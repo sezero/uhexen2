@@ -76,6 +76,7 @@ void VID_ApplyGamma (void);
 void VID_ForceLockState (int lk);
 int VID_ForceUnlockedAndReturnState (void);
 void VID_SetDefaultMode (void);
+void ToggleFullScreenSA (void);	// from Steven
 
 void VID_LockBuffer (void);
 void VID_UnlockBuffer (void);
