@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.7 2005-02-20 12:46:43 sezero Exp $
+	$Id: snd_alsa.c,v 1.8 2005-03-05 14:34:21 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -138,12 +138,11 @@ qboolean S_ALSA_Init (void)
 			if (err < 0) {
 				Con_DPrintf ("Could not set dsp to speed %d\n", tryrates[i]);
 			} else {
-			/* From alsa examples: is this necessary?
 				if (rate != tryrates[i]) {
-					Con_Printf ("Failure: Rate set (%d) didn't match requested rate (%d)!\n", rate, tryrates[i]);
-					goto error;
+					Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", rate, tryrates[i]);
+				//	goto error;
 				}
-			*/	desired_speed = rate;
+				desired_speed = rate;
 				break;
 			}
 		}
@@ -152,13 +151,14 @@ qboolean S_ALSA_Init (void)
 			goto error;
 		}
 	}
-/*	else {	// From alsa examples: is this necessary?
+	else {
 		if (rate != desired_speed) {
-			Con_Printf ("Failure: Rate set (%d) didn't match requested rate (%d)!\n", rate, desired_speed);
-			goto error;
+			Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", rate, desired_speed);
+		//	goto error;
+			desired_speed = rate;
 		}
 	}
-*/	frag_size = 8 * desired_bits * desired_speed / 11025;
+	frag_size = 8 * desired_bits * desired_speed / 11025;
 
 	err = hx2snd_pcm_hw_params_set_period_size_near (pcm, hw, &frag_size, 0);
 	if (err < 0) {
@@ -304,6 +304,14 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/02/20 12:46:43  sezero
+ * - Process all command line options in snd_dma.c, S_Startup() only.
+ *   Targets will do to its bidding first. And don't die immediately,
+ *   try setting alternative hw parameters. (FWIW, snd_oss.c now applies
+ *   all hardware settings before mmaping the buffer)
+ * - Check for requested and set rate mismatches and fail (Found in alsa
+ *   examples, is it necessary at all? Commented out for now.)
+ *
  * Revision 1.6  2005/02/14 15:12:52  sezero
  * added ability to disable ALSA support at compile time
  *

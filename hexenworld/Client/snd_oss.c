@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.8 2005-03-05 10:06:05 sezero Exp $
+	$Id: snd_oss.c,v 1.9 2005-03-05 14:34:21 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -148,13 +148,12 @@ qboolean S_OSS_Init(void)
 			if (rc < 0) {
 				Con_DPrintf ("Could not set dsp to speed %d\n", tryrates[i]);
 			} else {
-			/* From alsa examples: is this necessary?
 				if (tmp != tryrates[i]) {
-					Con_Printf ("Failure: Rate set (%d) didn't match requested rate (%d)!\n", tmp, tryrates[i]);
-					close(audio_fd);
-					return 0;
+					Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", tmp, tryrates[i]);
+				//	close(audio_fd);
+				//	return 0;
 				}
-			*/	desired_speed = tmp;
+				desired_speed = tmp;
 				break;
 			}
 		}
@@ -164,14 +163,15 @@ qboolean S_OSS_Init(void)
 			return 0;
 		}
 	}
-/*	else {	// From alsa examples: is this necessary?
+	else {
 		if (tmp != desired_speed) {
 			Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", tmp, desired_speed);
-			close(audio_fd);
-			return 0;
+		//	close(audio_fd);
+		//	return 0;
+			desired_speed = tmp;
 		}
 	}
-*/	shm->speed = desired_speed;
+	shm->speed = desired_speed;
 
 	tmp = (desired_channels == 2) ? 1 : 0;
 	rc = ioctl(audio_fd, SNDCTL_DSP_STEREO, &tmp);
