@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.10 2004-12-19 12:47:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.11 2005-01-03 22:37:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,6 +10,7 @@
 extern int ColorIndex[16];
 extern unsigned ColorPercent[16];
 extern qboolean	vid_initialized;
+extern int setup_class;
 
 #define MAX_DISC 18
 
@@ -898,8 +899,6 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 		first_time = false;
 	}
 
-	extern int setup_class;
-
 /*
 	GL_Bind (translate_texture[setup_class-1]);
 
@@ -1771,6 +1770,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2004/12/19 12:47:26  sezero
+ * fix the datatype for our new load32
+ *
  * Revision 1.9  2004/12/18 14:20:40  sezero
  * Clean-up and kill warnings: 11
  * A lot of whitespace cleanups.
