@@ -3,6 +3,8 @@
 
 
 int sv_mode;
+int do_stdin = 1;
+bool stdin_ready;
 
 sizebuf_t	cmd_text;
 byte		cmd_text_buf[8192];
@@ -249,7 +251,7 @@ void SZ_Write (sizebuf_t *buf, void *data, int length)
 }
 
 /////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////
+
 void SV_WriteFilterList();
 
 void SV_Shutdown (void)
@@ -260,45 +262,68 @@ void SV_Shutdown (void)
 	SV_WriteFilterList();
 }
 
+/* sys_dead_sleep: When set, the server gets NO cpu if no clients are connected
+   and there's no other activity. *MIGHT* cause problems with some mods. */
+bool	sys_dead_sleep	= 0;
+
+#ifndef max
+# define max(a,b) ((a) > (b) ? (a) : (b))
+#endif
+
+int Sys_CheckInput (int net_socket)
+{
+	fd_set      fdset;
+	int         res;
+	struct timeval _timeout;
+	struct timeval *timeout = 0;
+
+	_timeout.tv_sec = 0;
+	_timeout.tv_usec = net_socket < 0 ? 0 : 10000;
+
+	// select on the net socket and stdin
+	// the only reason we have a timeout at all is so that if the last
+	// connected client times out, the message would not otherwise
+	// be printed until the next event.
+	FD_ZERO (&fdset);
+
+	if (do_stdin)
+		FD_SET (0, &fdset);
+
+	if (net_socket >= 0)
+		FD_SET (net_socket, &fdset);
+
+	if (!sys_dead_sleep)
+		timeout = &_timeout;
+
+	res = select (max (net_socket, 0) + 1, &fdset, NULL, NULL, timeout);
+	if (res == 0 || res == -1)
+		return 0;
+
+	stdin_ready = FD_ISSET (0, &fdset);
+
+	return 1;
+}
+
 char *Sys_ConsoleInput (void)
 {
 	static char	text[256];
 	static int		len;
-	char		c;
-	fd_set		set;
-	struct timeval	timeout;
 
-	FD_ZERO (&set);
-	FD_SET (0, &set);	/* 0 is stdin?? */
-	timeout.tv_sec = 0;
-	timeout.tv_usec = 0;
+	if (!stdin_ready || !do_stdin)
+		return NULL;	// the select didn't say it was ready
+	stdin_ready = false;
 
-	while (select (1, &set, NULL, NULL, &timeout))
-	{
-		read (0, &c, 1);
-		if (c == '\n' || c == '\r')
-		{
-			text[len] = 0;
-			len = 0;
-			return text;
-		}
-		else if (c == 8)
-		{
-			if (len)
-			{
-				len--;
-				text[len] = 0;
-			}
-			continue;
-		}
-		text[len] = c;
-		len++;
-		text[len] = 0;
-		if (len == sizeof(text))
-			len = 0;
+	len = read (0, text, sizeof (text));
+	if (len == 0) {
+		// end of file
+		do_stdin = 0;
+		return NULL;
 	}
+	if (len < 1)
+		return NULL;
+	text[len - 1] = 0;	// rip off the \n and terminate
 
-	return NULL;
+	return text;
 }
 
 void SV_GetConsoleCommands (void)
@@ -388,8 +413,10 @@ void SV_TimeOut()
 void SV_Frame()
 {
 
+	Sys_CheckInput (net_socket);
+
 	SV_GetConsoleCommands ();
-	
+
 	Cbuf_Execute ();
 
 	SV_TimeOut();
