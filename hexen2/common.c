@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.8 2005-04-05 19:28:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.9 2005-04-05 19:44:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1931,7 +1931,7 @@ Sets com_gamedir, adds the directory to the head of the path,
 then loads and adds pak1.pak pak2.pak ... 
 ================
 */
-void COM_AddGameDirectory (char *dir, qboolean adduser)
+void COM_AddGameDirectory (char *dir)
 {
 	int				i;
 	searchpath_t    *search;
@@ -1970,12 +1970,10 @@ void COM_AddGameDirectory (char *dir, qboolean adduser)
 // we don't need to set it on win32 platforms since it's exactly com_gamedir
 //
 #ifdef PLATFORM_UNIX
-if (adduser) {
 	search = Hunk_Alloc (sizeof(searchpath_t));
 	strcpy (search->filename, com_userdir);
 	search->next = com_searchpaths;
 	com_searchpaths = search;
-}
 #endif
 //
 // add the contents of the parms.txt file to the end of the command line
@@ -2040,12 +2038,12 @@ void COM_InitFilesystem (void)
 // start up with GAMENAME by default (data1)
 //
 #ifndef H2MP
-	COM_AddGameDirectory (va("%s/"GAMENAME, basedir), true);
+	COM_AddGameDirectory (va("%s/"GAMENAME, basedir));
 #else
-	COM_AddGameDirectory (va("%s/"GAMENAME, basedir), false);
+	COM_AddGameDirectory (va("%s/"GAMENAME, basedir));
 	sprintf (com_userdir, "%s/portals", host_parms.userdir);
 	Sys_mkdir (com_userdir);
-	COM_AddGameDirectory (va("%s/portals", basedir), true);
+	COM_AddGameDirectory (va("%s/portals", basedir));
 #endif
 
 // -game <gamedir>
@@ -2057,7 +2055,7 @@ void COM_InitFilesystem (void)
 		com_modified = true;
 		sprintf (com_userdir, "%s/%s", host_parms.userdir, com_argv[i+1]);
 		Sys_mkdir (com_userdir);
-		COM_AddGameDirectory (va("%s/%s", basedir, com_argv[i+1]), true);
+		COM_AddGameDirectory (va("%s/%s", basedir, com_argv[i+1]));
 	}
 
 // -path <dir or packfile> [<dir or packfile>] ...
@@ -2107,6 +2105,9 @@ void COM_InitFilesystem (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/04/05 19:28:40  sezero
+ * clean-ups in endianness which now is decided at compile time
+ *
  * Revision 1.7  2005/02/05 16:21:13  sezero
  * killed Com_LoadHunkFile2()  [from HexenWorld]
  *

@@ -1686,7 +1686,7 @@ Sets com_gamedir, adds the directory to the head of the path,
 then loads and adds pak1.pak pak2.pak ... 
 ================
 */
-void COM_AddGameDirectory (char *dir, qboolean adduser)
+void COM_AddGameDirectory (char *dir)
 {
 	int				i;
 	searchpath_t	*search;
@@ -1730,12 +1730,10 @@ void COM_AddGameDirectory (char *dir, qboolean adduser)
 // we don't need to set it on win32 platforms since it's exactly com_gamedir
 //
 #ifdef PLATFORM_UNIX
-if (adduser) {
 	search = Hunk_Alloc (sizeof(searchpath_t));
 	strcpy (search->filename, com_userdir);
 	search->next = com_searchpaths;
 	com_searchpaths = search;
-}
 #endif
 
 }
@@ -1839,14 +1837,13 @@ void COM_InitFilesystem (void)
 //
 // start up with data1 by default
 //
-	COM_AddGameDirectory (va("%s/data1", com_basedir), false);
-/* O.S: This one shouldn't be necessary..
+	COM_AddGameDirectory (va("%s/data1", com_basedir));
 	sprintf (com_userdir, "%s/portals", host_parms.userdir);
 	Sys_mkdir (com_userdir);
-*/	COM_AddGameDirectory (va("%s/portals", com_basedir), false);
+	COM_AddGameDirectory (va("%s/portals", com_basedir));
 	sprintf (com_userdir, "%s/hw", host_parms.userdir);
 	Sys_mkdir (com_userdir);
-	COM_AddGameDirectory (va("%s/hw", com_basedir), true);
+	COM_AddGameDirectory (va("%s/hw", com_basedir));
 
 	i = COM_CheckParm ("-game");
 	if (i && i < com_argc-1)
@@ -1854,7 +1851,7 @@ void COM_InitFilesystem (void)
 		com_modified = true;
 		sprintf (com_userdir, "%s/%s", host_parms.userdir, com_argv[i+1]);
 		Sys_mkdir (com_userdir);
-		COM_AddGameDirectory (va("%s/%s", com_basedir, com_argv[i+1]), true);
+		COM_AddGameDirectory (va("%s/%s", com_basedir, com_argv[i+1]));
 	}
 
 	// any set gamedirs will be freed up to here
