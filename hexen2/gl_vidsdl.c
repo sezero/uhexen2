@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.26 2005-02-11 08:29:44 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.27 2005-02-11 08:32:02 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -356,7 +356,7 @@ void *bindTexFunc;
 
 #define TEXTURE_EXT_STRING "GL_EXT_texture_object"
 
-#define FX_DISPLAY_MODE_EXT_STRING "gl3DfxDisplayModeEXT"
+//#define FX_DISPLAY_MODE_EXT_STRING "gl3DfxDisplayModeEXT"
 
 //#define FX_SET_PALETTE_EXT_STRING "gl3DfxSetPaletteEXT"
 #define FX_SET_PALETTE_EXT_STRING "3DFX_set_global_palette"
@@ -364,6 +364,7 @@ void *bindTexFunc;
 
 //#define FX_MARK_PAL_TEXTURE_EXT_STRING "gl3DfxMarkPalettizedTextureEXT"
 
+/*
 void Check3DfxDisplayModeExtension( void )
 {
 #warning STUB
@@ -390,6 +391,7 @@ void Check3DfxDisplayModeExtension( void )
 	}
 #endif
 }
+*/
 
 void CheckSetPaletteExtension( void )
 {
@@ -556,7 +558,7 @@ void GL_Init (void)
     	//fxDisplayModeExtension = NULL;
 	//fxSetPaletteExtension = NULL;
 	//fxMarkPalTextureExtension = NULL;
-	Check3DfxDisplayModeExtension();
+	//Check3DfxDisplayModeExtension();
 	CheckSetPaletteExtension();
 	//Check3DfxMarkPaletteTextureExtension();	
 
