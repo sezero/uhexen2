@@ -12,5 +12,8 @@ Known Bugs
   be a problem anymore (we already have ALSA and SDL sound drivers),
   fixing that is on the TODO list.
 
-  matrox G200 : GL games don't display menus correctly (matrox GL bug ?)
+  matrox G200: GL games don't display menus correctly (matrox GL bug?)
+
+  Coop mode of HexenWorld is broken (known problem since Raven's latest
+  beta-0.15)
 
