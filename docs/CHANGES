@@ -1,5 +1,8 @@
 ChangeLog:
 
+2005-03-24 (CVS):
+    * fixed a harmless typo in launcher, for correctness' sake
+
 2005-03-19 (CVS):
     * added back the md5sum data for the data1/pak?.pak files
       to the README
