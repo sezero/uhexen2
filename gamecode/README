@@ -4,6 +4,12 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
+2005-03-17 (1.12h):
+===================
+Merged the actual H2MP 1.12-1.12a patch and it has been missing
+here in the CVS for ages. That no one told me about it is a bit
+embarassing....
+
 2005-02-23 (1.12g):
 ===================
 Merged a bunch of fixes/adjustments from Pa3PyX' sources:
