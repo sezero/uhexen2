@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.7 2005-03-03 17:02:37 sezero Exp $
+	$Id: snd_oss.c,v 1.8 2005-03-05 10:06:05 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -215,6 +215,7 @@ qboolean S_OSS_Init(void)
 	{
 		perror("/dev/dsp");
 		Con_Printf("Could not toggle.\n");
+		munmap (shm->buffer, mmaplen);
 		close(audio_fd);
 		return 0;
 	}
@@ -224,6 +225,7 @@ qboolean S_OSS_Init(void)
 	{
 		perror("/dev/dsp");
 		Con_Printf("Could not toggle.\n");
+		munmap (shm->buffer, mmaplen);
 		close(audio_fd);
 		return 0;
 	}
@@ -245,6 +247,7 @@ int S_OSS_GetDMAPos(void)
 	{
 		perror("/dev/dsp");
 		Con_Printf("Uh, sound dead.\n");
+		munmap (shm->buffer, mmaplen);
 		close(audio_fd);
 		snd_inited = 0;
 		return 0;
