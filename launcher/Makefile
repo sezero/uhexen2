@@ -32,14 +32,13 @@ VERSION = 0.3.2
 
 PROGRAMS = $(H2LAUNCH)
 
-#ORIG_SRC= support.c support.h
-SOURCES = main.c ${ORIG_SRC} interface.c interface.h \
-	callbacks.c callbacks.h launch_bin.c launch_bin.h \
-	config_file.c config_file.h
+SOURCES = main.c config_file.c config_file.h launch_bin.c launch_bin.h \
+	interface.c interface.h callbacks.c callbacks.h \
+	support.c support.h
 
 
-#ORIG_OBJ= support.o
-OBJECTS = main.o ${ORIG_OBJ} interface.o callbacks.o launch_bin.o \
+#SUPPORT_OBJ= support.o
+OBJECTS = main.o ${SUPPORT_OBJ} interface.o callbacks.o launch_bin.o \
 	config_file.o
 
 CFLAGS = -Wall -O2 -march=i386 -mcpu=i686 -I. ${GTK_CFLAGS}

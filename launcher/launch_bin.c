@@ -185,8 +185,8 @@ void launch_hexen2_bin() {
 
   if (sound == 0) {
     i++;
-    args[i]="-nosound -nomidi -nocdaudio"; // the 2nd and 3rd are bogus but just
-					   // in case we may screw-up someday
+    args[i]="-nosound -nocdaudio";	// the engine doesn't -nocdaudio upon -nosound,
+					// but it is simply what the name implies.
   } else {
 	if (midi == 0) {
 	    i++;

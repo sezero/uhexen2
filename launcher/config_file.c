@@ -168,35 +168,35 @@ int read_config_file()
 	   if (strstr(buff, "destiny=") == buff)
 	    {
 	      destiny = atoi(buff + 8);
-	      if (destiny < 0 || destiny > 1 )
+	      if (destiny != 0 || destiny != 1 )
 		destiny = DEST_H2;
 	    }
 #ifndef DEMOBUILD
 	  else if (strstr(buff, "mp_support=") == buff)
 	    {
 	      mp_support = atoi(buff + 11);
-	      if (mp_support < 0 || mp_support > 1 )
+	      if (mp_support != 0 || mp_support != 1 )
 		mp_support = 0;
 	    }
 
 	  else if (strstr(buff, "with_om=") == buff)
 	    {
 	      with_om = atoi(buff + 8);
-	      if (with_om < 0 || with_om > 1 )
+	      if (with_om != 0 || with_om != 1 )
 		with_om = 0;
 	    }
 #endif
 	  else if (strstr(buff, "opengl_support=") == buff)
 	    {
 	      opengl_support = atoi(buff + 15);
-	      if (opengl_support < 0 || opengl_support > 1 )
+	      if (opengl_support != 0 || opengl_support != 1 )
 		opengl_support = 1;
 	    }
 
 	  else if (strstr(buff, "fullscreen=") == buff)
 	    {
 	      fullscreen = atoi(buff + 11);
-	      if (fullscreen < 0 || fullscreen > 1 )
+	      if (fullscreen != 0 || fullscreen != 1 )
 		fullscreen = 1;
 	    }
 	  else if (strstr(buff, "resolution=") == buff)
@@ -208,7 +208,7 @@ int read_config_file()
 	  else if (strstr(buff, "sound=") == buff)
 	    {
 	      sound = atoi(buff + 6);
-	      if (sound < 0 || sound > 1 )
+	      if (sound != 0 || sound != 1 )
 		sound = 1;
 	    }
 	  else if (strstr(buff, "midi=") == buff)
@@ -217,7 +217,7 @@ int read_config_file()
 	        midi = 0;
 	      } else {
 		midi = atoi(buff + 5);
-		if (midi < 0 || midi > 1 )
+		if (midi != 0 || midi != 1 )
 		   midi = 1;
 	      }
 	    }
@@ -227,20 +227,20 @@ int read_config_file()
 		 cdaudio = 0;
 	      } else {
 		cdaudio = atoi(buff + 8);
-		if (cdaudio < 0 || cdaudio > 1 )
-		   sound = 1;
+		if (cdaudio != 0 || cdaudio != 1 )
+		   cdaudio = 1;
 	      }
 	    }
 	  else if (strstr(buff, "joystick=") == buff)
 	    {
 	      joystick = atoi(buff + 9);
-	      if (joystick < 0 || joystick > 1 )
+	      if (joystick != 0 || joystick != 1 )
 		joystick = 0;
 	    }
 	  else if (strstr(buff, "lan=") == buff)
 	    {
 	      lan = atoi(buff + 4);
-	      if (lan < 0 || lan > 1 )
+	      if (lan != 0 || lan != 1 )
 		lan = 1;
 	    }
 	}

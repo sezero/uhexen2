@@ -63,25 +63,13 @@ void
 on_SOUND_button_toggled                (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (sound) {
-    gtk_widget_set_sensitive (MIDI_button, FALSE);
-    gtk_widget_set_sensitive (CDAUDIO_button, FALSE);
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MIDI_button), TRUE);
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (CDAUDIO_button), TRUE);
-    midi=0;
-    cdaudio=0;
-    sound=0;
-  }
-
-  else {
-    gtk_widget_set_sensitive (MIDI_button, TRUE);
-    gtk_widget_set_sensitive (CDAUDIO_button, TRUE);
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MIDI_button), FALSE);
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (CDAUDIO_button), FALSE);
-    midi=1;
-    cdaudio=1;
-    sound=1;
-  }
+    sound=!sound;
+    gtk_widget_set_sensitive (MIDI_button, sound);
+    gtk_widget_set_sensitive (CDAUDIO_button, sound);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MIDI_button), !sound);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (CDAUDIO_button), !sound);
+    midi=sound;
+    cdaudio=sound;
 }
 
 
@@ -90,17 +78,10 @@ on_MP_button_toggled                   (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
 #ifndef DEMOBUILD
-  if (mp_support) {
-    mp_support=0;
-    gtk_widget_set_sensitive (OM_button, FALSE);
-//  if(with_om)
-//    gtk_widget_set_sensitive (EVIL_button, FALSE);
-  } else {
-    mp_support=1;
-    gtk_widget_set_sensitive (OM_button, TRUE);
-//  if(with_om)
-//    gtk_widget_set_sensitive (EVIL_button, TRUE);
-  }
+  mp_support = !mp_support;
+  gtk_widget_set_sensitive (OM_button, mp_support);
+//if(with_om)
+//   gtk_widget_set_sensitive (EVIL_button, mp_support);
 #endif
 }
 
@@ -132,11 +113,7 @@ on_EVIL_button_toggled                   (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
 #ifndef DEMOBUILD
-  if (iamevil) {
-    iamevil=0;
-  } else {
-    iamevil=1;
-  }
+  iamevil=!iamevil
 #endif
 }
 */
@@ -249,11 +226,7 @@ void
 on_FS_button_toggled                   (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
- if (fullscreen) {
-   fullscreen=0;
-  } else {
-    fullscreen=1;
-  } 
+  fullscreen=!fullscreen;
 }
 
 
@@ -313,12 +286,7 @@ void
 on_MIDI_button_toggled                 (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (midi) {
-    midi=0;
-  } else {
-    midi=1;
-  }
-
+  midi=!midi;
 }
 
 
@@ -326,12 +294,7 @@ void
 on_CDAUDIO_button_toggled              (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (cdaudio) {
-    cdaudio=0;
-  } else {
-    cdaudio=1;
-  }
-
+  cdaudio=!cdaudio;
 }
 
 
@@ -339,11 +302,7 @@ void
 on_LAN_button_toggled                  (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (lan) {
-    lan=0;
-  } else {
-    lan=1;
-  }
+  lan=!lan;
 }
 
 
@@ -351,10 +310,6 @@ void
 on_JOY_button_toggled                  (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (joystick) {
-    joystick=0;
-  } else {
-    joystick=1;
-  }
+  joystick=!joystick;
 }
 
