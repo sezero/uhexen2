@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.10 2005-02-08 21:18:02 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.11 2005-02-09 14:32:32 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -11,14 +11,10 @@ extern	cvar_t	crosshair;
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);
 
-enum {m_none, m_main, m_singleplayer, m_load, m_save, m_multiplayer, m_setup, m_net, m_options, m_video, 
-		m_keys, m_help, m_quit, m_serialconfig, m_modemconfig, m_lanconfig, m_gameoptions, m_search, m_slist, 
-		m_class, m_difficulty, m_mload, m_msave, m_mconnect} m_state;
+enum {m_none, m_main, m_multiplayer, m_setup, m_net, m_options, m_video, 
+		m_keys, m_help, m_quit, m_class, m_mconnect} m_state;
 
 void M_Menu_Main_f (void);
-	void M_Menu_SinglePlayer_f (void);
-		void M_Menu_Load_f (void);
-		void M_Menu_Save_f (void);
 	void M_Menu_MultiPlayer_f (void);
 		void M_Menu_Setup_f (void);
 		void M_Menu_Net_f (void);
@@ -27,17 +23,8 @@ void M_Menu_Main_f (void);
 		void M_Menu_Video_f (void);
 	void M_Menu_Help_f (void);
 	void M_Menu_Quit_f (void);
-void M_Menu_SerialConfig_f (void);
-	void M_Menu_ModemConfig_f (void);
-void M_Menu_LanConfig_f (void);
-void M_Menu_GameOptions_f (void);
-void M_Menu_Search_f (void);
-void M_Menu_ServerList_f (void);
 
 void M_Main_Draw (void);
-	void M_SinglePlayer_Draw (void);
-		void M_Load_Draw (void);
-		void M_Save_Draw (void);
 	void M_MultiPlayer_Draw (void);
 		void M_Setup_Draw (void);
 		void M_Net_Draw (void);
@@ -46,17 +33,8 @@ void M_Main_Draw (void);
 		void M_Video_Draw (void);
 	void M_Help_Draw (void);
 	void M_Quit_Draw (void);
-void M_SerialConfig_Draw (void);
-	void M_ModemConfig_Draw (void);
-void M_LanConfig_Draw (void);
-void M_GameOptions_Draw (void);
-void M_Search_Draw (void);
-void M_ServerList_Draw (void);
 
 void M_Main_Key (int key);
-	void M_SinglePlayer_Key (int key);
-		void M_Load_Key (int key);
-		void M_Save_Key (int key);
 	void M_MultiPlayer_Key (int key);
 		void M_Menu_Connect_f (void);
 		void M_Setup_Key (int key);
@@ -66,12 +44,6 @@ void M_Main_Key (int key);
 		void M_Video_Key (int key);
 	void M_Help_Key (int key);
 	void M_Quit_Key (int key);
-void M_SerialConfig_Key (int key);
-	void M_ModemConfig_Key (int key);
-void M_LanConfig_Key (int key);
-void M_GameOptions_Key (int key);
-void M_Search_Key (int key);
-void M_ServerList_Key (int key);
 
 qboolean	m_entersound;		// play after drawing a frame, so caching
 								// won't disrupt the sound
@@ -92,14 +64,6 @@ int		setup_class, which_class;
 static char *message,*message2;
 static double message_time;
 
-#define StartingGame	(m_multiplayer_cursor == 1)
-#define JoiningGame		(m_multiplayer_cursor == 0)
-#define SerialConfig	(m_net_cursor == 0)
-#define DirectConfig	(m_net_cursor == 1)
-#define	IPXConfig		(m_net_cursor == 2)
-#define	TCPIPConfig		(m_net_cursor == 3)
-
-void M_ConfigureNetSubsystem(void);
 void M_Menu_Class_f (void);
 
 char *ClassNames[MAX_PLAYER_CLASS] = 
@@ -120,46 +84,6 @@ char *ClassNamesU[MAX_PLAYER_CLASS] =
 	"ASSASSIN",
 	"SUCCUBUS",
 	"DWARF"
-};
-
-char *DiffNames[MAX_PLAYER_CLASS][4] =
-{
-	{	// Paladin
-		"APPRENTICE",
-		"SQUIRE",
-		"ADEPT",
-		"LORD"
-	},
-	{	// Crusader
-		"GALLANT",
-		"HOLY AVENGER",
-		"DIVINE HERO",
-		"LEGEND"
-	},
-	{	// Necromancer
-		"SORCERER",
-		"DARK SERVANT",
-		"WARLOCK",
-		"LICH KING"
-	},
-	{	// Assassin
-		"ROGUE",
-		"CUTTHROAT",
-		"EXECUTIONER",
-		"WIDOW MAKER"
-	},
-	{	// Demoness
-		"LARVA",
-		"SPAWN",
-		"FIEND",
-		"SHE BITCH"
-	},
-	{	// Dwarf
-		"NATE",
-		"MUNCHKIN",
-		"BERZERKER",
-		"HANK"
-	}
 };
 
 //=============================================================================
@@ -692,8 +616,6 @@ void M_Main_Draw (void)
 	int		f;
 
 	ScrollTitle("gfx/menu/title0.lmp");
-//	M_DrawTransPic (72, 32, Draw_CachePic ("gfx/mainmenu.lmp") );
-//	M_DrawBigString (72,60+(0*20),"SINGLE PLAYER");
 	M_DrawBigString (72,60+(0*20),"MULTIPLAYER");
 	M_DrawBigString (72,60+(1*20),"OPTIONS");
 	M_DrawBigString (72,60+(2*20),"HELP");
@@ -741,10 +663,6 @@ void M_Main_Key (int key)
 
 		switch (m_main_cursor)
 		{
-		case 4:
-			M_Menu_SinglePlayer_f ();
-			break;
-
 		case 0:
 			M_Menu_MultiPlayer_f ();
 			break;
@@ -815,10 +733,6 @@ void M_Class_Key (int key)
 {
 	switch (key)
 	{
-	case K_ESCAPE:
-		M_Menu_SinglePlayer_f ();
-		break;
-		
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
 		if (++m_class_cursor >= CLASS_ITEMS)
@@ -840,26 +754,17 @@ void M_Class_Key (int key)
 		break;
 
 	case K_ENTER:
-
 //		sv_player->v.playerclass=m_class_cursor+1;
 		Cbuf_AddText ( va ("playerclass %d\n", m_class_cursor+1) );
 		m_entersound = true;
-//		if (!class_flag)
-//		{		
-//			M_Menu_Difficulty_f();
-//		}
-//		else
-		{
 			key_dest = key_game;
 			m_state = m_none;
-		}
 		break;
 	default:
 		key_dest = key_game;
 		m_state = m_none;
 		break;
 	}
-
 }
 
 
@@ -2147,50 +2052,6 @@ void M_Quit_Draw (void)
 
 }
 
-void M_Menu_SinglePlayer_f (void) {
-	m_state = m_singleplayer;
-}
-
-void M_SinglePlayer_Draw (void)
-{
-	ScrollTitle("gfx/menu/title1.lmp");
-
-	M_DrawTextBox (60, 10*8, 23, 4);	
-	M_PrintWhite (92, 12*8, "HexenWorld is for");
-	M_PrintWhite (88, 13*8, "Internet play only");
-
-}
-
-void M_SinglePlayer_Key (key) {
-	if (key == K_ESCAPE || key==K_ENTER)
-		m_state = m_main;
-}
-
-/*
-void M_Menu_MultiPlayer_f (void) {
-	m_state = m_multiplayer;
-}
-
-void M_MultiPlayer_Draw (void)
-{
-	ScrollTitle("gfx/menu/title1.lmp");
-
-	M_DrawTextBox (46, 8*8, 27, 9);	
-	M_PrintWhite (72, 10*8, "If you want to find HW  ");
-	M_PrintWhite (72, 11*8, "games, head on over to: ");
-	     M_Print (72, 12*8, "   www.hexenworld.net   ");
-	M_PrintWhite (72, 13*8, "          or            ");
-	     M_Print (72, 14*8, "   www.quakespy.com     ");
-	M_PrintWhite (72, 15*8, "For pointers on getting ");
-	M_PrintWhite (72, 16*8, "        started!        ");
-}
-
-void M_MultiPlayer_Key (key) {
-	if (key == K_ESCAPE || key==K_ENTER)
-		m_state = m_main;
-}
-*/
-
 //=============================================================================
 /* MULTIPLAYER MENU */
 
@@ -2212,7 +2073,6 @@ void M_MultiPlayer_Draw (void)
 	int		f;
 
 	ScrollTitle("gfx/menu/title4.lmp");
-//	M_DrawTransPic (72, 32, Draw_CachePic ("gfx/mp_menu.lmp") );
 
 	M_DrawBigString (72,60+(0*20),"JOIN A GAME");
 	M_DrawBigString (72,60+(1*20),"SETUP");
@@ -2272,7 +2132,7 @@ void M_MultiPlayer_Key (int key)
 #define MAX_HOST_SIZE 80
 char save_names[MAX_HOST_NAMES][MAX_HOST_SIZE];
 
-cvar_t	hostname1 = {"host1","equalizer.ravensoft.com", true};
+cvar_t	hostname1 = {"host1","", true};
 cvar_t	hostname2 = {"host2","", true};
 cvar_t	hostname3 = {"host3","", true};
 cvar_t	hostname4 = {"host4","", true};
@@ -2822,20 +2682,8 @@ void M_Draw (void)
 		M_Main_Draw ();
 		break;
 
-	case m_singleplayer:
-		M_SinglePlayer_Draw ();
-		break;
-
 	case m_class:
 		M_Class_Draw ();
-		break;
-
-	case m_load:
-//		M_Load_Draw ();
-		break;
-
-	case m_save:
-//		M_Save_Draw ();
 		break;
 
 	case m_multiplayer:
@@ -2870,30 +2718,6 @@ void M_Draw (void)
 		M_Quit_Draw ();
 		break;
 
-	case m_serialconfig:
-//		M_SerialConfig_Draw ();
-		break;
-
-	case m_modemconfig:
-//		M_ModemConfig_Draw ();
-		break;
-
-	case m_lanconfig:
-//		M_LanConfig_Draw ();
-		break;
-
-	case m_gameoptions:
-//		M_GameOptions_Draw ();
-		break;
-
-	case m_search:
-//		M_Search_Draw ();
-		break;
-
-	case m_slist:
-//		M_ServerList_Draw ();
-		break;
-
 	case m_mconnect:
 		M_Connect_Draw ();
 		break;
@@ -2922,20 +2746,8 @@ void M_Keydown (int key)
 		M_Main_Key (key);
 		return;
 
-	case m_singleplayer:
-		M_SinglePlayer_Key (key);
-		return;
-
 	case m_class:
 		M_Class_Key (key);
-		return;
-
-	case m_load:
-//		M_Load_Key (key);
-		return;
-
-	case m_save:
-//		M_Save_Key (key);
 		return;
 
 	case m_multiplayer:
@@ -2969,30 +2781,6 @@ void M_Keydown (int key)
 	case m_quit:
 		M_Quit_Key (key);
 		return;
-
-	case m_serialconfig:
-//		M_SerialConfig_Key (key);
-		return;
-
-	case m_modemconfig:
-//		M_ModemConfig_Key (key);
-		return;
-
-	case m_lanconfig:
-//		M_LanConfig_Key (key);
-		return;
-
-	case m_gameoptions:
-//		M_GameOptions_Key (key);
-		return;
-
-	case m_search:
-//		M_Search_Key (key);
-		break;
-
-	case m_slist:
-//		M_ServerList_Key (key);
-		break;
 
 	case m_mconnect:
 		M_Connect_Key (key);
