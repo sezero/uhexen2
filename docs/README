@@ -216,11 +216,14 @@ Binary		Windows		Linux	  Game		Status
 -------------------------------------
 
 Your savegames and configuration files are stored in a directory
-named  .aot  in your home folder:  ~/.aot
-We still keep this  ".aot"  name for compatibility with the old
-AoT port. Savegames and configs for Hexen2 are stored directly
-under ~/.aot/   For the Mission Pack, see under ~/.aot/portals/
+named  .hexen2 in your home folder:  ~/.hexen2
 
+Savegames & configs for Hexen2 are stored directly under ~/.hexen2/
+For the Mission Pack, they are stored under ~/.hexen2/portals/
+
+(Until recently we kept the ".aot" name for compatibility with the
+old AoT port, but we think that it's now suitable for AoT, aot and
+.aot to retire.)
 
 1.7 Thanks
 ----------

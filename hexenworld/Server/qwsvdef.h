@@ -33,7 +33,7 @@
 #include "pmove.h"
 
 #ifndef DEMOBUILD
-#define AOT_USERDIR ".aot/hw"
+#define AOT_USERDIR ".hexen2/hw"
 #else
 #define AOT_USERDIR ".hexen2demo/hw"
 #endif

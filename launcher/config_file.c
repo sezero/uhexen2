@@ -19,7 +19,7 @@
 #include "launch_bin.h"
 
 #ifndef DEMOBUILD
-#define AOT_USERDIR ".aot"
+#define AOT_USERDIR ".hexen2"
 #else
 #define AOT_USERDIR ".hexen2demo"
 #endif
