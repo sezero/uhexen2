@@ -234,6 +234,8 @@ qboolean VID_SetWindowedMode (int modenum)
 
 	if (!(screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags)))
 		return false;
+	else
+		Con_SafePrintf ("Video Mode: %d x %d x %d\n", vid.width, vid.height, modelist[modenum].bpp);
 
 	SDL_WM_SetCaption ("GLHexenWorld", "GLHexenWorld");
 
@@ -958,7 +960,7 @@ VID_Init
 */
 void	VID_Init (unsigned char *palette)
 {
-	int	width, height, bpp, findbpp;
+	int	width, height, bpp;
 	char	gldir[MAX_OSPATH];
 
 	Cvar_RegisterVariable (&vid_mode);
@@ -1066,7 +1068,6 @@ void	VID_Init (unsigned char *palette)
 	if (COM_CheckParm("-bpp"))
 	{
 		bpp = atoi(com_argv[COM_CheckParm("-bpp")+1]);
-		findbpp = 0;
 	}
 	else
 	{

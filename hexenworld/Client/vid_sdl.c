@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.11 2005-02-25 15:43:09 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.12 2005-03-13 16:00:38 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -283,6 +283,8 @@ qboolean VID_SetWindowedMode (int modenum)
 	
 	if (!(screen = SDL_SetVideoMode(vid.width, vid.height, modelist[modenum].bpp, flags)))
 		return false;
+	else
+		Con_SafePrintf ("Video Mode: %d x %d x %d\n", vid.width, vid.height, modelist[modenum].bpp);
 
 	vid.buffer = vid.conbuffer = vid.direct = screen->pixels;
 	vid.rowbytes = vid.conrowbytes = screen->pitch;
@@ -1025,6 +1027,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/02/25 15:43:09  sezero
+ * fix hexenworld window caption for the software version.
+ *
  * Revision 1.10  2005/02/12 13:24:29  sezero
  * missing scrolltitle in the software version of VID_MenuDraw()
  *

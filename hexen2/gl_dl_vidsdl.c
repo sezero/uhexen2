@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.29 2005-02-11 23:45:52 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.30 2005-03-13 16:00:17 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -237,6 +237,8 @@ qboolean VID_SetWindowedMode (int modenum)
 	
 	if (!(screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags)))
 		return false;
+	else
+		Con_SafePrintf ("Video Mode: %d x %d x %d\n", vid.width, vid.height, modelist[modenum].bpp);
 
 	// acknowledge Portal of Praevus S.A
 #ifdef H2MP
@@ -1045,7 +1047,7 @@ VID_Init
 */
 void	VID_Init (unsigned char *palette)
 {
-	int	width, height, bpp, findbpp;
+	int	width, height, bpp;
 	char	gldir[MAX_OSPATH];
 
 	Cvar_RegisterVariable (&vid_mode);
@@ -1162,7 +1164,6 @@ void	VID_Init (unsigned char *palette)
 	if (COM_CheckParm("-bpp"))
 	{
 		bpp = atoi(com_argv[COM_CheckParm("-bpp")+1]);
-		findbpp = 0;
 	}
 	else
 	{

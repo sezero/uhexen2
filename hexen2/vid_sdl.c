@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.15 2005-02-12 13:24:28 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.16 2005-03-13 16:00:17 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -281,6 +281,8 @@ qboolean VID_SetWindowedMode (int modenum)
 	
 	if (!(screen = SDL_SetVideoMode(vid.width, vid.height, modelist[modenum].bpp, flags)))
 		return false;
+	else
+		Con_SafePrintf ("Video Mode: %d x %d x %d\n", vid.width, vid.height, modelist[modenum].bpp);
 
 	vid.buffer = vid.conbuffer = vid.direct = screen->pixels;
 	vid.rowbytes = vid.conrowbytes = screen->pitch;
@@ -1032,6 +1034,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/02/12 13:24:28  sezero
+ * missing scrolltitle in the software version of VID_MenuDraw()
+ *
  * Revision 1.14  2005/02/11 08:33:55  sezero
  * Kill sound/music messing in vid code: S_Init() and CDAudio_Init() are
  * called AFTER than VID_Init(), so this should be correct. See hexen2/host.c
