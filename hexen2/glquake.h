@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.2 2004-11-28 00:37:43 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.3 2004-12-16 18:10:12 sezero Exp $
  */
 
 // disable data conversion warnings
@@ -288,7 +288,7 @@ extern	int		gl_lightmap_format;
 extern	int		gl_solid_format;
 extern	int		gl_alpha_format;
 
-extern	cvar_t	gl_max_size;
+extern	int	gl_max_size;
 extern	cvar_t	gl_playermip;
 
 extern	int			mirrortexturenum;	// quake texturenum, not gltexturenum
@@ -315,6 +315,9 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/11/28 00:37:43  sezero
+ * add gl-glow. code borrowed from the js sources
+ *
  * Revision 1.1.1.1  2004/11/28 00:04:22  sezero
  * Initial import of AoT 1.2.0 code
  *

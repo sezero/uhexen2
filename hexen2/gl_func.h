@@ -52,6 +52,11 @@ typedef void (*glLoadMatrixf_f)(const GLfloat *);
 typedef const GLubyte* (*glGetString_f)(GLenum);
 typedef void (*glGetFloatv_f)(GLenum,GLfloat *);
 
+typedef void (*glActiveTextureARB_f)(GLenum texture);
+typedef void (*glMultiTexCoord2fARB_f)(GLenum target, GLfloat s, GLfloat t);
+
+typedef void (*glGetIntegerv_f)(GLenum pname, GLint *params);
+
 typedef GLint (*gluBuild2DMipmaps_f)(GLenum,GLint,GLsizei,GLsizei,GLenum,GLenum,const void*);
 typedef GLint (*gluScaleImage_f)(GLenum,GLsizei,GLsizei,GLenum,const void*,GLsizei,GLsizei,GLenum,GLvoid*);
 
@@ -110,6 +115,11 @@ typedef struct
 
   glGetString_f glGetString_fp;
   glGetFloatv_f glGetFloatv_fp;
+
+  glActiveTextureARB_f glActiveTextureARB_fp;
+  glMultiTexCoord2fARB_f glMultiTexCoord2fARB_fp;
+
+  glGetIntegerv_f glGetIntegerv_fp;
 
   gluBuild2DMipmaps_f gluBuild2DMipmaps_fp;
   gluScaleImage_f gluScaleImage_fp;

@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.3 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.4 2004-12-16 18:10:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -13,8 +13,7 @@ extern qboolean	vid_initialized;
 
 #define MAX_DISC 18
 
-cvar_t		gl_nobind = {"gl_nobind", "0"};
-cvar_t		gl_max_size = {"gl_max_size", "1024"};
+int		gl_max_size = 256;
 cvar_t		gl_round_down = {"gl_round_down", "0"};
 cvar_t		gl_picmip = {"gl_picmip", "0"};
 
@@ -47,8 +46,6 @@ int		texels;
 
 qboolean is_3dfx = false;
 qboolean is_PowerVR = false;
-//qboolean is_3dfx = true;
-//qboolean is_PowerVR = true;
 
 typedef struct
 {
@@ -65,8 +62,6 @@ int			numgltextures;
 
 void GL_Bind (int texnum)
 {
-	if (gl_nobind.value)
-		texnum = char_texture;
 	if (currenttexture == texnum)
 		return;
 	currenttexture = texnum;
@@ -493,16 +488,15 @@ void Draw_Init (void)
 	glpic_t *gl;
 	char temp[MAX_QPATH];
 
-	Cvar_RegisterVariable (&gl_nobind);
-	Cvar_RegisterVariable (&gl_max_size);
 	Cvar_RegisterVariable (&gl_round_down);
 	Cvar_RegisterVariable (&gl_picmip);
 
-	// 3dfx can only handle 256 wide textures
-	if (is_3dfx || is_PowerVR)
-	{
-		Cvar_Set ("gl_max_size", "256");
-	}
+	glfunc.glGetIntegerv_fp(GL_MAX_TEXTURE_SIZE, &gl_max_size);
+	if (gl_max_size < 64)	/* Any living examples for this? */
+		gl_max_size = 64;
+	if (gl_max_size > 1024) /* O.S: write a cmdline override if necessary */
+		gl_max_size = 1024;
+	Con_Printf("OpenGL max.texture size: %i\n", gl_max_size);
 
 	Cmd_AddCommand ("gl_texturemode", &Draw_TextureMode_f);
 	Cmd_AddCommand ("gl_texels", &GL_Texels_f);
@@ -1375,10 +1369,10 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 		scaled_height >>= (int)gl_picmip.value;
 	}
 
-	if (scaled_width > gl_max_size.value)
-		scaled_width = gl_max_size.value;
-	if (scaled_height > gl_max_size.value)
-		scaled_height = gl_max_size.value;
+	if (scaled_width > gl_max_size)
+		scaled_width = gl_max_size;
+	if (scaled_height > gl_max_size)
+		scaled_height = gl_max_size;
 
 	if (scaled_width * scaled_height > sizeof(scaled)/4)
 		Sys_Error ("GL_LoadTexture: too big");
@@ -1773,6 +1767,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.2  2004/11/29 12:17:46  sezero
  * draw fullscreen intermission pics. borrowed from Pa3PyX sources.
  *

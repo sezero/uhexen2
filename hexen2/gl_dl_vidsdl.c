@@ -1,6 +1,6 @@
 /*
    gl_dl_vidsdl.c
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.10 2004-12-12 14:38:18 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.11 2004-12-16 18:10:12 sezero Exp $
 
    Select window size and mode and init SDL in GL mode.
 
@@ -778,6 +778,9 @@ void GL_Init_Functions(void)
   if (glfunc.glHint_fp == 0) {Sys_Error("glHint not found in GL library");}
   glfunc.glCullFace_fp = (glCullFace_f) SDL_GL_GetProcAddress("glCullFace");
   if (glfunc.glCullFace_fp == 0) {Sys_Error("glCullFace not found in GL library");}
+
+  glfunc.glGetIntegerv_fp = (glGetIntegerv_f) SDL_GL_GetProcAddress("glGetIntegerv");
+  if (glfunc.glGetIntegerv_fp == 0) {Sys_Error("glGetIntegerv not found in GL library");}
 
   glfunc.glGetString_fp = (glGetString_f) SDL_GL_GetProcAddress("glGetString");
   if (glfunc.glGetString_fp == 0) {Sys_Error("glGetString not found in GL library");}
