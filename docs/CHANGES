@@ -1,6 +1,7 @@
 ChangeLog:
 
 2005-03-24 (CVS):
+    * simplified window title creation in launcher
     * fixed a harmless typo in launcher, for correctness' sake
 
 2005-03-19 (CVS):
