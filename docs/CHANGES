@@ -1,97 +1,83 @@
-Changes since AoT 1.2.0:
-------------------------
+ChangeLog:
 
-2004-12-29:
--   Some usability tweaks in the launcher. Removed the mouse option and
-    added the disable networking option.
 
--   Fullscreen/Windowed mode is now switchable. Seems to work good. (Steven)
+2004-12-29 (CVS, 1.2.3-rc2):
 
--   Mouse can now be disabled for fullscreen modes. (Steven)
+    * Launcher: Some usability tweaks. Removed the mouse option, added
+      the disable networking option.
+    * Hexen2: Fullscreen/Windowed mode is now switchable. Seems to work
+      good. (from Steven).
+    * Hexen2: Mouse can now be disabled for fullscreen modes (from Steven).
+    * HexenWorld Client: Merge some Hexen2 changes:
+      o Fix the fire attacks drawing lines across the screen
+      o Don't print gl_extensions which spams the console
+      o Partially merge Steven's mouse tweaks from 2004-12-29.
 
--   Merge some Hexen2 changes into HexenWorld Client:
-    o Fix the fire attacks drawing lines across the screen. 
-    o Don't print gl_extensions which spams the console. 
-    o Partially merge Steven's mouse tweaks from 2004-12-29.
+2004-12-28 (CVS):
 
-2004-12-28 and before:
--   No Boss bug in Dan's original linux port fixed: Hexen2 loads progs2.dat
-    along with progs.dat, as it should, now.
+    * Fixed gameplay issue: Holy item in the Cathedral balcony not
+      reachable (automatic install using the installer).
+    * Fixed (mostly) gameplay issue: Eidolon loses hostility under
+      certain conditions (automatic install using the installer).
+    * Fixed gameplay issue: Eidolon fails landing (automatic install
+      using the installer).
+    * Prepared an installer (using loki_setup tools from CVS / 
+      2004-12-26).
+    * The Launcher works fine with GTK2 now.
+    * Using redhat rpm style arch flags ( -march=i386 -mcpu=i686 ).
+    * Fixed textures going AWOL in GL mode upon loading savegames many
+      times. This used to result in white info-plaques, for instance
+      (adapted from pa3pyx).
+    * The "GL GLOWS" menu entry is fixed. It now controls
+      gl_other_glows, too.
+    * Fixed the gl_other_glows option not being written into config.cfg
+    * Previous Weapon entry added to the Customize Controls menu.
+    * Removed second arg from the function EmitSkyPolys.
+    * Use glGetIntegerv to detect maximum supported texture size, not
+      vendor string.
+    * gl_max_size is not a cvar anymore. Also killed cvar gl_nobind.
+    * Merge newer snd_dma code from HexenWorld to Hexen2.
+    * Intermission screens now drawn fullscreen (from pa3pyx).
+      This includes the help menu screen where the fonts seemed
+      unreadably small.
+    * Wheelmouse support is added.
+    * Removed console spamming code (gl_extensions, unbinding files, etc.)
 
--   A range checking bug is fixed along with the No Boss bug.
 
--   Proper fullscreen mode(s) for OpenGL.
+1.2.2: Changes since HoT 1.2.1:
 
--   Screen sizes are selectable with "-width" and "-height" options, now.
-    The "-mode" cmdline arg is removed.
+    * Launcher is fully functional and works fine with fullscreen opengl
+      modes.
+    * Fixed fire attacks of Demoness and Praevus drawing lines across
+      the screen.
+    * The annoying ".dynamic" extensions are removed from the binary names.
+    * HexenWorld: dlsym'ed all calls to GL functions with
+      SDL_GL_GetProcAddress.
+    * Made the music automatically restart when changed in the options
+      menu.
+    * Heapsize is now 32768 default
+    * The final splash screens now centre the messages properly.
+    * Added an experimental SDL sound driver. Very buggy for now.
+      (We acept patches ;)
+    * Mouse grab in window modes, released with menus, pause and console.
+      Mouse can be bound in the Options menu in window mode. "-nomouse"
+      option works in window mode.
 
--   Launcher is fully functional and works fine with fullscreen opengl modes.
 
--   Interactive video modes in software game disabled.
+1.2.1: Changes since AoT 1.2.0:
 
--   Video Modes menu now displays help message.
-
--   Height values corresponding to --width are properly added.
-
--   Mouse grab in window modes, released with menus, pause and console.
-    Mouse can be bound in the Options menu in window mode.  "-nomouse"
-    option works in window mode.
-
--   GL glow patch from jshexen2.
-
--   New menu items for GL Glow, Chase mode, Draw Shadows.
-
--   Two general overflow bug-fixes by Pa3Pyx.
-
--   Heapsize is now 32768 default
-
--   An experimental SDL sound driver is added. Very buggy for now.
-
--   The final splash screens now centre the messages properly.
-
--   Intermission screens now drawn fullscreen (from Pa3Pyx). This includes the
-    help menu screen where the fonts seemed unreadably small.
-
--   Wheelmouse support is added.
-
--   The annoying ".dynamic" extensions are removed from the binary names.
-
--   Fixed textures going AWOL in GL mode upon loading savegames many times.
-    This used to result in white info-plaques, for instance.
-
--   Fixed fire attacks of Demoness and Praevus which used to draw lines across
-    the screen.
-
--   Fixed the gl_other_glows option not being written into config.cfg
-
--   The "GL GLOWS" menu entry is fixed. It now controls gl_other_glows, too.
-
--   Made the music automatically restart when changed in the options menu.
-
--   Removed console spamming code (gl_extensions, unbinding files, etc.)
-
--   Previous Weapon  entry added to the Customize Controls menu.
-
--   Use glGetIntegerv to detect maximum supported texture size, not vendor
-    string.
-
--   Using redhat rpm style arch flags ( -march=i386 -mcpu=i686 ).
-
--   Add/enable the cmdline options -witholdmission and -noold for H2MP.
-
--   BIG code cleanup including retiring some unused files, retiring old opengl
-    files, killing many compiler warnings, etc.
-
--   The Launcher works fine with GTK2 now.
-
--   Prepared an installer (using loki_setup tools from CVS / 2004-12-26)
-
--   Fixed gameplay issue: Eidolon fails landing (automatic install using
-    the installer)
-
--   Fixed gameplay issue: Holy item in the Cathedral balcony not reachable
-    (automatic install using the installer)
-
--   Fixed (mostly) gameplay issue: Eidolon loses hostility under certain
-    conditions  (automatic install using the installer)
-
+    * New menu items for GL Glow, Chase mode, Draw Shadows.
+    * GL glow patch from jshexen2.
+    * Interactive video modes in software game disabled.
+    * Video Modes menu now displays help message.
+    * Height values corresponding to --width are properly added.
+    * Screen sizes are selectable with "-width" and "-height" options,
+      now. The "-mode" cmdline arg is removed.
+    * Proper fullscreen mode(s) for OpenGL.
+    * Two general overflow bug-fixes from pa3pyx.
+    * BIG code cleanup including retiring some unused files, retiring
+      old opengl files, killing many compiler warnings, etc.
+    * A range checking bug is fixed along with the No Boss bug.
+    * No Boss bug in Dan's original linux port fixed: Hexen2 loads
+      progs2.dat along with progs.dat, as it should, now.
+    * Probably some other minor things that we forgot.
