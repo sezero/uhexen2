@@ -15,9 +15,19 @@ extern int sound;
 extern int joystick;
 extern int lan;
 extern int destiny;
+extern int hwgame;
 
 static char *binary_name = NULL;
 unsigned missingexe = 0;
+
+const char *hwgame_names[MAX_HWGAMES][2]={
+	{  NULL     , "DeathMatch"},
+	{ "hexarena", "HexArena"},
+	{ "hwctf"   , "Capture the Flag"},
+	{ "siege"   , "Siege"},
+	{ "db"      , "Dungeon Break"},
+	{ "rk"      , "Rival Kingdoms"},
+};
 
 pid_t pid=0;
 
@@ -89,7 +99,7 @@ void launch_hexen2_bin() {
   }
 
 #ifndef DEMOBUILD
-  if (mp_support) {
+  if (mp_support && (destiny == DEST_H2)) {
     if (with_om)  {
        i++;
        args[i]="-witholdmission";
@@ -99,6 +109,13 @@ void launch_hexen2_bin() {
     }
   }
 #endif
+
+  if ((destiny == DEST_HW) && (hwgame > 0)) {
+       i++;
+       args[i]="-game";
+       i++;
+       args[i]=(char *)hwgame_names[hwgame][0];
+  }
 
   i++;
   args[i]=NULL;

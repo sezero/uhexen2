@@ -18,7 +18,9 @@ extern int sound;
 extern int joystick;
 extern int lan;
 extern int destiny;
+extern int hwgame;
 extern unsigned missingexe;
+extern const char *hwgame_names[MAX_HWGAMES][2];
 
 const char *res_names[]={
   " 320 x 240 ",
@@ -97,6 +99,7 @@ void on_HEXEN2 (GtkButton *button, gamewidget_t *wgt) {
   if(mp_support)
     gtk_widget_set_sensitive (wgt->OLD_MISSION, TRUE);
 #endif
+  gtk_widget_set_sensitive (wgt->HWGAME, FALSE);
   gtk_widget_set_sensitive (wgt->LAN_BUTTON, TRUE);
   UpdateStats(&(wgt->Launch));
 }
@@ -108,9 +111,25 @@ void on_H2W (GtkButton *button, gamewidget_t *wgt) {
     gtk_widget_set_sensitive (wgt->OLD_MISSION, FALSE);
   gtk_widget_set_sensitive (wgt->PORTALS_BUTTON, FALSE);
 #endif
+  gtk_widget_set_sensitive (wgt->HWGAME, TRUE);
   gtk_widget_set_sensitive (wgt->LAN_BUTTON, FALSE);
   UpdateStats(&(wgt->Launch));
 }
+
+#ifndef DEMOBUILD
+void HWGameChange (GtkEditable *editable, gpointer user_data) {
+   unsigned short i;
+   gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
+   for (i=0; i<MAX_HWGAMES; i++) {
+	if (strcmp(tmp, hwgame_names[i][1]) == 0) {
+	    g_free(tmp);
+	    hwgame = i;
+	    return;
+	}
+// Normally, we should be all set within this loop, thus no "else"
+   }
+}
+#endif
 
 void ReverseOpt (GtkObject *Unused, int *opt) {
   (*(opt)) = !(*(opt));

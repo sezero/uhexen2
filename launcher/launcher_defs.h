@@ -15,3 +15,5 @@
 #define RES_1024 5
 #define RES_1280 6
 #define RES_MAX  6
+
+#define MAX_HWGAMES 6

@@ -31,6 +31,7 @@ typedef struct {
 typedef struct {
 	GtkWidget *bHEXEN2;	// Hexen II
 	GtkWidget *bH2W;	// HexenWorld Client
+	GtkWidget *SelHW;	// HexenWorld Game type selection
 	GtkWidget *bH2MP;	// Expansion Pack
 	GtkWidget *bOLDM;	// Old Mission support for H2MP
 	struct Launch_s Launch;
@@ -54,6 +55,7 @@ typedef struct {
 #define WGT_CDAUDIO	Sound.bCDA
 #define WGT_HEXEN2	Games.bHEXEN2
 #define WGT_H2WORLD	Games.bH2W
+#define WGT_HWGAME	Games.SelHW
 #define WGT_PORTALS	Games.bH2MP
 #define WGT_OLDMISS	Games.bOLDM
 #define VID_STRUCT	(Games.Video)
@@ -69,6 +71,7 @@ typedef struct {
 #define RESOL_TEXT0	rText
 #define STATUSBAR	LStat
 #define PORTALS_BUTTON	bH2MP
+#define HWGAME		SelHW
 #define OLD_MISSION	bOLDM
 #define LAN_BUTTON	Others.bLAN
 #define LAUNCH_BUTTON	bLAUNCH

@@ -5,6 +5,7 @@ void on_HEXEN2 (GtkButton *button, gamewidget_t *wgt);
 void on_H2W (GtkButton *button, gamewidget_t *wgt);
 #ifndef DEMOBUILD
 void on_H2MP (GtkToggleButton *togglebutton, gamewidget_t *wgt);
+void HWGameChange (GtkEditable *editable, gpointer user_data);
 #endif
 void on_SND (GtkToggleButton *togglebutton, sndwidget_t *wgt);
 void on_OGL (GtkToggleButton *button, gamewidget_t *wgt);
