@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/crossbow.hc,v 1.2 2005-02-23 08:06:36 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/crossbow.hc,v 1.3 2005-02-23 08:08:19 sezero Exp $
  */
 
 /*
@@ -335,47 +335,94 @@ void crossbow_idle(void)
 
 void crossbow_fire (void)
 {
-	self.wfs = advanceweaponframe($shoot1,$shoot18);
-	self.th_weapon=crossbow_fire;
-	if (self.weaponframe >= $shoot2 && self.weaponframe <= $shoot4)
-		if(self.artifact_active&ART_TOMEOFPOWER)
-		{
-			if(self.weaponframe==$shoot2)
-			{
-				sound(self,CHAN_WEAPON,"assassin/firefblt.wav",1,ATTN_NORM);
-				self.bluemana-=10;
-				FireCB_Bolt(0,TRUE);
+	// Pa3PyX: rewrote the code for framerate independence
+	local float advance_frames;
+	local float cnt_frame;
+	local float attackframe1_passed;
+	local float attackframe2_passed;
+	local float attackframe3_passed;
+	local float arate_factor;
+
+	// Did the delay from previous attack expire yet?
+	if ((time >= self.attack_finished) || (self.ltime > 0)) {
+		if (self.ltime <= 0)
+			self.ltime = time;
+		// Tomed xbow: 3 shots per second; untomed: 2 shots per second
+		// (xbow has 20 frames, so unscaled animation is 1 second long)
+		if (self.artifact_active & ART_TOMEOFPOWER)
+			arate_factor = 3.0;
+		else
+			arate_factor = 2.0;
+		// Animation loop factor
+		advance_frames = rint(arate_factor * (time - self.ltime) / HX_FRAME_TIME);
+		if (advance_frames >= 1) {
+			cnt_frame = 0;
+			attackframe1_passed = attackframe2_passed = attackframe3_passed = FALSE;
+			// Advance <advance_frames> frames
+			while ((cnt_frame < advance_frames) && (self.wfs != WF_LAST_FRAME)) {
+				self.wfs = advanceweaponframe($shoot1,$shoot18);
+				self.weaponframe_cnt += 1;
+				// Did we go over any attack frames?
+				if (self.weaponframe_cnt == 2) {
+					attackframe1_passed = TRUE;
+				}
+				if (self.weaponframe_cnt == 3) {
+					attackframe2_passed = TRUE;
+				}
+				if (self.weaponframe_cnt == 4) {
+					attackframe3_passed = TRUE;
+				}
+				cnt_frame += 1;
 			}
-			else if(self.weaponframe==$shoot3)
-			{
-				FireCB_Bolt(-100,TRUE);
-				FireCB_Bolt(100,TRUE);
+			if (self.wfs == WF_LAST_FRAME) {
+				// End of animation, clean up and exit
+				self.wfs = WF_NORMAL_ADVANCE;
+				self.weaponframe_cnt = 0;
+				self.ltime = -1;
+				self.attack_finished = time;
+				self.th_weapon = crossbow_idle;
 			}
-			else if(self.weaponframe==$shoot4)
-			{
-				FireCB_Bolt(-200,TRUE);
-				FireCB_Bolt(200,TRUE);
-				self.attack_finished=time+0.3;
+			else {
+				self.ltime = time;
+				self.th_weapon=crossbow_fire;
+			}
+			// Attack frames were encountered in frame advance --
+			// perform attack actions
+			if (self.artifact_active & ART_TOMEOFPOWER) {
+				if (attackframe1_passed) {
+					sound(self,CHAN_WEAPON,"assassin/firefblt.wav",1,ATTN_NORM);
+					self.bluemana-=10;
+					FireCB_Bolt(0,TRUE);
+				}
+				if (attackframe2_passed) {
+					FireCB_Bolt(-100,TRUE);
+					FireCB_Bolt(100,TRUE);
+				}
+				if (attackframe3_passed) {
+					FireCB_Bolt(-200,TRUE);
+					FireCB_Bolt(200,TRUE);
+				}
+			}
+			else {
+				if (attackframe1_passed)
+				{
+					sound(self,CHAN_WEAPON,"assassin/firebolt.wav",1,ATTN_NORM);
+					self.bluemana-=3;
+					FireCB_Bolt(0,FALSE);
+				}
+				if (attackframe2_passed)
+					FireCB_Bolt(-100,FALSE);
+				if (attackframe3_passed)
+					FireCB_Bolt(100,FALSE);
 			}
 		}
 		else
-		{
-			if(self.weaponframe==$shoot2)
-			{
-				sound(self,CHAN_WEAPON,"assassin/firebolt.wav",1,ATTN_NORM);
-				self.bluemana-=3;
-				FireCB_Bolt(0,FALSE);
-			}
-			else if(self.weaponframe==$shoot3)
-				FireCB_Bolt(-100,FALSE);
-			else if(self.weaponframe==$shoot4)
-			{
-				FireCB_Bolt(100,FALSE);
-				self.attack_finished=time+0.5;
-			}
-		}
-	else if (self.wfs==WF_CYCLE_WRAPPED)
-		crossbow_idle();
+			self.th_weapon = crossbow_fire;
+	}
+	else
+		self.th_weapon = crossbow_fire;
+	thinktime self: 0;
+
 }
 
 void crossbow_select (void)
@@ -387,6 +434,11 @@ void crossbow_select (void)
 	if (self.weaponframe==$select1)
 	{
 		self.attack_finished = time - 1;
+		// Pa3PyX
+		self.ltime = -1;
+		self.weaponframe_cnt = 0;
+		self.wfs = WF_NORMAL_ADVANCE;
+
 		crossbow_idle();
 	}
 }
@@ -402,6 +454,9 @@ void crossbow_deselect (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/02/23 08:06:36  sezero
+ * merged H2MP xbow hcode
+ *
  * Revision 1.1.1.1  2004/11/29 11:37:48  sezero
  * Initial import
  *
