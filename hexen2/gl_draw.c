@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.9 2004-12-18 14:20:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.10 2004-12-19 12:47:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1655,7 +1655,7 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 	return texture_extension_number-1;
 }
 
-int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode)
+int GL_LoadTexture32 (char *identifier, int width, int height, unsigned *data, qboolean mipmap, qboolean alpha, int mode)
 {
 	int		i;
 	gltexture_t	*glt;
@@ -1771,6 +1771,10 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2004/12/18 14:20:40  sezero
+ * Clean-up and kill warnings: 11
+ * A lot of whitespace cleanups.
+ *
  * Revision 1.8  2004/12/18 14:15:34  sezero
  * Clean-up and kill warnings 10:
  * Remove some already commented-out functions and code fragments.
