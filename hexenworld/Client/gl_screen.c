@@ -434,7 +434,7 @@ void SCR_DrawFPS (void)
 	static double lastframetime;
 	double t;
 	extern int fps_count;
-	static lastfps;
+	static int lastfps;
 	int x, y;
 	char st[80];
 
