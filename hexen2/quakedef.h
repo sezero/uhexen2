@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.12 2004-12-22 21:50:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.13 2004-12-26 10:03:20 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -19,7 +19,7 @@
 
 #define HOT_VERSION_MAJ 1
 #define HOT_VERSION_MID 2
-#define HOT_VERSION_MIN 2
+#define HOT_VERSION_MIN 3
 #ifdef PLATFORM_UNIX
 #define VERSION_PLATFORM "Linux"
 #else
@@ -443,6 +443,9 @@ void IN_DeactivateMouseSA (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2004/12/22 21:50:16  sezero
+ * play with version and help display
+ *
  * Revision 1.11  2004/12/19 10:35:30  sezero
  * - Add "implicitly declared" functions as externs: Software rendering files.
  * - Add comments on the asm/non-Intel status of the code
