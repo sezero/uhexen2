@@ -3,6 +3,12 @@ ChangeLog:
 2005-01-13 (CVS, 1.2.3-rc7):
 
     * Fix off-by-one error in demo ending message line calculation.
+    * Fixed mouse behavior which was always broken in hexen2-linux.
+      Middle-button is MOUSE2, right-button is MOUSE3, not vice versa
+      (see SDL_mouse.h). The wheelmouse patch fixed this a little, but
+      introduced a mouse2/mouse3 fight in in_sdl.c. It is fixed here.
+    * Fixed the debug message about undefined mouse buttons.
+    * Did some syncing between H2 and HW versions of input files.
     * Misc cleanups (nitpicking/polishing).
 
 2005-01-08 (CVS, 1.2.3-rc6):
