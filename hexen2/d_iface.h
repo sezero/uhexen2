@@ -1,8 +1,9 @@
-// d_iface.h: interface header file for rasterization driver modules
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_iface.h,v 1.1.1.1 2004-11-28 00:01:47 sezero Exp $
- */
+	d_iface.h
+	interface header file for rasterization driver modules
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_iface.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #define WARP_WIDTH 320
 #define WARP_HEIGHT 200
@@ -276,10 +277,9 @@ extern byte		*r_warpbuffer;
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:03:57  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:01:47  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 11    3/10/98 11:13p Jmonroe
  * render works, need to optimize the drawpolyset stuff, ignore count
  * 

@@ -1,4 +1,7 @@
-// net.h -- quake's interface to the networking layer
+/*
+	net.h
+	quake's interface to the networking layer
+*/
 
 struct qsockaddr
 {

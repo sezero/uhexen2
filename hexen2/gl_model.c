@@ -1,11 +1,13 @@
-// models.c -- model loading and caching
-
-// models are the only shared resource between a client and server running
-// on the same machine.
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.c,v 1.2 2004-11-28 00:37:43 sezero Exp $
- */
+
+	models.c
+	model loading and caching
+
+	models are the only shared resource between a client and server
+	running on the same machine.
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.c,v 1.3 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 
@@ -2283,13 +2285,12 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/11/28 00:37:43  sezero
+ * add gl-glow. code borrowed from the js sources
+ *
  * Revision 1.1.1.1  2004/11/28 00:03:44  sezero
  * Initial import of AoT 1.2.0 code
  *
- * Revision 1.1.1.1  2001/11/09 17:03:59  theoddone33
- * Inital import
- *
- * 
  * 11    3/16/98 4:38p Jmonroe
  * 
  * 10    3/12/98 1:12p Jmonroe

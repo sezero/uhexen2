@@ -1,8 +1,8 @@
-// Z_zone.c
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.1.1.1 2004-11-28 00:08:32 sezero Exp $
- */
+	Z_zone.c
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.2 2004-12-12 14:14:43 sezero Exp $
+*/
 
 #include "quakedef.h"
 
@@ -1120,10 +1120,9 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:04:11  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:08:32  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 2     3/01/98 8:20p Jmonroe
  * removed the slow "quake" version of common functions
  * 

@@ -1,8 +1,9 @@
-// cl_main.c  -- client main loop
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.1.1.1 2004-11-28 00:01:04 sezero Exp $
- */
+	cl_main.c
+	client main loop
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 
@@ -1029,16 +1030,15 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:01:04  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.3  2001/12/13 22:18:25  phneutre
  * changed game_dir by user_dir in CL_RemoveGIPFiles()
  *
  * Revision 1.2  2001/12/08 06:35:35  relnev
  * Implemented CL_CopyFiles(), for savegames.
  *
- * Revision 1.1.1.1  2001/11/09 17:03:56  theoddone33
- * Inital import
- *
- * 
  * 12    3/16/98 5:32p Jweier
  * 
  * 11    3/16/98 12:02a Jweier

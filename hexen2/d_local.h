@@ -1,8 +1,9 @@
-// d_local.h:  private rasterization driver defs
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.1.1.1 2004-11-28 00:01:47 sezero Exp $
- */
+	d_local.h
+	private rasterization driver defs
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "r_shared.h"
 
@@ -127,10 +128,9 @@ extern byte			scanList[SCAN_SIZE];
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:03:57  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:01:47  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 13    8/30/97 6:17p Rjohnson
  * Reduced texture cache
  * 

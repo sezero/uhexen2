@@ -1,9 +1,9 @@
-
-// refresh.h -- public interface to refresh functions
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.1.1.1 2004-11-28 00:07:03 sezero Exp $
- */
+	refresh.h
+	public interface to refresh functions
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #define	MAXCLIPPLANES	11
 
@@ -153,10 +153,9 @@ void R_SetVrect (vrect_t *pvrect, vrect_t *pvrectin, int lineadj);
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:04:03  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:07:03  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 4     3/05/98 7:54p Jmonroe
  * fixed startRain, optimized particle struct
  * 

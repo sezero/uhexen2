@@ -1,13 +1,12 @@
-// mathlib.c -- math primitives
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.1.1.1 2004-11-28 00:04:51 sezero Exp $
- */
+	mathlib.c
+	math primitives
 
-// HEADER FILES ------------------------------------------------------------
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
+
 #include <math.h>
 #include "quakedef.h"
-
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
 void Sys_Error (char *error, ...);
@@ -511,10 +510,9 @@ fixed16_t Invert24To16(fixed16_t val)
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:04:01  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:04:51  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 4     2/06/98 7:17p Jmonroe
  * removed fastsqrt (not fast)
  * 

@@ -1,8 +1,9 @@
-// sv_main.c -- server main program
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.2 2004-11-28 00:58:08 sezero Exp $
- */
+	sv_main.c
+	server main program
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.3 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 
@@ -2536,13 +2537,23 @@ void SV_SpawnServer (char *server)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/11/28 00:58:08  sezero
+ *
+ * Commit Steven's changes as of 2004.11.24:
+ *
+ * * Rewritten Help/Version message(s)
+ * * Proper fullscreen mode(s) for OpenGL.
+ * * Screen sizes are selectable with "-width" and "-height" options.
+ * * Mouse grab in window modes , which is released when menus appear.
+ * * Interactive video modes in software game disabled.
+ * * Replaced Video Mode menu with a helpful message.
+ * * New menu items for GL Glow, Chase mode, Draw Shadows.
+ * * Changes to initial cvar_t variables:
+ *      r_shadows, gl_other_glows, _windowed_mouse,
+ *
  * Revision 1.1.1.1  2004/11/28 00:07:43  sezero
  * Initial import of AoT 1.2.0 code
  *
- * Revision 1.1.1.1  2001/11/09 17:04:08  theoddone33
- * Inital import
- *
- * 
  * 26    3/20/98 12:12a Jmonroe
  * 
  * 25    3/17/98 11:51a Jmonroe

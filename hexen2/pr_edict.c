@@ -1,8 +1,9 @@
-// sv_edict.c -- entity dictionary
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.2 2004-11-28 00:30:35 sezero Exp $
- */
+	sv_edict.c
+	entity dictionary
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.3 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 
@@ -1437,13 +1438,12 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/11/28 00:30:35  sezero
+ * allow original hexen2 to load many progsX.dat files. fixes the no-boss bug
+ *
  * Revision 1.1.1.1  2004/11/28 00:06:00  sezero
  * Initial import of AoT 1.2.0 code
  *
- * Revision 1.1.1.1  2001/11/09 17:04:04  theoddone33
- * Inital import
- *
- * 
  * 11    3/27/98 2:12p Jmonroe
  * 
  * 10    3/16/98 11:46p Jmonroe

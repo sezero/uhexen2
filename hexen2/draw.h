@@ -1,9 +1,11 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/draw.h,v 1.2 2004-11-29 12:17:46 sezero Exp $
- */
+	draw.h
+	these are the only functions outside the refresh
+	allowed to touch the vid buffer
 
-// draw.h -- these are the only functions outside the refresh allowed
-// to touch the vid buffer
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/draw.h,v 1.3 2004-12-12 14:14:42 sezero Exp $
+*/
+
 
 #define MAX_DISC 18
 
@@ -34,13 +36,12 @@ qpic_t *Draw_CachePicResize (char *path, int targetWidth, int targetHeight);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/11/29 12:17:46  sezero
+ * draw fullscreen intermission pics. borrowed from Pa3PyX sources.
+ *
  * Revision 1.1.1.1  2004/11/28 00:02:40  sezero
  * Initial import of AoT 1.2.0 code
  *
- * Revision 1.1.1.1  2001/11/09 17:03:57  theoddone33
- * Inital import
- *
- * 
  * 5     8/20/97 2:05p Rjohnson
  * fix for internationalization
  * 

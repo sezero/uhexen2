@@ -1,9 +1,10 @@
-// d_polyset.c: routines for drawing sets of polygons sharing the same
-// texture (used for Alias models)
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.1.1.1 2004-11-28 00:02:19 sezero Exp $
- */
+	d_polyset.c
+	routines for drawing sets of polygons sharing the same
+	texture (used for Alias models)
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "r_local.h"
@@ -12,7 +13,7 @@
 // TODO: put in span spilling to shrink list size
 // !!! if this is changed, it must be changed in d_polysa.s too !!!
 #define DPS_MAXSPANS			MAXHEIGHT+1	
-									// 1 extra for spanpackage that marks end
+// 1 extra for spanpackage that marks end
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
 typedef struct {
@@ -1145,6 +1146,9 @@ split:
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:02:19  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.1.1.1  2001/11/09 17:03:58  theoddone33
  * Inital import
  *

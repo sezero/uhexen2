@@ -1,13 +1,12 @@
-#include "quakedef.h"
-
 /*
-
-key up events are sent even if in console mode
+	keys.c
+	key up events are sent even if in console mode
 
 */
 
+#include "quakedef.h"
 
-#define		MAXCMDLINE	256
+#define	MAXCMDLINE	256
 char	key_lines[32][MAXCMDLINE];
 int		key_linepos;
 int		shift_down=false;

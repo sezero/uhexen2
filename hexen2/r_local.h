@@ -1,8 +1,9 @@
-// r_local.h -- private refresh defs
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_local.h,v 1.1.1.1 2004-11-28 00:06:41 sezero Exp $
- */
+	r_local.h
+	private refresh defs
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_local.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #ifndef GLQUAKE
 #include "r_shared.h"
@@ -310,10 +311,9 @@ extern int TransCount;
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:04:05  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:06:41  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 2     3/10/98 6:42p Jmonroe
  * first pass of new model fmt, fully in view render needs work
  * 

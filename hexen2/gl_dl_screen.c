@@ -1,8 +1,10 @@
-// screen.c -- master for refresh, status bar, console, chat, notify, etc
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_screen.c,v 1.3 2004-12-05 10:52:18 sezero Exp $
- */
+
+	screen.c
+	master for refresh, status bar, console, chat, notify, etc
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_screen.c,v 1.4 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 
@@ -1085,7 +1087,7 @@ void SB_IntermissionOverlay(void)
 
 	FindTextBreaks(message, 38);
 
-	if (cl.intermission == 8 )
+	if (cl.intermission == 8)
 		by = 16;
 	else
 		by = ((25-lines) * 8) / 2;
@@ -1282,6 +1284,15 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/05 10:52:18  sezero
+ * Sync with Steven, 2004-12-04 :
+ *  Fix the "Old Mission" menu PoP
+ *  Also release the windowed mouse on pause
+ *  Heapsize is now 32768 default
+ *  The final splash screens now centre the messages properly
+ *  Add more mods to the video mods table
+ *  Add the docs folder and update it
+ *
  * Revision 1.2  2004/11/29 12:17:46  sezero
  * draw fullscreen intermission pics. borrowed from Pa3PyX sources.
  *
@@ -1296,9 +1307,6 @@ void SCR_UpdateScreen (void)
  *
  * Revision 1.2  2001/11/12 01:27:54  theoddone33
  * Make glhexen2 build, even though it still doesn't work
- *
- * Revision 1.1.1.1  2001/11/09 17:04:00  theoddone33
- * Inital import
  *
  * 
  * 20    3/18/98 11:34p Jmonroe

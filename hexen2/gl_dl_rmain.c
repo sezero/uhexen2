@@ -1,8 +1,9 @@
-// gl_main.c
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_rmain.c,v 1.3 2004-11-28 00:58:08 sezero Exp $
- */
+	gl_main.c
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_rmain.c,v 1.4 2004-12-12 14:14:42 sezero Exp $
+*/
+
 
 #include "quakedef.h"
 
@@ -1817,6 +1818,20 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/11/28 00:58:08  sezero
+ *
+ * Commit Steven's changes as of 2004.11.24:
+ *
+ * * Rewritten Help/Version message(s)
+ * * Proper fullscreen mode(s) for OpenGL.
+ * * Screen sizes are selectable with "-width" and "-height" options.
+ * * Mouse grab in window modes , which is released when menus appear.
+ * * Interactive video modes in software game disabled.
+ * * Replaced Video Mode menu with a helpful message.
+ * * New menu items for GL Glow, Chase mode, Draw Shadows.
+ * * Changes to initial cvar_t variables:
+ *      r_shadows, gl_other_glows, _windowed_mouse,
+ *
  * Revision 1.2  2004/11/28 00:37:43  sezero
  * add gl-glow. code borrowed from the js sources
  *
@@ -1831,9 +1846,6 @@ void R_RenderView (void)
  *
  * Revision 1.1  2002/01/02 15:14:44  phneutre
  * dlsym'ed all calls to GL functions with SDL_GL_GetProcAddress
- *
- * Revision 1.1.1.1  2001/11/09 17:04:00  theoddone33
- * Inital import
  *
  * 
  * 4     3/30/98 10:57a Jmonroe

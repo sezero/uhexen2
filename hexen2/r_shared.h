@@ -1,11 +1,12 @@
-#ifndef GLQUAKE
-// r_shared.h: general refresh-related stuff shared between the refresh and the
-// driver
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.1.1.1 2004-11-28 00:07:00 sezero Exp $
- */
+	r_shared.h:
+	general refresh-related stuff shared between the refresh
+	and the driver
 
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
+
+#ifndef GLQUAKE
 // FIXME: clean up and move into d_iface.h
 
 #ifndef _R_SHARED_H_
@@ -146,10 +147,9 @@ extern byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:04:06  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:07:00  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 5     3/28/97 10:08a Rjohnson
  * Added transparent models
  * 

@@ -1,17 +1,21 @@
-// r_alias.c: routines for setting up to draw alias models
+/*
+	r_alias.c
+	routines for setting up to draw alias models
+
+*/
 
 #include "quakedef.h"
 #include "r_local.h"
 #include "d_local.h"	// FIXME: shouldn't be needed (is needed for patch
 						// right now, but that should move)
 
-#define LIGHT_MIN	5		// lowest light value we'll allow, to avoid the
-							//  need for inner-loop light clamping
+#define LIGHT_MIN	5	// lowest light value we'll allow, to avoid the
+						//  need for inner-loop light clamping
 
 mtriangle_t		*ptriangles;
 affinetridesc_t	r_affinetridesc;
 
-void *			acolormap;	// FIXME: should go away
+void *		acolormap;	// FIXME: should go away
 
 trivertx_t		*r_apverts;
 

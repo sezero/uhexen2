@@ -1,8 +1,9 @@
-// winquake.h: Win32-specific Quake header file
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/winquake.h,v 1.2 2004-12-04 19:51:43 sezero Exp $
- */
+	winquake.h
+	Win32-specific Quake header file
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/winquake.h,v 1.3 2004-12-12 14:14:43 sezero Exp $
+*/
 
 #pragma warning( disable : 4229 )  // mgraph gets this
 
@@ -111,16 +112,16 @@ int (PASCAL FAR *pgetsockname)(SOCKET s, struct sockaddr FAR *name,
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/04 19:51:43  sezero
+ * Kill more warnings (add a forward declaration of
+ * struct sockaddr in winquake.h)
+ *
  * Revision 1.1.1.1  2004/11/28 00:08:26  sezero
  * Initial import of AoT 1.2.0 code
  *
  * Revision 1.2  2001/12/02 04:59:43  theoddone33
  * Fix nvidia extention problem and a whole bunch of other stuff too apparently
  *
- * Revision 1.1.1.1  2001/11/09 17:04:10  theoddone33
- * Inital import
- *
- * 
  * 5     7/17/97 2:00p Rjohnson
  * Added a security means to control the running of the game
  * 

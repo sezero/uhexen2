@@ -1,8 +1,9 @@
-// protocol.h -- communications protocols
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/protocol.h,v 1.1.1.1 2004-11-28 00:06:09 sezero Exp $
- */
+	protocol.h
+	communications protocols
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/protocol.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #define	PROTOCOL_VERSION	19
 
@@ -257,10 +258,9 @@
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:04:04  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:06:09  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 12    3/16/98 5:33p Jweier
  * 
  * 11    3/16/98 12:01a Jweier

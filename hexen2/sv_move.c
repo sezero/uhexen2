@@ -1,8 +1,9 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.1.1.1 2004-11-28 00:07:43 sezero Exp $
- */
+	sv_move.c
+	monster movement
 
-// sv_move.c -- monster movement
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.2 2004-12-12 14:14:43 sezero Exp $
+*/
 
 #include "quakedef.h"
 
@@ -587,10 +588,9 @@ void SV_MoveToGoal (void)
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:04:09  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:07:43  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 17    3/18/98 4:46p Mgummelt
  * 
  * 16    3/16/98 6:38a Mgummelt

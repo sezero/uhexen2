@@ -1,10 +1,11 @@
 /*
-   vid_sdl.c -- SDL video driver
-
+   vid_sdl.c
+   SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   Changed by S.A. 7/11/04
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.4 2004-12-12 14:14:43 sezero Exp $
 
+   Changed by S.A. 7/11/04
    Options are now:
      -fullscreen | -window, -height , -width 
    Currently bpp is 8 bit (I think) but I haven't looked much at this.
@@ -19,10 +20,6 @@
    For clarity I have removed the variable "windowed_default" and replaced
    it with MODE_WINDOWED. Functionality is the same.
 */
-
-/*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.3 2004-12-05 10:52:18 sezero Exp $
- */
 
 #include "quakedef.h"
 #include "winquake.h"
@@ -972,7 +969,8 @@ void	VID_Init (unsigned char *palette)
         modelist[vid_default].width = width;
         modelist[vid_default].height = height;
         sprintf (modelist[vid_default].modedesc,"%dx%d",width,height);
-printf ("SA vid_default = %i\n",vid_default);
+
+	// printf ("SA vid_default = %i\n",vid_default);
 
 	vid_initialized = true;
 
@@ -1353,6 +1351,15 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/05 10:52:18  sezero
+ * Sync with Steven, 2004-12-04 :
+ *  Fix the "Old Mission" menu PoP
+ *  Also release the windowed mouse on pause
+ *  Heapsize is now 32768 default
+ *  The final splash screens now centre the messages properly
+ *  Add more mods to the video mods table
+ *  Add the docs folder and update it
+ *
  * Revision 1.2  2004/11/28 00:58:08  sezero
  *
  * Commit Steven's changes as of 2004.11.24:
@@ -1382,10 +1389,6 @@ void VID_MenuKey (int key)
  * Revision 1.2  2001/11/12 23:31:58  theoddone33
  * Some Loki-ish parameters and general cleanup/bugfixes.
  *
- * Revision 1.1.1.1  2001/11/09 17:03:58  theoddone33
- * Inital import
- *
- * 
  * 4     4/01/98 6:43p Jmonroe
  * fixed boundschecker errors
  * 

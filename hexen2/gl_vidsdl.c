@@ -1,5 +1,6 @@
 /*
-   gl_dl_vidsdl.c -- SDL GL vid component
+   gl_dl_vidsdl.c
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.7 2004-12-12 14:14:42 sezero Exp $
 
    Select window size and mode and init SDL in GL mode.
 
@@ -244,13 +245,13 @@ qboolean VID_SetWindowedMode (int modenum)
 	void *handle;
 	Uint32 flags;
 
-/* SDL doco recons you need this. S.A.
+	/* SDL doco recons you need this. S.A.
 	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
 	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
 	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
 	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 0 );
-*/
+	*/
 
 	if (modenum == MODE_FULLSCREEN_DEFAULT )
 		flags = (SDL_OPENGL|SDL_FULLSCREEN);

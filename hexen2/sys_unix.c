@@ -1,8 +1,9 @@
-// sys_unix.c -- Unix system interface code
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.5 2004-12-05 10:52:18 sezero Exp $
- */
+	sys_unix.c
+	Unix system interface code
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.6 2004-12-12 14:14:43 sezero Exp $
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -981,6 +982,15 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/12/05 10:52:18  sezero
+ * Sync with Steven, 2004-12-04 :
+ *  Fix the "Old Mission" menu PoP
+ *  Also release the windowed mouse on pause
+ *  Heapsize is now 32768 default
+ *  The final splash screens now centre the messages properly
+ *  Add more mods to the video mods table
+ *  Add the docs folder and update it
+ *
  * Revision 1.4  2004/11/29 16:31:58  sezero
  * Updated
  *
@@ -1031,10 +1041,6 @@ void strlwr (char * str)
  * Revision 1.2  2001/11/12 23:31:58  theoddone33
  * Some Loki-ish parameters and general cleanup/bugfixes.
  *
- * Revision 1.1.1.1  2001/11/09 17:04:10  theoddone33
- * Inital import
- *
- * 
  * 8     4/13/98 1:01p Jmonroe
  * changed default to not use CDVolume
  * 

@@ -1,13 +1,12 @@
-// sv_phys.c
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.1.1.1 2004-11-28 00:07:53 sezero Exp $
- */
+	sv_phys.c
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.2 2004-12-12 14:14:43 sezero Exp $
+*/
 
 #include "quakedef.h"
 
 /*
-
 
 pushmove objects do not obey gravity, and do not interact with each other or trigger fields, but block normal movement and push normal objects when they move.
 
@@ -2280,10 +2279,9 @@ trace_t SV_Trace_Toss (edict_t *ent, edict_t *ignore)
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:04:09  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:07:53  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 10    3/17/98 6:14p Jmonroe
  * 
  * 9     2/27/98 6:09p Mgummelt

@@ -1,8 +1,9 @@
-// r_surf.c: surface-related refresh code
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_surf.c,v 1.1.1.1 2004-11-28 00:07:02 sezero Exp $
- */
+	r_surf.c
+	surface-related refresh code
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_surf.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "r_local.h"
@@ -694,10 +695,9 @@ void R_GenTile (msurface_t *psurf, void *pdest)
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:04:06  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:07:02  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 2     2/04/98 12:53a Jmonroe
  * added fastfabs
  * 

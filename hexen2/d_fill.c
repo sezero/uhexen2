@@ -1,7 +1,10 @@
-// d_clear: clears a specified rectangle to the specified color
+/*
+	d_clear.c
+	clears a specified rectangle to the specified color
+
+*/
 
 #include "quakedef.h"
-
 
 /*
 ================

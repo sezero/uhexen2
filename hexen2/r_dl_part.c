@@ -1,6 +1,8 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_dl_part.c,v 1.1.1.1 2004-11-28 00:06:27 sezero Exp $
- */
+	r_part.c
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_dl_part.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "r_local.h"
@@ -2124,13 +2126,12 @@ void R_UpdateParticles (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:06:27  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.1  2002/01/02 15:14:44  phneutre
  * dlsym'ed all calls to GL functions with SDL_GL_GetProcAddress
  *
- * Revision 1.1.1.1  2001/11/09 17:04:06  theoddone33
- * Inital import
- *
- * 
  * 54    4/01/98 6:43p Jmonroe
  * fixed boundschecker errors
  * 

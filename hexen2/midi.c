@@ -1,6 +1,8 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/midi.c,v 1.1.1.1 2004-11-28 00:05:13 sezero Exp $
- */
+	midi.c
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/midi.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #ifndef PLATFORM_UNIX
 #include <windows.h>
@@ -828,6 +830,9 @@ void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 #endif	// !PLATFORM_UNIX
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:05:13  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.8  2002/01/04 13:50:06  phneutre
  * music looping fix
  *
@@ -849,10 +854,6 @@ void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
  * Revision 1.2  2001/12/11 19:17:50  phneutre
  * initial support for MIDI music (requieres SDL_mixer, see Makefile
  *
- * Revision 1.1.1.1  2001/11/09 17:04:02  theoddone33
- * Inital import
- *
- * 
  * 3     2/12/98 12:26a Jmonroe
  * finished -nomidi to not try to play
  * 

@@ -1,19 +1,14 @@
-// world.c -- world query functions
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.1.1.1 2004-11-28 00:08:28 sezero Exp $
- */
+	world.c
+	world query functions
 
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.2 2004-12-12 14:14:43 sezero Exp $
+
+	entities never clip against themselves, or their owner
+	line of sight checks trace->crosscontent, but bullets don't
+*/
 
 #include "quakedef.h"
-
-/*
-
-entities never clip against themselves, or their owner
-
-line of sight checks trace->crosscontent, but bullets don't
-
-*/
 
 cvar_t	sys_quake2 = {"sys_quake2","1",true};
 
@@ -1035,6 +1030,9 @@ trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, e
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:08:28  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.1.1.1  2001/11/09 17:04:10  theoddone33
  * Inital import
  *

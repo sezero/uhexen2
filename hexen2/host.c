@@ -1,8 +1,9 @@
-// host.c -- coordinates spawning and killing of local servers
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.1.1.1 2004-11-28 00:04:28 sezero Exp $
- */
+	host.c
+	coordinates spawning and killing of local servers
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "r_local.h"
@@ -1080,6 +1081,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:04:28  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.4  2001/12/14 16:31:06  phneutre
  * moved CL_RemoveGIPFiles(NULL) grom main() to Host_Init because of NULL paths
  *
@@ -1088,9 +1092,6 @@ void Host_Shutdown(void)
  *
  * Revision 1.2  2001/12/13 13:44:25  phneutre
  * apply gamma settings at startup after execing config file where the value is stored
- *
- * Revision 1.1.1.1  2001/11/09 17:03:58  theoddone33
- * Inital import
  *
  * 
  * 6     3/12/98 6:31p Mgummelt

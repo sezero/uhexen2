@@ -1,4 +1,8 @@
-// snd_mix.c -- portable code to mix sounds for snd_dma.c
+/*
+	snd_mix.c
+	portable code to mix sounds for snd_dma.c
+
+*/
 
 #include "quakedef.h"
 

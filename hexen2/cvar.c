@@ -1,4 +1,8 @@
-// cvar.c -- dynamic variable tracking
+/*
+	cvar.c
+	dynamic variable tracking
+
+*/
 
 #include "quakedef.h"
 #include "winquake.h"

@@ -1,10 +1,9 @@
-
-// draw.c -- this is the only file outside the refresh that touches the
-// vid buffer
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.2 2004-11-29 12:17:46 sezero Exp $
- */
+	draw.c
+	this is the only file outside the refresh that touches the vid buffer
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.3 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 
@@ -1774,16 +1773,15 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/11/29 12:17:46  sezero
+ * draw fullscreen intermission pics. borrowed from Pa3PyX sources.
+ *
  * Revision 1.1.1.1  2004/11/28 00:02:55  sezero
  * Initial import of AoT 1.2.0 code
  *
  * Revision 1.1  2002/01/02 15:14:44  phneutre
  * dlsym'ed all calls to GL functions with SDL_GL_GetProcAddress
  *
- * Revision 1.1.1.1  2001/11/09 17:03:59  theoddone33
- * Inital import
- *
- * 
  * 2     2/26/98 3:09p Jmonroe
  * fixed gl for numclasses
  * 

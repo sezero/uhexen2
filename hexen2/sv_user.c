@@ -1,8 +1,9 @@
-// sv_user.c -- server code for moving users
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.1.1.1 2004-11-28 00:07:56 sezero Exp $
- */
+	sv_user.c
+	server code for moving users
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.2 2004-12-12 14:14:43 sezero Exp $
+*/
 
 #include "quakedef.h"
 
@@ -744,16 +745,15 @@ void SV_RunClients (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:07:56  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.2  2001/11/13 21:12:07  theoddone33
  * Yay, Hexen 2 is playable apart from the mission pack now.
  *
  * Doubt it works with a real Hexen 2 client over the net, but that's what HW
  * is for, eh?
  *
- * Revision 1.1.1.1  2001/11/09 17:04:10  theoddone33
- * Inital import
- *
- * 
  * 6     3/13/98 1:51p Mgummelt
  * Fixed friction_change entity to work,  made checkbottom use the hull
  * mins/maxs for it's checks, not the bounding box's.

@@ -1,7 +1,6 @@
 /*
 	qtypes.h
-
-	(description)
+	$Id: qtypes.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 1999,2000  contributors of the QuakeForge project
@@ -25,7 +24,6 @@
 		59 Temple Place - Suite 330
 		Boston, MA  02111-1307, USA
 
-	$Id: qtypes.h,v 1.1.1.1 2004-11-28 00:06:09 sezero Exp $
 */
 
 #ifndef __qtypes

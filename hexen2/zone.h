@@ -1,10 +1,11 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.h,v 1.1.1.1 2004-11-28 00:08:32 sezero Exp $
- */
+	zone.h
 
-/*
- memory allocation
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.h,v 1.2 2004-12-12 14:14:43 sezero Exp $
+*/
 
+
+/*	Memory allocation
 
 H_??? The hunk manages the entire memory block given to quake.  It must be
 contiguous.  Memory can be allocated from either the low or high end in a
@@ -64,8 +65,6 @@ Zone block
 
 ----- Bottom of Memory -----
 
-
-
 */
 
 void Memory_Init (void *buf, int size);
@@ -117,10 +116,9 @@ void Cache_Report (void);
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:04:10  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:08:32  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 2     3/06/97 10:29a Rjohnson
  * Added memory statistics
  */

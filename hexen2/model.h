@@ -3,7 +3,7 @@
 #define __MODEL__
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/model.h,v 1.1.1.1 2004-11-28 00:05:23 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/model.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
  */
 
 #include "genmodel.h"
@@ -388,12 +388,13 @@ void	Mod_TouchModel (char *name);
 mleaf_t *Mod_PointInLeaf (float *p, model_t *model);
 byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
 
+#endif	// __MODEL__
+
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:04:01  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:05:23  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 7     3/12/98 1:12p Jmonroe
  * removed strcmp from render code
  * 
@@ -462,5 +463,3 @@ byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
  * 2     12/06/96 2:00p Rjohnson
  * New particle type for the fireball
  */
-
-#endif	// __MODEL__

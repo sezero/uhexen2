@@ -1,20 +1,18 @@
-// view.c -- player eye positioning
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.1.1.1 2004-11-28 00:08:26 sezero Exp $
- */
+	view.c
+	player eye positioning
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.2 2004-12-12 14:14:43 sezero Exp $
+
+	The view is allowed to move slightly from it's true position
+	for bobbing, but if it exceeds 8 pixels linear distance
+	(spherical, not box), the list of entities sent from the server
+	may not include everything in the pvs, especially when crossing
+	a water boudnary.
+*/
 
 #include "quakedef.h"
 #include "r_local.h"
-
-/*
-
-The view is allowed to move slightly from it's true position for bobbing,
-but if it exceeds 8 pixels linear distance (spherical, not box), the list of
-entities sent from the server may not include everything in the pvs, especially
-when crossing a water boudnary.
-
-*/
 
 cvar_t		lcd_x = {"lcd_x","0"};
 cvar_t		lcd_yaw = {"lcd_yaw","0"};
@@ -1223,10 +1221,9 @@ void V_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:04:07  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:08:26  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 4     3/18/98 11:34p Jmonroe
  * fixed gl renderheight in intermission, fixed bottom plaque draw, added
  * credit cd track

@@ -4,7 +4,6 @@
 #include "r_local.h"
 #include "d_local.h"
 
-
 int		iskyspeed = 4;
 int		iskyspeed2 = 1;
 float	skyspeed, skyspeed2;

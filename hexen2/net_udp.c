@@ -1,7 +1,6 @@
 /*
 	net_udp.c
-
-	@description@
+	$Id: net_udp.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -23,7 +22,6 @@
 		59 Temple Place - Suite 330
 		Boston, MA  02111-1307, USA
 
-	$Id: net_udp.c,v 1.1.1.1 2004-11-28 00:05:38 sezero Exp $
 */
 
 #ifdef HAVE_CONFIG_H

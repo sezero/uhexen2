@@ -1,6 +1,8 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.3 2004-12-05 10:52:18 sezero Exp $
- */
+	host_cmd.c
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.4 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 
@@ -2490,6 +2492,15 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/05 10:52:18  sezero
+ * Sync with Steven, 2004-12-04 :
+ *  Fix the "Old Mission" menu PoP
+ *  Also release the windowed mouse on pause
+ *  Heapsize is now 32768 default
+ *  The final splash screens now centre the messages properly
+ *  Add more mods to the video mods table
+ *  Add the docs folder and update it
+ *
  * Revision 1.2  2004/11/28 00:58:08  sezero
  *
  * Commit Steven's changes as of 2004.11.24:
@@ -2507,10 +2518,6 @@ void Host_InitCommands (void)
  * Revision 1.1.1.1  2004/11/28 00:04:34  sezero
  * Initial import of AoT 1.2.0 code
  *
- * Revision 1.1.1.1  2001/11/09 17:04:10  theoddone33
- * Inital import
- *
- * 
  * 25    4/01/98 4:53p Jmonroe
  * moved stack names to global
  * 

@@ -1,8 +1,9 @@
-// cmd.c -- Quake script command processing module
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.1.1.1 2004-11-28 00:01:15 sezero Exp $
- */
+	cmd.c
+	Quake script command processing module
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "winquake.h"
@@ -742,10 +743,9 @@ void ListCommands (char *prefix)
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:03:55  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:01:15  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 3     3/01/98 8:20p Jmonroe
  * removed the slow "quake" version of common functions
  * 

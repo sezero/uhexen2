@@ -1,8 +1,9 @@
-// cl_parse.c  -- parse a message received from the server
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.1.1.1 2004-11-28 00:01:08 sezero Exp $
- */
+	cl_parse.c
+	parse a message received from the server
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "r_shared.h"
@@ -2032,8 +2033,8 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:04:09  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:01:08  sezero
+ * Initial import of AoT 1.2.0 code
  *
  * 
  * 25    3/20/98 3:45p Jmonroe

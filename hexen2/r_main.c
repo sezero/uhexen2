@@ -1,8 +1,8 @@
-// r_main.c
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.1.1.1 2004-11-28 00:06:49 sezero Exp $
- */
+	r_main.c
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "r_local.h"
@@ -1304,10 +1304,9 @@ void R_InitTurb (void)
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:04:06  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:06:49  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 4     3/12/98 1:26a Mgummelt
  * 
  * 3     2/06/98 7:17p Jmonroe

@@ -4,17 +4,16 @@
 #include "r_local.h"
 #include "d_local.h"
 
-#if 0
-// FIXME
-the complex cases add new polys on most lines, so dont optimize for keeping them the same
-have multiple free span lists to try to get better coherence?
+/*
+FIXME
+the complex cases add new polys on most lines, so dont optimize for keeping
+them the same have multiple free span lists to try to get better coherence?
 low depth complexity -- 1 to 3 or so
 
 this breaks spans at every edge, even hidden ones (bad)
 
 have a sentinal at both ends?
-#endif
-
+*/
 
 edge_t	*auxedges;
 edge_t	*r_edges, *edge_p, *edge_max;

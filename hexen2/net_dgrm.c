@@ -1,6 +1,9 @@
-// net_dgrm.c
+/*
+	net_dgrm.c
+	This is enables a simple IP banning mechanism
 
-// This is enables a simple IP banning mechanism
+*/
+
 #define BAN_TEST
 
 #ifdef BAN_TEST

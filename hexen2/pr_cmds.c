@@ -1,7 +1,8 @@
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.2 2004-12-04 18:47:47 sezero Exp $
- */
+	pr_cmds.c
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.3 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "menu.h"
@@ -3416,13 +3417,12 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/04 18:47:47  sezero
+ * Kill some compiler warnings. Add sys_ia32.s to the "make clean" lists.
+ *
  * Revision 1.1.1.1  2004/11/28 00:05:55  sezero
  * Initial import of AoT 1.2.0 code
  *
- * Revision 1.1.1.1  2001/11/09 17:04:05  theoddone33
- * Inital import
- *
- * 
  * 26    3/23/98 7:24p Jmonroe
  * 
  * 25    3/18/98 2:48p Jmonroe

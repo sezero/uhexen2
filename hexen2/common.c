@@ -1,8 +1,9 @@
-// common.c -- misc functions used in client and server
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.2 2004-11-28 00:34:59 sezero Exp $
- */
+	common.c
+	misc functions used in client and server
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.3 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 #ifndef PLATFORM_UNIX
@@ -2195,6 +2196,9 @@ void COM_InitFilesystem (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/11/28 00:34:59  sezero
+ * no range checking. used to trash the stack and crash the game randomly upon loading progs. code borrowed from Pa3PyX sources.
+ *
  * Revision 1.1.1.1  2004/11/28 00:01:25  sezero
  * Initial import of AoT 1.2.0 code
  *

@@ -1,8 +1,7 @@
-// client.h
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.1.1.1 2004-11-28 00:01:15 sezero Exp $
- */
+	client.h
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 typedef struct
 {
@@ -371,10 +370,9 @@ void CL_UpdateTEnts(void);
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:03:55  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:01:15  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 4     3/12/98 6:31p Mgummelt
  * 
  * 3     3/02/98 2:51p Jweier

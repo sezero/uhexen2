@@ -1,13 +1,10 @@
+/*
+	cl_tent.c
+	Client side temporary entity effects.
 
-//**************************************************************************
-//**
-//** cl_tent.c
-//**
-//** Client side temporary entity effects.
-//**
-//** $Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.1.1.1 2004-11-28 00:01:15 sezero Exp $
-//**
-//**************************************************************************
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
+
 
 // HEADER FILES ------------------------------------------------------------
 

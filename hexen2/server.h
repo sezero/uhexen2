@@ -1,8 +1,8 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.1.1.1 2004-11-28 00:07:15 sezero Exp $
- */
+	server.h
 
-// server.h
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 typedef struct
 {
@@ -318,10 +318,9 @@ void SV_SpawnServer (char *server);
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:04:07  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:07:15  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 6     2/27/98 11:53p Jweier
  * 
  * 5     1/22/98 5:01p Mgummelt

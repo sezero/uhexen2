@@ -1,9 +1,9 @@
-// d_sprite.c: software top-level rasterization driver module for drawing
-// sprites
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_sprite.c,v 1.1.1.1 2004-11-28 00:02:32 sezero Exp $
- */
+	d_sprite.c:
+	software top-level rasterization driver module for drawing sprites
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_sprite.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "d_local.h"
@@ -590,10 +590,9 @@ void D_DrawSprite (void)
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:03:58  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:02:32  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 7     5/18/97 1:37p Rjohnson
  * Added new mixed mode sprite assembly
  * 

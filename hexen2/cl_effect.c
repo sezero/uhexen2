@@ -1,13 +1,10 @@
+/*
+	cl_effect.c
+	Client side effects.
 
-//**************************************************************************
-//**
-//** cl_effect.c
-//**
-//** Client side effects.
-//**
-//** $Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.1.1.1 2004-11-28 00:00:56 sezero Exp $
-//**
-//**************************************************************************
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
+
 // HEADER FILES ------------------------------------------------------------
 
 #include "quakedef.h"
@@ -2527,10 +2524,9 @@ static void FreeEffectEntity(int index)
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:03:56  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:00:56  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 41    3/20/98 12:55p Jmonroe
  * made sbar arti safe, made linkedict safe, removed pent hull for NON MP
  * maps.

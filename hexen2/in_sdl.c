@@ -1,9 +1,9 @@
-// in_win.c -- windows 95 mouse and joystick code
-// 02/21/97 JCB Added extended DirectInput code to support external controllers.
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.5 2004-12-05 11:00:37 sezero Exp $
- */
+	in_sdl.c
+	SDL game input code
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.6 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "SDL.h"
 #include "quakedef.h"
@@ -11,11 +11,11 @@
 // mouse variables
 cvar_t	m_filter = {"m_filter","0"};
 
-int			mouse_buttons;
-int			mouse_oldbuttonstate;
+int	mouse_buttons;
+int	mouse_oldbuttonstate;
 //POINT		current_pos;
-int			mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
-extern cvar_t	vid_mode, _windowed_mouse;
+int	mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
+extern cvar_t		vid_mode, _windowed_mouse;
 #define MODE_FULLSCREEN_DEFAULT 3
 
 extern qboolean	in_mode_set;
@@ -150,7 +150,6 @@ void IN_HideMouse (void)
 		mouseshowtoggle = 0;
 	}
 }
-
 
 /*
 ===========
@@ -1245,6 +1244,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/12/05 11:00:37  sezero
+ * added wheelmouse support.
+ *
  * Revision 1.4  2004/12/05 10:52:18  sezero
  * Sync with Steven, 2004-12-04 :
  *  Fix the "Old Mission" menu PoP
@@ -1286,10 +1288,6 @@ void IN_SendKeyEvents (void)
  * Revision 1.2  2001/11/12 23:31:58  theoddone33
  * Some Loki-ish parameters and general cleanup/bugfixes.
  *
- * Revision 1.1.1.1  2001/11/09 17:04:15  theoddone33
- * Inital import
- *
- * 
  * 3     3/01/98 8:20p Jmonroe
  * removed the slow "quake" version of common functions
  * 

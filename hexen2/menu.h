@@ -1,6 +1,8 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.h,v 1.1.1.1 2004-11-28 00:05:05 sezero Exp $
- */
+	menu.h
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 //
 // the net drivers should just set the apropriate bits in m_activenet,
@@ -28,10 +30,9 @@ void M_DrawTextBox (int x, int y, int width, int lines);
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:04:01  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:05:05  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 5     9/04/97 4:44p Rjohnson
  * Updates
  * 

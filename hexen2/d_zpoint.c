@@ -1,4 +1,8 @@
-// d_zpoint.c: software driver module for drawing z-buffered points
+/*
+	d_zpoint.c
+	software driver module for drawing z-buffered points
+
+*/
 
 #include "quakedef.h"
 #include "d_local.h"

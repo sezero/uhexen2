@@ -3,7 +3,6 @@
 #include "quakedef.h"
 #include "r_local.h"
 
-
 /*
 ===============
 R_CheckVariables

@@ -1,8 +1,9 @@
-// quakedef.h -- primary header for client
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.4 2004-11-29 16:22:23 sezero Exp $
- */
+	quakedef.h
+	primary header for client
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.5 2004-12-12 14:14:42 sezero Exp $
+*/
 
 //#define	GLTEST			// experimental stuff
 
@@ -430,6 +431,9 @@ void MIDI_Loop(int NewValue);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/11/29 16:22:23  sezero
+ * Grrrr......
+ *
  * Revision 1.3  2004/11/29 16:02:07  sezero
  * bump version to 1.2.1a to reflect the latest changes
  *
@@ -462,10 +466,6 @@ void MIDI_Loop(int NewValue);
  * Revision 1.2  2001/11/12 23:31:58  theoddone33
  * Some Loki-ish parameters and general cleanup/bugfixes.
  *
- * Revision 1.1.1.1  2001/11/09 17:04:04  theoddone33
- * Inital import
- *
- * 
  * 8     3/19/98 12:53p Jmonroe
  * 
  * 7     3/13/98 5:01a Mgummelt

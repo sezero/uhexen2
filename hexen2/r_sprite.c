@@ -9,7 +9,6 @@ static int				sprite_width, sprite_height;
 
 spritedesc_t			r_spritedesc;
 	
-
 /*
 ================
 R_RotateSprite

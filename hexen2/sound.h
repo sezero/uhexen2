@@ -1,4 +1,8 @@
-// sound.h -- client sound i/o functions
+/*
+	sound.h
+	client sound i/o functions
+
+*/
 
 #ifndef __SOUND__
 #define __SOUND__

@@ -1,13 +1,8 @@
+/*
+	pr_exec.c
 
-//**************************************************************************
-//**
-//** pr_exec.c
-//**
-//** $Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.1.1.1 2004-11-28 00:06:06 sezero Exp $
-//**
-//**************************************************************************
-
-// HEADER FILES ------------------------------------------------------------
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 
@@ -1178,10 +1173,9 @@ static unsigned int ProgsTimer(void)
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:04:04  theoddone33
- * Inital import
+ * Revision 1.1.1.1  2004/11/28 00:06:06  sezero
+ * Initial import of AoT 1.2.0 code
  *
- * 
  * 5     3/06/98 12:35a Jmonroe
  * made caserange work, switched some more things
  * 
