@@ -183,9 +183,33 @@ it.
 --------------------------
 
 Hexen II binaries here WILL NOT play over a network with Windows-
-hexen2 binaries.  Do not try it, it simply will not work.
-However, Portal of Praevus binaries are compatible across platforms.
-If this is a big issue for you, use HexenWorld.
+hexen2 binaries:  Do not try it, it simply will NOT work!..
+However, the mission pack binaries are compatible across platforms.
+
+This has got nothing to do with us: Raven didn't give us the original
+Hexen2-1.11 source and the network code had changes during the 1.11-
+1.12 transition. We only have the 1.12 sources.
+
+If this is a big issue for you, use HexenWorld: Version beta-0.15
+binaries on Windows and Linux are perfectly compatible.
+
+Here is a detailed network-compatibility table:
+
+===============================================================
+Binary		Windows		Linux	  Game		Status
+==========	===========	========  ==========	=======
+
+(gl)hexen2	<= 1.11		>= 1.12	  Hexen II	FAILS
+		>= 1.12 (*)	>= 1.12	  Hexen II	Runs
+==========	===========	========  ==========	=======
+
+(gl)h2mp	>= 1.12		>= 1.12	  Hexen II	Runs
+					  Miss. Pack	Runs
+==========	===========	========  ==========	=======
+
+(*) Recompiles/ports of the source such as the ones from Pa3Pyx
+    or newhexen and such.
+===============================================================
 
 
 1.6 SaveGames and Configuration files
