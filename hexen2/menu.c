@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.10 2004-12-12 23:16:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.11 2004-12-13 14:50:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1045,6 +1045,8 @@ void M_SinglePlayer_Draw (void)
 	if (m_oldmission.value)
 		M_DrawBigString (72,60+(3*20),"OLD MISSION");
 	M_DrawBigString (72,60+(4*20),"VIEW INTRO");
+	if ((m_singleplayer_cursor ==3) && (!m_oldmission.value))
+		m_singleplayer_cursor =2;
 #endif
 	
 	f = (int)(host_time * 10)%8;
@@ -4748,6 +4750,9 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2004/12/12 23:16:44  sezero
+ * two minor cvar annoyances
+ *
  * Revision 1.9  2004/12/12 18:38:40  sezero
  * fix compilation. not a good day ;(
  *
