@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.7 2005-01-12 22:11:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.8 2005-03-14 08:03:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -283,8 +283,8 @@ static void SCR_CalcRefdef (void)
 // bound viewsize
 	if (scr_viewsize.value < 30)
 		Cvar_Set ("viewsize","30");
-	if (scr_viewsize.value > 110)
-		Cvar_Set ("viewsize","110");
+	if (scr_viewsize.value > 120)
+		Cvar_Set ("viewsize","120");
 
 // bound field of view
 	if (scr_fov.value < 10)
@@ -1464,6 +1464,9 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/01/12 22:11:11  sezero
+ * Fix off-by-one error in demo ending message line calculation.
+ *
  * Revision 1.6  2004/12/18 13:46:26  sezero
  * Clean-up and kill warnings 2:
  * Kill " suggest explicit braces to avoid ambiguous `else' " warnings
