@@ -1,5 +1,9 @@
 ChangeLog:
 
+2005-04-06 (CVS):
+    * hexenworld/opengl: fixed non-dlsymmed use of some gl
+      functions. also fixed a truely silly copy+paste error
+
 2005-04-05 (CVS):
     * dropped the -march=i386 -mcpu=i686 flag: causes problems
       at least on old pentiums with old distros.  going with
