@@ -45,17 +45,15 @@ char *hw_binary_names[]={
 /* for example, table [1][0] is with openGL and without MP */
 int table[2][2] = { {3,2},{1,0} };
 
-/* [resolution][fullscreen] */
-char *gl_resolution_args[3][2]={
+/* [resolution]
+  -width values only. corresponding -height is is the game binary */
+char *gl_resolution_args[]={
 
-  {"640","480"}, {"800","600"}, {"1024","768"},
+  "640",
+  "800",
+  "1024"
 
 };
-
-//char *nosound_flag="--nosound";
-char *nosound_flag="-s";
-//char *windowed_flag="--windowed";
-char *windowed_flag="-w";
 
 static char *bin_path;
 extern char *argv_0;
@@ -138,7 +136,7 @@ void launch_hexen2_bin()
 {
   char directory_name[1024];
   char *binary_name;
-  char *args[7];
+  char *args[6];
   int i=0;
 
   if (destiny == DEST_H2)
@@ -164,24 +162,22 @@ void launch_hexen2_bin()
   i++;
   
   if (sound == 0) {
-    args[i]=nosound_flag;
+//  args[i]="--nosound";
+    args[i]="-s";
     i++;
   }
 
 //args[i]="--fullscreen";
   args[i]="-f";
   if (fullscreen == 0)
-    args[i]=windowed_flag;
+//  args[i]="--windowed";
+    args[i]="-w";
   i++;
 
   if (opengl_support) {
     args[i]="-width";
     i++;
-    args[i]=gl_resolution_args[resolution][0];
-    i++;
-    args[i]="-height";
-    i++;
-    args[i]=gl_resolution_args[resolution][1];
+    args[i]=gl_resolution_args[resolution];
   }
 
 // args[i]=NULL;
