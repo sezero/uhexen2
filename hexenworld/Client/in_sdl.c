@@ -1,9 +1,9 @@
-// in_win.c -- windows 95 mouse and joystick code
-// 02/21/97 JCB Added extended DirectInput code to support external controllers.
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.11 2005-01-23 15:18:09 sezero Exp $
- */
+	in_sdl.c
+	SDL game input code
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.12 2005-02-08 21:20:23 sezero Exp $
+*/
 
 #include "SDL.h"
 #include "quakedef.h"
@@ -11,19 +11,18 @@
 // mouse variables
 cvar_t	m_filter = {"m_filter","0"};
 
-int			mouse_buttons;
-int			mouse_oldbuttonstate;
-//POINT		current_pos;
-int			mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
-extern cvar_t	vid_mode, _windowed_mouse;
-#define MODE_FULLSCREEN_DEFAULT 3
+int	mouse_buttons;
+int	mouse_oldbuttonstate;
+int	mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
+extern cvar_t		vid_mode, _windowed_mouse;
+#define MODE_FULLSCREEN_DEFAULT 1
 
 extern qboolean	in_mode_set;
 //static qboolean	restore_spi;
-//static int		originalmouseparms[3], newmouseparms[3] = {0, 0, 1};
+//static int	originalmouseparms[3], newmouseparms[3] = {0, 0, 1};
 static qboolean	mouseactive;
-qboolean		mouseinitialized;
-static qboolean	/*mouseparmsvalid,*/ mouseactivatetoggle;
+qboolean	mouseinitialized;
+static qboolean	/*mouseparmsvalid, */mouseactivatetoggle;
 static qboolean	mouseshowtoggle = 1;
 
 qboolean grab = 1;
@@ -151,7 +150,6 @@ void IN_HideMouse (void)
 	}
 }
 
-
 /*
 ===========
 IN_ActivateMouse
@@ -163,7 +161,10 @@ void IN_ActivateMouse (void)
 
 	mouseactivatetoggle = true;
 
-	if (mouseinitialized)
+	// mouse code IS a mess S.A.
+	// added _windowed_mouse.value to work with vid_mode switching
+
+	if (mouseinitialized && _windowed_mouse.value)
 	{
 //		if (mouseparmsvalid)
 //			restore_spi = SystemParametersInfo (SPI_SETMOUSE, 0, newmouseparms, 0);
@@ -225,7 +226,7 @@ void IN_DeactivateMouse (void)
 void IN_DeactivateMouseSA (void)
 {
 	// don't worry if fullscreen - S.A.
-	if ((int)vid_mode.value != MODE_FULLSCREEN_DEFAULT)
+	if ((int)vid_mode.value != MODE_FULLSCREEN_DEFAULT || (int)_windowed_mouse.value == 0)
 		IN_DeactivateMouse ();
 
 	if (_windowed_mouse.value == 0)
@@ -268,7 +269,7 @@ void IN_StartupMouse (void)
 
 	if ( COM_CheckParm ("-nomouse") )  {
 		Cbuf_InsertText ("_windowed_mouse 0");
-	IN_ShowMouse ();
+		IN_ShowMouse ();
 	}
 
 	// Should be a NOP in Linux, with this exception - DDOI
@@ -353,7 +354,7 @@ void IN_Init (void)
 	IN_StartupMouse ();
 	IN_StartupJoystick ();
 
-	SDL_EnableUNICODE(1);
+	SDL_EnableUNICODE(1); /* needed for input in console */
 }
 
 /*
@@ -409,17 +410,7 @@ IN_MouseMove
 void IN_MouseMove (usercmd_t *cmd)
 {
 	int		mx, my;
-//	HDC	hdc;
 
-
-//	if (sv_player->v.cameramode)	// Stuck in a different camera, don't move
-//		return;
-
-//	GetCursorPos (&current_pos);
-
-//	mx = current_pos.x - window_center_x + mx_accum;
-//	my = current_pos.y - window_center_y + my_accum;
-	// This replaces these ^^^^ - DDOI
 	SDL_GetRelativeMouseState(&mx,&my);
 
 	mx_accum = 0;
@@ -1029,8 +1020,6 @@ void IN_SendKeyEvents (void)
         int sym, state;
         int modstate;
 
-	//SDL_EnableUNICODE(1);
-
         while (SDL_PollEvent(&event))
         {
                 switch (event.type) {
@@ -1039,7 +1028,8 @@ void IN_SendKeyEvents (void)
 				if ((event.key.keysym.sym == SDLK_RETURN) &&
 				    (event.key.keysym.mod & KMOD_ALT))
 				{
-					SDL_WM_ToggleFullScreen (SDL_GetVideoSurface());
+				//	SDL_WM_ToggleFullScreen (SDL_GetVideoSurface());
+					ToggleFullScreenSA ();
 					break;
 				}
 				else if ((event.key.keysym.sym == SDLK_g) &&
@@ -1050,25 +1040,22 @@ void IN_SendKeyEvents (void)
 				}
 
                         case SDL_KEYUP:
+
                                 sym = event.key.keysym.sym;
                                 state = event.key.state;
                                 modstate = SDL_GetModState();
 
-				switch (key_dest)
-				  {
+				switch (key_dest) {
 				  case key_game: 
-				    
 				    if ((event.key.keysym.unicode != 0) || (modstate & KMOD_SHIFT))
 				      {
 					/* only use unicode for ~ and ` in game mode */
 					if ((event.key.keysym.unicode & 0xFF80) == 0 ) 
 					  {
-					    if ( ((event.key.keysym.unicode & 0x7F) == '`') ||((event.key.keysym.unicode & 0x7F) == '~')) {
-					      sym=event.key.keysym.unicode & 0x7F;
-					      
-					    }
+					    if ( ((event.key.keysym.unicode & 0x7F) == '`') ||((event.key.keysym.unicode & 0x7F) == '~')) 
+						sym=event.key.keysym.unicode & 0x7F;
 					  }
-					
+
 				      }
 				    break;
 				  case key_message:
@@ -1077,7 +1064,7 @@ void IN_SendKeyEvents (void)
 				      {
 					if ((event.key.keysym.unicode & 0xFF80) == 0 )
 					  sym=event.key.keysym.unicode & 0x7F;
-					
+
 					/* else: it's an international character */
 				      }
 				    //printf("You pressed %s (%d) (%c)\n",SDL_GetKeyName(sym),sym,sym);
@@ -1180,13 +1167,13 @@ void IN_SendKeyEvents (void)
                                                 else
                                                         sym = SDLK_PERIOD;
                                                 break;
+
                                         case SDLK_KP_DIVIDE: sym = SDLK_SLASH; break;
                                         case SDLK_KP_MULTIPLY: sym = SDLK_ASTERISK; break;
                                         case SDLK_KP_MINUS: sym = SDLK_MINUS; break;
                                         case SDLK_KP_PLUS: sym = SDLK_PLUS; break;
                                         case SDLK_KP_ENTER: sym = SDLK_RETURN; break;
                                         case SDLK_KP_EQUALS: sym = SDLK_EQUALS; break;
-
 				case 178: /* the '²' key */
 				  //sym = 178; 
 				  sym = '~';
@@ -1274,6 +1261,10 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/01/23 15:18:09  sezero
+ * support for mouse buttons 4 and 5 (patch from Julien Langer)
+ * Let's see if this behaves for everybody.
+ *
  * Revision 1.10  2005/01/13 10:47:05  sezero
  * - Fixed mouse behavior which was always broken in hexen2-linux.
  *   Middle-button is MOUSE2, right-button is MOUSE3, not vice versa
