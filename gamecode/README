@@ -4,6 +4,23 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
+2005-02-23 (1.12g):
+===================
+Merged a bunch of fixes/adjustments from Pa3PyX' sources:
+- fixed ravenstaff bug where splitting missiles would collide
+  with each other
+- setstaff tomed and untomed fire rates now fps independent
+- crossbow fire rate fps now independent (also makes fire rate
+  slightly faster, but I liked it ;)
+- no more 20 tornadoes per second from meteor staff at 200 fps
+- framerate independent Flame Orb fire procedure
+- fix demoness abilities according to the manual
+- assasin backstab starts at level 6
+- crusader holy strength starts at level 6
+- necromancer sickle steal adjustments to make it really useful
+- assasin cloak ability re-write
+- start crusader full-mana ability at level3
+
 2005-02-15 (1.12f):
 ===================
 - added a separate patch file which allows compiling boss maps into
