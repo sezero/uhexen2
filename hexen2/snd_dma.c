@@ -1,7 +1,7 @@
 // snd_dma.c -- main control for any streaming sound output device
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.1.1.1 2004-11-28 00:07:21 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.2 2004-12-04 13:36:28 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -155,7 +155,12 @@ void S_Init (void)
 
 	Con_Printf("\nSound Initialization\n");
 
-	Cvar_RegisterVariable(&precache);
+	if (COM_CheckParm("-nosound") || COM_CheckParm("--nosound")
+			|| COM_CheckParm("-s"))
+		return;
+
+	if (COM_CheckParm("-simsound"))
+		fakedma = true;
 
 	Cmd_AddCommand("play", S_Play);
 	Cmd_AddCommand("playvol", S_PlayVol);
@@ -165,6 +170,7 @@ void S_Init (void)
 
 	Cvar_RegisterVariable(&nosound);
 	Cvar_RegisterVariable(&volume);
+	Cvar_RegisterVariable(&precache);
 	Cvar_RegisterVariable(&loadas8bit);
 	Cvar_RegisterVariable(&bgmvolume);
 	Cvar_RegisterVariable(&bgmtype);
@@ -174,13 +180,6 @@ void S_Init (void)
 	Cvar_RegisterVariable(&snd_noextraupdate);
 	Cvar_RegisterVariable(&snd_show);
 	Cvar_RegisterVariable(&_snd_mixahead);
-
-	if (COM_CheckParm("-nosound") || COM_CheckParm("--nosound")
-			|| COM_CheckParm ("-s"))
-		return;
-
-	if (COM_CheckParm("-simsound"))
-		fakedma = true;
 
 	if (host_parms.memsize < 0x800000)
 	{
@@ -193,7 +192,7 @@ void S_Init (void)
 
 	S_Startup ();
 
-	if (sound_started == 0)		// Got this from QF - DDOI
+	if (sound_started == 0)
 		return;
 
 	SND_InitScaletable ();
@@ -235,12 +234,12 @@ void S_Init (void)
 // =======================================================================
 // Shutdown sound engine
 // =======================================================================
+#ifndef PLATFORM_UNIX
+extern HINSTANCE hInstDS;
+#endif
 
 void S_Shutdown(void)
 {
-#ifndef PLATFORM_UNIX
-extern 	HINSTANCE hInstDS;	//from snd_win
-#endif
 
 	if (!sound_started)
 		return;
@@ -262,6 +261,7 @@ extern 	HINSTANCE hInstDS;	//from snd_win
 		hInstDS=NULL;
 	}
 #endif
+
 }
 
 
@@ -474,12 +474,13 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 	if (!target_chan)
 		return;
 		
-// spatialize
-	if(attenuation==4)
+	if(attenuation==4)//Looping sound- always play
 	{
 		skip_dist_check=true;
-		attenuation=1;
+		attenuation=1;//was 3 - static
 	}
+
+// spatialize
 	memset (target_chan, 0, sizeof(*target_chan));
 	VectorCopy(origin, target_chan->origin);
 	target_chan->dist_mult = attenuation / sound_nominal_clip_dist;
@@ -488,10 +489,10 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 	target_chan->entchannel = entchannel;
 	SND_Spatialize(target_chan);
 
-	if(!skip_dist_check)//always play looping sounds
+	if (!skip_dist_check)
 		if (!target_chan->leftvol && !target_chan->rightvol)
 			return;		// not audible at all
-	
+
 // new channel
 	sc = S_LoadSound (sfx);
 	if (!sc)
@@ -501,7 +502,7 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 	}
 
 	target_chan->sfx = sfx;
-//	target_chan->pos = 0.0;
+	target_chan->pos = 0.0;
     target_chan->end = paintedtime + sc->length;	
 
 // if an identical sound has also been started this frame, offset the pos
@@ -1039,6 +1040,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:07:21  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.2  2001/11/12 23:31:58  theoddone33
  * Some Loki-ish parameters and general cleanup/bugfixes.
  *
