@@ -1,5 +1,15 @@
 ChangeLog:
 
+1.2.4: Changes since HoT-1.2.3:
+2005-03-05:
+    * Release 1.2.4-final
+    * Added bsd includes to snd_oss.c
+    * Added net sanity checks (from Steven)
+    * Moved reinit_music to menu.c where it belongs
+    * Fixed reinit_music so that it works for the F4 key as well
+    * Don't mess with music volume on every frame update, it's
+      just silly
+
 2005-03-05 (CVS, 1.2.4-rc5):
     * OSS (and ALSA): Try to use what frequency is actually set:
       I first naively thought that requested-provided frequency
