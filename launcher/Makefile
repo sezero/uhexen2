@@ -44,7 +44,7 @@ SOURCES = ${SOURCES1} ${SOURCES2}
 OBJECTS = main.o com_sys.o config_file.o launch_bin.o \
 	interface.o callbacks.o ${SUPPORT_OBJ}
 
-CFLAGS = -Wall -O2 -march=i386 -mcpu=i686 -I. ${GTK_CFLAGS} -DHOTL_VER=\"${VERSION}\"
+CFLAGS = -Wall -O2 -march=i586 -I. ${GTK_CFLAGS} -DHOTL_VER=\"${VERSION}\"
 ifeq "${DEMO}" "yes"
 CFLAGS+=-DDEMOBUILD
 endif
