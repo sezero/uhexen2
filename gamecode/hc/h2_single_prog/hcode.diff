@@ -132,7 +132,7 @@ you'd better revert that change).  Not tested much.
  };
  
  
-@@ -1129,6 +1179,7 @@
+@@ -1129,8 +1179,8 @@
  		self.use=spawnspot_activate;
  }
  
@@ -140,5 +140,6 @@ you'd better revert that change).  Not tested much.
 -void spawn_ghost (entity attacker){}
 +//void hive_die(){}
 +//void spawn_ghost (entity attacker){}
-+
+ 
+ 
  /*

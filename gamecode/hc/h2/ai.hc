@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/ai.hc,v 1.1.1.1 2004-11-29 11:41:15 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/ai.hc,v 1.2 2004-12-26 10:30:30 sezero Exp $
  */
 void(entity etemp, entity stemp, entity stemp, float dmg) T_Damage;
 /*
@@ -1131,9 +1131,10 @@ void func_monsterspawn_spot (void)
 
 void hive_die(){}
 void spawn_ghost (entity attacker){}
+
+
 /*
  * $Log: not supported by cvs2svn $
- * 
  * 114   9/25/97 12:15p Mgummelt
  * 
  * 113   9/11/97 7:13p Rjohnson
