@@ -1,14 +1,17 @@
-
 ################ PLEASE edit below to select what you would like to build
 
+# BUILDGL :	yes = OpenGL support, no = software mode
 BUILDGL=yes
-#		yes = OpenGL support, no = software mode
-BUILDMP=no
-#		yes = build mission pack, no = normal hexen2
 
-USEMIDI=yes
-#		MIDI needs SDL_mixer (built with Timidity support)
+# BUILDMP :	yes = build mission pack, no = normal hexen2
+BUILDMP=no
+
+# USEMIDI :	MIDI needs SDL_mixer (built with Timidity support)
 #		and Timidity patches
+USEMIDI=yes
+
+# To build for the demo version, run with make DEMO=yes [other stuff]
+
 
 ################ You shouldn't need to edit anything below here.
 
