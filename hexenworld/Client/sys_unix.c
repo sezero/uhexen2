@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.11 2005-03-03 17:03:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.12 2005-03-03 19:48:46 sezero Exp $
 */
 
 #include <stdio.h>
@@ -15,11 +15,9 @@
 #include <sys/mman.h>
 #include <signal.h>
 #include <string.h>
-#include <pwd.h>
 #include <dirent.h>
 
 #include "quakedef.h"
-#include "errno.h"
 
 #define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error running
 										//  dedicated before exiting
@@ -214,9 +212,15 @@ int	Sys_FileTime (char *path)
 	return retval;
 }
 
-void Sys_mkdir (char *path)
+int Sys_mkdir (char *path)
 {
-	mkdir (path, 0777);
+	int rc;
+
+	rc = mkdir (path, 0777);
+	if (rc != 0 && errno == EEXIST)
+		rc = 0;
+
+	return rc;
 }
 
 
@@ -476,20 +480,14 @@ void Sys_SendKeyEvents (void)
 
 int Sys_GetUserdir(char *buff, unsigned int len)
 {
-    struct passwd *pwent;
+    if (getenv("HOME") == NULL)
+	return 1;
 
-    pwent = getpwuid( getuid() );
-    if ( pwent == NULL ) {
-	perror( "getpwuid" );
-	return 0;
-    }
+    if ( strlen( getenv("HOME") ) + strlen( AOT_USERDIR) + 5 > (unsigned)len )
+	return 1;
 
-    if ( strlen( pwent->pw_dir ) + strlen( AOT_USERDIR) + 5 > (unsigned)len ) {
-	return 0;
-    }
-    sprintf( buff, "%s/%s", pwent->pw_dir, AOT_USERDIR );
-    Sys_mkdir(buff);
-    return 1;
+    sprintf( buff, "%s/%s", getenv("HOME"), AOT_USERDIR );
+    return Sys_mkdir(buff);
 }
 
 void PrintVersion (void)
@@ -526,11 +524,11 @@ void PrintHelp(char *name)
 int main(int argc, char *argv[])
 {
 	quakeparms_t	parms;
-	double			time, oldtime, newtime;
-	static	char	cwd[1024];
-	static  char    userdir[1024];
-	int				t;
-	char binary_name[1024];
+	double	time, oldtime, newtime;
+	char	cwd[MAX_OSPATH];
+	char	userdir[MAX_OSPATH];
+	char	binary_name[MAX_OSPATH];
+	int	t;
 
 	if (!(getcwd (cwd, sizeof(cwd))))
 		Sys_Error ("Couldn't determine current directory");
@@ -538,17 +536,17 @@ int main(int argc, char *argv[])
 	if (cwd[strlen(cwd)-1] == '/')
 		cwd[strlen(cwd)-1] = 0;
 
-	if (!(Sys_GetUserdir(userdir,sizeof(userdir))))
+	if (Sys_GetUserdir(userdir,sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
-	else
-		printf("userdir is: %s\n",userdir);
+
+	printf("userdir is: %s\n",userdir);
 
 	parms.basedir = cwd;
 	parms.cachedir = NULL;
 	parms.userdir = userdir;
 
-	memset(binary_name,0,1024);
-	strncpy(binary_name,argv[0],1024);
+	memset(binary_name,0,sizeof(binary_name));
+	strncpy(binary_name,argv[0],sizeof(binary_name));
 
 	parms.argc = 1;
 	argv[0] = "";
@@ -623,6 +621,10 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/03/03 17:03:39  sezero
+ * - sys_unix.c cleanup: remove dead and/or win32 code
+ * - remove unreached return from main (it should have been 0, btw. from Steve)
+ *
  * Revision 1.10  2005/02/20 13:39:22  sezero
  * add the new sound options to the help messages
  *

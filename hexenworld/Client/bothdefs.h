@@ -54,7 +54,9 @@
 
 
 #define	MAX_QPATH		64			// max length of a quake game pathname
-#define	MAX_OSPATH		128			// max length of a filesystem pathname
+
+#define	MAX_OSPATH		256			// max length of a filesystem pathname
+// S.A: MAX_OSPATH was previously 128. Variable MAX_PATH is never set and/or used in hexen2
 
 #define	ON_EPSILON		0.1			// point on plane side epsilon
 

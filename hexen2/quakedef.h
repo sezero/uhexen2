@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.19 2005-02-14 19:41:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.20 2005-03-03 19:48:40 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -112,7 +112,9 @@ void	VID_UnlockBuffer (void);
 
 
 #define	MAX_QPATH		64			// max length of a quake game pathname
-#define	MAX_OSPATH		128			// max length of a filesystem pathname
+
+#define	MAX_OSPATH		256			// max length of a filesystem pathname
+// S.A: MAX_OSPATH was previously 128. Variable MAX_PATH is never set and/or used in hexen2
 
 #define	ON_EPSILON		0.1			// point on plane side epsilon
 
@@ -449,6 +451,9 @@ void IN_DeactivateMouseSA (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2005/02/14 19:41:18  sezero
+ * 1.2.4-rc1: prepare for 1.2.4 (2005-02-14)
+ *
  * Revision 1.18  2005/02/05 16:18:25  sezero
  * added midi volume control (partially from Pa3PyX)
  *
