@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/triggers.hc,v 1.1.1.1 2004-11-29 11:39:29 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/triggers.hc,v 1.2 2004-12-20 19:08:46 sezero Exp $
  */
 
 void() button_return;
@@ -1360,6 +1360,11 @@ void() trigger_monsterjump_touch =
 		return;
 
 // set XY even if not on ground, so the jump will clear lips
+	if(other.classname=="monster_eidolon")
+	{//blah
+		self.height*=1.3;
+		self.speed*=1.3;
+	}
 	other.velocity_x = self.movedir_x * self.speed;
 	other.velocity_y = self.movedir_y * self.speed;
 	
@@ -2017,6 +2022,9 @@ void trigger_message_transfer ()
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:39:29  sezero
+ * Initial import
+ *
  * 
  * 187   9/25/97 5:24p Mgummelt
  * 
