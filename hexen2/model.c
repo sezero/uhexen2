@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/model.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/model.c,v 1.3 2004-12-19 17:25:55 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -853,8 +853,8 @@ void Mod_LoadFaces (lump_t *l)
 				out->flags |= SURF_TRANSLUCENT;
 */
 			if (r_transwater.value && 
-				(!_strnicmp(out->texinfo->texture->name,"*rtex078",8)) ||
-				(!_strnicmp(out->texinfo->texture->name,"*lowlight",9)))
+				( (!_strnicmp(out->texinfo->texture->name,"*rtex078",8)) ||
+				  (!_strnicmp(out->texinfo->texture->name,"*lowlight",9)) ) )
 				out->flags |= SURF_TRANSLUCENT;
 
 			for (i=0 ; i<2 ; i++)
@@ -2282,6 +2282,9 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:05:18  sezero
  * Initial import of AoT 1.2.0 code
  *
