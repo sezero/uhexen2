@@ -1,21 +1,30 @@
 
 # Quick'n'Dirty Makefile for Hexen2 Launcher
 
+#  to compile for gtk-1.2, type:  make
+#  to compile for gtk-2.0, type:  make GTK2=yes
+
 prefix = /usr
 #prefix = /usr/local
 
-GTK_CONFIG = ${prefix}/bin/gtk-config
+PACKAGE = h2launcher
+H2LAUNCH = h2launcher
 GTK_CFLAGS = `gtk-config --cflags`
 GTK_LIBS = `gtk-config --libs`
-PACKAGE = h2launcher
+ifeq "${GTK2}" "yes"
+H2LAUNCH = h2launcher.gtk2
+GTK_CFLAGS = `pkg-config --cflags gtk+-2.0`
+GTK_LIBS = `pkg-config --libs gtk+-2.0`
+endif
 VERSION = 0.2d
+
+PROGRAMS = $(H2LAUNCH)
 
 #ORIG_SRC= support.c support.h
 SOURCES = main.c ${ORIG_SRC} interface.c interface.h \
 	callbacks.c callbacks.h launch_bin.c launch_bin.h \
 	config_file.c config_file.h
 
-PROGRAMS = h2launcher
 
 #ORIG_OBJ= support.o
 OBJECTS = main.o ${ORIG_OBJ} interface.o callbacks.o launch_bin.o \
@@ -44,12 +53,14 @@ LINK = $(CCLD) -o $@ $(LDFLAGS) ${GTK_LIBS}
 .S.o:
 	$(COMPILE) -c $<
 
-h2launcher: $(OBJECTS)
-	@rm -f h2launcher
+$(H2LAUNCH): $(OBJECTS)
+	@rm -f $(H2LAUNCH)
 	$(LINK) $(LDFLAGS) $(OBJECTS)
 
 all: $(PROGRAMS)
 
 clean:
 	-rm -f *.o core *.core
-	-test -z "$(PROGRAMS)" || rm -f $(PROGRAMS)
+
+cleaner:
+	-rm -f *.o core *.core $(PROGRAMS)
