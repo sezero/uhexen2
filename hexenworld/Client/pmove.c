@@ -929,12 +929,8 @@ void SpectatorMove (void)
 	float		fmove, smove;
 	vec3_t		wishdir;
 	float		wishspeed;
-#ifndef SERVERONLY
-	extern float	server_version;	// version of server we connected to
-#endif
 
 	// friction
-
 	speed = Length (pmove.velocity);
 	if (speed < 1)
 	{

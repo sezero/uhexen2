@@ -1,7 +1,7 @@
 // sys_unix.c -- Unix system interface code
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.8 2005-02-06 15:03:15 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.9 2005-02-09 14:37:34 sezero Exp $
  */
 
 #include <stdio.h>
@@ -51,7 +51,8 @@ qboolean			isDedicated;
 static qboolean		sc_return_on_enter = false;
 HANDLE				hinput, houtput;
 
-static char			*tracking_tag = "Sticky Buns";
+//static char			*tracking_tag = "Sticky Buns";
+
 /*
 static HANDLE	tevent;
 static HANDLE	hFile;
@@ -948,6 +949,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/02/06 15:03:15  sezero
+ * move resource.h to ./win_stuff/
+ *
  * Revision 1.7  2005/01/18 11:29:18  sezero
  * - Fix userdirs to work correctly against the -game arg
  * - Added a "qboolean adduser" arg to COM_AddGameDir()  (useful esp. in
