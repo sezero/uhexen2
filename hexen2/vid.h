@@ -76,6 +76,7 @@ void VID_ApplyGamma (void);
 void VID_SetDefaultMode (void);
 void VID_ForceLockState (int lk);
 int  VID_ForceUnlockedAndReturnState (void);
+void ToggleFullScreenSA (void);	// from Steven
 void D_ShowLoadingSize(void);	// was a missing prototype. this seems to
 				// be its best place.  O.S.
 
