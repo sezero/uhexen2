@@ -1,6 +1,6 @@
 /*
    gl_dl_vidsdl.c
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.8 2004-12-12 14:29:35 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.9 2004-12-12 14:31:29 sezero Exp $
 
    Select window size and mode and init SDL in GL mode.
 
@@ -629,7 +629,7 @@ void GL_Init (void)
 	gl_version = glfunc.glGetString_fp (GL_VERSION);
 	Con_Printf ("GL_VERSION: %s\n", gl_version);
 	gl_extensions = glfunc.glGetString_fp (GL_EXTENSIONS);
-	Con_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
+	// Con_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
 	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",4))
 	{
