@@ -1,12 +1,7 @@
 /*
-	midi.c
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/midi.c,v 1.1 2005-02-05 16:27:11 sezero Exp $
+ */
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/midi.c,v 1.2 2005-01-29 03:31:28 sezero Exp $
-*/
-
-// FIXME: midi doesnt work for HWClient at the moment
-
-#ifndef PLATFORM_UNIX
 #include <windows.h>
 #include <windowsx.h>
 #include <commctrl.h>
@@ -15,24 +10,9 @@
 
 #include "midstuff.h"
 #include "midi.h"
-#endif
 #include "quakedef.h"
 
-#ifdef USE_MIDI
-#error FIXME: midi doesnt work for HWClient at the moment
-#include <SDL/SDL.h>
-#include <SDL/SDL_mixer.h>
 
-static Mix_Music *music = NULL;
-void (*midi_endmusicfnc)(void);
-#endif
-
-
-byte bMidiInited,bFileOpen, bPlaying, bBuffersPrepared;
-byte bPaused, bLooped;
-float dwVolumePercent;
-
-#ifndef PLATFORM_UNIX
 BOOL bMidiInited,bFileOpen, bPlaying, bBuffersPrepared;
 BOOL bPaused, bLooped;
 UINT uMIDIDeviceID = MIDI_MAPPER, uCallbackStatus;
@@ -61,7 +41,6 @@ void MidiErrorMessageBox(MMRESULT mmr)
 }
 
 
-#endif
 
 
 
@@ -69,7 +48,7 @@ void MIDI_Play_f (void)
 {
 	if (Cmd_Argc () == 2)
 	{
-	  MIDI_Play(Cmd_Argv(1));
+		MIDI_Play(Cmd_Argv(1));
 	}
 }
 
@@ -85,7 +64,6 @@ void MIDI_Pause_f (void)
 
 void MIDI_Loop_f (void)
 {
-#ifndef PLATFORM_UNIX
 	if (Cmd_Argc () == 2)
 	{
       if (strcmpi(Cmd_Argv(1),"on") == 0 || strcmpi(Cmd_Argv(1),"1") == 0) 
@@ -98,28 +76,10 @@ void MIDI_Loop_f (void)
 
 	if (bLooped) Con_Printf("MIDI music will be looped\n");
 	else Con_Printf("MIDI music will not be looped\n");
-#endif
-
-#ifdef USE_MIDI
-	if (Cmd_Argc () == 2)
-	{
-      if (strcmpi(Cmd_Argv(1),"on") == 0 || strcmpi(Cmd_Argv(1),"1") == 0) 
-			MIDI_Loop(1);
-		else if (strcmpi(Cmd_Argv(1),"off") == 0 || strcmpi(Cmd_Argv(1),"0") == 0) 
-			MIDI_Loop(0);
-		else if (strcmpi(Cmd_Argv(1),"toggle") == 0) 
-			MIDI_Loop(2);
-	}
-
-	if (bLooped) Con_Printf("MIDI music will be looped\n");
-	else Con_Printf("MIDI music will not be looped\n");
-#endif
-
 }
 
 void MIDI_Volume_f (void)
 {
-#ifndef PLATFORM_UNIX
 	if (Cmd_Argc () == 2)
 	{
 		dwVolumePercent = atol(Cmd_Argv(1))*65535/100;
@@ -132,61 +92,20 @@ void MIDI_Volume_f (void)
 	{
 		Con_Printf("MIDI volume is %d\n", dwVolumePercent/(65535/100));
 	}
-#endif
 }
 
-qboolean MIDI_Init(void)
+BOOL MIDI_Init(void)
 {
-#ifdef USE_MIDI
-  int audio_rate = 22050;
-  int audio_format = AUDIO_S16;
-  int audio_channels = 2;
-  int audio_buffers = 4096;
-
-  printf("MIDI_Init\n");
-
-  if(COM_CheckParm("-nomidi"))
-    {
-      bMidiInited = 0;
-      return 0;
-    }
-
-  if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
-
-    Con_Printf("Cannot initialize SDL_AUDIO subsystem: %s\n",SDL_GetError());
-    bMidiInited = 0;
-    return 0;
-  }
-  if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0) {
-    bMidiInited = 0;
-    fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
-    return 0;
-  }
-
-  Cmd_AddCommand ("midi_play", MIDI_Play_f);
-  Cmd_AddCommand ("midi_stop", MIDI_Stop_f);
-  Cmd_AddCommand ("midi_pause", MIDI_Pause_f);
-  Cmd_AddCommand ("midi_loop", MIDI_Loop_f);
-  Cmd_AddCommand ("midi_volume", MIDI_Volume_f);
-  
-  bFileOpen = 0;
-  bPlaying = 0;
-  bLooped = 1;
-  bPaused = 0;
-  bMidiInited = 1;
-
-#endif
-
-#ifndef PLATFORM_UNIX	
 	MMRESULT mmrRetVal;
 
-	hBufferReturnEvent = CreateEvent(NULL,FALSE,FALSE,"Wait For Buffer Return");
-
-	if(COM_CheckParm("-nomidi"))
+	if (COM_CheckParm("-nomidi"))
 	{
 		bMidiInited = 0;
 		return FALSE;
 	}
+
+	hBufferReturnEvent = CreateEvent(NULL,FALSE,FALSE,"Wait For Buffer Return");
+
 	mmrRetVal = midiStreamOpen(&hStream,&uMIDIDeviceID,(DWORD)1,(DWORD)MidiProc,(DWORD)0,CALLBACK_FUNCTION);
 	if(mmrRetVal != MMSYSERR_NOERROR )
 	{
@@ -211,15 +130,11 @@ qboolean MIDI_Init(void)
 	uCallbackStatus = 0;
 	bMidiInited = 1;
 
-#endif
-	return true;
+	return TRUE;
 }
-
 
 void MIDI_Play(char *Name)
 {
-
-#ifndef PLATFORM_UNIX
 	MMRESULT mmrRetVal;
     char Temp[100];
 	char *Data;
@@ -227,6 +142,8 @@ void MIDI_Play(char *Name)
 	if (!bMidiInited)	//don't try to play if there is no midi
 		return;
 
+	//sprintf(Temp,"data1\\%s",Name);
+	//sprintf(Temp,"%s",Name);
 	sprintf(Temp, "midi/%s.mid", Name);
     MIDI_Stop();
 
@@ -253,107 +170,48 @@ void MIDI_Play(char *Name)
 		midiOutSetVolume(hStream, (dwVolumePercent<<16)+dwVolumePercent);
 		bPlaying = TRUE;
 	}
-
-
-#endif
-
-#ifdef USE_MIDI
-	char Temp[100];
-	char *Data;
-	char midi_file[200];
-	char midi_file_with_path[300];
-	FILE *f=NULL;
-
-	int size=0;
-
-	printf("MIDI_Play\n");
-	if (!bMidiInited)	//don't try to play if there is no midi
-		return;
-
-	sprintf(Temp, "midi/%s.mid", Name);
-	sprintf (midi_file, "glhexen/midi/%s.mid", Name);
-
-	MIDI_Stop();
-
-	COM_FOpenFile (midi_file, &f, true);	
-	if (f)
-	  {
-	    Con_Printf("MIDI: File %s already exists\n",midi_file);
-	  }
-	else {
-	  Con_Printf("MIDI: File %s needs to be extracted\n",midi_file);
-	  Data = (byte *)COM_LoadHunkFile2((char *)Temp, (int *)&size);
-	  if (!Data) 
-	    {
-	      //exit(1);
-	    }
-	  
-	  COM_WriteFile (midi_file, (void *)Data, size);
-	}
-
-	sprintf (midi_file_with_path, "%s/glhexen/midi/%s.mid", com_gamedir,Name);
-	music = Mix_LoadMUS(midi_file_with_path);
-	if ( music == NULL ) {
-	  Con_Printf("Couldn't load %s: %s\n",
-		  Temp, SDL_GetError());
-	}
-
-	else
-	{
-		bFileOpen = 1;
-
-		Con_Printf("Playing midi file %s\n",Temp);
-
-/*		midiOutSetVolume(hStream, (dwVolumePercent<<16)+dwVolumePercent);*/
-		Mix_FadeInMusic(music,0,2000);
-		bPlaying = 1;
-	}
-
-#endif
 }
 
 void MIDI_Pause(int mode)
 {
-  printf("MIDI_Pause\n");
-#ifndef PLATFORM_UNIX
-	if(bPaused)
-	   midiStreamRestart(hStream);
-   else
-      midiStreamPause(hStream);
+	if (!bPlaying)
+	{
+		return;
+	}
 
-	bPaused = !bPaused;
-#endif
-
-#ifdef USE_MIDI
-	if(bPaused)
-	  Mix_ResumeMusic();
-
+	if((mode == 0 && bPaused) || mode == 1)
+	{
+		midiStreamRestart(hStream);
+		bPaused = false;
+	}
 	else
-	  Mix_PauseMusic();
-
-	bPaused = !bPaused;
-#endif
-
+	{
+		midiStreamPause(hStream);
+		bPaused = true;
+	}
 }
 
-void MIDI_Loop(int NewValue)
+static void MIDI_Loop(int NewValue)
 {
-  printf("MIDI_Loop\n");
-#ifndef PLATFORM_UNIX
 	if (NewValue == 2)
-	   bLooped = !bLooped;
-    else bLooped = NewValue;
-#endif
+	{
+		bLooped = !bLooped;
+	}
+    else 
+	{
+		bLooped = NewValue;
+	}
 }
 
 void MIDI_Stop(void)
 {
-  printf("MIDI_Stop\n");
-#ifndef PLATFORM_UNIX
 	MMRESULT mmrRetVal;
 
-   if(bFileOpen || bPlaying)// || uCallbackStatus != STATUS_CALLBACKDEAD)
-   {
+	if (!bMidiInited)	//Just to be safe
+		return;
+
+	if(bFileOpen || bPlaying)// || uCallbackStatus != STATUS_CALLBACKDEAD)
+	{
       bPlaying = bPaused = FALSE;
       if (uCallbackStatus != STATUS_CALLBACKDEAD && uCallbackStatus != STATUS_WAITINGFOREND)
          uCallbackStatus = STATUS_KILLCALLBACK;
@@ -399,26 +257,14 @@ void MIDI_Stop(void)
          bFileOpen = FALSE;
       }
    }
-#endif
-
-#ifdef USE_MIDI
-   if(bFileOpen || bPlaying)
-   {
-      Mix_HaltMusic();
-      Mix_FreeMusic(music);
-   }
-
-   bPlaying = bPaused = 0;
-   bFileOpen=0;
-
-#endif
 }
 
 void MIDI_Cleanup(void)
 {
-  printf("MIDI_Cleanup\n");
-#ifndef PLATFORM_UNIX
 	MMRESULT mmrRetVal;
+
+	if (!bMidiInited)
+		return;
 
 	MIDI_Stop();
 
@@ -433,12 +279,6 @@ void MIDI_Cleanup(void)
 		}
 		hStream = NULL;
 	}
-#endif
-
-#ifdef USE_MIDI
-	MIDI_Stop();
-	Mix_CloseAudio();
-#endif
 }
 
 
@@ -451,7 +291,6 @@ void MIDI_Cleanup(void)
 /*****************************************************************************/
 void FreeBuffers(void)
 {
-#ifndef PLATFORM_UNIX
    DWORD idx;
    MMRESULT mmrRetVal;
 
@@ -475,7 +314,6 @@ void FreeBuffers(void)
          GlobalFreePtr( ciStreamBuffers[idx].mhBuffer.lpData);
          ciStreamBuffers[idx].mhBuffer.lpData = NULL;
       }
-#endif
 }
 
 
@@ -488,7 +326,6 @@ void FreeBuffers(void)
 /*****************************************************************************/
 BOOL StreamBufferSetup(char *Name)
 {
-#ifndef PLATFORM_UNIX
    int nChkErr;
    BOOL bFoundEnd = FALSE;
    DWORD dwConvertFlag, idx;
@@ -589,12 +426,10 @@ BOOL StreamBufferSetup(char *Name)
    bBuffersPrepared = TRUE;
    nCurrentBuffer = 0;
     
-#endif
-   return(false);
+   return(FALSE);
 }
 
 
-#ifndef PLATFORM_UNIX
 /*****************************************************************************/
 /* MidiProc()                                                                */
 /*                                                                           */
@@ -782,24 +617,8 @@ void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
    }
 }
 
-#endif
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2004/11/28 08:54:52  sezero
- * Initial import of AoT 1.2.0 code
- *
- * Revision 1.4  2002/01/02 19:38:35  phneutre
- * midi updates, though it still dosen't work at this time
- *
- * Revision 1.3  2001/12/13 14:01:59  phneutre
- * midi support
- *
- * Revision 1.2  2001/12/02 00:22:17  theoddone33
- * Initial client porting, software mode works
- *
- * Revision 1.1.1.1  2001/11/09 17:04:49  theoddone33
- * Inital import
- *
  * 
  * 7     3/27/98 6:22p Jmonroe
  * just made nomidi more clean

@@ -138,7 +138,7 @@ COMMONOBJS = cd_linux.o \
 	keys.o \
 	mathlib.o \
 	menu.o \
-	midi.o \
+	midi_sdl.o \
 	net_wins.o \
 	net_chan.o \
 	pmove.o \

@@ -1,7 +1,6 @@
 /*
-
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/midi.h,v 1.2 2005-01-29 03:31:28 sezero Exp $
-*/
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/midi.h,v 1.1 2005-02-05 16:27:11 sezero Exp $
+ */
 
 #ifndef __MSTREAM_INCLUDED__
 #define __MSTREAM_INCLUDED__
@@ -88,12 +87,6 @@ int ConvertToBuffer( DWORD, LPCONVERTINFO );
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2004/11/28 08:54:53  sezero
- * Initial import of AoT 1.2.0 code
- *
- * Revision 1.1.1.1  2001/11/09 17:04:49  theoddone33
- * Inital import
- *
  * 
  * 2     2/19/98 3:42p Rjohnson
  * Midi Music - Yeah!
