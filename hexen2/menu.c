@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.7 2004-12-12 14:38:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.8 2004-12-12 14:57:06 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -16,7 +16,8 @@ extern  cvar_t  r_shadows, gl_glows, gl_missile_glows; // S.A
 extern	float introTime;
 extern	cvar_t	crosshair;
 #ifdef H2MP
-cvar_t m_oldmission = {"m_oldmission","1"};
+cvar_t m_oldmission = {"m_oldmission","0", true};
+cvar_t m_demoness   = {"m_demoness",  "0", true};
 #endif
 
 void (*vid_menudrawfn)(void);
@@ -922,9 +923,18 @@ void M_Class_Draw (void)
 	qpic_t	*p;
 
 	ScrollTitle("gfx/menu/title2.lmp");
-
+if (!m_enter_portals) {
+	for(i = 0; i < NUM_CLASSES -1 + m_demoness.value; ++i)
+		M_DrawBigString (72,60+(i*20),ClassNamesU[i]);
+} else {
 	for(i = 0; i < NUM_CLASSES; ++i)
 		M_DrawBigString (72,60+(i*20),ClassNamesU[i]);
+}
+
+if (!m_enter_portals) {
+		if (m_class_cursor >= CLASS_ITEMS -1 + m_demoness.value)
+			m_class_cursor = 0;
+}
 
 	f = (int)(host_time * 10)%8;
 	M_DrawTransPic (43, 54 + m_class_cursor * 20,Draw_CachePic( va("gfx/menu/menudot%i.lmp", f+1 ) ) );
@@ -946,9 +956,13 @@ void M_Class_Key (int key)
 		
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
+if (!m_enter_portals) {
+		if (++m_class_cursor >= CLASS_ITEMS -1 + m_demoness.value)
+			m_class_cursor = 0;
+} else {
 		if (++m_class_cursor >= CLASS_ITEMS)
 			m_class_cursor = 0;
-
+}
 //		if ((!registered.value && !oem.value) && m_class_cursor >= 1 && m_class_cursor <= 2)
 //			m_class_cursor = CLASS_ITEMS - 1;
 
@@ -956,9 +970,13 @@ void M_Class_Key (int key)
 
 	case K_UPARROW:
 		S_LocalSound ("raven/menu1.wav");
+if (!m_enter_portals) {
+		if (--m_class_cursor < 0)
+			m_class_cursor = CLASS_ITEMS - 2 + m_demoness.value;
+} else {
 		if (--m_class_cursor < 0)
 			m_class_cursor = CLASS_ITEMS - 1;
-
+}
 //		if ((!registered.value && !oem.value) && m_class_cursor >= 1 && m_class_cursor <= 2)
 //			m_class_cursor = 0;
 
@@ -4453,6 +4471,17 @@ void M_ServerList_Key (int k)
 
 void M_Init (void)
 {
+#ifdef H2MP
+/*	if (COM_CheckParm("-witholdmission") ||
+	    COM_CheckParm("--witholdmission"))
+			m_oldmission.string = "1";
+	if (COM_CheckParm("-withdemoness") ||
+	    COM_CheckParm("--withdemoness"))
+			m_demoness.string = "1";
+*/
+	Cvar_RegisterVariable (&m_oldmission);
+	Cvar_RegisterVariable (&m_demoness);
+#endif
 	Cmd_AddCommand ("togglemenu", M_ToggleMenu_f);
 
 	Cmd_AddCommand ("menu_main", M_Menu_Main_f);
@@ -4469,9 +4498,6 @@ void M_Init (void)
 	Cmd_AddCommand ("menu_class", M_Menu_Class2_f);
 
 	M_BuildBigCharWidth();
-#ifdef H2MP
-	Cvar_RegisterVariable (&m_oldmission);
-#endif
 }
 
 
@@ -4715,6 +4741,9 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2004/12/12 14:38:18  sezero
+ * steven fixed the mouse again ;)
+ *
  * Revision 1.6  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *
