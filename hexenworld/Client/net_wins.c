@@ -1007,7 +1007,8 @@ void NET_GetLocalAddress (void)
 	struct sockaddr_in	address;
 	int		namelen;
 
-	gethostname(buff, 512);
+	if (gethostname(buff, 512) != 0)
+		Sys_Error("gethostname failed,  errno = %i,\nCannot continue, bailing out...\n",errno);
 	buff[512-1] = 0;
 
 	NET_StringToAdr (buff, &net_local_adr);
