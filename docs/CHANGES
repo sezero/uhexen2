@@ -1,5 +1,33 @@
 ChangeLog:
 
+2005-02-20 (CVS, 1.2.4-rc2):
+    * H2MP: Old mission option is now always enabled, removed my
+      cmdline thing, killed the cvar m_oldmission;  completely
+      disabled the demoness for the old mission, killed my cvar
+      m_demoness.
+    * Sound: Now processing all command line options in snd_dma.c,
+      S_Startup only, targets will do to its bidding first; don't
+      die immediately, try setting alternative hw parameters;
+      (fwiw, snd_oss.c now applies all hardware settings before
+      mmaping the buffer); added a check for requested and set rate
+      mismatches which fails S_Startup if found (found it in alsa
+      examples, is it necessary at all? commented out for now.)
+    * OpenGL: Added comments on gl_picmip scale-down and ugly help
+      screens (Steven)
+    * H2/HW: Added the new sound options to the help messages
+    * Documents: Updated the README files
+    * Launcher: New version 0.5.0:  added all sound cmdline options
+      (sampling rate, format, stereo); removed "disable joystick"
+      option (not functional in the engine for ages); removed the
+      "old mission" thing (already made always-enabled in the engine);
+      changed Mission Pack checkbox into a radio button grouped with
+      the others; added Hexen2 bot mods as extra game types similar
+      to hexenworld game types; redesigned the interface: default is
+      basic mode which displays the basic options necessary only, a
+      new "More" button expands the interface to show more things;
+      replaced the resolution slider with a combo; gtk-2 is default
+      now, to build for gtk-1.2 type make GTK1=yes.
+
 2005-02-14 (CVS, 1.2.4-rc1):
     * added ability to disable ALSA support at compile time
     * fix mouse not being activated after connecting to a server in
