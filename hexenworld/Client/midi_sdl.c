@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.2 2005-02-05 16:29:13 sezero Exp $
+	$Id: midi_sdl.c,v 1.3 2005-02-05 16:30:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -176,6 +176,11 @@ void MIDI_Play(char *Name)
 		return;
 
 	//printf("MIDI_Play\n");
+	if (strlen(Name)==0) {
+		Sys_Printf("no midi music to play\n");
+		return;
+	}
+
 	sprintf(Temp, "midi/%s.mid", Name);
 	sprintf (midi_file_with_path, ".midi/%s.mid", Name); // without userdir for now
 	MIDI_Stop();
@@ -287,6 +292,10 @@ void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/02/05 16:29:13  sezero
+ * Apply the HexenWorld specific changes to midi_sdl.c and enable
+ * midi in the makefiles
+ *
  * Revision 1.1  2005/02/05 16:27:09  sezero
  * Port midi changes from hexen2 to hexenworld, part1.
  * (separate win32 and linux versions of midi files.

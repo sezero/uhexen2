@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.5 2005-02-05 16:21:13 sezero Exp $
+	$Id: midi_sdl.c,v 1.6 2005-02-05 16:30:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -176,6 +176,11 @@ void MIDI_Play(char *Name)
 		return;
 
 	//printf("MIDI_Play\n");
+	if (strlen(Name)==0) {
+		Sys_Printf("no midi music to play\n");
+		return;
+	}
+
 	sprintf(Temp, "midi/%s.mid", Name);
 	sprintf (midi_file_with_path, ".midi/%s.mid", Name); // without userdir for now
 	MIDI_Stop();
@@ -286,6 +291,9 @@ void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/02/05 16:21:13  sezero
+ * killed Com_LoadHunkFile2()  [from HexenWorld]
+ *
  * Revision 1.4  2005/02/05 16:20:14  sezero
  * fix possible path length overflows
  *
