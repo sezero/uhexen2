@@ -1,26 +1,17 @@
-#include <gtk/gtk.h>
-
-void on_window1_destroy (GtkObject *object, gpointer user_data);
-void on_HEXEN2_button_released (GtkButton *button, gpointer user_data);
-void on_HW_button_released (GtkButton *button, gpointer user_data);
-void on_MP_button_toggled (GtkToggleButton *togglebutton, gpointer user_data);
-void on_OM_button_toggled (GtkToggleButton *togglebutton, gpointer user_data);
-//*void on_EVIL_button_toggled (GtkToggleButton *togglebutton, gpointer user_data);
-void on_SOUND_button_toggled (GtkToggleButton *togglebutton, gpointer user_data);
-void on_MIDI_button_toggled (GtkToggleButton *togglebutton, gpointer user_data);
-void on_CDAUDIO_button_toggled (GtkToggleButton *togglebutton, gpointer user_data);
-void on_LAN_button_toggled (GtkToggleButton *togglebutton, gpointer user_data);
-void on_JOY_button_toggled (GtkToggleButton *togglebutton, gpointer user_data);
-void on_SOFT_button_released (GtkButton *button, gpointer user_data);
-void on_GL_button_released (GtkButton *button, gpointer user_data);
-void on_FS_button_toggled (GtkToggleButton *togglebutton, gpointer user_data);
-void on_320_button_released (GtkButton *button, gpointer user_data);
-void on_400_button_released (GtkButton *button, gpointer user_data);
-void on_512_button_released (GtkButton *button, gpointer user_data);
-void on_640_button_released (GtkButton *button, gpointer user_data);
-void on_800_button_released (GtkButton *button, gpointer user_data);
-void on_1024_button_released (GtkButton *button, gpointer user_data);
-void on_1280_button_released (GtkButton *button, gpointer user_data);
-void on_Launch_clicked (GtkButton *button, gpointer user_data);
-void on_SAVE_button_clicked (GtkButton *button, gpointer user_data);
-void on_QUIT_button_clicked (GtkButton *button, gpointer user_data);
+void res_Change (GtkAdjustment *adj, struct Video_s *wgt);
+void UpdateRScale (GtkAdjustment *adj, GtkWidget *label, int ch_scale);
+void UpdateStats (struct Launch_s *wgt);
+void on_HEXEN2 (GtkButton *button, gamewidget_t *wgt);
+void on_H2W (GtkButton *button, gamewidget_t *wgt);
+#ifndef DEMOBUILD
+void on_H2MP (GtkToggleButton *togglebutton, gamewidget_t *wgt);
+void on_OLDM (GtkToggleButton *togglebutton, gpointer user_data);
+#endif
+void on_SND (GtkToggleButton *togglebutton, sndwidget_t *wgt);
+void on_MIDI (GtkToggleButton *togglebutton, gpointer user_data);
+void on_CDA (GtkToggleButton *togglebutton, gpointer user_data);
+void on_LAN (GtkToggleButton *togglebutton, gpointer user_data);
+void on_JOY (GtkToggleButton *togglebutton, gpointer user_data);
+void on_OGL (GtkToggleButton *button, gamewidget_t *wgt);
+void on_FULS (GtkToggleButton *togglebutton, gpointer user_data);
+void on_SAVE (GtkButton *button, gpointer user_data);

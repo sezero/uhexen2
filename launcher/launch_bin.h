@@ -1,19 +1,34 @@
+#include "launcher_defs.h"
 
-#ifndef LAUNCH_BIN_H
-#define LAUNCH_BIN_H
+/* [with or without OpenGL][with or without MP]
+   table [1][0] is with openGL and without MP
+   See the name tables below.		*/
+int table[2][2] = {  {3,2}, {1,0}  };
 
-#define RES_320  0
-#define RES_400  1
-#define RES_512  2
-#define RES_640  3
-#define RES_800  4
-#define RES_1024 5
-#define RES_1280 6
-#define RES_MAX  6
+char *h2_binary_names[]={
 
-#define DEST_H2 0
-#define DEST_HW 1
+  "glh2mp",	/* OpenGL and Mission Pack */	/* 0 */
+  "glhexen2",	/* GL and no MP */		/* 1 */
+  "h2mp",	/* software and MP */		/* 2 */
+  "hexen2"	/* software and no MP */	/* 3 */
+};
 
-void launch_hexen2_bin();
+char *hw_binary_names[]={
 
-#endif
+  "hwcl",	/* Software */	/* 0 */
+  "glhwcl"	/* OpenGL */	/* 1 */
+};
+
+/* [resolution]
+   -width values only. corresponding -height is in the game binary */
+char *resolution_args[]={
+
+  "320",
+  "400",
+  "512",
+  "640",
+  "800",
+  "1024",
+  "1280"
+};
+

@@ -1,22 +1,14 @@
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <gtk/gtk.h>
-
-#include "callbacks.h"
+#include "com_sys.h"
 #include "interface.h"
-#include "support.h"
-#include "launch_bin.h"
+#include "widget_defs.h"
+#include "callbacks.h"
 #include "config_file.h"
+#include "launcher_defs.h"
+//#include "support.h"
 
 #ifndef DEMOBUILD
 extern int mp_support;
 extern int with_om;
-//extern int iamevil;
 #endif
 extern int opengl_support;
 extern int fullscreen;
@@ -27,195 +19,124 @@ extern int sound;
 extern int joystick;
 extern int lan;
 extern int destiny;
+extern unsigned missingexe;
 
-extern GtkWidget *fixed1;
-extern GtkWidget *MIDI_button;
-extern GtkWidget *CDAUDIO_button;
-extern GtkWidget *LAN_button;
-extern GtkWidget *MP_button;
-extern GtkWidget *OM_button;
-//extern GtkWidget *EVIL_button;
-extern GtkWidget *_320_button;
-extern GtkWidget *_400_button;
-extern GtkWidget *_512_button;
-extern GtkWidget *_640_button;
-extern GtkWidget *_800_button;
-extern GtkWidget *_1024_button;
-extern GtkWidget *_1280_button;
+const char *res_names[]={
+  " 320 x 240 ",
+  " 400 x 300 ",
+  " 512 x 384 ",
+  " 640 x 480 ",
+  " 800 x 600 ",
+  "1024 x 768 ",
+  "1280 x 1024"
+};
 
-void on_window1_destroy (GtkObject *object, gpointer user_data) {
-  gtk_main_quit();
-}
+const char *stats[]={
 
-void on_Launch_clicked (GtkButton *button, gpointer user_data) {
-  launch_hexen2_bin();
-}
+  "   Ready to run the game",
+  "   Game binary missing or not executable"
+};
 
-void on_SOUND_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
+void on_SND (GtkToggleButton *togglebutton, sndwidget_t *wgt) {
     sound=!sound;
-    gtk_widget_set_sensitive (MIDI_button, sound);
-    gtk_widget_set_sensitive (CDAUDIO_button, sound);
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MIDI_button), !sound);
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (CDAUDIO_button), !sound);
-    midi=sound;
-    cdaudio=sound;
+    gtk_widget_set_sensitive (wgt->MIDI_BUTTON, sound);
+    gtk_widget_set_sensitive (wgt->CDAUDIO_BUTTON, sound);
 }
 
-void on_MP_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
 #ifndef DEMOBUILD
+void on_H2MP (GtkToggleButton *togglebutton, gamewidget_t *wgt) {
   mp_support = !mp_support;
-  gtk_widget_set_sensitive (OM_button, mp_support);
-//if(with_om)
-//   gtk_widget_set_sensitive (EVIL_button, mp_support);
+  gtk_widget_set_sensitive (wgt->OLD_MISSION, mp_support);
+  UpdateStats(&(wgt->Launch));
+}
+
+void on_OLDM (GtkToggleButton *togglebutton, gpointer user_data) {
+    with_om=!with_om;
+}
 #endif
-}
 
-void on_OM_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
-#ifndef DEMOBUILD
-  if (with_om) {
-    with_om=0;
-/*  if(iamevil) {
-      iamevil=0;
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (EVIL_button), FALSE);
-    }
-    gtk_widget_set_sensitive (EVIL_button, FALSE);
-    gtk_widget_hide (EVIL_button); */
-  } else {
-    with_om=1;
-//  gtk_widget_set_sensitive (EVIL_button, TRUE);
-//  gtk_widget_show (EVIL_button);
+void on_OGL (GtkToggleButton *button, gamewidget_t *wgt) {
+  opengl_support=!opengl_support;
+  switch (opengl_support) {
+  case 0:
+	if (resolution > 3 )
+		resolution = 3;
+	break;
+  case 1:
+	if (resolution < 3 )
+		resolution = 3;
+	break;
   }
-#endif
+  UpdateRScale (wgt->RESOL_ADJUST, wgt->RESOL_TEXT1, 1);
+  UpdateStats(&(wgt->Launch));
 }
 
-/*
-void on_EVIL_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
-#ifndef DEMOBUILD
-  iamevil=!iamevil
-#endif
-} */
-
-void on_SOFT_button_released (GtkButton *button, gpointer user_data) {
-  opengl_support=0;
-  gtk_widget_set_sensitive (_800_button, FALSE);
-  gtk_widget_set_sensitive (_1024_button, FALSE);
-  gtk_widget_set_sensitive (_1280_button, FALSE);
-  gtk_widget_hide (_800_button);
-  gtk_widget_hide (_1024_button);
-  gtk_widget_hide (_1280_button);
-  gtk_widget_set_uposition (_512_button, 144, 328);
-  gtk_fixed_move (GTK_FIXED (fixed1), _512_button, 144, 328);
-  gtk_widget_set_uposition (_640_button, 240, 328);
-  gtk_fixed_move (GTK_FIXED (fixed1), _640_button, 240, 328);
-  gtk_widget_show (_320_button);
-  gtk_widget_show (_400_button);
-  if (resolution > 3 ) {
-      resolution = 1;
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (_400_button), TRUE);
-  }
+void res_Change (GtkAdjustment *adj, struct Video_s *wgt) {
+   resolution = (int)(adj->value);
+   if ( (adj->value)-resolution > .5 )
+   	resolution++;
+   UpdateRScale (adj, wgt->RESOL_TEXT0, 0);
 }
 
-void on_GL_button_released (GtkButton *button, gpointer user_data) {
-  opengl_support=1;
-  gtk_widget_hide (_320_button);
-  gtk_widget_hide (_400_button);
-  gtk_widget_set_uposition (_512_button, 144, 304);
-  gtk_fixed_move (GTK_FIXED (fixed1), _512_button, 144, 304);
-  gtk_widget_set_uposition (_640_button, 240, 304);
-  gtk_fixed_move (GTK_FIXED (fixed1), _640_button, 240, 304);
-  gtk_widget_show (_800_button);
-  gtk_widget_show (_1024_button);
-  gtk_widget_show (_1280_button);
-  gtk_widget_set_sensitive (_800_button, TRUE);
-  gtk_widget_set_sensitive (_1024_button, TRUE);
-  gtk_widget_set_sensitive (_1280_button, TRUE);
-  if (resolution < 3 ) {
-      resolution = 3;
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (_640_button), TRUE);
-  }
+void UpdateRScale (GtkAdjustment *adj, GtkWidget *label, int ch_scale) {
+   gtk_adjustment_set_value (adj, resolution);
+   if (ch_scale) {
+	adj->lower=2*opengl_support;
+	adj->upper=3+3*opengl_support;
+	gtk_signal_emit_by_name (GTK_OBJECT (adj), "changed");
+   }
+   gtk_label_set_text (GTK_LABEL (label), res_names[resolution]);
 }
 
-void on_320_button_released (GtkButton *button, gpointer user_data) {
-   resolution=RES_320;
+void UpdateStats (struct Launch_s *wgt) {
+   CheckExe();
+   gtk_statusbar_push (GTK_STATUSBAR (wgt->STATUSBAR), wgt->BinStat, stats[missingexe]);
+   gtk_widget_set_sensitive (wgt->LAUNCH_BUTTON, !missingexe);
 }
 
-void on_400_button_released (GtkButton *button, gpointer user_data) {
-   resolution=RES_400;
-}
-
-void on_512_button_released (GtkButton *button, gpointer user_data) {
-   resolution=RES_512;
-}
-
-void on_640_button_released (GtkButton *button, gpointer user_data) {
-  resolution=RES_640;
-}
-
-void on_800_button_released (GtkButton *button, gpointer user_data) {
-  resolution=RES_800;
-}
-
-void on_1024_button_released (GtkButton *button, gpointer user_data) {
-  resolution=RES_1024;
-}
-
-void on_1280_button_released (GtkButton *button, gpointer user_data) {
-   resolution=RES_1280;
-}
-
-void on_FS_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
+void on_FULS (GtkToggleButton *togglebutton, gpointer user_data) {
   fullscreen=!fullscreen;
 }
 
-void on_QUIT_button_clicked (GtkButton *button, gpointer user_data) {
-  gtk_main_quit();
-}
-
-void on_SAVE_button_clicked (GtkButton *button, gpointer user_data) {
+void on_SAVE (GtkButton *button, gpointer user_data) {
   if (write_config_file() == 0)
     printf("Options saved successfully\n");
 }
 
-void on_HEXEN2_button_released (GtkButton *button, gpointer user_data) {
+void on_HEXEN2 (GtkButton *button, gamewidget_t *wgt) {
   destiny=DEST_H2;
 #ifndef DEMOBUILD
-  gtk_widget_set_sensitive (MP_button, TRUE);
+  gtk_widget_set_sensitive (wgt->PORTALS_BUTTON, TRUE);
+  if(mp_support)
+    gtk_widget_set_sensitive (wgt->OLD_MISSION, TRUE);
 #endif
-  gtk_widget_set_sensitive (LAN_button, TRUE);
+  gtk_widget_set_sensitive (wgt->LAN_BUTTON, TRUE);
+  UpdateStats(&(wgt->Launch));
 }
 
-void on_HW_button_released (GtkButton *button, gpointer user_data) {
+void on_H2W (GtkButton *button, gamewidget_t *wgt) {
   destiny=DEST_HW;
 #ifndef DEMOBUILD
-  if(mp_support) {
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MP_button), FALSE);
-    gtk_widget_set_sensitive (OM_button, FALSE);
-    mp_support=0;
-//  if(with_om)
-//    gtk_widget_set_sensitive (EVIL_button, FALSE);
-  }
-  gtk_widget_set_sensitive (MP_button, FALSE);
+  if(mp_support)
+    gtk_widget_set_sensitive (wgt->OLD_MISSION, FALSE);
+  gtk_widget_set_sensitive (wgt->PORTALS_BUTTON, FALSE);
 #endif
-  if(!lan) {
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (LAN_button), FALSE);
-    lan=1;
-  }
-  gtk_widget_set_sensitive (LAN_button, FALSE);
+  gtk_widget_set_sensitive (wgt->LAN_BUTTON, FALSE);
+  UpdateStats(&(wgt->Launch));
 }
 
-void on_MIDI_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
+void on_MIDI (GtkToggleButton *togglebutton, gpointer user_data) {
   midi=!midi;
 }
 
-void on_CDAUDIO_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
+void on_CDA (GtkToggleButton *togglebutton, gpointer user_data) {
   cdaudio=!cdaudio;
 }
 
-void on_LAN_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
+void on_LAN (GtkToggleButton *togglebutton, gpointer user_data) {
   lan=!lan;
 }
 
-void on_JOY_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
+void on_JOY (GtkToggleButton *togglebutton, gpointer user_data) {
   joystick=!joystick;
 }
-

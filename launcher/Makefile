@@ -1,4 +1,3 @@
-
 # Quick'n'Dirty Makefile for Hexen2 Launcher
 
 #  to compile for gtk-1.2, type:  make
@@ -28,20 +27,21 @@ H2LAUNCH = ${TMPNAME}.gtk1
 GTK_CFLAGS = `gtk-config --cflags`
 GTK_LIBS = `gtk-config --libs`
 endif
-VERSION = 0.3.3
+VERSION = 0.4.6
 
 PROGRAMS = $(H2LAUNCH)
 
-SOURCES = main.c config_file.c config_file.h launch_bin.c launch_bin.h \
-	interface.c interface.h callbacks.c callbacks.h \
-	support.c support.h
-
+SOURCES1= main.c com_sys.c config_file.c launch_bin.c interface.c \
+	callbacks.c support.c
+SOURCES2= com_sys.h launcher_defs.h config_file.h launch_bin.h \
+	interface.h widget_defs.h callbacks.h support.h
+SOURCES = ${SOURCES1} ${SOURCES2}
 
 #SUPPORT_OBJ= support.o
-OBJECTS = main.o ${SUPPORT_OBJ} interface.o callbacks.o launch_bin.o \
-	config_file.o
+OBJECTS = main.o com_sys.o config_file.o launch_bin.o \
+	interface.o callbacks.o ${SUPPORT_OBJ}
 
-CFLAGS = -Wall -O2 -march=i386 -mcpu=i686 -I. ${GTK_CFLAGS}
+CFLAGS = -Wall -O2 -march=i386 -mcpu=i686 -I. ${GTK_CFLAGS} -DHOTL_VER=\"${VERSION}\"
 ifeq "${DEMO}" "yes"
 CFLAGS+=-DDEMOBUILD
 endif
@@ -81,3 +81,4 @@ clean:
 
 cleaner:
 	-rm -f *.o core *.core $(PROGRAMS)
+

@@ -57,3 +57,8 @@ void add_pixmap_directory (const gchar     *directory);
 /* This is used to create the pixmaps in the interface. */
 GtkWidget* create_pixmap (GtkWidget *widget, const gchar *filename);
 
+// O.S: gtk_widget_set_usize is deprecated. use gtk_widget_set_size_request
+// Gtk-1.2 doesnt have it, here is a wrapper...
+#ifndef HAVE_GTK2
+#define gtk_widget_set_size_request gtk_widget_set_usize
+#endif

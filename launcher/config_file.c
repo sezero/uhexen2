@@ -1,69 +1,23 @@
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
+#include "com_sys.h"
+#include "launcher_defs.h"
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <pwd.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <gtk/gtk.h>
-#include <errno.h>
-
-#include "callbacks.h"
-#include "interface.h"
-#include "support.h"
-
-#include "launch_bin.h"
-
-#ifndef DEMOBUILD
-#define AOT_USERDIR ".hexen2"
-#else
-#define AOT_USERDIR ".hexen2demo"
-#endif
 #define LAUNCHER_CONFIG_FILE "launcher_options"
 
+int destiny		= DEST_H2;
+int mp_support		= 0;
 #ifndef DEMOBUILD
-int mp_support;
-int with_om;
-//int iamevil;
+int with_om		= 0;
 #endif
-int opengl_support;
-int fullscreen;
-int resolution;
-int midi;
-int cdaudio;
-int sound;
-int lan;
-int joystick;
-int destiny;
+int opengl_support	= 1;
+int fullscreen		= 1;
+int resolution		= RES_640;
+int sound		= 1;
+int midi		= 1;
+int cdaudio		= 1;
+int joystick		= 0;
+int lan			= 1;
 
-void Sys_mkdir (char *path) {
-
-	mkdir (path, 0777);
-}
-
-int Sys_GetUserdir(char *buff, unsigned int len) {
-
-    struct passwd *pwent;
-
-    pwent = getpwuid( getuid() );
-    if ( pwent == NULL ) {
-	perror( "getpwuid" );
-	return 0;
-    }
-
-    if ( strlen( pwent->pw_dir ) + strlen( AOT_USERDIR) + 2 > (unsigned)len ) {
-	return 0;
-    }
-
-    sprintf( buff, "%s/%s", pwent->pw_dir, AOT_USERDIR );
-    Sys_mkdir(buff);
-
-    return 1;
-}
+extern char userdir[1024];
 
 FILE * open_config_file(char *flags) {
 
@@ -73,42 +27,14 @@ FILE * open_config_file(char *flags) {
   char *config_file_name =0;
   config_file_name = (char *)calloc(MAX_PATH, sizeof(char));
 
-  if (Sys_GetUserdir(config_file_name, MAX_PATH) == 0) {
-    return NULL;
-  }
-
+  strcat (config_file_name,userdir);
   strcat (config_file_name,"/");
   strcat (config_file_name,LAUNCHER_CONFIG_FILE);
-
-  /*if (*flags == 'r')
-    printf("Opening configuration file for reading: %s\n",config_file_name);
-  else if (*flags == 'w')
-    printf("Opening configuration file for writing: %s\n",config_file_name);
-  else 
-    printf("Opening configuration file with unknown flag: %s\n",config_file_name);
-  */
   thefile = fopen(config_file_name, flags);
-
-  // NULL check has to be done later
+// NULL check has to be done later
   return thefile;
 }
 
-
-void fill_default_options() {
-
-#ifndef DEMOBUILD
-  mp_support=0;
-  with_om=0;
-#endif
-  opengl_support=1;
-  fullscreen=1;
-  resolution=RES_640;
-  sound=1;
-  midi=1;
-  cdaudio=1;
-  joystick=0;
-  lan=1;
-}
 
 int write_config_file() {
 
@@ -138,12 +64,10 @@ int write_config_file() {
     fprintf(cfg_file, "lan=%d\n",lan);
 
   }
-    fclose (cfg_file); 
-    //printf("Config file wrote successfully\n");
+  fclose (cfg_file); 
 
-    return 0;    
+  return 0;    
 }
-
 
 int read_config_file() {
 
@@ -155,7 +79,6 @@ int read_config_file() {
 //  printf("file does not exist.\n");
 //  printf(" Creating default configuration file... ");
     write_config_file();
-//  printf("done!\n");
     return 0;
 
   } else {
@@ -203,15 +126,11 @@ int read_config_file() {
 	  }
 	  else if (strstr(buff, "midi=") == buff) {
 		midi = atoi(buff + 5);
-		if (sound == 0)
-		   midi = 0;
 		if (midi != 0 && midi != 1 )
 		   midi = 1;
 	  }
 	  else if (strstr(buff, "cdaudio=") == buff) {
 		cdaudio = atoi(buff + 8);
-		if (sound == 0)
-		   cdaudio = 0;
 		if (cdaudio != 0 && cdaudio != 1 )
 		   cdaudio = 1;
 	  }
