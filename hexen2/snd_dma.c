@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.15 2005-02-20 12:44:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.16 2005-02-25 14:55:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -17,6 +17,9 @@ void S_SoundList(void);
 void S_Update_();
 void S_StopAllSounds(qboolean clear);
 void S_StopAllSoundsC(void);
+
+// QuakeWorld hack...	// Activate this in HW
+//#define	viewentity	playernum+1
 
 // =======================================================================
 // Internal sound data & structures
@@ -445,7 +448,7 @@ SND_Spatialize
 void SND_Spatialize(channel_t *ch)
 {
     vec_t dot;
-    vec_t/* ldist, rdist,*/ dist;
+    vec_t dist;
     vec_t lscale, rscale, scale;
     vec3_t source_vec;
     sfx_t *snd;
@@ -701,7 +704,7 @@ void S_StaticSound (sfx_t *sfx, vec3_t origin, float vol, float attenuation)
 	if (total_channels == MAX_CHANNELS)
 	{
 		Con_Printf ("StaticSound: MAX_CHANNELS reached\n");
-		Con_Printf (" failed at (%.2f, %.2f, %.2f)\n",origin[0],origin[1],origin[2]);
+	//	Con_Printf (" failed at (%.2f, %.2f, %.2f)\n",origin[0],origin[1],origin[2]);
 		return;
 	}
 
@@ -870,7 +873,7 @@ void S_Update(vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 		for (i=0 ; i<total_channels; i++, ch++)
 			if (ch->sfx && (ch->leftvol || ch->rightvol) )
 			{
-				Con_Printf ("%s %3i %3i\n", ch->sfx->name, ch->leftvol, ch->rightvol);
+				//Con_Printf ("%3i %3i %s\n", ch->leftvol, ch->rightvol, ch->sfx->name);
 				total++;
 			}
 		
@@ -1090,6 +1093,14 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/02/20 12:44:58  sezero
+ * - Process all command line options in snd_dma.c, S_Startup() only.
+ *   Targets will do to its bidding first. And don't die immediately,
+ *   try setting alternative hw parameters. (FWIW, snd_oss.c now applies
+ *   all hardware settings before mmaping the buffer)
+ * - Check for requested and set rate mismatches and fail (Found in alsa
+ *   examples, is it necessary at all? Commented out for now.)
+ *
  * Revision 1.14  2005/02/14 15:12:32  sezero
  * added ability to disable ALSA support at compile time
  *
@@ -1126,13 +1137,7 @@ void S_EndPrecaching (void)
  * style changes to our liking
  *
  * Revision 1.3  2004/12/05 10:52:18  sezero
- * Sync with Steven, 2004-12-04 :
- *  Fix the "Old Mission" menu PoP
- *  Also release the windowed mouse on pause
- *  Heapsize is now 32768 default
- *  The final splash screens now centre the messages properly
- *  Add more mods to the video mods table
- *  Add the docs folder and update it
+ * Sync with Steven, 2004-12-04
  *
  * Revision 1.2  2004/12/04 13:36:28  sezero
  * sync with hwclient's snd_dma.c hacks. yeah, not much...

@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Header:
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/snd_dma.c,v 1.14 2005-02-25 14:56:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -704,6 +704,7 @@ void S_StaticSound (sfx_t *sfx, vec3_t origin, float vol, float attenuation)
 	if (total_channels == MAX_CHANNELS)
 	{
 		Con_Printf ("StaticSound: MAX_CHANNELS reached\n");
+	//	Con_Printf (" failed at (%.2f, %.2f, %.2f)\n",origin[0],origin[1],origin[2]);
 		return;
 	}
 
@@ -1090,3 +1091,50 @@ void S_EndPrecaching (void)
 {
 }
 
+/*
+ * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/02/20 12:46:43  sezero
+ * - Process all command line options in snd_dma.c, S_Startup() only.
+ *   Targets will do to its bidding first. And don't die immediately,
+ *   try setting alternative hw parameters. (FWIW, snd_oss.c now applies
+ *   all hardware settings before mmaping the buffer)
+ * - Check for requested and set rate mismatches and fail (Found in alsa
+ *   examples, is it necessary at all? Commented out for now.)
+ *
+ * Revision 1.12  2005/02/14 15:12:52  sezero
+ * added ability to disable ALSA support at compile time
+ *
+ * Revision 1.11  2005/02/11 23:47:15  sezero
+ * paranoid sound driver checks
+ *
+ * Revision 1.10  2005/02/09 14:33:37  sezero
+ * make compiler happy (uninitialized warnings)
+ *
+ * Revision 1.9  2005/02/04 13:40:52  sezero
+ * build all all the sound drivers in and choose from command line
+ *
+ * Revision 1.8  2005/02/04 11:42:10  sezero
+ * kill fakedma (simsound). one less thing to worry about.
+ *
+ * Revision 1.7  2005/02/04 11:33:52  sezero
+ * some snd_dma.c fixes from the tenebrae project
+ *
+ * Revision 1.6  2005/02/04 11:29:38  sezero
+ * make sdl_audio actually work (finally)
+ *
+ * Revision 1.5  2005/02/01 13:38:22  sezero
+ * fix the demos without models with -nosound
+ *
+ * Revision 1.4  2005/01/29 03:31:28  sezero
+ * - initial style-only sound code syncing between h2 and hw
+ * - add #error to midi.c in case somone defines USE_MIDI
+ *
+ * Revision 1.3  2005/01/01 21:50:49  sezero
+ * warnings cleanup: unused stuff
+ *
+ * Revision 1.2  2004/12/05 12:25:58  sezero
+ * Sync with Steven's changes to hexen2, 2004-12-04
+ *
+ * Revision 1.1.1.1  2004/11/28 08:56:46  sezero
+ * Initial import of AoT 1.2.0 code
+ */
