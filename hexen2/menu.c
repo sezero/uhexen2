@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.6 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.7 2004-12-12 14:38:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1923,6 +1923,9 @@ void	M_Menu_Options_f (void)
 	key_dest = key_menu;
 	m_state = m_options;
 	m_entersound = true;
+
+	// better activate mouse to enable configuring the mouse S.A 
+	IN_ActivateMouseSA ();
 
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 		options_cursor = 0;
@@ -4712,6 +4715,9 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.5  2004/12/05 10:52:18  sezero
  * Sync with Steven, 2004-12-04 :
  *  Fix the "Old Mission" menu PoP

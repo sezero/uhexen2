@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.6 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.7 2004-12-12 14:38:18 sezero Exp $
 */
 
 #include "SDL.h"
@@ -257,6 +257,15 @@ IN_StartupMouse
 */
 void IN_StartupMouse (void)
 {
+	// S.A. mega hack to implement nomouse
+	// Dan just left several command line options broken,
+	// there's probably a better way to fix this, but where ?
+	// if -nomouse::return, userdir::config.cfg::_windowed_mouse=1, and !%$#
+
+	if ( COM_CheckParm ("-nomouse") )  {
+		Cbuf_InsertText ("_windowed_mouse 0");
+	}
+
 	// Should be a NOP in Linux, with this exception - DDOI
 	mouseinitialized = true;
 	mouse_buttons = 3;
@@ -1244,6 +1253,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.5  2004/12/05 11:00:37  sezero
  * added wheelmouse support.
  *

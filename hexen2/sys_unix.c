@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.6 2004-12-12 14:14:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.7 2004-12-12 14:38:18 sezero Exp $
 */
 
 #include <stdio.h>
@@ -834,6 +834,7 @@ void PrintHelp(char *name)
 	printf ("     [-w | --windowed]               Run the game windowed\n");
 	printf ("     [-s | --nosound]                Run the game without sound\n");
 	printf ("     [-g | --gllibrary]              Select 3D rendering library\n");
+	printf ("     [-nomouse]                      Disable mouse in window mode\n");
 	printf ("     [-width Width [-height Height]] Select screen size\n");
 	printf ("     [-bpp]                          Depth for GL fullscreen mode\n");
 	printf ("     [-heapsize Bytes]               Heapsize\n");
@@ -982,6 +983,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2004/12/12 14:14:43  sezero
+ * style changes to our liking
+ *
  * Revision 1.5  2004/12/05 10:52:18  sezero
  * Sync with Steven, 2004-12-04 :
  *  Fix the "Old Mission" menu PoP
