@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.14 2004-12-18 13:30:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.15 2004-12-18 13:46:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2285,13 +2285,13 @@ void M_Options_Key (int k)
 	// Redundancy here in case we have neither OPT_VIDEO and OPT_USEMOUSE
 	// Skip over the use mouse option if fullscreen - S.A.
 
-	if (options_cursor == OPT_VIDEO && vid_menudrawfn == NULL)
+	if (options_cursor == OPT_VIDEO && vid_menudrawfn == NULL) {
 		if (k == K_UPARROW)
 			options_cursor = OPT_VIDEO - 1;
 		else
 			options_cursor = 0;
-
-	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
+	}
+	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED)) {
 		if (k == K_UPARROW)
 			options_cursor = OPT_USEMOUSE - 1;
 		else {
@@ -2299,13 +2299,13 @@ void M_Options_Key (int k)
 			if (options_cursor == OPTIONS_ITEMS)
 				options_cursor = 0;
 		}
-	
-	if (options_cursor == OPT_VIDEO && vid_menudrawfn == NULL)
+	}
+	if (options_cursor == OPT_VIDEO && vid_menudrawfn == NULL) {
 		if (k == K_UPARROW)
 			options_cursor = OPT_VIDEO - 1;
 		else
 			options_cursor = 0;
-
+	}
 }
 
 //=============================================================================
@@ -3377,17 +3377,19 @@ forward:
 		}
 	}
 
-	if (DirectConfig && (serialConfig_cursor == 3 || serialConfig_cursor == 4))
+	if (DirectConfig && (serialConfig_cursor == 3 ||
+			     serialConfig_cursor == 4)) {
 		if (key == K_UPARROW)
 			serialConfig_cursor = 2;
 		else
 			serialConfig_cursor = 5;
-
-	if (SerialConfig && StartingGame && serialConfig_cursor == 4)
+	}
+	if (SerialConfig && StartingGame && serialConfig_cursor == 4) {
 		if (key == K_UPARROW)
 			serialConfig_cursor = 3;
 		else
 			serialConfig_cursor = 5;
+	}
 }
 
 //=============================================================================
@@ -3788,12 +3790,12 @@ void M_LanConfig_Key (int key)
 		}
 	}
 
-	if (StartingGame && lanConfig_cursor == 2)
+	if (StartingGame && lanConfig_cursor == 2) {
 		if (key == K_UPARROW)
 			lanConfig_cursor = 1;
 		else
 			lanConfig_cursor = 0;
-
+	}
 	l =  atoi(lanConfig_portname);
 	if (l > 65535)
 		l = lanConfig_port;
@@ -4761,6 +4763,11 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2004/12/18 13:30:50  sezero
+ * Hack to prevent textures going awol and some info-plaques start looking
+ * white upon succesive load games. The solution is not beautiful but seems
+ * to work for now. Adapted from Pa3PyX sources.
+ *
  * Revision 1.13  2004/12/18 13:20:37  sezero
  * make the music automatically restart when changed in the options menu
  *

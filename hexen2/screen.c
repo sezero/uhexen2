@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.5 2004-12-12 14:25:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.6 2004-12-18 13:46:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -249,11 +249,12 @@ qboolean SCR_CheckDrawCenterString2 (void)
 
 void SCR_CheckDrawCenterString (void)
 {
-	if (SCR_CheckDrawCenterString2())
+	if (SCR_CheckDrawCenterString2()) {
 		if(intro_playing)
 			Bottom_Plaque_Draw(scr_centerstring);
 		else
 			SCR_DrawCenterString ();
+	}
 }
 
 //=============================================================================
@@ -1461,6 +1462,9 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/12/12 14:25:18  sezero
+ * add and fix some comments
+ *
  * Revision 1.4  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *
