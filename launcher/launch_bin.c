@@ -31,16 +31,16 @@ extern int destiny;
 pid_t pid=0;
 char *h2_binary_names[]={
 
-  "glh2mp.dynamic",   /* OpenGL and Mission Pack */    /* 0 */
-  "glhexen2.dynamic", /* GL and no MP */               /* 1 */
-  "h2mp.dynamic",     /* software and MP */            /* 2 */
-  "hexen2.dynamic"    /* software and no MP */         /* 3 */
+  "glh2mp",	/* OpenGL and Mission Pack */	/* 0 */
+  "glhexen2",	/* GL and no MP */		/* 1 */
+  "h2mp",	/* software and MP */		/* 2 */
+  "hexen2"	/* software and no MP */	/* 3 */
 };
 
 char *hw_binary_names[]={
 
-  "hwcl",	/* Software */  /* 0 */
-  "glhwcl"	/* OpenGL */    /* 1 */
+  "hwcl",	/* Software */	/* 0 */
+  "glhwcl"	/* OpenGL */	/* 1 */
 };
 
 /* [with or without OpenGL][with or without MP] */
