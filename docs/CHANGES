@@ -1,6 +1,19 @@
 ChangeLog:
 
-2005-02-05 (CVS):
+2005-02-08 (CVS):
+    * video modes clean-up:
+      - removed cvar _vid_default_mode_win
+      - removed all mode descriptions
+      - removed all nummodes and VID_NumModes stuff
+      - removed all VID_GetXXX and VID_DescXXX stuff
+      - beautified the Video Modes menu screen a little
+      - removed firstupdate things (VID_Update() in vid_sdl.c)
+    * tiny whitespace cleanup in in_sdl.c
+    * draw alpha console background in Hexen2 (Draw_AlphaPic() from HW)
+    * if0-out fxPalTexImage2D (we don't use it)
+    * display the "meshing XXX" spam for developers only
+
+2005-02-06 (CVS):
     * first sketchy update to the README files regarding
       the recent sound changes
     * move cd_win.c and resource.h to ./win_stuff/
