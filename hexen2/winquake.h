@@ -2,10 +2,13 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/winquake.h,v 1.3 2004-12-12 14:14:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/winquake.h,v 1.4 2004-12-18 13:44:12 sezero Exp $
 */
 
+#if defined _WIN32
+// This is ignored on GNU
 #pragma warning( disable : 4229 )  // mgraph gets this
+#endif
 
 #ifndef PLATFORM_UNIX
 #include <windows.h>
@@ -112,6 +115,9 @@ int (PASCAL FAR *pgetsockname)(SOCKET s, struct sockaddr FAR *name,
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/12 14:14:43  sezero
+ * style changes to our liking
+ *
  * Revision 1.2  2004/12/04 19:51:43  sezero
  * Kill more warnings (add a forward declaration of
  * struct sockaddr in winquake.h)
