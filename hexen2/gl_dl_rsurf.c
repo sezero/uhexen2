@@ -13,9 +13,9 @@ int		lightmap_bytes;		// 1, 2, or 4
 
 int		lightmap_textures;
 
-unsigned		blocklights[18*18];
+unsigned	blocklights[18*18];
 
-#define	BLOCK_WIDTH		128
+#define	BLOCK_WIDTH	128
 #define	BLOCK_HEIGHT	128
 
 #define	MAX_LIGHTMAPS	64
@@ -24,7 +24,7 @@ int			active_lightmaps;
 glpoly_t	*lightmap_polys[MAX_LIGHTMAPS];
 qboolean	lightmap_modified[MAX_LIGHTMAPS];
 
-int			allocated[MAX_LIGHTMAPS][BLOCK_WIDTH];
+int		allocated[MAX_LIGHTMAPS][BLOCK_WIDTH];
 
 // the lightmap texture data needs to be kept in
 // main memory so texsubimage can update properly

@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.8 2004-12-18 14:08:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.9 2004-12-18 14:20:40 sezero Exp $
 */
 
 #include <stdio.h>
@@ -35,10 +35,10 @@
 
 #define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error running
 										//  dedicated before exiting
-#define PAUSE_SLEEP		50				// sleep time on pause or minimization
-#define NOT_FOCUS_SLEEP	20				// sleep time when not focus
+#define PAUSE_SLEEP		50	// sleep time on pause or minimization
+#define NOT_FOCUS_SLEEP		20	// sleep time when not focus
 
-#define MAXPRINTMSG	4096
+#define MAXPRINTMSG		4096
 
 int			starttime;
 qboolean	ActiveApp, Minimized;
@@ -462,7 +462,7 @@ void Sys_Error (char *error, ...)
 	{
 	// switch to windowed so the message box is visible
 		VID_SetDefaultMode ();
-//		MessageBox(NULL, text, "Hexen II Error", MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
+	//	MessageBox(NULL, text, "Hexen II Error", MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 		fprintf(stderr, "ERROR: %s\n", text);
 	}
 
@@ -634,7 +634,7 @@ char *Sys_ConsoleInput (void)
 #warning FIXME Soon - DDOI
 #if 0
 	static char	text[256];
-	static int		len;
+	static int	len;
 	INPUT_RECORD	recs[1024];
 	int		count;
 	int		i, dummy;
@@ -985,6 +985,10 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2004/12/18 14:08:08  sezero
+ * Clean-up and kill warnings 9:
+ * Kill many unused vars.
+ *
  * Revision 1.7  2004/12/12 14:38:18  sezero
  * steven fixed the mouse again ;)
  *

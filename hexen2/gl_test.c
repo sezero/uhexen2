@@ -47,7 +47,7 @@ plane_t	*HitPlane (vec3_t start, vec3_t end)
 
 void Test_Spawn (vec3_t origin)
 {
-	int		i;
+	int	i;
 	puff_t	*p;
 	vec3_t	temp;
 	vec3_t	normal;

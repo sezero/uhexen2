@@ -1,29 +1,29 @@
 /*
 	sbar.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.c,v 1.4 2004-12-18 14:15:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.c,v 1.5 2004-12-18 14:20:40 sezero Exp $
 */
 
 #include "quakedef.h"
 
 // MACROS ------------------------------------------------------------------
 
-#define STAT_MINUS 10 // num frame for '-' stats digit
+#define STAT_MINUS 10			// num frame for '-' stats digit
 
-#define BAR_TOP_HEIGHT				46.0
-#define BAR_BOTTOM_HEIGHT			98.0
-#define BAR_TOTAL_HEIGHT			(BAR_TOP_HEIGHT+BAR_BOTTOM_HEIGHT)
-#define BAR_BUMP_HEIGHT				23.0
+#define BAR_TOP_HEIGHT			46.0
+#define BAR_BOTTOM_HEIGHT		98.0
+#define BAR_TOTAL_HEIGHT		(BAR_TOP_HEIGHT+BAR_BOTTOM_HEIGHT)
+#define BAR_BUMP_HEIGHT			23.0
 #define INVENTORY_DISPLAY_TIME		4
 
-#define RING_FLIGHT					1
-#define RING_WATER					2
-#define RING_REGENERATION			4
-#define RING_TURNING				8
+#define RING_FLIGHT			1
+#define RING_WATER			2
+#define RING_REGENERATION		4
+#define RING_TURNING			8
 
 #define	INV_MAX_CNT			15
 
-#define INV_MAX_ICON		6		// Max number of inventory icons to display at once
+#define INV_MAX_ICON			6	// Max number of inventory icons to display at once
 
 // TYPES -------------------------------------------------------------------
 
@@ -101,7 +101,7 @@ static float ChainPosition = 0;
 static qboolean sb_ShowInfo;
 static qboolean sb_ShowDM;
 
-qboolean inv_flg;					// true - show inventory interface
+qboolean inv_flg;			// true - show inventory interface
 
 static float InventoryHideTime;
 
@@ -487,20 +487,20 @@ static void DrawLowerBar(void)
 	}
 
 	// Backdrop
-	//Sbar_DrawPic(0, 46, Draw_CachePic("gfx/btmbar.lmp"));
+	// Sbar_DrawPic(0, 46, Draw_CachePic("gfx/btmbar.lmp"));
 	Sbar_DrawPic(0, 46, Draw_CachePic("gfx/btmbar1.lmp"));
 	Sbar_DrawPic(160, 46, Draw_CachePic("gfx/btmbar2.lmp"));
 
 	// Game time
-	//minutes = cl.time / 60;
-	//seconds = cl.time - 60*minutes;
-	//tens = seconds / 10;
-	//units = seconds - 10*tens;
-	//sprintf(tempStr, "Time :%3i:%i%i", minutes, tens, units);
-	//Sbar_DrawSmallString(116, 114, tempStr);
+	// minutes = cl.time / 60;
+	// seconds = cl.time - 60*minutes;
+	// tens = seconds / 10;
+	// units = seconds - 10*tens;
+	// sprintf(tempStr, "Time :%3i:%i%i", minutes, tens, units);
+	// Sbar_DrawSmallString(116, 114, tempStr);
 
 	// Map name
-	//Sbar_DrawSmallString(10, 114, cl.levelname);
+	// Sbar_DrawSmallString(10, 114, cl.levelname);
 
 	// Stats
 	Sbar_DrawSmallString(11, 48, ClassNames[playerClass-1]);
@@ -934,9 +934,9 @@ void FindColor (int slot, int *color1, int *color2)
 void Sbar_DeathmatchOverlay(void)
 {
 	qpic_t			*pic;
-	int				i, k, l;
-	int				top, bottom;
-	int				x, y, f;
+	int			i, k, l;
+	int			top, bottom;
+	int			x, y, f;
 	char			num[12];
 	scoreboard_t	*s;
 
@@ -1047,9 +1047,8 @@ void FindName(char *which, char *name)
 
 void Sbar_NormalOverlay(void)
 {
-	qpic_t			*pic;
-	int				i,y,piece;
-	char			Name[40];
+	int	i,y,piece;
+	char	Name[40];
 
 	scr_copyeverything = 1;
 	scr_fullupdate = 0;
@@ -1093,10 +1092,9 @@ void Sbar_NormalOverlay(void)
 
 void Sbar_SmallDeathmatchOverlay(void)
 {
-	qpic_t			*pic;
-	int				i, k, l;
-	int				top, bottom;
-	int				x, y, f;
+	int		i, k, l;
+	int		top, bottom;
+	int		x, y, f;
 	unsigned char	num[12];
 	scoreboard_t	*s;
 

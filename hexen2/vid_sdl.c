@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.7 2004-12-18 14:08:08 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.8 2004-12-18 14:20:40 sezero Exp $
 
    Changed by S.A. 7/11/04
    Options are now:
@@ -34,8 +34,8 @@ SDL_Surface	*screen;
 byte globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
 byte *lastsourcecolormap = NULL;
 
-int			window_center_x, window_center_y, window_x, window_y, window_width, window_height;
-RECT		window_rect;
+int	window_center_x, window_center_y, window_x, window_y, window_width, window_height;
+RECT	window_rect;
 
 extern qboolean grab;
 static qboolean	startwindowed = 0;
@@ -1347,6 +1347,10 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2004/12/18 14:08:08  sezero
+ * Clean-up and kill warnings 9:
+ * Kill many unused vars.
+ *
  * Revision 1.6  2004/12/12 20:01:44  sezero
  * fix another typo so that compilation doesn't bomb-out
  *

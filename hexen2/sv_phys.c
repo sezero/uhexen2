@@ -1,7 +1,7 @@
 /*
 	sv_phys.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.4 2004-12-18 14:08:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.5 2004-12-18 14:20:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -124,8 +124,8 @@ qboolean SV_RunThink (edict_t *ent)
 		
 	if (thinktime < sv.time)
 		thinktime = sv.time;	// don't let things stay in the past.
-								// it is possible to start that way
-								// by a trigger with a local time.
+					// it is possible to start that way
+					// by a trigger with a local time.
 	ent->v.nextthink = 0;
 	pr_global_struct->time = thinktime;
 	pr_global_struct->self = EDICT_TO_PROG(ent);
@@ -2283,6 +2283,10 @@ trace_t SV_Trace_Toss (edict_t *ent, edict_t *ignore)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/18 14:08:08  sezero
+ * Clean-up and kill warnings 9:
+ * Kill many unused vars.
+ *
  * Revision 1.3  2004/12/18 13:57:00  sezero
  * Clean-up and warnings 7:
  * Add comments about RJNET / RJNETa / QUAKE2 / QUAKE2RJ mess.

@@ -7,26 +7,26 @@
 #include "quakedef.h"
 #include "r_local.h"
 #include "d_local.h"	// FIXME: shouldn't be needed (is needed for patch
-						// right now, but that should move)
+			//	  right now, but that should move)
 
 #define LIGHT_MIN	5	// lowest light value we'll allow, to avoid the
-						//  need for inner-loop light clamping
+				// need for inner-loop light clamping
 
 mtriangle_t		*ptriangles;
 affinetridesc_t	r_affinetridesc;
 
 void *		acolormap;	// FIXME: should go away
 
-trivertx_t		*r_apverts;
+trivertx_t	*r_apverts;
 
 // TODO: these probably will go away with optimized rasterization
-newmdl_t			*pmdl;	//JFM: new model fmt
-vec3_t				r_plightvec;
-int					r_ambientlight;
-float				r_shadelight;
-aliashdr_t			*paliashdr;
-finalvert_t			*pfinalverts;
-auxvert_t			*pauxverts;
+newmdl_t		*pmdl;		//JFM: new model fmt
+vec3_t			r_plightvec;
+int			r_ambientlight;
+float			r_shadelight;
+aliashdr_t		*paliashdr;
+finalvert_t		*pfinalverts;
+auxvert_t		*pauxverts;
 static float		ziscale;
 static model_t		*pmodel;
 
@@ -34,8 +34,8 @@ static vec3_t		alias_forward, alias_right, alias_up;
 
 static maliasskindesc_t	*pskindesc;
 
-int				r_amodels_drawn;
-int				r_anumverts;
+int	r_amodels_drawn;
+int	r_anumverts;
 
 float	aliastransform[3][4];
 
@@ -72,15 +72,15 @@ R_AliasCheckBBox
 */
 qboolean R_AliasCheckBBox (void)
 {
-	int					i, flags, frame, numv;
+	int				i, flags, frame, numv;
 	aliashdr_t			*pahdr;
 	float				zi, basepts[8][3], v0, v1, frac;
 	finalvert_t			*pv0, *pv1, viewpts[16];
 	auxvert_t			*pa0, *pa1, viewaux[16];
-	maliasframedesc_t	*pframedesc;
+	maliasframedesc_t		*pframedesc;
 	qboolean			zclipped, zfullyclipped;
 	unsigned			anyclip, allclip;
-	int					minz;
+	int				minz;
 	
 // expand, rotate, and translate points into worldspace
 

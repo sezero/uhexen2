@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.8 2004-12-18 14:15:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.9 2004-12-18 14:20:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1485,9 +1485,9 @@ GL_Upload8
 */
 void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode)
 {
-	int			i, s;
+	int		i, s;
 	qboolean	noalpha;
-	int			p;
+	int		p;
 
 	s = width*height;
 	// if there are no transparent pixels, make it a 3 component
@@ -1771,6 +1771,11 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2004/12/18 14:15:34  sezero
+ * Clean-up and kill warnings 10:
+ * Remove some already commented-out functions and code fragments.
+ * They seem to be of no-future use. Also remove some unused functions.
+ *
  * Revision 1.7  2004/12/18 14:11:53  sezero
  * Clean-up and kill warnings 9a:
  * More unused vars...

@@ -3,7 +3,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_screen.c,v 1.6 2004-12-18 14:08:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_screen.c,v 1.7 2004-12-18 14:20:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -103,7 +103,6 @@ float		scr_disabled_time;
 static qboolean scr_needfull = false;
 
 int			total_loading_size, current_loading_size, loading_stage;
-
 
 void SCR_ScreenShot_f (void);
 void Plaque_Draw (char *message, qboolean AlwaysDraw);
@@ -299,15 +298,12 @@ static void SCR_CalcRefdef (void)
 	float		size;
 	int		h;
 
-
 	scr_fullupdate = 0;		// force a background redraw
 	vid.recalc_refdef = 0;
 
 // force the status bar to redraw
 	SB_Changed();
 
-//========================================
-	
 // bound viewsize
 	if (scr_viewsize.value < 30)
 		Cvar_Set ("viewsize","30");
@@ -615,13 +611,13 @@ void SCR_SetUpToDrawConsole (void)
 
 	if (con_forcedup)
 	{
-		scr_conlines = vid.height;		// full screen
+		scr_conlines = vid.height;	// full screen
 		scr_con_current = scr_conlines;
 	}
 	else if (key_dest == key_console)
 		scr_conlines = vid.height/2;	// half screen
 	else
-		scr_conlines = 0;				// none visible
+		scr_conlines = 0;		// none visible
 	
 	if (scr_conlines < scr_con_current)
 	{
@@ -1283,6 +1279,10 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2004/12/18 14:08:07  sezero
+ * Clean-up and kill warnings 9:
+ * Kill many unused vars.
+ *
  * Revision 1.5  2004/12/12 14:25:18  sezero
  * add and fix some comments
  *

@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.3 2004-12-18 13:30:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.4 2004-12-18 14:20:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -27,13 +27,13 @@ qboolean	host_initialized;		// true if into command execution
 
 double		host_frametime;
 double		host_time;
-double		realtime;				// without any filtering or bounding
+double		realtime;			// without any filtering or bounding
 double		oldrealtime;			// last frame run
-int			host_framecount;
+int		host_framecount;
 
-int			host_hunklevel;
+int		host_hunklevel;
 
-int			minimum_memory;
+int		minimum_memory;
 
 client_t	*host_client;			// current client
 
@@ -1091,6 +1091,11 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/18 13:30:50  sezero
+ * Hack to prevent textures going awol and some info-plaques start looking
+ * white upon succesive load games. The solution is not beautiful but seems
+ * to work for now. Adapted from Pa3PyX sources.
+ *
  * Revision 1.2  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

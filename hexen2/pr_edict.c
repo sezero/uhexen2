@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.5 2004-12-18 14:08:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.6 2004-12-18 14:20:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -14,28 +14,27 @@ ddef_t			*pr_fielddefs;
 ddef_t			*pr_globaldefs;
 dstatement_t	*pr_statements;
 globalvars_t	*pr_global_struct;
-float			*pr_globals;			// same as pr_global_struct
-int				pr_edict_size;	// in bytes
+float		*pr_globals;		// same as pr_global_struct
+int		pr_edict_size;		// in bytes
 
 // For international stuff
 int             *pr_string_index = NULL;
-char			*pr_global_strings = NULL;
-int				pr_string_count = 0;
+char		*pr_global_strings = NULL;
+int		pr_string_count = 0;
 
 int             *pr_info_string_index = NULL;
 #ifdef H2MP
-char			*pr_global_info_strings = NULL;
+char		*pr_global_info_strings = NULL;
 #endif
-int				pr_info_string_count = 0;
+int		pr_info_string_count = 0;
 
-qboolean		ignore_precache = false;
+qboolean	ignore_precache = false;
 
-
-unsigned short		pr_crc;
+unsigned short	pr_crc;
 
 int		type_size[8] = {1,sizeof(string_t)/4,1,3,1,1,sizeof(func_t)/4,sizeof(void *)/4};
 
-ddef_t *ED_FieldAtOfs (int ofs);
+ddef_t		*ED_FieldAtOfs (int ofs);
 qboolean	ED_ParseEpair (void *base, ddef_t *key, char *s);
 
 cvar_t	nomonsters = {"nomonsters", "0"};
@@ -1443,6 +1442,10 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/12/18 14:08:07  sezero
+ * Clean-up and kill warnings 9:
+ * Kill many unused vars.
+ *
  * Revision 1.4  2004/12/12 14:25:18  sezero
  * add and fix some comments
  *

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.h,v 1.3 2004-12-18 13:59:25 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.h,v 1.4 2004-12-18 14:20:40 sezero Exp $
  */
 
 #ifndef __MODEL__
@@ -318,35 +318,35 @@ typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 
 // EF_ changes must also be made in model.h
 
-#define	EF_ROCKET		       1			// leave a trail
-#define	EF_GRENADE		       2			// leave a trail
-#define	EF_GIB			       4			// leave a trail
-#define	EF_ROTATE		       8			// rotate (bonus items)
-#define	EF_TRACER		      16			// green split trail
-#define	EF_ZOMGIB		      32			// small blood trail
-#define	EF_TRACER2			  64			// orange split trail + rotate
-#define	EF_TRACER3			 128			// purple trail
-#define  EF_FIREBALL		 256			// Yellow transparent trail in all directions
-#define  EF_ICE				 512			// Blue-white transparent trail, with gravity
-#define  EF_MIP_MAP			1024			// This model has mip-maps
-#define  EF_SPIT			2048			// Black transparent trail with negative light
-#define  EF_TRANSPARENT		4096			// Transparent sprite
-#define  EF_SPELL           8192			// Vertical spray of particles
-#define  EF_HOLEY		   16384			// Solid model with color 0
-#define  EF_SPECIAL_TRANS  32768			// Translucency through the particle table
-#define  EF_FACE_VIEW	   65536			// Poly Model always faces you
-#define  EF_VORP_MISSILE  131072			// leave a trail at top and bottom of model
-#define  EF_SET_STAFF     262144			// slowly move up and left/right
-#define  EF_MAGICMISSILE  524288            // a trickle of blue/white particles with gravity
-#define  EF_BONESHARD    1048576           // a trickle of brown particles with gravity
-#define  EF_SCARAB       2097152           // white transparent particles with little gravity
-#define  EF_ACIDBALL	 4194304			// Green drippy acid shit
-#define  EF_BLOODSHOT	 8388608			// Blood rain shot trail
+#define	EF_ROCKET	       1	// leave a trail
+#define	EF_GRENADE	       2	// leave a trail
+#define	EF_GIB		       4	// leave a trail
+#define	EF_ROTATE	       8	// rotate (bonus items)
+#define	EF_TRACER	      16	// green split trail
+#define	EF_ZOMGIB	      32	// small blood trail
+#define	EF_TRACER2	      64	// orange split trail + rotate
+#define	EF_TRACER3	     128	// purple trail
+#define	EF_FIREBALL	     256	// Yellow transparent trail in all directions
+#define	EF_ICE		     512	// Blue-white transparent trail, with gravity
+#define	EF_MIP_MAP	    1024	// This model has mip-maps
+#define	EF_SPIT		    2048	// Black transparent trail with negative light
+#define	EF_TRANSPARENT	    4096	// Transparent sprite
+#define	EF_SPELL	    8192	// Vertical spray of particles
+#define	EF_HOLEY	   16384	// Solid model with color 0
+#define	EF_SPECIAL_TRANS   32768	// Translucency through the particle table
+#define	EF_FACE_VIEW	   65536	// Poly Model always faces you
+#define	EF_VORP_MISSILE	  131072	// leave a trail at top and bottom of model
+#define	EF_SET_STAFF	  262144	// slowly move up and left/right
+#define	EF_MAGICMISSILE	  524288	// a trickle of blue/white particles with gravity
+#define	EF_BONESHARD	 1048576	// a trickle of brown particles with gravity
+#define	EF_SCARAB	 2097152	// white transparent particles with little gravity
+#define	EF_ACIDBALL	 4194304	// Green drippy acid shit
+#define	EF_BLOODSHOT	 8388608	// Blood rain shot trail
 
-#define  EF_MIP_MAP_FAR	  0x1000000	// Set per frame, this model will use the far mip map
+#define	EF_MIP_MAP_FAR	0x1000000	// Set per frame, this model will use the far mip map
 
 // XF_ Extra model efects set by engine (efects are model name dependent) 
-#define XF_TORCH_GLOW		  1		// glowing torches
+#define XF_TORCH_GLOW	  1		// glowing torches
 #define XF_GLOW		  2		// other glows
 #define XF_MISSILE_GLOW	  4		// missile glows
 
@@ -377,44 +377,44 @@ typedef struct model_s
 //
 // brush model
 //
-	int			firstmodelsurface, nummodelsurfaces;
+	int		firstmodelsurface, nummodelsurfaces;
 
-	int			numsubmodels;
+	int		numsubmodels;
 	dmodel_t	*submodels;
 
-	int			numplanes;
+	int		numplanes;
 	mplane_t	*planes;
 
-	int			numleafs;		// number of visible leafs, not counting 0
+	int		numleafs;		// number of visible leafs, not counting 0
 	mleaf_t		*leafs;
 
-	int			numvertexes;
+	int		numvertexes;
 	mvertex_t	*vertexes;
 
-	int			numedges;
+	int		numedges;
 	medge_t		*edges;
 
-	int			numnodes;
+	int		numnodes;
 	mnode_t		*nodes;
 
-	int			numtexinfo;
+	int		numtexinfo;
 	mtexinfo_t	*texinfo;
 
-	int			numsurfaces;
+	int		numsurfaces;
 	msurface_t	*surfaces;
 
-	int			numsurfedges;
-	int			*surfedges;
+	int		numsurfedges;
+	int		*surfedges;
 
-	int			numclipnodes;
+	int		numclipnodes;
 	dclipnode_t	*clipnodes;
 
-	int			nummarksurfaces;
+	int		nummarksurfaces;
 	msurface_t	**marksurfaces;
 
 	hull_t		hulls[MAX_MAP_HULLS];
 
-	int			numtextures;
+	int		numtextures;
 	texture_t	**textures;
 
 	byte		*visdata;
@@ -446,6 +446,10 @@ byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/18 13:59:25  sezero
+ * Clean-up and kill warnings 8:
+ * Missing prototypes.
+ *
  * Revision 1.2  2004/11/28 00:37:43  sezero
  * add gl-glow. code borrowed from the js sources
  *

@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.3 2004-12-18 14:20:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -68,16 +68,16 @@ int				d_aspancount, d_countextrastep;
 
 spanpackage_t			*a_spans;
 spanpackage_t			*d_pedgespanpackage;
-static int				ystart;
-byte					*d_pdest, *d_ptex;
-short					*d_pz;
-int						d_sfrac, d_tfrac, d_light, d_zi;
-int						d_ptexextrastep, d_sfracextrastep;
-int						d_tfracextrastep, d_lightextrastep, d_pdestextrastep;
-int						d_lightbasestep, d_pdestbasestep, d_ptexbasestep;
-int						d_sfracbasestep, d_tfracbasestep;
-int						d_ziextrastep, d_zibasestep;
-int						d_pzextrastep, d_pzbasestep;
+static int			ystart;
+byte				*d_pdest, *d_ptex;
+short				*d_pz;
+int				d_sfrac, d_tfrac, d_light, d_zi;
+int				d_ptexextrastep, d_sfracextrastep;
+int				d_tfracextrastep, d_lightextrastep, d_pdestextrastep;
+int				d_lightbasestep, d_pdestbasestep, d_ptexbasestep;
+int				d_sfracbasestep, d_tfracbasestep;
+int				d_ziextrastep, d_zibasestep;
+int				d_pzextrastep, d_pzbasestep;
 
 typedef struct {
 	int		quotient;
@@ -1146,6 +1146,9 @@ split:
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:02:19  sezero
  * Initial import of AoT 1.2.0 code
  *

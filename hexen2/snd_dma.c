@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.5 2004-12-18 14:08:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.6 2004-12-18 14:20:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -23,11 +23,11 @@ void S_StopAllSoundsC(void);
 // =======================================================================
 
 channel_t   channels[MAX_CHANNELS];
-int			total_channels;
+int		total_channels;
 
-int				snd_blocked = 0;
+int		snd_blocked = 0;
 static qboolean	snd_ambient = 1;
-qboolean		snd_initialized = false;
+qboolean	snd_initialized = false;
 
 // pointer should go away
 volatile dma_t  *shm = 0;
@@ -39,13 +39,13 @@ vec3_t		listener_right;
 vec3_t		listener_up;
 vec_t		sound_nominal_clip_dist=1000.0;
 
-int			soundtime;		// sample PAIRS
-int   		paintedtime; 	// sample PAIRS
+int		soundtime;	// sample PAIRS
+int   		paintedtime;	// sample PAIRS
 
 
 #define	MAX_SFX		512
-sfx_t		*known_sfx;		// hunk allocated [MAX_SFX]
-int			num_sfx;
+sfx_t		*known_sfx;	// hunk allocated [MAX_SFX]
+int		num_sfx;
 
 sfx_t		*ambient_sfx[NUM_AMBIENTS];
 
@@ -1041,6 +1041,10 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/12/18 14:08:08  sezero
+ * Clean-up and kill warnings 9:
+ * Kill many unused vars.
+ *
  * Revision 1.4  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *
