@@ -5,6 +5,10 @@ ChangeLog:
     * initial style-only sound code syncing between h2 and hw
     * sbar fixes from Pa3pyX' sources
     * added missing things to the makefiles
+    * launcher:
+      - fixed fork/execv again (thanks Steve)
+      - fixed args to execv (thanks again Steve)
+      - added an option to not close the gui after launching
     * game hcode:
       - added Raven's Siege hcode
       - added+fixed map cycling code to hexenworld and siege
