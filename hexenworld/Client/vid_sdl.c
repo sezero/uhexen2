@@ -1,28 +1,33 @@
 /*
-   vid_sdl.c -- SDL video driver
-
+   vid_sdl.c
+   SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   Changed by S.A. 7/11/04
+   $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.8 2005-02-08 21:22:23 sezero Exp $
+
+   Changed by S.A. 7/11/04, 27/12/04
 
    Options are now:
      -fullscreen | -window, -height , -width 
-   Currently bpp is 8 bit (I think) but I haven't looked much at this.
+   Currently bpp is 8 bit , and it seems fairly hardwired at this depth
    Interactive Video Modes have been disabled.
-   They conflict a little with the command-line options in that:
-     They insist on starting fullscreen.
-     If you remove this insistence, you break the test video mode restore.
-   Might fix them one day, but this file is such a mess.
 
-   The modes which are used are :
-	MODE_WINDOWED  0, MODE_FULLSCREEN_DEFAULT 3
+   The modes which are used are the traditional 0 and 3, but have redefined
+   MODE_FULLSCREEN_DEFAULT from 3 to 1 to be a boolean:
+
+	vid_mode = MODE_WINDOWED  0 || MODE_FULLSCREEN_DEFAULT 1
+
    For clarity I have removed the variable "windowed_default" and replaced
    it with MODE_WINDOWED. Functionality is the same.
-*/
 
-/*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.7 2005-02-06 15:03:15 sezero Exp $
- */
+   Changed by O.S 8/02/05
+   - Removed cvar _vid_default_mode_win
+   - Removed all mode descriptions
+   - Removed all nummodes and VID_NumModes stuff
+   - Removed all VID_GetXXX and VID_DescXXX stuff
+   - Removed firstupdate things (VID_Update() cleanup)
+
+*/
 
 #include "quakedef.h"
 #include "winquake.h"
@@ -36,12 +41,11 @@ SDL_Surface	*screen;
 byte globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
 byte *lastsourcecolormap = NULL;
 
-int			window_center_x, window_center_y, window_x, window_y, window_width, window_height;
-RECT		window_rect;
+int	window_center_x, window_center_y, window_x, window_y, window_width, window_height;
+RECT	window_rect;
 
 extern qboolean grab;
 static qboolean	startwindowed = 0;
-static int		firstupdate = 1;
 static qboolean	vid_initialized = false, vid_palettized = true;
 static int	lockcount;
 qboolean	in_mode_set, is_mode0x13;
@@ -50,17 +54,16 @@ static qboolean	palette_changed;
 
 viddef_t	vid;				// global video state
 
-#define MODE_WINDOWED			0
+#define MODE_WINDOWED		0
 #define MODE_SETTABLE_WINDOW	2
-#define NO_MODE					(MODE_WINDOWED - 1)
-#define MODE_FULLSCREEN_DEFAULT	(MODE_WINDOWED + 3)
+#define NO_MODE			(MODE_WINDOWED - 1)
+#define MODE_FULLSCREEN_DEFAULT	(MODE_WINDOWED + 1)
 
 // Note that 0 is MODE_WINDOWED
 cvar_t		vid_mode = {"vid_mode","0", false};
 // Note that 0 is MODE_WINDOWED
+// Note that 1 is MODE_FULLSCREEN_DEFAULT
 cvar_t		_vid_default_mode = {"_vid_default_mode","0", true};
-// Note that 3 is MODE_FULLSCREEN_DEFAULT
-cvar_t		_vid_default_mode_win = {"_vid_default_mode_win","3", true};
 cvar_t		vid_wait = {"vid_wait","0"};
 cvar_t		vid_nopageflip = {"vid_nopageflip","0", true};
 cvar_t		_vid_wait_override = {"_vid_wait_override", "0", true};
@@ -116,13 +119,10 @@ typedef struct {
 } vmode_t;
 
 static vmode_t	modelist[MAX_MODE_LIST];
-static int		nummodes;
 
 int		aPage;					// Current active display page
 int		vPage;					// Current visible display page
 int		waitVRT = true;			// True to wait for retrace on flip
-
-static vmode_t	badmode;
 
 static byte	backingbuf[48*24];
 
@@ -241,32 +241,6 @@ qboolean VID_AllocBuffers (int width, int height)
 
 /*
 =================
-VID_NumModes
-=================
-*/
-int VID_NumModes (void)
-{
-	return nummodes;
-}
-
-	
-/*
-=================
-VID_GetModePtr
-=================
-*/
-vmode_t *VID_GetModePtr (int modenum)
-{
-
-	if ((modenum >= 0) && (modenum < nummodes))
-		return &modelist[modenum];
-	else
-		return &badmode;
-}
-
-
-/*
-=================
 VID_CheckModedescFixup
 =================
 */
@@ -293,122 +267,6 @@ void VID_CheckModedescFixup (int mode)
 	}
 }
 
-
-/*
-=================
-VID_GetModeDescriptionMemCheck
-=================
-*/
-char *VID_GetModeDescriptionMemCheck (int mode)
-{
-	char		*pinfo;
-	vmode_t		*pv;
-
-	if ((mode < 0) || (mode >= nummodes))
-		return NULL;
-
-	VID_CheckModedescFixup (mode);
-
-	pv = VID_GetModePtr (mode);
-	pinfo = pv->modedesc;
-
-	if (VID_CheckAdequateMem (pv->width, pv->height))
-	{
-		return pinfo;
-	}
-	else
-	{
-		return NULL;
-	}
-}
-
-
-/*
-=================
-VID_GetModeDescription
-=================
-*/
-char *VID_GetModeDescription (int mode)
-{
-	char		*pinfo;
-	vmode_t		*pv;
-
-	if ((mode < 0) || (mode >= nummodes))
-		return NULL;
-
-	VID_CheckModedescFixup (mode);
-
-	pv = VID_GetModePtr (mode);
-	pinfo = pv->modedesc;
-	return pinfo;
-}
-
-
-/*
-=================
-VID_GetModeDescription2
-
-Tacks on "windowed" or "fullscreen"
-=================
-*/
-char *VID_GetModeDescription2 (int mode)
-{
-	static char	pinfo[40];
-	vmode_t		*pv;
-
-	if ((mode < 0) || (mode >= nummodes))
-		return NULL;
-
-	VID_CheckModedescFixup (mode);
-
-	pv = VID_GetModePtr (mode);
-
-	if (modelist[mode].type == MS_FULLSCREEN)
-	{
-		sprintf(pinfo,"%s fullscreen", pv->modedesc);
-	}
-	else if (modelist[mode].type == MS_FULLDIB)
-	{
-		sprintf(pinfo,"%s fullscreen", pv->modedesc);
-	}
-	else
-	{
-		sprintf(pinfo, "%s windowed", pv->modedesc);
-	}
-
-	return pinfo;
-}
-
-
-// KJB: Added this to return the mode driver name in description for console
-
-char *VID_GetExtModeDescription (int mode)
-{
-	static char	pinfo[40];
-	vmode_t		*pv;
-
-	if ((mode < 0) || (mode >= nummodes))
-		return NULL;
-
-	VID_CheckModedescFixup (mode);
-
-	pv = VID_GetModePtr (mode);
-	if (modelist[mode].type == MS_FULLSCREEN)
-	{
-		sprintf(pinfo,"%s fullscreen",pv->modedesc);
-		sprintf(pinfo,"%s fullscreen",pv->modedesc);
-	}
-	else if (modelist[mode].type == MS_FULLDIB)
-	{
-		sprintf(pinfo,"%s fullscreen DIB", pv->modedesc);
-	}
-	else
-	{
-		sprintf(pinfo, "%s windowed", pv->modedesc);
-	}
-
-	return pinfo;
-}
 
 qboolean VID_SetWindowedMode (int modenum)
 {
@@ -599,9 +457,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	ClearAllStates();
 
-	if (!msg_suppress_1)
-		Con_SafePrintf ("%s\n", VID_GetModeDescription (vid_modenum));
-
 	VID_SetPalette (palette);
 
 	SDL_WM_SetCaption("HexenII", "HEXEN2");
@@ -713,90 +568,9 @@ void	VID_ShiftPalette (unsigned char *palette)
 }
 
 
-/*
-=================
-VID_DescribeCurrentMode_f
-=================
-*/
-void VID_DescribeCurrentMode_f (void)
-{
-	Con_Printf ("%s\n", VID_GetExtModeDescription (vid_modenum));
-}
-
-
-/*
-=================
-VID_NumModes_f
-=================
-*/
-void VID_NumModes_f (void)
-{
-
-	if (nummodes == 1)
-		Con_Printf ("%d video mode is available\n", nummodes);
-	else
-		Con_Printf ("%d video modes are available\n", nummodes);
-}
-
-
-/*
-=================
-VID_DescribeMode_f
-=================
-*/
-void VID_DescribeMode_f (void)
-{
-	int		modenum;
-	
-	modenum = atoi (Cmd_Argv(1));
-
-	Con_Printf ("%s\n", VID_GetExtModeDescription (modenum));
-}
-
-
-/*
-=================
-VID_DescribeModes_f
-=================
-*/
-void VID_DescribeModes_f (void)
-{
-	int			i, lnummodes;
-	char		*pinfo;
-	qboolean	na;
-	vmode_t		*pv;
-
-	na = false;
-
-	lnummodes = VID_NumModes ();
-
-	for (i=0 ; i<lnummodes ; i++)
-	{
-		pv = VID_GetModePtr (i);
-		pinfo = VID_GetExtModeDescription (i);
-
-		if (VID_CheckAdequateMem (pv->width, pv->height))
-		{
-			Con_Printf ("%2d: %s\n", i, pinfo);
-		}
-		else
-		{
-			Con_Printf ("**: %s\n", pinfo);
-			na = true;
-		}
-	}
-
-	if (na)
-	{
-		Con_Printf ("\n[**: not enough system RAM for mode]\n");
-	}
-}
-
-
 void	VID_Init (unsigned char *palette)
 {
 	int		i, bestmatch, bestmatchmetric, t, dr, dg, db;
-	int		basenummodes;
 	int		width,height;
 	byte	*ptmp;
 
@@ -808,84 +582,43 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&vid_nopageflip);
 	Cvar_RegisterVariable (&_vid_wait_override);
 	Cvar_RegisterVariable (&_vid_default_mode);
-	Cvar_RegisterVariable (&_vid_default_mode_win);
 	Cvar_RegisterVariable (&vid_config_x);
 	Cvar_RegisterVariable (&vid_config_y);
 	Cvar_RegisterVariable (&vid_stretch_by_2);
 	Cvar_RegisterVariable (&_windowed_mouse);
 	Cvar_RegisterVariable (&vid_showload);
 
-	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
-	Cmd_AddCommand ("vid_describecurrentmode", VID_DescribeCurrentMode_f);
-	Cmd_AddCommand ("vid_describemode", VID_DescribeMode_f);
-	Cmd_AddCommand ("vid_describemodes", VID_DescribeModes_f);
 	Cmd_AddCommand ("vid_setgamma", VID_SetGamma_f);
 
-        modelist[0].type = MS_WINDOWED;
-        modelist[0].width = 320;
-        modelist[0].height = 240;
-        strcpy (modelist[0].modedesc, "320x240");
-        modelist[0].mode13 = 0;
-        modelist[0].modenum = MODE_WINDOWED;
-        modelist[0].stretched = 0;
-        modelist[0].dib = 1;
-        modelist[0].fullscreen = 0;
-        modelist[0].halfscreen = 0;
-        modelist[0].bpp = 8;
+	modelist[0].type = MS_WINDOWED;
+	modelist[0].width = 320;
+	modelist[0].height = 240;
+	strcpy (modelist[0].modedesc, "320x240");
+	modelist[0].mode13 = 0;
+	modelist[0].modenum = MODE_WINDOWED;
+	modelist[0].stretched = 0;
+	modelist[0].dib = 1;
+	modelist[0].fullscreen = 0;
+	modelist[0].halfscreen = 0;
+	modelist[0].bpp = 8;
 
-        modelist[1].type = MS_WINDOWED;
-        modelist[1].width = 640;
-        modelist[1].height = 480;
-        strcpy (modelist[1].modedesc, "640x480");
-        modelist[1].mode13 = 0;
-        modelist[1].modenum = MODE_WINDOWED + 1;
-        modelist[1].stretched = 0;
-        modelist[1].dib = 1;
-        modelist[1].fullscreen = 0;
-        modelist[1].halfscreen = 0;
-        modelist[1].bpp = 8;
+	// mode[1] has been hacked to be like the (missing) mode[3] S.A.
 
-        modelist[2].type = MS_WINDOWED;
-        modelist[2].width = 800;
-        modelist[2].height = 600;
-        strcpy (modelist[2].modedesc, "800x600");
-        modelist[2].mode13 = 0;
-        modelist[2].modenum = MODE_WINDOWED + 2;
-        modelist[2].stretched = 0;
-        modelist[2].dib = 1;
-        modelist[2].fullscreen = 0;
-        modelist[2].halfscreen = 0;
-        modelist[2].bpp = 8;
+	modelist[1].type = MS_FULLSCREEN;
+	modelist[1].width = 640;
+	modelist[1].height = 480;
+	strcpy (modelist[1].modedesc, "640x480");
+	modelist[1].mode13 = 0;
+	modelist[1].modenum = MODE_FULLSCREEN_DEFAULT;
+	modelist[1].stretched = 1;
+	modelist[1].dib = 1;
+	modelist[1].fullscreen = 1;
+	modelist[1].halfscreen = 0;
+	modelist[1].bpp = 8;
 
-        modelist[3].type = MS_FULLSCREEN;
-        modelist[3].width = 640;
-        modelist[3].height = 480;
-        strcpy (modelist[3].modedesc, "640x480");
-        modelist[3].mode13 = 0;
-        modelist[3].modenum = MODE_WINDOWED + 3;
-        modelist[3].stretched = 1;
-        modelist[3].dib = 1;
-        modelist[3].fullscreen = 1;
-        modelist[3].halfscreen = 0;
-        modelist[3].bpp = 8;
-
-        modelist[4].type = MS_FULLSCREEN;
-        modelist[4].width = 800;
-        modelist[4].height = 600;
-        strcpy (modelist[4].modedesc, "800x600");
-        modelist[4].mode13 = 0;
-        modelist[4].modenum = MODE_WINDOWED + 4;
-        modelist[4].stretched = 1;
-        modelist[4].dib = 1;
-        modelist[4].fullscreen = 0;
-        modelist[4].halfscreen = 0;
-        modelist[4].bpp = 8;
+	// modelist[2-4] removed
 
 	vid_default = MODE_WINDOWED;
-
-	nummodes = 5;
-
-	basenummodes = nummodes;
 
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
@@ -926,7 +659,7 @@ void	VID_Init (unsigned char *palette)
  	 * command line processing (S.A) *
  	 *********************************/
 
-	grab = 1; // grab window, but we release it when main menu is drawn
+	grab = 1; // grab window, release it when main menu is drawn
 
 	startwindowed = 1; // default is windowed
 	vid_default = MODE_WINDOWED;
@@ -938,25 +671,25 @@ void	VID_Init (unsigned char *palette)
 		vid_default = MODE_FULLSCREEN_DEFAULT;
 	}
 
-        if (COM_CheckParm("-width"))
-        {
-                width = atoi(com_argv[COM_CheckParm("-width")+1]);
-        }
-        else
-        {
+	if (COM_CheckParm("-width"))
+	{
+		width = atoi(com_argv[COM_CheckParm("-width")+1]);
+	}
+	else
+	{
 		// make the default sizes for software mode smaller
 		if (vid_default == MODE_WINDOWED)
-                        width=400;
-                else
-                        width=512;
-        }
+			width=400;
+		else
+			width=512;
+	}
 
-        if (COM_CheckParm("-height"))
-        {
-                height = atoi(com_argv[COM_CheckParm("-height")+1]);
-        }
-        else
-        {
+	if (COM_CheckParm("-height"))
+	{
+		height = atoi(com_argv[COM_CheckParm("-height")+1]);
+	}
+	else
+	{
 		switch (width) {
 			case 800: height=600; break;
 			case 640: height=480; break;
@@ -964,12 +697,13 @@ void	VID_Init (unsigned char *palette)
 			case 400: height=300; break;
 			case 320: height=240; break;
 			default:  height=300;
-                }
-        }
-        modelist[vid_default].width = width;
-        modelist[vid_default].height = height;
-        sprintf (modelist[vid_default].modedesc,"%dx%d",width,height);
-printf ("SA vid_default = %i\n",vid_default);
+		}
+	}
+	modelist[vid_default].width = width;
+	modelist[vid_default].height = height;
+	sprintf (modelist[vid_default].modedesc,"%dx%d",width,height);
+
+	// printf ("SA vid_default = %i\n",vid_default);
 
 	vid_initialized = true;
 
@@ -983,8 +717,6 @@ printf ("SA vid_default = %i\n",vid_default);
 	// vid_menudrawfn = NULL; S.A
 
 	vid_menukeyfn = VID_MenuKey;
-
-	strcpy (badmode.modedesc, "Bad mode");
 }
 
 
@@ -1040,23 +772,6 @@ void	VID_Update (vrect_t *rects)
 		rects = &rect;
 	}
 
-	if (firstupdate)
-	{
-		if ((_vid_default_mode_win.value != vid_default) &&
-			(!startwindowed || (_vid_default_mode_win.value < MODE_FULLSCREEN_DEFAULT)))
-		{
-			firstupdate = 0;
-
-			if ((_vid_default_mode_win.value < 0) ||
-				(_vid_default_mode_win.value >= nummodes))
-			{
-				Cvar_SetValue ("_vid_default_mode_win", MODE_WINDOWED);
-			}
-
-			// S.A. Cvar_SetValue ("vid_mode", _vid_default_mode_win.value);
-		}
-	}
-
 	// We've drawn the frame; copy it to the screen
 	FlipScreen (rects);
 
@@ -1096,7 +811,7 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 void D_ShowLoadingSize (void)
 {
 	vrect_t		rect;
-	viddef_t	save_vid;				// global video state
+	viddef_t	save_vid;	// global video state
 
 	if (!vid_showload.value)
 		return; 
@@ -1253,23 +968,8 @@ void VID_HandlePause (qboolean pause)
 	}
 }
 
-
-//static int	vid_line, vid_wmodes;
-
-typedef struct
-{
-	int		modenum;
-	char	*desc;
-	int		iscur;
-	int		ismode13;
-	int		width;
-} modedesc_t;
-
 #define MAX_COLUMN_SIZE		5
 #define MODE_AREA_HEIGHT	(MAX_COLUMN_SIZE + 6)
-//#define MAX_MODEDESCS		(MAX_COLUMN_SIZE*3)
-//static modedesc_t	modedescs[MAX_MODEDESCS];
-
 
 /*
 ================
@@ -1279,16 +979,29 @@ VID_MenuDraw
 
 void VID_MenuDraw (void)
 {
-        M_Print (0*8, 4 + MODE_AREA_HEIGHT * 8 + 8*0,
-                         "Select video modes from the command line");
-        M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*2,
-                         "-window");
-        M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*3,
-                         "-fullscreen");
-        M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*5,
-                         "-width  <width>");
-        M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*6,
-                         "-height <height>");
+	M_Print (8*8, 4 + MODE_AREA_HEIGHT * 8 + 8*0,
+			 "Select video modes");
+	M_Print (8*8, 4 + MODE_AREA_HEIGHT * 8 + 8*1,
+			 "from the command line:");
+	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*4,
+			 "-window");
+	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*5,
+			 "-fullscreen");
+	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*6,
+			 "-width  <width>");
+	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*7,
+			 "-height <height>");
+}
+
+void ToggleFullScreenSA ()
+{
+	if (SDL_WM_ToggleFullScreen(screen)==1) {
+
+		Cvar_SetValue ("vid_mode", !vid_mode.value);
+	
+	} else {
+	    Con_Printf ("SDL_WM_ToggleFullScreen failed\n");
+	}
 }
 
 /*
@@ -1315,6 +1028,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/02/06 15:03:15  sezero
+ * move resource.h to ./win_stuff/
+ *
  * Revision 1.6  2005/01/12 11:59:12  sezero
  * remove some commented-out win32-stuff
  *
