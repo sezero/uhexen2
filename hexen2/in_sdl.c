@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.14 2005-01-23 15:17:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.15 2005-02-08 21:10:22 sezero Exp $
 */
 
 #include "SDL.h"
@@ -13,7 +13,6 @@ cvar_t	m_filter = {"m_filter","0"};
 
 int	mouse_buttons;
 int	mouse_oldbuttonstate;
-//POINT		current_pos;
 int	mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
 extern cvar_t		vid_mode, _windowed_mouse;
 #define MODE_FULLSCREEN_DEFAULT 1
@@ -414,17 +413,7 @@ IN_MouseMove
 void IN_MouseMove (usercmd_t *cmd)
 {
 	int		mx, my;
-//	HDC	hdc;
 
-
-//	if (sv_player->v.cameramode)	// Stuck in a different camera, don't move
-//		return;
-
-//	GetCursorPos (&current_pos);
-
-//	mx = current_pos.x - window_center_x + mx_accum;
-//	my = current_pos.y - window_center_y + my_accum;
-	// This replaces these ^^^^ - DDOI
 	SDL_GetRelativeMouseState(&mx,&my);
 
 	mx_accum = 0;
@@ -1059,8 +1048,7 @@ void IN_SendKeyEvents (void)
                                 state = event.key.state;
                                 modstate = SDL_GetModState();
 
-                                switch (key_dest)
-				  {
+				switch (key_dest) {
 				  case key_game: 
 				    if ((event.key.keysym.unicode != 0) || (modstate & KMOD_SHIFT))
 				      {
@@ -1068,7 +1056,7 @@ void IN_SendKeyEvents (void)
 					if ((event.key.keysym.unicode & 0xFF80) == 0 ) 
 					  {
 					    if ( ((event.key.keysym.unicode & 0x7F) == '`') ||((event.key.keysym.unicode & 0x7F) == '~')) 
-					    sym=event.key.keysym.unicode & 0x7F;
+						sym=event.key.keysym.unicode & 0x7F;
 					  }
 
 				      }
@@ -1276,6 +1264,10 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/01/23 15:17:13  sezero
+ * support for mouse buttons 4 and 5 (patch from Julien Langer)
+ * Let's see if this behaves for everybody.
+ *
  * Revision 1.13  2005/01/13 10:46:45  sezero
  * - Fixed mouse behavior which was always broken in hexen2-linux.
  *   Middle-button is MOUSE2, right-button is MOUSE3, not vice versa
