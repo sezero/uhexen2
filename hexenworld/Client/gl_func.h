@@ -4,11 +4,13 @@ typedef void (*glTexParameterf_f)(GLenum,GLenum,GLfloat);
 typedef void (*glTexEnvf_f)(GLenum,GLenum,GLfloat);
 typedef void (*glScalef_f)(GLfloat,GLfloat,GLfloat);
 typedef void (*glTexImage2D_f)(GLenum,GLint,GLint,GLsizei,GLsizei,GLint,GLenum,GLenum,const GLvoid*);
+typedef void (*glTexSubImage2D_f)(GLenum,GLint,GLint,GLint,GLsizei,GLsizei,GLenum,GLenum,const GLvoid *);
 
 typedef void (*glBegin_f)(GLenum);
 typedef void (*glEnd_f)();
 typedef void (*glEnable_f)(GLenum);
 typedef void (*glDisable_f)(GLenum);
+typedef GLboolean (*glIsEnabled_f)(GLenum);
 typedef void (*glFinish_f)(void);
 typedef void (*glClear_f)(GLbitfield);
 
@@ -19,6 +21,7 @@ typedef void (*glTexCoord2f_f)(GLfloat,GLfloat);
 typedef void (*glTexCoord3f_f)(GLfloat,GLfloat,GLfloat);
 typedef void (*glColor4f_f)(GLfloat,GLfloat,GLfloat,GLfloat);
 typedef void (*glColor4fv_f)(const GLfloat *);
+typedef void (*glColor4ub_f)(GLubyte,GLubyte,GLubyte,GLubyte);
 typedef void (*glColor4ubv_f)(const GLubyte *);
 typedef void (*glColor3ubv_f)(const GLubyte *);
 typedef void (*glColor3f_f)(GLfloat,GLfloat,GLfloat);
@@ -67,6 +70,7 @@ typedef struct
   glEnd_f glEnd_fp;
   glEnable_f glEnable_fp;
   glDisable_f glDisable_fp;
+  glIsEnabled_f glIsEnabled_fp;
   glFinish_f glFinish_fp;
   glClear_f glClear_fp;
 
@@ -86,6 +90,7 @@ typedef struct
   glTexCoord3f_f glTexCoord3f_fp;
   glColor4f_f glColor4f_fp;
   glColor4fv_f glColor4fv_fp;
+  glColor4ub_f glColor4ub_fp;
   glColor4ubv_f glColor4ubv_fp;
   glColor3f_f glColor3f_fp;
   glColor3ubv_f glColor3ubv_fp;
@@ -100,6 +105,7 @@ typedef struct
   glTexEnvf_f glTexEnvf_fp;
   glScalef_f glScalef_fp;
   glTexImage2D_f glTexImage2D_fp;
+  glTexSubImage2D_f glTexSubImage2D_fp;
 
   glAlphaFunc_f glAlphaFunc_fp;
   glBlendFunc_f glBlendFunc_fp;

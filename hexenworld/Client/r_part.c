@@ -1534,7 +1534,7 @@ void R_RenderParticle(particle_t *p)
 	//			theAlpha = 255*(8-p->ramp)/8;
 		else
 			theAlpha = 255;
-		glColor4ub (*at, *(at+1), *(at+2), theAlpha);
+		glfunc.glColor4ub_fp (*at, *(at+1), *(at+2), theAlpha);
 	}
 	else
 	{
@@ -1580,7 +1580,7 @@ void R_DrawParticles (void)
 
 #ifdef GLQUAKE
 	GL_Bind(particletexture);
-	alphaTestEnabled = glIsEnabled(GL_ALPHA_TEST);
+	alphaTestEnabled = glfunc.glIsEnabled_fp(GL_ALPHA_TEST);
 	
 	if (alphaTestEnabled)
 		glfunc.glDisable_fp(GL_ALPHA_TEST);

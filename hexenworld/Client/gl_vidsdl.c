@@ -491,6 +491,8 @@ void GL_Init_Functions(void)
   if (glfunc.glEnable_fp == 0) {Sys_Error("glEnable not found in GL library");}
   glfunc.glDisable_fp = (glDisable_f) SDL_GL_GetProcAddress("glDisable");
   if (glfunc.glDisable_fp == 0) {Sys_Error("glDisable not found in GL library");}
+  glfunc.glIsEnabled_fp = (glIsEnabled_f) SDL_GL_GetProcAddress("glIsEnabled");
+  if (glfunc.glIsEnabled_fp == 0) {Sys_Error("glIsEnabled not found in GL library");}
   glfunc.glFinish_fp = (glFinish_f) SDL_GL_GetProcAddress("glFinish");
   if (glfunc.glFinish_fp == 0) {Sys_Error("glFinish not found in GL library");}
   glfunc.glClear_fp = (glClear_f) SDL_GL_GetProcAddress("glClear");
@@ -527,8 +529,10 @@ void GL_Init_Functions(void)
   if (glfunc.glColor4f_fp == 0) {Sys_Error("glColor4f not found in GL library");}
   glfunc.glColor4fv_fp = (glColor4fv_f) SDL_GL_GetProcAddress("glColor4fv");
   if (glfunc.glColor4fv_fp == 0) {Sys_Error("glColor4fv not found in GL library");}
+  glfunc.glColor4ub_fp = (glColor4ub_f) SDL_GL_GetProcAddress("glColor4ub");
+  if (glfunc.glColor4ub_fp == 0) {Sys_Error("glColor4ub not found in GL library");}
   glfunc.glColor4ubv_fp = (glColor4ubv_f) SDL_GL_GetProcAddress("glColor4ubv");
-  if (glfunc.glFrustum_fp == 0) {Sys_Error("glColor4ubv not found in GL library");}
+  if (glfunc.glColor4ubv_fp == 0) {Sys_Error("glColor4ubv not found in GL library");}
   glfunc.glColor3f_fp = (glColor3f_f) SDL_GL_GetProcAddress("glColor3f");
   if (glfunc.glColor3f_fp == 0) {Sys_Error("glColor3f not found in GL library");}
   glfunc.glColor3ubv_fp = (glColor3ubv_f) SDL_GL_GetProcAddress("glColor3ubv");
@@ -553,6 +557,8 @@ void GL_Init_Functions(void)
   if (glfunc.glScalef_fp == 0) {Sys_Error("glScalef not found in GL library");}
   glfunc.glTexImage2D_fp = (glTexImage2D_f) SDL_GL_GetProcAddress("glTexImage2D");
   if (glfunc.glTexImage2D_fp == 0) {Sys_Error("glTexImage2D not found in GL library");}
+  glfunc.glTexSubImage2D_fp = (glTexSubImage2D_f) SDL_GL_GetProcAddress("glTexSubImage2D");
+  if (glfunc.glTexSubImage2D_fp == 0) {Sys_Error("glTexSubImage2D not found in GL library");}
 
   glfunc.glAlphaFunc_fp = (glAlphaFunc_f) SDL_GL_GetProcAddress("glAlphaFunc");
   if (glfunc.glAlphaFunc_fp == 0) {Sys_Error("glAlphaFunc not found in GL library");}

@@ -312,7 +312,7 @@ void R_DrawSequentialPoly (msurface_t *s)
 			{
 				lightmap_modified[i] = false;
 				theRect = &lightmap_rectchange[i];
-				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, theRect->t, 
+				glfunc.glTexSubImage2D_fp(GL_TEXTURE_2D, 0, 0, theRect->t, 
 					BLOCK_WIDTH, theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
 					lightmaps+(i* BLOCK_HEIGHT + theRect->t) *BLOCK_WIDTH*lightmap_bytes);
 				theRect->l = BLOCK_WIDTH;
@@ -462,7 +462,7 @@ void R_DrawSequentialPoly (msurface_t *s)
 		{
 			lightmap_modified[i] = false;
 			theRect = &lightmap_rectchange[i];
-			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, theRect->t, 
+			glfunc.glTexSubImage2D_fp(GL_TEXTURE_2D, 0, 0, theRect->t, 
 				BLOCK_WIDTH, theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
 				lightmaps+(i* BLOCK_HEIGHT + theRect->t) *BLOCK_WIDTH*lightmap_bytes);
 			theRect->l = BLOCK_WIDTH;
@@ -618,7 +618,7 @@ void R_BlendLightmaps (qboolean Translucent)
 //			glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, lightmap_bytes
 //				, BLOCK_WIDTH, theRect->h, 0, 
 //				gl_lightmap_format, GL_UNSIGNED_BYTE, lightmaps+(i*BLOCK_HEIGHT+theRect->t)*BLOCK_WIDTH*lightmap_bytes);
-			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, theRect->t, 
+			glfunc.glTexSubImage2D_fp(GL_TEXTURE_2D, 0, 0, theRect->t, 
 				BLOCK_WIDTH, theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
 				lightmaps+(i* BLOCK_HEIGHT + theRect->t) *BLOCK_WIDTH*lightmap_bytes);
 			theRect->l = BLOCK_WIDTH;
