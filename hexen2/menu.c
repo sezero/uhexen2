@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.20 2004-12-21 17:53:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.21 2004-12-28 17:38:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -4463,10 +4463,13 @@ void M_Init (void)
 #ifdef H2MP
 	Cvar_RegisterVariable (&m_oldmission);
 	Cvar_RegisterVariable (&m_demoness);
-/*	if (COM_CheckParm("-witholdmission") ||
+	if (COM_CheckParm("-witholdmission") ||
 	    COM_CheckParm("--witholdmission"))
 			Cvar_SetValue ("m_oldmission", 1);
-	if (COM_CheckParm("-withdemoness") ||
+//	Honor the option passed by our Launcher
+	if (COM_CheckParm("-noold"))
+			Cvar_SetValue ("m_oldmission", 0);
+/*	if (COM_CheckParm("-withdemoness") ||
 	    COM_CheckParm("--withdemoness"))
 			Cvar_SetValue ("m_demoness", 1);
 */
@@ -4730,6 +4733,9 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2004/12/21 17:53:09  sezero
+ * fix the GL_GLOWS entry once again...
+ *
  * Revision 1.19  2004/12/21 16:15:58  sezero
  * - Do the right thing about the not-yet-enabled (not-to-be-enabled)
  *   --witholdmission and --withdemoness cmdline args.
