@@ -287,6 +287,9 @@ void CL_RequestNextDownload (void)
 	case dl_sound:
 		Sound_NextDownload ();
 		break;
+	case dl_none:
+	default:
+		Con_DPrintf("Unknown download type.\n");
 	}
 }
 
