@@ -25,7 +25,11 @@ int mp_support;
 int opengl_support;
 int fullscreen;
 int resolution;
+int midi;
+int cdaudio;
 int sound;
+int mouse;
+int joystick;
 int destiny;
 
 void Sys_mkdir (char *path)
@@ -87,8 +91,12 @@ void fill_default_options()
   mp_support=0;
   opengl_support=1;
   fullscreen=1;
-  resolution=RES_800;
+  resolution=RES_640;
+  midi=1;
+  cdaudio=1;
   sound=1;
+  joystick=0;
+  mouse=1;
 }
 
 int write_config_file()
@@ -102,14 +110,18 @@ int write_config_file()
 
   else {
 
-    fprintf(cfg_file, "# AoT Launcher Options file\n\n");
+    fprintf(cfg_file, "# Linux Hexen2 Launcher Options file\n\n");
     fprintf(cfg_file, "# This file has been automatically generated\n\n");
 
     fprintf(cfg_file, "destiny=%d\n",destiny);
     fprintf(cfg_file, "opengl_support=%d\n",opengl_support);
     fprintf(cfg_file, "fullscreen=%d\n",fullscreen);
     fprintf(cfg_file, "resolution=%d\n",resolution);
+    fprintf(cfg_file, "midi=%d\n",midi);
+    fprintf(cfg_file, "cdaudio=%d\n",cdaudio);
     fprintf(cfg_file, "sound=%d\n",sound);
+    fprintf(cfg_file, "joystick=%d\n",joystick);
+    fprintf(cfg_file, "mouse=%d\n",mouse);
     fprintf(cfg_file, "mp_support=%d\n",mp_support);
 
   }
@@ -164,14 +176,42 @@ int read_config_file()
 	  else if (strstr(buff, "resolution=") == buff)
 	    {
 	      resolution = atoi(buff + 11);
-	      if (resolution < 0 || resolution > 2 )
-		resolution = RES_800;
+	      if (resolution < 0 || resolution > 4 )
+		resolution = RES_640;
 	    }
 	  else if (strstr(buff, "sound=") == buff)
 	    {
 	      sound = atoi(buff + 6);
 	      if (sound < 0 || sound > 1 )
 		sound = 1;
+	    }
+	  else if (strstr(buff, "midi=") == buff)
+	    {
+	      midi = atoi(buff + 5);
+	      if (midi < 0 || midi > 1 )
+		midi = 1;
+	      if (sound == 0)
+	        midi = 0;
+	    }
+	  else if (strstr(buff, "cdaudio=") == buff)
+	    {
+	      cdaudio = atoi(buff + 8);
+	      if (cdaudio < 0 || cdaudio > 1 )
+		sound = 1;
+	      if (sound == 0)
+	        cdaudio = 0;
+	    }
+	  else if (strstr(buff, "joystick=") == buff)
+	    {
+	      joystick = atoi(buff + 9);
+	      if (joystick < 0 || joystick > 1 )
+		joystick = 0;
+	    }
+	  else if (strstr(buff, "mouse=") == buff)
+	    {
+	      mouse = atoi(buff + 6);
+	      if (mouse < 0 || mouse > 1 )
+		mouse = 0;
 	    }
 	  else if (strstr(buff, "mp_support=") == buff)
 	    {

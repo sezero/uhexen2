@@ -6,15 +6,26 @@ on_window1_destroy                     (GtkObject       *object,
                                         gpointer         user_data);
 
 void
-on_Launch_clicked                      (GtkButton       *button,
+on_HEXEN2_button_released              (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_SOUND_button_toggled                (GtkToggleButton *togglebutton,
+on_HW_button_released                  (GtkButton       *button,
                                         gpointer         user_data);
 
 void
 on_MP_button_toggled                   (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_MIDI_button_toggled                 (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_CDAUDIO_button_toggled              (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+void
+on_SOUND_button_toggled                (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
@@ -23,6 +34,10 @@ on_SOFT_button_released                (GtkButton       *button,
 
 void
 on_GL_button_released                  (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_512_button_released                 (GtkButton       *button,
                                         gpointer         user_data);
 
 void
@@ -38,6 +53,10 @@ on_1024_button_released                (GtkButton       *button,
                                         gpointer         user_data);
 
 void
+on_1280_button_released                (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
 on_FS_button_toggled                   (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
@@ -50,9 +69,14 @@ on_SAVE_button_clicked                 (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_HEXEN2_button_released              (GtkButton       *button,
+on_Launch_clicked                      (GtkButton       *button,
+                                        gpointer         user_data);
+
+
+void
+on_MOUS_button_toggled                 (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-on_HW_button_released                  (GtkButton       *button,
+on_JOY_button_toggled                  (GtkToggleButton *togglebutton,
                                         gpointer         user_data);

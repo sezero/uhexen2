@@ -21,16 +21,20 @@ extern int mp_support;
 extern int opengl_support;
 extern int fullscreen;
 extern int resolution;
+extern int midi;
+extern int cdaudio;
 extern int sound;
+extern int joystick;
+extern int mouse;
 extern int destiny;
 
 pid_t pid=0;
 char *h2_binary_names[]={
 
-  "glh2mp",   /* OpenGL and Mission Pack */    /* 0 */
-  "glhexen2", /* GL and no MP */               /* 1 */
-  "h2mp",     /* software and MP */            /* 2 */
-  "hexen2"    /* software and no MP */         /* 3 */
+  "glh2mp.dynamic",   /* OpenGL and Mission Pack */    /* 0 */
+  "glhexen2.dynamic", /* GL and no MP */               /* 1 */
+  "h2mp.dynamic",     /* software and MP */            /* 2 */
+  "hexen2.dynamic"    /* software and no MP */         /* 3 */
 
 };
 
@@ -47,11 +51,13 @@ int table[2][2] = { {3,2},{1,0} };
 
 /* [resolution]
   -width values only. corresponding -height is is the game binary */
-char *gl_resolution_args[]={
+char *resolution_args[]={
 
+  "512",
   "640",
   "800",
-  "1024"
+  "1024",
+  "1280"
 
 };
 
@@ -136,7 +142,7 @@ void launch_hexen2_bin()
 {
   char directory_name[1024];
   char *binary_name;
-  char *args[6];
+  char *args[8];
   int i=0;
 
   if (destiny == DEST_H2)
@@ -159,25 +165,41 @@ void launch_hexen2_bin()
   chdir(directory_name);
 
   args[i]=binary_name; 
+
   i++;
-  
+  if (midi == 0) {
+    args[i]="-nomidi";
+    i++;
+  }
+  if (cdaudio == 0) {
+    args[i]="-nocdaudio";
+    i++;
+  }
   if (sound == 0) {
 //  args[i]="--nosound";
     args[i]="-s";
     i++;
   }
-
 //args[i]="--fullscreen";
   args[i]="-f";
   if (fullscreen == 0)
-//  args[i]="--windowed";
     args[i]="-w";
-  i++;
+//  args[i]="--windowed";
 
-  if (opengl_support) {
-    args[i]="-width";
+  i++;
+  args[i]="-width";
+
+  i++;
+  args[i]=resolution_args[resolution];
+
+  if (joystick == 0) {
     i++;
-    args[i]=gl_resolution_args[resolution];
+    args[i]="-nojoy";
+  }
+
+  if (mouse == 0) {
+    i++;
+    args[i]="-nomouse";
   }
 
 // args[i]=NULL;
@@ -186,7 +208,7 @@ void launch_hexen2_bin()
   printf("base: %s\n",directory_name);
   printf("launching %s\n",binary_name);
   printf("using arguments :\n");
-  for (i=0;i<=6;i++)
+  for (i=0;i<=7;i++)
     printf("%d:  %s\n",i,args[i]);
 
   pid=fork();

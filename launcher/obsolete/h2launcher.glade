@@ -1,0 +1,519 @@
+<?xml version="1.0"?>
+<GTK-Interface>
+
+<project>
+  <name>h2launcher</name>
+  <program_name>h2launcher</program_name>
+  <directory></directory>
+  <source_directory>src</source_directory>
+  <pixmaps_directory>pixmaps</pixmaps_directory>
+  <language>C</language>
+  <gnome_support>False</gnome_support>
+  <gettext_support>True</gettext_support>
+</project>
+
+<widget>
+  <class>GtkWindow</class>
+  <name>window1</name>
+  <signal>
+    <name>destroy</name>
+    <handler>on_window1_destroy</handler>
+    <last_modification_time>Tue, 01 Jan 2002 17:30:49 GMT</last_modification_time>
+  </signal>
+  <title>Hexen II for Linux Launcher</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>True</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>GtkFixed</class>
+    <name>fixed1</name>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>LAUNCH_button</name>
+      <x>224</x>
+      <y>384</y>
+      <width>112</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>on_Launch_clicked</handler>
+	<last_modification_time>Tue, 01 Jan 2002 17:27:23 GMT</last_modification_time>
+      </signal>
+      <label>Launch Hexen2</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>QUIT_button</name>
+      <x>16</x>
+      <y>384</y>
+      <width>54</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>on_QUIT_button_clicked</handler>
+	<last_modification_time>Tue, 01 Jan 2002 23:04:49 GMT</last_modification_time>
+      </signal>
+      <label>Quit</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>SAVE_button</name>
+      <x>104</x>
+      <y>384</y>
+      <width>96</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>on_SAVE_button_clicked</handler>
+	<last_modification_time>Tue, 01 Jan 2002 23:04:56 GMT</last_modification_time>
+      </signal>
+      <label>Save Options</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>MP_button</name>
+      <x>24</x>
+      <y>128</y>
+      <width>288</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>on_MP_button_toggled</handler>
+	<last_modification_time>Tue, 01 Jan 2002 22:31:56 GMT</last_modification_time>
+      </signal>
+      <label>Portal of Praevus Mission Pack support</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>0</x>
+      <y>24</y>
+      <width>352</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1</name>
+      <x>8</x>
+      <y>8</y>
+      <width>160</width>
+      <height>24</height>
+      <label>Hammer of Thyrion 1.2.2</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>HEXEN2_button</name>
+      <x>24</x>
+      <y>72</y>
+      <width>88</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>released</name>
+	<handler>on_HEXEN2_button_released</handler>
+	<last_modification_time>Thu, 03 Jan 2002 16:58:44 GMT</last_modification_time>
+      </signal>
+      <label>Hexen II</label>
+      <active>True</active>
+      <draw_indicator>True</draw_indicator>
+      <group>destiny</group>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>HW_button</name>
+      <x>128</x>
+      <y>72</y>
+      <width>152</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>released</name>
+	<handler>on_HW_button_released</handler>
+	<last_modification_time>Thu, 03 Jan 2002 16:59:00 GMT</last_modification_time>
+      </signal>
+      <label>HexenWorld Client</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>destiny</group>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator3</name>
+      <x>0</x>
+      <y>88</y>
+      <width>352</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator4</name>
+      <x>0</x>
+      <y>152</y>
+      <width>352</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>SOFT_button</name>
+      <x>40</x>
+      <y>192</y>
+      <width>88</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>released</name>
+	<handler>on_SOFT_button_released</handler>
+	<last_modification_time>Tue, 01 Jan 2002 22:31:25 GMT</last_modification_time>
+      </signal>
+      <label>Software</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>renderer</group>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>GL_button</name>
+      <x>40</x>
+      <y>216</y>
+      <width>88</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>released</name>
+	<handler>on_GL_button_released</handler>
+	<last_modification_time>Tue, 01 Jan 2002 22:31:34 GMT</last_modification_time>
+      </signal>
+      <label>OpenGL</label>
+      <active>True</active>
+      <draw_indicator>True</draw_indicator>
+      <group>renderer</group>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>SOUND_button</name>
+      <x>184</x>
+      <y>168</y>
+      <width>117</width>
+      <height>26</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>on_SOUND_button_toggled</handler>
+	<last_modification_time>Tue, 01 Jan 2002 22:32:04 GMT</last_modification_time>
+      </signal>
+      <label>Enable sound</label>
+      <active>True</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>MIDI_button</name>
+      <x>200</x>
+      <y>192</y>
+      <width>144</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>on_MIDI_button_toggled</handler>
+	<last_modification_time>Sun, 05 Dec 2004 15:05:00 GMT</last_modification_time>
+      </signal>
+      <label>Enable MIDI music</label>
+      <active>True</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CDAUDIO_button</name>
+      <x>200</x>
+      <y>216</y>
+      <width>136</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>on_CDAUDIO_button_toggled</handler>
+	<last_modification_time>Sun, 05 Dec 2004 15:05:06 GMT</last_modification_time>
+      </signal>
+      <label>Enable CD music</label>
+      <active>True</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>MOUS_button</name>
+      <x>184</x>
+      <y>240</y>
+      <width>128</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>on_MOUS_button_toggled</handler>
+	<last_modification_time>Sun, 05 Dec 2004 19:44:31 GMT</last_modification_time>
+      </signal>
+      <label>Enable Mouse</label>
+      <active>True</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>JOY_button</name>
+      <x>184</x>
+      <y>264</y>
+      <width>128</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>on_JOY_button_toggled</handler>
+	<last_modification_time>Sun, 05 Dec 2004 19:44:36 GMT</last_modification_time>
+      </signal>
+      <label>Enable Joystick</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>FS_button</name>
+      <x>16</x>
+      <y>264</y>
+      <width>136</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>on_FS_button_toggled</handler>
+	<last_modification_time>Tue, 01 Jan 2002 22:32:33 GMT</last_modification_time>
+      </signal>
+      <label>Fullscreen mode</label>
+      <active>True</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator1</name>
+      <x>160</x>
+      <y>160</y>
+      <width>16</width>
+      <height>136</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator2</name>
+      <x>0</x>
+      <y>288</y>
+      <width>352</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label6</name>
+      <x>8</x>
+      <y>304</y>
+      <width>120</width>
+      <height>24</height>
+      <label>Screen resolution</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label2</name>
+      <x>8</x>
+      <y>168</y>
+      <width>80</width>
+      <height>24</height>
+      <label>Graphics :</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label3</name>
+      <x>8</x>
+      <y>104</y>
+      <width>112</width>
+      <height>24</height>
+      <label>Hexen II Options</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label7</name>
+      <x>0</x>
+      <y>48</y>
+      <width>152</width>
+      <height>16</height>
+      <label>Choose your destiny:</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>1024_button</name>
+      <x>144</x>
+      <y>336</y>
+      <width>88</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>released</name>
+	<handler>on_1024_button_released</handler>
+	<last_modification_time>Tue, 01 Jan 2002 22:32:28 GMT</last_modification_time>
+      </signal>
+      <label>1024x768</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>resolution</group>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>1280_button</name>
+      <x>240</x>
+      <y>336</y>
+      <width>96</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>released</name>
+	<handler>on_1280_button_released</handler>
+	<last_modification_time>Sun, 05 Dec 2004 14:57:14 GMT</last_modification_time>
+      </signal>
+      <label>1280x1024</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>resolution</group>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>800_button</name>
+      <x>48</x>
+      <y>336</y>
+      <width>88</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>released</name>
+	<handler>on_800_button_released</handler>
+	<last_modification_time>Tue, 01 Jan 2002 22:32:23 GMT</last_modification_time>
+      </signal>
+      <label>800x600</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>resolution</group>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>512_button</name>
+      <x>144</x>
+      <y>304</y>
+      <width>96</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>released</name>
+	<handler>on_512_button_released</handler>
+	<last_modification_time>Sun, 05 Dec 2004 14:57:07 GMT</last_modification_time>
+      </signal>
+      <label>512x384</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>resolution</group>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>640_button</name>
+      <x>240</x>
+      <y>304</y>
+      <width>88</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>released</name>
+	<handler>on_640_button_released</handler>
+	<last_modification_time>Tue, 01 Jan 2002 22:32:17 GMT</last_modification_time>
+      </signal>
+      <label>640x480</label>
+      <active>True</active>
+      <draw_indicator>True</draw_indicator>
+      <group>resolution</group>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator5</name>
+      <x>0</x>
+      <y>360</y>
+      <width>352</width>
+      <height>16</height>
+    </widget>
+  </widget>
+</widget>
+
+</GTK-Interface>
