@@ -119,7 +119,6 @@ typedef struct cmd_function_s
 //Function prototypes
 
 //net_test.cpp
-void COM_Init (void);
 int COM_CheckParm (char *parm);
 char *COM_Parse (char *data);
 void Sys_Error (char *error, ...);
@@ -222,12 +221,35 @@ extern	netadr_t	net_local_adr;
 extern netadr_t	master_adr[MAX_MASTERS];	// address of group servers
 extern int num_masters;
 
-extern short	(*BigShort) (short l);
-extern short	(*LittleShort) (short l);
-extern int	(*BigLong) (int l);
-extern int	(*LittleLong) (int l);
-extern float	(*BigFloat) (float l);
-extern float	(*LittleFloat) (float l);
+// endianness stuff
+#include <endian.h>
+
+#if __BYTE_ORDER == __BIG_ENDIAN
+
+#define BigShort(s) (s)
+#define LittleShort(s) (ShortSwap(s))
+#define BigLong(l) (l)
+#define LittleLong(l) (LongSwap(l))
+#define BigFloat(f) (f)
+#define LittleFloat(f) (FloatSwap(f))
+
+#elif __BYTE_ORDER == __LITTLE_ENDIAN
+
+#define BigShort(s) (ShortSwap(s))
+#define LittleShort(s) (s)
+#define BigLong(l) (LongSwap(l))
+#define LittleLong(l) (l)
+#define BigFloat(f) (FloatSwap(f))
+#define LittleFloat(f) (f)
+
+#else
+#error __BYTE_ORDER unset. I expect __LITTLE_ENDIAN or __BIG_ENDIAN
+#endif
+
+short	ShortSwap (short);
+int	LongSwap (int);
+float	FloatSwap (float);
+// end of endiannes stuff
 
 extern netadr_t	net_from;
 

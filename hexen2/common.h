@@ -66,14 +66,34 @@ void InsertLinkAfter (link_t *l, link_t *after);
 
 //============================================================================
 
-extern	qboolean		bigendien;
+// endianness stuff
+#include <endian.h>
 
-extern	short	(*BigShort) (short l);
-extern	short	(*LittleShort) (short l);
-extern	int	(*BigLong) (int l);
-extern	int	(*LittleLong) (int l);
-extern	float	(*BigFloat) (float l);
-extern	float	(*LittleFloat) (float l);
+#if __BYTE_ORDER == __BIG_ENDIAN
+
+#define BigShort(s) (s)
+#define LittleShort(s) (ShortSwap(s))
+#define BigLong(l) (l)
+#define LittleLong(l) (LongSwap(l))
+#define BigFloat(f) (f)
+#define LittleFloat(f) (FloatSwap(f))
+
+#elif __BYTE_ORDER == __LITTLE_ENDIAN
+
+#define BigShort(s) (ShortSwap(s))
+#define LittleShort(s) (s)
+#define BigLong(l) (LongSwap(l))
+#define LittleLong(l) (l)
+#define BigFloat(f) (FloatSwap(f))
+#define LittleFloat(f) (f)
+
+#else
+#error __BYTE_ORDER unset. I expect __LITTLE_ENDIAN or __BIG_ENDIAN
+#endif
+
+short	ShortSwap (short);
+int	LongSwap (int);
+float	FloatSwap (float);
 
 //============================================================================
 

@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.7 2004-12-23 21:12:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.8 2005-04-05 19:28:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1237,8 +1237,8 @@ void PR_LoadProgs (void)
 	
 	pr_edict_size = progs->entityfields * 4 + sizeof (edict_t) - sizeof(entvars_t);
 
-	if (bigendien)// byte swap the lumps
-	{
+#if __BYTE_ORDER == __BIG_ENDIAN
+	// byte swap the lumps
 		for (i=0 ; i<progs->numstatements ; i++)
 		{
 			pr_statements[i].op = LittleShort(pr_statements[i].op);
@@ -1275,7 +1275,8 @@ void PR_LoadProgs (void)
 		
 		for (i=0 ; i<progs->numglobals ; i++)
 			((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
-	}
+#endif	// __BIG_ENDIAN
+
 #ifdef H2MP
 	// set the cl_playerclass value after pr_global_struct has been created
 	pr_global_struct->cl_playerclass = cl_playerclass.value;
@@ -1444,6 +1445,9 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2004/12/23 21:12:14  sezero
+ * fix a comment and give more detail
+ *
  * Revision 1.6  2004/12/18 14:20:40  sezero
  * Clean-up and kill warnings: 11
  * A lot of whitespace cleanups.

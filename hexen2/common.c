@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.7 2005-02-05 16:21:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.8 2005-04-05 19:28:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -537,15 +537,6 @@ float Q_atof (char *str)
 ============================================================================
 */
 
-qboolean        bigendien;
-
-short   (*BigShort) (short l);
-short   (*LittleShort) (short l);
-int     (*BigLong) (int l);
-int     (*LittleLong) (int l);
-float   (*BigFloat) (float l);
-float   (*LittleFloat) (float l);
-
 short   ShortSwap (short l)
 {
 	byte    b1,b2;
@@ -554,11 +545,6 @@ short   ShortSwap (short l)
 	b2 = (l>>8)&255;
 
 	return (b1<<8) + b2;
-}
-
-short   ShortNoSwap (short l)
-{
-	return l;
 }
 
 int    LongSwap (int l)
@@ -571,11 +557,6 @@ int    LongSwap (int l)
 	b4 = (l>>24)&255;
 
 	return ((int)b1<<24) + ((int)b2<<16) + ((int)b3<<8) + b4;
-}
-
-int     LongNoSwap (int l)
-{
-	return l;
 }
 
 float FloatSwap (float f)
@@ -595,10 +576,6 @@ float FloatSwap (float f)
 	return dat2.f;
 }
 
-float FloatNoSwap (float f)
-{
-	return f;
-}
 
 /*
 ==============================================================================
@@ -1365,30 +1342,6 @@ COM_Init
 */
 void COM_Init (char *basedir)
 {
-	byte    swaptest[2] = {1,0};
-
-// set the byte swapping variables in a portable manner 
-	if ( *(short *)swaptest == 1)
-	{
-		bigendien = false;
-		BigShort = ShortSwap;
-		LittleShort = ShortNoSwap;
-		BigLong = LongSwap;
-		LittleLong = LongNoSwap;
-		BigFloat = FloatSwap;
-		LittleFloat = FloatNoSwap;
-	}
-	else
-	{
-		bigendien = true;
-		BigShort = ShortNoSwap;
-		LittleShort = ShortSwap;
-		BigLong = LongNoSwap;
-		LittleLong = LongSwap;
-		BigFloat = FloatNoSwap;
-		LittleFloat = FloatSwap;
-	}
-
 	Cvar_RegisterVariable (&registered);
 	Cvar_RegisterVariable (&oem);
 	Cvar_RegisterVariable (&cmdline);
@@ -2154,6 +2107,9 @@ void COM_InitFilesystem (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/02/05 16:21:13  sezero
+ * killed Com_LoadHunkFile2()  [from HexenWorld]
+ *
  * Revision 1.6  2005/02/05 16:17:29  sezero
  * - Midi file paths cleanup. these should be leftovers
  *   from times when gamedir and userdir were the same.

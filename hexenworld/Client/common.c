@@ -423,15 +423,6 @@ float Q_atof (char *str)
 ============================================================================
 */
 
-qboolean	bigendien;
-
-short	(*BigShort) (short l);
-short	(*LittleShort) (short l);
-int	(*BigLong) (int l);
-int	(*LittleLong) (int l);
-float	(*BigFloat) (float l);
-float	(*LittleFloat) (float l);
-
 short   ShortSwap (short l)
 {
 	byte    b1,b2;
@@ -440,11 +431,6 @@ short   ShortSwap (short l)
 	b2 = (l>>8)&255;
 
 	return (b1<<8) + b2;
-}
-
-short	ShortNoSwap (short l)
-{
-	return l;
 }
 
 int    LongSwap (int l)
@@ -457,11 +443,6 @@ int    LongSwap (int l)
 	b4 = (l>>24)&255;
 
 	return ((int)b1<<24) + ((int)b2<<16) + ((int)b3<<8) + b4;
-}
-
-int	LongNoSwap (int l)
-{
-	return l;
 }
 
 float FloatSwap (float f)
@@ -481,10 +462,6 @@ float FloatSwap (float f)
 	return dat2.f;
 }
 
-float FloatNoSwap (float f)
-{
-	return f;
-}
 
 /*
 ==============================================================================
@@ -1222,30 +1199,6 @@ COM_Init
 */
 void COM_Init (char *basedir)
 {
-	byte	swaptest[2] = {1,0};
-
-// set the byte swapping variables in a portable manner	
-	if ( *(short *)swaptest == 1)
-	{
-		bigendien = false;
-		BigShort = ShortSwap;
-		LittleShort = ShortNoSwap;
-		BigLong = LongSwap;
-		LittleLong = LongNoSwap;
-		BigFloat = FloatSwap;
-		LittleFloat = FloatNoSwap;
-	}
-	else
-	{
-		bigendien = true;
-		BigShort = ShortNoSwap;
-		LittleShort = ShortSwap;
-		BigLong = LongNoSwap;
-		LittleLong = LongSwap;
-		BigFloat = FloatNoSwap;
-		LittleFloat = FloatSwap;
-	}
-
 	Cvar_RegisterVariable (&registered);
 	Cvar_RegisterVariable (&oem);
 	Cmd_AddCommand ("path", COM_Path_f);
