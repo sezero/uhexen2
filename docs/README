@@ -172,12 +172,12 @@ and the ALSA site for alsa-sound support.
 
 b. SDL sound code
 -----------------
-There is now an option to build a new sound driver.  To do this, get
-the HoT source code, set "SOUND=SDL" in the Makefile, and type "make"
-(a recompile is necessary here).
+There is now an option to build a new sound driver. To do this, get
+the HoT source code, set "SOUND=SDL" in the Makefile, recompile the
+sources.
 This sound driver does not have the compatibility issues of the OSS
-sound code, BUT it is very much beta: varying from working well, to
-not at all.
+sound code, BUT it is very much beta: varying from working well,
+to not at all.
 
 If you can't get sound working, "-nosound" option will disable it.
 
@@ -185,24 +185,30 @@ If you can't get sound working, "-nosound" option will disable it.
 1.5 Networking / Multiplayer
 ----------------------------
 
-Hexen II binaries here WILL NOT play over a network with Windows-
-hexen2 binaries:  Do not try it, it simply will NOT work!..
-However, the mission pack binaries are compatible across platforms.
+Linux Hexen II binaries here WILL NOT play over a network with
+Windows Hexen2-1.11 binaries:  Don't try it, it simply WON'T..
+However: The mission pack binaries ARE compatible across platforms.
 
-This has got nothing to do with us: Raven didn't give us the original
-Hexen2-1.11 source, and the network code had changes during the 1.11-
-1.12 transition. We only have the 1.12 sources.
+This has nothing to do with us: Raven didn't give us the original
+Hexen2-1.11 source, and the network code had changes during the
+1.11-1.12 transition. We only have the 1.12 sources.
 
 Deathmatch, TeamPlay, etc:
 	- HexenWorld is highly recommended at both sides.
+
 Cooperative games:
 	- Linux side  : (gl)hexen2 or (gl)h2mp,
-	- Windows side: (gl)h2mp or jshexen2, or (gl)hexen2 (Pa3pyX-
-	  1.14 or 1.15), work just fine with each other.
+
+	- Windows side: * (gl)h2mp (original cdrom version), or
+			* jshexen2 executables, or
+			* Pa3pyX' 1.14-1.15 executables
+
+	should work just fine with each other.
+
 
 Here is a network-compatibility table:
 
-===============================================================
+================================================================
 Binary		Windows		Linux	  Game		Status
 ==========	===========	========  ==========	=======
 
@@ -215,8 +221,8 @@ Binary		Windows		Linux	  Game		Status
 ==========	===========	========  ==========	=======
 
 (*) Recompiles/ports of the source such as the ones from Pa3Pyx
-    or newhexen, jshexen2 and such.
-===============================================================
+    or jshexen2, newhexen and such.
+================================================================
 
 
 1.6 SaveGames and Configuration files

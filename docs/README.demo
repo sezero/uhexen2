@@ -34,9 +34,9 @@ Hammer of Thyrion 1.2.3
 -------------------
 
 This will install Hexen II Demo (Linux version: Hammer of Thyrion).
-All necessary binaries and the data files will be installed bythe
-installer, so no extra effort is necessary.  For the curious, names
-of the Hexen2 binaries are:
+All necessary binaries and the data files will be installed by the
+installer, no extra effort is necessary.  For the curious, names of
+the Hexen2 binaries are:
 
 	hexen2	 -  Software Hexen II
 	glhexen2 -  OpenGL Hexen II
@@ -52,8 +52,8 @@ It is recommended for network-playing. The names of the binaries are:
 1.2 Software Requirements
 -------------------------
 
-HoT has issues with linux sound modules. See "1.4 Sound" for more info.
-The only unusual software requirements are:
+Linux Hexen2 may have issues with some sound modules. See "1.4 Sound"
+for more info. The only unusual software requirements are:
 
     SDL (1.2.2 +)	    : Simple DirectMedia Layer libraries
     SDL_mixer (1.2.0 +)	    : required for midi support (should be
@@ -71,10 +71,10 @@ To do this: Either choose it from your start menu (should you chose
 to do it during the installation),  or typing "hexen2demo" from the
 command line. Choose your options and then press "Launch Hexen2".
 
-The "old school" way of running the game is going into the installa-
-tion directory and running the binary directly:
-The default mode is windowed. Use "glhexen2 -f" to start the game
-in full-screen mode.  The following options are accepted:
+The old school way of running the game: go into the installation
+directory and run the binary directly. The default mode is windowed.
+Use "glhexen2 -f" to start the game in full-screen mode. The
+following options are accepted:
 
  [-h | --help]			  Display this help message
  [-v | --version]		  Display the game version
@@ -82,15 +82,15 @@ in full-screen mode.  The following options are accepted:
  [-w | --windowed]		  Run the game windowed
  [-s | --nosound]		  Run the game without sound
  [-g | --gllibrary]		  Select 3D rendering library
- [-nomouse]			  Don't use the mouse in window mode
+ [-nomouse]			  No mouse in window mode
  [-width Width [-height Height]]  Select screen size
  [-bpp]				  Depth for GL fullscreen mode
  [-heapsize Bytes]		  Heapsize
 
 Others may work, but aren't really supported.
 
-You may wish to brighten the display with "xgamma". The script I use
-is:
+You may wish to brighten the display with "xgamma". The script I
+use is:
 
     cd /usr/local/games/hexen2
     xgamma -q -gamma 1.3;       # brighten the display
@@ -102,45 +102,46 @@ is:
 1.4 Sound 
 ---------
 
-OSS sound code
---------------
+a. OSS sound code
+-----------------
 HoT requires your kernel sound modules to be OSS (Open Sound System)
-compatible.  If your game bombs out after sound initialization and you
-aren't using the Alsa sound drivers you might try them, but doing so
-is not straight forward.  Once the Alsa sound modules are installed
-and configured, you can use (for example, on Mandrake):
+compatible.  If your game bombs out after sound initialization and
+you aren't using the Alsa sound drivers, you may want to try them
+(doing that may not be very easy, though.)  Once the Alsa sound
+modules are installed and configured, you can use (for example,
+on Mandrake):
 
-    rmmod emu10k1          ;# remove OSS sound module for SBLive card
+    rmmod emu10k1          ;# remove OSS sound module for SBLive
     /etc/init.d/alsa start ;# start ALSA sound modules
 
+Make SURE oss-emulation is available: lsmod should list snd-pcm-oss.
 Check with alsamixer that the volumes are not turned down to zero.
-Make SURE oss-emulation is available (lsmod should list snd-pcm-oss ).
 
-With ALSA + OSS Emulation, hexen2 should work fine. Mandrake (9.0 and
-newer), Fedora Core (2 and newer) and SuSE (8.2 and newer) _already_
-include alsa: So no worries, if you're using them.  Users of RedHat 9
-and older can see the FreshRPMS site and the official ALSA site for
-alsa-sound support.
+With ALSA + OSS Emulation, hexen2 should work fine. On Mandrake (9.0
+and newer), Fedora Core (2 and newer) and SuSE (8.2 and newer), Alsa
+is already included: no worries if you're using them.
+Users of Fedora Core 1, RedHat 9 and older can see the FreshRPMS site
+and the ALSA site for alsa-sound support.
 
-SDL sound code
---------------
-There is now an option to build a new sound driver. To do this, set
-"SOUND=SDL" in the Makefile in the HoT source code, and type "make"
-(yes, a recompile is necessary). This sound driver does not have the
-compatibility issues of the default (OSS) sound code, but it is very
-much beta - varying from working well, to not at all.
+b. SDL sound code
+-----------------
+There is now an option to build a new sound driver. To do this, get
+the HoT source code, set "SOUND=SDL" in the Makefile, recompile the
+sources.
+This sound driver does not have the compatibility issues of the OSS
+sound code, BUT it is very much beta: varying from working well,
+to not at all.
 
-If you can't get sound working , the "-nosound" option will disable
-it.
+If you can't get sound working, "-nosound" option will disable it.
 
 
 1.5 Networking/Multiplayer
 --------------------------
 
-Hexen II v1.11 binaries from Raven's official Windows demo WILL NOT
-play over network with Linux Hexen2-demo binaries.  Do not try, it
-simply will NOT work! If this is a big issue for you, please use
-HexenWorld, which is included in the installer.
+Hexen II v1.11 binaries from Raven's official Windows demo WON'T
+play over network with Linux Hexen2-demo binaries. Don't try, it
+simply will NOT work!  If this is a big issue for you, please use
+HexenWorld for deathmatch. It is included in the installer.
 
 
 1.6 SaveGames and Configuration files
@@ -194,7 +195,6 @@ gl_texturemode gl_nearest                : (least quality, best speed)
 gl_otherglows  0 | 1      : enable glow on green and blue mana
 snow_active    0 - 255    : 0 = none, 1 = normal (amount designated by
 			    the map), and higher acts as a multiplier
-m_oldmission   0 | 1      : enable "Old Mission" menu item in Praevus.
 
 
 2.2 Lines on Screen
@@ -202,38 +202,41 @@ m_oldmission   0 | 1      : enable "Old Mission" menu item in Praevus.
 
 A common problem (esp. with 3dfx cards) is flickering lines across the
 screen caused by gl_ztrick.  To fix this, bring down the console with
-the '~' key and enter 'gl_ztrick 0'.
+the '~' key and enter 'gl_ztrick 0'.  This is disabled by default
+in fresh HoT-1.2.3 installations.
 
 
 2.3 Hardware Acceleration
 -------------------------
 
-Setting up hardware OpenGL acceleration under Linux used to be a big
-deal, but most modern distros should automatically configure this.
+Setting up hardware OpenGL acceleration under Linux used to be a
+big deal in the past, but most modern distros do this automatically
+now.
 
 Nvidia's drivers for all of their modern video cards are not open
 source, and because of this many distributions do not include them.
-If your Nvidia card is running slowly this is probably the cause and
+If your Nvidia card is running slowly this is probably the cause,
 you should visit Nvidia.com to download the linux installer. In my
-experience these drivers are great, but not all versions work 100% with
-all cards. If you have a misbehaving Nvidia video card, try a different
-(older) driver.
+experience these drivers are great, but not all versions work 100%
+with all cards. If you have a misbehaving Nvidia video card, try a
+different (older) driver.
 
 3dfx Voodoo1/Voodoo2 is no longer hardware accelerated under recent
 XFree-4.0 releases.  For OpenGL acceleration of 3dfx Voodoo Graphics/
 Voodoo Rush/Voodoo 2 boards, you will have to use older versions of
-XFree86 (3.3.x), Glide and Mesa compiled against Glide.  Setting up a
-Voodoo1/Voodoo2 card under linux can be a bit of work.
+XFree86 (3.3.x), Glide and Mesa compiled against Glide.  Setting up
+a Voodoo1/Voodoo2 card under linux can be a bit of work.
 
 
 2.4 System Stability
 --------------------
 
-3D games are probably the most intensive workout you can give your PC.
-Problems with them are not always easy to track down.  I recently  had
-some trouble with glquake which I eventually tracked down to Mandrake's
-XFree86-4.3 packages - probably due to compiler pentium optimizations.
-I switched to XFree86-4.3 (from Redhat-9.0) and quake now is rock solid.
+3D games are probably the most intensive workout you can give your
+PC. Problems with them are not always easy to track down.
+I recently had some trouble with glquake which I eventually tracked
+down to Mandrake's XFree86-4.3 packages - probably due to compiler
+pentium optimizations. I switched to XFree86-4.3 (from Redhat-9.0)
+and quake now is rock solid.
 
 I've also had crashes in 3D games associated with
 
@@ -264,3 +267,4 @@ JSHexen2 port      :  http://jurajstyk.host.sk/
 Hexen II FAQ       :  http://www.raven-games.com/hex2faq/
 Linux GlQuake      :  http://mfcn.ilo.de/glxquake
 ALSA sound         :  http://www.alsa-project.org
+
