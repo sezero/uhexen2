@@ -979,11 +979,11 @@ void PR_Profile_f(void)
 			if(i+1 < Cmd_Argc() && !isdigit(*Cmd_Argv(i+1)))
 			{
 				i++;
-				sprintf(saveName, "%s/%s", com_gamedir, Cmd_Argv(i));
+				sprintf(saveName, "%s/%s", com_userdir, Cmd_Argv(i));
 			}
 			else
 			{
-				sprintf(saveName, "%s/profile.txt", com_gamedir);
+				sprintf(saveName, "%s/profile.txt", com_userdir);
 			}
 		}
 		else if(isdigit(*s))

@@ -923,7 +923,7 @@ void SV_WriteIP_f (void)
 	byte	b[4];
 	int		i;
 
-	sprintf (name, "%s/listip.cfg", com_gamedir);
+	sprintf (name, "%s/listip.cfg", com_userdir);
 
 	Con_Printf ("Writing %s.\n", name);
 

@@ -2,7 +2,6 @@
 #include <sys/time.h>
 
 #ifdef PLATFORM_UNIX
-#include <pwd.h>
 #include <dirent.h>
 #endif
 
@@ -23,22 +22,14 @@ Sys_GetUserdir
 */
 int Sys_GetUserdir(char *buff, unsigned int len)
 {
-    struct passwd *pwent;
+    if (getenv("HOME") == NULL)
+	return 1;
 
-    pwent = getpwuid( getuid() );
-    if ( pwent == NULL ) {
-	perror( "getpwuid" );
-	return 0;
-    }
+    if ( strlen( getenv("HOME") ) + strlen( AOT_USERDIR) + 5 > (unsigned)len )
+	return 1;
 
-    if ( strlen( pwent->pw_dir ) + strlen( AOT_USERDIR) + 2 > (unsigned)len ) {
-	return 0;
-    }
-
-    sprintf( buff, "%s/%s", pwent->pw_dir, AOT_USERDIR );
-    Sys_mkdir(buff);
-
-    return 1;
+    sprintf( buff, "%s/%s", getenv("HOME"), AOT_USERDIR );
+    return 0;
 }
 #endif
 
@@ -243,9 +234,8 @@ int main (int argc, char **argv)
 	if (!parms.membase)
 		Sys_Error("Insufficient memory.\n");
 
-	if (!(Sys_GetUserdir(userdir,sizeof(userdir))))
-	  Sys_Error ("Couldn't determine userspace directory");
-	/*else printf("userdir is: %s\n",userdir);*/
+	if (Sys_GetUserdir(userdir,sizeof(userdir)))
+		Sys_Error ("Couldn't determine userspace directory");
 
 	parms.basedir = ".";
 	parms.cachedir = NULL;
@@ -260,6 +250,11 @@ int main (int argc, char **argv)
 
 // run one frame immediately for first heartbeat
 	SV_Frame (HX_FRAME_TIME);		
+
+// report the filesystem to the user
+	Sys_Printf("userdir is: %s\n",userdir);
+	Sys_Printf("com_gamedir is: %s\n",com_gamedir);
+	Sys_Printf("com_userdir is: %s\n",com_userdir);
 
 //
 // main loop

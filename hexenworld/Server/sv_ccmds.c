@@ -83,7 +83,7 @@ void SV_Logfile_f (void)
 		return;
 	}
 
-	sprintf (name, "%s/qconsole.log", com_gamedir);
+	sprintf (name, "%s/qconsole.log", com_userdir);
 	Con_Printf ("Logging text to %s.\n", name);
 	sv_logfile = fopen (name, "w");
 	if (!sv_logfile)
@@ -112,7 +112,7 @@ void SV_Fraglogfile_f (void)
 	// find an unused name
 	for (i=0 ; i<1000 ; i++)
 	{
-		sprintf (name, "%s/frag_%i.log", com_gamedir, i);
+		sprintf (name, "%s/frag_%i.log", com_userdir, i);
 		sv_fraglogfile = fopen (name, "r");
 		if (!sv_fraglogfile)
 		{	// can't read it, so create this one
@@ -774,8 +774,6 @@ void SV_Gamedir (void)
 /*
 ================
 SV_Floodport_f
-
-Sets the gamedir and path to a different directory.
 ================
 */
 
@@ -866,6 +864,11 @@ void SV_Gamedir_f (void)
 
 	COM_Gamedir (dir);
 	Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
+	// Many mods changes the gamedir not by a -game cmdline arg,
+	// but by a "+exec mod.cfg". So, let's change com_userdir here
+	// accordingly: hwsv keeps com_gamedir as ./gamedir, therefore
+	// we use com_gamedir+2, not com_gamedir itself.	O.S.
+	sprintf (com_userdir, "%s/%s", host_parms.userdir, com_gamedir+2);
 }
 
 
