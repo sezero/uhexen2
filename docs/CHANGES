@@ -1,6 +1,8 @@
 ChangeLog:
 
 2005-02-05 (CVS):
+    * first sketchy update to the README files regarding
+      the recent sound changes
     * move cd_win.c and resource.h to ./win_stuff/
     * tiny makefiles cleanup
     * tiny log entries cleanup in snd_sdl.c, midi_sdl.c
