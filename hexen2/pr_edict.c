@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.6 2004-12-18 14:20:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.7 2004-12-23 21:12:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1170,13 +1170,15 @@ void PR_LoadProgs (void)
 
 	strcpy(finalprogname, "progs.dat");
 
-/*	don't need this anymore - JFM
-	H2MP doesn't need this, but original Hexen2 does...
-	But if you wish to compile progs.dat and progs2.dat together
-	into a single progs.dat, you must again remove this ifndef
-*/
+/*	H2MP doesn't need this, but original Hexen2 does, hence the ifndef H2MP
+	below: This way, the binary will look for a file named "maplist.txt" in
+	the pak files and using the info in maplist.txt it will load progs2.dat
+	along with progs.dat. Without this the rider bosses shall not appear in
+	the original Hexen2.
+	*** BUT *** :  If you wish to compile progs.dat and progs2.dat together
+	into a single progs.dat for Hexen2 (don't ask ;), then you MUST replace
+	the " #ifndef H2MP " with an " #if 0 " below.			O.S. */
 #ifndef H2MP
-
 	COM_FOpenFile ("maplist.txt", &f, true);
 	if (f)
 	{
@@ -1442,6 +1444,10 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2004/12/18 14:20:40  sezero
+ * Clean-up and kill warnings: 11
+ * A lot of whitespace cleanups.
+ *
  * Revision 1.5  2004/12/18 14:08:07  sezero
  * Clean-up and kill warnings 9:
  * Kill many unused vars.
@@ -1453,7 +1459,7 @@ int NUM_FOR_EDICT(edict_t *e)
  * style changes to our liking
  *
  * Revision 1.2  2004/11/28 00:30:35  sezero
- * allow original hexen2 to load many progsX.dat files. fixes the no-boss bug
+ * allow original hexen2 to load the progs2.dat, fixes the no-boss bug of AoT
  *
  * Revision 1.1.1.1  2004/11/28 00:06:00  sezero
  * Initial import of AoT 1.2.0 code
