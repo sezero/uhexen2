@@ -3,7 +3,7 @@
 	SDL sound driver which is meant to replace snd_oss.c in the future.
 	Currently buggy...
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_sdl.c,v 1.4 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_sdl.c,v 1.5 2004-12-12 14:40:56 sezero Exp $
 */
 
 #include <stdio.h>
@@ -16,6 +16,8 @@ static int snd_inited;
 
 extern int desired_speed;
 extern int desired_bits;
+// extern sfxcache_t              *sc;
+
 
 static void paint_audio(void *unused, Uint8 *stream, int len)
 {
@@ -129,6 +131,9 @@ void SNDDMA_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.3  2004/12/05 10:52:18  sezero
  * Sync with Steven, 2004-12-04 :
  *  Fix the "Old Mission" menu PoP

@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_rmain.c,v 1.4 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_rmain.c,v 1.5 2004-12-12 14:40:56 sezero Exp $
 */
 
 
@@ -1530,7 +1530,7 @@ void R_SetupGL (void)
 	glfunc.glViewport_fp (glx + x, gly + y2, w, h);
     screenaspect = (float)r_refdef.vrect.width/r_refdef.vrect.height;
 	yfov = 2*atan((float)r_refdef.vrect.height/r_refdef.vrect.width)*180/M_PI;
-    MYgluPerspective (yfov,  screenaspect,  4,  4096);
+    MYgluPerspective (yfov,  screenaspect,  4.0,  4096.0);
 
 	if (mirror)
 	{
@@ -1818,6 +1818,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.3  2004/11/28 00:58:08  sezero
  *
  * Commit Steven's changes as of 2004.11.24:
