@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/meteor.hc,v 1.1.1.1 2004-11-29 11:33:27 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/meteor.hc,v 1.2 2005-02-23 08:09:13 sezero Exp $
  */
 
 /*
@@ -142,7 +142,10 @@ entity meteor;
 		setsize(meteor,'0 0 0', '0 0 0');
 	}
 //	meteor.abslight = 0.5;
-	meteor.drawflags(+)MLS_FIREFLICKER;//|MLS_ABSLIGHT;
+	// Pa3PyX
+//	meteor.drawflags(+)MLS_FIREFLICKER;//|MLS_ABSLIGHT;
+	meteor.abslight = 1.0;
+	meteor.drawflags (+) (MLS_FIREFLICKER | MLS_ABSLIGHT);
 
 	meteor.avelocity=RandomVector('360 360 360');
 
@@ -652,8 +655,14 @@ void meteor_power_fire (void)
 {
 	self.wfs = advanceweaponframe($fire1,$fire9);
 	self.th_weapon=meteor_power_fire;
-	if(self.weaponframe==$fire2 && self.attack_finished<=time)
+	// Pa3PyX
+//	if(self.weaponframe==$fire2 && self.attack_finished<=time)
+	if(self.weaponframe==$fire1 && self.attack_finished<=time) {
+			// Pa3PyX
+			self.attack_finished = time + 0.5;
+
 			FireMeteorTornado();
+	}
 
 	if(self.wfs==WF_CYCLE_WRAPPED)
 	{
@@ -698,7 +707,9 @@ void meteor_select (void)
 	self.weaponmodel = "models/meteor.mdl";
 	self.th_weapon=meteor_select;
 	self.last_attack=time;
-	if(self.wfs==WF_CYCLE_WRAPPED)
+	// Pa3PyX
+//	if(self.wfs==WF_CYCLE_WRAPPED)
+	if(self.weaponframe==$Select16)
 	{
 		self.attack_finished = time - 1;
 		meteor_ready_loop();
@@ -716,6 +727,9 @@ void meteor_deselect (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:33:27  sezero
+ * Initial import
+ *
  * 
  * 9     3/16/98 6:21p Jweier
  * 
