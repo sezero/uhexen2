@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.2 2005-01-29 03:31:28 sezero Exp $
+	$Id: cd_linux.c,v 1.3 2005-02-04 11:45:44 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -349,17 +349,15 @@ void CDAudio_Update(void)
 
 	if (bgmvolume.value != cdvolume)
 	{
-		if (cdvolume)
+		cdvolume = bgmvolume.value;
+		if (cdvolume == 0)
 		{
-//			Cvar_SetValue("bgmvolume", 0.0);
 			CDAudio_Pause ();
 		}
 		else
 		{
-//			Cvar_SetValue("bgmvolume", 1.0);
 			CDAudio_Resume ();
 		}
-		cdvolume = bgmvolume.value;
 	}
 
 	if (playing && lastchk < time(NULL)) {
