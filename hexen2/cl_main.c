@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.3 2004-12-14 21:49:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -153,7 +153,7 @@ void CL_RemoveGIPFiles (char *path)
 		if (dent != NULL) {
 			if (!fnmatch ("*.gip", dent->d_name,FNM_PATHNAME)) {
 				snprintf (name, MAX_OSPATH, "%s%s", tempdir,dent->d_name);
-				printf("unlinking %s\n",name);
+			//	printf("unlinking %s\n",name);
 				unlink (name);
 			}
 		}
@@ -1030,6 +1030,9 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:01:04  sezero
  * Initial import of AoT 1.2.0 code
  *
