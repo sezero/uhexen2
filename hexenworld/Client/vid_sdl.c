@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.8 2005-02-08 21:22:23 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.9 2005-02-11 08:33:56 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -387,9 +387,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	scr_disabled_for_loading = true;
 	in_mode_set = true;
 
-	//Snd_ReleaseBuffer ();
-	CDAudio_Pause ();
-
 	if (vid_modenum == NO_MODE)
 		original_mode = windowed_default;
 	else
@@ -430,8 +427,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	window_height = vid.height << vid_stretched;
 	VID_UpdateWindowStatus ();
 
-	CDAudio_Resume ();
-	//Snd_AcquireBuffer ();
 	scr_disabled_for_loading = temp;
 
 	if (!stat)
@@ -1028,6 +1023,17 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/02/08 21:22:23  sezero
+ * Video modes/mouse syncing with Hexen2:
+ * * added missing parts of Steven's video/mouse stuff
+ *  (windowed/fullscreen switching and all others)
+ * * removed cvar _vid_default_mode_win
+ * * removed all mode descriptions
+ * * removed all nummodes and VID_NumModes stuff
+ * * removed all VID_GetXXX and VID_DescXXX stuff
+ * * beautified the Video Modes menu screen a little
+ * * removed firstupdate things (VID_Update() cleanup)
+ *
  * Revision 1.7  2005/02/06 15:03:15  sezero
  * move resource.h to ./win_stuff/
  *

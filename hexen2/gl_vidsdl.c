@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.27 2005-02-11 08:32:02 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.28 2005-02-11 08:33:55 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -261,12 +261,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 
-#warning Is this correct?!?
-#if 0
-	Snd_ReleaseBuffer ();
-#endif
-	CDAudio_Pause ();
-
 	if (vid_modenum == NO_MODE)
 		original_mode = windowed_default;
 	else
@@ -302,11 +296,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	window_height = DIBHeight;
 	VID_UpdateWindowStatus ();
 
-	CDAudio_Resume ();
-#warning Is this correct?!?
-#if 0
-	Snd_AcquireBuffer ();
-#endif
 	scr_disabled_for_loading = temp;
 
 	if (!stat)

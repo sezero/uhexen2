@@ -254,12 +254,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 
-#warning Is this correct?!?
-#if 0
-	Snd_ReleaseBuffer ();
-#endif
-	CDAudio_Pause ();
-
 	if (vid_modenum == NO_MODE)
 		original_mode = windowed_default;
 	else
@@ -295,11 +289,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	window_height = DIBHeight;
 	VID_UpdateWindowStatus ();
 
-	CDAudio_Resume ();
-#warning Is this correct?!?
-#if 0
-	Snd_AcquireBuffer ();
-#endif
 	scr_disabled_for_loading = temp;
 
 	if (!stat)
