@@ -2,9 +2,8 @@ Known Bugs
 ----------
 
   OSS sound segfaults with some sound drivers for some people.
-
-  SDL sound code is alpha, and doesn't work for everyone.  We
-  accept patches ;)
+  (This shouldn't be a problem, anyway: We already have ALSA
+   and SDL sound drivers, now.)
 
   matrox G200 : GL games don't display menus correctly (matrox GL bug ?)
 

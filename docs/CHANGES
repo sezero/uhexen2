@@ -1,5 +1,25 @@
 ChangeLog:
 
+2005-02-05 (CVS):
+    * fixed silly copy+paste error in snd_alsa.c
+    * fixed demo builds of the launcher
+    * fastsqrt.cpp isn't used for ages, moved it to ./obsolete/
+    * separated win32 and linux versions of midi files, too much
+      mess otherwise
+    * midi file paths cleanup: they should have been leftovers
+      from times when gamedir and userdir were the same
+    * killed Com_WriteFileFullPath(), not used anymore
+    * replaced some Con_Printf() with Sys_Printf() in midi_sdl.c
+    * added midi volume control (partially from Pa3PyX)
+    * updated the midi stuff (volume ctrl, etc) for win32, too
+    * fixed possible path length overflows in midi_sdl.c
+    * killed Com_LoadHunkFile2() in hexen2 [from HexenWorld]
+    * don't try extracting anything if no midi file is given
+    * ported all midi changes from hexen2 to hexenworld
+    * applied the HexenWorld specific changes to midi_sdl.c and
+      enabled midi in the HW makefiles. who knows why it didn't
+      work in aot before...
+
 2005-02-04 (CVS):
     * made sdl_audio actually work (finally)
     * some snd_dma.c fixes from the tenebrae project
