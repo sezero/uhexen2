@@ -1,7 +1,7 @@
 /*
 	midi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/midi.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/midi.c,v 1.3 2004-12-18 13:20:37 sezero Exp $
 */
 
 #ifndef PLATFORM_UNIX
@@ -391,6 +391,26 @@ void MIDI_Loop(int NewValue)
 
   MIDI_EndMusicFinished();
 #endif
+}
+
+void ReInitMusic() {
+	// called after exitting the menus and changing the music type
+	// this is pretty crude, but doen't seem to break anything S.A
+
+	if (strcmpi(bgmtype.string,"midi") == 0) {
+		CDAudio_Stop();
+		MIDI_Play(cl.midi_name);
+	}
+
+	if (strcmpi(bgmtype.string,"cd") == 0) {
+		MIDI_Stop();
+		CDAudio_Play ((byte)cl.cdtrack, true);
+	}
+
+	if (strcmpi(bgmtype.string,"none") == 0) {
+		CDAudio_Stop();
+		MIDI_Stop();
+	}
 }
 
 void MIDI_Stop(void)
@@ -830,6 +850,9 @@ void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 #endif	// !PLATFORM_UNIX
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:05:13  sezero
  * Initial import of AoT 1.2.0 code
  *

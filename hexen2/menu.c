@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.12 2004-12-13 14:52:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.13 2004-12-18 13:20:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -93,6 +93,8 @@ qboolean	m_recursiveDraw;
 int			m_return_state;
 qboolean	m_return_onerror;
 char		m_return_reason [32];
+
+char		old_bgmtype[20];	// S.A
 
 static float TitlePercent = 0;
 static float TitleTargetPercent = 1;
@@ -725,6 +727,9 @@ void M_Menu_Main_f (void)
 
 	// Deactivate the mouse when the main menu is drawn - S.A.
 	IN_DeactivateMouseSA ();
+	// get the music type if just in from game
+	if (key_dest == key_game )
+		strcpy(old_bgmtype,bgmtype.string);
 
 	if (key_dest != key_menu)
 	{
@@ -762,8 +767,12 @@ void M_Main_Key (int key)
 	{
 	case K_ESCAPE:
 
-		// leaving the main menu, reactivate the mouse - S.A.
+		// leaving the main menu, reactivate the mouse S.A.
 		IN_ActivateMouseSA ();
+
+		// and check we haven't changed the music type S.A.
+		if (strcmp(old_bgmtype,bgmtype.string)!=0)
+			ReInitMusic ();
 
 		key_dest = key_game;
 		m_state = m_none;
@@ -4752,6 +4761,9 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2004/12/13 14:52:23  sezero
+ * prevent the m_demoness.value spam, do some defines
+ *
  * Revision 1.11  2004/12/13 14:50:41  sezero
  * fix an oversight in oldmission menu drawing
  *
