@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.32 2005-04-05 19:36:22 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.33 2005-04-06 09:44:59 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -603,7 +603,7 @@ void GL_Init_Functions(void)
   glfunc.glColor4fv_fp = (glColor4fv_f) SDL_GL_GetProcAddress("glColor4fv");
   if (glfunc.glColor4fv_fp == 0) {Sys_Error("glColor4fv not found in GL library");}
   glfunc.glColor4ubv_fp = (glColor4ubv_f) SDL_GL_GetProcAddress("glColor4ubv");
-  if (glfunc.glFrustum_fp == 0) {Sys_Error("glColor4ubv not found in GL library");}
+  if (glfunc.glColor4ubv_fp == 0) {Sys_Error("glColor4ubv not found in GL library");}
   glfunc.glColor3f_fp = (glColor3f_f) SDL_GL_GetProcAddress("glColor3f");
   if (glfunc.glColor3f_fp == 0) {Sys_Error("glColor3f not found in GL library");}
   glfunc.glColor3ubv_fp = (glColor3ubv_f) SDL_GL_GetProcAddress("glColor3ubv");
