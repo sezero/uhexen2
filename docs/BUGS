@@ -2,13 +2,16 @@ Known Bugs
 ----------
 
   sound segfaults with some sound drivers. %-<
-  help page's fonts are mostly unreadable
+
   matrox G200 : GL games don't display menus correctly (matrox GL bug ?)
 
-  glhexen2: Eidolon doesn't jump down (some systems)
-  glhexen2: The bosses seem too hard ???
-  glhexen2: The end-of-game message is not displayed inside
-            the intermission graphic. (Is made o.k. with the
-            004-draw_intermissionpic-pa3pyx patch.)
   glh2mp:   The fire weapon for the Demoness in GL mode,
             draws lines across the screen.
+
+  glhexen2: Eidolon doesn't jump down:  This is NOT a hexen2
+	    engine issue, but is a HexenC (a.k.a. progs.dat)
+	    issue. If you hit this bug, download a fix from
+	    our site.
+
+  glhexen2: The bosses seem too hard ???
+
