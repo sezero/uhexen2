@@ -9,7 +9,7 @@ int opengl_support	= 1;
 int fullscreen		= 1;
 int resolution		= RES_640;
 int sound		= 1;
-int sndrate		= 2;
+int sndrate		= 0;
 int sndbits		= 1;
 int stereo		= 1;
 int midi		= 1;
@@ -131,7 +131,7 @@ int read_config_file() {
 				else if (strstr(buff, "sndrate=") == buff) {
 					sndrate = atoi(buff + 8);
 					if (sndrate < 0 || sndrate >= MAX_RATES)
-							sndrate = 2;
+							sndrate = 0;
 				}
 				else if (strstr(buff, "sndbits=") == buff) {
 					sndbits = atoi(buff + 8);
