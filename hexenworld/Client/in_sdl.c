@@ -2,7 +2,7 @@
 // 02/21/97 JCB Added extended DirectInput code to support external controllers.
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.2 2004-12-04 02:04:42 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.3 2004-12-04 02:05:57 sezero Exp $
  */
 
 #include "SDL.h"
@@ -15,6 +15,8 @@ int			mouse_buttons;
 int			mouse_oldbuttonstate;
 //POINT		current_pos;
 int			mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
+extern cvar_t	vid_mode, _windowed_mouse;
+#define MODE_FULLSCREEN_DEFAULT 3
 
 extern qboolean	in_mode_set;
 static qboolean	restore_spi;
@@ -1202,6 +1204,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/04 02:04:42  sezero
+ * porting from hexen2 :  steve's mouse changes-1.
+ *
  * Revision 1.1  2004/11/28 08:54:29  sezero
  * Initial revision
  *
