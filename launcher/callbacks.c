@@ -16,7 +16,7 @@ extern int destiny;
 extern int mp_support;
 extern int h2game;
 extern int hwgame;
-extern const char *h2game_names[MAX_HWGAMES][2];
+extern const char *h2game_names[MAX_H2GAMES][2];
 extern const char *hwgame_names[MAX_HWGAMES][2];
 #endif
 extern const char *snddrv_names[MAX_SOUND][2];
