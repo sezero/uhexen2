@@ -1,6 +1,6 @@
 /*
    gl_dl_vidsdl.c
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.7 2004-12-12 14:14:42 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.8 2004-12-12 14:29:35 sezero Exp $
 
    Select window size and mode and init SDL in GL mode.
 
@@ -281,8 +281,12 @@ qboolean VID_SetWindowedMode (int modenum)
 	if (!(screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags)))
 		return false;
 
-	// this should acknowledge Portal of Praevus S.A
-	SDL_WM_SetCaption ("GL Hexen II", "GLHEXEN2");
+	// acknowledge Portal of Praevus S.A
+#ifdef H2MP
+	SDL_WM_SetCaption ("Portal of Praevus", "PRAEVUS");
+#else
+	SDL_WM_SetCaption ("Hexen II", "HEXEN2");
+#endif
 	return true;
 
 	// "#if 0" removed

@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.4 2004-12-12 14:14:43 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.5 2004-12-12 14:29:35 sezero Exp $
 
    Changed by S.A. 7/11/04
    Options are now:
@@ -604,7 +604,11 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	VID_SetPalette (palette);
 
+#ifdef H2MP
+	SDL_WM_SetCaption("Portal of Praevus", "PRAEVUS");
+#else
 	SDL_WM_SetCaption("HexenII", "HEXEN2");
+#enif
 
 	in_mode_set = false;
 	vid.recalc_refdef = 1;
@@ -1351,6 +1355,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/12 14:14:43  sezero
+ * style changes to our liking
+ *
  * Revision 1.3  2004/12/05 10:52:18  sezero
  * Sync with Steven, 2004-12-04 :
  *  Fix the "Old Mission" menu PoP
