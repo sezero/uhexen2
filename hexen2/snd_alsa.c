@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.2 2005-02-05 16:38:34 sezero Exp $
+	$Id: snd_alsa.c,v 1.3 2005-02-11 23:44:22 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -112,6 +112,7 @@ qboolean S_ALSA_Init (void)
 		case 11025:
 		case 22050:
 		case 44100:
+		case 48000:
 			err = hx2snd_pcm_hw_params_set_rate_near (pcm, hw, &rate, 0);
 			if (err < 0)
 				goto error;
@@ -276,6 +277,9 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/02/05 16:38:34  sezero
+ * fix silly copy+paste error in snd_alsa.c
+ *
  * Revision 1.1  2005/02/04 11:59:16  sezero
  * add ALSA sound driver (from the quakeforge project)
  *
