@@ -1,5 +1,9 @@
 ChangeLog:
 
+1.2.3: Changes since HoT-1.2.2:
+2005-01-20
+    * Release 1.2.3-final
+
 2005-01-18/19 (CVS, 1.2.3-rc8):
     * Hexen2/HexenWorld:
     - Fixed userdirs to work correctly against the -game arg.
