@@ -19,7 +19,6 @@ extern int hwgame;
 
 static char *binary_name = NULL;
 unsigned missingexe = 0;
-extern int l_noexit;
 
 const char *hwgame_names[MAX_HWGAMES][2]={
 	{  NULL     , "DeathMatch"},
@@ -125,8 +124,7 @@ void launch_hexen2_bin() {
     printf(" %s", args[i1]);
   printf("\n\n");
 
-  if (!l_noexit)
-     gtk_main_quit();
+  gtk_main_quit();
   pid=fork();
   if (pid == -1) {
 	printf ("fork() failed, bad...\n");

@@ -22,7 +22,6 @@ extern int joystick;
 extern int lan;
 extern int destiny;
 extern int hwgame;
-extern int l_noexit;
 extern unsigned missingexe;
 extern const char *res_names[];
 extern const char *hwgame_names[MAX_HWGAMES][2];
@@ -57,7 +56,6 @@ GtkWidget* create_window1 (void)
   GtkWidget *HWG_Entry;
 
   GtkWidget *bJOY;
-  GtkWidget *bNOEXIT;
   GtkWidget *bSAVE;
   GtkWidget *bQUIT;
 
@@ -80,7 +78,7 @@ GtkWidget* create_window1 (void)
   gtk_window_set_title (GTK_WINDOW (window1), Title);
   free (Title);
   gtk_window_set_policy (GTK_WINDOW (window1), TRUE, TRUE, FALSE);
-  gtk_window_set_default_size (GTK_WINDOW (window1), -1, 400);
+  gtk_window_set_default_size (GTK_WINDOW (window1), -1, 384);
 
   fixed1 = gtk_fixed_new ();
   gtk_widget_ref (fixed1);
@@ -105,7 +103,7 @@ GtkWidget* create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "bLAUNCH", WGT_LAUNCH,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (WGT_LAUNCH);
-  gtk_fixed_put (GTK_FIXED (fixed1), WGT_LAUNCH, 16, 344);
+  gtk_fixed_put (GTK_FIXED (fixed1), WGT_LAUNCH, 16, 328);
   gtk_widget_set_size_request (WGT_LAUNCH, 112, 24);
 //gtk_widget_set_sensitive (WGT_LAUNCH, !missingexe);
 
@@ -114,7 +112,7 @@ GtkWidget* create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "LStat", WGT_STATUSBAR,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (WGT_STATUSBAR);
-  gtk_fixed_put (GTK_FIXED (fixed1), WGT_STATUSBAR, 0, 374);
+  gtk_fixed_put (GTK_FIXED (fixed1), WGT_STATUSBAR, 0, 358);
   gtk_widget_set_size_request (WGT_STATUSBAR, 340, 24);
   gtk_container_set_border_width (GTK_CONTAINER (WGT_STATUSBAR), 2);
   BIN_STATUS_ID = gtk_statusbar_get_context_id (GTK_STATUSBAR (WGT_STATUSBAR), "BinaryStatus");
@@ -184,7 +182,7 @@ GtkWidget* create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "bSAVE", bSAVE,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bSAVE);
-  gtk_fixed_put (GTK_FIXED (fixed1), bSAVE, 148, 344);
+  gtk_fixed_put (GTK_FIXED (fixed1), bSAVE, 148, 328);
   gtk_widget_set_size_request (bSAVE, 96, 24);
 
   bQUIT = gtk_button_new_with_label (_("Quit"));
@@ -192,7 +190,7 @@ GtkWidget* create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "bQUIT", bQUIT,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bQUIT);
-  gtk_fixed_put (GTK_FIXED (fixed1), bQUIT, 264, 344);
+  gtk_fixed_put (GTK_FIXED (fixed1), bQUIT, 264, 328);
   gtk_widget_set_size_request (bQUIT, 64, 24);
 
 /*********************************************************************/
@@ -403,17 +401,6 @@ GtkWidget* create_window1 (void)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bJOY), !joystick);
 
 /*********************************************************************/
-  bNOEXIT = gtk_check_button_new_with_label (_("Keep me open.."));
-  gtk_widget_ref (bNOEXIT);
-  gtk_object_set_data_full (GTK_OBJECT (window1), "bNOEXIT", bNOEXIT,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (bNOEXIT);
-  gtk_fixed_put (GTK_FIXED (fixed1), bNOEXIT, 16, 320);
-  gtk_widget_set_size_request (bNOEXIT, 116, 20);
-  GTK_WIDGET_UNSET_FLAGS (bNOEXIT, GTK_CAN_FOCUS);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bNOEXIT), l_noexit);
-
-/*********************************************************************/
 // Separators
 
   hseparator1 = gtk_hseparator_new ();
@@ -494,8 +481,6 @@ GtkWidget* create_window1 (void)
 			GTK_SIGNAL_FUNC (ReverseOpt), &fullscreen);
   gtk_signal_connect (GTK_OBJECT (WGT_RES_ADJUST), "value_changed",
 			GTK_SIGNAL_FUNC (res_Change), &VID_STRUCT);
-  gtk_signal_connect (GTK_OBJECT (bNOEXIT), "toggled",
-			GTK_SIGNAL_FUNC (ReverseOpt), &l_noexit);
 #ifdef HAVE_GTK2
   gtk_object_set_data (GTK_OBJECT (window1), "tooltips", tooltips);
 #endif
