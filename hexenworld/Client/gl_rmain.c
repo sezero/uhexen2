@@ -337,8 +337,10 @@ void R_DrawSpriteModel (entity_t *e)
 	glfunc.glEnd_fp ();
 
 	//restore tex parms
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// replaced GL_REPEAT with GL_CLAMP below (courtesy of Pa3Pyx)
+	// fixing the demoness flame's "lines" bug S.A
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
 	glfunc.glDisable_fp( GL_BLEND );
 }

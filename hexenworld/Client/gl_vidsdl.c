@@ -532,7 +532,7 @@ void GL_Init (void)
 	gl_version = glfunc.glGetString_fp (GL_VERSION);
 	Con_Printf ("GL_VERSION: %s\n", gl_version);
 	gl_extensions = glfunc.glGetString_fp (GL_EXTENSIONS);
-	Con_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
+//	Con_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
 	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",4))
 	{
@@ -568,8 +568,9 @@ void GL_Init (void)
 
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// previously GL_CLAMP was GL_REPEAT S.A
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
 	glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

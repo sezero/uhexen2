@@ -2,7 +2,7 @@
 // 02/21/97 JCB Added extended DirectInput code to support external controllers.
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.6 2004-12-12 19:01:01 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.7 2004-12-29 21:02:20 sezero Exp $
  */
 
 #include "SDL.h"
@@ -227,6 +227,9 @@ void IN_DeactivateMouseSA (void)
 	// don't worry if fullscreen - S.A.
 	if ((int)vid_mode.value != MODE_FULLSCREEN_DEFAULT)
 		IN_DeactivateMouse ();
+
+	if (_windowed_mouse.value == 0)
+		IN_ShowMouse ();
 }
 
 
@@ -259,12 +262,13 @@ IN_StartupMouse
 void IN_StartupMouse (void)
 {
 	// S.A. mega hack to implement nomouse
-	// Dan just left several command line options broken,
+	// Dan(?) left several command line options broken,
 	// there's probably a better way to fix this, but where ?
 	// if -nomouse::return, userdir::config.cfg::_windowed_mouse=1, and !%$#
 
 	if ( COM_CheckParm ("-nomouse") )  {
 		Cbuf_InsertText ("_windowed_mouse 0");
+	IN_ShowMouse ();
 	}
 
 	// Should be a NOP in Linux, with this exception - DDOI
@@ -1258,6 +1262,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2004/12/12 19:01:01  sezero
+ * port Steven's 2004-12-12 mouse changes form hexen2. hopefully correct...
+ *
  * Revision 1.5  2004/12/05 12:38:49  sezero
  * wheelmouse..
  *

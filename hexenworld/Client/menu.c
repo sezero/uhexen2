@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.5 2004-12-21 16:04:26 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.6 2004-12-29 21:02:20 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -667,7 +667,7 @@ int	m_main_cursor;
 void M_Menu_Main_f (void)
 {
 
-	// Deactivate the mouse when the main menu is drawn - S.A.
+	// Deactivate the mouse when the menus are drawn - S.A.
 	IN_DeactivateMouseSA ();
 
 	if (key_dest != key_menu)
@@ -705,7 +705,7 @@ void M_Main_Key (int key)
 	{
 	case K_ESCAPE:
 
-		// leaving the main menu, reactivate the mouse - S.A.
+		// leaving the main menu, reactivate mouse - S.A.
 		IN_ActivateMouseSA ();
 
 		key_dest = key_game;
@@ -1014,6 +1014,12 @@ void M_AdjustSliders (int dir)
 
 	case OPT_USEMOUSE:	// _windowed_mouse
 		Cvar_SetValue ("_windowed_mouse", !_windowed_mouse.value);
+
+		if (_windowed_mouse.value == 0)
+			IN_ShowMouse ();
+		else
+			IN_HideMouse ();
+
 		break;
 	}
 }
@@ -1134,6 +1140,9 @@ void M_Options_Key (int k)
 		switch (options_cursor)
 		{
 		case OPT_CUSTOMIZE:
+			// here's where we enter the customization menu
+			IN_ActivateMouseSA ();
+
 			M_Menu_Keys_f ();
 			break;
 		case OPT_CONSOLE:
@@ -1194,9 +1203,6 @@ void M_Options_Key (int k)
 		else
 			options_cursor = 0;
 	}
-
-	// better activate mouse to enable configuring the mouse S.A 
-	IN_ActivateMouseSA ();
 
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 	
@@ -1417,6 +1423,9 @@ void M_Keys_Key (int k)
 	switch (k)
 	{
 	case K_ESCAPE:
+		// returning to other menus, deactivate mouse
+		IN_DeactivateMouseSA ();
+
 		M_Menu_Options_f ();
 		break;
 
