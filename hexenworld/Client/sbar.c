@@ -3,7 +3,7 @@
 //**
 //** sbar.c
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.2 2005-01-01 21:50:49 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.3 2005-01-01 21:55:47 sezero Exp $
 //**
 //**************************************************************************
 
@@ -174,6 +174,8 @@ static int AbilityLineIndex[MAX_PLAYER_CLASS] =
 	590,		// Demoness
 	594			// Dwarf
 };
+
+
 // CODE --------------------------------------------------------------------
 
 //==========================================================================
@@ -213,9 +215,6 @@ void Sbar_Init(void)
 	Cvar_RegisterVariable(&sbtemp);
 	BarHeight = BarTargetHeight = BAR_TOP_HEIGHT;
 }
-
-
-
 
 
 void SB_PlacePlayerNames(void)

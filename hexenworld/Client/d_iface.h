@@ -177,19 +177,39 @@ extern int		d_con_indirect;	// if 0, Quake will draw console directly
 
 extern vec3_t	r_pright, r_pup, r_ppn;
 
-void D_PolysetDrawT (void);
-void D_PolysetDrawFinalVertsT (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
-void D_PolysetDrawT2 (void);
-void D_PolysetDrawFinalVertsT2 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
-
+#if !id386
 void D_Aff8Patch (void *pcolormap);
+#endif
+#if id386
+extern void D_Aff8Patch (void *pcolormap);
+extern void D_DrawParticle (particle_t *pparticle);
+extern void D_DrawParticle1x1b (particle_t *pparticle);
+extern void D_PolysetDraw (void);
+extern void D_PolysetDrawT (void);
+extern void D_PolysetDrawT2 (void);
+extern void D_PolysetDrawT3 (void);
+extern void D_PolysetDrawT5 (void);
+extern void D_PolysetDrawFinalVerts (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+extern void D_PolysetDrawFinalVertsT (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+extern void D_PolysetDrawFinalVertsT2 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+extern void D_PolysetDrawFinalVertsT3 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+extern void D_PolysetDrawFinalVertsT5 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+extern void D_DrawNonSubdiv (void);
+extern void D_PolysetCalcGradients (int skinwidth);
+extern void D_PolysetCalcGradientsT (int skinwidth);
+extern void D_PolysetCalcGradientsT2 (int skinwidth);
+extern void D_PolysetCalcGradientsT3 (int skinwidth);
+extern void D_PolysetCalcGradientsT5 (int skinwidth);
+extern void D_PolysetRecursiveTriangle (int *p1, int *p2, int *p3);
+extern void D_PolysetScanLeftEdge (int height);
+extern void D_PolysetScanLeftEdgeT (int height);
+extern void D_PolysetScanLeftEdgeT2 (int height);
+extern void D_PolysetScanLeftEdgeT3 (int height);
+extern void D_PolysetScanLeftEdgeT5 (int height);
+#endif
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height);
 void D_DisableBackBufferAccess (void);
 void D_EndDirectRect (int x, int y, int width, int height);
-void D_PolysetDraw (void);
-void D_PolysetDrawFinalVerts (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
-void D_DrawParticle (particle_t *pparticle);
-void D_DrawParticle1x1b (particle_t *pparticle);
 void D_DrawPoly (void);
 void D_DrawSprite (void);
 void D_DrawSurfaces (qboolean Translucent);

@@ -87,17 +87,30 @@ byte	*skintable[MAX_LBM_HEIGHT];
 int		skinwidth;
 byte	*skinstart;
 
+#warning FIXME: The code isnt compilable on non-Intel
+#warning FIXME: until all of the asm is taken out!....
+
+void D_PolysetSetEdgeTable (void);
+void D_RasterizeAliasPolySmooth (void);
+
+#if !id386
+void D_PolysetDraw (void);
+void D_PolysetDrawFinalVerts (finalvert_t *fv, int numverts);
 void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage);
-void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage);
 void D_PolysetCalcGradients (int skinwidth);
-void D_PolysetCalcGradientsT (int skinwidth);
 void D_DrawSubdiv (void);
 void D_DrawNonSubdiv (void);
 void D_PolysetRecursiveTriangle (int *p1, int *p2, int *p3);
-void D_PolysetSetEdgeTable (void);
-void D_RasterizeAliasPolySmooth (void);
 void D_PolysetScanLeftEdge (int height);
-void D_PolysetScanLeftEdgeT (int height);
+#endif
+
+#if id386
+extern void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage);
+extern void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage);
+extern void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage);
+extern void D_PolysetDrawSpans8T3 (spanpackage_t *pspanpackage);
+extern void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage);
+#endif
 
 #if	!id386
 

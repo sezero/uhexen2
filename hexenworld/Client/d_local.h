@@ -67,6 +67,8 @@ void D_SpriteDrawSpansT2 (sspan_t *pspan);
 void D_DrawSkyScans8 (espan_t *pspan);
 void D_DrawSkyScans16 (espan_t *pspan);
 
+void D_Patch (void);
+
 void R_ShowSubDiv (void);
 void (*prealspandrawer)(void);
 surfcache_t	*D_CacheSurface (msurface_t *surface, int miplevel);
@@ -93,6 +95,17 @@ extern void D_SpriteSpansEndT2 (void);
 extern void D_DrawTurbulent8TSpan (void);
 extern void D_DrawTurbulent8TQuickSpan (void);
 extern void D_DrawTurbulent8TSpanEnd (void);
+extern void D_Aff8PatchT(void *pcolormap);
+extern void D_Aff8PatchT2(void *pcolormap);
+extern void D_Aff8PatchT3(void *pcolormap);
+extern void D_Aff8PatchT5(void *pcolormap);
+extern void R_TranPatch1(void);
+extern void R_TranPatch2(void);
+extern void R_TranPatch3(void);
+extern void R_TranPatch4(void);
+extern void R_TranPatch5(void);
+extern void R_TranPatch6(void);
+extern void R_TranPatch7(void);
 #endif
 
 extern short *d_pzbuffer;

@@ -239,12 +239,6 @@ void R_InitParticles (void);
 void R_ClearParticles (void);
 
 void R_ColoredParticleExplosion (vec3_t org,int color,int radius,int counter);
-void R_ParseParticleEffect (void);
-void R_ParseParticleEffect2 (void);
-void R_ParseParticleEffect3 (void);
-void R_ParseParticleEffect4 (void);
-void R_ParseRainEffect(void);
-
 
 void R_ReadPointFile_f (void);
 void R_SurfacePatch (void);
@@ -312,7 +306,5 @@ void R_SplitEntityOnNode2 (mnode_t *node);
 void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
 
 extern int TransCount;
-
-void R_DrawName(vec3_t origin, char *Name, int Red);
 
 #endif //GLQUAKE

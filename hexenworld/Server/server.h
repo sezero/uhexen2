@@ -387,7 +387,7 @@ void Master_Packet (void);
 // sv_init.c
 //
 void SV_SpawnServer (char *server, char *startspot);
-
+void SV_FlushSignon (void);
 
 //
 // sv_phys.c
@@ -400,6 +400,7 @@ qboolean SV_RunThink (edict_t *ent);
 void SV_Physics_Toss (edict_t *ent);
 void SV_RunNewmis (void);
 void SV_Impact (edict_t *e1, edict_t *e2);
+void SV_SetMoveVars (void);
 
 //
 // sv_send.c
@@ -412,6 +413,8 @@ void SV_Multicast (vec3_t origin, int to);
 void SV_MulticastSpecific (unsigned clients, qboolean reliable);
 void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
     float attenuation);
+void SV_StopSound (edict_t *entity, int channel);
+void SV_UpdateSoundPos (edict_t *entity, int channel);
 void SV_StartParticle (vec3_t org, vec3_t dir, int color, int count);
 void SV_StartParticle2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int effect, int count);
 void SV_StartParticle3 (vec3_t org, vec3_t box, int color, int effect, int count);
@@ -446,3 +449,10 @@ void SV_Status_f (void);
 // sv_ents.c
 //
 void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg);
+void SV_WriteInventory (client_t *host_client, edict_t *ent, sizebuf_t *msg);
+
+//
+// sv_effect.c
+//
+void SV_ParseEffect (sizebuf_t *sb);
+void SV_SendEffect (sizebuf_t *sb, int index);

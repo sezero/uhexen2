@@ -5,7 +5,7 @@
 //**
 //** Client side effects.
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.c,v 1.2 2005-01-01 21:50:48 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.c,v 1.3 2005-01-01 21:55:47 sezero Exp $
 //**
 //**************************************************************************
 
@@ -1161,8 +1161,8 @@ void XbowImpactPuff(vec3_t origin, int material)//hopefully can use this with xb
 }
 
 void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everything
-							// in this message, even if the effect is not the right kind or invalid,
-							// or else client is sure to crash.	
+				// in this message, even if the effect is not the right kind or invalid,
+				// or else client is sure to crash.	
 {
 	int index,type,revisionCode;
 	int curEnt,material,takedamage;
@@ -2429,6 +2429,9 @@ static void FreeEffectEntity(int index)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/01/01 21:50:48  sezero
+ * warnings cleanup: unused stuff
+ *
  * Revision 1.1.1.1  2004/11/28 08:51:10  sezero
  * Initial import of AoT 1.2.0 code
  *

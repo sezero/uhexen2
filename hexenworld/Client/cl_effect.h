@@ -228,3 +228,11 @@ struct EffectT
 void SV_SaveEffects(FILE *FH);
 void SV_LoadEffects(FILE *FH);
 
+void CL_InitEffects (void);
+void CL_EndEffect (void);
+void CL_ParseEffect (void);
+void CL_ParseMultiEffect (void);
+void CL_ClearEffects (void);
+void CL_UpdateEffects (void);
+void CL_TurnEffect (void);
+void CL_ReviseEffect (void);

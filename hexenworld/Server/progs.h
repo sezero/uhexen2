@@ -53,12 +53,14 @@ void PR_Init (void);
 
 void PR_ExecuteProgram (func_t fnum);
 void PR_LoadProgs (void);
+void PR_LoadStrings (void);
 
 void PR_Profile_f (void);
 
 edict_t *ED_Alloc (void);
 edict_t *ED_Alloc_Temp (void);
 void ED_Free (edict_t *ed);
+void ED_ClearEdict (edict_t *e);
 
 char	*ED_NewString (char *string);
 // returns a copy of the string allocated from the server's string heap

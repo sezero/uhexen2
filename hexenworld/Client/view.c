@@ -45,10 +45,14 @@ float	v_targAngle;
 float	v_targPitch;
 float	v_targDist = 0.0;
 
-extern	int			in_forward, in_forward2, in_back;
+extern	int	in_forward, in_forward2, in_back;
 
 frame_t		*view_frame;
-player_state_t		*view_message;
+player_state_t	*view_message;
+
+#ifndef GLQUAKE
+extern void Draw_Crosshair(void);
+#endif
 
 /*
 ===============

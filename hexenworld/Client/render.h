@@ -107,6 +107,12 @@ void R_NewMap (void);
 
 
 void R_ParseParticleEffect (void);
+void R_ParseParticleEffect2 (void);
+void R_ParseParticleEffect3 (void);
+void R_ParseParticleEffect4 (void);
+void R_ParseRainEffect(void);
+void R_DarkFieldParticles (entity_t *ent);
+void R_DrawName(vec3_t origin, char *Name, int Red);
 void R_ParticleExplosion (vec3_t org);
 void R_ParticleExplosion2 (vec3_t org, int colorStart, int colorLength);
 void R_BlobExplosion (vec3_t org);
@@ -114,6 +120,7 @@ void R_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count);
 void R_RunParticleEffect2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int effect, int count);
 void R_RunParticleEffect3 (vec3_t org, vec3_t box, int color, int effect, int count);
 void R_RunParticleEffect4 (vec3_t org, float radius, int color, int effect, int count);
+void R_SplashParticleEffect (vec3_t org, float radius, int color, int effect, int count);
 void R_LavaSplash (vec3_t org);
 void R_TeleportSplash (vec3_t org);
 void R_RunQuakeEffect (vec3_t org, float distance);

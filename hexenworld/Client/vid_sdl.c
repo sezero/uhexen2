@@ -21,7 +21,7 @@
 */
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.4 2005-01-01 21:50:49 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.5 2005-01-01 21:55:47 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -1278,12 +1278,6 @@ void VID_HandlePause (qboolean pause)
 	}
 }
 
-extern void M_Menu_Options_f (void);
-extern void M_Print (int cx, int cy, char *str);
-extern void M_PrintWhite (int cx, int cy, char *str);
-extern void M_DrawCharacter (int cx, int line, int num);
-extern void M_DrawTransPic (int x, int y, qpic_t *pic);
-extern void M_DrawPic (int x, int y, qpic_t *pic);
 
 //static int	vid_line, vid_wmodes;
 
@@ -1346,6 +1340,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/01/01 21:50:49  sezero
+ * warnings cleanup: unused stuff
+ *
  * Revision 1.3  2004/12/05 12:25:58  sezero
  * Sync with Steven's changes to hexen2, 2004-12-04
  *

@@ -4,6 +4,12 @@
 #define GLQUAKE_VERSION 0.95
 #define	VERSION		0.15
 
+/* From Dan Olson:
+   The code isn't compilable on non-intel until all of the asm is
+   taken out.  Don't worry about the id386 define *yet*, and even
+   after all of the assembly is replaced  you may still need it
+   defined for non-x86 compiles. The eventual goal should probably
+   be to get rid of all x86 specific stuff. */
 #if (defined(_M_IX86) || defined(__i386__)) && !defined(id386)
 #define id386	1
 #else

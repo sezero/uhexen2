@@ -49,6 +49,34 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode);
 int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode);
 int GL_FindTexture (char *identifier);
+int GL_LoadPicTexture (qpic_t *pic);
+void GL_BuildLightmaps (void);
+void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr);
+void GL_Set2D (void);
+void GL_SubdivideSurface (msurface_t *fa);
+void EmitSkyPolys (msurface_t *fa);
+void EmitWaterPolys (msurface_t *fa);
+void EmitBothSkyLayers (msurface_t *fa);
+qboolean R_CullBox (vec3_t mins, vec3_t maxs);
+void R_DrawBrushModel (entity_t *e, qboolean Translucent);
+void R_DrawSkyChain (msurface_t *s);
+void R_DrawWorld (void);
+void R_DrawWaterSurfaces (void);
+void R_RenderBrushPoly (msurface_t *fa, qboolean override);
+void R_RenderDlights (void);
+void R_RotateForEntity (entity_t *e);
+void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
+void R_AnimateLight(void);
+int R_LightPoint (vec3_t p);
+void R_StoreEfrags (efrag_t **ppefrag);
+void R_InitParticles (void);
+void R_ClearParticles (void);
+void R_DrawParticles (void);
+void R_NetGraph (void);
+
+int M_DrawBigCharacter (int x, int y, int num, int numNext);
+// defined only for !GLQUAKE in menu.c
+
 
 typedef struct
 {

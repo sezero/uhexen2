@@ -403,6 +403,7 @@ void	CL_DecayLights (void);
 
 void CL_Init (void);
 
+void CL_SendConnectPacket (void);
 void CL_EstablishConnection (char *host);
 
 void CL_Disconnect (void);
@@ -459,11 +460,22 @@ void CL_ReRecord_f (void);
 void CL_PlayDemo_f (void);
 void CL_TimeDemo_f (void);
 
+void CL_WriteDemoCmd (usercmd_t *pcmd);
+
 //
 // cl_parse.c
 //
 void CL_ParseServerMessage (void);
 void CL_NewTranslation (int slot);
+qboolean CL_CheckOrDownloadFile (char *filename);
+
+//
+// cl_cam.c
+//
+void CL_InitCam (void);
+void Cam_Reset (void);
+void Cam_Track (usercmd_t *cmd);
+void Cam_FinishMove (usercmd_t *cmd);
 
 //
 // view
@@ -500,13 +512,24 @@ void CL_UpdatePowerFlameBurn(entity_t *ent, int edict_num);
 //
 // cl_ents.c
 //
+void CL_EmitEntities (void);
+void CL_SetUpPlayerPrediction (qboolean dopred);
 void CL_SetSolidPlayers (int playernum);
+void CL_SetSolidEntities (void);
+void CL_ClearProjectiles (void);
+void CL_ClearMissiles (void);
+void CL_ParseProjectiles (void);
+void CL_ParsePackMissiles (void);
+void CL_ParsePacketEntities (qboolean delta);
+void CL_ParsePlayerinfo (void);
+void CL_SavePlayer (void);
 
 //
 // cl_pred.c
 //
 void CL_InitPrediction (void);
 void CL_PredictMove (void);
+void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, qboolean spectator);
 
 //
 // skin.c

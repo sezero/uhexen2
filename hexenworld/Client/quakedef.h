@@ -133,12 +133,21 @@ void Host_Frame (float time);
 void Host_Quit_f (void);
 void Host_ClientCommands (char *fmt, ...);
 void Host_ShutdownServer (qboolean crash);
+void Host_WriteConfiguration (char *fname);
 
 extern qboolean		msg_suppress_1;		// suppresses resolution and cache size console output
-										//  an fullscreen DIB focus gain/loss
+						//  an fullscreen DIB focus gain/loss
 
-extern	unsigned int			defLosses;	// Defenders losses in Siege
-extern	unsigned int			attLosses;	// Attackers Losses in Siege
+//
+// Steve's windowed mouse tinkerings
+//
+void IN_ActivateMouseSA (void);
+void IN_DeactivateMouseSA (void);
+
+
+extern	unsigned int		defLosses;	// Defenders losses in Siege
+extern	unsigned int		attLosses;	// Attackers Losses in Siege
 
 extern int			cl_keyholder;
 extern int			cl_doc;
+

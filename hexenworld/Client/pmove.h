@@ -81,5 +81,6 @@ void PlayerMove (void);
 void Pmove_Init (void);
 
 int PM_PointContents (vec3_t point);
+int PM_HullPointContents (hull_t *hull, int num, vec3_t p);
 qboolean PM_TestPlayerPosition (vec3_t point);
 pmtrace_t PM_PlayerMove (vec3_t start, vec3_t stop);

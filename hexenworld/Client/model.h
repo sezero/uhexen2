@@ -418,6 +418,7 @@ typedef struct model_s
 
 void	Mod_Init (void);
 void	Mod_ClearAll (void);
+model_t *Mod_FindName (char *name);
 model_t *Mod_ForName (char *name, qboolean crash);
 void	*Mod_Extradata (model_t *mod);	// handles caching
 void	Mod_TouchModel (char *name);
