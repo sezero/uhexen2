@@ -72,6 +72,7 @@ void on_OGL (GtkToggleButton *button, gamewidget_t *wgt) {
 }
 
 void res_Change (GtkAdjustment *adj, struct Video_s *wgt) {
+   // FIXME: This is silly but it's less work ;)  Change it.
    resolution = (int)(adj->value);
    if ( (adj->value)-resolution > .65 )
    	resolution++;
