@@ -21,7 +21,7 @@ void R_Alias_clip_left (finalvert_t *pfv0, finalvert_t *pfv1,
 void R_Alias_clip_right (finalvert_t *pfv0, finalvert_t *pfv1,
 	finalvert_t *out);
 
-#warning FIXME: The code isn't compilable on non-Intel
+#warning FIXME: The code isnt compilable on non-Intel
 #warning FIXME: until all of the asm is taken out!....
 
 /*

@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.4 2004-12-19 10:35:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.5 2004-12-19 14:38:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -92,7 +92,7 @@ byte	*skintable[MAX_SKIN_HEIGHT];
 int		skinwidth;
 byte	*skinstart;
 
-#warning FIXME: The code isn't compilable on non-Intel
+#warning FIXME: The code isnt compilable on non-Intel
 #warning FIXME: until all of the asm is taken out!....
 
 void D_PolysetSetEdgeTable (void);
@@ -1159,6 +1159,10 @@ split:
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/19 10:35:30  sezero
+ * - Add "implicitly declared" functions as externs: Software rendering files.
+ * - Add comments on the asm/non-Intel status of the code
+ *
  * Revision 1.3  2004/12/18 14:20:40  sezero
  * Clean-up and kill warnings: 11
  * A lot of whitespace cleanups.

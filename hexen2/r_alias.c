@@ -64,7 +64,7 @@ void R_AliasTransformFinalVert (finalvert_t *fv, auxvert_t *av,
 	trivertx_t *pverts);
 void R_AliasProjectFinalVert (finalvert_t *fv, auxvert_t *av);
 
-#warning FIXME: The code isn't compilable on non-Intel
+#warning FIXME: The code isnt compilable on non-Intel
 #warning FIXME: until all of the asm is taken out!....
 
 /*
