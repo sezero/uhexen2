@@ -113,6 +113,9 @@ keyname_t keynames[] =
 
 	{"PAUSE", K_PAUSE},
 
+	{"MWHEELUP", K_MWHEELUP},
+	{"MWHEELDOWN", K_MWHEELDOWN},
+
 	{"SEMICOLON", ';'},	// because a raw semicolon seperates commands
 
 	{NULL,0}

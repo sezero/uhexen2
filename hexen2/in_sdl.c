@@ -2,7 +2,7 @@
 // 02/21/97 JCB Added extended DirectInput code to support external controllers.
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.4 2004-12-05 10:52:18 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.5 2004-12-05 11:00:37 sezero Exp $
  */
 
 #include "SDL.h"
@@ -1180,7 +1180,52 @@ void IN_SendKeyEvents (void)
                                 Key_Event(sym, state);
                                 break;
                         case SDL_MOUSEBUTTONDOWN:
+				switch(event.button.button)
+				{
+				case 1:
+					Key_Event(K_MOUSE1, true);
+					break;
+				case 2:
+					Key_Event(K_MOUSE3, true);
+					break;
+				case 3:
+					Key_Event(K_MOUSE2, true);
+					break;
+				case 4:
+					Key_Event(K_MWHEELUP, true);
+					break;
+				case 5:
+					Key_Event(K_MWHEELDOWN, true);
+					break;
+				default:
+					Con_Printf("HandleEvents: ButtonPress gave value %d, 1-5 expected\n", event.button.button);
+					break;
+				}
+				break;
+
                         case SDL_MOUSEBUTTONUP:
+				switch(event.button.button)
+				{
+				case 1:
+					Key_Event(K_MOUSE1, false);
+					break;
+				case 2:
+					Key_Event(K_MOUSE3, false);
+					break;
+				case 3:
+					Key_Event(K_MOUSE2, false);
+					break;
+				case 4:
+					Key_Event(K_MWHEELUP, false);
+					break;
+				case 5:
+					Key_Event(K_MWHEELDOWN, false);
+					break;
+				default:
+					Con_Printf("HandleEvents: ButtonRelease gave value %d, 1-5 expected\n", event.button.button);
+					break;
+				}
+				break;
                         case SDL_MOUSEMOTION:
                                 if (!in_mode_set)
                                 {
@@ -1200,6 +1245,15 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/05 10:52:18  sezero
+ * Sync with Steven, 2004-12-04 :
+ *  Fix the "Old Mission" menu PoP
+ *  Also release the windowed mouse on pause
+ *  Heapsize is now 32768 default
+ *  The final splash screens now centre the messages properly
+ *  Add more mods to the video mods table
+ *  Add the docs folder and update it
+ *
  * Revision 1.3  2004/12/04 18:47:47  sezero
  * Kill some compiler warnings. Add sys_ia32.s to the "make clean" lists.
  *
