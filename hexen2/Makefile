@@ -56,6 +56,14 @@ GLFLAGS+= -lSDL_mixer
 LDFLAGS+= -lSDL_mixer
 endif
 
+ifeq "${DEMO}" "yes"
+CFLAGS+= -DDEMOBUILD
+endif
+
+ifdef DEBUG
+CFLAGS+= -DDEBUG -g
+endif
+
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c -o $@ $< $(CFLAGS)
