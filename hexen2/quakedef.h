@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.10 2004-12-18 14:20:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.11 2004-12-19 10:35:30 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -69,6 +69,12 @@ void	VID_UnlockBuffer (void);
 
 #endif
 
+/* From Dan Olson:
+   The code isn't compilable on non-intel until all of the asm is
+   taken out.  Don't worry about the id386 define *yet*, and even
+   after all of the assembly is replaced  you may still need it
+   defined for non-x86 compiles. The eventual goal should probably
+   be to get rid of all x86 specific stuff. */
 #ifdef __i386__
 #define id386	1
 #else
@@ -443,6 +449,10 @@ void IN_DeactivateMouseSA (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2004/12/18 14:20:40  sezero
+ * Clean-up and kill warnings: 11
+ * A lot of whitespace cleanups.
+ *
  * Revision 1.9  2004/12/18 13:59:25  sezero
  * Clean-up and kill warnings 8:
  * Missing prototypes.

@@ -2,7 +2,7 @@
 	d_local.h
 	private rasterization driver defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.3 2004-12-19 10:35:30 sezero Exp $
 */
 
 #include "r_shared.h"
@@ -73,6 +73,8 @@ void D_SpriteDrawSpansT2 (sspan_t *pspan);
 void D_DrawSkyScans8 (espan_t *pspan);
 void D_DrawSkyScans16 (espan_t *pspan);
 
+void D_Patch (void);
+
 void R_ShowSubDiv (void);
 void (*prealspandrawer)(void);
 surfcache_t	*D_CacheSurface (msurface_t *surface, int miplevel);
@@ -99,6 +101,17 @@ extern void D_SpriteSpansEndT2 (void);
 extern void D_DrawTurbulent8TSpan (void);
 extern void D_DrawTurbulent8TQuickSpan (void);
 extern void D_DrawTurbulent8TSpanEnd (void);
+extern void D_Aff8PatchT(void *pcolormap);
+extern void D_Aff8PatchT2(void *pcolormap);
+extern void D_Aff8PatchT3(void *pcolormap);
+extern void D_Aff8PatchT5(void *pcolormap);
+extern void R_TranPatch1(void);
+extern void R_TranPatch2(void);
+extern void R_TranPatch3(void);
+extern void R_TranPatch4(void);
+extern void R_TranPatch5(void);
+extern void R_TranPatch6(void);
+extern void R_TranPatch7(void);
 #endif
 
 extern short *d_pzbuffer;
@@ -128,6 +141,9 @@ extern byte			scanList[SCAN_SIZE];
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:01:47  sezero
  * Initial import of AoT 1.2.0 code
  *
