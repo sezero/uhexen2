@@ -3,20 +3,20 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.8 2004-12-18 14:20:40 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.9 2004-12-29 19:49:40 sezero Exp $
 
-   Changed by S.A. 7/11/04
+   Changed by S.A. 7/11/04, 27/12/04
+
    Options are now:
      -fullscreen | -window, -height , -width 
-   Currently bpp is 8 bit (I think) but I haven't looked much at this.
+   Currently bpp is 8 bit , and it seems fairly hardwired at this depth
    Interactive Video Modes have been disabled.
-   They conflict a little with the command-line options in that:
-     They insist on starting fullscreen.
-     If you remove this insistence, you break the test video mode restore.
-   Might fix them one day, but this file is such a mess.
 
-   The modes which are used are :
-	MODE_WINDOWED  0, MODE_FULLSCREEN_DEFAULT 3
+   The modes which are used are the traditional 0 and 3, but have redefined
+   MODE_FULLSCREEN_DEFAULT from 3 to 1 to be a boolean:
+
+	vid_mode = MODE_WINDOWED  0 || MODE_FULLSCREEN_DEFAULT 1
+
    For clarity I have removed the variable "windowed_default" and replaced
    it with MODE_WINDOWED. Functionality is the same.
 */
@@ -51,13 +51,13 @@ viddef_t	vid;				// global video state
 #define MODE_WINDOWED			0
 #define MODE_SETTABLE_WINDOW	2
 #define NO_MODE					(MODE_WINDOWED - 1)
-#define MODE_FULLSCREEN_DEFAULT	(MODE_WINDOWED + 3)
+#define MODE_FULLSCREEN_DEFAULT	(MODE_WINDOWED + 1)
 
 // Note that 0 is MODE_WINDOWED
 cvar_t		vid_mode = {"vid_mode","0", false};
 // Note that 0 is MODE_WINDOWED
 cvar_t		_vid_default_mode = {"_vid_default_mode","0", true};
-// Note that 3 is MODE_FULLSCREEN_DEFAULT
+// Note that 1 is MODE_FULLSCREEN_DEFAULT
 cvar_t		_vid_default_mode_win = {"_vid_default_mode_win","3", true};
 cvar_t		vid_wait = {"vid_wait","0"};
 cvar_t		vid_nopageflip = {"vid_nopageflip","0", true};
@@ -823,65 +823,33 @@ void	VID_Init (unsigned char *palette)
 	Cmd_AddCommand ("vid_describemodes", VID_DescribeModes_f);
 	Cmd_AddCommand ("vid_setgamma", VID_SetGamma_f);
 
-        modelist[0].type = MS_WINDOWED;
-        modelist[0].width = 320;
-        modelist[0].height = 240;
-        strcpy (modelist[0].modedesc, "320x240");
-        modelist[0].mode13 = 0;
-        modelist[0].modenum = MODE_WINDOWED;
-        modelist[0].stretched = 0;
-        modelist[0].dib = 1;
-        modelist[0].fullscreen = 0;
-        modelist[0].halfscreen = 0;
-        modelist[0].bpp = 8;
+	modelist[0].type = MS_WINDOWED;
+	modelist[0].width = 320;
+	modelist[0].height = 240;
+	strcpy (modelist[0].modedesc, "320x240");
+	modelist[0].mode13 = 0;
+	modelist[0].modenum = MODE_WINDOWED;
+	modelist[0].stretched = 0;
+	modelist[0].dib = 1;
+	modelist[0].fullscreen = 0;
+	modelist[0].halfscreen = 0;
+	modelist[0].bpp = 8;
 
-        modelist[1].type = MS_WINDOWED;
-        modelist[1].width = 640;
-        modelist[1].height = 480;
-        strcpy (modelist[1].modedesc, "640x480");
-        modelist[1].mode13 = 0;
-        modelist[1].modenum = MODE_WINDOWED + 1;
-        modelist[1].stretched = 0;
-        modelist[1].dib = 1;
-        modelist[1].fullscreen = 0;
-        modelist[1].halfscreen = 0;
-        modelist[1].bpp = 8;
+	// mode[1] has been hacked to be like the (missing) mode[3] S.A.
 
-        modelist[2].type = MS_WINDOWED;
-        modelist[2].width = 800;
-        modelist[2].height = 600;
-        strcpy (modelist[2].modedesc, "800x600");
-        modelist[2].mode13 = 0;
-        modelist[2].modenum = MODE_WINDOWED + 2;
-        modelist[2].stretched = 0;
-        modelist[2].dib = 1;
-        modelist[2].fullscreen = 0;
-        modelist[2].halfscreen = 0;
-        modelist[2].bpp = 8;
+	modelist[1].type = MS_FULLSCREEN;
+	modelist[1].width = 640;
+	modelist[1].height = 480;
+	strcpy (modelist[1].modedesc, "640x480");
+	modelist[1].mode13 = 0;
+	modelist[1].modenum = MODE_FULLSCREEN_DEFAULT;
+	modelist[1].stretched = 1;
+	modelist[1].dib = 1;
+	modelist[1].fullscreen = 1;
+	modelist[1].halfscreen = 0;
+	modelist[1].bpp = 8;
 
-        modelist[3].type = MS_FULLSCREEN;
-        modelist[3].width = 640;
-        modelist[3].height = 480;
-        strcpy (modelist[3].modedesc, "640x480");
-        modelist[3].mode13 = 0;
-        modelist[3].modenum = MODE_WINDOWED + 3;
-        modelist[3].stretched = 1;
-        modelist[3].dib = 1;
-        modelist[3].fullscreen = 1;
-        modelist[3].halfscreen = 0;
-        modelist[3].bpp = 8;
-
-        modelist[4].type = MS_FULLSCREEN;
-        modelist[4].width = 800;
-        modelist[4].height = 600;
-        strcpy (modelist[4].modedesc, "800x600");
-        modelist[4].mode13 = 0;
-        modelist[4].modenum = MODE_WINDOWED + 4;
-        modelist[4].stretched = 1;
-        modelist[4].dib = 1;
-        modelist[4].fullscreen = 0;
-        modelist[4].halfscreen = 0;
-        modelist[4].bpp = 8;
+	// modelist[2-4] removed
 
 	vid_default = MODE_WINDOWED;
 
@@ -928,7 +896,7 @@ void	VID_Init (unsigned char *palette)
  	 * command line processing (S.A) *
  	 *********************************/
 
-	grab = 1; // grab window, but we release it when main menu is drawn
+	grab = 1; // grab window, release it when main menu is drawn
 
 	startwindowed = 1; // default is windowed
 	vid_default = MODE_WINDOWED;
@@ -940,25 +908,25 @@ void	VID_Init (unsigned char *palette)
 		vid_default = MODE_FULLSCREEN_DEFAULT;
 	}
 
-        if (COM_CheckParm("-width"))
-        {
-                width = atoi(com_argv[COM_CheckParm("-width")+1]);
-        }
-        else
-        {
+	if (COM_CheckParm("-width"))
+	{
+		width = atoi(com_argv[COM_CheckParm("-width")+1]);
+	}
+	else
+	{
 		// make the default sizes for software mode smaller
 		if (vid_default == MODE_WINDOWED)
-                        width=400;
-                else
-                        width=512;
-        }
+			width=400;
+		else
+			width=512;
+	}
 
-        if (COM_CheckParm("-height"))
-        {
-                height = atoi(com_argv[COM_CheckParm("-height")+1]);
-        }
-        else
-        {
+	if (COM_CheckParm("-height"))
+	{
+		height = atoi(com_argv[COM_CheckParm("-height")+1]);
+	}
+	else
+	{
 		switch (width) {
 			case 800: height=600; break;
 			case 640: height=480; break;
@@ -966,11 +934,11 @@ void	VID_Init (unsigned char *palette)
 			case 400: height=300; break;
 			case 320: height=240; break;
 			default:  height=300;
-                }
-        }
-        modelist[vid_default].width = width;
-        modelist[vid_default].height = height;
-        sprintf (modelist[vid_default].modedesc,"%dx%d",width,height);
+		}
+	}
+	modelist[vid_default].width = width;
+	modelist[vid_default].height = height;
+	sprintf (modelist[vid_default].modedesc,"%dx%d",width,height);
 
 	// printf ("SA vid_default = %i\n",vid_default);
 
@@ -1311,16 +1279,27 @@ VID_MenuDraw
 
 void VID_MenuDraw (void)
 {
-        M_Print (0*8, 4 + MODE_AREA_HEIGHT * 8 + 8*0,
-                         "Select video modes from the command line");
-        M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*2,
-                         "-window");
-        M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*3,
-                         "-fullscreen");
-        M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*5,
-                         "-width  <width>");
-        M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*6,
-                         "-height <height>");
+	M_Print (0*8, 4 + MODE_AREA_HEIGHT * 8 + 8*2,
+			 "Select video modes from the command line");
+	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*4,
+			 "-window");
+	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*5,
+			 "-fullscreen");
+	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*6,
+			 "-width  <width>");
+	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*7,
+			 "-height <height>");
+}
+
+void ToggleFullScreenSA ()
+{
+	if (SDL_WM_ToggleFullScreen(screen)==1) {
+
+		Cvar_SetValue ("vid_mode", !vid_mode.value);
+	
+	} else {
+	    Con_Printf ("SDL_WM_ToggleFullScreen failed\n");
+	}
 }
 
 /*
@@ -1332,6 +1311,11 @@ void VID_MenuKey (int key)
 {
 	switch (key)
 	{
+/*  unused // Toggle fullscreen/window modes S.A.
+	case K_SPACE:
+		ToggleFullScreenSA ();
+		break;
+*/
 	case K_ESCAPE:
 	case K_ENTER:
 		S_LocalSound ("raven/menu1.wav");
@@ -1347,6 +1331,10 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2004/12/18 14:20:40  sezero
+ * Clean-up and kill warnings: 11
+ * A lot of whitespace cleanups.
+ *
  * Revision 1.7  2004/12/18 14:08:08  sezero
  * Clean-up and kill warnings 9:
  * Kill many unused vars.

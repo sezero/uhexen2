@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.22 2004-12-28 22:33:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.23 2004-12-29 19:49:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -13,11 +13,12 @@
 extern  cvar_t  r_shadows, gl_glows, gl_missile_glows, gl_other_glows; // S.A
 #endif
 
+extern	cvar_t	vid_mode;
 extern	float introTime;
 extern	cvar_t	crosshair;
 #ifdef H2MP
-cvar_t m_oldmission = {"m_oldmission","0", false};
-cvar_t m_demoness   = {"m_demoness",  "0", false};
+cvar_t	m_oldmission = {"m_oldmission","0", false};
+cvar_t	m_demoness   = {"m_demoness",  "0", false};
 #define NUM_CLASSESD	(NUM_CLASSES -1 + m_demoness.value)
 #define CLASS_ITEMSD	(CLASS_ITEMS -1 + m_demoness.value)
 #endif
@@ -725,11 +726,12 @@ int	m_main_cursor;
 void M_Menu_Main_f (void)
 {
 
-	// Deactivate the mouse when the main menu is drawn - S.A.
+	// Deactivate the mouse when the menus are drawn - S.A.
 	IN_DeactivateMouseSA ();
+
 	// get the music type if just in from game
 	if (key_dest == key_game )
-		strcpy(old_bgmtype,bgmtype.string);
+		strncpy(old_bgmtype,bgmtype.string,20);
 
 	if (key_dest != key_menu)
 	{
@@ -765,10 +767,10 @@ void M_Main_Key (int key)
 	{
 	case K_ESCAPE:
 
-		// leaving the main menu, reactivate the mouse S.A.
+		// leaving the main menu, reactivate mouse S.A.
 		IN_ActivateMouseSA ();
 
-		// and check we haven't changed the music type S.A.
+		// and check we haven't changed the music type
 		if (strcmp(old_bgmtype,bgmtype.string)!=0)
 			ReInitMusic ();
 
@@ -1925,11 +1927,11 @@ enum
 	OPT_CONSOLE,
 	OPT_DEFAULTS,
 	OPT_SCRSIZE,	//3
-	OPT_GAMMA,	//4
+	OPT_GAMMA,		//4
 	OPT_MOUSESPEED,	//5
 	OPT_MUSICTYPE,	//6
 	OPT_MUSICVOL,	//7
-	OPT_SNDVOL,	//8
+	OPT_SNDVOL,		//8
 	OPT_ALWAYRUN,	//9
 	OPT_INVMOUSE,	//10
 	OPT_LOOKSPRING,	//11
@@ -1942,6 +1944,7 @@ enum
 	OPT_GL_GLOW,
 #endif
 	OPT_CHASE_ACTIVE,
+	OPT_FULLSCREEN,
 	OPT_VIDEO,
 	OPTIONS_ITEMS
 	// new definitions S.A.
@@ -1954,9 +1957,6 @@ void	M_Menu_Options_f (void)
 	key_dest = key_menu;
 	m_state = m_options;
 	m_entersound = true;
-
-	// better activate mouse to enable configuring the mouse S.A 
-	IN_ActivateMouseSA ();
 
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 		options_cursor = 0;
@@ -2091,8 +2091,17 @@ void M_AdjustSliders (int dir)
 	case OPT_CHASE_ACTIVE:	// chase_active
 		Cvar_SetValue ("chase_active", !chase_active.value);
 		break;
+	case OPT_FULLSCREEN:	// vid_mode
+		ToggleFullScreenSA();
+		break;
 	case OPT_USEMOUSE:	// _windowed_mouse
 		Cvar_SetValue ("_windowed_mouse", !_windowed_mouse.value);
+
+		if (_windowed_mouse.value == 0)
+			IN_ShowMouse ();
+		else
+			IN_HideMouse ();
+
 		break;
 	}
 }
@@ -2186,13 +2195,16 @@ void M_Options_Draw (void)
 	M_DrawCheckbox (220, 60+(OPT_ALWAYSMLOOK*8), in_mlook.state & 1);
 
 #if defined (_WIN32) || defined (PLATFORM_UNIX)
-	if (modestate == MS_WINDOWED)
-	{
-	  M_Print (16, 60+(OPT_USEMOUSE*8),	"             Use Mouse");
-	  M_DrawCheckbox (220, 60+(OPT_USEMOUSE*8), _windowed_mouse.value);
-	}
+	// don't need this anymore S.A
+	// if (modestate == MS_WINDOWED)
+	// {
+
+	M_Print (16, 60+(OPT_USEMOUSE*8),	"             Use Mouse");
+	M_DrawCheckbox (220, 60+(OPT_USEMOUSE*8), _windowed_mouse.value);
+
+	// }
 #endif
-	// S.A. new menu items
+
 #ifdef GLQUAKE
 	M_Print (16, 60+(OPT_R_SHADOWS*8),	"               Shadows");
 	M_DrawCheckbox (220, 60+(OPT_R_SHADOWS*8), r_shadows.value);
@@ -2200,13 +2212,17 @@ void M_Options_Draw (void)
 	M_Print (16, 60+(OPT_GL_GLOW*8),	"              Gl Glows");
 	M_DrawCheckbox (220, 60+(OPT_GL_GLOW*8), gl_glows.value);
 #endif
-	M_Print (16, 60+(OPT_CHASE_ACTIVE*8),	"            Chase Mode");
+	M_Print (16, 60+(OPT_CHASE_ACTIVE*8),"            Chase Mode");
 	M_DrawCheckbox (220, 60+(OPT_CHASE_ACTIVE*8), chase_active.value);
+
+	M_Print (16, 60+(OPT_FULLSCREEN*8),	"            Fullscreen");
+	M_DrawCheckbox (220, 60+(OPT_FULLSCREEN*8), vid_mode.value);
 
 	if (vid_menudrawfn)
 		M_Print (16, 60+(OPT_VIDEO*8),	"           Video Modes");
 
-// cursor
+	// cursor
+	// doesn't get drawn properly with XFree4.3/MGA200 S.A.
 	M_DrawCharacter (200, 60 + options_cursor*8, 12+((int)(realtime*4)&1));
 }
 
@@ -2224,6 +2240,9 @@ void M_Options_Key (int k)
 		switch (options_cursor)
 		{
 		case OPT_CUSTOMIZE:
+			// here's where we enter the customization menu
+			IN_ActivateMouseSA ();
+
 			M_Menu_Keys_f ();
 			break;
 		case OPT_CONSOLE:
@@ -2275,15 +2294,19 @@ void M_Options_Key (int k)
 		break;
 	}
 
-	// Redundancy here in case we have neither OPT_VIDEO and OPT_USEMOUSE
-	// Skip over the use mouse option if fullscreen - S.A.
-
 	if (options_cursor == OPT_VIDEO && vid_menudrawfn == NULL) {
 		if (k == K_UPARROW)
 			options_cursor = OPT_VIDEO - 1;
 		else
 			options_cursor = 0;
 	}
+
+/* - removed
+   - we now have the no mouse option for fullscreen also 
+
+  // redundancy here in case we have neither OPT_VIDEO and OPT_USEMOUSE
+  // skip over the use mouse option if fullscreen - S.A.
+
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED)) {
 		if (k == K_UPARROW)
 			options_cursor = OPT_USEMOUSE - 1;
@@ -2299,6 +2322,7 @@ void M_Options_Key (int k)
 		else
 			options_cursor = 0;
 	}
+*/
 }
 
 //=============================================================================
@@ -2500,6 +2524,9 @@ void M_Keys_Key (int k)
 	switch (k)
 	{
 	case K_ESCAPE:
+		// returning to other menus, deactivate mouse
+		IN_DeactivateMouseSA ();
+
 		M_Menu_Options_f ();
 		break;
 
@@ -4733,6 +4760,9 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2004/12/28 22:33:17  sezero
+ * fix the cvar m_oldmission again ;(
+ *
  * Revision 1.21  2004/12/28 17:38:03  sezero
  * Add/enable the cmdline options -witholdmission and -noold
  *

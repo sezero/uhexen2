@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.10 2004-12-18 14:08:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.11 2004-12-29 19:49:40 sezero Exp $
 */
 
 #include "SDL.h"
@@ -16,7 +16,7 @@ int	mouse_oldbuttonstate;
 //POINT		current_pos;
 int	mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
 extern cvar_t		vid_mode, _windowed_mouse;
-#define MODE_FULLSCREEN_DEFAULT 3
+#define MODE_FULLSCREEN_DEFAULT 1
 
 extern qboolean	in_mode_set;
 //static qboolean	restore_spi;
@@ -162,7 +162,10 @@ void IN_ActivateMouse (void)
 
 	mouseactivatetoggle = true;
 
-	if (mouseinitialized)
+	// mouse code IS a mess S.A.
+	// added _windowed_mouse.value to work with vid_mode switching
+
+	if (mouseinitialized && _windowed_mouse.value)
 	{
 //		if (mouseparmsvalid)
 //			restore_spi = SystemParametersInfo (SPI_SETMOUSE, 0, newmouseparms, 0);
@@ -182,7 +185,10 @@ void IN_ActivateMouseSA (void)
 {
 	// S.A's hack to activate mouse
 	// game is paused when loading game at start, but we'd like the mouse
-	if (((int)_windowed_mouse.value || (int)vid_mode.value == MODE_FULLSCREEN_DEFAULT) && (!sv.paused || sv.loadgame))
+
+	// maybe (int)vid_mode.value == MODE_FULLSCREEN_DEFAULT)
+
+	if ((int)_windowed_mouse.value && (!sv.paused || sv.loadgame))
 		IN_ActivateMouse ();
 }
 
@@ -224,9 +230,11 @@ void IN_DeactivateMouse (void)
 
 void IN_DeactivateMouseSA (void)
 {
-	// don't worry if fullscreen - S.A.
-	if ((int)vid_mode.value != MODE_FULLSCREEN_DEFAULT)
+	if ((int)vid_mode.value != MODE_FULLSCREEN_DEFAULT || (int)_windowed_mouse.value == 0)
 		IN_DeactivateMouse ();
+
+	if (_windowed_mouse.value == 0)
+		IN_ShowMouse ();
 }
 
 
@@ -259,12 +267,13 @@ IN_StartupMouse
 void IN_StartupMouse (void)
 {
 	// S.A. mega hack to implement nomouse
-	// Dan just left several command line options broken,
+	// Dan(?) left several command line options broken,
 	// there's probably a better way to fix this, but where ?
 	// if -nomouse::return, userdir::config.cfg::_windowed_mouse=1, and !%$#
 
 	if ( COM_CheckParm ("-nomouse") )  {
 		Cbuf_InsertText ("_windowed_mouse 0");
+		IN_ShowMouse ();
 	}
 
 	// Should be a NOP in Linux, with this exception - DDOI
@@ -1254,6 +1263,10 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2004/12/18 14:08:07  sezero
+ * Clean-up and kill warnings 9:
+ * Kill many unused vars.
+ *
  * Revision 1.9  2004/12/18 13:52:54  sezero
  * Clean-up and kill warnings 5:
  * Misc irritants..
