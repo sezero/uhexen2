@@ -2,7 +2,7 @@
 	d_surf.c
 	rasterization driver surface heap manager
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_surf.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_surf.c,v 1.3 2004-12-18 13:48:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -269,8 +269,8 @@ surfcache_t *D_CacheSurface (msurface_t *surface, int miplevel)
 	DoSurface = false;
 	if (cache)
 	{
-		if (cache->drawflags & MLS_ABSLIGHT == MLS_ABSLIGHT &&
-			currententity->drawflags & MLS_ABSLIGHT != MLS_ABSLIGHT)
+		if ((cache->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT &&
+			(currententity->drawflags & MLS_ABSLIGHT) != MLS_ABSLIGHT)
 		{
 			DoSurface = true;
 		}
@@ -340,6 +340,9 @@ surfcache_t *D_CacheSurface (msurface_t *surface, int miplevel)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:02:32  sezero
  * Initial import of AoT 1.2.0 code
  *

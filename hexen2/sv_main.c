@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.4 2004-12-18 13:30:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.5 2004-12-18 13:48:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1380,7 +1380,7 @@ skipA:
 		}
 
 		if (ref_ent->scale != ((int)(ent->v.scale*100.0)&255)
-			|| ref_ent->abslight != (int)(ent->v.abslight*255.0)&255)
+			|| ref_ent->abslight != ((int)(ent->v.abslight*255.0)&255))
 		{
 			bits |= U_SCALE;
 			set_ent->scale = ((int)(ent->v.scale*100.0)&255);
@@ -2548,6 +2548,11 @@ void SV_SpawnServer (char *server)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/18 13:30:50  sezero
+ * Hack to prevent textures going awol and some info-plaques start looking
+ * white upon succesive load games. The solution is not beautiful but seems
+ * to work for now. Adapted from Pa3PyX sources.
+ *
  * Revision 1.3  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

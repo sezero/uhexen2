@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_surf.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_surf.c,v 1.3 2004-12-18 13:48:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -179,7 +179,7 @@ void R_BuildLightMap (void)
 		return;
 	}
 
-	if (currententity->drawflags & MLS_ABSLIGHT == MLS_ABSLIGHT)
+	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
 	{
 		light = (255-currententity->abslight)<<VID_CBITS;
 		for (i=0 ; i<size ; i++)
@@ -695,6 +695,9 @@ void R_GenTile (msurface_t *psurf, void *pdest)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:07:02  sezero
  * Initial import of AoT 1.2.0 code
  *

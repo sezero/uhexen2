@@ -1,7 +1,7 @@
 /*
 	r_part.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_dl_part.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_dl_part.c,v 1.3 2004-12-18 13:48:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -880,7 +880,7 @@ void RiderParticle(int count, vec3_t origin)
 
 		//num = (rand ()&0x7fff) / ((float)0x7fff);
 		angle = (rand() % 360) / (2 * M_PI);
-		radius = 300 + rand() & 255;
+		radius = 300 + (rand() & 255);
 		p->org[0] += sin(angle) * radius;
 		p->org[1] += cos(angle) * radius;
 		p->org[2] += (rand() & 255) - 30; 
@@ -915,7 +915,7 @@ void GravityWellParticle(int count, vec3_t origin, int color)
 		VectorCopy(origin,p->org);
 
 		angle = (rand() % 360) / (2 * M_PI);
-		radius = 300 + rand() & 255;
+		radius = 300 + (rand() & 255);
 		p->org[0] += sin(angle) * radius;
 		p->org[1] += cos(angle) * radius;
 		p->org[2] += (rand() & 255) - 30; 
@@ -1253,7 +1253,7 @@ void R_SnowEffect (vec3_t org1,vec3_t org2,int flags,vec3_t alldir,int count)
 		p->flags = flags;
 
 #ifdef GLQUAKE
-		if(rand()&0x7f<=1)//have a console variable 'happy_snow' that makes all snowflakes happy snow!
+		if((rand()&0x7f)<=1)//have a console variable 'happy_snow' that makes all snowflakes happy snow!
 			p->count = 69;	//happy snow!
 		else if(flags & SFL_FLUFFY || (flags&SFL_MIXED && (rand()&3)))
 			p->count = (rand()&31)+10;//From 10 to 41 scale, will be divided
@@ -2126,6 +2126,9 @@ void R_UpdateParticles (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:06:27  sezero
  * Initial import of AoT 1.2.0 code
  *

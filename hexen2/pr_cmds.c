@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.3 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.4 2004-12-18 13:48:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -3247,7 +3247,7 @@ void PF_updateInfoPlaque (void)
 		use = (long *) &info_mask;
 	}
 		
-	check = (long) (1 << index - ofs);
+	check = (long) (1 << (index - ofs));
 		
 	if (((mode & 1) && ((*use) & check)) || ((mode & 2) && !((*use) & check)));
 	else
@@ -3417,6 +3417,9 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.2  2004/12/04 18:47:47  sezero
  * Kill some compiler warnings. Add sys_ia32.s to the "make clean" lists.
  *
