@@ -51,6 +51,8 @@ int table[2][2] = {  {3,2}, {1,0}  };
   -width values only. corresponding -height is is the game binary */
 char *resolution_args[]={
 
+  "320",
+  "400",
   "512",
   "640",
   "800",

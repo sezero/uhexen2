@@ -20,7 +20,7 @@
     <handler>on_window1_destroy</handler>
     <last_modification_time>Tue, 01 Jan 2002 17:30:49 GMT</last_modification_time>
   </signal>
-  <title>Hexen II for Linux Launcher</title>
+  <title>Hexen II for Linux Launcher, 0.2b</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
@@ -36,7 +36,7 @@
       <class>GtkButton</class>
       <name>LAUNCH_button</name>
       <x>224</x>
-      <y>384</y>
+      <y>376</y>
       <width>112</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -53,7 +53,7 @@
       <class>GtkButton</class>
       <name>QUIT_button</name>
       <x>16</x>
-      <y>384</y>
+      <y>376</y>
       <width>54</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -70,7 +70,7 @@
       <class>GtkButton</class>
       <name>SAVE_button</name>
       <x>104</x>
-      <y>384</y>
+      <y>376</y>
       <width>96</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -105,7 +105,7 @@
       <class>GtkHSeparator</class>
       <name>hseparator1</name>
       <x>0</x>
-      <y>24</y>
+      <y>28</y>
       <width>352</width>
       <height>16</height>
     </widget>
@@ -113,7 +113,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>label1</name>
-      <x>8</x>
+      <x>4</x>
       <y>8</y>
       <width>160</width>
       <height>24</height>
@@ -130,7 +130,7 @@
       <class>GtkRadioButton</class>
       <name>HEXEN2_button</name>
       <x>24</x>
-      <y>72</y>
+      <y>68</y>
       <width>88</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -149,7 +149,7 @@
       <class>GtkRadioButton</class>
       <name>HW_button</name>
       <x>128</x>
-      <y>72</y>
+      <y>68</y>
       <width>152</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -414,7 +414,7 @@
       <class>GtkRadioButton</class>
       <name>1024_button</name>
       <x>144</x>
-      <y>336</y>
+      <y>328</y>
       <width>88</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -423,7 +423,7 @@
 	<handler>on_1024_button_released</handler>
 	<last_modification_time>Tue, 01 Jan 2002 22:32:28 GMT</last_modification_time>
       </signal>
-      <label>1024x768</label>
+      <label>1024 x 768</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>resolution</group>
@@ -433,7 +433,7 @@
       <class>GtkRadioButton</class>
       <name>1280_button</name>
       <x>240</x>
-      <y>336</y>
+      <y>328</y>
       <width>96</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -442,7 +442,7 @@
 	<handler>on_1280_button_released</handler>
 	<last_modification_time>Sun, 05 Dec 2004 14:57:14 GMT</last_modification_time>
       </signal>
-      <label>1280x1024</label>
+      <label>1280 x 1024</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>resolution</group>
@@ -452,7 +452,7 @@
       <class>GtkRadioButton</class>
       <name>800_button</name>
       <x>48</x>
-      <y>336</y>
+      <y>328</y>
       <width>88</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -461,7 +461,7 @@
 	<handler>on_800_button_released</handler>
 	<last_modification_time>Tue, 01 Jan 2002 22:32:23 GMT</last_modification_time>
       </signal>
-      <label>800x600</label>
+      <label>800 x 600</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>resolution</group>
@@ -499,7 +499,7 @@
 	<handler>on_640_button_released</handler>
 	<last_modification_time>Tue, 01 Jan 2002 22:32:17 GMT</last_modification_time>
       </signal>
-      <label>640x480</label>
+      <label>640 x 480</label>
       <active>True</active>
       <draw_indicator>True</draw_indicator>
       <group>resolution</group>
@@ -509,7 +509,7 @@
       <class>GtkHSeparator</class>
       <name>hseparator5</name>
       <x>0</x>
-      <y>360</y>
+      <y>352</y>
       <width>352</width>
       <height>16</height>
     </widget>

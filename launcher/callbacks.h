@@ -37,6 +37,14 @@ on_GL_button_released                  (GtkButton       *button,
                                         gpointer         user_data);
 
 void
+on_320_button_released                 (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_400_button_released                 (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
 on_512_button_released                 (GtkButton       *button,
                                         gpointer         user_data);
 

@@ -31,9 +31,12 @@ int joystick;
 int mouse;
 int destiny;
 
+GtkWidget *fixed1;
 GtkWidget *MP_button;
 GtkWidget *MIDI_button;
 GtkWidget *CDAUDIO_button;
+GtkWidget *_320_button;
+GtkWidget *_400_button;
 GtkWidget *_512_button;
 GtkWidget *_640_button;
 GtkWidget *_800_button;
@@ -44,7 +47,6 @@ GtkWidget*
 create_window1 (void)
 {
   GtkWidget *window1;
-  GtkWidget *fixed1;
   GtkWidget *LAUNCH_button;
   GtkWidget *QUIT_button;
   GtkWidget *SAVE_button;
@@ -73,8 +75,9 @@ create_window1 (void)
 
   window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (window1), "window1", window1);
-  gtk_window_set_title (GTK_WINDOW (window1), _("Hexen II for Linux Launcher"));
+  gtk_window_set_title (GTK_WINDOW (window1), _("Hexen II for Linux Launcher, 0.2b"));
   gtk_window_set_policy (GTK_WINDOW (window1), TRUE, TRUE, FALSE);
+  gtk_window_set_default_size (GTK_WINDOW (window1), -1, 408);
 
   fixed1 = gtk_fixed_new ();
   gtk_widget_ref (fixed1);
@@ -88,8 +91,8 @@ create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "LAUNCH_button", LAUNCH_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (LAUNCH_button);
-  gtk_fixed_put (GTK_FIXED (fixed1), LAUNCH_button, 224, 384);
-  gtk_widget_set_uposition (LAUNCH_button, 224, 384);
+  gtk_fixed_put (GTK_FIXED (fixed1), LAUNCH_button, 224, 376);
+  gtk_widget_set_uposition (LAUNCH_button, 224, 376);
   gtk_widget_set_usize (LAUNCH_button, 112, 24);
 
   QUIT_button = gtk_button_new_with_label (_("Quit"));
@@ -97,8 +100,8 @@ create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "QUIT_button", QUIT_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (QUIT_button);
-  gtk_fixed_put (GTK_FIXED (fixed1), QUIT_button, 16, 384);
-  gtk_widget_set_uposition (QUIT_button, 16, 384);
+  gtk_fixed_put (GTK_FIXED (fixed1), QUIT_button, 16, 376);
+  gtk_widget_set_uposition (QUIT_button, 16, 376);
   gtk_widget_set_usize (QUIT_button, 54, 24);
 
   SAVE_button = gtk_button_new_with_label (_("Save Options"));
@@ -106,8 +109,8 @@ create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "SAVE_button", SAVE_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (SAVE_button);
-  gtk_fixed_put (GTK_FIXED (fixed1), SAVE_button, 104, 384);
-  gtk_widget_set_uposition (SAVE_button, 104, 384);
+  gtk_fixed_put (GTK_FIXED (fixed1), SAVE_button, 104, 376);
+  gtk_widget_set_uposition (SAVE_button, 104, 376);
   gtk_widget_set_usize (SAVE_button, 96, 24);
 
   MP_button = gtk_check_button_new_with_label (_("Portal of Praevus Mission Pack support"));
@@ -130,8 +133,8 @@ create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "hseparator1", hseparator1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hseparator1);
-  gtk_fixed_put (GTK_FIXED (fixed1), hseparator1, 0, 24);
-  gtk_widget_set_uposition (hseparator1, 0, 24);
+  gtk_fixed_put (GTK_FIXED (fixed1), hseparator1, 0, 28);
+  gtk_widget_set_uposition (hseparator1, 0, 28);
   gtk_widget_set_usize (hseparator1, 352, 16);
 
   label1 = gtk_label_new (_("Hammer of Thyrion 1.2.2"));
@@ -139,8 +142,8 @@ create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "label1", label1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label1);
-  gtk_fixed_put (GTK_FIXED (fixed1), label1, 8, 8);
-  gtk_widget_set_uposition (label1, 8, 8);
+  gtk_fixed_put (GTK_FIXED (fixed1), label1, 4, 8);
+  gtk_widget_set_uposition (label1, 4, 8);
   gtk_widget_set_usize (label1, 160, 24);
   gtk_label_set_justify (GTK_LABEL (label1), GTK_JUSTIFY_LEFT);
 
@@ -150,8 +153,8 @@ create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "HEXEN2_button", HEXEN2_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (HEXEN2_button);
-  gtk_fixed_put (GTK_FIXED (fixed1), HEXEN2_button, 24, 72);
-  gtk_widget_set_uposition (HEXEN2_button, 24, 72);
+  gtk_fixed_put (GTK_FIXED (fixed1), HEXEN2_button, 24, 68);
+  gtk_widget_set_uposition (HEXEN2_button, 24, 68);
   gtk_widget_set_usize (HEXEN2_button, 88, 24);
   if (destiny == DEST_H2)
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (HEXEN2_button), TRUE);
@@ -162,8 +165,8 @@ create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "HW_button", HW_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (HW_button);
-  gtk_fixed_put (GTK_FIXED (fixed1), HW_button, 128, 72);
-  gtk_widget_set_uposition (HW_button, 128, 72);
+  gtk_fixed_put (GTK_FIXED (fixed1), HW_button, 128, 68);
+  gtk_widget_set_uposition (HW_button, 128, 68);
   gtk_widget_set_usize (HW_button, 152, 24);
   if (destiny == DEST_HW)
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (HW_button), TRUE);
@@ -334,79 +337,113 @@ create_window1 (void)
   gtk_widget_set_uposition (label7, 0, 48);
   gtk_widget_set_usize (label7, 152, 16);
 
-  _1024_button = gtk_radio_button_new_with_label (resolution_group, _("1024x768"));
-  resolution_group = gtk_radio_button_group (GTK_RADIO_BUTTON (_1024_button));
-  gtk_widget_ref (_1024_button);
-  gtk_object_set_data_full (GTK_OBJECT (window1), "_1024_button", _1024_button,
+  _320_button = gtk_radio_button_new_with_label (resolution_group, _("320 x 240"));
+  resolution_group = gtk_radio_button_group (GTK_RADIO_BUTTON (_320_button));
+  gtk_widget_ref (_320_button);
+  gtk_object_set_data_full (GTK_OBJECT (window1), "_320_button", _320_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (_1024_button);
-  gtk_fixed_put (GTK_FIXED (fixed1), _1024_button, 144, 336);
-  gtk_widget_set_uposition (_1024_button, 144, 336);
-  gtk_widget_set_usize (_1024_button, 88, 24);
-  if (resolution == RES_1024)
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (_1024_button), TRUE);
+  gtk_widget_set_usize (_320_button, 96, 24);
+  gtk_fixed_put (GTK_FIXED (fixed1), _320_button, 144, 304);
+  gtk_widget_set_uposition (_320_button, 144, 304);
+  if (opengl_support==0)
+     gtk_widget_show (_320_button);
+  if (resolution == RES_320)
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (_320_button), TRUE);
 
-  _1280_button = gtk_radio_button_new_with_label (resolution_group, _("1280x1024"));
-  resolution_group = gtk_radio_button_group (GTK_RADIO_BUTTON (_1280_button));
-  gtk_widget_ref (_1280_button);
-  gtk_object_set_data_full (GTK_OBJECT (window1), "_1280_button", _1280_button,
+  _400_button = gtk_radio_button_new_with_label (resolution_group, _("400 x 300"));
+  resolution_group = gtk_radio_button_group (GTK_RADIO_BUTTON (_400_button));
+  gtk_widget_ref (_400_button);
+  gtk_object_set_data_full (GTK_OBJECT (window1), "_400_button", _400_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (_1280_button);
-  gtk_fixed_put (GTK_FIXED (fixed1), _1280_button, 240, 336);
-  gtk_widget_set_uposition (_1280_button, 240, 336);
-  gtk_widget_set_usize (_1280_button, 96, 24);
-  if (resolution == RES_1280)
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (_1280_button), TRUE);
+  gtk_widget_set_usize (_400_button, 96, 24);
+  gtk_fixed_put (GTK_FIXED (fixed1), _400_button, 240, 304);
+  gtk_widget_set_uposition (_400_button, 240, 304);
+  if (opengl_support==0)
+     gtk_widget_show (_400_button);
+  if (resolution == RES_400)
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (_400_button), TRUE);
 
-  _800_button = gtk_radio_button_new_with_label (resolution_group, _("800x600"));
-  resolution_group = gtk_radio_button_group (GTK_RADIO_BUTTON (_800_button));
-  gtk_widget_ref (_800_button);
-  gtk_object_set_data_full (GTK_OBJECT (window1), "_800_button", _800_button,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (_800_button);
-  gtk_fixed_put (GTK_FIXED (fixed1), _800_button, 48, 336);
-  gtk_widget_set_uposition (_800_button, 48, 336);
-  gtk_widget_set_usize (_800_button, 88, 24);
-  if (resolution == RES_800)
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (_800_button), TRUE);
-
-  _512_button = gtk_radio_button_new_with_label (resolution_group, _("512x384"));
+  _512_button = gtk_radio_button_new_with_label (resolution_group, _("512 x 384"));
   resolution_group = gtk_radio_button_group (GTK_RADIO_BUTTON (_512_button));
   gtk_widget_ref (_512_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "_512_button", _512_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (_512_button);
+  gtk_widget_set_usize (_512_button, 96, 24);
+if (opengl_support) {
   gtk_fixed_put (GTK_FIXED (fixed1), _512_button, 144, 304);
   gtk_widget_set_uposition (_512_button, 144, 304);
-  gtk_widget_set_usize (_512_button, 96, 24);
+} else {
+  gtk_fixed_put (GTK_FIXED (fixed1), _512_button, 144, 328);
+  gtk_widget_set_uposition (_512_button, 144, 328);
+}
+  gtk_widget_show (_512_button);
   if (resolution == RES_512)
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (_512_button), TRUE);
 
-  _640_button = gtk_radio_button_new_with_label (resolution_group, _("640x480"));
+  _640_button = gtk_radio_button_new_with_label (resolution_group, _("640 x 480"));
   resolution_group = gtk_radio_button_group (GTK_RADIO_BUTTON (_640_button));
   gtk_widget_ref (_640_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "_640_button", _640_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (_640_button);
+  gtk_widget_set_usize (_640_button, 88, 24);
+if (opengl_support) {
   gtk_fixed_put (GTK_FIXED (fixed1), _640_button, 240, 304);
   gtk_widget_set_uposition (_640_button, 240, 304);
-  gtk_widget_set_usize (_640_button, 88, 24);
+} else {
+  gtk_fixed_put (GTK_FIXED (fixed1), _640_button, 240, 328);
+  gtk_widget_set_uposition (_640_button, 240, 328);
+}
+  gtk_widget_show (_640_button);
   if (resolution == RES_640)
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (_640_button), TRUE);
+
+  _800_button = gtk_radio_button_new_with_label (resolution_group, _("800 x 600"));
+  resolution_group = gtk_radio_button_group (GTK_RADIO_BUTTON (_800_button));
+  gtk_widget_ref (_800_button);
+  gtk_object_set_data_full (GTK_OBJECT (window1), "_800_button", _800_button,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_usize (_800_button, 88, 24);
+  gtk_fixed_put (GTK_FIXED (fixed1), _800_button, 48, 328);
+  gtk_widget_set_uposition (_800_button, 48, 328);
+  if (opengl_support)
+     gtk_widget_show (_800_button);
+  if (resolution == RES_800)
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (_800_button), TRUE);
+
+  _1024_button = gtk_radio_button_new_with_label (resolution_group, _("1024 x 768"));
+  resolution_group = gtk_radio_button_group (GTK_RADIO_BUTTON (_1024_button));
+  gtk_widget_ref (_1024_button);
+  gtk_object_set_data_full (GTK_OBJECT (window1), "_1024_button", _1024_button,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_usize (_1024_button, 88, 24);
+  gtk_fixed_put (GTK_FIXED (fixed1), _1024_button, 144, 328);
+  gtk_widget_set_uposition (_1024_button, 144, 328);
+  if (opengl_support)
+     gtk_widget_show (_1024_button);
+  if (resolution == RES_1024)
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (_1024_button), TRUE);
+
+  _1280_button = gtk_radio_button_new_with_label (resolution_group, _("1280 x 1024"));
+  resolution_group = gtk_radio_button_group (GTK_RADIO_BUTTON (_1280_button));
+  gtk_widget_ref (_1280_button);
+  gtk_object_set_data_full (GTK_OBJECT (window1), "_1280_button", _1280_button,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_usize (_1280_button, 96, 24);
+  gtk_fixed_put (GTK_FIXED (fixed1), _1280_button, 240, 328);
+  gtk_widget_set_uposition (_1280_button, 240, 328);
+  if (opengl_support)
+     gtk_widget_show (_1280_button);
+  if (resolution == RES_1280)
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (_1280_button), TRUE);
 
   hseparator5 = gtk_hseparator_new ();
   gtk_widget_ref (hseparator5);
   gtk_object_set_data_full (GTK_OBJECT (window1), "hseparator5", hseparator5,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hseparator5);
-  gtk_fixed_put (GTK_FIXED (fixed1), hseparator5, 0, 360);
-  gtk_widget_set_uposition (hseparator5, 0, 360);
   gtk_widget_set_usize (hseparator5, 352, 16);
-
-  if (opengl_support==0) {
-    gtk_widget_set_sensitive (_1024_button, FALSE);
-    gtk_widget_set_sensitive (_1280_button, FALSE);
-  }
+  gtk_fixed_put (GTK_FIXED (fixed1), hseparator5, 0, 352);
+  gtk_widget_set_uposition (hseparator5, 0, 352);
+  gtk_widget_show (hseparator5);
 
   gtk_signal_connect (GTK_OBJECT (window1), "destroy",
                       GTK_SIGNAL_FUNC (on_window1_destroy),
@@ -461,6 +498,12 @@ create_window1 (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (_800_button), "released",
                       GTK_SIGNAL_FUNC (on_800_button_released),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (_320_button), "released",
+                      GTK_SIGNAL_FUNC (on_320_button_released),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (_400_button), "released",
+                      GTK_SIGNAL_FUNC (on_400_button_released),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (_512_button), "released",
                       GTK_SIGNAL_FUNC (on_512_button_released),

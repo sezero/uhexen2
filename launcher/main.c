@@ -14,6 +14,8 @@
 #include "support.h"
 #include "config_file.h"
 
+#define HOTL_VER "0.2b"
+
 char *argv_0;
 static  char    userdir[1024];
 
@@ -33,6 +35,8 @@ main (int argc, char *argv[])
 
   add_pixmap_directory (PACKAGE_DATA_DIR "/pixmaps");
   add_pixmap_directory (PACKAGE_SOURCE_DIR "/pixmaps");
+
+  printf("\nLinux Hexen2 Launcher, version %s\n", HOTL_VER);
 
   if (!(Sys_GetUserdir(userdir,sizeof(userdir)))) {
     fprintf (stderr,"Couldn't determine userspace directory");

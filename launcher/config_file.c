@@ -176,7 +176,7 @@ int read_config_file()
 	  else if (strstr(buff, "resolution=") == buff)
 	    {
 	      resolution = atoi(buff + 11);
-	      if (resolution < 0 || resolution > 4 )
+	      if (resolution < 0 || resolution > 6 )
 		resolution = RES_640;
 	    }
 	  else if (strstr(buff, "sound=") == buff)

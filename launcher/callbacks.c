@@ -24,9 +24,12 @@ extern int joystick;
 extern int mouse;
 extern int destiny;
 
+extern GtkWidget *fixed1;
 extern GtkWidget *MIDI_button;
 extern GtkWidget *CDAUDIO_button;
 extern GtkWidget *MP_button;
+extern GtkWidget *_320_button;
+extern GtkWidget *_400_button;
 extern GtkWidget *_512_button;
 extern GtkWidget *_640_button;
 extern GtkWidget *_800_button;
@@ -94,12 +97,22 @@ on_SOFT_button_released                (GtkButton       *button,
                                         gpointer         user_data)
 {
   opengl_support=0;
-  if (resolution >= 3 ) {
-      resolution = 1;
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (_640_button), TRUE);
-  }
+  gtk_widget_set_sensitive (_800_button, FALSE);
   gtk_widget_set_sensitive (_1024_button, FALSE);
   gtk_widget_set_sensitive (_1280_button, FALSE);
+  gtk_widget_hide (_800_button);
+  gtk_widget_hide (_1024_button);
+  gtk_widget_hide (_1280_button);
+  gtk_widget_set_uposition (_512_button, 144, 328);
+  gtk_fixed_move (GTK_FIXED (fixed1), _512_button, 144, 328);
+  gtk_widget_set_uposition (_640_button, 240, 328);
+  gtk_fixed_move (GTK_FIXED (fixed1), _640_button, 240, 328);
+  gtk_widget_show (_320_button);
+  gtk_widget_show (_400_button);
+  if (resolution >= 2 ) {
+      resolution = 1;
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (_400_button), TRUE);
+  }
 }
 
 
@@ -108,8 +121,46 @@ on_GL_button_released                  (GtkButton       *button,
                                         gpointer         user_data)
 {
   opengl_support=1;
+  gtk_widget_hide (_320_button);
+  gtk_widget_hide (_400_button);
+  gtk_widget_set_uposition (_512_button, 144, 304);
+  gtk_fixed_move (GTK_FIXED (fixed1), _512_button, 144, 304);
+  gtk_widget_set_uposition (_640_button, 240, 304);
+  gtk_fixed_move (GTK_FIXED (fixed1), _640_button, 240, 304);
+  gtk_widget_show (_800_button);
+  gtk_widget_show (_1024_button);
+  gtk_widget_show (_1280_button);
+  gtk_widget_set_sensitive (_800_button, TRUE);
   gtk_widget_set_sensitive (_1024_button, TRUE);
   gtk_widget_set_sensitive (_1280_button, TRUE);
+  if (resolution < 3 ) {
+      resolution = 3;
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (_640_button), TRUE);
+  }
+}
+
+
+void
+on_320_button_released                 (GtkButton       *button,
+                                        gpointer         user_data)
+{
+   resolution=RES_320;
+}
+
+
+void
+on_400_button_released                 (GtkButton       *button,
+                                        gpointer         user_data)
+{
+   resolution=RES_400;
+}
+
+
+void
+on_512_button_released                 (GtkButton       *button,
+                                        gpointer         user_data)
+{
+   resolution=RES_512;
 }
 
 
@@ -134,6 +185,14 @@ on_1024_button_released                (GtkButton       *button,
                                         gpointer         user_data)
 {
   resolution=RES_1024;
+}
+
+
+void
+on_1280_button_released                (GtkButton       *button,
+                                        gpointer         user_data)
+{
+   resolution=RES_1280;
 }
 
 
@@ -185,22 +244,6 @@ on_HW_button_released                  (GtkButton       *button,
   mp_support=0;
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MP_button), FALSE);
   gtk_widget_set_sensitive (MP_button, FALSE);
-}
-
-
-void
-on_512_button_released                 (GtkButton       *button,
-                                        gpointer         user_data)
-{
-   resolution=RES_512;
-}
-
-
-void
-on_1280_button_released                (GtkButton       *button,
-                                        gpointer         user_data)
-{
-   resolution=RES_1280;
 }
 
 
