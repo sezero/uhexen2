@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.18 2004-12-21 16:07:05 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.19 2004-12-21 16:15:58 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -4461,15 +4461,15 @@ void M_ServerList_Key (int k)
 void M_Init (void)
 {
 #ifdef H2MP
-/*	if (COM_CheckParm("-witholdmission") ||
-	    COM_CheckParm("--witholdmission"))
-			m_oldmission.string = "1";
-	if (COM_CheckParm("-withdemoness") ||
-	    COM_CheckParm("--withdemoness"))
-			m_demoness.string = "1";
-*/
 	Cvar_RegisterVariable (&m_oldmission);
 	Cvar_RegisterVariable (&m_demoness);
+/*	if (COM_CheckParm("-witholdmission") ||
+	    COM_CheckParm("--witholdmission"))
+			Cvar_SetValue ("m_oldmission", 1);
+	if (COM_CheckParm("-withdemoness") ||
+	    COM_CheckParm("--withdemoness"))
+			Cvar_SetValue ("m_demoness", 1);
+*/
 #endif
 	Cmd_AddCommand ("togglemenu", M_ToggleMenu_f);
 
@@ -4730,6 +4730,10 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2004/12/21 16:07:05  sezero
+ * - add Previous Weapon entry to the menu
+ * - fix the GL_GLOWS entry. Make it affect gl_other_glows, too.
+ *
  * Revision 1.17  2004/12/18 14:15:35  sezero
  * Clean-up and kill warnings 10:
  * Remove some already commented-out functions and code fragments.
