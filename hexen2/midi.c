@@ -1,7 +1,7 @@
 /*
 	midi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/midi.c,v 1.4 2005-02-04 11:28:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/midi.c,v 1.5 2005-02-04 13:51:31 sezero Exp $
 */
 
 #ifndef PLATFORM_UNIX
@@ -23,6 +23,7 @@
 #include <SDL/SDL_mixer.h>
 
 static Mix_Music *music = NULL;
+int audio_wasinit = 0;
 
 void (*midi_endmusicfnc)(void);
 #endif // !USE_MIDI
@@ -168,16 +169,14 @@ void MIDI_EndMusicFinished(void)
 qboolean MIDI_Init(void)
 {
 #ifdef USE_MIDI
-#ifndef SDL_SOUND
-// FIXME: midi doesn't play with snd_sdl.c
+#warning FIXME: midi doesnt play with snd_sdl.c
   int audio_rate = 22050;
   int audio_format = AUDIO_S16;
   int audio_channels = 2;
   int audio_buffers = 4096;
-#endif
   char	mididir[MAX_OSPATH];
 
-  printf("MIDI_Init\n");
+  printf("MIDI_Init :\n");
 
   sprintf (mididir, "%s/glhexen/midi", com_userdir);
 	Sys_mkdir (mididir);
@@ -189,20 +188,25 @@ qboolean MIDI_Init(void)
       return 0;
     }
 
-#ifndef SDL_SOUND
-// FIXME: midi doesn't play with snd_sdl.c
+ // Try initing the audio subsys if it hasn't been already
+ audio_wasinit = SDL_WasInit(SDL_INIT_AUDIO);
+ if (audio_wasinit == 0) {
   if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
-
     Con_Printf("Cannot initialize SDL_AUDIO subsystem: %s\n",SDL_GetError());
     bMidiInited = 0;
     return 0;
+  } else {
+    Con_Printf("Audio subsystem opened for SDL_mixer.\n");
   }
+ // Someone else (-> snd_sdl.c) opened it already. Don' try.
+ // But in this case, the following Mix_OpenAudio will fail anyway...
+ }
+
   if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0) {
     bMidiInited = 0;
-    fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
+    fprintf(stderr, "SDL_mixer: open audio failed: %s\n", SDL_GetError());
     return 0;
   }
-#endif
 
   midi_endmusicfnc = &MIDI_EndMusicFinished;
   if (midi_endmusicfnc)
@@ -310,10 +314,10 @@ void MIDI_Play(char *Name)
 
 	int size=0;
 
-        //printf("MIDI_Play\n");
 	if (!bMidiInited)	//don't try to play if there is no midi
 		return;
 
+        //printf("MIDI_Play\n");
 	sprintf(Temp, "midi/%s.mid", Name);
 	sprintf (midi_file, "glhexen/midi/%s.mid", Name);
 	sprintf (midi_file_with_path, "%s/glhexen/midi/%s.mid", com_userdir,Name);
@@ -508,8 +512,13 @@ void MIDI_Cleanup(void)
 #endif
 
 #ifdef USE_MIDI
+   if ( bMidiInited == 1 ) {
 	MIDI_Stop();
 	Mix_CloseAudio();
+	// I'd better do this here...
+	if (audio_wasinit == 0)
+		SDL_CloseAudio();
+   }
 #endif
 }
 
@@ -855,6 +864,9 @@ void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 #endif	// !PLATFORM_UNIX
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/02/04 11:28:59  sezero
+ * make sdl_audio actually work (finally)
+ *
  * Revision 1.3  2004/12/18 13:20:37  sezero
  * make the music automatically restart when changed in the options menu
  *
