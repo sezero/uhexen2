@@ -8,8 +8,6 @@
 
 int			cache_full_cycle;
 
-byte *S_Alloc (int size);
-
 /*
 ================
 ResampleSfx
@@ -96,8 +94,8 @@ sfxcache_t *S_LoadSound (sfx_t *s)
 
 //Con_Printf ("S_LoadSound: %x\n", (int)stackbuf);
 // load it in
-    strcpy(namebuffer, "sound/");
-    strcat(namebuffer, s->name);
+	strcpy(namebuffer, "sound/");
+	strcat(namebuffer, s->name);
 
 //	Con_Printf ("loading %s\n",namebuffer);
 
