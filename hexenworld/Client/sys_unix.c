@@ -1,7 +1,7 @@
 // sys_unix.c -- Unix system interface code
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.1.1.1 2004-11-28 08:57:00 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.2 2004-12-04 02:10:33 sezero Exp $
  */
 
 #include <stdio.h>
@@ -793,28 +793,36 @@ int Sys_GetUserdir(char *buff, unsigned int len)
     return 1;
 }
 
-void PrintHelp(char *name)
-{
-	printf ("Anvil of Thyrion (HW) v1.12 (%s %d.%d.%d)\n", VERSION_PLATFORM, 
-			VERSION_MAJ,VERSION_MID,VERSION_MIN);
-	printf ("http://aot.linuxgames.com/\n");
-	printf ("Please send bug reports or patches to \n");
-	printf ("             Dan Olson <theoddone33@linuxgames.com>\n");
-	printf ("             Clement Bourdarias  <phneutre@mangoquest.org>\n");
-	printf ("\n");
-	printf ("Usage: %s [options]\n", name);
-	printf ("     [ -h | --help]           Display this help message\n");
-	printf ("     [ -v | --version]        Display the game version\n");
-	printf ("     [ -f | --fullscreen]     Run the game fullscreen\n");
-	printf ("     [ -w | --windowed]       Run the game windowed\n");
-	printf ("     [ -s | --nosound]        Run the game without sound\n");
-	printf ("\n");
-}
-
 void PrintVersion (void)
 {
-	printf ("Anvil of Thyrion v1.12 (%s %d.%d.%d)\n", VERSION_PLATFORM, 
-			VERSION_MAJ, VERSION_MID,VERSION_MIN);
+	printf ("Hammer of Thyrion (%d.%d.%d)\n",
+		HOT_VERSION_MAJ, HOT_VERSION_MID, HOT_VERSION_MIN);
+	printf ("Anvil  of Thyrion 1.12 (%s %d.%d.%d)\n",
+		VERSION_PLATFORM, VERSION_MAJ, VERSION_MID, VERSION_MIN);
+	printf ("\tPatched by Steven Atkinson and Ozkan Sezer with\n");
+	printf ("\tsome code borrowed from the pa3pyx and js sources\n");
+}
+
+void PrintHelp(char *name)
+{
+	printf ("\n");
+	PrintVersion();
+	printf ("http://sourceforge.net/projects/uhexen2/\n");
+	printf ("Please send bug reports or patches to \n");
+	printf ("     Steven Atkinson    <stevenaaus@yahoo.com>\n");
+	printf ("     Ozkan Sezer        <sezeroz@ttnet.net.tr>\n");
+	printf ("\n");
+	printf ("Usage: %s [options]\n", name);
+	printf ("     [-h | --help]                   Display this help message\n");
+	printf ("     [-v | --version]                Display the game version\n");
+	printf ("     [-f | --fullscreen]             Run the game fullscreen\n");
+	printf ("     [-w | --windowed]               Run the game windowed\n");
+	printf ("     [-s | --nosound]                Run the game without sound\n");
+	printf ("     [-g | --gllibrary]              Select 3D rendering library\n");
+	printf ("     [-width Width [-height Height]] Select screen size\n");
+	printf ("     [-bpp]                          Depth for GL fullscreen mode\n");
+	printf ("     [-heapsize Bytes]               Heapsize\n");
+	printf ("\n");
 }
 
 int main(int argc, char *argv[])
@@ -854,7 +862,7 @@ int main(int argc, char *argv[])
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
-	if (COM_CheckParm ("-h") || COM_CheckParm ("--help"))
+	if (COM_CheckParm("-h") || COM_CheckParm("--help") || COM_CheckParm("-?"))
 	{
 		PrintHelp(binary_name);
 		exit (0);
@@ -941,6 +949,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 08:57:00  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.5  2002/01/03 14:15:47  phneutre
  * ~/.aot/hw support
  *

@@ -6,6 +6,9 @@
 #define VERSION_MAJ 1
 #define VERSION_MID 0
 #define VERSION_MIN 0
+#define HOT_VERSION_MAJ 1
+#define HOT_VERSION_MID 2
+#define HOT_VERSION_MIN 2
 #define VERSION_PLATFORM "Linux"
 #else
 #define VERSION_MAJ 1
