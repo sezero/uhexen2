@@ -1,6 +1,6 @@
 Linux Hexen II Demo
 -----------------------
-Hammer of Thyrion 1.2.3
+Hammer of Thyrion 1.2.4
 
 
 1. Installation
@@ -8,7 +8,7 @@ Hammer of Thyrion 1.2.3
   1.1 Getting Started
   1.2 Software Requirements
   1.3 Executing the Game
-  1.4 Sound 
+  1.4 Sound Options
   1.5 Networking/Multiplayer
   1.6 SaveGames and Configuration files
   1.7 Thanks
@@ -20,10 +20,14 @@ Hammer of Thyrion 1.2.3
   2.2 Lines on Screen
   2.3 Hardware Acceleration
   2.4 System Stability
-  2.5 Other
-  2.6 Links
+  2.5 Links
 
-------------------------------------------------------------------------
+3. Appendix
+
+  3.1 OSS Audio workarounds
+  3.2 Other
+
+----------------------------------------------------------------
 
 
 1. Installation
@@ -33,16 +37,17 @@ Hammer of Thyrion 1.2.3
 1.1 Getting Started
 -------------------
 
-This will install Hexen II Demo (Linux version: Hammer of Thyrion).
-All necessary binaries and the data files will be installed by the
-installer, no extra effort is necessary.  For the curious, names of
-the Hexen2 binaries are:
+This will install Hexen II Demo for Linux: Hammer of Thyrion.
+All necessary binaries and the data files will be installed by
+the installer, no extra effort is necessary. Names of the demo
+binaries are:
 
 	hexen2	 -  Software Hexen II
 	glhexen2 -  OpenGL Hexen II
 
-The second option on the installer is HexenWorld Multiplayer support.
-It is recommended for network-playing. The names of the binaries are:
+The second option on the installer is HexenWorld Multiplayer
+support. It is recommended for network-playing. The names of
+the binaries are:
 
 	hwcl	-  HexenWorld Client (software)
 	glhwcl	-  HexenWorld Client (OpenGL)
@@ -52,191 +57,211 @@ It is recommended for network-playing. The names of the binaries are:
 1.2 Software Requirements
 -------------------------
 
-Linux Hexen2 may have issues with some sound modules. See "1.4 Sound"
-for more info. The only unusual software requirements are:
+   SDL (min.: 1.2.2)	  : Simple DirectMedia Layer libraries
+			    1.2.5 and newer recommended.
 
-    SDL (1.2.2 +)	    : Simple DirectMedia Layer libraries
-    SDL_mixer (1.2.0 +)	    : required for midi support (should be
-			      compiled with timidity+ support)
-    ALSA libraries (0.9.8 +): Advanced Linux Sound Architecture
-			      libraries. 1.0.4+ recommended.
-    nasm (0.98 +)	    : x86 assembler (if you are compiling your
-			      own binaries.) 0.98.38 recommended.
+   SDL_mixer (min.: 1.2.0): Required for midi support (should
+			    be compiled with timidity+ support)
+			    1.2.5 and newer recommended.
+
+   ALSA libraries (0.9.8+): Advanced Linux Sound Architecture
+			    libraries. 1.0.4+ recommended.
+
+   nasm (0.98 +)	  : x86 assembler (if you compile your
+			    own binaries.) 0.98.38 recommended
+
 
 1.3 Running the Game:
 ----------------------
 
-The simplest way of running the game is running the game launcher.
-To do this: Either choose it from your start menu (should you chose
-to do it during the installation),  or typing "hexen2demo" from the
-command line. Choose your options and then press "Launch Hexen2".
+Simplest way of running the game is running the game launcher.
+Either choose it from your start menu  or type "hexen2demo"
+on the command line. Choose your options and then press "Launch
+Hexen2".
 
-The old school way of running the game: go into the installation
-directory and run the binary directly. The default mode is windowed.
+Old school way of running the game: Go into the installation
+directory and run the binary. The default mode is windowed.
 Use "glhexen2 -f" to start the game in full-screen mode. The
 following options are accepted:
 
- [-h | --help]			  Display this help message
- [-v | --version]		  Display the game version
- [-f | --fullscreen]		  Run the game fullscreen
- [-w | --windowed]		  Run the game windowed
- [-s | --nosound]		  Run the game without sound
- [-g | --gllibrary]		  Select 3D rendering library
- [-nomouse]			  No mouse in window mode
- [-width Width [-height Height]]  Select screen size
- [-bpp]				  Depth for GL fullscreen mode
- [-heapsize Bytes]		  Heapsize
+ -f | --fullscreen	Run the game fullscreen
+ -w | --windowed	Run the game windowed
+ -g | --gllibrary	Select 3D rendering library
+ -width Width		Select screen size
+ -height Height		Must be used with -width
+ -bpp			Color depth for GL fullscreen mode
+ -nomouse		No mouse in windowed mode
+ -heapsize Bytes	Heapsize
+ -sndalsa		Use ALSA for audio
+ -sndsdl		Use SDL for audio
+ -nocdaudio		Disable cdrom music
+ -nomidi		Disable MIDI music
+ -s | -nosound		Run the game without sound
+ -v | --version		Display the game version
+ -h | --help		Display this help message
 
 Others may work, but aren't really supported.
 
-You may wish to brighten the display with "xgamma". The script I
-use is:
+You may wish to brighten the display with "xgamma". The script
+I use is:
 
-    cd /usr/local/games/hexen2
+    cd /usr/local/games/hexen2demo
     xgamma -q -gamma 1.3;       # brighten the display
     ./glhexen2 -width 800 -height 600 -f -heapsize 48000
 	    			# default heapsize is 32768
     xgamma -q -gamma 1;         # restore old brightness
 
 
-1.4 Sound 
----------
+1.4 Sound Options
+-----------------
+
+Linux Hexen II includes three sound drivers all in one binary:
 
 a. OSS sound code
 -----------------
-HoT requires your kernel sound modules to be OSS (Open Sound System)
-compatible.  If your game bombs out after sound initialization and
-you aren't using the Alsa sound drivers, you may want to try them
-(doing that may not be very easy, though.)  Once the Alsa sound
-modules are installed and configured, you can use (for example,
-on Mandrake):
+The default sound driver uses OSS (Open Sound System) kernel
+modules. It is compatible with most of the Linux distributions
+but it is known not to work for some people, too. If you use
+the game launcher, select the OSS option from the sound menu.
+If you use command line, no additional arguments are necessary
+for OSS sound. If OSS doesn't work for you, then please try
+the other options below.
 
-    rmmod emu10k1          ;# remove OSS sound module for SBLive
-    /etc/init.d/alsa start ;# start ALSA sound modules
+b. ALSA sound code
+------------------
+Second driver is based on the new ALSA (Advanced Linux Sound
+Architecture) 1.0.x libraries and can be used with new Linux
+distributions such as Mandrake 10.x, Fedora Core 2/3, Debian-
+unstable and the like. If you use the game launcher, select
+the ALSA option from the sound menu. If you use command line,
+then start the game with "-sndalsa" argument. Example:
 
-Make SURE oss-emulation is available: lsmod should list snd-pcm-oss.
-Check with alsamixer that the volumes are not turned down to zero.
+  # ./glhexen2 -sndalsa [other possible arguments]
 
-With ALSA + OSS Emulation, hexen2 should work fine. On Mandrake (9.0
-and newer), Fedora Core (2 and newer) and SuSE (8.2 and newer), Alsa
-is already included: no worries if you're using them.
-Users of Fedora Core 1, RedHat 9 and older can see the FreshRPMS site
-and the ALSA site for alsa-sound support.
-
-b. SDL sound code
+c. SDL sound code
 -----------------
-There is now an option to build a new sound driver. To do this, get
-the HoT source code, set "SOUND=SDL" in the Makefile, recompile the
-sources.
-This sound driver does not have the compatibility issues of the OSS
-sound code, BUT it is very much beta: varying from working well,
-to not at all.
+This third option isolates you from many compatibility issues
+and should be usable on most Linux distributions.  If you use
+the launcher, select the SDL option from the sound menu.
+If you use command line, then start the game with "-sndsdl"
+argument. Example:
 
-If you can't get sound working, "-nosound" option will disable it.
+  # ./glhexen2 -sndsdl [other possible arguments]
 
 
-1.5 Networking/Multiplayer
---------------------------
+If you can't get the sound working, "-nosound" argument will
+disable it. Send a bug report on the project page.
 
-Hexen II v1.11 binaries from Raven's official Windows demo WON'T
-play over network with Linux Hexen2-demo binaries. Don't try, it
-simply will NOT work!  If this is a big issue for you, please use
-HexenWorld for deathmatch. It is included in the installer.
+
+1.5 Networking / Multiplayer
+----------------------------
+
+Hexen2 binaries from Raven's official Windows demo WON'T play
+over network with Linux Hexen2-demo binaries:  Don't try, it
+simply WON'T work. If this is a big issue for you, please use
+HexenWorld for deathmatch. It's included in the installer.
 
 
 1.6 SaveGames and Configuration files
 -------------------------------------
 
-Your savegames and configuration files are stored in a directory
+Your savegames and configuration files are stored in a folder
 named  .hexen2demo  in your home folder:  ~/.hexen2demo
 
 
 1.7 Thanks
 ----------
 
-Thanks to ID Software, Raven Games and Activision for a great game
-and for supporting open source software.  Also thanks to Ibiblio.org,
-Sourceforge.net for hosting and to Dan Olson and Clément Bourdarias
-for the initial Linux port (AoT). Mega Thanks to all the unheralded
-Doom/Quake/Hexen modders.
+Thanks to ID Software, Raven Games and Activision for a great
+game and for supporting open source software. Also thanks to
+Dan Olson and Clément Bourdarias for the initial Linux port
+(AoT) and to Ibiblio.org and Sourceforge.net for hosting.
+Mega thanks to all the unheralded Doom/Quake/Hexen modders.
 
 
 1.8 Contact
 -----------
-    Steven Atkinson    <stevenaaus@users.sourceforge.net>
-    Ozkan Sezer        <sezero@users.sourceforge.net>
+    Steven Atkinson	<stevenaaus@users.sourceforge.net>
+    Ozkan Sezer		<sezero@users.sourceforge.net>
 
-------------------------------------------------------------------------
+----------------------------------------------------------------
+
 
 
 2. Notes
 --------
 
+
 2.1 Tweaks
 ----------
 
-Quake games are very friendly to tweakers. The best performance gain I
-have found is by increasing the value "_snd_mixahead". For users with
-slow video cards, changing the gl_ variables may speed up your system.
-These are just a few of those that can be changed. For more info see
-various Quake tweaking sites.
+Quake games are very friendly to tweakers. The best performance
+gain I have found is by increasing the value  "_snd_mixahead".
+For users with slow video cards, changing the gl_ variables may
+speed up your system. Here are just a few of those that can be
+changed. For more info see various Quake tweaking sites.
 
-variable       values
---------       ------
-_snd_mixahead  0.1 - 0.9  : 0.1 = less latency, 0.9 = better performance
-gl_ztrick      0|1        : 3% performance tweak (some cards unsupported)
-gl_picmip      0|1|2
-gl_playermip   0|1|2
-gl_texturemode gl_nearest                : (least quality, best speed)
-               gl_nearest_mipmap_nearest :           ^
-               gl_linear_mipmap_nearest  :           v
-               gl_linear_mipmap_linear   : (best quality, least speed)
+variable	values
+--------	------
+_snd_mixahead	0.1 - 0.9 : 0.1 = less latency,
+			    0.9 = better performance
 
-gl_otherglows  0 | 1      : enable glow on green and blue mana
-snow_active    0 - 255    : 0 = none, 1 = normal (amount designated by
-			    the map), and higher acts as a multiplier
+gl_ztrick	0|1       : 3% performance tweak
+			    (some cards unsupported)
+
+gl_picmip	0|1|2
+
+gl_playermip	0|1|2
+
+gl_texturemode	gl_nearest	(least quality, best speed)
+		gl_nearest_mipmap_nearest :	    ^
+		gl_linear_mipmap_nearest  :
+		gl_linear_mipmap_linear   :	    v
+				(best quality, least speed)
 
 
 2.2 Lines on Screen
 -------------------
 
-A common problem (esp. with 3dfx cards) is flickering lines across the
-screen caused by gl_ztrick.  To fix this, bring down the console with
-the '~' key and enter 'gl_ztrick 0'.  This is disabled by default
-in fresh HoT-1.2.3 installations.
+A common problem (esp. with 3dfx cards) is flickering lines
+across the screen caused by gl_ztrick. To fix this, bring down
+the console with the '~' key and enter 'gl_ztrick 0'.
+With fresh installations of HoT-1.2.3 and later, this option
+is disabled by default.
 
 
 2.3 Hardware Acceleration
 -------------------------
 
-Setting up hardware OpenGL acceleration under Linux used to be a
-big deal in the past, but most modern distros do this automatically
+Setting up hardware OpenGL acceleration under Linux used to be
+a big deal in the past. Modern distros do this automatically
 now.
 
-Nvidia's drivers for all of their modern video cards are not open
-source, and because of this many distributions do not include them.
-If your Nvidia card is running slowly this is probably the cause,
-you should visit Nvidia.com to download the linux installer. In my
-experience these drivers are great, but not all versions work 100%
-with all cards. If you have a misbehaving Nvidia video card, try a
-different (older) driver.
+Nvidia's drivers for all of their modern video cards are not
+open source, and because of this many distributions do not
+include them. If your Nvidia card is running slowly, this is
+probably the cause, you should visit Nvidia.com to download the
+linux installer. In my experience these drivers are great, but
+not all versions work 100% with all cards. If you have a
+misbehaving Nvidia video card, try a different (older) driver.
 
-3dfx Voodoo1/Voodoo2 is no longer hardware accelerated under recent
-XFree-4.0 releases.  For OpenGL acceleration of 3dfx Voodoo Graphics/
-Voodoo Rush/Voodoo 2 boards, you will have to use older versions of
-XFree86 (3.3.x), Glide and Mesa compiled against Glide.  Setting up
-a Voodoo1/Voodoo2 card under linux can be a bit of work.
+3dfx Voodoo1/Voodoo2 is no longer hardware accelerated under
+recent XFree-4.0 releases.  For OpenGL acceleration of 3dfx
+Voodoo Graphics/Voodoo Rush/Voodoo2 boards, you will have to
+use old versions of XFree86 (3.3.x), Glide, and Mesa compiled
+against Glide.  Setting up a Voodoo1/Voodoo2 card under linux
+can be a bit of work.
 
 
 2.4 System Stability
 --------------------
 
-3D games are probably the most intensive workout you can give your
-PC. Problems with them are not always easy to track down.
-I recently had some trouble with glquake which I eventually tracked
-down to Mandrake's XFree86-4.3 packages - probably due to compiler
-pentium optimizations. I switched to XFree86-4.3 (from Redhat-9.0)
-and quake now is rock solid.
+3D games are probably the most intensive workout you can give
+your PC. Problems with them are not always easy to track down.
+I recently had some trouble with glquake which I eventually 
+racked down to Mandrake's XFree86-4.3 packages - probably due
+to compiler pentium optimizations. I switched to XFree86-4.3
+(from Redhat-9.0) and quake now is rock solid.
 
 I've also had crashes in 3D games associated with
 
@@ -245,19 +270,7 @@ I've also had crashes in 3D games associated with
   * Cpu overheating with unpredictable results.
 
 
-2.5 Other
---------
-
-from Dan Olson:
-
-"Raven didn't give us Hexen 2 source, they gave us Portal of Praevus
-source. PoP is a few levels short of being an entirely different game..
-I think once I nail a few simple physics bugs, we'll have PoP emulating
-Hexen 2 quite nicely, but it's been suggested that I'll need a whole
-different physics engine."
-
-
-2.6 Links
+2.5 Links
 ---------
 
 Hammer of Thyrion  :  http://sourceforge.net/projects/uhexen2
@@ -267,4 +280,43 @@ JSHexen2 port      :  http://jurajstyk.host.sk/
 Hexen II FAQ       :  http://www.raven-games.com/hex2faq/
 Linux GlQuake      :  http://mfcn.ilo.de/glxquake
 ALSA sound         :  http://www.alsa-project.org
+Lowercase Utility  :  www.freshmeat.net/projects/file-rename-utils
+
+----------------------------------------------------------------
+
+
+
+3. Appendix
+-------------
+
+
+3.1 OSS audio workarounds:
+--------------------------
+If you *really* have to use OSS and it doesn't work, you may try
+using the ALSA kernel sound modules (doing that on a distribution
+which doesn't come with ALSA by default isn't very easy, though.)
+Once the alsa sound modules are installed and configured, you can
+do (for example, on Mandrake):
+
+    rmmod emu10k1          ;# remove OSS sound module for SBLive
+    /etc/init.d/alsa start ;# start ALSA sound modules
+
+Make SURE oss-emulation is enabled: lsmod should list snd-pcm-oss.
+Check with alsamixer that the volumes are not turned down to zero.
+With ALSA + OSS Emulation, oss-sound in hexen2 should work fine.
+On Mandrake (9.0 and newer), Fedora Core (2 and newer) and SuSE
+(8.2 and newer) alsa-0.9.0 or better is already included. Users
+of Fedora Core 1, RedHat 9 and older can see the FreshRPMS site
+and the ALSA site for alsa-sound support.
+
+
+3.2 Other
+---------
+
+from Dan Olson:
+"Raven didn't give us Hexen 2 source, they gave us Portal of
+Praevus source. PoP is a few levels short of being an entirely
+different game....  I think once I nail a few simple physics
+bugs, we'll have PoP emulating Hexen 2 quite nicely, but it's
+been suggested that I'll need a whole different physics engine."
 
