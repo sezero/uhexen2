@@ -1,0 +1,25 @@
+HW Master Server 1.2
+
+Command line params:
+-port xxxxx    select a port other than default (26900)
+
+
+Console commands:
+
+list		lists all registered servers
+quit		just guess whats that for! :)
+filter		lists all current IP filters. When the program receives
+		packets from an IP matching a filter, the incomming IP
+		is changed to the value set in the filter
+
+filter add xxx.xxx.xxx.xxx:port xxx.xxx.xxx.xxx:port	adds a filter
+filter remove xxx.xxx.xxx.xxx:port			removes a filter
+filter clear						removes all filters
+
+The program source code is included in the hwmaster_src directory, and is subject
+to the Quake General Public Liscence (see gnu.txt included) since most of the code
+is based from qw source.
+
+If you have questions, comments or suggestions, you can contact me at
+korskarn@hexenworld.com
+
