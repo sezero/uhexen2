@@ -65,9 +65,9 @@ a. Using the installer (easy way):
 
 b. Manual install/update of datafiles (harder way):
    Copy the "data1" directory from the Hexen2 CD to your Hexen2
-   directory, do a "chmod 644 *" on the contents, then use the
-   file "game-updates-1.12g.tgz" (downloadable from the HoT web
-   site) to manually patch your data files to version 1.12g.
+   directory, do a "chmod 644 *" on the contents, then type
+   "sh update_h2" to patch your data files (this command and its
+   requirements are included in the HoT-1.2.4 binary package).
    All files should be lower-cased (if not already) and can be
    done with "mv_lowercase" from the file-rename-utils archive
    (see Links).
