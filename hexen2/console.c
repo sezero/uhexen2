@@ -351,7 +351,7 @@ void Con_DebugLog(char *file, char *fmt, ...)
     int fd;
     
     va_start(argptr, fmt);
-    vsprintf(data, fmt, argptr);
+    vsnprintf(data, 1023, fmt, argptr);
     va_end(argptr);
     fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
     write(fd, data, strlen(data));
@@ -375,7 +375,7 @@ void Con_Printf (char *fmt, ...)
 	static qboolean	inupdate;
 	
 	va_start (argptr,fmt);
-	vsnprintf (msg,MAXPRINTMSG,fmt,argptr);
+	vsnprintf (msg,MAXPRINTMSG - 1,fmt,argptr);
 	va_end (argptr);
 	
 // also echo to debugging console
@@ -424,7 +424,7 @@ void Con_DPrintf (char *fmt, ...)
 		return;			// don't confuse non-developers with techie stuff...
 
 	va_start (argptr,fmt);
-	vsprintf (msg,fmt,argptr);
+	vsnprintf(msg, MAXPRINTMSG - 1, fmt, argptr);
 	va_end (argptr);
 	
 	Con_Printf ("%s", msg);
@@ -445,7 +445,7 @@ void Con_SafePrintf (char *fmt, ...)
 	int			temp;
 		
 	va_start (argptr,fmt);
-	vsprintf (msg,fmt,argptr);
+	vsnprintf(msg, MAXPRINTMSG - 1, fmt, argptr);
 	va_end (argptr);
 
 	temp = scr_disabled_for_loading;
