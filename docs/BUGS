@@ -6,6 +6,3 @@ Known Bugs
 
   matrox G200 : GL games don't display menus correctly (matrox GL bug ?)
 
-  glh2mp:   The fire weapon for the Demoness in GL mode draws lines across
-	    the screen. So does the fire attack of Praevus.
-

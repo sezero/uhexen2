@@ -1,4 +1,3 @@
-
 Changes since AoT 1.2.0:
 ------------------------
 
@@ -25,6 +24,16 @@ Changes since AoT 1.2.0:
     unreadable.
 -   Wheelmouse support is added.
 -   The annoying ".dynamic" extensions are removed from the binary names.
+-   Fixed textures going AWOL in GL mode upon loading savegames many times.
+    This used to result in white info-plaques, for instance.
+-   Fixed fire attacks of Demoness and Praevus used to draw lines across
+    the screen.
+-   Fixed the gl_other_glows option not being written into config.cfg
+-   Made the music automatically restart when changed in the options menu.
+-   Removed console spamming code (gl_extensions, unbinding files, etc.)
+-   Now using glGetIntegerv to detect maximum supported texture size,
+    not vendor string.
 -   Building for pentium as default now.
--   Many code cleanups including retiring some unused files, retiring ogl
+-   BIG code cleanup including retiring some unused files, retiring ogl
     files without dlsym'ed gl functions, killing compiler warnings, etc.
+-   Probably some other minor things that we forgot.

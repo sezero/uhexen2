@@ -183,9 +183,9 @@ AoT has a bug: The bosses don't appear :-(
 This has been fixed in Hammer of Thyrion ;-)
 
 There is another (small) bug with Hexen II. On some systems Eidolon doesn't
-jump cleanly off the ledge, and wanders around above the ground. There is
-already a hcode patch for this, and should shortly be a shell script to
-automatically fix it.
+jump cleanly off the ledge, and wanders around above the ground. There already
+is an hcode fix for this: Download it from our page: eidolon_jumping_fix.tgz
+
 
 2.3 Mods and Crazy Polygons
 ---------------------------
