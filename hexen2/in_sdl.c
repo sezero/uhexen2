@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.13 2005-01-13 10:46:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.14 2005-01-23 15:17:13 sezero Exp $
 */
 
 #include "SDL.h"
@@ -1216,8 +1216,14 @@ void IN_SendKeyEvents (void)
 				case 5:
 					Key_Event(K_MWHEELDOWN, true);
 					break;
+				case 6:
+					Key_Event(K_MOUSE4, true);
+					break;
+				case 7:
+					Key_Event(K_MOUSE5, true);
+					break;
 				default:
-					Con_Printf("Mouse event for button %d received, 1-5 expected\n", event.button.button);
+					Con_Printf("Mouse event for button %d received, 1-7 expected\n", event.button.button);
 					break;
 				}
 				break;
@@ -1240,8 +1246,14 @@ void IN_SendKeyEvents (void)
 				case 5:
 					Key_Event(K_MWHEELDOWN, false);
 					break;
+				case 6:
+					Key_Event(K_MOUSE4, false);
+					break;
+				case 7:
+					Key_Event(K_MOUSE5, false);
+					break;
 				default:
-					Con_Printf("Mouse event for button %d received, 1-5 expected\n", event.button.button);
+					Con_Printf("Mouse event for button %d received, 1-7 expected\n", event.button.button);
 					break;
 				}
 				break;
@@ -1264,6 +1276,14 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/01/13 10:46:45  sezero
+ * - Fixed mouse behavior which was always broken in hexen2-linux.
+ *   Middle-button is MOUSE2, right-button is MOUSE3, not vice versa
+ *   (see SDL_mouse.h). The wheelmouse patch fixed this a little, but
+ *   introduced a mouse2/mouse3 fight in in_sdl.c. It is fixed here.
+ * - Fixed the debug message about undefined mouse buttons.
+ * - Did some syncing between H2 and HW versions of input files.
+ *
  * Revision 1.12  2005/01/05 14:20:00  sezero
  * bind Alt+Enter combination to Steven's stuff for fullscreen-windowed toggling
  *

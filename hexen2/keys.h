@@ -93,6 +93,8 @@
 
 #define K_MWHEELUP		239
 #define K_MWHEELDOWN		240
+#define K_MOUSE4		241
+#define K_MOUSE5		242
 
 
 typedef enum {key_game, key_console, key_message, key_menu} keydest_t;
