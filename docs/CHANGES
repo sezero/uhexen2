@@ -1,6 +1,20 @@
 Changes since AoT 1.2.0:
 ------------------------
 
+2004-12-29:
+-   Some usability tweaks in the launcher. Removed the mouse option and
+    added the disable networking option.
+
+-   Fullscreen/Windowed mode is now switchable. Seems to work good. (Steven)
+
+-   Mouse can now be disabled for fullscreen modes. (Steven)
+
+-   Merge some Hexen2 changes into HexenWorld Client:
+    o Fix the fire attacks drawing lines across the screen. 
+    o Don't print gl_extensions which spams the console. 
+    o Partially merge Steven's mouse tweaks from 2004-12-29.
+
+2004-12-28 and before:
 -   No Boss bug in Dan's original linux port fixed: Hexen2 loads progs2.dat
     along with progs.dat, as it should, now.
 
@@ -80,6 +94,4 @@ Changes since AoT 1.2.0:
 
 -   Fixed (mostly) gameplay issue: Eidolon loses hostility under certain
     conditions  (automatic install using the installer)
-
--   Probably some other minor things that we forgot.
 
