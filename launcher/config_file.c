@@ -31,6 +31,7 @@ FILE * open_config_file(char *flags) {
   strcat (config_file_name,"/");
   strcat (config_file_name,LAUNCHER_CONFIG_FILE);
   thefile = fopen(config_file_name, flags);
+  free (config_file_name);
 // NULL check has to be done later
   return thefile;
 }
@@ -62,7 +63,6 @@ int write_config_file() {
     fprintf(cfg_file, "cdaudio=%d\n",cdaudio);
     fprintf(cfg_file, "joystick=%d\n",joystick);
     fprintf(cfg_file, "lan=%d\n",lan);
-
   }
   fclose (cfg_file); 
   printf("Options saved successfully.\n");
@@ -76,12 +76,12 @@ int read_config_file() {
 
   cfg_file = open_config_file("r");
   if (cfg_file == NULL) {
-//  printf("file does not exist.\n");
-//  printf(" Creating default configuration file... ");
+    printf("Creating default configuration file.....\n");
     write_config_file();
     return 0;
 
   } else {
+    printf("Reading configuration file.... ");
     do {
       fgets(buff, sizeof(buff), cfg_file);
       if (!feof(cfg_file)) {
@@ -147,10 +147,8 @@ int read_config_file() {
       }
 
     } while(!feof(cfg_file));
-
+    printf ("OK.\n");
     fclose (cfg_file);
-    write_config_file();
-
   }
 
   return 0;
