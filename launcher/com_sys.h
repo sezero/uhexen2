@@ -17,3 +17,4 @@ int Sys_GetUserdir(char *buff, unsigned int len);
 // launch_bin.c
 void CheckExe (void);
 void launch_hexen2_bin();
+

@@ -1,7 +1,6 @@
 #include "com_sys.h"
 #include "launcher_defs.h"
 
-
 static char * Sys_SearchCommand(char * filename) {
 	static char pathname[1024];
 	char buff[1024];
@@ -101,3 +100,4 @@ int Sys_GetUserdir(char *buff, unsigned int len) {
 
 	return 1;
 }
+

@@ -1,7 +1,5 @@
-/* Widgets to be played with remotely are put in to
+/* Widgets to be played with remotely are put into
    these structs properly for easier handling.
-   We mostly send a pointer to the _whole_ Games struct,
-   but the binary output is smaller now.
 */
 
 struct Launch_s {
@@ -24,6 +22,9 @@ struct Misc_s {
 
 typedef struct {
 	GtkWidget *cSND;	// Global sound option
+	GtkWidget *cSRATE;	// Sampling rate
+	GtkWidget *bSBITS;	// Sample format
+	GtkWidget *bSTEREO;	// Stereo
 	GtkWidget *bMIDI;	// Midi music option
 	GtkWidget *bCDA;	// CD Audio option
 } sndwidget_t;
@@ -31,9 +32,9 @@ typedef struct {
 typedef struct {
 	GtkWidget *bHEXEN2;	// Hexen II
 	GtkWidget *bH2W;	// HexenWorld Client
+	GtkWidget *SelH2;	// Hexen2 Game type selection
 	GtkWidget *SelHW;	// HexenWorld Game type selection
 	GtkWidget *bH2MP;	// Expansion Pack
-	GtkWidget *bOLDM;	// Old Mission support for H2MP
 	struct Launch_s Launch;
 	struct Video_s Video;
 	struct Misc_s Others;
@@ -51,13 +52,16 @@ typedef struct {
 #define WGT_RESTEXT	Games.Video.rText
 #define WGT_FULLSCR	Games.Video.bFULS
 #define WGT_SOUND	Sound.cSND
+#define WGT_SRATE	Sound.cSRATE
+#define WGT_SBITS	Sound.bSBITS
+#define WGT_STEREO	Sound.bSTEREO
 #define WGT_MIDI	Sound.bMIDI
 #define WGT_CDAUDIO	Sound.bCDA
 #define WGT_HEXEN2	Games.bHEXEN2
 #define WGT_H2WORLD	Games.bH2W
+#define WGT_H2GAME	Games.SelH2
 #define WGT_HWGAME	Games.SelHW
 #define WGT_PORTALS	Games.bH2MP
-#define WGT_OLDMISS	Games.bOLDM
 #define VID_STRUCT	(Games.Video)
 #define LAUNCH_STRUCT	(Games.Launch)
 #define WGT_LANBUTTON	Games.Others.bLAN
@@ -66,22 +70,16 @@ typedef struct {
 #define RESOL_TEXT1	Video.rText
 #define RESOL_ADJUST	Video.rAdj
 
-#define MIDI_BUTTON	bMIDI
-#define CDAUDIO_BUTTON	bCDA
+#define SND_RATE	cSRATE
+#define SND_BITS	bSBITS
+#define SND_STEREO	bSTEREO
+#define MUSIC_MIDI	bMIDI
+#define MUSIC_CD	bCDA
 #define RESOL_TEXT0	rText
 #define STATUSBAR	LStat
 #define PORTALS_BUTTON	bH2MP
+#define H2GAME		SelH2
 #define HWGAME		SelHW
-#define OLD_MISSION	bOLDM
 #define LAN_BUTTON	Others.bLAN
 #define LAUNCH_BUTTON	bLAUNCH
 
-/* These widgets aren't played remotely by other
-   functions, so ne need to place them in here:
-   
-   bJOY		Jostick disabling button
-   bQUIT	Quit button
-   bSAVE	Save Options button
-
-   And the other separators, static labels, etc, of course.
-*/
