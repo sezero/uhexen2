@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.3 2004-12-14 21:49:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.4 2004-12-18 13:52:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -197,7 +197,7 @@ qboolean CL_CopyFiles(char *source, char *pat, char *dest)
 	error = false;
 
 /*
-pat is assumed to be <source>/*.gip
+pat is assumed to be <source> / *.gip
 as this function is currently only used for saving/loading games.
 plus, COM_CopyFile doesn't return anything, so there is no way to tell if it
 failed.
@@ -1030,6 +1030,9 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/14 21:49:37  sezero
+ * don't spam the console while exiting the game
+ *
  * Revision 1.2  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

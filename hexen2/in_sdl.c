@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.8 2004-12-18 13:17:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.9 2004-12-18 13:52:54 sezero Exp $
 */
 
 #include "SDL.h"
@@ -825,7 +825,7 @@ qboolean IN_ReadJoystick (void)
 	else
 	{
 		// read error occurred
-		// turning off the joystick seems too harsh for 1 read error,\
+		// turning off the joystick seems too harsh for 1 read error,
 		// but what should be done?
 		// Con_Printf ("IN_ReadJoystick: no response\n");
 		// joy_avail = false;
@@ -1254,6 +1254,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2004/12/18 13:17:10  sezero
+ * steven fixes the mouse once again ;
+ *
  * Revision 1.7  2004/12/12 14:38:18  sezero
  * steven fixed the mouse again ;)
  *
