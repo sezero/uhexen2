@@ -225,9 +225,6 @@ struct EffectT
 	} u;
 };
 
-void SV_SaveEffects(FILE *FH);
-void SV_LoadEffects(FILE *FH);
-
 void CL_InitEffects (void);
 void CL_EndEffect (void);
 void CL_ParseEffect (void);
