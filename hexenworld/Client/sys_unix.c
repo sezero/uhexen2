@@ -1,7 +1,7 @@
 // sys_unix.c -- Unix system interface code
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.4 2004-12-12 19:01:02 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.5 2004-12-22 21:51:17 sezero Exp $
  */
 
 #include <stdio.h>
@@ -795,22 +795,20 @@ int Sys_GetUserdir(char *buff, unsigned int len)
 
 void PrintVersion (void)
 {
-	printf ("Hammer of Thyrion (%d.%d.%d)\n",
+	printf ("\n");
+	printf ("Hammer of Thyrion, release %d.%d.%d\n",
 		HOT_VERSION_MAJ, HOT_VERSION_MID, HOT_VERSION_MIN);
-	printf ("Anvil  of Thyrion 1.12 (%s %d.%d.%d)\n",
-		VERSION_PLATFORM, VERSION_MAJ, VERSION_MID, VERSION_MIN);
-	printf ("\tPatched by Steven Atkinson and Ozkan Sezer with\n");
-	printf ("\tsome code borrowed from the pa3pyx and js sources\n");
+	printf ("running on HexenWorld engine %4.2f (%s)\n\n",
+		VERSION, VERSION_PLATFORM);
 }
 
 void PrintHelp(char *name)
 {
-	printf ("\n");
 	PrintVersion();
-	printf ("http://sourceforge.net/projects/uhexen2/\n");
-	printf ("Please send bug reports or patches to \n");
-	printf ("     Steven Atkinson    <stevenaaus@yahoo.com>\n");
-	printf ("     Ozkan Sezer        <sezeroz@ttnet.net.tr>\n");
+	printf ("Please send bug reports or patches to:\n");
+	printf ("     Steven Atkinson  <stevenaaus@users.sourceforge.net>\n");
+	printf ("     Ozkan Sezer      <sezero@users.sourceforge.net>\n");
+	printf ("Visit http://sf.net/projects/uhexen2/ for more info.\n");
 	printf ("\n");
 	printf ("Usage: %s [options]\n", name);
 	printf ("     [-h | --help]                   Display this help message\n");
@@ -863,13 +861,13 @@ int main(int argc, char *argv[])
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
-	if (COM_CheckParm("-h") || COM_CheckParm("--help") || COM_CheckParm("-?"))
+	if (COM_CheckParm ("-h") || COM_CheckParm ("-help") || COM_CheckParm ("--help"))
 	{
 		PrintHelp(binary_name);
 		exit (0);
 	}
 
-	if (COM_CheckParm ("-v") || COM_CheckParm ("--version"))
+	if (COM_CheckParm ("-v") || COM_CheckParm ("-version") || COM_CheckParm ("--version"))
 	{
 		PrintVersion();
 		exit (0);
@@ -950,6 +948,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/12 19:01:02  sezero
+ * port Steven's 2004-12-12 mouse changes form hexen2. hopefully correct...
+ *
  * Revision 1.3  2004/12/05 12:25:58  sezero
  * Sync with Steven's changes to hexen2, 2004-12-04
  *

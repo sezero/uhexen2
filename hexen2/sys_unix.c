@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.9 2004-12-18 14:20:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.10 2004-12-22 21:50:16 sezero Exp $
 */
 
 #include <stdio.h>
@@ -810,24 +810,20 @@ int Sys_GetUserdir(char *buff, unsigned int len)
 
 void PrintVersion (void)
 {
-	printf ("Hammer of Thyrion (%d.%d.%d)\n",
-	HOT_VERSION_MAJ,HOT_VERSION_MID,HOT_VERSION_MIN);
-	printf ("Anvil  of Thyrion 1.12 (%s %d.%d.%d)\n",
-	VERSION_PLATFORM,VERSION_MAJ,VERSION_MID,VERSION_MIN);
-	printf ("\tPatched by Steven Atkinson and Ozkan Sezer with\n");
-	printf ("\tsome code borrowed from the pa3pyx and js sources\n");
-
+	printf ("\n");
+	printf ("Hammer of Thyrion, release %d.%d.%d\n",
+		HOT_VERSION_MAJ, HOT_VERSION_MID, HOT_VERSION_MIN);
+	printf ("running on Hexen II engine %4.2f (%s)\n\n",
+		HEXEN2_VERSION, VERSION_PLATFORM);
 }
 
 void PrintHelp(char *name)
 {
-	printf ("\n");
 	PrintVersion();
-	printf ("http://sourceforge.net/projects/uhexen2/\n");
-	printf ("\n");
 	printf ("Please send bug reports or patches to:\n");
-	printf ("     Steven Atkinson    <stevenaaus@yahoo.com>\n");
-	printf ("     Ozkan Sezer        <sezeroz@ttnet.net.tr>\n");
+	printf ("     Steven Atkinson  <stevenaaus@users.sourceforge.net>\n");
+	printf ("     Ozkan Sezer      <sezero@users.sourceforge.net>\n");
+	printf ("Visit http://sf.net/projects/uhexen2/ for more info.\n");
 	printf ("\n");
 	printf ("Usage: %s [options]\n", name);
 	printf ("     [-h | --help]                   Display this help message\n");
@@ -880,13 +876,13 @@ int main(int argc, char *argv[])
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
-	if (COM_CheckParm("-h")||COM_CheckParm("--help")||COM_CheckParm("-?"))
+	if (COM_CheckParm ("-h") || COM_CheckParm ("-help") || COM_CheckParm ("--help"))
 	{
 		PrintHelp(binary_name);
 		exit (0);
 	}
 
-	if (COM_CheckParm ("-v") || COM_CheckParm ("--version"))
+	if (COM_CheckParm ("-v") || COM_CheckParm ("-version") || COM_CheckParm ("--version"))
 	{
 		PrintVersion();
 		exit (0);
@@ -985,6 +981,10 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2004/12/18 14:20:40  sezero
+ * Clean-up and kill warnings: 11
+ * A lot of whitespace cleanups.
+ *
  * Revision 1.8  2004/12/18 14:08:08  sezero
  * Clean-up and kill warnings 9:
  * Kill many unused vars.

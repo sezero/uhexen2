@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.11 2004-12-19 10:35:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.12 2004-12-22 21:50:16 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -17,18 +17,12 @@
 #include <ctype.h>
 #endif
 
-#ifdef PLATFORM_UNIX
-#define VERSION_MAJ 1
-#define VERSION_MID 2
-#define VERSION_MIN 0
 #define HOT_VERSION_MAJ 1
 #define HOT_VERSION_MID 2
 #define HOT_VERSION_MIN 2
+#ifdef PLATFORM_UNIX
 #define VERSION_PLATFORM "Linux"
 #else
-#define VERSION_MAJ 1
-#define VERSION_MID 2
-#define VERSION_MIN 0
 #define VERSION_PLATFORM "Windows"
 #endif
 
@@ -449,6 +443,10 @@ void IN_DeactivateMouseSA (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2004/12/19 10:35:30  sezero
+ * - Add "implicitly declared" functions as externs: Software rendering files.
+ * - Add comments on the asm/non-Intel status of the code
+ *
  * Revision 1.10  2004/12/18 14:20:40  sezero
  * Clean-up and kill warnings: 11
  * A lot of whitespace cleanups.

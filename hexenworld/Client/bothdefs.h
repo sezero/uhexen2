@@ -3,8 +3,6 @@
 
 #define GLQUAKE_VERSION 0.95
 #define	VERSION		0.15
-#define LINUX_VERSION 0.94
-
 
 #if (defined(_M_IX86) || defined(__i386__)) && !defined(id386)
 #define id386	1

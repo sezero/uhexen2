@@ -1251,23 +1251,13 @@ void Draw_ConsoleBackground (int lines)
 
 	//sprintf (ver, "start commands with a \\ character %4.2f", VERSION);
 
-#if defined(__linux__)
 	if (cls.download) {
 		sprintf (ver, "%4.2f", VERSION);
 		dest = conback->data + 320 + 320*186 - 11 - 8*strlen(ver);
 	} else {
-		sprintf (ver, "Linux HexenWorld (%4.2f) %4.2f", LINUX_VERSION, VERSION);
+		sprintf (ver, "HexenWorld %4.2f (%s)", VERSION, VERSION_PLATFORM);
 		dest = conback->data + 320 - (strlen(ver)*8 + 11) + 320*186;
 	}
-#else
-	if (cls.download) {
-		sprintf (ver, "%4.2f", VERSION);
-		dest = conback->data + 320 + 320*186 - 11 - 8*strlen(ver);
-	} else {
-		sprintf (ver, "HexenWorld %4.2f", VERSION);
-		dest = conback->data + 320 - (strlen(ver)*8 + 11) + 320*186;
-	}
-#endif
 
 	memcpy(saveback, conback->data + 320*186, 320*8);
 	for (x=0 ; x<strlen(ver) ; x++)
