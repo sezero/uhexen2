@@ -923,7 +923,7 @@ void Draw_TransPicCropped(int x, int y, qpic_t *pic)
 							if((tbyte = source[u+1]) != TRANSPARENT_COLOR)
 								dest[u+1] = mainTransTable[(((unsigned)dest[u+1])<<8) + tbyte];
 							if((tbyte = source[u+2]) != TRANSPARENT_COLOR)
-								dest[u+2] = mainTransTable[(((unsigned)dest[u=2])<<8) + tbyte];
+								dest[u+2] = mainTransTable[(((unsigned)dest[u+2])<<8) + tbyte];
 							if((tbyte = source[u+3]) != TRANSPARENT_COLOR)
 								dest[u+3] = mainTransTable[(((unsigned)dest[u+3])<<8) + tbyte];
 							if((tbyte = source[u+4]) != TRANSPARENT_COLOR)
