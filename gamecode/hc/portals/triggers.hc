@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/triggers.hc,v 1.1.1.1 2004-11-29 11:36:01 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/triggers.hc,v 1.2 2005-01-05 23:31:35 sezero Exp $
  */
 
 void() button_return;
@@ -1272,7 +1272,7 @@ float poof_speed;
 			if(other.classname!="player"&&other.velocity!='0 0 0')
 				poof_speed = vlen(other.velocity);
 			else
-				poof_speed = 300;
+				poof_speed = 150;
 			other.velocity = v_forward * poof_speed;
 		}
 	}
@@ -2614,6 +2614,9 @@ void trigger_hub_intermission(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:36:01  sezero
+ * Initial import
+ *
  * 
  * 75    3/24/98 4:01p Jmonroe
  * removed unused globals

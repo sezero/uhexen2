@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/triggers.hc,v 1.2 2004-12-20 19:08:46 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/triggers.hc,v 1.3 2005-01-05 23:31:35 sezero Exp $
  */
 
 void() button_return;
@@ -1086,7 +1086,7 @@ float poof_speed;
 		if(other.classname!="player"&&other.velocity!='0 0 0')
 			poof_speed = vlen(other.velocity);
 		else
-			poof_speed = 300;
+			poof_speed = 150;
 		other.velocity = v_forward * poof_speed;
 	}
 
@@ -2022,6 +2022,9 @@ void trigger_message_transfer ()
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/20 19:08:46  sezero
+ * fix Eidolon's jumping issue (aka. no-skywalker patch)
+ *
  * Revision 1.1.1.1  2004/11/29 11:39:29  sezero
  * Initial import
  *

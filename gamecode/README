@@ -3,6 +3,9 @@ Game code for Hexen2 / H2MP / HexenWorld
 
 Changes
 -------
+1.12d	Reduce the speed of the teleporting process' pushing you
+	forward. Fixes the unreachable Cathedral balcony issue for
+	me (for both Hexen2 and H2MP) (2005-01-06).
 1.12c   fix eidolon loses his hostility upon destruction of the orb.
 	(2005-01-05, adaptation of eidolon.hc from H2MP)
 1.12b	fix eidolon not jumping off the ledge (hc/h2/triggers.hc)
