@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.3 2005-02-11 23:44:32 sezero Exp $
+	$Id: snd_alsa.c,v 1.4 2005-02-14 10:07:03 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -106,7 +106,11 @@ qboolean S_ALSA_Init (void)
 	}
 
 	Con_Printf ("Using PCM %s.\n", pcmname);
-	hx2snd_pcm_hw_params_any (pcm, hw);
+	err = hx2snd_pcm_hw_params_any (pcm, hw);
+	if (err < 0) {
+		Con_Printf ("ALSA: error setting hw_params_any. %s\n", hx2snd_strerror (err));
+		goto error;
+	}
 
 	switch (rate) {
 		case 11025:
@@ -114,8 +118,11 @@ qboolean S_ALSA_Init (void)
 		case 44100:
 		case 48000:
 			err = hx2snd_pcm_hw_params_set_rate_near (pcm, hw, &rate, 0);
-			if (err < 0)
+			if (err < 0) {
+				Con_Printf ("ALSA: desired rate %i not supported. %s\n",
+					    rate, hx2snd_strerror (err));
 				goto error;
+			}
 			frag_size = 8 * bps * rate / 11025;
 			break;
 		default:
@@ -127,8 +134,11 @@ qboolean S_ALSA_Init (void)
 		case 8:
 		case 16:
 			err = hx2snd_pcm_hw_params_set_format (pcm, hw, bps == 8 ? SND_PCM_FORMAT_U8 : SND_PCM_FORMAT_S16);
-			if (err < 0)
+			if (err < 0) {
+				Con_Printf ("ALSA: desired format %d not supported. %s\n",
+					    bps, hx2snd_strerror (err));
 				goto error;
+			}
 			break;
 		default:
 			Con_Printf ("ALSA: desired format %d not supported\n", bps);
@@ -137,7 +147,7 @@ qboolean S_ALSA_Init (void)
 
 	err = hx2snd_pcm_hw_params_set_access (pcm, hw, SND_PCM_ACCESS_MMAP_INTERLEAVED);
 	if (err < 0) {
-		Con_Printf ("ALSA: interleaved is not supported\n");
+		Con_Printf ("ALSA: interleaved is not supported. %s\n", hx2snd_strerror (err));
 		goto error;
 	}
 
@@ -145,29 +155,50 @@ qboolean S_ALSA_Init (void)
 		case 0:
 		case 1:
 			err = hx2snd_pcm_hw_params_set_channels (pcm, hw, stereo ? 2 : 1);
-			if (err < 0)
+			if (err < 0) {
+				Con_Printf ("ALSA: desired channels not supported. %s\n", hx2snd_strerror (err));
 				goto error;
+			}
 			break;
 		default:
 			Con_Printf ("ALSA: desired channels not supported\n");
 			goto error;
 	}
 
-	hx2snd_pcm_hw_params_set_period_size_near (pcm, hw, &frag_size, 0);
-
-	err = hx2snd_pcm_hw_params (pcm, hw);
+	err = hx2snd_pcm_hw_params_set_period_size_near (pcm, hw, &frag_size, 0);
 	if (err < 0) {
-		Con_Printf ("ALSA: unable to install hw params\n");
+		Con_Printf ("ALSA: unable to set period size near %i. %s\n",
+			    (int) frag_size, hx2snd_strerror (err));
 		goto error;
 	}
 
-	hx2snd_pcm_sw_params_current (pcm, sw);
-	hx2snd_pcm_sw_params_set_start_threshold (pcm, sw, ~0U);
-	hx2snd_pcm_sw_params_set_stop_threshold (pcm, sw, ~0U);
+	err = hx2snd_pcm_hw_params (pcm, hw);
+	if (err < 0) {
+		Con_Printf ("ALSA: unable to install hw params. %s\n", hx2snd_strerror (err));
+		goto error;
+	}
+
+	err = hx2snd_pcm_sw_params_current (pcm, sw);
+	if (err < 0) {
+		Con_Printf ("ALSA: unable to determine current sw params. %s\n", hx2snd_strerror (err));
+		goto error;
+	}
+
+	err = hx2snd_pcm_sw_params_set_start_threshold (pcm, sw, ~0U);
+	if (err < 0) {
+		Con_Printf ("ALSA: unable to set playback threshold. %s\n", hx2snd_strerror (err));
+		goto error;
+	}
+
+	err = hx2snd_pcm_sw_params_set_stop_threshold (pcm, sw, ~0U);
+	if (err < 0) {
+		Con_Printf ("ALSA: unable to set playback stop threshold. %s\n", hx2snd_strerror (err));
+		goto error;
+	}
 
 	err = hx2snd_pcm_sw_params (pcm, sw);
 	if (err < 0) {
-		Con_Printf ("ALSA: unable to install sw params\n");
+		Con_Printf ("ALSA: unable to install sw params. %s\n", hx2snd_strerror (err));
 		goto error;
 	}
 
@@ -179,7 +210,7 @@ qboolean S_ALSA_Init (void)
 			(snd_pcm_uframes_t *) (&shm->submission_chunk), 0);
 			// don't mix less than this
 	if (err < 0) {
-		Con_Printf ("ALSA: unable to get period size\n");
+		Con_Printf ("ALSA: unable to get period size. %s\n", hx2snd_strerror (err));
 		goto error;
 	}
 	shm->samplepos = 0; // in mono samples
@@ -277,6 +308,9 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/02/11 23:44:32  sezero
+ * add 48000 to the alsa rate switch
+ *
  * Revision 1.2  2005/02/05 16:38:58  sezero
  * fix silly copy+paste error in snd_alsa.c
  *
