@@ -33,6 +33,7 @@ int lan;
 int destiny;
 
 GtkWidget *fixed1;
+GtkWidget *LAN_button;
 GtkWidget *MP_button;
 GtkWidget *OM_button;
 //GtkWidget *EVIL_button;
@@ -69,7 +70,6 @@ create_window1 (void)
   GtkWidget *SOFT_button;
   GtkWidget *GL_button;
   GtkWidget *SOUND_button;
-  GtkWidget *LAN_button;
   GtkWidget *JOY_button;
   GtkWidget *FS_button;
   GtkWidget *vseparator1;
@@ -338,6 +338,8 @@ create_window1 (void)
   gtk_fixed_put (GTK_FIXED (fixed1), LAN_button, 184, 264);
   gtk_widget_set_uposition (LAN_button, 184, 264);
   gtk_widget_set_usize (LAN_button, 136, 24);
+  if (destiny==DEST_HW)
+      gtk_widget_set_sensitive (LAN_button, FALSE);
   if (!lan)
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (LAN_button), TRUE);
 

@@ -31,6 +31,7 @@ extern int destiny;
 extern GtkWidget *fixed1;
 extern GtkWidget *MIDI_button;
 extern GtkWidget *CDAUDIO_button;
+extern GtkWidget *LAN_button;
 extern GtkWidget *MP_button;
 extern GtkWidget *OM_button;
 //extern GtkWidget *EVIL_button;
@@ -281,6 +282,7 @@ on_HEXEN2_button_released              (GtkButton       *button,
 #ifndef DEMOBUILD
   gtk_widget_set_sensitive (MP_button, TRUE);
 #endif
+  gtk_widget_set_sensitive (LAN_button, TRUE);
 }
 
 
@@ -299,6 +301,11 @@ on_HW_button_released                  (GtkButton       *button,
   }
   gtk_widget_set_sensitive (MP_button, FALSE);
 #endif
+  if(!lan) {
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (LAN_button), FALSE);
+    lan=1;
+  }
+  gtk_widget_set_sensitive (LAN_button, FALSE);
 }
 
 
