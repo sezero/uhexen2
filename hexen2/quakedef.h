@@ -1,7 +1,7 @@
 // quakedef.h -- primary header for client
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.2 2004-11-28 00:58:08 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.3 2004-11-29 16:02:07 sezero Exp $
  */
 
 //#define	GLTEST			// experimental stuff
@@ -18,7 +18,7 @@
 #define VERSION_MIN 0
 #define HOT_VERSION_MAJ 1
 #define HOT_VERSION_MID 2
-#define HOT_VERSION_MIN 1
+#define HOT_VERSION_MIN 1a
 #define VERSION_PLATFORM "Linux"
 #else
 #define VERSION_MAJ 1
@@ -430,6 +430,20 @@ void MIDI_Loop(int NewValue);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/11/28 00:58:08  sezero
+ *
+ * Commit Steven's changes as of 2004.11.24:
+ *
+ * * Rewritten Help/Version message(s)
+ * * Proper fullscreen mode(s) for OpenGL.
+ * * Screen sizes are selectable with "-width" and "-height" options.
+ * * Mouse grab in window modes , which is released when menus appear.
+ * * Interactive video modes in software game disabled.
+ * * Replaced Video Mode menu with a helpful message.
+ * * New menu items for GL Glow, Chase mode, Draw Shadows.
+ * * Changes to initial cvar_t variables:
+ *      r_shadows, gl_other_glows, _windowed_mouse,
+ *
  * Revision 1.1.1.1  2004/11/28 00:06:10  sezero
  * Initial import of AoT 1.2.0 code
  *
