@@ -66,12 +66,11 @@ a. Using the installer (easy way):
 b. Manual install/update of datafiles (harder way):
    Copy the "data1" directory from the Hexen2 CD to your Hexen2
    directory, do NOT overwrite what is already provided by the
-   HoT packages. Do a "chmod 644 *" on the contents, then type
-   "sh update_h2" to patch your data files (this command and its
+   HoT packages. Do a " chmod 644 data1/* ". All files should be
+   lower-cased, if not already, and can be done with mv_lowercase
+   from the file-rename-utils archive (see Links). To patch your
+   data files, type " sh update_h2 " (this update script and its
    requirements are included in the HoT-1.2.4 binary package).
-   All files should be lower-cased (if not already) and can be
-   done with "mv_lowercase" from the file-rename-utils archive
-   (see Links).
 
 
 1.2 Software Requirements
