@@ -1905,7 +1905,7 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 				if (width != glt->width || height != glt->height || mipmap != glt->mipmap) {
 				// Not the same texture - dont die, delete and rebind to new image
 				// TODO - Maybe add the hash check some day
-					Con_Printf ("GL_LoadTexture: reloading tex due to cache mismatch");
+					Con_Printf ("GL_LoadTexture: reloading tex due to cache mismatch\n");
 					glfunc.glDeleteTextures_fp (1, &(glt->texnum));
 					glt->width = width;
 					glt->height = height;

@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.14 2005-01-08 16:10:46 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.15 2005-01-11 07:11:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1645,7 +1645,7 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 				if (width != glt->width || height != glt->height || mipmap != glt->mipmap) {
 				// Not the same texture - dont die, delete and rebind to new image
 				// TODO - Maybe add the hash check some day
-					Con_Printf ("GL_LoadTexture: reloading tex due to cache mismatch");
+					Con_Printf ("GL_LoadTexture: reloading tex due to cache mismatch\n");
 					glfunc.glDeleteTextures_fp (1, &(glt->texnum));
 					glt->width = width;
 					glt->height = height;
@@ -1700,7 +1700,7 @@ int GL_LoadTexture32 (char *identifier, int width, int height, unsigned *data, q
 				if (width != glt->width || height != glt->height || mipmap != glt->mipmap) {
 				// Not the same texture - dont die, delete and rebind to new image
 				// TODO - Maybe add the hash check some day
-					Con_Printf ("GL_LoadTexture32: reloading tex due to cache mismatch");
+					Con_Printf ("GL_LoadTexture32: reloading tex due to cache mismatch\n");
 					glfunc.glDeleteTextures_fp (1, &(glt->texnum));
 					glt->width = width;
 					glt->height = height;
@@ -1820,6 +1820,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/01/08 16:10:46  sezero
+ * slight gl cleanup
+ *
  * Revision 1.13  2005/01/08 16:07:45  sezero
  * don't die on cache mismatch, delete and and reload the new texture
  *
