@@ -30,7 +30,7 @@ SOURCES = main.c ${ORIG_SRC} interface.c interface.h \
 OBJECTS = main.o ${ORIG_OBJ} interface.o callbacks.o launch_bin.o \
 	config_file.o
 
-CFLAGS = -O2 -Wall -I. ${GTK_CFLAGS}
+CFLAGS = -Wall -O2 -march=i386 -mcpu=i686 -I. ${GTK_CFLAGS}
 ifdef DEBUG
 CFLAGS+=-g
 endif

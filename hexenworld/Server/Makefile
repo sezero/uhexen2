@@ -5,7 +5,7 @@ DEBUG=no
 
 CC = gcc
 LINKER = gcc
-CFLAGS = -I../Client/ -I. -O2 -mcpu=pentium -DUSE_INTEL_ASM -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ -DSERVERONLY `sdl-config --cflags`
+CFLAGS = -I../Client/ -I. -O2 -march=i386 -mcpu=i686 -DUSE_INTEL_ASM -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ -DSERVERONLY `sdl-config --cflags`
 ifeq "$(DEBUG)" "yes"
 CFLAGS += -g
 endif
