@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/combat.hc,v 1.1.1.1 2004-11-29 11:37:37 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/combat.hc,v 1.2 2005-02-23 08:11:24 sezero Exp $
  */
 void(vector org, vector vel, float damage, entity victim) SpawnPuff;
 
@@ -63,7 +63,9 @@ void FireMelee (float damage_base,float damage_mod,float attack_radius)
 	if (trace_ent.takedamage)
 	{
 		//FIXME:Add multiplier for level and strength
-		if(trace_ent.flags2&FL_ALIVE&&!infront_of_ent(self,trace_ent)&&self.playerclass==CLASS_ASSASSIN&&self.weapon==IT_WEAPON1&&random(1,10)<self.level)
+	//	if(trace_ent.flags2&FL_ALIVE&&!infront_of_ent(self,trace_ent)&&self.playerclass==CLASS_ASSASSIN&&self.weapon==IT_WEAPON1&&random(1,10)<self.level)
+	//	Pa3PyX: this ability starts at clvl 6
+		if(trace_ent.flags2 & FL_ALIVE && !infront_of_ent(self, trace_ent) && self.playerclass == CLASS_ASSASSIN && self.weapon == IT_WEAPON1 && random(1, 10) < self.level && self.level > 5)
 		{
 			CreateRedFlash(trace_endpos);
 			damage_base*=random(2.5,4);
@@ -120,6 +122,9 @@ void FireMelee (float damage_base,float damage_mod,float attack_radius)
 }
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:37:37  sezero
+ * Initial import
+ *
  * 
  * 34    7/12/97 9:09a Rlove
  * Reworked Assassin Punch Dagger
