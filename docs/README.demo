@@ -64,8 +64,10 @@ the binaries are:
 			    be compiled with timidity+ support)
 			    1.2.5 and newer highly recommended.
 
-   ALSA libraries (0.9.8+): Advanced Linux Sound Architecture
-			    libraries. 1.0.4+ recommended.
+   ALSA (min.: 0.9.8)	  : Advanced Linux Sound Architecture
+			    libraries and kernel modules.
+			    Necessary, if you use alsa-sound.
+			    1.0.7 (or newer) recommended.
 
    nasm (0.98 +)	  : x86 assembler (if you compile your
 			    own binaries.) 0.98.38 recommended
