@@ -38,7 +38,7 @@ main (int argc, char *argv[])
     fprintf (stderr,"Couldn't determine userspace directory");
     exit(0);
   }
-  else printf("userdir is: %s\n",userdir);
+  else printf("\nUserdir is : %s\n",userdir);
 
   fill_default_options();
   read_config_file();

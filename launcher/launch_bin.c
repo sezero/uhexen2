@@ -35,19 +35,17 @@ char *h2_binary_names[]={
   "glhexen2.dynamic", /* GL and no MP */               /* 1 */
   "h2mp.dynamic",     /* software and MP */            /* 2 */
   "hexen2.dynamic"    /* software and no MP */         /* 3 */
-
 };
 
 char *hw_binary_names[]={
 
-  "hwcl",     /* Software */  /* 0 */
-  "glhwcl",   /* OpenGL */    /* 1 */
-
+  "hwcl",	/* Software */  /* 0 */
+  "glhwcl"	/* OpenGL */    /* 1 */
 };
 
 /* [with or without OpenGL][with or without MP] */
 /* for example, table [1][0] is with openGL and without MP */
-int table[2][2] = { {3,2},{1,0} };
+int table[2][2] = {  {3,2}, {1,0}  };
 
 /* [resolution]
   -width values only. corresponding -height is is the game binary */
@@ -58,14 +56,12 @@ char *resolution_args[]={
   "800",
   "1024",
   "1280"
-
 };
 
 static char *bin_path;
 extern char *argv_0;
 
-static char * search_for_command(char * filename)
-{
+static char * search_for_command(char * filename) {
   static char pathname[1024];
   char buff[1024];
   char *path;
@@ -79,13 +75,12 @@ static char * search_for_command(char * filename)
     char *cwd;
     cwd = malloc(sizeof(char)*1024);
     if (getcwd (cwd, 1024) == NULL) {
-      perror("getcwd failed");
+       perror("getcwd failed");
     }
     snprintf(pathname, 1024,"%s%s", cwd, filename+1);
     free(cwd);
     return pathname;
   }
-
 
   for (path = getenv("PATH"); path && *path; path += m) {
     if (strchr(path, ':')) {
@@ -100,13 +95,13 @@ static char * search_for_command(char * filename)
     }
     strcpy(pathname + n, filename);
     if (!access(pathname, F_OK)) {
-
-      strncpy(buff, pathname, 1024);
-	if (readlink(buff,pathname,1024) < 0) {
-	  if (errno == EINVAL)  /* not a symbolic link */ { }
-	  else perror(NULL);
+	strncpy(buff, pathname, 1024);
+	if (readlink(buff, pathname, 1024) < 0) {
+	   if (errno == EINVAL) {
+	      /* not a symbolic link */
+	   } else
+		perror(NULL);
 	}
-
 	return pathname;
     }
   }
@@ -114,22 +109,21 @@ static char * search_for_command(char * filename)
 }
 
 
-char *SkipPath (char *pathname)
-{
+char *SkipPath (char *pathname) {
   char *last;
 	
   last = pathname;
-  while (*pathname)
-    {
+  while (*pathname) {
       if (*pathname=='/')
 	last = pathname+1;
       pathname++;
-    }
+  }
   return last;
 }
 
-void SkipFilename (char *out, char *pathname, int size)
-{
+
+void SkipFilename (char *out, char *pathname, int size) {
+
   int base_size=0;
   char *name=0;
 
@@ -138,22 +132,20 @@ void SkipFilename (char *out, char *pathname, int size)
   strncpy(out,bin_path,base_size);
 }
 
-void launch_hexen2_bin()
-{
+void launch_hexen2_bin() {
+
   char directory_name[1024];
   char *binary_name;
-  char *args[8];
-  int i=0;
+  unsigned short i=0, i1=0;
+  char *args[12];
 
   if (destiny == DEST_H2)
-    binary_name=h2_binary_names[table[opengl_support][mp_support]];
-
+     binary_name=h2_binary_names[table[opengl_support][mp_support]];
   else if (destiny == DEST_HW)
      binary_name=hw_binary_names[opengl_support];
-
   else {
-    printf("Warning: unknown destiny choice, launhcing Hexen II\n");
-    binary_name=h2_binary_names[table[opengl_support][mp_support]];
+     printf("Warning: unknown destiny choice, launhcing Hexen II\n");
+     binary_name=h2_binary_names[table[opengl_support][mp_support]];
   }
 
   memset(directory_name,0,1024);
@@ -164,33 +156,32 @@ void launch_hexen2_bin()
   SkipFilename(directory_name,bin_path,1024);
   chdir(directory_name);
 
-  args[i]=binary_name; 
+  args[i]=binary_name;	// i == 0
 
-  i++;
-  if (midi == 0) {
-    args[i]="-nomidi";
-    i++;
-  }
-  if (cdaudio == 0) {
-    args[i]="-nocdaudio";
-    i++;
-  }
-  if (sound == 0) {
-//  args[i]="--nosound";
-    args[i]="-s";
-    i++;
-  }
-//args[i]="--fullscreen";
-  args[i]="-f";
+  i++;			// i == 1
+  args[i]="-f";		// args[i]="--fullscreen";
   if (fullscreen == 0)
-    args[i]="-w";
-//  args[i]="--windowed";
+    args[i]="-w";	// args[i]="--windowed";
 
-  i++;
+  i++;			// i == 2
   args[i]="-width";
 
-  i++;
+  i++;			// i == 3
   args[i]=resolution_args[resolution];
+
+  if (sound == 0) {
+    i++;
+    args[i]="-s";	// args[i]="--nosound";
+  } else {
+	if (midi == 0) {
+	    i++;
+	    args[i]="-nomidi";
+	}
+	if (cdaudio == 0) {
+	    i++;
+	    args[i]="-nocdaudio";
+	}
+  }
 
   if (joystick == 0) {
     i++;
@@ -202,22 +193,31 @@ void launch_hexen2_bin()
     args[i]="-nomouse";
   }
 
-// args[i]=NULL;
+  i++;
+  args[i]=NULL;
 
-  printf("we are here: %s\n",bin_path);
-  printf("base: %s\n",directory_name);
-  printf("launching %s\n",binary_name);
-  printf("using arguments :\n");
-  for (i=0;i<=7;i++)
-    printf("%d:  %s\n",i,args[i]);
+  printf("We are here: %s\n",bin_path);
+  printf("Base       : %s\n",directory_name);
+  printf("\nLaunching %s\n",binary_name);
+  printf("Command line is :\n  ");
+  for (i1 = 0; i1 <= i - 1; i1++)
+    printf(" %s", args[i1]);
+  printf("\n\n");
 
   pid=fork();
+
   if (pid == 0) {
-    pid=fork();
-    if (pid == 0) {
-      execv(binary_name,args);
-    }
-    else {if (pid == -1) perror(NULL); gtk_main_quit();}
+	pid=fork();
+	if (pid == 0) {
+	      execv(binary_name,args);
+	} else {
+	     if (pid == -1)
+		     perror(NULL);
+	     gtk_main_quit();
+	}
+  } else {
+	if (pid == -1)
+	   perror(NULL);
+	gtk_main_quit();
   }
-  else {if (pid == -1) perror(NULL); gtk_main_quit();}
 }
