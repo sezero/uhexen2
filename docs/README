@@ -1,5 +1,4 @@
 
-
 Linux Hexen II
 -----------------------
 Hammer of Thyrion 1.2.3
@@ -13,19 +12,19 @@ Hammer of Thyrion 1.2.3
   1.4 Sound 
   1.5 Networking/Multiplayer
   1.6 SaveGames and Configuration files
-  1.7 Thanks
-  1.8 Contact
+  1.7 Playing the Old Mission in Expansion Pack
+  1.8 Thanks
+  1.9 Contact
 
 2. Notes
 
   2.1 Tweaks
-  2.2 Problems with Bosses
-  2.3 Mods and Crazy Polygons
-  2.4 Lines on Screen
-  2.5 Hardware Acceleration
-  2.6 System Stability
-  2.7 Other
-  2.8 Links
+  2.2 Mods and Crazy Polygons
+  2.3 Lines on Screen
+  2.4 Hardware Acceleration
+  2.5 System Stability
+  2.6 Other
+  2.7 Links
 
 ------------------------------------------------------------------------
 
@@ -42,7 +41,7 @@ There are two ways to do this:
 
 a. Using the installer (easy way):
    The installer will get the files from your original cdroms and
-   apply the appropriate patches for you! It will also install the
+   apply the appropriate patches for you. It will also install the
    necessary binaries.
    There is a sub-option named "Hot-fixes for Hexen II", which will
    install fixes for some gameplay issues. We recommend that you
@@ -61,19 +60,18 @@ a. Using the installer (easy way):
 	h2mp	-  Software Portal of Praevus
 	glh2mp	-  OpenGL Portal of Praevus
 
-   The third option on the installer is HexenWorld Multiplayer support.
-   No cdrom is necessary for this option. The names of the binaries
-   are:
+   Third option on the installer is HexenWorld Multiplayer support.
+   No cdrom is necessary for this option. Names of the binaries are:
 
 	hwcl	-  HexenWorld Client (software)
 	glhwcl	-  HexenWorld Client (OpenGL)
 	hwsv	-  HexenWorld Server
 
-b. Mannual install/update of datafiles (hard way):
+b. Manual install/update of datafiles (hard way):
    Copy the "data1" directory from the Hexen II CD to your Hexen II
-   directory, do a "chmod 644 *" on the contents of, then use the file
+   directory, do a "chmod 644 *" on the contents, then use the file
    "h2-game-updates-1.12a.tgz" (downloadable from the HoT web site)
-   to manually patch your data files to version 1.11. (The 1.12a refers
+   to manually patch your data files to version 1.11. (1.12a refers
    to the version of the mission pack, should you have it).
    All files should be lower-cased (if not already) and can be done
    with "mv_lowercase" from the file-rename-utils archive (see Links).
@@ -93,12 +91,16 @@ b. Mannual install/update of datafiles (hard way):
 	df7c95d83638c187e703cf9c3644339a  portals/puzzles.txt
 	adf39e079d40f31ebbf0eb3b7ebf76a8  portals/strings.txt
 
+   There ARE newer updates since 1.11/1.12a. Look for them at our
+   website and use them for further fixes (as stated above, they'd
+   be automatically installed for you, if you use the installer).
+
 
 1.2 Software Requirements
 -------------------------
 
-HoT has issues with linux sound modules. See "1.4 Sound" for more info.
-The only unusual software requirements are:
+Linux Hexen2 may have issues with some sound modules. See "1.4 Sound"
+for more info. The only unusual software requirements are:
 
     SDL (1.2.2 +)	    : Simple DirectMedia Layer libraries
     SDL_mixer (1.2.0 +)	    : required for midi support (should be
@@ -113,13 +115,13 @@ The only unusual software requirements are:
 
 The simplest way of running the game is running the game launcher.
 To do this: Either choose it from your start menu (should you chose
-to do it during the installation),  or typing "hexen2" from the
-command line. Choose your options and then press "Launch Hexen2".
+to do it during the installation),  or type "hexen2" on the command
+line. Choose your options and then press "Launch Hexen2".
 
-The "old school" way of running the game is going into the installa-
-tion directory and running the binary directly:
-The default mode is windowed. Use "glhexen2 -f" to start the game
-in full-screen mode.  The following options are accepted:
+The old school way of running the game: go into the installation
+directory and run the binary directly. The default mode is windowed.
+Use "glhexen2 -f" to start the game in full-screen mode. The
+following options are accepted:
 
  [-h | --help]			  Display this help message
  [-v | --version]		  Display the game version
@@ -127,15 +129,15 @@ in full-screen mode.  The following options are accepted:
  [-w | --windowed]		  Run the game windowed
  [-s | --nosound]		  Run the game without sound
  [-g | --gllibrary]		  Select 3D rendering library
- [-nomouse]			  Don't use the mouse in window mode
+ [-nomouse]			  No mouse in window mode
  [-width Width [-height Height]]  Select screen size
  [-bpp]				  Depth for GL fullscreen mode
  [-heapsize Bytes]		  Heapsize
 
 Others may work, but aren't really supported.
 
-You may wish to brighten the display with "xgamma". The script I use
-is:
+You may wish to brighten the display with "xgamma". The script I
+use is:
 
     cd /usr/local/games/hexen2
     xgamma -q -gamma 1.3;       # brighten the display
@@ -147,53 +149,58 @@ is:
 1.4 Sound 
 ---------
 
-OSS sound code
---------------
+a. OSS sound code
+-----------------
 HoT requires your kernel sound modules to be OSS (Open Sound System)
-compatible.  If your game bombs out after sound initialization and you
-aren't using the Alsa sound drivers you might try them, but doing so
-is not straight forward.  Once the Alsa sound modules are installed
-and configured, you can use (for example, on Mandrake):
+compatible.  If your game bombs out after sound initialization and
+you aren't using the Alsa sound drivers, you may want to try them
+(doing that may not be very easy, though.)  Once the Alsa sound
+modules are installed and configured, you can use (for example,
+on Mandrake):
 
-    rmmod emu10k1          ;# remove OSS sound module for SBLive card
+    rmmod emu10k1          ;# remove OSS sound module for SBLive
     /etc/init.d/alsa start ;# start ALSA sound modules
 
+Make SURE oss-emulation is available: lsmod should list snd-pcm-oss.
 Check with alsamixer that the volumes are not turned down to zero.
-Make SURE oss-emulation is available (lsmod should list snd-pcm-oss ).
 
-With ALSA + OSS Emulation, hexen2 should work fine. Mandrake (9.0 and
-newer), Fedora Core (2 and newer) and SuSE (8.2 and newer) _already_
-include alsa: So no worries, if you're using them.  Users of RedHat 9
-and older can see the FreshRPMS site and the official ALSA site for
-alsa-sound support.
+With ALSA + OSS Emulation, hexen2 should work fine. On Mandrake (9.0
+and newer), Fedora Core (2 and newer) and SuSE (8.2 and newer), Alsa
+is already included: no worries if you're using them.
+Users of Fedora Core 1, RedHat 9 and older can see the FreshRPMS site
+and the ALSA site for alsa-sound support.
 
-SDL sound code
---------------
-There is now an option to build a new sound driver. To do this, set
-"SOUND=SDL" in the Makefile in the HoT source code, and type "make"
-(yes, a recompile is necessary). This sound driver does not have the
-compatibility issues of the default (OSS) sound code, but it is very
-much beta - varying from working well, to not at all.
+b. SDL sound code
+-----------------
+There is now an option to build a new sound driver.  To do this, get
+the HoT source code, set "SOUND=SDL" in the Makefile, and type "make"
+(a recompile is necessary here).
+This sound driver does not have the compatibility issues of the OSS
+sound code, BUT it is very much beta: varying from working well, to
+not at all.
 
-If you can't get sound working , the "-nosound" option will disable
-it.
+If you can't get sound working, "-nosound" option will disable it.
 
 
-1.5 Networking/Multiplayer
---------------------------
+1.5 Networking / Multiplayer
+----------------------------
 
 Hexen II binaries here WILL NOT play over a network with Windows-
 hexen2 binaries:  Do not try it, it simply will NOT work!..
 However, the mission pack binaries are compatible across platforms.
 
 This has got nothing to do with us: Raven didn't give us the original
-Hexen2-1.11 source and the network code had changes during the 1.11-
+Hexen2-1.11 source, and the network code had changes during the 1.11-
 1.12 transition. We only have the 1.12 sources.
 
-If this is a big issue for you, use HexenWorld: Version beta-0.15
-binaries on Windows and Linux are perfectly compatible.
+Deathmatch, TeamPlay, etc:
+	- HexenWorld is highly recommended at both sides.
+Cooperative games:
+	- Linux side  : (gl)hexen2 or (gl)h2mp,
+	- Windows side: (gl)h2mp or jshexen2, or (gl)hexen2 (Pa3pyX-
+	  1.14 or 1.15), work just fine with each other.
 
-Here is a detailed network-compatibility table:
+Here is a network-compatibility table:
 
 ===============================================================
 Binary		Windows		Linux	  Game		Status
@@ -208,7 +215,7 @@ Binary		Windows		Linux	  Game		Status
 ==========	===========	========  ==========	=======
 
 (*) Recompiles/ports of the source such as the ones from Pa3Pyx
-    or newhexen and such.
+    or newhexen, jshexen2 and such.
 ===============================================================
 
 
@@ -216,16 +223,27 @@ Binary		Windows		Linux	  Game		Status
 -------------------------------------
 
 Your savegames and configuration files are stored in a directory
-named  .hexen2 in your home folder:  ~/.hexen2
+named  .hexen2 in your home folder:  ~/.hexen2    (For the demo
+version, it's ~/.hexen2demo instead.)
 
-Savegames & configs for Hexen2 are stored directly under ~/.hexen2/
+Savegames/configs for Hexen2 are stored directly under ~/.hexen2/
 For the Mission Pack, they are stored under ~/.hexen2/portals/
 
-(Until recently we kept the ".aot" name for compatibility with the
-old AoT port, but we think that it's now suitable for AoT, aot and
-.aot to retire.)
+(Until recently we kept the ".aot" name for compatibility with
+the old AoT port, but we think that it's now suitable for AoT,
+aot and .aot to retire.)
 
-1.7 Thanks
+
+1.7 Playing the Old Mission in Expansion Pack
+---------------------------------------------
+
+Either choose the appropriate option in the game launcher, or type
+"m_oldmission 1" (without the quotes) in the game's console.
+Choose "New Game" from the menu, then choose "Old Mission". You
+will go into the original Hexen2 game.
+
+
+1.8 Thanks
 ----------
 
 Thanks to ID Software, Raven Games and Activision for a great game
@@ -235,7 +253,7 @@ for the initial Linux port (AoT). Mega Thanks to all the unheralded
 Doom/Quake/Hexen modders.
 
 
-1.8 Contact
+1.9 Contact
 -----------
     Steven Atkinson    <stevenaaus@users.sourceforge.net>
     Ozkan Sezer        <sezero@users.sourceforge.net>
@@ -257,8 +275,8 @@ various Quake tweaking sites.
 
 variable       values
 --------       ------
-_snd_mixahead  0.1 - 0.9  : 0.1 = less latency, 0.9 = better performance
-gl_ztrick      0|1        : 3% performance tweak (some cards unsupported)
+_snd_mixahead  0.1 - 0.9 : 0.1 = less latency, 0.9 = better performance
+gl_ztrick      0|1       : 3% performance tweak (some cards unsupported)
 gl_picmip      0|1|2
 gl_playermip   0|1|2
 gl_texturemode gl_nearest                : (least quality, best speed)
@@ -266,76 +284,65 @@ gl_texturemode gl_nearest                : (least quality, best speed)
                gl_linear_mipmap_nearest  :           v
                gl_linear_mipmap_linear   : (best quality, least speed)
 
-gl_otherglows  0 | 1      : enable glow on green and blue mana
-snow_active    0 - 255    : 0 = none, 1 = normal (amount designated by
-			    the map), and higher acts as a multiplier
-m_oldmission   0 | 1      : enable "Old Mission" menu item in Praevus.
+gl_otherglows  0 | 1     : enable glow on green and blue mana
+snow_active    0 - 255   : 0 = none, 1 = normal (amount designated by
+			   the map), and higher acts as a multiplier
 
 
-2.2 Problems with Bosses
-------------------------
-
-The old AoT port had a bug: the bosses didn't appear. This is fixed
-in Hammer of Thyrion.
-
-There is another bug with Hexen II:  On some systems Eidolon doesn't
-jump cleanly off the ledge, and wanders around above the ground. The
-fix is included in the installer: *Enable- the check-box which says
-"Hot-fixes for Hexen II". If you aren't using the installer, then go
-to the HoT website and check the files under the "Hexen2 Game Fixes"
-section.
-
-
-2.3 Mods and Crazy Polygons
+2.2 Mods and Crazy Polygons
 ---------------------------
 
 Some mission-packs/mods for Quake based games can cause existing player
-and monster models to be drawn with lines all over the place. To fix
-this, delete the directory  ~/.aot/glhexen  or  ~/.aot/portals/glhexen.
-When you next run the game, it will remake this directory and everything
-should be fine.
+and monster models to be drawn with lines all over the place.
+To fix this, delete the directory  ~/.hexen2/glhexen  and/or
+~/.hexen2/portals/glhexen .  When you next run the game, it will remake
+this directory and everything should be fine.
 
 The biggest mod I've seen for hexen II is the awesome Fortress of Four
 Doors (fo4d.zip). Go and get it, now ;)
 
 
-2.4 Lines on Screen
+2.3 Lines on Screen
 -------------------
 
-A common problem (esp. with 3dfx cards) is flickering lines across the
-screen caused by gl_ztrick.  To fix this, bring down the console with
-the '~' key and enter 'gl_ztrick 0'.
+A common problem (esp. with 3dfx cards) is flickering lines across
+the screen caused by gl_ztrick.  To fix this, bring down the console
+with the '~' key and enter 'gl_ztrick 0'.
+With fresh installations of HoT-1.2.3 this option is disabled by
+default.
 
 
-2.5 Hardware Acceleration
+2.4 Hardware Acceleration
 -------------------------
 
-Setting up hardware OpenGL acceleration under Linux used to be a big
-deal, but most modern distros should automatically configure this.
+Setting up hardware OpenGL acceleration under Linux used to be a
+big deal in the past, but most modern distros do this automatically
+now.
 
 Nvidia's drivers for all of their modern video cards are not open
 source, and because of this many distributions do not include them.
-If your Nvidia card is running slowly this is probably the cause and
+If your Nvidia card is running slowly this is probably the cause,
 you should visit Nvidia.com to download the linux installer. In my
-experience these drivers are great, but not all versions work 100% with
-all cards. If you have a misbehaving Nvidia video card, try a different
-(older) driver.
+experience these drivers are great, but not all versions work 100%
+with all cards. If you have a misbehaving Nvidia video card, try a
+different (older) driver.
 
 3dfx Voodoo1/Voodoo2 is no longer hardware accelerated under recent
 XFree-4.0 releases.  For OpenGL acceleration of 3dfx Voodoo Graphics/
 Voodoo Rush/Voodoo 2 boards, you will have to use older versions of
-XFree86 (3.3.x), Glide and Mesa compiled against Glide.  Setting up a
-Voodoo1/Voodoo2 card under linux can be a bit of work.
+XFree86 (3.3.x), Glide and Mesa compiled against Glide.  Setting up
+a Voodoo1/Voodoo2 card under linux can be a bit of work.
 
 
-2.6 System Stability
+2.5 System Stability
 --------------------
 
-3D games are probably the most intensive workout you can give your PC.
-Problems with them are not always easy to track down.  I recently  had
-some trouble with glquake which I eventually tracked down to Mandrake's
-XFree86-4.3 packages - probably due to compiler pentium optimizations.
-I switched to XFree86-4.3 (from Redhat-9.0) and quake now is rock solid.
+3D games are probably the most intensive workout you can give your
+PC. Problems with them are not always easy to track down.
+I recently had some trouble with glquake which I eventually tracked
+down to Mandrake's XFree86-4.3 packages - probably due to compiler
+pentium optimizations. I switched to XFree86-4.3 (from Redhat-9.0)
+and quake now is rock solid.
 
 I've also had crashes in 3D games associated with
 
@@ -344,7 +351,7 @@ I've also had crashes in 3D games associated with
   * Cpu overheating with unpredictable results.
 
 
-2.7 Other
+2.6 Other
 --------
 
 from Dan Olson:
@@ -356,7 +363,7 @@ Hexen 2 quite nicely, but it's been suggested that I'll need a whole
 different physics engine."
 
 
-2.8 Links
+2.7 Links
 ---------
 
 Hammer of Thyrion  :  http://sourceforge.net/projects/uhexen2
@@ -368,4 +375,3 @@ Hexen II FAQ       :  http://www.raven-games.com/hex2faq/
 Lowercase Utility  :  www.freshmeat.net/projects/file-rename-utils
 Linux GlQuake      :  http://mfcn.ilo.de/glxquake
 ALSA sound         :  http://www.alsa-project.org
-
