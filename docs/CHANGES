@@ -1,35 +1,35 @@
 ChangeLog:
 
-2005-01-18 (CVS, 1.2.3-rc8):
+2005-01-18/19 (CVS, 1.2.3-rc8):
     * Hexen2/HexenWorld:
-    - Fix userdirs to work correctly against the -game arg
-    - Added a "qboolean adduser" arg to COM_AddGameDir()  (useful esp.
-      in hexenworld):  com_userdir evolves gradually. Every search path
-      added has a consequence of additon of (multiple) unnecessary user-
-      paths. Avoid it where we can. (original aot also added the very
-      same userdir multiple times)
+    - Fixed userdirs to work correctly against the -game arg.
+    - Added "qboolean adduser" arg to COM_AddGameDir() (useful esp.
+      in HW):  com_userdir evolves gradually. Every search path
+      added has a consequence of additon of (multiple) unnecessary
+      userpaths. Avoid it where we can. (original aot also added the
+      very same userdir multiple times)
     - Changed all instances of "id1" to "data1"
     * Game Launcher (major changes):
     - Fixed (hopefully) fork() / execv()
-    - Removed res-buttons, made a slider,
-    - More compact interface.
-    - Made the lower/upper bounds of the resolution scale renderer-
-      dependant
-    - Disallowed launching when proper binary is absent.
-    - A status bar notifies the user for the above case.
     - Removed clumsy renderer selection, toggling ogl is enough.
+    - Removed res-buttons, made a slider, more compact interface.
+    - Made lower/upper bounds of the res-scale renderer-dependant.
+    - Disallowed launching when proper binary is absent. Added a
+      statusbar which notifies the user for this.
     - Removed already commented-out demoness-in-old-mission.
     - Put the widgets to be played with remotely are put in to
-      structs properly for easier handling. The catch is we mostly
-      send a pointer to the whole Games struct. But the binary
-      output is smaller now (aka. the struct/pointer mania patch).
+      structs properly for easier handling. The binary output is
+      even smaller now.
+    - For Gtk2.0 builds, replaced gtk_widget_set_uposition() with
+      gtk_widget_set_size_request()
+    - Much code clean-up (apparently)
     - Removed gtk_widget_set_uposition(). We seem to do fine with
       gtk_fixed_put().
-    - for Gtk2.0 builds, replaced gtk_widget_set_uposition() with
-      gtk_widget_set_size_request()
-    - Hacked the version number into the window title.
-    - Code clean-up (apparently)
-    - Bumped version to 0.4.6.
+    - Hacked the version number into the window title.  [v0.4.6]
+    - Combined a bunch of on_ThisEvent() type callback functions
+      which had been doing the same  x = !x  thing
+    - Fixed / cleaned-up config_file.c.
+    - Version 0.4.7.
 
 2005-01-13 (CVS, 1.2.3-rc7):
 
