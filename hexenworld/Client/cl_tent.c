@@ -133,7 +133,7 @@ explosion_t		cl_explosions[MAX_EXPLOSIONS];
 
 static stream_t cl_Streams[MAX_STREAMS];
 static entity_t StreamEntities[MAX_STREAM_ENTITIES];	/* What is so nice about this ???!!!  O.S. */
-static int		StreamEntityCount;
+//static int		StreamEntityCount;
 
 static int		MultiGrenadeCurrentChannel;
 
@@ -3773,7 +3773,7 @@ void CL_UpdateStreams(void)
 	entity_state_t	*state;
 
 	// Update streams
-	StreamEntityCount = 0;
+//	StreamEntityCount = 0;
 	for(i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
 	{
 		if(!stream->models[0])// || stream->endTime < cl.time)
