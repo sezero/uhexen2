@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.3 2005-02-04 11:45:15 sezero Exp $
+	$Id: cd_linux.c,v 1.4 2005-02-04 11:47:58 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -51,8 +51,8 @@ static qboolean	enabled = true;
 static qboolean playLooping = false;
 static float	cdvolume;
 static byte 	remap[100];
-static byte		playTrack;
-static byte		maxTrack;
+static byte	playTrack;
+static byte	maxTrack;
 
 static int cdfile = -1;
 static char cd_dev[64] = "/dev/cdrom";
@@ -83,10 +83,10 @@ static int CDAudio_GetAudioDiskInfo(void)
 	cdValid = false;
 
 	if ( ioctl(cdfile, CDROMREADTOCHDR, &tochdr) == -1 ) 
-    {
-      Con_DPrintf("ioctl cdromreadtochdr failed\n");
-	  return -1;
-    }
+	{
+		Con_DPrintf("ioctl cdromreadtochdr failed\n");
+		return -1;
+	}
 
 	if (tochdr.cdth_trk0 < 1)
 	{
@@ -127,7 +127,7 @@ void CDAudio_Play(byte track, qboolean looping)
 	// don't try to play a non-audio track
 	entry.cdte_track = track;
 	entry.cdte_format = CDROM_MSF;
-    if ( ioctl(cdfile, CDROMREADTOCENTRY, &entry) == -1 )
+	if ( ioctl(cdfile, CDROMREADTOCENTRY, &entry) == -1 )
 	{
 		Con_DPrintf("ioctl cdromreadtocentry failed\n");
 		return;
@@ -151,10 +151,10 @@ void CDAudio_Play(byte track, qboolean looping)
 	ti.cdti_ind1 = 99;
 
 	if ( ioctl(cdfile, CDROMPLAYTRKIND, &ti) == -1 ) 
-    {
+	{
 		Con_DPrintf("ioctl cdromplaytrkind failed\n");
 		return;
-    }
+	}
 
 	if ( ioctl(cdfile, CDROMRESUME) == -1 ) 
 		Con_DPrintf("ioctl cdromresume failed\n");
