@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.2 2004-11-28 00:58:08 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.3 2004-12-05 10:52:18 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -1622,7 +1622,6 @@ Host_Pause_f
 */
 void Host_Pause_f (void)
 {
-// S.A. pause
 	
 	if (cmd_source == src_command)
 	{
@@ -1635,13 +1634,16 @@ void Host_Pause_f (void)
 	{
 		sv.paused ^= 1;
 
+		// release and grab mouse with pause S.A
 		if (sv.paused)
 		{
 			SV_BroadcastPrintf ("%s paused the game\n", pr_strings + sv_player->v.netname);
+			IN_DeactivateMouseSA ();
 		}
 		else
 		{
 			SV_BroadcastPrintf ("%s unpaused the game\n",pr_strings + sv_player->v.netname);
+			IN_ActivateMouseSA ();
 		}
 
 	// send notification to all clients
@@ -2488,6 +2490,20 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/11/28 00:58:08  sezero
+ *
+ * Commit Steven's changes as of 2004.11.24:
+ *
+ * * Rewritten Help/Version message(s)
+ * * Proper fullscreen mode(s) for OpenGL.
+ * * Screen sizes are selectable with "-width" and "-height" options.
+ * * Mouse grab in window modes , which is released when menus appear.
+ * * Interactive video modes in software game disabled.
+ * * Replaced Video Mode menu with a helpful message.
+ * * New menu items for GL Glow, Chase mode, Draw Shadows.
+ * * Changes to initial cvar_t variables:
+ *      r_shadows, gl_other_glows, _windowed_mouse,
+ *
  * Revision 1.1.1.1  2004/11/28 00:04:34  sezero
  * Initial import of AoT 1.2.0 code
  *

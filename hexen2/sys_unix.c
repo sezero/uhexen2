@@ -1,7 +1,7 @@
 // sys_unix.c -- Unix system interface code
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.4 2004-11-29 16:31:58 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.5 2004-12-05 10:52:18 sezero Exp $
  */
 
 #include <stdio.h>
@@ -811,8 +811,8 @@ void PrintVersion (void)
 	HOT_VERSION_MAJ,HOT_VERSION_MID,HOT_VERSION_MIN);
 	printf ("Anvil  of Thyrion 1.12 (%s %d.%d.%d)\n",
 	VERSION_PLATFORM,VERSION_MAJ,VERSION_MID,VERSION_MIN);
-	printf ("\tPatched by Steven A. and Ozkan Sezer with some\n");
-	printf ("\tcode borrowed from the pa3pyx and js mods\n");
+	printf ("\tPatched by Steven Atkinson and Ozkan Sezer with\n");
+	printf ("\tsome code borrowed from the pa3pyx and js sources\n");
 
 }
 
@@ -823,10 +823,8 @@ void PrintHelp(char *name)
 	printf ("http://sourceforge.net/projects/uhexen2/\n");
 	printf ("\n");
 	printf ("Please send bug reports or patches to:\n");
-//	printf ("     Dan Olson          <theoddone33@linuxgames.com>\n");
-//	printf ("     Clement Bourdarias <phneutre@mangoquest.org>\n");
-	printf ("     Ozkan Sezer        <sezeroz@ttnet.net.tr>\n");
 	printf ("     Steven Atkinson    <stevenaaus@yahoo.com>\n");
+	printf ("     Ozkan Sezer        <sezeroz@ttnet.net.tr>\n");
 	printf ("\n");
 	printf ("Usage: %s [options]\n", name);
 	printf ("     [-h | --help]                   Display this help message\n");
@@ -894,8 +892,8 @@ int main(int argc, char *argv[])
 
 // take the greater of all the available memory or half the total memory,
 // but at least 8 Mb and no more than 16 Mb, unless they explicitly
-// request otherwise
-	parms.memsize = 16*1024*1024;
+// request otherwise - now 32 Mb minimum (S.A)
+	parms.memsize = 32*1024*1024;
 
 	if (COM_CheckParm ("-heapsize"))
 	{
@@ -983,6 +981,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/11/29 16:31:58  sezero
+ * Updated
+ *
  * Revision 1.3  2004/11/29 16:22:23  sezero
  * Grrrr......
  *

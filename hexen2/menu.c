@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.4 2004-11-29 12:17:46 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.5 2004-12-05 10:52:18 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -7,15 +7,14 @@
 #include "winquake.h"
 #endif
 
-extern	float introTime;
-extern	cvar_t	crosshair;
-
 #ifdef GLQUAKE
 extern  cvar_t  r_shadows, gl_glows, gl_missile_glows; // S.A
 #endif
 
+extern	float introTime;
+extern	cvar_t	crosshair;
 #ifdef H2MP
-cvar_t m_oldmission = {"m_oldmission","1",true};
+cvar_t m_oldmission = {"m_oldmission","1"};
 #endif
 
 void (*vid_menudrawfn)(void);
@@ -4711,6 +4710,9 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/11/29 12:17:46  sezero
+ * draw fullscreen intermission pics. borrowed from Pa3PyX sources.
+ *
  * Revision 1.3  2004/11/28 00:58:08  sezero
  *
  * Commit Steven's changes as of 2004.11.24:

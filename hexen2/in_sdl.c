@@ -2,7 +2,7 @@
 // 02/21/97 JCB Added extended DirectInput code to support external controllers.
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.3 2004-12-04 18:47:47 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.4 2004-12-05 10:52:18 sezero Exp $
  */
 
 #include "SDL.h"
@@ -182,7 +182,7 @@ void IN_ActivateMouse (void)
 void IN_ActivateMouseSA (void)
 {
 	// S.A's hack to activate mouse
-	if ((int)_windowed_mouse.value || (int)vid_mode.value == MODE_FULLSCREEN_DEFAULT)
+	if (((int)_windowed_mouse.value || (int)vid_mode.value == MODE_FULLSCREEN_DEFAULT) && !sv.paused)
 		IN_ActivateMouse ();
 }
 
@@ -1200,6 +1200,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/04 18:47:47  sezero
+ * Kill some compiler warnings. Add sys_ia32.s to the "make clean" lists.
+ *
  * Revision 1.2  2004/11/28 00:58:08  sezero
  *
  * Commit Steven's changes as of 2004.11.24:

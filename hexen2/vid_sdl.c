@@ -21,7 +21,7 @@
 */
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.2 2004-11-28 00:58:08 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.3 2004-12-05 10:52:18 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -450,7 +450,9 @@ qboolean VID_SetFullscreenMode (int modenum)
 	vid.height = vid.conheight = modelist[modenum].height;
 	vid.width = vid.conwidth = modelist[modenum].width;
 
-	// S.A. - this doesn't seem to work at 16 bpp ?? palette ??
+	// This doesn't work at 16 bpp.
+	// Looks like there's a heap of programing around 256 colours S.A
+
 	if (!(screen = SDL_SetVideoMode(vid.width, vid.height, 8, flags)))
 		return false;
 
@@ -1269,15 +1271,16 @@ void VID_HandlePause (qboolean pause)
 {
 	if ((modestate == MS_WINDOWED) && _windowed_mouse.value)
 	{
+		// for consistency , don't show pointer S.A
 		if (pause)
 		{
 			IN_DeactivateMouse ();
-			IN_ShowMouse ();
+			// IN_ShowMouse ();
 		}
 		else
 		{
 			IN_ActivateMouse ();
-			IN_HideMouse ();
+			// IN_HideMouse ();
 		}
 	}
 }
@@ -1350,6 +1353,20 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/11/28 00:58:08  sezero
+ *
+ * Commit Steven's changes as of 2004.11.24:
+ *
+ * * Rewritten Help/Version message(s)
+ * * Proper fullscreen mode(s) for OpenGL.
+ * * Screen sizes are selectable with "-width" and "-height" options.
+ * * Mouse grab in window modes , which is released when menus appear.
+ * * Interactive video modes in software game disabled.
+ * * Replaced Video Mode menu with a helpful message.
+ * * New menu items for GL Glow, Chase mode, Draw Shadows.
+ * * Changes to initial cvar_t variables:
+ *      r_shadows, gl_other_glows, _windowed_mouse,
+ *
  * Revision 1.1.1.1  2004/11/28 00:08:07  sezero
  * Initial import of AoT 1.2.0 code
  *

@@ -1,7 +1,7 @@
 // screen.c -- master for refresh, status bar, console, chat, notify, etc
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.2 2004-11-29 12:17:46 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.3 2004-12-05 10:52:18 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -220,6 +220,7 @@ void SCR_DrawCenterString (void)
 	FindTextBreaks(scr_centerstring, 38);
 
 	by = ((25-lines) * 8) / 2;
+
 	for(i=0;i<lines;i++,by+=8)
 	{
 		strncpy(temp,&scr_centerstring[StartC[i]],EndC[i]-StartC[i]);
@@ -1391,6 +1392,16 @@ void SB_IntermissionOverlay(void)
 	else
 		by = ((25-lines) * 8) / 2;
 
+        // final message hacks - S.A
+        // eidolon cl.intermission == 6,7,8
+        if (cl.intermission >= 6 && cl.intermission <= 8)
+                by = (vid.height/2 - lines*4);
+
+        if (cl.intermission == 10 ) // tibet10 cl.intermission == 10
+                by=33;
+
+        // printf ("cl.intermission == %i, lines == %i,vid(x,y)=%i,%i by=%i\n\n",cl.intermission,lines,vid.width,vid.height,by);
+
 	for(i=0;i<lines;i++,by+=8)
 	{
 		size = EndC[i]-StartC[i];
@@ -1446,6 +1457,9 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/11/29 12:17:46  sezero
+ * draw fullscreen intermission pics. borrowed from Pa3PyX sources.
+ *
  * Revision 1.1.1.1  2004/11/28 00:07:13  sezero
  * Initial import of AoT 1.2.0 code
  *

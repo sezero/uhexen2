@@ -1,7 +1,7 @@
 // snd_dma.c -- main control for any streaming sound output device
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.2 2004-12-04 13:36:28 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.3 2004-12-05 10:52:18 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -843,7 +843,7 @@ void GetSoundtime(void)
 	fullsamples = shm->samples / shm->channels;
 
 // it is possible to miscount buffers if it has wrapped twice between
-// calls to S_Update.  Oh well.
+// calls to S_Update.  Oh well. --- S.A well indeeed
 	samplepos = SNDDMA_GetDMAPos();
 
 	if (samplepos < oldsamplepos)
@@ -1040,6 +1040,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/04 13:36:28  sezero
+ * sync with hwclient's snd_dma.c hacks. yeah, not much...
+ *
  * Revision 1.1.1.1  2004/11/28 00:07:21  sezero
  * Initial import of AoT 1.2.0 code
  *

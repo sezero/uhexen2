@@ -1,6 +1,6 @@
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_sdl.c,v 1.2 2004-11-28 01:45:25 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_sdl.c,v 1.3 2004-12-05 10:52:18 sezero Exp $
  */
 
 #include <stdio.h>
@@ -53,7 +53,7 @@ qboolean SNDDMA_Init(void)
 			return 0;
 	}
 	desired.channels = 2;
-	desired.samples = 512;
+	desired.samples  = 1024; // previously 512 S.A.
 	desired.callback = paint_audio;
 
 	/* Open the audio device */
@@ -126,5 +126,8 @@ void SNDDMA_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/11/28 01:45:25  sezero
+ * Log entries.
+ *
  * Revision 1.1.1.1  2004/11/28 00:50:00  sezero
  */
