@@ -1160,8 +1160,7 @@ void Draw_ConsoleBackground (int lines)
 	y = lines-14;
 	if (!cls.download)
 	{
-		sprintf (ver, "GL HexenWorld %4.2f", VERSION); // JACK: ZOID! Passing
-													   // parms?!
+		sprintf (ver, "GL HexenWorld %4.2f", VERSION); // JACK: ZOID! Passing parms?!
 		x = vid.conwidth - (strlen(ver)*8 + 11) - (vid.conwidth*8/320)*7;
 		x = vid.conwidth - (strlen(ver)*8 + 11);
 		for (i=0 ; i<strlen(ver) ; i++)
