@@ -37,3 +37,5 @@ extern	int			scr_copyeverything;
 extern int			total_loading_size, current_loading_size, entity_file_size, loading_stage;
 
 void SCR_UpdateWholeScreen (void);
+
+void SCR_DrawLoading (void);

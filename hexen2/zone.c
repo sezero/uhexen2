@@ -1,7 +1,7 @@
 /*
 	Z_zone.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.2 2004-12-12 14:14:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.3 2004-12-18 13:59:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,6 +10,8 @@
 
 #define	ZONEID	0x1d4a11
 #define MINFRAGMENT	64
+
+extern void strlwr (char * str);
 
 typedef struct memblock_s
 {
@@ -1120,6 +1122,9 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:43  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:08:32  sezero
  * Initial import of AoT 1.2.0 code
  *

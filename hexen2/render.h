@@ -2,7 +2,7 @@
 	refresh.h
 	public interface to refresh functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.3 2004-12-18 13:59:25 sezero Exp $
 */
 
 #define	MAXCLIPPLANES	11
@@ -151,8 +151,23 @@ void D_DeleteSurfaceCache (void);
 void D_InitCaches (void *buffer, int size);
 void R_SetVrect (vrect_t *pvrect, vrect_t *pvrectin, int lineadj);
 
+//
+// these prototypes were missing, causing ugly warnings. O.S.
+//
+void R_AnimateLight(void);
+void R_ClearParticles (void);
+void R_DarkFieldParticles (entity_t *ent);
+void R_DrawParticles (void);
+void R_InitParticles (void);
+int R_LightPoint (vec3_t p);
+void R_StoreEfrags (efrag_t **ppefrag);
+
+
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:07:03  sezero
  * Initial import of AoT 1.2.0 code
  *

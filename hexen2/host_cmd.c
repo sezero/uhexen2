@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.4 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.5 2004-12-18 13:59:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -21,6 +21,7 @@ int	current_skill;
 static double		old_time;
 
 void Mod_Print (void);
+int LoadGamestate(char *level, char *startspot, int ClientsMode);
 void SaveGamestate(qboolean ClientsOnly);
 void RestoreClients(void);
 
@@ -2492,6 +2493,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.3  2004/12/05 10:52:18  sezero
  * Sync with Steven, 2004-12-04 :
  *  Fix the "Old Mission" menu PoP

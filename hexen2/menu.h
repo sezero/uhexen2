@@ -1,7 +1,7 @@
 /*
 	menu.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.h,v 1.3 2004-12-18 13:59:25 sezero Exp $
 */
 
 //
@@ -28,8 +28,23 @@ void M_ToggleMenu_f (void);
 
 void M_DrawTextBox (int x, int y, int width, int lines);
 
+//
+// these prototypes were missing, causing ugly warnings. O.S.
+//
+void M_Print (int x, int y, char *str);
+void M_Print2 (int x, int y, char *str);
+void M_PrintWhite (int x, int y, char *str);
+int M_DrawBigCharacter (int x, int y, int num, int numNext);
+void M_DrawTextBox2 (int x, int y, int w, int l, qboolean b);
+void M_DrawTransPic (int x, int y, qpic_t *pic);
+void ScrollTitle (char *name);
+
+
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:05:05  sezero
  * Initial import of AoT 1.2.0 code
  *

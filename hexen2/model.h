@@ -3,7 +3,7 @@
 #define __MODEL__
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/model.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/model.h,v 1.3 2004-12-18 13:59:25 sezero Exp $
  */
 
 #include "genmodel.h"
@@ -382,6 +382,7 @@ typedef struct model_s
 void	Mod_Init (void);
 void	Mod_ClearAll (void);
 model_t *Mod_ForName (char *name, qboolean crash);
+model_t *Mod_FindName (char *name);
 void	*Mod_Extradata (model_t *mod);	// handles caching
 void	Mod_TouchModel (char *name);
 
@@ -392,6 +393,9 @@ byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:05:23  sezero
  * Initial import of AoT 1.2.0 code
  *

@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.8 2004-12-18 13:54:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.9 2004-12-18 13:59:25 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -397,6 +397,7 @@ void Host_Frame (float time);
 void Host_Quit_f (void);
 void Host_ClientCommands (char *fmt, ...);
 void Host_ShutdownServer (qboolean crash);
+void SaveGamestate (qboolean ClientsOnly);
 
 extern qboolean		msg_suppress_1;		// suppresses resolution and cache size console output
 										//  an fullscreen DIB focus gain/loss
@@ -434,8 +435,18 @@ void MIDI_Stop(void);
 void MIDI_Pause(void);
 void MIDI_Loop(int NewValue);
 
+//
+// Steve's windowed mouse tinkerings
+//
+void IN_ActivateMouseSA (void);
+void IN_DeactivateMouseSA (void);
+
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2004/12/18 13:54:43  sezero
+ * Clean-up and kill warnings 6:
+ * Include proper stock headers to avoid some "implicity declared" warnings
+ *
  * Revision 1.7  2004/12/18 13:44:12  sezero
  * Clean-up and kill warnings 1:
  * Kill two pragmas that are ignored anyway.

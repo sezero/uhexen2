@@ -166,6 +166,7 @@ void COM_WriteFileFullPath (char *filename, void *data, int len);
 int COM_OpenFile (char *filename, int *hndl);
 int COM_FOpenFile (char *filename, FILE **file, qboolean override_pack);
 void COM_CloseFile (int h);
+void COM_CopyFile (char *netpath, char *cachepath);
 
 byte *COM_LoadStackFile (char *path, void *buffer, int bufsize);
 byte *COM_LoadTempFile (char *path);

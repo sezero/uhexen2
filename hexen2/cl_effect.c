@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.3 2004-12-18 13:59:25 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -1973,6 +1973,7 @@ void CL_LinkEntity(entity_t *ent)
 void R_RunQuakeEffect (vec3_t org, float distance);
 void RiderParticle(int count, vec3_t origin);
 void GravityWellParticle(int count, vec3_t origin, int color);
+void R_RunParticleEffect2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int effect, int count);
 
 void CL_UpdateEffects(void)
 {
@@ -2524,6 +2525,9 @@ static void FreeEffectEntity(int index)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:00:56  sezero
  * Initial import of AoT 1.2.0 code
  *

@@ -1,7 +1,7 @@
 /*
 	sbar.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.h,v 1.3 2004-12-18 13:59:25 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -20,6 +20,7 @@ void SB_FinaleOverlay(void);
 void SB_InvChanged(void);
 void SB_InvReset(void);
 void SB_ViewSizeChanged(void);
+void Sbar_DeathmatchOverlay(void);
 
 // PUBLIC DATA DECLARATIONS ------------------------------------------------
 

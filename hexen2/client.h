@@ -1,6 +1,6 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.3 2004-12-18 13:59:25 sezero Exp $
 */
 
 typedef struct
@@ -368,8 +368,23 @@ void CL_ClearTEnts(void);
 void CL_ParseTEnt(void);
 void CL_UpdateTEnts(void);
 
+//
+// these prototypes were missing, causing ugly warnings. O.S.
+//
+qboolean CL_CopyFiles(char *source, char *pat, char *dest);
+void CL_RemoveGIPFiles (char *path);
+void CL_InitEffects(void);
+void CL_ClearEffects(void);
+void CL_EndEffect(void);
+void CL_ParseEffect(void);
+void SV_ParseEffect(sizebuf_t *sb);
+void SV_UpdateEffects(sizebuf_t *sb);
+
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:01:15  sezero
  * Initial import of AoT 1.2.0 code
  *

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.4 2004-12-18 13:30:50 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.5 2004-12-18 13:59:25 sezero Exp $
  */
 
 // disable data conversion warnings
@@ -82,6 +82,23 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode);
 int GL_LoadTransTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, byte Alpha);
 int GL_FindTexture (char *identifier);
+int GL_LoadPicTexture (qpic_t *pic);
+void GL_BuildLightmaps (void);
+void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr);
+void GL_Set2D (void);
+void GL_SubdivideSurface (msurface_t *fa);
+void EmitSkyPolys (msurface_t *fa);
+void EmitWaterPolys (msurface_t *fa);
+void EmitBothSkyLayers (msurface_t *fa);
+void R_DrawBrushModel (entity_t *e, qboolean Translucent);
+void R_DrawSkyChain (msurface_t *s);
+void R_DrawWorld (void);
+void R_DrawWaterSurfaces (void);
+void R_RenderBrushPoly (msurface_t *fa, qboolean override);
+void R_RenderDlights (void);
+void R_RotateForEntity (entity_t *e);
+void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
+qboolean R_CullBox (vec3_t mins, vec3_t maxs);
 
 typedef struct
 {
@@ -345,6 +362,11 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/18 13:30:50  sezero
+ * Hack to prevent textures going awol and some info-plaques start looking
+ * white upon succesive load games. The solution is not beautiful but seems
+ * to work for now. Adapted from Pa3PyX sources.
+ *
  * Revision 1.3  2004/12/16 18:10:12  sezero
  * - Add glGetIntegerv, glActiveTextureARB and glMultiTexCoord2fARB to the
  *   gl_func lists. (glGetIntegerv is required to init. The others are for

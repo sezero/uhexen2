@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.3 2004-12-18 13:59:25 sezero Exp $
 */
 
 typedef struct
@@ -279,8 +279,12 @@ void SV_StartParticle3 (vec3_t org, vec3_t box, int color, int effect, int count
 void SV_StartParticle4 (vec3_t org, float radius, int color, int effect, int count);
 void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
     float attenuation);
+void SV_StopSound (edict_t *entity, int channel);
+void SV_UpdateSoundPos (edict_t *entity, int channel);
 
 void SV_DropClient (qboolean crash);
+
+void SV_Edicts(char *Name);
 
 void SV_SendClientMessages (void);
 void SV_ClearDatagram (void);
@@ -318,6 +322,9 @@ void SV_SpawnServer (char *server);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:07:15  sezero
  * Initial import of AoT 1.2.0 code
  *
