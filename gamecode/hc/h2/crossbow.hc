@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/crossbow.hc,v 1.1.1.1 2004-11-29 11:37:48 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/crossbow.hc,v 1.2 2005-02-23 08:06:36 sezero Exp $
  */
 
 /*
@@ -337,26 +337,42 @@ void crossbow_fire (void)
 {
 	self.wfs = advanceweaponframe($shoot1,$shoot18);
 	self.th_weapon=crossbow_fire;
-	if (self.weaponframe == $shoot2)
+	if (self.weaponframe >= $shoot2 && self.weaponframe <= $shoot4)
 		if(self.artifact_active&ART_TOMEOFPOWER)
 		{
-			sound(self,CHAN_WEAPON,"assassin/firefblt.wav",1,ATTN_NORM);
-			FireCB_Bolt(0,TRUE);
-			FireCB_Bolt(-100,TRUE);
-			FireCB_Bolt(100,TRUE);
-			FireCB_Bolt(-200,TRUE);
-			FireCB_Bolt(200,TRUE);
-			self.attack_finished=time+0.3;
-			self.bluemana-=10;
+			if(self.weaponframe==$shoot2)
+			{
+				sound(self,CHAN_WEAPON,"assassin/firefblt.wav",1,ATTN_NORM);
+				self.bluemana-=10;
+				FireCB_Bolt(0,TRUE);
+			}
+			else if(self.weaponframe==$shoot3)
+			{
+				FireCB_Bolt(-100,TRUE);
+				FireCB_Bolt(100,TRUE);
+			}
+			else if(self.weaponframe==$shoot4)
+			{
+				FireCB_Bolt(-200,TRUE);
+				FireCB_Bolt(200,TRUE);
+				self.attack_finished=time+0.3;
+			}
 		}
 		else
 		{
-			sound(self,CHAN_WEAPON,"assassin/firebolt.wav",1,ATTN_NORM);
-			FireCB_Bolt(0,FALSE);
-			FireCB_Bolt(-100,FALSE);
-			FireCB_Bolt(100,FALSE);
-			self.attack_finished=time+0.5;
-			self.bluemana-=3;
+			if(self.weaponframe==$shoot2)
+			{
+				sound(self,CHAN_WEAPON,"assassin/firebolt.wav",1,ATTN_NORM);
+				self.bluemana-=3;
+				FireCB_Bolt(0,FALSE);
+			}
+			else if(self.weaponframe==$shoot3)
+				FireCB_Bolt(-100,FALSE);
+			else if(self.weaponframe==$shoot4)
+			{
+				FireCB_Bolt(100,FALSE);
+				self.attack_finished=time+0.5;
+			}
 		}
 	else if (self.wfs==WF_CYCLE_WRAPPED)
 		crossbow_idle();
@@ -386,6 +402,9 @@ void crossbow_deselect (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:37:48  sezero
+ * Initial import
+ *
  * 
  * 66    9/11/97 12:02p Mgummelt
  * 
