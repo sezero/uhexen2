@@ -71,6 +71,10 @@ b. Manual install/update of datafiles (harder way):
    from the file-rename-utils archive (see Links). To patch your
    data files, type " sh update_h2 " (this update script and its
    requirements are included in the HoT-1.2.4 binary package).
+   Confirm the patching by checking with the following md5sums:
+
+   c9675191e75dd25a3b9ed81ee7e05eff  data1/pak0.pak
+   c2ac5b0640773eed9ebe1cda2eca2ad0  data1/pak1.pak
 
 
 1.2 Software Requirements
