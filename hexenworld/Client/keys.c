@@ -72,8 +72,14 @@ keyname_t keynames[] =
 	{"END", K_END},
 
 	{"MOUSE1", K_MOUSE1},
+#ifndef WITH_SDL
 	{"MOUSE2", K_MOUSE2},
 	{"MOUSE3", K_MOUSE3},
+#else
+/* ugly hack to avoid mouse2/3 fighting in in_sdl.c. O.S. */
+	{"MOUSE2", K_MOUSE3},
+	{"MOUSE3", K_MOUSE2},
+#endif
 
 	{"JOY1", K_JOY1},
 	{"JOY2", K_JOY2},

@@ -91,11 +91,8 @@
 #define	K_AUX31			237
 #define	K_AUX32			238
 
-// JACK: Intellimouse(c) Mouse Wheel Support
-
 #define K_MWHEELUP		239
 #define K_MWHEELDOWN		240
-
 
 
 typedef enum {key_game, key_console, key_message, key_menu} keydest_t;

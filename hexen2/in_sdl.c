@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.12 2005-01-05 14:20:00 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.13 2005-01-13 10:46:45 sezero Exp $
 */
 
 #include "SDL.h"
@@ -1205,10 +1205,10 @@ void IN_SendKeyEvents (void)
 					Key_Event(K_MOUSE1, true);
 					break;
 				case 2:
-					Key_Event(K_MOUSE3, true);
+					Key_Event(K_MOUSE2, true);
 					break;
 				case 3:
-					Key_Event(K_MOUSE2, true);
+					Key_Event(K_MOUSE3, true);
 					break;
 				case 4:
 					Key_Event(K_MWHEELUP, true);
@@ -1217,7 +1217,7 @@ void IN_SendKeyEvents (void)
 					Key_Event(K_MWHEELDOWN, true);
 					break;
 				default:
-					Con_Printf("HandleEvents: ButtonPress gave value %d, 1-5 expected\n", event.button.button);
+					Con_Printf("Mouse event for button %d received, 1-5 expected\n", event.button.button);
 					break;
 				}
 				break;
@@ -1229,10 +1229,10 @@ void IN_SendKeyEvents (void)
 					Key_Event(K_MOUSE1, false);
 					break;
 				case 2:
-					Key_Event(K_MOUSE3, false);
+					Key_Event(K_MOUSE2, false);
 					break;
 				case 3:
-					Key_Event(K_MOUSE2, false);
+					Key_Event(K_MOUSE3, false);
 					break;
 				case 4:
 					Key_Event(K_MWHEELUP, false);
@@ -1241,7 +1241,7 @@ void IN_SendKeyEvents (void)
 					Key_Event(K_MWHEELDOWN, false);
 					break;
 				default:
-					Con_Printf("HandleEvents: ButtonRelease gave value %d, 1-5 expected\n", event.button.button);
+					Con_Printf("Mouse event for button %d received, 1-5 expected\n", event.button.button);
 					break;
 				}
 				break;
@@ -1264,6 +1264,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/01/05 14:20:00  sezero
+ * bind Alt+Enter combination to Steven's stuff for fullscreen-windowed toggling
+ *
  * Revision 1.11  2004/12/29 19:49:40  sezero
  * From Steven (2004-12-29):
  * - Fullscreen/Windowed mode is now switchable. Seems to work good.

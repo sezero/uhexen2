@@ -69,8 +69,14 @@ keyname_t keynames[] =
 	{"END", K_END},
 
 	{"MOUSE1", K_MOUSE1},
+#ifndef WITH_SDL
 	{"MOUSE2", K_MOUSE2},
 	{"MOUSE3", K_MOUSE3},
+#else
+/* ugly hack to avoid mouse2/3 fighting in in_sdl.c. O.S. */
+	{"MOUSE2", K_MOUSE3},
+	{"MOUSE3", K_MOUSE2},
+#endif
 
 	{"JOY1", K_JOY1},
 	{"JOY2", K_JOY2},
@@ -214,7 +220,7 @@ void Key_Console (int key)
 		return;
 	}
 
-	if (key == K_PGUP)
+	if (key == K_PGUP || key==K_MWHEELUP)
 	{
 		con_backscroll += 2;
 		if (con_backscroll > con_totallines - (vid.height>>3) - 1)
@@ -222,7 +228,7 @@ void Key_Console (int key)
 		return;
 	}
 
-	if (key == K_PGDN)
+	if (key == K_PGDN || key==K_MWHEELDOWN)
 	{
 		con_backscroll -= 2;
 		if (con_backscroll < 0)
@@ -520,9 +526,13 @@ void Key_Init (void)
 	consolekeys[K_UPARROW] = true;
 	consolekeys[K_DOWNARROW] = true;
 	consolekeys[K_BACKSPACE] = true;
+	consolekeys[K_HOME] = true;
+	consolekeys[K_END] = true;
 	consolekeys[K_PGUP] = true;
 	consolekeys[K_PGDN] = true;
 	consolekeys[K_SHIFT] = true;
+	consolekeys[K_MWHEELUP] = true;
+	consolekeys[K_MWHEELDOWN] = true;
 	consolekeys['`'] = false;
 	consolekeys['~'] = false;
 

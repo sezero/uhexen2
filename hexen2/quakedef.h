@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.16 2005-01-02 15:08:53 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.17 2005-01-13 10:47:01 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -15,6 +15,7 @@
 #ifdef PLATFORM_UNIX
 #include "linux_inc.h"
 #include <ctype.h>
+#define WITH_SDL	/* for the mouse2/3 hack in keys.c */
 #endif
 
 #define HOT_VERSION_MAJ 1
@@ -447,6 +448,9 @@ void IN_DeactivateMouseSA (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/01/02 15:08:53  sezero
+ * Retire AoT, aot and .aot: Change userdir (AOT_USERDIR) to .hexen2
+ *
  * Revision 1.15  2004/12/30 14:27:15  sezero
  * userdir (AOT_USERDIR) is ~/.hexen2demo for make DEMOBUILD=yes [...]
  *
