@@ -606,56 +606,99 @@ void()flameorb_ready_power;
 void()flameorb_ready_normal;
 void flameorb_fire (void)
 {
+	// Pa3PyX: rewrote the code for framerate independence
+	local float advance_frames;
+	local float cnt_frame;
+	local float attackframe_passed;
 
-	if(self.artifact_active&ART_TOMEOFPOWER)
-		self.wfs = advanceweaponframe($powern135,$powern148);
-	else
-		self.wfs = advanceweaponframe($normal51,$normal64);
-	/*if(self.button0&&self.weaponframe>$normal60 &&!self.artifact_active&ART_TOMEOFPOWER)
-		self.weaponframe=$normal60;*/
-	
-	self.th_weapon=flameorb_fire;
-	self.last_attack=time;
-	if(self.wfs==WF_CYCLE_WRAPPED||self.greenmana<1||(self.greenmana<10&&self.artifact_active&ART_TOMEOFPOWER))
-	{
-		self.t_width=-1;
-		self.weaponframe_cnt=0;
-		if(!self.artifact_active&ART_TOMEOFPOWER)
-		{
-			self.aflag=FALSE;
-			self.attack_finished=time+0.2;
-			flameorb_ready_normal();
+	// Did the delay from previous attack expire yet?
+	if ((time >= self.attack_finished) || (self.ltime > 0)) {
+		if (self.ltime <= 0)
+			self.ltime = time;
+		// Animation loop factor
+		advance_frames = rint(1.33 * (time - self.ltime) / HX_FRAME_TIME);
+		if (advance_frames >= 1) {
+			cnt_frame = 0;
+			attackframe_passed = FALSE;
+			if (self.artifact_active & ART_TOMEOFPOWER) {
+				// Advance <advance_frames> frames
+				while ((cnt_frame < advance_frames) && (self.wfs != WF_LAST_FRAME)) {
+					self.wfs = advanceweaponframe($powern135, $powern147);
+					self.weaponframe_cnt += 1;
+					// Did we go over attack frame?
+					if (self.weaponframe_cnt == 2) {
+						attackframe_passed = TRUE;
+					}
+					cnt_frame += 1;
+				}
+				if (self.wfs == WF_LAST_FRAME) {
+					// End of animation, clean up and exit
+					self.wfs = WF_NORMAL_ADVANCE;
+					self.weaponframe_cnt = 0;
+					self.ltime = -1;
+					// Total: 0.5 + 0.5 = 1.0 secs between
+					// tomed shots
+					self.attack_finished = time + 0.5;
+					self.th_weapon = flameorb_ready_power;
+				}
+				else {
+					self.ltime = time;
+					self.th_weapon=flameorb_fire;
+				}
+			}
+			else {
+				while ((cnt_frame < advance_frames) && (self.wfs != WF_LAST_FRAME)) {
+					self.wfs = advanceweaponframe($normal51, $normal63);
+					self.weaponframe_cnt += 1;
+					if (self.weaponframe_cnt == 2) {
+						attackframe_passed = TRUE;
+					}
+					cnt_frame += 1;
+				}
+				if (self.wfs == WF_LAST_FRAME) {
+					self.wfs = WF_NORMAL_ADVANCE;
+					self.weaponframe_cnt=0;
+					self.ltime = -1;
+					// 0.5 secs between untomed fires
+					self.attack_finished = time;
+					self.th_weapon = flameorb_ready_normal;
+				}
+				else {
+					self.ltime = time;
+					self.th_weapon = flameorb_fire;
+				}
+			}
+			// Out of mana?
+			if((self.greenmana < 1) || ((self.greenmana < 10) && (self.artifact_active & ART_TOMEOFPOWER))) {
+				self.wfs = WF_NORMAL_ADVANCE;
+				self.weaponframe_cnt = 0;
+				self.ltime = -1;
+				self.attack_finished = time;
+				if(!(self.artifact_active & ART_TOMEOFPOWER)) {
+					self.th_weapon = flameorb_ready_normal;
+				}	
+				else {
+					self.th_weapon = flameorb_ready_power;
+				}
+			}
+			// Attack frame was encountered in frame advance --
+			// perform attack
+			else if (attackframe_passed && !(self.artifact_active & ART_TOMEOFPOWER)) {
+				sound(self, CHAN_BODY, "succubus/flamstrt.wav", 0.5, ATTN_NORM);
+				flamestream_fire();
+			}
+			else if (attackframe_passed && (self.artifact_active & ART_TOMEOFPOWER)) {
+				sound(self,CHAN_BODY,"succubus/flamstrt.wav",0.5,ATTN_NORM);
+				flameswarm_fire();
+			}
 		}
 		else
-		{
-			self.attack_finished = time + 1;
-			flameorb_ready_power();
-		}
+			self.th_weapon = flameorb_fire;
 	}
-	else if(self.weaponframe==$normal52)
-	{
-		if(self.t_width==-1)
-		{
-			sound(self,CHAN_BODY,"succubus/flamstrt.wav",0.5,ATTN_NORM);
-			self.t_width=FALSE;
-		}	
+	else
+		self.th_weapon = flameorb_fire;
+	thinktime self: 0;
 
-		if(self.t_width<time)
-		{
-			//sound(self,CHAN_WEAPON,"succubus/flamloop.wav",0.5,ATTN_NORM);
-			self.t_width=time+0.45;
-		}
-		if(!self.weaponframe_cnt)
-			flamestream_fire();
-		self.weaponframe_cnt+=1;
-		if(self.weaponframe_cnt==20)
-			self.weaponframe_cnt=0;
-	}
-	else if(self.weaponframe == $powern136)//Fixme: hold this frame for a few
-	{
-		sound(self,CHAN_BODY,"succubus/flamstrt.wav",0.5,ATTN_NORM);
-		flameswarm_fire();
-	}
 }
 
 void Suc_Forb_Fire()
@@ -760,6 +803,9 @@ void flameorb_select_power (void)
 void flameorb_select (void)
 {
 	self.weaponframe_cnt = 0;
+	// Pa3PyX
+	self.ltime = -1;
+	self.wfs = WF_NORMAL_ADVANCE;
 
 	if(self.artifact_active&ART_TOMEOFPOWER)
 		flameorb_select_power();
