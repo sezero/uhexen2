@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/stats.hc,v 1.1.1.1 2004-11-29 11:40:44 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/stats.hc,v 1.2 2005-02-23 08:15:33 sezero Exp $
  */
 
 // ExperienceValues for each level indicate the minimum at which
@@ -245,7 +245,16 @@ void PlayerAdvanceLevel(float NewLevel)
 		   sprint(self,"Crusader gained a level\n");
 
 			// Special ability #1, full mana at level advancement
-			self.bluemana = self.greenmana = self.max_mana;
+		//	self.bluemana = self.greenmana = self.max_mana;
+			// Pa3PyX: only do this at level 3 and on, and also
+			//	   fully heal, to make this more useful, and
+			//	   consistent with the manual
+			if (self.level > 2) {
+				self.bluemana = self.greenmana = self.max_mana;
+				if (self.health < self.max_health) {
+					self.health = self.max_health;
+				}
+			}
 
 		}
 		else if (self.playerclass == CLASS_NECROMANCER)
@@ -522,6 +531,9 @@ float pos;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:40:44  sezero
+ * Initial import
+ *
  * 
  * 24    9/10/97 11:40p Mgummelt
  * 
