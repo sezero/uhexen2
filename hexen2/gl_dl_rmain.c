@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_rmain.c,v 1.6 2004-12-12 23:16:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_rmain.c,v 1.7 2004-12-18 13:24:37 sezero Exp $
 */
 
 
@@ -428,8 +428,11 @@ void R_DrawSpriteModel (entity_t *e)
 	glfunc.glEnd_fp ();
 
 	//restore tex parms
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// courtesy of the great h4ck0r Pa3Pyx:
+	// replaced GL_REPEAT with GL_CLAMP below
+	// fixing the demoness flame's "lines" bug S.A
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
 	glfunc.glDisable_fp( GL_BLEND );
 }
@@ -1818,6 +1821,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2004/12/12 23:16:44  sezero
+ * two minor cvar annoyances
+ *
  * Revision 1.5  2004/12/12 14:40:56  sezero
  * sync with steven
  *
