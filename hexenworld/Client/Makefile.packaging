@@ -2,7 +2,7 @@
 #  if building for the demo version, run with
 #  make DEMO=yes [other stuff]
 
-USEMIDI=no
+USEMIDI=yes
 
 GL_BINARY=glhwcl
 GL_BINARY_STATIC=glhwcl.static

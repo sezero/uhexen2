@@ -4,9 +4,9 @@
 BUILDGL=yes
 #		yes = OpenGL support, no = software mode
 
-USEMIDI=no
-#		MIDI doesn't work at this time for HexenWorld client
-
+USEMIDI=yes
+#		MIDI needs SDL_mixer (built with Timidity support)
+#		and Timidity patches
 
 ################ You shouldn't need to edit anything below here.
 

@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.1 2005-02-05 16:27:09 sezero Exp $
+	$Id: midi_sdl.c,v 1.2 2005-02-05 16:29:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -38,7 +38,7 @@ void MIDI_Stop_f (void)
 
 void MIDI_Pause_f (void)
 {
-	MIDI_Pause();
+	MIDI_Pause(0);
 }
 
 #ifndef USE_MIDI
@@ -47,7 +47,7 @@ void MIDI_Loop_f (void) {}
 void MIDI_EndMusicFinished(void) {}
 qboolean MIDI_Init(void) { return true; }
 void MIDI_Play(char *Name) {}
-void MIDI_Pause(void) {}
+void MIDI_Pause(int mode) {}
 void MIDI_Loop(int NewValue) {}
 void MIDI_Stop(void) {}
 void MIDI_Cleanup(void) { Con_Printf("MIDI_Cleanup\n"); }
@@ -207,18 +207,19 @@ void MIDI_Play(char *Name)
 	}
 }
 
-void MIDI_Pause(void)
+void MIDI_Pause(int mode)
 {
 	if (!bPlaying)
 		return;
 
 	//  printf("MIDI_Pause\n");
-	if(bPaused)
+	if((mode == 0 && bPaused) || mode == 1) {
 		Mix_ResumeMusic();
-	else
+		bPaused = false;
+	} else {
 		Mix_PauseMusic();
-
-	bPaused = !bPaused;
+		bPaused = true;
+	}
 }
 
 void MIDI_Loop(int NewValue)
@@ -286,6 +287,12 @@ void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/02/05 16:27:09  sezero
+ * Port midi changes from hexen2 to hexenworld, part1.
+ * (separate win32 and linux versions of midi files.
+ *  add volume control, midi paths cleanup, path length
+ *  overflows)
+ *
  * Revision 1.5  2005/02/05 16:21:13  sezero
  * killed Com_LoadHunkFile2()  [from HexenWorld]
  *

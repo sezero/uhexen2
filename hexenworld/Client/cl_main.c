@@ -1317,7 +1317,6 @@ void Host_Init (quakeparms_t *parms)
 		Sys_Error ("Couldn't load gfx/colormap.lmp");
 #ifdef __linux__
 	
-	CDAudio_Init ();
 	VID_Init (host_basepal);
 	IN_Init ();
 	Draw_Init ();
@@ -1330,7 +1329,9 @@ void Host_Init (quakeparms_t *parms)
 		snd_system = S_SYS_ALSA; 
 	else 
 		snd_system = S_SYS_OSS;
-	S_Init ();		// S_Init is now done as part of VID. Sigh.
+	S_Init ();
+	CDAudio_Init ();
+	MIDI_Init ();	// this had better come after S_Init()
 	
 	cls.state = ca_disconnected;
 	Sbar_Init ();
