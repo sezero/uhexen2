@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/ravenstf.hc,v 1.1.1.1 2004-11-29 11:35:18 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/ravenstf.hc,v 1.2 2005-02-23 08:03:51 sezero Exp $
  */
 
 // For building the model
@@ -484,7 +484,9 @@ void create_raven_shot2(vector location,float add_yaw,float nexttime,float rotat
 	missile.owner = self.owner;
 	missile.movetype = MOVETYPE_FLYMISSILE;
 	missile.solid = SOLID_BBOX;
-	missile.solid = DAMAGE_YES;
+	/* Pa3PyX: apparently was here by mistake. caused the missiles to
+		   be of SOLID_TRIGGER type and collide with each other */
+//	missile.solid = DAMAGE_YES;
 		
 // set missile speed	
 	missile.dmg = 30;
@@ -741,6 +743,9 @@ void ravenstaff_deselect (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:35:18  sezero
+ * Initial import
+ *
  * 
  * 5     3/19/98 12:17a Mgummelt
  * last bug fixes
