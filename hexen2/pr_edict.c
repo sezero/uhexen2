@@ -1,7 +1,7 @@
 // sv_edict.c -- entity dictionary
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.1.1.1 2004-11-28 00:06:00 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.2 2004-11-28 00:30:35 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -1168,7 +1168,9 @@ void PR_LoadProgs (void)
 
 	strcpy(finalprogname, "progs.dat");
 
-/*	don't need this anymore - JFM
+/*	don't need this anymore - JFM */
+/*	H2MP doesn't need this, but original Hexen2 does... */
+#ifndef H2MP
 
 	COM_FOpenFile ("maplist.txt", &f, true);
 	if (f)
@@ -1199,7 +1201,7 @@ void PR_LoadProgs (void)
 		}
 		fclose (f);
 	}
-*/
+#endif
 	progs = (dprograms_t *)COM_LoadHunkFile (finalprogname);
 	if (!progs)
 		Sys_Error ("PR_LoadProgs: couldn't load %s",finalprogname);
@@ -1435,6 +1437,9 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:06:00  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.1.1.1  2001/11/09 17:04:04  theoddone33
  * Inital import
  *
