@@ -1,17 +1,11 @@
 Known Bugs
 ----------
 
-  sound segfaults with some sound drivers. %-<
+  OSS sound segfaults with some sound drivers. %-<
+  SDL sound code is alpha, and doesn't work for everyone. %-<
 
   matrox G200 : GL games don't display menus correctly (matrox GL bug ?)
 
-  glh2mp:   The fire weapon for the Demoness in GL mode,
-            draws lines across the screen.
-
-  glhexen2: Eidolon doesn't jump down:  This is NOT a hexen2
-	    engine issue, but is a HexenC (a.k.a. progs.dat)
-	    issue. If you hit this bug, download a fix from
-	    our site.
-
-  glhexen2: The bosses seem too hard ???
+  glh2mp:   The fire weapon for the Demoness in GL mode draws lines across
+	    the screen. So does the fire attack of Praevus.
 
