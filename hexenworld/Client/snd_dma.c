@@ -43,7 +43,7 @@ vec3_t		listener_up;
 vec_t		sound_nominal_clip_dist=1000.0;
 
 int		soundtime;	// sample PAIRS
-int		paintedtime; 	// sample PAIRS
+int		paintedtime;	// sample PAIRS
 
 
 #define	MAX_SFX		512
@@ -133,11 +133,16 @@ void S_GetSubsys (void)
 			SNDDMA_Submit	 = S_ALSA_Submit;
 			break;
 		case S_SYS_OSS:
-		default:
 			SNDDMA_Init	 = S_OSS_Init;
 			SNDDMA_GetDMAPos = S_OSS_GetDMAPos;
 			SNDDMA_Shutdown	 = S_OSS_Shutdown;
 			SNDDMA_Submit	 = S_OSS_Submit;
+			break;
+		case S_SYS_NULL:
+		default:
+		// Paranoia: We should never have come this far!..
+		// No function to point at, set snd_initialized to false.
+			snd_initialized = false;
 			break;
 	}
 }
@@ -153,12 +158,12 @@ void S_Startup (void)
 {
 	int		rc;
 
-	if (!snd_initialized)
-		return;
-
 #ifdef PLATFORM_UNIX
 	S_GetSubsys();
 #endif
+
+	if (!snd_initialized)
+		return;
 
 	rc = SNDDMA_Init();
 

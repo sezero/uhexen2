@@ -1323,7 +1323,9 @@ void Host_Init (quakeparms_t *parms)
 	SCR_Init ();
 	R_Init ();
 
-	if (COM_CheckParm ("-sndsdl")) 
+	if (COM_CheckParm("-nosound") || COM_CheckParm("--nosound") || COM_CheckParm("-s"))
+		snd_system = S_SYS_NULL;
+	else if (COM_CheckParm ("-sndsdl"))
 		snd_system = S_SYS_SDL; 
 	else if (COM_CheckParm ("-sndalsa")) 
 		snd_system = S_SYS_ALSA; 

@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.12 2005-02-09 14:33:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.13 2005-02-11 23:47:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -130,11 +130,16 @@ void S_GetSubsys (void)
 			SNDDMA_Submit	 = S_ALSA_Submit;
 			break;
 		case S_SYS_OSS:
-		default:
 			SNDDMA_Init	 = S_OSS_Init;
 			SNDDMA_GetDMAPos = S_OSS_GetDMAPos;
 			SNDDMA_Shutdown	 = S_OSS_Shutdown;
 			SNDDMA_Submit	 = S_OSS_Submit;
+			break;
+		case S_SYS_NULL:
+		default:
+		// Paranoia: We should never have come this far!..
+		// No function to point at, set snd_initialized to false.
+			snd_initialized = false;
 			break;
 	}
 }
@@ -150,12 +155,12 @@ void S_Startup (void)
 {
 	int		rc;
 
-	if (!snd_initialized)
-		return;
-
 #ifdef PLATFORM_UNIX
 	S_GetSubsys();
 #endif
+
+	if (!snd_initialized)
+		return;
 
 	rc = SNDDMA_Init();
 
@@ -1052,6 +1057,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/02/09 14:33:36  sezero
+ * make compiler happy (uninitialized warnings)
+ *
  * Revision 1.11  2005/02/04 13:40:20  sezero
  * build all all the sound drivers in and choose from command line
  *
