@@ -644,16 +644,6 @@ void Draw_RedString (int x, int y, char *str)
 	}
 }
 
-void Draw_Red_String (int x, int y, char *str)
-{
-	while (*str)
-	{
-		Draw_Character (x, y, *str+128);
-		str++;
-		x += 8;
-	}
-}
-
 void Draw_Crosshair(void)
 {
 	extern cvar_t crosshair, cl_crossx, cl_crossy;
