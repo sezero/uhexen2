@@ -103,8 +103,8 @@ void on_OGL (GtkToggleButton *button, gamewidget_t *wgt) {
 	Prevent the fight: res_Change() wont do a thing if(lock)
 */	lock = 1;
 	Make_ResMenu(&(wgt->Video));
-	lock = 0;
 	UpdateStats(&(wgt->Launch));
+	lock = 0;
 }
 
 void res_Change (GtkEditable *editable, gpointer user_data) {
