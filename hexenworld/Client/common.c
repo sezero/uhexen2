@@ -1735,7 +1735,7 @@ Sets com_gamedir, adds the directory to the head of the path,
 then loads and adds pak1.pak pak2.pak ... 
 ================
 */
-void COM_AddGameDirectory (char *dir)
+void COM_AddGameDirectory (char *dir, qboolean adduser)
 {
 	int				i;
 	searchpath_t	*search;
@@ -1779,10 +1779,12 @@ void COM_AddGameDirectory (char *dir)
 // we don't need to set it on win32 platforms since it's exactly com_gamedir
 //
 #ifdef PLATFORM_UNIX
+if (adduser) {
 	search = Hunk_Alloc (sizeof(searchpath_t));
 	strcpy (search->filename, com_userdir);
 	search->next = com_searchpaths;
 	com_searchpaths = search;
+}
 #endif
 
 }
@@ -1833,7 +1835,7 @@ void COM_Gamedir (char *dir)
 	//
 	Cache_Flush ();
 
-	if (!strcmp(dir,"id1") || !strcmp(dir, "hw"))
+	if (!strcmp(dir,"data1") || !strcmp(dir, "hw"))
 		return;
 
 	sprintf (com_gamedir, "%s/%s", com_basedir, dir);
@@ -1873,7 +1875,7 @@ void COM_InitFilesystem (void)
 
 //
 // -basedir <path>
-// Overrides the system supplied base directory (under id1)
+// Overrides the system supplied base directory (under data1)
 //
 	i = COM_CheckParm ("-basedir");
 	if (i && i < com_argc-1)
@@ -1884,17 +1886,24 @@ void COM_InitFilesystem (void)
 	strcpy (com_userdir, host_parms.userdir);
 
 //
-// start up with id1 by default
+// start up with data1 by default
 //
-	COM_AddGameDirectory (va("%s/data1", com_basedir) );
-	COM_AddGameDirectory (va("%s/portals", com_basedir) );
-	COM_AddGameDirectory (va("%s/hw", com_basedir) );
+	COM_AddGameDirectory (va("%s/data1", com_basedir), false);
+/* O.S: This one shouldn't be necessary..
+	sprintf (com_userdir, "%s/portals", host_parms.userdir);
+	Sys_mkdir (com_userdir);
+*/	COM_AddGameDirectory (va("%s/portals", com_basedir), false);
+	sprintf (com_userdir, "%s/hw", host_parms.userdir);
+	Sys_mkdir (com_userdir);
+	COM_AddGameDirectory (va("%s/hw", com_basedir), true);
 
 	i = COM_CheckParm ("-game");
 	if (i && i < com_argc-1)
 	{
 		com_modified = true;
-		COM_AddGameDirectory (va("%s/%s", com_basedir, com_argv[i+1]));
+		sprintf (com_userdir, "%s/%s", host_parms.userdir, com_argv[i+1]);
+		Sys_mkdir (com_userdir);
+		COM_AddGameDirectory (va("%s/%s", com_basedir, com_argv[i+1]), true);
 	}
 
 	// any set gamedirs will be freed up to here

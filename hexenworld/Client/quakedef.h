@@ -13,10 +13,13 @@
 
 //define	PARANOID			// speed sapping error checking
 
+/* We keep the userdir (and host_parms.userdir) as ~/.hexen2 here. In
+   COM_InitFilesystem, we'll first change com_userdir to ~/.hexen2/hw,
+   then to ~/.hexen2/<game> according to the -game cmdline arg. */
 #ifndef DEMOBUILD
-#define AOT_USERDIR ".hexen2/hw"
+#define AOT_USERDIR ".hexen2"
 #else
-#define AOT_USERDIR ".hexen2demo/hw"
+#define AOT_USERDIR ".hexen2demo"
 #endif
 
 #include <math.h>

@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.4 2004-12-18 14:15:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.5 2005-01-18 11:29:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2007,7 +2007,7 @@ Sets com_gamedir, adds the directory to the head of the path,
 then loads and adds pak1.pak pak2.pak ... 
 ================
 */
-void COM_AddGameDirectory (char *dir)
+void COM_AddGameDirectory (char *dir, qboolean adduser)
 {
 	int				i;
 	searchpath_t    *search;
@@ -2046,10 +2046,12 @@ void COM_AddGameDirectory (char *dir)
 // we don't need to set it on win32 platforms since it's exactly com_gamedir
 //
 #ifdef PLATFORM_UNIX
+if (adduser) {
 	search = Hunk_Alloc (sizeof(searchpath_t));
 	strcpy (search->filename, com_userdir);
 	search->next = com_searchpaths;
 	com_searchpaths = search;
+}
 #endif
 //
 // add the contents of the parms.txt file to the end of the command line
@@ -2111,11 +2113,15 @@ void COM_InitFilesystem (void)
 		com_cachedir[0] = 0;
 
 //
-// start up with GAMENAME by default (id1)
+// start up with GAMENAME by default (data1)
 //
-	COM_AddGameDirectory (va("%s/"GAMENAME, basedir) );
-#ifdef H2MP
-	COM_AddGameDirectory (va("%s/portals", basedir) );
+#ifndef H2MP
+	COM_AddGameDirectory (va("%s/"GAMENAME, basedir), true);
+#else
+	COM_AddGameDirectory (va("%s/"GAMENAME, basedir), false);
+	sprintf (com_userdir, "%s/portals", host_parms.userdir);
+	Sys_mkdir (com_userdir);
+	COM_AddGameDirectory (va("%s/portals", basedir), true);
 #endif
 
 // -game <gamedir>
@@ -2125,7 +2131,9 @@ void COM_InitFilesystem (void)
 	if (i && i < com_argc-1)
 	{
 		com_modified = true;
-		COM_AddGameDirectory (va("%s/%s", basedir, com_argv[i+1]));
+		sprintf (com_userdir, "%s/%s", host_parms.userdir, com_argv[i+1]);
+		Sys_mkdir (com_userdir);
+		COM_AddGameDirectory (va("%s/%s", basedir, com_argv[i+1]), true);
 	}
 
 // -path <dir or packfile> [<dir or packfile>] ...
@@ -2175,6 +2183,11 @@ void COM_InitFilesystem (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/18 14:15:34  sezero
+ * Clean-up and kill warnings 10:
+ * Remove some already commented-out functions and code fragments.
+ * They seem to be of no-future use. Also remove some unused functions.
+ *
  * Revision 1.3  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

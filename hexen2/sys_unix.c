@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.10 2004-12-22 21:50:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.11 2005-01-18 11:29:18 sezero Exp $
 */
 
 #include <stdio.h>
@@ -790,21 +790,20 @@ int Sys_GetUserdir(char *buff, unsigned int len)
 	return 0;
     }
 
+/* O.S:	We keep the userdir (and host_parms.userdir) as ~/.hexen2
+	here.  We'll change com_userdir in COM_InitFilesystem()
+	depending on H2MP and/or -game cmdline arg, instead.	*/
 #ifdef H2MP
     if ( strlen( pwent->pw_dir ) + strlen( AOT_USERDIR) + 10 > (unsigned)len ) {
 	return 0;
     }
-
-    sprintf( buff, "%s/%s/portals", pwent->pw_dir, AOT_USERDIR );
 #else
     if ( strlen( pwent->pw_dir ) + strlen( AOT_USERDIR) + 2 > (unsigned)len ) {
 	return 0;
     }
-
-    sprintf( buff, "%s/%s", pwent->pw_dir, AOT_USERDIR );
 #endif
+    sprintf( buff, "%s/%s", pwent->pw_dir, AOT_USERDIR );
     Sys_mkdir(buff);
-
     return 1;
 }
 
@@ -981,6 +980,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2004/12/22 21:50:16  sezero
+ * play with version and help display
+ *
  * Revision 1.9  2004/12/18 14:20:40  sezero
  * Clean-up and kill warnings: 11
  * A lot of whitespace cleanups.

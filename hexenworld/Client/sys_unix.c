@@ -1,7 +1,7 @@
 // sys_unix.c -- Unix system interface code
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.6 2005-01-01 21:50:49 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.7 2005-01-18 11:29:18 sezero Exp $
  */
 
 #include <stdio.h>
@@ -784,7 +784,7 @@ int Sys_GetUserdir(char *buff, unsigned int len)
 	return 0;
     }
 
-    if ( strlen( pwent->pw_dir ) + strlen( AOT_USERDIR) + 2 > (unsigned)len ) {
+    if ( strlen( pwent->pw_dir ) + strlen( AOT_USERDIR) + 5 > (unsigned)len ) {
 	return 0;
     }
 
@@ -949,6 +949,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/01/01 21:50:49  sezero
+ * warnings cleanup: unused stuff
+ *
  * Revision 1.5  2004/12/22 21:51:17  sezero
  * play with version and help display
  *
