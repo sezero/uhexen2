@@ -1,6 +1,7 @@
 ChangeLog:
 
 2005-02-14 (CVS):
+    * added ability to disable ALSA support at compile time
     * fix mouse not being activated after connecting to a server in
       windowed mode for hexenworld. from Steve.
     * oss sound improvements (from the quakeforge project):
