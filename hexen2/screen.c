@@ -1,7 +1,7 @@
 // screen.c -- master for refresh, status bar, console, chat, notify, etc
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.1.1.1 2004-11-28 00:07:13 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.2 2004-11-29 12:17:46 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -1004,12 +1004,14 @@ void SCR_UpdateScreen (void)
 		SCR_DrawNotifyString ();
 		scr_copyeverything = true;
 	}
-	else if (scr_drawloading)
+//	Pa3PyX: would clobber intermission screens (else if)
+/*	else if (scr_drawloading)
 	{
 		SB_Draw();
 		Draw_FadeScreen ();
 		SCR_DrawLoading ();
 	}
+*/
 	else if (cl.intermission >= 1 && cl.intermission <= 12)
 	{
 		SB_IntermissionOverlay();
@@ -1018,6 +1020,9 @@ void SCR_UpdateScreen (void)
 			SCR_DrawConsole();
 			M_Draw();
 		}
+		// Pa3PyX: draw loading plaque
+		if (scr_drawloading)
+			SCR_DrawLoading();
 	}
 /*	else if (cl.intermission == 2 && key_dest == key_game)
 	{
@@ -1036,6 +1041,14 @@ void SCR_UpdateScreen (void)
 		SCR_DrawPause();
 		SCR_CheckDrawCenterString();
 		SB_Draw();
+
+		// Pa3PyX: dim screen and draw plaque if loading, the rest
+		//	   otherwise
+		if (scr_drawloading) {
+			Draw_FadeScreen();
+			SCR_DrawLoading();
+		}
+		else {
 		Plaque_Draw(plaquemessage,0);
 		SCR_DrawConsole();
 		M_Draw();
@@ -1050,9 +1063,12 @@ void SCR_UpdateScreen (void)
 			Info_Plaque_Draw(infomessage);
 		}
 	}
+	}
 
-	if (loading_stage)
+	// Pa3PyX: this is now only called by actual loading procedures
+/*	if (loading_stage)
 		SCR_DrawLoading();
+*/
 
 	D_DisableBackBufferAccess ();	// for adapters that can't stay mapped in
 									//  for linear writes all the time
@@ -1287,48 +1303,51 @@ void SB_IntermissionOverlay(void)
 	
 	switch(cl.intermission)
 	{
+		// Pa3PyX: pics are now resized to screen size upon load
 		case 1:
-			pic = Draw_CachePic ("gfx/meso.lmp");
+			pic = Draw_CachePicResize("gfx/meso.lmp", vid.width, vid.height);
 			break;
 		case 2:
-			pic = Draw_CachePic ("gfx/egypt.lmp");
+			pic = Draw_CachePicResize("gfx/egypt.lmp", vid.width, vid.height);
 			break;
 		case 3:
-			pic = Draw_CachePic ("gfx/roman.lmp");
+			pic = Draw_CachePicResize("gfx/roman.lmp", vid.width, vid.height);
 			break;
 		case 4:
-			pic = Draw_CachePic ("gfx/castle.lmp");
+			pic = Draw_CachePicResize("gfx/castle.lmp", vid.width, vid.height);
 			break;
 		case 5:
-			pic = Draw_CachePic ("gfx/castle.lmp");
+			pic = Draw_CachePicResize("gfx/castle.lmp", vid.width, vid.height);
 			break;
 		case 6:
-			pic = Draw_CachePic ("gfx/end-1.lmp");
+			pic = Draw_CachePicResize("gfx/end-1.lmp", vid.width, vid.height);
 			break;
 		case 7:
-			pic = Draw_CachePic ("gfx/end-2.lmp");
+			pic = Draw_CachePicResize("gfx/end-2.lmp", vid.width, vid.height);
 			break;
 		case 8:
-			pic = Draw_CachePic ("gfx/end-3.lmp");
+			pic = Draw_CachePicResize("gfx/end-3.lmp", vid.width, vid.height);
 			break;
 		case 9:
-			pic = Draw_CachePic ("gfx/castle.lmp");
+			pic = Draw_CachePicResize("gfx/castle.lmp", vid.width, vid.height);
 			break;
 		case 10:
-			pic = Draw_CachePic ("gfx/mpend.lmp");
+			pic = Draw_CachePicResize("gfx/mpend.lmp", vid.width, vid.height);
 			break;
 		case 11:
-			pic = Draw_CachePic ("gfx/mpmid.lmp");
+			pic = Draw_CachePicResize("gfx/mpmid.lmp", vid.width, vid.height);
 			break;
 		case 12:
-			pic = Draw_CachePic ("gfx/end-3.lmp");
+			pic = Draw_CachePicResize("gfx/end-3.lmp", vid.width, vid.height);
 			break;
 
 		default:
 			Sys_Error ("SB_IntermissionOverlay: Bad episode");
 			break;
 	}
-	Draw_Pic (((vid.width - 320)>>1),((vid.height - 200)>>1), pic);
+	// Pa3PyX: intermissions will now be always drawn full screen size
+//	Draw_Pic (((vid.width - 320)>>1),((vid.height - 200)>>1), pic);
+	Draw_Pic(0, 0, pic);
 
 	if (cl.intermission >= 6 && cl.intermission <= 8)
 	{
@@ -1427,6 +1446,9 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:07:13  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.2  2002/01/04 14:50:09  phneutre
  * save screenshots in ~/.aot/shots
  *

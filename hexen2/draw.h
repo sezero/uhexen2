@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/draw.h,v 1.1.1.1 2004-11-28 00:02:40 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/draw.h,v 1.2 2004-11-29 12:17:46 sezero Exp $
  */
 
 // draw.h -- these are the only functions outside the refresh allowed
@@ -13,6 +13,7 @@ void Draw_Init (void);
 void Draw_Character (int x, int y, unsigned int num);
 void Draw_DebugChar (char num);
 void Draw_Pic (int x, int y, qpic_t *pic);
+void Draw_IntermissionPic (qpic_t *pic);
 void Draw_PicCropped(int x, int y, qpic_t *pic);
 void Draw_TransPic (int x, int y, qpic_t *pic);
 void Draw_TransPicCropped(int x, int y, qpic_t *pic);
@@ -28,9 +29,14 @@ void Draw_SmallCharacter(int x, int y, int num);
 void Draw_SmallString(int x, int y, char *str);
 qpic_t *Draw_PicFromWad (char *name);
 qpic_t *Draw_CachePic (char *path);
+qpic_t *Draw_CachePicNoTrans (char *path);
+qpic_t *Draw_CachePicResize (char *path, int targetWidth, int targetHeight);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:02:40  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.1.1.1  2001/11/09 17:03:57  theoddone33
  * Inital import
  *

@@ -3,7 +3,7 @@
 // vid buffer
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.1.1.1 2004-11-28 00:02:55 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.2 2004-11-29 12:17:46 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -339,6 +339,58 @@ qpic_t	*Draw_CachePic (char *path)
 	return &pic->pic;
 }
 
+/*
+================
+Draw_CachePicNoTrans
+
+Pa3PyX: Function added to cache pics ignoring transparent colors
+	 (e.g. in intermission screens)
+================
+*/
+qpic_t *Draw_CachePicNoTrans(char *path)
+{
+	cachepic_t      *pic;
+	int                     i;
+	qpic_t          *dat;
+	glpic_t         *gl;
+
+	for (pic=menu_cachepics, i=0 ; i<menu_numcachepics ; pic++, i++)
+		if (!strcmp (path, pic->name))
+			return &pic->pic;
+
+	if (menu_numcachepics == MAX_CACHED_PICS)
+		Sys_Error ("menu_numcachepics == MAX_CACHED_PICS");
+	menu_numcachepics++;
+	strcpy (pic->name, path);
+
+//
+// load the pic from disk
+//
+	dat = (qpic_t *)COM_LoadTempFile (path);
+	if (!dat)
+		Sys_Error ("Draw_CachePicNoTrans: failed to load %s", path);
+	SwapPic (dat);
+
+	pic->pic.width = dat->width;
+	pic->pic.height = dat->height;
+
+	gl = (glpic_t *)pic->pic.data;
+	// Get rid of transparencies
+	for (i = 0; i < dat->width * dat->height; i++)
+	     if (dat->data[i] == 255)
+		 dat->data[i] = 31; // pal(31) == pal(255) == FCFCFC (white)
+	gl->texnum = GL_LoadPicTexture (dat);
+
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	gl->sl = 0;
+	gl->sh = 1;
+	gl->tl = 0;
+	gl->th = 1;
+
+	return &pic->pic;
+}
 
 void Draw_CharToConback (int num, byte *dest)
 {
@@ -733,6 +785,41 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 	glfunc.glTexCoord2f_fp (gl->sl, gl->th);
 	glfunc.glVertex2f_fp (x, y+pic->height);
 	glfunc.glEnd_fp ();
+
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+}
+
+/*
+=============
+Draw_IntermissionPic
+
+Pa3PyX: this new function introduced to draw the intermission screen only
+=============
+*/
+void Draw_IntermissionPic (qpic_t *pic)
+{
+	glpic_t			*gl;
+
+	if (scrap_dirty)
+		Scrap_Upload ();
+	gl = (glpic_t *)pic->data;
+	glColor4f (1,1,1,1);
+	GL_Bind (gl->texnum);
+
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+	glfunc.glBegin_fp(GL_QUADS);
+	glfunc.glTexCoord2f_fp(0.0f, 0.0f);
+	glfunc.glVertex2f_fp(0.0f, 0.0f);
+	glfunc.glTexCoord2f_fp(1.0f, 0.0f);
+	glfunc.glVertex2f_fp(vid.width, 0.0f);
+	glfunc.glTexCoord2f_fp(1.0f, 1.0f);
+	glfunc.glVertex2f_fp(vid.width, vid.height);
+	glfunc.glTexCoord2f_fp(0.0f, 1.0f);
+	glfunc.glVertex2f_fp(0.0f, vid.height);
+	glfunc.glEnd_fp();
 
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -1687,6 +1774,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:02:55  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.1  2002/01/02 15:14:44  phneutre
  * dlsym'ed all calls to GL functions with SDL_GL_GetProcAddress
  *

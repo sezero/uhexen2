@@ -1,7 +1,7 @@
 // screen.c -- master for refresh, status bar, console, chat, notify, etc
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_screen.c,v 1.1.1.1 2004-11-28 00:03:15 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_screen.c,v 1.2 2004-11-29 12:17:46 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -1003,40 +1003,40 @@ void SB_IntermissionOverlay(void)
 	switch(cl.intermission)
 	{
 	case 1:
-			pic = Draw_CachePic ("gfx/meso.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/meso.lmp");
 			break;
 		case 2:
-			pic = Draw_CachePic ("gfx/egypt.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/egypt.lmp");
 			break;
 		case 3:
-			pic = Draw_CachePic ("gfx/roman.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/roman.lmp");
 			break;
 		case 4:
-			pic = Draw_CachePic ("gfx/castle.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/castle.lmp");
 			break;
 		case 5:
-			pic = Draw_CachePic ("gfx/castle.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/castle.lmp");
 			break;
 		case 6:
-			pic = Draw_CachePic ("gfx/end-1.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/end-1.lmp");
 			break;
 		case 7:
-			pic = Draw_CachePic ("gfx/end-2.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/end-2.lmp");
 			break;
 		case 8:
-			pic = Draw_CachePic ("gfx/end-3.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/end-3.lmp");
 			break;
 		case 9:
-			pic = Draw_CachePic ("gfx/castle.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/castle.lmp");
 			break;
 		case 10:
-			pic = Draw_CachePic ("gfx/mpend.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/mpend.lmp");
 			break;
 		case 11:
-			pic = Draw_CachePic ("gfx/mpmid.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/mpmid.lmp");
 			break;
 		case 12:
-			pic = Draw_CachePic ("gfx/end-3.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/end-3.lmp");
 			break;
 
 		default:
@@ -1044,7 +1044,9 @@ void SB_IntermissionOverlay(void)
 			break;
 	}
 
-	Draw_Pic (((vid.width - 320)>>1),((vid.height - 200)>>1), pic);
+// Pa3PyX: intermissions now drawn fullscreen
+//	Draw_Pic (((vid.width - 320)>>1),((vid.height - 200)>>1), pic);
+	Draw_IntermissionPic(pic);
 
 	if (cl.intermission >= 6 && cl.intermission <= 8)
 	{
@@ -1179,8 +1181,9 @@ void SCR_UpdateScreen (void)
 //
 	SCR_SetUpToDrawConsole ();
 	
-	if (cl.intermission > 1 || cl.intermission <= 12)
-	{
+	// Pa3PyX: no need to draw view in intermission screens anymore
+//	if (cl.intermission > 1 || cl.intermission <= 12) {
+	if (cl.intermission < 1 || cl.intermission > 12) {
 		V_RenderView ();
 	}
 
@@ -1198,12 +1201,13 @@ void SCR_UpdateScreen (void)
 		SCR_DrawNotifyString ();
 		scr_copyeverything = true;
 	}
-	else if (scr_drawloading)
+//	Pa3PyX: this clobbers intermission screens
+/*	else if (scr_drawloading)
 	{
 		SB_Draw();
 		Draw_FadeScreen ();
 		SCR_DrawLoading ();
-	}
+	} */
 	else if (cl.intermission >= 1 && cl.intermission <= 12)
 	{
 		SB_IntermissionOverlay();
@@ -1212,6 +1216,9 @@ void SCR_UpdateScreen (void)
 			SCR_DrawConsole();
 			M_Draw();
 		}
+		// Pa3PyX
+		if (scr_drawloading)
+			SCR_DrawLoading();
 	}
 /*	else if (cl.intermission == 2 && key_dest == key_game)
 	{
@@ -1229,6 +1236,13 @@ void SCR_UpdateScreen (void)
 		SCR_DrawPause();
 		SCR_CheckDrawCenterString();
 		SB_Draw();
+
+		// Pa3PyX: draw loading plaque and dim screen if loading
+		if (scr_drawloading) {
+			Draw_FadeScreen();
+			SCR_DrawLoading();
+		}
+		else {
 		Plaque_Draw(plaquemessage,0);
 		SCR_DrawConsole();
 		M_Draw();
@@ -1243,9 +1257,12 @@ void SCR_UpdateScreen (void)
 			Info_Plaque_Draw(infomessage);
 		}
 	}
+	}
 
-	if (loading_stage)
+// Pa3PyX: loading screen already called from actual loading procedures
+/*	if (loading_stage)
 		SCR_DrawLoading();
+*/
 
 	V_UpdatePalette ();
 
@@ -1254,6 +1271,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:03:15  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.2  2002/01/04 14:50:09  phneutre
  * save screenshots in ~/.aot/shots
  *
