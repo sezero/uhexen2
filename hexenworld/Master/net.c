@@ -393,6 +393,7 @@ void MSG_WriteString (sizebuf_t *sb, char *s)
 
 void NET_Filter()
 {
+	filter_t *filter;
 	netadr_t filter_adr;
 	int hold_port;
 
@@ -412,16 +413,11 @@ void NET_Filter()
 	}
 
 	//if no compare with filter list
-	filter_t *filter;
-
 	if((filter = FL_Find(net_from)))
 	{
 		NET_CopyAdr(&net_from,&filter->to);
 		net_from.port = hold_port;
 	}
-
-
-
 }
 
 void NET_Init (int port)
@@ -461,6 +457,8 @@ void SV_InitNet (void)
 {
 	int	port;
 	int	p;
+	FILE	*filters;
+	char	str[64];
 
 	port = PORT_MASTER;
 
@@ -473,9 +471,6 @@ void SV_InitNet (void)
 	NET_Init (port);
 
 	//Add filters
-	FILE *filters;
-	char str[64];
-
 	if((filters = fopen("filters.ini","rt")))
 	{
 		while(fgets(str,64,filters))
@@ -709,6 +704,8 @@ void Mst_SendList()
 {
 	byte		buf[MAX_DATAGRAM];
 	sizebuf_t	msg;
+	server_t	*sv;
+	short int	sv_num = 0;
 
 	msg.data = buf;
 	msg.maxsize = sizeof(buf);
@@ -716,10 +713,6 @@ void Mst_SendList()
 	msg.allowoverflow = true;
 	msg.overflowed = false;
 
-	server_t *sv;
-
-	short int sv_num = 0;
-	
 	//number of servers:
 	for(sv = sv_list;sv;sv = sv->next)
 		sv_num++;
@@ -983,6 +976,8 @@ void Cmd_Filter_f()
 void SV_WriteFilterList()
 {
 	FILE  *filters;
+	filter_t *filter;
+
 	if((filters = fopen("filters.ini","wt")))
 	{
 		if(filter_list == NULL)
@@ -990,8 +985,6 @@ void SV_WriteFilterList()
 			fclose(filters);
 			return;
 		}
-
-		filter_t *filter;
 
 		for(filter = filter_list;filter;filter = filter->next)
 		{
