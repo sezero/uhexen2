@@ -194,19 +194,23 @@ int read_config_file()
 	    }
 	  else if (strstr(buff, "midi=") == buff)
 	    {
-	      midi = atoi(buff + 5);
-	      if (midi < 0 || midi > 1 )
-		midi = 1;
-	      if (sound == 0)
+	      if (sound == 0) {
 	        midi = 0;
+	      } else {
+		midi = atoi(buff + 5);
+		if (midi < 0 || midi > 1 )
+		   midi = 1;
+	      }
 	    }
 	  else if (strstr(buff, "cdaudio=") == buff)
 	    {
-	      cdaudio = atoi(buff + 8);
-	      if (cdaudio < 0 || cdaudio > 1 )
-		sound = 1;
-	      if (sound == 0)
-	        cdaudio = 0;
+	      if (sound == 0) {
+		 cdaudio = 0;
+	      } else {
+		cdaudio = atoi(buff + 8);
+		if (cdaudio < 0 || cdaudio > 1 )
+		   sound = 1;
+	      }
 	    }
 	  else if (strstr(buff, "joystick=") == buff)
 	    {
@@ -220,15 +224,14 @@ int read_config_file()
 	      if (mouse < 0 || mouse > 1 )
 		mouse = 0;
 	    }
-
 	}
-
     }
-    while(!feof(cfg_file));
 
+    while(!feof(cfg_file));
 
     fclose (cfg_file);
     write_config_file();
+
   }
 
   return 0;
