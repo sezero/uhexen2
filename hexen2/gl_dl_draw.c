@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.6 2004-12-18 14:08:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.7 2004-12-18 14:11:53 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -887,10 +887,10 @@ Only used for the player color selection menu
 */
 void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 {
-	int				v, u, c;
+	int			v, u/*, c*/;
 	unsigned		trans[PLAYER_DEST_WIDTH * PLAYER_DEST_HEIGHT], *dest;
 	byte			*src;
-	int				p;
+	int			p;
 
 	// texture handle, name and trackers (Pa3PyX)
 	char texname[20];
@@ -1777,6 +1777,10 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2004/12/18 14:08:07  sezero
+ * Clean-up and kill warnings 9:
+ * Kill many unused vars.
+ *
  * Revision 1.5  2004/12/18 13:30:50  sezero
  * Hack to prevent textures going awol and some info-plaques start looking
  * white upon succesive load games. The solution is not beautiful but seems
