@@ -263,8 +263,8 @@ surfcache_t *D_CacheSurface (msurface_t *surface, int miplevel)
 	DoSurface = false;
 	if (cache)
 	{
-		if (cache->drawflags & MLS_ABSLIGHT == MLS_ABSLIGHT &&
-			currententity->drawflags & MLS_ABSLIGHT != MLS_ABSLIGHT)
+		if ((cache->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT &&
+			(currententity->drawflags & MLS_ABSLIGHT) != MLS_ABSLIGHT)
 		{
 			DoSurface = true;
 		}

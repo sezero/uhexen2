@@ -290,7 +290,7 @@ void SV_DropClient (client_t *drop)
 	// add the disconnect
 	MSG_WriteByte (&drop->netchan.message, svc_disconnect);
 
-	if (drop->state == cs_spawned)
+	if (drop->state == cs_spawned) {
 		if (!drop->spectator)
 		{
 			// call the prog function for removing a client
@@ -305,7 +305,7 @@ void SV_DropClient (client_t *drop)
 			pr_global_struct->self = EDICT_TO_PROG(drop->edict);
 			PR_ExecuteProgram (SpectatorDisconnect);
 		}
-	else if(dmMode.value==DM_SIEGE)
+	} else if(dmMode.value==DM_SIEGE)
 		if(stricmp(drop->edict->v.puzzle_inv1+pr_strings,""))
 		{
 			//this guy has a puzzle piece, call this function anyway
@@ -1534,12 +1534,12 @@ void SV_ExtractFromUserinfo (client_t *cl)
 				val[sizeof(cl->name) - 4] = 0;
 			p = val;
 
-			if (val[0] == '(')
+			if (val[0] == '(') {
 				if (val[2] == ')')
 					p = val + 3;
 				else if (val[3] == ')')
 					p = val + 4;
-
+			}
 			sprintf(newname, "(%d)%-0.40s", dupc++, p);
 			Info_SetValueForKey (cl->userinfo, "name", newname, MAX_INFO_STRING);
 			val = Info_ValueForKey (cl->userinfo, "name");

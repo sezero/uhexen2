@@ -174,7 +174,7 @@ void R_BuildLightMap (void)
 		return;
 	}
 
-	if (currententity->drawflags & MLS_ABSLIGHT == MLS_ABSLIGHT)
+	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
 	{
 		light = (255-currententity->abslight)<<VID_CBITS;
 		for (i=0 ; i<size ; i++)

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.7 2005-01-01 21:50:48 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.8 2005-01-01 21:53:53 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -1202,7 +1202,7 @@ void M_Options_Key (int k)
 	}
 
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
-	
+	{
 		if (k == K_UPARROW)
 			options_cursor = OPT_USEMOUSE - 1;
 		else {
@@ -1210,12 +1210,13 @@ void M_Options_Key (int k)
 			if (options_cursor == OPTIONS_ITEMS)
 				options_cursor = 0;
 		}
-
-	if (options_cursor == OPT_VIDEO && vid_menudrawfn == NULL)
+	}
+	if (options_cursor == OPT_VIDEO && vid_menudrawfn == NULL) {
 		if (k == K_UPARROW)
 			options_cursor = OPT_VIDEO - 1;
 		else
 			options_cursor = 0;
+	}
 }
 
 
