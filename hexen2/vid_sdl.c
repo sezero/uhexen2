@@ -1,7 +1,27 @@
-// vid_sdl.c -- SDL video driver
+/*
+   vid_sdl.c -- SDL video driver
+
+   Select window size and mode and init SDL in SOFTWARE mode.
+
+   Changed by S.A. 7/11/04
+
+   Options are now:
+     -fullscreen | -window, -height , -width 
+   Currently bpp is 8 bit (I think) but I haven't looked much at this.
+   Interactive Video Modes have been disabled.
+   They conflict a little with the command-line options in that:
+     They insist on starting fullscreen.
+     If you remove this insistence, you break the test video mode restore.
+   Might fix them one day, but this file is such a mess.
+
+   The modes which are used are :
+	MODE_WINDOWED  0, MODE_FULLSCREEN_DEFAULT 3
+   For clarity I have removed the variable "windowed_default" and replaced
+   it with MODE_WINDOWED. Functionality is the same.
+*/
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.1.1.1 2004-11-28 00:08:07 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.2 2004-11-28 00:58:08 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -24,9 +44,9 @@ extern qboolean grab;
 static qboolean	startwindowed = 0;
 static int		firstupdate = 1;
 static qboolean	vid_initialized = false, vid_palettized = true;
-static int		lockcount;
-qboolean	force_minimized, in_mode_set, is_mode0x13, force_mode_set;
-static int		vid_stretched, windowed_mouse;
+static int	lockcount;
+qboolean	in_mode_set, is_mode0x13;
+static int	vid_stretched, windowed_mouse;
 static qboolean	palette_changed;
 
 viddef_t	vid;				// global video state
@@ -48,7 +68,7 @@ cvar_t		_vid_wait_override = {"_vid_wait_override", "0", true};
 cvar_t		vid_config_x = {"vid_config_x","800", true};
 cvar_t		vid_config_y = {"vid_config_y","600", true};
 cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1", true};
-cvar_t		_windowed_mouse = {"_windowed_mouse","0", true};
+cvar_t		_windowed_mouse = {"_windowed_mouse","1", true};
 cvar_t		vid_showload = {"vid_showload", "1"};
 
 typedef struct {
@@ -63,10 +83,10 @@ lmode_t	lowresmodes[] = {
 	{512, 384},
 };
 
-int			vid_modenum = NO_MODE;
-int			vid_testingmode, vid_realmode;
+int		vid_modenum = NO_MODE;
+int		vid_realmode;
 double		vid_testendtime;
-int			vid_default = MODE_WINDOWED;
+int		vid_default = MODE_WINDOWED;
 static int	windowed_default;
 
 modestate_t	modestate = MS_UNINIT;
@@ -422,6 +442,7 @@ qboolean VID_SetWindowedMode (int modenum)
 qboolean VID_SetFullscreenMode (int modenum)
 {
 	Uint32 flags = (SDL_SWSURFACE|SDL_HWPALETTE|SDL_FULLSCREEN);
+	// (SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_HWPALETTE|SDL_FULLSCREEN);
 
 	mode = modelist[modenum].modenum;
 	modestate = MS_FULLSCREEN;
@@ -429,6 +450,7 @@ qboolean VID_SetFullscreenMode (int modenum)
 	vid.height = vid.conheight = modelist[modenum].height;
 	vid.width = vid.conwidth = modelist[modenum].width;
 
+	// S.A. - this doesn't seem to work at 16 bpp ?? palette ??
 	if (!(screen = SDL_SetVideoMode(vid.width, vid.height, 8, flags)))
 		return false;
 
@@ -487,31 +509,20 @@ void VID_SetDefaultMode (void)
 
 int VID_SetMode (int modenum, unsigned char *palette)
 {
-	int				original_mode, temp, dummy;
+	int			original_mode, temp, dummy;
 	qboolean		stat;
-	while ((modenum >= nummodes) || (modenum < 0))
-	{
-		if (vid_modenum == NO_MODE)
-		{
-			if (modenum == vid_default)
-			{
-				modenum = windowed_default;
-			}
-			else
-			{
-				modenum = vid_default;
-			}
 
-			Cvar_SetValue ("vid_mode", (float)modenum);
-		}
-		else
-		{
-			Cvar_SetValue ("vid_mode", (float)vid_modenum);
-			return 0;
-		}
-	}
+	// debug printf ("VID_SetMode modenum = %i\n",modenum);
 
-	if (!force_mode_set && (modenum == vid_modenum))
+// S.A. did this Cvar_SetValue & "if 0" 
+// It's pretty messy in here. Dunno much about it, probably alot of it
+// could go as it's used in dynamically changing/testing video modes
+
+	Cvar_SetValue ("vid_mode", (float)modenum);
+
+	// stuff removed S.A.
+
+	if (modenum == vid_modenum)
 		return true;
 
 	// so Con_Printfs don't mess us up by forcing vid and snd updates
@@ -527,7 +538,9 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	else
 		original_mode = vid_modenum;
 
-	// Set either the fullscreen or windowed mode
+	/* Set either the fullscreen or windowed mode */
+
+	// debug printf ("!! modenum is %i\n\n",modenum);
 	if (modelist[modenum].type == MS_WINDOWED)
 	{
 		if (_windowed_mouse.value)
@@ -574,7 +587,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 
 	vid_modenum = modenum;
-	Cvar_SetValue ("vid_mode", (float)vid_modenum);
+	// S.A.removed: Cvar_SetValue ("vid_mode", (float)vid_modenum);
 
 	if (!VID_AllocBuffers (vid.width, vid.height))
 	{
@@ -781,57 +794,11 @@ void VID_DescribeModes_f (void)
 }
 
 
-/*
-=================
-VID_TestMode_f
-=================
-*/
-void VID_TestMode_f (void)
-{
-	int		modenum;
-	double	testduration;
-
-	if (!vid_testingmode)
-	{
-		modenum = atoi (Cmd_Argv(1));
-
-		if (VID_SetMode (modenum, vid_curpal))
-		{
-			vid_testingmode = 1;
-			testduration = atof (Cmd_Argv(2));
-			if (testduration == 0)
-				testduration = 5.0;
-			vid_testendtime = realtime + testduration;
-		}
-	}
-}
-
-
-/*
-=================
-VID_ForceMode_f
-=================
-*/
-void VID_ForceMode_f (void)
-{
-	int		modenum;
-	double	testduration;
-
-	if (!vid_testingmode)
-	{
-		modenum = atoi (Cmd_Argv(1));
-
-		force_mode_set = 1;
-		VID_SetMode (modenum, vid_curpal);
-		force_mode_set = 0;
-	}
-}
-
-
 void	VID_Init (unsigned char *palette)
 {
 	int		i, bestmatch, bestmatchmetric, t, dr, dg, db;
 	int		basenummodes;
+	int		width,height;
 	byte	*ptmp;
 
 	if (SDL_Init(SDL_INIT_VIDEO)<0)
@@ -849,12 +816,10 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&_windowed_mouse);
 	Cvar_RegisterVariable (&vid_showload);
 
-	Cmd_AddCommand ("vid_testmode", VID_TestMode_f);
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
 	Cmd_AddCommand ("vid_describecurrentmode", VID_DescribeCurrentMode_f);
 	Cmd_AddCommand ("vid_describemode", VID_DescribeMode_f);
 	Cmd_AddCommand ("vid_describemodes", VID_DescribeModes_f);
-	Cmd_AddCommand ("vid_forcemode", VID_ForceMode_f);
 	Cmd_AddCommand ("vid_setgamma", VID_SetGamma_f);
 
         modelist[0].type = MS_WINDOWED;
@@ -919,8 +884,6 @@ void	VID_Init (unsigned char *palette)
 
 	vid_default = MODE_WINDOWED;
 
-        windowed_default = vid_default;
-
 	nummodes = 5;
 
 	basenummodes = nummodes;
@@ -929,7 +892,6 @@ void	VID_Init (unsigned char *palette)
 	vid.maxwarpheight = WARP_HEIGHT;
 	vid.colormap = host_colormap;
 	vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
-	vid_testingmode = 0;
 
 // GDI doesn't let us remap palette index 0, so we'll remap color
 // mappings from that black to another one
@@ -959,13 +921,56 @@ void	VID_Init (unsigned char *palette)
 			*ptmp = bestmatch;
 	}
 
-	if (COM_CheckParm("-startwindowed") || COM_CheckParm ("--windowed")
-			|| COM_CheckParm ("-w"))
+	// debug printf ("check -window\n");
+
+	/*********************************
+ 	 * command line processing (S.A) *
+ 	 *********************************/
+
+	grab = 1; // grab window, but we release it when main menu is drawn
+
+	startwindowed = 1; // default is windowed
+	vid_default = MODE_WINDOWED;
+
+	if (COM_CheckParm("-fullscreen") || COM_CheckParm ("--fullscreen")
+			|| COM_CheckParm ("-f") || COM_CheckParm ("-fs"))
 	{
-		startwindowed = 1;
-		grab = 0;
-		vid_default = windowed_default;
+		startwindowed=0;
+		vid_default = MODE_FULLSCREEN_DEFAULT;
 	}
+
+        if (COM_CheckParm("-width"))
+        {
+                width = atoi(com_argv[COM_CheckParm("-width")+1]);
+        }
+        else
+        {
+		// make the default sizes for software mode smaller
+		if (vid_default == MODE_WINDOWED)
+                        width=400;
+                else
+                        width=512;
+        }
+
+        if (COM_CheckParm("-height"))
+        {
+                height = atoi(com_argv[COM_CheckParm("-height")+1]);
+        }
+        else
+        {
+		switch (width) {
+			case 800: height=600; break;
+			case 640: height=480; break;
+			case 512: height=384; break;
+			case 400: height=300; break;
+			case 320: height=240; break;
+			default:  height=300;
+                }
+        }
+        modelist[vid_default].width = width;
+        modelist[vid_default].height = height;
+        sprintf (modelist[vid_default].modedesc,"%dx%d",width,height);
+printf ("SA vid_default = %i\n",vid_default);
 
 	vid_initialized = true;
 
@@ -976,6 +981,8 @@ void	VID_Init (unsigned char *palette)
 	VID_SetPalette (palette);	// Useless (?) - DDOI
 
 	vid_menudrawfn = VID_MenuDraw;
+	// vid_menudrawfn = NULL; S.A
+
 	vid_menukeyfn = VID_MenuKey;
 
 	strcpy (badmode.modedesc, "Bad mode");
@@ -1011,7 +1018,6 @@ extern byte *mainTransTable; // in r_main.c
 		DestroyFullDIBWindow ();
 		MGL_exit();
 #endif
-		vid_testingmode = 0;
 		vid_initialized = 0;
 		if (transTable)
 		{
@@ -1067,37 +1073,17 @@ void	VID_Update (vrect_t *rects)
 			if ((_vid_default_mode_win.value < 0) ||
 				(_vid_default_mode_win.value >= nummodes))
 			{
-				Cvar_SetValue ("_vid_default_mode_win", windowed_default);
+				Cvar_SetValue ("_vid_default_mode_win", MODE_WINDOWED);
 			}
 
-			Cvar_SetValue ("vid_mode", _vid_default_mode_win.value);
+			// S.A. Cvar_SetValue ("vid_mode", _vid_default_mode_win.value);
 		}
 	}
 
 	// We've drawn the frame; copy it to the screen
 	FlipScreen (rects);
 
-	if (vid_testingmode)
-	{
-		if (realtime >= vid_testendtime)
-		{
-			VID_SetMode (vid_realmode, vid_curpal);
-			vid_testingmode = 0;
-		}
-	}
-	else
-	{
-		if ((int)vid_mode.value != vid_realmode)
-		{
-			VID_SetMode ((int)vid_mode.value, vid_curpal);
-			Cvar_SetValue ("vid_mode", (float)vid_modenum);
-								// so if mode set fails, we don't keep on
-								//  trying to set that mode
-			vid_realmode = vid_modenum;
-		}
-	}
-
-// handle the mouse state when windowed if that's changed
+	// handle the mouse state when windowed if that's changed
 	if (modestate == MS_WINDOWED)
 	{
 		if ((int)_windowed_mouse.value != windowed_mouse)
@@ -1126,73 +1112,7 @@ D_BeginDirectRect
 */
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 {
-#if 0
-	int		i, j, reps, repshift;
-	vrect_t	rect;
-
-	if (!vid_initialized)
-		return;
-
-	if (vid.aspect > 1.5)
-	{
-		reps = 2;
-		repshift = 1;
-	}
-	else
-	{
-		reps = 1;
-		repshift = 0;
-	}
-
-	if (vid.numpages == 1)
-	{
-		VID_LockBuffer ();
-
-		if (!vid.direct)
-			Sys_Error ("NULL vid.direct pointer");
-
-		for (i=0 ; i<(height << repshift) ; i += reps)
-		{
-			for (j=0 ; j<reps ; j++)
-			{
-				memcpy (&backingbuf[(i + j) * width],
-						vid.direct + x + ((y << repshift) + i + j) * vid.rowbytes,
-						width);
-				memcpy (vid.direct + x + ((y << repshift) + i + j) * vid.rowbytes,
-						&pbitmap[(i >> repshift) * width],
-						width);
-			}
-		}
-
-		VID_UnlockBuffer ();
-
-		rect.x = x;
-		rect.y = y;
-		rect.width = width;
-		rect.height = height << repshift;
-		rect.pnext = NULL;
-
-		FlipScreen (&rect);
-	}
-	else
-	{
-		for (i=0 ; i<(height << repshift) ; i += reps)
-		{
-			for (j=0 ; j<reps ; j++)
-			{
-				memcpy (&backingbuf[(i + j) * width],
-						(byte *)screen->pixels + x +
-						 ((y << repshift) + i + j) * screen->pitch,
-						width);
-				memcpy ((byte *)screen->pixels + x +
-						 ((y << repshift) + i + j) * screen->pitch,
-						&pbitmap[(i >> repshift) * width],
-						width);
-			}
-		}
-
-	}
-#endif
+	// "if 0" removed
 }
 
 
@@ -1252,86 +1172,7 @@ D_EndDirectRect
 */
 void D_EndDirectRect (int x, int y, int width, int height)
 {
-#if 0
-	int		i, j, reps, repshift;
-	vrect_t	rect;
-
-	if (!vid_initialized)
-		return;
-
-	if (vid.aspect > 1.5)
-	{
-		reps = 2;
-		repshift = 1;
-	}
-	else
-	{
-		reps = 1;
-		repshift = 0;
-	}
-
-	if (vid.numpages == 1)
-	{
-		VID_LockBuffer ();
-
-		if (!vid.direct)
-			Sys_Error ("NULL vid.direct pointer");
-
-		for (i=0 ; i<(height << repshift) ; i += reps)
-		{
-			for (j=0 ; j<reps ; j++)
-			{
-				memcpy (vid.direct + x + ((y << repshift) + i + j) * vid.rowbytes,
-						&backingbuf[(i + j) * width],
-						width);
-			}
-		}
-
-		VID_UnlockBuffer ();
-
-		rect.x = x;
-		rect.y = y;
-		rect.width = width;
-		rect.height = height << repshift;
-		rect.pnext = NULL;
-
-		FlipScreen (&rect);
-	}
-	else
-	{
-	// unlock if locked
-		if (lockcount > 0)
-			SDL_UnlockSurface(screen);
-
-	// set the active page to the displayed page
-//		MGL_setActivePage (mgldc, vPage);
-
-	// lock the screen
-		SDL_LockSurface (screen);
-
-	// restore to the screen
-		for (i=0 ; i<(height << repshift) ; i += reps)
-		{
-			for (j=0 ; j<reps ; j++)
-			{
-				memcpy ((byte *)screen->pixels + x +
-						 ((y << repshift) + i + j) * screen->pitch,
-						&backingbuf[(i + j) * width],
-						width);
-			}
-		}
-
-	// unlock the screen
-		SDL_UnlockSurface (screen);
-
-//	// restore the original active page
-//		MGL_setActivePage (mgldc, aPage);
-
-	// relock the screen if it was locked
-		if (lockcount > 0)
-			SDL_LockSurface (screen);
-	}
-#endif
+	// "if 0" removed
 }
 
 /*
@@ -1468,183 +1309,22 @@ static modedesc_t	modedescs[MAX_MODEDESCS];
 /*
 ================
 VID_MenuDraw
-================
+================ S.A.
 */
+
 void VID_MenuDraw (void)
 {
-	qpic_t		*p;
-	char		*ptr;
-	int			lnummodes, i, j, k, column, row, dup, dupmode;
-	char		temp[100];
-	vmode_t		*pv;
-	modedesc_t	tmodedesc;
-
-	ScrollTitle("gfx/menu/title7.lmp");
-
-	for (i=0 ; i<3 ; i++)
-	{
-		ptr = VID_GetModeDescriptionMemCheck (i);
-		modedescs[i].modenum = modelist[i].modenum;
-		modedescs[i].desc = ptr;
-		modedescs[i].ismode13 = 0;
-		modedescs[i].iscur = 0;
-
-		if (vid_modenum == i)
-			modedescs[i].iscur = 1;
-	}
-
-	vid_wmodes = 3;
-	lnummodes = VID_NumModes ();
-	
-	for (i=3 ; i<lnummodes ; i++)
-	{
-		ptr = VID_GetModeDescriptionMemCheck (i);
-		pv = VID_GetModePtr (i);
-
-	// we only have room for 15 fullscreen modes, so don't allow
-	// 360-wide modes, because if there are 5 320-wide modes and
-	// 5 360-wide modes, we'll run out of space
-		if (ptr && ((pv->width != 360) || COM_CheckParm("-allow360")))
-		{
-			dup = 0;
-
-			for (j=3 ; j<vid_wmodes ; j++)
-			{
-				if (!strcmp (modedescs[j].desc, ptr))
-				{
-					dup = 1;
-					dupmode = j;
-					break;
-				}
-			}
-
-			if (dup || (vid_wmodes < MAX_MODEDESCS))       
-			{
-				if (!dup || !modedescs[dupmode].ismode13 || COM_CheckParm("-noforcevga"))
-				{
-					if (dup)
-					{
-						k = dupmode;
-					}
-					else
-					{
-						k = vid_wmodes;
-					}
-
-					modedescs[k].modenum = i;
-					modedescs[k].desc = ptr;
-					modedescs[k].ismode13 = pv->mode13;
-					modedescs[k].iscur = 0;
-					modedescs[k].width = pv->width;
-
-					if (i == vid_modenum)
-						modedescs[k].iscur = 1;
-
-					if (!dup)
-						vid_wmodes++;
-				}
-			}
-		}
-	}
-
-// sort the modes on width (to handle picking up oddball dibonly modes
-// after all the others)
-	for (i=3 ; i<(vid_wmodes-1) ; i++)
-	{
-		for (j=(i+1) ; j<vid_wmodes ; j++)
-		{
-			if (modedescs[i].width > modedescs[j].width)
-			{
-				tmodedesc = modedescs[i];
-				modedescs[i] = modedescs[j];
-				modedescs[j] = tmodedesc;
-			}
-		}
-	}
-
-
-	M_Print (13*8, 60, "Windowed Modes");
-
-	column = 16;
-	row = 60+2*8;
-
-	for (i=0 ; i<3; i++)
-	{
-		if (modedescs[i].iscur)
-			M_PrintWhite (column, row, modedescs[i].desc);
-		else
-			M_Print (column, row, modedescs[i].desc);
-
-		column += 13*8;
-	}
-
-	if (vid_wmodes > 3)
-	{
-		M_Print (12*8, 60+4*8, "Fullscreen Modes");
-
-		column = 16;
-		row = 60+6*8;
-
-		for (i=3 ; i<vid_wmodes ; i++)
-		{
-			if (modedescs[i].iscur)
-				M_PrintWhite (column, row, modedescs[i].desc);
-			else
-				M_Print (column, row, modedescs[i].desc);
-
-			column += 13*8;
-
-			if (((i - 3) % VID_ROW_SIZE) == (VID_ROW_SIZE - 1))
-			{
-				column = 16;
-				row += 8;
-			}
-		}
-	}
-
-// line cursor
-	if (vid_testingmode)
-	{
-		sprintf (temp, "TESTING %s",
-				modedescs[vid_line].desc);
-		M_Print (13*8, 60 + MODE_AREA_HEIGHT * 8 + 8*4, temp);
-		M_Print (9*8, 60 + MODE_AREA_HEIGHT * 8 + 8*6,
-				"Please wait 5 seconds...");
-	}
-	else
-	{
-		M_Print (9*8, 60 + MODE_AREA_HEIGHT * 8,
-				"Press Enter to set mode");
-		M_Print (6*8, 60 + MODE_AREA_HEIGHT * 8 + 8*1,
-				"T to test mode for 5 seconds");
-		ptr = VID_GetModeDescription2 (vid_modenum);
-
-		if (ptr)
-		{
-			sprintf (temp, "D to set default: %s", ptr);
-			M_Print (2*8, 60 + MODE_AREA_HEIGHT * 8 + 8*2, temp);
-		}
-		M_Print (15*8, 60 + MODE_AREA_HEIGHT * 8 + 8*3,
-				"Esc to exit");
-
-		ptr = VID_GetModeDescription2 ((int)_vid_default_mode_win.value);
-
-		if (ptr)
-		{
-			sprintf (temp, "Current default: %s", ptr);
-			M_Print (3*8, 60 + MODE_AREA_HEIGHT * 8 + 8*5, temp);
-		}
-
-		row = 60 + 2*8 + (vid_line / VID_ROW_SIZE) * 8;
-		column = 8 + (vid_line % VID_ROW_SIZE) * 13*8;
-
-		if (vid_line >= 3)
-			row += 3*8;
-
-		M_DrawCharacter (column, row, 12+((int)(realtime*4)&1));
-	}
+        M_Print (0*8, 4 + MODE_AREA_HEIGHT * 8 + 8*0,
+                         "Select video modes from the command line");
+        M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*2,
+                         "-window");
+        M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*3,
+                         "-fullscreen");
+        M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*5,
+                         "-width  <width>");
+        M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*6,
+                         "-height <height>");
 }
-
 
 /*
 ================
@@ -1653,88 +1333,15 @@ VID_MenuKey
 */
 void VID_MenuKey (int key)
 {
-	if (vid_testingmode)
-		return;
-
 	switch (key)
 	{
 	case K_ESCAPE:
+	case K_ENTER:
 		S_LocalSound ("raven/menu1.wav");
 		M_Menu_Options_f ();
 		break;
 
-	case K_LEFTARROW:
-		S_LocalSound ("raven/menu1.wav");
-		vid_line = ((vid_line / VID_ROW_SIZE) * VID_ROW_SIZE) +
-				   ((vid_line + 2) % VID_ROW_SIZE);
-
-		if (vid_line >= vid_wmodes)
-			vid_line = vid_wmodes - 1;
-		break;
-
-	case K_RIGHTARROW:
-		S_LocalSound ("raven/menu1.wav");
-		vid_line = ((vid_line / VID_ROW_SIZE) * VID_ROW_SIZE) +
-				   ((vid_line + 4) % VID_ROW_SIZE);
-
-		if (vid_line >= vid_wmodes)
-			vid_line = (vid_line / VID_ROW_SIZE) * VID_ROW_SIZE;
-		break;
-
-	case K_UPARROW:
-		S_LocalSound ("raven/menu1.wav");
-		vid_line -= VID_ROW_SIZE;
-
-		if (vid_line < 0)
-		{
-			vid_line += ((vid_wmodes + (VID_ROW_SIZE - 1)) /
-					VID_ROW_SIZE) * VID_ROW_SIZE;
-
-			while (vid_line >= vid_wmodes)
-				vid_line -= VID_ROW_SIZE;
-		}
-		break;
-
-	case K_DOWNARROW:
-		S_LocalSound ("raven/menu1.wav");
-		vid_line += VID_ROW_SIZE;
-
-		if (vid_line >= vid_wmodes)
-		{
-			vid_line -= ((vid_wmodes + (VID_ROW_SIZE - 1)) /
-					VID_ROW_SIZE) * VID_ROW_SIZE;
-
-			while (vid_line < 0)
-				vid_line += VID_ROW_SIZE;
-		}
-		break;
-
-	case K_ENTER:
-		S_LocalSound ("raven/menu1.wav");
-		VID_SetMode (modedescs[vid_line].modenum, vid_curpal);
-		break;
-
-	case 'T':
-	case 't':
-		S_LocalSound ("raven/menu1.wav");
-	// have to set this before setting the mode because WM_PAINT
-	// happens during the mode set and does a VID_Update, which
-	// checks vid_testingmode
-		vid_testingmode = 1;
-		vid_testendtime = realtime + 5.0;
-
-		if (!VID_SetMode (modedescs[vid_line].modenum, vid_curpal))
-		{
-			vid_testingmode = 0;
-		}
-		break;
-
-	case 'D':
-	case 'd':
-		S_LocalSound ("raven/menu1.wav");
-		firstupdate = 0;
-		Cvar_SetValue ("_vid_default_mode_win", vid_modenum);
-		break;
+	// disabled menu key bindings - S.A. 
 
 	default:
 		break;
@@ -1743,6 +1350,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:08:07  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.5  2002/01/03 16:14:50  phneutre
  * gamma correction fixes for software mode
  *

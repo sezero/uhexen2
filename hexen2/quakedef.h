@@ -1,7 +1,7 @@
 // quakedef.h -- primary header for client
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.1.1.1 2004-11-28 00:06:10 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.2 2004-11-28 00:58:08 sezero Exp $
  */
 
 //#define	GLTEST			// experimental stuff
@@ -16,6 +16,9 @@
 #define VERSION_MAJ 1
 #define VERSION_MID 2
 #define VERSION_MIN 0
+#define HOT_VERSION_MAJ 1
+#define HOT_VERSION_MID 2
+#define HOT_VERSION_MIN 1
 #define VERSION_PLATFORM "Linux"
 #else
 #define VERSION_MAJ 1
@@ -427,6 +430,9 @@ void MIDI_Loop(int NewValue);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:06:10  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.5  2002/01/02 15:16:37  phneutre
  * bumped version number to 1.2.0
  *

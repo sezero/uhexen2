@@ -1,7 +1,7 @@
 // sv_main.c -- server main program
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.1.1.1 2004-11-28 00:07:43 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.2 2004-11-28 00:58:08 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -446,8 +446,12 @@ This will be sent on the initial connection and upon each server load.
 */
 void SV_SendServerinfo (client_t *client)
 {
+
 	char			**s;
 	char			message[2048];
+
+	// When we activate the server, check the mouse is going - S.A.
+	IN_ActivateMouseSA ();
 
 	MSG_WriteByte (&client->message, svc_print);
 	sprintf (message, "%c\nVERSION %4.2f SERVER (%i CRC)", 2, HEXEN2_VERSION, pr_crc);
@@ -2532,6 +2536,9 @@ void SV_SpawnServer (char *server)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:07:43  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.1.1.1  2001/11/09 17:04:08  theoddone33
  * Inital import
  *

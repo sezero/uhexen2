@@ -55,6 +55,7 @@ void Con_ToggleConsole_f (void)
 {
 	if (key_dest == key_console)
 	{
+		IN_ActivateMouseSA(); // activate mouse when leaving console
 		if (cls.state == ca_connected)
 		{
 			key_dest = key_game;
@@ -66,8 +67,10 @@ void Con_ToggleConsole_f (void)
 			M_Menu_Main_f ();
 		}
 	}
-	else
+	else {
+		IN_DeactivateMouseSA(); // decativate mouse in console
 		key_dest = key_console;
+	}
 	
 	SCR_EndLoadingPlaque ();
 	memset (con_times, 0, sizeof(con_times));

@@ -1,4 +1,21 @@
-// gl_vidsdl.c -- SDL GL vid component
+/*
+   gl_dl_vidsdl.c -- SDL GL vid component
+
+   Select window size and mode and init SDL in GL mode.
+
+   Changed 7/11/04 by S.A.
+   Fixed fullscreen opengl mode, window sizes
+   Options are now:
+     -fullscreen | -window, -height , -width , -bpp
+
+   This file is a bit of a mess.
+   Fullscreen modes are normally 3-5, but we only use modes 0 and 3
+	MODE_WINDOWED		0
+	MODE_FULLSCREEN_DEFAULT	3
+
+   The "-mode" option has been removed
+
+*/
 
 #include "quakedef.h"
 #include "winquake.h"
@@ -18,7 +35,7 @@
 
 #define MODE_WINDOWED			0
 #define NO_MODE					(MODE_WINDOWED - 1)
-#define MODE_FULLSCREEN_DEFAULT	(MODE_WINDOWED + 1)
+#define MODE_FULLSCREEN_DEFAULT	(MODE_WINDOWED + 3)
 
 glfunc_t  glfunc;
 
@@ -152,7 +169,6 @@ PROC glVertexPointerEXT;
 cvar_t		vid_mode = {"vid_mode","0", false};
 // Note that 0 is MODE_WINDOWED
 cvar_t		_vid_default_mode = {"_vid_default_mode","0", true};
-// Note that 3 is MODE_FULLSCREEN_DEFAULT
 cvar_t		_vid_default_mode_win = {"_vid_default_mode_win","3", true};
 cvar_t		vid_wait = {"vid_wait","0"};
 cvar_t		vid_nopageflip = {"vid_nopageflip","0", true};
@@ -216,244 +232,61 @@ void *handle;
 }
 #endif
 
+/* Init SDL */
+
+// procedure VID_SetFullDIBMode is history
+qboolean VID_SetFullDIBMode (int modenum) {
+	return VID_SetWindowedMode (modenum);
+}
 
 qboolean VID_SetWindowedMode (int modenum)
 {
-                  char *error;
-		  void *handle;
+	// handle both fullscreen and windowed modes -S.A
 
-	Uint32 flags = (SDL_OPENGL);
+        char *error;
+	void *handle;
+	Uint32 flags;
 
-	modestate = MS_WINDOWED;
+	if (modenum == MODE_FULLSCREEN_DEFAULT )
+		flags = (SDL_OPENGL|SDL_FULLSCREEN);
+	else 
+		flags = (SDL_OPENGL);
+
+	// debug printf ("VID_SetWindowedMode, modenum %i",modenum);
+
+	// Linux version only uses modes 0, 3
+	if (modenum==0)
+		modestate = MS_WINDOWED;
+	else	
+		modestate = MS_FULLDIB;
 	
-	if (COM_CheckParm ("-scale2d")) {
-		WRHeight = vid.height = vid.conheight = BASEHEIGHT ;//modelist[modenum].height; // BASEHEIGHT;
-		WRWidth = vid.width = vid.conwidth =   BASEWIDTH  ;//modelist[modenum].width; //  BASEWIDTH ;
-	} else {
-		WRHeight = vid.height = vid.conheight = modelist[modenum].height; // BASEHEIGHT;
-		WRWidth = vid.width = vid.conwidth =   modelist[modenum].width; //  BASEWIDTH ;
-	}
+	WRHeight = vid.height = vid.conheight = modelist[modenum].height; // BASEHEIGHT;
+	WRWidth = vid.width = vid.conwidth =   modelist[modenum].width; //  BASEWIDTH ;
+
 	vid.numpages = 2;
 	
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		return false;
 
-	  if (SDL_GL_LoadLibrary(gl_library) < 0) {Sys_Error("VID: Couldn't load SDL: %s", SDL_GetError());}
+	if (SDL_GL_LoadLibrary(gl_library) < 0) 
+		Sys_Error("VID: Couldn't load SDL: %s", SDL_GetError());
 	
-	if (!(SDL_SetVideoMode (vid.width, vid.height, modelist[modenum].bpp, flags)))
+	if (!(SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags)))
 		return false;
-	//	exit(1);
 
-
+	// this should acknowledge Portal of Praevus S.A
 	SDL_WM_SetCaption ("GL Hexen II", "GLHEXEN2");
 	return true;
-#if 0
-	HDC				hdc;
-	int				lastmodestate, width, height;
-	RECT			rect;
 
-	lastmodestate = modestate;
-
-	WindowRect.top = WindowRect.left = 0;
-
-	WindowRect.right = modelist[modenum].width;
-	WindowRect.bottom = modelist[modenum].height;
-
-	DIBWidth = modelist[modenum].width;
-	DIBHeight = modelist[modenum].height;
-
-	WindowStyle = WS_OVERLAPPED | WS_BORDER | WS_CAPTION | WS_SYSMENU |
-				  WS_MINIMIZEBOX;
-	ExWindowStyle = 0;
-
-	rect = WindowRect;
-	AdjustWindowRectEx(&rect, WindowStyle, FALSE, 0);
-
-	width = rect.right - rect.left;
-	height = rect.bottom - rect.top;
-
-	// Create the DIB window
-	dibwindow = CreateWindowEx (
-		 ExWindowStyle,
-		 "HexenII",
-		 "HexenII",
-		 WindowStyle,
-		 rect.left, rect.top,
-		 width,
-		 height,
-		 NULL,
-		 NULL,
-		 global_hInstance,
-		 NULL);
-
-	if (!dibwindow)
-		Sys_Error ("Couldn't create DIB window");
-
-	// Center and show the DIB window
-	CenterWindow(dibwindow, WindowRect.right - WindowRect.left,
-				 WindowRect.bottom - WindowRect.top, false);
-
-	ShowWindow (dibwindow, SW_SHOWDEFAULT);
-	UpdateWindow (dibwindow);
-
-	modestate = MS_WINDOWED;
-
-// because we have set the background brush for the window to NULL
-// (to avoid flickering when re-sizing the window on the desktop),
-// we clear the window to black when created, otherwise it will be
-// empty while Quake starts up.
-	hdc = GetDC(dibwindow);
-	PatBlt(hdc,0,0,WindowRect.right,WindowRect.bottom,BLACKNESS);
-	ReleaseDC(dibwindow, hdc);
-
-	if (COM_CheckParm ("-scale2d")) {
-		vid.height = vid.conheight = BASEHEIGHT ;//modelist[modenum].height; // BASEHEIGHT;
-		vid.width = vid.conwidth =   BASEWIDTH  ;//modelist[modenum].width; //  BASEWIDTH ;
-	} else {
-		vid.height = vid.conheight = modelist[modenum].height; // BASEHEIGHT;
-		vid.width = vid.conwidth =   modelist[modenum].width; //  BASEWIDTH ;
-	}
-	vid.numpages = 2;
-
-	mainwindow = dibwindow;
-
-	SendMessage (mainwindow, WM_SETICON, (WPARAM)TRUE, (LPARAM)hIcon);
-	SendMessage (mainwindow, WM_SETICON, (WPARAM)FALSE, (LPARAM)hIcon);
-
-	return true;
-#endif
+	// "#if 0" removed
 }
-
-qboolean VID_SetFullDIBMode (int modenum)
-{
-	Uint32 flags = (SDL_OPENGL|SDL_FULLSCREEN);
-
-	modestate = MS_FULLDIB;
-	
-	if (COM_CheckParm ("-scale2d")) {
-		WRHeight = vid.height = vid.conheight = BASEHEIGHT ;//modelist[modenum].height; // BASEHEIGHT;
-		WRWidth = vid.width = vid.conwidth =   BASEWIDTH  ;//modelist[modenum].width; //  BASEWIDTH ;
-	} else {
-		WRHeight = vid.height = vid.conheight = modelist[modenum].height; // BASEHEIGHT;
-		WRWidth = vid.width = vid.conwidth =   modelist[modenum].width; //  BASEWIDTH ;
-	}
-	vid.numpages = 2;
-
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-		return false;
-	
-	if (SDL_GL_LoadLibrary(gl_library) < 0) {Sys_Error("VID: Couldn't load SDL: %s", SDL_GetError());}
-
-	if (!(SDL_SetVideoMode (vid.width, vid.height, modelist[modenum].bpp, flags)))
-		return false;
-
-	SDL_WM_SetCaption ("GL Hexen II", "GLHEXEN2");
-#if 0
-	HDC				hdc;
-	int				lastmodestate, width, height;
-	RECT			rect;
-
-	if (!leavecurrentmode)
-	{
-		gdevmode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
-		gdevmode.dmBitsPerPel = modelist[modenum].bpp;
-		gdevmode.dmPelsWidth = modelist[modenum].width <<
-							   modelist[modenum].halfscreen;
-		gdevmode.dmPelsHeight = modelist[modenum].height;
-		gdevmode.dmSize = sizeof (gdevmode);
-
-		if (ChangeDisplaySettings (&gdevmode, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
-			Sys_Error ("Couldn't set fullscreen DIB mode");
-	}
-
-	lastmodestate = modestate;
-	modestate = MS_FULLDIB;
-
-	WindowRect.top = WindowRect.left = 0;
-
-	WindowRect.right = modelist[modenum].width;
-	WindowRect.bottom = modelist[modenum].height;
-
-	DIBWidth = modelist[modenum].width;
-	DIBHeight = modelist[modenum].height;
-
-	WindowStyle = WS_POPUP;
-	ExWindowStyle = 0;
-
-	rect = WindowRect;
-	AdjustWindowRectEx(&rect, WindowStyle, FALSE, 0);
-
-	width = rect.right - rect.left;
-	height = rect.bottom - rect.top;
-
-	// Create the DIB window
-	dibwindow = CreateWindowEx (
-		 ExWindowStyle,
-		 "HexenII",
-		 "HexenII",
-		 WindowStyle,
-		 rect.left, rect.top,
-		 width,
-		 height,
-		 NULL,
-		 NULL,
-		 global_hInstance,
-		 NULL);
-
-	if (!dibwindow)
-		Sys_Error ("Couldn't create DIB window");
-
-	ShowWindow (dibwindow, SW_SHOWDEFAULT);
-	UpdateWindow (dibwindow);
-
-	// Because we have set the background brush for the window to NULL
-	// (to avoid flickering when re-sizing the window on the desktop), we
-	// clear the window to black when created, otherwise it will be
-	// empty while Quake starts up.
-	hdc = GetDC(dibwindow);
-	PatBlt(hdc,0,0,WindowRect.right,WindowRect.bottom,BLACKNESS);
-	ReleaseDC(dibwindow, hdc);
-
-	if (COM_CheckParm ("-scale2d")) {
-		vid.height = vid.conheight = BASEHEIGHT ;//modelist[modenum].height; // BASEHEIGHT;
-		vid.width = vid.conwidth =   BASEWIDTH  ;//modelist[modenum].width; //  BASEWIDTH ;
-	} else {
-		vid.height = vid.conheight = modelist[modenum].height; // BASEHEIGHT;
-		vid.width = vid.conwidth =   modelist[modenum].width; //  BASEWIDTH ;
-	}
-	vid.numpages = 2;
-
-// needed because we're not getting WM_MOVE messages fullscreen on NT
-	window_x = 0;
-	window_y = 0;
-
-	mainwindow = dibwindow;
-
-	SendMessage (mainwindow, WM_SETICON, (WPARAM)TRUE, (LPARAM)hIcon);
-	SendMessage (mainwindow, WM_SETICON, (WPARAM)FALSE, (LPARAM)hIcon);
-
-	return true;
-#endif
-}
-
 
 int VID_SetMode (int modenum, unsigned char *palette)
 {
 	int				original_mode, temp;
 	qboolean		stat;
-#if 0
-    MSG				msg;
-	HDC				hdc;
-#endif
 
-	if ((windowed && (modenum != 0)) ||
-		(!windowed && (modenum < 1)) ||
-		(!windowed && (modenum >= nummodes)))
-	{
-		Sys_Error ("Bad video mode\n");
-	}
-
-// so Con_Printfs don't mess us up by forcing vid and snd updates
+	// so Con_Printfs don't mess us up by forcing vid and snd updates
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 
@@ -468,32 +301,31 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	else
 		original_mode = vid_modenum;
 
-	// Set either the fullscreen or windowed mode
 	if (modelist[modenum].type == MS_WINDOWED)
 	{
 		if (_windowed_mouse.value)
 		{
+			//debug puts ("trace1\n");
 			stat = VID_SetWindowedMode(modenum);
 			IN_ActivateMouse ();
 			IN_HideMouse ();
 		}
 		else
 		{
+			//debug puts ("trace2\n");
 			IN_DeactivateMouse ();
 			IN_ShowMouse ();
 			stat = VID_SetWindowedMode(modenum);
 		}
 	}
 	else if (modelist[modenum].type == MS_FULLDIB)
-	{
-		stat = VID_SetFullDIBMode(modenum);
-		IN_ActivateMouse ();
-		IN_HideMouse ();
-	}
+        {
+                stat = VID_SetFullDIBMode(modenum);
+                IN_ActivateMouse ();
+                IN_HideMouse ();
+        }
 	else
-	{
 		Sys_Error ("VID_SetMode: Bad mode type in modelist");
-	}
 
 	window_width = DIBWidth;
 	window_height = DIBHeight;
@@ -553,14 +385,8 @@ int VID_SetMode (int modenum, unsigned char *palette)
 }
 
 
-/*
-================
-VID_UpdateWindowStatus
-================
-*/
 void VID_UpdateWindowStatus (void)
 {
-
 	window_rect.left = window_x;
 	window_rect.top = window_y;
 	window_rect.right = window_x + window_width;
@@ -1390,174 +1216,6 @@ void ClearAllStates (void)
 	IN_ClearStates ();
 }
 
-#if 0
-void AppActivate(BOOL fActive, BOOL minimize)
-/****************************************************************************
-*
-* Function:     AppActivate
-* Parameters:   fActive - True if app is activating
-*
-* Description:  If the application is activating, then swap the system
-*               into SYSPAL_NOSTATIC mode so that our palettes will display
-*               correctly.
-*
-****************************************************************************/
-{
-    HDC			hdc;
-    int			i, t;
-	static BOOL	sound_active;
-
-	ActiveApp = fActive;
-	Minimized = minimize;
-
-// enable/disable sound on focus gain/loss
-	if (!ActiveApp && sound_active)
-	{
-		S_BlockSound ();
-		sound_active = false;
-	}
-	else if (ActiveApp && !sound_active)
-	{
-		S_UnblockSound ();
-		sound_active = true;
-	}
-
-	if (fActive)
-	{
-		if (modestate == MS_FULLDIB)
-		{
-			IN_ActivateMouse ();
-			IN_HideMouse ();
-		}
-		else if ((modestate == MS_WINDOWED) && _windowed_mouse.value)
-		{
-			IN_ActivateMouse ();
-			IN_HideMouse ();
-		}
-	}
-
-	if (!fActive)
-	{
-		if (modestate == MS_FULLDIB)
-		{
-			IN_DeactivateMouse ();
-			IN_ShowMouse ();
-		}
-		else if ((modestate == MS_WINDOWED) && _windowed_mouse.value)
-		{
-			IN_DeactivateMouse ();
-			IN_ShowMouse ();
-		}
-	}
-}
-
-
-/* main window procedure */
-LONG WINAPI MainWndProc (
-    HWND    hWnd,
-    UINT    uMsg,
-    WPARAM  wParam,
-    LPARAM  lParam)
-{
-    LONG    lRet = 1;
-	int		fwKeys, xPos, yPos, fActive, fMinimized, temp;
-
-    switch (uMsg)
-    {
-		case WM_CREATE:
-			break;
-
-		case WM_MOVE:
-			window_x = (int) LOWORD(lParam);
-			window_y = (int) HIWORD(lParam);
-			VID_UpdateWindowStatus ();
-			break;
-
-		case WM_KEYDOWN:
-		case WM_SYSKEYDOWN:
-			Key_Event (MapKey(lParam), true);
-			break;
-			
-		case WM_KEYUP:
-		case WM_SYSKEYUP:
-			Key_Event (MapKey(lParam), false);
-			break;
-
-		case WM_SYSCHAR:
-		// keep Alt-Space from happening
-			break;
-
-	// this is complicated because Win32 seems to pack multiple mouse events into
-	// one update sometimes, so we always check all states and look for events
-		case WM_LBUTTONDOWN:
-		case WM_LBUTTONUP:
-		case WM_RBUTTONDOWN:
-		case WM_RBUTTONUP:
-		case WM_MBUTTONDOWN:
-		case WM_MBUTTONUP:
-		case WM_MOUSEMOVE:
-			temp = 0;
-
-			if (wParam & MK_LBUTTON)
-				temp |= 1;
-
-			if (wParam & MK_RBUTTON)
-				temp |= 2;
-
-			if (wParam & MK_MBUTTON)
-				temp |= 4;
-
-			IN_MouseEvent (temp);
-
-			break;
-
-
-    	case WM_SIZE:
-            break;
-
-   	    case WM_CLOSE:
-			if (MessageBox (mainwindow, "Are you sure you want to quit?", "Confirm Exit",
-						MB_YESNO | MB_SETFOREGROUND | MB_ICONQUESTION) == IDYES)
-			{
-				Sys_Quit ();
-			}
-
-	        break;
-
-		case WM_ACTIVATE:
-			fActive = LOWORD(wParam);
-			fMinimized = (BOOL) HIWORD(wParam);
-			AppActivate(!(fActive == WA_INACTIVE), fMinimized);
-
-		// fix the leftover Alt from any Alt-Tab or the like that switched us away
-			ClearAllStates ();
-
-			break;
-
-   	    case WM_DESTROY:
-        {
-			if (dibwindow)
-				DestroyWindow (dibwindow);
-
-            PostQuitMessage (0);
-        }
-        break;
-
-		case MM_MCINOTIFY:
-            lRet = CDAudio_MessageHandler (hWnd, uMsg, wParam, lParam);
-			break;
-
-    	default:
-            /* pass all unhandled messages to DefWindowProc */
-            lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
-        break;
-    }
-
-    /* return 1 if handled message, 0 if not */
-    return lRet;
-}
-#endif
-
 /*
 =================
 VID_NumModes
@@ -1740,205 +1398,7 @@ void VID_DescribeModes_f (void)
 	leavecurrentmode = t;
 }
 
-#if 0
-void VID_InitDIB (HINSTANCE hInstance)
-{
-	WNDCLASS		wc;
-	HDC				hdc;
-	int				i;
-
-	/* Register the frame class */
-    wc.style         = 0;
-    wc.lpfnWndProc   = (WNDPROC)MainWndProc;
-    wc.cbClsExtra    = 0;
-    wc.cbWndExtra    = 0;
-    wc.hInstance     = hInstance;
-    wc.hIcon         = 0;
-    wc.hCursor       = LoadCursor (NULL,IDC_ARROW);
-	wc.hbrBackground = NULL;
-    wc.lpszMenuName  = 0;
-    wc.lpszClassName = "HexenII";
-
-    if (!RegisterClass (&wc) )
-		Sys_Error ("Couldn't register window class");
-
-	modelist[0].type = MS_WINDOWED;
-
-	if (COM_CheckParm("-width"))
-		modelist[0].width = atoi(com_argv[COM_CheckParm("-width")+1]);
-	else
-		modelist[0].width = 640;
-
-	if (modelist[0].width < 320)
-		modelist[0].width = 320;
-
-	if (COM_CheckParm("-height"))
-		modelist[0].height= atoi(com_argv[COM_CheckParm("-height")+1]);
-	else
-		modelist[0].height = modelist[0].width * 240/320;
-
-	if (modelist[0].height < 240)
-		modelist[0].height = 240;
-
-	sprintf (modelist[0].modedesc, "%dx%d",
-			 modelist[0].width, modelist[0].height);
-
-	modelist[0].modenum = MODE_WINDOWED;
-	modelist[0].dib = 1;
-	modelist[0].fullscreen = 0;
-	modelist[0].halfscreen = 0;
-	modelist[0].bpp = 0;
-
-	nummodes = 1;
-}
-
-
-/*
-=================
-VID_InitFullDIB
-=================
-*/
-void VID_InitFullDIB (HINSTANCE hInstance)
-{
-	DEVMODE	devmode;
-	int		i, modenum, cmodes, originalnummodes, existingmode, numlowresmodes;
-	int		j, bpp, done;
-	BOOL	stat;
-
-// enumerate >8 bpp modes
-	originalnummodes = nummodes;
-	modenum = 0;
-
-	do
-	{
-		stat = EnumDisplaySettings (NULL, modenum, &devmode);
-
-		if ((devmode.dmBitsPerPel >= 15) &&
-			(devmode.dmPelsWidth <= MAXWIDTH) &&
-			(devmode.dmPelsHeight <= MAXHEIGHT) &&
-			(nummodes < MAX_MODE_LIST))
-		{
-			devmode.dmFields = DM_BITSPERPEL |
-							   DM_PELSWIDTH |
-							   DM_PELSHEIGHT;
-
-			if (ChangeDisplaySettings (&devmode, CDS_TEST | CDS_FULLSCREEN) ==
-					DISP_CHANGE_SUCCESSFUL)
-			{
-				modelist[nummodes].type = MS_FULLDIB;
-				modelist[nummodes].width = devmode.dmPelsWidth;
-				modelist[nummodes].height = devmode.dmPelsHeight;
-				modelist[nummodes].modenum = 0;
-				modelist[nummodes].halfscreen = 0;
-				modelist[nummodes].dib = 1;
-				modelist[nummodes].fullscreen = 1;
-				modelist[nummodes].bpp = devmode.dmBitsPerPel;
-				sprintf (modelist[nummodes].modedesc, "%dx%dx%d",
-						 devmode.dmPelsWidth, devmode.dmPelsHeight,
-						 devmode.dmBitsPerPel);
-
-			// if the width is more than twice the height, reduce it by half because this
-			// is probably a dual-screen monitor
-				if (!COM_CheckParm("-noadjustaspect"))
-				{
-					if (modelist[nummodes].width > (modelist[nummodes].height << 1))
-					{
-						modelist[nummodes].width >>= 1;
-						modelist[nummodes].halfscreen = 1;
-						sprintf (modelist[nummodes].modedesc, "%dx%dx%d",
-								 modelist[nummodes].width,
-								 modelist[nummodes].height,
-								 modelist[nummodes].bpp);
-					}
-				}
-
-				for (i=originalnummodes, existingmode = 0 ; i<nummodes ; i++)
-				{
-					if ((modelist[nummodes].width == modelist[i].width)   &&
-						(modelist[nummodes].height == modelist[i].height) &&
-						(modelist[nummodes].bpp == modelist[i].bpp))
-					{
-						existingmode = 1;
-						break;
-					}
-				}
-
-				if (!existingmode)
-				{
-					nummodes++;
-				}
-			}
-		}
-
-		modenum++;
-	} while (stat);
-
-// see if there are any low-res modes that aren't being reported
-	numlowresmodes = sizeof(lowresmodes) / sizeof(lowresmodes[0]);
-	bpp = 16;
-	done = 0;
-
-	do
-	{
-		for (j=0 ; (j<numlowresmodes) && (nummodes < MAX_MODE_LIST) ; j++)
-		{
-			devmode.dmBitsPerPel = bpp;
-			devmode.dmPelsWidth = lowresmodes[j].width;
-			devmode.dmPelsHeight = lowresmodes[j].height;
-			devmode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
-
-			if (ChangeDisplaySettings (&devmode, CDS_TEST | CDS_FULLSCREEN) ==
-					DISP_CHANGE_SUCCESSFUL)
-			{
-				modelist[nummodes].type = MS_FULLDIB;
-				modelist[nummodes].width = devmode.dmPelsWidth;
-				modelist[nummodes].height = devmode.dmPelsHeight;
-				modelist[nummodes].modenum = 0;
-				modelist[nummodes].halfscreen = 0;
-				modelist[nummodes].dib = 1;
-				modelist[nummodes].fullscreen = 1;
-				modelist[nummodes].bpp = devmode.dmBitsPerPel;
-				sprintf (modelist[nummodes].modedesc, "%dx%dx%d",
-						 devmode.dmPelsWidth, devmode.dmPelsHeight,
-						 devmode.dmBitsPerPel);
-
-				for (i=originalnummodes, existingmode = 0 ; i<nummodes ; i++)
-				{
-					if ((modelist[nummodes].width == modelist[i].width)   &&
-						(modelist[nummodes].height == modelist[i].height) &&
-						(modelist[nummodes].bpp == modelist[i].bpp))
-					{
-						existingmode = 1;
-						break;
-					}
-				}
-
-				if (!existingmode)
-				{
-					nummodes++;
-				}
-			}
-		}
-		switch (bpp)
-		{
-			case 16:
-				bpp = 32;
-				break;
-
-			case 32:
-				bpp = 24;
-				break;
-
-			case 24:
-				done = 1;
-				break;
-		}
-	} while (!done);
-
-	if (nummodes == originalnummodes)
-		Con_SafePrintf ("No fullscreen DIB modes found\n");
-}
-#endif
+// "if 0" removed
 
 /*
 ===================
@@ -2057,204 +1517,70 @@ void	VID_Init (unsigned char *palette)
         vid.maxwarpheight = WARP_HEIGHT;
         vid.colormap = host_colormap;
         vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
-#if 0
-        vid_testingmode = 0;
 
-	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
+	/*********************************
+ 	 * command line processing (S.A) *
+ 	 *********************************/
 
-	VID_InitDIB (global_hInstance);
-	basenummodes = nummodes = 1;
+        // window mode is default
 
-	VID_InitFullDIB (global_hInstance);
-#endif
+	if (COM_CheckParm("-fullscreen") || COM_CheckParm("-f") ||
+               COM_CheckParm("-fs") || COM_CheckParm("--fullscreen"))
+         {
+                 grab = 1;
+                 windowed = false;
+                 vid_default = MODE_FULLSCREEN_DEFAULT;
+         }
 
 	if (COM_CheckParm("-window") || COM_CheckParm("-w") ||
 			COM_CheckParm("--windowed"))
 	{
-#if 0
-		hdc = GetDC (NULL);
-
-		if (GetDeviceCaps(hdc, RASTERCAPS) & RC_PALETTE)
-		{
-			Sys_Error ("Can't run in non-RGB mode");
-		}
-
-		ReleaseDC (NULL, hdc);
-#endif
-
-		grab = 0;
+		grab = 1;
 		windowed = true;
-
 		vid_default = MODE_WINDOWED;
+	}
+
+	if (COM_CheckParm("-width"))
+	{
+		width = atoi(com_argv[COM_CheckParm("-width")+1]);
 	}
 	else
 	{
-		if (nummodes == 1)
-			Sys_Error ("No RGB fullscreen modes available");
-
-		windowed = false;
-
-		if (COM_CheckParm("-mode") || COM_CheckParm("--mode"))
-		{
-		  if(COM_CheckParm("-mode"))
-		    vid_default = atoi(com_argv[COM_CheckParm("-mode")+1]);
-
-		  else if (COM_CheckParm("--mode"))
-		    vid_default = atoi(com_argv[COM_CheckParm("--mode")+1]);
-
-		}
+		if (vid_default == MODE_WINDOWED)
+			width=640;
 		else
-		{
-#warning STUB!!! FIXME!!!
-#if 0
-			if (COM_CheckParm("-current"))
-			{
-				modelist[MODE_FULLSCREEN_DEFAULT].width =
-						GetSystemMetrics (SM_CXSCREEN);
-				modelist[MODE_FULLSCREEN_DEFAULT].height =
-						GetSystemMetrics (SM_CYSCREEN);
-				vid_default = MODE_FULLSCREEN_DEFAULT;
-				leavecurrentmode = 1;
-			}
-			else
-#else
-				vid_default = MODE_FULLSCREEN_DEFAULT;
-#endif
-			{
-				if (COM_CheckParm("-width"))
-				{
-					width = atoi(com_argv[COM_CheckParm("-width")+1]);
-				}
-				else
-				{
-					width = 640;
-				}
+			width=800;
+		
+	}
 
-				if (COM_CheckParm("-bpp"))
-				{
-					bpp = atoi(com_argv[COM_CheckParm("-bpp")+1]);
-					findbpp = 0;
-				}
-				else
-				{
-					bpp = 16;
-					// Huh? - DDOI
-					//bpp = 15;
-					//findbpp = 1;
-				}
-
-				if (COM_CheckParm("-height"))
-				{
-					height = atoi(com_argv[COM_CheckParm("-height")+1]);
-				}
-				else
-				{
-					height = 480;
-				}
-
-			// if they want to force it, add the specified mode to the list
-				if (COM_CheckParm("-force") && (nummodes < MAX_MODE_LIST))
-				{
-					modelist[nummodes].type = MS_FULLDIB;
-					modelist[nummodes].width = width;
-					modelist[nummodes].height = height;
-					modelist[nummodes].modenum = 0;
-					modelist[nummodes].halfscreen = 0;
-					modelist[nummodes].dib = 1;
-					modelist[nummodes].fullscreen = 1;
-					modelist[nummodes].bpp = bpp;
-#if 0
-					sprintf (modelist[nummodes].modedesc, "%dx%dx%d",
-							 devmode.dmPelsWidth, devmode.dmPelsHeight,
-							 devmode.dmBitsPerPel);
-
-#else
-					sprintf (modelist[nummodes].modedesc, "%dx%dx%x", width, height, bpp);
-#endif
-					for (i=nummodes, existingmode = 0 ; i<nummodes ; i++)
-					{
-						if ((modelist[nummodes].width == modelist[i].width)   &&
-							(modelist[nummodes].height == modelist[i].height) &&
-							(modelist[nummodes].bpp == modelist[i].bpp))
-						{
-							existingmode = 1;
-							break;
-						}
-					}
-
-					if (!existingmode)
-					{
-						nummodes++;
-					}
-				}
-
-				done = 0;
-
-				do
-				{
-					if (COM_CheckParm("-height"))
-					{
-						height = atoi(com_argv[COM_CheckParm("-height")+1]);
-
-						for (i=1, vid_default=0 ; i<nummodes ; i++)
-						{
-							if ((modelist[i].width == width) &&
-								(modelist[i].height == height) &&
-								(modelist[i].bpp == bpp))
-							{
-								vid_default = i;
-								done = 1;
-								break;
-							}
-						}
-					}
-					else
-					{
-						for (i=1, vid_default=0 ; i<nummodes ; i++)
-						{
-							if ((modelist[i].width == width) && (modelist[i].bpp == bpp))
-							{
-								vid_default = i;
-								done = 1;
-								break;
-							}
-						}
-					}
-
-					if (!done)
-					{
-						if (findbpp)
-						{
-							switch (bpp)
-							{
-							case 15:
-								bpp = 16;
-								break;
-							case 16:
-								bpp = 32;
-								break;
-							case 32:
-								bpp = 24;
-								break;
-							case 24:
-								done = 1;
-								break;
-							}
-						}
-						else
-						{
-							done = 1;
-						}
-					}
-				} while (!done);
-
-				if (!vid_default)
-				{
-					Sys_Error ("Specified video mode not available");
-				}
-			}
+	if (COM_CheckParm("-height"))
+	{
+		height = atoi(com_argv[COM_CheckParm("-height")+1]);
+	}
+	else
+	{
+		switch (width) {
+			case 1024:height=768; break;
+			case 800: height=600; break;
+			case 512: height=384; break;
+			case 400: height=300; break;
+			case 320: height=240; break;
+			default:  height=480;
 		}
 	}
+	if (COM_CheckParm("-bpp"))
+	{
+		bpp = atoi(com_argv[COM_CheckParm("-bpp")+1]);
+		findbpp = 0;
+	}
+	else
+	{
+		// this should be native bpp ??? S.A.
+		bpp = 16;
+	}
+	modelist[vid_default].width = width;
+	modelist[vid_default].height = height;
+	sprintf (modelist[vid_default].modedesc,"%dx%dx%d",width,height,bpp);
 
 	vid_initialized = true;
 
@@ -2263,22 +1589,9 @@ void	VID_Init (unsigned char *palette)
 	vid.colormap = host_colormap;
 	vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
 
-#if 0
-	DestroyWindow (hwnd_dialog);
-#endif
 
 	VID_SetMode (vid_default, palette);
 
-#if 0
-    maindc = GetDC(mainwindow);
-	bSetupPixelFormat(maindc);
-
-    baseRC = wglCreateContext( maindc );
-	if (!baseRC)
-		Sys_Error ("wglCreateContect failed");
-    if (!wglMakeCurrent( maindc, baseRC ))
-		Sys_Error ("wglMakeCurrent failed");
-#endif
 
 	GL_Init ();
 
@@ -2302,6 +1615,7 @@ void	VID_Init (unsigned char *palette)
 
 	VID_SetPalette (palette);
 
+	// vid_menudrawfn = NULL;
 	vid_menudrawfn = VID_MenuDraw;
 	vid_menukeyfn = VID_MenuKey;
 
@@ -2371,7 +1685,8 @@ void VID_MenuDraw (void)
 
 	}
 
-	if (vid_wmodes > 0)
+	// if (vid_wmodes > 0) S.A
+	if (0)
 	{
 		M_Print (2*8, 60+0*8, "Fullscreen Modes (WIDTHxHEIGHTxBPP)");
 
@@ -2395,14 +1710,18 @@ void VID_MenuDraw (void)
 		}
 	}
 
-	M_Print (3*8, 36 + MODE_AREA_HEIGHT * 8 + 8*2,
-			 "Video modes must be set from the");
-	M_Print (3*8, 36 + MODE_AREA_HEIGHT * 8 + 8*3,
-			 "command line with -width <width>");
-	M_Print (3*8, 36 + MODE_AREA_HEIGHT * 8 + 8*4,
-			 "and -bpp <bits-per-pixel>");
-	M_Print (3*8, 36 + MODE_AREA_HEIGHT * 8 + 8*6,
-			 "Select windowed mode with -window");
+	M_Print (0*8, 4 + MODE_AREA_HEIGHT * 8 + 8*0,
+			 "Select video modes from the command line");
+	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*2,
+			 "-window");
+	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*3,
+			 "-fullscreen");
+	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*5,
+			 "-width  <width>");
+	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*6,
+			 "-height <height>");
+	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*7,
+			 "-bpp    <depth>");
 }
 
 
@@ -2416,6 +1735,7 @@ void VID_MenuKey (int key)
 	switch (key)
 	{
 	case K_ESCAPE:
+	case K_ENTER:
 		S_LocalSound ("raven/menu1.wav");
 		M_Menu_Options_f ();
 		break;

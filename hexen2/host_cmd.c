@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.1.1.1 2004-11-28 00:04:34 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.2 2004-11-28 00:58:08 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -1622,6 +1622,7 @@ Host_Pause_f
 */
 void Host_Pause_f (void)
 {
+// S.A. pause
 	
 	if (cmd_source == src_command)
 	{
@@ -2487,6 +2488,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:04:34  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.1.1.1  2001/11/09 17:04:10  theoddone33
  * Inital import
  *

@@ -1,7 +1,7 @@
 // sys_unix.c -- Unix system interface code
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.1.1.1 2004-11-28 00:07:58 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.2 2004-11-28 00:58:08 sezero Exp $
  */
 
 #include <stdio.h>
@@ -807,27 +807,38 @@ int Sys_GetUserdir(char *buff, unsigned int len)
 
 void PrintHelp(char *name)
 {
-	printf ("Anvil of Thyrion v1.12 (%s %d.%d.%d)\n", VERSION_PLATFORM, 
-			VERSION_MAJ,VERSION_MID,VERSION_MIN);
-	printf ("http://aot.linuxgames.com/\n");
+	printf ("\n");
+	PrintVersion();
+	printf ("http://sourceforge.net/somewhere\n");
+	printf ("\n");
 	printf ("Please send bug reports or patches to:\n");
-	printf ("             Dan Olson <theoddone33@linuxgames.com>\n");
-	printf ("             Clement Bourdarias  <phneutre@mangoquest.org>\n");
+//	printf ("     Dan Olson          <theoddone33@linuxgames.com>\n");
+//	printf ("     Clement Bourdarias <phneutre@mangoquest.org>\n");
+	printf ("     Ozkan Sezer        <sezeroz@ttnet.net.tr>\n");
+	printf ("     Steven Atkinson    <stevenaaus@yahoo.com>\n");
 	printf ("\n");
 	printf ("Usage: %s [options]\n", name);
-	printf ("     [ -h | --help]           Display this help message\n");
-	printf ("     [ -v | --version]        Display the game version\n");
-	printf ("     [ -f | --fullscreen]     Run the game fullscreen\n");
-	printf ("     [ -w | --windowed]       Run the game windowed\n");
-	printf ("     [ -s | --nosound]        Run the game without sound\n");
-	printf ("     [ -g | --gllibrary]      Select 3D rendering library\n");
+	printf ("     [-h | --help]                   Display this help message\n");
+	printf ("     [-v | --version]                Display the game version\n");
+	printf ("     [-f | --fullscreen]             Run the game fullscreen\n");
+	printf ("     [-w | --windowed]               Run the game windowed\n");
+	printf ("     [-s | --nosound]                Run the game without sound\n");
+	printf ("     [-g | --gllibrary]              Select 3D rendering library\n");
+	printf ("     [-width Width [-height Height]] Select screen size\n");
+	printf ("     [-bpp]                          Depth for GL fullscreen mode\n");
+	printf ("     [-heapsize Bytes]               Heapsize\n");
 	printf ("\n");
 }
 
 void PrintVersion (void)
 {
-	printf ("Anvil of Thyrion v1.12 (%s %d.%d.%d)\n", VERSION_PLATFORM, 
-			VERSION_MAJ, VERSION_MID,VERSION_MIN);
+	printf ("Hammer of Thyrion (%d.%d.%d)\n",
+	HOT_VERSION_MAJ,HOT_VERSION_MID,HOT_VERSION_MIN);
+	printf ("Anvil  of Thyrion 1.12 (%s %d.%d.%d)\n",
+	VERSION_PLATFORM,VERSION_MAJ,VERSION_MID,VERSION_MIN);
+	printf ("\tPatched by Steven A. and Ozkan Sezer with some\n");
+	printf ("\tcode borrowed from the pa3pyx and js mods\n");
+
 }
 
 int main(int argc, char *argv[])
@@ -867,7 +878,7 @@ int main(int argc, char *argv[])
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
-	if (COM_CheckParm ("-h") || COM_CheckParm ("--help"))
+	if (COM_CheckParm("-h")||COM_CheckParm("--help")||COM_CheckParm("-?"))
 	{
 		PrintHelp(binary_name);
 		exit (0);
@@ -972,6 +983,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:07:58  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.10  2002/01/06 03:15:48  theoddone33
  * Separate portals dir so that hexen 2 will not list PoP saves.
  *

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.2 2004-11-28 00:45:18 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.3 2004-11-28 00:58:08 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -9,6 +9,11 @@
 
 extern	float introTime;
 extern	cvar_t	crosshair;
+
+#ifdef GLQUAKE
+extern  cvar_t  r_shadows, gl_glows, gl_missile_glows; // S.A
+#endif
+
 #ifdef H2MP
 cvar_t m_oldmission = {"m_oldmission","1",true};
 #endif
@@ -713,6 +718,10 @@ int	m_main_cursor;
 
 void M_Menu_Main_f (void)
 {
+
+	// Deactivate the mouse when the main menu is drawn - S.A.
+	IN_DeactivateMouseSA ();
+
 	if (key_dest != key_menu)
 	{
 		m_save_demonum = cls.demonum;
@@ -748,6 +757,10 @@ void M_Main_Key (int key)
 	switch (key)
 	{
 	case K_ESCAPE:
+
+		// leaving the main menu, reactivate the mouse - S.A.
+		IN_ActivateMouseSA ();
+
 		key_dest = key_game;
 		m_state = m_none;
 		cls.demonum = m_save_demonum;
@@ -1880,25 +1893,31 @@ enum
 	OPT_CONSOLE,
 	OPT_DEFAULTS,
 	OPT_SCRSIZE,	//3
-	OPT_GAMMA,		//4
+	OPT_GAMMA,	//4
 	OPT_MOUSESPEED,	//5
 	OPT_MUSICTYPE,	//6
 	OPT_MUSICVOL,	//7
-	OPT_SNDVOL,		//8
+	OPT_SNDVOL,	//8
 	OPT_ALWAYRUN,	//9
 	OPT_INVMOUSE,	//10
 	OPT_LOOKSPRING,	//11
 	OPT_LOOKSTRAFE,	//12
 	OPT_CROSSHAIR,	//13
 	OPT_ALWAYSMLOOK,//14
-	OPT_VIDEO,		//15
-	OPT_USEMOUSE,	//16
+	OPT_USEMOUSE,	//15
+#ifdef GLQUAKE
+	OPT_R_SHADOWS,
+	OPT_GL_GLOW,
+#endif
+	OPT_CHASE_ACTIVE,
+	OPT_VIDEO,
 	OPTIONS_ITEMS
+	// new definitions S.A.
 };
 
-int		options_cursor;
+int	options_cursor;
 
-void M_Menu_Options_f (void)
+void	M_Menu_Options_f (void)
 {
 	key_dest = key_menu;
 	m_state = m_options;
@@ -2024,11 +2043,21 @@ void M_AdjustSliders (int dir)
 			Cbuf_AddText("+mlook");
 		break;
 
-#if defined(_WIN32) || defined (PLATFORM_UNIX)
+#ifdef GLQUAKE
+	case OPT_R_SHADOWS:	// r_shadows
+		Cvar_SetValue ("r_shadows", !r_shadows.value);
+		break;
+	case OPT_GL_GLOW:	// gl_glows
+		Cvar_SetValue ("gl_glows", !gl_glows.value);
+		Cvar_SetValue ("gl_missile_glows", !gl_missile_glows.value);
+		break;
+#endif
+	case OPT_CHASE_ACTIVE:	// chase_active
+		Cvar_SetValue ("chase_active", !chase_active.value);
+		break;
 	case OPT_USEMOUSE:	// _windowed_mouse
 		Cvar_SetValue ("_windowed_mouse", !_windowed_mouse.value);
 		break;
-#endif
 	}
 }
 
@@ -2121,16 +2150,26 @@ void M_Options_Draw (void)
 	M_Print (16,60+(OPT_ALWAYSMLOOK*8),	"            Mouse Look");
 	M_DrawCheckbox (220, 60+(OPT_ALWAYSMLOOK*8), in_mlook.state & 1);
 
-	if (vid_menudrawfn)
-		M_Print (16, 60+(OPT_VIDEO*8),	"         Video Options");
-
 #if defined (_WIN32) || defined (PLATFORM_UNIX)
 	if (modestate == MS_WINDOWED)
 	{
-		M_Print (16, 60+(OPT_USEMOUSE*8), "             Use Mouse");
-		M_DrawCheckbox (220, 60+(OPT_USEMOUSE*8), _windowed_mouse.value);
+	  M_Print (16, 60+(OPT_USEMOUSE*8),	"             Use Mouse");
+	  M_DrawCheckbox (220, 60+(OPT_USEMOUSE*8), _windowed_mouse.value);
 	}
 #endif
+	// S.A. new menu items
+#ifdef GLQUAKE
+	M_Print (16, 60+(OPT_R_SHADOWS*8),	"               Shadows");
+	M_DrawCheckbox (220, 60+(OPT_R_SHADOWS*8), r_shadows.value);
+
+	M_Print (16, 60+(OPT_GL_GLOW*8),	"              Gl Glows");
+	M_DrawCheckbox (220, 60+(OPT_GL_GLOW*8), gl_glows.value);
+#endif
+	M_Print (16, 60+(OPT_CHASE_ACTIVE*8),	"            Chase Mode");
+	M_DrawCheckbox (220, 60+(OPT_CHASE_ACTIVE*8), chase_active.value);
+
+	if (vid_menudrawfn)
+		M_Print (16, 60+(OPT_VIDEO*8),	"           Video Modes");
 
 // cursor
 	M_DrawCharacter (200, 60 + options_cursor*8, 12+((int)(realtime*4)&1));
@@ -2201,21 +2240,30 @@ void M_Options_Key (int k)
 		break;
 	}
 
-	if (options_cursor == 12 && vid_menudrawfn == NULL)
+	// Redundancy here in case we have neither OPT_VIDEO and OPT_USEMOUSE
+	// Skip over the use mouse option if fullscreen - S.A.
+
+	if (options_cursor == OPT_VIDEO && vid_menudrawfn == NULL)
 		if (k == K_UPARROW)
-			options_cursor = 11;
+			options_cursor = OPT_VIDEO - 1;
 		else
 			options_cursor = 0;
 
-#if defined (_WIN32) || defined (PLATFORM_UNIX)
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
-	{
 		if (k == K_UPARROW)
-			options_cursor = OPT_VIDEO;
+			options_cursor = OPT_USEMOUSE - 1;
+		else {
+			options_cursor = OPT_USEMOUSE + 1;
+			if (options_cursor == OPTIONS_ITEMS)
+				options_cursor = 0;
+		}
+	
+	if (options_cursor == OPT_VIDEO && vid_menudrawfn == NULL)
+		if (k == K_UPARROW)
+			options_cursor = OPT_VIDEO - 1;
 		else
 			options_cursor = 0;
-	}
-#endif
+
 }
 
 //=============================================================================
@@ -4658,6 +4706,9 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/11/28 00:45:18  sezero
+ * activate the Old Mission menu option in the mission pack for now.
+ *
  * Revision 1.1.1.1  2004/11/28 00:05:05  sezero
  * Initial import of AoT 1.2.0 code
  *

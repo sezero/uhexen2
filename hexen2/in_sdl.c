@@ -2,7 +2,7 @@
 // 02/21/97 JCB Added extended DirectInput code to support external controllers.
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.1.1.1 2004-11-28 00:04:39 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.2 2004-11-28 00:58:08 sezero Exp $
  */
 
 #include "SDL.h"
@@ -15,6 +15,8 @@ int			mouse_buttons;
 int			mouse_oldbuttonstate;
 //POINT		current_pos;
 int			mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
+extern cvar_t	vid_mode, _windowed_mouse;
+#define MODE_FULLSCREEN_DEFAULT 3
 
 extern qboolean	in_mode_set;
 static qboolean	restore_spi;
@@ -155,6 +157,14 @@ void IN_HideMouse (void)
 IN_ActivateMouse
 ===========
 */
+
+void IN_ActivateMouseSA (void)
+{
+	// S.A's hack to activate mouse
+	if ((int)_windowed_mouse.value || (int)vid_mode.value == MODE_FULLSCREEN_DEFAULT)
+		IN_ActivateMouse ();
+}
+
 void IN_ActivateMouse (void)
 {
 
@@ -194,6 +204,13 @@ void IN_SetQuakeMouseState (void)
 IN_DeactivateMouse
 ===========
 */
+void IN_DeactivateMouseSA (void)
+{
+	// don't worry if fullscreen - S.A.
+	if ((int)vid_mode.value != MODE_FULLSCREEN_DEFAULT)
+		IN_DeactivateMouse ();
+}
+
 void IN_DeactivateMouse (void)
 {
 
@@ -1183,6 +1200,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:04:39  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.5  2002/01/01 12:28:13  phneutre
  * better handling of ~, ` and ² keys
  *

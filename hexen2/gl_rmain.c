@@ -1,7 +1,7 @@
 // gl_main.c
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_rmain.c,v 1.2 2004-11-28 00:37:43 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_rmain.c,v 1.3 2004-11-28 00:58:08 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -69,7 +69,7 @@ cvar_t	r_drawviewmodel = {"r_drawviewmodel","1"};
 cvar_t	r_speeds = {"r_speeds","0"};
 cvar_t	r_fullbright = {"r_fullbright","0"};
 cvar_t	r_lightmap = {"r_lightmap","0"};
-cvar_t	r_shadows = {"r_shadows","0"};
+cvar_t	r_shadows = {"r_shadows","0", true};
 cvar_t	r_mirroralpha = {"r_mirroralpha","1"};
 cvar_t	r_wateralpha = {"r_wateralpha",".4", true};
 cvar_t	r_dynamic = {"r_dynamic","1"};
@@ -89,7 +89,7 @@ cvar_t	gl_keeptjunctions = {"gl_keeptjunctions","1",true};
 cvar_t	gl_reporttjunctions = {"gl_reporttjunctions","0"};
 
 cvar_t gl_glows = {"gl_glows","1",true};
-cvar_t gl_other_glows = {"gl_other_glows","1",true};
+cvar_t gl_other_glows = {"gl_other_glows","0",false};
 cvar_t gl_missile_glows = {"gl_missile_glows","1",true};
 
 extern	cvar_t	gl_ztrick;
@@ -1817,6 +1817,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/11/28 00:37:43  sezero
+ * add gl-glow. code borrowed from the js sources
+ *
  * Revision 1.1.1.1  2004/11/28 00:03:04  sezero
  * Initial import of AoT 1.2.0 code
  *
