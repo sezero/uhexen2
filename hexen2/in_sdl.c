@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.7 2004-12-12 14:38:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.8 2004-12-18 13:17:10 sezero Exp $
 */
 
 #include "SDL.h"
@@ -181,7 +181,8 @@ void IN_ActivateMouse (void)
 void IN_ActivateMouseSA (void)
 {
 	// S.A's hack to activate mouse
-	if (((int)_windowed_mouse.value || (int)vid_mode.value == MODE_FULLSCREEN_DEFAULT) && !sv.paused)
+	// game is paused when loading game at start, but we'd like the mouse
+	if (((int)_windowed_mouse.value || (int)vid_mode.value == MODE_FULLSCREEN_DEFAULT) && (!sv.paused || sv.loadgame))
 		IN_ActivateMouse ();
 }
 
@@ -1253,6 +1254,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2004/12/12 14:38:18  sezero
+ * steven fixed the mouse again ;)
+ *
  * Revision 1.6  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *
