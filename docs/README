@@ -62,6 +62,7 @@ a. Using the installer (easy way):
 	hwcl	-  HexenWorld Client (software)
 	glhwcl	-  HexenWorld Client (OpenGL)
 	hwsv	-  HexenWorld Server
+	hwmaster-  HexenWorld Master Server
 
 b. Manual install/update of datafiles (harder way):
    Copy the "data1" directory from the Hexen2 CD to your Hexen2
