@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.13 2004-12-26 10:03:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.14 2004-12-26 10:05:57 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
