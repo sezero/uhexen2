@@ -55,7 +55,6 @@
 #include "strings.h"
 #include "sbar.h"
 #include "sound.h"
-#include "mididef.h"
 #include "render.h"
 #include "cl_effect.h"
 #include "client.h"
