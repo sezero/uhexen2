@@ -346,6 +346,14 @@ linux installer. In my experience these drivers are great, but
 not all versions work 100% with all cards. If you have a
 misbehaving Nvidia video card, try a different (older) driver.
 
+Linux kernel 2.6.8 / Nvidia driver version 6111 /TnT card and
+possibly other cards and kernels have issues with the GL game.
+Upgrade to NVIDIA-Linux-x86-1.0-7167 to fix these problems.
+If you don't want to change your nvidia driver and the game seems
+to halt, try using the alt-enter key combination to switch to
+windowed mode and redraw the screen. This behaviour is the same
+for glquake.
+
 3dfx Voodoo1/Voodoo2 is no longer hardware accelerated under
 recent XFree-4.0 releases.  For OpenGL acceleration of 3dfx
 Voodoo Graphics/Voodoo Rush/Voodoo2 boards, you will have to
