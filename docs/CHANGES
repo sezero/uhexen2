@@ -63,8 +63,23 @@ Changes since AoT 1.2.0:
 
 -   Using redhat rpm style arch flags ( -march=i386 -mcpu=i686 ).
 
+-   Add/enable the cmdline options -witholdmission and -noold for H2MP.
+
 -   BIG code cleanup including retiring some unused files, retiring old opengl
     files, killing many compiler warnings, etc.
+
+-   The Launcher works fine with GTK2 now.
+
+-   Prepared an installer (using loki_setup tools from CVS / 2004-12-26)
+
+-   Fixed gameplay issue: Eidolon fails landing (automatic install using
+    the installer)
+
+-   Fixed gameplay issue: Holy item in the Cathedral balcony not reachable
+    (automatic install using the installer)
+
+-   Fixed (mostly) gameplay issue: Eidolon loses hostility under certain
+    conditions  (automatic install using the installer)
 
 -   Probably some other minor things that we forgot.
 
