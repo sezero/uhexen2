@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.16 2005-02-11 08:30:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.17 2005-02-11 08:31:15 sezero Exp $
 */
 
 #include "SDL.h"
@@ -468,32 +468,6 @@ void IN_Move (usercmd_t *cmd)
 	// FIXME - Stub - DDOI
 	//if (ActiveApp)
 	//	IN_JoyMove (cmd);
-}
-
-
-/*
-===========
-IN_Accumulate
-===========
-*/
-void IN_Accumulate (void)
-{
-	// FIXME - Un-stub if needed! - DDOI
-#if 0
-	int		mx, my;
-	HDC	hdc;
-
-	if (mouseactive)
-	{
-		GetCursorPos (&current_pos);
-
-		mx_accum += current_pos.x - window_center_x;
-		my_accum += current_pos.y - window_center_y;
-
-	// force the mouse to the center, so there's room to move
-		SetCursorPos (window_center_x, window_center_y);
-	}
-#endif
 }
 
 
@@ -1233,6 +1207,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/02/11 08:30:29  sezero
+ * remove already commented-out win32 code from IN_StartupMouse
+ *
  * Revision 1.15  2005/02/08 21:10:22  sezero
  * tiny whitespace cleanup
  *
