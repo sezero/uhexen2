@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.22 2005-02-07 22:01:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.23 2005-02-20 13:48:55 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1379,6 +1379,13 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 	if (gl_round_down.value && scaled_height > height)
 		scaled_height >>= 1;
 
+/*
+  Two classes of textures don't like being scaled down here, the help
+  screens and the little item textures with numbers corresponding to
+  how many of each you have. If you wish to use gl_picmip > 0 , then
+  for these textures to be readable, you should check here for them
+  and ~not~ scale them. S.A
+*/
 	if ((scaled_width >> (int)gl_picmip.value) &&
 		(scaled_height >> (int)gl_picmip.value))
 	{
@@ -1801,6 +1808,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2005/02/07 22:01:03  sezero
+ * Draw_AlphaPic(), draw alpha console background (from HW)
+ *
  * Revision 1.21  2005/02/07 21:58:23  sezero
  * if0-out fxPalTexImage2D (we don't use it)
  *
