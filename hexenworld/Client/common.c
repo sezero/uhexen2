@@ -972,8 +972,11 @@ void COM_FileBase (char *in, char *out)
 	while (s != in && *s != '.')
 		s--;
 	
-	for (s2 = s ; *s2 && *s2 != '/' ; s2--)
-	;
+	/* Pa3PyX: no range checking -- used to trash the stack and crash the
+	   game randomly upon loading progs, for instance (or in any other
+	   instance where one would supply a filename witout a path */
+//	for (s2 = s ; *s2 && *s2 != '/' ; s2--);
+	for (s2 = s; *s2 && *s2 != '/' && s2 >= in; s2--);
 	
 	if (s-s2 < 2)
 		strcpy (out,"?model?");
