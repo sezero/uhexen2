@@ -1,4 +1,8 @@
 
+/*
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_sdl.c,v 1.2 2004-11-28 01:45:25 sezero Exp $
+ */
+
 #include <stdio.h>
 #include "SDL.h"
 //#include "SDL_byteorder.h"
@@ -119,3 +123,8 @@ void SNDDMA_Shutdown(void)
 void SNDDMA_Submit(void)
 {
 }
+
+/*
+ * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:50:00  sezero
+ */
