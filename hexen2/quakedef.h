@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.17 2005-01-13 10:47:01 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.18 2005-02-05 16:18:25 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -439,6 +439,7 @@ void MIDI_Play(char *Name);
 void MIDI_Stop(void);
 void MIDI_Pause(void);
 void MIDI_Loop(int NewValue);
+void MIDI_UpdateVolume(void);
 
 //
 // Steve's windowed mouse tinkerings
@@ -448,6 +449,14 @@ void IN_DeactivateMouseSA (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/01/13 10:47:01  sezero
+ * - Fixed mouse behavior which was always broken in hexen2-linux.
+ *   Middle-button is MOUSE2, right-button is MOUSE3, not vice versa
+ *   (see SDL_mouse.h). The wheelmouse patch fixed this a little, but
+ *   introduced a mouse2/mouse3 fight in in_sdl.c. It is fixed here.
+ * - Fixed the debug message about undefined mouse buttons.
+ * - Did some syncing between H2 and HW versions of input files.
+ *
  * Revision 1.16  2005/01/02 15:08:53  sezero
  * Retire AoT, aot and .aot: Change userdir (AOT_USERDIR) to .hexen2
  *

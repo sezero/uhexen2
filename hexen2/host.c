@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.6 2005-02-04 13:40:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.7 2005-02-05 16:18:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -839,6 +839,7 @@ void _Host_Frame (float time)
 		S_Update (vec3_origin, vec3_origin, vec3_origin, vec3_origin);
 	
 	CDAudio_Update();
+	MIDI_UpdateVolume();
 
 	if (host_speeds.value)
 	{
@@ -1098,6 +1099,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/02/04 13:40:20  sezero
+ * build all all the sound drivers in and choose from command line
+ *
  * Revision 1.5  2005/01/01 21:43:47  sezero
  * prototypes clean-up
  *

@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.2 2005-02-05 16:17:29 sezero Exp $
+	$Id: midi_sdl.c,v 1.3 2005-02-05 16:18:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -19,7 +19,8 @@ void (*midi_endmusicfnc)(void);
 
 byte bMidiInited,bFileOpen, bPlaying, bBuffersPrepared;
 byte bPaused, bLooped;
-float dwVolumePercent;
+extern cvar_t bgmvolume;
+float bgm_volume_old = -1.0f;
 
 
 void MIDI_Play_f (void)
@@ -43,7 +44,6 @@ void MIDI_Pause_f (void)
 #ifndef USE_MIDI
 // placeholders
 void MIDI_Loop_f (void) {}
-void MIDI_Volume_f (void) {}
 void MIDI_EndMusicFinished(void) {}
 qboolean MIDI_Init(void) { return true; }
 void MIDI_Play(char *Name) {}
@@ -51,6 +51,7 @@ void MIDI_Pause(void) {}
 void MIDI_Loop(int NewValue) {}
 void MIDI_Stop(void) {}
 void MIDI_Cleanup(void) { Con_Printf("MIDI_Cleanup\n"); }
+void MIDI_UpdateVolume(void) {}
 #else
 // actual functions
 void MIDI_Loop_f (void)
@@ -71,17 +72,21 @@ void MIDI_Loop_f (void)
 		Con_Printf("MIDI music will not be looped\n");
 }
 
-void MIDI_Volume_f (void)
+static void MIDI_SetVolume(float volume_frac)
 {
-	if (Cmd_Argc () == 2) {
-		dwVolumePercent = atof(Cmd_Argv(1))*100;
-		if (dwVolumePercent > 100)
-			dwVolumePercent=100;
-		if (dwVolumePercent < 0)
-			dwVolumePercent=0;
-		Mix_VolumeMusic(dwVolumePercent*1.28); /* needs to be between 0 and 128 */
-	} else {
-		Con_Printf("MIDI volume is %f\n", dwVolumePercent);
+	if (!bMidiInited)
+		return;
+
+	volume_frac = (volume_frac >= 0.0f) ? volume_frac : 0.0f;
+	volume_frac = (volume_frac <= 1.0f) ? volume_frac : 1.0f;
+	Mix_VolumeMusic(volume_frac*128); /* needs to be between 0 and 128 */
+}
+
+void MIDI_UpdateVolume(void)
+{
+	if (bgmvolume.value != bgm_volume_old) {
+		bgm_volume_old = bgmvolume.value;
+		MIDI_SetVolume(bgm_volume_old);
 	}
 }
 
@@ -148,7 +153,6 @@ qboolean MIDI_Init(void)
 	Cmd_AddCommand ("midi_stop", MIDI_Stop_f);
 	Cmd_AddCommand ("midi_pause", MIDI_Pause_f);
 	Cmd_AddCommand ("midi_loop", MIDI_Loop_f);
-	Cmd_AddCommand ("midi_volume", MIDI_Volume_f);
 
 	bFileOpen = 0;
 	bPlaying = 0;
@@ -197,7 +201,6 @@ void MIDI_Play(char *Name)
 	} else {
 		bFileOpen = 1;
 		Con_Printf("Playing midi file %s\n",Temp);
-/*		midiOutSetVolume(hStream, (dwVolumePercent<<16)+dwVolumePercent);*/
 		Mix_FadeInMusic(music,0,2000);
 		bPlaying = 1;
 	}
@@ -282,6 +285,12 @@ void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/02/05 16:17:29  sezero
+ * - Midi file paths cleanup. these should be leftovers
+ *   from times when gamedir and userdir were the same.
+ * - Killed Com_WriteFileFullPath(), not used anymore.
+ * - Replaced some Con_Printf() with Sys_Printf().
+ *
  * Revision 1.1  2005/02/05 16:16:06  sezero
  * separate win32 and linux versions of midi files. too much mess otherwise.
  *
