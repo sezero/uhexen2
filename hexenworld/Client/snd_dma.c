@@ -224,7 +224,9 @@ void S_Init (void)
 		shm->buffer = Hunk_AllocName(1<<16, "shmbuf");
 	}
 
-	Con_Printf ("Sound sampling rate: %i\n", shm->speed);
+	if ( shm ) {
+		Con_Printf ("Sound sampling rate: %i\n", shm->speed);
+	}
 
 	// provides a tick sound until washed clean
 
@@ -521,9 +523,11 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 			continue;
 		if (check->sfx == sfx && !check->pos)
 		{
-			skip = rand () % (int)(0.1*shm->speed);
-			if (skip >= target_chan->end)
-				skip = target_chan->end - 1;
+			skip = 0.1 * shm->speed;
+			if (skip > sc->length)
+				skip = sc->length;
+			if (skip > 0)
+				skip = rand() % skip;
 			target_chan->pos += skip;
 			target_chan->end -= skip;
 			break;
