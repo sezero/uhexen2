@@ -132,6 +132,7 @@ beam_t			cl_beams[MAX_BEAMS];
 explosion_t		cl_explosions[MAX_EXPLOSIONS];
 
 static stream_t cl_Streams[MAX_STREAMS];
+static entity_t StreamEntities[MAX_STREAM_ENTITIES];	/* What is so nice about this ???!!!  O.S. */
 static int		StreamEntityCount;
 
 static int		MultiGrenadeCurrentChannel;
