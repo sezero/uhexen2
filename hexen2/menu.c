@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.11 2004-12-13 14:50:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.12 2004-12-13 14:52:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -18,6 +18,8 @@ extern	cvar_t	crosshair;
 #ifdef H2MP
 cvar_t m_oldmission = {"m_oldmission","0", true};
 cvar_t m_demoness   = {"m_demoness",  "0", false};
+#define NUM_CLASSESD	(NUM_CLASSES -1 + m_demoness.value)
+#define CLASS_ITEMSD	(CLASS_ITEMS -1 + m_demoness.value)
 #endif
 
 void (*vid_menudrawfn)(void);
@@ -925,7 +927,7 @@ void M_Class_Draw (void)
 	ScrollTitle("gfx/menu/title2.lmp");
 #ifdef H2MP
 if (!m_enter_portals) {
-	for(i = 0; i < NUM_CLASSES -1 + m_demoness.value; ++i)
+	for(i = 0; i < NUM_CLASSESD; ++i)
 		M_DrawBigString (72,60+(i*20),ClassNamesU[i]);
 } else
 #endif
@@ -934,7 +936,7 @@ if (!m_enter_portals) {
 
 #ifdef H2MP
 if (!m_enter_portals) {
-		if (m_class_cursor >= CLASS_ITEMS -1 + m_demoness.value)
+		if (m_class_cursor >= CLASS_ITEMSD)
 			m_class_cursor = 0;
 }
 #endif
@@ -961,7 +963,7 @@ void M_Class_Key (int key)
 		S_LocalSound ("raven/menu1.wav");
 #ifdef H2MP
 if (!m_enter_portals) {
-		if (++m_class_cursor >= CLASS_ITEMS -1 + m_demoness.value)
+		if (++m_class_cursor >= CLASS_ITEMSD)
 			m_class_cursor = 0;
 } else
 #endif
@@ -978,7 +980,7 @@ if (!m_enter_portals) {
 #ifdef H2MP
 if (!m_enter_portals) {
 		if (--m_class_cursor < 0)
-			m_class_cursor = CLASS_ITEMS - 2 + m_demoness.value;
+			m_class_cursor = CLASS_ITEMSD - 1;
 } else
 #endif
 		if (--m_class_cursor < 0)
@@ -4750,6 +4752,9 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2004/12/13 14:50:41  sezero
+ * fix an oversight in oldmission menu drawing
+ *
  * Revision 1.10  2004/12/12 23:16:44  sezero
  * two minor cvar annoyances
  *
