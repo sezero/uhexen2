@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.5 2005-02-04 11:50:59 sezero Exp $
+	$Id: cd_linux.c,v 1.6 2005-03-06 10:44:41 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -345,14 +345,6 @@ void CDAudio_Update(void)
 	if (!enabled)
 		return;
 
-	if (bgmvolume.value != drv_vol.channel0)
-	{
-		drv_vol.channel0 = drv_vol.channel2 =
-		drv_vol.channel1 = drv_vol.channel3 =
-				bgmvolume.value * 255;
-		ioctl(cdfile, CDROMVOLCTRL, &drv_vol);
-	}
-
 	if (playing && lastchk < time(NULL)) {
 		lastchk = time(NULL) + 2; //two seconds between chks
 		subchnl.cdsc_format = CDROM_MSF;
@@ -367,6 +359,20 @@ void CDAudio_Update(void)
 			if (playLooping)
 				CDAudio_Play(playTrack, true);
 		}
+	}
+}
+
+void CDAudio_UpdateVolume(void)
+{
+	if (!enabled)
+		return;
+
+	if (bgmvolume.value != drv_vol.channel0)
+	{
+		drv_vol.channel0 = drv_vol.channel2 =
+		drv_vol.channel1 = drv_vol.channel3 =
+				bgmvolume.value * 255;
+		ioctl(cdfile, CDROMVOLCTRL, &drv_vol);
 	}
 }
 

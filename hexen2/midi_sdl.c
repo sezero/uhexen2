@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.6 2005-02-05 16:30:14 sezero Exp $
+	$Id: midi_sdl.c,v 1.7 2005-03-06 10:44:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -268,29 +268,12 @@ void MIDI_Cleanup(void)
 }
 #endif
 
-void ReInitMusic() {
-	// called after exitting the menus and changing the music type
-	// this is pretty crude, but doen't seem to break anything S.A
-
-	if (strcmpi(bgmtype.string,"midi") == 0) {
-		CDAudio_Stop();
-		MIDI_Play(cl.midi_name);
-	}
-
-	if (strcmpi(bgmtype.string,"cd") == 0) {
-		MIDI_Stop();
-		CDAudio_Play ((byte)cl.cdtrack, true);
-	}
-
-	if (strcmpi(bgmtype.string,"none") == 0) {
-		CDAudio_Stop();
-		MIDI_Stop();
-	}
-}
-
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/02/05 16:30:14  sezero
+ * don't try extracting anything if no midi file is given
+ *
  * Revision 1.5  2005/02/05 16:21:13  sezero
  * killed Com_LoadHunkFile2()  [from HexenWorld]
  *

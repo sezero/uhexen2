@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.9 2005-02-14 15:12:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.10 2005-03-06 10:44:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -839,7 +839,6 @@ void _Host_Frame (float time)
 		S_Update (vec3_origin, vec3_origin, vec3_origin, vec3_origin);
 	
 	CDAudio_Update();
-	MIDI_UpdateVolume();
 
 	if (host_speeds.value)
 	{
@@ -1103,6 +1102,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/02/14 15:12:32  sezero
+ * added ability to disable ALSA support at compile time
+ *
  * Revision 1.8  2005/02/11 23:47:02  sezero
  * paranoid sound driver checks
  *

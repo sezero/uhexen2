@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.20 2005-03-03 19:48:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.21 2005-03-06 10:44:41 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -435,13 +435,11 @@ void Chase_Update (void);
 // Put it here cuz I didn't want to make all the files
 // include the window components
 qboolean MIDI_Init(void);
-void ReInitMusic(void);
 void MIDI_Cleanup(void);
 void MIDI_Play(char *Name);
 void MIDI_Stop(void);
 void MIDI_Pause(void);
 void MIDI_Loop(int NewValue);
-void MIDI_UpdateVolume(void);
 
 //
 // Steve's windowed mouse tinkerings
@@ -451,6 +449,12 @@ void IN_DeactivateMouseSA (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2005/03/03 19:48:40  sezero
+ * More bits from Steven:
+ * - increase MAX_OSPATH to 256
+ * - Sys_Mkdir is now int. Its return code should be checked in other places, too.
+ * - Sys_GetUserdir now uses $HOME instead of the passwd struct
+ *
  * Revision 1.19  2005/02/14 19:41:18  sezero
  * 1.2.4-rc1: prepare for 1.2.4 (2005-02-14)
  *

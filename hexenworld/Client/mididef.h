@@ -4,5 +4,3 @@ void		MIDI_Play(char *Name);
 void		MIDI_Stop(void);
 void		MIDI_Pause(int mode);
 void		MIDI_Loop(int NewValue);
-void		MIDI_UpdateVolume(void);
-void		ReInitMusic(void);

@@ -1,9 +1,16 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.11 2005-02-09 14:32:32 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.12 2005-03-06 10:44:41 sezero Exp $
  */
 
 #include "quakedef.h"
 #include "winquake.h"
+
+static void ReInitMusic(void);
+extern void MIDI_UpdateVolume(void);
+#ifdef PLATFORM_UNIX
+// dont know how win32 cdvol is controlled..
+extern void CDAudio_UpdateVolume(void);
+#endif
 
 extern	cvar_t	vid_mode;
 extern	cvar_t	crosshair;
@@ -596,10 +603,6 @@ void M_Menu_Main_f (void)
 	// Deactivate the mouse when the menus are drawn - S.A.
 	IN_DeactivateMouseSA ();
 
-	// get the music type if just in from game
-	if (key_dest == key_game ) 
-		strcpy(old_bgmtype,bgmtype.string);
-
 	if (key_dest != key_menu)
 	{
 		m_save_demonum = cls.demonum;
@@ -638,6 +641,7 @@ void M_Main_Key (int key)
 		// and check we haven't changed the music type S.A. 
 		if (strcmp(old_bgmtype,bgmtype.string)!=0) 
 			ReInitMusic ();
+		strcpy (old_bgmtype, "");
 
 		key_dest = key_game;
 		m_state = m_none;
@@ -803,6 +807,11 @@ void M_Menu_Options_f (void)
 	key_dest = key_menu;
 	m_state = m_options;
 	m_entersound = true;
+
+	// get the current music type
+	if (!strlen(old_bgmtype))
+		strncpy(old_bgmtype,bgmtype.string,20);
+
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 		options_cursor = 0;
 }
@@ -875,6 +884,10 @@ void M_AdjustSliders (int dir)
 		if (bgmvolume.value > 1)
 			bgmvolume.value = 1;
 		Cvar_SetValue ("bgmvolume", bgmvolume.value);
+		MIDI_UpdateVolume();
+#ifdef PLATFORM_UNIX
+		CDAudio_UpdateVolume();
+#endif
 		break;
 	case OPT_SNDVOL:	// sfx volume
 		volume.value += dir * 0.1;
@@ -2788,4 +2801,24 @@ void M_Keydown (int key)
 	}
 }
 
+
+static void ReInitMusic() {
+	// called after exitting the menus and changing the music type
+	// this is pretty crude, but doen't seem to break anything S.A
+
+	if (strcmpi(bgmtype.string,"midi") == 0) {
+		CDAudio_Stop();
+		MIDI_Play(cl.midi_name);
+	}
+
+	if (strcmpi(bgmtype.string,"cd") == 0) {
+		MIDI_Stop();
+		CDAudio_Play ((byte)cl.cdtrack, true);
+	}
+
+	if (strcmpi(bgmtype.string,"none") == 0) {
+		CDAudio_Stop();
+		MIDI_Stop();
+	}
+}
 
