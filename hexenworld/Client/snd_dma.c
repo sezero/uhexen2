@@ -86,7 +86,7 @@ void S_AmbientOn (void)
 
 void S_SoundInfo_f(void)
 {
-	char *s_sys;
+	char *s_sys = NULL;
 	if (!sound_started || !shm)
 	{
 		Con_Printf ("sound system not started\n");
@@ -467,7 +467,7 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 	int		vol;
 	int		ch_idx;
 	int		skip;
-	qboolean skip_dist_check;
+	qboolean skip_dist_check = false;
 
 	if (!sound_started)
 		return;

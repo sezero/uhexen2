@@ -247,8 +247,8 @@ qboolean VID_SetFullDIBMode (int modenum) {
 
 int VID_SetMode (int modenum, unsigned char *palette)
 {
-	int				original_mode, temp;
-	qboolean		stat;
+	int		original_mode, temp;
+	qboolean	stat = false;
 
 	// so Con_Printfs don't mess us up by forcing vid and snd updates
 	temp = scr_disabled_for_loading;

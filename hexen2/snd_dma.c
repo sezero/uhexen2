@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.11 2005-02-04 13:40:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.12 2005-02-09 14:33:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -83,7 +83,7 @@ void S_AmbientOn (void)
 
 void S_SoundInfo_f(void)
 {
-	char *s_sys;
+	char *s_sys = NULL;
 	if (!sound_started || !shm)
 	{
 		Con_Printf ("sound system not started\n");
@@ -464,7 +464,7 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 	int		vol;
 	int		ch_idx;
 	int		skip;
-	qboolean skip_dist_check;
+	qboolean skip_dist_check = false;
 
 	if (!sound_started)
 		return;
@@ -1052,6 +1052,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/02/04 13:40:20  sezero
+ * build all all the sound drivers in and choose from command line
+ *
  * Revision 1.10  2005/02/04 11:41:44  sezero
  * kill fakedma (simsound). one less thing to worry about.
  *

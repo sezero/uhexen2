@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.23 2005-02-08 21:14:13 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.24 2005-02-09 14:35:11 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -254,8 +254,8 @@ qboolean VID_SetFullDIBMode (int modenum) {
 
 int VID_SetMode (int modenum, unsigned char *palette)
 {
-	int				original_mode, temp;
-	qboolean		stat;
+	int		original_mode, temp;
+	qboolean	stat = false;
 
 	// so Con_Printfs don't mess us up by forcing vid and snd updates
 	temp = scr_disabled_for_loading;
