@@ -27,7 +27,7 @@ ChangeLog:
     * fixed cd music stops playing on volume change (reported
       by Julien Langer)
     * added actual cdrom volume control via CDROMVOLCTRL.
-      do not pause cdromplaying when user volume is 0
+      cdrom isn't paused when the user volume is 0, anymore
       (should have been a trick to silence the cdrom before
       this control was present). BSD ioctls may be different,
       add conditionals for it one day...
@@ -44,7 +44,7 @@ ChangeLog:
     * added sound driver selection to the launcher
 
 2005-02-01 (CVS):
-    * fixed the demos without models with -nosound
+    * fixed demos playing without models with -nosound arg
     * initial style-only sound code syncing between h2 and hw
     * sbar fixes from Pa3pyX' sources
     * added missing things to the makefiles
@@ -93,7 +93,7 @@ ChangeLog:
     - Put the widgets to be played with remotely are put in to
       structs properly for easier handling. The binary output is
       even smaller now.
-    - For Gtk2.0 builds, replaced gtk_widget_set_uposition() with
+    - For Gtk2.0 builds, replaced gtk_widget_set_usize() with
       gtk_widget_set_size_request()
     - Much code clean-up (apparently)
     - Removed gtk_widget_set_uposition(). We seem to do fine with
@@ -218,6 +218,6 @@ ChangeLog:
     * BIG code cleanup including retiring some unused files, retiring
       old opengl files, killing many compiler warnings, etc.
     * A range checking bug is fixed along with the No Boss bug.
-    * No Boss bug in Dan's original linux port fixed: Hexen2 loads
+    * "No Boss" bug in Dan's original linux port fixed: Hexen2 loads
       progs2.dat along with progs.dat, as it should, now.
     * Probably some other minor things that we forgot.
