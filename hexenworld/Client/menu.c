@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.8 2005-01-01 21:53:53 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.9 2005-02-05 18:27:58 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -79,6 +79,7 @@ qboolean	m_recursiveDraw;
 int			m_return_state;
 qboolean	m_return_onerror;
 char		m_return_reason [32];
+char		old_bgmtype[20];	// S.A
 
 static float TitlePercent = 0;
 static float TitleTargetPercent = 1;
@@ -670,6 +671,10 @@ void M_Menu_Main_f (void)
 	// Deactivate the mouse when the menus are drawn - S.A.
 	IN_DeactivateMouseSA ();
 
+	// get the music type if just in from game
+	if (key_dest == key_game ) 
+		strcpy(old_bgmtype,bgmtype.string);
+
 	if (key_dest != key_menu)
 	{
 		m_save_demonum = cls.demonum;
@@ -706,6 +711,10 @@ void M_Main_Key (int key)
 
 		// leaving the main menu, reactivate mouse - S.A.
 		IN_ActivateMouseSA ();
+
+		// and check we haven't changed the music type S.A. 
+		if (strcmp(old_bgmtype,bgmtype.string)!=0) 
+			ReInitMusic ();
 
 		key_dest = key_game;
 		m_state = m_none;
