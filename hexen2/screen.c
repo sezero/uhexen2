@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.6 2004-12-18 13:46:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.7 2005-01-12 22:11:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1371,8 +1371,10 @@ void SB_IntermissionOverlay(void)
 
 	if (cl.intermission <= 4 && cl.intermission + 394 <= pr_string_count)
 		message = &pr_global_strings[pr_string_index[cl.intermission + 394]];
-	else if (cl.intermission == 5)
-		message = &pr_global_strings[pr_string_index[ABILITIES_STR_INDEX+NUM_CLASSES*2+1]];
+/* O.S: Why do calculate and not say 408? Anyone weird enough to play the demo
+   with strings.txt file from H2MP ?!!!! The thing below was off-by-one, btw..
+*/	else if (cl.intermission == 5)
+		message = &pr_global_strings[pr_string_index[ABILITIES_STR_INDEX+NUM_CLASSES*2]];
 	else if (cl.intermission >= 6 && cl.intermission <= 8 && cl.intermission + 386 <= pr_string_count)
 		message = &pr_global_strings[pr_string_index[cl.intermission + 386]];
 	else if (cl.intermission == 9)
@@ -1462,6 +1464,10 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2004/12/18 13:46:26  sezero
+ * Clean-up and kill warnings 2:
+ * Kill " suggest explicit braces to avoid ambiguous `else' " warnings
+ *
  * Revision 1.5  2004/12/12 14:25:18  sezero
  * add and fix some comments
  *
