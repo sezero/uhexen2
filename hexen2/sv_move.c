@@ -2,7 +2,7 @@
 	sv_move.c
 	monster movement
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.2 2004-12-12 14:14:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.3 2004-12-18 14:08:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -21,21 +21,21 @@ is not a staircase.
 //int c_yes, c_no;//These are never checked!!
 
 qboolean SV_CheckBottom (edict_t *ent)
-{//By this point, ent has been moved to it's new position after the
+{	//By this point, ent has been moved to it's new position after the
 	//move, and adjusted for steps
-	model_t		*model;
-	vec3_t	mins, maxs, start, stop, check,size;
-	trace_t	trace;
+/*	model_t	*model;
 	hull_t	*wclip_hull;
-	int		x, y;
+	int	index; */
+	vec3_t	mins, maxs, start, stop/*, check, size */;
+	trace_t	trace;
+	int	x, y;
 	float	mid, bottom;
 	float	save_hull;
-	int		index;
 
 	VectorAdd (ent->v.origin, ent->v.mins, mins);
 	VectorAdd (ent->v.origin, ent->v.maxs, maxs);
 
-/*//Make it use the clipping hull's size, not their bounding box...
+/* //Make it use the clipping hull's size, not their bounding box...
 	model = sv.models[ (int)sv.edicts->v.modelindex ];
 	VectorSubtract (ent->v.maxs, ent->v.mins, size);
 	if(ent->v.hull)
@@ -588,6 +588,9 @@ void SV_MoveToGoal (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:43  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:07:43  sezero
  * Initial import of AoT 1.2.0 code
  *

@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.4 2004-12-18 13:48:52 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.5 2004-12-18 14:08:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2963,7 +2963,7 @@ void PF_RewindFrame(void)
 void PF_advanceweaponframe (void)
 {
 	edict_t *ent;
-	float startframe,endframe,Result;
+	float startframe, endframe;
 	float state;
 
 	ent = PROG_TO_EDICT(pr_global_struct->self);
@@ -3034,7 +3034,6 @@ void PF_starteffect (void)
 
 void PF_endeffect (void)
 {
-	float holdindex;
 	int index;
 
 	index = G_FLOAT(OFS_PARM0);
@@ -3143,7 +3142,7 @@ void PF_GetString(void)
 void PF_v_factor(void)
 // returns (v_right * factor_x) + (v_forward * factor_y) + (v_up * factor_z)
 {
-	float num,*range;
+	float *range;
 	vec3_t result;
 
 	range = G_VECTOR(OFS_PARM0);
@@ -3229,10 +3228,9 @@ void PF_matchAngleToSlope(void)
 void PF_updateInfoPlaque (void)
 {
 	unsigned int check;
-	unsigned int index, mode, i;
-	char *newmessage;
+	unsigned int index, mode;
 	long *use;
-	int	ofs = 0;
+	int  ofs = 0;
 
 	index = G_FLOAT(OFS_PARM0);
 	mode = G_FLOAT(OFS_PARM1);
@@ -3417,6 +3415,10 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/18 13:48:52  sezero
+ * Clean-up and kill warnings 3:
+ * Kill " suggest parentheses around XXX " warnings
+ *
  * Revision 1.3  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

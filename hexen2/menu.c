@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.15 2004-12-18 13:46:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.16 2004-12-18 14:08:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -480,7 +480,7 @@ void M_ToggleMenu_f (void)
 }
 
 char BigCharWidth[27][27];
-static char unused_filler;  // cuz the COM_LoadStackFile puts a 0 at the end of the data
+//static char unused_filler;  // cuz the COM_LoadStackFile puts a 0 at the end of the data
 
 //#define BUILD_BIG_CHAR 1
 
@@ -576,10 +576,10 @@ smoothly scrolled off.
 int M_DrawBigCharacter (int x, int y, int num, int numNext)
 {
 	qpic_t	*p;
-	int ypos,xpos,c;
-	byte			*dest;
-	byte			*source;
-	int				add;
+	int	ypos,xpos;
+	byte	*dest;
+	byte	*source;
+	int	add;
 
 	if (num == ' ') return 32;
 
@@ -744,8 +744,7 @@ void M_Menu_Main_f (void)
 
 void M_Main_Draw (void)
 {
-	int		f;
-	qpic_t	*p;
+	int	f;
 
 	ScrollTitle("gfx/menu/title0.lmp");
 //	M_DrawTransPic (72, 32, Draw_CachePic ("gfx/mainmenu.lmp") );
@@ -754,7 +753,6 @@ void M_Main_Draw (void)
 	M_DrawBigString (72,60+(2*20),"OPTIONS");
 	M_DrawBigString (72,60+(3*20),"HELP");
 	M_DrawBigString (72,60+(4*20),"QUIT");
-
 
 	f = (int)(host_time * 10)%8;
 	M_DrawTransPic (43, 54 + m_main_cursor * 20,Draw_CachePic( va("gfx/menu/menudot%i.lmp", f+1 ) ) );
@@ -840,8 +838,7 @@ int m_enter_portals;
 
 void M_Difficulty_Draw (void)
 {
-	int		f, i;
-	qpic_t	*p;
+	int	f, i;
 
 	ScrollTitle("gfx/menu/title5.lmp");
 
@@ -930,8 +927,7 @@ int	m_class_cursor;
 
 void M_Class_Draw (void)
 {
-	int		f, i;
-	qpic_t	*p;
+	int	f, i;
 
 	ScrollTitle("gfx/menu/title2.lmp");
 #ifdef H2MP
@@ -1044,8 +1040,7 @@ void M_Menu_SinglePlayer_f (void)
 				
 void M_SinglePlayer_Draw (void)
 {
-	int		f;
-	qpic_t	*p;
+	int	f;
 
 	ScrollTitle("gfx/menu/title1.lmp");
 	
@@ -1463,8 +1458,7 @@ void M_Menu_MultiPlayer_f (void)
 
 void M_MultiPlayer_Draw (void)
 {
-	int		f;
-	qpic_t	*p;
+	int	f;
 
 	ScrollTitle("gfx/menu/title4.lmp");
 //	M_DrawTransPic (72, 32, Draw_CachePic ("gfx/mp_menu.lmp") );
@@ -1784,8 +1778,7 @@ void M_Menu_Net_f (void)
 
 void M_Net_Draw (void)
 {
-	int		f;
-	qpic_t	*p;
+	int	f;
 
 	ScrollTitle("gfx/menu/title4.lmp");
 
@@ -2135,8 +2128,7 @@ void M_DrawCheckbox (int x, int y, int on)
 
 void M_Options_Draw (void)
 {
-	float		r;
-	qpic_t	*p;
+	float	r;
 	
 	ScrollTitle("gfx/menu/title3.lmp");
 	
@@ -2426,9 +2418,8 @@ void M_Keys_Draw (void)
 {
 	int		i, l;
 	int		keys[2];
-	char	*name;
+	char		*name;
 	int		x, y;
-	qpic_t	*p;
 
 	ScrollTitle("gfx/menu/title6.lmp");
 
@@ -3603,8 +3594,7 @@ void M_Menu_LanConfig_f (void)
 
 void M_LanConfig_Draw (void)
 {
-	qpic_t	*p;
-	int		basex;
+	int	basex;
 	char	*startJoin;
 	char	*protocol;
 
@@ -3987,9 +3977,6 @@ void M_Menu_GameOptions_f (void)
 
 void M_GameOptions_Draw (void)
 {
-	qpic_t	*p;
-	int		x;
-
 	ScrollTitle("gfx/menu/title4.lmp");
 
 	M_DrawTextBox (152+8, 60, 10, 1);
@@ -4341,7 +4328,6 @@ void M_Menu_Search_f (void)
 
 void M_Search_Draw (void)
 {
-	qpic_t	*p;
 	int x;
 
 	ScrollTitle("gfx/menu/title4.lmp");
@@ -4400,9 +4386,8 @@ void M_Menu_ServerList_f (void)
 
 void M_ServerList_Draw (void)
 {
-	int		n;
+	int	n;
 	char	string [64],*name;
-	qpic_t	*p;
 
 	if (!slist_sorted)
 	{
@@ -4763,6 +4748,10 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2004/12/18 13:46:25  sezero
+ * Clean-up and kill warnings 2:
+ * Kill " suggest explicit braces to avoid ambiguous `else' " warnings
+ *
  * Revision 1.14  2004/12/18 13:30:50  sezero
  * Hack to prevent textures going awol and some info-plaques start looking
  * white upon succesive load games. The solution is not beautiful but seems

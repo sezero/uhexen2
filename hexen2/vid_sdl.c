@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.6 2004-12-12 20:01:44 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.7 2004-12-18 14:08:08 sezero Exp $
 
    Changed by S.A. 7/11/04
    Options are now:
@@ -121,8 +121,6 @@ int		vPage;					// Current visible display page
 int		waitVRT = true;			// True to wait for retrace on flip
 
 static vmode_t	badmode;
-
-static byte	backingbuf[48*24];
 
 void VID_MenuDraw (void);
 void VID_MenuKey (int key);
@@ -508,7 +506,7 @@ void VID_SetDefaultMode (void)
 
 int VID_SetMode (int modenum, unsigned char *palette)
 {
-	int			original_mode, temp, dummy;
+	int			original_mode, temp;
 	qboolean		stat;
 
 	// debug printf ("VID_SetMode modenum = %i\n",modenum);
@@ -1122,10 +1120,8 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 
 void D_ShowLoadingSize (void)
 {
-	int		i, j;
-	vrect_t	rect;
-	byte *data;
-	viddef_t	save_vid;				// global video state
+	vrect_t		rect;
+	viddef_t	save_vid;	// global video state
 
 	if (!vid_showload.value)
 		return; 
@@ -1294,8 +1290,6 @@ extern void M_DrawCharacter (int cx, int line, int num);
 extern void M_DrawTransPic (int x, int y, qpic_t *pic);
 extern void M_DrawPic (int x, int y, qpic_t *pic);
 
-static int	vid_line, vid_wmodes;
-
 typedef struct
 {
 	int		modenum;
@@ -1308,8 +1302,6 @@ typedef struct
 #define MAX_COLUMN_SIZE		5
 #define MODE_AREA_HEIGHT	(MAX_COLUMN_SIZE + 6)
 #define MAX_MODEDESCS		(MAX_COLUMN_SIZE*3)
-
-static modedesc_t	modedescs[MAX_MODEDESCS];
 
 /*
 ================
@@ -1355,6 +1347,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2004/12/12 20:01:44  sezero
+ * fix another typo so that compilation doesn't bomb-out
+ *
  * Revision 1.5  2004/12/12 14:29:35  sezero
  * make WM_SetCaption report PoP if running the mission pack
  *

@@ -1,7 +1,7 @@
 /*
 	sv_phys.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.3 2004-12-18 13:57:00 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.4 2004-12-18 14:08:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -788,22 +788,21 @@ NEW
 */
 void SV_PushRotate (edict_t *pusher, float movetime)
 {
-	int			i, e, t;
+	int		i, e, t;
 	edict_t		*check, *block;
-	vec3_t		move, a, amove,mins,maxs,move2,move3,testmove,amove_norm;
+	vec3_t		move, a, amove,mins,maxs,move2,move3,testmove/*,amove_norm*/;
 	vec3_t		entorig, pushorig,pushorigangles;
-	int			num_moved;
+	int		num_moved;
 	edict_t		*moved_edict[MAX_EDICTS];
 	vec3_t		moved_from[MAX_EDICTS];
 	vec3_t		org, org2, check_center;
 	vec3_t		forward, right, up;
-	vec3_t		dir2push,push_vel;
 	edict_t		*ground;
 	edict_t		*master;
 	edict_t		*slave;
-	int			slaves_moved;
-	qboolean	moveit, null_z;
-	float		amove_mag,turn_away;
+	int		slaves_moved;
+	qboolean	moveit/*, null_z*/;
+//	float		turn_away, amove_mag;
 
 #if 0
 Con_DPrintf("SV_PushRotate entity %i (time=%f)\n", NUM_FOR_EDICT(pusher), movetime);
@@ -2284,6 +2283,10 @@ trace_t SV_Trace_Toss (edict_t *ent, edict_t *ignore)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/18 13:57:00  sezero
+ * Clean-up and warnings 7:
+ * Add comments about RJNET / RJNETa / QUAKE2 / QUAKE2RJ mess.
+ *
  * Revision 1.2  2004/12/12 14:14:43  sezero
  * style changes to our liking
  *

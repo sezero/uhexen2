@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.4 2004-12-12 14:25:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.5 2004-12-18 14:08:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -996,12 +996,10 @@ to call ED_CallSpawnFunctions () to let the objects initialize themselves.
 void ED_LoadFromFile (char *data)
 {	
 	edict_t		*ent;
-	int			inhibit,i,skip;
+	int		inhibit, skip;
 	dfunction_t	*func;
-	edict_t	*sv_player;
-	client_t	*host_client;
 	char		*orig;
-	int			start_amount;
+	int		start_amount;
 	
 	ent = NULL;
 	inhibit = 0;
@@ -1157,9 +1155,13 @@ PR_LoadProgs
 */
 void PR_LoadProgs (void)
 {
-	int		i,j;
+	int	i;
+#ifndef H2MP
+	int	j;
 	FILE	*f;
-	char	mapname[MAX_QPATH], progname[MAX_OSPATH], finalprogname[MAX_OSPATH];
+	char	mapname[MAX_QPATH], progname[MAX_OSPATH];
+#endif
+	char	finalprogname[MAX_OSPATH];
 
 // flush the non-C variable lookup cache
 	for (i=0 ; i<GEFV_CACHESIZE ; i++)
@@ -1441,6 +1443,9 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/12 14:25:18  sezero
+ * add and fix some comments
+ *
  * Revision 1.3  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

@@ -2,7 +2,7 @@
 	cl_tent.c
 	Client side temporary entity effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.3 2004-12-14 10:19:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.4 2004-12-18 14:08:07 sezero Exp $
 */
 
 
@@ -76,8 +76,8 @@ static entity_t *NewStreamEntity(void);
 static stream_t cl_Streams[MAX_STREAMS];
 static entity_t StreamEntities[MAX_STREAM_ENTITIES];
 static int StreamEntityCount;
-static sfx_t *cl_sfx_wizhit;
-static sfx_t *cl_sfx_knighthit;
+//static sfx_t *cl_sfx_wizhit;
+//static sfx_t *cl_sfx_knighthit;
 static sfx_t *cl_sfx_tink1;
 static sfx_t *cl_sfx_ric1;
 static sfx_t *cl_sfx_ric2;
@@ -135,7 +135,7 @@ void CL_ParseTEnt(void)
 #endif
 	dlight_t *dl;
 	int rnd;
-	int colorStart, colorLength;
+//	int colorStart, colorLength;
 
 	type = MSG_ReadByte();
 	switch(type)

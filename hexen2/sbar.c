@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.c,v 1.3 2004-12-18 14:08:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -205,7 +205,6 @@ void SB_Draw(void)
 	char tempStr[80];
 	int mana;
 	int maxMana;
-	int y;
 
 	if (intro_playing)
 	{
@@ -480,7 +479,7 @@ static void DrawFullScreenInfo(void)
 static void DrawLowerBar(void)
 {
 	int i;
-	int minutes, seconds, tens, units;
+//	int minutes, seconds, tens, units;
 	char tempStr[80];
 	int playerClass;
 	int piece;

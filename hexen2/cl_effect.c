@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.3 2004-12-18 13:59:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.4 2004-12-18 14:08:07 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -1980,8 +1980,8 @@ void CL_UpdateEffects(void)
 	int index,cur_frame;
 	vec3_t mymin,mymax;
 	float frametime;
-	edict_t test;
-	trace_t	trace;
+//	edict_t test;
+//	trace_t	trace;
 	vec3_t	org,org2,alldir;
 	int x_dir,y_dir;
 	entity_t *ent;
@@ -2525,6 +2525,10 @@ static void FreeEffectEntity(int index)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/18 13:59:25  sezero
+ * Clean-up and kill warnings 8:
+ * Missing prototypes.
+ *
  * Revision 1.2  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

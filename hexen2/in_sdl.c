@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.9 2004-12-18 13:52:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.10 2004-12-18 14:08:07 sezero Exp $
 */
 
 #include "SDL.h"
@@ -19,11 +19,11 @@ extern cvar_t		vid_mode, _windowed_mouse;
 #define MODE_FULLSCREEN_DEFAULT 3
 
 extern qboolean	in_mode_set;
-static qboolean	restore_spi;
-static int		originalmouseparms[3], newmouseparms[3] = {0, 0, 1};
+//static qboolean	restore_spi;
+//static int	originalmouseparms[3], newmouseparms[3] = {0, 0, 1};
 static qboolean	mouseactive;
-qboolean		mouseinitialized;
-static qboolean	mouseparmsvalid, mouseactivatetoggle;
+qboolean	mouseinitialized;
+static qboolean	/*mouseparmsvalid, */mouseactivatetoggle;
 static qboolean	mouseshowtoggle = 1;
 
 qboolean grab = 1;
@@ -1254,6 +1254,10 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2004/12/18 13:52:54  sezero
+ * Clean-up and kill warnings 5:
+ * Misc irritants..
+ *
  * Revision 1.8  2004/12/18 13:17:10  sezero
  * steven fixes the mouse once again ;
  *

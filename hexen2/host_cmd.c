@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.5 2004-12-18 13:59:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.6 2004-12-18 14:08:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -629,17 +629,16 @@ void Host_Loadgame_f (void)
 	FILE	*f;
 	char	mapname[MAX_QPATH];
 	float	time, tfloat;
-	char	str[32768], *start;
-	int		i, r;
+	char	str[32768];
+	int	i;
 	edict_t	*ent;
-	int		entnum;
-	int		version;
+	int	version;
 	float	tempf;
-	int		tempi;
-	float			spawn_parms[NUM_SPAWN_PARMS];
+	int	tempi;
+	float	spawn_parms[NUM_SPAWN_PARMS];
 //	char	name[MAX_OSPATH],dest[MAX_OSPATH],tempdir[MAX_OSPATH];
 	qboolean error_state = false;
-	int attempts = 0;
+	int	attempts = 0;
 	char *message;
 
 	if (cmd_source != src_command)
@@ -1247,7 +1246,6 @@ extern char *ClassNames[NUM_CLASSES];	//from menu.c
 void Host_Class_f (void)
 {
 	float	newClass;
-	char *Text;
 
 	if (Cmd_Argc () == 1)
 	{
@@ -1866,8 +1864,7 @@ void Host_Create_f(void)
 	char *FindName;
 	dfunction_t	*Search,*func;
 	edict_t		*ent;
-	int			i,Length,NumFound,Diff,NewDiff;
-	char temp[256];
+	int		i,Length,NumFound,Diff,NewDiff;
 
 	if (!sv.active)
 	{
@@ -2079,8 +2076,7 @@ Host_Give_f
 void Host_Give_f (void)
 {
 	char	*t;
-	int		v, w;
-	eval_t	*val;
+	int	v;
 
 	if (cmd_source == src_command)
 	{
@@ -2493,6 +2489,10 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/12/18 13:59:25  sezero
+ * Clean-up and kill warnings 8:
+ * Missing prototypes.
+ *
  * Revision 1.4  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

@@ -3,7 +3,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_screen.c,v 1.5 2004-12-12 14:25:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_screen.c,v 1.6 2004-12-18 14:08:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -296,7 +296,6 @@ Internal use only
 */
 static void SCR_CalcRefdef (void)
 {
-	vrect_t		vrect;
 	float		size;
 	int		h;
 
@@ -1161,9 +1160,6 @@ needs almost the entire 256k of stack space!
 */
 void SCR_UpdateScreen (void)
 {
-	static float	oldscr_viewsize;
-	vrect_t		vrect;
-
 	scr_copytop = 0;
 	scr_copyeverything = 0;
 
@@ -1287,6 +1283,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/12/12 14:25:18  sezero
+ * add and fix some comments
+ *
  * Revision 1.4  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

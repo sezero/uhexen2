@@ -108,13 +108,12 @@ Combine and scale multiple lightmaps into the 8.8 format in blocklights
 */
 void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 {
-	int			smax, tmax;
-	int			t;
-	int			i, j, size;
+	int		smax, tmax;
+	int		t;
+	int		i, j, size;
 	byte		*lightmap;
 	unsigned	scale;
-	int			maps;
-	int			lightadj[4];
+	int		maps;
 	unsigned	*bl;
 
 	surf->cached_dlight = (surf->dlightframe == r_framecount);
@@ -382,9 +381,8 @@ Warp the vertex coordinates
 */
 void DrawGLWaterPoly (glpoly_t *p)
 {
-	int		i;
+	int	i;
 	float	*v;
-	float	s, t, os, ot;
 	vec3_t	nv;
 
 	glfunc.glBegin_fp (GL_TRIANGLE_FAN);
@@ -401,11 +399,11 @@ void DrawGLWaterPoly (glpoly_t *p)
 	}
 	glfunc.glEnd_fp ();
 }
+
 void DrawGLWaterPolyLightmap (glpoly_t *p)
 {
-	int		i;
+	int	i;
 	float	*v;
-	float	s, t, os, ot;
 	vec3_t	nv;
 
 	glfunc.glBegin_fp (GL_TRIANGLE_FAN);
@@ -745,9 +743,8 @@ R_DrawBrushModel
 */
 void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 {
-	int			j, k;
+	int		i, k;
 	vec3_t		mins, maxs;
-	int			i, numsurfaces;
 	msurface_t	*psurf;
 	float		dot;
 	mplane_t	*pplane;
@@ -861,13 +858,11 @@ R_RecursiveWorldNode
 */
 void R_RecursiveWorldNode (mnode_t *node)
 {
-	int			i, c, side, *pindex;
-	vec3_t		acceptpt, rejectpt;
+	int		c, side;
 	mplane_t	*plane;
 	msurface_t	*surf, **mark;
 	mleaf_t		*pleaf;
-	double		d, dot;
-	vec3_t		mins, maxs;
+	double		dot;
 
 	if (node->contents == CONTENTS_SOLID)
 		return;		// solid
@@ -983,7 +978,6 @@ R_DrawWorld
 void R_DrawWorld (void)
 {
 	entity_t	ent;
-	int			i;
 
 	memset (&ent, 0, sizeof(ent));
 	ent.model = cl.worldmodel;
@@ -1072,7 +1066,6 @@ int AllocBlock (int w, int h, int *x, int *y)
 {
 	int		i, j;
 	int		best, best2;
-	int		bestx;
 	int		texnum;
 
 	for (texnum=0 ; texnum<MAX_LIGHTMAPS ; texnum++)
@@ -1122,14 +1115,9 @@ BuildSurfaceDisplayList
 */
 void BuildSurfaceDisplayList (msurface_t *fa)
 {
-	int			i, lindex, lnumverts, s_axis, t_axis;
-	float		dist, lastdist, lzi, scale, u, v, frac;
-	unsigned	mask;
-	vec3_t		local, transformed;
+	int		i, lindex, lnumverts;
 	medge_t		*pedges, *r_pedge;
-	mplane_t	*pplane;
-	int			vertpage, newverts, newpage, lastvert;
-	qboolean	visible;
+	int		vertpage;
 	float		*vec;
 	float		s, t;
 	glpoly_t	*poly;
@@ -1200,7 +1188,6 @@ void BuildSurfaceDisplayList (msurface_t *fa)
 		{
 			vec3_t v1, v2;
 			float *prev, *this, *next;
-			float f;
 
 			prev = poly->verts[(i + lnumverts - 1) % lnumverts];
 			this = poly->verts[i];
@@ -1242,7 +1229,7 @@ GL_CreateSurfaceLightmap
 */
 void GL_CreateSurfaceLightmap (msurface_t *surf)
 {
-	int		smax, tmax, s, t, l, i;
+	int	smax, tmax;
 	byte	*base;
 
 	if (surf->flags & (SURF_DRAWSKY|SURF_DRAWTURB))

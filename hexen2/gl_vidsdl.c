@@ -1,6 +1,6 @@
 /*
    gl_dl_vidsdl.c
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.13 2004-12-18 13:30:50 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.14 2004-12-18 14:08:07 sezero Exp $
 
    Select window size and mode and init SDL in GL mode.
 
@@ -86,12 +86,11 @@ const char *gl_extensions;
 char *gl_library;
 
 
-qboolean		DDActive;
-qboolean		scr_skipupdate;
+qboolean	DDActive;
+qboolean	scr_skipupdate;
 
 static vmode_t	modelist[MAX_MODE_LIST];
-static int		nummodes;
-static vmode_t	*pcurrentmode;
+static int	nummodes;
 static vmode_t	badmode;
 
 #if 0
@@ -110,31 +109,31 @@ static HICON	hIcon;
 
 unsigned char inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
 
-int			DIBWidth, DIBHeight;
+int		DIBWidth, DIBHeight;
 int		WRHeight, WRWidth;
+
 #if 0
 RECT		WindowRect;
 DWORD		WindowStyle, ExWindowStyle;
-
-HWND	mainwindow, dibwindow;
+HWND		mainwindow, dibwindow;
 #endif
 
-int			vid_modenum = NO_MODE;
-int			vid_realmode;
-int			vid_default = MODE_WINDOWED;
+int		vid_modenum = NO_MODE;
+int		vid_realmode;
+int		vid_default = MODE_WINDOWED;
 static int	windowed_default;
 
 unsigned char	vid_curpal[256*3];
-float RTint[256],GTint[256],BTint[256];
+float		RTint[256],GTint[256],BTint[256];
 
 #if 0
-HGLRC	baseRC;
+HGLRC		baseRC;
 HDC		maindc;
 #endif
 
-glvert_t glv;
+glvert_t	glv;
 
-cvar_t	gl_ztrick = {"gl_ztrick","0",true};
+cvar_t		gl_ztrick = {"gl_ztrick","0",true};
 
 #if 0
 HWND WINAPI InitializeWindow (HINSTANCE hInstance, int nCmdShow);
@@ -186,7 +185,7 @@ cvar_t		vid_config_y = {"vid_config_y","600", true};
 cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1", true};
 cvar_t		_windowed_mouse = {"_windowed_mouse","0", true};
 
-int			window_center_x, window_center_y, window_x, window_y, window_width, window_height;
+int		window_center_x, window_center_y, window_x, window_y, window_width, window_height;
 RECT		window_rect;
 
 // direct draw software compatability stuff
@@ -224,8 +223,6 @@ void D_EndDirectRect (int x, int y, int width, int height)
 #if 0
 void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 {
-void *handle;
-
     RECT    rect;
     int     CenterX, CenterY;
 
@@ -246,8 +243,6 @@ qboolean VID_SetWindowedMode (int modenum)
 {
 	// handle both fullscreen and windowed modes -S.A
 
-        char *error;
-	void *handle;
 	Uint32 flags;
 
 	/* SDL doco recons you need this. S.A.
@@ -293,8 +288,6 @@ qboolean VID_SetWindowedMode (int modenum)
 	SDL_WM_SetCaption ("Hexen II", "HEXEN2");
 #endif
 	return true;
-
-	// "#if 0" removed
 }
 
 // procedure VID_SetFullDIBMode is history
@@ -850,7 +843,7 @@ GL_BeginRendering
 */
 void GL_BeginRendering (int *x, int *y, int *width, int *height)
 {
-	extern cvar_t gl_clear;
+//	extern cvar_t gl_clear;
 
 	*x = *y = 0;
 #if 0
@@ -910,6 +903,7 @@ unsigned ColorPercent[16] =
 	25, 51, 76, 102, 114, 127, 140, 153, 165, 178, 191, 204, 216, 229, 237, 247
 };
 
+#ifdef DO_BUILD
 static int ConvertTrueColorToPal( unsigned char *true_color, unsigned char *palette )
 {
 	int i;
@@ -943,6 +937,7 @@ static int ConvertTrueColorToPal( unsigned char *true_color, unsigned char *pale
 	}
 	return min_index;
 }
+#endif
 
 void	VID_CreateInversePalette( unsigned char *palette )
 {
@@ -1071,7 +1066,6 @@ void	VID_ShiftPalette (unsigned char *palette)
 
 //	gammaworks = SetDeviceGammaRamp (maindc, ramps);
 }
-
 
 void VID_SetDefaultMode (void)
 {
@@ -1434,12 +1428,10 @@ VID_Init
 */
 void	VID_Init (unsigned char *palette)
 {
-	int		i, existingmode;
-	int		basenummodes, width, height, bpp, findbpp, done;
-	byte	*ptmp;
+	int	basenummodes, width, height, bpp, findbpp;
 	char	gldir[MAX_OSPATH];
 #if 0
-	HDC		hdc;
+	HDC	hdc;
 	DEVMODE	devmode;
 #endif
 
@@ -1666,13 +1658,13 @@ extern void M_DrawCharacter (int cx, int line, int num);
 extern void M_DrawTransPic (int x, int y, qpic_t *pic);
 extern void M_DrawPic (int x, int y, qpic_t *pic);
 
-static int	vid_line, vid_wmodes;
+static int	vid_wmodes;
 
 typedef struct
 {
-	int		modenum;
+	int	modenum;
 	char	*desc;
-	int		iscur;
+	int	iscur;
 } modedesc_t;
 
 #define MAX_COLUMN_SIZE		9
@@ -1688,10 +1680,8 @@ VID_MenuDraw
 */
 void VID_MenuDraw (void)
 {
-	qpic_t		*p;
 	char		*ptr;
-	int			lnummodes, i, j, k, column, row, dup, dupmode;
-	char		temp[100];
+	int		lnummodes, i, k, column, row;
 	vmode_t		*pv;
 
 	ScrollTitle("gfx/menu/title7.lmp");

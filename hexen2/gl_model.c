@@ -1,12 +1,11 @@
 /*
-
 	models.c
 	model loading and caching
 
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.c,v 1.4 2004-12-18 13:30:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.c,v 1.5 2004-12-18 14:08:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1323,8 +1322,8 @@ Mod_LoadAliasFrame
 */
 void * Mod_LoadAliasFrame (void * pin, maliasframedesc_t *frame)
 {
-	trivertx_t		*pframe, *pinframe;
-	int				i, j;
+	trivertx_t	*pinframe;
+	int		i, j;
 	daliasframe_t	*pdaliasframe;
 	vec3_t in,out;
 
@@ -1528,12 +1527,11 @@ Mod_LoadAllSkins
 */
 void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int mdl_flags)
 {
-	int		i;
+	int	i;
 	char	name[MAX_QPATH]; /* 32 might be too low (Pa3PyX) */
-	int		s;
-	byte	*copy;
+	int	s;
 	byte	*skin;
-	int		texture_mode;
+	int	texture_mode;
 	
 	skin = (byte *)(pskintype + 1);
 
@@ -1755,15 +1753,15 @@ reads extra field for num ST verts, and extra index list of them
 */
 void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
 {
-	int					i, j;
-	newmdl_t			*pinmodel;
-	stvert_t			*pinstverts;
+	int			i, j;
+	newmdl_t		*pinmodel;
+	stvert_t		*pinstverts;
 	dnewtriangle_t		*pintriangles;
-	int					version, numframes, numskins;
-	int					size;
+	int			version, numframes;
+	int			size;
 	daliasframetype_t	*pframetype;
 	daliasskintype_t	*pskintype;
-	int					start, end, total;
+	int			start, end, total;
 	
 	Mod_SetAliasModelExtraFlags (mod);
 
@@ -1938,15 +1936,15 @@ Mod_LoadAliasModel
 */
 void Mod_LoadAliasModel (model_t *mod, void *buffer)
 {
-	int					i, j;
-	mdl_t				*pinmodel;
-	stvert_t			*pinstverts;
-	dtriangle_t			*pintriangles;
-	int					version, numframes, numskins;
-	int					size;
+	int			i, j;
+	mdl_t			*pinmodel;
+	stvert_t		*pinstverts;
+	dtriangle_t		*pintriangles;
+	int			version, numframes;
+	int			size;
 	daliasframetype_t	*pframetype;
 	daliasskintype_t	*pskintype;
-	int					start, end, total;
+	int			start, end, total;
 	
 	Mod_SetAliasModelExtraFlags (mod);
 
@@ -2124,10 +2122,8 @@ void * Mod_LoadSpriteFrame (model_t *mod, void * pin, mspriteframe_t **ppframe, 
 {
 	dspriteframe_t		*pinframe;
 	mspriteframe_t		*pspriteframe;
-	int					i, width, height, size, origin[2];
-	unsigned short		*ppixout;
-	byte				*ppixin;
-	char				name[64];
+	int			width, height, size, origin[2];
+	char			name[64];
 
 	pinframe = (dspriteframe_t *)pin;
 
@@ -2313,6 +2309,11 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/18 13:30:50  sezero
+ * Hack to prevent textures going awol and some info-plaques start looking
+ * white upon succesive load games. The solution is not beautiful but seems
+ * to work for now. Adapted from Pa3PyX sources.
+ *
  * Revision 1.3  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

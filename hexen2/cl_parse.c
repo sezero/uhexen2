@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.3 2004-12-18 14:08:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -662,13 +662,12 @@ void CL_ParseUpdate (int bits)
 
 void CL_ParseUpdate (int bits)
 {
-	int			i;
-	float		f;
+	int		i;
 	model_t		*model;
-	int			modnum;
+	int		modnum;
 	qboolean	forcelink;
 	entity_t	*ent;
-	int			num;
+	int		num;
 	entity_state2_t *ref_ent,*set_ent,build_ent,dummy;
 
 	if (cls.signon == SIGNONS - 1)
@@ -914,13 +913,7 @@ void CL_ParseUpdate (int bits)
 
 void CL_ParseUpdate2 (int bits)
 {
-	int			i;
-	model_t		*model;
-	int			modnum;
-	qboolean	forcelink;
-	entity_t	*ent;
-	int			num;
-	entity_state2_t *ref_ent,*set_ent,build_ent,dummy;
+	int		i;
 
 	if (bits & U_MOREBITS)
 	{
@@ -1014,9 +1007,7 @@ Server information pertaining to this client only
 */
 void CL_ParseClientdata (int bits)
 {
-	int		i, j;
-	int max_order;
-	
+	int	i, j;
 
 	if (bits & SU_VIEWHEIGHT)
 		cl.viewheight = MSG_ReadChar ();
@@ -1384,21 +1375,20 @@ CL_ParseServerMessage
 */
 void CL_ParseServerMessage (void)
 {
-	int			cmd;
-	int			i,j,k;
-	int			EntityCount = 0;
-	int			EntitySize = 0;
-	int			before;
+	int		cmd;
+	int		i, j, k;
+	int		EntityCount = 0;
+	int		EntitySize = 0;
+	int		before;
 	static		double lasttime;
 	static		qboolean packet_loss = false;
 	entity_t	*ent;
 	short		RemovePlace, OrigPlace, NewPlace, AddedIndex;
-	int sc1, sc2;
-	byte test;
-	float x,y,z,dx,dy,dz;
+	int		sc1, sc2;
+	byte		test;
 	float		compangles[2][3];
 	vec3_t		deltaangles;
-	
+
 //
 // if recording demos, copy the message out
 //
@@ -2033,6 +2023,9 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:01:08  sezero
  * Initial import of AoT 1.2.0 code
  *

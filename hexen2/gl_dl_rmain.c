@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_rmain.c,v 1.7 2004-12-18 13:24:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_rmain.c,v 1.8 2004-12-18 14:08:07 sezero Exp $
 */
 
 
@@ -474,19 +474,13 @@ extern float RTint[256],GTint[256],BTint[256];
 
 void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 {
-	float	s, t;
-	float 	l;
-	int		i, j;
-	int		index;
-	trivertx_t	*v, *verts;
-	int		list;
+	float 		l;
+	trivertx_t	*verts;
 	int		*order;
-	vec3_t	point;
-	float	*normal;
 	int		count;
-	float	r,g,b,p;
+	float		r,g,b;
 
-lastposenum = posenum;
+	lastposenum = posenum;
 
 	verts = (trivertx_t *)((byte *)paliashdr + paliashdr->posedata);
 	verts += posenum * paliashdr->poseverts;
@@ -542,15 +536,10 @@ extern	vec3_t			lightspot;
 
 void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 {
-	float	s, t, l;
-	int		i, j;
-	int		index;
-	trivertx_t	*v, *verts;
-	int		list;
+	trivertx_t	*verts;
 	int		*order;
-	vec3_t	point;
-	float	*normal;
-	float	height, lheight;
+	vec3_t		point;
+	float		height, lheight;
 	int		count;
 
 	lheight = currententity->origin[2] - lightspot[2];
@@ -641,24 +630,22 @@ R_DrawAliasModel
 */
 void R_DrawAliasModel (entity_t *e)
 {
-	int			i, j;
-	int			lnum;
+	int		i;
+	int		lnum;
 	vec3_t		dist;
 	float		add;
 	model_t		*clmodel;
 	vec3_t		mins, maxs;
 	aliashdr_t	*paliashdr;
-	trivertx_t	*verts, *v;
-	int			index;
-	float		s, t, an;
+	float		an;
 	static float	tmatrix[3][4];
-	float entScale;
-	float xyfact;
-	float zfact;
+	float		entScale;
+	float		xyfact;
+	float		zfact;
 	qpic_t		*stonepic;
-	glpic_t			*gl;
-	char temp[40];
-	int mls;
+	glpic_t		*gl;
+	char		temp[40];
+	int		mls;
 	vec3_t		adjust_origin;
 
 	clmodel = currententity->model;
@@ -1017,26 +1004,7 @@ void R_DrawEntitiesOnList (void)
 
 void R_DrawGlow (entity_t *e)
 {
-	int			i, j;
-	int			lnum;
-	vec3_t		dist;
-	float		add;
 	model_t		*clmodel;
-	vec3_t		mins, maxs;
-	aliashdr_t	*paliashdr;
-	trivertx_t	*verts, *v;
-	int			index;
-	float		s, t, an;
-	static float	tmatrix[3][4];
-	float entScale;
-	float xyfact;
-	float zfact;
-	qpic_t		*stonepic;
-	glpic_t			*gl;
-	char temp[40];
-	int mls;
-
-	vec3_t		adjust_origin;
 
 	clmodel = currententity->model;
 
@@ -1441,10 +1409,6 @@ R_SetupFrame
 */
 void R_SetupFrame (void)
 {
-	int				edgecount;
-	vrect_t			vrect;
-	float			w, h;
-
 // don't allow cheats in multiplayer
 	if (cl.maxclients > 1)
 		Cvar_Set ("r_fullbright", "0");
@@ -1496,15 +1460,14 @@ void R_SetupGL (void)
 {
 	float	screenaspect;
 	float	yfov;
-	int		i;
 	extern	int glwidth, glheight;
-	int		x, x2, y2, y, w, h;
+	int	x, x2, y2, y, w, h;
 
 	//
 	// set up viewpoint
 	//
 	glfunc.glMatrixMode_fp(GL_PROJECTION);
-    glfunc.glLoadIdentity_fp ();
+	glfunc.glLoadIdentity_fp ();
 	// JACK: Changes for non-scaled
 	x = r_refdef.vrect.x * glwidth/vid.width /*320*/;
 	x2 = (r_refdef.vrect.x + r_refdef.vrect.width) * glwidth/vid.width /*320*/;
@@ -1770,8 +1733,6 @@ r_refdef must be set before the first call
 */
 void R_RenderView (void)
 {
-	double	time1, time2;
-
 	if (r_norefresh.value)
 		return;
 
@@ -1821,6 +1782,10 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2004/12/18 13:24:37  sezero
+ * fix fire attacks of the Demoness and Praevus which were drawing lines
+ * across the screen. courtesy of Pa3Pyx.
+ *
  * Revision 1.6  2004/12/12 23:16:44  sezero
  * two minor cvar annoyances
  *

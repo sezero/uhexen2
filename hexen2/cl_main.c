@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.5 2004-12-18 13:54:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.6 2004-12-18 14:08:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -149,7 +149,6 @@ void CL_RemoveGIPFiles (char *path)
 		return;
 	}
 	do {
-		int errno = 0;
 		dent = readdir(dir);
 		if (dent != NULL) {
 			if (!fnmatch ("*.gip", dent->d_name,FNM_PATHNAME)) {
@@ -215,7 +214,6 @@ failed.
 		fpat++; /* skip the '/' */
 			
 	do {
-		int errno = 0;
 		dent = readdir(dir);
 		if (dent != NULL) {
 			if (!fnmatch (fpat, dent->d_name,FNM_PATHNAME)) {
@@ -603,11 +601,11 @@ void CL_RelinkEntities (void)
 	int			i, j;
 	float		frac, f, d;
 	vec3_t		delta;
-	//float		bobjrotate;
+//	float		bobjrotate;
 	vec3_t		oldorg;
 	dlight_t	*dl;
 	int c;
-	static int lastc = 0;
+//	static int lastc = 0;
 
 	c = 0;
 // determine partial update time	
@@ -1031,6 +1029,10 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/12/18 13:54:43  sezero
+ * Clean-up and kill warnings 6:
+ * Include proper stock headers to avoid some "implicity declared" warnings
+ *
  * Revision 1.4  2004/12/18 13:52:54  sezero
  * Clean-up and kill warnings 5:
  * Misc irritants..

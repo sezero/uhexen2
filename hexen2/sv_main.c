@@ -2,14 +2,14 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.6 2004-12-18 13:57:00 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.7 2004-12-18 14:08:08 sezero Exp $
 */
 
 #include "quakedef.h"
 
-server_t		sv;
+server_t	sv;
 server_static_t	svs;
-char	localmodels[MAX_MODELS][5];			// inline model names for precache
+char	localmodels[MAX_MODELS][5];	// inline model names for precache
 
 /******************************************************************
  * O.S.:   RJNET and RJNETa are different???  Clean this mess up! *
@@ -127,10 +127,7 @@ void SV_Edicts(char *Name)
 
 void Sv_Edicts_f(void)
 {
-	FILE *FH;
 	char *Name;
-	int i;
-	edict_t *e;
 
 	if (!sv.active)
 	{
@@ -197,8 +194,6 @@ Make sure the event gets sent to all clients
 */
 void SV_StartParticle2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int effect, int count)
 {
-	int		i, v;
-
 	if (sv.datagram.cursize > MAX_DATAGRAM-36)
 		return;	
 	MSG_WriteByte (&sv.datagram, svc_particle2);
@@ -226,8 +221,6 @@ Make sure the event gets sent to all clients
 */
 void SV_StartParticle3 (vec3_t org, vec3_t box, int color, int effect, int count)
 {
-	int		i, v;
-
 	if (sv.datagram.cursize > MAX_DATAGRAM-15)
 		return;	
 	MSG_WriteByte (&sv.datagram, svc_particle3);
@@ -252,8 +245,6 @@ Make sure the event gets sent to all clients
 */
 void SV_StartParticle4 (vec3_t org, float radius, int color, int effect, int count)
 {
-	int		i, v;
-
 	if (sv.datagram.cursize > MAX_DATAGRAM-13)
 		return;	
 	MSG_WriteByte (&sv.datagram, svc_particle4);
@@ -333,10 +324,11 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
 #if RJNET
 	sizebuf_t   cm;
 	byte		datagram_buf[MAX_DATAGRAM];
+#if RJNETa
 	client_t	*client;
 	vec_t		distance;
 	vec3_t		diff;
-
+#endif
 	cm.data = datagram_buf;
 	cm.maxsize = sizeof(datagram_buf);
 	cm.cursize = 0;
@@ -531,10 +523,10 @@ void SV_ConnectClient (int clientnum)
 	client_t		*client;
 	int				edictnum;
 	struct qsocket_s *netconnection;
-	int				i;
+//	int			i;
 	float			spawn_parms[NUM_SPAWN_PARMS];
 #if RJNET
-	int				entnum;
+	int			entnum;
 	edict_t			*svent;
 #endif
 
@@ -1497,16 +1489,12 @@ SV_WriteClientdataToMessage
 */ 
 void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg)
 {
-	int		bits,sc1,sc2;
+	int	bits,sc1,sc2;
 	byte	test;
-	int		i;
+	int	i;
 	edict_t	*other;
-	int		items;
 	static  int next_update = 0;
 	static	int next_count = 0;
-#ifndef QUAKE2
-	eval_t	*val;
-#endif
 
 //
 // send a damage message
@@ -1994,11 +1982,9 @@ SV_UpdateToReliableMessages
 */
 void SV_UpdateToReliableMessages (void)
 {
-	int			i, j;
+	int	i, j;
 	client_t *client;
 	edict_t *ent;
-	int		sc1,sc2;
-	byte	test;
 
 // check for changes to be sent over the reliable streams
 	for (i=0, host_client = svs.clients ; i<svs.maxclients ; i++, host_client++)
@@ -2312,7 +2298,7 @@ transition to another level
 */
 void SV_SaveSpawnparms (void)
 {
-	int		i, j;
+	int		i/*, j*/;
 
 	svs.serverflags = pr_global_struct->serverflags;
 
@@ -2552,6 +2538,10 @@ void SV_SpawnServer (char *server)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2004/12/18 13:57:00  sezero
+ * Clean-up and warnings 7:
+ * Add comments about RJNET / RJNETa / QUAKE2 / QUAKE2RJ mess.
+ *
  * Revision 1.5  2004/12/18 13:48:59  sezero
  * Clean-up and kill warnings 3:
  * Kill " suggest parentheses around XXX " warnings

@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.5 2004-12-18 13:30:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.6 2004-12-18 14:08:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -91,7 +91,6 @@ int Scrap_AllocBlock (int w, int h, int *x, int *y)
 {
 	int		i, j;
 	int		best, best2;
-	int		bestx;
 	int		texnum;
 
 	for (texnum=0 ; texnum<MAX_SCRAPS ; texnum++)
@@ -200,7 +199,7 @@ qpic_t *Draw_PicFromFile (char *name)
 	}
 	else*/
 	{
-nonscrap:
+//nonscrap:
 		gl->texnum = GL_LoadPicTexture (p);
 
 		gl->sl = 0;
@@ -586,10 +585,6 @@ smoothly scrolled off.
 */
 void Draw_Character (int x, int y, unsigned int num)
 {
-	byte			*dest;
-	byte			*source;
-	unsigned short	*pusdest;
-	int				drawline;
 	int				row, col;
 	float			frow, fcol, xsize,ysize;
 
@@ -649,10 +644,6 @@ void Draw_String (int x, int y, char *str)
 //==========================================================================
 void Draw_SmallCharacter (int x, int y, int num)
 {
-	byte			*dest;
-	byte			*source;
-	unsigned short	*pusdest;
-	int				drawline;
 	int				row, col;
 	float			frow, fcol, xsize,ysize;
 
@@ -988,10 +979,6 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 
 int M_DrawBigCharacter (int x, int y, int num, int numNext)
 {
-	byte			*dest;
-	byte			*source;
-	unsigned short	*pusdest;
-	int				drawline;
 	int				row, col;
 	float			frow, fcol, xsize,ysize;
 	int				add;
@@ -1646,8 +1633,7 @@ GL_LoadTexture
 */
 int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode)
 {
-	qboolean	noalpha;
-	int			i, p, s;
+	int		i;
 	gltexture_t	*glt;
 	char search[64];
 
@@ -1791,6 +1777,11 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/12/18 13:30:50  sezero
+ * Hack to prevent textures going awol and some info-plaques start looking
+ * white upon succesive load games. The solution is not beautiful but seems
+ * to work for now. Adapted from Pa3PyX sources.
+ *
  * Revision 1.4  2004/12/16 18:10:12  sezero
  * - Add glGetIntegerv, glActiveTextureARB and glMultiTexCoord2fARB to the
  *   gl_func lists. (glGetIntegerv is required to init. The others are for
