@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.1.1.1 2004-11-28 08:54:51 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.2 2004-12-04 02:03:20 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -856,25 +856,25 @@ enum
 	OPT_CONSOLE,
 	OPT_DEFAULTS,
 	OPT_SCRSIZE,	//3
-	OPT_GAMMA,		//4
+	OPT_GAMMA,	//4
 	OPT_MOUSESPEED,	//5
 	OPT_MUSICTYPE,	//6
 	OPT_MUSICVOL,	//7
-	OPT_SNDVOL,		//8
+	OPT_SNDVOL,	//8
 	OPT_ALWAYRUN,	//9
 	OPT_INVMOUSE,	//10
 	OPT_LOOKSPRING,	//11
 	OPT_LOOKSTRAFE,	//12
 	OPT_CROSSHAIR,	//13
 	OPT_ALWAYSMLOOK,//14
-	OPT_VIDEO,		//15
-	OPT_USEMOUSE,	//16
+	OPT_USEMOUSE,	//15
+	OPT_VIDEO,	//16
 	OPTIONS_ITEMS
 };
 
 #define	SLIDER_RANGE	10
 
-int		options_cursor;
+int	options_cursor;
 
 void M_Menu_Options_f (void)
 {
@@ -1099,14 +1099,14 @@ void M_Options_Draw (void)
 	M_Print (16,60+(OPT_ALWAYSMLOOK*8),	"            Mouse Look");
 	M_DrawCheckbox (220, 60+(OPT_ALWAYSMLOOK*8), in_mlook.state & 1);
 
-	if (vid_menudrawfn)
-		M_Print (16, 60+(OPT_VIDEO*8),	"         Video Options");
-
 	if (modestate == MS_WINDOWED)
 	{
 		M_Print (16, 60+(OPT_USEMOUSE*8), "             Use Mouse");
 		M_DrawCheckbox (220, 60+(OPT_USEMOUSE*8), _windowed_mouse.value);
 	}
+
+	if (vid_menudrawfn)
+		M_Print (16, 60+(OPT_VIDEO*8),	"           Video Modes");
 
 // cursor
 	M_DrawCharacter (200, 60 + options_cursor*8, 12+((int)(realtime*4)&1));
@@ -1182,20 +1182,26 @@ void M_Options_Key (int k)
 	if (options_cursor == OPT_VIDEO && vid_menudrawfn == NULL)
 	{
 		if (k == K_UPARROW)
-			options_cursor = OPT_ALWAYSMLOOK;
+			options_cursor = OPT_VIDEO - 1;
 		else
 			options_cursor = 0;
 	}
 
-#ifdef _WIN32
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
-	{
+	
 		if (k == K_UPARROW)
-			options_cursor = OPT_VIDEO;
+			options_cursor = OPT_USEMOUSE - 1;
+		else {
+			options_cursor = OPT_USEMOUSE + 1;
+			if (options_cursor == OPTIONS_ITEMS)
+				options_cursor = 0;
+		}
+
+	if (options_cursor == OPT_VIDEO && vid_menudrawfn == NULL)
+		if (k == K_UPARROW)
+			options_cursor = OPT_VIDEO - 1;
 		else
 			options_cursor = 0;
-	}
-#endif
 }
 
 
