@@ -1,0 +1,184 @@
+
+- this patch allows compiling the boss-map files into hwprogs.dat.
+  it is not of much use, because coop seems fairly broken as of now.
+
+diff -urNp gamecode/hc/hw.BAK/triggers.hc gamecode/hc/hw/triggers.hc
+--- gamecode/hc/hw.BAK/triggers.hc	2004-11-29 13:24:26.000000000 +0200
++++ gamecode/hc/hw/triggers.hc	2005-02-15 12:52:59.000000000 +0200
+@@ -1436,6 +1436,11 @@ void() trigger_monsterjump_touch =
+ 		return;
+ 
+ // set XY even if not on ground, so the jump will clear lips
++	if(other.classname=="monster_eidolon")
++	{//blah
++		self.height*=1.3;
++		self.speed*=1.3;
++	}
+ 	other.velocity_x = self.movedir_x * self.speed;
+ 	other.velocity_y = self.movedir_y * self.speed;
+ 	
+diff -urNp gamecode/hc/hw.BAK/ai.hc gamecode/hc/hw/ai.hc
+--- gamecode/hc/hw.BAK/ai.hc	2004-11-29 13:30:14.000000000 +0200
++++ gamecode/hc/hw/ai.hc	2005-02-15 12:52:59.000000000 +0200
+@@ -35,7 +35,13 @@ void()SpiderMeleeBegin;
+ void()spider_onwall_wait;
+ float(entity targ , entity from)infront_of_ent;
+ void(entity proj)mezzo_choose_roll;
++void()multiplayer_health;
++void()riderpath_init;
++void(float move_speed)riderpath_move;
++float(float move_speed)eidolon_riderpath_move;
++void() eidolon_guarding;
+ void()hive_die;
++float()eidolon_check_attack;
+ 
+ //void()check_climb;
+ 
+@@ -385,7 +391,18 @@ float		r;
+ 			if (!infront (client))
+ 				return FALSE;
+ 		}
+-	
++
++	if (r == RANGE_NEAR)
++	{
++		if (client.show_hostile < time && !infront (client))
++			return FALSE;
++	}
++	else if (r == RANGE_MID)
++	{
++		if (!infront (client))
++			return FALSE;
++ 	}
++
+ 	if (!visible (client))
+ 		return FALSE;
+ 
+@@ -491,7 +508,20 @@ void(float dist) ai_walk =
+ 	if (FindTarget (FALSE))
+ 		return;
+ 
+-	movetogoal (dist);
++	if(self.classname=="monster_eidolon")
++	{
++		if (!self.path_current)
++			riderpath_init();
++		if(!eidolon_riderpath_move(dist))
++		{
++			if(self.think==self.th_walk)
++				self.think=eidolon_guarding;
++		}
++		else if(self.think==eidolon_guarding)
++			self.think=self.th_walk;
++	}
++	else
++		movetogoal (dist);
+ };
+ 
+ 
+@@ -601,6 +631,11 @@ float() CheckAnyAttack =
+ 
+ 	if(self.goalentity==self.controller)
+ 		return FALSE;
++	if(self.classname=="monster_eidolon")
++		if(self.goalentity==self.controller)
++			return FALSE;
++		else
++			return eidolon_check_attack();
+ 
+ 	return CheckAttack ();
+ };
+@@ -747,11 +782,13 @@ void(float dist) ai_run =
+ 
+ 	enemy_infront = infront(self.enemy);
+ 	enemy_range = range(self.enemy);
+-	enemy_yaw = vectoyaw(self.goalentity.origin - self.origin);
++	if(self.classname!="monster_eidolon")
++		enemy_yaw = vectoyaw(self.goalentity.origin - self.origin);
+ 	
+ 	if ((self.attack_state == AS_MISSILE) || (self.attack_state == AS_MELEE))  // turning to attack
+ 	{
+-		ai_attack_face ();
++		if(self.classname!="monster_eidolon")
++			ai_attack_face ();
+ 		return;
+ 	}
+ 
+@@ -767,7 +804,20 @@ void(float dist) ai_run =
+ // head straight in
+ //	if(self.netname=="spider")
+ //		check_climb();
+-	movetogoal (dist);		// done in C code...
++	if(self.classname=="monster_eidolon")
++	{
++		if(!self.path_current)
++			riderpath_init();
++		if(!eidolon_riderpath_move(dist))
++		{
++			if(self.think==self.th_run)
++				eidolon_guarding();
++		}
++		else if(self.think==eidolon_guarding)
++			self.th_run();
++	}
++	else
++		movetogoal (dist);		// done in C code...
+ };
+ 
+ /*
+diff -urNp gamecode/hc/hw.BAK/plats_mp.hc gamecode/hc/hw/plats_mp.hc
+--- gamecode/hc/hw.BAK/plats_mp.hc	2004-11-29 13:28:34.000000000 +0200
++++ gamecode/hc/hw/plats_mp.hc	2005-02-15 12:52:59.000000000 +0200
+@@ -4,7 +4,7 @@ float USE_ORIGIN	= 64;
+ float ANGLE_WAIT	= 128;
+ void() train_next_mp;
+ void() func_train_find_mp;
+-void rider_die(){}
++void rider_die();
+ 
+ void() train_blocked_mp =
+ {
+diff -urNp gamecode/hc/hw.BAK/progs.src gamecode/hc/hw/progs.src
+--- gamecode/hc/hw.BAK/progs.src	2004-11-29 13:28:44.000000000 +0200
++++ gamecode/hc/hw/progs.src	2005-02-15 12:52:59.000000000 +0200
+@@ -131,11 +131,11 @@ fangel.hc
+ 
+ eric.hc
+ 
+-//rider.hc
+-//pstboar.hc
+-//famhorse.hc
+-//warhorse.hc
+-//dthhorse.hc
+-//eidolon.hc
++rider.hc
++pstboar.hc
++famhorse.hc
++warhorse.hc
++dthhorse.hc
++eidolon.hc
+ 
+ stats.hc
+diff -urNp gamecode/hc/hw.BAK/spawner.hc gamecode/hc/hw/spawner.hc
+--- gamecode/hc/hw.BAK/spawner.hc	2005-02-15 12:40:35.000000000 +0200
++++ gamecode/hc/hw/spawner.hc	2005-02-15 12:52:59.000000000 +0200
+@@ -360,16 +360,5 @@ void func_monsterspawn_spot (void)
+ 		self.use=spawnspot_activate;
+ }
+ 
+-//stubs for the missing boss map funcs
+-void hive_die(){}
+-void spawn_ghost (entity attacker){}
+-void rider_path(){}
+-void rider_famine(){}
+-void rider_pestilence(){}
+-void rider_death(){}
+-void rider_war(){}
+-void rider_quake(){}
+-void rider_quake_center(){}
+-void rider_trigger_once(){}
+-void rider_trigger_multiple(){}
+-void monster_eidolon(){}
++void hive_die();
++void spawn_ghost (entity attacker);
+
