@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/weapons.hc,v 1.1.1.1 2004-11-29 11:36:16 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/weapons.hc,v 1.2 2005-03-17 18:09:38 sezero Exp $
  */
 /*
 */
@@ -109,10 +109,11 @@ void() T_PhaseMissileTouch =
 		sound (self, CHAN_WEAPON, "paladin/axric1.wav", 1, ATTN_NORM);
 			
 		if (self.goalentity)
-		{
-			self.goalentity.think = axetail_run;
-			self.goalentity.nextthink = time + HX_FRAME_TIME;
-		}
+			if (self.goalentity.classname=="ax_tail")
+			{
+				self.goalentity.think = axetail_run;
+				self.goalentity.nextthink = time + HX_FRAME_TIME;
+			}
 	}
 
 	if (pointcontents(self.origin) == CONTENT_SKY)
@@ -1254,6 +1255,9 @@ void W_SetCurrentWeapon (void)
 }
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:36:16  sezero
+ * Initial import
+ *
  * 
  * 25    3/20/98 7:42p Mgummelt
  * 
