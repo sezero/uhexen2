@@ -1,7 +1,7 @@
 // sys_unix.c -- Unix system interface code
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.3 2004-11-29 16:22:23 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.4 2004-11-29 16:31:58 sezero Exp $
  */
 
 #include <stdio.h>
@@ -820,7 +820,7 @@ void PrintHelp(char *name)
 {
 	printf ("\n");
 	PrintVersion();
-	printf ("http://sourceforge.net/somewhere\n");
+	printf ("http://sourceforge.net/projects/uhexen2/\n");
 	printf ("\n");
 	printf ("Please send bug reports or patches to:\n");
 //	printf ("     Dan Olson          <theoddone33@linuxgames.com>\n");
@@ -983,6 +983,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/11/29 16:22:23  sezero
+ * Grrrr......
+ *
  * Revision 1.2  2004/11/28 00:58:08  sezero
  *
  * Commit Steven's changes as of 2004.11.24:
