@@ -32,7 +32,7 @@ int resolution;
 int midi;
 int cdaudio;
 int sound;
-int mouse;
+int lan;
 int joystick;
 int destiny;
 
@@ -103,7 +103,7 @@ void fill_default_options()
   midi=1;
   cdaudio=1;
   joystick=0;
-  mouse=1;
+  lan=1;
 }
 
 int write_config_file()
@@ -131,12 +131,12 @@ int write_config_file()
     fprintf(cfg_file, "midi=%d\n",midi);
     fprintf(cfg_file, "cdaudio=%d\n",cdaudio);
     fprintf(cfg_file, "joystick=%d\n",joystick);
-    fprintf(cfg_file, "mouse=%d\n",mouse);
+    fprintf(cfg_file, "lan=%d\n",lan);
 
   }
     fclose (cfg_file); 
     //printf("Config file wrote successfully\n");
-    
+
     return 0;    
 }
 
@@ -233,11 +233,11 @@ int read_config_file()
 	      if (joystick < 0 || joystick > 1 )
 		joystick = 0;
 	    }
-	  else if (strstr(buff, "mouse=") == buff)
+	  else if (strstr(buff, "lan=") == buff)
 	    {
-	      mouse = atoi(buff + 6);
-	      if (mouse < 0 || mouse > 1 )
-		mouse = 0;
+	      lan = atoi(buff + 4);
+	      if (lan < 0 || lan > 1 )
+		lan = 1;
 	    }
 	}
     }

@@ -25,7 +25,7 @@ extern int midi;
 extern int cdaudio;
 extern int sound;
 extern int joystick;
-extern int mouse;
+extern int lan;
 extern int destiny;
 
 extern GtkWidget *fixed1;
@@ -65,8 +65,8 @@ on_SOUND_button_toggled                (GtkToggleButton *togglebutton,
   if (sound) {
     gtk_widget_set_sensitive (MIDI_button, FALSE);
     gtk_widget_set_sensitive (CDAUDIO_button, FALSE);
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MIDI_button), FALSE);
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (CDAUDIO_button), FALSE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MIDI_button), TRUE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (CDAUDIO_button), TRUE);
     midi=0;
     cdaudio=0;
     sound=0;
@@ -75,8 +75,8 @@ on_SOUND_button_toggled                (GtkToggleButton *togglebutton,
   else {
     gtk_widget_set_sensitive (MIDI_button, TRUE);
     gtk_widget_set_sensitive (CDAUDIO_button, TRUE);
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MIDI_button), TRUE);
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (CDAUDIO_button), TRUE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MIDI_button), FALSE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (CDAUDIO_button), FALSE);
     midi=1;
     cdaudio=1;
     sound=1;
@@ -329,13 +329,13 @@ on_CDAUDIO_button_toggled              (GtkToggleButton *togglebutton,
 
 
 void
-on_MOUS_button_toggled                 (GtkToggleButton *togglebutton,
+on_LAN_button_toggled                  (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (mouse) {
-    mouse=0;
+  if (lan) {
+    lan=0;
   } else {
-    mouse=1;
+    lan=1;
   }
 }
 

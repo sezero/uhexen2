@@ -90,7 +90,7 @@ on_Launch_clicked                      (GtkButton       *button,
 
 
 void
-on_MOUS_button_toggled                 (GtkToggleButton *togglebutton,
+on_LAN_button_toggled                  (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void

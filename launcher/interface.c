@@ -29,7 +29,7 @@ int midi;
 int cdaudio;
 int sound;
 int joystick;
-int mouse;
+int lan;
 int destiny;
 
 GtkWidget *fixed1;
@@ -69,7 +69,7 @@ create_window1 (void)
   GtkWidget *SOFT_button;
   GtkWidget *GL_button;
   GtkWidget *SOUND_button;
-  GtkWidget *MOUS_button;
+  GtkWidget *LAN_button;
   GtkWidget *JOY_button;
   GtkWidget *FS_button;
   GtkWidget *vseparator1;
@@ -287,7 +287,7 @@ create_window1 (void)
   if (opengl_support)
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (GL_button), TRUE);
 
-  SOUND_button = gtk_check_button_new_with_label (_("Enable sound"));
+  SOUND_button = gtk_check_button_new_with_label (_("Disable sound"));
   gtk_widget_ref (SOUND_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "SOUND_button", SOUND_button,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -295,61 +295,61 @@ create_window1 (void)
   gtk_fixed_put (GTK_FIXED (fixed1), SOUND_button, 184, 168);
   gtk_widget_set_uposition (SOUND_button, 184, 168);
   gtk_widget_set_usize (SOUND_button, 117, 26);
-  if (sound)
+  if (!sound)
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (SOUND_button), TRUE);
 
-  MIDI_button = gtk_check_button_new_with_label (_("Enable MIDI music"));
+  MIDI_button = gtk_check_button_new_with_label (_("Disable MIDI music"));
   gtk_widget_ref (MIDI_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "MIDI_button", MIDI_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (MIDI_button);
-  gtk_fixed_put (GTK_FIXED (fixed1), MIDI_button, 200, 192);
-  gtk_widget_set_uposition (MIDI_button, 200, 192);
-  gtk_widget_set_usize (MIDI_button, 144, 24);
-  if (sound) {
-    gtk_widget_set_sensitive (MIDI_button, TRUE);
-    if (midi)
+  gtk_fixed_put (GTK_FIXED (fixed1), MIDI_button, 200, 216);
+  gtk_widget_set_uposition (MIDI_button, 200, 216);
+  gtk_widget_set_usize (MIDI_button, 140, 24);
+  if (!sound) {
+    gtk_widget_set_sensitive (MIDI_button, FALSE);
+    if (!midi)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MIDI_button), TRUE);
   } else {
-    gtk_widget_set_sensitive (MIDI_button, FALSE);
+    gtk_widget_set_sensitive (MIDI_button, TRUE);
   }
 
-  CDAUDIO_button = gtk_check_button_new_with_label (_("Enable CD music"));
+  CDAUDIO_button = gtk_check_button_new_with_label (_("Disable CD music"));
   gtk_widget_ref (CDAUDIO_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "CDAUDIO_button", CDAUDIO_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (CDAUDIO_button);
-  gtk_fixed_put (GTK_FIXED (fixed1), CDAUDIO_button, 200, 216);
-  gtk_widget_set_uposition (CDAUDIO_button, 200, 216);
-  gtk_widget_set_usize (CDAUDIO_button, 136, 24);
-  if (sound) {
-    gtk_widget_set_sensitive (CDAUDIO_button, TRUE);
-    if (cdaudio)
+  gtk_fixed_put (GTK_FIXED (fixed1), CDAUDIO_button, 200, 192);
+  gtk_widget_set_uposition (CDAUDIO_button, 200, 192);
+  gtk_widget_set_usize (CDAUDIO_button, 140, 24);
+  if (!sound) {
+    gtk_widget_set_sensitive (CDAUDIO_button, FALSE);
+    if (!cdaudio)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (CDAUDIO_button), TRUE);
   } else {
-    gtk_widget_set_sensitive (CDAUDIO_button, FALSE);
+    gtk_widget_set_sensitive (CDAUDIO_button, TRUE);
   }
 
-  MOUS_button = gtk_check_button_new_with_label (_("Windowed Mouse"));
-  gtk_widget_ref (MOUS_button);
-  gtk_object_set_data_full (GTK_OBJECT (window1), "MOUS_button", MOUS_button,
+  LAN_button = gtk_check_button_new_with_label (_("Disable Networking"));
+  gtk_widget_ref (LAN_button);
+  gtk_object_set_data_full (GTK_OBJECT (window1), "LAN_button", LAN_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (MOUS_button);
-  gtk_fixed_put (GTK_FIXED (fixed1), MOUS_button, 184, 240);
-  gtk_widget_set_uposition (MOUS_button, 184, 240);
-  gtk_widget_set_usize (MOUS_button, 128, 24);
-  if (mouse)
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MOUS_button), TRUE);
+  gtk_widget_show (LAN_button);
+  gtk_fixed_put (GTK_FIXED (fixed1), LAN_button, 184, 264);
+  gtk_widget_set_uposition (LAN_button, 184, 264);
+  gtk_widget_set_usize (LAN_button, 136, 24);
+  if (!lan)
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (LAN_button), TRUE);
 
-  JOY_button = gtk_check_button_new_with_label (_("Enable Joystick"));
+  JOY_button = gtk_check_button_new_with_label (_("Disable Joystick"));
   gtk_widget_ref (JOY_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "JOY_button", JOY_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (JOY_button);
-  gtk_fixed_put (GTK_FIXED (fixed1), JOY_button, 184, 264);
-  gtk_widget_set_uposition (JOY_button, 184, 264);
-  gtk_widget_set_usize (JOY_button, 128, 24);
-  if (joystick)
+  gtk_fixed_put (GTK_FIXED (fixed1), JOY_button, 184, 240);
+  gtk_widget_set_uposition (JOY_button, 184, 240);
+  gtk_widget_set_usize (JOY_button, 136, 24);
+  if (!joystick)
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (JOY_button), TRUE);
 
   FS_button = gtk_check_button_new_with_label (_("Fullscreen mode"));
@@ -587,8 +587,8 @@ if (opengl_support) {
   gtk_signal_connect (GTK_OBJECT (CDAUDIO_button), "toggled",
                       GTK_SIGNAL_FUNC (on_CDAUDIO_button_toggled),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (MOUS_button), "toggled",
-                      GTK_SIGNAL_FUNC (on_MOUS_button_toggled),
+  gtk_signal_connect (GTK_OBJECT (LAN_button), "toggled",
+                      GTK_SIGNAL_FUNC (on_LAN_button_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (JOY_button), "toggled",
                       GTK_SIGNAL_FUNC (on_JOY_button_toggled),

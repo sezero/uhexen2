@@ -29,7 +29,7 @@ extern int midi;
 extern int cdaudio;
 extern int sound;
 extern int joystick;
-extern int mouse;
+extern int lan;
 extern int destiny;
 
 pid_t pid=0;
@@ -185,7 +185,8 @@ void launch_hexen2_bin() {
 
   if (sound == 0) {
     i++;
-    args[i]="-s";	// args[i]="--nosound";
+    args[i]="-nosound -nomidi -nocdaudio"; // the 2nd and 3rd are bogus but just
+					   // in case we may screw-up someday
   } else {
 	if (midi == 0) {
 	    i++;
@@ -202,9 +203,9 @@ void launch_hexen2_bin() {
     args[i]="-nojoy";
   }
 
-  if (mouse == 0) {
+  if (lan == 0) {
     i++;
-    args[i]="-nomouse";
+    args[i]="-nolan";
   }
 
 #ifndef DEMOBUILD
