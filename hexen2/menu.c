@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.21 2004-12-28 17:38:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.22 2004-12-28 22:33:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -16,7 +16,7 @@ extern  cvar_t  r_shadows, gl_glows, gl_missile_glows, gl_other_glows; // S.A
 extern	float introTime;
 extern	cvar_t	crosshair;
 #ifdef H2MP
-cvar_t m_oldmission = {"m_oldmission","0", true};
+cvar_t m_oldmission = {"m_oldmission","0", false};
 cvar_t m_demoness   = {"m_demoness",  "0", false};
 #define NUM_CLASSESD	(NUM_CLASSES -1 + m_demoness.value)
 #define CLASS_ITEMSD	(CLASS_ITEMS -1 + m_demoness.value)
@@ -4733,6 +4733,9 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2004/12/28 17:38:03  sezero
+ * Add/enable the cmdline options -witholdmission and -noold
+ *
  * Revision 1.20  2004/12/21 17:53:09  sezero
  * fix the GL_GLOWS entry once again...
  *
