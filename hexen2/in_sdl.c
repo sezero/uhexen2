@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.11 2004-12-29 19:49:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.12 2005-01-05 14:20:00 sezero Exp $
 */
 
 #include "SDL.h"
@@ -1042,7 +1042,8 @@ void IN_SendKeyEvents (void)
 				if ((event.key.keysym.sym == SDLK_RETURN) &&
 				    (event.key.keysym.mod & KMOD_ALT))
 				{
-					SDL_WM_ToggleFullScreen (SDL_GetVideoSurface());
+				//	SDL_WM_ToggleFullScreen (SDL_GetVideoSurface());
+					ToggleFullScreenSA ();
 					break;
 				}
 				else if ((event.key.keysym.sym == SDLK_g) &&
@@ -1263,6 +1264,11 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2004/12/29 19:49:40  sezero
+ * From Steven (2004-12-29):
+ * - Fullscreen/Windowed mode is now switchable. Seems to work good.
+ * - Mouse can now be disabled for fullscreen modes.
+ *
  * Revision 1.10  2004/12/18 14:08:07  sezero
  * Clean-up and kill warnings 9:
  * Kill many unused vars.
