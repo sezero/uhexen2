@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.19 2005-01-24 20:29:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.20 2005-01-24 20:34:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -305,9 +305,8 @@ qpic_t	*Draw_CachePic (char *path)
 	gl = (glpic_t *)pic->pic.data;
 	gl->texnum = GL_LoadPicTexture (dat);
 
-	// point sample status bar
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	gl->sl = 0;
 	gl->sh = 1;
@@ -448,11 +447,16 @@ void Draw_TextureMode_f (void)
 	// change all the existing mipmap texture objects
 	for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
 	{
+		GL_Bind (glt->texnum);
+		glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+
 		if (glt->mipmap)
 		{
-			GL_Bind (glt->texnum);
 			glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
-			glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+		}
+		else
+		{
+			glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 		}
 	}
 }
@@ -1756,6 +1760,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2005/01/24 20:29:43  sezero
+ * fix flush_textures decision which used to be always true
+ *
  * Revision 1.18  2005/01/24 20:27:12  sezero
  * consolidate GL_LoadTexture functions
  *
