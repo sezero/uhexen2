@@ -1,6 +1,8 @@
 // winquake.h: Win32-specific Quake header file
 
+#ifdef _WIN32
 #pragma warning( disable : 4229 )  // mgraph gets this
+#endif
 
 #ifndef PLATFORM_UNIX
 #include <windows.h>
