@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.6 2005-02-20 12:44:58 sezero Exp $
+	$Id: snd_oss.c,v 1.7 2005-03-03 17:02:29 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -41,15 +41,15 @@ int audio_fd = -1;
 int snd_inited;
 extern int desired_bits, desired_speed, desired_channels;
 extern int tryrates[MAX_TRYRATES];
-// unsigned long mmaplen;
+unsigned long mmaplen;
 
 qboolean S_OSS_Init(void)
 {
 
 	int i, caps, rc, tmp;
 	int retries = 3;
-	// unsigned long sz;
-	unsigned long sz, mmaplen;
+	// unsigned long sz, mmaplen;
+	unsigned long sz;
 	struct audio_buf_info info;
 
 	snd_inited = 0;
@@ -263,7 +263,7 @@ void S_OSS_Shutdown(void)
 	{
 		Con_Printf ("Shutting down OSS sound\n");
 		snd_inited = 0;
-		// munmap (shm->buffer, mmaplen);
+		munmap (shm->buffer, mmaplen);
 		ioctl(audio_fd, SNDCTL_DSP_SETTRIGGER, &tmp);
 		ioctl(audio_fd, SNDCTL_DSP_RESET, 0);
 		close(audio_fd);

@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.16 2005-02-25 14:55:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.17 2005-03-03 17:02:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -292,17 +292,17 @@ extern HINSTANCE hInstDS;
 
 void S_Shutdown(void)
 {
-
 	if (!sound_started)
 		return;
 
+/* This doesnt serve anything. Why do we still keep it in dma_t struct?..
 	if (shm)
 		shm->gamealive = 0;
-
-	shm = 0;
+*/
 	sound_started = 0;
 
 	SNDDMA_Shutdown();
+	shm = NULL;
 
 #ifndef PLATFORM_UNIX
 	if (hInstDS)
@@ -1093,6 +1093,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/02/25 14:55:54  sezero
+ * exact syncing between hexen2 and hw versions of snd_dma.c
+ *
  * Revision 1.15  2005/02/20 12:44:58  sezero
  * - Process all command line options in snd_dma.c, S_Startup() only.
  *   Targets will do to its bidding first. And don't die immediately,
