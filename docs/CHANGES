@@ -1,5 +1,10 @@
 ChangeLog:
 
+2005-01-13 (CVS, 1.2.3-rc7):
+
+    * Fix off-by-one error in demo ending message line calculation.
+    * Misc cleanups (nitpicking/polishing).
+
 2005-01-08 (CVS, 1.2.3-rc6):
 
     * don't die on cache mismatch, delete and and reload the new
