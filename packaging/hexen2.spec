@@ -69,13 +69,6 @@ for launching different versions of the game.
 %setup -q -n hexen2source-HoT-%{version} -a1 -a2 -a3
 # remove the pre-compiled binary
 rm -f loki_patch
-# prepare loki_patch for build
-cd loki_patch-2004
-tar xvfz loki_setupdb-20041226.tar.gz
-tar xvfz loki_patch-20041226.tar.gz
-patch -p1 < loki_setupdb-0.diff
-patch -p0 < loki_patch-1.diff
-cd ..
 
 %build
 # Build the main game binaries
@@ -111,7 +104,17 @@ cp h2launcher.gtk1 h2launcher
 make clean
 cd ..
 # Build game-update patcher loki_patch
-cd loki_patch-2004/loki_setupdb
+cd loki_patch-2005
+patch -p1 < xdelta-1.1.3-aclocal.patch
+patch -p1 < xdelta-1.1.3-freegen.patch
+patch -p1 < xdelta-1.1.3-gcc4.patch
+patch -p1 < loki_setupdb-0.diff
+patch -p1 < loki_patch-1.diff
+patch -p1 < loki_patch-2.diff
+cd xdelta-1.1.3
+sh configure
+make
+cd ../loki_setupdb
 sh autogen.sh
 sh configure
 make
@@ -166,7 +169,7 @@ ln -s %{_prefix}/games/hexen2/h2launcher %{buildroot}/%{_bindir}/hexen2
 %{__install} -D -m644 h2_103_111.dat %{buildroot}/%{_prefix}/games/%{name}/h2_103_111.dat
 
 # Install the update-patcher binaries
-%{__install} -D -m755 loki_patch-2004/loki_patch/loki_patch %{buildroot}/%{_prefix}/games/%{name}/loki_patch
+%{__install} -D -m755 loki_patch-2005/loki_patch/loki_patch %{buildroot}/%{_prefix}/games/%{name}/loki_patch
 
 # Install the menu icon
 %{__mkdir_p} %{buildroot}/%{_datadir}/pixmaps
