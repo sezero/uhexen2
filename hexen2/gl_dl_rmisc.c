@@ -452,9 +452,9 @@ void R_TimeRefresh_f (void)
 */
 void D_ClearOpenGLTextures (int last_tex)
 {
-	// Con_Printf ("Debug: D_ClearOpenGLTexture() is called.");
 	int i;
 
+	Con_DPrintf ("Deleting OpenGL textures\n");
 	// Delete OpenGL textures
 	for (i = last_tex; i < numgltextures; i++)
 		glfunc.glDeleteTextures_fp(1, &(gltextures[i].texnum));

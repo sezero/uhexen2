@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.8 2005-01-01 21:43:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.9 2005-01-24 20:29:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -16,6 +16,9 @@
 extern cvar_t	pausable;
 extern	cvar_t	sv_flypitch;
 extern	cvar_t	sv_walkpitch;
+#ifdef GLQUAKE
+qboolean	flush_textures;
+#endif
 
 int	current_skill;
 static double		old_time;
@@ -243,6 +246,15 @@ void Host_Map_f (void)
 
 	cls.demonum = -1;		// stop demo loop in case this fails
 	
+#ifdef GLQUAKE
+	if (strnicmp(Cmd_Argv(1), sv.name, 64) == 0) {
+		flush_textures = false;
+	} else {
+		Con_DPrintf ("Mapname change: %s -> %s. flush_textures set to TRUE\n", sv.name, Cmd_Argv(1));
+		flush_textures = true;
+	}
+#endif
+
 	CL_Disconnect ();
 	Host_ShutdownServer(false);		
 
@@ -323,6 +335,9 @@ void Host_Changelevel_f (void)
 		startspot = _startspot;
 	}
 
+#ifdef GLQUAKE
+	flush_textures = true;
+#endif
 	SV_SaveSpawnparms ();
 	SV_SpawnServer (level, startspot);
 	
@@ -342,6 +357,9 @@ void Host_Changelevel_f (void)
 	}
 	SV_SaveSpawnparms ();
 	strcpy (level, Cmd_Argv(1));
+#ifdef GLQUAKE
+	flush_textures = true;
+#endif
 	SV_SpawnServer (level);
 #endif
 }
@@ -364,6 +382,9 @@ void Host_Restart_f (void)
 	if (cmd_source != src_command)
 		return;
 	
+#ifdef GLQUAKE
+	flush_textures = false;
+#endif
 	strcpy (mapname, sv.name);	// must copy out, because it gets cleared
 	strcpy(startspot, sv.startspot);
 
@@ -625,7 +646,7 @@ Host_Loadgame_f
 void Host_Loadgame_f (void)
 {
 	FILE	*f;
-	char	mapname[MAX_QPATH];
+	char	mapname[MAX_QPATH], tmpname[MAX_QPATH];
 	float	time, tfloat;
 	char	str[32768];
 	int	i;
@@ -647,6 +668,8 @@ void Host_Loadgame_f (void)
 		Con_Printf ("load <savename> : load a game\n");
 		return;
 	}
+
+	sprintf (tmpname, sv.name);	// temporary copy of current map name
 
 	cls.demonum = -1;		// stop demo loop in case this fails
 	CL_Disconnect();
@@ -738,6 +761,15 @@ void Host_Loadgame_f (void)
 	fclose (f);
 
 	CL_RemoveGIPFiles(tempdir);
+
+#ifdef GLQUAKE
+		if (strnicmp(tmpname, mapname, 64) == 0) {
+			flush_textures = false;
+		} else {
+			Con_DPrintf ("Mapname change: %s -> %s. flush_textures set to TRUE\n", tmpname, mapname);
+			flush_textures = true;
+		}
+#endif
 
 	retry:
 	attempts++;
@@ -1175,6 +1207,10 @@ void Host_Changelevel2_f (void)
 	// save the current level's state
 	old_time = sv.time;
 	SaveGamestate (false);
+
+#ifdef GLQUAKE
+	flush_textures = true;
+#endif
 
 	// try to restore the new level
 	if (LoadGamestate (level, startspot, 0))
@@ -2381,6 +2417,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/01/01 21:43:47  sezero
+ * prototypes clean-up
+ *
  * Revision 1.7  2004/12/18 14:15:35  sezero
  * Clean-up and kill warnings 10:
  * Remove some already commented-out functions and code fragments.

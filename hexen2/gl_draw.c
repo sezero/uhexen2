@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.18 2005-01-24 20:27:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.19 2005-01-24 20:29:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1627,6 +1627,7 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 			{
 				if (width != glt->width || height != glt->height || mipmap != glt->mipmap) {
 				// Not the same texture - dont die, delete and rebind to new image
+				// Paranoia??? We already flush opengl textures upon map change...
 				// TODO - Maybe add the hash check some day
 					Con_Printf ("GL_LoadTexture: reloading tex due to cache mismatch\n");
 					glfunc.glDeleteTextures_fp (1, &(glt->texnum));
@@ -1755,6 +1756,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/01/24 20:27:12  sezero
+ * consolidate GL_LoadTexture functions
+ *
  * Revision 1.17  2005/01/12 11:57:40  sezero
  * glfunc stuff (nitpicking)
  *
