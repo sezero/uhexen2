@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.8 2004-12-12 14:57:06 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.9 2004-12-12 18:38:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -923,18 +923,21 @@ void M_Class_Draw (void)
 	qpic_t	*p;
 
 	ScrollTitle("gfx/menu/title2.lmp");
+#ifdef H2MP
 if (!m_enter_portals) {
 	for(i = 0; i < NUM_CLASSES -1 + m_demoness.value; ++i)
 		M_DrawBigString (72,60+(i*20),ClassNamesU[i]);
-} else {
+} else
+#endif
 	for(i = 0; i < NUM_CLASSES; ++i)
 		M_DrawBigString (72,60+(i*20),ClassNamesU[i]);
-}
 
+#ifdef H2MP
 if (!m_enter_portals) {
 		if (m_class_cursor >= CLASS_ITEMS -1 + m_demoness.value)
 			m_class_cursor = 0;
 }
+#endif
 
 	f = (int)(host_time * 10)%8;
 	M_DrawTransPic (43, 54 + m_class_cursor * 20,Draw_CachePic( va("gfx/menu/menudot%i.lmp", f+1 ) ) );
@@ -956,13 +959,15 @@ void M_Class_Key (int key)
 		
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
+#ifdef H2MP
 if (!m_enter_portals) {
 		if (++m_class_cursor >= CLASS_ITEMS -1 + m_demoness.value)
 			m_class_cursor = 0;
-} else {
+} else
+#endif
 		if (++m_class_cursor >= CLASS_ITEMS)
 			m_class_cursor = 0;
-}
+
 //		if ((!registered.value && !oem.value) && m_class_cursor >= 1 && m_class_cursor <= 2)
 //			m_class_cursor = CLASS_ITEMS - 1;
 
@@ -970,13 +975,15 @@ if (!m_enter_portals) {
 
 	case K_UPARROW:
 		S_LocalSound ("raven/menu1.wav");
+#ifdef H2MP
 if (!m_enter_portals) {
 		if (--m_class_cursor < 0)
 			m_class_cursor = CLASS_ITEMS - 2 + m_demoness.value;
-} else {
+} else
+#endif
 		if (--m_class_cursor < 0)
 			m_class_cursor = CLASS_ITEMS - 1;
-}
+
 //		if ((!registered.value && !oem.value) && m_class_cursor >= 1 && m_class_cursor <= 2)
 //			m_class_cursor = 0;
 
@@ -4741,6 +4748,12 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2004/12/12 14:57:06  sezero
+ * Back-out the Old Mission menu in PoP:
+ *  It can be enabled with "m_oldmission 1" console command.
+ * Disabled  playing the Old Mission with the Demoness class:
+ *  It can be enabled with "m_demoness 1" console command.
+ *
  * Revision 1.7  2004/12/12 14:38:18  sezero
  * steven fixed the mouse again ;)
  *
