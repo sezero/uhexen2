@@ -67,7 +67,7 @@ create_window1 (void)
 
   window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (window1), "window1", window1);
-  gtk_window_set_title (GTK_WINDOW (window1), _("Anvil of Thyrion Launcher"));
+  gtk_window_set_title (GTK_WINDOW (window1), _("Hexen II for Linux Launcher"));
   gtk_window_set_policy (GTK_WINDOW (window1), TRUE, TRUE, FALSE);
 
   fixed1 = gtk_fixed_new ();
@@ -77,7 +77,7 @@ create_window1 (void)
   gtk_widget_show (fixed1);
   gtk_container_add (GTK_CONTAINER (window1), fixed1);
 
-  LAUNCH_button = gtk_button_new_with_label (_("Launch AoT"));
+  LAUNCH_button = gtk_button_new_with_label (_("Launch Hexen2"));
   gtk_widget_ref (LAUNCH_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "LAUNCH_button", LAUNCH_button,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -86,7 +86,7 @@ create_window1 (void)
   gtk_widget_set_uposition (LAUNCH_button, 224, 400);
   gtk_widget_set_usize (LAUNCH_button, 112, 24);
 
-  label1 = gtk_label_new (_("Anvil of Thyrion  1.2.0"));
+  label1 = gtk_label_new (_("Hammer of Thyrion  1.2.2"));
   gtk_widget_ref (label1);
   gtk_object_set_data_full (GTK_OBJECT (window1), "label1", label1,
                             (GtkDestroyNotify) gtk_widget_unref);

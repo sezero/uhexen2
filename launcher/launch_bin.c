@@ -48,18 +48,14 @@ int table[2][2] = { {3,2},{1,0} };
 /* [resolution][fullscreen] */
 char *gl_resolution_args[3][2]={
 
-  {"--windowed","-mode"} , {"-mode","-mode"} , {"-mode","-mode"}
+  {"640","480"}, {"800","600"}, {"1024","768"},
 
 };
 
-char *gl_resolution_args_part2[3][2]={
-
-  {NULL,"3"} , {"1","4"} , {"2","5"}
- 
-};
-
-char *nosound_flag="--nosound";
-char *windowed_flag="--windowed";
+//char *nosound_flag="--nosound";
+char *nosound_flag="-s";
+//char *windowed_flag="--windowed";
+char *windowed_flag="-w";
 
 static char *bin_path;
 extern char *argv_0;
@@ -142,7 +138,7 @@ void launch_hexen2_bin()
 {
   char directory_name[1024];
   char *binary_name;
-  char *args[6];
+  char *args[7];
   int i=0;
 
   if (destiny == DEST_H2)
@@ -166,34 +162,36 @@ void launch_hexen2_bin()
 
   args[i]=binary_name; 
   i++;
-
   
   if (sound == 0) {
     args[i]=nosound_flag;
     i++;
   }
+
+//args[i]="--fullscreen";
+  args[i]="-f";
+  if (fullscreen == 0)
+    args[i]=windowed_flag;
+  i++;
+
   if (opengl_support) {
-    args[i]=gl_resolution_args[resolution][fullscreen];
+    args[i]="-width";
     i++;
-    if (resolution == RES_640 && fullscreen==0) { }
-    else {
-      args[i]=gl_resolution_args_part2[resolution][fullscreen];
-      i++;
-    }
+    args[i]=gl_resolution_args[resolution][0];
+    i++;
+    args[i]="-height";
+    i++;
+    args[i]=gl_resolution_args[resolution][1];
   }
 
-  else {
-    if (fullscreen == 0) args[i]=windowed_flag;
-    i++;
-  }
-  args[i]=NULL;
+// args[i]=NULL;
 
-  /*for (i=0;i<5;i++)
-    printf("%d: %s\n",i,args[i]);
-    
-    printf("we are here: %s\n",bin_path);
-    printf("base: %s\n",directory_name);
-  printf("launching %s\n",binary_name);*/
+  printf("we are here: %s\n",bin_path);
+  printf("base: %s\n",directory_name);
+  printf("launching %s\n",binary_name);
+  printf("using arguments :\n");
+  for (i=0;i<=6;i++)
+    printf("%d:  %s\n",i,args[i]);
 
   pid=fork();
   if (pid == 0) {
