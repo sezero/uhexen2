@@ -3,6 +3,8 @@ Game code for Hexen2 / H2MP / HexenWorld
 
 Changes
 -------
+1.12c   fix eidolon loses his hostility upon destruction of the orb.
+	(2005-01-05, adaptation of eidolon.hc from H2MP)
 1.12b	fix eidolon not jumping off the ledge (hc/h2/triggers.hc)
 	(2004-12-09)
 
