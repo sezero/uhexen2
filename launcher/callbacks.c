@@ -73,7 +73,7 @@ void on_OGL (GtkToggleButton *button, gamewidget_t *wgt) {
 
 void res_Change (GtkAdjustment *adj, struct Video_s *wgt) {
    resolution = (int)(adj->value);
-   if ( (adj->value)-resolution > .5 )
+   if ( (adj->value)-resolution > .65 )
    	resolution++;
    UpdateRScale (adj, wgt->RESOL_TEXT0, 0);
 }

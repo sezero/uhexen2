@@ -168,7 +168,7 @@ GtkWidget* create_window1 (void)
   gtk_scale_set_draw_value (GTK_SCALE (WGT_RES_SCALE), FALSE);
   gtk_scale_set_value_pos (GTK_SCALE (WGT_RES_SCALE), GTK_POS_RIGHT);
   GTK_WIDGET_UNSET_FLAGS (WGT_RES_SCALE, GTK_CAN_FOCUS);
-//gtk_range_set_update_policy (GTK_RANGE (WGT_RES_SCALE), GTK_UPDATE_DELAYED);
+  gtk_range_set_update_policy (GTK_RANGE (WGT_RES_SCALE), GTK_UPDATE_DELAYED);
 
 /*********************************************************************/
   bSAVE = gtk_button_new_with_label (_("Save Options"));
