@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/setstaff.hc,v 1.1.1.1 2004-11-29 11:40:23 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/setstaff.hc,v 1.2 2005-02-23 08:05:35 sezero Exp $
  */
 
 /*
@@ -548,13 +548,21 @@ WEAPON MODEL CODE
 */
 void setstaff_powerfire (void)
 {
-	self.wfs = advanceweaponframe($scarab1,$scarab7);
-	self.th_weapon = setstaff_powerfire;
-	if (self.weaponframe== $scarab2)
-	{
-		TheOldBallAndChain();
-		self.greenmana -= 30;
-		self.bluemana -= 30;
+	// Pa3PyX: limited rate by real time (observed at 20 fps)
+	if (time - self.ltime >= HX_FRAME_TIME) {
+		self.ltime = time;
+
+		self.wfs = advanceweaponframe($scarab1,$scarab7);
+		self.th_weapon = setstaff_powerfire;
+		// Pa3PyX: we now have animation loop, so don't think
+		thinktime self: 0;
+
+		if (self.weaponframe== $scarab2)
+		{
+			TheOldBallAndChain();
+			self.greenmana -= 30;
+			self.bluemana -= 30;
+		}
 	}
 
 	if (self.wfs == WF_CYCLE_WRAPPED)
@@ -578,13 +586,18 @@ void setstaff_readyfire (void)
 	if(self.weaponframe==$build1)
 		sound(self,CHAN_WEAPON,"assassin/build.wav",1,ATTN_NORM);
 
+	if (self.lifetime <= 0)
+		self.lifetime = time;	// Pa3PyX
+
 	if (self.weaponframe >= $build1 && self.weaponframe < $build15)
 	{
 		self.weaponframe_cnt +=1;
-		if (self.weaponframe_cnt > 3)
+// Pa3PyX  //	if (self.weaponframe_cnt > 3)
+		if (time - self.lifetime > HX_FRAME_TIME * 3)
 		{
 			self.wfs = advanceweaponframe($build1,$build15);
 			self.weaponframe_cnt =0;
+			self.lifetime = time;	// Pa3PyX
 		}
 		else if(self.weaponframe_cnt==1)
 		{
@@ -615,6 +628,8 @@ void setstaff_readyfire (void)
 	if(!self.button0||self.greenmana<=0||self.bluemana<=0)
 	{
 		self.weaponframe_cnt=0;
+		self.lifetime = 0;	// Pa3PyX
+
 		Drilla(14 - ($build15 - self.weaponframe));
 		setstaff_settle();
 	}
@@ -668,6 +683,9 @@ void setstaff_decide_attack (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:40:23  sezero
+ * Initial import
+ *
  * 
  * 62    9/18/97 2:34p Rlove
  * 
