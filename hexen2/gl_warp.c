@@ -203,73 +203,35 @@ void EmitWaterPolys (msurface_t *fa)
 
 
 
-#define MAX_SAVE 10000
-
-static float buffer_s[MAX_SAVE], buffer_t[MAX_SAVE];
-static int buffer_pos;
 
 /*
 =============
 EmitSkyPolys
 =============
 */
-void EmitSkyPolys (msurface_t *fa, qboolean save)
+void EmitSkyPolys (msurface_t *fa)
 {
 	glpoly_t	*p;
 	float		*v;
 	int			i;
 	float	s, t;
-	vec3_t	dir,sort;
+	vec3_t	dir;
 	float	length;
 
 	for (p=fa->polys ; p ; p=p->next)
 	{
-		c_sky_polys++;
-
 		glfunc.glBegin_fp (GL_POLYGON);
 		for (i=0,v=p->verts[0] ; i<p->numverts ; i++, v+=VERTEXSIZE)
 		{
-			if (save || buffer_pos >= MAX_SAVE)
-			{
-				VectorSubtract (v, r_origin, dir);
-				dir[2] *= 3;	// flatten the sphere
+			VectorSubtract (v, r_origin, dir);
+			dir[2] *= 3;	// flatten the sphere
 
-	/*			VectorCopy(dir,sort);
-				if (sort[1] > sort[0])
-				{
-					t = sort[1];
-					sort[1] = sort[0];
-					sort[0] = t;
-				}
-				if (sort[2] > sort[0])
-				{
-					t = sort[2];
-					sort[2] = sort[0];
-					sort[0] = t;
-				}
-				length = sort[0] + (sort[1] * .25) + (sort[2] * .25);*/
+			length = dir[0]*dir[0] + dir[1]*dir[1] + dir[2]*dir[2];
+			length = sqrt (length);
+			length = 6*63/length;
 
-				length = dir[0]*dir[0] + dir[1]*dir[1] + dir[2]*dir[2];
-				length = sqrt (length);
-
-				length = 6*63/length;
-
-				dir[0] *= length;
-				dir[1] *= length;
-
-				if (buffer_pos < MAX_SAVE)
-				{
-					buffer_s[buffer_pos] = dir[0];
-					buffer_t[buffer_pos] = dir[1];
-					buffer_pos++;
-				}
-			}
-			else
-			{
-				dir[0] = buffer_s[buffer_pos];
-				dir[1] = buffer_t[buffer_pos];
-				buffer_pos++;
-			}
+			dir[0] *= length;
+			dir[1] *= length;
 
 			s = (speedscale + dir[0]) * (1.0/128);
 			t = (speedscale + dir[1]) * (1.0/128);
@@ -300,16 +262,14 @@ void EmitBothSkyLayers (msurface_t *fa)
 	speedscale = realtime*8;
 	speedscale -= (int)speedscale & ~127 ;
 
-	buffer_pos = 0;
-	EmitSkyPolys (fa,true);
+	EmitSkyPolys (fa);
 
 	glfunc.glEnable_fp (GL_BLEND);
 	GL_Bind (alphaskytexture);
 	speedscale = realtime*16;
 	speedscale -= (int)speedscale & ~127 ;
 
-	buffer_pos = 0;
-	EmitSkyPolys (fa,false);
+	EmitSkyPolys (fa);
 
 	glfunc.glDisable_fp (GL_BLEND);
 }
@@ -329,24 +289,18 @@ void R_DrawSkyChain (msurface_t *s)
 	speedscale = realtime*8;
 	speedscale -= (int)speedscale & ~127 ;
 
-	buffer_pos = 0;
-
 	for (fa=s ; fa ; fa=fa->texturechain)
-		EmitSkyPolys (fa,true);
+		EmitSkyPolys (fa);
 
 	glfunc.glEnable_fp (GL_BLEND);
 	GL_Bind (alphaskytexture);
 	speedscale = realtime*16;
 	speedscale -= (int)speedscale & ~127 ;
 
-	buffer_pos = 0;
-
 	for (fa=s ; fa ; fa=fa->texturechain)
-		EmitSkyPolys (fa,false);
+		EmitSkyPolys (fa);
 
 	glfunc.glDisable_fp (GL_BLEND);
-
-	c_sky_polys >>= 1;
 }
 
 #endif
