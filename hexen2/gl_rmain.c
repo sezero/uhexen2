@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_rmain.c,v 1.11 2005-01-10 14:31:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_rmain.c,v 1.12 2005-01-12 11:57:40 sezero Exp $
 */
 
 
@@ -567,7 +567,7 @@ void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 		do
 		{
 			// texture coordinates come from the draw list
-			// (skipped for shadows) glfunc.glTexCoord2f_fpv ((float *)order);
+			// (skipped for shadows) glfunc.glTexCoord2fv_fp ((float *)order);
 			order += 2;
 
 			// normals and vertexes come from the frame list
@@ -804,7 +804,7 @@ void R_DrawAliasModel (entity_t *e)
 		// rjr
 		glfunc.glEnable_fp (GL_BLEND);
 		glfunc.glBlendFunc_fp (GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
-//		glColor3f( 1,1,1);
+//		glfunc.glColor3f_fp( 1,1,1);
 		model_constant_alpha = 1.0f;
 		glfunc.glDisable_fp( GL_CULL_FACE );
 	}
@@ -821,7 +821,7 @@ void R_DrawAliasModel (entity_t *e)
 		// rjr
 		glfunc.glEnable_fp (GL_BLEND);
 		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//		glColor3f( 1,1,1);
+//		glfunc.glColor3f_fp( 1,1,1);
 		model_constant_alpha = 1.0f;
 	}
 	else if ((currententity->model->flags & EF_HOLEY))
@@ -830,7 +830,7 @@ void R_DrawAliasModel (entity_t *e)
 		glfunc.glEnable_fp (GL_BLEND);
 		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-//		glColor3f( 1,1,1);
+//		glfunc.glColor3f_fp( 1,1,1);
 		model_constant_alpha = 1.0f;
 	}
 	else
@@ -1769,6 +1769,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/01/10 14:31:19  sezero
+ * comment "beautification"
+ *
  * Revision 1.10  2005/01/10 14:30:06  sezero
  * glows indentation/whitespace fix. should be more readable now.
  *

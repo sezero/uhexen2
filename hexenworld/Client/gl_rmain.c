@@ -530,7 +530,7 @@ void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 		do
 		{
 			// texture coordinates come from the draw list
-			// (skipped for shadows) glTexCoord2fv ((float *)order);
+			// (skipped for shadows) glfunc.glTexCoord2fv_fp ((float *)order);
 			order += 2;
 
 			// normals and vertexes come from the frame list

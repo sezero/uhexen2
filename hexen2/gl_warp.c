@@ -959,8 +959,8 @@ void R_DrawSkyBox (void)
 
 #if 0
 glfunc.glEnable_fp (GL_BLEND);
-glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-glColor4f (1,1,1,0.5);
+glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+glfunc.glColor4f_fp (1,1,1,0.5);
 glfunc.glDisable_fp (GL_DEPTH_TEST);
 #endif
 	for (i=0 ; i<6 ; i++)
@@ -985,8 +985,8 @@ skymaxs[1][i] = 1;
 	}
 #if 0
 glfunc.glDisable_fp (GL_BLEND);
-glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-glColor4f (1,1,1,0.5);
+glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+glfunc.glColor4f_fp (1,1,1,0.5);
 glfunc.glEnable_fp (GL_DEPTH_TEST);
 #endif
 }

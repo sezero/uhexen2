@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.16 2005-01-12 11:56:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.17 2005-01-12 11:57:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -943,7 +943,7 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 /*
 	glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, gl_alpha_format, PLAYER_DEST_WIDTH, PLAYER_DEST_HEIGHT,
 		      0, GL_RGBA, GL_UNSIGNED_BYTE, trans);
-	//	  glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, 1, 64, 64, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, menuplyr_pixels);
+//	glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, 1, 64, 64, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, menuplyr_pixels);
 
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -1820,6 +1820,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/01/12 11:56:30  sezero
+ * missed dlsym'ing this one
+ *
  * Revision 1.15  2005/01/11 07:11:41  sezero
  * missing newline
  *
