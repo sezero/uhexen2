@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.5 2004-12-18 14:08:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.6 2004-12-18 14:15:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -938,7 +938,6 @@ void AddParticle(float *Org, float color)
 }
 
 /*
-
 void FindPath(float *StartV, float *EndV, float *Mins, float *Maxs, int NoMonsters, edict_t *Ent)
 {
 	vec3_t NewStartV,NewEndV;
@@ -1178,8 +1177,8 @@ void PF_FindPath(void)
    FindPath(v1,v2,mins,maxs,nomonsters,ent);
 	Con_Printf("Time is %10.4f\n",Sys_FloatTime ()-b);
 }
-
 */
+
 
 /*
 =================
@@ -2711,170 +2710,6 @@ void PF_movestep (void)
 	pr_global_struct->self = oldself;
 }
 
-/*
-#define MAX_LEVELS 10
-
-int PaladinExp[MAX_LEVELS+1] =
-{
-	0,				// Level 1
-	500,        // Level 2
-	1000,       // Level 3
-	1500,       // Level 4
-	2000,       // Level 5
-	2500,       // Level 6
-	3000,       // Level 7
-	3500,       // Level 8
-	4000,       // Level 9
-	4500,       // Level 10
-	1000        // Required amount for each level afterwards
-};
-
-int ClericExp[MAX_LEVELS+1] =
-{
-	0,				// Level 1
-	500,        // Level 2
-	1000,       // Level 3
-	1500,       // Level 4
-	2000,       // Level 5
-	2500,       // Level 6
-	3000,       // Level 7
-	3500,       // Level 8
-	4000,       // Level 9
-	4500,       // Level 10
-	1000        // Required amount for each level afterwards
-};
-
-int NecroExp[MAX_LEVELS+1] =
-{
-	0,				// Level 1
-	500,        // Level 2
-	1000,       // Level 3
-	1500,       // Level 4
-	2000,       // Level 5
-	2500,       // Level 6
-	3000,       // Level 7
-	3500,       // Level 8
-	4000,       // Level 9
-	4500,       // Level 10
-	1000        // Required amount for each level afterwards
-};
-
-int TheifExp[MAX_LEVELS+1] =
-{
-	0,				// Level 1
-	500,        // Level 2
-	1000,       // Level 3
-	1500,       // Level 4
-	2000,       // Level 5
-	2500,       // Level 6
-	3000,       // Level 7
-	3500,       // Level 8
-	4000,       // Level 9
-	4500,       // Level 10
-	1000        // Required amount for each level afterwards
-};
-
-int FindLevel(edict_t *WhichPlayer)
-{
-	int *Chart;
-	int Amount,counter,Level;
-
-	switch((int)WhichPlayer->v.playerclass)
-	{
-		case CLASS_PALADIN:
-			Chart = PaladinExp;
-			break;
-		case CLASS_CLERIC:
-			Chart = ClericExp;
-			break;
-		case CLASS_NECROMANCER:
-			Chart = NecroExp;
-			break;
-		case CLASS_THEIF:
-			Chart = TheifExp;
-			break;
-	}
-
-	Level = 0;
-	for(counter=0;counter<MAX_LEVELS;counter++)
-	{
-		if (WhichPlayer->v.experience <= Chart[counter])
-		{
-			Level = counter+1;
-			break;
-		}
-	}
-
-	if (!Level)
-	{
-		Amount = WhichPlayer->v.experience - Chart[MAX_LEVELS-1];
-		Level = (Amount % Chart[MAX_LEVELS]) + MAX_LEVELS;
-	}
-
-	return Level;
-}
-
-void PF_AwardExperience(void)
-{
-	edict_t	*ToEnt, *FromEnt;
-	float Amount;
-	int AfterLevel;
-	qboolean IsPlayer;
-//	client_t	*client;
-	int			entnum;
-//	char temp[200];
-	globalvars_t	pr_save;
-	
-	ToEnt = G_EDICT(OFS_PARM0);
-	FromEnt = G_EDICT(OFS_PARM1);
-	Amount = G_FLOAT(OFS_PARM2);
-
-	if (!Amount) return;
-
-	IsPlayer = (strcmpi(ToEnt->v.classname + pr_strings, "player") == 0);
-
-	if (FromEnt && Amount == 0.0)
-	{
-		Amount = FromEnt->v.experience_value;
-	}
-
-	ToEnt->v.experience += Amount;
-
-	if (IsPlayer)
-	{
-		AfterLevel = FindLevel(ToEnt);
-
-		Con_Printf("Total Experience: %d\n",(int)ToEnt->v.experience);
-
-		if (ToEnt->v.level != AfterLevel)
-		{
-			ToEnt->v.level = AfterLevel;
-			entnum = NUM_FOR_EDICT(ToEnt);
-
-			if (entnum >= 1 && entnum <= svs.maxclients)
-			{	
-				pr_save = *pr_global_struct;
-				pr_global_struct->time = sv.time;
-				pr_global_struct->self = EDICT_TO_PROG(ToEnt);
-				PR_ExecuteProgram (pr_global_struct->PlayerAdvanceLevel);
-
-				*pr_global_struct = pr_save;
-			
-			}
-		}
-	}
-}
-
-*/
-
-/*				client = &svs.clients[entnum-1];
-
-				sprintf(temp,"You are now level %d\n",AfterLevel);
-	
-				MSG_WriteChar (&client->message,svc_print);
-				MSG_WriteString (&client->message, temp );
-*/
-
 void PF_Cos(void)
 {
 	float angle;
@@ -3415,6 +3250,10 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/12/18 14:08:07  sezero
+ * Clean-up and kill warnings 9:
+ * Kill many unused vars.
+ *
  * Revision 1.4  2004/12/18 13:48:52  sezero
  * Clean-up and kill warnings 3:
  * Kill " suggest parentheses around XXX " warnings

@@ -2,7 +2,7 @@
 	refresh.h
 	public interface to refresh functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.3 2004-12-18 13:59:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.4 2004-12-18 14:15:35 sezero Exp $
 */
 
 #define	MAXCLIPPLANES	11
@@ -129,10 +129,7 @@ void R_RainEffect (vec3_t org,vec3_t e_size,int x_dir, int y_dir,int color,int c
 void R_SnowEffect (vec3_t org1,vec3_t org2,int flags,vec3_t alldir,int count);
 void R_ColoredParticleExplosion (vec3_t org,int color,int radius,int counter);
 
-void R_EntityParticles (entity_t *ent);
-void R_BlobExplosion (vec3_t org);
 void R_ParticleExplosion (vec3_t org);
-void R_ParticleExplosion2 (vec3_t org, int colorStart, int colorLength);
 void R_LavaSplash (vec3_t org);
 void R_TeleportSplash (vec3_t org);
 
@@ -165,6 +162,10 @@ void R_StoreEfrags (efrag_t **ppefrag);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/18 13:59:25  sezero
+ * Clean-up and kill warnings 8:
+ * Missing prototypes.
+ *
  * Revision 1.2  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

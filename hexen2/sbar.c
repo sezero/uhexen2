@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.c,v 1.3 2004-12-18 14:08:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.c,v 1.4 2004-12-18 14:15:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -44,9 +44,7 @@ static void Sbar_DrawTransPic(int x, int y, qpic_t *pic);
 static int Sbar_itoa(int num, char *buf);
 static void Sbar_DrawNum(int x, int y, int number, int digits);
 static void Sbar_SortFrags(void);
-static void Sbar_DrawCharacter(int x, int y, int num);
 static void Sbar_DrawString(int x, int y, char *str);
-static void Sbar_DrawSmallCharacter(int x, int y, int num);
 static void Sbar_DrawSmallString(int x, int y, char *str);
 static void DrawBarArtifactNumber(int x, int y, int number);
 
@@ -96,10 +94,6 @@ static qpic_t *sb_colon, *sb_slash;
 
 static int fragsort[MAX_SCOREBOARD];
 
-static char scoreboardtext[MAX_SCOREBOARD][20];
-static int scoreboardtop[MAX_SCOREBOARD];
-static int scoreboardbottom[MAX_SCOREBOARD];
-static int scoreboardcount[MAX_SCOREBOARD];
 static int scoreboardlines;
 
 static float ChainPosition = 0;
@@ -845,64 +839,6 @@ void Sbar_DrawScoreboard(void)
 		Sbar_DeathmatchOverlay();
 	}
 }
-
-//==========================================================================
-//
-// Sbar_DrawFrags
-//
-//==========================================================================
-/*
-void Sbar_DrawFrags (void)
-{	
-	int				i, k, l;
-	int				top, bottom;
-	int				x, y, f;
-	int				xofs;
-	char			num[12];
-	scoreboard_t	*s;
-	
-	Sbar_SortFrags ();
-
-// draw the text
-	l = scoreboardlines <= 4 ? scoreboardlines : 4;
-	
-	x = 23;
-	xofs = (vid.width - 320)>>1;
-	y = vid.height - BAR_TOP_HEIGHT - 23;
-
-	for (i=0 ; i<l ; i++)
-	{
-		k = fragsort[i];
-		s = &cl.scores[k];
-		if (!s->name[0])
-			continue;
-
-	// draw background
-		top = s->colors & 0xf0;
-		bottom = (s->colors & 15)<<4;
-		top = Sbar_ColorForMap (top);
-		bottom = Sbar_ColorForMap (bottom);
-	
-		Draw_Fill (xofs + x*8 + 10, y, 28, 4, top);
-		Draw_Fill (xofs + x*8 + 10, y+4, 28, 3, bottom);
-
-	// draw number
-		f = s->frags;
-		sprintf (num, "%3i",f);
-		
-		Sbar_DrawCharacter ( (x+1)*8 , -24, num[0]);
-		Sbar_DrawCharacter ( (x+2)*8 , -24, num[1]);
-		Sbar_DrawCharacter ( (x+3)*8 , -24, num[2]);
-
-		if (k == cl.viewentity - 1)
-		{
-			Sbar_DrawCharacter (x*8+2, -24, 16);
-			Sbar_DrawCharacter ( (x+4)*8-4, -24, 17);
-		}
-		x+=4;
-	}
-}
-*/
 
 //==========================================================================
 //
@@ -1757,18 +1693,6 @@ static void Sbar_DrawTransPic(int x, int y, qpic_t *pic)
 
 //==========================================================================
 //
-// Sbar_DrawCharacter
-//
-//==========================================================================
-
-static void Sbar_DrawCharacter(int x, int y, int num)
-{
-	Draw_Character(x+((vid.width-320)>>1)+4,
-		y+vid.height-(int)BarHeight, num);
-}
-
-//==========================================================================
-//
 // Sbar_DrawString
 //
 //==========================================================================
@@ -1776,18 +1700,6 @@ static void Sbar_DrawCharacter(int x, int y, int num)
 static void Sbar_DrawString(int x, int y, char *str)
 {
 	Draw_String(x+((vid.width-320)>>1), y+vid.height-(int)BarHeight, str);
-}
-
-//==========================================================================
-//
-// Sbar_DrawSmallCharacter
-//
-//==========================================================================
-
-static void Sbar_DrawSmallCharacter(int x, int y, int num)
-{
-	Draw_SmallCharacter(x+((vid.width-320)>>1)+4,
-		y+vid.height-(int)BarHeight, num);
 }
 
 //==========================================================================

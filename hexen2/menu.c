@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.16 2004-12-18 14:08:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.17 2004-12-18 14:15:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -3992,24 +3992,7 @@ void M_GameOptions_Draw (void)
 		M_Print (160+8, 92, "Deathmatch");
 
 	M_Print (0+8, 100, "        Teamplay");
-/*	if (rogue)
 	{
-		char *msg;
-
-		switch((int)teamplay.value)
-		{
-			case 1: msg = "No Friendly Fire"; break;
-			case 2: msg = "Friendly Fire"; break;
-			case 3: msg = "Tag"; break;
-			case 4: msg = "Capture the Flag"; break;
-			case 5: msg = "One Flag CTF"; break;
-			case 6: msg = "Three Team CTF"; break;
-			default: msg = "Off"; break;
-		}
-		M_Print (160+8, 100, msg);
-	}
-	else
-*/	{
 		char *msg;
 
 		switch((int)teamplay.value)
@@ -4114,10 +4097,7 @@ void M_NetStart_Change (int dir)
 		break;
 
 	case 3:
-//		if (rogue)
-//			count = 6;
-//		else
-			count = 2;
+		count = 2;
 
 		Cvar_SetValue ("teamplay", teamplay.value + dir);
 		if (teamplay.value > count)
@@ -4748,6 +4728,10 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2004/12/18 14:08:07  sezero
+ * Clean-up and kill warnings 9:
+ * Kill many unused vars.
+ *
  * Revision 1.15  2004/12/18 13:46:25  sezero
  * Clean-up and kill warnings 2:
  * Kill " suggest explicit braces to avoid ambiguous `else' " warnings

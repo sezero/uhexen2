@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.6 2004-12-18 14:08:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.7 2004-12-18 14:15:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -695,18 +695,8 @@ void CL_RelinkEntities (void)
 			
 		}
 
-// rotate binary objects locally
-// BG: Moved to r_alias.c / gl_rmain.c
-		//if(ent->model->flags&EF_ROTATE)
-		//{
-		//	ent->angles[1] = anglemod(ent->origin[0]+ent->origin[1]
-		//		+(100*cl.time));
-		//}
-
-
 		c++;
-//		if (ent->effects & EF_BRIGHTFIELD);
-//			R_EntityParticles (ent);
+
 #ifdef QUAKE2RJ
 		if (ent->effects & EF_DARKFIELD)
 			R_DarkFieldParticles (ent);
@@ -1029,6 +1019,10 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2004/12/18 14:08:07  sezero
+ * Clean-up and kill warnings 9:
+ * Kill many unused vars.
+ *
  * Revision 1.5  2004/12/18 13:54:43  sezero
  * Clean-up and kill warnings 6:
  * Include proper stock headers to avoid some "implicity declared" warnings

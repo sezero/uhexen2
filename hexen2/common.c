@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.3 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.4 2004-12-18 14:15:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -64,8 +64,6 @@ char	com_cmdline[CMDLINE_LENGTH];
 	byte *EncryptKey;
 	int KeySize = 0;
 #endif
-
-//qboolean		standard_quake = true, rogue, hipnotic;
 
 // Build Version
 //    BUILD_RAVEN      
@@ -1229,19 +1227,6 @@ void COM_InitArgv (int argc, char **argv)
 
 	largv[com_argc] = argvdummy;
 	com_argv = largv;
-
-/*	if (COM_CheckParm ("-rogue"))
-	{
-		rogue = true;
-		standard_quake = false;
-	}
-
-	if (COM_CheckParm ("-hipnotic"))
-	{
-		hipnotic = true;
-		standard_quake = false;
-	}
-*/
 }
 
 extern qboolean	LegitCopy;
@@ -2133,11 +2118,6 @@ void COM_InitFilesystem (void)
 	COM_AddGameDirectory (va("%s/portals", basedir) );
 #endif
 
-/*	if (COM_CheckParm ("-rogue"))
-		COM_AddGameDirectory (va("%s/rogue", basedir) );
-*/
-
-//
 // -game <gamedir>
 // Adds basedir/gamedir as an override game
 //
@@ -2148,7 +2128,6 @@ void COM_InitFilesystem (void)
 		COM_AddGameDirectory (va("%s/%s", basedir, com_argv[i+1]));
 	}
 
-//
 // -path <dir or packfile> [<dir or packfile>] ...
 // Fully specifies the exact serach path, overriding the generated one
 //
@@ -2196,6 +2175,9 @@ void COM_InitFilesystem (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.2  2004/11/28 00:34:59  sezero
  * no range checking. used to trash the stack and crash the game randomly upon loading progs. code borrowed from Pa3PyX sources.
  *

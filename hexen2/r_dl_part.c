@@ -1,7 +1,7 @@
 /*
 	r_part.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_dl_part.c,v 1.4 2004-12-18 14:08:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_dl_part.c,v 1.5 2004-12-18 14:15:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -56,23 +56,6 @@ static particle_t *AllocParticle(void);
 void R_RunParticleEffect2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int effect, int count);
 void R_RunParticleEffect3 (vec3_t org, vec3_t box, int color, int effect, int count);
 void R_RunParticleEffect4 (vec3_t org, float radius, int color, int effect, int count);
-
-/*
-void R_LeakColor_f(void)
-{
-	int		newLeakColor;
-	
-	newLeakColor = atoi (Cmd_Argv(1));
-	if (newLeakColor < 0 || newLeakColor > 255)
-	{
-	   Con_Printf ("Leak color is out of range!\n");
-	   return;
-	}
-
-	Cvar_SetValue ("leak_color", (float)newLeakColor);
-	Con_Printf ("Leak color is %d\n", newLeakColor);
-}
-*/
 
 /*
 ===============
@@ -181,71 +164,6 @@ static particle_t *AllocParticle(void)
 	active_particles = p;
 	return p;
 }
-
-/*
-===============
-R_EntityParticles
-===============
-*/
-/*
-#define NUMVERTEXNORMALS	162
-extern	float	r_avertexnormals[NUMVERTEXNORMALS][3];
-vec3_t	avelocities[NUMVERTEXNORMALS];
-float	beamlength = 16;
-//vec3_t	avelocity = {23, 7, 3};
-//float	partstep = 0.01;
-//float	timescale = 0.01;
-
-void R_EntityParticles (entity_t *ent)
-{
-	int			count;
-	int			i;
-	particle_t	*p;
-	float		angle;
-	float		sr, sp, sy, cr, cp, cy;
-	vec3_t		forward;
-	float		dist;
-	
-	dist = 64;
-	count = 50;
-
-if (!avelocities[0][0])
-{
-for (i=0 ; i<NUMVERTEXNORMALS*3 ; i++)
-avelocities[0][i] = (rand()&255) * 0.01;
-}
-
-
-	for (i=0 ; i<NUMVERTEXNORMALS ; i++)
-	{
-		angle = cl.time * avelocities[i][0];
-		sy = sin(angle);
-		cy = cos(angle);
-		angle = cl.time * avelocities[i][1];
-		sp = sin(angle);
-		cp = cos(angle);
-		angle = cl.time * avelocities[i][2];
-		sr = sin(angle);
-		cr = cos(angle);
-	
-		forward[0] = cp*cy;
-		forward[1] = cp*sy;
-		forward[2] = -sp;
-
-		p = AllocParticle();
-		if (!p)
-			return;
-
-		p->die = cl.time + 0.01;
-		p->color = 0x6f;
-		p->type = pt_fireball;//pt_explode;
-		
-		p->org[0] = ent->origin[0] + r_avertexnormals[i][0]*dist + forward[0]*beamlength;			
-		p->org[1] = ent->origin[1] + r_avertexnormals[i][1]*dist + forward[1]*beamlength;			
-		p->org[2] = ent->origin[2] + r_avertexnormals[i][2]*dist + forward[2]*beamlength;			
-	}
-}
-*/
 
 /*
 ===============
@@ -453,81 +371,6 @@ void R_ParticleExplosion (vec3_t org)
 	}
 }
 
-/*
-===============
-R_ParticleExplosion2
-
-===============
-*/
-/*
-void R_ParticleExplosion2 (vec3_t org, int colorStart, int colorLength)
-{
-	int			i, j;
-	particle_t	*p;
-	int			colorMod = 0;
-
-	for (i=0; i<512; i++)
-	{
-		p = AllocParticle();
-		if (!p)
-			return;
-
-		p->die = cl.time + 0.3;
-		p->color = colorStart + (colorMod % colorLength);
-		colorMod++;
-
-		p->type = pt_blob;
-		for (j=0 ; j<3 ; j++)
-		{
-			p->org[j] = org[j] + ((rand()&31)-16);
-			p->vel[j] = (rand()&511)-256;
-		}
-	}
-}
-*/
-/*
-===============
-R_BlobExplosion
-tar
-===============
-*/
-/*
-void R_BlobExplosion (vec3_t org)
-{
-	int			i, j;
-	particle_t	*p;
-	
-	for (i=0 ; i<1024 ; i++)
-	{
-		p = AllocParticle();
-		if (!p)
-			return;
-
-		p->die = cl.time + 1 + (rand()&8)*0.05;
-
-		if (i & 1)
-		{
-			p->type = pt_blob;
-			p->color = 66 + rand()%6;
-			for (j=0 ; j<3 ; j++)
-			{
-				p->org[j] = org[j] + ((rand()&31)-16);
-				p->vel[j] = (rand()&511)-256;
-			}
-		}
-		else
-		{
-			p->type = pt_blob2;
-			p->color = 150 + rand()%6;
-			for (j=0 ; j<3 ; j++)
-			{
-				p->org[j] = org[j] + ((rand()&31)-16);
-				p->vel[j] = (rand()&511)-256;
-			}
-		}
-	}
-}
-*/
 /*
 ===============
 R_RunParticleEffect
@@ -1850,23 +1693,6 @@ void R_UpdateParticles (void)
 			p->vel[2] -= grav;
 			break;
 
-/*	//jfm:not used
-		case pt_blob:
-			for (i=0 ; i<3 ; i++)
-			{
-				p->vel[i] += p->vel[i]*dvel;
-			}
-			p->vel[2] -= grav;
-			break;
-
-		case pt_blob2:
-			for (i=0 ; i<2 ; i++)
-			{
-				p->vel[i] -= p->vel[i]*dvel;
-			}
-			p->vel[2] -= grav;
-			break;
-*/
 		case pt_grav:
 #ifdef QUAKE2
 			p->vel[2] -= grav * 20;
@@ -2125,6 +1951,10 @@ void R_UpdateParticles (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/18 14:08:07  sezero
+ * Clean-up and kill warnings 9:
+ * Kill many unused vars.
+ *
  * Revision 1.3  2004/12/18 13:48:52  sezero
  * Clean-up and kill warnings 3:
  * Kill " suggest parentheses around XXX " warnings

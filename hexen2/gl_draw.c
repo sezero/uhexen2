@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.7 2004-12-18 14:11:53 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.8 2004-12-18 14:15:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -731,9 +731,6 @@ Draw_Pic
 */
 void Draw_Pic (int x, int y, qpic_t *pic)
 {
-//	byte			*dest, *source;
-//	unsigned short	*pusdest;
-//	int				v, u;
 	glpic_t 		*gl;
 
 	if (scrap_dirty)
@@ -860,9 +857,6 @@ Draw_TransPic
 */
 void Draw_TransPic (int x, int y, qpic_t *pic)
 {
-//	byte	*dest, *source, tbyte;
-//	unsigned short	*pusdest;
-//	int				v, u;
 
 	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
 		 (unsigned)(y + pic->height) > vid.height)
@@ -1777,6 +1771,10 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2004/12/18 14:11:53  sezero
+ * Clean-up and kill warnings 9a:
+ * More unused vars...
+ *
  * Revision 1.6  2004/12/18 14:08:07  sezero
  * Clean-up and kill warnings 9:
  * Kill many unused vars.
