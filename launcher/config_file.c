@@ -18,7 +18,11 @@
 
 #include "launch_bin.h"
 
+#ifndef DEMOBUILD
 #define AOT_USERDIR ".aot"
+#else
+#define AOT_USERDIR ".hexen2demo"
+#endif
 #define LAUNCHER_CONFIG_FILE "launcher_options"
 
 #ifndef DEMOBUILD

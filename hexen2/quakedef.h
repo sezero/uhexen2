@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.14 2004-12-26 10:05:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.15 2004-12-30 14:27:15 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -38,7 +38,11 @@
 #define	GAMENAME	"data1"
 #endif
 
+#ifndef DEMOBUILD
 #define AOT_USERDIR ".aot"
+#else
+#define AOT_USERDIR ".hexen2demo"
+#endif
 
 #include <math.h>
 #include <string.h>
@@ -443,6 +447,9 @@ void IN_DeactivateMouseSA (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2004/12/26 10:05:57  sezero
+ * prepare for 1.2.3
+ *
  * Revision 1.12  2004/12/22 21:50:16  sezero
  * play with version and help display
  *

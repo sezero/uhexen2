@@ -13,7 +13,11 @@
 
 //define	PARANOID			// speed sapping error checking
 
+#ifndef DEMOBUILD
 #define AOT_USERDIR ".aot/hw"
+#else
+#define AOT_USERDIR ".hexen2demo/hw"
+#endif
 
 #include <math.h>
 #include <string.h>

@@ -32,7 +32,11 @@
 #include "world.h"
 #include "pmove.h"
 
+#ifndef DEMOBUILD
 #define AOT_USERDIR ".aot/hw"
+#else
+#define AOT_USERDIR ".hexen2demo/hw"
+#endif
 
 //=============================================================================
 
