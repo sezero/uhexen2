@@ -19,6 +19,8 @@ extern unsigned short	snd_system;
 #define	S_SYS_ALSA	3
 #endif
 
+#define MAX_TRYRATES	4
+
 // !!! if this is changed, it must be changed in asm_i386.h too !!!
 typedef struct
 {

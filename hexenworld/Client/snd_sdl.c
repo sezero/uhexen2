@@ -3,7 +3,7 @@
 	SDL sound driver for Linux Hexen II,  based on the SDLquake
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/snd_sdl.c,v 1.5 2005-02-06 15:22:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/snd_sdl.c,v 1.6 2005-02-20 12:46:43 sezero Exp $
 */
 
 #include <stdio.h>
@@ -13,8 +13,8 @@
 
 static int snd_inited;
 
-extern int desired_speed;
-extern int desired_bits;
+extern int desired_speed, desired_bits, desired_channels;
+extern int tryrates[MAX_TRYRATES];
 
 static void paint_audio(void *unused, Uint8 *stream, int len)
 {
@@ -49,18 +49,14 @@ qboolean S_SDL_Init(void)
 			else
 				desired.format = AUDIO_S16LSB;
 			break;
-		default:
-        		Con_Printf("Unknown number of audio bits: %d\n",
-								desired_bits);
-			return 0;
 	}
-	desired.channels = 2;
+	desired.channels = desired_channels;
 	desired.samples  = 1024; // previously 512 S.A.
 	desired.callback = paint_audio;
 
 	/* Open the audio device */
 	if ( SDL_OpenAudio(&desired, &obtained) < 0 ) {
-        	Con_Printf("Couldn't open SDL audio: %s\n", SDL_GetError());
+		Con_Printf("Couldn't open SDL audio: %s\n", SDL_GetError());
 		return 0;
 	}
 
@@ -131,6 +127,9 @@ void S_SDL_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/02/06 15:22:56  sezero
+ * log entries cleanup
+ *
  * Revision 1.4  2005/02/04 13:40:52  sezero
  * build all all the sound drivers in and choose from command line
  *

@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.5 2005-02-14 10:06:23 sezero Exp $
+	$Id: snd_oss.c,v 1.6 2005-02-20 12:46:43 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -39,14 +39,14 @@
 
 int audio_fd = -1;
 int snd_inited;
+extern int desired_bits, desired_speed, desired_channels;
+extern int tryrates[MAX_TRYRATES];
 // unsigned long mmaplen;
-
-static int tryrates[] = { 11025, 22051, 44100, 8000 };
 
 qboolean S_OSS_Init(void)
 {
 
-	int i, caps, fmt, rc, tmp;
+	int i, caps, rc, tmp;
 	int retries = 3;
 	// unsigned long sz;
 	unsigned long sz, mmaplen;
@@ -104,35 +104,91 @@ qboolean S_OSS_Init(void)
 	}
 
 	shm = &sn;
+
 	shm->splitbuffer = 0;
 
 // set sample bits & speed
 
-	if ((i = COM_CheckParm("-sndbits")) != 0)
-		shm->samplebits = atoi(com_argv[i+1]);
-	if (shm->samplebits != 16 && shm->samplebits != 8)
+	rc = (desired_bits == 16) ? AFMT_S16_LE : AFMT_U8;
+	rc = ioctl(audio_fd, SNDCTL_DSP_SETFMT, &rc);
+	if (rc < 0)
 	{
-		ioctl(audio_fd, SNDCTL_DSP_GETFMTS, &fmt);
-		if (fmt & AFMT_S16_LE)
-			shm->samplebits = 16;
-		else if (fmt & AFMT_U8)
-			shm->samplebits = 8;
+		Con_Printf("Could not support %d-bit data, retrying..\n", desired_bits);
+		// try what the device gives us
+		ioctl(audio_fd, SNDCTL_DSP_GETFMTS, &rc);
+		if (rc & AFMT_S16_LE)
+			desired_bits = 16;
+		else if (rc & AFMT_U8)
+			desired_bits = 8;
+		else {
+			perror("/dev/dsp");
+			Con_Printf("Could not retrieve supported sound formats!..\n");
+			close(audio_fd);
+			return 0;
+		}
+		rc = (desired_bits == 16) ? AFMT_S16_LE : AFMT_U8;
+		rc = ioctl(audio_fd, SNDCTL_DSP_SETFMT, &rc);
+		if (rc < 0) {
+			perror("/dev/dsp");
+			Con_Printf("No supported sound formats!..\n");
+			close(audio_fd);
+			return 0;
+		}
 	}
+	shm->samplebits = desired_bits;
 
-	if ((i = COM_CheckParm("-sndspeed")) != 0)
-		shm->speed = atoi(com_argv[i+1]);
-	else
+	tmp = desired_speed;
+	rc = ioctl(audio_fd, SNDCTL_DSP_SPEED, &tmp);
+	if (rc < 0) {
+		Con_Printf("Problems setting dsp speed, trying alternatives..\n");
+		desired_speed = 0;
+		for (i=0 ; i<MAX_TRYRATES ; i++) {
+			tmp = tryrates[i];
+			rc= ioctl(audio_fd, SNDCTL_DSP_SPEED, &tmp);
+			if (rc < 0) {
+				Con_DPrintf ("Could not set dsp to speed %d\n", tryrates[i]);
+			} else {
+			/* From alsa examples: is this necessary?
+				if (tmp != tryrates[i]) {
+					Con_Printf ("Failure: Rate set (%d) didn't match requested rate (%d)!\n", tmp, tryrates[i]);
+					close(audio_fd);
+					return 0;
+				}
+			*/	desired_speed = tmp;
+				break;
+			}
+		}
+		if (desired_speed == 0) {
+			Con_Printf("Could not set /dev/dsp speed!\n");
+			close(audio_fd);
+			return 0;
+		}
+	}
+/*	else {	// From alsa examples: is this necessary?
+		if (tmp != desired_speed) {
+			Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", tmp, desired_speed);
+			close(audio_fd);
+			return 0;
+		}
+	}
+*/	shm->speed = desired_speed;
+
+	tmp = (desired_channels == 2) ? 1 : 0;
+	rc = ioctl(audio_fd, SNDCTL_DSP_STEREO, &tmp);
+	if (rc < 0)
 	{
-		for (i=0 ; i<sizeof(tryrates)/4 ; i++)
-			if (!ioctl(audio_fd, SNDCTL_DSP_SPEED, &tryrates[i]))
-			    break;
-		shm->speed = tryrates[i];
+		Con_Printf("Problems setting mono/stereo, retrying..\n");
+		tmp = (desired_channels == 2) ? 0 : 1;
+		rc = ioctl(audio_fd, SNDCTL_DSP_STEREO, &tmp);
+		if (rc < 0) {
+			perror("/dev/dsp");
+			Con_Printf("Could not set dsp to mono or stereo\n");
+			close(audio_fd);
+			return 0;
+		}
 	}
-
-	if ((i = COM_CheckParm("-sndmono")) != 0)
-		shm->channels = 1;
-	else
-		shm->channels = 2;
+	desired_channels = tmp +1;
+	shm->channels = desired_channels;
 
 	shm->samples = info.fragstotal * info.fragsize / (shm->samplebits/8);
 	shm->submission_chunk = 1;
@@ -147,63 +203,6 @@ qboolean S_OSS_Init(void)
 	{
 		perror("/dev/dsp");
 		Con_Printf("Could not mmap /dev/dsp\n");
-		close(audio_fd);
-		return 0;
-	}
-
-	tmp = 0;
-	if (shm->channels == 2)
-		tmp = 1;
-	rc = ioctl(audio_fd, SNDCTL_DSP_STEREO, &tmp);
-	if (rc < 0)
-	{
-		perror("/dev/dsp");
-		Con_Printf("Could not set /dev/dsp to stereo=%d", shm->channels);
-		close(audio_fd);
-		return 0;
-	}
-	if (tmp)
-		shm->channels = 2;
-	else
-		shm->channels = 1;
-
-	rc = ioctl(audio_fd, SNDCTL_DSP_SPEED, &shm->speed);
-	if (rc < 0)
-	{
-		perror("/dev/dsp");
-		Con_Printf("Could not set /dev/dsp speed to %d", shm->speed);
-		close(audio_fd);
-		return 0;
-	}
-
-	if (shm->samplebits == 16)
-	{
-		rc = AFMT_S16_LE;
-		rc = ioctl(audio_fd, SNDCTL_DSP_SETFMT, &rc);
-		if (rc < 0)
-		{
-			perror("/dev/dsp");
-			Con_Printf("Could not support 16-bit data.  Try 8-bit.\n");
-			close(audio_fd);
-			return 0;
-		}
-	}
-	else if (shm->samplebits == 8)
-	{
-		rc = AFMT_U8;
-		rc = ioctl(audio_fd, SNDCTL_DSP_SETFMT, &rc);
-		if (rc < 0)
-		{
-			perror("/dev/dsp");
-			Con_Printf("Could not support 8-bit data.\n");
-			close(audio_fd);
-			return 0;
-		}
-	}
-	else
-	{
-		perror("/dev/dsp");
-		Con_Printf("%d-bit sound not supported.", shm->samplebits);
 		close(audio_fd);
 		return 0;
 	}

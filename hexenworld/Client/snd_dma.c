@@ -54,8 +54,10 @@ sfx_t		*ambient_sfx[NUM_AMBIENTS];
 
 int 		desired_speed = 11025;
 int 		desired_bits = 16;
+int 		desired_channels = 2;
 
 int sound_started=0;
+int tryrates[MAX_TRYRATES] = { 11025, 22051, 44100, 8000 };
 
 cvar_t bgmvolume = {"bgmvolume", "1", true};
 cvar_t bgmtype = {"bgmtype", "cd", true};   // cd or midi
@@ -160,7 +162,7 @@ S_Startup
 */
 void S_Startup (void)
 {
-	int		rc;
+	int		rc, tmp;
 
 #ifdef PLATFORM_UNIX
 	S_GetSubsys();
@@ -168,6 +170,33 @@ void S_Startup (void)
 
 	if (!snd_initialized)
 		return;
+
+	if ((tmp = COM_CheckParm("-sndspeed")) != 0)
+	{
+		tmp = atoi(com_argv[tmp+1]);
+		switch (tmp) {
+			case  8000:
+			case 11025:
+			case 22050:
+			case 22051:
+			case 44100:
+			case 48000:
+				desired_speed = tmp;
+				break;
+			default:
+				break;
+		}
+	}
+
+	if ((tmp = COM_CheckParm("-sndbits")) != 0)
+	{
+		tmp = atoi(com_argv[tmp+1]);
+		if ((tmp == 16) || (tmp == 8))
+			desired_bits = tmp;
+	}
+
+	if ((tmp = COM_CheckParm("-sndmono")) != 0)
+		desired_channels = 1;
 
 	rc = SNDDMA_Init();
 

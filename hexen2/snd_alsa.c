@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.6 2005-02-14 15:12:32 sezero Exp $
+	$Id: snd_alsa.c,v 1.7 2005-02-20 12:44:58 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -37,8 +37,8 @@ static char *pcmname = "default";
 static snd_pcm_t *pcm;
 static int snd_inited;
 static snd_pcm_uframes_t buffer_size;
-extern int desired_bits;
-extern int desired_speed;
+extern int desired_bits, desired_speed, desired_channels;
+extern int tryrates[MAX_TRYRATES];
 extern int soundtime;
 
 #define HX2_ALSA(ret, func, params) \
@@ -71,8 +71,8 @@ static qboolean load_libasound (void)
 
 qboolean S_ALSA_Init (void)
 {
-	int	err, bps, stereo;
-	unsigned int rate;
+	int			i, err;
+	unsigned int		rate;
 	snd_pcm_uframes_t	frag_size;
 	snd_pcm_hw_params_t	*hw;
 	snd_pcm_sw_params_t	*sw;
@@ -82,21 +82,6 @@ qboolean S_ALSA_Init (void)
 
 	snd_pcm_hw_params_alloca (&hw);
 	snd_pcm_sw_params_alloca (&sw);
-
-	if ((err = COM_CheckParm("-sndbits")) != 0)
-		bps = atoi(com_argv[err+1]);
-	else
-		bps = desired_bits;
-
-	if ((err = COM_CheckParm("-sndspeed")) != 0)
-		rate = atoi(com_argv[err+1]);
-	else
-		rate = desired_speed;
-
-	if ((err = COM_CheckParm("-sndmono")) != 0)
-		stereo = 0;
-	else
-		stereo = 1;
 
 	if ((err = COM_CheckParm("-alsadev")) != 0)
 		pcmname = com_argv[err+1];
@@ -120,52 +105,60 @@ qboolean S_ALSA_Init (void)
 		goto error;
 	}
 
-	switch (bps) {
-		case 8:
-		case 16:
-			err = hx2snd_pcm_hw_params_set_format (pcm, hw, bps == 8 ? SND_PCM_FORMAT_U8 : SND_PCM_FORMAT_S16);
-			if (err < 0) {
-				Con_Printf ("ALSA: desired format %d not supported. %s\n",
-					    bps, hx2snd_strerror (err));
-				goto error;
-			}
-			break;
-		default:
-			Con_Printf ("ALSA: desired format %d not supported\n", bps);
+	err = hx2snd_pcm_hw_params_set_format (pcm, hw, desired_bits == 8 ? SND_PCM_FORMAT_U8 : SND_PCM_FORMAT_S16);
+	if (err < 0) {
+		Con_Printf ("Problems setting sndformat, retrying...\n");
+		desired_bits = (desired_bits == 8) ? 16 : 8;
+		err = hx2snd_pcm_hw_params_set_format (pcm, hw, desired_bits == 8 ? SND_PCM_FORMAT_U8 : SND_PCM_FORMAT_S16);
+		if (err < 0) {
+			Con_Printf ("ALSA: Neither 8 nor 16 bit format supported. %s\n", hx2snd_strerror (err));
 			goto error;
+		}
 	}
 
-	switch (stereo) {
-		case 0:
-		case 1:
-			err = hx2snd_pcm_hw_params_set_channels (pcm, hw, stereo ? 2 : 1);
-			if (err < 0) {
-				Con_Printf ("ALSA: desired channels not supported. %s\n", hx2snd_strerror (err));
-				goto error;
-			}
-			break;
-		default:
-			Con_Printf ("ALSA: desired channels not supported\n");
+	err = hx2snd_pcm_hw_params_set_channels (pcm, hw, desired_channels);
+	if (err < 0) {
+		Con_Printf ("Problems setting mono/stereo, retrying..\n");
+		desired_channels = (desired_channels == 2) ? 1 : 2;
+		err = hx2snd_pcm_hw_params_set_channels (pcm, hw, desired_channels);
+		if (err < 0) {
+			Con_Printf ("ALSA: could not set desired channels. %s\n", hx2snd_strerror (err));
 			goto error;
+		}
 	}
 
-	switch (rate) {
-		case 11025:
-		case 22050:
-		case 44100:
-		case 48000:
+	rate = desired_speed;
+	err = hx2snd_pcm_hw_params_set_rate_near (pcm, hw, &rate, 0);
+	if (err < 0) {
+		Con_Printf("Problems setting dsp speed, trying alternatives..\n");
+		desired_speed = 0;
+		for (i=0 ; i<MAX_TRYRATES ; i++) {
+			rate = tryrates[i];
 			err = hx2snd_pcm_hw_params_set_rate_near (pcm, hw, &rate, 0);
 			if (err < 0) {
-				Con_Printf ("ALSA: desired rate %i not supported. %s\n",
-					    rate, hx2snd_strerror (err));
-				goto error;
+				Con_DPrintf ("Could not set dsp to speed %d\n", tryrates[i]);
+			} else {
+			/* From alsa examples: is this necessary?
+				if (rate != tryrates[i]) {
+					Con_Printf ("Failure: Rate set (%d) didn't match requested rate (%d)!\n", rate, tryrates[i]);
+					goto error;
+				}
+			*/	desired_speed = rate;
+				break;
 			}
-			frag_size = 8 * bps * rate / 11025;
-			break;
-		default:
-			Con_Printf ("ALSA: desired rate %d not supported\n", rate);
+		}
+		if (desired_speed == 0) {
+			Con_Printf ("ALSA: Could not set dsp to any speed!..\n");
 			goto error;
+		}
 	}
+/*	else {	// From alsa examples: is this necessary?
+		if (rate != desired_speed) {
+			Con_Printf ("Failure: Rate set (%d) didn't match requested rate (%d)!\n", rate, desired_speed);
+			goto error;
+		}
+	}
+*/	frag_size = 8 * desired_bits * desired_speed / 11025;
 
 	err = hx2snd_pcm_hw_params_set_period_size_near (pcm, hw, &frag_size, 0);
 	if (err < 0) {
@@ -207,7 +200,7 @@ qboolean S_ALSA_Init (void)
 	shm = &sn;
 	memset ((dma_t *) shm, 0, sizeof (*shm));
 	shm->splitbuffer = 0;
-	shm->channels = stereo + 1;
+	shm->channels = desired_channels;
 	err = hx2snd_pcm_hw_params_get_period_size (hw, 
 			(snd_pcm_uframes_t *) (&shm->submission_chunk), 0);
 			// don't mix less than this
@@ -216,7 +209,7 @@ qboolean S_ALSA_Init (void)
 		goto error;
 	}
 	shm->samplepos = 0; // in mono samples
-	shm->samplebits = bps;
+	shm->samplebits = desired_bits;
 	err = hx2snd_pcm_hw_params_get_buffer_size (hw, &buffer_size);
 	if (err < 0) {
 		Con_Printf ("ALSA: unable to get buffer size. %s\n", hx2snd_strerror(err));
@@ -224,7 +217,7 @@ qboolean S_ALSA_Init (void)
 	}
 
 	shm->samples = buffer_size * shm->channels; // mono samples in buffer
-	shm->speed = rate;
+	shm->speed = desired_speed;
 
 	snd_inited = 1;
 	SNDDMA_GetDMAPos ();	// sets shm->buffer
@@ -311,6 +304,9 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/02/14 15:12:32  sezero
+ * added ability to disable ALSA support at compile time
+ *
  * Revision 1.5  2005/02/14 10:08:00  sezero
  * alsa sound:
  * - replicate the order in quakeforge as much as possible
