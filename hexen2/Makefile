@@ -178,7 +178,7 @@ COMMONOBJS = cd_linux.o \
 all : $(BINARY)
 
 clean:
-	rm -f *.o core
+	rm -f *.o core sys_ia32.s
 
 ifeq "$(BUILDGL)" "no"
 $(BINARY) : $(SOFTOBJS) $(COMMONOBJS)

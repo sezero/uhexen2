@@ -2,7 +2,7 @@
 // 02/21/97 JCB Added extended DirectInput code to support external controllers.
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.2 2004-11-28 00:58:08 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.3 2004-12-04 18:47:47 sezero Exp $
  */
 
 #include "SDL.h"
@@ -158,13 +158,6 @@ IN_ActivateMouse
 ===========
 */
 
-void IN_ActivateMouseSA (void)
-{
-	// S.A's hack to activate mouse
-	if ((int)_windowed_mouse.value || (int)vid_mode.value == MODE_FULLSCREEN_DEFAULT)
-		IN_ActivateMouse ();
-}
-
 void IN_ActivateMouse (void)
 {
 
@@ -186,6 +179,13 @@ void IN_ActivateMouse (void)
 	}
 }
 
+void IN_ActivateMouseSA (void)
+{
+	// S.A's hack to activate mouse
+	if ((int)_windowed_mouse.value || (int)vid_mode.value == MODE_FULLSCREEN_DEFAULT)
+		IN_ActivateMouse ();
+}
+
 
 /*
 ===========
@@ -204,13 +204,6 @@ void IN_SetQuakeMouseState (void)
 IN_DeactivateMouse
 ===========
 */
-void IN_DeactivateMouseSA (void)
-{
-	// don't worry if fullscreen - S.A.
-	if ((int)vid_mode.value != MODE_FULLSCREEN_DEFAULT)
-		IN_DeactivateMouse ();
-}
-
 void IN_DeactivateMouse (void)
 {
 
@@ -227,6 +220,13 @@ void IN_DeactivateMouse (void)
 		SDL_WM_GrabInput (SDL_GRAB_OFF);
 //		ReleaseCapture ();
 	}
+}
+
+void IN_DeactivateMouseSA (void)
+{
+	// don't worry if fullscreen - S.A.
+	if ((int)vid_mode.value != MODE_FULLSCREEN_DEFAULT)
+		IN_DeactivateMouse ();
 }
 
 
@@ -1200,6 +1200,20 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/11/28 00:58:08  sezero
+ *
+ * Commit Steven's changes as of 2004.11.24:
+ *
+ * * Rewritten Help/Version message(s)
+ * * Proper fullscreen mode(s) for OpenGL.
+ * * Screen sizes are selectable with "-width" and "-height" options.
+ * * Mouse grab in window modes , which is released when menus appear.
+ * * Interactive video modes in software game disabled.
+ * * Replaced Video Mode menu with a helpful message.
+ * * New menu items for GL Glow, Chase mode, Draw Shadows.
+ * * Changes to initial cvar_t variables:
+ *      r_shadows, gl_other_glows, _windowed_mouse,
+ *
  * Revision 1.1.1.1  2004/11/28 00:04:39  sezero
  * Initial import of AoT 1.2.0 code
  *

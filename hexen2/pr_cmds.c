@@ -1,6 +1,6 @@
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.1.1.1 2004-11-28 00:05:55 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.2 2004-12-04 18:47:47 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -3238,12 +3238,12 @@ void PF_updateInfoPlaque (void)
 
 	if (index > 31) 
 	{
-		use = &info_mask2;
+		use = (long *) &info_mask2;
 		ofs = 32;
 	}
 	else
 	{
-		use = &info_mask;
+		use = (long *) &info_mask;
 	}
 		
 	check = (long) (1 << index - ofs);
@@ -3416,6 +3416,9 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:05:55  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.1.1.1  2001/11/09 17:04:05  theoddone33
  * Inital import
  *

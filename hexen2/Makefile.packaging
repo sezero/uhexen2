@@ -159,10 +159,10 @@ COMMONOBJS = cd_linux.o \
 #all : glmp_static glmp_dynamic glh2_static glh2_dynamic mp_static mp_dynamic h2_static h2_dynamic
 	
 clean:
-	rm -f *.o core
+	rm -f *.o core sys_ia32.s
 	
 cleaner:
-	rm -f *.o core $(GLMP_BINARY) $(GLMP_BINARY_STATIC) $(GLH2_BINARY) $(GLH2_BINARY_STATIC)\
+	rm -f *.o core sys_ia32.s $(GLMP_BINARY) $(GLMP_BINARY_STATIC) $(GLH2_BINARY) $(GLH2_BINARY_STATIC)\
 	$(MP_BINARY) $(MP_BINARY_STATIC) $(H2_BINARY) $(H2_BINARY_STATIC)
 
 glmp_static : CFLAGS+= -DGLQUAKE -DH2MP 
