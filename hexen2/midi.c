@@ -1,7 +1,7 @@
 /*
 	midi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/midi.c,v 1.6 2005-02-04 13:56:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/midi.c,v 1.7 2005-02-04 14:00:14 sezero Exp $
 */
 
 #ifndef PLATFORM_UNIX
@@ -10,16 +10,14 @@
 #include <commctrl.h>
 #include <memory.h>
 #include <mmreg.h>
-#endif
 
-#ifndef PLATFORM_UNIX
 #include "midstuff.h"
 #include "midi.h"
-#endif
+#endif	// !PLATFORM_UNIX
 
 #include "quakedef.h"
 
-#ifdef USE_MIDI
+#ifdef USE_MIDI		// for unix
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
 
@@ -27,7 +25,7 @@ static Mix_Music *music = NULL;
 int audio_wasinit = 0;
 
 void (*midi_endmusicfnc)(void);
-#endif // !USE_MIDI
+#endif	// !USE_MIDI	// for unix
 
 byte bMidiInited,bFileOpen, bPlaying, bBuffersPrepared;
 byte bPaused, bLooped;
@@ -96,9 +94,9 @@ void MIDI_Loop_f (void)
 		Con_Printf("MIDI music will be looped\n");
 	else
 		Con_Printf("MIDI music will not be looped\n");
-#endif
+#endif	// !PLATFORM_UNIX
 
-#ifdef USE_MIDI
+#ifdef USE_MIDI	// for unix
 	if (Cmd_Argc () == 2)
 	{
 		if (strcmpi(Cmd_Argv(1),"on") == 0 || strcmpi(Cmd_Argv(1),"1") == 0)
@@ -113,7 +111,7 @@ void MIDI_Loop_f (void)
 		Con_Printf("MIDI music will be looped\n");
 	else
 		Con_Printf("MIDI music will not be looped\n");
-#endif
+#endif	// for unix
 }
 
 void MIDI_Volume_f (void)
@@ -128,9 +126,9 @@ void MIDI_Volume_f (void)
 	} else {
 		Con_Printf("MIDI volume is %d\n", dwVolumePercent/(65535/100));
 	}
-#endif
+#endif	// !PLATFORM_UNIX
 
-#ifdef USE_MIDI
+#ifdef USE_MIDI	// for unix
 	if (Cmd_Argc () == 2) {
 		dwVolumePercent = atof(Cmd_Argv(1))*100;
 		if (dwVolumePercent > 100)
@@ -141,13 +139,13 @@ void MIDI_Volume_f (void)
 	} else {
 		Con_Printf("MIDI volume is %f\n", dwVolumePercent);
 	}
-#endif
+#endif	// for unix
 }
 
 void MIDI_EndMusicFinished(void)
 {
 	printf("Music finished\n");
-#ifdef USE_MIDI
+#ifdef USE_MIDI	// for unix
 	if (bLooped) {
 		printf("Looping enabled\n");
 		if (Mix_PlayingMusic())
@@ -158,13 +156,13 @@ void MIDI_EndMusicFinished(void)
 		Mix_FadeInMusic(music,0,2000);
 		bPlaying = 1;
 	}
-#endif
+#endif	// for unix
 }
 
 // Changed to qboolean to jive with quakedef.h - DDOI
 qboolean MIDI_Init(void)
 {
-#ifdef USE_MIDI
+#ifdef USE_MIDI	// for unix
 #warning FIXME: midi doesnt play with snd_sdl.c
 	int audio_rate = 22050;
 	int audio_format = AUDIO_S16;
@@ -172,17 +170,16 @@ qboolean MIDI_Init(void)
 	int audio_buffers = 4096;
 	char	mididir[MAX_OSPATH];
 
-	printf("MIDI_Init :\n");
-
-	sprintf (mididir, "%s/glhexen/midi", com_userdir);
-	Sys_mkdir (mididir);
-
 	if (COM_CheckParm("-nomidi") || COM_CheckParm("-nosound")
 	   || COM_CheckParm("--nomidi") || COM_CheckParm("--nosound")) {
 
 		bMidiInited = 0;
 		return 0;
 	}
+
+	Con_Printf("MIDI_Init:\n");
+	sprintf (mididir, "%s/glhexen/midi", com_userdir);
+	Sys_mkdir (mididir);
 
 	// Try initing the audio subsys if it hasn't been already
 	audio_wasinit = SDL_WasInit(SDL_INIT_AUDIO);
@@ -200,7 +197,7 @@ qboolean MIDI_Init(void)
 
 	if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0) {
 		bMidiInited = 0;
-		fprintf(stderr, "SDL_mixer: open audio failed: %s\n", SDL_GetError());
+		Con_Printf("SDL_mixer: open audio failed: %s\n", SDL_GetError());
 		return 0;
 	}
 
@@ -219,17 +216,17 @@ qboolean MIDI_Init(void)
 	bLooped = 1;
 	bPaused = 0;
 	bMidiInited = 1;
-#endif
+#endif	// for unix
 
 #ifndef PLATFORM_UNIX	
 	MMRESULT mmrRetVal;
-
-	hBufferReturnEvent = CreateEvent(NULL,FALSE,FALSE,"Wait For Buffer Return");
 
 	if(COM_CheckParm("-nomidi")) {
 		bMidiInited = 0;
 		return FALSE;
 	}
+
+	hBufferReturnEvent = CreateEvent(NULL,FALSE,FALSE,"Wait For Buffer Return");
 
 	mmrRetVal = midiStreamOpen(&hStream,&uMIDIDeviceID,(DWORD)1,(DWORD)MidiProc,(DWORD)0,CALLBACK_FUNCTION);
 
@@ -254,7 +251,7 @@ qboolean MIDI_Init(void)
 	bBuffersPrepared = FALSE;
 	uCallbackStatus = 0;
 	bMidiInited = 1;
-#endif
+#endif	// !PLATFORM_UNIX
 
 	return true;
 }
@@ -288,9 +285,9 @@ void MIDI_Play(char *Name)
 		midiOutSetVolume(hStream, (dwVolumePercent<<16)+dwVolumePercent);
 		bPlaying = TRUE;
 	}
-#endif
+#endif	// !PLATFORM_UNIX
 
-#ifdef USE_MIDI
+#ifdef USE_MIDI	// for unix
 	char Temp[100];
 	char *Data;
 	char midi_file[200];
@@ -330,11 +327,14 @@ void MIDI_Play(char *Name)
 		Mix_FadeInMusic(music,0,2000);
 		bPlaying = 1;
 	}
-#endif
+#endif	// for unix
 }
 
 void MIDI_Pause(void)
 {
+	if (!bPlaying)
+		return;
+
 	//  printf("MIDI_Pause\n");
 #ifndef PLATFORM_UNIX
 	if(bPaused)
@@ -343,16 +343,16 @@ void MIDI_Pause(void)
 		midiStreamPause(hStream);
 
 	bPaused = !bPaused;
-#endif
+#endif	// !PLATFORM_UNIX
 
-#ifdef USE_MIDI
+#ifdef USE_MIDI	// for unix
 	if(bPaused)
 		Mix_ResumeMusic();
 	else
 		Mix_PauseMusic();
 
 	bPaused = !bPaused;
-#endif
+#endif	// for unix
 }
 
 void MIDI_Loop(int NewValue)
@@ -363,16 +363,16 @@ void MIDI_Loop(int NewValue)
 		bLooped = !bLooped;
 	else
 		bLooped = NewValue;
-#endif
+#endif	// !PLATFORM_UNIX
 
-#ifdef USE_MIDI
+#ifdef USE_MIDI	// for unix
 	if (NewValue == 2)
 		bLooped = !bLooped;
 	else
 		bLooped = NewValue;
 
 	MIDI_EndMusicFinished();
-#endif
+#endif	// for unix
 }
 
 void ReInitMusic() {
@@ -400,6 +400,9 @@ void MIDI_Stop(void)
 	// printf("MIDI_Stop\n");
 #ifndef PLATFORM_UNIX
 	MMRESULT mmrRetVal;
+
+	if (!bMidiInited)	//Just to be safe
+		return;
 
 	if(bFileOpen || bPlaying)// || uCallbackStatus != STATUS_CALLBACKDEAD)
 	{
@@ -442,9 +445,12 @@ void MIDI_Stop(void)
 			bFileOpen = FALSE;
 		}
 	}
-#endif
+#endif	// !PLATFORM_UNIX
 
-#ifdef USE_MIDI
+#ifdef USE_MIDI	// for unix
+	if (!bMidiInited)	//Just to be safe
+		return;
+
 	if(bFileOpen || bPlaying) {
 		Mix_HaltMusic();
 		Mix_FreeMusic(music);
@@ -452,14 +458,17 @@ void MIDI_Stop(void)
 
 	bPlaying = bPaused = 0;
 	bFileOpen=0;
-#endif
+#endif	// for unix
 }
 
 void MIDI_Cleanup(void)
 {
-	//  printf("MIDI_Cleanup\n");
+	Con_Printf("MIDI_Cleanup\n");
 #ifndef PLATFORM_UNIX
 	MMRESULT mmrRetVal;
+
+	if (!bMidiInited)
+		return;
 
 	MIDI_Stop();
 	CloseHandle(hBufferReturnEvent);
@@ -470,17 +479,20 @@ void MIDI_Cleanup(void)
 			MidiErrorMessageBox(mmrRetVal);
 		hStream = NULL;
 	}
-#endif
+#endif	// !PLATFORM_UNIX
 
-#ifdef USE_MIDI
+#ifdef USE_MIDI	// for unix
 	if ( bMidiInited == 1 ) {
 		MIDI_Stop();
+		Con_Printf("Closing SDL_mixer for midi music.\n");
 		Mix_CloseAudio();
 		// I'd better do this here...
-		if (audio_wasinit == 0)
+		if (audio_wasinit == 0) {
+			Con_Printf("Closing Audio subsystem for SDL_mixer.\n");
 			SDL_CloseAudio();
+		}
 	}
-#endif
+#endif	// for unix
 }
 
 
@@ -513,7 +525,7 @@ void FreeBuffers(void)
 			GlobalFreePtr( ciStreamBuffers[idx].mhBuffer.lpData);
 			ciStreamBuffers[idx].mhBuffer.lpData = NULL;
 		}
-#endif
+#endif	// !PLATFORM_UNIX
 }
 
 
@@ -614,7 +626,7 @@ BOOL StreamBufferSetup(char *Name)
 
 	bBuffersPrepared = TRUE;
 	nCurrentBuffer = 0;
-#endif
+#endif	// !PLATFORM_UNIX
 	return(false);
 }
 
@@ -784,6 +796,9 @@ void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/02/04 13:56:45  sezero
+ * midi.c: heavy whitespace changes
+ *
  * Revision 1.5  2005/02/04 13:51:31  sezero
  * midi fixes for correctness' sake. it still fails with snd_sdl.
  *
