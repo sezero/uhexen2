@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.7 2004-12-18 13:44:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.8 2004-12-18 13:54:43 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -14,6 +14,7 @@
 
 #ifdef PLATFORM_UNIX
 #include "linux_inc.h"
+#include <ctype.h>
 #endif
 
 #ifdef PLATFORM_UNIX
@@ -435,6 +436,10 @@ void MIDI_Loop(int NewValue);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2004/12/18 13:44:12  sezero
+ * Clean-up and kill warnings 1:
+ * Kill two pragmas that are ignored anyway.
+ *
  * Revision 1.6  2004/12/18 13:20:37  sezero
  * make the music automatically restart when changed in the options menu
  *

@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Id: net_udp.c,v 1.3 2004-12-18 13:54:43 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -38,10 +38,7 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
-
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
 
 #ifdef __sun__
 #include <sys/filio.h>

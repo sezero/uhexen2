@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.4 2004-12-18 13:52:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.5 2004-12-18 13:54:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -13,6 +13,7 @@
 #include <dirent.h>
 #include <sys/types.h>
 #include <fnmatch.h>
+#include <unistd.h>
 #endif
 
 // we need to declare some mouse variables here, because the menu system
@@ -1030,6 +1031,10 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/18 13:52:54  sezero
+ * Clean-up and kill warnings 5:
+ * Misc irritants..
+ *
  * Revision 1.3  2004/12/14 21:49:37  sezero
  * don't spam the console while exiting the game
  *
