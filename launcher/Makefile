@@ -8,7 +8,7 @@ GTK_CONFIG = ${prefix}/bin/gtk-config
 GTK_CFLAGS = `gtk-config --cflags`
 GTK_LIBS = `gtk-config --libs`
 PACKAGE = h2launcher
-VERSION = 0.2c9
+VERSION = 0.2d
 
 #ORIG_SRC= support.c support.h
 SOURCES = main.c ${ORIG_SRC} interface.c interface.h \
