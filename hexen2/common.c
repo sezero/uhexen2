@@ -1,7 +1,7 @@
 // common.c -- misc functions used in client and server
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.1.1.1 2004-11-28 00:01:25 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.2 2004-11-28 00:34:59 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -977,8 +977,12 @@ void COM_FileBase (char *in, char *out)
 	while (s != in && *s != '.')
 		s--;
 	
-	for (s2 = s ; *s2 && *s2 != '/' ; s2--)
-	;
+	/* Pa3PyX: no range checking -- used to trash the stack and crash the
+		   game randomly upon loading progs, for instance (or in any
+		   other instance where one would supply a filename witout
+		   a path */
+//	for (s2 = s ; *s2 && *s2 != '/' ; s2--);
+	for (s2 = s; *s2 && *s2 != '/' && s2 >= in; s2--);
 	
 	if (s-s2 < 2)
 		strcpy (out,"?model?");
@@ -2191,6 +2195,9 @@ void COM_InitFilesystem (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:01:25  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.6  2002/01/04 14:50:55  phneutre
  * write files in ~/.aot/ directory by default (in COM_WriteFile)
  *
