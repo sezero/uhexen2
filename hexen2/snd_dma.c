@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.9 2005-02-04 11:33:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.10 2005-02-04 11:41:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -40,7 +40,7 @@ vec3_t		listener_up;
 vec_t		sound_nominal_clip_dist=1000.0;
 
 int		soundtime;	// sample PAIRS
-int   		paintedtime;	// sample PAIRS
+int		paintedtime;	// sample PAIRS
 
 
 #define	MAX_SFX		512
@@ -67,21 +67,6 @@ cvar_t ambient_fade = {"ambient_fade", "100"};
 cvar_t snd_noextraupdate = {"snd_noextraupdate", "0"};
 cvar_t snd_show = {"snd_show", "0"};
 cvar_t _snd_mixahead = {"_snd_mixahead", "0.1", true};
-
-
-// ====================================================================
-// User-setable variables
-// ====================================================================
-
-
-//
-// Fake dma is a synchronous faking of the DMA progress used for
-// isolating performance in the renderer.  The fakedma_updates is
-// number of times S_Update() is called per second.
-//
-
-qboolean fakedma = false;
-int fakedma_updates = 15;
 
 
 void S_AmbientOff (void)
@@ -128,20 +113,16 @@ void S_Startup (void)
 	if (!snd_initialized)
 		return;
 
-	if (!fakedma)
+	rc = SNDDMA_Init();
+
+	if (!rc)
 	{
-		rc = SNDDMA_Init();
-
-		if (!rc)
-		{
 #ifndef	_WIN32
-			Con_Printf("S_Startup: SNDDMA_Init failed.\n");
+		Con_Printf("S_Startup: SNDDMA_Init failed.\n");
 #endif
-			sound_started = 0;
-			return;
-		}
+		sound_started = 0;
+		return;
 	}
-
 	sound_started = 1;
 }
 
@@ -163,9 +144,6 @@ void S_Init (void)
 		return;
 
 	Con_Printf("\nSound Initialization\n");
-
-	if (COM_CheckParm("-simsound"))
-		fakedma = true;
 
 	Cmd_AddCommand("play", S_Play);
 	Cmd_AddCommand("playvol", S_PlayVol);
@@ -204,23 +182,6 @@ void S_Init (void)
 	known_sfx = Hunk_AllocName (MAX_SFX*sizeof(sfx_t), "sfx_t");
 	num_sfx = 0;
 
-// create a piece of DMA memory
-
-	if (fakedma)
-	{
-		shm = (void *) Hunk_AllocName(sizeof(*shm), "shm");
-		shm->splitbuffer = 0;
-		shm->samplebits = 16;
-		shm->speed = 22050;
-		shm->channels = 2;
-		shm->samples = 32768;
-		shm->samplepos = 0;
-		shm->soundalive = true;
-		shm->gamealive = true;
-		shm->submission_chunk = 1;
-		shm->buffer = Hunk_AllocName(1<<16, "shmbuf");
-	}
-
 	if ( shm ) {
 		Con_Printf ("Sound sampling rate: %i\n", shm->speed);
 	}
@@ -256,10 +217,8 @@ void S_Shutdown(void)
 	shm = 0;
 	sound_started = 0;
 
-	if (!fakedma)
-	{
-		SNDDMA_Shutdown();
-	}
+	SNDDMA_Shutdown();
+
 #ifndef PLATFORM_UNIX
 	if (hInstDS)
 	{
@@ -267,7 +226,6 @@ void S_Shutdown(void)
 		hInstDS=NULL;
 	}
 #endif
-
 }
 
 
@@ -1050,6 +1008,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/02/04 11:33:25  sezero
+ * some snd_dma.c fixes from the tenebrae project
+ *
  * Revision 1.8  2005/02/04 11:28:59  sezero
  * make sdl_audio actually work (finally)
  *
