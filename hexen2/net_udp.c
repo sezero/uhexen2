@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.3 2004-12-18 13:54:43 sezero Exp $
+	$Id: net_udp.c,v 1.4 2005-03-06 10:41:29 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -75,9 +75,19 @@ int UDP_Init (void)
 		return -1;
 
 	// determine my name & address
-	gethostname(buff, MAXHOSTNAMELEN);
+
+	// sanity checking added by S.A.
+	if (gethostname(buff, MAXHOSTNAMELEN) != 0) {
+		printf ("gethostname failed,  errno = %i, disabling udp\n",errno);
+		return -1;
+	}
+
 	local = gethostbyname(buff);
-	myAddr = *(int *)local->h_addr_list[0];
+
+	if (local==NULL) {
+		printf ("gethostbyname failed, errno = %i, disabling udp\n",h_errno);
+		return -1;
+	}
 
 	// if the quake hostname isn't set, set it to the machine name
 	if (strcmp(hostname.string, "UNNAMED") == 0)
@@ -85,6 +95,8 @@ int UDP_Init (void)
 		buff[15] = 0;
 		Cvar_Set("hostname", buff);
 	}
+
+	myAddr = *(int *)local->h_addr_list[0];
 
 	if ((net_controlsocket = UDP_OpenSocket (0)) == -1)
 		Sys_Error("UDP_Init: Unable to open control socket\n");
