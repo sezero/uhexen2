@@ -2,7 +2,7 @@
 Linux Hexen2 Launcher
 
 Place the launcher binary into the directory that you installed
-Hammer of Thyrion (v1.2.3).  Execute it and enjoy.  You can also
+Hammer of Thyrion (v1.2.4).  Execute it and enjoy.  You can also
 create a symlink for it in a dir on your path.  You can then run
 it from any place.  Examples:
 
@@ -16,5 +16,3 @@ it from any place.  Examples:
 
 # ln -s /usr/games/hexen2/h2launcher  /usr/bin/hexen2
 
-
-O.S.
