@@ -85,7 +85,7 @@ create_window1 (void)
 #endif
   window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (window1), "window1", window1);
-  gtk_window_set_title (GTK_WINDOW (window1), _("Hexen II for Linux Launcher, 0.3.1"));
+  gtk_window_set_title (GTK_WINDOW (window1), _("Hexen II for Linux Launcher, 0.3.2"));
   gtk_window_set_policy (GTK_WINDOW (window1), TRUE, TRUE, FALSE);
   gtk_window_set_default_size (GTK_WINDOW (window1), -1, 408);
 

@@ -240,6 +240,7 @@ void launch_hexen2_bin() {
 	pid=fork();
 	if (pid == 0) {
 	      execv(binary_name,args);
+	      gtk_main_quit();
 	} else {
 	     if (pid == -1)
 		     perror(NULL);
