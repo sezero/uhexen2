@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/client.hc,v 1.1.1.1 2004-11-29 11:25:40 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/client.hc,v 1.2 2005-01-26 16:54:52 sezero Exp $
  */
 
 // prototypes
@@ -1173,6 +1173,11 @@ void() NextLevel =
 	entity o;
 
 	FindDMLevel();
+
+	if(world.next_map=="")
+		nextmap = mapname;
+	else
+		nextmap = world.next_map;
 
 	o = spawn();
 	o.map = nextmap;
@@ -3155,6 +3160,9 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 };
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:25:40  sezero
+ * Initial import
+ *
  * Revision 1.1.1.1  2001/11/09 17:05:01  theoddone33
  * Inital import
  *

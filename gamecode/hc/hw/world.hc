@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/world.hc,v 1.1.1.1 2004-11-29 11:24:39 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/world.hc,v 1.2 2005-01-26 16:54:52 sezero Exp $
  */
 
 //void() InitBodyQue;
@@ -110,6 +110,72 @@ void() main =
 
 entity	lastspawn;
 
+void GetNextMap()
+{
+float line_id;
+float map_sequence_start;
+float map_start;
+string map_name;
+
+	line_id = 0;
+	while (map_name!="map_sequence_start"||map_name!="<1.you passed the end of the file, pal>")
+	{
+		line_id +=1;
+		map_name = getstring(line_id);
+		if(map_name=="map_sequence_start")
+		{
+			break;
+		}
+		if(map_name=="<1.you passed the end of the file, pal>")
+		{
+			break;
+		}
+	}
+	if(map_name=="<1.you passed the end of the file, pal>")
+	{
+		return;
+	}
+
+	map_sequence_start = line_id;
+
+	line_id = 0;
+
+	while(map_name!=mapname||map_name!="map_sequence_end"||map_name!="<1.you passed the end of the file, pal>")
+	{
+		map_name = getstring(map_sequence_start+line_id+1);
+		line_id +=1;
+
+		if(map_name==mapname)
+		{
+			break;
+		}
+		if(map_name=="map_sequence_end")
+		{
+			break;
+		}
+		if(map_name=="<1.you passed the end of the file, pal>")
+		{
+			break;
+		}
+
+	}
+	if(map_name=="<1.you passed the end of the file, pal>")
+		return;
+	if(map_name=="map_sequence_end")
+		return;
+	map_name = getstring(map_sequence_start+line_id+1);
+	dprint("map_name == ");
+	dprint(map_name);
+	dprint("\n");	
+	if(map_name=="map_sequence_end")
+		map_name = getstring(map_sequence_start+1);
+	if(map_name=="*")
+		return;
+	self.next_map = map_name;
+
+}
+
+
 //=======================
 /*QUAKED worldspawn (0 0 0) ?
 Only used for the world entity.
@@ -131,6 +197,17 @@ void() worldspawn =
 //	InitBodyQue ();
 
 // custom map attributes
+
+	GetNextMap();
+
+	dprint("mapname == ");	
+	dprint(mapname);
+	dprint("\n");
+	dprint("self.next_map == ");
+	dprint(self.next_map);
+	dprint("\n");
+
+
 
 /*	don't want hardcoded values for hexenworld
 	if (self.model == "maps/mgtowers.bsp")

@@ -3,6 +3,25 @@ Game code for Hexen2 / H2MP / HexenWorld
 
 Changes
 -------
+
+2005-01-26:
+Map cycling for HexenWorld (by Kor Skarn):  This is a server side mod,
+so only the server needs to have the new hwprogs.dat and strings.txt.
+The new strings.txt can then be edited for the required mapnames.
+
+* map names must stay between map_sequence_start and map_sequence_end
+* only the first occurence of a mapname is used to determine next map
+* if server is running a map that is not in the list the same map will
+  reload when game ends.
+* when server reaches the end of the list, the last map reloads when
+  game ends it does NOT make a loop. To make a loop, add the name of
+  the first map after the last one (it looks for a mapname matching
+  current one and takes the following name for next map)
+* any number of maps can be put in it
+* remove the entries or use old strings.txt: server works as without
+  the mod.
+
+
 1.12d	Reduce the speed of the teleporting process' pushing you
 	forward. Fixes the unreachable Cathedral balcony issue for
 	me (for both Hexen2 and H2MP) (2005-01-06).

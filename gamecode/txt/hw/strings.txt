@@ -488,8 +488,8 @@ You do not possess this item.^
 's delayed fireball glyph!^
  got too close for comfort to 
 's proximity glyph!^
- was swept away by 
-'s guardian glyph!^
+ was in the wrong place at the wrong time thanks to 
+'s timebomb glyph!^
  isn't in kansas anymore thanks to 
 's tornado!^
  was snowed in by 
@@ -590,9 +590,15 @@ Polymorph Spell is wearing off...
 Demon Glide
 Masochistic Mana
  got the deep freeze from 
-arrows
-Dwarven Ability 1
-Dwarven Ability 2
+
+map_sequence_start
+demo1
+meso2
+egypt1
+romeric1
+cath
+map_sequence_end
+
 <1.you passed the end of the file, pal>
 <2.you passed the end of the file, pal>
 <3.you passed the end of the file, pal>
