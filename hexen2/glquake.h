@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.1.1.1 2004-11-28 00:04:22 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.2 2004-11-28 00:37:43 sezero Exp $
  */
 
 // disable data conversion warnings
@@ -280,6 +280,10 @@ extern	cvar_t	gl_reporttjunctions;
 extern	cvar_t	gl_flashblend;
 extern	cvar_t	gl_nocolors;
 
+extern  cvar_t  gl_glows;
+extern  cvar_t  gl_other_glows;
+extern  cvar_t  gl_missile_glows;
+
 extern	int		gl_lightmap_format;
 extern	int		gl_solid_format;
 extern	int		gl_alpha_format;
@@ -311,6 +315,9 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:04:22  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.2  2002/01/02 15:23:23  phneutre
  * include gl_func.h (dlsym'ed functions)
  *

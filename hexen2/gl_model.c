@@ -4,7 +4,7 @@
 // on the same machine.
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.c,v 1.1.1.1 2004-11-28 00:03:44 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.c,v 1.2 2004-11-28 00:37:43 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -1569,6 +1569,156 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int mdl_flags
 
 //=========================================================================
 
+void Mod_SetAliasModelExtraFlags (model_t *mod)
+{
+	mod->ex_flags = 0;
+
+	// Glows setup begins here
+	if (!strnicmp (mod->name, "models/eflmtrch",15) ||
+	    !strnicmp (mod->name, "models/rflmtrch",15) ||
+	    !strnicmp (mod->name, "models/cflmtrch",15) ||
+	    !strnicmp (mod->name, "models/castrch",15) ||
+	    !strnicmp (mod->name, "models/rometrch",15) ||
+	    !strnicmp (mod->name, "models/egtorch",14) ||
+	    !strnicmp (mod->name, "models/flame",12))
+	   mod->ex_flags |= XF_TORCH_GLOW;
+            
+	  else if (!strnicmp (mod->name, "models/i_bmana",14)) {
+		mod->ex_flags |= XF_GLOW;
+		mod->glow_color[0] = 0.25f;
+		mod->glow_color[1] = 0.25f;
+		mod->glow_color[2] = 1.0f;
+	} else if (!strnicmp (mod->name, "models/i_gmana",14)) {
+		mod->ex_flags |= XF_GLOW;
+		mod->glow_color[0] = 0.25f;
+		mod->glow_color[1] = 1.0f;
+		mod->glow_color[2] = 0.25f;
+	} else if (!strnicmp (mod->name, "models/i_btmana",15)) {
+		mod->ex_flags |= XF_GLOW;
+		mod->glow_color[0] = 1.0f;
+		mod->glow_color[1] = 0.25f;
+		mod->glow_color[2] = 0.25f;
+	}
+    
+	// Missile glows
+	  else if (!strnicmp (mod->name, "models/drgnball",15)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 1.0f;
+		mod->glow_color[1] = 0.75f;
+		mod->glow_color[2] = 0.25f;
+	} else if (!strnicmp (mod->name, "models/eidoball",15)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 1.0f;
+		mod->glow_color[1] = 0.55f;
+		mod->glow_color[2] = 0.25f;
+	} else if (!strnicmp (mod->name, "models/lavaball",15)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 1.0f;
+		mod->glow_color[1] = 0.75f;
+		mod->glow_color[2] = 0.25f;
+	} else if (!strnicmp (mod->name, "models/glowball",15)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 1.0f;
+		mod->glow_color[1] = 0.75f;
+		mod->glow_color[2] = 0.25f;
+	} else if (!strnicmp (mod->name, "models/fireball",15)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 1.0f;
+		mod->glow_color[1] = 0.25f;
+		mod->glow_color[2] = 0.25f;
+	} else if (!strnicmp (mod->name, "models/famshot",14)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 0.2f;
+		mod->glow_color[1] = 0.8f;
+		mod->glow_color[2] = 0.2f;
+	} else if (!strnicmp (mod->name, "models/pestshot",15)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 0.2f;
+		mod->glow_color[1] = 0.2f;
+		mod->glow_color[2] = 0.2f;
+	} else if (!strnicmp (mod->name, "models/mumshot",14)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 1.0f;
+		mod->glow_color[1] = 0.75f;
+		mod->glow_color[2] = 0.25f;
+	} else if (!strnicmp (mod->name, "models/scrbstp1",15)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 1.0f;
+		mod->glow_color[1] = 0.75f;
+		mod->glow_color[2] = 0.05f;
+	} else if (!strnicmp (mod->name, "models/scrbpbody",16)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 1.0f;
+		mod->glow_color[1] = 0.75f;
+		mod->glow_color[2] = 0.05f;
+	} else if (!strnicmp (mod->name, "models/iceshot2",15)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 0.25f;
+		mod->glow_color[1] = 0.25f;
+		mod->glow_color[2] = 1.0f;
+	} else if (!strnicmp (mod->name, "models/iceshot",14)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 0.25f;
+		mod->glow_color[1] = 0.25f;
+		mod->glow_color[2] = 1.0f;
+	} else if (!strnicmp (mod->name, "models/flaming",14)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 1.0f;
+		mod->glow_color[1] = 0.75f;
+		mod->glow_color[2] = 0.55f;
+	} else if (!strnicmp (mod->name, "models/sucwp1p",14)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 8.0f;
+		mod->glow_color[1] = 0.2f;
+		mod->glow_color[2] = 0.2f;
+	} else if (!strnicmp (mod->name, "models/sucwp2p",14)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 0.2f;
+		mod->glow_color[1] = 0.8f;
+		mod->glow_color[2] = 0.2f;
+	} else if (!strnicmp (mod->name, "models/goop",11)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 1.0f;
+		mod->glow_color[1] = 0.8f;
+		mod->glow_color[2] = 0.2f;
+	} else if (!strnicmp (mod->name, "models/purfir1",14)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 1.0f;
+		mod->glow_color[1] = 0.75f;
+		mod->glow_color[2] = 0.25f;
+	} else if (!strnicmp (mod->name, "models/golemmis",15)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 1.0f;
+		mod->glow_color[1] = 0.25f;
+		mod->glow_color[2] = 0.25f;
+	} else if (!strnicmp (mod->name, "models/shard",12) && strlen(mod->name) == 12) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 1.0f;
+		mod->glow_color[1] = 0.25f;
+		mod->glow_color[2] = 0.25f;
+	} else if (!strnicmp (mod->name, "models/shardice",15)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 0.25f;
+		mod->glow_color[1] = 0.25f;
+		mod->glow_color[2] = 1.0f;
+	} else if (!strnicmp (mod->name, "models/snakearr",15)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 1.0f;
+		mod->glow_color[1] = 0.25f;
+		mod->glow_color[2] = 0.25f;
+	} else if (!strnicmp (mod->name, "models/spit",11)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 0.25f;
+		mod->glow_color[1] = 1.0f;
+		mod->glow_color[2] = 0.25f;
+	} else if (!strnicmp (mod->name, "models/spike",12)) {
+		mod->ex_flags |= XF_MISSILE_GLOW;
+		mod->glow_color[0] = 1.0f;
+		mod->glow_color[1] = 1.0f;
+		mod->glow_color[2] = 1.0f;
+	}
+
+}
 /*
 =================
 Mod_LoadAliasModelNew
@@ -1587,6 +1737,8 @@ void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
 	daliasskintype_t	*pskintype;
 	int					start, end, total;
 	
+	Mod_SetAliasModelExtraFlags (mod);
+
 	start = Hunk_LowMark ();
 
 	pinmodel = (newmdl_t *)buffer;
@@ -1767,6 +1919,8 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	daliasskintype_t	*pskintype;
 	int					start, end, total;
 	
+	Mod_SetAliasModelExtraFlags (mod);
+
 	start = Hunk_LowMark ();
 
 	pinmodel = (mdl_t *)buffer;
@@ -2129,6 +2283,9 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:03:44  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.1.1.1  2001/11/09 17:03:59  theoddone33
  * Inital import
  *

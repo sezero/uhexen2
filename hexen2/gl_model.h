@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.h,v 1.1.1.1 2004-11-28 00:03:44 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.h,v 1.2 2004-11-28 00:37:43 sezero Exp $
  */
 
 #ifndef __MODEL__
@@ -345,6 +345,11 @@ typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 
 #define  EF_MIP_MAP_FAR	  0x1000000	// Set per frame, this model will use the far mip map
 
+// XF_ Extra model efects set by engine (efects are model name dependent) 
+#define XF_TORCH_GLOW		  1		// glowing torches
+#define XF_GLOW		  2		// other glows
+#define XF_MISSILE_GLOW	  4		// missile glows
+
 typedef struct model_s
 {
 	char		name[MAX_QPATH];
@@ -355,6 +360,7 @@ typedef struct model_s
 	synctype_t	synctype;
 	
 	int			flags;
+	int			ex_flags;
 
 //
 // volume occupied by the model graphics
@@ -420,6 +426,8 @@ typedef struct model_s
 //
 	cache_user_t	cache;		// only access through Mod_Extradata
 
+	float		glow_color[3];
+
 } model_t;
 
 //============================================================================
@@ -437,6 +445,9 @@ byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:03:44  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.1.1.1  2001/11/09 17:03:59  theoddone33
  * Inital import
  *
