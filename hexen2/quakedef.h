@@ -1,7 +1,7 @@
 // quakedef.h -- primary header for client
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.3 2004-11-29 16:02:07 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.4 2004-11-29 16:22:23 sezero Exp $
  */
 
 //#define	GLTEST			// experimental stuff
@@ -18,7 +18,7 @@
 #define VERSION_MIN 0
 #define HOT_VERSION_MAJ 1
 #define HOT_VERSION_MID 2
-#define HOT_VERSION_MIN 1a
+#define HOT_VERSION_MIN 2
 #define VERSION_PLATFORM "Linux"
 #else
 #define VERSION_MAJ 1
@@ -430,6 +430,9 @@ void MIDI_Loop(int NewValue);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/11/29 16:02:07  sezero
+ * bump version to 1.2.1a to reflect the latest changes
+ *
  * Revision 1.2  2004/11/28 00:58:08  sezero
  *
  * Commit Steven's changes as of 2004.11.24:

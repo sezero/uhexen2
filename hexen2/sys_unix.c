@@ -1,7 +1,7 @@
 // sys_unix.c -- Unix system interface code
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.2 2004-11-28 00:58:08 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.3 2004-11-29 16:22:23 sezero Exp $
  */
 
 #include <stdio.h>
@@ -805,6 +805,17 @@ int Sys_GetUserdir(char *buff, unsigned int len)
     return 1;
 }
 
+void PrintVersion (void)
+{
+	printf ("Hammer of Thyrion (%d.%d.%d)\n",
+	HOT_VERSION_MAJ,HOT_VERSION_MID,HOT_VERSION_MIN);
+	printf ("Anvil  of Thyrion 1.12 (%s %d.%d.%d)\n",
+	VERSION_PLATFORM,VERSION_MAJ,VERSION_MID,VERSION_MIN);
+	printf ("\tPatched by Steven A. and Ozkan Sezer with some\n");
+	printf ("\tcode borrowed from the pa3pyx and js mods\n");
+
+}
+
 void PrintHelp(char *name)
 {
 	printf ("\n");
@@ -828,17 +839,6 @@ void PrintHelp(char *name)
 	printf ("     [-bpp]                          Depth for GL fullscreen mode\n");
 	printf ("     [-heapsize Bytes]               Heapsize\n");
 	printf ("\n");
-}
-
-void PrintVersion (void)
-{
-	printf ("Hammer of Thyrion (%d.%d.%d)\n",
-	HOT_VERSION_MAJ,HOT_VERSION_MID,HOT_VERSION_MIN);
-	printf ("Anvil  of Thyrion 1.12 (%s %d.%d.%d)\n",
-	VERSION_PLATFORM,VERSION_MAJ,VERSION_MID,VERSION_MIN);
-	printf ("\tPatched by Steven A. and Ozkan Sezer with some\n");
-	printf ("\tcode borrowed from the pa3pyx and js mods\n");
-
 }
 
 int main(int argc, char *argv[])
@@ -983,6 +983,20 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/11/28 00:58:08  sezero
+ *
+ * Commit Steven's changes as of 2004.11.24:
+ *
+ * * Rewritten Help/Version message(s)
+ * * Proper fullscreen mode(s) for OpenGL.
+ * * Screen sizes are selectable with "-width" and "-height" options.
+ * * Mouse grab in window modes , which is released when menus appear.
+ * * Interactive video modes in software game disabled.
+ * * Replaced Video Mode menu with a helpful message.
+ * * New menu items for GL Glow, Chase mode, Draw Shadows.
+ * * Changes to initial cvar_t variables:
+ *      r_shadows, gl_other_glows, _windowed_mouse,
+ *
  * Revision 1.1.1.1  2004/11/28 00:07:58  sezero
  * Initial import of AoT 1.2.0 code
  *
