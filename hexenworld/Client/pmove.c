@@ -359,7 +359,7 @@ PM_Accelerate
 */
 void PM_Accelerate (vec3_t wishdir, float wishspeed, float accel)
 {
-	int			i;
+	int		i;
 	float		addspeed, accelspeed, currentspeed;
 
 	if (pmove.dead)
@@ -614,7 +614,7 @@ PM_FlyingMove - for when you are using the ring of flight
 */
 void PM_FlyingMove (void)
 {
-	int			i;
+	int		i;
 	vec3_t		wishvel;
 	float		fmove, smove, umove;
 	vec3_t		wishdir;
@@ -922,9 +922,9 @@ SpectatorMove
 */
 void SpectatorMove (void)
 {
-	float	speed, drop, friction, control, newspeed, accel;
+	float	speed, drop, friction, control, newspeed;
 	float	currentspeed, addspeed, accelspeed;
-	int			i;
+	int		i;
 	vec3_t		wishvel;
 	float		fmove, smove;
 	vec3_t		wishdir;

@@ -2797,7 +2797,7 @@ void PF_RewindFrame(void)
 void PF_advanceweaponframe (void)
 {
 	edict_t *ent;
-	float startframe,endframe,Result;
+	float startframe,endframe;
 	float state;
 
 	ent = PROG_TO_EDICT(pr_global_struct->self);
@@ -2882,7 +2882,7 @@ void PF_setsiegeteam (void)
 	int			entnum;
 	edict_t		*e;
 	client_t	*client,*old;
-	char		temp[1024];
+//	char		temp[1024];
 	
 	entnum = G_EDICTNUM(OFS_PARM0);
 	e = G_EDICT(OFS_PARM0);
@@ -2938,7 +2938,6 @@ void PF_starteffect (void)
 
 void PF_endeffect (void)
 {
-	float holdindex;
 	int index;
 
 	index = G_FLOAT(OFS_PARM0);
@@ -2981,8 +2980,7 @@ void PF_turneffect (void)
 void PF_updateeffect (void)//type-specific what this will send
 {
 	int index,type,cmd;
-	float speed;
-	vec3_t tvec,forward,right,up;
+	vec3_t tvec;
 
 	index = G_FLOAT(OFS_PARM0);// the effect we're lookin to change is parm 0
 	type = G_FLOAT(OFS_PARM1);// the type of effect that it had better be is parm 1
@@ -3161,7 +3159,7 @@ void PF_GetString(void)
 void PF_v_factor(void)
 // returns (v_right * factor_x) + (v_forward * factor_y) + (v_up * factor_z)
 {
-	float num,*range;
+	float *range;
 	vec3_t result;
 
 	range = G_VECTOR(OFS_PARM0);

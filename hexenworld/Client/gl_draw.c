@@ -104,7 +104,6 @@ int Scrap_AllocBlock (int w, int h, int *x, int *y)
 {
 	int		i, j;
 	int		best, best2;
-	int		bestx;
 	int		texnum;
 
 	for (texnum=0 ; texnum<MAX_SCRAPS ; texnum++)
@@ -215,7 +214,7 @@ qpic_t *Draw_PicFromFile (char *name)
 	}
 	else*/
 	{
-nonscrap:
+//nonscrap:
 		gl->texnum = GL_LoadPicTexture (p);
 
 		gl->sl = 0;
@@ -432,15 +431,11 @@ Draw_Init
 */
 void Draw_Init (void)
 {
-	int		i;
+	int	i;
 	qpic_t	*cb, *mf;
-	byte	*dest, *src;
-	int		x, y;
-	char	ver[40];
 	glpic_t	*gl;
-	int		start;
+	int	start;
 	byte    *ncdata;
-	int		f, fstep;
 	char	temp[MAX_QPATH];
 
 	Cvar_RegisterVariable (&gl_picmip);
@@ -592,11 +587,7 @@ smoothly scrolled off.
 */
 void Draw_Character (int x, int y, unsigned int num)
 {
-	byte			*dest;
-	byte			*source;
-	unsigned short	*pusdest;
-	int				drawline;	
-	int				row, col;
+	int			row, col;
 	float			frow, fcol, xsize,ysize;
 
 	if (num == 32)
@@ -702,11 +693,7 @@ void Draw_Crosshair(void)
 //==========================================================================
 void Draw_SmallCharacter (int x, int y, int num)
 {
-	byte			*dest;
-	byte			*source;
-	unsigned short	*pusdest;
-	int				drawline;
-	int				row, col;
+	int			row, col;
 	float			frow, fcol, xsize,ysize;
 
 	if(num < 32)
@@ -793,9 +780,6 @@ Draw_Pic
 */
 void Draw_Pic (int x, int y, qpic_t *pic)
 {
-	byte			*dest, *source;
-	unsigned short	*pusdest;
-	int				v, u;
 	glpic_t			*gl;
 
 	if (scrap_dirty)
@@ -829,9 +813,6 @@ Draw_AlphaPic
 */
 void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha)
 {
-	byte			*dest, *source;
-	unsigned short	*pusdest;
-	int				v, u;
 	glpic_t			*gl;
 
 	if (scrap_dirty)
@@ -860,9 +841,6 @@ void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha)
 
 void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height)
 {
-	byte			*dest, *source;
-	unsigned short	*pusdest;
-	int				v, u;
 	glpic_t			*gl;
 	float newsl, newtl, newsh, newth;
 	float oldglwidth, oldglheight;
@@ -1021,9 +999,6 @@ Draw_TransPic
 */
 void Draw_TransPic (int x, int y, qpic_t *pic)
 {
-//	byte	*dest, *source, tbyte;
-//	unsigned short	*pusdest;
-//	int				v, u;
 
 	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
 		 (unsigned)(y + pic->height) > vid.height)
@@ -1116,13 +1091,9 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 
 int M_DrawBigCharacter (int x, int y, int num, int numNext)
 {
-	byte			*dest;
-	byte			*source;
-	unsigned short	*pusdest;
-	int				drawline;
-	int				row, col;
+	int			row, col;
 	float			frow, fcol, xsize,ysize;
-	int				add;
+	int			add;
 
 	if (num == ' ') return 32;
 
@@ -1177,7 +1148,6 @@ void Draw_ConsoleBackground (int lines)
 	char ver[80];
 	int x, i;
 	int y;
-	int full;
 
 	y = (vid.height * 3) >> 2;
 	if (lines > y)
@@ -1643,11 +1613,9 @@ done: ;
 void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite) 
 {
 	int			i, s;
-	qboolean	noalpha;
-	int			p;
-	static unsigned j;
+	qboolean		noalpha;
 	int			samples;
-    static	unsigned char scaled[1024*512];	// [512*256];
+	static	unsigned char scaled[1024*512];	// [512*256];
 	int			scaled_width, scaled_height;
 
 	s = width*height;
@@ -1768,11 +1736,10 @@ GL_Upload8
 */
 void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode)
 {
-static	unsigned	trans[640*480];		// FIXME, temporary
-	int				i, s;
+	static	unsigned	trans[640*480];		// FIXME, temporary
+	int			i, s;
 	qboolean		noalpha;
-	int				p;
-	static unsigned j;
+	int			p;
 	qboolean		sprite = false;
 
 	if (mode >= 10)
@@ -1926,8 +1893,7 @@ GL_LoadTexture
 */
 int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode)
 {
-	qboolean	noalpha;
-	int			i, p, s;
+	int		i;
 	gltexture_t	*glt;
 
 	// see if the texture is allready present

@@ -731,7 +731,6 @@ trace_t SV_ClipMoveToEntity (edict_t *ent, vec3_t start, vec3_t mins, vec3_t max
 	if (ent->v.solid == SOLID_BSP && 
 		(fastfabs(ent->v.angles[0]) > 1 || fastfabs(ent->v.angles[1]) > 1 || fastfabs(ent->v.angles[2]) > 1) )
 	{
-		vec3_t	a;
 		vec3_t	forward, right, up;
 		vec3_t	temp;
 

@@ -949,8 +949,9 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 	int ret;
 	int outlen;
 	struct sockaddr_in	addr;
+#ifdef _DEBUG
 	char string[120];
-
+#endif
 	NetadrToSockadr (&to, &addr);
 	HuffEncode((unsigned char *)data,huffbuff,length,&outlen);
 

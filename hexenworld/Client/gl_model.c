@@ -1290,10 +1290,10 @@ Mod_LoadAliasFrame
 */
 void * Mod_LoadAliasFrame (void * pin, maliasframedesc_t *frame)
 {
-	trivertx_t		*pframe, *pinframe;
-	int				i, j;
+	trivertx_t	*pinframe;
+	int		i, j;
 	daliasframe_t	*pdaliasframe;
-	vec3_t			in,out;
+	vec3_t		in,out;
 	
 	pdaliasframe = (daliasframe_t *)pin;
 
@@ -1502,16 +1502,14 @@ Mod_LoadAllSkins
 */
 void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int mdl_flags)
 {
-	int		i, j, k;
+	int	i, j, k;
 	char	name[32];
-	int		s;
-	byte	*copy;
+	int	s;
 	byte	*skin;
-	byte	*texels;
-	daliasskingroup_t		*pinskingroup;
-	int		groupskins;
+	daliasskingroup_t	*pinskingroup;
+	int			groupskins;
 	daliasskininterval_t	*pinskinintervals;
-	int		texture_mode;
+	int			texture_mode;
 	
 	skin = (byte *)(pskintype + 1);
 
@@ -1623,16 +1621,16 @@ reads extra field for num ST verts, and extra index list of them
 */
 void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
 {
-	int					i, j;
-	newmdl_t			*pinmodel;
-	stvert_t			*pinstverts;
+	int			i, j;
+	newmdl_t		*pinmodel;
+	stvert_t		*pinstverts;
 	dnewtriangle_t		*pintriangles;
-	int					version, numframes, numskins;
-	int					size;
+	int			version, numframes;
+	int			size;
 	daliasframetype_t	*pframetype;
 	daliasskintype_t	*pskintype;
-	int					start, end, total;
-	
+	int			start, end, total;
+
 	start = Hunk_LowMark ();
 
 	pinmodel = (newmdl_t *)buffer;
@@ -1802,16 +1800,16 @@ Mod_LoadAliasModel
 */
 void Mod_LoadAliasModel (model_t *mod, void *buffer)
 {
-	int					i, j;
-	mdl_t				*pinmodel;
-	stvert_t			*pinstverts;
-	dtriangle_t			*pintriangles;
-	int					version, numframes, numskins;
-	int					size;
+	int			i, j;
+	mdl_t			*pinmodel;
+	stvert_t		*pinstverts;
+	dtriangle_t		*pintriangles;
+	int			version, numframes;
+	int			size;
 	daliasframetype_t	*pframetype;
 	daliasskintype_t	*pskintype;
-	int					start, end, total;
-	
+	int			start, end, total;
+
 	start = Hunk_LowMark ();
 
 	pinmodel = (mdl_t *)buffer;
@@ -1981,10 +1979,8 @@ void * Mod_LoadSpriteFrame (void * pin, mspriteframe_t **ppframe, int framenum)
 {
 	dspriteframe_t		*pinframe;
 	mspriteframe_t		*pspriteframe;
-	int					i, width, height, size, origin[2];
-	unsigned short		*ppixout;
-	byte				*ppixin;
-	char				name[64];
+	int			width, height, size, origin[2];
+	char			name[64];
 
 	pinframe = (dspriteframe_t *)pin;
 

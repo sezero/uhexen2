@@ -127,8 +127,6 @@ char *Sys_ConsoleInput (void)
 {
 	static char	text[256];
 	static int	len;
-	int	count;
-	int	i;
 	char	c;
 	fd_set		set;
 	struct timeval	timeout;
@@ -220,7 +218,6 @@ int main (int argc, char **argv)
 {
 	quakeparms_t	parms;
 	double			newtime, time, oldtime;
-	static	char	cwd[1024];
 	struct timeval	timeout;
 	fd_set			fdset;
 	int				t;

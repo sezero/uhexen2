@@ -132,7 +132,6 @@ beam_t			cl_beams[MAX_BEAMS];
 explosion_t		cl_explosions[MAX_EXPLOSIONS];
 
 static stream_t cl_Streams[MAX_STREAMS];
-static entity_t StreamEntities[MAX_STREAM_ENTITIES];
 static int		StreamEntityCount;
 
 static int		MultiGrenadeCurrentChannel;
@@ -504,7 +503,6 @@ void CreateStream(int type, int ent, int flags, int tag, float duration, int ski
 void CLTENT_SpawnDeathBubble(vec3_t pos)
 {
 	explosion_t	*ex;
-	int i;
 
 	//generic spinny impact image
 	ex=CL_AllocExplosion();
@@ -797,15 +795,14 @@ CL_ParseTEnt
 void CL_ParseTEnt (void)
 {
 	int		type;
-	vec3_t	pos, vel, movedir, offset;
+	vec3_t		pos, vel, movedir, offset;
 	dlight_t	*dl;
 	int		rnd;
 	explosion_t	*ex;
 	int		cnt, cnt2, i, chType;
-	int colorStart, colorLength;
-	int damage;
-	float	volume, scale;
-	float dir, cosval, sinval;
+	int		damage;
+	float		volume, scale;
+	float		dir, cosval, sinval;
 
 	type = MSG_ReadByte ();
 	switch (type)
@@ -1732,10 +1729,9 @@ void CL_ParseTEnt (void)
 
 		case TE_ICESTORM:
 			{
-				int				ent;
+				int			ent;
 				vec3_t			center;
 				stream_t		*stream;
-				float			duration;
 				model_t			*models[2];
 				entity_state_t	*state;
 				static float	playIceSound = .6;
@@ -1812,16 +1808,14 @@ void CL_ParseTEnt (void)
 
 		case TE_SUNSTAFF_CHEAP:
 			{
-				int				ent;
+				int			ent;
 				vec3_t			points[4];
-				int				reflect_count;
+				int			reflect_count;
 				short int		tempVal;
 				entity_state_t	*state;
-				int				i, j;
+				int			i, j;
 
-				vec3_t			center;
 				stream_t		*stream;
-				float			duration;
 				model_t			*models[4];
 
 
@@ -1903,7 +1897,6 @@ void CL_ParseTEnt (void)
 			{
 				int				ent;
 				stream_t		*stream;
-				float			duration;
 				model_t			*models[2];
 				entity_state_t	*state;
 
@@ -1999,9 +1992,8 @@ void CL_ParseTEnt (void)
 		case TE_SWORD_EXPLOSION:
 			{
 				vec3_t			pos;
-				int				ent;
+				int			ent;
 				stream_t		*stream;
-				float			duration;
 				model_t			*models[2];
 				entity_state_t	*state;
 
@@ -2202,9 +2194,8 @@ void CL_ParseTEnt (void)
 
 		case TE_SUNSTAFF_POWER:
 			{
-				int				ent;
+				int			ent;
 				stream_t		*stream;
-				float			duration;
 				model_t			*models[4];
 				entity_state_t	*state;
 
@@ -3001,8 +2992,7 @@ void CL_ParseTEnt (void)
 			{
 				float travelAng, travelPitch;
 				float trailLen;
-				vec3_t				vel;
-				vec3_t				angles, forward, right, up;
+				vec3_t	vel;
 
 				pos[0] = MSG_ReadCoord();
 				pos[1] = MSG_ReadCoord();
@@ -3046,8 +3036,7 @@ void CL_ParseTEnt (void)
 			{
 				float travelAng, travelPitch;
 				float trailLen;
-				vec3_t				vel;
-				vec3_t				angles, forward, right, up;
+				vec3_t	vel;
 
 				pos[0] = MSG_ReadCoord();
 				pos[1] = MSG_ReadCoord();
@@ -3078,8 +3067,7 @@ void CL_ParseTEnt (void)
 			{
 				float travelAng, travelPitch;
 				float trailLen;
-				vec3_t				vel;
-				vec3_t				angles, forward, right, up;
+				vec3_t	vel;
 
 				pos[0] = MSG_ReadCoord();
 				pos[1] = MSG_ReadCoord();
@@ -3359,11 +3347,10 @@ void CL_ParseTEnt (void)
 
 		case TE_LIGHTNINGEXPLODE:
 			{
-				int				ent;
+				int			ent;
 				stream_t		*stream;
-				float			duration;
 				model_t			*models[2];
-				entity_state_t	*state;
+				entity_state_t		*state;
 				float			tempAng, tempPitch;
 
 				ent = MSG_ReadShort();
@@ -3482,13 +3469,12 @@ void CL_ParseTEnt (void)
 		case TE_CHAINLIGHTNING:
 			{
 				vec3_t			points[12];
-				int				numTargs = 0;
-				int				oldNum;
-				int				temp;
+				int			numTargs = 0;
+				int			oldNum;
+				int			temp;
 
-				int				ent;
+				int			ent;
 				stream_t		*stream;
-				float			duration;
 				model_t			*models[2];
 
 				ent = MSG_ReadShort();
@@ -4341,8 +4327,8 @@ void ChunkThink(explosion_t *ex)
 		{
 			if(VectorNormalize(ex->velocity) > 100.0)
 			{	// hit, now make a splash of acid
-				vec3_t	dmin = {-40, -40, 10};
-				vec3_t	dmax = {40, 40, 40};
+			//	vec3_t	dmin = {-40, -40, 10};
+			//	vec3_t	dmax = {40, 40, 40};
 
 				//R_RunParticleEffect2 (ex->origin, dmin, dmax, 136 + (rand()%5), pt_darken, 20);	// FIXME - These should be green
 				if(!(rand()%3))
@@ -4457,7 +4443,6 @@ void ChunkThink(explosion_t *ex)
 
 void BubbleThink(explosion_t *ex)
 {
-	vec3_t oldorg;
 	mleaf_t		*l;
 
 	l = Mod_PointInLeaf (ex->origin, cl.worldmodel);
@@ -5042,66 +5027,9 @@ void CL_UpdateOnFire(entity_t *ent, int edict_num)
 	}
 }
 
-/*
-void CL_UpdatePowerFlame(entity_t *ent, int edict_num, vec3_t oldOrg)
-{
-	explosion_t *ex;
-	vec3_t		curPos, posAdd;
-	float		len;
-	int			spriteCount, i;
-	vec3_t		forward, up, right;
-	float		cVal, sVal;
-
-	AngleVectors(ent->angles, forward, right, up);
-
-	VectorCopy(oldOrg, curPos);
-	VectorSubtract(ent->origin, oldOrg, posAdd);
-	len = VectorNormalize(posAdd);
-	VectorScale(posAdd, 32.0, posAdd);
-	spriteCount = (int)(len / 32.0) + 1;
-
-	for(i = 0; i < spriteCount; i++)
-	{
-		cVal = cos((cl.time + (i*0.025))*12)*15;
-		sVal = sin((cl.time + (i*0.025))*12)*15;
-
-		ex = CL_AllocExplosion();
-		VectorCopy(curPos, ex->origin);
-		VectorMA(ex->origin, cVal, right, ex->origin);
-		VectorMA(ex->origin, sVal, up, ex->origin);
-		ex->model = Mod_ForName("models/flamestr.spr", true);
-		ex->startTime = cl.time + i*0.025;
-		ex->endTime = ex->startTime + ex->model->numframes * 0.04;
-
-		ex->scale = 100;
-
-		VectorCopy(ent->angles, ex->angles);
-		ex->angles[2] += 90;
-		ex->flags |= DRF_TRANSLUCENT;
-
-
-		ex = CL_AllocExplosion();
-		VectorCopy(curPos, ex->origin);
-		VectorMA(ex->origin, -cVal, right, ex->origin);
-		VectorMA(ex->origin, -sVal, up, ex->origin);
-		ex->model = Mod_ForName("models/flamestr.spr", true);
-		ex->startTime = cl.time + i*0.025;
-		ex->endTime = ex->startTime + ex->model->numframes * 0.04;
-
-		ex->scale = 100;
-
-		VectorCopy(ent->angles, ex->angles);
-		ex->angles[2] += 90;
-		ex->flags |= DRF_TRANSLUCENT;
-
-		VectorAdd(curPos, posAdd, curPos);
-	}
-}
-*/
 void PowerFlameBurnRemove(explosion_t *ex)
 {
 	explosion_t *ex2;
-	vec3_t		srcVec;
 
 	ex2 = CL_AllocExplosion();
 	VectorCopy(ex->origin, ex2->origin);
@@ -5204,15 +5132,10 @@ void CL_UpdateBug(entity_t *ent)
 
 void CL_UpdateIceStorm(entity_t *ent, int edict_num)
 {
-	vec3_t			center, side1, tempVect, wishLoc;
+	vec3_t			center, side1;
 	vec3_t			side2 = {160, 160, 128};
-	stream_t		*stream;
-	float			duration;
-	model_t			*models[2];
 	entity_state_t	*state;
-	int				i;
 	static float	playIceSound = .6;
-	int				wasNew;
 
 	state = FindState(edict_num);
 	if (state)
@@ -5237,7 +5160,6 @@ void CL_UpdateIceStorm(entity_t *ent, int edict_num)
 	// toss little ice chunks
 	if(rand()%100 < host_frametime * 100.0 * 3)
 	{
-		float final;
 		explosion_t *ex;
 
 		ex = CL_AllocExplosion();

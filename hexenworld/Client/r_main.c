@@ -1184,7 +1184,7 @@ void R_DrawName(vec3_t origin, char *Name, int Red)
 	float	zi;
 	byte	*pdest;
 	short	*pz;
-	int		i, izi, pix, count, u, v;
+	int	izi, u, v;
 
 	if (!Name)
 	{

@@ -84,14 +84,14 @@ qboolean		scr_skipupdate;
 
 static vmode_t	modelist[MAX_MODE_LIST];
 static int		nummodes;
-static vmode_t	*pcurrentmode;
+//static vmode_t	*pcurrentmode;
 static vmode_t	badmode;
 
 //static DEVMODE	gdevmode;
 static qboolean	vid_initialized = false;
 static qboolean	windowed, leavecurrentmode;
 static qboolean vid_canalttab = false;
-static qboolean vid_wassuspended = false;
+//static qboolean vid_wassuspended = false;
 static int		windowed_mouse;
 //static HICON	hIcon;
 
@@ -748,8 +748,6 @@ GL_BeginRendering
 */
 void GL_BeginRendering (int *x, int *y, int *width, int *height)
 {
-	extern cvar_t gl_clear;
-
 	*x = *y = 0;
 #if 0
 	*width = WindowRect.right - WindowRect.left;
@@ -1344,9 +1342,7 @@ VID_Init
 */
 void	VID_Init (unsigned char *palette)
 {
-	int		i, existingmode;
-	int		basenummodes, width, height, bpp, findbpp, done;
-	byte	*ptmp;
+	int	basenummodes, width, height, bpp, findbpp;
 	char	gldir[MAX_OSPATH];
 #if 0
 	HDC		hdc;
@@ -1587,7 +1583,7 @@ extern void M_DrawCharacter (int cx, int line, int num);
 extern void M_DrawTransPic (int x, int y, qpic_t *pic);
 extern void M_DrawPic (int x, int y, qpic_t *pic);
 
-static int	vid_line, vid_wmodes;
+static int	/*vid_line,*/ vid_wmodes;
 
 typedef struct
 {
@@ -1609,10 +1605,8 @@ VID_MenuDraw
 */
 void VID_MenuDraw (void)
 {
-	qpic_t		*p;
 	char		*ptr;
-	int			lnummodes, i, j, k, column, row, dup, dupmode;
-	char		temp[100];
+	int		lnummodes, i, k, column, row;
 	vmode_t		*pv;
 
 	ScrollTitle("gfx/menu/title7.lmp");

@@ -5,7 +5,7 @@
 //**
 //** Client side effects.
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.c,v 1.1.1.1 2004-11-28 08:51:10 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.c,v 1.2 2005-01-01 21:50:48 sezero Exp $
 //**
 //**************************************************************************
 
@@ -299,7 +299,6 @@ void CL_ParseEffect(void)
 	int dir;
 	float	angleval, sinval, cosval;
 	float skinnum;
-	int play_sound;
 	vec3_t forward, right, up, vtemp;
 	vec3_t forward2, right2, up2;
 	vec3_t origin;
@@ -1626,16 +1625,16 @@ void RiderParticle(int count, vec3_t origin);
 
 void CL_UpdateEffects(void)
 {
-	int			index,cur_frame;
+	int		index,cur_frame;
 	vec3_t		mymin,mymax;
 	float		frametime;
 //	edict_t		test;
 //	trace_t		trace;
 	vec3_t		org,org2,old_origin;
-	int			x_dir,y_dir;
+	int		x_dir,y_dir;
 	entity_t	*ent, *ent2;
-	float		distance,smoketime;
-	int			i;
+	float		smoketime;
+	int		i;
 	entity_state_t	*es;
 	mleaf_t		*l;
 
@@ -2336,7 +2335,7 @@ void CreateRavenExplosions(vec3_t pos);
 void CL_ParseMultiEffect(void)
 {
 	int type, index, count;
-	vec3_t	orig, vel, right;
+	vec3_t	orig, vel;
 	entity_t *ent;
 
 	type = MSG_ReadByte();
@@ -2430,6 +2429,9 @@ static void FreeEffectEntity(int index)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 08:51:10  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.2  2001/12/02 00:22:17  theoddone33
  * Initial client porting, software mode works
  *

@@ -630,9 +630,9 @@ R_RunParticleEffect2
 */
 void R_RunParticleEffect2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int effect, int count)
 {
-	int			i, j;
+	int		i, j;
 	particle_t	*p;
-	float		num,num2;
+	float		num/*, num2*/;
 
 	for (i=0 ; i<count ; i++)
 	{
@@ -670,9 +670,9 @@ R_RunParticleEffect3
 */
 void R_RunParticleEffect3 (vec3_t org, vec3_t box, int color, int effect, int count)
 {
-	int			i, j;
+	int		i, j;
 	particle_t	*p;
-	float		num,num2;
+	float		num;
 
 	for (i=0 ; i<count ; i++)
 	{
@@ -702,9 +702,9 @@ R_RunParticleEffect4
 */
 void R_RunParticleEffect4 (vec3_t org, float radius, int color, int effect, int count)
 {
-	int			i, j;
+	int		i, j;
 	particle_t	*p;
-	float		num,num2;
+	float		num;
 
 	for (i=0 ; i<count ; i++)
 	{
@@ -730,9 +730,9 @@ void R_RunParticleEffect4 (vec3_t org, float radius, int color, int effect, int 
 
 void R_SplashParticleEffect (vec3_t org, float radius, int color, int effect, int count)
 {
-	int			i, j;
+	int		i, j;
 	particle_t	*p;
-	float		num,num2;
+	float		num;
 
 	for (i=0 ; i<count ; i++)
 	{
@@ -811,7 +811,7 @@ R_LavaSplash
 */
 void R_TargetBallEffect (vec3_t org)
 {
-	int			i, j, k;
+	int		i;
 	particle_t	*p;
 	float		vel;
 	vec3_t		dir;
@@ -856,7 +856,7 @@ brightfieldsource
 
 void R_BrightFieldSource (vec3_t org)
 {
-	int			i, j, k;
+	int		i;
 	particle_t	*p;
 	float		vel;
 	vec3_t		dir;
@@ -959,7 +959,7 @@ R_RunQuakeEffect
 */
 void R_RunQuakeEffect (vec3_t org, float distance)
 {
-	int			i, j;
+	int		i/*, j*/;
 	particle_t	*p;
 	float		num,num2;
 
@@ -1049,9 +1049,9 @@ void R_SunStaffTrail(vec3_t source, vec3_t dest)
 
 void RiderParticle(int count, vec3_t origin)
 {
-	int			i, j;
+	int		i;
 	particle_t	*p;
-	float		num,num2;
+//	float		num,num2;
 	float radius,angle;
 
 	VectorCopy(origin, rider_origin);
@@ -1576,9 +1576,8 @@ void R_DrawParticles (void)
 	float			dvel;
 	float			frametime;
 	float			vel0, vel1, vel2;
-	unsigned char	temp[4];
 	vec3_t			diff;
-    
+
 #ifdef GLQUAKE
 	GL_Bind(particletexture);
 	alphaTestEnabled = glIsEnabled(GL_ALPHA_TEST);

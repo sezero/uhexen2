@@ -693,8 +693,6 @@ SV_Serverinfo_f
 char *CopyString(char *s);
 void SV_Localinfo_f (void)
 {
-	cvar_t	*var;
-
 	if (Cmd_Argc() == 1)
 	{
 		Con_Printf ("Local info settings:\n");

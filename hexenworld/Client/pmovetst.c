@@ -425,7 +425,6 @@ pmtrace_t PM_PlayerMove (vec3_t start, vec3_t end)
 
 		if (pe->model && (fastfabs(pe->angles[0]) > 1 || fastfabs(pe->angles[1]) > 1 || fastfabs(pe->angles[2]) > 1) )
 		{
-			vec3_t	a;
 			vec3_t	forward, right, up;
 			vec3_t	temp;
 

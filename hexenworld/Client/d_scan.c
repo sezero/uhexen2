@@ -242,7 +242,6 @@ void Turbulent8 (surf_t *s)
 	float			sdivz, tdivz, zi, z, du, dv, spancountminus1;
 	float			sdivz16stepu, tdivz16stepu, zi16stepu;
 	byte			origscanList[SCAN_SIZE];
-	byte			*ptra,*ptrb;
 	espan_t			*pspan;
 
 	pspan = s->spans;

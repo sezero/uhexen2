@@ -146,7 +146,6 @@ void SV_RemoveGIPFiles (char *path)
                 return;
         }
         do {
-                int errno = 0;
                 dent = readdir(dir);
                 if (dent != NULL) {
                         if (!fnmatch ("*.gip", dent->d_name,FNM_PATHNAME)) {
@@ -514,8 +513,7 @@ instead of the data.
 */
 void SVC_Log (void)
 {
-	int		i;
-	int		seq, send;
+	int		seq;
 	char	data[MAX_DATAGRAM+64];
 
 	if (Cmd_Argc() == 2)

@@ -2,7 +2,7 @@
 // 02/21/97 JCB Added extended DirectInput code to support external controllers.
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.7 2004-12-29 21:02:20 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.8 2005-01-01 21:50:48 sezero Exp $
  */
 
 #include "SDL.h"
@@ -19,11 +19,11 @@ extern cvar_t	vid_mode, _windowed_mouse;
 #define MODE_FULLSCREEN_DEFAULT 3
 
 extern qboolean	in_mode_set;
-static qboolean	restore_spi;
-static int		originalmouseparms[3], newmouseparms[3] = {0, 0, 1};
+//static qboolean	restore_spi;
+//static int		originalmouseparms[3], newmouseparms[3] = {0, 0, 1};
 static qboolean	mouseactive;
 qboolean		mouseinitialized;
-static qboolean	mouseparmsvalid, mouseactivatetoggle;
+static qboolean	/*mouseparmsvalid,*/ mouseactivatetoggle;
 static qboolean	mouseshowtoggle = 1;
 
 qboolean grab = 1;
@@ -1262,6 +1262,12 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2004/12/29 21:02:20  sezero
+ * Merge some Hexen2 changes into HexenWorld Client:
+ * - Fix the fire attacks drawing lines across the screen.
+ * - Don't print gl_extensions which spams the console.
+ * - Partially merge Steven's mouse tweaks from 2004-12-29.
+ *
  * Revision 1.6  2004/12/12 19:01:01  sezero
  * port Steven's 2004-12-12 mouse changes form hexen2. hopefully correct...
  *

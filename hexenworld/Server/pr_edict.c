@@ -409,7 +409,7 @@ char *PR_GlobalString (int ofs)
 	val = (void *)&pr_globals[ofs];
 	def = ED_GlobalAtOfs(ofs);
 	if (!def)
-		sprintf (line,"%i(???)", ofs);
+		sprintf (line,"%i(?)", ofs);
 	else
 	{
 		s = PR_ValueString (def->type, val);
@@ -432,7 +432,7 @@ char *PR_GlobalStringNoContents (int ofs)
 	
 	def = ED_GlobalAtOfs(ofs);
 	if (!def)
-		sprintf (line,"%i(???)", ofs);
+		sprintf (line,"%i(?)", ofs);
 	else
 		sprintf (line,"%i(%s)", ofs, pr_strings + def->s_name);
 	
@@ -1089,10 +1089,12 @@ void PR_LoadProgs (void)
 {
 	char	num[32];
 	dfunction_t *f;
-	int		i,j;
+	int	i;
+/*	int	j;
 	FILE	*FH;
-	char	mapname[MAX_QPATH], progname[MAX_OSPATH], finalprogname[MAX_OSPATH];
+	char	mapname[MAX_QPATH], progname[MAX_OSPATH];
 	char	build[2048], *test;
+*/	char	finalprogname[MAX_OSPATH];
 
 // flush the non-C variable lookup cache
 	for (i=0 ; i<GEFV_CACHESIZE ; i++)

@@ -134,7 +134,6 @@ keyname_t keynames[] =
 qboolean CheckForCommand (void)
 {
 	char	command[128];
-	char	temp[1024];
 	char	*cmd, *s;
 	int		i;
 
@@ -187,11 +186,11 @@ Interactive line editing and console scrollback
 */
 void Key_Console (int key)
 {
-	char	*cmd, *s;
+/*	char	*cmd, *s;
 	int		i;
 	HANDLE	th;
 	char	*clipText, *textCopied;
-	
+*/
 	if (key == K_ENTER)
 	{	// backslash text are commands, else chat
 		if (key_lines[edit_line][1] == '\\' || key_lines[edit_line][1] == '/')

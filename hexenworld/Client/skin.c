@@ -199,11 +199,8 @@ Skin_NextDownload
 */
 void Skin_NextDownload (void)
 {
-	char	*s;
 	player_info_t	*sc;
-	FILE		*f;
-	int			i;
-	char		name[1024];
+	int		i;
 
 	if (cls.downloadnumber == 0)
 		Con_Printf ("Checking skins...\n");

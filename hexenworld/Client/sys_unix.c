@@ -1,7 +1,7 @@
 // sys_unix.c -- Unix system interface code
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.5 2004-12-22 21:51:17 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.6 2005-01-01 21:50:49 sezero Exp $
  */
 
 #include <stdio.h>
@@ -44,21 +44,21 @@ qboolean	ActiveApp, Minimized;
 qboolean	Win32AtLeastV4, WinNT;
 qboolean	LegitCopy = true;
 
-static double		pfreq;
+//static double		pfreq;
 static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
-static int			lowshift;
+//static int			lowshift;
 qboolean			isDedicated;
 static qboolean		sc_return_on_enter = false;
 HANDLE				hinput, houtput;
 
 static char			*tracking_tag = "Sticky Buns";
-
+/*
 static HANDLE	tevent;
 static HANDLE	hFile;
 static HANDLE	heventParent;
 static HANDLE	heventChild;
-
+*/
 void MaskExceptions (void);
 void Sys_InitFloatTime (void);
 
@@ -75,7 +75,7 @@ Sys_PageIn
 void Sys_PageIn (void *ptr, int size)
 {
 	byte	*x;
-	int		j, m, n;
+	int	m, n;
 
 // touch all the memory to make sure it's there. The 16-page skip is to
 // keep Win 95 from thinking we're trying to page ourselves in (we are
@@ -413,12 +413,13 @@ static	char temp[MAX_PATH+1];
 void Sys_Error (char *error, ...)
 {
 	va_list		argptr;
-	char		text[MAXPRINTMSG], text2[MAXPRINTMSG];
+	char		text[MAXPRINTMSG];
+/*	char		text2[MAXPRINTMSG];
 	char		*text3 = "Press Enter to exit\n";
 	char		*text4 = "***********************************\n";
 	char		*text5 = "\n";
-//	DWORD		dummy;
-	double		starttime;
+	DWORD		dummy;
+*/	double		starttime;
 
 	VID_ForceUnlockedAndReturnState ();
 
@@ -948,6 +949,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/12/22 21:51:17  sezero
+ * play with version and help display
+ *
  * Revision 1.4  2004/12/12 19:01:02  sezero
  * port Steven's 2004-12-12 mouse changes form hexen2. hopefully correct...
  *

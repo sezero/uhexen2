@@ -371,7 +371,6 @@ void R_ZGraph (void)
 {
 	int		a, x, w, i;
 	static	int	height[256];
-	frame_t	*frame;
 
 	if (r_refdef.vrect.width <= 256)
 		w = r_refdef.vrect.width;

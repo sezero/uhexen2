@@ -382,17 +382,12 @@ extern float RTint[256],GTint[256],BTint[256];
 
 void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 {
-	float		s, t;
 	float 		l;
-	int			i, j;
-	int			index;
-	trivertx_t	*v, *verts;
-	int			list;
-	int			*order;
-	vec3_t		point;
-	float		*normal;
-	int			count;
-	float		r,g,b,p;
+	int		i;
+	trivertx_t	*verts;
+	int		*order;
+	int		count;
+	float		r,g,b;
 	char		client_team[16], this_team[16];
 	qboolean	OnTeam = false;
 	byte		ColorShade;
@@ -503,15 +498,10 @@ extern	vec3_t			lightspot;
 
 void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 {
-	float	s, t, l;
-	int		i, j;
-	int		index;
-	trivertx_t	*v, *verts;
-	int		list;
+	trivertx_t	*verts;
 	int		*order;
-	vec3_t	point;
-	float	*normal;
-	float	height, lheight;
+	vec3_t		point;
+	float		height, lheight;
 	int		count;
 
 	lheight = currententity->origin[2] - lightspot[2];
@@ -602,25 +592,21 @@ R_DrawAliasModel
 */
 void R_DrawAliasModel (entity_t *e)
 {
-	int			i, j;
-	int			lnum;
+	int		i;
+	int		lnum;
 	vec3_t		dist;
 	float		add;
 	model_t		*clmodel;
 	vec3_t		mins, maxs;
 	aliashdr_t	*paliashdr;
-	trivertx_t	*verts, *v;
-	int			index;
-	float		s, t, an;
-	int			anim;
+	float		an;
+	int		anim;
 	static float	tmatrix[3][4];
-	float entScale;
-	float xyfact;
-	float zfact;
+	float		entScale, xyfact, zfact;
 	qpic_t		*stonepic;
-	glpic_t			*gl;
+	glpic_t		*gl;
 	char		temp[80];
-	int mls;
+	int		mls;
 	vec3_t		adjust_origin;
 
 	clmodel = currententity->model;
@@ -1249,10 +1235,6 @@ R_SetupFrame
 */
 void R_SetupFrame (void)
 {
-	int				edgecount;
-	vrect_t			vrect;
-	float			w, h;
-
 // don't allow cheats in multiplayer
 	r_fullbright.value = 0;
 
@@ -1351,9 +1333,8 @@ void R_SetupGL (void)
 {
 	float	screenaspect;
 	float	yfov;
-	int		i;
 	extern	int glwidth, glheight;
-	int		x, x2, y2, y, w, h;
+	int	x, x2, y2, y, w, h;
 
 	//
 	// set up viewpoint
@@ -1629,8 +1610,6 @@ r_refdef must be set before the first call
 */
 void R_RenderView (void)
 {
-	vec3_t t;
-
 	if (r_norefresh.value)
 		return;
 

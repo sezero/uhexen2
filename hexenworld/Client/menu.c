@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.6 2004-12-29 21:02:20 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.7 2005-01-01 21:50:48 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -421,7 +421,7 @@ void M_ToggleMenu_f (void)
 }
 
 char BigCharWidth[27][27];
-static char unused_filler;  // cuz the COM_LoadStackFile puts a 0 at the end of the data
+//static char unused_filler;  // cuz the COM_LoadStackFile puts a 0 at the end of the data
 
 //#define BUILD_BIG_CHAR 1
 
@@ -517,10 +517,10 @@ smoothly scrolled off.
 int M_DrawBigCharacter (int x, int y, int num, int numNext)
 {
 	qpic_t	*p;
-	int ypos,xpos,c;
-	byte			*dest;
-	byte			*source;
-	int				add;
+	int	ypos,xpos;
+	byte	*dest;
+	byte	*source;
+	int	add;
 
 	if (num == ' ') return 32;
 
@@ -536,7 +536,7 @@ int M_DrawBigCharacter (int x, int y, int num, int numNext)
 	p = Draw_CachePic ("gfx/menu/bigfont.lmp");
 	source = p->data + ((num % 8) * 20) + (num / 8 * p->width * 20);
 
-    for(ypos=0;ypos < 19;ypos++)
+	for(ypos=0;ypos < 19;ypos++)
 	{
 		dest = vid.buffer + (y+ypos) * vid.rowbytes + x;
 		for(xpos=0;xpos<19;xpos++,dest++,source++)
@@ -684,7 +684,6 @@ void M_Menu_Main_f (void)
 void M_Main_Draw (void)
 {
 	int		f;
-	qpic_t	*p;
 
 	ScrollTitle("gfx/menu/title0.lmp");
 //	M_DrawTransPic (72, 32, Draw_CachePic ("gfx/mainmenu.lmp") );
@@ -784,7 +783,6 @@ int	m_class_cursor;
 void M_Class_Draw (void)
 {
 	int		f;
-	qpic_t	*p;
 
 	ScrollTitle("gfx/menu/title2.lmp");
 
@@ -1057,7 +1055,6 @@ void M_DrawCheckbox (int x, int y, int on)
 void M_Options_Draw (void)
 {
 	float		r;
-	qpic_t	*p;
 	
 	ScrollTitle("gfx/menu/title3.lmp");
 	
@@ -1069,11 +1066,11 @@ void M_Options_Draw (void)
 	r = (scr_viewsize.value - 30) / (120 - 30);
 	M_DrawSlider (220, 60+(3*8), r);
 
-	//#ifndef GLQUAKE
+//	#ifndef GLQUAKE
 	M_Print (16, 60+(4*8), "            Brightness");
 	r = (1.0 - v_gamma.value) / 0.5;
 	M_DrawSlider (220, 60+(4*8), r);
-	//#endif
+//	#endif
 
 	M_Print (16, 60+(5*8), "           Mouse Speed");
 	r = (sensitivity.value - 1)/10;
@@ -1344,7 +1341,7 @@ void M_Keys_Draw (void)
 	int		keys[2];
 	char	*name;
 	int		x, y;
-	qpic_t	*p;
+//	qpic_t	*p;
 
 	ScrollTitle("gfx/menu/title6.lmp");
 
@@ -2193,7 +2190,6 @@ void M_Menu_MultiPlayer_f (void)
 void M_MultiPlayer_Draw (void)
 {
 	int		f;
-	qpic_t	*p;
 
 	ScrollTitle("gfx/menu/title4.lmp");
 //	M_DrawTransPic (72, 32, Draw_CachePic ("gfx/mp_menu.lmp") );

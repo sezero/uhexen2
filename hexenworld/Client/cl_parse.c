@@ -176,7 +176,6 @@ Model_NextDownload
 void Model_NextDownload (void)
 {
 	char	*s;
-	FILE		*f;
 	int		i;
 	extern	char gamedirfile[];
 
@@ -236,7 +235,6 @@ Sound_NextDownload
 void Sound_NextDownload (void)
 {
 	char	*s;
-	FILE		*f;
 	int		i;
 
 	if (cls.downloadnumber == 0)
@@ -420,7 +418,6 @@ int	cl_doc = -1;
 void CL_ParseServerData (void)
 {
 	char	*str;
-	int		i;
 	FILE	*f;
 	char	fn[MAX_OSPATH];
 	qboolean	cflag = false;
@@ -720,9 +717,8 @@ void CL_ParseStartSoundPacket(void)
     int 	channel, ent;
     int 	sound_num;
     int 	volume;
-    int 	field_mask;
     float 	attenuation;  
- 	int		i;
+    int		i;
 	           
     channel = MSG_ReadShort(); 
 
@@ -760,13 +756,9 @@ Server information pertaining to this client only, sent every frame
 */
 void CL_ParseClientdata (void)
 {
-	int				i;
-	player_state_t	*ms;
-	entity_state_t	*es;
-	usercmd_t		*u;
+	int		i;
 	float		latency;
 	frame_t		*frame;
-	int			bits;
 
 // calculate simulated time of message
 	oldparsecountmod = parsecountmod;

@@ -35,7 +35,7 @@ cvar_t	sv_flypitch				= {"sv_flypitch","20"};
 cvar_t	sv_walkpitch			= {"sv_walkpitch","0"};
 
 
-static	vec3_t	vec_origin = {0.0, 0.0, 0.0};
+//static	vec3_t	vec_origin = {0.0, 0.0, 0.0};
 
 #define	MOVE_EPSILON	0.01
 
@@ -886,20 +886,19 @@ void SV_PushRotate (edict_t *pusher, float movetime)
 {
 	int			i, e, t;
 	edict_t		*check, *block;
-	vec3_t		move, a, amove,mins,maxs,move2,move3,testmove,amove_norm;
+	vec3_t		move, a, amove,mins,maxs,move2,move3,testmove/*,amove_norm*/;
 	vec3_t		entorig, pushorig,pushorigangles;
 	int			num_moved;
 	edict_t		*moved_edict[MAX_EDICTS];
 	vec3_t		moved_from[MAX_EDICTS];
 	vec3_t		org, org2, check_center;
 	vec3_t		forward, right, up;
-	vec3_t		dir2push,push_vel;
 	edict_t		*ground;
 	edict_t		*master;
 	edict_t		*slave;
 	int			slaves_moved;
-	qboolean	moveit, null_z;
-	float		amove_mag,turn_away;
+	qboolean	moveit;
+//	float		amove_mag,turn_away;
 
 #if 0
 Con_DPrintf("SV_PushRotate entity %i (time=%f)\n", NUM_FOR_EDICT(pusher), movetime);
@@ -1626,7 +1625,7 @@ Player character actions
 void SV_Physics_Client (edict_t	*ent)//, int num)
 {
 trace_t	trace;
-int save_hull;
+//int save_hull;
 
 //	save_hull=ent->v.hull;
 //	ent->v.hull=1;

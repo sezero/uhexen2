@@ -21,7 +21,7 @@
 */
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.3 2004-12-05 12:25:58 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.4 2005-01-01 21:50:49 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -511,7 +511,7 @@ void VID_SetDefaultMode (void)
 
 int VID_SetMode (int modenum, unsigned char *palette)
 {
-	int			original_mode, temp, dummy;
+	int			original_mode, temp;
 	qboolean		stat;
 
 	// debug printf ("VID_SetMode modenum = %i\n",modenum);
@@ -1120,9 +1120,7 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 
 void D_ShowLoadingSize (void)
 {
-	int		i, j;
-	vrect_t	rect;
-	byte *data;
+	vrect_t		rect;
 	viddef_t	save_vid;				// global video state
 
 	if (!vid_showload.value)
@@ -1287,7 +1285,7 @@ extern void M_DrawCharacter (int cx, int line, int num);
 extern void M_DrawTransPic (int x, int y, qpic_t *pic);
 extern void M_DrawPic (int x, int y, qpic_t *pic);
 
-static int	vid_line, vid_wmodes;
+//static int	vid_line, vid_wmodes;
 
 typedef struct
 {
@@ -1300,9 +1298,9 @@ typedef struct
 
 #define MAX_COLUMN_SIZE		5
 #define MODE_AREA_HEIGHT	(MAX_COLUMN_SIZE + 6)
-#define MAX_MODEDESCS		(MAX_COLUMN_SIZE*3)
+//#define MAX_MODEDESCS		(MAX_COLUMN_SIZE*3)
+//static modedesc_t	modedescs[MAX_MODEDESCS];
 
-static modedesc_t	modedescs[MAX_MODEDESCS];
 
 /*
 ================
@@ -1348,6 +1346,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/05 12:25:58  sezero
+ * Sync with Steven's changes to hexen2, 2004-12-04
+ *
  * Revision 1.2  2004/12/04 02:05:57  sezero
  * porting from hexen2 :  steve's mouse changes-2, vid-mode changes.
  *

@@ -1124,7 +1124,6 @@ void SV_RunCmd (usercmd_t *ucmd)
 	edict_t		*ent;
 	int			i, n;
 	int			oldmsec;
-	eval_t		*val;
 
 	cmd = *ucmd;
 

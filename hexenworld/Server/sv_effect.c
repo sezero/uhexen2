@@ -5,7 +5,7 @@
 //**
 //** Client side effects.
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.1.1.1 2004-11-28 08:50:04 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.2 2005-01-01 21:50:50 sezero Exp $
 //**
 //**************************************************************************
 
@@ -1192,7 +1192,6 @@ void SV_setseed(int seed)
 
 float SV_seedrand(void)
 {
-	int max;
 	randomseed = (randomseed * 877 + 573) % 9968;
 	return (float)randomseed / 9968;
 }
@@ -1206,7 +1205,7 @@ void SV_ParseMultiEffect(sizebuf_t *sb)
 {
 	int index, count;
 	byte effect;
-	vec3_t	orig, vel, right;
+	vec3_t	orig, vel;
 
 	MultiEffectIdCount = 0;
 	effect = G_FLOAT(OFS_PARM0);
@@ -1258,6 +1257,9 @@ float SV_GetMultiEffectId(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 08:50:04  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.2  2001/12/02 03:34:12  theoddone33
  * Fix stuff again
  *
