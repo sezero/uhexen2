@@ -137,9 +137,10 @@ it.
 1.5 Networking/Multiplayer
 --------------------------
 
-Hexen II binaries here WILL NOT play over a network with Windows-
-hexen2 binaries.  Do not try it, it simply will not work. If this
-is a big issue for you, use HexenWorld.
+Hexen II v1.11 binaries from Raven's official Windows demo WILL NOT
+play over network with Linux Hexen2-demo binaries.  Do not try, it
+simply will NOT work! If this is a big issue for you, please use
+HexenWorld, which is included in the installer.
 
 
 1.6 SaveGames and Configuration files
