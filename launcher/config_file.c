@@ -106,9 +106,8 @@ int write_config_file()
   if (cfg_file == NULL) {
     fprintf(stderr, " Error: couldn't open config file for writing\n");
     return 1;
-  }
 
-  else {
+  } else {
 
     fprintf(cfg_file, "# Linux Hexen2 Launcher Options file\n\n");
     fprintf(cfg_file, "# This file has been automatically generated\n\n");
@@ -139,14 +138,13 @@ int read_config_file()
 
   cfg_file = open_config_file("r");
   if (cfg_file == NULL) {
-    //printf("file does not exist.\n");
-    //printf(" Creating default configuration file... ");
+//  printf("file does not exist.\n");
+//  printf(" Creating default configuration file... ");
     write_config_file();
-    //printf("done!\n");
+//  printf("done!\n");
     return 0;
-  }
 
-  else {
+  } else {
     do {
       fgets(buff, sizeof(buff), cfg_file);
       if (!feof(cfg_file))

@@ -20,7 +20,7 @@
     <handler>on_window1_destroy</handler>
     <last_modification_time>Tue, 01 Jan 2002 17:30:49 GMT</last_modification_time>
   </signal>
-  <title>Hexen II for Linux Launcher, 0.2c</title>
+  <title>Hexen II for Linux Launcher, 0.2d</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
@@ -480,7 +480,7 @@
 	<handler>on_512_button_released</handler>
 	<last_modification_time>Sun, 05 Dec 2004 14:57:07 GMT</last_modification_time>
       </signal>
-      <label>512x384</label>
+      <label>512 x 384</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>resolution</group>

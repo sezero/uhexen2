@@ -8,13 +8,14 @@
 #endif
 
 #include <gtk/gtk.h>
+#include <stdlib.h>
 #include <stdio.h>
 
 #include "interface.h"
 #include "support.h"
 #include "config_file.h"
 
-#define HOTL_VER "0.2c"
+#define HOTL_VER "0.2d"
 
 char *argv_0;
 static  char    userdir[1024];

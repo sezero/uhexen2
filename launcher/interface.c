@@ -42,7 +42,7 @@ GtkWidget *_640_button;
 GtkWidget *_800_button;
 GtkWidget *_1024_button;
 GtkWidget *_1280_button;
-
+/* TODO: Kill all these resolution buttons and do a menu system. Oh well... */
 GtkWidget*
 create_window1 (void)
 {
@@ -75,7 +75,7 @@ create_window1 (void)
 
   window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (window1), "window1", window1);
-  gtk_window_set_title (GTK_WINDOW (window1), _("Hexen II for Linux Launcher, 0.2c"));
+  gtk_window_set_title (GTK_WINDOW (window1), _("Hexen II for Linux Launcher, 0.2d"));
   gtk_window_set_policy (GTK_WINDOW (window1), TRUE, TRUE, FALSE);
   gtk_window_set_default_size (GTK_WINDOW (window1), -1, 408);
 
@@ -121,6 +121,7 @@ create_window1 (void)
   gtk_fixed_put (GTK_FIXED (fixed1), MP_button, 24, 128);
   gtk_widget_set_uposition (MP_button, 24, 128);
   gtk_widget_set_usize (MP_button, 288, 24);
+  GTK_WIDGET_UNSET_FLAGS (MP_button, GTK_CAN_FOCUS);
   if (mp_support)
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MP_button), TRUE);
   if (destiny==DEST_HW)
@@ -152,6 +153,7 @@ create_window1 (void)
   gtk_widget_ref (HEXEN2_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "HEXEN2_button", HEXEN2_button,
                             (GtkDestroyNotify) gtk_widget_unref);
+  GTK_WIDGET_UNSET_FLAGS (HEXEN2_button, GTK_CAN_FOCUS);
   gtk_widget_show (HEXEN2_button);
   gtk_fixed_put (GTK_FIXED (fixed1), HEXEN2_button, 24, 68);
   gtk_widget_set_uposition (HEXEN2_button, 24, 68);
@@ -164,6 +166,7 @@ create_window1 (void)
   gtk_widget_ref (HW_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "HW_button", HW_button,
                             (GtkDestroyNotify) gtk_widget_unref);
+  GTK_WIDGET_UNSET_FLAGS (HW_button, GTK_CAN_FOCUS);
   gtk_widget_show (HW_button);
   gtk_fixed_put (GTK_FIXED (fixed1), HW_button, 128, 68);
   gtk_widget_set_uposition (HW_button, 128, 68);
@@ -194,6 +197,7 @@ create_window1 (void)
   gtk_widget_ref (SOFT_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "SOFT_button", SOFT_button,
                             (GtkDestroyNotify) gtk_widget_unref);
+  GTK_WIDGET_UNSET_FLAGS (SOFT_button, GTK_CAN_FOCUS);
   gtk_widget_show (SOFT_button);
   gtk_fixed_put (GTK_FIXED (fixed1), SOFT_button, 40, 192);
   gtk_widget_set_uposition (SOFT_button, 40, 192);
@@ -206,6 +210,7 @@ create_window1 (void)
   gtk_widget_ref (GL_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "GL_button", GL_button,
                             (GtkDestroyNotify) gtk_widget_unref);
+  GTK_WIDGET_UNSET_FLAGS (GL_button, GTK_CAN_FOCUS);
   gtk_widget_show (GL_button);
   gtk_fixed_put (GTK_FIXED (fixed1), GL_button, 40, 216);
   gtk_widget_set_uposition (GL_button, 40, 216);
@@ -350,6 +355,7 @@ create_window1 (void)
   gtk_widget_ref (_320_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "_320_button", _320_button,
                             (GtkDestroyNotify) gtk_widget_unref);
+  GTK_WIDGET_UNSET_FLAGS (_320_button, GTK_CAN_FOCUS);
   gtk_widget_set_usize (_320_button, 96, 24);
   gtk_fixed_put (GTK_FIXED (fixed1), _320_button, 144, 304);
   gtk_widget_set_uposition (_320_button, 144, 304);
@@ -363,6 +369,7 @@ create_window1 (void)
   gtk_widget_ref (_400_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "_400_button", _400_button,
                             (GtkDestroyNotify) gtk_widget_unref);
+  GTK_WIDGET_UNSET_FLAGS (_400_button, GTK_CAN_FOCUS);
   gtk_widget_set_usize (_400_button, 96, 24);
   gtk_fixed_put (GTK_FIXED (fixed1), _400_button, 240, 304);
   gtk_widget_set_uposition (_400_button, 240, 304);
@@ -377,6 +384,7 @@ create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "_512_button", _512_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_set_usize (_512_button, 96, 24);
+  GTK_WIDGET_UNSET_FLAGS (_512_button, GTK_CAN_FOCUS);
 if (opengl_support) {
   gtk_fixed_put (GTK_FIXED (fixed1), _512_button, 144, 304);
   gtk_widget_set_uposition (_512_button, 144, 304);
@@ -394,6 +402,7 @@ if (opengl_support) {
   gtk_object_set_data_full (GTK_OBJECT (window1), "_640_button", _640_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_set_usize (_640_button, 88, 24);
+  GTK_WIDGET_UNSET_FLAGS (_640_button, GTK_CAN_FOCUS);
 if (opengl_support) {
   gtk_fixed_put (GTK_FIXED (fixed1), _640_button, 240, 304);
   gtk_widget_set_uposition (_640_button, 240, 304);
@@ -411,6 +420,7 @@ if (opengl_support) {
   gtk_object_set_data_full (GTK_OBJECT (window1), "_800_button", _800_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_set_usize (_800_button, 88, 24);
+  GTK_WIDGET_UNSET_FLAGS (_800_button, GTK_CAN_FOCUS);
   gtk_fixed_put (GTK_FIXED (fixed1), _800_button, 48, 328);
   gtk_widget_set_uposition (_800_button, 48, 328);
   if (opengl_support)
@@ -424,6 +434,7 @@ if (opengl_support) {
   gtk_object_set_data_full (GTK_OBJECT (window1), "_1024_button", _1024_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_set_usize (_1024_button, 88, 24);
+  GTK_WIDGET_UNSET_FLAGS (_1024_button, GTK_CAN_FOCUS);
   gtk_fixed_put (GTK_FIXED (fixed1), _1024_button, 144, 328);
   gtk_widget_set_uposition (_1024_button, 144, 328);
   if (opengl_support)
@@ -438,6 +449,7 @@ if (opengl_support) {
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_set_usize (_1280_button, 96, 24);
   gtk_fixed_put (GTK_FIXED (fixed1), _1280_button, 240, 328);
+  GTK_WIDGET_UNSET_FLAGS (_1280_button, GTK_CAN_FOCUS);
   gtk_widget_set_uposition (_1280_button, 240, 328);
   if (opengl_support)
      gtk_widget_show (_1280_button);

@@ -84,9 +84,7 @@ on_MP_button_toggled                   (GtkToggleButton *togglebutton,
 {
   if (mp_support) {
     mp_support=0;
-  }
-
-  else {
+  } else {
     mp_support=1;
   }
 }
@@ -109,7 +107,7 @@ on_SOFT_button_released                (GtkButton       *button,
   gtk_fixed_move (GTK_FIXED (fixed1), _640_button, 240, 328);
   gtk_widget_show (_320_button);
   gtk_widget_show (_400_button);
-  if (resolution >= 2 ) {
+  if (resolution > 3 ) {
       resolution = 1;
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (_400_button), TRUE);
   }
@@ -202,9 +200,7 @@ on_FS_button_toggled                   (GtkToggleButton *togglebutton,
 {
  if (fullscreen) {
    fullscreen=0;
-  }
-
-  else {
+  } else {
     fullscreen=1;
   } 
 }
@@ -253,9 +249,7 @@ on_MIDI_button_toggled                 (GtkToggleButton *togglebutton,
 {
   if (midi) {
     midi=0;
-  }
-
-  else {
+  } else {
     midi=1;
   }
 
@@ -268,9 +262,7 @@ on_CDAUDIO_button_toggled              (GtkToggleButton *togglebutton,
 {
   if (cdaudio) {
     cdaudio=0;
-  }
-
-  else {
+  } else {
     cdaudio=1;
   }
 
@@ -283,8 +275,7 @@ on_MOUS_button_toggled                 (GtkToggleButton *togglebutton,
 {
   if (mouse) {
     mouse=0;
-  }
-  else {
+  } else {
     mouse=1;
   }
 }
@@ -296,8 +287,7 @@ on_JOY_button_toggled                  (GtkToggleButton *togglebutton,
 {
   if (joystick) {
     joystick=0;
-  }
-  else {
+  } else {
     joystick=1;
   }
 }
