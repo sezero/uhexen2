@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.23 2004-12-29 19:49:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.24 2005-02-20 12:28:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -16,12 +16,6 @@ extern  cvar_t  r_shadows, gl_glows, gl_missile_glows, gl_other_glows; // S.A
 extern	cvar_t	vid_mode;
 extern	float introTime;
 extern	cvar_t	crosshair;
-#ifdef H2MP
-cvar_t	m_oldmission = {"m_oldmission","0", false};
-cvar_t	m_demoness   = {"m_demoness",  "0", false};
-#define NUM_CLASSESD	(NUM_CLASSES -1 + m_demoness.value)
-#define CLASS_ITEMSD	(CLASS_ITEMS -1 + m_demoness.value)
-#endif
 
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);
@@ -934,7 +928,7 @@ void M_Class_Draw (void)
 	ScrollTitle("gfx/menu/title2.lmp");
 #ifdef H2MP
 if (!m_enter_portals) {
-	for(i = 0; i < NUM_CLASSESD; ++i)
+	for(i = 0; i < NUM_CLASSES -1; ++i)
 		M_DrawBigString (72,60+(i*20),ClassNamesU[i]);
 } else
 #endif
@@ -943,7 +937,7 @@ if (!m_enter_portals) {
 
 #ifdef H2MP
 if (!m_enter_portals) {
-		if (m_class_cursor >= CLASS_ITEMSD)
+		if (m_class_cursor >= CLASS_ITEMS -1)
 			m_class_cursor = 0;
 }
 #endif
@@ -970,7 +964,7 @@ void M_Class_Key (int key)
 		S_LocalSound ("raven/menu1.wav");
 #ifdef H2MP
 if (!m_enter_portals) {
-		if (++m_class_cursor >= CLASS_ITEMSD)
+		if (++m_class_cursor >= CLASS_ITEMS -1)
 			m_class_cursor = 0;
 } else
 #endif
@@ -987,7 +981,7 @@ if (!m_enter_portals) {
 #ifdef H2MP
 if (!m_enter_portals) {
 		if (--m_class_cursor < 0)
-			m_class_cursor = CLASS_ITEMSD - 1;
+			m_class_cursor = CLASS_ITEMS - 2;
 } else
 #endif
 		if (--m_class_cursor < 0)
@@ -1050,11 +1044,8 @@ void M_SinglePlayer_Draw (void)
 	M_DrawBigString (72,60+(1*20),"LOAD");
 	M_DrawBigString (72,60+(2*20),"SAVE");
 #ifdef H2MP
-	if (m_oldmission.value)
-		M_DrawBigString (72,60+(3*20),"OLD MISSION");
+	M_DrawBigString (72,60+(3*20),"OLD MISSION");
 	M_DrawBigString (72,60+(4*20),"VIEW INTRO");
-	if ((m_singleplayer_cursor ==3) && (!m_oldmission.value))
-		m_singleplayer_cursor =2;
 #endif
 	
 	f = (int)(host_time * 10)%8;
@@ -1074,26 +1065,12 @@ void M_SinglePlayer_Key (int key)
 		S_LocalSound ("raven/menu1.wav");
 		if (++m_singleplayer_cursor >= SINGLEPLAYER_ITEMS)
 			m_singleplayer_cursor = 0;
-#ifdef H2MP
-		if (!m_oldmission.value)
-		{
-			if (m_singleplayer_cursor ==3)
-				m_singleplayer_cursor =4;
-		}
-#endif	
 		break;
 
 	case K_UPARROW:
 		S_LocalSound ("raven/menu1.wav");
 		if (--m_singleplayer_cursor < 0)
 			m_singleplayer_cursor = SINGLEPLAYER_ITEMS - 1;
-#ifdef H2MP
-		if (!m_oldmission.value)
-		{
-			if (m_singleplayer_cursor ==3)
-				m_singleplayer_cursor =2;
-		}
-#endif
 		break;
 
 	case K_ENTER:
@@ -3996,12 +3973,6 @@ void M_Menu_GameOptions_f (void)
 		if (gameoptions_cursor >= NUM_GAMEOPTIONS-1)
 			gameoptions_cursor = 0;
 	}
-#ifdef H2MP
-	if (!m_oldmission.value)
-	{
-		startepisode = MP_START;
-	}
-#endif
 }
 
 void M_GameOptions_Draw (void)
@@ -4116,12 +4087,6 @@ void M_NetStart_Change (int dir)
 				startepisode = 0;
 			else if (startepisode == DM_START)
 				startepisode = REG_START;
-#ifdef H2MP
-			if (!m_oldmission.value)
-			{
-				startepisode = MP_START;
-			}
-#endif
 		}
 		break;
 
@@ -4186,15 +4151,7 @@ void M_NetStart_Change (int dir)
 			count = DM_START;
 			if (!coop.value)
 				count++;
-			else
-			{
-#ifdef H2MP
-				if (!m_oldmission.value)
-				{
-					startepisode = MP_START;
-				}
-#endif
-			}
+
 			if (startepisode < REG_START)
 				startepisode = count - 1;
 
@@ -4487,20 +4444,6 @@ void M_ServerList_Key (int k)
 
 void M_Init (void)
 {
-#ifdef H2MP
-	Cvar_RegisterVariable (&m_oldmission);
-	Cvar_RegisterVariable (&m_demoness);
-	if (COM_CheckParm("-witholdmission") ||
-	    COM_CheckParm("--witholdmission"))
-			Cvar_SetValue ("m_oldmission", 1);
-//	Honor the option passed by our Launcher
-	if (COM_CheckParm("-noold"))
-			Cvar_SetValue ("m_oldmission", 0);
-/*	if (COM_CheckParm("-withdemoness") ||
-	    COM_CheckParm("--withdemoness"))
-			Cvar_SetValue ("m_demoness", 1);
-*/
-#endif
 	Cmd_AddCommand ("togglemenu", M_ToggleMenu_f);
 
 	Cmd_AddCommand ("menu_main", M_Menu_Main_f);
@@ -4760,6 +4703,11 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2004/12/29 19:49:40  sezero
+ * From Steven (2004-12-29):
+ * - Fullscreen/Windowed mode is now switchable. Seems to work good.
+ * - Mouse can now be disabled for fullscreen modes.
+ *
  * Revision 1.22  2004/12/28 22:33:17  sezero
  * fix the cvar m_oldmission again ;(
  *
