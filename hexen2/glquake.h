@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.10 2005-01-12 11:59:11 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.11 2005-01-24 20:27:25 sezero Exp $
  */
 
 // disable data conversion warnings
@@ -64,8 +64,7 @@ extern	int	gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for mode
 
 void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha);
 void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode);
-int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode);
-int GL_LoadTexture32 (char *identifier, int width, int height, unsigned *data, qboolean mipmap, qboolean alpha, int mode);
+int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba);
 int GL_LoadTransTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, byte Alpha);
 int GL_FindTexture (char *identifier);
 int GL_LoadPicTexture (qpic_t *pic);
@@ -353,6 +352,9 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/01/12 11:59:11  sezero
+ * remove some commented-out win32-stuff
+ *
  * Revision 1.9  2005/01/08 16:07:45  sezero
  * don't die on cache mismatch, delete and and reload the new texture
  *

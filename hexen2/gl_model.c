@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.c,v 1.6 2005-01-10 14:30:06 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.c,v 1.7 2005-01-24 20:27:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -401,7 +401,7 @@ void Mod_LoadTextures (lump_t *l)
 		else
 		{
 			texture_mode = GL_LINEAR_MIPMAP_NEAREST; //_LINEAR;
-			tx->gl_texturenum = GL_LoadTexture (mt->name, tx->width, tx->height, (byte *)(tx+1), true, false, 0);
+			tx->gl_texturenum = GL_LoadTexture (mt->name, tx->width, tx->height, (byte *)(tx+1), true, false, 0, false);
 			texture_mode = GL_LINEAR;
 		}
 	}
@@ -1586,7 +1586,7 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int mdl_flags
 			texture_mode = 0;
 
 		pheader->gl_texturenum[i] = GL_LoadTexture (name, pheader->skinwidth, 
-			pheader->skinheight, (byte *)(pskintype + 1), true, false, texture_mode);
+			pheader->skinheight, (byte *)(pskintype + 1), true, false, texture_mode, false);
 		pskintype = (daliasskintype_t *)((byte *)(pskintype+1) + s);
 	}
 
@@ -2152,7 +2152,7 @@ void * Mod_LoadSpriteFrame (model_t *mod, void * pin, mspriteframe_t **ppframe, 
 	   pspriteframe->gl_texturenum = GL_LoadTransTexture (name, width, height, (byte *)(pinframe + 1), true, 127);
 	else*/
 
-	pspriteframe->gl_texturenum = GL_LoadTexture (name, width, height, (byte *)(pinframe + 1), true, true, 0);
+	pspriteframe->gl_texturenum = GL_LoadTexture (name, width, height, (byte *)(pinframe + 1), true, true, 0, false);
 
 	return (void *)((byte *)pinframe + sizeof (dspriteframe_t) + size);
 }
@@ -2308,6 +2308,9 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/01/10 14:30:06  sezero
+ * glows indentation/whitespace fix. should be more readable now.
+ *
  * Revision 1.5  2004/12/18 14:08:07  sezero
  * Clean-up and kill warnings 9:
  * Kill many unused vars.
