@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.c,v 1.5 2004-12-18 14:08:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.c,v 1.6 2005-01-10 14:30:06 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1606,10 +1606,9 @@ void Mod_SetAliasModelExtraFlags (model_t *mod)
 	    !strnicmp (mod->name, "models/castrch",15) ||
 	    !strnicmp (mod->name, "models/rometrch",15) ||
 	    !strnicmp (mod->name, "models/egtorch",14) ||
-	    !strnicmp (mod->name, "models/flame",12))
-	   mod->ex_flags |= XF_TORCH_GLOW;
-            
-	  else if (!strnicmp (mod->name, "models/i_bmana",14)) {
+	    !strnicmp (mod->name, "models/flame",12)) {
+		mod->ex_flags |= XF_TORCH_GLOW;
+	} else if (!strnicmp (mod->name, "models/i_bmana",14)) {
 		mod->ex_flags |= XF_GLOW;
 		mod->glow_color[0] = 0.25f;
 		mod->glow_color[1] = 0.25f;
@@ -1625,7 +1624,7 @@ void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[1] = 0.25f;
 		mod->glow_color[2] = 0.25f;
 	}
-    
+
 	// Missile glows
 	  else if (!strnicmp (mod->name, "models/drgnball",15)) {
 		mod->ex_flags |= XF_MISSILE_GLOW;
@@ -2309,6 +2308,10 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/12/18 14:08:07  sezero
+ * Clean-up and kill warnings 9:
+ * Kill many unused vars.
+ *
  * Revision 1.4  2004/12/18 13:30:50  sezero
  * Hack to prevent textures going awol and some info-plaques start looking
  * white upon succesive load games. The solution is not beautiful but seems

@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_rmain.c,v 1.9 2004-12-21 16:20:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_rmain.c,v 1.10 2005-01-10 14:30:06 sezero Exp $
 */
 
 
@@ -1008,13 +1008,11 @@ void R_DrawGlow (entity_t *e)
 
 	clmodel = currententity->model;
 
-
     // Torches & Flames
 	if ((gl_glows.value && (clmodel->ex_flags & XF_TORCH_GLOW )) ||
 	    (gl_missile_glows.value && (clmodel->ex_flags & XF_MISSILE_GLOW)) ||
 	    (gl_other_glows.value && (clmodel->ex_flags & XF_GLOW)))
-	 {
-
+	{
 	// Draw torch flares. KH
 		// NOTE: It would be better if we batched these up.
 		//	 All those state changes are not nice. KH
@@ -1040,26 +1038,23 @@ void R_DrawGlow (entity_t *e)
 
 		// See if view is outside the light.
 		distance = Length(glow_vect);
-
 		// See if view is outside the light.
 		distance = Length(vp2);
 
 		if (distance > radius) {
 			VectorNormalize(vp2);
-
 			glfunc.glPushMatrix_fp();
 
-		// Translate the glow to coincide with the flame. KH
-		if (clmodel->ex_flags & XF_TORCH_GLOW) {
-			// egypt torch fix
-			if (!strnicmp (clmodel->name, "models/eflmtrch",15)) {
+			// Translate the glow to coincide with the flame. KH
+			if (clmodel->ex_flags & XF_TORCH_GLOW) {
+				// egypt torch fix
+			    if (!strnicmp (clmodel->name, "models/eflmtrch",15))
 				glfunc.glTranslatef_fp( cos(e->angles[1]/180*M_PI)*8.0f,sin(e->angles[1]/180*M_PI)*8.0f, 16.0f);
-		}
-		else
-		    glfunc.glTranslatef_fp(0.0f, 0.0f, 8.0f);
-		}
+			    else
+				glfunc.glTranslatef_fp(0.0f, 0.0f, 8.0f);
+			}
 
-		glfunc.glBegin_fp(GL_TRIANGLE_FAN);
+			glfunc.glBegin_fp(GL_TRIANGLE_FAN);
 			// Diminish torch flare inversely with distance.
 			intensity = (1024.0f - distance) / 1024.0f;
 
@@ -1073,39 +1068,39 @@ void R_DrawGlow (entity_t *e)
 			// Now modulate with flicker.
 			if (clmodel->ex_flags & XF_TORCH_GLOW) {
 				i = (int)(cl.time*10);
-			if (!cl_lightstyle[TORCH_STYLE].length) {
-				j = 256;
-			} else {
-				j = i % cl_lightstyle[TORCH_STYLE].length;
-				j = cl_lightstyle[TORCH_STYLE].map[j] - 'a';
-				j = j*22;
+				if (!cl_lightstyle[TORCH_STYLE].length) {
+					j = 256;
+				} else {
+					j = i % cl_lightstyle[TORCH_STYLE].length;
+					j = cl_lightstyle[TORCH_STYLE].map[j] - 'a';
+					j = j*22;
+				}
 			}
-		}
-		else if (clmodel->ex_flags & XF_MISSILE_GLOW) {
-			i = (int)(cl.time*10);
-			if (!cl_lightstyle[MISSILE_STYLE].length) {
-				j = 256;
-			} else {
-				j = i % cl_lightstyle[MISSILE_STYLE].length;
-				j = cl_lightstyle[MISSILE_STYLE].map[j] - 'a';
-				j = j*22;
+			else if (clmodel->ex_flags & XF_MISSILE_GLOW) {
+				i = (int)(cl.time*10);
+				if (!cl_lightstyle[MISSILE_STYLE].length) {
+					j = 256;
+				} else {
+					j = i % cl_lightstyle[MISSILE_STYLE].length;
+					j = cl_lightstyle[MISSILE_STYLE].map[j] - 'a';
+					j = j*22;
+				}
 			}
-		}
-		else if (clmodel->ex_flags & XF_GLOW) {
-			i = (int)(cl.time*10);
-			if (!cl_lightstyle[PULSE_STYLE].length) {
-				j = 256;
-		} else {
-			j = i % cl_lightstyle[PULSE_STYLE].length;
-			j = cl_lightstyle[PULSE_STYLE].map[j] - 'a';
-			j = j*22;
-		}
-		}
+			else if (clmodel->ex_flags & XF_GLOW) {
+				i = (int)(cl.time*10);
+				if (!cl_lightstyle[PULSE_STYLE].length) {
+					j = 256;
+				} else {
+					j = i % cl_lightstyle[PULSE_STYLE].length;
+					j = cl_lightstyle[PULSE_STYLE].map[j] - 'a';
+					j = j*22;
+				}
+			}
 
-		intensity *= ((float)j / 255.0f);
+			intensity *= ((float)j / 255.0f);
 
-		if (clmodel->ex_flags & XF_TORCH_GLOW)
-		// Set yellow intensity
+			if (clmodel->ex_flags & XF_TORCH_GLOW)
+			// Set yellow intensity
 			    glfunc.glColor4f_fp(0.8f*intensity, 0.4f*intensity, 0.1f*intensity,1.0f);
 			else 
 			    glfunc.glColor4f_fp(clmodel->glow_color[0]*intensity,
@@ -1113,40 +1108,36 @@ void R_DrawGlow (entity_t *e)
 			    clmodel->glow_color[2]*intensity,
 			    0.5f);
 
-		for (i=0 ; i<3 ; i++)
-				glow_vect[i] = lightorigin[i] - vp2[i]*radius;
+			for (i=0 ; i<3 ; i++)
+			    glow_vect[i] = lightorigin[i] - vp2[i]*radius;
 
-		glfunc.glVertex3fv_fp(glow_vect);
+			glfunc.glVertex3fv_fp(glow_vect);
 
-		glfunc.glColor4f_fp(0.0f, 0.0f, 0.0f, 1.0f);
+			glfunc.glColor4f_fp(0.0f, 0.0f, 0.0f, 1.0f);
 
-		for (i=16; i>=0; i--) {
+			for (i=16; i>=0; i--) {
 				float a = i/16.0f * M_PI*2;
 
 				for (j=0; j<3; j++)
-						glow_vect[j] = lightorigin[j] + 
-						vright[j]*cos(a)*radius +
-						vup[j]*sin(a)*radius;
+					glow_vect[j] = lightorigin[j] + 
+					vright[j]*cos(a)*radius +
+					vup[j]*sin(a)*radius;
 
 				glfunc.glVertex3fv_fp(glow_vect);
-		}
-		glfunc.glEnd_fp();
+			}
 
-
-		glfunc.glColor4f_fp (0.0f,0.0f,0.0f,1.0f);
-
-		// Restore previous matrix! KH
+			glfunc.glEnd_fp();
+			glfunc.glColor4f_fp (0.0f,0.0f,0.0f,1.0f);
+			// Restore previous matrix! KH
 			glfunc.glPopMatrix_fp();		        
-
+		}
 	}
-	}
-    // end of glows    
+// end of glows    
 }
 
-void R_DrawAllGlows(void) {
-
+void R_DrawAllGlows(void)
+{
 	int i;
-
 
 	if (!r_drawentities.value)
 		return;
@@ -1160,13 +1151,11 @@ void R_DrawAllGlows(void) {
 	for (i=0 ; i<cl_numvisedicts ; i++) {
 		currententity = cl_visedicts[i];
 
-		switch (currententity->model->type)
-		{
-		case mod_alias:
+		switch (currententity->model->type) {
+		  case mod_alias:
 			R_DrawGlow (currententity);
 			break;
-
-		default:
+		  default:
 			break;
 		}		
 	}
@@ -1177,7 +1166,6 @@ void R_DrawAllGlows(void) {
 	glfunc.glDepthMask_fp (1);
 	glfunc.glShadeModel_fp (GL_FLAT);
 	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
 }
 
 /*
@@ -1782,6 +1770,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2004/12/21 16:20:17  sezero
+ * revert two commits (obsolete experimentals)
+ *
  * Revision 1.8  2004/12/18 14:08:07  sezero
  * Clean-up and kill warnings 9:
  * Kill many unused vars.
