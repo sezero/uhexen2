@@ -360,5 +360,16 @@ void func_monsterspawn_spot (void)
 		self.use=spawnspot_activate;
 }
 
+//stubs for the missing boss map funcs
 void hive_die(){}
 void spawn_ghost (entity attacker){}
+void rider_path(){}
+void rider_famine(){}
+void rider_pestilence(){}
+void rider_death(){}
+void rider_war(){}
+void rider_quake(){}
+void rider_quake_center(){}
+void rider_trigger_once(){}
+void rider_trigger_multiple(){}
+void monster_eidolon(){}
