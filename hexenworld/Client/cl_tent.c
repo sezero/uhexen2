@@ -2969,7 +2969,7 @@ void CL_ParseTEnt (void)
 					ex->scale = health - 90;
 					VectorCopy(vel, ex->velocity);
 					ex->frameFunc = updateBloodRain;
-					ex->exflags & EXFLAG_COLLIDE;
+					ex->exflags |= EXFLAG_COLLIDE;
 
 					ex = CL_AllocExplosion();
 					VectorCopy(pos, ex->origin);
