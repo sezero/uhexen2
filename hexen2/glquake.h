@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.3 2004-12-16 18:10:12 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.4 2004-12-18 13:30:50 sezero Exp $
  */
 
 // disable data conversion warnings
@@ -22,6 +22,19 @@
 void GL_BeginRendering (int *x, int *y, int *width, int *height);
 void GL_EndRendering (void);
 
+#define is_TexPresent { \
+	if (identifier[0]) { \
+		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++) { \
+			if (!strcmp (search, glt->identifier)) { \
+				if (width != glt->width || height != glt->height) \
+					Sys_Error ("GL_LoadTexture: cache mismatch"); \
+				return gltextures[i].texnum; \
+			} \
+		} \
+	} else { \
+		glt = &gltextures[numgltextures]; \
+	} \
+}
 
 // Function prototypes for the Texture Object Extension routines
 #ifdef _WIN32
@@ -59,12 +72,14 @@ extern	int		texture_mode;
 
 extern	float	gldepthmin, gldepthmax;
 
+#define MAX_GLTEXTURES	  2048
 #define MAX_EXTRA_TEXTURES 156   // 255-100+1
 extern int			gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for models
 
 void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha);
 void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode);
 int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode);
+int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode);
 int GL_LoadTransTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, byte Alpha);
 int GL_FindTexture (char *identifier);
 
@@ -82,6 +97,21 @@ typedef struct
 	int		texnum;
 	float	sl, tl, sh, th;
 } glpic_t;
+
+typedef struct cachepic_s
+{
+	char		name[MAX_QPATH];
+	qpic_t		pic;
+	byte		padding[32];	// for appended glpic
+} cachepic_t;
+
+typedef struct
+{
+	int		texnum;
+	char	identifier[64];
+	int		width, height;
+	qboolean	mipmap;
+} gltexture_t;
 
 extern	int glx, gly, glwidth, glheight;
 
@@ -315,6 +345,15 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/16 18:10:12  sezero
+ * - Add glGetIntegerv, glActiveTextureARB and glMultiTexCoord2fARB to the
+ *   gl_func lists. (glGetIntegerv is required to init. The others are for
+ *   future use).
+ * - Use glGetIntegerv to detect gl_max_size, not vendor string. if > 1024,
+ *   default to 1024 (inspired from pa3pyx).
+ * - gl_max_size is not a cvar anymore (ditto).
+ * - Kill cvar gl_nobind (ditto).
+ *
  * Revision 1.2  2004/11/28 00:37:43  sezero
  * add gl-glow. code borrowed from the js sources
  *

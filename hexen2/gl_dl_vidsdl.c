@@ -1,6 +1,6 @@
 /*
    gl_dl_vidsdl.c
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.12 2004-12-18 13:24:37 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.13 2004-12-18 13:30:50 sezero Exp $
 
    Select window size and mode and init SDL in GL mode.
 
@@ -47,6 +47,11 @@ byte globalcolormap[VID_GRADES*256];
 extern qboolean grab;
 extern qboolean is_3dfx;
 extern qboolean is_PowerVR;
+
+cvar_t gl_purge_maptex = {"gl_purge_maptex", "1", true};
+		/* whether or not map-specific OGL textures
+		   are flushed from map. default == yes  */
+extern int numgltextures;
 
 qboolean in_mode_set = false;
 
@@ -745,6 +750,8 @@ void GL_Init_Functions(void)
 
   glfunc.glBindTexture_fp = (glBindTexture_f) SDL_GL_GetProcAddress("glBindTexture");
   if (glfunc.glBindTexture_fp == 0) {Sys_Error("glBindTexture not found in GL library");}
+  glfunc.glDeleteTextures_fp = (glDeleteTextures_f) SDL_GL_GetProcAddress("glDeleteTextures");
+  if (glfunc.glDeleteTextures_fp == 0) {Sys_Error("glDeleteTextures not found in GL library");}
   glfunc.glTexParameterf_fp = (glTexParameterf_f) SDL_GL_GetProcAddress("glTexParameterf");
   if (glfunc.glTexParameterf_fp == 0) {Sys_Error("glTexParameterf not found in GL library");}
   glfunc.glTexEnvf_fp = (glTexEnvf_f) SDL_GL_GetProcAddress("glTexEnvf");
@@ -1447,6 +1454,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&vid_stretch_by_2);
 	Cvar_RegisterVariable (&_windowed_mouse);
 	Cvar_RegisterVariable (&gl_ztrick);
+	Cvar_RegisterVariable (&gl_purge_maptex);
 
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
 	Cmd_AddCommand ("vid_describecurrentmode", VID_DescribeCurrentMode_f);

@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.4 2004-12-16 18:10:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.5 2004-12-18 13:30:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -17,6 +17,8 @@ int		gl_max_size = 256;
 cvar_t		gl_round_down = {"gl_round_down", "0"};
 cvar_t		gl_picmip = {"gl_picmip", "0"};
 
+qboolean	plyrtex[NUM_CLASSES][16][16];		// whether or not the corresponding player textures
+							// (in multiplayer config screens) have been loaded
 byte		*draw_chars;				// 8*8 graphic characters
 byte		*draw_smallchars;			// Small characters for status bar
 byte		*draw_menufont; 			// Big Menu Font
@@ -47,15 +49,6 @@ int		texels;
 qboolean is_3dfx = false;
 qboolean is_PowerVR = false;
 
-typedef struct
-{
-	int		texnum;
-	char	identifier[64];
-	int		width, height;
-	qboolean	mipmap;
-} gltexture_t;
-
-#define MAX_GLTEXTURES	2048
 gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
 
@@ -148,13 +141,6 @@ void Scrap_Upload (void)
 
 //=============================================================================
 /* Support Routines */
-
-typedef struct cachepic_s
-{
-	char		name[MAX_QPATH];
-	qpic_t		pic;
-	byte		padding[32];	// for appended glpic
-} cachepic_t;
 
 //#define	MAX_CACHED_PICS 	128
 #define MAX_CACHED_PICS 	256
@@ -915,11 +901,25 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 	byte			*src;
 	int				p;
 
+	// texture handle, name and trackers (Pa3PyX)
+	char texname[20];
+	static qboolean first_time = true;
+	extern int setup_top;
+	extern int setup_bottom;
+
+	// Initialize array of texnums
+	if (first_time) {
+		memset(plyrtex, 0, NUM_CLASSES * 16 * 16 * sizeof(qboolean));
+		first_time = false;
+	}
+
 	extern int setup_class;
 
+/*
 	GL_Bind (translate_texture[setup_class-1]);
 
 	c = pic->width * pic->height;
+*/
 
 	dest = trans;
 	for (v=0 ; v<64 ; v++, dest += 64)
@@ -956,12 +956,21 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 			}
 	}
 
+/*
 	glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, gl_alpha_format, PLAYER_DEST_WIDTH, PLAYER_DEST_HEIGHT,
 		      0, GL_RGBA, GL_UNSIGNED_BYTE, trans);
 	//	  glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, 1, 64, 64, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, menuplyr_pixels);
 
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+*/
+
+	// See if the texture has already been loaded; if not, do it (Pa3PyX)
+	if (!plyrtex[setup_class - 1][setup_top][setup_bottom]) {
+		snprintf(texname, 19, "plyrmtex%i%i%i", setup_class, setup_top, setup_bottom);
+		plyrtex[setup_class - 1][setup_top][setup_bottom] = GL_LoadTexture32(texname, PLAYER_DEST_WIDTH, PLAYER_DEST_HEIGHT, trans, false, true, 0);
+	}
+	GL_Bind(plyrtex[setup_class - 1][setup_top][setup_bottom]);
 
 	glfunc.glColor3f_fp (1,1,1);
 	glfunc.glBegin_fp (GL_QUADS);
@@ -1648,22 +1657,7 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 	sprintf (search, "%s%d%d",identifier,width,height);
 
 	// see if the texture is allready present
-	if (identifier[0])
-	{
-		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
-		{
-			if (!strcmp (search, glt->identifier))
-			{
-				if (width != glt->width || height != glt->height)
-					Sys_Error ("GL_LoadTexture: cache mismatch");
-				return gltextures[i].texnum;
-			}
-		}
-	}
-	else
-	{
-		glt = &gltextures[numgltextures];
-	}
+	is_TexPresent;
 	numgltextures++;
 
 	strcpy(glt->identifier, search);
@@ -1675,6 +1669,36 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 	GL_Bind(texture_extension_number );
 
 	GL_Upload8 (data, width, height, mipmap, alpha, mode);
+
+	texture_extension_number++;
+
+	return texture_extension_number-1;
+}
+
+int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode)
+{
+	int		i;
+	gltexture_t	*glt;
+	char search[64];
+
+	if (!vid_initialized)
+		return -1;
+
+	sprintf (search, "%s%d%d",identifier,width,height);
+
+	// see if the texture is allready present
+	is_TexPresent;
+	numgltextures++;
+
+	strcpy(glt->identifier, search);
+	glt->texnum = texture_extension_number;
+	glt->width = width;
+	glt->height = height;
+	glt->mipmap = mipmap;
+
+	GL_Bind(texture_extension_number );
+
+	GL_Upload32 (data, width, height, mipmap, alpha);
 
 	texture_extension_number++;
 
@@ -1767,6 +1791,15 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/16 18:10:12  sezero
+ * - Add glGetIntegerv, glActiveTextureARB and glMultiTexCoord2fARB to the
+ *   gl_func lists. (glGetIntegerv is required to init. The others are for
+ *   future use).
+ * - Use glGetIntegerv to detect gl_max_size, not vendor string. if > 1024,
+ *   default to 1024 (inspired from pa3pyx).
+ * - gl_max_size is not a cvar anymore (ditto).
+ * - Kill cvar gl_nobind (ditto).
+ *
  * Revision 1.3  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

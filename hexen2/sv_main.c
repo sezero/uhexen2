@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.3 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.4 2004-12-18 13:30:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -22,6 +22,10 @@ cvar_t	sv_update_misc		= {"sv_update_misc","1", true};
 cvar_t	sv_ce_scale			= {"sv_ce_scale","0", true};
 cvar_t	sv_ce_max_size		= {"sv_ce_max_size","0", true};
 
+#endif
+
+#ifdef GLQUAKE
+qboolean	flush_textures;
 #endif
 
 unsigned int	info_mask, info_mask2;
@@ -2365,6 +2369,13 @@ void SV_SpawnServer (char *server)
 		SV_SendReconnect ();
 	}
 
+/* if this is GL version, we need to tell D_FlushCaches()
+   the map name: if map name equals previous one, then no
+   need to flush OGL textures, otherwise do that (Pa3PyX) */
+#ifdef GLQUAKE
+	flush_textures = strnicmp(server, sv.name, 64) ? true : false;
+#endif
+
 //
 // make cvars consistant
 //
@@ -2537,6 +2548,9 @@ void SV_SpawnServer (char *server)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.2  2004/11/28 00:58:08  sezero
  *
  * Commit Steven's changes as of 2004.11.24:

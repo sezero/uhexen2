@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.3 2004-12-18 13:30:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -42,6 +42,10 @@ jmp_buf 	host_abortserver;
 byte		*host_basepal;
 byte		*host_colormap;
 
+#ifdef GLQUAKE
+extern int	gl_texlevel;
+extern int	numgltextures;
+#endif
 
 extern cvar_t	sys_quake2;
 
@@ -1037,6 +1041,12 @@ void Host_Init (quakeparms_t *parms)
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
 
+#ifdef GLQUAKE
+/*	analogouos to host_hunklevel, this will mark OpenGL texture
+	beyond which everything will need to be purged on new map */
+	gl_texlevel = numgltextures;
+#endif
+
 	host_initialized = true;
 	
 	Sys_Printf("======== Hexen II Initialized =========\n");
@@ -1081,6 +1091,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:04:28  sezero
  * Initial import of AoT 1.2.0 code
  *

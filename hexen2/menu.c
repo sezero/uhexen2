@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.13 2004-12-18 13:20:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.14 2004-12-18 13:30:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1563,7 +1563,7 @@ void M_Menu_Setup_f (void)
 	m_entersound = true;
 	strcpy(setup_myname, cl_name.string);
 	strcpy(setup_hostname, hostname.string);
-	setup_top = setup_oldtop = ((int)cl_color.value) >> 4;
+	setup_top = setup_oldtop = (((int)cl_color.value) >> 4) & 15;
 	setup_bottom = setup_oldbottom = ((int)cl_color.value) & 15;
 	setup_class = cl_playerclass.value;
 	if (setup_class < 1 || setup_class > NUM_CLASSES)
@@ -4761,6 +4761,9 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2004/12/18 13:20:37  sezero
+ * make the music automatically restart when changed in the options menu
+ *
  * Revision 1.12  2004/12/13 14:52:23  sezero
  * prevent the m_demoness.value spam, do some defines
  *
