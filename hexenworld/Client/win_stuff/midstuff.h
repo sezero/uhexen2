@@ -69,7 +69,8 @@
 
 // These structures are stored in MIDI files; they need to be byte aligned.
 //
-#pragma pack(1)
+//#pragma pack(1)
+#pragma pack(push,1)	// Pa3PyX
 
 // Chunk header. dwTag is either MTrk or MThd.
 //
@@ -87,7 +88,8 @@ typedef struct
     WORD    wTimeDivision;      // Time division (hi-lo)
 } MIDIFILEHDR;
 
-#pragma pack() // End of need for byte-aligned structures
+//#pragma pack() // End of need for byte-aligned structures
+#pragma pack(pop)	// Pa3PyX
 
 
 // Temporary event structure which stores event data until we're ready to

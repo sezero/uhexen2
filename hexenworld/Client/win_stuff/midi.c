@@ -1,12 +1,13 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/midi.c,v 1.1 2005-02-05 16:27:11 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/midi.c,v 1.2 2005-02-05 16:28:19 sezero Exp $
  */
 
 #include <windows.h>
 #include <windowsx.h>
 #include <commctrl.h>
 #include <memory.h>
-#include <mmreg.h>
+//#include <mmreg.h>
+#include <mmsystem.h>
 
 #include "midstuff.h"
 #include "midi.h"
@@ -18,7 +19,9 @@ BOOL bPaused, bLooped;
 UINT uMIDIDeviceID = MIDI_MAPPER, uCallbackStatus;
 int nCurrentBuffer, nEmptyBuffers;
 DWORD dwBufferTickLength, dwTempoMultiplier, dwCurrentTempo, dwProgressBytes;
-DWORD dwVolumePercent, dwVolCache[NUM_CHANNELS];
+extern cvar_t bgmvolume;
+DWORD dwVolCache[NUM_CHANNELS];
+qboolean hw_vol_capable = false;
 
 HMIDISTRM    hStream;
 CONVERTINFO  ciStreamBuffers[NUM_STREAM_BUFFERS];
@@ -37,12 +40,8 @@ void MidiErrorMessageBox(MMRESULT mmr)
    char temp[1024];
 
    midiOutGetErrorText(mmr,temp,sizeof(temp));
-	Con_Printf("%s\n",temp);
+	Con_Printf("MIDI: %s\n", temp);
 }
-
-
-
-
 
 void MIDI_Play_f (void)
 {
@@ -78,30 +77,42 @@ void MIDI_Loop_f (void)
 	else Con_Printf("MIDI music will not be looped\n");
 }
 
-void MIDI_Volume_f (void)
+void MIDI_SetVolume(float volume_frac)
 {
-	if (Cmd_Argc () == 2)
-	{
-		dwVolumePercent = atol(Cmd_Argv(1))*65535/100;
-		midiOutSetVolume(hStream,(dwVolumePercent<<16)+dwVolumePercent);
+	int volume_int;
 
-/*		dwVolumePercent = atol(Cmd_Argv(1))*10;
-		SetAllChannelVolumes(dwVolumePercent);*/
-	}
-	else
-	{
-		Con_Printf("MIDI volume is %d\n", dwVolumePercent/(65535/100));
+	if (!bMidiInited)
+		return;
+
+	volume_frac = (volume_frac >= 0.0f) ? volume_frac : 0.0f;
+	volume_frac = (volume_frac <= 1.0f) ? volume_frac : 1.0f;
+	if (hw_vol_capable) {
+		volume_int = (int)(volume_frac * 65535.0f);
+		midiOutSetVolume(hStream, (volume_int << 16) + volume_int);
+	} else {
+		volume_int = (int)(volume_frac * 1000.0f);
+		SetAllChannelVolumes(volume_int);
 	}
 }
 
-BOOL MIDI_Init(void)
+void MIDI_UpdateVolume(void)
+{
+	static float bgm_volume_old = -1.0f;
+	if (bgmvolume.value != bgm_volume_old) {
+		bgm_volume_old = bgmvolume.value;
+		MIDI_SetVolume(bgm_volume_old);
+	}
+}
+
+qboolean MIDI_Init(void)
 {
 	MMRESULT mmrRetVal;
+	MIDIOUTCAPS midi_caps;
 
 	if (COM_CheckParm("-nomidi"))
 	{
 		bMidiInited = 0;
-		return FALSE;
+		return false;
 	}
 
 	hBufferReturnEvent = CreateEvent(NULL,FALSE,FALSE,"Wait For Buffer Return");
@@ -111,17 +122,15 @@ BOOL MIDI_Init(void)
 	{
 		bMidiInited = 0;
 		MidiErrorMessageBox( mmrRetVal );
-		return FALSE;
+		return false;
 	}
 
   	Cmd_AddCommand ("midi_play", MIDI_Play_f);
   	Cmd_AddCommand ("midi_stop", MIDI_Stop_f);
   	Cmd_AddCommand ("midi_pause", MIDI_Pause_f);
   	Cmd_AddCommand ("midi_loop", MIDI_Loop_f);
-  	Cmd_AddCommand ("midi_volume", MIDI_Volume_f);
 
 	dwTempoMultiplier = 100;
-	dwVolumePercent = 0xffff;
 	bFileOpen = FALSE;
 	bPlaying = FALSE;
 	bLooped = TRUE;
@@ -130,13 +139,23 @@ BOOL MIDI_Init(void)
 	uCallbackStatus = 0;
 	bMidiInited = 1;
 
-	return TRUE;
+        // try to see if the MIDI device supports midiOutSetVolume
+	if (midiOutGetDevCaps(uMIDIDeviceID, &midi_caps, sizeof(midi_caps)) == MMSYSERR_NOERROR)
+	{
+		if ((midi_caps.dwSupport & MIDICAPS_VOLUME) && !COM_CheckParm("-nohwmidivol"))
+		{
+			hw_vol_capable = true;
+			Con_Printf("Hardware MIDI volume adjustment used.\n");
+		}
+	}
+
+	return true;
 }
 
 void MIDI_Play(char *Name)
 {
 	MMRESULT mmrRetVal;
-    char Temp[100];
+	char Temp[MAX_OSPATH];
 	char *Data;
 
 	if (!bMidiInited)	//don't try to play if there is no midi
@@ -167,7 +186,7 @@ void MIDI_Play(char *Name)
 			return;
 		}
 
-		midiOutSetVolume(hStream, (dwVolumePercent<<16)+dwVolumePercent);
+                MIDI_SetVolume(bgmvolume.value);
 		bPlaying = TRUE;
 	}
 }
@@ -289,7 +308,8 @@ void MIDI_Cleanup(void)
 /* do to work around a bug in MMYSYSTEM that prevents a device from playing  */
 /* back properly unless it is closed and reopened after each stop.           */
 /*****************************************************************************/
-void FreeBuffers(void)
+
+static void FreeBuffers(void)
 {
    DWORD idx;
    MMRESULT mmrRetVal;
@@ -619,6 +639,12 @@ void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/02/05 16:27:11  sezero
+ * Port midi changes from hexen2 to hexenworld, part1.
+ * (separate win32 and linux versions of midi files.
+ *  add volume control, midi paths cleanup, path length
+ *  overflows)
+ *
  * 
  * 7     3/27/98 6:22p Jmonroe
  * just made nomidi more clean
