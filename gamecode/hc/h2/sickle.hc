@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/sickle.hc,v 1.1.1.1 2004-11-29 11:40:29 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/sickle.hc,v 1.2 2005-02-23 08:13:17 sezero Exp $
  */
 
 /*
@@ -92,15 +92,32 @@ void sickle_fire ()
 
 			if (random() < chance)
 			{
-				point_chance = (self.level - 5) * 2;
-				if (point_chance > 10)
-					point_chance = 10;
+			//	point_chance = (self.level - 5) * 2;
+			//	if (point_chance > 10)
+			//		point_chance = 10;
+/*	This HAS TO change: One will be dead 3 times before stealing their
+	10 hit points at clvl 10 in 5 hits trying to hack away at a medusa
+	or an archer lord. This has to be at least 20 to make any practical
+	use of this level 6 ability, and at most that, since spiders can be
+	leeched from fairly easily (but they will still caw at you at least
+	twice before your hit actually drains). Given that you cannot leech
+	from dead bodies. Pa3PyX	*/
+				point_chance = (self.level - 5) * 4;
+				if (point_chance > 20)
+					point_chance = 20;
 
 				sound (self, CHAN_BODY, "weapons/drain.wav", 1, ATTN_NORM);
 
-				self.health += point_chance;
-				if (self.health>self.max_health)
-					self.health = self.max_health;
+			//	self.health += point_chance;
+			//	if (self.health>self.max_health)
+			//		self.health = self.max_health;
+			//	Pa3PyX: no longer cancel mystic urn effect
+				if (self.health < self.max_health) {
+					self.health += point_chance;
+					if (self.health > self.max_health) {
+						self.health = self.max_health;
+					}
+				}
 			}
 		}
 
@@ -254,6 +271,9 @@ void sickle_decide_attack (void)
 }
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:40:29  sezero
+ * Initial import
+ *
  * 
  * 34    10/07/97 12:45p Mgummelt
  * 

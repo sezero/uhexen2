@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/soul.hc,v 1.2 2005-02-23 08:12:25 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/soul.hc,v 1.3 2005-02-23 08:13:25 sezero Exp $
  */
 
 // Possible improvement: Make model shrink before disappearing
@@ -51,13 +51,15 @@ void () crusader_soul_touch =
 
 void () necro_soul_touch =
 {
+	float pot_mult;	// Pa3PyX
+
 	if(!other.flags2&FL_ALIVE)
 		return;
 
 	if ((other.classname == "player") && (other.playerclass==CLASS_NECROMANCER))
 	{
 		sound (self, CHAN_VOICE, "items/artpkup.wav", 1, ATTN_NORM);
-		other.health += self.health;
+	/*	other.health += self.health;
 		if (other.health>other.max_health)
 			other.health = other.max_health;
 		
@@ -68,6 +70,36 @@ void () necro_soul_touch =
 		other.greenmana += self.greenmana;
 		if (other.greenmana > other.max_mana)
 			other.greenmana = other.max_mana;
+	*/ /*	Pa3PyX: We make the maximum health at 30,
+			just as it was, but:
+		1) Mana bonuses were not working. self(sphere).__mana
+		   fields are not set anywhere. Now the Necromancer
+		   should also gain mana from soul spheres.
+		2) Bonuses will wane as time goes, to 0 at 15 secs.
+		   They must be picked up immediately for full effect.
+		   "Soul Spheres quickly lose their potency, so the
+		    Necromancer must be swift!"
+		3) The health bonus will no longer cancel the effect
+		   of the Mystic Urn (above max hitpoints).	*/
+		pot_mult = 15.0 - time + self.lifetime;
+		if (pot_mult < 0) {
+			pot_mult = 0;
+		}
+		if (other.health < other.max_health) {
+			sprint(other, ftos(self.lifetime));
+			other.health += 2.0 * pot_mult;
+			if (other.health > other.max_health) {
+				other.health = other.max_health;
+			}
+		}
+		other.bluemana += pot_mult;
+		if (other.bluemana > other.max_mana) {
+			other.bluemana = other.max_mana;
+		}
+		other.greenmana += pot_mult;
+		if (other.greenmana > other.max_mana) {
+			other.greenmana = other.max_mana;
+		}
 
 		sprint (other, "You have devoured a life force!\n");
 
@@ -142,7 +174,11 @@ void necromancer_sphere (entity ent)
 	entity new,new2;
 	float chance;
 
-	chance = .05 + ((ent.level - 3) * .03);
+//	chance = .05 + ((ent.level - 3) * .03);
+	// Pa3PyX: adjusted chances (this artifact is powerful, and our sickle
+	//	   leech has been improved, so we nerf this a bit. Start at
+	//	   2.5% chance at clvl 3, increase to 20% at clvl 10
+	chance = (ent.level - 2) * 0.025;
 	if (chance > .2)
 		chance = .2;
 
@@ -168,6 +204,8 @@ void necromancer_sphere (entity ent)
 	new2.flags=0;
 	new2.lifespan = 15;  // Alive for 15 seconds
 	new2.health = new2.lifespan * 2;
+	// Pa3PyX: remember for how long the sphere was around
+	new2.lifetime = time;
 
 	new2.avelocity_y = 200;
 	sound (new, CHAN_VOICE,"raven/soul.wav", 1, ATTN_NORM);
@@ -251,6 +289,9 @@ void crusader_sphere (entity ent)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/02/23 08:12:25  sezero
+ * crusader holy strength starts at level 6 (from Pa3PyX)
+ *
  * Revision 1.1.1.1  2004/11/29 11:35:39  sezero
  * Initial import
  *
