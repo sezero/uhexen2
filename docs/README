@@ -41,7 +41,7 @@ Linux Hexen II requires Hexen II game files updated to version
 
 a. Using the installer (easy way):
    The installer will get the files from your original cdroms,
-   apply the latest patches (gamefiles 1.12d) and install the
+   apply the latest patches (gamedata 1.12g) and install the
    binaries for you. The names of the Hexen2 binaries are:
 
 	hexen2	 -  Software Hexen II
@@ -66,8 +66,8 @@ a. Using the installer (easy way):
 b. Manual install/update of datafiles (harder way):
    Copy the "data1" directory from the Hexen2 CD to your Hexen2
    directory, do a "chmod 644 *" on the contents, then use the
-   file "game-updates-1.12d.tgz" (downloadable from the HoT web
-   site) to manually patch your data files to version 1.12d.
+   file "game-updates-1.12g.tgz" (downloadable from the HoT web
+   site) to manually patch your data files to version 1.12g.
    All files should be lower-cased (if not already) and can be
    done with "mv_lowercase" from the file-rename-utils archive
    (see Links).
