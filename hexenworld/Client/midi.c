@@ -1,6 +1,10 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/midi.c,v 1.1.1.1 2004-11-28 08:54:52 sezero Exp $
- */
+	midi.c
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/midi.c,v 1.2 2005-01-29 03:31:28 sezero Exp $
+*/
+
+// FIXME: midi doesnt work for HWClient at the moment
 
 #ifndef PLATFORM_UNIX
 #include <windows.h>
@@ -15,6 +19,7 @@
 #include "quakedef.h"
 
 #ifdef USE_MIDI
+#error FIXME: midi doesnt work for HWClient at the moment
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
 
@@ -780,6 +785,9 @@ void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 #endif
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 08:54:52  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.4  2002/01/02 19:38:35  phneutre
  * midi updates, though it still dosen't work at this time
  *

@@ -1,4 +1,8 @@
-// snd_mem.c: sound caching
+/*
+	snd_mem.c
+	sound caching
+
+*/
 
 #include "quakedef.h"
 

@@ -1,7 +1,6 @@
 /*
 	snd_oss.c
-
-	@description@
+	$Id: snd_oss.c,v 1.2 2005-01-29 03:31:28 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -23,7 +22,6 @@
 		59 Temple Place - Suite 330
 		Boston, MA  02111-1307, USA
 
-	$Id: snd_oss.c,v 1.1.1.1 2004-11-28 08:56:48 sezero Exp $
 */
 
 #include <unistd.h>

@@ -1,4 +1,9 @@
-// snd_dma.c -- main control for any streaming sound output device
+/*
+	snd_dma.c
+	main control for any streaming sound output device
+
+	$Header:
+*/
 
 #include "quakedef.h"
 
@@ -21,11 +26,11 @@ void S_StopAllSoundsC(void);
 // =======================================================================
 
 channel_t   channels[MAX_CHANNELS];
-int			total_channels;
+int		total_channels;
 
-int				snd_blocked = 0;
+int		snd_blocked = 0;
 static qboolean	snd_ambient = 1;
-qboolean		snd_initialized = false;
+qboolean	snd_initialized = false;
 
 // pointer should go away
 volatile dma_t  *shm = 0;
@@ -37,13 +42,13 @@ vec3_t		listener_right;
 vec3_t		listener_up;
 vec_t		sound_nominal_clip_dist=1000.0;
 
-int			soundtime;		// sample PAIRS
-int   		paintedtime; 	// sample PAIRS
+int		soundtime;	// sample PAIRS
+int		paintedtime; 	// sample PAIRS
 
 
 #define	MAX_SFX		512
-sfx_t		*known_sfx;		// hunk allocated [MAX_SFX]
-int			num_sfx;
+sfx_t		*known_sfx;	// hunk allocated [MAX_SFX]
+int		num_sfx;
 
 sfx_t		*ambient_sfx[NUM_AMBIENTS];
 
@@ -152,7 +157,7 @@ S_Init
 void S_Init (void)
 {
 
-//	Con_Printf("\nSound Initialization\n");
+	Con_Printf("\nSound Initialization\n");
 
 	if (COM_CheckParm("-nosound") || COM_CheckParm("--nosound")
 			|| COM_CheckParm("-s"))
@@ -187,7 +192,6 @@ void S_Init (void)
 	}
 
 
-
 	snd_initialized = true;
 
 	S_Startup ();
@@ -217,7 +221,7 @@ void S_Init (void)
 		shm->buffer = Hunk_AllocName(1<<16, "shmbuf");
 	}
 
-//	Con_Printf ("Sound sampling rate: %i\n", shm->speed);
+	Con_Printf ("Sound sampling rate: %i\n", shm->speed);
 
 	// provides a tick sound until washed clean
 
@@ -402,7 +406,7 @@ void SND_Spatialize(channel_t *ch)
     vec_t dist;
     vec_t lscale, rscale, scale;
     vec3_t source_vec;
-	sfx_t *snd;
+    sfx_t *snd;
 
 // anything coming from the view entity will allways be full volume
 	if (ch->entnum == cl.viewentity)
@@ -652,7 +656,7 @@ void S_StaticSound (sfx_t *sfx, vec3_t origin, float vol, float attenuation)
 
 	if (total_channels == MAX_CHANNELS)
 	{
-		Con_Printf ("total_channels == MAX_CHANNELS\n");
+		Con_Printf ("StaticSound: MAX_CHANNELS reached\n");
 		return;
 	}
 
