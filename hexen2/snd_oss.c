@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.9 2005-03-05 14:33:32 sezero Exp $
+	$Id: snd_oss.c,v 1.10 2005-03-06 10:40:10 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -32,7 +32,12 @@
 #include <sys/mman.h>
 #include <sys/shm.h>
 #include <sys/wait.h>
+#if defined(__FreeBSD__)
+#include <sys/soundcard.h>
+#endif
+#ifdef __linux__
 #include <linux/soundcard.h>
+#endif
 #include <stdio.h>
 #include <errno.h>
 #include "quakedef.h"
