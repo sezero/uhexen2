@@ -1,0 +1,119 @@
+Bug/Problem									Priority	Status		Where to test it	
+----------------------------------------	--------	------		----------------	
+big spider web causes pain sound			High		FIXED		keep4		
+
+camera_remote allows mouse looking			HIGH		FIXED		
+
+monster-dropped puzzle pieces don't			High		FIXED		
+	have netnames
+
+Golems don't have a dormant flag			High		FIXED	
+
+Necromancer weapons broken (maybe 3			HIGH		FIXED		
+	gets stuck)
+
+Death Message for Pentacles					High		SEMI-FIXED	
+
+experience value default on pentacles		High		FIXED		
+
+Trains & stop sounds and decap all fucked	SUPERHIGH	FIXED!!!		Tibet4
+	up!
+
+Monsters can't go up stairs and slopes		SUPERHIGH					Any
+	to NE nor down SW	
+
+Snow auto-adjust speed and count cap		SUPERHIGH	JFM
+
+Snow shut-off at distance					SUPERHIGH	JFM
+
+Yaks and Mezzomen can't hit you if you're	HIGH		FIXED
+	above or below them						
+
+Pentacles killing causes no free edicts		HIGH					
+	error?
+
+Too many gas glyphs crash game				High	FIXED				
+
+Move rest of chunks and particle			High		good enough			
+	effects to client
+
+Add delay to exploding glyphs to prevent	High	fixed	
+	 cascade
+
+Tome of Power (use/die/can't use)			High?		CNR			
+
+Proper death messages for Succubus			High		fixed
+
+ZEbrains spawns 5 blood sprites				LOW
+	- change to client effect
+
+Succubus must reset her gravity when dies	Med			fixed
+
+Fallen Angel & Imp flapping sound			Med			FIXED		Keep5
+	doesn't stop
+
+Make yakman's attacks more network friendly	Med			fixed		
+
+Fadespeed on lights too fast				Low					
+
+bad push sound for Pentacles?				Low			MG			
+
+Need to make player untargetable and		Low			fixed			
+	invincible when in camera mode
+
+Give exp for damaging a creature, and		Low			fixed		
+	remove that exp from it's value
+
+Make everything network friendly			Low		good as it gets		
+
+
+
+Features Needed
+------------------
+need bone chunks for obj_skeleton	- made, DONE
+
+ice_chunks for func_train - NOT BROKEN
+
+sound types for trains : 
+	Rolling Boulder - DONE
+	Spinning prayer wheel - DONE
+
+find function that works on any field-NO
+
+ability to turn off ambient sounds?-NO
+
+MG_DONE Invincibility effect on Succubus		
+
+TEST! Succubus 2nd ability	- Done? (gain mana when taking damage)
+	check thresholds, and amounts
+
+NO-group player's frames into client side anim 
+	for less net traffic in multiplayer?
+
+MG_DONE Coop view for multiplayer (impulse 33?)
+
+save config - DONE
+
+JFM_DONE - add Always MLook to menu,	
+JFM_DONE - add Crosshair to menu,	
+JFM_DONE - add objectives key to customize controls
+JFM_DONE - add menu option to start mission pack directly
+
+JFM_DONE - sort out hcode precache commands to properly build our new pak4.
+
+More level of detail options (eg.: dynamic lights)
+MAYBE - add snow options to menu
+
+switch new game and new mission in menu
+add play demo to main menu
+
+New flame model for Kenn	-DONE
+
+Lion statue	-DONE
+
+team chat
+
+get autolooping sounds (C-side) to update their
+position when they start their loop again?
+
+More Funk _ never can get enough
