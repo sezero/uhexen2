@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.14 2005-03-03 17:03:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.15 2005-03-03 17:04:59 sezero Exp $
 */
 
 #include <stdio.h>
@@ -474,15 +474,9 @@ int Sys_GetUserdir(char *buff, unsigned int len)
 /* O.S:	We keep the userdir (and host_parms.userdir) as ~/.hexen2
 	here.  We'll change com_userdir in COM_InitFilesystem()
 	depending on H2MP and/or -game cmdline arg, instead.	*/
-#ifdef H2MP
-    if ( strlen( pwent->pw_dir ) + strlen( AOT_USERDIR) + 10 > (unsigned)len ) {
-	return 0;
-    }
-#else
     if ( strlen( pwent->pw_dir ) + strlen( AOT_USERDIR) + 2 > (unsigned)len ) {
 	return 0;
     }
-#endif
     sprintf( buff, "%s/%s", pwent->pw_dir, AOT_USERDIR );
     Sys_mkdir(buff);
     return 1;
@@ -637,6 +631,10 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/03/03 17:03:39  sezero
+ * - sys_unix.c cleanup: remove dead and/or win32 code
+ * - remove unreached return from main (it should have been 0, btw. from Steve)
+ *
  * Revision 1.13  2005/02/20 13:38:29  sezero
  * add the new sound options to the help messages
  *
