@@ -23,19 +23,21 @@ void GL_BeginRendering (int *x, int *y, int *width, int *height);
 void GL_EndRendering (void);
 
 // Function prototypes for the Texture Object Extension routines
+#ifdef _WIN32
 typedef GLboolean (APIENTRY *ARETEXRESFUNCPTR)(GLsizei, const GLuint *,
-                    const GLboolean *);
+		   const GLboolean *);
 typedef void (APIENTRY *BINDTEXFUNCPTR)(GLenum, GLuint);
 typedef void (APIENTRY *DELTEXFUNCPTR)(GLsizei, const GLuint *);
 typedef void (APIENTRY *GENTEXFUNCPTR)(GLsizei, GLuint *);
 typedef GLboolean (APIENTRY *ISTEXFUNCPTR)(GLuint);
 typedef void (APIENTRY *PRIORTEXFUNCPTR)(GLsizei, const GLuint *,
-                    const GLclampf *);
+	      const GLclampf *);
 typedef void (APIENTRY *TEXSUBIMAGEPTR)(int, int, int, int, int, int, int, int, void *);
 
 extern	BINDTEXFUNCPTR bindTexFunc;
 extern	DELTEXFUNCPTR delTexFunc;
 extern	TEXSUBIMAGEPTR TexSubImage2DFunc;
+#endif
 
 extern	int texture_extension_number;
 extern	int		texture_mode;

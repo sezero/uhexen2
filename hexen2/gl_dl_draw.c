@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.13 2005-01-08 16:07:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.14 2005-01-08 16:10:46 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -58,7 +58,7 @@ void GL_Bind (int texnum)
 	if (currenttexture == texnum)
 		return;
 	currenttexture = texnum;
- 	glfunc.glBindTexture_fp (GL_TEXTURE_2D, texnum);
+	glfunc.glBindTexture_fp (GL_TEXTURE_2D, texnum);
 }
 
 void GL_Texels_f (void)
@@ -1820,6 +1820,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/01/08 16:07:45  sezero
+ * don't die on cache mismatch, delete and and reload the new texture
+ *
  * Revision 1.12  2005/01/04 07:17:51  sezero
  * make gcc-2.96 happy
  *

@@ -1,6 +1,6 @@
 /*
    gl_dl_vidsdl.c
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.17 2005-01-07 07:38:14 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.18 2005-01-08 16:10:46 sezero Exp $
 
 	Select window size and mode and init SDL in GL mode.
 
@@ -418,11 +418,7 @@ void VID_UpdateWindowStatus (void)
 
 //====================================
 
-#if 0
-BINDTEXFUNCPTR bindTexFunc;
-#else
 void *bindTexFunc;
-#endif
 
 #define TEXTURE_EXT_STRING "GL_EXT_texture_object"
 
@@ -533,9 +529,6 @@ void CheckTextureExtensions (void)
 {
 	char		*tmp;
 	qboolean	texture_ext;
-#if 0
-	HINSTANCE	hInstGL;
-#endif
 
 	texture_ext = FALSE;
 	/* check for texture extension */
@@ -549,30 +542,14 @@ void CheckTextureExtensions (void)
 
 	if (!texture_ext || COM_CheckParm ("-gl11") )
 	{
-#if 0
-		hInstGL = LoadLibrary("opengl32.dll");
-		
-		if (hInstGL == NULL)
-			Sys_Error ("Couldn't load opengl32.dll\n");
-#endif
-
-#if 0
-		bindTexFunc = (void *)SDL_GL_GetProcAddress(hInstGL,"glBindTexture");
-#else
 		bindTexFunc = (void *)SDL_GL_GetProcAddress("glBindTexture");
-#endif
 		if (!bindTexFunc)
 			Sys_Error ("No texture objects!");
 		return;
 	}
 
 /* load library and get procedure adresses for texture extension API */
-#if 0
-	if ((bindTexFunc = (BINDTEXFUNCPTR)
-#else
-	if ((bindTexFunc =
-#endif
-		SDL_GL_GetProcAddress("glBindTextureEXT")) == NULL)
+	if ((bindTexFunc = SDL_GL_GetProcAddress("glBindTextureEXT")) == NULL)
 	{
 		Sys_Error ("GetProcAddress for BindTextureEXT failed");
 		return;
@@ -589,11 +566,10 @@ void CheckArrayExtensions (void)
 	{
 		if (strncmp((const char*)tmp, "GL_EXT_vertex_array", strlen("GL_EXT_vertex_array")) == 0)
 		{
-			if (
-((SDL_GL_GetProcAddress("glArrayElementEXT")) == NULL) ||
-((SDL_GL_GetProcAddress("glColorPointerEXT")) == NULL) ||
-((SDL_GL_GetProcAddress("glTexCoordPointerEXT")) == NULL) ||
-((SDL_GL_GetProcAddress("glVertexPointerEXT")) == NULL) )
+			if ( ((SDL_GL_GetProcAddress("glArrayElementEXT")) == NULL) ||
+			     ((SDL_GL_GetProcAddress("glColorPointerEXT")) == NULL) ||
+			     ((SDL_GL_GetProcAddress("glTexCoordPointerEXT")) == NULL) ||
+			     ((SDL_GL_GetProcAddress("glVertexPointerEXT")) == NULL) )
 			{
 				Sys_Error ("GetProcAddress for vertex extension failed");
 				return;
@@ -1423,7 +1399,6 @@ void VID_DescribeModes_f (void)
 	leavecurrentmode = t;
 }
 
-// "if 0" removed
 
 /*
 ===================
@@ -1722,11 +1697,6 @@ void VID_MenuKey (int key)
 {
 	switch (key)
 	{
-/*	unused // Toggle fullscreen/window modes S.A.
-	case K_SPACE:
-		ToggleFullScreenSA ();
-		break;
-*/
 	case K_ESCAPE:
 	case K_ENTER:
 		S_LocalSound ("raven/menu1.wav");
