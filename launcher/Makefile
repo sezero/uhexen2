@@ -5,7 +5,7 @@
 #  to compile for gtk-2.0, type:  make GTK2=yes
 
 #  if building for the demo version, run with
-#  make DEMOBUILD=yes
+#  make DEMO=yes [other stuff]
 
 #  if you want debug symbols compiled in ( -g CFLAG ), run with
 #  make DEBUG=1
@@ -14,7 +14,7 @@ prefix = /usr
 #prefix = /usr/local
 
 PACKAGE = h2launcher
-ifeq "${DEMOBUILD}" "yes"
+ifeq "${DEMO}" "yes"
 TMPNAME = h2demo
 else
 TMPNAME = h2launcher
@@ -42,7 +42,7 @@ OBJECTS = main.o ${SUPPORT_OBJ} interface.o callbacks.o launch_bin.o \
 	config_file.o
 
 CFLAGS = -Wall -O2 -march=i386 -mcpu=i686 -I. ${GTK_CFLAGS}
-ifeq "${DEMOBUILD}" "yes"
+ifeq "${DEMO}" "yes"
 CFLAGS+=-DDEMOBUILD
 endif
 ifeq "${GTK2}" "yes"

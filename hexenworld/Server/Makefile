@@ -1,4 +1,7 @@
 
+#  if building for the demo version, run with
+#  make DEMO=yes [other stuff]
+
 BINARY=hwsv
 BINARY_STATIC=hwsv.static
 DEBUG=no
@@ -9,7 +12,7 @@ CFLAGS = -I../Client/ -I. -O2 -march=i386 -mcpu=i686 -DUSE_INTEL_ASM -DPLATFORM_
 ifeq "$(DEBUG)" "yes"
 CFLAGS += -g
 endif
-ifeq "${DEMOBUILD}" "yes"
+ifeq "${DEMO}" "yes"
 CFLAGS+= -DDEMOBUILD
 endif
 LDFLAGS = -lm -lpthread

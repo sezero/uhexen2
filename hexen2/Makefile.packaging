@@ -1,4 +1,7 @@
 
+#  if building for the demo version, run with
+#  make DEMO=yes [other stuff]
+
 USEMIDI=yes
 SOUND=OSS
 
@@ -28,7 +31,7 @@ GLFLAGS+= -lSDL_mixer
 LDFLAGS+= -lSDL_mixer
 endif
 
-ifeq "${DEMOBUILD}" "yes"
+ifeq "${DEMO}" "yes"
 CFLAGS+= -DDEMOBUILD
 endif
 
