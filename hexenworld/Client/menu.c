@@ -1,10 +1,11 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.9 2005-02-05 18:27:58 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.10 2005-02-08 21:18:02 sezero Exp $
  */
 
 #include "quakedef.h"
 #include "winquake.h"
 
+extern	cvar_t	vid_mode;
 extern	cvar_t	crosshair;
 
 void (*vid_menudrawfn)(void);
@@ -883,7 +884,8 @@ enum
 	OPT_CROSSHAIR,	//13
 	OPT_ALWAYSMLOOK,//14
 	OPT_USEMOUSE,	//15
-	OPT_VIDEO,	//16
+	OPT_FULLSCREEN,	//16
+	OPT_VIDEO,	//17
 	OPTIONS_ITEMS
 };
 
@@ -1019,6 +1021,10 @@ void M_AdjustSliders (int dir)
 		Cvar_SetValue ("cl_sbar", !cl_sbar.value);
 		break;
 
+	case OPT_FULLSCREEN:	// vid_mode
+		ToggleFullScreenSA();
+		break;
+
 	case OPT_USEMOUSE:	// _windowed_mouse
 		Cvar_SetValue ("_windowed_mouse", !_windowed_mouse.value);
 
@@ -1119,11 +1125,15 @@ void M_Options_Draw (void)
 	M_Print (16,60+(OPT_ALWAYSMLOOK*8),	"            Mouse Look");
 	M_DrawCheckbox (220, 60+(OPT_ALWAYSMLOOK*8), in_mlook.state & 1);
 
-	if (modestate == MS_WINDOWED)
-	{
+	// don't need this anymore S.A
+	// if (modestate == MS_WINDOWED)
+	// {
 		M_Print (16, 60+(OPT_USEMOUSE*8), "             Use Mouse");
 		M_DrawCheckbox (220, 60+(OPT_USEMOUSE*8), _windowed_mouse.value);
-	}
+	// }
+
+	M_Print (16, 60+(OPT_FULLSCREEN*8),	"            Fullscreen");
+	M_DrawCheckbox (220, 60+(OPT_FULLSCREEN*8), vid_mode.value);
 
 	if (vid_menudrawfn)
 		M_Print (16, 60+(OPT_VIDEO*8),	"           Video Modes");
