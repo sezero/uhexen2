@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_rmain.c,v 1.10 2005-01-10 14:30:06 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_rmain.c,v 1.11 2005-01-10 14:31:19 sezero Exp $
 */
 
 
@@ -428,8 +428,7 @@ void R_DrawSpriteModel (entity_t *e)
 	glfunc.glEnd_fp ();
 
 	//restore tex parms
-	// courtesy of the great h4ck0r Pa3Pyx:
-	// replaced GL_REPEAT with GL_CLAMP below
+	// replaced GL_REPEAT with GL_CLAMP below (courtesy of Pa3Pyx)
 	// fixing the demoness flame's "lines" bug S.A
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -1770,6 +1769,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/01/10 14:30:06  sezero
+ * glows indentation/whitespace fix. should be more readable now.
+ *
  * Revision 1.9  2004/12/21 16:20:17  sezero
  * revert two commits (obsolete experimentals)
  *
