@@ -12,6 +12,7 @@
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include "gl_func.h"
 #endif
 
 #ifdef PLATFORM_UNIX
@@ -20,9 +21,6 @@
 
 void GL_BeginRendering (int *x, int *y, int *width, int *height);
 void GL_EndRendering (void);
-
-typedef void (*HW_glActiveTextureARB) (GLenum texture);
-typedef void (*HW_glMultiTexCoord2fARB) (GLenum target, GLfloat s, GLfloat t);
 
 // Function prototypes for the Texture Object Extension routines
 typedef GLboolean (APIENTRY *ARETEXRESFUNCPTR)(GLsizei, const GLuint *,
@@ -287,6 +285,8 @@ extern	const char *gl_extensions;
 
 void R_TranslatePlayerSkin (int playernum);
 void GL_Bind (int texnum);
+
+extern	glfunc_t glfunc;
 
 // Multitexture
 extern qboolean gl_mtexable;

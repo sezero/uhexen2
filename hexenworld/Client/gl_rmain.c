@@ -114,11 +114,11 @@ qboolean R_CullBox (vec3_t mins, vec3_t maxs)
 
 void R_RotateForEntity (entity_t *e)
 {
-    glTranslatef (e->origin[0],  e->origin[1],  e->origin[2]);
+    glfunc.glTranslatef_fp (e->origin[0],  e->origin[1],  e->origin[2]);
 
-    glRotatef (e->angles[1],  0, 0, 1);
-    glRotatef (-e->angles[0],  0, 1, 0);
-    glRotatef (e->angles[2],  1, 0, 0);	//RDM: switched sign so it matches software
+    glfunc.glRotatef_fp (e->angles[1],  0, 0, 1);
+    glfunc.glRotatef_fp (-e->angles[0],  0, 1, 0);
+    glfunc.glRotatef_fp (e->angles[2],  1, 0, 0);	//RDM: switched sign so it matches software
 }
 
 //==========================================================================
@@ -136,7 +136,7 @@ static void R_RotateForEntity2(entity_t *e)
 	float	yaw, pitch;
 	vec3_t			angles;
 
-	glTranslatef(e->origin[0], e->origin[1], e->origin[2]);
+	glfunc.glTranslatef_fp(e->origin[0], e->origin[1], e->origin[2]);
 
 	if (e->model->flags & EF_FACE_VIEW)
 	{
@@ -168,30 +168,30 @@ static void R_RotateForEntity2(entity_t *e)
 		angles[1] = yaw;
 		angles[2] = 0;
 
-		glRotatef(-angles[0], 0, 1, 0);
-		glRotatef(angles[1], 0, 0, 1);
-//		glRotatef(-angles[2], 1, 0, 0);
-		glRotatef(-e->angles[2], 1, 0, 0);
+		glfunc.glRotatef_fp(-angles[0], 0, 1, 0);
+		glfunc.glRotatef_fp(angles[1], 0, 0, 1);
+//		glfunc.glRotatef_fp(-angles[2], 1, 0, 0);
+		glfunc.glRotatef_fp(-e->angles[2], 1, 0, 0);
 	}
 	else 
 	{
 		if (e->model->flags & EF_ROTATE)
 		{
-			glRotatef(anglemod((e->origin[0]+e->origin[1])*0.8
+			glfunc.glRotatef_fp(anglemod((e->origin[0]+e->origin[1])*0.8
 				+(108*cl.time)), 0, 0, 1);
 		}
 		else
 		{
-			glRotatef(e->angles[1], 0, 0, 1);
+			glfunc.glRotatef_fp(e->angles[1], 0, 0, 1);
 		}
 
-		glRotatef(-e->angles[0], 0, 1, 0);
-		glRotatef(-e->angles[2], 1, 0, 0);
+		glfunc.glRotatef_fp(-e->angles[0], 0, 1, 0);
+		glfunc.glRotatef_fp(-e->angles[2], 1, 0, 0);
 
 		// For clientside rotation stuff
-		glRotatef(e->angleAdd[0], 0, 1, 0);
-		glRotatef(e->angleAdd[1], 0, 0, 1);
-		glRotatef(e->angleAdd[2], 1, 0, 0);
+		glfunc.glRotatef_fp(e->angleAdd[0], 0, 1, 0);
+		glfunc.glRotatef_fp(e->angleAdd[1], 0, 0, 1);
+		glfunc.glRotatef_fp(e->angleAdd[2], 1, 0, 0);
 	}
 }
 
@@ -274,22 +274,22 @@ void R_DrawSpriteModel (entity_t *e)
 
 	if (currententity->drawflags & DRF_TRANSLUCENT)
 	{
-		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable( GL_BLEND );
-		glColor4f (1,1,1,r_wateralpha.value);
+		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glfunc.glEnable_fp( GL_BLEND );
+		glfunc.glColor4f_fp (1,1,1,r_wateralpha.value);
 	}
 	else if (currententity->model->flags & EF_TRANSPARENT)
 	{
-		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable( GL_BLEND );
-		glColor3f(1,1,1);
+		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glfunc.glEnable_fp( GL_BLEND );
+		glfunc.glColor3f_fp(1,1,1);
 	}
 	else
 	{
-//		glColor3f(1,1,1);
-		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable( GL_BLEND );
-		glColor3f(1,1,1);
+//		glfunc.glColor3f_fp(1,1,1);
+		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glfunc.glEnable_fp( GL_BLEND );
+		glfunc.glColor3f_fp(1,1,1);
 	}
 
 	frame = R_GetSpriteFrame (e);
@@ -309,38 +309,38 @@ void R_DrawSpriteModel (entity_t *e)
 
     GL_Bind(frame->gl_texturenum);
 
-	glBegin (GL_QUADS);
+	glfunc.glBegin_fp (GL_QUADS);
 
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-	glTexCoord2f (0, 1);
+	glfunc.glTexCoord2f_fp (0, 1);
 	VectorMA (e->origin, frame->down, up, point);
 	VectorMA (point, frame->left, right, point);
-	glVertex3fv (point);
+	glfunc.glVertex3fv_fp (point);
 
-	glTexCoord2f (0, 0);
+	glfunc.glTexCoord2f_fp (0, 0);
 	VectorMA (e->origin, frame->up, up, point);
 	VectorMA (point, frame->left, right, point);
-	glVertex3fv (point);
+	glfunc.glVertex3fv_fp (point);
 
-	glTexCoord2f (1, 0);
+	glfunc.glTexCoord2f_fp (1, 0);
 	VectorMA (e->origin, frame->up, up, point);
 	VectorMA (point, frame->right, right, point);
-	glVertex3fv (point);
+	glfunc.glVertex3fv_fp (point);
 
-	glTexCoord2f (1, 1);
+	glfunc.glTexCoord2f_fp (1, 1);
 	VectorMA (e->origin, frame->down, up, point);
 	VectorMA (point, frame->right, right, point);
-	glVertex3fv (point);
+	glfunc.glVertex3fv_fp (point);
 	
-	glEnd ();
+	glfunc.glEnd_fp ();
 
 	//restore tex parms
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	glDisable( GL_BLEND );
+	glfunc.glDisable_fp( GL_BLEND );
 }
 
 /*
@@ -469,25 +469,25 @@ void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 		if (count < 0)
 		{
 			count = -count;
-			glBegin (GL_TRIANGLE_FAN);
+			glfunc.glBegin_fp (GL_TRIANGLE_FAN);
 		}
 		else
-			glBegin (GL_TRIANGLE_STRIP);
+			glfunc.glBegin_fp (GL_TRIANGLE_STRIP);
 
 		do
 		{
 			// texture coordinates come from the draw list
-			glTexCoord2f (((float *)order)[0], ((float *)order)[1]);
+			glfunc.glTexCoord2f_fp (((float *)order)[0], ((float *)order)[1]);
 			order += 2;
 
 			// normals and vertexes come from the frame list
 			l = shadedots[verts->lightnormalindex] * shadelight;
-			glColor4f (r*l, g*l, b*l, model_constant_alpha);
-			glVertex3f (verts->v[0], verts->v[1], verts->v[2]);
+			glfunc.glColor4f_fp (r*l, g*l, b*l, model_constant_alpha);
+			glfunc.glVertex3f_fp (verts->v[0], verts->v[1], verts->v[2]);
 			verts++;
 		} while (--count);
 
-		glEnd ();
+		glfunc.glEnd_fp ();
 	}
 }
 
@@ -530,10 +530,10 @@ void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 		if (count < 0)
 		{
 			count = -count;
-			glBegin (GL_TRIANGLE_FAN);
+			glfunc.glBegin_fp (GL_TRIANGLE_FAN);
 		}
 		else
-			glBegin (GL_TRIANGLE_STRIP);
+			glfunc.glBegin_fp (GL_TRIANGLE_STRIP);
 
 		do
 		{
@@ -550,12 +550,12 @@ void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 			point[1] -= shadevector[1]*(point[2]+lheight);
 			point[2] = height;
 //			height -= 0.001;
-			glVertex3fv (point);
+			glfunc.glVertex3fv_fp (point);
 
 			verts++;
 		} while (--count);
 
-		glEnd ();
+		glfunc.glEnd_fp ();
 	}	
 }
 
@@ -705,7 +705,7 @@ void R_DrawAliasModel (entity_t *e)
 	// draw all the triangles
 	//
 
-    glPushMatrix ();
+	glfunc.glPushMatrix_fp ();
 	R_RotateForEntity2(e);
 
 	if(currententity->scale != 0 && currententity->scale != 100)
@@ -770,45 +770,45 @@ void R_DrawAliasModel (entity_t *e)
 	}
 
 // [0][3] [1][3] [2][3]
-//	glTranslatef (paliashdr->scale_origin[0], paliashdr->scale_origin[1], paliashdr->scale_origin[2]);
-	glTranslatef (tmatrix[0][3],tmatrix[1][3],tmatrix[2][3]);
+//	glfunc.glTranslatef_fp (paliashdr->scale_origin[0], paliashdr->scale_origin[1], paliashdr->scale_origin[2]);
+	glfunc.glTranslatef_fp (tmatrix[0][3],tmatrix[1][3],tmatrix[2][3]);
 // [0][0] [1][1] [2][2]
-//	glScalef (paliashdr->scale[0], paliashdr->scale[1], paliashdr->scale[2]);
-	glScalef (tmatrix[0][0],tmatrix[1][1],tmatrix[2][2]);
+//	glfunc.glScalef_fp (paliashdr->scale[0], paliashdr->scale[1], paliashdr->scale[2]);
+	glfunc.glScalef_fp (tmatrix[0][0],tmatrix[1][1],tmatrix[2][2]);
 
 	if ((currententity->model->flags & EF_SPECIAL_TRANS))
 	{
-		glEnable (GL_BLEND);
-		glBlendFunc (GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
-//		glColor3f( 1,1,1);
+		glfunc.glEnable_fp (GL_BLEND);
+		glfunc.glBlendFunc_fp (GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
+//		glfunc.glColor3f_fp( 1,1,1);
 		model_constant_alpha = 1.0f;
-		glDisable( GL_CULL_FACE );
+		glfunc.glDisable_fp( GL_CULL_FACE );
 	}
 	else if (currententity->drawflags & DRF_TRANSLUCENT)
 	{
-		glEnable (GL_BLEND);
-		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//		glColor4f( 1,1,1,r_wateralpha.value);
+		glfunc.glEnable_fp (GL_BLEND);
+		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//		glfunc.glColor4f_fp( 1,1,1,r_wateralpha.value);
 		model_constant_alpha = r_wateralpha.value;
 	}
 	else if ((currententity->model->flags & EF_TRANSPARENT))
 	{
-		glEnable (GL_BLEND);
-		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//		glColor3f( 1,1,1);
+		glfunc.glEnable_fp (GL_BLEND);
+		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//		glfunc.glColor3f_fp( 1,1,1);
 		model_constant_alpha = 1.0f;
 	}
 	else if ((currententity->model->flags & EF_HOLEY))
 	{
-		glEnable (GL_BLEND);
-		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glfunc.glEnable_fp (GL_BLEND);
+		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-//		glColor3f( 1,1,1);
+//		glfunc.glColor3f_fp( 1,1,1);
 		model_constant_alpha = 1.0f;
 	}
 	else
 	{
-		glColor3f( 1,1,1);
+		glfunc.glColor3f_fp( 1,1,1);
 		model_constant_alpha = 1.0f;
 	}
 
@@ -867,49 +867,49 @@ void R_DrawAliasModel (entity_t *e)
 	}
 
 	if (gl_smoothmodels.value)
-		glShadeModel (GL_SMOOTH);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		glfunc.glShadeModel_fp (GL_SMOOTH);
+	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 	if (gl_affinemodels.value)
-		glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+		glfunc.glHint_fp (GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
 	R_SetupAliasFrame (currententity->frame, paliashdr);
 	if ((currententity->drawflags & DRF_TRANSLUCENT) ||
 		(currententity->model->flags & EF_SPECIAL_TRANS))
-		glDisable (GL_BLEND);
+		glfunc.glDisable_fp (GL_BLEND);
 
 	if ((currententity->model->flags & EF_TRANSPARENT))
-		glDisable (GL_BLEND);
+		glfunc.glDisable_fp (GL_BLEND);
 
 	if ((currententity->model->flags & EF_HOLEY))
-		glDisable (GL_BLEND);
+		glfunc.glDisable_fp (GL_BLEND);
 
 	if ((currententity->model->flags & EF_SPECIAL_TRANS))
 	{
-		glEnable( GL_CULL_FACE );
+		glfunc.glEnable_fp( GL_CULL_FACE );
 	}
 
 
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
-	glShadeModel (GL_FLAT);
+	glfunc.glShadeModel_fp (GL_FLAT);
 	if (gl_affinemodels.value)
-		glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+		glfunc.glHint_fp (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-	glPopMatrix ();
+	glfunc.glPopMatrix_fp ();
 
 	if (r_shadows.value)
 	{
-		glPushMatrix ();
+		glfunc.glPushMatrix_fp ();
 		R_RotateForEntity2 (e);
-		glDisable (GL_TEXTURE_2D);
-		glEnable (GL_BLEND);
-		glColor4f (0,0,0,0.5);
+		glfunc.glDisable_fp (GL_TEXTURE_2D);
+		glfunc.glEnable_fp (GL_BLEND);
+		glfunc.glColor4f_fp (0,0,0,0.5);
 		GL_DrawAliasShadow (paliashdr, lastposenum);
-		glEnable (GL_TEXTURE_2D);
-		glDisable (GL_BLEND);
-		glColor4f (1,1,1,1);
-		glPopMatrix ();
+		glfunc.glEnable_fp (GL_TEXTURE_2D);
+		glfunc.glDisable_fp (GL_BLEND);
+		glfunc.glColor4f_fp (1,1,1,1);
+		glfunc.glPopMatrix_fp ();
 	}
 
 }
@@ -1053,7 +1053,7 @@ void R_DrawTransEntitiesOnList ( qboolean inwater)
 	qsort((void *) theents, numents, sizeof(sortedent_t), transCompare);
 	// Add in BETTER sorting here
 
-	glDepthMask(0);
+	glfunc.glDepthMask_fp(0);
 	for (i=0;i<numents;i++)
 	{
 		currententity = theents[i].ent;
@@ -1064,7 +1064,7 @@ void R_DrawTransEntitiesOnList ( qboolean inwater)
 			if (!depthMaskWrite)
 			{
 				depthMaskWrite = 1;
-				glDepthMask(1);
+				glfunc.glDepthMask_fp(1);
 			}
 			R_DrawAliasModel (currententity);
 			break;
@@ -1072,7 +1072,7 @@ void R_DrawTransEntitiesOnList ( qboolean inwater)
 			if (!depthMaskWrite)
 			{
 				depthMaskWrite = 1;
-				glDepthMask(1);
+				glfunc.glDepthMask_fp(1);
 			}
 			R_DrawBrushModel (currententity,true);
 			break;
@@ -1080,14 +1080,14 @@ void R_DrawTransEntitiesOnList ( qboolean inwater)
 			if (depthMaskWrite)
 			{
 				depthMaskWrite = 0;
-				glDepthMask(0);
+				glfunc.glDepthMask_fp(0);
 			}
 			R_DrawSpriteModel (currententity);
 			break;
 		}
 	}
 	if (!depthMaskWrite) 
-		glDepthMask(1);
+		glfunc.glDepthMask_fp(1);
 }
 
 /*
@@ -1154,11 +1154,11 @@ void R_DrawViewModel (void)
 	diffuse[0] = diffuse[1] = diffuse[2] = diffuse[3] = (float)shadelight / 128;
 
 	// hack the depth range to prevent view model from poking into walls
-	glDepthRange (gldepthmin, gldepthmin + 0.3*(gldepthmax-gldepthmin));
+	glfunc.glDepthRange_fp (gldepthmin, gldepthmin + 0.3*(gldepthmax-gldepthmin));
 	AlwaysDrawModel = true;
 	R_DrawAliasModel (currententity);
 	AlwaysDrawModel = false;
-	glDepthRange (gldepthmin, gldepthmax);
+	glfunc.glDepthRange_fp (gldepthmin, gldepthmax);
 }
 
 
@@ -1176,29 +1176,29 @@ void R_PolyBlend (void)
 
 //Con_Printf("R_PolyBlend(): %4.2f %4.2f %4.2f %4.2f\n",v_blend[0], v_blend[1],	v_blend[2],	v_blend[3]);
 
-	glDisable (GL_ALPHA_TEST);
-	glEnable (GL_BLEND);
-	glDisable (GL_DEPTH_TEST);
-	glDisable (GL_TEXTURE_2D);
+	glfunc.glDisable_fp (GL_ALPHA_TEST);
+	glfunc.glEnable_fp (GL_BLEND);
+	glfunc.glDisable_fp (GL_DEPTH_TEST);
+	glfunc.glDisable_fp (GL_TEXTURE_2D);
 
-    glLoadIdentity ();
+	glfunc.glLoadIdentity_fp ();
 
-    glRotatef (-90,  1, 0, 0);	    // put Z going up
-    glRotatef (90,  0, 0, 1);	    // put Z going up
+	glfunc.glRotatef_fp (-90,  1, 0, 0);	// put Z going up
+	glfunc.glRotatef_fp (90,  0, 0, 1);	// put Z going up
 
-	glColor4fv (v_blend);
+	glfunc.glColor4fv_fp (v_blend);
 
-	glBegin (GL_QUADS);
+	glfunc.glBegin_fp (GL_QUADS);
 
-	glVertex3f (10, 10, 10);
-	glVertex3f (10, -10, 10);
-	glVertex3f (10, -10, -10);
-	glVertex3f (10, 10, -10);
-	glEnd ();
+	glfunc.glVertex3f_fp (10, 10, 10);
+	glfunc.glVertex3f_fp (10, -10, 10);
+	glfunc.glVertex3f_fp (10, -10, -10);
+	glfunc.glVertex3f_fp (10, 10, -10);
+	glfunc.glEnd_fp ();
 
-	glDisable (GL_BLEND);
-	glEnable (GL_TEXTURE_2D);
-	glEnable (GL_ALPHA_TEST);
+	glfunc.glDisable_fp (GL_BLEND);
+	glfunc.glEnable_fp (GL_TEXTURE_2D);
+	glfunc.glEnable_fp (GL_ALPHA_TEST);
 }
 
 
@@ -1289,7 +1289,7 @@ void MYgluPerspective( GLdouble fovy, GLdouble aspect,
    xmin = ymin * aspect;
    xmax = ymax * aspect;
 
-   glFrustum( xmin, xmax, ymin, ymax, zNear, zFar );
+   glfunc.glFrustum_fp( xmin, xmax, ymin, ymax, zNear, zFar );
 }
 
 
@@ -1356,8 +1356,8 @@ void R_SetupGL (void)
 	//
 	// set up viewpoint
 	//
-	glMatrixMode(GL_PROJECTION);
-    glLoadIdentity ();
+	glfunc.glMatrixMode_fp(GL_PROJECTION);
+	glfunc.glLoadIdentity_fp ();
 	x = r_refdef.vrect.x * glwidth/vid.width;
 	x2 = (r_refdef.vrect.x + r_refdef.vrect.width) * glwidth/vid.width;
 	y = (vid.height-r_refdef.vrect.y) * glheight/vid.height;
@@ -1382,8 +1382,8 @@ void R_SetupGL (void)
 		w = h = 256;
 	}
 
-	glViewport (glx + x, gly + y2, w, h);
-    screenaspect = (float)r_refdef.vrect.width/r_refdef.vrect.height;
+	glfunc.glViewport_fp (glx + x, gly + y2, w, h);
+	screenaspect = (float)r_refdef.vrect.width/r_refdef.vrect.height;
 //	yfov = 2*atan((float)r_refdef.vrect.height/r_refdef.vrect.width)*180/M_PI;
 //	yfov = (2.0 * tan (scr_fov.value/360*M_PI)) / screenaspect;
 	yfov = 2*atan((float)r_refdef.vrect.height/r_refdef.vrect.width)*(scr_fov.value*2)/M_PI;
@@ -1392,44 +1392,44 @@ void R_SetupGL (void)
 	if (mirror)
 	{
 		if (mirror_plane->normal[2])
-			glScalef (1, -1, 1);
+			glfunc.glScalef_fp (1, -1, 1);
 		else
-			glScalef (-1, 1, 1);
-		glCullFace(GL_BACK);
+			glfunc.glScalef_fp (-1, 1, 1);
+		glfunc.glCullFace_fp(GL_BACK);
 	}
 	else
-		glCullFace(GL_FRONT);
+		glfunc.glCullFace_fp(GL_FRONT);
 
-	glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity ();
+	glfunc.glMatrixMode_fp(GL_MODELVIEW);
+	glfunc.glLoadIdentity_fp ();
 
-    glRotatef (-90,  1, 0, 0);	    // put Z going up
-    glRotatef (90,  0, 0, 1);	    // put Z going up
-    glRotatef (-r_refdef.viewangles[2],  1, 0, 0);
-    glRotatef (-r_refdef.viewangles[0],  0, 1, 0);
-    glRotatef (-r_refdef.viewangles[1],  0, 0, 1);
-    glTranslatef (-r_refdef.vieworg[0],  -r_refdef.vieworg[1],  -r_refdef.vieworg[2]);
+	glfunc.glRotatef_fp (-90,  1, 0, 0);	// put Z going up
+	glfunc.glRotatef_fp (90,  0, 0, 1);	// put Z going up
+	glfunc.glRotatef_fp (-r_refdef.viewangles[2],  1, 0, 0);
+	glfunc.glRotatef_fp (-r_refdef.viewangles[0],  0, 1, 0);
+	glfunc.glRotatef_fp (-r_refdef.viewangles[1],  0, 0, 1);
+	glfunc.glTranslatef_fp (-r_refdef.vieworg[0],  -r_refdef.vieworg[1],  -r_refdef.vieworg[2]);
 
-	glGetFloatv (GL_MODELVIEW_MATRIX, r_world_matrix);
+	glfunc.glGetFloatv_fp (GL_MODELVIEW_MATRIX, r_world_matrix);
 
 	//
 	// set drawing parms
 	//
 	if (gl_cull.value)
-		glEnable(GL_CULL_FACE);
+		glfunc.glEnable_fp(GL_CULL_FACE);
 	else
-		glDisable(GL_CULL_FACE);
+		glfunc.glDisable_fp(GL_CULL_FACE);
 
-	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
-	glEnable(GL_DEPTH_TEST);
+	glfunc.glDisable_fp(GL_BLEND);
+	glfunc.glDisable_fp(GL_ALPHA_TEST);
+	glfunc.glEnable_fp(GL_DEPTH_TEST);
 
-	glGetFloatv(GL_MODELVIEW_MATRIX, (float *)ModelviewMatrix.M);
+	glfunc.glGetFloatv_fp(GL_MODELVIEW_MATRIX, (float *)ModelviewMatrix.M);
 //	ModelviewMatrix.M[0][3] = 0;
 //	ModelviewMatrix.M[1][3] = 0;
 //	ModelviewMatrix.M[2][3] = 0;
 //	ModelviewMatrix.M[3][3] = 0;
-	glGetFloatv(GL_PROJECTION_MATRIX, (float *)ProjectionMatrix.M);
+	glfunc.glGetFloatv_fp(GL_PROJECTION_MATRIX, (float *)ProjectionMatrix.M);
 //	MultiplyMatrix(&FinalMatrix, &ModelviewMatrix, &ProjectionMatrix);
 	MultiplyMatrix(&FinalMatrix, &ProjectionMatrix, &ModelviewMatrix);
 }
@@ -1476,46 +1476,46 @@ void R_Clear (void)
 	if (r_mirroralpha.value != 1.0)
 	{
 		if (gl_clear.value)
-			glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glfunc.glClear_fp (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		else
-			glClear (GL_DEPTH_BUFFER_BIT);
+			glfunc.glClear_fp (GL_DEPTH_BUFFER_BIT);
 		gldepthmin = 0;
 		gldepthmax = 0.5;
-		glDepthFunc (GL_LEQUAL);
+		glfunc.glDepthFunc_fp (GL_LEQUAL);
 	}
 	else if (gl_ztrick.value)
 	{
 		static int trickframe;
 
 		if (gl_clear.value)
-			glClear (GL_COLOR_BUFFER_BIT);
+			glfunc.glClear_fp (GL_COLOR_BUFFER_BIT);
 
 		trickframe++;
 		if (trickframe & 1)
 		{
 			gldepthmin = 0;
 			gldepthmax = 0.49999;
-			glDepthFunc (GL_LEQUAL);
+			glfunc.glDepthFunc_fp (GL_LEQUAL);
 		}
 		else
 		{
 			gldepthmin = 1;
 			gldepthmax = 0.5;
-			glDepthFunc (GL_GEQUAL);
+			glfunc.glDepthFunc_fp (GL_GEQUAL);
 		}
 	}
 	else
 	{
 		if (gl_clear.value)
-			glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glfunc.glClear_fp (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		else
-			glClear (GL_DEPTH_BUFFER_BIT);
+			glfunc.glClear_fp (GL_DEPTH_BUFFER_BIT);
 		gldepthmin = 0;
 		gldepthmax = 1;
-		glDepthFunc (GL_LEQUAL);
+		glfunc.glDepthFunc_fp (GL_LEQUAL);
 	}
 
-	glDepthRange (gldepthmin, gldepthmax);
+	glfunc.glDepthRange_fp (gldepthmin, gldepthmax);
 }
 
 #if 0 //!!! FIXME, Zoid, mirror is disabled for now
@@ -1554,10 +1554,10 @@ void R_Mirror (void)
 
 	gldepthmin = 0.5;
 	gldepthmax = 1;
-	glDepthRange (gldepthmin, gldepthmax);
-	glDepthFunc (GL_LEQUAL);
+	glfunc.glDepthRange_fp (gldepthmin, gldepthmax);
+	glfunc.glDepthFunc_fp (GL_LEQUAL);
 
-	glDepthMask(0);
+	glfunc.glDepthMask_fp(0);
 
 	R_DrawParticles ();
 // THIS IS THE F*S*D(KCING MIRROR ROUTINE!  Go down!!!
@@ -1570,28 +1570,28 @@ void R_Mirror (void)
 
 	gldepthmin = 0;
 	gldepthmax = 0.5;
-	glDepthRange (gldepthmin, gldepthmax);
-	glDepthFunc (GL_LEQUAL);
+	glfunc.glDepthRange_fp (gldepthmin, gldepthmax);
+	glfunc.glDepthFunc_fp (GL_LEQUAL);
 
 	// blend on top
-	glEnable (GL_BLEND);
-	glMatrixMode(GL_PROJECTION);
+	glfunc.glEnable_fp (GL_BLEND);
+	glfunc.glMatrixMode_fp(GL_PROJECTION);
 	if (mirror_plane->normal[2])
-		glScalef (1,-1,1);
+		glfunc.glScalef_fp (1,-1,1);
 	else
-		glScalef (-1,1,1);
-	glCullFace(GL_FRONT);
-	glMatrixMode(GL_MODELVIEW);
+		glfunc.glScalef_fp (-1,1,1);
+	glfunc.glCullFace_fp(GL_FRONT);
+	glfunc.glMatrixMode_fp(GL_MODELVIEW);
 
-	glLoadMatrixf (r_base_world_matrix);
+	glfunc.glLoadMatrixf_fp (r_base_world_matrix);
 
-	glColor4f (1,1,1,r_mirroralpha.value);
+	glfunc.glColor4f_fp (1,1,1,r_mirroralpha.value);
 	s = cl.worldmodel->textures[mirrortexturenum]->texturechain;
 	for ( ; s ; s=s->texturechain)
 		R_RenderBrushPoly (s, true);
 	cl.worldmodel->textures[mirrortexturenum]->texturechain = NULL;
-	glDisable (GL_BLEND);
-	glColor4f (1,1,1,1);
+	glfunc.glDisable_fp (GL_BLEND);
+	glfunc.glColor4f_fp (1,1,1,1);
 }
 #endif
 
@@ -1637,7 +1637,7 @@ void R_RenderView (void)
 
 	if (r_speeds.value)
 	{
-		glFinish ();
+		glfunc.glFinish_fp ();
 		r_time1 = Sys_DoubleTime ();
 		c_brush_polys = 0;
 		c_alias_polys = 0;
@@ -1645,14 +1645,14 @@ void R_RenderView (void)
 
 	mirror = false;
 
-//	glFinish ();
+//	glfunc.glFinish_fp ();
 
 	R_Clear ();
 
 	// render normal view
 	R_RenderScene ();
 
-	glDepthMask(0);
+	glfunc.glDepthMask_fp(0);
 
 	R_DrawParticles ();
 

@@ -22,6 +22,7 @@
 #include "resource.h"
 
 #include "SDL.h"
+#include <dlfcn.h>
 
 #define MAX_MODE_LIST	30
 #define VID_ROW_SIZE	3
@@ -35,6 +36,8 @@
 #define MODE_WINDOWED			0
 #define NO_MODE					(MODE_WINDOWED - 1)
 #define MODE_FULLSCREEN_DEFAULT	(MODE_WINDOWED + 3)
+
+glfunc_t glfunc;
 
 SDL_Surface *screen;
 
@@ -74,6 +77,7 @@ const char *gl_vendor;
 const char *gl_renderer;
 const char *gl_version;
 const char *gl_extensions;
+char *gl_library;
 
 qboolean		DDActive;
 qboolean		scr_skipupdate;
@@ -137,6 +141,7 @@ void VID_UpdateWindowStatus (void);
 void GL_Init (void);
 void VID_SetGamma(float value);
 void VID_SetGamma_f(void);
+void GL_Init_Functions(void);
 
 //PROC glArrayElementEXT;
 //PROC glColorPointerEXT;
@@ -251,8 +256,14 @@ qboolean VID_SetWindowedMode (int modenum)
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		return false;
+
+	if (SDL_GL_LoadLibrary(gl_library) < 0) {
+		Sys_Error("VID: Couldn't load SDL: %s", SDL_GetError());
+	}
+
 	if (!(screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags)))
 		return false;
+	//	exit(1);
 
 	SDL_WM_SetCaption ("GLHexenWorld", "GLHexenWorld");
 
@@ -398,7 +409,7 @@ void CheckTextureExtensions (void)
 
 	texture_ext = false;
 	/* check for texture extension */
-	tmp = (unsigned char *)glGetString(GL_EXTENSIONS);
+	tmp = (unsigned char *)glfunc.glGetString_fp(GL_EXTENSIONS);
 	while (*tmp)
 	{
 		if (strncmp((const char*)tmp, TEXTURE_EXT_STRING, strlen(TEXTURE_EXT_STRING)) == 0)
@@ -430,8 +441,7 @@ void CheckTextureExtensions (void)
 	if ((bindTexFunc = (BINDTEXFUNCPTR)
 		wglGetProcAddress((LPCSTR) "glBindTextureEXT")) == NULL)
 #else
-	if ((bindTexFunc =
-				SDL_GL_GetProcAddress("glBindTextureEXT")) == NULL)
+	if ((bindTexFunc = SDL_GL_GetProcAddress("glBindTextureEXT")) == NULL)
 #endif
 
 	{
@@ -445,16 +455,15 @@ void CheckArrayExtensions (void)
 	char		*tmp;
 
 	/* check for texture extension */
-	tmp = (unsigned char *)glGetString(GL_EXTENSIONS);
+	tmp = (unsigned char *)glfunc.glGetString_fp(GL_EXTENSIONS);
 	while (*tmp)
 	{
 		if (strncmp((const char*)tmp, "GL_EXT_vertex_array", strlen("GL_EXT_vertex_array")) == 0)
 		{
-			if (
-((SDL_GL_GetProcAddress("glArrayElementEXT")) == NULL) ||
-((SDL_GL_GetProcAddress("glColorPointerEXT")) == NULL) ||
-((SDL_GL_GetProcAddress("glTexCoordPointerEXT")) == NULL) ||
-((SDL_GL_GetProcAddress("glVertexPointerEXT")) == NULL) )
+		   if (	((SDL_GL_GetProcAddress("glArrayElementEXT")) == NULL) ||
+			((SDL_GL_GetProcAddress("glColorPointerEXT")) == NULL) ||
+			((SDL_GL_GetProcAddress("glTexCoordPointerEXT")) == NULL) ||
+			((SDL_GL_GetProcAddress("glVertexPointerEXT")) == NULL) )
 			{
 				Sys_Error ("GetProcAddress for vertex extension failed");
 				return;
@@ -466,9 +475,6 @@ void CheckArrayExtensions (void)
 
 	Sys_Error ("Vertex array extension not present");
 }
-
-extern HW_glActiveTextureARB hwglActiveTextureARB;
-extern HW_glMultiTexCoord2fARB hwglMultiTexCoord2fARB;
 
 //int		texture_mode = GL_NEAREST;
 //int		texture_mode = GL_NEAREST_MIPMAP_NEAREST;
@@ -490,14 +496,22 @@ void CheckMultiTextureExtensions(void)
 	if (strstr(gl_extensions, "GL_ARB_multitexture ") && !COM_CheckParm("-nomtex"))
 	{
 		Con_Printf ("Multitexture extensions found.\n");
-		hwglActiveTextureARB = (HW_glActiveTextureARB) SDL_GL_GetProcAddress("glActiveTextureARB");
-		hwglMultiTexCoord2fARB = (HW_glMultiTexCoord2fARB) SDL_GL_GetProcAddress ("glMultiTexCoord2fARB");
-		
-		glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB,&texture_units);
 
-		if (texture_units < 2)
+		glfunc.glActiveTextureARB_fp = (glActiveTextureARB_f) SDL_GL_GetProcAddress("glActiveTextureARB");
+		glfunc.glMultiTexCoord2fARB_fp = (glMultiTexCoord2fARB_f) SDL_GL_GetProcAddress ("glMultiTexCoord2fARB");
+		glfunc.glGetIntegerv_fp(GL_MAX_TEXTURE_UNITS_ARB,&texture_units);
+
+		if ((glfunc.glActiveTextureARB_fp == 0)   ||
+		    (glfunc.glMultiTexCoord2fARB_fp == 0) ||
+		    (texture_units < 2)) {
+			Con_Printf ("Multitexture extensions disabled.\n");
+			glfunc.glActiveTextureARB_fp = NULL;
+			glfunc.glMultiTexCoord2fARB_fp = NULL;
+			gl_mtexable = false;
 			return;
+		}
 
+		Con_Printf ("Multitexture extensions enabled.\n");
 		gl_mtexable = true;
 	}
 }
@@ -509,14 +523,15 @@ GL_Init
 */
 void GL_Init (void)
 {
-	gl_vendor = glGetString (GL_VENDOR);
+	GL_Init_Functions();
+	gl_vendor = glfunc.glGetString_fp (GL_VENDOR);
 	Con_Printf ("GL_VENDOR: %s\n", gl_vendor);
-	gl_renderer = glGetString (GL_RENDERER);
+	gl_renderer = glfunc.glGetString_fp (GL_RENDERER);
 	Con_Printf ("GL_RENDERER: %s\n", gl_renderer);
 
-	gl_version = glGetString (GL_VERSION);
+	gl_version = glfunc.glGetString_fp (GL_VERSION);
 	Con_Printf ("GL_VERSION: %s\n", gl_version);
-	gl_extensions = glGetString (GL_EXTENSIONS);
+	gl_extensions = glfunc.glGetString_fp (GL_EXTENSIONS);
 	Con_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
 	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",4))
@@ -541,35 +556,141 @@ void GL_Init (void)
 	CheckTextureExtensions ();
 	CheckMultiTextureExtensions ();
 
-	glClearColor (1,0,0,0);
-	glCullFace(GL_FRONT);
-	glEnable(GL_TEXTURE_2D);
+	glfunc.glClearColor_fp (1,0,0,0);
+	glfunc.glCullFace_fp(GL_FRONT);
+	glfunc.glEnable_fp(GL_TEXTURE_2D);
 
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, 0.666);
+	glfunc.glEnable_fp(GL_ALPHA_TEST);
+	glfunc.glAlphaFunc_fp(GL_GREATER, 0.666);
 
-	glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-	glShadeModel (GL_FLAT);
+	glfunc.glPolygonMode_fp (GL_FRONT_AND_BACK, GL_FILL);
+	glfunc.glShadeModel_fp (GL_FLAT);
 
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-//	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+//	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
 #if 0
 	CheckArrayExtensions ();
 
-	glEnable (GL_VERTEX_ARRAY_EXT);
-	glEnable (GL_TEXTURE_COORD_ARRAY_EXT);
+	glfunc.glEnable_fp (GL_VERTEX_ARRAY_EXT);
+	glfunc.glEnable_fp (GL_TEXTURE_COORD_ARRAY_EXT);
 	glVertexPointerEXT (3, GL_FLOAT, 0, 0, &glv.x);
 	glTexCoordPointerEXT (2, GL_FLOAT, 0, 0, &glv.s);
 	glColorPointerEXT (3, GL_FLOAT, 0, 0, &glv.r);
 #endif
+}
+
+void GL_Init_Functions(void)
+{
+  glfunc.glBegin_fp = (glBegin_f) SDL_GL_GetProcAddress("glBegin");
+  if (glfunc.glBegin_fp == 0) {Sys_Error("glBegin not found in GL library");}
+  glfunc.glEnd_fp = (glEnd_f) SDL_GL_GetProcAddress("glEnd");
+  if (glfunc.glEnd_fp == 0) {Sys_Error("glEnd not found in GL library");}
+  glfunc.glEnable_fp = (glEnable_f) SDL_GL_GetProcAddress("glEnable");
+  if (glfunc.glEnable_fp == 0) {Sys_Error("glEnable not found in GL library");}
+  glfunc.glDisable_fp = (glDisable_f) SDL_GL_GetProcAddress("glDisable");
+  if (glfunc.glDisable_fp == 0) {Sys_Error("glDisable not found in GL library");}
+  glfunc.glFinish_fp = (glFinish_f) SDL_GL_GetProcAddress("glFinish");
+  if (glfunc.glFinish_fp == 0) {Sys_Error("glFinish not found in GL library");}
+  glfunc.glClear_fp = (glClear_f) SDL_GL_GetProcAddress("glClear");
+  if (glfunc.glClear_fp == 0) {Sys_Error("glClear not found in GL library");}
+
+  glfunc.glOrtho_fp = (glOrtho_f) SDL_GL_GetProcAddress("glOrtho");
+  if (glfunc.glOrtho_fp == 0) {Sys_Error("glOrtho not found in GL library");}
+  glfunc.glFrustum_fp = (glFrustum_f) SDL_GL_GetProcAddress("glFrustum");
+  if (glfunc.glFrustum_fp == 0) {Sys_Error("glFrustum not found in GL library");}
+  glfunc.glViewport_fp = (glViewport_f) SDL_GL_GetProcAddress("glViewport");
+  if (glfunc.glViewport_fp == 0) {Sys_Error("glViewport not found in GL library");}
+  glfunc.glPushMatrix_fp = (glPushMatrix_f) SDL_GL_GetProcAddress("glPushMatrix");
+  if (glfunc.glPushMatrix_fp == 0) {Sys_Error("glPushMatrix not found in GL library");}
+  glfunc.glPopMatrix_fp = (glPopMatrix_f) SDL_GL_GetProcAddress("glPopMatrix");
+  if (glfunc.glPopMatrix_fp == 0) {Sys_Error("glPopMatrix not found in GL library");}
+  glfunc.glLoadIdentity_fp = (glLoadIdentity_f) SDL_GL_GetProcAddress("glLoadIdentity");
+  if (glfunc.glLoadIdentity_fp == 0) {Sys_Error("glLoadIdentity not found in GL library");}
+  glfunc.glMatrixMode_fp = (glMatrixMode_f) SDL_GL_GetProcAddress("glMatrixMode");
+  if (glfunc.glMatrixMode_fp == 0) {Sys_Error("glMatrixMode not found in GL library");}
+  glfunc.glLoadMatrixf_fp = (glLoadMatrixf_f) SDL_GL_GetProcAddress("glLoadMatrixf");
+  if (glfunc.glLoadMatrixf_fp == 0) {Sys_Error("glLoadMatrixf not found in GL library");}
+
+  glfunc.glVertex2f_fp = (glVertex2f_f) SDL_GL_GetProcAddress("glVertex2f");
+  if (glfunc.glVertex2f_fp == 0) {Sys_Error("glVertex2f not found in GL library");}
+  glfunc.glVertex3f_fp = (glVertex3f_f) SDL_GL_GetProcAddress("glVertex3f");
+  if (glfunc.glVertex3f_fp == 0) {Sys_Error("glVertex3f not found in GL library");}
+  glfunc.glVertex3fv_fp = (glVertex3fv_f) SDL_GL_GetProcAddress("glVertex3fv");
+  if (glfunc.glVertex3fv_fp == 0) {Sys_Error("glVertex3fv not found in GL library");}
+  glfunc.glTexCoord2f_fp = (glTexCoord2f_f) SDL_GL_GetProcAddress("glTexCoord2f");
+  if (glfunc.glTexCoord2f_fp == 0) {Sys_Error("glTexCoord2f not found in GL library");}
+  glfunc.glTexCoord3f_fp = (glTexCoord3f_f) SDL_GL_GetProcAddress("glTexCoord3f");
+  if (glfunc.glTexCoord3f_fp == 0) {Sys_Error("glTexCoord3f not found in GL library");}
+  glfunc.glColor4f_fp = (glColor4f_f) SDL_GL_GetProcAddress("glColor4f");
+  if (glfunc.glColor4f_fp == 0) {Sys_Error("glColor4f not found in GL library");}
+  glfunc.glColor4fv_fp = (glColor4fv_f) SDL_GL_GetProcAddress("glColor4fv");
+  if (glfunc.glColor4fv_fp == 0) {Sys_Error("glColor4fv not found in GL library");}
+  glfunc.glColor4ubv_fp = (glColor4ubv_f) SDL_GL_GetProcAddress("glColor4ubv");
+  if (glfunc.glFrustum_fp == 0) {Sys_Error("glColor4ubv not found in GL library");}
+  glfunc.glColor3f_fp = (glColor3f_f) SDL_GL_GetProcAddress("glColor3f");
+  if (glfunc.glColor3f_fp == 0) {Sys_Error("glColor3f not found in GL library");}
+  glfunc.glColor3ubv_fp = (glColor3ubv_f) SDL_GL_GetProcAddress("glColor3ubv");
+  if (glfunc.glColor3ubv_fp == 0) {Sys_Error("glColor3ubv not found in GL library");}
+  glfunc.glClearColor_fp = (glClearColor_f) SDL_GL_GetProcAddress("glClearColor");
+  if (glfunc.glClearColor_fp == 0) {Sys_Error("glClearColor not found in GL library");}
+
+  glfunc.glRotatef_fp = (glRotatef_f) SDL_GL_GetProcAddress("glRotatef");
+  if (glfunc.glRotatef_fp == 0) {Sys_Error("glRotatef not found in GL library");}
+  glfunc.glTranslatef_fp = (glTranslatef_f) SDL_GL_GetProcAddress("glTranslatef");
+  if (glfunc.glTranslatef_fp == 0) {Sys_Error("glTranslatef not found in GL library");}
+
+  glfunc.glBindTexture_fp = (glBindTexture_f) SDL_GL_GetProcAddress("glBindTexture");
+  if (glfunc.glBindTexture_fp == 0) {Sys_Error("glBindTexture not found in GL library");}
+  glfunc.glTexParameterf_fp = (glTexParameterf_f) SDL_GL_GetProcAddress("glTexParameterf");
+  if (glfunc.glTexParameterf_fp == 0) {Sys_Error("glTexParameterf not found in GL library");}
+  glfunc.glTexEnvf_fp = (glTexEnvf_f) SDL_GL_GetProcAddress("glTexEnvf");
+  if (glfunc.glTexEnvf_fp == 0) {Sys_Error("glTexEnvf not found in GL library");}
+  glfunc.glScalef_fp = (glScalef_f) SDL_GL_GetProcAddress("glScalef");
+  if (glfunc.glScalef_fp == 0) {Sys_Error("glScalef not found in GL library");}
+  glfunc.glTexImage2D_fp = (glTexImage2D_f) SDL_GL_GetProcAddress("glTexImage2D");
+  if (glfunc.glTexImage2D_fp == 0) {Sys_Error("glTexImage2D not found in GL library");}
+
+  glfunc.glAlphaFunc_fp = (glAlphaFunc_f) SDL_GL_GetProcAddress("glAlphaFunc");
+  if (glfunc.glAlphaFunc_fp == 0) {Sys_Error("glAlphaFunc not found in GL library");}
+  glfunc.glBlendFunc_fp = (glBlendFunc_f) SDL_GL_GetProcAddress("glBlendFunc");
+  if (glfunc.glBlendFunc_fp == 0) {Sys_Error("glBlendFunc not found in GL library");}
+  glfunc.glShadeModel_fp = (glShadeModel_f) SDL_GL_GetProcAddress("glShadeModel");
+  if (glfunc.glShadeModel_fp == 0) {Sys_Error("glShadeModel not found in GL library");}
+  glfunc.glPolygonMode_fp = (glPolygonMode_f) SDL_GL_GetProcAddress("glPolygonMode");
+  if (glfunc.glPolygonMode_fp == 0) {Sys_Error("glPolygonMode not found in GL library");}
+  glfunc.glDepthMask_fp = (glDepthMask_f) SDL_GL_GetProcAddress("glDepthMask");
+  if (glfunc.glDepthMask_fp == 0) {Sys_Error("glDepthMask not found in GL library");}
+  glfunc.glDepthRange_fp = (glDepthRange_f) SDL_GL_GetProcAddress("glDepthRange");
+  if (glfunc.glDepthRange_fp == 0) {Sys_Error("glDepthRange not found in GL library");}
+  glfunc.glDepthFunc_fp = (glDepthFunc_f) SDL_GL_GetProcAddress("glDepthFunc");
+  if (glfunc.glDepthFunc_fp == 0) {Sys_Error("glDepthFunc not found in GL library");}
+
+  glfunc.glDrawBuffer_fp = (glDrawBuffer_f) SDL_GL_GetProcAddress("glDrawBuffer");
+  if (glfunc.glDrawBuffer_fp == 0) {Sys_Error("glDrawBuffer not found in GL library");}
+  glfunc.glReadBuffer_fp = (glDrawBuffer_f) SDL_GL_GetProcAddress("glReadBuffer");
+  if (glfunc.glReadBuffer_fp == 0) {Sys_Error("glReadBuffer not found in GL library");}
+  glfunc.glReadPixels_fp = (glReadPixels_f) SDL_GL_GetProcAddress("glReadPixels");
+  if (glfunc.glReadPixels_fp == 0) {Sys_Error("glReadPixels not found in GL library");}
+  glfunc.glHint_fp = (glHint_f) SDL_GL_GetProcAddress("glHint");
+  if (glfunc.glHint_fp == 0) {Sys_Error("glHint not found in GL library");}
+  glfunc.glCullFace_fp = (glCullFace_f) SDL_GL_GetProcAddress("glCullFace");
+  if (glfunc.glCullFace_fp == 0) {Sys_Error("glCullFace not found in GL library");}
+
+  glfunc.glGetIntegerv_fp = (glGetIntegerv_f) SDL_GL_GetProcAddress("glGetIntegerv");
+  if (glfunc.glGetIntegerv_fp == 0) {Sys_Error("glGetIntegerv not found in GL library");}
+
+  glfunc.glGetString_fp = (glGetString_f) SDL_GL_GetProcAddress("glGetString");
+  if (glfunc.glGetString_fp == 0) {Sys_Error("glGetString not found in GL library");}
+  glfunc.glGetFloatv_fp = (glGetFloatv_f) SDL_GL_GetProcAddress("glGetFloatv");
+  if (glfunc.glGetFloatv_fp == 0) {Sys_Error("glGetFloatv not found in GL library");}
 }
 
 /*
@@ -637,10 +758,10 @@ void GL_BeginRendering (int *x, int *y, int *width, int *height)
 	*height = WRHeight;
 #endif
 
-//    if (!wglMakeCurrent( maindc, baseRC ))
+//	if (!wglMakeCurrent( maindc, baseRC ))
 //		Sys_Error ("wglMakeCurrent failed");
 
-//	glViewport (*x, *y, *width, *height);
+//	glfunc.glViewport_fp (*x, *y, *width, *height);
 }
 
 
@@ -1194,19 +1315,23 @@ void VID_Init8bitPalette()
 #else
 	MyglColorTableEXT = (void *)SDL_GL_GetProcAddress("glColorTableEXT");
 #endif
-    if (MyglColorTableEXT && strstr(gl_extensions, "GL_EXT_shared_texture_palette")) {
+	if (MyglColorTableEXT &&
+	    strstr(gl_extensions, "GL_EXT_shared_texture_palette")) {
+
 		Con_SafePrintf("8-bit GL extensions enabled.\n");
-	    glEnable( GL_SHARED_TEXTURE_PALETTE_EXT );
+		glfunc.glEnable_fp( GL_SHARED_TEXTURE_PALETTE_EXT );
 		oldPalette = (char *) d_8to24table; //d_8to24table3dfx;
 		newPalette = thePalette;
+
 		for (i=0;i<256;i++) {
 			*newPalette++ = *oldPalette++;
 			*newPalette++ = *oldPalette++;
 			*newPalette++ = *oldPalette++;
 			oldPalette++;
 		}
-		MyglColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256, GL_RGB, GL_UNSIGNED_BYTE,
-			(void *) thePalette);
+
+		MyglColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256,
+			GL_RGB, GL_UNSIGNED_BYTE, (void *) thePalette);
 		is8bit = true;
 	}
 }
@@ -1244,6 +1369,16 @@ void	VID_Init (unsigned char *palette)
 	Cmd_AddCommand ("vid_describemode", VID_DescribeMode_f);
 	Cmd_AddCommand ("vid_describemodes", VID_DescribeModes_f);
 	Cmd_AddCommand ("vid_setgamma", VID_SetGamma_f);
+
+	gl_library=NULL;
+	if (COM_CheckParm("--gllibrary")) {
+	  gl_library = com_argv[COM_CheckParm("--gllibrary")+1];
+	  Con_Printf("Using GL library: %s\n",gl_library);
+	}
+	else if (COM_CheckParm("-g")) {
+	  gl_library = com_argv[COM_CheckParm("-g")+1];
+	  Con_Printf("Using GL library: %s\n",gl_library);
+	}
 
         modelist[0].type = MS_WINDOWED;
         modelist[0].width = 640;

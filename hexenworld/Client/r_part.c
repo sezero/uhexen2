@@ -1538,17 +1538,17 @@ void R_RenderParticle(particle_t *p)
 	}
 	else
 	{
-		glColor4ubv ((byte *)&d_8to24TranslucentTable[(int)p->color-256]);
+		glfunc.glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[(int)p->color-256]);
 	}
 
-//		glColor3ubv (at);
-//		glColor3ubv ((byte *)&d_8to24table[(int)p->color]);
-	glTexCoord2f (0,0);
-	glVertex3fv (p->org);
-	glTexCoord2f (1,0);
-	glVertex3f (p->org[0] + up[0]*scale, p->org[1] + up[1]*scale, p->org[2] + up[2]*scale);
-	glTexCoord2f (0,1);
-	glVertex3f (p->org[0] + right[0]*scale, p->org[1] + right[1]*scale, p->org[2] + right[2]*scale);
+//		glfunc.glColor3ubv_fp (at);
+//		glfunc.glColor3ubv_fp ((byte *)&d_8to24table[(int)p->color]);
+	glfunc.glTexCoord2f_fp (0,0);
+	glfunc.glVertex3fv_fp (p->org);
+	glfunc.glTexCoord2f_fp (1,0);
+	glfunc.glVertex3f_fp (p->org[0] + up[0]*scale, p->org[1] + up[1]*scale, p->org[2] + up[2]*scale);
+	glfunc.glTexCoord2f_fp (0,1);
+	glfunc.glVertex3f_fp (p->org[0] + right[0]*scale, p->org[1] + right[1]*scale, p->org[2] + right[2]*scale);
 
 #else
 	if (p->color < 0 || p->color > 511)
@@ -1584,11 +1584,11 @@ void R_DrawParticles (void)
 	alphaTestEnabled = glIsEnabled(GL_ALPHA_TEST);
 	
 	if (alphaTestEnabled)
-		glDisable(GL_ALPHA_TEST);
-	glEnable (GL_BLEND);
-	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	glBegin (GL_TRIANGLES);
+		glfunc.glDisable_fp(GL_ALPHA_TEST);
+	glfunc.glEnable_fp (GL_BLEND);
+	glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glfunc.glBegin_fp (GL_TRIANGLES);
 
 	VectorScale (vup, 1.5, up);
 	VectorScale (vright, 1.5, right);
@@ -1955,11 +1955,11 @@ void R_DrawParticles (void)
 	}
 
 #ifdef GLQUAKE
-	glEnd ();
-	glDisable (GL_BLEND);
+	glfunc.glEnd_fp ();
+	glfunc.glDisable_fp (GL_BLEND);
 	if (alphaTestEnabled)
-		glEnable(GL_ALPHA_TEST);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glfunc.glEnable_fp(GL_ALPHA_TEST);
+	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 #else
 	D_EndParticles ();
 #endif
