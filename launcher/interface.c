@@ -10,8 +10,8 @@
 #ifndef DEMOBUILD
 extern int mp_support;
 extern int with_om;
-unsigned short i;
 #endif
+unsigned short i;
 extern int opengl_support;
 extern int fullscreen;
 extern int resolution;
