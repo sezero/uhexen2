@@ -1,5 +1,9 @@
 ChangeLog:
 
+2005-02-09 (CVS):
+    * killed a bunch of compiler warnings
+    * killed all unused HW menu stuff
+
 2005-02-08 (CVS):
     * video modes clean-up:
       - removed cvar _vid_default_mode_win
