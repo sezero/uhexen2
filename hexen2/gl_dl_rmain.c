@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_rmain.c,v 1.5 2004-12-12 14:40:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_rmain.c,v 1.6 2004-12-12 23:16:44 sezero Exp $
 */
 
 
@@ -90,7 +90,7 @@ cvar_t	gl_keeptjunctions = {"gl_keeptjunctions","1",true};
 cvar_t	gl_reporttjunctions = {"gl_reporttjunctions","0"};
 
 cvar_t gl_glows = {"gl_glows","1",true};
-cvar_t gl_other_glows = {"gl_other_glows","0",false};
+cvar_t gl_other_glows = {"gl_other_glows","0",true};
 cvar_t gl_missile_glows = {"gl_missile_glows","1",true};
 
 extern	cvar_t	gl_ztrick;
@@ -1818,6 +1818,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/12/12 14:40:56  sezero
+ * sync with steven
+ *
  * Revision 1.4  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *
