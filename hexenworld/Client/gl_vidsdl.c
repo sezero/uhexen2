@@ -166,7 +166,7 @@ cvar_t		_vid_wait_override = {"_vid_wait_override", "0", true};
 cvar_t		vid_config_x = {"vid_config_x","800", true};
 cvar_t		vid_config_y = {"vid_config_y","600", true};
 cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1", true};
-cvar_t		_windowed_mouse = {"_windowed_mouse","0", true};
+cvar_t		_windowed_mouse = {"_windowed_mouse","1", true};
 
 int			window_center_x, window_center_y, window_x, window_y, window_width, window_height;
 RECT		window_rect;
