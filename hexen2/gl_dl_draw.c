@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.12 2005-01-04 07:17:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.13 2005-01-08 16:07:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1635,17 +1635,42 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 
 	sprintf (search, "%s%d%d",identifier,width,height);
 
-	// see if the texture is allready present
-	is_TexPresent;
+	// see if the texture is already present
+	if (identifier[0])
+	{
+		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
+		{
+			if (!strcmp (search, glt->identifier))
+			{
+				if (width != glt->width || height != glt->height || mipmap != glt->mipmap) {
+				// Not the same texture - dont die, delete and rebind to new image
+				// TODO - Maybe add the hash check some day
+					Con_Printf ("GL_LoadTexture: reloading tex due to cache mismatch");
+					glfunc.glDeleteTextures_fp (1, &(glt->texnum));
+					glt->width = width;
+					glt->height = height;
+					glt->mipmap = mipmap;
+					GL_Bind (glt->texnum);
+					GL_Upload8 (data, width, height, mipmap, alpha, mode);
+					return glt->texnum;
+				} else {
+				// No need to rebind
+				return gltextures[i].texnum;
+				}
+			}
+		}
+	} else {
+		glt = &gltextures[numgltextures];
+	}
 	numgltextures++;
 
-	strcpy(glt->identifier, search);
+	strcpy (glt->identifier, search);
 	glt->texnum = texture_extension_number;
 	glt->width = width;
 	glt->height = height;
 	glt->mipmap = mipmap;
 
-	GL_Bind(texture_extension_number );
+	GL_Bind (texture_extension_number);
 
 	GL_Upload8 (data, width, height, mipmap, alpha, mode);
 
@@ -1665,17 +1690,42 @@ int GL_LoadTexture32 (char *identifier, int width, int height, unsigned *data, q
 
 	sprintf (search, "%s%d%d",identifier,width,height);
 
-	// see if the texture is allready present
-	is_TexPresent;
+	// see if the texture is already present
+	if (identifier[0])
+	{
+		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
+		{
+			if (!strcmp (search, glt->identifier))
+			{
+				if (width != glt->width || height != glt->height || mipmap != glt->mipmap) {
+				// Not the same texture - dont die, delete and rebind to new image
+				// TODO - Maybe add the hash check some day
+					Con_Printf ("GL_LoadTexture32: reloading tex due to cache mismatch");
+					glfunc.glDeleteTextures_fp (1, &(glt->texnum));
+					glt->width = width;
+					glt->height = height;
+					glt->mipmap = mipmap;
+					GL_Bind (glt->texnum);
+					GL_Upload32 (data, width, height, mipmap, alpha);
+					return glt->texnum;
+				} else {
+				// No need to rebind
+				return gltextures[i].texnum;
+				}
+			}
+		}
+	} else {
+		glt = &gltextures[numgltextures];
+	}
 	numgltextures++;
 
-	strcpy(glt->identifier, search);
+	strcpy (glt->identifier, search);
 	glt->texnum = texture_extension_number;
 	glt->width = width;
 	glt->height = height;
 	glt->mipmap = mipmap;
 
-	GL_Bind(texture_extension_number );
+	GL_Bind (texture_extension_number);
 
 	GL_Upload32 (data, width, height, mipmap, alpha);
 
@@ -1770,6 +1820,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/01/04 07:17:51  sezero
+ * make gcc-2.96 happy
+ *
  * Revision 1.10  2004/12/19 12:47:26  sezero
  * fix the datatype for our new load32
  *

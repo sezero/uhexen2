@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.8 2005-01-01 21:43:47 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.9 2005-01-08 16:07:45 sezero Exp $
  */
 
 // disable data conversion warnings
@@ -21,20 +21,6 @@
 
 void GL_BeginRendering (int *x, int *y, int *width, int *height);
 void GL_EndRendering (void);
-
-#define is_TexPresent { \
-	if (identifier[0]) { \
-		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++) { \
-			if (!strcmp (search, glt->identifier)) { \
-				if (width != glt->width || height != glt->height) \
-					Sys_Error ("GL_LoadTexture: cache mismatch"); \
-				return gltextures[i].texnum; \
-			} \
-		} \
-	} else { \
-		glt = &gltextures[numgltextures]; \
-	} \
-}
 
 // Function prototypes for the Texture Object Extension routines
 #ifdef _WIN32
@@ -372,6 +358,9 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/01/01 21:43:47  sezero
+ * prototypes clean-up
+ *
  * Revision 1.7  2004/12/19 12:47:27  sezero
  * fix the datatype for our new load32
  *

@@ -1896,21 +1896,33 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 	int		i;
 	gltexture_t	*glt;
 
-	// see if the texture is allready present
+	// see if the texture is already present
 	if (identifier[0])
 	{
 		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
 		{
 			if (!strcmp (identifier, glt->identifier))
 			{
-				if (width != glt->width || height != glt->height)
-					Sys_Error ("GL_LoadTexture: cache mismatch");
+				if (width != glt->width || height != glt->height || mipmap != glt->mipmap) {
+				// Not the same texture - dont die, delete and rebind to new image
+				// TODO - Maybe add the hash check some day
+					Con_Printf ("GL_LoadTexture: reloading tex due to cache mismatch");
+					glfunc.glDeleteTextures_fp (1, &(glt->texnum));
+					glt->width = width;
+					glt->height = height;
+					glt->mipmap = mipmap;
+					GL_Bind (glt->texnum);
+					GL_Upload8 (data, width, height, mipmap, alpha, mode);
+					return glt->texnum;
+				} else {
+				// No need to rebind
 				return gltextures[i].texnum;
+				}
 			}
 		}
-	}
-	else
+	} else {
 		glt = &gltextures[numgltextures];
+	}
 	numgltextures++;
 
 	strcpy (glt->identifier, identifier);
@@ -1919,7 +1931,7 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 	glt->height = height;
 	glt->mipmap = mipmap;
 
-	GL_Bind(texture_extension_number );
+	GL_Bind (texture_extension_number);
 
 	GL_Upload8 (data, width, height, mipmap, alpha, mode);
 

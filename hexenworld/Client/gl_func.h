@@ -1,4 +1,5 @@
 typedef void (*glBindTexture_f)(GLenum,GLuint);
+typedef void (*glDeleteTextures_f)(GLsizei n, const GLuint *textures);
 typedef void (*glTexParameterf_f)(GLenum,GLenum,GLfloat);
 typedef void (*glTexEnvf_f)(GLenum,GLenum,GLfloat);
 typedef void (*glScalef_f)(GLfloat,GLfloat,GLfloat);
@@ -94,6 +95,7 @@ typedef struct
   glTranslatef_f glTranslatef_fp;
 
   glBindTexture_f glBindTexture_fp;
+  glDeleteTextures_f glDeleteTextures_fp;
   glTexParameterf_f glTexParameterf_fp;
   glTexEnvf_f glTexEnvf_fp;
   glScalef_f glScalef_fp;
