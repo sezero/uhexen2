@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.4 2005-02-05 16:20:14 sezero Exp $
+	$Id: midi_sdl.c,v 1.5 2005-02-05 16:21:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -186,11 +186,12 @@ void MIDI_Play(char *Name)
 		fclose(f);
 	} else {
 		Sys_Printf("MIDI: File %s needs to be extracted\n",Temp);
-		Data = (byte *)COM_LoadHunkFile2((char *)Temp, (int *)&size);
+		Data = (byte *)COM_LoadHunkFile((char *)Temp);
 		if (!Data) {
 			Con_Printf("musicfile %s not found, not playing\n", Temp);
 			return;
 		}
+		size = com_filesize;
 		COM_WriteFile (midi_file_with_path, (void *)Data, size);
 	}
 	// now with full userdir path included, for SDL_mixer
@@ -285,6 +286,9 @@ void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/02/05 16:20:14  sezero
+ * fix possible path length overflows
+ *
  * Revision 1.3  2005/02/05 16:18:25  sezero
  * added midi volume control (partially from Pa3PyX)
  *

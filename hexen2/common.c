@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.6 2005-02-05 16:17:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.7 2005-02-05 16:21:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1875,11 +1875,6 @@ byte *COM_LoadHunkFile (char *path)
 	return COM_LoadFile (path, 1, NULL);
 }
 
-byte *COM_LoadHunkFile2 (char *path, int *size)
-{
-	return COM_LoadFile (path, 1, size);
-}
-
 byte *COM_LoadTempFile (char *path)
 {
 	return COM_LoadFile (path, 2, NULL);
@@ -2159,6 +2154,12 @@ void COM_InitFilesystem (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/02/05 16:17:29  sezero
+ * - Midi file paths cleanup. these should be leftovers
+ *   from times when gamedir and userdir were the same.
+ * - Killed Com_WriteFileFullPath(), not used anymore.
+ * - Replaced some Con_Printf() with Sys_Printf().
+ *
  * Revision 1.5  2005/01/18 11:29:18  sezero
  * - Fix userdirs to work correctly against the -game arg
  * - Added a "qboolean adduser" arg to COM_AddGameDir()  (useful esp. in

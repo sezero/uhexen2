@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/mstrconv.c,v 1.2 2005-02-05 16:19:31 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/mstrconv.c,v 1.3 2005-02-05 16:21:13 sezero Exp $
  */
 
 #include <windows.h>
@@ -131,11 +131,12 @@ BOOL ConverterInit( LPSTR szInFile )
 
     // Attempt to open the input and output files
     //
-	MidiData = (byte *)COM_LoadHunkFile2((char *)szInFile, (int *)&ifs.cbFileLength);
+	MidiData = (byte *)COM_LoadHunkFile((char *)szInFile);
 	if (!MidiData) 
 	{
 		goto Init_Cleanup;
 	}
+	ifs.cbFileLength = com_filesize;
 	MidiOffset = 0;
 	MidiSize = ifs.cbFileLength;
 
@@ -1189,6 +1190,10 @@ static void ShowTrackError( PINTRACKSTATE ptsTrack, LPSTR lpszErr )
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/02/05 16:19:31  sezero
+ * update the midi stuff (volume ctrl, etc) for win32, too
+ * (taken directly from Pa3PyX and HexenWorld)
+ *
  * Revision 1.1  2005/02/05 16:16:10  sezero
  * separate win32 and linux versions of midi files. too much mess otherwise.
  *
