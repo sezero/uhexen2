@@ -1439,7 +1439,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 				else if (val[3] == ')')
 					p = val + 4;
 			}
-			sprintf(newname, "(%d)%-0.40s", dupc++, p);
+			sprintf(newname, "(%d)%-.40s", dupc++, p);
 			Info_SetValueForKey (cl->userinfo, "name", newname, MAX_INFO_STRING);
 			val = Info_ValueForKey (cl->userinfo, "name");
 		} else
