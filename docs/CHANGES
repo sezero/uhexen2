@@ -1,5 +1,11 @@
 ChangeLog:
 
+2005-01-24 (CVS):
+    * consolidate GL_LoadTexture functions
+    * fix flush_textures decision which used to be always true
+    * add sky alpha
+    * gl filter changes
+
 2005-01-23 (CVS):
     * Hexen2/HW: support for mouse buttons 4 and 5 (patch from
       Julien Langer) Let's see if this behaves for everybody.
