@@ -5,7 +5,10 @@ Changes
 -------
 
 2005-01-26:
-Map cycling for HexenWorld (by Kor Skarn):  This is a server side mod,
+===========
+- Applied map cycling patch for Siege (similar to the one below)
+- Added the hcode for Siege.
+- Applied map cycling for HexenWorld (by Kor Skarn):  Server side mod,
 so only the server needs to have the new hwprogs.dat and strings.txt.
 The new strings.txt can then be edited for the required mapnames.
 

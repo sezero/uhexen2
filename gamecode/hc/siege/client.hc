@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/client.hc,v 1.1 2005-01-26 17:26:10 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/client.hc,v 1.2 2005-01-26 20:17:55 sezero Exp $
  */
 
 // prototypes
@@ -1292,7 +1292,17 @@ void() NextLevel =
 	entity o;
 
 	serverflags (+) SFL_NEW_UNIT;
-	nextmap = "siege";
+
+	if(mapname=="")
+		mapname = world.map;
+	
+	if(mapname=="")
+		mapname = "siege"; //If this happens, something is f*****d up somewhere.
+
+	if(world.next_map=="")
+		nextmap = mapname;
+	else
+		nextmap = world.next_map;
 
 	o = spawn();
 	o.map = nextmap;
@@ -3628,6 +3638,9 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 };
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/01/26 17:26:10  sezero
+ * Raven's original Siege hcode.
+ *
  * 
  * 77    6/01/98 5:45p Mgummelt
  * 

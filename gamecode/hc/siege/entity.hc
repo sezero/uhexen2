@@ -3,7 +3,7 @@
 //**
 //** entity.hc
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/entity.hc,v 1.1 2005-01-26 17:26:10 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/entity.hc,v 1.2 2005-01-26 20:17:55 sezero Exp $
 //**
 //**************************************************************************
 
@@ -778,3 +778,6 @@ entity	sight_entity;	//So monsters wake up other monsters
 .string ondeath_target;
 .string pain_target;
 .float last_up;
+
+//map cycling
+.string next_map;
