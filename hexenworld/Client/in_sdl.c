@@ -2,7 +2,7 @@
 // 02/21/97 JCB Added extended DirectInput code to support external controllers.
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.8 2005-01-01 21:50:48 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.9 2005-01-01 21:58:38 sezero Exp $
  */
 
 #include "SDL.h"
@@ -829,7 +829,7 @@ qboolean IN_ReadJoystick (void)
 	else
 	{
 		// read error occurred
-		// turning off the joystick seems too harsh for 1 read error,\
+		// turning off the joystick seems too harsh for 1 read error,
 		// but what should be done?
 		// Con_Printf ("IN_ReadJoystick: no response\n");
 		// joy_avail = false;
@@ -1262,6 +1262,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/01/01 21:50:48  sezero
+ * warnings cleanup: unused stuff
+ *
  * Revision 1.7  2004/12/29 21:02:20  sezero
  * Merge some Hexen2 changes into HexenWorld Client:
  * - Fix the fire attacks drawing lines across the screen.
