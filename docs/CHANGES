@@ -1,6 +1,13 @@
 ChangeLog:
 
 
+2005-01-02 (CVS, 1.2.3-rc3):
+
+    * Retired AoT, aot and .aot: Change userdir (AOT_USERDIR) to .hexen2
+      (for the demo, it's .hexen2demo)
+    * Added clarifications about network-compatibility in the docs.
+    * Code clean-up in Hexen2 and Launcher. Big clean-up in Hexenworld.
+
 2004-12-29 (CVS, 1.2.3-rc2):
 
     * Launcher: Some usability tweaks. Removed the mouse option, added
