@@ -94,7 +94,7 @@
 // JACK: Intellimouse(c) Mouse Wheel Support
 
 #define K_MWHEELUP		239
-#define K_MWHEELDOWN	240
+#define K_MWHEELDOWN		240
 
 
 

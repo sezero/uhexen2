@@ -2,7 +2,7 @@
 // 02/21/97 JCB Added extended DirectInput code to support external controllers.
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.4 2004-12-04 18:51:09 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.5 2004-12-05 12:38:49 sezero Exp $
  */
 
 #include "SDL.h"
@@ -1184,7 +1184,52 @@ void IN_SendKeyEvents (void)
                                 Key_Event(sym, state);
                                 break;
                         case SDL_MOUSEBUTTONDOWN:
+				switch(event.button.button)
+				{
+				case 1:
+					Key_Event(K_MOUSE1, true);
+					break;
+				case 2:
+					Key_Event(K_MOUSE3, true);
+					break;
+				case 3:
+					Key_Event(K_MOUSE2, true);
+					break;
+				case 4:
+					Key_Event(K_MWHEELUP, true);
+					break;
+				case 5:
+					Key_Event(K_MWHEELDOWN, true);
+					break;
+				default:
+					Con_Printf("HandleEvents: ButtonPress gave value %d, 1-5 expected\n", event.button.button);
+					break;
+				}
+				break;
+
                         case SDL_MOUSEBUTTONUP:
+				switch(event.button.button)
+				{
+				case 1:
+					Key_Event(K_MOUSE1, false);
+					break;
+				case 2:
+					Key_Event(K_MOUSE3, false);
+					break;
+				case 3:
+					Key_Event(K_MOUSE2, false);
+					break;
+				case 4:
+					Key_Event(K_MWHEELUP, false);
+					break;
+				case 5:
+					Key_Event(K_MWHEELDOWN, false);
+					break;
+				default:
+					Con_Printf("HandleEvents: ButtonRelease gave value %d, 1-5 expected\n", event.button.button);
+					break;
+				}
+				break;
                         case SDL_MOUSEMOTION:
                                 if (!in_mode_set)
                                 {
@@ -1204,6 +1249,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/04 18:51:09  sezero
+ * Kill some compiler warnings.
+ *
  * Revision 1.3  2004/12/04 02:05:57  sezero
  * porting from hexen2 :  steve's mouse changes-2, vid-mode changes.
  *
