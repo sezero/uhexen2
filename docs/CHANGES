@@ -1,0 +1,27 @@
+original file: aot-1.2.0.tar.gz
+size:          3069577
+md5sum:        603413254fd826d39fbeed0272e4c749
+
+Changes
+-------
+
+  "No Boss" bug in the original game fixed.
+  Proper fullscreen mode(s) for OpenGL.
+  Screen sizes are selectable with "-width" and "-height" options.
+  Interactive video modes in software game disabled.
+  - Video Modes menu now displays help message.
+  Mouse grab in window modes , which is released with menus, pause and console
+  GL glow patch by JS.
+  New menu items for GL Glow, Chase mode, Draw Shadows.
+  Two general overflow bug-fixes.
+  Heapsize is now 32768 default
+  The final splash screens now centre the messages properly
+
+  Patches used:
+    001-makefiles-stevena.patch
+    002-pr_edict.diff
+    007-range-check-pa3pyx.patch
+    008-vsnprintf-pa3pyx.patch
+    005-glows-js.patch
+    009-mp-oldmission-stevena.patch
+    010-stevena-27Nov.patch

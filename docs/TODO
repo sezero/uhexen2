@@ -1,0 +1,10 @@
+Todo
+----
+  Bugs.
+
+  Get game demos running.
+
+  The command line options are a bit of a mix. Personally, I prefer
+  single dash options (eg. -width) and this is what GlQuake uses,
+  but Raven and the AoT authors use (mostly) double dashes (eg --nosound)
+  and for compatibility I have not changed this.

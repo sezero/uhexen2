@@ -1,0 +1,107 @@
+Anvil of Thyrion README
+Version 1.2.0
+3 January 2002
+http://aot.linuxgames.com/
+
+
+-------------------------
+What is Anvil of Thyrion?
+-------------------------
+
+ Anvil of Thyrion is a project based on the Hexen II: Portal of Praevus source
+that runs on Linux and it's variants.  Anvil of Thyrion was given its name in
+the hope that it will one day outgrow the name "Hexen II for Linux" and
+eventually come to represent both a modified Hexen II engine and tools for that
+engine.
+
+ Thyrion is the world Hexen II takes place in.  An anvil is used by blacksmiths
+to create weapons and tools.  I stole the anvil paradigm from AoT's distant
+cousin, QuakeForge.
+
+----------------------------------------
+This thing doesn't work?  What can I do?
+----------------------------------------
+
+ AoT was designed in the hope that if something doesn't work, it is your fault,
+not mine.  However this is not always the case.  If you think you have a
+legitimate bug report, please email Dan Olson or Clement Bourdarias (see at 
+the bottom of this file for the email addresses) and let us know.  
+However, we have a limited amount of time.  As much as we may like to,
+we are not going to help every Hexen II user set up their OpenGL correctly.
+
+-----------------------------------------
+AoT damaged my monitor/hard drive/family!
+-----------------------------------------
+
+ I do not care.  Neither I nor Activision are responsible for any damage that
+AoT may cause.
+
+----------------------------------------------------------
+Speaking of Activision, I think I'll email them about AoT!
+----------------------------------------------------------
+
+ Don't.  Activision has nothing to do with this project.
+
+-------------------------------------------
+What do I need to install before compiling?
+-------------------------------------------
+
+ You'll need working copies of gcc and nasm, as well as a working SDL install.
+ SDL_mixer compiled with Timidity support is also needed if you want to read 
+ the midi music (optionnal).
+
+--------------------------------------------------
+Okay, enough of that, how do I compile this thing?
+--------------------------------------------------
+
+ To compile Hexen II with Portal of Praevus support, cd to aot/H2MP/code and
+type 'make'.  If you wish to compile Hexen 2 without Portal of Praevus support,
+or to compile a non-accelerated binary of either, you will have to edit the
+Makefile in aot/H2MP/code.  The first two lines give you your options,
+simply change them to "yes" or "no" appropriately.
+
+ After compiling, if all went well you should have a binary.  This binary needs
+to go in a spot where it has a data1/ dir.  This can be copied over from a
+patched Hexen II install.  If you are running with Portal of Praevus support,
+you will also need a portals/ dir.  Please make sure that all the files in
+data1/ and portals/ are lowercased.
+
+ The Hexen II demo uses the same executable as a registered version.  To
+play the demo, just build a Hexen II binary as normal and put the demo data
+files in the data1/ dir.
+
+ The procedure is similar for HexenWorld binaries.  To compile a client, type
+'make' in aot/H2W/Client.  You may also edit the Makefile in this directory
+to select a GL or non-GL accelerated build.  To compile a HexenWorld server,
+type 'make' in aot/H2W/Server.  The server Makefile has no extra options for
+you to select.
+
+ Both the HexenWorld client and server require the directories data1/ and hw/.
+Please do not ask me any questions about server setup or proper server configs.
+I simply do not know the answers.  There are many sites offering such info.
+ 
+------------
+Known issues
+------------
+
+ Hexen II binaries WILL NOT play over a network with Windows Hexen II binaries.
+Do not try it, it simply will not work.  However, Portal of Praevus binaries
+should be compatible across platforms.  If this is a big issue for you, use
+HexenWorld.
+
+------------
+Boring stuff
+------------
+
+This source is under the GNU Public License.  Read the gnu.txt file before
+you do anything with it.
+
+Hexen II and Portal of Praevus are trademarks of Raven Software Corporation.
+
+AoT is maintained by Dan Olson <theoddone33@linuxgames.com> and 
+                     Clément Bourdarias <phneutre@mangoquest.org>
+							
+DO NOT harass Activision or Raven Software about this, they cannot and will
+not help you.
+
+Thanks to all who have contributed code or helped test.
