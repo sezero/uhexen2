@@ -1,5 +1,13 @@
 ChangeLog:
 
+2005-03-05 (CVS, 1.2.4-rc5):
+    * OSS (and ALSA): Try to use what frequency is actually set:
+      I first naively thought that requested-provided frequency
+      mismatches wouldn't happen, but I got one weird oss report
+      which includes this case. Let's see what this does now...
+    * OSS: if failures are hit after mmaping shm->buffer, munmap
+      it before quitting
+
 2005-03-03 (CVS, 1.2.4-rc4):
     * fixed and activated munmap of shm->buffer for snd_oss.c
     * commented-out shm->gamealive thing which serves nothing
