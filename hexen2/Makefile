@@ -64,6 +64,10 @@ ifdef DEBUG
 CFLAGS+= -DDEBUG -g
 endif
 
+ifeq "$(SOUND)" "SDL"
+CFLAGS+= -DSDL_SOUND
+endif
+
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c -o $@ $< $(CFLAGS)

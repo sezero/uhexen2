@@ -1,9 +1,9 @@
 /*
 	snd_sdl.c
-	SDL sound driver which is meant to replace snd_oss.c in the future.
-	Currently buggy...
+	SDL sound driver for Linux Hexen II,  based on the SDLquake
+	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/snd_sdl.c,v 1.2 2004-12-21 17:35:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/snd_sdl.c,v 1.3 2005-02-04 11:29:38 sezero Exp $
 */
 
 #include <stdio.h>
@@ -11,7 +11,6 @@
 //#include "SDL_byteorder.h"
 #include "quakedef.h"
 
-static dma_t the_shm;
 static int snd_inited;
 
 extern int desired_speed;
@@ -94,7 +93,7 @@ qboolean SNDDMA_Init(void)
 	SDL_PauseAudio(0);
 
 	/* Fill the audio DMA information block */
-	shm = &the_shm;
+	shm = &sn;
 	shm->splitbuffer = 0;
 	shm->samplebits = (obtained.format & 0xFF);
 	shm->speed = obtained.freq;
@@ -117,6 +116,8 @@ void SNDDMA_Shutdown(void)
 {
 	if (snd_inited)
 	{
+		Con_Printf ("Shutting down SDL sound\n");
+//		SDL_PauseAudio (1);
 		SDL_CloseAudio();
 		snd_inited = 0;
 		SDL_QuitSubSystem(SDL_INIT_AUDIO);
@@ -129,6 +130,9 @@ void SNDDMA_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/21 17:35:19  sezero
+ * revert two commits (obsolete experimentals)
+ *
  * Revision 1.5  2004/12/12 14:40:56  sezero
  * sync with steven
  *

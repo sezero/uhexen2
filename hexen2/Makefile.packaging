@@ -31,6 +31,10 @@ GLFLAGS+= -lSDL_mixer
 LDFLAGS+= -lSDL_mixer
 endif
 
+ifeq "$(SOUND)" "SDL"
+CFLAGS+= -DSDL_SOUND
+endif
+
 ifeq "${DEMO}" "yes"
 CFLAGS+= -DDEMOBUILD
 endif

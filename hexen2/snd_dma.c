@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.7 2005-02-01 13:38:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.8 2005-02-04 11:28:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -882,6 +882,7 @@ void S_ExtraUpdate (void)
 
 void S_Update_(void)
 {
+#ifndef SDL_SOUND
 	unsigned        endtime;
 	int				samps;
 	
@@ -926,6 +927,7 @@ void S_Update_(void)
 	S_PaintChannels (endtime);
 
 	SNDDMA_Submit ();
+#endif	// !SDL_SOUND
 }
 
 /*
@@ -1044,6 +1046,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/02/01 13:38:19  sezero
+ * fix the demos without models with -nosound
+ *
  * Revision 1.6  2004/12/18 14:20:40  sezero
  * Clean-up and kill warnings: 11
  * A lot of whitespace cleanups.

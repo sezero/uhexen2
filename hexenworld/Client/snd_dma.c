@@ -884,6 +884,7 @@ void S_ExtraUpdate (void)
 
 void S_Update_(void)
 {
+#ifndef SDL_SOUND
 	unsigned        endtime;
 	int				samps;
 	
@@ -928,6 +929,7 @@ void S_Update_(void)
 	S_PaintChannels (endtime);
 
 	SNDDMA_Submit ();
+#endif	// !SDL_SOUND
 }
 
 /*

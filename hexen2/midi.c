@@ -1,7 +1,7 @@
 /*
 	midi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/midi.c,v 1.3 2004-12-18 13:20:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/midi.c,v 1.4 2005-02-04 11:28:59 sezero Exp $
 */
 
 #ifndef PLATFORM_UNIX
@@ -168,11 +168,13 @@ void MIDI_EndMusicFinished(void)
 qboolean MIDI_Init(void)
 {
 #ifdef USE_MIDI
+#ifndef SDL_SOUND
+// FIXME: midi doesn't play with snd_sdl.c
   int audio_rate = 22050;
   int audio_format = AUDIO_S16;
   int audio_channels = 2;
   int audio_buffers = 4096;
-
+#endif
   char	mididir[MAX_OSPATH];
 
   printf("MIDI_Init\n");
@@ -187,6 +189,8 @@ qboolean MIDI_Init(void)
       return 0;
     }
 
+#ifndef SDL_SOUND
+// FIXME: midi doesn't play with snd_sdl.c
   if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
 
     Con_Printf("Cannot initialize SDL_AUDIO subsystem: %s\n",SDL_GetError());
@@ -198,6 +202,7 @@ qboolean MIDI_Init(void)
     fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
     return 0;
   }
+#endif
 
   midi_endmusicfnc = &MIDI_EndMusicFinished;
   if (midi_endmusicfnc)
@@ -850,6 +855,9 @@ void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 #endif	// !PLATFORM_UNIX
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/18 13:20:37  sezero
+ * make the music automatically restart when changed in the options menu
+ *
  * Revision 1.2  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *
