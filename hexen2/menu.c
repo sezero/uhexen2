@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.17 2004-12-18 14:15:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.18 2004-12-21 16:07:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,7 +10,7 @@
 #endif
 
 #ifdef GLQUAKE
-extern  cvar_t  r_shadows, gl_glows, gl_missile_glows; // S.A
+extern  cvar_t  r_shadows, gl_glows, gl_missile_glows, gl_other_glows; // S.A
 #endif
 
 extern	float introTime;
@@ -2084,7 +2084,8 @@ void M_AdjustSliders (int dir)
 		break;
 	case OPT_GL_GLOW:	// gl_glows
 		Cvar_SetValue ("gl_glows", !gl_glows.value);
-		Cvar_SetValue ("gl_missile_glows", !gl_missile_glows.value);
+		Cvar_SetValue ("gl_missile_glows", !gl_glows.value);
+		Cvar_SetValue ("gl_other_glows", !gl_glows.value);
 		break;
 #endif
 	case OPT_CHASE_ACTIVE:	// chase_active
@@ -2306,7 +2307,8 @@ void M_Options_Key (int k)
 char *bindnames[][2] =
 {
 {"+attack", 		"attack"},
-{"impulse 10", 		"change weapon"},
+{"impulse 10", 		"next weapon"},
+{"impulse 12", 		"prev.weapon"},
 {"+jump", 			"jump / swim up"},
 {"+forward", 		"walk forward"},
 {"+back", 			"backpedal"},
@@ -4728,6 +4730,11 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2004/12/18 14:15:35  sezero
+ * Clean-up and kill warnings 10:
+ * Remove some already commented-out functions and code fragments.
+ * They seem to be of no-future use. Also remove some unused functions.
+ *
  * Revision 1.16  2004/12/18 14:08:07  sezero
  * Clean-up and kill warnings 9:
  * Kill many unused vars.
