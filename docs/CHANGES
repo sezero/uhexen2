@@ -1,5 +1,13 @@
 ChangeLog:
 
+2005-02-23 (CVS, 1.2.4-rc3):
+    * final rc for 1.2.4
+    * killed hexenworld warning "cl_tent.c:2972: warning: statement
+      with no effect". at last we decided that this guy intended |=,
+      not &=
+    * merged a bunch of hcode (gameplay) fixes/adjustments from Pa3PyX'
+      sources which brings the gamecode version to 1.12g.
+
 2005-02-20 (CVS, 1.2.4-rc2):
     * H2MP: Old mission option is now always enabled, removed my
       cmdline thing, killed the cvar m_oldmission;  completely
