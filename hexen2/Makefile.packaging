@@ -3,6 +3,7 @@
 #  make DEMO=yes [other stuff]
 
 USEMIDI=yes
+USEALSA=yes
 
 GLMP_BINARY=glh2mp
 GLMP_BINARY_STATIC=glh2mp.static
@@ -28,6 +29,10 @@ ifeq "$(USEMIDI)" "yes"
 CFLAGS+= -DUSE_MIDI
 GLFLAGS+= -lSDL_mixer
 LDFLAGS+= -lSDL_mixer
+endif
+
+ifeq "$(USEALSA)" "no"
+CFLAGS+= -DNO_ALSA
 endif
 
 ifeq "${DEMO}" "yes"

@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.8 2005-02-11 23:47:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.9 2005-02-14 15:12:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1020,8 +1020,10 @@ void Host_Init (quakeparms_t *parms)
 			snd_system = S_SYS_NULL;
 		else if (COM_CheckParm ("-sndsdl"))
 			snd_system = S_SYS_SDL;
+#ifndef NO_ALSA
 		else if (COM_CheckParm ("-sndalsa"))
 			snd_system = S_SYS_ALSA;
+#endif
 		else
 			snd_system = S_SYS_OSS;
 	// on Win32, sound initialization has to come before video initialization, so we
@@ -1101,6 +1103,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/02/11 23:47:02  sezero
+ * paranoid sound driver checks
+ *
  * Revision 1.7  2005/02/05 16:18:25  sezero
  * added midi volume control (partially from Pa3PyX)
  *

@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.13 2005-02-11 23:47:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.14 2005-02-14 15:12:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -97,9 +97,11 @@ void S_SoundInfo_f(void)
 	case S_SYS_SDL:
 		s_sys = "SDL";
 		break;
+#ifndef NO_ALSA
 	case S_SYS_ALSA:
 		s_sys = "ALSA";
 		break;
+#endif
 	}
 	Con_Printf("Driver: %s\n", s_sys);
 	Con_Printf("%5d stereo\n", shm->channels - 1);
@@ -123,12 +125,14 @@ void S_GetSubsys (void)
 			SNDDMA_Shutdown	 = S_SDL_Shutdown;
 			SNDDMA_Submit	 = S_SDL_Submit;
 			break;
+#ifndef NO_ALSA
 		case S_SYS_ALSA:
 			SNDDMA_Init	 = S_ALSA_Init;
 			SNDDMA_GetDMAPos = S_ALSA_GetDMAPos;
 			SNDDMA_Shutdown	 = S_ALSA_Shutdown;
 			SNDDMA_Submit	 = S_ALSA_Submit;
 			break;
+#endif
 		case S_SYS_OSS:
 			SNDDMA_Init	 = S_OSS_Init;
 			SNDDMA_GetDMAPos = S_OSS_GetDMAPos;
@@ -1057,6 +1061,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/02/11 23:47:02  sezero
+ * paranoid sound driver checks
+ *
  * Revision 1.12  2005/02/09 14:33:36  sezero
  * make compiler happy (uninitialized warnings)
  *

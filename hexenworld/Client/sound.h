@@ -109,44 +109,47 @@ void SND_Spatialize(channel_t *ch);
 #ifdef PLATFORM_UNIX
 // chooses functions to call depending on audio subsystem
 void S_GetSubsystem(void);
-#endif
 
 // initializes cycling through a DMA buffer and returns information on it
-#ifdef PLATFORM_UNIX
 qboolean (*SNDDMA_Init)(void);
-extern qboolean S_OSS_Init(void);	// OSS version
-extern qboolean S_SDL_Init(void);	// SDL version
-extern qboolean S_ALSA_Init(void);	// ALSA version
-#else
-qboolean SNDDMA_Init(void);
-#endif
 
 // gets the current DMA position
-#ifdef PLATFORM_UNIX
 int (*SNDDMA_GetDMAPos)(void);
-extern int S_OSS_GetDMAPos(void);	// OSS version
-extern int S_SDL_GetDMAPos(void);	// SDL version
-extern int S_ALSA_GetDMAPos(void);	// ALSA version
-#else
-int SNDDMA_GetDMAPos(void);
-#endif
 
 // shutdown the DMA xfer.
-#ifdef PLATFORM_UNIX
 void (*SNDDMA_Shutdown)(void);
-extern void S_OSS_Shutdown(void);	// OSS version
-extern void S_SDL_Shutdown(void);	// SDL version
-extern void S_ALSA_Shutdown(void);	// ALSA version
-#else
-void SNDDMA_Shutdown(void);
-#endif
 
-#ifdef PLATFORM_UNIX
 void (*SNDDMA_Submit)(void);
-extern void S_OSS_Submit(void);	// OSS version
-extern void S_SDL_Submit(void);	// SDL version
-extern void S_ALSA_Submit(void);// ALSA version
-#else
+
+// OSS versions of the above
+extern qboolean S_OSS_Init(void);
+extern int S_OSS_GetDMAPos(void);
+extern void S_OSS_Shutdown(void);
+extern void S_OSS_Submit(void);
+// SDL versions of the above
+extern qboolean S_SDL_Init(void);
+extern int S_SDL_GetDMAPos(void);
+extern void S_SDL_Shutdown(void);
+extern void S_SDL_Submit(void);
+#ifndef NO_ALSA
+// ALSA versions of the above
+extern qboolean S_ALSA_Init(void);
+extern int S_ALSA_GetDMAPos(void);
+extern void S_ALSA_Submit(void);
+extern void S_ALSA_Shutdown(void);
+#endif	// NO_ALSA
+
+#else	// here goes the win32 version
+
+// initializes cycling through a DMA buffer and returns information on it
+qboolean SNDDMA_Init(void);
+
+// gets the current DMA position
+int SNDDMA_GetDMAPos(void);
+
+// shutdown the DMA xfer.
+void SNDDMA_Shutdown(void);
+
 void SNDDMA_Submit(void);
 #endif
 

@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.5 2005-02-14 10:08:00 sezero Exp $
+	$Id: snd_alsa.c,v 1.6 2005-02-14 15:12:32 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -24,6 +24,8 @@
 		59 Temple Place - Suite 330
 		Boston, MA  02111-1307, USA
 */
+
+#ifndef NO_ALSA
 
 #include <stdio.h>
 #include <dlfcn.h>
@@ -305,9 +307,14 @@ void S_ALSA_Submit (void)
 	}
 }
 
+#endif	// NO_ALSA
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/02/14 10:08:00  sezero
+ * alsa sound:
+ * - replicate the order in quakeforge as much as possible
+ *
  * Revision 1.4  2005/02/14 10:07:03  sezero
  * alsa sound improvements:
  * - more error checking and detailed error reporting

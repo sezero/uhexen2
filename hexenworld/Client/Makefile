@@ -7,6 +7,11 @@ BUILDGL=yes
 #		and Timidity patches
 USEMIDI=yes
 
+# USEALSA :	no   =	Don't include alsa support.
+#		yes  =	Include ALSA sound support. Requires alsa-lib
+#			and alsa-kernel modules >= 1.0.1
+USEALSA=yes
+
 # To build for the demo version, run with make DEMO=yes [other stuff]
 
 
@@ -37,6 +42,10 @@ ifeq "$(USEMIDI)" "yes"
 CFLAGS+= -DUSE_MIDI
 GLFLAGS+= -lSDL_mixer
 LDFLAGS+= -lSDL_mixer
+endif
+
+ifeq "$(USEALSA)" "no"
+CFLAGS+= -DNO_ALSA
 endif
 
 ifeq "${DEMO}" "yes"

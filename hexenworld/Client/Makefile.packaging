@@ -3,6 +3,7 @@
 #  make DEMO=yes [other stuff]
 
 USEMIDI=yes
+USEALSA=yes
 
 GL_BINARY=glhwcl
 GL_BINARY_STATIC=glhwcl.static
@@ -26,6 +27,10 @@ ifeq "$(USEMIDI)" "yes"
 CFLAGS+= -DUSE_MIDI
 GLFLAGS+= -lSDL_mixer
 LDFLAGS+= -lSDL_mixer
+endif
+
+ifeq "$(USEALSA)" "no"
+CFLAGS+= -DNO_ALSA
 endif
 
 ifeq "${DEMO}" "yes"
