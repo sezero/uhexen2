@@ -1,7 +1,7 @@
 // sys_unix.c -- Unix system interface code
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.3 2004-12-05 12:25:58 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.4 2004-12-12 19:01:02 sezero Exp $
  */
 
 #include <stdio.h>
@@ -819,6 +819,7 @@ void PrintHelp(char *name)
 	printf ("     [-w | --windowed]               Run the game windowed\n");
 	printf ("     [-s | --nosound]                Run the game without sound\n");
 	printf ("     [-g | --gllibrary]              Select 3D rendering library\n");
+	printf ("     [-nomouse]                      Disable mouse in window mode\n");
 	printf ("     [-width Width [-height Height]] Select screen size\n");
 	printf ("     [-bpp]                          Depth for GL fullscreen mode\n");
 	printf ("     [-heapsize Bytes]               Heapsize\n");
@@ -949,6 +950,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/05 12:25:58  sezero
+ * Sync with Steven's changes to hexen2, 2004-12-04
+ *
  * Revision 1.2  2004/12/04 02:10:33  sezero
  * porting from hexen2 :  version stuff.
  *

@@ -1314,10 +1314,11 @@ void	VID_Init (unsigned char *palette)
 
 	// window mode is default 
 
+	grab = 1;
+
 	if (COM_CheckParm("-fullscreen") || COM_CheckParm("-f") ||
 		COM_CheckParm("-fs") || COM_CheckParm("--fullscreen"))
 	{
-		grab = 1;
 		windowed = false;
 		vid_default = MODE_FULLSCREEN_DEFAULT;
 	}
@@ -1325,7 +1326,6 @@ void	VID_Init (unsigned char *palette)
 	if (COM_CheckParm("-window") || COM_CheckParm("-w") ||
 			COM_CheckParm("--windowed"))
 	{
-		grab = 1;
 		windowed = true;
 		vid_default = MODE_WINDOWED;
 	}

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.3 2004-12-04 02:04:42 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.4 2004-12-12 19:01:01 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -1194,6 +1194,9 @@ void M_Options_Key (int k)
 		else
 			options_cursor = 0;
 	}
+
+	// better activate mouse to enable configuring the mouse S.A 
+	IN_ActivateMouseSA ();
 
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 	
