@@ -153,7 +153,7 @@ COMMONOBJS = cd_linux.o \
 	keys.o \
 	mathlib.o \
 	menu.o \
-	midi.o \
+	midi_sdl.o \
 	net_bsd.o \
 	net_dgrm.o \
 	net_loop.o \
