@@ -214,11 +214,6 @@ void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 
 /* Init SDL */
 
-// procedure VID_SetFullDIBMode is history
-qboolean VID_SetFullDIBMode (int modenum) {
-	return VID_SetWindowedMode (modenum);
-}
-
 qboolean VID_SetWindowedMode (int modenum)
 {
 	// handle both fullscreen and windowed modes -S.A
@@ -255,6 +250,11 @@ qboolean VID_SetWindowedMode (int modenum)
 
 
 	// "#if 0" removed
+}
+
+// procedure VID_SetFullDIBMode is history
+qboolean VID_SetFullDIBMode (int modenum) {
+	return VID_SetWindowedMode (modenum);
 }
 
 int VID_SetMode (int modenum, unsigned char *palette)

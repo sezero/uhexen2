@@ -2,7 +2,7 @@
 // 02/21/97 JCB Added extended DirectInput code to support external controllers.
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.3 2004-12-04 02:05:57 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.4 2004-12-04 18:51:09 sezero Exp $
  */
 
 #include "SDL.h"
@@ -158,13 +158,6 @@ IN_ActivateMouse
 ===========
 */
 
-void IN_ActivateMouseSA (void)
-{
-	// S.A's hack to activate mouse
-	if ((int)_windowed_mouse.value || (int)vid_mode.value == MODE_FULLSCREEN_DEFAULT)
-		IN_ActivateMouse ();
-}
-
 void IN_ActivateMouse (void)
 {
 
@@ -186,6 +179,13 @@ void IN_ActivateMouse (void)
 	}
 }
 
+void IN_ActivateMouseSA (void)
+{
+	// S.A's hack to activate mouse
+	if ((int)_windowed_mouse.value || (int)vid_mode.value == MODE_FULLSCREEN_DEFAULT)
+		IN_ActivateMouse ();
+}
+
 
 /*
 ===========
@@ -204,13 +204,6 @@ void IN_SetQuakeMouseState (void)
 IN_DeactivateMouse
 ===========
 */
-void IN_DeactivateMouseSA (void)
-{
-	// don't worry if fullscreen - S.A.
-	if ((int)vid_mode.value != MODE_FULLSCREEN_DEFAULT)
-		IN_DeactivateMouse ();
-}
-
 void IN_DeactivateMouse (void)
 {
 
@@ -227,6 +220,13 @@ void IN_DeactivateMouse (void)
 		SDL_WM_GrabInput (SDL_GRAB_OFF);
 //		ReleaseCapture ();
 	}
+}
+
+void IN_DeactivateMouseSA (void)
+{
+	// don't worry if fullscreen - S.A.
+	if ((int)vid_mode.value != MODE_FULLSCREEN_DEFAULT)
+		IN_DeactivateMouse ();
 }
 
 
@@ -1204,6 +1204,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/04 02:05:57  sezero
+ * porting from hexen2 :  steve's mouse changes-2, vid-mode changes.
+ *
  * Revision 1.2  2004/12/04 02:04:42  sezero
  * porting from hexen2 :  steve's mouse changes-1.
  *

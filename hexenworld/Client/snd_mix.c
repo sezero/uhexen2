@@ -5,6 +5,7 @@
 #ifdef _WIN32
 #include "winquake.h"
 #else
+#undef  DWORD
 #define DWORD	unsigned long
 #endif
 
