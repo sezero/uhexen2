@@ -177,6 +177,7 @@ void CL_SendConnectPacket (void)
 	sprintf (data, "%c%c%c%cconnect %d \"%s\"\n",
 		255, 255, 255, 255,	com_portals, cls.userinfo);
 	NET_SendPacket (strlen(data), data, adr);
+	IN_ActivateMouseSA();
 }
 
 /*

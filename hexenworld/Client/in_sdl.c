@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.14 2005-02-11 08:31:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.15 2005-02-14 10:05:27 sezero Exp $
 */
 
 #include "SDL.h"
@@ -183,7 +183,7 @@ void IN_ActivateMouse (void)
 void IN_ActivateMouseSA (void)
 {
 	// S.A's hack to activate mouse
-	if ((int)_windowed_mouse.value || (int)vid_mode.value == MODE_FULLSCREEN_DEFAULT)
+	if ((int)_windowed_mouse.value && (!cl.paused))
 		IN_ActivateMouse ();
 }
 
@@ -1204,6 +1204,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/02/11 08:31:16  sezero
+ * remove unused-and-emptied IN_Accumulate
+ *
  * Revision 1.13  2005/02/11 08:30:29  sezero
  * remove already commented-out win32 code from IN_StartupMouse
  *
