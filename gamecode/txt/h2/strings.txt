@@ -54,10 +54,10 @@ The constellation of Isis
 The constellation of Aries
 A constellation of a Lion
 A constellation of a Baboon
-The heiroglyphs read:@Hapy Canopic Jar
-The heiroglyphs read:@Imsethy Canopic Jar
-The heiroplyphs read:@Qebhsenuef Canopic Jar
-The heiroglyphs read:@Duamutef Canopic Jar
+The hieroglyphs read:@Hapy Canopic Jar
+The hieroglyphs read:@Imsethy Canopic Jar
+The hieroplyphs read:@Qebhsenuef Canopic Jar
+The hieroglyphs read:@Duamutef Canopic Jar
 You have found@the Burial Chamber of@the Dark Pharaoh
 The boat is ready for the journey                                                    
 You need the key of RA
@@ -79,7 +79,7 @@ You need the Rough Cut Gem
 The Gem is ready to be cut
 On this wall, the scribes give calculations for the planet's shift over time in the Zodiac.  These calculations instruct the advancement of the Wheel of Time in the current day two steps further than Gemini
 The Dark Pharaoh's Journey@beyond has been staved@without his Royal Scepter
-The heiroglyphs ask Anubis to@re-unite the Dark Pharaoh with@his Royal Scepter
+The hieroglyphs ask Anubis to@re-unite the Dark Pharaoh with@his Royal Scepter
 Summer Solstice falls in the@constellation of the@Hippopotamus
 Vernal Equinox lands in the@constellation of Gemini
 You need some music@before you can play@the organ
@@ -94,7 +94,7 @@ You destroyed the old tower!
 You have been given the power to destroy the Crystal Golem!
 Welcome to the Temple of@Horus, God of the Sky and@Protector of the Pharaoh
 You have found the Time Portal of Set
-You have traveled back 1000@years to the Temple of Set
+You have traveled back 1000@years to the Temple of Nefertum
 The Guardian Key is needed
 You need the Key of the Pharaoh
 You hear a door open above you
