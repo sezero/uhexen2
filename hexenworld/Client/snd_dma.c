@@ -157,11 +157,15 @@ S_Init
 void S_Init (void)
 {
 
-	Con_Printf("\nSound Initialization\n");
+	// We need this thing even if the snd won't be initalized
+	// at all. Fixes the demos without models with -nosound
+	Cvar_RegisterVariable(&precache);
 
 	if (COM_CheckParm("-nosound") || COM_CheckParm("--nosound")
 			|| COM_CheckParm("-s"))
 		return;
+
+	Con_Printf("\nSound Initialization\n");
 
 	if (COM_CheckParm("-simsound"))
 		fakedma = true;
@@ -174,7 +178,6 @@ void S_Init (void)
 
 	Cvar_RegisterVariable(&nosound);
 	Cvar_RegisterVariable(&volume);
-	Cvar_RegisterVariable(&precache);
 	Cvar_RegisterVariable(&loadas8bit);
 	Cvar_RegisterVariable(&bgmvolume);
 	Cvar_RegisterVariable(&bgmtype);

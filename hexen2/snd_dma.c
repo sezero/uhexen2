@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.6 2004-12-18 14:20:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.7 2005-02-01 13:38:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -154,11 +154,15 @@ S_Init
 void S_Init (void)
 {
 
-	Con_Printf("\nSound Initialization\n");
+	// We need this thing even if the snd won't be initalized
+	// at all. Fixes the demos without models with -nosound
+	Cvar_RegisterVariable(&precache);
 
 	if (COM_CheckParm("-nosound") || COM_CheckParm("--nosound")
 			|| COM_CheckParm("-s"))
 		return;
+
+	Con_Printf("\nSound Initialization\n");
 
 	if (COM_CheckParm("-simsound"))
 		fakedma = true;
@@ -171,7 +175,6 @@ void S_Init (void)
 
 	Cvar_RegisterVariable(&nosound);
 	Cvar_RegisterVariable(&volume);
-	Cvar_RegisterVariable(&precache);
 	Cvar_RegisterVariable(&loadas8bit);
 	Cvar_RegisterVariable(&bgmvolume);
 	Cvar_RegisterVariable(&bgmtype);
@@ -1041,6 +1044,10 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2004/12/18 14:20:40  sezero
+ * Clean-up and kill warnings: 11
+ * A lot of whitespace cleanups.
+ *
  * Revision 1.5  2004/12/18 14:08:08  sezero
  * Clean-up and kill warnings 9:
  * Kill many unused vars.
