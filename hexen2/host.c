@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.4 2004-12-18 14:20:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.5 2005-01-01 21:43:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -598,9 +598,6 @@ void Host_GetConsoleCommands (void)
 
 //#define FPS_20
 
-void R_UpdateParticles (void);
-void CL_UpdateEffects (void);
-
 /*
 ==================
 Host_ServerFrame
@@ -1091,6 +1088,10 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/18 14:20:40  sezero
+ * Clean-up and kill warnings: 11
+ * A lot of whitespace cleanups.
+ *
  * Revision 1.3  2004/12/18 13:30:50  sezero
  * Hack to prevent textures going awol and some info-plaques start looking
  * white upon succesive load games. The solution is not beautiful but seems

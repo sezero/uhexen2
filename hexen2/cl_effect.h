@@ -107,6 +107,13 @@ struct EffectT
 	} ef;
 };
 
+void CL_InitEffects(void);
+void CL_ClearEffects(void);
+void CL_EndEffect(void);
+void CL_ParseEffect(void);
+void CL_UpdateEffects (void);
+void SV_ParseEffect(sizebuf_t *sb);
+void SV_UpdateEffects(sizebuf_t *sb);
 void SV_SaveEffects(FILE *FH);
 void SV_LoadEffects(FILE *FH);
 

@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.4 2004-12-18 14:08:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.5 2005-01-01 21:43:47 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -1973,7 +1973,6 @@ void CL_LinkEntity(entity_t *ent)
 void R_RunQuakeEffect (vec3_t org, float distance);
 void RiderParticle(int count, vec3_t origin);
 void GravityWellParticle(int count, vec3_t origin, int color);
-void R_RunParticleEffect2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int effect, int count);
 
 void CL_UpdateEffects(void)
 {
@@ -2525,6 +2524,10 @@ static void FreeEffectEntity(int index)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/18 14:08:07  sezero
+ * Clean-up and kill warnings 9:
+ * Kill many unused vars.
+ *
  * Revision 1.3  2004/12/18 13:59:25  sezero
  * Clean-up and kill warnings 8:
  * Missing prototypes.

@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.7 2004-12-18 14:15:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.8 2005-01-01 21:43:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -34,8 +34,6 @@ UINT	info_mask, info_mask2;
 Host_Quit_f
 ==================
 */
-
-extern void M_Menu_Quit_f (void);
 
 void Host_Quit_f (void)
 {
@@ -2383,6 +2381,11 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2004/12/18 14:15:35  sezero
+ * Clean-up and kill warnings 10:
+ * Remove some already commented-out functions and code fragments.
+ * They seem to be of no-future use. Also remove some unused functions.
+ *
  * Revision 1.6  2004/12/18 14:08:07  sezero
  * Clean-up and kill warnings 9:
  * Kill many unused vars.

@@ -1,7 +1,7 @@
 /*
 	menu.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.h,v 1.3 2004-12-18 13:59:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.h,v 1.4 2005-01-01 21:43:47 sezero Exp $
 */
 
 //
@@ -23,25 +23,32 @@ extern char BigCharWidth[27][27];
 //
 void M_Init (void);
 void M_Keydown (int key);
-void M_Draw (void);
 void M_ToggleMenu_f (void);
 
-void M_DrawTextBox (int x, int y, int width, int lines);
+void M_Menu_Options_f (void);
+void M_Menu_Quit_f (void);
 
-//
-// these prototypes were missing, causing ugly warnings. O.S.
-//
 void M_Print (int x, int y, char *str);
 void M_Print2 (int x, int y, char *str);
 void M_PrintWhite (int x, int y, char *str);
-int M_DrawBigCharacter (int x, int y, int num, int numNext);
-void M_DrawTextBox2 (int x, int y, int w, int l, qboolean b);
+
+void M_Draw (void);
+void M_DrawCharacter (int cx, int line, int num);
+
+void M_DrawPic (int x, int y, qpic_t *pic);
 void M_DrawTransPic (int x, int y, qpic_t *pic);
+void M_DrawTextBox (int x, int y, int width, int lines);
+void M_DrawTextBox2 (int x, int y, int w, int l, qboolean b);
+
 void ScrollTitle (char *name);
 
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/18 13:59:25  sezero
+ * Clean-up and kill warnings 8:
+ * Missing prototypes.
+ *
  * Revision 1.2  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

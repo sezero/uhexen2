@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.9 2004-12-29 19:49:40 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.10 2005-01-01 21:43:47 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -1251,13 +1251,6 @@ void VID_HandlePause (qboolean pause)
 	}
 }
 
-extern void M_Menu_Options_f (void);
-extern void M_Print (int cx, int cy, char *str);
-extern void M_PrintWhite (int cx, int cy, char *str);
-extern void M_DrawCharacter (int cx, int line, int num);
-extern void M_DrawTransPic (int x, int y, qpic_t *pic);
-extern void M_DrawPic (int x, int y, qpic_t *pic);
-
 typedef struct
 {
 	int		modenum;
@@ -1331,6 +1324,11 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2004/12/29 19:49:40  sezero
+ * From Steven (2004-12-29):
+ * - Fullscreen/Windowed mode is now switchable. Seems to work good.
+ * - Mouse can now be disabled for fullscreen modes.
+ *
  * Revision 1.8  2004/12/18 14:20:40  sezero
  * Clean-up and kill warnings: 11
  * A lot of whitespace cleanups.

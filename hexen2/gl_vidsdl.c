@@ -1,6 +1,6 @@
 /*
    gl_dl_vidsdl.c
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.15 2004-12-29 19:49:40 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.16 2005-01-01 21:43:47 sezero Exp $
 
 	Select window size and mode and init SDL in GL mode.
 
@@ -1613,17 +1613,6 @@ void	VID_Init (unsigned char *palette)
 	strcpy (badmode.modedesc, "Bad mode");
 }
 
-
-//========================================================
-// Video menu stuff
-//========================================================
-
-extern void M_Menu_Options_f (void);
-extern void M_Print (int cx, int cy, char *str);
-extern void M_PrintWhite (int cx, int cy, char *str);
-extern void M_DrawCharacter (int cx, int line, int num);
-extern void M_DrawTransPic (int x, int y, qpic_t *pic);
-extern void M_DrawPic (int x, int y, qpic_t *pic);
 
 static int	vid_wmodes;
 

@@ -1,7 +1,7 @@
 /*
 	r_part.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_dl_part.c,v 1.6 2004-12-18 14:20:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_dl_part.c,v 1.7 2005-01-01 21:43:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1413,8 +1413,6 @@ void R_DrawParticles (void)
 }
 
 
-
-
 void R_UpdateParticles (void)
 {
 	particle_t		*p, *kill;
@@ -1951,6 +1949,10 @@ void R_UpdateParticles (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2004/12/18 14:20:40  sezero
+ * Clean-up and kill warnings: 11
+ * A lot of whitespace cleanups.
+ *
  * Revision 1.5  2004/12/18 14:15:35  sezero
  * Clean-up and kill warnings 10:
  * Remove some already commented-out functions and code fragments.

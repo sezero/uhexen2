@@ -1,6 +1,6 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.3 2004-12-18 13:59:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.4 2005-01-01 21:43:47 sezero Exp $
 */
 
 typedef struct
@@ -300,6 +300,9 @@ void CL_Disconnect (void);
 void CL_Disconnect_f (void);
 void CL_NextDemo (void);
 
+qboolean CL_CopyFiles(char *source, char *pat, char *dest);
+void CL_RemoveGIPFiles (char *path);
+
 #define			MAX_VISEDICTS	256
 extern	int				cl_numvisedicts;
 extern	entity_t		*cl_visedicts[MAX_VISEDICTS];
@@ -368,20 +371,13 @@ void CL_ClearTEnts(void);
 void CL_ParseTEnt(void);
 void CL_UpdateTEnts(void);
 
-//
-// these prototypes were missing, causing ugly warnings. O.S.
-//
-qboolean CL_CopyFiles(char *source, char *pat, char *dest);
-void CL_RemoveGIPFiles (char *path);
-void CL_InitEffects(void);
-void CL_ClearEffects(void);
-void CL_EndEffect(void);
-void CL_ParseEffect(void);
-void SV_ParseEffect(sizebuf_t *sb);
-void SV_UpdateEffects(sizebuf_t *sb);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/18 13:59:25  sezero
+ * Clean-up and kill warnings 8:
+ * Missing prototypes.
+ *
  * Revision 1.2  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

@@ -37,7 +37,6 @@ void _VectorSubtract (vec3_t veca, vec3_t vecb, vec3_t out);
 void _VectorAdd (vec3_t veca, vec3_t vecb, vec3_t out);
 void _VectorCopy (vec3_t in, vec3_t out);
 
-int _VectorCompare (vec3_t v1, vec3_t v2);
 int VectorCompare (vec3_t v1, vec3_t v2);
 vec_t _Length (vec3_t v);
 void _CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross);

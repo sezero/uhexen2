@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.7 2004-12-19 12:47:27 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.8 2005-01-01 21:43:47 sezero Exp $
  */
 
 // disable data conversion warnings
@@ -99,6 +99,17 @@ void R_RenderDlights (void);
 void R_RotateForEntity (entity_t *e);
 void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
 qboolean R_CullBox (vec3_t mins, vec3_t maxs);
+void R_AnimateLight(void);
+//void R_ClearParticles (void);	// O.S.: better in render.h
+void R_DrawParticles (void);
+void R_InitParticles (void);
+int R_LightPoint (vec3_t p);
+void R_StoreEfrags (efrag_t **ppefrag);
+
+
+int M_DrawBigCharacter (int x, int y, int num, int numNext);
+// defined only for !GLQUAKE in menu.c
+
 
 typedef struct
 {
@@ -361,6 +372,9 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2004/12/19 12:47:27  sezero
+ * fix the datatype for our new load32
+ *
  * Revision 1.6  2004/12/18 14:20:40  sezero
  * Clean-up and kill warnings: 11
  * A lot of whitespace cleanups.

@@ -2,7 +2,7 @@
 	refresh.h
 	public interface to refresh functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.4 2004-12-18 14:15:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.5 2005-01-01 21:43:47 sezero Exp $
 */
 
 #define	MAXCLIPPLANES	11
@@ -113,18 +113,17 @@ void R_RemoveEfrags (entity_t *ent);
 
 void R_NewMap (void);
 
-
 void R_ParseParticleEffect (void);
 void R_ParseParticleEffect2 (void);
 void R_ParseParticleEffect3 (void);
 void R_ParseParticleEffect4 (void);
 void R_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count);
+void R_RunParticleEffect2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int effect, int count);
 void R_RocketTrail (vec3_t start, vec3_t end, int type);
 void R_SunStaffTrail(vec3_t source, vec3_t dest);
 
-#ifdef QUAKE2
 void R_DarkFieldParticles (entity_t *ent);
-#endif
+void R_UpdateParticles (void);
 void R_RainEffect (vec3_t org,vec3_t e_size,int x_dir, int y_dir,int color,int count);
 void R_SnowEffect (vec3_t org1,vec3_t org2,int flags,vec3_t alldir,int count);
 void R_ColoredParticleExplosion (vec3_t org,int color,int radius,int counter);
@@ -148,20 +147,15 @@ void D_DeleteSurfaceCache (void);
 void D_InitCaches (void *buffer, int size);
 void R_SetVrect (vrect_t *pvrect, vrect_t *pvrectin, int lineadj);
 
-//
-// these prototypes were missing, causing ugly warnings. O.S.
-//
-void R_AnimateLight(void);
 void R_ClearParticles (void);
-void R_DarkFieldParticles (entity_t *ent);
-void R_DrawParticles (void);
-void R_InitParticles (void);
-int R_LightPoint (vec3_t p);
-void R_StoreEfrags (efrag_t **ppefrag);
-
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/18 14:15:35  sezero
+ * Clean-up and kill warnings 10:
+ * Remove some already commented-out functions and code fragments.
+ * They seem to be of no-future use. Also remove some unused functions.
+ *
  * Revision 1.3  2004/12/18 13:59:25  sezero
  * Clean-up and kill warnings 8:
  * Missing prototypes.
