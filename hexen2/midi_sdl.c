@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.1 2005-02-05 16:16:06 sezero Exp $
+	$Id: midi_sdl.c,v 1.2 2005-02-05 16:17:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -117,7 +117,7 @@ qboolean MIDI_Init(void)
 	}
 
 	Con_Printf("MIDI_Init:\n");
-	sprintf (mididir, "%s/glhexen/midi", com_userdir);
+	sprintf (mididir, "%s/.midi", com_userdir);
 	Sys_mkdir (mididir);
 
 	// Try initing the audio subsys if it hasn't been already
@@ -163,7 +163,6 @@ void MIDI_Play(char *Name)
 {
 	char Temp[100];
 	char *Data;
-	char midi_file[200];
 	char midi_file_with_path[300];
 	FILE *f=NULL;
 
@@ -174,25 +173,27 @@ void MIDI_Play(char *Name)
 
 	//printf("MIDI_Play\n");
 	sprintf(Temp, "midi/%s.mid", Name);
-	sprintf (midi_file, "glhexen/midi/%s.mid", Name);
-	sprintf (midi_file_with_path, "%s/glhexen/midi/%s.mid", com_userdir,Name);
+	sprintf (midi_file_with_path, ".midi/%s.mid", Name); // without userdir for now
 	MIDI_Stop();
 
-	COM_FOpenFile (midi_file, &f, true);
+	COM_FOpenFile (midi_file_with_path, &f, true);
 	if (f) {
-		Con_Printf("MIDI: File %s already exists\n",midi_file);
+		Sys_Printf("MIDI: File %s already exists\n",Temp);
+		fclose(f);
 	} else {
-		Con_Printf("MIDI: File %s needs to be extracted\n",midi_file);
+		Sys_Printf("MIDI: File %s needs to be extracted\n",Temp);
 		Data = (byte *)COM_LoadHunkFile2((char *)Temp, (int *)&size);
 		if (!Data) {
-			//exit(1);
+			Con_Printf("musicfile %s not found, not playing\n", Temp);
+			return;
 		}
-		COM_WriteFileFullPath (midi_file_with_path, (void *)Data, size);
+		COM_WriteFile (midi_file_with_path, (void *)Data, size);
 	}
-
+	// now with full userdir path included, for SDL_mixer
+	sprintf (midi_file_with_path, "%s/.midi/%s.mid", com_userdir, Name);
 	music = Mix_LoadMUS(midi_file_with_path);
 	if ( music == NULL ) {
-		Con_Printf("Couldn't load %s: %s\n", midi_file_with_path, SDL_GetError());
+		Sys_Printf("Couldn't load %s: %s\n", midi_file_with_path, SDL_GetError());
 	} else {
 		bFileOpen = 1;
 		Con_Printf("Playing midi file %s\n",Temp);
@@ -281,6 +282,9 @@ void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/02/05 16:16:06  sezero
+ * separate win32 and linux versions of midi files. too much mess otherwise.
+ *
  *
  * 2005/02/04 14:00:14  sezero
  * - merge small bits from the hexenworld version

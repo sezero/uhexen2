@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.5 2005-01-18 11:29:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.6 2005-02-05 16:17:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1544,30 +1544,6 @@ void COM_WriteFile (char *filename, void *data, int len)
 
 /*
 ============
-COM_WriteFileFullPath
-
-The filename will _NOT_ be prefixed by the current game directory
-============
-*/
-void COM_WriteFileFullPath (char *filename, void *data, int len)
-{
-	int             handle;
-
-	handle = Sys_FileOpenWrite (filename);
-	if (handle == -1)
-	{
-		Sys_Printf ("COM_WriteFile: failed on %s\n", filename);
-		return;
-	}
-	
-	Sys_Printf ("COM_WriteFile: %s\n", filename);
-	Sys_FileWrite (handle, data, len);
-	Sys_FileClose (handle);
-}
-
-
-/*
-============
 COM_CreatePath
 
 Only used for CopyFile
@@ -2183,6 +2159,15 @@ void COM_InitFilesystem (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/01/18 11:29:18  sezero
+ * - Fix userdirs to work correctly against the -game arg
+ * - Added a "qboolean adduser" arg to COM_AddGameDir()  (useful esp. in
+ *   hexenworld):  com_userdir evolves gradually. Every search path added
+ *   has a consequence of additon of (multiple) unnecessary userpaths.
+ *   Avoid it where we can. (original aot also added the very same userdir
+ *   multiple times)
+ * - Changed all instances of "id1" to "data1"
+ *
  * Revision 1.4  2004/12/18 14:15:34  sezero
  * Clean-up and kill warnings 10:
  * Remove some already commented-out functions and code fragments.
