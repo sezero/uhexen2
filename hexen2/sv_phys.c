@@ -1,7 +1,7 @@
 /*
 	sv_phys.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.2 2004-12-12 14:14:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.3 2004-12-18 13:57:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -30,6 +30,11 @@ cvar_t	sv_maxvelocity = {"sv_maxvelocity","2000"};
 cvar_t	sv_nostep = {"sv_nostep","0"};
 cvar_t	sv_flypitch={"sv_flypitch","20"};
 cvar_t	sv_walkpitch={"sv_walkpitch","0"};
+
+
+/****************************************************************************
+ *  O.S.:  QUAKE2, QUAKE2RJ and QUAKE2RJa are different??? Clean this mess! *
+ ****************************************************************************/
 
 #ifdef QUAKE2RJ
 static	vec3_t	vec_origin = {0.0, 0.0, 0.0};
@@ -2279,6 +2284,9 @@ trace_t SV_Trace_Toss (edict_t *ent, edict_t *ignore)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:43  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:07:53  sezero
  * Initial import of AoT 1.2.0 code
  *

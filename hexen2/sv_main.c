@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.5 2004-12-18 13:48:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.6 2004-12-18 13:57:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,6 +10,10 @@
 server_t		sv;
 server_static_t	svs;
 char	localmodels[MAX_MODELS][5];			// inline model names for precache
+
+/******************************************************************
+ * O.S.:   RJNET and RJNETa are different???  Clean this mess up! *
+ ******************************************************************/
 
 #if RJNET
 cvar_t	sv_sound_distance = {"sv_sound_distance","800", true};
@@ -2548,6 +2552,10 @@ void SV_SpawnServer (char *server)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/12/18 13:48:59  sezero
+ * Clean-up and kill warnings 3:
+ * Kill " suggest parentheses around XXX " warnings
+ *
  * Revision 1.4  2004/12/18 13:30:50  sezero
  * Hack to prevent textures going awol and some info-plaques start looking
  * white upon succesive load games. The solution is not beautiful but seems
