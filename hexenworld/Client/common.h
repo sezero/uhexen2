@@ -206,7 +206,6 @@ void COM_Gamedir (char *dir);
 
 extern	struct cvar_s	registered;
 extern	struct cvar_s	oem;
-extern qboolean		standard_quake, rogue, hipnotic;
 extern qboolean		com_portals;
 
 char *Info_ValueForKey (char *s, char *key);

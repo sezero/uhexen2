@@ -46,8 +46,6 @@ void COM_Path_f (void);
 #define PAK4_COUNT				102
 #define PAK4_CRC				41062
 
-qboolean		standard_quake = true, rogue, hipnotic;
-
 char	gamedirfile[MAX_OSPATH];
 
 // this graphic needs to be in the pak file to use registered features
