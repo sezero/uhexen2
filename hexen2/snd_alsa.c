@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.1 2005-02-04 11:59:16 sezero Exp $
+	$Id: snd_alsa.c,v 1.2 2005-02-05 16:38:34 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -174,9 +174,13 @@ qboolean S_ALSA_Init (void)
 	memset ((dma_t *) shm, 0, sizeof (*shm));
 	shm->splitbuffer = 0;
 	shm->channels = stereo + 1;
-	shm->submission_chunk = hx2snd_pcm_hw_params_get_period_size (hw, 
+	err = hx2snd_pcm_hw_params_get_period_size (hw, 
 			(snd_pcm_uframes_t *) (&shm->submission_chunk), 0);
 			// don't mix less than this
+	if (err < 0) {
+		Con_Printf ("ALSA: unable to get period size\n");
+		goto error;
+	}
 	shm->samplepos = 0; // in mono samples
 	shm->samplebits = bps;
 	err = hx2snd_pcm_hw_params_get_buffer_size (hw, &buffer_size);
@@ -272,4 +276,7 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/02/04 11:59:16  sezero
+ * add ALSA sound driver (from the quakeforge project)
+ *
  */
