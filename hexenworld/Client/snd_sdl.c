@@ -1,7 +1,10 @@
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/snd_sdl.c,v 1.1 2004-12-07 09:17:34 sezero Exp $
- */
+	snd_sdl.c
+	SDL sound driver which is meant to replace snd_oss.c in the future.
+	Currently buggy...
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/snd_sdl.c,v 1.2 2004-12-21 17:35:19 sezero Exp $
+*/
 
 #include <stdio.h>
 #include "SDL.h"
@@ -126,6 +129,12 @@ void SNDDMA_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/12/12 14:40:56  sezero
+ * sync with steven
+ *
+ * Revision 1.4  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.3  2004/12/05 10:52:18  sezero
  * Sync with Steven, 2004-12-04 :
  *  Fix the "Old Mission" menu PoP
