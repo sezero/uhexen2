@@ -1,0 +1,10 @@
+#!/bin/sh
+
+make -C h2mp_utils/hcc clean
+make -C h2_utils/hcc clean
+make -C h2mp_utils/qfiles clean
+make -C h2mp_utils/genmodel clean
+make -C h2mp_utils/utils clean
+make -C h2_utils/utils clean
+make -C dcc clean
+

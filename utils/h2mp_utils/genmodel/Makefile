@@ -1,0 +1,28 @@
+
+CC = gcc
+LINKER = gcc
+BINARY=genmodel
+DESTDIR=../bin
+CFLAGS = 
+LDFLAGS = 
+LDLIBS= -lm
+
+all : $(BINARY)
+
+clean : 
+	rm -f *.o core
+
+# Rules for turning source files into .o files
+%.o: %.c
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+
+GENMODELOBJS= cmdlib.o \
+	mathlib.o \
+	loadtri.o \
+	scriplib.o \
+	token.o \
+	genmodel.o
+
+$(BINARY) : $(GENMODELOBJS)
+	$(LINKER) -o $(DESTDIR)/$(BINARY) $(LDFLAGS) $(LDLIBS) $(GENMODELOBJS)

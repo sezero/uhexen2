@@ -1,0 +1,16 @@
+
+This package is put together essentially by merging two files
+released by Raven, namely H2_UTILS.EXE (for original Hexen2)
+and h2mputil.zip (for the mission pack).
+
+Only a couple of trivial changes were needed to make them
+compile under Linux (see the file Ref/utils_linux.diff,
+included here for your reference). The original License by
+Activision file while they released H2_UTILS.EXE is included
+here, as well (see Ref/LICENSE.txt).
+
+Also included here is dcc, a progs.dat compiler/decompiler
+for Hexen2 by Eric Hobbs. It is only interesting due to its
+decompiler facility.
+
+

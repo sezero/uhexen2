@@ -1,0 +1,11 @@
+
+progs.dat compiler/decompiler for Hexen2 by Eric Hobbs.
+Read the hcc.txt file for usage/details.
+
+Made only small touches to the original code so that it
+compiles under Linux (x86). Only interesting due to its
+decompiler facility. Since the original author cannot be
+contacted (at least not from the address written in the
+package), there possibly won't be any improvements. Most
+probably no one would need this utility today, anyway, 
+but I put it here for reference.

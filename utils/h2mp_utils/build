@@ -1,0 +1,9 @@
+#!/bin/sh
+echo "Building hcc, the HexenC compiler.."
+make -C hcc
+echo "" && echo "Now building qfiles.."
+make -C qfiles
+echo "" && echo "Now building genmodel.."
+make -C genmodel
+echo "" && echo "Now building light, vis and qbsp.."
+make -C utils

@@ -1,0 +1,82 @@
+hcc  - a hexen 2 c compiler/decompiler
+programming: eric hobbs
+             many thanks to whoever wrote unqcc it inspired me to write this,
+             I used your file loading procedure in my code  so thanks :-)
+             obvoiusly thanks to id software, they released the source to qcc
+             I just modified it to work with hexen 2 and put the decompiler in.
+
+send all responses bug reports to:     jlhobbs@ma.ultranet.com
+
+included in this hcc1.zip: all the files needed to compile hcc.exe. do put these files in a directory with
+quake source files, some are different but have the same name
+
+installation: unzip into empty directory, just compile and link all source files in the directory.
+
+NOTE:  when modifying hexenc code DO NOT MODIFY THE SYSTEM GLOBALS OR SYSTEM FIELD_DEFS hcc just assigns the correct crc
+       value. the crc is used by the game to make sure these fields are up to date in the executable.  In order to modify 
+       them you would need to be able to compile the h2.exe and I do not think that raven will be releasing that source
+        any time soon.
+
+====================================================
+hcc run time info
+====================================================
+new: compact string heap,  I think that is it.
+     someone may want ot look at the priority level of the new intsructions, they may be wrong
+
+command line:
+"hcc"  will work just like qcc does( ie: make the progs.dat file from the source)
+"hcc -dcc" will decompile the progs.dat file in the current directoy
+"hcc -dcc -asm <funtionname>" will decompile filename to the console (just redirect it to a file to see it)
+"hcc -dcc -dump -asm <functionname>" same as above but it will show instructions(opcodes and parms) as well
+
+NOTE: due to the uncertainty of some instructions minor modifications must be made to the output of hcc.exe in order for it to compile using hcc.exe
+empty braces are a result of either a programming error or some sort of testing done by the original coders.
+some function headers will need to be created due to the fact that they were put in header files in the original source.
+an example of this is T_Damage in fight.hc
+
+example:
+if you compiled this
+
+if(self.owner == world){
+    self.owner == other; // note the use of the equal(==) instead of the assignment(=)
+}
+
+it would decompile as this
+
+if(self.owner == world){
+
+}
+
+this would give an error, most likely " } is not a name"
+this is why I added " -dump -asm" to the command line in order to see unprinted instructions
+
+
+new instructions:
+
+hexen supports the full quake instruction setas well as  "+=,-=,*=,/=,->,|=,^="
+hexen has support for arrays(must be global)of floats and vectors.  a 5 element array of vectors would be created as follows
+vector vecarray[5] = {'0 0 0', '1 1 1', '2 2 2' , '3 3 3', '4 4 4'};
+each element can be accessed by using the "->" operator(note: this is my own convention not a c or raven software convention)
+accessing the nth element of vecarray would look like this
+vecarray->n;
+were n is an offset from the beginning of the array
+vecarray->0 == '0 0 0';
+there is builtin bounds checking so hexen will stop with an out of bounds error if
+you go beyond the end of the array(ie "vecarray->5" would fail, 0 through n-1 are valid,were n is the number of elements)
+builtin support for frame cycling using
+AdvanceFrame(float a,float b);
+Advance frame will advance the current frame number of self by one and lock it unto the range (a b) when b is reached it
+appears that the variable "cycle_wrapped" is set to true, false otherwise.
+builtin support for advancing the nextthink field def
+AdvanceThinkTime(entity a,float b)
+would expand to:
+entity.nextthink += b;
+random has been expanded to 6 forms(note: again this may or may not be how raven does it)
+float random();//return a float between 0 and 1
+float random(float n);//return a float between 0 and n
+float random(float a,floatb);//return a float between a and b
+***(this is an op_code not supported as hexenc)  vector random();//return a vector between '0 0 0' and '1 1 1' *** this for has not been tested
+vector random(vector a);//return a vectorbetween '0 0 0' and a
+vector random(vector a,vector b);//return a vector between a and b
+
+ 

@@ -1,0 +1,5 @@
+#!/bin/sh
+make -C hcc clean
+make -C qfiles clean
+make -C genmodel clean
+make -C utils clean
