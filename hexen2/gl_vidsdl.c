@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.30 2005-03-13 16:00:17 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.31 2005-04-05 19:33:43 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -1235,12 +1235,14 @@ void VID_MenuDraw (void)
 
 void ToggleFullScreenSA ()
 {
+	// This doesn't seem to cause any trouble even
+	// with is_3dfx == true and FX_GLX_MESA == f
 	if (SDL_WM_ToggleFullScreen(screen)==1) {
 
 		Cvar_SetValue ("vid_mode", !vid_mode.value);
 
 	} else {
-		puts ("SDL_WM_ToggleFullScreen failed");
+		Con_Printf ("SDL_WM_ToggleFullScreen failed\n");
 	}
 }
 

@@ -1145,12 +1145,14 @@ void VID_MenuDraw (void)
 
 void ToggleFullScreenSA ()
 {
+	// This doesn't seem to cause any trouble even
+	// with is_3dfx == true and FX_GLX_MESA == f
 	if (SDL_WM_ToggleFullScreen(screen)==1) {
 
 		Cvar_SetValue ("vid_mode", !vid_mode.value);
 
 	} else {
-		puts ("SDL_WM_ToggleFullScreen failed");
+		Con_Printf ("SDL_WM_ToggleFullScreen failed\n");
 	}
 }
 
