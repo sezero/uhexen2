@@ -20,7 +20,7 @@
     <handler>on_window1_destroy</handler>
     <last_modification_time>Tue, 01 Jan 2002 17:30:49 GMT</last_modification_time>
   </signal>
-  <title>Hexen II for Linux Launcher, 0.2b</title>
+  <title>Hexen II for Linux Launcher, 0.2c</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
