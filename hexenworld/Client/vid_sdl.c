@@ -21,7 +21,7 @@
 */
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.5 2005-01-01 21:55:47 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.6 2005-01-12 11:59:12 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -522,8 +522,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	Cvar_SetValue ("vid_mode", (float)modenum);
 
-	// stuff removed S.A.
-
 	if (modenum == vid_modenum)
 		return true;
 
@@ -993,33 +991,11 @@ printf ("SA vid_default = %i\n",vid_default);
 
 void	VID_Shutdown (void)
 {
-#if 0
-	HDC				hdc;
-#endif
 extern byte *transTable;	//from r_part
 extern byte *mainTransTable; // in r_main.c
 
 	if (vid_initialized)
 	{
-#if 0
-		if (hwnd_dialog)
-		{
-			DestroyWindow (hwnd_dialog);
-			hwnd_dialog=NULL;
-		}
-
-		if (modestate == MS_FULLDIB)
-			ChangeDisplaySettings (NULL, CDS_FULLSCREEN);
-
-		PostMessage (HWND_BROADCAST, WM_PALETTECHANGED, (WPARAM)mainwindow, (LPARAM)0);
-		PostMessage (HWND_BROADCAST, WM_SYSCOLORCHANGE, (WPARAM)0, (LPARAM)0);
-
-		AppActivate(false, false);
-		DestroyDIBWindow ();
-		DestroyFullscreenWindow ();
-		DestroyFullDIBWindow ();
-		MGL_exit();
-#endif
 		vid_initialized = 0;
 		if (transTable)
 		{
@@ -1340,6 +1316,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/01/01 21:55:47  sezero
+ * warnings cleanup: missing prototypes
+ *
  * Revision 1.4  2005/01/01 21:50:49  sezero
  * warnings cleanup: unused stuff
  *

@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.10 2005-01-01 21:43:47 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.11 2005-01-12 11:59:11 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -517,8 +517,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	Cvar_SetValue ("vid_mode", (float)modenum);
 
-	// stuff removed S.A.
-
 	if (modenum == vid_modenum)
 		return true;
 
@@ -961,33 +959,11 @@ void	VID_Init (unsigned char *palette)
 
 void	VID_Shutdown (void)
 {
-#if 0
-	HDC				hdc;
-#endif
 extern byte *transTable;	//from r_part
 extern byte *mainTransTable; // in r_main.c
 
 	if (vid_initialized)
 	{
-#if 0
-		if (hwnd_dialog)
-		{
-			DestroyWindow (hwnd_dialog);
-			hwnd_dialog=NULL;
-		}
-
-		if (modestate == MS_FULLDIB)
-			ChangeDisplaySettings (NULL, CDS_FULLSCREEN);
-
-		PostMessage (HWND_BROADCAST, WM_PALETTECHANGED, (WPARAM)mainwindow, (LPARAM)0);
-		PostMessage (HWND_BROADCAST, WM_SYSCOLORCHANGE, (WPARAM)0, (LPARAM)0);
-
-		AppActivate(false, false);
-		DestroyDIBWindow ();
-		DestroyFullscreenWindow ();
-		DestroyFullDIBWindow ();
-		MGL_exit();
-#endif
 		vid_initialized = 0;
 		if (transTable)
 		{
@@ -1324,6 +1300,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/01/01 21:43:47  sezero
+ * prototypes clean-up
+ *
  * Revision 1.9  2004/12/29 19:49:40  sezero
  * From Steven (2004-12-29):
  * - Fullscreen/Windowed mode is now switchable. Seems to work good.

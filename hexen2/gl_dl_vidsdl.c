@@ -1,6 +1,6 @@
 /*
    gl_dl_vidsdl.c
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.19 2005-01-12 11:57:40 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.20 2005-01-12 11:59:11 sezero Exp $
 
 	Select window size and mode and init SDL in GL mode.
 
@@ -89,7 +89,6 @@ const char *gl_version;
 const char *gl_extensions;
 char *gl_library;
 
-
 qboolean	DDActive;
 qboolean	scr_skipupdate;
 
@@ -97,15 +96,9 @@ static vmode_t	modelist[MAX_MODE_LIST];
 static int	nummodes;
 static vmode_t	badmode;
 
-#if 0
-static DEVMODE	gdevmode;
-#endif
 qboolean	vid_initialized = false;
 static qboolean	windowed, leavecurrentmode;
 static int		windowed_mouse;
-#if 0
-static HICON	hIcon;
-#endif
 
 //FX_DISPLAY_MODE_EXT fxDisplayModeExtension;
 //FX_SET_PALETTE_EXT fxSetPaletteExtension;
@@ -116,12 +109,6 @@ unsigned char inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
 int		DIBWidth, DIBHeight;
 int		WRHeight, WRWidth;
 
-#if 0
-RECT		WindowRect;
-DWORD		WindowStyle, ExWindowStyle;
-HWND		mainwindow, dibwindow;
-#endif
-
 int		vid_modenum = NO_MODE;
 int		vid_realmode;
 int		vid_default = MODE_WINDOWED;
@@ -130,18 +117,9 @@ static int	windowed_default;
 unsigned char	vid_curpal[256*3];
 float		RTint[256],GTint[256],BTint[256];
 
-#if 0
-HGLRC		baseRC;
-HDC		maindc;
-#endif
-
 glvert_t	glv;
 
 cvar_t		gl_ztrick = {"gl_ztrick","0",true};
-
-#if 0
-HWND WINAPI InitializeWindow (HINSTANCE hInstance, int nCmdShow);
-#endif
 
 viddef_t	vid;				// global video state
 
@@ -156,10 +134,6 @@ modestate_t	modestate = MS_UNINIT;
 void VID_MenuDraw (void);
 void VID_MenuKey (int key);
 
-#if 0
-LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-void AppActivate(BOOL fActive, BOOL minimize);
-#endif
 char *VID_GetModeDescription (int mode);
 void ClearAllStates (void);
 void VID_UpdateWindowStatus (void);
@@ -168,12 +142,6 @@ void GL_Init_Functions(void);
 void VID_SetGamma(float value);
 void VID_SetGamma_f(void);
 
-#if 0
-PROC glArrayElementEXT;
-PROC glColorPointerEXT;
-PROC glTexCoordPointerEXT;
-PROC glVertexPointerEXT;
-#endif
 
 //====================================
 
@@ -223,23 +191,6 @@ void D_EndDirectRect (int x, int y, int width, int height)
 {
 }
 
-
-#if 0
-void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
-{
-    RECT    rect;
-    int     CenterX, CenterY;
-
-	CenterX = (GetSystemMetrics(SM_CXSCREEN) - width) / 2;
-	CenterY = (GetSystemMetrics(SM_CYSCREEN) - height) / 2;
-	if (CenterX > CenterY*2)
-		CenterX >>= 1;	// dual screens
-	CenterX = (CenterX < 0) ? 0: CenterX;
-	CenterY = (CenterY < 0) ? 0: CenterY;
-	SetWindowPos (hWndCenter, NULL, CenterX, CenterY, 0, 0,
-			SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_DRAWFRAME);
-}
-#endif
 
 /* Init SDL */
 
@@ -367,28 +318,10 @@ int VID_SetMode (int modenum, unsigned char *palette)
 // to let messages finish bouncing around the system, then we put
 // ourselves at the top of the z order, then grab the foreground again,
 // Who knows if it helps, but it probably doesn't hurt
-#if 0
-	SetForegroundWindow (mainwindow);
-#endif
 	VID_SetPalette (palette);
 	vid_modenum = modenum;
 	Cvar_SetValue ("vid_mode", (float)vid_modenum);
 
-#if 0
-	while (PeekMessage (&msg, NULL, 0, 0, PM_REMOVE))
-	{
-      	TranslateMessage (&msg);
-      	DispatchMessage (&msg);
-	}
-
-	Sleep (100);
-
-	SetWindowPos (mainwindow, HWND_TOP, 0, 0, 0, 0,
-				  SWP_DRAWFRAME | SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW |
-				  SWP_NOCOPYBITS);
-
-	SetForegroundWindow (mainwindow);
-#endif
 // fix the leftover Alt from any Alt-Tab or the like that switched us away
 	ClearAllStates ();
 
@@ -826,16 +759,8 @@ void GL_BeginRendering (int *x, int *y, int *width, int *height)
 //	extern cvar_t gl_clear;
 
 	*x = *y = 0;
-#if 0
-	*width = WindowRect.right - WindowRect.left;
-	*height = WindowRect.bottom - WindowRect.top;
-#else
 	*width = WRWidth;
 	*height = WRHeight;
-#endif
-
-//    if (!wglMakeCurrent( maindc, baseRC ))
-//		Sys_Error ("wglMakeCurrent failed");
 
 //	glfunc.glViewport_fp (*x, *y, *width, *height);
 }
@@ -843,13 +768,8 @@ void GL_BeginRendering (int *x, int *y, int *width, int *height)
 
 void GL_EndRendering (void)
 {
-#if 0
-	if (!scr_skipupdate)
-		SwapBuffers(maindc);
-#else
 	if (!scr_skipupdate)
 		SDL_GL_SwapBuffers();
-#endif
 
 // handle the mouse state when windowed if that's changed
 	if (modestate == MS_WINDOWED)
@@ -1056,32 +976,6 @@ void VID_SetDefaultMode (void)
 void	VID_Shutdown (void)
 {
 	SDL_Quit();
-#if 0
-   	HGLRC hRC;
-   	HDC	  hDC;
-
-	if (vid_initialized)
-	{
-    	hRC = wglGetCurrentContext();
-    	hDC = wglGetCurrentDC();
-
-    	wglMakeCurrent(NULL, NULL);
-
-    	if (hRC)
-    	    wglDeleteContext(hRC);
-
-		if (hDC && dibwindow)
-			ReleaseDC(dibwindow, hDC);
-
-		if (modestate == MS_FULLDIB)
-			ChangeDisplaySettings (NULL, 0);
-
-		if (maindc && dibwindow)
-			ReleaseDC (dibwindow, maindc);
-
-		AppActivate(false, false);
-	}
-#endif 
 }
 
 
@@ -1127,7 +1021,6 @@ BOOL bSetupPixelFormat(HDC hDC)
     return TRUE;
 }
 #endif
-
 
 
 byte        scantokey[128] = 
@@ -1409,10 +1302,6 @@ void	VID_Init (unsigned char *palette)
 {
 	int	basenummodes, width, height, bpp, findbpp;
 	char	gldir[MAX_OSPATH];
-#if 0
-	HDC	hdc;
-	DEVMODE	devmode;
-#endif
 
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&vid_wait);

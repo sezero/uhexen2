@@ -15,10 +15,6 @@
 #include "gl_func.h"
 #endif
 
-#ifdef PLATFORM_UNIX
-#define APIENTRY
-#endif
-
 void GL_BeginRendering (int *x, int *y, int *width, int *height);
 void GL_EndRendering (void);
 

@@ -87,20 +87,14 @@ static int		nummodes;
 //static vmode_t	*pcurrentmode;
 static vmode_t	badmode;
 
-//static DEVMODE	gdevmode;
 static qboolean	vid_initialized = false;
 static qboolean	windowed, leavecurrentmode;
 static qboolean vid_canalttab = false;
 //static qboolean vid_wassuspended = false;
 static int		windowed_mouse;
-//static HICON	hIcon;
 
 int			DIBWidth, DIBHeight;
 int		WRHeight, WRWidth;
-//RECT		WindowRect;
-//DWORD		WindowStyle, ExWindowStyle;
-
-//HWND	mainwindow, dibwindow;
 
 int			vid_modenum = NO_MODE;
 int			vid_realmode;
@@ -110,14 +104,9 @@ unsigned char	vid_curpal[256*3];
 static qboolean fullsbardraw = false;
 float RTint[256],GTint[256],BTint[256];
 
-//HGLRC	baseRC;
-//HDC		maindc;
-
 glvert_t glv;
 
 cvar_t	gl_ztrick = {"gl_ztrick","0",true};
-
-//HWND WINAPI InitializeWindow (HINSTANCE hInstance, int nCmdShow);
 
 viddef_t	vid;				// global video state
 
@@ -133,20 +122,13 @@ modestate_t	modestate = MS_UNINIT;
 void VID_MenuDraw (void);
 void VID_MenuKey (int key);
 
-//LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-//void AppActivate(BOOL fActive, BOOL minimize);
 char *VID_GetModeDescription (int mode);
 void ClearAllStates (void);
 void VID_UpdateWindowStatus (void);
 void GL_Init (void);
+void GL_Init_Functions(void);
 void VID_SetGamma(float value);
 void VID_SetGamma_f(void);
-void GL_Init_Functions(void);
-
-//PROC glArrayElementEXT;
-//PROC glColorPointerEXT;
-//PROC glTexCoordPointerEXT;
-//PROC glVertexPointerEXT;
 
 typedef void (*lp3DFXFUNC) (int, int, int, int, int, const void*);
 lp3DFXFUNC MyglColorTableEXT;
@@ -202,22 +184,6 @@ void D_EndDirectRect (int x, int y, int width, int height)
 {
 }
 
-/*
-void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
-{
-    RECT    rect;
-    int     CenterX, CenterY;
-
-	CenterX = (GetSystemMetrics(SM_CXSCREEN) - width) / 2;
-	CenterY = (GetSystemMetrics(SM_CYSCREEN) - height) / 2;
-	if (CenterX > CenterY*2)
-		CenterX >>= 1;	// dual screens
-	CenterX = (CenterX < 0) ? 0: CenterX;
-	CenterY = (CenterY < 0) ? 0: CenterY;
-	SetWindowPos (hWndCenter, NULL, CenterX, CenterY, 0, 0,
-			SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_DRAWFRAME);
-}
-*/
 
 /* Init SDL */
 
@@ -268,9 +234,6 @@ qboolean VID_SetWindowedMode (int modenum)
 	SDL_WM_SetCaption ("GLHexenWorld", "GLHexenWorld");
 
 	return true;
-
-
-	// "#if 0" removed
 }
 
 // procedure VID_SetFullDIBMode is history
@@ -346,28 +309,10 @@ int VID_SetMode (int modenum, unsigned char *palette)
 // to let messages finish bouncing around the system, then we put
 // ourselves at the top of the z order, then grab the foreground again,
 // Who knows if it helps, but it probably doesn't hurt
-#if 0
-	SetForegroundWindow (mainwindow);
-#endif
 	VID_SetPalette (palette);
 	vid_modenum = modenum;
 	Cvar_SetValue ("vid_mode", (float)vid_modenum);
 
-#if 0
-	while (PeekMessage (&msg, NULL, 0, 0, PM_REMOVE))
-	{
-      	TranslateMessage (&msg);
-      	DispatchMessage (&msg);
-	}
-
-	Sleep (100);
-
-	SetWindowPos (mainwindow, HWND_TOP, 0, 0, 0, 0,
-				  SWP_DRAWFRAME | SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW |
-				  SWP_NOCOPYBITS);
-
-	SetForegroundWindow (mainwindow);
-#endif
 // fix the leftover Alt from any Alt-Tab or the like that switched us away
 	ClearAllStates ();
 
@@ -733,16 +678,8 @@ GL_BeginRendering
 void GL_BeginRendering (int *x, int *y, int *width, int *height)
 {
 	*x = *y = 0;
-#if 0
-	*width = WindowRect.right - WindowRect.left;
-	*height = WindowRect.bottom - WindowRect.top;
-#else
 	*width = WRWidth;
 	*height = WRHeight;
-#endif
-
-//	if (!wglMakeCurrent( maindc, baseRC ))
-//		Sys_Error ("wglMakeCurrent failed");
 
 //	glfunc.glViewport_fp (*x, *y, *width, *height);
 }
@@ -750,13 +687,8 @@ void GL_BeginRendering (int *x, int *y, int *width, int *height)
 
 void GL_EndRendering (void)
 {
-#if 0
-	if (!scr_skipupdate || block_drawing)
-		SwapBuffers(maindc);
-#else
 	if (!scr_skipupdate)
 		SDL_GL_SwapBuffers();
-#endif
 
 // handle the mouse state when windowed if that's changed
 	if (modestate == MS_WINDOWED)
@@ -804,7 +736,6 @@ void	VID_SetPalette (unsigned char *palette)
 	unsigned	*table, *table3dfx;
 	FILE *f;
 	char s[255];
-//	HWND hDlg, hProgress;
 
 //
 // 8 8 8 encoding
@@ -861,13 +792,6 @@ void	VID_SetPalette (unsigned char *palette)
 	} 
 	else 
 	{
-#if 0
-		hDlg = CreateDialog(global_hInstance, MAKEINTRESOURCE(IDD_PROGRESS), 
-			NULL, NULL);
-		hProgress = GetDlgItem(hDlg, IDC_PROGRESS);
-		SendMessage(hProgress, PBM_SETSTEP, 1, 0);
-		SendMessage(hProgress, PBM_SETRANGE, 0, MAKELPARAM(0, 33));
-#endif
 		for (i=0,m=0; i < (1<<15); i++,m++) 
 		{
 			/* Maps
@@ -907,9 +831,6 @@ void	VID_SetPalette (unsigned char *palette)
 				sprintf(s, "Done - %d\n", i);
 				OutputDebugString(s);
 #endif
-#if 0
-				SendMessage(hProgress, PBM_STEPIT, 0, 0);
-#endif
 				m=0;
 			}
 		}
@@ -921,9 +842,6 @@ void	VID_SetPalette (unsigned char *palette)
 			fwrite(d_15to8table, 1<<15, 1, f);
 			fclose(f);
 		}
-#if 0
-		DestroyWindow(hDlg);
-#endif
 	}
 
 	d_8to24table[255] &= 0xffffff;	// 255 is transparent
@@ -950,33 +868,6 @@ void VID_SetDefaultMode (void)
 void	VID_Shutdown (void)
 {
 	SDL_Quit();
-#if 0
-   	HGLRC hRC;
-   	HDC	  hDC;
-
-	if (vid_initialized)
-	{
-		vid_canalttab = false;
-		hRC = wglGetCurrentContext();
-    	hDC = wglGetCurrentDC();
-
-    	wglMakeCurrent(NULL, NULL);
-
-    	if (hRC)
-    	    wglDeleteContext(hRC);
-
-		if (hDC && dibwindow)
-			ReleaseDC(dibwindow, hDC);
-
-		if (modestate == MS_FULLDIB)
-			ChangeDisplaySettings (NULL, 0);
-
-		if (maindc && dibwindow)
-			ReleaseDC (dibwindow, maindc);
-
-		AppActivate(false, false);
-	}
-#endif
 }
 
 
@@ -1278,8 +1169,6 @@ void VID_DescribeModes_f (void)
 	leavecurrentmode = t;
 }
 
-// "if 0" removed
-
 qboolean VID_Is8bit() {
 	return is8bit;
 }
@@ -1293,11 +1182,7 @@ void VID_Init8bitPalette()
 	char thePalette[256*3];
 	char *oldPalette, *newPalette;
 
-#if 0
-	glColorTableEXT = (void *)wglGetProcAddress("glColorTableEXT");
-#else
 	MyglColorTableEXT = (void *)SDL_GL_GetProcAddress("glColorTableEXT");
-#endif
 	if (MyglColorTableEXT &&
 	    strstr(gl_extensions, "GL_EXT_shared_texture_palette")) {
 
@@ -1328,10 +1213,6 @@ void	VID_Init (unsigned char *palette)
 {
 	int	basenummodes, width, height, bpp, findbpp;
 	char	gldir[MAX_OSPATH];
-#if 0
-	HDC		hdc;
-	DEVMODE	devmode;
-#endif
 
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&vid_wait);

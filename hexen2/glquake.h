@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.9 2005-01-08 16:07:45 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.10 2005-01-12 11:59:11 sezero Exp $
  */
 
 // disable data conversion warnings
@@ -177,8 +177,7 @@ typedef struct
 	pixel_t		*surfdat;	// destination for generated surface
 	int		rowbytes;	// destination logical width in bytes
 	msurface_t	*surf;		// description for surface to generate
-	fixed8_t	lightadj[MAXLIGHTMAPS];
-						// adjust for lightmap levels for dynamic lighting
+	fixed8_t	lightadj[MAXLIGHTMAPS]; // adjust for lightmap levels for dynamic lighting
 	texture_t	*texture;	// corrected for animating textures
 	int		surfmip;	// mipmapped ratio of surface texels / world pixels
 	int		surfwidth;	// in mipmapped texels
@@ -350,14 +349,13 @@ void GL_Bind (int texnum);
 
 extern   glfunc_t  glfunc;
 
-#ifndef _WIN32
-#define APIENTRY /* */
-#endif
-
 byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/01/08 16:07:45  sezero
+ * don't die on cache mismatch, delete and and reload the new texture
+ *
  * Revision 1.8  2005/01/01 21:43:47  sezero
  * prototypes clean-up
  *
