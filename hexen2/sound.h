@@ -10,7 +10,16 @@
 #define DEFAULT_SOUND_PACKET_VOLUME 255
 #define DEFAULT_SOUND_PACKET_ATTENUATION 1.0
 
-// !!! if this is changed, it much be changed in asm_i386.h too !!!
+#ifdef PLATFORM_UNIX
+// Sound system definitions
+extern unsigned short	snd_system;
+#define	S_SYS_NULL	0
+#define	S_SYS_OSS	1
+#define	S_SYS_SDL	2
+#define	S_SYS_ALSA	3
+#endif
+
+// !!! if this is changed, it must be changed in asm_i386.h too !!!
 typedef struct
 {
 	int left;
@@ -55,7 +64,7 @@ typedef struct
 	int		leftvol;		// 0-255 volume
 	int		rightvol;		// 0-255 volume
 	int		end;			// end time in global paintsamples
-	int 	pos;			// sample position in sfx
+	int		pos;			// sample position in sfx
 //	int		looping;		// where to loop, -1 = no looping
 	int		entnum;			// to allow overriding a specific sound
 	int		entchannel;		//
@@ -100,20 +109,55 @@ channel_t *SND_PickChannel(int entnum, int entchannel);
 // spatializes a channel
 void SND_Spatialize(channel_t *ch);
 
+#ifdef PLATFORM_UNIX
+// chooses functions to call depending on audio subsystem
+void S_GetSubsystem(void);
+#endif
+
 // initializes cycling through a DMA buffer and returns information on it
+#ifdef PLATFORM_UNIX
+qboolean (*SNDDMA_Init)(void);
+extern qboolean S_OSS_Init(void);	// OSS version
+extern qboolean S_SDL_Init(void);	// SDL version
+extern qboolean S_ALSA_Init(void);	// ALSA version
+#else
 qboolean SNDDMA_Init(void);
+#endif
 
 // gets the current DMA position
+#ifdef PLATFORM_UNIX
+int (*SNDDMA_GetDMAPos)(void);
+extern int S_OSS_GetDMAPos(void);	// OSS version
+extern int S_SDL_GetDMAPos(void);	// SDL version
+extern int S_ALSA_GetDMAPos(void);	// ALSA version
+#else
 int SNDDMA_GetDMAPos(void);
+#endif
 
 // shutdown the DMA xfer.
+#ifdef PLATFORM_UNIX
+void (*SNDDMA_Shutdown)(void);
+extern void S_OSS_Shutdown(void);	// OSS version
+extern void S_SDL_Shutdown(void);	// SDL version
+extern void S_ALSA_Shutdown(void);	// ALSA version
+#else
 void SNDDMA_Shutdown(void);
+#endif
+
+#ifdef PLATFORM_UNIX
+void (*SNDDMA_Submit)(void);
+extern void S_OSS_Submit(void);	// OSS version
+extern void S_SDL_Submit(void);	// SDL version
+extern void S_ALSA_Submit(void);// ALSA version
+#else
+void SNDDMA_Submit(void);
+#endif
 
 // ====================================================================
 // User-setable variables
 // ====================================================================
 
-#define	MAX_CHANNELS			128
+#define	MAX_CHANNELS		128
 #define	MAX_DYNAMIC_CHANNELS	8
 
 
@@ -148,7 +192,6 @@ sfxcache_t *S_LoadSound (sfx_t *s);
 wavinfo_t GetWavinfo (char *name, byte *wav, int wavlength);
 
 void SND_InitScaletable (void);
-void SNDDMA_Submit(void);
 
 void S_AmbientOff (void);
 void S_AmbientOn (void);

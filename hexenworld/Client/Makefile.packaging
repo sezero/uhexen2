@@ -2,7 +2,6 @@
 #  if building for the demo version, run with
 #  make DEMO=yes [other stuff]
 
-SOUND=OSS
 USEMIDI=no
 
 GL_BINARY=glhwcl
@@ -27,10 +26,6 @@ ifeq "$(USEMIDI)" "yes"
 CFLAGS+= -DUSE_MIDI
 GLFLAGS+= -lSDL_mixer
 LDFLAGS+= -lSDL_mixer
-endif
-
-ifeq "$(SOUND)" "SDL"
-CFLAGS+= -DSDL_SOUND
 endif
 
 ifeq "${DEMO}" "yes"
@@ -115,7 +110,7 @@ GLOBJS = gl_draw.o \
 	gl_warp.o \
 	gl_vidsdl.o
 
-MOSTOBJS = cd_linux.o \
+COMMONOBJS = cd_linux.o \
 	cl_cam.o \
 	cl_demo.o \
 	cl_effect.o \
@@ -145,6 +140,9 @@ MOSTOBJS = cd_linux.o \
 	snd_dma.o \
 	snd_mix.o \
 	snd_mem.o \
+	snd_oss.o \
+	snd_sdl.o \
+	snd_alsa.o \
 	strings.o \
 	sys_unix.o \
 	view.o \
@@ -153,12 +151,6 @@ MOSTOBJS = cd_linux.o \
 	math.o \
 	snd_mixa.o \
 	sys_wina.o
-	
-ifeq "$(SOUND)" "SDL"
-	COMMONOBJS = $(MOSTOBJS) snd_sdl.o
-else
-	COMMONOBJS = $(MOSTOBJS) snd_oss.o
-endif
 
 #all: $(BINARY) 
 all: dynamic static

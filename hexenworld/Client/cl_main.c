@@ -7,6 +7,7 @@
 #endif
 
 #ifdef PLATFORM_UNIX
+unsigned short snd_system;
 /* Change me */
 #define INADDR_LOOPBACK         0x7F000001
 #ifndef htonl
@@ -1322,6 +1323,12 @@ void Host_Init (quakeparms_t *parms)
 	SCR_Init ();
 	R_Init ();
 
+	if (COM_CheckParm ("-sndsdl")) 
+		snd_system = S_SYS_SDL; 
+	else if (COM_CheckParm ("-sndalsa")) 
+		snd_system = S_SYS_ALSA; 
+	else 
+		snd_system = S_SYS_OSS;
 	S_Init ();		// S_Init is now done as part of VID. Sigh.
 	
 	cls.state = ca_disconnected;

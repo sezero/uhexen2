@@ -4,10 +4,6 @@
 BUILDGL=yes
 #		yes = OpenGL support, no = software mode
 
-SOUND=OSS
-#		OSS or SDL. The default OSS works great but is incompatible
-#		with some cards/kernel modules. The alternative, SDL, is buggy.
-
 USEMIDI=no
 #		MIDI doesn't work at this time for HexenWorld client
 
@@ -47,10 +43,6 @@ endif
 
 ifdef DEBUG
 CFLAGS+= -DDEBUG -g
-endif
-
-ifeq "$(SOUND)" "SDL"
-CFLAGS+= -DSDL_SOUND
 endif
 
 # Rules for turning source files into .o files
@@ -127,7 +119,7 @@ GLOBJS = gl_draw.o \
 	gl_warp.o \
 	gl_vidsdl.o
 
-MOSTOBJS = cd_linux.o \
+COMMONOBJS = cd_linux.o \
 	cl_cam.o \
 	cl_demo.o \
 	cl_effect.o \
@@ -157,6 +149,9 @@ MOSTOBJS = cd_linux.o \
 	snd_dma.o \
 	snd_mix.o \
 	snd_mem.o \
+	snd_oss.o \
+	snd_sdl.o \
+	snd_alsa.o \
 	strings.o \
 	sys_unix.o \
 	view.o \
@@ -165,12 +160,6 @@ MOSTOBJS = cd_linux.o \
 	math.o \
 	snd_mixa.o \
 	sys_wina.o
-	
-ifeq "$(SOUND)" "SDL"
-	COMMONOBJS = $(MOSTOBJS) snd_sdl.o
-else
-	COMMONOBJS = $(MOSTOBJS) snd_oss.o
-endif
 
 all: $(BINARY) 
 

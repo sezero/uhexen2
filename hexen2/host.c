@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.5 2005-01-01 21:43:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.6 2005-02-04 13:40:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -45,6 +45,10 @@ byte		*host_colormap;
 #ifdef GLQUAKE
 extern int	gl_texlevel;
 extern int	numgltextures;
+#endif
+
+#ifdef PLATFORM_UNIX
+unsigned short	snd_system;
 #endif
 
 extern cvar_t	sys_quake2;
@@ -1011,6 +1015,12 @@ void Host_Init (quakeparms_t *parms)
 		SCR_Init ();
 		R_Init ();
 #ifndef	_WIN32
+		if (COM_CheckParm ("-sndsdl"))
+			snd_system = S_SYS_SDL;
+		else if (COM_CheckParm ("-sndalsa"))
+			snd_system = S_SYS_ALSA;
+		else
+			snd_system = S_SYS_OSS;
 	// on Win32, sound initialization has to come before video initialization, so we
 	// can put up a popup if the sound hardware is in use
 		S_Init ();
@@ -1088,6 +1098,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/01/01 21:43:47  sezero
+ * prototypes clean-up
+ *
  * Revision 1.4  2004/12/18 14:20:40  sezero
  * Clean-up and kill warnings: 11
  * A lot of whitespace cleanups.

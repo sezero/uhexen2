@@ -3,7 +3,7 @@
 	SDL sound driver for Linux Hexen II,  based on the SDLquake
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/snd_sdl.c,v 1.3 2005-02-04 11:29:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/snd_sdl.c,v 1.4 2005-02-04 13:40:52 sezero Exp $
 */
 
 #include <stdio.h>
@@ -26,7 +26,7 @@ static void paint_audio(void *unused, Uint8 *stream, int len)
 	}
 }
 
-qboolean SNDDMA_Init(void)
+qboolean S_SDL_Init(void)
 {
 	SDL_AudioSpec desired, obtained;
 
@@ -104,15 +104,16 @@ qboolean SNDDMA_Init(void)
 	shm->buffer = NULL;
 
 	snd_inited = 1;
+	Con_Printf("Audio Subsystem initialized in SDL mode.\n");
 	return 1;
 }
 
-int SNDDMA_GetDMAPos(void)
+int S_SDL_GetDMAPos(void)
 {
 	return shm->samplepos;
 }
 
-void SNDDMA_Shutdown(void)
+void S_SDL_Shutdown(void)
 {
 	if (snd_inited)
 	{
@@ -124,12 +125,15 @@ void SNDDMA_Shutdown(void)
 	}
 }
 
-void SNDDMA_Submit(void)
+void S_SDL_Submit(void)
 {
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/02/04 11:29:38  sezero
+ * make sdl_audio actually work (finally)
+ *
  * Revision 1.2  2004/12/21 17:35:19  sezero
  * revert two commits (obsolete experimentals)
  *

@@ -6,10 +6,6 @@ BUILDGL=yes
 BUILDMP=no
 #		yes = build mission pack, no = normal hexen2
 
-SOUND=OSS
-#		OSS or SDL. The default OSS works great but is incompatible
-#		with some cards/kernel modules. The alternative, SDL, is buggy.
-
 USEMIDI=yes
 #		MIDI needs SDL_mixer (built with Timidity support)
 #		and Timidity patches
@@ -62,10 +58,6 @@ endif
 
 ifdef DEBUG
 CFLAGS+= -DDEBUG -g
-endif
-
-ifeq "$(SOUND)" "SDL"
-CFLAGS+= -DSDL_SOUND
 endif
 
 # Rules for turning source files into .o files
@@ -142,7 +134,7 @@ GLOBJS = gl_dl_draw.o \
 	gl_dl_warp.o \
 	gl_dl_vidsdl.o
 
-MOSTOBJS = cd_linux.o \
+COMMONOBJS = cd_linux.o \
 	chase.o \
 	cl_demo.o \
 	cl_effect.o \
@@ -176,6 +168,9 @@ MOSTOBJS = cd_linux.o \
 	snd_dma.o \
 	snd_mix.o \
 	snd_mem.o \
+	snd_oss.o \
+	snd_sdl.o \
+	snd_alsa.o \
 	sv_main.o \
 	sv_move.o \
 	sv_phys.o \
@@ -190,12 +185,6 @@ MOSTOBJS = cd_linux.o \
 	snd_mixa.o \
 	sys_ia32.o \
 	worlda.o
-	
-ifeq "$(SOUND)" "SDL"
-	COMMONOBJS = $(MOSTOBJS) snd_sdl.o
-else
-	COMMONOBJS = $(MOSTOBJS) snd_oss.o
-endif
 
 #all: static dynamic 
 all : $(BINARY)

@@ -86,21 +86,62 @@ void S_AmbientOn (void)
 
 void S_SoundInfo_f(void)
 {
+	char *s_sys;
 	if (!sound_started || !shm)
 	{
 		Con_Printf ("sound system not started\n");
 		return;
 	}
 	
-    Con_Printf("%5d stereo\n", shm->channels - 1);
-    Con_Printf("%5d samples\n", shm->samples);
-    Con_Printf("%5d samplepos\n", shm->samplepos);
-    Con_Printf("%5d samplebits\n", shm->samplebits);
-    Con_Printf("%5d submission_chunk\n", shm->submission_chunk);
-    Con_Printf("%5d speed\n", shm->speed);
-    Con_Printf("0x%x dma buffer\n", shm->buffer);
+	switch (snd_system) {
+	case S_SYS_OSS:
+		s_sys = "OSS";
+		break;
+	case S_SYS_SDL:
+		s_sys = "SDL";
+		break;
+	case S_SYS_ALSA:
+		s_sys = "ALSA";
+		break;
+	}
+	Con_Printf("Driver: %s\n", s_sys);
+	Con_Printf("%5d stereo\n", shm->channels - 1);
+	Con_Printf("%5d samples\n", shm->samples);
+	Con_Printf("%5d samplepos\n", shm->samplepos);
+	Con_Printf("%5d samplebits\n", shm->samplebits);
+	Con_Printf("%5d submission_chunk\n", shm->submission_chunk);
+	Con_Printf("%5d speed\n", shm->speed);
+	Con_Printf("0x%x dma buffer\n", shm->buffer);
 	Con_Printf("%5d total_channels\n", total_channels);
 }
+
+
+#ifdef PLATFORM_UNIX
+void S_GetSubsys (void)
+{
+	switch (snd_system) {
+		case S_SYS_SDL:
+			SNDDMA_Init	 = S_SDL_Init;
+			SNDDMA_GetDMAPos = S_SDL_GetDMAPos;
+			SNDDMA_Shutdown	 = S_SDL_Shutdown;
+			SNDDMA_Submit	 = S_SDL_Submit;
+			break;
+		case S_SYS_ALSA:
+			SNDDMA_Init	 = S_ALSA_Init;
+			SNDDMA_GetDMAPos = S_ALSA_GetDMAPos;
+			SNDDMA_Shutdown	 = S_ALSA_Shutdown;
+			SNDDMA_Submit	 = S_ALSA_Submit;
+			break;
+		case S_SYS_OSS:
+		default:
+			SNDDMA_Init	 = S_OSS_Init;
+			SNDDMA_GetDMAPos = S_OSS_GetDMAPos;
+			SNDDMA_Shutdown	 = S_OSS_Shutdown;
+			SNDDMA_Submit	 = S_OSS_Submit;
+			break;
+	}
+}
+#endif	// PLATFORM_UNIX
 
 
 /*
@@ -108,13 +149,16 @@ void S_SoundInfo_f(void)
 S_Startup
 ================
 */
-
 void S_Startup (void)
 {
 	int		rc;
 
 	if (!snd_initialized)
 		return;
+
+#ifdef PLATFORM_UNIX
+	S_GetSubsys();
+#endif
 
 	rc = SNDDMA_Init();
 
@@ -846,7 +890,7 @@ void S_ExtraUpdate (void)
 
 void S_Update_(void)
 {
-#ifndef SDL_SOUND
+ if (snd_system != S_SYS_SDL) {
 	unsigned        endtime;
 	int				samps;
 	
@@ -891,7 +935,7 @@ void S_Update_(void)
 	S_PaintChannels (endtime);
 
 	SNDDMA_Submit ();
-#endif	// !SDL_SOUND
+ }
 }
 
 /*

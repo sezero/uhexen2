@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.2 2005-01-29 03:31:28 sezero Exp $
+	$Id: snd_oss.c,v 1.3 2005-02-04 13:40:52 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -41,7 +41,7 @@ int snd_inited;
 
 static int tryrates[] = { 11025, 22051, 44100, 8000 };
 
-qboolean SNDDMA_Init(void)
+qboolean S_OSS_Init(void)
 {
 
 	int rc;
@@ -227,11 +227,12 @@ qboolean SNDDMA_Init(void)
 	shm->samplepos = 0;
 
 	snd_inited = 1;
+	Con_Printf("Audio Subsystem initialized in OSS mode.\n");
 	return 1;
 
 }
 
-int SNDDMA_GetDMAPos(void)
+int S_OSS_GetDMAPos(void)
 {
 
 	struct count_info count;
@@ -254,10 +255,11 @@ int SNDDMA_GetDMAPos(void)
 
 }
 
-void SNDDMA_Shutdown(void)
+void S_OSS_Shutdown(void)
 {
 	if (snd_inited)
 	{
+		Con_Printf ("Shutting down OSS sound\n");
 		close(audio_fd);
 		snd_inited = 0;
 	}
@@ -270,7 +272,7 @@ SNDDMA_Submit
 Send sound to device if buffer isn't really the dma buffer
 ===============
 */
-void SNDDMA_Submit(void)
+void S_OSS_Submit(void)
 {
 }
 
