@@ -4,7 +4,7 @@
 
 #define HOT_VERSION_MAJ 1
 #define HOT_VERSION_MID 2
-#define HOT_VERSION_MIN 2
+#define HOT_VERSION_MIN 3
 #ifdef PLATFORM_UNIX
 #define VERSION_PLATFORM "Linux"
 #else
