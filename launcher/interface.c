@@ -83,7 +83,7 @@ GtkWidget* create_window1 (void) {
   window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (window1), "window1", window1);
 #ifndef DEMOBUILD
-  gtk_window_set_title (GTK_WINDOW (window1), _("Hexen II for Linux Launcher, 0.3.2"));
+  gtk_window_set_title (GTK_WINDOW (window1), _("Hexen II for Linux Launcher, 0.3.3"));
 #else
   gtk_window_set_title (GTK_WINDOW (window1), _("Hexen2 Demo for Linux"));
 #endif
@@ -299,8 +299,7 @@ GtkWidget* create_window1 (void) {
   gtk_fixed_put (GTK_FIXED (fixed1), SOUND_button, 184, 168);
   gtk_widget_set_uposition (SOUND_button, 184, 168);
   gtk_widget_set_usize (SOUND_button, 117, 26);
-  if (!sound)
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (SOUND_button), TRUE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (SOUND_button), !sound);
 
   MIDI_button = gtk_check_button_new_with_label (_("Disable MIDI music"));
   gtk_widget_ref (MIDI_button);
@@ -310,13 +309,8 @@ GtkWidget* create_window1 (void) {
   gtk_fixed_put (GTK_FIXED (fixed1), MIDI_button, 200, 216);
   gtk_widget_set_uposition (MIDI_button, 200, 216);
   gtk_widget_set_usize (MIDI_button, 140, 24);
-  if (!sound) {
-    gtk_widget_set_sensitive (MIDI_button, FALSE);
-    if (!midi)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MIDI_button), TRUE);
-  } else {
-    gtk_widget_set_sensitive (MIDI_button, TRUE);
-  }
+  gtk_widget_set_sensitive (MIDI_button, sound); 
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MIDI_button), !midi);
 
   CDAUDIO_button = gtk_check_button_new_with_label (_("Disable CD music"));
   gtk_widget_ref (CDAUDIO_button);
@@ -326,13 +320,8 @@ GtkWidget* create_window1 (void) {
   gtk_fixed_put (GTK_FIXED (fixed1), CDAUDIO_button, 200, 192);
   gtk_widget_set_uposition (CDAUDIO_button, 200, 192);
   gtk_widget_set_usize (CDAUDIO_button, 140, 24);
-  if (!sound) {
-    gtk_widget_set_sensitive (CDAUDIO_button, FALSE);
-    if (!cdaudio)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (CDAUDIO_button), TRUE);
-  } else {
-    gtk_widget_set_sensitive (CDAUDIO_button, TRUE);
-  }
+  gtk_widget_set_sensitive (CDAUDIO_button, sound);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (CDAUDIO_button), !cdaudio);
 
   LAN_button = gtk_check_button_new_with_label (_("Disable Networking"));
   gtk_widget_ref (LAN_button);

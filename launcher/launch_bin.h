@@ -9,6 +9,7 @@
 #define RES_800  4
 #define RES_1024 5
 #define RES_1280 6
+#define RES_MAX  6
 
 #define DEST_H2 0
 #define DEST_HW 1

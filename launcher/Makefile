@@ -28,7 +28,7 @@ H2LAUNCH = ${TMPNAME}.gtk1
 GTK_CFLAGS = `gtk-config --cflags`
 GTK_LIBS = `gtk-config --libs`
 endif
-VERSION = 0.3.2
+VERSION = 0.3.3
 
 PROGRAMS = $(H2LAUNCH)
 

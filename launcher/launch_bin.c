@@ -235,21 +235,19 @@ void launch_hexen2_bin() {
     printf(" %s", args[i1]);
   printf("\n\n");
 
+  gtk_main_quit();
   pid=fork();
-
-  if (pid == 0) {
-	pid=fork();
-	if (pid == 0) {
-	      execv(binary_name,args);
-	      gtk_main_quit();
-	} else {
-	     if (pid == -1)
-		     perror(NULL);
-	     gtk_main_quit();
-	}
+  if (pid == -1) {
+	printf ("fork() failed, bad...\n");
+	perror(NULL);
+	exit(1);
+  }
+  if (pid) {
+	printf ("Child process %s with PID %d\n", binary_name, pid);
+	exit(0);
   } else {
-	if (pid == -1)
-	   perror(NULL);
-	gtk_main_quit();
+	printf ("now execv()ing %s\n", binary_name);
+	execv(binary_name, args);
+	exit(0);
   }
 }
