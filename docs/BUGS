@@ -1,6 +1,8 @@
 Known Bugs
 ----------
 
+  Midi music doesn't work with SDL sound driver
+
   OSS sound segfaults with some sound drivers for some people.
   (This shouldn't be a problem, anyway: We already have ALSA
    and SDL sound drivers, now.)
