@@ -1,21 +1,20 @@
-                       Linux Hexen II Project
+                           Linux Hexen II
 			--------------------
-			 Hammer of  Thyrion	
+                       Hammer of Thyrion 1.2.2
 
 1. Installation
 
-  1.1 Getting the Program
-  1.2 Software requirements
-  1.3 Installing the data files
-  1.4 Executing the game
-  1.5 Sound 
-  1.6 Thanks
-  1.7 Contact
+  1.1 Getting Started
+  1.2 Software Requirements
+  1.3 Executing the Game
+  1.4 Sound 
+  1.5 Thanks
+  1.6 Contact
 
 2. Notes
 
   2.1 Tweaks
-  2.2 No Bosses
+  2.2 Problems with Bosses
   2.3 Mods and Crazy Polygons
   2.4 Lines on Screen
   2.5 Hardware Acceleration
@@ -28,40 +27,30 @@
 1. Installation
 ---------------
 
-1.1 Getting the Program
------------------------
+1.1 Getting Started
+-------------------
 
-The easiest way to start is to find the file "aot-1.2.0.x86.run" (obtainable
-from the 3d download site - see "2.8 Links") and execute it. It is a graphical
-installer which also patches the Hexen II game files from your CD up to the
-required version. Next, copy a HoT binary to the installation directory and you
-should be set to run the game. They are:
+Linux Hexen II requires Hexen II game files updated to version 1.11.
+To do this you can either:
 
-    glhexen2.dynamic -  OpenGL Hexen II
-    glh2mp.dynamic   -  OpenGL Portal of Praevus
-    hexen2.dynamic   -  Software Hexen II
-    h2mp.dynamic     -  Software Portal of Praevus
+1. Copy the "data1" directory from the Hexen II CD to your Hexen II directory
+and use the file "h2-game-updates-1.12a.tgz" (obtainable from the HoT web
+site) to manually patch your data files to version 1.11. (The 1.12a refers to
+the version of the mission pack, should you have it). or
 
-1.2 Software requirements
--------------------------
+2. Find the file "aot-1.2.0.x86.run" (obtainable from the 3d download site
+- see "2.8 Links") and execute it. It is an AoT graphical installer which also
+patches the Hexen II game files from your CD up to the required version. 
 
-AoT has issues with linux sound modules. See "1.5 Sound" for more info.
-The only unusual software requirements are:
+Then, simply copy a HoT binary to the installation directory and you should be
+set to run the game. The binaries are:
 
-    SDL                  : Single Direct Layer game libraries
-    SDL_mixer            : required for midi support
-    Alsa sound libraries : the SuSe supported Advanced Linux Sound Architecture
-    nasm                 : an x86 assembler if you are compiling your own program.
+    glhexen2 -  OpenGL Hexen II
+    glh2mp   -  OpenGL Portal of Praevus
+    hexen2   -  Software Hexen II
+    h2mp     -  Software Portal of Praevus
 
-and (perhaps) the multimedia libraries:  smpeg, vorbisfile, vorbis, ogg
-
-1.3 Installing the data files
------------------------------
-
-If you didn't use "aot-1.2.0.x86.run" in step 1.1, you will have to manually 
-upgrade the data files to game version 1.11. Earlier versions will not work.
-To do this, upgrade the original w**dows game with the "ph2v111.exe" patch
-(which is available on the web). After doing this, you should have these files:
+The data files you will need are:
 
     file	md5sum					size (bytes)
     ----	------					------------
@@ -73,15 +62,29 @@ To do this, upgrade the original w**dows game with the "ph2v111.exe" patch
 
     and string<something>.txt renamed to "strings.txt"
 
-All files should be lowercased, which can be done with "mv_lowercase" from the
-file-rename-utils archive (see Links).
+All files should be lowercased (if not already) and can be done with
+"mv_lowercase" from the file-rename-utils archive (see Links).
 
-To use the mission pack, copy the w**dows "portals" directory to your AoT directory.
+To use the mission pack, copy the "portals" directory to your Hexen II
+directory (and ,optionally, patch the game files with "h2-game-updates-1.12a")
 
-1.4 Executing the game
+1.2 Software Requirements
+-------------------------
+
+HoT has issues with linux sound modules. See "1.4 Sound" for more info.
+The only unusual software requirements are:
+
+    SDL                  : Single Direct Layer game libraries
+    SDL_mixer            : required for midi support
+    Alsa sound libraries : the SuSe supported Advanced Linux Sound Architecture
+    nasm                 : an x86 assembler if you are compiling your own program.
+
+and (perhaps) the multimedia libraries:  smpeg, vorbisfile, vorbis, ogg
+
+1.3 Executing the Game
 ----------------------
 
-The default mode is windowed. Use "glhexen2.dynamic -f" to start the game in
+The default mode is windowed. Use "glhexen2 -f" to start the game in
 full-screen mode.  The following options are accepted:
 
      [-h | --help]                   Display this help message
@@ -90,6 +93,7 @@ full-screen mode.  The following options are accepted:
      [-w | --windowed]               Run the game windowed
      [-s | --nosound]                Run the game without sound
      [-g | --gllibrary]              Select 3D rendering library
+     [-nomouse]                      Don't use the mouse in window mode
      [-width Width [-height Height]] Select screen size
      [-bpp]                          Depth for GL fullscreen mode
      [-heapsize Bytes]               Heapsize
@@ -97,45 +101,47 @@ full-screen mode.  The following options are accepted:
 Others may work, but aren't really supported.
 
 You may wish to brighten the display with "xgamma". The script I use is:
+
     cd /usr/local/games/hexenII
     xgamma -q -gamma 1.3;       # brighten the display
-    ./glhexen2.dynamic -width 800 -height 600 -fullscreen -heapsize 48000
-	    # quake games require manually setting the heapsize
+    ./glhexen2 -width 800 -height 600 -f -heapsize 48000
+	    			# default heapsize is 32768
     xgamma -q -gamma 1;         # restore old brightness
-If you haven't used a Hammer of Thyrion binary, the GL fullscreen modes are not
-true fullscreen - they still have the window borders and handles. 
 
-1.5 Sound 
+1.4 Sound 
 ---------
 
-Several older linux shooters are picky about their sound driver. If your game
-bombs out after sound initialization, you might try alternative sound
-modules.  This is not straight forward and is a real problem for linux
-games. If the Alsa sound modules are installed and configured, you can use
-(for example):
+OSS sound code
+--------------
+HoT requires your kernel sound modules to be OSS (Open Sound System)
+compatible.  If your game bombs out after sound initialization and you are not
+using the Alsa kernel sound drivers you might try them, but doing so is not
+straight forward.  Once the Alsa sound modules are installed and configured,
+you can use (for example):
 
     rmmod emu10k1          ;# remove standard sound module for SBLive card
     /etc/init.d/alsa start ;# start alsa sound modules
 
 and check with alsamixer that the volumes are not turned down to zero.
 
-Currently, sound compatibility issues have not been addressed.  There may be
-other fixes for those affected, but I don't know of them.  Quake III has
-similar issues and are related to the sound driver's "mmap" feature. The
-problem may also be with OSS (Open Sound System - the original linux sound
-libraries) compatibility, or lack of.
+SDL sound code
+--------------
+There is now an option to build a new sound driver. To do this, set
+"SOUND=SDL" in the Makefile in the HoT source code, and type "make". This
+sound driver does not have the compatibility issues of the default (OSS) sound
+code, it is very much beta - varying from working well, to not at all.
 
 If you can't get sound working , the "-nosound" option will disable it.
 
-1.6 Thanks
+1.5 Thanks
 ----------
 
 *Thanks* to ID Software, Raven Games and Activision for a great game and for
 supporting open source software. Also thank-you to Ibiblio.org, Sourceforge.net
 and the AoT Authors - Dan Olson and Clément Bourdarias. Mega Thanks to all the
-unheralded Quake/Hexen modders.
+unheralded Doom/Quake/Hexen modders.
 
-1.7 Contact
+1.6 Contact
 -----------
     Steven Atkinson    <stevenaaus@yahoo.com>
     Ozkan Sezer        <sezeroz@ttnet.net.tr>
@@ -167,22 +173,28 @@ those that can be changed. For more info see various Quake tweaking sites.
     gl_otherglows  0 | 1      : enable glow on green and blue mana
     snow_active    0 - 255    : 0 = none, 1 = normal (amount designated by
 			        the map), and higher will act as a multiplier.
+    m_oldmission   0 | 1      : enable "Old Mission" menu item in Praevus.
 
 
-2.2 No Bosses
--------------
+2.2 Problems with Bosses
+------------------------
 
-AoT had a bug: The bosses don't appear :-(
+AoT has a bug: The bosses don't appear :-(
 This has been fixed in Hammer of Thyrion ;-)
 
+There is another (small) bug with Hexen II. On some systems Eidolon doesn't
+jump cleanly off the ledge, and wanders around above the ground. There is
+already a hcode patch for this, and should shortly be a shell script to
+automatically fix it.
 
 2.3 Mods and Crazy Polygons
 ---------------------------
 
-Some mission-packs/mods for Quake based games can cause existing player/monster
-models to be drawn with lines all over the place. To fix this, delete the
-directory "~/.aot/glhexen" or "~/.aot/portals/glhexen". When you next run
-the game, it will remake this directory and everything should be fine.
+Some mission-packs/mods for Quake based games can cause existing
+player/monster models to be drawn with lines all over the place. To fix this,
+delete the directory "~/.aot/glhexen" or "~/.aot/portals/glhexen". When you
+next run the game, it will remake this directory and everything should be
+fine.
 
 The biggest mod I've seen for hexen II is the awesome Fortress of Four Doors.
 (fo4d.zip). Go and get it, fool. 8>
@@ -237,6 +249,9 @@ I think once I nail a few simple physics bugs, we'll have PoP emulating
 Hexen 2 quite nicely, but it's been suggested that I'll need a whole
 different physics engine."
 
+Ozkan has fixed the bug when Eidolon's jump doesn't clear the ledge.
+Unfortunately, this involves the HexenC code, and progs2.dat, and how
+best to include it in HoT I'm not sure.
 
 2.8 Links
 ---------
