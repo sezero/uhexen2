@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.4 2005-02-04 11:48:18 sezero Exp $
+	$Id: cd_linux.c,v 1.5 2005-02-04 11:51:19 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -49,13 +49,14 @@ static qboolean	wasPlaying = false;
 static qboolean	initialized = false;
 static qboolean	enabled = true;
 static qboolean playLooping = false;
-static float	cdvolume;
 static byte 	remap[100];
 static byte	playTrack;
 static byte	maxTrack;
 
 static int cdfile = -1;
 static char cd_dev[64] = "/dev/cdrom";
+static struct cdrom_volctrl drv_vol0;	// orig. setting to be restored upon exit
+static struct cdrom_volctrl drv_vol;	// the volume setting we'll be using
 
 static void CDAudio_Eject(void)
 {
@@ -162,9 +163,6 @@ void CDAudio_Play(byte track, qboolean looping)
 	playLooping = looping;
 	playTrack = track;
 	playing = true;
-
-	if (cdvolume == 0.0)
-		CDAudio_Pause ();
 }
 
 
@@ -334,7 +332,7 @@ static void CD_f (void)
 			Con_Printf("Currently %s track %u\n", playLooping ? "looping" : "playing", playTrack);
 		else if (wasPlaying)
 			Con_Printf("Paused %s track %u\n", playLooping ? "looping" : "playing", playTrack);
-		Con_Printf("Volume is %f\n", cdvolume);
+		Con_Printf("Volume is %f\n", bgmvolume.value);
 		return;
 	}
 }
@@ -347,17 +345,12 @@ void CDAudio_Update(void)
 	if (!enabled)
 		return;
 
-	if (bgmvolume.value != cdvolume)
+	if (bgmvolume.value != drv_vol.channel0)
 	{
-		cdvolume = bgmvolume.value;
-		if (cdvolume == 0)
-		{
-			CDAudio_Pause ();
-		}
-		else
-		{
-			CDAudio_Resume ();
-		}
+		drv_vol.channel0 = drv_vol.channel2 =
+		drv_vol.channel1 = drv_vol.channel3 =
+				bgmvolume.value * 255;
+		ioctl(cdfile, CDROMVOLCTRL, &drv_vol);
 	}
 
 	if (playing && lastchk < time(NULL)) {
@@ -414,6 +407,14 @@ int CDAudio_Init(void)
 
 	Con_Printf("CD Audio Initialized\n");
 
+	// get drives volume
+	ioctl(cdfile, CDROMVOLREAD, &drv_vol0);
+	// set our own volume
+	drv_vol.channel0 = drv_vol.channel2 =
+	drv_vol.channel1 = drv_vol.channel3 =
+			bgmvolume.value * 255;
+	ioctl(cdfile, CDROMVOLCTRL, &drv_vol);
+
 	return 0;
 }
 
@@ -423,6 +424,8 @@ void CDAudio_Shutdown(void)
 	if (!initialized)
 		return;
 	CDAudio_Stop();
+	// put the drives old volume back
+	ioctl(cdfile, CDROMVOLCTRL, &drv_vol0);
 	close(cdfile);
 	cdfile = -1;
 }
