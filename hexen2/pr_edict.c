@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.3 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.4 2004-12-12 14:25:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1169,8 +1169,11 @@ void PR_LoadProgs (void)
 
 	strcpy(finalprogname, "progs.dat");
 
-/*	don't need this anymore - JFM */
-/*	H2MP doesn't need this, but original Hexen2 does... */
+/*	don't need this anymore - JFM
+	H2MP doesn't need this, but original Hexen2 does...
+	But if you wish to compile progs.dat and progs2.dat together
+	into a single progs.dat, you must again remove this ifndef
+*/
 #ifndef H2MP
 
 	COM_FOpenFile ("maplist.txt", &f, true);
@@ -1438,6 +1441,9 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.2  2004/11/28 00:30:35  sezero
  * allow original hexen2 to load many progsX.dat files. fixes the no-boss bug
  *

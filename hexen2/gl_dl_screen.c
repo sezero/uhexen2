@@ -3,7 +3,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_screen.c,v 1.4 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_screen.c,v 1.5 2004-12-12 14:25:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1094,9 +1094,12 @@ void SB_IntermissionOverlay(void)
 
 	// final message hacks - S.A
 	// eidolon cl.intermission == 6,7,8
+	// "by" is the y offset in pixels to begin printing at
+	// each line is 8 pixels
 	if (cl.intermission >= 6 && cl.intermission <= 8)
 		by = (vid.height/2 - lines*4);
 
+	// different story for the mission pack
         if (cl.intermission == 10 )	// tibet10 cl.intermission == 10
 		by=33;
 
@@ -1284,6 +1287,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.3  2004/12/05 10:52:18  sezero
  * Sync with Steven, 2004-12-04 :
  *  Fix the "Old Mission" menu PoP
