@@ -1,5 +1,28 @@
 ChangeLog:
 
+2005-02-04 (CVS):
+    * made sdl_audio actually work (finally)
+    * some snd_dma.c fixes from the tenebrae project
+    * killed fakedma (simsound). one less thing to worry about
+    * fixed cd music stops playing on volume change (reported
+      by Julien Langer)
+    * added actual cdrom volume control via CDROMVOLCTRL.
+      do not pause cdromplaying when user volume is 0
+      (should have been a trick to silence the cdrom before
+      this control was present). BSD ioctls may be different,
+      add conditionals for it one day...
+    * added ALSA sound driver (from the quakeforge project)
+    * we now build all all the sound drivers in and choose from
+      the command line. oss is default
+    * removed environment variable support from snd_oss.c.
+    * midi fixes for correctness' sake. it still fails with snd_sdl
+    * merged small bits from the hw version of midi.c into h2
+    * small whitespace cleanups in snd_oss.c, snd_mem.c, snd_dma.c,
+      cd_linux.c. Heavy whitespace changes in midi.c, midi.h.
+    * removed the noexit (keep me open) thing from launcher
+    * removed forking from the launcher which now serves nothing
+    * added sound driver selection to the launcher
+
 2005-02-01 (CVS):
     * fixed the demos without models with -nosound
     * initial style-only sound code syncing between h2 and hw
