@@ -15,7 +15,7 @@ endif
 
 CC = gcc
 LINKER = gcc
-CFLAGS = -fomit-frame-pointer -ffast-math -fexpensive-optimizations -malign-loops=2 -malign-jumps=2 -malign-functions=2 -g -O2 -DUSE_INTEL_ASM -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ `sdl-config --cflags`
+CFLAGS = -fomit-frame-pointer -ffast-math -fexpensive-optimizations -falign-loops=2 -falign-jumps=2 -falign-functions=2 -g -O2 -DUSE_INTEL_ASM -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ `sdl-config --cflags`
 LDFLAGS = `sdl-config --libs`
 GLFLAGS = `sdl-config --libs` -L/usr/X11R6/lib -lGL -lGLU
 
