@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.11 2005-01-03 22:37:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.12 2005-01-04 07:17:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,7 +10,6 @@
 extern int ColorIndex[16];
 extern unsigned ColorPercent[16];
 extern qboolean	vid_initialized;
-extern int setup_class;
 
 #define MAX_DISC 18
 
@@ -892,6 +891,7 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 	static qboolean first_time = true;
 	extern int setup_top;
 	extern int setup_bottom;
+	extern int setup_class;
 
 	// Initialize array of texnums
 	if (first_time) {
