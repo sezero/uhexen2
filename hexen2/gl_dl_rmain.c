@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_rmain.c,v 1.8 2004-12-18 14:08:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_rmain.c,v 1.9 2004-12-21 16:20:17 sezero Exp $
 */
 
 
@@ -1496,7 +1496,7 @@ void R_SetupGL (void)
 	glfunc.glViewport_fp (glx + x, gly + y2, w, h);
     screenaspect = (float)r_refdef.vrect.width/r_refdef.vrect.height;
 	yfov = 2*atan((float)r_refdef.vrect.height/r_refdef.vrect.width)*180/M_PI;
-    MYgluPerspective (yfov,  screenaspect,  4.0,  4096.0);
+    MYgluPerspective (yfov,  screenaspect,  4,  4096);
 
 	if (mirror)
 	{
@@ -1782,6 +1782,10 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2004/12/18 14:08:07  sezero
+ * Clean-up and kill warnings 9:
+ * Kill many unused vars.
+ *
  * Revision 1.7  2004/12/18 13:24:37  sezero
  * fix fire attacks of the Demoness and Praevus which were drawing lines
  * across the screen. courtesy of Pa3Pyx.
