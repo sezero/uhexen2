@@ -6,11 +6,11 @@ ChangeLog:
       non-functional findbpp
 
 2005-03-08 (CVS):
-    * my silly oversight in reinit_music: fixes bug "midi always
-      restarts upon pressing Esc twice"
+    * fixed an oversight in reinit_music which resulted in a
+      needless restart of midi music upon pressing Esc twice
 
 1.2.4: Changes since HoT-1.2.3:
-2005-03-05:
+2005-03-06:
     * Release 1.2.4-final
     * Added bsd includes to snd_oss.c
     * Added net sanity checks (from Steven)
