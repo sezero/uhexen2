@@ -316,7 +316,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	if (!stat)
 	{
-		Sys_Error ("Couldn't set video mode");
+		Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 	}
 
 // now we try to make sure we get the focus on the mode switch, because
