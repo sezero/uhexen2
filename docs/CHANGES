@@ -1,5 +1,11 @@
 ChangeLog:
 
+2005-01-08 (CVS, 1.2.3-rc6):
+
+    * don't die on cache mismatch, delete and and reload the new
+      texture.
+    * slight gl clean-ups.
+
 2005-01-07 (CVS, 1.2.3-rc5):
 
     * _windowed_mouse default is 1 in gl mode, too.
