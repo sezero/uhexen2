@@ -232,9 +232,13 @@ create_window1 (void)
   gtk_fixed_put (GTK_FIXED (fixed1), MIDI_button, 200, 192);
   gtk_widget_set_uposition (MIDI_button, 200, 192);
   gtk_widget_set_usize (MIDI_button, 144, 24);
-  if (sound)
+  if (sound) {
+    gtk_widget_set_sensitive (MIDI_button, TRUE);
     if (midi)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MIDI_button), TRUE);
+  } else {
+    gtk_widget_set_sensitive (MIDI_button, FALSE);
+  }
 
   CDAUDIO_button = gtk_check_button_new_with_label (_("Enable CD music"));
   gtk_widget_ref (CDAUDIO_button);
@@ -244,9 +248,13 @@ create_window1 (void)
   gtk_fixed_put (GTK_FIXED (fixed1), CDAUDIO_button, 200, 216);
   gtk_widget_set_uposition (CDAUDIO_button, 200, 216);
   gtk_widget_set_usize (CDAUDIO_button, 136, 24);
-  if (sound)
+  if (sound) {
+    gtk_widget_set_sensitive (CDAUDIO_button, TRUE);
     if (cdaudio)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (CDAUDIO_button), TRUE);
+  } else {
+    gtk_widget_set_sensitive (CDAUDIO_button, FALSE);
+  }
 
   MOUS_button = gtk_check_button_new_with_label (_("Enable Mouse"));
   gtk_widget_ref (MOUS_button);
