@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.13 2005-02-20 13:38:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.14 2005-03-03 17:03:39 sezero Exp $
 */
 
 #include <stdio.h>
@@ -21,22 +21,8 @@
 #include "quakedef.h"
 #include "errno.h"
 
-#define CRC_A 59461 // "Who's Ridin' With Chaos?"
-#define CRC_B 54866 // "Santa needs a new sled!"
-
-#ifdef GLQUAKE
-	#define MINIMUM_WIN_MEMORY		0x1000000
-	#define MAXIMUM_WIN_MEMORY		0x1800000
-#else
-	#define MINIMUM_WIN_MEMORY		0x0C00000
-	#define MAXIMUM_WIN_MEMORY		0x1600000
-#endif
-
 #define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error running
 										//  dedicated before exiting
-#define PAUSE_SLEEP		50	// sleep time on pause or minimization
-#define NOT_FOCUS_SLEEP		20	// sleep time when not focus
-
 #define MAXPRINTMSG		4096
 
 int			starttime;
@@ -48,17 +34,8 @@ static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
 qboolean		isDedicated;
 static qboolean		sc_return_on_enter = false;
-HANDLE			hinput, houtput;
-
-#if 0
-static double	pfreq;
-static int	lowshift;
-static char	*tracking_tag = "Sticky Buns";
-static HANDLE	tevent;
-static HANDLE	hFile;
-static HANDLE	heventParent;
-static HANDLE	heventChild;
-#endif
+//HANDLE			hinput, houtput;
+//static char	*tracking_tag = "Sticky Buns";
 
 void MaskExceptions (void);
 void Sys_InitFloatTime (void);
@@ -66,32 +43,6 @@ void Sys_InitFloatTime (void);
 cvar_t		sys_delay = {"sys_delay","0", true};
 
 volatile int					sys_checksum;
-
-
-/*
-================
-Sys_PageIn
-================
-*/
-void Sys_PageIn (void *ptr, int size)
-{
-	byte	*x;
-	int	m, n;
-
-// touch all the memory to make sure it's there. The 16-page skip is to
-// keep Win 95 from thinking we're trying to page ourselves in (we are
-// doing that, of course, but there's no reason we shouldn't)
-	x = (byte *)ptr;
-
-	for (n=0 ; n<4 ; n++)
-	{
-		for (m=0 ; m<(size - 16 * 0x1000) ; m += 4)
-		{
-			sys_checksum += *(int *)&x[m];
-			sys_checksum += *(int *)&x[m + 16 * 0x1000];
-		}
-	}
-}
 
 
 /*
@@ -282,33 +233,9 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 
         r = mprotect ((char *) addr, length + startaddr - addr + psize, 7);
 
-        if (r < 0)
-                Sys_Error("Protection change failed\n");
-#if 0
-	DWORD  flOldProtect;
-
-	if (!VirtualProtect((LPVOID)startaddr, length, PAGE_READWRITE, &flOldProtect))
-   		Sys_Error("Protection change failed\n");
-#endif
+	if (r < 0)
+		Sys_Error("Protection change failed\n");
 }
-
-#ifdef SECURE_TIME
-#include <time.h>
-#define BuildTime 889138800
-void CheckTime()
-{
-	time_t now;
-	int    days;
-
-	time( &now );
-	if ((now < BuildTime) || (now> BuildTime+26*24*60*60))
-	{
-		errormessage = "This version has expired.@Please contact Activision for a new version";
-		LegitCopy = false;
-	}
-}
-
-#endif
 
 /*
 ================
@@ -318,100 +245,6 @@ Sys_Init
 void Sys_Init (void)
 {
 	Sys_SetFPCW();
-#if 0
-	LARGE_INTEGER	PerformanceFreq;
-	unsigned int	lowpart, highpart;
-	OSVERSIONINFO	vinfo;
-static	char temp[MAX_PATH+1];
-	int value,i;
-	HKEY hKey;
-    DWORD dwSize,dwType;
-	unsigned short crc;
-
-	MaskExceptions ();
-	Sys_SetFPCW ();
-
-#if 0
-	if (!QueryPerformanceFrequency (&PerformanceFreq))
-		Sys_Error ("No hardware timer available");
-
-// get 32 out of the 64 time bits such that we have around
-// 1 microsecond resolution
-	lowpart = (unsigned int)PerformanceFreq.LowPart;
-	highpart = (unsigned int)PerformanceFreq.HighPart;
-	lowshift = 0;
-
-	while (highpart || (lowpart > 2000000.0))
-	{
-		lowshift++;
-		lowpart >>= 1;
-		lowpart |= (highpart & 1) << 31;
-		highpart >>= 1;
-	}
-#endif
-	pfreq = 1.0 / (double)lowpart;
-
-	Sys_InitFloatTime ();
-
-	vinfo.dwOSVersionInfoSize = sizeof(vinfo);
-
-	if (!GetVersionEx (&vinfo))
-		Sys_Error ("Couldn't get OS info");
-
-	if (vinfo.dwMajorVersion < 4)
-		Win32AtLeastV4 = false;
-	else
-		Win32AtLeastV4 = true;
-
-	if (vinfo.dwPlatformId == VER_PLATFORM_WIN32s)
-		Sys_Error ("Hexen2 requires at least Win95 or NT 4.0");
-	
-	if (vinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
-		WinNT = true;
-	else
-		WinNT = false;
-
-#ifdef SECURE
-	dwSize = sizeof(temp);
-    RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-                 "SYSTEM\\CurrentControlSet\\Control\\ComputerName\\ComputerName",
-                 0, KEY_READ, &hKey);
-    value = RegQueryValueEx(hKey,"RAID2",NULL,&dwType,temp,&dwSize);
-
-	if (value == ERROR_SUCCESS && dwType == REG_SZ)
-	{
-		CRC_Init(&crc);
-		dwSize = strlen(temp);
-		for(i=0;i<dwSize;i++)
-		{
-			CRC_ProcessByte(&crc,temp[i]);
-		}
-		i = CRC_Value(crc);
-//		Con_Printf("CRC is %d\n",i);
-
-		if (i != CRC_A && i != CRC_B)
-			LegitCopy = false;
-	}
-	else LegitCopy = false;
-
-	if (!LegitCopy)
-		errormessage = "You need to re-install Hexen 2 on this computer!";
-
-#else
-	LegitCopy = true;
-#endif
-
-#ifdef ACTIVISION
-	FindEncryption();
-#endif
-
-#ifdef SECURE
-	FindCD();
-#endif
-#ifdef SECURE_TIME
-	CheckTime();
-#endif
-#endif // 0
 }
 
 
@@ -419,12 +252,7 @@ void Sys_Error (char *error, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
-/*	char		text2[MAXPRINTMSG];
-	char		*text3 = "Press Enter to exit\n";
-	char		*text4 = "***********************************\n";
-	char		*text5 = "\n";
-	DWORD		dummy;
-*/	double		starttime;
+	double		starttime;
 
 	VID_ForceUnlockedAndReturnState ();
 
@@ -438,16 +266,7 @@ void Sys_Error (char *error, ...)
 		vsnprintf (text, MAXPRINTMSG, error, argptr);
 		va_end (argptr);
 
-#if 0
-		sprintf (text2, "ERROR: %s\n", text);
-		WriteFile (houtput, text5, strlen (text5), &dummy, NULL);
-		WriteFile (houtput, text4, strlen (text4), &dummy, NULL);
-		WriteFile (houtput, text2, strlen (text2), &dummy, NULL);
-		WriteFile (houtput, text3, strlen (text3), &dummy, NULL);
-		WriteFile (houtput, text4, strlen (text4), &dummy, NULL);
-#endif
 		fprintf(stderr, "ERROR: %s\n", text);
-
 
 		starttime = Sys_FloatTime ();
 		sc_return_on_enter = true;	// so Enter will get us out of here
@@ -461,16 +280,10 @@ void Sys_Error (char *error, ...)
 	{
 	// switch to windowed so the message box is visible
 		VID_SetDefaultMode ();
-	//	MessageBox(NULL, text, "Hexen II Error", MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 		fprintf(stderr, "ERROR: %s\n", text);
 	}
 
 	Host_Shutdown ();
-
-#if 0
-// shut down QHOST hooks if necessary
-	DeinitConProc ();
-#endif
 
 	exit (1);
 }
@@ -479,7 +292,6 @@ void Sys_Printf (char *fmt, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
-	//DWORD		dummy;
 	
 	va_start (argptr,fmt);
 	vsnprintf (text, MAXPRINTMSG, fmt, argptr);
@@ -490,8 +302,6 @@ void Sys_Printf (char *fmt, ...)
 		va_start (argptr,fmt);
 		vsnprintf (text, MAXPRINTMSG, fmt, argptr);
 		va_end (argptr);
-
-//		WriteFile(houtput, text, strlen (text), &dummy, NULL);	
 	}
 	fprintf(stderr, "%s", text);
 }
@@ -502,17 +312,6 @@ void Sys_Quit (void)
 	VID_ForceUnlockedAndReturnState ();
 
 	Host_Shutdown();
-
-#if 0
-	if (tevent)
-		CloseHandle (tevent);
-
-	if (isDedicated)
-		FreeConsole ();
-
-// shut down QHOST hooks if necessary
-	DeinitConProc ();
-#endif
 
 	exit (0);
 }
@@ -539,66 +338,6 @@ double Sys_FloatTime (void)
         }
 
         return (tp.tv_sec - secbase) + tp.tv_usec/1000000.0;
-#if 0
-	static int			sametimecount;
-	static unsigned int	oldtime;
-	static int			first = 1;
-	LARGE_INTEGER		PerformanceCount;
-	unsigned int		temp, t2;
-	double				time;
-
-	Sys_PushFPCW_SetHigh ();
-
-	QueryPerformanceCounter (&PerformanceCount);
-
-	temp = ((unsigned int)PerformanceCount.part.LowPart >> lowshift) |
-		   ((unsigned int)PerformanceCount.part.HighPart << (32 - lowshift));
-
-	if (first)
-	{
-		oldtime = temp;
-		first = 0;
-	}
-	else
-	{
-	// check for turnover or backward time
-		if ((temp <= oldtime) && ((oldtime - temp) < 0x10000000))
-		{
-			oldtime = temp;	// so we can't get stuck
-		}
-		else
-		{
-			t2 = temp - oldtime;
-
-			time = (double)t2 * pfreq;
-			oldtime = temp;
-
-			curtime += time;
-
-			if (curtime == lastcurtime)
-			{
-				sametimecount++;
-
-				if (sametimecount > 100000)
-				{
-					curtime += 1.0;
-					sametimecount = 0;
-				}
-			}
-			else
-			{
-				sametimecount = 0;
-			}
-
-			lastcurtime = curtime;
-		}
-	}
-
-	Sys_PopFPCW ();
-
-    return curtime;
-#endif
-    return 1;
 }
 
 
@@ -720,64 +459,7 @@ void Sys_Sleep (void)
 void Sys_SendKeyEvents (void)
 {
 	IN_SendKeyEvents();
-#if 0
-    MSG        msg;
-
-	while (PeekMessage (&msg, NULL, 0, 0, PM_NOREMOVE))
-	{
-	// we always update if there are any event, even if we're paused
-		scr_skipupdate = 0;
-
-		if (!GetMessage (&msg, NULL, 0, 0))
-			Sys_Quit ();
-      	TranslateMessage (&msg);
-      	DispatchMessage (&msg);
-	}
-#endif
 }
-
-#if 0
-/*
-==============================================================================
-
- WINDOWS CRAP
-
-==============================================================================
-*/
-
-
-/*
-==================
-WinMain
-==================
-*/
-void SleepUntilInput (int time)
-{
-
-	MsgWaitForMultipleObjects(1, &tevent, FALSE, time, QS_ALLINPUT);
-}
-
-
-/*
-==================
-WinMain
-==================
-*/
-HINSTANCE	global_hInstance;
-int			global_nCmdShow;
-char		*argv[MAX_NUM_ARGVS];
-static char	*empty_string = "";
-HWND		hwnd_dialog;
-
-
-#ifdef GLQUAKE
-
-#define H2_PARAM_KEY      "Software\\Hexen2"
-#define H2_FLAG_VALUE     "Flag"
-
-#endif
-
-#endif
 
 int Sys_GetUserdir(char *buff, unsigned int len)
 {
@@ -853,9 +535,9 @@ int main(int argc, char *argv[])
 		cwd[strlen(cwd)-1] = 0;
 
 	if (!(Sys_GetUserdir(userdir,sizeof(userdir))))
-	        Sys_Error ("Couldn't determine userspace directory");
-
-	else printf("userdir is: %s\n",userdir);
+		Sys_Error ("Couldn't determine userspace directory");
+	else
+		printf("userdir is: %s\n",userdir);
 
 	parms.basedir = cwd;
 	parms.cachedir = NULL;
@@ -906,28 +588,6 @@ int main(int argc, char *argv[])
 	if (!parms.membase)
 		Sys_Error ("Not enough memory free; check disk space\n");
 
-	if(COM_CheckParm("-nopagein") == 0)
-	{
-		Sys_PageIn (parms.membase, parms.memsize);
-	}
-
-#if 0
-	if (!tevent)
-		Sys_Error ("Couldn't create event");
-
-	if (isDedicated)
-	{
-		if (!AllocConsole ())
-		{
-			Sys_Error ("Couldn't create dedicated server console");
-		}
-
-	// give QHOST a chance to hook into the console
-		// FIXME - DDOI
-	//InitConProc (hFile, heventParent, heventChild);
-	}
-#endif
-
 	Sys_Init ();
 
 // because sound is off until we become active
@@ -968,8 +628,6 @@ int main(int argc, char *argv[])
 		oldtime = newtime;
 	}
 
-    /* return success of application */
-    return 1;
 }
 
 void strlwr (char * str)
@@ -979,6 +637,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/02/20 13:38:29  sezero
+ * add the new sound options to the help messages
+ *
  * Revision 1.12  2005/02/06 15:03:10  sezero
  * move resource.h to ./win_stuff/
  *
