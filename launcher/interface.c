@@ -76,17 +76,11 @@ GtkWidget* create_window1 (void)
 
   window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (window1), "window1", window1);
-  // here is a template for the final Title string
-  // changes should be consistent for malloc().
-  Title = (char *)malloc(sizeof("Hexen2 demo Launcher 9.99.9"));
 #ifndef DEMOBUILD
-  strcpy (Title, "Hexen2 Launcher ");
+  gtk_window_set_title (GTK_WINDOW (window1), "Hexen2 Launcher " HOTL_VER);
 #else
-  strcpy (Title, "Hexen2 demo Launcher ");
+  gtk_window_set_title (GTK_WINDOW (window1), "Hexen2 demo Launcher " HOTL_VER);
 #endif
-  strcat (Title, HOTL_VER);	// from our Makefile
-  gtk_window_set_title (GTK_WINDOW (window1), Title);
-  free (Title);
   gtk_window_set_resizable (GTK_WINDOW (window1), FALSE);
   gtk_widget_set_size_request(window1, 230, 352);
 
