@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.13 2005-03-08 12:14:21 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.14 2005-04-05 19:40:33 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -12,6 +12,7 @@ extern void MIDI_UpdateVolume(void);
 extern void CDAudio_UpdateVolume(void);
 #endif
 
+extern char com_basedir[MAX_OSPATH];
 extern	cvar_t	vid_mode;
 extern	cvar_t	crosshair;
 
@@ -2360,7 +2361,7 @@ void M_Menu_Setup_f (void)
 	if(!com_portals)
 		if(playerclass.value==CLASS_DEMON)
 			playerclass.value = 0;
-	if(stricmp(com_gamedir, "siege"))
+	if(stricmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
 		if(playerclass.value==CLASS_DWARF)
 			playerclass.value = 0;
 
@@ -2408,7 +2409,7 @@ void M_Setup_Draw (void)
 	if(!com_portals)
 		if(setup_class==CLASS_DEMON)
 			setup_class = 0;
-	if(stricmp(com_gamedir, "siege"))
+	if(stricmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
 		if(setup_class==CLASS_DWARF)
 			setup_class = 0;
 	switch(setup_class)
@@ -2438,7 +2439,7 @@ void M_Setup_Draw (void)
 		{
 			if(!com_portals)
 			{//not succubus
-				if(stricmp(com_gamedir, "siege"))
+				if(stricmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
 					which_class = (rand() % CLASS_THEIF) + 1;
 				else
 				{
@@ -2449,7 +2450,7 @@ void M_Setup_Draw (void)
 			}
 			else
 			{
-				if(stricmp(com_gamedir, "siege"))
+				if(stricmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
 					which_class = (rand() % CLASS_DEMON) + 1;
 				else
 					which_class = (rand() % class_limit) + 1;
