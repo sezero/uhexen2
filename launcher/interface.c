@@ -5,6 +5,7 @@
 #include "widget_defs.h"
 #include "callbacks.h"
 #include "support.h"
+#include "config_file.h"
 
 #ifndef DEMOBUILD
 extern int mp_support;
@@ -399,12 +400,12 @@ GtkWidget* create_window1 (void)
   gtk_signal_connect (GTK_OBJECT (bQUIT), "clicked",
 			GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
   gtk_signal_connect (GTK_OBJECT (bSAVE), "clicked",
-			GTK_SIGNAL_FUNC (on_SAVE), NULL);
+			GTK_SIGNAL_FUNC (write_config_file), NULL);
 #ifndef DEMOBUILD
   gtk_signal_connect (GTK_OBJECT (WGT_PORTALS), "toggled",
 			GTK_SIGNAL_FUNC (on_H2MP), &Games);
   gtk_signal_connect (GTK_OBJECT (WGT_OLDMISS), "toggled",
-			GTK_SIGNAL_FUNC (on_OLDM), NULL);
+			GTK_SIGNAL_FUNC (ReverseOpt), &with_om);
 #endif
   gtk_signal_connect (GTK_OBJECT (WGT_HEXEN2), "released",
 			GTK_SIGNAL_FUNC (on_HEXEN2), &Games);
@@ -415,15 +416,15 @@ GtkWidget* create_window1 (void)
   gtk_signal_connect (GTK_OBJECT (WGT_SOUND), "toggled",
 			GTK_SIGNAL_FUNC (on_SND), &Sound);
   gtk_signal_connect (GTK_OBJECT (WGT_MIDI), "toggled",
-			GTK_SIGNAL_FUNC (on_MIDI), NULL);
+			GTK_SIGNAL_FUNC (ReverseOpt), &midi);
   gtk_signal_connect (GTK_OBJECT (WGT_CDAUDIO), "toggled",
-			GTK_SIGNAL_FUNC (on_CDA), NULL);
+			GTK_SIGNAL_FUNC (ReverseOpt), &cdaudio);
   gtk_signal_connect (GTK_OBJECT (WGT_LANBUTTON), "toggled",
-			GTK_SIGNAL_FUNC (on_LAN), NULL);
+			GTK_SIGNAL_FUNC (ReverseOpt), &lan);
   gtk_signal_connect (GTK_OBJECT (bJOY), "toggled",
-			GTK_SIGNAL_FUNC (on_JOY), NULL);
+			GTK_SIGNAL_FUNC (ReverseOpt), &joystick);
   gtk_signal_connect (GTK_OBJECT (WGT_FULLSCR), "toggled",
-			GTK_SIGNAL_FUNC (on_FULS), NULL);
+			GTK_SIGNAL_FUNC (ReverseOpt), &fullscreen);
   gtk_signal_connect (GTK_OBJECT (WGT_RES_ADJUST), "value_changed",
 			GTK_SIGNAL_FUNC (res_Change), &VID_STRUCT);
 #ifdef HAVE_GTK2

@@ -2,7 +2,6 @@
 #include "interface.h"
 #include "widget_defs.h"
 #include "callbacks.h"
-#include "config_file.h"
 #include "launcher_defs.h"
 //#include "support.h"
 
@@ -49,10 +48,6 @@ void on_H2MP (GtkToggleButton *togglebutton, gamewidget_t *wgt) {
   gtk_widget_set_sensitive (wgt->OLD_MISSION, mp_support);
   UpdateStats(&(wgt->Launch));
 }
-
-void on_OLDM (GtkToggleButton *togglebutton, gpointer user_data) {
-    with_om=!with_om;
-}
 #endif
 
 void on_OGL (GtkToggleButton *button, gamewidget_t *wgt) {
@@ -95,15 +90,6 @@ void UpdateStats (struct Launch_s *wgt) {
    gtk_widget_set_sensitive (wgt->LAUNCH_BUTTON, !missingexe);
 }
 
-void on_FULS (GtkToggleButton *togglebutton, gpointer user_data) {
-  fullscreen=!fullscreen;
-}
-
-void on_SAVE (GtkButton *button, gpointer user_data) {
-  if (write_config_file() == 0)
-    printf("Options saved successfully\n");
-}
-
 void on_HEXEN2 (GtkButton *button, gamewidget_t *wgt) {
   destiny=DEST_H2;
 #ifndef DEMOBUILD
@@ -126,18 +112,6 @@ void on_H2W (GtkButton *button, gamewidget_t *wgt) {
   UpdateStats(&(wgt->Launch));
 }
 
-void on_MIDI (GtkToggleButton *togglebutton, gpointer user_data) {
-  midi=!midi;
-}
-
-void on_CDA (GtkToggleButton *togglebutton, gpointer user_data) {
-  cdaudio=!cdaudio;
-}
-
-void on_LAN (GtkToggleButton *togglebutton, gpointer user_data) {
-  lan=!lan;
-}
-
-void on_JOY (GtkToggleButton *togglebutton, gpointer user_data) {
-  joystick=!joystick;
+void ReverseOpt (GtkObject *Unused, int *opt) {
+  (*(opt)) = !(*(opt));
 }

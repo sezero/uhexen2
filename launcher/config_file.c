@@ -65,7 +65,7 @@ int write_config_file() {
 
   }
   fclose (cfg_file); 
-
+  printf("Options saved successfully.\n");
   return 0;    
 }
 
