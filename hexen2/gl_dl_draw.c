@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.21 2005-02-07 21:58:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.22 2005-02-07 22:01:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -755,6 +755,39 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 
 /*
 =============
+Draw_AlphaPic
+=============
+*/
+void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha)
+{
+	glpic_t			*gl;
+
+	if (scrap_dirty)
+		Scrap_Upload ();
+	gl = (glpic_t *)pic->data;
+	glfunc.glDisable_fp(GL_ALPHA_TEST);
+	glfunc.glEnable_fp (GL_BLEND);
+//	glfunc.glBlendFunc_fp(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glfunc.glCullFace_fp(GL_FRONT);
+	glfunc.glColor4f_fp (1,1,1,alpha);
+	GL_Bind (gl->texnum);
+	glfunc.glBegin_fp (GL_QUADS);
+	glfunc.glTexCoord2f_fp (gl->sl, gl->tl);
+	glfunc.glVertex2f_fp (x, y);
+	glfunc.glTexCoord2f_fp (gl->sh, gl->tl);
+	glfunc.glVertex2f_fp (x+pic->width, y);
+	glfunc.glTexCoord2f_fp (gl->sh, gl->th);
+	glfunc.glVertex2f_fp (x+pic->width, y+pic->height);
+	glfunc.glTexCoord2f_fp (gl->sl, gl->th);
+	glfunc.glVertex2f_fp (x, y+pic->height);
+	glfunc.glEnd_fp ();
+	glfunc.glColor4f_fp (1,1,1,1);
+	glfunc.glEnable_fp(GL_ALPHA_TEST);
+	glfunc.glDisable_fp (GL_BLEND);
+}
+
+/*
+=============
 Draw_IntermissionPic
 
 Pa3PyX: this new function introduced to draw the intermission screen only
@@ -1012,7 +1045,14 @@ Draw_ConsoleBackground
 */
 void Draw_ConsoleBackground (int lines)
 {
-	Draw_Pic (0, lines-vid.height, conback);
+	int y;
+
+	y = (vid.height * 3) >> 2;
+	if (lines > y)
+		Draw_Pic (0, lines-vid.height, conback);
+	else
+		Draw_AlphaPic (0, lines - vid.height, conback, (float)(1.1 * lines)/y);
+		// O.S: hexenworld had 1.2 as multiplier, I used 1.1
 }
 
 
@@ -1761,6 +1801,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2005/02/07 21:58:23  sezero
+ * if0-out fxPalTexImage2D (we don't use it)
+ *
  * Revision 1.20  2005/01/24 20:34:21  sezero
  * gl filter changes
  *
