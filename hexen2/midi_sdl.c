@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.3 2005-02-05 16:18:25 sezero Exp $
+	$Id: midi_sdl.c,v 1.4 2005-02-05 16:20:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -165,9 +165,9 @@ qboolean MIDI_Init(void)
 
 void MIDI_Play(char *Name)
 {
-	char Temp[100];
+	char Temp[MAX_OSPATH];
 	char *Data;
-	char midi_file_with_path[300];
+	char midi_file_with_path[MAX_OSPATH];
 	FILE *f=NULL;
 
 	int size=0;
@@ -285,6 +285,9 @@ void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/02/05 16:18:25  sezero
+ * added midi volume control (partially from Pa3PyX)
+ *
  * Revision 1.2  2005/02/05 16:17:29  sezero
  * - Midi file paths cleanup. these should be leftovers
  *   from times when gamedir and userdir were the same.
