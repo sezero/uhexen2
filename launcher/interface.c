@@ -261,7 +261,7 @@ create_window1 (void)
     gtk_widget_set_sensitive (CDAUDIO_button, FALSE);
   }
 
-  MOUS_button = gtk_check_button_new_with_label (_("Enable Mouse"));
+  MOUS_button = gtk_check_button_new_with_label (_("Windowed Mouse"));
   gtk_widget_ref (MOUS_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "MOUS_button", MOUS_button,
                             (GtkDestroyNotify) gtk_widget_unref);
