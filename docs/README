@@ -122,12 +122,14 @@ HoT requires your kernel sound modules to be OSS (Open Sound System)
 compatible.  If your game bombs out after sound initialization and you are not
 using the Alsa kernel sound drivers you might try them, but doing so is not
 straight forward.  Once the Alsa sound modules are installed and configured,
-you can use (for example):
+you can use (for example, on Mandrake):
 
-    rmmod emu10k1          ;# remove standard sound module for SBLive card
-    /etc/init.d/alsa start ;# start alsa sound modules
+    rmmod emu10k1          ;# remove OSS sound module for SBLive card
+    /etc/init.d/alsa start ;# start ALSA sound modules
 
 and check with alsamixer that the volumes are not turned down to zero.
+Make SURE that oss-emulation is available (lsmod should list snd-pcm-oss).
+With oss emulation hexen2 should work fine.
 
 SDL sound code
 --------------
@@ -273,3 +275,4 @@ JSHexen2 port      :  http://jurajstyk.host.sk/
 Hexen II FAQ       :  http://www.raven-games.com/hex2faq/
 Lowercase Utility  :  www.freshmeat.net/projects/file-rename-utils
 Linux GlQuake      :  http://mfcn.ilo.de/glxquake
+ALSA sound         :  http://www.alsa-project.org
