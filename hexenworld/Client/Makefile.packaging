@@ -1,12 +1,16 @@
-GL_BINARY=glhwcl.dynamic
-GL_BINARY_STATIC=glhwcl
 
-BINARY=hwcl.dynamic
-BINARY_STATIC=hwcl
+SOUND=OSS
+USEMIDI=no
+
+GL_BINARY=glhwcl
+GL_BINARY_STATIC=glhwcl.static
+
+BINARY=hwcl
+BINARY_STATIC=hwcl.static
 
 CC = gcc
 LINKER = gcc
-CFLAGS = -fomit-frame-pointer -ffast-math -fexpensive-optimizations -falign-loops=2 -falign-jumps=2 -falign-functions=2 -O2 -DUSE_INTEL_ASM -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ `sdl-config --cflags`
+CFLAGS = -fomit-frame-pointer -ffast-math -fexpensive-optimizations -falign-loops=2 -falign-jumps=2 -falign-functions=2 -O2 -mcpu=pentium -DUSE_INTEL_ASM -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ `sdl-config --cflags`
 LDFLAGS = `sdl-config --libs`
 GLFLAGS = `sdl-config --libs` -L/usr/X11R6/lib -lGL -lGLU
 GLSTATIC = -Wl,-Bstatic -L/usr/lib -lSDL_mixer -lSDL -L/usr/X11R6/lib -lX11 -lXext -ldl -lGLU -L/usr/X11R6/lib -lXxf86dga -lXxf86vm -lXv -L/usr/lib/ -lsmpeg -lvorbisfile -lvorbis -logg -lm -Wl,-Bdynamic -lpthread -lGL
@@ -96,7 +100,7 @@ GLOBJS = gl_draw.o \
 	gl_warp.o \
 	gl_vidsdl.o
 
-COMMONOBJS = cd_linux.o \
+MOSTOBJS = cd_linux.o \
 	cl_cam.o \
 	cl_demo.o \
 	cl_effect.o \
@@ -126,7 +130,6 @@ COMMONOBJS = cd_linux.o \
 	snd_dma.o \
 	snd_mix.o \
 	snd_mem.o \
-	snd_oss.o \
 	strings.o \
 	sys_unix.o \
 	view.o \
@@ -136,6 +139,12 @@ COMMONOBJS = cd_linux.o \
 	snd_mixa.o \
 	sys_wina.o
 	
+ifeq "$(SOUND)" "SDL"
+	COMMONOBJS = $(MOSTOBJS) snd_sdl.o
+else
+	COMMONOBJS = $(MOSTOBJS) snd_oss.o
+endif
+
 #all: $(BINARY) 
 all: dynamic static
 

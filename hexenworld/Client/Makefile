@@ -1,21 +1,30 @@
-# PLEASE edit below to select what you would like to build
-BUILDGL=yes
-# MIDI doesn't work at this time for HexenWorld client
-USEMIDI=no
 
-# You shouldn't need to edit anything below here.
+################ PLEASE edit below to select what you would like to build
+
+BUILDGL=yes
+#		yes = OpenGL support, no = software mode
+
+SOUND=OSS
+#		OSS or SDL. The default OSS works great but is incompatible
+#		with some cards/kernel modules. The alternative, SDL, is buggy.
+
+USEMIDI=no
+#		MIDI doesn't work at this time for HexenWorld client
+
+
+################ You shouldn't need to edit anything below here.
 
 ifeq "$(BUILDGL)" "yes"
-BINARY=glhwcl.dynamic
-BINARY_STATIC=glhwcl
+BINARY=glhwcl
+BINARY_STATIC=glhwcl.static
 else
-BINARY=hwcl.dynamic
-binary_STATIC=hwcl
+BINARY=hwcl
+binary_STATIC=hwcl.static
 endif
 
 CC = gcc
 LINKER = gcc
-CFLAGS = -fomit-frame-pointer -ffast-math -fexpensive-optimizations -falign-loops=2 -falign-jumps=2 -falign-functions=2 -g -O2 -DUSE_INTEL_ASM -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ `sdl-config --cflags`
+CFLAGS = -fomit-frame-pointer -ffast-math -fexpensive-optimizations -falign-loops=2 -falign-jumps=2 -falign-functions=2 -g -O2 -mcpu=pentium -DUSE_INTEL_ASM -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ `sdl-config --cflags`
 LDFLAGS = `sdl-config --libs`
 GLFLAGS = `sdl-config --libs` -L/usr/X11R6/lib -lGL -lGLU
 
@@ -106,7 +115,7 @@ GLOBJS = gl_draw.o \
 	gl_warp.o \
 	gl_vidsdl.o
 
-COMMONOBJS = cd_linux.o \
+MOSTOBJS = cd_linux.o \
 	cl_cam.o \
 	cl_demo.o \
 	cl_effect.o \
@@ -136,7 +145,6 @@ COMMONOBJS = cd_linux.o \
 	snd_dma.o \
 	snd_mix.o \
 	snd_mem.o \
-	snd_oss.o \
 	strings.o \
 	sys_unix.o \
 	view.o \
@@ -146,6 +154,12 @@ COMMONOBJS = cd_linux.o \
 	snd_mixa.o \
 	sys_wina.o
 	
+ifeq "$(SOUND)" "SDL"
+	COMMONOBJS = $(MOSTOBJS) snd_sdl.o
+else
+	COMMONOBJS = $(MOSTOBJS) snd_oss.o
+endif
+
 all: $(BINARY) 
 
 ifeq "$(BUILDGL)" "no"

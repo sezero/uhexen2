@@ -1,9 +1,14 @@
-BINARY=hwsv.dynamic
-BINARY_STATIC=hwsv
+
+BINARY=hwsv
+BINARY_STATIC=hwsv.static
+DEBUG=no
 
 CC = gcc
 LINKER = gcc
-CFLAGS = -g -O2 -I../Client/ -I. -DUSE_INTEL_ASM -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ -DSERVERONLY `sdl-config --cflags`
+CFLAGS = -I../Client/ -I. -O2 -mcpu=pentium -DUSE_INTEL_ASM -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ -DSERVERONLY `sdl-config --cflags`
+ifeq "$(DEBUG)" "yes"
+CFLAGS += -g
+endif
 LDFLAGS = -lm -lpthread
 LDSTATIC = -lm -lpthread -static
 

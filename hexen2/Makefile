@@ -1,40 +1,46 @@
-# PLEASE edit below to select what you would like to build
-BUILDGL=yes
-BUILDMP=no
-# MIDI needs SDL_mixer (built with Timidity support) and Timidity patches
-USEMIDI=yes
 
-# You shouldn't need to edit anything below here.
+################ PLEASE edit below to select what you would like to build
+
+BUILDGL=yes
+#		yes = OpenGL support, no = software mode
+BUILDMP=no
+#		yes = build mission pack, no = normal hexen2
+
+SOUND=OSS
+#		OSS or SDL. The default OSS works great but is incompatible
+#		with some cards/kernel modules. The alternative, SDL, is buggy.
+
+USEMIDI=yes
+#		MIDI needs SDL_mixer (built with Timidity support)
+#		and Timidity patches
+
+################ You shouldn't need to edit anything below here.
 
 ifeq "$(BUILDGL)" "yes"
 ifeq "$(BUILDMP)" "yes"
-BINARY=glh2mp.dynamic
-BINARY_STATIC=glh2mp
+BINARY=glh2mp
+BINARY_STATIC=glh2mp.static
 else
-BINARY=glhexen2.dynamic
-BINARY_STATIC=glhexen2
+BINARY=glhexen2
+BINARY_STATIC=glhexen2.static
 endif
 else
 ifeq "$(BUILDMP)" "yes"
-BINARY=h2mp.dynamic
-BINARY_STATIC=h2mp
+BINARY=h2mp
+BINARY_STATIC=h2mp.static
 else
-BINARY=hexen2.dynamic
-BINARY_STATIC=hexen2
+BINARY=hexen2
+BINARY_STATIC=hexen2.static
 endif
 endif
 
 CC = gcc
 LINKER = gcc
-#CFLAGS = -march=athlon -fomit-frame-pointer -ffast-math -fexpensive-optimizations -falign-loops=2 -falign-jumps=2 -falign-functions=2 -O2 -DUSE_INTEL_ASM -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ `sdl-config --cflags`
-CFLAGS = -fomit-frame-pointer -ffast-math -fexpensive-optimizations -falign-loops=2 -falign-jumps=2 -falign-functions=2 -O2 -DUSE_INTEL_ASM -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ `sdl-config --cflags`
+CFLAGS = -fomit-frame-pointer -ffast-math -fexpensive-optimizations -falign-loops=2 -falign-jumps=2 -falign-functions=2 -O2 -mcpu=pentium -DUSE_INTEL_ASM -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ `sdl-config --cflags`
 LDFLAGS = `sdl-config --libs`
 GLFLAGS = `sdl-config --libs` -L/usr/X11R6/lib -lGL -lGLU
 GLSTATIC = -Wl,-Bstatic -L/usr/lib -lSDL_mixer -lSDL -L/usr/X11R6/lib -lX11 -lXext -ldl -lGLU -L/usr/X11R6/lib -lXxf86dga -lXxf86vm -lXv -L/usr/lib/ -lsmpeg -lvorbisfile -lvorbis -logg -lm -Wl,-Bdynamic -lpthread -lGL
 LDSTATIC = -Wl,-Bstatic -L/usr/lib -lSDL_mixer -lSDL -L/usr/X11R6/lib -lX11 -lXext -ldl -L/usr/X11R6/lib -lXxf86dga -lXxf86vm -lXv -L/usr/lib/ -lsmpeg -lvorbisfile -lvorbis -logg -lm -Wl,-Bdynamic -lpthread
-#LDSTATIC = -L/usr/lib -lpthread -lSDL_mixer -lSDL -L/usr/X11R6/lib -lX11 -lXext -ldl -L/usr/X11R6/lib -lXxf86dga -lXxf86vm -lXv -L/usr/lib/ -lsmpeg -lvorbisfile -lvorbis -logg -lm -static
-#LDSTATIC = `sdl-config --static-libs` -L/usr/lib/ -lSDL_mixer -lSDL -lsmpeg -lvorbisfile -lvorbis -logg -lm -static
-#LDSTATIC = -L/usr/lib -lSDL -lpthread -lm -L/usr/X11R6/lib -lX11 -lXext -ldl -L/usr/X11R6/lib -lXxf86dga -lXxf86vm -lXv -L/usr/lib/ -lSDL_mixer -lSDL -lsmpeg -lvorbisfile -lvorbis -logg -lm
 
 ifeq "$(BUILDGL)" "yes"
 CFLAGS+= -DGLQUAKE
@@ -124,7 +130,7 @@ GLOBJS = gl_dl_draw.o \
 	gl_dl_warp.o \
 	gl_dl_vidsdl.o
 
-COMMONOBJS = cd_linux.o \
+MOSTOBJS = cd_linux.o \
 	chase.o \
 	cl_demo.o \
 	cl_effect.o \
@@ -158,7 +164,6 @@ COMMONOBJS = cd_linux.o \
 	snd_dma.o \
 	snd_mix.o \
 	snd_mem.o \
-	snd_oss.o \
 	sv_main.o \
 	sv_move.o \
 	sv_phys.o \
@@ -174,6 +179,12 @@ COMMONOBJS = cd_linux.o \
 	sys_ia32.o \
 	worlda.o
 	
+ifeq "$(SOUND)" "SDL"
+	COMMONOBJS = $(MOSTOBJS) snd_sdl.o
+else
+	COMMONOBJS = $(MOSTOBJS) snd_oss.o
+endif
+
 #all: static dynamic 
 all : $(BINARY)
 
