@@ -1,5 +1,13 @@
 ChangeLog:
 
+2005-03-19 (CVS):
+    * added back the md5sum data for the data1/pak?.pak files
+      to the README
+    * imported the utility sources to the CVS. how I forgot
+      doing that for months is a mystery
+    * merged an H2MP 1.12-1.12a axtail patch to the gamecode
+      which has been missing in the CVS somehow
+
 2005-03-14 (CVS):
     * updated the build_all scripts
     * small sbar resizing fix in software mode (from Steven)
