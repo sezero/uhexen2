@@ -26,8 +26,8 @@ The new strings.txt can then be edited for the required mapnames.
   the first map after the last one (it looks for a mapname matching
   current one and takes the following name for next map)
 * any number of maps can be put in it
-* remove the entries or use old strings.txt: server works as without
-  the mod.
+* remove the map entries AND "map_sequence_start / map_sequence_end"
+  strings (or use old strings.txt): server works as without the mod.
 
 
 1.12d	Reduce the speed of the teleporting process' pushing you

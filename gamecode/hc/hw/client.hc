@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/client.hc,v 1.2 2005-01-26 16:54:52 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/client.hc,v 1.3 2005-01-27 14:22:31 sezero Exp $
  */
 
 // prototypes
@@ -8,7 +8,7 @@ void() W_SetCurrentAmmo;
 void (vector org, entity death_owner) spawn_tdeath;
 void() DecrementSuperHealth;
 void CheckRings (void);
-
+void () NextLevel;
 
 void FreezeAllEntities(void)
 {
@@ -337,8 +337,11 @@ void() changelevel_touch =
 		bprinti (PRINT_MEDIUM, STR_EXITEDLEVEL);
 	}
 	
-	if (deathmatch)
-		FindDMLevel();
+	if (deathmatch) {
+	//	FindDMLevel();
+		NextLevel();	// Otherwise map-cycling doesnt work
+				// work for exitters.		O.S.
+	}
 	else
 	{
 		nextmap = self.map;
@@ -1174,11 +1177,12 @@ void() NextLevel =
 
 	FindDMLevel();
 
+    if (world.next_map!="no_map_cycling_found") {
 	if(world.next_map=="")
 		nextmap = mapname;
 	else
 		nextmap = world.next_map;
-
+    }
 	o = spawn();
 	o.map = nextmap;
 
@@ -3160,6 +3164,24 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 };
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/01/26 16:54:52  sezero
+ *
+ * Map cycling for HW (by Kor Skarn):  This is a server side mod, so
+ * only the server needs to have the new hwprogs.dat and strings.txt.
+ * The new strings.txt can then be edited for the required mapnames.
+ *
+ * * map names must stay between map_sequence_start and map_sequence_end
+ * * only the first occurence of a mapname is used to determine next map
+ * * if server is running a map that is not in the list the same map will
+ *   reload when game ends.
+ * * when server reaches the end of the list, the last map reloads when
+ *   game ends it does NOT make a loop. To make a loop, add the name of
+ *   the first map after the last one (it looks for a mapname matching
+ *   current one and takes the following name for next map)
+ * * any number of maps can be put in it
+ * * remove the entries or use old strings.txt: server works as without
+ *   the mod.
+ *
  * Revision 1.1.1.1  2004/11/29 11:25:40  sezero
  * Initial import
  *

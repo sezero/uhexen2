@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/world.hc,v 1.2 2005-01-26 16:54:52 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/world.hc,v 1.3 2005-01-27 14:22:31 sezero Exp $
  */
 
 //void() InitBodyQue;
@@ -114,7 +114,7 @@ void GetNextMap()
 {
 float line_id;
 float map_sequence_start;
-float map_start;
+//float map_start;
 string map_name;
 
 	line_id = 0;
@@ -133,6 +133,7 @@ string map_name;
 	}
 	if(map_name=="<1.you passed the end of the file, pal>")
 	{
+		self.next_map = "no_map_cycling_found";
 		return;
 	}
 
