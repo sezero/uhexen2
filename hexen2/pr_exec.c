@@ -1,7 +1,7 @@
 /*
 	pr_exec.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.3 2005-04-05 19:41:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -982,11 +982,11 @@ void PR_Profile_f(void)
 			if(i+1 < Cmd_Argc() && !isdigit(*Cmd_Argv(i+1)))
 			{
 				i++;
-				sprintf(saveName, "%s/%s", com_gamedir, Cmd_Argv(i));
+				sprintf(saveName, "%s/%s", com_userdir, Cmd_Argv(i));
 			}
 			else
 			{
-				sprintf(saveName, "%s/profile.txt", com_gamedir);
+				sprintf(saveName, "%s/profile.txt", com_userdir);
 			}
 		}
 		else if(isdigit(*s))
@@ -1173,6 +1173,9 @@ static unsigned int ProgsTimer(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:06:06  sezero
  * Initial import of AoT 1.2.0 code
  *

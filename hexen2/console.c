@@ -206,9 +206,9 @@ void Con_Init (void)
 
 	if (con_debuglog)
 	{
-		if (strlen (com_gamedir) < (MAXGAMEDIRLEN - strlen (t2)))
+		if (strlen (com_userdir) < (MAXGAMEDIRLEN - strlen (t2)))
 		{
-			sprintf (temp, "%s%s", com_gamedir, t2);
+			sprintf (temp, "%s%s", com_userdir, t2);
 			unlink (temp);
 		}
 	}
@@ -385,7 +385,7 @@ void Con_Printf (char *fmt, ...)
 
 // log all messages to file
 	if (con_debuglog)
-		Con_DebugLog(va("%s/qconsole.log",com_gamedir), "%s", msg);
+		Con_DebugLog(va("%s/qconsole.log",com_userdir), "%s", msg);
 
 	if (!con_initialized)
 		return;
