@@ -1,6 +1,7 @@
 ChangeLog:
 
-2005-03-13 (CVS):
+2005-03-14 (CVS):
+    * small sbar resizing fix in software mode (from Steven)
     * added back console video mode reporting. also removed the
       non-functional findbpp
 
