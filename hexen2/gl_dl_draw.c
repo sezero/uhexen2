@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.23 2005-02-20 13:48:55 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.24 2005-04-05 19:37:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1118,6 +1118,11 @@ void Draw_FadeScreen (void)
 {
 	int bx,by,ex,ey;
 	int c;
+
+	// fadescreen ripple effect stops help/quit screens
+	// from appearing on 3dfx with Mesa Glide.  S.A
+	if (is_3dfx) return;
+
 	glfunc.glAlphaFunc_fp(GL_ALWAYS, 0);
 
 	glfunc.glEnable_fp (GL_BLEND);
@@ -1808,6 +1813,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/02/20 13:48:55  sezero
+ * add comments on gl_picmip scale-down and ugly help screens (Steven)
+ *
  * Revision 1.22  2005/02/07 22:01:03  sezero
  * Draw_AlphaPic(), draw alpha console background (from HW)
  *

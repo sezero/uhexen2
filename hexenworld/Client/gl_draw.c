@@ -1220,6 +1220,11 @@ void Draw_FadeScreen (void)
 {
 	int bx,by,ex,ey;
 	int c;
+
+	// fadescreen ripple effect stops help/quit screens
+	// from appearing on 3dfx with Mesa Glide.  S.A
+	if (is_3dfx) return;
+
 	glfunc.glAlphaFunc_fp(GL_ALWAYS, 0);
 
 	glfunc.glEnable_fp (GL_BLEND);
