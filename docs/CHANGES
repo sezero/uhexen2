@@ -1,6 +1,12 @@
 ChangeLog:
 
 
+2005-01-03 (CVS, 1.2.3-rc4):
+
+    * Also compiled against glibc-2.2 with gcc-2.96 (on rh-7.3) and
+      included properly in the installer.
+    * Fixed a compilation error in case of gcc-2.96
+
 2005-01-02 (CVS, 1.2.3-rc3):
 
     * Retired AoT, aot and .aot: Change userdir (AOT_USERDIR) to .hexen2
