@@ -1,5 +1,9 @@
 ChangeLog:
 
+2005-03-13 (CVS):
+    * added back console video mode reporting. also removed the
+      non-functional findbpp
+
 2005-03-08 (CVS):
     * my silly oversight in reinit_music: fixes bug "midi always
       restarts upon pressing Esc twice"
