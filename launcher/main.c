@@ -1,7 +1,3 @@
-/*
- * main.c initial généré par Glade. Éditer ce fichier à votre
- * convenance. Glade n'écrira plus dans ce fichier.
- */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>

@@ -1,3 +1,4 @@
+
 #ifndef LAUNCH_BIN_H
 #define LAUNCH_BIN_H
 
@@ -15,3 +16,4 @@
 void launch_hexen2_bin();
 
 #endif
+
