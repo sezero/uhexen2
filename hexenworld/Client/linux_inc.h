@@ -1,6 +1,8 @@
 #ifndef _LINUX_INC
 #define _LINUX_INC
 
+#include <ctype.h>
+
 #define _inline inline
 #define __inline static inline
 #define HANDLE int

@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include <unistd.h>
 
 #define ioctlsocket(A,B,C) ioctl(A,B,C)
 #define closesocket(A) close(A)

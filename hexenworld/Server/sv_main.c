@@ -6,6 +6,7 @@
 #include <dirent.h>
 #include <sys/types.h>
 #include <fnmatch.h>
+#include <unistd.h>
 #endif
 
 quakeparms_t host_parms;
