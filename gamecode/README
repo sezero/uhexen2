@@ -1,0 +1,10 @@
+
+Game code for Hexen2 / H2MP / HexenWorld
+
+Changes
+-------
+1.12b	fix eidolon not jumping off the ledge (hc/h2/triggers.hc)
+	(2004-12-09)
+
+1.12a   Raven's original 1.12a hcode for the mission pack (initial)
+1.11    Raven's original 1.11 hcode for original Hexen2 (initial)
