@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.4 2005-02-14 10:07:03 sezero Exp $
+	$Id: snd_alsa.c,v 1.5 2005-02-14 10:08:00 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -104,30 +104,18 @@ qboolean S_ALSA_Init (void)
 		Con_Printf ("Error: audio open error: %s\n", hx2snd_strerror (err));
 		return 0;
 	}
-
 	Con_Printf ("Using PCM %s.\n", pcmname);
+
 	err = hx2snd_pcm_hw_params_any (pcm, hw);
 	if (err < 0) {
 		Con_Printf ("ALSA: error setting hw_params_any. %s\n", hx2snd_strerror (err));
 		goto error;
 	}
 
-	switch (rate) {
-		case 11025:
-		case 22050:
-		case 44100:
-		case 48000:
-			err = hx2snd_pcm_hw_params_set_rate_near (pcm, hw, &rate, 0);
-			if (err < 0) {
-				Con_Printf ("ALSA: desired rate %i not supported. %s\n",
-					    rate, hx2snd_strerror (err));
-				goto error;
-			}
-			frag_size = 8 * bps * rate / 11025;
-			break;
-		default:
-			Con_Printf ("ALSA: desired rate %d not supported\n", rate);
-			goto error;
+	err = hx2snd_pcm_hw_params_set_access (pcm, hw, SND_PCM_ACCESS_MMAP_INTERLEAVED);
+	if (err < 0) {
+		Con_Printf ("ALSA: interleaved is not supported. %s\n", hx2snd_strerror (err));
+		goto error;
 	}
 
 	switch (bps) {
@@ -145,12 +133,6 @@ qboolean S_ALSA_Init (void)
 			goto error;
 	}
 
-	err = hx2snd_pcm_hw_params_set_access (pcm, hw, SND_PCM_ACCESS_MMAP_INTERLEAVED);
-	if (err < 0) {
-		Con_Printf ("ALSA: interleaved is not supported. %s\n", hx2snd_strerror (err));
-		goto error;
-	}
-
 	switch (stereo) {
 		case 0:
 		case 1:
@@ -162,6 +144,24 @@ qboolean S_ALSA_Init (void)
 			break;
 		default:
 			Con_Printf ("ALSA: desired channels not supported\n");
+			goto error;
+	}
+
+	switch (rate) {
+		case 11025:
+		case 22050:
+		case 44100:
+		case 48000:
+			err = hx2snd_pcm_hw_params_set_rate_near (pcm, hw, &rate, 0);
+			if (err < 0) {
+				Con_Printf ("ALSA: desired rate %i not supported. %s\n",
+					    rate, hx2snd_strerror (err));
+				goto error;
+			}
+			frag_size = 8 * bps * rate / 11025;
+			break;
+		default:
+			Con_Printf ("ALSA: desired rate %d not supported\n", rate);
 			goto error;
 	}
 
@@ -308,6 +308,10 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/02/14 10:07:03  sezero
+ * alsa sound improvements:
+ * - more error checking and detailed error reporting
+ *
  * Revision 1.3  2005/02/11 23:44:32  sezero
  * add 48000 to the alsa rate switch
  *
