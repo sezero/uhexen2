@@ -217,7 +217,11 @@ create_window1 (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   GTK_WIDGET_UNSET_FLAGS (HEXEN2_button, GTK_CAN_FOCUS);
 #ifdef HAVE_GTK2
+#ifdef DEMOBUILD
+  gtk_tooltips_set_tip (tooltips, HEXEN2_button, _("Hexen II demo"), NULL);
+#else
   gtk_tooltips_set_tip (tooltips, HEXEN2_button, _("Hexen II game"), NULL);
+#endif
 #endif
   gtk_widget_show (HEXEN2_button);
   gtk_fixed_put (GTK_FIXED (fixed1), HEXEN2_button, 24, 68);
