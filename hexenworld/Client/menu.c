@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.2 2004-12-04 02:03:20 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.3 2004-12-04 02:04:42 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -666,6 +666,10 @@ int	m_main_cursor;
 
 void M_Menu_Main_f (void)
 {
+
+	// Deactivate the mouse when the main menu is drawn - S.A.
+	IN_DeactivateMouseSA ();
+
 	if (key_dest != key_menu)
 	{
 		m_save_demonum = cls.demonum;
@@ -700,6 +704,10 @@ void M_Main_Key (int key)
 	switch (key)
 	{
 	case K_ESCAPE:
+
+		// leaving the main menu, reactivate the mouse - S.A.
+		IN_ActivateMouseSA ();
+
 		key_dest = key_game;
 		m_state = m_none;
 		cls.demonum = m_save_demonum;

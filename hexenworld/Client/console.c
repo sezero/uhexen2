@@ -50,12 +50,14 @@ void Con_ToggleConsole_f (void)
 
 	if (key_dest == key_console)
 	{
+		IN_ActivateMouseSA(); // activate mouse when leaving console
 		if (cls.state == ca_active)
 			key_dest = key_game;
 	}
-	else
+	else {
 		key_dest = key_console;
-	
+		IN_DeactivateMouseSA(); // decativate mouse in console
+	}
 	Con_ClearNotify ();
 }
 
