@@ -1,5 +1,30 @@
 ChangeLog:
 
+2005-02-14 (CVS):
+    * fix mouse not being activated after connecting to a server in
+      windowed mode for hexenworld. from Steve.
+    * oss sound improvements (from the quakeforge project):
+      - retry 3 times opening /dev/dsp
+      - open O_NONBLOCK
+      - check pagesize when mmaping
+      - reset /dev/dsp when closing it (from the twilight project)
+    * alsa sound improvements:
+      - more error checking and detailed error reporting
+      - replicate the order in quakeforge as much as possible
+
+2005-02-12 (CVS):
+    * more general clean-up:
+      - delete dead win32 code from linux files
+      - Kill sound/music messing in vid code: S_Init() and CDAudio_Init()
+        are called AFTER VID_Init(), so this should be correct.
+        See hexen2/host.c for reasoning on Win32.
+      - we can never reach CheckTextureExtensions(), we'll give up
+        in GL_Init_Functions() if we don't like the gl_library...
+      - also comment out CheckArrayExtensions(), its call is if0'ed out
+    * added 48000 to the alsa rate switch
+    * added paranoid sound driver checks
+    * added missing scrolltitle in the software version of VID_MenuDraw()
+
 2005-02-10 (CVS):
     * removed unused functions SV_SaveEffects, SV_LoadEffects,
       SV_RemoveGIPFiles and SV_CopyFiles from hwsv.

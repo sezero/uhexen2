@@ -58,11 +58,11 @@ the binaries are:
 -------------------------
 
    SDL (min.: 1.2.2)	  : Simple DirectMedia Layer libraries
-			    1.2.5 and newer recommended.
+			    1.2.7 and newer highly recommended.
 
    SDL_mixer (min.: 1.2.0): Required for midi support (should
 			    be compiled with timidity+ support)
-			    1.2.5 and newer recommended.
+			    1.2.5 and newer highly recommended.
 
    ALSA libraries (0.9.8+): Advanced Linux Sound Architecture
 			    libraries. 1.0.4+ recommended.
