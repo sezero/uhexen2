@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.15 2005-01-11 07:11:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.16 2005-01-12 11:56:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -771,7 +771,7 @@ void Draw_IntermissionPic (qpic_t *pic)
 	if (scrap_dirty)
 		Scrap_Upload ();
 	gl = (glpic_t *)pic->data;
-	glColor4f (1,1,1,1);
+	glfunc.glColor4f_fp (1,1,1,1);
 	GL_Bind (gl->texnum);
 
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -1820,6 +1820,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/01/11 07:11:41  sezero
+ * missing newline
+ *
  * Revision 1.14  2005/01/08 16:10:46  sezero
  * slight gl cleanup
  *
