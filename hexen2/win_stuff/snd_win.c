@@ -286,7 +286,13 @@ sndinitstat SNDDMA_InitDirect (void)
 		return SIS_FAILURE;
 	}
 
-	if (DS_OK != pDS->lpVtbl->SetCooperativeLevel (pDS, mainwindow, DSSCL_EXCLUSIVE))
+	// if (DS_OK != pDS->lpVtbl->SetCooperativeLevel (pDS, mainwindow, DSSCL_EXCLUSIVE))
+	/* Pa3PyX: Some MIDI synthesizers are software and require access to
+	   waveOut; so if we set the coop level to exclusive, MIDI will fail
+	   to init because the device is locked. We use priority level instead.
+	   That way we don't lock out software synths and other apps, but can
+	   still set the sound buffer format. */
+	if (DS_OK != pDS->lpVtbl->SetCooperativeLevel (pDS, mainwindow, DSSCL_PRIORITY))
 	{
 		Con_SafePrintf ("Set coop level failed\n");
 		FreeSound ();

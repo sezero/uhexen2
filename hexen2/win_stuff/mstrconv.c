@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/mstrconv.c,v 1.1 2005-02-05 16:16:10 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/mstrconv.c,v 1.2 2005-02-05 16:19:31 sezero Exp $
  */
 
 #include <windows.h>
@@ -11,6 +11,7 @@
 
 #include "midi.h"
 #include "midstuff.h"
+#include "quakedef.h"
 
 // Global stuff which is defined in the main module
 //
@@ -939,7 +940,7 @@ static BOOL GetTrackByte( PINTRACKSTATE ptsTrack, LPBYTE lpbyByte )
 //
 // This function attempts to read in a buffer-full of data for a MIDI track.
 //
-BOOL RefillTrackBuffer( PINTRACKSTATE ptsTrack )
+static BOOL RefillTrackBuffer( PINTRACKSTATE ptsTrack )
     {
     DWORD   dwBytesRead, dwResult;
     BOOL    bResult;
@@ -1188,6 +1189,9 @@ static void ShowTrackError( PINTRACKSTATE ptsTrack, LPSTR lpszErr )
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/02/05 16:16:10  sezero
+ * separate win32 and linux versions of midi files. too much mess otherwise.
+ *
  * 
  * 1     2/27/97 4:04p Rjohnson
  * Initial Revision
