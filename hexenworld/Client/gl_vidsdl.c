@@ -334,46 +334,11 @@ void VID_UpdateWindowStatus (void)
 
 //====================================
 
-void *bindTexFunc;
-
-#define TEXTURE_EXT_STRING "GL_EXT_texture_object"
-
-void CheckTextureExtensions (void)
-{
-	char		*tmp;
-	qboolean	texture_ext;
-
-	texture_ext = false;
-	/* check for texture extension */
-	tmp = (unsigned char *)glfunc.glGetString_fp(GL_EXTENSIONS);
-	while (*tmp)
-	{
-		if (strncmp((const char*)tmp, TEXTURE_EXT_STRING, strlen(TEXTURE_EXT_STRING)) == 0)
-			texture_ext = true;
-		tmp++;
-	}
-
-	if (!texture_ext || COM_CheckParm ("-gl11") )
-	{
-		bindTexFunc = (void *)SDL_GL_GetProcAddress("glBindTexture");
-		if (!bindTexFunc)
-			Sys_Error ("No texture objects!");
-		return;
-	}
-
-/* load library and get procedure adresses for texture extension API */
-	if ((bindTexFunc = SDL_GL_GetProcAddress("glBindTextureEXT")) == NULL)
-	{
-		Sys_Error ("GetProcAddress for BindTextureEXT failed");
-		return;
-	}
-}
-
+/*
 void CheckArrayExtensions (void)
 {
 	char		*tmp;
 
-	/* check for texture extension */
 	tmp = (unsigned char *)glfunc.glGetString_fp(GL_EXTENSIONS);
 	while (*tmp)
 	{
@@ -394,6 +359,7 @@ void CheckArrayExtensions (void)
 
 	Sys_Error ("Vertex array extension not present");
 }
+*/
 
 //int		texture_mode = GL_NEAREST;
 //int		texture_mode = GL_NEAREST_MIPMAP_NEAREST;
@@ -472,7 +438,6 @@ void GL_Init (void)
     if (strnicmp(gl_renderer,"Permedia",8)==0)
          isPermedia = true;
 
-	CheckTextureExtensions ();
 	CheckMultiTextureExtensions ();
 
 	glfunc.glClearColor_fp (1,0,0,0);

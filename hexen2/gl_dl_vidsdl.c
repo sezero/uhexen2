@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.28 2005-02-11 08:33:55 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.29 2005-02-11 23:45:52 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -341,10 +341,6 @@ void VID_UpdateWindowStatus (void)
 
 //====================================
 
-void *bindTexFunc;
-
-#define TEXTURE_EXT_STRING "GL_EXT_texture_object"
-
 //#define FX_DISPLAY_MODE_EXT_STRING "gl3DfxDisplayModeEXT"
 
 //#define FX_SET_PALETTE_EXT_STRING "gl3DfxSetPaletteEXT"
@@ -447,42 +443,11 @@ void Check3DfxMarkPaletteTextureExtension( void )
 }
 */
 
-void CheckTextureExtensions (void)
-{
-	char		*tmp;
-	qboolean	texture_ext;
-
-	texture_ext = false;
-	/* check for texture extension */
-	tmp = (unsigned char *)glfunc.glGetString_fp(GL_EXTENSIONS);
-	while (*tmp)
-	{
-		if (strncmp((const char*)tmp, TEXTURE_EXT_STRING, strlen(TEXTURE_EXT_STRING)) == 0)
-			texture_ext = true;
-		tmp++;
-	}
-
-	if (!texture_ext || COM_CheckParm ("-gl11") )
-	{
-		bindTexFunc = (void *)SDL_GL_GetProcAddress("glBindTexture");
-		if (!bindTexFunc)
-			Sys_Error ("No texture objects!");
-		return;
-	}
-
-/* load library and get procedure adresses for texture extension API */
-	if ((bindTexFunc = SDL_GL_GetProcAddress("glBindTextureEXT")) == NULL)
-	{
-		Sys_Error ("GetProcAddress for BindTextureEXT failed");
-		return;
-	}
-}
-
+/*
 void CheckArrayExtensions (void)
 {
 	char		*tmp;
 
-	/* check for texture extension */
 	tmp = (unsigned char *)glfunc.glGetString_fp(GL_EXTENSIONS);
 	while (*tmp)
 	{
@@ -503,6 +468,7 @@ void CheckArrayExtensions (void)
 
 	Sys_Error ("Vertex array extension not present");
 }
+*/
 
 //int		texture_mode = GL_NEAREST;
 //int		texture_mode = GL_NEAREST_MIPMAP_NEAREST;
@@ -541,8 +507,6 @@ void GL_Init (void)
 	{
 		is_PowerVR = true;
 	}
-
-	CheckTextureExtensions ();
 
     	//fxDisplayModeExtension = NULL;
 	//fxSetPaletteExtension = NULL;
