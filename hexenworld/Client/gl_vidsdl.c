@@ -19,7 +19,6 @@
 
 #include "quakedef.h"
 #include "winquake.h"
-#include "resource.h"
 
 #include "SDL.h"
 #include <dlfcn.h>

@@ -21,13 +21,12 @@
 */
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.6 2005-01-12 11:59:12 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.7 2005-02-06 15:03:15 sezero Exp $
  */
 
 #include "quakedef.h"
 #include "winquake.h"
 #include "d_local.h"
-#include "resource.h"
 #include "SDL.h"
 
 #define MAX_MODE_LIST	30
@@ -1316,6 +1315,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/01/12 11:59:12  sezero
+ * remove some commented-out win32-stuff
+ *
  * Revision 1.5  2005/01/01 21:55:47  sezero
  * warnings cleanup: missing prototypes
  *

@@ -1,7 +1,7 @@
 // sys_unix.c -- Unix system interface code
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.7 2005-01-18 11:29:18 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.8 2005-02-06 15:03:15 sezero Exp $
  */
 
 #include <stdio.h>
@@ -19,7 +19,6 @@
 
 #include "quakedef.h"
 #include "errno.h"
-#include "resource.h"
 
 #define CRC_A 59461 // "Who's Ridin' With Chaos?"
 #define CRC_B 54866 // "Santa needs a new sled!"
@@ -949,6 +948,15 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/01/18 11:29:18  sezero
+ * - Fix userdirs to work correctly against the -game arg
+ * - Added a "qboolean adduser" arg to COM_AddGameDir()  (useful esp. in
+ *   hexenworld):  com_userdir evolves gradually. Every search path added
+ *   has a consequence of additon of (multiple) unnecessary userpaths.
+ *   Avoid it where we can. (original aot also added the very same userdir
+ *   multiple times)
+ * - Changed all instances of "id1" to "data1"
+ *
  * Revision 1.6  2005/01/01 21:50:49  sezero
  * warnings cleanup: unused stuff
  *

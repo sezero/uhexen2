@@ -1,6 +1,6 @@
 /*
    gl_dl_vidsdl.c
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.21 2005-01-24 20:34:22 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.22 2005-02-06 15:03:09 sezero Exp $
 
 	Select window size and mode and init SDL in GL mode.
 
@@ -24,7 +24,6 @@
 
 #include "quakedef.h"
 #include "winquake.h"
-#include "resource.h"
 
 #include "SDL.h"
 #include <dlfcn.h>
