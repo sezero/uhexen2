@@ -120,7 +120,7 @@ GLOBJS = gl_dl_draw.o \
 	gl_dl_rmisc.o \
 	gl_dl_rsurf.o \
 	gl_dl_screen.o \
-	gl_test.o \
+	gl_dl_test.o \
 	gl_dl_warp.o \
 	gl_dl_vidsdl.o
 
