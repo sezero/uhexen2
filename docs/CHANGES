@@ -1,5 +1,14 @@
 ChangeLog:
 
+2005-03-03 (CVS, 1.2.4-rc4):
+    * fixed and activated munmap of shm->buffer for snd_oss.c
+    * commented-out shm->gamealive thing which serves nothing
+    * sys_unix.c cleanup: remove dead and/or win32 code
+    * removed unreached return from main (it should have been 0, btw.
+      from Steve)
+    * removed h2mp dependency from length check in Sys_GetUserdir,
+      seems to serve no purpose (from Steve)
+
 2005-02-23 (CVS, 1.2.4-rc3):
     * final rc for 1.2.4
     * killed hexenworld warning "cl_tent.c:2972: warning: statement
