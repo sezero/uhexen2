@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.1.1.1 2004-11-28 00:05:05 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.2 2004-11-28 00:45:18 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -10,7 +10,7 @@
 extern	float introTime;
 extern	cvar_t	crosshair;
 #ifdef H2MP
-cvar_t m_oldmission = {"m_oldmission","0",true};
+cvar_t m_oldmission = {"m_oldmission","1",true};
 #endif
 
 void (*vid_menudrawfn)(void);
@@ -4658,6 +4658,9 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:05:05  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.5  2002/01/04 20:39:55  phneutre
  * fixed SINGLEPLAYER_ITEMS value (3 instead of 4) when PoP is not installed
  *
