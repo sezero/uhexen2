@@ -40,22 +40,17 @@ Linux Hexen II requires Hexen II game files updated to version 1.11.
 There are two ways to do this:
 
 a. Using the installer (easy way):
-   The installer will get the files from your original cdroms and
-   apply the appropriate patches for you. It will also install the
-   necessary binaries.
-   There is a sub-option named "Hot-fixes for Hexen II", which will
-   install fixes for some gameplay issues. We recommend that you
-   choose it.  For the curious, names of the Hexen2 binaries are:
+   The installer will get the files from your original cdroms, apply
+   the latest patches (gamefiles 1.12d) and install the binaries for
+   you. For the curious, names of the Hexen2 binaries are:
 
 	hexen2	 -  Software Hexen II
 	glhexen2 -  OpenGL Hexen II
 
    The second option will allow you to install the Mission Pack
-   "Portal of Praevus" (should you have it). All you need to do is
+   "Portal of Praevus", should you have it. All you need to do is
    choosing the Praevus support check-box and readying your cdrom.
-   There is a sub-option named "Hot-fixes for Portal of Praevus",
-   which will install fixes for some gameplay issues. We recommend
-   that you choose it.  The names of the binaries are:
+   The names of the binaries are:
 
 	h2mp	-  Software Portal of Praevus
 	glh2mp	-  OpenGL Portal of Praevus
@@ -381,3 +376,4 @@ Hexen II FAQ       :  http://www.raven-games.com/hex2faq/
 Lowercase Utility  :  www.freshmeat.net/projects/file-rename-utils
 Linux GlQuake      :  http://mfcn.ilo.de/glxquake
 ALSA sound         :  http://www.alsa-project.org
+
