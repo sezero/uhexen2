@@ -10,8 +10,7 @@ extern unsigned ColorPercent[16];
 
 extern unsigned char d_15to8table[65536];
 
-cvar_t		gl_nobind = {"gl_nobind", "0"};
-cvar_t		gl_max_size = {"gl_max_size", "1024"};
+int		gl_max_size = 256;
 cvar_t		gl_picmip = {"gl_picmip", "0"};
 cvar_t		gl_spritemip = {"gl_spritemip", "0"};
 
@@ -73,8 +72,6 @@ int			numgltextures;
 
 void GL_Bind (int texnum)
 {
-	if (gl_nobind.value)
-		texnum = char_texture;
 	if (currenttexture == texnum)
 		return;
 	currenttexture = texnum;
@@ -446,15 +443,15 @@ void Draw_Init (void)
 	int		f, fstep;
 	char	temp[MAX_QPATH];
 
-	Cvar_RegisterVariable (&gl_nobind);
-	Cvar_RegisterVariable (&gl_max_size);
 	Cvar_RegisterVariable (&gl_picmip);
 	Cvar_RegisterVariable (&gl_spritemip);
 
-	// rjr - handle powervr
-	// 3dfx can only handle 256 wide textures
-	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",4))
-		Cvar_Set ("gl_max_size", "256");
+	glfunc.glGetIntegerv_fp(GL_MAX_TEXTURE_SIZE, &gl_max_size);
+	if (gl_max_size < 64)	/* Any living examples for this? */
+		gl_max_size = 64;
+	if (gl_max_size > 1024) /* O.S: write a cmdline override if necessary */
+		gl_max_size = 1024;
+	Con_Printf("OpenGL max.texture size: %i\n", gl_max_size);
 
 	Cmd_AddCommand ("gl_texturemode", &Draw_TextureMode_f);
 
@@ -1559,10 +1556,10 @@ static	unsigned	scaled[1024*512];	// [512*256];
 		scaled_height = 1;
 	}
 
-	if (scaled_width > gl_max_size.value)
-		scaled_width = gl_max_size.value;
-	if (scaled_height > gl_max_size.value)
-		scaled_height = gl_max_size.value;
+	if (scaled_width > gl_max_size)
+		scaled_width = gl_max_size;
+	if (scaled_height > gl_max_size)
+		scaled_height = gl_max_size;
 
 	// 3dfx has some aspect ratio constraints. . . can't go beyond 8 to 1 or below 1 to 8.
 	if( is_3dfx )
@@ -1692,10 +1689,10 @@ void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboole
 		scaled_height = 1;
 	}
 
-	if (scaled_width > gl_max_size.value)
-		scaled_width = gl_max_size.value;
-	if (scaled_height > gl_max_size.value)
-		scaled_height = gl_max_size.value;
+	if (scaled_width > gl_max_size)
+		scaled_width = gl_max_size;
+	if (scaled_height > gl_max_size)
+		scaled_height = gl_max_size;
 
 	// 3dfx has some aspect ratio constraints. . . can't go beyond 8 to 1 or below 1 to 8.
 	if( is_3dfx )
