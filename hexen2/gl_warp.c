@@ -260,6 +260,8 @@ void EmitBothSkyLayers (msurface_t *fa)
 	EmitSkyPolys (fa);
 
 	glfunc.glEnable_fp (GL_BLEND);
+	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glfunc.glColor4f_fp(1.0f, 1.0f, 1.0f, r_skyalpha.value);
 	GL_Bind (alphaskytexture);
 	speedscale = realtime*16;
 	speedscale -= (int)speedscale & ~127 ;
@@ -267,6 +269,7 @@ void EmitBothSkyLayers (msurface_t *fa)
 	EmitSkyPolys (fa);
 
 	glfunc.glDisable_fp (GL_BLEND);
+	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
 
 #ifndef QUAKE2
@@ -288,6 +291,8 @@ void R_DrawSkyChain (msurface_t *s)
 		EmitSkyPolys (fa);
 
 	glfunc.glEnable_fp (GL_BLEND);
+	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glfunc.glColor4f_fp(1.0f, 1.0f, 1.0f, r_skyalpha.value);
 	GL_Bind (alphaskytexture);
 	speedscale = realtime*16;
 	speedscale -= (int)speedscale & ~127 ;
@@ -296,6 +301,7 @@ void R_DrawSkyChain (msurface_t *s)
 		EmitSkyPolys (fa);
 
 	glfunc.glDisable_fp (GL_BLEND);
+	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
 
 #endif

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.11 2005-01-24 20:27:25 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.12 2005-01-24 20:32:56 sezero Exp $
  */
 
 // disable data conversion warnings
@@ -305,6 +305,7 @@ extern	cvar_t	r_lightmap;
 extern	cvar_t	r_shadows;
 extern	cvar_t	r_mirroralpha;
 extern	cvar_t	r_wateralpha;
+extern	cvar_t	r_skyalpha;
 extern	cvar_t	r_dynamic;
 extern	cvar_t	r_novis;
 extern	cvar_t	r_wholeframe;
@@ -352,6 +353,9 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/01/24 20:27:25  sezero
+ * consolidate GL_LoadTexture functions
+ *
  * Revision 1.10  2005/01/12 11:59:11  sezero
  * remove some commented-out win32-stuff
  *

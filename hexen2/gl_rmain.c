@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_rmain.c,v 1.12 2005-01-12 11:57:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_rmain.c,v 1.13 2005-01-24 20:32:56 sezero Exp $
 */
 
 
@@ -72,7 +72,8 @@ cvar_t	r_fullbright = {"r_fullbright","0"};
 cvar_t	r_lightmap = {"r_lightmap","0"};
 cvar_t	r_shadows = {"r_shadows","0", true};
 cvar_t	r_mirroralpha = {"r_mirroralpha","1"};
-cvar_t	r_wateralpha = {"r_wateralpha",".4", true};
+cvar_t	r_wateralpha = {"r_wateralpha","0.33", true};
+cvar_t	r_skyalpha = {"r_skyalpha", "0.67", true};
 cvar_t	r_dynamic = {"r_dynamic","1"};
 cvar_t	r_novis = {"r_novis","0"};
 cvar_t	r_wholeframe = {"r_wholeframe", "1", true};
@@ -1769,6 +1770,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/01/12 11:57:40  sezero
+ * glfunc stuff (nitpicking)
+ *
  * Revision 1.11  2005/01/10 14:31:19  sezero
  * comment "beautification"
  *
