@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/pstboar.hc,v 1.1.1.1 2004-11-29 11:28:54 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/pstboar.hc,v 1.2 2005-02-15 10:57:27 sezero Exp $
  */
 
 /*
@@ -195,27 +195,6 @@ void throw_hive (void)
 	thinktime newmis : 0;
 }
 
-void poison_think ()
-{
-	self.enemy.deathtype="poison";
-	T_Damage (self.enemy, self, self.owner, 1 );
-	if(self.enemy.flags&FL_CLIENT)
-		stuffcmd(self.enemy,"bf\n");
-	if(self.lifetime<time||self.enemy.health<=0)
-		self.think=SUB_Remove;
-	thinktime self : 1;
-}
-
-void spawn_poison ()
-{
-	newmis=spawn();
-	newmis.think=poison_think;
-	newmis.enemy=self.enemy;
-	newmis.owner=self.owner;
-
-	thinktime newmis : 0.05;
-	newmis.lifetime=time+random(5,10);
-}
 
 void pestilence_missile_touch(void)
 {
@@ -236,7 +215,7 @@ void pestilence_missile_touch(void)
 		if(other.flags&FL_CLIENT)
 			stuffcmd(other,"bf\n");
 		if(other.classname!="rider_pestilence")
-			spawn_poison();
+			spawn_poison(self.enemy,self.owner,random(5,10));
 		other.deathtype="poison";
 		T_Damage (other, self, self.owner, damg );
 		sound (self, CHAN_WEAPON, "pest/xbowhit.wav", 1, ATTN_NORM);
@@ -762,32 +741,6 @@ void hive_touch(void)
 }
 
 
-void create_swarm (void)
-{
-entity newmis;
-vector diff;
-	newmis = spawn ();
-	newmis.owner = self;
-	newmis.movetype = MOVETYPE_TOSS;
-	newmis.solid = SOLID_BBOX;
-	newmis.thingtype = THINGTYPE_FLESH;
-	newmis.classname="hive";
-		
-	setmodel (newmis,"models/boss/hive.mdl");
-	setsize(newmis,'0 0 0','0 0 0');
-	makevectors (self.v_angle);
-
-	setorigin (newmis,self.origin + (v_forward * 14) + (v_up * 40));
-
-	diff = ((self.origin  + (100 * v_forward)) - self.origin);
-	newmis.velocity = normalize(diff);
-	newmis.velocity = newmis.velocity * 1000;
-	newmis.angles = vectoangles(newmis.velocity);
-
-	newmis.enemy = self;
-	newmis.touch = hive_touch;
-}
-
 /*QUAKED rider_pestilence (1 0 0)  (-55 -55 -24) (55 55 100) TRIGGER_WAIT
 Pestilence rider monster.  You must place rider_path entites
 on the map.  The rider will first proceed to the 
@@ -869,6 +822,9 @@ void rider_pestilence(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:28:54  sezero
+ * Initial import
+ *
  * Revision 1.1.1.1  2001/11/09 17:05:10  theoddone33
  * Inital import
  *

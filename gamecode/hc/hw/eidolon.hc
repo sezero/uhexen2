@@ -146,7 +146,7 @@ void()eidolon_face_orb;
 void orb_die()
 {
 	self.owner.health=4000+skill*2000;
-	self.th_save=eidolon_ready_roar;
+	self.owner.th_save=eidolon_ready_roar;
 	self.owner.controller=world;
 	self.owner.goalentity=self.owner.enemy;
 	self.owner.think=multiplayer_health;
@@ -227,7 +227,7 @@ void orb_lightning_recharge ()  [++ 0 .. 35]
 		self.proj_ofs=self.owner.origin+self.owner.proj_ofs+v_forward*200+v_right*36+'0 0 100';
 	}
 
-	do_lightning (self.owner,self.weaponframe_cnt,0, 2, self.view_ofs, self.proj_ofs,0);
+	do_lightning (self.owner,self.weaponframe_cnt,0, 2, self.view_ofs, self.proj_ofs,0,TE_STREAM_LIGHTNING);
 }
 
 void orb_lightning_pattern ()  [++ 0 .. 35]
@@ -248,7 +248,7 @@ void orb_lightning_pattern ()  [++ 0 .. 35]
 //			self.v_angle-=randomv('15 15 15','45 45 45');
 		makevectors(self.v_angle);
 		self.proj_ofs=self.origin+'0 0 1'*self.absmax_z*0.6+v_forward*54;
-		do_lightning (self.owner,self.weaponframe_cnt,0, random(4), self.view_ofs, self.proj_ofs,0);
+		do_lightning (self.owner,self.weaponframe_cnt,0, random(4), self.view_ofs, self.proj_ofs,0,TE_STREAM_LIGHTNING);
 	}
 	else
 	{
@@ -268,7 +268,7 @@ void orb_lightning_pattern_init ()
 	self.v_angle+=randomv('-45 -45 -45','45 45 45');
 	makevectors(self.v_angle);
 	self.proj_ofs=self.origin+'0 0 1'*self.absmax_z*0.6+v_forward*54;
-	do_lightning (self.owner,self.weaponframe_cnt,0, random(3), self.view_ofs, self.proj_ofs,0);
+	do_lightning (self.owner,self.weaponframe_cnt,0, random(3), self.view_ofs, self.proj_ofs,0,TE_STREAM_LIGHTNING);
 	self.think=orb_lightning_pattern;
 	thinktime self :0.05;
 }
@@ -473,7 +473,7 @@ vector displace;
 				setorigin(self,self.origin+v_forward*move_speed);
 			}
 		}
-		else if(trace_ent)
+		else if(trace_ent!=world)
 		{
 			displace = normalize(trace_ent.origin - self.origin);
 			if (infront(trace_ent))
@@ -503,10 +503,10 @@ vector org,from;
 	makevectors(self.angles);
 	org=(self.absmin+self.absmax)*0.5;
 	from=org+'0 0 500';
-	do_lightning (self,1,0,4,org,from+v_forward*300,0);
-	do_lightning (self,1,0,4,org,from+v_right*300,0);
-	do_lightning (self,1,0,4,org,from-v_forward*300,0);
-	do_lightning (self,1,0,4,org,from-v_up*300,0);
+	do_lightning (self,1,0,4,org,from+v_forward*300,0,TE_STREAM_LIGHTNING);
+	do_lightning (self,1,0,4,org,from+v_right*300,0,TE_STREAM_LIGHTNING);
+	do_lightning (self,1,0,4,org,from-v_forward*300,0,TE_STREAM_LIGHTNING);
+	do_lightning (self,1,0,4,org,from-v_up*300,0,TE_STREAM_LIGHTNING);
 	sound(self,CHAN_BODY,"player/megagib.wav",1,ATTN_NONE);
 	sound (self, CHAN_ITEM, "weapons/exphuge.wav", 1, ATTN_NONE);
 	SpawnPuff(org,self.size,100,self);
@@ -599,8 +599,8 @@ entity found;
 	if(self.frame<$grow71)
 		thinktime self : 0.1;
 //	check_use_model("models/boss/bigeido.mdl");
-	if(self.scale<2.5)
-		self.scale+=0.02;
+	if(self.scale<2.52)
+		self.scale+=0.03;
 	setsize (self, '-16 -16 0'*1.3333333*self.scale, '16 16 200'*1.3333333*self.scale);
 	self.mass=2000*1.34*self.scale;
 	self.hull=HULL_POINT;
@@ -619,10 +619,11 @@ entity found;
 	}
 	if(cycle_wrapped)
 	{
+		self.scale=2.55;
 		self.rider_path_distance=64;
 		self.weapon=0;
 		self.health=10000;
-		self.experience_value=100000;
+		self.experience_value=self.init_exp_val=100000;
 		self.drawflags(-)MLS_POWERMODE;
 		self.flags2(-)FL_SMALL;
 		self.controller.think=orb_wait;
@@ -653,13 +654,17 @@ void eidolon_ready_grow () [++ $dwait1 .. $dwait29]
 void eidolon_darken_sky () [++ $dwait1 .. $dwait29]
 {
 float lightval;
+entity watcher;
 //	check_use_model("models/boss/smaleido.mdl");
 	lightval=lightstylevalue(self.lockentity.style);
-	if(lightval>2)
-		lightstylestatic(self.lockentity.style,lightval - 1);
 //	else if(self.frame==$dwait29 &&lineofsight(self,self.enemy))
+	if(lightval>2)
+	{
+		lightval-=1;
+		lightstylestatic(self.lockentity.style,lightval);
+	}
 	else if(self.frame==$dwait29)
-		if(infront_of_ent(self,self.enemy))
+/*		if(infront_of_ent(self,self.enemy))
 		if(infront_of_ent(self.controller,self.enemy))
 		if(vlen(self.enemy.origin-self.origin)<1500)
 		{
@@ -674,6 +679,33 @@ float lightval;
 		}
 	self.health=self.max_health;
 	self.lockentity.lightvalue1=lightval;
+*/
+	{
+		watcher=self.enemy;
+		if(self.enemy.classname=="monster_imp_lord")//if enemy an imp, look for it's owner
+			watcher=self.enemy.controller;
+		if(!watcher.flags2&FL_ALIVE)
+		{//If enemy not alive, look for other players
+			watcher=find(world,classname,"player");
+			while(watcher!=world&&!watcher.flags2&FL_ALIVE)
+				watcher=find(watcher,classname,"player");
+		}
+		if(infront_of_ent(self,watcher))
+			if(infront_of_ent(self.controller,watcher))
+				if(vlen(self.enemy.origin-self.origin)<1500)
+				{
+					self.velocity='0 0 0';
+					self.movetype=MOVETYPE_NOCLIP;
+					self.flags(+)FL_FLY;
+					MonsterQuake(500);
+					SUB_UseTargets();
+					self.target="";
+					self.lifetime=time+2;
+					self.think=eidolon_ready_grow;
+				}
+	}
+	self.health=self.max_health;
+	self.lockentity.lightvalue1=lightval;
 }
 
 void eidolon_fake_die () [++ $death1 .. $death30]
@@ -681,7 +713,7 @@ void eidolon_fake_die () [++ $death1 .. $death30]
 //	check_use_model("models/boss/smaleido.mdl");
 	self.health=self.max_health;
 	if(self.frame==$death30)
-	 	if(self.lockentity!=world)
+		if(self.lockentity!=world)
 		{
 			self.lockentity.wait=100;
 			self.lockentity.dmg=0;
@@ -717,6 +749,7 @@ void eidolon_pain () [++ $painA1 .. $painA9]
 {
 //	if(self.frame==$painA1)
 //		check_use_model("models/boss/smaleido.mdl");
+
 	if(self.frame==$painA9)
 	{
 		if(self.weapon>=1000&&self.controller.flags2&FL_ALIVE)
@@ -890,6 +923,7 @@ void eidolon_power () [++ $power1 .. $power20]
 void eidolon_face_orb () [++ $walk1 .. $walk16]
 {
 //	check_use_model("models/boss/smaleido.mdl");
+
 	self.ideal_yaw = vectoyaw(self.controller.origin - self.origin);
 	ChangeYaw();
 	if(self.angles_y>self.ideal_yaw - 10&&self.angles_y<self.ideal_yaw + 10)
@@ -1265,13 +1299,15 @@ void monster_eidolon(void)
 	self.movetype = MOVETYPE_STEP;
 	self.takedamage=DAMAGE_YES;
 	self.monsterclass=CLASS_FINAL_BOSS;
-	self.flags2(+)FL_ALIVE|FL_MONSTER|FL_SMALL;
+	self.flags(+)FL_MONSTER;
+	self.flags2(+)FL_ALIVE|FL_SMALL;
 	self.thingtype=THINGTYPE_FLESH;
 
 	setmodel (self, "models/boss/smaleido.mdl");
 	self.skin = 0;
 
-	setsize (self, '-32 -32 0', '32 32 150');
+	setsize (self, '-40 -40 0', '40 40 150');
+//	setsize (self, '-32 -32 0', '32 32 150');
 	self.hull=HULL_GOLEM;
 	self.health = self.max_health=3000+skill*1000;
 
@@ -1281,7 +1317,7 @@ void monster_eidolon(void)
 	self.rider_path_distance=30;
 
 	self.proj_ofs=self.view_ofs='0 0 100';
-	self.experience_value = 10000;
+	self.experience_value = self.init_exp_val=10000;
 
 	self.th_stand = eidolon_wait;
 	self.th_jump = eidolon_ready_roar;
@@ -1304,6 +1340,9 @@ void monster_eidolon(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:26:10  sezero
+ * Initial import
+ *
  * Revision 1.1.1.1  2001/11/09 17:05:03  theoddone33
  * Inital import
  *

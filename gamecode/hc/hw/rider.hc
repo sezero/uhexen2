@@ -314,6 +314,7 @@ void rider_multi_touch(void)
 /*QUAKED rider_trigger_multiple (0.5 0.15 0) ?
 -------------------------FIELDS-------------------------
 rt_chance: chance (0-1) that the trigger will be run
+These two are used only for waking up rider_war.
 --------------------------------------------------------
 
 */
@@ -342,6 +343,7 @@ void rider_trigger_multiple(void)
 /*QUAKED rider_trigger_once (0.5 0.15 0) ?
 -------------------------FIELDS-------------------------
 rt_chance: chance (0-1) that the trigger will be run
+These two are used only for waking up rider_war.
 --------------------------------------------------------
 
 */
@@ -355,6 +357,10 @@ void rider_trigger_once(void)
 void beam_move(void)
 {
 	thinktime self : HX_FRAME_TIME;
+
+
+	if(self.owner.model=="models/soulskul.mdl")
+		setorigin(self,self.owner.origin);
 
 	if (self.scale < self.beam_max_scale)
 		self.scale += 0.6;
@@ -379,6 +385,9 @@ void beam_move(void)
 void star_think(void)
 {
 	thinktime self : HX_FRAME_TIME;
+
+	if(self.owner.model=="models/soulskul.mdl")
+		setorigin(self,self.owner.origin);
 
 	self.velocity = self.velocity * 1.05;
 
@@ -420,6 +429,9 @@ void rider_star(void)
 void circle_think(void)
 {
 	thinktime self : HX_FRAME_TIME;
+
+	if(self.owner.model=="models/soulskul.mdl")
+		setorigin(self,self.owner.origin);
 
 	rider_star();
 
@@ -468,14 +480,17 @@ void rider_eol(void)
 		search = find(world, classname, "rider_temp");
 		while (search != world)
 		{
-			remove(search);
+			if(search.owner==self)
+				remove(search);
 			search = find(search, classname, "rider_temp");
 		}
 
 		return;
 	}
 
-//	return;
+	if(self.model=="models/soulskul.mdl")
+		return;
+	//	return;
 
 	nextmap = self.map;
 	nextstartspot = self.target;
@@ -560,19 +575,26 @@ vector new_origin;
 	if (self.count == 0)
 	{
 		sound (self, CHAN_AUTO, "famine/flashdie.wav", 1, ATTN_NONE);  // Start of the death flash
-		found=find(world,classname,"player");
-		while(found)
-		{//Give them all the exp
-			AwardExperience(found,self,self.experience_value);
-			found=find(found,classname,"player");
+
+		if(self.model!="models/soulskul.mdl")
+		{
+			found=find(world,classname,"player");
+			while(found)
+			{//Give them all the exp
+				AwardExperience(found,self,self.experience_value);
+				found=find(found,classname,"player");
+			}
+			self.experience_value=	self.init_exp_val = FALSE;
 		}
-		self.experience_value=FALSE;
 		self.drawflags = self.drawflags | MLS_ABSLIGHT;
 		self.abslight = 3;
 		if(self.noise)
 			sound(self,CHAN_VOICE,self.noise,1,ATTN_NONE);
-		self.movetype=MOVETYPE_NONE;
-		self.velocity='0 0 0';
+		if(self.model!="models/soulskul.mdl")
+		{
+			self.movetype=MOVETYPE_NONE;
+			self.velocity='0 0 0';
+		}
 	}
 
 	thinktime self : self.rider_death_speed;
@@ -584,7 +606,10 @@ vector new_origin;
 		{
 			beam = spawn();
 
-			new_origin = self.origin + '0 0 50';
+			if(self.model!="models/soulskul.mdl")
+				new_origin = self.origin + '0 0 50';
+			else
+				new_origin = self.origin;
 
 			setmodel(beam,"models/boss/circle.mdl");
 			setorigin(beam,new_origin);
@@ -617,7 +642,10 @@ vector new_origin;
 		{
 			beam = spawn();
 
-			new_origin = self.origin + '0 0 50';
+			if(self.model=="models/soulskul.mdl")
+				new_origin = self.origin;
+			else
+				new_origin = self.origin + '0 0 50';
 
 			setmodel(beam,"models/boss/circle.mdl");
 			setorigin(beam,new_origin);
@@ -647,8 +675,11 @@ vector new_origin;
 
 	makevectors(self.angles);
 //	new_origin = v_factorrange('-3 -25 45', '3 25 50') + self.origin;
-	new_origin = self.origin + '0 0 50';
-
+	if(self.model=="models/soulskul.mdl")
+		new_origin = self.origin;
+	else
+		new_origin = self.origin + '0 0 50';
+	
 	setmodel(beam,"models/boss/shaft.mdl");
 	setorigin(beam,new_origin);
 

@@ -1,12 +1,11 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/impulse.hc,v 1.1.1.1 2004-11-29 11:27:37 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/impulse.hc,v 1.2 2005-02-15 10:57:27 sezero Exp $
  */
 
 void PlayerAdvanceLevel(float NewLevel);
 void player_level_cheat(void);
 void player_experience_cheat(void);
 void Polymorph (entity loser);
-//void create_swarm (void);
 
 void restore_weapon ()
 {//FIXME: use idle, not select
@@ -505,6 +504,9 @@ void() ImpulseCommands =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:27:37  sezero
+ * Initial import
+ *
  * Revision 1.1.1.1  2001/11/09 17:05:06  theoddone33
  * Inital import
  *

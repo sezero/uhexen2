@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/warhorse.hc,v 1.1.1.1 2004-11-29 11:30:03 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/warhorse.hc,v 1.2 2005-02-15 10:57:27 sezero Exp $
  */
 
 /*
@@ -656,6 +656,7 @@ void rider_war(void)
 	self.monsterclass = CLASS_BOSS;
 	self.yaw_speed = 2;
 	self.experience_value = 2000;
+	self.init_exp_val = self.experience_value;
 	setmodel (self, "models/boss/warhorse.mdl");
 	self.skin = 0;
 
@@ -827,6 +828,9 @@ void rider_quake_center(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:30:03  sezero
+ * Initial import
+ *
  * Revision 1.1.1.1  2001/11/09 17:05:14  theoddone33
  * Inital import
  *

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/famhorse.hc,v 1.1.1.1 2004-11-29 11:26:18 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/famhorse.hc,v 1.2 2005-02-15 10:57:27 sezero Exp $
  */
 
 /*
@@ -763,7 +763,7 @@ void rider_famine(void)
 	precache_sound3 ("famine/clop1.wav");
 	precache_sound3 ("famine/clop2.wav");
 	precache_sound3 ("famine/clop3.wav");
-	precache_sound3 ("misc/null.wav");
+//	precache_sound3 ("misc/null.wav");
 	precache_sound3 ("raven/blast.wav");
 	precache_sound3 ("skullwiz/blinkout.wav");
 	precache_sound3 ("skullwiz/blinkin.wav");
@@ -790,7 +790,7 @@ void rider_famine(void)
 	self.flags2 (+) FL_ALIVE;
 	self.monsterclass = CLASS_BOSS;
 	self.yaw_speed = 10;
-	self.experience_value = 500;
+	self.experience_value = self.init_exp_val = 500;
 
 	create_famrider(self);
 	self.attack_finished = 0;
@@ -807,6 +807,9 @@ void rider_famine(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:26:18  sezero
+ * Initial import
+ *
  * Revision 1.1.1.1  2001/11/09 17:05:03  theoddone33
  * Inital import
  *

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/dthhorse.hc,v 1.1.1.1 2004-11-29 11:26:07 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/dthhorse.hc,v 1.2 2005-02-15 10:57:26 sezero Exp $
  */
 
 /*
@@ -165,18 +165,22 @@ void fire_circ_hit ()
 
 	self.dmg=0;
 	self.think=circle_of_fire;
+	if(self.owner.classname=="player")
+		self.effects(+)EF_BRIGHTLIGHT;
+
 	thinktime self : 0;
 }
 
 void firecirc_fall_think()
 {
-	if (self.lifetime < time || vlen(self.enemy.origin - self.origin) < 40)
-	{
-		other=self.enemy;
-		self.think=self.touch;
-		thinktime self : 0;
-		return;
-	}
+	if(self.enemy)
+		if (self.lifetime < time || vlen(self.enemy.origin - self.origin) < 40)
+		{
+			other=self.enemy;
+			self.think=self.touch;
+			thinktime self : 0;
+			return;
+		}
 
 	HomeThink();
 	self.angles=vectoangles(self.velocity);
@@ -949,7 +953,7 @@ void rider_death(void)
 
 	setsize (self, '-55 -55 -24', '55 55 100');
 	self.health = 3500;
-	self.experience_value = 1000;
+	self.experience_value = self.init_exp_val = 1000;
 
 	self.dflags = 0;
 	self.rider_gallop_mode = 0;
@@ -976,6 +980,9 @@ void rider_death(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:26:07  sezero
+ * Initial import
+ *
  * Revision 1.1.1.1  2001/11/09 17:05:02  theoddone33
  * Inital import
  *
