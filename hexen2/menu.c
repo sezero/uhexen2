@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.25 2005-03-06 10:44:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.26 2005-03-08 12:14:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -768,7 +768,7 @@ void M_Main_Key (int key)
 		IN_ActivateMouseSA ();
 
 		// and check we haven't changed the music type
-		if (strcmp(old_bgmtype,bgmtype.string)!=0)
+		if (strlen(old_bgmtype)!=0 && strcmp(old_bgmtype,bgmtype.string)!=0)
 			ReInitMusic ();
 		strcpy (old_bgmtype, "");
 
@@ -4735,6 +4735,11 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2005/03/06 10:44:41  sezero
+ * - move reinit_music to menu.c where it belongs
+ * - fix reinit_music so that it works for the F4 key as well
+ * - don't mess with music volume on every frame update, it's just silly
+ *
  * Revision 1.24  2005/02/20 12:28:47  sezero
  * - old mission option is now always enabled, removed my cmdline thing,
  *   killed the cvar m_oldmission

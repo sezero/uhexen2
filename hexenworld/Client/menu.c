@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.12 2005-03-06 10:44:41 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.13 2005-03-08 12:14:21 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -638,8 +638,8 @@ void M_Main_Key (int key)
 		// leaving the main menu, reactivate mouse - S.A.
 		IN_ActivateMouseSA ();
 
-		// and check we haven't changed the music type S.A. 
-		if (strcmp(old_bgmtype,bgmtype.string)!=0) 
+		// and check we haven't changed the music type
+		if (strlen(old_bgmtype)!=0 && strcmp(old_bgmtype,bgmtype.string)!=0)
 			ReInitMusic ();
 		strcpy (old_bgmtype, "");
 
