@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.14 2005-02-11 08:33:55 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.15 2005-02-12 13:24:28 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -981,6 +981,8 @@ VID_MenuDraw
 
 void VID_MenuDraw (void)
 {
+	ScrollTitle("gfx/menu/title7.lmp");
+
 	M_Print (8*8, 4 + MODE_AREA_HEIGHT * 8 + 8*0,
 			 "Select video modes");
 	M_Print (8*8, 4 + MODE_AREA_HEIGHT * 8 + 8*1,
@@ -1030,6 +1032,11 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/02/11 08:33:55  sezero
+ * Kill sound/music messing in vid code: S_Init() and CDAudio_Init() are
+ * called AFTER than VID_Init(), so this should be correct. See hexen2/host.c
+ * for reasoning on Win32.
+ *
  * Revision 1.13  2005/02/08 21:12:36  sezero
  * video cleanup:
  * * removed cvar _vid_default_mode_win
