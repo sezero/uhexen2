@@ -115,7 +115,7 @@ float RTint[256],GTint[256],BTint[256];
 
 glvert_t glv;
 
-cvar_t	gl_ztrick = {"gl_ztrick","1"};
+cvar_t	gl_ztrick = {"gl_ztrick","0",true};
 
 //HWND WINAPI InitializeWindow (HINSTANCE hInstance, int nCmdShow);
 
