@@ -24,7 +24,7 @@ H2LAUNCH = ${TMPNAME}.gtk2
 GTK_CFLAGS = `pkg-config --cflags gtk+-2.0`
 GTK_LIBS = `pkg-config --libs gtk+-2.0`
 else
-H2LAUNCH = ${TMPNAME}
+H2LAUNCH = ${TMPNAME}.gtk1
 GTK_CFLAGS = `gtk-config --cflags`
 GTK_LIBS = `gtk-config --libs`
 endif
