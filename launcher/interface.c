@@ -216,7 +216,7 @@ GtkWidget* create_window1 (void)
 /*********************************************************************/
 
 // Video Options
-  TxtVideo = gtk_label_new (_("Graphics :"));
+  TxtVideo = gtk_label_new (_("Graphics  :"));
   gtk_widget_ref (TxtVideo);
   gtk_object_set_data_full (GTK_OBJECT (window1), "TxtVideo", TxtVideo,
 				(GtkDestroyNotify) gtk_widget_unref);
@@ -231,7 +231,7 @@ GtkWidget* create_window1 (void)
 				(GtkDestroyNotify) gtk_widget_unref);
   GTK_WIDGET_UNSET_FLAGS (WGT_OPENGL, GTK_CAN_FOCUS);
   gtk_widget_show (WGT_OPENGL);
-  gtk_fixed_put (GTK_FIXED (fixed1), WGT_OPENGL, 80, 162);
+  gtk_fixed_put (GTK_FIXED (fixed1), WGT_OPENGL, 84, 162);
   gtk_widget_set_size_request (WGT_OPENGL, 108, 24);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_OPENGL), opengl_support);
 
@@ -242,7 +242,7 @@ GtkWidget* create_window1 (void)
 				(GtkDestroyNotify) gtk_widget_unref);
   GTK_WIDGET_UNSET_FLAGS (WGT_FULLSCR, GTK_CAN_FOCUS);
   gtk_widget_show (WGT_FULLSCR);
-  gtk_fixed_put (GTK_FIXED (fixed1), WGT_FULLSCR, 80, 186);
+  gtk_fixed_put (GTK_FIXED (fixed1), WGT_FULLSCR, 84, 186);
   gtk_widget_set_size_request (WGT_FULLSCR, 108, 24);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_FULLSCR), fullscreen);
 
@@ -252,35 +252,33 @@ GtkWidget* create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "TxtResol", TxtResol,
 				(GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (TxtResol);
-  gtk_fixed_put (GTK_FIXED (fixed1), TxtResol, 14, 214);
+  gtk_fixed_put (GTK_FIXED (fixed1), TxtResol, 14, 218);
   gtk_label_set_justify (GTK_LABEL (TxtResol), GTK_JUSTIFY_LEFT);
 
-// resolution display label
-  WGT_RESTEXT = gtk_label_new (res_names[resolution]);
-  gtk_widget_ref (WGT_RESTEXT);
-  gtk_object_set_data_full (GTK_OBJECT (window1), "rText", WGT_RESTEXT,
+//resolution combo
+  WGT_RESCOMBO = gtk_combo_new ();
+  gtk_widget_ref (WGT_RESCOMBO);
+  gtk_object_set_data_full (GTK_OBJECT (window1), "cRES", WGT_RESCOMBO,
 				(GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (WGT_RESTEXT);
-  gtk_fixed_put (GTK_FIXED (fixed1), WGT_RESTEXT, 78, 214);
-  gtk_widget_set_size_request (WGT_RESTEXT, 80, -1);
-  gtk_label_set_justify (GTK_LABEL (WGT_RESTEXT), GTK_JUSTIFY_RIGHT);
-
-// slider for changing resolution
-  WGT_RES_ADJUST = gtk_adjustment_new (resolution, 2*opengl_support, 3+3*opengl_support, 1, 1, 0);
-  WGT_RES_SCALE = gtk_hscale_new (WGT_RES_ADJUST);
-  gtk_object_set_data_full (GTK_OBJECT (window1), "rScale", WGT_RES_SCALE,
+  gtk_combo_set_use_arrows (GTK_COMBO (WGT_RESCOMBO), FALSE);
+  gtk_widget_set_size_request (WGT_RESCOMBO, 108, 24);
+  gtk_fixed_put (GTK_FIXED (fixed1), WGT_RESCOMBO, 84, 214);
+//resolution display
+  WGT_RESLIST = GTK_COMBO (WGT_RESCOMBO)->entry;
+  gtk_widget_ref (WGT_RESLIST);
+  gtk_object_set_data_full (GTK_OBJECT (window1), "eRES", WGT_RESLIST,
 				(GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (WGT_RES_SCALE);
-  gtk_fixed_put (GTK_FIXED (fixed1), WGT_RES_SCALE, 16, 236);
-  gtk_widget_set_size_request (WGT_RES_SCALE, 176, 24);
-  gtk_scale_set_draw_value (GTK_SCALE (WGT_RES_SCALE), FALSE);
-  GTK_WIDGET_UNSET_FLAGS (WGT_RES_SCALE, GTK_CAN_FOCUS);
-  gtk_range_set_update_policy (GTK_RANGE (WGT_RES_SCALE), GTK_UPDATE_DELAYED);
+  //gtk_entry_set_alignment (GTK_ENTRY (WGT_RESLIST), 1);
+  gtk_entry_set_editable (GTK_ENTRY (WGT_RESLIST), FALSE);
+//menu listing from a callback
+  Make_ResMenu(&VID_STRUCT);
+  gtk_widget_show (WGT_RESCOMBO);
+  gtk_widget_show (WGT_RESLIST);
 
 /*********************************************************************/
 
 // Sound options (basic: driver selection)
-  TxtSound = gtk_label_new (_("Sound    :"));
+  TxtSound = gtk_label_new (_("Sound     :"));
   gtk_widget_ref (TxtSound);
   gtk_object_set_data_full (GTK_OBJECT (window1), "TxtSound", TxtSound,
 				(GtkDestroyNotify) gtk_widget_unref);
@@ -294,12 +292,12 @@ GtkWidget* create_window1 (void)
 				(GtkDestroyNotify) gtk_widget_unref);
   gtk_combo_set_use_arrows (GTK_COMBO (WGT_SOUND), FALSE);
   gtk_widget_set_size_request (WGT_SOUND, 108, 24);
-//TmpList = NULL;
+  TmpList = NULL;
   for (i=0; i<MAX_SOUND; i++)
 	TmpList = g_list_append (TmpList, (char *)snddrv_names[i][1]);
   gtk_combo_set_popdown_strings (GTK_COMBO (WGT_SOUND), TmpList);
   g_list_free (TmpList);
-  gtk_fixed_put (GTK_FIXED (fixed1), WGT_SOUND, 80, 132);
+  gtk_fixed_put (GTK_FIXED (fixed1), WGT_SOUND, 84, 132);
   gtk_widget_show (WGT_SOUND);
   SND_Entry = GTK_COMBO (WGT_SOUND)->entry;
   gtk_widget_ref (SND_Entry);
@@ -517,7 +515,7 @@ GtkWidget* create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "bCDA", WGT_CDAUDIO,
 				(GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (WGT_CDAUDIO);
-  gtk_fixed_put (GTK_FIXED (fixed1), WGT_CDAUDIO, 230, 210);
+  gtk_fixed_put (GTK_FIXED (fixed1), WGT_CDAUDIO, 230, 214);
   gtk_widget_set_size_request (WGT_CDAUDIO, 92, 24);
   gtk_widget_set_sensitive (WGT_CDAUDIO, sound);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_CDAUDIO), !cdaudio);
@@ -530,7 +528,7 @@ GtkWidget* create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "bMIDI", WGT_MIDI,
 				(GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (WGT_MIDI);
-  gtk_fixed_put (GTK_FIXED (fixed1), WGT_MIDI, 324, 210);
+  gtk_fixed_put (GTK_FIXED (fixed1), WGT_MIDI, 324, 214);
   gtk_widget_set_size_request (WGT_MIDI, 86, 24);
   gtk_widget_set_sensitive (WGT_MIDI, sound);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_MIDI), !midi);
@@ -608,8 +606,8 @@ GtkWidget* create_window1 (void)
 			GTK_SIGNAL_FUNC (ReverseOpt), &lan);
   gtk_signal_connect (GTK_OBJECT (WGT_FULLSCR), "toggled",
 			GTK_SIGNAL_FUNC (ReverseOpt), &fullscreen);
-  gtk_signal_connect (GTK_OBJECT (WGT_RES_ADJUST), "value_changed",
-			GTK_SIGNAL_FUNC (res_Change), &VID_STRUCT);
+  gtk_signal_connect (GTK_OBJECT (WGT_RESLIST), "changed",
+			GTK_SIGNAL_FUNC (res_Change), NULL);
   gtk_object_set_data (GTK_OBJECT (window1), "tooltips", tooltips);
 // End of callbacks setup
 /********************************************************************/

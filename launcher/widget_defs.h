@@ -10,9 +10,8 @@ struct Launch_s {
 
 struct Video_s {
 	GtkWidget *bOGL;	// OpenGL / Software
-	GtkAdjustment *rAdj;	// Resolution slider's Adj. object
-	GtkWidget *rScale;	// Resolution slider
-	GtkWidget *rText;	// Resolution display
+	GtkWidget *cRES;	// Resolution combo
+	GtkWidget *eRES;	// Resolution combo listing
 	GtkWidget *bFULS;	// Fullscreen / windowed
 };
 
@@ -47,9 +46,8 @@ typedef struct {
 #define BIN_STATUS_ID	Games.Launch.BinStat
 #define WGT_LAUNCH	Games.Launch.bLAUNCH
 #define WGT_OPENGL	Games.Video.bOGL
-#define WGT_RES_ADJUST	Games.Video.rAdj
-#define WGT_RES_SCALE	Games.Video.rScale
-#define WGT_RESTEXT	Games.Video.rText
+#define WGT_RESCOMBO	Games.Video.cRES
+#define WGT_RESLIST	Games.Video.eRES
 #define WGT_FULLSCR	Games.Video.bFULS
 #define WGT_SOUND	Sound.cSND
 #define WGT_SRATE	Sound.cSRATE
@@ -67,15 +65,13 @@ typedef struct {
 #define WGT_LANBUTTON	Games.Others.bLAN
 
 // Friendlier definitions for use in callbacks.c
-#define RESOL_TEXT1	Video.rText
-#define RESOL_ADJUST	Video.rAdj
-
 #define SND_RATE	cSRATE
 #define SND_BITS	bSBITS
 #define SND_STEREO	bSTEREO
 #define MUSIC_MIDI	bMIDI
 #define MUSIC_CD	bCDA
-#define RESOL_TEXT0	rText
+#define RES_COMBO	cRES
+#define RES_LIST	eRES
 #define STATUSBAR	LStat
 #define PORTALS_BUTTON	bH2MP
 #define H2GAME		SelH2
