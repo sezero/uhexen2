@@ -14,11 +14,10 @@
 #define HOTL_VER "0.3.2"
 
 char *argv_0;
-static  char    userdir[1024];
+static char userdir[1024];
 
-int
-main (int argc, char *argv[])
-{
+int main (int argc, char *argv[]) {
+
   GtkWidget *window1;
   argv_0 = argv[0];
 /*

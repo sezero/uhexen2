@@ -47,9 +47,9 @@ GtkWidget *_800_button;
 GtkWidget *_1024_button;
 GtkWidget *_1280_button;
 /* TODO: Kill all these resolution buttons and do a menu system. Oh well... */
-GtkWidget*
-create_window1 (void)
-{
+
+GtkWidget* create_window1 (void) {
+
   GtkWidget *window1;
   GtkWidget *LAUNCH_button;
   GtkWidget *QUIT_button;
@@ -550,79 +550,55 @@ if (opengl_support) {
   gtk_widget_show (hseparator5);
 
   gtk_signal_connect (GTK_OBJECT (window1), "destroy",
-                      GTK_SIGNAL_FUNC (on_window1_destroy),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_window1_destroy), NULL);
   gtk_signal_connect (GTK_OBJECT (LAUNCH_button), "clicked",
-                      GTK_SIGNAL_FUNC (on_Launch_clicked),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_Launch_clicked), NULL);
   gtk_signal_connect (GTK_OBJECT (QUIT_button), "clicked",
-                      GTK_SIGNAL_FUNC (on_QUIT_button_clicked),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_QUIT_button_clicked), NULL);
   gtk_signal_connect (GTK_OBJECT (SAVE_button), "clicked",
-                      GTK_SIGNAL_FUNC (on_SAVE_button_clicked),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_SAVE_button_clicked), NULL);
   gtk_signal_connect (GTK_OBJECT (MP_button), "toggled",
-                      GTK_SIGNAL_FUNC (on_MP_button_toggled),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_MP_button_toggled), NULL);
   gtk_signal_connect (GTK_OBJECT (OM_button), "toggled",
-                      GTK_SIGNAL_FUNC (on_OM_button_toggled),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_OM_button_toggled), NULL);
 /*
   gtk_signal_connect (GTK_OBJECT (EVIL_button), "toggled",
-                      GTK_SIGNAL_FUNC (on_EVIL_button_toggled),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_EVIL_button_toggled), NULL);
 */
   gtk_signal_connect (GTK_OBJECT (HEXEN2_button), "released",
-                      GTK_SIGNAL_FUNC (on_HEXEN2_button_released),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_HEXEN2_button_released), NULL);
   gtk_signal_connect (GTK_OBJECT (HW_button), "released",
-                      GTK_SIGNAL_FUNC (on_HW_button_released),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_HW_button_released), NULL);
   gtk_signal_connect (GTK_OBJECT (SOFT_button), "released",
-                      GTK_SIGNAL_FUNC (on_SOFT_button_released),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_SOFT_button_released), NULL);
   gtk_signal_connect (GTK_OBJECT (GL_button), "released",
-                      GTK_SIGNAL_FUNC (on_GL_button_released),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_GL_button_released), NULL);
   gtk_signal_connect (GTK_OBJECT (SOUND_button), "toggled",
-                      GTK_SIGNAL_FUNC (on_SOUND_button_toggled),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_SOUND_button_toggled), NULL);
   gtk_signal_connect (GTK_OBJECT (MIDI_button), "toggled",
-                      GTK_SIGNAL_FUNC (on_MIDI_button_toggled),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_MIDI_button_toggled), NULL);
   gtk_signal_connect (GTK_OBJECT (CDAUDIO_button), "toggled",
-                      GTK_SIGNAL_FUNC (on_CDAUDIO_button_toggled),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_CDAUDIO_button_toggled), NULL);
   gtk_signal_connect (GTK_OBJECT (LAN_button), "toggled",
-                      GTK_SIGNAL_FUNC (on_LAN_button_toggled),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_LAN_button_toggled), NULL);
   gtk_signal_connect (GTK_OBJECT (JOY_button), "toggled",
-                      GTK_SIGNAL_FUNC (on_JOY_button_toggled),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_JOY_button_toggled), NULL);
   gtk_signal_connect (GTK_OBJECT (FS_button), "toggled",
-                      GTK_SIGNAL_FUNC (on_FS_button_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (_1024_button), "released",
-                      GTK_SIGNAL_FUNC (on_1024_button_released),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (_1280_button), "released",
-                      GTK_SIGNAL_FUNC (on_1280_button_released),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (_800_button), "released",
-                      GTK_SIGNAL_FUNC (on_800_button_released),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_FS_button_toggled), NULL);
   gtk_signal_connect (GTK_OBJECT (_320_button), "released",
-                      GTK_SIGNAL_FUNC (on_320_button_released),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_320_button_released), NULL);
   gtk_signal_connect (GTK_OBJECT (_400_button), "released",
-                      GTK_SIGNAL_FUNC (on_400_button_released),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_400_button_released), NULL);
   gtk_signal_connect (GTK_OBJECT (_512_button), "released",
-                      GTK_SIGNAL_FUNC (on_512_button_released),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_512_button_released), NULL);
   gtk_signal_connect (GTK_OBJECT (_640_button), "released",
-                      GTK_SIGNAL_FUNC (on_640_button_released),
-                      NULL);
+			GTK_SIGNAL_FUNC (on_640_button_released), NULL);
+  gtk_signal_connect (GTK_OBJECT (_800_button), "released",
+			GTK_SIGNAL_FUNC (on_800_button_released), NULL);
+  gtk_signal_connect (GTK_OBJECT (_1024_button), "released",
+			GTK_SIGNAL_FUNC (on_1024_button_released), NULL);
+  gtk_signal_connect (GTK_OBJECT (_1280_button), "released",
+			GTK_SIGNAL_FUNC (on_1280_button_released), NULL);
 #ifdef HAVE_GTK2
   gtk_object_set_data (GTK_OBJECT (window1), "tooltips", tooltips);
 #endif

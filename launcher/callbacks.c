@@ -43,26 +43,15 @@ extern GtkWidget *_800_button;
 extern GtkWidget *_1024_button;
 extern GtkWidget *_1280_button;
 
-void
-on_window1_destroy                     (GtkObject       *object,
-                                        gpointer         user_data)
-{
+void on_window1_destroy (GtkObject *object, gpointer user_data) {
   gtk_main_quit();
 }
 
-
-void
-on_Launch_clicked                      (GtkButton       *button,
-                                        gpointer         user_data)
-{
+void on_Launch_clicked (GtkButton *button, gpointer user_data) {
   launch_hexen2_bin();
 }
 
-
-void
-on_SOUND_button_toggled                (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
+void on_SOUND_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
     sound=!sound;
     gtk_widget_set_sensitive (MIDI_button, sound);
     gtk_widget_set_sensitive (CDAUDIO_button, sound);
@@ -72,11 +61,7 @@ on_SOUND_button_toggled                (GtkToggleButton *togglebutton,
     cdaudio=sound;
 }
 
-
-void
-on_MP_button_toggled                   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
+void on_MP_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
 #ifndef DEMOBUILD
   mp_support = !mp_support;
   gtk_widget_set_sensitive (OM_button, mp_support);
@@ -85,11 +70,7 @@ on_MP_button_toggled                   (GtkToggleButton *togglebutton,
 #endif
 }
 
-
-void
-on_OM_button_toggled                   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
+void on_OM_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
 #ifndef DEMOBUILD
   if (with_om) {
     with_om=0;
@@ -108,20 +89,13 @@ on_OM_button_toggled                   (GtkToggleButton *togglebutton,
 }
 
 /*
-void
-on_EVIL_button_toggled                   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
+void on_EVIL_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
 #ifndef DEMOBUILD
   iamevil=!iamevil
 #endif
-}
-*/
+} */
 
-void
-on_SOFT_button_released                (GtkButton       *button,
-                                        gpointer         user_data)
-{
+void on_SOFT_button_released (GtkButton *button, gpointer user_data) {
   opengl_support=0;
   gtk_widget_set_sensitive (_800_button, FALSE);
   gtk_widget_set_sensitive (_1024_button, FALSE);
@@ -141,11 +115,7 @@ on_SOFT_button_released                (GtkButton       *button,
   }
 }
 
-
-void
-on_GL_button_released                  (GtkButton       *button,
-                                        gpointer         user_data)
-{
+void on_GL_button_released (GtkButton *button, gpointer user_data) {
   opengl_support=1;
   gtk_widget_hide (_320_button);
   gtk_widget_hide (_400_button);
@@ -165,92 +135,48 @@ on_GL_button_released                  (GtkButton       *button,
   }
 }
 
-
-void
-on_320_button_released                 (GtkButton       *button,
-                                        gpointer         user_data)
-{
+void on_320_button_released (GtkButton *button, gpointer user_data) {
    resolution=RES_320;
 }
 
-
-void
-on_400_button_released                 (GtkButton       *button,
-                                        gpointer         user_data)
-{
+void on_400_button_released (GtkButton *button, gpointer user_data) {
    resolution=RES_400;
 }
 
-
-void
-on_512_button_released                 (GtkButton       *button,
-                                        gpointer         user_data)
-{
+void on_512_button_released (GtkButton *button, gpointer user_data) {
    resolution=RES_512;
 }
 
-
-void
-on_640_button_released                 (GtkButton       *button,
-                                        gpointer         user_data)
-{
+void on_640_button_released (GtkButton *button, gpointer user_data) {
   resolution=RES_640;
 }
 
-
-void
-on_800_button_released                 (GtkButton       *button,
-                                        gpointer         user_data)
-{
+void on_800_button_released (GtkButton *button, gpointer user_data) {
   resolution=RES_800;
 }
 
-
-void
-on_1024_button_released                (GtkButton       *button,
-                                        gpointer         user_data)
-{
+void on_1024_button_released (GtkButton *button, gpointer user_data) {
   resolution=RES_1024;
 }
 
-
-void
-on_1280_button_released                (GtkButton       *button,
-                                        gpointer         user_data)
-{
+void on_1280_button_released (GtkButton *button, gpointer user_data) {
    resolution=RES_1280;
 }
 
-
-void
-on_FS_button_toggled                   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
+void on_FS_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
   fullscreen=!fullscreen;
 }
 
-
-void
-on_QUIT_button_clicked                 (GtkButton       *button,
-                                        gpointer         user_data)
-{
+void on_QUIT_button_clicked (GtkButton *button, gpointer user_data) {
   gtk_main_quit();
 }
 
-
-void
-on_SAVE_button_clicked                 (GtkButton       *button,
-                                        gpointer         user_data)
-{
+void on_SAVE_button_clicked (GtkButton *button, gpointer user_data) {
   if (write_config_file() == 0)
     printf("Options saved successfully\n");
 }
 
-
-void
-on_HEXEN2_button_released              (GtkButton       *button,
-                                        gpointer         user_data)
-{
+void on_HEXEN2_button_released (GtkButton *button, gpointer user_data) {
   destiny=DEST_H2;
 #ifndef DEMOBUILD
   gtk_widget_set_sensitive (MP_button, TRUE);
@@ -258,11 +184,7 @@ on_HEXEN2_button_released              (GtkButton       *button,
   gtk_widget_set_sensitive (LAN_button, TRUE);
 }
 
-
-void
-on_HW_button_released                  (GtkButton       *button,
-                                        gpointer         user_data)
-{
+void on_HW_button_released (GtkButton *button, gpointer user_data) {
   destiny=DEST_HW;
 #ifndef DEMOBUILD
   if(mp_support) {
@@ -281,35 +203,19 @@ on_HW_button_released                  (GtkButton       *button,
   gtk_widget_set_sensitive (LAN_button, FALSE);
 }
 
-
-void
-on_MIDI_button_toggled                 (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
+void on_MIDI_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
   midi=!midi;
 }
 
-
-void
-on_CDAUDIO_button_toggled              (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
+void on_CDAUDIO_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
   cdaudio=!cdaudio;
 }
 
-
-void
-on_LAN_button_toggled                  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
+void on_LAN_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
   lan=!lan;
 }
 
-
-void
-on_JOY_button_toggled                  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
+void on_JOY_button_toggled (GtkToggleButton *togglebutton, gpointer user_data) {
   joystick=!joystick;
 }
 

@@ -16,4 +16,3 @@
 void launch_hexen2_bin();
 
 #endif
-
