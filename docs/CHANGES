@@ -61,7 +61,7 @@ Changes since AoT 1.2.0:
 -   Use glGetIntegerv to detect maximum supported texture size, not vendor
     string.
 
--   Building for pentium as default for now.
+-   Using redhat rpm style arch flags ( -march=i386 -mcpu=i686 ).
 
 -   BIG code cleanup including retiring some unused files, retiring old opengl
     files, killing many compiler warnings, etc.
