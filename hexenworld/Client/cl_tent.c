@@ -3975,6 +3975,7 @@ void CL_UpdateStreams(void)
 					ent->drawflags = MLS_ABSLIGHT;
 					ent->abslight = 128;
 				}
+				break;
 			case TE_STREAM_FAMINE:
 				ent->angles[2] = rand()%360;
 				ent->drawflags = MLS_ABSLIGHT;
