@@ -1,0 +1,18 @@
+Ok, here's all the source code for Siege.  It's not pretty,
+it hasn't been tidied up or anything, so don't be
+surprised if you see some really weird hacks and no comments.
+
+The progs.src shows which files are to be included by hccmp.exe
+when building the hwprogs.dat.  This also has at the top the path
+(if any) and filename to use when making the hwprogs.dat
+
+Also included is the latest compiler, hccmp.exe, my batch
+file I use for compiling, and my MSDEV workspace files if
+you want to use them...
+
+Any questions?  If they can be answered with a yes or
+no, definitely e-mail me, otherwise, you can e-mail me but
+I can't promise a swift response...
+
+Mike Gummelt
+mgummelt@mail.ravensoft.com

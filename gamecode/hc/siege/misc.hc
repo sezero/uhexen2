@@ -1,0 +1,1611 @@
+/*
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/misc.hc,v 1.1 2005-01-26 17:26:11 sezero Exp $
+ */
+
+/*QUAKED info_null (0 0.5 0) (-4 -4 -4) (4 4 4)
+Used as a positional target for spotlights, etc.
+*/
+void info_null()
+{
+	remove(self);
+}
+
+float ROTATE_BREAK = 16;
+/*
+//============================================================================
+
+float	POWERPOOL_HEALTH		= 1;
+float	POWERPOOL_EXPERIENCE	= 2;
+float	POWERPOOL_GREENMANA		= 4;
+float	POWERPOOL_BLUEMANA		= 8;
+
+
+void	power_pool_touch()
+{
+	if(time < self.ltime)
+		return;
+	self.cnt = self.cnt + 1;
+	if(self.cnt > self.count)
+		{
+		self.touch = SUB_Null;
+		return;
+		}
+
+	if(self.spawnflags & POWERPOOL_HEALTH)
+		other.health		= other.health		+ 1;
+	if(self.spawnflags & POWERPOOL_EXPERIENCE)
+		other.experience	= other.experience	+ 1;
+	if(self.spawnflags & POWERPOOL_GREENMANA)
+		other.greenmana		= other.greenmana	+ 1;
+	if(self.spawnflags & POWERPOOL_BLUEMANA)
+		other.bluemana		= other.bluemana	+ 1;
+
+	self.ltime = time + 0.15;
+}
+
+//QUAKED power_pool (0 1 0) ? HEALTH EXPERIENCE GREENMANA BLUEMANA
+//Power pool.  You can pick whatever combination of benefits you would like.
+
+void	power_pool()
+{
+	if(!self.spawnflags)
+		{
+		remove(self);
+		return;
+		}
+	self.touch = power_pool_touch;
+	self.solid = SOLID_TRIGGER;
+	if(!self.count)
+		self.count = 5;
+}
+*/
+//============================================================================
+
+//Launches a nail in a offset spread (jweier)
+void launch_spread(float offset)
+{
+	local	vector	offang;
+	local	vector	org, vec;
+   local entity   mis;
+
+	org = self.origin;
+
+	offang = vectoangles (self.movedir - org);
+	offang_y = offang_y + offset * 6;
+   
+   makevectors (offang);
+
+	vec = normalize (v_forward);
+
+	vec_z = 0;
+
+	mis = spawn ();
+	mis.owner = self;
+	mis.movetype = MOVETYPE_FLYMISSILE;
+	mis.solid = SOLID_BBOX;
+
+	mis.angles = vectoangles(vec);
+	
+	mis.touch = spike_touch;
+	mis.classname = "spike";
+	mis.think = SUB_Remove;
+	thinktime mis : 6;
+	setmodel (mis, "models/spike.mdl");
+	setsize (mis, VEC_ORIGIN, VEC_ORIGIN);		
+	setorigin (mis, org);
+
+	mis.velocity = vec * 1000;
+}
+
+//============================================================================
+
+
+//============================================================================
+
+
+/*QUAKED misc_fireball (0 .5 .8) (-8 -8 -8) (8 8 8)
+Lava Balls
+*/
+
+void fire_fly();
+void fire_touch();
+
+void misc_fireball()
+{
+	precache_model ("models/lavaball.mdl");
+	self.classname = "fireball";
+	thinktime self : random(5);
+	self.think = fire_fly;
+	if (!self.speed)
+		self.speed == 1000;
+}
+
+void fire_fly()
+{
+local entity	fireball;
+
+	fireball = spawn();
+	fireball.solid = SOLID_TRIGGER;
+	fireball.movetype = MOVETYPE_TOSS;
+	fireball.velocity = '0 0 1000';
+	fireball.velocity=RandomVector('50 50 0');
+	fireball.velocity_z = self.speed + random(200);
+	fireball.classname = "fireball";
+	setmodel (fireball, "models/lavaball.mdl");
+	setsize (fireball, '0 0 0', '0 0 0');
+	setorigin (fireball, self.origin);
+	thinktime fireball : 5;
+	fireball.think = SUB_Remove;
+	fireball.touch = fire_touch;
+	
+	thinktime self : random(3,8);
+	self.think = fire_fly;
+}
+
+void fire_touch()
+{
+	T_Damage (other, self, self, 20);
+	remove(self);
+}
+
+
+//============================================================================
+
+/*
+void() barrel_explode =
+{
+	self.takedamage = DAMAGE_NO;
+	self.classname = "explo_box";
+	// did say self.owner
+	T_RadiusDamage (self, self, 160, world);
+	sound (self, CHAN_VOICE, "weapons/explode.wav", 1, ATTN_NORM);
+	particle (self.origin, '0 0 0', 75, 255);
+
+	self.origin_z = self.origin_z + 32;
+	BecomeExplosion (FALSE);
+};
+
+
+
+/*QUAK-ED misc_explobox (0 .5 .8) (0 0 0) (32 32 64)
+TESTING THING
+*/
+/*
+void() misc_explobox =
+{
+	local float	oldz;
+	
+	self.solid = SOLID_BBOX;
+	self.movetype = MOVETYPE_NONE;
+	//rj precache_model ("maps/b_explob.bsp");
+	setmodel (self, "maps/b_explob.bsp");
+	precache_sound ("weapons/explode.wav");
+	self.health = 20;
+	self.th_die = barrel_explode;
+	self.takedamage = DAMAGE_YES;
+
+	self.origin_z = self.origin_z + 2;
+	oldz = self.origin_z;
+	droptofloor();
+	if (oldz - self.origin_z > 250)
+	{
+		dprint ("item fell out of level at ");
+		dprint (vtos(self.origin));
+		dprint ("\n");
+		remove(self);
+	}
+};
+*/
+
+
+
+/*QUAK-ED misc_explobox2 (0 .5 .8) (0 0 0) (32 32 64)
+Smaller exploding box, REGISTERED ONLY
+*
+/*
+void() misc_explobox2 =
+{
+	local float	oldz;
+	
+	self.solid = SOLID_BBOX;
+	self.movetype = MOVETYPE_NONE;
+	//rj precache_model2 ("maps/b_exbox2.bsp");
+	setmodel (self, "maps/b_exbox2.bsp");
+	precache_sound ("weapons/explode.wav");
+	self.health = 20;
+	self.th_die = barrel_explode;
+	self.takedamage = DAMAGE_YES;
+
+	self.origin_z = self.origin_z + 2;
+	oldz = self.origin_z;
+	droptofloor();
+	if (oldz - self.origin_z > 250)
+	{
+		dprint ("item fell out of level at ");
+		dprint (vtos(self.origin));
+		dprint ("\n");
+		remove(self);
+	}
+};
+*/
+//============================================================================
+
+float SPAWNFLAG_SUPERSPIKE	= 1;
+float SPAWNFLAG_LASER = 2;
+
+/*
+void Laser_Touch()
+{
+	local vector org;
+	
+	if (other == self.owner)
+		return;		// don't explode on owner
+
+	if (pointcontents(self.origin) == CONTENT_SKY)
+	{
+		remove(self);
+		return;
+	}
+	
+	//sound (self, CHAN_WEAPON, "enforcer/enfstop.wav", 1, ATTN_STATIC);
+	org = self.origin - 8*normalize(self.velocity);
+
+	if (other.health)
+	{
+		SpawnPuff (org, self.velocity*0.2, 15,other);
+		T_Damage (other, self, self.owner, 15);
+	}
+	else
+	{
+		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
+		WriteByte (MSG_BROADCAST, 1);
+		WriteCoord (MSG_BROADCAST, org_x);
+		WriteCoord (MSG_BROADCAST, org_y);
+		WriteCoord (MSG_BROADCAST, org_z);
+	}
+	
+	remove(self);	
+}
+
+void LaunchLaser(vector org, vector vec)
+{
+	local	vector	vec;
+		
+	vec = normalize(vec);
+	
+	newmis = spawn();
+	newmis.owner = self;
+	newmis.movetype = MOVETYPE_FLY;
+	newmis.solid = SOLID_BBOX;
+	newmis.effects = EF_DIMLIGHT;
+
+	setmodel (newmis, "models/javproj.mdl");
+	setsize (newmis, '0 0 0', '0 0 0');		
+
+	setorigin (newmis, org);
+
+	newmis.velocity = vec * 600;
+	newmis.angles = vectoangles(newmis.velocity);
+   
+	newmis.angles_y = newmis.angles_y + 30;
+	
+	thinktime newmis : 5;
+	newmis.think = SUB_Remove;
+	newmis.touch = Laser_Touch;
+}
+*/
+void spikeshooter_use()
+{
+
+	self.enemy = other.enemy;
+
+/*	if (self.spawnflags & SPAWNFLAG_LASER)
+	{
+		sound (self, CHAN_VOICE, "enforcer/enfire.wav", 1, ATTN_NORM);
+		LaunchLaser (self.origin, self.movedir);
+	}
+	else
+	{*/
+		sound (self, CHAN_VOICE, "weapons/spike2.wav", 1, ATTN_NORM);
+		launch_spike (self.origin, self.movedir);
+		newmis.velocity = self.movedir * 500;
+		if (self.spawnflags & SPAWNFLAG_SUPERSPIKE)
+//	 		newmis.touch = superspike_touch;
+	 		newmis.touch = spike_touch;
+//	}
+}
+
+void shooter_think()
+{
+	spikeshooter_use ();
+	thinktime self : self.wait;
+	//newmis.velocity = self.velocity * 500;
+}
+
+void sprayshooter_use()
+{
+   sound (self, CHAN_VOICE, "weapons/spike2.wav", 1, ATTN_NORM);
+   launch_spread(random(10));
+}
+
+void sprayshooter_think()
+{
+	sprayshooter_use ();
+	thinktime self : self.wait;
+}
+
+/*QUAKED trap_spikeshooter_spray (0 .5 .8) (-8 -8 -8) (8 8 8)
+When triggered, fires a spike in the direction set in QuakeEd.
+*/
+void trap_spikeshooter_spray()
+{
+	SetMovedir ();
+	self.use = sprayshooter_use;
+	precache_sound ("weapons/spike2.wav");
+
+	if (self.wait == 0)
+		self.wait = 1;
+	self.nextthink = self.nextthink + self.wait + self.ltime;
+	self.think = sprayshooter_think;
+}
+
+/*QUAKED trap_spikeshooter (0 .5 .8) (-8 -8 -8) (8 8 8) superspike laser
+When triggered, fires a spike in the direction set in QuakeEd.
+Laser is only for REGISTERED.
+*/
+
+void trap_spikeshooter()
+{
+	SetMovedir ();
+	self.use = spikeshooter_use;
+/*	if (self.spawnflags & SPAWNFLAG_LASER)
+	{
+//		precache_model2 ("models/laser.mdl");
+		
+		//precache_sound2 ("enforcer/enfire.wav");
+		//precache_sound2 ("enforcer/enfstop.wav");
+	}
+	else*/
+		precache_sound ("weapons/spike2.wav");
+}
+
+
+/*QUAKED trap_shooter (0 .5 .8) (-8 -8 -8) (8 8 8) superspike laser
+Continuously fires spikes.
+"wait" time between spike (1.0 default)
+"nextthink" delay before firing first spike, so multiple shooters can be stagered.
+*/
+void trap_shooter()
+{
+	trap_spikeshooter ();
+	
+	if (self.wait == 0)
+		self.wait = 1;
+	self.nextthink = self.nextthink + self.wait + self.ltime;
+	self.think = shooter_think;
+}
+
+void () trap_lightning_track =
+{
+	local vector p1,p2;
+	local entity targ;
+	local float len;
+	
+	targ = find (world, classname, "player");  // Get ending point
+	
+	if (!targ)
+	{
+		dprint("No target for lightning");
+		return;
+	}
+
+	if (targ.health <= 0) 
+	{
+		self.nextthink = -1;
+		return;
+	}
+
+	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+	
+	p1 = self.origin;
+	p2 = targ.origin;
+
+	len = vlen(p2 - p1);
+
+	traceline(p1, p2, TRUE, self);
+
+	if (len >= self.aflag || trace_fraction < 1)
+	{
+		if (self.wait == -1 || self.spawnflags & 2)
+			self.nextthink = -1;
+		else if (self.wait == 1)
+			thinktime self : random(self.wait,self.wait+2);
+		else 
+			thinktime self : self.wait;
+
+		return;
+	}
+				
+	do_lightning (self,1,0,4, p1, p2, self.dmg,TE_STREAM_LIGHTNING);
+
+	fx_flash (p2);		// Flash of light
+
+	self.think = trap_lightning_track;
+	
+	if (self.wait == -1 || self.spawnflags & 2)
+		self.nextthink = -1;
+	else if (self.wait == 1)
+		thinktime self : random(self.wait,self.wait+2);
+	else 
+		thinktime self : self.wait;
+};
+
+void () trap_lightning_use =
+{
+	local vector p1,p2;
+	local entity targ;
+
+	if (!self.target)
+	{
+		dprint("No target for lightning");
+		return;
+	}
+	
+	targ = find (world, targetname, self.target);  // Get ending point
+	
+	if (!targ)
+	{
+		dprint("No target for lightning");
+		return;
+	}
+
+	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+	
+	p1 = self.origin;
+	p2 = targ.origin;
+				
+	WriteByte (MSG_ALL, SVC_TEMPENTITY);
+	WriteByte (MSG_ALL, TE_LIGHTNING1);
+	WriteEntity	(MSG_ALL, self);
+	
+	WriteCoord (MSG_ALL, p1_x);
+	WriteCoord (MSG_ALL, p1_y);
+	WriteCoord (MSG_ALL, p1_z);
+
+	WriteCoord (MSG_ALL, p2_x);
+	WriteCoord (MSG_ALL, p2_y);
+	WriteCoord (MSG_ALL, p2_z);
+
+	LightningDamage (p1, p2, self, self.dmg,"lightning");
+
+	fx_flash (p2);		// Flash of light
+};
+
+/*QUAKED trap_lightning (0 1 1) (-8 -8 -8) (8 8 8) TRACK ONCE
+Generates a bolt of lightning which ends at the weather_lightning_end that is the target
+-------------------------FIELDS-------------------------
+noise  - sound generated when lightning appears
+      1 - no sound
+      2 - lightning (default)
+
+wait - time between shots
+aflag - radius limiter
+target - be sure to give this a target fx_lightning_end to hit
+dmg - damage this bolt does
+--------------------------------------------------------
+*/
+void () trap_lightning =
+{
+	self.movetype = MOVETYPE_NOCLIP;
+	self.owner = self;
+	self.solid = SOLID_NOT;
+	setorigin (self,self.origin);
+	setmodel (self,self.model);
+	setsize (self,self.mins, self.maxs);
+
+	if (!self.noise)
+		self.noise = "raven/lightng1.wav"; 
+
+	if (!self.dmg)
+		self.dmg = 10;
+
+	if (!self.wait)
+		self.wait = 1;
+
+	if (!self.aflag)
+		self.aflag = 500;
+
+	self.ltime = time;
+
+	self.noise = "raven/lightng1.wav"; 
+	precache_sound ("raven/lightng1.wav");
+
+	if (self.spawnflags & 1) 
+		self.use = trap_lightning_track;
+	else
+		self.use = trap_lightning_use;		// For triggered lightning
+};
+
+
+/*===============================================================================
+
+
+===============================================================================
+*/
+
+
+//void make_bubbles();
+void bubble_remove();
+void bubble_bob();
+
+/*QUAK-ED air_bubbles (0 .5 .8) (-8 -8 -8) (8 8 8)
+
+testing air bubbles
+*/
+/*
+void air_bubbles()
+{
+	if (deathmatch)
+	{
+		remove (self);
+		return;
+	}
+	precache_model ("models/s_bubble.spr");
+	thinktime self : 1;
+	self.think = make_bubbles;
+}
+
+
+void make_bubbles()
+{
+local entity	bubble;
+
+	bubble = spawn_temp();
+	setmodel (bubble, "models/s_bubble.spr");
+	setorigin (bubble, self.origin);
+	bubble.movetype = MOVETYPE_NOCLIP;
+	bubble.solid = SOLID_NOT;
+	bubble.velocity = '0 0 15';
+	thinktime bubble : 0.5;
+	bubble.think = bubble_bob;
+	bubble.touch = bubble_remove;
+	bubble.classname = "bubble";
+	bubble.frame = 0;
+	bubble.cnt = 0;
+	setsize (bubble, '-8 -8 -8', '8 8 8');
+	thinktime self : random(0.5,1.5);
+	self.think = make_bubbles;
+}
+*/
+void() bubble_split =
+{
+local entity	bubble;
+	bubble = spawn_temp();
+	setmodel (bubble, "models/s_bubble.spr");
+	setorigin (bubble, self.origin);
+	bubble.movetype = MOVETYPE_NOCLIP;
+	bubble.solid = SOLID_NOT;
+	bubble.velocity = self.velocity;
+	thinktime bubble : 0.5;
+	bubble.think = bubble_bob;
+	bubble.touch = bubble_remove;
+	bubble.classname = "bubble";
+	bubble.frame = 1;
+	bubble.cnt = 10;
+	setsize (bubble, '-8 -8 -8', '8 8 8');
+	self.frame = 1;
+	self.cnt = 10;
+	if (self.waterlevel != 3)
+		remove (self);
+};
+
+void() bubble_remove =
+{
+	if (other.classname == self.classname)
+	{
+//		dprint ("bump");
+		return;
+	}
+	remove(self);
+};
+
+
+void() bubble_bob =
+{
+local float		rnd1, rnd2, rnd3;
+
+local float waterornot;
+	waterornot=pointcontents(self.origin);
+	if (waterornot!=CONTENT_WATER&&waterornot!=CONTENT_SLIME)
+		remove(self);
+	self.cnt = self.cnt + 1;
+	if (self.cnt == 4)
+		bubble_split();
+	if (self.cnt == 20)
+		remove(self);
+
+	rnd1 = self.velocity_x + random(-10,10);
+	rnd2 = self.velocity_y + random(-10,10);
+	rnd3 = self.velocity_z + random(10,20);
+
+	if (rnd1 > 10)
+		rnd1 = 5;
+	if (rnd1 < -10)
+		rnd1 = -5;
+		
+	if (rnd2 > 10)
+		rnd2 = 5;
+	if (rnd2 < -10)
+		rnd2 = -5;
+		
+	if (rnd3 < 10)
+		rnd3 = 15;
+	if (rnd3 > 30)
+		rnd3 = 25;
+	
+	self.velocity_x = rnd1;
+	self.velocity_y = rnd2;
+	self.velocity_z = rnd3;
+		
+	thinktime self : 0.5;
+	self.think = bubble_bob;
+};
+
+
+/*~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>
+~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~*/
+
+/*QUAK-ED viewthing (0 .5 .8) (-8 -8 -8) (8 8 8)
+Just for the debugging level.  Don't use
+*/
+/*
+void viewthing()
+{
+	self.movetype = MOVETYPE_NONE;
+	self.solid = SOLID_NOT;
+//	precache_model ("models/player.mdl");
+//	setmodel (self, "models/player.mdl");
+}
+*/
+
+
+/*
+==============================================================================
+
+SIMPLE BMODELS
+
+==============================================================================
+*/
+
+void() func_wall_use =
+{	// change to alternate textures
+	self.frame = 1 - self.frame;
+};
+
+/*QUAKED func_wall (0 .5 .8) ? TRANSLUCENT
+This is just a solid wall if not inhibitted
+TRANSLUCENT - makes it see-through
+abslight = how bright to make it
+*/
+void func_wall()
+{
+	self.angles = '0 0 0';
+	self.movetype = MOVETYPE_PUSH;	// so it doesn't get pushed by anything
+	self.solid = SOLID_BSP;
+	self.classname="solid wall";
+	self.use = func_wall_use;
+	setmodel (self, self.model);
+	if(self.spawnflags&1)
+		self.drawflags=DRF_TRANSLUCENT;
+	if(self.abslight)
+		self.drawflags(+)MLS_ABSLIGHT;
+}
+
+
+/*QUAKED func_illusionary (0 .5 .8) ? TRANSLUCENT LIGHT
+A simple entity that looks solid but lets you walk through it.
+*/
+void func_illusionary()
+{
+	if (self.spawnflags & 1) 
+		self.drawflags (+) DRF_TRANSLUCENT;
+
+	if (self.abslight)
+		self.drawflags (+) MLS_ABSLIGHT;
+
+	if (self.spawnflags & 2)
+		self.drawflags (+) MLS_ABSLIGHT;
+
+	self.classname="illusionary wall";
+	self.angles = '0 0 0';
+	self.movetype = MOVETYPE_NONE;
+	self.solid = SOLID_NOT;
+	setmodel (self, self.model);
+	makestatic (self);
+}
+
+//============================================================================
+
+/*
+void noise_think()
+{
+	thinktime self : 0.5;
+	//sound (self, 1, "enforcer/enfire.wav", 1, ATTN_NORM);
+	//sound (self, 2, "enforcer/enfstop.wav", 1, ATTN_NORM);
+//	sound (self, 3, "enforcer/sight1.wav", 1, ATTN_NORM);
+//	sound (self, 4, "enforcer/sight2.wav", 1, ATTN_NORM);
+//	sound (self, 5, "enforcer/sight3.wav", 1, ATTN_NORM);
+//	sound (self, 6, "enforcer/sight4.wav", 1, ATTN_NORM);
+//	sound (self, 7, "enforcer/pain1.wav", 1, ATTN_NORM);
+}
+*/
+
+/*QUAKED misc_noisemaker (1 0.5 0) (-10 -10 -10) (10 10 10)
+For optimzation testing, starts a lot of sounds.
+*/
+/*void misc_noisemaker()
+{
+	//precache_sound2 ("enforcer/enfire.wav");
+	//precache_sound2 ("enforcer/enfstop.wav");
+//	precache_sound2 ("enforcer/sight1.wav");
+//	precache_sound2 ("enforcer/sight2.wav");
+//	precache_sound2 ("enforcer/sight3.wav");
+//	precache_sound2 ("enforcer/sight4.wav");
+//	precache_sound2 ("enforcer/pain1.wav");
+//	precache_sound2 ("enforcer/pain2.wav");
+//	precache_sound2 ("enforcer/death1.wav");
+//	precache_sound2 ("enforcer/idle1.wav");
+
+	thinktime self : random(0.1,1.1);
+	self.think = noise_think;
+}
+*/
+
+/*QUAKED func_rotating (0 .5 .8) ? START_ON REVERSE X_AXIS Y_AXIS BREAK GRADUAL TOGGLE_REVERSE KEEP_START
+You need to have an origin brush as part of this entity.  The  
+center of that brush will be the point around which it is rotated. 
+It will rotate around the Z axis by default.  You can
+check either the X_AXIS or Y_AXIS box to change that.
+BREAK makes the brush breakable
+REVERSE will cause the it to rotate in the opposite direction.
+GRADUAL will make it slowly speed up and slow down.
+TOGGLE_REVERSE will make it go in the other direction next time it's triggered
+KEEP_START means it will return to it's starting position when turned off
+
+"speed" determines how fast it moves; default value is 100.
+"dmg"	damage to inflict when blocked (2 default)
+"lifetime" this will make it stop after a while, then start up again after "wait".  Default is staying on.
+"wait" if it has a lifetime, this is how long it will wait to start up again.  default is 3 seconds.
+"thingtype" type of brush (if breakable - default is wood)
+"health" (if breakable - default is 25)
+"abslight" - to set the absolute light level
+"anglespeed" - If using GRADUAL, this will determine how fast the speed up and down will occur.  1 will be very slow, 100 will be instant.  (Default is 10)
+
+thingtype - type of chunks and sprites it will generate
+    0 - glass (default)
+    1 - stone
+    2 - wood
+    3 - metal
+    4 - flesh 
+    
+health - amount of damage item can take.  Default is based on thingtype
+   glass -  25
+   stone -  75
+   wood -   50
+   metal - 100
+   flesh -  30
+*/
+void() rotating_use;
+void() rotating_touch;
+void rotate_wait (void)
+{
+	thinktime self : 10000000000;
+}
+
+void rotate_reset (void)
+{
+	if(self.wait)
+	{
+		self.think=rotating_use;
+		thinktime self : self.wait;
+	}
+	else
+	{
+		self.think=SUB_Null;
+		self.nextthink=-1;
+	}
+}
+
+void rotate_wait_startpos (void)
+{
+	if(self.angles==self.o_angle)
+	{
+		self.avelocity='0 0 0';
+		rotate_reset();
+	}
+	else
+		thinktime self : 0.05;
+}
+
+void rotate_slowdown (void)
+{
+	self.level-=(self.speed/self.anglespeed);
+	if((self.dmg==-1||self.dmg==666)&&self.level<100)
+		self.touch=SUB_Null;
+
+	if(self.level<1||(self.level<=self.speed/self.anglespeed&&self.spawnflags&KEEP_START))
+	{
+		if(self.spawnflags&KEEP_START)
+		{
+			self.think=rotate_wait_startpos;
+			thinktime self : 0;
+		}
+		else		
+		{
+			self.avelocity='0 0 0';
+			rotate_reset();
+		}
+	}
+	else 
+	{
+		self.avelocity=self.movedir*self.level;
+		self.think=rotate_slowdown;
+		thinktime self : 0.01;
+	}
+}
+
+void rotate_startup (void)
+{
+	self.level+=(self.speed/self.anglespeed);
+	if((self.dmg==-1||self.dmg==666)&&self.level>=100&&self.touch==SUB_Null)
+		self.touch=rotating_touch;
+
+	if(self.pain_finished<=time&&self.lifetime)
+	{
+		self.think=rotating_use;
+		thinktime self : 0;
+		return;
+	}
+
+	if(self.level<self.speed)
+	{
+		self.avelocity = self.movedir * self.level;
+		self.think=rotate_startup;
+		thinktime self : 0.01;
+	}
+	else 
+	{
+		//dprint("reached max speed\n");
+		self.level = self.speed;
+		self.avelocity = self.movedir * self.speed;
+		if(self.pain_finished>time&&self.lifetime)
+		{
+			self.think=rotating_use;
+			thinktime self : self.pain_finished;
+			return;
+		}
+		else
+		{
+			self.think=rotate_wait;
+			thinktime self : 10000000000;
+		}
+	}
+}
+
+void rotating_use()
+{
+	if (self.avelocity != '0 0 0')
+	{
+		if(!self.spawnflags&GRADUAL)
+		{
+			self.avelocity='0 0 0';
+			rotate_reset();
+		}
+		else if(self.think==rotate_slowdown)
+			return;
+		else
+		{
+			sound (self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
+			self.think=rotate_slowdown;
+			thinktime self : 0;
+		}
+	}
+	else
+	{
+		if(self.lifetime)
+			self.pain_finished=time+self.lifetime;
+		if(self.spawnflags&TOGGLE_REVERSE)
+			self.movedir= self.movedir*-1;
+		if(!self.spawnflags&GRADUAL)
+		{
+			self.avelocity = self.movedir * self.speed;
+			self.think=rotating_use;
+			thinktime self : 10000000000;
+		}
+		else
+		{
+			sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+			self.think=rotate_startup;
+			thinktime self : 0;
+		}
+	}
+}
+
+void rotating_damage (entity chopped_liver)
+{
+	if(self.dmg==666)
+	{
+		if(chopped_liver.classname=="player"&&chopped_liver.flags2&FL_ALIVE)
+		{
+			chopped_liver.decap=TRUE;
+			T_Damage (chopped_liver, self, self, chopped_liver.health+300);
+		}
+		else
+			T_Damage (chopped_liver, self, self, chopped_liver.health+50);
+	}
+	else if(self.dmg==-1&&chopped_liver.health)
+	{
+	float damg;
+		chopped_liver.deathtype="chopped";
+		damg=vlen(self.avelocity);
+		T_Damage (chopped_liver, self, self, damg);
+	}
+}
+	
+void rotating_touch()
+{
+	if(!other.takedamage)
+		return;
+	rotating_damage(other);		
+}
+
+void rotating_blocked (void)
+{
+	if(!other.takedamage)
+		return;
+
+	rotating_damage(other);		
+
+	if(other.health>100&&!other.flags2&FL_ALIVE)//allow for blockage
+	{
+		self.avelocity='0 0 0';
+		self.level=0;
+		self.touch=SUB_Null;
+		self.think=rotating_use;
+		thinktime self : self.wait;
+	}
+}
+
+void func_rotating()
+{
+	// set the axis of rotation
+	if (self.spawnflags & 4)
+		self.movedir = '0 0 1';
+	else if (self.spawnflags & 8)
+		self.movedir = '1 0 0';
+	else
+		self.movedir = '0 1 0';
+
+	// check for reverse rotation
+	if (self.spawnflags & 2)
+		self.movedir = self.movedir * -1;
+
+	if(self.spawnflags&TOGGLE_REVERSE)
+		self.movedir = self.movedir * -1;
+
+	self.solid = SOLID_BSP;
+	self.movetype = MOVETYPE_PUSH;
+	self.classname="rotating non-door";
+	setorigin (self, self.origin);	
+	setmodel (self, self.model);
+
+	self.use = rotating_use;
+	self.blocked = rotating_blocked;
+	self.touch=SUB_Null;
+
+	if (!self.speed)
+		self.speed = 100;
+
+	if(!self.anglespeed)
+		self.anglespeed = 10;
+
+	if (self.dmg==0)
+		self.dmg = 2;
+
+	if(self.lifetime)
+		if(!self.wait)
+			self.wait=3;
+
+//	self.noise1 = "doors/hydro1.wav";
+//	self.noise2 = "doors/hydro2.wav";
+
+//	precache_sound ("doors/hydro1.wav");
+//	precache_sound ("doors/hydro2.wav");
+
+	if (self.abslight)
+		self.drawflags(+)MLS_ABSLIGHT;
+
+	if (self.spawnflags & ROTATE_BREAK)
+	{
+	  if (!self.thingtype)
+	   self.thingtype = THINGTYPE_WOOD;
+	  if (!self.health)
+	  {
+		if ((self.thingtype == THINGTYPE_GLASS) || (self.thingtype == THINGTYPE_CLEARGLASS))
+			self.health = 25;
+		else if ((self.thingtype == THINGTYPE_GREYSTONE) || (self.thingtype == THINGTYPE_BROWNSTONE)||self.thingtype==THINGTYPE_DIRT)
+			self.health = 75;
+		else if (self.thingtype == THINGTYPE_WOOD)
+			self.health = 50;
+		else if (self.thingtype == THINGTYPE_METAL)
+			self.health = 100;
+		else if (self.thingtype == THINGTYPE_FLESH)
+			self.health = 30;
+		else
+			self.health = 25;
+	  }
+	  self.takedamage = DAMAGE_YES;
+	  self.th_die = chunk_death;
+	}
+
+	if(self.spawnflags&KEEP_START)
+		self.o_angle=self.angles;
+
+	if (self.spawnflags & 1)
+		self.use();
+
+	if (self.flags2)
+	{
+		self.touch = rotating_touch;
+		self.flags2=FALSE;
+	}
+}
+
+/*QUAK-ED trigger_fan_blow (0 .5 .8) ? 
+Will blow anything in the direction of the func_rotating it's targeted by.
+Note that clockwise rotation pulls you towards it, counterclockwise pushes you away- func_rotating design should match this.
+To use, target this trigger with with the func_rotating (do NOT target the func_rotating with the trigger!!!).
+Then place this trigger so that it covers both front and back of the "fan" and extend it as far as you want it to have influence.
+*/
+
+void trigger_find_owner (void)
+{
+entity found;
+	found=find(world,target,self.targetname);
+	if(found==world)
+		remove(self);
+	else
+		self.owner=found;
+}
+/*
+void trigger_fan_blow_touch (void)
+{
+vector blowdir, org;
+float blowhard, blowdist;
+	if(other==self.owner)
+		return;
+
+	if(self.owner.origin=='0 0 0')
+		org=(self.owner.absmin+self.owner.absmax)*0.5;
+	else
+		org=self.owner.origin;
+
+	if(self.owner.avelocity_x!=0)
+	{
+//FIXME: Need to cheat here?  dilute avelocity?
+		blowhard=self.owner.avelocity_x/3;
+		blowdir = '0 1 0';
+		blowdist = fabs(org_y - other.origin_y);
+	}
+	else if(self.owner.avelocity_y!=0)
+	{
+		blowhard = self.owner.avelocity_y;
+		blowdir = '0 0 1';
+		blowdist = fabs(org_z - other.origin_z);
+	}
+	else if(self.owner.avelocity_z!=0)
+	{
+//FIXME: Need to cheat here?  dilute avelocity?
+		blowhard=self.owner.avelocity_z/3;
+		blowdir = '1 0 0';
+		blowdist = fabs(org_x - other.origin_x);
+	}
+	else 
+		return;
+	if(blowdist<100)
+		blowdist=0;
+
+	if(blowhard>0)
+	{
+		blowhard-=blowdist;
+		if(blowhard<=0)
+			return;
+	}
+	else
+	{
+		blowhard+=blowdist;
+		if(blowhard>=0)
+			return;
+	}
+	blowhard/=10;
+
+//FIXME: Factor in mass?
+	blowdir*=blowhard;
+//FIXME: Need to cheat here?  Pull down much faster?
+	if(blowdir_z<0)
+		blowdir*=10;
+//FIXME: Will actually slow someone down if their already moving in this direction!
+	if(other.velocity!=blowdir)
+	{
+		other.velocity+=blowdir;
+		UpdateMissileVelocity(other);
+	}
+//	if(!other.flags&FL_ONGROUND)
+//	{
+//		if(pointcontents(other.origin)==CONTENT_EMPTY&&other.movetype!=MOVETYPE_FLY&&other.movetype!=MOVETYPE_FLYMISSILE&&other.movetype!=MOVETYPE_BOUNCEMISSILE)
+//			other.velocity_z-=60;//FIXME:  calculate in gravity too
+//	}
+//	else
+	if(other.flags&FL_ONGROUND)
+	{
+		other.flags(-)FL_ONGROUND;
+		if(other.velocity_z==0)
+			other.velocity_z+=7;
+	}
+}
+
+void trigger_fan_blow (void)
+{
+	InitTrigger();
+	self.touch=trigger_fan_blow_touch;
+	self.think=trigger_find_owner;
+	thinktime self : 0.1;
+}
+*/
+
+void() angletrigger_done =
+{
+	self.level = FALSE;
+};
+
+void() angletrigger_blocked =
+{
+	T_Damage (other, self, self, self.dmg);
+};
+
+void() angletrigger_use =
+{
+vector newvect;
+
+	if (self.level)
+		return;
+	else
+		self.level = TRUE;
+
+	if(self.angles_x>=360)
+		self.angles_x-=360;
+	else if(self.angles_x<=-360)
+		self.angles_x+=360;
+	if(self.angles_y>=360)
+		self.angles_y-=360;
+	else if(self.angles_y<=-360)
+		self.angles_y+=360;
+	if(self.angles_z>=360)
+		self.angles_z-=360;
+	else if(self.angles_z<=-360)
+		self.angles_z+=360;
+	newvect = self.movedir * self.cnt;
+
+	if (self.angles + newvect == self.mangle) 
+	{
+		self.check_ok = TRUE;
+		SUB_UseTargets();
+	}
+	else if (self.check_ok)
+	{
+		self.check_ok = FALSE;
+		SUB_UseTargets();
+	}
+	
+	SUB_CalcAngleMove(self.angles + newvect, self.speed, angletrigger_done);
+};
+
+/*QUAKED func_angletrigger (0 .5 .8) ? REVERSE X_AXIS Y_AXIS
+Rotates at certain intervals, and fires off when a set angle is met
+
+mangle = desired angle to trigger at (relative to the world!)
+cnt	 = degrees to turn each move
+dmg	 = damage if blocked
+*/
+
+void() func_angletrigger =
+{
+	
+	// set the axis of rotation
+	if (self.spawnflags & 2)
+		self.movedir = '0 0 1';
+	else if (self.spawnflags & 4)
+		self.movedir = '1 0 0';
+	else
+		self.movedir = '0 1 0';
+
+	// check for clockwise rotation
+	if (self.spawnflags & 1)
+		self.movedir = self.movedir*-1;
+
+	self.pos1 = self.angles;
+	self.pos2 = self.angles + self.movedir * self.cnt;
+
+	self.max_health = self.health;
+	self.solid = SOLID_BSP;
+	self.movetype = MOVETYPE_PUSH;
+	setorigin (self, self.origin);	
+	setmodel (self, self.model);
+	self.classname = "angletrigger";
+
+	if (self.abslight)
+		self.drawflags(+)MLS_ABSLIGHT;
+
+	if (!self.speed)
+		self.speed = 100;
+	if (self.wait==0)
+		self.wait = 1;
+	if (!self.dmg)
+		self.dmg = 2;
+	
+/*
+	precache_sound ("doors/hydro1.wav");
+	precache_sound ("doors/hydro2.wav");
+	precache_sound ("doors/basetry.wav");
+	precache_sound ("doors/baseuse.wav");
+	self.noise2 = "doors/hydro1.wav";
+	self.noise1 = "doors/hydro2.wav";
+	self.noise3 = "doors/basetry.wav";
+	self.noise4 = "doors/baseuse.wav";
+*/
+	self.blocked = angletrigger_blocked;
+	self.use = angletrigger_use;
+	
+	if (!self.targetname)
+		self.touch = angletrigger_use;
+
+	self.inactive = FALSE;	
+};
+
+void shish_ka_bob (entity loser)
+{
+	T_Damage(loser,self,self,other.health+random(10,20));
+	sound(other,CHAN_BODY,"player/gib1.wav",1,ATTN_NORM);
+	//leave behind something?  Drip blood?  Sound?
+}
+
+void velocity_damage ()
+{
+float impact;
+	if(!other.takedamage)
+		return;
+	if(other.health<=0)
+		return;
+	if(other.last_onground+0.25>time)
+		return;
+	if(other.movetype==MOVETYPE_FLY)
+		return;
+//	if(self.movedir!='0 0 0')
+//		if(normalize(other.velocity)*self.movedir<0)
+//			return;
+	if(other.velocity_y<0)
+		return;//really cheap hack, so don't hurt unless moving north
+	if(other.siege_team==ST_DEFENDER&&random()<0.9)
+		return;//leniency for def.
+
+	impact=vlen(other.velocity)*other.mass/10;
+	impact*=self.dmg;
+
+//FIXME: Skewer them	
+/*
+	if(other.health<impact)
+		if(other.classname=="player"&&random()<0.3)
+		{
+			shish_ka_bob(other);
+			return;
+		}
+*/
+	T_Damage(other,self,self,impact);
+}
+
+/*QUAKED func_obstacle (0 .5 .8) ? 
+Does damage on impact based on the speed of the impactee
+"dmg" - multiplier on damage (damage is based on speed of impact and mass of impactee)
+"level" - velocity threshold to not do damage under (400 is running speed)
+"mangle" - pitch yaw roll, what dir things must be moving in to allow deadly collision.  '0 0 0' means any dir.
+			for spikes on siege5, this should be (no quotes) "0 270 0" (meaning, they have to be moving North to hurt themselves on it)
+give this object an origin brush!!!
+*/
+void func_obstacle ()
+{
+	self.angles = '0 0 0';
+	if(self.mangle!='0 0 0')
+	{
+		makevectors(self.mangle);
+		self.movedir = v_forward;
+	}
+	self.mangle = '0 0 0';
+
+	self.movetype = MOVETYPE_PUSH;	// so it doesn't get pushed by anything
+	self.solid = SOLID_BSP;
+	self.classname = "solid wall";
+//	self.use = func_wall_use;
+	setmodel (self, self.model);
+	if(self.spawnflags&1)
+		self.drawflags=DRF_TRANSLUCENT;
+	if(self.abslight)
+		self.drawflags(+)MLS_ABSLIGHT;
+	if(!self.dmg)
+		self.dmg=1;
+	self.touch=velocity_damage;
+}
+
+
+void make_ripple ()
+{
+	if(self.attack_finished>time)
+		return;
+	starteffect(CE_RIPPLE, self.origin,'0 0 0',HX_FRAME_TIME);
+	self.attack_finished=time+self.wait;
+}
+
+/*QUAKED misc_ripples (0 0 1) (-4 -4 0) (4 4 8)
+When used, starts a ripple
+"wait" - shortest time between two ripples
+*/
+void misc_ripples()
+{
+	if(!self.wait)
+		self.wait = 0.1;
+	self.use=make_ripple;
+}
+
+/*
+ * $Log: not supported by cvs2svn $
+ * 
+ * 15    5/31/98 2:59p Mgummelt
+ * 
+ * 14    5/25/98 10:56p Mgummelt
+ * Last version before send-off, v0.15
+ * 
+ * 13    5/25/98 1:39p Mgummelt
+ * 
+ * 12    5/25/98 1:31p Mgummelt
+ * 
+ * 11    5/07/98 11:19p Mgummelt
+ * Almost ready for release- fix some dwarf-related compatibility problems
+ * 
+ * 10    5/05/98 8:33p Mgummelt
+ * Added 6th playerclass for Siege only- Dwarf
+ * 
+ * 9     5/01/98 4:02p Mgummelt
+ * Siege version 0.2 5/1/98 4:02PM
+ * 
+ * 8     4/24/98 1:31a Mgummelt
+ * Siege version 0.02 4/24/98 1:31 AM
+ * 
+ * 7     4/23/98 5:19p Mgummelt
+ * Siege version 0.01 4/23/98
+ * 
+ * 6     4/17/98 9:00p Mgummelt
+ * 1st version of Siege- loads but totally fucked
+ * 
+ * 4     3/26/98 4:56p Mgummelt
+ * fix for added lightning parm
+ * 
+ * 3     3/13/98 2:11p Ssengele
+ * finished teleporters for chaos device?; made reflection polys and wind
+ * tunnels update missiles correctly; wind tunnels work as in mission pack
+ * 
+ * 2     2/09/98 3:24p Rjohnson
+ * Update temp ents
+ * 
+ * 1     2/04/98 1:59p Rjohnson
+ * 
+ * 87    9/02/97 10:03p Mgummelt
+ * 
+ * 86    9/01/97 3:08a Mgummelt
+ * 
+ * 85    8/27/97 6:47p Rjohnson
+ * Auto abslight for illusionary walls
+ * 
+ * 84    8/25/97 1:38p Mgummelt
+ * 
+ * 83    8/23/97 7:15p Rlove
+ * 
+ * 82    8/19/97 12:57p Mgummelt
+ * 
+ * 81    8/16/97 10:51a Rjohnson
+ * Precache update
+ * 
+ * 80    8/15/97 4:41p Mgummelt
+ * 
+ * 79    7/21/97 3:03p Rlove
+ * 
+ * 78    7/21/97 11:25a Mgummelt
+ * 
+ * 77    7/09/97 11:53a Mgummelt
+ * 
+ * 76    7/09/97 7:35a Rlove
+ * New thingtype of CLEARGLASS
+ * 
+ * 75    7/07/97 2:23p Mgummelt
+ * 
+ * 74    7/03/97 12:48p Mgummelt
+ * 
+ * 73    7/03/97 11:20a Mgummelt
+ * 
+ * 72    7/01/97 4:28p Mgummelt
+ * 
+ * 71    6/23/97 4:50p Mgummelt
+ * 
+ * 70    6/18/97 7:10p Mgummelt
+ * 
+ * 69    6/18/97 5:30p Mgummelt
+ * 
+ * 68    6/18/97 4:00p Mgummelt
+ * 
+ * 67    6/18/97 10:46a Rjohnson
+ * Code cleanu
+ * 
+ * 66    6/16/97 11:23a Mgummelt
+ * 
+ * 65    6/16/97 9:56a Jweier
+ * 
+ * 64    6/05/97 8:51p Mgummelt
+ * 
+ * 63    6/04/97 2:56p Jweier
+ * 
+ * 62    6/03/97 5:58p Jweier
+ * 
+ * 61    6/01/97 5:09a Mgummelt
+ * 
+ * 60    5/31/97 9:28p Mgummelt
+ * 
+ * 59    5/28/97 8:13p Mgummelt
+ * 
+ * 58    5/27/97 1:28p Rjohnson
+ * Added abslight to func_rotating
+ * 
+ * 57    5/27/97 7:58a Rlove
+ * New thingtypes of GreyStone,BrownStone, and Cloth.
+ * 
+ * 56    5/23/97 11:51p Mgummelt
+ * 
+ * 55    5/22/97 3:59p Jweier
+ * 
+ * 54    5/21/97 4:15p Jweier
+ * 
+ * 53    5/20/97 6:05p Jweier
+ * 
+ * 52    5/20/97 6:03p Jweier
+ * 
+ * 51    5/15/97 6:34p Rjohnson
+ * Code cleanup
+ * 
+ * 50    5/09/97 7:17p Mgummelt
+ * 
+ * 49    5/09/97 6:24p Jweier
+ * 
+ * 48    4/29/97 5:38p Jweier
+ * 
+ * 47    4/27/97 4:47p Rjohnson
+ * Added an illusionary option
+ * 
+ * 46    4/26/97 3:52p Mgummelt
+ * 
+ * 45    4/26/97 7:32a Rlove
+ * Getting rid of some Id sounds
+ * 
+ * 44    4/25/97 5:16p Jweier
+ * 
+ * 43    4/24/97 2:21p Mgummelt
+ * 
+ * 42    4/22/97 10:46a Rjohnson
+ * Added translucency as an option for illusionary walls
+ * 
+ * 41    4/21/97 4:15p Rjohnson
+ * Renamed the imps
+ * 
+ * 40    4/16/96 11:52p Mgummelt
+ * 
+ * 39    3/31/97 2:40p Aleggett
+ * 
+ * 38    3/31/97 6:35a Rlove
+ * Changed SpawnBlood to SpawnPuff. Added PRECACHE.HC
+ * 
+ * 37    3/25/97 4:58p Rjohnson
+ * Cleaned up pre-cache stuff
+ * 
+ * 36    3/24/97 7:24p Jweier
+ * 
+ * 35    3/24/97 7:08p Jweier
+ * 
+ * 34    3/24/97 7:07p Jweier
+ * Added breakable rotating brushes
+ * 
+ * 33    3/20/97 4:54p Aleggett
+ * Used teleport effect on spawners
+ * 
+ * 32    3/19/97 7:09p Jweier
+ * moved func_magicfield to triggers
+ * 
+ * 31    3/19/97 4:15p Rjohnson
+ * Added bmodel rotating code
+ * 
+ * 30    3/18/97 7:35p Jweier
+ * added func_magicfield
+ * 
+ * 29    3/15/97 12:31p Jweier
+ * Added basic trap_lightning
+ * 
+ * 28    3/14/97 6:31p Aleggett
+ * Consolidated health item spawners into one
+ * 
+ * 27    3/13/97 9:57a Rlove
+ * Changed constant DAMAGE_AIM  to DAMAGE_YES and the old DAMAGE_YES to
+ * DAMAGE_NO_GRENADE
+ * 
+ * 26    3/11/97 3:03p Aleggett
+ * Made the itemspawner really good!
+ * 
+ * 25    3/07/97 7:12p Aleggett
+ * Added Item Spawner
+ * 
+ * 24    3/07/97 5:42p Aleggett
+ * Added Power Pool
+ * 
+ * 23    3/07/97 2:38p Aleggett
+ * 
+ * 22    3/07/97 2:01p Aleggett
+ * Enhanced monster spawner...still needs whoosh! F/X
+ * 
+ * 21    3/06/97 1:08p Aleggett
+ * Redid monster spawner... again!
+ * 
+ * 20    3/05/97 4:56p Jweier
+ * spikeshooter retains triggerer to award frags
+ * 
+ * 19    3/05/97 1:54p Rlove
+ * Placed light entites in LIGHT.HC and placed breakable entities in
+ * BREAKABL.HC
+ * 
+ * 18    3/04/97 4:01p Aleggett
+ * Split apart monster spawner
+ * 
+ * 17    2/28/97 6:05p Aleggett
+ * Added Monster Spawner - scary!
+ * 
+ * 16    2/28/97 5:49p Aleggett
+ * 
+ * 15    2/28/97 2:33p Jweier
+ * 
+ * 14    2/28/97 2:31p Jweier
+ * func_quake is now trigger_quake
+ * 
+ * 13    2/28/97 1:02p Jweier
+ * Added basic func_quake structures
+ * 
+ * 12    2/27/97 2:33p Aleggett
+ * 
+ * 11    2/27/97 2:16p Aleggett
+ * Added fading lights - beautiful!
+ * 
+ * 10    2/27/97 1:43p Rlove
+ * Added Gem Light
+ * 
+ * 9     2/26/97 5:05p Jweier
+ * Added trap_spikeshooter_spray
+ * 
+ * 3     1/15/97 12:02p Rjohnson
+ * Removed all of quake's monsters
+ * 
+ * 2     11/11/96 1:19p Rlove
+ * Added Source Safe stuff
+ */
