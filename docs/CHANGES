@@ -1,5 +1,15 @@
 ChangeLog:
 
+2005-02-01 (CVS):
+    * fixed the demos without models with -nosound
+    * initial style-only sound code syncing between h2 and hw
+    * sbar fixes from Pa3pyX' sources
+    * added missing things to the makefiles
+    * game hcode:
+      - added Raven's Siege hcode
+      - added+fixed map cycling code to hexenworld and siege
+      - added Kor S karn's further fixes to the siege code
+
 2005-01-24 (CVS):
     * consolidate GL_LoadTexture functions
     * fix flush_textures decision which used to be always true
