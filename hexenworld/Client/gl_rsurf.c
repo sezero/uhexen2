@@ -1,7 +1,6 @@
 // r_surf.c: surface-related refresh code
 
 #include "quakedef.h"
-#include <GL/glext.h>
 
 int			skytexturenum;
 

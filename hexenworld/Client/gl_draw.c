@@ -3,7 +3,6 @@
 // vid buffer
 
 #include "quakedef.h"
-#include <GL/glext.h>
 
 extern int ColorIndex[16];
 extern unsigned ColorPercent[16];
