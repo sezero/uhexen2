@@ -1,5 +1,11 @@
 ChangeLog:
 
+2005-02-10 (CVS):
+    * removed unused functions SV_SaveEffects, SV_LoadEffects,
+      SV_RemoveGIPFiles and SV_CopyFiles from hwsv.
+    * fixed a typo in hwcl software draw code
+    * fixed a format warning in hwsv
+
 2005-02-09 (CVS):
     * killed a bunch of compiler warnings
     * killed all unused HW menu stuff
