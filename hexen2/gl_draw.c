@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.20 2005-01-24 20:34:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.21 2005-02-07 21:58:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1283,6 +1283,7 @@ void GL_MipMap (byte *in, int width, int height)
 	}
 }
 
+#if 0	// we don't use this
 // Acts the same as glfunc.glTexImage2D_fp, except that it maps color into the
 // current palette and uses paletteized textures.
 static void fxPalTexImage2D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels)
@@ -1316,7 +1317,7 @@ static void fxPalTexImage2D (GLenum target, GLint level, GLint internalformat, G
 /*	if( fxMarkPalTextureExtension )
 		fxMarkPalTextureExtension();*/
 }
-
+#endif
 
 /*
 ===============
@@ -1760,6 +1761,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2005/01/24 20:34:21  sezero
+ * gl filter changes
+ *
  * Revision 1.19  2005/01/24 20:29:43  sezero
  * fix flush_textures decision which used to be always true
  *
