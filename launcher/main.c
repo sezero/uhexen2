@@ -25,18 +25,18 @@ main (int argc, char *argv[])
 {
   GtkWidget *window1;
   argv_0 = argv[0];
-
+/*
 #ifdef ENABLE_NLS
   bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
   textdomain (PACKAGE);
 #endif
 
-  gtk_set_locale ();
+  gtk_set_locale (); */
   gtk_init (&argc, &argv);
-
+/*
   add_pixmap_directory (PACKAGE_DATA_DIR "/pixmaps");
   add_pixmap_directory (PACKAGE_SOURCE_DIR "/pixmaps");
-
+*/
   printf("\nLinux Hexen2 Launcher, version %s\n", HOTL_VER);
 
   if (!(Sys_GetUserdir(userdir,sizeof(userdir)))) {
