@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/soul.hc,v 1.1.1.1 2004-11-29 11:40:40 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/soul.hc,v 1.2 2005-02-23 08:12:24 sezero Exp $
  */
 
 // Possible improvement: Make model shrink before disappearing
@@ -15,6 +15,16 @@ void () crusader_soul_touch =
 		other.super_damage_time = time + 30;
 		other.super_damage = 1;
 		other.super_damage_low = 0;
+		// Pa3PyX: since holy strength now only spawns starting at
+		//         clvl 6 now (as opposed to 4), we offset this negative
+		//         change by adding small health bonus to it (+clvl)
+		if (other.health < other.max_health) {
+			other.health += other.level;
+			if (other.health > other.max_health) {
+				other.health = other.max_health;
+			}
+		}
+		// Pa3PyX: end code
 
 		self.touch = SUB_Null;
 		self.think=SUB_Remove;
@@ -178,7 +188,9 @@ void crusader_sphere (entity ent)
 	local entity new,new2;
 	float chance;
 
-	chance = .05 + ((ent.level - 3) * .03);
+//	chance = .05 + ((ent.level - 3) * .03);
+	// Pa3PyX: adjusted to start at level 6, reach 0.2 at level 10
+	chance = .04 + ((ent.level - 6) * 0.04);
 	if (chance > .2)
 		chance = .2;
 
@@ -234,6 +246,9 @@ void crusader_sphere (entity ent)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:40:40  sezero
+ * Initial import
+ *
  * 
  * 27    9/02/97 9:20p Rlove
  * 

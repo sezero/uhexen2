@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/damage.hc,v 1.1.1.1 2004-11-29 11:37:50 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/damage.hc,v 1.2 2005-02-23 08:12:24 sezero Exp $
  */
 
 void() T_MissileTouch;
@@ -193,7 +193,10 @@ float exp_bonus;
 			if ((targ.flags & FL_MONSTER) || (targ.flags & FL_CLIENT))
 				necromancer_sphere (attacker);
 		}
-		else if ((attacker.playerclass==CLASS_CRUSADER) && (attacker.level >= 3))
+	//	else if ((attacker.playerclass==CLASS_CRUSADER) && (attacker.level >= 3))
+	// Pa3PyX: this is supposed to be a level 6 ability,
+	//	   according to the manual, not level 3.
+		else if ((attacker.playerclass == CLASS_CRUSADER) && (attacker.level >= 6))
 		{
 			if ((targ.flags & FL_MONSTER) || (targ.flags & FL_CLIENT))
 				crusader_sphere (attacker);
@@ -949,6 +952,9 @@ void(entity inflictor, entity attacker, float manadamage, entity ignore) T_Radiu
 */
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:37:50  sezero
+ * Initial import
+ *
  * 
  * 153   10/07/97 12:59p Mgummelt
  * 
