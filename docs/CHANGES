@@ -1,5 +1,10 @@
 ChangeLog:
 
+2005-01-07 (CVS, 1.2.3-rc5):
+
+    * _windowed_mouse default is 1 in gl mode, too.
+    * bind Alt+Enter combination to Steven's stuff for fullscreen-
+      windowed toggling
 
 2005-01-03 (CVS, 1.2.3-rc4):
 
