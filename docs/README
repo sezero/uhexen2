@@ -116,6 +116,7 @@ following options are accepted:
  -sndsdl		Use SDL for audio
  -nocdaudio		Disable cdrom music
  -nomidi		Disable MIDI music
+ -listen N		Enable multiplayer with maximum N players
  -s | -nosound		Run the game without sound
  -v | --version		Display the game version
  -h | --help		Display this help message
@@ -253,14 +254,14 @@ For the Mission Pack, they are stored under ~/.hexen2/portals/
 Thanks to ID Software, Raven Games and Activision for a great
 game and for supporting open source software. Also thanks to
 Dan Olson and Clément Bourdarias for the initial Linux port
-(AoT) and to Ibiblio.org and Sourceforge.net for hosting.
+(AoT) and to Sourceforge.net for hosting HoT.
 Mega thanks to all the unheralded Doom/Quake/Hexen modders.
 
 
 1.9 Contact
 -----------
-    Steven Atkinson	<stevenaaus@users.sourceforge.net>
     Ozkan Sezer		<sezero@users.sourceforge.net>
+    Steven Atkinson	<stevenaaus@users.sourceforge.net>
 
 ----------------------------------------------------------------
 
@@ -316,7 +317,8 @@ and/or  ~/.hexen2/portals/glhexen.  When you next run the game,
 it will remake this directory and everything should be fine.
 
 The biggest mod I've seen for Hexen II is the awesome Fortress
-of Four Doors (fo4d.zip).
+of Four Doors (fo4d.zip). Make sure to check out the botmatch
+mod "hcbots" available at our project page.
 
 
 2.3 Lines on Screen
@@ -372,12 +374,17 @@ I've also had crashes in 3D games associated with
 2.6 Other
 ---------
 
-from Dan Olson:
+"Thyrion is the world Hexen II takes place in.  An anvil is used
+by blacksmiths to create weapons and tools.  I stole the anvil
+paradigm from AoT's distant cousin, QuakeForge.
+
 "Raven didn't give us Hexen 2 source, they gave us Portal of
 Praevus source. PoP is a few levels short of being an entirely
 different game....  I think once I nail a few simple physics
 bugs, we'll have PoP emulating Hexen 2 quite nicely, but it's
 been suggested that I'll need a whole different physics engine."
+
+- Dan Olson
 
 
 2.7 Links
