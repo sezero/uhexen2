@@ -15,7 +15,7 @@ Version:	1.2.4a
 Release:	1
 Summary:	Hexen II
 Source:		hexen2source-HoT-%{version}.tgz
-Source1:	loki_patch-2004.tar.gz
+Source1:	loki_patch-2005.tgz
 Source2:	hexenworld-pakfiles-0.15.tgz
 Source3:	gamedata-all-1.12h.tgz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
