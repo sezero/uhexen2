@@ -19,6 +19,7 @@ extern int hwgame;
 
 static char *binary_name = NULL;
 unsigned missingexe = 0;
+extern int l_noexit;
 
 const char *hwgame_names[MAX_HWGAMES][2]={
 	{  NULL     , "DeathMatch"},
@@ -56,9 +57,7 @@ void CheckExe () {
 void launch_hexen2_bin() {
 
   unsigned short i=0, i1=0;
-  static char *args[12];	// static is necessary here
-
-  memset(args,0,1024);
+  char *args[12];
 
   args[i]=binary_name;	// i == 0
 
@@ -126,7 +125,8 @@ void launch_hexen2_bin() {
     printf(" %s", args[i1]);
   printf("\n\n");
 
-  gtk_main_quit();
+  if (!l_noexit)
+     gtk_main_quit();
   pid=fork();
   if (pid == -1) {
 	printf ("fork() failed, bad...\n");
@@ -135,10 +135,10 @@ void launch_hexen2_bin() {
   }
   if (pid) {
 	printf ("Child process %s with PID %d\n", binary_name, pid);
-	exit(0);
+//	exit(0);
   } else {
 	printf ("now execv()ing %s\n", binary_name);
 	execv(binary_name, args);
-	exit(0);
+//	exit(0);
   }
 }

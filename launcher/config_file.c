@@ -18,6 +18,8 @@ int cdaudio		= 1;
 int joystick		= 0;
 int lan			= 1;
 
+int l_noexit		= 0;
+
 extern char userdir[1024];
 
 FILE * open_config_file(char *flags) {
@@ -65,6 +67,8 @@ int write_config_file() {
     fprintf(cfg_file, "cdaudio=%d\n",cdaudio);
     fprintf(cfg_file, "joystick=%d\n",joystick);
     fprintf(cfg_file, "lan=%d\n",lan);
+
+    fprintf(cfg_file, "l_noexit=%d\n",l_noexit);
   }
   fclose (cfg_file); 
   printf("Options saved successfully.\n");
@@ -150,6 +154,11 @@ int read_config_file() {
 	      lan = atoi(buff + 4);
 	      if (lan != 0 && lan != 1 )
 		lan = 1;
+	  }
+	  else if (strstr(buff, "l_noexit=") == buff) {
+	      l_noexit = atoi(buff + 9);
+	      if (l_noexit != 0 && l_noexit != 1 )
+		l_noexit = 0;
 	  }
       }
 

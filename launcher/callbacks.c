@@ -7,16 +7,11 @@
 
 #ifndef DEMOBUILD
 extern int mp_support;
-extern int with_om;
 #endif
 extern int opengl_support;
 extern int fullscreen;
 extern int resolution;
-extern int midi;
-extern int cdaudio;
 extern int sound;
-extern int joystick;
-extern int lan;
 extern int destiny;
 extern int hwgame;
 extern unsigned missingexe;
