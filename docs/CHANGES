@@ -3,6 +3,7 @@ ChangeLog:
 
 2005-01-03 (CVS, 1.2.3-rc4):
 
+    * gl_ztrick disabled by default for hexenworld, too
     * Also compiled against glibc-2.2 with gcc-2.96 (on rh-7.3) and
       included properly in the installer.
     * Fixed a compilation error in case of gcc-2.96
