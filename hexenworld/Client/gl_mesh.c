@@ -335,7 +335,7 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 		//
 		// build it from scratch
 		//
-		Con_Printf ("meshing %s...\n",m->name);
+		Con_DPrintf ("meshing %s...\n",m->name);
 
 		BuildTris ();		// trifans or lists
 
