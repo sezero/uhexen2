@@ -3,7 +3,7 @@
 	SDL sound driver for Linux Hexen II,  based on the SDLquake
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/snd_sdl.c,v 1.4 2005-02-04 13:40:52 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/snd_sdl.c,v 1.5 2005-02-06 15:22:56 sezero Exp $
 */
 
 #include <stdio.h>
@@ -131,29 +131,15 @@ void S_SDL_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/02/04 13:40:52  sezero
+ * build all all the sound drivers in and choose from command line
+ *
  * Revision 1.3  2005/02/04 11:29:38  sezero
  * make sdl_audio actually work (finally)
  *
- * Revision 1.2  2004/12/21 17:35:19  sezero
- * revert two commits (obsolete experimentals)
+ * Revision 1.2  2004.12.05.10.52.18  sezero
+ * Change desired.samples to 1024 (from Steven)
  *
- * Revision 1.5  2004/12/12 14:40:56  sezero
- * sync with steven
- *
- * Revision 1.4  2004/12/12 14:14:42  sezero
- * style changes to our liking
- *
- * Revision 1.3  2004/12/05 10:52:18  sezero
- * Sync with Steven, 2004-12-04 :
- *  Fix the "Old Mission" menu PoP
- *  Also release the windowed mouse on pause
- *  Heapsize is now 32768 default
- *  The final splash screens now centre the messages properly
- *  Add more mods to the video mods table
- *  Add the docs folder and update it
- *
- * Revision 1.2  2004/11/28 01:45:25  sezero
- * Log entries.
- *
- * Revision 1.1.1.1  2004/11/28 00:50:00  sezero
+ * Revision 1.1  2004/11/28 00:50:00  sezero
+ * Initial version.
  */

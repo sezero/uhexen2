@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.3 2005-02-05 16:30:39 sezero Exp $
+	$Id: midi_sdl.c,v 1.4 2005-02-06 15:22:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -292,6 +292,9 @@ void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/02/05 16:30:39  sezero
+ * don't try extracting anything if no midi file is given
+ *
  * Revision 1.2  2005/02/05 16:29:13  sezero
  * Apply the HexenWorld specific changes to midi_sdl.c and enable
  * midi in the makefiles
@@ -302,24 +305,23 @@ void ReInitMusic() {
  *  add volume control, midi paths cleanup, path length
  *  overflows)
  *
- * Revision 1.5  2005/02/05 16:21:13  sezero
+ * 2005/02/05 16:21:13  sezero
  * killed Com_LoadHunkFile2()  [from HexenWorld]
  *
- * Revision 1.4  2005/02/05 16:20:14  sezero
+ * 2005/02/05 16:20:14  sezero
  * fix possible path length overflows
  *
- * Revision 1.3  2005/02/05 16:18:25  sezero
+ * 2005/02/05 16:18:25  sezero
  * added midi volume control (partially from Pa3PyX)
  *
- * Revision 1.2  2005/02/05 16:17:29  sezero
+ * 2005/02/05 16:17:29  sezero
  * - Midi file paths cleanup. these should be leftovers
  *   from times when gamedir and userdir were the same.
  * - Killed Com_WriteFileFullPath(), not used anymore.
  * - Replaced some Con_Printf() with Sys_Printf().
  *
- * Revision 1.1  2005/02/05 16:16:06  sezero
+ * 2005/02/05 16:16:06  sezero
  * separate win32 and linux versions of midi files. too much mess otherwise.
- *
  *
  * 2005/02/04 14:00:14  sezero
  * - merge small bits from the hexenworld version
