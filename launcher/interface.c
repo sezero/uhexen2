@@ -79,10 +79,13 @@ create_window1 (void)
   GtkWidget *hseparator2;
   GSList *resolution_group = NULL;
   GtkWidget *hseparator5;
-
+#ifdef HAVE_GTK2
+  GtkTooltips *tooltips;
+  tooltips = gtk_tooltips_new ();
+#endif
   window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (window1), "window1", window1);
-  gtk_window_set_title (GTK_WINDOW (window1), _("Hexen II for Linux Launcher, 0.3.0"));
+  gtk_window_set_title (GTK_WINDOW (window1), _("Hexen II for Linux Launcher, 0.3.1"));
   gtk_window_set_policy (GTK_WINDOW (window1), TRUE, TRUE, FALSE);
   gtk_window_set_default_size (GTK_WINDOW (window1), -1, 408);
 
@@ -120,15 +123,18 @@ create_window1 (void)
   gtk_widget_set_uposition (SAVE_button, 104, 376);
   gtk_widget_set_usize (SAVE_button, 96, 24);
 
-  MP_button = gtk_check_button_new_with_label (_("\nPortal of Praevus\nMission Pack"));
+  MP_button = gtk_check_button_new_with_label (_("with Mission Pack"));
   gtk_widget_ref (MP_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "MP_button", MP_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (MP_button);
-  gtk_fixed_put (GTK_FIXED (fixed1), MP_button, 16, 108);
-  gtk_widget_set_uposition (MP_button, 16, 108);
-  gtk_widget_set_usize (MP_button, 124, 44);
   GTK_WIDGET_UNSET_FLAGS (MP_button, GTK_CAN_FOCUS);
+#ifdef HAVE_GTK2
+  gtk_tooltips_set_tip (tooltips, MP_button, _("play Hexen II with\nPortal of Praevus support"), NULL);
+#endif
+  gtk_widget_show (MP_button);
+  gtk_fixed_put (GTK_FIXED (fixed1), MP_button, 16, 122);
+  gtk_widget_set_uposition (MP_button, 16, 122);
+  gtk_widget_set_usize (MP_button, 128, 18);
 #ifndef DEMOBUILD
   if (mp_support)
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MP_button), TRUE);
@@ -145,6 +151,9 @@ create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "OM_button", MP_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   GTK_WIDGET_UNSET_FLAGS (OM_button, GTK_CAN_FOCUS);
+#ifdef HAVE_GTK2
+  gtk_tooltips_set_tip (tooltips, OM_button, _("Support the Old Mission\nin Portal of Praevus"), NULL);
+#endif
   gtk_fixed_put (GTK_FIXED (fixed1), OM_button, 152, 122);
   gtk_widget_set_uposition (OM_button, 152, 122);
   gtk_widget_set_usize (OM_button, 160, 18);
@@ -207,6 +216,9 @@ create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "HEXEN2_button", HEXEN2_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   GTK_WIDGET_UNSET_FLAGS (HEXEN2_button, GTK_CAN_FOCUS);
+#ifdef HAVE_GTK2
+  gtk_tooltips_set_tip (tooltips, HEXEN2_button, _("Hexen II game"), NULL);
+#endif
   gtk_widget_show (HEXEN2_button);
   gtk_fixed_put (GTK_FIXED (fixed1), HEXEN2_button, 24, 68);
   gtk_widget_set_uposition (HEXEN2_button, 24, 68);
@@ -220,6 +232,9 @@ create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (window1), "HW_button", HW_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   GTK_WIDGET_UNSET_FLAGS (HW_button, GTK_CAN_FOCUS);
+#ifdef HAVE_GTK2
+  gtk_tooltips_set_tip (tooltips, HW_button, _("Multiplayer-only\nClient"), NULL);
+#endif
   gtk_widget_show (HW_button);
   gtk_fixed_put (GTK_FIXED (fixed1), HW_button, 152, 68);
   gtk_widget_set_uposition (HW_button, 152, 68);
@@ -445,8 +460,8 @@ create_window1 (void)
   gtk_widget_ref (_512_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "_512_button", _512_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_set_usize (_512_button, 96, 24);
   GTK_WIDGET_UNSET_FLAGS (_512_button, GTK_CAN_FOCUS);
+  gtk_widget_set_usize (_512_button, 96, 24);
 if (opengl_support) {
   gtk_fixed_put (GTK_FIXED (fixed1), _512_button, 144, 304);
   gtk_widget_set_uposition (_512_button, 144, 304);
@@ -463,8 +478,8 @@ if (opengl_support) {
   gtk_widget_ref (_640_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "_640_button", _640_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_set_usize (_640_button, 88, 24);
   GTK_WIDGET_UNSET_FLAGS (_640_button, GTK_CAN_FOCUS);
+  gtk_widget_set_usize (_640_button, 88, 24);
 if (opengl_support) {
   gtk_fixed_put (GTK_FIXED (fixed1), _640_button, 240, 304);
   gtk_widget_set_uposition (_640_button, 240, 304);
@@ -481,8 +496,8 @@ if (opengl_support) {
   gtk_widget_ref (_800_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "_800_button", _800_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_set_usize (_800_button, 88, 24);
   GTK_WIDGET_UNSET_FLAGS (_800_button, GTK_CAN_FOCUS);
+  gtk_widget_set_usize (_800_button, 88, 24);
   gtk_fixed_put (GTK_FIXED (fixed1), _800_button, 48, 328);
   gtk_widget_set_uposition (_800_button, 48, 328);
   if (opengl_support)
@@ -495,8 +510,8 @@ if (opengl_support) {
   gtk_widget_ref (_1024_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "_1024_button", _1024_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_set_usize (_1024_button, 88, 24);
   GTK_WIDGET_UNSET_FLAGS (_1024_button, GTK_CAN_FOCUS);
+  gtk_widget_set_usize (_1024_button, 88, 24);
   gtk_fixed_put (GTK_FIXED (fixed1), _1024_button, 144, 328);
   gtk_widget_set_uposition (_1024_button, 144, 328);
   if (opengl_support)
@@ -509,8 +524,8 @@ if (opengl_support) {
   gtk_widget_ref (_1280_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "_1280_button", _1280_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_set_usize (_1280_button, 96, 24);
   GTK_WIDGET_UNSET_FLAGS (_1280_button, GTK_CAN_FOCUS);
+  gtk_widget_set_usize (_1280_button, 96, 24);
   gtk_fixed_put (GTK_FIXED (fixed1), _1280_button, 240, 328);
   gtk_widget_set_uposition (_1280_button, 240, 328);
   if (opengl_support)
@@ -601,7 +616,9 @@ if (opengl_support) {
   gtk_signal_connect (GTK_OBJECT (_640_button), "released",
                       GTK_SIGNAL_FUNC (on_640_button_released),
                       NULL);
-
+#ifdef HAVE_GTK2
+  gtk_object_set_data (GTK_OBJECT (window1), "tooltips", tooltips);
+#endif
   return window1;
 }
 

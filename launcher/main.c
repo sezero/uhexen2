@@ -15,7 +15,7 @@
 #include "support.h"
 #include "config_file.h"
 
-#define HOTL_VER "0.3.0"
+#define HOTL_VER "0.3.1"
 
 char *argv_0;
 static  char    userdir[1024];

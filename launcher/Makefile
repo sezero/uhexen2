@@ -28,7 +28,7 @@ H2LAUNCH = ${TMPNAME}
 GTK_CFLAGS = `gtk-config --cflags`
 GTK_LIBS = `gtk-config --libs`
 endif
-VERSION = 0.3.0
+VERSION = 0.3.1
 
 PROGRAMS = $(H2LAUNCH)
 
@@ -45,6 +45,9 @@ OBJECTS = main.o ${ORIG_OBJ} interface.o callbacks.o launch_bin.o \
 CFLAGS = -Wall -O2 -march=i386 -mcpu=i686 -I. ${GTK_CFLAGS}
 ifeq "${DEMOBUILD}" "yes"
 CFLAGS+=-DDEMOBUILD
+endif
+ifeq "${GTK2}" "yes"
+CFLAGS+=-DHAVE_GTK2
 endif
 ifdef DEBUG
 CFLAGS+=-g
