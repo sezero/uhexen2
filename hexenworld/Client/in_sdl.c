@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.12 2005-02-08 21:20:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.13 2005-02-11 08:30:29 sezero Exp $
 */
 
 #include "SDL.h"
@@ -262,6 +262,9 @@ IN_StartupMouse
 */
 void IN_StartupMouse (void)
 {
+//	if ( COM_CheckParm ("-nomouse") ) 
+//		return; 
+
 	// S.A. mega hack to implement nomouse
 	// Dan(?) left several command line options broken,
 	// there's probably a better way to fix this, but where ?
@@ -276,40 +279,6 @@ void IN_StartupMouse (void)
 	mouseinitialized = true;
 	mouse_buttons = 3;
 	
-#if 0	
-	HDC			hdc;
-
-	if ( COM_CheckParm ("-nomouse") ) 
-		return; 
-
-	mouseinitialized = true;
-	mouseparmsvalid = SystemParametersInfo (SPI_GETMOUSE, 0, originalmouseparms, 0);
-
-	if (mouseparmsvalid)
-	{
-		if ( COM_CheckParm ("-noforcemspd") ) 
-			newmouseparms[2] = originalmouseparms[2];
-
-		if ( COM_CheckParm ("-noforcemaccel") ) 
-		{
-			newmouseparms[0] = originalmouseparms[0];
-			newmouseparms[1] = originalmouseparms[1];
-		}
-
-		if ( COM_CheckParm ("-noforcemparms") ) 
-		{
-			newmouseparms[0] = originalmouseparms[0];
-			newmouseparms[1] = originalmouseparms[1];
-			newmouseparms[2] = originalmouseparms[2];
-		}
-	}
-
-	mouse_buttons = 3;
-
-	if (mouse_buttons > 3)
-		mouse_buttons = 3;
-
-#endif
 // if a fullscreen video mode was set before the mouse was initialized,
 // set the mouse state appropriately
 	if (mouseactivatetoggle)
@@ -1261,6 +1230,10 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/02/08 21:20:23  sezero
+ * added missing parts of Steven's video/mouse stuff:
+ * windowed/fullscreen switching and all others
+ *
  * Revision 1.11  2005/01/23 15:18:09  sezero
  * support for mouse buttons 4 and 5 (patch from Julien Langer)
  * Let's see if this behaves for everybody.
