@@ -1,11 +1,16 @@
 Known Bugs
 ----------
 
-  Midi music doesn't work with SDL sound driver
+  Midi music doesn't work with SDL sound driver due to conflicting
+  SDL and SDL_mixer calls. There are a few other problems related
+  to SDL_mixer/midi. Re-writing midi code for libWildmidi is on the
+  TODO list.
 
-  OSS sound segfaults with some sound drivers for some people.
-  (This shouldn't be a problem, anyway: We already have ALSA
-   and SDL sound drivers, now.)
+  OSS sound code does not work for some people, either partially or
+  completely. This includes some sampling rate problems, and probably
+  more things that we're not aware of, yet. Although this shouldn't
+  be a problem anymore (we already have ALSA and SDL sound drivers),
+  fixing that is on the TODO list.
 
   matrox G200 : GL games don't display menus correctly (matrox GL bug ?)
 
