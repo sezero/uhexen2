@@ -7,11 +7,11 @@ Hammer of Thyrion 1.2.4
 
   1.1 Getting Started
   1.2 Software Requirements
-  1.3 Executing the Game
+  1.3 Running the Game
   1.4 Sound Options
-  1.5 Networking/Multiplayer
-  1.6 SaveGames and Configuration files
-  1.7 Playing the Old Mission in Expansion Pack
+  1.5 OSS Audio workarounds
+  1.6 Networking/Multiplayer
+  1.7 SaveGames and Configuration files
   1.8 Thanks
   1.9 Contact
 
@@ -22,12 +22,9 @@ Hammer of Thyrion 1.2.4
   2.3 Lines on Screen
   2.4 Hardware Acceleration
   2.5 System Stability
-  2.6 Links
+  2.6 Other
+  2.7 Links
 
-3. Appendix
-
-  3.1 OSS Audio workarounds
-  3.2 Other
 
 ----------------------------------------------------------------
 
@@ -176,7 +173,27 @@ If you can't get the sound working, "-nosound" argument will
 disable it. Send a bug report on the project page.
 
 
-1.5 Networking / Multiplayer
+1.5 OSS audio workarounds:
+--------------------------
+If you *really* have to use OSS and it doesn't work, you may try
+using the ALSA kernel sound modules (doing that on a distribution
+which doesn't come with ALSA by default isn't very easy, though.)
+Once the alsa sound modules are installed and configured, you can
+do (for example, on Mandrake):
+
+    rmmod emu10k1          ;# remove OSS sound module for SBLive
+    /etc/init.d/alsa start ;# start ALSA sound modules
+
+Make SURE oss-emulation is enabled: lsmod should list snd-pcm-oss.
+Check with alsamixer that the volumes are not turned down to zero.
+With ALSA + OSS Emulation, oss-sound in hexen2 should work fine.
+On Mandrake (9.0 and newer), Fedora Core (2 and newer) and SuSE
+(8.2 and newer) alsa-0.9.0 or better is already included. Users
+of Fedora Core 1, RedHat 9 and older can see the FreshRPMS site
+and the ALSA site for alsa-sound support.
+
+
+1.6 Networking / Multiplayer
 ----------------------------
 
 Linux Hexen II binaries here WILL NOT play over network with
@@ -219,7 +236,7 @@ Binary		Windows		Linux	  Game		Status
 ==============================================================
 
 
-1.6 SaveGames and Configuration files
+1.7 SaveGames and Configuration files
 -------------------------------------
 
 Your savegames and configuration files are stored in a folder
@@ -228,15 +245,6 @@ version, it's ~/.hexen2demo instead.
 
 Saves/configs for Hexen2 are stored directly under ~/.hexen2/
 For the Mission Pack, they are stored under ~/.hexen2/portals/
-
-
-1.7 Playing the Old Mission in Expansion Pack
----------------------------------------------
-
-Either choose the appropriate option in the game launcher,
-or type "m_oldmission 1" (without the quotes) in the game's
-console. Choose "New Game" from the menu, then choose "Old
-Mission". You will go into the original Hexen2 game.
 
 
 1.8 Thanks
@@ -276,10 +284,13 @@ variable	values
 _snd_mixahead	0.1 - 0.9 : 0.1 = less latency,
 			    0.9 = better performance
 
-gl_ztrick	0|1       : 3% performance tweak
+gl_ztrick	0|1	  : 3% performance tweak
 			    (some cards unsupported)
 
-gl_picmip	0|1|2
+gl_picmip	0|1|2	  : 0 is default. 1 and 2 scale down
+			    the textures (low quality), but
+			    the help screens and some small
+			    fonts become unreadable and ugly.
 
 gl_playermip	0|1|2
 
@@ -358,7 +369,18 @@ I've also had crashes in 3D games associated with
   * Cpu overheating with unpredictable results.
 
 
-2.6 Links
+2.6 Other
+---------
+
+from Dan Olson:
+"Raven didn't give us Hexen 2 source, they gave us Portal of
+Praevus source. PoP is a few levels short of being an entirely
+different game....  I think once I nail a few simple physics
+bugs, we'll have PoP emulating Hexen 2 quite nicely, but it's
+been suggested that I'll need a whole different physics engine."
+
+
+2.7 Links
 ---------
 
 Hammer of Thyrion  :  http://sourceforge.net/projects/uhexen2
@@ -368,43 +390,5 @@ JSHexen2 port      :  http://jurajstyk.host.sk/
 Hexen II FAQ       :  http://www.raven-games.com/hex2faq/
 Linux GlQuake      :  http://mfcn.ilo.de/glxquake
 ALSA sound         :  http://www.alsa-project.org
-Lowercase Utility  :  www.freshmeat.net/projects/file-rename-utils
-
-----------------------------------------------------------------
-
-
-
-3. Appendix
--------------
-
-
-3.1 OSS audio workarounds:
---------------------------
-If you *really* have to use OSS and it doesn't work, you may try
-using the ALSA kernel sound modules (doing that on a distribution
-which doesn't come with ALSA by default isn't very easy, though.)
-Once the alsa sound modules are installed and configured, you can
-do (for example, on Mandrake):
-
-    rmmod emu10k1          ;# remove OSS sound module for SBLive
-    /etc/init.d/alsa start ;# start ALSA sound modules
-
-Make SURE oss-emulation is enabled: lsmod should list snd-pcm-oss.
-Check with alsamixer that the volumes are not turned down to zero.
-With ALSA + OSS Emulation, oss-sound in hexen2 should work fine.
-On Mandrake (9.0 and newer), Fedora Core (2 and newer) and SuSE
-(8.2 and newer) alsa-0.9.0 or better is already included. Users
-of Fedora Core 1, RedHat 9 and older can see the FreshRPMS site
-and the ALSA site for alsa-sound support.
-
-
-3.2 Other
----------
-
-from Dan Olson:
-"Raven didn't give us Hexen 2 source, they gave us Portal of
-Praevus source. PoP is a few levels short of being an entirely
-different game....  I think once I nail a few simple physics
-bugs, we'll have PoP emulating Hexen 2 quite nicely, but it's
-been suggested that I'll need a whole different physics engine."
+Lowercase Utility  :  http://sourceforge.net/projects/filerenameutils
 
