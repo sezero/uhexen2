@@ -1,8 +1,8 @@
 
 this patch to the original-Hexen2 game-code allows running the
 game with a single progs.dat file instead of progs.dat + progs2.dat
-files. With this, you'll not need the change in pr_edict.c .
-Not tested much.
+files. With this, you'll not need the change in pr_edict.c (in fact,
+you'd better revert that change).  Not tested much.
 
 --- h2/progs.src~	1997-08-29 16:49:38.000000000 +0300
 +++ h2/progs.src	2004-07-05 23:02:20.000000000 +0300
@@ -132,13 +132,12 @@ Not tested much.
  };
  
  
-@@ -1129,6 +1179,8 @@
+@@ -1129,6 +1179,7 @@
  		self.use=spawnspot_activate;
  }
  
 -void hive_die(){}
 -void spawn_ghost (entity attacker){}
-+//Hmmmmm...
 +//void hive_die(){}
 +//void spawn_ghost (entity attacker){}
 +

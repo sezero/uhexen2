@@ -1,5 +1,6 @@
 
 this patch to the original-Hexen2 game-code allows running the
 game with a single progs.dat file instead of progs.dat + progs2.dat
-files. With this, you'll not need the change in pr_edict.c .
-Not tested much.
+files. With this, you'll not need the change in pr_edict.c (in fact,
+you'd better revert that change).  Not tested much.
+
