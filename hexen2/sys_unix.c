@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.12 2005-02-06 15:03:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.13 2005-02-20 13:38:29 sezero Exp $
 */
 
 #include <stdio.h>
@@ -824,17 +824,17 @@ void PrintHelp(char *name)
 	printf ("Visit http://sf.net/projects/uhexen2/ for more info.\n");
 	printf ("\n");
 	printf ("Usage: %s [options]\n", name);
-	printf ("     [-h | --help]                   Display this help message\n");
 	printf ("     [-v | --version]                Display the game version\n");
 	printf ("     [-f | --fullscreen]             Run the game fullscreen\n");
 	printf ("     [-w | --windowed]               Run the game windowed\n");
-	printf ("     [-s | --nosound]                Run the game without sound\n");
 	printf ("     [-g | --gllibrary]              Select 3D rendering library\n");
+	printf ("     [-s | --nosound]                Run the game without sound\n");
+	printf ("     [-sndalsa]                      Use ALSA sound (alsa > 1.0.1)\n");
+	printf ("     [-sndsdl]                       Use SDL sound\n");
 	printf ("     [-nomouse]                      Disable mouse in window mode\n");
 	printf ("     [-width Width [-height Height]] Select screen size\n");
 	printf ("     [-bpp]                          Depth for GL fullscreen mode\n");
 	printf ("     [-heapsize Bytes]               Heapsize\n");
-	printf ("\n");
 }
 
 int main(int argc, char *argv[])
@@ -979,6 +979,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/02/06 15:03:10  sezero
+ * move resource.h to ./win_stuff/
+ *
  * Revision 1.11  2005/01/18 11:29:18  sezero
  * - Fix userdirs to work correctly against the -game arg
  * - Added a "qboolean adduser" arg to COM_AddGameDir()  (useful esp. in

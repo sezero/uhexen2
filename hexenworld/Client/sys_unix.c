@@ -1,7 +1,7 @@
 // sys_unix.c -- Unix system interface code
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.9 2005-02-09 14:37:34 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.10 2005-02-20 13:39:22 sezero Exp $
  */
 
 #include <stdio.h>
@@ -812,17 +812,17 @@ void PrintHelp(char *name)
 	printf ("Visit http://sf.net/projects/uhexen2/ for more info.\n");
 	printf ("\n");
 	printf ("Usage: %s [options]\n", name);
-	printf ("     [-h | --help]                   Display this help message\n");
 	printf ("     [-v | --version]                Display the game version\n");
 	printf ("     [-f | --fullscreen]             Run the game fullscreen\n");
 	printf ("     [-w | --windowed]               Run the game windowed\n");
-	printf ("     [-s | --nosound]                Run the game without sound\n");
 	printf ("     [-g | --gllibrary]              Select 3D rendering library\n");
+	printf ("     [-s | --nosound]                Run the game without sound\n");
+	printf ("     [-sndalsa]                      Use ALSA sound (alsa > 1.0.1)\n");
+	printf ("     [-sndsdl]                       Use SDL sound\n");
 	printf ("     [-nomouse]                      Disable mouse in window mode\n");
 	printf ("     [-width Width [-height Height]] Select screen size\n");
 	printf ("     [-bpp]                          Depth for GL fullscreen mode\n");
 	printf ("     [-heapsize Bytes]               Heapsize\n");
-	printf ("\n");
 }
 
 int main(int argc, char *argv[])
@@ -949,6 +949,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/02/09 14:37:34  sezero
+ * make compiler happy (unused warnings)
+ *
  * Revision 1.8  2005/02/06 15:03:15  sezero
  * move resource.h to ./win_stuff/
  *
