@@ -91,7 +91,7 @@ GtkWidget* create_window1 (void)
   gtk_container_add (GTK_CONTAINER (window1), fixed1);
 
 /*********************************************************************/
-  TxtTitle = gtk_label_new (_("Hammer of Thyrion 1.2.3"));
+  TxtTitle = gtk_label_new (_("Hammer of Thyrion 1.2.4"));
   gtk_widget_ref (TxtTitle);
   gtk_object_set_data_full (GTK_OBJECT (window1), "TxtTitle", TxtTitle,
                             (GtkDestroyNotify) gtk_widget_unref);

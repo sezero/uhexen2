@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.18 2005-02-05 16:18:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.19 2005-02-14 19:41:18 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -20,7 +20,7 @@
 
 #define HOT_VERSION_MAJ 1
 #define HOT_VERSION_MID 2
-#define HOT_VERSION_MIN 3
+#define HOT_VERSION_MIN 4
 #ifdef PLATFORM_UNIX
 #define VERSION_PLATFORM "Linux"
 #else
@@ -449,6 +449,9 @@ void IN_DeactivateMouseSA (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/02/05 16:18:25  sezero
+ * added midi volume control (partially from Pa3PyX)
+ *
  * Revision 1.17  2005/01/13 10:47:01  sezero
  * - Fixed mouse behavior which was always broken in hexen2-linux.
  *   Middle-button is MOUSE2, right-button is MOUSE3, not vice versa
