@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.19 2004-12-21 16:15:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.20 2004-12-21 17:53:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2084,8 +2084,8 @@ void M_AdjustSliders (int dir)
 		break;
 	case OPT_GL_GLOW:	// gl_glows
 		Cvar_SetValue ("gl_glows", !gl_glows.value);
-		Cvar_SetValue ("gl_missile_glows", !gl_glows.value);
-		Cvar_SetValue ("gl_other_glows", !gl_glows.value);
+		Cvar_SetValue ("gl_missile_glows", gl_glows.value);
+		Cvar_SetValue ("gl_other_glows", gl_glows.value);
 		break;
 #endif
 	case OPT_CHASE_ACTIVE:	// chase_active
@@ -4730,6 +4730,10 @@ void M_ConfigureNetSubsystem(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2004/12/21 16:15:58  sezero
+ * - Do the right thing about the not-yet-enabled (not-to-be-enabled)
+ *   --witholdmission and --withdemoness cmdline args.
+ *
  * Revision 1.18  2004/12/21 16:07:05  sezero
  * - add Previous Weapon entry to the menu
  * - fix the GL_GLOWS entry. Make it affect gl_other_glows, too.
