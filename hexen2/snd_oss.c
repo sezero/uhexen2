@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.4 2005-02-04 13:44:26 sezero Exp $
+	$Id: snd_oss.c,v 1.5 2005-02-14 10:06:23 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -34,10 +34,12 @@
 #include <sys/wait.h>
 #include <linux/soundcard.h>
 #include <stdio.h>
+#include <errno.h>
 #include "quakedef.h"
 
-int audio_fd;
+int audio_fd = -1;
 int snd_inited;
+// unsigned long mmaplen;
 
 static int tryrates[] = { 11025, 22051, 44100, 8000 };
 
@@ -45,18 +47,28 @@ qboolean S_OSS_Init(void)
 {
 
 	int i, caps, fmt, rc, tmp;
+	int retries = 3;
+	// unsigned long sz;
+	unsigned long sz, mmaplen;
 	struct audio_buf_info info;
 
 	snd_inited = 0;
 
 // open /dev/dsp, confirm capability to mmap, and get size of dma buffer
 
-	audio_fd = open("/dev/dsp", O_RDWR);
-	if (audio_fd < 0)
-	{
-		perror("/dev/dsp");
-		Con_Printf("Could not open /dev/dsp\n");
-		return 0;
+	audio_fd = open("/dev/dsp", O_RDWR|O_NONBLOCK);
+	if (audio_fd < 0) {	// Failed open, retry up to 3 times
+		// if it's busy
+		while ((audio_fd < 0) && retries-- &&
+			((errno == EAGAIN) || (errno == EBUSY))) {
+			sleep (1);
+			audio_fd = open("/dev/dsp", O_RDWR|O_NONBLOCK);
+		}
+		if (audio_fd < 0) {
+			perror("/dev/dsp");
+			Con_Printf("Could not open /dev/dsp\n");
+			return 0;
+		}
 	}
 
 	rc = ioctl(audio_fd, SNDCTL_DSP_RESET, 0);
@@ -126,9 +138,11 @@ qboolean S_OSS_Init(void)
 	shm->submission_chunk = 1;
 
 // memory map the dma buffer
-
-	shm->buffer = (unsigned char *) mmap(NULL, info.fragstotal
-		* info.fragsize, PROT_WRITE, MAP_FILE|MAP_SHARED, audio_fd, 0);
+	sz = sysconf (_SC_PAGESIZE);
+	mmaplen = info.fragstotal * info.fragsize;
+	mmaplen = (mmaplen + sz - 1) & ~(sz - 1);
+	shm->buffer = (unsigned char *) mmap(NULL, mmaplen, PROT_WRITE,
+					     MAP_FILE|MAP_SHARED, audio_fd, 0);
 	if (!shm->buffer || shm->buffer == MAP_FAILED)
 	{
 		perror("/dev/dsp");
@@ -245,11 +259,16 @@ int S_OSS_GetDMAPos(void)
 
 void S_OSS_Shutdown(void)
 {
+	int tmp = 0;
 	if (snd_inited)
 	{
 		Con_Printf ("Shutting down OSS sound\n");
-		close(audio_fd);
 		snd_inited = 0;
+		// munmap (shm->buffer, mmaplen);
+		ioctl(audio_fd, SNDCTL_DSP_SETTRIGGER, &tmp);
+		ioctl(audio_fd, SNDCTL_DSP_RESET, 0);
+		close(audio_fd);
+		audio_fd = -1;
 	}
 }
 
