@@ -1,6 +1,6 @@
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/progs.src,v 1.1 2005-01-26 18:20:30 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/progs.src,v 1.2 2005-01-27 11:50:19 sezero Exp $
  */
 
 hwprogs.dat
@@ -110,26 +110,26 @@ setmodth.hc
 
 fish.hc
 sheep.hc
-//raven.hc
+raven.hc
 rat.hc
-//snake.hc
+snake.hc
 
 fireball.hc		// Imp stuff
 shardice.hc
 //mummy.hc
 imp.hc
-//spider.hc
-//scorpion.hc
+spider.hc
+scorpion.hc
 //golem.hc
-//skullwiz.hc
-//medusa.hc
+skullwiz.hc
+medusa.hc
 mezzoman.hc
-//archer.hc
+archer.hc
 spit.hc			// Hydra stuff
-//hydra.hc
-//faspell.hc      // Fallen angel stuff
-//fablade.hc
-//fangel.hc
+hydra.hc
+faspell.hc      // Fallen angel stuff
+fablade.hc
+fangel.hc
 
 eric.hc
 

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/invntory.hc,v 1.1 2005-01-26 17:26:11 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/invntory.hc,v 1.2 2005-01-27 11:50:19 sezero Exp $
  */
 
 void teleport_touch (void);
@@ -627,10 +627,12 @@ void jail_touch ()
 {
 entity found,oself;
 float found_cnt;
+	
 	particleexplosion(self.origin,random(144,159),self.absmax_z-self.absmin_z,10);
 	if(other.classname!="player"||(!other.flags&FL_CLIENT)||other.model=="models/yakman.mdl")
 	{
-		remove(self);
+		self.nextthink = time + 0.1;
+		self.think = SUB_Remove;
 		return;
 	}
 
@@ -1413,6 +1415,9 @@ void Inventory_Quick(float which)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/01/26 17:26:11  sezero
+ * Raven's original Siege hcode.
+ *
  * 
  * 50    6/01/98 2:49a Mgummelt
  * 

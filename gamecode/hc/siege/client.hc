@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/client.hc,v 1.2 2005-01-26 20:17:55 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/client.hc,v 1.3 2005-01-27 11:50:19 sezero Exp $
  */
 
 // prototypes
@@ -1385,6 +1385,7 @@ void() CheckRules =
 {
 float		timelimit;
 float		fraglimit;
+float		time_buffer;
 //string printnum;
 	
 	if (gameover)	// someone else quit the game already
@@ -1399,8 +1400,9 @@ float		fraglimit;
 		updateSiegeInfo();
 	}
 
+	time_buffer = (ceil(timelimit)-timelimit)*60;
 	timelimit*=60;
-	if (timelimit>0 && time >= timelimit + 30)//extra 30 second buffer
+	if (timelimit>0 && time >= timelimit + time_buffer)//extra 30 second buffer
 	{
 		if(dmMode==DM_SIEGE)//Siege
 		{
@@ -1599,7 +1601,7 @@ float wall_jump;
 		else
 			return;
 	}
-	
+
 	if ( !(self.flags & FL_JUMPRELEASED) )
 		return;		// don't pogo stick
 
@@ -1821,7 +1823,8 @@ void CheckCrouch (void)
 
 void CheckIncapacities ()
 {
-//vector dir;
+vector dir;	// KS: Need to put this back for below changes to compile
+
 	if(self.frozen>0)
 		if(self.flags2&FL_ALIVE&&self.health)
 		{
@@ -1846,16 +1849,19 @@ void CheckIncapacities ()
 				self.drawflags(-)DRF_TRANSLUCENT|MLS_ABSLIGHT;
 				self.frozen=FALSE;
 				self.artifact_active(-)ARTFLAG_FROZEN;
-				self.touch=SUB_Null;
-//				self.touch=PlayerTouch;
+
+// KS: in 0.15 self.touch=PlayerTouch not SUB_Null
+//				self.touch=SUB_Null;
+				self.touch=PlayerTouch;
+
 				self.credit_enemy=world;
 			}
 		}
 		else
 			self.frozen=self.pausetime=self.teleport_time=0;
 
-
-/*	if(self.pausetime>time&&self.model!=self.headmodel)
+	// KS: This has been removed in latest progs, putting it back
+	if(self.pausetime>time&&self.model!=self.headmodel)
 	{
 		if(self.model=="models/flesh1.mdl")
 		{
@@ -1900,10 +1906,10 @@ void CheckIncapacities ()
  			self.impulse=0;					//allow item use while frozen
 		else if(!(self.flags2 & FL_ALIVE))	//unless also dead
 			self.impulse = 0;
-	}*/
+	}
 
-//	if(self.flags2&FL_CHAINED)
-//		self.button1=self.button2=0;//self.button0=
+	if(self.flags2&FL_CHAINED)
+		self.button1=self.button2=0;//self.button0=
 }
 
 /*
@@ -1919,7 +1925,10 @@ vector f_dir;
 	centerprint(self,"Jumping Mode\n");
 	sound (self, CHAN_VOICE,"player/assjmp.wav", 1, ATTN_NORM);
 	self.climbing = FALSE;
-	self.safe_time = time + 2;//so if hang on wall a long time, don't splatter when hit
+
+// KS: This was not in 0.15, removing it
+//	self.safe_time = time + 2;//so if hang on wall a long time, don't splatter when hit
+
 	//	self.velocity_z = self.velocity_z + 270*self.scale;
 	self.velocity = self.velocity + f_dir*300;
 }
@@ -1927,13 +1936,22 @@ vector f_dir;
 void Climb ()
 {
 vector spot;
-	if(self.flags&FL_ONGROUND)
+
+// KS: Changed this. See below.
+/*	if(self.flags&FL_ONGROUND)
 	{
 		self.climbing = FALSE;
 		return;
 	}
-
+*/
 	makevectors (self.v_angle);
+
+	if ( ((self.flags & FL_ONGROUND) || (self.climbing & (vlen ( (self.climbspot - (self.origin + self.view_ofs))) > 64))) ) //Unknown Value for vlen > X!!!
+	{
+		ClimbDrop ( );
+		return ;
+	}
+
     spot=self.origin+self.view_ofs;
 	traceline(spot,spot+v_forward*64,FALSE,self);
 	if(trace_ent.solid==SOLID_BSP)
@@ -2060,6 +2078,7 @@ void() PlayerPreThink =
 {
 	vector	spot1, spot2;	
 
+// KS: This was not in 0.15...
 	if(self.teleport_time<time)
 		self.touch = SUB_Null;
 	else
@@ -2091,7 +2110,8 @@ void() PlayerPreThink =
 		}
 	}
 */
-	if (!self.flags & FL_INWATER) self.aflag = 0;
+	if (!self.flags & FL_INWATER) 
+		self.aflag = 0;
 
 //	dprint(teststr[1]);
 //	dprint("\n");
@@ -2211,6 +2231,7 @@ void() PlayerPreThink =
 	if (self.deadflag == DEAD_DYING)
 		return;	// dying, so do nothing
 
+/* KS: Removed. This was not in 0.15
 	if(self.climbing)
 		if(self.flags&FL_ONGROUND||
 			vhlen(self.climbspot-(self.origin+self.view_ofs))>64)
@@ -2218,6 +2239,7 @@ void() PlayerPreThink =
 			ClimbDrop();//reached the top
 			self.button2 = 0;
 		}
+*/
 
 	if (self.button2)
 	{
@@ -2507,8 +2529,9 @@ void() CheckPowerups =
 
 //	if (self.artifact_active & ART_TOMEOFPOWER)
 //	{
-//		if ((self.drawflags & MLS_MASKIN) != MLS_POWERMODE)
-//			self.drawflags = (self.drawflags & MLS_MASKOUT)| MLS_POWERMODE;
+		// KS: This was removed from 0.15. Putting it back.
+		if ((self.drawflags & MLS_MASKIN) != MLS_POWERMODE)
+			self.drawflags = (self.drawflags & MLS_MASKOUT)| MLS_POWERMODE;
 
 		if (self.tome_time < time)
 		{
@@ -2624,10 +2647,12 @@ other players, etc.
 */
 void PlayerTouch (void)
 {
-	if(other.solid!=SOLID_BSP&&other!=world)
-		return;
+//	KS: This was not in 0.15. removed it.
+//	if(other.solid!=SOLID_BSP&&other!=world)
+//		return;
 
-/*	if(self.effects & EF_ONFIRE)
+	// KS: This was removed from 0.15. Reactivating it.
+	if(self.effects & EF_ONFIRE)
 		if(random()<self.fire_damage/100)
 			if(flammable(other))
 			{
@@ -2643,28 +2668,32 @@ void PlayerTouch (void)
 				else
 					T_Damage(other,self,self,random(self.fire_damage)+0.1);
 			}
-*/
-//	if(self.model=="models/yakman.mdl")
-//		return;
 
-/*	if(self.playerclass==CLASS_NECROMANCER)
+	if(self.model=="models/yakman.mdl")
+		return;
+	if(other.classname == "player")
+		return;
+
+	if(self.playerclass==CLASS_NECROMANCER)
 		if(other.netname=="corpse")
 			if(other.think!=corpseblink)
 			{
 				self.greenmana+=5;
 				other.think=init_corpseblink;
 				thinktime other : 0;
-			}*/
+			}
 
 //FIXME!
-/*	if(other.dmg==666&&(other.velocity!='0 0 0'||other.avelocity!='0 0 0'))
+	if(other.dmg==666&&(other.velocity!='0 0 0'||other.avelocity!='0 0 0'))
 	{
 		self.decap=TRUE;
 		T_Damage (self, other, other, self.health+300);
 		return;
-	}*/
+	}
 
-	if(self.teleport_time>time)//SMACK!!!
+	// KS RK CODE: "fell to his death" bug fix
+	// Removed this function, it was not in 0.15 progs
+	/*if(self.teleport_time>time)//SMACK!!!
 	{
 		if(self.last_impact+0.2<time&&(!self.flags&FL_ONGROUND))
 			if(other.solid==SOLID_BSP||other==world)
@@ -2677,66 +2706,18 @@ void PlayerTouch (void)
 				self.deathtype="";
 				return;
 			}
-	}
-	
-//	if(((vlen(self.velocity)*(self.mass/10)>=100&&self.last_onground+0.3<time)||other.thingtype>=THINGTYPE_WEBS)&&self.last_impact+0.1<=time)
-//		obj_fly_hurt(other);
+	}*/
 
-//	if(other==world)
+	// KS: This was removed from 0.15. Reactivating it.
+	if(((vlen(self.velocity)*(self.mass/10)>=100&&self.last_onground+0.3<time)||other.thingtype>=THINGTYPE_WEBS)&&self.last_impact+0.1<=time)
+		obj_fly_hurt(other);
+
+	if(other==world)
 		return;
 
-/*	if(coop||deathmatch)
+	if(coop||deathmatch)
 	{
-		if(other.classname=="player")
-		{
-		entity pusher,pushee;
-			if(self.adjust_velocity!='0 0 0')
-				self.velocity=self.adjust_velocity;
-			if(other.adjust_velocity!='0 0 0')
-				other.velocity=other.adjust_velocity;
-			if(self.velocity!='0 0 0')
-			{
-				pusher=self;
-				pushee=other;
-			}
-			else if(other.velocity!='0 0 0')
-			{
-				pusher=other;
-				pushee=self;
-			}
-			if(pusher!=world)
-			{
-				sprint(pusher,PRINT_HIGH,"You are pushing\n");
-				sprint(pushee,PRINT_HIGH,"You are being pushed\n");
-				if(normalize(pusher.velocity)*normalize(pushee.origin-pusher.origin)>0.2)
-				{
-					if(fabs(pushee.origin_z-pusher.origin_z)<48)
-					{
-					float push_mod;
-						if(!pushee.artifact_active&ARTFLAG_FROZEN)
-							pushee.credit_enemy=pusher;
-						if(pusher.flags&FL_ONGROUND)
-							push_mod=.33;
-						else
-							push_mod=.77;
-						if(pushee.flags&FL_ONGROUND&&pusher.velocity_z<0)
-						{
-							pushee.velocity_x=(pushee.velocity_x/push_mod+pusher.velocity_x*push_mod)*push_mod;
-							pushee.velocity_y=(pushee.velocity_y/push_mod+pusher.velocity_y*push_mod)*push_mod;
-						}
-						else
-							pushee.velocity=(pushee.velocity*(1/push_mod)+pusher.velocity*push_mod)*push_mod;
-						pushee.flags(-)FL_ONGROUND;
-						pushee.adjust_velocity=pushee.velocity;
-					}
-				}
-			}
-			else
-				sprint(self,PRINT_HIGH,"Neither one is moving\n");
-		}
-	}
-*/
-/*		if(random()<0.5)
+		if(random()<0.5)
 			if(other.classname=="player")
 				if(self.velocity!='0 0 0')//push other players
 					if(normalize(self.velocity)*normalize(other.origin-self.origin)>0.2)
@@ -2761,8 +2742,12 @@ void PlayerTouch (void)
 		return;
 
 	if((other.classname=="player"||other.flags&FL_ONGROUND||other.health)&&self.origin_z>=(other.absmin_z+other.absmax_z)*0.5&&self.velocity_z<10)
-		self.flags(+)FL_ONGROUND;*/
+		self.flags(+)FL_ONGROUND;
+
+   }
 }
+// KS: END OF RK CHANGES
+
 
 /*
 ================
@@ -2771,6 +2756,7 @@ PlayerPostThink
 Called every frame after physics are run
 ================
 */
+
 void() PlayerPostThink =
 {
 	if (intermission_running)
@@ -2778,6 +2764,7 @@ void() PlayerPostThink =
 
 	if (self.deadflag)
 		return;
+
 // do weapon stuff
 
 	//fixme, make time-based
@@ -2790,7 +2777,9 @@ void() PlayerPostThink =
 		self.weaponmodel="";
 
 // check to see if player landed and play landing sound	
-	if (self.flags & FL_ONGROUND)
+
+// KS: This was not in 0.15. Removed it.
+/*	if (self.flags & FL_ONGROUND)
 	{
 		if(self.health > 0)
 		{
@@ -2815,43 +2804,43 @@ void() PlayerPostThink =
 					self.flags2(-)FL2_HARDFALL;
 				}
 			}
-			if ((self.jump_flag*(self.mass/10) < -300))
+*/
+
+//	KS: modified this to match 0.15
+	if ((self.jump_flag*(self.mass/10) < -300)&&(self.flags&FL_ONGROUND)&&(self.health>0))
+	{
+		if(self.beast_time<time)
+		{
+			if(self.absorb_time>=time||self.playerclass==CLASS_DWARF)
+				self.jump_flag/=2;
+			if (self.watertype == CONTENT_WATER)
+				sound (self, CHAN_BODY, "player/h2ojmp.wav", 1, ATTN_NORM);
+			else
 			{
-				if(self.beast_time<time)
+				if (self.jump_flag*(self.mass/10) < -500)//was -650
 				{
-					if(self.absorb_time>=time||self.playerclass==CLASS_DWARF)
-						self.jump_flag/=2;
-		//			if (self.watertype == CONTENT_WATER)
-		//				sound (self, CHAN_BODY, "player/h2ojmp.wav", 1, ATTN_NORM);
-		//			else
-					if (self.jump_flag*(self.mass/10) < -500)//was -650
-					{
-						if (self.watertype == CONTENT_WATER)
-							sound (self, CHAN_BODY, "player/h2ojmp.wav", 1, ATTN_NORM);
-						if(self.playerclass==CLASS_ASSASSIN||self.playerclass==CLASS_SUCCUBUS)
-							sound (self, CHAN_VOICE, "player/asslnd.wav", 1, ATTN_NORM);
-						else
-							sound (self, CHAN_VOICE, "player/pallnd.wav", 1, ATTN_NORM);
-						if(self.last_impact+0.2<time)
-						{//otherwise playertouch handles it
-							self.deathtype = "fall";
-							T_Damage (self, world, world, ((self.jump_flag*self.mass/-10) - 500)*0.1+5);//min 5, + 1/10th of anything over 500
-							self.deathtype="";
-						}
+					if(self.playerclass==CLASS_ASSASSIN||self.playerclass==CLASS_SUCCUBUS)
+						sound (self, CHAN_VOICE, "player/asslnd.wav", 1, ATTN_NORM);
+					else
+						sound (self, CHAN_VOICE, "player/pallnd.wav", 1, ATTN_NORM);
+
+					if(self.health > 0) // KS
+					{//otherwise playertouch handles it
+						self.deathtype = "fall";
+						T_Damage (self, world, world, ((self.jump_flag*self.mass/-10) - 500)*0.1+5);//min 5, + 1/10th of anything over 500
+						self.deathtype="";
 					}
-					else if (self.watertype == CONTENT_WATER)
-						sound (self, CHAN_BODY, "player/h2ojmp.wav", 1, ATTN_NORM);
 					else
 						sound (self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM);
 				}
-				if(self.scale>1&&self.jump_flag*(self.mass/10) < -500)
-					MonsterQuake((self.mass/500)*self.jump_flag);
 			}
 		}
-		self.teleport_time=self.last_up=self.last_onground=time;
+		if(self.scale>1&&self.jump_flag*(self.mass/10) < -500)
+				MonsterQuake((self.mass/500)*self.jump_flag);
 		self.jump_flag=0;
 	}
-	else //if (!(self.flags & FL_ONGROUND))
+
+	if (!(self.flags & FL_ONGROUND))
 	{
 		if(self.playerclass==CLASS_SUCCUBUS)
 			if(self.flags&FL_SPECIAL_ABILITY1)
@@ -2865,25 +2854,10 @@ void() PlayerPostThink =
 				else
 					self.gravity=self.standard_grav;
 
-		if(self.velocity_z>=0||self.safe_time>time)
-		{
-			self.jump_flag=0;
-			self.last_up=time;
-		}
-		else if(self.velocity_z<-200)
 			self.jump_flag=self.velocity_z;
-		else if(self.velocity_z<=0&&//not going up
-			!self.waterlevel&&//not in water
-			self.movetype==MOVETYPE_WALK&&//not flying
-			self.gravity==1&&//not gliding
-			self.last_climb - 1<time)//wasn't climbing
-			self.jump_flag = (time - self.last_up)*20*-60;// self.velocity_z;
-		else
-		{
-			self.jump_flag = 0;
-			self.last_up=time;
-		}
 	}
+	else
+		self.last_onground = time;
 
 	CheckPowerups ();
 
@@ -2915,8 +2889,9 @@ void() PlayerPostThink =
 		self.velocity='0 0 0';
 		self.velocity = normalize(self.climbspot - (self.origin+self.view_ofs))*80;
 	}
-	if(random()<0.3)
-		self.oldorigin=self.origin;
+
+// KS: END OF RK CHANGES
+
 };
 
 
@@ -3638,6 +3613,9 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 };
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/01/26 20:17:55  sezero
+ * Applied the map cycling for Siege (by Kor Skarn) (similar to the HW one).
+ *
  * Revision 1.1  2005/01/26 17:26:10  sezero
  * Raven's original Siege hcode.
  *

@@ -66,6 +66,13 @@ entity targ_ent,health_spell;
 
 void poison_spell_touch ()
 {
+	if(other.classname!="player")
+	{
+		self.think = SUB_Remove;
+		self.nextthink = time+0.1;
+		return;
+	}
+
 	if(other.playerclass==CLASS_DWARF)
 		return;
 

@@ -4,6 +4,11 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
+2005-01-27:
+===========
+- Applied Kor Skarn's further changes to the Siege hcode:  This is the
+  code to the hwprogs.dat in "sgcycle.zip". Seems to be first intended
+  for Rival Kingdoms?...
 2005-01-26:
 ===========
 - Applied map cycling patch for Siege (similar to the one below)
