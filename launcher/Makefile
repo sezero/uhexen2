@@ -28,7 +28,7 @@ GTK_CFLAGS = `gtk-config --cflags`
 GTK_LIBS = `gtk-config --libs`
 endif
 
-VERSION = 0.4.8
+VERSION = 0.4.9
 
 PROGRAMS = $(H2LAUNCH)
 

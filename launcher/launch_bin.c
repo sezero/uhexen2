@@ -20,6 +20,13 @@ extern int hwgame;
 static char *binary_name = NULL;
 unsigned missingexe = 0;
 
+const char *snddrv_names[MAX_SOUND][2]={
+	{ "-nosound", "No Sound"},
+	{ "-sndoss" , "OSS"	},	// just a placeholder, it is default actually
+	{ "-sndsdl" , "SDL"	},
+	{ "-sndalsa", "ALSA"	},
+};
+
 const char *hwgame_names[MAX_HWGAMES][2]={
 	{  NULL     , "DeathMatch"},
 	{ "hexarena", "HexArena"},
@@ -71,11 +78,10 @@ void launch_hexen2_bin() {
   i++;			// i == 3
   args[i]=resolution_args[resolution];
 
-  if (sound == 0) {
-    i++;
-    args[i]="-nosound -nocdaudio";	// engine doesn't -nocdaudio upon -nosound,
-					// but it is simply what the name implies.
-  } else {
+  i++;
+  args[i]=(char *)snddrv_names[sound][0];
+
+  if (sound != 0) {
 	if (midi == 0) {
 	    i++;
 	    args[i]="-nomidi";
@@ -84,6 +90,11 @@ void launch_hexen2_bin() {
 	    i++;
 	    args[i]="-nocdaudio";
 	}
+  } else {
+	i++;
+	// engine doesn't -nocdaudio upon -nosound,
+	// but it simply is what the name implies.
+	args[i]="-nocdaudio";
   }
 
   if (joystick == 0) {

@@ -128,7 +128,7 @@ int read_config_file() {
 	  }
 	  else if (strstr(buff, "sound=") == buff) {
 	      sound = atoi(buff + 6);
-	      if (sound != 0 && sound != 1 )
+	      if (sound < 0 || sound >= MAX_SOUND)
 		sound = 1;
 	  }
 	  else if (strstr(buff, "midi=") == buff) {

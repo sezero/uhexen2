@@ -16,6 +16,7 @@ extern int destiny;
 extern int hwgame;
 extern unsigned missingexe;
 extern const char *hwgame_names[MAX_HWGAMES][2];
+extern const char *snddrv_names[MAX_SOUND][2];
 
 const char *res_names[]={
   " 320 x 240 ",
@@ -33,10 +34,19 @@ const char *stats[]={
   "   Game binary missing or not executable"
 };
 
-void on_SND (GtkToggleButton *togglebutton, sndwidget_t *wgt) {
-    sound=!sound;
-    gtk_widget_set_sensitive (wgt->MIDI_BUTTON, sound);
-    gtk_widget_set_sensitive (wgt->CDAUDIO_BUTTON, sound);
+void on_SND (GtkEditable *editable, sndwidget_t *wgt) {
+    unsigned short i;
+    gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
+    for (i=0; i<MAX_SOUND; i++) {
+	if (strcmp(tmp, snddrv_names[i][1]) == 0) {
+	    g_free(tmp);
+	    sound = i;
+	    gtk_widget_set_sensitive (wgt->MIDI_BUTTON, sound);
+	    gtk_widget_set_sensitive (wgt->CDAUDIO_BUTTON, sound);
+	    return;
+	}
+// Normally, we should be all set within this loop, thus no "else"
+    }
 }
 
 #ifndef DEMOBUILD

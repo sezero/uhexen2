@@ -23,7 +23,7 @@ struct Misc_s {
 };
 
 typedef struct {
-	GtkWidget *bSND;	// Global sound option
+	GtkWidget *cSND;	// Global sound option
 	GtkWidget *bMIDI;	// Midi music option
 	GtkWidget *bCDA;	// CD Audio option
 } sndwidget_t;
@@ -50,7 +50,7 @@ typedef struct {
 #define WGT_RES_SCALE	Games.Video.rScale
 #define WGT_RESTEXT	Games.Video.rText
 #define WGT_FULLSCR	Games.Video.bFULS
-#define WGT_SOUND	Sound.bSND
+#define WGT_SOUND	Sound.cSND
 #define WGT_MIDI	Sound.bMIDI
 #define WGT_CDAUDIO	Sound.bCDA
 #define WGT_HEXEN2	Games.bHEXEN2

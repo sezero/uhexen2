@@ -25,6 +25,7 @@ extern int hwgame;
 extern unsigned missingexe;
 extern const char *res_names[];
 extern const char *hwgame_names[MAX_HWGAMES][2];
+extern const char *snddrv_names[MAX_SOUND][2];
 
 /*********************************************************************/
 
@@ -41,6 +42,7 @@ GtkWidget* create_window1 (void)
   GtkWidget *TxtGame1;	// Hexen2 options
   GtkWidget *TxtGame2;	// Miss.Pack options
   GtkWidget *TxtVideo;	// Renderer, etc.
+  GtkWidget *TxtSound;	// Sound options.
   GtkWidget *TxtResol;	// Resolution
   GtkWidget *hseparator1;
   GtkWidget *hseparator2;
@@ -54,6 +56,7 @@ GtkWidget* create_window1 (void)
   GSList *Destinies = NULL;
   GList *TmpList = NULL;
   GtkWidget *HWG_Entry;
+  GtkWidget *SND_Entry;
 
   GtkWidget *bJOY;
   GtkWidget *bSAVE;
@@ -344,19 +347,35 @@ GtkWidget* create_window1 (void)
 /*********************************************************************/
 // Sound options
 
-  WGT_SOUND = gtk_check_button_new_with_label (_("Disable sound"));
+  TxtSound = gtk_label_new (_("Sound:"));
+  gtk_widget_ref (TxtSound);
+  gtk_object_set_data_full (GTK_OBJECT (window1), "TxtSound", TxtSound,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (TxtSound);
+  gtk_fixed_put (GTK_FIXED (fixed1), TxtSound, 175, 188);
+  gtk_widget_set_size_request (TxtSound, 50, 24);
+  gtk_label_set_justify (GTK_LABEL (TxtSound), GTK_JUSTIFY_LEFT);
+
+  WGT_SOUND = gtk_combo_new ();
   gtk_widget_ref (WGT_SOUND);
-  gtk_object_set_data_full (GTK_OBJECT (window1), "bSND", WGT_SOUND,
-                            (GtkDestroyNotify) gtk_widget_unref);
-#ifdef HAVE_GTK2
-  gtk_tooltips_set_tip (tooltips, WGT_SOUND, _("Disable Sound and\nMusic altogether"), NULL);
-  // This is what I do within launch_bin.c,
-  // because it's what the name implies.
-#endif
+  gtk_object_set_data_full (GTK_OBJECT (window1), "cSND", WGT_SOUND,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_combo_set_use_arrows (GTK_COMBO (WGT_SOUND), FALSE);
+  gtk_widget_set_size_request (WGT_SOUND, 100, 24);
+  TmpList = NULL;
+  for (i=0; i<MAX_SOUND; i++)
+		TmpList = g_list_append (TmpList, (char *)snddrv_names[i][1]);
+  gtk_combo_set_popdown_strings (GTK_COMBO (WGT_SOUND), TmpList);
+  g_list_free (TmpList);
+  gtk_fixed_put (GTK_FIXED (fixed1), WGT_SOUND, 225, 188);
   gtk_widget_show (WGT_SOUND);
-  gtk_fixed_put (GTK_FIXED (fixed1), WGT_SOUND, 180, 188);
-  gtk_widget_set_size_request (WGT_SOUND, 117, 26);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_SOUND), !sound);
+  SND_Entry = GTK_COMBO (WGT_SOUND)->entry;
+  gtk_widget_ref (SND_Entry);
+  gtk_object_set_data_full (GTK_OBJECT (window1), "SND_Entry", SND_Entry,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_entry_set_text (GTK_ENTRY (SND_Entry), (char *)snddrv_names[sound][1]);
+  gtk_entry_set_editable (GTK_ENTRY (SND_Entry), FALSE);
+  gtk_widget_show (SND_Entry);
 
   WGT_MIDI = gtk_check_button_new_with_label (_("Disable MIDI music"));
   gtk_widget_ref (WGT_MIDI);
@@ -467,7 +486,7 @@ GtkWidget* create_window1 (void)
 			GTK_SIGNAL_FUNC (on_H2W), &Games);
   gtk_signal_connect (GTK_OBJECT (WGT_OPENGL), "released",
 			GTK_SIGNAL_FUNC (on_OGL), &Games);
-  gtk_signal_connect (GTK_OBJECT (WGT_SOUND), "toggled",
+  gtk_signal_connect (GTK_OBJECT (SND_Entry), "changed",
 			GTK_SIGNAL_FUNC (on_SND), &Sound);
   gtk_signal_connect (GTK_OBJECT (WGT_MIDI), "toggled",
 			GTK_SIGNAL_FUNC (ReverseOpt), &midi);

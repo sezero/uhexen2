@@ -17,3 +17,4 @@
 #define RES_MAX  6
 
 #define MAX_HWGAMES 6
+#define MAX_SOUND 4
