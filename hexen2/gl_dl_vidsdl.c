@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.31 2005-04-05 19:33:43 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.32 2005-04-05 19:36:22 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -499,8 +499,15 @@ void GL_Init (void)
 	gl_extensions = glfunc.glGetString_fp (GL_EXTENSIONS);
 //	Con_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
-	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",4))
+	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",  4)  ||
+	    !Q_strncasecmp ((char *)gl_renderer, "Glide", 5)  ||
+	    !Q_strncasecmp ((char *)gl_renderer, "Mesa Glide", 10))
 	{
+	// This should hopefully detect Voodoo1 and Voodoo2
+	// hardware and possibly Voodoo Rush.
+	// Voodoo Banshee, Voodoo3 and later are hw-accelerated
+	// by DRI in XFree86-4.x and should be: is_3dfx = false.
+		Con_Printf("3dfx Voodoo found\n");
 		is_3dfx = true;
 	}
 
