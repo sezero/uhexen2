@@ -21,7 +21,7 @@
 */
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.2 2004-12-04 02:05:57 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.3 2004-12-05 12:25:58 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -450,7 +450,9 @@ qboolean VID_SetFullscreenMode (int modenum)
 	vid.height = vid.conheight = modelist[modenum].height;
 	vid.width = vid.conwidth = modelist[modenum].width;
 
-	// S.A. - this doesn't seem to work at 16 bpp ?? palette ??
+	// This doesn't work at 16 bpp.
+	// Looks like there's a heap of programing around 256 colours S.A
+
 	if (!(screen = SDL_SetVideoMode(vid.width, vid.height, 8, flags)))
 		return false;
 
@@ -1264,15 +1266,16 @@ void VID_HandlePause (qboolean pause)
 {
 	if ((modestate == MS_WINDOWED) && _windowed_mouse.value)
 	{
+		// for consistency , don't show pointer S.A
 		if (pause)
 		{
 			IN_DeactivateMouse ();
-			IN_ShowMouse ();
+			// IN_ShowMouse ();
 		}
 		else
 		{
 			IN_ActivateMouse ();
-			IN_HideMouse ();
+			// IN_HideMouse ();
 		}
 	}
 }
@@ -1345,6 +1348,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/04 02:05:57  sezero
+ * porting from hexen2 :  steve's mouse changes-2, vid-mode changes.
+ *
  * Revision 1.1.1.1  2004/11/28 08:57:10  sezero
  * Initial import of AoT 1.2.0 code
  *

@@ -842,7 +842,7 @@ void GetSoundtime(void)
 	fullsamples = shm->samples / shm->channels;
 
 // it is possible to miscount buffers if it has wrapped twice between
-// calls to S_Update.  Oh well.
+// calls to S_Update.  Oh well. --- S.A well indeeed
 	samplepos = SNDDMA_GetDMAPos();
 
 	if (samplepos < oldsamplepos)

@@ -1,7 +1,7 @@
 // sys_unix.c -- Unix system interface code
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.2 2004-12-04 02:10:33 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.3 2004-12-05 12:25:58 sezero Exp $
  */
 
 #include <stdio.h>
@@ -878,8 +878,8 @@ int main(int argc, char *argv[])
 
 // take the greater of all the available memory or half the total memory,
 // but at least 8 Mb and no more than 16 Mb, unless they explicitly
-// request otherwise
-	parms.memsize = 16*1024*1024;
+// request otherwise - now 32 Mb minimum (S.A)
+	parms.memsize = 32*1024*1024;
 
 	if (COM_CheckParm ("-heapsize"))
 	{
@@ -949,6 +949,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/04 02:10:33  sezero
+ * porting from hexen2 :  version stuff.
+ *
  * Revision 1.1.1.1  2004/11/28 08:57:00  sezero
  * Initial import of AoT 1.2.0 code
  *

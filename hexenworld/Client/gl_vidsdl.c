@@ -36,6 +36,8 @@
 #define NO_MODE					(MODE_WINDOWED - 1)
 #define MODE_FULLSCREEN_DEFAULT	(MODE_WINDOWED + 3)
 
+SDL_Surface *screen;
+
 byte globalcolormap[VID_GRADES*256];
 
 extern qboolean grab;
@@ -220,10 +222,19 @@ qboolean VID_SetWindowedMode (int modenum)
 
 	Uint32 flags;
 
+/* SDL doco recons you need this. S.A.
+	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
+	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
+	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
+	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
+	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 0 );
+*/
+
 	if (modenum == MODE_FULLSCREEN_DEFAULT )
 		flags = (SDL_OPENGL|SDL_FULLSCREEN);
 	else 
 		flags = (SDL_OPENGL);
+		// flags = (SDL_OPENGL|SDL_NOFRAME);
 
 	// debug printf ("VID_SetWindowedMode, modenum %i",modenum);
 
@@ -240,10 +251,9 @@ qboolean VID_SetWindowedMode (int modenum)
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		return false;
-	if (!(SDL_SetVideoMode (vid.width, vid.height, modelist[modenum].bpp, flags)))
+	if (!(screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags)))
 		return false;
 
-	// this should acknowledge Portal of Praevus S.A
 	SDL_WM_SetCaption ("GLHexenWorld", "GLHexenWorld");
 
 	return true;
@@ -1340,12 +1350,16 @@ void	VID_Init (unsigned char *palette)
 	else
 	{
 		switch (width) {
-			case 1024:height=768; break;
-			case 800: height=600; break;
-			case 512: height=384; break;
-			case 400: height=300; break;
-			case 320: height=240; break;
-			default:  height=480;
+			case 1600: height=1200; break;
+			case 1280: height=1024; break;
+			case 1024: height=768;  break;
+			case 800:  height=600;  break;
+			case 640:  height=480;  break;
+			case 512:  height=384;  break;
+			case 400:  height=300;  break;
+			case 320:  height=240;  break;
+
+			default:   height=480;
 		}
 	}
 	if (COM_CheckParm("-bpp"))
