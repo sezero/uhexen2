@@ -17,7 +17,11 @@
 
 #include "launch_bin.h"
 
+#ifndef DEMOBUILD
 extern int mp_support;
+extern int with_om;
+//extern int iamevil;
+#endif
 extern int opengl_support;
 extern int fullscreen;
 extern int resolution;
@@ -142,12 +146,20 @@ void launch_hexen2_bin() {
   char *args[12];
 
   if (destiny == DEST_H2)
+#ifndef DEMOBUILD
      binary_name=h2_binary_names[table[opengl_support][mp_support]];
+#else
+     binary_name=h2_binary_names[table[opengl_support][0]];
+#endif
   else if (destiny == DEST_HW)
      binary_name=hw_binary_names[opengl_support];
   else {
      printf("Warning: unknown destiny choice, launhcing Hexen II\n");
+#ifndef DEMOBUILD
      binary_name=h2_binary_names[table[opengl_support][mp_support]];
+#else
+     binary_name=h2_binary_names[table[opengl_support][0]];
+#endif
   }
 
   memset(directory_name,0,1024);
@@ -194,6 +206,22 @@ void launch_hexen2_bin() {
     i++;
     args[i]="-nomouse";
   }
+
+#ifndef DEMOBUILD
+  if (mp_support) {
+    if (with_om)  {
+       i++;
+       args[i]="-witholdmission";
+/*     if (iamevil) {
+         i++;
+	 args[i]="-withdemoness";
+       } */
+    } else {
+       i++;
+       args[i]="-noold";
+    }
+  }
+#endif
 
   i++;
   args[i]=NULL;

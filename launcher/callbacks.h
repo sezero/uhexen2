@@ -18,6 +18,14 @@ on_MP_button_toggled                   (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
+on_OM_button_toggled                   (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+/*
+void
+on_EVIL_button_toggled                 (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+*/
+void
 on_MIDI_button_toggled                 (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 

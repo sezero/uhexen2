@@ -21,7 +21,11 @@
 #define AOT_USERDIR ".aot"
 #define LAUNCHER_CONFIG_FILE "launcher_options"
 
+#ifndef DEMOBUILD
 int mp_support;
+int with_om;
+//int iamevil;
+#endif
 int opengl_support;
 int fullscreen;
 int resolution;
@@ -88,7 +92,10 @@ FILE * open_config_file(char *flags)
 
 void fill_default_options()
 {
+#ifndef DEMOBUILD
   mp_support=0;
+  with_om=0;
+#endif
   opengl_support=1;
   fullscreen=1;
   resolution=RES_640;
@@ -113,7 +120,10 @@ int write_config_file()
     fprintf(cfg_file, "# This file has been automatically generated\n\n");
 
     fprintf(cfg_file, "destiny=%d\n",destiny);
+#ifndef DEMOBUILD
     fprintf(cfg_file, "mp_support=%d\n",mp_support);
+    fprintf(cfg_file, "with_om=%d\n",with_om);
+#endif
     fprintf(cfg_file, "opengl_support=%d\n",opengl_support);
     fprintf(cfg_file, "fullscreen=%d\n",fullscreen);
     fprintf(cfg_file, "resolution=%d\n",resolution);
@@ -157,7 +167,7 @@ int read_config_file()
 	      if (destiny < 0 || destiny > 1 )
 		destiny = DEST_H2;
 	    }
-
+#ifndef DEMOBUILD
 	  else if (strstr(buff, "mp_support=") == buff)
 	    {
 	      mp_support = atoi(buff + 11);
@@ -165,6 +175,13 @@ int read_config_file()
 		mp_support = 0;
 	    }
 
+	  else if (strstr(buff, "with_om=") == buff)
+	    {
+	      with_om = atoi(buff + 8);
+	      if (with_om < 0 || with_om > 1 )
+		with_om = 0;
+	    }
+#endif
 	  else if (strstr(buff, "opengl_support=") == buff)
 	    {
 	      opengl_support = atoi(buff + 15);

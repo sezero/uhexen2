@@ -13,7 +13,11 @@
 #include "launch_bin.h"
 #include "config_file.h"
 
+#ifndef DEMOBUILD
 extern int mp_support;
+extern int with_om;
+//extern int iamevil;
+#endif
 extern int opengl_support;
 extern int fullscreen;
 extern int resolution;
@@ -28,6 +32,8 @@ extern GtkWidget *fixed1;
 extern GtkWidget *MIDI_button;
 extern GtkWidget *CDAUDIO_button;
 extern GtkWidget *MP_button;
+extern GtkWidget *OM_button;
+//extern GtkWidget *EVIL_button;
 extern GtkWidget *_320_button;
 extern GtkWidget *_400_button;
 extern GtkWidget *_512_button;
@@ -82,13 +88,57 @@ void
 on_MP_button_toggled                   (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
+#ifndef DEMOBUILD
   if (mp_support) {
     mp_support=0;
+    gtk_widget_set_sensitive (OM_button, FALSE);
+//  if(with_om)
+//    gtk_widget_set_sensitive (EVIL_button, FALSE);
   } else {
     mp_support=1;
+    gtk_widget_set_sensitive (OM_button, TRUE);
+//  if(with_om)
+//    gtk_widget_set_sensitive (EVIL_button, TRUE);
   }
+#endif
 }
 
+
+void
+on_OM_button_toggled                   (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+#ifndef DEMOBUILD
+  if (with_om) {
+    with_om=0;
+/*  if(iamevil) {
+      iamevil=0;
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (EVIL_button), FALSE);
+    }
+    gtk_widget_set_sensitive (EVIL_button, FALSE);
+    gtk_widget_hide (EVIL_button); */
+  } else {
+    with_om=1;
+//  gtk_widget_set_sensitive (EVIL_button, TRUE);
+//  gtk_widget_show (EVIL_button);
+  }
+#endif
+}
+
+/*
+void
+on_EVIL_button_toggled                   (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+#ifndef DEMOBUILD
+  if (iamevil) {
+    iamevil=0;
+  } else {
+    iamevil=1;
+  }
+#endif
+}
+*/
 
 void
 on_SOFT_button_released                (GtkButton       *button,
@@ -228,7 +278,9 @@ on_HEXEN2_button_released              (GtkButton       *button,
                                         gpointer         user_data)
 {
   destiny=DEST_H2;
+#ifndef DEMOBUILD
   gtk_widget_set_sensitive (MP_button, TRUE);
+#endif
 }
 
 
@@ -237,9 +289,16 @@ on_HW_button_released                  (GtkButton       *button,
                                         gpointer         user_data)
 {
   destiny=DEST_HW;
-  mp_support=0;
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MP_button), FALSE);
+#ifndef DEMOBUILD
+  if(mp_support) {
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MP_button), FALSE);
+    gtk_widget_set_sensitive (OM_button, FALSE);
+    mp_support=0;
+//  if(with_om)
+//    gtk_widget_set_sensitive (EVIL_button, FALSE);
+  }
   gtk_widget_set_sensitive (MP_button, FALSE);
+#endif
 }
 
 

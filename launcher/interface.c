@@ -20,7 +20,11 @@
 
 #include "launch_bin.h"
 
+#ifndef DEMOBUILD
 int mp_support;
+int with_om;
+//int iamevil;
+#endif
 int opengl_support;
 int fullscreen;
 int resolution;
@@ -33,6 +37,8 @@ int destiny;
 
 GtkWidget *fixed1;
 GtkWidget *MP_button;
+GtkWidget *OM_button;
+//GtkWidget *EVIL_button;
 GtkWidget *MIDI_button;
 GtkWidget *CDAUDIO_button;
 GtkWidget *_320_button;
@@ -52,6 +58,11 @@ create_window1 (void)
   GtkWidget *SAVE_button;
   GtkWidget *hseparator1;
   GtkWidget *label1;
+  GtkWidget *label2;
+  GtkWidget *label3;
+  GtkWidget *label4;
+  GtkWidget *label6;
+  GtkWidget *label7;
   GSList *destiny_group = NULL;
   GtkWidget *HEXEN2_button;
   GtkWidget *HW_button;
@@ -66,16 +77,12 @@ create_window1 (void)
   GtkWidget *FS_button;
   GtkWidget *vseparator1;
   GtkWidget *hseparator2;
-  GtkWidget *label6;
-  GtkWidget *label2;
-  GtkWidget *label3;
-  GtkWidget *label7;
   GSList *resolution_group = NULL;
   GtkWidget *hseparator5;
 
   window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (window1), "window1", window1);
-  gtk_window_set_title (GTK_WINDOW (window1), _("Hexen II for Linux Launcher, 0.2d"));
+  gtk_window_set_title (GTK_WINDOW (window1), _("Hexen II for Linux Launcher, 0.3.0"));
   gtk_window_set_policy (GTK_WINDOW (window1), TRUE, TRUE, FALSE);
   gtk_window_set_default_size (GTK_WINDOW (window1), -1, 408);
 
@@ -113,21 +120,67 @@ create_window1 (void)
   gtk_widget_set_uposition (SAVE_button, 104, 376);
   gtk_widget_set_usize (SAVE_button, 96, 24);
 
-  MP_button = gtk_check_button_new_with_label (_("Portal of Praevus Mission Pack support"));
+  MP_button = gtk_check_button_new_with_label (_("\nPortal of Praevus\nMission Pack"));
   gtk_widget_ref (MP_button);
   gtk_object_set_data_full (GTK_OBJECT (window1), "MP_button", MP_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (MP_button);
-  gtk_fixed_put (GTK_FIXED (fixed1), MP_button, 24, 128);
-  gtk_widget_set_uposition (MP_button, 24, 128);
-  gtk_widget_set_usize (MP_button, 288, 24);
+  gtk_fixed_put (GTK_FIXED (fixed1), MP_button, 16, 108);
+  gtk_widget_set_uposition (MP_button, 16, 108);
+  gtk_widget_set_usize (MP_button, 124, 44);
   GTK_WIDGET_UNSET_FLAGS (MP_button, GTK_CAN_FOCUS);
+#ifndef DEMOBUILD
   if (mp_support)
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (MP_button), TRUE);
   if (destiny==DEST_HW)
       gtk_widget_set_sensitive (MP_button, FALSE);
   else
       gtk_widget_set_sensitive (MP_button, TRUE);
+#else
+  gtk_widget_set_sensitive (MP_button, FALSE);
+#endif
+
+  OM_button = gtk_check_button_new_with_label (_(" Enable the Old Mission"));
+  gtk_widget_ref (MP_button);
+  gtk_object_set_data_full (GTK_OBJECT (window1), "OM_button", MP_button,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  GTK_WIDGET_UNSET_FLAGS (OM_button, GTK_CAN_FOCUS);
+  gtk_fixed_put (GTK_FIXED (fixed1), OM_button, 152, 122);
+  gtk_widget_set_uposition (OM_button, 152, 122);
+  gtk_widget_set_usize (OM_button, 160, 18);
+#ifndef DEMOBUILD
+  if (with_om)
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (OM_button), TRUE);
+  if ((destiny==DEST_HW) || (!mp_support))
+      gtk_widget_set_sensitive (OM_button, FALSE);
+  else
+      gtk_widget_set_sensitive (OM_button, TRUE);
+#else
+  gtk_widget_set_sensitive (OM_button, FALSE);
+#endif
+  gtk_widget_show (OM_button);
+/*
+  EVIL_button = gtk_check_button_new_with_label (_("with Demoness class (No!!)"));
+  gtk_widget_ref (EVIL_button);
+  gtk_object_set_data_full (GTK_OBJECT (window1), "EVIL_button", EVIL_button,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  GTK_WIDGET_UNSET_FLAGS (EVIL_button, GTK_CAN_FOCUS);
+  gtk_fixed_put (GTK_FIXED (fixed1), EVIL_button, 172, 138);
+  gtk_widget_set_uposition (EVIL_button, 172, 138);
+  gtk_widget_set_usize (EVIL_button, 176, 18);
+#ifndef DEMOBUILD
+  if ((destiny==DEST_HW) || (!mp_support))
+      gtk_widget_set_sensitive (EVIL_button, FALSE);
+  else
+      gtk_widget_set_sensitive (EVIL_button, TRUE);
+  if ((iamevil) && (with_om))
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (EVIL_button), TRUE);
+  if (with_om)
+      gtk_widget_show (EVIL_button);
+#else
+   gtk_widget_hide (EVIL_button);
+#endif
+*/
 
   hseparator1 = gtk_hseparator_new ();
   gtk_widget_ref (hseparator1);
@@ -138,7 +191,7 @@ create_window1 (void)
   gtk_widget_set_uposition (hseparator1, 0, 28);
   gtk_widget_set_usize (hseparator1, 352, 16);
 
-  label1 = gtk_label_new (_("Hammer of Thyrion 1.2.2"));
+  label1 = gtk_label_new (_("Hammer of Thyrion 1.2.3"));
   gtk_widget_ref (label1);
   gtk_object_set_data_full (GTK_OBJECT (window1), "label1", label1,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -168,8 +221,8 @@ create_window1 (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   GTK_WIDGET_UNSET_FLAGS (HW_button, GTK_CAN_FOCUS);
   gtk_widget_show (HW_button);
-  gtk_fixed_put (GTK_FIXED (fixed1), HW_button, 128, 68);
-  gtk_widget_set_uposition (HW_button, 128, 68);
+  gtk_fixed_put (GTK_FIXED (fixed1), HW_button, 152, 68);
+  gtk_widget_set_uposition (HW_button, 152, 68);
   gtk_widget_set_usize (HW_button, 152, 24);
   if (destiny == DEST_HW)
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (HW_button), TRUE);
@@ -331,15 +384,24 @@ create_window1 (void)
   gtk_widget_set_usize (label2, 80, 24);
   gtk_label_set_justify (GTK_LABEL (label2), GTK_JUSTIFY_LEFT);
 
-  label3 = gtk_label_new (_("Hexen II Options"));
+  label3 = gtk_label_new (_("Hexen II options :"));
   gtk_widget_ref (label3);
   gtk_object_set_data_full (GTK_OBJECT (window1), "label3", label3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label3);
-  gtk_fixed_put (GTK_FIXED (fixed1), label3, 8, 104);
-  gtk_widget_set_uposition (label3, 8, 104);
-  gtk_widget_set_usize (label3, 112, 24);
-  gtk_label_set_justify (GTK_LABEL (label3), GTK_JUSTIFY_LEFT);
+  gtk_fixed_put (GTK_FIXED (fixed1), label3, 16, 100);
+  gtk_widget_set_uposition (label3, 16, 100);
+  gtk_widget_set_usize (label3, 100, 24);
+
+  label4 = gtk_label_new (_("Mission Pack options :"));
+  gtk_widget_ref (label4);
+  gtk_object_set_data_full (GTK_OBJECT (window1), "label4", label4,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label4);
+  gtk_fixed_put (GTK_FIXED (fixed1), label4, 152, 100);
+  gtk_widget_set_uposition (label4, 152, 100);
+  gtk_widget_set_usize (label4, 128, 24);
+  gtk_label_set_justify (GTK_LABEL (label4), GTK_JUSTIFY_LEFT);
 
   label7 = gtk_label_new (_("Choose your destiny:"));
   gtk_widget_ref (label7);
@@ -448,8 +510,8 @@ if (opengl_support) {
   gtk_object_set_data_full (GTK_OBJECT (window1), "_1280_button", _1280_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_set_usize (_1280_button, 96, 24);
-  gtk_fixed_put (GTK_FIXED (fixed1), _1280_button, 240, 328);
   GTK_WIDGET_UNSET_FLAGS (_1280_button, GTK_CAN_FOCUS);
+  gtk_fixed_put (GTK_FIXED (fixed1), _1280_button, 240, 328);
   gtk_widget_set_uposition (_1280_button, 240, 328);
   if (opengl_support)
      gtk_widget_show (_1280_button);
@@ -480,6 +542,14 @@ if (opengl_support) {
   gtk_signal_connect (GTK_OBJECT (MP_button), "toggled",
                       GTK_SIGNAL_FUNC (on_MP_button_toggled),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (OM_button), "toggled",
+                      GTK_SIGNAL_FUNC (on_OM_button_toggled),
+                      NULL);
+/*
+  gtk_signal_connect (GTK_OBJECT (EVIL_button), "toggled",
+                      GTK_SIGNAL_FUNC (on_EVIL_button_toggled),
+                      NULL);
+*/
   gtk_signal_connect (GTK_OBJECT (HEXEN2_button), "released",
                       GTK_SIGNAL_FUNC (on_HEXEN2_button_released),
                       NULL);
