@@ -1,6 +1,11 @@
 TODO:
 -----
 
-  Bugs (Specifically re-writing midi code for wildmidi and
-  truely fixing OSS for good.)
+  Re-write midi code for wildmidi
+  Add sequencer support for midi
 
+  Really fix OSS for good (mostly done, but there still
+  are a few reports of weird behavior)
+
+  Add some scaling to text so that they'd be readable at
+  high resolutions as well
