@@ -4,8 +4,13 @@ ChangeLog:
     * fixed and activated munmap of shm->buffer for snd_oss.c
     * commented-out shm->gamealive thing which serves nothing
     * sys_unix.c cleanup: remove dead and/or win32 code
-    * removed unreached return from main (it should have been 0, btw.
-      from Steve)
+    * removed unreached return from main (it should have been 0,
+      btw. from Steve)
+    * increased MAX_OSPATH to 256 (from Steve)
+    * Sys_Mkdir is now int. Its return code should be checked in
+      other places, too (from Steve).
+    * Sys_GetUserdir now uses $HOME instead of the passwd struct
+      (from Steve)
     * removed h2mp dependency from length check in Sys_GetUserdir,
       seems to serve no purpose (from Steve)
 
