@@ -1,5 +1,34 @@
 ChangeLog:
 
+2005-04-05 (CVS):
+    * dropped the -march=i386 -mcpu=i686 flag: causes problems
+      at least on old pentiums with old distros.  going with
+      plain -march=i586
+    * we dlsym the gl functions and still use -lGL -lGLU ?!!
+      bad.. bad....
+    * cleaned-up endianness which is now decided at compile time
+    * fadescreen ripple effect may stop help/quit screens from
+      appearing on 3dfx with Mesa Glide. (from Steve)
+    * 3dfx voodoo detection when using Mesa Glide (from Steve)
+    * quakeized and added a comment to ToggleFullScreenSA
+    * removed my previous restrictions about adding userpaths
+      to the searchpath (was added in 1.2.3)
+    * Save recorded demos, progs profiles, console debug logs
+      and all server logs, etc to com_userdir, not com_gamedir.
+      Otherwise these operations shall fail on a system-wide
+      installation unless the user is super user.
+    * dwarf class was never enabled in hexenworld/siege menu
+      system, because com_gamedir is not only a naked dirname
+      but a full pathname
+    * removed a few quake1 leftovers from hexenworld
+    * imported the hexenworld master server 1.2 sources (by
+      Marc Allaire, aka. Kor Skarn) into the cvs
+    * fixed gcc2 compilation of hwmaster
+    * merged a stdin code for hwmaster that doesn't eat 100%
+      of the cpu (adapted from quakeforge)
+    * added compile instructions for the gamecode
+    * updated the specfile for our new loki_patch package
+
 2005-03-24 (CVS):
     * simplified window title creation in launcher
     * fixed a harmless typo in launcher, for correctness' sake
