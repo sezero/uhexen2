@@ -1,7 +1,7 @@
 // winquake.h: Win32-specific Quake header file
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/winquake.h,v 1.1.1.1 2004-11-28 00:08:26 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/winquake.h,v 1.2 2004-12-04 19:51:43 sezero Exp $
  */
 
 #pragma warning( disable : 4229 )  // mgraph gets this
@@ -89,6 +89,7 @@ void S_UnblockSound (void);
 
 void VID_SetDefaultMode (void);
 
+struct sockaddr;
 int (PASCAL FAR *pWSAStartup)(WORD wVersionRequired, LPWSADATA lpWSAData);
 int (PASCAL FAR *pWSACleanup)(void);
 int (PASCAL FAR *pWSAGetLastError)(void);
@@ -110,6 +111,9 @@ int (PASCAL FAR *pgetsockname)(SOCKET s, struct sockaddr FAR *name,
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/28 00:08:26  sezero
+ * Initial import of AoT 1.2.0 code
+ *
  * Revision 1.2  2001/12/02 04:59:43  theoddone33
  * Fix nvidia extention problem and a whole bunch of other stuff too apparently
  *

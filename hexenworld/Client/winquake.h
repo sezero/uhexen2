@@ -84,6 +84,7 @@ void S_UnblockSound (void);
 
 void VID_SetDefaultMode (void);
 
+struct sockaddr;
 int (PASCAL FAR *pWSAStartup)(WORD wVersionRequired, LPWSADATA lpWSAData);
 int (PASCAL FAR *pWSACleanup)(void);
 int (PASCAL FAR *pWSAGetLastError)(void);
