@@ -11,13 +11,13 @@ Name:		hexen2
 License:	GPL
 Group:		Amusements/Games
 URL:		http://uhexen2.sourceforge.net/
-Version:	1.2.4
+Version:	1.2.4a
 Release:	1
 Summary:	Hexen II
 Source:		hexen2source-HoT-%{version}.tgz
 Source1:	loki_patch-2004.tar.gz
 Source2:	hexenworld-pakfiles-0.15.tgz
-Source3:	gamedata-all-1.12g.tgz
+Source3:	gamedata-all-1.12h.tgz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	SDL-devel XFree86-devel XFree86-libs Mesa glut-devel
 BuildRequires:	gtk+-devel libstdc++-devel
