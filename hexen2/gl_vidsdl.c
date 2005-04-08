@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.37 2005-04-08 19:12:46 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.38 2005-04-08 20:01:46 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -401,7 +401,9 @@ void GL_Init (void)
 		is_3dfx = true;
 	}
 
-	CheckSetPaletteExtension();
+	// enable paletted textures only when -paltex cmdline arg is used
+	if (COM_CheckParm("-paltex"))
+		CheckSetPaletteExtension();
 
 	glfunc.glClearColor_fp (1,0,0,0);
 	glfunc.glCullFace_fp(GL_FRONT);

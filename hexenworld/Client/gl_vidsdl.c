@@ -888,7 +888,9 @@ void VID_Init8bitPalette()
 	char *oldPalette, *newPalette;
 
 	MyglColorTableEXT = (void *)SDL_GL_GetProcAddress("glColorTableEXT");
-	if (MyglColorTableEXT &&
+
+	// enable paletted textures only when -paltex cmdline arg is used
+	if (MyglColorTableEXT && COM_CheckParm("-paltex") &&
 	    strstr(gl_extensions, "GL_EXT_shared_texture_palette")) {
 
 		Con_SafePrintf("8-bit GL extensions enabled.\n");
