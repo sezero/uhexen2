@@ -7,6 +7,11 @@ ChangeLog:
       vertex array extension checking from hexenworld
     * 3dfx stuff initial clean-up
     * whitespace cosmetics in gl_vidsdl.c
+    * Merged a new R_PolyBlend code (from jshexen2).  Also
+      added the GL_DoGamma function (to be called from
+      R_PolyBlend) which brightens the display. Commented out
+      for now. This little gem can be used to adjust gamma for
+      Voodoo1/2/Rush.
 
 2005-04-06 (CVS):
     * hexenworld/opengl: fixed non-dlsymmed use of some gl
