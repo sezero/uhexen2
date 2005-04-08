@@ -12,6 +12,13 @@ ChangeLog:
       R_PolyBlend) which brightens the display. Commented out
       for now. This little gem can be used to adjust gamma for
       Voodoo1/2/Rush.
+    * Enable 8-bit gl extensions only if explicitly required
+      by the user (-paltex cmdline arg.) Otherwise, fxMesa is
+      rendering is borked, at least with Mesa-3.4.2 on RH-7.3
+      in my experience.
+    * Added -old3dfx cmdline check. For now, I use it to set
+      the MESA_GLX_FX environment variable to "f" and to disable
+      fxMesa fake multitexturing. Further future uses possible.
 
 2005-04-06 (CVS):
     * hexenworld/opengl: fixed non-dlsymmed use of some gl
