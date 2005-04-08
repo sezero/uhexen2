@@ -334,33 +334,6 @@ void VID_UpdateWindowStatus (void)
 
 //====================================
 
-/*
-void CheckArrayExtensions (void)
-{
-	char		*tmp;
-
-	tmp = (unsigned char *)glfunc.glGetString_fp(GL_EXTENSIONS);
-	while (*tmp)
-	{
-		if (strncmp((const char*)tmp, "GL_EXT_vertex_array", strlen("GL_EXT_vertex_array")) == 0)
-		{
-		   if (	((SDL_GL_GetProcAddress("glArrayElementEXT")) == NULL) ||
-			((SDL_GL_GetProcAddress("glColorPointerEXT")) == NULL) ||
-			((SDL_GL_GetProcAddress("glTexCoordPointerEXT")) == NULL) ||
-			((SDL_GL_GetProcAddress("glVertexPointerEXT")) == NULL) )
-			{
-				Sys_Error ("GetProcAddress for vertex extension failed");
-				return;
-			}
-			return;
-		}
-		tmp++;
-	}
-
-	Sys_Error ("Vertex array extension not present");
-}
-*/
-
 //int		texture_mode = GL_NEAREST;
 //int		texture_mode = GL_NEAREST_MIPMAP_NEAREST;
 //int		texture_mode = GL_NEAREST_MIPMAP_LINEAR;
@@ -458,16 +431,6 @@ void GL_Init (void)
 
 //	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-#if 0
-	CheckArrayExtensions ();
-
-	glfunc.glEnable_fp (GL_VERTEX_ARRAY_EXT);
-	glfunc.glEnable_fp (GL_TEXTURE_COORD_ARRAY_EXT);
-	glVertexPointerEXT (3, GL_FLOAT, 0, 0, &glv.x);
-	glTexCoordPointerEXT (2, GL_FLOAT, 0, 0, &glv.s);
-	glColorPointerEXT (3, GL_FLOAT, 0, 0, &glv.r);
-#endif
 }
 
 void GL_Init_Functions(void)
