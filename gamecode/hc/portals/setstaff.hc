@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/setstaff.hc,v 1.2 2005-02-23 08:05:36 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/setstaff.hc,v 1.3 2005-04-08 16:25:10 sezero Exp $
  */
 
 /*
@@ -580,6 +580,13 @@ void setstaff_settle ()
 
 void setstaff_readyfire (void)
 {
+	// Pa3PyX: Added casting delay (0.5s). You can no
+	// longer use set staff in place of a chaingun.
+	if (self.attack_finished > time) {
+		self.th_weapon = setstaff_readyfire;
+		return;
+	}
+
 	if(self.weaponframe>$build15)
 		self.weaponframe=$build1;
 
@@ -631,6 +638,9 @@ void setstaff_readyfire (void)
 		self.lifetime = 0;	// Pa3PyX
 
 		Drilla(14 - ($build15 - self.weaponframe));
+
+		self.attack_finished = time + 0.5;	// Pa3PyX: casting delay
+
 		setstaff_settle();
 	}
 }
@@ -683,6 +693,9 @@ void setstaff_decide_attack (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/02/23 08:05:36  sezero
+ * setstaff tomed and untomed fire rates now fps independent (from Pa3PyX)
+ *
  * Revision 1.1.1.1  2004/11/29 11:35:28  sezero
  * Initial import
  *
