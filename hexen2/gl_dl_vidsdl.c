@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.34 2005-04-08 16:29:34 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.35 2005-04-08 17:30:21 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -57,7 +57,6 @@ byte globalcolormap[VID_GRADES*256];
 
 extern qboolean grab;
 extern qboolean is_3dfx;
-extern qboolean is_PowerVR;
 
 cvar_t gl_purge_maptex = {"gl_purge_maptex", "1", true};
 		/* whether or not map-specific OGL textures
@@ -105,9 +104,7 @@ qboolean	vid_initialized = false;
 static qboolean	windowed;
 static int	windowed_mouse;
 
-//FX_DISPLAY_MODE_EXT fxDisplayModeExtension;
-//FX_SET_PALETTE_EXT fxSetPaletteExtension;
-//FX_MARK_PAL_TEXTURE_EXT fxMarkPalTextureExtension;
+FX_SET_PALETTE_EXT fxSetPaletteExtension;
 
 unsigned char inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
 
@@ -125,7 +122,7 @@ glvert_t	glv;
 
 cvar_t		gl_ztrick = {"gl_ztrick","0",true};
 
-viddef_t	vid;				// global video state
+viddef_t	vid;		// global video state
 
 unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
@@ -202,13 +199,13 @@ qboolean VID_SetWindowedMode (int modenum)
 
 	Uint32 flags;
 
-	/* SDL doco recons you need this. S.A.
+/*	SDL doco recons you need this. S.A.
 	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
 	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
 	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
 	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 0 );
-	*/
+*/
 
 	if (modenum == MODE_FULLSCREEN_DEFAULT )
 		flags = (SDL_OPENGL|SDL_FULLSCREEN);
@@ -343,134 +340,26 @@ void VID_UpdateWindowStatus (void)
 
 //====================================
 
-//#define FX_DISPLAY_MODE_EXT_STRING "gl3DfxDisplayModeEXT"
-
-//#define FX_SET_PALETTE_EXT_STRING "gl3DfxSetPaletteEXT"
-#define FX_SET_PALETTE_EXT_STRING "3DFX_set_global_palette"
-#define VR_SET_PALETTE_EXT_STRING "POWERVR_set_global_palette"
-
-//#define FX_MARK_PAL_TEXTURE_EXT_STRING "gl3DfxMarkPalettizedTextureEXT"
-
-/*
-void Check3DfxDisplayModeExtension( void )
-{
-#warning STUB
-#if 0
-	char *tmp;
-	qboolean display_mode_ext = false;
-
-	tmp = ( unsigned char * )glGetString( GL_EXTENSIONS );
-	while( *tmp )
-	{
-		if (strncmp((const char*)tmp, FX_DISPLAY_MODE_EXT_STRING, strlen(FX_DISPLAY_MODE_EXT_STRING)) == 0)
-			display_mode_ext = true;
-		tmp++;
-	}
-
-	fxDisplayModeExtension = NULL;
-	if( !display_mode_ext )
-		return;
-	if ((fxDisplayModeExtension = (FX_DISPLAY_MODE_EXT)
-		wglGetProcAddress((LPCSTR) FX_DISPLAY_MODE_EXT_STRING)) == NULL)
-	{
-		Sys_Error ("GetProcAddress for gl3DfxDisplayModeExt failed");
-		return;
-	}
-#endif
-}
-*/
-
 void CheckSetPaletteExtension( void )
 {
-        char *tmp;
-	qboolean set_palette_ext = false;
-	char *search;
-
-#if 0
 	fxSetPaletteExtension = NULL;
-#endif
-	
-	search = NULL;
-	if (is_3dfx) search = FX_SET_PALETTE_EXT_STRING;
-	if (is_PowerVR) search = VR_SET_PALETTE_EXT_STRING;
-	if (!search) return;
 
-
-	tmp = ( unsigned char * )glfunc.glGetString_fp( GL_EXTENSIONS );
-	while( *tmp )
-	{
-		if (strncmp((const char*)tmp, search, strlen(search)) == 0)
-		{
-			Con_Printf("Using palettized textures!\n");
-			set_palette_ext = true;
-		}
-		tmp++;
-	}
-
-	if( !set_palette_ext )
-		return;
 #if 0
-	if ((fxSetPaletteExtension = (FX_SET_PALETTE_EXT)
-		wglGetProcAddress((LPCSTR) search)) == NULL)
-	{
-		Sys_Error ("GetProcAddress for gl3DfxSetPaletteEXT failed");
+	if (strstr(gl_extensions, "3DFX_set_global_palette"))
+		fxSetPaletteExtension = (FX_SET_PALETTE_EXT)SDL_GL_GetProcAddress("gl3DfxSetPaletteEXT");
+	else
 		return;
+
+	if (fxSetPaletteExtension == NULL)
+	{
+			Con_Printf ("GetProcAddress for gl3DfxSetPaletteEXT failed\n");
+			Con_Printf ("Palettized textures disabled...\n");
+			return;
 	}
+	Con_Printf("Found 3Dfx 8-bit extension\n");
+	Con_Printf("using palettized textures.\n");
 #endif
 }
-
-/*
-void Check3DfxMarkPaletteTextureExtension( void )
-{
-	char *tmp;
-	qboolean found_ext = false;
-
-	tmp = ( unsigned char * )glGetString( GL_EXTENSIONS );
-	while( *tmp )
-	{
-		if (strncmp((const char*)tmp, FX_SET_PALETTE_EXT_STRING, strlen(FX_SET_PALETTE_EXT_STRING)) == 0)
-			found_ext = true;
-		tmp++;
-	}
-
-	fxMarkPalTextureExtension = NULL;
-	if( !found_ext )
-		return;
-	if ((fxMarkPalTextureExtension = (FX_MARK_PAL_TEXTURE_EXT)
-		wglGetProcAddress((LPCSTR) FX_MARK_PAL_TEXTURE_EXT_STRING)) == NULL)
-	{
-		Sys_Error ("GetProcAddress for fxMarkPalTextureExtension failed");
-		return;
-	}
-}
-*/
-
-/*
-void CheckArrayExtensions (void)
-{
-	char		*tmp;
-
-	tmp = (unsigned char *)glfunc.glGetString_fp(GL_EXTENSIONS);
-	while (*tmp)
-	{
-		if (strncmp((const char*)tmp, "GL_EXT_vertex_array", strlen("GL_EXT_vertex_array")) == 0)
-		{
-			if ( ((SDL_GL_GetProcAddress("glArrayElementEXT")) == NULL) ||
-			     ((SDL_GL_GetProcAddress("glColorPointerEXT")) == NULL) ||
-			     ((SDL_GL_GetProcAddress("glTexCoordPointerEXT")) == NULL) ||
-			     ((SDL_GL_GetProcAddress("glVertexPointerEXT")) == NULL) )
-			{
-				Sys_Error ("GetProcAddress for vertex extension failed");
-				return;
-			}
-			return;
-		}
-		tmp++;
-	}
-
-	Sys_Error ("Vertex array extension not present");
-}
-*/
 
 //int		texture_mode = GL_NEAREST;
 //int		texture_mode = GL_NEAREST_MIPMAP_NEAREST;
@@ -511,18 +400,7 @@ void GL_Init (void)
 		is_3dfx = true;
 	}
 
-	if (!Q_strncasecmp ((char *)gl_renderer, "PowerVR PCX1",12) ||
-		!Q_strncasecmp ((char *)gl_renderer, "PowerVR PCX2",12))
-	{
-		is_PowerVR = true;
-	}
-
-    	//fxDisplayModeExtension = NULL;
-	//fxSetPaletteExtension = NULL;
-	//fxMarkPalTextureExtension = NULL;
-	//Check3DfxDisplayModeExtension();
 	CheckSetPaletteExtension();
-	//Check3DfxMarkPaletteTextureExtension();	
 
 	glfunc.glClearColor_fp (1,0,0,0);
 	glfunc.glCullFace_fp(GL_FRONT);
@@ -544,17 +422,8 @@ void GL_Init (void)
 
 //	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-#if 0
-	CheckArrayExtensions ();
-
-	glfunc.glEnable_fp (GL_VERTEX_ARRAY_EXT);
-	glfunc.glEnable_fp (GL_TEXTURE_COORD_ARRAY_EXT);
-	glVertexPointerEXT (3, GL_FLOAT, 0, 0, &glv.x);
-	glTexCoordPointerEXT (2, GL_FLOAT, 0, 0, &glv.s);
-	glColorPointerEXT (3, GL_FLOAT, 0, 0, &glv.r);
-#endif
 }
+
 
 void GL_Init_Functions(void)
 {
@@ -837,6 +706,9 @@ void VID_Download3DfxPalette( void )
 	unsigned long fxPalette[256];
 	int i;
 
+	if( !fxSetPaletteExtension )
+		return;
+
 	for( i = 0; i < 256; i++ )
 	{
 		fxPalette[i] = 0xff000000 | 
@@ -846,8 +718,8 @@ void VID_Download3DfxPalette( void )
 
 //		fxPalette[i] = i<<16; // 0x00rrggbb
 	}
-	if( fxSetPaletteExtension )
-		fxSetPaletteExtension( fxPalette );
+
+	fxSetPaletteExtension( fxPalette );
 }
 #endif
 
@@ -858,7 +730,7 @@ void VID_SetPalette (unsigned char *palette)
 	int		i,c,p;
 	unsigned	*table;
 
-	if( is_3dfx || is_PowerVR)
+	if(fxSetPaletteExtension)
 		VID_CreateInversePalette( palette );
 
 //
@@ -882,10 +754,8 @@ void VID_SetPalette (unsigned char *palette)
 
 	d_8to24table[255] &= 0xffffff;	// 255 is transparent
 
-#if 0
-	if( is_3dfx || is_PowerVR )
+	if(fxSetPaletteExtension)
 		VID_Download3DfxPalette();
-#endif
 
 	pal = palette;
 	table = d_8to24TranslucentTable;
@@ -1021,25 +891,6 @@ void ClearAllStates (void)
 }
 
 /*
-void VID_Switch_f (void)
-{
-#warning STUB!!!
-#if 0
-	int newmode;
-
-	newmode = atoi (Cmd_Argv(1));
-	if( !fxDisplayModeExtension )
-		return;
-
-//	fxDisplayModeExtension( newmode );
-	fxDisplayModeExtension( 0 );
-	Sleep( 2 );
-	fxDisplayModeExtension( 1 );
-#endif
-} */
-
-
-/*
 ===================
 VID_Init
 ===================
@@ -1061,7 +912,6 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&gl_ztrick);
 	Cvar_RegisterVariable (&gl_purge_maptex);
 
-//	Cmd_AddCommand ("vid_switch", VID_Switch_f);
 	Cmd_AddCommand ("vid_setgamma", VID_SetGamma_f);
 
 	gl_library=NULL;

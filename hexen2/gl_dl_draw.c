@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.24 2005-04-05 19:37:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.25 2005-04-08 17:30:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -46,7 +46,6 @@ int		gl_filter_max = GL_LINEAR;
 int		texels;
 
 qboolean is_3dfx = false;
-qboolean is_PowerVR = false;
 
 gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
@@ -1813,6 +1812,10 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2005/04/05 19:37:51  sezero
+ * fadescreen ripple effect may stop help/quit screens
+ * from appearing on 3dfx with Mesa Glide. (from Steve)
+ *
  * Revision 1.23  2005/02/20 13:48:55  sezero
  * add comments on gl_picmip scale-down and ugly help screens (Steven)
  *
