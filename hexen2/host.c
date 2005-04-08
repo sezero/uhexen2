@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.10 2005-03-06 10:44:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.11 2005-04-08 20:14:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1009,6 +1009,13 @@ void Host_Init (quakeparms_t *parms)
 		if (!host_colormap)
 			Sys_Error ("Couldn't load gfx/colormap.lmp");
 
+#ifdef GLQUAKE
+		if (COM_CheckParm("-old3dfx")) {
+		// I always forget doing these...
+			setenv ("MESA_GLX_FX","f",1);
+			setenv ("FX_DONT_FAKE_MULTITEX","1",1);
+		}
+#endif
 		VID_Init (host_basepal);
 
 		Draw_Init ();
@@ -1102,6 +1109,11 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/03/06 10:44:41  sezero
+ * - move reinit_music to menu.c where it belongs
+ * - fix reinit_music so that it works for the F4 key as well
+ * - don't mess with music volume on every frame update, it's just silly
+ *
  * Revision 1.9  2005/02/14 15:12:32  sezero
  * added ability to disable ALSA support at compile time
  *

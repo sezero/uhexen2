@@ -1316,7 +1316,14 @@ void Host_Init (quakeparms_t *parms)
 	if (!host_colormap)
 		Sys_Error ("Couldn't load gfx/colormap.lmp");
 #ifdef __linux__
-	
+
+#ifdef GLQUAKE
+	if (COM_CheckParm("-old3dfx")) {
+	// I always forget doing these...
+		setenv ("MESA_GLX_FX","f",1);
+		setenv ("FX_DONT_FAKE_MULTITEX","1",1);
+	}
+#endif
 	VID_Init (host_basepal);
 	IN_Init ();
 	Draw_Init ();
