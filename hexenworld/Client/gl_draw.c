@@ -55,7 +55,6 @@ int		gl_filter_max = GL_LINEAR;
 int		texels;
 
 qboolean is_3dfx = false;
-qboolean is_PowerVR = false;
 
 typedef struct
 {

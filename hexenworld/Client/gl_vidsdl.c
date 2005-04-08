@@ -57,7 +57,6 @@ byte globalcolormap[VID_GRADES*256];
 
 extern qboolean grab;
 extern qboolean is_3dfx;
-extern qboolean is_PowerVR;
 
 qboolean in_mode_set = false;
 
@@ -139,7 +138,6 @@ void VID_SetGamma_f(void);
 typedef void (*lp3DFXFUNC) (int, int, int, int, int, const void*);
 lp3DFXFUNC MyglColorTableEXT;
 qboolean is8bit = false;
-qboolean isPermedia = false;
 qboolean gl_mtexable = false;
 
 //====================================
@@ -433,19 +431,10 @@ void GL_Init (void)
 		is_3dfx = true;
 	}
 
-	if (!Q_strncasecmp ((char *)gl_renderer, "PowerVR PCX1",12) ||
-		!Q_strncasecmp ((char *)gl_renderer, "PowerVR PCX2",12))
-	{
-		is_PowerVR = true;
-	}
-
 //	Con_Printf ("%s %s\n", gl_renderer, gl_version);
 
-    if (strnicmp(gl_renderer,"PowerVR",7)==0)
-         fullsbardraw = true;
-
-    if (strnicmp(gl_renderer,"Permedia",8)==0)
-         isPermedia = true;
+	if (strnicmp(gl_renderer,"PowerVR",7)==0)
+		fullsbardraw = true;
 
 	CheckMultiTextureExtensions ();
 
