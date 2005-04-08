@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.12 2005-01-24 20:32:56 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.13 2005-04-08 18:30:08 sezero Exp $
  */
 
 // disable data conversion warnings
@@ -43,6 +43,9 @@ extern	TEXSUBIMAGEPTR TexSubImage2DFunc;
 extern  FX_DISPLAY_MODE_EXT fxDisplayModeExtension;
 extern  FX_SET_PALETTE_EXT fxSetPaletteExtension;
 extern  FX_MARK_PAL_TEXTURE_EXT fxMarkPalTextureExtension;
+#else
+typedef void (*FX_SET_PALETTE_EXT)( unsigned long * );
+extern  FX_SET_PALETTE_EXT fxSetPaletteExtension;
 #endif
 
 #define INVERSE_PAL_R_BITS 6
@@ -353,6 +356,9 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/01/24 20:32:56  sezero
+ * add sky alpha
+ *
  * Revision 1.11  2005/01/24 20:27:25  sezero
  * consolidate GL_LoadTexture functions
  *
