@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_rmain.c,v 1.13 2005-01-24 20:32:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_rmain.c,v 1.14 2005-04-08 18:16:35 sezero Exp $
 */
 
 
@@ -64,6 +64,9 @@ int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 
 void R_MarkLeaves (void);
 
+extern	cvar_t	v_gamma;
+extern	qboolean is_3dfx;
+
 cvar_t	r_norefresh = {"r_norefresh","0"};
 cvar_t	r_drawentities = {"r_drawentities","1"};
 cvar_t	r_drawviewmodel = {"r_drawviewmodel","1"};
@@ -95,9 +98,46 @@ cvar_t gl_other_glows = {"gl_other_glows","0",true};
 cvar_t gl_missile_glows = {"gl_missile_glows","1",true};
 
 extern	cvar_t	gl_ztrick;
+
 static qboolean AlwaysDrawModel;
 
 static void R_RotateForEntity2(entity_t *e);
+
+
+// idea originally nicked from LordHavoc,
+// re-worked + extended - muff 5 Feb 2001
+// called inside polyblend
+#if 0
+void GL_DoGamma()
+{
+	if (v_gamma.value <0.2)
+		v_gamma.value=0.2;
+	if (v_gamma.value>= 1) {
+		v_gamma.value = 1;
+		return;
+	}
+
+	// believe it or not this actually does brighten the picture!!
+	glfunc.glBlendFunc_fp (  GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+	glfunc.glColor4f_fp (1, 1, 1, v_gamma.value);
+
+	glfunc.glBegin_fp (GL_QUADS);
+	glfunc.glVertex3f_fp (10, 100, 100);
+	glfunc.glVertex3f_fp (10, -100, 100);
+	glfunc.glVertex3f_fp (10, -100, -100);
+	glfunc.glVertex3f_fp (10, 100, -100);
+
+	// if we do this twice, we double the brightening
+	// effect for a wider range of gamma's
+/*
+	glfunc.glVertex3f_fp (11, 100, 100);
+	glfunc.glVertex3f_fp (11, -100, 100);
+	glfunc.glVertex3f_fp (11, -100, -100);
+	glfunc.glVertex3f_fp (11, 100, -100);
+*/
+	glfunc.glEnd_fp ();
+}
+#endif	// GL_DoGamma
 
 
 /*
@@ -1323,29 +1363,43 @@ void R_PolyBlend (void)
 {
 	if (!gl_polyblend.value)
 		return;
-	if (!v_blend[3])
-		return;
 
-	glfunc.glDisable_fp (GL_ALPHA_TEST);
+	glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	glfunc.glEnable_fp (GL_BLEND);
 	glfunc.glDisable_fp (GL_DEPTH_TEST);
 	glfunc.glDisable_fp (GL_TEXTURE_2D);
 
-    glfunc.glLoadIdentity_fp ();
+	glfunc.glLoadIdentity_fp ();
 
-    glfunc.glRotatef_fp (-90,  1, 0, 0);	    // put Z going up
-    glfunc.glRotatef_fp (90,  0, 0, 1);	    // put Z going up
+	glfunc.glRotatef_fp (-90,  1, 0, 0);	// put Z going up
+	glfunc.glRotatef_fp (90,  0, 0, 1);	// put Z going up
 
-	glfunc.glColor4fv_fp (v_blend);
+	if (v_blend[3])
+	{
+		glfunc.glColor4fv_fp (v_blend);
 
-	glfunc.glBegin_fp (GL_QUADS);
+		glfunc.glBegin_fp (GL_QUADS);
 
-	glfunc.glVertex3f_fp (10, 10, 10);
-	glfunc.glVertex3f_fp (10, -10, 10);
-	glfunc.glVertex3f_fp (10, -10, -10);
-	glfunc.glVertex3f_fp (10, 10, -10);
-	glfunc.glEnd_fp ();
+		glfunc.glVertex3f_fp (10, 100, 100);
+		glfunc.glVertex3f_fp (10, -100, 100);
+		glfunc.glVertex3f_fp (10, -100, -100);
+		glfunc.glVertex3f_fp (10, 100, -100);
+		glfunc.glEnd_fp ();
+	}
 
+//	gamma trick based on LordHavoc - muff
+#if 0
+/*	This trick is useful if normal ways of gamma adjustment fail:
+	In case of 3dfx Voodoo1/2/Rush, we can't use 3dfx spesific
+	extension WGL_3DFX_gamma_control (wglSetDeviceGammaRamp3DFX)
+	so this can be our friend at cost of 4-5 fps.		*/
+	if (is_3dfx) {
+	//  if (v_gamma.value != 1)
+		GL_DoGamma();
+	}
+#endif
+	glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glfunc.glDisable_fp (GL_BLEND);
 	glfunc.glEnable_fp (GL_TEXTURE_2D);
 	glfunc.glEnable_fp (GL_ALPHA_TEST);
@@ -1770,6 +1824,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/01/24 20:32:56  sezero
+ * add sky alpha
+ *
  * Revision 1.12  2005/01/12 11:57:40  sezero
  * glfunc stuff (nitpicking)
  *
