@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.35 2005-04-08 17:30:21 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.36 2005-04-08 18:41:52 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -141,6 +141,7 @@ void GL_Init (void);
 void GL_Init_Functions(void);
 void VID_SetGamma(float value);
 void VID_SetGamma_f(void);
+void VID_Download3DfxPalette(void);
 
 
 //====================================
