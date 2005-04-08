@@ -1,5 +1,13 @@
 ChangeLog:
 
+2005-04-08 (CVS):
+    * added Pa3PyX' fire delay bits for paladin's setstaff
+      (gamedata-1.14)
+    * removed useless is_PowerVR and isPermedia and unused
+      vertex array extension checking from hexenworld
+    * 3dfx stuff initial clean-up
+    * whitespace cosmetics in gl_vidsdl.c
+
 2005-04-06 (CVS):
     * hexenworld/opengl: fixed non-dlsymmed use of some gl
       functions. also fixed a truely silly copy+paste error
