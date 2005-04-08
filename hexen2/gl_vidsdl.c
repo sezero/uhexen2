@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.33 2005-04-06 09:44:59 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.34 2005-04-08 16:29:34 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -664,56 +664,48 @@ void GL_Init_Functions(void)
   if (glfunc.glGetFloatv_fp == 0) {Sys_Error("glGetFloatv not found in GL library");}
 }
 
+
 /*
-=================
-VID_SetGamma
-
-=================
+============================
+Gamma functions for UNIX/SDL
+============================
 */
-
 void VID_SetGamma(float value)
 {
-//#ifdef PLATFORM_UNIX
-  SDL_SetGamma(value,value,value);
-//#endif
+	SDL_SetGamma(value,value,value);
 }
 
 void VID_ApplyGamma (void)
 {
-  if ((v_gamma.value != 0)&&(v_gamma.value > (1/GAMMA_MAX)))
-    VID_SetGamma(1/v_gamma.value);
-
-  else VID_SetGamma(GAMMA_MAX);
-
-//  Con_Printf ("Gamma changed to %f\n", v_gamma.value);
+	if ((v_gamma.value != 0)&&(v_gamma.value > (1/GAMMA_MAX)))
+		VID_SetGamma(1/v_gamma.value);
+	else
+		VID_SetGamma(GAMMA_MAX);
 }
 
 void VID_SetGamma_f (void)
 {
-  float value = 1;
+	float value = 1;
 
-  value = atof (Cmd_Argv(1));
+	value = atof (Cmd_Argv(1));
 
-  if (value != 0) {
-    if (value > (1/GAMMA_MAX))
-      v_gamma.value = value;
+	if (value != 0) {
+		if (value > (1/GAMMA_MAX))
+			v_gamma.value = value;
+		else
+			v_gamma.value =  1/GAMMA_MAX;
+	}
 
-    else v_gamma.value =  1/GAMMA_MAX;
-  }
+	/* if value==0, just apply current settings.
+	   this is usefull at startup */
 
-/* if value==0 , just apply current settings.
-   this is usefull at startup */
-
-  VID_ApplyGamma();
-
-//  Con_Printf ("Gamma changed to %f\n", v_gamma.value);
+	VID_ApplyGamma();
 }
 
 
 /*
 =================
 GL_BeginRendering
-
 =================
 */
 void GL_BeginRendering (int *x, int *y, int *width, int *height)
@@ -919,7 +911,7 @@ void VID_SetPalette (unsigned char *palette)
 	}
 }
 
-//BOOL	gammaworks;
+//qboolean	gammaworks;
 void	VID_ShiftPalette (unsigned char *palette)
 {
 //	extern	byte ramps[3][256];
@@ -1074,12 +1066,12 @@ void	VID_Init (unsigned char *palette)
 
 	gl_library=NULL;
 	if (COM_CheckParm("--gllibrary")) {
-	  gl_library = com_argv[COM_CheckParm("--gllibrary")+1];
-	  Con_Printf("Using GL library: %s\n",gl_library);
+		gl_library = com_argv[COM_CheckParm("--gllibrary")+1];
+		Con_Printf("Using GL library: %s\n",gl_library);
 	}
 	else if (COM_CheckParm("-g")) {
-	  gl_library = com_argv[COM_CheckParm("-g")+1];
-	  Con_Printf("Using GL library: %s\n",gl_library);
+		gl_library = com_argv[COM_CheckParm("-g")+1];
+		Con_Printf("Using GL library: %s\n",gl_library);
 	}
 
 	modelist[0].type = MS_WINDOWED;
