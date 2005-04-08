@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.36 2005-04-08 18:41:52 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.37 2005-04-08 19:12:46 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -701,9 +701,9 @@ void	VID_CreateInversePalette( unsigned char *palette )
 #endif
 }
 
-#if 0
 void VID_Download3DfxPalette( void )
 {
+#if 0
 	unsigned long fxPalette[256];
 	int i;
 
@@ -721,8 +721,8 @@ void VID_Download3DfxPalette( void )
 	}
 
 	fxSetPaletteExtension( fxPalette );
-}
 #endif
+}
 
 void VID_SetPalette (unsigned char *palette)
 {
