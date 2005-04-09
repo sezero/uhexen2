@@ -1,5 +1,10 @@
 ChangeLog:
 
+2005-04-09 (CVS):
+    * Removed scankey[] and MapKey(), unused for
+      SDL/PLATFORM_UNIX
+    * More unused/cosmetic clean-ups in vidsdl
+
 2005-04-08 (CVS):
     * added Pa3PyX' fire delay bits for paladin's setstaff
       (gamedata-1.14)
