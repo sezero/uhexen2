@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.12 2005-03-13 16:00:38 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.13 2005-04-09 22:16:16 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -52,7 +52,7 @@ qboolean	in_mode_set, is_mode0x13;
 static int	vid_stretched, windowed_mouse;
 static qboolean	palette_changed;
 
-viddef_t	vid;				// global video state
+viddef_t	vid;		// global video state
 
 #define MODE_WINDOWED		0
 #define MODE_SETTABLE_WINDOW	2
@@ -120,10 +120,6 @@ typedef struct {
 
 static vmode_t	modelist[MAX_MODE_LIST];
 
-int		aPage;					// Current active display page
-int		vPage;					// Current visible display page
-int		waitVRT = true;			// True to wait for retrace on flip
-
 static byte	backingbuf[48*24];
 
 void VID_MenuDraw (void);
@@ -139,7 +135,6 @@ VID_UpdateWindowStatus
 */
 void VID_UpdateWindowStatus (void)
 {
-
 	window_rect.left = window_x;
 	window_rect.top = window_y;
 	window_rect.right = window_x + window_width;
@@ -361,7 +356,6 @@ void VID_RestoreOldMode (int original_mode)
 
 void VID_SetDefaultMode (void)
 {
-
 	if (vid_initialized)
 		VID_SetMode (0, vid_curpal);
 
@@ -494,7 +488,6 @@ void VID_LockBuffer (void)
 		
 void VID_UnlockBuffer (void)
 {
-
 	lockcount--;
 
 	if (lockcount > 0)
@@ -528,7 +521,6 @@ int VID_ForceUnlockedAndReturnState (void)
 
 void VID_ForceLockState (int lk)
 {
-
 	if (lk)
 	{
 		lockcount = 0;
@@ -554,8 +546,8 @@ void	VID_SetPalette (unsigned char *palette)
                 colors[i].g = *palette++;
                 colors[i].b = *palette++;
         }
-        SDL_SetColors(screen, colors, 0, 256);
 
+        SDL_SetColors(screen, colors, 0, 256);
 }
 
 
@@ -719,8 +711,8 @@ void	VID_Init (unsigned char *palette)
 
 void	VID_Shutdown (void)
 {
-extern byte *transTable;	//from r_part
-extern byte *mainTransTable; // in r_main.c
+	extern byte *transTable;	//from r_part
+	extern byte *mainTransTable;	// in r_main.c
 
 	if (vid_initialized)
 	{
@@ -801,7 +793,6 @@ D_BeginDirectRect
 */
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 {
-	// "if 0" removed
 }
 
 
@@ -854,93 +845,47 @@ D_EndDirectRect
 */
 void D_EndDirectRect (int x, int y, int width, int height)
 {
-	// "if 0" removed
 }
 
 /*
-=================
-VID_SetGamma
-
-=================
+============================
+Gamma functions for UNIX/SDL
+============================
 */
 
 void VID_SetGamma(float value)
 {
-#ifdef PLATFORM_UNIX
-  SDL_SetGamma(value,value,value);
-#endif
+	SDL_SetGamma(value,value,value);
 }
 
 void VID_ApplyGamma (void)
 {
-  if ((v_gamma.value != 0)&&(v_gamma.value > (1/GAMMA_MAX)))
-    VID_SetGamma(1/v_gamma.value);
-
-  else VID_SetGamma(GAMMA_MAX);
-
-//  Con_Printf ("Gamma changed to %f\n", v_gamma.value);
+	if ((v_gamma.value != 0)&&(v_gamma.value > (1/GAMMA_MAX)))
+		VID_SetGamma(1/v_gamma.value);
+	else
+		VID_SetGamma(GAMMA_MAX);
 }
 
 void VID_SetGamma_f (void)
 {
-  float value = 1;
+	float value = 1;
 
-  value = atof (Cmd_Argv(1));
+	value = atof (Cmd_Argv(1));
 
-  if (value != 0) {
-    if (value > (1/GAMMA_MAX))
-      v_gamma.value = value;
+	if (value != 0) {
+		if (value > (1/GAMMA_MAX))
+			v_gamma.value = value;
+		else
+			v_gamma.value =  1/GAMMA_MAX;
+	}
 
-    else v_gamma.value =  1/GAMMA_MAX;
-  }
+	/* if value==0 , just apply current settings.
+	   this is usefull at startup */
 
-/* if value==0 , just apply current settings.
-   this is usefull at startup */
-
-  VID_ApplyGamma();
-
-//  Con_Printf ("Gamma changed to %f\n", v_gamma.value);
+	VID_ApplyGamma();
 }
 
 //==========================================================================
-
-byte        scantokey[128] = 
-					{ 
-//  0           1       2       3       4       5       6       7 
-//  8           9       A       B       C       D       E       F 
-	0  ,    27,     '1',    '2',    '3',    '4',    '5',    '6', 
-	'7',    '8',    '9',    '0',    '-',    '=',    K_BACKSPACE, 9, // 0 
-	'q',    'w',    'e',    'r',    't',    'y',    'u',    'i', 
-	'o',    'p',    '[',    ']',    13 ,    K_CTRL,'a',  's',      // 1 
-	'd',    'f',    'g',    'h',    'j',    'k',    'l',    ';', 
-	'\'' ,    '`',    K_SHIFT,'\\',  'z',    'x',    'c',    'v',      // 2 
-	'b',    'n',    'm',    ',',    '.',    '/',    K_SHIFT,'*', 
-	K_ALT,' ',   0  ,    K_F1, K_F2, K_F3, K_F4, K_F5,   // 3 
-	K_F6, K_F7, K_F8, K_F9, K_F10,  K_PAUSE,    0  , K_HOME, 
-	K_UPARROW,K_PGUP,'-',K_LEFTARROW,'5',K_RIGHTARROW,'+',K_END, //4 
-	K_DOWNARROW,K_PGDN,K_INS,K_DEL,0,0,             0,              K_F11, 
-	K_F12,0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,        // 5
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0, 
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,        // 6 
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0, 
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0         // 7 
-}; 
-
-/*
-=======
-MapKey
-
-Map from windows to quake keynums
-=======
-*/
-int MapKey (int key)
-{
-	key = (key>>16)&255;
-	if (key > 127)
-		return 0;
-
-	return scantokey[key];
-}
 
 /*
 ================
@@ -1017,9 +962,6 @@ void VID_MenuKey (int key)
 		S_LocalSound ("raven/menu1.wav");
 		M_Menu_Options_f ();
 		break;
-
-	// disabled menu key bindings - S.A. 
-
 	default:
 		break;
 	}
@@ -1027,6 +969,10 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/03/13 16:00:38  sezero
+ * added back console video mode reporting
+ * also removed the non-functional findbpp
+ *
  * Revision 1.11  2005/02/25 15:43:09  sezero
  * fix hexenworld window caption for the software version.
  *
