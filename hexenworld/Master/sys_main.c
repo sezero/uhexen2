@@ -15,6 +15,10 @@ char	**com_argv;
 
 static char	*largv[MAX_NUM_ARGVS + 1];
 static char	*argvdummy = " ";
+#ifdef PLATFORM_UNIX
+char		userdir[240];
+#endif
+char		filters_file[256];
 
 short   ShortSwap (short l)
 {
@@ -377,6 +381,16 @@ void SV_Frame()
 int main (int argc, char **argv)
 {
 	COM_InitArgv (argc, argv);
+
+#ifdef PLATFORM_UNIX
+	if (getenv("HOME") == NULL)
+		Sys_Error ("Couldn't determine userspace directory");
+	sprintf(userdir, "%s/%s", getenv("HOME"), ".hwmaster");
+	mkdir (userdir, 0755);
+	sprintf(filters_file, "%s/%s", userdir, "filters.ini");
+#else
+	sprintf(filters_file, "%s", "filters.ini");
+#endif
 
 	Cbuf_Init();
 	Cmd_Init ();	

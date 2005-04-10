@@ -1,5 +1,7 @@
 #include "defs.h"
 
+extern char	filters_file[256];
+
 byte		net_message_buffer[MAX_UDP_PACKET];
 sizebuf_t	net_message;
 int			net_socket;
@@ -471,7 +473,7 @@ void SV_InitNet (void)
 	NET_Init (port);
 
 	//Add filters
-	if((filters = fopen("filters.ini","rt")))
+	if((filters = fopen(filters_file,"rt")))
 	{
 		while(fgets(str,64,filters))
 		{
@@ -978,7 +980,7 @@ void SV_WriteFilterList()
 	FILE  *filters;
 	filter_t *filter;
 
-	if((filters = fopen("filters.ini","wt")))
+	if((filters = fopen(filters_file,"wt")))
 	{
 		if(filter_list == NULL)
 		{
