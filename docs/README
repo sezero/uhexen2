@@ -117,6 +117,8 @@ following options are accepted:
  -bpp			Color depth for GL fullscreen mode
  -nomouse		No mouse in windowed mode
  -heapsize Bytes	Heapsize
+ -paltex		Enable 8-bit textures
+ -old3dfx		Support for old Voodoo1/2/Rush
  -sndalsa		Use ALSA for audio
  -sndsdl		Use SDL for audio
  -nocdaudio		Disable cdrom music
