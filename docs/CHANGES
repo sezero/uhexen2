@@ -1,5 +1,14 @@
 ChangeLog:
 
+2005-04-10 (CVS):
+    * Various MAX_OSPATH fixes
+    * Added version string to hwmaster initialization display
+    * Added user directory support to hwmaster. filters.ini will
+      now be processed in ~/.hwmaster as ~/.hwmaster/filters.ini
+    * Added FreeBSD to VERSION_PLATFORM
+    * Bumped the version to 1.2.5 for a new future release,
+      updated the specfile
+
 2005-04-09 (CVS):
     * Removed scankey[] and MapKey(), unused for
       SDL/PLATFORM_UNIX
