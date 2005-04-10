@@ -212,7 +212,7 @@ int main (int argc, char **argv)
 	struct timeval	timeout;
 	fd_set			fdset;
 	int				t;
-	static  char    userdir[1024];
+	static  char    userdir[MAX_OSPATH];
 
 	COM_InitArgv (argc, argv);
 	

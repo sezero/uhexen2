@@ -957,7 +957,7 @@ void PR_Profile_f(void)
 	int total;
 	int funcCount;
 	qboolean byHC;
-	char saveName[128];
+	char saveName[MAX_OSPATH];
 	FILE *saveFile;
 	int currentFile;
 	int bestFile;

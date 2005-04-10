@@ -649,8 +649,8 @@ void VID_SetPalette (unsigned char *palette)
 	int		j,k,l,m;
 	unsigned short i, p, c;
 	unsigned	*table, *table3dfx;
-	FILE *f;
-	char s[255];
+	FILE	*f;
+	char	s[MAX_OSPATH];
 
 //
 // 8 8 8 encoding
