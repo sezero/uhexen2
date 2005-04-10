@@ -32,6 +32,7 @@ typedef enum {false, true}	bool;
 #endif
 
 //Defines
+#define VER_HWMASTER	"1.2.1"				// our version string
 
 #define	MAX_ARGS	80
 #define MAX_NUM_ARGVS	50

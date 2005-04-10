@@ -399,7 +399,7 @@ int main (int argc, char **argv)
 
 	printf ("Exe: "__TIME__" "__DATE__"\n");
 
-	printf("======== HW master initialized ========\n\n");
+	printf("======== HW master %s initialized ========\n\n", VER_HWMASTER);
 
 	while(1)
 	{
