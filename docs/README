@@ -1,6 +1,6 @@
 Linux Hexen II
 -----------------------
-Hammer of Thyrion 1.2.4
+Hammer of Thyrion 1.2.5
 
 
 1. Installation
@@ -37,11 +37,11 @@ Hammer of Thyrion 1.2.4
 -------------------
 
 Linux Hexen II requires Hexen II game files updated to version
-1.11. There are two ways to do this:
+1.11 or higher. There are two ways to do this:
 
 a. Using the installer (easy way):
    The installer will get the files from your original cdroms,
-   apply the latest patches (gamedata 1.12g) and install the
+   apply the latest patches (gamedata 1.14) and install the
    binaries for you. The names of the Hexen2 binaries are:
 
 	hexen2	 -  Software Hexen II
@@ -71,7 +71,7 @@ b. Manual install/update of datafiles (harder way):
    lower-cased, if not already, and can be done with mv_lowercase
    from the file-rename-utils archive (see Links). To patch your
    data files, type " sh update_h2 " (this update script and its
-   requirements are included in the HoT-1.2.4 binary package).
+   requirements are included in the HoT-1.2.5 binary package).
    Confirm the patching by checking with the following md5sums:
 
    c9675191e75dd25a3b9ed81ee7e05eff  data1/pak0.pak

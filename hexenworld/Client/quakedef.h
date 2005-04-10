@@ -4,11 +4,15 @@
 
 #define HOT_VERSION_MAJ 1
 #define HOT_VERSION_MID 2
-#define HOT_VERSION_MIN 4
-#ifdef PLATFORM_UNIX
+#define HOT_VERSION_MIN 5
+#if defined (__linux__)
 #define VERSION_PLATFORM "Linux"
-#else
+#elif defined (__FreeBSD__)
+#define VERSION_PLATFORM "FreeBSD"
+#elif defined (_WIN32)
 #define VERSION_PLATFORM "Windows"
+#else
+#define VERSION_PLATFORM "Unknown"
 #endif
 
 //define	PARANOID			// speed sapping error checking

@@ -30,6 +30,7 @@ GTK_LIBS = `pkg-config --libs gtk+-2.0`
 endif
 
 VERSION = 0.5.0
+HOT_VERSION = 1.2.5
 
 PROGRAMS = $(H2LAUNCH)
 
@@ -44,7 +45,7 @@ SOURCES = ${SOURCES1} ${SOURCES2}
 OBJECTS = main.o com_sys.o config_file.o launch_bin.o \
 	interface.o callbacks.o ${SUPPORT_OBJ}
 
-CFLAGS = -Wall -O2 -march=i586 -I. ${GTK_CFLAGS} -DHOTL_VER=\"${VERSION}\"
+CFLAGS = -Wall -O2 -march=i586 -I. ${GTK_CFLAGS} -DHOTL_VER=\"${VERSION}\" -DHOT_VER=\"${HOT_VERSION}\"
 ifeq "${DEMO}" "yes"
 CFLAGS+=-DDEMOBUILD
 endif

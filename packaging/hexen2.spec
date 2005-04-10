@@ -11,13 +11,13 @@ Name:		hexen2
 License:	GPL
 Group:		Amusements/Games
 URL:		http://uhexen2.sourceforge.net/
-Version:	1.2.4a
+Version:	1.2.5
 Release:	1
 Summary:	Hexen II
 Source:		hexen2source-HoT-%{version}.tgz
 Source1:	loki_patch-2005.tgz
 Source2:	hexenworld-pakfiles-0.15.tgz
-Source3:	gamedata-all-1.12h.tgz
+Source3:	gamedata-all-1.14.tgz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	SDL-devel XFree86-devel XFree86-libs Mesa glut-devel
 BuildRequires:	gtk+-devel libstdc++-devel
@@ -91,6 +91,9 @@ make clean
 cd ../Server
 make
 make clean
+cd ../Master
+make
+make clean
 # Launcher binaries
 cd ../../launcher
 %if %{!?_without_gtk2:1}0
@@ -133,6 +136,7 @@ cd ../..
 %{__install} -D -m755 hexen2/glhexen2 %{buildroot}/%{_prefix}/games/%{name}/glhexen2
 %{__install} -D -m755 hexen2/glh2mp %{buildroot}/%{_prefix}/games/%{name}/glh2mp
 %{__install} -D -m755 hexenworld/Server/hwsv %{buildroot}/%{_prefix}/games/%{name}/hwsv
+%{__install} -D -m755 hexenworld/Master/hwmaster %{buildroot}/%{_prefix}/games/%{name}/hwmaster
 %{__install} -D -m755 hexenworld/Client/hwcl %{buildroot}/%{_prefix}/games/%{name}/hwcl
 %{__install} -D -m755 hexenworld/Client/glhwcl %{buildroot}/%{_prefix}/games/%{name}/glhwcl
 %{__install} -D -m755 launcher/h2launcher %{buildroot}/%{_prefix}/games/%{name}/h2launcher
@@ -146,6 +150,7 @@ ln -s %{_prefix}/games/hexen2/h2launcher %{buildroot}/%{_bindir}/hexen2
 %{__install} -D -m644 docs/ABOUT %{buildroot}/%{_prefix}/games/%{name}/docs/ABOUT
 %{__install} -D -m644 docs/CHANGES %{buildroot}/%{_prefix}/games/%{name}/docs/CHANGES
 %{__install} -D -m644 docs/README.launcher %{buildroot}/%{_prefix}/games/%{name}/docs/README.launcher
+%{__install} -D -m644 hexenworld/Master/README.hwmaster %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwmaster
 
 # Install the gamedata
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/
@@ -225,6 +230,7 @@ rm -rf %{buildroot}
 %files -n hexenworld
 %defattr(-,root,root)
 %{_prefix}/games/%{name}/hwsv
+%{_prefix}/games/%{name}/hwmaster
 %{_prefix}/games/%{name}/hwcl
 %{_prefix}/games/%{name}/glhwcl
 %{_prefix}/games/%{name}/hw/hwprogs.dat
@@ -241,9 +247,10 @@ rm -rf %{buildroot}
 %{_prefix}/games/%{name}/docs/ABOUT
 %{_prefix}/games/%{name}/docs/CHANGES
 %{_prefix}/games/%{name}/docs/README.launcher
+%{_prefix}/games/%{name}/docs/README.hwmaster
 %{!?_without_freedesktop:%{_datadir}/applications/%{desktop_vendor}-%{name}.desktop}
 %{?_without_freedesktop:%{_sysconfdir}/X11/applnk/Games/%{name}.desktop}
 
 %changelog
-* Thu Feb 25 2005 O.Sezer <sezero@users.sourceforge.net> 1.2.4-1
+* Thu Apr 10 2005 O.Sezer <sezero@users.sourceforge.net> 1.2.5-1
 - First sketchy spec file for RedHat and Fedora Core

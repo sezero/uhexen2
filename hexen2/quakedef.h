@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.21 2005-03-06 10:44:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.22 2005-04-10 14:30:44 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -20,11 +20,15 @@
 
 #define HOT_VERSION_MAJ 1
 #define HOT_VERSION_MID 2
-#define HOT_VERSION_MIN 4
-#ifdef PLATFORM_UNIX
+#define HOT_VERSION_MIN 5
+#if defined (__linux__)
 #define VERSION_PLATFORM "Linux"
-#else
+#elif defined (__FreeBSD__)
+#define VERSION_PLATFORM "FreeBSD"
+#elif defined (_WIN32)
 #define VERSION_PLATFORM "Windows"
+#else
+#define VERSION_PLATFORM "Unknown"
 #endif
 
 #define	QUAKE_GAME		// as opposed to utilities
@@ -449,6 +453,11 @@ void IN_DeactivateMouseSA (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2005/03/06 10:44:41  sezero
+ * - move reinit_music to menu.c where it belongs
+ * - fix reinit_music so that it works for the F4 key as well
+ * - don't mess with music volume on every frame update, it's just silly
+ *
  * Revision 1.20  2005/03/03 19:48:40  sezero
  * More bits from Steven:
  * - increase MAX_OSPATH to 256

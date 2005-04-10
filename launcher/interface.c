@@ -93,7 +93,7 @@ GtkWidget* create_window1 (void)
 
 /*********************************************************************/
 
-  TxtTitle = gtk_label_new ("Hammer of Thyrion 1.2.4");
+  TxtTitle = gtk_label_new ("Hammer of Thyrion " HOT_VER);
   gtk_widget_ref (TxtTitle);
   gtk_object_set_data_full (GTK_OBJECT (window1), "TxtTitle", TxtTitle,
 				(GtkDestroyNotify) gtk_widget_unref);
