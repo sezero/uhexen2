@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.22 2005-04-10 14:30:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.23 2005-04-13 12:19:39 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -37,11 +37,7 @@
 
 //define	PARANOID	// speed sapping error checking
 
-#ifdef QUAKE2
 #define	GAMENAME	"data1"	// directory to look in by default
-#else
-#define	GAMENAME	"data1"
-#endif
 
 #ifndef DEMOBUILD
 #define AOT_USERDIR ".hexen2"
@@ -453,6 +449,9 @@ void IN_DeactivateMouseSA (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2005/04/10 14:30:44  sezero
+ * Bumped the version for a new future release, updated the specfile
+ *
  * Revision 1.21  2005/03/06 10:44:41  sezero
  * - move reinit_music to menu.c where it belongs
  * - fix reinit_music so that it works for the F4 key as well
