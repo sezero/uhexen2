@@ -33,7 +33,16 @@ typedef void (APIENTRY *TEXSUBIMAGEPTR)(int, int, int, int, int, int, int, int, 
 extern	BINDTEXFUNCPTR bindTexFunc;
 extern	DELTEXFUNCPTR delTexFunc;
 extern	TEXSUBIMAGEPTR TexSubImage2DFunc;
+#else
+#define	bindTexFunc(a, b) glfunc.glBindTexture_fp((a), (b))
 #endif
+
+#define GL_Bind(texnum) {\
+	if (currenttexture != (texnum)) {\
+		currenttexture = (texnum);\
+		bindTexFunc(GL_TEXTURE_2D, currenttexture);\
+	}\
+}
 
 extern	int texture_extension_number;
 extern	int		texture_mode;
@@ -309,7 +318,6 @@ extern	const char *gl_version;
 extern	const char *gl_extensions;
 
 void R_TranslatePlayerSkin (int playernum);
-void GL_Bind (int texnum);
 
 extern	glfunc_t glfunc;
 

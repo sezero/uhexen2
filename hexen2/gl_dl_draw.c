@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.25 2005-04-08 17:30:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.26 2005-04-13 12:20:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -50,14 +50,6 @@ qboolean is_3dfx = false;
 gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
 
-
-void GL_Bind (int texnum)
-{
-	if (currenttexture == texnum)
-		return;
-	currenttexture = texnum;
-	glfunc.glBindTexture_fp (GL_TEXTURE_2D, texnum);
-}
 
 void GL_Texels_f (void)
 {
@@ -1812,6 +1804,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2005/04/08 17:30:21  sezero
+ * 3dfx stuff initial clean-up
+ *
  * Revision 1.24  2005/04/05 19:37:51  sezero
  * fadescreen ripple effect may stop help/quit screens
  * from appearing on 3dfx with Mesa Glide. (from Steve)

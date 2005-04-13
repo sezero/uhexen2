@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.13 2005-04-08 18:30:08 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.14 2005-04-13 12:20:44 sezero Exp $
  */
 
 // disable data conversion warnings
@@ -44,9 +44,17 @@ extern  FX_DISPLAY_MODE_EXT fxDisplayModeExtension;
 extern  FX_SET_PALETTE_EXT fxSetPaletteExtension;
 extern  FX_MARK_PAL_TEXTURE_EXT fxMarkPalTextureExtension;
 #else
+#define	bindTexFunc(a, b) glfunc.glBindTexture_fp((a), (b))
 typedef void (*FX_SET_PALETTE_EXT)( unsigned long * );
 extern  FX_SET_PALETTE_EXT fxSetPaletteExtension;
 #endif
+
+#define GL_Bind(texnum) {\
+	if (currenttexture != (texnum)) {\
+		currenttexture = (texnum);\
+		bindTexFunc(GL_TEXTURE_2D, currenttexture);\
+	}\
+}
 
 #define INVERSE_PAL_R_BITS 6
 #define INVERSE_PAL_G_BITS 6
@@ -348,7 +356,6 @@ extern	const char *gl_version;
 extern	const char *gl_extensions;
 
 void R_TranslatePlayerSkin (int playernum);
-void GL_Bind (int texnum);
 
 extern   glfunc_t  glfunc;
 
@@ -356,6 +363,9 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/04/08 18:30:08  sezero
+ * 3dfx stuff initial clean-up
+ *
  * Revision 1.12  2005/01/24 20:32:56  sezero
  * add sky alpha
  *
