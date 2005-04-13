@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.9 2005-04-05 19:44:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/common.c,v 1.10 2005-04-13 12:18:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2037,10 +2037,8 @@ void COM_InitFilesystem (void)
 //
 // start up with GAMENAME by default (data1)
 //
-#ifndef H2MP
 	COM_AddGameDirectory (va("%s/"GAMENAME, basedir));
-#else
-	COM_AddGameDirectory (va("%s/"GAMENAME, basedir));
+#ifdef H2MP
 	sprintf (com_userdir, "%s/portals", host_parms.userdir);
 	Sys_mkdir (com_userdir);
 	COM_AddGameDirectory (va("%s/portals", basedir));
@@ -2105,6 +2103,10 @@ void COM_InitFilesystem (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/04/05 19:44:14  sezero
+ * removed my previous restrictions about adding
+ * userpaths to the searchpath (was added in 1.2.3)
+ *
  * Revision 1.8  2005/04/05 19:28:40  sezero
  * clean-ups in endianness which now is decided at compile time
  *
