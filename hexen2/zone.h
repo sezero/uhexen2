@@ -1,7 +1,7 @@
 /*
 	zone.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.h,v 1.2 2004-12-12 14:14:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.h,v 1.3 2005-04-13 12:22:41 sezero Exp $
 */
 
 
@@ -77,8 +77,6 @@ void Z_DumpHeap (void);
 void Z_CheckHeap (void);
 int Z_FreeMemory (void);
 
-void Hunk_Print (qboolean all, qboolean write_file);
-
 void *Hunk_Alloc (int size);		// returns 0 filled memory
 void *Hunk_AllocName (int size, char *name);
 
@@ -116,6 +114,9 @@ void Cache_Report (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:43  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:08:32  sezero
  * Initial import of AoT 1.2.0 code
  *

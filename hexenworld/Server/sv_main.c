@@ -1531,13 +1531,7 @@ void SV_Init (quakeparms_t *parms)
 //	COM_AddParm ("-game");
 //	COM_AddParm ("hw");
 
-	if (COM_CheckParm ("-minmemory"))
-		parms->memsize = MINIMUM_MEMORY;
-
 	host_parms = *parms;
-
-	if (parms->memsize < MINIMUM_MEMORY)
-		SV_Error ("Only %4.1f megs of memory reported, can't execute game", parms->memsize / (float)0x100000);
 
 	Memory_Init (parms->membase, parms->memsize);
 	Cbuf_Init ();

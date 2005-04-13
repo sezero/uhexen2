@@ -1280,13 +1280,7 @@ void Host_Init (quakeparms_t *parms)
 
 	Sys_mkdir("hw");
 
-	if (COM_CheckParm ("-minmemory"))
-		parms->memsize = MINIMUM_MEMORY;
-
 	host_parms = *parms;
-
-	if (parms->memsize < MINIMUM_MEMORY)
-		Sys_Error ("Only %4.1f megs of memory reported, can't execute game", parms->memsize / (float)0x100000);
 
 	Memory_Init (parms->membase, parms->memsize);
 	Cbuf_Init ();

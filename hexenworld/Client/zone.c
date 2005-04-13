@@ -391,12 +391,7 @@ void *Hunk_AllocName (int size, char *name)
 	size = sizeof(hunk_t) + ((size+15)&~15);
 	
 	if (hunk_size - hunk_low_used - hunk_high_used < size)
-//		Sys_Error ("Hunk_Alloc: failed on %i bytes",size);
-#ifdef _WIN32
-	  	Sys_Error ("Not enough RAM allocated.  Try starting using \"-heapsize 16000\" on the HexenWorld command line.");
-#else
-	  	Sys_Error ("Not enough RAM allocated.  Try starting using \"-mem 16\" on the HexenWorld command line.");
-#endif
+		Sys_Error ("Hunk_Alloc: failed on %i bytes",size);
 	
 	h = (hunk_t *)(hunk_base + hunk_low_used);
 	hunk_low_used += size;
@@ -672,7 +667,7 @@ cache_system_t *Cache_TryAlloc (int size, qboolean nobottom)
 	if (!nobottom && cache_head.prev == &cache_head)
 	{
 		if (hunk_size - hunk_high_used - hunk_low_used < size)
-			Sys_Error ("Cache_TryAlloc: %i is greater then free hunk", size);
+			Sys_Error ("Cache_TryAlloc: out of hunk memory (failed to allocate %i bytes)", size);
 
 		new = (cache_system_t *) (hunk_base + hunk_low_used);
 		memset (new, 0, sizeof(*new));
@@ -908,12 +903,25 @@ void Memory_Init (void *buf, int size)
 	
 	Cache_Init ();
 	p = COM_CheckParm ("-zone");
-	if (p)
-	{
-		if (p < com_argc-1)
+	if (p) {
+		if (p < com_argc-1) {
 			zonesize = atoi (com_argv[p+1]) * 1024;
-		else
-			Sys_Error ("Memory_Init: you must specify a size in KB after -zone");
+			if (zonesize < DYNAMIC_SIZE) {
+				// No less than 256 KB default. 128kb fails,
+				// 129kb seem to work at first glance. Lets
+				// be on the safe side...
+				Sys_Printf ("Requested zone size (%i Kb) too little.\n", zonesize/1024);
+				Sys_Printf ("Going with the default 256 KB size.\n");
+				zonesize = DYNAMIC_SIZE; // 256 Kb
+			} else if (zonesize > 1024*1024) {
+				// no bigger than 1 MB
+				Sys_Printf ("Requested zone size (%i Kb) too large.\n", zonesize/1024);
+				Sys_Printf ("Will try going with a 1 MB size.\n");
+				zonesize = 1024*1024;	// 4*DYNAMIC_SIZE
+			}
+		} else {
+			Sys_Printf ("Memory_Init: No size specified after -zone. Ignoring.\n");
+		}
 	}
 	mainzone = Hunk_AllocName ( zonesize, "zone" );
 	Z_ClearZone (mainzone, zonesize);

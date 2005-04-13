@@ -219,15 +219,24 @@ int main (int argc, char **argv)
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
+	// Client uses 32 Mb minimum but this server-only situation
+	// should go well with 16 Mb. We can always use -heapsize..
 	parms.memsize = 16*1024*1024;
 
-	if ((t = COM_CheckParm ("-heapsize")) != 0 &&
-		t + 1 < com_argc)
+	if (((t = COM_CheckParm ("-heapsize")) != 0) && (t + 1 < com_argc))
+	{
 		parms.memsize = atoi (com_argv[t + 1]) * 1024;
 
-	if ((t = COM_CheckParm ("-mem")) != 0 &&
-		t + 1 < com_argc)
-		parms.memsize = atoi (com_argv[t + 1]) * 1024 * 1024;
+		if (parms.memsize > 96*1024*1024) { // no bigger than 96 MB
+			Sys_Printf ("Requested memory (%d Mb) too large.\n", parms.memsize/(1024*1024));
+			Sys_Printf ("Will try going with a saner 96 Mb..\n");
+			parms.memsize = 96*1024*1024;
+		} else if (parms.memsize < 8*1024*1024) { // no less than 8 MB
+			Sys_Printf ("Requested memory (%d Mb) too little.\n", parms.memsize/(1024*1024));
+			Sys_Printf ("Will try going with a humble 8 Mb..\n");
+			parms.memsize = 8*1024*1024;
+		}
+	}
 
 	parms.membase = malloc (parms.memsize);
 

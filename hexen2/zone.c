@@ -1,7 +1,7 @@
 /*
 	Z_zone.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.3 2004-12-18 13:59:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.4 2005-04-13 12:22:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -423,8 +423,9 @@ void *Hunk_AllocName (int size, char *name)
 	
 	h->size = size;
 	h->sentinal = HUNK_SENTINAL;
-	strncpy (h->name, name, 20);
-	
+	strncpy (h->name, name, 19);
+	h->name[19] = 0;	
+
 	return (void *)(h+1);
 }
 
@@ -515,6 +516,7 @@ void *Hunk_HighAllocName (int size, char *name)
 	h->size = size;
 	h->sentinal = HUNK_SENTINAL;
 	strncpy (h->name, name, 8);
+	h->name[8] = 0;
 
 	return (void *)(h+1);
 }
@@ -688,7 +690,7 @@ cache_system_t *Cache_TryAlloc (int size, qboolean nobottom)
 	if (!nobottom && cache_head.prev == &cache_head)
 	{
 		if (hunk_size - hunk_high_used - hunk_low_used < size)
-			Sys_Error ("Cache_TryAlloc: %i is greater then free hunk", size);
+			Sys_Error ("Cache_TryAlloc: out of hunk memory (failed to allocate %i bytes)", size);
 
 		new = (cache_system_t *) (hunk_base + hunk_low_used);
 		memset (new, 0, sizeof(*new));
@@ -929,6 +931,7 @@ void *Cache_Alloc (cache_user_t *c, int size, char *name)
 		if (cs)
 		{
 			strncpy (cs->name, name, sizeof(cs->name)-1);
+			cs->name[sizeof(cs->name) - 1] = 0;
 			c->data = (void *)(cs+1);
 			cs->user = c;
 			break;
@@ -1105,12 +1108,23 @@ void Memory_Init (void *buf, int size)
 	
 	Cache_Init ();
 	p = COM_CheckParm ("-zone");
-	if (p)
-	{
-		if (p < com_argc-1)
+	if (p) {
+		if (p < com_argc-1) {
 			zonesize = atoi (com_argv[p+1]) * 1024;
-		else
-			Sys_Error ("Memory_Init: you must specify a size in KB after -zone");
+			if (zonesize < DYNAMIC_SIZE) {
+				// no less than 48 KB default
+				Sys_Printf ("Requested zone size (%i Kb) too little.\n", zonesize/1024);
+				Sys_Printf ("Going with the default 48 KB size.\n");
+				zonesize = DYNAMIC_SIZE; // 48 KB
+			} else if (zonesize > 1024*1024) {
+				// no bigger than 1 MB
+				Sys_Printf ("Requested zone size (%i Kb) too large.\n", zonesize/1024);
+				Sys_Printf ("Will try going with a 1 MB size.\n");
+				zonesize = 1024*1024;
+			}
+		} else {
+			Sys_Printf ("Memory_Init: No size specified after -zone. Ignoring.\n");
+		}
 	}
 	mainzone = Hunk_AllocName (zonesize, "zone" );
 	Z_ClearZone (mainzone, zonesize);
@@ -1122,6 +1136,10 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/18 13:59:25  sezero
+ * Clean-up and kill warnings 8:
+ * Missing prototypes.
+ *
  * Revision 1.2  2004/12/12 14:14:43  sezero
  * style changes to our liking
  *

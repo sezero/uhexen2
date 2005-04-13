@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.11 2005-04-08 20:14:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.12 2005-04-13 12:22:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -966,13 +966,7 @@ void Host_Init (quakeparms_t *parms)
 //	else
 //		minimum_memory = MINIMUM_MEMORY_LEVELPAK;
 
-	if (COM_CheckParm ("-minmemory"))
-		parms->memsize = minimum_memory;
-
 	host_parms = *parms;
-
-	if (parms->memsize < minimum_memory)
-		Sys_Error ("Only %4.1f megs of memory available, can't execute game", parms->memsize / (float)0x100000);
 
 	com_argc = parms->argc;
 	com_argv = parms->argv;
@@ -1109,6 +1103,11 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/04/08 20:14:20  sezero
+ * Added -old3dfx cmdline check. For now, I use it to set the
+ * MESA_GLX_FX environment variable to "f" and to disable fxMesa
+ * fake multitexturing. Further future uses possible.
+ *
  * Revision 1.10  2005/03/06 10:44:41  sezero
  * - move reinit_music to menu.c where it belongs
  * - fix reinit_music so that it works for the F4 key as well

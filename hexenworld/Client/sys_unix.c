@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.12 2005-03-03 19:48:46 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.13 2005-04-13 12:21:34 sezero Exp $
 */
 
 #include <stdio.h>
@@ -577,12 +577,19 @@ int main(int argc, char *argv[])
 // request otherwise - now 32 Mb minimum (S.A)
 	parms.memsize = 32*1024*1024;
 
-	if (COM_CheckParm ("-heapsize"))
+	if (((t = COM_CheckParm ("-heapsize")) != 0) && (t + 1 < com_argc))
 	{
-		t = COM_CheckParm("-heapsize") + 1;
+		parms.memsize = atoi (com_argv[t + 1]) * 1024;
 
-		if (t < com_argc)
-			parms.memsize = atoi (com_argv[t]) * 1024;
+		if (parms.memsize > 96*1024*1024) { // no bigger than 96 MB
+			Sys_Printf ("Requested memory (%d Mb) too large.\n", parms.memsize/(1024*1024));
+			Sys_Printf ("Will try going with a saner 96 Mb..\n");
+			parms.memsize = 96*1024*1024;
+		} else if (parms.memsize < 8*1024*1024) { // no less than 8 MB
+			Sys_Printf ("Requested memory (%d Mb) too little.\n", parms.memsize/(1024*1024));
+			Sys_Printf ("Will try going with a humble 8 Mb..\n");
+			parms.memsize = 8*1024*1024;
+		}
 	}
 
 	parms.membase = malloc (parms.memsize);
@@ -621,6 +628,12 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/03/03 19:48:46  sezero
+ * More bits from Steven:
+ * - increase MAX_OSPATH to 256
+ * - Sys_Mkdir is now int. Its return code should be checked in other places, too.
+ * - Sys_GetUserdir now uses $HOME instead of the passwd struct
+ *
  * Revision 1.11  2005/03/03 17:03:39  sezero
  * - sys_unix.c cleanup: remove dead and/or win32 code
  * - remove unreached return from main (it should have been 0, btw. from Steve)
