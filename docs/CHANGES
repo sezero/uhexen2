@@ -1,5 +1,22 @@
 ChangeLog:
 
+2005-04-13 (CVS):
+    * Removed useless -minmemory cmdline argument
+    * Removed useless parms->memsize < minimum_memory check
+      in Host_Init()
+    * Added lower/upper boundaries (8mb/96mb) for -heapsize arg.
+    * Added lower (48kb for hexen2, 256kb for hexenworld)/upper
+      (1mb) boundaries for -zone argument (DYNAMIC_SIZE defs and
+      zonesize requirements are different for hexen2 and hw.)
+    * We won't die if no size is specified after -zone, but will
+      ignore the arg.
+    * Added null string terminations to hexen2 zone.c, so as to
+      prevent garbage on sys_memory console command (found this
+      in Pa3PyX)
+    * tiny clean-up in COM_InitFilesystem (hexen2)
+    * GAMENAME doesn't depend on QUAKE2 definition (hexen2)
+    * made GL_Bind a macro (from Pa3PyX)
+
 2005-04-10 (CVS):
     * Various MAX_OSPATH fixes
     * Added version string to hwmaster initialization display
