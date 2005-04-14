@@ -1,5 +1,9 @@
 ChangeLog:
 
+2005-04-14 (CVS):
+    * no need to announce MIDI_Cleanup if we'll never do it.
+    * -? arg is back (Steve likes it ;)
+
 2005-04-13 (CVS):
     * Removed useless -minmemory cmdline argument
     * Removed useless parms->memsize < minimum_memory check
