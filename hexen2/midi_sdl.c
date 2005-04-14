@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.7 2005-03-06 10:44:41 sezero Exp $
+	$Id: midi_sdl.c,v 1.8 2005-04-14 07:35:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -254,8 +254,8 @@ void MIDI_Stop(void)
 
 void MIDI_Cleanup(void)
 {
-	Con_Printf("MIDI_Cleanup\n");
 	if ( bMidiInited == 1 ) {
+		Con_Printf("MIDI_Cleanup\n");
 		MIDI_Stop();
 		Con_Printf("Closing SDL_mixer for midi music.\n");
 		Mix_CloseAudio();
@@ -271,6 +271,11 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/03/06 10:44:41  sezero
+ * - move reinit_music to menu.c where it belongs
+ * - fix reinit_music so that it works for the F4 key as well
+ * - don't mess with music volume on every frame update, it's just silly
+ *
  * Revision 1.6  2005/02/05 16:30:14  sezero
  * don't try extracting anything if no midi file is given
  *
