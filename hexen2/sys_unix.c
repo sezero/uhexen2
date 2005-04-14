@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.17 2005-04-13 12:22:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.18 2005-04-14 07:36:15 sezero Exp $
 */
 
 #include <stdio.h>
@@ -550,7 +550,8 @@ int main(int argc, char *argv[])
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
-	if (COM_CheckParm ("-h") || COM_CheckParm ("-help") || COM_CheckParm ("--help"))
+	if (COM_CheckParm ("-help") || COM_CheckParm ("--help") ||
+	    COM_CheckParm ("-h")    || COM_CheckParm ("-?"))
 	{
 		PrintHelp(binary_name);
 		exit (0);
@@ -638,6 +639,17 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/04/13 12:22:41  sezero
+ * - Removed useless -minmemory cmdline argument
+ * - Removed useless parms->memsize < minimum_memory check in Host_Init
+ * - Added lower/upper boundaries (8mb/96mb) for -heapsize argument
+ * - Added lower (48kb for hexen2, 256kb for hw)/upper (1mb) boundaries
+ *   for -zone argument (DYNAMIC_SIZE definitions/zonesize requirements
+ *   are different for hexen2 and hexenworld)
+ * - We won't die if no size is specified after -zone, but will ignore
+ * - Added null string terminations to hexen2 zone.c, so as to prevent
+ *   garbage on sys_memory console command (found this in Pa3PyX)
+ *
  * Revision 1.16  2005/03/03 19:48:40  sezero
  * More bits from Steven:
  * - increase MAX_OSPATH to 256
