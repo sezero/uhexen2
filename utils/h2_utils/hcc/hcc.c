@@ -3,7 +3,7 @@
 //**
 //** hcc.c
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/hcc.c,v 1.1.1.1 2005-03-19 09:29:57 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/hcc.c,v 1.2 2005-04-14 07:43:14 sezero Exp $
 //**
 //** Hash table modifications based on fastqcc by Jonathan Roy
 //** (roy@atlantic.net).
@@ -741,7 +741,7 @@ void main(int argc, char **argv)
 	myargc = argc;
 	myargv = argv;
 
-	if(MS_CheckParm("-?") || MS_CheckParm("-help"))
+	if(MS_CheckParm("-?") || MS_CheckParm("-h") || MS_CheckParm("-help") || MS_CheckParm("--help"))
 	{
 		printf(" -quiet           : Quiet mode\n");
 		printf(" -fileinfo        : Show object sizes per file\n");

@@ -794,7 +794,7 @@ void main (int argc, char **argv)
 	myargc = argc;
 	myargv = argv;
 	
-	if ( CheckParm ("--help") || CheckParm ("-help") || CheckParm ("-h"))
+	if ( CheckParm ("--help") || CheckParm ("-help") || CheckParm ("-h") || CheckParm ("-?"))
 	{
 		printf ("qcc looks for progs.src in the current directory.\n");
 		printf ("to look in a different directory: qcc -src <directory>\n");
