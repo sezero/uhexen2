@@ -84,9 +84,10 @@ void launch_hexen2_bin() {
 
 	args[i]=binary_name;
 
-	i++;
-	args[i] = (fullscreen == 1) ? "-fullscreen" : "-window";
-
+	if (fullscreen) {
+		i++;
+		args[i] = "-fullscreen";
+	}
 	i++;
 	args[i]="-width";
 	i++;
