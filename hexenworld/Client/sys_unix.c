@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.14 2005-04-14 07:36:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.15 2005-04-15 20:23:17 sezero Exp $
 */
 
 #include <stdio.h>
@@ -30,9 +30,6 @@ qboolean	LegitCopy = true;
 
 static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
-qboolean		isDedicated;
-static qboolean		sc_return_on_enter = false;
-//HANDLE			hinput, houtput;
 //static char	*tracking_tag = "Sticky Buns";
 
 void MaskExceptions (void);
@@ -269,7 +266,6 @@ void Sys_Error (char *error, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
-	double		starttime;
 
 	VID_ForceUnlockedAndReturnState ();
 
@@ -277,28 +273,9 @@ void Sys_Error (char *error, ...)
 	vsnprintf (text, MAXPRINTMSG, error, argptr);
 	va_end (argptr);
 
-	if (isDedicated)
-	{
-		va_start (argptr, error);
-		vsnprintf (text, MAXPRINTMSG, error, argptr);
-		va_end (argptr);
-
-		fprintf(stderr, "ERROR: %s\n", text);
-
-		starttime = Sys_DoubleTime ();
-		sc_return_on_enter = true;	// so Enter will get us out of here
-
-		while (!Sys_ConsoleInput () &&
-				((Sys_DoubleTime () - starttime) < CONSOLE_ERROR_TIMEOUT))
-		{
-		}
-	}
-	else
-	{
 	// switch to windowed so the message box is visible
-		VID_SetDefaultMode ();
-		fprintf(stderr, "ERROR: %s\n", text);
-	}
+	VID_SetDefaultMode ();
+	fprintf(stderr, "ERROR: %s\n", text);
 
 	Host_Shutdown ();
 
@@ -314,12 +291,6 @@ void Sys_Printf (char *fmt, ...)
 	vsnprintf (text, MAXPRINTMSG, fmt, argptr);
 	va_end (argptr);
 
-	if (isDedicated)
-	{
-		va_start (argptr,fmt);
-		vsnprintf (text, MAXPRINTMSG, fmt, argptr);
-		va_end (argptr);
-	}
 	fprintf(stderr, "%s", text);
 }
 
@@ -383,89 +354,6 @@ void Sys_InitFloatTime (void)
 	lastcurtime = curtime;
 }
 
-
-char *Sys_ConsoleInput (void)
-{
-#warning FIXME Soon - DDOI
-#if 0
-	static char	text[256];
-	static int	len;
-	INPUT_RECORD	recs[1024];
-	int		count;
-	int		i, dummy;
-	int		ch, numread, numevents;
-
-	if (!isDedicated)
-		return NULL;
-
-
-	for ( ;; )
-	{
-		if (!GetNumberOfConsoleInputEvents (hinput, &numevents))
-			Sys_Error ("Error getting # of console events");
-
-		if (numevents <= 0)
-			break;
-
-		if (!ReadConsoleInput(hinput, recs, 1, &numread))
-			Sys_Error ("Error reading console input");
-
-		if (numread != 1)
-			Sys_Error ("Couldn't read console input");
-
-		if (recs[0].EventType == KEY_EVENT)
-		{
-			if (!recs[0].Event.KeyEvent.bKeyDown)
-			{
-				ch = recs[0].Event.KeyEvent.uChar.AsciiChar;
-
-				switch (ch)
-				{
-					case '\r':
-						WriteFile(houtput, "\r\n", 2, &dummy, NULL);	
-
-						if (len)
-						{
-							text[len] = 0;
-							len = 0;
-							return text;
-						}
-						else if (sc_return_on_enter)
-						{
-						// special case to allow exiting from the error handler on Enter
-							text[0] = '\r';
-							len = 0;
-							return text;
-						}
-
-						break;
-
-					case '\b':
-						WriteFile(houtput, "\b \b", 3, &dummy, NULL);	
-						if (len)
-						{
-							len--;
-						}
-						break;
-
-					default:
-						if (ch >= ' ')
-						{
-							WriteFile(houtput, &ch, 1, &dummy, NULL);	
-							text[len] = ch;
-							len = (len + 1) & 0xff;
-						}
-
-						break;
-
-				}
-			}
-		}
-	}
-
-#endif
-	return NULL;
-}
 
 void Sys_Sleep (void)
 {
@@ -571,8 +459,6 @@ int main(int argc, char *argv[])
 		exit (0);
 	}
 			
-	isDedicated = (COM_CheckParm ("-dedicated") != 0);
-
 // take the greater of all the available memory or half the total memory,
 // but at least 8 Mb and no more than 16 Mb, unless they explicitly
 // request otherwise - now 32 Mb minimum (S.A)
@@ -629,6 +515,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/04/14 07:36:15  sezero
+ * -? arg is back (Steve likes it ;)
+ *
  * Revision 1.13  2005/04/13 12:21:34  sezero
  * - Removed useless -minmemory cmdline argument
  * - Removed useless parms->memsize < minimum_memory check in Host_Init
