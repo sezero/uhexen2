@@ -1,5 +1,15 @@
 ChangeLog:
 
+2005-04-15 (CVS):
+    * Added working console input (from hexenworld server).
+      Disabled console input in non-dedicated mode.
+    * No dedicated server possible in hexenworld client.
+    * Save memory.txt into com_userdir for sys_memory cmd.
+    * Cure warning: cl_main.c: warning: `return' with no value,
+      in function returning non-void
+    * Shut up the compiler: gl_rsurf.c, gl_draw.c: warning: control
+      reaches end of non-void function
+
 2005-04-14 (CVS):
     * no need to announce MIDI_Cleanup if we'll never do it.
     * -? arg is back (Steve likes it ;)
