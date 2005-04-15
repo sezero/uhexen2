@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.18 2005-04-14 07:36:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.19 2005-04-15 20:24:21 sezero Exp $
 */
 
 #include <stdio.h>
@@ -373,84 +373,42 @@ void Sys_InitFloatTime (void)
 
 char *Sys_ConsoleInput (void)
 {
-#warning FIXME Soon - DDOI
-#if 0
 	static char	text[256];
 	static int	len;
-	INPUT_RECORD	recs[1024];
-	int		count;
-	int		i, dummy;
-	int		ch, numread, numevents;
+	char		c;
+	fd_set		set;
+	struct timeval	timeout;
 
-	if (!isDedicated)
-		return NULL;
+	FD_ZERO (&set);
+	FD_SET (0, &set);	/* 0 is stdin?? */
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 0;
 
-
-	for ( ;; )
+	while (select (1, &set, NULL, NULL, &timeout))
 	{
-		if (!GetNumberOfConsoleInputEvents (hinput, &numevents))
-			Sys_Error ("Error getting # of console events");
-
-		if (numevents <= 0)
-			break;
-
-		if (!ReadConsoleInput(hinput, recs, 1, &numread))
-			Sys_Error ("Error reading console input");
-
-		if (numread != 1)
-			Sys_Error ("Couldn't read console input");
-
-		if (recs[0].EventType == KEY_EVENT)
+		read (0, &c, 1);
+		if (c == '\n' || c == '\r')
 		{
-			if (!recs[0].Event.KeyEvent.bKeyDown)
-			{
-				ch = recs[0].Event.KeyEvent.uChar.AsciiChar;
-
-				switch (ch)
-				{
-					case '\r':
-						WriteFile(houtput, "\r\n", 2, &dummy, NULL);	
-
-						if (len)
-						{
-							text[len] = 0;
-							len = 0;
-							return text;
-						}
-						else if (sc_return_on_enter)
-						{
-						// special case to allow exiting from the error handler on Enter
-							text[0] = '\r';
-							len = 0;
-							return text;
-						}
-
-						break;
-
-					case '\b':
-						WriteFile(houtput, "\b \b", 3, &dummy, NULL);	
-						if (len)
-						{
-							len--;
-						}
-						break;
-
-					default:
-						if (ch >= ' ')
-						{
-							WriteFile(houtput, &ch, 1, &dummy, NULL);	
-							text[len] = ch;
-							len = (len + 1) & 0xff;
-						}
-
-						break;
-
-				}
-			}
+			text[len] = 0;
+			len = 0;
+			return text;
 		}
+		else if (c == 8)
+		{
+			if (len)
+			{
+				len--;
+				text[len] = 0;
+			}
+			continue;
+		}
+		text[len] = c;
+		len++;
+		text[len] = 0;
+		if (len == sizeof(text))
+			len = 0;
 	}
 
-#endif
 	return NULL;
 }
 
@@ -639,6 +597,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/04/14 07:36:15  sezero
+ * -? arg is back (Steve likes it ;)
+ *
  * Revision 1.17  2005/04/13 12:22:41  sezero
  * - Removed useless -minmemory cmdline argument
  * - Removed useless parms->memsize < minimum_memory check in Host_Init

@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.12 2005-04-13 12:22:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.13 2005-04-15 20:24:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -590,6 +590,9 @@ void Host_GetConsoleCommands (void)
 {
 	char	*cmd;
 
+	if (!isDedicated)
+		return;
+
 	while (1)
 	{
 		cmd = Sys_ConsoleInput ();
@@ -1103,6 +1106,17 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/04/13 12:22:41  sezero
+ * - Removed useless -minmemory cmdline argument
+ * - Removed useless parms->memsize < minimum_memory check in Host_Init
+ * - Added lower/upper boundaries (8mb/96mb) for -heapsize argument
+ * - Added lower (48kb for hexen2, 256kb for hw)/upper (1mb) boundaries
+ *   for -zone argument (DYNAMIC_SIZE definitions/zonesize requirements
+ *   are different for hexen2 and hexenworld)
+ * - We won't die if no size is specified after -zone, but will ignore
+ * - Added null string terminations to hexen2 zone.c, so as to prevent
+ *   garbage on sys_memory console command (found this in Pa3PyX)
+ *
  * Revision 1.11  2005/04/08 20:14:20  sezero
  * Added -old3dfx cmdline check. For now, I use it to set the
  * MESA_GLX_FX environment variable to "f" and to disable fxMesa
