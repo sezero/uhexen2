@@ -1,7 +1,7 @@
 /*
 	Z_zone.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.4 2005-04-13 12:22:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.5 2005-04-15 20:25:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -304,6 +304,7 @@ void Hunk_Print (qboolean all, qboolean write_file)
 	hunk_t	*h, *next, *endlow, *starthigh, *endhigh;
 	int		count, sum;
 	int		totalblocks;
+	char	memtxt[MAX_OSPATH];
 	FILE *FH;
 
 	count = 0;
@@ -311,8 +312,14 @@ void Hunk_Print (qboolean all, qboolean write_file)
 	totalblocks = 0;
 	
 	FH = NULL;
-	if (write_file) FH = fopen("memory.txt","w");
-
+	if (write_file) {
+#ifdef PLATFORM_UNIX
+		sprintf(memtxt,"%s/%s", com_userdir, "memory.txt");
+#else
+		sprintf(memtxt,"%s", "memory.txt");
+#endif
+		FH = fopen(memtxt,"w");
+	}
 	h = (hunk_t *)hunk_base;
 	endlow = (hunk_t *)(hunk_base + hunk_low_used);
 	starthigh = (hunk_t *)(hunk_base + hunk_size - hunk_high_used);
@@ -388,9 +395,11 @@ void Hunk_Print (qboolean all, qboolean write_file)
 	Con_Printf ("-------------------------\n");
 	if (FH) fprintf(FH,"-------------------------\n");
 	Con_Printf ("%8i total blocks\n", totalblocks);
-	if (FH) fprintf(FH,"%8i total blocks\n", totalblocks);
-
-	if (FH) fclose(FH);
+	if (FH) {
+		fprintf(FH,"%8i total blocks\n", totalblocks);
+		fclose(FH);
+		Con_Printf ("Data saved to %s.\n", memtxt);
+	}
 }
 
 /*
@@ -1136,6 +1145,17 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/04/13 12:22:41  sezero
+ * - Removed useless -minmemory cmdline argument
+ * - Removed useless parms->memsize < minimum_memory check in Host_Init
+ * - Added lower/upper boundaries (8mb/96mb) for -heapsize argument
+ * - Added lower (48kb for hexen2, 256kb for hw)/upper (1mb) boundaries
+ *   for -zone argument (DYNAMIC_SIZE definitions/zonesize requirements
+ *   are different for hexen2 and hexenworld)
+ * - We won't die if no size is specified after -zone, but will ignore
+ * - Added null string terminations to hexen2 zone.c, so as to prevent
+ *   garbage on sys_memory console command (found this in Pa3PyX)
+ *
  * Revision 1.3  2004/12/18 13:59:25  sezero
  * Clean-up and kill warnings 8:
  * Missing prototypes.
