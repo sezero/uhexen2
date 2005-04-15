@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.9 2005-01-24 20:29:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.10 2005-04-15 20:21:49 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -556,8 +556,6 @@ void Host_Savegame_f (void)
 		}
 	}
 
-
-
 	SaveGamestate(false);
 
 	retry:
@@ -591,6 +589,8 @@ void Host_Savegame_f (void)
 	Con_Printf ("Saving game to %s...\n", dest);
 
 	error_state = CL_CopyFiles(tempdir, name, dest);
+	if (error_state)
+		goto retrymsg;
 
 	sprintf(dest,"%s/%s/info.dat",com_savedir, Cmd_Argv(1));
 	f = fopen (dest, "w");
@@ -622,6 +622,7 @@ void Host_Savegame_f (void)
 
 	fclose(f);
 
+	retrymsg:
 	if (error_state)
 	{
 		if (attempts == 1)
@@ -2417,6 +2418,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/01/24 20:29:43  sezero
+ * fix flush_textures decision which used to be always true
+ *
  * Revision 1.8  2005/01/01 21:43:47  sezero
  * prototypes clean-up
  *

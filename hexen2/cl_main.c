@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.7 2004-12-18 14:15:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.8 2005-04-15 20:21:49 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -190,11 +190,8 @@ qboolean CL_CopyFiles(char *source, char *pat, char *dest)
 	return error;
 #else
 	char	name[MAX_OSPATH],tempdir[MAX_OSPATH], *fpat;
-	qboolean error;	
 	DIR	*dir;
 	struct dirent	*dent;
-
-	error = false;
 
 /*
 pat is assumed to be <source> / *.gip
@@ -204,7 +201,7 @@ failed.
 */
 	dir = opendir (source);
 	if (dir == NULL) {
-		return;
+		return true;
 	}
 	
 	fpat = strrchr(pat, '/');
@@ -225,7 +222,7 @@ failed.
 	} while (dent != NULL);	
 	closedir (dir);
 	
-	return error;
+	return false;	// assuming no error
 #endif
 }
 
@@ -1019,6 +1016,11 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2004/12/18 14:15:34  sezero
+ * Clean-up and kill warnings 10:
+ * Remove some already commented-out functions and code fragments.
+ * They seem to be of no-future use. Also remove some unused functions.
+ *
  * Revision 1.6  2004/12/18 14:08:07  sezero
  * Clean-up and kill warnings 9:
  * Kill many unused vars.
