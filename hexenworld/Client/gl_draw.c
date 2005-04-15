@@ -128,6 +128,7 @@ int Scrap_AllocBlock (int w, int h, int *x, int *y)
 	}
 
 	Sys_Error ("Scrap_AllocBlock: full");
+	return -1;	// shut up the compiler
 }
 
 int	scrap_uploads;

@@ -1408,6 +1408,7 @@ int AllocBlock (int w, int h, int *x, int *y)
 	}
 
 	Sys_Error ("AllocBlock: full");
+	return -1;	// shut up the compiler
 }
 
 
