@@ -423,9 +423,8 @@ Larger attenuations will drop off.  (max 4 attenuation)
 
 ==================
 */  
-void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
-    float attenuation)
-{       
+void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, float attenuation)
+{
     int         sound_num;
     int			field_mask;
     int			i;

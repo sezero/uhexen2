@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.10 2005-04-30 08:30:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.11 2005-04-30 08:39:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -310,9 +310,8 @@ Larger attenuations will drop off.  (max 4 attenuation)
 
 ==================
 */  
-void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
-    float attenuation)
-{       
+void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, float attenuation)
+{
     int         sound_num;
     int			field_mask;
     int			i;
@@ -2169,6 +2168,9 @@ void SV_SpawnServer (char *server)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/04/30 08:30:09  sezero
+ * changed message datatypes to byte in SV_SendReconnect() and Host_ShutdownServer()
+ *
  * Revision 1.9  2005/01/24 20:29:43  sezero
  * fix flush_textures decision which used to be always true
  *

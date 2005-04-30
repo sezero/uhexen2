@@ -411,8 +411,7 @@ void SV_SendClientMessages (void);
 
 void SV_Multicast (vec3_t origin, int to);
 void SV_MulticastSpecific (unsigned clients, qboolean reliable);
-void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
-    float attenuation);
+void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, float attenuation);
 void SV_StopSound (edict_t *entity, int channel);
 void SV_UpdateSoundPos (edict_t *entity, int channel);
 void SV_StartParticle (vec3_t org, vec3_t dir, int color, int count);

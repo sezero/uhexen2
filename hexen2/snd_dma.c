@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.17 2005-03-03 17:02:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.18 2005-04-30 08:39:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -61,7 +61,7 @@ int tryrates[MAX_TRYRATES] = { 11025, 22051, 44100, 8000 };
 
 cvar_t bgmvolume = {"bgmvolume", "1", true};
 cvar_t bgmtype = {"bgmtype", "cd", true};   // cd or midi
-cvar_t volume = {"volume", "0.7", true};
+cvar_t sfxvolume = {"volume", "0.7", true};
 
 cvar_t nosound = {"nosound", "0"};
 cvar_t precache = {"precache", "1"};
@@ -237,7 +237,7 @@ void S_Init (void)
 	Cmd_AddCommand("soundinfo", S_SoundInfo_f);
 
 	Cvar_RegisterVariable(&nosound);
-	Cvar_RegisterVariable(&volume);
+	Cvar_RegisterVariable(&sfxvolume);
 	Cvar_RegisterVariable(&loadas8bit);
 	Cvar_RegisterVariable(&bgmvolume);
 	Cvar_RegisterVariable(&bgmtype);
@@ -1093,6 +1093,10 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/03/03 17:02:29  sezero
+ * - fix and activate munmap of shm->buffer for snd_oss.c
+ * - comment-out shm->gamealive thing which serves nothing
+ *
  * Revision 1.16  2005/02/25 14:55:54  sezero
  * exact syncing between hexen2 and hw versions of snd_dma.c
  *

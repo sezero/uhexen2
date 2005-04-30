@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.26 2005-03-08 12:14:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.27 2005-04-30 08:39:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2021,12 +2021,12 @@ void M_AdjustSliders (int dir)
 #endif
 		break;
 	case OPT_SNDVOL:	// sfx volume
-		volume.value += dir * 0.1;
-		if (volume.value < 0)
-			volume.value = 0;
-		if (volume.value > 1)
-			volume.value = 1;
-		Cvar_SetValue ("volume", volume.value);
+		sfxvolume.value += dir * 0.1;
+		if (sfxvolume.value < 0)
+			sfxvolume.value = 0;
+		if (sfxvolume.value > 1)
+			sfxvolume.value = 1;
+		Cvar_SetValue ("volume", sfxvolume.value);
 		break;
 		
 	case OPT_ALWAYRUN:	// allways run
@@ -2162,7 +2162,7 @@ void M_Options_Draw (void)
 	M_DrawSlider (220, 60+(7*8), r);
 
 	M_Print (16, 60+(8*8), "          Sound Volume");
-	r = volume.value;
+	r = sfxvolume.value;
 	M_DrawSlider (220, 60+(8*8), r);
 
 	M_Print (16, 60+(9*8),				"            Always Run");
@@ -4735,6 +4735,10 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2005/03/08 12:14:16  sezero
+ * my silly oversight in reinit_music: fixes bug "midi
+ * always restarts upon pressing Esc twice"
+ *
  * Revision 1.25  2005/03/06 10:44:41  sezero
  * - move reinit_music to menu.c where it belongs
  * - fix reinit_music so that it works for the F4 key as well

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.14 2005-04-05 19:40:33 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.15 2005-04-30 08:39:08 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -891,12 +891,12 @@ void M_AdjustSliders (int dir)
 #endif
 		break;
 	case OPT_SNDVOL:	// sfx volume
-		volume.value += dir * 0.1;
-		if (volume.value < 0)
-			volume.value = 0;
-		if (volume.value > 1)
-			volume.value = 1;
-		Cvar_SetValue ("volume", volume.value);
+		sfxvolume.value += dir * 0.1;
+		if (sfxvolume.value < 0)
+			sfxvolume.value = 0;
+		if (sfxvolume.value > 1)
+			sfxvolume.value = 1;
+		Cvar_SetValue ("volume", sfxvolume.value);
 		break;
 	case OPT_ALWAYRUN:	// allways run
 		if (cl_forwardspeed.value > 200)
@@ -1023,7 +1023,7 @@ void M_Options_Draw (void)
 	M_DrawSlider (220, 60+(7*8), r);
 
 	M_Print (16, 60+(8*8), "          Sound Volume");
-	r = volume.value;
+	r = sfxvolume.value;
 	M_DrawSlider (220, 60+(8*8), r);
 
 	M_Print (16, 60+(9*8),				"            Always Run");

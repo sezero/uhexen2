@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.3 2004-12-18 13:59:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.4 2005-04-30 08:39:08 sezero Exp $
 */
 
 typedef struct
@@ -277,8 +277,7 @@ void SV_StartParticle (vec3_t org, vec3_t dir, int color, int count);
 void SV_StartParticle2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int effect, int count);
 void SV_StartParticle3 (vec3_t org, vec3_t box, int color, int effect, int count);
 void SV_StartParticle4 (vec3_t org, float radius, int color, int effect, int count);
-void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
-    float attenuation);
+void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, float attenuation);
 void SV_StopSound (edict_t *entity, int channel);
 void SV_UpdateSoundPos (edict_t *entity, int channel);
 
@@ -322,6 +321,10 @@ void SV_SpawnServer (char *server);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/18 13:59:25  sezero
+ * Clean-up and kill warnings 8:
+ * Missing prototypes.
+ *
  * Revision 1.2  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *
