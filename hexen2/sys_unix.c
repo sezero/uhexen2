@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.19 2005-04-15 20:24:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.20 2005-04-30 08:34:52 sezero Exp $
 */
 
 #include <stdio.h>
@@ -23,7 +23,6 @@
 										//  dedicated before exiting
 #define MAXPRINTMSG		4096
 
-int			starttime;
 qboolean	ActiveApp, Minimized;
 qboolean	Win32AtLeastV4, WinNT;
 qboolean	LegitCopy = true;
@@ -597,6 +596,10 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2005/04/15 20:24:21  sezero
+ * added working console input (from hexenworld server).
+ * disabled console input in non-dedicated mode.
+ *
  * Revision 1.18  2005/04/14 07:36:15  sezero
  * -? arg is back (Steve likes it ;)
  *
