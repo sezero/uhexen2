@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.8 2005-04-15 20:21:49 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.9 2005-04-30 08:07:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -367,8 +367,6 @@ void CL_NextDemo (void)
 	if (cls.demonum == -1)
 		return;		// don't play demos
 
-	SCR_BeginLoadingPlaque ();
-
 	if (!cls.demos[cls.demonum][0] || cls.demonum == MAX_DEMOS)
 	{
 		cls.demonum = 0;
@@ -376,9 +374,12 @@ void CL_NextDemo (void)
 		{
 			Con_Printf ("No demos listed with startdemos\n");
 			cls.demonum = -1;
+			CL_Disconnect();
 			return;
 		}
 	}
+
+	SCR_BeginLoadingPlaque ();
 
 	sprintf (str,"playdemo %s\n", cls.demos[cls.demonum]);
 	Cbuf_InsertText (str);
@@ -1016,6 +1017,9 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/04/15 20:21:49  sezero
+ * Kill warning: cl_main.c:207: warning: `return' with no value, in function returning non-void
+ *
  * Revision 1.7  2004/12/18 14:15:34  sezero
  * Clean-up and kill warnings 10:
  * Remove some already commented-out functions and code fragments.
