@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.c,v 1.7 2005-01-24 20:27:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.c,v 1.8 2005-04-30 08:21:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -399,11 +399,7 @@ void Mod_LoadTextures (lump_t *l)
 		if (!strncmp(mt->name,"sky",3))	
 			R_InitSky (tx);
 		else
-		{
-			texture_mode = GL_LINEAR_MIPMAP_NEAREST; //_LINEAR;
 			tx->gl_texturenum = GL_LoadTexture (mt->name, tx->width, tx->height, (byte *)(tx+1), true, false, 0, false);
-			texture_mode = GL_LINEAR;
-		}
 	}
 
 //
@@ -1531,7 +1527,7 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int mdl_flags
 	char	name[MAX_QPATH]; /* 32 might be too low (Pa3PyX) */
 	int	s;
 	byte	*skin;
-	int	texture_mode;
+	int	tex_mode;
 	
 	skin = (byte *)(pskintype + 1);
 
@@ -1577,16 +1573,16 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int mdl_flags
 
 		sprintf (name, "%s_%i", loadmodel->name, i);
 		if( mdl_flags & EF_HOLEY )
-			texture_mode = 2;
+			tex_mode = 2;
 		else if( mdl_flags & EF_TRANSPARENT )
-			texture_mode = 1;
+			tex_mode = 1;
 		else if( mdl_flags & EF_SPECIAL_TRANS )
-			texture_mode = 3;
+			tex_mode = 3;
 		else
-			texture_mode = 0;
+			tex_mode = 0;
 
 		pheader->gl_texturenum[i] = GL_LoadTexture (name, pheader->skinwidth, 
-			pheader->skinheight, (byte *)(pskintype + 1), true, false, texture_mode, false);
+			pheader->skinheight, (byte *)(pskintype + 1), true, false, tex_mode, false);
 		pskintype = (daliasskintype_t *)((byte *)(pskintype+1) + s);
 	}
 
@@ -2308,6 +2304,9 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/01/24 20:27:25  sezero
+ * consolidate GL_LoadTexture functions
+ *
  * Revision 1.6  2005/01/10 14:30:06  sezero
  * glows indentation/whitespace fix. should be more readable now.
  *

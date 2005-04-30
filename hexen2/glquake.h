@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.14 2005-04-13 12:20:44 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.15 2005-04-30 08:21:42 sezero Exp $
  */
 
 // disable data conversion warnings
@@ -65,7 +65,6 @@ extern  FX_SET_PALETTE_EXT fxSetPaletteExtension;
 extern unsigned char inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
 
 extern	int texture_extension_number;
-extern	int		texture_mode;
 
 extern	float	gldepthmin, gldepthmax;
 
@@ -363,6 +362,9 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/04/13 12:20:44  sezero
+ * made GL_Bind a macro (from Pa3PyX)
+ *
  * Revision 1.13  2005/04/08 18:30:08  sezero
  * 3dfx stuff initial clean-up
  *

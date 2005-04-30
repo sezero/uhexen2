@@ -45,7 +45,6 @@ extern	TEXSUBIMAGEPTR TexSubImage2DFunc;
 }
 
 extern	int texture_extension_number;
-extern	int		texture_mode;
 
 extern	float	gldepthmin, gldepthmax;
 

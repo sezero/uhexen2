@@ -366,11 +366,7 @@ void Mod_LoadTextures (lump_t *l)
 		if (!strncmp(mt->name,"sky",3))	
 			R_InitSky (tx);
 		else
-		{
-			texture_mode = GL_LINEAR_MIPMAP_NEAREST; //_LINEAR;
 			tx->gl_texturenum = GL_LoadTexture (mt->name, tx->width, tx->height, (byte *)(tx+1), true, false, 0);
-			texture_mode = GL_LINEAR;
-		}
 	}
 
 //
@@ -1509,7 +1505,7 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int mdl_flags
 	daliasskingroup_t	*pinskingroup;
 	int			groupskins;
 	daliasskininterval_t	*pinskinintervals;
-	int			texture_mode;
+	int			tex_mode;
 	
 	skin = (byte *)(pskintype + 1);
 
@@ -1519,13 +1515,13 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int mdl_flags
 	s = pheader->skinwidth * pheader->skinheight;
 
 	if( mdl_flags & EF_HOLEY )
-		texture_mode = 2;
+		tex_mode = 2;
 	else if( mdl_flags & EF_TRANSPARENT )
-		texture_mode = 1;
+		tex_mode = 1;
 	else if( mdl_flags & EF_SPECIAL_TRANS )
-		texture_mode = 3;
+		tex_mode = 3;
 	else
-		texture_mode = 0;
+		tex_mode = 0;
 
 	for (i=0 ; i<numskins ; i++)
 	{
@@ -1578,7 +1574,7 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int mdl_flags
 			pheader->gl_texturenum[i][2] =
 			pheader->gl_texturenum[i][3] =
 				GL_LoadTexture (name, pheader->skinwidth, 
-				pheader->skinheight, (byte *)(pskintype + 1), true, false, texture_mode);
+				pheader->skinheight, (byte *)(pskintype + 1), true, false, tex_mode);
 			pskintype = (daliasskintype_t *)((byte *)(pskintype+1) + s);
 		} 
 		else 
@@ -1598,7 +1594,7 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int mdl_flags
 					sprintf (name, "%s_%i_%i", loadmodel->name, i,j);
 					pheader->gl_texturenum[i][j&3] = 
 						GL_LoadTexture (name, pheader->skinwidth, 
-						pheader->skinheight, (byte *)(pskintype), true, false, texture_mode);
+						pheader->skinheight, (byte *)(pskintype), true, false, tex_mode);
 					pskintype = (daliasskintype_t *)((byte *)(pskintype) + s);
 			}
 			k = j;
