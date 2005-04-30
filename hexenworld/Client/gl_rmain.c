@@ -62,8 +62,8 @@ int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 
 void R_MarkLeaves (void);
 
-extern	cvar_t	v_gamma;
-extern	qboolean is_3dfx;
+//extern	cvar_t	v_gamma;
+//extern	qboolean is_3dfx;
 
 cvar_t	r_norefresh = {"r_norefresh","0"};
 cvar_t	r_drawentities = {"r_drawentities","1"};

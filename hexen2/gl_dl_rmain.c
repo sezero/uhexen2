@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_rmain.c,v 1.15 2005-04-30 08:19:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_rmain.c,v 1.16 2005-04-30 11:12:08 sezero Exp $
 */
 
 
@@ -64,8 +64,8 @@ int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 
 void R_MarkLeaves (void);
 
-extern	cvar_t	v_gamma;
-extern	qboolean is_3dfx;
+//extern	cvar_t	v_gamma;
+//extern	qboolean is_3dfx;
 
 cvar_t	r_norefresh = {"r_norefresh","0"};
 cvar_t	r_drawentities = {"r_drawentities","1"};
@@ -1785,6 +1785,10 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/04/30 08:19:35  sezero
+ * R_DrawAliasModel does all these by itself. As a bonus, fixes two warnings
+ * about ambientlight and shadelight global declerations being shadowed
+ *
  * Revision 1.14  2005/04/08 18:16:35  sezero
  * - Merged a new R_PolyBlend code (from jshexen2)
  * - Added the GL_DoGamma function (to be called from R_PolyBlend)
