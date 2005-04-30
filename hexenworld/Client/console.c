@@ -137,7 +137,7 @@ Con_Resize
 
 ================
 */
-void Con_Resize (console_t *con)
+void Con_Resize (console_t *cons)
 {
 	int		i, j, width, oldwidth, oldtotallines, numlines, numchars;
 	char	tbuf[CON_TEXTSIZE], tbuf_attr[CON_TEXTSIZE];
@@ -152,8 +152,8 @@ void Con_Resize (console_t *con)
 		width = 38;
 		con_linewidth = width;
 		con_totallines = CON_TEXTSIZE / con_linewidth;
-		memset (con->text, ' ', CON_TEXTSIZE);
-		memset (con->text_attr, 0, CON_TEXTSIZE);
+		memset (cons->text, ' ', CON_TEXTSIZE);
+		memset (cons->text_attr, 0, CON_TEXTSIZE);
 	}
 	else
 	{
@@ -171,20 +171,20 @@ void Con_Resize (console_t *con)
 		if (con_linewidth < numchars)
 			numchars = con_linewidth;
 
-		memcpy (tbuf, con->text, CON_TEXTSIZE);
-		memcpy (tbuf_attr, con->text_attr, CON_TEXTSIZE);
-		memset (con->text, ' ', CON_TEXTSIZE);
-		memset (con->text_attr, 0, CON_TEXTSIZE);
+		memcpy (tbuf, cons->text, CON_TEXTSIZE);
+		memcpy (tbuf_attr, cons->text_attr, CON_TEXTSIZE);
+		memset (cons->text, ' ', CON_TEXTSIZE);
+		memset (cons->text_attr, 0, CON_TEXTSIZE);
 
 		for (i=0 ; i<numlines ; i++)
 		{
 			for (j=0 ; j<numchars ; j++)
 			{
-				con->text[(con_totallines - 1 - i) * con_linewidth + j] =
-						tbuf[((con->current - i + oldtotallines) %
+				cons->text[(con_totallines - 1 - i) * con_linewidth + j] =
+						tbuf[((cons->current - i + oldtotallines) %
 							  oldtotallines) * oldwidth + j];
-				con->text_attr[(con_totallines - 1 - i) * con_linewidth + j] =
-						tbuf_attr[((con->current - i + oldtotallines) %
+				cons->text_attr[(con_totallines - 1 - i) * con_linewidth + j] =
+						tbuf_attr[((cons->current - i + oldtotallines) %
 							  oldtotallines) * oldwidth + j];
 			}
 		}
@@ -192,8 +192,8 @@ void Con_Resize (console_t *con)
 		Con_ClearNotify ();
 	}
 
-	con->current = con_totallines - 1;
-	con->display = con->current;
+	cons->current = con_totallines - 1;
+	cons->display = cons->current;
 }
 
 					
