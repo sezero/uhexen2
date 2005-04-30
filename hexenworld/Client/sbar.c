@@ -3,7 +3,7 @@
 //**
 //** sbar.c
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.3 2005-01-01 21:55:47 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.4 2005-04-30 08:41:10 sezero Exp $
 //**
 //**************************************************************************
 
@@ -220,17 +220,17 @@ void Sbar_Init(void)
 void SB_PlacePlayerNames(void)
 {
 	int			i,j;
-	entity_t	*currententity;
+	entity_t	*curr_ent;
 
 	for (j=0;j<cl_numvisedicts;j++)
 	{
-		currententity = &cl_visedicts[j];
+		curr_ent = &cl_visedicts[j];
 
-		i = currententity->scoreboard - cl.players;
+		i = curr_ent->scoreboard - cl.players;
 /*		if (i >= 0 && i<MAX_CLIENTS && 
 				(
 					(cl.PIV & (1<<i))&&//in PIV and not invis or seen by dwarf MLS_INVIS = 5
-					(currententity->drawflags!=5||cl.v.playerclass==CLASS_DWARF)
+					(curr_ent->drawflags!=5||cl.v.playerclass==CLASS_DWARF)
 				)
 			)*/
 		if (i >= 0 && i<MAX_CLIENTS && (cl.PIV & (1<<i)) )
@@ -242,26 +242,26 @@ void SB_PlacePlayerNames(void)
 					if(cl.players[i].siege_team==ST_ATTACKER)//attacker
 					{
 						if(i==cl_keyholder)
-							R_DrawName(currententity->origin, cl.players[i].name,10);
+							R_DrawName(curr_ent->origin, cl.players[i].name,10);
 						else
-							R_DrawName(currententity->origin, cl.players[i].name,false);
+							R_DrawName(curr_ent->origin, cl.players[i].name,false);
 					}
 					else if(cl.players[i].siege_team==ST_DEFENDER)//def
 					{
 						if(i==cl_keyholder&&i==cl_doc)
-							R_DrawName(currententity->origin, cl.players[i].name,12);
+							R_DrawName(curr_ent->origin, cl.players[i].name,12);
 						else if(i==cl_keyholder)
-							R_DrawName(currententity->origin, cl.players[i].name,11);
+							R_DrawName(curr_ent->origin, cl.players[i].name,11);
 						else if(i==cl_doc)
-							R_DrawName(currententity->origin, cl.players[i].name,2);
+							R_DrawName(curr_ent->origin, cl.players[i].name,2);
 						else
-							R_DrawName(currententity->origin, cl.players[i].name,1);
+							R_DrawName(curr_ent->origin, cl.players[i].name,1);
 					}
 					else
-						R_DrawName(currententity->origin, cl.players[i].name,3);
+						R_DrawName(curr_ent->origin, cl.players[i].name,3);
 				}
 				else
-					R_DrawName(currententity->origin, cl.players[i].name,false);
+					R_DrawName(curr_ent->origin, cl.players[i].name,false);
 			}
 		}
 	}

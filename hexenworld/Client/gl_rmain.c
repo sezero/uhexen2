@@ -248,7 +248,7 @@ static void R_RotateForEntity2(entity_t *e)
 R_GetSpriteFrame
 ================
 */
-mspriteframe_t *R_GetSpriteFrame (entity_t *currententity)
+mspriteframe_t *R_GetSpriteFrame (entity_t *curr_ent)
 {
 	msprite_t		*psprite;
 	mspritegroup_t	*pspritegroup;
@@ -256,8 +256,8 @@ mspriteframe_t *R_GetSpriteFrame (entity_t *currententity)
 	int				i, numframes, frame;
 	float			*pintervals, fullinterval, targettime, time;
 
-	psprite = currententity->model->cache.data;
-	frame = currententity->frame;
+	psprite = curr_ent->model->cache.data;
+	frame = curr_ent->frame;
 
 	if ((frame >= psprite->numframes) || (frame < 0))
 	{
@@ -276,7 +276,7 @@ mspriteframe_t *R_GetSpriteFrame (entity_t *currententity)
 		numframes = pspritegroup->numframes;
 		fullinterval = pintervals[numframes-1];
 
-		time = cl.time + currententity->syncbase;
+		time = cl.time + curr_ent->syncbase;
 
 	// when loading in Mod_LoadSpriteGroup, we guaranteed all interval values
 	// are positive, so we don't have to worry about division by 0
