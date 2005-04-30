@@ -1041,12 +1041,12 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 #endif
 
 	{
-	  int x, y;
+	  int xi, yi;
 
-	  for( x = 0; x < PLAYER_PIC_WIDTH; x++ )
-	    for( y = 0; y < PLAYER_PIC_HEIGHT; y++ )
+	  for( xi = 0; xi < PLAYER_PIC_WIDTH; xi++ )
+	    for( yi = 0; yi < PLAYER_PIC_HEIGHT; yi++ )
 	      {
-		trans[y * PLAYER_DEST_WIDTH + x] = d_8to24table[translation[menuplyr_pixels[which_class-1][y * PLAYER_PIC_WIDTH + x]]];
+		trans[yi * PLAYER_DEST_WIDTH + xi] = d_8to24table[translation[menuplyr_pixels[which_class-1][yi * PLAYER_PIC_WIDTH + xi]]];
 	      }
 	}
 

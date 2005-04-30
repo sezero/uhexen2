@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.27 2005-04-30 08:10:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.28 2005-04-30 08:48:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -951,12 +951,12 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 #endif
 
 	{
-		int x, y;
+		int xi, yi;
 		
-		for( x = 0; x < PLAYER_PIC_WIDTH; x++ )
-			for( y = 0; y < PLAYER_PIC_HEIGHT; y++ )
+		for( xi = 0; xi < PLAYER_PIC_WIDTH; xi++ )
+			for( yi = 0; yi < PLAYER_PIC_HEIGHT; yi++ )
 			{
-				trans[y * PLAYER_DEST_WIDTH + x] = d_8to24table[translation[menuplyr_pixels[setup_class-1][y * PLAYER_PIC_WIDTH + x]]];
+				trans[yi * PLAYER_DEST_WIDTH + xi] = d_8to24table[translation[menuplyr_pixels[setup_class-1][yi * PLAYER_PIC_WIDTH + xi]]];
 			}
 	}
 
@@ -1812,6 +1812,10 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2005/04/30 08:10:19  sezero
+ * re-enable fadescreen for is_3dfx == true (but keep the note in
+ * for future reference)
+ *
  * Revision 1.26  2005/04/13 12:20:44  sezero
  * made GL_Bind a macro (from Pa3PyX)
  *
