@@ -224,7 +224,7 @@ bool	sys_dead_sleep	= 0;
 # define max(a,b) ((a) > (b) ? (a) : (b))
 #endif
 
-int Sys_CheckInput (int net_socket)
+int Sys_CheckInput (int ns)
 {
 	fd_set      fdset;
 	int         res;
@@ -232,7 +232,7 @@ int Sys_CheckInput (int net_socket)
 	struct timeval *timeout = 0;
 
 	_timeout.tv_sec = 0;
-	_timeout.tv_usec = net_socket < 0 ? 0 : 10000;
+	_timeout.tv_usec = ns < 0 ? 0 : 10000;
 
 	// select on the net socket and stdin
 	// the only reason we have a timeout at all is so that if the last
@@ -243,13 +243,13 @@ int Sys_CheckInput (int net_socket)
 	if (do_stdin)
 		FD_SET (0, &fdset);
 
-	if (net_socket >= 0)
-		FD_SET (net_socket, &fdset);
+	if (ns >= 0)
+		FD_SET (ns, &fdset);
 
 	if (!sys_dead_sleep)
 		timeout = &_timeout;
 
-	res = select (max (net_socket, 0) + 1, &fdset, NULL, NULL, timeout);
+	res = select (max (ns, 0) + 1, &fdset, NULL, NULL, timeout);
 	if (res == 0 || res == -1)
 		return 0;
 
@@ -339,7 +339,7 @@ double Sys_DoubleTime (void)
 void SV_TimeOut()
 {
 	//Remove listed severs that havnt sent a heartbeat for some time
-	double time = Sys_DoubleTime();
+	double t = Sys_DoubleTime();
 
 	server_t *sv;
 	server_t *next;
@@ -349,7 +349,7 @@ void SV_TimeOut()
 
 	for(sv = sv_list;sv;)
 	{
-		if(sv->timeout + SV_TIMEOUT < time)
+		if(sv->timeout + SV_TIMEOUT < t)
 		{
 			next = sv->next;
 			printf("%s timed out\n",NET_AdrToString(sv->ip));
