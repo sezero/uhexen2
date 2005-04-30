@@ -4711,7 +4711,7 @@ void MeteorBlastThink(explosion_t *ex)
 			S_StartSound (TempSoundChannel(), 0, cl_sfx_axeExplode, ex->origin, 1, 1);
 		}
 
-		ex->model == NULL;
+		ex->model = NULL;
 		ex->endTime = cl.time;
 	}
 }
