@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.6 2005-04-14 07:35:37 sezero Exp $
+	$Id: midi_sdl.c,v 1.7 2005-04-30 08:13:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -191,7 +191,7 @@ void MIDI_Play(char *Name)
 		fclose(f);
 	} else {
 		Sys_Printf("MIDI: File %s needs to be extracted\n",Temp);
-		Data = (byte *)COM_LoadHunkFile((char *)Temp);
+		Data = (char *)COM_LoadHunkFile((char *)Temp);
 		if (!Data) {
 			Con_Printf("musicfile %s not found, not playing\n", Temp);
 			return;
@@ -272,6 +272,9 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/04/14 07:35:37  sezero
+ * no need to announce MIDI_Cleanup if we'll never do it..
+ *
  * Revision 1.5  2005/03/06 10:44:41  sezero
  * - move reinit_music to menu.c where it belongs
  * - fix reinit_music so that it works for the F4 key as well
