@@ -1,6 +1,64 @@
 ChangeLog:
 
 2005-04-15 (CVS):
+    * Always set the MESA_GLX_FX FX_DONT_FAKE_MULTITEX environment
+      variables
+    * "Fixed" (in fact, worked-around) Succubus' lightning weapon
+      crashing the client if gcc4 compiled client is used, and/or
+      the unused StreamEntities[MAX_STREAM_ENTITIES] is removed.
+      Weird case..
+    * Fixed hexenworld master server compile failure with gcc4
+    * Socket length args of recvfrom and getsocklen should be of
+      type socklen_t, not int (thanks go to gcc4)
+    * Fixed two instances of the warning "dereferencing type-punned
+      pointer will break strict-aliasing rules". Playing loose with
+      pointers may not be safe
+    * Fixed a statement with no effect in cl_tent.c of hwclient
+    * Fixed an obscure demo playback bug which caused a fake freeze-
+      like appearance when no next demos were found
+    * Re-enabled fadescreen for fxMesa driver
+    * Fixed a lot of gcc4 warnings about signedness mismatches
+    * Silenced many instances of shadowed declarations
+    * Removed a bunch of code from R_DrawViewModel(). R_DrawAliasModel()
+      already does those things.
+    * Removed int texture_mode which seemed to serve nothing
+    * Changed texnum member of gltexture_t to be of unsigned int
+      type rather than int (fixes a gcc4 warning)
+    * Removed unnecessary global decl. of starttime in sys_unix.c
+    * Switched to GL_EXT_shared_texture_palette and enabled paletted
+      textures in hexen2. For paletted textures to work, the -paltex
+      cmdline must be specified for both hexen2 and hexenworld.
+    * Applied a big video cleanup patch:
+    - Removed a lot of windoze left-overs, unused variables/cvars,
+      functions using those vars/cvars serving no purpose (esp. those
+      window_rect and window_center stuff, and more). There still are
+      things in vid_sdl.c that need to be fully understood, they are
+      there, for now.
+    - The -window and -w cmdline args are now now removed: They did
+      nothing, unless someone did some silly thing like using both -w
+      and -f on the same cmdline.
+    - The two mode-setting functions (windowed and f/s) are merged
+    - The -height arg now is functional only if used in combination
+      with -height. Since we only do normal modes, the width switch
+      is replaced with the calculation  height = 3*width/4. Issue: We
+      need some sanity check in case of both -width and -height args
+      are specified
+    - -bpp wasn't written into modenum[x].bpp, I did it here. As a
+      side note, bpp doesn't affect anything, anyway.
+    - The vidmode reporting code now displays the actual bpp value
+      being set by SDL.
+    - The code used to call VID_SetPalette() very multiple times in
+      gl_vidsdl.c, they are now unified in VID_Init: After VID_SetMode,
+      VID_SetPalette is called first, and then 8-bit palette if -paltex
+      is specified. Note: Didn't touch vid_sdl.c in this manner, but DDOI
+      (one of the guys during Dan's porting, perpahs) has a comment on
+      a VID_SetPalette call being "Useless?"...
+    - Updated gamma stuff: We don't use gamma ramps (in fact we can, we
+      have SDL_SetGammaRamp), therefore eliminated V_CheckGamma & friends
+      from V_UpdatePalette for PLATFORM_UNIX. Also killed unused function
+      WarpPalette.
+
+2005-04-15 (CVS):
     * Added working console input (from hexenworld server).
       Disabled console input in non-dedicated mode.
     * No dedicated server possible in hexenworld client.
