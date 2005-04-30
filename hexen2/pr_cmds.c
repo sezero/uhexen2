@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.6 2004-12-18 14:15:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.7 2005-04-30 07:59:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -3065,6 +3065,7 @@ void PF_updateInfoPlaque (void)
 	unsigned int check;
 	unsigned int index, mode;
 	long *use;
+	long tmp_mask;
 	int  ofs = 0;
 
 	index = G_FLOAT(OFS_PARM0);
@@ -3072,13 +3073,14 @@ void PF_updateInfoPlaque (void)
 
 	if (index > 31) 
 	{
-		use = (long *) &info_mask2;
+		tmp_mask = info_mask2;
 		ofs = 32;
 	}
 	else
 	{
-		use = (long *) &info_mask;
+		tmp_mask = info_mask;
 	}
+	use = (long *)&tmp_mask;
 		
 	check = (long) (1 << (index - ofs));
 		
@@ -3250,6 +3252,11 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2004/12/18 14:15:35  sezero
+ * Clean-up and kill warnings 10:
+ * Remove some already commented-out functions and code fragments.
+ * They seem to be of no-future use. Also remove some unused functions.
+ *
  * Revision 1.5  2004/12/18 14:08:07  sezero
  * Clean-up and kill warnings 9:
  * Kill many unused vars.

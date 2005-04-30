@@ -79,6 +79,7 @@ vec_t Length(vec3_t v);
 float VectorNormalize (vec3_t v);
 void VectorInverse (vec3_t v);
 void VectorScale (vec3_t in, vec_t scale, vec3_t out);
-float fastfabs(float _X);
+
+#define fastfabs(val) ((val)>=0.0f?(val):-(val))
 
 #endif

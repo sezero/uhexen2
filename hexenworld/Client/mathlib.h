@@ -127,8 +127,5 @@ __inline void VectorScale (vec3_t in, vec_t scale, vec3_t out)
 	out[2] = in[2]*scale;
 }
 
-__inline float fastfabs(float _X)
-{
-	*((long*)&_X) &= 0x7fffffff;
-	return (_X);
-}
+#define fastfabs(val) ((val)>=0.0f?(val):-(val))
+

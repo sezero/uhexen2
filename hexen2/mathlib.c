@@ -2,7 +2,7 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.3 2005-04-30 07:57:44 sezero Exp $
 */
 
 #include <math.h>
@@ -69,12 +69,6 @@ void VectorScale (vec3_t in, vec_t scale, vec3_t out)
         out[0] = in[0]*scale;
         out[1] = in[1]*scale;
         out[2] = in[2]*scale;
-}
-
-float fastfabs(float _X)
-{       
-        *((long*)&_X) &= 0x7fffffff;
-        return (_X);
 }
 
 // CODE --------------------------------------------------------------------
@@ -510,6 +504,9 @@ fixed16_t Invert24To16(fixed16_t val)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:04:51  sezero
  * Initial import of AoT 1.2.0 code
  *
