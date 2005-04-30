@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.39 2005-04-09 22:16:01 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.40 2005-04-30 08:16:45 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -379,14 +379,14 @@ GL_Init
 void GL_Init (void)
 {
 	GL_Init_Functions();
-	gl_vendor = glfunc.glGetString_fp (GL_VENDOR);
+	gl_vendor = (const char *)glfunc.glGetString_fp (GL_VENDOR);
 	Con_Printf ("GL_VENDOR: %s\n", gl_vendor);
-	gl_renderer = glfunc.glGetString_fp (GL_RENDERER);
+	gl_renderer = (const char *)glfunc.glGetString_fp (GL_RENDERER);
 	Con_Printf ("GL_RENDERER: %s\n", gl_renderer);
 
-	gl_version = glfunc.glGetString_fp (GL_VERSION);
+	gl_version = (const char *)glfunc.glGetString_fp (GL_VERSION);
 	Con_Printf ("GL_VERSION: %s\n", gl_version);
-	gl_extensions = glfunc.glGetString_fp (GL_EXTENSIONS);
+	gl_extensions = (const char *)glfunc.glGetString_fp (GL_EXTENSIONS);
 //	Con_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
 	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",  4)  ||
