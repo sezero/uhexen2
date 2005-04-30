@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.3 2004-12-18 14:08:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.4 2005-04-30 08:50:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1568,20 +1568,20 @@ void CL_ParseServerMessage (void)
 			//be set automatically by each sound and stopSound
 			//called for this ent?
 			vec3_t  pos;
-			int 	channel, ent;
-			
+			int 	channel, entt;
+
 			channel = MSG_ReadShort ();
-			
-			ent = channel >> 3;
+
+			entt = channel >> 3;
 			channel &= 7;
-			
-			if (ent > MAX_EDICTS)
-				Host_Error ("svc_sound_update_pos: ent = %i", ent);
-			
+
+			if (entt > MAX_EDICTS)
+				Host_Error ("svc_sound_update_pos: ent = %i", entt);
+
 			for (i=0 ; i<3 ; i++)
 				pos[i] = MSG_ReadCoord ();
-			
-			S_UpdateSoundPos (ent, channel, pos);
+
+			S_UpdateSoundPos (entt, channel, pos);
 		}
 			break;
 
@@ -2023,6 +2023,10 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/18 14:08:07  sezero
+ * Clean-up and kill warnings 9:
+ * Kill many unused vars.
+ *
  * Revision 1.2  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *
