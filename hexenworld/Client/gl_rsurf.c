@@ -13,9 +13,9 @@ int		lightmap_bytes;		// 1, 2, or 4
 
 int		lightmap_textures;
 
-unsigned		blocklights[18*18];
+unsigned	blocklights[18*18];
 
-#define	BLOCK_WIDTH		128
+#define	BLOCK_WIDTH	128
 #define	BLOCK_HEIGHT	128
 
 #define	MAX_LIGHTMAPS	64
@@ -31,7 +31,7 @@ glRect_t	lightmap_rectchange[MAX_LIGHTMAPS];
 
 cvar_t gl_multitex = {"gl_multitex", "0"};
 
-int			allocated[MAX_LIGHTMAPS][BLOCK_WIDTH];
+int		allocated[MAX_LIGHTMAPS][BLOCK_WIDTH];
 
 // the lightmap texture data needs to be kept in
 // main memory so texsubimage can update properly
@@ -694,7 +694,6 @@ void R_RenderBrushPoly (msurface_t *fa, qboolean override)
 
 		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		intensity = 1.0;
-
 	}
 	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
 	{
@@ -713,7 +712,7 @@ void R_RenderBrushPoly (msurface_t *fa, qboolean override)
 		EmitBothSkyLayers (fa);
 		return;
 	}
-		
+
 	t = R_TextureAnimation (fa->texinfo->texture);
 	GL_Bind (t->gl_texturenum);
 
@@ -1111,9 +1110,9 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 	}
 
     glfunc.glPushMatrix_fp ();
-e->angles[0] = -e->angles[0];	// stupid quake bug
+    e->angles[0] = -e->angles[0];	// stupid quake bug
 	R_RotateForEntity (e);
-e->angles[0] = -e->angles[0];	// stupid quake bug
+    e->angles[0] = -e->angles[0];	// stupid quake bug
 
 	//
 	// draw texture
@@ -1276,8 +1275,6 @@ void R_RecursiveWorldNode (mnode_t *node)
 // recurse down the back side
 	R_RecursiveWorldNode (node->children[!side]);
 }
-
-
 
 /*
 =============
@@ -1611,8 +1608,10 @@ void GL_BuildLightmaps (void)
 			break;
 		if (m->name[0] == '*')
 			continue;
+
 		r_pcurrentvertbase = m->vertexes;
 		currentmodel = m;
+
 		for (i=0 ; i<m->numsurfaces ; i++)
 		{
 			GL_CreateSurfaceLightmap (m->surfaces + i);

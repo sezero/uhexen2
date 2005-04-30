@@ -559,7 +559,6 @@ void R_RenderBrushPoly (msurface_t *fa, qboolean override)
 
 		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		intensity = 1.0;
-
 	}
 	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
 	{
@@ -572,13 +571,13 @@ void R_RenderBrushPoly (msurface_t *fa, qboolean override)
 	
 	if (!override)
 		glfunc.glColor4f_fp( intensity, intensity, intensity, alpha_val );
-		
+
 	if (fa->flags & SURF_DRAWSKY)
 	{	// warp texture, no lightmaps
 		EmitBothSkyLayers (fa);
 		return;
 	}
-		
+
 	t = R_TextureAnimation (fa->texinfo->texture);
 	GL_Bind (t->gl_texturenum);
 
@@ -809,11 +808,11 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 	}
 
     glfunc.glPushMatrix_fp ();
-e->angles[0] = -e->angles[0];	// stupid quake bug
-e->angles[2] = -e->angles[2];	// stupid quake bug
+    e->angles[0] = -e->angles[0];	// stupid quake bug
+    e->angles[2] = -e->angles[2];	// stupid quake bug
 	R_RotateForEntity (e);
-e->angles[0] = -e->angles[0];	// stupid quake bug
-e->angles[2] = -e->angles[2];	// stupid quake bug
+    e->angles[0] = -e->angles[0];	// stupid quake bug
+    e->angles[2] = -e->angles[2];	// stupid quake bug
 
 	//
 	// draw texture
@@ -967,8 +966,6 @@ void R_RecursiveWorldNode (mnode_t *node)
 // recurse down the back side
 	R_RecursiveWorldNode (node->children[!side]);
 }
-
-
 
 /*
 =============
@@ -1303,8 +1300,10 @@ void GL_BuildLightmaps (void)
 			break;
 		if (m->name[0] == '*')
 			continue;
+
 		r_pcurrentvertbase = m->vertexes;
 		currentmodel = m;
+
 		for (i=0 ; i<m->numsurfaces ; i++)
 		{
 			GL_CreateSurfaceLightmap (m->surfaces + i);
