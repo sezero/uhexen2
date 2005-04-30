@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.18 2005-04-30 09:06:07 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.19 2005-04-30 09:59:16 sezero Exp $
  */
 
 // disable data conversion warnings
@@ -45,8 +45,6 @@ extern  FX_SET_PALETTE_EXT fxSetPaletteExtension;
 extern  FX_MARK_PAL_TEXTURE_EXT fxMarkPalTextureExtension;
 #else
 #define	bindTexFunc(a, b) glfunc.glBindTexture_fp((a), (b))
-typedef void (*FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
-extern  FX_SET_PALETTE_EXT fxSetPaletteExtension;
 #endif
 
 #define GL_Bind(texnum) {\
@@ -105,15 +103,6 @@ void R_StoreEfrags (efrag_t **ppefrag);
 int M_DrawBigCharacter (int x, int y, int num, int numNext);
 // defined only for !GLQUAKE in menu.c
 
-
-typedef struct
-{
-	float	x, y, z;
-	float	s, t;
-	float	r, g, b;
-} glvert_t;
-
-extern glvert_t glv;
 
 typedef struct
 {
@@ -362,6 +351,11 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/04/30 09:06:07  sezero
+ * Remove the 3dfx-spesific 3DFX_set_global_palette usage and favor
+ * GL_EXT_shared_texture_palette, instead. VID_Download3DfxPalette
+ * code taken from Pa3PyX.
+ *
  * Revision 1.17  2005/04/30 09:02:17  sezero
  * Patch for voodoo1/voodoo2/rush, enabling 3dfx paletted texture extensions:
  * * it may help low vidmem issues without using gl_picmip uglies.

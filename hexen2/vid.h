@@ -62,7 +62,12 @@ void	VID_Shutdown (void);
 void	VID_Update (vrect_t *rects);
 // flushes the given rectangles from the view buffer to the screen
 
+#ifdef GLQUAKE
+// doesn't use the palette arg anymore in GL mode. O.S.
+int VID_SetMode (int modenum);
+#else
 int VID_SetMode (int modenum, unsigned char *palette);
+#endif
 // sets the mode; only used by the Quake engine for resetting to mode 0 (the
 // base mode) on memory allocation failures
 

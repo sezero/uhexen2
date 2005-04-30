@@ -3,14 +3,15 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.13 2005-04-09 22:16:16 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.14 2005-04-30 09:59:19 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
    Options are now:
      -fullscreen | -window, -height , -width 
    Currently bpp is 8 bit , and it seems fairly hardwired at this depth
-   Interactive Video Modes have been disabled.
+   Interactive Video Modes switching have been disabled and we shall not
+   put it back.
 
    The modes which are used are the traditional 0 and 3, but have redefined
    MODE_FULLSCREEN_DEFAULT from 3 to 1 to be a boolean:
@@ -41,11 +42,7 @@ SDL_Surface	*screen;
 byte globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
 byte *lastsourcecolormap = NULL;
 
-int	window_center_x, window_center_y, window_x, window_y, window_width, window_height;
-RECT	window_rect;
-
 extern qboolean grab;
-static qboolean	startwindowed = 0;
 static qboolean	vid_initialized = false, vid_palettized = true;
 static int	lockcount;
 qboolean	in_mode_set, is_mode0x13;
@@ -59,35 +56,16 @@ viddef_t	vid;		// global video state
 #define NO_MODE			(MODE_WINDOWED - 1)
 #define MODE_FULLSCREEN_DEFAULT	(MODE_WINDOWED + 1)
 
-// Note that 0 is MODE_WINDOWED
+// Note that 0 is MODE_WINDOWED and 1 is MODE_FULLSCREEN_DEFAULT
 cvar_t		vid_mode = {"vid_mode","0", false};
-// Note that 0 is MODE_WINDOWED
-// Note that 1 is MODE_FULLSCREEN_DEFAULT
 cvar_t		_vid_default_mode = {"_vid_default_mode","0", true};
-cvar_t		vid_wait = {"vid_wait","0"};
-cvar_t		vid_nopageflip = {"vid_nopageflip","0", true};
-cvar_t		_vid_wait_override = {"_vid_wait_override", "0", true};
 cvar_t		vid_config_x = {"vid_config_x","800", true};
 cvar_t		vid_config_y = {"vid_config_y","600", true};
 cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1", true};
 cvar_t		_windowed_mouse = {"_windowed_mouse","1", true};
 cvar_t		vid_showload = {"vid_showload", "1"};
 
-typedef struct {
-	int		width;
-	int		height;
-} lmode_t;
-
-lmode_t	lowresmodes[] = {
-	{320, 200},
-	{320, 240},
-	{400, 300},
-	{512, 384},
-};
-
 int		vid_modenum = NO_MODE;
-int		vid_realmode;
-double		vid_testendtime;
 int		vid_default = MODE_WINDOWED;
 static int	windowed_default;
 
@@ -126,24 +104,6 @@ void VID_MenuDraw (void);
 void VID_MenuKey (int key);
 void VID_SetGamma(float value);
 void VID_SetGamma_f(void);
-
-
-/*
-================
-VID_UpdateWindowStatus
-================
-*/
-void VID_UpdateWindowStatus (void)
-{
-	window_rect.left = window_x;
-	window_rect.top = window_y;
-	window_rect.right = window_x + window_width;
-	window_rect.bottom = window_y + window_height;
-	window_center_x = (window_rect.left + window_rect.right) / 2;
-	window_center_y = (window_rect.top + window_rect.bottom) / 2;
-
-	//IN_UpdateClipCursor ();
-}
 
 
 /*
@@ -323,13 +283,6 @@ qboolean VID_SetFullscreenMode (int modenum)
 }
 
 
-qboolean VID_SetFullDIBMode (int modenum)
-{
-	// This should never get called anyway - DDOI
-	return false;
-}
-
-
 void VID_RestoreOldMode (int original_mode)
 {
 	static qboolean	inerror = false;
@@ -367,8 +320,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	int			original_mode, temp;
 	qboolean		stat;
 
-	// debug printf ("VID_SetMode modenum = %i\n",modenum);
-
 // S.A. did this Cvar_SetValue & "if 0" 
 // It's pretty messy in here. Dunno much about it, probably alot of it
 // could go as it's used in dynamically changing/testing video modes
@@ -390,7 +341,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	/* Set either the fullscreen or windowed mode */
 
-	// debug printf ("!! modenum is %i\n\n",modenum);
 	if (modelist[modenum].type == MS_WINDOWED)
 	{
 		if (_windowed_mouse.value)
@@ -406,22 +356,12 @@ int VID_SetMode (int modenum, unsigned char *palette)
 			stat = VID_SetWindowedMode(modenum);
 		}
 	}
-	else if (modelist[modenum].type == MS_FULLDIB)
-	{
-		stat = VID_SetFullDIBMode(modenum);
-		IN_ActivateMouse ();
-		IN_HideMouse ();
-	}
 	else
 	{
 		stat = VID_SetFullscreenMode(modenum);
 		IN_ActivateMouse ();
 		IN_HideMouse ();
 	}
-
-	window_width = vid.width << vid_stretched;
-	window_height = vid.height << vid_stretched;
-	VID_UpdateWindowStatus ();
 
 	scr_disabled_for_loading = temp;
 
@@ -432,7 +372,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	}
 
 	VID_SetPalette (palette);
-
 
 	vid_modenum = modenum;
 	// S.A.removed: Cvar_SetValue ("vid_mode", (float)vid_modenum);
@@ -567,9 +506,6 @@ void	VID_Init (unsigned char *palette)
 		Sys_Error("VID: Couldn't load SDL: %s", SDL_GetError());
 		
 	Cvar_RegisterVariable (&vid_mode);
-	Cvar_RegisterVariable (&vid_wait);
-	Cvar_RegisterVariable (&vid_nopageflip);
-	Cvar_RegisterVariable (&_vid_wait_override);
 	Cvar_RegisterVariable (&_vid_default_mode);
 	Cvar_RegisterVariable (&vid_config_x);
 	Cvar_RegisterVariable (&vid_config_y);
@@ -642,7 +578,6 @@ void	VID_Init (unsigned char *palette)
 			*ptmp = bestmatch;
 	}
 
-	// debug printf ("check -window\n");
 
 	/*********************************
  	 * command line processing (S.A) *
@@ -650,19 +585,27 @@ void	VID_Init (unsigned char *palette)
 
 	grab = 1; // grab window, release it when main menu is drawn
 
-	startwindowed = 1; // default is windowed
+	// default mode is windowed
 	vid_default = MODE_WINDOWED;
 
+	// see if the user wants fullscreen
 	if (COM_CheckParm("-fullscreen") || COM_CheckParm ("--fullscreen")
 			|| COM_CheckParm ("-f") || COM_CheckParm ("-fs"))
 	{
-		startwindowed=0;
 		vid_default = MODE_FULLSCREEN_DEFAULT;
 	}
 
 	if (COM_CheckParm("-width"))
 	{
 		width = atoi(com_argv[COM_CheckParm("-width")+1]);
+		if (COM_CheckParm("-height")) {
+			// we removed the old stuff, and now we need
+			// some sanity check here...
+			height = atoi(com_argv[COM_CheckParm("-height")+1]);
+		} else {
+			// we currently do "normal" modes with 4/3 ratio
+			height = 3 * width / 4;
+		}
 	}
 	else
 	{
@@ -671,40 +614,22 @@ void	VID_Init (unsigned char *palette)
 			width=400;
 		else
 			width=512;
+
+		// we currently do "normal" modes with 4/3 ratio
+		height = 3 * width / 4;
 	}
 
-	if (COM_CheckParm("-height"))
-	{
-		height = atoi(com_argv[COM_CheckParm("-height")+1]);
-	}
-	else
-	{
-		switch (width) {
-			case 800: height=600; break;
-			case 640: height=480; break;
-			case 512: height=384; break;
-			case 400: height=300; break;
-			case 320: height=240; break;
-			default:  height=300;
-		}
-	}
 	modelist[vid_default].width = width;
 	modelist[vid_default].height = height;
 	sprintf (modelist[vid_default].modedesc,"%dx%d",width,height);
-
-	// printf ("SA vid_default = %i\n",vid_default);
 
 	vid_initialized = true;
 
 	VID_SetMode (vid_default, palette);
 
-	vid_realmode = vid_modenum;
-
 	VID_SetPalette (palette);	// Useless (?) - DDOI
 
 	vid_menudrawfn = VID_MenuDraw;
-	// vid_menudrawfn = NULL; S.A
-
 	vid_menukeyfn = VID_MenuKey;
 }
 
@@ -969,6 +894,11 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/04/09 22:16:16  sezero
+ * Removed scankey[] and MapKey(), unused for SDL/PLATFORM_UNIX
+ * Did the same unused/cosmetic clean-up in vid_sdl.c which was
+ * done in gl_vidsdl.c
+ *
  * Revision 1.12  2005/03/13 16:00:38  sezero
  * added back console video mode reporting
  * also removed the non-functional findbpp

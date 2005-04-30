@@ -317,7 +317,7 @@ Translates a skin texture by the per-player color lookup
 	scaled_width >>= (int)gl_playermip.value;
 	scaled_height >>= (int)gl_playermip.value;
 
-	if (VID_Is8bit()) { // 8bit texture upload
+	if (is8bit) { // 8bit texture upload
 		byte *out2;
 
 		out2 = (byte *)pixels;

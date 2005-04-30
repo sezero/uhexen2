@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.17 2005-02-11 08:31:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.18 2005-04-30 09:59:17 sezero Exp $
 */
 
 #include "SDL.h"
@@ -106,21 +106,6 @@ void Force_CenterView_f (void)
 
 /*
 ===========
-IN_UpdateClipCursor
-===========
-*/
-void IN_UpdateClipCursor (void)
-{
-// FIXME - figure out what this does and un-stub it - DDOI
-#if 0
-	if (mouseinitialized && mouseactive)
-		ClipCursor (&window_rect);
-#endif
-}
-
-
-/*
-===========
 IN_ShowMouse
 ===========
 */
@@ -166,17 +151,10 @@ void IN_ActivateMouse (void)
 
 	if (mouseinitialized && _windowed_mouse.value)
 	{
-//		if (mouseparmsvalid)
-//			restore_spi = SystemParametersInfo (SPI_SETMOUSE, 0, newmouseparms, 0);
-
-//		SetCursorPos (window_center_x, window_center_y);
-
 		mouseactive = true;
 
-//		SetCapture (mainwindow);
 		if (grab)
 			SDL_WM_GrabInput (SDL_GRAB_ON);
-//		ClipCursor (&window_rect);
 	}
 }
 
@@ -441,7 +419,7 @@ void IN_MouseMove (usercmd_t *cmd)
 // if the mouse has moved, force it to the center, so there's room to move
 	if (mx || my)
 	{
-	// I'll give it a whirl without this and see how she does - DDOI
+	// We're running without this thing for quite a while now and we're still fine
 	//	SetCursorPos (window_center_x, window_center_y);
 	}
 }
@@ -1207,6 +1185,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/02/11 08:31:15  sezero
+ * remove unused-and-emptied IN_Accumulate
+ *
  * Revision 1.16  2005/02/11 08:30:29  sezero
  * remove already commented-out win32 code from IN_StartupMouse
  *

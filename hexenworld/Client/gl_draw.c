@@ -1720,7 +1720,7 @@ done: ;
 	}
 }
 
-extern qboolean VID_Is8bit();
+extern qboolean is8bit;
 
 /*
 ===============
@@ -1871,7 +1871,7 @@ void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean a
 		}
 	}
 
-	if (VID_Is8bit() && !alpha && (data!=scrap_texels[0])) {
+	if (is8bit && !alpha && (data!=scrap_texels[0])) {
 		GL_Upload8_EXT (data, width, height, mipmap, alpha, sprite);
 		return;
 	}

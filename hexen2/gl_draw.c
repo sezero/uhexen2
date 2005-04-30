@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.30 2005-04-30 09:06:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_draw.c,v 1.31 2005-04-30 09:59:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -14,6 +14,7 @@
 extern int ColorIndex[16];
 extern unsigned ColorPercent[16];
 extern qboolean	vid_initialized;
+extern qboolean	is8bit;
 
 #define MAX_DISC 18
 
@@ -1451,7 +1452,7 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 
 	// If you are on a 3Dfx card and your texture has no alpha, then download it
 	// as a palettized texture to save memory.
-	if( fxSetPaletteExtension && ( samples == 3 ) )
+	if( is8bit && ( samples == 3 ) )
 	{
 		fxPalTexImage2D( GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled );
 	}
@@ -1479,7 +1480,7 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 
 			// If you are on a 3Dfx card and your texture has no alpha, then download it
 			// as a palettized texture to save memory.
-			if( fxSetPaletteExtension && ( samples == 3) )
+			if( is8bit && ( samples == 3) )
 			{
 				fxPalTexImage2D (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 			}
@@ -1810,6 +1811,11 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2005/04/30 09:06:07  sezero
+ * Remove the 3dfx-spesific 3DFX_set_global_palette usage and favor
+ * GL_EXT_shared_texture_palette, instead. VID_Download3DfxPalette
+ * code taken from Pa3PyX.
+ *
  * Revision 1.29  2005/04/30 09:02:14  sezero
  * Patch for voodoo1/voodoo2/rush, enabling 3dfx paletted texture extensions:
  * * it may help low vidmem issues without using gl_picmip uglies.
