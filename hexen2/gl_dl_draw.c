@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.26 2005-04-13 12:20:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.27 2005-04-30 08:10:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1110,9 +1110,17 @@ void Draw_FadeScreen (void)
 	int bx,by,ex,ey;
 	int c;
 
+#if 0
 	// fadescreen ripple effect stops help/quit screens
 	// from appearing on 3dfx with Mesa Glide.  S.A
+
+	// fadescreen actually works with supported versions
+	// of mesa, such as 3.0, 3.2.1, 3.4.2 and 6.2.1.
+	// It only seems to break when using an old binary
+	// mesaGL from a quake3 package.		O.S.
+
 	if (is_3dfx) return;
+#endif
 
 	glfunc.glAlphaFunc_fp(GL_ALWAYS, 0);
 
@@ -1804,6 +1812,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2005/04/13 12:20:44  sezero
+ * made GL_Bind a macro (from Pa3PyX)
+ *
  * Revision 1.25  2005/04/08 17:30:21  sezero
  * 3dfx stuff initial clean-up
  *
