@@ -58,7 +58,7 @@ qboolean is_3dfx = false;
 
 typedef struct
 {
-	int		texnum;
+	unsigned int	texnum;
 	char	identifier[64];
 	int		width, height;
 	qboolean	mipmap;

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.15 2005-04-30 08:21:42 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.16 2005-04-30 08:26:11 sezero Exp $
  */
 
 // disable data conversion warnings
@@ -130,7 +130,7 @@ typedef struct cachepic_s
 
 typedef struct
 {
-	int		texnum;
+	unsigned int	texnum;
 	char	identifier[64];
 	int		width, height;
 	qboolean	mipmap;
@@ -362,6 +362,9 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/04/30 08:21:42  sezero
+ * int texture_mode seem to serve nothing...
+ *
  * Revision 1.14  2005/04/13 12:20:44  sezero
  * made GL_Bind a macro (from Pa3PyX)
  *
