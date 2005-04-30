@@ -657,16 +657,6 @@ void VID_SetPalette (unsigned char *palette)
 	d_8to24table[255] &= 0xffffff;	// 255 is transparent
 }
 
-//qboolean	gammaworks;
-void	VID_ShiftPalette (unsigned char *palette)
-{
-//	extern	byte ramps[3][256];
-	
-//	VID_SetPalette (palette);
-
-//	gammaworks = SetDeviceGammaRamp (maindc, ramps);
-}
-
 
 void VID_SetDefaultMode (void)
 {

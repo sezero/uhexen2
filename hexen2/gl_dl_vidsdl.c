@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.46 2005-04-30 10:07:53 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.47 2005-04-30 10:42:39 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -651,16 +651,6 @@ void VID_SetPalette (unsigned char *palette)
 			BTint[i*16+p] = ((float)b) / ((float)ColorPercent[15-p]);
 		}
 	}
-}
-
-//qboolean	gammaworks;
-void	VID_ShiftPalette (unsigned char *palette)
-{
-//	extern	byte ramps[3][256];
-	
-//	VID_SetPalette (palette);
-
-//	gammaworks = SetDeviceGammaRamp (maindc, ramps);
 }
 
 

@@ -446,29 +446,6 @@ void R_PrintAliasStats (void)
 }
 
 
-void WarpPalette (void)
-{
-	int		i,j;
-	byte	newpalette[768];
-	int		basecolor[3];
-	
-	basecolor[0] = 130;
-	basecolor[1] = 80;
-	basecolor[2] = 50;
-
-// pull the colors halfway to bright brown
-	for (i=0 ; i<256 ; i++)
-	{
-		for (j=0 ; j<3 ; j++)
-		{
-			newpalette[i*3+j] = (host_basepal[i*3+j] + basecolor[j])/2;
-		}
-	}
-	
-	VID_ShiftPalette (newpalette);
-}
-
-
 /*
 ===================
 R_TransformFrustum

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.15 2005-04-30 08:39:08 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.16 2005-04-30 10:42:41 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -834,7 +834,6 @@ void M_AdjustSliders (int dir)
 		SB_ViewSizeChanged();
 		vid.recalc_refdef = 1;
 		break;
-		//#ifndef GLQUAKE
 	case OPT_GAMMA:	// gamma
 		v_gamma.value -= dir * 0.05;
 		if (v_gamma.value < 0.5)
@@ -844,7 +843,6 @@ void M_AdjustSliders (int dir)
 		Cvar_SetValue ("gamma", v_gamma.value);
 		VID_ApplyGamma();
 		break;
-		//#endif
 	case OPT_MOUSESPEED:	// mouse speed
 		sensitivity.value += dir * 0.5;
 		if (sensitivity.value < 1)
@@ -1000,11 +998,9 @@ void M_Options_Draw (void)
 	r = (scr_viewsize.value - 30) / (120 - 30);
 	M_DrawSlider (220, 60+(3*8), r);
 
-//	#ifndef GLQUAKE
 	M_Print (16, 60+(4*8), "            Brightness");
 	r = (1.0 - v_gamma.value) / 0.5;
 	M_DrawSlider (220, 60+(4*8), r);
-//	#endif
 
 	M_Print (16, 60+(5*8), "           Mouse Speed");
 	r = (sensitivity.value - 1)/10;
@@ -1104,10 +1100,6 @@ void M_Options_Key (int k)
 		if (options_cursor < 0)
 			options_cursor = OPTIONS_ITEMS-1;
 
-		//#ifdef GLQUAKE	
-		//if ((options_cursor == OPT_GAMMA)) options_cursor--;
-		//#endif
-
 		break;
 
 	case K_DOWNARROW:
@@ -1115,10 +1107,6 @@ void M_Options_Key (int k)
 		options_cursor++;
 		if (options_cursor >= OPTIONS_ITEMS)
 			options_cursor = 0;
-
-		//#ifdef GLQUAKE	
-		//if ((options_cursor == OPT_GAMMA)) options_cursor++;
-		//#endif
 
 		break;	
 

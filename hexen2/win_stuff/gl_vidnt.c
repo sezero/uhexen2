@@ -113,8 +113,6 @@ char *VID_GetModeDescription (int mode);
 void ClearAllStates (void);
 void VID_UpdateWindowStatus (void);
 void GL_Init (void);
-void VID_SetGamma(float value);
-void VID_SetGamma_f(void);
 
 PROC glArrayElementEXT;
 PROC glColorPointerEXT;
@@ -138,6 +136,10 @@ cvar_t		_windowed_mouse = {"_windowed_mouse","0", true};
 
 int			window_center_x, window_center_y, window_x, window_y, window_width, window_height;
 RECT		window_rect;
+
+
+extern unsigned short	ramps[3][256];
+
 
 // direct draw software compatability stuff
 
@@ -719,50 +721,6 @@ void GL_Init (void)
 #endif
 }
 
-/*
-=================
-VID_SetGamma
-
-=================
-*/
-
-void VID_SetGamma(float value)
-{
-#ifdef PLATFORM_UNIX
-  SDL_SetGamma(value,value,value);
-#endif
-}
-
-void VID_ApplyGamma (void)
-{
-  if ((v_gamma.value != 0)&&(v_gamma.value > (1/GAMMA_MAX)))
-    VID_SetGamma(1/v_gamma.value);
-
-  else VID_SetGamma(GAMMA_MAX);
-
-//  Con_Printf ("Gamma changed to %f\n", v_gamma.value);
-}
-
-void VID_SetGamma_f (void)
-{
-  float value = 1;
-
-  value = atof (Cmd_Argv(1));
-
-  if (value != 0) {
-    if (value > (1/GAMMA_MAX))
-      v_gamma.value = value;
-
-    else v_gamma.value =  1/GAMMA_MAX;
-  }
-
-/* if value==0 , just apply current settings.
-   this is usefull at startup */
-
-  VID_ApplyGamma();
-
-//  Con_Printf ("Gamma changed to %f\n", v_gamma.value);
-}
 
 /*
 =================
@@ -971,14 +929,11 @@ void VID_SetPalette (unsigned char *palette)
 	}
 }
 
-BOOL	gammaworks;
+qboolean	gammaworks;
 void	VID_ShiftPalette (unsigned char *palette)
 {
-	extern	byte ramps[3][256];
-	
-//	VID_SetPalette (palette);
-
-//	gammaworks = SetDeviceGammaRamp (maindc, ramps);
+	if (gammaworks)
+		SetDeviceGammaRamp (maindc, ramps);
 }
 
 
@@ -997,6 +952,9 @@ void	VID_Shutdown (void)
 	{
     	hRC = wglGetCurrentContext();
     	hDC = wglGetCurrentDC();
+
+	if (maindc && gammaworks)
+		SetDeviceGammaRamp(maindc, orig_ramps);
 
     	wglMakeCurrent(NULL, NULL);
 
@@ -1916,6 +1874,10 @@ void	VID_Init (unsigned char *palette)
 		Sys_Error ("wglMakeCurrent failed");
 
 	GL_Init ();
+
+	gammaworks = GetDeviceGammaRamp(maindc, orig_ramps);
+	if (!gammaworks)
+		Con_Printf("WARNING: Hardware gamma not supported.\n");
 
 	sprintf (gldir, "%s/glhexen", com_gamedir);
 	Sys_mkdir (gldir);
