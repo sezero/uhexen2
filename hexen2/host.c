@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.13 2005-04-15 20:24:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.14 2005-04-30 07:44:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1007,11 +1007,9 @@ void Host_Init (quakeparms_t *parms)
 			Sys_Error ("Couldn't load gfx/colormap.lmp");
 
 #ifdef GLQUAKE
-		if (COM_CheckParm("-old3dfx")) {
 		// I always forget doing these...
-			setenv ("MESA_GLX_FX","f",1);
-			setenv ("FX_DONT_FAKE_MULTITEX","1",1);
-		}
+		setenv ("MESA_GLX_FX","f",1);
+		setenv ("FX_DONT_FAKE_MULTITEX","1",1);
 #endif
 		VID_Init (host_basepal);
 
@@ -1106,6 +1104,10 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/04/15 20:24:21  sezero
+ * added working console input (from hexenworld server).
+ * disabled console input in non-dedicated mode.
+ *
  * Revision 1.12  2005/04/13 12:22:41  sezero
  * - Removed useless -minmemory cmdline argument
  * - Removed useless parms->memsize < minimum_memory check in Host_Init
