@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.8 2005-04-05 19:28:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.9 2005-04-30 08:45:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1287,7 +1287,7 @@ void PR_LoadProgs (void)
 #ifdef H2MP
 void PR_LoadInfoStrings(void)
 {
-	int i,count,start,Length;
+	int i,count,start;
 	char NewLineChar;
 
 	pr_global_info_strings = (char *)COM_LoadHunkFile ("infolist.txt");
@@ -1307,7 +1307,6 @@ void PR_LoadInfoStrings(void)
 			}	
 		}
 	}
-	Length = i;
 
 	if (!count)
 	{
@@ -1339,7 +1338,7 @@ void PR_LoadInfoStrings(void)
 
 void PR_LoadStrings(void)
 {
-	int i,count,start,Length;
+	int i,count,start;
 	char NewLineChar;
 
 	pr_global_strings = (char *)COM_LoadHunkFile ("strings.txt");
@@ -1359,7 +1358,6 @@ void PR_LoadStrings(void)
 			}	
 		}
 	}
-	Length = i;
 
 	if (!count)
 	{
@@ -1445,6 +1443,9 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/04/05 19:28:40  sezero
+ * clean-ups in endianness which now is decided at compile time
+ *
  * Revision 1.7  2004/12/23 21:12:14  sezero
  * fix a comment and give more detail
  *

@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.10 2005-04-15 20:21:49 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.11 2005-04-30 08:45:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1899,7 +1899,7 @@ void Host_Create_f(void)
 	char *FindName;
 	dfunction_t	*Search,*func;
 	edict_t		*ent;
-	int		i,Length,NumFound,Diff,NewDiff;
+	int		i,fLength,NumFound,Diff,NewDiff;
 
 	if (!sv.active)
 	{
@@ -1925,7 +1925,7 @@ void Host_Create_f(void)
 
 	if (!func)
 	{
-		Length = strlen(FindName);
+		fLength = strlen(FindName);
 		NumFound = 0;
 
 		Diff = 999;
@@ -1933,7 +1933,7 @@ void Host_Create_f(void)
 		for (i=0 ; i<progs->numfunctions ; i++)
 		{
 			Search = &pr_functions[i];
-			if (!_strnicmp(pr_strings + Search->s_name,FindName,Length) )
+			if (!_strnicmp(pr_strings + Search->s_name,FindName,fLength) )
 			{
 				if (NumFound == 1)
 				{
@@ -2418,6 +2418,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/04/15 20:21:49  sezero
+ * Kill warning: cl_main.c:207: warning: `return' with no value, in function returning non-void
+ *
  * Revision 1.9  2005/01/24 20:29:43  sezero
  * fix flush_textures decision which used to be always true
  *

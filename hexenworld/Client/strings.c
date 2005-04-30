@@ -8,7 +8,7 @@ char			*puzzle_strings;
 
 void PR_LoadStrings(void)
 {
-	int i,count,start,Length;
+	int i,count,start;
 	char NewLineChar;
 
 	pr_global_strings = (char *)COM_LoadHunkFile ("strings.txt");
@@ -28,7 +28,6 @@ void PR_LoadStrings(void)
 			}	
 		}
 	}
-	Length = i;
 
 	if (!count)
 	{
