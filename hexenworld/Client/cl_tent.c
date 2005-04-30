@@ -132,8 +132,6 @@ beam_t			cl_beams[MAX_BEAMS];
 explosion_t		cl_explosions[MAX_EXPLOSIONS];
 
 static stream_t cl_Streams[MAX_STREAMS];
-static entity_t StreamEntities[MAX_STREAM_ENTITIES];	/* What is so nice about this ???!!!  O.S. */
-//static int		StreamEntityCount;
 
 static int		MultiGrenadeCurrentChannel;
 
@@ -3370,7 +3368,10 @@ void CL_ParseTEnt (void)
 					S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning2, pos, 1, 1);
 				}
 
-				for (i = 0; i < 10; i++)
+				// Oddity note:  10 used to crash the game either with gcc4,
+				// or with any gcc + static entity_t StreamEntities removed.
+				//for (i = 0; i < 10; i++)
+				for (i = 0; i < 8; i++)
 				{	// make some lightning
 					models[0] = Mod_ForName("models/stlghtng.mdl", true);
 
