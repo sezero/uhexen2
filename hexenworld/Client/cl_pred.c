@@ -43,7 +43,7 @@ void CL_NudgePosition (void)
 CL_PredictUsercmd
 ==============
 */
-void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, qboolean spectator)
+void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, qboolean spectate)
 {
 	// split up very long moves
 	if (u->msec > 50)
@@ -54,8 +54,8 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 		split = *u;
 		split.msec /= 2;
 
-		CL_PredictUsercmd (from, &temp, &split, spectator);
-		CL_PredictUsercmd (&temp, to, &split, spectator);
+		CL_PredictUsercmd (from, &temp, &split, spectate);
+		CL_PredictUsercmd (&temp, to, &split, spectate);
 		return;
 	}
 
@@ -69,7 +69,7 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 	pmove.oldbuttons = from->oldbuttons;
 	pmove.waterjumptime = from->waterjumptime;
 	pmove.dead = cl.v.health <= 0;
-	pmove.spectator = spectator;
+	pmove.spectator = spectate;
 	pmove.hasted = cl.v.hasted;
 	pmove.movetype = cl.v.movetype;
 	pmove.teleport_time = cl.v.teleport_time;
