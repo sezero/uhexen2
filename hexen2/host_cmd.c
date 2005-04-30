@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.11 2005-04-30 08:45:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.12 2005-04-30 08:47:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1854,7 +1854,7 @@ void Host_Spawn_f (void)
 	host_client->sendsignon = true;
 }
 
-dfunction_t *ED_FindFunctioni (char *name);
+dfunction_t *ED_FindFunctioni (char *fn_name);
 
 #define		MAXCMDLINE	256
 extern  char	key_lines[32][MAXCMDLINE];
@@ -2418,6 +2418,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/04/30 08:45:17  sezero
+ * silenced warnings about Lenght decleration being shadowed
+ *
  * Revision 1.10  2005/04/15 20:21:49  sezero
  * Kill warning: cl_main.c:207: warning: `return' with no value, in function returning non-void
  *

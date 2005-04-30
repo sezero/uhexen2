@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.9 2005-04-30 08:45:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.10 2005-04-30 08:47:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -270,7 +270,7 @@ ddef_t *ED_FindGlobal (char *name)
 ED_FindFunction
 ============
 */
-dfunction_t *ED_FindFunction (char *name)
+dfunction_t *ED_FindFunction (char *fn_name)
 {
 	dfunction_t		*func;
 	int				i;
@@ -278,13 +278,13 @@ dfunction_t *ED_FindFunction (char *name)
 	for (i=0 ; i<progs->numfunctions ; i++)
 	{
 		func = &pr_functions[i];
-		if (!strcmp(pr_strings + func->s_name,name) )
+		if (!strcmp(pr_strings + func->s_name, fn_name))
 			return func;
 	}
 	return NULL;
 }
 
-dfunction_t *ED_FindFunctioni (char *name)
+dfunction_t *ED_FindFunctioni (char *fn_name)
 {
 	dfunction_t		*func;
 	int				i;
@@ -292,7 +292,7 @@ dfunction_t *ED_FindFunctioni (char *name)
 	for (i=0 ; i<progs->numfunctions ; i++)
 	{
 		func = &pr_functions[i];
-		if (!strcmpi(pr_strings + func->s_name,name) )
+		if (!strcmpi(pr_strings + func->s_name,fn_name) )
 			return func;
 	}
 	return NULL;
@@ -1443,6 +1443,9 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/04/30 08:45:17  sezero
+ * silenced warnings about Lenght decleration being shadowed
+ *
  * Revision 1.8  2005/04/05 19:28:40  sezero
  * clean-ups in endianness which now is decided at compile time
  *
