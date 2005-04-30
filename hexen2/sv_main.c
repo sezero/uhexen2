@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.9 2005-01-24 20:29:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.10 2005-04-30 08:30:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1906,7 +1906,7 @@ Tell all the clients that the server is changing levels
 */
 void SV_SendReconnect (void)
 {
-	char	data[128];
+	byte	data[128];
 	sizebuf_t	msg;
 
 	msg.data = data;
@@ -2169,6 +2169,9 @@ void SV_SpawnServer (char *server)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/01/24 20:29:43  sezero
+ * fix flush_textures decision which used to be always true
+ *
  * Revision 1.8  2004/12/18 14:15:35  sezero
  * Clean-up and kill warnings 10:
  * Remove some already commented-out functions and code fragments.

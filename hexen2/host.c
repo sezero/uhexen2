@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.14 2005-04-30 07:44:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.15 2005-04-30 08:30:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -464,7 +464,7 @@ void Host_ShutdownServer(qboolean crash)
 	int		i;
 	int		count;
 	sizebuf_t	buf;
-	char		message[4];
+	byte		message[4];
 	double	start;
 
 	if (!sv.active)
@@ -1104,6 +1104,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/04/30 07:44:35  sezero
+ * Always set the MESA_GLX_FX FX_DONT_FAKE_MULTITEX environment variables
+ *
  * Revision 1.13  2005/04/15 20:24:21  sezero
  * added working console input (from hexenworld server).
  * disabled console input in non-dedicated mode.
