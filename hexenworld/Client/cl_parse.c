@@ -303,7 +303,7 @@ A download message has been received from the server
 void CL_ParseDownload (void)
 {
 	int		size, percent;
-	byte	name[1024];
+	char	name[1024];
 	int		r;
 
 
