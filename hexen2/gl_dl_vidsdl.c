@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.45 2005-04-30 10:04:23 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.46 2005-04-30 10:07:53 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -154,12 +154,20 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 /* Init SDL */
 
-qboolean VID_SDL_SetMode (int modenum)
+int VID_SetMode (int modenum)
 {
-	// handle both fullscreen and windowed modes -S.A
+	Uint32	flags;
+	int	temp;
+	int	sdl_tmp;	// for SDL GL attributes actually set
 
-	Uint32 flags;
-	int sdl_tmp;	// for displaying SDL GL actual attributes
+	// so Con_Printfs don't mess us up by forcing vid and snd updates
+	temp = scr_disabled_for_loading;
+	scr_disabled_for_loading = true;
+
+	if ((modelist[modenum].type != MS_WINDOWED) && (modelist[modenum].type != MS_FULLSCREEN))
+		Sys_Error ("VID_SetMode: Bad mode type in modelist");
+
+	// handle both fullscreen and windowed modes -S.A
 
 /*	SDL doco recons you need this. S.A.
 	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
@@ -186,19 +194,17 @@ qboolean VID_SDL_SetMode (int modenum)
 	vid.numpages = 2;
 	
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-		return false;
+		Sys_Error ("Couldn't init video: %s", SDL_GetError());
 
 	if (SDL_GL_LoadLibrary(gl_library) < 0)
 		Sys_Error("VID: Couldn't load GL library: %s", SDL_GetError());
 
 	//SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, modelist[modenum].bpp);
-
 	if (!(screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags)))
-		return false;
+		Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 
 	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &sdl_tmp);
 	Con_SafePrintf ("Video Mode: %d x %d x %d\n", vid.width, vid.height, sdl_tmp);
-
 
 	// acknowledge Portal of Praevus S.A
 #ifdef H2MP
@@ -206,23 +212,6 @@ qboolean VID_SDL_SetMode (int modenum)
 #else
 	SDL_WM_SetCaption ("Hexen II", "HEXEN2");
 #endif
-	return true;
-}
-
-int VID_SetMode (int modenum)
-{
-	int		temp;
-	qboolean	stat = false;
-
-	// so Con_Printfs don't mess us up by forcing vid and snd updates
-	temp = scr_disabled_for_loading;
-	scr_disabled_for_loading = true;
-
-	if ((modelist[modenum].type != MS_WINDOWED) && (modelist[modenum].type != MS_FULLSCREEN))
-		Sys_Error ("VID_SetMode: Bad mode type in modelist");
-
-	if ( !(stat = VID_SDL_SetMode(modenum)) )
-		Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 
 	if (modelist[modenum].type == MS_WINDOWED)
 	{
