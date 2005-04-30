@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.41 2005-04-30 08:21:42 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.42 2005-04-30 09:02:14 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -104,6 +104,9 @@ qboolean	vid_initialized = false;
 static qboolean	windowed;
 static int	windowed_mouse;
 
+#ifndef GL_SHARED_TEXTURE_PALETTE_EXT
+#define GL_SHARED_TEXTURE_PALETTE_EXT 0x81FB
+#endif
 FX_SET_PALETTE_EXT fxSetPaletteExtension;
 
 unsigned char inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
@@ -343,9 +346,10 @@ void VID_UpdateWindowStatus (void)
 
 void CheckSetPaletteExtension( void )
 {
+	void *prjobj;
+
 	fxSetPaletteExtension = NULL;
 
-#if 0
 	if (strstr(gl_extensions, "3DFX_set_global_palette"))
 		fxSetPaletteExtension = (FX_SET_PALETTE_EXT)SDL_GL_GetProcAddress("gl3DfxSetPaletteEXT");
 	else
@@ -353,13 +357,21 @@ void CheckSetPaletteExtension( void )
 
 	if (fxSetPaletteExtension == NULL)
 	{
+		if ((prjobj = dlopen(NULL, RTLD_LAZY)) == NULL) {
+			Con_Printf ("Unable to open symbol list!..\n");
+			Con_Printf ("Palettized textures disabled.\n");
+			return;
+		}
+		if ((fxSetPaletteExtension = (FX_SET_PALETTE_EXT)dlsym(prjobj, "gl3DfxSetPaletteEXT")) == NULL) {
 			Con_Printf ("GetProcAddress for gl3DfxSetPaletteEXT failed\n");
 			Con_Printf ("Palettized textures disabled...\n");
+			dlclose(prjobj);
 			return;
+		}
+		dlclose(prjobj);
 	}
 	Con_Printf("Found 3Dfx 8-bit extension\n");
 	Con_Printf("using palettized textures.\n");
-#endif
 }
 
 
@@ -699,13 +711,13 @@ void	VID_CreateInversePalette( unsigned char *palette )
 
 void VID_Download3DfxPalette( void )
 {
-#if 0
-	unsigned long fxPalette[256];
+	GLuint fxPalette[256];
 	int i;
 
 	if( !fxSetPaletteExtension )
 		return;
 
+	glfunc.glEnable_fp( GL_SHARED_TEXTURE_PALETTE_EXT );
 	for( i = 0; i < 256; i++ )
 	{
 		fxPalette[i] = 0xff000000 | 
@@ -717,7 +729,6 @@ void VID_Download3DfxPalette( void )
 	}
 
 	fxSetPaletteExtension( fxPalette );
-#endif
 }
 
 void VID_SetPalette (unsigned char *palette)

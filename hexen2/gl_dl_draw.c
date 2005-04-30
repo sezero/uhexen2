@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.28 2005-04-30 08:48:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.29 2005-04-30 09:02:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1327,8 +1327,8 @@ void GL_MipMap (byte *in, int width, int height)
 	}
 }
 
-#if 0	// we don't use this
-// Acts the same as glfunc.glTexImage2D_fp, except that it maps color into the
+
+// Acts the same as glTexImage2D, except that it maps color into the
 // current palette and uses paletteized textures.
 static void fxPalTexImage2D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels)
 {
@@ -1361,7 +1361,7 @@ static void fxPalTexImage2D (GLenum target, GLint level, GLint internalformat, G
 /*	if( fxMarkPalTextureExtension )
 		fxMarkPalTextureExtension();*/
 }
-#endif
+
 
 /*
 ===============
@@ -1447,7 +1447,6 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 
 	texels += scaled_width * scaled_height;
 
-#if 0	// DDOI
 	// If you are on a 3Dfx card and your texture has no alpha, then download it
 	// as a palettized texture to save memory.
 	if( fxSetPaletteExtension && ( samples == 3 ) )
@@ -1455,7 +1454,6 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 		fxPalTexImage2D( GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled );
 	}
 	else
-#endif
 	{
 		glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 	}
@@ -1479,13 +1477,11 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 
 			// If you are on a 3Dfx card and your texture has no alpha, then download it
 			// as a palettized texture to save memory.
-#if 0	// DDOI
 			if( fxSetPaletteExtension && ( samples == 3) )
 			{
 				fxPalTexImage2D (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 			}
 			else
-#endif
 			{
 				glfunc.glTexImage2D_fp (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 			}
@@ -1812,6 +1808,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2005/04/30 08:48:39  sezero
+ * silenced warnings about x and y parameters being shadowed
+ *
  * Revision 1.27  2005/04/30 08:10:19  sezero
  * re-enable fadescreen for is_3dfx == true (but keep the note in
  * for future reference)

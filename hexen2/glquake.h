@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.16 2005-04-30 08:26:11 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.17 2005-04-30 09:02:17 sezero Exp $
  */
 
 // disable data conversion warnings
@@ -45,7 +45,7 @@ extern  FX_SET_PALETTE_EXT fxSetPaletteExtension;
 extern  FX_MARK_PAL_TEXTURE_EXT fxMarkPalTextureExtension;
 #else
 #define	bindTexFunc(a, b) glfunc.glBindTexture_fp((a), (b))
-typedef void (*FX_SET_PALETTE_EXT)( unsigned long * );
+typedef void (*FX_SET_PALETTE_EXT)( GLuint * );
 extern  FX_SET_PALETTE_EXT fxSetPaletteExtension;
 #endif
 
@@ -362,6 +362,10 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/04/30 08:26:11  sezero
+ * changed texnum member of gltexture_t to be of unsigned int type rather
+ * than int
+ *
  * Revision 1.15  2005/04/30 08:21:42  sezero
  * int texture_mode seem to serve nothing...
  *
