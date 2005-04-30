@@ -1,7 +1,7 @@
 /*
 	sv_phys.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.5 2004-12-18 14:20:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.6 2005-04-30 08:04:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -36,7 +36,7 @@ cvar_t	sv_walkpitch={"sv_walkpitch","0"};
  *  O.S.:  QUAKE2, QUAKE2RJ and QUAKE2RJa are different??? Clean this mess! *
  ****************************************************************************/
 
-#ifdef QUAKE2RJ
+#ifdef QUAKE2
 static	vec3_t	vec_origin = {0.0, 0.0, 0.0};
 #endif
 
@@ -2283,6 +2283,10 @@ trace_t SV_Trace_Toss (edict_t *ent, edict_t *ignore)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/12/18 14:20:40  sezero
+ * Clean-up and kill warnings: 11
+ * A lot of whitespace cleanups.
+ *
  * Revision 1.4  2004/12/18 14:08:08  sezero
  * Clean-up and kill warnings 9:
  * Kill many unused vars.
