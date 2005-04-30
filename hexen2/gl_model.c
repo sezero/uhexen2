@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.c,v 1.8 2005-04-30 08:21:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.c,v 1.9 2005-04-30 12:07:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -714,14 +714,14 @@ Fills in s->texturemins[] and s->extents[]
 */
 void CalcSurfaceExtents (msurface_t *s)
 {
-	float	mins[2], maxs[2], val;
+	float	min_s[2], max_s[2], val;
 	int		i,j, e;
 	mvertex_t	*v;
 	mtexinfo_t	*tex;
 	int		bmins[2], bmaxs[2];
 
-	mins[0] = mins[1] = 999999;
-	maxs[0] = maxs[1] = -99999;
+	min_s[0] = min_s[1] = 999999;
+	max_s[0] = max_s[1] = -99999;
 
 	tex = s->texinfo;
 	
@@ -739,17 +739,17 @@ void CalcSurfaceExtents (msurface_t *s)
 				v->position[1] * tex->vecs[j][1] +
 				v->position[2] * tex->vecs[j][2] +
 				tex->vecs[j][3];
-			if (val < mins[j])
-				mins[j] = val;
-			if (val > maxs[j])
-				maxs[j] = val;
+			if (val < min_s[j])
+				min_s[j] = val;
+			if (val > max_s[j])
+				max_s[j] = val;
 		}
 	}
 
 	for (i=0 ; i<2 ; i++)
 	{	
-		bmins[i] = floor(mins[i]/16);
-		bmaxs[i] = ceil(maxs[i]/16);
+		bmins[i] = floor(min_s[i]/16);
+		bmaxs[i] = ceil(max_s[i]/16);
 
 		s->texturemins[i] = bmins[i] * 16;
 		s->extents[i] = (bmaxs[i] - bmins[i]) * 16;
@@ -1185,14 +1185,14 @@ void Mod_LoadPlanes (lump_t *l)
 RadiusFromBounds
 =================
 */
-float RadiusFromBounds (vec3_t mins, vec3_t maxs)
+float RadiusFromBounds (vec3_t min_ss, vec3_t max_ss)
 {
 	int		i;
 	vec3_t	corner;
 
 	for (i=0 ; i<3 ; i++)
 	{
-		corner[i] = fastfabs(mins[i]) > fastfabs(maxs[i]) ? fastfabs(mins[i]) : fastfabs(maxs[i]);
+		corner[i] = fastfabs(min_ss[i]) > fastfabs(max_ss[i]) ? fastfabs(min_ss[i]) : fastfabs(max_ss[i]);
 	}
 
 	return Length (corner);
@@ -2304,6 +2304,9 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/04/30 08:21:42  sezero
+ * int texture_mode seem to serve nothing...
+ *
  * Revision 1.7  2005/01/24 20:27:25  sezero
  * consolidate GL_LoadTexture functions
  *
