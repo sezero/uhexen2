@@ -554,7 +554,7 @@ void NET_GetLocalAddress (void)
 {
 	char	buff[512];
 	struct sockaddr_in	address;
-	int		namelen;
+	socklen_t		namelen;
 
 	gethostname(buff, 512);
 	buff[512-1] = 0;
@@ -826,7 +826,7 @@ bool NET_GetPacket (void)
 {
 	int 	ret;
 	struct sockaddr_in	from;
-	int		fromlen;
+	socklen_t		fromlen;
 
 	fromlen = sizeof(from);
 	ret = recvfrom (net_socket, (char *)net_message_buffer, sizeof(net_message_buffer), 0, (struct sockaddr *)&from, &fromlen);

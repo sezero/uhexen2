@@ -911,7 +911,7 @@ qboolean NET_GetPacket (void)
 {
 	int 	ret;
 	struct sockaddr_in	from;
-	int		fromlen;
+	socklen_t		fromlen;
 
 	fromlen = sizeof(from);
 	ret = recvfrom (net_socket,(char *) huffbuff, sizeof(net_message_buffer), 0, (struct sockaddr *)&from, &fromlen);
@@ -1005,7 +1005,7 @@ void NET_GetLocalAddress (void)
 {
 	char	buff[512];
 	struct sockaddr_in	address;
-	int		namelen;
+	socklen_t		namelen;
 
 	if (gethostname(buff, 512) != 0)
 		Sys_Error("gethostname failed,  errno = %i,\nCannot continue, bailing out...\n",errno);
