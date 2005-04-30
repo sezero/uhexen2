@@ -195,22 +195,12 @@ void Cmd_Filter_f();
 
 //Globals
 
-extern cmd_function_t	*cmd_functions;		// possible commands to execute
-
 extern sizebuf_t	cmd_text;
 extern byte		cmd_text_buf[8192];
-
-extern	int			cmd_argc;
-extern	char		*cmd_argv[MAX_ARGS];
-extern	char		*cmd_null_string;
-extern	char		*cmd_args;
 
 extern char		com_token[1024];
 extern int		com_argc;
 extern char	**com_argv;
-
-extern char	*largv[MAX_NUM_ARGVS + 1];
-extern char	*argvdummy;
 
 extern sizebuf_t	net_message;
 extern int			net_socket;
