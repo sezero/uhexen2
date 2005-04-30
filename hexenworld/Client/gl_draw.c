@@ -1466,10 +1466,10 @@ void GL_MipMap8Bit (byte *in, int width, int height)
 //	{
 		for (j=0 ; j<width ; j+=2, out+=1, in+=2)
 		{
-			at1 = (char *) &d_8to24table[in[0]];
-			at2 = (char *) &d_8to24table[in[1]];
-			at3 = (char *) &d_8to24table[in[width+0]];
-			at4 = (char *) &d_8to24table[in[width+1]];
+			at1 = (byte *) &d_8to24table[in[0]];
+			at2 = (byte *) &d_8to24table[in[1]];
+			at3 = (byte *) &d_8to24table[in[width+0]];
+			at4 = (byte *) &d_8to24table[in[width+1]];
 
  			r = (at1[0]+at2[0]+at3[0]+at4[0]); r>>=5;
  			g = (at1[1]+at2[1]+at3[1]+at4[1]); g>>=5;
