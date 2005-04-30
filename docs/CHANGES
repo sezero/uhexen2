@@ -1,6 +1,6 @@
 ChangeLog:
 
-2005-04-15 (CVS):
+2005-04-30 (CVS):
     * Always set the MESA_GLX_FX FX_DONT_FAKE_MULTITEX environment
       variables
     * "Fixed" (in fact, worked-around) Succubus' lightning weapon
