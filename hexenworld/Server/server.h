@@ -448,7 +448,7 @@ void SV_Status_f (void);
 // sv_ents.c
 //
 void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg);
-void SV_WriteInventory (client_t *host_client, edict_t *ent, sizebuf_t *msg);
+void SV_WriteInventory (client_t *host_cl, edict_t *ent, sizebuf_t *msg);
 
 //
 // sv_effect.c

@@ -504,31 +504,31 @@ void SV_EmitPacketEntities (client_t *client, packet_entities_t *to, sizebuf_t *
 
 
 
-void SV_WriteInventory (client_t *host_client, edict_t *ent, sizebuf_t *msg)
+void SV_WriteInventory (client_t *host_cl, edict_t *ent, sizebuf_t *msg)
 {
 	int		sc1,sc2;
 	byte	test;
 
-	if (host_client->send_all_v) 
+	if (host_cl->send_all_v) 
 	{
 		sc1 = sc2 = 0xffffffff;
-		host_client->send_all_v = false;
+		host_cl->send_all_v = false;
 	}
 	else
 	{
 		sc1 = sc2 = 0;
 
-		if (ent->v.health != host_client->old_v.health)
+		if (ent->v.health != host_cl->old_v.health)
 			sc1 |= SC1_HEALTH;
-		if(ent->v.level != host_client->old_v.level)
+		if(ent->v.level != host_cl->old_v.level)
 			sc1 |= SC1_LEVEL;
-		if(ent->v.intelligence != host_client->old_v.intelligence)
+		if(ent->v.intelligence != host_cl->old_v.intelligence)
 			sc1 |= SC1_INTELLIGENCE;
-		if(ent->v.wisdom != host_client->old_v.wisdom)
+		if(ent->v.wisdom != host_cl->old_v.wisdom)
 			sc1 |= SC1_WISDOM;
-		if(ent->v.strength != host_client->old_v.strength)
+		if(ent->v.strength != host_cl->old_v.strength)
 			sc1 |= SC1_STRENGTH;
-		if(ent->v.dexterity != host_client->old_v.dexterity)
+		if(ent->v.dexterity != host_cl->old_v.dexterity)
 			sc1 |= SC1_DEXTERITY;
 		if (ent->v.teleport_time > sv.time)
 		{
@@ -537,102 +537,102 @@ void SV_WriteInventory (client_t *host_client, edict_t *ent, sizebuf_t *msg)
 //			ent->v.teleport_time = 0;
 		}
 
-//		if (ent->v.weapon != host_client->old_v.weapon)
+//		if (ent->v.weapon != host_cl->old_v.weapon)
 //			sc1 |= SC1_WEAPON;
-		if (ent->v.bluemana != host_client->old_v.bluemana)
+		if (ent->v.bluemana != host_cl->old_v.bluemana)
 			sc1 |= SC1_BLUEMANA;
-		if (ent->v.greenmana != host_client->old_v.greenmana)
+		if (ent->v.greenmana != host_cl->old_v.greenmana)
 			sc1 |= SC1_GREENMANA;
-		if (ent->v.experience != host_client->old_v.experience)
+		if (ent->v.experience != host_cl->old_v.experience)
 			sc1 |= SC1_EXPERIENCE;
-		if (ent->v.cnt_torch != host_client->old_v.cnt_torch)
+		if (ent->v.cnt_torch != host_cl->old_v.cnt_torch)
 			sc1 |= SC1_CNT_TORCH;
-		if (ent->v.cnt_h_boost != host_client->old_v.cnt_h_boost)
+		if (ent->v.cnt_h_boost != host_cl->old_v.cnt_h_boost)
 			sc1 |= SC1_CNT_H_BOOST;
-		if (ent->v.cnt_sh_boost != host_client->old_v.cnt_sh_boost)
+		if (ent->v.cnt_sh_boost != host_cl->old_v.cnt_sh_boost)
 			sc1 |= SC1_CNT_SH_BOOST;
-		if (ent->v.cnt_mana_boost != host_client->old_v.cnt_mana_boost)
+		if (ent->v.cnt_mana_boost != host_cl->old_v.cnt_mana_boost)
 			sc1 |= SC1_CNT_MANA_BOOST;
-		if (ent->v.cnt_teleport != host_client->old_v.cnt_teleport)
+		if (ent->v.cnt_teleport != host_cl->old_v.cnt_teleport)
 			sc1 |= SC1_CNT_TELEPORT;
-		if (ent->v.cnt_tome != host_client->old_v.cnt_tome)
+		if (ent->v.cnt_tome != host_cl->old_v.cnt_tome)
 			sc1 |= SC1_CNT_TOME;
-		if (ent->v.cnt_summon != host_client->old_v.cnt_summon)
+		if (ent->v.cnt_summon != host_cl->old_v.cnt_summon)
 			sc1 |= SC1_CNT_SUMMON;
-		if (ent->v.cnt_invisibility != host_client->old_v.cnt_invisibility)
+		if (ent->v.cnt_invisibility != host_cl->old_v.cnt_invisibility)
 			sc1 |= SC1_CNT_INVISIBILITY;
-		if (ent->v.cnt_glyph != host_client->old_v.cnt_glyph)
+		if (ent->v.cnt_glyph != host_cl->old_v.cnt_glyph)
 			sc1 |= SC1_CNT_GLYPH;
-		if (ent->v.cnt_haste != host_client->old_v.cnt_haste)
+		if (ent->v.cnt_haste != host_cl->old_v.cnt_haste)
 			sc1 |= SC1_CNT_HASTE;
-		if (ent->v.cnt_blast != host_client->old_v.cnt_blast)
+		if (ent->v.cnt_blast != host_cl->old_v.cnt_blast)
 			sc1 |= SC1_CNT_BLAST;
-		if (ent->v.cnt_polymorph != host_client->old_v.cnt_polymorph)
+		if (ent->v.cnt_polymorph != host_cl->old_v.cnt_polymorph)
 			sc1 |= SC1_CNT_POLYMORPH;
-		if (ent->v.cnt_flight != host_client->old_v.cnt_flight)
+		if (ent->v.cnt_flight != host_cl->old_v.cnt_flight)
 			sc1 |= SC1_CNT_FLIGHT;
-		if (ent->v.cnt_cubeofforce != host_client->old_v.cnt_cubeofforce)
+		if (ent->v.cnt_cubeofforce != host_cl->old_v.cnt_cubeofforce)
 			sc1 |= SC1_CNT_CUBEOFFORCE;
-		if (ent->v.cnt_invincibility != host_client->old_v.cnt_invincibility)
+		if (ent->v.cnt_invincibility != host_cl->old_v.cnt_invincibility)
 			sc1 |= SC1_CNT_INVINCIBILITY;
-		if (ent->v.artifact_active != host_client->old_v.artifact_active)
+		if (ent->v.artifact_active != host_cl->old_v.artifact_active)
 			sc1 |= SC1_ARTIFACT_ACTIVE;
-		if (ent->v.artifact_low != host_client->old_v.artifact_low)
+		if (ent->v.artifact_low != host_cl->old_v.artifact_low)
 			sc1 |= SC1_ARTIFACT_LOW;
-		if (ent->v.movetype != host_client->old_v.movetype)
+		if (ent->v.movetype != host_cl->old_v.movetype)
 			sc1 |= SC1_MOVETYPE;
-		if (ent->v.cameramode != host_client->old_v.cameramode)
+		if (ent->v.cameramode != host_cl->old_v.cameramode)
 			sc1 |= SC1_CAMERAMODE;
-		if (ent->v.hasted != host_client->old_v.hasted)
+		if (ent->v.hasted != host_cl->old_v.hasted)
 			sc1 |= SC1_HASTED;
-		if (ent->v.inventory != host_client->old_v.inventory)
+		if (ent->v.inventory != host_cl->old_v.inventory)
 			sc1 |= SC1_INVENTORY;
-		if (ent->v.rings_active != host_client->old_v.rings_active)
+		if (ent->v.rings_active != host_cl->old_v.rings_active)
 			sc1 |= SC1_RINGS_ACTIVE;
 
-		if (ent->v.rings_low != host_client->old_v.rings_low)
+		if (ent->v.rings_low != host_cl->old_v.rings_low)
 			sc2 |= SC2_RINGS_LOW;
-		if (ent->v.armor_amulet != host_client->old_v.armor_amulet)
+		if (ent->v.armor_amulet != host_cl->old_v.armor_amulet)
 			sc2 |= SC2_AMULET;
-		if (ent->v.armor_bracer != host_client->old_v.armor_bracer)
+		if (ent->v.armor_bracer != host_cl->old_v.armor_bracer)
 			sc2 |= SC2_BRACER;
-		if (ent->v.armor_breastplate != host_client->old_v.armor_breastplate)
+		if (ent->v.armor_breastplate != host_cl->old_v.armor_breastplate)
 			sc2 |= SC2_BREASTPLATE;
-		if (ent->v.armor_helmet != host_client->old_v.armor_helmet)
+		if (ent->v.armor_helmet != host_cl->old_v.armor_helmet)
 			sc2 |= SC2_HELMET;
-		if (ent->v.ring_flight != host_client->old_v.ring_flight)
+		if (ent->v.ring_flight != host_cl->old_v.ring_flight)
 			sc2 |= SC2_FLIGHT_T;
-		if (ent->v.ring_water != host_client->old_v.ring_water)
+		if (ent->v.ring_water != host_cl->old_v.ring_water)
 			sc2 |= SC2_WATER_T;
-		if (ent->v.ring_turning != host_client->old_v.ring_turning)
+		if (ent->v.ring_turning != host_cl->old_v.ring_turning)
 			sc2 |= SC2_TURNING_T;
-		if (ent->v.ring_regeneration != host_client->old_v.ring_regeneration)
+		if (ent->v.ring_regeneration != host_cl->old_v.ring_regeneration)
 			sc2 |= SC2_REGEN_T;
-//		if (ent->v.haste_time != host_client->old_v.haste_time)
+//		if (ent->v.haste_time != host_cl->old_v.haste_time)
 //			sc2 |= SC2_HASTE_T;
-//		if (ent->v.tome_time != host_client->old_v.tome_time)
+//		if (ent->v.tome_time != host_cl->old_v.tome_time)
 //			sc2 |= SC2_TOME_T;
-		if (ent->v.puzzle_inv1 != host_client->old_v.puzzle_inv1)
+		if (ent->v.puzzle_inv1 != host_cl->old_v.puzzle_inv1)
 			sc2 |= SC2_PUZZLE1;
-		if (ent->v.puzzle_inv2 != host_client->old_v.puzzle_inv2)
+		if (ent->v.puzzle_inv2 != host_cl->old_v.puzzle_inv2)
 			sc2 |= SC2_PUZZLE2;
-		if (ent->v.puzzle_inv3 != host_client->old_v.puzzle_inv3)
+		if (ent->v.puzzle_inv3 != host_cl->old_v.puzzle_inv3)
 			sc2 |= SC2_PUZZLE3;
-		if (ent->v.puzzle_inv4 != host_client->old_v.puzzle_inv4)
+		if (ent->v.puzzle_inv4 != host_cl->old_v.puzzle_inv4)
 			sc2 |= SC2_PUZZLE4;
-		if (ent->v.puzzle_inv5 != host_client->old_v.puzzle_inv5)
+		if (ent->v.puzzle_inv5 != host_cl->old_v.puzzle_inv5)
 			sc2 |= SC2_PUZZLE5;
-		if (ent->v.puzzle_inv6 != host_client->old_v.puzzle_inv6)
+		if (ent->v.puzzle_inv6 != host_cl->old_v.puzzle_inv6)
 			sc2 |= SC2_PUZZLE6;
-		if (ent->v.puzzle_inv7 != host_client->old_v.puzzle_inv7)
+		if (ent->v.puzzle_inv7 != host_cl->old_v.puzzle_inv7)
 			sc2 |= SC2_PUZZLE7;
-		if (ent->v.puzzle_inv8 != host_client->old_v.puzzle_inv8)
+		if (ent->v.puzzle_inv8 != host_cl->old_v.puzzle_inv8)
 			sc2 |= SC2_PUZZLE8;
-		if (ent->v.max_health != host_client->old_v.max_health)
+		if (ent->v.max_health != host_cl->old_v.max_health)
 			sc2 |= SC2_MAXHEALTH;
-		if (ent->v.max_mana != host_client->old_v.max_mana)
+		if (ent->v.max_mana != host_cl->old_v.max_mana)
 			sc2 |= SC2_MAXMANA;
-		if (ent->v.flags != host_client->old_v.flags)
+		if (ent->v.flags != host_cl->old_v.flags)
 			sc2 |= SC2_FLAGS;
 	}
 
@@ -788,7 +788,7 @@ void SV_WriteInventory (client_t *host_client, edict_t *ent, sizebuf_t *msg)
 		MSG_WriteFloat(msg, ent->v.flags);
 
 end:
-	memcpy(&host_client->old_v,&ent->v,sizeof(host_client->old_v));
+	memcpy(&host_cl->old_v,&ent->v,sizeof(host_cl->old_v));
 }
 
 
