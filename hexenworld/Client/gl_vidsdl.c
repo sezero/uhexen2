@@ -159,6 +159,7 @@ qboolean VID_SDL_SetMode (int modenum)
 	// handle both fullscreen and windowed modes -S.A
 
 	Uint32 flags;
+	int sdl_tmp;	// for displaying SDL GL actual attributes
 
 /*	SDL doco recons you need this. S.A.
 	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
@@ -190,10 +191,14 @@ qboolean VID_SDL_SetMode (int modenum)
 	if (SDL_GL_LoadLibrary(gl_library) < 0)
 		Sys_Error("VID: Couldn't load GL library: %s", SDL_GetError());
 
+	//SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, modelist[modenum].bpp);
+
 	if (!(screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags)))
 		return false;
-	else
-		Con_SafePrintf ("Video Mode: %d x %d x %d\n", vid.width, vid.height, modelist[modenum].bpp);
+
+	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &sdl_tmp);
+	Con_SafePrintf ("Video Mode: %d x %d x %d\n", vid.width, vid.height, sdl_tmp);
+
 
 	SDL_WM_SetCaption ("GLHexenWorld", "GLHexenWorld");
 

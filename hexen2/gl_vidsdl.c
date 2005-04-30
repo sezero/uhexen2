@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.44 2005-04-30 09:59:16 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.45 2005-04-30 10:04:23 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -159,6 +159,7 @@ qboolean VID_SDL_SetMode (int modenum)
 	// handle both fullscreen and windowed modes -S.A
 
 	Uint32 flags;
+	int sdl_tmp;	// for displaying SDL GL actual attributes
 
 /*	SDL doco recons you need this. S.A.
 	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
@@ -190,10 +191,14 @@ qboolean VID_SDL_SetMode (int modenum)
 	if (SDL_GL_LoadLibrary(gl_library) < 0)
 		Sys_Error("VID: Couldn't load GL library: %s", SDL_GetError());
 
+	//SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, modelist[modenum].bpp);
+
 	if (!(screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags)))
 		return false;
-	else
-		Con_SafePrintf ("Video Mode: %d x %d x %d\n", vid.width, vid.height, modelist[modenum].bpp);
+
+	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &sdl_tmp);
+	Con_SafePrintf ("Video Mode: %d x %d x %d\n", vid.width, vid.height, sdl_tmp);
+
 
 	// acknowledge Portal of Praevus S.A
 #ifdef H2MP
