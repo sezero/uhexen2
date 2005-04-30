@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.42 2005-04-30 09:02:14 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.43 2005-04-30 09:06:07 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -346,32 +346,22 @@ void VID_UpdateWindowStatus (void)
 
 void CheckSetPaletteExtension( void )
 {
-	void *prjobj;
-
 	fxSetPaletteExtension = NULL;
 
-	if (strstr(gl_extensions, "3DFX_set_global_palette"))
-		fxSetPaletteExtension = (FX_SET_PALETTE_EXT)SDL_GL_GetProcAddress("gl3DfxSetPaletteEXT");
+	if (strstr(gl_extensions, "GL_EXT_shared_texture_palette"))
+		fxSetPaletteExtension = (FX_SET_PALETTE_EXT)SDL_GL_GetProcAddress("glColorTableEXT");
 	else
 		return;
 
 	if (fxSetPaletteExtension == NULL)
 	{
-		if ((prjobj = dlopen(NULL, RTLD_LAZY)) == NULL) {
-			Con_Printf ("Unable to open symbol list!..\n");
-			Con_Printf ("Palettized textures disabled.\n");
-			return;
-		}
-		if ((fxSetPaletteExtension = (FX_SET_PALETTE_EXT)dlsym(prjobj, "gl3DfxSetPaletteEXT")) == NULL) {
-			Con_Printf ("GetProcAddress for gl3DfxSetPaletteEXT failed\n");
+			Con_Printf ("GetProcAddress for glColorTableEXT failed\n");
 			Con_Printf ("Palettized textures disabled...\n");
-			dlclose(prjobj);
 			return;
-		}
-		dlclose(prjobj);
 	}
-	Con_Printf("Found 3Dfx 8-bit extension\n");
+	Con_Printf("Found 8-bit gl extensions\n");
 	Con_Printf("using palettized textures.\n");
+	glfunc.glEnable_fp(GL_SHARED_TEXTURE_PALETTE_EXT);
 }
 
 
@@ -407,9 +397,11 @@ void GL_Init (void)
 		is_3dfx = true;
 	}
 
+	fxSetPaletteExtension = NULL;
 	// enable paletted textures only when -paltex cmdline arg is used
 	if (COM_CheckParm("-paltex"))
 		CheckSetPaletteExtension();
+	VID_Download3DfxPalette();
 
 	glfunc.glClearColor_fp (1,0,0,0);
 	glfunc.glCullFace_fp(GL_FRONT);
@@ -709,26 +701,19 @@ void	VID_CreateInversePalette( unsigned char *palette )
 #endif
 }
 
-void VID_Download3DfxPalette( void )
+void VID_Download3DfxPalette (void)
 {
-	GLuint fxPalette[256];
+	byte glExtPalette[768];
 	int i;
 
-	if( !fxSetPaletteExtension )
-		return;
-
-	glfunc.glEnable_fp( GL_SHARED_TEXTURE_PALETTE_EXT );
-	for( i = 0; i < 256; i++ )
-	{
-		fxPalette[i] = 0xff000000 | 
-			( (  d_8to24table[i] & 0x000000ff ) << 16 ) |
-			( (  d_8to24table[i] & 0x0000ff00 ) ) |
-			( (  d_8to24table[i] & 0x00ff0000 ) >> 16 );
-
-//		fxPalette[i] = i<<16; // 0x00rrggbb
+	if (fxSetPaletteExtension) {
+		for (i = 0; i < 256; i++) {
+			glExtPalette[3 * i] = d_8to24table[i] & 0xFF;
+			glExtPalette[3 * i + 1] = (d_8to24table[i] & 0xFF00) >> 8;
+			glExtPalette[3 * i + 2] = (d_8to24table[i] & 0xFF0000) >> 16;
+		}
+		fxSetPaletteExtension(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256, GL_RGB, GL_UNSIGNED_BYTE, glExtPalette);
 	}
-
-	fxSetPaletteExtension( fxPalette );
 }
 
 void VID_SetPalette (unsigned char *palette)

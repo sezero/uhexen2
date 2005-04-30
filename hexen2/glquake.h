@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.17 2005-04-30 09:02:17 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.18 2005-04-30 09:06:07 sezero Exp $
  */
 
 // disable data conversion warnings
@@ -45,7 +45,7 @@ extern  FX_SET_PALETTE_EXT fxSetPaletteExtension;
 extern  FX_MARK_PAL_TEXTURE_EXT fxMarkPalTextureExtension;
 #else
 #define	bindTexFunc(a, b) glfunc.glBindTexture_fp((a), (b))
-typedef void (*FX_SET_PALETTE_EXT)( GLuint * );
+typedef void (*FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
 extern  FX_SET_PALETTE_EXT fxSetPaletteExtension;
 #endif
 
@@ -362,6 +362,20 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/04/30 09:02:17  sezero
+ * Patch for voodoo1/voodoo2/rush, enabling 3dfx paletted texture extensions:
+ * * it may help low vidmem issues without using gl_picmip uglies.
+ * * may also help with a little performance.
+ * Notes:
+ * * paletted textures enabled only when -paltex cmdline arg is used, otherwise
+ *   voodoo2 rendering is borked with both GL_EXT_shared_texture_palette and
+ *   3DFX_set_global_palette (at least in my experience with Mesa-3.4.2 on
+ *   RedHat-7.3)
+ * * some dlsym fiddling from quake1 was added in order to successfuly link to
+ *   the gl function. SDL_GL_GetProcAddress did not work for me...
+ * * This 3dfx extension is hardware spesific and even Mesa says not to use it,
+ *   but use the generic GL_EXT_shared_texture_palette, instead.
+ *
  * Revision 1.16  2005/04/30 08:26:11  sezero
  * changed texnum member of gltexture_t to be of unsigned int type rather
  * than int

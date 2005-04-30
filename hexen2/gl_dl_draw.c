@@ -2,10 +2,14 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.29 2005-04-30 09:02:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.30 2005-04-30 09:06:07 sezero Exp $
 */
 
 #include "quakedef.h"
+
+#ifndef GL_COLOR_INDEX8_EXT
+#define GL_COLOR_INDEX8_EXT	0x80E5
+#endif
 
 extern int ColorIndex[16];
 extern unsigned ColorPercent[16];
@@ -1356,10 +1360,8 @@ static void fxPalTexImage2D (GLenum target, GLint level, GLint internalformat, G
 		dest_image[i] = inverse_pal[index];
 //		dest_image[i] = ( ( unsigned char * )pixels )[i*4];
 	}
-//	glfunc.glTexImage2D_fp( target, level, 1, width, height, border, GL_LUMINANCE, GL_UNSIGNED_BYTE, dest_image );
-	glfunc.glTexImage2D_fp( target, level, 1, width, height, border, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, dest_image );
-/*	if( fxMarkPalTextureExtension )
-		fxMarkPalTextureExtension();*/
+
+	glfunc.glTexImage2D_fp(target, level, GL_COLOR_INDEX8_EXT, mip_width, mip_height, border, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, dest_image);
 }
 
 
@@ -1808,6 +1810,20 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2005/04/30 09:02:14  sezero
+ * Patch for voodoo1/voodoo2/rush, enabling 3dfx paletted texture extensions:
+ * * it may help low vidmem issues without using gl_picmip uglies.
+ * * may also help with a little performance.
+ * Notes:
+ * * paletted textures enabled only when -paltex cmdline arg is used, otherwise
+ *   voodoo2 rendering is borked with both GL_EXT_shared_texture_palette and
+ *   3DFX_set_global_palette (at least in my experience with Mesa-3.4.2 on
+ *   RedHat-7.3)
+ * * some dlsym fiddling from quake1 was added in order to successfuly link to
+ *   the gl function. SDL_GL_GetProcAddress did not work for me...
+ * * This 3dfx extension is hardware spesific and even Mesa says not to use it,
+ *   but use the generic GL_EXT_shared_texture_palette, instead.
+ *
  * Revision 1.28  2005/04/30 08:48:39  sezero
  * silenced warnings about x and y parameters being shadowed
  *
