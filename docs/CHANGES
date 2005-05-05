@@ -1,5 +1,12 @@
 ChangeLog:
 
+2005-05-05 (CVS):
+    * [hexenworld] save downloaded files to com_userdir
+    * [h2/hw] profile save cleanup (and another MAX_OSPATH fix)
+    * [opengl] report both requested and set video modes (matters for bpp)
+2005-05-04 (CVS):
+    * [launcher] cleanup the i++ mess and bump version slightly (v0.5.1)
+
 2005-04-30 (CVS):
     * Always set the MESA_GLX_FX FX_DONT_FAKE_MULTITEX environment
       variables
