@@ -303,7 +303,7 @@ A download message has been received from the server
 void CL_ParseDownload (void)
 {
 	int		size, percent;
-	char	name[1024];
+	char	name[MAX_OSPATH];
 	int		r;
 
 
@@ -333,10 +333,16 @@ void CL_ParseDownload (void)
 	// open the file if not opened yet
 	if (!cls.download)
 	{
+#ifdef _WIN32
 		if (strncmp(cls.downloadtempname,"skins/",6))
 			sprintf (name, "%s/%s", com_gamedir, cls.downloadtempname);
 		else
 			sprintf (name, "hw/%s", cls.downloadtempname);
+#else
+	// UNIX: download files to com_userdir
+	// Do I really need to care more about skins like above?..
+		sprintf (name, "%s/%s", com_userdir, cls.downloadtempname);
+#endif
 
 		COM_CreatePath (name);
 
@@ -382,6 +388,7 @@ void CL_ParseDownload (void)
 		fclose (cls.download);
 
 		// rename the temp file to it's final name
+#ifdef _WIN32
 		if (strncmp(cls.downloadtempname,"skins/",6)) {
 			sprintf (oldn, "%s/%s", com_gamedir, cls.downloadtempname);
 			sprintf (newn, "%s/%s", com_gamedir, cls.downloadname);
@@ -389,6 +396,11 @@ void CL_ParseDownload (void)
 			sprintf (oldn, "hw/%s", cls.downloadtempname);
 			sprintf (newn, "hw/%s", cls.downloadname);
 		}
+#else
+	// UNIX: download files to com_userdir
+		sprintf (oldn, "%s/%s", com_userdir, cls.downloadtempname);
+		sprintf (newn, "%s/%s", com_userdir, cls.downloadname);
+#endif
 		r = rename (oldn, newn);
 		if (r)
 			Con_Printf ("failed to rename.\n");
