@@ -958,7 +958,7 @@ void PR_Profile_f(void)
 	int funcCount;
 	qboolean byHC;
 	char saveName[MAX_OSPATH];
-	FILE *saveFile;
+	FILE *saveFile = NULL;
 	int currentFile;
 	int bestFile;
 	int tally;
@@ -1004,15 +1004,13 @@ void PR_Profile_f(void)
 
 	if(*saveName)
 	{ // Create the output file
-		if((saveFile = fopen(saveName, "w")) == NULL)
-		{
+		saveFile = fopen(saveName, "w");
+		if(saveFile == NULL)
 			Con_Printf("Could not open %s\n", saveName);
-			return;
-		}
 	}
 
 #ifdef TIMESNAP_ACTIVE
-	if(*saveName)
+	if(saveFile)
 	{
 		fprintf(saveFile, "(Timesnap Profile)\n");
 	}
@@ -1042,7 +1040,7 @@ void PR_Profile_f(void)
 			{
 				if(j < funcCount)
 				{
-					if(*saveName)
+					if(saveFile)
 					{
 						fprintf(saveFile, "%05.2f %s\n",
 							((float)bestFunc->profile/(float)total)*100.0,
@@ -1059,7 +1057,7 @@ void PR_Profile_f(void)
 				bestFunc->profile = 0;
 			}
 		} while(bestFunc);
-		if(*saveName)
+		if(saveFile)
 		{
 			fclose(saveFile);
 		}
@@ -1088,7 +1086,7 @@ void PR_Profile_f(void)
 		currentFile = bestFile;
 		if(tally && currentFile != Q_MAXINT)
 		{
-			if(*saveName)
+			if(saveFile)
 			{
 				fprintf(saveFile, "\"%s\"\n", pr_strings+currentFile);
 			}
@@ -1114,7 +1112,7 @@ void PR_Profile_f(void)
 				{
 					if(j < funcCount)
 					{
-						if(*saveName)
+						if(saveFile)
 						{
 							fprintf(saveFile, "   %05.2f %s\n",
 								((float)bestFunc->profile
@@ -1135,7 +1133,7 @@ void PR_Profile_f(void)
 			} while(bestFunc);
 		}
 	} while(currentFile != Q_MAXINT);
-	if(*saveName)
+	if(saveFile)
 	{
 		fclose(saveFile);
 	}

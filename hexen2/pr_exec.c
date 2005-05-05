@@ -1,7 +1,7 @@
 /*
 	pr_exec.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.3 2005-04-05 19:41:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.4 2005-05-05 17:17:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -960,8 +960,8 @@ void PR_Profile_f(void)
 	int total;
 	int funcCount;
 	qboolean byHC;
-	char saveName[128];
-	FILE *saveFile;
+	char saveName[MAX_OSPATH];
+	FILE *saveFile = NULL;
 	int currentFile;
 	int bestFile;
 	int tally;
@@ -1007,15 +1007,13 @@ void PR_Profile_f(void)
 
 	if(*saveName)
 	{ // Create the output file
-		if((saveFile = fopen(saveName, "w")) == NULL)
-		{
+		saveFile = fopen(saveName, "w");
+		if(saveFile == NULL)
 			Con_Printf("Could not open %s\n", saveName);
-			return;
-		}
 	}
 
 #ifdef TIMESNAP_ACTIVE
-	if(*saveName)
+	if(saveFile)
 	{
 		fprintf(saveFile, "(Timesnap Profile)\n");
 	}
@@ -1045,7 +1043,7 @@ void PR_Profile_f(void)
 			{
 				if(j < funcCount)
 				{
-					if(*saveName)
+					if(saveFile)
 					{
 						fprintf(saveFile, "%05.2f %s\n",
 							((float)bestFunc->profile/(float)total)*100.0,
@@ -1062,7 +1060,7 @@ void PR_Profile_f(void)
 				bestFunc->profile = 0;
 			}
 		} while(bestFunc);
-		if(*saveName)
+		if(saveFile)
 		{
 			fclose(saveFile);
 		}
@@ -1091,7 +1089,7 @@ void PR_Profile_f(void)
 		currentFile = bestFile;
 		if(tally && currentFile != Q_MAXINT)
 		{
-			if(*saveName)
+			if(saveFile)
 			{
 				fprintf(saveFile, "\"%s\"\n", pr_strings+currentFile);
 			}
@@ -1117,7 +1115,7 @@ void PR_Profile_f(void)
 				{
 					if(j < funcCount)
 					{
-						if(*saveName)
+						if(saveFile)
 						{
 							fprintf(saveFile, "   %05.2f %s\n",
 								((float)bestFunc->profile
@@ -1138,7 +1136,7 @@ void PR_Profile_f(void)
 			} while(bestFunc);
 		}
 	} while(currentFile != Q_MAXINT);
-	if(*saveName)
+	if(saveFile)
 	{
 		fclose(saveFile);
 	}
@@ -1173,6 +1171,12 @@ static unsigned int ProgsTimer(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/04/05 19:41:28  sezero
+ * Save recorded demos, progs profiles and console debug
+ * logs to com_userdir, not com_gamedir. Otherwise these
+ * operations shall fail on a system-wide installation
+ * unless the user is super user.
+ *
  * Revision 1.2  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *
