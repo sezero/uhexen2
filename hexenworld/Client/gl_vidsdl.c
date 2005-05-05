@@ -200,11 +200,12 @@ int VID_SetMode (int modenum)
 		Sys_Error("VID: Couldn't load GL library: %s", SDL_GetError());
 
 	//SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, modelist[modenum].bpp);
+	Con_SafePrintf ("Requesting Mode: %dx%dx%d\n", vid.width, vid.height, modelist[modenum].bpp);
 	if (!(screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags)))
 		Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 
 	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &sdl_tmp);
-	Con_SafePrintf ("Video Mode: %d x %d x %d\n", vid.width, vid.height, sdl_tmp);
+	Con_SafePrintf ("Video Mode Set : %dx%dx%d\n", vid.width, vid.height, sdl_tmp);
 
 	SDL_WM_SetCaption ("GLHexenWorld", "GLHexenWorld");
 

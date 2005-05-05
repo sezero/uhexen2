@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.47 2005-04-30 10:42:39 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.48 2005-05-05 16:29:03 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -200,11 +200,12 @@ int VID_SetMode (int modenum)
 		Sys_Error("VID: Couldn't load GL library: %s", SDL_GetError());
 
 	//SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, modelist[modenum].bpp);
+	Con_SafePrintf ("Requesting Mode: %dx%dx%d\n", vid.width, vid.height, modelist[modenum].bpp);
 	if (!(screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags)))
 		Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 
 	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &sdl_tmp);
-	Con_SafePrintf ("Video Mode: %d x %d x %d\n", vid.width, vid.height, sdl_tmp);
+	Con_SafePrintf ("Video Mode Set : %dx%dx%d\n", vid.width, vid.height, sdl_tmp);
 
 	// acknowledge Portal of Praevus S.A
 #ifdef H2MP
