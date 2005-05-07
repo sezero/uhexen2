@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.4 2005-04-30 08:50:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.5 2005-05-07 08:11:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -141,7 +141,7 @@ void CL_ParseStartSoundPacket(void)
 	channel = MSG_ReadShort ();
 	sound_num = MSG_ReadByte ();
     if (field_mask & SND_OVERFLOW)
-		sound_num += 255;
+		sound_num += 256;
 
 	ent = channel >> 3;
 	channel &= 7;
@@ -2023,6 +2023,9 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/04/30 08:50:19  sezero
+ * silenced warnings about ent decleration being shadowed
+ *
  * Revision 1.3  2004/12/18 14:08:07  sezero
  * Clean-up and kill warnings 9:
  * Kill many unused vars.

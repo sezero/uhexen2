@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.11 2005-04-30 08:39:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.12 2005-05-07 08:11:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -370,8 +370,8 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 		field_mask |= SND_ATTENUATION;
 	if (sound_num>255)
 	{
-		field_mask |= SND_ATTENUATION;
-		sound_num -= 255;
+		field_mask |= SND_OVERFLOW;
+		sound_num -= 256;
 	}
 
 #if RJNETa
@@ -2168,6 +2168,9 @@ void SV_SpawnServer (char *server)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/04/30 08:39:08  sezero
+ * silenced shadowed decleration warnings about volume (now sfxvolume)
+ *
  * Revision 1.10  2005/04/30 08:30:09  sezero
  * changed message datatypes to byte in SV_SendReconnect() and Host_ShutdownServer()
  *
