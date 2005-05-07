@@ -519,7 +519,7 @@ void CL_FullServerinfo_f (void)
 				Con_Printf("The server is running an old version (v%4.2f), you have v%4.2f, please ask server admin to update to latest version\n",server_version,VERSION);
 				CL_Disconnect_f ();
 			}
-#erdif
+#endif
 		}
 	}
 }
