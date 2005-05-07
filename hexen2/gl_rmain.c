@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_rmain.c,v 1.16 2005-04-30 11:12:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_rmain.c,v 1.17 2005-05-07 08:07:47 sezero Exp $
 */
 
 
@@ -1284,6 +1284,11 @@ R_DrawViewModel
 */
 void R_DrawViewModel (void)
 {
+	int			lnum;
+	vec3_t		dist;
+	float		add;
+	dlight_t	*dl;
+
 	if (!r_drawviewmodel.value)
 		return;
 
@@ -1305,6 +1310,28 @@ void R_DrawViewModel (void)
 	currententity = &cl.viewent;
 	if (!currententity->model)
 		return;
+
+	ambientlight = R_LightPoint (currententity->origin);
+
+	if (ambientlight < 24)
+		ambientlight = 24;	// allways give some light on gun
+
+// add dynamic lights		
+	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
+	{
+		dl = &cl_dlights[lnum];
+		if (!dl->radius)
+			continue;
+		if (dl->die < cl.time)
+			continue;
+
+		VectorSubtract (currententity->origin, dl->origin, dist);
+		add = dl->radius - Length(dist);
+		if (add > 0)
+			ambientlight += add;
+	}
+
+	cl.light_level = ambientlight;
 
 	// hack the depth range to prevent view model from poking into walls
 	glfunc.glDepthRange_fp (gldepthmin, gldepthmin + 0.3*(gldepthmax-gldepthmin));
@@ -1785,6 +1812,10 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/04/30 11:12:08  sezero
+ * commented-out the externs in gl_rmain.c which are to
+ * serve not-yet-enabled GL_DoGamma()
+ *
  * Revision 1.15  2005/04/30 08:19:35  sezero
  * R_DrawAliasModel does all these by itself. As a bonus, fixes two warnings
  * about ambientlight and shadelight global declerations being shadowed

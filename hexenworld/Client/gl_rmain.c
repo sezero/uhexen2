@@ -1125,6 +1125,11 @@ R_DrawViewModel
 */
 void R_DrawViewModel (void)
 {
+	int			lnum;
+	vec3_t		dist;
+	float		add;
+	dlight_t	*dl;
+
 	if (!r_drawviewmodel.value || cl.spectator)
 		return;
 
@@ -1143,6 +1148,28 @@ void R_DrawViewModel (void)
 	currententity = &cl.viewent;
 	if (!currententity->model)
 		return;
+
+	ambientlight = R_LightPoint (currententity->origin);
+
+	if (ambientlight < 24)
+		ambientlight = 24;	// allways give some light on gun
+
+// add dynamic lights		
+	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
+	{
+		dl = &cl_dlights[lnum];
+		if (!dl->radius)
+			continue;
+		if (dl->die < cl.time)
+			continue;
+
+		VectorSubtract (currententity->origin, dl->origin, dist);
+		add = dl->radius - Length(dist);
+		if (add > 0)
+			ambientlight += add;
+	}
+
+	cl.light_level = ambientlight;
 
 	// hack the depth range to prevent view model from poking into walls
 	glfunc.glDepthRange_fp (gldepthmin, gldepthmin + 0.3*(gldepthmax-gldepthmin));
