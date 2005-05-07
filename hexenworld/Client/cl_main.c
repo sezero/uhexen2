@@ -505,6 +505,10 @@ void CL_FullServerinfo_f (void)
 			if (!server_version)
 				Con_Printf("Version %1.2f Server\n", v);
 			server_version = v;
+#if 0
+	// this is a bit overkill today
+	// if someone did a newer version, they should
+	// have bumped the PROTOCOL_VERSION
 			if((int)(server_version*100)>(int)(VERSION*100))
 			{
 				Con_Printf("The server is running v%4.2f, you have v%4.2f, please go to www.hexenworld.com and update your client to join\n",server_version,VERSION);
@@ -515,6 +519,7 @@ void CL_FullServerinfo_f (void)
 				Con_Printf("The server is running an old version (v%4.2f), you have v%4.2f, please ask server admin to update to latest version\n",server_version,VERSION);
 				CL_Disconnect_f ();
 			}
+#erdif
 		}
 	}
 }
