@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/draw.c,v 1.3 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/draw.c,v 1.4 2005-05-07 10:39:07 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -934,8 +934,8 @@ void Draw_ConsoleBackground (int lines)
 	conback = Draw_CachePic ("gfx/menu/conback.lmp");
 
 // hack the version number directly into the pic
-	dest = conback->data + 320 - 43 + 320*186;
-	sprintf (ver, "%4.2f", HEXEN2_VERSION);
+	sprintf (ver, "%4.2f (%s)", HEXEN2_VERSION, VERSION_PLATFORM);
+	dest = conback->data + 320 - (strlen(ver)*8 + 11) + 320*186;
 
 	for (x=0 ; x<strlen(ver) ; x++)
 		Draw_CharToConback (ver[x], dest+(x<<3));
@@ -1304,6 +1304,9 @@ void Draw_EndDisc (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.2  2004/11/29 12:17:38  sezero
  * draw fullscreen intermission pics. borrowed from Pa3PyX sources.
  *
