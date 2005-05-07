@@ -1,5 +1,11 @@
 ChangeLog:
 
+2005-05-07 (CVS):
+    * Backed-out my silly mistake of removing light_level code
+      in R_DrawViewModel
+    * SV_StartSound should set SND_OVERFLOW, not SND_ATTENUATION.
+      sound_num should be incremented/decremented by 256, not 255.
+      (ran into this in quakesrc.org tutorials, by Kor Skarn, iirc)
 2005-05-05 (CVS):
     * [hexenworld] save downloaded files to com_userdir
     * [h2/hw] profile save cleanup (and another MAX_OSPATH fix)
