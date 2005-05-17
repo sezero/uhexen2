@@ -32,18 +32,8 @@ extern	int nanmask;
 
 void VectorMA (vec3_t veca, float scale, vec3_t vecb, vec3_t vecc);
 
-vec_t _DotProduct (vec3_t v1, vec3_t v2);
-void _VectorSubtract (vec3_t veca, vec3_t vecb, vec3_t out);
-void _VectorAdd (vec3_t veca, vec3_t vecb, vec3_t out);
-void _VectorCopy (vec3_t in, vec3_t out);
-
 int VectorCompare (vec3_t v1, vec3_t v2);
-vec_t _Length (vec3_t v);
-void _CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross);
-float _VectorNormalize (vec3_t v);		// returns vector length
-void _VectorInverse (vec3_t v);
-void _VectorScale (vec3_t in, vec_t scale, vec3_t out);
-int Q_log2(int val);
+vec_t Length(vec3_t v);
 
 void R_ConcatRotations (float in1[3][3], float in2[3][3], float out[3][3]);
 void R_ConcatTransforms (float in1[3][4], float in2[3][4], float out[3][4]);
@@ -75,7 +65,6 @@ float	anglemod(float a);
 		BoxOnPlaneSide( (emins), (emaxs), (p)))
 
 void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross);
-vec_t Length(vec3_t v);
 float VectorNormalize (vec3_t v);
 void VectorInverse (vec3_t v);
 void VectorScale (vec3_t in, vec_t scale, vec3_t out);
