@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.14 2005-04-30 09:59:19 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.15 2005-05-17 06:39:42 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -97,8 +97,6 @@ typedef struct {
 } vmode_t;
 
 static vmode_t	modelist[MAX_MODE_LIST];
-
-static byte	backingbuf[48*24];
 
 void VID_MenuDraw (void);
 void VID_MenuKey (int key);
@@ -894,6 +892,40 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/04/30 09:59:19  sezero
+ * Many things in gl_vidsdl.c, and *especially in vid_sdl.c, are there
+ * for the dynamic video mode swithching which we removed a long time
+ * ago (and we don't seem to put it back in any foreseeable future.)
+ * Some stuff were there only to provide human readable descriptions in
+ * the menu and I removed them in 1.2.3 or in 1.2.4. In this patch:
+ * 1. Tried cleaning-up the remaining mess: There still were some
+ *    windoze left-overs, unused variables/cvars, functions using those
+ *    vars/cvars serving no purpose (especially those window_rect and
+ *    window_center stuff, and more). I removed them as best as I could.
+ *    There still are things in vid_sdl.c that I didn't fully understand,
+ *    they are there, for now.
+ * 2. The -window and -w cmdline args are now now removed: They actually
+ *    did nothing, unless the user did some silly thing like using both
+ *    -w and -f on the same cmdline.
+ * 3. The two mode-setting functions (windowed and f/s) are made into one
+ *    as VID_SDL_SetMode
+ * 4. The -height arg now is functional *only* if used together -height.
+ *    Since we only do the normal modes, I removed the width switch and
+ *    calculated:  height = 3*width/4
+ *    Issue: We need some sanity check in case of both -width and -height
+ *    args are specified
+ * 5. -bpp wasn't written into modenum[x].bpp, I did it here. As a side
+ *    note, bpp doesn't affect anything, or my eyes are in more need of a
+ *    doctor than I know: -bpp 8 / 16 / 32 give the same picture.
+ * 6. The code calls VID_SetPalette very multiple times in gl_vidsdl.c.
+ *    Why the hell is that?.. Something windoze spesific?  I unified them
+ *    here in VID_Init: After VID_SetMode, VID_SetPalette is called first,
+ *    and then 8-bit palette is activated if -paltex is specified.
+ *    Note: I didn't touch vid_sdl.c in this manner, but DDOI (one of the
+ *    guys during Dan's porting, perpahs) has a comment on a VID_SetPalette
+ *    call being "Useless".
+ * 7. Many whitespace clean-up as a bonus material ;)
+ *
  * Revision 1.13  2005/04/09 22:16:16  sezero
  * Removed scankey[] and MapKey(), unused for SDL/PLATFORM_UNIX
  * Did the same unused/cosmetic clean-up in vid_sdl.c which was
