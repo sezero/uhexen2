@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.5 2005-05-07 08:11:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.6 2005-05-17 06:17:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1666,16 +1666,12 @@ void CL_ParseServerMessage (void)
 				if (cl.paused)
 				{
 					CDAudio_Pause ();
-#if defined (_WIN32) || defined (PLATFORM_UNIX)
 					VID_HandlePause (true);
-#endif
 				}
 				else
 				{
 					CDAudio_Resume ();
-#if defined (_WIN32) || defined (PLATFORM_UNIX)
 					VID_HandlePause (false);
-#endif
 				}
 			}
 			break;
@@ -2023,6 +2019,11 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/05/07 08:11:48  sezero
+ * SV_StartSound should set SND_OVERFLOW, not SND_ATTENUATION.
+ * souno_num should be incremented/decremented by 256, not 255.
+ * (ran into this in quakesrc.org tutorials, by Kor Skarn, iirc)
+ *
  * Revision 1.4  2005/04/30 08:50:19  sezero
  * silenced warnings about ent decleration being shadowed
  *
