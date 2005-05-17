@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.18 2005-04-30 09:59:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.19 2005-05-17 06:47:50 sezero Exp $
 */
 
 #include "SDL.h"
@@ -18,11 +18,9 @@ extern cvar_t		vid_mode, _windowed_mouse;
 #define MODE_FULLSCREEN_DEFAULT 1
 
 extern qboolean	in_mode_set;
-//static qboolean	restore_spi;
-//static int	originalmouseparms[3], newmouseparms[3] = {0, 0, 1};
 static qboolean	mouseactive;
 qboolean	mouseinitialized;
-static qboolean	/*mouseparmsvalid, */mouseactivatetoggle;
+static qboolean	mouseactivatetoggle;
 static qboolean	mouseshowtoggle = 1;
 
 qboolean grab = 1;
@@ -146,9 +144,7 @@ void IN_ActivateMouse (void)
 
 	mouseactivatetoggle = true;
 
-	// mouse code IS a mess S.A.
 	// added _windowed_mouse.value to work with vid_mode switching
-
 	if (mouseinitialized && _windowed_mouse.value)
 	{
 		mouseactive = true;
@@ -172,18 +168,6 @@ void IN_ActivateMouseSA (void)
 
 /*
 ===========
-IN_SetQuakeMouseState
-===========
-*/
-void IN_SetQuakeMouseState (void)
-{
-	if (mouseactivatetoggle)
-		IN_ActivateMouse ();
-}
-
-
-/*
-===========
 IN_DeactivateMouse
 ===========
 */
@@ -194,14 +178,8 @@ void IN_DeactivateMouse (void)
 
 	if (mouseinitialized)
 	{
-//		if (restore_spi)
-//			SystemParametersInfo (SPI_SETMOUSE, 0, originalmouseparms, 0);
-
 		mouseactive = false;
-
-//		ClipCursor (NULL);
 		SDL_WM_GrabInput (SDL_GRAB_OFF);
-//		ReleaseCapture ();
 	}
 }
 
@@ -414,13 +392,6 @@ void IN_MouseMove (usercmd_t *cmd)
 			cl.idealroll=-10;
 		else if ((mouse_x >0) && (cl.v.movetype==MOVETYPE_FLY))
 			cl.idealroll=10;
-	}
-
-// if the mouse has moved, force it to the center, so there's room to move
-	if (mx || my)
-	{
-	// We're running without this thing for quite a while now and we're still fine
-	//	SetCursorPos (window_center_x, window_center_y);
 	}
 }
 
@@ -940,15 +911,15 @@ void IN_JoyMove (usercmd_t *cmd)
 
 void IN_SendKeyEvents (void)
 {
-        SDL_Event event;
-        int sym, state;
-        int modstate;
+	SDL_Event event;
+	int sym, state;
+	int modstate;
 
-        while (SDL_PollEvent(&event))
-        {
-                switch (event.type) {
+	while (SDL_PollEvent(&event))
+	{
+		switch (event.type) {
 
-                        case SDL_KEYDOWN:
+			case SDL_KEYDOWN:
 				if ((event.key.keysym.sym == SDLK_RETURN) &&
 				    (event.key.keysym.mod & KMOD_ALT))
 				{
@@ -963,39 +934,38 @@ void IN_SendKeyEvents (void)
 					break;
 				}
 
-                        case SDL_KEYUP:
-
-                                sym = event.key.keysym.sym;
-                                state = event.key.state;
-                                modstate = SDL_GetModState();
+			case SDL_KEYUP:
+				sym = event.key.keysym.sym;
+				state = event.key.state;
+				modstate = SDL_GetModState();
 
 				switch (key_dest) {
 				  case key_game: 
 				    if ((event.key.keysym.unicode != 0) || (modstate & KMOD_SHIFT))
-				      {
+				    {
 					/* only use unicode for ~ and ` in game mode */
 					if ((event.key.keysym.unicode & 0xFF80) == 0 ) 
-					  {
+					{
 					    if ( ((event.key.keysym.unicode & 0x7F) == '`') ||((event.key.keysym.unicode & 0x7F) == '~')) 
 						sym=event.key.keysym.unicode & 0x7F;
-					  }
+					}
 
-				      }
+				    }
 				    break;
 				  case key_message:
 				  case key_console:
 				    if ((event.key.keysym.unicode != 0) || (modstate & KMOD_SHIFT))
-				      {
+				    {
 					if ((event.key.keysym.unicode & 0xFF80) == 0 )
 					  sym=event.key.keysym.unicode & 0x7F;
 
 					/* else: it's an international character */
-				      }
+				    }
 				    //printf("You pressed %s (%d) (%c)\n",SDL_GetKeyName(sym),sym,sym);
 				    break;
 				  default:
 				    break;
-				  }
+				}
 
                                 switch(sym)
                                 {
@@ -1166,25 +1136,59 @@ void IN_SendKeyEvents (void)
 					break;
 				}
 				break;
-                        case SDL_MOUSEMOTION:
-                                if (!in_mode_set)
-                                {
-                                        IN_MouseEvent (SDL_GetMouseState(NULL,NULL));
-                                }
-                                break;
+			case SDL_MOUSEMOTION:
+				if (!in_mode_set)
+				{
+					IN_MouseEvent (SDL_GetMouseState(NULL,NULL));
+				}
+				break;
 
-                        case SDL_QUIT:
-                                CL_Disconnect ();
-                                Sys_Quit ();
-                                break;
-                        default:
-                                break;
-                }
-        }
+			case SDL_QUIT:
+				CL_Disconnect ();
+				Sys_Quit ();
+				break;
+			default:
+				break;
+		}
+	}
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/04/30 09:59:17  sezero
+ * Many things in gl_vidsdl.c, and *especially in vid_sdl.c, are there
+ * for the dynamic video mode swithching which we removed a long time
+ * ago (and we don't seem to put it back in any foreseeable future.)
+ * Some stuff were there only to provide human readable descriptions in
+ * the menu and I removed them in 1.2.3 or in 1.2.4. In this patch:
+ * 1. Tried cleaning-up the remaining mess: There still were some
+ *    windoze left-overs, unused variables/cvars, functions using those
+ *    vars/cvars serving no purpose (especially those window_rect and
+ *    window_center stuff, and more). I removed them as best as I could.
+ *    There still are things in vid_sdl.c that I didn't fully understand,
+ *    they are there, for now.
+ * 2. The -window and -w cmdline args are now now removed: They actually
+ *    did nothing, unless the user did some silly thing like using both
+ *    -w and -f on the same cmdline.
+ * 3. The two mode-setting functions (windowed and f/s) are made into one
+ *    as VID_SDL_SetMode
+ * 4. The -height arg now is functional *only* if used together -height.
+ *    Since we only do the normal modes, I removed the width switch and
+ *    calculated:  height = 3*width/4
+ *    Issue: We need some sanity check in case of both -width and -height
+ *    args are specified
+ * 5. -bpp wasn't written into modenum[x].bpp, I did it here. As a side
+ *    note, bpp doesn't affect anything, or my eyes are in more need of a
+ *    doctor than I know: -bpp 8 / 16 / 32 give the same picture.
+ * 6. The code calls VID_SetPalette very multiple times in gl_vidsdl.c.
+ *    Why the hell is that?.. Something windoze spesific?  I unified them
+ *    here in VID_Init: After VID_SetMode, VID_SetPalette is called first,
+ *    and then 8-bit palette is activated if -paltex is specified.
+ *    Note: I didn't touch vid_sdl.c in this manner, but DDOI (one of the
+ *    guys during Dan's porting, perpahs) has a comment on a VID_SetPalette
+ *    call being "Useless".
+ * 7. Many whitespace clean-up as a bonus material ;)
+ *
  * Revision 1.17  2005/02/11 08:31:15  sezero
  * remove unused-and-emptied IN_Accumulate
  *
