@@ -21,8 +21,10 @@
 #define Q_strncasecmp strncasecmp
 #define Q_strcasecmp strcasecmp
 #define strnicmp strncasecmp
-#define _strnicmp strncasecmp
 #define strcmpi strcasecmp
+
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+#define max(a, b) (((a) > (b)) ? (a) : (b))
 
 typedef struct RECT_s {
 	int left;

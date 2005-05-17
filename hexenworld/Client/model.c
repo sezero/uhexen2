@@ -792,8 +792,8 @@ void Mod_LoadFaces (lump_t *l)
 			out->flags |= (SURF_DRAWTURB | SURF_DRAWTILED);
 
 			if (r_transwater.value && 
-				( (!_strnicmp(out->texinfo->texture->name,"*rtex078",8)) ||
-				  (!_strnicmp(out->texinfo->texture->name,"*lowlight",9)) ) )
+				( (!strnicmp(out->texinfo->texture->name,"*rtex078",8)) ||
+				  (!strnicmp(out->texinfo->texture->name,"*lowlight",9)) ) )
 				out->flags |= SURF_TRANSLUCENT;
 
 			for (i=0 ; i<2 ; i++)

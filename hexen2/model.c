@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/model.c,v 1.4 2005-04-30 12:07:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/model.c,v 1.5 2005-05-17 06:50:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -842,19 +842,19 @@ void Mod_LoadFaces (lump_t *l)
 
 			// stupid stupid way of doing this:
 /*			if (r_transwater.value && 
-				_strnicmp(out->texinfo->texture->name,"*lava",5) &&
-				_strnicmp(out->texinfo->texture->name,"*slime",6) &&
-				_strnicmp(out->texinfo->texture->name,"*cur_90",7) &&
-				_strnicmp(out->texinfo->texture->name,"*cur_0",6) &&
-				_strnicmp(out->texinfo->texture->name,"*cur_270",8) &&
-				_strnicmp(out->texinfo->texture->name,"*cur_180",8) &&
-				_strnicmp(out->texinfo->texture->name,"*cur_up",7) &&
-				_strnicmp(out->texinfo->texture->name,"*cur_dwn",8))
+				strnicmp(out->texinfo->texture->name,"*lava",5) &&
+				strnicmp(out->texinfo->texture->name,"*slime",6) &&
+				strnicmp(out->texinfo->texture->name,"*cur_90",7) &&
+				strnicmp(out->texinfo->texture->name,"*cur_0",6) &&
+				strnicmp(out->texinfo->texture->name,"*cur_270",8) &&
+				strnicmp(out->texinfo->texture->name,"*cur_180",8) &&
+				strnicmp(out->texinfo->texture->name,"*cur_up",7) &&
+				strnicmp(out->texinfo->texture->name,"*cur_dwn",8))
 				out->flags |= SURF_TRANSLUCENT;
 */
 			if (r_transwater.value && 
-				( (!_strnicmp(out->texinfo->texture->name,"*rtex078",8)) ||
-				  (!_strnicmp(out->texinfo->texture->name,"*lowlight",9)) ) )
+				( (!strnicmp(out->texinfo->texture->name,"*rtex078",8)) ||
+				  (!strnicmp(out->texinfo->texture->name,"*lowlight",9)) ) )
 				out->flags |= SURF_TRANSLUCENT;
 
 			for (i=0 ; i<2 ; i++)
@@ -2282,6 +2282,11 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/04/30 12:07:17  sezero
+ * silence warnings about mins and maxs declerations being
+ * shadowed in CalcSurfaceExtents() and RadiusFromBounds()
+ * in model.c and gl_model.c
+ *
  * Revision 1.3  2004/12/19 17:25:55  sezero
  * Another parentheses warning fix
  *

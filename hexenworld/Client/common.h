@@ -148,6 +148,7 @@ int Q_strncmp (char *s1, char *s2, int count);
 int	Q_atoi (char *str);
 float Q_atof (char *str);
 */
+#ifndef PLATFORM_UNIX
 __inline int Q_strncasecmp (char *s1, char *s2, int n)
 {
 	return strnicmp (s1, s2, n);
@@ -157,6 +158,7 @@ __inline int Q_strcasecmp (char *s1, char *s2)
 {
 	return stricmp (s1, s2);
 }
+#endif
 
 //============================================================================
 
