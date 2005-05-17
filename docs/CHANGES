@@ -1,5 +1,19 @@
 ChangeLog:
 
+2005-05-17 (CVS):
+    * removed underscored versions of string comparison functions
+    * removed unused underscored versions of math funcs
+    * Q_strXXXXX is now only for !PLATFORM_UNIX
+    * macroized some math functions (from Pa3PyX)
+    * synced h2 and hw versions of mathlib.* (h2 now has some math
+      functions inlined)
+    * updated linux_inc.h for the changes above
+    * removed unused backingbuf from vid_sdl.c (was a windows leftover)
+    * removed some dead platform conditionals
+    * reorganized x86 assembly files placement (shuffle practice ;)
+    * initial cosmetic cleanups in menu.c and in_sdl.c
+    * more obsoleted and/or win32 files clean-up
+
 2005-05-07 (CVS):
     * Backed-out my silly mistake of removing light_level code
       in R_DrawViewModel
