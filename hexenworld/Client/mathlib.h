@@ -23,19 +23,29 @@ extern	int nanmask;
 
 #define	IS_NAN(x) (((*(int *)&x)&nanmask)==nanmask)
 
-#define DotProduct(x,y) (x[0]*y[0]+x[1]*y[1]+x[2]*y[2])
-#define VectorSubtract(a,b,c) {c[0]=a[0]-b[0];c[1]=a[1]-b[1];c[2]=a[2]-b[2];}
-#define VectorAdd(a,b,c) {c[0]=a[0]+b[0];c[1]=a[1]+b[1];c[2]=a[2]+b[2];}
-#define VectorCopy(a,b) {b[0]=a[0];b[1]=a[1];b[2]=a[2];}
+#define Length(v) (sqrt((v)[0]*(v)[0]+(v)[1]*(v)[1]+(v)[2]*(v)[2]))
+#define CrossProduct(v1,v2,cross) {(cross)[0]=(v1)[1]*(v2)[2]-(v1)[2]*(v2)[1];(cross)[1]=(v1)[2]*(v2)[0]-(v1)[0]*(v2)[2];(cross)[2]=(v1)[0]*(v2)[1]-(v1)[1]*(v2)[0];}
+#define DotProduct(x,y) ((x)[0]*(y)[0]+(x)[1]*(y)[1]+(x)[2]*(y)[2])
+#define VectorCompare(v1,v2) (((v1)[0]==(v2)[0])&&((v1)[1]==(v2)[1])&&((v1)[2]==(v2)[2]))
+#define VectorAdd(a,b,c) { \
+	(c)[0] = (a)[0] + (b)[0]; \
+	(c)[1] = (a)[1] + (b)[1]; \
+	(c)[2] = (a)[2] + (b)[2]; \
+}
+#define VectorSubtract(a,b,c) { \
+	(c)[0] = (a)[0] - (b)[0]; \
+	(c)[1] = (a)[1] - (b)[1]; \
+	(c)[2] = (a)[2] - (b)[2]; \
+}
+#define VectorInverse(v) {(v)[0]=-(v)[0];(v)[1]=-(v)[1];(v)[2]=-(v)[2];}
+#define VectorCopy(a,b) { \
+	memcpy((b), (a), sizeof(vec3_t)); \
+}
 #define VectorSet(vec,a,b,c) {vec[0]=a;vec[1]=b;vec[2]=c;}
 
 void VectorMA (vec3_t veca, float scale, vec3_t vecb, vec3_t vecc);
 
-int VectorCompare (vec3_t v1, vec3_t v2);
-__inline vec_t Length (vec3_t v);
-__inline void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross);
 __inline float VectorNormalize (vec3_t v);		// returns vector length
-__inline void VectorInverse (vec3_t v);
 __inline void VectorScale (vec3_t in, vec_t scale, vec3_t out);
 
 void R_ConcatRotations (float in1[3][3], float in2[3][3], float out[3][3]);
@@ -67,32 +77,11 @@ float	anglemod(float a);
 	:										\
 		BoxOnPlaneSide( (emins), (emaxs), (p)))
 
-__inline void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross)
-{
-	cross[0] = v1[1]*v2[2] - v1[2]*v2[1];
-	cross[1] = v1[2]*v2[0] - v1[0]*v2[2];
-	cross[2] = v1[0]*v2[1] - v1[1]*v2[0];
-}
-
-__inline vec_t Length(vec3_t v)
-{
-	int		i;
-	float	length;
-	
-	length = 0;
-	for (i=0 ; i< 3 ; i++)
-		length += v[i]*v[i];
-	length = sqrt (length);
-
-	return length;
-}
-
 __inline float VectorNormalize (vec3_t v)
 {
 	float	length, ilength;
 
-	length = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
-	length = sqrt (length);
+	length = Length(v);
 
 	if (length)
 	{
@@ -101,15 +90,8 @@ __inline float VectorNormalize (vec3_t v)
 		v[1] *= ilength;
 		v[2] *= ilength;
 	}
-		
-	return length;
-}
 
-__inline void VectorInverse (vec3_t v)
-{
-	v[0] = -v[0];
-	v[1] = -v[1];
-	v[2] = -v[2];
+	return length;
 }
 
 __inline void VectorScale (vec3_t in, vec_t scale, vec3_t out)

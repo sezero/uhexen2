@@ -2,76 +2,42 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.4 2005-05-17 06:50:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.5 2005-05-17 06:51:19 sezero Exp $
 */
 
 #include <math.h>
 #include "quakedef.h"
 
-// EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
 void Sys_Error (char *error, ...);
 
-// PUBLIC DATA DEFINITIONS -------------------------------------------------
 vec3_t vec3_origin = {0,0,0};
 int nanmask = 255<<23;
 
-// PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
-
-// PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
-
-void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross)
-{       
-        cross[0] = v1[1]*v2[2] - v1[2]*v2[1];
-        cross[1] = v1[2]*v2[0] - v1[0]*v2[2];
-        cross[2] = v1[0]*v2[1] - v1[1]*v2[0];
-}
-
-vec_t Length(vec3_t v)
-{       
-        int             i;
-        float   length;
-        
-        length = 0;
-        for (i=0 ; i< 3 ; i++)
-                length += v[i]*v[i];
-        length = sqrt (length);
-        
-        return length;
-}
 
 float VectorNormalize (vec3_t v)
-{       
-        float   length, ilength;
-        
-        length = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
-        length = sqrt (length);
-        
-        if (length)
-        {
-                ilength = 1/length;
-                v[0] *= ilength;
-                v[1] *= ilength;
-                v[2] *= ilength;
-        }
+{
+	float	length, ilength;
 
-        return length;
-}
+	length = Length(v);
 
-void VectorInverse (vec3_t v)
-{       
-        v[0] = -v[0];
-        v[1] = -v[1];
-        v[2] = -v[2];
+	if (length)
+	{
+		ilength = 1/length;
+		v[0] *= ilength;
+		v[1] *= ilength;
+		v[2] *= ilength;
+	}
+
+	return length;
 }
 
 void VectorScale (vec3_t in, vec_t scale, vec3_t out)
-{       
-        out[0] = in[0]*scale;
-        out[1] = in[1]*scale;
-        out[2] = in[2]*scale;
+{
+	out[0] = in[0]*scale;
+	out[1] = in[1]*scale;
+	out[2] = in[2]*scale;
 }
 
-// CODE --------------------------------------------------------------------
 float	anglemod(float a)
 {
 #if 0
@@ -123,7 +89,7 @@ int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, mplane_t *p)
 		return 3;
 	}
 #endif
-	
+
 // general case
 	switch (p->signbits)
 	{
@@ -233,17 +199,6 @@ void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 	up[0] = (cr*sp*cy+-sr*-sy);
 	up[1] = (cr*sp*sy+-sr*cy);
 	up[2] = cr*cp;
-}
-
-int VectorCompare (vec3_t v1, vec3_t v2)
-{
-	int		i;
-	
-	for (i=0 ; i<3 ; i++)
-		if (v1[i] != v2[i])
-			return 0;
-			
-	return 1;
 }
 
 void VectorMA (vec3_t veca, float scale, vec3_t vecb, vec3_t vecc)
@@ -416,6 +371,9 @@ fixed16_t Invert24To16(fixed16_t val)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/05/17 06:50:44  sezero
+ * removed unused underscored versions of math funcs
+ *
  * Revision 1.3  2005/04/30 07:57:44  sezero
  * fix warning "dereferencing type-punned pointer will break strict-aliasing rules"
  *
