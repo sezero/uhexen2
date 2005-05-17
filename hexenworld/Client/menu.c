@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.16 2005-04-30 10:42:41 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.17 2005-05-17 06:48:54 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -54,7 +54,7 @@ void M_Main_Key (int key);
 	void M_Quit_Key (int key);
 
 qboolean	m_entersound;		// play after drawing a frame, so caching
-								// won't disrupt the sound
+					// won't disrupt the sound
 qboolean	m_recursiveDraw;
 
 int			m_return_state;
@@ -412,7 +412,6 @@ void M_BuildBigCharWidth (void)
 				source += (p->width - xpos);
 			}
 
-
 			while(1)
 			{
 				for(ypos=0;ypos<19;ypos++)
@@ -508,10 +507,6 @@ void M_DrawBigString(int x, int y, char *string)
 }
 
 
-
-
-
-
 void ScrollTitle (char *name)
 {
 	float delta;
@@ -571,7 +566,7 @@ void ScrollTitle (char *name)
 	if (strcmpi(LastName,name) != 0 && TitleTargetPercent != 0) 
 		TitleTargetPercent = 0;
 
-    if (CanSwitch) 
+	if (CanSwitch)
 	{
 		LastName = name;
 		CanSwitch = false;
@@ -600,7 +595,6 @@ int	m_main_cursor;
 
 void M_Menu_Main_f (void)
 {
-
 	// Deactivate the mouse when the menus are drawn - S.A.
 	IN_DeactivateMouseSA ();
 
@@ -613,7 +607,7 @@ void M_Menu_Main_f (void)
 	m_state = m_main;
 	m_entersound = true;
 }
-				
+
 
 void M_Main_Draw (void)
 {
@@ -635,7 +629,6 @@ void M_Main_Key (int key)
 	switch (key)
 	{
 	case K_ESCAPE:
-
 		// leaving the main menu, reactivate mouse - S.A.
 		IN_ActivateMouseSA ();
 
@@ -650,7 +643,7 @@ void M_Main_Key (int key)
 		if (cls.demonum != -1 && !cls.demoplayback && cls.state == ca_disconnected)
 			CL_NextDemo ();
 		break;
-		
+
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
 		if (++m_main_cursor >= MAIN_ITEMS)
@@ -776,7 +769,7 @@ void M_Class_Key (int key)
 //=============================================================================
 /* OPTIONS MENU */
 
-enum 
+enum
 {
 	OPT_CUSTOMIZE = 0,
 	OPT_CONSOLE,
@@ -908,24 +901,24 @@ void M_AdjustSliders (int dir)
 			Cvar_SetValue ("cl_backspeed", 400);
 		}
 		break;
-	
+
 	case OPT_INVMOUSE:	// invert mouse
 		Cvar_SetValue ("m_pitch", -m_pitch.value);
 		break;
-	
+
 	case OPT_LOOKSPRING:	// lookspring
 		Cvar_SetValue ("lookspring", !lookspring.value);
 		break;
-	
+
 	case OPT_LOOKSTRAFE:	// lookstrafe
 		Cvar_SetValue ("lookstrafe", !lookstrafe.value);
 		break;
 
-	case OPT_CROSSHAIR:	
+	case OPT_CROSSHAIR:
 		Cvar_SetValue ("crosshair", !crosshair.value);
 		break;
 
-	case OPT_ALWAYSMLOOK:	
+	case OPT_ALWAYSMLOOK:
 		if (in_mlook.state & 1)
 			//IN_MLookUp();
 			Cbuf_AddText("-mlook");
@@ -949,7 +942,6 @@ void M_AdjustSliders (int dir)
 			IN_ShowMouse ();
 		else
 			IN_HideMouse ();
-
 		break;
 	}
 }
@@ -1002,11 +994,11 @@ void M_Options_Draw (void)
 	r = (1.0 - v_gamma.value) / 0.5;
 	M_DrawSlider (220, 60+(4*8), r);
 
-	M_Print (16, 60+(5*8), "           Mouse Speed");
+	M_Print (16, 60+(5*8),	"           Mouse Speed");
 	r = (sensitivity.value - 1)/10;
 	M_DrawSlider (220, 60+(5*8), r);
 
-	M_Print (16, 60+(6*8), "            Music Type");
+	M_Print (16, 60+(6*8),	"            Music Type");
 	if (strcmpi(bgmtype.string,"midi") == 0)
 		M_Print (220, 60+(6*8), "MIDI");
 	else if (strcmpi(bgmtype.string,"cd") == 0)
@@ -1022,7 +1014,7 @@ void M_Options_Draw (void)
 	r = sfxvolume.value;
 	M_DrawSlider (220, 60+(8*8), r);
 
-	M_Print (16, 60+(9*8),				"            Always Run");
+	M_Print (16, 60+(9*8),			"            Always Run");
 	M_DrawCheckbox (220, 60+(9*8), cl_forwardspeed.value > 200);
 
 	M_Print (16, 60+(OPT_INVMOUSE*8),	"          Invert Mouse");
@@ -1040,12 +1032,8 @@ void M_Options_Draw (void)
 	M_Print (16,60+(OPT_ALWAYSMLOOK*8),	"            Mouse Look");
 	M_DrawCheckbox (220, 60+(OPT_ALWAYSMLOOK*8), in_mlook.state & 1);
 
-	// don't need this anymore S.A
-	// if (modestate == MS_WINDOWED)
-	// {
-		M_Print (16, 60+(OPT_USEMOUSE*8), "             Use Mouse");
-		M_DrawCheckbox (220, 60+(OPT_USEMOUSE*8), _windowed_mouse.value);
-	// }
+	M_Print (16, 60+(OPT_USEMOUSE*8),	"             Use Mouse");
+	M_DrawCheckbox (220, 60+(OPT_USEMOUSE*8), _windowed_mouse.value);
 
 	M_Print (16, 60+(OPT_FULLSCREEN*8),	"            Fullscreen");
 	M_DrawCheckbox (220, 60+(OPT_FULLSCREEN*8), vid_mode.value);
@@ -1065,15 +1053,13 @@ void M_Options_Key (int k)
 	case K_ESCAPE:
 		M_Menu_Main_f ();
 		break;
-		
+
 	case K_ENTER:
 		m_entersound = true;
 		switch (options_cursor)
 		{
 		case OPT_CUSTOMIZE:
-			// here's where we enter the customization menu
-			IN_ActivateMouseSA ();
-
+			IN_ActivateMouseSA ();	// we entered the customization menu
 			M_Menu_Keys_f ();
 			break;
 		case OPT_CONSOLE:
@@ -1093,13 +1079,12 @@ void M_Options_Key (int k)
 			break;
 		}
 		return;
-	
+
 	case K_UPARROW:
 		S_LocalSound ("raven/menu1.wav");
 		options_cursor--;
 		if (options_cursor < 0)
 			options_cursor = OPTIONS_ITEMS-1;
-
 		break;
 
 	case K_DOWNARROW:
@@ -1107,8 +1092,7 @@ void M_Options_Key (int k)
 		options_cursor++;
 		if (options_cursor >= OPTIONS_ITEMS)
 			options_cursor = 0;
-
-		break;	
+		break;
 
 	case K_LEFTARROW:
 		M_AdjustSliders (-1);
@@ -1282,7 +1266,7 @@ void M_Keys_Draw (void)
 	else
 		M_Print (18, 64, "Enter to change, backspace to clear");
 		
-	if (keys_top) 
+	if (keys_top)
 		M_DrawCharacter (6, 80, 128);
 	if (keys_top + KEYS_SIZE < NUMCOMMANDS)
 		M_DrawCharacter (6, 80 + ((KEYS_SIZE-1)*8), 129);
@@ -1295,9 +1279,9 @@ void M_Keys_Draw (void)
 		M_Print (16, y, bindnames[i+keys_top][1]);
 
 		l = strlen (bindnames[i+keys_top][0]);
-		
+
 		M_FindKeysForCommand (bindnames[i+keys_top][0], keys);
-		
+
 		if (keys[0] == -1)
 		{
 			M_Print (140, y, "???");
@@ -1326,7 +1310,7 @@ void M_Keys_Key (int k)
 {
 	char	cmd[80];
 	int		keys[2];
-	
+
 	if (bind_grab)
 	{	// defining a key
 		S_LocalSound ("raven/menu1.wav");
@@ -1336,20 +1320,19 @@ void M_Keys_Key (int k)
 		}
 		else if (k != '`')
 		{
-			sprintf (cmd, "bind \"%s\" \"%s\"\n", Key_KeynumToString (k), bindnames[keys_cursor][0]);			
+			sprintf (cmd, "bind \"%s\" \"%s\"\n", Key_KeynumToString (k), bindnames[keys_cursor][0]);
 			Cbuf_InsertText (cmd);
 		}
-		
+
 		bind_grab = false;
 		return;
 	}
-	
+
 	switch (k)
 	{
 	case K_ESCAPE:
 		// returning to other menus, deactivate mouse
 		IN_DeactivateMouseSA ();
-
 		M_Menu_Options_f ();
 		break;
 
@@ -1377,14 +1360,14 @@ void M_Keys_Key (int k)
 		bind_grab = true;
 		break;
 
-	case K_BACKSPACE:		// delete bindings
-	case K_DEL:				// delete bindings
+	case K_BACKSPACE:	// delete bindings
+	case K_DEL:		// delete bindings
 		S_LocalSound ("raven/menu2.wav");
 		M_UnbindCommand (bindnames[keys_cursor][0]);
 		break;
 	}
 
-	if (keys_cursor < keys_top) 
+	if (keys_cursor < keys_top)
 		keys_top = keys_cursor;
 	else if (keys_cursor >= keys_top+KEYS_SIZE)
 		keys_top = keys_cursor - KEYS_SIZE + 1;
@@ -1420,8 +1403,6 @@ int		help_page;
 #define	NUM_HELP_PAGES	5
 #define	NUM_SG_HELP_PAGES	10//Siege has more help
 
-
-
 void M_Menu_Help_f (void)
 {
 	key_dest = key_menu;
@@ -1429,7 +1410,6 @@ void M_Menu_Help_f (void)
 	m_entersound = true;
 	help_page = 0;
 }
-
 
 
 void M_Help_Draw (void)
@@ -1448,7 +1428,7 @@ void M_Help_Key (int key)
 	case K_ESCAPE:
 		M_Menu_Main_f ();
 		break;
-		
+
 	case K_UPARROW:
 	case K_RIGHTARROW:
 		m_entersound = true;
@@ -1473,7 +1453,6 @@ void M_Help_Key (int key)
 		}
 		break;
 	}
-
 }
 
 //=============================================================================
@@ -1483,7 +1462,7 @@ int		msgNumber;
 int		m_quit_prevstate;
 qboolean	wasInMenus;
 
-#ifndef	_WIN32
+#if 0
 char *quitMessage [] = 
 {
 /* .........1.........2.... */
@@ -1491,7 +1470,7 @@ char *quitMessage [] =
   "  There's a big nasty   ",
   "   thing - shoot it!    ",
   "                        ",
- 
+
   "  You can't go now, I   ",
   "   was just getting     ",
   "    warmed up.          ",
@@ -1506,22 +1485,22 @@ char *quitMessage [] =
   "   Palms too sweaty to  ",
   "     keep playing?      ",
   "                        ",
- 
+
   "  Watch your local store",
   "      for Hexen 2       ",
   "    plush toys and      ",
   "    greeting cards!     ",
- 
+
   "  Hexen 2...            ",
   "                        ",
   "    Too much is never   ",
   "        enough.         ",
- 
+
   "  Sure go ahead and     ",
   "  leave.  But I know    ",
   "  you'll be back.       ",
   "                        ",
- 
+
   "                        ",
   "  Insert cute phrase    ",
   "        here            ",
@@ -1957,7 +1936,6 @@ void M_Quit_Key (int key)
 	default:
 		break;
 	}
-
 }
 
 #define VSTR(x) #x
@@ -2068,7 +2046,7 @@ void M_Menu_MultiPlayer_f (void)
 
 	message = NULL;
 }
-				
+
 
 void M_MultiPlayer_Draw (void)
 {
@@ -2099,7 +2077,7 @@ void M_MultiPlayer_Key (int key)
 	case K_ESCAPE:
 		M_Menu_Main_f ();
 		break;
-		
+
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
 		if (++m_multiplayer_cursor >= MULTIPLAYER_ITEMS)
@@ -2289,7 +2267,7 @@ void M_Connect_Key (int k)
 			M_Menu_MultiPlayer_f ();
 		}
 		break;
-	
+
 	case K_BACKSPACE:
 		if (connect_cursor < MAX_HOST_NAMES)
 		{
@@ -2300,7 +2278,7 @@ void M_Connect_Key (int k)
 			}
 		}
 		break;
-		
+
 	default:
 		if (k < 32 || k > 127)
 			break;
@@ -2345,7 +2323,6 @@ void M_Menu_Setup_f (void)
 	setup_top = setup_oldtop = (int)topcolor.value;
 	setup_bottom = setup_oldbottom = (int)bottomcolor.value;
 
-
 	if(!com_portals)
 		if(playerclass.value==CLASS_DEMON)
 			playerclass.value = 0;
@@ -2368,7 +2345,7 @@ void M_Menu_Setup_f (void)
 		setup_class = 1;
 	which_class = setup_class;
 }
-				
+
 
 void M_Setup_Draw (void)
 {
@@ -2377,7 +2354,7 @@ void M_Setup_Draw (void)
 	static qboolean wait;
 
 	ScrollTitle("gfx/menu/title4.lmp");
-	
+
 	M_Print (64, 56, "Your name");
 	M_DrawTextBox (160, 48, 16, 1);
 	M_PrintWhite (168, 56, setup_myname);
@@ -2415,7 +2392,7 @@ void M_Setup_Draw (void)
 
 	M_Print (64, 112, "First color patch");
 	M_Print (64, 136, "Second color patch");
-	
+
 	M_DrawTextBox (64, 164-8, 14, 1);
 	M_Print (72, 164, "Accept Changes");
 
@@ -2580,7 +2557,7 @@ forward:
 		m_entersound = true;
 		M_Menu_MultiPlayer_f ();
 		break;
-	
+
 	case K_BACKSPACE:
 		if (setup_cursor == 1)
 		{
@@ -2588,7 +2565,7 @@ forward:
 				setup_myname[strlen(setup_myname)-1] = 0;
 		}
 		break;
-		
+
 	default:
 		if (k < 32 || k > 127)
 			break;

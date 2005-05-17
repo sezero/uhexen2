@@ -1,13 +1,11 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.28 2005-04-30 10:42:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.29 2005-05-17 06:48:54 sezero Exp $
 */
 
 #include "quakedef.h"
-#if defined(_WIN32) || defined(PLATFORM_UNIX)
 #include "winquake.h"
-#endif
 
 #ifdef GLQUAKE
 extern  cvar_t  r_shadows, gl_glows, gl_missile_glows, gl_other_glows; // S.A
@@ -89,7 +87,7 @@ void M_Search_Key (int key);
 void M_ServerList_Key (int key);
 
 qboolean	m_entersound;		// play after drawing a frame, so caching
-								// won't disrupt the sound
+					// won't disrupt the sound
 qboolean	m_recursiveDraw;
 
 int			m_return_state;
@@ -446,7 +444,7 @@ void M_DrawTextBox2 (int x, int y, int width, int lines, qboolean bottom)
 //=============================================================================
 
 int m_save_demonum;
-		
+
 /*
 ================
 M_ToggleMenu_f
@@ -597,7 +595,7 @@ int M_DrawBigCharacter (int x, int y, int num, int numNext)
 	p = Draw_CachePic ("gfx/menu/bigfont.lmp");
 	source = p->data + ((num % 8) * 20) + (num / 8 * p->width * 20);
 
-    for(ypos=0;ypos < 19;ypos++)
+	for(ypos=0;ypos < 19;ypos++)
 	{
 		dest = vid.buffer + (y+ypos) * vid.rowbytes + x;
 		for(xpos=0;xpos<19;xpos++,dest++,source++)
@@ -633,10 +631,6 @@ void M_DrawBigString(int x, int y, char *string)
 		x += M_DrawBigCharacter(x,y,string[c],string[c+1]);
 	}
 }
-
-
-
-
 
 
 void ScrollTitle (char *name)
@@ -695,10 +689,10 @@ void ScrollTitle (char *name)
 		}
 	}
 
-	if (strcmpi(LastName,name) != 0 && TitleTargetPercent != 0) 
+	if (strcmpi(LastName,name) != 0 && TitleTargetPercent != 0)
 		TitleTargetPercent = 0;
 
-    if (CanSwitch) 
+	if (CanSwitch)
 	{
 		LastName = name;
 		CanSwitch = false;
@@ -726,7 +720,6 @@ int	m_main_cursor;
 
 void M_Menu_Main_f (void)
 {
-
 	// Deactivate the mouse when the menus are drawn - S.A.
 	IN_DeactivateMouseSA ();
 
@@ -739,7 +732,7 @@ void M_Menu_Main_f (void)
 	m_state = m_main;
 	m_entersound = true;
 }
-				
+
 
 void M_Main_Draw (void)
 {
@@ -763,10 +756,8 @@ void M_Main_Key (int key)
 	switch (key)
 	{
 	case K_ESCAPE:
-
 		// leaving the main menu, reactivate mouse S.A.
 		IN_ActivateMouseSA ();
-
 		// and check we haven't changed the music type
 		if (strlen(old_bgmtype)!=0 && strcmp(old_bgmtype,bgmtype.string)!=0)
 			ReInitMusic ();
@@ -778,7 +769,7 @@ void M_Main_Key (int key)
 		if (cls.demonum != -1 && !cls.demoplayback && cls.state != ca_connected)
 			CL_NextDemo ();
 		break;
-		
+
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
 		if (++m_main_cursor >= MAIN_ITEMS)
@@ -847,7 +838,7 @@ void M_Difficulty_Draw (void)
 	if (setup_class < 1 || setup_class > NUM_CLASSES)
 		setup_class = NUM_CLASSES;
 	setup_class--;
-	
+
 	for(i = 0; i < NUM_DIFFLEVELS; ++i)
 		M_DrawBigString (72,60+(i*20),DiffNames[setup_class][i]);
 
@@ -865,13 +856,11 @@ void M_Difficulty_Key (int key)
 	case K_ESCAPE:
 		M_Menu_Class_f ();
 		break;
-		
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
 		if (++m_diff_cursor >= DIFF_ITEMS)
 			m_diff_cursor = 0;
 		break;
-
 	case K_UPARROW:
 		S_LocalSound ("raven/menu1.wav");
 		if (--m_diff_cursor < 0)
@@ -931,16 +920,16 @@ void M_Class_Draw (void)
 
 	ScrollTitle("gfx/menu/title2.lmp");
 #ifdef H2MP
-if (!m_enter_portals) {
-	for(i = 0; i < NUM_CLASSES -1; ++i)
-		M_DrawBigString (72,60+(i*20),ClassNamesU[i]);
-} else
+	if (!m_enter_portals) {
+		for(i = 0; i < NUM_CLASSES -1; ++i)
+			M_DrawBigString (72,60+(i*20),ClassNamesU[i]);
+	} else
 #endif
 	for(i = 0; i < NUM_CLASSES; ++i)
 		M_DrawBigString (72,60+(i*20),ClassNamesU[i]);
 
 #ifdef H2MP
-if (!m_enter_portals) {
+	if (!m_enter_portals) {
 		if (m_class_cursor >= CLASS_ITEMS -1)
 			m_class_cursor = 0;
 }
@@ -963,14 +952,13 @@ void M_Class_Key (int key)
 	case K_ESCAPE:
 		M_Menu_SinglePlayer_f ();
 		break;
-		
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
 #ifdef H2MP
-if (!m_enter_portals) {
+	if (!m_enter_portals) {
 		if (++m_class_cursor >= CLASS_ITEMS -1)
 			m_class_cursor = 0;
-} else
+	} else
 #endif
 		if (++m_class_cursor >= CLASS_ITEMS)
 			m_class_cursor = 0;
@@ -983,10 +971,10 @@ if (!m_enter_portals) {
 	case K_UPARROW:
 		S_LocalSound ("raven/menu1.wav");
 #ifdef H2MP
-if (!m_enter_portals) {
+	if (!m_enter_portals) {
 		if (--m_class_cursor < 0)
 			m_class_cursor = CLASS_ITEMS - 2;
-} else
+	} else
 #endif
 		if (--m_class_cursor < 0)
 			m_class_cursor = CLASS_ITEMS - 1;
@@ -1051,7 +1039,7 @@ void M_SinglePlayer_Draw (void)
 	M_DrawBigString (72,60+(3*20),"OLD MISSION");
 	M_DrawBigString (72,60+(4*20),"VIEW INTRO");
 #endif
-	
+
 	f = (int)(host_time * 10)%8;
 	M_DrawTransPic (43, 54 + m_singleplayer_cursor * 20,Draw_CachePic( va("gfx/menu/menudot%i.lmp", f+1 ) ) );
 }
@@ -1064,22 +1052,18 @@ void M_SinglePlayer_Key (int key)
 	case K_ESCAPE:
 		M_Menu_Main_f ();
 		break;
-		
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
 		if (++m_singleplayer_cursor >= SINGLEPLAYER_ITEMS)
 			m_singleplayer_cursor = 0;
 		break;
-
 	case K_UPARROW:
 		S_LocalSound ("raven/menu1.wav");
 		if (--m_singleplayer_cursor < 0)
 			m_singleplayer_cursor = SINGLEPLAYER_ITEMS - 1;
 		break;
-
 	case K_ENTER:
 		m_entersound = true;
-
 #ifdef H2MP
 		m_enter_portals = 0;
 #endif
@@ -1183,9 +1167,9 @@ void M_Menu_Save_f (void)
 void M_Load_Draw (void)
 {
 	int		i;
-	
+
 	ScrollTitle("gfx/menu/load.lmp");
-	
+
 	for (i=0 ; i< MAX_SAVEGAMES; i++)
 		M_Print (16, 60 + 8*i, m_filenames[i]);
 
@@ -1263,7 +1247,7 @@ void M_Save_Key (int k)
 		key_dest = key_game;
 		Cbuf_AddText (va("save s%i\n", load_cursor));
 		return;
-	
+
 	case K_UPARROW:
 	case K_LEFTARROW:
 		S_LocalSound ("raven/menu1.wav");
@@ -1281,12 +1265,6 @@ void M_Save_Key (int k)
 		break;	
 	}
 }
-
-
-
-
-
-
 
 
 //=============================================================================
@@ -1346,7 +1324,7 @@ void M_Menu_MSave_f (void)
 
 
 void M_MLoad_Key (int k)
-{	
+{
 	switch (k)
 	{
 	case K_ESCAPE:
@@ -1371,7 +1349,7 @@ void M_MLoad_Key (int k)
 	// issue the load command
 		Cbuf_AddText (va ("load ms%i\n", load_cursor) );
 		return;
-	
+
 	case K_UPARROW:
 	case K_LEFTARROW:
 		S_LocalSound ("raven/menu1.wav");
@@ -1404,7 +1382,7 @@ void M_MSave_Key (int k)
 		key_dest = key_game;
 		Cbuf_AddText (va("save ms%i\n", load_cursor));
 		return;
-	
+
 	case K_UPARROW:
 	case K_LEFTARROW:
 		S_LocalSound ("raven/menu1.wav");
@@ -1476,7 +1454,7 @@ void M_MultiPlayer_Key (int key)
 	case K_ESCAPE:
 		M_Menu_Main_f ();
 		break;
-		
+
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
 		if (++m_multiplayer_cursor >= MULTIPLAYER_ITEMS)
@@ -1546,14 +1524,14 @@ void M_Menu_Setup_f (void)
 	if (setup_class < 1 || setup_class > NUM_CLASSES)
 		setup_class = NUM_CLASSES;
 }
-				
+
 
 void M_Setup_Draw (void)
 {
 	qpic_t	*p;
 
 	ScrollTitle("gfx/menu/title4.lmp");
-	
+
 	M_Print (64, 40, "Hostname");
 	M_DrawTextBox (160, 32, 16, 1);
 	M_Print (168, 40, setup_hostname);
@@ -1567,7 +1545,7 @@ void M_Setup_Draw (void)
 
 	M_Print (64, 104, "First color patch");
 	M_Print (64, 128, "Second color patch");
-	
+
 	M_DrawTextBox (64, 156-8, 14, 1);
 	M_Print (72, 156, "Accept Changes");
 
@@ -1666,7 +1644,7 @@ forward:
 		m_entersound = true;
 		M_Menu_MultiPlayer_f ();
 		break;
-	
+
 	case K_BACKSPACE:
 		if (setup_cursor == 0)
 		{
@@ -1680,7 +1658,7 @@ forward:
 				setup_myname[strlen(setup_myname)-1] = 0;
 		}
 		break;
-		
+
 	default:
 		if (k < 32 || k > 127)
 			break;
@@ -1728,7 +1706,7 @@ char *net_helpMessage [] =
   " Two computers connected",
   "   through two modems.  ",
   "                        ",
- 
+
   "                        ",
   " Two computers connected",
   " by a null-modem cable. ",
@@ -1767,7 +1745,7 @@ void M_Net_Draw (void)
 
 	f = 32;
 
-#if !defined(_WIN32) && !defined (PLATFORM_UNIX)
+#if 0
 	if (serialAvailable)
 	{
 		p = Draw_CachePic ("gfx/netmen1.lmp");
@@ -1780,10 +1758,9 @@ void M_Net_Draw (void)
 		M_DrawTransPic (72, f, p);
 #endif
 
-
 	f += 19;
 
-#if !defined(_WIN32) && !defined (PLATFORM_UNIX)
+#if 0
 	if (serialAvailable)
 	{
 		p = Draw_CachePic ("gfx/netmen2.lmp");
@@ -1796,7 +1773,6 @@ void M_Net_Draw (void)
 		M_DrawTransPic (72, f, p);
 #endif
 
-
 	f += 19;
 /*	rjr
 	if (ipxAvailable)
@@ -1806,7 +1782,6 @@ void M_Net_Draw (void)
 */
 //	M_DrawTransPic (72, f, p);
 	M_DrawBigString (72,f,"IPX");
-
 
 	f += 19;
 /* rjr
@@ -1838,7 +1813,7 @@ again:
 	case K_ESCAPE:
 		M_Menu_MultiPlayer_f ();
 		break;
-		
+
 	case K_DOWNARROW:
 // Tries to re-draw the menu here, and m_net_cursor could be set to -1
 //		S_LocalSound ("raven/menu1.wav");
@@ -1902,17 +1877,17 @@ again:
 
 #define	SLIDER_RANGE	10
 
-enum 
+enum
 {
 	OPT_CUSTOMIZE = 0,
 	OPT_CONSOLE,
 	OPT_DEFAULTS,
 	OPT_SCRSIZE,	//3
-	OPT_GAMMA,		//4
+	OPT_GAMMA,	//4
 	OPT_MOUSESPEED,	//5
 	OPT_MUSICTYPE,	//6
 	OPT_MUSICVOL,	//7
-	OPT_SNDVOL,		//8
+	OPT_SNDVOL,	//8
 	OPT_ALWAYRUN,	//9
 	OPT_INVMOUSE,	//10
 	OPT_LOOKSPRING,	//11
@@ -2026,7 +2001,7 @@ void M_AdjustSliders (int dir)
 			sfxvolume.value = 1;
 		Cvar_SetValue ("volume", sfxvolume.value);
 		break;
-		
+
 	case OPT_ALWAYRUN:	// allways run
 		if (cl_forwardspeed.value > 200)
 		{
@@ -2039,24 +2014,24 @@ void M_AdjustSliders (int dir)
 			Cvar_SetValue ("cl_backspeed", 400);
 		}
 		break;
-	
+
 	case OPT_INVMOUSE:	// invert mouse
 		Cvar_SetValue ("m_pitch", -m_pitch.value);
 		break;
-	
+
 	case OPT_LOOKSPRING:	// lookspring
 		Cvar_SetValue ("lookspring", !lookspring.value);
 		break;
-	
+
 	case OPT_LOOKSTRAFE:	// lookstrafe
 		Cvar_SetValue ("lookstrafe", !lookstrafe.value);
 		break;
 
-	case OPT_CROSSHAIR:	
+	case OPT_CROSSHAIR:
 		Cvar_SetValue ("crosshair", !crosshair.value);
 		break;
 
-	case OPT_ALWAYSMLOOK:	
+	case OPT_ALWAYSMLOOK:
 		if (in_mlook.state & 1)
 			//IN_MLookUp();
 			Cbuf_AddText("-mlook");
@@ -2069,26 +2044,28 @@ void M_AdjustSliders (int dir)
 	case OPT_R_SHADOWS:	// r_shadows
 		Cvar_SetValue ("r_shadows", !r_shadows.value);
 		break;
+
 	case OPT_GL_GLOW:	// gl_glows
 		Cvar_SetValue ("gl_glows", !gl_glows.value);
 		Cvar_SetValue ("gl_missile_glows", gl_glows.value);
 		Cvar_SetValue ("gl_other_glows", gl_glows.value);
 		break;
 #endif
+
 	case OPT_CHASE_ACTIVE:	// chase_active
 		Cvar_SetValue ("chase_active", !chase_active.value);
 		break;
+
 	case OPT_FULLSCREEN:	// vid_mode
 		ToggleFullScreenSA();
 		break;
+
 	case OPT_USEMOUSE:	// _windowed_mouse
 		Cvar_SetValue ("_windowed_mouse", !_windowed_mouse.value);
-
 		if (_windowed_mouse.value == 0)
 			IN_ShowMouse ();
 		else
 			IN_HideMouse ();
-
 		break;
 	}
 }
@@ -2126,9 +2103,9 @@ void M_DrawCheckbox (int x, int y, int on)
 void M_Options_Draw (void)
 {
 	float	r;
-	
+
 	ScrollTitle("gfx/menu/title3.lmp");
-	
+
 	M_Print (16, 60+(0*8), "    Customize controls");
 	M_Print (16, 60+(1*8), "         Go to console");
 	M_Print (16, 60+(2*8), "     Reset to defaults");
@@ -2161,7 +2138,7 @@ void M_Options_Draw (void)
 	r = sfxvolume.value;
 	M_DrawSlider (220, 60+(8*8), r);
 
-	M_Print (16, 60+(9*8),				"            Always Run");
+	M_Print (16, 60+(9*8),			"            Always Run");
 	M_DrawCheckbox (220, 60+(9*8), cl_forwardspeed.value > 200);
 
 	M_Print (16, 60+(OPT_INVMOUSE*8),	"          Invert Mouse");
@@ -2179,16 +2156,8 @@ void M_Options_Draw (void)
 	M_Print (16,60+(OPT_ALWAYSMLOOK*8),	"            Mouse Look");
 	M_DrawCheckbox (220, 60+(OPT_ALWAYSMLOOK*8), in_mlook.state & 1);
 
-#if defined (_WIN32) || defined (PLATFORM_UNIX)
-	// don't need this anymore S.A
-	// if (modestate == MS_WINDOWED)
-	// {
-
 	M_Print (16, 60+(OPT_USEMOUSE*8),	"             Use Mouse");
 	M_DrawCheckbox (220, 60+(OPT_USEMOUSE*8), _windowed_mouse.value);
-
-	// }
-#endif
 
 #ifdef GLQUAKE
 	M_Print (16, 60+(OPT_R_SHADOWS*8),	"               Shadows");
@@ -2197,7 +2166,7 @@ void M_Options_Draw (void)
 	M_Print (16, 60+(OPT_GL_GLOW*8),	"              Gl Glows");
 	M_DrawCheckbox (220, 60+(OPT_GL_GLOW*8), gl_glows.value);
 #endif
-	M_Print (16, 60+(OPT_CHASE_ACTIVE*8),"            Chase Mode");
+	M_Print (16, 60+(OPT_CHASE_ACTIVE*8),	"            Chase Mode");
 	M_DrawCheckbox (220, 60+(OPT_CHASE_ACTIVE*8), chase_active.value);
 
 	M_Print (16, 60+(OPT_FULLSCREEN*8),	"            Fullscreen");
@@ -2219,15 +2188,13 @@ void M_Options_Key (int k)
 	case K_ESCAPE:
 		M_Menu_Main_f ();
 		break;
-		
+
 	case K_ENTER:
 		m_entersound = true;
 		switch (options_cursor)
 		{
 		case OPT_CUSTOMIZE:
-			// here's where we enter the customization menu
-			IN_ActivateMouseSA ();
-
+			IN_ActivateMouseSA ();	// we entered the customization menu
 			M_Menu_Keys_f ();
 			break;
 		case OPT_CONSOLE:
@@ -2245,13 +2212,12 @@ void M_Options_Key (int k)
 			break;
 		}
 		return;
-	
+
 	case K_UPARROW:
 		S_LocalSound ("raven/menu1.wav");
 		options_cursor--;
 		if (options_cursor < 0)
 			options_cursor = OPTIONS_ITEMS-1;
-
 		break;
 
 	case K_DOWNARROW:
@@ -2259,8 +2225,7 @@ void M_Options_Key (int k)
 		options_cursor++;
 		if (options_cursor >= OPTIONS_ITEMS)
 			options_cursor = 0;
-
-		break;	
+		break;
 
 	case K_LEFTARROW:
 		M_AdjustSliders (-1);
@@ -2277,29 +2242,6 @@ void M_Options_Key (int k)
 		else
 			options_cursor = 0;
 	}
-
-/* - removed
-   - we now have the no mouse option for fullscreen also 
-
-  // redundancy here in case we have neither OPT_VIDEO and OPT_USEMOUSE
-  // skip over the use mouse option if fullscreen - S.A.
-
-	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED)) {
-		if (k == K_UPARROW)
-			options_cursor = OPT_USEMOUSE - 1;
-		else {
-			options_cursor = OPT_USEMOUSE + 1;
-			if (options_cursor == OPTIONS_ITEMS)
-				options_cursor = 0;
-		}
-	}
-	if (options_cursor == OPT_VIDEO && vid_menudrawfn == NULL) {
-		if (k == K_UPARROW)
-			options_cursor = OPT_VIDEO - 1;
-		else
-			options_cursor = 0;
-	}
-*/
 }
 
 //=============================================================================
@@ -2435,8 +2377,8 @@ void M_Keys_Draw (void)
 		M_Print (12, 64, "Press a key or button for this action");
 	else
 		M_Print (18, 64, "Enter to change, backspace to clear");
-		
-	if (keys_top) 
+
+	if (keys_top)
 		M_DrawCharacter (6, 80, 128);
 	if (keys_top + KEYS_SIZE < NUMCOMMANDS)
 		M_DrawCharacter (6, 80 + ((KEYS_SIZE-1)*8), 129);
@@ -2449,9 +2391,9 @@ void M_Keys_Draw (void)
 		M_Print (16, y, bindnames[i+keys_top][1]);
 
 		l = strlen (bindnames[i+keys_top][0]);
-		
+
 		M_FindKeysForCommand (bindnames[i+keys_top][0], keys);
-		
+
 		if (keys[0] == -1)
 		{
 			M_Print (140, y, "???");
@@ -2480,7 +2422,7 @@ void M_Keys_Key (int k)
 {
 	char	cmd[80];
 	int		keys[2];
-	
+
 	if (bind_grab)
 	{	// defining a key
 		S_LocalSound ("raven/menu1.wav");
@@ -2493,17 +2435,16 @@ void M_Keys_Key (int k)
 			sprintf (cmd, "bind \"%s\" \"%s\"\n", Key_KeynumToString (k), bindnames[keys_cursor][0]);			
 			Cbuf_InsertText (cmd);
 		}
-		
+
 		bind_grab = false;
 		return;
 	}
-	
+
 	switch (k)
 	{
 	case K_ESCAPE:
 		// returning to other menus, deactivate mouse
 		IN_DeactivateMouseSA ();
-
 		M_Menu_Options_f ();
 		break;
 
@@ -2531,14 +2472,14 @@ void M_Keys_Key (int k)
 		bind_grab = true;
 		break;
 
-	case K_BACKSPACE:		// delete bindings
-	case K_DEL:				// delete bindings
+	case K_BACKSPACE:	// delete bindings
+	case K_DEL:		// delete bindings
 		S_LocalSound ("raven/menu2.wav");
 		M_UnbindCommand (bindnames[keys_cursor][0]);
 		break;
 	}
 
-	if (keys_cursor < keys_top) 
+	if (keys_cursor < keys_top)
 		keys_top = keys_cursor;
 	else if (keys_cursor >= keys_top+KEYS_SIZE)
 		keys_top = keys_cursor - KEYS_SIZE + 1;
@@ -2582,10 +2523,8 @@ void M_Menu_Help_f (void)
 }
 
 
-
 void M_Help_Draw (void)
 {
-// Pa3PyX
 #ifdef GLQUAKE
 	Draw_IntermissionPic(Draw_CachePicNoTrans(va("gfx/menu/help%02i.lmp", help_page+1)));
 #else
@@ -2601,7 +2540,7 @@ void M_Help_Key (int key)
 	case K_ESCAPE:
 		M_Menu_Main_f ();
 		break;
-		
+
 	case K_UPARROW:
 	case K_RIGHTARROW:
 		m_entersound = true;
@@ -2616,7 +2555,6 @@ void M_Help_Key (int key)
 			help_page = NUM_HELP_PAGES-1;
 		break;
 	}
-
 }
 
 //=============================================================================
@@ -2626,7 +2564,7 @@ void M_Help_Key (int key)
 int		m_quit_prevstate;
 qboolean	wasInMenus;
 
-#ifndef	_WIN32
+#if 0
 char *quitMessage [] = 
 {
 /* .........1.........2.... */
@@ -2634,7 +2572,7 @@ char *quitMessage [] =
   "  There's a big nasty   ",
   "   thing - shoot it!    ",
   "                        ",
- 
+
   "  You can't go now, I   ",
   "   was just getting     ",
   "    warmed up.          ",
@@ -2654,7 +2592,7 @@ char *quitMessage [] =
   "      for Hexen 2       ",
   "    plush toys and      ",
   "    greeting cards!     ",
- 
+
   "  Hexen 2...            ",
   "                        ",
   "    Too much is never   ",
@@ -2664,7 +2602,7 @@ char *quitMessage [] =
   "  leave.  But I know    ",
   "  you'll be back.       ",
   "                        ",
- 
+
   "                        ",
   "  Insert cute phrase    ",
   "        here            ",
@@ -3351,7 +3289,7 @@ forward:
 		else
 			Cbuf_AddText ("connect\n");
 		break;
-	
+
 	case K_BACKSPACE:
 		if (serialConfig_cursor == 4)
 		{
@@ -3359,7 +3297,7 @@ forward:
 				serialConfig_phone[strlen(serialConfig_phone)-1] = 0;
 		}
 		break;
-		
+
 	default:
 		if (key < 32 || key > 127)
 			break;
@@ -3408,7 +3346,7 @@ void M_Menu_ModemConfig_f (void)
 	m_entersound = true;
 	(*GetModemConfig) (0, &modemConfig_dialing, modemConfig_clear, modemConfig_init, modemConfig_hangup);
 }
-				
+
 
 void M_ModemConfig_Draw (void)
 {
@@ -3503,7 +3441,7 @@ void M_ModemConfig_Key (int key)
 			M_Menu_SerialConfig_f ();
 		}
 		break;
-	
+
 	case K_BACKSPACE:
 		if (modemConfig_cursor == 1)
 		{
@@ -3523,7 +3461,7 @@ void M_ModemConfig_Key (int key)
 				modemConfig_hangup[strlen(modemConfig_hangup)-1] = 0;
 		}
 		break;
-		
+
 	default:
 		if (key < 32 || key > 127)
 			break;
@@ -3596,7 +3534,7 @@ void M_Menu_LanConfig_f (void)
 		setup_class = NUM_CLASSES;
 	setup_class--;
 }
-				
+
 
 void M_LanConfig_Draw (void)
 {
@@ -3724,7 +3662,7 @@ void M_LanConfig_Key (int key)
 		}
 
 		break;
-	
+
 	case K_BACKSPACE:
 		if (lanConfig_cursor == 0)
 		{
@@ -3738,14 +3676,14 @@ void M_LanConfig_Key (int key)
 				lanConfig_joinname[strlen(lanConfig_joinname)-1] = 0;
 		}
 		break;
-		
+
 	case K_LEFTARROW:
 		if (lanConfig_cursor != 1 || !JoiningGame)
 			break;
 
 		S_LocalSound ("raven/menu3.wav");
 		setup_class--;
-		if (setup_class < 0) 
+		if (setup_class < 0)
 			setup_class = NUM_CLASSES -1;
 		break;
 
@@ -3755,7 +3693,7 @@ void M_LanConfig_Key (int key)
 
 		S_LocalSound ("raven/menu3.wav");
 		setup_class++;
-		if (setup_class > NUM_CLASSES - 1) 
+		if (setup_class > NUM_CLASSES - 1)
 			setup_class = 0;
 		break;
 
@@ -3811,90 +3749,90 @@ typedef struct
 
 level_t		levels[] =
 {
-	{"demo1", "Blackmarsh"},							// 0
-	{"demo2", "Barbican"},								// 1
+	{"demo1", "Blackmarsh"},			// 0
+	{"demo2", "Barbican"},				// 1
 
-	{"ravdm1", "Deathmatch 1"},							// 2
+	{"ravdm1", "Deathmatch 1"},			// 2
 
-	{"demo1","Blackmarsh"},								// 3
-	{"demo2","Barbican"},								// 4
-	{"demo3","The Mill"},								// 5
-	{"village1","King's Court"},						// 6
-	{"village2","Inner Courtyard"},						// 7
-	{"village3","Stables"},								// 8
-	{"village4","Palace Entrance"},						// 9
-	{"village5","The Forgotten Chapel"},				// 10
-	{"rider1a","Famine's Domain"},						// 11
+	{"demo1","Blackmarsh"},				// 3
+	{"demo2","Barbican"},				// 4
+	{"demo3","The Mill"},				// 5
+	{"village1","King's Court"},			// 6
+	{"village2","Inner Courtyard"},			// 7
+	{"village3","Stables"},				// 8
+	{"village4","Palace Entrance"},			// 9
+	{"village5","The Forgotten Chapel"},		// 10
+	{"rider1a","Famine's Domain"},			// 11
 
-	{"meso2","Plaza of the Sun"},						// 12
-	{"meso1","The Palace of Columns"},					// 13
-	{"meso3","Square of the Stream"},					// 14
-	{"meso4","Tomb of the High Priest"},				// 15
-	{"meso5","Obelisk of the Moon"},					// 16
-	{"meso6","Court of 1000 Warriors"},					// 17
-	{"meso8","Bridge of Stars"},						// 18
-	{"meso9","Well of Souls"},							// 19
+	{"meso2","Plaza of the Sun"},			// 12
+	{"meso1","The Palace of Columns"},		// 13
+	{"meso3","Square of the Stream"},		// 14
+	{"meso4","Tomb of the High Priest"},		// 15
+	{"meso5","Obelisk of the Moon"},		// 16
+	{"meso6","Court of 1000 Warriors"},		// 17
+	{"meso8","Bridge of Stars"},			// 18
+	{"meso9","Well of Souls"},			// 19
 
-	{"egypt1","Temple of Horus"},						// 20
-	{"egypt2","Ancient Temple of Nefertum"},			// 21
-	{"egypt3","Temple of Nefertum"},					// 22
-	{"egypt4","Palace of the Pharaoh"},					// 23
-	{"egypt5","Pyramid of Anubis"},						// 24
-	{"egypt6","Temple of Light"},						// 25
-	{"egypt7","Shrine of Naos"},						// 26
-	{"rider2c","Pestilence's Lair"},					// 27
+	{"egypt1","Temple of Horus"},			// 20
+	{"egypt2","Ancient Temple of Nefertum"},	// 21
+	{"egypt3","Temple of Nefertum"},		// 22
+	{"egypt4","Palace of the Pharaoh"},		// 23
+	{"egypt5","Pyramid of Anubis"},			// 24
+	{"egypt6","Temple of Light"},			// 25
+	{"egypt7","Shrine of Naos"},			// 26
+	{"rider2c","Pestilence's Lair"},		// 27
 
-	{"romeric1","The Hall of Heroes"},					// 28
-	{"romeric2","Gardens of Athena"},					// 29
-	{"romeric3","Forum of Zeus"},						// 30
-	{"romeric4","Baths of Demetrius"},					// 31
-	{"romeric5","Temple of Mars"},						// 32
-	{"romeric6","Coliseum of War"},						// 33
-	{"romeric7","Reflecting Pool"},						// 34
+	{"romeric1","The Hall of Heroes"},		// 28
+	{"romeric2","Gardens of Athena"},		// 29
+	{"romeric3","Forum of Zeus"},			// 30
+	{"romeric4","Baths of Demetrius"},		// 31
+	{"romeric5","Temple of Mars"},			// 32
+	{"romeric6","Coliseum of War"},			// 33
+	{"romeric7","Reflecting Pool"},			// 34
 
-	{"cath","Cathedral"},								// 35
-	{"tower","Tower of the Dark Mage"},					// 36
-	{"castle4","The Underhalls"},						// 37
-	{"castle5","Eidolon's Ordeal"},						// 38
-	{"eidolon","Eidolon's Lair"},						// 39
-  
-	{"ravdm1","Atrium of Immolation"},					// 40
-	{"ravdm2","Total Carnage"},							// 41
-	{"ravdm3","Reckless Abandon"},						// 42
-	{"ravdm4","Temple of RA"},							// 43
-	{"ravdm5","Tom Foolery"},							// 44
+	{"cath","Cathedral"},				// 35
+	{"tower","Tower of the Dark Mage"},		// 36
+	{"castle4","The Underhalls"},			// 37
+	{"castle5","Eidolon's Ordeal"},			// 38
+	{"eidolon","Eidolon's Lair"},			// 39
 
-	{"ravdm1", "Deathmatch 1"},							// 45
+	{"ravdm1","Atrium of Immolation"},		// 40
+	{"ravdm2","Total Carnage"},			// 41
+	{"ravdm3","Reckless Abandon"},			// 42
+	{"ravdm4","Temple of RA"},			// 43
+	{"ravdm5","Tom Foolery"},			// 44
+
+	{"ravdm1", "Deathmatch 1"},			// 45
 
 //OEM
-	{"demo1","Blackmarsh"},								// 46
-	{"demo2","Barbican"},								// 47
-	{"demo3","The Mill"},								// 48
-	{"village1","King's Court"},						// 49
-	{"village2","Inner Courtyard"},						// 50
-	{"village3","Stables"},								// 51
-	{"village4","Palace Entrance"},						// 52
-	{"village5","The Forgotten Chapel"},				// 53
-	{"rider1a","Famine's Domain"},						// 54
+	{"demo1","Blackmarsh"},				// 46
+	{"demo2","Barbican"},				// 47
+	{"demo3","The Mill"},				// 48
+	{"village1","King's Court"},			// 49
+	{"village2","Inner Courtyard"},			// 50
+	{"village3","Stables"},				// 51
+	{"village4","Palace Entrance"},			// 52
+	{"village5","The Forgotten Chapel"},		// 53
+	{"rider1a","Famine's Domain"},			// 54
 
 #ifdef H2MP
 //Mission Pack
-	{"keep1",	"Eidolon's Lair"},						// 55
-	{"keep2",	"Village of Turnabel"},					// 56
-	{"keep3",	"Duke's Keep"},							// 57
-	{"keep4",	"The Catacombs"},						// 58
-	{"keep5",	"Hall of the Dead"},					// 59
+	{"keep1",	"Eidolon's Lair"},		// 55
+	{"keep2",	"Village of Turnabel"},		// 56
+	{"keep3",	"Duke's Keep"},			// 57
+	{"keep4",	"The Catacombs"},		// 58
+	{"keep5",	"Hall of the Dead"},		// 59
 
-	{"tibet1",	"Tulku"},								// 60
-	{"tibet2",	"Ice Caverns"},							// 61
-	{"tibet3",	"The False Temple"},					// 62
-	{"tibet4",	"Courtyards of Tsok"},					// 63
-	{"tibet5",	"Temple of Kalachakra"},				// 64
-	{"tibet6",	"Temple of Bardo"},						// 65
-	{"tibet7",	"Temple of Phurbu"},					// 66
-	{"tibet8",	"Palace of Emperor Egg Chen"},			// 67
-	{"tibet9",	"Palace Inner Chambers"},				// 68
-	{"tibet10",	"The Inner Sanctum of Praevus"},		// 69
+	{"tibet1",	"Tulku"},			// 60
+	{"tibet2",	"Ice Caverns"},			// 61
+	{"tibet3",	"The False Temple"},		// 62
+	{"tibet4",	"Courtyards of Tsok"},		// 63
+	{"tibet5",	"Temple of Kalachakra"},	// 64
+	{"tibet6",	"Temple of Bardo"},		// 65
+	{"tibet7",	"Temple of Phurbu"},		// 66
+	{"tibet8",	"Palace of Emperor Egg Chen"},	// 67
+	{"tibet9",	"Palace Inner Chambers"},	// 68
+	{"tibet10",	"The Inner Sanctum of Praevus"},// 69
 #endif
 };
 
@@ -3934,7 +3872,7 @@ episode_t	episodes[] =
 
 int	startepisode;
 int	startlevel;
-int maxplayers;
+int	maxplayers;
 qboolean m_serverInfoMessage = false;
 double m_serverInfoMessageTime;
 
@@ -4267,7 +4205,7 @@ void M_GameOptions_Key (int key)
 
 			return;
 		}
-		
+
 		M_NetStart_Change (1);
 		break;	
 	}
@@ -4288,7 +4226,6 @@ void M_Menu_Search_f (void)
 	slistLocal = false;
 	searchComplete = false;
 	NET_Slist_f();
-
 }
 
 
@@ -4440,7 +4377,6 @@ void M_ServerList_Key (int k)
 
 //=============================================================================
 /* Menu Subsystem */
-
 
 void M_Init (void)
 {
@@ -4723,6 +4659,11 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2005/04/30 10:42:39  sezero
+ * Updated gamma stuff: We don't use gamma ramps (in fact we can, we have
+ * SDL_SetGammaRamp), therefore eliminated V_CheckGamma & friends from
+ * V_UpdatePalette for PLATFORM_UNIX. Also killed unused function WarpPalette.
+ *
  * Revision 1.27  2005/04/30 08:39:07  sezero
  * silenced shadowed decleration warnings about volume (now sfxvolume)
  *
