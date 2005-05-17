@@ -123,8 +123,6 @@ static byte	backingbuf[48*24];
 
 void VID_MenuDraw (void);
 void VID_MenuKey (int key);
-void VID_SetGamma(float value);
-void VID_SetGamma_f(void);
 
 LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 void AppActivate(BOOL fActive, BOOL minimize);
@@ -2528,51 +2526,6 @@ void D_EndDirectRect (int x, int y, int width, int height)
 	}
 }
 
-/*
-=================
-VID_SetGamma
-
-=================
-*/
-
-void VID_SetGamma(float value)
-{
-#ifdef PLATFORM_UNIX
-  SDL_SetGamma(value,value,value);
-#endif
-}
-
-void VID_ApplyGamma (void)
-{
-
-  if ((v_gamma.value != 0)&&(v_gamma.value > (1/GAMMA_MAX)))
-    VID_SetGamma(1/v_gamma.value);
-
-  else VID_SetGamma(GAMMA_MAX);
-
-//  Con_Printf ("Gamma changed to %f\n", v_gamma.value);
-}
-
-void VID_SetGamma_f (void)
-{
-  float value = 1;
-
-  value = atof (Cmd_Argv(1));
-
-  if (value != 0) {
-    if (value > (1/GAMMA_MAX))
-      v_gamma.value = value;
-
-    else v_gamma.value =  1/GAMMA_MAX;
-  }
-
-/* if value==0 , just apply current settings.
-   this is usefull at startup */
-
-  VID_ApplyGamma();
-
-//  Con_Printf ("Gamma changed to %f\n", v_gamma.value);
-}
 
 //==========================================================================
 
@@ -3255,15 +3208,6 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.3  2001/12/13 13:40:35  phneutre
- * implemented gamma correction functions
- *
- * Revision 1.2  2001/12/13 13:16:27  phneutre
- * implement gamma correction functions
- *
- * Revision 1.1.1.1  2001/11/09 17:04:08  theoddone33
- * Inital import
- *
  * 
  * 4     4/01/98 6:43p Jmonroe
  * fixed boundschecker errors

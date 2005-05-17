@@ -744,6 +744,8 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
     if (hPrevInstance)
         return 0;
 
+	CL_RemoveGIPFiles(NULL);
+
 	global_hInstance = hInstance;
 	global_nCmdShow = nCmdShow;
 
@@ -758,7 +760,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	parms.basedir = cwd;
 	parms.cachedir = NULL;
-	parms.userdir = cwd; /* on win32, there is no userdir */
 
 	parms.argc = 1;
 	argv[0] = empty_string;
@@ -944,15 +945,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.3  2001/12/14 16:31:06  phneutre
- * moved CL_RemoveGIPFiles(NULL) grom main() to Host_Init because of NULL paths
- *
- * Revision 1.2  2001/12/13 16:06:15  phneutre
- * initial support for userspace directory (~/.aot) (parms.userdir)
- *
- * Revision 1.1.1.1  2001/11/09 17:04:10  theoddone33
- * Inital import
- *
  * 
  * 8     4/13/98 1:01p Jmonroe
  * changed default to not use CDVolume
