@@ -19,7 +19,6 @@ clean :
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 DHCCOBJS= cmdlib.o \
-	mathlib.o \
 	pr_comp.o \
 	pr_lex.o \
 	dcc.o \
