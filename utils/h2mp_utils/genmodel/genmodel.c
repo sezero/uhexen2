@@ -19,7 +19,9 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
-//#include <conio.h>
+#ifdef _WIN32
+#include <conio.h>
+#endif
 
 #include "cmdlib.h"
 #include "scriplib.h"
@@ -207,7 +209,7 @@ int main(int argc, char **argv)
 
 	for(i=1; i<argc;i++)
 	{
-		if(!strcasecmp(argv[i], "-archive"))
+		if(!Q_strcasecmp(argv[i], "-archive"))
 		{
 			archive = true;
 			strcpy(archivedir, argv[i+1]);
@@ -215,7 +217,7 @@ int main(int argc, char **argv)
 
 			i++;
 		}
-		else if(!strncasecmp(argv[i], "-opt",4))
+		else if(!Q_strncasecmp(argv[i], "-opt",4))
 		{
 			DoOpts = true;
 		}
@@ -238,7 +240,7 @@ int main(int argc, char **argv)
 	strcpy(outname, path);
 
 	i = strlen(path);
-	if (i > 4 && strcasecmp(&path[i-4],".mdl") == 0)
+	if (i > 4 && Q_strcasecmp(&path[i-4],".mdl") == 0)
 	{
 		strcpy(outname,path);
 		ReadModel(path);

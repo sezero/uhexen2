@@ -695,13 +695,13 @@ TextureContents
 */
 int TextureContents (char *name)
 {
-	if (!strncasecmp (name, "sky",3))
+	if (!Q_strncasecmp (name, "sky",3))
 		return CONTENTS_SKY;
 
-   if (!strncasecmp(name,"*lava",5))
+   if (!Q_strncasecmp(name,"*lava",5))
 		return CONTENTS_LAVA;
 
-   if (!strncasecmp(name,"*slime",6))
+   if (!Q_strncasecmp(name,"*slime",6))
 		return CONTENTS_SLIME;
 
 	if (!Q_strncasecmp (name, "*cur_90",7))

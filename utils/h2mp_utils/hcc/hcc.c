@@ -3,7 +3,7 @@
 //**
 //** hcc.c
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/hcc.c,v 1.2 2005-04-14 07:43:14 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/hcc.c,v 1.3 2005-05-17 19:35:36 sezero Exp $
 //**
 //** Hash table modifications based on fastqcc by Jonathan Roy
 //** (roy@atlantic.net).
@@ -12,6 +12,7 @@
 
 // HEADER FILES ------------------------------------------------------------
 
+#include "cmdlib.h"
 #include "hcc.h"
 
 // MACROS ------------------------------------------------------------------
@@ -118,7 +119,7 @@ int	CopyString (char *str)
 {
 	int		old;
 
-	if (!strcasecmp(str,"gfx/palette.lmp"))
+	if (!Q_strcasecmp(str,"gfx/palette.lmp"))
 	{
 		old=0;
 	}

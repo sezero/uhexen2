@@ -28,8 +28,13 @@ extern char **myargv;
 
 char *strupr (char *in);
 char *strlower (char *in);
+#ifndef __GNUC__
 int Q_strncasecmp (char *s1, char *s2, int n);
 int Q_strcasecmp (char *s1, char *s2);
+#else
+#define Q_strcasecmp strcasecmp
+#define Q_strncasecmp strncasecmp
+#endif
 void Q_getwd (char *out);
 
 int filelength (FILE *f);

@@ -287,7 +287,7 @@ skipwhite:
 	return data;
 }
 
-
+#ifndef __GNUC__
 int Q_strncasecmp (char *s1, char *s2, int n)
 {
 	int		c1, c2;
@@ -320,7 +320,7 @@ int Q_strcasecmp (char *s1, char *s2)
 {
 	return Q_strncasecmp (s1, s2, 99999);
 }
-
+#endif
 
 char *strupr (char *start)
 {

@@ -27,8 +27,13 @@ extern char **myargv;
 
 char *strupr (char *in);
 char *strlower (char *in);
+#ifdef __GNUC__
+#define Q_strcasecmp strcasecmp
+#define Q_strncasecmp strncasecmp
+#else
 int Q_strncasecmp (char *s1, char *s2, int n);
 int Q_strcasecmp (char *s1, char *s2);
+#endif
 
 int filelength (FILE *f);
 
