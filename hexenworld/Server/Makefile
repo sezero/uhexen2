@@ -49,7 +49,7 @@ COMMONOBJS = model.o \
 	sv_phys.o \
 	sv_send.o \
 	sv_user.o \
-	sys_win.o \
+	sys_unix.o \
 	world.o
 
 all: $(BINARY) 

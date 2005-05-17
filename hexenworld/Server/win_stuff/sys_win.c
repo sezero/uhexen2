@@ -1,37 +1,10 @@
 #include <sys/types.h>
-#include <sys/time.h>
-
-#ifdef PLATFORM_UNIX
-#include <dirent.h>
-#endif
-
-#include <unistd.h>
-#ifndef PLATFORM_UNIX
+#include <sys/timeb.h>
 #include <winsock.h>
-#endif
 #include "qwsvdef.h"
 
 
 cvar_t	sys_nostdout = {"sys_nostdout","0"};
-
-#ifdef PLATFORM_UNIX
-/*
-================
-Sys_GetUserdir
-================
-*/
-int Sys_GetUserdir(char *buff, unsigned int len)
-{
-    if (getenv("HOME") == NULL)
-	return 1;
-
-    if ( strlen( getenv("HOME") ) + strlen( AOT_USERDIR) + 5 > (unsigned)len )
-	return 1;
-
-    sprintf( buff, "%s/%s", getenv("HOME"), AOT_USERDIR );
-    return 0;
-}
-#endif
 
 /*
 ================
@@ -80,7 +53,7 @@ void Sys_Error (char *error, ...)
 	printf ("ERROR: %s\n", text);
 
 //#ifdef _DEBUG
-	//getch();
+	getch();
 //#endif
 
 	exit (1);
@@ -94,18 +67,17 @@ Sys_DoubleTime
 */
 double Sys_DoubleTime (void)
 {
-	struct timeval  tp;
-	struct timezone tzp;
-	static int              secbase;
+	double t;
+    struct _timeb tstruct;
+	static int	starttime;
 
-	gettimeofday(&tp, &tzp);
-
-	if (!secbase) {
-		secbase = tp.tv_sec;
-		return tp.tv_usec/1000000.0;
-	}
-
-	return (tp.tv_sec - secbase) + tp.tv_usec/1000000.0;
+	_ftime( &tstruct );
+ 
+	if (!starttime)
+		starttime = tstruct.time;
+	t = (tstruct.time-starttime) + tstruct.millitm*0.001;
+	
+	return t;
 }
 
 
@@ -117,29 +89,29 @@ Sys_ConsoleInput
 char *Sys_ConsoleInput (void)
 {
 	static char	text[256];
-	static int	len;
-	char	c;
-	fd_set		set;
-	struct timeval	timeout;
+	static int		len;
+	int		count;
+	int		i;
+	int		c;
 
-	FD_ZERO (&set);
-	FD_SET (0, &set);	/* 0 is stdin?? */
-	timeout.tv_sec = 0;
-	timeout.tv_usec = 0;
-
-	while (select (1, &set, NULL, NULL, &timeout))
+	// read a line out
+	while (_kbhit())
 	{
-		read (0, &c, 1);
-		if (c == '\n' || c == '\r')
+		c = _getch();
+		putch (c);
+		if (c == '\r')
 		{
 			text[len] = 0;
+			putch ('\n');
 			len = 0;
 			return text;
 		}
-		else if (c == 8)
+		if (c == 8)
 		{
 			if (len)
 			{
+				putch (' ');
+				putch (c);
 				len--;
 				text[len] = 0;
 			}
@@ -209,36 +181,25 @@ int main (int argc, char **argv)
 {
 	quakeparms_t	parms;
 	double			newtime, time, oldtime;
+	static	char	cwd[1024];
 	struct timeval	timeout;
 	fd_set			fdset;
 	int				t;
-#ifdef PLATFORM_UNIX
-	static  char    userdir[MAX_OSPATH];
-#endif
 
 	COM_InitArgv (argc, argv);
 	
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
-	// Client uses 32 Mb minimum but this server-only situation
-	// should go well with 16 Mb. We can always use -heapsize..
 	parms.memsize = 16*1024*1024;
 
-	if (((t = COM_CheckParm ("-heapsize")) != 0) && (t + 1 < com_argc))
-	{
+	if ((t = COM_CheckParm ("-heapsize")) != 0 &&
+		t + 1 < com_argc)
 		parms.memsize = atoi (com_argv[t + 1]) * 1024;
 
-		if (parms.memsize > 96*1024*1024) { // no bigger than 96 MB
-			Sys_Printf ("Requested memory (%d Mb) too large.\n", parms.memsize/(1024*1024));
-			Sys_Printf ("Will try going with a saner 96 Mb..\n");
-			parms.memsize = 96*1024*1024;
-		} else if (parms.memsize < 8*1024*1024) { // no less than 8 MB
-			Sys_Printf ("Requested memory (%d Mb) too little.\n", parms.memsize/(1024*1024));
-			Sys_Printf ("Will try going with a humble 8 Mb..\n");
-			parms.memsize = 8*1024*1024;
-		}
-	}
+	if ((t = COM_CheckParm ("-mem")) != 0 &&
+		t + 1 < com_argc)
+		parms.memsize = atoi (com_argv[t + 1]) * 1024 * 1024;
 
 	parms.membase = malloc (parms.memsize);
 
@@ -247,27 +208,12 @@ int main (int argc, char **argv)
 
 	parms.basedir = ".";
 	parms.cachedir = NULL;
-
-#ifdef PLATFORM_UNIX
-	if (Sys_GetUserdir(userdir,sizeof(userdir)))
-		Sys_Error ("Couldn't determine userspace directory");
-	parms.userdir = userdir;
-#else
-	// no userdir on win32
-	parms.userdir = parms.basedir;
-#endif
+	parms.userdir = parms.basedir;	// no userdir on win32
 
 	SV_Init (&parms);
 
 // run one frame immediately for first heartbeat
 	SV_Frame (HX_FRAME_TIME);		
-
-// report the filesystem to the user
-#ifdef PLATFORM_UNIX
-	Sys_Printf("userdir is: %s\n",userdir);
-#endif
-	Sys_Printf("com_gamedir is: %s\n",com_gamedir);
-	Sys_Printf("com_userdir is: %s\n",com_userdir);
 
 //
 // main loop
