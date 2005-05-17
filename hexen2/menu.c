@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.29 2005-05-17 06:48:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.30 2005-05-17 22:56:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -689,7 +689,7 @@ void ScrollTitle (char *name)
 		}
 	}
 
-	if (strcmpi(LastName,name) != 0 && TitleTargetPercent != 0)
+	if (Q_strcasecmp(LastName,name) != 0 && TitleTargetPercent != 0)
 		TitleTargetPercent = 0;
 
 	if (CanSwitch)
@@ -1957,14 +1957,14 @@ void M_AdjustSliders (int dir)
 		Cvar_SetValue ("sensitivity", sensitivity.value);
 		break;
 	case OPT_MUSICTYPE: // bgm type
-		if (strcmpi(bgmtype.string,"midi") == 0)
+		if (Q_strcasecmp(bgmtype.string,"midi") == 0)
 		{
 			if (dir < 0)
 				Cvar_Set("bgmtype","none");
 			else
 				Cvar_Set("bgmtype","cd");
 		}
-		else if (strcmpi(bgmtype.string,"cd") == 0)
+		else if (Q_strcasecmp(bgmtype.string,"cd") == 0)
 		{
 			if (dir < 0)
 				Cvar_Set("bgmtype","midi");
@@ -2123,9 +2123,9 @@ void M_Options_Draw (void)
 	M_DrawSlider (220, 60+(5*8), r);
 
 	M_Print (16, 60+(6*8), "            Music Type");
-	if (strcmpi(bgmtype.string,"midi") == 0)
+	if (Q_strcasecmp(bgmtype.string,"midi") == 0)
 		M_Print (220, 60+(6*8), "MIDI");
-	else if (strcmpi(bgmtype.string,"cd") == 0)
+	else if (Q_strcasecmp(bgmtype.string,"cd") == 0)
 		M_Print (220, 60+(6*8), "CD");
 	else
 		M_Print (220, 60+(6*8), "None");
@@ -4641,17 +4641,17 @@ static void ReInitMusic() {
 	// called after exitting the menus and changing the music type
 	// this is pretty crude, but doen't seem to break anything S.A
 
-	if (strcmpi(bgmtype.string,"midi") == 0) {
+	if (Q_strcasecmp(bgmtype.string,"midi") == 0) {
 		CDAudio_Stop();
 		MIDI_Play(cl.midi_name);
 	}
 
-	if (strcmpi(bgmtype.string,"cd") == 0) {
+	if (Q_strcasecmp(bgmtype.string,"cd") == 0) {
 		MIDI_Stop();
 		CDAudio_Play ((byte)cl.cdtrack, true);
 	}
 
-	if (strcmpi(bgmtype.string,"none") == 0) {
+	if (Q_strcasecmp(bgmtype.string,"none") == 0) {
 		CDAudio_Stop();
 		MIDI_Stop();
 	}
@@ -4659,6 +4659,9 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2005/05/17 06:48:54  sezero
+ * initial cosmetic cleanup in menu.c
+ *
  * Revision 1.28  2005/04/30 10:42:39  sezero
  * Updated gamma stuff: We don't use gamma ramps (in fact we can, we have
  * SDL_SetGammaRamp), therefore eliminated V_CheckGamma & friends from

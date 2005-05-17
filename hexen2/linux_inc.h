@@ -17,11 +17,9 @@
 #define LONG long
 #define LONGLONG long long
 
-#define stricmp strcasecmp
-#define Q_strncasecmp strncasecmp
-#define Q_strcasecmp strcasecmp
-#define strnicmp strncasecmp
-#define strcmpi strcasecmp
+#define stricmp(s1,s2) strcasecmp((s1),(s2))
+#define strcmpi(s1,s2) strcasecmp((s1),(s2))
+#define strnicmp(s1,s2,n) strncasecmp((s1),(s2),(n))
 
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 #define max(a, b) (((a) > (b)) ? (a) : (b))

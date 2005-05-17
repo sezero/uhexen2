@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.9 2005-04-30 08:07:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.10 2005-05-17 22:56:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -959,9 +959,9 @@ void CL_Sensitivity_save_f (void)
 		return;
 	}
 
-	if (strcmpi(Cmd_Argv(1),"save") == 0)
+	if (Q_strcasecmp(Cmd_Argv(1),"save") == 0)
 		save_sensitivity = sensitivity.value;
-	else if (strcmpi(Cmd_Argv(1),"restore") == 0)
+	else if (Q_strcasecmp(Cmd_Argv(1),"restore") == 0)
 		Cvar_SetValue ("sensitivity", save_sensitivity);
 }
 /*
@@ -1017,6 +1017,11 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/04/30 08:07:21  sezero
+ * CL_NextDemo calls SCR_BeginLoadingPlaque (which triggers scr_drawloading = 1)
+ * before checking if an actual nextdemo exists, so scr_drawloading still remained
+ * as true.
+ *
  * Revision 1.8  2005/04/15 20:21:49  sezero
  * Kill warning: cl_main.c:207: warning: `return' with no value, in function returning non-void
  *

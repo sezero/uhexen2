@@ -610,10 +610,10 @@ void GL_Init (void)
 
 //	Con_Printf ("%s %s\n", gl_renderer, gl_version);
 
-    if (strnicmp(gl_renderer,"PowerVR",7)==0)
+    if (Q_strncasecmp(gl_renderer,"PowerVR",7)==0)
          fullsbardraw = true;
 
-    if (strnicmp(gl_renderer,"Permedia",8)==0)
+    if (Q_strncasecmp(gl_renderer,"Permedia",8)==0)
          isPermedia = true;
 
 	CheckTextureExtensions ();

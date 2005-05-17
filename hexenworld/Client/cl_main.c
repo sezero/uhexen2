@@ -592,7 +592,7 @@ void CL_SetInfo_f (void)
 		Con_Printf ("usage: setinfo [ <key> <value> ]\n");
 		return;
 	}
-	if (!stricmp(Cmd_Argv(1), "pmodel") || !strcmp(Cmd_Argv(1), "emodel"))
+	if (!Q_strcasecmp(Cmd_Argv(1), "pmodel") || !strcmp(Cmd_Argv(1), "emodel"))
 		return;
 
 	Info_SetValueForKey (cls.userinfo, Cmd_Argv(1), Cmd_Argv(2), MAX_INFO_STRING);
@@ -919,11 +919,11 @@ void CL_Sensitivity_save_f (void)
 		return;
 	}
 
-	if (strcmpi(Cmd_Argv(1),"save") == 0)
+	if (Q_strcasecmp(Cmd_Argv(1),"save") == 0)
 	{
 		save_sensitivity = sensitivity.value;
 	}
-	else if (strcmpi(Cmd_Argv(1),"restore") == 0)
+	else if (Q_strcasecmp(Cmd_Argv(1),"restore") == 0)
 	{
 		Cvar_SetValue ("sensitivity", save_sensitivity);
 	}

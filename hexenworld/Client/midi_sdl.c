@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.7 2005-04-30 08:13:43 sezero Exp $
+	$Id: midi_sdl.c,v 1.8 2005-05-17 22:56:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -58,11 +58,11 @@ void MIDI_Loop_f (void)
 {
 	if (Cmd_Argc () == 2)
 	{
-		if (strcmpi(Cmd_Argv(1),"on") == 0 || strcmpi(Cmd_Argv(1),"1") == 0)
+		if (Q_strcasecmp(Cmd_Argv(1),"on") == 0 || Q_strcasecmp(Cmd_Argv(1),"1") == 0)
 			MIDI_Loop(1);
-		else if (strcmpi(Cmd_Argv(1),"off") == 0 || strcmpi(Cmd_Argv(1),"0") == 0)
+		else if (Q_strcasecmp(Cmd_Argv(1),"off") == 0 || Q_strcasecmp(Cmd_Argv(1),"0") == 0)
 			MIDI_Loop(0);
-		else if (strcmpi(Cmd_Argv(1),"toggle") == 0)
+		else if (Q_strcasecmp(Cmd_Argv(1),"toggle") == 0)
 			MIDI_Loop(2);
 	}
 
@@ -272,6 +272,9 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/04/30 08:13:43  sezero
+ * wrong casts in midi_sdl.c
+ *
  * Revision 1.6  2005/04/14 07:35:37  sezero
  * no need to announce MIDI_Cleanup if we'll never do it..
  *

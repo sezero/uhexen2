@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_rmain.c,v 1.17 2005-05-07 08:07:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_rmain.c,v 1.18 2005-05-17 22:56:19 sezero Exp $
 */
 
 
@@ -1088,7 +1088,7 @@ void R_DrawGlow (entity_t *e)
 			// Translate the glow to coincide with the flame. KH
 			if (clmodel->ex_flags & XF_TORCH_GLOW) {
 				// egypt torch fix
-			    if (!strnicmp (clmodel->name, "models/eflmtrch",15))
+			    if (!Q_strncasecmp (clmodel->name, "models/eflmtrch",15))
 				glfunc.glTranslatef_fp( cos(e->angles[1]/180*M_PI)*8.0f,sin(e->angles[1]/180*M_PI)*8.0f, 16.0f);
 			    else
 				glfunc.glTranslatef_fp(0.0f, 0.0f, 8.0f);
@@ -1812,6 +1812,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/05/07 08:07:47  sezero
+ * Back-out my silly mistake of removing light_level code in R_DrawViewModel
+ *
  * Revision 1.16  2005/04/30 11:12:08  sezero
  * commented-out the externs in gl_rmain.c which are to
  * serve not-yet-enabled GL_DoGamma()

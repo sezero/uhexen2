@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.17 2005-05-17 06:48:54 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.18 2005-05-17 22:56:26 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -563,7 +563,7 @@ void ScrollTitle (char *name)
 		}
 	}
 
-	if (strcmpi(LastName,name) != 0 && TitleTargetPercent != 0) 
+	if (Q_strcasecmp(LastName,name) != 0 && TitleTargetPercent != 0) 
 		TitleTargetPercent = 0;
 
 	if (CanSwitch)
@@ -845,14 +845,14 @@ void M_AdjustSliders (int dir)
 		Cvar_SetValue ("sensitivity", sensitivity.value);
 		break;
 	case OPT_MUSICTYPE: // bgm type
-		if (strcmpi(bgmtype.string,"midi") == 0)
+		if (Q_strcasecmp(bgmtype.string,"midi") == 0)
 		{
 			if (dir < 0)
 				Cvar_Set("bgmtype","none");
 			else
 				Cvar_Set("bgmtype","cd");
 		}
-		else if (strcmpi(bgmtype.string,"cd") == 0)
+		else if (Q_strcasecmp(bgmtype.string,"cd") == 0)
 		{
 			if (dir < 0)
 				Cvar_Set("bgmtype","midi");
@@ -999,9 +999,9 @@ void M_Options_Draw (void)
 	M_DrawSlider (220, 60+(5*8), r);
 
 	M_Print (16, 60+(6*8),	"            Music Type");
-	if (strcmpi(bgmtype.string,"midi") == 0)
+	if (Q_strcasecmp(bgmtype.string,"midi") == 0)
 		M_Print (220, 60+(6*8), "MIDI");
-	else if (strcmpi(bgmtype.string,"cd") == 0)
+	else if (Q_strcasecmp(bgmtype.string,"cd") == 0)
 		M_Print (220, 60+(6*8), "CD");
 	else
 		M_Print (220, 60+(6*8), "None");
@@ -2326,7 +2326,7 @@ void M_Menu_Setup_f (void)
 	if(!com_portals)
 		if(playerclass.value==CLASS_DEMON)
 			playerclass.value = 0;
-	if(stricmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
+	if(Q_strcasecmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
 		if(playerclass.value==CLASS_DWARF)
 			playerclass.value = 0;
 
@@ -2374,7 +2374,7 @@ void M_Setup_Draw (void)
 	if(!com_portals)
 		if(setup_class==CLASS_DEMON)
 			setup_class = 0;
-	if(stricmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
+	if(Q_strcasecmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
 		if(setup_class==CLASS_DWARF)
 			setup_class = 0;
 	switch(setup_class)
@@ -2404,7 +2404,7 @@ void M_Setup_Draw (void)
 		{
 			if(!com_portals)
 			{//not succubus
-				if(stricmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
+				if(Q_strcasecmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
 					which_class = (rand() % CLASS_THEIF) + 1;
 				else
 				{
@@ -2415,7 +2415,7 @@ void M_Setup_Draw (void)
 			}
 			else
 			{
-				if(stricmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
+				if(Q_strcasecmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
 					which_class = (rand() % CLASS_DEMON) + 1;
 				else
 					which_class = (rand() % class_limit) + 1;
@@ -2772,17 +2772,17 @@ static void ReInitMusic() {
 	// called after exitting the menus and changing the music type
 	// this is pretty crude, but doen't seem to break anything S.A
 
-	if (strcmpi(bgmtype.string,"midi") == 0) {
+	if (Q_strcasecmp(bgmtype.string,"midi") == 0) {
 		CDAudio_Stop();
 		MIDI_Play(cl.midi_name);
 	}
 
-	if (strcmpi(bgmtype.string,"cd") == 0) {
+	if (Q_strcasecmp(bgmtype.string,"cd") == 0) {
 		MIDI_Stop();
 		CDAudio_Play ((byte)cl.cdtrack, true);
 	}
 
-	if (strcmpi(bgmtype.string,"none") == 0) {
+	if (Q_strcasecmp(bgmtype.string,"none") == 0) {
 		CDAudio_Stop();
 		MIDI_Stop();
 	}

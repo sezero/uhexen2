@@ -325,7 +325,7 @@ void CL_PlayDemo_f (void)
 // open the demo file
 //
 	strcpy (name, Cmd_Argv(1));
-	if(!stricmp(name,"t9"))
+	if(!Q_strcasecmp(name,"t9"))
 	{
 		intro_playing=true;
 //		skip_start=true;

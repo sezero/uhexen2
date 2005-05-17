@@ -1585,7 +1585,7 @@ void CL_SetSolidPlayers (int playernum)
 		pent->model = 0;
 		VectorCopy(pplayer->origin, pent->origin);
 /*shitbox
-		if(!stricmp(cl.model_precache[cl.players[playernum].modelindex]->name,"models/yakman.mdl"))
+		if(!Q_strcasecmp(cl.model_precache[cl.players[playernum].modelindex]->name,"models/yakman.mdl"))
 		{//use golem hull
 			Sys_Error("Using beast model");
 			VectorCopy(beast_mins, pent->mins);

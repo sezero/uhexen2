@@ -1,7 +1,7 @@
 /*
 	Z_zone.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.6 2005-05-17 17:39:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.7 2005-05-17 22:56:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -965,8 +965,8 @@ void Memory_Display_f(void)
 	NumItems = Cmd_Argc();
 	for(counter=1;counter<NumItems;counter++)
 	{
-		if (strcmpi(Cmd_Argv(counter),"short") == 0) all = false;
-		else if (strcmpi(Cmd_Argv(counter),"save") == 0) write_file = true;
+		if (Q_strcasecmp(Cmd_Argv(counter),"short") == 0) all = false;
+		else if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0) write_file = true;
 	}
 
    Hunk_Print(all,write_file);
@@ -982,7 +982,7 @@ void Cache_Display_f(void)
 	NumItems = Cmd_Argc();
 	for(counter=1;counter<NumItems;counter++)
 	{
-		if (strcmpi(Cmd_Argv(counter),"save") == 0) write_file = true;
+		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0) write_file = true;
 	}
 
    Cache_Print(write_file);
@@ -1026,7 +1026,7 @@ void Memory_Stats_f(void)
 	NumItems = Cmd_Argc();
 	for(counter=1;counter<NumItems;counter++)
 	{
-		if (strcmpi(Cmd_Argv(counter),"save") == 0) write_file = true;
+		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0) write_file = true;
 	}
 
 	memset(GroupCount,0,sizeof(GroupCount));
@@ -1053,7 +1053,7 @@ void Memory_Stats_f(void)
 
 		for(counter=0;counter<NUM_GROUPS;counter++)
 		{
-			if (strcmpi(h->name,MemoryGroups[counter]) == 0)
+			if (Q_strcasecmp(h->name,MemoryGroups[counter]) == 0)
 			{
 				GroupCount[counter]++;
 				GroupSum[counter] += h->size;
@@ -1141,6 +1141,10 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/05/17 17:39:54  sezero
+ * (Re-)added the parms.userdir to all sys_win.c. The platform conditionals
+ * around some of the com_userdir code of late are now unnecessary.
+ *
  * Revision 1.5  2005/04/15 20:25:11  sezero
  * save memory.txt into com_userdir
  *

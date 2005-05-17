@@ -29,11 +29,11 @@ extern char **myargv;
 char *strupr (char *in);
 char *strlower (char *in);
 #ifndef __GNUC__
-int Q_strncasecmp (char *s1, char *s2, int n);
-int Q_strcasecmp (char *s1, char *s2);
+#define Q_strncasecmp(s1,s2,n) strnicmp((s1),(s2),(n))
+#define Q_strcasecmp(s1,s2) stricmp((s1),(s2))
 #else
-#define Q_strcasecmp strcasecmp
-#define Q_strncasecmp strncasecmp
+#define Q_strncasecmp(s1,s2,n) strncasecmp((s1),(s2),(n))
+#define Q_strcasecmp(s1,s2) strcasecmp((s1),(s2))
 #endif
 void Q_getwd (char *out);
 

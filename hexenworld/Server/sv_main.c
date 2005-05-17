@@ -205,7 +205,7 @@ void SV_DropClient (client_t *drop)
 			PR_ExecuteProgram (SpectatorDisconnect);
 		}
 	} else if(dmMode.value==DM_SIEGE)
-		if(stricmp(drop->edict->v.puzzle_inv1+pr_strings,""))
+		if(Q_strcasecmp(drop->edict->v.puzzle_inv1+pr_strings,""))
 		{
 			//this guy has a puzzle piece, call this function anyway
 			//to make sure he leaves it behind
@@ -480,7 +480,7 @@ void SVC_DirectConnect (void)
 	if (s[0] && strcmp(s, "0"))
 	{
 		if (spectator_password.string[0] && 
-			stricmp(spectator_password.string, "none") &&
+			Q_strcasecmp(spectator_password.string, "none") &&
 			strcmp(spectator_password.string, s) )
 		{	// failed
 			Con_Printf ("%s:spectator password failed\n", NET_AdrToString (net_from));
@@ -495,7 +495,7 @@ void SVC_DirectConnect (void)
 	{
 		s = Info_ValueForKey (userinfo, "password");
 		if (password.string[0] && 
-			stricmp(password.string, "none") &&
+			Q_strcasecmp(password.string, "none") &&
 			strcmp(password.string, s) )
 		{
 			Con_Printf ("%s:password failed\n", NET_AdrToString (net_from));
@@ -1415,7 +1415,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 		val = Info_ValueForKey (cl->userinfo, "name");
 	}
 
-	if (!val[0] || !stricmp(val, "console")) {
+	if (!val[0] || !Q_strcasecmp(val, "console")) {
 		Info_SetValueForKey (cl->userinfo, "name", "unnamed", MAX_INFO_STRING);
 		val = Info_ValueForKey (cl->userinfo, "name");
 	}
@@ -1425,7 +1425,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 		for (i=0, client = svs.clients ; i<MAX_CLIENTS ; i++, client++) {
 			if (client->state != cs_spawned || client == cl)
 				continue;
-			if (!stricmp(client->name, val))
+			if (!Q_strcasecmp(client->name, val))
 				break;
 		}
 		if (i != MAX_CLIENTS) { // dup name

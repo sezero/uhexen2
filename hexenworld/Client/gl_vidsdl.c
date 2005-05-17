@@ -300,7 +300,7 @@ void GL_Init (void)
 		is_3dfx = true;
 	}
 
-	if (strnicmp(gl_renderer,"PowerVR",7)==0)
+	if (Q_strncasecmp(gl_renderer,"PowerVR",7)==0)
 		fullsbardraw = true;
 
 	CheckMultiTextureExtensions();

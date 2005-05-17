@@ -2649,7 +2649,7 @@ void PF_AwardExperience(void)
 
 	if (!Amount) return;
 
-	IsPlayer = (strcmpi(ToEnt->v.classname + pr_strings, "player") == 0);
+	IsPlayer = (Q_strcasecmp(ToEnt->v.classname + pr_strings, "player") == 0);
 
 	if (FromEnt && Amount == 0.0)
 	{

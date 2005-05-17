@@ -456,7 +456,7 @@ void CL_ParseServerData (void)
 	// game directory
 	str = MSG_ReadString ();
 
-	if (stricmp(gamedirfile, str)) {
+	if (Q_strcasecmp(gamedirfile, str)) {
 		// save current config
 		Host_WriteConfiguration ("config.cfg");
 		cflag = true;
@@ -1653,7 +1653,7 @@ void CL_ParseServerMessage (void)
 
 		case svc_midi_name:
 			strcpy(cl.midi_name,MSG_ReadString ());
-			if (strcmpi(bgmtype.string,"midi") == 0)
+			if (Q_strcasecmp(bgmtype.string,"midi") == 0)
 				MIDI_Play(cl.midi_name);
 			else 
 				MIDI_Stop();

@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.10 2005-04-30 08:47:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.11 2005-05-17 22:56:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -292,7 +292,7 @@ dfunction_t *ED_FindFunctioni (char *fn_name)
 	for (i=0 ; i<progs->numfunctions ; i++)
 	{
 		func = &pr_functions[i];
-		if (!strcmpi(pr_strings + func->s_name,fn_name) )
+		if (!Q_strcasecmp(pr_strings + func->s_name,fn_name) )
 			return func;
 	}
 	return NULL;
@@ -939,12 +939,12 @@ if (!strcmp(com_token, "light"))
 		if (keyname[0] == '_')
 			continue;
 
-		if (strcmpi(keyname,"MIDI") == 0)
+		if (Q_strcasecmp(keyname,"MIDI") == 0)
 		{
 			strcpy(sv.midi_name,com_token);
 			continue;
 		}
-		else if (strcmpi(keyname,"CD") == 0)
+		else if (Q_strcasecmp(keyname,"CD") == 0)
 		{
 			sv.cd_track = (byte)atol(com_token);
 			continue;
@@ -1198,7 +1198,7 @@ void PR_LoadProgs (void)
 					*test = 0;
 					strcpy(mapname, build);
 					strcpy(progname, test+1);
-					if (strcmpi(mapname, sv.name) == 0)
+					if (Q_strcasecmp(mapname, sv.name) == 0)
 					{
 						strcpy(finalprogname, progname);
 						break;
@@ -1443,6 +1443,9 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/04/30 08:47:07  sezero
+ * silenced warnings about name decleration being shadowed
+ *
  * Revision 1.9  2005/04/30 08:45:17  sezero
  * silenced warnings about Lenght decleration being shadowed
  *

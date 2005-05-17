@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/midi.c,v 1.2 2005-02-05 16:28:19 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/midi.c,v 1.3 2005-05-17 22:56:27 sezero Exp $
  */
 
 #include <windows.h>
@@ -65,11 +65,11 @@ void MIDI_Loop_f (void)
 {
 	if (Cmd_Argc () == 2)
 	{
-      if (strcmpi(Cmd_Argv(1),"on") == 0 || strcmpi(Cmd_Argv(1),"1") == 0) 
+      if (Q_strcasecmp(Cmd_Argv(1),"on") == 0 || Q_strcasecmp(Cmd_Argv(1),"1") == 0) 
 			MIDI_Loop(1);
-		else if (strcmpi(Cmd_Argv(1),"off") == 0 || strcmpi(Cmd_Argv(1),"0") == 0) 
+		else if (Q_strcasecmp(Cmd_Argv(1),"off") == 0 || Q_strcasecmp(Cmd_Argv(1),"0") == 0) 
 			MIDI_Loop(0);
-		else if (strcmpi(Cmd_Argv(1),"toggle") == 0) 
+		else if (Q_strcasecmp(Cmd_Argv(1),"toggle") == 0) 
 			MIDI_Loop(2);
 	}
 
@@ -639,6 +639,10 @@ void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/02/05 16:28:19  sezero
+ * Port midi changes from hexen2 to hexenworld, part2.
+ * (update the midi stuff (volume ctrl, etc) for win32, too)
+ *
  * Revision 1.1  2005/02/05 16:27:11  sezero
  * Port midi changes from hexen2 to hexenworld, part1.
  * (separate win32 and linux versions of midi files.

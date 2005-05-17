@@ -3,7 +3,7 @@
 //**
 //** sbar.c
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.4 2005-04-30 08:41:10 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.5 2005-05-17 22:56:27 sezero Exp $
 //**
 //**************************************************************************
 
@@ -1249,7 +1249,7 @@ void FindName(char *which, char *name)
 		strncpy(test,pos,p2-pos);
 		test[p2-pos] = 0;
 
-		if (strcmpi(which,test) == 0)
+		if (Q_strcasecmp(which,test) == 0)
 		{
 			pos = strchr(pos,' ');
 			if (pos)

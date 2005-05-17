@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.12 2005-05-07 08:11:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.13 2005-05-17 22:56:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -329,7 +329,7 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 	cm.cursize = 0;
 #endif
 	
-	if (strcmpi(sample,"misc/null.wav") == 0)
+	if (Q_strcasecmp(sample,"misc/null.wav") == 0)
 	{
 		SV_StopSound(entity,channel);
 		return;
@@ -2168,6 +2168,11 @@ void SV_SpawnServer (char *server)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/05/07 08:11:48  sezero
+ * SV_StartSound should set SND_OVERFLOW, not SND_ATTENUATION.
+ * souno_num should be incremented/decremented by 256, not 255.
+ * (ran into this in quakesrc.org tutorials, by Kor Skarn, iirc)
+ *
  * Revision 1.11  2005/04/30 08:39:08  sezero
  * silenced shadowed decleration warnings about volume (now sfxvolume)
  *

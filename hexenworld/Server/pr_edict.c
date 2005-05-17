@@ -902,12 +902,12 @@ if (!strcmp(com_token, "light"))
 		if (keyname[0] == '_')
 			continue;
 
-		if (strcmpi(keyname,"MIDI") == 0)
+		if (Q_strcasecmp(keyname,"MIDI") == 0)
 		{
 			strcpy(sv.midi_name,com_token);
 			continue;
 		}
-		else if (strcmpi(keyname,"CD") == 0)
+		else if (Q_strcasecmp(keyname,"CD") == 0)
 		{
 			sv.cd_track = (byte)atol(com_token);
 			continue;
@@ -1121,7 +1121,7 @@ void PR_LoadProgs (void)
 					*test = 0;
 					strcpy(mapname, build);
 					strcpy(progname, test+1);
-					if (strcmpi(mapname, sv.name) == 0)
+					if (Q_strcasecmp(mapname, sv.name) == 0)
 					{
 						strcpy(finalprogname, progname);
 						break;

@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.13 2005-05-17 06:50:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.14 2005-05-17 22:56:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -247,7 +247,7 @@ void Host_Map_f (void)
 	cls.demonum = -1;		// stop demo loop in case this fails
 	
 #ifdef GLQUAKE
-	if (strnicmp(Cmd_Argv(1), sv.name, 64) == 0) {
+	if (Q_strncasecmp(Cmd_Argv(1), sv.name, 64) == 0) {
 		flush_textures = false;
 	} else {
 		Con_DPrintf ("Mapname change: %s -> %s. flush_textures set to TRUE\n", sv.name, Cmd_Argv(1));
@@ -388,7 +388,7 @@ void Host_Restart_f (void)
 	strcpy (mapname, sv.name);	// must copy out, because it gets cleared
 	strcpy(startspot, sv.startspot);
 
-	if (Cmd_Argc() == 2 && strcmpi(Cmd_Argv(1),"restore") == 0)
+	if (Cmd_Argc() == 2 && Q_strcasecmp(Cmd_Argv(1),"restore") == 0)
 	{
 		if (LoadGamestate (mapname, startspot, 3))
 		{
@@ -764,7 +764,7 @@ void Host_Loadgame_f (void)
 	CL_RemoveGIPFiles(tempdir);
 
 #ifdef GLQUAKE
-		if (strnicmp(tmpname, mapname, 64) == 0) {
+		if (Q_strncasecmp(tmpname, mapname, 64) == 0) {
 			flush_textures = false;
 		} else {
 			Con_DPrintf ("Mapname change: %s -> %s. flush_textures set to TRUE\n", tmpname, mapname);
@@ -1933,7 +1933,7 @@ void Host_Create_f(void)
 		for (i=0 ; i<progs->numfunctions ; i++)
 		{
 			Search = &pr_functions[i];
-			if (!strnicmp(pr_strings + Search->s_name,FindName,fLength) )
+			if (!Q_strncasecmp(pr_strings + Search->s_name,FindName,fLength) )
 			{
 				if (NumFound == 1)
 				{
@@ -2418,6 +2418,11 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/05/17 06:50:02  sezero
+ * removed underscored versions of string comparison functions
+ * Q_strXXXXX is now only for !PLATFORM_UNIX
+ * updated linux_inc.h
+ *
  * Revision 1.12  2005/04/30 08:47:07  sezero
  * silenced warnings about name decleration being shadowed
  *

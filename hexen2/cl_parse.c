@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.6 2005-05-17 06:17:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.7 2005-05-17 22:56:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1706,7 +1706,7 @@ void CL_ParseServerMessage (void)
 		case svc_cdtrack:
 			cl.cdtrack = MSG_ReadByte ();
 			cl.looptrack = MSG_ReadByte ();
-			if (strcmpi(bgmtype.string,"cd") == 0)
+			if (Q_strcasecmp(bgmtype.string,"cd") == 0)
 			{
 				if ( (cls.demoplayback || cls.demorecording) && (cls.forcetrack != -1) )
 					CDAudio_Play ((byte)cls.forcetrack, true);
@@ -1719,7 +1719,7 @@ void CL_ParseServerMessage (void)
 
 		case svc_midi_name:
 			strcpy(cl.midi_name,MSG_ReadString ());
-			if (strcmpi(bgmtype.string,"midi") == 0)
+			if (Q_strcasecmp(bgmtype.string,"midi") == 0)
 				MIDI_Play(cl.midi_name);
 			else 
 				MIDI_Stop();
@@ -2019,6 +2019,9 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/05/17 06:17:29  sezero
+ * removed dead conditionals
+ *
  * Revision 1.5  2005/05/07 08:11:48  sezero
  * SV_StartSound should set SND_OVERFLOW, not SND_ATTENUATION.
  * souno_num should be incremented/decremented by 256, not 255.

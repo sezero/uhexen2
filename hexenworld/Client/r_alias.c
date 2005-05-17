@@ -1028,7 +1028,7 @@ void R_AliasDrawModel (alight_t *plighting)
 			{
 				strncpy(this_team, Info_ValueForKey(cl.players[i].userinfo, "team"), 16);
 				this_team[15] = 0;
-				if (strcmpi(client_team, this_team) == 0)
+				if (Q_strcasecmp(client_team, this_team) == 0)
 				{
 					OnTeam = true;
 					ColorShade = r_teamcolor.value;

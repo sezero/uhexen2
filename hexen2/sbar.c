@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.c,v 1.6 2005-01-29 03:27:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.c,v 1.7 2005-05-17 22:56:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1017,7 +1017,7 @@ void FindName(char *which, char *name)
 		strncpy(test,pos,p2-pos);
 		test[p2-pos] = 0;
 
-		if (strcmpi(which,test) == 0)
+		if (Q_strcasecmp(which,test) == 0)
 		{
 			pos = p2;
 			pos++;
