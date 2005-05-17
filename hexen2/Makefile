@@ -113,7 +113,6 @@ SOFTOBJS = d_edge.o \
 	d_draw16.o \
 	d_draw16t.o \
 	d_parta.o \
-	d_partb.o \
 	d_polysa.o \
 	d_polysa2.o \
 	d_polysa3.o \
@@ -192,17 +191,16 @@ COMMONOBJS = cd_linux.o \
 	wad.o \
 	world.o \
 	zone.o \
-	ftol.o \
 	math.o \
 	snd_mixa.o \
-	sys_ia32.o \
+	sys_wina.o \
 	worlda.o
 
 #all: static dynamic 
 all : $(BINARY)
 
 clean:
-	rm -f *.o core sys_ia32.s
+	rm -f *.o core
 
 ifeq "$(BUILDGL)" "no"
 $(BINARY) : $(SOFTOBJS) $(COMMONOBJS)

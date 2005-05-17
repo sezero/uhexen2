@@ -84,7 +84,6 @@ SOFTOBJS = d_edge.o \
 	d_draw16.o \
 	d_draw16t.o \
 	d_parta.o \
-	d_partb.o \
 	d_polysa.o \
 	d_polysa2.o \
 	d_polysa3.o \
@@ -163,17 +162,16 @@ COMMONOBJS = cd_linux.o \
 	wad.o \
 	world.o \
 	zone.o \
-	ftol.o \
 	math.o \
 	snd_mixa.o \
-	sys_ia32.o \
+	sys_wina.o \
 	worlda.o
 
 # FIXME: this doesn't work, we need to make clean before each compilation
 #all : glmp_static glmp_dynamic glh2_static glh2_dynamic mp_static mp_dynamic h2_static h2_dynamic
 	
 clean:
-	rm -f *.o core sys_ia32.s
+	rm -f *.o core
 	
 cleaner:
 	rm -f *.o core sys_ia32.s $(GLMP_BINARY) $(GLMP_BINARY_STATIC) $(GLH2_BINARY) $(GLH2_BINARY_STATIC)\
