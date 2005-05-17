@@ -760,6 +760,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	parms.basedir = cwd;
 	parms.cachedir = NULL;
+	parms.userdir = cwd;	/* no userdir on win32 */
 
 	parms.argc = 1;
 	argv[0] = empty_string;
@@ -945,6 +946,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/05/17 06:44:08  sezero
+ * restored some win32 files to their original state
+ *
  * 
  * 8     4/13/98 1:01p Jmonroe
  * changed default to not use CDVolume

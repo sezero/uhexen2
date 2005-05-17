@@ -212,7 +212,9 @@ int main (int argc, char **argv)
 	struct timeval	timeout;
 	fd_set			fdset;
 	int				t;
+#ifdef PLATFORM_UNIX
 	static  char    userdir[MAX_OSPATH];
+#endif
 
 	COM_InitArgv (argc, argv);
 	
@@ -243,15 +245,15 @@ int main (int argc, char **argv)
 	if (!parms.membase)
 		Sys_Error("Insufficient memory.\n");
 
-	if (Sys_GetUserdir(userdir,sizeof(userdir)))
-		Sys_Error ("Couldn't determine userspace directory");
-
 	parms.basedir = ".";
 	parms.cachedir = NULL;
 
 #ifdef PLATFORM_UNIX
+	if (Sys_GetUserdir(userdir,sizeof(userdir)))
+		Sys_Error ("Couldn't determine userspace directory");
 	parms.userdir = userdir;
 #else
+	// no userdir on win32
 	parms.userdir = parms.basedir;
 #endif
 
@@ -261,7 +263,9 @@ int main (int argc, char **argv)
 	SV_Frame (HX_FRAME_TIME);		
 
 // report the filesystem to the user
+#ifdef PLATFORM_UNIX
 	Sys_Printf("userdir is: %s\n",userdir);
+#endif
 	Sys_Printf("com_gamedir is: %s\n",com_gamedir);
 	Sys_Printf("com_userdir is: %s\n",com_userdir);
 

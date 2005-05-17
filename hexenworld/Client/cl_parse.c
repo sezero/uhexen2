@@ -398,6 +398,7 @@ void CL_ParseDownload (void)
 		}
 #else
 	// UNIX: download files to com_userdir
+	// Do I really need to care more about skins like above?..
 		sprintf (oldn, "%s/%s", com_userdir, cls.downloadtempname);
 		sprintf (newn, "%s/%s", com_userdir, cls.downloadname);
 #endif

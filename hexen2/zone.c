@@ -1,7 +1,7 @@
 /*
 	Z_zone.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.5 2005-04-15 20:25:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.6 2005-05-17 17:39:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -313,11 +313,7 @@ void Hunk_Print (qboolean all, qboolean write_file)
 	
 	FH = NULL;
 	if (write_file) {
-#ifdef PLATFORM_UNIX
 		sprintf(memtxt,"%s/%s", com_userdir, "memory.txt");
-#else
-		sprintf(memtxt,"%s", "memory.txt");
-#endif
 		FH = fopen(memtxt,"w");
 	}
 	h = (hunk_t *)hunk_base;
@@ -1145,6 +1141,9 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/04/15 20:25:11  sezero
+ * save memory.txt into com_userdir
+ *
  * Revision 1.4  2005/04/13 12:22:41  sezero
  * - Removed useless -minmemory cmdline argument
  * - Removed useless parms->memsize < minimum_memory check in Host_Init
