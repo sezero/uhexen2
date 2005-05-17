@@ -1,10 +1,8 @@
 // mathlib.h
-#ifndef _MATHLIB_H_
-#define _MATHLIB_H_
 
-#ifndef PLATFORM_UNIX
-#pragma once
-#endif
+//#ifdef PLATFORM_UNIX
+//#include "linux_inc.h"
+//#endif
 
 typedef float vec_t;
 typedef vec_t vec3_t[3];
@@ -43,8 +41,17 @@ extern	int nanmask;
 #define VectorCopy(a,b) { \
 	memcpy((b), (a), sizeof(vec3_t)); \
 }
+#define VectorSet(vec,a,b,c) {vec[0]=a;vec[1]=b;vec[2]=c;}
 
 void VectorMA (vec3_t veca, float scale, vec3_t vecb, vec3_t vecc);
+
+#ifndef PLATFORM_UNIX
+__inline float VectorNormalize (vec3_t v);		// returns vector length
+__inline void VectorScale (vec3_t in, vec_t scale, vec3_t out);
+#else
+static inline float VectorNormalize (vec3_t v);		// returns vector length
+static inline void VectorScale (vec3_t in, vec_t scale, vec3_t out);
+#endif
 
 void R_ConcatRotations (float in1[3][3], float in2[3][3], float out[3][3]);
 void R_ConcatTransforms (float in1[3][4], float in2[3][4], float out[3][4]);
@@ -75,9 +82,37 @@ float	anglemod(float a);
 	:										\
 		BoxOnPlaneSide( (emins), (emaxs), (p)))
 
-float VectorNormalize (vec3_t v);
-void VectorScale (vec3_t in, vec_t scale, vec3_t out);
+#ifndef PLATFORM_UNIX
+__inline float VectorNormalize (vec3_t v)
+#else
+static inline float VectorNormalize (vec3_t v)
+#endif
+{
+	float	length, ilength;
+
+	length = Length(v);
+
+	if (length)
+	{
+		ilength = 1/length;
+		v[0] *= ilength;
+		v[1] *= ilength;
+		v[2] *= ilength;
+	}
+
+	return length;
+}
+
+#ifndef PLATFORM_UNIX
+__inline void VectorScale (vec3_t in, vec_t scale, vec3_t out)
+#else
+static inline void VectorScale (vec3_t in, vec_t scale, vec3_t out)
+#endif
+{
+	out[0] = in[0]*scale;
+	out[1] = in[1]*scale;
+	out[2] = in[2]*scale;
+}
 
 #define fastfabs(val) ((val)>=0.0f?(val):-(val))
 
-#endif

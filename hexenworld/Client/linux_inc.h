@@ -3,8 +3,8 @@
 
 #include <ctype.h>
 
-#define _inline inline
-#define __inline static inline
+//#define _inline inline
+//#define __inline static inline
 #define HANDLE int
 #define HINST int
 #define HWND int

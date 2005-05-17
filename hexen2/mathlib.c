@@ -2,7 +2,7 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.5 2005-05-17 06:51:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.6 2005-05-17 06:51:57 sezero Exp $
 */
 
 #include <math.h>
@@ -13,30 +13,6 @@ void Sys_Error (char *error, ...);
 vec3_t vec3_origin = {0,0,0};
 int nanmask = 255<<23;
 
-
-float VectorNormalize (vec3_t v)
-{
-	float	length, ilength;
-
-	length = Length(v);
-
-	if (length)
-	{
-		ilength = 1/length;
-		v[0] *= ilength;
-		v[1] *= ilength;
-		v[2] *= ilength;
-	}
-
-	return length;
-}
-
-void VectorScale (vec3_t in, vec_t scale, vec3_t out)
-{
-	out[0] = in[0]*scale;
-	out[1] = in[1]*scale;
-	out[2] = in[2]*scale;
-}
 
 float	anglemod(float a)
 {
@@ -62,8 +38,7 @@ void BOPS_Error (void)
 	Sys_Error ("BoxOnPlaneSide:  Bad signbits");
 }
 
-
-#if	!id386
+#if !id386
 
 /*
 ==================
@@ -216,24 +191,24 @@ R_ConcatRotations
 */
 void R_ConcatRotations (float in1[3][3], float in2[3][3], float out[3][3])
 {
-	out[0][0] = (in1[0][0] * in2[0][0]) + (in1[0][1] * in2[1][0]) +
-				(in1[0][2] * in2[2][0]);
-	out[0][1] = (in1[0][0] * in2[0][1]) + (in1[0][1] * in2[1][1]) +
-				(in1[0][2] * in2[2][1]);
-	out[0][2] = (in1[0][0] * in2[0][2]) + (in1[0][1] * in2[1][2]) +
-				(in1[0][2] * in2[2][2]);
-	out[1][0] = (in1[1][0] * in2[0][0]) + (in1[1][1] * in2[1][0]) +
-				(in1[1][2] * in2[2][0]);
-	out[1][1] = (in1[1][0] * in2[0][1]) + (in1[1][1] * in2[1][1]) +
-				(in1[1][2] * in2[2][1]);
-	out[1][2] = (in1[1][0] * in2[0][2]) + (in1[1][1] * in2[1][2]) +
-				(in1[1][2] * in2[2][2]);
-	out[2][0] = (in1[2][0] * in2[0][0]) + (in1[2][1] * in2[1][0]) +
-				(in1[2][2] * in2[2][0]);
-	out[2][1] = (in1[2][0] * in2[0][1]) + (in1[2][1] * in2[1][1]) +
-				(in1[2][2] * in2[2][1]);
-	out[2][2] = (in1[2][0] * in2[0][2]) + (in1[2][1] * in2[1][2]) +
-				(in1[2][2] * in2[2][2]);
+	out[0][0] = in1[0][0] * in2[0][0] + in1[0][1] * in2[1][0] +
+				in1[0][2] * in2[2][0];
+	out[0][1] = in1[0][0] * in2[0][1] + in1[0][1] * in2[1][1] +
+				in1[0][2] * in2[2][1];
+	out[0][2] = in1[0][0] * in2[0][2] + in1[0][1] * in2[1][2] +
+				in1[0][2] * in2[2][2];
+	out[1][0] = in1[1][0] * in2[0][0] + in1[1][1] * in2[1][0] +
+				in1[1][2] * in2[2][0];
+	out[1][1] = in1[1][0] * in2[0][1] + in1[1][1] * in2[1][1] +
+				in1[1][2] * in2[2][1];
+	out[1][2] = in1[1][0] * in2[0][2] + in1[1][1] * in2[1][2] +
+				in1[1][2] * in2[2][2];
+	out[2][0] = in1[2][0] * in2[0][0] + in1[2][1] * in2[1][0] +
+				in1[2][2] * in2[2][0];
+	out[2][1] = in1[2][0] * in2[0][1] + in1[2][1] * in2[1][1] +
+				in1[2][2] * in2[2][1];
+	out[2][2] = in1[2][0] * in2[0][2] + in1[2][1] * in2[1][2] +
+				in1[2][2] * in2[2][2];
 }
 
 
@@ -345,7 +320,7 @@ int GreatestCommonDivisor (int i1, int i2)
 }
 
 
-#if	!id386
+#if !id386
 
 // TODO: move to nonintel.c
 
@@ -371,6 +346,10 @@ fixed16_t Invert24To16(fixed16_t val)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/05/17 06:51:19  sezero
+ * macroized some math functions (from Pa3PyX)
+ * initial sync between h2/hw versions of mathlib.*
+ *
  * Revision 1.4  2005/05/17 06:50:44  sezero
  * removed unused underscored versions of math funcs
  *

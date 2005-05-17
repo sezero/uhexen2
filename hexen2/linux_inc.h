@@ -1,8 +1,8 @@
 #ifndef _LINUX_INC
 #define _LINUX_INC
 
-#define _inline inline
-#define __inline inline
+//#define _inline inline
+//#define __inline static inline
 #define HANDLE int
 #define HINST int
 #define HWND int

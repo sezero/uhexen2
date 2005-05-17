@@ -1,4 +1,9 @@
-// mathlib.c -- math primitives
+/*
+	mathlib.c
+	math primitives
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.c,v 1.4 2005-05-17 06:51:57 sezero Exp $
+*/
 
 #include <math.h>
 #include "quakedef.h"
@@ -59,7 +64,7 @@ int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, mplane_t *p)
 		return 3;
 	}
 #endif
-	
+
 // general case
 	switch (p->signbits)
 	{
