@@ -1,5 +1,22 @@
 ChangeLog:
 
+2005-05-18 (CVS):
+     * (Re-)added the parms.userdir to all sys_win.c. The platform
+       conditionals around some of the com_userdir code of late are now
+       unnecessary.
+     * separated sys_unix.c and sys_win.c of hwsv to avoid many confusing
+       conditionals
+     * hopefully restored utils' compilability on win32: platform
+       conditionals for includes; Q_strXcasecmp is now only for non
+       __GNUC__, otherwise strXcasecmp is used.
+     * updated mathlib.* of the utilities (removed underscored versions
+       of the functions. dhcc doesnt even use the mathlib, updated its
+       makefile...)
+     * cleanup of "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp"
+       mess: Q_strXcasecmp will now be used throughout the code which are
+       implementation dependant defines for __GNUC__ (strXcasecmp) and
+       _WIN32 (strXicmp)
+
 2005-05-17 (CVS):
     * removed underscored versions of string comparison functions
     * removed unused underscored versions of math funcs
