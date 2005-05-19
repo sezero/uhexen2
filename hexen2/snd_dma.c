@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_dma.c,v 1.18 2005-04-30 08:39:08 sezero Exp $
+	$Id: snd_dma.c,v 1.19 2005-05-19 10:58:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -18,8 +18,10 @@ void S_Update_();
 void S_StopAllSounds(qboolean clear);
 void S_StopAllSoundsC(void);
 
-// QuakeWorld hack...	// Activate this in HW
-//#define	viewentity	playernum+1
+#ifdef H2W
+// QuakeWorld hack...
+#define	viewentity	playernum+1
+#endif
 
 // =======================================================================
 // Internal sound data & structures
@@ -1093,6 +1095,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/04/30 08:39:08  sezero
+ * silenced shadowed decleration warnings about volume (now sfxvolume)
+ *
  * Revision 1.17  2005/03/03 17:02:29  sezero
  * - fix and activate munmap of shm->buffer for snd_oss.c
  * - comment-out shm->gamealive thing which serves nothing
