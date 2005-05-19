@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/mstrconv.c,v 1.3 2005-02-05 16:21:13 sezero Exp $
+ * $Id: mstrconv.c,v 1.4 2005-05-19 12:47:10 sezero Exp $
  */
 
 #include <windows.h>
@@ -132,6 +132,7 @@ BOOL ConverterInit( LPSTR szInFile )
     // Attempt to open the input and output files
     //
 	MidiData = (byte *)COM_LoadHunkFile((char *)szInFile);
+//	MidiData = (byte *)COM_LoadHunkFile((char *)szInFile, (int *)&ifs.cbFileLength);
 	if (!MidiData) 
 	{
 		goto Init_Cleanup;

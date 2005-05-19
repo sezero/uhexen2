@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.10 2005-05-17 22:56:19 sezero Exp $
+	$Id: midi_sdl.c,v 1.11 2005-05-19 12:46:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -38,7 +38,7 @@ void MIDI_Stop_f (void)
 
 void MIDI_Pause_f (void)
 {
-	MIDI_Pause();
+	MIDI_Pause(0);
 }
 
 #ifndef USE_MIDI
@@ -47,7 +47,7 @@ void MIDI_Loop_f (void) {}
 void MIDI_EndMusicFinished(void) {}
 qboolean MIDI_Init(void) { return true; }
 void MIDI_Play(char *Name) {}
-void MIDI_Pause(void) {}
+void MIDI_Pause(int mode) {}
 void MIDI_Loop(int NewValue) {}
 void MIDI_Stop(void) {}
 void MIDI_Cleanup(void) { Con_Printf("MIDI_Cleanup\n"); }
@@ -212,18 +212,19 @@ void MIDI_Play(char *Name)
 	}
 }
 
-void MIDI_Pause(void)
+void MIDI_Pause(int mode)
 {
 	if (!bPlaying)
 		return;
 
 	//  printf("MIDI_Pause\n");
-	if(bPaused)
+	if((mode == 0 && bPaused) || mode == 1) {
 		Mix_ResumeMusic();
-	else
+		bPaused = false;
+	} else {
 		Mix_PauseMusic();
-
-	bPaused = !bPaused;
+		bPaused = true;
+	}
 }
 
 void MIDI_Loop(int NewValue)
@@ -271,6 +272,11 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/05/17 22:56:19  sezero
+ * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
+ * Q_strXcasecmp will now be used throughout the code which are implementation
+ * dependant defines for __GNUC__ (strXcasecmp) and _WIN32 (strXicmp)
+ *
  * Revision 1.9  2005/04/30 08:13:43  sezero
  * wrong casts in midi_sdl.c
  *

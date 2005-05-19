@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.23 2005-04-13 12:19:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.24 2005-05-19 12:46:56 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -438,7 +438,7 @@ qboolean MIDI_Init(void);
 void MIDI_Cleanup(void);
 void MIDI_Play(char *Name);
 void MIDI_Stop(void);
-void MIDI_Pause(void);
+void MIDI_Pause(int mode);
 void MIDI_Loop(int NewValue);
 
 //
@@ -449,6 +449,9 @@ void IN_DeactivateMouseSA (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/04/13 12:19:39  sezero
+ * GAMENAME doesn't depend on QUAKE2 definition
+ *
  * Revision 1.22  2005/04/10 14:30:44  sezero
  * Bumped the version for a new future release, updated the specfile
  *

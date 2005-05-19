@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/midi.h,v 1.1 2005-02-05 16:27:11 sezero Exp $
+ * $Id: midi.h,v 1.2 2005-05-19 12:47:10 sezero Exp $
  */
 
 #ifndef __MSTREAM_INCLUDED__
@@ -87,11 +87,11 @@ int ConvertToBuffer( DWORD, LPCONVERTINFO );
 
 /*
  * $Log: not supported by cvs2svn $
- * 
+ * Revision 1.1  2005/02/05 16:16:10  sezero
+ * separate win32 and linux versions of midi files. too much mess otherwise.
+ *
  * 2     2/19/98 3:42p Rjohnson
  * Midi Music - Yeah!
- * 
- * 1     2/19/98 3:23p Rjohnson
  * 
  * 1     2/27/97 4:04p Rjohnson
  * Initial Revision

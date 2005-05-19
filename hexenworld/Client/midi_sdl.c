@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.8 2005-05-17 22:56:26 sezero Exp $
+	$Id: midi_sdl.c,v 1.9 2005-05-19 12:47:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -272,50 +272,43 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.7  2005/04/30 08:13:43  sezero
+ * Revision 1.10  2005/05/17 22:56:19  sezero
+ * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
+ * Q_strXcasecmp will now be used throughout the code which are implementation
+ * dependant defines for __GNUC__ (strXcasecmp) and _WIN32 (strXicmp)
+ *
+ * Revision 1.9  2005/04/30 08:13:43  sezero
  * wrong casts in midi_sdl.c
  *
- * Revision 1.6  2005/04/14 07:35:37  sezero
+ * Revision 1.8  2005/04/14 07:35:27  sezero
  * no need to announce MIDI_Cleanup if we'll never do it..
  *
- * Revision 1.5  2005/03/06 10:44:41  sezero
+ * Revision 1.7  2005/03/06 10:44:41  sezero
  * - move reinit_music to menu.c where it belongs
  * - fix reinit_music so that it works for the F4 key as well
  * - don't mess with music volume on every frame update, it's just silly
  *
- * Revision 1.4  2005/02/06 15:22:56  sezero
- * log entries cleanup
- *
- * Revision 1.3  2005/02/05 16:30:39  sezero
+ * Revision 1.6  2005/02/05 16:30:14  sezero
  * don't try extracting anything if no midi file is given
  *
- * Revision 1.2  2005/02/05 16:29:13  sezero
- * Apply the HexenWorld specific changes to midi_sdl.c and enable
- * midi in the makefiles
- *
- * Revision 1.1  2005/02/05 16:27:09  sezero
- * Port midi changes from hexen2 to hexenworld, part1.
- * (separate win32 and linux versions of midi files.
- *  add volume control, midi paths cleanup, path length
- *  overflows)
- *
- * 2005/02/05 16:21:13  sezero
+ * Revision 1.5  2005/02/05 16:21:13  sezero
  * killed Com_LoadHunkFile2()  [from HexenWorld]
  *
- * 2005/02/05 16:20:14  sezero
+ * Revision 1.4  2005/02/05 16:20:14  sezero
  * fix possible path length overflows
  *
- * 2005/02/05 16:18:25  sezero
+ * Revision 1.3  2005/02/05 16:18:25  sezero
  * added midi volume control (partially from Pa3PyX)
  *
- * 2005/02/05 16:17:29  sezero
+ * Revision 1.2  2005/02/05 16:17:29  sezero
  * - Midi file paths cleanup. these should be leftovers
  *   from times when gamedir and userdir were the same.
  * - Killed Com_WriteFileFullPath(), not used anymore.
  * - Replaced some Con_Printf() with Sys_Printf().
  *
- * 2005/02/05 16:16:06  sezero
+ * Revision 1.1  2005/02/05 16:16:06  sezero
  * separate win32 and linux versions of midi files. too much mess otherwise.
+ *
  *
  * 2005/02/04 14:00:14  sezero
  * - merge small bits from the hexenworld version
