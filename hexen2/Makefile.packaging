@@ -19,35 +19,35 @@ H2_BINARY_STATIC=hexen2.static
 
 CC = gcc
 LINKER = gcc
-CFLAGS = -fomit-frame-pointer -ffast-math -fexpensive-optimizations -falign-loops=2 -falign-jumps=2 -falign-functions=2 -O2 -march=i586 -DUSE_INTEL_ASM -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ `sdl-config --cflags` -Wall
-LDFLAGS = `sdl-config --libs`
-GLFLAGS = `sdl-config --libs` -L/usr/X11R6/lib
-GLSTATIC = -Wl,-Bstatic -L/usr/lib -lSDL_mixer -lSDL -L/usr/X11R6/lib -lX11 -lXext -ldl -L/usr/X11R6/lib -lXxf86dga -lXxf86vm -lXv -L/usr/lib/ -lsmpeg -lvorbisfile -lvorbis -logg -lm -Wl,-Bdynamic -lpthread
+CFLAGS = -O2 -march=i586 -Wall \
+	-fomit-frame-pointer -ffast-math -fexpensive-optimizations \
+	-falign-loops=2 -falign-jumps=2 -falign-functions=2
+ifdef DEBUG
+CFLAGS+= -DDEBUG -g
+endif
+GAMEFLAGS = -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ
+SDLFLAGS = `sdl-config --cflags`
+SDLLINK = `sdl-config --libs`
+LDFLAGS =
+GLFLAGS = -L/usr/X11R6/lib
 LDSTATIC = -Wl,-Bstatic -L/usr/lib -lSDL_mixer -lSDL -L/usr/X11R6/lib -lX11 -lXext -ldl -L/usr/X11R6/lib -lXxf86dga -lXxf86vm -lXv -L/usr/lib/ -lsmpeg -lvorbisfile -lvorbis -logg -lm -Wl,-Bdynamic -lpthread
 
 ifeq "$(USEMIDI)" "yes"
-CFLAGS+= -DUSE_MIDI
-GLFLAGS+= -lSDL_mixer
-LDFLAGS+= -lSDL_mixer
+GAMEFLAGS+= -DUSE_MIDI
+SDLLINK+= -lSDL_mixer
 endif
 
 ifeq "$(USEALSA)" "no"
-CFLAGS+= -DNO_ALSA
+GAMEFLAGS+= -DNO_ALSA
 endif
 
-ifeq "${DEMO}" "yes"
-CFLAGS+= -DDEMOBUILD
-endif
-
-ifdef DEBUG
-CFLAGS+= -DDEBUG -g
+ifdef DEMO
+GAMEFLAGS+= -DDEMOBUILD
 endif
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c -o $@ $< $(CFLAGS)
-%.o: %.S
-	$(CC) -c -o $@ $< -save-temps $(CFLAGS)
+	$(CC) -c -o $@ $< $(CFLAGS) $(SDLFLAGS) $(GAMEFLAGS)
 %.o: %.asm
 	nasm -f elf -o $@ $<
 
@@ -167,42 +167,40 @@ COMMONOBJS = cd_linux.o \
 	sys_wina.o \
 	worlda.o
 
-# FIXME: this doesn't work, we need to make clean before each compilation
-#all : glmp_static glmp_dynamic glh2_static glh2_dynamic mp_static mp_dynamic h2_static h2_dynamic
-	
+
 clean:
 	rm -f *.o core
-	
+
 cleaner:
-	rm -f *.o core sys_ia32.s $(GLMP_BINARY) $(GLMP_BINARY_STATIC) $(GLH2_BINARY) $(GLH2_BINARY_STATIC)\
+	rm -f *.o core $(GLMP_BINARY) $(GLMP_BINARY_STATIC) $(GLH2_BINARY) $(GLH2_BINARY_STATIC)\
 	$(MP_BINARY) $(MP_BINARY_STATIC) $(H2_BINARY) $(H2_BINARY_STATIC)
 
-glmp_static : CFLAGS+= -DGLQUAKE -DH2MP 
+glmp_static : GAMEFLAGS+= -DGLQUAKE -DH2MP
 glmp_static : $(GLOBJS) $(COMMONOBJS)
-		$(LINKER) -o $(GLMP_BINARY_STATIC) $(GLOBJS) $(COMMONOBJS) $(GLSTATIC)
-	
-glmp_dynamic : CFLAGS+=-DGLQUAKE -DH2MP 
+		$(LINKER) -o $(GLMP_BINARY_STATIC) $(GLOBJS) $(COMMONOBJS) $(LDSTATIC)
+
+glmp_dynamic : GAMEFLAGS+=-DGLQUAKE -DH2MP
 glmp_dynamic : $(GLOBJS) $(COMMONOBJS)
-		$(LINKER) -o $(GLMP_BINARY) $(GLOBJS) $(COMMONOBJS) -DGLQUAKE -DH2MP $(GLFLAGS)
+		$(LINKER) -o $(GLMP_BINARY) $(GLOBJS) $(COMMONOBJS) $(GLFLAGS) $(SDLLINK)
 
-glh2_static : CFLAGS+=-DGLQUAKE 
+glh2_static : GAMEFLAGS+=-DGLQUAKE
 glh2_static : $(GLOBJS) $(COMMONOBJS)
-		$(LINKER) -o $(GLH2_BINARY_STATIC) $(GLOBJS) $(COMMONOBJS) -DGLQUAKE $(GLSTATIC)
-	
-glh2_dynamic : CFLAGS+=-DGLQUAKE 
-glh2_dynamic : $(GLOBJS) $(COMMONOBJS)
-		$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMONOBJS) -DGLQUAKE $(GLFLAGS)
+		$(LINKER) -o $(GLH2_BINARY_STATIC) $(GLOBJS) $(COMMONOBJS) $(LDSTATIC)
 
-mp_static : CFLAGS+=-DH2MP 
+glh2_dynamic : GAMEFLAGS+=-DGLQUAKE
+glh2_dynamic : $(GLOBJS) $(COMMONOBJS)
+		$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMONOBJS) $(GLFLAGS) $(SDLLINK)
+
+mp_static : GAMEFLAGS+=-DH2MP
 mp_static : $(SOFTOBJS) $(COMMONOBJS)
-		$(LINKER) -o $(MP_BINARY_STATIC) $(SOFTOBJS) $(COMMONOBJS) -DH2MP $(LDSTATIC)
-	
-mp_dynamic : CFLAGS+=-DH2MP 
+		$(LINKER) -o $(MP_BINARY_STATIC) $(SOFTOBJS) $(COMMONOBJS) $(LDSTATIC)
+
+mp_dynamic : GAMEFLAGS+=-DH2MP
 mp_dynamic : $(SOFTOBJS) $(COMMONOBJS)
-		$(LINKER) -o $(MP_BINARY) $(SOFTOBJS) $(COMMONOBJS) -DH2MP $(LDFLAGS)
-	
+		$(LINKER) -o $(MP_BINARY) $(SOFTOBJS) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK)
+
 h2_static : $(SOFTOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(H2_BINARY_STATIC) $(SOFTOBJS) $(COMMONOBJS) $(LDSTATIC)
-	
+
 h2_dynamic : $(SOFTOBJS) $(COMMONOBJS)
-		$(LINKER) -o $(H2_BINARY) $(SOFTOBJS) $(COMMONOBJS) $(LDFLAGS)
+		$(LINKER) -o $(H2_BINARY) $(SOFTOBJS) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK)

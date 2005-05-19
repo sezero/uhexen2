@@ -13,12 +13,12 @@ prefix = /usr
 #prefix = /usr/local
 
 PACKAGE = h2launcher
-ifeq "${DEMO}" "yes"
+ifdef DEMO
 TMPNAME = h2demo
 else
 TMPNAME = h2launcher
 endif
-ifeq "${GTK1}" "yes"
+ifdef GTK1
 H2LAUNCH = ${TMPNAME}.gtk1
 GTK_CFLAGS = `gtk-config --cflags`
 GTK_LIBS = `gtk-config --libs`
@@ -46,14 +46,14 @@ OBJECTS = main.o com_sys.o config_file.o launch_bin.o \
 	interface.o callbacks.o ${SUPPORT_OBJ}
 
 CFLAGS = -Wall -O2 -march=i586 -I. ${GTK_CFLAGS} -DHOTL_VER=\"${VERSION}\" -DHOT_VER=\"${HOT_VERSION}\"
-ifeq "${DEMO}" "yes"
-CFLAGS+=-DDEMOBUILD
-endif
-ifeq "${GTK1}" "yes"
-CFLAGS+=-DWITH_GTK1
-endif
 ifdef DEBUG
 CFLAGS+=-g
+endif
+ifdef DEMO
+CFLAGS+=-DDEMOBUILD
+endif
+ifdef GTK1
+CFLAGS+=-DWITH_GTK1
 endif
 LDFLAGS =
 
@@ -63,15 +63,11 @@ endif
 
 COMPILE = $(CC) $(CFLAGS)
 CCLD = $(CC)
-#LINK = $(CCLD) $(CFLAGS) $(LDFLAGS) ${GTK_LIBS} -o $@
 LINK = $(CCLD) -o $@ $(LDFLAGS) ${GTK_LIBS}
 
-.SUFFIXES: .S .c .o .s
+.SUFFIXES: .c .o
 
-.s.o:
-	$(COMPILE) -c $<
-
-.S.o:
+.o:
 	$(COMPILE) -c $<
 
 $(H2LAUNCH): $(OBJECTS)

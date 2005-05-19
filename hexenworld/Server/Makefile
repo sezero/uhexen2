@@ -4,24 +4,26 @@
 
 BINARY=hwsv
 BINARY_STATIC=hwsv.static
-DEBUG=no
 
 CC = gcc
 LINKER = gcc
-CFLAGS = -I../Client/ -I. -O2 -march=i586 -DUSE_INTEL_ASM -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ -DSERVERONLY `sdl-config --cflags` -Wall
-ifeq "$(DEBUG)" "yes"
-CFLAGS += -g
+CFLAGS = -O2 -march=i586 -Wall
+ifdef DEBUG
+CFLAGS += -DDEBUG -g
 endif
-ifeq "${DEMO}" "yes"
-CFLAGS+= -DDEMOBUILD
+GAMEFLAGS = -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ -DH2W -DSERVERONLY
+SVINCS = -I../Client/ -I.
+SDLFLAG = `sdl-config --cflags`
+SDLLINK = `sdl-config --libs`
+
+ifdef DEMO
+GAMEFLAGS+= -DDEMOBUILD
 endif
 LDFLAGS = -lm -lpthread
 LDSTATIC = -lm -lpthread -static
 
 %.o: %.c
-	$(CC) -c -o $@ $< $(CFLAGS)
-%.o: %.S
-	$(CC) -c -o $@ $< -save-temps $(CFLAGS)
+	$(CC) -c -o $@ $< $(SVINCS) $(CFLAGS) $(GAMEFLAGS)
 %.o: %.asm
 	nasm -f elf -o $@ $<
 
@@ -56,13 +58,13 @@ all: $(BINARY)
 
 $(BINARY) : $(COMMONOBJS)
 	$(LINKER) -o $(BINARY) $(LDFLAGS) $(COMMONOBJS)
-	
+
 dynamic : $(COMMONOBJS)
 	$(LINKER) -o $(BINARY) $(LDFLAGS) $(COMMONOBJS)
 
 $(BINARY_STATIC) : $(COMMONOBJS)
 	$(LINKER) -o $(BINARY_STATIC) $(COMMONOBJS) $(LDSTATIC)
-	
+
 static : $(COMMONOBJS)
 	$(LINKER) -o $(BINARY_STATIC) $(COMMONOBJS) $(LDSTATIC)
 
