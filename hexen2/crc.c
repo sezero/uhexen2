@@ -60,3 +60,14 @@ unsigned short CRC_Value(unsigned short crcvalue)
 {
 	return crcvalue ^ CRC_XOR_VALUE;
 }
+
+int CRC_Block (byte *start, int count)
+{
+	unsigned short	crc;
+
+	CRC_Init (&crc);
+	while (count--)
+		CRC_ProcessByte (&crc, *start++);
+
+	return crc;
+}
