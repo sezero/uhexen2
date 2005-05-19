@@ -1,6 +1,6 @@
 /*
-	 sound.h
-	 client sound i/o functions
+	sound.h
+	client sound i/o functions
 
 */
 

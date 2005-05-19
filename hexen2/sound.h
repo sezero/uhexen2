@@ -7,9 +7,6 @@
 #ifndef __SOUND__
 #define __SOUND__
 
-#define DEFAULT_SOUND_PACKET_VOLUME 255
-#define DEFAULT_SOUND_PACKET_ATTENUATION 1.0
-
 #ifdef PLATFORM_UNIX
 // Sound system definitions
 extern unsigned short	snd_system;

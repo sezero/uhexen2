@@ -2,7 +2,7 @@
 	protocol.h
 	communications protocols
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/protocol.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/protocol.h,v 1.3 2005-05-19 10:36:26 sezero Exp $
 */
 
 #define	PROTOCOL_VERSION	19
@@ -81,6 +81,8 @@
 #define	SND_ATTENUATION	(1<<1)		// a byte
 #define	SND_OVERFLOW	(1<<2)		// add 255 to snd num
 //gonna use the rest of the bits to pack the ent+channel
+#define DEFAULT_SOUND_PACKET_VOLUME 255
+#define DEFAULT_SOUND_PACKET_ATTENUATION 1.0
 
 // Bits to help send server info about the client's edict variables
 #define SC1_HEALTH				(1<<0)		// changes stat bar
@@ -258,6 +260,9 @@
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:06:09  sezero
  * Initial import of AoT 1.2.0 code
  *
