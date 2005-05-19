@@ -1,7 +1,7 @@
 /*
 	Z_zone.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.7 2005-05-17 22:56:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.8 2005-05-19 11:34:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -394,6 +394,7 @@ void Hunk_Print (qboolean all, qboolean write_file)
 	if (FH) {
 		fprintf(FH,"%8i total blocks\n", totalblocks);
 		fclose(FH);
+		FH = NULL;
 		Con_Printf ("Data saved to %s.\n", memtxt);
 	}
 }
@@ -781,6 +782,7 @@ Cache_Print
 void Cache_Print (qboolean write_file)
 {
 	cache_system_t	*cd;
+	char    cachetxt[MAX_OSPATH];
 	FILE *FH;
 	int		count, sum;
 	int num_mod, sum_mod;
@@ -788,7 +790,10 @@ void Cache_Print (qboolean write_file)
 	char temp[128];
 
 	FH = NULL;
-	if (write_file) FH = fopen("cache.txt","w");
+	if (write_file) {
+		sprintf(cachetxt,"%s/%s", com_userdir, "cache.txt");
+		FH = fopen(cachetxt,"w");
+	}
 
 	count = sum = 0;
 	num_mod = sum_mod = 0;
@@ -823,9 +828,11 @@ void Cache_Print (qboolean write_file)
 	Con_Printf("%8i : Total .MDL of %i items\n",sum_mod,num_mod);
 	if (FH) fprintf(FH,"%8i : Total .MDL of %i items\n",sum_mod,num_mod);
 	Con_Printf("%8i : Total .WAV of %i items\n",sum_wav,num_wav);
-	if (FH) fprintf(FH,"%8i : Total .WAV of %i items\n",sum_wav,num_wav);
-
-	if (FH) fclose(FH);
+	if (FH) {
+		fprintf(FH,"%8i : Total .WAV of %i items\n",sum_wav,num_wav);
+		fclose(FH);
+		FH = NULL;
+	}
 }
 
 /*
@@ -1017,6 +1024,7 @@ void Memory_Stats_f(void)
 	hunk_t	*h, *next, *endlow, *starthigh, *endhigh;
 	int		count, sum, counter;
 	FILE *FH;
+	char    statstxt[MAX_OSPATH];
 	int GroupCount[NUM_GROUPS+1],GroupSum[NUM_GROUPS+1];
 	qboolean write_file;
 	short NumItems;
@@ -1073,7 +1081,10 @@ void Memory_Stats_f(void)
 	sum = 0;
 
 	FH = NULL;
-	if (write_file) FH = fopen("stats.txt","w");
+	if (write_file) {
+		sprintf(statstxt,"%s/%s", com_userdir, "stats.txt");
+		FH = fopen(statstxt,"w");
+	}
 
 	Con_Printf("Group           Count Size\n");
 	if (FH) fprintf(FH,"Group           Count Size\n");
@@ -1089,9 +1100,11 @@ void Memory_Stats_f(void)
 	Con_Printf("--------------- ----- --------\n");
 	if (FH) fprintf(FH,"--------------- ----- --------\n");
 	Con_Printf("%-15s %-5i %i\n","Total",count,sum);
-	if (FH) fprintf(FH,"%-15s %-5i %i\n","Total",count,sum);
-
-	if (FH) fclose(FH);
+	if (FH) {
+		fprintf(FH,"%-15s %-5i %i\n","Total",count,sum);
+		fclose(FH);
+		FH = NULL;
+	}
 }
 
 
@@ -1141,6 +1154,11 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/05/17 22:56:19  sezero
+ * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
+ * Q_strXcasecmp will now be used throughout the code which are implementation
+ * dependant defines for __GNUC__ (strXcasecmp) and _WIN32 (strXicmp)
+ *
  * Revision 1.6  2005/05/17 17:39:54  sezero
  * (Re-)added the parms.userdir to all sys_win.c. The platform conditionals
  * around some of the com_userdir code of late are now unnecessary.
