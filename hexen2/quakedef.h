@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.24 2005-05-19 12:46:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.25 2005-05-19 16:35:51 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -222,10 +222,6 @@ void	VID_UnlockBuffer (void);
 #define	MAX_SCOREBOARDNAME	32
 
 #define	SOUND_CHANNELS		8
-
-// This makes anyone on id's net privileged
-// Use for multiplayer testing only - VERY dangerous!!!
-// #define IDGODS
 
 #include "common.h"
 #include "bspfile.h"
@@ -449,6 +445,9 @@ void IN_DeactivateMouseSA (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2005/05/19 12:46:56  sezero
+ * synced h2 and hw versions of midi stuff
+ *
  * Revision 1.23  2005/04/13 12:19:39  sezero
  * GAMENAME doesn't depend on QUAKE2 definition
  *

@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.14 2005-05-17 22:56:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.15 2005-05-19 16:35:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1393,59 +1393,6 @@ void Host_Version_f (void)
 }
 #endif
 
-#ifdef IDGODS
-void Host_Please_f (void)
-{
-	client_t *cl;
-	int			j;
-	
-	if (cmd_source != src_command)
-		return;
-
-	if ((Cmd_Argc () == 3) && strcmp(Cmd_Argv(1), "#") == 0)
-	{
-		j = atof(Cmd_Argv(2)) - 1;
-		if (j < 0 || j >= svs.maxclients)
-			return;
-		if (!svs.clients[j].active)
-			return;
-		cl = &svs.clients[j];
-		if (cl->privileged)
-		{
-			cl->privileged = false;
-			cl->edict->v.flags = (int)cl->edict->v.flags & ~(FL_GODMODE|FL_NOTARGET);
-			cl->edict->v.movetype = MOVETYPE_WALK;
-			noclip_anglehack = false;
-		}
-		else
-			cl->privileged = true;
-	}
-
-	if (Cmd_Argc () != 2)
-		return;
-
-	for (j=0, cl = svs.clients ; j<svs.maxclients ; j++, cl++)
-	{
-		if (!cl->active)
-			continue;
-		if (Q_strcasecmp(cl->name, Cmd_Argv(1)) == 0)
-		{
-			if (cl->privileged)
-			{
-				cl->privileged = false;
-				cl->edict->v.flags = (int)cl->edict->v.flags & ~(FL_GODMODE|FL_NOTARGET);
-				cl->edict->v.movetype = MOVETYPE_WALK;
-				noclip_anglehack = false;
-			}
-			else
-				cl->privileged = true;
-			break;
-		}
-	}
-}
-#endif
-
-
 void Host_Say(qboolean teamonly)
 {
 	client_t *client;
@@ -2382,9 +2329,6 @@ void Host_InitCommands (void)
 	Cmd_AddCommand ("playerclass", Host_Class_f);
 	Cmd_AddCommand ("noclip", Host_Noclip_f);
 	Cmd_AddCommand ("version", Host_Version_f);
-#ifdef IDGODS
-	Cmd_AddCommand ("please", Host_Please_f);
-#endif
 	Cmd_AddCommand ("say", Host_Say_f);
 	Cmd_AddCommand ("say_team", Host_Say_Team_f);
 	Cmd_AddCommand ("tell", Host_Tell_f);
@@ -2418,6 +2362,11 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/05/17 22:56:19  sezero
+ * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
+ * Q_strXcasecmp will now be used throughout the code which are implementation
+ * dependant defines for __GNUC__ (strXcasecmp) and _WIN32 (strXicmp)
+ *
  * Revision 1.13  2005/05/17 06:50:02  sezero
  * removed underscored versions of string comparison functions
  * Q_strXXXXX is now only for !PLATFORM_UNIX

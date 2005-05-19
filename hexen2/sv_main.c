@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.13 2005-05-17 22:56:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.14 2005-05-19 16:35:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -565,9 +565,6 @@ void SV_ConnectClient (int clientnum)
 
 #endif
 
-#ifdef IDGODS
-	client->privileged = IsID(&client->netconnection->addr);
-#else	
 	client->privileged = false;				
 #endif
 
@@ -2168,6 +2165,11 @@ void SV_SpawnServer (char *server)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/05/17 22:56:19  sezero
+ * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
+ * Q_strXcasecmp will now be used throughout the code which are implementation
+ * dependant defines for __GNUC__ (strXcasecmp) and _WIN32 (strXicmp)
+ *
  * Revision 1.12  2005/05/07 08:11:48  sezero
  * SV_StartSound should set SND_OVERFLOW, not SND_ATTENUATION.
  * souno_num should be incremented/decremented by 256, not 255.
