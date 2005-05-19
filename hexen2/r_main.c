@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.3 2005-05-19 16:41:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -795,9 +795,7 @@ void R_DrawViewModel (void)
 
 	r_viewlighting.plightvec = lightvec;
 
-#ifdef QUAKE2RJ
 	cl.light_level = r_viewlighting.ambientlight;
-#endif
 
 	R_AliasDrawModel (&r_viewlighting);
 }
@@ -1304,6 +1302,9 @@ void R_InitTurb (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:06:49  sezero
  * Initial import of AoT 1.2.0 code
  *

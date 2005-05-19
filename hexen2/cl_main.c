@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.10 2005-05-17 22:56:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.11 2005-05-19 16:41:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -645,11 +645,7 @@ void CL_RelinkEntities (void)
 		}
 
 // if the object wasn't included in the last packet, remove it
-#if RJNET
 		if (ent->msgtime != cl.mtime[0] && !(ent->baseline.flags & BE_ON))
-#else
-		if (ent->msgtime != cl.mtime[0])
-#endif
 		{
 			ent->model = NULL;
 			continue;
@@ -657,11 +653,7 @@ void CL_RelinkEntities (void)
 
 		VectorCopy (ent->origin, oldorg);
 
-#if RJNET
 		if (ent->forcelink || ent->msgtime != cl.mtime[0])
-#else
-		if (ent->forcelink)
-#endif
 		{	// the entity was not updated in the last message
 			// so move to the final spot
 			VectorCopy (ent->msg_origins[0], ent->origin);
@@ -695,10 +687,9 @@ void CL_RelinkEntities (void)
 
 		c++;
 
-#ifdef QUAKE2RJ
 		if (ent->effects & EF_DARKFIELD)
 			R_DarkFieldParticles (ent);
-#endif
+
 		if (ent->effects & EF_MUZZLEFLASH)
 		{
 			vec3_t		fv, rv, uv;
@@ -737,7 +728,7 @@ void CL_RelinkEntities (void)
 				dl->die = cl.time + 0.001;
 			}
 		}
-#ifdef QUAKE2RJ
+
 		if (ent->effects & EF_DARKLIGHT)
 		{			
 			if (cl_prettylights.value)
@@ -759,7 +750,6 @@ void CL_RelinkEntities (void)
 				dl->die = cl.time + 0.001;
 			}
 		}
-#endif
 
 		if (ent->model->flags & EF_GIB)
 			R_RocketTrail (oldorg, ent->origin, 2);
@@ -847,10 +837,9 @@ void CL_RelinkEntities (void)
 		if (i == cl.viewentity && !chase_active.value)
 			continue;
 
-#ifdef QUAKE2RJ
 		if ( ent->effects & EF_NODRAW )
 			continue;
-#endif
+
 		if (cl_numvisedicts < MAX_VISEDICTS)
 		{
 			cl_visedicts[cl_numvisedicts] = ent;
@@ -1017,6 +1006,11 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/05/17 22:56:19  sezero
+ * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
+ * Q_strXcasecmp will now be used throughout the code which are implementation
+ * dependant defines for __GNUC__ (strXcasecmp) and _WIN32 (strXicmp)
+ *
  * Revision 1.9  2005/04/30 08:07:21  sezero
  * CL_NextDemo calls SCR_BeginLoadingPlaque (which triggers scr_drawloading = 1)
  * before checking if an actual nextdemo exists, so scr_drawloading still remained

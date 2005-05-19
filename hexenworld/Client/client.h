@@ -306,10 +306,8 @@ typedef struct
 #define	FL_PARTIALGROUND		1024	// not all corners are valid
 #define	FL_WATERJUMP			2048	// player jumping out of water
 #define	FL_JUMPRELEASED			4096	// for jump debouncing
-#ifdef QUAKE2RJ
 #define FL_FLASHLIGHT			8192
 #define FL_ARCHIVE_OVERRIDE		1048576
-#endif
 #define	FL_ARTIFACTUSED			16384
 #define FL_MOVECHAIN_ANGLE		32768    // when in a move chain, will update the angle
 #define FL_CLASS_DEPENDENT		2097152  // model will appear different to each player

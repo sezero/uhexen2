@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.25 2005-05-19 16:35:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.26 2005-05-19 16:41:50 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -245,10 +245,7 @@ typedef struct
 	byte	scale;
 	byte	drawflags;
 	byte	abslight;
-
-#if RJNET
 	byte	ClearCount[32];
-#endif
 } entity_state_t;
 
 typedef struct
@@ -445,6 +442,9 @@ void IN_DeactivateMouseSA (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2005/05/19 16:35:51  sezero
+ * removed all unused IDGODS code
+ *
  * Revision 1.24  2005/05/19 12:46:56  sezero
  * synced h2 and hw versions of midi stuff
  *

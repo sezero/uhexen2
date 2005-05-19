@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.2 2004-12-12 14:14:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.3 2005-05-19 16:41:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -570,10 +570,8 @@ void SV_ReadClientMove (usercmd_t *move)
 	if (i)
 		host_client->edict->v.impulse = i;
 
-#ifdef QUAKE2RJ
 // read light level
 	host_client->edict->v.light_level = MSG_ReadByte ();
-#endif
 }
 
 /*
@@ -745,6 +743,9 @@ void SV_RunClients (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:43  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:07:56  sezero
  * Initial import of AoT 1.2.0 code
  *

@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_surf.c,v 1.3 2004-12-18 13:48:52 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_surf.c,v 1.4 2005-05-19 16:41:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -105,7 +105,6 @@ void R_AddDynamicLights (void)
 					dist = td + (sd>>1);
 				if (dist < minlight)
 				{
-#ifdef QUAKE2RJ
 					unsigned temp;
 					temp = (rad - dist)*256;
 					i = t*smax + s;
@@ -129,18 +128,6 @@ void R_AddDynamicLights (void)
 						else
 							*pos = 0;
 					}
-#else
-					if (rad >= 0)
-						*pos += (rad - dist)*256;
-					else
-					{
-						lightval = (dist + rad)*256;
-						if (lightval < 0 && -lightval > blocklights[t*smax + s])
-							*pos = 0;
-						else
-							*pos += lightval;
-					}
-#endif
 				}
 			}
 		}
@@ -695,6 +682,10 @@ void R_GenTile (msurface_t *psurf, void *pdest)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/18 13:48:52  sezero
+ * Clean-up and kill warnings 3:
+ * Kill " suggest parentheses around XXX " warnings
+ *
  * Revision 1.2  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

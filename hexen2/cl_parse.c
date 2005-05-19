@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.7 2005-05-17 22:56:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.8 2005-05-19 16:41:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -420,246 +420,6 @@ If an entities model or origin changes from frame to frame, it must be
 relinked.  Other attributes can change without relinking.
 ==================
 */
-//int	bitcounts[16];
-
-/*
-void CL_ParseUpdate (int bits)
-{
-	int			i;
-	model_t		*model;
-	int			modnum;
-	qboolean	forcelink;
-	entity_t	*ent;
-	int			num;
-
-	if (cls.signon == SIGNONS - 1)
-	{	// first update is the final signon stage
-		cls.signon = SIGNONS;
-		CL_SignonReply ();
-	}
-
-	if (bits & U_MOREBITS)
-	{
-		i = MSG_ReadByte ();
-		bits |= (i<<8);
-	}
-
-#if RJNET
-	if (bits & U_MOREBITS2)
-	{
-		i = MSG_ReadByte ();
-		bits |= (i<<16);
-	}
-#endif
-
-	if (bits & U_LONGENTITY)	
-		num = MSG_ReadShort ();
-	else
-		num = MSG_ReadByte ();
-
-	ent = CL_EntityNum (num);
-
-#if RJNET
-	if (bits & U_CLEAR_ENT)
-		memset(ent, 0, sizeof(entity_t));
-#endif
-
-//	for (i=0 ; i<16 ; i++)
-//		if (bits&(1<<i))
-//			bitcounts[i]++;
-
-	if (ent->msgtime != cl.mtime[1])
-		forcelink = true;	// no previous frame to lerp from
-	else
-		forcelink = false;
-
-	ent->msgtime = cl.mtime[0];
-	
-	if (bits & U_MODEL)
-	{
-#if RJNET
-		ent->baseline.modelindex = 
-#endif
-		modnum = MSG_ReadShort ();
-		if (modnum >= MAX_MODELS)
-			Host_Error ("CL_ParseModel: bad modnum");
-	}
-	else
-		modnum = ent->baseline.modelindex;
-		
-	model = cl.model_precache[modnum];
-	if (model != ent->model)
-	{
-		ent->model = model;
-	// automatic animation (torches, etc) can be either all together
-	// or randomized
-		if (model)
-		{
-			if (model->synctype == ST_RAND)
-				ent->syncbase = (float)(rand()&0x7fff) / 0x7fff;
-			else
-				ent->syncbase = 0.0;
-		}
-		else
-			forcelink = true;	// hack to make null model players work
-#ifdef GLQUAKE
-		if (num > 0 && num <= cl.maxclients)
-			R_TranslatePlayerSkin (num - 1);
-#endif
-	}
-	
-	if (bits & U_FRAME)
-#if RJNET
-		ent->baseline.frame = 
-#endif
-		ent->frame = MSG_ReadByte ();
-	else
-		ent->frame = ent->baseline.frame;
-
-	if (bits & U_COLORMAP)
-#if RJNET
-		ent->baseline.colormap = 
-#endif
-		i = MSG_ReadByte();
-	else
-		i = ent->baseline.colormap;
-
-	if (num && num <= cl.maxclients)
-		ent->colormap = ent->sourcecolormap = cl.scores[num-1].translations;
-	else
-		ent->sourcecolormap = vid.colormap;
-
-#ifdef GLQUAKE
-	ent->colormap = vid.colormap;
-#endif
-
-	if (!i)
-	{
-		ent->colorshade = i;
-		ent->colormap = ent->sourcecolormap;
-	}
-	else
-	{
-		ent->colorshade = i;
-#ifdef GLQUAKE
-		ent->colormap = vid.colormap;
-#else
-		ent->colormap = globalcolormap;
-#endif
-	}
-
-	if(bits & U_SKIN)
-	{
-#if RJNET
-		ent->baseline.skin = 
-#endif
-		ent->skinnum = MSG_ReadByte();
-#if RJNET
-		ent->baseline.drawflags = 
-#endif
-		ent->drawflags = MSG_ReadByte();
-	}
-	else
-	{
-		ent->skinnum = ent->baseline.skin;
-		ent->drawflags = ent->baseline.drawflags;
-	}
-
-	if (bits & U_EFFECTS)
-#if RJNET
-		ent->baseline.effects = 
-#endif
-		ent->effects = MSG_ReadByte();
-	else
-		ent->effects = ent->baseline.effects;
-
-// shift the known values for interpolation
-	VectorCopy (ent->msg_origins[0], ent->msg_origins[1]);
-	VectorCopy (ent->msg_angles[0], ent->msg_angles[1]);
-
-	if (bits & U_ORIGIN1)
-#if RJNET
-		ent->baseline.origin[0] = 
-#endif
-		ent->msg_origins[0][0] = MSG_ReadCoord ();
-	else
-		ent->msg_origins[0][0] = ent->baseline.origin[0];
-	if (bits & U_ANGLE1)
-#if RJNET
-		ent->baseline.angles[0] = 
-#endif
-		ent->msg_angles[0][0] = MSG_ReadAngle();
-	else
-		ent->msg_angles[0][0] = ent->baseline.angles[0];
-
-	if (bits & U_ORIGIN2)
-#if RJNET
-		ent->baseline.origin[1] = 
-#endif
-		ent->msg_origins[0][1] = MSG_ReadCoord ();
-	else
-		ent->msg_origins[0][1] = ent->baseline.origin[1];
-	if (bits & U_ANGLE2)
-#if RJNET
-		ent->baseline.angles[1] = 
-#endif
-		ent->msg_angles[0][1] = MSG_ReadAngle();
-	else
-		ent->msg_angles[0][1] = ent->baseline.angles[1];
-
-	if (bits & U_ORIGIN3)
-#if RJNET
-		ent->baseline.origin[2] = 
-#endif
-		ent->msg_origins[0][2] = MSG_ReadCoord ();
-	else
-		ent->msg_origins[0][2] = ent->baseline.origin[2];
-	if (bits & U_ANGLE3)
-#if RJNET
-		ent->baseline.angles[2] = 
-#endif
-		ent->msg_angles[0][2] = MSG_ReadAngle();
-	else
-		ent->msg_angles[0][2] = ent->baseline.angles[2];
-
-	if(bits&U_SCALE)
-	{
-#if RJNET
-		ent->baseline.scale = 
-#endif
-		ent->scale = MSG_ReadByte();
-#if RJNET
-		ent->baseline.abslight = 
-#endif
-		ent->abslight = MSG_ReadByte();
-	}
-	else
-	{
-		ent->scale = ent->baseline.scale;
-		ent->abslight = ent->baseline.abslight;
-	}
-
-#if RJNET
-	if (bits & U_ENT_ON) 
-		ent->baseline.flags |= BASE_ENT_ON;
-	if (bits & U_ENT_OFF) 
-		ent->baseline.flags &= ~BASE_ENT_ON;
-#endif
-
-	if ( bits & U_NOLERP )
-		ent->forcelink = true;
-
-	if ( forcelink )
-	{	// didn't have an update last message
-		VectorCopy (ent->msg_origins[0], ent->msg_origins[1]);
-		VectorCopy (ent->msg_origins[0], ent->origin);
-		VectorCopy (ent->msg_angles[0], ent->msg_angles[1]);
-		VectorCopy (ent->msg_angles[0], ent->angles);
-		ent->forcelink = true;
-	}
-}
-*/
-
 void CL_ParseUpdate (int bits)
 {
 	int		i;
@@ -2019,6 +1779,11 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/05/17 22:56:19  sezero
+ * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
+ * Q_strXcasecmp will now be used throughout the code which are implementation
+ * dependant defines for __GNUC__ (strXcasecmp) and _WIN32 (strXicmp)
+ *
  * Revision 1.6  2005/05/17 06:17:29  sezero
  * removed dead conditionals
  *

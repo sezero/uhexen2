@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.7 2005-04-30 07:59:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.8 2005-05-19 16:41:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2420,7 +2420,6 @@ PF_changelevel
 */
 void PF_changelevel (void)
 {
-#ifdef QUAKE2RJ
 	char	*s1, *s2;
 
 	if (svs.changelevel_issued)
@@ -2434,17 +2433,6 @@ void PF_changelevel (void)
 		Cbuf_AddText (va("changelevel %s %s\n",s1, s2));
 	else
 		Cbuf_AddText (va("changelevel2 %s %s\n",s1, s2));
-#else
-	char	*s;
-
-// make sure we don't issue two changelevels
-	if (svs.changelevel_issued)
-		return;
-	svs.changelevel_issued = true;
-	
-	s = G_STRING(OFS_PARM0);
-	Cbuf_AddText (va("changelevel %s\n",s));
-#endif
 }
 
 #ifdef QUAKE2
@@ -3252,6 +3240,9 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/04/30 07:59:32  sezero
+ * fix warning "dereferencing type-punned pointer will break strict-aliasing rules"
+ *
  * Revision 1.6  2004/12/18 14:15:35  sezero
  * Clean-up and kill warnings 10:
  * Remove some already commented-out functions and code fragments.

@@ -46,7 +46,7 @@ CFLAGS = -O2 -march=i586 \
 ifdef DEBUG
 CFLAGS+= -DDEBUG -g -Wall
 endif
-GAMEFLAGS = -DPLATFORM_UNIX -DRJNET -DQUAKE2RJ
+GAMEFLAGS = -DPLATFORM_UNIX
 SDLFLAGS = `sdl-config --cflags`
 SDLLINK = `sdl-config --libs`
 LDFLAGS =

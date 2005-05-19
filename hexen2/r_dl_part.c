@@ -1,7 +1,7 @@
 /*
 	r_part.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_dl_part.c,v 1.7 2005-01-01 21:43:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_dl_part.c,v 1.8 2005-05-19 16:41:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -105,7 +105,6 @@ void R_InitParticles (void)
 
 }	
 
-#ifdef QUAKE2RJ
 void R_DarkFieldParticles (entity_t *ent)
 {
 	int			i, j, k;
@@ -142,14 +141,13 @@ void R_DarkFieldParticles (entity_t *ent)
 				VectorScale (dir, vel, p->vel);
 			}
 }
-#endif
+
 
 //==========================================================================
 //
 // AllocParticle
 //
 //==========================================================================
-
 static particle_t *AllocParticle(void)
 {
 	particle_t *p;
@@ -1949,6 +1947,9 @@ void R_UpdateParticles (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/01/01 21:43:47  sezero
+ * prototypes clean-up
+ *
  * Revision 1.6  2004/12/18 14:20:40  sezero
  * Clean-up and kill warnings: 11
  * A lot of whitespace cleanups.

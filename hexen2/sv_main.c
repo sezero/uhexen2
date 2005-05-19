@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.14 2005-05-19 16:35:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.15 2005-05-19 16:41:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -15,18 +15,16 @@ char	localmodels[MAX_MODELS][5];	// inline model names for precache
  * O.S.:   RJNET and RJNETa are different???  Clean this mess up! *
  ******************************************************************/
 
-#if RJNET
-cvar_t	sv_sound_distance = {"sv_sound_distance","800", true};
+cvar_t	sv_sound_distance	= {"sv_sound_distance","800", true};
 
 cvar_t	sv_update_player	= {"sv_update_player","1", true};
 cvar_t	sv_update_monsters	= {"sv_update_monsters","1", true};
 cvar_t	sv_update_missiles	= {"sv_update_missiles","1", true};
 cvar_t	sv_update_misc		= {"sv_update_misc","1", true};
 
-cvar_t	sv_ce_scale			= {"sv_ce_scale","0", true};
+cvar_t	sv_ce_scale		= {"sv_ce_scale","0", true};
 cvar_t	sv_ce_max_size		= {"sv_ce_max_size","0", true};
 
-#endif
 
 unsigned int	info_mask, info_mask2;
 int		sv_kingofhill;
@@ -73,7 +71,6 @@ void SV_Init (void)
 	Cvar_RegisterVariable (&sv_nostep);
 	Cvar_RegisterVariable (&sv_walkpitch);
 	Cvar_RegisterVariable (&sv_flypitch);
-#if RJNET
 	Cvar_RegisterVariable (&sv_sound_distance);
 	Cvar_RegisterVariable (&sv_update_player);
 	Cvar_RegisterVariable (&sv_update_monsters);
@@ -81,7 +78,6 @@ void SV_Init (void)
 	Cvar_RegisterVariable (&sv_update_misc);
 	Cvar_RegisterVariable (&sv_ce_scale);
 	Cvar_RegisterVariable (&sv_ce_max_size);
-#endif
 
 	Cmd_AddCommand ("sv_edicts", Sv_Edicts_f);	
 
@@ -312,11 +308,11 @@ Larger attenuations will drop off.  (max 4 attenuation)
 */  
 void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, float attenuation)
 {
-    int         sound_num;
-    int			field_mask;
-    int			i;
+	int         sound_num;
+	int			field_mask;
+	int			i;
 	int			ent;
-#if RJNET
+
 	sizebuf_t   cm;
 	byte		datagram_buf[MAX_DATAGRAM];
 #if RJNETa
@@ -327,7 +323,6 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 	cm.data = datagram_buf;
 	cm.maxsize = sizeof(datagram_buf);
 	cm.cursize = 0;
-#endif
 	
 	if (Q_strcasecmp(sample,"misc/null.wav") == 0)
 	{
@@ -520,10 +515,8 @@ void SV_ConnectClient (int clientnum)
 	struct qsocket_s *netconnection;
 //	int			i;
 	float			spawn_parms[NUM_SPAWN_PARMS];
-#if RJNET
 	int			entnum;
 	edict_t			*svent;
-#endif
 
 	client = svs.clients + clientnum;
 
@@ -555,7 +548,6 @@ void SV_ConnectClient (int clientnum)
 	client->datagram.maxsize = sizeof(client->datagram_buf);
 	client->datagram.allowoverflow = false;
 
-#if RJNET
 	for (entnum = 0; entnum < sv.num_edicts ; entnum++)
 	{
 		svent = EDICT_NUM(entnum);
@@ -563,10 +555,7 @@ void SV_ConnectClient (int clientnum)
 	}
 	memset(&sv.states[clientnum],0,sizeof(client_state2_t ));
 
-#endif
-
 	client->privileged = false;				
-#endif
 
 	if (sv.loadgame)
 		memcpy (client->spawn_parms, spawn_parms, sizeof(spawn_parms));
@@ -1795,9 +1784,8 @@ void SV_CreateBaseline (void)
 	int			i;
 	edict_t			*svent;
 	int				entnum;	
-#if RJNET
+
 //	int client_num = 1<<(MAX_BASELINES-1);
-#endif
 		
 	for (entnum = 0; entnum < sv.num_edicts ; entnum++)
 	{
@@ -1811,7 +1799,6 @@ void SV_CreateBaseline (void)
 	//
 	// create entity baseline
 	//
-#if RJNET
 		VectorCopy (svent->v.origin, svent->baseline.origin);
 		VectorCopy (svent->v.angles, svent->baseline.angles);
 		svent->baseline.frame = svent->v.frame;
@@ -1850,45 +1837,6 @@ void SV_CreateBaseline (void)
 			MSG_WriteCoord(&sv.signon, svent->baseline.origin[i]);
 			MSG_WriteAngle(&sv.signon, svent->baseline.angles[i]);
 		}
-#else
-		VectorCopy (svent->v.origin, svent->baseline.origin);
-		VectorCopy (svent->v.angles, svent->baseline.angles);
-		svent->baseline.frame = svent->v.frame;
-		svent->baseline.skin = svent->v.skin;
-		svent->baseline.scale = (int)(svent->v.scale*100.0)&255;
-		svent->baseline.drawflags = svent->v.drawflags;
-		svent->baseline.abslight = (int)(svent->v.abslight*255.0)&255;
-		if (entnum > 0 && entnum <= svs.maxclients)
-		{
-			svent->baseline.colormap = entnum;
-			svent->baseline.modelindex = 0;//SV_ModelIndex("models/paladin.mdl");
-		}
-		else
-		{
-			svent->baseline.colormap = 0;
-			svent->baseline.modelindex =
-				SV_ModelIndex(pr_strings + svent->v.model);
-		}
-		
-	//
-	// add to the message
-	//
-		MSG_WriteByte (&sv.signon,svc_spawnbaseline);
-		MSG_WriteShort (&sv.signon,entnum);
-
-		MSG_WriteShort (&sv.signon, svent->baseline.modelindex);
-		MSG_WriteByte (&sv.signon, svent->baseline.frame);
-		MSG_WriteByte (&sv.signon, svent->baseline.colormap);
-		MSG_WriteByte (&sv.signon, svent->baseline.skin);
-		MSG_WriteByte (&sv.signon, svent->baseline.scale);
-		MSG_WriteByte (&sv.signon, svent->baseline.drawflags);
-		MSG_WriteByte (&sv.signon, svent->baseline.abslight);
-		for (i=0 ; i<3 ; i++)
-		{
-			MSG_WriteCoord(&sv.signon, svent->baseline.origin[i]);
-			MSG_WriteAngle(&sv.signon, svent->baseline.angles[i]);
-		}
-#endif
 	}
 }
 
@@ -1959,11 +1907,7 @@ This is called at the start of each level
 */
 extern float		scr_centertime_off;
 
-#ifdef QUAKE2RJ
 void SV_SpawnServer (char *server, char *startspot)
-#else
-void SV_SpawnServer (char *server)
-#endif
 {
 	edict_t		*ent;
 	int			i;
@@ -1978,9 +1922,7 @@ void SV_SpawnServer (char *server)
 	if (svs.changelevel_issued)
 	{
 		stats_restored = true;
-#ifdef QUAKE2RJ
 		SaveGamestate(true);
-#endif
 	}
 	else 
 		stats_restored = false;
@@ -2015,10 +1957,9 @@ void SV_SpawnServer (char *server)
 	//memset (&sv, 0, sizeof(sv));
 
 	strcpy (sv.name, server);
-#ifdef QUAKE2RJ
+
 	if (startspot)
 		strcpy(sv.startspot, startspot);
-#endif
 
 // load progs to get entity field count
 
@@ -2126,9 +2067,8 @@ void SV_SpawnServer (char *server)
 	pr_global_struct->randomclass = randomclass.value;
 
 	pr_global_struct->mapname = sv.name - pr_strings;
-#ifdef QUAKE2RJ
+
 	pr_global_struct->startspot = sv.startspot - pr_strings;
-#endif
 
 	// serverflags are for cross level information (sigils)
 	pr_global_struct->serverflags = svs.serverflags;
@@ -2165,6 +2105,9 @@ void SV_SpawnServer (char *server)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/05/19 16:35:51  sezero
+ * removed all unused IDGODS code
+ *
  * Revision 1.13  2005/05/17 22:56:19  sezero
  * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
  * Q_strXcasecmp will now be used throughout the code which are implementation

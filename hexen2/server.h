@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.4 2005-04-30 08:39:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.5 2005-05-19 16:41:50 sezero Exp $
 */
 
 typedef struct
@@ -33,9 +33,7 @@ typedef struct
 	char		midi_name[128];     // midi file name
 	byte		cd_track;			// cd track number
 
-#ifdef QUAKE2RJ
 	char		startspot[64];
-#endif
 	char		modelname[64];		// maps/<name>.bsp, for model_precache[0]
 	struct model_s 	*worldmodel;
 	char		*model_precache[MAX_MODELS];	// NULL terminated
@@ -164,10 +162,8 @@ typedef struct client_s
 #define	FL_PARTIALGROUND		1024	// not all corners are valid
 #define	FL_WATERJUMP			2048	// player jumping out of water
 #define	FL_JUMPRELEASED			4096	// for jump debouncing
-#ifdef QUAKE2RJ
 #define FL_FLASHLIGHT			8192
 #define FL_ARCHIVE_OVERRIDE		1048576
-#endif
 #define	FL_ARTIFACTUSED			16384
 #define FL_MOVECHAIN_ANGLE		32768    // when in a move chain, will update the angle
 #define	FL_HUNTFACE				65536	//Makes monster go for enemy view_ofs thwn moving
@@ -209,12 +205,10 @@ typedef struct client_s
 #define	EF_MUZZLEFLASH 			2
 #define	EF_BRIGHTLIGHT 			4
 #define	EF_DIMLIGHT 			8
-#ifdef QUAKE2RJ
 #define EF_DARKLIGHT			16
 #define EF_DARKFIELD			32
 #define EF_LIGHT				64
 #define EF_NODRAW				128
-#endif
 
 // Player Classes
 #define CLASS_PALADIN				1
@@ -237,7 +231,6 @@ typedef struct client_s
 #define SPAWNFLAG_NOT_DEMON			0x00040000
 
 
-#ifdef QUAKE2RJ
 // server flags
 #define	SFL_EPISODE_1		1
 #define	SFL_EPISODE_2		2
@@ -246,7 +239,6 @@ typedef struct client_s
 #define	SFL_NEW_UNIT		16
 #define	SFL_NEW_EPISODE		32
 #define	SFL_CROSS_TRIGGERS	65280
-#endif
 
 //============================================================================
 
@@ -313,14 +305,13 @@ void SV_MoveToGoal (void);
 void SV_CheckForNewClients (void);
 void SV_RunClients (void);
 void SV_SaveSpawnparms ();
-#ifdef QUAKE2RJ
 void SV_SpawnServer (char *server, char *startspot);
-#else
-void SV_SpawnServer (char *server);
-#endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/04/30 08:39:08  sezero
+ * silenced shadowed decleration warnings about volume (now sfxvolume)
+ *
  * Revision 1.3  2004/12/18 13:59:25  sezero
  * Clean-up and kill warnings 8:
  * Missing prototypes.

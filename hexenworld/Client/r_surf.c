@@ -100,7 +100,6 @@ void R_AddDynamicLights (void)
 					dist = td + (sd>>1);
 				if (dist < minlight)
 				{
-#ifdef QUAKE2RJ
 					unsigned temp;
 					temp = (rad - dist)*256;
 					i = t*smax + s;
@@ -124,18 +123,6 @@ void R_AddDynamicLights (void)
 						else
 							*pos = 0;
 					}
-#else
-					if (rad >= 0)
-						*pos += (rad - dist)*256;
-					else
-					{
-						lightval = (dist + rad)*256;
-						if (lightval < 0 && -lightval > blocklights[t*smax + s])
-							*pos = 0;
-						else
-							*pos += lightval;
-					}
-#endif
 				}
 			}
 		}

@@ -1,6 +1,6 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.4 2005-01-01 21:43:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.5 2005-05-19 16:41:50 sezero Exp $
 */
 
 typedef struct
@@ -11,9 +11,7 @@ typedef struct
 	float	forwardmove;
 	float	sidemove;
 	float	upmove;
-#ifdef QUAKE2RJ
 	byte	lightlevel;
-#endif
 } usercmd_t;
 
 typedef struct
@@ -63,9 +61,7 @@ typedef struct
 	float	decay;				// drop this each second
 	float	minlight;			// don't add when contributing less
 	int		key;
-#ifdef QUAKE2RJ
 	qboolean	dark;			// subtracts light instead of adding
-#endif
 } dlight_t;
 
 #define	MAX_EFRAGS		640
@@ -218,12 +214,10 @@ typedef struct
 // frag scoreboard
 	scoreboard_t	*scores;		// [cl.maxclients]
 
-#ifdef QUAKE2RJ
 // light level at player's position including dlights
 // this is sent back to the server each frame
 // architectually ugly but it works
 	int			light_level;
-#endif
 
 	client_frames2_t frames[3]; // 0 = base, 1 = building, 2 = 0 & 1 merged
 	short RemoveList[MAX_CLIENT_STATES],NumToRemove;
@@ -374,6 +368,9 @@ void CL_UpdateTEnts(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/01/01 21:43:47  sezero
+ * prototypes clean-up
+ *
  * Revision 1.3  2004/12/18 13:59:25  sezero
  * Clean-up and kill warnings 8:
  * Missing prototypes.

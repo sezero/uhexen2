@@ -2301,7 +2301,6 @@ PF_changelevel
 */
 void PF_changelevel (void)
 {
-#ifdef QUAKE2RJ
 	char	*s1, *s2;
 
 	if (svs.changelevel_issued)
@@ -2315,18 +2314,6 @@ void PF_changelevel (void)
 		Cbuf_AddText (va("map %s %s\n",s1, s2));
 	else
 		Cbuf_AddText (va("changelevel2 %s %s\n",s1, s2));
-#else
-	char	*s;
-
-
-// make sure we don't issue two changelevels
-	if (svs.changelevel_issued)
-		return;
-	svs.changelevel_issued = true;
-	
-	s = G_STRING(OFS_PARM0);
-	Cbuf_AddText (va("changelevel %s\n",s));
-#endif
 }
 
 

@@ -281,7 +281,6 @@ typedef struct
 #define SPAWNFLAG_NOT_COOP			65536
 #define SPAWNFLAG_NOT_SINGLE		131072
 
-#ifdef QUAKE2RJ
 // server flags
 #define	SFL_EPISODE_1		1
 #define	SFL_EPISODE_2		2
@@ -290,7 +289,6 @@ typedef struct
 #define	SFL_NEW_UNIT		16
 #define	SFL_NEW_EPISODE		32
 #define	SFL_CROSS_TRIGGERS	65280
-#endif
 
 #define	MULTICAST_ALL			0
 #define	MULTICAST_PHS			1
