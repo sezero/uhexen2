@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.15 2005-05-19 16:41:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.16 2005-05-19 16:44:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,10 +10,6 @@
 server_t	sv;
 server_static_t	svs;
 char	localmodels[MAX_MODELS][5];	// inline model names for precache
-
-/******************************************************************
- * O.S.:   RJNET and RJNETa are different???  Clean this mess up! *
- ******************************************************************/
 
 cvar_t	sv_sound_distance	= {"sv_sound_distance","800", true};
 
@@ -315,11 +311,6 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 
 	sizebuf_t   cm;
 	byte		datagram_buf[MAX_DATAGRAM];
-#if RJNETa
-	client_t	*client;
-	vec_t		distance;
-	vec3_t		diff;
-#endif
 	cm.data = datagram_buf;
 	cm.maxsize = sizeof(datagram_buf);
 	cm.cursize = 0;
@@ -369,40 +360,6 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 		sound_num -= 256;
 	}
 
-#if RJNETa
-	MSG_WriteByte (&cm, svc_sound);
-	MSG_WriteByte (&cm, field_mask);
-	if (field_mask & SND_VOLUME)
-		MSG_WriteByte (&cm, volume);
-	if (field_mask & SND_ATTENUATION)
-		MSG_WriteByte (&cm, attenuation*64);
-	MSG_WriteShort (&cm, channel);
-	MSG_WriteByte (&cm, sound_num);
-	for (i=0 ; i<3 ; i++)
-		MSG_WriteCoord (&cm, entity->v.origin[i]+0.5*(entity->v.mins[i]+entity->v.maxs[i]));
-
-	for (i=0, client = svs.clients ; i<svs.maxclients ; i++, client++)
-	{
-		if (!client->active)
-			continue;
-
-		VectorAdd(entity->v.absmax,entity->v.absmin,diff);
-		diff[0] /= 2;
-		diff[1] /= 2;
-		diff[2] /= 2;
-
-		VectorSubtract(client->edict->v.origin,diff,diff);
-
-		distance = Length(diff);
-
-		if (!sv_sound_distance.value || distance < sv_sound_distance.value)
-		{	// rjr this gets put in a reliable packet - should be unreliable
-			SZ_Write (&client->message, cm.data, cm.cursize);
-		}
-	}
-
-#else
-
 // directed messages go only to the entity the are targeted on
 	MSG_WriteByte (&sv.datagram, svc_sound);
 	MSG_WriteByte (&sv.datagram, field_mask);
@@ -414,9 +371,6 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 	MSG_WriteByte (&sv.datagram, sound_num);
 	for (i=0 ; i<3 ; i++)
 		MSG_WriteCoord (&sv.datagram, entity->v.origin[i]+0.5*(entity->v.mins[i]+entity->v.maxs[i]));
-
-#endif
-
 }           
 
 /*
@@ -551,7 +505,6 @@ void SV_ConnectClient (int clientnum)
 	for (entnum = 0; entnum < sv.num_edicts ; entnum++)
 	{
 		svent = EDICT_NUM(entnum);
-//		memcpy(&svent->baseline[clientnum],&svent->baseline[MAX_BASELINES-1],sizeof(entity_state_t));
 	}
 	memset(&sv.states[clientnum],0,sizeof(client_state2_t ));
 
@@ -1785,8 +1738,6 @@ void SV_CreateBaseline (void)
 	edict_t			*svent;
 	int				entnum;	
 
-//	int client_num = 1<<(MAX_BASELINES-1);
-		
 	for (entnum = 0; entnum < sv.num_edicts ; entnum++)
 	{
 	// get the current server version
@@ -2105,6 +2056,9 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/05/19 16:41:50  sezero
+ * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
+ *
  * Revision 1.14  2005/05/19 16:35:51  sezero
  * removed all unused IDGODS code
  *

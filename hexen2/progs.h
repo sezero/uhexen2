@@ -12,10 +12,6 @@ typedef union eval_s
 	int				edict;
 } eval_t;	
 
-//#if RJNET
-//#define MAX_BASELINES 17
-//#endif
-
 #define	MAX_ENT_LEAFS	16
 typedef struct edict_s
 {
@@ -25,11 +21,7 @@ typedef struct edict_s
 	int			num_leafs;
 	short		leafnums[MAX_ENT_LEAFS];
 
-#if RJNET2
-	entity_state_t	baseline[MAX_BASELINES];
-#else
 	entity_state_t	baseline;
-#endif
 	
 	float		freetime;			// sv.time when the object was freed
 	float		alloctime;			// sv.time when the object was allocated

@@ -1,7 +1,7 @@
 /*
 	sv_phys.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.7 2005-05-19 16:41:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.8 2005-05-19 16:44:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -30,11 +30,6 @@ cvar_t	sv_maxvelocity = {"sv_maxvelocity","2000"};
 cvar_t	sv_nostep = {"sv_nostep","0"};
 cvar_t	sv_flypitch={"sv_flypitch","20"};
 cvar_t	sv_walkpitch={"sv_walkpitch","0"};
-
-
-/****************************************************************************
- *  O.S.:  QUAKE2, QUAKE2RJ and QUAKE2RJa are different??? Clean this mess! *
- ****************************************************************************/
 
 #ifdef QUAKE2
 static	vec3_t	vec_origin = {0.0, 0.0, 0.0};
@@ -2139,6 +2134,9 @@ trace_t SV_Trace_Toss (edict_t *ent, edict_t *ignore)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/05/19 16:41:50  sezero
+ * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
+ *
  * Revision 1.6  2005/04/30 08:04:38  sezero
  * Fix warning about vec_origin being unused
  *
