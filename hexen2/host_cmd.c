@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.16 2005-05-19 16:41:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.17 2005-05-19 16:47:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -122,8 +122,7 @@ void Host_God_f (void)
 		return;
 	}
 
-	if ((pr_global_struct->deathmatch ||
-		 pr_global_struct->coop || skill.value > 2) && !host_client->privileged)
+	if (pr_global_struct->deathmatch || pr_global_struct->coop || skill.value > 2)
 		return;
 
 	sv_player->v.flags = (int)sv_player->v.flags ^ FL_GODMODE;
@@ -141,7 +140,7 @@ void Host_Notarget_f (void)
 		return;
 	}
 
-	if ((pr_global_struct->deathmatch || skill.value > 2)&& !host_client->privileged)
+	if (pr_global_struct->deathmatch || skill.value > 2)
 		return;
 
 	sv_player->v.flags = (int)sv_player->v.flags ^ FL_NOTARGET;
@@ -161,8 +160,7 @@ void Host_Noclip_f (void)
 		return;
 	}
 
-	if ((pr_global_struct->deathmatch ||
-		 pr_global_struct->coop|| skill.value > 2) && !host_client->privileged)
+	if (pr_global_struct->deathmatch || pr_global_struct->coop || skill.value > 2)
 		return;
 
 	if (sv_player->v.movetype != MOVETYPE_NOCLIP)
@@ -1952,7 +1950,7 @@ void Host_Kick_f (void)
 			return;
 		}
 	}
-	else if (pr_global_struct->deathmatch && !host_client->privileged)
+	else if (pr_global_struct->deathmatch)
 		return;
 
 	save = host_client;
@@ -2039,7 +2037,7 @@ void Host_Give_f (void)
 		return;
 	}
 
-	if ((pr_global_struct->deathmatch|| skill.value > 2) && !host_client->privileged)
+	if (pr_global_struct->deathmatch || skill.value > 2)
 		return;
 
 	t = Cmd_Argv(1);
@@ -2333,6 +2331,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/05/19 16:41:50  sezero
+ * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
+ *
  * Revision 1.15  2005/05/19 16:35:51  sezero
  * removed all unused IDGODS code
  *

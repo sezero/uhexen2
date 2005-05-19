@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.3 2005-05-19 16:41:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.4 2005-05-19 16:47:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -629,10 +629,7 @@ nextmsg:
 				
 			case clc_stringcmd:	
 				s = MSG_ReadString ();
-				if (host_client->privileged)
-					ret = 2;
-				else
-					ret = 0;
+				ret = 0;
 				if (Q_strncasecmp(s, "status", 6) == 0)
 					ret = 1;
 				else if (Q_strncasecmp(s, "god", 3) == 0)
@@ -674,9 +671,7 @@ nextmsg:
 				else if (Q_strncasecmp(s, "ban", 3) == 0)
 					ret = 1;
 
-				if (ret == 2)
-					Cbuf_InsertText (s);
-				else if (ret == 1)
+				if (ret == 1)
 					Cmd_ExecuteString (s, src_client);
 				else
 					Con_DPrintf("%s tried to %s\n", host_client->name, s);
@@ -743,6 +738,9 @@ void SV_RunClients (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/05/19 16:41:50  sezero
+ * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
+ *
  * Revision 1.2  2004/12/12 14:14:43  sezero
  * style changes to our liking
  *

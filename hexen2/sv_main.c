@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.16 2005-05-19 16:44:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.17 2005-05-19 16:47:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -507,8 +507,6 @@ void SV_ConnectClient (int clientnum)
 		svent = EDICT_NUM(entnum);
 	}
 	memset(&sv.states[clientnum],0,sizeof(client_state2_t ));
-
-	client->privileged = false;				
 
 	if (sv.loadgame)
 		memcpy (client->spawn_parms, spawn_parms, sizeof(spawn_parms));
@@ -2056,6 +2054,9 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/05/19 16:44:13  sezero
+ * removed all unused (never used) RJNETa and RJNET2 code
+ *
  * Revision 1.15  2005/05/19 16:41:50  sezero
  * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
  *

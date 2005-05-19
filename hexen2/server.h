@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.5 2005-05-19 16:41:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.6 2005-05-19 16:47:18 sezero Exp $
 */
 
 typedef struct
@@ -68,7 +68,6 @@ typedef struct client_s
 	qboolean		active;				// false = client is free
 	qboolean		spawned;			// false = don't send datagrams
 	qboolean		dropasap;			// has been told to go to another level
-	qboolean		privileged;			// can execute any host command
 	qboolean		sendsignon;			// only valid before spawned
 
 	double			last_message;		// reliable messages must be sent
@@ -309,6 +308,9 @@ void SV_SpawnServer (char *server, char *startspot);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/05/19 16:41:50  sezero
+ * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
+ *
  * Revision 1.4  2005/04/30 08:39:08  sezero
  * silenced shadowed decleration warnings about volume (now sfxvolume)
  *
