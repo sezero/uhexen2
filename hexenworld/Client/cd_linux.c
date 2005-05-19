@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.6 2005-03-06 10:44:41 sezero Exp $
+	$Id: cd_linux.c,v 1.7 2005-05-19 10:49:57 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -380,7 +380,7 @@ int CDAudio_Init(void)
 {
 	int i;
 
-#if 0		// QW
+#ifndef H2W
 	if (cls.state == ca_dedicated)
 		return -1;
 #endif
