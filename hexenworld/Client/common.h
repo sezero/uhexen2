@@ -23,7 +23,7 @@ typedef struct sizebuf_s
 {
 	qboolean	allowoverflow;	// if false, do a Sys_Error
 	qboolean	overflowed;		// set to true if the buffer size failed
-	byte	*data;
+	byte		*data;
 	int		maxsize;
 	int		cursize;
 } sizebuf_t;

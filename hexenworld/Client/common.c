@@ -1,4 +1,9 @@
-// common.c -- misc functions used in client and server
+/*
+	common.c
+	misc functions used in client and server
+
+	$Id: common.c,v 1.8 2005-05-20 12:01:34 sezero Exp $
+*/
 
 #ifdef SERVERONLY 
 #include "qwsvdef.h"
@@ -19,7 +24,7 @@ static char	*safeargvs[NUM_SAFE_ARGVS] =
 	{"-stdvid", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse"};
 
 cvar_t	registered = {"registered","0"};
-cvar_t  oem = {"oem","0"};
+cvar_t	oem = {"oem","0"};
 
 qboolean	com_modified;	// set true if using non-id files
 qboolean	com_portals = false;
@@ -31,20 +36,25 @@ qboolean		msg_suppress_1 = 0;
 void COM_InitFilesystem (void);
 void COM_Path_f (void);
 
-
 // if a packfile directory differs from this, it is assumed to be hacked
-// retail
-#define PAK0_COUNT              797
-#define PAK0_CRC                22780
+#define MAX_PAKDATA	6
+const int pakdata[MAX_PAKDATA][2] = {
+	{ 696,	34289 },
+	{ 523,	2995  },
+	{ 183,	4807  },
+	{ 245,	1478  },
+	{ 102,	41062 },
+	{ 797,	22780 }
+};
 
-#define PAK2_COUNT              183
-#define PAK2_CRC                4807
-
-#define PAK3_COUNT              245
-#define PAK3_CRC                1478
-
-#define PAK4_COUNT				102
-#define PAK4_CRC				41062
+const char *dirdata[MAX_PAKDATA] = {
+	"data1",
+	"data1",
+	"data1",
+	"portals",
+	"hw",
+	"data1"
+};
 
 char	gamedirfile[MAX_OSPATH];
 
@@ -69,24 +79,34 @@ unsigned short pop[] =
 ,0x0000,0x0000,0x0000,0x0000,0x6400,0x0000,0x0000,0x0000
 };
 
-/*
-
-
-All of Quake's data access is through a hierchal file system, but the contents of the file system can be transparently merged from several sources.
-
-The "base directory" is the path to the directory holding the quake.exe and all game directories.  The sys_* files pass this to host_init in quakeparms_t->basedir.  This can be overridden with the "-basedir" command line parm to allow code debugging in a different directory.  The base directory is
-only used during filesystem initialization.
-
-The "game directory" is the first tree on the search path and directory that all generated files (savegames, screenshots, demos, config files) will be saved to.  This can be overridden with the "-game" command line parameter.  The game directory can never be changed while quake is executing.  This is a precacution against having a malicious server instruct clients to write files over areas they shouldn't.
-
-The "cache directory" is only used during development to save network bandwidth, especially over ISDN / T1 lines.  If there is a cache directory
-specified, when a file is found by the normal search path, it will be mirrored
-into the cache directory, then opened there.
-	
-*/
 
 //============================================================================
 
+/*
+All of Quake's data access is through a hierchal file system, but the contents
+of the file system can be transparently merged from several sources.
+
+The "base directory" is the path to the directory holding the exe and all game
+directories.  The sys_* files pass this to host_init in quakeparms_t->basedir.
+This can be overridden with the "-basedir" command line parm to allow code
+debugging in a different directory.  The base directory is only used during
+filesystem initialization.
+
+The "game directory" is the first tree on the search path and directory that
+all generated files (savegames, screenshots, demos, config files) will be saved
+to.  This can be overridden with the "-game" command line parameter.  The game
+directory can never be changed while quake is executing.  This is a precacution
+against having a malicious server instruct clients to write files over areas
+they shouldn't.
+
+The "cache directory" is only used during development to save network bandwidth
+especially over ISDN / T1 lines.  If there is a cache directory specified, when
+a file is found by the normal search path, it will be mirrored into the cache
+directory, then opened there.
+*/
+
+
+//============================================================================
 
 // ClearLink is used for new headnodes
 void ClearLink (link_t *l)
@@ -152,8 +172,7 @@ float FloatSwap (float f)
 		float	f;
 		byte	b[4];
 	} dat1, dat2;
-	
-	
+
 	dat1.f = f;
 	dat2.b[0] = dat1.b[3];
 	dat2.b[1] = dat1.b[2];
@@ -179,7 +198,7 @@ Handles byte ordering and avoids alignment errors
 void MSG_WriteChar (sizebuf_t *sb, int c)
 {
 	byte	*buf;
-	
+
 #ifdef PARANOID
 	if (c < -128 || c > 127)
 		Sys_Error ("MSG_WriteChar: range error");
@@ -192,7 +211,7 @@ void MSG_WriteChar (sizebuf_t *sb, int c)
 void MSG_WriteByte (sizebuf_t *sb, int c)
 {
 	byte	*buf;
-	
+
 #ifdef PARANOID
 	if (c < 0 || c > 255)
 		Sys_Error ("MSG_WriteByte: range error");
@@ -205,7 +224,7 @@ void MSG_WriteByte (sizebuf_t *sb, int c)
 void MSG_WriteShort (sizebuf_t *sb, int c)
 {
 	byte	*buf;
-	
+
 #ifdef PARANOID
 	if (c < ((short)0x8000) || c > (short)0x7fff)
 		Sys_Error ("MSG_WriteShort: range error");
@@ -219,7 +238,7 @@ void MSG_WriteShort (sizebuf_t *sb, int c)
 void MSG_WriteLong (sizebuf_t *sb, int c)
 {
 	byte	*buf;
-	
+
 	buf = SZ_GetSpace (sb, 4);
 	buf[0] = c&0xff;
 	buf[1] = (c>>8)&0xff;
@@ -234,11 +253,10 @@ void MSG_WriteFloat (sizebuf_t *sb, float f)
 		float	f;
 		int	l;
 	} dat;
-	
-	
+
 	dat.f = f;
 	dat.l = LittleLong (dat.l);
-	
+
 	SZ_Write (sb, &dat.l, 4);
 }
 
@@ -290,7 +308,7 @@ void MSG_WriteUsercmd (sizebuf_t *buf, usercmd_t *cmd, qboolean long_msg)
 	if (cmd->msec)
 		bits |= CM_MSEC;
 
-    MSG_WriteByte (buf, bits);
+	MSG_WriteByte (buf, bits);
 	if (long_msg)
 	{
 		MSG_WriteByte (buf, cmd->light_level);
@@ -301,7 +319,7 @@ void MSG_WriteUsercmd (sizebuf_t *buf, usercmd_t *cmd, qboolean long_msg)
 	MSG_WriteAngle16 (buf, cmd->angles[1]);
 	if (bits & CM_ANGLE3)
 		MSG_WriteAngle16 (buf, cmd->angles[2]);
-	
+
 	if (bits & CM_FORWARD)
 		MSG_WriteChar (buf, (int)(cmd->forwardmove*0.25));
 	if (bits & CM_SIDE)
@@ -309,19 +327,19 @@ void MSG_WriteUsercmd (sizebuf_t *buf, usercmd_t *cmd, qboolean long_msg)
 	if (bits & CM_UP)
 		MSG_WriteChar (buf, (int)(cmd->upmove*0.25));
 
- 	if (bits & CM_BUTTONS)
+	if (bits & CM_BUTTONS)
 	  	MSG_WriteByte (buf, cmd->buttons);
- 	if (bits & CM_IMPULSE)
-	    MSG_WriteByte (buf, cmd->impulse);
- 	if (bits & CM_MSEC)
-	    MSG_WriteByte (buf, cmd->msec);
+	if (bits & CM_IMPULSE)
+		MSG_WriteByte (buf, cmd->impulse);
+	if (bits & CM_MSEC)
+		MSG_WriteByte (buf, cmd->msec);
 }
 
 
 //
 // reading functions
 //
-int			msg_readcount;
+int		msg_readcount;
 qboolean	msg_badread;
 
 void MSG_BeginReading (void)
@@ -334,70 +352,70 @@ void MSG_BeginReading (void)
 int MSG_ReadChar (void)
 {
 	int	c;
-	
+
 	if (msg_readcount+1 > net_message.cursize)
 	{
 		msg_badread = true;
 		return -1;
 	}
-		
+
 	c = (signed char)net_message.data[msg_readcount];
 	msg_readcount++;
-	
+
 	return c;
 }
 
 int MSG_ReadByte (void)
 {
 	int	c;
-	
+
 	if (msg_readcount+1 > net_message.cursize)
 	{
 		msg_badread = true;
 		return -1;
 	}
-		
+
 	c = (unsigned char)net_message.data[msg_readcount];
 	msg_readcount++;
-	
+
 	return c;
 }
 
 int MSG_ReadShort (void)
 {
 	int	c;
-	
+
 	if (msg_readcount+2 > net_message.cursize)
 	{
 		msg_badread = true;
 		return -1;
 	}
-		
+
 	c = (short)(net_message.data[msg_readcount]
 	+ (net_message.data[msg_readcount+1]<<8));
-	
+
 	msg_readcount += 2;
-	
+
 	return c;
 }
 
 int MSG_ReadLong (void)
 {
 	int	c;
-	
+
 	if (msg_readcount+4 > net_message.cursize)
 	{
 		msg_badread = true;
 		return -1;
 	}
-		
+
 	c = net_message.data[msg_readcount]
 	+ (net_message.data[msg_readcount+1]<<8)
 	+ (net_message.data[msg_readcount+2]<<16)
 	+ (net_message.data[msg_readcount+3]<<24);
-	
+
 	msg_readcount += 4;
-	
+
 	return c;
 }
 
@@ -409,23 +427,23 @@ float MSG_ReadFloat (void)
 		float	f;
 		int	l;
 	} dat;
-	
+
 	dat.b[0] =	net_message.data[msg_readcount];
 	dat.b[1] =	net_message.data[msg_readcount+1];
 	dat.b[2] =	net_message.data[msg_readcount+2];
 	dat.b[3] =	net_message.data[msg_readcount+3];
 	msg_readcount += 4;
-	
+
 	dat.l = LittleLong (dat.l);
 
-	return dat.f;	
+	return dat.f;
 }
 
 char *MSG_ReadString (void)
 {
 	static char	string[2048];
 	int		l,c;
-	
+
 	l = 0;
 	do
 	{
@@ -435,9 +453,9 @@ char *MSG_ReadString (void)
 		string[l] = c;
 		l++;
 	} while (l < sizeof(string)-1);
-	
+
 	string[l] = 0;
-	
+
 	return string;
 }
 
@@ -445,7 +463,7 @@ char *MSG_ReadStringLine (void)
 {
 	static char	string[2048];
 	int		l,c;
-	
+
 	l = 0;
 	do
 	{
@@ -455,9 +473,9 @@ char *MSG_ReadStringLine (void)
 		string[l] = c;
 		l++;
 	} while (l < sizeof(string)-1);
-	
+
 	string[l] = 0;
-	
+
 	return string;
 }
 
@@ -492,7 +510,7 @@ void MSG_ReadUsercmd (usercmd_t *move, qboolean long_msg)
 	{
 		move->light_level = 0;
 	}
-		
+
 // read current angles
 	if (bits & CM_ANGLE1)
 		move->angles[0] = MSG_ReadAngle16 ();
@@ -503,7 +521,7 @@ void MSG_ReadUsercmd (usercmd_t *move, qboolean long_msg)
 		move->angles[2] = MSG_ReadAngle16 ();
 	else
 		move->angles[2] = 0;
-		
+
 // read movement
 	if (bits & CM_FORWARD)
 		move->forwardmove = MSG_ReadChar () * 4;
@@ -511,7 +529,7 @@ void MSG_ReadUsercmd (usercmd_t *move, qboolean long_msg)
 		move->sidemove = MSG_ReadChar () * 4;
 	if (bits & CM_UP)
 		move->upmove = MSG_ReadChar () * 4;
-	
+
 // read buttons
 	if (bits & CM_BUTTONS)
 		move->buttons = MSG_ReadByte ();
@@ -542,7 +560,7 @@ void SZ_Clear (sizebuf_t *buf)
 void *SZ_GetSpace (sizebuf_t *buf, int length)
 {
 	void	*data;
-	
+
 	if (buf->cursize + length > buf->maxsize)
 	{
 		if (!buf->allowoverflow)
@@ -558,19 +576,19 @@ void *SZ_GetSpace (sizebuf_t *buf, int length)
 
 	data = buf->data + buf->cursize;
 	buf->cursize += length;
-	
+
 	return data;
 }
 
 void SZ_Write (sizebuf_t *buf, void *data, int length)
 {
-	memcpy (SZ_GetSpace(buf,length),data,length);		
+	memcpy (SZ_GetSpace(buf,length),data,length);
 }
 
 void SZ_Print (sizebuf_t *buf, char *data)
 {
 	int		len;
-	
+
 	len = strlen(data)+1;
 
 	if (!buf->cursize || buf->data[buf->cursize-1])
@@ -591,7 +609,7 @@ COM_SkipPath
 char *COM_SkipPath (char *pathname)
 {
 	char	*last;
-	
+
 	last = pathname;
 	while (*pathname)
 	{
@@ -643,18 +661,18 @@ COM_FileBase
 void COM_FileBase (char *in, char *out)
 {
 	char *s, *s2;
-	
+
 	s = in + strlen(in) - 1;
-	
+
 	while (s != in && *s != '.')
 		s--;
-	
+
 	/* Pa3PyX: no range checking -- used to trash the stack and crash the
 	   game randomly upon loading progs, for instance (or in any other
 	   instance where one would supply a filename witout a path */
 //	for (s2 = s ; *s2 && *s2 != '/' ; s2--);
 	for (s2 = s; *s2 && *s2 != '/' && s2 >= in; s2--);
-	
+
 	if (s-s2 < 2)
 		strcpy (out,"?model?");
 	else
@@ -708,13 +726,13 @@ char *COM_Parse (char *data)
 {
 	int		c;
 	int		len;
-	
+
 	len = 0;
 	com_token[0] = 0;
-	
+
 	if (!data)
 		return NULL;
-		
+
 // skip whitespace
 skipwhite:
 	while ( (c = *data) <= ' ')
@@ -723,7 +741,7 @@ skipwhite:
 			return NULL;			// end of file;
 		data++;
 	}
-	
+
 // skip // comments
 	if (c=='/' && data[1] == '/')
 	{
@@ -731,7 +749,7 @@ skipwhite:
 			data++;
 		goto skipwhite;
 	}
-	
+
 
 // handle quoted strings specially
 	if (c == '\"')
@@ -770,7 +788,7 @@ skipwhite:
 //		if (c=='{' || c=='}'|| c==')'|| c=='(' || c=='\'' || c==':')
 //			break;
 	} while (c>32);
-	
+
 	com_token[len] = 0;
 	return data;
 }
@@ -787,7 +805,7 @@ where the given parameter apears, or 0 if not present
 int COM_CheckParm (char *parm)
 {
 	int		i;
-	
+
 	for (i=1 ; i<com_argc ; i++)
 	{
 		if (!com_argv[i])
@@ -795,7 +813,7 @@ int COM_CheckParm (char *parm)
 		if (!strcmp (parm,com_argv[i]))
 			return i;
 	}
-		
+
 	return 0;
 }
 
@@ -815,7 +833,6 @@ void COM_CheckRegistered (void)
 	unsigned short	check[128];
 	int			i;
 
-
 	COM_FOpenFile("gfx/pop.lmp", &h, false);
 	static_registered = 0;
 
@@ -832,16 +849,15 @@ void COM_CheckRegistered (void)
 
 	fread (check, 1, sizeof(check), h);
 	fclose (h);
-	
+
 	for (i=0 ; i<128 ; i++)
 		if (pop[i] != (unsigned short)BigShort (check[i]))
 			Sys_Error ("Corrupted data file.");
-	
+
 	Cvar_Set ("registered", "1");
 	static_registered = 1;
 	Con_Printf ("Playing registered version.\n");
 }
-
 
 
 /*
@@ -921,12 +937,12 @@ char	*va(char *format, ...)
 {
 	va_list		argptr;
 	static char		string[1024];
-	
+
 	va_start (argptr, format);
 	vsprintf (string, format,argptr);
 	va_end (argptr);
 
-	return string;	
+	return string;
 }
 
 
@@ -934,7 +950,7 @@ char	*va(char *format, ...)
 int	memsearch (byte *start, int count, int search)
 {
 	int		i;
-	
+
 	for (i=0 ; i<count ; i++)
 		if (start[i] == search)
 			return i;
@@ -990,14 +1006,14 @@ typedef struct
 
 char	com_gamedir[MAX_OSPATH];
 char	com_basedir[MAX_OSPATH];
-char    com_userdir[MAX_OSPATH];
-char    com_savedir[MAX_OSPATH];
+char	com_userdir[MAX_OSPATH];
+char	com_savedir[MAX_OSPATH];
 
 typedef struct searchpath_s
 {
 	char	filename[MAX_OSPATH];
 	pack_t	*pack;		// only one of filename / pack will be used
-	struct searchpath_s *next;
+	struct	searchpath_s *next;
 } searchpath_t;
 
 searchpath_t	*com_searchpaths;
@@ -1032,7 +1048,7 @@ int COM_FileOpenRead (char *path, FILE **hndl)
 		return -1;
 	}
 	*hndl = f;
-	
+
 	return COM_filelength(f);
 }
 
@@ -1045,7 +1061,7 @@ COM_Path_f
 void COM_Path_f (void)
 {
 	searchpath_t	*s;
-	
+
 	Con_Printf ("Current search path:\n");
 	for (s=com_searchpaths ; s ; s=s->next)
 	{
@@ -1069,13 +1085,13 @@ void COM_WriteFile (char *filename, void *data, int len)
 {
 	FILE	*f;
 	char	name[MAX_OSPATH];
-	
+
 	sprintf (name, "%s/%s", com_userdir, filename);
-	
+
 	f = fopen (name, "wb");
 	if (!f)
 		Sys_Error ("Error opening %s", filename);
-	
+
 	Sys_Printf ("COM_WriteFile: %s\n", name);
 	fwrite (data, 1, len, f);
 	fclose (f);
@@ -1092,7 +1108,7 @@ Only used for CopyFile and download
 void	COM_CreatePath (char *path)
 {
 	char	*ofs;
-	
+
 	for (ofs = path+1 ; *ofs ; ofs++)
 	{
 		if (*ofs == '/')
@@ -1118,13 +1134,13 @@ void COM_CopyFile (char *netpath, char *cachepath)
 	FILE	*in, *out;
 	int		remaining, count;
 	char	buf[4096];
-	
+
 	remaining = COM_FileOpenRead (netpath, &in);		
 	COM_CreatePath (cachepath);	// create directories up to the cache file
 	out = fopen(cachepath, "wb");
 	if (!out)
 		Sys_Error ("Error opening %s", cachepath);
-	
+
 	while (remaining)
 	{
 		if (remaining < sizeof(buf))
@@ -1148,8 +1164,7 @@ Finds the file in the search path.
 Sets com_filesize and one of handle or file
 ===========
 */
-int file_from_pak; // global indicating file came from pack file ZOID
-
+int file_from_pak;	// global indicating file came from pack file ZOID
 int COM_FOpenFile (char *filename, FILE **file, qboolean override_pack)
 {
 	searchpath_t	*search;
@@ -1159,7 +1174,7 @@ int COM_FOpenFile (char *filename, FILE **file, qboolean override_pack)
 	int			findtime;
 
 	file_from_pak = 0;
-		
+
 //
 // search through the path, one element at a time
 //
@@ -1173,8 +1188,7 @@ int COM_FOpenFile (char *filename, FILE **file, qboolean override_pack)
 			for (i=0 ; i<pak->numfiles ; i++)
 				if (!strcmp (pak->files[i].name, filename))
 				{	// found it!
-					/* Sys_Printf ("PackFile: %s : %s\n",pak->filename, filename); */
-				// open a new file on the pakfile
+					// open a new file on the pakfile
 					*file = fopen (pak->filename, "rb");
 					if (!*file)
 						Sys_Error ("Couldn't reopen %s", pak->filename);	
@@ -1185,30 +1199,27 @@ int COM_FOpenFile (char *filename, FILE **file, qboolean override_pack)
 				}
 		}
 		else
-		{		
+		{
 	// check a file in the directory tree
 //			if (!static_registered && !override_pack)
 //			{	// if not a registered version, don't ever go beyond base
 //				if ( strchr (filename, '/') || strchr (filename,'\\'))
 //					continue;
 //			}
-			
+
 			sprintf (netpath, "%s/%s",search->filename, filename);
-			
+
 			findtime = Sys_FileTime (netpath);
 			if (findtime == -1)
 				continue;
-				
-			/* Sys_Printf ("FindFile: %s\n",netpath); */
 
 			*file = fopen (netpath, "rb");
 			return COM_filelength (*file);
 		}
-		
 	}
-	
+
 	Sys_Printf ("FindFile: can't find %s\n", filename);
-	
+
 	*file = NULL;
 	com_filesize = -1;
 	return -1;
@@ -1238,10 +1249,10 @@ byte *COM_LoadFile (char *path, int usehunk)
 	len = com_filesize = COM_FOpenFile (path, &h, false);
 	if (!h)
 		return NULL;
-	
+
 // extract the filename base name for hunk tag
 	COM_FileBase (path, base);
-	
+
 	if (usehunk == 1)
 		buf = Hunk_AllocName (len+1, base);
 	else if (usehunk == 2)
@@ -1262,7 +1273,7 @@ byte *COM_LoadFile (char *path, int usehunk)
 
 	if (!buf)
 		Sys_Error ("COM_LoadFile: not enough space for %s", path);
-		
+
 	((byte *)buf)[len] = 0;
 #ifndef SERVERONLY
 	Draw_BeginDisc ();
@@ -1295,11 +1306,11 @@ void COM_LoadCacheFile (char *path, struct cache_user_s *cu)
 byte *COM_LoadStackFile (char *path, void *buffer, int bufsize)
 {
 	byte	*buf;
-	
+
 	loadbuf = (byte *)buffer;
 	loadsize = bufsize;
 	buf = COM_LoadFile (path, 4);
-	
+
 	return buf;
 }
 
@@ -1313,7 +1324,7 @@ Loads the header and directory, adding the files at the beginning
 of the list so they override previous pack files.
 =================
 */
-pack_t *COM_LoadPackFile (char *packfile)
+pack_t *COM_LoadPackFile (char *packfile, int paknum)
 {
 	dpackheader_t	header;
 	int				i;
@@ -1328,9 +1339,10 @@ pack_t *COM_LoadPackFile (char *packfile)
 		return NULL;
 
 	fread (&header, 1, sizeof(header), packhandle);
-	if (header.id[0] != 'P' || header.id[1] != 'A'
-	|| header.id[2] != 'C' || header.id[3] != 'K')
+	if (header.id[0] != 'P' || header.id[1] != 'A' ||
+	    header.id[2] != 'C' || header.id[3] != 'K')
 		Sys_Error ("%s is not a packfile", packfile);
+
 	header.dirofs = LittleLong (header.dirofs);
 	header.dirlen = LittleLong (header.dirlen);
 
@@ -1339,26 +1351,39 @@ pack_t *COM_LoadPackFile (char *packfile)
 	if (numpackfiles > MAX_FILES_IN_PACK)
 		Sys_Error ("%s has %i files", packfile, numpackfiles);
 
-	if (numpackfiles != PAK0_COUNT && numpackfiles != PAK2_COUNT && 
-		numpackfiles != PAK3_COUNT && numpackfiles != PAK4_COUNT)
-		com_modified = true;    // not the original file
-
 	newfiles = Z_Malloc (numpackfiles * sizeof(packfile_t));
 
 	fseek (packhandle, header.dirofs, SEEK_SET);
 	fread (&info, 1, header.dirlen, packhandle);
 
-// crc the directory to check for modifications
+// crc the directory
 	CRC_Init (&crc);
 	for (i=0 ; i<header.dirlen ; i++)
 		CRC_ProcessByte (&crc, ((byte *)info)[i]);
-	if (crc != PAK0_CRC && crc != PAK2_CRC && 
-		crc != PAK3_CRC && crc != PAK4_CRC)
-		com_modified = true;
 
-	if (numpackfiles == PAK3_COUNT && crc == PAK3_CRC)
-	{
-		com_portals = true;
+// check for modifications
+	if (paknum <= MAX_PAKDATA-2) {
+		if (strcmp(gamedirfile, dirdata[paknum]) != 0) {
+			com_modified = true;    // raven didnt ship like that
+		} else if (numpackfiles != pakdata[paknum][0]) {
+			if (paknum == 0) { // demo ??
+				if (numpackfiles != pakdata[MAX_PAKDATA-1][0]) {
+					com_modified = true;    // not original
+				} else if (crc != pakdata[MAX_PAKDATA-1][1]) {
+					com_modified = true;    // not original
+				}
+				// both crc and numfiles matched the demo
+			} else {
+				com_modified = true;    // not original
+			}
+		} else if (crc != pakdata[paknum][1]) {
+			com_modified = true;    // not original
+		} else if (paknum == 3) {
+			com_portals = true;
+		}
+		// both crc and numfiles are good, we are still original
+	} else {
+		com_modified = true;
 	}
 
 // parse the directory
@@ -1374,7 +1399,7 @@ pack_t *COM_LoadPackFile (char *packfile)
 	pack->handle = packhandle;
 	pack->numfiles = numpackfiles;
 	pack->files = newfiles;
-	
+
 	Con_Printf ("Added packfile %s (%i files)\n", packfile, numpackfiles);
 	return pack;
 }
@@ -1391,7 +1416,7 @@ then loads and adds pak1.pak pak2.pak ...
 void COM_AddGameDirectory (char *dir)
 {
 	int				i;
-	searchpath_t	*search;
+	searchpath_t		*search;
 	pack_t			*pak;
 	char			pakfile[MAX_OSPATH];
 	char			*p;
@@ -1416,7 +1441,7 @@ void COM_AddGameDirectory (char *dir)
 	for (i=0 ; i<10 ; i++)
 	{
 		sprintf (pakfile, "%s/pak%i.pak", dir, i);
-		pak = COM_LoadPackFile (pakfile);
+		pak = COM_LoadPackFile (pakfile, i);
 		if (!pak)
 			continue;
 		if (i == 2)
@@ -1437,7 +1462,6 @@ void COM_AddGameDirectory (char *dir)
 	search->next = com_searchpaths;
 	com_searchpaths = search;
 #endif
-
 }
 
 /*
@@ -1505,7 +1529,7 @@ void COM_Gamedir (char *dir)
 	for (i=0 ; i<10 ; i++)
 	{
 		sprintf (pakfile, "%s/pak%i.pak", com_gamedir, i);
-		pak = COM_LoadPackFile (pakfile);
+		pak = COM_LoadPackFile (pakfile, i);
 		if (!pak)
 			continue;
 		search = Z_Malloc (sizeof(searchpath_t));
@@ -1547,6 +1571,9 @@ void COM_InitFilesystem (void)
 	Sys_mkdir (com_userdir);
 	COM_AddGameDirectory (va("%s/hw", com_basedir));
 
+// -game <gamedir>
+// Adds basedir/gamedir as an override game
+//
 	i = COM_CheckParm ("-game");
 	if (i && i < com_argc-1)
 	{

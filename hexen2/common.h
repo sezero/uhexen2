@@ -15,9 +15,9 @@ typedef struct sizebuf_s
 	qboolean	allowoverflow;	// if false, do a Sys_Error
 	qboolean	overflowed;		// set to true if the buffer size failed
 	byte		*data;
-	int			maxsize;
-	int			cursize;
-	int			effectsize;
+	int		maxsize;
+	int		cursize;
+	int		effectsize;
 	qboolean	effectdata;
 } sizebuf_t;
 
@@ -167,8 +167,8 @@ extern	char	com_userdir[MAX_OSPATH];
 void COM_WriteFile (char *filename, void *data, int len);
 int COM_OpenFile (char *filename, int *hndl);
 int COM_FOpenFile (char *filename, FILE **file, qboolean override_pack);
-void COM_CloseFile (int h);
 void COM_CopyFile (char *netpath, char *cachepath);
+void COM_CloseFile (int h);
 
 byte *COM_LoadStackFile (char *path, void *buffer, int bufsize);
 byte *COM_LoadTempFile (char *path);
