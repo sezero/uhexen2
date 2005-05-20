@@ -2,46 +2,14 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.11 2005-05-20 17:31:01 sezero Exp $
+	$Id: glquake.h,v 1.12 2005-05-20 18:15:29 sezero Exp $
 */
 
 
-#ifndef PLATFORM_UNIX
-// disable data conversion warnings
-#pragma warning(disable : 4244)     // MIPS
-#pragma warning(disable : 4136)     // X86
-#pragma warning(disable : 4051)     // ALPHA
-  
-#include <windows.h>
-
-#include <gl\gl.h>
-#include <gl\glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include "gl_func.h"
-#endif
-
-void GL_BeginRendering (int *x, int *y, int *width, int *height);
-void GL_EndRendering (void);
-
-// Function prototypes for the Texture Object Extension routines
 #ifdef _WIN32
-typedef GLboolean (APIENTRY *ARETEXRESFUNCPTR)(GLsizei, const GLuint *,
-		   const GLboolean *);
-typedef void (APIENTRY *BINDTEXFUNCPTR)(GLenum, GLuint);
-typedef void (APIENTRY *DELTEXFUNCPTR)(GLsizei, const GLuint *);
-typedef void (APIENTRY *GENTEXFUNCPTR)(GLsizei, GLuint *);
-typedef GLboolean (APIENTRY *ISTEXFUNCPTR)(GLuint);
-typedef void (APIENTRY *PRIORTEXFUNCPTR)(GLsizei, const GLuint *,
-	      const GLclampf *);
-typedef void (APIENTRY *TEXSUBIMAGEPTR)(int, int, int, int, int, int, int, int, void *);
-
-extern	BINDTEXFUNCPTR bindTexFunc;
-extern	DELTEXFUNCPTR delTexFunc;
-extern	TEXSUBIMAGEPTR TexSubImage2DFunc;
+#include "glwin32.h"
 #else
-#define	bindTexFunc(a, b) glfunc.glBindTexture_fp((a), (b))
+#include "glxunix.h"
 #endif
 
 #define GL_Bind(texnum) {\
@@ -50,6 +18,9 @@ extern	TEXSUBIMAGEPTR TexSubImage2DFunc;
 		bindTexFunc(GL_TEXTURE_2D, currenttexture);\
 	}\
 }
+
+void GL_BeginRendering (int *x, int *y, int *width, int *height);
+void GL_EndRendering (void);
 
 extern	int texture_extension_number;
 

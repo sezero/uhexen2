@@ -2,52 +2,14 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.22 2005-05-20 17:30:57 sezero Exp $
+	$Id: glquake.h,v 1.23 2005-05-20 18:15:22 sezero Exp $
 */
 
 
-#ifndef PLATFORM_UNIX
-// disable data conversion warnings
-#pragma warning(disable : 4244)     // MIPS
-#pragma warning(disable : 4136)     // X86
-#pragma warning(disable : 4051)     // ALPHA
-  
-#include <windows.h>
-
-#include <gl\gl.h>
-#include <gl\glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include "gl_func.h"
-#endif
-
-void GL_BeginRendering (int *x, int *y, int *width, int *height);
-void GL_EndRendering (void);
-
-// Function prototypes for the Texture Object Extension routines
 #ifdef _WIN32
-typedef GLboolean (APIENTRY *ARETEXRESFUNCPTR)(GLsizei, const GLuint *,
-		   const GLboolean *);
-typedef void (APIENTRY *BINDTEXFUNCPTR)(GLenum, GLuint);
-typedef void (APIENTRY *DELTEXFUNCPTR)(GLsizei, const GLuint *);
-typedef void (APIENTRY *GENTEXFUNCPTR)(GLsizei, GLuint *);
-typedef GLboolean (APIENTRY *ISTEXFUNCPTR)(GLuint);
-typedef void (APIENTRY *PRIORTEXFUNCPTR)(GLsizei, const GLuint *,
-	      const GLclampf *);
-typedef void (APIENTRY *TEXSUBIMAGEPTR)(int, int, int, int, int, int, int, int, void *);
-typedef int  (APIENTRY *FX_DISPLAY_MODE_EXT)(int);
-typedef void (APIENTRY *FX_SET_PALETTE_EXT)( unsigned long * );
-typedef void (APIENTRY *FX_MARK_PAL_TEXTURE_EXT)( void );
-
-extern	BINDTEXFUNCPTR bindTexFunc;
-extern	DELTEXFUNCPTR delTexFunc;
-extern	TEXSUBIMAGEPTR TexSubImage2DFunc;
-extern  FX_DISPLAY_MODE_EXT fxDisplayModeExtension;
-extern  FX_SET_PALETTE_EXT fxSetPaletteExtension;
-extern  FX_MARK_PAL_TEXTURE_EXT fxMarkPalTextureExtension;
+#include "glwin32.h"
 #else
-#define	bindTexFunc(a, b) glfunc.glBindTexture_fp((a), (b))
+#include "glxunix.h"
 #endif
 
 #define GL_Bind(texnum) {\
@@ -62,6 +24,9 @@ extern  FX_MARK_PAL_TEXTURE_EXT fxMarkPalTextureExtension;
 #define INVERSE_PAL_B_BITS 6
 #define INVERSE_PAL_TOTAL_BITS \
 	( INVERSE_PAL_R_BITS + INVERSE_PAL_G_BITS + INVERSE_PAL_B_BITS )
+
+void GL_BeginRendering (int *x, int *y, int *width, int *height);
+void GL_EndRendering (void);
 
 extern unsigned char inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
 
@@ -347,6 +312,9 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2005/05/20 17:30:57  sezero
+ * initial slight gl syncing-2 (kill unused c_sky_polys)
+ *
  * Revision 1.21  2005/05/20 17:05:55  sezero
  * initial slight gl syncing
  *
