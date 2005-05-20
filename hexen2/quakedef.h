@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.26 2005-05-19 16:41:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.27 2005-05-20 12:28:13 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -36,8 +36,6 @@
 #define HEXEN2_VERSION		1.12
 
 //define	PARANOID	// speed sapping error checking
-
-#define	GAMENAME	"data1"	// directory to look in by default
 
 #ifndef DEMOBUILD
 #define AOT_USERDIR ".hexen2"
@@ -442,6 +440,9 @@ void IN_DeactivateMouseSA (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2005/05/19 16:41:50  sezero
+ * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
+ *
  * Revision 1.25  2005/05/19 16:35:51  sezero
  * removed all unused IDGODS code
  *

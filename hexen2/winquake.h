@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/winquake.h,v 1.4 2004-12-18 13:44:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/winquake.h,v 1.5 2005-05-20 12:29:37 sezero Exp $
 */
 
 #if defined _WIN32
@@ -60,7 +60,6 @@ extern HWND			mainwindow;
 extern qboolean		ActiveApp, Minimized;
 
 extern qboolean	Win32AtLeastV4, WinNT;
-extern qboolean	LegitCopy;
 
 int VID_ForceUnlockedAndReturnState (void);
 void VID_ForceLockState (int lk);
@@ -115,6 +114,10 @@ int (PASCAL FAR *pgetsockname)(SOCKET s, struct sockaddr FAR *name,
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/18 13:44:12  sezero
+ * Clean-up and kill warnings 1:
+ * Kill two pragmas that are ignored anyway.
+ *
  * Revision 1.3  2004/12/12 14:14:43  sezero
  * style changes to our liking
  *

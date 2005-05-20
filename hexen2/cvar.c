@@ -138,9 +138,6 @@ void Cvar_RegisterVariable (cvar_t *variable)
 {
 	char	*oldstr;
 
-//	if (!LegitCopy)
-//		return;
-
 // first check to see if it has allready been defined
 	if (Cvar_FindVar (variable->name))
 	{

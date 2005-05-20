@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.15 2005-04-30 08:30:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.16 2005-05-20 12:29:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -282,8 +282,6 @@ void Host_InitLocal (void)
 	host_time = 1.0;		// so a think at time 0 won't get called
 }
 
-extern qboolean	LegitCopy;
-
 /*
 ===============
 Host_WriteConfiguration
@@ -294,9 +292,6 @@ Writes key bindings and archived cvars to config.cfg
 void Host_WriteConfiguration (char *fname)
 {
 	FILE	*f;
-
-	if (!LegitCopy)
-		return;
 
 // dedicated servers initialize the host but don't parse and set the
 // config.cfg cvars
@@ -1104,6 +1099,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/04/30 08:30:09  sezero
+ * changed message datatypes to byte in SV_SendReconnect() and Host_ShutdownServer()
+ *
  * Revision 1.14  2005/04/30 07:44:35  sezero
  * Always set the MESA_GLX_FX FX_DONT_FAKE_MULTITEX environment variables
  *
