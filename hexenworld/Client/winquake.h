@@ -6,7 +6,6 @@
 
 #ifndef PLATFORM_UNIX
 #include <windows.h>
-#define WM_MOUSEWHEEL                   0x020A
 
 #ifndef SERVERONLY
 #include <ddraw.h>
@@ -19,6 +18,7 @@
 extern	HINSTANCE	global_hInstance;
 extern	int			global_nCmdShow;
 
+#define	WM_MOUSEWHEEL		0x020A
 UINT	uMSG_MOUSEWHEEL;
 #else
 #include "linux_inc.h"
