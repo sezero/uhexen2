@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_rmain.c,v 1.18 2005-05-17 22:56:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_rmain.c,v 1.19 2005-05-20 17:30:57 sezero Exp $
 */
 
 
@@ -19,7 +19,7 @@ int			r_framecount;		// used for dlight push checking
 
 mplane_t	frustum[4];
 
-int			c_brush_polys, c_alias_polys, c_sky_polys;
+int			c_brush_polys, c_alias_polys;
 
 qboolean	envmap;				// true during envmap command capture 
 int			currenttexture;		// to avoid unnecessary texture sets
@@ -1461,7 +1461,8 @@ void R_SetupFrame (void)
 
 	r_cache_thrash = false;
 
-	c_brush_polys = c_alias_polys = c_sky_polys = 0;
+	c_brush_polys = 0;
+	c_alias_polys = 0;
 
 }
 
@@ -1750,8 +1751,8 @@ void R_PrintTimes(void)
 	ms = 1000*(r_time2-r_time1);
 	fps = 1000/ms;
 
-	Con_Printf("%3.1f fps %5.0f ms\n%4i wpoly  %4i epoly %4i spoly\n",
-		fps, ms, c_brush_polys, c_alias_polys, c_sky_polys);
+	Con_Printf("%3.1f fps %5.0f ms\n%4i wpoly  %4i epoly\n",
+		fps, ms, c_brush_polys, c_alias_polys);
 }
 
 /*
@@ -1812,6 +1813,11 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/05/17 22:56:19  sezero
+ * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
+ * Q_strXcasecmp will now be used throughout the code which are implementation
+ * dependant defines for __GNUC__ (strXcasecmp) and _WIN32 (strXicmp)
+ *
  * Revision 1.17  2005/05/07 08:07:47  sezero
  * Back-out my silly mistake of removing light_level code in R_DrawViewModel
  *

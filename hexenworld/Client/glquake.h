@@ -1,6 +1,13 @@
-// disable data conversion warnings
+/*
+	glquake.h
+	common glquake header
+
+	$Id: glquake.h,v 1.11 2005-05-20 17:31:01 sezero Exp $
+*/
+
 
 #ifndef PLATFORM_UNIX
+// disable data conversion warnings
 #pragma warning(disable : 4244)     // MIPS
 #pragma warning(disable : 4136)     // X86
 #pragma warning(disable : 4051)     // ALPHA

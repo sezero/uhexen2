@@ -1,10 +1,13 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/glquake.h,v 1.21 2005-05-20 17:05:55 sezero Exp $
- */
+	glquake.h
+	common glquake header
 
-// disable data conversion warnings
+	$Id: glquake.h,v 1.22 2005-05-20 17:30:57 sezero Exp $
+*/
+
 
 #ifndef PLATFORM_UNIX
+// disable data conversion warnings
 #pragma warning(disable : 4244)     // MIPS
 #pragma warning(disable : 4136)     // X86
 #pragma warning(disable : 4051)     // ALPHA
@@ -260,7 +263,8 @@ extern	entity_t	*currententity;
 extern	int		r_visframecount;	// ??? what difs?
 extern	int		r_framecount;
 extern	mplane_t	frustum[4];
-extern	int		c_brush_polys, c_alias_polys, c_sky_polys;
+extern	int		c_brush_polys, c_alias_polys;
+
 
 //
 // view origin
@@ -343,6 +347,9 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2005/05/20 17:05:55  sezero
+ * initial slight gl syncing
+ *
  * Revision 1.20  2005/05/20 16:17:50  sezero
  * keep ID style in declerations (less diff between h2/h2w...)
  *
