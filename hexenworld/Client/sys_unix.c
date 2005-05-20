@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.17 2005-05-20 12:29:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.18 2005-05-20 12:34:46 sezero Exp $
 */
 
 #include <stdio.h>
@@ -23,12 +23,8 @@
 										//  dedicated before exiting
 #define MAXPRINTMSG		4096
 
-qboolean	ActiveApp, Minimized;
-qboolean	Win32AtLeastV4, WinNT;
-
 static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
-//static char	*tracking_tag = "Sticky Buns";
 
 void MaskExceptions (void);
 void Sys_InitFloatTime (void);
@@ -513,6 +509,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/05/20 12:29:37  sezero
+ * leftovers after common.c sync-1
+ *
  * Revision 1.16  2005/04/30 08:34:56  sezero
  * removed pointless global decleration of starttime in sys_unix.c which
  * kills a shadowed decleration warning, as well.
