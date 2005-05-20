@@ -1,9 +1,9 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.18 2005-05-17 22:56:26 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.19 2005-05-20 15:26:34 sezero Exp $
  */
 
 #include "quakedef.h"
-#include "winquake.h"
+#include "quakeinc.h"
 
 static void ReInitMusic(void);
 extern void MIDI_UpdateVolume(void);

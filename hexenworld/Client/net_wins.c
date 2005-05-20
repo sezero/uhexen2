@@ -29,7 +29,7 @@
 #endif
 
 #include "quakedef.h"
-#include "winquake.h"
+#include "quakeinc.h"
 
 int LastCompMessageSize = 0;
 

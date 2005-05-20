@@ -1,5 +1,5 @@
 #include "quakedef.h"
-#include "winquake.h"
+#include "quakeinc.h"
 
 #define iDirectSoundCreate(a,b,c)	pDirectSoundCreate(a,b,c)
 

@@ -2,7 +2,7 @@
 // 02/21/97 JCB Added extended DirectInput code to support external controllers.
 
 #include "quakedef.h"
-#include "winquake.h"
+#include "quakeinc.h"
 #include "dosisms.h"
 
 // mouse variables
@@ -952,6 +952,9 @@ void IN_JoyMove (usercmd_t *cmd)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2004/12/12 11:20:08  sezero
+ * move the windows specific stuff from our main dir into the win_stuff dir.
+ *
  * 3     3/01/98 8:20p Jmonroe
  * removed the slow "quake" version of common functions
  * 

@@ -1,11 +1,11 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.30 2005-05-17 22:56:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.31 2005-05-20 15:26:33 sezero Exp $
 */
 
 #include "quakedef.h"
-#include "winquake.h"
+#include "quakeinc.h"
 
 #ifdef GLQUAKE
 extern  cvar_t  r_shadows, gl_glows, gl_missile_glows, gl_other_glows; // S.A
@@ -4659,6 +4659,11 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2005/05/17 22:56:19  sezero
+ * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
+ * Q_strXcasecmp will now be used throughout the code which are implementation
+ * dependant defines for __GNUC__ (strXcasecmp) and _WIN32 (strXicmp)
+ *
  * Revision 1.29  2005/05/17 06:48:54  sezero
  * initial cosmetic cleanup in menu.c
  *

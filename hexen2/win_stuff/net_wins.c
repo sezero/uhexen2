@@ -1,7 +1,7 @@
 // net_wins.c
 
 #include "quakedef.h"
-#include "winquake.h"
+#include "quakeinc.h"
 
 extern cvar_t hostname;
 

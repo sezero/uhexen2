@@ -78,10 +78,13 @@ void VID_ApplyGamma (void);
 // really applies gamma correction after the v_gamma variable is changed
 
 
-void VID_SetDefaultMode (void);
 void VID_ForceLockState (int lk);
-int  VID_ForceUnlockedAndReturnState (void);
+int VID_ForceUnlockedAndReturnState (void);
+void VID_SetDefaultMode (void);
 void ToggleFullScreenSA (void);	// from Steven
 void D_ShowLoadingSize(void);	// was a missing prototype. this seems to
 				// be its best place.  O.S.
+
+void VID_LockBuffer (void);
+void VID_UnlockBuffer (void);
 

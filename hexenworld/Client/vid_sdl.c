@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.15 2005-05-17 06:39:42 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/vid_sdl.c,v 1.16 2005-05-20 15:26:34 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -31,7 +31,7 @@
 */
 
 #include "quakedef.h"
-#include "winquake.h"
+#include "quakeinc.h"
 #include "d_local.h"
 #include "SDL.h"
 
@@ -892,6 +892,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/05/17 06:39:42  sezero
+ * removed unused backingbuf (was a windows leftover)
+ *
  * Revision 1.14  2005/04/30 09:59:19  sezero
  * Many things in gl_vidsdl.c, and *especially in vid_sdl.c, are there
  * for the dynamic video mode swithching which we removed a long time

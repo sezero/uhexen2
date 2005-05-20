@@ -1,5 +1,5 @@
 #include "quakedef.h"
-#include "winquake.h"
+#include "quakeinc.h"
 
 cvar_t	cl_nopred = {"cl_nopred","0"};
 cvar_t	cl_pushlatency = {"pushlatency","-50", true};

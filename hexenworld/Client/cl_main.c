@@ -1,7 +1,7 @@
 // cl_main.c  -- client main loop
 
 #include "quakedef.h"
-#include "winquake.h"
+#include "quakeinc.h"
 #ifdef _WIN32
 #include "winsock.h"
 #endif

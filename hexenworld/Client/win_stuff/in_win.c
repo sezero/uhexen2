@@ -3,7 +3,7 @@
 
 #include <dinput.h>
 #include "quakedef.h"
-#include "winquake.h"
+#include "quakeinc.h"
 //#include "dosisms.h"
 
 #define DINPUT_BUFFERSIZE           16

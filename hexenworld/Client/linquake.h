@@ -1,76 +1,25 @@
 /*
-	winquake.h
-	Win32-specific Quake header file
+	linquake.h
+	Unix-specific Quake header file
 
-	$Id: winquake.h,v 1.6 2005-05-20 15:26:34 sezero Exp $
+	$Id: linquake.h,v 1.1 2005-05-20 15:27:37 sezero Exp $
 */
 
-#pragma warning( disable : 4229 )  // mgraph gets this
-
-#include <windows.h>
-
-#ifndef SERVERONLY
-#include <ddraw.h>
-#include <dsound.h>
-#ifndef GLQUAKE
-#include <mgraph.h>
-#endif
-#endif
-
-extern	HINSTANCE	global_hInstance;
-extern	int			global_nCmdShow;
-
-#define	WM_MOUSEWHEEL		0x020A
-UINT	uMSG_MOUSEWHEEL;
-
-#ifndef SERVERONLY
-extern LPDIRECTDRAW		lpDD;
-extern qboolean			DDActive;
-extern LPDIRECTDRAWSURFACE	lpPrimary;
-extern LPDIRECTDRAWSURFACE	lpFrontBuffer;
-extern LPDIRECTDRAWSURFACE	lpBackBuffer;
-extern LPDIRECTDRAWPALETTE	lpDDPal;
-extern LPDIRECTSOUND pDS;
-extern LPDIRECTSOUNDBUFFER pDSBuf;
-
-extern DWORD gSndBufSize;
-//#define SNDBUFSIZE 65536
-#endif
+#include "linux_inc.h"
 
 typedef enum {MS_WINDOWED, MS_FULLSCREEN, MS_FULLDIB, MS_UNINIT} modestate_t;
 
 extern modestate_t	modestate;
 
-extern HWND			mainwindow;
-extern qboolean		ActiveApp, Minimized;
-
-extern qboolean	WinNT;
-
 void IN_ShowMouse (void);
 void IN_DeactivateMouse (void);
 void IN_HideMouse (void);
 void IN_ActivateMouse (void);
-void IN_RestoreOriginalMouseState (void);
-void IN_SetQuakeMouseState (void);
 void IN_MouseEvent (int mstate);
-
-extern qboolean	winsock_lib_initialized;
 
 extern cvar_t		_windowed_mouse;
 
-extern int		window_center_x, window_center_y;
-extern RECT		window_rect;
-
 extern qboolean	mouseinitialized;
-extern HWND		hwnd_dialog;
-
-extern HANDLE	hinput, houtput;
-
-void IN_UpdateClipCursor (void);
-void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify);
-
-void S_BlockSound (void);
-void S_UnblockSound (void);
 
 struct sockaddr;
 int (PASCAL FAR *pWSAStartup)(WORD wVersionRequired, LPWSADATA lpWSAData);
@@ -91,3 +40,30 @@ struct hostent FAR * (PASCAL FAR *pgethostbyaddr)(const char FAR * addr,
 												  int len, int type);
 int (PASCAL FAR *pgetsockname)(SOCKET s, struct sockaddr FAR *name,
 							   int FAR * namelen);
+
+/*
+ * $Log: not supported by cvs2svn $
+ *
+ * 2005/05/20 12:29:37  sezero
+ * leftovers after common.c sync-1
+ *
+ * 2004/12/18 13:44:12  sezero
+ * Clean-up and kill warnings 1:
+ * Kill two pragmas that are ignored anyway.
+ *
+ * 2004/12/04 19:51:43  sezero
+ * Kill more warnings (add a forward declaration of
+ * struct sockaddr in winquake.h)
+ *
+ * 2004/11/28 00:08:26  sezero
+ * Initial import of AoT 1.2.0 code
+ *
+ * 2001/12/02 04:59:43  theoddone33
+ * Fix nvidia extention problem and a whole bunch of other stuff too apparently
+ *
+ * 5     7/17/97 2:00p Rjohnson
+ * Added a security means to control the running of the game
+ * 
+ * 4     3/07/97 2:34p Rjohnson
+ * Id Updates
+ */

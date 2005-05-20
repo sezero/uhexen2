@@ -31,7 +31,7 @@
 */
 
 #include "quakedef.h"
-#include "winquake.h"
+#include "quakeinc.h"
 
 #include "SDL.h"
 #include <dlfcn.h>

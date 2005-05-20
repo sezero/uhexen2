@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.48 2005-05-05 16:29:03 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.49 2005-05-20 15:26:33 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -31,7 +31,7 @@
 */
 
 #include "quakedef.h"
-#include "winquake.h"
+#include "quakeinc.h"
 
 #include "SDL.h"
 #include <dlfcn.h>

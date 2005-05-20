@@ -1,7 +1,7 @@
 // sys_win.h
 
 #include "quakedef.h"
-#include "winquake.h"
+#include "quakeinc.h"
 #include "resource.h"
 #include "errno.h"
 #include "fcntl.h"

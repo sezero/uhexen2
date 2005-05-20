@@ -6,8 +6,8 @@
 
 #include "quakedef.h"
 
-#ifdef _WIN32
-#include "winquake.h"
+#ifndef PLATFORM_UNIX
+#include "quakeinc.h"
 #else
 #undef  DWORD
 #define DWORD	unsigned long

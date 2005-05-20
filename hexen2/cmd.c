@@ -2,11 +2,11 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.4 2005-05-20 12:29:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.5 2005-05-20 15:26:33 sezero Exp $
 */
 
 #include "quakedef.h"
-#include "winquake.h"
+#include "quakeinc.h"
 
 void Cmd_ForwardToServer (void);
 void ListCommands (char *prefix);
@@ -739,6 +739,9 @@ void ListCommands (char *prefix)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/05/20 12:29:37  sezero
+ * leftovers after common.c sync-1
+ *
  * Revision 1.3  2004/12/18 14:08:07  sezero
  * Clean-up and kill warnings 9:
  * Kill many unused vars.

@@ -1,7 +1,7 @@
 // vid_win.c -- Win32 video driver
 
 #include "quakedef.h"
-#include "winquake.h"
+#include "quakeinc.h"
 #include "d_local.h"
 #include "resource.h"
 
@@ -3208,6 +3208,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/05/17 06:44:08  sezero
+ * restored some win32 files to their original state
+ *
  * 
  * 4     4/01/98 6:43p Jmonroe
  * fixed boundschecker errors

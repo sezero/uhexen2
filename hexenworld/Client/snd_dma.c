@@ -2,13 +2,13 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.17 2005-05-19 10:58:02 sezero Exp $
+	$Id: snd_dma.c,v 1.18 2005-05-20 15:26:34 sezero Exp $
 */
 
 #include "quakedef.h"
 
-#ifdef _WIN32
-#include "winquake.h"
+#ifndef PLATFORM_UNIX
+#include "quakeinc.h"
 #endif
 
 void S_Play(void);
@@ -1095,6 +1095,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/05/19 10:58:02  sezero
+ * synced h2 and hw versions of snd_dma.c (use the new H2W define)
+ *
  * Revision 1.16  2005/04/30 08:39:09  sezero
  * silenced shadowed decleration warnings about volume (now sfxvolume)
  *

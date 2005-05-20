@@ -2,7 +2,7 @@
 
 #include "quakedef.h"
 #include <windows.h>
-#include "winquake.h"
+#include "quakeinc.h"
 #include "errno.h"
 #include "resource.h"
 
@@ -886,6 +886,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/05/20 12:29:37  sezero
+ * leftovers after common.c sync-1
+ *
  * Revision 1.3  2005/05/17 17:40:01  sezero
  * (Re-)added the parms.userdir to all sys_win.c. The platform conditionals
  * around some of the com_userdir code of late are now unnecessary.

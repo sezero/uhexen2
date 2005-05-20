@@ -1,7 +1,7 @@
 // gl_vidnt.c -- NT GL vid component
 
 #include "quakedef.h"
-#include "winquake.h"
+#include "quakeinc.h"
 #include "resource.h"
 #include <commctrl.h>
 
