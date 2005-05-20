@@ -48,8 +48,9 @@ extern	int texture_extension_number;
 
 extern	float	gldepthmin, gldepthmax;
 
-#define MAX_EXTRA_TEXTURES 156   // 255-100+1
-extern int			gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for models
+#define MAX_GLTEXTURES		2048
+#define MAX_EXTRA_TEXTURES	156   // 255-100+1
+extern	int	gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for models
 
 void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite);
 void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode);
@@ -86,27 +87,26 @@ int M_DrawBigCharacter (int x, int y, int num, int numNext);
 
 typedef struct
 {
-	float	x, y, z;
-	float	s, t;
-	float	r, g, b;
-} glvert_t;
-
-extern glvert_t glv;
-
-typedef struct
-{
 	int		texnum;
 	float	sl, tl, sh, th;
 } glpic_t;
 
-extern	int glx, gly, glwidth, glheight;
+typedef struct cachepic_s
+{
+	char		name[MAX_QPATH];
+	qpic_t		pic;
+	byte		padding[32];	// for appended glpic
+} cachepic_t;
 
-#ifdef _WIN32
-extern	PROC glArrayElementEXT;
-extern	PROC glColorPointerEXT;
-extern	PROC glTexturePointerEXT;
-extern	PROC glVertexPointerEXT;
-#endif
+typedef struct
+{
+	unsigned int	texnum;
+	char	identifier[64];
+	int		width, height;
+	qboolean	mipmap;
+} gltexture_t;
+
+extern	int glx, gly, glwidth, glheight;
 
 
 // r_local.h -- private refresh defs
@@ -216,7 +216,7 @@ typedef enum
 	rt_bloodshot
 } rt_type_t;
 
-// !!! if this is changed, it must be changed in d_ifacea.h too !!!
+// !!! if this is changed, it must be changed in d_iface.h too !!!
 typedef struct particle_s
 {
 // driver-usable fields
@@ -320,10 +320,11 @@ void R_TranslatePlayerSkin (int playernum);
 
 extern	glfunc_t glfunc;
 
+byte *playerTranslation;
+
 // Multitexture
 extern qboolean gl_mtexable;
 
 void GL_DisableMultitexture(void);
 void GL_EnableMultitexture(void);
 
-byte *playerTranslation;

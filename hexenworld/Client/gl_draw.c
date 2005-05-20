@@ -56,15 +56,6 @@ int		texels;
 
 qboolean is_3dfx = false;
 
-typedef struct
-{
-	unsigned int	texnum;
-	char	identifier[64];
-	int		width, height;
-	qboolean	mipmap;
-} gltexture_t;
-
-#define	MAX_GLTEXTURES	2048
 gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
 
@@ -143,13 +134,6 @@ void Scrap_Upload (void)
 
 //=============================================================================
 /* Support Routines */
-
-typedef struct cachepic_s
-{
-	char		name[MAX_QPATH];
-	qpic_t		pic;
-	byte		padding[32];	// for appended glpic
-} cachepic_t;
 
 #define	MAX_CACHED_PICS		256
 cachepic_t	menu_cachepics[MAX_CACHED_PICS];

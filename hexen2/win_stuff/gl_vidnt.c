@@ -88,8 +88,6 @@ float RTint[256],GTint[256],BTint[256];
 HGLRC	baseRC;
 HDC		maindc;
 
-glvert_t glv;
-
 cvar_t	gl_ztrick = {"gl_ztrick","0",true};
 
 HWND WINAPI InitializeWindow (HINSTANCE hInstance, int nCmdShow);
@@ -114,10 +112,6 @@ void ClearAllStates (void);
 void VID_UpdateWindowStatus (void);
 void GL_Init (void);
 
-PROC glArrayElementEXT;
-PROC glColorPointerEXT;
-PROC glTexCoordPointerEXT;
-PROC glVertexPointerEXT;
 
 //====================================
 
@@ -617,32 +611,6 @@ void CheckTextureExtensions (void)
 	}
 }
 
-void CheckArrayExtensions (void)
-{
-	char		*tmp;
-
-	/* check for texture extension */
-	tmp = (unsigned char *)glGetString(GL_EXTENSIONS);
-	while (*tmp)
-	{
-		if (strncmp((const char*)tmp, "GL_EXT_vertex_array", strlen("GL_EXT_vertex_array")) == 0)
-		{
-			if (
-((glArrayElementEXT = wglGetProcAddress("glArrayElementEXT")) == NULL) ||
-((glColorPointerEXT = wglGetProcAddress("glColorPointerEXT")) == NULL) ||
-((glTexCoordPointerEXT = wglGetProcAddress("glTexCoordPointerEXT")) == NULL) ||
-((glVertexPointerEXT = wglGetProcAddress("glVertexPointerEXT")) == NULL) )
-			{
-				Sys_Error ("GetProcAddress for vertex extension failed");
-				return;
-			}
-			return;
-		}
-		tmp++;
-	}
-
-	Sys_Error ("Vertex array extension not present");
-}
 
 //int		texture_mode = GL_NEAREST;
 //int		texture_mode = GL_NEAREST_MIPMAP_NEAREST;
@@ -709,16 +677,6 @@ void GL_Init (void)
 
 //	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-#if 0
-	CheckArrayExtensions ();
-
-	glEnable (GL_VERTEX_ARRAY_EXT);
-	glEnable (GL_TEXTURE_COORD_ARRAY_EXT);
-	glVertexPointerEXT (3, GL_FLOAT, 0, 0, &glv.x);
-	glTexCoordPointerEXT (2, GL_FLOAT, 0, 0, &glv.s);
-	glColorPointerEXT (3, GL_FLOAT, 0, 0, &glv.r);
-#endif
 }
 
 
