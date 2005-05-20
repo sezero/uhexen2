@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.17 2005-05-19 16:47:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.18 2005-05-20 16:17:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -388,6 +388,8 @@ This command causes the client to wait for the signon messages again.
 This is sent just before a server changes levels
 ==================
 */
+extern void R_ClearParticles (void);
+
 void Host_Reconnect_f (void)
 {
 	R_ClearParticles ();	//jfm: for restarts which didn't use to clear parts.
@@ -2331,6 +2333,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/05/19 16:47:18  sezero
+ * killed client->privileged (was only available to IDGODS)
+ *
  * Revision 1.16  2005/05/19 16:41:50  sezero
  * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
  *

@@ -2,7 +2,7 @@
 	refresh.h
 	public interface to refresh functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.5 2005-01-01 21:43:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.6 2005-05-20 16:17:50 sezero Exp $
 */
 
 #define	MAXCLIPPLANES	11
@@ -147,10 +147,11 @@ void D_DeleteSurfaceCache (void);
 void D_InitCaches (void *buffer, int size);
 void R_SetVrect (vrect_t *pvrect, vrect_t *pvrectin, int lineadj);
 
-void R_ClearParticles (void);
-
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/01/01 21:43:47  sezero
+ * prototypes clean-up
+ *
  * Revision 1.4  2004/12/18 14:15:35  sezero
  * Clean-up and kill warnings 10:
  * Remove some already commented-out functions and code fragments.

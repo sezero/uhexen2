@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.11 2005-05-19 16:41:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.12 2005-05-20 16:17:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -234,6 +234,8 @@ Sends a disconnect message to the server
 This is also called on Host_Error, so it shouldn't cause any errors
 =====================
 */
+extern void R_ClearParticles (void);
+
 void CL_Disconnect (void)
 {
 	R_ClearParticles ();	//jfm: need to clear parts because some now check world
@@ -1006,6 +1008,9 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/05/19 16:41:50  sezero
+ * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
+ *
  * Revision 1.10  2005/05/17 22:56:19  sezero
  * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
  * Q_strXcasecmp will now be used throughout the code which are implementation

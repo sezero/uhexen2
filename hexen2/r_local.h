@@ -2,7 +2,7 @@
 	r_local.h
 	private refresh defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_local.h,v 1.3 2005-01-01 21:43:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_local.h,v 1.4 2005-05-20 16:17:50 sezero Exp $
 */
 
 #ifndef GLQUAKE
@@ -239,7 +239,7 @@ qboolean R_AliasCheckBBox (void);
 
 void R_DrawParticles (void);
 void R_InitParticles (void);
-//void R_ClearParticles (void);	// O.S.: better in render.h
+void R_ClearParticles (void);
 void R_ReadPointFile_f (void);
 void R_SurfacePatch (void);
 
@@ -311,6 +311,9 @@ extern int TransCount;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/01/01 21:43:47  sezero
+ * prototypes clean-up
+ *
  * Revision 1.2  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *
