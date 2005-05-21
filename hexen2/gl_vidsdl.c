@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.52 2005-05-21 12:34:01 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.53 2005-05-21 12:55:30 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -122,9 +122,11 @@ void VID_SetGamma_f(void);
 //====================================
 
 // direct draw software compatability stuff
+#ifndef H2W
 void VID_HandlePause (qboolean pause)
 {
 }
+#endif
 
 void VID_ForceLockState (int lk)
 {

@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.18 2005-05-21 09:51:49 sezero Exp $
+   $Id: vid_sdl.c,v 1.19 2005-05-21 12:55:32 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -823,7 +823,7 @@ void VID_SetGamma_f (void)
 }
 
 //==========================================================================
-
+#ifndef H2W
 /*
 ================
 VID_HandlePause
@@ -846,6 +846,7 @@ void VID_HandlePause (qboolean pause)
 		}
 	}
 }
+#endif
 
 #define MAX_COLUMN_SIZE		5
 #define MODE_AREA_HEIGHT	(MAX_COLUMN_SIZE + 6)
@@ -906,6 +907,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/05/21 09:51:49  sezero
+ * more syncing of h2/hw vid_sdl
+ *
  * Revision 1.17  2005/05/21 09:17:23  sezero
  * synced wm caption code
  *
