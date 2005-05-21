@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.21 2005-05-21 09:17:19 sezero Exp $
+   $Id: vid_sdl.c,v 1.22 2005-05-21 09:51:48 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -725,6 +725,8 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 }
 
 
+#ifndef H2W
+// unused in hexenworld
 void D_ShowLoadingSize (void)
 {
 	vrect_t		rect;
@@ -770,6 +772,7 @@ void D_ShowLoadingSize (void)
 
 	vid = save_vid;
 }
+#endif
 
 
 /*
@@ -903,6 +906,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2005/05/21 09:17:19  sezero
+ * synced wm caption code
+ *
  * Revision 1.20  2005/05/21 08:56:11  sezero
  * MINIMUM_MEMORY_LEVELPAK was never used, switched to MINIMUM_MEMORY
  *

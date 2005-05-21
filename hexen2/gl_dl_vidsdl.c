@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_vidsdl.c,v 1.50 2005-05-21 09:17:19 sezero Exp $
+   $Id: gl_dl_vidsdl.c,v 1.51 2005-05-21 09:51:48 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -899,6 +899,8 @@ void VID_MenuKey (int key)
 	}
 }
 
+#ifndef H2W
+//unused in hexenworld
 void D_ShowLoadingSize(void)
 {
 	if (!vid_initialized)
@@ -910,3 +912,4 @@ void D_ShowLoadingSize(void)
 
 	glfunc.glDrawBuffer_fp  (GL_BACK);
 }
+#endif

@@ -71,8 +71,10 @@ int VID_SetMode (int modenum, unsigned char *palette);
 // sets the mode; only used by the Quake engine for resetting to mode 0 (the
 // base mode) on memory allocation failures
 
+#ifndef H2W
 void VID_HandlePause (qboolean pause);
 // called only on Win32, when pause happens, so the mouse can be released
+#endif
 
 void VID_ApplyGamma (void);
 // really applies gamma correction after the v_gamma variable is changed
@@ -82,9 +84,9 @@ void VID_ForceLockState (int lk);
 int VID_ForceUnlockedAndReturnState (void);
 void VID_SetDefaultMode (void);
 void ToggleFullScreenSA (void);	// from Steven
-void D_ShowLoadingSize(void);	// was a missing prototype. this seems to
-				// be its best place.  O.S.
+#ifndef H2W
+void D_ShowLoadingSize(void);
+#endif
 
 void VID_LockBuffer (void);
 void VID_UnlockBuffer (void);
-

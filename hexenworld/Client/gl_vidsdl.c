@@ -2,7 +2,7 @@
    gl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id:
+   $Id: gl_vidsdl.c,v 1.43 2005-05-21 09:51:49 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -936,3 +936,18 @@ void VID_MenuKey (int key)
 		break;
 	}
 }
+
+#ifndef H2W
+//unused in hexenworld
+void D_ShowLoadingSize(void)
+{
+	if (!vid_initialized)
+		return;
+
+	glfunc.glDrawBuffer_fp  (GL_FRONT);
+
+	SCR_DrawLoading();
+
+	glfunc.glDrawBuffer_fp  (GL_BACK);
+}
+#endif
