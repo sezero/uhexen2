@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.17 2005-05-17 06:47:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.18 2005-05-21 16:53:15 sezero Exp $
 */
 
 #include "SDL.h"
@@ -187,27 +187,6 @@ void IN_DeactivateMouseSA (void)
 
 	if (_windowed_mouse.value == 0)
 		IN_ShowMouse ();
-}
-
-
-/*
-===========
-IN_RestoreOriginalMouseState
-===========
-*/
-void IN_RestoreOriginalMouseState (void)
-{
-	if (mouseactivatetoggle)
-	{
-		IN_DeactivateMouse ();
-		mouseactivatetoggle = true;
-	}
-
-// try to redraw the cursor so it gets reinitialized, because sometimes it
-// has garbage after the mode switch
-// not applicable on Linux - DDOI	
-//	ShowCursor (TRUE);
-//	ShowCursor (FALSE);
 }
 
 
@@ -1152,6 +1131,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/05/17 06:47:57  sezero
+ * initial cosmetic cleanup in in_sdl.c
+ *
  * Revision 1.16  2005/04/30 09:59:19  sezero
  * Many things in gl_vidsdl.c, and *especially in vid_sdl.c, are there
  * for the dynamic video mode swithching which we removed a long time
