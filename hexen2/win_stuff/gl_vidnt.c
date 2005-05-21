@@ -62,7 +62,7 @@ static vmode_t	badmode;
 static DEVMODE	gdevmode;
 qboolean	vid_initialized = false;
 static qboolean	windowed, leavecurrentmode;
-static int		windowed_mouse;
+static int		enable_mouse;
 static HICON	hIcon;
 
 BINDTEXFUNCPTR bindTexFunc;
@@ -136,7 +136,7 @@ cvar_t		_vid_wait_override = {"_vid_wait_override", "0", true};
 cvar_t		vid_config_x = {"vid_config_x","800", true};
 cvar_t		vid_config_y = {"vid_config_y","600", true};
 cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1", true};
-cvar_t		_windowed_mouse = {"_windowed_mouse","0", true};
+cvar_t		_enable_mouse = {"_enable_mouse","0", true};
 
 int			window_center_x, window_center_y, window_x, window_y, window_width, window_height;
 RECT		window_rect;
@@ -389,7 +389,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	// Set either the fullscreen or windowed mode
 	if (modelist[modenum].type == MS_WINDOWED)
 	{
-		if (_windowed_mouse.value)
+		if (_enable_mouse.value)
 		{
 			stat = VID_SetWindowedMode(modenum);
 			IN_ActivateMouse ();
@@ -689,9 +689,9 @@ void GL_EndRendering (void)
 // handle the mouse state when windowed if that's changed
 	if (modestate == MS_WINDOWED)
 	{
-		if ((int)_windowed_mouse.value != windowed_mouse)
+		if ((int)_enable_mouse.value != enable_mouse)
 		{
-			if (_windowed_mouse.value)
+			if (_enable_mouse.value)
 			{
 				IN_ActivateMouse ();
 				IN_HideMouse ();
@@ -702,7 +702,7 @@ void GL_EndRendering (void)
 				IN_ShowMouse ();
 			}
 
-			windowed_mouse = (int)_windowed_mouse.value;
+			enable_mouse = (int)_enable_mouse.value;
 		}
 	}
 }
@@ -1081,7 +1081,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 			IN_ActivateMouse ();
 			IN_HideMouse ();
 		}
-		else if ((modestate == MS_WINDOWED) && _windowed_mouse.value)
+		else if ((modestate == MS_WINDOWED) && _enable_mouse.value)
 		{
 			IN_ActivateMouse ();
 			IN_HideMouse ();
@@ -1100,7 +1100,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 			IN_DeactivateMouse ();
 			IN_ShowMouse ();
 		}
-		else if ((modestate == MS_WINDOWED) && _windowed_mouse.value)
+		else if ((modestate == MS_WINDOWED) && _enable_mouse.value)
 		{
 			IN_DeactivateMouse ();
 			IN_ShowMouse ();
@@ -1617,7 +1617,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&vid_config_x);
 	Cvar_RegisterVariable (&vid_config_y);
 	Cvar_RegisterVariable (&vid_stretch_by_2);
-	Cvar_RegisterVariable (&_windowed_mouse);
+	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&gl_ztrick);
 
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);

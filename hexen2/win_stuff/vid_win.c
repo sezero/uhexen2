@@ -34,7 +34,7 @@ static qboolean	vid_initialized = false, vid_palettized;
 static int		lockcount;
 static int		vid_fulldib_on_focus_mode;
 static qboolean	force_minimized, in_mode_set, is_mode0x13, force_mode_set;
-static int		vid_stretched, windowed_mouse;
+static int		vid_stretched, enable_mouse;
 static qboolean	palette_changed, syscolchg;
 static HICON	hIcon;
 
@@ -57,7 +57,7 @@ cvar_t		_vid_wait_override = {"_vid_wait_override", "0", true};
 cvar_t		vid_config_x = {"vid_config_x","800", true};
 cvar_t		vid_config_y = {"vid_config_y","600", true};
 cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1", true};
-cvar_t		_windowed_mouse = {"_windowed_mouse","0", true};
+cvar_t		_enable_mouse = {"_enable_mouse","0", true};
 
 typedef struct {
 	int		width;
@@ -1554,7 +1554,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	// Set either the fullscreen or windowed mode
 	if (modelist[modenum].type == MS_WINDOWED)
 	{
-		if (_windowed_mouse.value)
+		if (_enable_mouse.value)
 		{
 			stat = VID_SetWindowedMode(modenum);
 			IN_ActivateMouse ();
@@ -1972,7 +1972,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&vid_config_x);
 	Cvar_RegisterVariable (&vid_config_y);
 	Cvar_RegisterVariable (&vid_stretch_by_2);
-	Cvar_RegisterVariable (&_windowed_mouse);
+	Cvar_RegisterVariable (&_enable_mouse);
 
 	Cmd_AddCommand ("vid_testmode", VID_TestMode_f);
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
@@ -2261,9 +2261,9 @@ void	VID_Update (vrect_t *rects)
 // handle the mouse state when windowed if that's changed
 	if (modestate == MS_WINDOWED)
 	{
-		if ((int)_windowed_mouse.value != windowed_mouse)
+		if ((int)_enable_mouse.value != enable_mouse)
 		{
-			if (_windowed_mouse.value)
+			if (_enable_mouse.value)
 			{
 				IN_ActivateMouse ();
 				IN_HideMouse ();
@@ -2274,7 +2274,7 @@ void	VID_Update (vrect_t *rects)
 				IN_ShowMouse ();
 			}
 
-			windowed_mouse = (int)_windowed_mouse.value;
+			enable_mouse = (int)_enable_mouse.value;
 		}
 	}
 }
@@ -2660,7 +2660,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 				IN_ActivateMouse ();
 				IN_HideMouse ();
 			}
-			else if ((modestate == MS_WINDOWED) && _windowed_mouse.value)
+			else if ((modestate == MS_WINDOWED) && _enable_mouse.value)
 			{
 				IN_ActivateMouse ();
 				IN_HideMouse ();
@@ -2692,7 +2692,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 				IN_DeactivateMouse ();
 				IN_ShowMouse ();
 			}
-			else if ((modestate == MS_WINDOWED) && _windowed_mouse.value)
+			else if ((modestate == MS_WINDOWED) && _enable_mouse.value)
 			{
 				IN_DeactivateMouse ();
 				IN_ShowMouse ();
@@ -2710,7 +2710,7 @@ VID_HandlePause
 void VID_HandlePause (qboolean pause)
 {
 
-	if ((modestate == MS_WINDOWED) && _windowed_mouse.value)
+	if ((modestate == MS_WINDOWED) && _enable_mouse.value)
 	{
 		if (pause)
 		{
@@ -3208,6 +3208,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/05/21 08:56:13  sezero
+ * MINIMUM_MEMORY_LEVELPAK was never used, switched to MINIMUM_MEMORY
+ *
  * Revision 1.3  2005/05/20 15:26:33  sezero
  * separated winquake.h into winquake.h and linquake.h
  * changed all occurances of winquake.h to quakeinc.h,
