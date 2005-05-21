@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.8 2005-05-20 12:01:34 sezero Exp $
+	$Id: common.c,v 1.9 2005-05-21 17:32:13 sezero Exp $
 */
 
 #ifdef SERVERONLY 
@@ -1276,12 +1276,16 @@ byte *COM_LoadFile (char *path, int usehunk)
 
 	((byte *)buf)[len] = 0;
 #ifndef SERVERONLY
+#ifndef GLQUAKE
 	Draw_BeginDisc ();
+#endif
 #endif
 	fread (buf, 1, len, h);
 	fclose (h);
 #ifndef SERVERONLY
+#ifndef GLQUAKE
 	Draw_EndDisc ();
+#endif
 #endif
 	return buf;
 }

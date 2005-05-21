@@ -3,7 +3,7 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/draw.h,v 1.3 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/draw.h,v 1.4 2005-05-21 17:32:03 sezero Exp $
 */
 
 
@@ -21,8 +21,10 @@ void Draw_TransPic (int x, int y, qpic_t *pic);
 void Draw_TransPicCropped(int x, int y, qpic_t *pic);
 void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation);
 void Draw_ConsoleBackground (int lines);
+#ifndef GLQUAKE
 void Draw_BeginDisc (void);
 void Draw_EndDisc (void);
+#endif
 void Draw_TileClear (int x, int y, int w, int h);
 void Draw_Fill (int x, int y, int w, int h, int c);
 void Draw_FadeScreen (void);
@@ -36,6 +38,9 @@ qpic_t *Draw_CachePicResize (char *path, int targetWidth, int targetHeight);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.2  2004/11/29 12:17:46  sezero
  * draw fullscreen intermission pics. borrowed from Pa3PyX sources.
  *

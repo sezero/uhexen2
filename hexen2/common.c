@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.12 2005-05-20 12:01:27 sezero Exp $
+	$Id: common.c,v 1.13 2005-05-21 17:32:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1212,11 +1212,14 @@ byte *COM_LoadFile (char *path, int usehunk, int *size)
 
 	((byte *)buf)[len] = 0;
 
+#ifndef GLQUAKE
 	Draw_BeginDisc ();
+#endif
 	Sys_FileRead (h, buf, len);                     
 	COM_CloseFile (h);
+#ifndef GLQUAKE
 	Draw_EndDisc ();
-
+#endif
 	return buf;
 }
 
@@ -1464,6 +1467,14 @@ void COM_InitFilesystem (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/05/20 12:01:27  sezero
+ * large initial syncing of common.c between h2 and hw:
+ * a lot of whitespace clean-up, removal of activision
+ * secure stuff, demoval of -path, -proghack, -savedir
+ * and -cachedir support, better registered version
+ * detection and crc checks, etc. There are some leftovers
+ * after this, next patches will clean that up.
+ *
  * Revision 1.11  2005/05/17 22:56:19  sezero
  * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
  * Q_strXcasecmp will now be used throughout the code which are implementation

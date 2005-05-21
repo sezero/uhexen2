@@ -2,7 +2,7 @@
 	draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.32 2005-05-07 10:39:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.33 2005-05-21 17:32:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -27,10 +27,6 @@ qboolean	plyrtex[NUM_CLASSES][16][16];		// whether or not the corresponding play
 byte		*draw_chars;				// 8*8 graphic characters
 byte		*draw_smallchars;			// Small characters for status bar
 byte		*draw_menufont; 			// Big Menu Font
-qpic_t		*draw_disc[MAX_DISC] =
-{
-	NULL  // make the first one null for sure
-};
 qpic_t		*draw_backtile;
 
 int			char_texture;
@@ -470,7 +466,6 @@ void Draw_Init (void)
 	int		x, y;
 	char	ver[40];
 	glpic_t *gl;
-	char temp[MAX_QPATH];
 
 	Cvar_RegisterVariable (&gl_round_down);
 	Cvar_RegisterVariable (&gl_picmip);
@@ -549,17 +544,6 @@ void Draw_Init (void)
 	// save slots for scraps
 	scrap_texnum = texture_extension_number;
 	texture_extension_number += MAX_SCRAPS;
-
-	//
-	// get the other pics we need
-	//
-	for(i=MAX_DISC-1;i>=0;i--)
-	{
-		sprintf(temp,"gfx/menu/skull%d.lmp",i);
-		draw_disc[i] = Draw_PicFromFile (temp);
-	}
-
-//	draw_disc = Draw_PicFromWad ("disc");
 //	draw_backtile = Draw_PicFromWad ("backtile");
 	draw_backtile = Draw_PicFromFile ("gfx/menu/backtile.lmp");
 }
@@ -1174,42 +1158,6 @@ void Draw_FadeScreen (void)
 
 /*
 ================
-Draw_BeginDisc
-
-Draws the little blue disc in the corner of the screen.
-Call before beginning any disc IO.
-================
-*/
-void Draw_BeginDisc (void)
-{
-	static int index = 0;
-
-	if (!draw_disc[index] || loading_stage) return;
-
-	index++;
-	if (index >= MAX_DISC) index = 0;
-
-	glfunc.glDrawBuffer_fp  (GL_FRONT);
-
-	Draw_Pic (vid.width - 28, 0, draw_disc[index]);
-
-	glfunc.glDrawBuffer_fp  (GL_BACK);
-}
-
-/*
-================
-Draw_EndDisc
-
-Erases the disc icon.
-Call after completing any disc IO
-================
-*/
-void Draw_EndDisc (void)
-{
-}
-
-/*
-================
 GL_Set2D
 
 Setup as if the screen was 320*200
@@ -1811,6 +1759,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2005/05/07 10:39:07  sezero
+ * display platform in console background
+ *
  * Revision 1.31  2005/04/30 09:59:16  sezero
  * Many things in gl_vidsdl.c, and *especially in vid_sdl.c, are there
  * for the dynamic video mode swithching which we removed a long time

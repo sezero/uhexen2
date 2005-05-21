@@ -16,10 +16,6 @@ cvar_t		gl_spritemip = {"gl_spritemip", "0"};
 byte		*draw_chars;				// 8*8 graphic characters
 byte		*draw_smallchars;			// Small characters for status bar
 byte		*draw_menufont; 			// Big Menu Font
-qpic_t		*draw_disc[MAX_DISC] = 
-{
-	NULL  // make the first one null for sure
-};
 qpic_t		*draw_backtile;
 
 int			translate_texture[MAX_PLAYER_CLASS];
@@ -411,7 +407,6 @@ void Draw_Init (void)
 	glpic_t	*gl;
 	int	start;
 	byte    *ncdata;
-	char	temp[MAX_QPATH];
 
 	Cvar_RegisterVariable (&gl_picmip);
 	Cvar_RegisterVariable (&gl_spritemip);
@@ -535,16 +530,6 @@ void Draw_Init (void)
 	// save slots for scraps
 	scrap_texnum = texture_extension_number;
 	texture_extension_number += MAX_SCRAPS;
-
-	//
-	// get the other pics we need
-	//
-	for(i=MAX_DISC-1;i>=0;i--)
-	{
-		sprintf(temp,"gfx/menu/skull%d.lmp",i);
-		draw_disc[i] = Draw_PicFromFile (temp);
-	}
-//	draw_disc = Draw_PicFromWad ("disc");
 //	draw_backtile = Draw_PicFromWad ("backtile");
 	draw_backtile = Draw_PicFromFile ("gfx/menu/backtile.lmp");
 }
@@ -1253,46 +1238,6 @@ void Draw_FadeScreen (void)
 }
 
 //=============================================================================
-
-/*
-================
-Draw_BeginDisc
-
-Draws the little blue disc in the corner of the screen.
-Call before beginning any disc IO.
-================
-*/
-void Draw_BeginDisc (void)
-{
-	static int index = 0;
-
-	if (!draw_disc[index]) 
-	{
-		return;
-	}
-
-	index++;
-	if (index >= MAX_DISC) index = 0;
-
-	glfunc.glDrawBuffer_fp (GL_FRONT);
-
-	Draw_Pic (vid.width - 28, 4, draw_disc[index]);
-
-	glfunc.glDrawBuffer_fp (GL_BACK);
-}
-
-
-/*
-================
-Draw_EndDisc
-
-Erases the disc icon.
-Call after completing any disc IO
-================
-*/
-void Draw_EndDisc (void)
-{
-}
 
 /*
 ================

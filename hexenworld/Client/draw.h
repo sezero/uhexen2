@@ -19,8 +19,10 @@ void Draw_TransPic (int x, int y, qpic_t *pic);
 void Draw_TransPicCropped(int x, int y, qpic_t *pic);
 void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation);
 void Draw_ConsoleBackground (int lines);
+#ifndef GLQUAKE
 void Draw_BeginDisc (void);
 void Draw_EndDisc (void);
+#endif
 void Draw_TileClear (int x, int y, int w, int h);
 void Draw_Fill (int x, int y, int w, int h, int c);
 void Draw_FadeScreen (void);
