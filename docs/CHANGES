@@ -4,6 +4,7 @@ ChangeLog:
      * MINIMUM_MEMORY_LEVELPAK was never used, switched
        to MINIMUM_MEMORY
      * don't Sys_Error on bad -port cmdline argument
+     * removed net_serial which has been dead for ages
      * synced wm caption code
      * more syncing of h2/hw vid_sdl and gl_vidsdl
      * fixed vid.h for VID_SetMode for win32

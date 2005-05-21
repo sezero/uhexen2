@@ -1,6 +1,6 @@
 /*
 	net_bsd.c
-	$Id: net_bsd.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Id: net_bsd.c,v 1.3 2005-05-21 16:27:27 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -32,7 +32,6 @@
 
 #include "net_loop.h"
 #include "net_dgrm.h"
-#include "net_ser.h"
 
 net_driver_t net_drivers[MAX_NET_DRIVERS] =
 {

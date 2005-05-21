@@ -2,7 +2,6 @@
 
 #include "net_loop.h"
 #include "net_dgrm.h"
-#include "net_ser.h"
 
 net_driver_t net_drivers[MAX_NET_DRIVERS] =
 {
