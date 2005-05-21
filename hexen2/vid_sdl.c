@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.20 2005-05-21 08:56:11 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.21 2005-05-21 09:17:19 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -387,10 +387,12 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	VID_SetPalette (palette);
 
-#ifdef H2MP
+#if defined(H2W)
+	SDL_WM_SetCaption("HexenWorld", "HexenWorld");
+#elif defined(H2MP)
 	SDL_WM_SetCaption("Portal of Praevus", "PRAEVUS");
 #else
-	SDL_WM_SetCaption("HexenII", "HEXEN2");
+	SDL_WM_SetCaption("Hexen II", "HEXEN2");
 #endif
 
 	in_mode_set = false;
@@ -901,6 +903,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2005/05/21 08:56:11  sezero
+ * MINIMUM_MEMORY_LEVELPAK was never used, switched to MINIMUM_MEMORY
+ *
  * Revision 1.19  2005/05/20 15:26:33  sezero
  * separated winquake.h into winquake.h and linquake.h
  * changed all occurances of winquake.h to quakeinc.h,

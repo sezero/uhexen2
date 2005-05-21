@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.49 2005-05-20 15:26:33 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_vidsdl.c,v 1.50 2005-05-21 09:17:19 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -207,11 +207,12 @@ int VID_SetMode (int modenum)
 	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &sdl_tmp);
 	Con_SafePrintf ("Video Mode Set : %dx%dx%d\n", vid.width, vid.height, sdl_tmp);
 
-	// acknowledge Portal of Praevus S.A
-#ifdef H2MP
-	SDL_WM_SetCaption ("Portal of Praevus", "PRAEVUS");
+#if defined(H2W)
+	SDL_WM_SetCaption("HexenWorld", "HexenWorld");
+#elif defined(H2MP)
+	SDL_WM_SetCaption("Portal of Praevus", "PRAEVUS");
 #else
-	SDL_WM_SetCaption ("Hexen II", "HEXEN2");
+	SDL_WM_SetCaption("Hexen II", "HEXEN2");
 #endif
 
 	if (modelist[modenum].type == MS_WINDOWED)

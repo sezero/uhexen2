@@ -207,7 +207,13 @@ int VID_SetMode (int modenum)
 	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &sdl_tmp);
 	Con_SafePrintf ("Video Mode Set : %dx%dx%d\n", vid.width, vid.height, sdl_tmp);
 
-	SDL_WM_SetCaption ("GLHexenWorld", "GLHexenWorld");
+#if defined(H2W)
+	SDL_WM_SetCaption("HexenWorld", "HexenWorld");
+#elif defined(H2MP)
+	SDL_WM_SetCaption("Portal of Praevus", "PRAEVUS");
+#else
+	SDL_WM_SetCaption("Hexen II", "HEXEN2");
+#endif
 
 
 	if (modelist[modenum].type == MS_WINDOWED)
