@@ -2,7 +2,7 @@
    gl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.43 2005-05-21 09:51:49 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.44 2005-05-21 12:34:03 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -58,7 +58,7 @@ typedef struct {
 	int			fullscreen;
 	int			bpp;
 	int			halfscreen;
-	char		modedesc[17];
+	char		modedesc[33];
 } vmode_t;
 
 SDL_Surface	*screen;
@@ -93,8 +93,8 @@ float		gldepthmin, gldepthmax;
 #ifndef GL_SHARED_TEXTURE_PALETTE_EXT
 #define GL_SHARED_TEXTURE_PALETTE_EXT 0x81FB
 #endif
-typedef void	(*lp3DFXFUNC) (int, int, int, int, int, const void*);
-lp3DFXFUNC	MyglColorTableEXT;
+typedef void	(*FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
+FX_SET_PALETTE_EXT	MyglColorTableEXT;
 qboolean	is8bit = false;
 
 float		RTint[256],GTint[256],BTint[256];
@@ -214,7 +214,6 @@ int VID_SetMode (int modenum)
 #else
 	SDL_WM_SetCaption("Hexen II", "HEXEN2");
 #endif
-
 
 	if (modelist[modenum].type == MS_WINDOWED)
 	{
@@ -793,6 +792,7 @@ void	VID_Init (unsigned char *palette)
 	 *********************************/
 
 	// windowed mode is default
+	vid_default = MODE_WINDOWED;
 	// see if the user wants fullscreen
 	if (COM_CheckParm("-fullscreen") || COM_CheckParm("-f") ||
 		COM_CheckParm("-fs") || COM_CheckParm("--fullscreen"))

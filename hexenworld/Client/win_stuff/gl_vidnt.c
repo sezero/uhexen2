@@ -32,7 +32,7 @@ typedef struct {
 	int			fullscreen;
 	int			bpp;
 	int			halfscreen;
-	char		modedesc[17];
+	char		modedesc[33];
 } vmode_t;
 
 typedef struct {
@@ -85,7 +85,7 @@ float RTint[256],GTint[256],BTint[256];
 HGLRC	baseRC;
 HDC		maindc;
 
-cvar_t	gl_ztrick = {"gl_ztrick","1"};
+cvar_t	gl_ztrick = {"gl_ztrick","0",true};
 
 HWND WINAPI InitializeWindow (HINSTANCE hInstance, int nCmdShow);
 
@@ -110,8 +110,14 @@ void ClearAllStates (void);
 void VID_UpdateWindowStatus (void);
 void GL_Init (void);
 
-typedef void (APIENTRY *lp3DFXFUNC) (int, int, int, int, int, const void*);
-lp3DFXFUNC glColorTableEXT;
+BINDTEXFUNCPTR bindTexFunc;
+#define TEXTURE_EXT_STRING "GL_EXT_texture_object"
+
+typedef void (APIENTRY *FX_SET_PALETTE_EXT) (int, int, int, int, int, const void*);
+FX_SET_PALETTE_EXT MyglColorTableEXT;
+typedef BOOL (APIENTRY *GAMMA_RAMP_FN)(HDC, LPVOID); 
+GAMMA_RAMP_FN GetDeviceGammaRamp_f; 
+GAMMA_RAMP_FN SetDeviceGammaRamp_f;
 qboolean is8bit = false;
 qboolean isPermedia = false;
 qboolean gl_mtexable = false;
@@ -136,6 +142,7 @@ RECT		window_rect;
 
 
 extern unsigned short	ramps[3][256];
+qboolean	gammaworks = false;
 
 
 // direct draw software compatability stuff
@@ -476,10 +483,25 @@ void VID_UpdateWindowStatus (void)
 
 //====================================
 
-BINDTEXFUNCPTR bindTexFunc;
-
-#define TEXTURE_EXT_STRING "GL_EXT_texture_object"
-
+void Check3DfxGammaControlExtension (void)
+{
+	if (!strstr(gl_extensions, "WGL_3DFX_gamma_control"))
+	{
+		GetDeviceGammaRamp_f = GetDeviceGammaRamp;
+		SetDeviceGammaRamp_f = SetDeviceGammaRamp;
+	}
+	else
+	{
+		GetDeviceGammaRamp_f = wglGetProcAddress("wglGetDeviceGammaRamp3DFX");
+		SetDeviceGammaRamp_f = wglGetProcAddress("wglSetDeviceGammaRamp3DFX");
+		if (GetDeviceGammaRamp_f && SetDeviceGammaRamp_f)
+			Con_Printf("Using 3Dfx specific gamma control\n");
+		else {
+			GetDeviceGammaRamp_f = GetDeviceGammaRamp;
+			SetDeviceGammaRamp_f = SetDeviceGammaRamp;
+		}
+	}
+}
 
 void CheckTextureExtensions (void)
 {
@@ -530,7 +552,6 @@ int		texture_mode = GL_LINEAR;
 
 int		texture_extension_number = 1;
 
-#ifdef _WIN32
 void CheckMultiTextureExtensions(void) 
 {
 	if (strstr(gl_extensions, "GL_SGIS_multitexture ") && !COM_CheckParm("-nomtex")) {
@@ -540,12 +561,6 @@ void CheckMultiTextureExtensions(void)
 		gl_mtexable = true;
 	}
 }
-#else
-void CheckMultiTextureExtensions(void) 
-{
-		gl_mtexable = true;
-}
-#endif
 
 /*
 ===============
@@ -577,14 +592,17 @@ void GL_Init (void)
 
 //	Con_Printf ("%s %s\n", gl_renderer, gl_version);
 
-    if (Q_strncasecmp(gl_renderer,"PowerVR",7)==0)
-         fullsbardraw = true;
+	if (Q_strncasecmp(gl_renderer,"PowerVR",7)==0)
+		fullsbardraw = true;
 
-    if (Q_strncasecmp(gl_renderer,"Permedia",8)==0)
-         isPermedia = true;
+	if (Q_strncasecmp(gl_renderer,"Permedia",8)==0)
+		isPermedia = true;
 
+	GetDeviceGammaRamp_f = NULL;
+	SetDeviceGammaRamp_f = NULL;
 	CheckTextureExtensions ();
 	CheckMultiTextureExtensions ();
+	Check3DfxGammaControlExtension();
 
 	glClearColor (1,0,0,0);
 	glCullFace(GL_FRONT);
@@ -606,7 +624,6 @@ void GL_Init (void)
 //	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
-
 
 
 /*
@@ -658,6 +675,7 @@ void GL_EndRendering (void)
 		Sbar_Changed();
 }
 
+
 int ColorIndex[16] =
 {
 	0, 31, 47, 63, 79, 95, 111, 127, 143, 159, 175, 191, 199, 207, 223, 231
@@ -670,7 +688,7 @@ unsigned ColorPercent[16] =
 
 unsigned	d_8to24table3dfx[256];
 
-void	VID_SetPalette (unsigned char *palette)
+void VID_SetPalette (unsigned char *palette)
 {
 	byte	*pal;
 	unsigned short r,g,b;
@@ -800,11 +818,10 @@ void	VID_SetPalette (unsigned char *palette)
 	d_8to24table[255] &= 0xffffff;	// 255 is transparent
 }
 
-qboolean	gammaworks;
 void	VID_ShiftPalette (unsigned char *palette)
 {
-	if (gammaworks)
-		SetDeviceGammaRamp (maindc, ramps);
+	if (gammaworks && SetDeviceGammaRamp_f)
+		SetDeviceGammaRamp_f (maindc, ramps);
 }
 
 
@@ -825,8 +842,8 @@ void	VID_Shutdown (void)
 		hRC = wglGetCurrentContext();
     	hDC = wglGetCurrentDC();
 
-	if (maindc && gammaworks)
-		SetDeviceGammaRamp(maindc, orig_ramps);
+	if (maindc && gammaworks && SetDeviceGammaRamp_f)
+		SetDeviceGammaRamp_f(maindc, orig_ramps);
 
     	wglMakeCurrent(NULL, NULL);
 
@@ -1029,10 +1046,15 @@ void AppActivate(BOOL fActive, BOOL minimize)
 			IN_ActivateMouse ();
 			IN_HideMouse ();
 		}
+		VID_ShiftPalette(NULL);
 	}
 
 	if (!fActive)
 	{
+		if (maindc && gammaworks && SetDeviceGammaRamp_f)
+		{
+			SetDeviceGammaRamp_f(maindc, orig_ramps);
+		}
 		if (modestate == MS_FULLDIB)
 		{
 			IN_DeactivateMouse ();
@@ -1255,7 +1277,7 @@ char *VID_GetModeDescription (int mode)
 
 char *VID_GetExtModeDescription (int mode)
 {
-	static char	pinfo[40];
+	static char	pinfo[100];
 	vmode_t		*pv;
 
 	if ((mode < 0) || (mode >= nummodes))
@@ -1558,11 +1580,9 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 		Con_SafePrintf ("No fullscreen DIB modes found\n");
 }
 
-qboolean VID_Is8bit() {
-	return is8bit;
-}
-
+#ifndef GL_SHARED_TEXTURE_PALETTE_EXT
 #define GL_SHARED_TEXTURE_PALETTE_EXT 0x81FB
+#endif
 
 void VID_Init8bitPalette() 
 {
@@ -1571,10 +1591,10 @@ void VID_Init8bitPalette()
 	char thePalette[256*3];
 	char *oldPalette, *newPalette;
 
-	glColorTableEXT = (void *)wglGetProcAddress("glColorTableEXT");
-    if (glColorTableEXT && strstr(gl_extensions, "GL_EXT_shared_texture_palette")) {
+	MyglColorTableEXT = (void *)wglGetProcAddress("glColorTableEXT");
+	if (MyglColorTableEXT && strstr(gl_extensions, "GL_EXT_shared_texture_palette")) {
 		Con_SafePrintf("8-bit GL extensions enabled.\n");
-	    glEnable( GL_SHARED_TEXTURE_PALETTE_EXT );
+		glEnable( GL_SHARED_TEXTURE_PALETTE_EXT );
 		oldPalette = (char *) d_8to24table; //d_8to24table3dfx;
 		newPalette = thePalette;
 		for (i=0;i<256;i++) {
@@ -1583,7 +1603,7 @@ void VID_Init8bitPalette()
 			*newPalette++ = *oldPalette++;
 			oldPalette++;
 		}
-		glColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256, GL_RGB, GL_UNSIGNED_BYTE,
+		MyglColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256, GL_RGB, GL_UNSIGNED_BYTE,
 			(void *) thePalette);
 		is8bit = TRUE;
 	}
@@ -1832,7 +1852,10 @@ void	VID_Init (unsigned char *palette)
 
 	GL_Init ();
 
-	gammaworks = GetDeviceGammaRamp(maindc, orig_ramps);
+	if (GetDeviceGammaRamp_f)
+		gammaworks = GetDeviceGammaRamp_f(maindc, orig_ramps);
+	else
+		gammaworks = false;
 	if (!gammaworks)
 		Con_Printf("WARNING: Hardware gamma not supported.\n");
 

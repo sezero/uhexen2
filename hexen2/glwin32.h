@@ -2,7 +2,7 @@
 	glwin32.h
 	glquake header for win32/wgl
 
-	$Id: glwin32.h,v 1.1 2005-05-20 18:16:45 sezero Exp $
+	$Id: glwin32.h,v 1.2 2005-05-21 12:34:01 sezero Exp $
 */
 
 
@@ -30,12 +30,4 @@ typedef void (APIENTRY *TEXSUBIMAGEPTR)(int, int, int, int, int, int, int, int, 
 extern	BINDTEXFUNCPTR bindTexFunc;
 extern	DELTEXFUNCPTR delTexFunc;
 extern	TEXSUBIMAGEPTR TexSubImage2DFunc;
-
-// 3dfx functions
-typedef int  (APIENTRY *FX_DISPLAY_MODE_EXT)(int);
-typedef void (APIENTRY *FX_SET_PALETTE_EXT)( unsigned long * );
-typedef void (APIENTRY *FX_MARK_PAL_TEXTURE_EXT)( void );
-extern  FX_DISPLAY_MODE_EXT fxDisplayModeExtension;
-extern  FX_SET_PALETTE_EXT fxSetPaletteExtension;
-extern  FX_MARK_PAL_TEXTURE_EXT fxMarkPalTextureExtension;
 

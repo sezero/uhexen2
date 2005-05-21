@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_dl_vidsdl.c,v 1.51 2005-05-21 09:51:48 sezero Exp $
+   $Id: gl_dl_vidsdl.c,v 1.52 2005-05-21 12:34:01 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -58,7 +58,7 @@ typedef struct {
 	int			fullscreen;
 	int			bpp;
 	int			halfscreen;
-	char		modedesc[17];
+	char		modedesc[33];
 } vmode_t;
 
 SDL_Surface	*screen;
@@ -92,8 +92,8 @@ extern int	numgltextures;
 #ifndef GL_SHARED_TEXTURE_PALETTE_EXT
 #define GL_SHARED_TEXTURE_PALETTE_EXT 0x81FB
 #endif
-typedef void (*FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
-FX_SET_PALETTE_EXT fxSetPaletteExtension;
+typedef void	(*FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
+FX_SET_PALETTE_EXT	MyglColorTableEXT;
 qboolean	is8bit = false;
 
 float		RTint[256],GTint[256],BTint[256];
@@ -250,11 +250,11 @@ void CheckSetPaletteExtension( unsigned char *palette )
 	int i;
 
 	if (strstr(gl_extensions, "GL_EXT_shared_texture_palette"))
-		fxSetPaletteExtension = (FX_SET_PALETTE_EXT)SDL_GL_GetProcAddress("glColorTableEXT");
+		MyglColorTableEXT = (FX_SET_PALETTE_EXT)SDL_GL_GetProcAddress("glColorTableEXT");
 	else
 		return;
 
-	if (fxSetPaletteExtension == NULL)
+	if (MyglColorTableEXT == NULL)
 	{
 			Con_Printf ("GetProcAddress for glColorTableEXT failed\n");
 			Con_Printf ("Palettized textures disabled...\n");
@@ -274,7 +274,7 @@ void CheckSetPaletteExtension( unsigned char *palette )
 		glExtPalette[3 * i + 1] = (d_8to24table[i] & 0xFF00) >> 8;
 		glExtPalette[3 * i + 2] = (d_8to24table[i] & 0xFF0000) >> 16;
 	}
-	fxSetPaletteExtension(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256, GL_RGB, GL_UNSIGNED_BYTE, glExtPalette);
+	MyglColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256, GL_RGB, GL_UNSIGNED_BYTE, glExtPalette);
 	is8bit = true;
 }
 
@@ -747,15 +747,14 @@ void	VID_Init (unsigned char *palette)
 
 	// modelist[2-5] have been removed
 
-	// windowed mode is default
-	vid_default = MODE_WINDOWED;
-
 	grab = 1;
 
 	/*********************************
 	 * command line processing (S.A) *
 	 *********************************/
 
+	// windowed mode is default
+	vid_default = MODE_WINDOWED;
 	// see if the user wants fullscreen
 	if (COM_CheckParm("-fullscreen") || COM_CheckParm("-f") ||
 		COM_CheckParm("-fs") || COM_CheckParm("--fullscreen"))
@@ -823,7 +822,7 @@ void	VID_Init (unsigned char *palette)
 	VID_SetPalette (palette);
 
 	// enable paletted textures if -paltex cmdline arg is used
-	fxSetPaletteExtension = NULL;
+	MyglColorTableEXT = NULL;
 	if (COM_CheckParm("-paltex"))
 		CheckSetPaletteExtension(palette);
 
