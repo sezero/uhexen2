@@ -3,8 +3,10 @@ ChangeLog:
 2005-05-21 (CVS):
      * MINIMUM_MEMORY_LEVELPAK was never used, switched
        to MINIMUM_MEMORY
+     * don't Sys_Error on bad -port cmdline argument
      * synced wm caption code
      * more syncing of h2/hw vid_sdl and gl_vidsdl
+     * fixed vid.h for VID_SetMode for win32
 
 2005-05-20 (CVS):
      * Makefiles clean-up
