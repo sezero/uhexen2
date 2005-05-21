@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.17 2005-05-19 16:47:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.18 2005-05-21 17:04:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -389,6 +389,8 @@ Sends the first message from the server to a connected client.
 This will be sent on the initial connection and upon each server load.
 ================
 */
+extern qboolean mousestate_sa;
+extern void IN_ActivateMouse (void);
 void SV_SendServerinfo (client_t *client)
 {
 
@@ -396,7 +398,8 @@ void SV_SendServerinfo (client_t *client)
 	char			message[2048];
 
 	// When we activate the server, check the mouse is going - S.A.
-	IN_ActivateMouseSA ();
+	if (mousestate_sa)
+		IN_ActivateMouse();
 
 	MSG_WriteByte (&client->message, svc_print);
 	sprintf (message, "%c\nVERSION %4.2f SERVER (%i CRC)", 2, HEXEN2_VERSION, pr_crc);
@@ -2054,6 +2057,9 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/05/19 16:47:18  sezero
+ * killed client->privileged (was only available to IDGODS)
+ *
  * Revision 1.16  2005/05/19 16:44:13  sezero
  * removed all unused (never used) RJNETa and RJNET2 code
  *

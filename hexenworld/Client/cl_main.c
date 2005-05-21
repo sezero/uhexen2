@@ -150,6 +150,7 @@ CL_SendConnectPacket
 called by CL_Connect_f and CL_CheckResend
 ======================
 */
+extern qboolean mousestate_sa;
 void CL_SendConnectPacket (void)
 {
 	netadr_t	adr;
@@ -177,7 +178,9 @@ void CL_SendConnectPacket (void)
 	sprintf (data, "%c%c%c%cconnect %d \"%s\"\n",
 		255, 255, 255, 255,	com_portals, cls.userinfo);
 	NET_SendPacket (strlen(data), data, adr);
-	IN_ActivateMouseSA();
+	// When we connect to a server, check the mouse is going - S.A.
+	if (mousestate_sa)
+		IN_ActivateMouse();
 }
 
 /*

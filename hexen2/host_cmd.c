@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.18 2005-05-20 16:17:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.19 2005-05-21 17:04:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -30,6 +30,9 @@ void RestoreClients(void);
 
 UINT	info_mask, info_mask2;
 
+extern qboolean	mousestate_sa;
+extern void IN_ActivateMouse (void);
+extern void IN_DeactivateMouse (void);
 #define TESTSAVE
 
 /*
@@ -1594,12 +1597,13 @@ void Host_Pause_f (void)
 		if (sv.paused)
 		{
 			SV_BroadcastPrintf ("%s paused the game\n", pr_strings + sv_player->v.netname);
-			IN_DeactivateMouseSA ();
+			IN_DeactivateMouse ();
+			mousestate_sa = true;
 		}
 		else
 		{
 			SV_BroadcastPrintf ("%s unpaused the game\n",pr_strings + sv_player->v.netname);
-			IN_ActivateMouseSA ();
+			IN_ActivateMouse ();
 		}
 
 	// send notification to all clients
@@ -2333,6 +2337,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/05/20 16:17:50  sezero
+ * keep ID style in declerations (less diff between h2/h2w...)
+ *
  * Revision 1.17  2005/05/19 16:47:18  sezero
  * killed client->privileged (was only available to IDGODS)
  *

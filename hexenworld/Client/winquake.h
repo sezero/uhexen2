@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.6 2005-05-20 15:26:34 sezero Exp $
+	$Id: winquake.h,v 1.7 2005-05-21 17:04:17 sezero Exp $
 */
 
 #pragma warning( disable : 4229 )  // mgraph gets this
@@ -36,10 +36,6 @@ extern LPDIRECTSOUNDBUFFER pDSBuf;
 extern DWORD gSndBufSize;
 //#define SNDBUFSIZE 65536
 #endif
-
-typedef enum {MS_WINDOWED, MS_FULLSCREEN, MS_FULLDIB, MS_UNINIT} modestate_t;
-
-extern modestate_t	modestate;
 
 extern HWND			mainwindow;
 extern qboolean		ActiveApp, Minimized;

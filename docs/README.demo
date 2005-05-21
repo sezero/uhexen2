@@ -89,7 +89,7 @@ following options are accepted:
  -width Width		Select screen size
  -height Height		Must be used with -width
  -bpp			Color depth for GL fullscreen mode
- -nomouse		No mouse in windowed mode
+ -nomouse		Disables mouse usage in game
  -heapsize Bytes	Heapsize
  -sndalsa		Use ALSA for audio
  -sndsdl		Use SDL for audio

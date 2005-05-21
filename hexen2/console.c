@@ -28,7 +28,7 @@ cvar_t		con_notifytime = {"con_notifytime","3"};		//seconds
 
 #define	NUM_CON_TIMES 4
 float		con_times[NUM_CON_TIMES];	// realtime time the line was generated
-								// for transparent notify lines
+						// for transparent notify lines
 
 int			con_vislines;
 
@@ -38,7 +38,9 @@ qboolean	con_debuglog;
 extern	char	key_lines[32][MAXCMDLINE];
 extern	int		edit_line;
 extern	int		key_linepos;
-		
+extern qboolean		mousestate_sa;
+extern void	IN_ActivateMouse (void);
+extern void	IN_DeactivateMouse (void);
 
 qboolean	con_initialized;
 
@@ -55,7 +57,7 @@ void Con_ToggleConsole_f (void)
 {
 	if (key_dest == key_console)
 	{
-		IN_ActivateMouseSA(); // activate mouse when leaving console
+		IN_ActivateMouse (); // activate mouse when leaving console
 		if (cls.state == ca_connected)
 		{
 			key_dest = key_game;
@@ -68,7 +70,8 @@ void Con_ToggleConsole_f (void)
 		}
 	}
 	else {
-		IN_DeactivateMouseSA(); // decativate mouse in console
+		IN_DeactivateMouse (); // decativate mouse in console
+		mousestate_sa = true;
 		key_dest = key_console;
 	}
 	

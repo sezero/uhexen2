@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.28 2005-05-21 08:56:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.29 2005-05-21 17:04:16 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -430,14 +430,12 @@ void MIDI_Stop(void);
 void MIDI_Pause(int mode);
 void MIDI_Loop(int NewValue);
 
-//
-// Steve's windowed mouse tinkerings
-//
-void IN_ActivateMouseSA (void);
-void IN_DeactivateMouseSA (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2005/05/21 08:56:11  sezero
+ * MINIMUM_MEMORY_LEVELPAK was never used, switched to MINIMUM_MEMORY
+ *
  * Revision 1.27  2005/05/20 12:28:13  sezero
  * leftovers after common.c sync-1
  *

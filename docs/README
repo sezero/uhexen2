@@ -115,7 +115,7 @@ following options are accepted:
  -width Width		Select screen size
  -height Height		Must be used with -width
  -bpp			Color depth for GL fullscreen mode
- -nomouse		No mouse in windowed mode
+ -nomouse		Disables mouse usage in game
  -heapsize Bytes	Heapsize
  -paltex		Enable 8-bit textures
  -old3dfx		Support for old Voodoo1/2/Rush

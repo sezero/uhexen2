@@ -2,14 +2,10 @@
 	linquake.h
 	Unix-specific Quake header file
 
-	$Id: linquake.h,v 1.1 2005-05-20 15:27:37 sezero Exp $
+	$Id: linquake.h,v 1.2 2005-05-21 17:04:16 sezero Exp $
 */
 
 #include "linux_inc.h"
-
-typedef enum {MS_WINDOWED, MS_FULLSCREEN, MS_FULLDIB, MS_FULLDIRECT, MS_UNINIT} modestate_t;
-
-extern modestate_t	modestate;
 
 void IN_ShowMouse (void);
 void IN_DeactivateMouse (void);
@@ -17,7 +13,7 @@ void IN_HideMouse (void);
 void IN_ActivateMouse (void);
 void IN_MouseEvent (int mstate);
 
-extern cvar_t		_windowed_mouse;
+extern cvar_t		_enable_mouse;
 
 extern qboolean	mouseinitialized;
 
@@ -43,6 +39,11 @@ int (PASCAL FAR *pgetsockname)(SOCKET s, struct sockaddr FAR *name,
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/05/20 15:27:37  sezero
+ * separated winquake.h into winquake.h and linquake.h
+ * changed all occurances of winquake.h to quakeinc.h,
+ * which includes the correct header
+ *
  *
  * 2005/05/20 12:29:37  sezero
  * leftovers after common.c sync-1

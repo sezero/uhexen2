@@ -14,6 +14,12 @@ typedef struct vrect_s
 	struct vrect_s	*pnext;
 } vrect_t;
 
+typedef enum {MS_WINDOWED, MS_FULLSCREEN, MS_FULLDIB, MS_UNINIT} modestate_t;
+#define MODE_WINDOWED		0
+#define NO_MODE			(MODE_WINDOWED - 1)
+#define MODE_FULLSCREEN_DEFAULT	(MODE_WINDOWED + 1)
+#define MODE_SETTABLE_WINDOW	2
+
 typedef struct
 {
 	pixel_t			*buffer;		// invisible buffer

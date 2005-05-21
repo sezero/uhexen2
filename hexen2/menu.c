@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.32 2005-05-21 16:27:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.33 2005-05-21 17:04:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -24,6 +24,8 @@ extern	cvar_t	crosshair;
 
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);
+
+extern modestate_t	modestate;
 
 enum {m_none, m_main, m_singleplayer, m_load, m_save, m_multiplayer, m_setup, m_net, m_options, m_video, 
 		m_keys, m_help, m_quit, m_lanconfig, m_gameoptions, m_search, m_slist, 
@@ -88,6 +90,7 @@ int			m_return_state;
 qboolean	m_return_onerror;
 char		m_return_reason [32];
 
+extern qboolean	mousestate_sa;
 char		old_bgmtype[20];	// S.A
 
 static float TitlePercent = 0;
@@ -713,7 +716,8 @@ int	m_main_cursor;
 void M_Menu_Main_f (void)
 {
 	// Deactivate the mouse when the menus are drawn - S.A.
-	IN_DeactivateMouseSA ();
+	IN_DeactivateMouse ();
+	mousestate_sa = true;
 
 	if (key_dest != key_menu)
 	{
@@ -749,7 +753,7 @@ void M_Main_Key (int key)
 	{
 	case K_ESCAPE:
 		// leaving the main menu, reactivate mouse S.A.
-		IN_ActivateMouseSA ();
+		IN_ActivateMouse ();
 		// and check we haven't changed the music type
 		if (strlen(old_bgmtype)!=0 && strcmp(old_bgmtype,bgmtype.string)!=0)
 			ReInitMusic ();
@@ -1826,9 +1830,10 @@ void	M_Menu_Options_f (void)
 	// get the current music type
 	if (!strlen(old_bgmtype))
 		strncpy(old_bgmtype,bgmtype.string,20);
-
+#if 1	// change to 1 if dont want to disable mouse in fullscreen
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 		options_cursor = 0;
+#endif
 }
 
 
@@ -1969,12 +1974,8 @@ void M_AdjustSliders (int dir)
 		ToggleFullScreenSA();
 		break;
 
-	case OPT_USEMOUSE:	// _windowed_mouse
-		Cvar_SetValue ("_windowed_mouse", !_windowed_mouse.value);
-		if (_windowed_mouse.value == 0)
-			IN_ShowMouse ();
-		else
-			IN_HideMouse ();
+	case OPT_USEMOUSE:	// _enable_mouse
+		Cvar_SetValue ("_enable_mouse", !_enable_mouse.value);
 		break;
 	}
 }
@@ -2066,7 +2067,7 @@ void M_Options_Draw (void)
 	M_DrawCheckbox (220, 60+(OPT_ALWAYSMLOOK*8), in_mlook.state & 1);
 
 	M_Print (16, 60+(OPT_USEMOUSE*8),	"             Use Mouse");
-	M_DrawCheckbox (220, 60+(OPT_USEMOUSE*8), _windowed_mouse.value);
+	M_DrawCheckbox (220, 60+(OPT_USEMOUSE*8), _enable_mouse.value);
 
 #ifdef GLQUAKE
 	M_Print (16, 60+(OPT_R_SHADOWS*8),	"               Shadows");
@@ -2103,7 +2104,7 @@ void M_Options_Key (int k)
 		switch (options_cursor)
 		{
 		case OPT_CUSTOMIZE:
-			IN_ActivateMouseSA ();	// we entered the customization menu
+			IN_ActivateMouse ();	// we entered the customization menu
 			M_Menu_Keys_f ();
 			break;
 		case OPT_CONSOLE:
@@ -2144,7 +2145,18 @@ void M_Options_Key (int k)
 		M_AdjustSliders (1);
 		break;
 	}
-
+#if 1	// change to 1 if dont want to disable mouse in fullscreen
+	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
+	{
+		if (k == K_UPARROW)
+			options_cursor = OPT_USEMOUSE - 1;
+		else {
+			options_cursor = OPT_USEMOUSE + 1;
+			if (options_cursor == OPTIONS_ITEMS)
+				options_cursor = 0;
+		}
+	}
+#endif
 	if (options_cursor == OPT_VIDEO && vid_menudrawfn == NULL) {
 		if (k == K_UPARROW)
 			options_cursor = OPT_VIDEO - 1;
@@ -2353,7 +2365,8 @@ void M_Keys_Key (int k)
 	{
 	case K_ESCAPE:
 		// returning to other menus, deactivate mouse
-		IN_DeactivateMouseSA ();
+		IN_DeactivateMouse ();
+		mousestate_sa = true;
 		M_Menu_Options_f ();
 		break;
 
@@ -4086,6 +4099,9 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2005/05/21 16:27:27  sezero
+ * removed net_serial which has been dead for ages
+ *
  * Revision 1.31  2005/05/20 15:26:33  sezero
  * separated winquake.h into winquake.h and linquake.h
  * changed all occurances of winquake.h to quakeinc.h,

@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.6 2005-05-20 15:26:33 sezero Exp $
+	$Id: winquake.h,v 1.7 2005-05-21 17:04:17 sezero Exp $
 */
 
 #pragma warning( disable : 4229 )  // mgraph gets this
@@ -39,10 +39,6 @@ extern DWORD gSndBufSize;
 void Snd_AcquireBuffer (void);
 void Snd_ReleaseBuffer (void);
 #endif
-
-typedef enum {MS_WINDOWED, MS_FULLSCREEN, MS_FULLDIB, MS_FULLDIRECT, MS_UNINIT} modestate_t;
-
-extern modestate_t	modestate;
 
 extern HWND			mainwindow;
 extern qboolean		ActiveApp, Minimized;
@@ -97,6 +93,11 @@ int (PASCAL FAR *pgetsockname)(SOCKET s, struct sockaddr FAR *name,
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/05/20 15:26:33  sezero
+ * separated winquake.h into winquake.h and linquake.h
+ * changed all occurances of winquake.h to quakeinc.h,
+ * which includes the correct header
+ *
  * Revision 1.5  2005/05/20 12:29:37  sezero
  * leftovers after common.c sync-1
  *

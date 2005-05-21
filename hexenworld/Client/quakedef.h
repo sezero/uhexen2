@@ -145,13 +145,6 @@ void Host_WriteConfiguration (char *fname);
 extern qboolean		msg_suppress_1;		// suppresses resolution and cache size console output
 						//  an fullscreen DIB focus gain/loss
 
-//
-// Steve's windowed mouse tinkerings
-//
-void IN_ActivateMouseSA (void);
-void IN_DeactivateMouseSA (void);
-
-
 extern	unsigned int		defLosses;	// Defenders losses in Siege
 extern	unsigned int		attLosses;	// Attackers Losses in Siege
 

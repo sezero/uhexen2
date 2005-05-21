@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.53 2005-05-21 12:55:30 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.54 2005-05-21 17:04:16 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -45,10 +45,6 @@
 #define BASEWIDTH		320
 #define BASEHEIGHT		200
 
-#define MODE_WINDOWED		0
-#define NO_MODE			(MODE_WINDOWED - 1)
-#define MODE_FULLSCREEN_DEFAULT	(MODE_WINDOWED + 1)
-
 typedef struct {
 	modestate_t	type;
 	int			width;
@@ -74,10 +70,9 @@ qboolean	vid_initialized = false;
 
 byte		globalcolormap[VID_GRADES*256];
 
-cvar_t		_windowed_mouse = {"_windowed_mouse","1", true};
-static int	windowed_mouse;
+cvar_t		_enable_mouse = {"_enable_mouse","1", true};
+static int	enable_mouse;
 qboolean	in_mode_set = false;	// do we need this?..
-extern qboolean	grab;
 
 glfunc_t	glfunc;
 const char	*gl_vendor;
@@ -217,24 +212,7 @@ int VID_SetMode (int modenum)
 	SDL_WM_SetCaption("Hexen II", "HEXEN2");
 #endif
 
-	if (modelist[modenum].type == MS_WINDOWED)
-	{
-		if (_windowed_mouse.value)
-		{
-			IN_ActivateMouse ();
-			IN_HideMouse ();
-		}
-		else
-		{
-			IN_DeactivateMouse ();
-			IN_ShowMouse ();
-		}
-	}
-	else
-	{
-		IN_ActivateMouse ();
-		IN_HideMouse ();
-	}
+	IN_HideMouse ();
 
 	scr_disabled_for_loading = temp;
 
@@ -504,24 +482,18 @@ void GL_EndRendering (void)
 		SDL_GL_SwapBuffers();
 
 // handle the mouse state when windowed if that's changed
+#if 1	// change to 1 if dont want to disable mouse in fullscreen
 	if (modestate == MS_WINDOWED)
-	{
-		if ((int)_windowed_mouse.value != windowed_mouse)
+#endif
+		if ((int)_enable_mouse.value != enable_mouse)
 		{
-			if (_windowed_mouse.value)
-			{
+			if (_enable_mouse.value)
 				IN_ActivateMouse ();
-				IN_HideMouse ();
-			}
 			else
-			{
 				IN_DeactivateMouse ();
-				IN_ShowMouse ();
-			}
 
-			windowed_mouse = (int)_windowed_mouse.value;
+			enable_mouse = (int)_enable_mouse.value;
 		}
-	}
 }
 
 
@@ -709,7 +681,7 @@ void	VID_Init (unsigned char *palette)
 
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&_vid_default_mode);
-	Cvar_RegisterVariable (&_windowed_mouse);
+	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&gl_ztrick);
 	Cvar_RegisterVariable (&gl_purge_maptex);
 
@@ -749,7 +721,6 @@ void	VID_Init (unsigned char *palette)
 
 	// modelist[2-5] have been removed
 
-	grab = 1;
 
 	/*********************************
 	 * command line processing (S.A) *
@@ -867,14 +838,33 @@ void VID_MenuDraw (void)
 			 "-bpp    <depth>");
 }
 
+/*
+================
+ToggleFullScreenSA
+Handles switching between fullscreen/windowed modes
+and brings the mouse to a proper state afterwards
+================
+*/
+extern qboolean mousestate_sa;
 void ToggleFullScreenSA ()
 {
 	// This doesn't seem to cause any trouble even
 	// with is_3dfx == true and FX_GLX_MESA == f
 	if (SDL_WM_ToggleFullScreen(screen)==1) {
-
 		Cvar_SetValue ("vid_mode", !vid_mode.value);
-
+		modestate = (vid_mode.value) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
+#if 1	// change to 1 if dont want to disable mouse in fullscreen
+		if (vid_mode.value) {
+			if (!_enable_mouse.value) {
+				// activate the mouse if not in menus
+				if (!mousestate_sa)
+					IN_ActivateMouse();
+			}
+		} else {
+			if (!_enable_mouse.value)
+				IN_DeactivateMouse();
+		}
+#endif
 	} else {
 		Con_Printf ("SDL_WM_ToggleFullScreen failed\n");
 	}

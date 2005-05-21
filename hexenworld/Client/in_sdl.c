@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.18 2005-05-21 16:53:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.19 2005-05-21 17:04:17 sezero Exp $
 */
 
 #include "SDL.h"
@@ -14,16 +14,15 @@ cvar_t	m_filter = {"m_filter","0"};
 int	mouse_buttons;
 int	mouse_oldbuttonstate;
 int	mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
-extern cvar_t		vid_mode, _windowed_mouse;
-#define MODE_FULLSCREEN_DEFAULT 1
+extern cvar_t		vid_mode, _enable_mouse;
 
+extern modestate_t	modestate;
 extern qboolean	in_mode_set;
-static qboolean	mouseactive;
-qboolean	mouseinitialized;
-static qboolean	mouseactivatetoggle;
+static qboolean	mouseactive = false;
+qboolean	mouseinitialized = false;
+qboolean	mousestate_sa = false;  // whether mouse is disabled in interesting places
+static qboolean	mouseactivatetoggle = false;
 static qboolean	mouseshowtoggle = 1;
-
-qboolean grab = 1;
 
 // joystick defines and variables
 // where should defines be moved?
@@ -109,7 +108,7 @@ IN_ShowMouse
 */
 void IN_ShowMouse (void)
 {
-
+	// no need to check mouseinitialized here
 	if (!mouseshowtoggle)
 	{
 		SDL_ShowCursor(1);
@@ -125,7 +124,7 @@ IN_HideMouse
 */
 void IN_HideMouse (void)
 {
-
+	// no need to check mouseinitialized here
 	if (mouseshowtoggle)
 	{
 		SDL_ShowCursor (0);
@@ -141,26 +140,22 @@ IN_ActivateMouse
 
 void IN_ActivateMouse (void)
 {
+	if (!mouseinitialized)
+		return;
 
-	mouseactivatetoggle = true;
-
-	// added _windowed_mouse.value to work with vid_mode switching
-	if (mouseinitialized && _windowed_mouse.value)
-	{
-		mouseactive = true;
-
-		if (grab)
+	mousestate_sa = false;
+	if (!mouseactivatetoggle)
+#if 1	// change to 1 if dont want to disable mouse in fullscreen
+		if ((modestate==MODE_FULLSCREEN_DEFAULT) || _enable_mouse.value)
+#else
+		if (_enable_mouse.value)
+#endif
+		{
+			mouseactivatetoggle = true;
+			mouseactive = true;
 			SDL_WM_GrabInput (SDL_GRAB_ON);
-	}
+		}
 }
-
-void IN_ActivateMouseSA (void)
-{
-	// S.A's hack to activate mouse
-	if ((int)_windowed_mouse.value && (!cl.paused))
-		IN_ActivateMouse ();
-}
-
 
 /*
 ===========
@@ -169,26 +164,15 @@ IN_DeactivateMouse
 */
 void IN_DeactivateMouse (void)
 {
-
-	mouseactivatetoggle = false;
-
-	if (mouseinitialized)
+	if (!mouseinitialized)
+		return;
+	if (mouseactivatetoggle)
 	{
+		mouseactivatetoggle = false;
 		mouseactive = false;
 		SDL_WM_GrabInput (SDL_GRAB_OFF);
 	}
 }
-
-void IN_DeactivateMouseSA (void)
-{
-	// don't worry if fullscreen - S.A.
-	if ((int)vid_mode.value != MODE_FULLSCREEN_DEFAULT || (int)_windowed_mouse.value == 0)
-		IN_DeactivateMouse ();
-
-	if (_windowed_mouse.value == 0)
-		IN_ShowMouse ();
-}
-
 
 /*
 ===========
@@ -197,26 +181,21 @@ IN_StartupMouse
 */
 void IN_StartupMouse (void)
 {
-//	if ( COM_CheckParm ("-nomouse") ) 
-//		return; 
-
-	// S.A. mega hack to implement nomouse
-	// Dan(?) left several command line options broken,
-	// there's probably a better way to fix this, but where ?
-	// if -nomouse::return, userdir::config.cfg::_windowed_mouse=1, and !%$#
-
-	if ( COM_CheckParm ("-nomouse") )  {
-		Cbuf_InsertText ("_windowed_mouse 0");
-		IN_ShowMouse ();
+	//IN_HideMouse ();
+	if ( COM_CheckParm ("-nomouse") ) {
+		SDL_WM_GrabInput (SDL_GRAB_OFF);
+		return;
 	}
 
-	// Should be a NOP in Linux, with this exception - DDOI
 	mouseinitialized = true;
 	mouse_buttons = 3;
-	
-// if a fullscreen video mode was set before the mouse was initialized,
-// set the mouse state appropriately
-	if (mouseactivatetoggle)
+
+	//if (mouseactivatetoggle)
+#if 1	// change to 1 if dont want to disable mouse in fullscreen
+	if ((modestate==MODE_FULLSCREEN_DEFAULT) || _enable_mouse.value)
+#else
+	if (_enable_mouse.value)
+#endif
 		IN_ActivateMouse ();
 }
 
@@ -1054,6 +1033,8 @@ void IN_SendKeyEvents (void)
                                 Key_Event(sym, state);
                                 break;
                         case SDL_MOUSEBUTTONDOWN:
+				if (!mouseactive)
+					break;
 				switch(event.button.button)
 				{
 				case 1:
@@ -1084,6 +1065,8 @@ void IN_SendKeyEvents (void)
 				break;
 
                         case SDL_MOUSEBUTTONUP:
+				if (!mouseactive)
+					break;
 				switch(event.button.button)
 				{
 				case 1:
@@ -1113,6 +1096,8 @@ void IN_SendKeyEvents (void)
 				}
 				break;
 			case SDL_MOUSEMOTION:
+				if (!mouseactive)
+					break;
 				if (!in_mode_set)
 				{
 					IN_MouseEvent (SDL_GetMouseState(NULL,NULL));
@@ -1131,6 +1116,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/05/21 16:53:15  sezero
+ * killed another unused mouse function
+ *
  * Revision 1.17  2005/05/17 06:47:57  sezero
  * initial cosmetic cleanup in in_sdl.c
  *
