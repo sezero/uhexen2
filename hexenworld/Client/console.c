@@ -48,18 +48,18 @@ Con_ToggleConsole_f
 */
 void Con_ToggleConsole_f (void)
 {
+	if (mousestate_sa)
+		IN_ActivateMouse (); // activate mouse when in console
+
 	Key_ClearTyping ();
 
 	if (key_dest == key_console)
 	{
-		IN_ActivateMouse (); // activate mouse when leaving console
 		if (cls.state == ca_active)
 			key_dest = key_game;
 	}
 	else {
 		key_dest = key_console;
-		IN_DeactivateMouse (); // decativate mouse in console
-		mousestate_sa = true;
 	}
 	Con_ClearNotify ();
 }
