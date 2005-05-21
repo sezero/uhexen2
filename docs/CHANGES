@@ -1,5 +1,31 @@
 ChangeLog:
 
+2005-05-20 (CVS):
+     * Makefiles clean-up
+     * synced h2 and hw versions of sound.h, moved
+       two defines to protocol.h where they belong
+     * synced h2 and hw versions of cd_linux.c (use the new H2W define)
+     * synced h2 and hw versions of snd_dma.c (use the new H2W define)
+     * synced h2 and hw versions of crc.c and crc.h
+     * synced h2 and hw versions of midi stuff
+     * save cache.txt and stats.txt into com_userdir
+     * removed all unused IDGODS code
+     * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
+     * removed all unused (never used) RJNETa and RJNET2 code
+     * killed client->privileged (was only available to IDGODS)
+     * initial syncing of common.c between h2 and hw: a lot of
+       whitespace clean-up, removal of activision secure stuff,
+       removal of -path, -proghack, -savedir and -cachedir support,
+       better registered version detection and crc checks, etc.
+     * removed some windows left-overs from sys_unix
+     * separated winquake.h into winquake.h and linquake.h
+       changed all occurances of winquake.h to quakeinc.h,
+       which includes the correct header
+     * keep ID style in declerations (less diff between h2/h2w...)
+     * initial slight gl syncing: stripped the platform spesific
+       stuff out from glquake.h into glxunix.h and glwin32.h
+     * killed unused c_sky_polys in h2
+
 2005-05-18 (CVS):
      * (Re-)added the parms.userdir to all sys_win.c. The platform
        conditionals around some of the com_userdir code of late are now
