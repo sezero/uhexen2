@@ -183,7 +183,7 @@ qboolean VID_CheckAdequateMem (int width, int height)
 // see if there's enough memory, allowing for the normal mode 0x13 pixel,
 // z, and surface buffers
 	if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
-		 0x10000 * 3) < minimum_memory)
+		 0x10000 * 3) < MINIMUM_MEMORY)
 	{
 		return false;		// not enough memory for mode
 	}
@@ -210,7 +210,7 @@ qboolean VID_AllocBuffers (int width, int height)
 // see if there's enough memory, allowing for the normal mode 0x13 pixel,
 // z, and surface buffers
 	if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
-		 0x10000 * 3) < minimum_memory)
+		 0x10000 * 3) < MINIMUM_MEMORY)
 	{
 		Con_SafePrintf ("Not enough memory for video mode\n");
 		return false;		// not enough memory for mode
@@ -3208,6 +3208,11 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/05/20 15:26:33  sezero
+ * separated winquake.h into winquake.h and linquake.h
+ * changed all occurances of winquake.h to quakeinc.h,
+ * which includes the correct header
+ *
  * Revision 1.2  2005/05/17 06:44:08  sezero
  * restored some win32 files to their original state
  *

@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.19 2005-05-20 15:26:33 sezero Exp $
+   $Header: /home/ozzie/Download/0000/uhexen2/hexen2/vid_sdl.c,v 1.20 2005-05-21 08:56:11 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -140,7 +140,7 @@ qboolean VID_CheckAdequateMem (int width, int height)
 // see if there's enough memory, allowing for the normal mode 0x13 pixel,
 // z, and surface buffers
 	if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
-		 0x10000 * 3) < minimum_memory)
+		 0x10000 * 3) < MINIMUM_MEMORY)
 	{
 		return false;		// not enough memory for mode
 	}
@@ -167,7 +167,7 @@ qboolean VID_AllocBuffers (int width, int height)
 // see if there's enough memory, allowing for the normal mode 0x13 pixel,
 // z, and surface buffers
 	if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
-		 0x10000 * 3) < minimum_memory)
+		 0x10000 * 3) < MINIMUM_MEMORY)
 	{
 		Con_SafePrintf ("Not enough memory for video mode\n");
 		return false;		// not enough memory for mode
@@ -901,6 +901,11 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2005/05/20 15:26:33  sezero
+ * separated winquake.h into winquake.h and linquake.h
+ * changed all occurances of winquake.h to quakeinc.h,
+ * which includes the correct header
+ *
  * Revision 1.18  2005/04/30 09:59:17  sezero
  * Many things in gl_vidsdl.c, and *especially in vid_sdl.c, are there
  * for the dynamic video mode swithching which we removed a long time

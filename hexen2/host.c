@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.16 2005-05-20 12:29:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.17 2005-05-21 08:56:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -32,8 +32,6 @@ double		oldrealtime;			// last frame run
 int		host_framecount;
 
 int		host_hunklevel;
-
-int		minimum_memory;
 
 client_t	*host_client;			// current client
 
@@ -959,11 +957,6 @@ Host_Init
 */
 void Host_Init (quakeparms_t *parms)
 {
-//	if (standard_quake)
-		minimum_memory = MINIMUM_MEMORY;
-//	else
-//		minimum_memory = MINIMUM_MEMORY_LEVELPAK;
-
 	host_parms = *parms;
 
 	com_argc = parms->argc;
@@ -1099,6 +1092,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/05/20 12:29:37  sezero
+ * leftovers after common.c sync-1
+ *
  * Revision 1.15  2005/04/30 08:30:09  sezero
  * changed message datatypes to byte in SV_SendReconnect() and Host_ShutdownServer()
  *

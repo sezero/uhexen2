@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.27 2005-05-20 12:28:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.28 2005-05-21 08:56:11 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -405,8 +405,6 @@ extern int		current_skill;		// skill level for currently loaded level (in case
 
 extern qboolean		isDedicated;
 
-extern int		minimum_memory;
-
 extern int		sv_kingofhill;
 extern qboolean		intro_playing;
 extern qboolean		skip_start;
@@ -440,6 +438,9 @@ void IN_DeactivateMouseSA (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2005/05/20 12:28:13  sezero
+ * leftovers after common.c sync-1
+ *
  * Revision 1.26  2005/05/19 16:41:50  sezero
  * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
  *
