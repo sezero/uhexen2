@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.24 2005-05-21 17:04:16 sezero Exp $
+   $Id: vid_sdl.c,v 1.25 2005-05-21 17:10:58 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -671,7 +671,7 @@ void	VID_Update (vrect_t *rects)
 	FlipScreen (rects);
 
 	// handle the mouse state when windowed if that's changed
-#if 1	// change to 1 if dont want to disable mouse in fullscreen
+#if 0	// change to 1 if dont want to disable mouse in fullscreen
 	if (modestate == MS_WINDOWED)
 #endif
 		if ((int)_enable_mouse.value != enable_mouse)
@@ -802,7 +802,7 @@ VID_HandlePause
 */
 void VID_HandlePause (qboolean pause)
 {
-#if 1	// change to 1 if dont want to disable mouse in fullscreen
+#if 0	// change to 1 if dont want to disable mouse in fullscreen
 	if ((modestate == MS_WINDOWED) && _enable_mouse.value)
 #else
 	if (_enable_mouse.value)
@@ -863,7 +863,7 @@ void ToggleFullScreenSA ()
 	if (SDL_WM_ToggleFullScreen(screen)==1) {
 		Cvar_SetValue ("vid_mode", !vid_mode.value);
 		modestate = (vid_mode.value) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
-#if 1	// change to 1 if dont want to disable mouse in fullscreen
+#if 0	// change to 1 if dont want to disable mouse in fullscreen
 		if (vid_mode.value) {
 			if (!_enable_mouse.value) {
 				// activate the mouse if not in menus
@@ -901,6 +901,34 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2005/05/21 17:04:16  sezero
+ * - revived -nomouse that "disables mouse no matter what"
+ * - renamed _windowed_mouse to _enable_mouse which is our intention,
+ *   that is, dynamically disabling/enabling mouse while in game
+ * - old code had many oversights/leftovers that prevented mouse being
+ *   really disabled in fullscreen mode. fixed and cleaned-up here
+ * - even in windowed mode, when mouse was disabled, mouse buttons and
+ *   the wheel got processed. fixed it here.
+ * - mouse cursor is never shown while the game is alive, regardless
+ *   of mouse being enabled/disabled (I never liked an ugly pointer
+ *   around while playing) Its only intention would be to be able to
+ *   use the desktop, and for that see, the grab notes below
+ * - if mouse is disabled, it is un-grabbed in windowed mode. Note: One
+ *   can always use the keyboard shortcut CTRL-G for grabbing-ungrabbing
+ *   the mouse regardless of mouse being enabled/disabled.
+ * - ToggleFullScreenSA() used to update vid_mode but always forgot
+ *   modestate. It now updates modestate as well.
+ * - Now that IN_ActivateMouse() and IN_DeactivateMouse() are fixed,
+ *   IN_ActivateMouseSA() and IN_DeactivateMouseSA() are redundant and
+ *   are removed. BTW, I added a new qboolean mousestate_sa (hi Steve)
+ *   which keeps track of whether we intentionally disabled the mouse.
+ * - mouse disabling in fullscreen mode (in the absence of -nomouse
+ *   arg) is not allowed in this patch, but this is done by a if 1/if 0
+ *   conditional compilation. Next patch will change all those if 1 to
+ *   if 0, and voila!, we can fully disable/enable mouse in fullscreen.
+ * - moved modestate enums/defines to vid.h so that they can be used
+ *   by other code properly.
+ *
  * Revision 1.23  2005/05/21 12:55:31  sezero
  * more syncing of h2/hw vid_sdl
  *

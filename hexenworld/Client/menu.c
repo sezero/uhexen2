@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.20 2005-05-21 17:04:17 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.21 2005-05-21 17:10:59 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -808,7 +808,7 @@ void M_Menu_Options_f (void)
 	// get the current music type
 	if (!strlen(old_bgmtype))
 		strncpy(old_bgmtype,bgmtype.string,20);
-#if 1	// change to 1 if dont want to disable mouse in fullscreen
+#if 0	// change to 1 if dont want to disable mouse in fullscreen
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 		options_cursor = 0;
 #endif
@@ -1109,7 +1109,7 @@ void M_Options_Key (int k)
 		else
 			options_cursor = 0;
 	}
-#if 1	// change to 1 if dont want to disable mouse in fullscreen
+#if 0	// change to 1 if dont want to disable mouse in fullscreen
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 	{
 		if (k == K_UPARROW)
