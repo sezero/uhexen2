@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.7 2005-05-21 17:04:17 sezero Exp $
+	$Id: winquake.h,v 1.8 2005-05-21 22:15:49 sezero Exp $
 */
 
 #pragma warning( disable : 4229 )  // mgraph gets this
@@ -52,7 +52,7 @@ void IN_MouseEvent (int mstate);
 
 extern qboolean	winsock_lib_initialized;
 
-extern cvar_t		_windowed_mouse;
+extern cvar_t		_enable_mouse;
 
 extern int		window_center_x, window_center_y;
 extern RECT		window_rect;
