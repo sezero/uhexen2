@@ -802,7 +802,7 @@ void NET_Init (void)
 		if (i < com_argc-1)
 			DEFAULTnet_hostport = atoi (com_argv[i+1]);
 		else
-			Sys_Error ("NET_Init: you must specify a number after -port");
+			Con_Printf ("NET_Init: ignoring -port argument\n");
 	}
 	net_hostport = DEFAULTnet_hostport;
 
