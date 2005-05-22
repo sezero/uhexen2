@@ -1,5 +1,14 @@
 ChangeLog:
 
+2005-05-22 (CVS):
+     * applied sbar fixes to hexenworld
+     * changed default viewsize to 110
+     * temporary fix for multiplayer episode selection.
+       next time we should get rid of these H2MP defines
+       and decide in runtime (com_portals from H2W?)
+     * killed cvar sys_quake2 (I dont think anyone uses it)
+     * conproc.* is for win32 only, moved them
+
 2005-05-21 (CVS):
      * disabled the rotating skull annoyance in GL mode (used to cause
        problems with voodoo1/mesa6 when using gamma tricks)
