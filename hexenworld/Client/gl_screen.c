@@ -61,7 +61,7 @@ float           scr_con_current;
 float           scr_conlines;           // lines of console to display
 
 float           oldscreensize, oldfov;
-cvar_t          scr_viewsize = {"viewsize","100", true};
+cvar_t          scr_viewsize = {"viewsize","110", true};
 cvar_t          scr_fov = {"fov","90"}; // 10 - 170
 cvar_t          scr_conspeed = {"scr_conspeed","300"};
 cvar_t          scr_centertime = {"scr_centertime","4"};

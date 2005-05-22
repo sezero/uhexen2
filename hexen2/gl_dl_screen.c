@@ -3,7 +3,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_screen.c,v 1.8 2005-01-12 22:11:05 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_screen.c,v 1.9 2005-05-22 11:50:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -66,7 +66,7 @@ float		scr_con_current;
 float		scr_conlines;		// lines of console to display
 
 float		oldscreensize, oldfov;
-cvar_t		scr_viewsize = {"viewsize","100", true};
+cvar_t		scr_viewsize = {"viewsize","110", true};
 cvar_t		scr_fov = {"fov","90"};	// 10 - 170
 cvar_t		scr_conspeed = {"scr_conspeed","300"};
 cvar_t		scr_centertime = {"scr_centertime","4"};
@@ -1281,6 +1281,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/01/12 22:11:05  sezero
+ * Fix off-by-one error in demo ending message line calculation.
+ *
  * Revision 1.7  2004/12/18 14:20:40  sezero
  * Clean-up and kill warnings: 11
  * A lot of whitespace cleanups.
