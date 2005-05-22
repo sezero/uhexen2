@@ -2,15 +2,13 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.4 2005-05-19 16:41:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.5 2005-05-22 11:59:53 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
 */
 
 #include "quakedef.h"
-
-cvar_t	sys_quake2 = {"sys_quake2","1",true};
 
 typedef struct
 {
@@ -786,27 +784,24 @@ trace_t SV_ClipMoveToEntity (edict_t *ent, vec3_t start, vec3_t mins, vec3_t max
 	VectorSubtract (start, offset, start_l);
 	VectorSubtract (end, offset, end_l);
 
-	if (sys_quake2.value)
-	{
-		// rotate start and end into the models frame of reference
-		if (ent->v.solid == SOLID_BSP && 
+	// rotate start and end into the models frame of reference
+	if (ent->v.solid == SOLID_BSP && 
 		(fastfabs(ent->v.angles[0]) > 1 || fastfabs(ent->v.angles[1]) > 1 || fastfabs(ent->v.angles[2]) > 1) )
-		{
-			vec3_t	forward, right, up;
-			vec3_t	temp;
+	{
+		vec3_t	forward, right, up;
+		vec3_t	temp;
 
-			AngleVectors (ent->v.angles, forward, right, up);
+		AngleVectors (ent->v.angles, forward, right, up);
 
-			VectorCopy (start_l, temp);
-			start_l[0] = DotProduct (temp, forward);
-			start_l[1] = -DotProduct (temp, right);
-			start_l[2] = DotProduct (temp, up);
+		VectorCopy (start_l, temp);
+		start_l[0] = DotProduct (temp, forward);
+		start_l[1] = -DotProduct (temp, right);
+		start_l[2] = DotProduct (temp, up);
 
-			VectorCopy (end_l, temp);
-			end_l[0] = DotProduct (temp, forward);
-			end_l[1] = -DotProduct (temp, right);
-			end_l[2] = DotProduct (temp, up);
-		}
+		VectorCopy (end_l, temp);
+		end_l[0] = DotProduct (temp, forward);
+		end_l[1] = -DotProduct (temp, right);
+		end_l[2] = DotProduct (temp, up);
 	}
 
 // trace a line through the apropriate clipping hull
@@ -820,31 +815,28 @@ trace_t SV_ClipMoveToEntity (edict_t *ent, vec3_t start, vec3_t mins, vec3_t max
 		}
 	}
 
-	if (sys_quake2.value)
-	{
-		// rotate endpos back to world frame of reference
-		if (ent->v.solid == SOLID_BSP && 
+	// rotate endpos back to world frame of reference
+	if (ent->v.solid == SOLID_BSP && 
 		(fastfabs(ent->v.angles[0]) > 1 || fastfabs(ent->v.angles[1]) > 1 || fastfabs(ent->v.angles[2]) > 1) )
+	{
+		vec3_t	a;
+		vec3_t	forward, right, up;
+		vec3_t	temp;
+
+		if (trace.fraction != 1)
 		{
-			vec3_t	a;
-			vec3_t	forward, right, up;
-			vec3_t	temp;
+			VectorSubtract (vec3_origin, ent->v.angles, a);
+			AngleVectors (a, forward, right, up);
 
-			if (trace.fraction != 1)
-			{
-				VectorSubtract (vec3_origin, ent->v.angles, a);
-				AngleVectors (a, forward, right, up);
+			VectorCopy (trace.endpos, temp);
+			trace.endpos[0] = DotProduct (temp, forward);
+			trace.endpos[1] = -DotProduct (temp, right);
+			trace.endpos[2] = DotProduct (temp, up);
 
-				VectorCopy (trace.endpos, temp);
-				trace.endpos[0] = DotProduct (temp, forward);
-				trace.endpos[1] = -DotProduct (temp, right);
-				trace.endpos[2] = DotProduct (temp, up);
-
-				VectorCopy (trace.plane.normal, temp);
-				trace.plane.normal[0] = DotProduct (temp, forward);
-				trace.plane.normal[1] = -DotProduct (temp, right);
-				trace.plane.normal[2] = DotProduct (temp, up);
-			}
+			VectorCopy (trace.plane.normal, temp);
+			trace.plane.normal[0] = DotProduct (temp, forward);
+			trace.plane.normal[1] = -DotProduct (temp, right);
+			trace.plane.normal[2] = DotProduct (temp, up);
 		}
 	}
 
@@ -1023,6 +1015,9 @@ trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, e
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/05/19 16:41:50  sezero
+ * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
+ *
  * Revision 1.3  2004/12/18 14:08:08  sezero
  * Clean-up and kill warnings 9:
  * Kill many unused vars.

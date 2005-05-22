@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.17 2005-05-21 08:56:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.18 2005-05-22 11:59:53 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -48,8 +48,6 @@ extern int	numgltextures;
 #ifdef PLATFORM_UNIX
 unsigned short	snd_system;
 #endif
-
-extern cvar_t	sys_quake2;
 
 cvar_t	host_framerate = {"host_framerate","0"};	// set for slow motion
 cvar_t	host_speeds = {"host_speeds","0"};			// set for running times
@@ -250,8 +248,6 @@ void Host_InitLocal (void)
 
 	Host_InitCommands ();
 	
-	Cvar_RegisterVariable (&sys_quake2);
-
 	Cvar_RegisterVariable (&host_framerate);
 	Cvar_RegisterVariable (&host_speeds);
 
@@ -1092,6 +1088,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/05/21 08:56:11  sezero
+ * MINIMUM_MEMORY_LEVELPAK was never used, switched to MINIMUM_MEMORY
+ *
  * Revision 1.16  2005/05/20 12:29:37  sezero
  * leftovers after common.c sync-1
  *
