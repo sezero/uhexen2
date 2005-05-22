@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.34 2005-05-21 17:10:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.35 2005-05-22 13:50:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -3325,10 +3325,15 @@ episode_t	episodes[] =
 	{"Deathmatch", 45, 1},
 };
 
-#define OEM_START 9
+#ifndef H2MP
+#define WITH_H2MP 0
+#else
+#define WITH_H2MP 1
+#endif
 #define REG_START 2
 #define MP_START 7
-#define DM_START 8
+#define DM_START  (MP_START+WITH_H2MP)
+#define OEM_START (DM_START+1)
 
 int	startepisode;
 int	startlevel;
@@ -4099,6 +4104,10 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.34  2005/05/21 17:10:58  sezero
+ * re-enabled complete disabling/enabling of mousa in fullscreen
+ * mode. (only replaced a bunch of if 1's to if 0's)
+ *
  * Revision 1.33  2005/05/21 17:04:16  sezero
  * - revived -nomouse that "disables mouse no matter what"
  * - renamed _windowed_mouse to _enable_mouse which is our intention,
