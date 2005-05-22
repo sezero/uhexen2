@@ -3,7 +3,7 @@
 //**
 //** sbar.c
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.5 2005-05-17 22:56:27 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.6 2005-05-22 11:49:00 sezero Exp $
 //**
 //**************************************************************************
 
@@ -1811,7 +1811,7 @@ static void ShowInfoDown_f(void)
 
 static void ShowInfoUp_f(void)
 {
-	if(cl.intermission || (scr_viewsize.value >= 110.0 && !sbtrans.value))
+	if(cl.intermission || (scr_viewsize.value > 110.0 && !sbtrans.value))
 	{
 		BarTargetHeight = 0.0-BAR_BUMP_HEIGHT;
 	}
@@ -2044,13 +2044,13 @@ void SB_InvReset(void)
 
 void SB_ViewSizeChanged(void)
 {
-	if(cl.intermission || (scr_viewsize.value >= 110.0 && !sbtrans.value))
+	if(cl.intermission || (scr_viewsize.value > 110.0 && !sbtrans.value))
 	{
-		BarTargetHeight = 0.0-BAR_BUMP_HEIGHT;
+		BarHeight = BarTargetHeight = 0.0-BAR_BUMP_HEIGHT;
 	}
 	else
 	{
-		BarTargetHeight = BAR_TOP_HEIGHT;
+		BarHeight = BarTargetHeight = BAR_TOP_HEIGHT;
 	}
 }
 
@@ -2144,10 +2144,10 @@ static void DrawBarArtifactNumber(int x, int y, int number)
 	if(number >= 10)
 	{
 		artiNumName[11] = '0'+(number%100)/10;
-		Sbar_DrawTransPic(x, y, Draw_CachePic(artiNumName));
+		Sbar_DrawTransPic(x -4, y, Draw_CachePic(artiNumName));
 	}
 	artiNumName[11] = '0'+number%10;
-	Sbar_DrawTransPic(x+4, y, Draw_CachePic(artiNumName));
+	Sbar_DrawTransPic(x, y, Draw_CachePic(artiNumName));
 }
 
 
