@@ -1,0 +1,191 @@
+Setting up 3dfx Voodoo Graphics, Voodoo 2 and Voodoo Rush
+3d accelerator boards to work with Hexen II under Linux:
+---------------------------------------------------------
+
+
+    This doco here is provided for convenience; there
+    certainly are many documentation on the Internet.
+
+
+For your Voodoo Graphics or Voodoo2 board to work with opengl,
+and Hexen II, you need to install Glide2 or Glide3 libraries
+spesific to your board. Then you must compile Mesa3d against
+glide and optionally install it. Mesa-3.x.x uses glide2, and
+optionally glide3.  Mesa-6.x.x only uses glide3 and this is the
+fastest and recommended option.
+
+
+1a. Downloading and installing glide2x :
+----------------------------------------
+There are two ways of installing glide2x under linux:
+- Download and install proper 3dfx rpm packages for your voodoo
+  card (you need to search them on the internet)
+- Or, better: Check-out the latest cvs version of glide from
+  sourceforge:
+
+# cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/glide co glide2x swlibs
+
+Alternatively you can download the package "glide2x.tgz"
+from our page. To compile for voodoo2:
+
+# mv swlibs ./glide2x/
+# cd glide2x
+# make -f makefile.linux FX_GLIDE_HW=cvg
+(replace cvg with sst1 in order to compile for voodoo graphics)
+
+The compiled library filename is libglide.so.2.53 for voodoo2, or
+libglide.so.2.46 for voodoo graphics. Become root, copy either of
+these libraries into /usr/lib, then create some symlinks, the final
+picture should be like:
+
+libglide.so   -> libglide.so.2
+libglide2x.so -> libglide.so.2
+libglide.so.2 -> libglide.so.2.53 (libglide.so.2.46 for Voodoo1)
+
+Finally, while still as the super user, run /sbin/ldconfig
+To install the glide2 headers, create a directory named glide under
+/usr/include. Download the file "glide2_headers.tgz" from our page
+and extract it into /usr/include/glide. This finalizes glide2
+installation.
+
+
+1b. Downloading and installing glide3x :
+----------------------------------------
+Check-out the latest cvs-development version of glide3 from
+sourceforge:
+
+# cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/glide co -r glide-devel-branch glide3x swlibs
+
+Alternatively you can download the package "glide3x.tgz" from
+our page.
+
+To compile for Voodoo2:
+
+# mv swlibs ./glide3x/
+# cd glide3x
+# make -f makefile.linux FX_GLIDE_HW=cvg
+(replace cvg with sst1 in order to compile for voodoo graphics)
+
+The compiled library filename is libglide3x.so, become root,
+copy this library into /usr/lib. Finally, while still as the
+super user, run /sbin/ldconfig
+To install the glide3 headers, create a directory named glide
+under /usr/include. Download the file "glide3_headers_v5.tgz"
+from our page and extract it into /usr/include/glide. This
+finalizes glide3 installation.
+
+
+2. Installing Device3Dfx kernel module :
+----------------------------------------
+You need this kernel module in order to use glide and access
+/dev/3dfx as a normal user. Check-out the latest sources from
+sourceforge cvs:
+
+# cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/glide co -r glide-devel-branch Device3Dfx
+
+(The glide2x.tgz and glide3x.tgz packages on our page already
+include this module's sources.)
+
+Compile it:
+
+# cd Device3Dfx
+# make KSRC=/path/to/kernelsource
+
+Install it:
+
+# su
+(enter root password)
+
+# make KSRC=/path/to/kernelsource install
+
+If the compilation errors-out with a message about remap_page_range
+this means you're using a non-standard kernel (like a RedHat kernel).
+In this case you may try editing 3dfx_driver.c and changing the
+kernel version to match yours at line 257.
+
+
+3. Downloading and installing Mesa :
+------------------------------------
+This may be a tricky process depending on what kind of a system
+you are on:
+
+
+3.a.  RedHat-7.3 and newer :
+----------------------------
+This represents a system with XFree86-4.x which, in a way, already
+includes mesa libraries and includes a working opengl installation
+through DRI. You must NOT do any "make install" after compiling
+mesa. Here is a procedure which is tested and works on an up-to-date
+RedHat-7.3 system:
+
+Download  Mesa-6.2.1 (or Mesa-3.4.2 for glide2) from mesa3d downloads
+page on sf.net into an empty directory.
+
+# tar xvfz MesaLib-6.2.1.tar.gz
+# tar xvfz MesaDemos-6.2.1.tar.gz
+# cd Mesa-6.2.1
+# make linux-x86-glide  # this compiles against glide
+                        # using all possible x86 asm
+# cd lib
+# cp libGL.so.1.5.060201 libVoodooGL.so.6.2
+or, for mesa-3.4.2:
+# cp libGL.so.1.2.030402 libVoodooGL.so.3.4
+
+The last command creates a copy of Mesa OpenGL library, we will
+use it with Hexen2. Copy this new library to any place you want,
+for example, into /home/NAME/lib . Now run the Hexen2 game with
+the command:
+
+# export MESA_GLX_FX=f
+# ./glhexen2 -f -width 640 --gllibrary /home/NAME/lib/libVoodooGL.so.6.2
+(you may use additional arguments)
+
+Mesa-3.0 and Mesa-3.2.1 should also work fine. In my experience,
+Mesa-4.0.4 and 5.0.2 didn't work, they may or may not work for
+you. The only issue I had with Mesa-6.2.1 is SLI was not put into
+any action (no fps beef-up.) Otherwise, it worked fine.
+
+Note:	The maximum resolution for a voodoo1 is 640. For a single
+	voodoo2 it is 800,  for a voodoo2/SLI setup it is 1024.
+	This actually depends on how much fb memory your board have:
+	if you have a 8mb Skywell Magic3D plus, you can do 800x600
+	with a voodoo graphics board, as well.
+	For performance reasons, 640x480 is recommended for a Voodoo2,
+	512x384 is recommended for a Voodoo Graphics.
+
+Note:	Hammer of Thyrion 1.2.5 automatically sets a few environment
+	variables for 3dfx/Mesa,  so you won't have to use the above
+	export command.
+
+
+3.b.  RedHat-6.2, Slackware-7.1 :
+     (anyone still with these oldies? ;)
+----------------------------------------
+These ones represent systems which use XFree86-3.x and no default
+installations of OpenGL/DRI.
+
+# tar xvfz MesaLib-3.4.2.tar.gz
+# tar xvfz MesaDemos-3.4.2.tar.gz
+# cd Mesa-3.4.2
+# make linux-x86-glide
+(or better: use the configure / make / make install sequence)
+
+You can also try using the other mentioned mesa versions.
+After the installation, you will have an opengl implementation
+that depends on 3dfx glide.  If you performe a system-wide mesa
+installation, you don't need the --gllibrary argument for running
+hexen2. Otherwise use a commandline like:
+# ./glhexen2 -f -width 640 --gllibrary /home/NAME/lib/libVoodooGL.so.3.4
+(you may use additional arguments)
+
+
+4.  8-bit Texture extensions:
+-----------------------------
+
+If you use the -paltex argument with HoT-1.2.5, 8-bit texture
+extensions will be searched and used with very little quality loss
+and it helps saving video memory.
+This options works with Mesa-6.x but not with Mesa-3.x.  It may or
+may not work correctly for you. The option is available on the game
+launcher, as well.
+

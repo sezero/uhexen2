@@ -12,6 +12,12 @@ Known Bugs
   be a problem anymore (we already have ALSA and SDL sound drivers),
   fixing that is on the TODO list.
 
+  3dfx Voodoo1/Voodoo2: Palettized textures are broken both with
+  Mesa 3.x. Mesa-6.x seems to work fine.  Voodoo3/5 aren't affected,
+  because DRI driver doesn't have those extensions. Nvidia seems to
+  work fine with it, though). Don't know if this is a Mesa bug or
+  Hexen2 bug, yet.
+
   matrox G200: GL games don't display menus correctly (matrox GL bug?)
 
   Coop mode of HexenWorld is broken (known problem since Raven's latest

@@ -361,12 +361,10 @@ to halt, try using the alt-enter key combination to switch to
 windowed mode and redraw the screen. This behaviour is the same
 for glquake.
 
-3dfx Voodoo1/Voodoo2 is no longer hardware accelerated under
-recent XFree-4.0 releases.  For OpenGL acceleration of 3dfx
-Voodoo Graphics/Voodoo Rush/Voodoo2 boards, you will have to
-use old versions of XFree86 (3.3.x), Glide, and Mesa compiled
-against Glide.  Setting up a Voodoo1/Voodoo2 card under linux
-can be a bit of work.
+3dfx Voodoo1, Voodoo2 and Voodoo Rush are no longer hardware
+accelerated under recent XFree-4.0 releases.  You need Glide,
+and Mesa compiled against Glide. For some more detailed info,
+consult the document README.3dfx.
 
 
 2.5 System Stability
