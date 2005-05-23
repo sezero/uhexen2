@@ -311,7 +311,7 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 	int		i, j;
 	int			*cmds;
 	trivertx_t	*verts;
-	char	cache[MAX_QPATH], fullpath[MAX_OSPATH];
+	char	cache[MAX_QPATH];
 	FILE	*f;
 
 	aliasmodel = m;
@@ -320,13 +320,11 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 	//
 	// look for a cached version
 	//
-
-	strcpy (cache, "glhexen/");
-
-	COM_StripExtension (m->name+strlen("models/"), cache+strlen("glhexen/"));
+	sprintf (cache, "%s/glhexen/", com_userdir);
+	COM_StripExtension (m->name+strlen("models/"), cache+strlen(cache));
 	strcat (cache, ".ms2");
 
-	COM_FOpenFile (cache, &f, true);	
+	f = fopen (cache, "rb");
 	if (f)
 	{
 		fread (&numcommands, 4, 1, f);
@@ -347,9 +345,7 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 		//
 		// save out the cached version in user's directory
 		//
-		sprintf (fullpath, "%s/%s", com_userdir, cache);
-
-		f = fopen (fullpath, "wb");
+		f = fopen (cache, "wb");
 		if (f)
 		{
 			fwrite (&numcommands, 4, 1, f);
