@@ -1,5 +1,10 @@
 ChangeLog:
 
+2005-05-23 (CVS):
+     * search the mesh cache directly under com_userdir/glhexen,
+       not in search_path. fixes the crazy polygons in mods bug.
+     * added 3dfx documentation, updated BUGS.
+
 2005-05-22 (CVS):
      * applied sbar fixes to hexenworld
      * changed default viewsize to 110
