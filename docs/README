@@ -322,6 +322,10 @@ player and monster models to be drawn with lines all over the
 place.  To fix this, delete the directory  ~/.hexen2/glhexen
 and/or  ~/.hexen2/portals/glhexen.  When you next run the game,
 it will remake this directory and everything should be fine.
+HoT-1.2.5 and later have fixed this bug, but pre-existing mesh
+files in those mentioned directories shall still cause this bad
+view, so delete them.  Mods installed after HoT-1.2.5 shall be
+fine.
 
 The biggest mod I've seen for Hexen II is the awesome Fortress
 of Four Doors (fo4d.zip). Make sure to check out the botmatch
