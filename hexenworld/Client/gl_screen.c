@@ -1,5 +1,9 @@
+/*
+	screen.c
+	master for refresh, status bar, console, chat, notify, etc
 
-// screen.c -- master for refresh, status bar, console, chat, notify, etc
+	$Id: gl_screen.c,v 1.9 2005-05-26 21:36:36 sezero Exp $
+*/
 
 #include "quakedef.h"
 

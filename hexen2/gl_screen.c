@@ -1,9 +1,8 @@
 /*
-
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_screen.c,v 1.10 2005-05-26 21:32:17 sezero Exp $
+	$Id: gl_screen.c,v 1.11 2005-05-26 21:36:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1265,6 +1264,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/05/26 21:32:17  sezero
+ * whitespace...
+ *
  * Revision 1.9  2005/05/22 11:50:59  sezero
  * changed default viewsize to 110
  *
