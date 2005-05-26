@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.21 2005-05-21 17:10:59 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.22 2005-05-26 08:39:27 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -979,6 +979,8 @@ void M_Options_Draw (void)
 {
 	float		r;
 	
+	IN_ActivateMouse ();	// we entered the customization menu
+
 	ScrollTitle("gfx/menu/title3.lmp");
 	
 	M_Print (16, 60+(0*8), "    Customize controls");
@@ -1058,7 +1060,6 @@ void M_Options_Key (int k)
 		switch (options_cursor)
 		{
 		case OPT_CUSTOMIZE:
-			IN_ActivateMouse ();	// we entered the customization menu
 			M_Menu_Keys_f ();
 			break;
 		case OPT_CONSOLE:
@@ -1331,9 +1332,6 @@ void M_Keys_Key (int k)
 	switch (k)
 	{
 	case K_ESCAPE:
-		// returning to other menus, deactivate mouse
-		IN_DeactivateMouse ();
-		mousestate_sa = true;
 		M_Menu_Options_f ();
 		break;
 

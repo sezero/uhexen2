@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.35 2005-05-22 13:50:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.36 2005-05-26 08:39:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2014,6 +2014,8 @@ void M_Options_Draw (void)
 {
 	float	r;
 
+	IN_ActivateMouse ();	// we entered the customization menu
+
 	ScrollTitle("gfx/menu/title3.lmp");
 
 	M_Print (16, 60+(0*8), "    Customize controls");
@@ -2104,7 +2106,6 @@ void M_Options_Key (int k)
 		switch (options_cursor)
 		{
 		case OPT_CUSTOMIZE:
-			IN_ActivateMouse ();	// we entered the customization menu
 			M_Menu_Keys_f ();
 			break;
 		case OPT_CONSOLE:
@@ -2364,9 +2365,6 @@ void M_Keys_Key (int k)
 	switch (k)
 	{
 	case K_ESCAPE:
-		// returning to other menus, deactivate mouse
-		IN_DeactivateMouse ();
-		mousestate_sa = true;
 		M_Menu_Options_f ();
 		break;
 
@@ -4104,6 +4102,11 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.35  2005/05/22 13:50:04  sezero
+ * temporary fix for multiplayer episode selection.
+ * next time we should get rid of these H2MP defines
+ * and decide in runtime (com_portals from H2W?)
+ *
  * Revision 1.34  2005/05/21 17:10:58  sezero
  * re-enabled complete disabling/enabling of mousa in fullscreen
  * mode. (only replaced a bunch of if 1's to if 0's)
