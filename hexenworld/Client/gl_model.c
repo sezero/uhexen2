@@ -1,7 +1,12 @@
-// models.c -- model loading and caching
+/*
+	models.c
+	model loading and caching
 
-// models are the only shared resource between a client and server running
-// on the same machine.
+	models are the only shared resource between a client and server
+	running on the same machine.
+
+	$Id: gl_model.c,v 1.7 2005-05-26 22:20:16 sezero Exp $
+*/
 
 #include "quakedef.h"
 
@@ -270,7 +275,7 @@ model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 	case IDPOLYHEADER:
 		Mod_LoadAliasModel (mod, buf);
 		break;
-		
+
 	case IDSPRITEHEADER:
 		Mod_LoadSpriteModel (mod, buf);
 		break;
@@ -787,7 +792,6 @@ void Mod_LoadFaces (lump_t *l)
 		if (out->texinfo->texture->name[0]=='*')		// turbulent
 		{
 			out->flags |= (SURF_DRAWTURB | SURF_DRAWTILED);
-		
 			for (i=0 ; i<2 ; i++)
 			{
 				out->extents[i] = 16384;
@@ -801,7 +805,6 @@ void Mod_LoadFaces (lump_t *l)
 
 			continue;
 		}
-
 	}
 }
 

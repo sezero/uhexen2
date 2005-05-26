@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.c,v 1.11 2005-05-17 22:56:19 sezero Exp $
+	$Id: gl_model.c,v 1.12 2005-05-26 22:20:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1321,7 +1321,7 @@ void * Mod_LoadAliasFrame (void * pin, maliasframedesc_t *frame)
 	trivertx_t	*pinframe;
 	int		i, j;
 	daliasframe_t	*pdaliasframe;
-	vec3_t in,out;
+	vec3_t		in,out;
 
 	pdaliasframe = (daliasframe_t *)pin;
 
@@ -1380,7 +1380,7 @@ void *Mod_LoadAliasGroup (void * pin,  maliasframedesc_t *frame)
 	int					i, j, k, numframes;
 	daliasinterval_t	*pin_intervals;
 	void				*ptemp;
-	vec3_t in,out;
+	vec3_t				in,out;
 	
 	pingroup = (daliasgroup_t *)pin;
 
@@ -2078,6 +2078,7 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 // FIXME: do this right
 //	mod->mins[0] = mod->mins[1] = mod->mins[2] = -16;
 //	mod->maxs[0] = mod->maxs[1] = mod->maxs[2] = 16;
+
 	mod->mins[0] = mins[0] - 10;
 	mod->mins[1] = mins[1] - 10;
 	mod->mins[2] = mins[2] - 10;
@@ -2090,6 +2091,7 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	//
 	if (vid_initialized)
 		GL_MakeAliasModelDisplayLists (mod, pheader);
+
 //
 // move the complete, relocatable alias model to the cache
 //	
@@ -2106,7 +2108,6 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 }
 
 //=============================================================================
-
 
 /*
 =================
@@ -2304,6 +2305,11 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/05/17 22:56:19  sezero
+ * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
+ * Q_strXcasecmp will now be used throughout the code which are implementation
+ * dependant defines for __GNUC__ (strXcasecmp) and _WIN32 (strXicmp)
+ *
  * Revision 1.10  2005/05/17 06:50:02  sezero
  * removed underscored versions of string comparison functions
  * Q_strXXXXX is now only for !PLATFORM_UNIX
