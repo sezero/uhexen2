@@ -7,7 +7,7 @@ Setting up 3dfx Voodoo Graphics, Voodoo 2 and Voodoo Rush
     certainly are many documentation on the Internet.
 
 
-For your Voodoo Graphics or Voodoo2 board to work with opengl,
+For your Voodoo Graphics or Voodoo2 board to work with OpenGL,
 and Hexen II, you need to install Glide2 or Glide3 libraries
 spesific to your board. Then you must compile Mesa3d against
 glide and optionally install it. Mesa-3.x.x uses glide2, and
@@ -101,7 +101,7 @@ Install it:
 If the compilation errors-out with a message about remap_page_range
 this means you're using a non-standard kernel (like a RedHat kernel).
 In this case you may try editing 3dfx_driver.c and changing the
-kernel version to match yours at line 257.
+kernel version to match yours at line 181.
 
 
 3. Downloading and installing Mesa :
@@ -172,9 +172,9 @@ installations of OpenGL/DRI.
 
 You can also try using the other mentioned mesa versions.
 After the installation, you will have an opengl implementation
-that depends on 3dfx glide.  If you performe a system-wide mesa
+that depends on 3dfx glide.  If you perform a system-wide mesa
 installation, you don't need the --gllibrary argument for running
-hexen2. Otherwise use a commandline like:
+hexen2. Otherwise use a command line like:
 # ./glhexen2 -f -width 640 --gllibrary /home/NAME/lib/libVoodooGL.so.3.4
 (you may use additional arguments)
 
