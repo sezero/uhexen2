@@ -3,7 +3,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_screen.c,v 1.9 2005-05-22 11:50:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_screen.c,v 1.10 2005-05-26 21:32:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -102,7 +102,7 @@ float		scr_disabled_time;
 
 static qboolean scr_needfull = false;
 
-int			total_loading_size, current_loading_size, loading_stage;
+int		total_loading_size, current_loading_size, loading_stage;
 
 void SCR_ScreenShot_f (void);
 void Plaque_Draw (char *message, qboolean AlwaysDraw);
@@ -329,7 +329,7 @@ static void SCR_CalcRefdef (void)
 	else
 		sb_lines = 24+16+8;*/
 
-	if(size >= 110)
+	if (size >= 110)
 	{ // No status bar
 		sb_lines = 0;
 	}
@@ -500,14 +500,6 @@ void SCR_DrawPause (void)
 	if (!scr_showpause.value)		// turn off for screenshots
 		return;
 
-//	if (!cl.paused)
-//		return;
-
-//	pic = Draw_CachePic ("gfx/pause.lmp");
-//	Draw_Pic ( (vid.width - pic->width)/2, 
-//		(vid.height - 48 - pic->height)/2, pic);
-
-
 	if (!cl.paused)
 	{
 		newdraw = false;
@@ -544,7 +536,6 @@ void SCR_DrawPause (void)
 }
 
 
-
 /*
 ==============
 SCR_DrawLoading
@@ -552,12 +543,12 @@ SCR_DrawLoading
 */
 void SCR_DrawLoading (void)
 {
-	int		size, count, offset;
+	int	size, count, offset;
 	qpic_t	*pic;
 
 	if (!scr_drawloading && loading_stage == 0)
 		return;
-		
+
 	pic = Draw_CachePic ("gfx/menu/loading.lmp");
 	offset = (vid.width - pic->width)/2;
 	Draw_TransPic (offset , 0, pic);
@@ -618,7 +609,7 @@ void SCR_SetUpToDrawConsole (void)
 		scr_conlines = vid.height/2;	// half screen
 	else
 		scr_conlines = 0;		// none visible
-	
+
 	if (scr_conlines < scr_con_current)
 	{
 		scr_con_current -= scr_conspeed.value*host_frametime;
@@ -665,16 +656,16 @@ void SCR_DrawConsole (void)
 }
 
 
-/* 
-============================================================================== 
- 
-						SCREEN SHOTS 
- 
-============================================================================== 
-*/ 
+/*
+==============================================================================
+
+						SCREEN SHOTS
+
+==============================================================================
+*/
 
 typedef struct _TargaHeader {
-	unsigned char 	id_length, colormap_type, image_type;
+	unsigned char	id_length, colormap_type, image_type;
 	unsigned short	colormap_index, colormap_length;
 	unsigned char	colormap_size;
 	unsigned short	x_origin, y_origin, width, height;
@@ -696,25 +687,25 @@ void SCR_ScreenShot_f (void)
 
 	sprintf (checkname, "%s/shots", com_userdir);
 	Sys_mkdir (checkname);
+
 // 
 // find a file name to save it to 
 // 
 	strcpy(pcxname,"shots/hexen00.tga");
 
-	for (i=0 ; i<=99 ; i++) 
-	{ 
-		pcxname[11] = i/10 + '0'; 
-		pcxname[12] = i%10 + '0'; 
+	for (i=0 ; i<=99 ; i++)
+	{
+		pcxname[11] = i/10 + '0';
+		pcxname[12] = i%10 + '0';
 		sprintf (checkname, "%s/%s", com_userdir, pcxname);
 		if (Sys_FileTime(checkname) == -1)
 			break;	// file doesn't exist
-	} 
-	if (i==100) 
+	}
+	if (i==100)
 	{
-		Con_Printf ("SCR_ScreenShot_f: Couldn't create a TGA file\n"); 
+		Con_Printf ("SCR_ScreenShot_f: Couldn't create a TGA file\n");
 		return;
- 	}
-
+	}
 
 	buffer = malloc(glwidth*glheight*3 + 18);
 	memset (buffer, 0, 18);
@@ -725,7 +716,7 @@ void SCR_ScreenShot_f (void)
 	buffer[15] = glheight>>8;
 	buffer[16] = 24;	// pixel size
 
-	glfunc.glReadPixels_fp (glx, gly, glwidth, glheight, GL_RGB, GL_UNSIGNED_BYTE, buffer+18 ); 
+	glfunc.glReadPixels_fp (glx, gly, glwidth, glheight, GL_RGB, GL_UNSIGNED_BYTE, buffer+18 );
 
 	// swap rgb to bgr
 	c = 18+glwidth*glheight*3;
@@ -739,11 +730,10 @@ void SCR_ScreenShot_f (void)
 
 	free (buffer);
 	Con_Printf ("Wrote %s\n", pcxname);
-} 
+}
 
 
 //=============================================================================
-
 
 /*
 ===============
@@ -803,8 +793,8 @@ void SCR_DrawNotifyString (void)
 ==================
 SCR_ModalMessage
 
-Displays a text string in the center of the screen and waits for a Y or N
-keypress.  
+Displays a text string in the center of the screen
+and waits for a Y or N keypress.
 ==================
 */
 int SCR_ModalMessage (char *text)
@@ -819,7 +809,7 @@ int SCR_ModalMessage (char *text)
 	scr_drawdialog = true;
 	SCR_UpdateScreen ();
 	scr_drawdialog = false;
-	
+
 	S_ClearBuffer ();		// so dma doesn't loop current sound
 
 	do
@@ -847,9 +837,9 @@ Brings the console down and fades the palettes back to normal
 void SCR_BringDownConsole (void)
 {
 	int		i;
-	
+
 	scr_centertime_off = 0;
-	
+
 	for (i=0 ; i<20 && scr_conlines != scr_con_current ; i++)
 		SCR_UpdateScreen ();
 
@@ -999,7 +989,7 @@ void SB_IntermissionOverlay(void)
 	
 	switch(cl.intermission)
 	{
-	case 1:
+		case 1:
 			pic = Draw_CachePicNoTrans ("gfx/meso.lmp");
 			break;
 		case 2:
@@ -1035,14 +1025,12 @@ void SB_IntermissionOverlay(void)
 		case 12:
 			pic = Draw_CachePicNoTrans ("gfx/end-3.lmp");
 			break;
-
 		default:
 			Sys_Error ("SB_IntermissionOverlay: Bad episode");
 			break;
 	}
 
-// Pa3PyX: intermissions now drawn fullscreen
-//	Draw_Pic (((vid.width - 320)>>1),((vid.height - 200)>>1), pic);
+	//Draw_Pic (((vid.width - 320)>>1),((vid.height - 200)>>1), pic);
 	Draw_IntermissionPic(pic);
 
 	if (cl.intermission >= 6 && cl.intermission <= 8)
@@ -1097,9 +1085,8 @@ void SB_IntermissionOverlay(void)
 		by = (vid.height/2 - lines*4);
 
 	// different story for the mission pack
-        if (cl.intermission == 10 )	// tibet10 cl.intermission == 10
+	if (cl.intermission == 10)	// tibet10 cl.intermission == 10
 		by=33;
-
 
 	// printf ("cl.intermission == %i, lines == %i,vid(x,y)=%i,%i by=%i\n\n",cl.intermission,lines,vid.width,vid.height,by);
 
@@ -1191,9 +1178,10 @@ void SCR_UpdateScreen (void)
 //
 	SCR_SetUpToDrawConsole ();
 	
-	// Pa3PyX: no need to draw view in intermission screens anymore
-//	if (cl.intermission > 1 || cl.intermission <= 12) {
-	if (cl.intermission < 1 || cl.intermission > 12) {
+	// no need to draw view in fullscreen intermission screens
+	//if (cl.intermission > 1 || cl.intermission <= 12) {
+	if (cl.intermission < 1 || cl.intermission > 12)
+	{
 		V_RenderView ();
 	}
 
@@ -1239,7 +1227,7 @@ void SCR_UpdateScreen (void)
 	{
 		if (crosshair.value)
 			Draw_Character (scr_vrect.x + scr_vrect.width/2, scr_vrect.y + scr_vrect.height/2, '+');
-		
+
 		SCR_DrawRam();
 		SCR_DrawNet();
 		SCR_DrawTurtle();
@@ -1248,31 +1236,27 @@ void SCR_UpdateScreen (void)
 		SB_Draw();
 
 		// Pa3PyX: draw loading plaque and dim screen if loading
-		if (scr_drawloading) {
+		if (scr_drawloading)
+		{
 			Draw_FadeScreen();
 			SCR_DrawLoading();
 		}
 		else {
-		Plaque_Draw(plaquemessage,0);
-		SCR_DrawConsole();
-		M_Draw();
-		if (errormessage)
-			Plaque_Draw(errormessage,1);
+			Plaque_Draw(plaquemessage,0);
+			SCR_DrawConsole();
+			M_Draw();
+			if (errormessage)
+				Plaque_Draw(errormessage,1);
 
-		if (info_up)
-		{
+			if (info_up)
+			{
 #ifdef H2MP
-			UpdateInfoMessage();
+				UpdateInfoMessage();
 #endif
-			Info_Plaque_Draw(infomessage);
+				Info_Plaque_Draw(infomessage);
+			}
 		}
 	}
-	}
-
-// Pa3PyX: loading screen already called from actual loading procedures
-/*	if (loading_stage)
-		SCR_DrawLoading();
-*/
 
 	V_UpdatePalette ();
 
@@ -1281,6 +1265,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/05/22 11:50:59  sezero
+ * changed default viewsize to 110
+ *
  * Revision 1.8  2005/01/12 22:11:05  sezero
  * Fix off-by-one error in demo ending message line calculation.
  *

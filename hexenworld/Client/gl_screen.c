@@ -51,51 +51,51 @@ console is:
 */
 
 
-int                     glx, gly, glwidth, glheight;
+int			glx, gly, glwidth, glheight;
 
 // only the refresh window will be updated unless these variables are flagged 
-int                     scr_copytop;
-int                     scr_copyeverything;
+int			scr_copytop;
+int			scr_copyeverything;
 
-float           scr_con_current;
-float           scr_conlines;           // lines of console to display
+float		scr_con_current;
+float		scr_conlines;		// lines of console to display
 
-float           oldscreensize, oldfov;
-cvar_t          scr_viewsize = {"viewsize","110", true};
-cvar_t          scr_fov = {"fov","90"}; // 10 - 170
-cvar_t          scr_conspeed = {"scr_conspeed","300"};
-cvar_t          scr_centertime = {"scr_centertime","4"};
-cvar_t          scr_showram = {"showram","1"};
-cvar_t          scr_showturtle = {"showturtle","0"};
-cvar_t          scr_showpause = {"showpause","1"};
-cvar_t          scr_printspeed = {"scr_printspeed","8"};
+float		oldscreensize, oldfov;
+cvar_t		scr_viewsize = {"viewsize","110", true};
+cvar_t		scr_fov = {"fov","90"};	// 10 - 170
+cvar_t		scr_conspeed = {"scr_conspeed","300"};
+cvar_t		scr_centertime = {"scr_centertime","4"};
+cvar_t		scr_showram = {"showram","1"};
+cvar_t		scr_showturtle = {"showturtle","0"};
+cvar_t		scr_showpause = {"showpause","1"};
+cvar_t		scr_printspeed = {"scr_printspeed","8"};
 cvar_t		gl_triplebuffer = {"gl_triplebuffer", "0", true };
-extern  cvar_t  crosshair;
+extern	cvar_t	crosshair;
 extern void Draw_Crosshair(void);
 
-qboolean        scr_initialized;                // ready to draw
+qboolean	scr_initialized;		// ready to draw
 
-qpic_t          *scr_ram;
-qpic_t          *scr_net;
-qpic_t          *scr_turtle;
+qpic_t		*scr_ram;
+qpic_t		*scr_net;
+qpic_t		*scr_turtle;
 
-int                     scr_fullupdate;
-int						scr_topupdate;
+int			scr_fullupdate;
+int			scr_topupdate;
 
-int                     clearconsole;
-int                     clearnotify;
+int			clearconsole;
+int			clearnotify;
 
-int                     sb_lines;
+int			sb_lines;
 
-viddef_t        vid;                            // global video state
+viddef_t	vid;				// global video state
 
-vrect_t         scr_vrect;
+vrect_t		scr_vrect;
 
-qboolean        scr_disabled_for_loading;
-qboolean        scr_drawloading;
-float           scr_disabled_time;
+qboolean	scr_disabled_for_loading;
+qboolean	scr_drawloading;
+float		scr_disabled_time;
 
-qboolean        block_drawing;
+qboolean	block_drawing;
 
 void SCR_ScreenShot_f (void);
 void Plaque_Draw (char *message, qboolean AlwaysDraw);
@@ -177,6 +177,7 @@ void SCR_CenterPrint (char *str)
 	scr_center_lines = lines;
 }
 
+
 void SCR_DrawCenterString (void)
 {
 	int		i;
@@ -232,18 +233,15 @@ Internal use only
 */
 static void SCR_CalcRefdef (void)
 {
-	float           size;
-	int             h;
+	float		size;
+	int		h;
 
-
-	scr_fullupdate = 0;             // force a background redraw
+	scr_fullupdate = 0;		// force a background redraw
 	vid.recalc_refdef = 0;
 
 // force the status bar to redraw
 	Sbar_Changed ();
 
-//========================================
-	
 // bound viewsize
 	if (scr_viewsize.value < 30)
 		Cvar_Set ("viewsize","30");
@@ -262,12 +260,12 @@ static void SCR_CalcRefdef (void)
 	else
 		size = scr_viewsize.value;
 
-//	if (size >= 120)
-//		sb_lines = 0;		// no status bar at all
-//	else if (size >= 110)
-//		sb_lines = 24;		// no inventory
-//	else
-//		sb_lines = 24+16+8;
+/*	if (size >= 120)
+		sb_lines = 0;		// no status bar at all
+	else if (size >= 110)
+		sb_lines = 24;		// no inventory
+	else
+		sb_lines = 24+16+8;*/
 
 	if (size >= 110)
 	{ // No status bar
@@ -282,7 +280,6 @@ static void SCR_CalcRefdef (void)
 	if (cl.intermission)
 	{
 		size = 100;
-
 		sb_lines = 0;
 	}
 	size /= 100;
@@ -304,6 +301,7 @@ static void SCR_CalcRefdef (void)
 
 	scr_vrect = r_refdef.vrect;
 }
+
 
 /*
 =================
@@ -395,7 +393,7 @@ SCR_DrawTurtle
 */
 void SCR_DrawTurtle (void)
 {
-	static int      count;
+	static int	count;
 	
 	if (!scr_showturtle.value)
 		return;
@@ -507,6 +505,7 @@ void SCR_DrawPause (void)
 	Draw_TransPicCropped ( (vid.width - pic->width)/2, finaly, pic);
 }
 
+
 /*
 ==============
 SCR_DrawLoading
@@ -514,11 +513,11 @@ SCR_DrawLoading
 */
 void SCR_DrawLoading (void)
 {
-	qpic_t  *pic;
+	qpic_t	*pic;
 
 	if (!scr_drawloading)
 		return;
-		
+
 	pic = Draw_CachePic ("gfx/loading.lmp");
 	Draw_Pic ( (vid.width - pic->width)/2, 
 		(vid.height - 48 - pic->height)/2, pic);
@@ -539,19 +538,19 @@ void SCR_SetUpToDrawConsole (void)
 	Con_CheckResize ();
 	
 	if (scr_drawloading)
-		return;         // never a console with loading plaque
+		return;		// never a console with loading plaque
 		
 // decide on the height of the console
 	if (cls.state != ca_active)
 	{
-		scr_conlines = vid.height;              // full screen
+		scr_conlines = vid.height;	// full screen
 		scr_con_current = scr_conlines;
 	}
 	else if (key_dest == key_console)
-		scr_conlines = vid.height/2;    // half screen
+		scr_conlines = vid.height/2;	// half screen
 	else
-		scr_conlines = 0;                               // none visible
-	
+		scr_conlines = 0;		// none visible
+
 	if (scr_conlines < scr_con_current)
 	{
 		scr_con_current -= scr_conspeed.value*host_frametime;
@@ -593,25 +592,25 @@ void SCR_DrawConsole (void)
 	else
 	{
 		if (key_dest == key_game || key_dest == key_message)
-			Con_DrawNotify ();      // only draw notify in game
+			Con_DrawNotify ();	// only draw notify in game
 	}
 }
 
 
-/* 
-============================================================================== 
- 
-						SCREEN SHOTS 
- 
-============================================================================== 
-*/ 
+/*
+==============================================================================
+
+						SCREEN SHOTS
+
+==============================================================================
+*/
 
 typedef struct _TargaHeader {
-	unsigned char   id_length, colormap_type, image_type;
-	unsigned short  colormap_index, colormap_length;
-	unsigned char   colormap_size;
-	unsigned short  x_origin, y_origin, width, height;
-	unsigned char   pixel_size, attributes;
+	unsigned char	id_length, colormap_type, image_type;
+	unsigned short	colormap_index, colormap_length;
+	unsigned char	colormap_size;
+	unsigned short	x_origin, y_origin, width, height;
+	unsigned char	pixel_size, attributes;
 } TargaHeader;
 
 
@@ -622,10 +621,10 @@ SCR_ScreenShot_f
 */  
 void SCR_ScreenShot_f (void) 
 {
-	byte            *buffer;
-	char            pcxname[80]; 
-	char            checkname[MAX_OSPATH];
-	int                     i, c, temp;
+	byte		*buffer;
+	char		pcxname[80]; 
+	char		checkname[MAX_OSPATH];
+	int			i, c, temp;
 
 	sprintf (checkname, "%s/shots", com_userdir);
 	Sys_mkdir (checkname);
@@ -634,32 +633,31 @@ void SCR_ScreenShot_f (void)
 // find a file name to save it to 
 // 
 	strcpy(pcxname,"shots/hw00.tga");
-		
-	for (i=0 ; i<=99 ; i++) 
-	{ 
-		pcxname[8] = i/10 + '0'; 
-		pcxname[9] = i%10 + '0'; 
+
+	for (i=0 ; i<=99 ; i++)
+	{
+		pcxname[8] = i/10 + '0';
+		pcxname[9] = i%10 + '0';
 		sprintf (checkname, "%s/%s", com_userdir, pcxname);
 		if (Sys_FileTime(checkname) == -1)
-			break;  // file doesn't exist
-	} 
-	if (i==100) 
+			break;	// file doesn't exist
+	}
+	if (i==100)
 	{
-		Con_Printf ("SCR_ScreenShot_f: Couldn't create a PCX file\n"); 
+		Con_Printf ("SCR_ScreenShot_f: Couldn't create a PCX file\n");
 		return;
 	}
 
-
 	buffer = malloc(glwidth*glheight*3 + 18);
 	memset (buffer, 0, 18);
-	buffer[2] = 2;          // uncompressed type
+	buffer[2] = 2;		// uncompressed type
 	buffer[12] = glwidth&255;
 	buffer[13] = glwidth>>8;
 	buffer[14] = glheight&255;
 	buffer[15] = glheight>>8;
-	buffer[16] = 24;        // pixel size
+	buffer[16] = 24;	// pixel size
 
-	glfunc.glReadPixels_fp (glx, gly, glwidth, glheight, GL_RGB, GL_UNSIGNED_BYTE, buffer+18 ); 
+	glfunc.glReadPixels_fp (glx, gly, glwidth, glheight, GL_RGB, GL_UNSIGNED_BYTE, buffer+18 );
 
 	// swap rgb to bgr
 	c = 18+glwidth*glheight*3;
@@ -673,16 +671,13 @@ void SCR_ScreenShot_f (void)
 
 	free (buffer);
 	Con_Printf ("Wrote %s\n", pcxname);
-} 
+}
 
 
 //=============================================================================
 
-
-//=============================================================================
-
-char    *scr_notifystring;
-qboolean        scr_drawdialog;
+char	*scr_notifystring;
+qboolean	scr_drawdialog;
 
 void SCR_DrawNotifyString (void)
 {
@@ -693,8 +688,8 @@ void SCR_DrawNotifyString (void)
 ==================
 SCR_ModalMessage
 
-Displays a text string in the center of the screen and waits for a Y or N
-keypress.  
+Displays a text string in the center of the screen
+and waits for a Y or N keypress.
 ==================
 */
 int SCR_ModalMessage (char *text)
@@ -706,12 +701,12 @@ int SCR_ModalMessage (char *text)
 	scr_drawdialog = true;
 	SCR_UpdateScreen ();
 	scr_drawdialog = false;
-	
-	S_ClearBuffer ();               // so dma doesn't loop current sound
+
+	S_ClearBuffer ();		// so dma doesn't loop current sound
 
 	do
 	{
-		key_count = -1;         // wait for a key down and up
+		key_count = -1;		// wait for a key down and up
 		Sys_SendKeyEvents ();
 	} while (key_lastpress != 'y' && key_lastpress != 'n' && key_lastpress != K_ESCAPE);
 
@@ -733,14 +728,14 @@ Brings the console down and fades the palettes back to normal
 */
 void SCR_BringDownConsole (void)
 {
-	int             i;
-	
+	int		i;
+
 	scr_centertime_off = 0;
-	
+
 	for (i=0 ; i<20 && scr_conlines != scr_con_current ; i++)
 		SCR_UpdateScreen ();
 
-	cl.cshifts[0].percent = 0;              // no area contents palette on next frame
+	cl.cshifts[0].percent = 0;		// no area contents palette on next frame
 	VID_SetPalette (host_basepal);
 }
 
@@ -1012,8 +1007,7 @@ void SCR_UpdateScreen (void)
 	}
 
 	if (!scr_initialized || !con_initialized)
-		return;                         // not initialized yet
-
+		return;				// not initialized yet
 
 	if (oldsbar != cl_sbar.value) {
 		oldsbar = cl_sbar.value;
@@ -1074,7 +1068,7 @@ void SCR_UpdateScreen (void)
 	{
 		if (crosshair.value)
 			Draw_Crosshair();
-		
+
 		SCR_DrawRam ();
 		SCR_DrawFPS ();
 		SCR_DrawTurtle ();
