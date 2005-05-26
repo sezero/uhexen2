@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_dl_vidsdl.c,v 1.57 2005-05-26 09:07:21 sezero Exp $
+   $Id: gl_dl_vidsdl.c,v 1.58 2005-05-26 09:15:45 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -188,6 +188,13 @@ int VID_SetMode (int modenum)
 	// set fxMesa mode to fullscreen, don't let it it cheat multitexturing
 	setenv ("MESA_GLX_FX","f",1);
 	setenv ("FX_DONT_FAKE_MULTITEX","1",1);
+
+	// enable vsync for nvidia geforce or newer - S.A
+	if (COM_CheckParm("-sync") || COM_CheckParm("-vsync"))
+	{
+		setenv("__GL_SYNC_TO_VBLANK", "1", 1);
+		Con_Printf ("Nvidia GL vsync enabled\n");
+	}
 
 	WRHeight = vid.height = vid.conheight = modelist[modenum].height; // BASEHEIGHT;
 	WRWidth = vid.width = vid.conwidth =   modelist[modenum].width; //  BASEWIDTH ;
