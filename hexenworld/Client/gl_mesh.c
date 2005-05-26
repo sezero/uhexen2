@@ -1,4 +1,9 @@
-// gl_mesh.c: triangle model functions
+/*
+	gl_mesh.c
+	triangle model functions
+
+	$Id: gl_mesh.c,v 1.5 2005-05-26 21:54:30 sezero Exp $
+*/
 
 #include "quakedef.h"
 

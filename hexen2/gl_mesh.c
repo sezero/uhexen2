@@ -1,6 +1,8 @@
 /*
 	gl_mesh.c
 	triangle model functions
+
+	$Id: gl_mesh.c,v 1.6 2005-05-26 21:54:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -309,7 +311,7 @@ GL_MakeAliasModelDisplayLists
 void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 {
 	int		i, j;
-	int			*cmds;
+	int		*cmds;
 	trivertx_t	*verts;
 	char	cache[MAX_QPATH];
 	FILE	*f;
@@ -346,6 +348,15 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 		// save out the cached version in user's directory
 		//
 		f = fopen (cache, "wb");
+		if (!f)
+		{
+			char gldir[MAX_OSPATH];
+
+			sprintf (gldir, "%s/glhexen", com_userdir);
+			Sys_mkdir (gldir);
+			f = fopen (cache, "wb");
+		}
+
 		if (f)
 		{
 			fwrite (&numcommands, 4, 1, f);
