@@ -2,7 +2,7 @@
    gl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.47 2005-05-21 17:10:59 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.48 2005-05-26 08:56:59 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -84,6 +84,7 @@ extern qboolean	is_3dfx;
 extern cvar_t	gl_multitex;
 qboolean	gl_mtexable = false;
 float		gldepthmin, gldepthmax;
+int		multisample = 0;
 
 #ifndef GL_SHARED_TEXTURE_PALETTE_EXT
 #define GL_SHARED_TEXTURE_PALETTE_EXT 0x81FB
@@ -154,8 +155,7 @@ void D_EndDirectRect (int x, int y, int width, int height)
 int VID_SetMode (int modenum)
 {
 	Uint32	flags;
-	int	temp;
-	int	sdl_tmp;	// for SDL GL attributes actually set
+	int	i, temp;
 
 	// so Con_Printfs don't mess us up by forcing vid and snd updates
 	temp = scr_disabled_for_loading;
@@ -196,13 +196,36 @@ int VID_SetMode (int modenum)
 	if (SDL_GL_LoadLibrary(gl_library) < 0)
 		Sys_Error("VID: Couldn't load GL library: %s", SDL_GetError());
 
-	//SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, modelist[modenum].bpp);
-	Con_SafePrintf ("Requesting Mode: %dx%dx%d\n", vid.width, vid.height, modelist[modenum].bpp);
-	if (!(screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags)))
-		Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
+	if ((i = COM_CheckParm ("-fsaa")))
+		multisample = atoi(com_argv[i+1]);
+	if (multisample) {
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisample);
+	}
 
-	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &sdl_tmp);
-	Con_SafePrintf ("Video Mode Set : %dx%dx%d\n", vid.width, vid.height, sdl_tmp);
+	//SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, modelist[modenum].bpp);
+	Con_Printf ("Requesting Mode: %dx%dx%d\n", vid.width, vid.height, modelist[modenum].bpp);
+	screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags);
+	if (!screen) {
+		if (!multisample) {
+			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
+		} else {
+			Con_Printf ("multisample window failed\n");
+			multisample = 0;
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisample);
+			screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags);
+			if (!screen)
+				Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
+		}
+	}
+
+	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &i);
+	Con_Printf ("Video Mode Set : %dx%dx%d\n", vid.width, vid.height, i);
+	if (multisample) {
+		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &multisample);
+		Con_Printf ("multisample buffer with %i samples\n", multisample);
+	}
 
 #if defined(H2W)
 	SDL_WM_SetCaption("HexenWorld", "HexenWorld");
@@ -310,6 +333,11 @@ void GL_Init (void)
 
 //	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	if (multisample) {
+		glfunc.glEnable_fp (GL_MULTISAMPLE_ARB);
+		Con_Printf ("enabled %i sample fsaa\n", multisample);
+	}
 }
 
 
