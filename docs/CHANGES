@@ -1,5 +1,18 @@
 ChangeLog:
 
+2005-05-25 (CVS):
+     * enabled mouse in whole of the options menu group
+     * added basic multisampling support (GL_ARB_multisample),
+       activated with -fsaa N. That D_ShowLoadingSize doesn't
+       display anything with this on is the only issue
+     * moved Mesa environment variable handling to gl_vidsdl where
+       they belong
+     * added a cmdline switch to enable vsync for nvidia users
+     * made gl_vidsdl report stencil size as well
+     * updated command-line help display
+     * updated README for cmdline switches and tweaks
+     * fixed small typos in README.3dfx
+
 2005-05-23 (CVS):
      * search the mesh cache directly under com_userdir/glhexen,
        not in search_path. fixes the crazy polygons in mods bug.
