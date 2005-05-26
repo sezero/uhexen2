@@ -1,12 +1,19 @@
+/*
+	gl_draw.c
+	this is the only file outside the refresh that touches the vid buffer
 
-// draw.c -- this is the only file outside the refresh that touches the
-// vid buffer
+	$Id: gl_draw.c,v 1.23 2005-05-26 18:20:45 sezero Exp $
+*/
 
 #include "quakedef.h"
 
+#ifndef GL_COLOR_INDEX8_EXT
+#define GL_COLOR_INDEX8_EXT	0x80E5
+#endif
+
 extern int ColorIndex[16];
 extern unsigned ColorPercent[16];
-
+extern qboolean	is8bit;
 extern unsigned char d_15to8table[65536];
 
 int		gl_max_size = 256;
@@ -69,7 +76,7 @@ int			numgltextures;
 
 #define	MAX_SCRAPS		1
 #define	BLOCK_WIDTH		256
-#define	BLOCK_HEIGHT	256
+#define	BLOCK_HEIGHT		256
 
 int			scrap_allocated[MAX_SCRAPS][BLOCK_WIDTH];
 byte		scrap_texels[MAX_SCRAPS][BLOCK_WIDTH*BLOCK_HEIGHT*4];
@@ -263,7 +270,7 @@ qpic_t	*Draw_CachePic (char *path)
 //
 // load the pic from disk
 //
-	dat = (qpic_t *)COM_LoadTempFile (path);	
+	dat = (qpic_t *)COM_LoadTempFile (path);
 	if (!dat)
 		Sys_Error ("Draw_CachePic: failed to load %s", path);
 	SwapPic (dat);
@@ -554,7 +561,7 @@ void Draw_Character (int x, int y, unsigned int num)
 		return;		// space
 
 	num &= 511;
-	
+
 	if (y <= -8)
 		return;			// totally off screen
 
@@ -955,7 +962,7 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 	{
 		Sys_Error ("Draw_TransPic: bad coordinates");
 	}
-		
+
 	Draw_Pic (x, y, pic);
 }
 
@@ -973,10 +980,10 @@ Only used for the player color selection menu
 */
 void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 {
-	int				v, u, c;
+	int			v, u, c;
 	unsigned		trans[PLAYER_DEST_WIDTH * PLAYER_DEST_HEIGHT], *dest;
 	byte			*src;
-	int				p;
+	int			p;
 
 	extern int which_class;
 
@@ -1000,23 +1007,23 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 
 #if 0
 	{
-	  int i;
+		int i;
 
-	  for( i = 0; i < 64 * 64; i++ )
-	    {
-	      trans[i] = d_8to24table[translation[menuplyr_pixels[i]]];
-	    }
+		for( i = 0; i < 64 * 64; i++ )
+		{
+			trans[i] = d_8to24table[translation[menuplyr_pixels[i]]];
+		}
 	}
 #endif
 
 	{
-	  int xi, yi;
+		int xi, yi;
 
-	  for( xi = 0; xi < PLAYER_PIC_WIDTH; xi++ )
-	    for( yi = 0; yi < PLAYER_PIC_HEIGHT; yi++ )
-	      {
-		trans[yi * PLAYER_DEST_WIDTH + xi] = d_8to24table[translation[menuplyr_pixels[which_class-1][yi * PLAYER_PIC_WIDTH + xi]]];
-	      }
+		for( xi = 0; xi < PLAYER_PIC_WIDTH; xi++ )
+			for( yi = 0; yi < PLAYER_PIC_HEIGHT; yi++ )
+			{
+				trans[yi * PLAYER_DEST_WIDTH + xi] = d_8to24table[translation[menuplyr_pixels[which_class-1][yi * PLAYER_PIC_WIDTH + xi]]];
+			}
 	}
 
 	glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, gl_alpha_format, PLAYER_DEST_WIDTH, PLAYER_DEST_HEIGHT,
@@ -1101,7 +1108,7 @@ void Draw_ConsoleBackground (int lines)
 
 	y = (vid.height * 3) >> 2;
 	if (lines > y)
-		Draw_Pic(0, lines-vid.height, conback);
+		Draw_Pic (0, lines-vid.height, conback);
 	else
 		Draw_AlphaPic (0, lines - vid.height, conback, (float)(1.2 * lines)/y);
 
@@ -1420,7 +1427,7 @@ GL_Upload32
 void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite)
 {
 	int			samples;
-static	unsigned	scaled[1024*512];	// [512*256];
+	static	unsigned	scaled[1024*512];	// [512*256];
 	int			scaled_width, scaled_height;
 
 	for (scaled_width = 1 ; scaled_width < width ; scaled_width<<=1)
@@ -1482,7 +1489,7 @@ static	unsigned	scaled[1024*512];	// [512*256];
 		glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 	}
 #else
-texels += scaled_width * scaled_height;
+	texels += scaled_width * scaled_height;
 
 	if (scaled_width == width && scaled_height == height)
 	{
@@ -1648,7 +1655,6 @@ done: ;
 	}
 }
 
-extern qboolean is8bit;
 
 /*
 ===============
@@ -1682,7 +1688,6 @@ void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean a
 				noalpha = false;
 			trans[i] = d_8to24table[p];
 		}
-
 
 		for (i=0 ; i<s ; i++)
 		{
@@ -1740,7 +1745,6 @@ void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean a
 //				trans[i] = 0;
 			}
 		}
-
 
 		if (alpha && noalpha)
 			alpha = false;
@@ -1871,4 +1875,3 @@ int GL_LoadPicTexture (qpic_t *pic)
 	return GL_LoadTexture ("", pic->width, pic->height, pic->data, false, true, 0);
 }
 
-/****************************************/

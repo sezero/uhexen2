@@ -1,8 +1,8 @@
 /*
-	draw.c
+	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_draw.c,v 1.33 2005-05-21 17:32:03 sezero Exp $
+	$Id: gl_dl_draw.c,v 1.34 2005-05-26 18:20:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -15,8 +15,6 @@ extern int ColorIndex[16];
 extern unsigned ColorPercent[16];
 extern qboolean	vid_initialized;
 extern qboolean	is8bit;
-
-#define MAX_DISC 18
 
 int		gl_max_size = 256;
 cvar_t		gl_round_down = {"gl_round_down", "0"};
@@ -68,9 +66,9 @@ void GL_Texels_f (void)
 =============================================================================
 */
 
-#define MAX_SCRAPS		1
-#define BLOCK_WIDTH		256
-#define BLOCK_HEIGHT	256
+#define	MAX_SCRAPS		1
+#define	BLOCK_WIDTH		256
+#define	BLOCK_HEIGHT		256
 
 int			scrap_allocated[MAX_SCRAPS][BLOCK_WIDTH];
 byte		scrap_texels[MAX_SCRAPS][BLOCK_WIDTH*BLOCK_HEIGHT*4];
@@ -133,7 +131,7 @@ void Scrap_Upload (void)
 /* Support Routines */
 
 //#define	MAX_CACHED_PICS 	128
-#define MAX_CACHED_PICS 	256
+#define	MAX_CACHED_PICS		256
 cachepic_t	menu_cachepics[MAX_CACHED_PICS];
 int			menu_numcachepics;
 
@@ -204,7 +202,7 @@ qpic_t *Draw_PicFromFile (char *name)
 qpic_t *Draw_PicFromWad (char *name)
 {
 	qpic_t	*p;
-	glpic_t *gl;
+	glpic_t	*gl;
 
 	p = W_GetLumpName (name);
 	gl = (glpic_t *)p->data;
@@ -257,7 +255,7 @@ qpic_t	*Draw_CachePic (char *path)
 	cachepic_t	*pic;
 	int			i;
 	qpic_t		*dat;
-	glpic_t 	*gl;
+	glpic_t		*gl;
 
 	for (pic=menu_cachepics, i=0 ; i<menu_numcachepics ; pic++, i++)
 		if (!strcmp (path, pic->name))
@@ -361,6 +359,7 @@ qpic_t *Draw_CachePicNoTrans(char *path)
 	return &pic->pic;
 }
 
+
 void Draw_CharToConback (int num, byte *dest)
 {
 	int		row, col;
@@ -460,12 +459,12 @@ Draw_Init
 */
 void Draw_Init (void)
 {
-	int		i;
-	qpic_t	*cb,*mf;
+	int	i;
+	qpic_t	*cb, *mf;
 	byte	*dest;
-	int		x, y;
+	int	x, y;
 	char	ver[40];
-	glpic_t *gl;
+	glpic_t	*gl;
 
 	Cvar_RegisterVariable (&gl_round_down);
 	Cvar_RegisterVariable (&gl_picmip);
@@ -561,16 +560,16 @@ smoothly scrolled off.
 */
 void Draw_Character (int x, int y, unsigned int num)
 {
-	int				row, col;
+	int			row, col;
 	float			frow, fcol, xsize,ysize;
 
 	if (num == 32)
-		return; 	// space
+		return;		// space
 
 	num &= 511;
 
 	if (y <= -8)
-		return; 		// totally off screen
+		return;			// totally off screen
 
 	row = num>>5;
 	col = num&31;
@@ -578,7 +577,7 @@ void Draw_Character (int x, int y, unsigned int num)
 	xsize = 0.03125;
 	ysize = 0.0625;
 	fcol = col*xsize;
-	frow =row*ysize;
+	frow = row*ysize;
 
 	GL_Bind (char_texture);
 
@@ -620,7 +619,7 @@ void Draw_String (int x, int y, char *str)
 //==========================================================================
 void Draw_SmallCharacter (int x, int y, int num)
 {
-	int				row, col;
+	int			row, col;
 	float			frow, fcol, xsize,ysize;
 
 	if(num < 32)
@@ -707,7 +706,7 @@ Draw_Pic
 */
 void Draw_Pic (int x, int y, qpic_t *pic)
 {
-	glpic_t 		*gl;
+	glpic_t			*gl;
 
 	if (scrap_dirty)
 		Scrap_Upload ();
@@ -931,7 +930,7 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 #if 0
 	{
 		int i;
-		
+
 		for( i = 0; i < 64 * 64; i++ )
 		{
 			trans[i] = d_8to24table[translation[menuplyr_pixels[i]]];
@@ -941,7 +940,7 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 
 	{
 		int xi, yi;
-		
+
 		for( xi = 0; xi < PLAYER_PIC_WIDTH; xi++ )
 			for( yi = 0; yi < PLAYER_PIC_HEIGHT; yi++ )
 			{
@@ -969,12 +968,11 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 	glfunc.glEnd_fp ();
 }
 
-
 int M_DrawBigCharacter (int x, int y, int num, int numNext)
 {
-	int				row, col;
+	int			row, col;
 	float			frow, fcol, xsize,ysize;
-	int				add;
+	int			add;
 
 	if (num == ' ') return 32;
 
@@ -1016,6 +1014,7 @@ int M_DrawBigCharacter (int x, int y, int num, int numNext)
 
 	return BigCharWidth[num][numNext] + add;
 }
+
 
 /*
 ================
@@ -1138,7 +1137,7 @@ void Draw_FadeScreen (void)
 		if (ey > vid.height) ey = vid.height;
 
 		glfunc.glBegin_fp (GL_QUADS);
-		glfunc.glVertex2f_fp (bx,by);
+		glfunc.glVertex2f_fp (bx, by);
 		glfunc.glVertex2f_fp (ex, by);
 		glfunc.glVertex2f_fp (ex, ey);
 		glfunc.glVertex2f_fp (bx, ey);
@@ -1168,12 +1167,11 @@ void GL_Set2D (void)
 	glfunc.glViewport_fp (glx, gly, glwidth, glheight);
 
 	glfunc.glMatrixMode_fp(GL_PROJECTION);
-    glfunc.glLoadIdentity_fp ();
-//	glfunc.glOrtho_fp  (0, 320, 200, 0, -99999, 99999);
+	glfunc.glLoadIdentity_fp ();
 	glfunc.glOrtho_fp  (0, vid.width, vid.height, 0, -99999, 99999);
 
 	glfunc.glMatrixMode_fp(GL_MODELVIEW);
-    glfunc.glLoadIdentity_fp ();
+	glfunc.glLoadIdentity_fp ();
 
 	glfunc.glDisable_fp (GL_DEPTH_TEST);
 	glfunc.glDisable_fp (GL_CULL_FACE);
@@ -1442,16 +1440,16 @@ done: ;
 #endif
 
 
-	  if (mipmap)
-	  {
-		  glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
-		  glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
-	  }
-	  else
-	  {
-		  glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
-		  glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
-	  }
+	if (mipmap)
+	{
+		glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
+		glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+	}
+	else
+	{
+		glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+		glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+	}
 }
 
 static	unsigned	trans[640*480]; 	// FIXME, temporary
@@ -1470,9 +1468,9 @@ GL_Upload8
 */
 void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode)
 {
-	int		i, s;
-	qboolean	noalpha;
-	int		p;
+	int			i, s;
+	qboolean		noalpha;
+	int			p;
 
 	s = width*height;
 	// if there are no transparent pixels, make it a 3 component
@@ -1672,81 +1670,6 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 	return texture_extension_number-1;
 }
 
-
-/*
-===============
-GL_Upload8
-===============
-*/
-/*
-void GL_UploadTrans8 (byte *data, int width, int height,  qboolean mipmap, byte Alpha)
-{
-	int			i, s;
-	int			p;
-	unsigned NewAlpha;
-
-	NewAlpha = ((unsigned)Alpha)<<24;
-
-	s = width*height;
-	for (i=0 ; i<s ; i++)
-	{
-		p = data[i];
-		trans[i] = d_8to24table[p];
-		if (p != 255)
-		{
-			trans[i] &= 0x00ffffff;
-			trans[i] |= NewAlpha;
-		}
-	}
-
-	GL_Upload32 (trans, width, height, mipmap, true);
-}
-*/
-
-/*
-================
-GL_LoadTransTexture
-================
-*/
-/*int GL_LoadTransTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, byte Alpha)
-{
-	qboolean	noalpha;
-	int			i, p, s;
-	gltexture_t	*glt;
-
-	// see if the texture is allready present
-	if (identifier[0])
-	{
-		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
-		{
-			if (!strcmp (identifier, glt->identifier))
-			{
-				if (width != glt->width || height != glt->height)
-					Sys_Error ("GL_LoadTexture: cache mismatch");
-				return gltextures[i].texnum;
-			}
-		}
-	}
-	else
-		glt = &gltextures[numgltextures];
-	numgltextures++;
-
-	strcpy (glt->identifier, identifier);
-	glt->texnum = texture_extension_number;
-	glt->width = width;
-	glt->height = height;
-	glt->mipmap = mipmap;
-
-	GL_Bind(texture_extension_number );
-
-	GL_UploadTrans8 (data, width, height, mipmap, Alpha);
-
-	texture_extension_number++;
-
-	return texture_extension_number-1;
-}
-*/
-
 /*
 ================
 GL_LoadPicTexture
@@ -1759,6 +1682,10 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.33  2005/05/21 17:32:03  sezero
+ * disabled the rotating skull annoyance in GL mode (used to
+ * cause problems with voodoo1/mesa6 when using gamma tricks)
+ *
  * Revision 1.32  2005/05/07 10:39:07  sezero
  * display platform in console background
  *
