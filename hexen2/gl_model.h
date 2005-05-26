@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_model.h,v 1.4 2004-12-18 14:20:40 sezero Exp $
+ * $Id: gl_model.h,v 1.5 2005-05-26 22:56:27 sezero Exp $
  */
 
 #ifndef __MODEL__
@@ -63,11 +63,11 @@ typedef struct texture_s
 	unsigned	width, height;
 	int			gl_texturenum;
 	struct msurface_s	*texturechain;	// for gl_texsort drawing
-	int			anim_total;				// total tenths in sequence ( 0 = no)
-	int			anim_min, anim_max;		// time for this frame min <=time< max
+	int			anim_total;	// total tenths in sequence ( 0 = no)
+	int			anim_min, anim_max;	// time for this frame min <=time< max
 	struct texture_s *anim_next;		// in the animation sequence
 	struct texture_s *alternate_anims;	// bmodels in frmae 1 use these
-	unsigned	offsets[MIPLEVELS];		// four mip maps stored
+	unsigned	offsets[MIPLEVELS];	// four mip maps stored
 } texture_t;
 
 
@@ -93,7 +93,7 @@ typedef struct
 	float		vecs[2][4];
 	float		mipadjust;
 	texture_t	*texture;
-	int			flags;
+	int		flags;
 } mtexinfo_t;
 
 #define	VERTEXSIZE	7
@@ -103,46 +103,46 @@ typedef struct glpoly_s
 	struct	glpoly_s	*next;
 	struct	glpoly_s	*chain;
 	int		numverts;
-	int		flags;			// for SURF_UNDERWATER
+	int		flags;		// for SURF_UNDERWATER
 	float	verts[4][VERTEXSIZE];	// variable sized (xyz s1t1 s2t2)
 } glpoly_t;
 
 typedef struct msurface_s
 {
-	int			visframe;		// should be drawn when node is crossed
+	int		visframe;	// should be drawn when node is crossed
 
 	mplane_t	*plane;
-	int			flags;
+	int		flags;
 
-	int			firstedge;	// look up in model->surfedges[], negative numbers
-	int			numedges;	// are backwards edges
+	int		firstedge;	// look up in model->surfedges[], negative numbers
+	int		numedges;	// are backwards edges
 	
 	short		texturemins[2];
 	short		extents[2];
 
-	int			light_s, light_t;	// gl lightmap coordinates
+	int		light_s, light_t;	// gl lightmap coordinates
 
-	glpoly_t	*polys;				// multiple if warped
+	glpoly_t	*polys;			// multiple if warped
 	struct	msurface_s	*texturechain;
 
 	mtexinfo_t	*texinfo;
 	
 // lighting info
-	int			dlightframe;
-	int			dlightbits;
+	int		dlightframe;
+	int		dlightbits;
 
-	int			lightmaptexturenum;
+	int		lightmaptexturenum;
 	byte		styles[MAXLIGHTMAPS];
-	int			cached_light[MAXLIGHTMAPS];	// values currently used in lightmap
-	qboolean	cached_dlight;				// true if dynamic light in cache
+	int		cached_light[MAXLIGHTMAPS];	// values currently used in lightmap
+	qboolean	cached_dlight;			// true if dynamic light in cache
 	byte		*samples;		// [numstyles*surfsize]
 } msurface_t;
 
 typedef struct mnode_s
 {
 // common with leaf
-	int			contents;		// 0, to differentiate from leafs
-	int			visframe;		// node needs to be traversed if current
+	int		contents;		// 0, to differentiate from leafs
+	int		visframe;		// node needs to be traversed if current
 	
 	float		minmaxs[6];		// for bounding box culling
 
@@ -152,8 +152,8 @@ typedef struct mnode_s
 	mplane_t	*plane;
 	struct mnode_s	*children[2];	
 
-	unsigned short		firstsurface;
-	unsigned short		numsurfaces;
+	unsigned short	firstsurface;
+	unsigned short	numsurfaces;
 } mnode_t;
 
 
@@ -161,8 +161,8 @@ typedef struct mnode_s
 typedef struct mleaf_s
 {
 // common with node
-	int			contents;		// wil be a negative contents number
-	int			visframe;		// node needs to be traversed if current
+	int		contents;		// wil be a negative contents number
+	int		visframe;		// node needs to be traversed if current
 
 	float		minmaxs[6];		// for bounding box culling
 
@@ -173,8 +173,8 @@ typedef struct mleaf_s
 	efrag_t		*efrags;
 
 	msurface_t	**firstmarksurface;
-	int			nummarksurfaces;
-	int			key;			// BSP sequence number for leaf's contents
+	int		nummarksurfaces;
+	int		key;			// BSP sequence number for leaf's contents
 	byte		ambient_sound_level[NUM_AMBIENTS];
 } mleaf_t;
 
@@ -183,8 +183,8 @@ typedef struct
 {
 	dclipnode_t	*clipnodes;
 	mplane_t	*planes;
-	int			firstclipnode;
-	int			lastclipnode;
+	int		firstclipnode;
+	int		lastclipnode;
 	vec3_t		clip_mins;
 	vec3_t		clip_maxs;
 } hull_t;
@@ -201,9 +201,9 @@ SPRITE MODELS
 // FIXME: shorten these?
 typedef struct mspriteframe_s
 {
-	short	width;
-	short	height;
-	float	up, down, left, right;
+	short		width;
+	short		height;
+	float		up, down, left, right;
 	int		gl_texturenum;
 } mspriteframe_t;
 
@@ -222,12 +222,12 @@ typedef struct
 
 typedef struct
 {
-	short				type;
-	short				maxwidth;
-	short				maxheight;
-	short				numframes;
-	float				beamlength;		// remove?
-	//void				*cachespot;		// remove?
+	short			type;
+	short			maxwidth;
+	short			maxheight;
+	short			numframes;
+	float			beamlength;		// remove?
+	//void			*cachespot;		// remove?
 	mspriteframedesc_t	frames[1];
 } msprite_t;
 
@@ -243,60 +243,60 @@ Alias models are position independent, so the cache manager can move them.
 
 typedef struct
 {
-	int					firstpose;
-	int					numposes;
-	float				interval;
-	trivertx_t			bboxmin;
-	trivertx_t			bboxmax;
-	int					frame;
-	char				name[16];
+	int			firstpose;
+	int			numposes;
+	float			interval;
+	trivertx_t		bboxmin;
+	trivertx_t		bboxmax;
+	int			frame;
+	char			name[16];
 } maliasframedesc_t;
 
 typedef struct
 {
-	trivertx_t			bboxmin;
-	trivertx_t			bboxmax;
-	int					frame;
+	trivertx_t		bboxmin;
+	trivertx_t		bboxmax;
+	int			frame;
 } maliasgroupframedesc_t;
 
 typedef struct
 {
-	int						numframes;
-	int						intervals;
+	int			numframes;
+	int			intervals;
 	maliasgroupframedesc_t	frames[1];
 } maliasgroup_t;
 
 //this is only the GL version
 typedef struct mtriangle_s {
-	int					facesfront;
-	unsigned short		vertindex[3];
-	unsigned short		stindex[3];
+	int		facesfront;
+	unsigned short	vertindex[3];
+	unsigned short	stindex[3];
 } mtriangle_t;
 
 
 #define	MAX_SKINS	32
 typedef struct {
-	int			ident;
-	int			version;
+	int		ident;
+	int		version;
 	vec3_t		scale;
 	vec3_t		scale_origin;
 	float		boundingradius;
 	vec3_t		eyeposition;
-	int			numskins;
-	int			skinwidth;
-	int			skinheight;
-	int			numverts;
-	int			numtris;
-	int			numframes;
+	int		numskins;
+	int		skinwidth;
+	int		skinheight;
+	int		numverts;
+	int		numtris;
+	int		numframes;
 	synctype_t	synctype;
-	int			flags;
+	int		flags;
 	float		size;
 
-	int					numposes;
-	int					poseverts;
-	int					posedata;	// numposes*poseverts trivert_t
-	int					commands;	// gl command list with embedded s/t
-	int					gl_texturenum[MAX_SKINS];
+	int		numposes;
+	int		poseverts;
+	int		posedata;	// numposes*poseverts trivert_t
+	int		commands;	// gl command list with embedded s/t
+	int		gl_texturenum[MAX_SKINS];
 	maliasframedesc_t	frames[1];	// variable sized
 } aliashdr_t;
 
@@ -346,9 +346,9 @@ typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 #define	EF_MIP_MAP_FAR	0x1000000	// Set per frame, this model will use the far mip map
 
 // XF_ Extra model efects set by engine (efects are model name dependent) 
-#define XF_TORCH_GLOW	  1		// glowing torches
-#define XF_GLOW		  2		// other glows
-#define XF_MISSILE_GLOW	  4		// missile glows
+#define XF_TORCH_GLOW		1	// glowing torches
+#define XF_GLOW			2	// other glows
+#define XF_MISSILE_GLOW		4	// missile glows
 
 typedef struct model_s
 {
@@ -356,11 +356,11 @@ typedef struct model_s
 	qboolean	needload;		// bmodels and sprites don't cache normally
 
 	modtype_t	type;
-	int			numframes;
+	int		numframes;
 	synctype_t	synctype;
 	
-	int			flags;
-	int			ex_flags;
+	int		flags;
+	int		ex_flags;
 
 //
 // volume occupied by the model graphics
@@ -446,6 +446,10 @@ byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/18 14:20:40  sezero
+ * Clean-up and kill warnings: 11
+ * A lot of whitespace cleanups.
+ *
  * Revision 1.3  2004/12/18 13:59:25  sezero
  * Clean-up and kill warnings 8:
  * Missing prototypes.
