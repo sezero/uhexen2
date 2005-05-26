@@ -2,7 +2,7 @@
    gl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.48 2005-05-26 08:56:59 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.49 2005-05-26 09:07:22 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -184,6 +184,10 @@ int VID_SetMode (int modenum)
 		modestate = MS_WINDOWED;
 	else	
 		modestate = MS_FULLSCREEN;
+
+	// set fxMesa mode to fullscreen, don't let it it cheat multitexturing
+	setenv ("MESA_GLX_FX","f",1);
+	setenv ("FX_DONT_FAKE_MULTITEX","1",1);
 
 	WRHeight = vid.height = vid.conheight = modelist[modenum].height; // BASEHEIGHT;
 	WRWidth = vid.width = vid.conwidth =   modelist[modenum].width; //  BASEWIDTH ;

@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.18 2005-05-22 11:59:53 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.19 2005-05-26 09:07:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -990,11 +990,6 @@ void Host_Init (quakeparms_t *parms)
 		if (!host_colormap)
 			Sys_Error ("Couldn't load gfx/colormap.lmp");
 
-#ifdef GLQUAKE
-		// I always forget doing these...
-		setenv ("MESA_GLX_FX","f",1);
-		setenv ("FX_DONT_FAKE_MULTITEX","1",1);
-#endif
 		VID_Init (host_basepal);
 
 		Draw_Init ();
@@ -1088,6 +1083,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/05/22 11:59:53  sezero
+ * killed cvar sys_quake2 (I dont think anyone uses it)
+ *
  * Revision 1.17  2005/05/21 08:56:11  sezero
  * MINIMUM_MEMORY_LEVELPAK was never used, switched to MINIMUM_MEMORY
  *
