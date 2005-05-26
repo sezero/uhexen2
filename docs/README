@@ -110,13 +110,14 @@ Use "glhexen2 -f" to start the game in full-screen mode. The
 following options are accepted:
 
  -f | --fullscreen	Run the game fullscreen
- -w | --windowed	Run the game windowed
  -g | --gllibrary	Select 3D rendering library
  -width Width		Select screen size
  -height Height		Must be used with -width
  -bpp			Color depth for GL fullscreen mode
  -nomouse		Disables mouse usage in game
- -heapsize Bytes	Heapsize
+ -heapsize Bytes	Heapsize (memory to allocate)
+ -fsaa N		Enable N sample antialiasing (N: 0,2,4)
+ -sync | -vsync		Enable syncing with monitor refresh (GL, Nvidia)
  -paltex		Enable 8-bit textures
  -old3dfx		Support for old Voodoo1/2/Rush
  -sndalsa		Use ALSA for audio
@@ -312,6 +313,24 @@ snow_active	0 - 255	 : 0 =  none,
 			   1 =  normal (amount designated by
 				the map), and higher acts as
 				a multiplier
+
+
+2.1.1 Nvidia tweaks
+-------------------
+
+These are only valid for supported hardware (Geforce and better)
+with Nvidia's proprietry video drivers installed.
+
+The -sync or -vsync command line switch enables GL redraws syncing
+with monitor refresh to provide a more stable image.  This is
+equivalent to setting the environment variable __GL_SYNC_TO_VBLANK
+to 1.
+
+You can also override our -fsaa switch if you set Nvidia spesific
+environment variable __GL_FSAA_MODE to an appropriate value.  The
+details for this can usually be found in Nvidia's readme file
+(/usr/share/doc/NVIDIA_GLX-1.0/README).  Briefly: Geforce 1 and 2
+use mode 3 or 4, others 1,2,4 or 5.
 
 
 2.2 Mods and Crazy Polygons
