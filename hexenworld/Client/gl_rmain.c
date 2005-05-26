@@ -1,4 +1,9 @@
-// r_main.c
+/*
+	gl_main.c
+
+	$Id: gl_rmain.c,v 1.12 2005-05-26 19:45:43 sezero Exp $
+*/
+
 
 #include "quakedef.h"
 
@@ -18,7 +23,7 @@ int			c_brush_polys, c_alias_polys;
 
 qboolean	envmap;				// true during envmap command capture 
 
-int			currenttexture = -1;		// to avoid unnecessary texture sets
+int			currenttexture = -1;	// to avoid unnecessary texture sets
 
 int			cnttextures[2] = {-1, -1};     // cached
 
@@ -73,7 +78,7 @@ cvar_t	r_fullbright = {"r_fullbright","0"};
 cvar_t	r_lightmap = {"r_lightmap","0"};
 cvar_t	r_shadows = {"r_shadows","0"};
 cvar_t	r_mirroralpha = {"r_mirroralpha","1"};
-cvar_t	r_wateralpha = {"r_wateralpha","0.4",true};
+cvar_t	r_wateralpha = {"r_wateralpha","0.33", true};
 cvar_t	r_dynamic = {"r_dynamic","1"};
 cvar_t	r_novis = {"r_novis","0"};
 cvar_t	r_netgraph = {"r_netgraph","0"};
@@ -347,7 +352,7 @@ void R_DrawSpriteModel (entity_t *e)
 		right = vright;
 	}
 
-    GL_Bind(frame->gl_texturenum);
+	GL_Bind(frame->gl_texturenum);
 
 	glfunc.glBegin_fp (GL_QUADS);
 
@@ -373,7 +378,7 @@ void R_DrawSpriteModel (entity_t *e)
 	VectorMA (e->origin, frame->down, up, point);
 	VectorMA (point, frame->right, right, point);
 	glfunc.glVertex3fv_fp (point);
-	
+
 	glfunc.glEnd_fp ();
 
 	//restore tex parms
@@ -704,7 +709,6 @@ void R_DrawAliasModel (entity_t *e)
 				+(cl.time*3.8))*34;
 	}
 	else if (mls == MLS_ABSLIGHT)
-
 	{
 		ambientlight = shadelight = currententity->abslight;
 	}
@@ -916,7 +920,6 @@ void R_DrawAliasModel (entity_t *e)
 	{
 		glfunc.glEnable_fp( GL_CULL_FACE );
 	}
-
 
 	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
@@ -1412,7 +1415,7 @@ void R_SetupGL (void)
 //	yfov = 2*atan((float)r_refdef.vrect.height/r_refdef.vrect.width)*180/M_PI;
 //	yfov = (2.0 * tan (scr_fov.value/360*M_PI)) / screenaspect;
 	yfov = 2*atan((float)r_refdef.vrect.height/r_refdef.vrect.width)*(scr_fov.value*2)/M_PI;
-    MYgluPerspective (yfov,  screenaspect,  4,  4096);
+	MYgluPerspective (yfov,  screenaspect,  4,  4096);
 
 	if (mirror)
 	{
@@ -1592,7 +1595,6 @@ void R_Mirror (void)
 
 	R_DrawTransEntitiesOnList( false );
 
-
 	gldepthmin = 0;
 	gldepthmax = 0.5;
 	glfunc.glDepthRange_fp (gldepthmin, gldepthmax);
@@ -1752,6 +1754,4 @@ void R_DrawName(vec3_t origin, char *Name, int Red)
 	else
 		Draw_String (u, v, Name);
 }
-
-
 

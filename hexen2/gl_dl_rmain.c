@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/gl_dl_rmain.c,v 1.19 2005-05-20 17:30:57 sezero Exp $
+	$Id: gl_dl_rmain.c,v 1.20 2005-05-26 19:45:37 sezero Exp $
 */
 
 
@@ -22,6 +22,7 @@ mplane_t	frustum[4];
 int			c_brush_polys, c_alias_polys;
 
 qboolean	envmap;				// true during envmap command capture 
+
 int			currenttexture;		// to avoid unnecessary texture sets
 
 int			particletexture;	// little dot for particles
@@ -90,7 +91,7 @@ cvar_t	gl_polyblend = {"gl_polyblend","1"};
 cvar_t	gl_flashblend = {"gl_flashblend","0"};
 cvar_t	gl_playermip = {"gl_playermip","0"};
 cvar_t	gl_nocolors = {"gl_nocolors","0"};
-cvar_t	gl_keeptjunctions = {"gl_keeptjunctions","1",true};
+cvar_t	gl_keeptjunctions = {"gl_keeptjunctions","1", true};
 cvar_t	gl_reporttjunctions = {"gl_reporttjunctions","0"};
 
 cvar_t gl_glows = {"gl_glows","1",true};
@@ -230,6 +231,7 @@ static void R_RotateForEntity2(entity_t *e)
 		{
 			glfunc.glRotatef_fp(e->angles[1], 0, 0, 1);
 		}
+
 		glfunc.glRotatef_fp(-e->angles[0], 0, 1, 0);
 		glfunc.glRotatef_fp(-e->angles[2], 1, 0, 0);
 	}
@@ -321,21 +323,18 @@ void R_DrawSpriteModel (entity_t *e)
 
 	if (currententity->drawflags & DRF_TRANSLUCENT)
 	{
-		// rjr
 		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glfunc.glEnable_fp( GL_BLEND );
 		glfunc.glColor4f_fp (1,1,1,r_wateralpha.value);
 	}
 	else if (currententity->model->flags & EF_TRANSPARENT)
 	{
-		// rjr
 		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glfunc.glEnable_fp( GL_BLEND );
 		glfunc.glColor3f_fp(1,1,1);
 	}
 	else
 	{
-		// rjr
 		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glfunc.glEnable_fp( GL_BLEND );
 		glfunc.glColor3f_fp(1,1,1);
@@ -437,9 +436,7 @@ void R_DrawSpriteModel (entity_t *e)
 		Sys_Error ("R_DrawSprite: Bad sprite type %d", psprite->type);
 	}
 
-//	R_RotateSprite (psprite->beamlength);
-
-    GL_Bind(frame->gl_texturenum);
+	GL_Bind(frame->gl_texturenum);
 
 	glfunc.glBegin_fp (GL_QUADS);
 
@@ -679,9 +676,7 @@ void R_DrawAliasModel (entity_t *e)
 	aliashdr_t	*paliashdr;
 	float		an;
 	static float	tmatrix[3][4];
-	float		entScale;
-	float		xyfact;
-	float		zfact;
+	float		entScale, xyfact, zfact;
 	qpic_t		*stonepic;
 	glpic_t		*gl;
 	char		temp[40];
@@ -748,7 +743,6 @@ void R_DrawAliasModel (entity_t *e)
 		ambientlight = shadelight = d_lightstylevalue[24+mls]/2;
 	}
 
-
 	shadedots = r_avertexnormal_dots[((int)(e->angles[1] * (SHADEDOT_QUANT / 360.0))) & (SHADEDOT_QUANT - 1)];
 	shadelight = shadelight / 200.0;
 	
@@ -769,7 +763,7 @@ void R_DrawAliasModel (entity_t *e)
 	// draw all the triangles
 	//
 
-    glfunc.glPushMatrix_fp ();
+	glfunc.glPushMatrix_fp ();
 	R_RotateForEntity2(e);
 
 	if(currententity->scale != 0 && currententity->scale != 100)
@@ -842,7 +836,6 @@ void R_DrawAliasModel (entity_t *e)
 
 	if ((currententity->model->flags & EF_SPECIAL_TRANS))
 	{
-		// rjr
 		glfunc.glEnable_fp (GL_BLEND);
 		glfunc.glBlendFunc_fp (GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
 //		glfunc.glColor3f_fp( 1,1,1);
@@ -851,7 +844,6 @@ void R_DrawAliasModel (entity_t *e)
 	}
 	else if (currententity->drawflags & DRF_TRANSLUCENT)
 	{
-		// rjr
 		glfunc.glEnable_fp (GL_BLEND);
 		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //		glfunc.glColor4f_fp( 1,1,1,r_wateralpha.value);
@@ -859,7 +851,6 @@ void R_DrawAliasModel (entity_t *e)
 	}
 	else if ((currententity->model->flags & EF_TRANSPARENT))
 	{
-		// rjr
 		glfunc.glEnable_fp (GL_BLEND);
 		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //		glfunc.glColor3f_fp( 1,1,1);
@@ -867,7 +858,6 @@ void R_DrawAliasModel (entity_t *e)
 	}
 	else if ((currententity->model->flags & EF_HOLEY))
 	{
-		// rjr
 		glfunc.glEnable_fp (GL_BLEND);
 		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -876,7 +866,6 @@ void R_DrawAliasModel (entity_t *e)
 	}
 	else
 	{
-		// rjr
 		glfunc.glColor3f_fp( 1,1,1);
 		model_constant_alpha = 1.0f;
 	}
@@ -940,7 +929,6 @@ void R_DrawAliasModel (entity_t *e)
 
 	if ((currententity->model->flags & EF_SPECIAL_TRANS))
 	{
-		// rjr
 		glfunc.glEnable_fp( GL_CULL_FACE );
 	}
 
@@ -955,7 +943,7 @@ void R_DrawAliasModel (entity_t *e)
 	if (r_shadows.value)
 	{
 		glfunc.glPushMatrix_fp ();
-		R_RotateForEntity2(e);
+		R_RotateForEntity2 (e);
 		glfunc.glDisable_fp (GL_TEXTURE_2D);
 		glfunc.glEnable_fp (GL_BLEND);
 		glfunc.glColor4f_fp (0,0,0,0.5);
@@ -988,9 +976,9 @@ R_DrawEntitiesOnList
 */
 void R_DrawEntitiesOnList (void)
 {
-	int		i;
-	qboolean item_trans;
-	mleaf_t *pLeaf;
+	int			i;
+	qboolean	item_trans;
+	mleaf_t		*pLeaf;
 
 	cl_numtransvisedicts=0;
 	cl_numtranswateredicts=0;
@@ -1010,28 +998,25 @@ void R_DrawEntitiesOnList (void)
 						  (currententity->model->flags & (EF_TRANSPARENT|EF_HOLEY|EF_SPECIAL_TRANS))) != 0;
 			if (!item_trans)
 				R_DrawAliasModel (currententity);
-
 			break;
 
 		case mod_brush:
 			item_trans = ((currententity->drawflags & DRF_TRANSLUCENT)) != 0;
 			if (!item_trans)
 				R_DrawBrushModel (currententity,false);
-
 			break;
-
 
 		case mod_sprite:
 			item_trans = true;
-
 			break;
 
 		default:
 			item_trans = false;
 			break;
 		}
-		
-		if (item_trans) {
+
+		if (item_trans)
+		{
 			pLeaf = Mod_PointInLeaf (currententity->origin, cl.worldmodel);
 //			if (pLeaf->contents == CONTENTS_EMPTY)
 			if (pLeaf->contents != CONTENTS_WATER)
@@ -1215,14 +1200,16 @@ Implemented by: jack
 ================
 */
 
-int transCompare(const void *arg1, const void *arg2 ) {
+int transCompare(const void *arg1, const void *arg2 )
+{
 	const sortedent_t *a1, *a2;
 	a1 = (sortedent_t *) arg1;
 	a2 = (sortedent_t *) arg2;
 	return (a2->len - a1->len); // Sorted in reverse order.  Neat, huh?
 }
 
-void R_DrawTransEntitiesOnList ( qboolean inwater) {
+void R_DrawTransEntitiesOnList ( qboolean inwater)
+{
 	int i;
 	int numents;
 	sortedent_t *theents;
@@ -1232,7 +1219,8 @@ void R_DrawTransEntitiesOnList ( qboolean inwater) {
 	theents = (inwater) ? cl_transwateredicts : cl_transvisedicts;
 	numents = (inwater) ? cl_numtranswateredicts : cl_numtransvisedicts;
 
-	for (i=0; i<numents; i++) {
+	for (i=0; i<numents; i++)
+	{
 		VectorSubtract(
 			theents[i].ent->origin, 
 			r_origin, 
@@ -1245,27 +1233,31 @@ void R_DrawTransEntitiesOnList ( qboolean inwater) {
 	// Add in BETTER sorting here
 
 	glfunc.glDepthMask_fp(0);
-	for (i=0;i<numents;i++) {
+	for (i=0;i<numents;i++)
+	{
 		currententity = theents[i].ent;
 
 		switch (currententity->model->type)
 		{
 		case mod_alias:
-			if (!depthMaskWrite) {
+			if (!depthMaskWrite)
+			{
 				depthMaskWrite = 1;
 				glfunc.glDepthMask_fp(1);
 			}
 			R_DrawAliasModel (currententity);
 			break;
 		case mod_brush:
-			if (!depthMaskWrite) {
+			if (!depthMaskWrite)
+			{
 				depthMaskWrite = 1;
 				glfunc.glDepthMask_fp(1);
 			}
 			R_DrawBrushModel (currententity,true);
 			break;
 		case mod_sprite:
-			if (depthMaskWrite) {
+			if (depthMaskWrite)
+			{
 				depthMaskWrite = 0;
 				glfunc.glDepthMask_fp(0);
 			}
@@ -1525,9 +1517,9 @@ void R_SetupGL (void)
 	}
 
 	glfunc.glViewport_fp (glx + x, gly + y2, w, h);
-    screenaspect = (float)r_refdef.vrect.width/r_refdef.vrect.height;
+	screenaspect = (float)r_refdef.vrect.width/r_refdef.vrect.height;
 	yfov = 2*atan((float)r_refdef.vrect.height/r_refdef.vrect.width)*180/M_PI;
-    MYgluPerspective (yfov,  screenaspect,  4,  4096);
+	MYgluPerspective (yfov,  screenaspect,  4,  4096);
 
 	if (mirror)
 	{
@@ -1541,14 +1533,14 @@ void R_SetupGL (void)
 		glfunc.glCullFace_fp(GL_FRONT);
 
 	glfunc.glMatrixMode_fp(GL_MODELVIEW);
-    glfunc.glLoadIdentity_fp ();
+	glfunc.glLoadIdentity_fp ();
 
-    glfunc.glRotatef_fp (-90,  1, 0, 0);	    // put Z going up
-    glfunc.glRotatef_fp (90,  0, 0, 1);	    // put Z going up
-    glfunc.glRotatef_fp (-r_refdef.viewangles[2],  1, 0, 0);
-    glfunc.glRotatef_fp (-r_refdef.viewangles[0],  0, 1, 0);
-    glfunc.glRotatef_fp (-r_refdef.viewangles[1],  0, 0, 1);
-    glfunc.glTranslatef_fp (-r_refdef.vieworg[0],  -r_refdef.vieworg[1],  -r_refdef.vieworg[2]);
+	glfunc.glRotatef_fp (-90,  1, 0, 0);	// put Z going up
+	glfunc.glRotatef_fp (90,  0, 0, 1);	// put Z going up
+	glfunc.glRotatef_fp (-r_refdef.viewangles[2],  1, 0, 0);
+	glfunc.glRotatef_fp (-r_refdef.viewangles[0],  0, 1, 0);
+	glfunc.glRotatef_fp (-r_refdef.viewangles[1],  0, 0, 1);
+	glfunc.glTranslatef_fp (-r_refdef.vieworg[0],  -r_refdef.vieworg[1],  -r_refdef.vieworg[2]);
 
 	glfunc.glGetFloatv_fp (GL_MODELVIEW_MATRIX, r_world_matrix);
 
@@ -1572,7 +1564,7 @@ R_RenderScene
 r_refdef must be set before the first call
 ================
 */
-void R_RenderScene ()
+void R_RenderScene (void)
 {
 	R_SetupFrame ();
 
@@ -1585,15 +1577,10 @@ void R_RenderScene ()
 	R_DrawWorld ();		// adds static entities to the list
 
 	S_ExtraUpdate ();	// don't let sound get messed up if going slow
-	
+
 	R_DrawEntitiesOnList ();
 
 	R_DrawAllGlows();
-
-/*	else
-	{
-		glfunc.glDepthMask_fp( 0 );
-	}*/
 
 	R_RenderDlights ();
 
@@ -1604,7 +1591,6 @@ void R_RenderScene ()
 	}
 #endif
 
-//	glfunc.glDepthMask_fp( 1 );
 }
 
 
@@ -1774,9 +1760,9 @@ void R_RenderView (void)
 	{
 		glfunc.glFinish_fp ();
 		if (r_wholeframe.value)
-		   r_time1 = r_lasttime1;
-	   else
-		   r_time1 = Sys_FloatTime ();
+			r_time1 = r_lasttime1;
+		else
+			r_time1 = Sys_FloatTime ();
 		c_brush_polys = 0;
 		c_alias_polys = 0;
 	}
@@ -1808,11 +1794,17 @@ void R_RenderView (void)
 	R_PolyBlend ();
 
 	if (r_speeds.value)
+	{
 		R_PrintTimes ();
+	}
 }
+
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2005/05/20 17:30:57  sezero
+ * initial slight gl syncing-2 (kill unused c_sky_polys)
+ *
  * Revision 1.18  2005/05/17 22:56:19  sezero
  * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
  * Q_strXcasecmp will now be used throughout the code which are implementation
