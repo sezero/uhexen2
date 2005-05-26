@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.18 2005-05-20 12:34:46 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.19 2005-05-26 09:38:11 sezero Exp $
 */
 
 #include <stdio.h>
@@ -390,17 +390,20 @@ void PrintHelp(char *name)
 	printf ("Visit http://sf.net/projects/uhexen2/ for more info.\n");
 	printf ("\n");
 	printf ("Usage: %s [options]\n", name);
-	printf ("     [-v | --version]                Display the game version\n");
-	printf ("     [-f | --fullscreen]             Run the game fullscreen\n");
-	printf ("     [-w | --windowed]               Run the game windowed\n");
-	printf ("     [-g | --gllibrary]              Select 3D rendering library\n");
-	printf ("     [-s | --nosound]                Run the game without sound\n");
-	printf ("     [-sndalsa]                      Use ALSA sound (alsa > 1.0.1)\n");
-	printf ("     [-sndsdl]                       Use SDL sound\n");
-	printf ("     [-nomouse]                      Disable mouse in window mode\n");
-	printf ("     [-width Width [-height Height]] Select screen size\n");
-	printf ("     [-bpp]                          Depth for GL fullscreen mode\n");
-	printf ("     [-heapsize Bytes]               Heapsize\n");
+	printf ("     [-v | --version]        Display the game version\n");
+	printf ("     [-f | --fullscreen]     Run the game fullscreen\n");
+	printf ("     [-width X [-height Y]]  Select screen size\n");
+	printf ("     [-bpp]                  Depth for GL fullscreen mode\n");
+	printf ("     [-g | --gllibrary]      Select 3D rendering library\n");
+	printf ("     [-vsync]                Enable sync with monitor refresh\n");
+	printf ("     [-fsaa N]               Enable N sample antialiasing\n");
+	printf ("     [-paltex]               Enable 8-bit GL extensions\n");
+	printf ("     [-s | --nosound]        Run the game without sound\n");
+	printf ("     [-sndalsa]              Use ALSA sound (alsa > 1.0.1)\n");
+	printf ("     [-sndsdl]               Use SDL sound\n");
+	printf ("     [-nomouse]              Disable mouse usage\n");
+	printf ("     [-listen N]             Enable multiplayer with max. N players\n");
+	printf ("     [-heapsize Bytes]       Heapsize (memory to allocate)\n");
 }
 
 int main(int argc, char *argv[])
@@ -509,6 +512,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/05/20 12:34:46  sezero
+ * removed some windows left-overs from sys_unix
+ *
  * Revision 1.17  2005/05/20 12:29:37  sezero
  * leftovers after common.c sync-1
  *
