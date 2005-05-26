@@ -44,7 +44,6 @@ void R_AnimateLight(void)
 		v = defaultLocus%cl_lightstyle[i].length;
 		d_lightstylevalue[i] = (cl_lightstyle[i].map[v]-'a')*22;
 	}
-
 }
 
 /*
@@ -66,7 +65,6 @@ void AddLightBlend (float r, float g, float b, float a2)
 	v_blend[0] = v_blend[1]*(1-a2) + r*a2;
 	v_blend[1] = v_blend[1]*(1-a2) + g*a2;
 	v_blend[2] = v_blend[2]*(1-a2) + b*a2;
-//Con_Printf("AddLightBlend(): %4.2f %4.2f %4.2f %4.6f\n", v_blend[0], v_blend[1], v_blend[2], v_blend[3]);
 }
 
 float bubble_sintable[17], bubble_costable[17];
