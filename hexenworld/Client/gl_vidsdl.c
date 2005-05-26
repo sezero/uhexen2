@@ -2,7 +2,7 @@
    gl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.50 2005-05-26 09:15:47 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.51 2005-05-26 10:16:51 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -233,6 +233,9 @@ int VID_SetMode (int modenum)
 
 	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &i);
 	Con_Printf ("Video Mode Set : %dx%dx%d\n", vid.width, vid.height, i);
+	SDL_GL_GetAttribute(SDL_GL_STENCIL_SIZE, &i);
+	if (i)
+		Con_Printf ("%i bit stencil buffer\n", i);
 	if (multisample) {
 		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &multisample);
 		Con_Printf ("multisample buffer with %i samples\n", multisample);
