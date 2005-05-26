@@ -258,11 +258,11 @@ void R_DrawSequentialPoly (msurface_t *s)
 {
 	glpoly_t	*p;
 	float		*v;
-	int			i;
+	int		i;
 	texture_t	*t;
 	float		alpha_val = 1.0f;
 	float		intensity = 1.0f;
-	
+
 	//
 	// normal lightmaped poly
 	//
@@ -431,14 +431,10 @@ void DrawGLPoly (glpoly_t *p)
 	int		i;
 	float	*v;
 
-	// hack
-//	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glfunc.glBegin_fp (GL_POLYGON);
 	v = p->verts[0];
 	for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
 	{
-		// hack
-//		glfunc.glColor3f( 1.0f, 0.0f, 0.0f );
 		glfunc.glTexCoord2f_fp (v[3], v[4]);
 		glfunc.glVertex3fv_fp (v);
 	}
@@ -463,7 +459,7 @@ void R_BlendLightmaps (qboolean Translucent)
 		return;
 
 	if (!Translucent)
-		glfunc.glDepthMask_fp (0);		// don't bother writing Z
+		glfunc.glDepthMask_fp (0);	// don't bother writing Z
 
 	if (gl_lightmap_format == GL_LUMINANCE)
 		glfunc.glBlendFunc_fp (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
@@ -520,7 +516,7 @@ void R_BlendLightmaps (qboolean Translucent)
 	}
 
 	if (!Translucent)
-		glfunc.glDepthMask_fp (1);		// back to normal Z buffering
+		glfunc.glDepthMask_fp (1);	// back to normal Z buffering
 }
 
 /*
@@ -553,7 +549,7 @@ void R_RenderBrushPoly (msurface_t *fa, qboolean override)
 	if (currententity->drawflags & DRF_TRANSLUCENT)
 	{
 		glfunc.glEnable_fp (GL_BLEND);
-		//			glfunc.glColor4f_fp (1,1,1,r_wateralpha.value);
+	//	glfunc.glColor4f_fp (1,1,1,r_wateralpha.value);
 		alpha_val = r_wateralpha.value;
 		// rjr
 
@@ -655,12 +651,10 @@ void R_DrawWaterSurfaces (void)
 	if (r_wateralpha.value == 1.0)
 		return;
 
-//	glfunc.glDepthMask_fp( 0 );
-
 	//
 	// go back to the world matrix
 	//
-    glfunc.glLoadMatrixf_fp (r_world_matrix);
+	glfunc.glLoadMatrixf_fp (r_world_matrix);
 
 	glfunc.glEnable_fp (GL_BLEND);
 	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -694,7 +688,6 @@ void R_DrawWaterSurfaces (void)
 
 	glfunc.glColor4f_fp (1,1,1,1);
 	glfunc.glDisable_fp (GL_BLEND);
-//	glfunc.glDepthMask_fp( 0 );
 }
 
 /*
@@ -807,12 +800,12 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 		}
 	}
 
-    glfunc.glPushMatrix_fp ();
-    e->angles[0] = -e->angles[0];	// stupid quake bug
-    e->angles[2] = -e->angles[2];	// stupid quake bug
+	glfunc.glPushMatrix_fp ();
+	e->angles[0] = -e->angles[0];	// stupid quake bug
+	e->angles[2] = -e->angles[2];	// stupid quake bug
 	R_RotateForEntity (e);
-    e->angles[0] = -e->angles[0];	// stupid quake bug
-    e->angles[2] = -e->angles[2];	// stupid quake bug
+	e->angles[0] = -e->angles[0];	// stupid quake bug
+	e->angles[2] = -e->angles[2];	// stupid quake bug
 
 	//
 	// draw texture
@@ -954,8 +947,7 @@ void R_RecursiveWorldNode (mnode_t *node)
 						surf->texturechain = surf->texinfo->texture->texturechain;
 						surf->texinfo->texture->texturechain = surf;
 					}
-				}
-				else
+				} else
 					R_DrawSequentialPoly (surf);
 
 			}

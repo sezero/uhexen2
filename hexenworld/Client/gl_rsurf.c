@@ -285,7 +285,6 @@ void R_DrawSequentialPoly (msurface_t *s)
 	//
 	// normal lightmaped poly
 	//
-
 	if (! (s->flags & (SURF_DRAWSKY|SURF_DRAWTURB|SURF_UNDERWATER) ) )
 	{
 		R_RenderDynamicLightmaps (s);
@@ -320,7 +319,6 @@ void R_DrawSequentialPoly (msurface_t *s)
 				theRect->h = 0;
 				theRect->w = 0;
 			}
-
 
 			glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
 
@@ -409,7 +407,6 @@ void R_DrawSequentialPoly (msurface_t *s)
 	//
 	// subdivided water surface warp
 	//
-
 	if (s->flags & SURF_DRAWTURB)
 	{
 		GL_Bind (s->texinfo->texture->gl_texturenum);
@@ -1043,9 +1040,8 @@ R_DrawBrushModel
 */
 void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 {
-	int		k;
+	int		i, k;
 	vec3_t		mins, maxs;
-	int		i;
 	msurface_t	*psurf;
 	float		dot;
 	mplane_t	*pplane;
@@ -1109,10 +1105,10 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 		}
 	}
 
-    glfunc.glPushMatrix_fp ();
-    e->angles[0] = -e->angles[0];	// stupid quake bug
+	glfunc.glPushMatrix_fp ();
+	e->angles[0] = -e->angles[0];	// stupid quake bug
 	R_RotateForEntity (e);
-    e->angles[0] = -e->angles[0];	// stupid quake bug
+	e->angles[0] = -e->angles[0];	// stupid quake bug
 
 	//
 	// draw texture
