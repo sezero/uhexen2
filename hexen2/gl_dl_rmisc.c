@@ -121,8 +121,8 @@ void R_Envmap_f (void)
 {
 	byte	buffer[256*256*4];
 
-	glfunc.glDrawBuffer_fp  (GL_FRONT);
-	glfunc.glReadBuffer_fp  (GL_FRONT);
+	glfunc.glDrawBuffer_fp (GL_FRONT);
+	glfunc.glReadBuffer_fp (GL_FRONT);
 	envmap = true;
 
 	r_refdef.vrect.x = 0;
@@ -171,8 +171,8 @@ void R_Envmap_f (void)
 	COM_WriteFile ("env5.rgb", buffer, sizeof(buffer));		
 
 	envmap = false;
-	glfunc.glDrawBuffer_fp  (GL_BACK);
-	glfunc.glReadBuffer_fp  (GL_BACK);
+	glfunc.glDrawBuffer_fp (GL_BACK);
+	glfunc.glReadBuffer_fp (GL_BACK);
 	GL_EndRendering ();
 }
 
@@ -183,7 +183,7 @@ R_Init
 */
 void R_Init (void)
 {	
-	int counter;
+	int	counter;
 
 	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);	
 	Cmd_AddCommand ("envmap", R_Envmap_f);	
@@ -290,7 +290,6 @@ void R_TranslatePlayerSkin (int playernum)
 			translate[i] = *sourceB;
 	}
 
-
 	//
 	// locate the original skin pixels
 	//
@@ -364,9 +363,7 @@ void R_TranslatePlayerSkin (int playernum)
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 #endif
-
 }
-
 
 /*
 ===============

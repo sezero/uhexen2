@@ -153,7 +153,7 @@ R_Init
 */
 void R_Init (void)
 {	
-	int			counter;
+	int	counter;
 
 	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);	
 	Cmd_AddCommand ("envmap", R_Envmap_f);	
@@ -174,8 +174,8 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_entdistance);
 	Cvar_RegisterVariable (&gl_clear);
 	Cvar_RegisterVariable (&gl_texsort);
- 
- 	if (gl_mtexable && gl_multitex.value)
+
+	if (gl_mtexable && gl_multitex.value)
 		Cvar_SetValue ("gl_texsort", 0.0);
 
 	Cvar_RegisterVariable (&gl_cull);
@@ -191,7 +191,7 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_teamcolor);
 
 	R_InitBubble();
-	
+
 	R_InitParticles ();
 	R_InitParticleTexture ();
 
@@ -442,11 +442,9 @@ void R_TranslatePlayerSkin (int playernum)
 	if (cl.players[playernum].modelindex <= 0)
 		return;
 
-
 	model = player_models[cl.players[playernum].playerclass-1];
 	if (!model)
-		return;
-	// player doesn't have a model yet
+		return;		// player doesn't have a model yet
 	paliashdr = (aliashdr_t *)Mod_Extradata (model);
 	s = paliashdr->skinwidth * paliashdr->skinheight;
 
@@ -602,5 +600,4 @@ void R_TimeRefresh_f (void)
 void D_FlushCaches (void)
 {
 }
-
 
