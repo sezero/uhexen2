@@ -212,10 +212,10 @@ void EmitSkyPolys (msurface_t *fa)
 {
 	glpoly_t	*p;
 	float		*v;
-	int			i;
-	float	s, t;
-	vec3_t	dir;
-	float	length;
+	int		i;
+	float		s, t;
+	vec3_t		dir;
+	float		length;
 
 	for (p=fa->polys ; p ; p=p->next)
 	{
