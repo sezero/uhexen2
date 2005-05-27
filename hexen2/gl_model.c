@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.12 2005-05-26 22:20:10 sezero Exp $
+	$Id: gl_model.c,v 1.13 2005-05-27 17:59:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2145,10 +2145,6 @@ void * Mod_LoadSpriteFrame (model_t *mod, void * pin, mspriteframe_t **ppframe, 
 
 	sprintf (name, "%s_%i", loadmodel->name, framenum);
 
-/*	if ((mod->flags & EF_TRANSPARENT))
-	   pspriteframe->gl_texturenum = GL_LoadTransTexture (name, width, height, (byte *)(pinframe + 1), true, 127);
-	else*/
-
 	pspriteframe->gl_texturenum = GL_LoadTexture (name, width, height, (byte *)(pinframe + 1), true, true, 0, false);
 
 	return (void *)((byte *)pinframe + sizeof (dspriteframe_t) + size);
@@ -2305,6 +2301,9 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/05/26 22:20:10  sezero
+ * whitespace...
+ *
  * Revision 1.11  2005/05/17 22:56:19  sezero
  * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
  * Q_strXcasecmp will now be used throughout the code which are implementation

@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.24 2005-05-27 17:56:40 sezero Exp $
+	$Id: glquake.h,v 1.25 2005-05-27 17:59:52 sezero Exp $
 */
 
 
@@ -33,7 +33,6 @@ extern	int	gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for mode
 void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite);
 void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode);
 int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba);
-int GL_LoadTransTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, byte Alpha);
 int GL_FindTexture (char *identifier);
 int GL_LoadPicTexture (qpic_t *pic);
 void GL_BuildLightmaps (void);
@@ -304,6 +303,10 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2005/05/27 17:56:40  sezero
+ * merged texture scale/upload and 8-bit extension
+ * functions from hexenworld to hexen2
+ *
  * Revision 1.23  2005/05/20 18:15:22  sezero
  * stripped the platform spesific stuff out from glquake.h
  * into glxunix.h and glwin32.h
