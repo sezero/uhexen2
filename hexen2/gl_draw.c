@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.34 2005-05-26 18:20:42 sezero Exp $
+	$Id: gl_draw.c,v 1.35 2005-05-27 17:56:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -15,10 +15,11 @@ extern int ColorIndex[16];
 extern unsigned ColorPercent[16];
 extern qboolean	vid_initialized;
 extern qboolean	is8bit;
+extern unsigned char d_15to8table[65536];
 
 int		gl_max_size = 256;
-cvar_t		gl_round_down = {"gl_round_down", "0"};
 cvar_t		gl_picmip = {"gl_picmip", "0"};
+cvar_t		gl_spritemip = {"gl_spritemip", "0"};
 
 qboolean	plyrtex[NUM_CLASSES][16][16];		// whether or not the corresponding player textures
 							// (in multiplayer config screens) have been loaded
@@ -466,8 +467,8 @@ void Draw_Init (void)
 	char	ver[40];
 	glpic_t	*gl;
 
-	Cvar_RegisterVariable (&gl_round_down);
 	Cvar_RegisterVariable (&gl_picmip);
+	Cvar_RegisterVariable (&gl_spritemip);
 
 	glfunc.glGetIntegerv_fp(GL_MAX_TEXTURE_SIZE, &gl_max_size);
 	if (gl_max_size < 64)	/* Any living examples for this? */
@@ -1211,42 +1212,54 @@ GL_ResampleTexture
 void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigned *out,  int outwidth, int outheight)
 {
 	int		i, j;
-	unsigned	*inrow, *inrow2;
+	unsigned	*inrow;
 	unsigned	frac, fracstep;
-	unsigned	p1[1024], p2[1024];
-	byte		*pix1, *pix2, *pix3, *pix4;
 
 	fracstep = inwidth*0x10000/outwidth;
-
-	frac = fracstep>>2;
-	for (i=0 ; i<outwidth ; i++)
-	{
-		p1[i] = 4*(frac>>16);
-		frac += fracstep;
-	}
-	frac = 3*(fracstep>>2);
-	for (i=0 ; i<outwidth ; i++)
-	{
-		p2[i] = 4*(frac>>16);
-		frac += fracstep;
-	}
-
 	for (i=0 ; i<outheight ; i++, out += outwidth)
 	{
-		inrow = in + inwidth*(int)((i+0.25)*inheight/outheight);
-		inrow2 = in + inwidth*(int)((i+0.75)*inheight/outheight);
-
+		inrow = in + inwidth*(i*inheight/outheight);
 		frac = fracstep >> 1;
-		for (j=0 ; j<outwidth ; j++)
+		for (j=0 ; j<outwidth ; j+=4)
 		{
-			pix1 = (byte *)inrow + p1[j];
-			pix2 = (byte *)inrow + p2[j];
-			pix3 = (byte *)inrow2 + p1[j];
-			pix4 = (byte *)inrow2 + p2[j];
-			((byte *)(out+j))[0] = (pix1[0] + pix2[0] + pix3[0] + pix4[0])>>2;
-			((byte *)(out+j))[1] = (pix1[1] + pix2[1] + pix3[1] + pix4[1])>>2;
-			((byte *)(out+j))[2] = (pix1[2] + pix2[2] + pix3[2] + pix4[2])>>2;
-			((byte *)(out+j))[3] = (pix1[3] + pix2[3] + pix3[3] + pix4[3])>>2;
+			out[j] = inrow[frac>>16];
+			frac += fracstep;
+			out[j+1] = inrow[frac>>16];
+			frac += fracstep;
+			out[j+2] = inrow[frac>>16];
+			frac += fracstep;
+			out[j+3] = inrow[frac>>16];
+			frac += fracstep;
+		}
+	}
+}
+
+/*
+================
+GL_Resample8BitTexture -- JACK
+================
+*/
+void GL_Resample8BitTexture (unsigned char *in, int inwidth, int inheight, unsigned char *out,  int outwidth, int outheight)
+{
+	int		i, j;
+	unsigned	char *inrow;
+	unsigned	frac, fracstep;
+
+	fracstep = inwidth*0x10000/outwidth;
+	for (i=0 ; i<outheight ; i++, out += outwidth)
+	{
+		inrow = in + inwidth*(i*inheight/outheight);
+		frac = fracstep >> 1;
+		for (j=0 ; j<outwidth ; j+=4)
+		{
+			out[j] = inrow[frac>>16];
+			frac += fracstep;
+			out[j+1] = inrow[frac>>16];
+			frac += fracstep;
+			out[j+2] = inrow[frac>>16];
+			frac += fracstep;
+			out[j+3] = inrow[frac>>16];
+			frac += fracstep;
 		}
 	}
 }
@@ -1278,46 +1291,50 @@ void GL_MipMap (byte *in, int width, int height)
 	}
 }
 
+/*
+================
+GL_MipMap8Bit
 
-// Acts the same as glTexImage2D, except that it maps color into the
-// current palette and uses paletteized textures.
-static void fxPalTexImage2D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels)
+Mipping for 8 bit textures
+================
+*/
+void GL_MipMap8Bit (byte *in, int width, int height)
 {
-	static unsigned char dest_image[256*256];
-	long i;
-	long mip_width, mip_height;
+	int		i, j;
+	unsigned short     r,g,b;
+	byte	*out, *at1, *at2, *at3, *at4;
 
-	mip_width = width;
-	mip_height = height;
+//	width <<=2;
+	height >>= 1;
+	out = in;
+	for (i=0 ; i<height ; i++, in+=width)
+//	{
+		for (j=0 ; j<width ; j+=2, out+=1, in+=2)
+		{
+			at1 = (byte *) &d_8to24table[in[0]];
+			at2 = (byte *) &d_8to24table[in[1]];
+			at3 = (byte *) &d_8to24table[in[width+0]];
+			at4 = (byte *) &d_8to24table[in[width+1]];
 
-	if( internalformat != 3 )
-		Sys_Error( "fxPalTexImage2D: internalformat != 3" );
-	for( i = 0; i < mip_width * mip_height; i++ )
-	{
-		int r, g, b, index;
-		r = ( ( unsigned char * )pixels )[i * 4];
-		g = ( ( unsigned char * )pixels )[i * 4+1];
-		b = ( ( unsigned char * )pixels )[i * 4+2];
-		r >>= 8 - INVERSE_PAL_R_BITS;
-		g >>= 8 - INVERSE_PAL_G_BITS;
-		b >>= 8 - INVERSE_PAL_B_BITS;
-		index = ( r << ( INVERSE_PAL_G_BITS + INVERSE_PAL_B_BITS ) ) |
-			( g << INVERSE_PAL_B_BITS ) |
-			b;
-		dest_image[i] = inverse_pal[index];
-//		dest_image[i] = ( ( unsigned char * )pixels )[i*4];
-	}
+ 			r = (at1[0]+at2[0]+at3[0]+at4[0]); r>>=5;
+ 			g = (at1[1]+at2[1]+at3[1]+at4[1]); g>>=5;
+ 			b = (at1[2]+at2[2]+at3[2]+at4[2]); b>>=5;
 
-	glfunc.glTexImage2D_fp(target, level, GL_COLOR_INDEX8_EXT, mip_width, mip_height, border, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, dest_image);
+			out[0] = d_15to8table[(r<<0) + (g<<5) + (b<<10)];
+//			out[0] = (in[0] + in[1] + in[width+0] + in[width+1])>>2;
+//			out[1] = (in[1] + in[5] + in[width+1] + in[width+5])>>2;
+//			out[2] = (in[2] + in[6] + in[width+2] + in[width+6])>>2;
+//			out[3] = (in[3] + in[7] + in[width+3] + in[width+7])>>2;
+		}
+//	}
 }
-
 
 /*
 ===============
 GL_Upload32
 ===============
 */
-void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha)
+void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite)
 {
 	int			samples;
 	static	unsigned	scaled[1024*512];	// [512*256];
@@ -1325,34 +1342,32 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 
 	for (scaled_width = 1 ; scaled_width < width ; scaled_width<<=1)
 		;
-	if (gl_round_down.value && scaled_width > width)
-		scaled_width >>= 1;
 	for (scaled_height = 1 ; scaled_height < height ; scaled_height<<=1)
 		;
-	if (gl_round_down.value && scaled_height > height)
-		scaled_height >>= 1;
 
-/*
-  Two classes of textures don't like being scaled down here, the help
-  screens and the little item textures with numbers corresponding to
-  how many of each you have. If you wish to use gl_picmip > 0 , then
-  for these textures to be readable, you should check here for them
-  and ~not~ scale them. S.A
-*/
-	if ((scaled_width >> (int)gl_picmip.value) &&
-		(scaled_height >> (int)gl_picmip.value))
+	if (sprite)
+	{
+		scaled_width >>= (int)gl_spritemip.value;
+		scaled_height >>= (int)gl_spritemip.value;
+	}
+	else
 	{
 		scaled_width >>= (int)gl_picmip.value;
 		scaled_height >>= (int)gl_picmip.value;
+	}
+	if (scaled_width < 1)
+	{
+		scaled_width = 1;
+	}
+	if (scaled_height < 1)
+	{
+		scaled_height = 1;
 	}
 
 	if (scaled_width > gl_max_size)
 		scaled_width = gl_max_size;
 	if (scaled_height > gl_max_size)
 		scaled_height = gl_max_size;
-
-	if (scaled_width * scaled_height > sizeof(scaled)/4)
-		Sys_Error ("GL_LoadTexture: too big");
 
 	// 3dfx has some aspect ratio constraints. . . can't go beyond 8 to 1 or below 1 to 8.
 	if( is_3dfx )
@@ -1366,6 +1381,9 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 			scaled_height = scaled_width >> 3;
 		}
 	}
+
+	if (scaled_width * scaled_height > sizeof(scaled)/4)
+		Sys_Error ("GL_LoadTexture: too big");
 
 	samples = alpha ? gl_alpha_format : gl_solid_format;
 
@@ -1381,6 +1399,7 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 		glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 	}
 #else
+	texels += scaled_width * scaled_height;
 
 	if (scaled_width == width && scaled_height == height)
 	{
@@ -1394,19 +1413,7 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 	else
 		GL_ResampleTexture (data, width, height, scaled, scaled_width, scaled_height);
 
-	texels += scaled_width * scaled_height;
-
-	// If you are on a 3Dfx card and your texture has no alpha, then download it
-	// as a palettized texture to save memory.
-	if( is8bit && ( samples == 3 ) )
-	{
-		fxPalTexImage2D( GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled );
-	}
-	else
-	{
-		glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
-	}
-
+	glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 	if (mipmap)
 	{
 		int		miplevel;
@@ -1422,18 +1429,7 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 			if (scaled_height < 1)
 				scaled_height = 1;
 			miplevel++;
-			texels += scaled_width * scaled_height;
-
-			// If you are on a 3Dfx card and your texture has no alpha, then download it
-			// as a palettized texture to save memory.
-			if( is8bit && ( samples == 3) )
-			{
-				fxPalTexImage2D (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
-			}
-			else
-			{
-				glfunc.glTexImage2D_fp (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
-			}
+			glfunc.glTexImage2D_fp (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 		}
 	}
 done: ;
@@ -1452,7 +1448,123 @@ done: ;
 	}
 }
 
-static	unsigned	trans[640*480]; 	// FIXME, temporary
+void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite) 
+{
+	int			i, s;
+	qboolean		noalpha;
+	int			samples;
+	static	unsigned char scaled[1024*512];	// [512*256];
+	int			scaled_width, scaled_height;
+
+	s = width*height;
+	// if there are no transparent pixels, make it a 3 component
+	// texture even if it was specified as otherwise
+	if (alpha)
+	{
+		noalpha = true;
+		for (i=0 ; i<s ; i++)
+		{
+			if (data[i] == 255)
+				noalpha = false;
+		}
+
+		if (alpha && noalpha)
+			alpha = false;
+	}
+	for (scaled_width = 1 ; scaled_width < width ; scaled_width<<=1)
+		;
+	for (scaled_height = 1 ; scaled_height < height ; scaled_height<<=1)
+		;
+
+	if (sprite)
+	{
+		scaled_width >>= (int)gl_spritemip.value;
+		scaled_height >>= (int)gl_spritemip.value;
+	}
+	else
+	{
+		scaled_width >>= (int)gl_picmip.value;
+		scaled_height >>= (int)gl_picmip.value;
+	}
+	if (scaled_width < 1)
+	{
+		scaled_width = 1;
+	}
+	if (scaled_height < 1)
+	{
+		scaled_height = 1;
+	}
+
+	if (scaled_width > gl_max_size)
+		scaled_width = gl_max_size;
+	if (scaled_height > gl_max_size)
+		scaled_height = gl_max_size;
+
+	// 3dfx has some aspect ratio constraints. . . can't go beyond 8 to 1 or below 1 to 8.
+	if( is_3dfx )
+	{
+		if( scaled_width * 8 < scaled_height )
+		{
+			scaled_width = scaled_height >> 3;
+		}
+		else if( scaled_height * 8 < scaled_width )
+		{
+			scaled_height = scaled_width >> 3;
+		}
+	}
+
+	if (scaled_width * scaled_height > sizeof(scaled))
+		Sys_Error ("GL_LoadTexture: too big");
+
+	samples = 1; // alpha ? gl_alpha_format : gl_solid_format;
+
+	texels += scaled_width * scaled_height;
+
+	if (scaled_width == width && scaled_height == height)
+	{
+		if (!mipmap)
+		{
+			glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX , GL_UNSIGNED_BYTE, data);
+			goto done;
+		}
+		memcpy (scaled, data, width*height);
+	}
+	else
+		GL_Resample8BitTexture (data, width, height, scaled, scaled_width, scaled_height);
+
+	glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, scaled);
+	if (mipmap)
+	{
+		int		miplevel;
+
+		miplevel = 0;
+		while (scaled_width > 1 || scaled_height > 1)
+		{
+			GL_MipMap8Bit ((byte *)scaled, scaled_width, scaled_height);
+			scaled_width >>= 1;
+			scaled_height >>= 1;
+			if (scaled_width < 1)
+				scaled_width = 1;
+			if (scaled_height < 1)
+				scaled_height = 1;
+			miplevel++;
+			glfunc.glTexImage2D_fp (GL_TEXTURE_2D, miplevel, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, scaled);
+		}
+	}
+done: ;
+
+	if (mipmap)
+	{
+		glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
+		glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+	}
+	else
+	{
+		glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+		glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+	}
+}
+
 
 /*
 ===============
@@ -1468,14 +1580,22 @@ GL_Upload8
 */
 void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode)
 {
+	static	unsigned	trans[640*480];		// FIXME, temporary
 	int			i, s;
 	qboolean		noalpha;
 	int			p;
+	qboolean		sprite = false;
+
+	if (mode >= 10)
+	{
+		sprite = true;
+		mode -= 10;
+	}
 
 	s = width*height;
 	// if there are no transparent pixels, make it a 3 component
 	// texture even if it was specified as otherwise
-	if ((alpha || mode != 0) && mode != 10 )
+	if ((alpha || mode != 0))
 	{
 		noalpha = true;
 		for (i=0 ; i<s ; i++)
@@ -1600,7 +1720,12 @@ void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean a
 		}
 	}
 
-	GL_Upload32 (trans, width, height, mipmap, alpha);
+	if (is8bit && !alpha && (data!=scrap_texels[0])) {
+		GL_Upload8_EXT (data, width, height, mipmap, alpha, sprite);
+		return;
+	}
+
+	GL_Upload32 (trans, width, height, mipmap, alpha, sprite);
 }
 
 /*
@@ -1637,7 +1762,7 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 					glt->mipmap = mipmap;
 					GL_Bind (glt->texnum);
 					if (rgba)
-						GL_Upload32 ((unsigned *)data, width, height, mipmap, alpha);
+						GL_Upload32 ((unsigned *)data, width, height, mipmap, alpha, false);
 					else
 						GL_Upload8 (data, width, height, mipmap, alpha, mode);
 					return glt->texnum;
@@ -1661,7 +1786,7 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 	GL_Bind (texture_extension_number);
 
 	if (rgba)
-		GL_Upload32 ((unsigned *)data, width, height, mipmap, alpha);
+		GL_Upload32 ((unsigned *)data, width, height, mipmap, alpha, false);
 	else
 		GL_Upload8 (data, width, height, mipmap, alpha, mode);
 
@@ -1682,6 +1807,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.34  2005/05/26 18:20:42  sezero
+ * whitespace + unused stuff...
+ *
  * Revision 1.33  2005/05/21 17:32:03  sezero
  * disabled the rotating skull annoyance in GL mode (used to
  * cause problems with voodoo1/mesa6 when using gamma tricks)

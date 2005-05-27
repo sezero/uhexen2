@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.23 2005-05-20 18:15:22 sezero Exp $
+	$Id: glquake.h,v 1.24 2005-05-27 17:56:40 sezero Exp $
 */
 
 
@@ -19,16 +19,8 @@
 	}\
 }
 
-#define INVERSE_PAL_R_BITS 6
-#define INVERSE_PAL_G_BITS 6
-#define INVERSE_PAL_B_BITS 6
-#define INVERSE_PAL_TOTAL_BITS \
-	( INVERSE_PAL_R_BITS + INVERSE_PAL_G_BITS + INVERSE_PAL_B_BITS )
-
 void GL_BeginRendering (int *x, int *y, int *width, int *height);
 void GL_EndRendering (void);
-
-extern unsigned char inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
 
 extern	int texture_extension_number;
 
@@ -38,7 +30,7 @@ extern	float	gldepthmin, gldepthmax;
 #define MAX_EXTRA_TEXTURES	156   // 255-100+1
 extern	int	gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for models
 
-void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha);
+void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite);
 void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode);
 int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba);
 int GL_LoadTransTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, byte Alpha);
@@ -312,6 +304,10 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/05/20 18:15:22  sezero
+ * stripped the platform spesific stuff out from glquake.h
+ * into glxunix.h and glwin32.h
+ *
  * Revision 1.22  2005/05/20 17:30:57  sezero
  * initial slight gl syncing-2 (kill unused c_sky_polys)
  *

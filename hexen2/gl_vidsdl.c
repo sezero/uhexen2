@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.59 2005-05-26 10:16:49 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.60 2005-05-27 17:56:40 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -93,9 +93,10 @@ FX_SET_PALETTE_EXT	MyglColorTableEXT;
 qboolean	is8bit = false;
 
 float		RTint[256],GTint[256],BTint[256];
-unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
+unsigned char	d_15to8table[65536];
 unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
+unsigned	d_8to24table3dfx[256];
 unsigned	d_8to24TranslucentTable[256];
 
 cvar_t		gl_ztrick = {"gl_ztrick","0",true};
@@ -260,41 +261,6 @@ int VID_SetMode (int modenum)
 
 
 //====================================
-
-void CheckSetPaletteExtension( unsigned char *palette )
-{
-	byte glExtPalette[768];
-	int i;
-
-	if (strstr(gl_extensions, "GL_EXT_shared_texture_palette"))
-		MyglColorTableEXT = (FX_SET_PALETTE_EXT)SDL_GL_GetProcAddress("glColorTableEXT");
-	else
-		return;
-
-	if (MyglColorTableEXT == NULL)
-	{
-			Con_Printf ("GetProcAddress for glColorTableEXT failed\n");
-			Con_Printf ("Palettized textures disabled...\n");
-			return;
-	}
-	Con_Printf("Found 8-bit gl extensions\n");
-	Con_Printf("using palettized textures.\n");
-#ifdef DO_BUILD
-	VID_CreateInversePalette(palette);
-#else
-	COM_LoadStackFile ("gfx/invpal.lmp",inverse_pal,sizeof(inverse_pal));
-#endif
-	glfunc.glEnable_fp(GL_SHARED_TEXTURE_PALETTE_EXT);
-
-	for (i = 0; i < 256; i++) {
-		glExtPalette[3 * i] = d_8to24table[i] & 0xFF;
-		glExtPalette[3 * i + 1] = (d_8to24table[i] & 0xFF00) >> 8;
-		glExtPalette[3 * i + 2] = (d_8to24table[i] & 0xFF0000) >> 16;
-	}
-	MyglColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256, GL_RGB, GL_UNSIGNED_BYTE, glExtPalette);
-	is8bit = true;
-}
-
 
 int		texture_extension_number = 1;
 
@@ -549,89 +515,25 @@ unsigned ColorPercent[16] =
 	25, 51, 76, 102, 114, 127, 140, 153, 165, 178, 191, 204, 216, 229, 237, 247
 };
 
-#ifdef DO_BUILD
-static int ConvertTrueColorToPal( unsigned char *true_color, unsigned char *palette )
-{
-	int i;
-	long min_dist;
-	int min_index;
-	long r, g, b;
-
-	min_dist = 256 * 256 + 256 * 256 + 256 * 256;
-	min_index = -1;
-	r = ( long )true_color[0];
-	g = ( long )true_color[1];
-	b = ( long )true_color[2];
-
-	for( i = 0; i < 256; i++ )
-	{
-		long palr, palg, palb, dist;
-		long dr, dg, db;
-
-		palr = palette[3*i];
-		palg = palette[3*i+1];
-		palb = palette[3*i+2];
-		dr = palr - r;
-		dg = palg - g;
-		db = palb - b;
-		dist = dr * dr + dg * dg + db * db;
-		if( dist < min_dist )
-		{
-			min_dist = dist;
-			min_index = i;
-		}
-	}
-	return min_index;
-}
-
-void	VID_CreateInversePalette( unsigned char *palette )
-{
-	FILE *FH;
-
-	long r, g, b;
-	long index = 0;
-	unsigned char true_color[3];
-	static qboolean been_here = false;
-
-	if( been_here )
-		return;
-
-	been_here = true;
-	
-	for( r = 0; r < ( 1 << INVERSE_PAL_R_BITS ); r++ )
-	{
-		for( g = 0; g < ( 1 << INVERSE_PAL_G_BITS ); g++ )
-		{
-			for( b = 0; b < ( 1 << INVERSE_PAL_B_BITS ); b++ )
-			{
-				true_color[0] = ( unsigned char )( r << ( 8 - INVERSE_PAL_R_BITS ) );
-				true_color[1] = ( unsigned char )( g << ( 8 - INVERSE_PAL_G_BITS ) );
-				true_color[2] = ( unsigned char )( b << ( 8 - INVERSE_PAL_B_BITS ) );
-				inverse_pal[index] = ConvertTrueColorToPal( true_color, palette );
-				index++;
-			}
-		}
-	}
-
-	FH = fopen("data1\\gfx\\invpal.lmp","wb");
-	fwrite(inverse_pal,1,sizeof(inverse_pal),FH);
-	fclose(FH);
-}
-#endif
 
 void VID_SetPalette (unsigned char *palette)
 {
 	byte	*pal;
-	int		r,g,b,v;
-	int		i,c,p;
-	unsigned	*table;
+	unsigned short r,g,b;
+	int     v;
+	int     r1,g1,b1;
+	int		j,k,l,m;
+	unsigned short i, p, c;
+	unsigned	*table, *table3dfx;
+	FILE	*f;
+	char	s[MAX_OSPATH];
 
 //
 // 8 8 8 encoding
 //
 	pal = palette;
 	table = d_8to24table;
-	
+	table3dfx = d_8to24table3dfx;
 	for (i=0 ; i<256 ; i++)
 	{
 		r = pal[0];
@@ -643,9 +545,9 @@ void VID_SetPalette (unsigned char *palette)
 //		v = (255<<0) + (r<<8) + (g<<16) + (b<<24);
 		v = (255<<24) + (r<<0) + (g<<8) + (b<<16);
 		*table++ = v;
+		v = (255<<24) + (r<<16) + (g<<8) + (b<<0);
+		*table3dfx++ = v;
 	}
-
-	d_8to24table[255] &= 0xffffff;	// 255 is transparent
 
 	pal = palette;
 	table = d_8to24TranslucentTable;
@@ -669,6 +571,66 @@ void VID_SetPalette (unsigned char *palette)
 			BTint[i*16+p] = ((float)b) / ((float)ColorPercent[15-p]);
 		}
 	}
+
+	// JACK: 3D distance calcs - k is last closest, l is the distance.
+
+	COM_FOpenFile("glhexen/15to8.pal", &f, true);
+	if (f)
+	{
+		fread(d_15to8table, 1<<15, 1, f);
+		fclose(f);
+	} 
+	else 
+	{
+		Con_Printf ("Creating 15to8.pal ..");
+		for (i=0,m=0; i < (1<<15); i++,m++) 
+		{
+			/* Maps
+ 			000000000000000
+ 			000000000011111 = Red  = 0x1F
+ 			000001111100000 = Blue = 0x03E0
+ 			111110000000000 = Grn  = 0x7C00
+ 			*/
+ 			r = ((i & 0x1F) << 3)+4;
+ 			g = ((i & 0x03E0) >> 2)+4;
+ 			b = ((i & 0x7C00) >> 7)+4;
+#if 0
+			r = (i << 11);
+			g = (i << 6);
+			b = (i << 1);
+			r >>= 11;
+			g >>= 11;
+			b >>= 11;
+#endif
+			pal = (unsigned char *)d_8to24table;
+			for (v=0,k=0,l=10000; v<256; v++,pal+=4)
+			{
+ 				r1 = r-pal[0];
+ 				g1 = g-pal[1];
+ 				b1 = b-pal[2];
+				j = sqrt(((r1*r1)+(g1*g1)+(b1*b1)));
+				if (j<l)
+				{
+					k=v;
+					l=j;
+				}
+			}
+			d_15to8table[i]=k;
+			if (m >= 1000)
+				m=0;
+		}
+		sprintf(s, "%s/glhexen", com_userdir);
+ 		Sys_mkdir (s);
+		sprintf(s, "%s/glhexen/15to8.pal", com_userdir);
+		if ((f = fopen(s, "wb")))
+		{
+			fwrite(d_15to8table, 1<<15, 1, f);
+			fclose(f);
+		}
+		Con_Printf(". done\n");
+	}
+
+	d_8to24table[255] &= 0xffffff;	// 255 is transparent
 }
 
 
@@ -709,6 +671,40 @@ void ClearAllStates (void)
 
 	Key_ClearStates ();
 	IN_ClearStates ();
+}
+
+void VID_Init8bitPalette() 
+{
+	// Check for 8bit Extensions and initialize them.
+	int i;
+	char thePalette[256*3];
+	char *oldPalette, *newPalette;
+
+	MyglColorTableEXT = NULL;
+	if (strstr(gl_extensions, "GL_EXT_shared_texture_palette"))
+	{
+		MyglColorTableEXT = (void *)SDL_GL_GetProcAddress("glColorTableEXT");
+		if (MyglColorTableEXT == NULL)
+		{
+			Con_Printf ("Unable to init palettized textures\n");
+			return;
+		}
+		Con_Printf("8-bit palettized textures enabled\n");
+		glfunc.glEnable_fp( GL_SHARED_TEXTURE_PALETTE_EXT );
+		oldPalette = (char *) d_8to24table; //d_8to24table3dfx;
+		newPalette = thePalette;
+
+		for (i=0;i<256;i++) {
+			*newPalette++ = *oldPalette++;
+			*newPalette++ = *oldPalette++;
+			*newPalette++ = *oldPalette++;
+			oldPalette++;
+		}
+
+		MyglColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256,
+			GL_RGB, GL_UNSIGNED_BYTE, (void *) thePalette);
+		is8bit = true;
+	}
 }
 
 /*
@@ -839,7 +835,7 @@ void	VID_Init (unsigned char *palette)
 	// enable paletted textures if -paltex cmdline arg is used
 	MyglColorTableEXT = NULL;
 	if (COM_CheckParm("-paltex"))
-		CheckSetPaletteExtension(palette);
+		VID_Init8bitPalette();
 
 	vid_initialized = true;
 

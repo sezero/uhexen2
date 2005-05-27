@@ -2,7 +2,7 @@
    gl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.51 2005-05-26 10:16:51 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.52 2005-05-27 17:56:44 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -615,7 +615,6 @@ void VID_SetPalette (unsigned char *palette)
 	}
 
 	// JACK: 3D distance calcs - k is last closest, l is the distance.
-	// FIXME: Precalculate this and cache to disk.
 
 	COM_FOpenFile("glhexen/15to8.pal", &f, true);
 	if (f)
@@ -625,6 +624,7 @@ void VID_SetPalette (unsigned char *palette)
 	} 
 	else 
 	{
+		Con_Printf ("Creating 15to8.pal ..");
 		for (i=0,m=0; i < (1<<15); i++,m++) 
 		{
 			/* Maps
@@ -659,13 +659,7 @@ void VID_SetPalette (unsigned char *palette)
 			}
 			d_15to8table[i]=k;
 			if (m >= 1000)
-			{
-#ifdef _DEBUG
-				sprintf(s, "Done - %d\n", i);
-				OutputDebugString(s);
-#endif
 				m=0;
-			}
 		}
 		sprintf(s, "%s/glhexen", com_userdir);
  		Sys_mkdir (s);
@@ -675,6 +669,7 @@ void VID_SetPalette (unsigned char *palette)
 			fwrite(d_15to8table, 1<<15, 1, f);
 			fclose(f);
 		}
+		Con_Printf(". done\n");
 	}
 
 	d_8to24table[255] &= 0xffffff;	// 255 is transparent
@@ -727,13 +722,16 @@ void VID_Init8bitPalette()
 	char thePalette[256*3];
 	char *oldPalette, *newPalette;
 
-	MyglColorTableEXT = (void *)SDL_GL_GetProcAddress("glColorTableEXT");
-
-	// enable paletted textures only when -paltex cmdline arg is used
-	if (MyglColorTableEXT && COM_CheckParm("-paltex") &&
-	    strstr(gl_extensions, "GL_EXT_shared_texture_palette")) {
-
-		Con_SafePrintf("8-bit GL extensions enabled.\n");
+	MyglColorTableEXT = NULL;
+	if (strstr(gl_extensions, "GL_EXT_shared_texture_palette"))
+	{
+		MyglColorTableEXT = (void *)SDL_GL_GetProcAddress("glColorTableEXT");
+		if (MyglColorTableEXT == NULL)
+		{
+			Con_Printf ("Unable to init palettized textures\n");
+			return;
+		}
+		Con_Printf("8-bit palettized textures enabled\n");
 		glfunc.glEnable_fp( GL_SHARED_TEXTURE_PALETTE_EXT );
 		oldPalette = (char *) d_8to24table; //d_8to24table3dfx;
 		newPalette = thePalette;
@@ -875,8 +873,10 @@ void	VID_Init (unsigned char *palette)
 
 	VID_SetPalette (palette);
 
-	// Check for 3DFX Extensions and initialize them.
-	VID_Init8bitPalette();
+	// enable paletted textures if -paltex cmdline arg is used
+	MyglColorTableEXT = NULL;
+	if (COM_CheckParm("-paltex"))
+		VID_Init8bitPalette();
 
 	vid_initialized = true;
 
