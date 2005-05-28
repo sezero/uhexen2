@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.13 2005-05-28 12:02:04 sezero Exp $
+	$Id: gl_rmain.c,v 1.14 2005-05-28 12:43:49 sezero Exp $
 */
 
 
@@ -24,8 +24,6 @@ int			c_brush_polys, c_alias_polys;
 qboolean	envmap;				// true during envmap command capture 
 
 int			currenttexture = -1;	// to avoid unnecessary texture sets
-
-int			cnttextures[2] = {-1, -1};     // cached
 
 int			particletexture;	// little dot for particles
 int			playertextures;		// up to 16 color translated skins

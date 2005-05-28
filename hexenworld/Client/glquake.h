@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.14 2005-05-28 12:31:50 sezero Exp $
+	$Id: glquake.h,v 1.15 2005-05-28 12:43:49 sezero Exp $
 */
 
 
@@ -253,7 +253,6 @@ extern	int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 
 extern	qboolean	envmap;
 extern	int	currenttexture;
-extern	int	cnttextures[2];
 extern	int	particletexture;
 extern	int	netgraphtexture;	// netgraph texture
 extern	int	playertextures;
