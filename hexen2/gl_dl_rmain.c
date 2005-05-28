@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_dl_rmain.c,v 1.21 2005-05-28 12:02:02 sezero Exp $
+	$Id: gl_dl_rmain.c,v 1.22 2005-05-28 12:31:47 sezero Exp $
 */
 
 
@@ -84,6 +84,7 @@ cvar_t	r_wholeframe = {"r_wholeframe", "1", true};
 
 cvar_t	gl_clear = {"gl_clear","0"};
 cvar_t	gl_cull = {"gl_cull","1"};
+cvar_t	gl_multitexture = {"gl_multitexture","0",true};
 cvar_t	gl_smoothmodels = {"gl_smoothmodels","1"};
 cvar_t	gl_affinemodels = {"gl_affinemodels","0"};
 cvar_t	gl_polyblend = {"gl_polyblend","1"};
@@ -1801,6 +1802,12 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2005/05/28 12:02:02  sezero
+ * Killed gl_texsort (thus, R_DrawSequentailPoly and co) which was
+ * fairly broken. This also effectively killed the unfunctional
+ * multitextune support in hexenworld: updated the detection but
+ * doesn't do anything for now.
+ *
  * Revision 1.20  2005/05/26 19:45:37  sezero
  * whitespace...
  *

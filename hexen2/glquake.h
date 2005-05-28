@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.26 2005-05-28 12:02:03 sezero Exp $
+	$Id: glquake.h,v 1.27 2005-05-28 12:31:47 sezero Exp $
 */
 
 
@@ -10,6 +10,19 @@
 #include "glwin32.h"
 #else
 #include "glxunix.h"
+#endif
+
+#ifndef	GL_TEXTURE0_ARB
+#define	GL_TEXTURE0_ARB				0x84C0
+#define	GL_TEXTURE1_ARB				0x84C1
+#define	GL_TEXTURE2_ARB				0x84C2
+#define	GL_TEXTURE3_ARB				0x84C3
+#define	GL_TEXTURE4_ARB				0x84C4
+#define	GL_TEXTURE5_ARB				0x84C5
+
+#define	GL_ACTIVE_TEXTURE_ARB			0x84E0
+#define	GL_CLIENT_ACTIVE_TEXTURE_ARB		0x84E1
+#define	GL_MAX_TEXTURE_UNITS_ARB		0x84E2
 #endif
 
 #define GL_Bind(texnum) {\
@@ -264,6 +277,7 @@ extern	cvar_t	r_wholeframe;
 extern	cvar_t	gl_clear;
 extern	cvar_t	gl_cull;
 extern	cvar_t	gl_poly;
+extern	cvar_t	gl_multitexture;
 extern	cvar_t	gl_smoothmodels;
 extern	cvar_t	gl_affinemodels;
 extern	cvar_t	gl_polyblend;
@@ -300,8 +314,18 @@ extern	glfunc_t glfunc;
 
 byte *playerTranslation;
 
+// Multitexture
+extern	qboolean gl_mtexable;
+
+
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2005/05/28 12:02:03  sezero
+ * Killed gl_texsort (thus, R_DrawSequentailPoly and co) which was
+ * fairly broken. This also effectively killed the unfunctional
+ * multitextune support in hexenworld: updated the detection but
+ * doesn't do anything for now.
+ *
  * Revision 1.25  2005/05/27 17:59:52  sezero
  * removed some dead code
  *
