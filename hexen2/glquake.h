@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.25 2005-05-27 17:59:52 sezero Exp $
+	$Id: glquake.h,v 1.26 2005-05-28 12:02:03 sezero Exp $
 */
 
 
@@ -264,7 +264,6 @@ extern	cvar_t	r_wholeframe;
 extern	cvar_t	gl_clear;
 extern	cvar_t	gl_cull;
 extern	cvar_t	gl_poly;
-extern	cvar_t	gl_texsort;
 extern	cvar_t	gl_smoothmodels;
 extern	cvar_t	gl_affinemodels;
 extern	cvar_t	gl_polyblend;
@@ -303,6 +302,9 @@ byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2005/05/27 17:59:52  sezero
+ * removed some dead code
+ *
  * Revision 1.24  2005/05/27 17:56:40  sezero
  * merged texture scale/upload and 8-bit extension
  * functions from hexenworld to hexen2

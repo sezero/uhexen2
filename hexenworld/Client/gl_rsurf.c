@@ -29,19 +29,12 @@ glpoly_t	*lightmap_polys[MAX_LIGHTMAPS];
 qboolean	lightmap_modified[MAX_LIGHTMAPS];
 glRect_t	lightmap_rectchange[MAX_LIGHTMAPS];
 
-cvar_t gl_multitex = {"gl_multitex", "0"};
-
 int		allocated[MAX_LIGHTMAPS][BLOCK_WIDTH];
 
 // the lightmap texture data needs to be kept in
 // main memory so texsubimage can update properly
 byte		lightmaps[4*MAX_LIGHTMAPS*BLOCK_WIDTH*BLOCK_HEIGHT];
 
-// For gl_texsort 0
-msurface_t  *skychain = NULL;
-msurface_t  *waterchain = NULL;
-
-void R_RenderDynamicLightmaps (msurface_t *fa);
 
 /*
 ===============
@@ -261,247 +254,6 @@ extern	float	speedscale;		// for top sky and bottom sky
 void DrawGLWaterPoly (glpoly_t *p);
 void DrawGLWaterPolyLightmap (glpoly_t *p);
 
-qboolean mtexenabled = false;
-
-/*
-================
-R_DrawSequentialPoly
-
-Systems that have fast state and texture changes can
-just do everything as it passes with no need to sort
-================
-*/
-void R_DrawSequentialPoly (msurface_t *s)
-{
-	glpoly_t	*p;
-	float		*v;
-	int		i;
-	texture_t	*t;
-	vec3_t		nv;
-	glRect_t	*theRect;
-	float		alpha_val = 1.0f;
-	float		intensity = 1.0f;
-
-	//
-	// normal lightmaped poly
-	//
-	if (! (s->flags & (SURF_DRAWSKY|SURF_DRAWTURB|SURF_UNDERWATER) ) )
-	{
-		R_RenderDynamicLightmaps (s);
-		if ((gl_mtexable && gl_multitex.value) && !(currententity->drawflags & DRF_TRANSLUCENT) &&
-			(currententity->drawflags & MLS_ABSLIGHT) != MLS_ABSLIGHT)
-		{
-			printf ("Taking bad path!\n");
-			p = s->polys;
-
-			t = R_TextureAnimation (s->texinfo->texture);
-			// Binds world to texture env 0
-			glfunc.glActiveTextureARB_fp(GL_TEXTURE0_ARB);
-			glfunc.glBindTexture_fp (GL_TEXTURE_2D,t->gl_texturenum);
-			glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-			glfunc.glEnable_fp(GL_TEXTURE_2D);
-			// Binds lightmap to texenv 1
-			glfunc.glActiveTextureARB_fp(GL_TEXTURE1_ARB);
-			glfunc.glBindTexture_fp (GL_TEXTURE_2D,lightmap_textures + s->lightmaptexturenum);
-			glfunc.glTexEnvf_fp (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-			glfunc.glEnable_fp (GL_TEXTURE_2D);
-
-			i = s->lightmaptexturenum;
-			if (lightmap_modified[i])
-			{
-				lightmap_modified[i] = false;
-				theRect = &lightmap_rectchange[i];
-				glfunc.glTexSubImage2D_fp(GL_TEXTURE_2D, 0, 0, theRect->t, 
-					BLOCK_WIDTH, theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
-					lightmaps+(i* BLOCK_HEIGHT + theRect->t) *BLOCK_WIDTH*lightmap_bytes);
-				theRect->l = BLOCK_WIDTH;
-				theRect->t = BLOCK_HEIGHT;
-				theRect->h = 0;
-				theRect->w = 0;
-			}
-
-			glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-
-			glfunc.glBegin_fp(GL_POLYGON);
-			v = p->verts[0];
-			for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
-			{
-				glfunc.glMultiTexCoord2fARB_fp(GL_TEXTURE0_ARB, v[3], v[4]);
-				glfunc.glMultiTexCoord2fARB_fp(GL_TEXTURE1_ARB, v[5], v[6]);
-				glfunc.glVertex3fv_fp (v);
-			}
-			glfunc.glEnd_fp ();
-			glfunc.glDisable_fp (GL_TEXTURE_2D);
-			glfunc.glActiveTextureARB_fp(GL_TEXTURE0_ARB);
-			glfunc.glEnable_fp (GL_TEXTURE_2D);
-
-			if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT ||
-				(currententity->drawflags & DRF_TRANSLUCENT))
-			{
-				glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-			}
-
-			return;
-		} 
-		else 
-		{
-			printf ("Taking good path!\n");
-			if (currententity->drawflags & DRF_TRANSLUCENT)
-			{
-				glfunc.glEnable_fp (GL_BLEND);
-		//		glfunc.glColor4f_fp (1,1,1,r_wateralpha.value);
-				alpha_val = r_wateralpha.value;
-
-				glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-				intensity = 1;
-				// rjr
-			}
-			if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
-			{
-				// currententity->abslight   0 - 255
-				// rjr
-				glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-				intensity = ( float )currententity->abslight / 255.0f;
-			//	intensity = 0;
-			}
-
-			glfunc.glColor4f_fp( intensity, intensity, intensity, alpha_val );
-			
-			p = s->polys;
-
-			t = R_TextureAnimation (s->texinfo->texture);
-			GL_Bind (t->gl_texturenum);
-			glfunc.glBegin_fp (GL_POLYGON);
-			v = p->verts[0];
-			for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
-			{
-				glfunc.glTexCoord2f_fp (v[3], v[4]);
-				glfunc.glVertex3fv_fp (v);
-			}
-			glfunc.glEnd_fp ();
-
-			GL_Bind (lightmap_textures + s->lightmaptexturenum);
-			glfunc.glEnable_fp (GL_BLEND);
-			glfunc.glBegin_fp (GL_POLYGON);
-			v = p->verts[0];
-			for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
-			{
-				glfunc.glTexCoord2f_fp (v[5], v[6]);
-				glfunc.glVertex3fv_fp (v);
-			}
-			glfunc.glEnd_fp ();
-
-			glfunc.glDisable_fp (GL_BLEND);
-		
-			if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT ||
-				(currententity->drawflags & DRF_TRANSLUCENT))
-			{
-				glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-				glfunc.glColor4f_fp(1,1,1,1);
-			}
-		}
-
-		return;
-	}
-
-	//
-	// subdivided water surface warp
-	//
-	if (s->flags & SURF_DRAWTURB)
-	{
-		GL_Bind (s->texinfo->texture->gl_texturenum);
-		EmitWaterPolys (s);
-		return;
-	}
-
-	//
-	// subdivided sky warp
-	//
-	if (s->flags & SURF_DRAWSKY)
-	{
-		GL_Bind (solidskytexture);
-		speedscale = realtime*8;
-		speedscale -= (int)speedscale & ~127;
-
-		EmitSkyPolys (s);
-
-		glfunc.glEnable_fp (GL_BLEND);
-		GL_Bind (alphaskytexture);
-		speedscale = realtime*16;
-		speedscale -= (int)speedscale & ~127;
-		EmitSkyPolys (s);
-
-		glfunc.glDisable_fp (GL_BLEND);
-		return;
-	}
-
-	//
-	// underwater warped with lightmap
-	//
-	R_RenderDynamicLightmaps (s);
-	if (gl_mtexable && gl_multitex.value) {
-		printf ("Taking bad path!\n");
-		p = s->polys;
-
-		t = R_TextureAnimation (s->texinfo->texture);
-		glfunc.glActiveTextureARB_fp(GL_TEXTURE0_ARB);
-		GL_Bind (t->gl_texturenum);
-		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-		glfunc.glEnable_fp (GL_TEXTURE_2D);
-
-		glfunc.glActiveTextureARB_fp(GL_TEXTURE1_ARB);
-		GL_Bind (lightmap_textures + s->lightmaptexturenum);
-		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		glfunc.glEnable_fp (GL_TEXTURE_2D);
-
-		i = s->lightmaptexturenum;
-		if (lightmap_modified[i])
-		{
-			lightmap_modified[i] = false;
-			theRect = &lightmap_rectchange[i];
-			glfunc.glTexSubImage2D_fp(GL_TEXTURE_2D, 0, 0, theRect->t, 
-				BLOCK_WIDTH, theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
-				lightmaps+(i* BLOCK_HEIGHT + theRect->t) *BLOCK_WIDTH*lightmap_bytes);
-			theRect->l = BLOCK_WIDTH;
-			theRect->t = BLOCK_HEIGHT;
-			theRect->h = 0;
-			theRect->w = 0;
-		}
-		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-		glfunc.glBegin_fp (GL_TRIANGLE_FAN);
-		v = p->verts[0];
-		for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
-		{
-			glfunc.glMultiTexCoord2fARB_fp(GL_TEXTURE0_ARB, v[3], v[4]);
-			glfunc.glMultiTexCoord2fARB_fp(GL_TEXTURE1_ARB, v[5], v[6]);
-
-			nv[0] = v[0] + 8*sin(v[1]*0.05+realtime)*sin(v[2]*0.05+realtime);
-			nv[1] = v[1] + 8*sin(v[0]*0.05+realtime)*sin(v[2]*0.05+realtime);
-			nv[2] = v[2];
-
-			glfunc.glVertex3fv_fp (nv);
-		}
-		glfunc.glEnd_fp ();
-		glfunc.glDisable_fp (GL_TEXTURE_2D);
-		glfunc.glActiveTextureARB_fp(GL_TEXTURE0_ARB);
-		glfunc.glEnable_fp (GL_TEXTURE_2D);
-
-	} else {
-		printf ("Taking good path!\n");
-		p = s->polys;
-
-		t = R_TextureAnimation (s->texinfo->texture);
-		GL_Bind (t->gl_texturenum);
-		DrawGLWaterPoly (p);
-
-		GL_Bind (lightmap_textures + s->lightmaptexturenum);
-		glfunc.glEnable_fp (GL_BLEND);
-		DrawGLWaterPolyLightmap (p);
-		glfunc.glDisable_fp (GL_BLEND);
-	}
-}
-
-
 /*
 ================
 DrawGLWaterPoly
@@ -585,8 +337,6 @@ void R_BlendLightmaps (qboolean Translucent)
 	glRect_t	*theRect;
 
 	if (r_fullbright.value)
-		return;
-	if (!gl_texsort.value)
 		return;
 
 	if (!Translucent)
@@ -776,64 +526,6 @@ dynamic:
 
 /*
 ================
-R_RenderDynamicLightmaps
-Multitexture
-================
-*/
-void R_RenderDynamicLightmaps (msurface_t *fa)
-{
-	byte		*base;
-	int		maps;
-	glRect_t	*theRect;
-	int		smax, tmax;
-
-	c_brush_polys++;
-
-	if (fa->flags & ( SURF_DRAWSKY | SURF_DRAWTURB) )
-		return;
-		
-	fa->polys->chain = lightmap_polys[fa->lightmaptexturenum];
-	lightmap_polys[fa->lightmaptexturenum] = fa->polys;
-
-	// check for lightmap modification
-	for (maps = 0 ; maps < MAXLIGHTMAPS && fa->styles[maps] != 255 ;
-		 maps++)
-		if (d_lightstylevalue[fa->styles[maps]] != fa->cached_light[maps])
-			goto dynamic;
-
-	if (fa->dlightframe == r_framecount	// dynamic this frame
-		|| fa->cached_dlight)			// dynamic previously
-	{
-dynamic:
-		if (r_dynamic.value)
-		{
-			lightmap_modified[fa->lightmaptexturenum] = true;
-			theRect = &lightmap_rectchange[fa->lightmaptexturenum];
-			if (fa->light_t < theRect->t) {
-				if (theRect->h)
-					theRect->h += theRect->t - fa->light_t;
-				theRect->t = fa->light_t;
-			}
-			if (fa->light_s < theRect->l) {
-				if (theRect->w)
-					theRect->w += theRect->l - fa->light_s;
-				theRect->l = fa->light_s;
-			}
-			smax = (fa->extents[0]>>4)+1;
-			tmax = (fa->extents[1]>>4)+1;
-			if ((theRect->w + theRect->l) < (fa->light_s + smax))
-				theRect->w = (fa->light_s-theRect->l)+smax;
-			if ((theRect->h + theRect->t) < (fa->light_t + tmax))
-				theRect->h = (fa->light_t-theRect->t)+tmax;
-			base = lightmaps + fa->lightmaptexturenum*lightmap_bytes*BLOCK_WIDTH*BLOCK_HEIGHT;
-			base += fa->light_t * BLOCK_WIDTH * lightmap_bytes + fa->light_s * lightmap_bytes;
-			R_BuildLightMap (fa, base, BLOCK_WIDTH*lightmap_bytes);
-		}
-	}
-}
-
-/*
-================
 R_MirrorChain
 ================
 */
@@ -907,7 +599,7 @@ void R_DrawWaterSurfaces (void)
 	msurface_t	*s;
 	texture_t	*t;
 
-	if (r_wateralpha.value == 1.0 && gl_texsort.value)
+	if (r_wateralpha.value == 1.0)
 		return;
 
 	//
@@ -922,50 +614,29 @@ void R_DrawWaterSurfaces (void)
 		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	}
 
-	if (!gl_texsort.value) {
-		if (!waterchain)
-			return;
+	for (i=0 ; i<cl.worldmodel->numtextures ; i++)
+	{
+		t = cl.worldmodel->textures[i];
+		if (!t)
+			continue;
+		s = t->texturechain;
+		if (!s)
+			continue;
+		if ( !(s->flags & SURF_DRAWTURB ) )
+			continue;
 
-		for ( s = waterchain ; s ; s=s->texturechain)
-		{
-			if (s->flags & SURF_TRANSLUCENT)
-				glfunc.glColor4f_fp (1,1,1,r_wateralpha.value);
-			else
-				glfunc.glColor4f_fp (1,1,1,1);
+		if (s->flags & SURF_TRANSLUCENT)
+			glfunc.glColor4f_fp (1,1,1,r_wateralpha.value);
+		else
+			glfunc.glColor4f_fp (1,1,1,1);
 
-			GL_Bind (s->texinfo->texture->gl_texturenum);
+		// set modulate mode explicitly
+		GL_Bind (t->gl_texturenum);
+
+		for ( ; s ; s=s->texturechain)
 			EmitWaterPolys (s);
-		}
-		
-		waterchain = NULL;
-	} else {
 
-		for (i=0 ; i<cl.worldmodel->numtextures ; i++)
-		{
-			t = cl.worldmodel->textures[i];
-			if (!t)
-				continue;
-			s = t->texturechain;
-			if (!s)
-				continue;
-			if ( !(s->flags & SURF_DRAWTURB ) )
-				continue;
-
-			if (s->flags & SURF_TRANSLUCENT)
-				glfunc.glColor4f_fp (1,1,1,r_wateralpha.value);
-			else
-				glfunc.glColor4f_fp (1,1,1,1);
-
-			// set modulate mode explicitly
-			
-			GL_Bind (t->gl_texturenum);
-
-			for ( ; s ; s=s->texturechain)
-				EmitWaterPolys (s);
-			
-			t->texturechain = NULL;
-		}
-
+		t->texturechain = NULL;
 	}
 
 	if (r_wateralpha.value < 1.0) {
@@ -974,7 +645,6 @@ void R_DrawWaterSurfaces (void)
 		glfunc.glColor4f_fp (1,1,1,1);
 		glfunc.glDisable_fp (GL_BLEND);
 	}
-
 }
 
 #endif
@@ -989,16 +659,6 @@ void DrawTextureChains (void)
 	int		i;
 	msurface_t	*s;
 	texture_t	*t;
-
-	if (!gl_texsort.value) {
-
-		if (skychain) {
-			R_DrawSkyChain(skychain);
-			skychain = NULL;
-		}
-
-		return;
-	} 
 
 	for (i=0 ; i<cl.worldmodel->numtextures ; i++)
 	{
@@ -1124,10 +784,7 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 		if (((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||
 			(!(psurf->flags & SURF_PLANEBACK) && (dot > BACKFACE_EPSILON)))
 		{
-			if (gl_texsort.value)
-				R_RenderBrushPoly (psurf, false);
-			else
-				R_DrawSequentialPoly (psurf);
+			R_RenderBrushPoly (psurf, false);
 		}
 	}
 
@@ -1245,24 +902,13 @@ void R_RecursiveWorldNode (mnode_t *node)
 					&& !(surf->flags & SURF_DONTWARP)) && ( (dot < 0) ^ !!(surf->flags & SURF_PLANEBACK)) )
 					continue;		// wrong side
 
-				// if sorting by texture, just store it out
-				if (gl_texsort.value)
-				{
-					if (!mirror
+				// sorting by texture, just store it out
+				if (!mirror
 					|| surf->texinfo->texture != cl.worldmodel->textures[mirrortexturenum])
 					{
 						surf->texturechain = surf->texinfo->texture->texturechain;
 						surf->texinfo->texture->texturechain = surf;
 					}
-				} else if (surf->flags & SURF_DRAWSKY) {
-					surf->texturechain = skychain;
-					skychain = surf;
-				} else if (surf->flags & SURF_DRAWTURB) {
-					surf->texturechain = waterchain;
-					waterchain = surf;
-				} else
-					R_DrawSequentialPoly (surf);
-
 			}
 		}
 
@@ -1621,9 +1267,6 @@ void GL_BuildLightmaps (void)
 		}
 	}
 
- 	if (!gl_texsort.value)
-		glfunc.glActiveTextureARB_fp(GL_TEXTURE1_ARB);
-
 	//
 	// upload all lightmaps that were filled
 	//
@@ -1643,9 +1286,5 @@ void GL_BuildLightmaps (void)
 		, BLOCK_WIDTH, BLOCK_HEIGHT, 0, 
 		gl_lightmap_format, GL_UNSIGNED_BYTE, lightmaps+i*BLOCK_WIDTH*BLOCK_HEIGHT*lightmap_bytes);
 	}
-
- 	if (!gl_texsort.value)
-		glfunc.glActiveTextureARB_fp(GL_TEXTURE0_ARB);
-
 }
 

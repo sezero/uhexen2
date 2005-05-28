@@ -204,7 +204,6 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_wholeframe);
 
 	Cvar_RegisterVariable (&gl_clear);
-	Cvar_RegisterVariable (&gl_texsort);
 	Cvar_RegisterVariable (&gl_cull);
 	Cvar_RegisterVariable (&gl_smoothmodels);
 	Cvar_RegisterVariable (&gl_affinemodels);

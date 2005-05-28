@@ -248,132 +248,6 @@ void DrawGLWaterPolyLightmap (glpoly_t *p);
 
 /*
 ================
-R_DrawSequentialPoly
-
-Systems that have fast state and texture changes can
-just do everything as it passes with no need to sort
-================
-*/
-void R_DrawSequentialPoly (msurface_t *s)
-{
-	glpoly_t	*p;
-	float		*v;
-	int		i;
-	texture_t	*t;
-	float		alpha_val = 1.0f;
-	float		intensity = 1.0f;
-
-	//
-	// normal lightmaped poly
-	//
-	if (! (s->flags & (SURF_DRAWSKY|SURF_DRAWTURB|SURF_UNDERWATER) ) )
-	{
-		if (currententity->drawflags & DRF_TRANSLUCENT)
-		{
-			glfunc.glEnable_fp (GL_BLEND);
-//			glfunc.glColor4f_fp (1,1,1,r_wateralpha.value);
-			alpha_val = r_wateralpha.value;
-
-			glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-			intensity = 1;
-			// rjr
-		}
-		if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
-		{
-			// currententity->abslight   0 - 255
-			// rjr
-			glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-			intensity = ( float )currententity->abslight / 255.0f;
-//			intensity = 0;
-		}
-
-		glfunc.glColor4f_fp( intensity, intensity, intensity, alpha_val );
-		
-		p = s->polys;
-
-		t = R_TextureAnimation (s->texinfo->texture);
-		GL_Bind (t->gl_texturenum);
-		glfunc.glBegin_fp (GL_POLYGON);
-		v = p->verts[0];
-		for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
-		{
-			glfunc.glTexCoord2f_fp (v[3], v[4]);
-			glfunc.glVertex3fv_fp (v);
-		}
-		glfunc.glEnd_fp ();
-
-		GL_Bind (lightmap_textures + s->lightmaptexturenum);
-		glfunc.glEnable_fp (GL_BLEND);
-		glfunc.glBegin_fp (GL_POLYGON);
-		v = p->verts[0];
-		for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
-		{
-			glfunc.glTexCoord2f_fp (v[5], v[6]);
-			glfunc.glVertex3fv_fp (v);
-		}
-		glfunc.glEnd_fp ();
-
-		glfunc.glDisable_fp (GL_BLEND);
-
-		if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT ||
-			(currententity->drawflags & DRF_TRANSLUCENT))
-		{
-			glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-		}
-		return;
-	}
-
-	//
-	// subdivided water surface warp
-	//
-	if (s->flags & SURF_DRAWTURB)
-	{
-		GL_Bind (s->texinfo->texture->gl_texturenum);
-		EmitWaterPolys (s);
-		return;
-	}
-
-	//
-	// subdivided sky warp
-	//
-	if (s->flags & SURF_DRAWSKY)
-	{
-		GL_Bind (solidskytexture);
-		speedscale = realtime*8;
-		speedscale -= (int)speedscale;
-
-		EmitSkyPolys (s);
-
-		glfunc.glEnable_fp (GL_BLEND);
-		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		GL_Bind (alphaskytexture);
-		speedscale = realtime*16;
-		speedscale -= (int)speedscale;
-		EmitSkyPolys (s);
-		if (gl_lightmap_format == GL_LUMINANCE)
-			glfunc.glBlendFunc_fp (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
-
-		glfunc.glDisable_fp (GL_BLEND);
-	}
-
-	//
-	// underwater warped with lightmap
-	//
-	p = s->polys;
-
-	t = R_TextureAnimation (s->texinfo->texture);
-	GL_Bind (t->gl_texturenum);
-	DrawGLWaterPoly (p);
-
-	GL_Bind (lightmap_textures + s->lightmaptexturenum);
-	glfunc.glEnable_fp (GL_BLEND);
-	DrawGLWaterPolyLightmap (p);
-	glfunc.glDisable_fp (GL_BLEND);
-}
-
-
-/*
-================
 DrawGLWaterPoly
 
 Warp the vertex coordinates
@@ -454,8 +328,6 @@ void R_BlendLightmaps (qboolean Translucent)
 	float		*v;
 
 	if (r_fullbright.value)
-		return;
-	if (!gl_texsort.value)
 		return;
 
 	if (!Translucent)
@@ -821,10 +693,7 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 		if (((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||
 			(!(psurf->flags & SURF_PLANEBACK) && (dot > BACKFACE_EPSILON)))
 		{
-			if (gl_texsort.value)
-				R_RenderBrushPoly (psurf, false);
-			else
-				R_DrawSequentialPoly (psurf);
+			R_RenderBrushPoly (psurf, false);
 		}
 	}
 
@@ -938,18 +807,13 @@ void R_RecursiveWorldNode (mnode_t *node)
 				if ( !(surf->flags & SURF_UNDERWATER) && ( (dot < 0) ^ !!(surf->flags & SURF_PLANEBACK)) )
 					continue;		// wrong side
 
-				// if sorting by texture, just store it out
-				if (gl_texsort.value)
-				{
-					if (!mirror
+				// sorting by texture, just store it out
+				if (!mirror
 					|| surf->texinfo->texture != cl.worldmodel->textures[mirrortexturenum])
 					{
 						surf->texturechain = surf->texinfo->texture->texturechain;
 						surf->texinfo->texture->texturechain = surf;
 					}
-				} else
-					R_DrawSequentialPoly (surf);
-
 			}
 		}
 
@@ -984,8 +848,7 @@ void R_DrawWorld (void)
 
 	R_RecursiveWorldNode (cl.worldmodel->nodes);
 
-	if (gl_texsort.value)
-		DrawTextureChains ();
+	DrawTextureChains ();
 
 	R_BlendLightmaps (false);
 

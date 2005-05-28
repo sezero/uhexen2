@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.12 2005-05-20 18:15:29 sezero Exp $
+	$Id: glquake.h,v 1.13 2005-05-28 12:02:04 sezero Exp $
 */
 
 
@@ -267,7 +267,7 @@ extern	cvar_t	r_teamcolor;
 extern	cvar_t	gl_clear;
 extern	cvar_t	gl_cull;
 extern	cvar_t	gl_poly;
-extern	cvar_t	gl_texsort;
+extern	cvar_t	gl_multitexture;
 extern	cvar_t	gl_smoothmodels;
 extern	cvar_t	gl_affinemodels;
 extern	cvar_t	gl_polyblend;

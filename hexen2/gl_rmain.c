@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.20 2005-05-26 19:45:37 sezero Exp $
+	$Id: gl_rmain.c,v 1.21 2005-05-28 12:02:02 sezero Exp $
 */
 
 
@@ -84,7 +84,6 @@ cvar_t	r_wholeframe = {"r_wholeframe", "1", true};
 
 cvar_t	gl_clear = {"gl_clear","0"};
 cvar_t	gl_cull = {"gl_cull","1"};
-cvar_t	gl_texsort = {"gl_texsort","1"};
 cvar_t	gl_smoothmodels = {"gl_smoothmodels","1"};
 cvar_t	gl_affinemodels = {"gl_affinemodels","0"};
 cvar_t	gl_polyblend = {"gl_polyblend","1"};
@@ -1802,6 +1801,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2005/05/26 19:45:37  sezero
+ * whitespace...
+ *
  * Revision 1.19  2005/05/20 17:30:57  sezero
  * initial slight gl syncing-2 (kill unused c_sky_polys)
  *

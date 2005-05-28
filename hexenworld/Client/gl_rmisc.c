@@ -145,7 +145,6 @@ void R_Envmap_f (void)
 	GL_EndRendering ();
 }
 
-extern cvar_t gl_multitex;
 /*
 ===============
 R_Init
@@ -173,10 +172,6 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_netgraph);
 	Cvar_RegisterVariable (&r_entdistance);
 	Cvar_RegisterVariable (&gl_clear);
-	Cvar_RegisterVariable (&gl_texsort);
-
-	if (gl_mtexable && gl_multitex.value)
-		Cvar_SetValue ("gl_texsort", 0.0);
 
 	Cvar_RegisterVariable (&gl_cull);
 	Cvar_RegisterVariable (&gl_smoothmodels);
@@ -188,6 +183,7 @@ void R_Init (void)
 
 	Cvar_RegisterVariable (&gl_keeptjunctions);
 	Cvar_RegisterVariable (&gl_reporttjunctions);
+	Cvar_RegisterVariable (&gl_multitexture);
 	Cvar_RegisterVariable (&r_teamcolor);
 
 	R_InitBubble();

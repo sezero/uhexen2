@@ -2,7 +2,7 @@
    gl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.52 2005-05-27 17:56:44 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.53 2005-05-28 12:02:04 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -81,8 +81,6 @@ const char	*gl_version;
 const char	*gl_extensions;
 char		*gl_library;
 extern qboolean	is_3dfx;
-extern cvar_t	gl_multitex;
-qboolean	gl_mtexable = false;
 float		gldepthmin, gldepthmax;
 int		multisample = 0;
 
@@ -101,6 +99,10 @@ unsigned	d_8to24table3dfx[256];
 unsigned	d_8to24TranslucentTable[256];
 
 cvar_t		gl_ztrick = {"gl_ztrick","0",true};
+
+// multitexturing  
+qboolean	gl_mtexable = false; 
+int		num_tmus = 1;
 
 qboolean	scr_skipupdate;
 static		qboolean fullsbardraw = false;
@@ -263,32 +265,42 @@ int VID_SetMode (int modenum)
 
 int		texture_extension_number = 1;
 
-void CheckMultiTextureExtensions(void) 
+void CheckMultiTextureExtensions(void)
 {
-	GLint texture_units = 1;
+	gl_mtexable = false;
 
-	Cvar_RegisterVariable (&gl_multitex);
-
-	if (strstr(gl_extensions, "GL_ARB_multitexture ") && !COM_CheckParm("-nomtex"))
+	if (COM_CheckParm("-nomtex"))
 	{
-		Con_Printf ("Multitexture extensions found.\n");
+		Con_Printf("Multitexture extensions disabled\n");
+	}
+	else if (strstr(gl_extensions, "GL_ARB_multitexture"))
+	{
+		Con_Printf("ARB Multitexture extensions found\n");
 
-		glfunc.glActiveTextureARB_fp = (glActiveTextureARB_f) SDL_GL_GetProcAddress("glActiveTextureARB");
-		glfunc.glMultiTexCoord2fARB_fp = (glMultiTexCoord2fARB_f) SDL_GL_GetProcAddress ("glMultiTexCoord2fARB");
-		glfunc.glGetIntegerv_fp(GL_MAX_TEXTURE_UNITS_ARB,&texture_units);
-
-		if ((glfunc.glActiveTextureARB_fp == 0)   ||
-		    (glfunc.glMultiTexCoord2fARB_fp == 0) ||
-		    (texture_units < 2)) {
-			Con_Printf ("Multitexture extensions disabled.\n");
-			glfunc.glActiveTextureARB_fp = NULL;
-			glfunc.glMultiTexCoord2fARB_fp = NULL;
-			gl_mtexable = false;
+		glfunc.glGetIntegerv_fp(GL_MAX_TEXTURE_UNITS_ARB, &num_tmus);
+		if (num_tmus < 2) {
+			Con_Printf("not enough TMUs, ignoring multitexture\n");
 			return;
 		}
 
-		Con_Printf ("Multitexture extensions enabled.\n");
+		glfunc.glMultiTexCoord2fARB_fp = (void *) SDL_GL_GetProcAddress("glMultiTexCoord2fARB");
+		glfunc.glActiveTextureARB_fp = (void *) SDL_GL_GetProcAddress("glActiveTextureARB");
+		if ((glfunc.glMultiTexCoord2fARB_fp == NULL) ||
+		    (glfunc.glActiveTextureARB_fp == NULL)) {
+			Con_Printf ("Couldn't link to multitexture functions\n");
+			return;
+		}
+
+		Con_Printf("Found %i TMUs support\n", num_tmus);
 		gl_mtexable = true;
+
+		// start up with the correct texture selected!
+		glfunc.glDisable_fp(GL_TEXTURE_2D);
+		glfunc.glActiveTextureARB_fp(GL_TEXTURE0_ARB);
+	}
+	else
+	{
+		Con_Printf("GL_ARB_multitexture not found\n");
 	}
 }
 

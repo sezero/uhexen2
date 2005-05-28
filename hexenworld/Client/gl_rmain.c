@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.12 2005-05-26 19:45:43 sezero Exp $
+	$Id: gl_rmain.c,v 1.13 2005-05-28 12:02:04 sezero Exp $
 */
 
 
@@ -85,7 +85,7 @@ cvar_t	r_netgraph = {"r_netgraph","0"};
 cvar_t	r_entdistance = {"r_entdistance", "0", true};
 cvar_t	gl_clear = {"gl_clear","0"};
 cvar_t	gl_cull = {"gl_cull","1"};
-cvar_t	gl_texsort = {"gl_texsort","1"};
+cvar_t	gl_multitexture = {"gl_multitexture","0",true};
 cvar_t	gl_smoothmodels = {"gl_smoothmodels","1"};
 cvar_t	gl_affinemodels = {"gl_affinemodels","0"};
 cvar_t	gl_polyblend = {"gl_polyblend","1"};
