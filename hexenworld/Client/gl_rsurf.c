@@ -340,11 +340,13 @@ void R_BlendLightmaps (qboolean Translucent)
 		glfunc.glDepthMask_fp (0);	// don't bother writing Z
 
 	if (gl_lightmap_format == GL_LUMINANCE)
+	{
 		glfunc.glBlendFunc_fp (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+	}
 	else if (gl_lightmap_format == GL_INTENSITY)
 	{
 		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		glfunc.glColor4f_fp (0,0,0,1);
+		glfunc.glColor4f_fp (0.0f,0.0f,0.0f,1.0f);
 		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
@@ -357,22 +359,15 @@ void R_BlendLightmaps (qboolean Translucent)
 	{
 		p = lightmap_polys[i];
 		if (!p)
-			continue;
+			continue;	// skip if no lightmap
+
 		GL_Bind(lightmap_textures+i);
+
 		if (lightmap_modified[i])
 		{
+		// if current lightmap was changed reload it and mark as not changed
 			lightmap_modified[i] = false;
 			theRect = &lightmap_rectchange[i];
-//			theRect->l = 0;
-//			theRect->t = 0;
-//			theRect->w = BLOCK_WIDTH;
-//			theRect->h = BLOCK_HEIGHT;
-//			glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, lightmap_bytes
-//			, BLOCK_WIDTH, BLOCK_HEIGHT, 0, 
-//			gl_lightmap_format, GL_UNSIGNED_BYTE, lightmaps+i*BLOCK_WIDTH*BLOCK_HEIGHT*lightmap_bytes);
-//			glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, lightmap_bytes
-//				, BLOCK_WIDTH, theRect->h, 0, 
-//				gl_lightmap_format, GL_UNSIGNED_BYTE, lightmaps+(i*BLOCK_HEIGHT+theRect->t)*BLOCK_WIDTH*lightmap_bytes);
 			glfunc.glTexSubImage2D_fp(GL_TEXTURE_2D, 0, 0, theRect->t, 
 				BLOCK_WIDTH, theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
 				lightmaps+(i* BLOCK_HEIGHT + theRect->t) *BLOCK_WIDTH*lightmap_bytes);
@@ -381,10 +376,10 @@ void R_BlendLightmaps (qboolean Translucent)
 			theRect->h = 0;
 			theRect->w = 0;
 		}
+
 		for ( ; p ; p=p->chain)
 		{
-//			if (p->flags & SURF_UNDERWATER)
-//				DrawGLWaterPolyLightmap (p);
+			//if (p->flags & SURF_UNDERWATER)
 			if (((r_viewleaf->contents==CONTENTS_EMPTY && (p->flags & SURF_UNDERWATER)) ||
 				(r_viewleaf->contents!=CONTENTS_EMPTY && !(p->flags & SURF_UNDERWATER)))
 				&& !(p->flags & SURF_DONTWARP))
@@ -403,14 +398,19 @@ void R_BlendLightmaps (qboolean Translucent)
 		}
 	}
 
-	glfunc.glDisable_fp (GL_BLEND);
+	if (!r_lightmap.value)
+	{
+		glfunc.glDisable_fp (GL_BLEND);
+	}
 
 	if (gl_lightmap_format == GL_LUMINANCE)
+	{
 		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
 	else if (gl_lightmap_format == GL_INTENSITY)
 	{
 		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-		glfunc.glColor4f_fp (1,1,1,1);
+		glfunc.glColor4f_fp (1.0f,1.0f,1.0f,1.0f);
 	}
 
 	if (!Translucent)
@@ -949,7 +949,7 @@ void R_DrawWorld (void)
 	currententity = &ent;
 	currenttexture = -1;
 
-	glfunc.glColor3f_fp (1,1,1);
+	glfunc.glColor4f_fp (1.0f,1.0f,1.0f,1.0f);
 	memset (lightmap_polys, 0, sizeof(lightmap_polys));
 #ifdef QUAKE2
 	R_ClearSkyBox ();
@@ -1296,9 +1296,9 @@ void GL_BuildLightmaps (void)
 		GL_Bind(lightmap_textures + i);
 		glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, lightmap_bytes
-		, BLOCK_WIDTH, BLOCK_HEIGHT, 0, 
-		gl_lightmap_format, GL_UNSIGNED_BYTE, lightmaps+i*BLOCK_WIDTH*BLOCK_HEIGHT*lightmap_bytes);
+		glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, lightmap_bytes, BLOCK_WIDTH,
+				BLOCK_HEIGHT, 0, gl_lightmap_format, GL_UNSIGNED_BYTE,
+				lightmaps+i*BLOCK_WIDTH*BLOCK_HEIGHT*lightmap_bytes);
 	}
 }
 
