@@ -171,9 +171,7 @@ store:
 				t >>= 7;
 				if (t > 255)
 					t = 255;
-				/* dest[3] = 255-t; */
-				dest[0] = dest[1] = dest[2] = t;
-				dest[3] = 255;
+				dest[3] = 255-t;
 				dest += 4;
 			}
 		}
@@ -190,8 +188,7 @@ store:
 				t >>= 7;
 				if (t > 255)
 					t = 255;
-				/* dest[j] = 255-t; */
-				dest[j] = t;
+				dest[j] = 255-t;
 			}
 		}
 		break;
@@ -342,8 +339,19 @@ void R_BlendLightmaps (qboolean Translucent)
 	if (!Translucent)
 		glfunc.glDepthMask_fp (0);	// don't bother writing Z
 
-	glfunc.glBlendFunc_fp (GL_ZERO, GL_SRC_COLOR);
-	glfunc.glEnable_fp (GL_BLEND);
+	if (gl_lightmap_format == GL_LUMINANCE)
+		glfunc.glBlendFunc_fp (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+	else if (gl_lightmap_format == GL_INTENSITY)
+	{
+		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		glfunc.glColor4f_fp (0,0,0,1);
+		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+
+	if (!r_lightmap.value)
+	{
+		glfunc.glEnable_fp (GL_BLEND);
+	}
 
 	for (i=0 ; i<MAX_LIGHTMAPS ; i++)
 	{
@@ -397,7 +405,13 @@ void R_BlendLightmaps (qboolean Translucent)
 
 	glfunc.glDisable_fp (GL_BLEND);
 
-	glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	if (gl_lightmap_format == GL_LUMINANCE)
+		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	else if (gl_lightmap_format == GL_INTENSITY)
+	{
+		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glfunc.glColor4f_fp (1,1,1,1);
+	}
 
 	if (!Translucent)
 		glfunc.glDepthMask_fp (1);	// back to normal Z buffering
