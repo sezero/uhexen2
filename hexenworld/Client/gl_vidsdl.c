@@ -2,7 +2,7 @@
    gl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.53 2005-05-28 12:02:04 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.54 2005-05-28 12:40:36 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -100,8 +100,8 @@ unsigned	d_8to24TranslucentTable[256];
 
 cvar_t		gl_ztrick = {"gl_ztrick","0",true};
 
-// multitexturing  
-qboolean	gl_mtexable = false; 
+// multitexturing
+qboolean	gl_mtexable = false;
 int		num_tmus = 1;
 
 qboolean	scr_skipupdate;

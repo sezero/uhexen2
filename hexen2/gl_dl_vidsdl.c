@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_dl_vidsdl.c,v 1.61 2005-05-28 12:31:47 sezero Exp $
+   $Id: gl_dl_vidsdl.c,v 1.62 2005-05-28 12:40:36 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -104,7 +104,7 @@ cvar_t		gl_purge_maptex = {"gl_purge_maptex", "1", true};
 		/* whether or not map-specific OGL textures
 		   are flushed from map. default == yes  */
 
-// multitexturing 
+// multitexturing
 qboolean	gl_mtexable = false;
 int		num_tmus = 1;
 
