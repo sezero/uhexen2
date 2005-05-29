@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_dl_draw.c,v 1.35 2005-05-27 17:56:40 sezero Exp $
+	$Id: gl_dl_draw.c,v 1.36 2005-05-29 08:53:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -21,7 +21,7 @@ int		gl_max_size = 256;
 cvar_t		gl_picmip = {"gl_picmip", "0"};
 cvar_t		gl_spritemip = {"gl_spritemip", "0"};
 
-qboolean	plyrtex[NUM_CLASSES][16][16];		// whether or not the corresponding player textures
+qboolean	plyrtex[MAX_PLAYER_CLASS][16][16];	// whether or not the corresponding player textures
 							// (in multiplayer config screens) have been loaded
 byte		*draw_chars;				// 8*8 graphic characters
 byte		*draw_smallchars;			// Small characters for status bar
@@ -144,7 +144,7 @@ int			menu_numcachepics;
 #define PLAYER_DEST_WIDTH 128
 #define PLAYER_DEST_HEIGHT 128
 
-byte		menuplyr_pixels[NUM_CLASSES][PLAYER_PIC_WIDTH*PLAYER_PIC_HEIGHT];
+byte		menuplyr_pixels[MAX_PLAYER_CLASS][PLAYER_PIC_WIDTH*PLAYER_PIC_HEIGHT];
 
 int		pic_texels;
 int		pic_count;
@@ -904,7 +904,7 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 
 	// Initialize array of texnums
 	if (first_time) {
-		memset(plyrtex, 0, NUM_CLASSES * 16 * 16 * sizeof(qboolean));
+		memset(plyrtex, 0, MAX_PLAYER_CLASS * 16 * 16 * sizeof(qboolean));
 		first_time = false;
 	}
 
@@ -1807,6 +1807,10 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.35  2005/05/27 17:56:40  sezero
+ * merged texture scale/upload and 8-bit extension
+ * functions from hexenworld to hexen2
+ *
  * Revision 1.34  2005/05/26 18:20:42  sezero
  * whitespace + unused stuff...
  *

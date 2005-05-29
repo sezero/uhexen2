@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_dl_rmain.c,v 1.23 2005-05-29 08:38:12 sezero Exp $
+	$Id: gl_dl_rmain.c,v 1.24 2005-05-29 08:53:57 sezero Exp $
 */
 
 
@@ -38,7 +38,7 @@ float		model_constant_alpha;
 float		r_time1;
 float		r_lasttime1 = 0;
 
-extern model_t *player_models[NUM_CLASSES];
+extern model_t *player_models[MAX_PLAYER_CLASS];
 
 //
 // view origin
@@ -1802,6 +1802,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/05/29 08:38:12  sezero
+ * get rid of the silly func name difference
+ *
  * Revision 1.22  2005/05/28 12:31:47  sezero
  * added/updated multitexture detection. doesn't do anything yet.
  *

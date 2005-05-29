@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.9 2005-05-22 11:51:00 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.10 2005-05-29 08:53:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1374,7 +1374,7 @@ void SB_IntermissionOverlay(void)
 /* O.S: Why do calculate and not say 408? Anyone weird enough to play the demo
    with strings.txt file from H2MP ?!!!! The thing below was off-by-one, btw..
 */	else if (cl.intermission == 5)
-		message = &pr_global_strings[pr_string_index[ABILITIES_STR_INDEX+NUM_CLASSES*2]];
+		message = &pr_global_strings[pr_string_index[ABILITIES_STR_INDEX+MAX_PLAYER_CLASS*2]];
 	else if (cl.intermission >= 6 && cl.intermission <= 8 && cl.intermission + 386 <= pr_string_count)
 		message = &pr_global_strings[pr_string_index[cl.intermission + 386]];
 	else if (cl.intermission == 9)
@@ -1464,6 +1464,9 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/05/22 11:51:00  sezero
+ * changed default viewsize to 110
+ *
  * Revision 1.8  2005/03/14 08:03:16  sezero
  * small sbar resizing fix in software mode (from Steven)
  *

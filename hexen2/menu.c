@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.36 2005-05-26 08:39:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.37 2005-05-29 08:53:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -116,7 +116,7 @@ extern qboolean introPlaying;
 
 extern float introTime;
 
-char *ClassNames[NUM_CLASSES] = 
+char *ClassNames[MAX_PLAYER_CLASS] = 
 {
 	"Paladin",
 	"Crusader",
@@ -127,7 +127,7 @@ char *ClassNames[NUM_CLASSES] =
 #endif
 };
 
-char *ClassNamesU[NUM_CLASSES] = 
+char *ClassNamesU[MAX_PLAYER_CLASS] = 
 {
 	"PALADIN",
 	"CRUSADER",
@@ -138,7 +138,7 @@ char *ClassNamesU[NUM_CLASSES] =
 #endif
 };
 
-char *DiffNames[NUM_CLASSES][4] =
+char *DiffNames[MAX_PLAYER_CLASS][4] =
 {
 	{	// Paladin
 		"APPRENTICE",
@@ -255,7 +255,7 @@ void M_DrawTransPicCropped (int x, int y, qpic_t *pic)
 
 byte identityTable[256];
 byte translationTable[256];
-extern int color_offsets[NUM_CLASSES];
+extern int color_offsets[MAX_PLAYER_CLASS];
 extern byte *playerTranslation;
 extern int setup_class;
 
@@ -831,8 +831,8 @@ void M_Difficulty_Draw (void)
 
 	setup_class = cl_playerclass.value;
 
-	if (setup_class < 1 || setup_class > NUM_CLASSES)
-		setup_class = NUM_CLASSES;
+	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
+		setup_class = MAX_PLAYER_CLASS;
 	setup_class--;
 
 	for(i = 0; i < NUM_DIFFLEVELS; ++i)
@@ -908,7 +908,7 @@ void M_Menu_Class2_f (void)
 
 
 int	m_class_cursor;
-#define	CLASS_ITEMS	NUM_CLASSES
+#define	CLASS_ITEMS	MAX_PLAYER_CLASS
 
 void M_Class_Draw (void)
 {
@@ -917,11 +917,11 @@ void M_Class_Draw (void)
 	ScrollTitle("gfx/menu/title2.lmp");
 #ifdef H2MP
 	if (!m_enter_portals) {
-		for(i = 0; i < NUM_CLASSES -1; ++i)
+		for(i = 0; i < MAX_PLAYER_CLASS -1; ++i)
 			M_DrawBigString (72,60+(i*20),ClassNamesU[i]);
 	} else
 #endif
-	for(i = 0; i < NUM_CLASSES; ++i)
+	for(i = 0; i < MAX_PLAYER_CLASS; ++i)
 		M_DrawBigString (72,60+(i*20),ClassNamesU[i]);
 
 #ifdef H2MP
@@ -1517,8 +1517,8 @@ void M_Menu_Setup_f (void)
 	setup_top = setup_oldtop = (((int)cl_color.value) >> 4) & 15;
 	setup_bottom = setup_oldbottom = ((int)cl_color.value) & 15;
 	setup_class = cl_playerclass.value;
-	if (setup_class < 1 || setup_class > NUM_CLASSES)
-		setup_class = NUM_CLASSES;
+	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
+		setup_class = MAX_PLAYER_CLASS;
 }
 
 
@@ -1593,9 +1593,9 @@ void M_Setup_Key (int k)
 		{
 			setup_class--;
 			if (setup_class < 1) 
-				setup_class = NUM_CLASSES;
+				setup_class = MAX_PLAYER_CLASS;
 
-//			if ((!registered.value && !oem.value) && setup_class >= 2 && setup_class < NUM_CLASSES)
+//			if ((!registered.value && !oem.value) && setup_class >= 2 && setup_class < MAX_PLAYER_CLASS)
 //				setup_class = 5;
 		}
 		if (setup_cursor == 3)
@@ -1611,11 +1611,11 @@ forward:
 		if (setup_cursor == 2)
 		{
 			setup_class++;
-			if (setup_class > NUM_CLASSES) 
+			if (setup_class > MAX_PLAYER_CLASS) 
 				setup_class = 1;
 
-//			if ((!registered.value && !oem.value) && setup_class >= 2 && setup_class < NUM_CLASSES)
-//				setup_class = NUM_CLASSES;
+//			if ((!registered.value && !oem.value) && setup_class >= 2 && setup_class < MAX_PLAYER_CLASS)
+//				setup_class = MAX_PLAYER_CLASS;
 		}
 		if (setup_cursor == 3)
 			setup_top = setup_top + 1;
@@ -2988,8 +2988,8 @@ void M_Menu_LanConfig_f (void)
 	m_return_reason[0] = 0;
 
 	setup_class = cl_playerclass.value;
-	if (setup_class < 1 || setup_class > NUM_CLASSES)
-		setup_class = NUM_CLASSES;
+	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
+		setup_class = MAX_PLAYER_CLASS;
 	setup_class--;
 }
 
@@ -3142,7 +3142,7 @@ void M_LanConfig_Key (int key)
 		S_LocalSound ("raven/menu3.wav");
 		setup_class--;
 		if (setup_class < 0)
-			setup_class = NUM_CLASSES -1;
+			setup_class = MAX_PLAYER_CLASS -1;
 		break;
 
 	case K_RIGHTARROW:
@@ -3151,7 +3151,7 @@ void M_LanConfig_Key (int key)
 
 		S_LocalSound ("raven/menu3.wav");
 		setup_class++;
-		if (setup_class > NUM_CLASSES - 1)
+		if (setup_class > MAX_PLAYER_CLASS - 1)
 			setup_class = 0;
 		break;
 
@@ -3354,8 +3354,8 @@ void M_Menu_GameOptions_f (void)
 		maxplayers = svs.maxclientslimit;
 
 	setup_class = cl_playerclass.value;
-	if (setup_class < 1 || setup_class > NUM_CLASSES)
-		setup_class = NUM_CLASSES;
+	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
+		setup_class = MAX_PLAYER_CLASS;
 	setup_class--;
 
 	if (oem.value && startepisode < OEM_START)
@@ -3504,12 +3504,12 @@ void M_NetStart_Change (int dir)
 	case 4:
 		setup_class += dir;
 //		if ((!registered.value && !oem.value) && setup_class == 1)
-//			setup_class = NUM_CLASSES - 1;
+//			setup_class = MAX_PLAYER_CLASS - 1;
 //		if ((!registered.value && !oem.value) && setup_class == 2)
 //			setup_class = 0;
 		if (setup_class < 0) 
-			setup_class = NUM_CLASSES - 1;
-		if (setup_class > NUM_CLASSES - 1) 
+			setup_class = MAX_PLAYER_CLASS - 1;
+		if (setup_class > MAX_PLAYER_CLASS - 1) 
 			setup_class = 0;
 		break;
 
@@ -4102,6 +4102,9 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.36  2005/05/26 08:39:22  sezero
+ * enabled mouse in whole of the options menu group
+ *
  * Revision 1.35  2005/05/22 13:50:04  sezero
  * temporary fix for multiplayer episode selection.
  * next time we should get rid of these H2MP defines

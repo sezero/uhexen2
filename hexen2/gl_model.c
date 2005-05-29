@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.13 2005-05-27 17:59:52 sezero Exp $
+	$Id: gl_model.c,v 1.14 2005-05-29 08:53:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1300,7 +1300,7 @@ mtriangle_t	triangles[MAXALIASTRIS];
 trivertx_t	*poseverts[MAXALIASFRAMES];
 int			posenum;
 
-byte		player_8bit_texels[NUM_CLASSES][620*245];
+byte		player_8bit_texels[MAX_PLAYER_CLASS][620*245];
 
 static float	aliastransform[3][4];
 
@@ -2301,6 +2301,9 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/05/27 17:59:52  sezero
+ * removed some dead code
+ *
  * Revision 1.12  2005/05/26 22:20:10  sezero
  * whitespace...
  *

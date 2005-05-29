@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.c,v 1.7 2005-05-17 22:56:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.c,v 1.8 2005-05-29 08:53:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -105,9 +105,9 @@ qboolean inv_flg;			// true - show inventory interface
 
 static float InventoryHideTime;
 
-extern char *ClassNames[NUM_CLASSES];	//from menu.c
+extern char *ClassNames[MAX_PLAYER_CLASS];	//from menu.c
 
-static int AmuletAC[NUM_CLASSES] =
+static int AmuletAC[MAX_PLAYER_CLASS] =
 {
 	8,		// Paladin
 	4,		// Crusader
@@ -118,7 +118,7 @@ static int AmuletAC[NUM_CLASSES] =
 #endif
 };
 
-static int BracerAC[NUM_CLASSES] =
+static int BracerAC[MAX_PLAYER_CLASS] =
 {
 	6,		// Paladin
 	8,		// Crusader
@@ -129,7 +129,7 @@ static int BracerAC[NUM_CLASSES] =
 #endif
 };
 
-static int BreastplateAC[NUM_CLASSES] =
+static int BreastplateAC[MAX_PLAYER_CLASS] =
 {
 	2,		// Paladin
 	6,		// Crusader
@@ -140,7 +140,7 @@ static int BreastplateAC[NUM_CLASSES] =
 #endif
 };
 
-static int HelmetAC[NUM_CLASSES] =
+static int HelmetAC[MAX_PLAYER_CLASS] =
 {
 	4,		// Paladin
 	2,		// Crusader
@@ -481,9 +481,9 @@ static void DrawLowerBar(void)
 
 	//playerClass = cl.v.playerclass;
 	playerClass = cl_playerclass.value;
-	if(playerClass < 1 || playerClass > NUM_CLASSES)
+	if(playerClass < 1 || playerClass > MAX_PLAYER_CLASS)
 	{ // Default to demoness
-		playerClass = NUM_CLASSES-1;
+		playerClass = MAX_PLAYER_CLASS-1;
 	}
 
 	// Backdrop
@@ -645,9 +645,9 @@ static int CalcAC(void)
 
 	//playerClass = cl.v.playerclass;
 	playerClass = cl_playerclass.value -1 ;
-	if(playerClass < 0 || playerClass >= NUM_CLASSES)
+	if(playerClass < 0 || playerClass >= MAX_PLAYER_CLASS)
 	{
-		playerClass = NUM_CLASSES-1;
+		playerClass = MAX_PLAYER_CLASS-1;
 	}
 	a = 0;
 	if(cl.v.armor_amulet > 0)
@@ -872,7 +872,7 @@ void Sbar_IntermissionNumber (int x, int y, int num, int digits, int color)
 	}
 }
 
-extern int color_offsets[NUM_CLASSES];
+extern int color_offsets[MAX_PLAYER_CLASS];
 extern byte *playerTranslation;
 
 void FindColor (int slot, int *color1, int *color2)

@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.20 2005-05-29 08:38:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.21 2005-05-29 08:53:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1253,7 +1253,7 @@ void Host_Name_f (void)
 	MSG_WriteString (&sv.reliable_datagram, host_client->name);
 }
 
-extern char *ClassNames[NUM_CLASSES];	//from menu.c
+extern char *ClassNames[MAX_PLAYER_CLASS];	//from menu.c
 void Host_Class_f (void)
 {
 	float	newClass;
@@ -2337,6 +2337,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2005/05/29 08:38:12  sezero
+ * get rid of the silly func name difference
+ *
  * Revision 1.19  2005/05/21 17:04:16  sezero
  * - revived -nomouse that "disables mouse no matter what"
  * - renamed _windowed_mouse to _enable_mouse which is our intention,

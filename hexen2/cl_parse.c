@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.9 2005-05-29 08:38:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.10 2005-05-29 08:53:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -15,7 +15,7 @@ extern	cvar_t	sv_flypitch;
 extern	cvar_t	sv_walkpitch;
 extern 	cvar_t	bgmtype;
 
-model_t *player_models[NUM_CLASSES];
+model_t *player_models[MAX_PLAYER_CLASS];
 
 char *svc_strings[] =
 {
@@ -960,7 +960,7 @@ void CL_ParseClientdata (int bits)
 		SB_InvChanged();*/
 }
 
-int color_offsets[NUM_CLASSES] =
+int color_offsets[MAX_PLAYER_CLASS] =
 {
 	2*14*256,
 	0,
@@ -1779,6 +1779,9 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/05/29 08:38:11  sezero
+ * get rid of the silly func name difference
+ *
  * Revision 1.8  2005/05/19 16:41:50  sezero
  * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
  *

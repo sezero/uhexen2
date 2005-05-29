@@ -8,7 +8,7 @@ int			gl_texlevel;
 extern int		numgltextures;
 extern cvar_t		gl_purge_maptex;
 extern qboolean		flush_textures;
-extern qboolean		plyrtex[NUM_CLASSES][16][16];
+extern qboolean		plyrtex[MAX_PLAYER_CLASS][16][16];
 extern gltexture_t	gltextures[2048];
 extern int		menu_numcachepics;
 extern cachepic_t	menu_cachepics[256];
@@ -238,7 +238,7 @@ void R_Init (void)
 		Sys_Error ("Couldn't load gfx/player.lmp");
 }
 
-extern int color_offsets[NUM_CLASSES];
+extern int color_offsets[MAX_PLAYER_CLASS];
 
 /*
 ===============
@@ -249,7 +249,7 @@ Translates a skin texture by the per-player color lookup
 */
 void R_TranslatePlayerSkin (int playernum)
 {
-	extern	byte		player_8bit_texels[NUM_CLASSES][620*245];
+	extern	byte		player_8bit_texels[MAX_PLAYER_CLASS][620*245];
 
 	int		top, bottom;
 	byte	translate[256];
@@ -301,7 +301,7 @@ void R_TranslatePlayerSkin (int playernum)
 	s = paliashdr->skinwidth * paliashdr->skinheight;
 
 	if (playerclass >= 1 && 
-		playerclass <= NUM_CLASSES)
+		playerclass <= MAX_PLAYER_CLASS)
 		original = player_8bit_texels[playerclass-1];
 	else
 		original = player_8bit_texels[0];
@@ -468,7 +468,7 @@ void D_ClearOpenGLTextures (int last_tex)
 	menu_numcachepics = 0;
 
 	// Clear player pic cache
-	memset(plyrtex, 0, NUM_CLASSES * 16 * 16 * sizeof(qboolean));
+	memset(plyrtex, 0, MAX_PLAYER_CLASS * 16 * 16 * sizeof(qboolean));
 }
 
 void D_FlushCaches (void)

@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.11 2005-05-26 21:36:36 sezero Exp $
+	$Id: gl_screen.c,v 1.12 2005-05-29 08:53:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1054,7 +1054,7 @@ void SB_IntermissionOverlay(void)
 /* O.S: Why do calculate and not say 408? Anyone weird enough to play the demo
    with strings.txt file from H2MP ?!!!! The thing below was off-by-one, btw..
 */	else if (cl.intermission == 5)
-		message = &pr_global_strings[pr_string_index[ABILITIES_STR_INDEX+NUM_CLASSES*2]];
+		message = &pr_global_strings[pr_string_index[ABILITIES_STR_INDEX+MAX_PLAYER_CLASS*2]];
 	else if (cl.intermission >= 6 && cl.intermission <= 8 && cl.intermission + 386 <= pr_string_count)
 		message = &pr_global_strings[pr_string_index[cl.intermission + 386]];
 	else if (cl.intermission == 9)
@@ -1264,6 +1264,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/05/26 21:36:36  sezero
+ * whitespace...
+ *
  * Revision 1.10  2005/05/26 21:32:17  sezero
  * whitespace...
  *
