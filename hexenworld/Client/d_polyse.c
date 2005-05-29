@@ -83,7 +83,7 @@ static adivtab_t	adivtab[32*32] = {
 #include "adivtab.h"
 };
 
-byte	*skintable[MAX_LBM_HEIGHT];
+byte	*skintable[MAX_SKIN_HEIGHT];
 int		skinwidth;
 byte	*skinstart;
 
@@ -402,7 +402,7 @@ void D_PolysetUpdateTables (void)
 		skinwidth = r_affinetridesc.skinwidth;
 		skinstart = r_affinetridesc.pskin;
 		s = skinstart;
-		for (i=0 ; i<MAX_LBM_HEIGHT ; i++, s+=skinwidth)
+		for (i=0 ; i<MAX_SKIN_HEIGHT ; i++, s+=skinwidth)
 			skintable[i] = s;
 	}
 }

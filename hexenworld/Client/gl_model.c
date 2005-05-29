@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.7 2005-05-26 22:20:16 sezero Exp $
+	$Id: gl_model.c,v 1.8 2005-05-29 11:41:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1659,9 +1659,9 @@ void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
 	pheader->skinwidth = LittleLong (pinmodel->skinwidth);
 	pheader->skinheight = LittleLong (pinmodel->skinheight);
 
-	if (pheader->skinheight > MAX_LBM_HEIGHT)
+	if (pheader->skinheight > MAX_SKIN_HEIGHT)
 		Sys_Error ("model %s has a skin taller than %d", mod->name,
-				   MAX_LBM_HEIGHT);
+				   MAX_SKIN_HEIGHT);
 
 	pheader->numverts = LittleLong (pinmodel->numverts);
 	pheader->version = LittleLong (pinmodel->num_st_verts);	//hide num_st in version
@@ -1837,9 +1837,9 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	pheader->skinwidth = LittleLong (pinmodel->skinwidth);
 	pheader->skinheight = LittleLong (pinmodel->skinheight);
 
-	if (pheader->skinheight > MAX_LBM_HEIGHT)
+	if (pheader->skinheight > MAX_SKIN_HEIGHT)
 		Sys_Error ("model %s has a skin taller than %d", mod->name,
-				   MAX_LBM_HEIGHT);
+				   MAX_SKIN_HEIGHT);
 
 	pheader->numverts = LittleLong (pinmodel->numverts);
 	pheader->version = pheader->numverts;	//hide num_st in version
