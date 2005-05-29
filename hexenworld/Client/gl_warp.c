@@ -208,6 +208,56 @@ void EmitWaterPolys (msurface_t *fa)
 EmitSkyPolys
 =============
 */
+
+void EmitSkyPolysMulti (msurface_t *fa)
+{
+	glpoly_t	*p;
+	float		*v;
+	int		i;
+	float	s, ss, t, tt;
+	vec3_t		dir;
+	float		length;
+
+	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	GL_Bind (solidskytexture);
+
+	glfunc.glActiveTextureARB_fp (GL_TEXTURE1_ARB);
+	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	glfunc.glEnable_fp(GL_TEXTURE_2D);
+	GL_Bind (alphaskytexture);
+
+	for (p=fa->polys ; p ; p=p->next)
+	{
+		glfunc.glBegin_fp (GL_POLYGON);
+		for (i=0,v=p->verts[0] ; i<p->numverts ; i++, v+=VERTEXSIZE)
+		{
+			VectorSubtract (v, r_origin, dir);
+			dir[2] *= 3;	// flatten the sphere
+
+			length = dir[0]*dir[0] + dir[1]*dir[1] + dir[2]*dir[2];
+			length = sqrt (length);
+			length = 6*63/length;
+
+			dir[0] *= length;
+			dir[1] *= length;
+
+			s = (realtime*8 + dir[0]) * (1.0/128);
+			t = (realtime*8 + dir[1]) * (1.0/128);
+
+			ss = (realtime*16 + dir[0]) * (1.0/128);
+			tt = (realtime*16 + dir[1]) * (1.0/128);
+
+			glfunc.glMultiTexCoord2fARB_fp (GL_TEXTURE0_ARB, s, t);
+			glfunc.glMultiTexCoord2fARB_fp (GL_TEXTURE1_ARB, ss, tt);
+			glfunc.glVertex3fv_fp (v);
+		}
+		glfunc.glEnd_fp ();
+	}
+
+	glfunc.glDisable_fp(GL_TEXTURE_2D);
+	glfunc.glActiveTextureARB_fp (GL_TEXTURE0_ARB);
+}
+
 void EmitSkyPolys (msurface_t *fa)
 {
 	glpoly_t	*p;
@@ -253,6 +303,12 @@ will have them chained together.
 */
 void EmitBothSkyLayers (msurface_t *fa)
 {
+	if (gl_multitexture.value == 1 && gl_mtexable == true)
+	{
+		EmitSkyPolysMulti (fa);
+		return;
+	}
+
 	GL_Bind (solidskytexture);
 	speedscale = realtime*8;
 	speedscale -= (int)speedscale & ~127 ;
@@ -281,6 +337,13 @@ R_DrawSkyChain
 void R_DrawSkyChain (msurface_t *s)
 {
 	msurface_t	*fa;
+
+	if (gl_multitexture.value == 1 && gl_mtexable == true)
+	{
+		for (fa=s ; fa ; fa=fa->texturechain)
+			EmitSkyPolysMulti (fa);
+		return;
+	}
 
 	GL_Bind(solidskytexture);
 	speedscale = realtime*8;
