@@ -2,7 +2,7 @@
    gl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.54 2005-05-28 12:40:36 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.55 2005-05-29 11:23:13 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -84,9 +84,6 @@ extern qboolean	is_3dfx;
 float		gldepthmin, gldepthmax;
 int		multisample = 0;
 
-#ifndef GL_SHARED_TEXTURE_PALETTE_EXT
-#define GL_SHARED_TEXTURE_PALETTE_EXT 0x81FB
-#endif
 typedef void	(*FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
 FX_SET_PALETTE_EXT	MyglColorTableEXT;
 qboolean	is8bit = false;

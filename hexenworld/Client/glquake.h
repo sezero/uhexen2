@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.15 2005-05-28 12:43:49 sezero Exp $
+	$Id: glquake.h,v 1.16 2005-05-29 11:23:13 sezero Exp $
 */
 
 
@@ -23,6 +23,14 @@
 #define	GL_ACTIVE_TEXTURE_ARB			0x84E0
 #define	GL_CLIENT_ACTIVE_TEXTURE_ARB		0x84E1
 #define	GL_MAX_TEXTURE_UNITS_ARB		0x84E2
+#endif
+
+#ifndef	GL_MULTISAMPLE_ARB
+#define	GL_MULTISAMPLE_ARB			0x809D
+#endif
+
+#ifndef	GL_SHARED_TEXTURE_PALETTE_EXT
+#define	GL_SHARED_TEXTURE_PALETTE_EXT		0x81FB
 #endif
 
 #define GL_Bind(texnum) {\

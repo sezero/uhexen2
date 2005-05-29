@@ -1580,10 +1580,6 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 		Con_SafePrintf ("No fullscreen DIB modes found\n");
 }
 
-#ifndef GL_SHARED_TEXTURE_PALETTE_EXT
-#define GL_SHARED_TEXTURE_PALETTE_EXT 0x81FB
-#endif
-
 void VID_Init8bitPalette() 
 {
 	// Check for 8bit Extensions and initialize them.
