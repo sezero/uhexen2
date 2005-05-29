@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.14 2005-05-28 12:43:49 sezero Exp $
+	$Id: gl_rmain.c,v 1.15 2005-05-29 20:04:13 sezero Exp $
 */
 
 
@@ -77,6 +77,7 @@ cvar_t	r_lightmap = {"r_lightmap","0"};
 cvar_t	r_shadows = {"r_shadows","0"};
 cvar_t	r_mirroralpha = {"r_mirroralpha","1"};
 cvar_t	r_wateralpha = {"r_wateralpha","0.33", true};
+cvar_t	r_skyalpha = {"r_skyalpha", "0.67", true};
 cvar_t	r_dynamic = {"r_dynamic","1"};
 cvar_t	r_novis = {"r_novis","0"};
 cvar_t	r_netgraph = {"r_netgraph","0"};
