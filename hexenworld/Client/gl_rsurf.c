@@ -552,56 +552,6 @@ void R_MirrorChain (msurface_t *s)
 }
 
 
-#if 0
-/*
-================
-R_DrawWaterSurfaces
-================
-*/
-void R_DrawWaterSurfaces (void)
-{
-	int			i;
-	msurface_t	*s;
-	texture_t	*t;
-
-	if (r_wateralpha.value == 1.0)
-		return;
-
-	//
-	// go back to the world matrix
-	//
-	glfunc.glLoadMatrixf_fp (r_world_matrix);
-
-	glfunc.glEnable_fp (GL_BLEND);
-	glfunc.glColor4f_fp (1,1,1,r_wateralpha.value);
-	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-	for (i=0 ; i<cl.worldmodel->numtextures ; i++)
-	{
-		t = cl.worldmodel->textures[i];
-		if (!t)
-			continue;
-		s = t->texturechain;
-		if (!s)
-			continue;
-		if ( !(s->flags & SURF_DRAWTURB) )
-			continue;
-
-		// set modulate mode explicitly
-		GL_Bind (t->gl_texturenum);
-
-		for ( ; s ; s=s->texturechain)
-			R_RenderBrushPoly (s);
-
-		t->texturechain = NULL;
-	}
-
-	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-	glfunc.glColor4f_fp (1,1,1,1);
-	glfunc.glDisable_fp (GL_BLEND);
-}
-#else
 /*
 ================
 R_DrawWaterSurfaces
@@ -660,8 +610,6 @@ void R_DrawWaterSurfaces (void)
 		glfunc.glDisable_fp (GL_BLEND);
 	}
 }
-
-#endif
 
 /*
 ================
