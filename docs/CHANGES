@@ -1,14 +1,19 @@
 ChangeLog:
 
 2005-05-29 (CVS):
+     * Merged skyalpha of hexen2 to hexenworld
+     * Added 2-tmu multitexture support (extracted from jshexen2):
+       Doesn't work well with fxMesa (Voodoo2): "Unexpected dual
+       texture mode encountered" all the time: Voodoo driver doesn't
+       support many mtex modes (same goes for 3dfx DRI drivers). The
+       particular problem we have is GL_MODULATE/GL_BLEND mode not
+       being supported. GL_MODULATE/GL_DECAL is also missing which
+       the patch uses for sky
      * Ported texture scale/upload and 8-bit extension functions of
        hexenworld to hexen2. This cures some corrupted textures while
        using paletted textures in hexen2
      * Killed gl_texsort (thus, R_DrawSequentailPoly & co) which was
-       fairly broken. This also effectively killed the unfunctional
-       multitextune support in hexenworld
-     * Added/updated the multitextune detection. Doesn't do anything
-       for now but the tree is ready for it
+       fairly broken
      * Reverted AoT changes to hexenworld's gl_rsurf
      * Synced some function and define names between h2 and h2w
      * A lot of whitespace clean-ups
