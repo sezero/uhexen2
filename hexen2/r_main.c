@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.3 2005-05-19 16:41:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.4 2005-05-29 08:38:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1088,7 +1088,7 @@ void R_EdgeDrawing (qboolean Translucent)
 
 		if (r_dspeeds.value)
 		{
-			rw_time1 = Sys_FloatTime ();
+			rw_time1 = Sys_DoubleTime ();
 		}
 
 		R_RenderWorld ();
@@ -1110,7 +1110,7 @@ void R_EdgeDrawing (qboolean Translucent)
 
 		if (r_dspeeds.value)
 		{
-			rw_time2 = Sys_FloatTime ();
+			rw_time2 = Sys_DoubleTime ();
 			db_time1 = rw_time2;
 		}
 
@@ -1135,7 +1135,7 @@ void R_EdgeDrawing (qboolean Translucent)
 
 		if (r_dspeeds.value)
 		{
-			db_time2 = Sys_FloatTime ();
+			db_time2 = Sys_DoubleTime ();
 			se_time1 = db_time2;
 		}
 
@@ -1170,7 +1170,7 @@ void R_RenderView_ (void)
 		if (r_wholeframe.value)
 		   r_time1 = r_lasttime1;
 	   else
-		   r_time1 = Sys_FloatTime ();
+		   r_time1 = Sys_DoubleTime ();
 	}
 
 	R_SetupFrame ();
@@ -1208,7 +1208,7 @@ SetVisibilityByPassages ();
 	
 	if (r_dspeeds.value)
 	{
-		se_time2 = Sys_FloatTime ();
+		se_time2 = Sys_DoubleTime ();
 		de_time1 = se_time2;
 	}
 
@@ -1218,7 +1218,7 @@ SetVisibilityByPassages ();
 
 	if (r_dspeeds.value)
 	{
-		de_time2 = Sys_FloatTime ();
+		de_time2 = Sys_DoubleTime ();
 		dv_time1 = de_time2;
 	}
 
@@ -1226,14 +1226,14 @@ SetVisibilityByPassages ();
 
 	if (r_dspeeds.value)
 	{
-		dv_time2 = Sys_FloatTime ();
-		dp_time1 = Sys_FloatTime ();
+		dv_time2 = Sys_DoubleTime ();
+		dp_time1 = Sys_DoubleTime ();
 	}
 
 	R_DrawParticles ();
 
 	if (r_dspeeds.value)
-		dp_time2 = Sys_FloatTime ();
+		dp_time2 = Sys_DoubleTime ();
 
 	if (r_dowarp)
 		D_WarpScreen ();
@@ -1302,6 +1302,9 @@ void R_InitTurb (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/05/19 16:41:50  sezero
+ * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
+ *
  * Revision 1.2  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

@@ -371,11 +371,11 @@ void Sys_Error (char *error, ...)
 		WriteFile (houtput, text4, strlen (text4), &dummy, NULL);
 
 
-		starttime = Sys_FloatTime ();
+		starttime = Sys_DoubleTime ();
 		sc_return_on_enter = true;	// so Enter will get us out of here
 
 		while (!Sys_ConsoleInput () &&
-				((Sys_FloatTime () - starttime) < CONSOLE_ERROR_TIMEOUT))
+				((Sys_DoubleTime () - starttime) < CONSOLE_ERROR_TIMEOUT))
 		{
 		}
 	}
@@ -432,10 +432,10 @@ void Sys_Quit (void)
 
 /*
 ================
-Sys_FloatTime
+Sys_DoubleTime
 ================
 */
-double Sys_FloatTime (void)
+double Sys_DoubleTime (void)
 {
 	static int			sametimecount;
 	static unsigned int	oldtime;
@@ -506,7 +506,7 @@ void Sys_InitFloatTime (void)
 {
 	int		j;
 
-	Sys_FloatTime ();
+	Sys_DoubleTime ();
 
 	j = COM_CheckParm("-starttime");
 
@@ -835,7 +835,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	Sys_Printf ("Host_Init\n");
 	Host_Init (&parms);
 
-	oldtime = Sys_FloatTime ();
+	oldtime = Sys_DoubleTime ();
 
 	Cvar_RegisterVariable (&sys_delay);
 
@@ -844,13 +844,13 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	{
 		if (isDedicated)
 		{
-			newtime = Sys_FloatTime ();
+			newtime = Sys_DoubleTime ();
 			time = newtime - oldtime;
 
 			while (time < sys_ticrate.value )
 			{
 				Sys_Sleep();
-				newtime = Sys_FloatTime ();
+				newtime = Sys_DoubleTime ();
 				time = newtime - oldtime;
 			}
 		}
@@ -868,7 +868,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 				scr_skipupdate = 1;		// no point in bothering to draw
 			}
 
-			newtime = Sys_FloatTime ();
+			newtime = Sys_DoubleTime ();
 			time = newtime - oldtime;
 		}
 
@@ -886,6 +886,11 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/05/20 15:26:33  sezero
+ * separated winquake.h into winquake.h and linquake.h
+ * changed all occurances of winquake.h to quakeinc.h,
+ * which includes the correct header
+ *
  * Revision 1.4  2005/05/20 12:29:37  sezero
  * leftovers after common.c sync-1
  *

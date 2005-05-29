@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.8 2005-05-19 16:41:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.9 2005-05-29 08:38:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1173,9 +1173,9 @@ void PF_FindPath(void)
 	nomonsters = G_FLOAT(OFS_PARM4);
 	ent = G_EDICT(OFS_PARM5);
 
-   b= Sys_FloatTime ();
+   b= Sys_DoubleTime ();
    FindPath(v1,v2,mins,maxs,nomonsters,ent);
-	Con_Printf("Time is %10.4f\n",Sys_FloatTime ()-b);
+	Con_Printf("Time is %10.4f\n",Sys_DoubleTime ()-b);
 }
 */
 
@@ -3240,6 +3240,9 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/05/19 16:41:50  sezero
+ * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
+ *
  * Revision 1.7  2005/04/30 07:59:32  sezero
  * fix warning "dereferencing type-punned pointer will break strict-aliasing rules"
  *

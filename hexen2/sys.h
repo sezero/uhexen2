@@ -35,7 +35,7 @@ void Sys_Printf (char *fmt, ...);
 
 void Sys_Quit (void);
 
-double Sys_FloatTime (void);
+double Sys_DoubleTime (void);
 
 char *Sys_ConsoleInput (void);
 

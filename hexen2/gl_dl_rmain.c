@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_dl_rmain.c,v 1.22 2005-05-28 12:31:47 sezero Exp $
+	$Id: gl_dl_rmain.c,v 1.23 2005-05-29 08:38:12 sezero Exp $
 */
 
 
@@ -1732,7 +1732,7 @@ void R_PrintTimes(void)
 	float r_time2;
 	float ms, fps;
 
-	r_lasttime1 = r_time2 = Sys_FloatTime();
+	r_lasttime1 = r_time2 = Sys_DoubleTime();
 
 	ms = 1000*(r_time2-r_time1);
 	fps = 1000/ms;
@@ -1762,7 +1762,7 @@ void R_RenderView (void)
 		if (r_wholeframe.value)
 			r_time1 = r_lasttime1;
 		else
-			r_time1 = Sys_FloatTime ();
+			r_time1 = Sys_DoubleTime ();
 		c_brush_polys = 0;
 		c_alias_polys = 0;
 	}
@@ -1802,6 +1802,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2005/05/28 12:31:47  sezero
+ * added/updated multitexture detection. doesn't do anything yet.
+ *
  * Revision 1.21  2005/05/28 12:02:02  sezero
  * Killed gl_texsort (thus, R_DrawSequentailPoly and co) which was
  * fairly broken. This also effectively killed the unfunctional

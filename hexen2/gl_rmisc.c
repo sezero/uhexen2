@@ -423,7 +423,7 @@ void R_TimeRefresh_f (void)
 	glfunc.glDrawBuffer_fp (GL_FRONT);
 	glfunc.glFinish_fp ();
 
-	start = Sys_FloatTime ();
+	start = Sys_DoubleTime ();
 	for (i=0 ; i<128 ; i++)
 	{
 		r_refdef.viewangles[1] = i/128.0*360.0;
@@ -431,7 +431,7 @@ void R_TimeRefresh_f (void)
 	}
 
 	glfunc.glFinish_fp ();
-	stop = Sys_FloatTime ();
+	stop = Sys_DoubleTime ();
 	time = stop-start;
 	Con_Printf ("%f seconds (%f fps)\n", time, 128/time);
 

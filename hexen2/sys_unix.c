@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.23 2005-05-26 09:38:06 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.24 2005-05-29 08:38:12 sezero Exp $
 */
 
 #include <stdio.h>
@@ -265,11 +265,11 @@ void Sys_Error (char *error, ...)
 
 		fprintf(stderr, "ERROR: %s\n", text);
 
-		starttime = Sys_FloatTime ();
+		starttime = Sys_DoubleTime ();
 		sc_return_on_enter = true;	// so Enter will get us out of here
 
 		while (!Sys_ConsoleInput () &&
-				((Sys_FloatTime () - starttime) < CONSOLE_ERROR_TIMEOUT))
+				((Sys_DoubleTime () - starttime) < CONSOLE_ERROR_TIMEOUT))
 		{
 		}
 	}
@@ -316,12 +316,12 @@ void Sys_Quit (void)
 
 /*
 ================
-Sys_FloatTime
+Sys_DoubleTime
 ================
 */
-double Sys_FloatTime (void)
+double Sys_DoubleTime (void)
 {
-	// This is Sys_DoubleTime from Quake, since Hexen 2's Sys_FloatTime
+	// This is Sys_DoubleTime from Quake, since Hexen 2's Sys_DoubleTime
 	// is inherently un-portable - DDOI
         struct timeval  tp;
         struct timezone tzp;
@@ -347,7 +347,7 @@ void Sys_InitFloatTime (void)
 {
 	int		j;
 
-	Sys_FloatTime ();
+	Sys_DoubleTime ();
 
 	j = COM_CheckParm("-starttime");
 
@@ -552,7 +552,7 @@ int main(int argc, char *argv[])
 	Sys_Printf ("Host_Init\n");
 	Host_Init (&parms);
 
-	oldtime = Sys_FloatTime ();
+	oldtime = Sys_DoubleTime ();
 
 	Cvar_RegisterVariable (&sys_delay);
 
@@ -561,19 +561,19 @@ int main(int argc, char *argv[])
 	{
 		if (isDedicated)
 		{
-			newtime = Sys_FloatTime ();
+			newtime = Sys_DoubleTime ();
 			time = newtime - oldtime;
 
 			while (time < sys_ticrate.value )
 			{
 				Sys_Sleep();
-				newtime = Sys_FloatTime ();
+				newtime = Sys_DoubleTime ();
 				time = newtime - oldtime;
 			}
 		}
 		else
 		{
-			newtime = Sys_FloatTime ();
+			newtime = Sys_DoubleTime ();
 			time = newtime - oldtime;
 		}
 
@@ -593,6 +593,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/05/26 09:38:06  sezero
+ * updated help display
+ *
  * Revision 1.22  2005/05/20 12:34:44  sezero
  * removed some windows left-overs from sys_unix
  *

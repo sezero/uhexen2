@@ -50,7 +50,7 @@ BOOL PASCAL FAR BlockingHook(void)
     MSG		msg;
     BOOL	ret;
  
-	if ((Sys_FloatTime() - blocktime) > 2.0)
+	if ((Sys_DoubleTime() - blocktime) > 2.0)
 	{
 		WSACancelBlockingCall();
 		return FALSE;
@@ -137,7 +137,7 @@ int WINS_Init (void)
 	// determine my name & address
 	if (pgethostname(buff, MAXHOSTNAMELEN) == 0)
 	{
-		blocktime = Sys_FloatTime();
+		blocktime = Sys_DoubleTime();
 		WSASetBlockingHook(BlockingHook);
 		local = pgethostbyname(buff);
 		WSAUnhookBlockingHook();
