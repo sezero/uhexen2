@@ -4,6 +4,19 @@
 #define GLQUAKE_VERSION 0.95
 #define	VERSION		0.15
 
+#define HOT_VERSION_MAJ 1
+#define HOT_VERSION_MID 2
+#define HOT_VERSION_MIN 5
+#if defined (__linux__)
+#define VERSION_PLATFORM "Linux"
+#elif defined (__FreeBSD__)
+#define VERSION_PLATFORM "FreeBSD"
+#elif defined (_WIN32)
+#define VERSION_PLATFORM "Windows"
+#else
+#define VERSION_PLATFORM "Unknown"
+#endif
+
 /* From Dan Olson:
    The code isn't compilable on non-intel until all of the asm is
    taken out.  Don't worry about the id386 define *yet*, and even

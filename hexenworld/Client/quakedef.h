@@ -2,19 +2,6 @@
 
 #define	QUAKE_GAME			// as opposed to utilities
 
-#define HOT_VERSION_MAJ 1
-#define HOT_VERSION_MID 2
-#define HOT_VERSION_MIN 5
-#if defined (__linux__)
-#define VERSION_PLATFORM "Linux"
-#elif defined (__FreeBSD__)
-#define VERSION_PLATFORM "FreeBSD"
-#elif defined (_WIN32)
-#define VERSION_PLATFORM "Windows"
-#else
-#define VERSION_PLATFORM "Unknown"
-#endif
-
 //define	PARANOID			// speed sapping error checking
 
 /* We keep the userdir (and host_parms.userdir) as ~/.hexen2 here. In
