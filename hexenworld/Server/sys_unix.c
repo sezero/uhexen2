@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.1 2005-05-17 17:45:04 sezero Exp $
+	$Id: sys_unix.c,v 1.2 2005-05-30 13:28:13 sezero Exp $
 
 	Unix system interface code
 */
@@ -221,10 +221,10 @@ int main (int argc, char **argv)
 	{
 		parms.memsize = atoi (com_argv[t + 1]) * 1024;
 
-		if (parms.memsize > 96*1024*1024) { // no bigger than 96 MB
+		if (parms.memsize > 64*1024*1024) { // no bigger than 64 MB
 			Sys_Printf ("Requested memory (%d Mb) too large.\n", parms.memsize/(1024*1024));
-			Sys_Printf ("Will try going with a saner 96 Mb..\n");
-			parms.memsize = 96*1024*1024;
+			Sys_Printf ("Will try going with a saner 64 Mb..\n");
+			parms.memsize = 64*1024*1024;
 		} else if (parms.memsize < 8*1024*1024) { // no less than 8 MB
 			Sys_Printf ("Requested memory (%d Mb) too little.\n", parms.memsize/(1024*1024));
 			Sys_Printf ("Will try going with a humble 8 Mb..\n");
