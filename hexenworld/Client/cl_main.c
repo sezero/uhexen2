@@ -1284,10 +1284,6 @@ Host_Init
 void Host_Init (quakeparms_t *parms)
 {
 	COM_InitArgv (parms->argc, parms->argv);
-//	COM_AddParm ("-game");
-//	COM_AddParm ("hw");
-
-	Sys_mkdir("hw");
 
 	host_parms = *parms;
 
