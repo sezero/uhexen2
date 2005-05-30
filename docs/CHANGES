@@ -1,5 +1,14 @@
 ChangeLog:
 
+2005-05-30 (CVS, 1.2.5-pre1):
+     * updated commandline help display
+     * removed obsoleted mkdir from hexenworld's Host_Init
+     * added version and help strings to hwmaster
+     * lowered the upper heapsize to 64 Mb for hwsv
+     * version and help strings for hwsv (not much in help, but...)
+     * moved hexenworld HOT_VERSION defines to bothdefs.h
+     * consider this as 1.2.5-pre1
+
 2005-05-29 (CVS):
      * Merged skyalpha of hexen2 to hexenworld
      * Added 2-tmu multitexture support (extracted from jshexen2):
