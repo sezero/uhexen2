@@ -380,6 +380,30 @@ void SV_Frame()
 
 int main (int argc, char **argv)
 {
+	int t;
+
+	if (argc>=1) {
+	    for (t=1;t<argc;t++) {
+		if ((strcmp(argv[t], "-h"    ) == 0 ||
+		     strcmp(argv[t], "-help" ) == 0 ||
+		     strcmp(argv[t], "--help") == 0 ||
+		     strcmp(argv[t], "-?") == 0 ))
+		{
+			printf("\nHexenWorld master server %s\n\n", VER_HWMASTER);
+			printf("Usage:     hwmaster [-port xxxxx]\n");
+			printf("See the documentation for details\n\n");
+			exit(0);
+		}
+		else if ((strcmp(argv[t], "-v"  ) == 0 ||
+			  strcmp(argv[t], "-version" ) == 0 ||
+			  strcmp(argv[t], "--version") == 0 ))
+		{
+			printf("hwmaster %s\n", VER_HWMASTER);
+			exit(0);
+		}
+	    }
+	}
+
 	COM_InitArgv (argc, argv);
 
 #ifdef PLATFORM_UNIX
