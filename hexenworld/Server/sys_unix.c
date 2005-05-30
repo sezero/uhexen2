@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.2 2005-05-30 13:28:13 sezero Exp $
+	$Id: sys_unix.c,v 1.3 2005-05-30 13:56:17 sezero Exp $
 
 	Unix system interface code
 */
@@ -212,6 +212,22 @@ int main (int argc, char **argv)
 
 	parms.argc = com_argc;
 	parms.argv = com_argv;
+
+	if (COM_CheckParm ("-help") || COM_CheckParm ("--help") ||
+	    COM_CheckParm ("-h")    || COM_CheckParm ("-?"))
+	{
+		printf ("\nHexenWorld server %4.2f (%s)\n", VERSION, VERSION_PLATFORM);
+		printf ("(Hammer of Thyrion, release %d.%d.%d)\n",
+			 HOT_VERSION_MAJ, HOT_VERSION_MID, HOT_VERSION_MIN);
+		printf ("See the documentation for details\n\n");
+		exit (0);
+	}
+
+	if (COM_CheckParm ("-v") || COM_CheckParm ("-version") || COM_CheckParm ("--version"))
+	{
+		printf ("hwsv %4.2f (%s)\n", VERSION, VERSION_PLATFORM);
+		exit (0);
+	}
 
 	// Client uses 32 Mb minimum but this server-only situation
 	// should go well with 16 Mb. We can always use -heapsize..
