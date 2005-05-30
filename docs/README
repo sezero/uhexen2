@@ -119,6 +119,7 @@ following options are accepted:
  -fsaa N		Enable N sample antialiasing (N: 0,2,4)
  -sync | -vsync		Enable syncing with monitor refresh (GL, Nvidia)
  -paltex		Enable 8-bit textures
+ -nomtex		Disable multitexture detection/usage
  -old3dfx		Support for old Voodoo1/2/Rush
  -sndalsa		Use ALSA for audio
  -sndsdl		Use SDL for audio
@@ -292,6 +293,9 @@ variable	values
 --------	------
 _snd_mixahead	0.1 - 0.9 : 0.1 = less latency,
 			    0.9 = better performance
+
+gl_multitexture	0|1	  : Disable/Enable multitexturing on
+			    the fly. 0 is default.
 
 gl_ztrick	0|1	  : 3% performance tweak
 			    (some cards unsupported)
