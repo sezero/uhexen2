@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.24 2005-05-29 08:38:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.25 2005-05-30 09:44:19 sezero Exp $
 */
 
 #include <stdio.h>
@@ -454,11 +454,14 @@ void PrintHelp(char *name)
 	printf ("     [-v | --version]        Display the game version\n");
 	printf ("     [-f | --fullscreen]     Run the game fullscreen\n");
 	printf ("     [-width X [-height Y]]  Select screen size\n");
+#ifdef GLQUAKE
 	printf ("     [-bpp]                  Depth for GL fullscreen mode\n");
-	printf ("     [-g | --gllibrary]      Select 3D rendering library\n");
 	printf ("     [-vsync]                Enable sync with monitor refresh\n");
+	printf ("     [-g | --gllibrary]      Select 3D rendering library\n");
 	printf ("     [-fsaa N]               Enable N sample antialiasing\n");
 	printf ("     [-paltex]               Enable 8-bit GL extensions\n");
+	printf ("     [-nomtex]               Disable multitexture detection/usage\n");
+#endif
 	printf ("     [-s | --nosound]        Run the game without sound\n");
 	printf ("     [-sndalsa]              Use ALSA sound (alsa > 1.0.1)\n");
 	printf ("     [-sndsdl]               Use SDL sound\n");
@@ -593,6 +596,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2005/05/29 08:38:12  sezero
+ * get rid of the silly func name difference
+ *
  * Revision 1.23  2005/05/26 09:38:06  sezero
  * updated help display
  *

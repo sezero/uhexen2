@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.19 2005-05-26 09:38:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.20 2005-05-30 09:44:20 sezero Exp $
 */
 
 #include <stdio.h>
@@ -393,11 +393,14 @@ void PrintHelp(char *name)
 	printf ("     [-v | --version]        Display the game version\n");
 	printf ("     [-f | --fullscreen]     Run the game fullscreen\n");
 	printf ("     [-width X [-height Y]]  Select screen size\n");
+#ifdef GLQUAKE
 	printf ("     [-bpp]                  Depth for GL fullscreen mode\n");
-	printf ("     [-g | --gllibrary]      Select 3D rendering library\n");
 	printf ("     [-vsync]                Enable sync with monitor refresh\n");
+	printf ("     [-g | --gllibrary]      Select 3D rendering library\n");
 	printf ("     [-fsaa N]               Enable N sample antialiasing\n");
 	printf ("     [-paltex]               Enable 8-bit GL extensions\n");
+	printf ("     [-nomtex]               Disable multitexture detection/usage\n");
+#endif
 	printf ("     [-s | --nosound]        Run the game without sound\n");
 	printf ("     [-sndalsa]              Use ALSA sound (alsa > 1.0.1)\n");
 	printf ("     [-sndsdl]               Use SDL sound\n");
@@ -512,6 +515,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2005/05/26 09:38:11  sezero
+ * updated help display
+ *
  * Revision 1.18  2005/05/20 12:34:46  sezero
  * removed some windows left-overs from sys_unix
  *
