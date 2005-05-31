@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.36 2005-05-29 08:53:57 sezero Exp $
+	$Id: gl_draw.c,v 1.37 2005-05-31 19:49:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -131,10 +131,12 @@ void Scrap_Upload (void)
 //=============================================================================
 /* Support Routines */
 
-//#define	MAX_CACHED_PICS 	128
 #define	MAX_CACHED_PICS		256
 cachepic_t	menu_cachepics[MAX_CACHED_PICS];
 int			menu_numcachepics;
+
+int		pic_texels;
+int		pic_count;
 
 /*
  * Geometry for the player/skin selection screen image.
@@ -145,9 +147,6 @@ int			menu_numcachepics;
 #define PLAYER_DEST_HEIGHT 128
 
 byte		menuplyr_pixels[MAX_PLAYER_CLASS][PLAYER_PIC_WIDTH*PLAYER_PIC_HEIGHT];
-
-int		pic_texels;
-int		pic_count;
 
 qpic_t *Draw_PicFromFile (char *name)
 {
@@ -890,7 +889,7 @@ Only used for the player color selection menu
 */
 void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 {
-	int			v, u/*, c*/;
+	int			v, u;
 	unsigned		trans[PLAYER_DEST_WIDTH * PLAYER_DEST_HEIGHT], *dest;
 	byte			*src;
 	int			p;
@@ -907,12 +906,6 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 		memset(plyrtex, 0, MAX_PLAYER_CLASS * 16 * 16 * sizeof(qboolean));
 		first_time = false;
 	}
-
-/*
-	GL_Bind (translate_texture[setup_class-1]);
-
-	c = pic->width * pic->height;
-*/
 
 	dest = trans;
 	for (v=0 ; v<64 ; v++, dest += 64)
@@ -1767,8 +1760,8 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 						GL_Upload8 (data, width, height, mipmap, alpha, mode);
 					return glt->texnum;
 				} else {
-				// No need to rebind
-				return gltextures[i].texnum;
+					// No need to rebind
+					return gltextures[i].texnum;
 				}
 			}
 		}
@@ -1807,6 +1800,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.36  2005/05/29 08:53:57  sezero
+ * get rid of silly name changes
+ *
  * Revision 1.35  2005/05/27 17:56:40  sezero
  * merged texture scale/upload and 8-bit extension
  * functions from hexenworld to hexen2

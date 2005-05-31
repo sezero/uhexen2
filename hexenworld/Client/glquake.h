@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.18 2005-05-29 20:04:13 sezero Exp $
+	$Id: glquake.h,v 1.19 2005-05-31 19:50:01 sezero Exp $
 */
 
 
@@ -53,7 +53,7 @@ extern	int	gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for mode
 
 void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite);
 void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode);
-int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode);
+int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba);
 int GL_FindTexture (char *identifier);
 int GL_LoadPicTexture (qpic_t *pic);
 void GL_BuildLightmaps (void);

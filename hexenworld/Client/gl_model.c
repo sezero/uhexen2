@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.8 2005-05-29 11:41:00 sezero Exp $
+	$Id: gl_model.c,v 1.9 2005-05-31 19:50:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -371,7 +371,7 @@ void Mod_LoadTextures (lump_t *l)
 		if (!strncmp(mt->name,"sky",3))	
 			R_InitSky (tx);
 		else
-			tx->gl_texturenum = GL_LoadTexture (mt->name, tx->width, tx->height, (byte *)(tx+1), true, false, 0);
+			tx->gl_texturenum = GL_LoadTexture (mt->name, tx->width, tx->height, (byte *)(tx+1), true, false, 0, false);
 	}
 
 //
@@ -1577,7 +1577,7 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int mdl_flags
 			pheader->gl_texturenum[i][2] =
 			pheader->gl_texturenum[i][3] =
 				GL_LoadTexture (name, pheader->skinwidth, 
-				pheader->skinheight, (byte *)(pskintype + 1), true, false, tex_mode);
+				pheader->skinheight, (byte *)(pskintype + 1), true, false, tex_mode, false);
 			pskintype = (daliasskintype_t *)((byte *)(pskintype+1) + s);
 		} 
 		else 
@@ -1597,7 +1597,7 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int mdl_flags
 					sprintf (name, "%s_%i_%i", loadmodel->name, i,j);
 					pheader->gl_texturenum[i][j&3] = 
 						GL_LoadTexture (name, pheader->skinwidth, 
-						pheader->skinheight, (byte *)(pskintype), true, false, tex_mode);
+						pheader->skinheight, (byte *)(pskintype), true, false, tex_mode, false);
 					pskintype = (daliasskintype_t *)((byte *)(pskintype) + s);
 			}
 			k = j;
@@ -2004,7 +2004,7 @@ void * Mod_LoadSpriteFrame (void * pin, mspriteframe_t **ppframe, int framenum)
 	pspriteframe->right = width + origin[0];
 
 	sprintf (name, "%s_%i", loadmodel->name, framenum);
-	pspriteframe->gl_texturenum = GL_LoadTexture (name, width, height, (byte *)(pinframe + 1), true, true, 10);
+	pspriteframe->gl_texturenum = GL_LoadTexture (name, width, height, (byte *)(pinframe + 1), true, true, 10, false);
 
 	return (void *)((byte *)pinframe + sizeof (dspriteframe_t) + size);
 }

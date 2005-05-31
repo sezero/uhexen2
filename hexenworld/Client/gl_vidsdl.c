@@ -2,7 +2,7 @@
    gl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.55 2005-05-29 11:23:13 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.56 2005-05-31 19:50:00 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -346,8 +346,8 @@ void GL_Init (void)
 	glfunc.glPolygonMode_fp (GL_FRONT_AND_BACK, GL_FILL);
 	glfunc.glShadeModel_fp (GL_FLAT);
 
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// previously GL_CLAMP was GL_REPEAT S.A
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);

@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.23 2005-05-26 18:20:45 sezero Exp $
+	$Id: gl_draw.c,v 1.24 2005-05-31 19:50:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -20,12 +20,13 @@ int		gl_max_size = 256;
 cvar_t		gl_picmip = {"gl_picmip", "0"};
 cvar_t		gl_spritemip = {"gl_spritemip", "0"};
 
+qboolean	plyrtex[MAX_PLAYER_CLASS][16][16];	// whether or not the corresponding player textures
+							// (in multiplayer config screens) have been loaded
 byte		*draw_chars;				// 8*8 graphic characters
 byte		*draw_smallchars;			// Small characters for status bar
 byte		*draw_menufont; 			// Big Menu Font
 qpic_t		*draw_backtile;
 
-int			translate_texture[MAX_PLAYER_CLASS];
 int			char_texture;
 int			cs_texture; // crosshair texture
 int			char_smalltexture;
@@ -300,9 +301,8 @@ qpic_t	*Draw_CachePic (char *path)
 	pic->pic.width = dat->width;
 	pic->pic.height = dat->height;
 
-	// point sample status bar
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	gl = (glpic_t *)pic->pic.data;
 	gl->texnum = GL_LoadPicTexture (dat);
@@ -393,11 +393,16 @@ void Draw_TextureMode_f (void)
 	// change all the existing mipmap texture objects
 	for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
 	{
+		GL_Bind (glt->texnum);
+		glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+
 		if (glt->mipmap)
 		{
-			GL_Bind (glt->texnum);
 			glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
-			glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+		}
+		else
+		{
+			glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 		}
 	}
 }
@@ -437,11 +442,11 @@ void Draw_Init (void)
 		if (draw_chars[i] == 0)
 			draw_chars[i] = 255;	// proper transparent color
 
-	char_texture = GL_LoadTexture ("charset", 256, 128, draw_chars, false, true, 0);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	char_texture = GL_LoadTexture ("charset", 256, 128, draw_chars, false, true, 0, false);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
-	cs_texture = GL_LoadTexture ("crosshair", 8, 8, cs_data, false, true, 0);
+	cs_texture = GL_LoadTexture ("crosshair", 8, 8, cs_data, false, true, 0, false);
 
 	draw_smallchars = W_GetLumpName("tinyfont");
 	for (i=0 ; i<128*32 ; i++)
@@ -449,9 +454,9 @@ void Draw_Init (void)
 			draw_smallchars[i] = 255;	// proper transparent color
 
 	// now turn them into textures
-	char_smalltexture = GL_LoadTexture ("smallcharset", 128, 32, draw_smallchars, false, true, 0);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	char_smalltexture = GL_LoadTexture ("smallcharset", 128, 32, draw_smallchars, false, true, 0, false);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
 	mf = (qpic_t *)COM_LoadTempFile("gfx/menu/bigfont2.lmp");
 	for (i=0 ; i<160*80 ; i++)
@@ -459,9 +464,9 @@ void Draw_Init (void)
 			mf->data[i] = 255;	// proper transparent color
 
 
-	char_menufonttexture = GL_LoadTexture ("menufont", 160, 80, mf->data, false, true, 0);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	char_menufonttexture = GL_LoadTexture ("menufont", 160, 80, mf->data, false, true, 0, false);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
 
 	start = Hunk_LowMark ();
@@ -471,7 +476,7 @@ void Draw_Init (void)
 		Sys_Error ("Couldn't load gfx/menu/conback.lmp");
 	SwapPic (cb);
 
-/*	sprintf (ver, "%4.2f", VERSION);
+/*	sprintf (ver, "%4.2f (%s)", VERSION, VERSION_PLATFORM);
 	dest = cb->data + 320 + 320*186 - 11 - 8*strlen(ver);
 	for (x=0 ; x<strlen(ver) ; x++)
 		Draw_CharToConback (ver[x], dest+(x<<3));*/
@@ -511,11 +516,11 @@ void Draw_Init (void)
 	ncdata = cb->data;
 #endif
 	
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
 	gl = (glpic_t *)conback->data;
-	gl->texnum = GL_LoadTexture ("conback", conback->width, conback->height, ncdata, false, false, 0);
+	gl->texnum = GL_LoadTexture ("conback", conback->width, conback->height, ncdata, false, false, 0, false);
 	gl->sl = 0;
 	gl->sh = 1;
 	gl->tl = 0;
@@ -525,14 +530,6 @@ void Draw_Init (void)
 
 	// free loaded console
 	Hunk_FreeToLowMark (start);
-
-	// save a texture slot for translated picture
-	translate_texture[0] = texture_extension_number++;
-	translate_texture[1] = texture_extension_number++;
-	translate_texture[2] = texture_extension_number++;
-	translate_texture[3] = texture_extension_number++;
-	translate_texture[4] = texture_extension_number++;
-	translate_texture[5] = texture_extension_number++;//mg-siege
 
 	// save slots for scraps
 	scrap_texnum = texture_extension_number;
@@ -980,16 +977,23 @@ Only used for the player color selection menu
 */
 void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 {
-	int			v, u, c;
+	int			v, u;
 	unsigned		trans[PLAYER_DEST_WIDTH * PLAYER_DEST_HEIGHT], *dest;
 	byte			*src;
 	int			p;
 
+	// texture handle, name and trackers (Pa3PyX)
+	char texname[20];
+	static qboolean first_time = true;
+	extern int setup_top;
+	extern int setup_bottom;
 	extern int which_class;
 
-	GL_Bind (translate_texture[which_class-1]);
-
-	c = pic->width * pic->height;
+	// Initialize array of texnums
+	if (first_time) {
+		memset(plyrtex, 0, MAX_PLAYER_CLASS * 16 * 16 * sizeof(qboolean));
+		first_time = false;
+	}
 
 	dest = trans;
 	for (v=0 ; v<64 ; v++, dest += 64)
@@ -1026,12 +1030,12 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 			}
 	}
 
-	glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, gl_alpha_format, PLAYER_DEST_WIDTH, PLAYER_DEST_HEIGHT,
-		      0, GL_RGBA, GL_UNSIGNED_BYTE, trans);
-//	glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, gl_alpha_format, 64, 64, 0, GL_RGBA, GL_UNSIGNED_BYTE, trans);
-
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// See if the texture has already been loaded; if not, do it (Pa3PyX)
+	if (!plyrtex[which_class - 1][setup_top][setup_bottom]) {
+		snprintf(texname, 19, "plyrmtex%i%i%i", which_class, setup_top, setup_bottom);
+		plyrtex[which_class - 1][setup_top][setup_bottom] = GL_LoadTexture(texname, PLAYER_DEST_WIDTH, PLAYER_DEST_HEIGHT, (byte *)trans, false, true, 0, true);
+	}
+	GL_Bind(plyrtex[which_class - 1][setup_top][setup_bottom]);
 
 	glfunc.glColor3f_fp (1,1,1);
 	glfunc.glBegin_fp (GL_QUADS);
@@ -1816,7 +1820,7 @@ void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean a
 GL_LoadTexture
 ================
 */
-int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode)
+int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba)
 {
 	int		i;
 	gltexture_t	*glt;
@@ -1837,11 +1841,14 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 					glt->height = height;
 					glt->mipmap = mipmap;
 					GL_Bind (glt->texnum);
-					GL_Upload8 (data, width, height, mipmap, alpha, mode);
+					if (rgba)
+						GL_Upload32 ((unsigned *)data, width, height, mipmap, alpha, false);
+					else
+						GL_Upload8 (data, width, height, mipmap, alpha, mode);
 					return glt->texnum;
 				} else {
-				// No need to rebind
-				return gltextures[i].texnum;
+					// No need to rebind
+					return gltextures[i].texnum;
 				}
 			}
 		}
@@ -1858,7 +1865,10 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 
 	GL_Bind (texture_extension_number);
 
-	GL_Upload8 (data, width, height, mipmap, alpha, mode);
+	if (rgba)
+		GL_Upload32 ((unsigned *)data, width, height, mipmap, alpha, false);
+	else
+		GL_Upload8 (data, width, height, mipmap, alpha, mode);
 
 	texture_extension_number++;
 
@@ -1872,6 +1882,6 @@ GL_LoadPicTexture
 */
 int GL_LoadPicTexture (qpic_t *pic)
 {
-	return GL_LoadTexture ("", pic->width, pic->height, pic->data, false, true, 0);
+	return GL_LoadTexture ("", pic->width, pic->height, pic->data, false, true, 0, false);
 }
 
