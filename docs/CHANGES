@@ -1,5 +1,9 @@
 ChangeLog:
 
+2005-05-31 (CVS, 1.2.5-pre1):
+     * ported player menu-texture handling, GL_LoadTexture
+       and gl-filter changes from hexen2 to hexenworld.
+
 2005-05-30 (CVS, 1.2.5-pre1):
      * updated commandline help display
      * removed obsoleted mkdir from hexenworld's Host_Init
