@@ -1,5 +1,13 @@
 ChangeLog:
 
+2005-06-01 (CVS, 1.2.5-pre1):
+     * SDL version >= 1.2.6 is now required. Updated the READMEs
+       and added a version check at startup.
+     * removed win32-only net function prototypes from linquake.h
+       and updated linux_inc.h. also moved win32-only ipx netcode
+       (this should fix the silly compile errors on bsd.)
+     * updated a comment in Client/cl_main.c
+
 2005-05-31 (CVS, 1.2.5-pre1):
      * ported player menu-texture handling, GL_LoadTexture
        and gl-filter changes from hexen2 to hexenworld.
