@@ -2,14 +2,14 @@
 
 #include "quakedef.h"
 #include "quakeinc.h"
+
 #ifdef _WIN32
 #include "winsock.h"
+#else
+// do we really need to include <arpa/inet.h>
+#ifndef INADDR_LOOPBACK
+#define	INADDR_LOOPBACK	0x7F000001
 #endif
-
-#ifdef PLATFORM_UNIX
-unsigned short snd_system;
-/* Change me */
-#define INADDR_LOOPBACK         0x7F000001
 #ifndef htonl
 extern unsigned long htonl (unsigned long hostlong);
 #endif
@@ -113,6 +113,10 @@ void Master_Connect_f (void);
 
 float	server_version = 0;	// version of server we connected to
 
+#ifdef PLATFORM_UNIX
+// sound interface to use (oss, alsa, sdl), assigned at startup.
+unsigned short snd_system;
+#endif
 
 
 /*
