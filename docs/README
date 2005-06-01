@@ -81,7 +81,7 @@ b. Manual install/update of datafiles (harder way):
 1.2 Software Requirements
 -------------------------
 
-   SDL (min.: 1.2.2)	  : Simple DirectMedia Layer libraries
+   SDL (min.: 1.2.6)	  : Simple DirectMedia Layer libraries
 			    1.2.7 and newer highly recommended.
 
    SDL_mixer (min.: 1.2.0): Required for midi support (should

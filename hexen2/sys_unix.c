@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.25 2005-05-30 09:44:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.26 2005-06-01 14:13:21 sezero Exp $
 */
 
 #include <stdio.h>
@@ -16,12 +16,18 @@
 #include <signal.h>
 #include <string.h>
 #include <dirent.h>
+#include "SDL_version.h"
 
 #include "quakedef.h"
 
 #define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error running
 										//  dedicated before exiting
 #define MAXPRINTMSG		4096
+
+// minimum required SDL version
+#define	SDL_MIN_X	1
+#define	SDL_MIN_Y	2
+#define	SDL_MIN_Z	6
 
 static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
@@ -478,6 +484,7 @@ int main(int argc, char *argv[])
 	char	userdir[MAX_OSPATH];
 	char	binary_name[MAX_OSPATH];
 	int	t;
+	const SDL_version *sdl_version;
 
 	if (!(getcwd (cwd, sizeof(cwd))))
 		Sys_Error ("Couldn't determine current directory");
@@ -488,7 +495,15 @@ int main(int argc, char *argv[])
 	if (Sys_GetUserdir(userdir,sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
 
-	printf("userdir is: %s\n",userdir);
+	Sys_Printf("userdir is: %s\n",userdir);
+
+	sdl_version = SDL_Linked_Version();
+	Sys_Printf("Found SDL version %i.%i.%i\n",sdl_version->major,sdl_version->minor,sdl_version->patch);
+	if(SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_VERSIONNUM(SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z))
+	{	//reject running under SDL versions < 1.2.6
+		printf("You need at least version %i.%i.%i of SDL to run this game\n",SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
+		exit(0);
+	}
 
 	parms.basedir = cwd;
 	parms.cachedir = NULL;
@@ -596,6 +611,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2005/05/30 09:44:19  sezero
+ * updated commandline help display
+ *
  * Revision 1.24  2005/05/29 08:38:12  sezero
  * get rid of the silly func name difference
  *
