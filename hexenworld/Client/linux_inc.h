@@ -8,6 +8,7 @@
 #define HANDLE int
 #define HINST int
 #define HWND int
+#define APIENTRY
 #define PASCAL
 #define FAR
 #define SOCKET int

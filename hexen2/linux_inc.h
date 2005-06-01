@@ -1,11 +1,14 @@
 #ifndef _LINUX_INC
 #define _LINUX_INC
 
+#include <ctype.h>
+
 //#define _inline inline
 //#define __inline static inline
 #define HANDLE int
 #define HINST int
 #define HWND int
+#define APIENTRY
 #define PASCAL
 #define FAR
 #define SOCKET int

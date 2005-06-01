@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.30 2005-05-29 08:53:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.31 2005-06-01 14:10:42 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -14,7 +14,6 @@
 
 #ifdef PLATFORM_UNIX
 #include "linux_inc.h"
-#include <ctype.h>
 #define WITH_SDL	/* for the mouse2/3 hack in keys.c */
 #endif
 
@@ -433,6 +432,9 @@ void MIDI_Loop(int NewValue);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2005/05/29 08:53:57  sezero
+ * get rid of silly name changes
+ *
  * Revision 1.29  2005/05/21 17:04:16  sezero
  * - revived -nomouse that "disables mouse no matter what"
  * - renamed _windowed_mouse to _enable_mouse which is our intention,
