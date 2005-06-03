@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.64 2005-06-03 13:21:08 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.65 2005-06-03 13:25:28 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -991,18 +991,21 @@ void ToggleFullScreenSA ()
 	if (SDL_WM_ToggleFullScreen(screen)==1) {
 		Cvar_SetValue ("vid_mode", !vid_mode.value);
 		modestate = (vid_mode.value) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
-#if 0	// change to 1 if dont want to disable mouse in fullscreen
 		if (vid_mode.value) {
-			if (!_enable_mouse.value) {
-				// activate the mouse if not in menus
-				if (!mousestate_sa)
-					IN_ActivateMouse();
-			}
-		} else {
+#if 0	// change to 1 if dont want to disable mouse in fullscreen
 			if (!_enable_mouse.value)
+				Cvar_SetValue ("_enable_mouse", 1);
+#endif
+			// activate mouse in fullscreen mode
+			// in_sdl.c handles other non-moused cases
+			if (mousestate_sa)
+				IN_ActivateMouse();
+		} else {
+			// windowed mode:
+			// deactivate mouse if we are in menus
+			if (mousestate_sa)
 				IN_DeactivateMouse();
 		}
-#endif
 	} else {
 		Con_Printf ("SDL_WM_ToggleFullScreen failed\n");
 	}

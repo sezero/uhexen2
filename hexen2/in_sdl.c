@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.22 2005-05-21 17:10:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.23 2005-06-03 13:25:29 sezero Exp $
 */
 
 #include "SDL.h"
@@ -20,7 +20,6 @@ extern modestate_t	modestate;
 extern qboolean	in_mode_set;
 static qboolean	mouseactive = false;
 qboolean	mouseinitialized = false;
-qboolean	mousestate_sa = false;  // whether mouse is disabled in interesting places
 static qboolean	mouseactivatetoggle = false;
 static qboolean	mouseshowtoggle = 1;
 
@@ -132,18 +131,33 @@ void IN_HideMouse (void)
 	}
 }
 
+
+/* ============================================================
+   NOTES on enabling-disabling the mouse:
+   - In windowed mode, mouse is temporarily disabled in main
+     menu, so the un-grabbed pointer can be used for desktop
+     This state is stored in mousestate_sa as true
+   - In fullscreen mode, we don't disable the mouse in menus,
+     if we toggle windowed/fullscreen, the above state variable
+     is used to correct this in ToggleFullScreenSA()
+   - In the console mode and in the options menu-group, mouse
+     is not disabled, and mousestate_sa is set to false
+   - Starting a or connecting to a server activates the mouse
+     and sets mousestate_sa to false
+   - Pausing the game disables (so un-grabs) the mouse, unpausing
+     activates it. We don't play with mousestate_sa in such cases
+*/
+
 /*
 ===========
 IN_ActivateMouse
 ===========
 */
-
 void IN_ActivateMouse (void)
 {
 	if (!mouseinitialized)
 		return;
 
-	mousestate_sa = false;
 	if (!mouseactivatetoggle)
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
 		if ((modestate==MODE_FULLSCREEN_DEFAULT) || _enable_mouse.value)
@@ -1116,6 +1130,10 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2005/05/21 17:10:58  sezero
+ * re-enabled complete disabling/enabling of mousa in fullscreen
+ * mode. (only replaced a bunch of if 1's to if 0's)
+ *
  * Revision 1.21  2005/05/21 17:04:16  sezero
  * - revived -nomouse that "disables mouse no matter what"
  * - renamed _windowed_mouse to _enable_mouse which is our intention,

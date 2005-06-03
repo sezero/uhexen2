@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.25 2005-05-21 17:10:58 sezero Exp $
+   $Id: vid_sdl.c,v 1.26 2005-06-03 13:25:29 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -863,18 +863,17 @@ void ToggleFullScreenSA ()
 	if (SDL_WM_ToggleFullScreen(screen)==1) {
 		Cvar_SetValue ("vid_mode", !vid_mode.value);
 		modestate = (vid_mode.value) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
-#if 0	// change to 1 if dont want to disable mouse in fullscreen
 		if (vid_mode.value) {
-			if (!_enable_mouse.value) {
-				// activate the mouse if not in menus
-				if (!mousestate_sa)
-					IN_ActivateMouse();
-			}
+			// activate mouse in fullscreen mode
+			// in_sdl.c handles other non-moused cases
+			if (mousestate_sa)
+				IN_ActivateMouse();
 		} else {
-			if (!_enable_mouse.value)
+			// windowed mode:
+			// deactivate mouse if we are in menus
+			if (mousestate_sa)
 				IN_DeactivateMouse();
 		}
-#endif
 	} else {
 	    Con_Printf ("SDL_WM_ToggleFullScreen failed\n");
 	}
@@ -901,6 +900,10 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2005/05/21 17:10:58  sezero
+ * re-enabled complete disabling/enabling of mousa in fullscreen
+ * mode. (only replaced a bunch of if 1's to if 0's)
+ *
  * Revision 1.24  2005/05/21 17:04:16  sezero
  * - revived -nomouse that "disables mouse no matter what"
  * - renamed _windowed_mouse to _enable_mouse which is our intention,

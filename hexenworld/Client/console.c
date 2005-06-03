@@ -48,8 +48,10 @@ Con_ToggleConsole_f
 */
 void Con_ToggleConsole_f (void)
 {
-	if (mousestate_sa)
-		IN_ActivateMouse (); // activate mouse when in console
+	// activate mouse when in console in
+	// case it is disabled somewhere else
+	mousestate_sa = false;
+	IN_ActivateMouse ();
 
 	Key_ClearTyping ();
 

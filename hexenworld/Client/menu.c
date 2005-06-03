@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.22 2005-05-26 08:39:27 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.23 2005-06-03 13:25:29 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -62,7 +62,7 @@ qboolean	m_recursiveDraw;
 int			m_return_state;
 qboolean	m_return_onerror;
 char		m_return_reason [32];
-extern qboolean	mousestate_sa;
+qboolean	mousestate_sa = false;	// true if we're in menus and mouse is to be disabled
 char		old_bgmtype[20];	// S.A
 
 static float TitlePercent = 0;
@@ -599,8 +599,9 @@ int	m_main_cursor;
 void M_Menu_Main_f (void)
 {
 	// Deactivate the mouse when the menus are drawn - S.A.
-	IN_DeactivateMouse ();
 	mousestate_sa = true;
+	if (modestate == MS_WINDOWED)
+		IN_DeactivateMouse ();
 
 	if (key_dest != key_menu)
 	{
@@ -634,6 +635,7 @@ void M_Main_Key (int key)
 	{
 	case K_ESCAPE:
 		// leaving the main menu, reactivate mouse - S.A.
+		mousestate_sa = false;
 		IN_ActivateMouse ();
 		// and check we haven't changed the music type
 		if (strlen(old_bgmtype)!=0 && strcmp(old_bgmtype,bgmtype.string)!=0)
@@ -978,7 +980,8 @@ void M_DrawCheckbox (int x, int y, int on)
 void M_Options_Draw (void)
 {
 	float		r;
-	
+
+	mousestate_sa = false;
 	IN_ActivateMouse ();	// we entered the customization menu
 
 	ScrollTitle("gfx/menu/title3.lmp");

@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.21 2005-05-29 08:53:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.22 2005-06-03 13:25:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -428,6 +428,10 @@ void Host_Connect_f (void)
 	strcpy (name, Cmd_Argv(1));
 	CL_EstablishConnection (name);
 	Host_Reconnect_f ();
+
+	// When we connect to a server, check the mouse is going - S.A.
+	mousestate_sa = false;
+	IN_ActivateMouse();
 }
 
 
@@ -1598,7 +1602,6 @@ void Host_Pause_f (void)
 		{
 			SV_BroadcastPrintf ("%s paused the game\n", pr_strings + sv_player->v.netname);
 			IN_DeactivateMouse ();
-			mousestate_sa = true;
 		}
 		else
 		{
@@ -2337,6 +2340,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2005/05/29 08:53:57  sezero
+ * get rid of silly name changes
+ *
  * Revision 1.20  2005/05/29 08:38:12  sezero
  * get rid of the silly func name difference
  *
