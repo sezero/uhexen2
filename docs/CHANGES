@@ -1,5 +1,13 @@
 ChangeLog:
 
+2005-06-03 (CVS, 1.2.5-pre1):
+     * Latest mouse fixes and clean-ups
+     * Updated gamma stuff. Enabled gl-gamma trick to work if all
+       else fail (such as in cases of Voodoo1/2). IMO, the gl-gamma
+       trick looks very ugly and causes a 5 fps slowdown in 1x
+       brightening and 10-12 fps in 2x brightening on my Voodoo2
+       box. We'll see..
+
 2005-06-01 (CVS, 1.2.5-pre1):
      * SDL version >= 1.2.6 is now required. Updated the READMEs
        and added a version check at startup.
