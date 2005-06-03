@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.63 2005-05-29 11:23:10 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.64 2005-06-03 13:21:08 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -115,6 +115,14 @@ void GL_Init (void);
 void GL_Init_Functions(void);
 void VID_SetGamma(float value);
 void VID_SetGamma_f(void);
+
+#if 0
+unsigned short	orig_ramps[3][256];	// for hw- or 3dfx-gamma
+extern unsigned short	ramps[3][256];	// for hw- or 3dfx-gamma
+#endif
+qboolean	fx_gamma   = false;	// 3dfx-spesific gamma control
+qboolean	gammaworks = false;	// whether hw-gamma works
+qboolean	gl_dogamma = false;	// none of the above two, use gl tricks
 
 
 //====================================
@@ -473,22 +481,58 @@ void GL_Init_Functions(void)
 }
 
 
+void Gamma_Init(void)
+{
+	if (is_3dfx) {
+	// we don't have WGL_3DFX_gamma_control or an equivalent
+	// in unix. If we have it one day, I'll put stuff checking
+	// for and linking to it here.
+	// Otherwise, assuming is_3dfx means Voodoo1 or Voodoo2,
+	// this means we dont have hw-gamma, just use gl_dogamma
+		gl_dogamma = true;
+	}
+
+	if (!fx_gamma && !gl_dogamma)
+	{
+	// we may also use SDL_GetGammaRamp/SDL_SetGammaRamp
+	// but let's just stick to what AoT guys did for now.
+#if 0
+		// if the thing below works, it'll get the
+		// original gamma to be restored upon exit
+		if (SDL_GetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]) == 0)
+#else
+		if (SDL_SetGamma(v_gamma.value,v_gamma.value,v_gamma.value) == 0)
+#endif
+			gammaworks = true;
+		else
+			gl_dogamma = true;
+	}
+
+	if (gl_dogamma)
+		Con_Printf("Hardware gamma not available, using gl tricks\n");
+}
+
 /*
 ============================
 Gamma functions for UNIX/SDL
 ============================
 */
 void VID_SetGamma(float value)
-{
-	SDL_SetGamma(value,value,value);
+{// callback for VID_ApplyGamma ONLY
+	if (fx_gamma)
+		return; // FIXME
+	else if (!gl_dogamma && gammaworks)
+		SDL_SetGamma(value,value,value);
 }
 
 void VID_ApplyGamma (void)
 {
+#if 1	// change to if 0 if want to use gamma ramps
 	if ((v_gamma.value != 0)&&(v_gamma.value > (1/GAMMA_MAX)))
 		VID_SetGamma(1/v_gamma.value);
 	else
 		VID_SetGamma(GAMMA_MAX);
+#endif
 }
 
 void VID_SetGamma_f (void)
@@ -506,10 +550,18 @@ void VID_SetGamma_f (void)
 
 	/* if value==0, just apply current settings.
 	   this is usefull at startup */
-
 	VID_ApplyGamma();
 }
 
+void	VID_ShiftPalette (unsigned char *palette)
+{
+#if 0
+	if (fx_gamma)
+		return; // FIXME
+	else if (!gl_dogamma && gammaworks)
+		SDL_SetGammaRamp(ramps[0], ramps[1], ramps[2]);
+#endif
+}
 
 /*
 =================
@@ -684,6 +736,11 @@ void VID_SetDefaultMode (void)
 
 void	VID_Shutdown (void)
 {
+#if 0
+	// restore hardware gamma
+	if (!fx_gamma && !gl_dogamma && gammaworks)
+		SDL_SetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]);
+#endif
 	SDL_Quit();
 }
 
@@ -863,6 +920,7 @@ void	VID_Init (unsigned char *palette)
 	ClearAllStates ();
 
 	GL_Init ();
+	Gamma_Init();
 
 	// use com_userdir instead of com_gamedir to stock cached mesh files
 	sprintf (gldir, "%s/glhexen", com_userdir);

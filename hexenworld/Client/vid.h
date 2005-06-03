@@ -56,6 +56,7 @@ void	VID_SetPalette (unsigned char *palette);
 
 void	VID_ShiftPalette (unsigned char *palette);
 // called for bonus and pain flashes, and for underwater color changes
+// in gl mode, used to update hardware gamma.
 
 void	VID_Init (unsigned char *palette);
 // Called at startup to set up translation tables, takes 256 8 bit RGB values

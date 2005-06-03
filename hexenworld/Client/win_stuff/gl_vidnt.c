@@ -143,6 +143,7 @@ RECT		window_rect;
 
 extern unsigned short	ramps[3][256];
 qboolean	gammaworks = false;
+qboolean	gl_dogamma = false;
 
 
 // direct draw software compatability stuff
@@ -1853,7 +1854,11 @@ void	VID_Init (unsigned char *palette)
 	else
 		gammaworks = false;
 	if (!gammaworks)
-		Con_Printf("WARNING: Hardware gamma not supported.\n");
+	{
+		// we can still adjust the brightness...
+		Con_Printf("Hardware gamma not available, using gl tricks\n");
+		gl_dogamma = true;
+	}
 
 	sprintf (gldir, "%s/glhexen", com_gamedir);
 	Sys_mkdir (gldir);

@@ -630,10 +630,8 @@ V_UpdatePalette
 void V_UpdatePalette (void)
 {
 	int		i, j;
-#ifdef _WIN32
 	qboolean	force;
 	unsigned long	obr_buf;
-#endif
 
 	V_CalcPowerupCshift ();
 	
@@ -657,7 +655,6 @@ void V_UpdatePalette (void)
 	if (cl.cshifts[CSHIFT_BONUS].percent <= 0)
 		cl.cshifts[CSHIFT_BONUS].percent = 0;
 
-#ifdef _WIN32
 	force = V_CheckGamma ();
 	// calc hardware gamma
 	if (force) {
@@ -670,7 +667,6 @@ void V_UpdatePalette (void)
 		// Update hardware gamma if available
 		VID_ShiftPalette(NULL);
 	}
-#endif
 }
 #else	// !GLQUAKE
 void V_UpdatePalette (void)

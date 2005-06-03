@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_dl_rmain.c,v 1.24 2005-05-29 08:53:57 sezero Exp $
+	$Id: gl_dl_rmain.c,v 1.25 2005-06-03 13:21:08 sezero Exp $
 */
 
 
@@ -65,8 +65,8 @@ int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 
 void R_MarkLeaves (void);
 
-//extern	cvar_t	v_gamma;
-//extern	qboolean is_3dfx;
+extern	cvar_t	v_gamma;
+extern	qboolean gl_dogamma;
 
 cvar_t	r_norefresh = {"r_norefresh","0"};
 cvar_t	r_drawentities = {"r_drawentities","1"};
@@ -107,10 +107,12 @@ static void R_RotateForEntity2(entity_t *e);
 
 // idea originally nicked from LordHavoc,
 // re-worked + extended - muff 5 Feb 2001
-// called inside polyblend
-#if 0
+// called from polyblend
 void GL_DoGamma()
 {
+/* This trick is useful if normal ways of gamma adjustment fail:
+   In case of 3dfx Voodoo1/2/Rush, we can't use 3dfx spesific
+   extensions in unix, so this can be our friend at cost of 4-5 fps */
 	if (v_gamma.value <0.2)
 		v_gamma.value=0.2;
 	if (v_gamma.value>= 1) {
@@ -138,7 +140,6 @@ void GL_DoGamma()
 */
 	glfunc.glEnd_fp ();
 }
-#endif	// GL_DoGamma
 
 
 /*
@@ -1368,17 +1369,11 @@ void R_PolyBlend (void)
 		glfunc.glEnd_fp ();
 	}
 
-//	gamma trick based on LordHavoc - muff
-#if 0
-/*	This trick is useful if normal ways of gamma adjustment fail:
-	In case of 3dfx Voodoo1/2/Rush, we can't use 3dfx spesific
-	extension WGL_3DFX_gamma_control (wglSetDeviceGammaRamp3DFX)
-	so this can be our friend at cost of 4-5 fps.		*/
-	if (is_3dfx) {
+	if (gl_dogamma) {
 	//  if (v_gamma.value != 1)
 		GL_DoGamma();
 	}
-#endif
+
 	glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glfunc.glDisable_fp (GL_BLEND);
 	glfunc.glEnable_fp (GL_TEXTURE_2D);
@@ -1802,6 +1797,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2005/05/29 08:53:57  sezero
+ * get rid of silly name changes
+ *
  * Revision 1.23  2005/05/29 08:38:12  sezero
  * get rid of the silly func name difference
  *

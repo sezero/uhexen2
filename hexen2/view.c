@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.3 2005-04-30 10:42:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.4 2005-06-03 13:21:08 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -602,10 +602,8 @@ V_UpdatePalette
 void V_UpdatePalette (void)
 {
 	int		i, j;
-#ifdef _WIN32
 	qboolean	force;
 	unsigned long	obr_buf;
-#endif
 
 	V_CalcPowerupCshift ();
 	
@@ -629,7 +627,6 @@ void V_UpdatePalette (void)
 	if (cl.cshifts[CSHIFT_BONUS].percent <= 0)
 		cl.cshifts[CSHIFT_BONUS].percent = 0;
 
-#ifdef _WIN32
 	force = V_CheckGamma ();
 	// calc hardware gamma
 	if (force) {
@@ -642,7 +639,6 @@ void V_UpdatePalette (void)
 		// Update hardware gamma if available
 		VID_ShiftPalette(NULL);
 	}
-#endif
 }
 #else	// !GLQUAKE
 void V_UpdatePalette (void)
@@ -1180,6 +1176,11 @@ void V_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/04/30 10:42:39  sezero
+ * Updated gamma stuff: We don't use gamma ramps (in fact we can, we have
+ * SDL_SetGammaRamp), therefore eliminated V_CheckGamma & friends from
+ * V_UpdatePalette for PLATFORM_UNIX. Also killed unused function WarpPalette.
+ *
  * Revision 1.2  2004/12/12 14:14:43  sezero
  * style changes to our liking
  *
