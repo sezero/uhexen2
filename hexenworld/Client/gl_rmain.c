@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.16 2005-06-03 13:21:27 sezero Exp $
+	$Id: gl_rmain.c,v 1.17 2005-06-05 16:08:01 sezero Exp $
 */
 
 
@@ -26,7 +26,7 @@ qboolean	envmap;				// true during envmap command capture
 int			currenttexture = -1;	// to avoid unnecessary texture sets
 
 int			particletexture;	// little dot for particles
-int			playertextures;		// up to 16 color translated skins
+int			playertextures[16];	// up to 16 color translated skins
 int			gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for models
 
 int			mirrortexturenum;	// quake texturenum, not gltexturenum
@@ -892,7 +892,7 @@ void R_DrawAliasModel (entity_t *e)
 						R_TranslatePlayerSkin(i);
 					}
 
-					GL_Bind(playertextures + i);
+					GL_Bind(playertextures[i]);
 				}
 			}
 		}

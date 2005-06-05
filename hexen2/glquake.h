@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.28 2005-05-29 11:23:10 sezero Exp $
+	$Id: glquake.h,v 1.29 2005-06-05 16:07:54 sezero Exp $
 */
 
 
@@ -262,7 +262,7 @@ extern	int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 extern	qboolean	envmap;
 extern	int	currenttexture;
 extern	int	particletexture;
-extern	int	playertextures;
+extern	int	playertextures[16];
 
 extern	int	skytexturenum;		// index in cl.loadmodel, not gl texture object
 
@@ -328,6 +328,9 @@ extern	qboolean gl_mtexable;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2005/05/29 11:23:10  sezero
+ * moved some defines to gl header files
+ *
  * Revision 1.27  2005/05/28 12:31:47  sezero
  * added/updated multitexture detection. doesn't do anything yet.
  *

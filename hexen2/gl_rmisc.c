@@ -227,9 +227,6 @@ void R_Init (void)
 	Test_Init ();
 #endif
 
-	playertextures = texture_extension_number;
-	texture_extension_number += 16;
-
 	for(counter=0;counter<MAX_EXTRA_TEXTURES;counter++)
 		gl_extra_textures[counter] = -1;
 
@@ -265,6 +262,7 @@ void R_TranslatePlayerSkin (int playernum)
 	unsigned	frac, fracstep;
 	byte	*sourceA, *sourceB, *colorA, *colorB;
 	int		playerclass = (int)cl.scores[playernum].playerclass;
+	char	texname[20];
 
 	for (i=0 ; i<256 ; i++)
 		translate[i] = i;
@@ -308,10 +306,6 @@ void R_TranslatePlayerSkin (int playernum)
 
 	if (s & 3)
 		Sys_Error ("R_TranslateSkin: s&3");
-
-	// because this happens during gameplay, do it fast
-	// instead of sending it through gl_upload 8
-    GL_Bind(playertextures + playernum);
 
 #if 0
 	byte	translated[320*200];
@@ -357,11 +351,8 @@ void R_TranslatePlayerSkin (int playernum)
 			frac += fracstep;
 		}
 	}
-	glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, gl_solid_format, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-
-	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	snprintf(texname, 19, "player%i", playernum);
+	playertextures[playernum] = GL_LoadTexture(texname, scaled_width, scaled_height, (byte *)pixels, false, false, 0, true);
 #endif
 }
 

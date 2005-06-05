@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_dl_rmain.c,v 1.25 2005-06-03 13:21:08 sezero Exp $
+	$Id: gl_dl_rmain.c,v 1.26 2005-06-05 16:07:53 sezero Exp $
 */
 
 
@@ -26,7 +26,7 @@ qboolean	envmap;				// true during envmap command capture
 int			currenttexture;		// to avoid unnecessary texture sets
 
 int			particletexture;	// little dot for particles
-int			playertextures;		// up to 16 color translated skins
+int			playertextures[16];	// up to 16 color translated skins
 int			gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for models
 
 int			mirrortexturenum;	// quake texturenum, not gltexturenum
@@ -905,7 +905,7 @@ void R_DrawAliasModel (entity_t *e)
 			{
 				i = currententity - cl_entities;
 				if (i >= 1 && i<=cl.maxclients)
-					GL_Bind(playertextures - 1 + i);
+					GL_Bind(playertextures[i-1]);
 			}
 		}
 	}
@@ -1797,6 +1797,12 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2005/06/03 13:21:08  sezero
+ * Updated gamma stuff. Enabled gl-gamma trick to work if all else
+ * fail (such as in cases of Voodoo1/2).  IMO, the gl-gamma trick
+ * looks very ugly and causes a 5 fps slowdown in 1x brughtening and
+ * 10-12 fps in 2x brightening on my Voodoo2 box. We'll see..
+ *
  * Revision 1.24  2005/05/29 08:53:57  sezero
  * get rid of silly name changes
  *
