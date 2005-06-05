@@ -177,7 +177,12 @@ void EmitWaterPolys (msurface_t *fa)
 	float		*v;
 	int			i;
 	float		s, t, os, ot;
+	vec3_t		nv;	// waterripple
 
+	if(gl_waterripple.value<0)
+		gl_waterripple.value=0;
+	if(gl_waterripple.value>10)
+		gl_waterripple.value=10;
 
 	for (p=fa->polys ; p ; p=p->next)
 	{
@@ -187,6 +192,10 @@ void EmitWaterPolys (msurface_t *fa)
 			os = v[3];
 			ot = v[4];
 
+			nv[0] = v[0];
+			nv[1] = v[1];
+			nv[2] = v[2] + gl_waterripple.value*sin(v[0]*0.05+realtime)*sin(v[2]*0.05+realtime);
+
 			s = os + turbsin[(int)((ot*0.125+realtime) * TURBSCALE) & 255];
 			s *= (1.0/64);
 
@@ -194,7 +203,8 @@ void EmitWaterPolys (msurface_t *fa)
 			t *= (1.0/64);
 
 			glfunc.glTexCoord2f_fp (s, t);
-			glfunc.glVertex3fv_fp (v);
+			//glfunc.glVertex3fv_fp (v);
+			glfunc.glVertex3fv_fp (nv);
 		}
 		glfunc.glEnd_fp ();
 	}

@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_dl_rmain.c,v 1.27 2005-06-05 16:09:07 sezero Exp $
+	$Id: gl_dl_rmain.c,v 1.28 2005-06-05 16:14:07 sezero Exp $
 */
 
 
@@ -93,10 +93,11 @@ cvar_t	gl_playermip = {"gl_playermip","0"};
 cvar_t	gl_nocolors = {"gl_nocolors","0"};
 cvar_t	gl_keeptjunctions = {"gl_keeptjunctions","1", true};
 cvar_t	gl_reporttjunctions = {"gl_reporttjunctions","0"};
-
-cvar_t gl_glows = {"gl_glows","1",true};
-cvar_t gl_other_glows = {"gl_other_glows","0",true};
-cvar_t gl_missile_glows = {"gl_missile_glows","1",true};
+cvar_t	gl_waterripple = {"gl_waterripple", "2", true};
+cvar_t	gl_waterwarp = {"gl_waterwarp", "0", true};
+cvar_t	gl_glows = {"gl_glows","1",true};
+cvar_t	gl_other_glows = {"gl_other_glows","0",true};
+cvar_t	gl_missile_glows = {"gl_missile_glows","1",true};
 
 extern	cvar_t	gl_ztrick;
 
@@ -1799,6 +1800,10 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2005/06/05 16:09:07  sezero
+ * patches I've been forgetting 2/6:
+ * prevent Z fighting in shadows
+ *
  * Revision 1.26  2005/06/05 16:07:53  sezero
  * patches I've been forgetting 1/6:
  * use GL_LoadTexture for player textures

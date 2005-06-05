@@ -268,11 +268,14 @@ void DrawGLWaterPoly (glpoly_t *p)
 	{
 		glfunc.glTexCoord2f_fp (v[3], v[4]);
 
-		nv[0] = v[0] + 8*sin(v[1]*0.05+realtime)*sin(v[2]*0.05+realtime);
-		nv[1] = v[1] + 8*sin(v[0]*0.05+realtime)*sin(v[2]*0.05+realtime);
-		nv[2] = v[2];
-
-		glfunc.glVertex3fv_fp (nv);
+		if (gl_waterwarp.value) {
+			nv[0] = v[0] + 8*sin(v[1]*0.05+realtime)*sin(v[2]*0.05+realtime);
+			nv[1] = v[1] + 8*sin(v[0]*0.05+realtime)*sin(v[2]*0.05+realtime);
+			nv[2] = v[2];
+			glfunc.glVertex3fv_fp (nv);
+		} else {
+			glfunc.glVertex3fv_fp (v);
+		}
 	}
 	glfunc.glEnd_fp ();
 }
@@ -289,10 +292,14 @@ void DrawGLWaterPolyLightmap (glpoly_t *p)
 	{
 		glfunc.glTexCoord2f_fp (v[5], v[6]);
 
-		nv[0] = v[0] + 8*sin(v[1]*0.05+realtime)*sin(v[2]*0.05+realtime);
-		nv[1] = v[1] + 8*sin(v[0]*0.05+realtime)*sin(v[2]*0.05+realtime);
-		nv[2] = v[2];
-		glfunc.glVertex3fv_fp (nv);
+		if (gl_waterwarp.value) {
+			nv[0] = v[0] + 8*sin(v[1]*0.05+realtime)*sin(v[2]*0.05+realtime);
+			nv[1] = v[1] + 8*sin(v[0]*0.05+realtime)*sin(v[2]*0.05+realtime);
+			nv[2] = v[2];
+			glfunc.glVertex3fv_fp (nv);
+		} else {
+			glfunc.glVertex3fv_fp (v);
+		}
 	}
 	glfunc.glEnd_fp ();
 }
@@ -311,11 +318,14 @@ void DrawGLWaterPolyMTexLM (glpoly_t *p)
 		glfunc.glMultiTexCoord2fARB_fp (GL_TEXTURE0_ARB, v[3], v[4]);
 		glfunc.glMultiTexCoord2fARB_fp (GL_TEXTURE1_ARB, v[5], v[6]);
 
-		nv[0] = v[0] + 8*sin(v[1]*0.05+realtime)*sin(v[2]*0.05+realtime);
-		nv[1] = v[1] + 8*sin(v[0]*0.05+realtime)*sin(v[2]*0.05+realtime);
-		nv[2] = v[2];
-
-		glfunc.glVertex3fv_fp (nv);
+		if (gl_waterwarp.value) {
+			nv[0] = v[0] + 8*sin(v[1]*0.05+realtime)*sin(v[2]*0.05+realtime);
+			nv[1] = v[1] + 8*sin(v[0]*0.05+realtime)*sin(v[2]*0.05+realtime);
+			nv[2] = v[2];
+			glfunc.glVertex3fv_fp (nv);
+		} else {
+			glfunc.glVertex3fv_fp (v);
+		}
 	}
 	glfunc.glEnd_fp ();
 }

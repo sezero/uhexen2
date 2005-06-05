@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.20 2005-06-05 16:08:01 sezero Exp $
+	$Id: glquake.h,v 1.21 2005-06-05 16:14:07 sezero Exp $
 */
 
 
@@ -296,6 +296,8 @@ extern	cvar_t	gl_keeptjunctions;
 extern	cvar_t	gl_reporttjunctions;
 extern	cvar_t	gl_flashblend;
 extern	cvar_t	gl_nocolors;
+extern	cvar_t	gl_waterripple;
+extern	cvar_t	gl_waterwarp;
 
 extern	int	gl_lightmap_format;
 extern	int	gl_solid_format;

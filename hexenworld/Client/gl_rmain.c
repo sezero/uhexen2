@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.18 2005-06-05 16:09:07 sezero Exp $
+	$Id: gl_rmain.c,v 1.19 2005-06-05 16:14:07 sezero Exp $
 */
 
 
@@ -93,6 +93,8 @@ cvar_t	gl_playermip = {"gl_playermip","0"};
 cvar_t	gl_nocolors = {"gl_nocolors","0"};
 cvar_t	gl_keeptjunctions = {"gl_keeptjunctions","1", true};
 cvar_t	gl_reporttjunctions = {"gl_reporttjunctions","0"};
+cvar_t	gl_waterripple = {"gl_waterripple", "2", true};
+cvar_t	gl_waterwarp = {"gl_waterwarp", "0", true};
 cvar_t	r_teamcolor = {"r_teamcolor", "187", true};
 
 extern	cvar_t	gl_ztrick;

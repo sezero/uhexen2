@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.29 2005-06-05 16:07:54 sezero Exp $
+	$Id: glquake.h,v 1.30 2005-06-05 16:14:07 sezero Exp $
 */
 
 
@@ -293,7 +293,8 @@ extern	cvar_t	gl_keeptjunctions;
 extern	cvar_t	gl_reporttjunctions;
 extern	cvar_t	gl_flashblend;
 extern	cvar_t	gl_nocolors;
-
+extern	cvar_t	gl_waterripple;
+extern	cvar_t	gl_waterwarp;
 extern	cvar_t	gl_glows;
 extern	cvar_t	gl_other_glows;
 extern	cvar_t	gl_missile_glows;
@@ -328,6 +329,10 @@ extern	qboolean gl_mtexable;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2005/06/05 16:07:54  sezero
+ * patches I've been forgetting 1/6:
+ * use GL_LoadTexture for player textures
+ *
  * Revision 1.28  2005/05/29 11:23:10  sezero
  * moved some defines to gl header files
  *
