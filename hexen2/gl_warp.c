@@ -1102,14 +1102,7 @@ void R_InitSky (texture_t *mt)
 	((byte *)&transpix)[2] = b/(128*128);
 	((byte *)&transpix)[3] = 0;
 
-
-	if (!solidskytexture)
-		solidskytexture = texture_extension_number++;
-	GL_Bind (solidskytexture );
-	glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, gl_solid_format, 128, 128, 0, GL_RGBA, GL_UNSIGNED_BYTE, trans);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
+	solidskytexture = GL_LoadTexture("upsky", 128, 128, (byte *)trans, false, false, 0, true);
 
 	for (i=0 ; i<128 ; i++)
 		for (j=0 ; j<128 ; j++)
@@ -1121,11 +1114,6 @@ void R_InitSky (texture_t *mt)
 				trans[(i*128) + j] = d_8to24table[p];
 		}
 
-	if (!alphaskytexture)
-		alphaskytexture = texture_extension_number++;
-	GL_Bind(alphaskytexture);
-	glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, gl_alpha_format, 128, 128, 0, GL_RGBA, GL_UNSIGNED_BYTE, trans);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	alphaskytexture = GL_LoadTexture("lowsky", 128, 128, (byte *)trans, false, true, 0, true);
 }
 
