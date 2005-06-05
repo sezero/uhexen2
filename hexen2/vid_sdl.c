@@ -3,15 +3,15 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.26 2005-06-03 13:25:29 sezero Exp $
+   $Id: vid_sdl.c,v 1.27 2005-06-05 07:50:27 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
    Options are now:
      -fullscreen | -window, -height , -width 
    Currently bpp is 8 bit , and it seems fairly hardwired at this depth
-   Interactive Video Modes switching have been disabled and we shall not
-   put it back.
+   Interactive Video Modes switching have been disabled, we may put it
+   back in future.
 
    The modes which are used are the traditional 0 and 3, but have redefined
    MODE_FULLSCREEN_DEFAULT from 3 to 1 to be a boolean:
@@ -900,6 +900,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2005/06/03 13:25:29  sezero
+ * Latest mouse fixes and clean-ups
+ *
  * Revision 1.25  2005/05/21 17:10:58  sezero
  * re-enabled complete disabling/enabling of mousa in fullscreen
  * mode. (only replaced a bunch of if 1's to if 0's)

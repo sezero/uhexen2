@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.65 2005-06-03 13:25:28 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.66 2005-06-05 07:50:27 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -27,7 +27,7 @@
 
 	- The "-mode" option has been removed
 	- There was no on-the-fly video mode switching
-	  before, and there won't be any in the future
+	  before, but we may implement that in future
 */
 
 #include "quakedef.h"
