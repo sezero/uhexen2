@@ -1,5 +1,13 @@
 ChangeLog:
 
+2005-06-05 (CVS, 1.2.5-pre1):
+     * patches I've been forgetting for quite some time:
+     * use GL_LoadTexture for player, particle and sky textures,
+     * prevent Z fighting in shadows,
+     * increase MAX_MOD_KNOWN for sofwware version as well,
+     * enable the irritating water-warp only by a cvar and add
+       water-ripple code of Jacques Krige.
+
 2005-06-03 (CVS, 1.2.5-pre1):
      * Latest mouse fixes and clean-ups
      * Updated gamma stuff. Enabled gl-gamma trick to work if all
