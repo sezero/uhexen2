@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.17 2005-06-05 16:08:01 sezero Exp $
+	$Id: gl_rmain.c,v 1.18 2005-06-05 16:09:07 sezero Exp $
 */
 
 
@@ -936,7 +936,9 @@ void R_DrawAliasModel (entity_t *e)
 		glfunc.glDisable_fp (GL_TEXTURE_2D);
 		glfunc.glEnable_fp (GL_BLEND);
 		glfunc.glColor4f_fp (0,0,0,0.5);
+		glfunc.glDepthMask_fp (0);	// prevent Z fighting
 		GL_DrawAliasShadow (paliashdr, lastposenum);
+		glfunc.glDepthMask_fp (1);
 		glfunc.glEnable_fp (GL_TEXTURE_2D);
 		glfunc.glDisable_fp (GL_BLEND);
 		glfunc.glColor4f_fp (1,1,1,1);

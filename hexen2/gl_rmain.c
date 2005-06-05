@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.26 2005-06-05 16:07:53 sezero Exp $
+	$Id: gl_rmain.c,v 1.27 2005-06-05 16:09:07 sezero Exp $
 */
 
 
@@ -948,7 +948,9 @@ void R_DrawAliasModel (entity_t *e)
 		glfunc.glDisable_fp (GL_TEXTURE_2D);
 		glfunc.glEnable_fp (GL_BLEND);
 		glfunc.glColor4f_fp (0,0,0,0.5);
+		glfunc.glDepthMask_fp (0);	// prevent Z fighting
 		GL_DrawAliasShadow (paliashdr, lastposenum);
+		glfunc.glDepthMask_fp (1);
 		glfunc.glEnable_fp (GL_TEXTURE_2D);
 		glfunc.glDisable_fp (GL_BLEND);
 		glfunc.glColor4f_fp (1,1,1,1);
@@ -1797,6 +1799,10 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2005/06/05 16:07:53  sezero
+ * patches I've been forgetting 1/6:
+ * use GL_LoadTexture for player textures
+ *
  * Revision 1.25  2005/06/03 13:21:08  sezero
  * Updated gamma stuff. Enabled gl-gamma trick to work if all else
  * fail (such as in cases of Voodoo1/2).  IMO, the gl-gamma trick
