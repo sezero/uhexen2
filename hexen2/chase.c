@@ -58,8 +58,9 @@ void Chase_Update (void)
 		chase_dest[i] = r_refdef.vieworg[i] 
 		- forward[i]*chase_back.value
 		- right[i]*chase_right.value;
+	//chase_dest[2] += chase_up.value;
 	chase_dest[2] = r_refdef.vieworg[2] + chase_up.value;
-
+#if 1
 	// find the spot the player is looking at
 	VectorMA (r_refdef.vieworg, 4096, forward, dest);
 	TraceLine (r_refdef.vieworg, dest, stop);
@@ -70,6 +71,12 @@ void Chase_Update (void)
 	if (dist < 1)
 		dist = 1;
 	r_refdef.viewangles[PITCH] = -atan(stop[2] / dist) / M_PI * 180;
+#endif
+	// check for walls between player and camera. from quakeforge
+	TraceLine(r_refdef.vieworg, chase_dest, stop);
+	if (Length(stop) != 0)
+		for (i = 0; i < 3; i++)
+			chase_dest[i] = stop[i] + forward[i] * 8;
 
 	// move towards destination
 	VectorCopy (chase_dest, r_refdef.vieworg);

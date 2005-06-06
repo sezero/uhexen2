@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.4 2005-05-29 08:38:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.5 2005-06-06 10:19:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -651,8 +651,12 @@ void R_DrawEntitiesOnList (void)
 	{
 		currententity = cl_visedicts[i];
 
-		if (currententity == &cl_entities[cl.viewentity] && chase_active.value == 0)
-			continue;	// don't draw the player
+		if (currententity == &cl_entities[cl.viewentity]) {
+			if (chase_active.value == 0)
+				continue;	// don't draw the player
+			else // chase-cam pitch adj. by FrikaC
+				currententity->angles[0] *= 0.3;
+		}
 
 		switch (currententity->model->type)
 		{
@@ -1302,6 +1306,9 @@ void R_InitTurb (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/05/29 08:38:12  sezero
+ * get rid of the silly func name difference
+ *
  * Revision 1.3  2005/05/19 16:41:50  sezero
  * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
  *

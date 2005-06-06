@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.28 2005-06-05 16:14:07 sezero Exp $
+	$Id: gl_rmain.c,v 1.29 2005-06-06 10:19:40 sezero Exp $
 */
 
 
@@ -995,6 +995,10 @@ void R_DrawEntitiesOnList (void)
 	{
 		currententity = cl_visedicts[i];
 
+		// chase-cam pitch adj. by FrikaC
+		if (currententity == &cl_entities[cl.viewentity]) 
+			currententity->angles[0] *= 0.3;
+
 		switch (currententity->model->type)
 		{
 		case mod_alias:
@@ -1800,6 +1804,11 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2005/06/05 16:14:07  sezero
+ * patches I've been forgetting 6/6:
+ * enable the irritating water-warp only by a cvar
+ * and add water-ripple code by Jacques Krige
+ *
  * Revision 1.27  2005/06/05 16:09:07  sezero
  * patches I've been forgetting 2/6:
  * prevent Z fighting in shadows
