@@ -1,6 +1,6 @@
 /*
 	alsa_funcs.h
-	$Id: alsa_funcs.h,v 1.2 2005-04-30 12:20:27 sezero Exp $
+	$Id: alsa_funcs.h,v 1.3 2005-06-06 10:17:53 sezero Exp $
 
 	ALSA function list
 
@@ -29,7 +29,7 @@
 */
 
 // We require alsa-lib 0.9.8 or newer to function. Refuse otherwise.
-#if SND_LIB_MAJOR < 1 && SND_LIB_MINOR >=9 && SND_LIB_SUBMINOR < 8
+#if SND_LIB_MAJOR < 1 && (SND_LIB_MINOR < 9 || SND_LIB_SUBMINOR < 8)
 #error Alsa libraries v0.9.8 or newer are required
 #endif
 
@@ -81,6 +81,9 @@ HX2_ALSA (const char *, snd_strerror, (int errnum))
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/04/30 12:20:27  sezero
+ * silenced shadowed declerations warnings for alsa (cosmetics really...)
+ *
  * Revision 1.1  2005/02/04 11:59:16  sezero
  * add ALSA sound driver (from the quakeforge project)
  *
