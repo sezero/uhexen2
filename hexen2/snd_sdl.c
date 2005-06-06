@@ -3,7 +3,7 @@
 	SDL sound driver for Linux Hexen II,  based on the SDLquake
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/snd_sdl.c,v 1.10 2005-02-20 12:44:58 sezero Exp $
+	$Id: snd_sdl.c,v 1.11 2005-06-06 10:14:05 sezero Exp $
 */
 
 #include <stdio.h>
@@ -92,6 +92,8 @@ qboolean S_SDL_Init(void)
 	shm = &sn;
 	shm->splitbuffer = 0;
 	shm->samplebits = (obtained.format & 0xFF);
+	if (obtained.freq != desired_speed)
+		Con_Printf ("Warning: Rate set (%i) didn't match requested rate (%i)!\n", obtained.freq, desired_speed);
 	shm->speed = obtained.freq;
 	shm->channels = obtained.channels;
 	shm->samples = obtained.samples*shm->channels;
@@ -127,6 +129,14 @@ void S_SDL_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/02/20 12:44:58  sezero
+ * - Process all command line options in snd_dma.c, S_Startup() only.
+ *   Targets will do to its bidding first. And don't die immediately,
+ *   try setting alternative hw parameters. (FWIW, snd_oss.c now applies
+ *   all hardware settings before mmaping the buffer)
+ * - Check for requested and set rate mismatches and fail (Found in alsa
+ *   examples, is it necessary at all? Commented out for now.)
+ *
  * Revision 1.9  2005/02/06 15:22:55  sezero
  * log entries cleanup
  *
