@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.18 2005-05-20 15:26:34 sezero Exp $
+	$Id: snd_dma.c,v 1.19 2005-06-06 10:17:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -176,6 +176,8 @@ void S_Startup (void)
 	if ((tmp = COM_CheckParm("-sndspeed")) != 0)
 	{
 		tmp = atoi(com_argv[tmp+1]);
+		/* I won't rely on users' precision in typing or their needs
+		   here. If you know what you're doing, then change this. */
 		switch (tmp) {
 			case  8000:
 			case 11025:
@@ -1095,6 +1097,11 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/05/20 15:26:34  sezero
+ * separated winquake.h into winquake.h and linquake.h
+ * changed all occurances of winquake.h to quakeinc.h,
+ * which includes the correct header
+ *
  * Revision 1.17  2005/05/19 10:58:02  sezero
  * synced h2 and hw versions of snd_dma.c (use the new H2W define)
  *
