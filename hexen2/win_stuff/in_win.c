@@ -392,8 +392,10 @@ void IN_MouseMove (usercmd_t *cmd)
 	else
 		cl.viewangles[YAW] -= m_yaw.value * mouse_x;
 
-	if (in_mlook.state & 1)
-		V_StopPitchDrift ();
+	if (in_mlook.state & 1) {
+		if (mx || my)
+			V_StopPitchDrift ();
+	}
 		
 	if ( (in_mlook.state & 1) && !(in_strafe.state & 1))
 	{
@@ -853,15 +855,6 @@ void IN_JoyMove (usercmd_t *cmd)
 					}
 					V_StopPitchDrift();
 				}
-				else
-				{
-					// no pitch movement
-					// disable pitch return-to-center unless requested by user
-					// *** this code can be removed when the lookspring bug is fixed
-					// *** the bug always has the lookspring feature on
-					if(lookspring.value == 0.0)
-						V_StopPitchDrift();
-				}
 			}
 			else
 			{
@@ -926,15 +919,6 @@ void IN_JoyMove (usercmd_t *cmd)
 					}
 					V_StopPitchDrift();
 				}
-				else
-				{
-					// no pitch movement
-					// disable pitch return-to-center unless requested by user
-					// *** this code can be removed when the lookspring bug is fixed
-					// *** the bug always has the lookspring feature on
-					if(lookspring.value == 0.0)
-						V_StopPitchDrift();
-				}
 			}
 			break;
 
@@ -952,6 +936,11 @@ void IN_JoyMove (usercmd_t *cmd)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/05/20 15:26:33  sezero
+ * separated winquake.h into winquake.h and linquake.h
+ * changed all occurances of winquake.h to quakeinc.h,
+ * which includes the correct header
+ *
  * Revision 1.1  2004/12/12 11:20:08  sezero
  * move the windows specific stuff from our main dir into the win_stuff dir.
  *

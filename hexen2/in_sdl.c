@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.23 2005-06-03 13:25:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.24 2005-06-06 13:10:20 sezero Exp $
 */
 
 #include "SDL.h"
@@ -336,8 +336,10 @@ void IN_MouseMove (usercmd_t *cmd)
 	else
 		cl.viewangles[YAW] -= m_yaw.value * mouse_x;
 
-	if (in_mlook.state & 1)
-		V_StopPitchDrift ();
+	if (in_mlook.state & 1) {
+		if (mx || my)
+			V_StopPitchDrift ();
+	}
 		
 	if ( (in_mlook.state & 1) && !(in_strafe.state & 1))
 	{
@@ -780,15 +782,6 @@ void IN_JoyMove (usercmd_t *cmd)
 					}
 					V_StopPitchDrift();
 				}
-				else
-				{
-					// no pitch movement
-					// disable pitch return-to-center unless requested by user
-					// *** this code can be removed when the lookspring bug is fixed
-					// *** the bug always has the lookspring feature on
-					if(lookspring.value == 0.0)
-						V_StopPitchDrift();
-				}
 			}
 			else
 			{
@@ -852,15 +845,6 @@ void IN_JoyMove (usercmd_t *cmd)
 						cl.viewangles[PITCH] += (fAxisValue * joy_pitchsensitivity.value) * speed * 180.0;
 					}
 					V_StopPitchDrift();
-				}
-				else
-				{
-					// no pitch movement
-					// disable pitch return-to-center unless requested by user
-					// *** this code can be removed when the lookspring bug is fixed
-					// *** the bug always has the lookspring feature on
-					if(lookspring.value == 0.0)
-						V_StopPitchDrift();
 				}
 			}
 			break;
@@ -1130,6 +1114,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/06/03 13:25:29  sezero
+ * Latest mouse fixes and clean-ups
+ *
  * Revision 1.22  2005/05/21 17:10:58  sezero
  * re-enabled complete disabling/enabling of mousa in fullscreen
  * mode. (only replaced a bunch of if 1's to if 0's)

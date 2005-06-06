@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.4 2005-06-03 13:21:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.5 2005-06-06 13:10:20 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -181,7 +181,8 @@ void V_DriftPitch (void)
 	
 		if ( cl.driftmove > v_centermove.value)
 		{
-			V_StartPitchDrift ();
+			if (lookspring.value)
+				V_StartPitchDrift ();
 		}
 		return;
 	}
@@ -1176,6 +1177,12 @@ void V_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/06/03 13:21:08  sezero
+ * Updated gamma stuff. Enabled gl-gamma trick to work if all else
+ * fail (such as in cases of Voodoo1/2).  IMO, the gl-gamma trick
+ * looks very ugly and causes a 5 fps slowdown in 1x brughtening and
+ * 10-12 fps in 2x brightening on my Voodoo2 box. We'll see..
+ *
  * Revision 1.3  2005/04/30 10:42:39  sezero
  * Updated gamma stuff: We don't use gamma ramps (in fact we can, we have
  * SDL_SetGammaRamp), therefore eliminated V_CheckGamma & friends from
