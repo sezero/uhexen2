@@ -1,6 +1,6 @@
 ChangeLog:
 
-2005-06-06 (CVS, 1.2.5-pre1):
+2005-06-06 (CVS, 1.2.5-pre2):
      * fixed alsa minimum required version detection
      * put some notes on decision behavior for -sndspeed argument
      * put my usual requested/obtained sndrate mismatch warning
@@ -8,6 +8,9 @@ ChangeLog:
      * ChaseCam clipping and pitch fixes from quakeforge and
        quakesrc.org (FrikaC). Still not perfect, but much better
        than what we previously had.
+     * mlook and lookspring fixes by J.Krige
+      ( http://www.quakesrc.org/tutorials/old/1 )
+     * considered as 1.2.5-pre2.
 
 2005-06-05 (CVS, 1.2.5-pre1):
      * patches I've been forgetting for quite some time:
