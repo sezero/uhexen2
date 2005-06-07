@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.38 2005-06-03 13:25:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.39 2005-06-07 20:26:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2451,7 +2451,7 @@ void M_Help_Draw (void)
 #ifdef GLQUAKE
 	Draw_IntermissionPic(Draw_CachePicNoTrans(va("gfx/menu/help%02i.lmp", help_page+1)));
 #else
-	M_DrawPic (0, 0, Draw_CachePic ( va("gfx/menu/help%02i.lmp", help_page+1)) );
+	Draw_Pic (0, 0, Draw_CachePicResize(va("gfx/menu/help%02i.lmp", help_page+1), vid.width, vid.height));
 #endif
 }
 
@@ -4105,6 +4105,9 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.38  2005/06/03 13:25:29  sezero
+ * Latest mouse fixes and clean-ups
+ *
  * Revision 1.37  2005/05/29 08:53:57  sezero
  * get rid of silly name changes
  *
