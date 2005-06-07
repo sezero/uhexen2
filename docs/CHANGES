@@ -14,6 +14,8 @@ ChangeLog:
        No paranoia, because gl_purge_maptex may well be false, and
        flush_textures doesn't work for map changes in client-to remote
        server connections.
+     * Removed a lot of unnecessary/obsoleted files
+     * Updated documentation to the state of 1.2.5-pre2 / 2005-06-07
 
 2005-06-06 (CVS, 1.2.5-pre2):
      * fixed alsa minimum required version detection
