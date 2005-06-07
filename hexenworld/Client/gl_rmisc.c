@@ -228,24 +228,25 @@ Translates a skin texture by the per-player color lookup
 */
 void R_TranslatePlayerSkin (int playernum)
 {
-	int				top, bottom;
-	byte			translate[256];
-	unsigned		translate32[256];
-	int				i, j, s;
-	model_t			*model;
-	aliashdr_t		*paliashdr;
-	byte			*original;
-	unsigned		pixels[512*256], *out;
-	unsigned		scaled_width, scaled_height;
-	int				inwidth, inheight;
-	byte			*inrow;
-	unsigned		frac, fracstep;
 	extern	byte	player_8bit_texels[MAX_PLAYER_CLASS][620*245];
-	byte			*sourceA, *sourceB, *colorA, *colorB;
-	player_info_t	*player;
-	char	texname[20];
 
- 	for (i=0 ; i<256 ; i++)
+	int		top, bottom;
+	byte		translate[256];
+	unsigned	translate32[256];
+	int		i, j, s;
+	model_t		*model;
+	aliashdr_t	*paliashdr;
+	byte		*original;
+	unsigned	pixels[512*256], *out;
+	unsigned	scaled_width, scaled_height;
+	int		inwidth, inheight;
+	byte		*inrow;
+	unsigned	frac, fracstep;
+	byte		*sourceA, *sourceB, *colorA, *colorB;
+	player_info_t	*player;
+	char		texname[20];
+
+	for (i=0 ; i<256 ; i++)
 		translate[i] = i;
 
 	player = &cl.players[playernum];

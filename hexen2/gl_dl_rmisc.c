@@ -246,23 +246,23 @@ Translates a skin texture by the per-player color lookup
 */
 void R_TranslatePlayerSkin (int playernum)
 {
-	extern	byte		player_8bit_texels[MAX_PLAYER_CLASS][620*245];
+	extern	byte	player_8bit_texels[MAX_PLAYER_CLASS][620*245];
 
 	int		top, bottom;
-	byte	translate[256];
+	byte		translate[256];
 	unsigned	translate32[256];
 	int		i, j, s;
-	model_t	*model;
-	aliashdr_t *paliashdr;
-	byte	*original;
+	model_t		*model;
+	aliashdr_t	*paliashdr;
+	byte		*original;
 	unsigned	pixels[512*256], *out;
 	unsigned	scaled_width, scaled_height;
-	int			inwidth, inheight;
+	int		inwidth, inheight;
 	byte		*inrow;
 	unsigned	frac, fracstep;
-	byte	*sourceA, *sourceB, *colorA, *colorB;
+	byte		*sourceA, *sourceB, *colorA, *colorB;
 	int		playerclass = (int)cl.scores[playernum].playerclass;
-	char	texname[20];
+	char		texname[20];
 
 	for (i=0 ; i<256 ; i++)
 		translate[i] = i;
@@ -426,7 +426,7 @@ void R_TimeRefresh_f (void)
 	time = stop-start;
 	Con_Printf ("%f seconds (%f fps)\n", time, 128/time);
 
-	glfunc.glDrawBuffer_fp  (GL_BACK);
+	glfunc.glDrawBuffer_fp (GL_BACK);
 	GL_EndRendering ();
 }
 

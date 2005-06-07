@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.10 2005-06-07 07:08:31 sezero Exp $
+	$Id: gl_model.c,v 1.11 2005-06-07 20:27:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -276,7 +276,7 @@ model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 	else if (mod->needload == NL_PRESENT) {
 		return mod;
 	}
-
+	
 //
 // load the file
 //
@@ -1328,7 +1328,7 @@ void * Mod_LoadAliasFrame (void * pin, maliasframedesc_t *frame)
 	int		i, j;
 	daliasframe_t	*pdaliasframe;
 	vec3_t		in,out;
-	
+
 	pdaliasframe = (daliasframe_t *)pin;
 
 	strcpy (frame->name, pdaliasframe->name);
@@ -1369,7 +1369,6 @@ void * Mod_LoadAliasFrame (void * pin, maliasframedesc_t *frame)
 			}
 		}
 	}
-
 	poseverts[posenum] = pinframe;
 	posenum++;
 
@@ -1540,10 +1539,10 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int mdl_flags
 	char	name[MAX_QPATH]; /* 32 might be too low (Pa3PyX) */
 	int	s;
 	byte	*skin;
+	int	tex_mode;
+	int	groupskins;
 	daliasskingroup_t	*pinskingroup;
-	int			groupskins;
 	daliasskininterval_t	*pinskinintervals;
-	int			tex_mode;
 	
 	skin = (byte *)(pskintype + 1);
 
