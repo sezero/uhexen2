@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/draw.c,v 1.4 2005-05-07 10:39:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/draw.c,v 1.5 2005-06-07 20:30:49 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -697,6 +697,82 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 
 //==========================================================================
 //
+// Draw_SubPicCropped
+//
+// Draws a qpic_t that is clipped at the bottom/top edges of the screen.
+//
+//==========================================================================
+
+void Draw_SubPicCropped(int x, int y, int h, qpic_t *pic)
+{
+	byte *dest, *source;
+	unsigned short *pusdest;
+	int v, u;
+	int height;
+
+	if((x < 0) || (x+pic->width > vid.width))
+	{
+		Sys_Error("Draw_PicCropped: bad coordinates");
+	}
+
+	if (y >= (int)vid.height || y+h < 0)
+	{ // Totally off screen
+		return;
+	}
+
+	if(y+pic->height > vid.height)
+	{
+		height = vid.height-y;
+	}
+	else if (y < 0) 
+	{
+		height = pic->height+y;
+	}
+	else
+	{
+		height = pic->height;
+	}
+
+	if (height > h)
+	{
+		height = h;
+	}
+
+	source = pic->data;
+	if (y < 0) 
+	{
+		source += (pic->width * (-y));
+		y = 0;
+	}
+
+	if(r_pixbytes == 1)
+	{
+		dest = vid.buffer+y*vid.rowbytes+x;
+
+		for(v = 0; v < height; v++)
+		{
+			memcpy(dest, source, pic->width);
+			dest += vid.rowbytes;
+			source += pic->width;
+		}
+	}
+	else
+	{ // FIXME: pretranslate at load time?
+		pusdest = (unsigned short *)vid.buffer+y*(vid.rowbytes>>1)+x;
+		for(v = 0; v < height; v++)
+		{
+			for(u = 0; u < pic->width; u++)
+			{
+				pusdest[u] = d_8to16table[source[u]];
+			}
+			pusdest += vid.rowbytes>>1;
+			source += pic->width;
+		}
+	}
+}
+
+//==========================================================================
+//
 // Draw_TransPicCropped
 //
 // Draws a holey qpic_t that is clipped at the bottom edge of the screen.
@@ -800,6 +876,58 @@ void Draw_TransPicCropped(int x, int y, qpic_t *pic)
 				}
 			}
 			pusdest += vid.rowbytes>>1;
+			source += pic->width;
+		}
+	}
+}
+
+
+
+/*
+=============
+Draw_SubPic
+=============
+*/
+void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height)
+{
+	byte			*dest, *source;
+	unsigned short	*pusdest;
+	int				v, u;
+
+	if ((x < 0) ||
+		(x + width > vid.width) ||
+		(y < 0) ||
+		(y + height > vid.height))
+	{
+		Sys_Error ("Draw_Pic: bad coordinates");
+	}
+
+	source = pic->data + srcy * pic->width + srcx;
+
+	if (r_pixbytes == 1)
+	{
+		dest = vid.buffer + y * vid.rowbytes + x;
+
+		for (v=0 ; v<height ; v++)
+		{
+			memcpy (dest, source, width);
+			dest += vid.rowbytes;
+			source += pic->width;
+		}
+	}
+	else
+	{
+	// FIXME: pretranslate at load time?
+		pusdest = (unsigned short *)vid.buffer + y * (vid.rowbytes >> 1) + x;
+
+		for (v=0 ; v<height ; v++)
+		{
+			for (u=srcx ; u<(srcx+width) ; u++)
+			{
+				pusdest[u] = d_8to16table[source[u]];
+			}
+
+			pusdest += vid.rowbytes >> 1;
 			source += pic->width;
 		}
 	}
@@ -1304,6 +1432,9 @@ void Draw_EndDisc (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/05/07 10:39:07  sezero
+ * display platform in console background
+ *
  * Revision 1.3  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

@@ -3,7 +3,7 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/draw.h,v 1.4 2005-05-21 17:32:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/draw.h,v 1.5 2005-06-07 20:30:49 sezero Exp $
 */
 
 
@@ -17,6 +17,8 @@ void Draw_DebugChar (char num);
 void Draw_Pic (int x, int y, qpic_t *pic);
 void Draw_IntermissionPic (qpic_t *pic);
 void Draw_PicCropped(int x, int y, qpic_t *pic);
+void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height);
+void Draw_SubPicCropped(int x, int y, int h, qpic_t *pic);
 void Draw_TransPic (int x, int y, qpic_t *pic);
 void Draw_TransPicCropped(int x, int y, qpic_t *pic);
 void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation);
@@ -38,6 +40,10 @@ qpic_t *Draw_CachePicResize (char *path, int targetWidth, int targetHeight);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/05/21 17:32:03  sezero
+ * disabled the rotating skull annoyance in GL mode (used to
+ * cause problems with voodoo1/mesa6 when using gamma tricks)
+ *
  * Revision 1.3  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

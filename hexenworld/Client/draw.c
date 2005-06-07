@@ -693,6 +693,93 @@ void Draw_PicCropped(int x, int y, qpic_t *pic)
 	}
 }
 
+/*
+=============
+Draw_TransPic
+=============
+*/
+void Draw_TransPic (int x, int y, qpic_t *pic)
+{
+	byte	*dest, *source, tbyte;
+	unsigned short	*pusdest;
+	int				v, u;
+
+	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
+		 (unsigned)(y + pic->height) > vid.height)
+	{
+		Sys_Error ("Draw_TransPic: bad coordinates");
+	}
+		
+	source = pic->data;
+
+	if (r_pixbytes == 1)
+	{
+		dest = vid.buffer + y * vid.rowbytes + x;
+
+		if (pic->width & 7)
+		{	// general
+			for (v=0 ; v<pic->height ; v++)
+			{
+				for (u=0 ; u<pic->width ; u++)
+					if ( (tbyte=source[u]) != TRANSPARENT_COLOR)
+						dest[u] = tbyte;
+	
+				dest += vid.rowbytes;
+				source += pic->width;
+			}
+		}
+		else
+		{	// unwound
+			for (v=0 ; v<pic->height ; v++)
+			{
+				for (u=0 ; u<pic->width ; u+=8)
+				{
+					if ( (tbyte=source[u]) != TRANSPARENT_COLOR)
+						dest[u] = tbyte;
+					if ( (tbyte=source[u+1]) != TRANSPARENT_COLOR)
+						dest[u+1] = tbyte;
+					if ( (tbyte=source[u+2]) != TRANSPARENT_COLOR)
+						dest[u+2] = tbyte;
+					if ( (tbyte=source[u+3]) != TRANSPARENT_COLOR)
+						dest[u+3] = tbyte;
+					if ( (tbyte=source[u+4]) != TRANSPARENT_COLOR)
+						dest[u+4] = tbyte;
+					if ( (tbyte=source[u+5]) != TRANSPARENT_COLOR)
+						dest[u+5] = tbyte;
+					if ( (tbyte=source[u+6]) != TRANSPARENT_COLOR)
+						dest[u+6] = tbyte;
+					if ( (tbyte=source[u+7]) != TRANSPARENT_COLOR)
+						dest[u+7] = tbyte;
+				}
+				dest += vid.rowbytes;
+				source += pic->width;
+			}
+		}
+	}
+	else
+	{
+	// FIXME: pretranslate at load time?
+		pusdest = (unsigned short *)vid.buffer + y * (vid.rowbytes >> 1) + x;
+
+		for (v=0 ; v<pic->height ; v++)
+		{
+			for (u=0 ; u<pic->width ; u++)
+			{
+				tbyte = source[u];
+
+				if (tbyte != TRANSPARENT_COLOR)
+				{
+					pusdest[u] = d_8to16table[tbyte];
+				}
+			}
+
+			pusdest += vid.rowbytes >> 1;
+			source += pic->width;
+		}
+	}
+}
+
+
 //==========================================================================
 //
 // Draw_SubPicCropped
@@ -1030,93 +1117,6 @@ void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int h
 		}
 	}
 }
-
-/*
-=============
-Draw_TransPic
-=============
-*/
-void Draw_TransPic (int x, int y, qpic_t *pic)
-{
-	byte	*dest, *source, tbyte;
-	unsigned short	*pusdest;
-	int				v, u;
-
-	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
-		 (unsigned)(y + pic->height) > vid.height)
-	{
-		Sys_Error ("Draw_TransPic: bad coordinates");
-	}
-		
-	source = pic->data;
-
-	if (r_pixbytes == 1)
-	{
-		dest = vid.buffer + y * vid.rowbytes + x;
-
-		if (pic->width & 7)
-		{	// general
-			for (v=0 ; v<pic->height ; v++)
-			{
-				for (u=0 ; u<pic->width ; u++)
-					if ( (tbyte=source[u]) != TRANSPARENT_COLOR)
-						dest[u] = tbyte;
-	
-				dest += vid.rowbytes;
-				source += pic->width;
-			}
-		}
-		else
-		{	// unwound
-			for (v=0 ; v<pic->height ; v++)
-			{
-				for (u=0 ; u<pic->width ; u+=8)
-				{
-					if ( (tbyte=source[u]) != TRANSPARENT_COLOR)
-						dest[u] = tbyte;
-					if ( (tbyte=source[u+1]) != TRANSPARENT_COLOR)
-						dest[u+1] = tbyte;
-					if ( (tbyte=source[u+2]) != TRANSPARENT_COLOR)
-						dest[u+2] = tbyte;
-					if ( (tbyte=source[u+3]) != TRANSPARENT_COLOR)
-						dest[u+3] = tbyte;
-					if ( (tbyte=source[u+4]) != TRANSPARENT_COLOR)
-						dest[u+4] = tbyte;
-					if ( (tbyte=source[u+5]) != TRANSPARENT_COLOR)
-						dest[u+5] = tbyte;
-					if ( (tbyte=source[u+6]) != TRANSPARENT_COLOR)
-						dest[u+6] = tbyte;
-					if ( (tbyte=source[u+7]) != TRANSPARENT_COLOR)
-						dest[u+7] = tbyte;
-				}
-				dest += vid.rowbytes;
-				source += pic->width;
-			}
-		}
-	}
-	else
-	{
-	// FIXME: pretranslate at load time?
-		pusdest = (unsigned short *)vid.buffer + y * (vid.rowbytes >> 1) + x;
-
-		for (v=0 ; v<pic->height ; v++)
-		{
-			for (u=0 ; u<pic->width ; u++)
-			{
-				tbyte = source[u];
-
-				if (tbyte != TRANSPARENT_COLOR)
-				{
-					pusdest[u] = d_8to16table[tbyte];
-				}
-			}
-
-			pusdest += vid.rowbytes >> 1;
-			source += pic->width;
-		}
-	}
-}
-
 
 /*
 =============
