@@ -1,5 +1,20 @@
 ChangeLog:
 
+2005-06-07 (CVS, 1.2.5-pre2):
+     * Moved flush_textures decision to svmain.c:SV_SpawnServer()
+       again, this time fixing it by not clearing the server struct
+       in Host_ShutdownServer(). In fact this logic is still slightly
+       flawed, because flush_textures isn't set on map changes in
+       client-to-remote server map-change situations.
+     * Ported gl texture purge and model recycling code to hexenworld.
+       Textures are purged regardless of mapname change (we can't
+       detect it early enough), but servers normally wouldn't repeat a
+       map anyway.
+     * Removed my incorrect paranoia alert in cache mismatch code:
+       No paranoia, because gl_purge_maptex may well be false, and
+       flush_textures doesn't work for map changes in client-to remote
+       server connections.
+
 2005-06-06 (CVS, 1.2.5-pre2):
      * fixed alsa minimum required version detection
      * put some notes on decision behavior for -sndspeed argument
