@@ -41,7 +41,7 @@
 
 #define SPRITE_VERSION	1
 
-// must match definition in modelgen.h
+// must match definition in genmodel.h
 #ifndef SYNCTYPE_T
 #define SYNCTYPE_T
 typedef enum {ST_SYNC=0, ST_RAND } synctype_t;

@@ -51,7 +51,7 @@
 
 
 // stvert_t structure
-// !!! if this is changed, it must be changed in modelgen.h too !!!
+// !!! if this is changed, it must be changed in genmodel.h too !!!
 #define stv_onseam	0
 #define stv_s		4
 #define stv_t		8
@@ -59,7 +59,7 @@
 
 
 // trivertx_t structure
-// !!! if this is changed, it must be changed in modelgen.h too !!!
+// !!! if this is changed, it must be changed in genmodel.h too !!!
 #define tv_v				0
 #define tv_lightnormalindex	3
 #define tv_size				4

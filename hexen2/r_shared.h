@@ -3,7 +3,7 @@
 	general refresh-related stuff shared between the refresh
 	and the driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.3 2005-06-07 08:58:54 sezero Exp $
 */
 
 #ifndef GLQUAKE
@@ -122,7 +122,7 @@ extern int	ubasestep, errorterm, erroradjustup, erroradjustdown;
 #define ALIAS_BOTTOM_CLIP			0x0008
 #define ALIAS_Z_CLIP				0x0010
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
-#define ALIAS_ONSEAM				0x0020	// also defined in modelgen.h;
+#define ALIAS_ONSEAM				0x0020	// also defined in genmodel.h;
 											//  must be kept in sync
 #define ALIAS_XY_CLIP_MASK			0x000F
 
@@ -147,6 +147,9 @@ extern byte *playerTranslation;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:07:00  sezero
  * Initial import of AoT 1.2.0 code
  *

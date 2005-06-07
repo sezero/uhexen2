@@ -114,7 +114,7 @@ extern int	ubasestep, errorterm, erroradjustup, erroradjustdown;
 #define ALIAS_BOTTOM_CLIP			0x0008
 #define ALIAS_Z_CLIP				0x0010
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
-#define ALIAS_ONSEAM				0x0020	// also defined in modelgen.h;
+#define ALIAS_ONSEAM				0x0020	// also defined in genmodel.h;
 											//  must be kept in sync
 #define ALIAS_XY_CLIP_MASK			0x000F
 

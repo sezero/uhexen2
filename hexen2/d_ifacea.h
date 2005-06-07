@@ -1,6 +1,6 @@
 /*
 	d_ifacea.h
-	$Id: d_ifacea.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Id: d_ifacea.h,v 1.3 2005-06-07 08:58:54 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -72,7 +72,7 @@
 
 
 // stvert_t structure
-// !!! if this is changed, it must be changed in modelgen.h too !!!
+// !!! if this is changed, it must be changed in genmodel.h too !!!
 #define stv_onseam	0
 #define stv_s		4
 #define stv_t		8
@@ -80,7 +80,7 @@
 
 
 // trivertx_t structure
-// !!! if this is changed, it must be changed in modelgen.h too !!!
+// !!! if this is changed, it must be changed in genmodel.h too !!!
 #define tv_v				0
 #define tv_lightnormalindex	3
 #define tv_size				4
