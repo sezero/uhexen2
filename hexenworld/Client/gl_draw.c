@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.24 2005-05-31 19:50:00 sezero Exp $
+	$Id: gl_draw.c,v 1.25 2005-06-07 12:03:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -446,7 +446,7 @@ void Draw_Init (void)
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
-	cs_texture = GL_LoadTexture ("crosshair", 8, 8, cs_data, false, true, 0, false);
+	cs_texture = GL_LoadTexture ("crosshair", 8, 8, cs_data, false, true, 0, true);
 
 	draw_smallchars = W_GetLumpName("tinyfont");
 	for (i=0 ; i<128*32 ; i++)
