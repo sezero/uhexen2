@@ -12,8 +12,7 @@ Hammer of Thyrion 1.2.5
   1.5 OSS Audio workarounds
   1.6 Networking/Multiplayer
   1.7 SaveGames and Configuration files
-  1.8 Thanks
-  1.9 Contact
+  1.8 Fullscreen/Windowed modes & mouse
 
 2. Notes
 
@@ -23,6 +22,8 @@ Hammer of Thyrion 1.2.5
   2.4 System Stability
   2.5 Other
   2.6 Links
+  2.7 Thanks
+  2.8 Contact
 
 ----------------------------------------------------------------
 
@@ -94,7 +95,6 @@ following options are accepted:
  -sync | -vsync		Enable syncing with monitor refresh (GL, Nvidia)
  -paltex		Enable 8-bit textures
  -nomtex		Disable multitexture detection/usage
- -old3dfx		Support for old Voodoo1/2/Rush
  -sndalsa		Use ALSA for audio
  -sndsdl		Use SDL for audio
  -nocdaudio		Disable cdrom music
@@ -106,8 +106,9 @@ following options are accepted:
 
 Others may work, but aren't really supported.
 
-You may wish to brighten the display with "xgamma". The script
-I use is:
+If you wish to brighten the display, you can simply use the menu
+entry. In the unlikely case that it doesn't work for you, you can
+use the "xgamma" utility: Here is the script I use for xgamma:
 
     cd /usr/local/games/hexen2demo
     xgamma -q -gamma 1.3;       # brighten the display
@@ -193,23 +194,22 @@ Your savegames and configuration files are stored in a folder
 named  .hexen2demo  in your home folder:  ~/.hexen2demo
 
 
-1.8 Thanks
-----------
+1.8 Fullscreen/Windowed modes & mouse
+-------------------------------------
 
-Thanks to ID Software, Raven Games and Activision for a great
-game and for supporting open source software. Also thanks to
-Dan Olson and Clément Bourdarias for the initial Linux port
-(AoT) and to Sourceforge.net for hosting HoT.
-Mega thanks to all the unheralded Doom/Quake/Hexen modders.
+While playing the Hexen II, you can switch between fullscreen and
+windowed modes by pressing ALT + Enter combination, alternatively
+you can use the relevant menu option.
 
+The menu option "Use Mouse" enables/disables mouse usage on the
+fly. While in windowed mode, disabling the mouse ungrabs the mouse
+pointer, so that you can easily use your desktop. You can also
+un-grab/re-grab the mouse pointer by pressing the CTRL + G key
+combination whenever you want.
 
-1.9 Contact
------------
-    Ozkan Sezer		<sezero@users.sourceforge.net>
-    Steven Atkinson	<stevenaaus@users.sourceforge.net>
 
 ----------------------------------------------------------------
-
+----------------------------------------------------------------
 
 
 2. Notes
@@ -232,6 +232,11 @@ _snd_mixahead	0.1 - 0.9 : 0.1 = less latency,
 
 gl_multitexture	0|1	  : Disable/Enable multitexturing on
 			    the fly. 0 is default.
+
+gl_purge_maptex	0|1	  : Purge opengl textures upon map
+			    change. Saves a lot of video memory
+			    because the textures won't keep
+			    accumulating from map to map
 
 gl_ztrick	0|1	  : 3% performance tweak
 			    (some cards unsupported)
@@ -352,3 +357,18 @@ Linux GlQuake      :  http://mfcn.ilo.de/glxquake
 ALSA sound         :  http://www.alsa-project.org
 Lowercase Utility  :  http://sourceforge.net/projects/filerenameutils
 
+
+2.8 Thanks
+----------
+
+Thanks to ID Software, Raven Games and Activision for a great
+game and for supporting open source software. Also thanks to
+Dan Olson and Clément Bourdarias for the initial Linux port
+(AoT) and to Sourceforge.net for hosting HoT.
+Mega thanks to all the unheralded Doom/Quake/Hexen modders.
+
+
+2.9 Contact
+-----------
+    Steven Atkinson	<stevenaaus@users.sourceforge.net>
+    Ozkan Sezer		<sezero@users.sourceforge.net>
