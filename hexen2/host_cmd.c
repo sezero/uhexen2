@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.22 2005-06-03 13:25:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.23 2005-06-07 07:06:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -16,9 +16,6 @@
 extern cvar_t	pausable;
 extern	cvar_t	sv_flypitch;
 extern	cvar_t	sv_walkpitch;
-#ifdef GLQUAKE
-qboolean	flush_textures;
-#endif
 
 int	current_skill;
 static double		old_time;
@@ -247,15 +244,6 @@ void Host_Map_f (void)
 
 	cls.demonum = -1;		// stop demo loop in case this fails
 	
-#ifdef GLQUAKE
-	if (Q_strncasecmp(Cmd_Argv(1), sv.name, 64) == 0) {
-		flush_textures = false;
-	} else {
-		Con_DPrintf ("Mapname change: %s -> %s. flush_textures set to TRUE\n", sv.name, Cmd_Argv(1));
-		flush_textures = true;
-	}
-#endif
-
 	CL_Disconnect ();
 	Host_ShutdownServer(false);		
 
@@ -333,9 +321,6 @@ void Host_Changelevel_f (void)
 		startspot = _startspot;
 	}
 
-#ifdef GLQUAKE
-	flush_textures = true;
-#endif
 	SV_SaveSpawnparms ();
 	SV_SpawnServer (level, startspot);
 	
@@ -360,9 +345,6 @@ void Host_Restart_f (void)
 	if (cmd_source != src_command)
 		return;
 	
-#ifdef GLQUAKE
-	flush_textures = false;
-#endif
 	strcpy (mapname, sv.name);	// must copy out, because it gets cleared
 	strcpy(startspot, sv.startspot);
 
@@ -631,7 +613,7 @@ Host_Loadgame_f
 void Host_Loadgame_f (void)
 {
 	FILE	*f;
-	char	mapname[MAX_QPATH], tmpname[MAX_QPATH];
+	char	mapname[MAX_QPATH];
 	float	time, tfloat;
 	char	str[32768];
 	int	i;
@@ -653,8 +635,6 @@ void Host_Loadgame_f (void)
 		Con_Printf ("load <savename> : load a game\n");
 		return;
 	}
-
-	sprintf (tmpname, sv.name);	// temporary copy of current map name
 
 	cls.demonum = -1;		// stop demo loop in case this fails
 	CL_Disconnect();
@@ -744,15 +724,6 @@ void Host_Loadgame_f (void)
 	fclose (f);
 
 	CL_RemoveGIPFiles(tempdir);
-
-#ifdef GLQUAKE
-		if (Q_strncasecmp(tmpname, mapname, 64) == 0) {
-			flush_textures = false;
-		} else {
-			Con_DPrintf ("Mapname change: %s -> %s. flush_textures set to TRUE\n", tmpname, mapname);
-			flush_textures = true;
-		}
-#endif
 
 	retry:
 	attempts++;
@@ -1189,10 +1160,6 @@ void Host_Changelevel2_f (void)
 	// save the current level's state
 	old_time = sv.time;
 	SaveGamestate (false);
-
-#ifdef GLQUAKE
-	flush_textures = true;
-#endif
 
 	// try to restore the new level
 	if (LoadGamestate (level, startspot, 0))
@@ -2340,6 +2307,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2005/06/03 13:25:28  sezero
+ * Latest mouse fixes and clean-ups
+ *
  * Revision 1.21  2005/05/29 08:53:57  sezero
  * get rid of silly name changes
  *

@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.20 2005-05-29 08:38:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.21 2005-06-07 07:06:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -507,7 +507,7 @@ void Host_ShutdownServer(qboolean crash)
 //
 // clear structures
 //
-	memset (&sv, 0, sizeof(sv));
+	//memset (&sv, 0, sizeof(sv)); // ServerSpawn will already do this by Host_ClearMemory
 	memset (svs.clients, 0, svs.maxclientslimit*sizeof(client_t));
 }
 
@@ -1083,6 +1083,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2005/05/29 08:38:12  sezero
+ * get rid of the silly func name difference
+ *
  * Revision 1.19  2005/05/26 09:07:21  sezero
  * moved Mesa environment variable handling to gl_vidsdl where they belong
  *

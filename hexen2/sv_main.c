@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.19 2005-06-03 13:25:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.20 2005-06-07 07:06:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -21,6 +21,10 @@ cvar_t	sv_update_misc		= {"sv_update_misc","1", true};
 cvar_t	sv_ce_scale		= {"sv_ce_scale","0", true};
 cvar_t	sv_ce_max_size		= {"sv_ce_max_size","0", true};
 
+
+#ifdef GLQUAKE
+qboolean	flush_textures;
+#endif
 
 unsigned int	info_mask, info_mask2;
 int		sv_kingofhill;
@@ -1888,6 +1892,12 @@ void SV_SpawnServer (char *server, char *startspot)
 		SV_SendReconnect ();
 	}
 
+/* if this is GL version, we need to tell D_FlushCaches() whether to flush
+   OGL textures depending on mapname change. */
+#ifdef GLQUAKE
+	flush_textures = Q_strncasecmp(server, sv.name, 64) ? true : false;
+#endif
+
 //
 // make cvars consistant
 //
@@ -2058,6 +2068,9 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2005/06/03 13:25:29  sezero
+ * Latest mouse fixes and clean-ups
+ *
  * Revision 1.18  2005/05/21 17:04:16  sezero
  * - revived -nomouse that "disables mouse no matter what"
  * - renamed _windowed_mouse to _enable_mouse which is our intention,
