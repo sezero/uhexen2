@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_dl_draw.c,v 1.39 2005-06-07 20:28:12 sezero Exp $
+	$Id: gl_dl_draw.c,v 1.40 2005-06-07 20:29:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1778,6 +1778,31 @@ void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean a
 	GL_Upload32 (trans, width, height, mipmap, alpha, sprite);
 }
 
+// Simple checksum functions for verification of texture. From Pa3PyX
+qboolean GL_SumCheckTexData(byte *data, int size, qboolean is_rgba, unsigned long sum_value)
+{
+	int i;
+	unsigned long real_value = 0;
+
+	if (is_rgba)
+		size *= 4;
+	for (i = 0; i < size; i++)
+		real_value += data[i];
+	return (real_value == sum_value);
+}
+
+unsigned long GL_ComputeTexDataSum(byte *data, int size, qboolean is_rgba)
+{
+	int i;
+	unsigned long sum_value = 0;
+
+	if (is_rgba)
+		size *= 4;
+	for (i = 0; i < size; i++)
+		sum_value += data[i];
+	return sum_value;
+}
+
 /*
 ================
 GL_LoadTexture
@@ -1798,14 +1823,16 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 		{
 			if (!strcmp (identifier, glt->identifier))
 			{
-				if (width != glt->width || height != glt->height || mipmap != glt->mipmap) {
+				if (width != glt->width || height != glt->height || mipmap != glt->mipmap ||
+				    !GL_SumCheckTexData(data, width * height, rgba, glt->hash))
+				{
 				// Not the same texture - dont die, delete and rebind to new image
-				// TODO - Maybe add the hash check some day
 					Con_Printf ("GL_LoadTexture: reloading tex due to cache mismatch\n");
 					glfunc.glDeleteTextures_fp (1, &(glt->texnum));
 					glt->width = width;
 					glt->height = height;
 					glt->mipmap = mipmap;
+					glt->hash = GL_ComputeTexDataSum(data, width * height, rgba);
 					GL_Bind (glt->texnum);
 					if (rgba)
 						GL_Upload32 ((unsigned *)data, width, height, mipmap, alpha, false);
@@ -1828,6 +1855,7 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 	glt->width = width;
 	glt->height = height;
 	glt->mipmap = mipmap;
+	glt->hash = GL_ComputeTexDataSum(data, width * height, rgba);
 
 	GL_Bind (texture_extension_number);
 
@@ -1853,6 +1881,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.39  2005/06/07 20:28:12  sezero
+ * A lot of syncing for gl_draw.c between hexen2/hexenworld
+ *
  * Revision 1.38  2005/06/07 07:10:02  sezero
  * Removed my incorrect paranoia alert in cache mismatch code:
  * No paranoia, because gl_purge_maptex may well be false, and flush_textures

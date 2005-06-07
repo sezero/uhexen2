@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.30 2005-06-05 16:14:07 sezero Exp $
+	$Id: glquake.h,v 1.31 2005-06-07 20:29:44 sezero Exp $
 */
 
 
@@ -102,6 +102,7 @@ typedef struct
 	char	identifier[64];
 	int		width, height;
 	qboolean	mipmap;
+	unsigned long	hash;
 } gltexture_t;
 
 extern	int glx, gly, glwidth, glheight;
@@ -329,6 +330,11 @@ extern	qboolean gl_mtexable;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2005/06/05 16:14:07  sezero
+ * patches I've been forgetting 6/6:
+ * enable the irritating water-warp only by a cvar
+ * and add water-ripple code by Jacques Krige
+ *
  * Revision 1.29  2005/06/05 16:07:54  sezero
  * patches I've been forgetting 1/6:
  * use GL_LoadTexture for player textures
