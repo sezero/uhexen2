@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.23 2005-06-03 13:25:29 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.24 2005-06-07 20:32:10 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -1417,9 +1417,17 @@ void M_Menu_Help_f (void)
 void M_Help_Draw (void)
 {
 	if(cl_siege)
-		M_DrawPic (0, 0, Draw_CachePic ( va("gfx/menu/sghelp%02i.lmp", help_page+1)) );
+#ifdef GLQUAKE
+		Draw_IntermissionPic(Draw_CachePicNoTrans(va("gfx/menu/sghelp%02i.lmp", help_page+1)));
+#else
+		Draw_Pic (0, 0, Draw_CachePicResize(va("gfx/menu/sghelp%02i.lmp", help_page+1), vid.width, vid.height));
+#endif
 	else
-		M_DrawPic (0, 0, Draw_CachePic ( va("gfx/menu/help%02i.lmp", help_page+1)) );
+#ifdef GLQUAKE
+		Draw_IntermissionPic(Draw_CachePicNoTrans(va("gfx/menu/help%02i.lmp", help_page+1)));
+#else
+		Draw_Pic (0, 0, Draw_CachePicResize(va("gfx/menu/help%02i.lmp", help_page+1), vid.width, vid.height));
+#endif
 }
 
 

@@ -10,6 +10,7 @@ void Draw_Init (void);
 void Draw_Character (int x, int y, unsigned int num);
 void Draw_DebugChar (char num);
 void Draw_Pic (int x, int y, qpic_t *pic);
+void Draw_IntermissionPic (qpic_t *pic);
 void Draw_PicCropped(int x, int y, qpic_t *pic);
 void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height);
 void Draw_SubPicCropped(int x, int y, int h, qpic_t *pic);
@@ -30,5 +31,7 @@ void Draw_SmallString(int x, int y, char *str);
 void Draw_RedString (int x, int y, char *str);
 qpic_t *Draw_PicFromWad (char *name);
 qpic_t *Draw_CachePic (char *path);
+qpic_t *Draw_CachePicNoTrans (char *path);
+qpic_t *Draw_CachePicResize (char *path, int targetWidth, int targetHeight);
 
 extern int	trans_level;

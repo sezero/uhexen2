@@ -90,6 +90,60 @@ qpic_t	*Draw_CachePic (char *path)
 }
 
 
+/*
+================
+Draw_CachePicResize
+New function by Pa3PyX; will load a pic resizing it (needed for intermissions)
+================
+*/
+cache_user_t *intermissionScreen;
+qpic_t  *Draw_CachePicResize(char *path, int targetWidth, int targetHeight)
+{
+	cachepic_t *pic;
+	int i, j;
+	int sourceWidth, sourceHeight;
+	qpic_t *dat, *temp;
+
+	for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
+		if (!strcmp(path, pic->name))
+			break;
+	if (i == menu_numcachepics)
+	{
+		if (menu_numcachepics == MAX_CACHED_PICS)
+			Sys_Error("menu_numcachepics == MAX_CACHED_PICS");
+		menu_numcachepics++;
+		strcpy(pic->name, path);
+	}
+	dat = Cache_Check(&pic->cache);
+	if (dat)
+		return dat;
+	// Allocate original data temporarily
+	temp = (qpic_t *)COM_LoadTempFile(path);
+	SwapPic(temp);
+	/* I wish Carmack would thought of something more intuitive than
+	   out-of-bounds array for storing image data */
+	Cache_Alloc(&pic->cache, targetWidth * targetHeight * sizeof(byte) + sizeof(qpic_t), path);
+	/* Make sure we memorize this cache entry. It is dependent upon the
+	   screen resolution; if for any obscure reason the user will want
+	   to switch resolutions during intermission playing, we need to
+	   flush this pic (force reload with updated width/height) or else
+	   it might end up being greater than the size of the screen, and
+	   cause an error in Draw_Pic(). */
+	intermissionScreen = &pic->cache;
+	dat = (qpic_t *)pic->cache.data;
+	if (!dat)
+		Sys_Error("Draw_CachePicResize: failed to load %s (cache flushed prematurely)", path);
+	dat->width = targetWidth;
+	dat->height = targetHeight;
+	sourceWidth = temp->width;
+	sourceHeight = temp->height;
+	for (j = 0; j < targetHeight; j++) {
+		for (i = 0; i < targetWidth; i++) {
+			dat->data[i + targetWidth * j] = temp->data[(i * sourceWidth / targetWidth) + sourceWidth * (j * sourceHeight / targetHeight)];
+		}
+	}
+	return dat;
+}
 
 /*
 ===============

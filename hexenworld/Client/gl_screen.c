@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.9 2005-05-26 21:36:36 sezero Exp $
+	$Id: gl_screen.c,v 1.10 2005-06-07 20:32:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -866,46 +866,48 @@ void SB_IntermissionOverlay(void)
 	switch(cl.intermission)
 	{
 		case 1:
-			pic = Draw_CachePic ("gfx/meso.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/meso.lmp");
 			break;
 		case 2:
-			pic = Draw_CachePic ("gfx/egypt.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/egypt.lmp");
 			break;
 		case 3:
-			pic = Draw_CachePic ("gfx/roman.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/roman.lmp");
 			break;
 		case 4:
-			pic = Draw_CachePic ("gfx/castle.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/castle.lmp");
 			break;
 		case 5:
-			pic = Draw_CachePic ("gfx/castle.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/castle.lmp");
 			break;
 		case 6:
-			pic = Draw_CachePic ("gfx/end-1.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/end-1.lmp");
 			break;
 		case 7:
-			pic = Draw_CachePic ("gfx/end-2.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/end-2.lmp");
 			break;
 		case 8:
-			pic = Draw_CachePic ("gfx/end-3.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/end-3.lmp");
 			break;
 		case 9:
-			pic = Draw_CachePic ("gfx/castle.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/castle.lmp");
 			break;
 		case 10://Defender win - wipe out or time limit
-			pic = Draw_CachePic ("gfx/defwin.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/defwin.lmp");
 			break;
 		case 11://Attacker win - caught crown
-			pic = Draw_CachePic ("gfx/attwin.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/attwin.lmp");
 			break;
 		case 12://Attacker win 2 - wiped out
-			pic = Draw_CachePic ("gfx/attwin2.lmp");
+			pic = Draw_CachePicNoTrans ("gfx/attwin2.lmp");
 			break;
 		default:
 			Sys_Error ("SB_IntermissionOverlay: Bad episode");
 			break;
 	}
-	Draw_Pic (((vid.width - 320)>>1),((vid.height - 200)>>1), pic);
+
+	//Draw_Pic (((vid.width - 320)>>1),((vid.height - 200)>>1), pic);
+	Draw_IntermissionPic(pic);
 
 	if (cl.intermission >= 6 && cl.intermission <= 8)
 	{
@@ -1031,6 +1033,8 @@ void SCR_UpdateScreen (void)
 //
 	SCR_SetUpToDrawConsole ();
 	
+	// no need to draw view in fullscreen intermission screens
+	//if (cl.intermission > 1 || cl.intermission <= 12)
 	if (cl.intermission < 1 || cl.intermission > 12)
 	{
 		V_RenderView ();
@@ -1053,15 +1057,19 @@ void SCR_UpdateScreen (void)
 		SCR_DrawNotifyString ();
 		scr_copyeverything = true;
 	}
-	else if (scr_drawloading)
+//	Pa3PyX: this clobbers intermission screens
+/*	else if (scr_drawloading)
 	{
 		Sbar_Draw ();
 		Draw_FadeScreen ();
 		SCR_DrawLoading ();
-	}
+	} */
 	else if (cl.intermission == 1 && key_dest == key_game)
 	{
 		Sbar_IntermissionOverlay ();
+		// Pa3PyX
+		if (scr_drawloading)
+			SCR_DrawLoading();
 	}
 	else if (cl.intermission == 2 && key_dest == key_game)
 	{
@@ -1079,12 +1087,21 @@ void SCR_UpdateScreen (void)
 		SCR_DrawPause ();
 		SCR_CheckDrawCenterString ();
 		Sbar_Draw ();
-		Plaque_Draw(plaquemessage,0);
-		SCR_DrawNet ();
-		SCR_DrawConsole ();     
-		M_Draw ();
-		if (errormessage)
-			Plaque_Draw(errormessage,1);
+
+		// Pa3PyX: draw loading plaque and dim screen if loading
+		if (scr_drawloading)
+		{
+			Draw_FadeScreen();
+			SCR_DrawLoading();
+		}
+		else {
+			Plaque_Draw(plaquemessage,0);
+			SCR_DrawNet ();
+			SCR_DrawConsole ();     
+			M_Draw ();
+			if (errormessage)
+				Plaque_Draw(errormessage,1);
+		}
 	}
 
 	V_UpdatePalette ();

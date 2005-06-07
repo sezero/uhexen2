@@ -1098,47 +1098,51 @@ void SB_IntermissionOverlay(void)
 	
 	switch(cl.intermission)
 	{
+		// Pa3PyX: pics are now resized to screen size upon load
 		case 1:
-			pic = Draw_CachePic ("gfx/meso.lmp");
+			pic = Draw_CachePicResize("gfx/meso.lmp", vid.width, vid.height);
 			break;
 		case 2:
-			pic = Draw_CachePic ("gfx/egypt.lmp");
+			pic = Draw_CachePicResize("gfx/egypt.lmp", vid.width, vid.height);
 			break;
 		case 3:
-			pic = Draw_CachePic ("gfx/roman.lmp");
+			pic = Draw_CachePicResize("gfx/roman.lmp", vid.width, vid.height);
 			break;
 		case 4:
-			pic = Draw_CachePic ("gfx/castle.lmp");
+			pic = Draw_CachePicResize("gfx/castle.lmp", vid.width, vid.height);
 			break;
 		case 5:
-			pic = Draw_CachePic ("gfx/castle.lmp");
+			pic = Draw_CachePicResize("gfx/castle.lmp", vid.width, vid.height);
 			break;
 		case 6:
-			pic = Draw_CachePic ("gfx/end-1.lmp");
+			pic = Draw_CachePicResize("gfx/end-1.lmp", vid.width, vid.height);
 			break;
 		case 7:
-			pic = Draw_CachePic ("gfx/end-2.lmp");
+			pic = Draw_CachePicResize("gfx/end-2.lmp", vid.width, vid.height);
 			break;
 		case 8:
-			pic = Draw_CachePic ("gfx/end-3.lmp");
+			pic = Draw_CachePicResize("gfx/end-3.lmp", vid.width, vid.height);
 			break;
 		case 9:
-			pic = Draw_CachePic ("gfx/castle.lmp");
+			pic = Draw_CachePicResize("gfx/castle.lmp", vid.width, vid.height);
 			break;
 		case 10://Defender win - wipe out or time limit
-			pic = Draw_CachePic ("gfx/defwin.lmp");
+			pic = Draw_CachePicResize("gfx/defwin.lmp", vid.width, vid.height);
 			break;
 		case 11://Attacker win - caught crown
-			pic = Draw_CachePic ("gfx/attwin.lmp");
+			pic = Draw_CachePicResize("gfx/attwin.lmp", vid.width, vid.height);
 			break;
 		case 12://Attacker win 2 - wiped out
-			pic = Draw_CachePic ("gfx/attwin2.lmp");
+			pic = Draw_CachePicResize("gfx/attwin2.lmp", vid.width, vid.height);
 			break;
+
 		default:
 			Sys_Error ("SB_IntermissionOverlay: Bad episode");
 			break;
 	}
-	Draw_Pic (((vid.width - 320)>>1),((vid.height - 200)>>1), pic);
+	// Pa3PyX: intermissions will now be always drawn full screen size
+//	Draw_Pic (((vid.width - 320)>>1),((vid.height - 200)>>1), pic);
+	Draw_Pic(0, 0, pic);
 
 	if (cl.intermission >= 6 && cl.intermission <= 8)
 	{
