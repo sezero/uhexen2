@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.9 2005-05-31 19:50:00 sezero Exp $
+	$Id: gl_model.c,v 1.10 2005-06-07 07:08:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -22,11 +22,23 @@ model_t *Mod_LoadModel (model_t *mod, qboolean crash);
 
 byte	mod_novis[MAX_MAP_LEAFS/8];
 
-#define	MAX_MOD_KNOWN	1500
+// 650 should be enough with model handle recycling, but.. (Pa3PyX)
+#define	MAX_MOD_KNOWN	2048
 model_t	mod_known[MAX_MOD_KNOWN];
 int		mod_numknown;
 
 static vec3_t	mins,maxs;
+
+// purging models (Pa3PyX)
+#define	NL_PRESENT	0
+#define	NL_NEEDS_LOADED	1
+#define	NL_UNREFERENCED	2
+#ifndef H2W
+// we can't detect mapname change early enough in hw,
+// so flush_textures is only for hexen2
+extern	qboolean flush_textures;
+#endif
+extern	cvar_t gl_purge_maptex;
 
 cvar_t gl_subdivide_size = {"gl_subdivide_size", "128", true};
 
@@ -160,9 +172,25 @@ void Mod_ClearAll (void)
 	int		i;
 	model_t	*mod;
 	
-	for (i=0 , mod=mod_known ; i<mod_numknown ; i++, mod++)
-		if (mod->type != mod_alias)
-			mod->needload = true;
+	for (i=0 , mod=mod_known ; i<mod_numknown ; i++, mod++) {
+	// clear alias models only if textures were flushed (Pa3PyX)
+		if (mod->type == mod_alias) {
+#ifndef H2W
+			if (flush_textures && gl_purge_maptex.value) {
+#else
+			if (gl_purge_maptex.value) {
+#endif
+				if (Cache_Check(&(mod->cache)))
+					Cache_Free(&(mod->cache));
+				mod->needload = NL_NEEDS_LOADED;
+			}
+		}
+		else {
+		// Clear all other models completely
+			memset(mod, 0, sizeof(model_t));
+			mod->needload = NL_UNREFERENCED;
+		}
+	}
 }
 
 /*
@@ -174,7 +202,7 @@ Mod_FindName
 model_t *Mod_FindName (char *name)
 {
 	int		i;
-	model_t	*mod;
+	model_t	*mod = NULL;
 	
 	if (!name[0])
 		Sys_Error ("Mod_ForName: NULL name");
@@ -182,19 +210,28 @@ model_t *Mod_FindName (char *name)
 //
 // search the currently loaded models
 //
-	for (i=0 , mod=mod_known ; i<mod_numknown ; i++, mod++)
-		if (!strcmp (mod->name, name) )
-			break;
-			
-	if (i == mod_numknown)
-	{
-		if (mod_numknown == MAX_MOD_KNOWN)
-			Sys_Error ("mod_numknown == MAX_MOD_KNOWN");
-		strcpy (mod->name, name);
-		mod->needload = true;
-		mod_numknown++;
+	// allow recycling of model handles (Pa3PyX)
+	for (i = 0; i < mod_numknown; i++) {
+		if (!strcmp(mod_known[i].name, name)) {
+			mod = &(mod_known[i]);
+			return mod;
+		}
+		if (!mod && mod_known[i].needload == NL_UNREFERENCED) {
+			mod = mod_known + i;
+		}
 	}
-
+			
+	if (!mod) {
+		if (mod_numknown == MAX_MOD_KNOWN) {
+		// No free model handle
+			Sys_Error ("mod_numknown == MAX_MOD_KNOWN");
+	}
+		else {
+			mod = &(mod_known[mod_numknown++]);
+		}
+	}
+	strcpy(mod->name, name);
+	mod->needload = NL_NEEDS_LOADED;
 	return mod;
 }
 
@@ -210,7 +247,7 @@ void Mod_TouchModel (char *name)
 	
 	mod = Mod_FindName (name);
 	
-	if (!mod->needload)
+	if (mod->needload == NL_PRESENT)
 	{
 		if (mod->type == mod_alias)
 			Cache_Check (&mod->cache);
@@ -226,20 +263,18 @@ Loads a model into the cache
 */
 model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 {
-	void	*d;
 	unsigned *buf;
 	byte	stackbuf[1024];		// avoid dirtying the cache heap
 
-	if (!mod->needload)
-	{
-		if (mod->type == mod_alias)
-		{
-			d = Cache_Check (&mod->cache);
-			if (d)
-				return mod;
+	// allow recycling of models (Pa3PyX)
+	if (mod->type == mod_alias) {
+		if (Cache_Check(&(mod->cache))) {
+			mod->needload = NL_PRESENT;
+			return mod;
 		}
-		else
-			return mod;		// not cached at all
+	}
+	else if (mod->needload == NL_PRESENT) {
+		return mod;
 	}
 
 //
@@ -265,7 +300,7 @@ model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 //
 
 // call the apropriate loader
-	mod->needload = false;
+	mod->needload = NL_PRESENT;
 	
 	switch (LittleLong(*(unsigned *)buf))
 	{
@@ -1502,7 +1537,7 @@ Mod_LoadAllSkins
 void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int mdl_flags)
 {
 	int	i, j, k;
-	char	name[32];
+	char	name[MAX_QPATH]; /* 32 might be too low (Pa3PyX) */
 	int	s;
 	byte	*skin;
 	daliasskingroup_t	*pinskingroup;
@@ -1784,7 +1819,8 @@ void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
 	end = Hunk_LowMark ();
 	total = end - start;
 	
-	Cache_Alloc (&mod->cache, total, loadname);
+	if (!mod->cache.data)
+		Cache_Alloc (&mod->cache, total, loadname);
 	if (!mod->cache.data)
 		return;
 	memcpy (mod->cache.data, pheader, total);
@@ -1959,7 +1995,8 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	end = Hunk_LowMark ();
 	total = end - start;
 	
-	Cache_Alloc (&mod->cache, total, loadname);
+	if (!mod->cache.data)
+		Cache_Alloc (&mod->cache, total, loadname);
 	if (!mod->cache.data)
 		return;
 	memcpy (mod->cache.data, pheader, total);
@@ -2153,7 +2190,7 @@ void Mod_Print (void)
 	Con_Printf ("Cached models:\n");
 	for (i=0, mod=mod_known ; i < mod_numknown ; i++, mod++)
 	{
-		Con_Printf ("%8p : %s\n",mod->cache.data, mod->name);
+		Con_Printf ("%i (%8p): %s\n", i, mod->cache.data, mod->name);
 	}
 }
 

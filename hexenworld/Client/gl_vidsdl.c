@@ -2,7 +2,7 @@
    gl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.59 2005-06-05 07:50:29 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.60 2005-06-07 07:08:31 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -82,6 +82,7 @@ const char	*gl_extensions;
 char		*gl_library;
 extern qboolean	is_3dfx;
 float		gldepthmin, gldepthmax;
+extern int	numgltextures;
 int		multisample = 0;
 
 typedef void	(*FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
@@ -96,6 +97,9 @@ unsigned	d_8to24table3dfx[256];
 unsigned	d_8to24TranslucentTable[256];
 
 cvar_t		gl_ztrick = {"gl_ztrick","0",true};
+cvar_t		gl_purge_maptex = {"gl_purge_maptex", "1", true};
+		/* whether or not map-specific OGL textures
+		   are flushed from map. default == yes  */
 
 // multitexturing
 qboolean	gl_mtexable = false;
@@ -829,6 +833,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&_vid_default_mode);
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&gl_ztrick);
+	Cvar_RegisterVariable (&gl_purge_maptex);
 
 	Cmd_AddCommand ("vid_setgamma", VID_SetGamma_f);
 

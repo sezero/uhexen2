@@ -7,7 +7,11 @@ byte *playerTranslation;
 int			gl_texlevel;
 extern int		numgltextures;
 extern cvar_t		gl_purge_maptex;
+#ifndef H2W
+// we can't detect mapname change early enough in hw,
+// so flush_textures is only for hexen2
 extern qboolean		flush_textures;
+#endif
 extern qboolean		plyrtex[MAX_PLAYER_CLASS][16][16];
 extern gltexture_t	gltextures[2048];
 extern int		menu_numcachepics;
@@ -427,7 +431,8 @@ void R_TimeRefresh_f (void)
 }
 
 /* D_ClearOpenGLTexture
-   this procedure (called by Host_ClearMemory/SV_SpawnServer on new map) will
+   this procedure (called by Host_ClearMemory/SV_SpawnServer in hexen2 on new
+   map, or by CL_ClearState/CL_ParseServerData in HW on new connection) will
    purge all OpenGL textures beyond static ones (console, menu, etc, whatever
    was loaded at initialization time). This will save a lot of video memory,
    because the textures won't keep accumulating from map to map, thus bloating
@@ -460,7 +465,11 @@ void D_ClearOpenGLTextures (int last_tex)
 
 void D_FlushCaches (void)
 {
+#ifndef H2W
 	if (numgltextures - gl_texlevel > 0 && flush_textures && gl_purge_maptex.value)
+#else
+	if (numgltextures - gl_texlevel > 0 && gl_purge_maptex.value)
+#endif
 		D_ClearOpenGLTextures (gl_texlevel);
 }
 

@@ -99,6 +99,11 @@ int			host_hunklevel;
 byte		*host_basepal;
 byte		*host_colormap;
 
+#ifdef GLQUAKE
+extern int	gl_texlevel;
+extern int	numgltextures;
+#endif
+
 netadr_t	master_adr;				// address of the master server
 
 cvar_t	host_speeds = {"host_speeds","0"};			// set for running times
@@ -1368,6 +1373,11 @@ void Host_Init (quakeparms_t *parms)
 
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
+#ifdef GLQUAKE
+/*	analogouos to host_hunklevel, this will mark OpenGL texture
+	beyond which everything will need to be purged on new map */
+	gl_texlevel = numgltextures;
+#endif
 
 	host_initialized = true;
 	

@@ -441,6 +441,12 @@ void CL_ParseServerData (void)
 	int protover;
 	
 	Con_DPrintf ("Serverdata packet received.\n");
+
+/* if this is GL version, we need to tell D_FlushCaches() whether to flush
+   OGL textures depending on mapname change, but we cannot detect the map
+   name change here. So it will only check gl_purge_maptex.value. Servers
+   normally wouldn't repeat a map anyway, so no worries.
+*/
 //
 // wipe the client_state_t struct
 //

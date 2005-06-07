@@ -4,6 +4,19 @@
 
 byte *playerTranslation;
 
+int			gl_texlevel;
+extern int		numgltextures;
+extern cvar_t		gl_purge_maptex;
+#ifndef H2W
+// we can't detect mapname change early enough in hw,
+// so flush_textures is only for hexen2
+extern qboolean		flush_textures;
+#endif
+extern qboolean		plyrtex[MAX_PLAYER_CLASS][16][16];
+extern gltexture_t	gltextures[2048];
+extern int		menu_numcachepics;
+extern cachepic_t	menu_cachepics[256];
+
 extern void R_InitBubble();
 
 /*
@@ -416,7 +429,46 @@ void R_TimeRefresh_f (void)
 	GL_EndRendering ();
 }
 
+/* D_ClearOpenGLTexture
+   this procedure (called by Host_ClearMemory/SV_SpawnServer in hexen2 on new
+   map, or by CL_ClearState/CL_ParseServerData in HW on new connection) will
+   purge all OpenGL textures beyond static ones (console, menu, etc, whatever
+   was loaded at initialization time). This will save a lot of video memory,
+   because the textures won't keep accumulating from map to map, thus bloating
+   more and more the more time the client is running, which gets pretty nasty
+   on 8-16-32M machines with OpenGL drivers like nVidia, which cache all
+   textures in system memory. (Pa3PyX)
+*/
+void D_ClearOpenGLTextures (int last_tex)
+{
+	int i;
+
+	Con_DPrintf ("Deleting OpenGL textures\n");
+	// Delete OpenGL textures
+	for (i = last_tex; i < numgltextures; i++)
+		glfunc.glDeleteTextures_fp(1, &(gltextures[i].texnum));
+
+	memset(&(gltextures[last_tex]), 0, (numgltextures - last_tex) * sizeof(gltexture_t));
+	numgltextures = last_tex;
+
+	if (currenttexture >= last_tex)
+		currenttexture = -1;
+
+	// Clear menu pic cache
+	memset(menu_cachepics, 0, menu_numcachepics * sizeof(cachepic_t));
+	menu_numcachepics = 0;
+
+	// Clear player pic cache
+	memset(plyrtex, 0, MAX_PLAYER_CLASS * 16 * 16 * sizeof(qboolean));
+}
+
 void D_FlushCaches (void)
 {
+#ifndef H2W
+	if (numgltextures - gl_texlevel > 0 && flush_textures && gl_purge_maptex.value)
+#else
+	if (numgltextures - gl_texlevel > 0 && gl_purge_maptex.value)
+#endif
+		D_ClearOpenGLTextures (gl_texlevel);
 }
 

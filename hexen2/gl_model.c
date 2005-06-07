@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.14 2005-05-29 08:53:57 sezero Exp $
+	$Id: gl_model.c,v 1.15 2005-06-07 07:08:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -35,7 +35,11 @@ static vec3_t	mins,maxs;
 #define	NL_PRESENT	0
 #define	NL_NEEDS_LOADED	1
 #define	NL_UNREFERENCED	2
+#ifndef H2W
+// we can't detect mapname change early enough in hw,
+// so flush_textures is only for hexen2
 extern	qboolean flush_textures;
+#endif
 extern	cvar_t gl_purge_maptex;
 
 int entity_file_size;
@@ -172,7 +176,11 @@ void Mod_ClearAll (void)
 	for (i=0 , mod=mod_known ; i<mod_numknown ; i++, mod++) {
 	// clear alias models only if textures were flushed (Pa3PyX)
 		if (mod->type == mod_alias) {
+#ifndef H2W
 			if (flush_textures && gl_purge_maptex.value) {
+#else
+			if (gl_purge_maptex.value) {
+#endif
 				if (Cache_Check(&(mod->cache)))
 					Cache_Free(&(mod->cache));
 				mod->needload = NL_NEEDS_LOADED;
@@ -2301,6 +2309,9 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/05/29 08:53:57  sezero
+ * get rid of silly name changes
+ *
  * Revision 1.13  2005/05/27 17:59:52  sezero
  * removed some dead code
  *
