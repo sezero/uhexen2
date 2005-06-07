@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.25 2005-06-07 12:03:33 sezero Exp $
+	$Id: gl_draw.c,v 1.26 2005-06-07 20:28:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -122,8 +122,8 @@ int Scrap_AllocBlock (int w, int h, int *x, int *y)
 		return texnum;
 	}
 
-	Sys_Error ("Scrap_AllocBlock: full");
-	return -1;	// shut up the compiler
+	return -1;
+//	Sys_Error ("Scrap_AllocBlock: full");
 }
 
 int	scrap_uploads;
@@ -146,6 +146,9 @@ int			menu_numcachepics;
 int		pic_texels;
 int		pic_count;
 
+/*
+ * Geometry for the player/skin selection screen image.
+ */
 #define PLAYER_PIC_WIDTH 68
 #define PLAYER_PIC_HEIGHT 114
 #define PLAYER_DEST_WIDTH 128
@@ -166,8 +169,26 @@ qpic_t *Draw_PicFromFile (char *name)
 
 	gl = (glpic_t *)p->data;
 
+	gl->texnum = GL_LoadPicTexture (p);
+
+	gl->sl = 0;
+	gl->sh = 1;
+	gl->tl = 0;
+	gl->th = 1;
+
+	return p;
+}
+
+qpic_t *Draw_PicFromWad (char *name)
+{
+	qpic_t	*p;
+	glpic_t	*gl;
+
+	p = W_GetLumpName (name);
+	gl = (glpic_t *)p->data;
+
 	// load little ones into the scrap
-/*	if (p->width < 64 && p->height < 64)
+	if (p->width < 64 && p->height < 64)
 	{
 		int		x, y;
 		int		i, j, k;
@@ -191,52 +212,9 @@ qpic_t *Draw_PicFromFile (char *name)
 		pic_count++;
 		pic_texels += p->width*p->height;
 	}
-	else*/
-	{
-//nonscrap:
-		gl->texnum = GL_LoadPicTexture (p);
-
-		gl->sl = 0;
-		gl->sh = 1;
-		gl->tl = 0;
-		gl->th = 1;
-	}
-	return p;
-}
-
-qpic_t *Draw_PicFromWad (char *name)
-{
-	qpic_t	*p;
-	glpic_t	*gl;
-
-	p = W_GetLumpName (name);
-	gl = (glpic_t *)p->data;
-
-	// load little ones into the scrap
-	if (p->width < 64 && p->height < 64)
-	{
-		int		x, y;
-		int		i, j, k;
-		int		texnum;
-
-		texnum = Scrap_AllocBlock (p->width, p->height, &x, &y);
-		scrap_dirty = true;
-		k = 0;
-		for (i=0 ; i<p->height ; i++)
-			for (j=0 ; j<p->width ; j++, k++)
-				scrap_texels[texnum][(y+i)*BLOCK_WIDTH + x + j] = p->data[k];
-		texnum += scrap_texnum;
-		gl->texnum = texnum;
-		gl->sl = (x+0.01)/(float)BLOCK_WIDTH;
-		gl->sh = (x+p->width-0.01)/(float)BLOCK_WIDTH;
-		gl->tl = (y+0.01)/(float)BLOCK_WIDTH;
-		gl->th = (y+p->height-0.01)/(float)BLOCK_WIDTH;
-
-		pic_count++;
-		pic_texels += p->width*p->height;
-	}
 	else
 	{
+nonscrap:
 		gl->texnum = GL_LoadPicTexture (p);
 		gl->sl = 0;
 		gl->sh = 1;
@@ -279,24 +257,19 @@ qpic_t	*Draw_CachePic (char *path)
 	// HACK HACK HACK --- we need to keep the bytes for
 	// the translatable player picture just for the menu
 	// configuration dialog
-#if 0
-	if (!strcmp (path, "gfx/menuplyr.lmp"))
-		memcpy (menuplyr_pixels, dat->data, dat->width*dat->height);
-#else
 	/* garymct */
 	if (!strcmp (path, "gfx/menu/netp1.lmp"))
 		memcpy (menuplyr_pixels[0], dat->data, dat->width*dat->height);
-	if (!strcmp (path, "gfx/menu/netp2.lmp"))
+	else if (!strcmp (path, "gfx/menu/netp2.lmp"))
 		memcpy (menuplyr_pixels[1], dat->data, dat->width*dat->height);
-	if (!strcmp (path, "gfx/menu/netp3.lmp"))
+	else if (!strcmp (path, "gfx/menu/netp3.lmp"))
 		memcpy (menuplyr_pixels[2], dat->data, dat->width*dat->height);
-	if (!strcmp (path, "gfx/menu/netp4.lmp"))
+	else if (!strcmp (path, "gfx/menu/netp4.lmp"))
 		memcpy (menuplyr_pixels[3], dat->data, dat->width*dat->height);
-	if (!strcmp (path, "gfx/menu/netp5.lmp"))
+	else if (!strcmp (path, "gfx/menu/netp5.lmp"))
 		memcpy (menuplyr_pixels[4], dat->data, dat->width*dat->height);
-	if (!strcmp (path, "gfx/menu/netp6.lmp"))
+	else if (!strcmp (path, "gfx/menu/netp6.lmp"))
 		memcpy (menuplyr_pixels[5], dat->data, dat->width*dat->height);
-#endif
 
 	pic->pic.width = dat->width;
 	pic->pic.height = dat->height;
@@ -314,6 +287,58 @@ qpic_t	*Draw_CachePic (char *path)
 	return &pic->pic;
 }
 
+/*
+================
+Draw_CachePicNoTrans
+
+Pa3PyX: Function added to cache pics ignoring transparent
+colors (e.g. in intermission screens)
+================
+*/
+qpic_t *Draw_CachePicNoTrans(char *path)
+{
+	cachepic_t      *pic;
+	int                     i;
+	qpic_t          *dat;
+	glpic_t         *gl;
+
+	for (pic=menu_cachepics, i=0 ; i<menu_numcachepics ; pic++, i++)
+		if (!strcmp (path, pic->name))
+			return &pic->pic;
+
+	if (menu_numcachepics == MAX_CACHED_PICS)
+		Sys_Error ("menu_numcachepics == MAX_CACHED_PICS");
+	menu_numcachepics++;
+	strcpy (pic->name, path);
+
+//
+// load the pic from disk
+//
+	dat = (qpic_t *)COM_LoadTempFile (path);
+	if (!dat)
+		Sys_Error ("Draw_CachePicNoTrans: failed to load %s", path);
+	SwapPic (dat);
+
+	pic->pic.width = dat->width;
+	pic->pic.height = dat->height;
+
+	gl = (glpic_t *)pic->pic.data;
+	// Get rid of transparencies
+	for (i = 0; i < dat->width * dat->height; i++)
+	     if (dat->data[i] == 255)
+		 dat->data[i] = 31; // pal(31) == pal(255) == FCFCFC (white)
+	gl->texnum = GL_LoadPicTexture (dat);
+
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	gl->sl = 0;
+	gl->sh = 1;
+	gl->tl = 0;
+	gl->th = 1;
+
+	return &pic->pic;
+}
 
 void Draw_CharToConback (int num, byte *dest)
 {
@@ -416,6 +441,9 @@ void Draw_Init (void)
 {
 	int	i;
 	qpic_t	*cb, *mf;
+/*	byte	*dest;
+	int	x;
+	char	ver[40];*/
 	glpic_t	*gl;
 	int	start;
 	byte    *ncdata;
@@ -463,11 +491,9 @@ void Draw_Init (void)
 		if (mf->data[i] == 0)
 			mf->data[i] = 255;	// proper transparent color
 
-
 	char_menufonttexture = GL_LoadTexture ("menufont", 160, 80, mf->data, false, true, 0, false);
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
-
 
 	start = Hunk_LowMark ();
 
@@ -476,45 +502,15 @@ void Draw_Init (void)
 		Sys_Error ("Couldn't load gfx/menu/conback.lmp");
 	SwapPic (cb);
 
-/*	sprintf (ver, "%4.2f (%s)", VERSION, VERSION_PLATFORM);
+/*	// hack the version number directly into the pic
+	sprintf (ver, "%4.2f (%s)", VERSION, VERSION_PLATFORM);
 	dest = cb->data + 320 + 320*186 - 11 - 8*strlen(ver);
 	for (x=0 ; x<strlen(ver) ; x++)
-		Draw_CharToConback (ver[x], dest+(x<<3));*/
-
-#if 0
-	conback->width = vid.conwidth;
-	conback->height = vid.conheight;
-
-	// scale console to vid size
-	dest = ncdata = Hunk_AllocName(vid.conwidth * vid.conheight, "conback");
-
-	for (y=0 ; y<vid.conheight ; y++, dest += vid.conwidth)
-	{
-		src = cb->data + cb->width * (y*cb->height/vid.conheight);
-		if (vid.conwidth == cb->width)
-			memcpy (dest, src, vid.conwidth);
-		else
-		{
-			f = 0;
-			fstep = cb->width*0x10000/vid.conwidth;
-			for (x=0 ; x<vid.conwidth ; x+=4)
-			{
-				dest[x] = src[f>>16];
-				f += fstep;
-				dest[x+1] = src[f>>16];
-				f += fstep;
-				dest[x+2] = src[f>>16];
-				f += fstep;
-				dest[x+3] = src[f>>16];
-				f += fstep;
-			}
-		}
-	}
-#else
+		Draw_CharToConback (ver[x], dest+(x<<3));
+*/
 	conback->width = cb->width;
 	conback->height = cb->height;
 	ncdata = cb->data;
-#endif
 	
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
@@ -741,11 +737,11 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 	gl = (glpic_t *)pic->data;
 	glfunc.glColor4f_fp (1,1,1,1);
 	GL_Bind (gl->texnum);
-	glfunc.glBegin_fp (GL_QUADS);
 
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
+	glfunc.glBegin_fp (GL_QUADS);
 	glfunc.glTexCoord2f_fp (gl->sl, gl->tl);
 	glfunc.glVertex2f_fp (x, y);
 	glfunc.glTexCoord2f_fp (gl->sh, gl->tl);
@@ -791,6 +787,41 @@ void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha)
 	glfunc.glColor4f_fp (1,1,1,1);
 	glfunc.glEnable_fp(GL_ALPHA_TEST);
 	glfunc.glDisable_fp (GL_BLEND);
+}
+
+/*
+=============
+Draw_IntermissionPic
+
+Pa3PyX: this new function introduced to draw the intermission screen only
+=============
+*/
+void Draw_IntermissionPic (qpic_t *pic)
+{
+	glpic_t			*gl;
+
+	if (scrap_dirty)
+		Scrap_Upload ();
+	gl = (glpic_t *)pic->data;
+	glfunc.glColor4f_fp (1,1,1,1);
+	GL_Bind (gl->texnum);
+
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+	glfunc.glBegin_fp(GL_QUADS);
+	glfunc.glTexCoord2f_fp(0.0f, 0.0f);
+	glfunc.glVertex2f_fp(0.0f, 0.0f);
+	glfunc.glTexCoord2f_fp(1.0f, 0.0f);
+	glfunc.glVertex2f_fp(vid.width, 0.0f);
+	glfunc.glTexCoord2f_fp(1.0f, 1.0f);
+	glfunc.glVertex2f_fp(vid.width, vid.height);
+	glfunc.glTexCoord2f_fp(0.0f, 1.0f);
+	glfunc.glVertex2f_fp(0.0f, vid.height);
+	glfunc.glEnd_fp();
+
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
 void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height)
@@ -1114,7 +1145,7 @@ void Draw_ConsoleBackground (int lines)
 	if (lines > y)
 		Draw_Pic (0, lines-vid.height, conback);
 	else
-		Draw_AlphaPic (0, lines - vid.height, conback, (float)(1.2 * lines)/y);
+		Draw_AlphaPic (0, lines - vid.height, conback, (float)(1.1 * lines)/y);
 
 	// hack the version number directly into the pic
 //	y = lines-186;
@@ -1664,6 +1695,13 @@ done: ;
 ===============
 GL_Upload8
 ===============
+*/
+/*
+* mode:
+* 0 - standard
+* 1 - color 0 transparent, odd - translucent, even - full value
+* 2 - color 0 transparent
+* 3 - special (particle translucency table)
 */
 void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode)
 {

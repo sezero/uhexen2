@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.38 2005-06-07 07:10:02 sezero Exp $
+	$Id: gl_draw.c,v 1.39 2005-06-07 20:28:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -161,41 +161,13 @@ qpic_t *Draw_PicFromFile (char *name)
 
 	gl = (glpic_t *)p->data;
 
-	// load little ones into the scrap
-/*	if (p->width < 64 && p->height < 64)
-	{
-		int		x, y;
-		int		i, j, k;
-		int		texnum;
+	gl->texnum = GL_LoadPicTexture (p);
 
-		texnum = Scrap_AllocBlock (p->width, p->height, &x, &y);
-		if (texnum == -1)
-			goto nonscrap;
-		scrap_dirty = true;
-		k = 0;
-		for (i=0 ; i<p->height ; i++)
-			for (j=0 ; j<p->width ; j++, k++)
-				scrap_texels[texnum][(y+i)*BLOCK_WIDTH + x + j] = p->data[k];
-		texnum += scrap_texnum;
-		gl->texnum = texnum;
-		gl->sl = (x+0.01)/(float)BLOCK_WIDTH;
-		gl->sh = (x+p->width-0.01)/(float)BLOCK_WIDTH;
-		gl->tl = (y+0.01)/(float)BLOCK_WIDTH;
-		gl->th = (y+p->height-0.01)/(float)BLOCK_WIDTH;
+	gl->sl = 0;
+	gl->sh = 1;
+	gl->tl = 0;
+	gl->th = 1;
 
-		pic_count++;
-		pic_texels += p->width*p->height;
-	}
-	else*/
-	{
-//nonscrap:
-		gl->texnum = GL_LoadPicTexture (p);
-
-		gl->sl = 0;
-		gl->sh = 1;
-		gl->tl = 0;
-		gl->th = 1;
-	}
 	return p;
 }
 
@@ -292,12 +264,11 @@ qpic_t	*Draw_CachePic (char *path)
 	pic->pic.width = dat->width;
 	pic->pic.height = dat->height;
 
-	gl = (glpic_t *)pic->pic.data;
-	gl->texnum = GL_LoadPicTexture (dat);
-
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+	gl = (glpic_t *)pic->pic.data;
+	gl->texnum = GL_LoadPicTexture (dat);
 	gl->sl = 0;
 	gl->sh = 1;
 	gl->tl = 0;
@@ -310,8 +281,8 @@ qpic_t	*Draw_CachePic (char *path)
 ================
 Draw_CachePicNoTrans
 
-Pa3PyX: Function added to cache pics ignoring transparent colors
-	 (e.g. in intermission screens)
+Pa3PyX: Function added to cache pics ignoring transparent
+colors (e.g. in intermission screens)
 ================
 */
 qpic_t *Draw_CachePicNoTrans(char *path)
@@ -358,7 +329,6 @@ qpic_t *Draw_CachePicNoTrans(char *path)
 
 	return &pic->pic;
 }
-
 
 void Draw_CharToConback (int num, byte *dest)
 {
@@ -462,7 +432,7 @@ void Draw_Init (void)
 	int	i;
 	qpic_t	*cb, *mf;
 	byte	*dest;
-	int	x, y;
+	int	x;
 	char	ver[40];
 	glpic_t	*gl;
 
@@ -479,7 +449,6 @@ void Draw_Init (void)
 	Cmd_AddCommand ("gl_texturemode", &Draw_TextureMode_f);
 	Cmd_AddCommand ("gl_texels", &GL_Texels_f);
 
-
 	// load the console background and the charset
 	// by hand, because we need to write the version
 	// string into the background before turning
@@ -493,7 +462,6 @@ void Draw_Init (void)
 	char_texture = GL_LoadTexture ("charset", 256, 128, draw_chars, false, true, 0, false);
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
-
 
 	draw_smallchars = W_GetLumpName("tinyfont");
 	for (i=0 ; i<128*32 ; i++)
@@ -510,7 +478,6 @@ void Draw_Init (void)
 		if (mf->data[i] == 0)
 			mf->data[i] = 255;	// proper transparent color
 
-
 	char_menufonttexture = GL_LoadTexture ("menufont", 160, 80, mf->data, false, true, 0, false);
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
@@ -521,14 +488,9 @@ void Draw_Init (void)
 	SwapPic (cb);
 
 	// hack the version number directly into the pic
-
 	sprintf (ver, "%4.2f (%s)", HEXEN2_VERSION, VERSION_PLATFORM);
 	dest = cb->data + 320 + 320*186 - 11 - 8*strlen(ver);
-
-//	sprintf (ver, "(gl %4.2f) %4.2f", (float)GLQUAKE_VERSION, (float)VERSION);
-//	dest = cb->data + 320*186 + 320 - 11 - 8*strlen(ver);
-	y = strlen(ver);
-	for (x=0 ; x<y ; x++)
+	for (x=0 ; x<strlen(ver) ; x++)
 		Draw_CharToConback (ver[x], dest+(x<<3));
 
 	gl = (glpic_t *)conback->data;
@@ -800,6 +762,39 @@ void Draw_IntermissionPic (qpic_t *pic)
 	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
+void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height)
+{
+	glpic_t			*gl;
+	float newsl, newtl, newsh, newth;
+	float oldglwidth, oldglheight;
+
+	if (scrap_dirty)
+		Scrap_Upload ();
+	gl = (glpic_t *)pic->data;
+	
+	oldglwidth = gl->sh - gl->sl;
+	oldglheight = gl->th - gl->tl;
+
+	newsl = gl->sl + (srcx*oldglwidth)/pic->width;
+	newsh = newsl + (width*oldglwidth)/pic->width;
+
+	newtl = gl->tl + (srcy*oldglheight)/pic->height;
+	newth = newtl + (height*oldglheight)/pic->height;
+	
+	glfunc.glColor4f_fp (1,1,1,1);
+	GL_Bind (gl->texnum);
+	glfunc.glBegin_fp (GL_QUADS);
+	glfunc.glTexCoord2f_fp (newsl, newtl);
+	glfunc.glVertex2f_fp (x, y);
+	glfunc.glTexCoord2f_fp (newsh, newtl);
+	glfunc.glVertex2f_fp (x+width, y);
+	glfunc.glTexCoord2f_fp (newsh, newth);
+	glfunc.glVertex2f_fp (x+width, y+height);
+	glfunc.glTexCoord2f_fp (newsl, newth);
+	glfunc.glVertex2f_fp (x, y+height);
+	glfunc.glEnd_fp ();
+}
+
 void Draw_PicCropped(int x, int y, qpic_t *pic)
 {
 	int height;
@@ -843,6 +838,68 @@ void Draw_PicCropped(int x, int y, qpic_t *pic)
 		th = gl->th;//(height-0.01)/pic->height;
 	}
 
+
+	glfunc.glColor4f_fp (1,1,1,1);
+	GL_Bind (gl->texnum);
+	glfunc.glBegin_fp (GL_QUADS);
+	glfunc.glTexCoord2f_fp (gl->sl, tl);
+	glfunc.glVertex2f_fp (x, y);
+	glfunc.glTexCoord2f_fp (gl->sh, tl);
+	glfunc.glVertex2f_fp (x+pic->width, y);
+	glfunc.glTexCoord2f_fp (gl->sh, th);
+	glfunc.glVertex2f_fp (x+pic->width, y+height);
+	glfunc.glTexCoord2f_fp (gl->sl, th);
+	glfunc.glVertex2f_fp (x, y+height);
+	glfunc.glEnd_fp ();
+}
+
+void Draw_SubPicCropped(int x, int y, int h, qpic_t *pic)
+{
+	int height;
+	glpic_t 		*gl;
+	float th,tl;
+
+	if((x < 0) || (x+pic->width > vid.width))
+	{
+		Sys_Error("Draw_PicCropped: bad coordinates");
+	}
+
+	if (y >= (int)vid.height || y+h < 0)
+	{ // Totally off screen
+		return;
+	}
+
+	if (scrap_dirty)
+		Scrap_Upload ();
+	gl = (glpic_t *)pic->data;
+
+	// rjr tl/th need to be computed based upon pic->tl and pic->th
+	//     cuz the piece may come from the scrap
+	if(y+pic->height > vid.height)
+	{
+		height = vid.height-y;
+		tl = 0;
+		th = (height-0.01)/pic->height;
+	}
+	else if (y < 0)
+	{
+		height = pic->height+y;
+		y = -y;
+		tl = (y-0.01)/pic->height;
+		th = (pic->height-0.01)/pic->height;
+		y = 0;
+	}
+	else
+	{
+		height = pic->height;
+		tl = gl->tl;
+		th = gl->th;//(height-0.01)/pic->height;
+	}
+
+	if (height > h) 
+	{
+		height = h;
+	}
 
 	glfunc.glColor4f_fp (1,1,1,1);
 	GL_Bind (gl->texnum);
@@ -1025,7 +1082,6 @@ void Draw_ConsoleBackground (int lines)
 		Draw_Pic (0, lines-vid.height, conback);
 	else
 		Draw_AlphaPic (0, lines - vid.height, conback, (float)(1.1 * lines)/y);
-		// O.S: hexenworld had 1.2 as multiplier, I used 1.1
 }
 
 
@@ -1112,6 +1168,7 @@ void Draw_FadeScreen (void)
 //	glfunc.glColor4f_fp (248.0/255.0, 220.0/255.0, 120.0/255.0, 0.2);
 	glfunc.glColor4f_fp (208.0/255.0, 180.0/255.0, 80.0/255.0, 0.2);
 	glfunc.glBegin_fp (GL_QUADS);
+
 	glfunc.glVertex2f_fp (0,0);
 	glfunc.glVertex2f_fp (vid.width, 0);
 	glfunc.glVertex2f_fp (vid.width, vid.height);
@@ -1730,19 +1787,16 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 {
 	int		i;
 	gltexture_t	*glt;
-	char search[64];
 
 	if (!vid_initialized)
 		return -1;
-
-	sprintf (search, "%s%d%d",identifier,width,height);
 
 	// see if the texture is already present
 	if (identifier[0])
 	{
 		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
 		{
-			if (!strcmp (search, glt->identifier))
+			if (!strcmp (identifier, glt->identifier))
 			{
 				if (width != glt->width || height != glt->height || mipmap != glt->mipmap) {
 				// Not the same texture - dont die, delete and rebind to new image
@@ -1769,7 +1823,7 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 	}
 	numgltextures++;
 
-	strcpy (glt->identifier, search);
+	strcpy (glt->identifier, identifier);
 	glt->texnum = texture_extension_number;
 	glt->width = width;
 	glt->height = height;
@@ -1799,6 +1853,11 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.38  2005/06/07 07:10:02  sezero
+ * Removed my incorrect paranoia alert in cache mismatch code:
+ * No paranoia, because gl_purge_maptex may well be false, and flush_textures
+ * doesn't work for map changes in client-to remote server connections.
+ *
  * Revision 1.37  2005/05/31 19:49:57  sezero
  * ported player menu-texture handling, GL_LoadTexture
  * and gl-filter changes from hexen2 to hexenworld.
