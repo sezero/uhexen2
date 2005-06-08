@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/world.hc,v 1.2 2005-01-26 20:17:55 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/world.hc,v 1.3 2005-06-08 17:14:00 sezero Exp $
  */
 
 //void() InitBodyQue;
@@ -114,7 +114,7 @@ void GetNextMap()
 {
 float line_id;
 float map_sequence_start;
-float map_start;
+//float map_start;
 string map_name;
 
 	line_id = 0;
