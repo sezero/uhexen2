@@ -1,5 +1,12 @@
 ChangeLog:
 
+2005-06-08 (CVS, 1.2.5-pre2):
+     * Help messages drawn fullscreen for software version, as well
+     * Added texture cheksumming (from Pa3PyX) for verification in
+       GL_LoadTexture. Die white textures, die die die ;)
+     * Ported fullscreen intermissions code to hexenworld.
+     * Some more hexen2/hexenworld code syncing.
+
 2005-06-07 (CVS, 1.2.5-pre2):
      * Moved flush_textures decision to svmain.c:SV_SpawnServer()
        again, this time fixing it by not clearing the server struct
