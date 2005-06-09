@@ -1,5 +1,11 @@
 ChangeLog:
 
+2005-06-09 (CVS, 1.2.5-pre2):
+     * [launcher] fixed a truely silly typo which is responsible for
+       the longstanding "Gtk-CRITICAL **: file gtkwidget.c: line 6502
+       (gtk_widget_unref): assertion `GTK_IS_WIDGET (widget)' failed"
+       error message upon exitting.
+
 2005-06-08 (CVS, 1.2.5-pre2):
      * Help messages drawn fullscreen for software version, as well
      * Added texture cheksumming (from Pa3PyX) for verification in
