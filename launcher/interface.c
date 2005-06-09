@@ -308,7 +308,7 @@ GtkWidget* create_window1 (void)
  ********************************************************************/
 
   bMORE = gtk_button_new_with_label (_("More >>>"));
-  gtk_widget_ref (bQUIT);
+  gtk_widget_ref (bMORE);
   gtk_object_set_data_full (GTK_OBJECT (window1), "bMORE", bMORE,
 				(GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bMORE);
