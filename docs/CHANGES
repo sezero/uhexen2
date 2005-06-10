@@ -1,5 +1,13 @@
 ChangeLog:
 
+2005-06-10 (CVS, 1.2.5-pre2):
+     * Cleaned up and redesigned the launcher, Version 0.6.0:
+     - The "More" mode uses tabs on the right for more bloat
+     - Removed -sndmono option
+     - Added support for --gllibrary, -3dfxgamma, -fsaa, -vsync,
+       -paltex, -nomtex, -nomouse, -heapsize, -zone, -condebug
+     - Maybe I add a space for custom arguments one day
+
 2005-06-09 (CVS, 1.2.5-pre2):
      * [launcher] fixed a truely silly typo which is responsible for
        the longstanding "Gtk-CRITICAL **: file gtkwidget.c: line 6502
