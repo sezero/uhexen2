@@ -9,6 +9,7 @@ extern unsigned missingexe;
 extern int opengl_support;
 extern int fullscreen;
 extern int resolution;
+extern char gllibrary[256];
 extern int sound;
 extern int sndrate;
 extern int destiny;
@@ -62,7 +63,6 @@ void on_SND (GtkEditable *editable, sndwidget_t *wgt) {
 			gtk_widget_set_sensitive (wgt->MUSIC_CD, sound);
 			gtk_widget_set_sensitive (wgt->SND_RATE, sound);
 			gtk_widget_set_sensitive (wgt->SND_BITS, sound);
-			gtk_widget_set_sensitive (wgt->SND_STEREO, sound);
 			return;
 		}
 // Normally, we should be all set within this loop, thus no "else"
@@ -99,6 +99,12 @@ void on_OGL (GtkToggleButton *button, gamewidget_t *wgt) {
 			resolution = 3;
 		break;
 	}
+	gtk_widget_set_sensitive (wgt->TDFX_BUTTON, opengl_support);
+	gtk_widget_set_sensitive (wgt->GL8BIT_BUTTON, opengl_support);
+	gtk_widget_set_sensitive (wgt->MTEX_BUTTON, opengl_support);
+	gtk_widget_set_sensitive (wgt->VSYNC_BUTTON, opengl_support);
+	gtk_widget_set_sensitive (wgt->FSAA_BUTTON, opengl_support);
+	gtk_widget_set_sensitive (wgt->LIBGL_BUTTON, opengl_support);
 /*	Make_ResMenu() triggers "changed" signal for RES_LIST
 	Prevent the fight: res_Change() wont do a thing if(lock)
 */	lock = 1;
@@ -120,6 +126,12 @@ void res_Change (GtkEditable *editable, gpointer user_data) {
 		// Normally, we should be all set within this loop
 		}
 	}
+}
+
+void gl_Change (GtkEditable *editable, gpointer user_data) {
+	gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
+	memset (gllibrary, 0, sizeof(gllibrary));
+	memcpy (gllibrary, tmp, strlen(tmp));
 }
 
 void UpdateStats (struct Launch_s *wgt) {
@@ -195,11 +207,17 @@ void ReverseOpt (GtkObject *Unused, int *opt) {
 	(*(opt)) = !(*(opt));
 }
 
-void on_MORE (GtkButton *button, GtkWidget *window) {
+void adj_Change (GtkAdjustment *adj, int *opt) {
+	(*(opt)) = (int)(adj->value);
+//	printf ("Value is: %d\n", *(opt));
+}
+
+void on_MORE (GtkButton *button, HoTWindow_t *window) { 
 	bmore = !bmore;
-	gtk_widget_set_size_request(window, bmore ? 420 : 230, 352);
 	gtk_button_set_label(button, bmore ? _("<<< Less") : _("More >>>"));
-	// window1 has one child which is fixed1
-	gtk_fixed_move(GTK_FIXED(GTK_BIN(window)->child), GTK_WIDGET(button), bmore ? 330 : 132, bmore ? 300 : 272);
-//	gtk_widget_set_uposition(GTK_WIDGET(button), bmore ? 330 : 132, bmore ? 300 : 272);
+	gtk_widget_set_size_request(window->mywindow, bmore ? 460 : 230, 354);
+	if (bmore)
+		gtk_widget_show (window->notebook1);
+	else
+		gtk_widget_hide (window->notebook1);
 }

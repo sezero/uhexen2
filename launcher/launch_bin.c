@@ -7,13 +7,26 @@ extern int mp_support;
 extern int opengl_support;
 extern int fullscreen;
 extern int resolution;
+extern int fxgamma;
+extern int is8bit;
+extern int use_fsaa;
+extern int aasamples;
+extern int vsync;
+extern int mtex;
+extern int gl_nonstd;
+extern char gllibrary[256];
 extern int midi;
 extern int cdaudio;
 extern int sound;
 extern int sndrate;
 extern int sndbits;
-extern int stereo;
 extern int lan;
+extern int mouse;
+extern int debug;
+extern int use_heap;
+extern int use_zone;
+extern int heapsize;
+extern int zonesize;
 #ifndef DEMOBUILD
 extern int h2game;
 extern int hwgame;
@@ -80,7 +93,8 @@ void CheckExe () {
 void launch_hexen2_bin() {
 
 	unsigned short i=0, i1=0;
-	char *args[20];
+	char *args[32];
+	char tmparg1[8], tmparg2[8], tmparg3[8];
 
 	args[i]=binary_name;
 
@@ -101,8 +115,6 @@ void launch_hexen2_bin() {
 			args[++i]="-sndbits";
 			args[++i]="8";
 		}
-		if (stereo == 0)
-			args[++i]="-sndmono";
 		if (midi == 0)
 			args[++i]="-nomidi";
 		if (cdaudio == 0)
@@ -129,6 +141,47 @@ void launch_hexen2_bin() {
 
 	if ((lan == 0) && (destiny != DEST_HW))
 		args[++i]="-nolan";
+
+	if (!mouse)
+		args[++i]="-nomouse";
+
+	if ((opengl_support) && (fxgamma))
+		args[++i]="-3dfxgamma";
+
+	if ((opengl_support) && (is8bit))
+		args[++i]="-paltex";
+
+	if ((opengl_support) && (use_fsaa) && (aasamples)) {
+		args[++i]="-fsaa";
+		snprintf (tmparg3, 8, "%i", aasamples);
+		args[++i]=tmparg3;
+	}
+
+	if ((opengl_support) && (vsync))
+		args[++i]="-vsync";
+
+	if ((opengl_support) && (!mtex))
+		args[++i]="-nomtex";
+
+	if ((opengl_support) && (gl_nonstd) && (strlen(gllibrary) != 0)) {
+		args[++i]="--gllibrary";
+		args[++i]=gllibrary;
+	}
+
+	if ((use_heap) && (heapsize >= 8192)) {
+		args[++i]="-heapsize";
+		snprintf (tmparg1, 8, "%i", heapsize);
+		args[++i]=tmparg1;
+	}
+
+	if ((use_zone) && (zonesize >= 48)) {
+		args[++i]="-zone";
+		snprintf (tmparg2, 8, "%i", zonesize);
+		args[++i]=tmparg2;
+	}
+
+	if (debug)
+		args[++i]="-condebug";
 
 	// finish the list of args
 	args[++i]=NULL;
