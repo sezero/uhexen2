@@ -4,21 +4,25 @@ Known Bugs
   Midi music doesn't work with SDL sound driver due to conflicting
   SDL and SDL_mixer calls. There are a few other problems related
   to SDL_mixer/midi. Re-writing midi code for libWildmidi is on the
-  TODO list.
+  TODO list. We may also add alsa (and/or oss) sequencer support.
 
-  OSS sound code does not work for some people, either partially or
-  completely. This includes some sampling rate problems, and probably
-  more things that we're not aware of, yet. Although this shouldn't
-  be a problem anymore (we already have ALSA and SDL sound drivers),
-  fixing that is on the TODO list.
+  OSS sound code does not work for a few people, either partially or
+  completely. This includes some sampling rate problems in the first
+  place, and probably more things that we are not aware of, yet.
+  Although this shouldn't be a problem (we already have ALSA and SDL
+  sound drivers), fixing that is on the TODO list.
 
-  3dfx Voodoo1/Voodoo2: Palettized textures are broken both with
-  Mesa 3.x. Mesa-6.x seems to work fine.  Voodoo3/5 aren't affected,
-  because DRI driver doesn't have those extensions. Nvidia seems to
-  work fine with it, though). Don't know if this is a Mesa bug or
-  Hexen2 bug, yet.
+  3dfx Voodoo1/2: Palettized textures are broken both with Mesa 3.x.
+  Mesa-6.x seems to work fine. Voodoo3/5 aren't affected, because DRI
+  driver doesn't have those extensions. Nvidia seems to work fine with
+  it. Don't know if this is a Mesa bug or Hexen2 bug, yet.
 
-  matrox G200: GL games don't display menus correctly (matrox GL bug?)
+  3dfx Voodoo: Doesn't work correctly with multitexturing, yet.
+
+  Multisampling: When multisampling is enabled (-fsaa N), the "Loading
+  widget" isn't displayed correctly, at least on Nvidia.
+
+  Matrox G200: GL games may not display menus correctly (Matrox bug?)
 
   Coop mode of HexenWorld is broken (known problem since Raven's latest
   beta-0.15)
