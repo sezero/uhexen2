@@ -10,6 +10,7 @@ USEMIDI=yes
 # USEALSA :	no   =	Don't include alsa support.
 #		yes  =	Include ALSA sound support. Requires alsa-lib
 #			and alsa-kernel modules >= 1.0.1
+#		On platforms other than linux, it will already be disabled
 USEALSA=yes
 
 # To build for the demo version, run with make DEMO=yes [other stuff]

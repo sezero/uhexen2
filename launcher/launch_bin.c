@@ -39,7 +39,9 @@ const char *snddrv_names[MAX_SOUND][2]={
 	{ "-nosound", "No Sound"},
 	{ "-sndoss" , "OSS"	},	// just a placeholder, it is default actually
 	{ "-sndsdl" , "SDL"	},
+#if defined(__linux__)
 	{ "-sndalsa", "ALSA"	},
+#endif
 };
 
 const char *snd_rates[MAX_RATES]={

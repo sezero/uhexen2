@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.21 2005-06-07 07:06:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.22 2005-06-12 07:31:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1000,7 +1000,7 @@ void Host_Init (quakeparms_t *parms)
 			snd_system = S_SYS_NULL;
 		else if (COM_CheckParm ("-sndsdl"))
 			snd_system = S_SYS_SDL;
-#ifndef NO_ALSA
+#if defined(__linux__) && !defined(NO_ALSA)
 		else if (COM_CheckParm ("-sndalsa"))
 			snd_system = S_SYS_ALSA;
 #endif
@@ -1083,6 +1083,12 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2005/06/07 07:06:32  sezero
+ * Moved flush_textures decision to svmain.c:SV_SpawnServer() again, this
+ * time fixing it by not clearing the server struct in Host_ShutdownServer().
+ * In fact this logic is still slightly flawed, because flush_textures isn't
+ * set on map changes in client-to-remote server map-change situations.
+ *
  * Revision 1.20  2005/05/29 08:38:12  sezero
  * get rid of the silly func name difference
  *

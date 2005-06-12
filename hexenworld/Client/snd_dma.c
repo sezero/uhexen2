@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.19 2005-06-06 10:17:05 sezero Exp $
+	$Id: snd_dma.c,v 1.20 2005-06-12 07:31:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -104,7 +104,7 @@ void S_SoundInfo_f(void)
 	case S_SYS_SDL:
 		s_sys = "SDL";
 		break;
-#ifndef NO_ALSA
+#if defined(__linux__) && !defined(NO_ALSA)
 	case S_SYS_ALSA:
 		s_sys = "ALSA";
 		break;
@@ -1097,6 +1097,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2005/06/06 10:17:05  sezero
+ * put some notes on decision behavior for -sndspeed argument.
+ *
  * Revision 1.18  2005/05/20 15:26:34  sezero
  * separated winquake.h into winquake.h and linquake.h
  * changed all occurances of winquake.h to quakeinc.h,

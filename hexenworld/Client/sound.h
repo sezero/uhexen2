@@ -133,7 +133,7 @@ extern qboolean S_SDL_Init(void);
 extern int S_SDL_GetDMAPos(void);
 extern void S_SDL_Shutdown(void);
 extern void S_SDL_Submit(void);
-#ifndef NO_ALSA
+#if defined(__linux__) && !defined(NO_ALSA)
 // ALSA versions of the above
 extern qboolean S_ALSA_Init(void);
 extern int S_ALSA_GetDMAPos(void);

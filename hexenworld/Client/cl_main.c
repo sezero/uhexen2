@@ -1333,7 +1333,7 @@ void Host_Init (quakeparms_t *parms)
 		snd_system = S_SYS_NULL;
 	else if (COM_CheckParm ("-sndsdl"))
 		snd_system = S_SYS_SDL; 
-#ifndef NO_ALSA
+#if defined(__linux__) && !defined(NO_ALSA)
 	else if (COM_CheckParm ("-sndalsa")) 
 		snd_system = S_SYS_ALSA; 
 #endif

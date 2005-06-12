@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.9 2005-06-12 07:28:54 sezero Exp $
+	$Id: snd_alsa.c,v 1.10 2005-06-12 07:31:18 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -25,7 +25,7 @@
 		Boston, MA  02111-1307, USA
 */
 
-#ifndef NO_ALSA
+#if defined(__linux__) && !defined(NO_ALSA)
 
 #include "quakedef.h"
 #include <dlfcn.h>
@@ -303,6 +303,9 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/06/12 07:28:54  sezero
+ * clean-up of includes and a fix (hopefully) for endianness detection
+ *
  * Revision 1.8  2005/03/05 14:34:21  sezero
  * Try to use what frequency is actually set:
  * I first naively thought that requested-provided frequency
