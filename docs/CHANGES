@@ -13,6 +13,16 @@ ChangeLog:
        to be included automagically into cd_unix.c at compile time.
        not enabled right now but be trivially done so by editing the
        makefiles
+     * changed all strcasecmp to Q_strcasecmp in unix cdrom code for
+       consistency
+     * open the cdrom device with O_NONBLOCK in order to prevent
+       CDAudio_Init failing when there is no disc in drive
+     * misc cdaudio spelling fixes
+     * added SDL cdaudio code (from SDLquake with fixes & adaptation)
+     * enabled the use of cd_unix.c which includes the correct cdraudio
+       code: If USE_SDLCD is set to yes in the makefiles cd_sdl.c will
+       be used; otherwise cd_linux.c for linux, cd_bsd.c for freebsd or
+       cd_sdl.c for any others.
 
 2005-06-10 (CVS, 1.2.5-pre2):
      * Cleaned up and redesigned the launcher, Version 0.6.0:
