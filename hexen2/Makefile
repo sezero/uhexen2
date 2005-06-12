@@ -16,6 +16,12 @@ USEMIDI=yes
 #		On platforms other than linux, it will already be disabled
 USEALSA=yes
 
+# USE_SDLCD:	no   =	Don't use SDL cdaudio (default); platform spesific
+#			cdrom code will be used.  The only problem with
+#			SDL_cdrom is that it lacks proper volume controls.
+#		yes  =	Use SDL for cdaudio instead of platform spesific code
+USE_SDLCD=no
+
 # To build for the demo version, run with make DEMO=yes [other stuff]
 
 
@@ -71,6 +77,10 @@ endif
 
 ifeq "$(USEALSA)" "no"
 GAMEFLAGS+= -DNO_ALSA
+endif
+
+ifeq "$(USE_SDLCD)" "yes"
+GAMEFLAGS+= -DWITH_SDLCD
 endif
 
 ifdef DEMO

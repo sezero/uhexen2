@@ -1,6 +1,6 @@
 /*
 	cd_unix.c
-	$Id: cd_unix.c,v 1.1 2005-06-12 07:43:56 sezero Exp $
+	$Id: cd_unix.c,v 1.2 2005-06-12 14:22:50 sezero Exp $
 
 	Wrapper file to include correct cdaudio code
 
@@ -24,14 +24,16 @@
 
 */
 
-
-#if defined (__linux__)
+#if defined (WITH_SDLCD)
+// for this to happen, you need to
+// edit the makefiles for USE_SDLCD
+#include "cd_sdl.c"
+#elif defined (__linux__)
 #include "cd_linux.c"
 #elif defined (__FreeBSD__) 
 #include "cd_unix.c"
 #else
-// we may add cd_sdl.c here
-// in future
-#include "cd_null.c"
+#include "cd_sdl.c"
+//#include "cd_null.c"
 #endif
 

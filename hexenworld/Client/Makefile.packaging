@@ -4,6 +4,7 @@
 
 USEMIDI=yes
 USEALSA=yes
+USE_SDLCD=no
 
 GL_BINARY=glhwcl
 GL_BINARY_STATIC=glhwcl.static
@@ -39,6 +40,10 @@ endif
 
 ifeq "$(USEALSA)" "no"
 GAMEFLAGS+= -DNO_ALSA
+endif
+
+ifeq "$(USE_SDLCD)" "yes"
+GAMEFLAGS+= -DWITH_SDLCD
 endif
 
 ifdef DEMO

@@ -4,6 +4,7 @@
 
 USEMIDI=yes
 USEALSA=yes
+USE_SDLCD=no
 
 GLMP_BINARY=glh2mp
 GLMP_BINARY_STATIC=glh2mp.static
@@ -41,6 +42,10 @@ endif
 
 ifeq "$(USEALSA)" "no"
 GAMEFLAGS+= -DNO_ALSA
+endif
+
+ifeq "$(USE_SDLCD)" "yes"
+GAMEFLAGS+= -DWITH_SDLCD
 endif
 
 ifdef DEMO
