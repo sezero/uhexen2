@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.5 2005-04-30 07:54:45 sezero Exp $
+	$Id: net_udp.c,v 1.6 2005-06-12 07:28:51 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -28,7 +28,6 @@
 # include "config.h"
 #endif
 
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -36,8 +35,6 @@
 #include <sys/param.h>
 #include <sys/ioctl.h>
 #include <errno.h>
-#include <string.h>
-#include <stdlib.h>
 #include <unistd.h>
 
 #ifdef __sun__

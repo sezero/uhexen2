@@ -1,4 +1,8 @@
 // net_wins.c
+
+#include "quakedef.h"
+#include "quakeinc.h"
+
 #ifdef PLATFORM_UNIX
 #include <errno.h>
 #include <sys/stat.h>
@@ -6,7 +10,6 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/ioctl.h>
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <unistd.h>
@@ -27,9 +30,6 @@
 #define SOCKET_ERROR -1
 #define INVALID_SOCKET -1
 #endif
-
-#include "quakedef.h"
-#include "quakeinc.h"
 
 int LastCompMessageSize = 0;
 

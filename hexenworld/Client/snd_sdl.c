@@ -3,10 +3,9 @@
 	SDL sound driver for Linux Hexen II,  based on the SDLquake
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 
-	$Id: snd_sdl.c,v 1.7 2005-06-06 10:14:18 sezero Exp $
+	$Id: snd_sdl.c,v 1.8 2005-06-12 07:28:54 sezero Exp $
 */
 
-#include <stdio.h>
 #include "SDL.h"
 //#include "SDL_byteorder.h"
 #include "quakedef.h"
@@ -129,6 +128,10 @@ void S_SDL_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/06/06 10:14:18  sezero
+ * put my usual requested/obtained sndrate mismatch
+ * warning in snd_sdl, as well.
+ *
  * Revision 1.6  2005/02/20 12:46:43  sezero
  * - Process all command line options in snd_dma.c, S_Startup() only.
  *   Targets will do to its bidding first. And don't die immediately,

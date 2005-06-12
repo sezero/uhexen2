@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.12 2005-05-19 16:41:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.13 2005-06-12 07:28:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1235,7 +1235,7 @@ void PR_LoadProgs (void)
 	
 	pr_edict_size = progs->entityfields * 4 + sizeof (edict_t) - sizeof(entvars_t);
 
-#if __BYTE_ORDER == __BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
 	// byte swap the lumps
 		for (i=0 ; i<progs->numstatements ; i++)
 		{
@@ -1273,7 +1273,7 @@ void PR_LoadProgs (void)
 		
 		for (i=0 ; i<progs->numglobals ; i++)
 			((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
-#endif	// __BIG_ENDIAN
+#endif	// BIG_ENDIAN
 
 #ifdef H2MP
 	// set the cl_playerclass value after pr_global_struct has been created
@@ -1441,6 +1441,9 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/05/19 16:41:50  sezero
+ * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
+ *
  * Revision 1.11  2005/05/17 22:56:19  sezero
  * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
  * Q_strXcasecmp will now be used throughout the code which are implementation

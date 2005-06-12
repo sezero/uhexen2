@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.8 2005-03-05 14:33:32 sezero Exp $
+	$Id: snd_alsa.c,v 1.9 2005-06-12 07:28:51 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -27,10 +27,9 @@
 
 #ifndef NO_ALSA
 
-#include <stdio.h>
+#include "quakedef.h"
 #include <dlfcn.h>
 #include <alsa/asoundlib.h>
-#include "quakedef.h"
 
 static void *alsa_handle;
 static char *pcmname = "default";
@@ -304,6 +303,12 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/03/05 14:33:32  sezero
+ * Try to use what frequency is actually set:
+ * I first naively thought that requested-provided frequency
+ * mismatches wouldn't happen, but I got one weird oss report
+ * which includes this case. Let's see what this does now...
+ *
  * Revision 1.7  2005/02/20 12:44:58  sezero
  * - Process all command line options in snd_dma.c, S_Startup() only.
  *   Targets will do to its bidding first. And don't die immediately,

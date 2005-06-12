@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.12 2005-05-20 16:17:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.13 2005-06-12 07:28:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -11,7 +11,6 @@
 #include <windows.h>
 #else
 #include <dirent.h>
-#include <sys/types.h>
 #include <fnmatch.h>
 #include <unistd.h>
 #endif
@@ -1008,6 +1007,9 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/05/20 16:17:50  sezero
+ * keep ID style in declerations (less diff between h2/h2w...)
+ *
  * Revision 1.11  2005/05/19 16:41:50  sezero
  * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
  *

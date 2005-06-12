@@ -2,10 +2,9 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.6 2005-05-17 06:51:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.7 2005-06-12 07:28:51 sezero Exp $
 */
 
-#include <math.h>
 #include "quakedef.h"
 
 void Sys_Error (char *error, ...);
@@ -346,6 +345,11 @@ fixed16_t Invert24To16(fixed16_t val)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/05/17 06:51:57  sezero
+ * synced h2 and hw versions of mathlib.*
+ * (h2 now has some math functions inlined)
+ * updated linux_inc.h
+ *
  * Revision 1.5  2005/05/17 06:51:19  sezero
  * macroized some math functions (from Pa3PyX)
  * initial sync between h2/hw versions of mathlib.*

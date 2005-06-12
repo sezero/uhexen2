@@ -1,11 +1,10 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.3 2005-05-30 13:56:17 sezero Exp $
+	$Id: sys_unix.c,v 1.4 2005-06-12 07:28:54 sezero Exp $
 
 	Unix system interface code
 */
 
-#include <sys/types.h>
 #include <sys/time.h>
 #include <dirent.h>
 #include <unistd.h>

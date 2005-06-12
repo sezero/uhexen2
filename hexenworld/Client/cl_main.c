@@ -6,12 +6,9 @@
 #ifdef _WIN32
 #include "winsock.h"
 #else
-// do we really need to include <arpa/inet.h>
+#include <netinet/in.h>
 #ifndef INADDR_LOOPBACK
 #define	INADDR_LOOPBACK	0x7F000001
-#endif
-#ifndef htonl
-extern unsigned long htonl (unsigned long hostlong);
 #endif
 #endif
 

@@ -212,10 +212,10 @@ extern	netadr_t	net_local_adr;
 extern netadr_t	master_adr[MAX_MASTERS];	// address of group servers
 extern int num_masters;
 
-// endianness stuff
-#include <endian.h>
+// endianness stuff: <sys/types.h> is supposed
+// to succeed in locating the correct endian.h
 
-#if __BYTE_ORDER == __BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
 
 #define BigShort(s) (s)
 #define LittleShort(s) (ShortSwap(s))
@@ -224,7 +224,7 @@ extern int num_masters;
 #define BigFloat(f) (f)
 #define LittleFloat(f) (FloatSwap(f))
 
-#elif __BYTE_ORDER == __LITTLE_ENDIAN
+#elif BYTE_ORDER == LITTLE_ENDIAN
 
 #define BigShort(s) (ShortSwap(s))
 #define LittleShort(s) (s)
@@ -234,7 +234,7 @@ extern int num_masters;
 #define LittleFloat(f) (f)
 
 #else
-#error __BYTE_ORDER unset. I expect __LITTLE_ENDIAN or __BIG_ENDIAN
+#error BYTE_ORDER not set. I expect LITTLE_ENDIAN or BIG_ENDIAN
 #endif
 
 short	ShortSwap (short);

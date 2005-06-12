@@ -2,11 +2,11 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.26 2005-06-01 14:13:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.27 2005-06-12 07:28:51 sezero Exp $
 */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "quakedef.h"
+
 #include <errno.h>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -14,11 +14,8 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <signal.h>
-#include <string.h>
 #include <dirent.h>
 #include "SDL_version.h"
-
-#include "quakedef.h"
 
 #define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error running
 										//  dedicated before exiting
@@ -611,6 +608,10 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2005/06/01 14:13:21  sezero
+ * SDL version >= 1.2.6 is now required. Updated the READMEs
+ * and added a version check at startup.
+ *
  * Revision 1.25  2005/05/30 09:44:19  sezero
  * updated commandline help display
  *

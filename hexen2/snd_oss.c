@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.10 2005-03-06 10:40:10 sezero Exp $
+	$Id: snd_oss.c,v 1.11 2005-06-12 07:28:51 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -24,10 +24,10 @@
 
 */
 
+#include "quakedef.h"
+
 #include <unistd.h>
 #include <fcntl.h>
-#include <stdlib.h>
-#include <sys/types.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <sys/shm.h>
@@ -38,9 +38,7 @@
 #ifdef __linux__
 #include <linux/soundcard.h>
 #endif
-#include <stdio.h>
 #include <errno.h>
-#include "quakedef.h"
 
 int audio_fd = -1;
 int snd_inited;

@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.31 2005-06-01 14:10:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.32 2005-06-12 07:28:51 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -42,6 +42,7 @@
 #define AOT_USERDIR ".hexen2demo"
 #endif
 
+#include <sys/types.h>
 #include <math.h>
 #include <string.h>
 #include <stdarg.h>
@@ -432,6 +433,10 @@ void MIDI_Loop(int NewValue);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2005/06/01 14:10:42  sezero
+ * removed win32-only net function prototypes from linquake.h
+ * and updated linux_inc.h. also moved win32-only ipx netcode
+ *
  * Revision 1.30  2005/05/29 08:53:57  sezero
  * get rid of silly name changes
  *

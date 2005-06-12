@@ -4,6 +4,7 @@
 
 //define	PARANOID			// speed sapping error checking
 
+#include <sys/types.h>
 #include <math.h>
 #include <string.h>
 #include <stdarg.h>

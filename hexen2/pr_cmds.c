@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.9 2005-05-29 08:38:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.10 2005-06-12 07:28:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -9,7 +9,6 @@
 #ifndef PLATFORM_UNIX
 #include <windows.h>
 #else
-#include <sys/types.h>
 #include <signal.h>
 #include <unistd.h>
 #endif
@@ -3240,6 +3239,9 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/05/29 08:38:12  sezero
+ * get rid of the silly func name difference
+ *
  * Revision 1.8  2005/05/19 16:41:50  sezero
  * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
  *

@@ -4,7 +4,6 @@
 #include <windows.h>
 #else
 #include <dirent.h>
-#include <sys/types.h>
 #include <fnmatch.h>
 #include <unistd.h>
 #endif

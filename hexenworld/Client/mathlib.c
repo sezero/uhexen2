@@ -2,10 +2,9 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.c,v 1.4 2005-05-17 06:51:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.c,v 1.5 2005-06-12 07:28:54 sezero Exp $
 */
 
-#include <math.h>
 #include "quakedef.h"
 
 void Sys_Error (char *error, ...);

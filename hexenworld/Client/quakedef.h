@@ -13,6 +13,7 @@
 #define AOT_USERDIR ".hexen2demo"
 #endif
 
+#include <sys/types.h>
 #include <math.h>
 #include <string.h>
 #include <stdarg.h>

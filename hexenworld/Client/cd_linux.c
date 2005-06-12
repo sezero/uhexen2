@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.7 2005-05-19 10:49:57 sezero Exp $
+	$Id: cd_linux.c,v 1.8 2005-06-12 07:28:54 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -28,20 +28,16 @@
 # include "config.h"
 #endif
 
-#include <stdio.h>
+#include "quakedef.h"
+
 #include <unistd.h>
-#include <stdlib.h>
 #include <sys/ioctl.h>
 #include <sys/file.h>
-#include <sys/types.h>
 #include <fcntl.h>
-#include <string.h>
 #include <time.h>
 #include <errno.h>
 
 #include <linux/cdrom.h>
-
-#include "quakedef.h"
 
 static qboolean cdValid = false;
 static qboolean	playing = false;
