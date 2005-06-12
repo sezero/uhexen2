@@ -1,5 +1,19 @@
 ChangeLog:
 
+2005-06-11/12 (CVS, 1.2.5-pre3):
+     * cleaned-up includes and hopefully fixed endianness detection
+     * enabled alsa only on linux platforms
+     * updated all makefiles and build scripts. now I can happily
+       do make CC=xxx ..., make/gmake issue should also be fixed.
+     * updated cd_linux
+     * added cd_unix as a wrapper and a cd_null
+     * updated known bugs
+     * added a version of cd_bsd: hopefully correct, cannot test its
+       functionality right now. it is not used directly but intended
+       to be included automagically into cd_unix.c at compile time.
+       not enabled right now but be trivially done so by editing the
+       makefiles
+
 2005-06-10 (CVS, 1.2.5-pre2):
      * Cleaned up and redesigned the launcher, Version 0.6.0:
      - The "More" mode uses tabs on the right for more bloat
