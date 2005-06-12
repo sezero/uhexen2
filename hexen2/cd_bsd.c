@@ -1,6 +1,6 @@
 /*
 	cd_bsd.c
-	$Id: cd_bsd.c,v 1.3 2005-06-12 13:56:06 sezero Exp $
+	$Id: cd_bsd.c,v 1.4 2005-06-12 13:56:48 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	A few BSD bits taken from the Dark Places project for Hammer
@@ -424,7 +424,7 @@ int CDAudio_Init(void)
 
 	if (CDAudio_GetAudioDiskInfo())
 	{
-		Con_Printf("CDAudio_Init: No CD in player.\n");
+		Con_Printf("CDAudio_Init: No CD in drive\n");
 		cdValid = false;
 	}
 
