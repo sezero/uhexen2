@@ -3,8 +3,10 @@ DEBUG=no
 BINARY=hwmaster
 BINARY_STATIC=hwmaster.static
 
+ifndef CC
 CC = gcc
-LINKER = gcc
+endif
+LINKER = $(CC)
 CFLAGS = -I. -O2 -march=i586 -DPLATFORM_UNIX -Wall
 ifeq "$(DEBUG)" "yes"
 CFLAGS += -g

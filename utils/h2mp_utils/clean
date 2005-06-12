@@ -1,5 +1,19 @@
 #!/bin/sh
-make -C hcc clean
-make -C qfiles clean
-make -C genmodel clean
-make -C utils clean
+
+if [ -f /usr/local/bin/make ]; then
+	MAKE=/usr/local/bin/make
+elif [ -f /usr/bin/make ]; then
+	MAKE=/usr/bin/make
+elif [ -f /usr/local/bin/gmake ]; then
+	MAKE=/usr/local/bin/gmake
+elif [ -f /usr/bin/gmake ]; then
+	MAKE=/usr/bin/gmake
+else
+	echo "Error: make or gmake not found"
+	exit 1
+fi
+
+$MAKE -C hcc clean
+$MAKE -C qfiles clean
+$MAKE -C genmodel clean
+$MAKE -C utils clean

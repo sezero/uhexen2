@@ -1,5 +1,7 @@
+ifndef CC
 CC = gcc
-LINKER = gcc
+endif
+LINKER = $(CC)
 BINARY=hcc
 DESTDIR=../bin
 CFLAGS = 

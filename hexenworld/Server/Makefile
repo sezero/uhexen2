@@ -5,8 +5,10 @@
 BINARY=hwsv
 BINARY_STATIC=hwsv.static
 
+ifndef CC
 CC = gcc
-LINKER = gcc
+endif
+LINKER = $(CC)
 CFLAGS = -O2 -march=i586 -Wall
 ifdef DEBUG
 CFLAGS += -DDEBUG -g

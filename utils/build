@@ -1,17 +1,30 @@
 #!/bin/sh
 
+if [ -f /usr/local/bin/make ]; then
+	MAKE=/usr/local/bin/make
+elif [ -f /usr/bin/make ]; then
+	MAKE=/usr/bin/make
+elif [ -f /usr/local/bin/gmake ]; then
+	MAKE=/usr/local/bin/gmake
+elif [ -f /usr/bin/gmake ]; then
+	MAKE=/usr/bin/gmake
+else
+	echo "Error: make or gmake not found"
+	exit 1
+fi
+
 echo "Building hcc, the HexenC compiler.."
-make -C h2mp_utils/hcc
+$MAKE -C h2mp_utils/hcc
 echo "" && echo "Now building hcc, old version"
-make -C h2_utils/hcc
+$MAKE -C h2_utils/hcc
 echo "" && echo "Now building qfiles.."
-make -C h2mp_utils/qfiles
+$MAKE -C h2mp_utils/qfiles
 echo "" && echo "Now building genmodel.."
-make -C h2mp_utils/genmodel
+$MAKE -C h2mp_utils/genmodel
 echo "" && echo "Now building light, vis and qbsp.."
-make -C h2mp_utils/utils
+$MAKE -C h2mp_utils/utils
 echo "" && echo "Now building light, vis and qbsp, old versions.."
-make -C h2_utils/utils
+$MAKE -C h2_utils/utils
 echo "" && echo "Now building dhcc, a progs.dat decompiler.."
-make -C dcc
+$MAKE -C dcc
 

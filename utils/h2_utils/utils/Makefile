@@ -1,6 +1,8 @@
 
+ifndef CC
 CC = gcc
-LINKER = gcc
+endif
+LINKER = $(CC)
 
 QBSP=qbsp
 LIGHT=light

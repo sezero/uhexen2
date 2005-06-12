@@ -11,8 +11,10 @@ GL_BINARY_STATIC=glhwcl.static
 BINARY=hwcl
 BINARY_STATIC=hwcl.static
 
+ifndef CC
 CC = gcc
-LINKER = gcc
+endif
+LINKER = $(CC)
 CFLAGS = -O2 -march=i586 -Wall \
 	-fomit-frame-pointer -ffast-math -fexpensive-optimizations \
 	-falign-loops=2 -falign-jumps=2 -falign-functions=2

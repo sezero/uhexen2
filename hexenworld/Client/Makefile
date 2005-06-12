@@ -26,8 +26,10 @@ BINARY=hwcl
 binary_STATIC=hwcl.static
 endif
 
+ifndef CC
 CC = gcc
-LINKER = gcc
+endif
+LINKER = $(CC)
 CFLAGS = -O2 -march=i586 \
 	-fomit-frame-pointer -ffast-math -fexpensive-optimizations \
 	-falign-loops=2 -falign-jumps=2 -falign-functions=2

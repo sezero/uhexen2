@@ -1,9 +1,23 @@
 #!/bin/sh
+
+if [ -f /usr/local/bin/make ]; then
+	MAKE=/usr/local/bin/make
+elif [ -f /usr/bin/make ]; then
+	MAKE=/usr/bin/make
+elif [ -f /usr/local/bin/gmake ]; then
+	MAKE=/usr/local/bin/gmake
+elif [ -f /usr/bin/gmake ]; then
+	MAKE=/usr/bin/gmake
+else
+	echo "Error: make or gmake not found"
+	exit 1
+fi
+
 echo "Building hcc, the HexenC compiler.."
-make -C hcc
+$MAKE -C hcc
 echo "" && echo "Now building qfiles.."
-make -C qfiles
+$MAKE -C qfiles
 echo "" && echo "Now building genmodel.."
-make -C genmodel
+$MAKE -C genmodel
 echo "" && echo "Now building light, vis and qbsp.."
-make -C utils
+$MAKE -C utils
