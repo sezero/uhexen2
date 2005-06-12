@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.10 2005-06-12 13:55:19 sezero Exp $
+	$Id: cd_linux.c,v 1.11 2005-06-12 13:56:06 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -388,7 +388,7 @@ int CDAudio_Init(void)
 		cd_dev[sizeof(cd_dev) - 1] = 0;
 	}
 
-	if ((cdfile = open(cd_dev, O_RDONLY)) == -1) {
+	if ((cdfile = open(cd_dev, O_RDONLY | O_NONBLOCK)) == -1) {
 		Con_Printf("CDAudio_Init: open of \"%s\" failed (%i)\n", cd_dev, errno);
 		cdfile = -1;
 		return -1;
