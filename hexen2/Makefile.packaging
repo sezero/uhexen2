@@ -123,7 +123,7 @@ GLOBJS = gl_dl_draw.o \
 	gl_dl_warp.o \
 	gl_dl_vidsdl.o
 
-COMMONOBJS = cd_linux.o \
+COMMONOBJS = cd_unix.o \
 	chase.o \
 	cl_demo.o \
 	cl_effect.o \
