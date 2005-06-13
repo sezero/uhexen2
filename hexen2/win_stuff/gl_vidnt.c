@@ -143,6 +143,7 @@ RECT		window_rect;
 
 
 extern unsigned short	ramps[3][256];
+unsigned short	orig_ramps[3][256];
 qboolean	gammaworks = false;
 qboolean	gl_dogamma = false;
 
