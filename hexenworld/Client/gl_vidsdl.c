@@ -2,7 +2,7 @@
    gl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.61 2005-06-13 07:58:54 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.62 2005-06-13 08:13:35 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -117,7 +117,9 @@ void GL_Init_Functions(void);
 void VID_SetGamma(float value);
 void VID_SetGamma_f(void);
 
-#if 0
+#define USE_GAMMA_RAMPS	0	// change to 1 if want to use ramps for gamma
+
+#if USE_GAMMA_RAMPS
 unsigned short	orig_ramps[3][256];	// for hw- or 3dfx-gamma
 extern unsigned short	ramps[3][256];	// for hw- or 3dfx-gamma
 #endif
@@ -506,7 +508,7 @@ void Gamma_Init(void)
 	{
 	// we may also use SDL_GetGammaRamp/SDL_SetGammaRamp
 	// but let's just stick to what AoT guys did for now.
-#if 0
+#if USE_GAMMA_RAMPS
 		// if the thing below works, it'll get the
 		// original gamma to be restored upon exit
 		if (SDL_GetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]) == 0)
@@ -537,7 +539,7 @@ void VID_SetGamma(float value)
 
 void VID_ApplyGamma (void)
 {
-#if 1	// change to if 0 if want to use gamma ramps
+#if !(USE_GAMMA_RAMPS)
 	if ((v_gamma.value != 0)&&(v_gamma.value > (1/GAMMA_MAX)))
 		VID_SetGamma(1/v_gamma.value);
 	else
@@ -565,7 +567,7 @@ void VID_SetGamma_f (void)
 
 void	VID_ShiftPalette (unsigned char *palette)
 {
-#if 0
+#if USE_GAMMA_RAMPS
 	if (fx_gamma)
 		return; // FIXME
 	else if (!gl_dogamma && gammaworks)
@@ -749,7 +751,7 @@ void VID_SetDefaultMode (void)
 
 void	VID_Shutdown (void)
 {
-#if 0
+#if USE_GAMMA_RAMPS
 	// restore hardware gamma
 	if (!fx_gamma && !gl_dogamma && gammaworks)
 		SDL_SetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]);
