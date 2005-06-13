@@ -2,7 +2,7 @@
    gl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.60 2005-06-07 07:08:31 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.61 2005-06-13 07:58:54 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -519,7 +519,7 @@ void Gamma_Init(void)
 	}
 
 	if (gl_dogamma)
-		Con_Printf("Hardware gamma not available, using gl tricks\n");
+		Con_Printf("gamma not available, using gl tricks\n");
 }
 
 /*

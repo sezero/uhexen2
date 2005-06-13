@@ -1825,7 +1825,7 @@ void	VID_Init (unsigned char *palette)
 	if (!gammaworks)
 	{
 		// we can still adjust the brightness...
-		Con_Printf("Hardware gamma not available, using gl tricks\n");
+		Con_Printf("gamma not available, using gl tricks\n");
 		gl_dogamma = true;
 	}
 
