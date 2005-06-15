@@ -38,6 +38,7 @@
 #include "cmd.h"
 #ifdef PLATFORM_UNIX
 #define WITH_SDL	/* for the mouse2/3 hack in keys.c */
+			/* also enables some SDL-only things such as the vid_setgamma command */
 #include "../Server/pr_comp.h"
 #include "../Server/progdefs.h"
 #else

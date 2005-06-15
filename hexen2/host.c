@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.22 2005-06-12 07:31:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.23 2005-06-15 22:03:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1024,9 +1024,12 @@ void Host_Init (quakeparms_t *parms)
 		IN_Init();
 	}
 
-	/* apply gamma settings at startup, after having read the config.cfg.
-	   FIXME: this should be added automatically in autoexec.cfg */
+#ifdef WITH_SDL
+	// apply gamma settings at startup, after having read the config.cfg
+	// this is for SDL versions, practically unix-only.
+	// native win32 version handles things differently.
 	Cbuf_InsertText ("vid_setgamma\n");
+#endif
 
 	Cbuf_InsertText ("exec hexen.rc\n");
 
@@ -1083,6 +1086,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2005/06/12 07:31:18  sezero
+ * enabled alsa only on linux platforms
+ *
  * Revision 1.21  2005/06/07 07:06:32  sezero
  * Moved flush_textures decision to svmain.c:SV_SpawnServer() again, this
  * time fixing it by not clearing the server struct in Host_ShutdownServer().

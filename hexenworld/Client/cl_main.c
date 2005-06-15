@@ -1364,7 +1364,12 @@ void Host_Init (quakeparms_t *parms)
 	IN_Init ();
 #endif
 
+#ifdef WITH_SDL
+	// apply gamma settings at startup, after having read the config.cfg
+	// this is for SDL versions, practically unix-only.
+	// native win32 version handles things differently.
 	Cbuf_InsertText ("vid_setgamma\n");
+#endif
 	Cbuf_InsertText ("exec hexen.rc\n");
 	Cbuf_AddText ("cl_warncmd 1\n");
 

@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.32 2005-06-12 07:28:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.33 2005-06-15 22:03:02 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -15,6 +15,7 @@
 #ifdef PLATFORM_UNIX
 #include "linux_inc.h"
 #define WITH_SDL	/* for the mouse2/3 hack in keys.c */
+			/* also enables some SDL-only things such as the vid_setgamma command */
 #endif
 
 #define HOT_VERSION_MAJ 1
@@ -433,6 +434,9 @@ void MIDI_Loop(int NewValue);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2005/06/12 07:28:51  sezero
+ * clean-up of includes and a fix (hopefully) for endianness detection
+ *
  * Revision 1.31  2005/06/01 14:10:42  sezero
  * removed win32-only net function prototypes from linquake.h
  * and updated linux_inc.h. also moved win32-only ipx netcode
