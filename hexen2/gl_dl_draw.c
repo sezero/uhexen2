@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_dl_draw.c,v 1.42 2005-06-15 13:18:16 sezero Exp $
+	$Id: gl_dl_draw.c,v 1.43 2005-06-15 18:50:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -257,8 +257,10 @@ qpic_t	*Draw_CachePic (char *path)
 		memcpy (menuplyr_pixels[2], dat->data, dat->width*dat->height);
 	else if (!strcmp (path, "gfx/menu/netp4.lmp"))
 		memcpy (menuplyr_pixels[3], dat->data, dat->width*dat->height);
+#ifdef H2MP
 	else if (!strcmp (path, "gfx/menu/netp5.lmp"))
 		memcpy (menuplyr_pixels[4], dat->data, dat->width*dat->height);
+#endif
 
 	pic->pic.width = dat->width;
 	pic->pic.height = dat->height;
@@ -1873,6 +1875,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.42  2005/06/15 13:18:16  sezero
+ * killed the glfunc struct
+ *
  * Revision 1.41  2005/06/15 06:12:51  sezero
  * moved gl_max_size and is_3dfx to gl_vidsdl, others will use it as externs
  *

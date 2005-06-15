@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.15 2005-06-07 07:08:31 sezero Exp $
+	$Id: gl_model.c,v 1.16 2005-06-15 18:50:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1572,12 +1572,14 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int mdl_flags
 				Sys_Error ("Player skin too large");
 			memcpy (player_8bit_texels[3], (byte *)(pskintype + 1), s);
 		}
+#ifdef H2MP
 		else if (!strcmp(loadmodel->name,"models/succubus.mdl"))
 		{
 			if (s > sizeof(player_8bit_texels[4]))
 				Sys_Error ("Player skin too large");
 			memcpy (player_8bit_texels[4], (byte *)(pskintype + 1), s);
 		}
+#endif
 
 		sprintf (name, "%s_%i", loadmodel->name, i);
 		if( mdl_flags & EF_HOLEY )
@@ -2309,6 +2311,11 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/06/07 07:08:31  sezero
+ * Ported gl texture purge and model recycling code to hexenworld.
+ * Textures are purged regardless of mapname change (we can't detect it
+ * early enough), but servers normally wouldn't repeat a map anyway.
+ *
  * Revision 1.14  2005/05/29 08:53:57  sezero
  * get rid of silly name changes
  *
