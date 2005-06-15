@@ -35,7 +35,7 @@ char *strlower (char *in);
 #define Q_strcasecmp(s1,s2) strcasecmp((s1),(s2))
 #endif
 
-int filelength (FILE *f);
+int	Q_filelength (FILE *f);
 
 double I_FloatTime (void);
 

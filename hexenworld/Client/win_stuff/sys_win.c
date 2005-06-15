@@ -67,10 +67,10 @@ FILE IO
 
 /*
 ================
-filelength
+Sys_FileLength
 ================
 */
-int filelength (FILE *f)
+int Sys_FileLength (FILE *f)
 {
 	int		pos;
 	int		end;

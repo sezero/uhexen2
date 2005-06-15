@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.23 2005-06-15 09:45:01 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.24 2005-06-15 10:30:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -81,10 +81,10 @@ void Sys_DebugLog(char *file, char *fmt, ...)
 };
 /*
 ================
-filelength
+Sys_FileLength
 ================
 */
-int filelength (FILE *f)
+int Sys_FileLength (FILE *f)
 {
 	int		pos;
 	int		end;
@@ -123,7 +123,7 @@ int Sys_FileOpenRead (char *path, int *hndl)
 	{
 		sys_handles[i] = f;
 		*hndl = i;
-		retval = filelength(f);
+		retval = Sys_FileLength(f);
 	}
 
 	VID_ForceLockState (t);
@@ -534,6 +534,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/06/15 09:45:01  sezero
+ * more endianness stuff
+ *
  * Revision 1.22  2005/06/12 07:28:54  sezero
  * clean-up of includes and a fix (hopefully) for endianness detection
  *

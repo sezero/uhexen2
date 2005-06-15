@@ -37,7 +37,7 @@ char *strlower (char *in);
 #endif
 void Q_getwd (char *out);
 
-int filelength (FILE *f);
+int	Q_filelength (FILE *f);
 int	FileTime (char *path);
 
 void	Q_mkdir (char *path);

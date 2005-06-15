@@ -56,7 +56,7 @@ void PackFile (char *src, char *name)
 		Error ("Too many files in pak file");
 	
 	in = SafeOpenRead (src);
-	remaining = filelength (in);
+	remaining = Q_filelength (in);
 
 	pf->filepos = LittleLong (ftell (packhandle));
 	pf->filelen = LittleLong (remaining);

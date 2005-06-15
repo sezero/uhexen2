@@ -106,10 +106,10 @@ int		findhandle (void)
 
 /*
 ================
-filelength
+Sys_FileLength
 ================
 */
-int filelength (FILE *f)
+int Sys_FileLength (FILE *f)
 {
 	int		pos;
 	int		end;
@@ -148,7 +148,7 @@ int Sys_FileOpenRead (char *path, int *hndl)
 	{
 		sys_handles[i] = f;
 		*hndl = i;
-		retval = filelength(f);
+		retval = Sys_FileLength(f);
 	}
 
 	VID_ForceLockState (t);
@@ -891,6 +891,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/06/15 09:45:01  sezero
+ * more endianness stuff
+ *
  * Revision 1.6  2005/05/29 08:38:16  sezero
  * get rid of the silly func name difference
  *
