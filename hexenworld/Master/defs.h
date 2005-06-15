@@ -214,27 +214,48 @@ extern int num_masters;
 
 // endianness stuff: <sys/types.h> is supposed
 // to succeed in locating the correct endian.h
+// this BSD style may not work everywhere, eg. on WIN32
+#if !defined(BYTE_ORDER) || !defined(LITTLE_ENDIAN) || !defined(BIG_ENDIAN) || (BYTE_ORDER != LITTLE_ENDIAN && BYTE_ORDER != BIG_ENDIAN)
+#undef BYTE_ORDER
+#undef LITTLE_ENDIAN
+#undef BIG_ENDIAN
+#define LITTLE_ENDIAN 1234
+#define BIG_ENDIAN 4321
+#endif
+// assumptions in case we don't have endianness info
+#ifndef BYTE_ORDER
+#if defined(_WIN32)
+#define BYTE_ORDER LITTLE_ENDIAN
+#else
+#if defined(SUNOS)
+// these bits from darkplaces project
+#if defined(__i386) || defined(__amd64)
+#define BYTE_ORDER LITTLE_ENDIAN
+#else
+#define BYTE_ORDER BIG_ENDIAN
+#endif
+#else
+#warning "Unable to determine CPU endianess. Defaulting to little endian"
+#define BYTE_ORDER LITTLE_ENDIAN
+#endif
+#endif
+#endif
 
 #if BYTE_ORDER == BIG_ENDIAN
-
 #define BigShort(s) (s)
 #define LittleShort(s) (ShortSwap(s))
 #define BigLong(l) (l)
 #define LittleLong(l) (LongSwap(l))
 #define BigFloat(f) (f)
 #define LittleFloat(f) (FloatSwap(f))
-
-#elif BYTE_ORDER == LITTLE_ENDIAN
-
+#else
+// BYTE_ORDER == LITTLE_ENDIAN
 #define BigShort(s) (ShortSwap(s))
 #define LittleShort(s) (s)
 #define BigLong(l) (LongSwap(l))
 #define LittleLong(l) (l)
 #define BigFloat(f) (FloatSwap(f))
 #define LittleFloat(f) (f)
-
-#else
-#error BYTE_ORDER not set. I expect LITTLE_ENDIAN or BIG_ENDIAN
 #endif
 
 short	ShortSwap (short);

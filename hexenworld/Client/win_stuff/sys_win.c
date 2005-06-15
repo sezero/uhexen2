@@ -17,6 +17,11 @@
 #define PAUSE_SLEEP		50				// sleep time on pause or minimization
 #define NOT_FOCUS_SLEEP	20				// sleep time when not focus
 
+#ifdef GUESSED_WIN32_ENDIANNESS
+// not that it matters but to remember what I did
+#warning "CPU endianess for Win32 assumed to be little endian"
+#endif
+
 int		starttime;
 int		ActiveApp;
 int		Minimized;

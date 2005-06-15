@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.22 2005-06-12 07:28:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.23 2005-06-15 09:45:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -16,6 +16,13 @@
 #include <signal.h>
 #include <dirent.h>
 #include "SDL_version.h"
+
+#ifdef ASSUMED_LITTLE_ENDIAN
+#warning "Unable to determine CPU endianess. Defaulting to little endian"
+#endif
+#ifdef GUESSED_SUNOS_ENDIANNESS
+#warning "Made assumptions for undetermined SUNOS CPU endianess"
+#endif
 
 #define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error running
 										//  dedicated before exiting
@@ -527,6 +534,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2005/06/12 07:28:54  sezero
+ * clean-up of includes and a fix (hopefully) for endianness detection
+ *
  * Revision 1.21  2005/06/01 14:13:22  sezero
  * SDL version >= 1.2.6 is now required. Updated the READMEs
  * and added a version check at startup.
