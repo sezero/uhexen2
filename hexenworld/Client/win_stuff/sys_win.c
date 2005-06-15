@@ -5,6 +5,8 @@
 #include "resource.h"
 #include "errno.h"
 #include "fcntl.h"
+#include <io.h>
+//#include "conproc.h"
 
 #ifdef GLQUAKE
 	#define MINIMUM_WIN_MEMORY		0x1000000

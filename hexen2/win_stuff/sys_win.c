@@ -5,6 +5,8 @@
 #include "quakeinc.h"
 #include "errno.h"
 #include "resource.h"
+#include <io.h>
+#include "conproc.h"
 
 #define CRC_A 59461 // "Who's Ridin' With Chaos?"
 #define CRC_B 54866 // "Santa needs a new sled!"
@@ -891,6 +893,10 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/06/15 10:30:10  sezero
+ * fix a compile problem on win32 (filelength clash with io.h)
+ * and keep the names consistent throughout the tree
+ *
  * Revision 1.7  2005/06/15 09:45:01  sezero
  * more endianness stuff
  *
