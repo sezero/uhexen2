@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_dl_rmain.c,v 1.30 2005-06-15 13:18:17 sezero Exp $
+	$Id: gl_dl_rmain.c,v 1.31 2005-06-15 18:40:43 sezero Exp $
 */
 
 
@@ -901,8 +901,12 @@ void R_DrawAliasModel (entity_t *e)
 			if (currententity->model == player_models[0] ||
 			    currententity->model == player_models[1] ||
 			    currententity->model == player_models[2] ||
+#	ifndef H2MP
+			    currententity->model == player_models[3])
+#	else
 			    currententity->model == player_models[3] ||
 			    currententity->model == player_models[4])
+#	endif
 			{
 				i = currententity - cl_entities;
 				if (i >= 1 && i<=cl.maxclients)
@@ -1804,6 +1808,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2005/06/15 13:18:17  sezero
+ * killed the glfunc struct
+ *
  * Revision 1.29  2005/06/06 10:19:40  sezero
  * ChaseCam clipping fixes from quakeforge and quakesrc.org (FrikaC).
  * Still not perfect, but much better than what we previously had.

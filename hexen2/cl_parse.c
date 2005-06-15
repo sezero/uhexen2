@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.10 2005-05-29 08:53:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.11 2005-06-15 18:40:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -341,7 +341,9 @@ void CL_ParseServerInfo (void)
 	player_models[1] = (model_t *)Mod_FindName ("models/crusader.mdl");
 	player_models[2] = (model_t *)Mod_FindName ("models/necro.mdl");
 	player_models[3] = (model_t *)Mod_FindName ("models/assassin.mdl");
+#ifdef H2MP
 	player_models[4] = (model_t *)Mod_FindName ("models/succubus.mdl");
+#endif
 
 	S_BeginPrecaching ();
 	for (i=1 ; i<numsounds ; i++)
@@ -1779,6 +1781,9 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/05/29 08:53:57  sezero
+ * get rid of silly name changes
+ *
  * Revision 1.9  2005/05/29 08:38:11  sezero
  * get rid of the silly func name difference
  *
