@@ -8,8 +8,8 @@
 #include <io.h>
 #include "conproc.h"
 
-#define CRC_A 59461 // "Who's Ridin' With Chaos?"
-#define CRC_B 54866 // "Santa needs a new sled!"
+//#define CRC_A 59461 // "Who's Ridin' With Chaos?"
+//#define CRC_B 54866 // "Santa needs a new sled!"
 
 #ifdef GLQUAKE
 	#define MINIMUM_WIN_MEMORY		0x1000000
@@ -41,7 +41,7 @@ qboolean			isDedicated;
 static qboolean		sc_return_on_enter = false;
 HANDLE				hinput, houtput;
 
-static char			*tracking_tag = "Sticky Buns";
+//static char			*tracking_tag = "Sticky Buns";
 
 static HANDLE	tevent;
 static HANDLE	hFile;
@@ -298,10 +298,9 @@ void Sys_Init (void)
 	LARGE_INTEGER	PerformanceFreq;
 	unsigned int	lowpart, highpart;
 	OSVERSIONINFO	vinfo;
-static	char temp[MAX_PATH+1];
 	int value,i;
 	HKEY hKey;
-    DWORD dwSize,dwType;
+	DWORD dwSize,dwType;
 	unsigned short crc;
 
 	MaskExceptions ();
@@ -893,6 +892,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/06/15 10:35:40  sezero
+ * added missing includes
+ *
  * Revision 1.8  2005/06/15 10:30:10  sezero
  * fix a compile problem on win32 (filelength clash with io.h)
  * and keep the names consistent throughout the tree
