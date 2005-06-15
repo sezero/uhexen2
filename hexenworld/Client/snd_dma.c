@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.20 2005-06-12 07:31:18 sezero Exp $
+	$Id: snd_dma.c,v 1.21 2005-06-15 06:14:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -90,13 +90,16 @@ void S_AmbientOn (void)
 
 void S_SoundInfo_f(void)
 {
+#ifdef PLATFORM_UNIX
 	char *s_sys = NULL;
+#endif
 	if (!sound_started || !shm)
 	{
 		Con_Printf ("sound system not started\n");
 		return;
 	}
 	
+#ifdef PLATFORM_UNIX
 	switch (snd_system) {
 	case S_SYS_OSS:
 		s_sys = "OSS";
@@ -111,6 +114,7 @@ void S_SoundInfo_f(void)
 #endif
 	}
 	Con_Printf("Driver: %s\n", s_sys);
+#endif
 	Con_Printf("%5d stereo\n", shm->channels - 1);
 	Con_Printf("%5d samples\n", shm->samples);
 	Con_Printf("%5d samplepos\n", shm->samplepos);
@@ -933,7 +937,9 @@ void S_ExtraUpdate (void)
 
 void S_Update_(void)
 {
+#ifdef PLATFORM_UNIX
  if (snd_system != S_SYS_SDL) {
+#endif
 	unsigned        endtime;
 	int				samps;
 	
@@ -978,7 +984,9 @@ void S_Update_(void)
 	S_PaintChannels (endtime);
 
 	SNDDMA_Submit ();
+#ifdef PLATFORM_UNIX
  }
+#endif
 }
 
 /*
@@ -1097,6 +1105,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2005/06/12 07:31:18  sezero
+ * enabled alsa only on linux platforms
+ *
  * Revision 1.19  2005/06/06 10:17:05  sezero
  * put some notes on decision behavior for -sndspeed argument.
  *
