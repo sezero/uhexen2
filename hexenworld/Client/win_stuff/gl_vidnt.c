@@ -676,7 +676,7 @@ void VID_SetPalette (unsigned char *palette)
 	unsigned short	i, p, c;
 	unsigned	*table, *table3dfx;
 	FILE		*f;
-	char		s[255];
+	char		s[MAX_OSPATH];
 	HWND		hDlg, hProgress;
 
 //
