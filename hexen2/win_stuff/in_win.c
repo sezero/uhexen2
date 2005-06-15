@@ -762,7 +762,7 @@ qboolean IN_ReadJoystick (void)
 	else
 	{
 		// read error occurred
-		// turning off the joystick seems too harsh for 1 read error,\
+		// turning off the joystick seems too harsh for 1 read error,
 		// but what should be done?
 		// Con_Printf ("IN_ReadJoystick: no response\n");
 		// joy_avail = false;
@@ -936,6 +936,10 @@ void IN_JoyMove (usercmd_t *cmd)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/06/06 13:10:21  sezero
+ * mlook and lookspring fixes by J.Krige
+ * ( http://www.quakesrc.org/tutorials/old/1 )
+ *
  * Revision 1.2  2005/05/20 15:26:33  sezero
  * separated winquake.h into winquake.h and linquake.h
  * changed all occurances of winquake.h to quakeinc.h,
