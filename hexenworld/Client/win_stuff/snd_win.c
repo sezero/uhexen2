@@ -47,7 +47,6 @@ LPDIRECTSOUNDBUFFER pDSBuf, pDSPBuf;
 
 HINSTANCE hInstDS;
 
-qboolean SNDDMA_InitDirect (void);
 qboolean SNDDMA_InitWav (void);
 
 
@@ -217,7 +216,7 @@ sndinitstat SNDDMA_InitDirect (void)
 
 		if (MessageBox (NULL,
 						"The sound hardware is in use by another app.\n\n"
-					    "Select Retry to try to start sound again or Cancel to run Quake with no sound.",
+					    "Select Retry to try to start sound again or Cancel to run Hexen II with no sound.",
 						"Sound not available",
 						MB_RETRYCANCEL | MB_SETFOREGROUND | MB_ICONEXCLAMATION) != IDRETRY)
 		{
@@ -539,7 +538,7 @@ Returns false if nothing is found.
 ==================
 */
 
-int SNDDMA_Init(void)
+qboolean SNDDMA_Init(void)
 {
 	sndinitstat	stat;
 
