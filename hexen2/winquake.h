@@ -2,12 +2,14 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.8 2005-05-21 22:15:47 sezero Exp $
+	$Id: winquake.h,v 1.9 2005-06-15 11:03:39 sezero Exp $
 */
 
 #pragma warning( disable : 4229 )  // mgraph gets this
 
 #include <windows.h>
+#include <winsock.h>	// for LCC
+#include <mmsystem.h>	// for LCC
 
 #ifndef SERVERONLY
 #include <ddraw.h>
@@ -93,6 +95,9 @@ int (PASCAL FAR *pgetsockname)(SOCKET s, struct sockaddr FAR *name,
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/05/21 22:15:47  sezero
+ * forgot replacing windowed_mouse in winquake.h
+ *
  * Revision 1.7  2005/05/21 17:04:17  sezero
  * - revived -nomouse that "disables mouse no matter what"
  * - renamed _windowed_mouse to _enable_mouse which is our intention,

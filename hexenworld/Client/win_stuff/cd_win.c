@@ -2,6 +2,7 @@
 // rights reserved.
 
 #include <windows.h>
+#include <mmsystem.h>	// for LCC
 #include "quakedef.h"
 
 extern	HWND	mainwindow;

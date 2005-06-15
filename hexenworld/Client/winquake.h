@@ -2,16 +2,18 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.8 2005-05-21 22:15:49 sezero Exp $
+	$Id: winquake.h,v 1.9 2005-06-15 11:03:44 sezero Exp $
 */
 
 #pragma warning( disable : 4229 )  // mgraph gets this
 
 #include <windows.h>
+#include <winsock.h>	// for LCC
 
 #ifndef SERVERONLY
 #include <ddraw.h>
 #include <dsound.h>
+#include <mmsystem.h>	// for LCC
 #ifndef GLQUAKE
 #include <mgraph.h>
 #endif

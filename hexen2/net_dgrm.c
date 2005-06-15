@@ -9,6 +9,7 @@
 #ifdef BAN_TEST
 #if defined(_WIN32)
 #include <windows.h>
+#include <winsock.h>	// for LCC
 #elif defined (NeXT)
 #include <sys/socket.h>
 #include <arpa/inet.h>
