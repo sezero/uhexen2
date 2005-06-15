@@ -45,13 +45,8 @@ extern	int nanmask;
 
 void VectorMA (vec3_t veca, float scale, vec3_t vecb, vec3_t vecc);
 
-#ifndef PLATFORM_UNIX
-__inline float VectorNormalize (vec3_t v);		// returns vector length
-__inline void VectorScale (vec3_t in, vec_t scale, vec3_t out);
-#else
 static inline float VectorNormalize (vec3_t v);		// returns vector length
 static inline void VectorScale (vec3_t in, vec_t scale, vec3_t out);
-#endif
 
 void R_ConcatRotations (float in1[3][3], float in2[3][3], float out[3][3]);
 void R_ConcatTransforms (float in1[3][4], float in2[3][4], float out[3][4]);
@@ -82,11 +77,7 @@ float	anglemod(float a);
 	:										\
 		BoxOnPlaneSide( (emins), (emaxs), (p)))
 
-#ifndef PLATFORM_UNIX
-__inline float VectorNormalize (vec3_t v)
-#else
 static inline float VectorNormalize (vec3_t v)
-#endif
 {
 	float	length, ilength;
 
@@ -103,11 +94,7 @@ static inline float VectorNormalize (vec3_t v)
 	return length;
 }
 
-#ifndef PLATFORM_UNIX
-__inline void VectorScale (vec3_t in, vec_t scale, vec3_t out)
-#else
 static inline void VectorScale (vec3_t in, vec_t scale, vec3_t out)
-#endif
 {
 	out[0] = in[0]*scale;
 	out[1] = in[1]*scale;
