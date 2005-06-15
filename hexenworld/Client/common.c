@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.9 2005-05-21 17:32:13 sezero Exp $
+	$Id: common.c,v 1.10 2005-06-15 09:53:57 sezero Exp $
 */
 
 #ifdef SERVERONLY 
@@ -1567,6 +1567,10 @@ void COM_InitFilesystem (void)
 //
 // start up with data1 by default
 //
+#ifdef _WIN32
+	// Let's keep the game's old win32 behavior
+	sprintf (com_userdir, "%s/data1", host_parms.userdir);
+#endif
 	COM_AddGameDirectory (va("%s/data1", com_basedir));
 	sprintf (com_userdir, "%s/portals", host_parms.userdir);
 	Sys_mkdir (com_userdir);

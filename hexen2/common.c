@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.13 2005-05-21 17:32:02 sezero Exp $
+	$Id: common.c,v 1.14 2005-06-15 09:53:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1439,6 +1439,10 @@ void COM_InitFilesystem (void)
 //
 // start up with data1 by default
 //
+#ifdef _WIN32
+	// Let's keep the game's old win32 behavior
+	sprintf (com_userdir, "%s/data1", host_parms.userdir);
+#endif
 	COM_AddGameDirectory (va("%s/data1", basedir));
 #ifdef H2MP
 	sprintf (com_userdir, "%s/portals", host_parms.userdir);
@@ -1467,6 +1471,10 @@ void COM_InitFilesystem (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/05/21 17:32:02  sezero
+ * disabled the rotating skull annoyance in GL mode (used to
+ * cause problems with voodoo1/mesa6 when using gamma tricks)
+ *
  * Revision 1.12  2005/05/20 12:01:27  sezero
  * large initial syncing of common.c between h2 and hw:
  * a lot of whitespace clean-up, removal of activision
