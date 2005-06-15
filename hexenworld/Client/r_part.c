@@ -1534,21 +1534,21 @@ void R_RenderParticle(particle_t *p)
 	//			theAlpha = 255*(8-p->ramp)/8;
 		else
 			theAlpha = 255;
-		glfunc.glColor4ub_fp (*at, *(at+1), *(at+2), theAlpha);
+		glColor4ub_fp (*at, *(at+1), *(at+2), theAlpha);
 	}
 	else
 	{
-		glfunc.glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[(int)p->color-256]);
+		glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[(int)p->color-256]);
 	}
 
-//		glfunc.glColor3ubv_fp (at);
-//		glfunc.glColor3ubv_fp ((byte *)&d_8to24table[(int)p->color]);
-	glfunc.glTexCoord2f_fp (0,0);
-	glfunc.glVertex3fv_fp (p->org);
-	glfunc.glTexCoord2f_fp (1,0);
-	glfunc.glVertex3f_fp (p->org[0] + up[0]*scale, p->org[1] + up[1]*scale, p->org[2] + up[2]*scale);
-	glfunc.glTexCoord2f_fp (0,1);
-	glfunc.glVertex3f_fp (p->org[0] + right[0]*scale, p->org[1] + right[1]*scale, p->org[2] + right[2]*scale);
+//		glColor3ubv_fp (at);
+//		glColor3ubv_fp ((byte *)&d_8to24table[(int)p->color]);
+	glTexCoord2f_fp (0,0);
+	glVertex3fv_fp (p->org);
+	glTexCoord2f_fp (1,0);
+	glVertex3f_fp (p->org[0] + up[0]*scale, p->org[1] + up[1]*scale, p->org[2] + up[2]*scale);
+	glTexCoord2f_fp (0,1);
+	glVertex3f_fp (p->org[0] + right[0]*scale, p->org[1] + right[1]*scale, p->org[2] + right[2]*scale);
 
 #else
 	if (p->color < 0 || p->color > 511)
@@ -1580,14 +1580,14 @@ void R_DrawParticles (void)
 
 #ifdef GLQUAKE
 	GL_Bind(particletexture);
-	alphaTestEnabled = glfunc.glIsEnabled_fp(GL_ALPHA_TEST);
+	alphaTestEnabled = glIsEnabled_fp(GL_ALPHA_TEST);
 	
 	if (alphaTestEnabled)
-		glfunc.glDisable_fp(GL_ALPHA_TEST);
-	glfunc.glEnable_fp (GL_BLEND);
-	glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	glfunc.glBegin_fp (GL_TRIANGLES);
+		glDisable_fp(GL_ALPHA_TEST);
+	glEnable_fp (GL_BLEND);
+	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glBegin_fp (GL_TRIANGLES);
 
 	VectorScale (vup, 1.5, up);
 	VectorScale (vright, 1.5, right);
@@ -1954,11 +1954,11 @@ void R_DrawParticles (void)
 	}
 
 #ifdef GLQUAKE
-	glfunc.glEnd_fp ();
-	glfunc.glDisable_fp (GL_BLEND);
+	glEnd_fp ();
+	glDisable_fp (GL_BLEND);
 	if (alphaTestEnabled)
-		glfunc.glEnable_fp(GL_ALPHA_TEST);
-	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glEnable_fp(GL_ALPHA_TEST);
+	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 #else
 	D_EndParticles ();
 #endif

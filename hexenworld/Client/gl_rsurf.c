@@ -267,22 +267,22 @@ void DrawGLWaterPoly (glpoly_t *p)
 	float	*v;
 	vec3_t	nv;
 
-	glfunc.glBegin_fp (GL_TRIANGLE_FAN);
+	glBegin_fp (GL_TRIANGLE_FAN);
 	v = p->verts[0];
 	for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
 	{
-		glfunc.glTexCoord2f_fp (v[3], v[4]);
+		glTexCoord2f_fp (v[3], v[4]);
 
 		if (gl_waterwarp.value) {
 			nv[0] = v[0] + 8*sin(v[1]*0.05+realtime)*sin(v[2]*0.05+realtime);
 			nv[1] = v[1] + 8*sin(v[0]*0.05+realtime)*sin(v[2]*0.05+realtime);
 			nv[2] = v[2];
-			glfunc.glVertex3fv_fp (nv);
+			glVertex3fv_fp (nv);
 		} else {
-			glfunc.glVertex3fv_fp (v);
+			glVertex3fv_fp (v);
 		}
 	}
-	glfunc.glEnd_fp ();
+	glEnd_fp ();
 }
 
 void DrawGLWaterPolyLightmap (glpoly_t *p)
@@ -291,22 +291,22 @@ void DrawGLWaterPolyLightmap (glpoly_t *p)
 	float	*v;
 	vec3_t	nv;
 
-	glfunc.glBegin_fp (GL_TRIANGLE_FAN);
+	glBegin_fp (GL_TRIANGLE_FAN);
 	v = p->verts[0];
 	for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
 	{
-		glfunc.glTexCoord2f_fp (v[5], v[6]);
+		glTexCoord2f_fp (v[5], v[6]);
 
 		if (gl_waterwarp.value) {
 			nv[0] = v[0] + 8*sin(v[1]*0.05+realtime)*sin(v[2]*0.05+realtime);
 			nv[1] = v[1] + 8*sin(v[0]*0.05+realtime)*sin(v[2]*0.05+realtime);
 			nv[2] = v[2];
-			glfunc.glVertex3fv_fp (nv);
+			glVertex3fv_fp (nv);
 		} else {
-			glfunc.glVertex3fv_fp (v);
+			glVertex3fv_fp (v);
 		}
 	}
-	glfunc.glEnd_fp ();
+	glEnd_fp ();
 }
 
 
@@ -316,23 +316,23 @@ void DrawGLWaterPolyMTexLM (glpoly_t *p)
 	float	*v;
 	vec3_t	nv;
 
-	glfunc.glBegin_fp (GL_TRIANGLE_FAN);
+	glBegin_fp (GL_TRIANGLE_FAN);
 	v = p->verts[0];
 	for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
 	{
-		glfunc.glMultiTexCoord2fARB_fp (GL_TEXTURE0_ARB, v[3], v[4]);
-		glfunc.glMultiTexCoord2fARB_fp (GL_TEXTURE1_ARB, v[5], v[6]);
+		glMultiTexCoord2fARB_fp (GL_TEXTURE0_ARB, v[3], v[4]);
+		glMultiTexCoord2fARB_fp (GL_TEXTURE1_ARB, v[5], v[6]);
 
 		if (gl_waterwarp.value) {
 			nv[0] = v[0] + 8*sin(v[1]*0.05+realtime)*sin(v[2]*0.05+realtime);
 			nv[1] = v[1] + 8*sin(v[0]*0.05+realtime)*sin(v[2]*0.05+realtime);
 			nv[2] = v[2];
-			glfunc.glVertex3fv_fp (nv);
+			glVertex3fv_fp (nv);
 		} else {
-			glfunc.glVertex3fv_fp (v);
+			glVertex3fv_fp (v);
 		}
 	}
-	glfunc.glEnd_fp ();
+	glEnd_fp ();
 }
 
 /*
@@ -345,14 +345,14 @@ void DrawGLPoly (glpoly_t *p)
 	int		i;
 	float	*v;
 
-	glfunc.glBegin_fp (GL_POLYGON);
+	glBegin_fp (GL_POLYGON);
 	v = p->verts[0];
 	for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
 	{
-		glfunc.glTexCoord2f_fp (v[3], v[4]);
-		glfunc.glVertex3fv_fp (v);
+		glTexCoord2f_fp (v[3], v[4]);
+		glVertex3fv_fp (v);
 	}
-	glfunc.glEnd_fp ();
+	glEnd_fp ();
 }
 
 
@@ -361,16 +361,16 @@ void DrawGLPolyMTex (glpoly_t *p)
 	int		i;
 	float	*v;
 
-	glfunc.glBegin_fp (GL_POLYGON);
+	glBegin_fp (GL_POLYGON);
 	v = p->verts[0];
 	for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
 	{
-		glfunc.glMultiTexCoord2fARB_fp (GL_TEXTURE0_ARB, v[3], v[4]);
-		glfunc.glMultiTexCoord2fARB_fp (GL_TEXTURE1_ARB, v[5], v[6]);
+		glMultiTexCoord2fARB_fp (GL_TEXTURE0_ARB, v[3], v[4]);
+		glMultiTexCoord2fARB_fp (GL_TEXTURE1_ARB, v[5], v[6]);
 
-		glfunc.glVertex3fv_fp (v);
+		glVertex3fv_fp (v);
 	}
-	glfunc.glEnd_fp ();
+	glEnd_fp ();
 }
 
 
@@ -390,22 +390,22 @@ void R_BlendLightmaps (qboolean Translucent)
 		return;
 
 	if (!Translucent)
-		glfunc.glDepthMask_fp (0);	// don't bother writing Z
+		glDepthMask_fp (0);	// don't bother writing Z
 
 	if (gl_lightmap_format == GL_LUMINANCE)
 	{
-		glfunc.glBlendFunc_fp (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+		glBlendFunc_fp (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
 	}
 	else if (gl_lightmap_format == GL_INTENSITY)
 	{
-		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		glfunc.glColor4f_fp (0.0f,0.0f,0.0f,1.0f);
-		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		glColor4f_fp (0.0f,0.0f,0.0f,1.0f);
+		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	if (!r_lightmap.value)
 	{
-		glfunc.glEnable_fp (GL_BLEND);
+		glEnable_fp (GL_BLEND);
 	}
 
 	for (i=0 ; i<MAX_LIGHTMAPS ; i++)
@@ -421,7 +421,7 @@ void R_BlendLightmaps (qboolean Translucent)
 		// if current lightmap was changed reload it and mark as not changed
 			lightmap_modified[i] = false;
 			theRect = &lightmap_rectchange[i];
-			glfunc.glTexSubImage2D_fp(GL_TEXTURE_2D, 0, 0, theRect->t, 
+			glTexSubImage2D_fp(GL_TEXTURE_2D, 0, 0, theRect->t, 
 				BLOCK_WIDTH, theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
 				lightmaps+(i* BLOCK_HEIGHT + theRect->t) *BLOCK_WIDTH*lightmap_bytes);
 			theRect->l = BLOCK_WIDTH;
@@ -439,35 +439,35 @@ void R_BlendLightmaps (qboolean Translucent)
 				DrawGLWaterPolyLightmap (p);
 			else
 			{
-				glfunc.glBegin_fp (GL_POLYGON);
+				glBegin_fp (GL_POLYGON);
 				v = p->verts[0];
 				for (j=0 ; j<p->numverts ; j++, v+= VERTEXSIZE)
 				{
-					glfunc.glTexCoord2f_fp (v[5], v[6]);
-					glfunc.glVertex3fv_fp (v);
+					glTexCoord2f_fp (v[5], v[6]);
+					glVertex3fv_fp (v);
 				}
-				glfunc.glEnd_fp ();
+				glEnd_fp ();
 			}
 		}
 	}
 
 	if (!r_lightmap.value)
 	{
-		glfunc.glDisable_fp (GL_BLEND);
+		glDisable_fp (GL_BLEND);
 	}
 
 	if (gl_lightmap_format == GL_LUMINANCE)
 	{
-		glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 	else if (gl_lightmap_format == GL_INTENSITY)
 	{
-		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-		glfunc.glColor4f_fp (1.0f,1.0f,1.0f,1.0f);
+		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glColor4f_fp (1.0f,1.0f,1.0f,1.0f);
 	}
 
 	if (!Translucent)
-		glfunc.glDepthMask_fp (1);	// back to normal Z buffering
+		glDepthMask_fp (1);	// back to normal Z buffering
 }
 
 
@@ -482,7 +482,7 @@ void R_UpdateLightmaps (qboolean Translucent)
 
 	if (gl_mtexable == true && gl_multitexture.value == 1)
 	{
-		glfunc.glActiveTextureARB_fp (GL_TEXTURE1_ARB);
+		glActiveTextureARB_fp (GL_TEXTURE1_ARB);
 	}
 
 	for (i=0 ; i<MAX_LIGHTMAPS ; i++)
@@ -498,7 +498,7 @@ void R_UpdateLightmaps (qboolean Translucent)
 		// if current lightmap was changed reload it and mark as not changed
 			lightmap_modified[i] = false;
 			theRect = &lightmap_rectchange[i];
-			glfunc.glTexSubImage2D_fp(GL_TEXTURE_2D, 0, 0, theRect->t, 
+			glTexSubImage2D_fp(GL_TEXTURE_2D, 0, 0, theRect->t, 
 				BLOCK_WIDTH, theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
 				lightmaps+(i* BLOCK_HEIGHT + theRect->t) *BLOCK_WIDTH*lightmap_bytes);
 			theRect->l = BLOCK_WIDTH;
@@ -510,7 +510,7 @@ void R_UpdateLightmaps (qboolean Translucent)
 
 	if (gl_mtexable == true && gl_multitexture.value == 1)
 	{
-		glfunc.glActiveTextureARB_fp (GL_TEXTURE0_ARB);
+		glActiveTextureARB_fp (GL_TEXTURE0_ARB);
 	}
 }
 
@@ -533,8 +533,8 @@ void R_RenderBrushPoly (msurface_t *fa, qboolean override)
 #if 0
 	if (currententity->drawflags & DRF_TRANSLUCENT)
 	{
-		glfunc.glEnable_fp (GL_BLEND);
-		glfunc.glColor4f_fp (1,1,1,r_wateralpha.value);
+		glEnable_fp (GL_BLEND);
+		glColor4f_fp (1,1,1,r_wateralpha.value);
 		// rjr
 	}
 	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
@@ -544,29 +544,29 @@ void R_RenderBrushPoly (msurface_t *fa, qboolean override)
 #endif
 
 	if (gl_multitexture.value == 1 && gl_mtexable == true)
-		glfunc.glActiveTextureARB_fp(GL_TEXTURE0_ARB);
+		glActiveTextureARB_fp(GL_TEXTURE0_ARB);
 
 	if (currententity->drawflags & DRF_TRANSLUCENT)
 	{
-		glfunc.glEnable_fp (GL_BLEND);
-	//	glfunc.glColor4f_fp (1,1,1,r_wateralpha.value);
+		glEnable_fp (GL_BLEND);
+	//	glColor4f_fp (1,1,1,r_wateralpha.value);
 		alpha_val = r_wateralpha.value;
 		// rjr
 
-		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		intensity = 1.0;
 	}
 	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
 	{
 		// currententity->abslight   0 - 255
 		// rjr
-		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		intensity = ( float )currententity->abslight / 255.0f;
 //		intensity = 0;
 	}
 	
 	if (!override)
-		glfunc.glColor4f_fp( intensity, intensity, intensity, alpha_val );
+		glColor4f_fp( intensity, intensity, intensity, alpha_val );
 
 	if (fa->flags & SURF_DRAWSKY)
 	{	// warp texture, no lightmaps
@@ -597,20 +597,20 @@ void R_RenderBrushPoly (msurface_t *fa, qboolean override)
 		}
 		else
 		{
-			glfunc.glActiveTextureARB_fp(GL_TEXTURE1_ARB);
+			glActiveTextureARB_fp(GL_TEXTURE1_ARB);
 
 			if (gl_lightmap_format == GL_LUMINANCE)
 			{
-				glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
+				glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
 			}
 			else
 			{
-				glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+				glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 			}
 
-			glfunc.glEnable_fp(GL_TEXTURE_2D);
+			glEnable_fp(GL_TEXTURE_2D);
 			GL_Bind (lightmap_textures + fa->lightmaptexturenum);
-			//glfunc.glEnable_fp (GL_BLEND);
+			//glEnable_fp (GL_BLEND);
 
 			if (((r_viewleaf->contents==CONTENTS_EMPTY && (fa->flags & SURF_UNDERWATER)) ||
 				(r_viewleaf->contents!=CONTENTS_EMPTY && !(fa->flags & SURF_UNDERWATER)))
@@ -619,10 +619,10 @@ void R_RenderBrushPoly (msurface_t *fa, qboolean override)
 			else
 				DrawGLPolyMTex (fa->polys);
 
-			glfunc.glDisable_fp(GL_TEXTURE_2D);
-			glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-			//glfunc.glDisable_fp (GL_BLEND);
-			glfunc.glActiveTextureARB_fp(GL_TEXTURE0_ARB);
+			glDisable_fp(GL_TEXTURE_2D);
+			glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+			//glDisable_fp (GL_BLEND);
+			glActiveTextureARB_fp(GL_TEXTURE0_ARB);
 		}
 	}
 	else
@@ -679,7 +679,7 @@ dynamic:
 	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT ||
 	    (currententity->drawflags & DRF_TRANSLUCENT))
 	{
-		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	}
 }
 
@@ -695,37 +695,37 @@ void R_RenderBrushPolyMTex (msurface_t *fa, qboolean override)
 
 	c_brush_polys++;
 
-	glfunc.glActiveTextureARB_fp(GL_TEXTURE0_ARB);
+	glActiveTextureARB_fp(GL_TEXTURE0_ARB);
 
 	if (currententity->drawflags & DRF_TRANSLUCENT)
 	{
-		glfunc.glEnable_fp (GL_BLEND);
+		glEnable_fp (GL_BLEND);
 
 		alpha_val = r_wateralpha.value;
 
-		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		intensity = 1.0;
 	}
 
 	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
 	{
-		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		intensity = ( float )currententity->abslight / 255.0f;
 	}
 
 	if (fa->flags & SURF_DRAWTURB)
 	{
-		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-		glfunc.glDisable_fp (GL_BLEND);
-		glfunc.glActiveTextureARB_fp(GL_TEXTURE1_ARB);
-		glfunc.glDisable_fp(GL_TEXTURE_2D);
-		glfunc.glActiveTextureARB_fp(GL_TEXTURE0_ARB);
+		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glDisable_fp (GL_BLEND);
+		glActiveTextureARB_fp(GL_TEXTURE1_ARB);
+		glDisable_fp(GL_TEXTURE_2D);
+		glActiveTextureARB_fp(GL_TEXTURE0_ARB);
 
 		intensity = 1.0;
 	}
 
 	if (!override)
-		glfunc.glColor4f_fp(intensity, intensity, intensity, alpha_val);
+		glColor4f_fp(intensity, intensity, intensity, alpha_val);
 
 	if (fa->flags & SURF_DRAWSKY)
 	{	// warp texture, no lightmaps
@@ -733,13 +733,13 @@ void R_RenderBrushPolyMTex (msurface_t *fa, qboolean override)
 		return;
 	}
 
-	glfunc.glActiveTextureARB_fp(GL_TEXTURE0_ARB);
+	glActiveTextureARB_fp(GL_TEXTURE0_ARB);
 	t = R_TextureAnimation (fa->texinfo->texture);
 	GL_Bind (t->gl_texturenum);
 
 	if (fa->flags & SURF_DRAWTURB)
 	{
-		glfunc.glColor4f_fp( 1.0f, 1.0f, 1.0f, 1.0f );
+		glColor4f_fp( 1.0f, 1.0f, 1.0f, 1.0f );
 		EmitWaterPolys (fa);
 		//return;
 	}
@@ -747,7 +747,7 @@ void R_RenderBrushPolyMTex (msurface_t *fa, qboolean override)
 	{
 		if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
 		{
-			glfunc.glActiveTextureARB_fp(GL_TEXTURE0_ARB);
+			glActiveTextureARB_fp(GL_TEXTURE0_ARB);
 
 			if (((r_viewleaf->contents==CONTENTS_EMPTY && (fa->flags & SURF_UNDERWATER)) ||
 				(r_viewleaf->contents!=CONTENTS_EMPTY && !(fa->flags & SURF_UNDERWATER)))
@@ -758,7 +758,7 @@ void R_RenderBrushPolyMTex (msurface_t *fa, qboolean override)
 		}
 		else
 		{
-			glfunc.glActiveTextureARB_fp(GL_TEXTURE1_ARB);
+			glActiveTextureARB_fp(GL_TEXTURE1_ARB);
 			GL_Bind (lightmap_textures + fa->lightmaptexturenum);
 
 			if (((r_viewleaf->contents==CONTENTS_EMPTY && (fa->flags & SURF_UNDERWATER)) ||
@@ -769,7 +769,7 @@ void R_RenderBrushPolyMTex (msurface_t *fa, qboolean override)
 				DrawGLPolyMTex (fa->polys);
 		}
 
-		glfunc.glActiveTextureARB_fp(GL_TEXTURE1_ARB);
+		glActiveTextureARB_fp(GL_TEXTURE1_ARB);
 
 		// add the poly to the proper lightmap chain
 		fa->polys->chain = lightmap_polys[fa->lightmaptexturenum];
@@ -811,15 +811,15 @@ dynamic1:
 		}
 	}
 
-	glfunc.glActiveTextureARB_fp(GL_TEXTURE0_ARB);
+	glActiveTextureARB_fp(GL_TEXTURE0_ARB);
 
 	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT ||
 	    (currententity->drawflags & DRF_TRANSLUCENT))
 	{
-		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	}
 
-	glfunc.glActiveTextureARB_fp(GL_TEXTURE1_ARB);
+	glActiveTextureARB_fp(GL_TEXTURE1_ARB);
 }
 
 /*
@@ -850,17 +850,17 @@ void R_DrawWaterSurfaces (void)
 	if (r_wateralpha.value == 1.0)
 		return;
 
-	glfunc.glDepthMask_fp( 0 );
+	glDepthMask_fp( 0 );
 
 	//
 	// go back to the world matrix
 	//
-	glfunc.glLoadMatrixf_fp (r_world_matrix);
+	glLoadMatrixf_fp (r_world_matrix);
 
 	if (r_wateralpha.value < 1.0) {
-		glfunc.glEnable_fp (GL_BLEND);
-		glfunc.glColor4f_fp (1,1,1,r_wateralpha.value);
-		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		glEnable_fp (GL_BLEND);
+		glColor4f_fp (1,1,1,r_wateralpha.value);
+		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	}
 
 	for (i=0 ; i<cl.worldmodel->numtextures ; i++)
@@ -876,9 +876,9 @@ void R_DrawWaterSurfaces (void)
 
 		//if ((s->flags & SURF_DRAWTURB) && (s->flags & SURF_TRANSLUCENT))
 		if (s->flags & SURF_TRANSLUCENT)
-			glfunc.glColor4f_fp (1,1,1,r_wateralpha.value);
+			glColor4f_fp (1,1,1,r_wateralpha.value);
 		else
-			glfunc.glColor4f_fp (1,1,1,1);
+			glColor4f_fp (1,1,1,1);
 
 		// set modulate mode explicitly
 		GL_Bind (t->gl_texturenum);
@@ -890,12 +890,12 @@ void R_DrawWaterSurfaces (void)
 	}
 
 	if (r_wateralpha.value < 1.0) {
-		glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
-		glfunc.glColor4f_fp (1,1,1,1);
-		glfunc.glDisable_fp (GL_BLEND);
+		glColor4f_fp (1,1,1,1);
+		glDisable_fp (GL_BLEND);
 	}
-	glfunc.glDepthMask_fp( 1 );
+	glDepthMask_fp( 1 );
 }
 
 /*
@@ -933,47 +933,47 @@ void DrawTextureChains (void)
 				(currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT))
 			{
 				if (s->flags & SURF_TRANSLUCENT)
-					glfunc.glColor4f_fp (1,1,1,r_wateralpha.value);
+					glColor4f_fp (1,1,1,r_wateralpha.value);
 				else
-					glfunc.glColor4f_fp (1,1,1,1);
+					glColor4f_fp (1,1,1,1);
 
 				for ( ; s ; s=s->texturechain);
 					R_RenderBrushPoly (s, true);
 			}
 			else if (gl_multitexture.value == 1 && gl_mtexable == true)
 			{
-				glfunc.glActiveTextureARB_fp(GL_TEXTURE0_ARB);
-				glfunc.glEnable_fp(GL_TEXTURE_2D);
-				glfunc.glActiveTextureARB_fp(GL_TEXTURE1_ARB);
-				glfunc.glEnable_fp(GL_TEXTURE_2D);
+				glActiveTextureARB_fp(GL_TEXTURE0_ARB);
+				glEnable_fp(GL_TEXTURE_2D);
+				glActiveTextureARB_fp(GL_TEXTURE1_ARB);
+				glEnable_fp(GL_TEXTURE_2D);
 
 				if (gl_lightmap_format == GL_LUMINANCE)
 				{
-					glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
+					glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
 				}
 				else
 				{
-					glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+					glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 				}
 
-				glfunc.glEnable_fp (GL_BLEND);
+				glEnable_fp (GL_BLEND);
 
 				for ( ; s ; s=s->texturechain)
 				{
 					R_RenderBrushPolyMTex (s, false);
 				}
 
-				glfunc.glDisable_fp(GL_TEXTURE_2D);
-				glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-				glfunc.glDisable_fp (GL_BLEND);
-				glfunc.glActiveTextureARB_fp(GL_TEXTURE0_ARB);
+				glDisable_fp(GL_TEXTURE_2D);
+				glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+				glDisable_fp (GL_BLEND);
+				glActiveTextureARB_fp(GL_TEXTURE0_ARB);
 			}
 			else
 			{
 				if (s->flags & SURF_TRANSLUCENT)
-					glfunc.glColor4f_fp (1,1,1,r_wateralpha.value);
+					glColor4f_fp (1,1,1,r_wateralpha.value);
 				else
-					glfunc.glColor4f_fp (1,1,1,1);
+					glColor4f_fp (1,1,1,1);
 
 				for ( ; s ; s=s->texturechain)
 					R_RenderBrushPoly (s, true);
@@ -1023,7 +1023,7 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 	if (R_CullBox (mins, maxs))
 		return;
 
-	glfunc.glColor3f_fp (1,1,1);
+	glColor3f_fp (1,1,1);
 	memset (lightmap_polys, 0, sizeof(lightmap_polys));
 
 	VectorSubtract (r_refdef.vieworg, e->origin, modelorg);
@@ -1056,7 +1056,7 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 		}
 	}
 
-	glfunc.glPushMatrix_fp ();
+	glPushMatrix_fp ();
 	e->angles[0] = -e->angles[0];	// stupid quake bug
 	R_RotateForEntity (e);
 	e->angles[0] = -e->angles[0];	// stupid quake bug
@@ -1085,7 +1085,7 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 	{
 		R_BlendLightmaps (Translucent);
 	}
-	glfunc.glPopMatrix_fp ();
+	glPopMatrix_fp ();
 }
 
 /*
@@ -1228,7 +1228,7 @@ void R_DrawWorld (void)
 	currententity = &ent;
 	currenttexture = -1;
 
-	glfunc.glColor4f_fp (1.0f,1.0f,1.0f,1.0f);
+	glColor4f_fp (1.0f,1.0f,1.0f,1.0f);
 	memset (lightmap_polys, 0, sizeof(lightmap_polys));
 #ifdef QUAKE2
 	R_ClearSkyBox ();
@@ -1242,10 +1242,10 @@ void R_DrawWorld (void)
 
 	if (gl_multitexture.value == 1 && gl_mtexable == true)
 	{
-		glfunc.glActiveTextureARB_fp (GL_TEXTURE1_ARB);
-		glfunc.glDisable_fp(GL_TEXTURE_2D);
-		glfunc.glActiveTextureARB_fp (GL_TEXTURE0_ARB);
-		glfunc.glEnable_fp(GL_TEXTURE_2D);
+		glActiveTextureARB_fp (GL_TEXTURE1_ARB);
+		glDisable_fp(GL_TEXTURE_2D);
+		glActiveTextureARB_fp (GL_TEXTURE0_ARB);
+		glEnable_fp(GL_TEXTURE_2D);
 	}
 
 	if (!(gl_mtexable == true && gl_multitexture.value == 1))
@@ -1572,7 +1572,7 @@ void GL_BuildLightmaps (void)
 
 	// multitexture support
 	if (gl_multitexture.value == 1 && gl_mtexable == true)
-		glfunc.glActiveTextureARB_fp (GL_TEXTURE1_ARB);
+		glActiveTextureARB_fp (GL_TEXTURE1_ARB);
 
 	//
 	// upload all lightmaps that were filled
@@ -1587,15 +1587,15 @@ void GL_BuildLightmaps (void)
 		lightmap_rectchange[i].w = 0;
 		lightmap_rectchange[i].h = 0;
 		GL_Bind(lightmap_textures + i);
-		glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, lightmap_bytes, BLOCK_WIDTH,
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexImage2D_fp (GL_TEXTURE_2D, 0, lightmap_bytes, BLOCK_WIDTH,
 				BLOCK_HEIGHT, 0, gl_lightmap_format, GL_UNSIGNED_BYTE,
 				lightmaps+i*BLOCK_WIDTH*BLOCK_HEIGHT*lightmap_bytes);
 	}
 
 	// multitexture support
 	if (gl_multitexture.value == 1 && gl_mtexable == true)
-		glfunc.glActiveTextureARB_fp (GL_TEXTURE0_ARB);
+		glActiveTextureARB_fp (GL_TEXTURE0_ARB);
 }
 

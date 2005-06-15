@@ -119,25 +119,25 @@ void R_NetGraph (void)
 	
     GL_Bind(netgraphtexture);
 
-	glfunc.glTexImage2D_fp (GL_TEXTURE_2D, 0, gl_alpha_format, 
+	glTexImage2D_fp (GL_TEXTURE_2D, 0, gl_alpha_format, 
 		NET_TIMINGS, NET_GRAPHHEIGHT, 0, GL_RGBA, 
 		GL_UNSIGNED_BYTE, ngraph_pixels);
 
-	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glfunc.glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	x = 8;
-	glfunc.glColor3f_fp (1,1,1);
-	glfunc.glBegin_fp (GL_QUADS);
-	glfunc.glTexCoord2f_fp (0, 0);
-	glfunc.glVertex2f_fp (x, y);
-	glfunc.glTexCoord2f_fp (1, 0);
-	glfunc.glVertex2f_fp (x+NET_TIMINGS, y);
-	glfunc.glTexCoord2f_fp (1, 1);
-	glfunc.glVertex2f_fp (x+NET_TIMINGS, y+NET_GRAPHHEIGHT);
-	glfunc.glTexCoord2f_fp (0, 1);
-	glfunc.glVertex2f_fp (x, y+NET_GRAPHHEIGHT);
-	glfunc.glEnd_fp ();
+	glColor3f_fp (1,1,1);
+	glBegin_fp (GL_QUADS);
+	glTexCoord2f_fp (0, 0);
+	glVertex2f_fp (x, y);
+	glTexCoord2f_fp (1, 0);
+	glVertex2f_fp (x+NET_TIMINGS, y);
+	glTexCoord2f_fp (1, 1);
+	glVertex2f_fp (x+NET_TIMINGS, y+NET_GRAPHHEIGHT);
+	glTexCoord2f_fp (0, 1);
+	glVertex2f_fp (x, y+NET_GRAPHHEIGHT);
+	glEnd_fp ();
 }
 

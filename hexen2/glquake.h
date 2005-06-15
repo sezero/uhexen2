@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.31 2005-06-07 20:29:44 sezero Exp $
+	$Id: glquake.h,v 1.32 2005-06-15 13:18:17 sezero Exp $
 */
 
 
@@ -36,7 +36,7 @@
 #define GL_Bind(texnum) {\
 	if (currenttexture != (texnum)) {\
 		currenttexture = (texnum);\
-		bindTexFunc(GL_TEXTURE_2D, currenttexture);\
+		glBindTexture_fp(GL_TEXTURE_2D, currenttexture);\
 	}\
 }
 
@@ -320,8 +320,6 @@ extern	const char *gl_extensions;
 
 void R_TranslatePlayerSkin (int playernum);
 
-extern	glfunc_t glfunc;
-
 byte *playerTranslation;
 
 // Multitexture
@@ -330,6 +328,10 @@ extern	qboolean gl_mtexable;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2005/06/07 20:29:44  sezero
+ * Added texture cheksumming (from Pa3PyX) for verification in GL_LoadTexture.
+ * Die white textures, die die die!!!
+ *
  * Revision 1.30  2005/06/05 16:14:07  sezero
  * patches I've been forgetting 6/6:
  * enable the irritating water-warp only by a cvar

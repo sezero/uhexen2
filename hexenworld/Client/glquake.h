@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.22 2005-06-07 20:29:44 sezero Exp $
+	$Id: glquake.h,v 1.23 2005-06-15 13:18:20 sezero Exp $
 */
 
 
@@ -36,7 +36,7 @@
 #define GL_Bind(texnum) {\
 	if (currenttexture != (texnum)) {\
 		currenttexture = (texnum);\
-		bindTexFunc(GL_TEXTURE_2D, currenttexture);\
+		glBindTexture_fp(GL_TEXTURE_2D, currenttexture);\
 	}\
 }
 
@@ -319,8 +319,6 @@ extern	const char *gl_version;
 extern	const char *gl_extensions;
 
 void R_TranslatePlayerSkin (int playernum);
-
-extern	glfunc_t glfunc;
 
 byte *playerTranslation;
 

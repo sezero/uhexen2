@@ -105,7 +105,7 @@ void R_InitParticleTexture (void)
 	}
 
 	particletexture = GL_LoadTexture("", texsize, texsize, (byte *)data, false, true, 0, true);
-	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
 /*
@@ -119,8 +119,8 @@ void R_Envmap_f (void)
 {
 	byte	buffer[256*256*4];
 
-	glfunc.glDrawBuffer_fp (GL_FRONT);
-	glfunc.glReadBuffer_fp (GL_FRONT);
+	glDrawBuffer_fp (GL_FRONT);
+	glReadBuffer_fp (GL_FRONT);
 	envmap = true;
 
 	r_refdef.vrect.x = 0;
@@ -133,44 +133,44 @@ void R_Envmap_f (void)
 	r_refdef.viewangles[2] = 0;
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
-	glfunc.glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 	COM_WriteFile ("env0.rgb", buffer, sizeof(buffer));		
 
 	r_refdef.viewangles[1] = 90;
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
-	glfunc.glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 	COM_WriteFile ("env1.rgb", buffer, sizeof(buffer));		
 
 	r_refdef.viewangles[1] = 180;
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
-	glfunc.glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 	COM_WriteFile ("env2.rgb", buffer, sizeof(buffer));		
 
 	r_refdef.viewangles[1] = 270;
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
-	glfunc.glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 	COM_WriteFile ("env3.rgb", buffer, sizeof(buffer));		
 
 	r_refdef.viewangles[0] = -90;
 	r_refdef.viewangles[1] = 0;
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
-	glfunc.glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 	COM_WriteFile ("env4.rgb", buffer, sizeof(buffer));		
 
 	r_refdef.viewangles[0] = 90;
 	r_refdef.viewangles[1] = 0;
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
-	glfunc.glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 	COM_WriteFile ("env5.rgb", buffer, sizeof(buffer));		
 
 	envmap = false;
-	glfunc.glDrawBuffer_fp (GL_BACK);
-	glfunc.glReadBuffer_fp (GL_BACK);
+	glDrawBuffer_fp (GL_BACK);
+	glReadBuffer_fp (GL_BACK);
 	GL_EndRendering ();
 }
 
@@ -411,8 +411,8 @@ void R_TimeRefresh_f (void)
 	int		i;
 	float		start, stop, time;
 
-	glfunc.glDrawBuffer_fp (GL_FRONT);
-	glfunc.glFinish_fp ();
+	glDrawBuffer_fp (GL_FRONT);
+	glFinish_fp ();
 
 	start = Sys_DoubleTime ();
 	for (i=0 ; i<128 ; i++)
@@ -421,12 +421,12 @@ void R_TimeRefresh_f (void)
 		R_RenderView ();
 	}
 
-	glfunc.glFinish_fp ();
+	glFinish_fp ();
 	stop = Sys_DoubleTime ();
 	time = stop-start;
 	Con_Printf ("%f seconds (%f fps)\n", time, 128/time);
 
-	glfunc.glDrawBuffer_fp (GL_BACK);
+	glDrawBuffer_fp (GL_BACK);
 	GL_EndRendering ();
 }
 
@@ -447,7 +447,7 @@ void D_ClearOpenGLTextures (int last_tex)
 	Con_DPrintf ("Deleting OpenGL textures\n");
 	// Delete OpenGL textures
 	for (i = last_tex; i < numgltextures; i++)
-		glfunc.glDeleteTextures_fp(1, &(gltextures[i].texnum));
+		glDeleteTextures_fp(1, &(gltextures[i].texnum));
 
 	memset(&(gltextures[last_tex]), 0, (numgltextures - last_tex) * sizeof(gltexture_t));
 	numgltextures = last_tex;

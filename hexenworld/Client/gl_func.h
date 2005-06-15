@@ -1,5 +1,5 @@
 typedef void (*glBindTexture_f)(GLenum,GLuint);
-typedef void (*glDeleteTextures_f)(GLsizei n, const GLuint *textures);
+typedef void (*glDeleteTextures_f)(GLsizei,const GLuint *);
 typedef void (*glTexParameterf_f)(GLenum,GLenum,GLfloat);
 typedef void (*glTexEnvf_f)(GLenum,GLenum,GLfloat);
 typedef void (*glScalef_f)(GLfloat,GLfloat,GLfloat);
@@ -55,81 +55,71 @@ typedef void (*glLoadMatrixf_f)(const GLfloat *);
 
 typedef const GLubyte* (*glGetString_f)(GLenum);
 typedef void (*glGetFloatv_f)(GLenum,GLfloat *);
+typedef void (*glGetIntegerv_f)(GLenum,GLint *);
 
-typedef void (*glActiveTextureARB_f)(GLenum texture);
-typedef void (*glMultiTexCoord2fARB_f)(GLenum target, GLfloat s, GLfloat t);
+typedef void (*glActiveTextureARB_f)(GLenum);
+typedef void (*glMultiTexCoord2fARB_f)(GLenum,GLfloat,GLfloat);
 
-typedef void (*glGetIntegerv_f)(GLenum pname, GLint *params);
 
-typedef GLint (*gluBuild2DMipmaps_f)(GLenum,GLint,GLsizei,GLsizei,GLenum,GLenum,const void*);
-typedef GLint (*gluScaleImage_f)(GLenum,GLsizei,GLsizei,GLenum,const void*,GLsizei,GLsizei,GLenum,GLvoid*);
+glBegin_f glBegin_fp;
+glEnd_f glEnd_fp;
+glEnable_f glEnable_fp;
+glDisable_f glDisable_fp;
+glIsEnabled_f glIsEnabled_fp;
+glFinish_f glFinish_fp;
+glClear_f glClear_fp;
 
-typedef struct
-{
-  glBegin_f glBegin_fp;
-  glEnd_f glEnd_fp;
-  glEnable_f glEnable_fp;
-  glDisable_f glDisable_fp;
-  glIsEnabled_f glIsEnabled_fp;
-  glFinish_f glFinish_fp;
-  glClear_f glClear_fp;
+glOrtho_f glOrtho_fp;
+glFrustum_f glFrustum_fp;
+glViewport_f glViewport_fp;
+glPushMatrix_f glPushMatrix_fp;
+glPopMatrix_f glPopMatrix_fp;
+glLoadIdentity_f glLoadIdentity_fp;
+glMatrixMode_f glMatrixMode_fp;
+glLoadMatrixf_f glLoadMatrixf_fp;
 
-  glOrtho_f glOrtho_fp;
-  glFrustum_f glFrustum_fp;
-  glViewport_f glViewport_fp;
-  glPushMatrix_f glPushMatrix_fp;
-  glPopMatrix_f glPopMatrix_fp;
-  glLoadIdentity_f glLoadIdentity_fp;
-  glMatrixMode_f glMatrixMode_fp;
-  glLoadMatrixf_f glLoadMatrixf_fp;
+glVertex2f_f glVertex2f_fp;
+glVertex3f_f glVertex3f_fp;
+glVertex3fv_f glVertex3fv_fp;
+glTexCoord2f_f glTexCoord2f_fp;
+glTexCoord3f_f glTexCoord3f_fp;
+glColor4f_f glColor4f_fp;
+glColor4fv_f glColor4fv_fp;
+glColor4ub_f glColor4ub_fp;
+glColor4ubv_f glColor4ubv_fp;
+glColor3f_f glColor3f_fp;
+glColor3ubv_f glColor3ubv_fp;
+glClearColor_f glClearColor_fp;
 
-  glVertex2f_f glVertex2f_fp;
-  glVertex3f_f glVertex3f_fp;
-  glVertex3fv_f glVertex3fv_fp;
-  glTexCoord2f_f glTexCoord2f_fp;
-  glTexCoord3f_f glTexCoord3f_fp;
-  glColor4f_f glColor4f_fp;
-  glColor4fv_f glColor4fv_fp;
-  glColor4ub_f glColor4ub_fp;
-  glColor4ubv_f glColor4ubv_fp;
-  glColor3f_f glColor3f_fp;
-  glColor3ubv_f glColor3ubv_fp;
-  glClearColor_f glClearColor_fp;
+glRotatef_f glRotatef_fp;
+glTranslatef_f glTranslatef_fp;
 
-  glRotatef_f glRotatef_fp;
-  glTranslatef_f glTranslatef_fp;
+glBindTexture_f glBindTexture_fp;
+glDeleteTextures_f glDeleteTextures_fp;
+glTexParameterf_f glTexParameterf_fp;
+glTexEnvf_f glTexEnvf_fp;
+glScalef_f glScalef_fp;
+glTexImage2D_f glTexImage2D_fp;
+glTexSubImage2D_f glTexSubImage2D_fp;
 
-  glBindTexture_f glBindTexture_fp;
-  glDeleteTextures_f glDeleteTextures_fp;
-  glTexParameterf_f glTexParameterf_fp;
-  glTexEnvf_f glTexEnvf_fp;
-  glScalef_f glScalef_fp;
-  glTexImage2D_f glTexImage2D_fp;
-  glTexSubImage2D_f glTexSubImage2D_fp;
+glAlphaFunc_f glAlphaFunc_fp;
+glBlendFunc_f glBlendFunc_fp;
+glShadeModel_f glShadeModel_fp;
+glPolygonMode_f glPolygonMode_fp;
+glDepthMask_f glDepthMask_fp;
+glDepthRange_f glDepthRange_fp;
+glDepthFunc_f glDepthFunc_fp;
 
-  glAlphaFunc_f glAlphaFunc_fp;
-  glBlendFunc_f glBlendFunc_fp;
-  glShadeModel_f glShadeModel_fp;
-  glPolygonMode_f glPolygonMode_fp;
-  glDepthMask_f glDepthMask_fp;
-  glDepthRange_f glDepthRange_fp;
-  glDepthFunc_f glDepthFunc_fp;
+glDrawBuffer_f glDrawBuffer_fp;
+glReadBuffer_f glReadBuffer_fp;
+glReadPixels_f glReadPixels_fp;
+glHint_f glHint_fp;
+glCullFace_f glCullFace_fp;
 
-  glDrawBuffer_f glDrawBuffer_fp;
-  glReadBuffer_f glReadBuffer_fp;
-  glReadPixels_f glReadPixels_fp;
-  glHint_f glHint_fp;
-  glCullFace_f glCullFace_fp;
+glGetString_f glGetString_fp;
+glGetFloatv_f glGetFloatv_fp;
+glGetIntegerv_f glGetIntegerv_fp;
 
-  glGetString_f glGetString_fp;
-  glGetFloatv_f glGetFloatv_fp;
+glActiveTextureARB_f glActiveTextureARB_fp;
+glMultiTexCoord2fARB_f glMultiTexCoord2fARB_fp;
 
-  glActiveTextureARB_f glActiveTextureARB_fp;
-  glMultiTexCoord2fARB_f glMultiTexCoord2fARB_fp;
-
-  glGetIntegerv_f glGetIntegerv_fp;
-
-  gluBuild2DMipmaps_f gluBuild2DMipmaps_fp;
-  gluScaleImage_f gluScaleImage_fp;
-
-} glfunc_t;

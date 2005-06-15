@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_dl_screen.c,v 1.12 2005-05-29 08:53:57 sezero Exp $
+	$Id: gl_dl_screen.c,v 1.13 2005-06-15 13:18:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -715,7 +715,7 @@ void SCR_ScreenShot_f (void)
 	buffer[15] = glheight>>8;
 	buffer[16] = 24;	// pixel size
 
-	glfunc.glReadPixels_fp (glx, gly, glwidth, glheight, GL_RGB, GL_UNSIGNED_BYTE, buffer+18 );
+	glReadPixels_fp (glx, gly, glwidth, glheight, GL_RGB, GL_UNSIGNED_BYTE, buffer+18 );
 
 	// swap rgb to bgr
 	c = 18+glwidth*glheight*3;
@@ -1264,6 +1264,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/05/29 08:53:57  sezero
+ * get rid of silly name changes
+ *
  * Revision 1.11  2005/05/26 21:36:36  sezero
  * whitespace...
  *
