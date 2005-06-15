@@ -7,37 +7,34 @@
 
 #define MAX_MODE_LIST	30
 #define VID_ROW_SIZE	3
-#define WARP_WIDTH		320
-#define WARP_HEIGHT		200
-#define MAXWIDTH		10000
-#define MAXHEIGHT		10000
-#define BASEWIDTH		320
-#define BASEHEIGHT		200
+#define WARP_WIDTH	320
+#define WARP_HEIGHT	200
+#define MAXWIDTH	10000
+#define MAXHEIGHT	10000
+#define BASEWIDTH	320
+#define BASEHEIGHT	200
 
-#define MODE_WINDOWED			0
-#define NO_MODE					(MODE_WINDOWED - 1)
+#define MODE_WINDOWED		0
+#define NO_MODE			(MODE_WINDOWED - 1)
 #define MODE_FULLSCREEN_DEFAULT	(MODE_WINDOWED + 1)
 
 byte globalcolormap[VID_GRADES*256];
 
-extern qboolean is_3dfx;
-extern qboolean is_PowerVR;
-
 typedef struct {
 	modestate_t	type;
-	int			width;
-	int			height;
-	int			modenum;
-	int			dib;
-	int			fullscreen;
-	int			bpp;
-	int			halfscreen;
-	char		modedesc[33];
+	int	width;
+	int	height;
+	int	modenum;
+	int	dib;
+	int	fullscreen;
+	int	bpp;
+	int	halfscreen;
+	char	modedesc[33];
 } vmode_t;
 
 typedef struct {
-	int			width;
-	int			height;
+	int	width;
+	int	height;
 } lmode_t;
 
 lmode_t	lowresmodes[] = {
@@ -47,45 +44,52 @@ lmode_t	lowresmodes[] = {
 	{512, 384},
 };
 
-const char *gl_vendor;
-const char *gl_renderer;
-const char *gl_version;
-const char *gl_extensions;
+const char	*gl_vendor;
+const char	*gl_renderer;
+const char	*gl_version;
+const char	*gl_extensions;
+int		gl_max_size = 256;
+qboolean	is8bit = false;
+qboolean	is_3dfx = false;
+qboolean	gl_mtexable = false;
+int		num_tmus = 1;
 
-qboolean		DDActive;
-qboolean		scr_skipupdate;
+qboolean	DDActive;
+qboolean	scr_skipupdate;
 
 static vmode_t	modelist[MAX_MODE_LIST];
-static int		nummodes;
+static int	nummodes;
 static vmode_t	*pcurrentmode;
 static vmode_t	badmode;
 
 static DEVMODE	gdevmode;
-static qboolean	vid_initialized = false;
+qboolean	vid_initialized = false;
 static qboolean	windowed, leavecurrentmode;
 static qboolean vid_canalttab = false;
 static qboolean vid_wassuspended = false;
-static int		enable_mouse;
+static int	enable_mouse;
 static HICON	hIcon;
 
-int			DIBWidth, DIBHeight;
+int		DIBWidth, DIBHeight;
 RECT		WindowRect;
 DWORD		WindowStyle, ExWindowStyle;
 
-HWND	mainwindow, dibwindow;
+HWND		mainwindow, dibwindow;
 
-int			vid_modenum = NO_MODE;
-int			vid_realmode;
-int			vid_default = MODE_WINDOWED;
+int		vid_modenum = NO_MODE;
+int		vid_realmode;
+int		vid_default = MODE_WINDOWED;
 static int	windowed_default;
 unsigned char	vid_curpal[256*3];
 static qboolean fullsbardraw = false;
-float RTint[256],GTint[256],BTint[256];
 
-HGLRC	baseRC;
+HGLRC		baseRC;
 HDC		maindc;
 
 cvar_t	gl_ztrick = {"gl_ztrick","0",true};
+cvar_t		gl_purge_maptex = {"gl_purge_maptex", "1", true};
+		/* whether or not map-specific OGL textures
+		   are flushed from map. default == yes  */
 
 HWND WINAPI InitializeWindow (HINSTANCE hInstance, int nCmdShow);
 
@@ -93,8 +97,10 @@ viddef_t	vid;				// global video state
 
 unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
-unsigned char d_15to8table[65536];
 unsigned	d_8to24TranslucentTable[256];
+unsigned	d_8to24table3dfx[256];
+unsigned char	d_15to8table[65536];
+float		RTint[256],GTint[256],BTint[256];
 
 float		gldepthmin, gldepthmax;
 
@@ -110,17 +116,11 @@ void ClearAllStates (void);
 void VID_UpdateWindowStatus (void);
 void GL_Init (void);
 
-BINDTEXFUNCPTR bindTexFunc;
-#define TEXTURE_EXT_STRING "GL_EXT_texture_object"
-
-typedef void (APIENTRY *FX_SET_PALETTE_EXT) (int, int, int, int, int, const void*);
+typedef void (APIENTRY *FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
 FX_SET_PALETTE_EXT MyglColorTableEXT;
-typedef BOOL (APIENTRY *GAMMA_RAMP_FN)(HDC, LPVOID); 
-GAMMA_RAMP_FN GetDeviceGammaRamp_f; 
+typedef BOOL (APIENTRY *GAMMA_RAMP_FN)(HDC, LPVOID);
+GAMMA_RAMP_FN GetDeviceGammaRamp_f;
 GAMMA_RAMP_FN SetDeviceGammaRamp_f;
-qboolean is8bit = false;
-qboolean isPermedia = false;
-qboolean gl_mtexable = false;
 
 //====================================
 
@@ -137,7 +137,7 @@ cvar_t		vid_config_y = {"vid_config_y","600", true};
 cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1", true};
 cvar_t		_enable_mouse = {"_enable_mouse","0", true};
 
-int			window_center_x, window_center_y, window_x, window_y, window_width, window_height;
+int		window_center_x, window_center_y, window_x, window_y, window_width, window_height;
 RECT		window_rect;
 
 
@@ -181,8 +181,8 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 {
-    RECT    rect;
-    int     CenterX, CenterY;
+	RECT	rect;
+	int	CenterX, CenterY;
 
 	CenterX = (GetSystemMetrics(SM_CXSCREEN) - width) / 2;
 	CenterY = (GetSystemMetrics(SM_CYSCREEN) - height) / 2;
@@ -196,9 +196,9 @@ void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 
 qboolean VID_SetWindowedMode (int modenum)
 {
-	HDC				hdc;
-	int				lastmodestate, width, height;
-	RECT			rect;
+	HDC	hdc;
+	int	lastmodestate, width, height;
+	RECT	rect;
 
 	lastmodestate = modestate;
 
@@ -274,9 +274,9 @@ qboolean VID_SetWindowedMode (int modenum)
 
 qboolean VID_SetFullDIBMode (int modenum)
 {
-	HDC				hdc;
-	int				lastmodestate, width, height;
-	RECT			rect;
+	HDC	hdc;
+	int	lastmodestate, width, height;
+	RECT	rect;
 
 	if (!leavecurrentmode)
 	{
@@ -363,10 +363,10 @@ qboolean VID_SetFullDIBMode (int modenum)
 
 int VID_SetMode (int modenum, unsigned char *palette)
 {
-	int				original_mode, temp;
-	qboolean		stat;
-    MSG				msg;
-	HDC				hdc;
+	int		original_mode, temp;
+	qboolean	stat;
+	MSG		msg;
+	HDC		hdc;
 
 	if ((windowed && (modenum != 0)) ||
 		(!windowed && (modenum < 1)) ||
@@ -438,8 +438,8 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	while (PeekMessage (&msg, NULL, 0, 0, PM_REMOVE))
 	{
-      	TranslateMessage (&msg);
-      	DispatchMessage (&msg);
+		TranslateMessage (&msg);
+		DispatchMessage (&msg);
 	}
 
 	Sleep (100);
@@ -471,7 +471,6 @@ VID_UpdateWindowStatus
 */
 void VID_UpdateWindowStatus (void)
 {
-
 	window_rect.left = window_x;
 	window_rect.top = window_y;
 	window_rect.right = window_x + window_width;
@@ -505,62 +504,44 @@ void Check3DfxGammaControlExtension (void)
 	}
 }
 
-void CheckTextureExtensions (void)
-{
-	char		*tmp;
-	qboolean	texture_ext;
-	HINSTANCE	hInstGL;
-
-	texture_ext = FALSE;
-	/* check for texture extension */
-	tmp = (unsigned char *)glGetString(GL_EXTENSIONS);
-	while (*tmp)
-	{
-		if (strncmp((const char*)tmp, TEXTURE_EXT_STRING, strlen(TEXTURE_EXT_STRING)) == 0)
-			texture_ext = TRUE;
-		tmp++;
-	}
-
-	if (!texture_ext || COM_CheckParm ("-gl11") )
-	{
-		hInstGL = LoadLibrary("opengl32.dll");
-		
-		if (hInstGL == NULL)
-			Sys_Error ("Couldn't load opengl32.dll\n");
-
-		bindTexFunc = (void *)GetProcAddress(hInstGL,"glBindTexture");
-
-		if (!bindTexFunc)
-			Sys_Error ("No texture objects!");
-		return;
-	}
-
-/* load library and get procedure adresses for texture extension API */
-	if ((bindTexFunc = (BINDTEXFUNCPTR)
-		wglGetProcAddress((LPCSTR) "glBindTextureEXT")) == NULL)
-	{
-		Sys_Error ("GetProcAddress for BindTextureEXT failed");
-		return;
-	}
-}
-
-
-//int		texture_mode = GL_NEAREST;
-//int		texture_mode = GL_NEAREST_MIPMAP_NEAREST;
-//int		texture_mode = GL_NEAREST_MIPMAP_LINEAR;
-int		texture_mode = GL_LINEAR;
-//int		texture_mode = GL_LINEAR_MIPMAP_NEAREST;
-//int		texture_mode = GL_LINEAR_MIPMAP_LINEAR;
-
 int		texture_extension_number = 1;
 
-void CheckMultiTextureExtensions(void) 
+void CheckMultiTextureExtensions(void)
 {
-	if (strstr(gl_extensions, "GL_SGIS_multitexture ") && !COM_CheckParm("-nomtex")) {
-		Con_Printf("Multitexture extensions found.\n");
-		glMTexCoord2fSGIS = (void *) wglGetProcAddress("glMTexCoord2fSGIS");
-		glSelectTextureSGIS = (void *) wglGetProcAddress("glSelectTextureSGIS");
+	gl_mtexable = false;
+
+	if (COM_CheckParm("-nomtex"))
+	{
+		Con_Printf("Multitexture extensions disabled\n");
+	}
+	else if (strstr(gl_extensions, "GL_ARB_multitexture"))
+	{
+		Con_Printf("ARB Multitexture extensions found\n");
+
+		glGetIntegerv_fp(GL_MAX_TEXTURE_UNITS_ARB, &num_tmus);
+		if (num_tmus < 2) {
+			Con_Printf("not enough TMUs, ignoring multitexture\n");
+			return;
+		}
+
+		glMultiTexCoord2fARB_fp = (void *) wglGetProcAddress("glMultiTexCoord2fARB");
+		glActiveTextureARB_fp = (void *) wglGetProcAddress("glActiveTextureARB");
+		if ((glMultiTexCoord2fARB_fp == NULL) ||
+		    (glActiveTextureARB_fp == NULL)) {
+			Con_Printf ("Couldn't link to multitexture functions\n");
+			return;
+		}
+
+		Con_Printf("Found %i TMUs support\n", num_tmus);
 		gl_mtexable = true;
+
+		// start up with the correct texture selected!
+		glDisable_fp(GL_TEXTURE_2D);
+		glActiveTextureARB_fp(GL_TEXTURE0_ARB);
+	}
+	else
+	{
+		Con_Printf("GL_ARB_multitexture not found\n");
 	}
 }
 
@@ -571,60 +552,58 @@ GL_Init
 */
 void GL_Init (void)
 {
-	gl_vendor = glGetString (GL_VENDOR);
+	gl_vendor = glGetString_fp (GL_VENDOR);
 	Con_Printf ("GL_VENDOR: %s\n", gl_vendor);
-	gl_renderer = glGetString (GL_RENDERER);
+	gl_renderer = glGetString_fp (GL_RENDERER);
 	Con_Printf ("GL_RENDERER: %s\n", gl_renderer);
 
-	gl_version = glGetString (GL_VERSION);
+	gl_version = glGetString_fp (GL_VERSION);
 	Con_Printf ("GL_VERSION: %s\n", gl_version);
-	gl_extensions = glGetString (GL_EXTENSIONS);
+	gl_extensions = glGetString_fp (GL_EXTENSIONS);
 	Con_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
-	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",4))
+	glGetIntegerv_fp(GL_MAX_TEXTURE_SIZE, &gl_max_size);
+	if (gl_max_size < 256)	// Refuse to work when less than 256
+		Sys_Error ("hardware capable of min. 256k opengl texture size needed");
+	if (gl_max_size > 1024)	// We're cool with 1024, write a cmdline override if necessary
+		gl_max_size = 1024;
+	Con_Printf("OpenGL max.texture size: %i\n", gl_max_size);
+
+	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",  4)  ||
+	    !Q_strncasecmp ((char *)gl_renderer, "Glide", 5)  ||
+	    !Q_strncasecmp ((char *)gl_renderer, "Mesa Glide", 10))
 	{
+		Con_Printf("3dfx Voodoo found\n");
 		is_3dfx = true;
 	}
-
-	if (!Q_strncasecmp ((char *)gl_renderer, "PowerVR PCX1",12) ||
-		!Q_strncasecmp ((char *)gl_renderer, "PowerVR PCX2",12))
-	{
-		is_PowerVR = true;
-	}
-
-//	Con_Printf ("%s %s\n", gl_renderer, gl_version);
 
 	if (Q_strncasecmp(gl_renderer,"PowerVR",7)==0)
 		fullsbardraw = true;
 
-	if (Q_strncasecmp(gl_renderer,"Permedia",8)==0)
-		isPermedia = true;
-
 	GetDeviceGammaRamp_f = NULL;
 	SetDeviceGammaRamp_f = NULL;
-	CheckTextureExtensions ();
 	CheckMultiTextureExtensions ();
 	Check3DfxGammaControlExtension();
 
-	glClearColor (1,0,0,0);
-	glCullFace(GL_FRONT);
-	glEnable(GL_TEXTURE_2D);
+	glClearColor_fp (1,0,0,0);
+	glCullFace_fp(GL_FRONT);
+	glEnable_fp(GL_TEXTURE_2D);
 
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, 0.666);
+	glEnable_fp(GL_ALPHA_TEST);
+	glAlphaFunc_fp(GL_GREATER, 0.666);
 
-	glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-	glShadeModel (GL_FLAT);
+	glPolygonMode_fp (GL_FRONT_AND_BACK, GL_FILL);
+	glShadeModel_fp (GL_FLAT);
 
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-//	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+//	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
 
 
@@ -636,16 +615,14 @@ GL_BeginRendering
 */
 void GL_BeginRendering (int *x, int *y, int *width, int *height)
 {
-	extern cvar_t gl_clear;
-
 	*x = *y = 0;
 	*width = WindowRect.right - WindowRect.left;
 	*height = WindowRect.bottom - WindowRect.top;
 
-//    if (!wglMakeCurrent( maindc, baseRC ))
+//	if (!wglMakeCurrent( maindc, baseRC ))
 //		Sys_Error ("wglMakeCurrent failed");
 
-//	glViewport (*x, *y, *width, *height);
+//	glViewport_fp (*x, *y, *width, *height);
 }
 
 
@@ -688,20 +665,18 @@ unsigned ColorPercent[16] =
 	25, 51, 76, 102, 114, 127, 140, 153, 165, 178, 191, 204, 216, 229, 237, 247
 };
 
-unsigned	d_8to24table3dfx[256];
-
 void VID_SetPalette (unsigned char *palette)
 {
-	byte	*pal;
-	unsigned short r,g,b;
-	int     v;
-	int     r1,g1,b1;
+	byte		*pal;
+	unsigned short	r,g,b;
+	int		v;
+	int		r1,g1,b1;
 	int		j,k,l,m;
-	unsigned short i, p, c;
+	unsigned short	i, p, c;
 	unsigned	*table, *table3dfx;
-	FILE *f;
-	char s[255];
-	HWND hDlg, hProgress;
+	FILE		*f;
+	char		s[255];
+	HWND		hDlg, hProgress;
 
 //
 // 8 8 8 encoding
@@ -820,6 +795,10 @@ void VID_SetPalette (unsigned char *palette)
 	d_8to24table[255] &= 0xffffff;	// 255 is transparent
 }
 
+void VID_ApplyGamma(void)
+{
+}
+
 void	VID_ShiftPalette (unsigned char *palette)
 {
 	if (gammaworks && SetDeviceGammaRamp_f)
@@ -835,22 +814,22 @@ void VID_SetDefaultMode (void)
 
 void	VID_Shutdown (void)
 {
-   	HGLRC hRC;
-   	HDC	  hDC;
+	HGLRC	hRC;
+	HDC	hDC;
 
 	if (vid_initialized)
 	{
 		vid_canalttab = false;
 		hRC = wglGetCurrentContext();
-    	hDC = wglGetCurrentDC();
+		hDC = wglGetCurrentDC();
 
-	if (maindc && gammaworks && SetDeviceGammaRamp_f)
-		SetDeviceGammaRamp_f(maindc, orig_ramps);
+		if (maindc && gammaworks && SetDeviceGammaRamp_f)
+			SetDeviceGammaRamp_f(maindc, orig_ramps);
 
-    	wglMakeCurrent(NULL, NULL);
+		wglMakeCurrent(NULL, NULL);
 
-    	if (hRC)
-    	    wglDeleteContext(hRC);
+		if (hRC)
+			wglDeleteContext(hRC);
 
 		if (hDC && dibwindow)
 			ReleaseDC(dibwindow, hDC);
@@ -910,8 +889,7 @@ BOOL bSetupPixelFormat(HDC hDC)
 
 
 
-byte        scantokey[128] = 
-					{ 
+byte	scantokey[128] = { 
 //  0           1       2       3       4       5       6       7 
 //  8           9       A       B       C       D       E       F 
 	0  ,    27,     '1',    '2',    '3',    '4',    '5',    '6', 
@@ -922,7 +900,7 @@ byte        scantokey[128] =
 	'\'' ,    '`',    K_SHIFT,'\\',  'z',    'x',    'c',    'v',      // 2 
 	'b',    'n',    'm',    ',',    '.',    '/',    K_SHIFT,'*', 
 	K_ALT,' ',   0  ,    K_F1, K_F2, K_F3, K_F4, K_F5,   // 3 
-	K_F6, K_F7, K_F8, K_F9, K_F10, K_PAUSE  ,    0  , K_HOME, 
+	K_F6, K_F7, K_F8, K_F9, K_F10, K_PAUSE,    0  , K_HOME, 
 	K_UPARROW,K_PGUP,'-',K_LEFTARROW,'5',K_RIGHTARROW,'+',K_END, //4 
 	K_DOWNARROW,K_PGDN,K_INS,K_DEL,0,0,             0,              K_F11, 
 	K_F12,0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,        // 5 
@@ -930,10 +908,9 @@ byte        scantokey[128] =
 	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,        // 6 
 	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0, 
 	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0         // 7 
-					}; 
+};
 
-byte        shiftscantokey[128] = 
-					{ 
+byte	shiftscantokey[128] = { 
 //  0           1       2       3       4       5       6       7 
 //  8           9       A       B       C       D       E       F 
 	0  ,    27,     '!',    '@',    '#',    '$',    '%',    '^', 
@@ -944,7 +921,7 @@ byte        shiftscantokey[128] =
 	'"' ,    '~',    K_SHIFT,'|',  'Z',    'X',    'C',    'V',      // 2 
 	'B',    'N',    'M',    '<',    '>',    '?',    K_SHIFT,'*', 
 	K_ALT,' ',   0  ,    K_F1, K_F2, K_F3, K_F4, K_F5,   // 3 
-	K_F6, K_F7, K_F8, K_F9, K_F10, K_PAUSE  ,    0  , K_HOME, 
+	K_F6, K_F7, K_F8, K_F9, K_F10, K_PAUSE,    0  , K_HOME, 
 	K_UPARROW,K_PGUP,'_',K_LEFTARROW,'%',K_RIGHTARROW,'+',K_END, //4 
 	K_DOWNARROW,K_PGDN,K_INS,K_DEL,0,0,             0,              K_F11, 
 	K_F12,0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,        // 5 
@@ -952,7 +929,7 @@ byte        shiftscantokey[128] =
 	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,        // 6 
 	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0, 
 	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0         // 7 
-					}; 
+};
 
 
 /*
@@ -1011,9 +988,9 @@ void AppActivate(BOOL fActive, BOOL minimize)
 *
 ****************************************************************************/
 {
-	MSG msg;
-    HDC			hdc;
-    int			i, t;
+	MSG		msg;
+	HDC		hdc;
+	int		i, t;
 	static BOOL	sound_active;
 
 	ActiveApp = fActive;
@@ -1079,14 +1056,10 @@ extern cvar_t mwheelthreshold;
 
 
 /* main window procedure */
-LONG WINAPI MainWndProc (
-    HWND    hWnd,
-    UINT    uMsg,
-    WPARAM  wParam,
-    LPARAM  lParam)
+LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    LONG    lRet = 1;
-	int		fwKeys, xPos, yPos, fActive, fMinimized, temp;
+	LONG	lRet = 1;
+	int	fwKeys, xPos, yPos, fActive, fMinimized, temp;
 
 	if (uMsg == uMSG_MOUSEWHEEL && mwheelthreshold.value >= 1)
 	{
@@ -1105,8 +1078,8 @@ LONG WINAPI MainWndProc (
 		}
 	}
 
-    switch (uMsg)
-    {
+	switch (uMsg)
+	{
 		case WM_KILLFOCUS:
 			if (modestate == MS_FULLDIB)
 				ShowWindow(mainwindow, SW_SHOWMINNOACTIVE);
@@ -1172,17 +1145,17 @@ LONG WINAPI MainWndProc (
 			}
 			break;
 
-    	case WM_SIZE:
-            break;
+		case WM_SIZE:
+			break;
 
-   	    case WM_CLOSE:
+		case WM_CLOSE:
 			if (MessageBox (mainwindow, "Are you sure you want to quit?", "Confirm Exit",
 						MB_YESNO | MB_SETFOREGROUND | MB_ICONQUESTION) == IDYES)
 			{
 				Sys_Quit ();
 			}
 
-	        break;
+			break;
 
 		case WM_ACTIVATE:
 			fActive = LOWORD(wParam);
@@ -1194,27 +1167,27 @@ LONG WINAPI MainWndProc (
 
 			break;
 
-   	    case WM_DESTROY:
-        {
-			if (dibwindow)
-				DestroyWindow (dibwindow);
+		case WM_DESTROY:
+			{
+				if (dibwindow)
+					DestroyWindow (dibwindow);
 
-            PostQuitMessage (0);
-        }
-        break;
-
-		case MM_MCINOTIFY:
-            lRet = CDAudio_MessageHandler (hWnd, uMsg, wParam, lParam);
+				PostQuitMessage (0);
+			}
 			break;
 
-    	default:
-            /* pass all unhandled messages to DefWindowProc */
-            lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
-        break;
-    }
+		case MM_MCINOTIFY:
+			lRet = CDAudio_MessageHandler (hWnd, uMsg, wParam, lParam);
+			break;
 
-    /* return 1 if handled message, 0 if not */
-    return lRet;
+		default:
+			/* pass all unhandled messages to DefWindowProc */
+			lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
+			break;
+	}
+
+	/* return 1 if handled message, 0 if not */
+	return lRet;
 }
 
 
@@ -1236,7 +1209,6 @@ VID_GetModePtr
 */
 vmode_t *VID_GetModePtr (int modenum)
 {
-
 	if ((modenum >= 0) && (modenum < nummodes))
 		return &modelist[modenum];
 	else
@@ -1329,7 +1301,6 @@ VID_NumModes_f
 */
 void VID_NumModes_f (void)
 {
-
 	if (nummodes == 1)
 		Con_Printf ("%d video mode is available\n", nummodes);
 	else
@@ -1344,8 +1315,8 @@ VID_DescribeMode_f
 */
 void VID_DescribeMode_f (void)
 {
-	int		t, modenum;
-	
+	int	t, modenum;
+
 	modenum = atoi (Cmd_Argv(1));
 
 	t = leavecurrentmode;
@@ -1356,7 +1327,6 @@ void VID_DescribeMode_f (void)
 	leavecurrentmode = t;
 }
 
-
 /*
 =================
 VID_DescribeModes_f
@@ -1364,9 +1334,9 @@ VID_DescribeModes_f
 */
 void VID_DescribeModes_f (void)
 {
-	int			i, lnummodes, t;
-	char		*pinfo;
-	vmode_t		*pv;
+	int	i, lnummodes, t;
+	char	*pinfo;
+	vmode_t	*pv;
 
 	lnummodes = VID_NumModes ();
 
@@ -1386,23 +1356,23 @@ void VID_DescribeModes_f (void)
 
 void VID_InitDIB (HINSTANCE hInstance)
 {
-	WNDCLASS		wc;
-	HDC				hdc;
-	int				i;
+	WNDCLASS	wc;
+	HDC		hdc;
+	int		i;
 
 	/* Register the frame class */
-    wc.style         = 0;
-    wc.lpfnWndProc   = (WNDPROC)MainWndProc;
-    wc.cbClsExtra    = 0;
-    wc.cbWndExtra    = 0;
-    wc.hInstance     = hInstance;
-    wc.hIcon         = 0;
-    wc.hCursor       = LoadCursor (NULL,IDC_ARROW);
+	wc.style         = 0;
+	wc.lpfnWndProc   = (WNDPROC)MainWndProc;
+	wc.cbClsExtra    = 0;
+	wc.cbWndExtra    = 0;
+	wc.hInstance     = hInstance;
+	wc.hIcon         = 0;
+	wc.hCursor       = LoadCursor (NULL,IDC_ARROW);
 	wc.hbrBackground = NULL;
-    wc.lpszMenuName  = 0;
-    wc.lpszClassName = "GLHexenWorld";
+	wc.lpszMenuName  = 0;
+	wc.lpszClassName = "GLHexenWorld";
 
-    if (!RegisterClass (&wc) )
+	if (!RegisterClass (&wc) )
 		Sys_Error ("Couldn't register window class");
 
 	modelist[0].type = MS_WINDOWED;
@@ -1444,8 +1414,8 @@ VID_InitFullDIB
 void VID_InitFullDIB (HINSTANCE hInstance)
 {
 	DEVMODE	devmode;
-	int		i, modenum, cmodes, originalnummodes, existingmode, numlowresmodes;
-	int		j, bpp, done;
+	int	i, modenum, cmodes, originalnummodes, existingmode, numlowresmodes;
+	int	j, bpp, done;
 	BOOL	stat;
 
 // enumerate >8 bpp modes
@@ -1462,8 +1432,8 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 			(nummodes < MAX_MODE_LIST))
 		{
 			devmode.dmFields = DM_BITSPERPEL |
-							   DM_PELSWIDTH |
-							   DM_PELSHEIGHT;
+					   DM_PELSWIDTH |
+					   DM_PELSHEIGHT;
 
 			if (ChangeDisplaySettings (&devmode, CDS_TEST | CDS_FULLSCREEN) ==
 					DISP_CHANGE_SUCCESSFUL)
@@ -1585,14 +1555,15 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 void VID_Init8bitPalette() 
 {
 	// Check for 8bit Extensions and initialize them.
-	int i;
-	char thePalette[256*3];
-	char *oldPalette, *newPalette;
+	int	i;
+	char	thePalette[256*3];
+	char	*oldPalette, *newPalette;
 
 	MyglColorTableEXT = (void *)wglGetProcAddress("glColorTableEXT");
-	if (MyglColorTableEXT && strstr(gl_extensions, "GL_EXT_shared_texture_palette")) {
+	if (MyglColorTableEXT && strstr(gl_extensions, "GL_EXT_shared_texture_palette"))
+	{
 		Con_SafePrintf("8-bit GL extensions enabled.\n");
-		glEnable( GL_SHARED_TEXTURE_PALETTE_EXT );
+		glEnable_fp( GL_SHARED_TEXTURE_PALETTE_EXT );
 		oldPalette = (char *) d_8to24table; //d_8to24table3dfx;
 		newPalette = thePalette;
 		for (i=0;i<256;i++) {
@@ -1614,11 +1585,11 @@ VID_Init
 */
 void	VID_Init (unsigned char *palette)
 {
-	int		i, existingmode;
-	int		basenummodes, width, height, bpp, findbpp, done;
+	int	i, existingmode;
+	int	basenummodes, width, height, bpp, findbpp, done;
 	byte	*ptmp;
 	char	gldir[MAX_OSPATH];
-	HDC		hdc;
+	HDC	hdc;
 	DEVMODE	devmode;
 
 	Cvar_RegisterVariable (&vid_mode);
@@ -1632,6 +1603,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&vid_stretch_by_2);
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&gl_ztrick);
+	Cvar_RegisterVariable (&gl_purge_maptex);
 
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
 	Cmd_AddCommand ("vid_describecurrentmode", VID_DescribeCurrentMode_f);
@@ -1839,13 +1811,13 @@ void	VID_Init (unsigned char *palette)
 
 	VID_SetMode (vid_default, palette);
 
-    maindc = GetDC(mainwindow);
+	maindc = GetDC(mainwindow);
 	bSetupPixelFormat(maindc);
 
-    baseRC = wglCreateContext( maindc );
+	baseRC = wglCreateContext( maindc );
 	if (!baseRC)
 		Sys_Error ("Could not initialize GL (wglCreateContext failed).\n\nMake sure you in are 65535 color mode, and try running -window.");
-    if (!wglMakeCurrent( maindc, baseRC ))
+	if (!wglMakeCurrent( maindc, baseRC ))
 		Sys_Error ("wglMakeCurrent failed");
 
 	GL_Init ();
@@ -1873,7 +1845,8 @@ void	VID_Init (unsigned char *palette)
 	VID_SetPalette (palette);
 	
 	// Check for 3DFX Extensions and initialize them.
-	VID_Init8bitPalette();
+	if (COM_CheckParm("-paltex"))
+		VID_Init8bitPalette();
 
 	vid_menudrawfn = VID_MenuDraw;
 	vid_menukeyfn = VID_MenuKey;
@@ -1901,9 +1874,9 @@ static int	vid_line, vid_wmodes;
 
 typedef struct
 {
-	int		modenum;
+	int	modenum;
 	char	*desc;
-	int		iscur;
+	int	iscur;
 } modedesc_t;
 
 #define MAX_COLUMN_SIZE		9
@@ -1919,11 +1892,11 @@ VID_MenuDraw
 */
 void VID_MenuDraw (void)
 {
-	qpic_t		*p;
-	char		*ptr;
-	int			lnummodes, i, j, k, column, row, dup, dupmode;
-	char		temp[100];
-	vmode_t		*pv;
+	qpic_t	*p;
+	char	*ptr;
+	int	lnummodes, i, j, k, column, row, dup, dupmode;
+	char	temp[100];
+	vmode_t	*pv;
 
 	ScrollTitle("gfx/menu/title7.lmp");
 
@@ -2001,3 +1974,23 @@ void VID_MenuKey (int key)
 		break;
 	}
 }
+
+#ifndef H2W
+//unused in hexenworld
+void D_ShowLoadingSize(void)
+{
+	if (!vid_initialized)
+		return;
+
+	glDrawBuffer_fp (GL_FRONT);
+
+	SCR_DrawLoading();
+
+	glDrawBuffer_fp (GL_BACK);
+}
+#endif
+
+void ToggleFullScreenSA(void)
+{
+}
+
