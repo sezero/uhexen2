@@ -240,9 +240,15 @@ int	Sys_FileTime (char *path)
 	return retval;
 }
 
-void Sys_mkdir (char *path)
+int Sys_mkdir (char *path)
 {
-	_mkdir (path);
+	int rc;
+
+	rc = _mkdir (path);
+	if (rc != 0 && errno == EEXIST)
+		rc = 0;
+
+	return rc;
 }
 
 
@@ -892,6 +898,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/06/15 10:45:42  sezero
+ * unused stuff
+ *
  * Revision 1.9  2005/06/15 10:35:40  sezero
  * added missing includes
  *
