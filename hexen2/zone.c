@@ -1,7 +1,7 @@
 /*
 	Z_zone.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.8 2005-05-19 11:34:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.9 2005-06-15 06:16:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -11,7 +11,9 @@
 #define	ZONEID	0x1d4a11
 #define MINFRAGMENT	64
 
+#ifndef _WIN32
 extern void strlwr (char * str);
+#endif
 
 typedef struct memblock_s
 {
@@ -1154,6 +1156,9 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/05/19 11:34:45  sezero
+ * save cache.txt and stats.txt into com_userdir
+ *
  * Revision 1.7  2005/05/17 22:56:19  sezero
  * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
  * Q_strXcasecmp will now be used throughout the code which are implementation
