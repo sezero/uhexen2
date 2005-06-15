@@ -670,14 +670,6 @@ char		*argv[MAX_NUM_ARGVS];
 static char	*empty_string = "";
 HWND		hwnd_dialog;
 
-
-#ifdef GLQUAKE
-
-#define H2_PARAM_KEY      "Software\\Hexen2"
-#define H2_FLAG_VALUE     "Flag"
-
-#endif
-
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     MSG				msg;
@@ -686,11 +678,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	MEMORYSTATUS	lpBuffer;
 	static	char	cwd[1024];
 	int				t;
-#ifdef GLQUAKE
-	HKEY hParamKey;
-	BOOL FlagValue;
-	DWORD cbBuffSize = sizeof(FlagValue);
-#endif
 
     /* previous instances do not exist in Win32 */
     if (hPrevInstance)
@@ -750,16 +737,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	if (!isDedicated)
 	{
-#ifdef GLQUAKE
-		RegCreateKeyEx(HKEY_LOCAL_MACHINE, H2_PARAM_KEY, 0, "GLH2", REG_OPTION_NON_VOLATILE, KEY_READ | KEY_WRITE, NULL, &hParamKey, NULL);
-		if (RegQueryValueEx(hParamKey, H2_FLAG_VALUE, NULL, NULL, (LPBYTE)&FlagValue, &cbBuffSize) != ERROR_SUCCESS)
-		{
-			FlagValue = TRUE;
-			RegSetValueEx(hParamKey, H2_FLAG_VALUE, 0, REG_BINARY, (LPBYTE)&FlagValue, sizeof(FlagValue));
-			MessageBox(NULL,"GLHexen is a special, accelerated version of Hexen II that runs on some OpenGL-based 3D cards.  Note that not all 3D accelerator cards will work with GLHexen.  If you are experiencing trouble launching GLHexen on your machine, your card is either not GLHexen compliant or you need to update your drivers.  Consult your manufacturer for OpenGL compatibility and driver updates.","GLHexen2",MB_OK|MB_ICONSTOP);
-		}
-#endif
-			
 		hwnd_dialog = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, NULL);
 
 		if (hwnd_dialog)
@@ -898,6 +875,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/06/15 11:10:52  sezero
+ * made Sys_mkdir int for win32 as well
+ *
  * Revision 1.10  2005/06/15 10:45:42  sezero
  * unused stuff
  *
