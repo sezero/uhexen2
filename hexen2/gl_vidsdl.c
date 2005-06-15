@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.70 2005-06-15 13:18:17 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.71 2005-06-15 22:10:38 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -330,7 +330,7 @@ void GL_Init (void)
 	gl_version = (const char *)glGetString_fp (GL_VERSION);
 	Con_Printf ("GL_VERSION: %s\n", gl_version);
 	gl_extensions = (const char *)glGetString_fp (GL_EXTENSIONS);
-//	Con_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
+	Con_DPrintf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
 	glGetIntegerv_fp(GL_MAX_TEXTURE_SIZE, &gl_max_size);
 	if (gl_max_size < 256)	// Refuse to work when less than 256
