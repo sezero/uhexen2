@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.68 2005-06-13 08:12:59 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.69 2005-06-15 06:12:51 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -80,7 +80,8 @@ const char	*gl_renderer;
 const char	*gl_version;
 const char	*gl_extensions;
 char		*gl_library;
-extern qboolean	is_3dfx;
+int		gl_max_size = 256;
+qboolean	is_3dfx = false;
 float		gldepthmin, gldepthmax;
 extern int	numgltextures;
 int		multisample = 0;
@@ -331,6 +332,13 @@ void GL_Init (void)
 	Con_Printf ("GL_VERSION: %s\n", gl_version);
 	gl_extensions = (const char *)glfunc.glGetString_fp (GL_EXTENSIONS);
 //	Con_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
+
+	glfunc.glGetIntegerv_fp(GL_MAX_TEXTURE_SIZE, &gl_max_size);
+	if (gl_max_size < 256)	// Refuse to work when less than 256
+		Sys_Error ("hardware capable of min. 256k opengl texture size needed");
+	if (gl_max_size > 1024)	// We're cool with 1024, write a cmdline override if necessary
+		gl_max_size = 1024;
+	Con_Printf("OpenGL max.texture size: %i\n", gl_max_size);
 
 	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",  4)  ||
 	    !Q_strncasecmp ((char *)gl_renderer, "Glide", 5)  ||

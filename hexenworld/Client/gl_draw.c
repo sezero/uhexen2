@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.27 2005-06-07 20:29:44 sezero Exp $
+	$Id: gl_draw.c,v 1.28 2005-06-15 06:12:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -16,7 +16,7 @@ extern unsigned ColorPercent[16];
 extern qboolean	is8bit;
 extern unsigned char d_15to8table[65536];
 
-int		gl_max_size = 256;
+extern int	gl_max_size;
 cvar_t		gl_picmip = {"gl_picmip", "0"};
 cvar_t		gl_spritemip = {"gl_spritemip", "0"};
 
@@ -55,10 +55,9 @@ int		gl_alpha_format = 4;
 int		gl_filter_min = GL_LINEAR_MIPMAP_NEAREST;
 int		gl_filter_max = GL_LINEAR;
 
-
 int		texels;
 
-qboolean is_3dfx = false;
+extern qboolean	is_3dfx;
 
 gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
@@ -450,13 +449,6 @@ void Draw_Init (void)
 
 	Cvar_RegisterVariable (&gl_picmip);
 	Cvar_RegisterVariable (&gl_spritemip);
-
-	glfunc.glGetIntegerv_fp(GL_MAX_TEXTURE_SIZE, &gl_max_size);
-	if (gl_max_size < 64)	/* Any living examples for this? */
-		gl_max_size = 64;
-	if (gl_max_size > 1024) /* O.S: write a cmdline override if necessary */
-		gl_max_size = 1024;
-	Con_Printf("OpenGL max.texture size: %i\n", gl_max_size);
 
 	Cmd_AddCommand ("gl_texturemode", &Draw_TextureMode_f);
 

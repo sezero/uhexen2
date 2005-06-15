@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_dl_draw.c,v 1.40 2005-06-07 20:29:44 sezero Exp $
+	$Id: gl_dl_draw.c,v 1.41 2005-06-15 06:12:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -17,7 +17,7 @@ extern qboolean	vid_initialized;
 extern qboolean	is8bit;
 extern unsigned char d_15to8table[65536];
 
-int		gl_max_size = 256;
+extern int	gl_max_size;
 cvar_t		gl_picmip = {"gl_picmip", "0"};
 cvar_t		gl_spritemip = {"gl_spritemip", "0"};
 
@@ -42,10 +42,9 @@ int		gl_alpha_format = 4;
 int		gl_filter_min = GL_LINEAR_MIPMAP_NEAREST;
 int		gl_filter_max = GL_LINEAR;
 
-
 int		texels;
 
-qboolean is_3dfx = false;
+extern qboolean	is_3dfx;
 
 gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
@@ -438,13 +437,6 @@ void Draw_Init (void)
 
 	Cvar_RegisterVariable (&gl_picmip);
 	Cvar_RegisterVariable (&gl_spritemip);
-
-	glfunc.glGetIntegerv_fp(GL_MAX_TEXTURE_SIZE, &gl_max_size);
-	if (gl_max_size < 64)	/* Any living examples for this? */
-		gl_max_size = 64;
-	if (gl_max_size > 1024) /* O.S: write a cmdline override if necessary */
-		gl_max_size = 1024;
-	Con_Printf("OpenGL max.texture size: %i\n", gl_max_size);
 
 	Cmd_AddCommand ("gl_texturemode", &Draw_TextureMode_f);
 	Cmd_AddCommand ("gl_texels", &GL_Texels_f);
@@ -1881,6 +1873,10 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.40  2005/06/07 20:29:44  sezero
+ * Added texture cheksumming (from Pa3PyX) for verification in GL_LoadTexture.
+ * Die white textures, die die die!!!
+ *
  * Revision 1.39  2005/06/07 20:28:12  sezero
  * A lot of syncing for gl_draw.c between hexen2/hexenworld
  *
