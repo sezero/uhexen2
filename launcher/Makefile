@@ -19,12 +19,12 @@ else
 TMPNAME = h2launcher
 endif
 ifdef GTK1
-H2LAUNCH = ${TMPNAME}.gtk1
+H2LAUNCH = $(TMPNAME).gtk1
 GTK_CFLAGS = `gtk-config --cflags`
 GTK_LIBS = `gtk-config --libs`
 else
-#H2LAUNCH = ${TMPNAME}.gtk2
-H2LAUNCH = ${TMPNAME}
+#H2LAUNCH = $(TMPNAME).gtk2
+H2LAUNCH = $(TMPNAME)
 GTK_CFLAGS = `pkg-config --cflags gtk+-2.0`
 GTK_LIBS = `pkg-config --libs gtk+-2.0`
 endif
@@ -34,18 +34,12 @@ HOT_VERSION = 1.2.5
 
 PROGRAMS = $(H2LAUNCH)
 
-SOURCES1= main.c com_sys.c config_file.c launch_bin.c interface.c \
-	callbacks.c support.c
-SOURCES2= com_sys.h launcher_defs.h config_file.h launch_bin.h \
-	interface.h widget_defs.h callbacks.h support.h
-SOURCES = ${SOURCES1} ${SOURCES2}
-
 # activate the line below if you activate NLS support
 #SUPPORT_OBJ= support.o
 OBJECTS = main.o com_sys.o config_file.o launch_bin.o \
-	interface.o callbacks.o ${SUPPORT_OBJ}
+	interface.o callbacks.o $(SUPPORT_OBJ)
 
-CFLAGS = -Wall -O2 -march=i586 -I. ${GTK_CFLAGS} -DHOTL_VER=\"${VERSION}\" -DHOT_VER=\"${HOT_VERSION}\"
+CFLAGS = -Wall -O2 -march=i586 -I. $(GTK_CFLAGS) -DHOTL_VER=\"$(VERSION)\" -DHOT_VER=\"$(HOT_VERSION)\"
 ifdef DEBUG
 CFLAGS+=-g
 endif
@@ -63,7 +57,7 @@ endif
 
 COMPILE = $(CC) $(CFLAGS)
 CCLD = $(CC)
-LINK = $(CCLD) -o $@ $(LDFLAGS) ${GTK_LIBS}
+LINK = $(CCLD) -o $@ $(LDFLAGS) $(GTK_LIBS)
 
 .SUFFIXES: .c .o
 
@@ -72,7 +66,7 @@ LINK = $(CCLD) -o $@ $(LDFLAGS) ${GTK_LIBS}
 
 $(H2LAUNCH): $(OBJECTS)
 	@rm -f $(H2LAUNCH)
-	$(LINK) $(LDFLAGS) $(OBJECTS)
+	$(LINK) $(OBJECTS) $(LDFLAGS)
 
 all: $(PROGRAMS)
 

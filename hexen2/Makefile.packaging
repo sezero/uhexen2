@@ -18,21 +18,23 @@ MP_BINARY_STATIC=h2mp.static
 H2_BINARY=hexen2
 H2_BINARY_STATIC=hexen2.static
 
+AS = nasm
 ifndef CC
 CC = gcc
 endif
 LINKER = $(CC)
-CFLAGS = -O2 -march=i586 -Wall \
+CFLAGS = -O2 -march=i586 -Wall -DPLATFORM_UNIX \
 	-fomit-frame-pointer -ffast-math -fexpensive-optimizations \
 	-falign-loops=2 -falign-jumps=2 -falign-functions=2
 ifdef DEBUG
 CFLAGS+= -DDEBUG -g
 endif
-GAMEFLAGS = -DPLATFORM_UNIX
+GAMEFLAGS =
 SDLFLAGS = `sdl-config --cflags`
 SDLLINK = `sdl-config --libs`
 LDFLAGS =
 GLFLAGS = -L/usr/X11R6/lib
+ASFLAGS = -f elf
 LDSTATIC = -Wl,-Bstatic -L/usr/lib -lSDL_mixer -lSDL -L/usr/X11R6/lib -lX11 -lXext -ldl -L/usr/X11R6/lib -lXxf86dga -lXxf86vm -lXv -L/usr/lib/ -lsmpeg -lvorbisfile -lvorbis -logg -lm -Wl,-Bdynamic -lpthread
 
 ifeq "$(USEMIDI)" "yes"
@@ -54,9 +56,9 @@ endif
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c -o $@ $< $(CFLAGS) $(SDLFLAGS) $(GAMEFLAGS)
+	$(CC) -c $(CFLAGS) $(SDLFLAGS) $(GAMEFLAGS) -o $@ $<
 %.o: %.asm
-	nasm -f elf -o $@ $<
+	$(AS) $(ASFLAGS) -o $@ $<
 
 SOFTOBJS = d_edge.o \
 	d_fill.o \
@@ -188,7 +190,7 @@ glmp_static : $(GLOBJS) $(COMMONOBJS)
 
 glmp_dynamic : GAMEFLAGS+=-DGLQUAKE -DH2MP
 glmp_dynamic : $(GLOBJS) $(COMMONOBJS)
-		$(LINKER) -o $(GLMP_BINARY) $(GLOBJS) $(COMMONOBJS) $(GLFLAGS) $(SDLLINK)
+		$(LINKER) -o $(GLMP_BINARY) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
 glh2_static : GAMEFLAGS+=-DGLQUAKE
 glh2_static : $(GLOBJS) $(COMMONOBJS)
@@ -196,7 +198,7 @@ glh2_static : $(GLOBJS) $(COMMONOBJS)
 
 glh2_dynamic : GAMEFLAGS+=-DGLQUAKE
 glh2_dynamic : $(GLOBJS) $(COMMONOBJS)
-		$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMONOBJS) $(GLFLAGS) $(SDLLINK)
+		$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
 mp_static : GAMEFLAGS+=-DH2MP
 mp_static : $(SOFTOBJS) $(COMMONOBJS)
@@ -211,3 +213,4 @@ h2_static : $(SOFTOBJS) $(COMMONOBJS)
 
 h2_dynamic : $(SOFTOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(H2_BINARY) $(SOFTOBJS) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK)
+

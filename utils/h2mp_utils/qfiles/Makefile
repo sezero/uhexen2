@@ -16,11 +16,11 @@ clean :
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 
 QFILESOBJS= cmdlib.o \
 	qfiles.o
 
 $(BINARY) : $(QFILESOBJS)
-	$(LINKER) -o $(DESTDIR)/$(BINARY) $(LDFLAGS) $(LDLIBS) $(QFILESOBJS)
+	$(LINKER) -o $(DESTDIR)/$(BINARY) $(QFILESOBJS) $(LDFLAGS) $(LDLIBS)

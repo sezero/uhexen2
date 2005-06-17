@@ -1,3 +1,4 @@
+
 ################ PLEASE edit below to select what you would like to build
 
 # BUILDGL :	yes = OpenGL support, no = software mode
@@ -26,29 +27,27 @@ USE_SDLCD=no
 
 ifeq "$(BUILDGL)" "yes"
 BINARY=glhwcl
-BINARY_STATIC=glhwcl.static
 else
 BINARY=hwcl
-binary_STATIC=hwcl.static
 endif
 
+AS = nasm
 ifndef CC
 CC = gcc
 endif
 LINKER = $(CC)
-CFLAGS = -O2 -march=i586 \
+CFLAGS = -O2 -march=i586 -DPLATFORM_UNIX \
 	-fomit-frame-pointer -ffast-math -fexpensive-optimizations \
 	-falign-loops=2 -falign-jumps=2 -falign-functions=2
 ifdef DEBUG
 CFLAGS+= -DDEBUG -g -Wall
 endif
-GAMEFLAGS = -DPLATFORM_UNIX -DH2W
+GAMEFLAGS = -DH2W
 SDLFLAGS = `sdl-config --cflags`
 SDLLINK = `sdl-config --libs`
 LDFLAGS =
 GLFLAGS = -L/usr/X11R6/lib
-
-LDSTATIC = -Wl,-Bstatic -L/usr/lib -lSDL_mixer -lSDL -L/usr/X11R6/lib -lX11 -lXext -ldl -L/usr/X11R6/lib -lXxf86dga -lXxf86vm -lXv -L/usr/lib/ -lsmpeg -lvorbisfile -lvorbis -logg -lm -Wl,-Bdynamic -lpthread
+ASFLAGS = -f elf
 
 ifeq "$(BUILDGL)" "yes"
 GAMEFLAGS+= -DGLQUAKE
@@ -73,9 +72,9 @@ endif
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c -o $@ $< $(CFLAGS) $(SDLFLAGS) $(GAMEFLAGS)
+	$(CC) -c $(CFLAGS) $(SDLFLAGS) $(GAMEFLAGS) -o $@ $<
 %.o: %.asm
-	nasm -f elf -o $@ $<
+	$(AS) $(ASFLAGS) -o $@ $<
 
 SOFTOBJS = d_edge.o \
 	d_fill.o \
@@ -189,34 +188,10 @@ all: $(BINARY)
 
 ifeq "$(BUILDGL)" "no"
 $(BINARY) : $(SOFTOBJS) $(COMMONOBJS)
-	$(LINKER) -o $(BINARY) $(LDFLAGS) $(SDLLINK) $(SOFTOBJS) $(COMMONOBJS)
+	$(LINKER) -o $(BINARY) $(SOFTOBJS) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK)
 else
 $(BINARY) : $(GLOBJS) $(COMMONOBJS)
-	$(LINKER) -o $(BINARY) $(GLFLAGS) $(SDLLINK) $(GLOBJS) $(COMMONOBJS)
-endif
-
-ifeq "$(BUILDGL)" "no"
-$(BINARY_STATIC) : $(SOFTOBJS) $(COMMONOBJS)
-	$(LINKER) -o $(BINARY_STATIC) $(SOFTOBJS) $(COMMONOBJS) $(LDSTATIC)
-else
-$(BINARY_STATIC) : $(GLOBJS) $(COMMONOBJS)
-	$(LINKER) -o $(BINARY_STATIC) $(GLOBJS) $(COMMONOBJS) $(LDSTATIC)
-endif
-
-ifeq "$(BUILDGL)" "no"
-dynamic : $(SOFTOBJS) $(COMMONOBJS)
-	$(LINKER) -o $(BINARY) $(LDFLAGS) $(SDLLINK) $(SOFTOBJS) $(COMMONOBJS)
-else
-dynamic : $(GLOBJS) $(COMMONOBJS)
-	$(LINKER) -o $(BINARY) $(GLFLAGS) $(SDLLINK) $(GLOBJS) $(COMMONOBJS)
-endif
-
-ifeq "$(BUILDGL)" "no"
-static : $(SOFTOBJS) $(COMMONOBJS)
-	$(LINKER) -o $(BINARY_STATIC) $(SOFTOBJS) $(COMMONOBJS) $(LDSTATIC)
-else
-static : $(GLOBJS) $(COMMONOBJS)
-	$(LINKER) -o $(BINARY_STATIC) $(GLOBJS) $(COMMONOBJS) $(LDSTATIC)
+	$(LINKER) -o $(BINARY) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 endif
 
 clean:

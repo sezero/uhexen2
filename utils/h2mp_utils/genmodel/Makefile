@@ -16,7 +16,7 @@ clean :
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 
 GENMODELOBJS= cmdlib.o \
@@ -27,4 +27,4 @@ GENMODELOBJS= cmdlib.o \
 	genmodel.o
 
 $(BINARY) : $(GENMODELOBJS)
-	$(LINKER) -o $(DESTDIR)/$(BINARY) $(LDFLAGS) $(LDLIBS) $(GENMODELOBJS)
+	$(LINKER) -o $(DESTDIR)/$(BINARY) $(GENMODELOBJS) $(LDFLAGS) $(LDLIBS)

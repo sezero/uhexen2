@@ -7,7 +7,7 @@ ifndef CC
 CC = gcc
 endif
 LINKER = $(CC)
-CFLAGS = -I. -O2 -march=i586 -DPLATFORM_UNIX -Wall
+CFLAGS = -I. -O2 -march=i586 -Wall -DPLATFORM_UNIX
 ifeq "$(DEBUG)" "yes"
 CFLAGS += -g
 endif
@@ -15,22 +15,17 @@ LDFLAGS = -lm -lpthread
 LDSTATIC = -lm -lpthread -static
 
 %.o: %.c
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 MASTEROBJS = cmds.o net_test.o net.o
 
-all: $(BINARY) 
+all: $(BINARY)
+static: $(BINARY_STATIC)
 
 $(BINARY) : $(MASTEROBJS)
-	$(LINKER) -o $(BINARY) $(LDFLAGS) $(MASTEROBJS)
-	
-dynamic : $(MASTEROBJS)
-	$(LINKER) -o $(BINARY) $(LDFLAGS) $(MASTEROBJS)
+	$(LINKER) -o $(BINARY) $(MASTEROBJS) $(LDFLAGS)
 
 $(BINARY_STATIC) : $(MASTEROBJS)
-	$(LINKER) -o $(BINARY_STATIC) $(MASTEROBJS) $(LDSTATIC)
-	
-static : $(MASTEROBJS)
 	$(LINKER) -o $(BINARY_STATIC) $(MASTEROBJS) $(LDSTATIC)
 
 clean:

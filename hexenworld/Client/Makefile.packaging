@@ -12,21 +12,23 @@ GL_BINARY_STATIC=glhwcl.static
 BINARY=hwcl
 BINARY_STATIC=hwcl.static
 
+AS = nasm
 ifndef CC
 CC = gcc
 endif
 LINKER = $(CC)
-CFLAGS = -O2 -march=i586 -Wall \
+CFLAGS = -O2 -march=i586 -Wall -DPLATFORM_UNIX \
 	-fomit-frame-pointer -ffast-math -fexpensive-optimizations \
 	-falign-loops=2 -falign-jumps=2 -falign-functions=2
 ifdef DEBUG
 CFLAGS+= -DDEBUG -g
 endif
-GAMEFLAGS = -DPLATFORM_UNIX -DH2W
+GAMEFLAGS = -DH2W
 SDLFLAGS = `sdl-config --cflags`
 SDLLINK = `sdl-config --libs`
 LDFLAGS =
 GLFLAGS = -L/usr/X11R6/lib
+ASFLAGS = -f elf
 LDSTATIC = -Wl,-Bstatic -L/usr/lib -lSDL_mixer -lSDL -L/usr/X11R6/lib -lX11 -lXext -ldl -L/usr/X11R6/lib -lXxf86dga -lXxf86vm -lXv -L/usr/lib/ -lsmpeg -lvorbisfile -lvorbis -logg -lm -Wl,-Bdynamic -lpthread
 
 ifeq "$(BUILDGL)" "yes"
@@ -52,9 +54,9 @@ endif
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c -o $@ $< $(CFLAGS) $(SDLFLAGS) $(GAMEFLAGS)
+	$(CC) -c $(CFLAGS) $(SDLFLAGS) $(GAMEFLAGS) -o $@ $<
 %.o: %.asm
-	nasm -f elf -o $@ $<
+	$(AS) $(ASFLAGS) -o $@ $<
 
 SOFTOBJS = d_edge.o \
 	d_fill.o \
@@ -164,19 +166,16 @@ COMMONOBJS = cd_unix.o \
 	snd_mixa.o \
 	sys_wina.o
 
-#all: $(BINARY) 
-all: dynamic static
-
 glhw_dynamic: GAMEFLAGS+= -DGLQUAKE
 glhw_dynamic: $(GLOBJS) $(COMMONOBJS)
-	$(LINKER) -o $(GL_BINARY) $(GLFLAGS) $(SDLLINK) $(GLOBJS) $(COMMONOBJS)
+	$(LINKER) -o $(GL_BINARY) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
 glhw_static: GAMEFLAGS+= -DGLQUAKE
 glhw_static: $(GLOBJS) $(COMMONOBJS)
 	$(LINKER) -o $(GL_BINARY_STATIC) $(GLOBJS) $(COMMONOBJS) $(LDSTATIC)
 
 hw_dynamic: $(SOFTOBJS) $(COMMONOBJS)
-	$(LINKER) -o $(BINARY) $(LDFLAGS) $(SDLLINK) $(SOFTOBJS) $(COMMONOBJS)
+	$(LINKER) -o $(BINARY) $(SOFTOBJS) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK)
 
 hw_static: $(SOFTOBJS) $(COMMONOBJS)
 	$(LINKER) -o $(BINARY_STATIC) $(SOFTOBJS) $(COMMONOBJS) $(LDSTATIC)

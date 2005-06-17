@@ -15,7 +15,7 @@ clean :
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 
 HCCOBJS= cmdlib.o \
@@ -26,4 +26,4 @@ HCCOBJS= cmdlib.o \
 	stmt.o
 
 $(BINARY) : $(HCCOBJS)
-	$(LINKER) -o $(DESTDIR)/$(BINARY) $(LDFLAGS) $(LDLIBS) $(HCCOBJS)
+	$(LINKER) -o $(DESTDIR)/$(BINARY) $(HCCOBJS) $(LDFLAGS) $(LDLIBS)

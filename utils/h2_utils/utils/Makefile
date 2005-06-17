@@ -20,7 +20,7 @@ clean :
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 
 COMMONOBJS= cmdlib.o \
@@ -53,11 +53,11 @@ QBSPOBJS= brush.c \
 
 
 $(LIGHT) : $(COMMONOBJS) $(LIGHTOBJS)
-	$(LINKER) -o $(DESTDIR)/$(LIGHT) $(LDFLAGS) $(LDLIBS) $(COMMONOBJS) $(LIGHTOBJS)
+	$(LINKER) -o $(DESTDIR)/$(LIGHT) $(COMMONOBJS) $(LIGHTOBJS) $(LDFLAGS) $(LDLIBS)
 
 $(VIS) : $(COMMONOBJS) $(VISOBJS)
-	$(LINKER) -o $(DESTDIR)/$(VIS) $(LDFLAGS) $(LDLIBS) $(COMMONOBJS) $(VISOBJS)
+	$(LINKER) -o $(DESTDIR)/$(VIS) $(COMMONOBJS) $(VISOBJS) $(LDFLAGS) $(LDLIBS)
 
 $(QBSP) : $(COMMONOBJS) $(QBSPOBJS)
-	$(LINKER) -o $(DESTDIR)/$(QBSP) $(LDFLAGS) $(LDLIBS) $(COMMONOBJS) $(QBSPOBJS)
+	$(LINKER) -o $(DESTDIR)/$(QBSP) $(COMMONOBJS) $(QBSPOBJS) $(LDFLAGS) $(LDLIBS)
 

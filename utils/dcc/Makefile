@@ -16,7 +16,7 @@ clean :
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 DHCCOBJS= cmdlib.o \
 	pr_comp.o \
@@ -25,4 +25,4 @@ DHCCOBJS= cmdlib.o \
 	hcc.o
 
 $(BINARY) : $(DHCCOBJS)
-	$(LINKER) -o $(DESTDIR)/$(BINARY) $(LDFLAGS) $(LDLIBS) $(DHCCOBJS)
+	$(LINKER) -o $(DESTDIR)/$(BINARY) $(DHCCOBJS) $(LDFLAGS) $(LDLIBS)

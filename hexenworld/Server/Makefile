@@ -5,15 +5,17 @@
 BINARY=hwsv
 BINARY_STATIC=hwsv.static
 
+AS = nasm
 ifndef CC
 CC = gcc
 endif
 LINKER = $(CC)
-CFLAGS = -O2 -march=i586 -Wall
+CFLAGS = -O2 -march=i586 -Wall -DPLATFORM_UNIX
 ifdef DEBUG
 CFLAGS += -DDEBUG -g
 endif
-GAMEFLAGS = -DPLATFORM_UNIX -DH2W -DSERVERONLY
+ASFLAGS = -f elf
+GAMEFLAGS = -DH2W -DSERVERONLY
 SVINCS = -I../Client/ -I.
 SDLFLAG = `sdl-config --cflags`
 SDLLINK = `sdl-config --libs`
@@ -25,9 +27,9 @@ LDFLAGS = -lm -lpthread
 LDSTATIC = -lm -lpthread -static
 
 %.o: %.c
-	$(CC) -c -o $@ $< $(SVINCS) $(CFLAGS) $(GAMEFLAGS)
+	$(CC) -c $(SVINCS) $(CFLAGS) $(GAMEFLAGS) -o $@ $<
 %.o: %.asm
-	nasm -f elf -o $@ $<
+	$(AS) $(ASFLAGS) -o $@ $<
 
 COMMONOBJS = model.o \
 	../Client/cmd.o \
@@ -56,18 +58,13 @@ COMMONOBJS = model.o \
 	sys_unix.o \
 	world.o
 
-all: $(BINARY) 
+all: $(BINARY)
+static: $(BINARY_STATIC)
 
 $(BINARY) : $(COMMONOBJS)
-	$(LINKER) -o $(BINARY) $(LDFLAGS) $(COMMONOBJS)
-
-dynamic : $(COMMONOBJS)
-	$(LINKER) -o $(BINARY) $(LDFLAGS) $(COMMONOBJS)
+	$(LINKER) -o $(BINARY) $(COMMONOBJS) $(LDFLAGS)
 
 $(BINARY_STATIC) : $(COMMONOBJS)
-	$(LINKER) -o $(BINARY_STATIC) $(COMMONOBJS) $(LDSTATIC)
-
-static : $(COMMONOBJS)
 	$(LINKER) -o $(BINARY_STATIC) $(COMMONOBJS) $(LDSTATIC)
 
 clean:
