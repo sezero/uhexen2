@@ -1,0 +1,26 @@
+DEBUG=no
+
+BINARY=hwmaster.exe
+
+MINGWDIR=/mingw
+CC = gcc
+LINKER = $(CC)
+CFLAGS = -I. -I$(MINGWDIR)/include -O2 -march=i586 -Wall
+ifeq "$(DEBUG)" "yes"
+CFLAGS += -g
+endif
+LDFLAGS = -L$(MINGWDIR)/lib -lm -lwsock32 -lwinmm -mconsole
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+MASTEROBJS = cmds.o net_test.o net.o
+
+all: $(BINARY) 
+
+$(BINARY) : $(MASTEROBJS)
+	$(LINKER) -o $(BINARY) $(MASTEROBJS) $(LDFLAGS)
+	
+clean:
+	rm -f $(MASTEROBJS) core
+

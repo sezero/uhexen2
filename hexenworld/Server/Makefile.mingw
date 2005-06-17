@@ -1,0 +1,63 @@
+#  if building for the demo version, run with
+#  make DEMO=yes [other stuff]
+
+BINARY=hwsv.exe
+
+MINGWDIR=/mingw
+AS = nasmw
+CC = gcc
+LINKER = $(CC)
+CFLAGS = -O2 -march=i586 -Wall -I$(MINGWDIR)/include
+ifdef DEBUG
+CFLAGS += -DDEBUG -g
+endif
+SVINCS = -I../Client/ -I.
+
+GAMEFLAGS = -DH2W -DSERVERONLY
+
+ifdef DEMO
+GAMEFLAGS+= -DDEMOBUILD
+endif
+LDFLAGS = -L$(MINGWDIR)/lib -lm -lwsock32 -mconsole
+ASFLAGS = -O2 -fwin32 -D__WIN32__ --prefix _
+
+%.o: %.c
+	$(CC) -c $(SVINCS) $(CFLAGS) $(GAMEFLAGS) -o $@ $<
+%.o: %.asm
+	$(AS) $(ASFLAGS) -o $@ $<
+
+COMMONOBJS = model.o \
+	../Client/cmd.o \
+	../Client/common.o \
+	../Client/crc.o \
+	../Client/cvar.o \
+	../Client/mathlib.o \
+	../Client/net_chan.o \
+	../Client/net_wins.o \
+	../Client/pmove.o \
+	../Client/pmovetst.o \
+	../Client/strings.o \
+	../Client/zone.o \
+	pr_cmds.o \
+	pr_edict.o \
+	pr_exec.o \
+	sv_ccmds.o \
+	sv_effect.o \
+	sv_ents.o \
+	sv_init.o \
+	sv_main.o \
+	sv_move.o \
+	sv_phys.o \
+	sv_send.o \
+	sv_user.o \
+	win_stuff/sys_win.o \
+	world.o
+
+all: $(BINARY) 
+
+$(BINARY) : $(COMMONOBJS)
+	$(LINKER) -o $(BINARY) $(COMMONOBJS) $(LDFLAGS)
+
+clean:
+	rm -f $(COMMONOBJS) core
+
