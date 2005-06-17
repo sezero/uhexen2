@@ -1,10 +1,12 @@
 #include "defs.h"
 #include <limits.h>
 
+#ifndef _WIN32
+int		do_stdin = 1;
+qboolean	stdin_ready;
+#endif
 
-int sv_mode;
-int do_stdin = 1;
-bool stdin_ready;
+int		sv_mode;
 
 sizebuf_t	cmd_text;
 byte		cmd_text_buf[8192];
@@ -15,6 +17,7 @@ char	**com_argv;
 
 static char	*largv[MAX_NUM_ARGVS + 1];
 static char	*argvdummy = " ";
+
 #ifdef PLATFORM_UNIX
 char		userdir[240];
 #endif
@@ -218,7 +221,7 @@ void SV_Shutdown (void)
 
 /* sys_dead_sleep: When set, the server gets NO cpu if no clients are connected
    and there's no other activity. *MIGHT* cause problems with some mods. */
-bool	sys_dead_sleep	= 0;
+qboolean sys_dead_sleep	= 0;
 
 #ifndef max
 # define max(a,b) ((a) > (b) ? (a) : (b))
@@ -226,23 +229,27 @@ bool	sys_dead_sleep	= 0;
 
 int Sys_CheckInput (int ns)
 {
-	fd_set      fdset;
-	int         res;
-	struct timeval _timeout;
-	struct timeval *timeout = 0;
+	fd_set		fdset;
+	int		res;
+	struct timeval	_timeout;
+	struct timeval	*timeout = 0;
 
 	_timeout.tv_sec = 0;
+#ifdef _WIN32
+	_timeout.tv_usec = ns < 0 ? 0 : 100;
+#else
 	_timeout.tv_usec = ns < 0 ? 0 : 10000;
-
+#endif
 	// select on the net socket and stdin
 	// the only reason we have a timeout at all is so that if the last
 	// connected client times out, the message would not otherwise
 	// be printed until the next event.
 	FD_ZERO (&fdset);
 
+#ifndef _WIN32
 	if (do_stdin)
 		FD_SET (0, &fdset);
-
+#endif
 	if (ns >= 0)
 		FD_SET (ns, &fdset);
 
@@ -253,8 +260,9 @@ int Sys_CheckInput (int ns)
 	if (res == 0 || res == -1)
 		return 0;
 
+#ifndef _WIN32
 	stdin_ready = FD_ISSET (0, &fdset);
-
+#endif
 	return 1;
 }
 
@@ -263,6 +271,37 @@ char *Sys_ConsoleInput (void)
 	static char	text[256];
 	static int		len;
 
+#ifdef _WIN32
+	int		c;
+
+	// read a line out
+	while (_kbhit ()) {
+		c = _getch ();
+		putch (c);
+		if (c == '\r') {
+			text[len] = 0;
+			putch ('\n');
+			len = 0;
+			return text;
+		}
+		if (c == 8) {
+			if (len) {
+				putch (' ');
+				putch (c);
+				len--;
+				text[len] = 0;
+			}
+			continue;
+		}
+		text[len] = c;
+		len++;
+		text[len] = 0;
+		if (len == sizeof (text))
+			len = 0;
+	}
+
+	return NULL;
+#else
 	if (!stdin_ready || !do_stdin)
 		return NULL;	// the select didn't say it was ready
 	stdin_ready = false;
@@ -278,6 +317,7 @@ char *Sys_ConsoleInput (void)
 	text[len - 1] = 0;	// rip off the \n and terminate
 
 	return text;
+#endif
 }
 
 void SV_GetConsoleCommands (void)
@@ -295,7 +335,7 @@ void SV_GetConsoleCommands (void)
 
 double Sys_DoubleTime (void)
 {
-	static bool first = true;
+	static qboolean first = true;
 #ifdef _WIN32
 	static DWORD starttime;
 	DWORD now;

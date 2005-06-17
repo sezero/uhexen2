@@ -2,19 +2,21 @@
 	glwin32.h
 	glquake header for win32/wgl
 
-	$Id: glwin32.h,v 1.4 2005-06-17 14:46:30 sezero Exp $
+	$Id: glwin32.h,v 1.5 2005-06-17 16:24:41 sezero Exp $
 */
 
 
+#if !defined(__GNUC__)
 // disable data conversion warnings
 #pragma warning(disable : 4244)     // MIPS
 #pragma warning(disable : 4136)     // X86
 #pragma warning(disable : 4051)     // ALPHA
-  
+#endif
+
 #include <windows.h>
 
-#include <gl\gl.h>
-#include <gl\glu.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 // whether to dlsym gl and wgl function calls
 // dlsymming is broken for now, dont use it.

@@ -401,8 +401,6 @@ IN_StartupMouse
 */
 void IN_StartupMouse (void)
 {
-	HDC			hdc;
-
 	if ( COM_CheckParm ("-nomouse") ) 
 		return; 
 
@@ -558,11 +556,10 @@ IN_MouseMove
 void IN_MouseMove (usercmd_t *cmd)
 {
 	int		mx, my;
-	HDC	hdc;
-	int					i;
+	int		i;
 	DIDEVICEOBJECTDATA	od;
-	DWORD				dwElements;
-	HRESULT				hr;
+	DWORD			dwElements;
+	HRESULT			hr;
 
 	if (!mouseactive)
 		return;
@@ -742,9 +739,6 @@ IN_Accumulate
 */
 void IN_Accumulate (void)
 {
-	int		mx, my;
-	HDC	hdc;
-
 	if (mouseactive)
 	{
 		GetCursorPos (&current_pos);
@@ -782,7 +776,7 @@ IN_StartupJoystick
 */  
 void IN_StartupJoystick (void) 
 { 
-	int			i, numdevs;
+	int		numdevs;
 	JOYCAPS		jc;
 	MMRESULT	mmr;
  
@@ -941,6 +935,41 @@ void Joy_AdvancedUpdate_f (void)
 }
 
 
+/* 
+=============== 
+IN_ReadJoystick
+=============== 
+*/  
+qboolean IN_ReadJoystick (void)
+{
+
+	memset (&ji, 0, sizeof(ji));
+	ji.dwSize = sizeof(ji);
+	ji.dwFlags = joy_flags;
+
+	if (joyGetPosEx (joy_id, &ji) == JOYERR_NOERROR)
+	{
+		// this is a hack -- there is a bug in the Logitech WingMan Warrior DirectInput Driver
+		// rather than having 32768 be the zero point, they have the zero point at 32668
+		// go figure -- anyway, now we get the full resolution out of the device
+		if (joy_wwhack1.value != 0.0)
+		{
+			ji.dwUpos += 100;
+		}
+		return true;
+	}
+	else
+	{
+		// read error occurred
+		// turning off the joystick seems too harsh for 1 read error,
+		// but what should be done?
+		// Con_Printf ("IN_ReadJoystick: no response\n");
+		// joy_avail = false;
+		return false;
+	}
+}
+
+
 /*
 ===========
 IN_Commands
@@ -1007,41 +1036,6 @@ void IN_Commands (void)
 			}
 		}
 		joy_oldpovstate = povstate;
-	}
-}
-
-
-/* 
-=============== 
-IN_ReadJoystick
-=============== 
-*/  
-qboolean IN_ReadJoystick (void)
-{
-
-	memset (&ji, 0, sizeof(ji));
-	ji.dwSize = sizeof(ji);
-	ji.dwFlags = joy_flags;
-
-	if (joyGetPosEx (joy_id, &ji) == JOYERR_NOERROR)
-	{
-		// this is a hack -- there is a bug in the Logitech WingMan Warrior DirectInput Driver
-		// rather than having 32768 be the zero point, they have the zero point at 32668
-		// go figure -- anyway, now we get the full resolution out of the device
-		if (joy_wwhack1.value != 0.0)
-		{
-			ji.dwUpos += 100;
-		}
-		return true;
-	}
-	else
-	{
-		// read error occurred
-		// turning off the joystick seems too harsh for 1 read error,
-		// but what should be done?
-		// Con_Printf ("IN_ReadJoystick: no response\n");
-		// joy_avail = false;
-		return false;
 	}
 }
 

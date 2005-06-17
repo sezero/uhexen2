@@ -2,7 +2,7 @@
 #include <sys/timeb.h>
 #include <winsock.h>
 #include "qwsvdef.h"
-
+#include <conio.h>
 
 cvar_t	sys_nostdout = {"sys_nostdout","0"};
 
@@ -14,14 +14,14 @@ Sys_FileTime
 int	Sys_FileTime (char *path)
 {
 	FILE	*f;
-	
+
 	f = fopen(path, "rb");
 	if (f)
 	{
 		fclose(f);
 		return 1;
 	}
-	
+
 	return -1;
 }
 
@@ -49,7 +49,7 @@ void Sys_Error (char *error, ...)
 	vsprintf (text, error,argptr);
 	va_end (argptr);
 
-//    MessageBox(NULL, text, "Error", 0 /* MB_OK */ );
+//	MessageBox(NULL, text, "Error", 0 /* MB_OK */ );
 	printf ("ERROR: %s\n", text);
 
 //#ifdef _DEBUG
@@ -68,15 +68,15 @@ Sys_DoubleTime
 double Sys_DoubleTime (void)
 {
 	double t;
-    struct _timeb tstruct;
+	struct _timeb	tstruct;
 	static int	starttime;
 
 	_ftime( &tstruct );
- 
+
 	if (!starttime)
 		starttime = tstruct.time;
 	t = (tstruct.time-starttime) + tstruct.millitm*0.001;
-	
+
 	return t;
 }
 
@@ -90,8 +90,6 @@ char *Sys_ConsoleInput (void)
 {
 	static char	text[256];
 	static int		len;
-	int		count;
-	int		i;
 	int		c;
 
 	// read a line out
@@ -136,10 +134,10 @@ Sys_Printf
 void Sys_Printf (char *fmt, ...)
 {
 	va_list		argptr;
-	
+
 	if (sys_nostdout.value)
 		return;
-		
+
 	va_start (argptr,fmt);
 	vprintf (fmt,argptr);
 	va_end (argptr);
@@ -180,14 +178,14 @@ char	*newargv[256];
 int main (int argc, char **argv)
 {
 	quakeparms_t	parms;
-	double			newtime, time, oldtime;
-	static	char	cwd[1024];
+	double		newtime, time, oldtime;
+	//static	char	cwd[1024];
 	struct timeval	timeout;
-	fd_set			fdset;
-	int				t;
+	fd_set		fdset;
+	int		t;
 
 	COM_InitArgv (argc, argv);
-	
+
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
@@ -213,7 +211,11 @@ int main (int argc, char **argv)
 	SV_Init (&parms);
 
 // run one frame immediately for first heartbeat
-	SV_Frame (HX_FRAME_TIME);		
+	SV_Frame (HX_FRAME_TIME);
+
+// report the filesystem to the user
+	Sys_Printf("com_gamedir is: %s\n",com_gamedir);
+	Sys_Printf("com_userdir is: %s\n",com_userdir);
 
 //
 // main loop
@@ -236,11 +238,10 @@ int main (int argc, char **argv)
 		newtime = Sys_DoubleTime ();
 		time = newtime - oldtime;
 		oldtime = newtime;
-		
-		SV_Frame (time);				
-	}	
+
+		SV_Frame (time);
+	}
 
 	return true;
 }
-
 

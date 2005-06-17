@@ -64,7 +64,6 @@ qboolean	scr_skipupdate;
 
 static vmode_t	modelist[MAX_MODE_LIST];
 static int	nummodes;
-static vmode_t	*pcurrentmode;
 static vmode_t	badmode;
 
 static DEVMODE	gdevmode;
@@ -186,7 +185,6 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 {
-	RECT	rect;
 	int	CenterX, CenterY;
 
 	CenterX = (GetSystemMetrics(SM_CXSCREEN) - width) / 2;
@@ -371,7 +369,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	int		original_mode, temp;
 	qboolean	stat;
 	MSG		msg;
-	HDC		hdc;
 
 	if ((windowed && (modenum != 0)) ||
 		(!windowed && (modenum < 1)) ||
@@ -953,7 +950,8 @@ void VID_SetPalette (unsigned char *palette)
 		sprintf(s, "%s/glhexen", com_gamedir);
  		Sys_mkdir (s);
 		sprintf(s, "%s/glhexen/15to8.pal", com_gamedir);
-		if (f = fopen(s, "wb"))
+		f = fopen(s, "wb");
+		if (f)
 		{
 			fwrite(d_15to8table, 1<<15, 1, f);
 			fclose(f);
@@ -1160,9 +1158,6 @@ void AppActivate(BOOL fActive, BOOL minimize)
 *
 ****************************************************************************/
 {
-	MSG		msg;
-	HDC		hdc;
-	int		i, t;
 	static BOOL	sound_active;
 
 	ActiveApp = fActive;
@@ -1231,7 +1226,7 @@ extern cvar_t mwheelthreshold;
 LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	LONG	lRet = 1;
-	int	fwKeys, xPos, yPos, fActive, fMinimized, temp;
+	int	fActive, fMinimized, temp;
 
 	if (uMsg == uMSG_MOUSEWHEEL && mwheelthreshold.value >= 1)
 	{
@@ -1529,8 +1524,6 @@ void VID_DescribeModes_f (void)
 void VID_InitDIB (HINSTANCE hInstance)
 {
 	WNDCLASS	wc;
-	HDC		hdc;
-	int		i;
 
 	/* Register the frame class */
 	wc.style         = 0;
@@ -1586,7 +1579,7 @@ VID_InitFullDIB
 void VID_InitFullDIB (HINSTANCE hInstance)
 {
 	DEVMODE	devmode;
-	int	i, modenum, cmodes, originalnummodes, existingmode, numlowresmodes;
+	int	i, modenum, originalnummodes, existingmode, numlowresmodes;
 	int	j, bpp, done;
 	BOOL	stat;
 
@@ -1759,7 +1752,6 @@ void	VID_Init (unsigned char *palette)
 {
 	int	i, existingmode;
 	int	basenummodes, width, height, bpp, findbpp, done;
-	byte	*ptmp;
 	char	gldir[MAX_OSPATH];
 	HDC	hdc;
 	DEVMODE	devmode;
@@ -2051,7 +2043,7 @@ extern void M_DrawCharacter (int cx, int line, int num);
 extern void M_DrawTransPic (int x, int y, qpic_t *pic);
 extern void M_DrawPic (int x, int y, qpic_t *pic);
 
-static int	vid_line, vid_wmodes;
+static int	vid_wmodes;
 
 typedef struct
 {
@@ -2073,10 +2065,8 @@ VID_MenuDraw
 */
 void VID_MenuDraw (void)
 {
-	qpic_t	*p;
 	char	*ptr;
-	int	lnummodes, i, j, k, column, row, dup, dupmode;
-	char	temp[100];
+	int	lnummodes, i, k, column, row;
 	vmode_t	*pv;
 
 	ScrollTitle("gfx/menu/title7.lmp");

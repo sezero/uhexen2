@@ -211,7 +211,7 @@ void Cbuf_Execute (void)
 	}
 }
 
-bool Cmd_Exists (char *cmd_name)
+qboolean Cmd_Exists (char *cmd_name)
 {
 	cmd_function_t	*cmd;
 

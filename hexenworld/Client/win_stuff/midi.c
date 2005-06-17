@@ -1,5 +1,5 @@
 /*
- * $Id: midi.c,v 1.4 2005-05-19 12:47:10 sezero Exp $
+ * $Id: midi.c,v 1.5 2005-06-17 16:24:42 sezero Exp $
  */
 
 #include <windows.h>
@@ -158,7 +158,6 @@ void MIDI_Play(char *Name)
 {
 	MMRESULT mmrRetVal;
 	char Temp[MAX_OSPATH];
-	char *Data;
 
 	if (!bMidiInited)	//don't try to play if there is no midi
 		return;
@@ -643,6 +642,9 @@ void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/05/19 12:47:10  sezero
+ * synced h2 and hw versions of midi stuff
+ *
  * Revision 1.3  2005/05/17 22:56:26  sezero
  * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
  * Q_strXcasecmp will now be used throughout the code which are implementation

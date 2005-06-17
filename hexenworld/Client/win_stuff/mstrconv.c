@@ -1,5 +1,5 @@
 /*
- * $Id: mstrconv.c,v 1.3 2005-05-19 12:47:11 sezero Exp $
+ * $Id: mstrconv.c,v 1.4 2005-06-17 16:24:42 sezero Exp $
  */
 
 #include <windows.h>
@@ -1030,13 +1030,17 @@ static int AddEventToStreamBuffer( PTEMPEVENT pteTemp, CONVERTINFO *lpciInfo )
     // Use the above set start time to figure out how much longer we should fill
     // this buffer before officially declaring it as "full"
     if( tkCurrentTime - lpciInfo->tkStart > dwBufferTickLength )
-    if( lpciInfo->bTimesUp )
-        {
-        lpciInfo->bTimesUp = FALSE;
-        return( CONVERTERR_BUFFERFULL );
-        }
-    else
-        lpciInfo->bTimesUp = TRUE;
+    {
+	if( lpciInfo->bTimesUp )
+	{
+	    lpciInfo->bTimesUp = FALSE;
+	    return( CONVERTERR_BUFFERFULL );
+	}
+	else
+	{
+	    lpciInfo->bTimesUp = TRUE;
+	}
+    }
 
     tkNow = tkCurrentTime;
 
@@ -1191,6 +1195,9 @@ static void ShowTrackError( PINTRACKSTATE ptsTrack, LPSTR lpszErr )
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/05/19 12:47:11  sezero
+ * synced h2 and hw versions of midi stuff
+ *
  * Revision 1.2  2005/02/05 16:19:31  sezero
  * update the midi stuff (volume ctrl, etc) for win32, too
  * (taken directly from Pa3PyX and HexenWorld)

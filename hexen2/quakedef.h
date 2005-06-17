@@ -2,13 +2,12 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.33 2005-06-15 22:03:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.34 2005-06-17 16:24:33 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
 
-#if defined _WIN32
-// This is ignored on GNU
+#if defined(_WIN32) && !defined(__GNUC__)
 #pragma warning(disable:4244)
 #endif
 
@@ -434,6 +433,10 @@ void MIDI_Loop(int NewValue);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.33  2005/06/15 22:03:02  sezero
+ * vid_setgamma command is for sdl versions only.
+ * also added notes on the WITH_SDL define in quakedef.h
+ *
  * Revision 1.32  2005/06/12 07:28:51  sezero
  * clean-up of includes and a fix (hopefully) for endianness detection
  *

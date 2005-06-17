@@ -1,4 +1,4 @@
-// sys_win.h
+// sys_win.c -- Win32 system interface code
 
 #include "quakedef.h"
 #include "quakeinc.h"
@@ -6,7 +6,7 @@
 #include "errno.h"
 #include "fcntl.h"
 #include <io.h>
-//#include "conproc.h"
+#include <conio.h>
 
 #ifdef GLQUAKE
 	#define MINIMUM_WIN_MEMORY		0x1000000
@@ -25,8 +25,7 @@
 #endif
 
 int		starttime;
-int		ActiveApp;
-int		Minimized;
+qboolean	ActiveApp, Minimized;
 qboolean	WinNT;
 
 HWND	hwnd_dialog;		// startup dialog box
@@ -220,8 +219,7 @@ void Sys_Init (void)
 void Sys_Error (char *error, ...)
 {
 	va_list		argptr;
-	char		text[1024], text2[1024];
-	DWORD		dummy;
+	char		text[1024];
 
 	Host_Shutdown ();
 
@@ -241,8 +239,6 @@ void Sys_Error (char *error, ...)
 void Sys_Printf (char *fmt, ...)
 {
 	va_list		argptr;
-	char		text[1024];
-	DWORD		dummy;
 	
 	va_start (argptr,fmt);
 	vprintf (fmt, argptr);
@@ -361,7 +357,6 @@ char *Sys_ConsoleInput (void)
 	static char	text[256];
 	static int		len;
 	INPUT_RECORD	recs[1024];
-	int		count;
 	int		i, dummy;
 	int		ch, numread, numevents;
 	HANDLE	th;
@@ -509,7 +504,6 @@ HWND		hwnd_dialog;
 
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    MSG				msg;
 	quakeparms_t	parms;
 	double			time, oldtime, newtime;
 	MEMORYSTATUS	lpBuffer;
@@ -517,9 +511,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	int				t;
 	RECT			rect;
 
-    /* previous instances do not exist in Win32 */
-    if (hPrevInstance)
-        return 0;
+	/* previous instances do not exist in Win32 */
+	if (hPrevInstance)
+		return 0;
 
 	global_hInstance = hInstance;
 	global_nCmdShow = nCmdShow;

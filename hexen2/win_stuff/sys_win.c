@@ -66,7 +66,7 @@ Sys_PageIn
 void Sys_PageIn (void *ptr, int size)
 {
 	byte	*x;
-	int		j, m, n;
+	int		m, n;
 
 // touch all the memory to make sure it's there. The 16-page skip is to
 // keep Win 95 from thinking we're trying to page ourselves in (we are
@@ -304,10 +304,6 @@ void Sys_Init (void)
 	LARGE_INTEGER	PerformanceFreq;
 	unsigned int	lowpart, highpart;
 	OSVERSIONINFO	vinfo;
-	int value,i;
-	HKEY hKey;
-	DWORD dwSize,dwType;
-	unsigned short crc;
 
 	MaskExceptions ();
 	Sys_SetFPCW ();
@@ -540,8 +536,7 @@ char *Sys_ConsoleInput (void)
 	static char	text[256];
 	static int		len;
 	INPUT_RECORD	recs[1024];
-	int		count;
-	int		i, dummy;
+	int		dummy;
 	int		ch, numread, numevents;
 
 	if (!isDedicated)
@@ -623,7 +618,7 @@ void Sys_Sleep (void)
 
 void Sys_SendKeyEvents (void)
 {
-    MSG        msg;
+	MSG	msg;
 
 	while (PeekMessage (&msg, NULL, 0, 0, PM_NOREMOVE))
 	{
@@ -632,8 +627,8 @@ void Sys_SendKeyEvents (void)
 
 		if (!GetMessage (&msg, NULL, 0, 0))
 			Sys_Quit ();
-      	TranslateMessage (&msg);
-      	DispatchMessage (&msg);
+		TranslateMessage (&msg);
+		DispatchMessage (&msg);
 	}
 }
 
@@ -672,16 +667,15 @@ HWND		hwnd_dialog;
 
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    MSG				msg;
 	quakeparms_t	parms;
 	double			time, oldtime, newtime;
 	MEMORYSTATUS	lpBuffer;
 	static	char	cwd[1024];
 	int				t;
 
-    /* previous instances do not exist in Win32 */
-    if (hPrevInstance)
-        return 0;
+	/* previous instances do not exist in Win32 */
+	if (hPrevInstance)
+		return 0;
 
 	CL_RemoveGIPFiles(NULL);
 
@@ -875,6 +869,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/06/15 22:45:10  sezero
+ * killed silly opengl pop-up info
+ *
  * Revision 1.11  2005/06/15 11:10:52  sezero
  * made Sys_mkdir int for win32 as well
  *

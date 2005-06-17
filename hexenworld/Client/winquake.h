@@ -2,13 +2,15 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.9 2005-06-15 11:03:44 sezero Exp $
+	$Id: winquake.h,v 1.10 2005-06-17 16:24:41 sezero Exp $
 */
 
+#if !defined(__GNUC__)
 #pragma warning( disable : 4229 )  // mgraph gets this
-
+#endif
 #include <windows.h>
 #include <winsock.h>	// for LCC
+#include <ctype.h>
 
 #ifndef SERVERONLY
 #include <ddraw.h>
@@ -22,7 +24,9 @@
 extern	HINSTANCE	global_hInstance;
 extern	int			global_nCmdShow;
 
+#ifndef WM_MOUSEWHEEL
 #define	WM_MOUSEWHEEL		0x020A
+#endif
 UINT	uMSG_MOUSEWHEEL;
 
 #ifndef SERVERONLY

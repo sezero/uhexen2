@@ -31,6 +31,11 @@
 #define INVALID_SOCKET -1
 #endif
 
+#ifdef _WIN32
+// Hrmph....
+typedef int	socklen_t;
+#endif
+
 int LastCompMessageSize = 0;
 
 typedef struct huffnode_s
@@ -918,7 +923,8 @@ qboolean NET_GetPacket (void)
 	if (ret == -1)
 	{
 #ifndef PLATFORM_UNIX
-		int errno = WSAGetLastError();
+		//int errno = WSAGetLastError();
+		errno = WSAGetLastError();
 
 		if (errno == WSAEWOULDBLOCK)
 #else
@@ -967,7 +973,8 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 	if (ret == -1)
 	{
 #ifndef PLATFORM_UNIX
-		int errno = WSAGetLastError();
+		//int errno = WSAGetLastError();
+		errno = WSAGetLastError();
 #endif
 
 		Con_Printf ("NET_SendPacket ERROR: %i", errno);

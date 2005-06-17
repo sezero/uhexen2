@@ -13,7 +13,7 @@ netadr_t	net_from;
 
 
 int		msg_readcount;
-bool	msg_badread;
+qboolean	msg_badread;
 
 ////////////////////////
 typedef struct filter_s
@@ -526,14 +526,14 @@ void	NET_Shutdown (void)
 #endif
 }
 
-bool	NET_CompareAdr (netadr_t a, netadr_t b)
+qboolean NET_CompareAdr (netadr_t a, netadr_t b)
 {
 	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3] && a.port == b.port)
 		return true;
 	return false;
 }
 
-bool	NET_CompareAdrNoPort (netadr_t a, netadr_t b)
+qboolean NET_CompareAdrNoPort (netadr_t a, netadr_t b)
 {
 	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3])
 		return true;
@@ -578,7 +578,7 @@ char	*NET_AdrToString (netadr_t a)
 	return s;
 }
 
-bool	NET_StringToAdr (char *s, netadr_t *a)
+qboolean NET_StringToAdr (char *s, netadr_t *a)
 {
 	struct hostent	*h;
 	struct sockaddr_in sadr;
@@ -822,7 +822,7 @@ void SV_ReadPackets (void)
 	}
 }
 
-bool NET_GetPacket (void)
+qboolean NET_GetPacket (void)
 {
 	int 	ret;
 	struct sockaddr_in	from;

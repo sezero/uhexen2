@@ -1,20 +1,27 @@
+
 #include <sys/types.h>
-//#include <sys/timeb.h>
+
+#ifdef _WIN32
+#include <sys/timeb.h>
 #include <time.h>
-#include <sys/time.h>
-#ifndef PLATFORM_UNIX
 #include <io.h>
 #include <conio.h>
+#else
+#include <time.h>
+#include <sys/time.h>
 #endif
+
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
 #include <stdarg.h>
 #include <stdlib.h>
+
 #ifdef _WIN32
 #include <windows.h>
-#endif
-#ifdef PLATFORM_UNIX
+// Hrmph....
+typedef int socklen_t;
+#else
 #include <errno.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
@@ -26,13 +33,14 @@
 #define ioctlsocket(A,B,C) ioctl(A,B,C)
 #define closesocket(A) close(A)
 #define DWORD unsigned int
-#undef true
-#undef false
-typedef enum {false, true}	bool;
 #endif
 
 //Defines
 #define VER_HWMASTER	"1.2.1"				// our version string
+
+#undef true
+#undef false
+typedef enum {false, true}	qboolean;
 
 #define	MAX_ARGS	80
 #define MAX_NUM_ARGVS	50
@@ -101,8 +109,8 @@ typedef struct server_s
 
 typedef struct sizebuf_s
 {
-	bool	allowoverflow;	// if false, do a Sys_Error
-	bool	overflowed;		// set to true if the buffer size failed
+	qboolean	allowoverflow;	// if false, do a Sys_Error
+	qboolean	overflowed;	// set to true if the buffer size failed
 	byte	*data;
 	int		maxsize;
 	int		cursize;
@@ -145,7 +153,7 @@ void	Cbuf_Init (void);
 void	Cbuf_AddText (char *text);
 void	Cbuf_InsertText (char *text);
 void	Cbuf_Execute (void);
-bool Cmd_Exists (char *cmd_name);
+qboolean Cmd_Exists (char *cmd_name);
 
 void Cmd_Quit_f();
 void Cmd_ServerList_f();
@@ -175,16 +183,16 @@ int UDP_OpenSocket (int port);
 void NET_Shutdown (void);
 void NET_GetLocalAddress();
 char	*NET_AdrToString (netadr_t a);
-bool	NET_StringToAdr (char *s, netadr_t *a);
+qboolean NET_StringToAdr (char *s, netadr_t *a);
 void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s);
 void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a);
 void NET_SendPacket (int length, void *data, netadr_t to);
 void SV_ReadPackets (void);
-bool NET_GetPacket (void);
+qboolean NET_GetPacket (void);
 void SV_ConnectionlessPacket (void);
 void	NET_CopyAdr (netadr_t *a, netadr_t *b);
-bool	NET_CompareAdr (netadr_t a, netadr_t b);
-bool	NET_CompareAdrNoPort (netadr_t a, netadr_t b);
+qboolean NET_CompareAdr (netadr_t a, netadr_t b);
+qboolean NET_CompareAdrNoPort (netadr_t a, netadr_t b);
 void SVL_Add(server_t *sv);
 void SVL_Remove(server_t *sv);
 void SVL_Clear();
@@ -266,6 +274,6 @@ float	FloatSwap (float);
 extern netadr_t	net_from;
 
 extern int		msg_readcount;
-extern bool	msg_badread;
+extern qboolean		msg_badread;
 
 extern server_t *sv_list;
