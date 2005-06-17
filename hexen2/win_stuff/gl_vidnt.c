@@ -3,6 +3,7 @@
 #include "quakedef.h"
 #include "quakeinc.h"
 #include "resource.h"
+#include "wgl_func.h"
 //#include <commctrl.h>	//add this back when wheelmouse, alt-tab, etc from H2W are in
 
 #define MAX_MODE_LIST	30
@@ -44,6 +45,10 @@ lmode_t	lowresmodes[] = {
 	{512, 384},
 };
 
+#ifdef GL_DLSYM
+HINSTANCE	hInstGL;
+const char	*gl_library;
+#endif
 const char	*gl_vendor;
 const char	*gl_renderer;
 const char	*gl_version;
@@ -494,8 +499,8 @@ void Check3DfxGammaControlExtension (void)
 	}
 	else
 	{
-		GetDeviceGammaRamp_f = wglGetProcAddress("wglGetDeviceGammaRamp3DFX");
-		SetDeviceGammaRamp_f = wglGetProcAddress("wglSetDeviceGammaRamp3DFX");
+		GetDeviceGammaRamp_f = wglGetProcAddress_fp("wglGetDeviceGammaRamp3DFX");
+		SetDeviceGammaRamp_f = wglGetProcAddress_fp("wglSetDeviceGammaRamp3DFX");
 		if (GetDeviceGammaRamp_f && SetDeviceGammaRamp_f)
 			Con_Printf("Using 3Dfx specific gamma control\n");
 		else {
@@ -525,8 +530,8 @@ void CheckMultiTextureExtensions(void)
 			return;
 		}
 
-		glMultiTexCoord2fARB_fp = (void *) wglGetProcAddress("glMultiTexCoord2fARB");
-		glActiveTextureARB_fp = (void *) wglGetProcAddress("glActiveTextureARB");
+		glMultiTexCoord2fARB_fp = (void *) wglGetProcAddress_fp("glMultiTexCoord2fARB");
+		glActiveTextureARB_fp = (void *) wglGetProcAddress_fp("glActiveTextureARB");
 		if ((glMultiTexCoord2fARB_fp == NULL) ||
 		    (glActiveTextureARB_fp == NULL)) {
 			Con_Printf ("Couldn't link to multitexture functions\n");
@@ -546,6 +551,160 @@ void CheckMultiTextureExtensions(void)
 	}
 }
 
+#ifdef GL_DLSYM
+static void GL_CloseLibrary(void)
+{
+	// clear the wgl function pointers
+	wglGetProcAddress_fp = NULL;
+	wglCreateContext_fp = NULL;
+	wglDeleteContext_fp = NULL;
+	wglMakeCurrent_fp = NULL;
+	wglGetCurrentContext_fp = NULL;
+	wglGetCurrentDC_fp = NULL;
+
+	// free the library
+	if (hInstGL != NULL)
+		FreeLibrary(hInstGL);
+        hInstGL = NULL;
+}
+
+static qboolean GL_OpenLibrary(const char *name)
+{
+	Con_Printf("Loading OpenGL library %s\n", name);
+
+	// open the library
+	if (!(hInstGL = LoadLibrary(name)))
+	{
+		Con_Printf("Unable to LoadLibrary %s\n", name);
+		return false;
+	}
+
+	// link to necessary wgl functions
+	wglGetProcAddress_fp = (void *)GetProcAddress(hInstGL, "wglGetProcAddress");
+	if (wglGetProcAddress_fp == NULL) {Sys_Error("Couldn't link to wglGetProcAddress");}
+	wglCreateContext_fp = (void *)GetProcAddress(hInstGL, "wglCreateContext");
+	if (wglCreateContext_fp == NULL) {Sys_Error("Couldn't link to wglCreateContext");}
+	wglDeleteContext_fp = (void *)GetProcAddress(hInstGL, "wglDeleteContext");
+	if (wglDeleteContext_fp == NULL) {Sys_Error("Couldn't link to wglDeleteContext");}
+	wglMakeCurrent_fp = (void *)GetProcAddress(hInstGL, "wglMakeCurrent");
+	if (wglMakeCurrent_fp == NULL) {Sys_Error("Couldn't link to wglMakeCurrent");}
+	wglGetCurrentContext_fp = (void *)GetProcAddress(hInstGL, "wglGetCurrentContext");
+	if (wglGetCurrentContext_fp == NULL) {Sys_Error("Couldn't link to wglGetCurrentContext");}
+	wglGetCurrentDC_fp = (void *)GetProcAddress(hInstGL, "wglGetCurrentDC");
+	if (wglGetCurrentDC_fp == NULL) {Sys_Error("Couldn't link to wglGetCurrentDC");}
+
+	return true;
+}
+
+void GL_Init_Functions(void)
+{
+  glBegin_fp = (glBegin_f) wglGetProcAddress_fp("glBegin");
+  if (glBegin_fp == 0) {Sys_Error("glBegin not found in GL library");}
+  glEnd_fp = (glEnd_f) wglGetProcAddress_fp("glEnd");
+  if (glEnd_fp == 0) {Sys_Error("glEnd not found in GL library");}
+  glEnable_fp = (glEnable_f) wglGetProcAddress_fp("glEnable");
+  if (glEnable_fp == 0) {Sys_Error("glEnable not found in GL library");}
+  glDisable_fp = (glDisable_f) wglGetProcAddress_fp("glDisable");
+  if (glDisable_fp == 0) {Sys_Error("glDisable not found in GL library");}
+  glFinish_fp = (glFinish_f) wglGetProcAddress_fp("glFinish");
+  if (glFinish_fp == 0) {Sys_Error("glFinish not found in GL library");}
+  glClear_fp = (glClear_f) wglGetProcAddress_fp("glClear");
+  if (glClear_fp == 0) {Sys_Error("glClear not found in GL library");}
+
+  glOrtho_fp = (glOrtho_f) wglGetProcAddress_fp("glOrtho");
+  if (glOrtho_fp == 0) {Sys_Error("glOrtho not found in GL library");}
+  glFrustum_fp = (glFrustum_f) wglGetProcAddress_fp("glFrustum");
+  if (glFrustum_fp == 0) {Sys_Error("glFrustum not found in GL library");}
+  glViewport_fp = (glViewport_f) wglGetProcAddress_fp("glViewport");
+  if (glViewport_fp == 0) {Sys_Error("glViewport not found in GL library");}
+  glPushMatrix_fp = (glPushMatrix_f) wglGetProcAddress_fp("glPushMatrix");
+  if (glPushMatrix_fp == 0) {Sys_Error("glPushMatrix not found in GL library");}
+  glPopMatrix_fp = (glPopMatrix_f) wglGetProcAddress_fp("glPopMatrix");
+  if (glPopMatrix_fp == 0) {Sys_Error("glPopMatrix not found in GL library");}
+  glLoadIdentity_fp = (glLoadIdentity_f) wglGetProcAddress_fp("glLoadIdentity");
+  if (glLoadIdentity_fp == 0) {Sys_Error("glLoadIdentity not found in GL library");}
+  glMatrixMode_fp = (glMatrixMode_f) wglGetProcAddress_fp("glMatrixMode");
+  if (glMatrixMode_fp == 0) {Sys_Error("glMatrixMode not found in GL library");}
+  glLoadMatrixf_fp = (glLoadMatrixf_f) wglGetProcAddress_fp("glLoadMatrixf");
+  if (glLoadMatrixf_fp == 0) {Sys_Error("glLoadMatrixf not found in GL library");}
+
+  glVertex2f_fp = (glVertex2f_f) wglGetProcAddress_fp("glVertex2f");
+  if (glVertex2f_fp == 0) {Sys_Error("glVertex2f not found in GL library");}
+  glVertex3f_fp = (glVertex3f_f) wglGetProcAddress_fp("glVertex3f");
+  if (glVertex3f_fp == 0) {Sys_Error("glVertex3f not found in GL library");}
+  glVertex3fv_fp = (glVertex3fv_f) wglGetProcAddress_fp("glVertex3fv");
+  if (glVertex3fv_fp == 0) {Sys_Error("glVertex3fv not found in GL library");}
+  glTexCoord2f_fp = (glTexCoord2f_f) wglGetProcAddress_fp("glTexCoord2f");
+  if (glTexCoord2f_fp == 0) {Sys_Error("glTexCoord2f not found in GL library");}
+  glTexCoord3f_fp = (glTexCoord3f_f) wglGetProcAddress_fp("glTexCoord3f");
+  if (glTexCoord3f_fp == 0) {Sys_Error("glTexCoord3f not found in GL library");}
+  glColor4f_fp = (glColor4f_f) wglGetProcAddress_fp("glColor4f");
+  if (glColor4f_fp == 0) {Sys_Error("glColor4f not found in GL library");}
+  glColor4fv_fp = (glColor4fv_f) wglGetProcAddress_fp("glColor4fv");
+  if (glColor4fv_fp == 0) {Sys_Error("glColor4fv not found in GL library");}
+  glColor4ubv_fp = (glColor4ubv_f) wglGetProcAddress_fp("glColor4ubv");
+  if (glColor4ubv_fp == 0) {Sys_Error("glColor4ubv not found in GL library");}
+  glColor3f_fp = (glColor3f_f) wglGetProcAddress_fp("glColor3f");
+  if (glColor3f_fp == 0) {Sys_Error("glColor3f not found in GL library");}
+  glColor3ubv_fp = (glColor3ubv_f) wglGetProcAddress_fp("glColor3ubv");
+  if (glColor3ubv_fp == 0) {Sys_Error("glColor3ubv not found in GL library");}
+  glClearColor_fp = (glClearColor_f) wglGetProcAddress_fp("glClearColor");
+  if (glClearColor_fp == 0) {Sys_Error("glClearColor not found in GL library");}
+
+  glRotatef_fp = (glRotatef_f) wglGetProcAddress_fp("glRotatef");
+  if (glRotatef_fp == 0) {Sys_Error("glRotatef not found in GL library");}
+  glTranslatef_fp = (glTranslatef_f) wglGetProcAddress_fp("glTranslatef");
+  if (glTranslatef_fp == 0) {Sys_Error("glTranslatef not found in GL library");}
+
+  glBindTexture_fp = (glBindTexture_f) wglGetProcAddress_fp("glBindTexture");
+  if (glBindTexture_fp == 0) {Sys_Error("glBindTexture not found in GL library");}
+  glDeleteTextures_fp = (glDeleteTextures_f) wglGetProcAddress_fp("glDeleteTextures");
+  if (glDeleteTextures_fp == 0) {Sys_Error("glDeleteTextures not found in GL library");}
+  glTexParameterf_fp = (glTexParameterf_f) wglGetProcAddress_fp("glTexParameterf");
+  if (glTexParameterf_fp == 0) {Sys_Error("glTexParameterf not found in GL library");}
+  glTexEnvf_fp = (glTexEnvf_f) wglGetProcAddress_fp("glTexEnvf");
+  if (glTexEnvf_fp == 0) {Sys_Error("glTexEnvf not found in GL library");}
+  glScalef_fp = (glScalef_f) wglGetProcAddress_fp("glScalef");
+  if (glScalef_fp == 0) {Sys_Error("glScalef not found in GL library");}
+  glTexImage2D_fp = (glTexImage2D_f) wglGetProcAddress_fp("glTexImage2D");
+  if (glTexImage2D_fp == 0) {Sys_Error("glTexImage2D not found in GL library");}
+
+  glAlphaFunc_fp = (glAlphaFunc_f) wglGetProcAddress_fp("glAlphaFunc");
+  if (glAlphaFunc_fp == 0) {Sys_Error("glAlphaFunc not found in GL library");}
+  glBlendFunc_fp = (glBlendFunc_f) wglGetProcAddress_fp("glBlendFunc");
+  if (glBlendFunc_fp == 0) {Sys_Error("glBlendFunc not found in GL library");}
+  glShadeModel_fp = (glShadeModel_f) wglGetProcAddress_fp("glShadeModel");
+  if (glShadeModel_fp == 0) {Sys_Error("glShadeModel not found in GL library");}
+  glPolygonMode_fp = (glPolygonMode_f) wglGetProcAddress_fp("glPolygonMode");
+  if (glPolygonMode_fp == 0) {Sys_Error("glPolygonMode not found in GL library");}
+  glDepthMask_fp = (glDepthMask_f) wglGetProcAddress_fp("glDepthMask");
+  if (glDepthMask_fp == 0) {Sys_Error("glDepthMask not found in GL library");}
+  glDepthRange_fp = (glDepthRange_f) wglGetProcAddress_fp("glDepthRange");
+  if (glDepthRange_fp == 0) {Sys_Error("glDepthRange not found in GL library");}
+  glDepthFunc_fp = (glDepthFunc_f) wglGetProcAddress_fp("glDepthFunc");
+  if (glDepthFunc_fp == 0) {Sys_Error("glDepthFunc not found in GL library");}
+
+  glDrawBuffer_fp = (glDrawBuffer_f) wglGetProcAddress_fp("glDrawBuffer");
+  if (glDrawBuffer_fp == 0) {Sys_Error("glDrawBuffer not found in GL library");}
+  glReadBuffer_fp = (glDrawBuffer_f) wglGetProcAddress_fp("glReadBuffer");
+  if (glReadBuffer_fp == 0) {Sys_Error("glReadBuffer not found in GL library");}
+  glReadPixels_fp = (glReadPixels_f) wglGetProcAddress_fp("glReadPixels");
+  if (glReadPixels_fp == 0) {Sys_Error("glReadPixels not found in GL library");}
+  glHint_fp = (glHint_f) wglGetProcAddress_fp("glHint");
+  if (glHint_fp == 0) {Sys_Error("glHint not found in GL library");}
+  glCullFace_fp = (glCullFace_f) wglGetProcAddress_fp("glCullFace");
+  if (glCullFace_fp == 0) {Sys_Error("glCullFace not found in GL library");}
+
+  glGetIntegerv_fp = (glGetIntegerv_f) wglGetProcAddress_fp("glGetIntegerv");
+  if (glGetIntegerv_fp == 0) {Sys_Error("glGetIntegerv not found in GL library");}
+
+  glGetString_fp = (glGetString_f) wglGetProcAddress_fp("glGetString");
+  if (glGetString_fp == 0) {Sys_Error("glGetString not found in GL library");}
+  glGetFloatv_fp = (glGetFloatv_f) wglGetProcAddress_fp("glGetFloatv");
+  if (glGetFloatv_fp == 0) {Sys_Error("glGetFloatv not found in GL library");}
+}
+#endif	// GL_DLSYM
+
 /*
 ===============
 GL_Init
@@ -553,6 +712,9 @@ GL_Init
 */
 void GL_Init (void)
 {
+#ifdef GL_DLSYM
+	GL_Init_Functions();
+#endif
 	gl_vendor = glGetString_fp (GL_VENDOR);
 	Con_Printf ("GL_VENDOR: %s\n", gl_vendor);
 	gl_renderer = glGetString_fp (GL_RENDERER);
@@ -618,7 +780,7 @@ void GL_BeginRendering (int *x, int *y, int *width, int *height)
 	*width = WindowRect.right - WindowRect.left;
 	*height = WindowRect.bottom - WindowRect.top;
 
-//	if (!wglMakeCurrent( maindc, baseRC ))
+//	if (!wglMakeCurrent_fp( maindc, baseRC ))
 //		Sys_Error ("wglMakeCurrent failed");
 
 //	glViewport_fp (*x, *y, *width, *height);
@@ -820,16 +982,16 @@ void	VID_Shutdown (void)
 
 	if (vid_initialized)
 	{
-		hRC = wglGetCurrentContext();
-		hDC = wglGetCurrentDC();
+		hRC = wglGetCurrentContext_fp();
+		hDC = wglGetCurrentDC_fp();
 
 		if (maindc && gammaworks && SetDeviceGammaRamp_f)
 			SetDeviceGammaRamp_f(maindc, orig_ramps);
 
-		wglMakeCurrent(NULL, NULL);
+		wglMakeCurrent_fp(NULL, NULL);
 
 		if (hRC)
-			wglDeleteContext(hRC);
+			wglDeleteContext_fp(hRC);
 
 		if (hDC && dibwindow)
 			ReleaseDC(dibwindow, hDC);
@@ -841,6 +1003,9 @@ void	VID_Shutdown (void)
 			ReleaseDC (dibwindow, maindc);
 
 		AppActivate(false, false);
+#ifdef GL_DLSYM
+		GL_CloseLibrary();
+#endif
 	}
 }
 
@@ -1511,7 +1676,7 @@ void VID_Init8bitPalette()
 	char	thePalette[256*3];
 	char	*oldPalette, *newPalette;
 
-	MyglColorTableEXT = (void *)wglGetProcAddress("glColorTableEXT");
+	MyglColorTableEXT = (void *)wglGetProcAddress_fp("glColorTableEXT");
 	if (MyglColorTableEXT && strstr(gl_extensions, "GL_EXT_shared_texture_palette"))
 	{
 		Con_SafePrintf("8-bit GL extensions enabled.\n");
@@ -1565,6 +1730,15 @@ void	VID_Init (unsigned char *palette)
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
 
 	VID_SetPalette (palette);
+
+#ifdef GL_DLSYM
+	gl_library = "opengl32.dll";
+	i = COM_CheckParm("-gllibrary");
+	if (i && i < com_argc - 1)
+		gl_library = com_argv[i+1];
+	if (!GL_OpenLibrary(gl_library))
+		Sys_Error ("Unable to load GL library %s", gl_library);
+#endif
 
 	VID_InitDIB (global_hInstance);
 	basenummodes = nummodes = 1;
@@ -1747,10 +1921,10 @@ void	VID_Init (unsigned char *palette)
 	maindc = GetDC(mainwindow);
 	bSetupPixelFormat(maindc);
 
-	baseRC = wglCreateContext( maindc );
+	baseRC = wglCreateContext_fp( maindc );
 	if (!baseRC)
 		Sys_Error ("wglCreateContect failed");
-	if (!wglMakeCurrent( maindc, baseRC ))
+	if (!wglMakeCurrent_fp( maindc, baseRC ))
 		Sys_Error ("wglMakeCurrent failed");
 
 	GL_Init ();
