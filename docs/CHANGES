@@ -1,5 +1,26 @@
 ChangeLog:
 
+2005-06-17 (CVS, 1.2.5-pre4):
+    * many fixes/clean-ups to the Makefiles
+    * several gamma clean-ups, spelling fixes
+    * inline fixes in mathlib.h
+    * moved gl_max_size and is_3dfx to gl_vidsdl, others
+      will use it as externs
+    * fifth (succubus) model in hexen2 is for the mission
+      pack only and we've been out of bounds in four places
+      for ages, fixed it
+    * killed the glfunc struct for opengl funtion pointers
+    * added a cleaner com_userdir solution for hwsv in
+      SV_Gamedir_f()
+    * more endianness detection fixes
+    * properly ifdef'd unix-only sound things
+    * strlwr extern in zone.c is for unix only
+    * made Sys_mkdir int for win32 as well
+    * restored the game's old userdir behavior on win32
+    * fixed many win32 compile failures and warnings
+    * restored opengl version's compilability on win32
+      using MinGW under MSYS
+
 2005-06-11/12 (CVS, 1.2.5-pre3):
      * cleaned-up includes and hopefully fixed endianness detection
      * enabled alsa only on linux platforms
