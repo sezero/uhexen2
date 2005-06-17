@@ -6,6 +6,7 @@ qboolean	sv_allow_cheats;
 int fp_messages=4, fp_persecond=4, fp_secondsdead=10;
 char fp_msg[255] = { 0 };
 extern cvar_t cl_warncmd;
+extern char com_basedir[MAX_OSPATH];
 
 /*
 ===============================================================================
@@ -866,9 +867,7 @@ void SV_Gamedir_f (void)
 	Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
 	// Many mods changes the gamedir not by a -game cmdline arg,
 	// but by a "+exec mod.cfg". So, let's change com_userdir here
-	// accordingly: hwsv keeps com_gamedir as ./gamedir, therefore
-	// we use com_gamedir+2, not com_gamedir itself.	O.S.
-	sprintf (com_userdir, "%s/%s", host_parms.userdir, com_gamedir+2);
+	sprintf (com_userdir, "%s/%s", host_parms.userdir, com_gamedir+1+strlen(com_basedir));
 }
 
 
