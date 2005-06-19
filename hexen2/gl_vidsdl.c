@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.71 2005-06-15 22:10:38 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.72 2005-06-19 11:19:26 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -391,6 +391,10 @@ void GL_Init_Functions(void)
   if (glEnable_fp == 0) {Sys_Error("glEnable not found in GL library");}
   glDisable_fp = (glDisable_f) SDL_GL_GetProcAddress("glDisable");
   if (glDisable_fp == 0) {Sys_Error("glDisable not found in GL library");}
+#ifdef H2W
+  glIsEnabled_fp = (glIsEnabled_f) SDL_GL_GetProcAddress("glIsEnabled");
+  if (glIsEnabled_fp == 0) {Sys_Error("glIsEnabled not found in GL library");}
+#endif
   glFinish_fp = (glFinish_f) SDL_GL_GetProcAddress("glFinish");
   if (glFinish_fp == 0) {Sys_Error("glFinish not found in GL library");}
   glClear_fp = (glClear_f) SDL_GL_GetProcAddress("glClear");
@@ -427,6 +431,10 @@ void GL_Init_Functions(void)
   if (glColor4f_fp == 0) {Sys_Error("glColor4f not found in GL library");}
   glColor4fv_fp = (glColor4fv_f) SDL_GL_GetProcAddress("glColor4fv");
   if (glColor4fv_fp == 0) {Sys_Error("glColor4fv not found in GL library");}
+#ifdef H2W
+  glColor4ub_fp = (glColor4ub_f) SDL_GL_GetProcAddress("glColor4ub");
+  if (glColor4ub_fp == 0) {Sys_Error("glColor4ub not found in GL library");}
+#endif
   glColor4ubv_fp = (glColor4ubv_f) SDL_GL_GetProcAddress("glColor4ubv");
   if (glColor4ubv_fp == 0) {Sys_Error("glColor4ubv not found in GL library");}
   glColor3f_fp = (glColor3f_f) SDL_GL_GetProcAddress("glColor3f");
@@ -453,6 +461,10 @@ void GL_Init_Functions(void)
   if (glScalef_fp == 0) {Sys_Error("glScalef not found in GL library");}
   glTexImage2D_fp = (glTexImage2D_f) SDL_GL_GetProcAddress("glTexImage2D");
   if (glTexImage2D_fp == 0) {Sys_Error("glTexImage2D not found in GL library");}
+#ifdef H2W
+  glTexSubImage2D_fp = (glTexSubImage2D_f) SDL_GL_GetProcAddress("glTexSubImage2D");
+  if (glTexSubImage2D_fp == 0) {Sys_Error("glTexSubImage2D not found in GL library");}
+#endif
 
   glAlphaFunc_fp = (glAlphaFunc_f) SDL_GL_GetProcAddress("glAlphaFunc");
   if (glAlphaFunc_fp == 0) {Sys_Error("glAlphaFunc not found in GL library");}
