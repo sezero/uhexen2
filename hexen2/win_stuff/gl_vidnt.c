@@ -198,6 +198,8 @@ void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 
 void VID_ConWidth(int modenum)
 {
+	int i;
+
 	vid.width  = vid.conwidth  = modelist[modenum].width;
 	vid.height = vid.conheight = modelist[modenum].height;
 

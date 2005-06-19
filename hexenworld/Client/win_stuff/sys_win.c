@@ -2,6 +2,7 @@
 
 #include "quakedef.h"
 #include "quakeinc.h"
+#include <errno.h>
 #include "resource.h"
 #include "fcntl.h"
 #include <io.h>
