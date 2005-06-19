@@ -1271,7 +1271,7 @@ extern cvar_t mwheelthreshold;
 /* main window procedure */
 LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	LONG	lRet = 1;
+	LONG	lRet = 0;
 	int	fActive, fMinimized, temp;
 
 	if (uMsg == uMSG_MOUSEWHEEL && mwheelthreshold.value >= 1)
@@ -1302,6 +1302,8 @@ LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			break;
 
 		case WM_MOVE:
+			if (modestate == MS_FULLDIB)
+				break;	// ignore when fullscreen
 			window_x = (int) LOWORD(lParam);
 			window_y = (int) HIWORD(lParam);
 			VID_UpdateWindowStatus ();
