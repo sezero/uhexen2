@@ -29,7 +29,7 @@ ifdef DEMO
 GAMEFLAGS+= -DDEMOBUILD
 endif
 
-ICOFILE = qe3.ico
+ICO_FILE = qe3.ico
 
 # disable startup splash screens
 GAMEFLAGS+= -DNO_SPLASHES

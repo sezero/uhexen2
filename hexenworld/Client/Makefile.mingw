@@ -26,7 +26,7 @@ ifdef DEMO
 GAMEFLAGS+= -DDEMOBUILD
 endif
 
-ICOFILE = qwcl2.ico
+ICO_FILE = qwcl2.ico
 
 # disable startup splash screens
 GAMEFLAGS+= -DNO_SPLASHES
