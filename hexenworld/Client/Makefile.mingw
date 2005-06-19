@@ -16,7 +16,8 @@ ifdef DEBUG
 CFLAGS+= -DDEBUG -g
 endif
 GAMEFLAGS = -DH2W
-LDFLAGS = -L$(MINGWDIR)/lib -lwinmm -lwsock32 -lcomctl32 -ldinput -ldxguid -mwindows
+LDFLAGS = -L$(MINGWDIR)/lib -lwinmm -lwsock32 -ldinput -ldxguid -mwindows
+#LDFLAGS+= -lcomctl32
 #LDFLAGS+= -mconsole
 GLFLAGS = -lopengl32
 ASFLAGS = -O2 -fwin32 -D__WIN32__ --prefix _
