@@ -1231,6 +1231,9 @@ void AppActivate(BOOL fActive, BOOL minimize)
 				vid_wassuspended = false;
 				ChangeDisplaySettings (&gdevmode, CDS_FULLSCREEN);
 				ShowWindow(mainwindow, SW_SHOWNORMAL);
+				// Fix for alt-tab bug in NVidia drivers, from quakeforge
+				MoveWindow(mainwindow, 0, 0, gdevmode.dmPelsWidth,
+						gdevmode.dmPelsHeight, false);
 			}
 		}
 		else if ((modestate == MS_WINDOWED) && _enable_mouse.value)
