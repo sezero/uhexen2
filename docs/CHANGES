@@ -1,5 +1,23 @@
 ChangeLog:
 
+2005-06-19 (CVS, 1.2.5-pre4):
+    * added the -conwidth (and -conheight) commandline switches
+      enabling a bigger hud display and readable fonts at high
+      resolutions. the fonts will be somewhat distorted, though.
+      valid conwidth values are values equal or less than the
+      window width, 640 is the sanest.
+    * synced h2 and h2w versions of GL_Init_Fuctions()
+    * win32 stuff: added wheelmouse support and conwidth support
+      to hexen2. changed hexenworld's default behavior of default
+      640 conwidth to main width unless specified otherwise by the
+      user. disabled startup splash screens for now. compile the
+      icons in. sycned hexen2 and hexnworld's GL_Init_Functions().
+      disabled InitCommonControls() in gl_vidnt. moved
+      RegisterWindowMessage for uMSG_MOUSEWHEEL to in_win where
+      it belongs. bumped MAXIMUM_WIN_MEMORY to 32 MB. killed
+      useless Sys_ConsoleInput in hwcl. several other sycning and
+      clean-up.
+
 2005-06-17 (CVS, 1.2.5-pre4):
     * many fixes/clean-ups to the Makefiles
     * several gamma clean-ups, spelling fixes
