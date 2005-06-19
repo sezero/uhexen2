@@ -25,6 +25,8 @@ ifdef DEMO
 GAMEFLAGS+= -DDEMOBUILD
 endif
 
+ICOFILE = qwcl2.ico
+
 # disable startup splash screens
 GAMEFLAGS+= -DNO_SPLASHES
 
@@ -33,6 +35,10 @@ GAMEFLAGS+= -DNO_SPLASHES
 	$(CC) -c $(CFLAGS) $(GAMEFLAGS) -o $@ $<
 %.o: %.asm
 	$(AS) $(ASFLAGS) -o $@ $<
+%.res: %.rc
+	cp win_stuff/$(ICO_FILE) $(ICO_FILE)
+	windres --include=$(MINGWDIR)/include --output=coff -o $@ $<
+	rm -f $(ICO_FILE)
 
 SOFTOBJS = d_edge.o \
 	d_fill.o \
@@ -139,6 +145,7 @@ COMMONOBJS = win_stuff/cd_win.o \
 	zone.o \
 	math.o \
 	snd_mixa.o \
+	win_stuff/hexenworld.res \
 	sys_wina.o
 
 

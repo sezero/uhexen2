@@ -1,0 +1,18 @@
+#include <windows.h>
+#include "resource.h"
+
+IDI_ICON2 ICON DISCARDABLE qwcl2.ico
+
+// These stuff would be added one day
+//IDD_DIALOG1 DIALOGEX 0, 0, 62, 21
+//STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_VISIBLE
+//EXSTYLE WS_EX_TOOLWINDOW | WS_EX_CLIENTEDGE
+//FONT 16, "Times New Roman", 0, 0, 0x1
+//BEGIN
+//        CTEXT "Starting HexenWorld...", IDC_STATIC, 2, 3, 58, 15, SS_CENTERIMAGE | SS_SUNKEN
+//END
+//
+//STRINGTABLE DISCARDABLE
+//BEGIN
+//        IDS_STRING1 "HexenII"
+//END
