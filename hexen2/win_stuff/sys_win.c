@@ -13,10 +13,10 @@
 
 #ifdef GLQUAKE
 	#define MINIMUM_WIN_MEMORY		0x1000000
-	#define MAXIMUM_WIN_MEMORY		0x1800000
+	#define MAXIMUM_WIN_MEMORY		0x2000000
 #else
 	#define MINIMUM_WIN_MEMORY		0x0C00000
-	#define MAXIMUM_WIN_MEMORY		0x1600000
+	#define MAXIMUM_WIN_MEMORY		0x2000000
 #endif
 
 #define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error running
@@ -29,9 +29,9 @@
 #warning "CPU endianess for Win32 assumed to be little endian"
 #endif
 
-int			starttime;
+int		starttime;
 qboolean	ActiveApp, Minimized;
-qboolean	Win32AtLeastV4, WinNT;
+qboolean	WinNT;
 
 static double		pfreq;
 static double		curtime = 0.0;
@@ -39,7 +39,7 @@ static double		lastcurtime = 0.0;
 static int			lowshift;
 qboolean			isDedicated;
 static qboolean		sc_return_on_enter = false;
-HANDLE				hinput, houtput;
+static HANDLE		hinput, houtput;
 
 //static char			*tracking_tag = "Sticky Buns";
 
@@ -334,13 +334,11 @@ void Sys_Init (void)
 	if (!GetVersionEx (&vinfo))
 		Sys_Error ("Couldn't get OS info");
 
-	if (vinfo.dwMajorVersion < 4)
-		Win32AtLeastV4 = false;
-	else
-		Win32AtLeastV4 = true;
-
-	if (vinfo.dwPlatformId == VER_PLATFORM_WIN32s)
+	if ((vinfo.dwMajorVersion < 4) ||
+		(vinfo.dwPlatformId == VER_PLATFORM_WIN32s))
+	{
 		Sys_Error ("Hexen2 requires at least Win95 or NT 4.0");
+	}
 	
 	if (vinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
 		WinNT = true;
@@ -420,7 +418,6 @@ void Sys_Printf (char *fmt, ...)
 
 void Sys_Quit (void)
 {
-
 	VID_ForceUnlockedAndReturnState ();
 
 	Host_Shutdown();
@@ -644,7 +641,7 @@ void Sys_SendKeyEvents (void)
 
 /*
 ==================
-WinMain
+SleepUntilInput
 ==================
 */
 void SleepUntilInput (int time)
@@ -663,7 +660,9 @@ HINSTANCE	global_hInstance;
 int			global_nCmdShow;
 char		*argv[MAX_NUM_ARGVS];
 static char	*empty_string = "";
+#if !defined(NO_SPLASHES)
 HWND		hwnd_dialog;
+#endif
 
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -729,6 +728,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	isDedicated = (COM_CheckParm ("-dedicated") != 0);
 
+#if !defined(NO_SPLASHES)
 	if (!isDedicated)
 	{
 		hwnd_dialog = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, NULL);
@@ -740,6 +740,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 			SetForegroundWindow (hwnd_dialog);
 		}
 	}
+#endif
 
 // take the greater of all the available memory or half the total memory,
 // but at least 8 Mb and no more than 16 Mb, unless they explicitly
@@ -860,7 +861,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 		Host_Frame (time);
 		oldtime = newtime;
-
 	}
 
     /* return success of application */
@@ -869,6 +869,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/06/17 16:24:41  sezero
+ * win32 fixes and clean-ups
+ *
  * Revision 1.12  2005/06/15 22:45:10  sezero
  * killed silly opengl pop-up info
  *

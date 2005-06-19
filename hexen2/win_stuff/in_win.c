@@ -31,14 +31,17 @@ static qboolean	mouseshowtoggle = 1;
 #define JOY_AXIS_R			3
 #define JOY_AXIS_U			4
 #define JOY_AXIS_V			5
+
 enum _ControlList
 {
 	AxisNada = 0, AxisForward, AxisLook, AxisSide, AxisTurn
 };
+
 DWORD	dwAxisFlags[JOY_MAX_AXES] =
 {
 	JOY_RETURNX, JOY_RETURNY, JOY_RETURNZ, JOY_RETURNR, JOY_RETURNU, JOY_RETURNV
 };
+
 DWORD	dwAxisMap[JOY_MAX_AXES];
 DWORD	dwControlMap[JOY_MAX_AXES];
 PDWORD	pdwRawValue[JOY_MAX_AXES];
@@ -48,7 +51,7 @@ PDWORD	pdwRawValue[JOY_MAX_AXES];
 // each time.  this avoids any problems with getting back to a default usage
 // or when changing from one controller to another.  this way at least something
 // works.
-cvar_t	in_joystick = {"joystick","1"};
+cvar_t	in_joystick = {"joystick","0", true};
 cvar_t	joy_name = {"joyname", "joystick"};
 cvar_t	joy_advanced = {"joyadvanced", "0"};
 cvar_t	joy_advaxisx = {"joyadvaxisx", "0"};
@@ -82,6 +85,7 @@ void IN_StartupJoystick (void);
 void Joy_AdvancedUpdate_f (void);
 void IN_JoyMove (usercmd_t *cmd);
 
+
 /*
 ===========
 Force_CenterView_f
@@ -102,7 +106,9 @@ void IN_UpdateClipCursor (void)
 {
 
 	if (mouseinitialized && mouseactive)
+	{
 		ClipCursor (&window_rect);
+	}
 }
 
 
@@ -154,11 +160,10 @@ void IN_ActivateMouse (void)
 			restore_spi = SystemParametersInfo (SPI_SETMOUSE, 0, newmouseparms, 0);
 
 		SetCursorPos (window_center_x, window_center_y);
-
-		mouseactive = true;
-
 		SetCapture (mainwindow);
 		ClipCursor (&window_rect);
+
+		mouseactive = true;
 	}
 }
 
@@ -190,10 +195,10 @@ void IN_DeactivateMouse (void)
 		if (restore_spi)
 			SystemParametersInfo (SPI_SETMOUSE, 0, originalmouseparms, 0);
 
-		mouseactive = false;
-
 		ClipCursor (NULL);
 		ReleaseCapture ();
+
+	    mouseactive = false;
 	}
 }
 
@@ -252,9 +257,6 @@ void IN_StartupMouse (void)
 
 	mouse_buttons = 3;
 
-	if (mouse_buttons > 3)
-		mouse_buttons = 3;
-
 // if a fullscreen video mode was set before the mouse was initialized,
 // set the mouse state appropriately
 	if (mouseactivatetoggle)
@@ -298,6 +300,12 @@ void IN_Init (void)
 
 	IN_StartupMouse ();
 	IN_StartupJoystick ();
+
+	uMSG_MOUSEWHEEL = RegisterWindowMessage("MSWHEEL_ROLLMSG");
+	if (!uMSG_MOUSEWHEEL)
+	{
+		Sys_Error ("Error Registering Message\n");
+	}
 }
 
 /*
@@ -547,9 +555,11 @@ void IN_StartupJoystick (void)
 
 	// mark the joystick as available and advanced initialization not completed
 	// this is needed as cvars are not available during initialization
-	Con_Printf ("\njoystick found\n\n", mmr); 
+
 	joy_avail = true; 
 	joy_advancedinit = false;
+
+	Con_Printf ("\njoystick found\n\n", mmr); 
 }
 
 
@@ -930,6 +940,9 @@ void IN_JoyMove (usercmd_t *cmd)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/06/17 16:24:40  sezero
+ * win32 fixes and clean-ups
+ *
  * Revision 1.4  2005/06/15 21:40:40  sezero
  * killed silly warning
  *

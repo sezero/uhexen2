@@ -332,10 +332,6 @@ void VID_InitMGLFull (HINSTANCE hInstance)
 	int			lowstretchedres, stretchedmode, lowstretched;
     uchar		*m;
 
-	// MGL requires at least NT 4.0
-	if (!Win32AtLeastV4 && WinNT)
-		return;
-
 // FIXME: NT is checked for because MGL currently has a bug that causes it
 // to try to use WinDirect modes even on NT
 	if (COM_CheckParm("-nowindirect") ||
@@ -1995,7 +1991,6 @@ void	VID_Init (unsigned char *palette)
 // fullscreen DIBs as well
 	if (((nummodes == basenummodes) ||
 		 ((nummodes == (basenummodes + 1)) && is_mode0x13)) &&
-		Win32AtLeastV4 &&
 		!COM_CheckParm ("-nofulldib"))
 
 	{
@@ -2042,11 +2037,13 @@ void	VID_Init (unsigned char *palette)
 		vid_default = windowed_default;
 	}
 
+#if !defined(NO_SPLASHES)
 	if (hwnd_dialog)
 	{
 		DestroyWindow (hwnd_dialog);
 		hwnd_dialog=NULL;
 	}
+#endif
 
 // sound initialization has to go here, preceded by a windowed mode set,
 // so there's a window for DirectSound to work with but we're not yet
@@ -2078,11 +2075,13 @@ extern byte *mainTransTable; // in r_main.c
 
 	if (vid_initialized)
 	{
+#if !defined(NO_SPLASHES)
 		if (hwnd_dialog)
 		{
 			DestroyWindow (hwnd_dialog);
 			hwnd_dialog=NULL;
 		}
+#endif
 
 		if (modestate == MS_FULLDIB)
 			ChangeDisplaySettings (NULL, CDS_FULLSCREEN);
@@ -2736,6 +2735,9 @@ MAIN WINDOW
 
 LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+static int MWheelAccumulator;
+extern cvar_t mwheelthreshold;
+
 /* main window procedure */
 LONG WINAPI MainWndProc (
     HWND    hWnd,
@@ -2748,6 +2750,23 @@ LONG WINAPI MainWndProc (
 	HDC				hdc;
 	PAINTSTRUCT		ps;
 	static int		recursiveflag;
+
+	if (uMsg == uMSG_MOUSEWHEEL && mwheelthreshold.value >= 1)
+	{
+		MWheelAccumulator += *(int *)&wParam;
+		while (MWheelAccumulator >= mwheelthreshold.value)
+		{
+			Key_Event(K_MWHEELUP, true);
+			Key_Event(K_MWHEELUP, false);
+			MWheelAccumulator -= mwheelthreshold.value;
+		}
+		while (MWheelAccumulator <= -mwheelthreshold.value)
+		{
+			Key_Event(K_MWHEELDOWN, true);
+			Key_Event(K_MWHEELDOWN, false);
+			MWheelAccumulator += mwheelthreshold.value;
+		}
+	}
 
 	switch (uMsg)
 	{
@@ -2843,7 +2862,18 @@ LONG WINAPI MainWndProc (
 				IN_MouseEvent (temp);
 			}
 			break;
-
+		// JACK: This is the mouse wheel with the Intellimouse
+		// Its delta is either positive or neg, and we generate the proper
+		// Event.
+		case WM_MOUSEWHEEL: 
+			if ((short) HIWORD(wParam) > 0) {
+				Key_Event(K_MWHEELUP, true);
+				Key_Event(K_MWHEELUP, false);
+			} else {
+				Key_Event(K_MWHEELDOWN, true);
+				Key_Event(K_MWHEELDOWN, false);
+			}
+			break;
 		// KJB: Added these new palette functions
 		case WM_PALETTECHANGED:
 			if ((HWND)wParam == hWnd)
@@ -3208,6 +3238,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/05/21 17:20:19  sezero
+ * changed all occurances of windowed_mouse to enable_mouse for win32 as well
+ *
  * Revision 1.4  2005/05/21 08:56:13  sezero
  * MINIMUM_MEMORY_LEVELPAK was never used, switched to MINIMUM_MEMORY
  *

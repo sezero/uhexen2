@@ -1,10 +1,10 @@
 // in_win.c -- windows 95 mouse and joystick code
 // 02/21/97 JCB Added extended DirectInput code to support external controllers.
 
-#include <dinput.h>
 #include "quakedef.h"
 #include "quakeinc.h"
 //#include "dosisms.h"
+#include <dinput.h>
 
 #define DINPUT_BUFFERSIZE           16
 #define iDirectInputCreate(a,b,c,d)	pDirectInputCreate(a,b,c,d)
@@ -258,27 +258,27 @@ void IN_DeactivateMouse (void)
 
 	if (mouseinitialized)
 	{
-		if (dinput)
+	    if (dinput)
+	    {
+		if (g_pMouse)
 		{
-			if (g_pMouse)
+			if (dinput_acquired)
 			{
-				if (dinput_acquired)
-				{
-					IDirectInputDevice_Unacquire(g_pMouse);
-					dinput_acquired = false;
-				}
+				IDirectInputDevice_Unacquire(g_pMouse);
+				dinput_acquired = false;
 			}
 		}
-		else
-		{
+	    }
+	    else
+	    {
 		if (restore_spi)
 			SystemParametersInfo (SPI_SETMOUSE, 0, originalmouseparms, 0);
 
 		ClipCursor (NULL);
 		ReleaseCapture ();
-	}
+	    }
 
-		mouseactive = false;
+	    mouseactive = false;
 	}
 }
 
@@ -489,6 +489,12 @@ void IN_Init (void)
 
 	IN_StartupMouse ();
 	IN_StartupJoystick ();
+
+	uMSG_MOUSEWHEEL = RegisterWindowMessage("MSWHEEL_ROLLMSG");
+	if (!uMSG_MOUSEWHEEL)
+	{
+		Sys_Error ("Error Registering Message\n");
+	}
 }
 
 /*
@@ -502,13 +508,13 @@ void IN_Shutdown (void)
 	IN_DeactivateMouse ();
 	IN_ShowMouse ();
 
-    if (g_pMouse)
+	if (g_pMouse)
 	{
 		IDirectInputDevice_Release(g_pMouse);
 		g_pMouse = NULL;
 	}
 
-    if (g_pdi)
+	if (g_pdi)
 	{
 		IDirectInput_Release(g_pdi);
 		g_pdi = NULL;

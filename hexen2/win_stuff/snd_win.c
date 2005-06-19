@@ -595,7 +595,7 @@ qboolean SNDDMA_Init(void)
 	stat = SIS_FAILURE;	// assume DirectSound won't initialize
 
 	/* Init DirectSound */
-	if (!wavonly && Win32AtLeastV4)
+	if (!wavonly)
 	{
 		if (snd_firsttime || snd_isdirect)
 		{

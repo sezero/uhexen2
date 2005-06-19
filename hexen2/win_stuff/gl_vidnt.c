@@ -4,7 +4,7 @@
 #include "quakeinc.h"
 #include "resource.h"
 #include "wgl_func.h"
-//#include <commctrl.h>	//add this back when wheelmouse, alt-tab, etc from H2W are in
+//#include <commctrl.h>
 
 #define MAX_MODE_LIST	30
 #define VID_ROW_SIZE	3
@@ -69,8 +69,8 @@ static vmode_t	badmode;
 static DEVMODE	gdevmode;
 qboolean	vid_initialized = false;
 static qboolean	windowed, leavecurrentmode;
-//static qboolean vid_canalttab = false;
-//static qboolean vid_wassuspended = false;
+static qboolean vid_canalttab = false;
+static qboolean vid_wassuspended = false;
 static int	enable_mouse;
 static HICON	hIcon;
 
@@ -196,6 +196,36 @@ void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 			SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_DRAWFRAME);
 }
 
+void VID_ConWidth(int modenum)
+{
+	vid.width  = vid.conwidth  = modelist[modenum].width;
+	vid.height = vid.conheight = modelist[modenum].height;
+
+	// This will display a bigger hud and readable fonts at high
+	// resolutions. The fonts will be somewhat distorted, though
+	i = COM_CheckParm("-conwidth");
+	if (i != 0 && i < com_argc-1) {
+		vid.conwidth = atoi(com_argv[i+1]);
+		vid.conwidth &= 0xfff8; // make it a multiple of eight
+		if (vid.conwidth < 320)
+			vid.conwidth = 320;
+		// pick a conheight that matches with correct aspect
+		vid.conheight = vid.conwidth*3 / 4;
+		i = COM_CheckParm("-conheight");
+		if (i != 0 && i < com_argc-1)
+			vid.conheight = atoi(com_argv[i+1]);
+		if (vid.conheight < 200)
+			vid.conheight = 200;
+		if (vid.conwidth > modelist[modenum].width)
+			vid.conwidth = modelist[modenum].width;
+		if (vid.conheight > modelist[modenum].height)
+			vid.conheight = modelist[modenum].height;
+
+		vid.width = vid.conwidth;
+		vid.height = vid.conheight;
+	}
+}
+
 qboolean VID_SetWindowedMode (int modenum)
 {
 	HDC	hdc;
@@ -225,8 +255,13 @@ qboolean VID_SetWindowedMode (int modenum)
 	// Create the DIB window
 	dibwindow = CreateWindowEx (
 		 ExWindowStyle,
+#ifndef H2W
 		 "HexenII",
 		 "HexenII",
+#else
+		 "HexenWorld",
+		 "HexenWorld",
+#endif
 		 WindowStyle,
 		 rect.left, rect.top,
 		 width,
@@ -256,13 +291,8 @@ qboolean VID_SetWindowedMode (int modenum)
 	PatBlt(hdc,0,0,WindowRect.right,WindowRect.bottom,BLACKNESS);
 	ReleaseDC(dibwindow, hdc);
 
-	if (COM_CheckParm ("-scale2d")) {
-		vid.height = vid.conheight = BASEHEIGHT ;//modelist[modenum].height; // BASEHEIGHT;
-		vid.width = vid.conwidth =   BASEWIDTH  ;//modelist[modenum].width; //  BASEWIDTH ;
-	} else {
-		vid.height = vid.conheight = modelist[modenum].height; // BASEHEIGHT;
-		vid.width = vid.conwidth =   modelist[modenum].width; //  BASEWIDTH ;
-	}
+	VID_ConWidth(modenum);
+
 	vid.numpages = 2;
 
 	mainwindow = dibwindow;
@@ -316,8 +346,13 @@ qboolean VID_SetFullDIBMode (int modenum)
 	// Create the DIB window
 	dibwindow = CreateWindowEx (
 		 ExWindowStyle,
+#ifndef H2W
 		 "HexenII",
 		 "HexenII",
+#else
+		 "HexenWorld",
+		 "HexenWorld",
+#endif
 		 WindowStyle,
 		 rect.left, rect.top,
 		 width,
@@ -341,13 +376,8 @@ qboolean VID_SetFullDIBMode (int modenum)
 	PatBlt(hdc,0,0,WindowRect.right,WindowRect.bottom,BLACKNESS);
 	ReleaseDC(dibwindow, hdc);
 
-	if (COM_CheckParm ("-scale2d")) {
-		vid.height = vid.conheight = BASEHEIGHT ;//modelist[modenum].height; // BASEHEIGHT;
-		vid.width = vid.conwidth =   BASEWIDTH  ;//modelist[modenum].width; //  BASEWIDTH ;
-	} else {
-		vid.height = vid.conheight = modelist[modenum].height; // BASEHEIGHT;
-		vid.width = vid.conwidth =   modelist[modenum].width; //  BASEWIDTH ;
-	}
+	VID_ConWidth(modenum);
+
 	vid.numpages = 2;
 
 // needed because we're not getting WM_MOVE messages fullscreen on NT
@@ -415,6 +445,11 @@ int VID_SetMode (int modenum, unsigned char *palette)
 		Sys_Error ("VID_SetMode: Bad mode type in modelist");
 	}
 
+	if (!stat)
+	{
+		Sys_Error ("Couldn't set video mode");
+	}
+
 	window_width = DIBWidth;
 	window_height = DIBHeight;
 	VID_UpdateWindowStatus ();
@@ -422,11 +457,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	CDAudio_Resume ();
 	Snd_AcquireBuffer ();
 	scr_disabled_for_loading = temp;
-
-	if (!stat)
-	{
-		Sys_Error ("Couldn't set video mode");
-	}
 
 // now we try to make sure we get the focus on the mode switch, because
 // sometimes in some systems we don't.  We grab the foreground, then
@@ -603,6 +633,10 @@ void GL_Init_Functions(void)
   if (glEnable_fp == 0) {Sys_Error("glEnable not found in GL library");}
   glDisable_fp = (glDisable_f) wglGetProcAddress_fp("glDisable");
   if (glDisable_fp == 0) {Sys_Error("glDisable not found in GL library");}
+#ifdef H2W
+  glIsEnabled_fp = (glIsEnabled_f) wglGetProcAddress_fp("glIsEnabled");
+  if (glIsEnabled_fp == 0) {Sys_Error("glIsEnabled not found in GL library");}
+#endif
   glFinish_fp = (glFinish_f) wglGetProcAddress_fp("glFinish");
   if (glFinish_fp == 0) {Sys_Error("glFinish not found in GL library");}
   glClear_fp = (glClear_f) wglGetProcAddress_fp("glClear");
@@ -639,6 +673,10 @@ void GL_Init_Functions(void)
   if (glColor4f_fp == 0) {Sys_Error("glColor4f not found in GL library");}
   glColor4fv_fp = (glColor4fv_f) wglGetProcAddress_fp("glColor4fv");
   if (glColor4fv_fp == 0) {Sys_Error("glColor4fv not found in GL library");}
+#ifdef H2W
+  glColor4ub_fp = (glColor4ub_f) wglGetProcAddress_fp("glColor4ub");
+  if (glColor4ub_fp == 0) {Sys_Error("glColor4ub not found in GL library");}
+#endif
   glColor4ubv_fp = (glColor4ubv_f) wglGetProcAddress_fp("glColor4ubv");
   if (glColor4ubv_fp == 0) {Sys_Error("glColor4ubv not found in GL library");}
   glColor3f_fp = (glColor3f_f) wglGetProcAddress_fp("glColor3f");
@@ -665,6 +703,10 @@ void GL_Init_Functions(void)
   if (glScalef_fp == 0) {Sys_Error("glScalef not found in GL library");}
   glTexImage2D_fp = (glTexImage2D_f) wglGetProcAddress_fp("glTexImage2D");
   if (glTexImage2D_fp == 0) {Sys_Error("glTexImage2D not found in GL library");}
+#ifdef H2W
+  glTexSubImage2D_fp = (glTexSubImage2D_f) wglGetProcAddress_fp("glTexSubImage2D");
+  if (glTexSubImage2D_fp == 0) {Sys_Error("glTexSubImage2D not found in GL library");}
+#endif
 
   glAlphaFunc_fp = (glAlphaFunc_f) wglGetProcAddress_fp("glAlphaFunc");
   if (glAlphaFunc_fp == 0) {Sys_Error("glAlphaFunc not found in GL library");}
@@ -832,8 +874,11 @@ void VID_SetPalette (unsigned char *palette)
 	unsigned	*table, *table3dfx;
 	FILE		*f;
 	char		s[MAX_OSPATH];
-	// disabled temporarily 
-	//HWND		hDlg, hProgress;
+#if !defined(NO_SPLASHES)
+// if this is to be activated, resource.h and the
+// rc file needs syncing with hexenworld, as well
+	HWND		hDlg, hProgress;
+#endif
 
 //
 // 8 8 8 encoding
@@ -890,14 +935,13 @@ void VID_SetPalette (unsigned char *palette)
 	} 
 	else 
 	{
-	// FIXME: ADD THIS BACK
-	/*
+#if !defined(NO_SPLASHES)
 		hDlg = CreateDialog(global_hInstance, MAKEINTRESOURCE(IDD_PROGRESS), 
 			NULL, NULL);
 		hProgress = GetDlgItem(hDlg, IDC_PROGRESS);
 		SendMessage(hProgress, PBM_SETSTEP, 1, 0);
 		SendMessage(hProgress, PBM_SETRANGE, 0, MAKELPARAM(0, 33));
-	*/
+#endif
 		for (i=0,m=0; i < (1<<15); i++,m++) 
 		{
 			/* Maps
@@ -933,11 +977,13 @@ void VID_SetPalette (unsigned char *palette)
 			d_15to8table[i]=k;
 			if (m >= 1000)
 			{
+#if !defined(NO_SPLASHES)
 #ifdef _DEBUG
 				sprintf(s, "Done - %d\n", i);
 				OutputDebugString(s);
 #endif
-		//		SendMessage(hProgress, PBM_STEPIT, 0, 0);
+				SendMessage(hProgress, PBM_STEPIT, 0, 0);
+#endif
 				m=0;
 			}
 		}
@@ -950,7 +996,9 @@ void VID_SetPalette (unsigned char *palette)
 			fwrite(d_15to8table, 1<<15, 1, f);
 			fclose(f);
 		}
-	//	DestroyWindow(hDlg);
+#if !defined(NO_SPLASHES)
+		DestroyWindow(hDlg);
+#endif
 	}
 
 	d_8to24table[255] &= 0xffffff;	// 255 is transparent
@@ -980,6 +1028,7 @@ void	VID_Shutdown (void)
 
 	if (vid_initialized)
 	{
+		vid_canalttab = false;
 		hRC = wglGetCurrentContext_fp();
 		hDC = wglGetCurrentDC_fp();
 
@@ -1174,6 +1223,11 @@ void AppActivate(BOOL fActive, BOOL minimize)
 		{
 			IN_ActivateMouse ();
 			IN_HideMouse ();
+			if (vid_canalttab && vid_wassuspended) {
+				vid_wassuspended = false;
+				ChangeDisplaySettings (&gdevmode, CDS_FULLSCREEN);
+				ShowWindow(mainwindow, SW_SHOWNORMAL);
+			}
 		}
 		else if ((modestate == MS_WINDOWED) && _enable_mouse.value)
 		{
@@ -1193,6 +1247,10 @@ void AppActivate(BOOL fActive, BOOL minimize)
 		{
 			IN_DeactivateMouse ();
 			IN_ShowMouse ();
+			if (vid_canalttab) { 
+				ChangeDisplaySettings (NULL, 0);
+				vid_wassuspended = true;
+			}
 		}
 		else if ((modestate == MS_WINDOWED) && _enable_mouse.value)
 		{
@@ -1202,6 +1260,9 @@ void AppActivate(BOOL fActive, BOOL minimize)
 	}
 }
 
+static int MWheelAccumulator;
+extern cvar_t mwheelthreshold;
+
 
 /* main window procedure */
 LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -1209,8 +1270,30 @@ LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	LONG	lRet = 1;
 	int	fActive, fMinimized, temp;
 
+	if (uMsg == uMSG_MOUSEWHEEL && mwheelthreshold.value >= 1)
+	{
+		MWheelAccumulator += *(int *)&wParam;
+		while (MWheelAccumulator >= mwheelthreshold.value)
+		{
+			Key_Event(K_MWHEELUP, true);
+			Key_Event(K_MWHEELUP, false);
+			MWheelAccumulator -= mwheelthreshold.value;
+		}
+		while (MWheelAccumulator <= -mwheelthreshold.value)
+		{
+			Key_Event(K_MWHEELDOWN, true);
+			Key_Event(K_MWHEELDOWN, false);
+			MWheelAccumulator += mwheelthreshold.value;
+		}
+	}
+
 	switch (uMsg)
 	{
+		case WM_KILLFOCUS:
+			if (modestate == MS_FULLDIB)
+				ShowWindow(mainwindow, SW_SHOWMINNOACTIVE);
+			break;
+
 		case WM_CREATE:
 			break;
 
@@ -1256,6 +1339,19 @@ LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			IN_MouseEvent (temp);
 
+			break;
+
+		// JACK: This is the mouse wheel with the Intellimouse
+		// Its delta is either positive or neg, and we generate the proper
+		// Event.
+		case WM_MOUSEWHEEL: 
+			if ((short) HIWORD(wParam) > 0) {
+				Key_Event(K_MWHEELUP, true);
+				Key_Event(K_MWHEELUP, false);
+			} else {
+				Key_Event(K_MWHEELDOWN, true);
+				Key_Event(K_MWHEELDOWN, false);
+			}
 			break;
 
 		case WM_SIZE:
@@ -1481,7 +1577,11 @@ void VID_InitDIB (HINSTANCE hInstance)
 	wc.hCursor       = LoadCursor (NULL,IDC_ARROW);
 	wc.hbrBackground = NULL;
 	wc.lpszMenuName  = 0;
+#ifndef H2W
 	wc.lpszClassName = "HexenII";
+#else
+	wc.lpszClassName = "HexenWorld";
+#endif
 
 	if (!RegisterClass (&wc) )
 		Sys_Error ("Couldn't register window class");
@@ -1722,6 +1822,7 @@ void	VID_Init (unsigned char *palette)
 
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
 
+	//InitCommonControls();
 	VID_SetPalette (palette);
 
 #ifdef GL_DLSYM
@@ -1907,7 +2008,9 @@ void	VID_Init (unsigned char *palette)
 	vid.colormap = host_colormap;
 	vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
 
+#if !defined(NO_SPLASHES)
 	DestroyWindow (hwnd_dialog);
+#endif
 
 	VID_SetMode (vid_default, palette);
 
@@ -1916,7 +2019,7 @@ void	VID_Init (unsigned char *palette)
 
 	baseRC = wglCreateContext_fp( maindc );
 	if (!baseRC)
-		Sys_Error ("wglCreateContect failed");
+		Sys_Error ("Could not initialize GL (wglCreateContext failed).\n\nMake sure you in are 65535 color mode, and try running -window.");
 	if (!wglMakeCurrent_fp( maindc, baseRC ))
 		Sys_Error ("wglMakeCurrent failed");
 
@@ -1952,6 +2055,7 @@ void	VID_Init (unsigned char *palette)
 	vid_menukeyfn = VID_MenuKey;
 
 	strcpy (badmode.modedesc, "Bad mode");
+	vid_canalttab = true;
 }
 
 
@@ -2039,13 +2143,13 @@ void VID_MenuDraw (void)
 		}
 	}
 
-	M_Print (3*8, 36 + MODE_AREA_HEIGHT * 8 + 8*2,
+	M_Print (3*8, 60 + MODE_AREA_HEIGHT * 8 + 8*2,
 			 "Video modes must be set from the");
-	M_Print (3*8, 36 + MODE_AREA_HEIGHT * 8 + 8*3,
+	M_Print (3*8, 60 + MODE_AREA_HEIGHT * 8 + 8*3,
 			 "command line with -width <width>");
-	M_Print (3*8, 36 + MODE_AREA_HEIGHT * 8 + 8*4,
+	M_Print (3*8, 60 + MODE_AREA_HEIGHT * 8 + 8*4,
 			 "and -bpp <bits-per-pixel>");
-	M_Print (3*8, 36 + MODE_AREA_HEIGHT * 8 + 8*6,
+	M_Print (3*8, 60 + MODE_AREA_HEIGHT * 8 + 8*6,
 			 "Select windowed mode with -window");
 }
 

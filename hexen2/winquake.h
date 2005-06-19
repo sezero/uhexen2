@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.10 2005-06-17 16:24:33 sezero Exp $
+	$Id: winquake.h,v 1.11 2005-06-19 11:23:23 sezero Exp $
 */
 
 #if !defined(__GNUC__)
@@ -67,7 +67,10 @@ extern int		window_center_x, window_center_y;
 extern RECT		window_rect;
 
 extern qboolean	mouseinitialized;
+
+#if !defined(NO_SPLASHES)
 extern HWND		hwnd_dialog;
+#endif
 
 extern HANDLE	hinput, houtput;
 
@@ -99,6 +102,9 @@ int (PASCAL FAR *pgetsockname)(SOCKET s, struct sockaddr FAR *name,
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/06/17 16:24:33  sezero
+ * win32 fixes and clean-ups
+ *
  * Revision 1.9  2005/06/15 11:03:39  sezero
  * missing includes for LCC
  *

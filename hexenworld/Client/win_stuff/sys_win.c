@@ -3,17 +3,16 @@
 #include "quakedef.h"
 #include "quakeinc.h"
 #include "resource.h"
-#include "errno.h"
 #include "fcntl.h"
 #include <io.h>
 #include <conio.h>
 
 #ifdef GLQUAKE
 	#define MINIMUM_WIN_MEMORY		0x1000000
-	#define MAXIMUM_WIN_MEMORY		0x1600000
+	#define MAXIMUM_WIN_MEMORY		0x2000000
 #else
 	#define MINIMUM_WIN_MEMORY		0x0C00000
-	#define MAXIMUM_WIN_MEMORY		0x1600000
+	#define MAXIMUM_WIN_MEMORY		0x2000000
 #endif
 
 #define PAUSE_SLEEP		50				// sleep time on pause or minimization
@@ -28,8 +27,6 @@ int		starttime;
 qboolean	ActiveApp, Minimized;
 qboolean	WinNT;
 
-HWND	hwnd_dialog;		// startup dialog box
-
 static double		pfreq;
 static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
@@ -38,11 +35,10 @@ static HANDLE		hinput, houtput;
 
 HANDLE		qwclsemaphore;
 
-void Sys_InitFloatTime (void);
-
 void MaskExceptions (void);
-void Sys_PopFPCW (void);
+void Sys_InitFloatTime (void);
 void Sys_PushFPCW_SetHigh (void);
+void Sys_PopFPCW (void);
 
 void Sys_DebugLog(char *file, char *fmt, ...)
 {
@@ -352,105 +348,6 @@ void Sys_InitFloatTime (void)
 }
 
 
-char *Sys_ConsoleInput (void)
-{
-	static char	text[256];
-	static int		len;
-	INPUT_RECORD	recs[1024];
-	int		i, dummy;
-	int		ch, numread, numevents;
-	HANDLE	th;
-	char	*clipText, *textCopied;
-
-	for ( ;; )
-	{
-		if (!GetNumberOfConsoleInputEvents (hinput, &numevents))
-			Sys_Error ("Error getting # of console events");
-
-		if (numevents <= 0)
-			break;
-
-		if (!ReadConsoleInput(hinput, recs, 1, &numread))
-			Sys_Error ("Error reading console input");
-
-		if (numread != 1)
-			Sys_Error ("Couldn't read console input");
-
-		if (recs[0].EventType == KEY_EVENT)
-		{
-			if (!recs[0].Event.KeyEvent.bKeyDown)
-			{
-				ch = recs[0].Event.KeyEvent.uChar.AsciiChar;
-
-				switch (ch)
-				{
-					case '\r':
-						WriteFile(houtput, "\r\n", 2, &dummy, NULL);	
-
-						if (len)
-						{
-							text[len] = 0;
-							len = 0;
-							return text;
-						}
-						break;
-
-					case '\b':
-						WriteFile(houtput, "\b \b", 3, &dummy, NULL);	
-						if (len)
-						{
-							len--;
-							putch('\b');
-						}
-						break;
-
-					default:
-						Con_Printf("Stupid: %d\n", recs[0].Event.KeyEvent.dwControlKeyState);
-						if (((ch=='V' || ch=='v') && (recs[0].Event.KeyEvent.dwControlKeyState & 
-							(LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED))) || ((recs[0].Event.KeyEvent.dwControlKeyState 
-							& SHIFT_PRESSED) && (recs[0].Event.KeyEvent.wVirtualKeyCode
-							==VK_INSERT))) {
-							if (OpenClipboard(NULL)) {
-								th = GetClipboardData(CF_TEXT);
-								if (th) {
-									clipText = GlobalLock(th);
-									if (clipText) {
-										textCopied = malloc(GlobalSize(th)+1);
-										strcpy(textCopied, clipText);
-/* Substitutes a NULL for every token */strtok(textCopied, "\n\r\b");
-										i = strlen(textCopied);
-										if (i+len>=256)
-											i=256-len;
-										if (i>0) {
-											textCopied[i]=0;
-											text[len]=0;
-											strcat(text, textCopied);
-											len+=dummy;
-											WriteFile(houtput, textCopied, i, &dummy, NULL);
-										}
-										free(textCopied);
-									}
-									GlobalUnlock(th);
-								}
-								CloseClipboard();
-							}
-						} else if (ch >= ' ')
-						{
-							WriteFile(houtput, &ch, 1, &dummy, NULL);	
-							text[len] = ch;
-							len = (len + 1) & 0xff;
-						}
-
-						break;
-
-				}
-			}
-		}
-	}
-
-	return NULL;
-}
-
 void Sys_Sleep (void)
 {
 	Sleep (1);
@@ -459,17 +356,16 @@ void Sys_Sleep (void)
 
 void Sys_SendKeyEvents (void)
 {
-    MSG        msg;
+	MSG	msg;
 
 	while (PeekMessage (&msg, NULL, 0, 0, PM_NOREMOVE))
 	{
 		if (!GetMessage (&msg, NULL, 0, 0))
 			Sys_Quit ();
-      	TranslateMessage (&msg);
-      	DispatchMessage (&msg);
+		TranslateMessage (&msg);
+		DispatchMessage (&msg);
 	}
 }
-
 
 
 /*
@@ -499,8 +395,9 @@ HINSTANCE	global_hInstance;
 int			global_nCmdShow;
 char		*argv[MAX_NUM_ARGVS];
 static char	*empty_string = "";
-HWND		hwnd_dialog;
-
+#if !defined(NO_SPLASHES)
+HWND	hwnd_dialog;
+#endif
 
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -509,7 +406,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	MEMORYSTATUS	lpBuffer;
 	static	char	cwd[1024];
 	int				t;
+#if !defined(NO_SPLASHES)
 	RECT			rect;
+#endif
 
 	/* previous instances do not exist in Win32 */
 	if (hPrevInstance)
@@ -563,6 +462,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
+#if !defined(NO_SPLASHES)
 	hwnd_dialog = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, NULL);
 
 	if (hwnd_dialog)
@@ -582,6 +482,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		UpdateWindow (hwnd_dialog);
 		SetForegroundWindow (hwnd_dialog);
 	}
+#endif
 
 // take the greater of all the available memory or half the total memory,
 // but at least 8 Mb and no more than 16 Mb, unless they explicitly
@@ -611,12 +512,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		Sys_Error ("Not enough memory free; check disk space\n");
 
 	Sys_Init ();
-
-	uMSG_MOUSEWHEEL = RegisterWindowMessage("MSWHEEL_ROLLMSG");
-	if (!uMSG_MOUSEWHEEL)
-	{
-		Sys_Error ("Error Registering Message\n");
-	}
 
 // because sound is off until we become active
 	S_BlockSound ();

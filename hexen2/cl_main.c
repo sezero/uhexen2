@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.13 2005-06-12 07:28:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.14 2005-06-19 11:23:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -29,6 +29,7 @@ cvar_t	cl_nolerp = {"cl_nolerp","0"};
 cvar_t	lookspring = {"lookspring","0", true};
 cvar_t	lookstrafe = {"lookstrafe","0", true};
 cvar_t	sensitivity = {"sensitivity","3", true};
+cvar_t	mwheelthreshold = {"mwheelthreshold","120", true};
 static float save_sensitivity;
 
 cvar_t	m_pitch = {"m_pitch","0.022", true};
@@ -987,6 +988,7 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&lookspring);
 	Cvar_RegisterVariable (&lookstrafe);
 	Cvar_RegisterVariable (&sensitivity);
+	Cvar_RegisterVariable (&mwheelthreshold);
 
 	Cvar_RegisterVariable (&m_pitch);
 	Cvar_RegisterVariable (&m_yaw);
@@ -1007,6 +1009,9 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/06/12 07:28:51  sezero
+ * clean-up of includes and a fix (hopefully) for endianness detection
+ *
  * Revision 1.12  2005/05/20 16:17:50  sezero
  * keep ID style in declerations (less diff between h2/h2w...)
  *

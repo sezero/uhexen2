@@ -4,7 +4,7 @@
 #include "quakeinc.h"
 #include "resource.h"
 #include "wgl_func.h"
-#include <commctrl.h>
+//#include <commctrl.h>
 
 #define MAX_MODE_LIST	30
 #define VID_ROW_SIZE	3
@@ -197,6 +197,36 @@ void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 			SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_DRAWFRAME);
 }
 
+void VID_ConWidth(int modenum)
+{
+	vid.width  = vid.conwidth  = modelist[modenum].width;
+	vid.height = vid.conheight = modelist[modenum].height;
+
+	// This will display a bigger hud and readable fonts at high
+	// resolutions. The fonts will be somewhat distorted, though
+	i = COM_CheckParm("-conwidth");
+	if (i != 0 && i < com_argc-1) {
+		vid.conwidth = atoi(com_argv[i+1]);
+		vid.conwidth &= 0xfff8; // make it a multiple of eight
+		if (vid.conwidth < 320)
+			vid.conwidth = 320;
+		// pick a conheight that matches with correct aspect
+		vid.conheight = vid.conwidth*3 / 4;
+		i = COM_CheckParm("-conheight");
+		if (i != 0 && i < com_argc-1)
+			vid.conheight = atoi(com_argv[i+1]);
+		if (vid.conheight < 200)
+			vid.conheight = 200;
+		if (vid.conwidth > modelist[modenum].width)
+			vid.conwidth = modelist[modenum].width;
+		if (vid.conheight > modelist[modenum].height)
+			vid.conheight = modelist[modenum].height;
+
+		vid.width = vid.conwidth;
+		vid.height = vid.conheight;
+	}
+}
+
 qboolean VID_SetWindowedMode (int modenum)
 {
 	HDC	hdc;
@@ -226,8 +256,13 @@ qboolean VID_SetWindowedMode (int modenum)
 	// Create the DIB window
 	dibwindow = CreateWindowEx (
 		 ExWindowStyle,
-		 "GLHexenWorld",
-		 "GLHexenWorld",
+#ifndef H2W
+		 "HexenII",
+		 "HexenII",
+#else
+		 "HexenWorld",
+		 "HexenWorld",
+#endif
 		 WindowStyle,
 		 rect.left, rect.top,
 		 width,
@@ -257,12 +292,7 @@ qboolean VID_SetWindowedMode (int modenum)
 	PatBlt(hdc,0,0,WindowRect.right,WindowRect.bottom,BLACKNESS);
 	ReleaseDC(dibwindow, hdc);
 
-	if (vid.conheight > modelist[modenum].height)
-		vid.conheight = modelist[modenum].height;
-	if (vid.conwidth > modelist[modenum].width)
-		vid.conwidth = modelist[modenum].width;
-	vid.width = vid.conwidth;
-	vid.height = vid.conheight;
+	VID_ConWidth(modenum);
 
 	vid.numpages = 2;
 
@@ -317,8 +347,13 @@ qboolean VID_SetFullDIBMode (int modenum)
 	// Create the DIB window
 	dibwindow = CreateWindowEx (
 		 ExWindowStyle,
-		 "GLHexenWorld",
-		 "GLHexenWorld",
+#ifndef H2W
+		 "HexenII",
+		 "HexenII",
+#else
+		 "HexenWorld",
+		 "HexenWorld",
+#endif
 		 WindowStyle,
 		 rect.left, rect.top,
 		 width,
@@ -342,12 +377,7 @@ qboolean VID_SetFullDIBMode (int modenum)
 	PatBlt(hdc,0,0,WindowRect.right,WindowRect.bottom,BLACKNESS);
 	ReleaseDC(dibwindow, hdc);
 
-	if (vid.conheight > modelist[modenum].height)
-		vid.conheight = modelist[modenum].height;
-	if (vid.conwidth > modelist[modenum].width)
-		vid.conwidth = modelist[modenum].width;
-	vid.width = vid.conwidth;
-	vid.height = vid.conheight;
+	VID_ConWidth(modenum);
 
 	vid.numpages = 2;
 
@@ -415,17 +445,17 @@ int VID_SetMode (int modenum, unsigned char *palette)
 		Sys_Error ("VID_SetMode: Bad mode type in modelist");
 	}
 
+	if (!stat)
+	{
+		Sys_Error ("Couldn't set video mode");
+	}
+
 	window_width = DIBWidth;
 	window_height = DIBHeight;
 	VID_UpdateWindowStatus ();
 
 	CDAudio_Resume ();
 	scr_disabled_for_loading = temp;
-
-	if (!stat)
-	{
-		Sys_Error ("Couldn't set video mode");
-	}
 
 // now we try to make sure we get the focus on the mode switch, because
 // sometimes in some systems we don't.  We grab the foreground, then
@@ -602,8 +632,10 @@ void GL_Init_Functions(void)
   if (glEnable_fp == 0) {Sys_Error("glEnable not found in GL library");}
   glDisable_fp = (glDisable_f) wglGetProcAddress_fp("glDisable");
   if (glDisable_fp == 0) {Sys_Error("glDisable not found in GL library");}
+#ifdef H2W
   glIsEnabled_fp = (glIsEnabled_f) wglGetProcAddress_fp("glIsEnabled");
   if (glIsEnabled_fp == 0) {Sys_Error("glIsEnabled not found in GL library");}
+#endif
   glFinish_fp = (glFinish_f) wglGetProcAddress_fp("glFinish");
   if (glFinish_fp == 0) {Sys_Error("glFinish not found in GL library");}
   glClear_fp = (glClear_f) wglGetProcAddress_fp("glClear");
@@ -640,8 +672,10 @@ void GL_Init_Functions(void)
   if (glColor4f_fp == 0) {Sys_Error("glColor4f not found in GL library");}
   glColor4fv_fp = (glColor4fv_f) wglGetProcAddress_fp("glColor4fv");
   if (glColor4fv_fp == 0) {Sys_Error("glColor4fv not found in GL library");}
+#ifdef H2W
   glColor4ub_fp = (glColor4ub_f) wglGetProcAddress_fp("glColor4ub");
   if (glColor4ub_fp == 0) {Sys_Error("glColor4ub not found in GL library");}
+#endif
   glColor4ubv_fp = (glColor4ubv_f) wglGetProcAddress_fp("glColor4ubv");
   if (glColor4ubv_fp == 0) {Sys_Error("glColor4ubv not found in GL library");}
   glColor3f_fp = (glColor3f_f) wglGetProcAddress_fp("glColor3f");
@@ -668,8 +702,10 @@ void GL_Init_Functions(void)
   if (glScalef_fp == 0) {Sys_Error("glScalef not found in GL library");}
   glTexImage2D_fp = (glTexImage2D_f) wglGetProcAddress_fp("glTexImage2D");
   if (glTexImage2D_fp == 0) {Sys_Error("glTexImage2D not found in GL library");}
+#ifdef H2W
   glTexSubImage2D_fp = (glTexSubImage2D_f) wglGetProcAddress_fp("glTexSubImage2D");
   if (glTexSubImage2D_fp == 0) {Sys_Error("glTexSubImage2D not found in GL library");}
+#endif
 
   glAlphaFunc_fp = (glAlphaFunc_f) wglGetProcAddress_fp("glAlphaFunc");
   if (glAlphaFunc_fp == 0) {Sys_Error("glAlphaFunc not found in GL library");}
@@ -842,7 +878,9 @@ void VID_SetPalette (unsigned char *palette)
 	unsigned	*table, *table3dfx;
 	FILE		*f;
 	char		s[MAX_OSPATH];
+#if !defined(NO_SPLASHES)
 	HWND		hDlg, hProgress;
+#endif
 
 //
 // 8 8 8 encoding
@@ -899,11 +937,13 @@ void VID_SetPalette (unsigned char *palette)
 	} 
 	else 
 	{
+#if !defined(NO_SPLASHES)
 		hDlg = CreateDialog(global_hInstance, MAKEINTRESOURCE(IDD_PROGRESS), 
 			NULL, NULL);
 		hProgress = GetDlgItem(hDlg, IDC_PROGRESS);
 		SendMessage(hProgress, PBM_SETSTEP, 1, 0);
 		SendMessage(hProgress, PBM_SETRANGE, 0, MAKELPARAM(0, 33));
+#endif
 		for (i=0,m=0; i < (1<<15); i++,m++) 
 		{
 			/* Maps
@@ -939,11 +979,13 @@ void VID_SetPalette (unsigned char *palette)
 			d_15to8table[i]=k;
 			if (m >= 1000)
 			{
+#if !defined(NO_SPLASHES)
 #ifdef _DEBUG
 				sprintf(s, "Done - %d\n", i);
 				OutputDebugString(s);
 #endif
 				SendMessage(hProgress, PBM_STEPIT, 0, 0);
+#endif
 				m=0;
 			}
 		}
@@ -956,7 +998,9 @@ void VID_SetPalette (unsigned char *palette)
 			fwrite(d_15to8table, 1<<15, 1, f);
 			fclose(f);
 		}
+#if !defined(NO_SPLASHES)
 		DestroyWindow(hDlg);
+#endif
 	}
 
 	d_8to24table[255] &= 0xffffff;	// 255 is transparent
@@ -1535,7 +1579,11 @@ void VID_InitDIB (HINSTANCE hInstance)
 	wc.hCursor       = LoadCursor (NULL,IDC_ARROW);
 	wc.hbrBackground = NULL;
 	wc.lpszMenuName  = 0;
-	wc.lpszClassName = "GLHexenWorld";
+#ifndef H2W
+	wc.lpszClassName = "HexenII";
+#else
+	wc.lpszClassName = "HexenWorld";
+#endif
 
 	if (!RegisterClass (&wc) )
 		Sys_Error ("Couldn't register window class");
@@ -1776,7 +1824,7 @@ void	VID_Init (unsigned char *palette)
 
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
 
-	InitCommonControls();
+	//InitCommonControls();
 	VID_SetPalette (palette);
 
 #ifdef GL_DLSYM
@@ -1957,30 +2005,14 @@ void	VID_Init (unsigned char *palette)
 
 	vid_initialized = true;
 
-	if ((i = COM_CheckParm("-conwidth")) != 0)
-		vid.conwidth = atoi(com_argv[i+1]);
-	else
-		vid.conwidth = 640;
-
-	vid.conwidth &= 0xfff8; // make it a multiple of eight
-
-	if (vid.conwidth < 320)
-		vid.conwidth = 320;
-
-	// pick a conheight that matches with correct aspect
-	vid.conheight = vid.conwidth*3 / 4;
-
-	if ((i = COM_CheckParm("-conheight")) != 0)
-		vid.conheight = atoi(com_argv[i+1]);
-	if (vid.conheight < 200)
-		vid.conheight = 200;
-
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
 	vid.colormap = host_colormap;
 	vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
 
+#if !defined(NO_SPLASHES)
 	DestroyWindow (hwnd_dialog);
+#endif
 
 	VID_SetMode (vid_default, palette);
 

@@ -25,6 +25,9 @@ ifdef DEMO
 GAMEFLAGS+= -DDEMOBUILD
 endif
 
+# disable startup splash screens
+GAMEFLAGS+= -DNO_SPLASHES
+
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(GAMEFLAGS) -o $@ $<

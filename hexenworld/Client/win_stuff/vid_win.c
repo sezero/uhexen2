@@ -2169,11 +2169,13 @@ void	VID_Init (unsigned char *palette)
 		vid_default = windowed_default;
 	}
 
+#if !defined(NO_SPLASHES)
 	if (hwnd_dialog)
 	{
 		DestroyWindow (hwnd_dialog);
 		hwnd_dialog = NULL;
 	}
+#endif
 
 // sound initialization has to go here, preceded by a windowed mode set,
 // so there's a window for DirectSound to work with but we're not yet
@@ -2222,11 +2224,13 @@ extern byte *mainTransTable; // in r_main.c
 		DestroyFullscreenWindow ();
 		DestroyFullDIBWindow ();
 
+#if !defined(NO_SPLASHES)
 		if (hwnd_dialog)
 		{
 			DestroyWindow (hwnd_dialog);
 			hwnd_dialog = NULL;
 		}
+#endif
 
 		if (mainwindow)
 			DestroyWindow(mainwindow);
