@@ -2,7 +2,7 @@
    gl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.66 2005-06-19 11:19:31 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.67 2005-06-19 11:21:09 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -209,8 +209,8 @@ int VID_SetMode (int modenum)
 		Con_Printf ("Nvidia GL vsync enabled\n");
 	}
 
-	WRHeight = vid.height = vid.conheight = modelist[modenum].height; // BASEHEIGHT;
-	WRWidth = vid.width = vid.conwidth =   modelist[modenum].width; //  BASEWIDTH ;
+	WRWidth = vid.width = vid.conwidth =   modelist[modenum].width;
+	WRHeight = vid.height = vid.conheight = modelist[modenum].height;
 
 	vid.numpages = 2;
 	
@@ -263,6 +263,31 @@ int VID_SetMode (int modenum)
 #endif
 
 	IN_HideMouse ();
+
+	// This will display a bigger hud and readable fonts at high
+	// resolutions. The fonts will be somewhat distorted, though
+	i = COM_CheckParm("-conwidth");
+	if (i != 0 && i < com_argc-1) {
+		vid.conwidth = atoi(com_argv[i+1]);
+		vid.conwidth &= 0xfff8; // make it a multiple of eight
+		if (vid.conwidth < 320)
+			vid.conwidth = 320;
+		// pick a conheight that matches with correct aspect
+		vid.conheight = vid.conwidth*3 / 4;
+		i = COM_CheckParm("-conheight");
+		if (i != 0 && i < com_argc-1)
+			vid.conheight = atoi(com_argv[i+1]);
+		if (vid.conheight < 200)
+			vid.conheight = 200;
+		if (vid.conwidth > modelist[modenum].width)
+			vid.conwidth = modelist[modenum].width;
+		if (vid.conheight > modelist[modenum].height)
+			vid.conheight = modelist[modenum].height;
+
+		vid.width = vid.conwidth;
+		vid.height = vid.conheight;
+	}
+	// end of conwidth hack
 
 	scr_disabled_for_loading = temp;
 
