@@ -398,7 +398,7 @@ qboolean VID_SetFullDIBMode (int modenum)
 int VID_SetMode (int modenum, unsigned char *palette)
 {
 	int		original_mode, temp;
-	qboolean	stat;
+	qboolean	stat = false;
 	MSG		msg;
 
 	if ((windowed && (modenum != 0)) ||
@@ -1267,7 +1267,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 
 static int MWheelAccumulator;
 extern cvar_t mwheelthreshold;
-
+extern LONG CDAudio_MessageHandler(HWND,UINT,WPARAM,LPARAM);
 
 /* main window procedure */
 LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -1665,8 +1665,8 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 				modelist[nummodes].fullscreen = 1;
 				modelist[nummodes].bpp = devmode.dmBitsPerPel;
 				sprintf (modelist[nummodes].modedesc, "%dx%dx%d",
-						 devmode.dmPelsWidth, devmode.dmPelsHeight,
-						 devmode.dmBitsPerPel);
+						(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight,
+						(int)devmode.dmBitsPerPel);
 
 			// if the width is more than twice the height, reduce it by half because this
 			// is probably a dual-screen monitor
@@ -1730,8 +1730,8 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 				modelist[nummodes].fullscreen = 1;
 				modelist[nummodes].bpp = devmode.dmBitsPerPel;
 				sprintf (modelist[nummodes].modedesc, "%dx%dx%d",
-						 devmode.dmPelsWidth, devmode.dmPelsHeight,
-						 devmode.dmBitsPerPel);
+						(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight,
+						(int)devmode.dmBitsPerPel);
 
 				for (i=originalnummodes, existingmode = 0 ; i<nummodes ; i++)
 				{
@@ -1920,8 +1920,8 @@ void	VID_Init (unsigned char *palette)
 					modelist[nummodes].fullscreen = 1;
 					modelist[nummodes].bpp = bpp;
 					sprintf (modelist[nummodes].modedesc, "%dx%dx%d",
-							 devmode.dmPelsWidth, devmode.dmPelsHeight,
-							 devmode.dmBitsPerPel);
+							(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight,
+							(int)devmode.dmBitsPerPel);
 
 					for (i=nummodes, existingmode = 0 ; i<nummodes ; i++)
 					{

@@ -32,7 +32,6 @@ static double		pfreq;
 static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
 static int			lowshift;
-static HANDLE		hinput, houtput;
 
 HANDLE		qwclsemaphore;
 
