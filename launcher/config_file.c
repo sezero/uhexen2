@@ -162,7 +162,7 @@ int read_config_file() {
 							conwidth = resolution;
 				}
 				else if (strstr(buff, "use_con=") == buff) {
-					conwidth = atoi(buff + 8);
+					use_con = atoi(buff + 8);
 					if (use_con != 0 && use_con != 1)
 							use_con = 1;
 				}
