@@ -607,7 +607,7 @@ char *Make_Immediate(gofs_t ofs,char *line,int mode){
 		  temp_val[i] = malloc(strlen(line) + 1);
 		  if(temp_val[i] == NULL)
 			  Error("MakeImmediate failed to create new string for %s\n",line);
-		  stpcpy(temp_val[i],line);
+		  Q_stpcpy(temp_val[i],line);
 		  return temp_val[i];
 
 	  }

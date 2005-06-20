@@ -35,6 +35,32 @@ char *strlower (char *in);
 #define Q_strncasecmp(s1,s2,n) strncasecmp((s1),(s2),(n))
 #define Q_strcasecmp(s1,s2) strcasecmp((s1),(s2))
 #endif
+
+// here is a stpcpy replacement.
+#if defined (__GLIBC__) && defined (_STRING_H) && defined (_GNU_SOURCE)
+#define Q_stpcpy stpcpy
+#else
+/* Copy QSRC to QDEST, returning the address of the terminating '\0' in
+   QDEST.  */
+char *
+# if defined (__STDC__) || defined (__cplusplus)
+Q_stpcpy (char *qdest, const char *qsrc)
+# else
+Q_stpcpy (qdest, qsrc)
+     char *qdest;
+     const char *qsrc;
+# endif
+{
+  register char *qd = qdest;
+  register const char *qs = qsrc;
+
+  while ((*qd++ = *qs++) != '\0')
+    continue;
+
+  return qd - 1;
+}
+#endif
+
 void Q_getwd (char *out);
 
 int	Q_filelength (FILE *f);
