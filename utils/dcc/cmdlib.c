@@ -132,6 +132,22 @@ char *copystring(char *s)
 }
 
 
+// here is a stpcpy replacement.
+#if !(defined (__GLIBC__) && defined (_STRING_H) && defined (_GNU_SOURCE))
+char *Q_stpcpy (char *qdest, const char *qsrc)
+{
+/* Copy QSRC to QDEST, returning the address
+   of the terminating '\0' in QDEST.	*/
+	register char *qd = qdest;
+	register const char *qs = qsrc;
+
+	while ((*qd++ = *qs++) != '\0')
+		continue;
+
+	return qd - 1;
+}
+#endif
+
 
 /*
 ================
