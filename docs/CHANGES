@@ -5,6 +5,10 @@ ChangeLog:
     * launcher v0.6.1: added conwidth support, included
       1600 in the resolution list, other tiny clean-ups
     * killed a few ugly win32 warnings
+    * killed a leftover Q_strncasecmp function in utils
+    * added a replacement stpcpy for non-__GLIBC__ cases
+    * added MSYS/MinGW makefiles and build scripts for utilities
+    * added _GNU_SOURCE define to dhcc compilation
 
 2005-06-19 (CVS, 1.2.5-pre4):
     * added the -conwidth (and -conheight) commandline switches
