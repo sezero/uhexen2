@@ -1,5 +1,11 @@
 ChangeLog:
 
+2005-06-20 (CVS, 1.2.5-pre5):
+    * added -conwidth info to the documentation
+    * launcher v0.6.1: added conwidth support, included
+      1600 in the resolution list, other tiny clean-ups
+    * killed a few ugly win32 warnings
+
 2005-06-19 (CVS, 1.2.5-pre4):
     * added the -conwidth (and -conheight) commandline switches
       enabling a bigger hud display and readable fonts at high
