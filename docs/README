@@ -114,6 +114,10 @@ following options are accepted:
  -g | --gllibrary	Select 3D rendering library
  -width Width		Select screen size
  -height Height		Must be used with -width
+ -conwidth		Enables a bigger hud display and readable fonts
+			at high resolutions. Valid conwidth values are
+			values equal or less than the screen width above,
+			640 is the sanest.
  -bpp			Color depth for GL fullscreen mode
  -nomouse		Disables mouse usage in game
  -heapsize Bytes	Heapsize (memory to allocate)
