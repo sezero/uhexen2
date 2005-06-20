@@ -1,0 +1,6 @@
+#!/bin/sh
+
+make -C hcc -f Makefile.mingw clean
+make -C qfiles -f Makefile.mingw clean
+make -C genmodel -f Makefile.mingw clean
+make -C utils -f Makefile.mingw clean

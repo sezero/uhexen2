@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "Building hcc, the HexenC compiler.."
+make -C hcc -f Makefile.mingw
+echo "" && echo "Now building qfiles.."
+make -C qfiles -f Makefile.mingw
+echo "" && echo "Now building genmodel.."
+make -C genmodel -f Makefile.mingw
+echo "" && echo "Now building light, vis and qbsp.."
+make -C utils -f Makefile.mingw

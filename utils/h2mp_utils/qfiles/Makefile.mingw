@@ -1,0 +1,26 @@
+
+MINGWDIR=/mingw
+
+CC = gcc
+LINKER = $(CC)
+BINARY=qfiles.exe
+DESTDIR=../bin
+CFLAGS = -I$(MINGWDIR)/include
+LDFLAGS = -mconsole
+LDLIBS = 
+
+all : $(BINARY)
+
+clean : 
+	rm -f *.o core
+
+# Rules for turning source files into .o files
+%.o: %.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+
+QFILESOBJS= cmdlib.o \
+	qfiles.o
+
+$(BINARY) : $(QFILESOBJS)
+	$(LINKER) -o $(DESTDIR)/$(BINARY) $(QFILESOBJS) $(LDFLAGS) $(LDLIBS)

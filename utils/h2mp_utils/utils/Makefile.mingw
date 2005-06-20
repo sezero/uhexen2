@@ -1,0 +1,63 @@
+
+MINGWDIR=/mingw
+
+CC = gcc
+LINKER = $(CC)
+
+QBSP=qbsp.exe
+LIGHT=light.exe
+VIS=vis.exe
+
+DESTDIR=../bin
+CFLAGS = -I$(MINGWDIR)/include
+LDFLAGS = -mconsole
+LDLIBS= -lm
+
+all : $(LIGHT) $(VIS) $(QBSP)
+
+clean : 
+	rm -f *.o core
+
+# Rules for turning source files into .o files
+%.o: %.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+
+COMMONOBJS= cmdlib.o \
+	mathlib.o \
+	bspfile.o
+
+LIGHTOBJS= entities.o \
+	light.o \
+	ltface.o \
+	threads.o \
+	trace.o
+
+VISOBJS= flow.o \
+	soundpvs.o \
+	vis.o
+
+QBSPOBJS= brush.c \
+	csg4.o \
+	map.o \
+	merge.o \
+	nodraw.o \
+	outside.o \
+	portals.o \
+	qbsp.o \
+	region.o \
+	solidbsp.o \
+	surfaces.o \
+	tjunc.o \
+	writebsp.o
+
+
+$(LIGHT) : $(COMMONOBJS) $(LIGHTOBJS)
+	$(LINKER) -o $(DESTDIR)/$(LIGHT) $(COMMONOBJS) $(LIGHTOBJS) $(LDFLAGS) $(LDLIBS)
+
+$(VIS) : $(COMMONOBJS) $(VISOBJS)
+	$(LINKER) -o $(DESTDIR)/$(VIS) $(COMMONOBJS) $(VISOBJS) $(LDFLAGS) $(LDLIBS)
+
+$(QBSP) : $(COMMONOBJS) $(QBSPOBJS)
+	$(LINKER) -o $(DESTDIR)/$(QBSP) $(COMMONOBJS) $(QBSPOBJS) $(LDFLAGS) $(LDLIBS)
+
