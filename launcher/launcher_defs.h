@@ -14,7 +14,8 @@
 #define	RES_800		4
 #define	RES_1024	5
 #define	RES_1280	6
-#define	RES_MAX		6
+#define	RES_1600	7
+#define	RES_MAX		7
 
 #define	MAX_H2GAMES	3	// max.# of entries in the h2game_names table
 #define	MAX_HWGAMES	6	// max.# of entries in the hwgame_names table

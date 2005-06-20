@@ -29,7 +29,7 @@ GTK_CFLAGS = `pkg-config --cflags gtk+-2.0`
 GTK_LIBS = `pkg-config --libs gtk+-2.0`
 endif
 
-VERSION = 0.6.0
+VERSION = 0.6.1
 HOT_VERSION = 1.2.5
 
 PROGRAMS = $(H2LAUNCH)

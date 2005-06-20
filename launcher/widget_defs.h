@@ -26,6 +26,9 @@ struct Video_s {
 	GtkWidget *bOGL;	// OpenGL / Software
 	GtkWidget *cRES;	// Resolution combo
 	GtkWidget *eRES;	// Resolution combo listing
+	GtkWidget *bCONW;	// Allow conwidth toggle
+	GtkWidget *cCONW;	// Conwidth combo
+	GtkWidget *eCONW;	// Conwidth combo listing
 	GtkWidget *bFULS;	// Fullscreen / windowed
 	GtkWidget *b3DFX;	// 3dfx spesific Gamma
 	GtkWidget *b8BIT;	// 8-bit texture extensions
@@ -91,6 +94,9 @@ typedef struct {
 #define WGT_OPENGL	Games.Video.bOGL
 #define WGT_RESCOMBO	Games.Video.cRES
 #define WGT_RESLIST	Games.Video.eRES
+#define WGT_CONWBUTTON	Games.Video.bCONW
+#define WGT_CONWCOMBO	Games.Video.cCONW
+#define WGT_CONWLIST	Games.Video.eCONW
 #define WGT_FULLSCR	Games.Video.bFULS
 #define WGT_3DFX	Games.Video.b3DFX
 #define WGT_GL8BIT	Games.Video.b8BIT
@@ -130,10 +136,15 @@ typedef struct {
 #define MUSIC_CD	bCDA
 #define RES_COMBO	cRES
 #define RES_LIST	eRES
+#define CONW_COMBO	cCONW
+#define CONW_LIST	eCONW
+#define CONW_BUTTON	bCONW
 #define STATUSBAR	LStat
 #define PORTALS_BUTTON	bH2MP
 #define H2GAME		SelH2
 #define HWGAME		SelHW
+#define CONW_COMBO_S	Video.cCONW
+#define CONW_BUTTON_S	Video.bCONW
 #define TDFX_BUTTON	Video.b3DFX
 #define GL8BIT_BUTTON	Video.b8BIT
 #define MTEX_BUTTON	Video.bMTEX

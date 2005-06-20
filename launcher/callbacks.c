@@ -9,6 +9,7 @@ extern unsigned missingexe;
 extern int opengl_support;
 extern int fullscreen;
 extern int resolution;
+extern int conwidth;
 extern char gllibrary[256];
 extern int sound;
 extern int sndrate;
@@ -31,7 +32,8 @@ const char *res_names[]={
 	"640 x 480",
 	"800 x 600",
 	"1024 x 768",
-	"1280 x 1024"
+	"1280 x 1024",
+	"1600 x 1280"
 };
 
 const char *stats[]={
@@ -39,18 +41,6 @@ const char *stats[]={
 	"  Ready to run the game",
 	"  Binary missing or not executable"
 };
-
-void Make_ResMenu (struct Video_s *wgt) {
-	GList *ResList = NULL;
-	unsigned short i, up;
-	
-	up = (opengl_support) ? RES_MAX : 3;
-	for (i = 2*opengl_support; i <= up; i++)
-		ResList = g_list_append (ResList, (char *)res_names[i]);
-	gtk_combo_set_popdown_strings (GTK_COMBO (wgt->RES_COMBO), ResList);
-	g_list_free (ResList);
-	gtk_entry_set_text (GTK_ENTRY (wgt->RES_LIST), (char *)res_names[resolution]);
-}
 
 void on_SND (GtkEditable *editable, sndwidget_t *wgt) {
 	unsigned short i;
@@ -87,16 +77,44 @@ void on_SBITS (GtkButton *button, int *opt) {
 	gtk_button_set_label(button, (*(opt)) ? "16 bit" : " 8 bit");
 }
 
+void Make_ResMenu (struct Video_s *wgt) {
+	unsigned short i, up;
+	GList *ResList = NULL;
+
+	up = (opengl_support) ? RES_MAX : RES_640;
+	for (i = 2*opengl_support; i <= up; i++)
+		ResList = g_list_append (ResList, (char *)res_names[i]);
+	gtk_combo_set_popdown_strings (GTK_COMBO (wgt->RES_COMBO), ResList);
+	g_list_free (ResList);
+	gtk_entry_set_text (GTK_ENTRY (wgt->RES_LIST), (char *)res_names[resolution]);
+}
+
+void Make_ConwMenu (struct Video_s *wgt) {
+	unsigned short i;
+	GList *ResList = NULL;
+
+	for (i = 0; i <= resolution; i++)
+		ResList = g_list_append (ResList, (char *)res_names[i]);
+	gtk_combo_set_popdown_strings (GTK_COMBO (wgt->CONW_COMBO), ResList);
+	g_list_free (ResList);
+	gtk_entry_set_text (GTK_ENTRY (wgt->CONW_LIST), (char *)res_names[conwidth]);
+}
+
 void on_OGL (GtkToggleButton *button, gamewidget_t *wgt) {
+/*	Make_ResMenu() triggers "changed" signal for RES_LIST
+	Prevent the fight: res_Change() wont do a thing if(lock)
+*/	lock = 1;
 	opengl_support=!opengl_support;
 	switch (opengl_support) {
 	case 0:
-		if (resolution > 3 )
-			resolution = 3;
+		if (resolution > RES_640)
+			resolution = RES_640;
 		break;
 	case 1:
-		if (resolution < 3 )
-			resolution = 3;
+		if (resolution < RES_640)
+			resolution = RES_640;
+		if (conwidth > resolution)
+			conwidth = resolution;
 		break;
 	}
 	gtk_widget_set_sensitive (wgt->TDFX_BUTTON, opengl_support);
@@ -105,22 +123,42 @@ void on_OGL (GtkToggleButton *button, gamewidget_t *wgt) {
 	gtk_widget_set_sensitive (wgt->VSYNC_BUTTON, opengl_support);
 	gtk_widget_set_sensitive (wgt->FSAA_BUTTON, opengl_support);
 	gtk_widget_set_sensitive (wgt->LIBGL_BUTTON, opengl_support);
-/*	Make_ResMenu() triggers "changed" signal for RES_LIST
-	Prevent the fight: res_Change() wont do a thing if(lock)
-*/	lock = 1;
+	gtk_widget_set_sensitive (wgt->CONW_BUTTON_S, opengl_support);
+	gtk_widget_set_sensitive (wgt->CONW_COMBO_S, opengl_support);
 	Make_ResMenu(&(wgt->Video));
+	if (opengl_support)
+		Make_ConwMenu(&(wgt->Video));
 	UpdateStats(&(wgt->Launch));
 	lock = 0;
 }
 
-void res_Change (GtkEditable *editable, gpointer user_data) {
+void res_Change (GtkEditable *editable, struct Video_s *wgt) {
+	unsigned short i;
+	if(!lock) {
+		lock = 1;
+		gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
+		for (i=0; i<=RES_MAX; i++) {
+			if (strcmp(tmp, res_names[i]) == 0)
+				resolution = i;
+		}
+		g_free(tmp);
+		if (opengl_support) {
+			if (conwidth > resolution)
+				conwidth = resolution;
+			Make_ConwMenu(wgt);
+		}
+		lock = 0;
+	}
+}
+
+void con_Change (GtkEditable *editable, gpointer user_data) {
 	unsigned short i;
 	if(!lock) {
 		gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
 		for (i=0; i<=RES_MAX; i++) {
 			if (strcmp(tmp, res_names[i]) == 0) {
 				g_free(tmp);
-				resolution = i;
+				conwidth = i;
 				return;
 			}
 		// Normally, we should be all set within this loop
@@ -128,7 +166,7 @@ void res_Change (GtkEditable *editable, gpointer user_data) {
 	}
 }
 
-void gl_Change (GtkEditable *editable, gpointer user_data) {
+void libgl_Change (GtkEditable *editable, gpointer user_data) {
 	gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
 	memset (gllibrary, 0, sizeof(gllibrary));
 	memcpy (gllibrary, tmp, strlen(tmp));

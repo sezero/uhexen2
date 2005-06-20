@@ -7,6 +7,8 @@ extern int mp_support;
 extern int opengl_support;
 extern int fullscreen;
 extern int resolution;
+extern int conwidth;
+extern int use_con;
 extern int fxgamma;
 extern int is8bit;
 extern int use_fsaa;
@@ -105,6 +107,11 @@ void launch_hexen2_bin() {
 
 	args[++i]="-width";
 	args[++i]=resolution_args[resolution];
+
+	if (opengl_support && use_con && conwidth < resolution) {
+		args[++i]="-conwidth";
+		args[++i]=resolution_args[conwidth];
+	}
 
 	args[++i]=(char *)snddrv_names[sound][0];
 

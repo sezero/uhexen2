@@ -9,6 +9,8 @@ int mp_support		= 0;
 int opengl_support	= 1;
 int fullscreen		= 1;
 int resolution		= RES_640;
+int use_con		= 1;
+int conwidth		= RES_640;
 int fxgamma		= 0;
 int is8bit		= 0;
 int use_fsaa		= 0;
@@ -75,6 +77,8 @@ int write_config_file() {
 		fprintf(cfg_file, "opengl_support=%d\n",opengl_support);
 		fprintf(cfg_file, "fullscreen=%d\n",fullscreen);
 		fprintf(cfg_file, "resolution=%d\n",resolution);
+		fprintf(cfg_file, "use_con=%d\n",use_con);
+		fprintf(cfg_file, "conwidth=%d\n",conwidth);
 		fprintf(cfg_file, "fxgamma=%d\n",fxgamma);
 		fprintf(cfg_file, "is8bit=%d\n",is8bit);
 		fprintf(cfg_file, "use_fsaa=%d\n",use_fsaa);
@@ -149,6 +153,18 @@ int read_config_file() {
 					resolution = atoi(buff + 11);
 					if (resolution < 0 || resolution > RES_MAX)
 							resolution = RES_640;
+				}
+				else if (strstr(buff, "conwidth=") == buff) {
+					conwidth = atoi(buff + 9);
+					if (conwidth < 0 || conwidth > RES_MAX)
+							conwidth = RES_640;
+					if (opengl_support && conwidth > resolution)
+							conwidth = resolution;
+				}
+				else if (strstr(buff, "use_con=") == buff) {
+					conwidth = atoi(buff + 8);
+					if (use_con != 0 && use_con != 1)
+							use_con = 1;
 				}
 				else if (strstr(buff, "fxgamma=") == buff) {
 					fxgamma = atoi(buff + 8);

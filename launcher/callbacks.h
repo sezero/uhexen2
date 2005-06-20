@@ -1,6 +1,8 @@
 void Make_ResMenu (struct Video_s *wgt);
-void res_Change (GtkEditable *editable, gpointer user_data);
-void gl_Change (GtkEditable *editable, gpointer user_data);
+void Make_ConwMenu (struct Video_s *wgt);
+void res_Change (GtkEditable *editable, struct Video_s *wgt);
+void con_Change (GtkEditable *editable, gpointer user_data);
+void libgl_Change (GtkEditable *editable, gpointer user_data);
 void adj_Change (GtkAdjustment *adj, int *opt);
 void UpdateStats (struct Launch_s *wgt);
 void on_HEXEN2 (GtkButton *button, gamewidget_t *wgt);

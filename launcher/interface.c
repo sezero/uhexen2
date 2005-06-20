@@ -14,6 +14,7 @@ extern int mp_support;
 extern int opengl_support;
 extern int fullscreen;
 extern int resolution;
+extern int use_con;
 extern int fxgamma;
 extern int is8bit;
 extern int mtex;
@@ -36,7 +37,6 @@ extern int heapsize;
 extern int zonesize;
 // from launch_bin.c
 extern unsigned missingexe;
-extern const char *res_names[];
 extern const char *snddrv_names[MAX_SOUND][2];
 extern const char *snd_rates[MAX_RATES];
 #ifndef DEMOBUILD
@@ -51,21 +51,21 @@ GtkWidget* create_window1 (void)
 {
   static HoTWindow_t main_win;
 
-  char *Title;
-  GList *TmpList = NULL;
-  GSList *Destinies = NULL;
+  static gamewidget_t Games;
+  static sndwidget_t Sound;
 
-// for basics
+// Labels for basics
   GtkWidget *TxtTitle;	// Title Label
   GtkWidget *TxtGame0;	// Destiny label
   GtkWidget *TxtVideo;	// Renderer, etc.
   GtkWidget *TxtResol;	// Resolution
   GtkWidget *TxtSound;	// Sound driver combo
+// Widgets for basics which needn't be in a relevant struct
   GtkWidget *SND_Entry; // Sound driver listing
   GtkWidget *bSAVE;	// Save options button
   GtkWidget *bQUIT;	// Quit button
 
-// for additionals
+// Labels for additionals
   GtkWidget *TxtMouse;	// Mouse options.
   GtkWidget *TxtNet;	// Networking options.
   GtkWidget *TxtAdv;	// Memory options.
@@ -73,19 +73,23 @@ GtkWidget* create_window1 (void)
   GtkWidget *TxtSndExt;	// Extra Sound Options label
   GtkWidget *TxtSound2;	// Sound options extra
   GtkWidget *TxtSound3;	// Sound options extra
-  GtkWidget *SRATE_Entry; // Sampling rate listing
   GtkWidget *TxtGameT;	// GameType Label
   GtkWidget *TxtGameH2;	// Hexen2 GameType Label
-  GtkWidget *H2G_Entry;	// Hexen2 games listing
   GtkWidget *TxtGameHW;	// Hexenworld GameType Label
+// Widgets for additionals which needn't be in a relevant struct
+  GtkWidget *SRATE_Entry; // Sampling rate listing
+  GtkWidget *H2G_Entry;	// Hexen2 games listing
   GtkWidget *HWG_Entry;	// Hexenworld games listing
 
+// Separators
   GtkWidget *hseparator0;
   GtkWidget *hseparator1;
   GtkWidget *hseparator2;
 
-  static gamewidget_t Games;
-  static sndwidget_t Sound;
+// Other stuff
+  char *Title;
+  GList *TmpList = NULL;
+  GSList *Destinies = NULL;
 
   GtkTooltips *tooltips;
   tooltips = gtk_tooltips_new ();
@@ -288,7 +292,7 @@ GtkWidget* create_window1 (void)
 /*********************************************************************/
 
 // Video Options
-  TxtVideo = gtk_label_new (_("Graphics  :"));
+  TxtVideo = gtk_label_new (_("Graphics    :"));
   gtk_widget_ref (TxtVideo);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "TxtVideo", TxtVideo,
 				(GtkDestroyNotify) gtk_widget_unref);
@@ -303,7 +307,7 @@ GtkWidget* create_window1 (void)
 				(GtkDestroyNotify) gtk_widget_unref);
   GTK_WIDGET_UNSET_FLAGS (WGT_OPENGL, GTK_CAN_FOCUS);
   gtk_widget_show (WGT_OPENGL);
-  gtk_fixed_put (GTK_FIXED (BASIC_TAB), WGT_OPENGL, 84, 162);
+  gtk_fixed_put (GTK_FIXED (BASIC_TAB), WGT_OPENGL, 100, 162);
   gtk_widget_set_size_request (WGT_OPENGL, 108, 24);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_OPENGL), opengl_support);
 
@@ -314,12 +318,12 @@ GtkWidget* create_window1 (void)
 				(GtkDestroyNotify) gtk_widget_unref);
   GTK_WIDGET_UNSET_FLAGS (WGT_FULLSCR, GTK_CAN_FOCUS);
   gtk_widget_show (WGT_FULLSCR);
-  gtk_fixed_put (GTK_FIXED (BASIC_TAB), WGT_FULLSCR, 84, 186);
+  gtk_fixed_put (GTK_FIXED (BASIC_TAB), WGT_FULLSCR, 100, 186);
   gtk_widget_set_size_request (WGT_FULLSCR, 108, 24);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_FULLSCR), fullscreen);
 
 // resolution
-  TxtResol = gtk_label_new (_("Resolution:"));
+  TxtResol = gtk_label_new (_("Resolution  :"));
   gtk_widget_ref (TxtResol);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "TxtResol", TxtResol,
 				(GtkDestroyNotify) gtk_widget_unref);
@@ -334,7 +338,7 @@ GtkWidget* create_window1 (void)
 				(GtkDestroyNotify) gtk_widget_unref);
   gtk_combo_set_use_arrows (GTK_COMBO (WGT_RESCOMBO), FALSE);
   gtk_widget_set_size_request (WGT_RESCOMBO, 108, 24);
-  gtk_fixed_put (GTK_FIXED (BASIC_TAB), WGT_RESCOMBO, 84, 214);
+  gtk_fixed_put (GTK_FIXED (BASIC_TAB), WGT_RESCOMBO, 100, 214);
 //resolution display
   WGT_RESLIST = GTK_COMBO (WGT_RESCOMBO)->entry;
   gtk_widget_ref (WGT_RESLIST);
@@ -342,15 +346,49 @@ GtkWidget* create_window1 (void)
 				(GtkDestroyNotify) gtk_widget_unref);
   //gtk_entry_set_alignment (GTK_ENTRY (WGT_RESLIST), 1);
   gtk_entry_set_editable (GTK_ENTRY (WGT_RESLIST), FALSE);
-//menu listing from a callback
+
+//conwidth toggle button
+  WGT_CONWBUTTON = gtk_check_button_new_with_label (_("Conwidth :"));
+  gtk_widget_ref (WGT_CONWBUTTON);
+  gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "bCONW", WGT_CONWBUTTON,
+				(GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (WGT_CONWBUTTON);
+  gtk_fixed_put (GTK_FIXED (BASIC_TAB), WGT_CONWBUTTON, 14, 244);
+  gtk_widget_set_size_request (WGT_CONWBUTTON, 84, 24);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_CONWBUTTON), use_con);
+  GTK_WIDGET_UNSET_FLAGS (WGT_CONWBUTTON, GTK_CAN_FOCUS);
+  gtk_tooltips_set_tip (tooltips, WGT_CONWBUTTON, _("Allow bigger/readable text and HUD in high resolutions. 640 is recommended"), NULL);
+  gtk_widget_set_sensitive (WGT_CONWBUTTON, opengl_support);
+
+//conwidth combo
+  WGT_CONWCOMBO = gtk_combo_new ();
+  gtk_widget_ref (WGT_CONWCOMBO);
+  gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "cCONW", WGT_CONWCOMBO,
+				(GtkDestroyNotify) gtk_widget_unref);
+  gtk_combo_set_use_arrows (GTK_COMBO (WGT_CONWCOMBO), FALSE);
+  gtk_widget_set_size_request (WGT_CONWCOMBO, 108, 24);
+  gtk_fixed_put (GTK_FIXED (BASIC_TAB), WGT_CONWCOMBO, 100, 244);
+  gtk_widget_set_sensitive (WGT_CONWCOMBO, opengl_support);
+//conwidth display
+  WGT_CONWLIST = GTK_COMBO (WGT_CONWCOMBO)->entry;
+  gtk_widget_ref (WGT_CONWLIST);
+  gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "eCONW", WGT_CONWLIST,
+				(GtkDestroyNotify) gtk_widget_unref);
+  //gtk_entry_set_alignment (GTK_ENTRY (WGT_CONWLIST), 1);
+  gtk_entry_set_editable (GTK_ENTRY (WGT_CONWLIST), FALSE);
+
+//menu listing for resolution and conwidth come from a callback
   Make_ResMenu(&VID_STRUCT);
+  Make_ConwMenu(&VID_STRUCT);
   gtk_widget_show (WGT_RESCOMBO);
   gtk_widget_show (WGT_RESLIST);
+  gtk_widget_show (WGT_CONWCOMBO);
+  gtk_widget_show (WGT_CONWLIST);
 
 /*********************************************************************/
 
 // Sound options (basic: driver selection)
-  TxtSound = gtk_label_new (_("Sound     :"));
+  TxtSound = gtk_label_new (_("Sound        :"));
   gtk_widget_ref (TxtSound);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "TxtSound", TxtSound,
 				(GtkDestroyNotify) gtk_widget_unref);
@@ -369,7 +407,7 @@ GtkWidget* create_window1 (void)
 	TmpList = g_list_append (TmpList, (char *)snddrv_names[i][1]);
   gtk_combo_set_popdown_strings (GTK_COMBO (WGT_SOUND), TmpList);
   g_list_free (TmpList);
-  gtk_fixed_put (GTK_FIXED (BASIC_TAB), WGT_SOUND, 84, 132);
+  gtk_fixed_put (GTK_FIXED (BASIC_TAB), WGT_SOUND, 100, 132);
   gtk_widget_show (WGT_SOUND);
   SND_Entry = GTK_COMBO (WGT_SOUND)->entry;
   gtk_widget_ref (SND_Entry);
@@ -910,6 +948,8 @@ GtkWidget* create_window1 (void)
 			GTK_SIGNAL_FUNC (ReverseOpt), &lan);
   gtk_signal_connect (GTK_OBJECT (WGT_FULLSCR), "toggled",
 			GTK_SIGNAL_FUNC (ReverseOpt), &fullscreen);
+  gtk_signal_connect (GTK_OBJECT (WGT_CONWBUTTON), "toggled",
+			GTK_SIGNAL_FUNC (ReverseOpt), &use_con);
   gtk_signal_connect (GTK_OBJECT (WGT_3DFX), "toggled",
 			GTK_SIGNAL_FUNC (ReverseOpt), &fxgamma);
   gtk_signal_connect (GTK_OBJECT (WGT_GL8BIT), "toggled",
@@ -931,9 +971,11 @@ GtkWidget* create_window1 (void)
   gtk_signal_connect (GTK_OBJECT (WGT_MEMZONE), "toggled",
 			GTK_SIGNAL_FUNC (ReverseOpt), &use_zone);
   gtk_signal_connect (GTK_OBJECT (WGT_RESLIST), "changed",
-			GTK_SIGNAL_FUNC (res_Change), NULL);
+			GTK_SIGNAL_FUNC (res_Change), &VID_STRUCT);
+  gtk_signal_connect (GTK_OBJECT (WGT_CONWLIST), "changed",
+			GTK_SIGNAL_FUNC (con_Change), NULL);
   gtk_signal_connect (GTK_OBJECT (WGT_GLPATH), "changed",
-			GTK_SIGNAL_FUNC (gl_Change), NULL);
+			GTK_SIGNAL_FUNC (libgl_Change), NULL);
   gtk_signal_connect (GTK_OBJECT (WGT_HEAPADJ), "value_changed",
 			GTK_SIGNAL_FUNC (adj_Change), &heapsize);
   gtk_signal_connect (GTK_OBJECT (WGT_ZONEADJ), "value_changed",
