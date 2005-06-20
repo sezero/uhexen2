@@ -5,7 +5,7 @@ LINKER = $(CC)
 BINARY=dhcc
 DESTDIR= ./bin
 #CFLAGS = -O2 -Wall
-CFLAGS = -O2
+CFLAGS = -O2 -D_GNU_SOURCE
 LDFLAGS = 
 LDLIBS= -lm
 
