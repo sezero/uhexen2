@@ -193,7 +193,7 @@ void BspModels (void)
 ReadFiles
 =============
 */
-int ReadFiles (void)
+void ReadFiles (void)
 {
 	FILE	*f;
 	int		i;
