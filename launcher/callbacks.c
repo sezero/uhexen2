@@ -134,9 +134,10 @@ void on_OGL (GtkToggleButton *button, gamewidget_t *wgt) {
 
 void res_Change (GtkEditable *editable, struct Video_s *wgt) {
 	unsigned short i;
+	gchar *tmp;
 	if(!lock) {
 		lock = 1;
-		gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
+		tmp = gtk_editable_get_chars (editable, 0, -1);
 		for (i=0; i<=RES_MAX; i++) {
 			if (strcmp(tmp, res_names[i]) == 0)
 				resolution = i;
@@ -153,8 +154,9 @@ void res_Change (GtkEditable *editable, struct Video_s *wgt) {
 
 void con_Change (GtkEditable *editable, gpointer user_data) {
 	unsigned short i;
+	gchar *tmp;
 	if(!lock) {
-		gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
+		tmp = gtk_editable_get_chars (editable, 0, -1);
 		for (i=0; i<=RES_MAX; i++) {
 			if (strcmp(tmp, res_names[i]) == 0) {
 				g_free(tmp);
