@@ -812,133 +812,141 @@ void main (int argc, char **argv)
 		printf ("Source directory: %s\n", sourcedir);
 	}
 	else
+	{
 		strcpy (sourcedir, "");
+	}
 
 	InitData ();
 
-	 PR_FILE = stdout;
-	p = CheckParm ("-dump");
+	PR_FILE = stdout;
 
+	p = CheckParm ("-dump");
 	if (p)
 		pr_dumpasm = true;
 
 // do a crc of the file
 	p = CheckParm ("-crc");
 
-if (p){
-	CRC_Init (&crc);
-	f = fopen ("progdefs.h", "r");
-	while ((c = fgetc(f)) != EOF)
-		CRC_ProcessByte (&crc, (byte)c);
-		
-	printf ("#define PROGHEADER_CRC %i %d\n", crc,(int)crc);
-	fclose (f);
-	return;
-}
+	if (p) {
+		CRC_Init (&crc);
+		f = fopen ("progdefs.h", "r");
+		while ((c = fgetc(f)) != EOF)
+			CRC_ProcessByte (&crc, (byte)c);
+
+		printf ("#define PROGHEADER_CRC %i %d\n", crc,(int)crc);
+		fclose (f);
+		return;
+	}
 
 	p = CheckParm ("-dcc");
 
-	if (p) {
-
-		 DEC_ReadData ("progs.dat");
-		 //fix mangled names if asked
-		 p = CheckParm ("-fix");
-		 if(p)
-			 FILE_NUM_FOR_NAME = 1;
-		 memset(func_headers,0,MAX_FUNCTIONS*sizeof(char *));
-		 memset(temp_val,0,MAX_REGS*sizeof(char *));
-	p = CheckParm ("-bbb");
 	if (p)
 	{
-	/* i= -999;
-		 for(p = 0;p<numstatements;p++)
-			 if((statements+p)->op > i)
-				 i = (statements+p)->op;
-		 printf("largest op %d\n",i); */
-		 FindBuiltinParameters(1);
+		DEC_ReadData ("progs.dat");
+		//fix mangled names if asked
+		p = CheckParm ("-fix");
+		if(p)
+			FILE_NUM_FOR_NAME = 1;
+		memset(func_headers,0,MAX_FUNCTIONS*sizeof(char *));
+		memset(temp_val,0,MAX_REGS*sizeof(char *));
 
-		 return;
-	}
-	p = CheckParm ("-ddd");
-	if (p)
-	{
-		for (p++ ; p<argc ; p++)
+		p = CheckParm ("-bbb");
+		if (p)
 		{
-			if (argv[p][0] == '-')
-				break;
-			DccFunctionOP (atoi(argv[p]));
+		/*	i= -999;
+			for(p = 0;p<numstatements;p++)
+				if((statements+p)->op > i)
+					i = (statements+p)->op;
+			printf("largest op %d\n",i); */
+			FindBuiltinParameters(1);
+
+			return;
 		}
-	return;
-	}
-//void DccFunctionOP(unsigned short op){
-	p = CheckParm ("-info2");
-	if (p)
-	{
-		 printf("\n=======================\n");
-		 printf("fields\n");
-		 printf("=======================\n");
-		 PrintFields ();
-		 printf("\n=======================\n");
-		 printf("globals\n");
-		 printf("=======================\n");
-		 PrintGlobals ();
+
+		p = CheckParm ("-ddd");
+		if (p)
+		{
+			for (p++ ; p<argc ; p++)
+			{
+				if (argv[p][0] == '-')
+					break;
+				DccFunctionOP (atoi(argv[p]));
+			}
+			return;
+		}
+
+		p = CheckParm ("-info2");
+		if (p)
+		{
+			printf("\n=======================\n");
+			printf("fields\n");
+			printf("=======================\n");
+			PrintFields ();
+			printf("\n=======================\n");
+			printf("globals\n");
+			printf("=======================\n");
+			PrintGlobals ();
+			return;
+		}
+
+		p = CheckParm ("-info");
+		if (p)
+		{
+			printf("\n=======================\n");
+			printf("strings\n");
+			printf("=======================\n");
+			PrintStrings ();
+			printf("\n=======================\n");
+			printf("functions");
+			printf("\n=======================\n");
+			PrintFunctions ();
+			printf("\n=======================\n");
+			printf("fields\n");
+			printf("=======================\n");
+			PrintFields ();
+			printf("\n=======================\n");
+			printf("globals\n");
+			printf("=======================\n");
+			PrintGlobals ();
+			printf("\n=======================\n");
+			printf("pr_globals\n");
+			printf("=======================\n");
+			PrintPRGlobals ();
+			printf("\n=======================\n");
+			printf("statements\n");
+			printf("=======================\n");
+			Printstatements();
+			return;
+		}
+
+		p = CheckParm ("-asm");
+		if (p)
+		{
+			for (p++ ; p<argc ; p++)
+			{
+				if (argv[p][0] == '-')
+					break;
+				PR_PrintFunction (argv[p]);
+			}
+		}
+		else
+		{
+			Dcc_Functions();
+		}
+
 		return;
-	}
-	p = CheckParm ("-info");
-	if (p)
-	{
-		 printf("\n=======================\n");
-		 printf("strings\n");
-		 printf("=======================\n");
-		 PrintStrings ();
-		 printf("\n=======================\n");
-		 printf("functions");
-		 printf("\n=======================\n");
-		 PrintFunctions ();
-		 printf("\n=======================\n");
-		 printf("fields\n");
-		 printf("=======================\n");
-		 PrintFields ();
-		 printf("\n=======================\n");
-		 printf("globals\n");
-		 printf("=======================\n");
-		 PrintGlobals ();
-		 printf("\n=======================\n");
-		 printf("pr_globals\n");
-		 printf("=======================\n");
-		 PrintPRGlobals ();
-		 printf("\n=======================\n");
-		 printf("statements\n");
-		 printf("=======================\n");
-		 Printstatements();
-		 return;
-	 }
-
-	p = CheckParm ("-asm");
-	if (p)
-	{
-		for (p++ ; p<argc ; p++)
-		{
-			if (argv[p][0] == '-')
-				break;
-			PR_PrintFunction (argv[p]);
-		}
-	}
-	else
-		Dcc_Functions();
-	return;
-
 	}
 
 	sprintf (filename, "%sprogs.src", sourcedir);
 	LoadFile (filename, (void *)&src);
-	
+
 	src = COM_Parse (src);
 	if (!src)
 		Error ("No destination filename.  qcc -help for info.\n");
+
 	strcpy (destfile, com_token);
 	printf ("outputfile: %s\n", destfile);
-	
+
 	pr_dumpasm = false;
 
 	PR_BeginCompilation (malloc (0x100000), 0x100000);
@@ -949,15 +957,16 @@ if (p){
 		src = COM_Parse(src);
 		if (!src)
 			break;
+
 		sprintf (filename, "%s%s", sourcedir, com_token);
 		printf ("compiling %s\n", filename);
 		LoadFile (filename, (void *)&src2);
 
 		if (!PR_CompileFile (src2, filename) )
 			exit (1);
-			
+
 	} while (1);
-	
+
 	if (!PR_FinishCompilation ())
 		Error ("compilation errors");
 
@@ -971,21 +980,19 @@ if (p){
 			PrintFunction (argv[p]);
 		}
 	}
-	
-	
+
 // write progdefs.h
 	crc = PR_WriteProgdefs ("progdefs.h");
 	printf ("#define PROGHEADER_CRC %i %d\n", crc,(int)crc);
 	//cheap hack for now!!!!!!!!!!!!!!!!!!!!
 	crc = 14046;
-	
+
 // write data file
 	WriteData (crc);
-	
+
 // write files.dat
 	WriteFiles ();
 
 	stop = I_FloatTime ();
 	printf ("%i seconds elapsed.\n", (int)(stop-start));
-
 }
