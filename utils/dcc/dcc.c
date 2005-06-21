@@ -1266,9 +1266,6 @@ int CalcArraySize(int j,int end)
 {
 	ddef_t	*par;
 
-	if(j==end)
-		return;
-
 	for (j++ ; j<end; j++)
 	{
 		par = DEC_GetParameter (j);
