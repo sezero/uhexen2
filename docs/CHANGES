@@ -1,5 +1,8 @@
 ChangeLog:
 
+2005-06-21 (CVS, 1.2.5-pre5):
+    * fixed launcher for gcc2 compilation
+
 2005-06-20 (CVS, 1.2.5-pre5):
     * added -conwidth info to the documentation
     * launcher v0.6.1: added conwidth support, included
