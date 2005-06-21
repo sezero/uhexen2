@@ -88,12 +88,11 @@ CopyQFiles
 */
 void CopyQFiles (int blocknum)
 {
-	int		i, p;
+	int		i, dirlen;
 	char	srcfile[1024];
 	char	destfile[1024];
 	char	name[1024];
 	packheader_t	header;
-	int		dirlen;
 	unsigned short		crc;
 
 	// create a pak file
@@ -167,7 +166,6 @@ Runs qbsp and light on all of the models with a .bsp extension
 */
 void BspModels (void)
 {
-	int		p;
 	int		i;
 	char	*m;
 	char	cmd[1024];
