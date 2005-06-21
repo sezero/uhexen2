@@ -2239,7 +2239,7 @@ void PR_PrintFunction (char *name)
 unsigned short GetLastFunctionReturn(dfunction_t *df,dstatement_t *ds)
 {
 	dstatement_t	*di;
-	int		i, k;
+	int		i;
 	char		*arg1;
 	def_t		*type1;
 
@@ -2271,7 +2271,6 @@ unsigned short GetLastFunctionReturn(dfunction_t *df,dstatement_t *ds)
 			}
 			else
 			{
-				k--;
 				break;
 			}
 		}//end if call
