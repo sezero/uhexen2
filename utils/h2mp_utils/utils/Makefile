@@ -9,7 +9,7 @@ LIGHT=light
 VIS=vis
 
 DESTDIR=../bin
-CFLAGS = 
+CFLAGS = -O2 -Wall
 LDFLAGS = 
 LDLIBS= -lm
 

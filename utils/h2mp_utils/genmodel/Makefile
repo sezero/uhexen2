@@ -5,7 +5,7 @@ endif
 LINKER = $(CC)
 BINARY=genmodel
 DESTDIR=../bin
-CFLAGS = 
+CFLAGS = -O2 -Wall
 LDFLAGS = 
 LDLIBS= -lm
 

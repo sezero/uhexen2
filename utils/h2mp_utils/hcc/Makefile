@@ -4,7 +4,7 @@ endif
 LINKER = $(CC)
 BINARY=hcc
 DESTDIR=../bin
-CFLAGS = 
+CFLAGS = -O2 -Wall
 LDFLAGS = 
 LDLIBS = 
 

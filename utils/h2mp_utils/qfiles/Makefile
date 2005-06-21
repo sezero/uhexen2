@@ -5,7 +5,7 @@ endif
 LINKER = $(CC)
 BINARY=qfiles
 DESTDIR=../bin
-CFLAGS = 
+CFLAGS = -O2 -Wall
 LDFLAGS =
 LDLIBS = 
 
