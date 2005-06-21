@@ -78,7 +78,7 @@ char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
 	int i;
 	ddef_t	*def=0;
 	static char line[500];
-	ddef_t	*d;
+	ddef_t	*d=0;
 
 	for (i=0 ; i<numglobaldefs ; i++)
 	{
@@ -114,7 +114,7 @@ char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
 	unsigned short	 t1=0;
 	int i;
 	ddef_t	*def=0;
-	ddef_t	*d;
+	ddef_t	*d=0;
 
 	if(typ)
 		t1 = typ->type->type;
