@@ -3,7 +3,7 @@
 //**
 //** hcc.c
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/hcc.c,v 1.3 2005-05-17 19:35:36 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/hcc.c,v 1.4 2005-06-21 21:19:06 sezero Exp $
 //**
 //** Hash table modifications based on fastqcc by Jonathan Roy
 //** (roy@atlantic.net).
@@ -270,7 +270,7 @@ strofs = (strofs+3)&~3;
 	printf("object file %s\n", destfile);
 	printf("      registers: %-6d / %-6d (%6d)\n", numpr_globals,
 		MAX_REGS, numpr_globals*sizeof(float));
-	printf("     statements: %-10d / %-10d (%10)\n", numstatements,
+	printf("     statements: %-10d / %-10d (%10d)\n", numstatements,
 		MAX_STATEMENTS, numstatements*sizeof(dstatement_t));
 	printf("      functions: %-6d / %-6d (%6d)\n", numfunctions,
 		MAX_FUNCTIONS, numfunctions*sizeof(dfunction_t));
