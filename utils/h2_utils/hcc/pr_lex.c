@@ -3,7 +3,7 @@
 //**
 //** lexi.c
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/pr_lex.c,v 1.1.1.1 2005-03-19 09:30:08 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/pr_lex.c,v 1.2 2005-06-21 21:30:40 sezero Exp $
 //**
 //**************************************************************************
 
@@ -45,7 +45,6 @@ static void NewLine(void);
 static void LexVector(void);
 static void LexPunctuation(void);
 static void LexName(void);
-static void LexWhiteSpace(void);
 static void ClearFrameMacros(void);
 
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
