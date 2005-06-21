@@ -9,7 +9,7 @@ LIGHT=light.exe
 VIS=vis.exe
 
 DESTDIR=../bin
-CFLAGS = -I$(MINGWDIR)/include
+CFLAGS = -I$(MINGWDIR)/include -O2 -Wall
 LDFLAGS = -mconsole
 LDLIBS= -lm
 

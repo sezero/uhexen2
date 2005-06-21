@@ -5,8 +5,7 @@ CC = gcc
 LINKER = $(CC)
 BINARY=dhcc.exe
 DESTDIR= ./bin
-#CFLAGS = -O2 -Wall
-CFLAGS = -O2 -I$(MINGWDIR)/include
+CFLAGS = -O2 -Wall -I$(MINGWDIR)/include
 LDFLAGS = -mconsole
 LDLIBS= -lm
 

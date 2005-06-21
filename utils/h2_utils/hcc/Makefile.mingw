@@ -4,7 +4,7 @@ CC = gcc
 LINKER = $(CC)
 BINARY=hcc.exe
 DESTDIR=../bin
-CFLAGS = -I$(MINGWDIR)/include
+CFLAGS = -I$(MINGWDIR)/include -O2 -Wall
 LDFLAGS = -mconsole
 LDLIBS= 
 
