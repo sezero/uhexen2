@@ -849,7 +849,7 @@ static void WriteModel (void)
 
 	if (ModelReadIn)
 	{
-		printf ("file size: %d (Saved %d)\n", (int)ftell (modelouthandle), original_size - ftell(modelouthandle) );
+		printf ("file size: %d (Saved %d)\n", (int)ftell (modelouthandle), (int)(original_size - ftell(modelouthandle)) );
 	}
 	else
 	{
