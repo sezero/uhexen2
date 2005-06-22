@@ -173,7 +173,7 @@ void TK_OpenSource(char *fileName)
 	int size;
 
 	TK_CloseSource();
-	size = LoadFile(fileName, (void **)&FileStart);
+	size = LoadFile(fileName, (void **) (char *) &FileStart);
 	strcpy(tk_SourceName, fileName);
 	SourceOpen = TRUE;
 	FileEnd = FileStart+size;
