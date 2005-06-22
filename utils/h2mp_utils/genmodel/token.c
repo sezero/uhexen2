@@ -64,36 +64,36 @@ static struct
 	tokenType_t token;
 } Keywords[] =
 {
-	"model", TK_MODEL,
-	"mesh", TK_MESH,
-	"vertices", TK_VERTICES,
-	"position", TK_POSITION,
-	"polygons", TK_POLYGONS,
-	"nodes", TK_NODES,
-	"rotation", TK_ROTATION,
-	"scaling", TK_SCALING,
-	"translation", TK_TRANSLATION,
-	"vertex", TK_VERTEX,
-	"HRCH", TK_HRCH,
-	"Softimage", TK_SOFTIMAGE,
+	{ "model",	TK_MODEL	},
+	{ "mesh",	TK_MESH		},
+	{ "vertices",	TK_VERTICES	},
+	{ "position",	TK_POSITION	},
+	{ "polygons",	TK_POLYGONS	},
+	{ "nodes",	TK_NODES	},
+	{ "rotation",	TK_ROTATION	},
+	{ "scaling",	TK_SCALING	},
+	{ "translation", TK_TRANSLATION	},
+	{ "vertex",	TK_VERTEX	},
+	{ "HRCH",	TK_HRCH		},
+	{ "Softimage",	TK_SOFTIMAGE	},
 
-	"Named", TK_C_NAMED,
-	"object", TK_OBJECT,
-	"Tri", TK_C_TRI,
-	"Vertices", TK_C_VERTICES,
-	"Faces", TK_C_FACES,
-	"Vertex", TK_C_VERTEX,
-	"list", TK_LIST,
-	"Face", TK_C_FACE,
+	{ "Named",	TK_C_NAMED	},
+	{ "object",	TK_OBJECT	},
+	{ "Tri",	TK_C_TRI	},
+	{ "Vertices",	TK_C_VERTICES	},
+	{ "Faces",	TK_C_FACES	},
+	{ "Vertex",	TK_C_VERTEX	},
+	{ "list",	TK_LIST		},
+	{ "Face",	TK_C_FACE	},
 
-	"Hexen", TK_C_HEXEN,
-	"Triangles", TK_C_TRIANGLES,
-	"Version", TK_C_VERSION,
-	"faces", TK_FACES,
-	"face", TK_FACE,
-	"origin", TK_ORIGIN,
+	{ "Hexen",	TK_C_HEXEN	},
+	{ "Triangles",	TK_C_TRIANGLES	},
+	{ "Version",	TK_C_VERSION	},
+	{ "faces",	TK_FACES	},
+	{ "face",	TK_FACE		},
+	{ "origin",	TK_ORIGIN	},
 
-	NULL, -1
+	{ NULL,		-1		}
 };
 
 static char *TokenNames[] =
