@@ -374,8 +374,8 @@ portal_t *GetNextPortal (void)
 {
 	int             j;
 	portal_t        *p, *tp;
-    int     min,ndone;
-
+	int		min;
+//	int		ndone;
 	const int       num2 = numportals*2;
 	
 	min = 99999;
@@ -401,7 +401,7 @@ portal_t *GetNextPortal (void)
 
 	UNLOCK;
 /*
-   if (GilMode)
+	if (GilMode)
 	{
 		ndone*=50;
 		ndone/=numportals;

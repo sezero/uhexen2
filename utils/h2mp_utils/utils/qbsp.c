@@ -1032,8 +1032,8 @@ ProcessFile
 void ProcessFile (char *sourcebase, char *bspfilename1)
 {
 	int i;
-	FILE *FH;
-    char	radfilename[1024];
+//	FILE *FH;
+//	char	radfilename[1024];
 
 	// create filenames
 	strcpy (bspfilename, bspfilename1);

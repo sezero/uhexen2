@@ -53,19 +53,21 @@ CalcAmbientSounds
 */
 void CalcAmbientSounds (void)
 {
-	int		i, j, k, l;
+	int		i, j, k;
 	dleaf_t	*leaf, *hit;
 	byte	*vis;
 	dface_t	*surf;
-	vec3_t	mins, maxs;
-	float	d, maxd;
+	float	maxd;
 	int		ambient_type;
 	texinfo_t	*info;
 	miptex_t	*miptex;
 	int		ofs;
 	float	dists[NUM_AMBIENTS];
 	float	vol;
-	
+//	int		l;
+//	vec3_t	mins, maxs;
+//	float	d;
+
 	for (i=0 ; i< portalleafs ; i++)
 	{
 		leaf = &dleafs[i+1];
