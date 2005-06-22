@@ -847,9 +847,9 @@ static void LoadTRI(FILE *input, triangle_t **triList, int *triangleCount)
 	while(feof(input) == 0)
 	{
 		fread(&start, sizeof(float), 1, input);
-		*(int *)&start = BigLong(*(int *)&start);
+		*(int *) (char *) &start = BigLong(*(int *) (char *) &start);
 
-		if(*(int *)&start != exitpattern)
+		if(*(int *) (char *) &start != exitpattern)
 		{
 			if(start == FLOAT_START)
 			{ // Start of an object or group of objects
