@@ -10,6 +10,7 @@
 #include <ctype.h>
 #include <time.h>
 #include <stdarg.h>
+#include <unistd.h>
 
 #ifndef __BYTEBOOL__
 #define __BYTEBOOL__

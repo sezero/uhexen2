@@ -4,10 +4,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#ifdef WIN32
-#include <direct.h>
-#endif
-
 #ifdef NeXT
 #include <libc.h>
 #endif
