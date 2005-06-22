@@ -1344,6 +1344,7 @@ static int ExtractDigit(byte *pic, int x, int y)
 		}
 	}
 	Error("Unable to extract scaling info from skin PCX.");
+	return -1; // shut-up the compiler
 }
 
 /*
