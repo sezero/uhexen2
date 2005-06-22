@@ -578,8 +578,8 @@ LoadMapFile
 void LoadMapFile (char *filename)
 {
 	char	*buf;
-		
-	LoadFile (filename, (void **)&buf);
+
+	LoadFile (filename, (void **) (char *) &buf);
 
 	StartTokenParsing (buf);
 	
