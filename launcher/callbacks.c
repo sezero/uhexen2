@@ -33,7 +33,7 @@ const char *res_names[]={
 	"800 x 600",
 	"1024 x 768",
 	"1280 x 1024",
-	"1600 x 1280"
+	"1600 x 1200"
 };
 
 const char *stats[]={
