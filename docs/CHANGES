@@ -1,5 +1,13 @@
 ChangeLog:
 
+2005-06-23 (CVS, 1.2.5-pre5):
+    * several typo/spelling fixes
+
+2005-06-22 (CVS, 1.2.5-pre5):
+    * added -O2 -Wall flags to utilities' complilation
+    * many warning fixes in utilities, it should be
+      gcc4-ready now
+
 2005-06-21 (CVS, 1.2.5-pre5):
     * fixed launcher for gcc2 compilation
 
