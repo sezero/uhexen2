@@ -339,7 +339,7 @@ with monitor refresh to provide a more stable image.  This is
 equivalent to setting the environment variable __GL_SYNC_TO_VBLANK
 to 1.
 
-You can also override our -fsaa switch if you set Nvidia spesific
+You can also override our -fsaa switch if you set Nvidia specific
 environment variable __GL_FSAA_MODE to an appropriate value.  The
 details for this can usually be found in Nvidia's readme file
 (/usr/share/doc/NVIDIA_GLX-1.0/README).  Briefly: Geforce 1 and 2

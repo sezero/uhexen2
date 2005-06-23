@@ -9,7 +9,7 @@ Setting up 3dfx Voodoo Graphics, Voodoo 2 and Voodoo Rush
 
 For your Voodoo Graphics or Voodoo2 board to work with OpenGL,
 and Hexen II, you need to install Glide2 or Glide3 libraries
-spesific to your board. Then you must compile Mesa3d against
+specific to your board. Then you must compile Mesa3d against
 glide and optionally install it. Mesa-3.x.x uses glide2, and
 optionally glide3.  Mesa-6.x.x only uses glide3 and this is the
 fastest and recommended option.

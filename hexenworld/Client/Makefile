@@ -14,10 +14,10 @@ USEMIDI=yes
 #		On platforms other than linux, it will already be disabled
 USEALSA=yes
 
-# USE_SDLCD:	no   =	Don't use SDL cdaudio (default); platform spesific
+# USE_SDLCD:	no   =	Don't use SDL cdaudio (default); platform specific
 #			cdrom code will be used.  The only problem with
 #			SDL_cdrom is that it lacks proper volume controls.
-#		yes  =	Use SDL for cdaudio instead of platform spesific code
+#		yes  =	Use SDL for cdaudio instead of platform specific code
 USE_SDLCD=no
 
 # To build for the demo version, run with make DEMO=yes [other stuff]

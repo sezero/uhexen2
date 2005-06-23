@@ -5,8 +5,8 @@ The asm files we use are *.asm in nasm syntax, and are actually
 in the game trees.  The *.s here have comments in them, and all
 seem to be from original quake1.  Unfortunately, not all hexen2
 asm code are identical their quake1 counterparts, and there are
-additional hexen2 spesific ones, as well..  The original q1 asm
-have their C equivalents in some way, but the hexen II spesific
+additional hexen2 specific ones, as well..  The original q1 asm
+have their C equivalents in some way, but the hexen II specific
 ones don't, so the code is more difficult to port.
 
 From Dan Olson:  " The code isn't compilable on non-intel until

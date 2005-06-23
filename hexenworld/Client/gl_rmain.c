@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.20 2005-06-15 13:18:20 sezero Exp $
+	$Id: gl_rmain.c,v 1.21 2005-06-23 06:29:54 sezero Exp $
 */
 
 
@@ -110,7 +110,7 @@ static void R_RotateForEntity2(entity_t *e);
 void GL_DoGamma()
 {
 /* This trick is useful if normal ways of gamma adjustment fail:
-   In case of 3dfx Voodoo1/2/Rush, we can't use 3dfx spesific
+   In case of 3dfx Voodoo1/2/Rush, we can't use 3dfx specific
    extensions in unix, so this can be our friend at cost of 4-5 fps */
 	if (v_gamma.value <0.2)
 		v_gamma.value=0.2;

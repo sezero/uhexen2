@@ -30,7 +30,7 @@ struct Video_s {
 	GtkWidget *cCONW;	// Conwidth combo
 	GtkWidget *eCONW;	// Conwidth combo listing
 	GtkWidget *bFULS;	// Fullscreen / windowed
-	GtkWidget *b3DFX;	// 3dfx spesific Gamma
+	GtkWidget *b3DFX;	// 3dfx specific Gamma
 	GtkWidget *b8BIT;	// 8-bit texture extensions
 	GtkWidget *bFSAA;	// Multisampling check button
 	GtkObject *adjFSAA;	// Multisampling adjustment

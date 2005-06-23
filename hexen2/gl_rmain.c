@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.31 2005-06-15 18:40:43 sezero Exp $
+	$Id: gl_rmain.c,v 1.32 2005-06-23 06:29:54 sezero Exp $
 */
 
 
@@ -112,7 +112,7 @@ static void R_RotateForEntity2(entity_t *e);
 void GL_DoGamma()
 {
 /* This trick is useful if normal ways of gamma adjustment fail:
-   In case of 3dfx Voodoo1/2/Rush, we can't use 3dfx spesific
+   In case of 3dfx Voodoo1/2/Rush, we can't use 3dfx specific
    extensions in unix, so this can be our friend at cost of 4-5 fps */
 	if (v_gamma.value <0.2)
 		v_gamma.value=0.2;
@@ -1808,6 +1808,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2005/06/15 18:40:43  sezero
+ * fifth model is for h2mp only and we've been out of bounds for ages here
+ *
  * Revision 1.30  2005/06/15 13:18:17  sezero
  * killed the glfunc struct
  *

@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_dl_vidsdl.c,v 1.73 2005-06-19 11:21:09 sezero Exp $
+   $Id: gl_dl_vidsdl.c,v 1.74 2005-06-23 06:29:54 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -122,7 +122,7 @@ void VID_SetGamma_f(void);
 unsigned short	orig_ramps[3][256];	// for hw- or 3dfx-gamma
 extern unsigned short	ramps[3][256];	// for hw- or 3dfx-gamma
 #endif
-qboolean	fx_gamma   = false;	// 3dfx-spesific gamma control
+qboolean	fx_gamma   = false;	// 3dfx-specific gamma control
 qboolean	gammaworks = false;	// whether hw-gamma works
 qboolean	gl_dogamma = false;	// none of the above two, use gl tricks
 
