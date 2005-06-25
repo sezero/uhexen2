@@ -125,6 +125,7 @@ following options are accepted:
  -sync | -vsync		Enable syncing with monitor refresh (GL, Nvidia)
  -paltex		Enable 8-bit textures
  -nomtex		Disable multitexture detection/usage
+ -3dfxgamma		Special gamma support for old Voodoo1/2/Rush
  -sndalsa		Use ALSA for audio
  -sndsdl		Use SDL for audio
  -nocdaudio		Disable cdrom music

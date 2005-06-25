@@ -189,3 +189,10 @@ This options works with Mesa-6.x but not with Mesa-3.x.  It may or
 may not work correctly for you. The option is available on the game
 launcher, as well.
 
+
+5.  Gamma (brightness) support:
+-------------------------------
+
+If you run the game with -3dfxgamma command-line argument, some 3dfx
+specific hacks will be searched and activated for brightness control.
+This option is also available on the launcher.
