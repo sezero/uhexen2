@@ -2,7 +2,7 @@
    gl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.68 2005-06-23 06:29:54 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.69 2005-06-25 06:31:27 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -122,7 +122,12 @@ void VID_SetGamma_f(void);
 #if USE_GAMMA_RAMPS
 unsigned short	orig_ramps[3][256];	// for hw- or 3dfx-gamma
 extern unsigned short	ramps[3][256];	// for hw- or 3dfx-gamma
+int	(*glGetDeviceGammaRamp3DFX_fp)(void *) = NULL;
+int	(*glSetDeviceGammaRamp3DFX_fp)(void *) = NULL;
 #endif
+static void	*fx_gammalib = NULL;
+int		(*fxGammaCtl)(float) = NULL;
+#define	EVIL_3DFX_LIB	"./lib3dfxgamma.so"
 qboolean	fx_gamma   = false;	// 3dfx-specific gamma control
 qboolean	gammaworks = false;	// whether hw-gamma works
 qboolean	gl_dogamma = false;	// none of the above two, use gl tricks
@@ -533,12 +538,55 @@ void GL_Init_Functions(void)
 
 void Gamma_Init(void)
 {
+	int gtmp;
+
 	if (is_3dfx) {
 	// we don't have WGL_3DFX_gamma_control or an equivalent
 	// in unix. If we have it one day, I'll put stuff checking
 	// for and linking to it here.
 	// Otherwise, assuming is_3dfx means Voodoo1 or Voodoo2,
 	// this means we dont have hw-gamma, just use gl_dogamma
+
+	// Here is a hack to abuse the Glide symbols exposed on us
+	   if (COM_CheckParm ("-3dfxgamma")) {
+		fx_gammalib = dlopen(EVIL_3DFX_LIB, RTLD_GLOBAL | RTLD_NOW);
+		if (fx_gammalib) {
+#if USE_GAMMA_RAMPS
+// not recommended for Voodoo1, currently crashes
+			glGetDeviceGammaRamp3DFX_fp = dlsym(fx_gammalib, "glGetDeviceGammaRamp3DFX");
+			glSetDeviceGammaRamp3DFX_fp = dlsym(fx_gammalib, "glSetDeviceGammaRamp3DFX");
+			if (glSetDeviceGammaRamp3DFX_fp != NULL && glSetDeviceGammaRamp3DFX_fp != NULL) {
+				if (glGetDeviceGammaRamp3DFX_fp(orig_ramps) != 0) {
+					fx_gamma = true;
+				} else {
+					glGetDeviceGammaRamp3DFX_fp = NULL;
+					glSetDeviceGammaRamp3DFX_fp = NULL;
+					dlclose (fx_gammalib);
+					fx_gammalib = NULL;
+				}
+			}
+#else
+			fxGammaCtl = dlsym(fx_gammalib, "do3dfxGammaCtrl");
+			if (fxGammaCtl) {
+				gtmp = fxGammaCtl(-1);
+				switch (gtmp) {
+					case 2:
+					case 3:
+						fx_gamma = true;
+						break;
+					default:
+						fxGammaCtl = NULL;
+						dlclose (fx_gammalib);
+						fx_gammalib = NULL;
+				}
+			}
+#endif
+			else {
+				dlclose (fx_gammalib);
+			}
+		}
+	    }
+	    if (!fx_gamma)
 		gl_dogamma = true;
 	}
 
@@ -558,6 +606,8 @@ void Gamma_Init(void)
 			gl_dogamma = true;
 	}
 
+	if (fx_gamma)
+		Con_Printf("using 3dfx glide gamma controls\n");
 	if (gl_dogamma)
 		Con_Printf("gamma not available, using gl tricks\n");
 }
@@ -569,8 +619,8 @@ Gamma functions for UNIX/SDL
 */
 void VID_SetGamma(float value)
 {// callback for VID_ApplyGamma ONLY
-	if (fx_gamma)
-		return; // FIXME
+	if (fxGammaCtl != NULL && fx_gamma)
+		fxGammaCtl(value);
 	else if (!gl_dogamma && gammaworks)
 		SDL_SetGamma(value,value,value);
 }
@@ -606,8 +656,8 @@ void VID_SetGamma_f (void)
 void	VID_ShiftPalette (unsigned char *palette)
 {
 #if USE_GAMMA_RAMPS
-	if (fx_gamma)
-		return; // FIXME
+	if (glSetDeviceGammaRamp3DFX_fp != NULL && fx_gamma)
+		glSetDeviceGammaRamp3DFX_fp(ramps);
 	else if (!gl_dogamma && gammaworks)
 		SDL_SetGammaRamp(ramps[0], ramps[1], ramps[2]);
 #endif
@@ -791,9 +841,18 @@ void	VID_Shutdown (void)
 {
 #if USE_GAMMA_RAMPS
 	// restore hardware gamma
-	if (!fx_gamma && !gl_dogamma && gammaworks)
+	if (glSetDeviceGammaRamp3DFX_fp != NULL && fx_gamma)
+		glSetDeviceGammaRamp3DFX_fp(orig_ramps);
+	else if (!fx_gamma && !gl_dogamma && gammaworks)
 		SDL_SetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]);
+	glGetDeviceGammaRamp3DFX_fp = NULL;
+	glSetDeviceGammaRamp3DFX_fp = NULL;
 #endif
+	fxGammaCtl = NULL;
+	if (fx_gammalib != NULL)
+		dlclose (fx_gammalib);
+	fx_gammalib = NULL;
+
 	SDL_Quit();
 }
 
