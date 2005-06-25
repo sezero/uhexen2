@@ -5,6 +5,11 @@ ChangeLog:
     * added lib3dfxgamma (native 3dfx gamma) support to
       the gl versions, activated for voodoo1 and voodoo2
       when -3dfxgamma argument is used.
+    * Bumped the teleport-push speed to a highest safe value
+      of 225 (250 is still safe, but just in case)
+      and restricted that to the Cathedral map when not in
+      deathmatch.  Otherwise, Raven's original value (300)
+      is used.
 
 2005-06-23 (CVS, 1.2.5-pre5):
     * several typo/spelling fixes
