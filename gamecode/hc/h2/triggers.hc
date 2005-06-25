@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/triggers.hc,v 1.3 2005-01-05 23:31:35 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/triggers.hc,v 1.4 2005-06-25 16:29:23 sezero Exp $
  */
 
 void() button_return;
@@ -1085,8 +1085,10 @@ float poof_speed;
 		other.fixangle = 1;		// turn this way immediately
 		if(other.classname!="player"&&other.velocity!='0 0 0')
 			poof_speed = vlen(other.velocity);
+		else if(mapname=="cath" && !deathmatch)
+			poof_speed = 225; // otherwise cant reach the balcony
 		else
-			poof_speed = 150;
+			poof_speed = 300;
 		other.velocity = v_forward * poof_speed;
 	}
 
@@ -2022,6 +2024,11 @@ void trigger_message_transfer ()
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/01/05 23:31:35  sezero
+ * Reduce the speed of the teleporting process' pushing you
+ * forward. Fixes the unreachable Cathedral balcony issue for
+ * me (for both Hexen2 and H2MP).
+ *
  * Revision 1.2  2004/12/20 19:08:46  sezero
  * fix Eidolon's jumping issue (aka. no-skywalker patch)
  *
