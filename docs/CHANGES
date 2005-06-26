@@ -7,6 +7,10 @@ ChangeLog:
       fixes and/or improvements for it, send it this way.  If it
       broke anything, umm, tell that as well ;)
     * Changed those pointless glow style const ints to defines.
+    * Added the intermissionScreen CacheFree code to software vid.
+      I have ignored this fragment for a long time due to the fact
+      we removed video mode switching, but here it is for possible
+      future use.
 
 2005-06-25 (CVS, 1.2.5-pre6):
     * added the lib3dfxgamma sources.
