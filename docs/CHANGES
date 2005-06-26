@@ -1,5 +1,12 @@
 ChangeLog:
 
+2005-06-26 (CVS, 1.2.5-pre6):
+    * Added hexen2's glow code to hexenworld without any changes.
+      Not that bad at all considering the changes in hexenworld.
+      I won't bother anymore with this myself. If anyone has any
+      fixes and/or improvements for it, send it this way.  If it
+      broke anything, umm, tell that as well ;)
+
 2005-06-25 (CVS, 1.2.5-pre6):
     * added the lib3dfxgamma sources.
     * added lib3dfxgamma (native 3dfx gamma) support to
