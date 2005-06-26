@@ -1,5 +1,5 @@
 /*
- * $Id: gl_model.h,v 1.3 2005-05-26 22:56:31 sezero Exp $
+ * $Id: gl_model.h,v 1.4 2005-06-26 10:13:53 sezero Exp $
  */
 
 #ifndef __MODEL__
@@ -365,6 +365,10 @@ typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 
 #define	EF_MIP_MAP_FAR	0x1000000	// Set per frame, this model will use the far mip map
 
+// XF_ Extra model efects set by engine (efects are model name dependent) 
+#define XF_TORCH_GLOW		1	// glowing torches
+#define XF_GLOW			2	// other glows
+#define XF_MISSILE_GLOW		4	// missile glows
 
 typedef struct model_s
 {
@@ -376,6 +380,7 @@ typedef struct model_s
 	synctype_t	synctype;
 	
 	int		flags;
+	int		ex_flags;
 
 //
 // volume occupied by the model graphics
@@ -440,6 +445,8 @@ typedef struct model_s
 // additional model data
 //
 	cache_user_t	cache;		// only access through Mod_Extradata
+
+	float		glow_color[3];
 
 } model_t;
 

@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.21 2005-06-23 06:29:54 sezero Exp $
+	$Id: gl_rmain.c,v 1.22 2005-06-26 10:13:53 sezero Exp $
 */
 
 
@@ -96,6 +96,9 @@ cvar_t	gl_reporttjunctions = {"gl_reporttjunctions","0"};
 cvar_t	gl_waterripple = {"gl_waterripple", "2", true};
 cvar_t	gl_waterwarp = {"gl_waterwarp", "0", true};
 cvar_t	r_teamcolor = {"r_teamcolor", "187", true};
+cvar_t	gl_glows = {"gl_glows","1",true};
+cvar_t	gl_other_glows = {"gl_other_glows","0",true};
+cvar_t	gl_missile_glows = {"gl_missile_glows","1",true};
 
 extern	cvar_t	gl_ztrick;
 extern	cvar_t	scr_fov;
@@ -1049,6 +1052,173 @@ void R_DrawEntitiesOnList (void)
 	}
 }
 
+void R_DrawGlow (entity_t *e)
+{
+	model_t		*clmodel;
+
+	clmodel = currententity->model;
+
+    // Torches & Flames
+	if ((gl_glows.value && (clmodel->ex_flags & XF_TORCH_GLOW )) ||
+	    (gl_missile_glows.value && (clmodel->ex_flags & XF_MISSILE_GLOW)) ||
+	    (gl_other_glows.value && (clmodel->ex_flags & XF_GLOW)))
+	{
+	// Draw torch flares. KH
+		// NOTE: It would be better if we batched these up.
+		//	 All those state changes are not nice. KH
+
+		// This relies on unchanged game code!
+		const int TORCH_STYLE = 1;	// Flicker.
+		const int MISSILE_STYLE = 6;	// Flicker.
+		const int PULSE_STYLE = 11;	// Slow pulse
+
+		vec3_t	lightorigin;		// Origin of torch.
+		vec3_t	glow_vect;		// Vector to torch.
+		float	radius;			// Radius of torch flare.
+		float	distance;		// Vector distance to torch.
+		float	intensity;		// Intensity of torch flare.
+		int	i,j;
+		vec3_t	vp2;
+
+		// NOTE: I don't think this is centered on the model.
+		VectorCopy(currententity->origin, lightorigin);
+
+		radius = 20.0f;
+		VectorSubtract(lightorigin, r_origin, vp2);
+
+		// See if view is outside the light.
+		distance = Length(glow_vect);
+		// See if view is outside the light.
+		distance = Length(vp2);
+
+		if (distance > radius) {
+			VectorNormalize(vp2);
+			glPushMatrix_fp();
+
+			// Translate the glow to coincide with the flame. KH
+			if (clmodel->ex_flags & XF_TORCH_GLOW) {
+				// egypt torch fix
+			    if (!Q_strncasecmp (clmodel->name, "models/eflmtrch",15))
+				glTranslatef_fp( cos(e->angles[1]/180*M_PI)*8.0f,sin(e->angles[1]/180*M_PI)*8.0f, 16.0f);
+			    else
+				glTranslatef_fp(0.0f, 0.0f, 8.0f);
+			}
+
+			glBegin_fp(GL_TRIANGLE_FAN);
+			// Diminish torch flare inversely with distance.
+			intensity = (1024.0f - distance) / 1024.0f;
+
+			// Invert (fades as you approach).
+			intensity = (1.0f - intensity);
+
+			// Clamp, but don't let the flare disappear.
+			if (intensity > 1.0f) intensity = 1.0f;
+			if (intensity < 0.0f) intensity = 0.0f;
+
+			// Now modulate with flicker.
+			if (clmodel->ex_flags & XF_TORCH_GLOW) {
+				i = (int)(cl.time*10);
+				if (!cl_lightstyle[TORCH_STYLE].length) {
+					j = 256;
+				} else {
+					j = i % cl_lightstyle[TORCH_STYLE].length;
+					j = cl_lightstyle[TORCH_STYLE].map[j] - 'a';
+					j = j*22;
+				}
+			}
+			else if (clmodel->ex_flags & XF_MISSILE_GLOW) {
+				i = (int)(cl.time*10);
+				if (!cl_lightstyle[MISSILE_STYLE].length) {
+					j = 256;
+				} else {
+					j = i % cl_lightstyle[MISSILE_STYLE].length;
+					j = cl_lightstyle[MISSILE_STYLE].map[j] - 'a';
+					j = j*22;
+				}
+			}
+			else if (clmodel->ex_flags & XF_GLOW) {
+				i = (int)(cl.time*10);
+				if (!cl_lightstyle[PULSE_STYLE].length) {
+					j = 256;
+				} else {
+					j = i % cl_lightstyle[PULSE_STYLE].length;
+					j = cl_lightstyle[PULSE_STYLE].map[j] - 'a';
+					j = j*22;
+				}
+			}
+
+			intensity *= ((float)j / 255.0f);
+
+			if (clmodel->ex_flags & XF_TORCH_GLOW)
+			// Set yellow intensity
+			    glColor4f_fp(0.8f*intensity, 0.4f*intensity, 0.1f*intensity,1.0f);
+			else 
+			    glColor4f_fp(clmodel->glow_color[0]*intensity,
+			    clmodel->glow_color[1]*intensity,
+			    clmodel->glow_color[2]*intensity,
+			    0.5f);
+
+			for (i=0 ; i<3 ; i++)
+			    glow_vect[i] = lightorigin[i] - vp2[i]*radius;
+
+			glVertex3fv_fp(glow_vect);
+
+			glColor4f_fp(0.0f, 0.0f, 0.0f, 1.0f);
+
+			for (i=16; i>=0; i--) {
+				float a = i/16.0f * M_PI*2;
+
+				for (j=0; j<3; j++)
+					glow_vect[j] = lightorigin[j] + 
+					vright[j]*cos(a)*radius +
+					vup[j]*sin(a)*radius;
+
+				glVertex3fv_fp(glow_vect);
+			}
+
+			glEnd_fp();
+			glColor4f_fp (0.0f,0.0f,0.0f,1.0f);
+			// Restore previous matrix! KH
+			glPopMatrix_fp();		        
+		}
+	}
+// end of glows    
+}
+
+void R_DrawAllGlows(void)
+{
+	int i;
+
+	if (!r_drawentities.value)
+		return;
+
+	glDepthMask_fp (0);
+	glDisable_fp (GL_TEXTURE_2D);
+	glShadeModel_fp (GL_SMOOTH);
+	glEnable_fp (GL_BLEND);
+	glBlendFunc_fp (GL_ONE, GL_ONE);
+
+	for (i=0 ; i<cl_numvisedicts ; i++) {
+		currententity = &cl_visedicts[i];
+
+		switch (currententity->model->type) {
+		  case mod_alias:
+			R_DrawGlow (currententity);
+			break;
+		  default:
+			break;
+		}		
+	}
+
+	glDisable_fp (GL_BLEND);
+	glEnable_fp (GL_TEXTURE_2D);
+	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthMask_fp (1);
+	glShadeModel_fp (GL_FLAT);
+	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+}
+
+
 /*
 ================
 R_DrawTransEntitiesOnList
@@ -1482,6 +1652,8 @@ void R_RenderScene (void)
 	S_ExtraUpdate ();	// don't let sound get messed up if going slow
 
 	R_DrawEntitiesOnList ();
+
+	R_DrawAllGlows();
 
 	R_RenderDlights ();
 

@@ -196,6 +196,10 @@ void R_Init (void)
 	Cvar_RegisterVariable (&gl_multitexture);
 	Cvar_RegisterVariable (&r_teamcolor);
 
+	Cvar_RegisterVariable (&gl_glows);
+	Cvar_RegisterVariable (&gl_missile_glows);
+	Cvar_RegisterVariable (&gl_other_glows);
+
 	R_InitBubble();
 
 	R_InitParticles ();
