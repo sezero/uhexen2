@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.23 2005-06-05 07:50:29 sezero Exp $
+   $Id: vid_sdl.c,v 1.24 2005-06-26 12:43:41 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -41,6 +41,9 @@
 SDL_Surface	*screen;
 byte globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
 byte *lastsourcecolormap = NULL;
+
+//intermission screen cache reference (to flush on video mode switch)
+extern cache_user_t	*intermissionScreen;
 
 static qboolean	vid_initialized = false, vid_palettized = true;
 static int	lockcount;
@@ -325,6 +328,10 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 	in_mode_set = true;
+
+	//flush the intermission screen if it's cached (Pa3PyX)
+	if (intermissionScreen && intermissionScreen->data)
+		Cache_Free(intermissionScreen);
 
 	if (vid_modenum == NO_MODE)
 		original_mode = windowed_default;
@@ -900,6 +907,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/06/05 07:50:29  sezero
+ * *** empty log message ***
+ *
  * Revision 1.22  2005/06/03 13:25:29  sezero
  * Latest mouse fixes and clean-ups
  *

@@ -15,11 +15,12 @@ qboolean	dibonly;
 byte globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
 byte *lastsourcecolormap = NULL;
 
-extern int		Minimized;
-
 HWND		mainwindow;
 
 HWND WINAPI InitializeWindow (HINSTANCE hInstance, int nCmdShow);
+
+//intermission screen cache reference (to flush on video mode switch)
+extern	cache_user_t	*intermissionScreen;
 
 int			DIBWidth, DIBHeight;
 qboolean	DDActive;
@@ -1645,6 +1646,10 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	CDAudio_Pause ();
 	S_ClearBuffer ();
+
+	//flush the intermission screen if it's cached (Pa3PyX)
+	if (intermissionScreen && intermissionScreen->data)
+		Cache_Free(intermissionScreen);
 
 	if (vid_modenum == NO_MODE)
 		original_mode = windowed_default;

@@ -13,11 +13,11 @@ qboolean	dibonly;
 byte globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
 byte *lastsourcecolormap = NULL;
 
-extern int		Minimized;
-
 HWND		mainwindow, dibwindow;
-
 HWND WINAPI InitializeWindow (HINSTANCE hInstance, int nCmdShow);
+
+//intermission screen cache reference (to flush on video mode switch)
+extern	cache_user_t	*intermissionScreen;
 
 int			DIBWidth, DIBHeight;
 qboolean	DDActive;
@@ -1541,6 +1541,10 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	Snd_ReleaseBuffer ();
 	CDAudio_Pause ();
+
+	//flush the intermission screen if it's cached (Pa3PyX)
+	if (intermissionScreen && intermissionScreen->data)
+		Cache_Free(intermissionScreen);
 
 	if (vid_modenum == NO_MODE)
 		original_mode = windowed_default;
@@ -3238,6 +3242,16 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/06/19 11:23:23  sezero
+ * added wheelmouse support and conwidth support to hexen2. changed
+ * hexenworld's default behavior of default 640 conwidth to main width
+ * unless specified otherwise by the user. disabled startup splash
+ * screens for now. sycned hexen2 and hexnworld's GL_Init_Functions().
+ * disabled InitCommonControls()in gl_vidnt. moved RegisterWindowMessage
+ * for uMSG_MOUSEWHEEL to in_win where it belongs. bumped MAXIMUM_WIN_MEMORY
+ * to 32 MB. killed useless Sys_ConsoleInput in hwcl. several other sycning
+ * and clean-up
+ *
  * Revision 1.5  2005/05/21 17:20:19  sezero
  * changed all occurances of windowed_mouse to enable_mouse for win32 as well
  *
