@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.32 2005-06-23 06:29:54 sezero Exp $
+	$Id: gl_rmain.c,v 1.33 2005-06-26 11:11:57 sezero Exp $
 */
 
 
@@ -1039,6 +1039,12 @@ void R_DrawEntitiesOnList (void)
 	}
 }
 
+
+// Glow styles. These rely on unchanged game code!
+#define	TORCH_STYLE	1	/* Flicker	*/
+#define	MISSILE_STYLE	6	/* Flicker	*/
+#define	PULSE_STYLE	11	/* Slow pulse	*/
+
 void R_DrawGlow (entity_t *e)
 {
 	model_t		*clmodel;
@@ -1053,12 +1059,6 @@ void R_DrawGlow (entity_t *e)
 	// Draw torch flares. KH
 		// NOTE: It would be better if we batched these up.
 		//	 All those state changes are not nice. KH
-
-		// This relies on unchanged game code!
-		const int TORCH_STYLE = 1;	// Flicker.
-		const int MISSILE_STYLE = 6;	// Flicker.
-		const int PULSE_STYLE = 11;	// Slow pulse
-
 		vec3_t	lightorigin;		// Origin of torch.
 		vec3_t	glow_vect;		// Vector to torch.
 		float	radius;			// Radius of torch flare.
@@ -1808,6 +1808,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2005/06/23 06:29:54  sezero
+ * Ummm, spelling fixes (spesific <-> specific)
+ *
  * Revision 1.31  2005/06/15 18:40:43  sezero
  * fifth model is for h2mp only and we've been out of bounds for ages here
  *
