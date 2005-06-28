@@ -3,11 +3,10 @@
 	SDL sound driver for Linux Hexen II,  based on the SDLquake
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 
-	$Id: snd_sdl.c,v 1.9 2005-06-28 17:01:52 sezero Exp $
+	$Id: snd_sdl.c,v 1.10 2005-06-28 17:20:32 sezero Exp $
 */
 
 #include "SDL.h"
-//#include "SDL_byteorder.h"
 #include "quakedef.h"
 
 static int snd_inited;
@@ -32,7 +31,7 @@ qboolean S_SDL_Init(void)
 	snd_inited = 0;
 
 	if (SDL_InitSubSystem (SDL_INIT_AUDIO)<0) {
-        	Con_Printf("Couldn't init SDL audio: %s\n", SDL_GetError());
+		Con_Printf("Couldn't init SDL audio: %s\n", SDL_GetError());
 		return 0;
 	}
 
@@ -66,26 +65,22 @@ qboolean S_SDL_Init(void)
 			break;
 		case AUDIO_S16LSB:
 		case AUDIO_S16MSB:
-			if ( ((obtained.format == AUDIO_S16LSB) &&
-			     (SDL_BYTEORDER == SDL_LIL_ENDIAN)) ||
-			     ((obtained.format == AUDIO_S16MSB) &&
-			     (SDL_BYTEORDER == SDL_BIG_ENDIAN)) ) {
-				/* Supported */
-				break;
-			}
+			if ( ((obtained.format == AUDIO_S16LSB) && (SDL_BYTEORDER == SDL_LIL_ENDIAN)) ||
+				((obtained.format == AUDIO_S16MSB) && (SDL_BYTEORDER == SDL_BIG_ENDIAN)) )
+				break;	/* Supported */
 		default:
 			/* Not supported -- force SDL to do our bidding */
 			Con_Printf ("Warning: sound format / endianness mismatch\n");
 			Con_Printf ("Warning: will try forcing sdl audio\n");
 			SDL_CloseAudio();
 			if ( SDL_OpenAudio(&desired, NULL) < 0 ) {
-        			Con_Printf("Couldn't open SDL audio: %s\n",
-							SDL_GetError());
+				Con_Printf("Couldn't open SDL audio: %s\n", SDL_GetError());
 				return 0;
 			}
 			memcpy(&obtained, &desired, sizeof(desired));
 			break;
 	}
+
 	SDL_PauseAudio(0);
 
 	/* Fill the audio DMA information block */
@@ -129,6 +124,9 @@ void S_SDL_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/06/28 17:01:52  sezero
+ * Added warning messages to snd_sdl for endianness-format mismatches
+ *
  * Revision 1.8  2005/06/12 07:28:54  sezero
  * clean-up of includes and a fix (hopefully) for endianness detection
  *
