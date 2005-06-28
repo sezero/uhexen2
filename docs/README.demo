@@ -35,21 +35,23 @@ Hammer of Thyrion 1.2.5
 1.1 Getting Started
 -------------------
 
-This will install Hexen II Demo for Linux: Hammer of Thyrion.
-All necessary binaries and the data files will be installed by
-the installer, no extra effort is necessary. Names of the demo
-binaries are:
+All necessary binaries and the data files for Hexen II Demo can be
+installed by the installer, no extra effort is necessary. Names of
+the demo binaries are:
 
 	hexen2	 -  Software Hexen II
 	glhexen2 -  OpenGL Hexen II
 
-The second option on the installer is HexenWorld Multiplayer
-support. It is recommended for network-playing. The names of
-the binaries are:
+A second option on the installer is HexenWorld Multiplayer support.
+It is recommended for network-playing. The names of the binaries:
 
 	hwcl	-  HexenWorld Client (software)
 	glhwcl	-  HexenWorld Client (OpenGL)
 	hwsv	-  HexenWorld Server
+
+If you don't want to use the installer, grab the demo tarball from
+the HoT website, extract it in any place and you'll be ready to run
+the game.
 
 
 1.2 Software Requirements
