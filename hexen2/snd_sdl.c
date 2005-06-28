@@ -3,7 +3,7 @@
 	SDL sound driver for Linux Hexen II,  based on the SDLquake
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 
-	$Id: snd_sdl.c,v 1.12 2005-06-12 07:28:51 sezero Exp $
+	$Id: snd_sdl.c,v 1.13 2005-06-28 17:01:49 sezero Exp $
 */
 
 #include "SDL.h"
@@ -73,9 +73,10 @@ qboolean S_SDL_Init(void)
 				/* Supported */
 				break;
 			}
-			/* Unsupported, fall through */;
 		default:
 			/* Not supported -- force SDL to do our bidding */
+			Con_Printf ("Warning: sound format / endianness mismatch\n");
+			Con_Printf ("Warning: will try forcing sdl audio\n");
 			SDL_CloseAudio();
 			if ( SDL_OpenAudio(&desired, NULL) < 0 ) {
         			Con_Printf("Couldn't open SDL audio: %s\n",
@@ -128,6 +129,9 @@ void S_SDL_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/06/12 07:28:51  sezero
+ * clean-up of includes and a fix (hopefully) for endianness detection
+ *
  * Revision 1.11  2005/06/06 10:14:05  sezero
  * put my usual requested/obtained sndrate mismatch
  * warning in snd_sdl, as well.
