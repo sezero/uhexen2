@@ -276,6 +276,11 @@ pointer, so that you can easily use your desktop. You can also
 un-grab/re-grab the mouse pointer by pressing the CTRL + G key
 combination whenever you want.
 
+If you're using fluxbox,  the mouse may not start properly when
+running the game in fullscreen mode: Try another window manager,
+fluxbox has issues with some games and fullscreen. If you need to
+use fluxbox, changing into windowed mode and back into fullscreen
+mode should fix the mouse.
 
 ----------------------------------------------------------------
 ----------------------------------------------------------------
