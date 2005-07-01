@@ -1,5 +1,8 @@
 ChangeLog:
 
+2005-07-01 (CVS, 1.2.5-pre6):
+    * speed key now acts as slow key when "always run" is chosen
+
 2005-06-28 (CVS, 1.2.5-pre6):
     * Added warning messages to snd_sdl for endianness-format
       mismatches
