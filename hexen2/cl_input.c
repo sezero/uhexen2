@@ -324,8 +324,11 @@ void CL_BaseMove (usercmd_t *cmd)
 
 //
 // adjust for speed key (but not if always runs has been chosen)
-//
-	if ((cl_forwardspeed.value > 200 || in_speed.state & 1) && cl.v.hasted <= 1)
+// speed key now acts as slow key when always run is chosen - OS
+	//if ((cl_forwardspeed.value > 200 || in_speed.state & 1) && cl.v.hasted <= 1)
+	if ( ( (cl_forwardspeed.value <= 200 && in_speed.state & 1) ||
+	       (cl_forwardspeed.value > 200 && !(in_speed.state & 1)) )
+	     && (cl.v.hasted <= 1) )
 	{
 		cmd->forwardmove *= cl_movespeedkey.value;
 		cmd->sidemove *= cl_movespeedkey.value;
