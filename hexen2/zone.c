@@ -1,7 +1,7 @@
 /*
 	Z_zone.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.9 2005-06-15 06:16:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.10 2005-07-02 13:13:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -306,18 +306,16 @@ void Hunk_Print (qboolean all, qboolean write_file)
 	hunk_t	*h, *next, *endlow, *starthigh, *endhigh;
 	int		count, sum;
 	int		totalblocks;
-	char	memtxt[MAX_OSPATH];
-	FILE *FH;
+	FILE	*FH;
 
 	count = 0;
 	sum = 0;
 	totalblocks = 0;
 	
 	FH = NULL;
-	if (write_file) {
-		sprintf(memtxt,"%s/%s", com_userdir, "memory.txt");
-		FH = fopen(memtxt,"w");
-	}
+	if (write_file)
+		FH = fopen(va("%s/memory.txt", com_userdir),"w");
+
 	h = (hunk_t *)hunk_base;
 	endlow = (hunk_t *)(hunk_base + hunk_low_used);
 	starthigh = (hunk_t *)(hunk_base + hunk_size - hunk_high_used);
@@ -397,7 +395,6 @@ void Hunk_Print (qboolean all, qboolean write_file)
 		fprintf(FH,"%8i total blocks\n", totalblocks);
 		fclose(FH);
 		FH = NULL;
-		Con_Printf ("Data saved to %s.\n", memtxt);
 	}
 }
 
@@ -784,18 +781,15 @@ Cache_Print
 void Cache_Print (qboolean write_file)
 {
 	cache_system_t	*cd;
-	char    cachetxt[MAX_OSPATH];
-	FILE *FH;
+	FILE		*FH;
 	int		count, sum;
 	int num_mod, sum_mod;
 	int num_wav, sum_wav;
 	char temp[128];
 
 	FH = NULL;
-	if (write_file) {
-		sprintf(cachetxt,"%s/%s", com_userdir, "cache.txt");
-		FH = fopen(cachetxt,"w");
-	}
+	if (write_file)
+		FH = fopen(va("%s/cache.txt", com_userdir),"w");
 
 	count = sum = 0;
 	num_mod = sum_mod = 0;
@@ -1025,8 +1019,7 @@ void Memory_Stats_f(void)
 {
 	hunk_t	*h, *next, *endlow, *starthigh, *endhigh;
 	int		count, sum, counter;
-	FILE *FH;
-	char    statstxt[MAX_OSPATH];
+	FILE	*FH;
 	int GroupCount[NUM_GROUPS+1],GroupSum[NUM_GROUPS+1];
 	qboolean write_file;
 	short NumItems;
@@ -1083,10 +1076,8 @@ void Memory_Stats_f(void)
 	sum = 0;
 
 	FH = NULL;
-	if (write_file) {
-		sprintf(statstxt,"%s/%s", com_userdir, "stats.txt");
-		FH = fopen(statstxt,"w");
-	}
+	if (write_file)
+		FH = fopen(va("%s/stats.txt", com_userdir),"w");
 
 	Con_Printf("Group           Count Size\n");
 	if (FH) fprintf(FH,"Group           Count Size\n");
@@ -1156,6 +1147,9 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/06/15 06:16:26  sezero
+ * strlwr extern in zone.c is for unix only
+ *
  * Revision 1.8  2005/05/19 11:34:45  sezero
  * save cache.txt and stats.txt into com_userdir
  *
