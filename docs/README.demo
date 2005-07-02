@@ -106,6 +106,8 @@ following options are accepted:
  -sndalsa		Use ALSA for audio
  -alsadev		ALSA Audio device to use (default: hw:0,0 )
  -sndsdl		Use SDL for audio
+ -cddev			CD Audio device to use (default:
+				/dev/cdrom for linux, /dev/acd0 for BSD)
  -nocdaudio		Disable cdrom music
  -nomidi		Disable MIDI music
  -listen N		Enable multiplayer with maximum N players
