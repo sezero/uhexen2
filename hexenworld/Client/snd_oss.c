@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.11 2005-06-12 07:28:54 sezero Exp $
+	$Id: snd_oss.c,v 1.12 2005-07-02 11:48:19 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -42,34 +42,36 @@
 
 int audio_fd = -1;
 int snd_inited;
+static char *ossdev = "/dev/dsp";
 extern int desired_bits, desired_speed, desired_channels;
 extern int tryrates[MAX_TRYRATES];
 unsigned long mmaplen;
 
 qboolean S_OSS_Init(void)
 {
-
 	int i, caps, rc, tmp;
 	int retries = 3;
-	// unsigned long sz, mmaplen;
 	unsigned long sz;
 	struct audio_buf_info info;
 
 	snd_inited = 0;
 
 // open /dev/dsp, confirm capability to mmap, and get size of dma buffer
+	if ((tmp = COM_CheckParm("-ossdev")) != 0)
+		ossdev = com_argv[tmp+1];
+	Con_Printf ("Using OSS device %s\n", ossdev);
 
-	audio_fd = open("/dev/dsp", O_RDWR|O_NONBLOCK);
+	audio_fd = open(ossdev, O_RDWR|O_NONBLOCK);
 	if (audio_fd < 0) {	// Failed open, retry up to 3 times
 		// if it's busy
 		while ((audio_fd < 0) && retries-- &&
 			((errno == EAGAIN) || (errno == EBUSY))) {
 			sleep (1);
-			audio_fd = open("/dev/dsp", O_RDWR|O_NONBLOCK);
+			audio_fd = open(ossdev, O_RDWR|O_NONBLOCK);
 		}
 		if (audio_fd < 0) {
-			perror("/dev/dsp");
-			Con_Printf("Could not open /dev/dsp\n");
+			perror(ossdev);
+			Con_Printf("Could not open %s\n", ossdev);
 			return 0;
 		}
 	}
@@ -77,23 +79,23 @@ qboolean S_OSS_Init(void)
 	rc = ioctl(audio_fd, SNDCTL_DSP_RESET, 0);
 	if (rc < 0)
 	{
-		perror("/dev/dsp");
-		Con_Printf("Could not reset /dev/dsp\n");
+		perror(ossdev);
+		Con_Printf("Could not reset %s\n", ossdev);
 		close(audio_fd);
 		return 0;
 	}
 
 	if (ioctl(audio_fd, SNDCTL_DSP_GETCAPS, &caps)==-1)
 	{
-		perror("/dev/dsp");
-		Con_Printf("Sound driver too old\n");
+		perror(ossdev);
+		Con_Printf("Couldn't retrieve soundcard capabilities\n");
 		close(audio_fd);
 		return 0;
 	}
 
 	if (!(caps & DSP_CAP_TRIGGER) || !(caps & DSP_CAP_MMAP))
 	{
-		Con_Printf("Sorry but your soundcard can't do this\n");
+		Con_Printf("Audio driver doesn't support mmap or trigger\n");
 		close(audio_fd);
 		return 0;
 	}
@@ -101,7 +103,7 @@ qboolean S_OSS_Init(void)
 	if (ioctl(audio_fd, SNDCTL_DSP_GETOSPACE, &info)==-1)
 	{   
 		perror("GETOSPACE");
-		Con_Printf("Um, can't do GETOSPACE?\n");
+		Con_Printf("Couldn't retrieve buffer status\n");
 		close(audio_fd);
 		return 0;
 	}
@@ -124,7 +126,7 @@ qboolean S_OSS_Init(void)
 		else if (rc & AFMT_U8)
 			desired_bits = 8;
 		else {
-			perror("/dev/dsp");
+			perror(ossdev);
 			Con_Printf("Could not retrieve supported sound formats!..\n");
 			close(audio_fd);
 			return 0;
@@ -132,7 +134,7 @@ qboolean S_OSS_Init(void)
 		rc = (desired_bits == 16) ? AFMT_S16_LE : AFMT_U8;
 		rc = ioctl(audio_fd, SNDCTL_DSP_SETFMT, &rc);
 		if (rc < 0) {
-			perror("/dev/dsp");
+			perror(ossdev);
 			Con_Printf("No supported sound formats!..\n");
 			close(audio_fd);
 			return 0;
@@ -161,7 +163,7 @@ qboolean S_OSS_Init(void)
 			}
 		}
 		if (desired_speed == 0) {
-			Con_Printf("Could not set /dev/dsp speed!\n");
+			Con_Printf("Could not set %s speed!\n", ossdev);
 			close(audio_fd);
 			return 0;
 		}
@@ -184,7 +186,7 @@ qboolean S_OSS_Init(void)
 		tmp = (desired_channels == 2) ? 0 : 1;
 		rc = ioctl(audio_fd, SNDCTL_DSP_STEREO, &tmp);
 		if (rc < 0) {
-			perror("/dev/dsp");
+			perror(ossdev);
 			Con_Printf("Could not set dsp to mono or stereo\n");
 			close(audio_fd);
 			return 0;
@@ -204,8 +206,8 @@ qboolean S_OSS_Init(void)
 					     MAP_FILE|MAP_SHARED, audio_fd, 0);
 	if (!shm->buffer || shm->buffer == MAP_FAILED)
 	{
-		perror("/dev/dsp");
-		Con_Printf("Could not mmap /dev/dsp\n");
+		perror(ossdev);
+		Con_Printf("Could not mmap %s\n", ossdev);
 		close(audio_fd);
 		return 0;
 	}
@@ -216,8 +218,8 @@ qboolean S_OSS_Init(void)
 	rc  = ioctl(audio_fd, SNDCTL_DSP_SETTRIGGER, &tmp);
 	if (rc < 0)
 	{
-		perror("/dev/dsp");
-		Con_Printf("Could not toggle.\n");
+		perror(ossdev);
+		Con_Printf("Could not toggle %s\n", ossdev);
 		munmap (shm->buffer, mmaplen);
 		close(audio_fd);
 		return 0;
@@ -226,8 +228,8 @@ qboolean S_OSS_Init(void)
 	rc = ioctl(audio_fd, SNDCTL_DSP_SETTRIGGER, &tmp);
 	if (rc < 0)
 	{
-		perror("/dev/dsp");
-		Con_Printf("Could not toggle.\n");
+		perror(ossdev);
+		Con_Printf("Could not toggle %s\n", ossdev);
 		munmap (shm->buffer, mmaplen);
 		close(audio_fd);
 		return 0;
@@ -248,7 +250,7 @@ int S_OSS_GetDMAPos(void)
 
 	if (ioctl(audio_fd, SNDCTL_DSP_GETOPTR, &count)==-1)
 	{
-		perror("/dev/dsp");
+		perror(ossdev);
 		Con_Printf("Uh, sound dead.\n");
 		munmap (shm->buffer, mmaplen);
 		close(audio_fd);
