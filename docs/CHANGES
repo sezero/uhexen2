@@ -1,5 +1,14 @@
 ChangeLog:
 
+2005-07-02 (CVS, 1.2.5-pre7):
+    * Minor cosmetic clean-up in S_ExtraUpdate for S_SYS_SDL
+    * Added device selection support (-ossdev) to OSS sound.
+      Cleaned-up OSS warning/error messages.
+    * Updated documentation for -cddev, -alsadev and -ossdev
+      arguments
+    * commands.txt and edicts.txt will be saved into com_userdir
+    * Cleaned-up file saving in zone.c
+
 2005-07-01 (CVS, 1.2.5-pre6):
     * speed key now acts as slow key when "always run" is chosen
 
