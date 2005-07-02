@@ -126,7 +126,9 @@ following options are accepted:
  -paltex		Enable 8-bit textures
  -nomtex		Disable multitexture detection/usage
  -3dfxgamma		Special gamma support for old Voodoo1/2/Rush
+ -ossdev		OSS Audio device to use (default: /dev/dsp)
  -sndalsa		Use ALSA for audio
+ -alsadev		ALSA Audio device to use (default: hw:0,0 )
  -sndsdl		Use SDL for audio
  -nocdaudio		Disable cdrom music
  -nomidi		Disable MIDI music
