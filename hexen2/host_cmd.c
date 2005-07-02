@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.23 2005-06-07 07:06:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.24 2005-07-02 13:12:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1776,11 +1776,11 @@ void Host_Commands_f(void)
 	FILE *FH;
 	cvar_t	*var;
 
-	FH = fopen("commands.txt","w");
+	FH = fopen(va("%s/commands.txt", com_userdir),"w");
 
 	fprintf(FH,"\n\nConsole Commands:\n");
 	WriteCommands (FH);
-	
+
 	fprintf(FH,"\n\nConsole Variables:\n");
 	for (var = cvar_vars ; var ; var = var->next)
 		fprintf (FH, "   %s\n", var->name);
@@ -2307,6 +2307,12 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/06/07 07:06:32  sezero
+ * Moved flush_textures decision to svmain.c:SV_SpawnServer() again, this
+ * time fixing it by not clearing the server struct in Host_ShutdownServer().
+ * In fact this logic is still slightly flawed, because flush_textures isn't
+ * set on map changes in client-to-remote server map-change situations.
+ *
  * Revision 1.22  2005/06/03 13:25:28  sezero
  * Latest mouse fixes and clean-ups
  *

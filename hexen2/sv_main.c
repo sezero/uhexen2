@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.20 2005-06-07 07:06:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.21 2005-07-02 13:12:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -93,7 +93,7 @@ void SV_Edicts(char *Name)
 	int i;
 	edict_t *e;
 
-	FH = fopen(Name,"w");
+	FH = fopen(va("%s/%s", com_userdir, Name),"w");
 	if (!FH)
 	{
 		Con_Printf("Could not open %s\n",Name);
@@ -2068,6 +2068,12 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2005/06/07 07:06:32  sezero
+ * Moved flush_textures decision to svmain.c:SV_SpawnServer() again, this
+ * time fixing it by not clearing the server struct in Host_ShutdownServer().
+ * In fact this logic is still slightly flawed, because flush_textures isn't
+ * set on map changes in client-to-remote server map-change situations.
+ *
  * Revision 1.19  2005/06/03 13:25:29  sezero
  * Latest mouse fixes and clean-ups
  *
