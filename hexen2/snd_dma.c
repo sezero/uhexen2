@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.23 2005-06-15 06:14:54 sezero Exp $
+	$Id: snd_dma.c,v 1.24 2005-07-02 11:47:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -937,12 +937,12 @@ void S_ExtraUpdate (void)
 
 void S_Update_(void)
 {
-#ifdef PLATFORM_UNIX
- if (snd_system != S_SYS_SDL) {
-#endif
 	unsigned        endtime;
 	int				samps;
-	
+#ifdef PLATFORM_UNIX
+	if (snd_system == S_SYS_SDL)
+		return;
+#endif
 	if (!sound_started || (snd_blocked > 0))
 		return;
 
@@ -984,9 +984,6 @@ void S_Update_(void)
 	S_PaintChannels (endtime);
 
 	SNDDMA_Submit ();
-#ifdef PLATFORM_UNIX
- }
-#endif
 }
 
 /*
@@ -1105,6 +1102,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/06/15 06:14:54  sezero
+ * properly ifdef'd unix-only sound things
+ *
  * Revision 1.22  2005/06/12 07:31:18  sezero
  * enabled alsa only on linux platforms
  *
