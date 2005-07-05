@@ -3,7 +3,7 @@
 	SDL sound driver for Linux Hexen II,  based on the SDLquake
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 
-	$Id: snd_sdl.c,v 1.14 2005-06-28 17:20:20 sezero Exp $
+	$Id: snd_sdl.c,v 1.15 2005-07-05 17:16:52 sezero Exp $
 */
 
 #include "SDL.h"
@@ -48,9 +48,11 @@ qboolean S_SDL_Init(void)
 				desired.format = AUDIO_S16LSB;
 			break;
 	}
+
 	desired.channels = desired_channels;
 	desired.samples  = 1024; // previously 512 S.A.
 	desired.callback = paint_audio;
+	desired.userdata = NULL;
 
 	/* Open the audio device */
 	if ( SDL_OpenAudio(&desired, &obtained) < 0 ) {
@@ -81,8 +83,6 @@ qboolean S_SDL_Init(void)
 			break;
 	}
 
-	SDL_PauseAudio(0);
-
 	/* Fill the audio DMA information block */
 	shm = &sn;
 	shm->splitbuffer = 0;
@@ -94,10 +94,20 @@ qboolean S_SDL_Init(void)
 	shm->samples = obtained.samples*shm->channels;
 	shm->samplepos = 0;
 	shm->submission_chunk = 1;
+
 	shm->buffer = NULL;
 
 	snd_inited = 1;
+	SDL_PauseAudio(0);
 	Con_Printf("Audio Subsystem initialized in SDL mode.\n");
+	Con_Printf ("%5d stereo\n", shm->channels - 1);
+	Con_Printf ("%5d samples\n", shm->samples);
+	Con_Printf ("%5d samplepos\n", shm->samplepos);
+	Con_Printf ("%5d samplebits\n", shm->samplebits);
+	Con_Printf ("%5d submission_chunk\n", shm->submission_chunk);
+	Con_Printf ("%5d speed\n", shm->speed);
+	Con_Printf ("0x%x dma buffer address\n", (int) shm->buffer);
+	Con_Printf ("%5d total_channels\n", total_channels);
 	return 1;
 }
 
@@ -111,9 +121,9 @@ void S_SDL_Shutdown(void)
 	if (snd_inited)
 	{
 		Con_Printf ("Shutting down SDL sound\n");
+		snd_inited = 0;
 //		SDL_PauseAudio (1);
 		SDL_CloseAudio();
-		snd_inited = 0;
 		SDL_QuitSubSystem(SDL_INIT_AUDIO);
 	}
 }
@@ -124,6 +134,9 @@ void S_SDL_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/06/28 17:20:20  sezero
+ * Tiny cosmetic clean-up
+ *
  * Revision 1.13  2005/06/28 17:01:49  sezero
  * Added warning messages to snd_sdl for endianness-format mismatches
  *
