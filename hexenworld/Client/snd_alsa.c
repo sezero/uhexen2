@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.10 2005-06-12 07:31:18 sezero Exp $
+	$Id: snd_alsa.c,v 1.11 2005-07-05 17:12:01 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -32,10 +32,13 @@
 #include <alsa/asoundlib.h>
 
 static void *alsa_handle;
+//static char *pcmname = "hw:0,0";
 static char *pcmname = "default";
 static snd_pcm_t *pcm;
 static int snd_inited;
 static snd_pcm_uframes_t buffer_size;
+static snd_pcm_hw_params_t *hw;
+static snd_pcm_sw_params_t *sw;
 extern int desired_bits, desired_speed, desired_channels;
 extern int tryrates[MAX_TRYRATES];
 extern int soundtime;
@@ -73,14 +76,9 @@ qboolean S_ALSA_Init (void)
 	int			i, err;
 	unsigned int		rate;
 	snd_pcm_uframes_t	frag_size;
-	snd_pcm_hw_params_t	*hw;
-	snd_pcm_sw_params_t	*sw;
 
 	if (!load_libasound ())
 		return false;
-
-	snd_pcm_hw_params_alloca (&hw);
-	snd_pcm_sw_params_alloca (&sw);
 
 	if ((err = COM_CheckParm("-alsadev")) != 0)
 		pcmname = com_argv[err+1];
@@ -92,15 +90,21 @@ qboolean S_ALSA_Init (void)
 	}
 	Con_Printf ("Using PCM %s.\n", pcmname);
 
+	err = hx2snd_pcm_hw_params_malloc (&hw);
+	if (err < 0) {
+		Con_Printf ("ALSA: unable to allocate hardware params. %s\n", hx2snd_strerror (err));
+		goto error;
+	}
+
 	err = hx2snd_pcm_hw_params_any (pcm, hw);
 	if (err < 0) {
-		Con_Printf ("ALSA: error setting hw_params_any. %s\n", hx2snd_strerror (err));
+		Con_Printf ("ALSA: unable to init hardware params. %s\n", hx2snd_strerror (err));
 		goto error;
 	}
 
 	err = hx2snd_pcm_hw_params_set_access (pcm, hw, SND_PCM_ACCESS_MMAP_INTERLEAVED);
 	if (err < 0) {
-		Con_Printf ("ALSA: interleaved is not supported. %s\n", hx2snd_strerror (err));
+		Con_Printf ("ALSA: unable to set interleaved access. %s\n", hx2snd_strerror (err));
 		goto error;
 	}
 
@@ -129,13 +133,13 @@ qboolean S_ALSA_Init (void)
 	rate = desired_speed;
 	err = hx2snd_pcm_hw_params_set_rate_near (pcm, hw, &rate, 0);
 	if (err < 0) {
-		Con_Printf("Problems setting dsp speed, trying alternatives..\n");
+		Con_Printf("Problems setting sample rate, trying alternatives..\n");
 		desired_speed = 0;
 		for (i=0 ; i<MAX_TRYRATES ; i++) {
 			rate = tryrates[i];
 			err = hx2snd_pcm_hw_params_set_rate_near (pcm, hw, &rate, 0);
 			if (err < 0) {
-				Con_DPrintf ("Could not set dsp to speed %d\n", tryrates[i]);
+				Con_DPrintf ("Could not set sample rate %d\n", tryrates[i]);
 			} else {
 				if (rate != tryrates[i]) {
 					Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", rate, tryrates[i]);
@@ -146,7 +150,7 @@ qboolean S_ALSA_Init (void)
 			}
 		}
 		if (desired_speed == 0) {
-			Con_Printf ("ALSA: Could not set dsp to any speed!..\n");
+			Con_Printf ("ALSA: Could not set any sample rate !\n");
 			goto error;
 		}
 	}
@@ -157,6 +161,7 @@ qboolean S_ALSA_Init (void)
 			desired_speed = rate;
 		}
 	}
+
 	frag_size = 8 * desired_bits * desired_speed / 11025;
 
 	err = hx2snd_pcm_hw_params_set_period_size_near (pcm, hw, &frag_size, 0);
@@ -168,13 +173,19 @@ qboolean S_ALSA_Init (void)
 
 	err = hx2snd_pcm_hw_params (pcm, hw);
 	if (err < 0) {
-		Con_Printf ("ALSA: unable to install hw params. %s\n", hx2snd_strerror (err));
+		Con_Printf ("ALSA: unable to install hardware params. %s\n", hx2snd_strerror (err));
+		goto error;
+	}
+
+	err = hx2snd_pcm_sw_params_malloc (&sw);
+	if (err < 0) {
+		Con_Printf ("ALSA: unable to allocate software params. %s\n", hx2snd_strerror (err));
 		goto error;
 	}
 
 	err = hx2snd_pcm_sw_params_current (pcm, sw);
 	if (err < 0) {
-		Con_Printf ("ALSA: unable to determine current sw params. %s\n", hx2snd_strerror (err));
+		Con_Printf ("ALSA: unable to determine current software params. %s\n", hx2snd_strerror (err));
 		goto error;
 	}
 
@@ -192,7 +203,7 @@ qboolean S_ALSA_Init (void)
 
 	err = hx2snd_pcm_sw_params (pcm, sw);
 	if (err < 0) {
-		Con_Printf ("ALSA: unable to install sw params. %s\n", hx2snd_strerror (err));
+		Con_Printf ("ALSA: unable to install software params. %s\n", hx2snd_strerror (err));
 		goto error;
 	}
 
@@ -200,14 +211,17 @@ qboolean S_ALSA_Init (void)
 	memset ((dma_t *) shm, 0, sizeof (*shm));
 	shm->splitbuffer = 0;
 	shm->channels = desired_channels;
-	err = hx2snd_pcm_hw_params_get_period_size (hw, 
+
+	// don't mix less than this in mono samples:
+/*	err = hx2snd_pcm_hw_params_get_period_size (hw, 
 			(snd_pcm_uframes_t *) (&shm->submission_chunk), 0);
-			// don't mix less than this
 	if (err < 0) {
 		Con_Printf ("ALSA: unable to get period size. %s\n", hx2snd_strerror (err));
 		goto error;
 	}
-	shm->samplepos = 0; // in mono samples
+*/
+	shm->submission_chunk = 1;
+	shm->samplepos = 0;
 	shm->samplebits = desired_bits;
 	err = hx2snd_pcm_hw_params_get_buffer_size (hw, &buffer_size);
 	if (err < 0) {
@@ -234,6 +248,10 @@ qboolean S_ALSA_Init (void)
 	return 1;
 error:
 	hx2snd_pcm_close (pcm);
+	if (hw)
+		hx2snd_pcm_hw_params_free(hw);
+	if (sw)
+		hx2snd_pcm_sw_params_free(sw);
 	return 0;
 }
 
@@ -264,8 +282,12 @@ void S_ALSA_Shutdown (void)
 {
 	if (snd_inited) {
 		Con_Printf ("Shutting down ALSA sound\n");
-		hx2snd_pcm_close (pcm);
 		snd_inited = 0;
+		hx2snd_pcm_drop (pcm);
+		hx2snd_pcm_close (pcm);
+		hx2snd_pcm_hw_params_free(hw);
+		hx2snd_pcm_sw_params_free(sw);
+		shm->buffer = NULL;
 	}
 }
 
@@ -278,8 +300,8 @@ void S_ALSA_Submit (void)
 	snd_pcm_uframes_t offset;
 	snd_pcm_uframes_t nframes;
 	const snd_pcm_channel_area_t *areas;
-	int         state;
-	int         count = paintedtime - soundtime;
+	int state;
+	int count = paintedtime - soundtime;
 
 	nframes = count / shm->channels;
 	hx2snd_pcm_avail_update (pcm);
@@ -303,6 +325,9 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/06/12 07:31:18  sezero
+ * enabled alsa only on linux platforms
+ *
  * Revision 1.9  2005/06/12 07:28:54  sezero
  * clean-up of includes and a fix (hopefully) for endianness detection
  *

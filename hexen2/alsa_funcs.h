@@ -1,6 +1,6 @@
 /*
 	alsa_funcs.h
-	$Id: alsa_funcs.h,v 1.3 2005-06-06 10:17:53 sezero Exp $
+	$Id: alsa_funcs.h,v 1.4 2005-07-05 17:11:37 sezero Exp $
 
 	ALSA function list
 
@@ -72,6 +72,11 @@ HX2_ALSA (int, snd_pcm_sw_params_set_start_threshold, (snd_pcm_t *pcmdev, snd_pc
 HX2_ALSA (int, snd_pcm_sw_params_set_stop_threshold, (snd_pcm_t *pcmdev, snd_pcm_sw_params_t *params, snd_pcm_uframes_t val))
 HX2_ALSA (size_t, snd_pcm_sw_params_sizeof, (void))
 HX2_ALSA (const char *, snd_strerror, (int errnum))
+HX2_ALSA (int, snd_pcm_drop, (snd_pcm_t *pcmdev))
+HX2_ALSA (int, snd_pcm_hw_params_malloc, (snd_pcm_hw_params_t **ptr))
+HX2_ALSA (int, snd_pcm_sw_params_malloc, (snd_pcm_sw_params_t **ptr))
+HX2_ALSA (void, snd_pcm_hw_params_free, (snd_pcm_hw_params_t *obj))
+HX2_ALSA (void, snd_pcm_sw_params_free, (snd_pcm_sw_params_t *obj))
 
 #ifdef UNDEF_HX2_ALSA
 #undef HX2_ALSA
@@ -81,6 +86,9 @@ HX2_ALSA (const char *, snd_strerror, (int errnum))
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/06/06 10:17:53  sezero
+ * fixed alsa minimum required version detection
+ *
  * Revision 1.2  2005/04/30 12:20:27  sezero
  * silenced shadowed declerations warnings for alsa (cosmetics really...)
  *
