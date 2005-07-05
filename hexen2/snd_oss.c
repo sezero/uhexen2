@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.12 2005-07-02 11:48:19 sezero Exp $
+	$Id: snd_oss.c,v 1.13 2005-07-05 17:20:01 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -202,7 +202,7 @@ qboolean S_OSS_Init(void)
 	sz = sysconf (_SC_PAGESIZE);
 	mmaplen = info.fragstotal * info.fragsize;
 	mmaplen = (mmaplen + sz - 1) & ~(sz - 1);
-	shm->buffer = (unsigned char *) mmap(NULL, mmaplen, PROT_WRITE,
+	shm->buffer = (unsigned char *) mmap(NULL, mmaplen, PROT_READ|PROT_WRITE,
 					     MAP_FILE|MAP_SHARED, audio_fd, 0);
 	if (!shm->buffer || shm->buffer == MAP_FAILED)
 	{
