@@ -1,5 +1,11 @@
 ChangeLog:
 
+2005-07-05 (CVS, 1.2.5-pre7):
+    * Updated oss driver (added PROT_READ to mmap mode)
+    * Updated sdl sound (added soundinfo to init, various
+      insignificant things)
+    * Updated alsa driver (various insignificant things)
+
 2005-07-02 (CVS, 1.2.5-pre7):
     * Minor cosmetic clean-up in S_Update_() for S_SYS_SDL
     * Added device selection support (-ossdev) to OSS sound.
