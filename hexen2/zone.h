@@ -1,7 +1,7 @@
 /*
 	zone.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.h,v 1.3 2005-04-13 12:22:41 sezero Exp $
+	$Id: zone.h,v 1.4 2005-07-06 08:35:23 sezero Exp $
 */
 
 
@@ -114,6 +114,17 @@ void Cache_Report (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/04/13 12:22:41  sezero
+ * - Removed useless -minmemory cmdline argument
+ * - Removed useless parms->memsize < minimum_memory check in Host_Init
+ * - Added lower/upper boundaries (8mb/96mb) for -heapsize argument
+ * - Added lower (48kb for hexen2, 256kb for hw)/upper (1mb) boundaries
+ *   for -zone argument (DYNAMIC_SIZE definitions/zonesize requirements
+ *   are different for hexen2 and hexenworld)
+ * - We won't die if no size is specified after -zone, but will ignore
+ * - Added null string terminations to hexen2 zone.c, so as to prevent
+ *   garbage on sys_memory console command (found this in Pa3PyX)
+ *
  * Revision 1.2  2004/12/12 14:14:43  sezero
  * style changes to our liking
  *

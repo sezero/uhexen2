@@ -1,6 +1,11 @@
 /*
- memory allocation
+	zone.h
 
+	$Id: zone.h,v 1.2 2005-07-06 08:35:46 sezero Exp $
+*/
+
+
+/*	Memory allocation
 
 H_??? The hunk manages the entire memory block given to quake.  It must be
 contiguous.  Memory can be allocated from either the low or high end in a
@@ -59,8 +64,6 @@ startup hunk allocations
 Zone block
 
 ----- Bottom of Memory -----
-
-
 
 */
 

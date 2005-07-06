@@ -1,25 +1,31 @@
-// Z_zone.c
+/*
+	zone.c
+	Memory management
+
+	$Id: zone.c,v 1.3 2005-07-06 08:35:46 sezero Exp $
+*/
+
 
 #include "quakedef.h"
 
 #define	DYNAMIC_SIZE	0x40000
-
-#define	ZONEID	0x1d4a11
+#define	ZONEID		0x1d4a11
+#define	HUNK_SENTINAL	0x1df001ed
 #define MINFRAGMENT	64
 
 typedef struct memblock_s
 {
-	int		size;           // including the header and possibly tiny fragments
-	int     tag;            // a tag of 0 is a free block
-	int     id;        		// should be ZONEID
-	struct memblock_s       *next, *prev;
-	int		pad;			// pad to 64 bit boundary
+	int	size;		// including the header and possibly tiny fragments
+	int	tag;		// a tag of 0 is a free block
+	int	id;		// should be ZONEID
+	struct memblock_s	*next, *prev;
+	int	pad;		// pad to 64 bit boundary
 } memblock_t;
 
 typedef struct
 {
 	int		size;		// total bytes malloced, including header
-	memblock_t	blocklist;		// start / end cap for linked list
+	memblock_t	blocklist;	// start / end cap for linked list
 	memblock_t	*rover;
 } memzone_t;
 
@@ -30,7 +36,7 @@ void Cache_FreeHigh (int new_high_hunk);
 /*
 ==============================================================================
 
-						ZONE MEMORY ALLOCATION
+		ZONE MEMORY ALLOCATION
 
 There is never any space between memblocks, and there will never be two
 contiguous free memblocks.
@@ -244,8 +250,6 @@ void Z_CheckHeap (void)
 
 //============================================================================
 
-#define	HUNK_SENTINAL	0x1df001ed
-
 typedef struct
 {
 	int		sentinal;
@@ -261,8 +265,6 @@ int		hunk_high_used;
 
 qboolean	hunk_tempactive;
 int		hunk_tempmark;
-
-void R_FreeTextures (void);
 
 /*
 ==============
@@ -369,7 +371,6 @@ void Hunk_Print (qboolean all)
 
 	Con_Printf ("-------------------------\n");
 	Con_Printf ("%8i total blocks\n", totalblocks);
-	
 }
 
 /*
@@ -389,7 +390,7 @@ void *Hunk_AllocName (int size, char *name)
 		Sys_Error ("Hunk_Alloc: bad size: %i", size);
 		
 	size = sizeof(hunk_t) + ((size+15)&~15);
-	
+
 	if (hunk_size - hunk_low_used - hunk_high_used < size)
 		Sys_Error ("Hunk_Alloc: failed on %i bytes",size);
 	
@@ -403,7 +404,7 @@ void *Hunk_AllocName (int size, char *name)
 	h->size = size;
 	h->sentinal = HUNK_SENTINAL;
 	strncpy (h->name, name, 8);
-	
+
 	return (void *)(h+1);
 }
 
@@ -537,9 +538,9 @@ CACHE MEMORY
 
 typedef struct cache_system_s
 {
-	int						size;		// including this header
-	cache_user_t			*user;
-	char					name[16];
+	int				size;		// including this header
+	cache_user_t		*user;
+	char				name[16];
 	struct cache_system_s	*prev, *next;
 	struct cache_system_s	*lru_prev, *lru_next;	// for LRU flushing	
 } cache_system_t;

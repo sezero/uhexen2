@@ -1,14 +1,15 @@
 /*
-	Z_zone.c
+	zone.c
+	Memory management
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/zone.c,v 1.10 2005-07-02 13:13:27 sezero Exp $
+	$Id: zone.c,v 1.11 2005-07-06 08:35:23 sezero Exp $
 */
 
 #include "quakedef.h"
 
 #define	DYNAMIC_SIZE	0xc000
-
-#define	ZONEID	0x1d4a11
+#define	ZONEID		0x1d4a11
+#define	HUNK_SENTINAL	0x1df001ed
 #define MINFRAGMENT	64
 
 #ifndef _WIN32
@@ -17,17 +18,17 @@ extern void strlwr (char * str);
 
 typedef struct memblock_s
 {
-	int		size;           // including the header and possibly tiny fragments
-	int     tag;            // a tag of 0 is a free block
-	int     id;        		// should be ZONEID
-	struct memblock_s       *next, *prev;
-	int		pad;			// pad to 64 bit boundary
+	int	size;		// including the header and possibly tiny fragments
+	int	tag;		// a tag of 0 is a free block
+	int	id;		// should be ZONEID
+	struct memblock_s	*next, *prev;
+	int	pad;		// pad to 64 bit boundary
 } memblock_t;
 
 typedef struct
 {
 	int		size;		// total bytes malloced, including header
-	memblock_t	blocklist;		// start / end cap for linked list
+	memblock_t	blocklist;	// start / end cap for linked list
 	memblock_t	*rover;
 } memzone_t;
 
@@ -38,7 +39,7 @@ void Cache_FreeHigh (int new_high_hunk);
 /*
 ==============================================================================
 
-						ZONE MEMORY ALLOCATION
+		ZONE MEMORY ALLOCATION
 
 There is never any space between memblocks, and there will never be two
 contiguous free memblocks.
@@ -252,8 +253,6 @@ void Z_CheckHeap (void)
 
 //============================================================================
 
-#define	HUNK_SENTINAL	0x1df001ed
-
 typedef struct
 {
 	int		sentinal;
@@ -269,8 +268,6 @@ int		hunk_high_used;
 
 qboolean	hunk_tempactive;
 int		hunk_tempmark;
-
-void R_FreeTextures (void);
 
 /*
 ==============
@@ -565,9 +562,9 @@ CACHE MEMORY
 
 typedef struct cache_system_s
 {
-	int						size;		// including this header
-	cache_user_t			*user;
-	char					name[32];
+	int				size;		// including this header
+	cache_user_t		*user;
+	char				name[32];
 	struct cache_system_s	*prev, *next;
 	struct cache_system_s	*lru_prev, *lru_next;	// for LRU flushing	
 } cache_system_t;
@@ -988,7 +985,7 @@ void Cache_Display_f(void)
 		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0) write_file = true;
 	}
 
-   Cache_Print(write_file);
+	Cache_Print(write_file);
 }
 
 #define NUM_GROUPS 18
@@ -1137,7 +1134,7 @@ void Memory_Init (void *buf, int size)
 			Sys_Printf ("Memory_Init: No size specified after -zone. Ignoring.\n");
 		}
 	}
-	mainzone = Hunk_AllocName (zonesize, "zone" );
+	mainzone = Hunk_AllocName ( zonesize, "zone" );
 	Z_ClearZone (mainzone, zonesize);
 
   	Cmd_AddCommand ("sys_memory", Memory_Display_f);
@@ -1147,6 +1144,9 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/07/02 13:13:27  sezero
+ * cleaned-up file saving in zone.c
+ *
  * Revision 1.9  2005/06/15 06:16:26  sezero
  * strlwr extern in zone.c is for unix only
  *
