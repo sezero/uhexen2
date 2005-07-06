@@ -1,6 +1,6 @@
 /*
 	alsa_funcs.h
-	$Id: alsa_funcs.h,v 1.4 2005-07-05 17:12:01 sezero Exp $
+	$Id: alsa_funcs.h,v 1.5 2005-07-06 08:46:40 sezero Exp $
 
 	ALSA function list
 
@@ -41,21 +41,11 @@
 HX2_ALSA (int, snd_pcm_close, (snd_pcm_t *pcmdev))
 HX2_ALSA (int, snd_pcm_hw_params, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params))
 HX2_ALSA (int, snd_pcm_hw_params_any, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params))
-/*
-#if SND_LIB_MAJOR < 1 && SND_LIB_MINOR >=9 && SND_LIB_SUBMINOR < 8
-HX2_ALSA (snd_pcm_sframes_t, snd_pcm_hw_params_get_buffer_size, (const snd_pcm_hw_params_t *params))
-HX2_ALSA (snd_pcm_sframes_t, snd_pcm_hw_params_get_period_size, (const snd_pcm_hw_params_t *params, int *dir))
-HX2_ALSA (int, snd_pcm_hw_params_set_access, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, snd_pcm_access_t val))
-HX2_ALSA (snd_pcm_uframes_t, snd_pcm_hw_params_set_period_size_near, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, snd_pcm_uframes_t val, int *dir))
-HX2_ALSA (unsigned int, snd_pcm_hw_params_set_rate_near, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, unsigned int val, int *dir))
-#else
-*/
 HX2_ALSA (int, snd_pcm_hw_params_get_buffer_size, (const snd_pcm_hw_params_t *params, snd_pcm_uframes_t *val))
 HX2_ALSA (int, snd_pcm_hw_params_get_period_size, (const snd_pcm_hw_params_t *params, snd_pcm_uframes_t *frames, int *dir))
 HX2_ALSA (int, snd_pcm_hw_params_set_access, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, snd_pcm_access_t acc))
 HX2_ALSA (int, snd_pcm_hw_params_set_period_size_near, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, snd_pcm_uframes_t *val, int *dir))
 HX2_ALSA (int, snd_pcm_hw_params_set_rate_near, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, unsigned int *val, int *dir))
-//#endif
 HX2_ALSA (int, snd_pcm_hw_params_set_channels, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, unsigned int val))
 HX2_ALSA (int, snd_pcm_hw_params_set_format, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, snd_pcm_format_t val))
 HX2_ALSA (size_t, snd_pcm_hw_params_sizeof, (void))
@@ -86,6 +76,9 @@ HX2_ALSA (void, snd_pcm_sw_params_free, (snd_pcm_sw_params_t *obj))
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/07/05 17:12:01  sezero
+ * Updated alsa driver (various insignificant things)
+ *
  * Revision 1.3  2005/06/06 10:17:54  sezero
  * fixed alsa minimum required version detection
  *
