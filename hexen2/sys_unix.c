@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.30 2005-07-09 07:00:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.31 2005-07-09 07:02:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -582,22 +582,17 @@ int main(int argc, char *argv[])
     /* main window message loop */
 	while (1)
 	{
+		newtime = Sys_DoubleTime ();
+		time = newtime - oldtime;
+
 		if (isDedicated)
 		{
-			newtime = Sys_DoubleTime ();
-			time = newtime - oldtime;
-
 			while (time < sys_ticrate.value )
 			{
 				Sys_Sleep();
 				newtime = Sys_DoubleTime ();
 				time = newtime - oldtime;
 			}
-		}
-		else
-		{
-			newtime = Sys_DoubleTime ();
-			time = newtime - oldtime;
 		}
 
 		if (sys_delay.value) 
@@ -616,6 +611,9 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2005/07/09 07:00:03  sezero
+ * SDL version refusal should not happen for dedicated servers
+ *
  * Revision 1.29  2005/06/15 10:30:02  sezero
  * fix a compile problem on win32 (filelength clash with io.h)
  * and keep the names consistent throughout the tree
