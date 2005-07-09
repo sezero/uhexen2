@@ -860,7 +860,7 @@ GtkWidget* create_window1 (void)
   GTK_WIDGET_UNSET_FLAGS (WGT_MEMHEAP, GTK_CAN_FOCUS);
   gtk_tooltips_set_tip (tooltips, WGT_MEMHEAP, _("The main memory to allocate in KB"), NULL);
 
-  WGT_HEAPADJ =  gtk_adjustment_new (heapsize, 8192, 98304, 1024, 10, 10);
+  WGT_HEAPADJ =  gtk_adjustment_new (heapsize, HEAP_MINSIZE, HEAP_MAXSIZE, 1024, 10, 10);
   WGT_HEAPSIZE = gtk_spin_button_new (GTK_ADJUSTMENT (WGT_HEAPADJ), 1024, 0);
   gtk_entry_set_editable (GTK_ENTRY (WGT_HEAPSIZE), FALSE);
   gtk_widget_show (WGT_HEAPSIZE);
@@ -882,7 +882,7 @@ GtkWidget* create_window1 (void)
   GTK_WIDGET_UNSET_FLAGS (WGT_MEMZONE, GTK_CAN_FOCUS);
   gtk_tooltips_set_tip (tooltips, WGT_MEMZONE, _("Dynamic zone memory to allocate in KB"), NULL);
 
-  WGT_ZONEADJ =  gtk_adjustment_new (zonesize, 48, 1024, 1, 10, 10);
+  WGT_ZONEADJ =  gtk_adjustment_new (zonesize, ZONE_MINSIZE, ZONE_MAXSIZE, 1, 10, 10);
   WGT_ZONESIZE = gtk_spin_button_new (GTK_ADJUSTMENT (WGT_ZONEADJ), 1, 0);
   gtk_entry_set_editable (GTK_ENTRY (WGT_ZONESIZE), FALSE);
   gtk_widget_show (WGT_ZONESIZE);

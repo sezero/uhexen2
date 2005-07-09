@@ -29,8 +29,8 @@ int mouse		= 1;
 int debug		= 0;
 int use_heap		= 0;
 int use_zone		= 0;
-int heapsize		= 32768;
-int zonesize		= 48;
+int heapsize		= HEAP_DEFAULT;
+int zonesize		= ZONE_DEFAULT;
 #ifndef DEMOBUILD
 int h2game		= 0;
 int hwgame		= 0;
@@ -258,13 +258,13 @@ int read_config_file() {
 				}
 				else if (strstr(buff, "heapsize=") == buff) {
 					heapsize = atoi(buff + 9);
-					if (heapsize <  8192 || heapsize > 98304)
-							heapsize = 32768;
+					if (heapsize <  HEAP_MINSIZE || heapsize > HEAP_MAXSIZE)
+							heapsize = HEAP_DEFAULT;
 				}
 				else if (strstr(buff, "zonesize=") == buff) {
 					zonesize = atoi(buff + 9);
-					if (zonesize < 48 || zonesize > 1024)
-							zonesize = 48;
+					if (zonesize < ZONE_MINSIZE || zonesize > ZONE_MAXSIZE)
+							zonesize = ZONE_DEFAULT;
 				}
 			}
 

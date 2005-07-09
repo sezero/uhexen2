@@ -177,13 +177,13 @@ void launch_hexen2_bin() {
 		args[++i]=gllibrary;
 	}
 
-	if ((use_heap) && (heapsize >= 8192)) {
+	if ((use_heap) && (heapsize >= HEAP_MINSIZE)) {
 		args[++i]="-heapsize";
 		snprintf (tmparg1, 8, "%i", heapsize);
 		args[++i]=tmparg1;
 	}
 
-	if ((use_zone) && (zonesize >= 48)) {
+	if ((use_zone) && (zonesize >= ZONE_MINSIZE)) {
 		args[++i]="-zone";
 		snprintf (tmparg2, 8, "%i", zonesize);
 		args[++i]=tmparg2;
