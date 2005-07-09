@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_dl_screen.c,v 1.13 2005-06-15 13:18:17 sezero Exp $
+	$Id: gl_dl_screen.c,v 1.14 2005-07-09 07:29:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -683,6 +683,7 @@ void SCR_ScreenShot_f (void)
 	char		pcxname[80]; 
 	char		checkname[MAX_OSPATH];
 	int			i, c, temp;
+	int			mark;
 
 	sprintf (checkname, "%s/shots", com_userdir);
 	Sys_mkdir (checkname);
@@ -706,7 +707,8 @@ void SCR_ScreenShot_f (void)
 		return;
 	}
 
-	buffer = malloc(glwidth*glheight*3 + 18);
+	mark = Hunk_LowMark();
+	buffer = Hunk_AllocName(glwidth * glheight * 3 + 18, "buffer_sshot");
 	memset (buffer, 0, 18);
 	buffer[2] = 2;		// uncompressed type
 	buffer[12] = glwidth&255;
@@ -727,7 +729,7 @@ void SCR_ScreenShot_f (void)
 	}
 	COM_WriteFile (pcxname, buffer, glwidth*glheight*3 + 18 );
 
-	free (buffer);
+	Hunk_FreeToLowMark(mark);
 	Con_Printf ("Wrote %s\n", pcxname);
 }
 
@@ -1264,6 +1266,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/06/15 13:18:17  sezero
+ * killed the glfunc struct
+ *
  * Revision 1.12  2005/05/29 08:53:57  sezero
  * get rid of silly name changes
  *

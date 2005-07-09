@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_dl_draw.c,v 1.43 2005-06-15 18:50:38 sezero Exp $
+	$Id: gl_dl_draw.c,v 1.44 2005-07-09 07:29:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1381,7 +1381,8 @@ GL_Upload32
 void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite)
 {
 	int			samples;
-	static	unsigned	scaled[1024*512];	// [512*256];
+	unsigned		*scaled;
+	int			mark = 0;
 	int			scaled_width, scaled_height;
 
 	for (scaled_width = 1 ; scaled_width < width ; scaled_width<<=1)
@@ -1426,23 +1427,8 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 		}
 	}
 
-	if (scaled_width * scaled_height > sizeof(scaled)/4)
-		Sys_Error ("GL_LoadTexture: too big");
-
 	samples = alpha ? gl_alpha_format : gl_solid_format;
 
-#if 0
-	if (mipmap)
-		gluBuild2DMipmaps (GL_TEXTURE_2D, samples, width, height, GL_RGBA, GL_UNSIGNED_BYTE, trans);
-	else if (scaled_width == width && scaled_height == height)
-		glTexImage2D_fp (GL_TEXTURE_2D, 0, samples, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, trans);
-	else
-	{
-		gluScaleImage (GL_RGBA, width, height, GL_UNSIGNED_BYTE, trans,
-			scaled_width, scaled_height, GL_UNSIGNED_BYTE, scaled);
-		glTexImage2D_fp (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
-	}
-#else
 	texels += scaled_width * scaled_height;
 
 	if (scaled_width == width && scaled_height == height)
@@ -1452,10 +1438,15 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 			glTexImage2D_fp (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 			goto done;
 		}
-		memcpy (scaled, data, width*height*4);
+		//memcpy (scaled, data, width*height*4);
+		scaled = data;
 	}
 	else
+	{
+		mark = Hunk_LowMark();
+		scaled = Hunk_AllocName(scaled_width * scaled_height * sizeof(unsigned), "texbuf_upload32");
 		GL_ResampleTexture (data, width, height, scaled, scaled_width, scaled_height);
+	}
 
 	glTexImage2D_fp (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 	if (mipmap)
@@ -1477,8 +1468,6 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 		}
 	}
 done: ;
-#endif
-
 
 	if (mipmap)
 	{
@@ -1490,6 +1479,9 @@ done: ;
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 	}
+
+	if (mark)
+		Hunk_FreeToLowMark(mark);
 }
 
 void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite) 
@@ -1497,7 +1489,8 @@ void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboole
 	int			i, s;
 	qboolean		noalpha;
 	int			samples;
-	static	unsigned char scaled[1024*512];	// [512*256];
+	unsigned char 		*scaled;
+	int			mark = 0;
 	int			scaled_width, scaled_height;
 
 	s = width*height;
@@ -1557,9 +1550,6 @@ void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboole
 		}
 	}
 
-	if (scaled_width * scaled_height > sizeof(scaled))
-		Sys_Error ("GL_LoadTexture: too big");
-
 	samples = 1; // alpha ? gl_alpha_format : gl_solid_format;
 
 	texels += scaled_width * scaled_height;
@@ -1571,10 +1561,15 @@ void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboole
 			glTexImage2D_fp (GL_TEXTURE_2D, 0, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX , GL_UNSIGNED_BYTE, data);
 			goto done;
 		}
-		memcpy (scaled, data, width*height);
+		//memcpy (scaled, data, width*height);
+		scaled = data;
 	}
 	else
+	{
+		mark = Hunk_LowMark();
+		scaled = Hunk_AllocName(scaled_width * scaled_height * sizeof(unsigned), "texbuf_upload8ext");
 		GL_Resample8BitTexture (data, width, height, scaled, scaled_width, scaled_height);
+	}
 
 	glTexImage2D_fp (GL_TEXTURE_2D, 0, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, scaled);
 	if (mipmap)
@@ -1607,6 +1602,9 @@ done: ;
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 	}
+
+	if (mark)
+		Hunk_FreeToLowMark(mark);
 }
 
 
@@ -1624,10 +1622,10 @@ GL_Upload8
 */
 void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode)
 {
-	static	unsigned	trans[640*480];		// FIXME, temporary
-	int			i, s;
+	unsigned		*trans;
+	int			mark;
+	int			i, p, s;
 	qboolean		noalpha;
-	int			p;
 	qboolean		sprite = false;
 
 	if (mode >= 10)
@@ -1637,6 +1635,9 @@ void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean a
 	}
 
 	s = width*height;
+	mark = Hunk_LowMark();
+	trans = Hunk_AllocName(s * sizeof(unsigned), "texbuf_upload8");
+
 	// if there are no transparent pixels, make it a 3 component
 	// texture even if it was specified as otherwise
 	if ((alpha || mode != 0))
@@ -1766,10 +1767,12 @@ void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean a
 
 	if (is8bit && !alpha && (data!=scrap_texels[0])) {
 		GL_Upload8_EXT (data, width, height, mipmap, alpha, sprite);
+		Hunk_FreeToLowMark(mark);
 		return;
 	}
 
 	GL_Upload32 (trans, width, height, mipmap, alpha, sprite);
+	Hunk_FreeToLowMark(mark);
 }
 
 // Simple checksum functions for verification of texture. From Pa3PyX
@@ -1875,6 +1878,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.43  2005/06/15 18:50:38  sezero
+ * fifth model is for h2mp only and we've been out of bounds for ages here
+ *
  * Revision 1.42  2005/06/15 13:18:16  sezero
  * killed the glfunc struct
  *

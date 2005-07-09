@@ -2244,16 +2244,6 @@ extern byte *mainTransTable; // in r_main.c
 
 		vid_testingmode = 0;
 		vid_initialized = 0;
-		if (transTable)
-		{
-			free(transTable);
-			transTable=NULL;
-		}
-		if (mainTransTable)
-		{
-			free(mainTransTable);
-			mainTransTable=NULL;
-		}
 	}
 }
 

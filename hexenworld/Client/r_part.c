@@ -67,17 +67,14 @@ void R_InitParticles (void)
 
 	Cvar_RegisterVariable (&leak_color);
 
-	transTable = (byte *)malloc(65536);
-	if (!transTable)
-		Sys_Error ("Couldn't load gfx/tinttab.lmp");
+	transTable = Hunk_AllocName(65536, "transtable");
 
 	COM_FOpenFile ("gfx/tinttab.lmp", &f, false);	
+	if (!f)
+		Sys_Error ("Couldn't load gfx/tinttab.lmp");
 
-	if (f)
-	{
-		fread(transTable,1,65536,f);
-		fclose(f);
-	}
+	fread(transTable,1,65536,f);
+	fclose(f);
 }
 
 

@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.5 2005-06-06 10:19:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.6 2005-07-09 07:29:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -241,17 +241,14 @@ void R_Init (void)
 
 	D_Init ();
 
-	mainTransTable = (byte *)malloc(65536);
-	if (!mainTransTable)
-		Sys_Error ("Couldn't load gfx/tinttab2.lmp");
+	mainTransTable = Hunk_AllocName(65536, "transtable2");
 
 	COM_FOpenFile ("gfx/tinttab2.lmp", &f, false);	
+	if (!f)
+		Sys_Error ("Couldn't load gfx/tinttab2.lmp");
 
-	if (f)
-	{
-		fread(mainTransTable,1,65536,f);
-		fclose(f);
-	}
+	fread(mainTransTable,1,65536,f);
+	fclose(f);
 
 #if id386
 	D_Patch();
@@ -1306,6 +1303,10 @@ void R_InitTurb (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/06/06 10:19:40  sezero
+ * ChaseCam clipping fixes from quakeforge and quakesrc.org (FrikaC).
+ * Still not perfect, but much better than what we previously had.
+ *
  * Revision 1.4  2005/05/29 08:38:12  sezero
  * get rid of the silly func name difference
  *

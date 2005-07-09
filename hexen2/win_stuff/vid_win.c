@@ -2100,16 +2100,6 @@ extern byte *mainTransTable; // in r_main.c
 		MGL_exit();
 		vid_testingmode = 0;
 		vid_initialized = 0;
-		if (transTable)
-		{
-			free(transTable);
-			transTable=NULL;
-		}
-		if (mainTransTable)
-		{
-			free(mainTransTable);
-			mainTransTable=NULL;
-		}
 	}
 }
 
@@ -3242,6 +3232,12 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/06/26 12:43:41  sezero
+ * Added the intermissionScreen CacheFree code to software vid.
+ * I have ignored this fragment for a long time due to the fact
+ * we removed video mode switching, but here it is for possible
+ * future use.
+ *
  * Revision 1.6  2005/06/19 11:23:23  sezero
  * added wheelmouse support and conwidth support to hexen2. changed
  * hexenworld's default behavior of default 640 conwidth to main width

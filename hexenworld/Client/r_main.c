@@ -244,17 +244,14 @@ void R_Init (void)
 
 	D_Init ();
 
-	mainTransTable = (byte *)malloc(65536);
-	if (!mainTransTable)
-		Sys_Error ("Couldn't load gfx/tinttab2.lmp");
+	mainTransTable = Hunk_AllocName(65536, "transtable2");
 
 	COM_FOpenFile ("gfx/tinttab2.lmp", &f, false);	
+	if (!f)
+		Sys_Error ("Couldn't load gfx/tinttab2.lmp");
 
-	if (f)
-	{
-		fread(mainTransTable,1,65536,f);
-		fclose(f);
-	}
+	fread(mainTransTable,1,65536,f);
+	fclose(f);
 
 #if id386
 	D_Patch();

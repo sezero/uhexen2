@@ -1,7 +1,7 @@
 /*
 	r_part.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_dl_part.c,v 1.9 2005-06-15 13:18:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_dl_part.c,v 1.10 2005-07-09 07:29:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -91,18 +91,14 @@ void R_InitParticles (void)
 	Cvar_RegisterVariable (&snow_flurry);
 	Cvar_RegisterVariable (&snow_active);
 
-	transTable = (byte *)malloc(65536);
-	if (!transTable)
-		Sys_Error ("Couldn't load gfx/tinttab.lmp");
+	transTable = Hunk_AllocName(65536, "transtable");
 
 	COM_FOpenFile ("gfx/tinttab.lmp", &f, false);	
+	if (!f)
+		Sys_Error ("Couldn't load gfx/tinttab.lmp");
 
-	if (f)
-	{
-		fread(transTable,1,65536,f);
-		fclose(f);
-	}
-
+	fread(transTable,1,65536,f);
+	fclose(f);
 }	
 
 void R_DarkFieldParticles (entity_t *ent)
@@ -1947,6 +1943,9 @@ void R_UpdateParticles (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/06/15 13:18:17  sezero
+ * killed the glfunc struct
+ *
  * Revision 1.8  2005/05/19 16:41:50  sezero
  * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
  *

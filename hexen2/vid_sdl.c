@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.28 2005-06-26 12:43:38 sezero Exp $
+   $Id: vid_sdl.c,v 1.29 2005-07-09 07:29:40 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -630,16 +630,6 @@ void	VID_Shutdown (void)
 	if (vid_initialized)
 	{
 		vid_initialized = 0;
-		if (transTable)
-		{
-			free(transTable);
-			transTable=NULL;
-		}
-		if (mainTransTable)
-		{
-			free(mainTransTable);
-			mainTransTable=NULL;
-		}
 		SDL_Quit();
 	}
 }
@@ -907,6 +897,12 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2005/06/26 12:43:38  sezero
+ * Added the intermissionScreen CacheFree code to software vid.
+ * I have ignored this fragment for a long time due to the fact
+ * we removed video mode switching, but here it is for possible
+ * future use.
+ *
  * Revision 1.27  2005/06/05 07:50:27  sezero
  * *** empty log message ***
  *
