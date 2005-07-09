@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.4 2005-07-09 11:46:41 sezero Exp $
+	$Id: zone.c,v 1.5 2005-07-09 11:53:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -11,10 +11,6 @@
 #define	ZONEID		0x1d4a11
 #define	HUNK_SENTINAL	0x1df001ed
 #define MINFRAGMENT	64
-
-#ifndef _WIN32
-extern void strlwr (char * str);
-#endif
 
 typedef struct memblock_s
 {
@@ -34,6 +30,13 @@ typedef struct
 
 void Cache_FreeLow (int new_low_hunk);
 void Cache_FreeHigh (int new_high_hunk);
+
+#ifndef _WIN32
+static void strlwr (char * str)
+{
+	while (*str) {*str = tolower (*str); str++; }
+}
+#endif
 
 
 /*

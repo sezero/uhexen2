@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.31 2005-07-09 07:02:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.32 2005-07-09 11:53:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -604,13 +604,11 @@ int main(int argc, char *argv[])
 
 }
 
-void strlwr (char * str)
-{
-	while (*str) {*str = tolower (*str); str++; }
-}
-
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2005/07/09 07:02:09  sezero
+ * tiny clean-up
+ *
  * Revision 1.30  2005/07/09 07:00:03  sezero
  * SDL version refusal should not happen for dedicated servers
  *

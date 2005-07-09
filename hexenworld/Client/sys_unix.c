@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.25 2005-07-09 07:00:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.26 2005-07-09 11:53:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -527,13 +527,11 @@ int main(int argc, char *argv[])
 
 }
 
-void strlwr (char * str)
-{
-	while (*str) {*str = tolower (*str); str++; }
-}
-
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2005/07/09 07:00:03  sezero
+ * SDL version refusal should not happen for dedicated servers
+ *
  * Revision 1.24  2005/06/15 10:30:10  sezero
  * fix a compile problem on win32 (filelength clash with io.h)
  * and keep the names consistent throughout the tree
