@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.12 2005-07-09 07:26:27 sezero Exp $
+	$Id: zone.c,v 1.13 2005-07-09 10:45:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -21,7 +21,7 @@ typedef struct memblock_s
 	int	size;		// including the header and possibly tiny fragments
 	int	tag;		// a tag of 0 is a free block
 	int	id;		// should be ZONEID
-	struct memblock_s	*next, *prev;
+	struct	memblock_s	*next, *prev;
 	int	pad;		// pad to 64 bit boundary
 } memblock_t;
 
@@ -253,11 +253,12 @@ void Z_CheckHeap (void)
 
 //============================================================================
 
+#define HUNKNAME_LEN	20
 typedef struct
 {
 	int		sentinal;
 	int		size;		// including sizeof(hunk_t), -1 = not allocated
-	char	name[20];
+	char		name[HUNKNAME_LEN];
 } hunk_t;
 
 byte	*hunk_base;
@@ -283,7 +284,7 @@ void Hunk_Check (void)
 	for (h = (hunk_t *)hunk_base ; (byte *)h != hunk_base + hunk_low_used ; )
 	{
 		if (h->sentinal != HUNK_SENTINAL)
-			Sys_Error ("Hunk_Check: trahsed sentinal");
+			Sys_Error ("Hunk_Check: trashed sentinal");
 		if (h->size < 16 || h->size + (byte *)h - hunk_base > hunk_size)
 			Sys_Error ("Hunk_Check: bad size");
 		h = (hunk_t *)((byte *)h+h->size);
@@ -298,6 +299,11 @@ If "all" is specified, every single allocation is printed.
 Otherwise, allocations with the same name will be totaled up before printing.
 ==============
 */
+#define MEM_Printf(FH, fmt, args...) {\
+	Con_Printf(fmt, ##args);\
+	if ((FH))\
+		fprintf((FH), fmt, ##args);\
+}
 void Hunk_Print (qboolean all, qboolean write_file)
 {
 	hunk_t	*h, *next, *endlow, *starthigh, *endhigh;
@@ -308,7 +314,7 @@ void Hunk_Print (qboolean all, qboolean write_file)
 	count = 0;
 	sum = 0;
 	totalblocks = 0;
-	
+
 	FH = NULL;
 	if (write_file)
 		FH = fopen(va("%s/memory.txt", com_userdir),"w");
@@ -318,10 +324,8 @@ void Hunk_Print (qboolean all, qboolean write_file)
 	starthigh = (hunk_t *)(hunk_base + hunk_size - hunk_high_used);
 	endhigh = (hunk_t *)(hunk_base + hunk_size);
 
-	Con_Printf ("          :%8i total hunk size\n", hunk_size);
-	if (FH) fprintf(FH,"          :%8i total hunk size\n", hunk_size);
-	Con_Printf ("-------------------------\n");
-	if (FH) fprintf(FH,"-------------------------\n");
+	MEM_Printf(FH,"          :%8i total hunk size\n", hunk_size);
+	MEM_Printf(FH,"-------------------------\n");
 
 	while (1)
 	{
@@ -330,12 +334,9 @@ void Hunk_Print (qboolean all, qboolean write_file)
 	//
 		if ( h == endlow )
 		{
-			Con_Printf ("-------------------------\n");
-			if (FH) fprintf(FH,"-------------------------\n");
-			Con_Printf ("          :%8i REMAINING\n", hunk_size - hunk_low_used - hunk_high_used);
-			if (FH) fprintf(FH,"          :%8i REMAINING\n", hunk_size - hunk_low_used - hunk_high_used);
-			Con_Printf ("-------------------------\n");
-			if (FH) fprintf(FH,"-------------------------\n");
+			MEM_Printf(FH,"-------------------------\n");
+			MEM_Printf(FH,"          :%8i REMAINING\n", hunk_size - hunk_low_used - hunk_high_used);
+			MEM_Printf(FH,"-------------------------\n");
 			h = starthigh;
 		}
 		
@@ -352,7 +353,7 @@ void Hunk_Print (qboolean all, qboolean write_file)
 			Sys_Error ("Hunk_Check: trahsed sentinal");
 		if (h->size < 16 || h->size + (byte *)h - hunk_base > hunk_size)
 			Sys_Error ("Hunk_Check: bad size");
-			
+
 		next = (hunk_t *)((byte *)h+h->size);
 		count++;
 		totalblocks++;
@@ -362,22 +363,16 @@ void Hunk_Print (qboolean all, qboolean write_file)
 	// print the single block
 	//
 		if (all)
-		{
-			Con_Printf ("%8p :%8i %8s\n",h, h->size, h->name);
-			if (FH) fprintf(FH,"%8p :%8i %8s\n",h, h->size, h->name);
-		}
-			
+			MEM_Printf(FH,"%8p :%8i %8s\n",h, h->size, h->name);
+
 	//
 	// print the total
 	//
 		if (next == endlow || next == endhigh || 
-		strncmp (h->name, next->name, 8) )
+			strncmp (h->name, next->name, HUNKNAME_LEN))
 		{
 			if (!all)
-			{
-				Con_Printf ("          :%8i %8s (TOTAL)\n",sum, h->name);
-				if (FH) fprintf(FH,"          :%8i %8s (TOTAL)\n",sum, h->name);
-			}
+				MEM_Printf(FH,"          :%8i %8s (TOTAL)\n",sum, h->name);
 			count = 0;
 			sum = 0;
 		}
@@ -385,11 +380,9 @@ void Hunk_Print (qboolean all, qboolean write_file)
 		h = next;
 	}
 
-	Con_Printf ("-------------------------\n");
-	if (FH) fprintf(FH,"-------------------------\n");
-	Con_Printf ("%8i total blocks\n", totalblocks);
+	MEM_Printf(FH,"-------------------------\n");
+	MEM_Printf(FH,"%8i total blocks\n", totalblocks);
 	if (FH) {
-		fprintf(FH,"%8i total blocks\n", totalblocks);
 		fclose(FH);
 		FH = NULL;
 	}
@@ -425,8 +418,8 @@ void *Hunk_AllocName (int size, char *name)
 	
 	h->size = size;
 	h->sentinal = HUNK_SENTINAL;
-	strncpy (h->name, name, 19);
-	h->name[19] = 0;	
+	strncpy (h->name, name, HUNKNAME_LEN - 1);
+	h->name[HUNKNAME_LEN - 1] = 0;
 
 	return (void *)(h+1);
 }
@@ -517,8 +510,8 @@ void *Hunk_HighAllocName (int size, char *name)
 	memset (h, 0, size);
 	h->size = size;
 	h->sentinal = HUNK_SENTINAL;
-	strncpy (h->name, name, 8);
-	h->name[8] = 0;
+	strncpy (h->name, name, HUNKNAME_LEN - 1);
+	h->name[HUNKNAME_LEN - 1] = 0;
 
 	return (void *)(h+1);
 }
@@ -559,12 +552,12 @@ CACHE MEMORY
 
 ===============================================================================
 */
-
+#define CACHENAME_LEN	32
 typedef struct cache_system_s
 {
 	int				size;		// including this header
 	cache_user_t		*user;
-	char				name[32];
+	char			name[CACHENAME_LEN];
 	struct cache_system_s	*prev, *next;
 	struct cache_system_s	*lru_prev, *lru_next;	// for LRU flushing	
 } cache_system_t;
@@ -794,8 +787,7 @@ void Cache_Print (qboolean write_file)
 
 	for (cd = cache_head.next ; cd != &cache_head ; cd = cd->next)
 	{
-		Con_Printf ("%8i : %s\n", cd->size, cd->name);
-		if (FH) fprintf(FH,"%8i : %s\n", cd->size, cd->name);
+		MEM_Printf(FH,"%8i : %s\n", cd->size, cd->name);
 
 		count++;
 		sum += cd->size;
@@ -814,15 +806,11 @@ void Cache_Print (qboolean write_file)
 		}
 	}
 
-	Con_Printf("--------   ------------------\n");
-	if (FH) fprintf(FH,"--------   ------------------\n");
-	Con_Printf("%8i : Total of %i items\n",sum,count);
-	if (FH) fprintf(FH,"%8i : Total of %i items\n",sum,count);
-	Con_Printf("%8i : Total .MDL of %i items\n",sum_mod,num_mod);
-	if (FH) fprintf(FH,"%8i : Total .MDL of %i items\n",sum_mod,num_mod);
-	Con_Printf("%8i : Total .WAV of %i items\n",sum_wav,num_wav);
+	MEM_Printf(FH,"--------   ------------------\n");
+	MEM_Printf(FH,"%8i : Total of %i items\n",sum,count);
+	MEM_Printf(FH,"%8i : Total .MDL of %i items\n",sum_mod,num_mod);
+	MEM_Printf(FH,"%8i : Total .WAV of %i items\n",sum_wav,num_wav);
 	if (FH) {
-		fprintf(FH,"%8i : Total .WAV of %i items\n",sum_wav,num_wav);
 		fclose(FH);
 		FH = NULL;
 	}
@@ -935,8 +923,8 @@ void *Cache_Alloc (cache_user_t *c, int size, char *name)
 		cs = Cache_TryAlloc (size, false);
 		if (cs)
 		{
-			strncpy (cs->name, name, sizeof(cs->name)-1);
-			cs->name[sizeof(cs->name) - 1] = 0;
+			strncpy (cs->name, name, CACHENAME_LEN - 1);
+			cs->name[CACHENAME_LEN - 1] = 0;
 			c->data = (void *)(cs+1);
 			cs->user = c;
 			break;
@@ -965,11 +953,13 @@ void Memory_Display_f(void)
 	NumItems = Cmd_Argc();
 	for(counter=1;counter<NumItems;counter++)
 	{
-		if (Q_strcasecmp(Cmd_Argv(counter),"short") == 0) all = false;
-		else if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0) write_file = true;
+		if (Q_strcasecmp(Cmd_Argv(counter),"short") == 0)
+			all = false;
+		else if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
+			write_file = true;
 	}
 
-   Hunk_Print(all,write_file);
+	Hunk_Print(all,write_file);
 }
 
 void Cache_Display_f(void)
@@ -982,7 +972,8 @@ void Cache_Display_f(void)
 	NumItems = Cmd_Argc();
 	for(counter=1;counter<NumItems;counter++)
 	{
-		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0) write_file = true;
+		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
+			write_file = true;
 	}
 
 	Cache_Print(write_file);
@@ -1015,18 +1006,19 @@ char *MemoryGroups[NUM_GROUPS+1] =
 void Memory_Stats_f(void)
 {
 	hunk_t	*h, *next, *endlow, *starthigh, *endhigh;
-	int		count, sum, counter;
+	int	count, sum, counter;
+	int	GroupCount[NUM_GROUPS+1], GroupSum[NUM_GROUPS+1];
+	short	NumItems;
 	FILE	*FH;
-	int GroupCount[NUM_GROUPS+1],GroupSum[NUM_GROUPS+1];
 	qboolean write_file;
-	short NumItems;
 
 	write_file = false;
 
 	NumItems = Cmd_Argc();
 	for(counter=1;counter<NumItems;counter++)
 	{
-		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0) write_file = true;
+		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
+			write_file = true;
 	}
 
 	memset(GroupCount,0,sizeof(GroupCount));
@@ -1076,27 +1068,21 @@ void Memory_Stats_f(void)
 	if (write_file)
 		FH = fopen(va("%s/stats.txt", com_userdir),"w");
 
-	Con_Printf("Group           Count Size\n");
-	if (FH) fprintf(FH,"Group           Count Size\n");
-	Con_Printf("--------------- ----- --------\n");
-	if (FH) fprintf(FH,"--------------- ----- --------\n");
+	MEM_Printf(FH,"Group           Count Size\n");
+	MEM_Printf(FH,"--------------- ----- --------\n");
 	for(counter=0;counter<NUM_GROUPS+1;counter++)
 	{
-		Con_Printf("%-15s %-5i %i\n",MemoryGroups[counter],GroupCount[counter],GroupSum[counter]);
-		if (FH) fprintf(FH,"%-15s %-5i %i\n",MemoryGroups[counter],GroupCount[counter],GroupSum[counter]);
+		MEM_Printf(FH,"%-15s %-5i %i\n",MemoryGroups[counter],GroupCount[counter],GroupSum[counter]);
 		count += GroupCount[counter];
 		sum += GroupSum[counter];
 	}
-	Con_Printf("--------------- ----- --------\n");
-	if (FH) fprintf(FH,"--------------- ----- --------\n");
-	Con_Printf("%-15s %-5i %i\n","Total",count,sum);
+	MEM_Printf(FH,"--------------- ----- --------\n");
+	MEM_Printf(FH,"%-15s %-5i %i\n","Total",count,sum);
 	if (FH) {
-		fprintf(FH,"%-15s %-5i %i\n","Total",count,sum);
 		fclose(FH);
 		FH = NULL;
 	}
 }
-
 
 
 /*
@@ -1137,13 +1123,16 @@ void Memory_Init (void *buf, int size)
 	mainzone = Hunk_AllocName ( zonesize, "zone" );
 	Z_ClearZone (mainzone, zonesize);
 
-  	Cmd_AddCommand ("sys_memory", Memory_Display_f);
-  	Cmd_AddCommand ("sys_cache", Cache_Display_f);
-  	Cmd_AddCommand ("sys_stats", Memory_Stats_f);
+	Cmd_AddCommand ("sys_memory", Memory_Display_f);
+	Cmd_AddCommand ("sys_cache", Cache_Display_f);
+	Cmd_AddCommand ("sys_stats", Memory_Stats_f);
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/07/09 07:26:27  sezero
+ * increased hexen2 zone size to 128 kb
+ *
  * Revision 1.11  2005/07/06 08:35:23  sezero
  * style/whitespace changes and removal of weird alien stuff
  *
