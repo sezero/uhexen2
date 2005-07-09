@@ -1,5 +1,5 @@
 /*
- * $Id: mstrconv.c,v 1.4 2005-06-17 16:24:42 sezero Exp $
+ * $Id: mstrconv.c,v 1.5 2005-07-09 07:21:13 sezero Exp $
  */
 
 #include <windows.h>
@@ -37,10 +37,7 @@ extern BOOL bLooped;
 
 // Messages
 //
-static char szInitErrMem[]  = "Out of memory.\n";
 static char szInitErrInFile[]   = "Read error on input file or file is corrupt.\n";
-static char szNoTrackBuffMem[]  = "Insufficient memory for track buffer allocation\n";
-
 #ifdef DEBUG
 static char gteBadRunStat[]     = "Reference to missing running status.";
 static char gteRunStatMsgTrunc[]= "Running status message truncated";
@@ -187,30 +184,19 @@ BOOL ConverterInit( LPSTR szInFile )
 // them. The parse merely looks at the MTrk signature and track chunk length
 // in order to skip to the next track header.
 //
-    ifs.pitsTracks = (PINTRACKSTATE)GlobalAllocPtr( GPTR,
-                    ifs.dwTrackCount * sizeof(INTRACKSTATE));
-    if( ifs.pitsTracks == NULL )
-        {
-		     Con_Printf("MIDI: %s\n",szInitErrMem);
-        goto Init_Cleanup;
-        }
+    ifs.pitsTracks = (PINTRACKSTATE)Z_Malloc(ifs.dwTrackCount * sizeof(INTRACKSTATE));
 
     for( idx = 0, ptsTrack = ifs.pitsTracks; idx < ifs.dwTrackCount;
                                 ++idx, ++ptsTrack )
     {
-    if(( ptsTrack->pTrackStart
-            = GlobalAllocPtr( GHND, TRACK_BUFFER_SIZE )) == NULL )
-        {
-		     Con_Printf("MIDI: %s\n", szNoTrackBuffMem);
-        goto Init_Cleanup;
-        }
+	ptsTrack->pTrackStart = Z_Malloc(TRACK_BUFFER_SIZE);
 
-    if( GetInFileData( &dwTag, sizeof(dwTag)) || ( dwTag != MTrk )
-            || GetInFileData( &cbHeader, sizeof(cbHeader)))
-        {
-		     Con_Printf("MIDI: %s\n", szInitErrInFile);
-        goto Init_Cleanup;
-        }
+	if( GetInFileData( &dwTag, sizeof(dwTag)) || ( dwTag != MTrk )
+	   || GetInFileData( &cbHeader, sizeof(cbHeader)))
+	{
+		Con_Printf("MIDI: %s\n", szInitErrInFile);
+		goto Init_Cleanup;
+	}
 
     cbHeader = DWORDSWAP( cbHeader );
     ptsTrack->dwTrackLength = cbHeader; // Total track length
@@ -326,7 +312,7 @@ static BOOL GetInFileData( LPVOID lpDest, DWORD cbToGet )
 // Free anything we ever allocated
 //
 void ConverterCleanup( void )
-    {
+{
     DWORD   idx;
 
 /*    if( hInFile != INVALID_HANDLE_VALUE )
@@ -336,16 +322,16 @@ void ConverterCleanup( void )
     }*/
 
     if( ifs.pitsTracks )
-        {
-    // De-allocate all our track buffers
-    for( idx = 0; idx < ifs.dwTrackCount; idx++ )
-        if( ifs.pitsTracks[idx].pTrackStart )
-        GlobalFreePtr( ifs.pitsTracks[idx].pTrackStart );
+    {
+	// De-allocate all our track buffers
+	for( idx = 0; idx < ifs.dwTrackCount; idx++ )
+		if( ifs.pitsTracks[idx].pTrackStart )
+			Z_Free(ifs.pitsTracks[idx].pTrackStart);
 
-        GlobalFreePtr( ifs.pitsTracks );
-    ifs.pitsTracks = NULL;
+	Z_Free(ifs.pitsTracks);
+	ifs.pitsTracks = NULL;
     }
-    }
+}
 
 
 /*****************************************************************************/
@@ -513,7 +499,7 @@ int ConvertToBuffer( DWORD dwFlags, LPCONVERTINFO lpciInfo )
         {
         if( dwMallocBlocks )
         {
-        free( teTemp.pLongData );
+        Z_Free(teTemp.pLongData);
         dwMallocBlocks--;
         }
         }
@@ -536,7 +522,7 @@ int ConvertToBuffer( DWORD dwFlags, LPCONVERTINFO lpciInfo )
         DebugPrint( "Unable to add event to stream buffer." );
         if( dwMallocBlocks )
             {
-            free( teTemp.pLongData );
+            Z_Free(teTemp.pLongData);
             dwMallocBlocks--;
             }
         return( TRUE );
@@ -587,7 +573,7 @@ int ConvertToBuffer( DWORD dwFlags, LPCONVERTINFO lpciInfo )
         {
         if( dwMallocBlocks )
         {
-        free( teTemp.pLongData );
+        Z_Free(teTemp.pLongData);
         dwMallocBlocks--;
         }
         continue;
@@ -611,7 +597,7 @@ int ConvertToBuffer( DWORD dwFlags, LPCONVERTINFO lpciInfo )
         DebugPrint( "Unable to add event to stream buffer." );
         if( dwMallocBlocks )
             {
-            free( teTemp.pLongData );
+            Z_Free(teTemp.pLongData);
             dwMallocBlocks--;
             }
         return( TRUE );
@@ -619,7 +605,7 @@ int ConvertToBuffer( DWORD dwFlags, LPCONVERTINFO lpciInfo )
         }
         }   
 
-    return( CONVERTERR_NOERROR );
+//    return( CONVERTERR_NOERROR );  // unreachable
     }
 
 
@@ -806,11 +792,7 @@ static BOOL GetTrackEvent( INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp )
             }
 
     // Malloc a temporary memory block to hold the parameter data
-    if(( pteTemp->pLongData = malloc( pteTemp->dwEventLength )) == NULL )
-        {
-        TRACKERR( ptsTrack, gteNoMem );
-        return( TRUE );
-        }
+    pteTemp->pLongData = Z_Malloc(pteTemp->dwEventLength);
     // Copy from the input buffer to the parameter data buffer
     for( idx = 0; idx < pteTemp->dwEventLength; idx++ )
         if( GetTrackByte( ptsTrack, pteTemp->pLongData + idx ))
@@ -863,12 +845,7 @@ static BOOL GetTrackEvent( INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp )
                 }
 
     // Malloc a temporary memory block to hold the parameter data
-        if(( pteTemp->pLongData = malloc( pteTemp->dwEventLength ))
-                                        == NULL )
-        {
-        TRACKERR( ptsTrack, gteNoMem );
-        return( TRUE );
-        }
+        pteTemp->pLongData = Z_Malloc(pteTemp->dwEventLength);
     // Copy from the input buffer to the parameter data buffer
         for( idx = 0; idx < pteTemp->dwEventLength; idx++ )
          if( GetTrackByte( ptsTrack, pteTemp->pLongData + idx ))
@@ -1015,7 +992,7 @@ static BOOL RefillTrackBuffer( PINTRACKSTATE ptsTrack )
 //
 static int AddEventToStreamBuffer( PTEMPEVENT pteTemp, CONVERTINFO *lpciInfo )
     {
-    DWORD   tkNow, tkDelta;
+    DWORD	tkDelta;
     MIDIEVENT   *pmeEvent;
 	 char szTemp[256];
 
@@ -1041,8 +1018,6 @@ static int AddEventToStreamBuffer( PTEMPEVENT pteTemp, CONVERTINFO *lpciInfo )
 	    lpciInfo->bTimesUp = TRUE;
 	}
     }
-
-    tkNow = tkCurrentTime;
 
     // Delta time is absolute event time minus absolute time
     // already gone by on this track
@@ -1104,7 +1079,7 @@ static int AddEventToStreamBuffer( PTEMPEVENT pteTemp, CONVERTINFO *lpciInfo )
     DebugPrint( "AddEventToStreamBuffer: Ignoring SysEx event." );
     if( dwMallocBlocks )
         {
-        free( pteTemp->pLongData );
+        Z_Free(pteTemp->pLongData);
         dwMallocBlocks--;
         }
     }
@@ -1124,7 +1099,7 @@ static int AddEventToStreamBuffer( PTEMPEVENT pteTemp, CONVERTINFO *lpciInfo )
             {
         if( dwMallocBlocks )
         {
-        free( pteTemp->pLongData );
+        Z_Free(pteTemp->pLongData);
         dwMallocBlocks--;
         }
             return( CONVERTERR_METASKIP );
@@ -1139,7 +1114,7 @@ static int AddEventToStreamBuffer( PTEMPEVENT pteTemp, CONVERTINFO *lpciInfo )
         // Cleanup the temporary event if necessary and return
         if( dwMallocBlocks )
         {
-        free( pteTemp->pLongData );
+        Z_Free(pteTemp->pLongData);
         dwMallocBlocks--;
         }
         return( CONVERTERR_BUFFERFULL );
@@ -1169,7 +1144,7 @@ static int AddEventToStreamBuffer( PTEMPEVENT pteTemp, CONVERTINFO *lpciInfo )
 
     if( dwMallocBlocks )
         {
-        free( pteTemp->pLongData );
+        Z_Free(pteTemp->pLongData);
         dwMallocBlocks--;
         }
     lpciInfo->dwBytesRecorded += 3 *sizeof(DWORD);
@@ -1195,6 +1170,9 @@ static void ShowTrackError( PINTRACKSTATE ptsTrack, LPSTR lpszErr )
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/06/17 16:24:42  sezero
+ * win32 fixes and clean-ups
+ *
  * Revision 1.3  2005/05/19 12:47:11  sezero
  * synced h2 and hw versions of midi stuff
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: midi.c,v 1.5 2005-06-17 16:24:40 sezero Exp $
+ * $Id: midi.c,v 1.6 2005-07-09 07:19:04 sezero Exp $
  */
 
 #include <windows.h>
@@ -162,8 +162,6 @@ void MIDI_Play(char *Name)
 	if (!bMidiInited)	//don't try to play if there is no midi
 		return;
 
-	//sprintf(Temp,"data1\\%s",Name);
-	//sprintf(Temp,"%s",Name);
 	sprintf(Temp, "midi/%s.mid", Name);
 	MIDI_Stop();
 
@@ -211,7 +209,7 @@ void MIDI_Pause(int mode)
 	}
 }
 
-static void MIDI_Loop(int NewValue)
+void MIDI_Loop(int NewValue)
 {
 	if (NewValue == 2)
 	{
@@ -327,12 +325,12 @@ static void FreeBuffers(void)
 		}
 		bBuffersPrepared = FALSE;
 	}
-    
+
 	// Free our stream buffers...
 	for(idx=0;idx<NUM_STREAM_BUFFERS;idx++)
 		if(ciStreamBuffers[idx].mhBuffer.lpData)
 		{
-			GlobalFreePtr( ciStreamBuffers[idx].mhBuffer.lpData);
+			Z_Free(ciStreamBuffers[idx].mhBuffer.lpData);
 			ciStreamBuffers[idx].mhBuffer.lpData = NULL;
 		}
 }
@@ -366,7 +364,7 @@ BOOL StreamBufferSetup(char *Name)
 	for(idx=0;idx<NUM_STREAM_BUFFERS;idx++)
 	{
 		ciStreamBuffers[idx].mhBuffer.dwBufferLength = OUT_BUFFER_SIZE;
-		ciStreamBuffers[idx].mhBuffer.lpData = GlobalAllocPtr(GHND,OUT_BUFFER_SIZE);
+		ciStreamBuffers[idx].mhBuffer.lpData = Z_Malloc(OUT_BUFFER_SIZE);
 		if(ciStreamBuffers[idx].mhBuffer.lpData == NULL)
 		{
 		// Buffers we already allocated will be killed by WM_DESTROY
@@ -642,6 +640,9 @@ void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/06/17 16:24:40  sezero
+ * win32 fixes and clean-ups
+ *
  * Revision 1.4  2005/05/19 12:47:10  sezero
  * synced h2 and hw versions of midi stuff
  *
