@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.24 2005-06-15 10:30:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.25 2005-07-09 07:00:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -440,14 +440,6 @@ int main(int argc, char *argv[])
 
 	Sys_Printf("userdir is: %s\n",userdir);
 
-	sdl_version = SDL_Linked_Version();
-	Sys_Printf("Found SDL version %i.%i.%i\n",sdl_version->major,sdl_version->minor,sdl_version->patch);
-	if(SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_VERSIONNUM(SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z))
-	{	//reject running under SDL versions < 1.2.6
-		printf("You need at least version %i.%i.%i of SDL to run this game\n",SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
-		exit(0);
-	}
-
 	parms.basedir = cwd;
 	parms.cachedir = NULL;
 	parms.userdir = userdir;
@@ -477,7 +469,15 @@ int main(int argc, char *argv[])
 		PrintVersion();
 		exit (0);
 	}
-			
+
+	sdl_version = SDL_Linked_Version();
+	Sys_Printf("Found SDL version %i.%i.%i\n",sdl_version->major,sdl_version->minor,sdl_version->patch);
+	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_VERSIONNUM(SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z))
+	{	//reject running under SDL versions < 1.2.6
+		printf("You need at least version %i.%i.%i of SDL to run this game\n",SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
+		exit(0);
+	}
+
 // take the greater of all the available memory or half the total memory,
 // but at least 8 Mb and no more than 16 Mb, unless they explicitly
 // request otherwise - now 32 Mb minimum (S.A)
@@ -534,6 +534,10 @@ void strlwr (char * str)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2005/06/15 10:30:10  sezero
+ * fix a compile problem on win32 (filelength clash with io.h)
+ * and keep the names consistent throughout the tree
+ *
  * Revision 1.23  2005/06/15 09:45:01  sezero
  * more endianness stuff
  *
