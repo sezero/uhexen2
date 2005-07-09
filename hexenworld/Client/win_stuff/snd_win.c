@@ -6,8 +6,8 @@
 HRESULT (WINAPI *pDirectSoundCreate)(GUID FAR *lpGUID, LPDIRECTSOUND FAR *lplpDS, IUnknown FAR *pUnkOuter);
 
 // 64K is > 1 second at 16-bit, 22050 Hz
-#define	WAV_BUFFERS				64
-#define	WAV_MASK				0x3F
+#define	WAV_BUFFERS				128
+#define	WAV_MASK				0x7F
 #define	WAV_BUFFER_SIZE			0x0400
 #define SECONDARY_BUFFER_SIZE	0x10000
 
@@ -19,6 +19,8 @@ static qboolean	wav_init;
 static qboolean	snd_firsttime = true, snd_isdirect, snd_iswave;
 static qboolean	primary_format_set;
 
+// starts at 0 for disabled
+static int	snd_buffer_count = 0;
 static int	sample16;
 static int	snd_sent, snd_completed;
 
@@ -153,6 +155,49 @@ void FreeSound (void)
 
 /*
 ==================
+Snd_ReleaseBuffer
+==================
+*/
+void Snd_ReleaseBuffer (void)
+{
+
+//@@@ this goes away completely once we keep the same window for the whole session
+	if (snd_isdirect)
+	{
+		snd_buffer_count--;
+
+		if (snd_buffer_count == 0)
+		{
+			S_ClearBuffer ();
+			S_Shutdown ();
+		}
+	}
+}
+
+
+/*
+==================
+Snd_AcquireBuffer
+==================
+*/
+void Snd_AcquireBuffer (void)
+{
+
+//@@@ this goes away completely once we keep the same window for the whole session
+	if (snd_isdirect)
+	{
+		snd_buffer_count++;
+
+		if (snd_buffer_count == 1)
+		{
+			S_Startup ();
+		}
+	}
+}
+
+
+/*
+==================
 SNDDMA_InitDirect
 
 Direct-Sound support
@@ -273,16 +318,16 @@ sndinitstat SNDDMA_InitDirect (void)
 
 			if (DS_OK != pDSPBuf->lpVtbl->SetFormat (pDSPBuf, &pformat))
 			{
-//				if (snd_firsttime)
-//					Con_SafePrintf ("Set primary sound buffer format: no\n");
+				if (snd_firsttime)
+					Con_SafePrintf ("Set primary sound buffer format: no\n");
 			}
 			else
-//			{
-//				if (snd_firsttime)
-//					Con_SafePrintf ("Set primary sound buffer format: yes\n");
+			{
+				if (snd_firsttime)
+					Con_SafePrintf ("Set primary sound buffer format: yes\n");
 
 				primary_format_set = true;
-//			}
+			}
 		}
 	}
 
@@ -316,8 +361,8 @@ sndinitstat SNDDMA_InitDirect (void)
 			return SIS_FAILURE;
 		}
 
-//		if (snd_firsttime)
-//			Con_SafePrintf ("Using secondary sound buffer\n");
+		if (snd_firsttime)
+			Con_SafePrintf ("Using secondary sound buffer\n");
 	}
 	else
 	{
@@ -335,17 +380,17 @@ sndinitstat SNDDMA_InitDirect (void)
 		}
 
 		pDSBuf = pDSPBuf;
-//		Con_SafePrintf ("Using primary sound buffer\n");
+		Con_SafePrintf ("Using primary sound buffer\n");
 	}
 
 	// Make sure mixer is active
 	pDSBuf->lpVtbl->Play(pDSBuf, 0, 0, DSBPLAY_LOOPING);
 
-/*	if (snd_firsttime)
+	if (snd_firsttime)
 		Con_SafePrintf("   %d channel(s)\n"
 		               "   %d bits/sample\n"
 					   "   %d bytes/sec\n",
-					   shm->channels, shm->samplebits, shm->speed);*/
+					   shm->channels, shm->samplebits, shm->speed);
 	
 	gSndBufSize = dsbcaps.dwBufferBytes;
 
@@ -442,7 +487,7 @@ qboolean SNDDMA_InitWav (void)
 
 		if (MessageBox (NULL,
 						"The sound hardware is in use by another app.\n\n"
-					    "Select Retry to try to start sound again or Cancel to run Quake with no sound.",
+					    "Select Retry to try to start sound again or Cancel to run Hexen II with no sound.",
 						"Sound not available",
 						MB_RETRYCANCEL | MB_SETFOREGROUND | MB_ICONEXCLAMATION) != IDRETRY)
 		{
@@ -595,6 +640,8 @@ qboolean SNDDMA_Init(void)
 	}
 
 	snd_firsttime = false;
+
+	snd_buffer_count = 1;
 
 	if (!dsound_init && !wav_init)
 	{
