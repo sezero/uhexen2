@@ -2,12 +2,12 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.11 2005-07-06 08:35:23 sezero Exp $
+	$Id: zone.c,v 1.12 2005-07-09 07:26:27 sezero Exp $
 */
 
 #include "quakedef.h"
 
-#define	DYNAMIC_SIZE	0xc000
+#define	DYNAMIC_SIZE	0x20000
 #define	ZONEID		0x1d4a11
 #define	HUNK_SENTINAL	0x1df001ed
 #define MINFRAGMENT	64
@@ -1120,10 +1120,10 @@ void Memory_Init (void *buf, int size)
 		if (p < com_argc-1) {
 			zonesize = atoi (com_argv[p+1]) * 1024;
 			if (zonesize < DYNAMIC_SIZE) {
-				// no less than 48 KB default
+				// no less than 128 KB default
 				Sys_Printf ("Requested zone size (%i Kb) too little.\n", zonesize/1024);
-				Sys_Printf ("Going with the default 48 KB size.\n");
-				zonesize = DYNAMIC_SIZE; // 48 KB
+				Sys_Printf ("Going with the default 128 KB size.\n");
+				zonesize = DYNAMIC_SIZE; // 128 KB
 			} else if (zonesize > 1024*1024) {
 				// no bigger than 1 MB
 				Sys_Printf ("Requested zone size (%i Kb) too large.\n", zonesize/1024);
@@ -1144,6 +1144,9 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/07/06 08:35:23  sezero
+ * style/whitespace changes and removal of weird alien stuff
+ *
  * Revision 1.10  2005/07/02 13:13:27  sezero
  * cleaned-up file saving in zone.c
  *
