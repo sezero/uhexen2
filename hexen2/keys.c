@@ -5,6 +5,9 @@
 */
 
 #include "quakedef.h"
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 #define	MAXCMDLINE	256
 char	key_lines[32][MAXCMDLINE];
@@ -147,7 +150,11 @@ Interactive line editing and console scrollback
 void Key_Console (int key)
 {
 	char	*cmd;
-	
+#ifdef _WIN32
+	int		i;
+	HANDLE	th;
+	char	*clipText, *textCopied;
+#endif
 	if (key == K_ENTER)
 	{
 		Cbuf_AddText (key_lines[edit_line]+1);	// skip the >
@@ -250,6 +257,35 @@ void Key_Console (int key)
 		return;
 	}
 	
+#ifdef _WIN32
+	if ((key=='V' || key=='v') && GetKeyState(VK_CONTROL)<0) {
+		if (OpenClipboard(NULL)) {
+			th = GetClipboardData(CF_TEXT);
+			if (th) {
+				clipText = GlobalLock(th);
+				if (clipText) {
+					textCopied = Z_Malloc(GlobalSize(th)+1);
+					strcpy(textCopied, clipText);
+					/* Substitute a NULL for every token */
+					strtok(textCopied, "\n\r\b");
+					i = strlen(textCopied);
+					if (i+key_linepos>=MAXCMDLINE)
+						i=MAXCMDLINE-key_linepos;
+					if (i>0) {
+						textCopied[i]=0;
+						strcat(key_lines[edit_line], textCopied);
+						key_linepos+=i;;
+					}
+					Z_Free(textCopied);
+				}
+				GlobalUnlock(th);
+			}
+			CloseClipboard();
+		return;
+		}
+	}
+#endif
+
 	if (key < 32 || key > 127)
 		return;	// non printable
 		
