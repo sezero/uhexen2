@@ -5,7 +5,7 @@
 */
 
 #include "quakedef.h"
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 #include <windows.h>
 #endif
 
@@ -194,11 +194,11 @@ Interactive line editing and console scrollback
 */
 void Key_Console (int key)
 {
-/*	char	*cmd, *s;
+#ifdef _WIN32
 	int		i;
 	HANDLE	th;
 	char	*clipText, *textCopied;
-*/
+#endif
 	if (key == K_ENTER)
 	{	// backslash text are commands, else chat
 		if (key_lines[edit_line][1] == '\\' || key_lines[edit_line][1] == '/')
@@ -299,16 +299,17 @@ void Key_Console (int key)
 		return;
 	}
 	
-#ifdef _WINDOWS
+#ifdef _WIN32
 	if ((key=='V' || key=='v') && GetKeyState(VK_CONTROL)<0) {
 		if (OpenClipboard(NULL)) {
 			th = GetClipboardData(CF_TEXT);
 			if (th) {
 				clipText = GlobalLock(th);
 				if (clipText) {
-					textCopied = malloc(GlobalSize(th)+1);
+					textCopied = Z_Malloc(GlobalSize(th)+1);
 					strcpy(textCopied, clipText);
-	/* Substitutes a NULL for every token */strtok(textCopied, "\n\r\b");
+					/* Substitute a NULL for every token */
+					strtok(textCopied, "\n\r\b");
 					i = strlen(textCopied);
 					if (i+key_linepos>=MAXCMDLINE)
 						i=MAXCMDLINE-key_linepos;
@@ -317,7 +318,7 @@ void Key_Console (int key)
 						strcat(key_lines[edit_line], textCopied);
 						key_linepos+=i;;
 					}
-					free(textCopied);
+					Z_Free(textCopied);
 				}
 				GlobalUnlock(th);
 			}
