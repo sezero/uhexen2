@@ -2,9 +2,8 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.3 2005-07-06 08:35:46 sezero Exp $
+	$Id: zone.c,v 1.4 2005-07-09 11:46:41 sezero Exp $
 */
-
 
 #include "quakedef.h"
 
@@ -13,12 +12,16 @@
 #define	HUNK_SENTINAL	0x1df001ed
 #define MINFRAGMENT	64
 
+#ifndef _WIN32
+extern void strlwr (char * str);
+#endif
+
 typedef struct memblock_s
 {
 	int	size;		// including the header and possibly tiny fragments
 	int	tag;		// a tag of 0 is a free block
 	int	id;		// should be ZONEID
-	struct memblock_s	*next, *prev;
+	struct	memblock_s	*next, *prev;
 	int	pad;		// pad to 64 bit boundary
 } memblock_t;
 
@@ -130,7 +133,7 @@ void *Z_Malloc (int size)
 {
 	void	*buf;
 	
-Z_CheckHeap ();	// DEBUG
+//Z_CheckHeap ();	// DEBUG
 	buf = Z_TagMalloc (size, 1);
 	if (!buf)
 		Sys_Error ("Z_Malloc: failed on allocation of %i bytes",size);
@@ -250,11 +253,12 @@ void Z_CheckHeap (void)
 
 //============================================================================
 
+#define HUNKNAME_LEN	20
 typedef struct
 {
 	int		sentinal;
 	int		size;		// including sizeof(hunk_t), -1 = not allocated
-	char	name[8];
+	char		name[HUNKNAME_LEN];
 } hunk_t;
 
 byte	*hunk_base;
@@ -280,7 +284,7 @@ void Hunk_Check (void)
 	for (h = (hunk_t *)hunk_base ; (byte *)h != hunk_base + hunk_low_used ; )
 	{
 		if (h->sentinal != HUNK_SENTINAL)
-			Sys_Error ("Hunk_Check: trahsed sentinal");
+			Sys_Error ("Hunk_Check: trashed sentinal");
 		if (h->size < 16 || h->size + (byte *)h - hunk_base > hunk_size)
 			Sys_Error ("Hunk_Check: bad size");
 		h = (hunk_t *)((byte *)h+h->size);
@@ -295,25 +299,33 @@ If "all" is specified, every single allocation is printed.
 Otherwise, allocations with the same name will be totaled up before printing.
 ==============
 */
-void Hunk_Print (qboolean all)
+#define MEM_Printf(FH, fmt, args...) {\
+	Con_Printf(fmt, ##args);\
+	if ((FH))\
+		fprintf((FH), fmt, ##args);\
+}
+void Hunk_Print (qboolean all, qboolean write_file)
 {
 	hunk_t	*h, *next, *endlow, *starthigh, *endhigh;
 	int		count, sum;
 	int		totalblocks;
-	char	name[9];
+	FILE	*FH;
 
-	name[8] = 0;
 	count = 0;
 	sum = 0;
 	totalblocks = 0;
-	
+
+	FH = NULL;
+	if (write_file)
+		FH = fopen(va("%s/memory.txt", com_userdir),"w");
+
 	h = (hunk_t *)hunk_base;
 	endlow = (hunk_t *)(hunk_base + hunk_low_used);
 	starthigh = (hunk_t *)(hunk_base + hunk_size - hunk_high_used);
 	endhigh = (hunk_t *)(hunk_base + hunk_size);
 
-	Con_Printf ("          :%8i total hunk size\n", hunk_size);
-	Con_Printf ("-------------------------\n");
+	MEM_Printf(FH,"          :%8i total hunk size\n", hunk_size);
+	MEM_Printf(FH,"-------------------------\n");
 
 	while (1)
 	{
@@ -322,9 +334,9 @@ void Hunk_Print (qboolean all)
 	//
 		if ( h == endlow )
 		{
-			Con_Printf ("-------------------------\n");
-			Con_Printf ("          :%8i REMAINING\n", hunk_size - hunk_low_used - hunk_high_used);
-			Con_Printf ("-------------------------\n");
+			MEM_Printf(FH,"-------------------------\n");
+			MEM_Printf(FH,"          :%8i REMAINING\n", hunk_size - hunk_low_used - hunk_high_used);
+			MEM_Printf(FH,"-------------------------\n");
 			h = starthigh;
 		}
 		
@@ -341,7 +353,7 @@ void Hunk_Print (qboolean all)
 			Sys_Error ("Hunk_Check: trahsed sentinal");
 		if (h->size < 16 || h->size + (byte *)h - hunk_base > hunk_size)
 			Sys_Error ("Hunk_Check: bad size");
-			
+
 		next = (hunk_t *)((byte *)h+h->size);
 		count++;
 		totalblocks++;
@@ -350,18 +362,17 @@ void Hunk_Print (qboolean all)
 	//
 	// print the single block
 	//
-		memcpy (name, h->name, 8);
 		if (all)
-			Con_Printf ("%8p :%8i %8s\n",h, h->size, name);
-			
+			MEM_Printf(FH,"%8p :%8i %8s\n",h, h->size, h->name);
+
 	//
 	// print the total
 	//
 		if (next == endlow || next == endhigh || 
-		strncmp (h->name, next->name, 8) )
+			strncmp (h->name, next->name, HUNKNAME_LEN))
 		{
 			if (!all)
-				Con_Printf ("          :%8i %8s (TOTAL)\n",sum, name);
+				MEM_Printf(FH,"          :%8i %8s (TOTAL)\n",sum, h->name);
 			count = 0;
 			sum = 0;
 		}
@@ -369,8 +380,12 @@ void Hunk_Print (qboolean all)
 		h = next;
 	}
 
-	Con_Printf ("-------------------------\n");
-	Con_Printf ("%8i total blocks\n", totalblocks);
+	MEM_Printf(FH,"-------------------------\n");
+	MEM_Printf(FH,"%8i total blocks\n", totalblocks);
+	if (FH) {
+		fclose(FH);
+		FH = NULL;
+	}
 }
 
 /*
@@ -403,7 +418,8 @@ void *Hunk_AllocName (int size, char *name)
 	
 	h->size = size;
 	h->sentinal = HUNK_SENTINAL;
-	strncpy (h->name, name, 8);
+	strncpy (h->name, name, HUNKNAME_LEN - 1);
+	h->name[HUNKNAME_LEN - 1] = 0;
 
 	return (void *)(h+1);
 }
@@ -494,7 +510,8 @@ void *Hunk_HighAllocName (int size, char *name)
 	memset (h, 0, size);
 	h->size = size;
 	h->sentinal = HUNK_SENTINAL;
-	strncpy (h->name, name, 8);
+	strncpy (h->name, name, HUNKNAME_LEN - 1);
+	h->name[HUNKNAME_LEN - 1] = 0;
 
 	return (void *)(h+1);
 }
@@ -535,12 +552,12 @@ CACHE MEMORY
 
 ===============================================================================
 */
-
+#define CACHENAME_LEN	32
 typedef struct cache_system_s
 {
 	int				size;		// including this header
 	cache_user_t		*user;
-	char				name[16];
+	char			name[CACHENAME_LEN];
 	struct cache_system_s	*prev, *next;
 	struct cache_system_s	*lru_prev, *lru_next;	// for LRU flushing	
 } cache_system_t;
@@ -751,13 +768,51 @@ Cache_Print
 
 ============
 */
-void Cache_Print (void)
+void Cache_Print (qboolean write_file)
 {
 	cache_system_t	*cd;
+	FILE		*FH;
+	int		count, sum;
+	int num_mod, sum_mod;
+	int num_wav, sum_wav;
+	char temp[128];
+
+	FH = NULL;
+	if (write_file)
+		FH = fopen(va("%s/cache.txt", com_userdir),"w");
+
+	count = sum = 0;
+	num_mod = sum_mod = 0;
+	num_wav = sum_wav = 0;
 
 	for (cd = cache_head.next ; cd != &cache_head ; cd = cd->next)
 	{
-		Con_Printf ("%8i : %s\n", cd->size, cd->name);
+		MEM_Printf(FH,"%8i : %s\n", cd->size, cd->name);
+
+		count++;
+		sum += cd->size;
+
+		strcpy(temp,cd->name);
+		strlwr(temp);
+		if (strstr(temp,".mdl")) 
+		{
+		   num_mod++;
+			sum_mod += cd->size;
+		}
+		else if (strstr(temp,".wav")) 
+		{
+		   num_wav++;
+			sum_wav += cd->size;
+		}
+	}
+
+	MEM_Printf(FH,"--------   ------------------\n");
+	MEM_Printf(FH,"%8i : Total of %i items\n",sum,count);
+	MEM_Printf(FH,"%8i : Total .MDL of %i items\n",sum_mod,num_mod);
+	MEM_Printf(FH,"%8i : Total .WAV of %i items\n",sum_wav,num_wav);
+	if (FH) {
+		fclose(FH);
+		FH = NULL;
 	}
 }
 
@@ -868,7 +923,8 @@ void *Cache_Alloc (cache_user_t *c, int size, char *name)
 		cs = Cache_TryAlloc (size, false);
 		if (cs)
 		{
-			strncpy (cs->name, name, sizeof(cs->name)-1);
+			strncpy (cs->name, name, CACHENAME_LEN - 1);
+			cs->name[CACHENAME_LEN - 1] = 0;
 			c->data = (void *)(cs+1);
 			cs->user = c;
 			break;
@@ -885,6 +941,148 @@ void *Cache_Alloc (cache_user_t *c, int size, char *name)
 }
 
 //============================================================================
+
+void Memory_Display_f(void)
+{
+	short NumItems,counter;
+	qboolean all, write_file;
+
+	all = true;
+	write_file = false;
+
+	NumItems = Cmd_Argc();
+	for(counter=1;counter<NumItems;counter++)
+	{
+		if (Q_strcasecmp(Cmd_Argv(counter),"short") == 0)
+			all = false;
+		else if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
+			write_file = true;
+	}
+
+	Hunk_Print(all,write_file);
+}
+
+void Cache_Display_f(void)
+{
+	short NumItems,counter;
+	qboolean write_file;
+
+	write_file = false;
+
+	NumItems = Cmd_Argc();
+	for(counter=1;counter<NumItems;counter++)
+	{
+		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
+			write_file = true;
+	}
+
+	Cache_Print(write_file);
+}
+
+#define NUM_GROUPS 18
+char *MemoryGroups[NUM_GROUPS+1] =
+{
+	"texture",
+	"light",
+	"vis",
+	"entities",
+	"vertexes",
+	"submodels",
+	"edges",
+	"faces",
+	"nodes",
+	"leafs",
+	"clipnodes",
+	"hull0",
+	"marksurfaces",
+	"surfedges",
+	"planes",
+	"video",
+	"progs.dat",
+	"edicts",
+	"misc"
+};
+
+void Memory_Stats_f(void)
+{
+	hunk_t	*h, *next, *endlow, *starthigh, *endhigh;
+	int	count, sum, counter;
+	int	GroupCount[NUM_GROUPS+1], GroupSum[NUM_GROUPS+1];
+	short	NumItems;
+	FILE	*FH;
+	qboolean write_file;
+
+	write_file = false;
+
+	NumItems = Cmd_Argc();
+	for(counter=1;counter<NumItems;counter++)
+	{
+		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
+			write_file = true;
+	}
+
+	memset(GroupCount,0,sizeof(GroupCount));
+	memset(GroupSum,0,sizeof(GroupSum));
+
+	h = (hunk_t *)hunk_base;
+	endlow = (hunk_t *)(hunk_base + hunk_low_used);
+	starthigh = (hunk_t *)(hunk_base + hunk_size - hunk_high_used);
+	endhigh = (hunk_t *)(hunk_base + hunk_size);
+
+	while (1)
+	{
+		if ( h == endlow )
+		{
+			h = starthigh;
+		}
+	//
+	// if totally done, break
+	//
+		if ( h == endhigh )
+			break;
+
+		next = (hunk_t *)((byte *)h+h->size);
+
+		for(counter=0;counter<NUM_GROUPS;counter++)
+		{
+			if (Q_strcasecmp(h->name,MemoryGroups[counter]) == 0)
+			{
+				GroupCount[counter]++;
+				GroupSum[counter] += h->size;
+				break;
+			}
+		}
+		if (counter >= NUM_GROUPS)
+		{
+			GroupCount[NUM_GROUPS]++;
+			GroupSum[NUM_GROUPS] += h->size;
+		}
+
+		h = next;
+	}
+
+	count = 0;
+	sum = 0;
+
+	FH = NULL;
+	if (write_file)
+		FH = fopen(va("%s/stats.txt", com_userdir),"w");
+
+	MEM_Printf(FH,"Group           Count Size\n");
+	MEM_Printf(FH,"--------------- ----- --------\n");
+	for(counter=0;counter<NUM_GROUPS+1;counter++)
+	{
+		MEM_Printf(FH,"%-15s %-5i %i\n",MemoryGroups[counter],GroupCount[counter],GroupSum[counter]);
+		count += GroupCount[counter];
+		sum += GroupSum[counter];
+	}
+	MEM_Printf(FH,"--------------- ----- --------\n");
+	MEM_Printf(FH,"%-15s %-5i %i\n","Total",count,sum);
+	if (FH) {
+		fclose(FH);
+		FH = NULL;
+	}
+}
 
 
 /*
@@ -908,9 +1106,7 @@ void Memory_Init (void *buf, int size)
 		if (p < com_argc-1) {
 			zonesize = atoi (com_argv[p+1]) * 1024;
 			if (zonesize < DYNAMIC_SIZE) {
-				// No less than 256 KB default. 128kb fails,
-				// 129kb seem to work at first glance. Lets
-				// be on the safe side...
+				// no less than 256 KB default
 				Sys_Printf ("Requested zone size (%i Kb) too little.\n", zonesize/1024);
 				Sys_Printf ("Going with the default 256 KB size.\n");
 				zonesize = DYNAMIC_SIZE; // 256 Kb
@@ -926,5 +1122,9 @@ void Memory_Init (void *buf, int size)
 	}
 	mainzone = Hunk_AllocName ( zonesize, "zone" );
 	Z_ClearZone (mainzone, zonesize);
+
+	Cmd_AddCommand ("sys_memory", Memory_Display_f);
+	Cmd_AddCommand ("sys_cache", Cache_Display_f);
+	Cmd_AddCommand ("sys_stats", Memory_Stats_f);
 }
 
