@@ -2074,8 +2074,6 @@ void	VID_Init (unsigned char *palette)
 void	VID_Shutdown (void)
 {
 	HDC				hdc;
-extern byte *transTable;	//from r_part
-extern byte *mainTransTable; // in r_main.c
 
 	if (vid_initialized)
 	{
@@ -3232,6 +3230,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/07/09 07:29:40  sezero
+ * use hunk instead of malloc
+ *
  * Revision 1.7  2005/06/26 12:43:41  sezero
  * Added the intermissionScreen CacheFree code to software vid.
  * I have ignored this fragment for a long time due to the fact

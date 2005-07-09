@@ -2213,8 +2213,6 @@ void	VID_Init (unsigned char *palette)
 void	VID_Shutdown (void)
 {
 	HDC				hdc;
-extern byte *transTable;	//from r_part
-extern byte *mainTransTable; // in r_main.c
 
 	if (vid_initialized)
 	{

@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.25 2005-07-09 07:29:40 sezero Exp $
+   $Id: vid_sdl.c,v 1.26 2005-07-09 08:56:18 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -624,9 +624,6 @@ void	VID_Init (unsigned char *palette)
 
 void	VID_Shutdown (void)
 {
-	extern byte *transTable;	//from r_part
-	extern byte *mainTransTable;	// in r_main.c
-
 	if (vid_initialized)
 	{
 		vid_initialized = 0;
@@ -897,6 +894,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2005/07/09 07:29:40  sezero
+ * use hunk instead of malloc
+ *
  * Revision 1.24  2005/06/26 12:43:41  sezero
  * Added the intermissionScreen CacheFree code to software vid.
  * I have ignored this fragment for a long time due to the fact
