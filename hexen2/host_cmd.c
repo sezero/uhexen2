@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.24 2005-07-02 13:12:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.25 2005-07-09 09:07:58 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1025,7 +1025,7 @@ int LoadGamestate(char *level, char *startspot, int ClientsMode)
 		for (i=0 ; i<MAX_LIGHTSTYLES ; i++)
 		{
 			fscanf (f, "%s\n", str);
-			sv.lightstyles[i] = Hunk_Alloc (strlen(str)+1);
+			sv.lightstyles[i] = Hunk_AllocName (strlen(str)+1, "lightstyles");
 			strcpy (sv.lightstyles[i], str);
 		}
 		SV_LoadEffects(f);
@@ -2307,6 +2307,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2005/07/02 13:12:27  sezero
+ * commands.txt and edicts.txt will be saved into com_userdir
+ *
  * Revision 1.23  2005/06/07 07:06:32  sezero
  * Moved flush_textures decision to svmain.c:SV_SpawnServer() again, this
  * time fixing it by not clearing the server struct in Host_ShutdownServer().

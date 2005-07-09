@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.10 2005-06-15 09:53:57 sezero Exp $
+	$Id: common.c,v 1.11 2005-07-09 09:07:59 sezero Exp $
 */
 
 #ifdef SERVERONLY 
@@ -1434,7 +1434,7 @@ void COM_AddGameDirectory (char *dir)
 //
 // add the directory to the search path
 //
-	search = Hunk_Alloc (sizeof(searchpath_t));
+	search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
 	strcpy (search->filename, dir);
 	search->next = com_searchpaths;
 	com_searchpaths = search;
@@ -1450,7 +1450,7 @@ void COM_AddGameDirectory (char *dir)
 			continue;
 		if (i == 2)
 			Cvar_Set ("oem", "1");
-		search = Hunk_Alloc (sizeof(searchpath_t));
+		search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
 		search->pack = pak;
 		search->next = com_searchpaths;
 		com_searchpaths = search;		
@@ -1461,7 +1461,7 @@ void COM_AddGameDirectory (char *dir)
 // we don't need to set it on win32 platforms since it's exactly com_gamedir
 //
 #ifdef PLATFORM_UNIX
-	search = Hunk_Alloc (sizeof(searchpath_t));
+	search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
 	strcpy (search->filename, com_userdir);
 	search->next = com_searchpaths;
 	com_searchpaths = search;
@@ -1530,7 +1530,7 @@ void COM_Gamedir (char *dir)
 	//
 	// add any pak files in the format pak0.pak pak1.pak, ...
 	//
-	for (i=0 ; i<10 ; i++)
+	for (i=0 ; i < 10 ; i++)
 	{
 		sprintf (pakfile, "%s/pak%i.pak", com_gamedir, i);
 		pak = COM_LoadPackFile (pakfile, i);
@@ -1539,7 +1539,7 @@ void COM_Gamedir (char *dir)
 		search = Z_Malloc (sizeof(searchpath_t));
 		search->pack = pak;
 		search->next = com_searchpaths;
-		com_searchpaths = search;		
+		com_searchpaths = search;
 	}
 }
 

@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.14 2005-06-15 09:53:57 sezero Exp $
+	$Id: common.c,v 1.15 2005-07-09 09:07:55 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1332,7 +1332,7 @@ pack_t *COM_LoadPackFile (char *packfile, int paknum)
 		newfiles[i].filelen = LittleLong(info[i].filelen);
 	}
 
-	pack = Hunk_Alloc (sizeof (pack_t));
+	pack = Hunk_AllocName (sizeof (pack_t), "pack");
 	strcpy (pack->filename, packfile);
 	pack->handle = packhandle;
 	pack->numfiles = numpackfiles;
@@ -1376,16 +1376,16 @@ void COM_AddGameDirectory (char *dir)
 			continue;
 		if (i == 2)
 			Cvar_Set ("oem", "1");
-		search = Hunk_Alloc (sizeof(searchpath_t));
+		search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
 		search->pack = pak;
 		search->next = com_searchpaths;
-		com_searchpaths = search;               
+		com_searchpaths = search;
 	}
 
 //
 // add the directory to the search path
 //
-	search = Hunk_Alloc (sizeof(searchpath_t));
+	search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
 	strcpy (search->filename, dir);
 	search->next = com_searchpaths;
 	com_searchpaths = search;
@@ -1395,7 +1395,7 @@ void COM_AddGameDirectory (char *dir)
 // we don't need to set it on win32 platforms since it's exactly com_gamedir
 //
 #ifdef PLATFORM_UNIX
-	search = Hunk_Alloc (sizeof(searchpath_t));
+	search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
 	strcpy (search->filename, com_userdir);
 	search->next = com_searchpaths;
 	com_searchpaths = search;
@@ -1471,6 +1471,9 @@ void COM_InitFilesystem (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/06/15 09:53:57  sezero
+ * keep the game's old userdir behavior on win32
+ *
  * Revision 1.13  2005/05/21 17:32:02  sezero
  * disabled the rotating skull annoyance in GL mode (used to
  * cause problems with voodoo1/mesa6 when using gamma tricks)

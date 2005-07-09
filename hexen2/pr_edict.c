@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.13 2005-06-12 07:28:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.14 2005-07-09 09:07:58 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -771,7 +771,7 @@ char *ED_NewString (char *string)
 	int		i,l;
 	
 	l = strlen(string) + 1;
-	new = Hunk_Alloc (l);
+	new = Hunk_AllocName (l, "string");
 	new_p = new;
 
 	for (i=0 ; i< l ; i++)
@@ -1441,6 +1441,9 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/06/12 07:28:51  sezero
+ * clean-up of includes and a fix (hopefully) for endianness detection
+ *
  * Revision 1.12  2005/05/19 16:41:50  sezero
  * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
  *
