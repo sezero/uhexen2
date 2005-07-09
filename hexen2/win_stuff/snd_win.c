@@ -6,10 +6,14 @@
 HRESULT (WINAPI *pDirectSoundCreate)(GUID FAR *lpGUID, LPDIRECTSOUND FAR *lplpDS, IUnknown FAR *pUnkOuter);
 
 // 64K is > 1 second at 16-bit, 22050 Hz
-#define	WAV_BUFFERS				128
-#define	WAV_MASK				0x7F
-#define	WAV_BUFFER_SIZE			0x0400
-#define SECONDARY_BUFFER_SIZE	0x10000
+#define	WAV_BUFFERS		128
+#define	WAV_MASK		0x7F
+#ifndef DSBSIZE_MIN
+#define DSBSIZE_MIN		4
+#endif
+#ifndef DSBSIZE_MAX
+#define DSBSIZE_MAX		0x0FFFFFFF
+#endif
 
 typedef enum {SIS_SUCCESS, SIS_FAILURE, SIS_NOTAVAIL} sndinitstat;
 
@@ -23,31 +27,25 @@ static qboolean	primary_format_set;
 static int	snd_buffer_count = 0;
 static int	sample16;
 static int	snd_sent, snd_completed;
-
+static int	allocMark = 0;
+static int	ds_sbuf_size, wv_buf_size;
+extern int	desired_bits, desired_speed, desired_channels;
 
 /* 
  * Global variables. Must be visible to window-procedure function 
  *  so it can unlock and free the data block after it has been played. 
  */ 
 
-HANDLE		hData;
 HPSTR		lpData, lpData2;
-
-HGLOBAL		hWaveHdr;
 LPWAVEHDR	lpWaveHdr;
-
-HWAVEOUT    hWaveOut; 
-
+HWAVEOUT	hWaveOut;
 WAVEOUTCAPS	wavecaps;
-
-DWORD	gSndBufSize;
-
+DWORD		gSndBufSize;
 MMTIME		mmstarttime;
 
-LPDIRECTSOUND pDS;
-LPDIRECTSOUNDBUFFER pDSBuf, pDSPBuf;
-
-HINSTANCE hInstDS;
+LPDIRECTSOUND	pDS;
+LPDIRECTSOUNDBUFFER	pDSBuf, pDSPBuf;
+HINSTANCE	hInstDS;
 
 qboolean SNDDMA_InitWav (void);
 
@@ -126,26 +124,21 @@ void FreeSound (void)
 
 		waveOutClose (hWaveOut);
 
-		if (hWaveHdr)
-		{
-			GlobalUnlock(hWaveHdr); 
-			GlobalFree(hWaveHdr);
+/* These are now on the hunk and we have to be wary about deallocating them:
+   Other stuff might have been allocated above.  A nonzero allocMark is the
+   case only if wave init failed, and we are here immediately after that,
+   in which case it's safe to free whatever we allocated. In any other case,
+   allocMark will be 0 and no action is performed.	Pa3PyX	*/
+		if (allocMark) {
+			Hunk_FreeToLowMark(allocMark);
+			allocMark = 0;
 		}
-
-		if (hData)
-		{
-			GlobalUnlock(hData);
-			GlobalFree(hData);
-		}
-
 	}
 
 	pDS = NULL;
 	pDSBuf = NULL;
 	pDSPBuf = NULL;
 	hWaveOut = 0;
-	hData = 0;
-	hWaveHdr = 0;
 	lpData = NULL;
 	lpWaveHdr = NULL;
 	dsound_init = false;
@@ -217,25 +210,23 @@ sndinitstat SNDDMA_InitDirect (void)
 
 	shm = &sn;
 
-	shm->channels = 2;
-	shm->samplebits = 16;
-	shm->speed = 11025;
+	shm->channels = desired_channels;
+	shm->samplebits = desired_bits;
+	shm->speed = desired_speed;
 
 	memset (&format, 0, sizeof(format));
 	format.wFormatTag = WAVE_FORMAT_PCM;
-    format.nChannels = shm->channels;
-    format.wBitsPerSample = shm->samplebits;
-    format.nSamplesPerSec = shm->speed;
-    format.nBlockAlign = format.nChannels
-		*format.wBitsPerSample / 8;
-    format.cbSize = 0;
-    format.nAvgBytesPerSec = format.nSamplesPerSec
-		*format.nBlockAlign; 
+	format.nChannels = shm->channels;
+	format.wBitsPerSample = shm->samplebits;
+	format.nSamplesPerSec = shm->speed;
+	format.nBlockAlign = format.nChannels * format.wBitsPerSample / 8;
+	format.cbSize = 0;
+	format.nAvgBytesPerSec = format.nSamplesPerSec * format.nBlockAlign;
 
 	if (!hInstDS)
 	{
 		hInstDS = LoadLibrary("dsound.dll");
-		
+
 		if (hInstDS == NULL)
 		{
 			Con_SafePrintf ("Couldn't load dsound.dll\n");
@@ -259,14 +250,13 @@ sndinitstat SNDDMA_InitDirect (void)
 			return SIS_FAILURE;
 		}
 
-		if (MessageBox (NULL,
-						"The sound hardware is in use by another app.\n\n"
-					    "Select Retry to try to start sound again or Cancel to run Hexen II with no sound.",
-						"Sound not available",
-						MB_RETRYCANCEL | MB_SETFOREGROUND | MB_ICONEXCLAMATION) != IDRETRY)
+		if (MessageBox (NULL, "The sound hardware is in use by another app.\n\n"
+				"Select Retry to try to start sound again or Cancel to run Hexen II with no sound.",
+				"Sound not available",
+				MB_RETRYCANCEL | MB_SETFOREGROUND | MB_ICONEXCLAMATION) != IDRETRY)
 		{
 			Con_SafePrintf ("DirectSoundCreate failure\n"
-							"  hardware already in use\n");
+					"  hardware already in use\n");
 			return SIS_NOTAVAIL;
 		}
 	}
@@ -337,7 +327,11 @@ sndinitstat SNDDMA_InitDirect (void)
 		memset (&dsbuf, 0, sizeof(dsbuf));
 		dsbuf.dwSize = sizeof(DSBUFFERDESC);
 		dsbuf.dwFlags = DSBCAPS_CTRLFREQUENCY | DSBCAPS_LOCSOFTWARE;
-		dsbuf.dwBufferBytes = SECONDARY_BUFFER_SIZE;
+		if (ds_sbuf_size < DSBSIZE_MIN) 
+			ds_sbuf_size = 1 << (Q_log2(DSBSIZE_MIN) + 1);
+		if (ds_sbuf_size > DSBSIZE_MAX)
+			ds_sbuf_size = 1 << Q_log2(DSBSIZE_MAX);
+		dsbuf.dwBufferBytes = ds_sbuf_size;
 		dsbuf.lpwfxFormat = &format;
 
 		memset(&dsbcaps, 0, sizeof(dsbcaps));
@@ -387,11 +381,13 @@ sndinitstat SNDDMA_InitDirect (void)
 	pDSBuf->lpVtbl->Play(pDSBuf, 0, 0, DSBPLAY_LOOPING);
 
 	if (snd_firsttime)
-		Con_SafePrintf("   %d channel(s)\n"
-		               "   %d bits/sample\n"
-					   "   %d bytes/sec\n",
-					   shm->channels, shm->samplebits, shm->speed);
-	
+		Con_SafePrintf ("   %d channel(s)\n"
+				"   %d bits/sample\n"
+				"   %d bytes/sec\n",
+				"   %d bytes in sound buffer\n",
+				shm->channels, shm->samplebits,
+				shm->speed, dsbcaps.dwBufferBytes);
+
 	gSndBufSize = dsbcaps.dwBufferBytes;
 
 // initialize the buffer
@@ -459,9 +455,9 @@ qboolean SNDDMA_InitWav (void)
 
 	shm = &sn;
 
-	shm->channels = 2;
-	shm->samplebits = 16;
-	shm->speed = 11025;
+	shm->channels = desired_channels;
+	shm->samplebits = desired_bits;
+	shm->speed = desired_speed;
 
 	memset (&format, 0, sizeof(format));
 	format.wFormatTag = WAVE_FORMAT_PCM;
@@ -486,71 +482,34 @@ qboolean SNDDMA_InitWav (void)
 		}
 
 		if (MessageBox (NULL,
-						"The sound hardware is in use by another app.\n\n"
-					    "Select Retry to try to start sound again or Cancel to run Hexen II with no sound.",
-						"Sound not available",
-						MB_RETRYCANCEL | MB_SETFOREGROUND | MB_ICONEXCLAMATION) != IDRETRY)
+				"The sound hardware is in use by another app.\n\n"
+				"Select Retry to try to start sound again or Cancel to run Hexen II with no sound.",
+				"Sound not available",
+				MB_RETRYCANCEL | MB_SETFOREGROUND | MB_ICONEXCLAMATION) != IDRETRY)
 		{
 			Con_SafePrintf ("waveOutOpen failure;\n"
-							"  hardware already in use\n");
+					"  hardware already in use\n");
 			return false;
 		}
 	} 
 
 	/* 
-	 * Allocate and lock memory for the waveform data. The memory 
-	 * for waveform data must be globally allocated with 
-	 * GMEM_MOVEABLE and GMEM_SHARE flags. 
-
+	 * Allocate memory for the waveform data.
 	*/ 
-	gSndBufSize = WAV_BUFFERS*WAV_BUFFER_SIZE;
-	hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, gSndBufSize); 
-	if (!hData) 
-	{ 
-		Con_SafePrintf ("Sound: Out of memory.\n");
-		FreeSound ();
-		return false; 
-	}
-	lpData = GlobalLock(hData);
-	if (!lpData)
-	{ 
-		Con_SafePrintf ("Sound: Failed to lock.\n");
-		FreeSound ();
-		return false; 
-	} 
-	memset (lpData, 0, gSndBufSize);
+	gSndBufSize = WAV_BUFFERS * wv_buf_size;
+	allocMark = Hunk_LowMark();
+	lpData = Hunk_AllocName(gSndBufSize, "sndbuff");
 
 	/* 
-	 * Allocate and lock memory for the header. This memory must 
-	 * also be globally allocated with GMEM_MOVEABLE and 
-	 * GMEM_SHARE flags. 
+	 * Allocate memory for the header.
 	 */ 
-	hWaveHdr = GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, 
-		(DWORD) sizeof(WAVEHDR) * WAV_BUFFERS); 
-
-	if (hWaveHdr == NULL)
-	{ 
-		Con_SafePrintf ("Sound: Failed to Alloc header.\n");
-		FreeSound ();
-		return false; 
-	} 
-
-	lpWaveHdr = (LPWAVEHDR) GlobalLock(hWaveHdr); 
-
-	if (lpWaveHdr == NULL)
-	{ 
-		Con_SafePrintf ("Sound: Failed to lock header.\n");
-		FreeSound ();
-		return false; 
-	}
-
-	memset (lpWaveHdr, 0, sizeof(WAVEHDR) * WAV_BUFFERS);
+	lpWaveHdr = Hunk_AllocName((DWORD)sizeof(WAVEHDR) * WAV_BUFFERS, "wavehdr");
 
 	/* After allocation, set up and prepare headers. */ 
 	for (i=0 ; i<WAV_BUFFERS ; i++)
 	{
-		lpWaveHdr[i].dwBufferLength = WAV_BUFFER_SIZE; 
-		lpWaveHdr[i].lpData = lpData + i*WAV_BUFFER_SIZE;
+		lpWaveHdr[i].dwBufferLength = wv_buf_size;
+		lpWaveHdr[i].lpData = lpData + i * wv_buf_size;
 
 		if (waveOutPrepareHeader(hWaveOut, lpWaveHdr+i, sizeof(WAVEHDR)) !=
 				MMSYSERR_NOERROR)
@@ -571,6 +530,19 @@ qboolean SNDDMA_InitWav (void)
 
 	wav_init = true;
 
+	Con_SafePrintf ("   %d channel(s)\n"
+			"   %d bits/sample\n"
+			"   %d bytes/sec\n"
+			"   %d sound buffers\n"
+			"   %d bytes/sound buffer\n",
+			shm->channels, shm->samplebits,
+			shm->speed, WAV_BUFFERS, wv_buf_size);
+
+	/* Wave init succeeded, so DO NOT attempt to deallocate sound buffers
+	   from the hunk later on, otherwise we risk trashing everything that
+	   was allocated after them.	Pa3PyX	*/
+	allocMark = 0;
+
 	return true;
 }
 
@@ -582,7 +554,6 @@ Try to find a sound device to mix for.
 Returns false if nothing is found.
 ==================
 */
-
 qboolean SNDDMA_Init(void)
 {
 	sndinitstat	stat;
@@ -593,6 +564,11 @@ qboolean SNDDMA_Init(void)
 	dsound_init = wav_init = 0;
 
 	stat = SIS_FAILURE;	// assume DirectSound won't initialize
+
+	/* Calculate Wave and DS buffer sizes to set, to store
+	   2 secs of data, round up to the next power of 2  */
+	ds_sbuf_size = 1 << (Q_log2((desired_bits  >> 3) * (desired_speed << 1)) + 1);
+	wv_buf_size  = 1 << (Q_log2((desired_speed << 3) / WAV_BUFFERS) + 1);
 
 	/* Init DirectSound */
 	if (!wavonly)
@@ -648,10 +624,10 @@ qboolean SNDDMA_Init(void)
 		if (snd_firsttime)
 			Con_SafePrintf ("No sound device initialized\n");
 
-		return 0;
+		return false;
 	}
 
-	return 1;
+	return true;
 }
 
 /*
@@ -677,7 +653,7 @@ int SNDDMA_GetDMAPos(void)
 	}
 	else if (wav_init)
 	{
-		s = snd_sent * WAV_BUFFER_SIZE;
+		s = snd_sent * wv_buf_size;
 	}
 
 
