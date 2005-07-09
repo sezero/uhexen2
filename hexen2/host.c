@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.23 2005-06-15 22:03:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.24 2005-07-09 07:31:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -907,12 +907,12 @@ void Host_InitVCR (quakeparms_t *parms)
 			Sys_Error("Invalid signature in vcr file\n");
 
 		Sys_FileRead (vcrFile, &com_argc, sizeof(int));
-		com_argv = malloc(com_argc * sizeof(char *));
+		com_argv = Z_Malloc(com_argc * sizeof(char *));
 		com_argv[0] = parms->argv[0];
 		for (i = 0; i < com_argc; i++)
 		{
 			Sys_FileRead (vcrFile, &len, sizeof(int));
-			p = malloc(len);
+			p = Z_Malloc(len);
 			Sys_FileRead (vcrFile, p, len);
 			com_argv[i+1] = p;
 		}
@@ -1086,6 +1086,10 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/06/15 22:03:02  sezero
+ * vid_setgamma command is for sdl versions only.
+ * also added notes on the WITH_SDL define in quakedef.h
+ *
  * Revision 1.22  2005/06/12 07:31:18  sezero
  * enabled alsa only on linux platforms
  *
