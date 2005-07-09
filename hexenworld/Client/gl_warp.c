@@ -387,10 +387,7 @@ void R_DrawSkyChain (msurface_t *s)
 */
 
 #ifdef QUAKE2
-
-
-#define	SKY_TEX		2000
-
+int	sky_tex[6];
 /*
 =================================================================
 
@@ -457,7 +454,7 @@ void LoadPCX (FILE *f)
 	fseek (f, sizeof(pcxbuf) - 4, SEEK_SET);
 
 	count = (pcx->xmax+1) * (pcx->ymax+1);
-	pcx_rgb = malloc( count * 4);
+	pcx_rgb = Hunk_AllocName(count * 4, "pcxfile_data");
 
 	for (y=0 ; y<=pcx->ymax ; y++)
 	{
@@ -567,8 +564,8 @@ void LoadTGA (FILE *fin)
 	rows = targa_header.height;
 	numPixels = columns * rows;
 
-	targa_rgba = malloc (numPixels*4);
-	
+	targa_rgba = Hunk_AllocName(numPixels * 4, "tgafile_data");
+
 	if (targa_header.id_length != 0)
 		fseek(fin, targa_header.id_length, SEEK_CUR);  // skip TARGA image comment
 	
@@ -691,13 +688,12 @@ R_LoadSkys
 char	*suf[6] = {"rt", "bk", "lf", "ft", "up", "dn"};
 void R_LoadSkys (void)
 {
-	int		i;
+	int	i. mark;
 	FILE	*f;
-	char	name[64];
+	char	name[64], texname[20];
 
 	for (i=0 ; i<6 ; i++)
 	{
-		GL_Bind (SKY_TEX + i);
 		sprintf (name, "gfx/env/bkgtst%s.tga", suf[i]);
 		COM_FOpenFile (name, &f);
 		if (!f)
@@ -705,17 +701,17 @@ void R_LoadSkys (void)
 			Con_Printf ("Couldn't load %s\n", name);
 			continue;
 		}
+
+		mark = Hunk_LowMark();
 		LoadTGA (f);
 //		LoadPCX (f);
 
-		glTexImage2D_fp (GL_TEXTURE_2D, 0, gl_solid_format, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, targa_rgba);
-//		glTexImage2D_fp (GL_TEXTURE_2D, 0, gl_solid_format, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, pcx_rgb);
+		snprintf(texname, "skybox%i", i);
+		sky_tex[i] = GL_LoadTexture(texname, 256, 256, targa_rgba, false, false, 0, true);
+		Hunk_FreeToLowMark(mark);
 
-		free (targa_rgba);
-//		free (pcx_rgb);
-
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 	}
 }
 
@@ -1036,23 +1032,22 @@ void R_DrawSkyBox (void)
 	float	s, t;
 
 #if 0
-glEnable_fp (GL_BLEND);
-glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-glColor4f_fp (1,1,1,0.5);
-glDisable_fp (GL_DEPTH_TEST);
+	glEnable_fp (GL_BLEND);
+	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glColor4f_fp (1,1,1,0.5);
+	glDisable_fp (GL_DEPTH_TEST);
 #endif
 	for (i=0 ; i<6 ; i++)
 	{
-		if (skymins[0][i] >= skymaxs[0][i]
-		|| skymins[1][i] >= skymaxs[1][i])
+		if ( (skymins[0][i] >= skymaxs[0][i]) || (skymins[1][i] >= skymaxs[1][i]) )
 			continue;
 
-		GL_Bind (SKY_TEX+skytexorder[i]);
+		GL_Bind(sky_tex[skytexorder[i]]);
 #if 0
-skymins[0][i] = -1;
-skymins[1][i] = -1;
-skymaxs[0][i] = 1;
-skymaxs[1][i] = 1;
+		skymins[0][i] = -1;
+		skymins[1][i] = -1;
+		skymaxs[0][i] = 1;
+		skymaxs[1][i] = 1;
 #endif
 		glBegin_fp (GL_QUADS);
 		MakeSkyVec (skymins[0][i], skymins[1][i], i);
@@ -1062,10 +1057,10 @@ skymaxs[1][i] = 1;
 		glEnd_fp ();
 	}
 #if 0
-glDisable_fp (GL_BLEND);
-glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-glColor4f_fp (1,1,1,0.5);
-glEnable_fp (GL_DEPTH_TEST);
+	glDisable_fp (GL_BLEND);
+	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glColor4f_fp (1,1,1,0.5);
+	glEnable_fp (GL_DEPTH_TEST);
 #endif
 }
 
