@@ -2,7 +2,7 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.c,v 1.5 2005-06-12 07:28:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.c,v 1.6 2005-07-09 07:24:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -180,6 +180,15 @@ void VectorMA (vec3_t veca, float scale, vec3_t vecb, vec3_t vecc)
 	vecc[0] = veca[0] + scale*vecb[0];
 	vecc[1] = veca[1] + scale*vecb[1];
 	vecc[2] = veca[2] + scale*vecb[2];
+}
+
+
+int Q_log2(int val)
+{
+	int answer=0;
+	while (val>>=1)
+		answer++;
+	return answer;
 }
 
 

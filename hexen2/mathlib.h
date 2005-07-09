@@ -48,6 +48,8 @@ void VectorMA (vec3_t veca, float scale, vec3_t vecb, vec3_t vecc);
 static inline float VectorNormalize (vec3_t v);		// returns vector length
 static inline void VectorScale (vec3_t in, vec_t scale, vec3_t out);
 
+int Q_log2(int val);
+
 void R_ConcatRotations (float in1[3][3], float in2[3][3], float out[3][3]);
 void R_ConcatTransforms (float in1[3][4], float in2[3][4], float out[3][4]);
 

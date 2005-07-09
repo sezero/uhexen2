@@ -2,7 +2,7 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.7 2005-06-12 07:28:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.8 2005-07-09 07:24:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -183,6 +183,15 @@ void VectorMA (vec3_t veca, float scale, vec3_t vecb, vec3_t vecc)
 }
 
 
+int Q_log2(int val)
+{
+	int answer=0;
+	while (val>>=1)
+		answer++;
+	return answer;
+}
+
+
 /*
 ================
 R_ConcatRotations
@@ -345,6 +354,9 @@ fixed16_t Invert24To16(fixed16_t val)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/06/12 07:28:51  sezero
+ * clean-up of includes and a fix (hopefully) for endianness detection
+ *
  * Revision 1.6  2005/05/17 06:51:57  sezero
  * synced h2 and hw versions of mathlib.*
  * (h2 now has some math functions inlined)
