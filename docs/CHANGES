@@ -1,6 +1,35 @@
 ChangeLog:
 
+2005-07-09 (CVS, 1.2.5-pre8):
+    * fixed some string length oversights in zone.c.
+    * macroized the repetitive console+file printing routines
+      for sys_* console commands.
+    * added hexen2 version of zone.c to hexenworld.
+    * changed all Hunk_Alloc() usage to Hunk_AllocName() for
+      easier memory usage tracing (adapted from Pa3PyX).
+    * we now allocate on the hunk (or zone) and don't malloc
+      system memory unless necessary.
+    * increased hexen2 minimum zone size to 128 kb.
+    * put back Q_log2() to mathlib, hunk allocation changes to
+      snd_win requires that.
+    * tiny fixes/clean-ups in win32 sound which now honors user's
+      sampling rate and bps requests.
+    * similar cleanups in win32 midi.
+    * copied hexen2 version of snd_win to hexenworld.
+    * fixed win32-hexenworld clipboard pasting code compilation.
+    * added win32 clipboard pasting to hexen2 (from hexenworld).
+    * SDL version checking and refusal shall not happen for
+      dedicated servers.
+    * tiny clean-ups in sys_unix.c.
+    * moved local unix version of strlwr to zone.c, its only user.
+    * added defines for min, max and default heap and zone sizes
+      in the launcher.
+    * increased minimun zonesize to 128 in the launcher, as well.
+
 2005-07-05 (CVS, 1.2.5-pre7):
+    * removed traces of alsa ancient versions support
+    * style/whitespace changes and removal of weird alien stuff
+      in zone.{c|h}
     * Updated oss driver (added PROT_READ to mmap mode)
     * Updated sdl sound (added soundinfo to init, various
       insignificant things)
