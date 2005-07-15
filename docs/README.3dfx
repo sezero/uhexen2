@@ -193,6 +193,6 @@ launcher, as well.
 5.  Gamma (brightness) support:
 -------------------------------
 
-If you run the game with -3dfxgamma command-line argument, some 3dfx
+If you run HoT-1.2.5 with -3dfxgamma command-line argument, some 3dfx
 specific hacks will be searched and activated for brightness control.
 This option is also available on the launcher.
