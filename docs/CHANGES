@@ -1,5 +1,15 @@
 ChangeLog:
 
+2005-07-15 (CVS, 1.2.5-pre9):
+    * fixed typo in cd_unix.c for freebsd
+    * added a makefile hack to prevent hwsv or hwcl build failures when
+      either of them is built first and then the other is attempted to
+      be built without doing a make clean
+    * documented the modified/unmodified detection
+    * updated README.3dfx (the -3dfxgamma argument requires HoT-1.2.5
+      and newer)
+    * updated BUGS (insignificant typos, etc.)
+
 2005-07-09 (CVS, 1.2.5-pre8):
     * fixed some string length oversights in zone.c.
     * macroized the repetitive console+file printing routines
