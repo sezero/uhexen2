@@ -1,0 +1,49 @@
+Compiling the Hammer of Thyrion code on Win32:
+----------------------------------------------
+
+First download this package and install it to C:\MinGW :
+  http://prdownloads.sourceforge.net/mingw/MinGW-3.1.0-1.exe?download
+
+Then download this one and install to c:\msys :
+  http://prdownloads.sourceforge.net/mingw/MSYS-1.0.11-2004.04.30-1.exe?download
+
+I did this on a Win98 installation and, FWIW, I also added
+these lines to my autoexec.bat:
+
+  PATH=%PATH%;C:\MinGW\bin;C:\MinGW\mingw32\bin
+
+This version of MinGW comes with a 3.2.3 version of gcc (GNU C
+compiler) Newer versions of MinGW and MSYS may or may not work.
+
+For assembly sources, download nasm:
+  http://prdownloads.sourceforge.net/nasm/nasm-0.98.39-win32.zip?download
+and put the nasmw.exe into the C:\MinGW\bin directory.
+
+Open up a command.com (cmd.exe for NT/XP users) console, cd
+into \msys and type
+  msys sh.exe
+You'll be in a unixish sh environment. The rest is just like
+doing things in linux:  cd into your fake "home directory",
+explode the HoT tarball. Then:
+
+  cd uhexen2
+
+  cd hexen2
+  make -f Makefile.mingw glh2_exe
+  make -f Makefile.mingw clean
+  make -f Makefile.mingw glmp_exe
+
+  cd ../hexenworld/Client
+  make -f Makefile.mingw glhw_exe
+
+  cd ../hexenworld/Server
+  make -f Makefile.mingw
+
+  cd ../hexenworld/Master
+  make -f Makefile.mingw
+
+  cd ../../utils
+  sh build_win32
+
+MinGW/MSYS homepage is at: http://mingw.sourceforge.net/
+NASM homepage is at	 : http://nasm.sourceforge.net/
