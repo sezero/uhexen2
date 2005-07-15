@@ -5,7 +5,6 @@
 BINARY=hwsv
 BINARY_STATIC=hwsv.static
 
-AS = nasm
 ifndef CC
 CC = gcc
 endif
@@ -14,7 +13,6 @@ CFLAGS = -O2 -march=i586 -Wall -DPLATFORM_UNIX
 ifdef DEBUG
 CFLAGS += -DDEBUG -g
 endif
-ASFLAGS = -f elf
 GAMEFLAGS = -DH2W -DSERVERONLY
 SVINCS = -I../Client/ -I.
 SDLFLAG = `sdl-config --cflags`
@@ -28,21 +26,21 @@ LDSTATIC = -lm -lpthread -static
 
 %.o: %.c
 	$(CC) -c $(SVINCS) $(CFLAGS) $(GAMEFLAGS) -o $@ $<
-%.o: %.asm
-	$(AS) $(ASFLAGS) -o $@ $<
+cl_objs/%.o: ../Client/%.c
+	$(CC) -c $(SVINCS) $(CFLAGS) $(GAMEFLAGS) -o $@ $<
 
 COMMONOBJS = model.o \
-	../Client/cmd.o \
-	../Client/common.o \
-	../Client/crc.o \
-	../Client/cvar.o \
-	../Client/mathlib.o \
-	../Client/net_chan.o \
-	../Client/net_wins.o \
-	../Client/pmove.o \
-	../Client/pmovetst.o \
-	../Client/strings.o \
-	../Client/zone.o \
+	cl_objs/cmd.o \
+	cl_objs/common.o \
+	cl_objs/crc.o \
+	cl_objs/cvar.o \
+	cl_objs/mathlib.o \
+	cl_objs/net_chan.o \
+	cl_objs/net_wins.o \
+	cl_objs/pmove.o \
+	cl_objs/pmovetst.o \
+	cl_objs/strings.o \
+	cl_objs/zone.o \
 	pr_cmds.o \
 	pr_edict.o \
 	pr_exec.o \
