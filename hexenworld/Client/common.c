@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.11 2005-07-09 09:07:59 sezero Exp $
+	$Id: common.c,v 1.12 2005-07-15 16:55:45 sezero Exp $
 */
 
 #ifdef SERVERONLY 
@@ -36,24 +36,25 @@ qboolean		msg_suppress_1 = 0;
 void COM_InitFilesystem (void);
 void COM_Path_f (void);
 
+// look-up table of pak filenames: { numfiles, crc }
 // if a packfile directory differs from this, it is assumed to be hacked
 #define MAX_PAKDATA	6
 const int pakdata[MAX_PAKDATA][2] = {
-	{ 696,	34289 },
-	{ 523,	2995  },
-	{ 183,	4807  },
-	{ 245,	1478  },
-	{ 102,	41062 },
-	{ 797,	22780 }
+	{ 696,	34289 },	/* pak0.pak, registered	*/
+	{ 523,	2995  },	/* pak1.pak, registered	*/
+	{ 183,	4807  },	/* pak2.pak, oem, data needs verification */
+	{ 245,	1478  },	/* pak3.pak, portals	*/
+	{ 102,	41062 },	/* pak4.pak, hexenworld	*/
+	{ 797,	22780 }		/* pak0.pak, demo	*/
 };
-
+// loacations of pak filenames as shipped by raven
 const char *dirdata[MAX_PAKDATA] = {
-	"data1",
-	"data1",
-	"data1",
-	"portals",
-	"hw",
-	"data1"
+	"data1",	/* pak0.pak, registered	*/
+	"data1",	/* pak1.pak, registered	*/
+	"data1",	/* pak2.pak, oem	*/
+	"portals",	/* pak3.pak, portals	*/
+	"hw",		/* pak4.pak, hexenworld	*/
+	"data1"		/* pak0.pak, demo	*/
 };
 
 char	gamedirfile[MAX_OSPATH];
