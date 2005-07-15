@@ -12,10 +12,10 @@ Known Bugs
   Although this shouldn't be a problem (we already have ALSA and SDL
   sound drivers), fixing that is on the TODO list.
 
-  3dfx Voodoo1/2: Palettized textures are broken both with Mesa 3.x.
-  Mesa-6.x seems to work fine. Voodoo3/5 aren't affected, because DRI
-  driver doesn't have those extensions. Nvidia seems to work fine with
-  it. Don't know if this is a Mesa bug or Hexen2 bug, yet.
+  3dfx Voodoo1/2:  Palettized textures are broken with Mesa 3.x.
+  Mesa-6.x seems to work fine. Banshee and Voodoo3/4/5 aren't affected
+  because the DRI driver doesn't have those extensions. Nvidia seems to
+  work fine with it. Don't know if this is a Mesa bug or a Hexen2 bug.
 
   3dfx Voodoo: Doesn't work correctly with multitexturing, yet.
 
