@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.30 2005-07-09 07:29:40 sezero Exp $
+	$Id: gl_draw.c,v 1.31 2005-07-16 23:27:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -62,6 +62,11 @@ extern qboolean	is_3dfx;
 gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
 
+
+void GL_Texels_f (void)
+{
+	Con_Printf ("Current uploaded texels: %i\n", texels);
+}
 
 /*
 =============================================================================
@@ -265,10 +270,14 @@ qpic_t	*Draw_CachePic (char *path)
 		memcpy (menuplyr_pixels[2], dat->data, dat->width*dat->height);
 	else if (!strcmp (path, "gfx/menu/netp4.lmp"))
 		memcpy (menuplyr_pixels[3], dat->data, dat->width*dat->height);
+#if defined(H2MP) || defined (H2W)
 	else if (!strcmp (path, "gfx/menu/netp5.lmp"))
 		memcpy (menuplyr_pixels[4], dat->data, dat->width*dat->height);
+#endif
+#if defined (H2W)
 	else if (!strcmp (path, "gfx/menu/netp6.lmp"))
 		memcpy (menuplyr_pixels[5], dat->data, dat->width*dat->height);
+#endif
 
 	pic->pic.width = dat->width;
 	pic->pic.height = dat->height;
@@ -451,6 +460,7 @@ void Draw_Init (void)
 	Cvar_RegisterVariable (&gl_spritemip);
 
 	Cmd_AddCommand ("gl_texturemode", &Draw_TextureMode_f);
+	Cmd_AddCommand ("gl_texels", &GL_Texels_f);
 
 	// load the console background and the charset
 	// by hand, because we need to write the version
@@ -620,8 +630,7 @@ void Draw_Crosshair(void)
 		glEnd_fp ();
 	} else if (crosshair.value)
 		Draw_Character (scr_vrect.x + scr_vrect.width/2-4 + cl_crossx.value, 
-			scr_vrect.y + scr_vrect.height/2-4 + cl_crossy.value, 
-			'+');
+			scr_vrect.y + scr_vrect.height/2-4 + cl_crossy.value, '+');
 }
 
 
