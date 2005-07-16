@@ -188,10 +188,10 @@ void R_TimeGraph(void)
 		LastServerMessageSize = 0;
 	}
 
-//a = fastfabs(mouse_y * 0.05);
+//a = fabs(mouse_y * 0.05);
 //a = (int)((r_refdef.vieworg[2] + 1024)/1)%(int)r_graphheight.value;
-//a = fastfabs(velocity[0])/20;
-//a = ((int)fastfabs(origin[0])/8)%20;
+//a = fabs(velocity[0])/20;
+//a = ((int)fabs(origin[0])/8)%20;
 //a = (cl.idealpitch + 30)/5;
 
 	r_timings[timex] = a;

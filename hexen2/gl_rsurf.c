@@ -59,7 +59,7 @@ void R_AddDynamicLights (msurface_t *surf)
 		rad = cl_dlights[lnum].radius;
 		dist = DotProduct (cl_dlights[lnum].origin, surf->plane->normal) -
 				surf->plane->dist;
-		rad -= fastfabs(dist);
+		rad -= fabs(dist);
 		minlight = cl_dlights[lnum].minlight;
 		if (rad < minlight)
 			continue;
@@ -1379,9 +1379,9 @@ void BuildSurfaceDisplayList (msurface_t *fa)
 
 			// skip co-linear points
 			#define COLINEAR_EPSILON 0.001
-			if ((fastfabs( v1[0] - v2[0] ) <= COLINEAR_EPSILON) &&
-				(fastfabs( v1[1] - v2[1] ) <= COLINEAR_EPSILON) && 
-				(fastfabs( v1[2] - v2[2] ) <= COLINEAR_EPSILON))
+			if ((fabs( v1[0] - v2[0] ) <= COLINEAR_EPSILON) &&
+				(fabs( v1[1] - v2[1] ) <= COLINEAR_EPSILON) && 
+				(fabs( v1[2] - v2[2] ) <= COLINEAR_EPSILON))
 			{
 				int j;
 				for (j = i + 1; j < lnumverts; ++j)

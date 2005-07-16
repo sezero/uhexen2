@@ -103,5 +103,3 @@ static inline void VectorScale (vec3_t in, vec_t scale, vec3_t out)
 	out[2] = in[2]*scale;
 }
 
-#define fastfabs(val) ((val)>=0.0f?(val):-(val))
-

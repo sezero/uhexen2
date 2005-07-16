@@ -785,9 +785,9 @@ return;
 	{
 		VectorAdd (vp, v, v);
 	}
-	av[0] = fastfabs(v[0]);
-	av[1] = fastfabs(v[1]);
-	av[2] = fastfabs(v[2]);
+	av[0] = fabs(v[0]);
+	av[1] = fabs(v[1]);
+	av[2] = fabs(v[2]);
 	if (av[0] > av[1] && av[0] > av[2])
 	{
 		if (v[0] < 0)

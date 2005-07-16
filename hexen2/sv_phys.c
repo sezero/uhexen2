@@ -1,7 +1,7 @@
 /*
 	sv_phys.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.8 2005-05-19 16:44:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.9 2005-07-16 23:23:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -890,13 +890,13 @@ Con_DPrintf("%f %f %f\n", pusher->v.angles[0], pusher->v.angles[1], pusher->v.an
 					VectorSubtract(check->v.origin,testmove,check->v.origin);
 					testmove[0]=0;
 					testmove[1]=0;
-					testmove[2]=org[2]*3;//was: +org[2]*(fastfabs(org[1])+fastfabs(org[2]));
+					testmove[2]=org[2]*3;//was: +org[2]*(fabs(org[1])+fabs(org[2]));
 					break;
 				case 10:
 				//Try normalized org xy * 2 only
 					VectorSubtract(check->v.origin,testmove,check->v.origin);
-					testmove[0]=org[0]*2;//was: +org[0]*fastfabs(org[2]);
-					testmove[1]=org[1]*2;//was: +org[1]*fastfabs(org[2]);
+					testmove[0]=org[0]*2;//was: +org[0]*fabs(org[2]);
+					testmove[1]=org[1]*2;//was: +org[1]*fabs(org[2]);
 					testmove[2]=0;
 					break;
 				case 11:
@@ -1243,8 +1243,8 @@ int SV_TryUnstick (edict_t *ent, vec3_t oldvel)
 		ent->v. velocity[2] = 0;
 		clip = SV_FlyMove (ent, 0.1, &steptrace);
 
-		if ( fastfabs(oldorg[1] - ent->v.origin[1]) > 4
-		|| fastfabs(oldorg[0] - ent->v.origin[0]) > 4 )
+		if ( fabs(oldorg[1] - ent->v.origin[1]) > 4
+			|| fabs(oldorg[0] - ent->v.origin[0]) > 4 )
 		{
 //			Con_DPrintf ("unstuck!\n");
 			return clip;
@@ -1327,8 +1327,8 @@ void SV_WalkMove (edict_t *ent)
 // in the clipping hulls
 	if (clip)
 	{
-		if ( fastfabs(oldorg[1] - ent->v.origin[1]) < 0.03125
-		&& fastfabs(oldorg[0] - ent->v.origin[0]) < 0.03125 )
+		if ( fabs(oldorg[1] - ent->v.origin[1]) < 0.03125
+			&& fabs(oldorg[0] - ent->v.origin[0]) < 0.03125 )
 		{	// stepping up didn't make any progress
 			clip = SV_TryUnstick (ent, oldvel);
 		}
@@ -2134,6 +2134,9 @@ trace_t SV_Trace_Toss (edict_t *ent, edict_t *ignore)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/05/19 16:44:13  sezero
+ * removed all unused (never used) RJNETa and RJNET2 code
+ *
  * Revision 1.7  2005/05/19 16:41:50  sezero
  * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
  *

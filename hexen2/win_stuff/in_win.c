@@ -845,7 +845,7 @@ void IN_JoyMove (usercmd_t *cmd)
 			if ((joy_advanced.value == 0.0) && (in_mlook.state & 1))
 			{
 				// user wants forward control to become look control
-				if (fastfabs(fAxisValue) > joy_pitchthreshold.value)
+				if (fabs(fAxisValue) > joy_pitchthreshold.value)
 				{		
 					// if mouse invert is on, invert the joystick pitch value
 					// only absolute control support here (joy_advanced is false)
@@ -863,7 +863,7 @@ void IN_JoyMove (usercmd_t *cmd)
 			else
 			{
 				// user wants forward control to be forward control
-				if (fastfabs(fAxisValue) > joy_forwardthreshold.value)
+				if (fabs(fAxisValue) > joy_forwardthreshold.value)
 				{
 //					cmd->forwardmove += (fAxisValue * joy_forwardsensitivity.value) * speed * cl_forwardspeed.value;
 					cmd->forwardmove += (fAxisValue * joy_forwardsensitivity.value) * speed * 200;
@@ -872,7 +872,7 @@ void IN_JoyMove (usercmd_t *cmd)
 			break;
 
 		case AxisSide:
-			if (fastfabs(fAxisValue) > joy_sidethreshold.value)
+			if (fabs(fAxisValue) > joy_sidethreshold.value)
 			{
 //				cmd->sidemove += (fAxisValue * joy_sidesensitivity.value) * speed * cl_sidespeed.value;
 				cmd->sidemove += (fAxisValue * joy_sidesensitivity.value) * speed * 225;
@@ -883,7 +883,7 @@ void IN_JoyMove (usercmd_t *cmd)
 			if ((in_strafe.state & 1) || (lookstrafe.value && (in_mlook.state & 1)))
 			{
 				// user wants turn control to become side control
-				if (fastfabs(fAxisValue) > joy_sidethreshold.value)
+				if (fabs(fAxisValue) > joy_sidethreshold.value)
 				{
 //					cmd->sidemove -= (fAxisValue * joy_sidesensitivity.value) * speed * cl_sidespeed.value;
 					cmd->sidemove -= (fAxisValue * joy_sidesensitivity.value) * speed * 225;
@@ -892,7 +892,7 @@ void IN_JoyMove (usercmd_t *cmd)
 			else
 			{
 				// user wants turn control to be turn control
-				if (fastfabs(fAxisValue) > joy_yawthreshold.value)
+				if (fabs(fAxisValue) > joy_yawthreshold.value)
 				{
 					if(dwControlMap[i] == JOY_ABSOLUTE_AXIS)
 					{
@@ -910,7 +910,7 @@ void IN_JoyMove (usercmd_t *cmd)
 		case AxisLook:
 			if (in_mlook.state & 1)
 			{
-				if (fastfabs(fAxisValue) > joy_pitchthreshold.value)
+				if (fabs(fAxisValue) > joy_pitchthreshold.value)
 				{
 					// pitch movement detected and pitch movement desired by user
 					if(dwControlMap[i] == JOY_ABSOLUTE_AXIS)
@@ -940,6 +940,16 @@ void IN_JoyMove (usercmd_t *cmd)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/06/19 11:23:23  sezero
+ * added wheelmouse support and conwidth support to hexen2. changed
+ * hexenworld's default behavior of default 640 conwidth to main width
+ * unless specified otherwise by the user. disabled startup splash
+ * screens for now. sycned hexen2 and hexnworld's GL_Init_Functions().
+ * disabled InitCommonControls()in gl_vidnt. moved RegisterWindowMessage
+ * for uMSG_MOUSEWHEEL to in_win where it belongs. bumped MAXIMUM_WIN_MEMORY
+ * to 32 MB. killed useless Sys_ConsoleInput in hwcl. several other sycning
+ * and clean-up
+ *
  * Revision 1.5  2005/06/17 16:24:40  sezero
  * win32 fixes and clean-ups
  *

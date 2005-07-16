@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.12 2005-06-26 10:13:53 sezero Exp $
+	$Id: gl_model.c,v 1.13 2005-07-16 23:23:55 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1198,7 +1198,7 @@ float RadiusFromBounds (vec3_t min_ss, vec3_t max_ss)
 
 	for (i=0 ; i<3 ; i++)
 	{
-		corner[i] = fastfabs(min_ss[i]) > fastfabs(max_ss[i]) ? fastfabs(min_ss[i]) : fastfabs(max_ss[i]);
+		corner[i] = fabs(min_ss[i]) > fabs(max_ss[i]) ? fabs(min_ss[i]) : fabs(max_ss[i]);
 	}
 
 	return Length (corner);

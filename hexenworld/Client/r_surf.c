@@ -63,10 +63,10 @@ void R_AddDynamicLights (void)
 		if ( !(surf->dlightbits & (1<<lnum) ) )
 			continue;		// not lit by this light
 
-		rad = fastfabs(cl_dlights[lnum].radius);
+		rad = fabs(cl_dlights[lnum].radius);
 		dist = DotProduct (cl_dlights[lnum].origin, surf->plane->normal) -
 				surf->plane->dist;
-		rad -= fastfabs(dist);
+		rad -= fabs(dist);
 		minlight = cl_dlights[lnum].minlight;
 		if (rad < minlight)
 			continue;

@@ -1144,7 +1144,7 @@ float RadiusFromBounds (vec3_t min_ss, vec3_t max_ss)
 
 	for (i=0 ; i<3 ; i++)
 	{
-		corner[i] = fastfabs(min_ss[i]) > fastfabs(max_ss[i]) ? fastfabs(min_ss[i]) : fastfabs(max_ss[i]);
+		corner[i] = fabs(min_ss[i]) > fabs(max_ss[i]) ? fabs(min_ss[i]) : fabs(max_ss[i]);
 	}
 
 	return Length (corner);

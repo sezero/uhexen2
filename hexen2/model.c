@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/model.c,v 1.7 2005-06-05 16:10:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/model.c,v 1.8 2005-07-16 23:23:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1235,7 +1235,7 @@ float RadiusFromBounds (vec3_t min_ss, vec3_t max_ss)
 
 	for (i=0 ; i<3 ; i++)
 	{
-		corner[i] = fastfabs(min_ss[i]) > fastfabs(max_ss[i]) ? fastfabs(min_ss[i]) : fastfabs(max_ss[i]);
+		corner[i] = fabs(min_ss[i]) > fabs(max_ss[i]) ? fabs(min_ss[i]) : fabs(max_ss[i]);
 	}
 
 	return Length (corner);
@@ -2282,6 +2282,10 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/06/05 16:10:15  sezero
+ * patches I've been forgetting 3/6:
+ * increase MAX_MOD_KNOWN for sofwware version as well
+ *
  * Revision 1.6  2005/05/17 22:56:19  sezero
  * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
  * Q_strXcasecmp will now be used throughout the code which are implementation

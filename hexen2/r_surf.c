@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_surf.c,v 1.4 2005-05-19 16:41:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_surf.c,v 1.5 2005-07-16 23:23:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -68,10 +68,10 @@ void R_AddDynamicLights (void)
 		if ( !(surf->dlightbits & (1<<lnum) ) )
 			continue;		// not lit by this light
 
-		rad = fastfabs(cl_dlights[lnum].radius);
+		rad = fabs(cl_dlights[lnum].radius);
 		dist = DotProduct (cl_dlights[lnum].origin, surf->plane->normal) -
 				surf->plane->dist;
-		rad -= fastfabs(dist);
+		rad -= fabs(dist);
 		minlight = cl_dlights[lnum].minlight;
 		if (rad < minlight)
 			continue;
@@ -682,6 +682,9 @@ void R_GenTile (msurface_t *psurf, void *pdest)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/05/19 16:41:50  sezero
+ * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
+ *
  * Revision 1.3  2004/12/18 13:48:52  sezero
  * Clean-up and kill warnings 3:
  * Kill " suggest parentheses around XXX " warnings

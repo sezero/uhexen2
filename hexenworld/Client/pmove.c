@@ -431,7 +431,7 @@ void PM_WaterMove (void)
 	// client 400 (assasin running) is scaled to maxspeed
 	// clamp is tested seperately so strafe running works
 	clamp = movevars.maxspeed * pmove.hasted;
-	if(fastfabs(fmove) > clamp)
+	if(fabs(fmove) > clamp)
 	{
 		if(fmove < 0)
 			fmove = -clamp;
@@ -439,7 +439,7 @@ void PM_WaterMove (void)
 			fmove = clamp;
 	}
 
-	if(fastfabs(smove) > clamp)
+	if(fabs(smove) > clamp)
 	{
 		if(smove < 0)
 			smove = -clamp;
@@ -535,7 +535,7 @@ void PM_AirMove (void)
 	// client 400 (assasin running) is scaled to maxspeed
 	// clamp is tested seperately so strafe running works
 	clamp = movevars.maxspeed * pmove.hasted;
-	if(fastfabs(fmove) > clamp)
+	if(fabs(fmove) > clamp)
 	{
 		if(fmove < 0)
 			fmove = -clamp;
@@ -543,7 +543,7 @@ void PM_AirMove (void)
 			fmove = clamp;
 	}
 
-	if(fastfabs(smove) > clamp)
+	if(fabs(smove) > clamp)
 	{
 		if(smove < 0)
 			smove = -clamp;
@@ -629,7 +629,7 @@ void PM_FlyingMove (void)
 	// client 400 (assasin running) is scaled to maxspeed
 	// clamp is tested seperately so strafe running works
 	clamp = movevars.maxspeed * pmove.hasted;
-	if(fastfabs(fmove) > clamp)
+	if(fabs(fmove) > clamp)
 	{
 		if(fmove < 0)
 			fmove = -clamp;
@@ -637,14 +637,14 @@ void PM_FlyingMove (void)
 			fmove = clamp;
 	}
 
-	if(fastfabs(smove) > clamp)
+	if(fabs(smove) > clamp)
 	{
 		if(smove < 0)
 			smove = -clamp;
 		else
 			smove = clamp;
 	}
-	if(fastfabs(umove) > clamp)
+	if(fabs(umove) > clamp)
 	{
 		if(umove < 0)
 			umove = -clamp;

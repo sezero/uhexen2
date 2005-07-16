@@ -384,10 +384,10 @@ void SV_LinkEdict (edict_t *ent, qboolean touch_triggers)
 		max = 0;
 		for (i=0 ; i<3 ; i++)
 		{
-			v =fastfabs( ent->v.mins[i]);
+			v =fabs( ent->v.mins[i]);
 			if (v > max)
 				max = v;
-			v =fastfabs( ent->v.maxs[i]);
+			v =fabs( ent->v.maxs[i]);
 			if (v > max)
 				max = v;
 		}
@@ -729,7 +729,7 @@ trace_t SV_ClipMoveToEntity (edict_t *ent, vec3_t start, vec3_t mins, vec3_t max
 
 	// rotate start and end into the models frame of reference
 	if (ent->v.solid == SOLID_BSP && 
-		(fastfabs(ent->v.angles[0]) > 1 || fastfabs(ent->v.angles[1]) > 1 || fastfabs(ent->v.angles[2]) > 1) )
+		(fabs(ent->v.angles[0]) > 1 || fabs(ent->v.angles[1]) > 1 || fabs(ent->v.angles[2]) > 1) )
 	{
 		vec3_t	forward, right, up;
 		vec3_t	temp;
@@ -761,7 +761,7 @@ trace_t SV_ClipMoveToEntity (edict_t *ent, vec3_t start, vec3_t mins, vec3_t max
 
 	// rotate endpos back to world frame of reference
 	if (ent->v.solid == SOLID_BSP && 
-	(fastfabs(ent->v.angles[0]) > 1 || fastfabs(ent->v.angles[1]) > 1 || fastfabs(ent->v.angles[2]) > 1) )
+	(fabs(ent->v.angles[0]) > 1 || fabs(ent->v.angles[1]) > 1 || fabs(ent->v.angles[2]) > 1) )
 	{
 		vec3_t	a;
 		vec3_t	forward, right, up;

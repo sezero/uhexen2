@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.16 2005-06-15 18:50:38 sezero Exp $
+	$Id: gl_model.c,v 1.17 2005-07-16 23:23:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1200,7 +1200,7 @@ float RadiusFromBounds (vec3_t min_ss, vec3_t max_ss)
 
 	for (i=0 ; i<3 ; i++)
 	{
-		corner[i] = fastfabs(min_ss[i]) > fastfabs(max_ss[i]) ? fastfabs(min_ss[i]) : fastfabs(max_ss[i]);
+		corner[i] = fabs(min_ss[i]) > fabs(max_ss[i]) ? fabs(min_ss[i]) : fabs(max_ss[i]);
 	}
 
 	return Length (corner);
@@ -2311,6 +2311,9 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/06/15 18:50:38  sezero
+ * fifth model is for h2mp only and we've been out of bounds for ages here
+ *
  * Revision 1.15  2005/06/07 07:08:31  sezero
  * Ported gl texture purge and model recycling code to hexenworld.
  * Textures are purged regardless of mapname change (we can't detect it

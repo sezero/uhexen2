@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.10 2005-06-12 07:28:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.11 2005-07-16 23:23:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1476,7 +1476,7 @@ void PF_fabs (void)
 {
 	float	v;
 	v = G_FLOAT(OFS_PARM0);
-	G_FLOAT(OFS_RETURN) = fastfabs(v);
+	G_FLOAT(OFS_RETURN) = fabs(v);
 }
 
 void PF_vtos (void)
@@ -3044,7 +3044,7 @@ void PF_matchAngleToSlope(void)
 	dot = DotProduct(v_forward, old_forward);
 
 	actor->v.angles[0] = dot*pitch;
-	actor->v.angles[2] = (1-fastfabs(dot))*pitch*mod;
+	actor->v.angles[2] = (1-fabs(dot))*pitch*mod;
 }
 
 void PF_updateInfoPlaque (void)
@@ -3239,6 +3239,9 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/06/12 07:28:51  sezero
+ * clean-up of includes and a fix (hopefully) for endianness detection
+ *
  * Revision 1.9  2005/05/29 08:38:12  sezero
  * get rid of the silly func name difference
  *

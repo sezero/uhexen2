@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.c,v 1.8 2005-05-29 08:53:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.c,v 1.9 2005-07-16 23:23:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -377,7 +377,7 @@ static qboolean SetChainPosition(float health, float maxHealth)
 		health = maxHealth;
 	}
 	chainTargetPosition = (health*195)/maxHealth;
-	if(fastfabs(ChainPosition-chainTargetPosition) < 0.1)
+	if(fabs(ChainPosition-chainTargetPosition) < 0.1)
 	{
 		return false;
 	}

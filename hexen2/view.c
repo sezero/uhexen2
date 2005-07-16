@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.5 2005-06-06 13:10:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.6 2005-07-16 23:23:52 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -67,7 +67,7 @@ float V_CalcRoll (vec3_t angles, vec3_t velocity)
 	AngleVectors (angles, forward, right, up);
 	side = DotProduct (velocity, right);
 	sign = side < 0 ? -1 : 1;
-	side = fastfabs(side);
+	side = fabs(side);
 	
 	value = cl_rollangle.value;
 //	if (cl.inwater)
@@ -174,7 +174,7 @@ void V_DriftPitch (void)
 // don't count small mouse motion
 	if (cl.nodrift)
 	{
-		if ( fastfabs(cl.cmd.forwardmove) < (cl.v.hasted*cl_forwardspeed.value)-10)
+		if ( fabs(cl.cmd.forwardmove) < (cl.v.hasted*cl_forwardspeed.value)-10)
 			cl.driftmove = 0;
 		else
 			cl.driftmove += host_frametime;
@@ -1177,6 +1177,10 @@ void V_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/06/06 13:10:20  sezero
+ * mlook and lookspring fixes by J.Krige
+ * ( http://www.quakesrc.org/tutorials/old/1 )
+ *
  * Revision 1.4  2005/06/03 13:21:08  sezero
  * Updated gamma stuff. Enabled gl-gamma trick to work if all else
  * fail (such as in cases of Voodoo1/2).  IMO, the gl-gamma trick

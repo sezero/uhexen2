@@ -1377,7 +1377,7 @@ void PF_fabs (void)
 {
 	float	v;
 	v = G_FLOAT(OFS_PARM0);
-	G_FLOAT(OFS_RETURN) = fastfabs(v);
+	G_FLOAT(OFS_RETURN) = fabs(v);
 }
 
 void PF_vtos (void)

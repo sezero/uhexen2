@@ -423,7 +423,7 @@ pmtrace_t PM_PlayerMove (vec3_t start, vec3_t end)
 		VectorSubtract (start, offset, start_l);
 		VectorSubtract (end, offset, end_l);
 
-		if (pe->model && (fastfabs(pe->angles[0]) > 1 || fastfabs(pe->angles[1]) > 1 || fastfabs(pe->angles[2]) > 1) )
+		if (pe->model && (fabs(pe->angles[0]) > 1 || fabs(pe->angles[1]) > 1 || fabs(pe->angles[2]) > 1) )
 		{
 			vec3_t	forward, right, up;
 			vec3_t	temp;
@@ -462,7 +462,7 @@ pmtrace_t PM_PlayerMove (vec3_t start, vec3_t end)
 // rjr will need to adjust for player when going into different hulls
 		trace.endpos[2] += hull->clip_mins[2];
 
-		if (pe->model && (fastfabs(pe->angles[0]) > 1 || fastfabs(pe->angles[1]) > 1 || fastfabs(pe->angles[2]) > 1) )
+		if (pe->model && (fabs(pe->angles[0]) > 1 || fabs(pe->angles[1]) > 1 || fabs(pe->angles[2]) > 1) )
 		{
 			vec3_t	a;
 			vec3_t	forward, right, up;

@@ -958,7 +958,7 @@ float V_CalcRoll (vec3_t angles, vec3_t velocity)
 	AngleVectors (angles, forward, right, up);
 	side = DotProduct (velocity, right);
 	sign = side < 0 ? -1 : 1;
-	side = fastfabs(side);
+	side = fabs(side);
 	
 	value = cl_rollangle.value;
 

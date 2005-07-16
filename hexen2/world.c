@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.5 2005-05-22 11:59:53 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.6 2005-07-16 23:23:52 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -415,10 +415,10 @@ void SV_LinkEdict (edict_t *ent, qboolean touch_triggers)
 		max = 0;
 		for (i=0 ; i<3 ; i++)
 		{
-			v =fastfabs( ent->v.mins[i]);
+			v =fabs( ent->v.mins[i]);
 			if (v > max)
 				max = v;
-			v =fastfabs( ent->v.maxs[i]);
+			v =fabs( ent->v.maxs[i]);
 			if (v > max)
 				max = v;
 		}
@@ -786,7 +786,7 @@ trace_t SV_ClipMoveToEntity (edict_t *ent, vec3_t start, vec3_t mins, vec3_t max
 
 	// rotate start and end into the models frame of reference
 	if (ent->v.solid == SOLID_BSP && 
-		(fastfabs(ent->v.angles[0]) > 1 || fastfabs(ent->v.angles[1]) > 1 || fastfabs(ent->v.angles[2]) > 1) )
+		(fabs(ent->v.angles[0]) > 1 || fabs(ent->v.angles[1]) > 1 || fabs(ent->v.angles[2]) > 1) )
 	{
 		vec3_t	forward, right, up;
 		vec3_t	temp;
@@ -817,7 +817,7 @@ trace_t SV_ClipMoveToEntity (edict_t *ent, vec3_t start, vec3_t mins, vec3_t max
 
 	// rotate endpos back to world frame of reference
 	if (ent->v.solid == SOLID_BSP && 
-		(fastfabs(ent->v.angles[0]) > 1 || fastfabs(ent->v.angles[1]) > 1 || fastfabs(ent->v.angles[2]) > 1) )
+		(fabs(ent->v.angles[0]) > 1 || fabs(ent->v.angles[1]) > 1 || fabs(ent->v.angles[2]) > 1) )
 	{
 		vec3_t	a;
 		vec3_t	forward, right, up;
@@ -1015,6 +1015,9 @@ trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, e
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/05/22 11:59:53  sezero
+ * killed cvar sys_quake2 (I dont think anyone uses it)
+ *
  * Revision 1.4  2005/05/19 16:41:50  sezero
  * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
  *
