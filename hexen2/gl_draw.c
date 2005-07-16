@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.44 2005-07-09 07:29:39 sezero Exp $
+	$Id: gl_draw.c,v 1.45 2005-07-16 23:28:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -257,9 +257,13 @@ qpic_t	*Draw_CachePic (char *path)
 		memcpy (menuplyr_pixels[2], dat->data, dat->width*dat->height);
 	else if (!strcmp (path, "gfx/menu/netp4.lmp"))
 		memcpy (menuplyr_pixels[3], dat->data, dat->width*dat->height);
-#ifdef H2MP
+#if defined(H2MP) || defined (H2W)
 	else if (!strcmp (path, "gfx/menu/netp5.lmp"))
 		memcpy (menuplyr_pixels[4], dat->data, dat->width*dat->height);
+#endif
+#if defined (H2W)
+	else if (!strcmp (path, "gfx/menu/netp6.lmp"))
+		memcpy (menuplyr_pixels[5], dat->data, dat->width*dat->height);
 #endif
 
 	pic->pic.width = dat->width;
@@ -1878,6 +1882,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.44  2005/07/09 07:29:39  sezero
+ * use hunk instead of malloc
+ *
  * Revision 1.43  2005/06/15 18:50:38  sezero
  * fifth model is for h2mp only and we've been out of bounds for ages here
  *
