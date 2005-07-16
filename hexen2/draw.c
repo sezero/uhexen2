@@ -2,37 +2,20 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/draw.c,v 1.5 2005-06-07 20:30:49 sezero Exp $
+	$Id: draw.c,v 1.6 2005-07-16 23:35:19 sezero Exp $
 */
 
-// HEADER FILES ------------------------------------------------------------
 
 #include "quakedef.h"
+#include "r_shared.h"
 
-// MACROS ------------------------------------------------------------------
-
-// TYPES -------------------------------------------------------------------
-
-typedef struct 
-{
+typedef struct {
 	vrect_t	rect;
 	int		width;
 	int		height;
 	byte	*ptexbytes;
 	int		rowbytes;
 } rectdesc_t;
-
-// EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
-
-// PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
-
-// PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
-
-// EXTERNAL DATA DECLARATIONS ----------------------------------------------
-
-// PUBLIC DATA DEFINITIONS -------------------------------------------------
-
-// PRIVATE DATA DEFINITIONS ------------------------------------------------
 
 static rectdesc_t	r_rectdesc;
 
@@ -45,6 +28,8 @@ qpic_t		*draw_disc[MAX_DISC] =
 };
 qpic_t		*draw_backtile;
 
+int	trans_level = 0;
+
 //=============================================================================
 /* Support Routines */
 
@@ -54,13 +39,10 @@ typedef struct cachepic_s
 	cache_user_t	cache;
 } cachepic_t;
 
-//#define	MAX_CACHED_PICS		128
 #define	MAX_CACHED_PICS		256
 cachepic_t	menu_cachepics[MAX_CACHED_PICS];
 int			menu_numcachepics;
 
-
-// CODE --------------------------------------------------------------------
 
 qpic_t	*Draw_PicFromWad (char *name)
 {
@@ -167,18 +149,17 @@ qpic_t  *Draw_CachePicResize(char *path, int targetWidth, int targetHeight)
 	return dat;
 }
 
-//==========================================================================
-//
-// Draw_Init
-//
-//==========================================================================
+/*
+===============
+Draw_Init
+===============
+*/
 void Draw_Init (void)
 {
 	int		i;
-	char temp[MAX_QPATH];
+	char	temp[MAX_QPATH];
 
 	draw_smallchars = W_GetLumpName("tinyfont");
-//	draw_chars = W_GetLumpName ("conchars");
 	draw_chars = COM_LoadHunkFile ("gfx/menu/conchars.lmp");
 
 	// Do this backwards so we don't try and draw the 
@@ -189,8 +170,6 @@ void Draw_Init (void)
 		draw_disc[i] = (qpic_t *)COM_LoadHunkFile (temp);
 	}
 
-//	draw_disc = W_GetLumpName ("disc");
-//	draw_backtile = W_GetLumpName ("backtile");
 	draw_backtile = (qpic_t	*)COM_LoadHunkFile ("gfx/menu/backtile.lmp");
 
 	r_rectdesc.width = draw_backtile->width;
@@ -223,12 +202,10 @@ void Draw_Character (int x, int y, unsigned int num)
 	if (y <= -8)
 		return;			// totally off screen
 
-#ifdef PARANOID
 	if (y > vid.height - 8 || x < 0 || x > vid.width - 8)
-		Sys_Error ("Con_DrawCharacter: (%i, %i)", x, y);
+		return;
 	if (num < 0 || num > 511)
-		Sys_Error ("Con_DrawCharacter: char %i", num);
-#endif
+		return;
 
 	row = num>>5;
 	col = num&31;
@@ -250,22 +227,64 @@ void Draw_Character (int x, int y, unsigned int num)
 	
 		while (drawline--)
 		{
-			if (source[0])
-				dest[0] = source[0];
-			if (source[1])
-				dest[1] = source[1];
-			if (source[2])
-				dest[2] = source[2];
-			if (source[3])
-				dest[3] = source[3];
-			if (source[4])
-				dest[4] = source[4];
-			if (source[5])
-				dest[5] = source[5];
-			if (source[6])
-				dest[6] = source[6];
-			if (source[7])
-				dest[7] = source[7];
+			switch(trans_level)
+			{
+				case 0:
+					if (source[0])
+						dest[0] = source[0];
+					if (source[1])
+						dest[1] = source[1];
+					if (source[2])
+						dest[2] = source[2];
+					if (source[3])
+						dest[3] = source[3];
+					if (source[4])
+						dest[4] = source[4];
+					if (source[5])
+						dest[5] = source[5];
+					if (source[6])
+						dest[6] = source[6];
+					if (source[7])
+						dest[7] = source[7];
+					break;
+				case 1:
+					if (source[0])
+						dest[0] = mainTransTable[(((unsigned)dest[0])<<8) + source[0]];
+					if (source[1])
+						dest[1] = mainTransTable[(((unsigned)dest[1])<<8) + source[1]];
+					if (source[2])
+						dest[2] = mainTransTable[(((unsigned)dest[2])<<8) + source[2]];
+					if (source[3])
+						dest[3] = mainTransTable[(((unsigned)dest[3])<<8) + source[3]];
+					if (source[4])
+						dest[4] = mainTransTable[(((unsigned)dest[4])<<8) + source[4]];
+					if (source[5])
+						dest[5] = mainTransTable[(((unsigned)dest[5])<<8) + source[5]];
+					if (source[6])
+						dest[6] = mainTransTable[(((unsigned)dest[6])<<8) + source[6]];
+					if (source[7])
+						dest[7] = mainTransTable[(((unsigned)dest[7])<<8) + source[7]];
+					break;
+				case 2:
+					if (source[0])
+						dest[0] = mainTransTable[(((unsigned)source[0])<<8) + dest[0]];
+					if (source[1])
+						dest[1] = mainTransTable[(((unsigned)source[1])<<8) + dest[1]];
+					if (source[2])
+						dest[2] = mainTransTable[(((unsigned)source[2])<<8) + dest[2]];
+					if (source[3])
+						dest[3] = mainTransTable[(((unsigned)source[3])<<8) + dest[3]];
+					if (source[4])
+						dest[4] = mainTransTable[(((unsigned)source[4])<<8) + dest[4]];
+					if (source[5])
+						dest[5] = mainTransTable[(((unsigned)source[5])<<8) + dest[5]];
+					if (source[6])
+						dest[6] = mainTransTable[(((unsigned)source[6])<<8) + dest[6]];
+					if (source[7])
+						dest[7] = mainTransTable[(((unsigned)source[7])<<8) + dest[7]];
+					break;
+			}
+
 			source += 256;
 			dest += vid.conrowbytes;
 		}
@@ -380,22 +399,64 @@ void Draw_SmallCharacter(int x, int y, int num)
 		dest = vid.buffer+y*vid.rowbytes+x;
 		while(height--)
 		{
-			if(source[0])
-				dest[0] = source[0];
-			if(source[1])
-				dest[1] = source[1];
-			if(source[2])
-				dest[2] = source[2];
-			if(source[3])
-				dest[3] = source[3];
-			if(source[4])
-				dest[4] = source[4];
-			if(source[5])
-				dest[5] = source[5];
-			if(source[6])
-				dest[6] = source[6];
-			if(source[7])
-				dest[7] = source[7];
+			switch(trans_level)
+			{
+				case 0:
+					if (source[0])
+						dest[0] = source[0];
+					if (source[1])
+						dest[1] = source[1];
+					if (source[2])
+						dest[2] = source[2];
+					if (source[3])
+						dest[3] = source[3];
+					if (source[4])
+						dest[4] = source[4];
+					if (source[5])
+						dest[5] = source[5];
+					if (source[6])
+						dest[6] = source[6];
+					if (source[7])
+						dest[7] = source[7];
+					break;
+				case 1:
+					if (source[0])
+						dest[0] = mainTransTable[(((unsigned)dest[0])<<8) + source[0]];
+					if (source[1])
+						dest[1] = mainTransTable[(((unsigned)dest[1])<<8) + source[1]];
+					if (source[2])
+						dest[2] = mainTransTable[(((unsigned)dest[2])<<8) + source[2]];
+					if (source[3])
+						dest[3] = mainTransTable[(((unsigned)dest[3])<<8) + source[3]];
+					if (source[4])
+						dest[4] = mainTransTable[(((unsigned)dest[4])<<8) + source[4]];
+					if (source[5])
+						dest[5] = mainTransTable[(((unsigned)dest[5])<<8) + source[5]];
+					if (source[6])
+						dest[6] = mainTransTable[(((unsigned)dest[6])<<8) + source[6]];
+					if (source[7])
+						dest[7] = mainTransTable[(((unsigned)dest[7])<<8) + source[7]];
+					break;
+				case 2:
+					if (source[0])
+						dest[0] = mainTransTable[(((unsigned)source[0])<<8) + dest[0]];
+					if (source[1])
+						dest[1] = mainTransTable[(((unsigned)source[1])<<8) + dest[1]];
+					if (source[2])
+						dest[2] = mainTransTable[(((unsigned)source[2])<<8) + dest[2]];
+					if (source[3])
+						dest[3] = mainTransTable[(((unsigned)source[3])<<8) + dest[3]];
+					if (source[4])
+						dest[4] = mainTransTable[(((unsigned)source[4])<<8) + dest[4]];
+					if (source[5])
+						dest[5] = mainTransTable[(((unsigned)source[5])<<8) + dest[5]];
+					if (source[6])
+						dest[6] = mainTransTable[(((unsigned)source[6])<<8) + dest[6]];
+					if (source[7])
+						dest[7] = mainTransTable[(((unsigned)source[7])<<8) + dest[7]];
+					break;
+			}
+
 			source += 128;
 			dest += vid.conrowbytes;
 		}
@@ -586,11 +647,37 @@ void Draw_PicCropped(int x, int y, qpic_t *pic)
 	if(r_pixbytes == 1)
 	{
 		dest = vid.buffer+y*vid.rowbytes+x;
-		for(v = 0; v < height; v++)
+
+		switch(trans_level)
 		{
-			memcpy(dest, source, pic->width);
-			dest += vid.rowbytes;
-			source += pic->width;
+			case 0:
+				for(v = 0; v < height; v++)
+				{
+					memcpy(dest, source, pic->width);
+					dest += vid.rowbytes;
+					source += pic->width;
+				}
+				break;
+			case 1:
+				for(v = 0; v < height; v++)
+				{
+					for(u = 0;u < pic->width;u++,source++)
+					{
+						dest[u] = mainTransTable[(((unsigned)dest[u])<<8) + (*source)];
+					}
+					dest += vid.rowbytes;
+				}
+				break;
+			case 2:
+				for(v = 0; v < height; v++)
+				{
+					for(u = 0;u < pic->width;u++,source++)
+					{
+						dest[u] = mainTransTable[(((unsigned)(*source))<<8) + dest[u]];
+					}
+					dest += vid.rowbytes;
+				}
+				break;
 		}
 	}
 	else
@@ -617,14 +704,14 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 {
 	byte	*dest, *source, tbyte;
 	unsigned short	*pusdest;
-	int				v, u;
+	int	v, u;
 
 	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
 		 (unsigned)(y + pic->height) > vid.height)
 	{
 		Sys_Error("Draw_TransPic: bad coordinates y=%d, pic_height=%d, vheight=%d\n",y,pic->height,vid.height);
 	}
-		
+
 	source = pic->data;
 
 	if (r_pixbytes == 1)
@@ -749,11 +836,36 @@ void Draw_SubPicCropped(int x, int y, int h, qpic_t *pic)
 	{
 		dest = vid.buffer+y*vid.rowbytes+x;
 
-		for(v = 0; v < height; v++)
+		switch(trans_level)
 		{
-			memcpy(dest, source, pic->width);
-			dest += vid.rowbytes;
-			source += pic->width;
+			case 0:
+				for(v = 0; v < height; v++)
+				{
+					memcpy(dest, source, pic->width);
+					dest += vid.rowbytes;
+					source += pic->width;
+				}
+				break;
+			case 1:
+				for(v = 0; v < height; v++)
+				{
+					for(u = 0;u < pic->width;u++,source++)
+					{
+						dest[u] = mainTransTable[(((unsigned)dest[u])<<8) + (*source)];
+					}
+					dest += vid.rowbytes;
+				}
+				break;
+			case 2:
+				for(v = 0; v < height; v++)
+				{
+					for(u = 0;u < pic->width;u++,source++)
+					{
+						dest[u] = mainTransTable[(((unsigned)(*source))<<8) + dest[u]];
+					}
+					dest += vid.rowbytes;
+				}
+				break;
 		}
 	}
 	else
@@ -821,18 +933,52 @@ void Draw_TransPicCropped(int x, int y, qpic_t *pic)
 		dest = vid.buffer+y*vid.rowbytes+x;
 		if(pic->width&7)
 		{ // General
-			for(v = 0; v < height; v++)
+			switch(trans_level)
 			{
-				for(u = 0; u < pic->width; u++)
-				{
-					if((tbyte = source[u]) != TRANSPARENT_COLOR)
+				case 0:
+					for(v = 0; v < height; v++)
 					{
-						dest[u] = tbyte;
+						for(u = 0; u < pic->width; u++)
+						{
+							if((tbyte = source[u]) != TRANSPARENT_COLOR)
+							{
+								dest[u] = tbyte;
+							}
+						}
+						dest += vid.rowbytes;
+						source += pic->width;
 					}
-				}
-				dest += vid.rowbytes;
-				source += pic->width;
+					break;
+				case 1:
+					for(v = 0; v < height; v++)
+					{
+						for(u = 0; u < pic->width; u++)
+						{
+							if((tbyte = source[u]) != TRANSPARENT_COLOR)
+							{
+								dest[u] = mainTransTable[(((unsigned)dest[u])<<8) + tbyte];
+							}
+						}
+						dest += vid.rowbytes;
+						source += pic->width;
+					}
+					break;
+				case 2:
+					for(v = 0; v < height; v++)
+					{
+						for(u = 0; u < pic->width; u++)
+						{
+							if((tbyte = source[u]) != TRANSPARENT_COLOR)
+							{
+								dest[u] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u]];
+							}
+						}
+						dest += vid.rowbytes;
+						source += pic->width;
+					}
+					break;
 			}
+
 		}
 		else
 		{ // Unwound
@@ -840,22 +986,63 @@ void Draw_TransPicCropped(int x, int y, qpic_t *pic)
 			{
 				for(u = 0; u < pic->width; u += 8)
 				{
-					if((tbyte = source[u]) != TRANSPARENT_COLOR)
-						dest[u] = tbyte;
-					if((tbyte = source[u+1]) != TRANSPARENT_COLOR)
-						dest[u+1] = tbyte;
-					if((tbyte = source[u+2]) != TRANSPARENT_COLOR)
-						dest[u+2] = tbyte;
-					if((tbyte = source[u+3]) != TRANSPARENT_COLOR)
-						dest[u+3] = tbyte;
-					if((tbyte = source[u+4]) != TRANSPARENT_COLOR)
-						dest[u+4] = tbyte;
-					if((tbyte = source[u+5]) != TRANSPARENT_COLOR)
-						dest[u+5] = tbyte;
-					if((tbyte = source[u+6]) != TRANSPARENT_COLOR)
-						dest[u+6] = tbyte;
-					if((tbyte = source[u+7]) != TRANSPARENT_COLOR)
-						dest[u+7] = tbyte;
+					switch(trans_level)
+					{
+						case 0:
+							if((tbyte = source[u]) != TRANSPARENT_COLOR)
+								dest[u] = tbyte;
+							if((tbyte = source[u+1]) != TRANSPARENT_COLOR)
+								dest[u+1] = tbyte;
+							if((tbyte = source[u+2]) != TRANSPARENT_COLOR)
+								dest[u+2] = tbyte;
+							if((tbyte = source[u+3]) != TRANSPARENT_COLOR)
+								dest[u+3] = tbyte;
+							if((tbyte = source[u+4]) != TRANSPARENT_COLOR)
+								dest[u+4] = tbyte;
+							if((tbyte = source[u+5]) != TRANSPARENT_COLOR)
+								dest[u+5] = tbyte;
+							if((tbyte = source[u+6]) != TRANSPARENT_COLOR)
+								dest[u+6] = tbyte;
+							if((tbyte = source[u+7]) != TRANSPARENT_COLOR)
+								dest[u+7] = tbyte;
+							break;
+						case 1:
+							if((tbyte = source[u]) != TRANSPARENT_COLOR)
+								dest[u] = mainTransTable[(((unsigned)dest[u])<<8) + tbyte];
+							if((tbyte = source[u+1]) != TRANSPARENT_COLOR)
+								dest[u+1] = mainTransTable[(((unsigned)dest[u+1])<<8) + tbyte];
+							if((tbyte = source[u+2]) != TRANSPARENT_COLOR)
+								dest[u+2] = mainTransTable[(((unsigned)dest[u+2])<<8) + tbyte];
+							if((tbyte = source[u+3]) != TRANSPARENT_COLOR)
+								dest[u+3] = mainTransTable[(((unsigned)dest[u+3])<<8) + tbyte];
+							if((tbyte = source[u+4]) != TRANSPARENT_COLOR)
+								dest[u+4] = mainTransTable[(((unsigned)dest[u+4])<<8) + tbyte];
+							if((tbyte = source[u+5]) != TRANSPARENT_COLOR)
+								dest[u+5] = mainTransTable[(((unsigned)dest[u+5])<<8) + tbyte];
+							if((tbyte = source[u+6]) != TRANSPARENT_COLOR)
+								dest[u+6] = mainTransTable[(((unsigned)dest[u+6])<<8) + tbyte];
+							if((tbyte = source[u+7]) != TRANSPARENT_COLOR)
+								dest[u+7] = mainTransTable[(((unsigned)dest[u+7])<<8) + tbyte];
+							break;
+						case 2:
+							if((tbyte = source[u]) != TRANSPARENT_COLOR)
+								dest[u] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u]];
+							if((tbyte = source[u+1]) != TRANSPARENT_COLOR)
+								dest[u+1] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u+1]];
+							if((tbyte = source[u+2]) != TRANSPARENT_COLOR)
+								dest[u+2] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u+2]];
+							if((tbyte = source[u+3]) != TRANSPARENT_COLOR)
+								dest[u+3] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u+3]];
+							if((tbyte = source[u+4]) != TRANSPARENT_COLOR)
+								dest[u+4] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u+4]];
+							if((tbyte = source[u+5]) != TRANSPARENT_COLOR)
+								dest[u+5] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u+5]];
+							if((tbyte = source[u+6]) != TRANSPARENT_COLOR)
+								dest[u+6] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u+6]];
+							if((tbyte = source[u+7]) != TRANSPARENT_COLOR)
+								dest[u+7] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u+7]];
+							break;
+					}
 				}
 				dest += vid.rowbytes;
 				source += pic->width;
@@ -1319,12 +1506,40 @@ void Draw_Fill (int x, int y, int w, int h, int c)
 	unsigned		uc;
 	int				u, v;
 
+	if (x < 0 || x + w > vid.width ||
+		y < 0 || y + h > vid.height) {
+		Con_Printf("Bad Draw_Fill(%d, %d, %d, %d, %c)\n",
+			x, y, w, h, c);
+		return;
+	}
+
 	if (r_pixbytes == 1)
 	{
 		dest = vid.buffer + y*vid.rowbytes + x;
-		for (v=0 ; v<h ; v++, dest += vid.rowbytes)
-			for (u=0 ; u<w ; u++)
-				dest[u] = c;
+		switch(trans_level)
+		{
+			case 0:
+				for (v=0 ; v<h ; v++, dest += vid.rowbytes)
+					for (u=0 ; u<w ; u++)
+					{
+						dest[u] = c;
+					}
+				break;
+			case 1:
+				for (v=0 ; v<h ; v++, dest += vid.rowbytes)
+					for (u=0 ; u<w ; u++)
+				{
+					dest[u] = mainTransTable[(((unsigned)dest[u])<<8) + c];
+				}
+				break;
+			case 2:
+				for (v=0 ; v<h ; v++, dest += vid.rowbytes)
+					for (u=0 ; u<w ; u++)
+				{
+					dest[u] = mainTransTable[(c<<8) + dest[u]];
+				}
+				break;
+		}
 	}
 	else
 	{
@@ -1402,7 +1617,10 @@ void Draw_BeginDisc (void)
 {
 	static int index = 0;
 
-	if (!draw_disc[index] || loading_stage) return;
+	if (!draw_disc[index] || loading_stage)
+	{
+		return;
+	}
 
 	index++;
 	if (index >= MAX_DISC) index = 0;
@@ -1432,6 +1650,9 @@ void Draw_EndDisc (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/06/07 20:30:49  sezero
+ * More syncing: software version draw.c between hexen2/hexenworld
+ *
  * Revision 1.4  2005/05/07 10:39:07  sezero
  * display platform in console background
  *

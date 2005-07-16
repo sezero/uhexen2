@@ -1,6 +1,10 @@
+/*
+	draw.c
+	This is the only file outside the refresh that touches the vid buffer.
 
-// draw.c -- this is the only file outside the refresh that touches the
-// vid buffer
+	$Id: draw.c,v 1.6 2005-07-16 23:35:19 sezero Exp $
+*/
+
 
 #include "quakedef.h"
 #include "r_shared.h"
@@ -160,7 +164,6 @@ void Draw_Init (void)
 
 	// Do this backwards so we don't try and draw the 
 	// skull as we are loading
-
 	for(i=MAX_DISC-1;i>=0;i--)
 	{
 		sprintf(temp,"gfx/menu/skull%d.lmp",i);
@@ -168,7 +171,6 @@ void Draw_Init (void)
 	}
 
 	draw_backtile = (qpic_t	*)COM_LoadHunkFile ("gfx/menu/backtile.lmp");
-
 
 	r_rectdesc.width = draw_backtile->width;
 	r_rectdesc.height = draw_backtile->height;
@@ -380,10 +382,8 @@ void Draw_Crosshair(void)
 		Draw_Pixel(x, y + 1, 0x4f);
 		Draw_Pixel(x, y + 3, 0x4f);
 	} else if (crosshair.value)
-		Draw_Character (
-			scr_vrect.x + scr_vrect.width/2-4 + cl_crossx.value, 
-			scr_vrect.y + scr_vrect.height/2-4 + cl_crossy.value, 
-			'+');
+		Draw_Character (scr_vrect.x + scr_vrect.width/2-4 + cl_crossx.value, 
+				scr_vrect.y + scr_vrect.height/2-4 + cl_crossy.value, '+');
 }
 
 //==========================================================================
@@ -555,7 +555,6 @@ void Draw_SmallString(int x, int y, char *str)
 		x += 6;
 	}
 }
-
 
 /*
 ================
@@ -756,14 +755,14 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 {
 	byte	*dest, *source, tbyte;
 	unsigned short	*pusdest;
-	int				v, u;
+	int	v, u;
 
 	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
 		 (unsigned)(y + pic->height) > vid.height)
 	{
-		Sys_Error ("Draw_TransPic: bad coordinates");
+		Sys_Error("Draw_TransPic: bad coordinates y=%d, pic_height=%d, vheight=%d\n",y,pic->height,vid.height);
 	}
-		
+
 	source = pic->data;
 
 	if (r_pixbytes == 1)
@@ -1316,7 +1315,7 @@ void Draw_ConsoleBackground (int lines)
 	memcpy(saveback, conback->data + 320*186, 320*8);
 	for (x=0 ; x<strlen(ver) ; x++)
 		Draw_CharToConback (ver[x], dest+(x<<3));
-	
+
 // draw the pic
 	if (r_pixbytes == 1)
 	{
@@ -1711,5 +1710,4 @@ void Draw_EndDisc (void)
 	D_EndDirectRect (vid.width - 28, 0, 28, 24);
 //rjr	scr_topupdate = 0;
 }
-
 

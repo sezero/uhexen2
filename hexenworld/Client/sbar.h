@@ -1,11 +1,8 @@
+/*
+	sbar.h
 
-//**************************************************************************
-//**
-//** sbar.h
-//**
-//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.h,v 1.2 2005-01-01 21:55:47 sezero Exp $
-//**
-//**************************************************************************
+	$Id: sbar.h,v 1.3 2005-07-16 23:35:19 sezero Exp $
+*/
 
 // HEADER FILES ------------------------------------------------------------
 
@@ -23,10 +20,10 @@ void SB_FinaleOverlay(void);
 void SB_InvChanged(void);
 void SB_InvReset(void);
 void SB_ViewSizeChanged(void);
+void Sbar_DeathmatchOverlay(void);
 
 void Sbar_Init(void);
 void Sbar_Changed(void);
-void Sbar_DeathmatchOverlay(void);
 void Sbar_Draw(void);
 void Sbar_IntermissionOverlay(void);
 void Sbar_FinaleOverlay(void);

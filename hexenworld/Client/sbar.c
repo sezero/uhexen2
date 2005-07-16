@@ -1,35 +1,30 @@
+/*
+	sbar.c
 
-//**************************************************************************
-//**
-//** sbar.c
-//**
-//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.7 2005-07-16 23:26:21 sezero Exp $
-//**
-//**************************************************************************
-
-// HEADER FILES ------------------------------------------------------------
+	$Id: sbar.c,v 1.8 2005-07-16 23:35:19 sezero Exp $
+*/
 
 #include "quakedef.h"
 
 // MACROS ------------------------------------------------------------------
 
-#define STAT_MINUS 10 // num frame for '-' stats digit
+#define STAT_MINUS 10			// num frame for '-' stats digit
 
-#define BAR_TOP_HEIGHT				46.0
-#define BAR_BOTTOM_HEIGHT			98.0
-#define BAR_TOTAL_HEIGHT			(BAR_TOP_HEIGHT+BAR_BOTTOM_HEIGHT)
-#define BAR_BUMP_HEIGHT				23.0
+#define BAR_TOP_HEIGHT			46.0
+#define BAR_BOTTOM_HEIGHT		98.0
+#define BAR_TOTAL_HEIGHT		(BAR_TOP_HEIGHT+BAR_BOTTOM_HEIGHT)
+#define BAR_BUMP_HEIGHT			23.0
 #define INVENTORY_DISPLAY_TIME		4
-#define ABILITIES_STR_INDEX			400
+#define ABILITIES_STR_INDEX		400
 
-#define RING_FLIGHT					1
-#define RING_WATER					2
-#define RING_REGENERATION			4
-#define RING_TURNING				8
+#define RING_FLIGHT			1
+#define RING_WATER			2
+#define RING_REGENERATION		4
+#define RING_TURNING			8
 
 #define	INV_MAX_CNT			15
 
-#define INV_MAX_ICON		6		// Max number of inventory icons to display at once
+#define INV_MAX_ICON			6	// Max number of inventory icons to display at once
 
 // TYPES -------------------------------------------------------------------
 
@@ -50,7 +45,7 @@ static void Sbar_DrawSubPic(int x, int y, int h, qpic_t *pic);
 static void Sbar_DrawTransPic(int x, int y, qpic_t *pic);
 static int Sbar_itoa(int num, char *buf);
 static void Sbar_DrawNum(int x, int y, int number, int digits);
-void Sbar_SortFrags (qboolean includespec);
+static void Sbar_SortFrags (qboolean includespec);
 static void Sbar_DrawString(int x, int y, char *str);
 static void Sbar_DrawRedString (int cx, int cy, char *str);
 static void Sbar_DrawSmallString(int x, int y, char *str);
@@ -83,6 +78,8 @@ static void DrawArtifactInventory(void);
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
 extern int in_impulse;
+extern int trans_level;
+
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
 int sb_lines; // scan lines to draw
@@ -111,7 +108,7 @@ static qboolean sb_ShowInfo;
 static qboolean sb_ShowDM;
 static qboolean sb_ShowNames;
 
-qboolean inv_flg;					// true - show inventory interface
+qboolean inv_flg;			// true - show inventory interface
 
 static float InventoryHideTime;
 
@@ -142,7 +139,7 @@ static int BracerAC[MAX_PLAYER_CLASS] =
 	4,		// Necromancer
 	2,		// Assassin
 	2,		// Demoness
-	10		// Demoness
+	10		// Dwarf
 };
 
 static int BreastplateAC[MAX_PLAYER_CLASS] =
@@ -172,9 +169,8 @@ static int AbilityLineIndex[MAX_PLAYER_CLASS] =
 	404,		// Necromancer
 	406,		// Assassin
 	590,		// Demoness
-	594			// Dwarf
+	594		// Dwarf
 };
-
 
 // CODE --------------------------------------------------------------------
 
@@ -362,9 +358,7 @@ void Sbar_Draw(void)
 
 
 	if(BarHeight < 0)
-	{
 		DrawFullScreenInfo();
-	}
 
 	//Sbar_DrawPic(0, 0, Draw_CachePic("gfx/topbar.lmp"));
 	Sbar_DrawPic(0, 0, Draw_CachePic("gfx/topbar1.lmp"));
@@ -875,9 +869,9 @@ static void Sbar_DrawNum(int x, int y, int number, int digits)
 
 #define SPEC_FRAGS -9999
 
-void Sbar_SortFrags (qboolean includespec)
+static void Sbar_SortFrags (qboolean includespec)
 {
-	int		i, j, k;
+	int i, j, k;
 		
 // sort by frags
 	scoreboardlines = 0;
@@ -1231,8 +1225,8 @@ void FindName(char *which, char *name)
 	strcpy(name, "Unknown");
 	j = atol(puzzle_strings);
 	pos = strchr(puzzle_strings,13);
-	if (!pos) return;
-
+	if (!pos)
+		return;
 	if ((*pos) == 10 || (*pos) == 13)
 		pos++;
 	if ((*pos) == 10 || (*pos) == 13)
@@ -1327,8 +1321,9 @@ void Sbar_NormalOverlay(void)
 
 void DrawTime (int x, int y, int disp_time)
 {
-int	show_min,show_sec;
-char num[40];
+	int	show_min,show_sec;
+	char	num[40];
+
 	show_min = disp_time;
 	show_sec = show_min%60;
 	show_min = (show_min - show_sec)/60;
@@ -1337,7 +1332,9 @@ char num[40];
 //	Draw_Character ( x+32 , y, 58);// ":"
 	sprintf(num, "%2d",show_sec);
 	if(show_sec>=10)
+	{
 		Sbar_DrawRedString ( x+40 , y, num);
+	}
 	else
 	{
 		Sbar_DrawRedString ( x+40 , y, num);
@@ -1347,15 +1344,15 @@ char num[40];
 
 void Sbar_SmallDeathmatchOverlay(void)
 {
-	int				i, k, l;
-	int				top, bottom;
-	int				x, y, f;
-	int				def_frags,att_frags;
-	char			num[40];
+	int		i, k, l;
+	int		top, bottom;
+	int		x, y, f;
+	int		def_frags,att_frags;
+	char		num[40];
 //	unsigned char	num[12];
 	player_info_t	*s;
 
-	if (DMMode.value >= 2 && BarHeight != BAR_TOP_HEIGHT)
+	if ((int)DMMode.value >= 2 && BarHeight != BAR_TOP_HEIGHT)
 		return;
 
 	trans_level = (int)((DMMode.value-floor(DMMode.value)+1E-3)*10);

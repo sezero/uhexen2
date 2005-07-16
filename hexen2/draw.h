@@ -3,7 +3,7 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/draw.h,v 1.5 2005-06-07 20:30:49 sezero Exp $
+	$Id: draw.h,v 1.6 2005-07-16 23:35:19 sezero Exp $
 */
 
 
@@ -40,6 +40,9 @@ qpic_t *Draw_CachePicResize (char *path, int targetWidth, int targetHeight);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/06/07 20:30:49  sezero
+ * More syncing: software version draw.c between hexen2/hexenworld
+ *
  * Revision 1.4  2005/05/21 17:32:03  sezero
  * disabled the rotating skull annoyance in GL mode (used to
  * cause problems with voodoo1/mesa6 when using gamma tricks)

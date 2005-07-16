@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.46 2005-07-16 23:29:49 sezero Exp $
+	$Id: gl_draw.c,v 1.47 2005-07-16 23:35:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -30,6 +30,8 @@ qpic_t		*draw_backtile;
 int			char_texture;
 int			char_smalltexture;
 int			char_menufonttexture;
+
+int	trans_level = 0;
 
 byte		conback_buffer[sizeof(qpic_t) + sizeof(glpic_t)];
 qpic_t		*conback = (qpic_t *)&conback_buffer;
@@ -1878,6 +1880,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.46  2005/07/16 23:29:49  sezero
+ * made vid_initialized static
+ *
  * Revision 1.45  2005/07/16 23:28:16  sezero
  * added some H2MP and H2W define conditionals.
  *

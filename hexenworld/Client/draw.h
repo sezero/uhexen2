@@ -1,6 +1,11 @@
+/*
+	draw.h
+	these are the only functions outside the refresh
+	allowed to touch the vid buffer
 
-// draw.h -- these are the only functions outside the refresh allowed
-// to touch the vid buffer
+	$Id: draw.h,v 1.6 2005-07-16 23:35:19 sezero Exp $
+*/
+
 
 #define MAX_DISC 18
 
@@ -34,4 +39,3 @@ qpic_t *Draw_CachePic (char *path);
 qpic_t *Draw_CachePicNoTrans (char *path);
 qpic_t *Draw_CachePicResize (char *path, int targetWidth, int targetHeight);
 
-extern int	trans_level;

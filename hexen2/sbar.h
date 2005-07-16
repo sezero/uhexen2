@@ -1,7 +1,7 @@
 /*
 	sbar.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.h,v 1.3 2004-12-18 13:59:25 sezero Exp $
+	$Id: sbar.h,v 1.4 2005-07-16 23:35:19 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------

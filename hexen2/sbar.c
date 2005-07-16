@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.c,v 1.9 2005-07-16 23:23:52 sezero Exp $
+	$Id: sbar.c,v 1.10 2005-07-16 23:35:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -74,6 +74,7 @@ extern qboolean intro_playing;
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
 extern int in_impulse;
+extern int trans_level;
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
@@ -88,6 +89,7 @@ static float BarTargetHeight;
 cvar_t BarSpeed = { "barspeed", "5" };
 cvar_t sbtemp = { "sbtemp", "5" };
 cvar_t DMMode = { "dm_mode", "1", true };
+cvar_t sbtrans = { "sbtrans", "0", true };
 
 static qpic_t *sb_nums[11];
 static qpic_t *sb_colon, *sb_slash;
@@ -181,6 +183,7 @@ void SB_Init(void)
 	Cmd_AddCommand("invoff", InvOff_f);
 	Cmd_AddCommand("toggle_dm", ToggleDM_f);
 	Cvar_RegisterVariable(&DMMode);
+	Cvar_RegisterVariable(&sbtrans);
 
 	Cvar_RegisterVariable(&BarSpeed);
 	Cvar_RegisterVariable(&sbtemp);
@@ -210,6 +213,12 @@ void SB_Draw(void)
 	if (scr_con_current == vid.height)
 	{ // console is full screen
 		return;
+	}
+
+	trans_level = (int)sbtrans.value;
+	if (trans_level < 0 || trans_level > 2)
+	{
+		trans_level = 0;
 	}
 
 	// Draw always until we fix things
@@ -345,6 +354,8 @@ void SB_Draw(void)
 	DrawActiveRings();
 	DrawActiveArtifacts();
 
+	trans_level = 0;
+
 	if (sb_ShowDM)
 	{
 		if (cl.gametype == GAME_DEATHMATCH)
@@ -354,7 +365,6 @@ void SB_Draw(void)
 	}
 	else if (cl.gametype == GAME_DEATHMATCH && DMMode.value)
 		Sbar_SmallDeathmatchOverlay();
-
 }
 
 //==========================================================================
@@ -487,20 +497,20 @@ static void DrawLowerBar(void)
 	}
 
 	// Backdrop
-	// Sbar_DrawPic(0, 46, Draw_CachePic("gfx/btmbar.lmp"));
+	//Sbar_DrawPic(0, 46, Draw_CachePic("gfx/btmbar.lmp"));
 	Sbar_DrawPic(0, 46, Draw_CachePic("gfx/btmbar1.lmp"));
 	Sbar_DrawPic(160, 46, Draw_CachePic("gfx/btmbar2.lmp"));
 
 	// Game time
-	// minutes = cl.time / 60;
-	// seconds = cl.time - 60*minutes;
-	// tens = seconds / 10;
-	// units = seconds - 10*tens;
-	// sprintf(tempStr, "Time :%3i:%i%i", minutes, tens, units);
-	// Sbar_DrawSmallString(116, 114, tempStr);
+	//minutes = cl.time / 60;
+	//seconds = cl.time - 60*minutes;
+	//tens = seconds / 10;
+	//units = seconds - 10*tens;
+	//sprintf(tempStr, "Time :%3i:%i%i", minutes, tens, units);
+	//Sbar_DrawSmallString(116, 114, tempStr);
 
 	// Map name
-	// Sbar_DrawSmallString(10, 114, cl.levelname);
+	//Sbar_DrawSmallString(10, 114, cl.levelname);
 
 	// Stats
 	Sbar_DrawSmallString(11, 48, ClassNames[playerClass-1]);
@@ -933,11 +943,11 @@ void FindColor (int slot, int *color1, int *color2)
 
 void Sbar_DeathmatchOverlay(void)
 {
-	qpic_t			*pic;
-	int			i, k, l;
-	int			top, bottom;
-	int			x, y, f;
-	char			num[12];
+	qpic_t		*pic;
+	int		i, k, l;
+	int		top, bottom;
+	int		x, y, f;
+	char		num[12];
 	scoreboard_t	*s;
 
 	scr_copyeverything = 1;
@@ -1001,7 +1011,7 @@ void FindName(char *which, char *name)
 	strcpy(name, "Unknown");
 	j = atol(puzzle_strings);
 	pos = strchr(puzzle_strings,13);
-	if (!pos) 
+	if (!pos)
 		return;
 	if ((*pos) == 10 || (*pos) == 13)
 		pos++;
@@ -1047,8 +1057,8 @@ void FindName(char *which, char *name)
 
 void Sbar_NormalOverlay(void)
 {
-	int	i,y,piece;
-	char	Name[40];
+	int		i, y, piece;
+	char		Name[40];
 
 	scr_copyeverything = 1;
 	scr_fullupdate = 0;
@@ -1098,8 +1108,14 @@ void Sbar_SmallDeathmatchOverlay(void)
 	unsigned char	num[12];
 	scoreboard_t	*s;
 
-	if (DMMode.value == 2 && BarHeight != BAR_TOP_HEIGHT)
+	if ((int)DMMode.value == 2 && BarHeight != BAR_TOP_HEIGHT)
 		return;
+
+	trans_level = (int)((DMMode.value-floor(DMMode.value)+1E-3)*10);
+	if (trans_level > 2) 
+	{
+		trans_level = 0;
+	}
 
 	scr_copyeverything = 1;
 	scr_fullupdate = 0;
@@ -1110,13 +1126,13 @@ void Sbar_SmallDeathmatchOverlay(void)
 // draw the text
 	l = scoreboardlines;
 
-	if (DMMode.value == 1)
+	if ((int)DMMode.value == 1)
 	{
 		if (l > 8) 
 			l = 8;
 		y = 46;
 	}
-	else if (DMMode.value == 2)
+	else if ((int)DMMode.value == 2)
 	{
 		if (l > 4) 
 			l = 4;
@@ -1131,7 +1147,7 @@ void Sbar_SmallDeathmatchOverlay(void)
 		if (!s->name[0])
 			continue;
 
-		if (DMMode.value == 2)
+		if ((int)DMMode.value == 2)
 		{
 		}
 		// draw background
@@ -1163,6 +1179,8 @@ void Sbar_SmallDeathmatchOverlay(void)
 
 		y += 10;
 	}
+
+	trans_level = 0;
 }
 
 
@@ -1251,7 +1269,9 @@ static void DrawActiveArtifacts(void)
 		scr_topupdate = 0;
 	}
 	else if (oldflags & ART_TOMEOFPOWER)
+	{
 		scr_topupdate = 0;
+	}
 
 	if (flag & ART_HASTE)
 	{
@@ -1262,7 +1282,9 @@ static void DrawActiveArtifacts(void)
 		scr_topupdate = 0;
 	}
 	else if (oldflags & ART_HASTE)
+	{
 		scr_topupdate = 0;
+	}
 
 	if (flag & ART_INVINCIBILITY)
 	{
@@ -1273,7 +1295,9 @@ static void DrawActiveArtifacts(void)
 		scr_topupdate = 0;
 	}
 	else if (oldflags & ART_INVINCIBILITY)
+	{
 		scr_topupdate = 0;
+	}
 
 	oldflags = flag;
 }
@@ -1436,6 +1460,7 @@ static void ShowInfoDown_f(void)
 
 static void ShowInfoUp_f(void)
 {
+	//if(cl.intermission || (scr_viewsize.value > 110.0 && !sbtrans.value))
 	if(cl.intermission || scr_viewsize.value > 110.0)
 	{
 		BarTargetHeight = 0.0-BAR_BUMP_HEIGHT;
@@ -1649,6 +1674,7 @@ void SB_InvReset(void)
 
 void SB_ViewSizeChanged(void)
 {
+	//if(cl.intermission || (scr_viewsize.value > 110.0 && !sbtrans.value))
 	if(cl.intermission || scr_viewsize.value > 110.0)
 	{
 		BarHeight = BarTargetHeight = 0.0-BAR_BUMP_HEIGHT;
