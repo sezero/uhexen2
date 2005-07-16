@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.75 2005-06-25 06:31:27 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.76 2005-07-16 23:29:49 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -66,7 +66,7 @@ int		vid_default = MODE_WINDOWED;	// windowed mode is default
 cvar_t		vid_mode = {"vid_mode","0", false};
 cvar_t		_vid_default_mode = {"_vid_default_mode","0", true};
 static vmode_t	modelist[MAX_MODE_LIST];
-qboolean	vid_initialized = false;
+static qboolean	vid_initialized = false;
 
 byte		globalcolormap[VID_GRADES*256];
 

@@ -5,12 +5,10 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.17 2005-07-16 23:23:52 sezero Exp $
+	$Id: gl_model.c,v 1.18 2005-07-16 23:29:49 sezero Exp $
 */
 
 #include "quakedef.h"
-
-extern qboolean	vid_initialized;
 
 model_t	*loadmodel;
 char	loadname[32];	// for hunk tags
@@ -1916,8 +1914,7 @@ void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
 	//
 	// build the draw lists
 	//
-	if (vid_initialized)
-		GL_MakeAliasModelDisplayLists (mod, pheader);
+	GL_MakeAliasModelDisplayLists (mod, pheader);
 
 //
 // move the complete, relocatable alias model to the cache
@@ -2099,8 +2096,7 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	//
 	// build the draw lists
 	//
-	if (vid_initialized)
-		GL_MakeAliasModelDisplayLists (mod, pheader);
+	GL_MakeAliasModelDisplayLists (mod, pheader);
 
 //
 // move the complete, relocatable alias model to the cache
@@ -2311,6 +2307,9 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/07/16 23:23:52  sezero
+ * killed fastfabs, not worthy of keeping anymore
+ *
  * Revision 1.16  2005/06/15 18:50:38  sezero
  * fifth model is for h2mp only and we've been out of bounds for ages here
  *

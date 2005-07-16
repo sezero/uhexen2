@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.45 2005-07-16 23:28:16 sezero Exp $
+	$Id: gl_draw.c,v 1.46 2005-07-16 23:29:49 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -13,7 +13,6 @@
 
 extern int ColorIndex[16];
 extern unsigned ColorPercent[16];
-extern qboolean	vid_initialized;
 extern qboolean	is8bit;
 extern unsigned char d_15to8table[65536];
 
@@ -1814,9 +1813,6 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 	int		i;
 	gltexture_t	*glt;
 
-	if (!vid_initialized)
-		return -1;
-
 	// see if the texture is already present
 	if (identifier[0])
 	{
@@ -1882,6 +1878,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.45  2005/07/16 23:28:16  sezero
+ * added some H2MP and H2W define conditionals.
+ *
  * Revision 1.44  2005/07/09 07:29:39  sezero
  * use hunk instead of malloc
  *
