@@ -3,7 +3,7 @@
 //**
 //** sbar.c
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.6 2005-05-22 11:49:00 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.7 2005-07-16 23:26:21 sezero Exp $
 //**
 //**************************************************************************
 
@@ -1811,7 +1811,8 @@ static void ShowInfoDown_f(void)
 
 static void ShowInfoUp_f(void)
 {
-	if(cl.intermission || (scr_viewsize.value > 110.0 && !sbtrans.value))
+	//if(cl.intermission || (scr_viewsize.value > 110.0 && !sbtrans.value))
+	if(cl.intermission || scr_viewsize.value > 110.0)
 	{
 		BarTargetHeight = 0.0-BAR_BUMP_HEIGHT;
 	}
@@ -2044,7 +2045,8 @@ void SB_InvReset(void)
 
 void SB_ViewSizeChanged(void)
 {
-	if(cl.intermission || (scr_viewsize.value > 110.0 && !sbtrans.value))
+	//if(cl.intermission || (scr_viewsize.value > 110.0 && !sbtrans.value))
+	if(cl.intermission || scr_viewsize.value > 110.0)
 	{
 		BarHeight = BarTargetHeight = 0.0-BAR_BUMP_HEIGHT;
 	}
