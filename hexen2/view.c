@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.6 2005-07-16 23:23:52 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.7 2005-07-17 15:19:34 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -43,11 +43,17 @@ cvar_t	v_idlescale = {"v_idlescale", "0", false};
 
 cvar_t	crosshair = {"crosshair", "0", true};
 
+cvar_t	cl_crossx = {"cl_crossx", "0", true};
+cvar_t	cl_crossy = {"cl_crossy", "0", true};
+
 float	v_dmg_time, v_dmg_roll, v_dmg_pitch;
 
 extern	int			in_forward, in_forward2, in_back;
 extern	cvar_t	sv_idealrollscale;
 
+#ifndef GLQUAKE
+extern void Draw_Crosshair(void);
+#endif
 
 /*
 ===============
@@ -1120,7 +1126,7 @@ void V_RenderView (void)
 
 #ifndef GLQUAKE
 	if (crosshair.value)
-		Draw_Character (scr_vrect.x + scr_vrect.width/2, scr_vrect.y + scr_vrect.height/2, '+');
+		Draw_Crosshair();
 #endif
 }
 
@@ -1156,6 +1162,8 @@ void V_Init (void)
 
 	Cvar_RegisterVariable (&v_idlescale);
 	Cvar_RegisterVariable (&crosshair);
+	Cvar_RegisterVariable (&cl_crossx);
+	Cvar_RegisterVariable (&cl_crossy);
 
 	Cvar_RegisterVariable (&scr_ofsx);
 	Cvar_RegisterVariable (&scr_ofsy);
@@ -1177,6 +1185,9 @@ void V_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/07/16 23:23:52  sezero
+ * killed fastfabs, not worthy of keeping anymore
+ *
  * Revision 1.5  2005/06/06 13:10:20  sezero
  * mlook and lookspring fixes by J.Krige
  * ( http://www.quakesrc.org/tutorials/old/1 )

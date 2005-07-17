@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.6 2005-07-16 23:35:19 sezero Exp $
+	$Id: draw.c,v 1.7 2005-07-17 15:19:34 sezero Exp $
 */
 
 
@@ -333,6 +333,47 @@ void Draw_String (int x, int y, char *str)
 		str++;
 		x += 8;
 	}
+}
+
+void Draw_Pixel(int x, int y, byte color)
+{
+	byte			*dest;
+	unsigned short	*pusdest;
+
+	if (r_pixbytes == 1)
+	{
+		dest = vid.conbuffer + y*vid.conrowbytes + x;
+		*dest = color;
+	}
+	else
+	{
+	// FIXME: pre-expand to native format?
+		pusdest = (unsigned short *)
+				((byte *)vid.conbuffer + y*vid.conrowbytes + (x<<1));
+		*pusdest = d_8to16table[color];
+	}
+}
+
+void Draw_Crosshair(void)
+{
+	int x, y;
+	extern cvar_t crosshair, cl_crossx, cl_crossy;
+	extern vrect_t		scr_vrect;
+
+	if (crosshair.value == 2) {
+		x = scr_vrect.x + scr_vrect.width/2 + cl_crossx.value; 
+		y = scr_vrect.y + scr_vrect.height/2 + cl_crossy.value;
+		Draw_Pixel(x - 1, y, 0x4f);
+		Draw_Pixel(x - 3, y, 0x4f);
+		Draw_Pixel(x + 1, y, 0x4f);
+		Draw_Pixel(x + 3, y, 0x4f);
+		Draw_Pixel(x, y - 1, 0x4f);
+		Draw_Pixel(x, y - 3, 0x4f);
+		Draw_Pixel(x, y + 1, 0x4f);
+		Draw_Pixel(x, y + 3, 0x4f);
+	} else if (crosshair.value)
+		Draw_Character (scr_vrect.x + scr_vrect.width/2-4 + cl_crossx.value, 
+				scr_vrect.y + scr_vrect.height/2-4 + cl_crossy.value, '+');
 }
 
 //==========================================================================
@@ -1650,6 +1691,10 @@ void Draw_EndDisc (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/07/16 23:35:19  sezero
+ * added transparent sbar of hexenworld to hexen2 for software mode.
+ * style fixes in draw.c, draw.h, sbar.c, sbar.h. tiny synchronization.
+ *
  * Revision 1.5  2005/06/07 20:30:49  sezero
  * More syncing: software version draw.c between hexen2/hexenworld
  *

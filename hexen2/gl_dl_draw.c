@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_dl_draw.c,v 1.47 2005-07-16 23:35:19 sezero Exp $
+	$Id: gl_dl_draw.c,v 1.48 2005-07-17 15:19:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -28,10 +28,22 @@ byte		*draw_menufont; 			// Big Menu Font
 qpic_t		*draw_backtile;
 
 int			char_texture;
+int			cs_texture; // crosshair texture
 int			char_smalltexture;
 int			char_menufonttexture;
 
 int	trans_level = 0;
+
+static byte cs_data[64] = {
+	0xff, 0xff, 0xff, 0x4f, 0xff, 0xff, 0xff, 0xff,
+	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+	0xff, 0xff, 0xff, 0x4f, 0xff, 0xff, 0xff, 0xff,
+	0x4f, 0xff, 0x4f, 0xff, 0x4f, 0xff, 0x4f, 0xff,
+	0xff, 0xff, 0xff, 0x4f, 0xff, 0xff, 0xff, 0xff,
+	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+	0xff, 0xff, 0xff, 0x4f, 0xff, 0xff, 0xff, 0xff,
+	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
+};
 
 byte		conback_buffer[sizeof(qpic_t) + sizeof(glpic_t)];
 qpic_t		*conback = (qpic_t *)&conback_buffer;
@@ -462,6 +474,8 @@ void Draw_Init (void)
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
+	cs_texture = GL_LoadTexture ("crosshair", 8, 8, cs_data, false, true, 0, false);
+
 	draw_smallchars = W_GetLumpName("tinyfont");
 	for (i=0 ; i<128*32 ; i++)
 		if (draw_smallchars[i] == 0)
@@ -567,6 +581,32 @@ void Draw_String (int x, int y, char *str)
 		str++;
 		x += 8;
 	}
+}
+
+void Draw_Crosshair(void)
+{
+	extern cvar_t crosshair, cl_crossx, cl_crossy;
+	int x, y;
+	extern vrect_t		scr_vrect;
+
+	if (crosshair.value == 2) {
+		x = scr_vrect.x + scr_vrect.width/2 - 3 + cl_crossx.value; 
+		y = scr_vrect.y + scr_vrect.height/2 - 3 + cl_crossy.value;
+		GL_Bind (cs_texture);
+
+		glBegin_fp (GL_QUADS);
+		glTexCoord2f_fp (0, 0);
+		glVertex2f_fp (x - 4, y - 4);
+		glTexCoord2f_fp (1, 0);
+		glVertex2f_fp (x+12, y-4);
+		glTexCoord2f_fp (1, 1);
+		glVertex2f_fp (x+12, y+12);
+		glTexCoord2f_fp (0, 1);
+		glVertex2f_fp (x - 4, y+12);
+		glEnd_fp ();
+	} else if (crosshair.value)
+		Draw_Character (scr_vrect.x + scr_vrect.width/2-4 + cl_crossx.value, 
+			scr_vrect.y + scr_vrect.height/2-4 + cl_crossy.value, '+');
 }
 
 
@@ -1880,6 +1920,10 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.47  2005/07/16 23:35:19  sezero
+ * added transparent sbar of hexenworld to hexen2 for software mode.
+ * style fixes in draw.c, draw.h, sbar.c, sbar.h. tiny synchronization.
+ *
  * Revision 1.46  2005/07/16 23:29:49  sezero
  * made vid_initialized static
  *

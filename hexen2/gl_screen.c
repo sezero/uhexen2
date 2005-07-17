@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.14 2005-07-09 07:29:40 sezero Exp $
+	$Id: gl_screen.c,v 1.15 2005-07-17 15:19:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -74,6 +74,7 @@ cvar_t		scr_showturtle = {"showturtle","0"};
 cvar_t		scr_showpause = {"showpause","1"};
 cvar_t		scr_printspeed = {"scr_printspeed","8"};
 extern	cvar_t	crosshair;
+extern void Draw_Crosshair(void);
 
 qboolean	scr_initialized;		// ready to draw
 
@@ -1227,7 +1228,7 @@ void SCR_UpdateScreen (void)
 	else
 	{
 		if (crosshair.value)
-			Draw_Character (scr_vrect.x + scr_vrect.width/2, scr_vrect.y + scr_vrect.height/2, '+');
+			Draw_Crosshair();
 
 		SCR_DrawRam();
 		SCR_DrawNet();
@@ -1266,6 +1267,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/07/09 07:29:40  sezero
+ * use hunk instead of malloc
+ *
  * Revision 1.13  2005/06/15 13:18:17  sezero
  * killed the glfunc struct
  *
