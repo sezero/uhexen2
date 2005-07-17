@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.31 2005-07-16 23:27:19 sezero Exp $
+	$Id: gl_draw.c,v 1.32 2005-07-17 14:36:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -476,7 +476,7 @@ void Draw_Init (void)
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
-	cs_texture = GL_LoadTexture ("crosshair", 8, 8, cs_data, false, true, 0, true);
+	cs_texture = GL_LoadTexture ("crosshair", 8, 8, cs_data, false, true, 0, false);
 
 	draw_smallchars = W_GetLumpName("tinyfont");
 	for (i=0 ; i<128*32 ; i++)
@@ -616,6 +616,7 @@ void Draw_Crosshair(void)
 	if (crosshair.value == 2) {
 		x = scr_vrect.x + scr_vrect.width/2 - 3 + cl_crossx.value; 
 		y = scr_vrect.y + scr_vrect.height/2 - 3 + cl_crossy.value;
+
 		GL_Bind (cs_texture);
 
 		glBegin_fp (GL_QUADS);
@@ -627,6 +628,7 @@ void Draw_Crosshair(void)
 		glVertex2f_fp (x+12, y+12);
 		glTexCoord2f_fp (0, 1);
 		glVertex2f_fp (x - 4, y+12);
+
 		glEnd_fp ();
 	} else if (crosshair.value)
 		Draw_Character (scr_vrect.x + scr_vrect.width/2-4 + cl_crossx.value, 
