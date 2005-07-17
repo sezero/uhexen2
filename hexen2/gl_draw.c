@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.50 2005-07-17 19:26:40 sezero Exp $
+	$Id: gl_draw.c,v 1.51 2005-07-17 19:28:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -16,7 +16,7 @@ extern unsigned ColorPercent[16];
 extern qboolean	is8bit;
 extern unsigned char d_15to8table[65536];
 extern vrect_t	scr_vrect;
-extern cvar_t	crosshair, cl_crossx, cl_crossy;
+extern cvar_t	crosshair, cl_crossx, cl_crossy, crosshaircolor;
 
 extern int	gl_max_size;
 cvar_t		gl_picmip = {"gl_picmip", "0"};
@@ -617,27 +617,36 @@ void Draw_String (int x, int y, char *str)
 void Draw_Crosshair(void)
 {
 	int x, y;
+	unsigned char *pColor;
 
-	if (crosshair.value == 2) {
-		x = scr_vrect.x + scr_vrect.width/2 - 3 + cl_crossx.value; 
-		y = scr_vrect.y + scr_vrect.height/2 - 3 + cl_crossy.value;
+	x = scr_vrect.x + scr_vrect.width/2 + cl_crossx.value; 
+	y = scr_vrect.y + scr_vrect.height/2 + cl_crossy.value;
 
+	if ((int)crosshair.value == 2)
+	{
+		pColor = (unsigned char *) &d_8to24table[(byte) crosshaircolor.value];
+
+		glTexEnvf_fp (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		glColor4ubv_fp (pColor);
 		GL_Bind (cs_texture);
 
 		glBegin_fp (GL_QUADS);
 		glTexCoord2f_fp (0, 0);
-		glVertex2f_fp (x - 4, y - 4);
+		glVertex2f_fp (x - 7, y - 7);
 		glTexCoord2f_fp (1, 0);
-		glVertex2f_fp (x+12, y-4);
+		glVertex2f_fp (x + 9, y - 7);
 		glTexCoord2f_fp (1, 1);
-		glVertex2f_fp (x+12, y+12);
+		glVertex2f_fp (x + 9, y + 9);
 		glTexCoord2f_fp (0, 1);
-		glVertex2f_fp (x - 4, y+12);
+		glVertex2f_fp (x - 7, y + 9);
 
 		glEnd_fp ();
-	} else if (crosshair.value)
-		Draw_Character (scr_vrect.x + scr_vrect.width/2-4 + cl_crossx.value, 
-			scr_vrect.y + scr_vrect.height/2-4 + cl_crossy.value, '+');
+		glTexEnvf_fp (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	}
+	else if (crosshair.value)
+	{
+		Draw_Character (x - 4, y - 4, '+');
+	}
 }
 
 
@@ -1985,6 +1994,12 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.50  2005/07/17 19:26:40  sezero
+ * added 32x32 alpha pixmap support from darkplaces project which fixes
+ * the crosshair 2 support. chances are that things maybe incomplete here,
+ * but I don't care much. (this actually is hiding our actual bug where
+ * 8-bit upload somehow clobbered the crosshair texture.)
+ *
  * Revision 1.49  2005/07/17 15:33:06  sezero
  * took those crosshair externs out of the fuctions
  *

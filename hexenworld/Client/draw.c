@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.7 2005-07-17 15:33:06 sezero Exp $
+	$Id: draw.c,v 1.8 2005-07-17 19:28:28 sezero Exp $
 */
 
 
@@ -365,27 +365,32 @@ void Draw_Pixel(int x, int y, byte color)
 }
 
 
-extern cvar_t	crosshair, cl_crossx, cl_crossy;
+extern cvar_t	crosshair, cl_crossx, cl_crossy, crosshaircolor;
 extern vrect_t	scr_vrect;
 
 void Draw_Crosshair(void)
 {
 	int x, y;
+	byte c = (byte)crosshaircolor.value;
 
-	if (crosshair.value == 2) {
-		x = scr_vrect.x + scr_vrect.width/2 + cl_crossx.value; 
-		y = scr_vrect.y + scr_vrect.height/2 + cl_crossy.value;
-		Draw_Pixel(x - 1, y, 0x4f);
-		Draw_Pixel(x - 3, y, 0x4f);
-		Draw_Pixel(x + 1, y, 0x4f);
-		Draw_Pixel(x + 3, y, 0x4f);
-		Draw_Pixel(x, y - 1, 0x4f);
-		Draw_Pixel(x, y - 3, 0x4f);
-		Draw_Pixel(x, y + 1, 0x4f);
-		Draw_Pixel(x, y + 3, 0x4f);
-	} else if (crosshair.value)
-		Draw_Character (scr_vrect.x + scr_vrect.width/2-4 + cl_crossx.value, 
-				scr_vrect.y + scr_vrect.height/2-4 + cl_crossy.value, '+');
+	x = scr_vrect.x + scr_vrect.width/2 + cl_crossx.value; 
+	y = scr_vrect.y + scr_vrect.height/2 + cl_crossy.value;
+
+	if ((int)crosshair.value == 2)
+	{
+		Draw_Pixel(x - 1, y, c);
+		Draw_Pixel(x - 3, y, c);
+		Draw_Pixel(x + 1, y, c);
+		Draw_Pixel(x + 3, y, c);
+		Draw_Pixel(x, y - 1, c);
+		Draw_Pixel(x, y - 3, c);
+		Draw_Pixel(x, y + 1, c);
+		Draw_Pixel(x, y + 3, c);
+	}
+	else if (crosshair.value)
+	{
+		Draw_Character (x - 4, y - 4, '+');
+	}
 }
 
 //==========================================================================

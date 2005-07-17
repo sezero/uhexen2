@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.7 2005-07-17 15:19:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.8 2005-07-17 19:28:28 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -45,6 +45,7 @@ cvar_t	crosshair = {"crosshair", "0", true};
 
 cvar_t	cl_crossx = {"cl_crossx", "0", true};
 cvar_t	cl_crossy = {"cl_crossy", "0", true};
+cvar_t	crosshaircolor = {"crosshaircolor", "75", true}; // 79 seemed too bright
 
 float	v_dmg_time, v_dmg_roll, v_dmg_pitch;
 
@@ -1164,6 +1165,7 @@ void V_Init (void)
 	Cvar_RegisterVariable (&crosshair);
 	Cvar_RegisterVariable (&cl_crossx);
 	Cvar_RegisterVariable (&cl_crossy);
+	Cvar_RegisterVariable (&crosshaircolor);
 
 	Cvar_RegisterVariable (&scr_ofsx);
 	Cvar_RegisterVariable (&scr_ofsy);
@@ -1185,6 +1187,12 @@ void V_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/07/17 15:19:34  sezero
+ * added crosshair 2 support of hexenworld to hexen2.
+ * gl versions issue, that crosshair 2 won't show-up
+ * without a proper low conwidth, still remains to be
+ * solved.
+ *
  * Revision 1.6  2005/07/16 23:23:52  sezero
  * killed fastfabs, not worthy of keeping anymore
  *

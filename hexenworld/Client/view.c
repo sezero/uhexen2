@@ -38,6 +38,7 @@ cvar_t	crosshair = {"crosshair", "0", true};
 
 cvar_t  cl_crossx = {"cl_crossx", "0", true};
 cvar_t  cl_crossy = {"cl_crossy", "0", true};
+cvar_t	crosshaircolor = {"crosshaircolor", "75", true}; // 79 seemed too bright
 
 float	v_dmg_time, v_dmg_roll, v_dmg_pitch;
 
@@ -1141,6 +1142,7 @@ void V_Init (void)
 	Cvar_RegisterVariable (&crosshair);
 	Cvar_RegisterVariable (&cl_crossx);
 	Cvar_RegisterVariable (&cl_crossy);
+	Cvar_RegisterVariable (&crosshaircolor);
 
 	Cvar_RegisterVariable (&cl_rollspeed);
 	Cvar_RegisterVariable (&cl_rollangle);
