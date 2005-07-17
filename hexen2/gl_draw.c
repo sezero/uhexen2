@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.49 2005-07-17 15:33:06 sezero Exp $
+	$Id: gl_draw.c,v 1.50 2005-07-17 19:26:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -36,15 +36,42 @@ int			char_menufonttexture;
 
 int	trans_level = 0;
 
-static byte cs_data[64] = {
-	0xff, 0xff, 0xff, 0x4f, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0x4f, 0xff, 0xff, 0xff, 0xff,
-	0x4f, 0xff, 0x4f, 0xff, 0x4f, 0xff, 0x4f, 0xff,
-	0xff, 0xff, 0xff, 0x4f, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0x4f, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
+// Crosshair texture is a 32x32 alpha map with 8 levels of alpha.
+// The format is similar to an X11 pixmap, but not the same.
+// 7 is 100% solid, 0 and any other characters are transparent.
+static char *cs_data = {
+	"................................"
+	"................................"
+	"..............7777.............."
+	"..............7777.............."
+	"..............7777.............."
+	"..............7777.............."
+	"................................"
+	"................................"
+	"................................"
+	"................................"
+	"..............7777.............."
+	"..............7777.............."
+	"..............7777.............."
+	"..............7777.............."
+	"..7777....7777....7777....7777.."
+	"..7777....7777....7777....7777.."
+	"..7777....7777....7777....7777.."
+	"..7777....7777....7777....7777.."
+	"..............7777.............."
+	"..............7777.............."
+	"..............7777.............."
+	"..............7777.............."
+	"................................"
+	"................................"
+	"................................"
+	"................................"
+	"..............7777.............."
+	"..............7777.............."
+	"..............7777.............."
+	"..............7777.............."
+	"................................"
+	"................................"
 };
 
 byte		conback_buffer[sizeof(qpic_t) + sizeof(glpic_t)];
@@ -63,6 +90,8 @@ extern qboolean	is_3dfx;
 
 gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
+
+static int GL_LoadPixmap(char *name, char *data);
 
 
 void GL_Texels_f (void)
@@ -476,7 +505,7 @@ void Draw_Init (void)
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
-	cs_texture = GL_LoadTexture ("crosshair", 8, 8, cs_data, false, true, 0, false);
+	cs_texture = GL_LoadPixmap ("crosshair", cs_data);
 
 	draw_smallchars = W_GetLumpName("tinyfont");
 	for (i=0 ; i<128*32 ; i++)
@@ -1911,6 +1940,40 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 }
 
 /*
+===============
+GL_LoadPixmap
+from LordHavoc's Twilight (DarkPlaces) project
+
+Loads a string into a named 32x32 greyscale OpenGL texture, suitable for
+crosshairs or pointers. The data string is in a format similar to an X11
+pixmap.  '0'-'7' are brightness levels, any other character is considered
+transparent. Remember, NO error checking is performed on the input string.
+*/
+static int GL_LoadPixmap (char *name, char *data)
+{
+	int		i;
+	unsigned char	pixels[32*32][4];
+
+	for (i = 0; i < 32*32; i++)
+	{
+		if (data[i] >= '0' && data[i] < '8')
+		{
+			pixels[i][0] = 255;
+			pixels[i][1] = 255;
+			pixels[i][2] = 255;
+			pixels[i][3] = (data[i] - '0') * 32;
+		} else {
+			pixels[i][0] = 255;
+			pixels[i][1] = 255;
+			pixels[i][2] = 255;
+			pixels[i][3] = 0;
+		}
+	}
+
+	return GL_LoadTexture (name, 32, 32, (unsigned char *) pixels, false, true, 0, true);
+}
+
+/*
 ================
 GL_LoadPicTexture
 ================
@@ -1922,6 +1985,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.49  2005/07/17 15:33:06  sezero
+ * took those crosshair externs out of the fuctions
+ *
  * Revision 1.48  2005/07/17 15:19:34  sezero
  * added crosshair 2 support of hexenworld to hexen2.
  * gl versions issue, that crosshair 2 won't show-up
