@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.32 2005-07-17 14:36:59 sezero Exp $
+	$Id: gl_draw.c,v 1.33 2005-07-17 15:33:06 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -15,6 +15,8 @@ extern int ColorIndex[16];
 extern unsigned ColorPercent[16];
 extern qboolean	is8bit;
 extern unsigned char d_15to8table[65536];
+extern vrect_t	scr_vrect;
+extern cvar_t	crosshair, cl_crossx, cl_crossy;
 
 extern int	gl_max_size;
 cvar_t		gl_picmip = {"gl_picmip", "0"};
@@ -609,9 +611,7 @@ void Draw_RedString (int x, int y, char *str)
 
 void Draw_Crosshair(void)
 {
-	extern cvar_t crosshair, cl_crossx, cl_crossy;
 	int x, y;
-	extern vrect_t		scr_vrect;
 
 	if (crosshair.value == 2) {
 		x = scr_vrect.x + scr_vrect.width/2 - 3 + cl_crossx.value; 

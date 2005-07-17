@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.48 2005-07-17 15:19:34 sezero Exp $
+	$Id: gl_draw.c,v 1.49 2005-07-17 15:33:06 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -15,6 +15,8 @@ extern int ColorIndex[16];
 extern unsigned ColorPercent[16];
 extern qboolean	is8bit;
 extern unsigned char d_15to8table[65536];
+extern vrect_t	scr_vrect;
+extern cvar_t	crosshair, cl_crossx, cl_crossy;
 
 extern int	gl_max_size;
 cvar_t		gl_picmip = {"gl_picmip", "0"};
@@ -585,13 +587,12 @@ void Draw_String (int x, int y, char *str)
 
 void Draw_Crosshair(void)
 {
-	extern cvar_t crosshair, cl_crossx, cl_crossy;
 	int x, y;
-	extern vrect_t		scr_vrect;
 
 	if (crosshair.value == 2) {
 		x = scr_vrect.x + scr_vrect.width/2 - 3 + cl_crossx.value; 
 		y = scr_vrect.y + scr_vrect.height/2 - 3 + cl_crossy.value;
+
 		GL_Bind (cs_texture);
 
 		glBegin_fp (GL_QUADS);
@@ -603,6 +604,7 @@ void Draw_Crosshair(void)
 		glVertex2f_fp (x+12, y+12);
 		glTexCoord2f_fp (0, 1);
 		glVertex2f_fp (x - 4, y+12);
+
 		glEnd_fp ();
 	} else if (crosshair.value)
 		Draw_Character (scr_vrect.x + scr_vrect.width/2-4 + cl_crossx.value, 
@@ -1920,6 +1922,12 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.48  2005/07/17 15:19:34  sezero
+ * added crosshair 2 support of hexenworld to hexen2.
+ * gl versions issue, that crosshair 2 won't show-up
+ * without a proper low conwidth, still remains to be
+ * solved.
+ *
  * Revision 1.47  2005/07/16 23:35:19  sezero
  * added transparent sbar of hexenworld to hexen2 for software mode.
  * style fixes in draw.c, draw.h, sbar.c, sbar.h. tiny synchronization.
