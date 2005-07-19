@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.51 2005-07-17 19:28:28 sezero Exp $
+	$Id: gl_draw.c,v 1.52 2005-07-19 20:08:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -40,6 +40,9 @@ int	trans_level = 0;
 // The format is similar to an X11 pixmap, but not the same.
 // 7 is 100% solid, 0 and any other characters are transparent.
 static char *cs_data = {
+/* This is actually the QuakeWorld crosshair
+   which Raven didn't bother changing. It is
+   possible to make class-based crosshairs. */
 	"................................"
 	"................................"
 	"..............7777.............."
@@ -630,6 +633,10 @@ void Draw_Crosshair(void)
 		glColor4ubv_fp (pColor);
 		GL_Bind (cs_texture);
 
+		// Our crosshair is now 32x32, but we're drawing 16x16 here
+		// to have a smaller pic. If, in the pixmap, the pixels are
+		// not drawn in doubles, the final image on the screen may
+		// have some of the pixels missing. Sigh...
 		glBegin_fp (GL_QUADS);
 		glTexCoord2f_fp (0, 0);
 		glVertex2f_fp (x - 7, y - 7);
@@ -1994,6 +2001,10 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.51  2005/07/17 19:28:28  sezero
+ * added crosshair color from quake. performed some small cleanup.
+ * I hope I won't have to bother with this thing anymore.
+ *
  * Revision 1.50  2005/07/17 19:26:40  sezero
  * added 32x32 alpha pixmap support from darkplaces project which fixes
  * the crosshair 2 support. chances are that things maybe incomplete here,
