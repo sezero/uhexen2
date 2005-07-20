@@ -1,5 +1,31 @@
 ChangeLog:
 
+2005-07-20 (CVS, 1.2.5-pre10):
+    * killed fastfabs, not worthy of keeping anymore
+    * made vid_initialized static
+    * allowed mini-status when sbar transparency is set, for now
+    * added transparent sbar of hexenworld to hexen2 for software mode.
+      style fixes in draw.c, draw.h, sbar.c, sbar.h.
+    * added the gl_texels console cmd to hexenworld as well. added some
+      H2MP and H2W define conditionals.
+    * partial fix for hexenwold crosshair 2: send the texture to
+      GL_LoadTexture in non-rgba mode. it still won't show up unless the
+      game is started with a proper conwidth value.
+    * added crosshair 2 support of hexenworld to hexen2.
+    * added 32x32 alpha pixmap support from darkplaces project which
+      "fixes" the crosshair 2 support. chances are that things maybe
+      incomplete here, but I don't care much. (this actually is hiding
+      our actual bug where 8-bit upload somehow clobbered the crosshair
+      texture.)
+    * added crosshair color from quake. performed some small cleanup. I
+      hope I won't have to bother with this thing anymore.
+    * the crosshair we have here is actually the QuakeWorld crosshair
+      which Raven didn't bother changing. it is possible to make class-
+      based crosshairs.  our crosshair is now 32x32, but we're drawing in
+      16x16 to have a smaller pic. if, in the pixmap, the pixels are not
+      drawn in doubles, the final image on the screen may have some of
+      the pixels missing. sigh...
+
 2005-07-15 (CVS, 1.2.5-pre9):
     * fixed typo in cd_unix.c for freebsd
     * added a makefile hack to prevent hwsv or hwcl build failures when
