@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "resource.h"
 
-IDI_ICON2 ICON DISCARDABLE qe3.ico
+IDI_ICON2 ICON DISCARDABLE resource.ico
 
 // These stuff would be added one day
 //IDD_DIALOG1 DIALOGEX 0, 0, 62, 21

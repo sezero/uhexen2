@@ -29,7 +29,7 @@ ifdef DEMO
 GAMEFLAGS+= -DDEMOBUILD
 endif
 
-ICO_FILE = qe3.ico
+ICO_FILE = hexen2.ico
 
 # disable startup splash screens
 GAMEFLAGS+= -DNO_SPLASHES
@@ -39,10 +39,10 @@ GAMEFLAGS+= -DNO_SPLASHES
 	$(CC) -c $(CFLAGS) $(GAMEFLAGS) -o $@ $<
 %.o: %.asm
 	$(AS) $(ASFLAGS) -o $@ $<
-%.res: %.rc
-	cp win_stuff/$(ICO_FILE) $(ICO_FILE)
+win32res.o: win_stuff/hexen2.rc
+	cp icons/$(ICO_FILE) resource.ico
 	windres --include=$(MINGWDIR)/include --output=coff -o $@ $<
-	rm -f $(ICO_FILE)
+	rm -f resource.ico
 
 SOFTOBJS = d_edge.o \
 	d_fill.o \
@@ -159,8 +159,8 @@ COMMONOBJS = win_stuff/cd_win.o \
 	math.o \
 	snd_mixa.o \
 	sys_wina.o \
-	win_stuff/hexen2.res \
-	worlda.o
+	worlda.o \
+	win32res.o
 
 
 clean:
@@ -170,6 +170,7 @@ cleaner:
 	rm -f $(SOFTOBJS) $(GLOBJS) $(COMMONOBJS) $(GLMP_BINARY) $(GLH2_BINARY) $(MP_BINARY) $(H2_BINARY) core
 
 glmp_exe : GAMEFLAGS+=-DGLQUAKE -DH2MP
+glmp_exe : ICO_FILE=h2mp.ico
 glmp_exe : $(GLOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(GLMP_BINARY) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS)
 
@@ -178,6 +179,7 @@ glh2_exe : $(GLOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS)
 
 mp_exe : GAMEFLAGS+=-DH2MP
+mp_exe : ICO_FILE=h2mp.ico
 mp_exe : $(SOFTOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(MP_BINARY) $(SOFTOBJS) $(COMMONOBJS) $(LDFLAGS)
 
