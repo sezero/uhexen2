@@ -88,7 +88,8 @@ void SV_New_f (void)
 
 	// send music
 	MSG_WriteByte (&host_client->netchan.message, svc_cdtrack);
-	MSG_WriteByte (&host_client->netchan.message, sv.edicts->v.soundtype);
+//	MSG_WriteByte (&host_client->netchan.message, sv.edicts->v.soundtype);
+	MSG_WriteByte (&host_client->netchan.message, sv.cd_track);
 
 	MSG_WriteByte (&host_client->netchan.message, svc_midi_name);
 	MSG_WriteString (&host_client->netchan.message, sv.midi_name);
