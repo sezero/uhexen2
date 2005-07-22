@@ -1,21 +1,24 @@
+// cmds.c
+
 #include "defs.h"
 
-static	int			cmd_argc;
-static	char		*cmd_argv[MAX_ARGS];
-static	char		*cmd_null_string = "";
-static	char		*cmd_args = NULL;
+static	int		cmd_argc;
+static	char	*cmd_argv[MAX_ARGS];
+static	char	*cmd_null_string = "";
+static	char	*cmd_args = NULL;
 
 static	cmd_function_t	*cmd_functions;		// possible commands to execute
 
-int		Cmd_Argc (void)
+int Cmd_Argc (void)
 {
 	return cmd_argc;
 }
 
-char	*Cmd_Argv (int arg)
+char *Cmd_Argv (int arg)
 {
-	if ( arg >= cmd_argc )
+	if (arg >= cmd_argc)
 		return cmd_null_string;
+
 	return cmd_argv[arg];	
 }
 
@@ -23,7 +26,7 @@ void Cmd_TokenizeString (char *text)
 {
 	int		i;
 	
-// clear the args from the last string
+	// clear the args from the last string
 	for (i=0 ; i<cmd_argc ; i++)
 		free (cmd_argv[i]);
 		
@@ -31,13 +34,12 @@ void Cmd_TokenizeString (char *text)
 	cmd_args = NULL;
 	
 	while (1)
-	{
-// skip whitespace up to a /n
+	{	// skip whitespace up to a /n
 		while (*text && *text <= ' ' && *text != '\n')
 		{
 			text++;
 		}
-		
+
 		if (*text == '\n')
 		{	// a newline seperates commands in the buffer
 			text++;
@@ -46,10 +48,10 @@ void Cmd_TokenizeString (char *text)
 
 		if (!*text)
 			return;
-	
+
 		if (cmd_argc == 1)
 			 cmd_args = text;
-		
+
 		text = COM_Parse (text);
 		if (!text)
 			return;
@@ -61,14 +63,13 @@ void Cmd_TokenizeString (char *text)
 			cmd_argc++;
 		}
 	}
-	
 }
 
-void	Cmd_AddCommand (char *cmd_name, xcommand_t function)
+void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 {
 	cmd_function_t	*cmd;
-		
-// fail if the command already exists
+
+	// fail if the command already exists
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
 	{
 		if (!strcmp (cmd_name, cmd->name))
@@ -83,7 +84,6 @@ void	Cmd_AddCommand (char *cmd_name, xcommand_t function)
 	cmd->function = function;
 	cmd->next = cmd_functions;
 	cmd_functions = cmd;
-
 }
 
 void Cmd_Init()
@@ -93,17 +93,17 @@ void Cmd_Init()
 	Cmd_AddCommand("filter",Cmd_Filter_f);
 }
 
-void	Cmd_ExecuteString (char *text)
+void Cmd_ExecuteString (char *text)
 {	
 	cmd_function_t	*cmd;
 
 	Cmd_TokenizeString (text);
-			
-// execute the command line
+
+	// execute the command line
 	if (!Cmd_Argc())
 		return;		// no tokens
 
-// check functions
+	// check functions
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
 	{
 		if (!strcmp(cmd_argv[0],cmd->name))
@@ -127,7 +127,7 @@ void Cbuf_Init (void)
 void Cbuf_AddText (char *text)
 {
 	int		l;
-	
+
 	l = strlen (text);
 
 	if (cmd_text.cursize + l >= cmd_text.maxsize)
@@ -135,15 +135,16 @@ void Cbuf_AddText (char *text)
 		printf ("Cbuf_AddText: overflow\n");
 		return;
 	}
+
 	SZ_Write (&cmd_text, text, strlen (text));
 }
 
 void Cbuf_InsertText (char *text)
 {
 	char	*temp;
-	int		templen;
+	int	templen;
 
-// copy off any commands still remaining in the exec buffer
+	// copy off any commands still remaining in the exec buffer
 	templen = cmd_text.cursize;
 	if (templen)
 	{
@@ -152,12 +153,15 @@ void Cbuf_InsertText (char *text)
 		SZ_Clear (&cmd_text);
 	}
 	else
+	{
 		temp = NULL;	// shut up compiler
-		
-// add the entire text of the file
+	}
+
+	// add the entire text of the file
 	Cbuf_AddText (text);
 	SZ_Write (&cmd_text, "\n", 1);
-// add the copied off data
+
+	// add the copied off data
 	if (templen)
 	{
 		SZ_Write (&cmd_text, temp, templen);
@@ -167,14 +171,13 @@ void Cbuf_InsertText (char *text)
 
 void Cbuf_Execute (void)
 {
-	int		i;
+	int	i, quotes;
 	char	*text;
 	char	line[1024];
-	int		quotes;
-	
+
 	while (cmd_text.cursize)
 	{
-// find a \n or ; line break
+		// find a \n or ; line break
 		text = (char *)cmd_text.data;
 
 		quotes = 0;
@@ -187,17 +190,18 @@ void Cbuf_Execute (void)
 			if (text[i] == '\n')
 				break;
 		}
-			
-				
+
 		memcpy (line, text, i);
 		line[i] = 0;
-		
+
 // delete the text from the command buffer and move remaining commands down
 // this is necessary because commands (exec, alias) can insert data at the
 // beginning of the text buffer
 
 		if (i == cmd_text.cursize)
+		{
 			cmd_text.cursize = 0;
+		}
 		else
 		{
 			i++;
@@ -205,9 +209,8 @@ void Cbuf_Execute (void)
 			memcpy (text, text+i, cmd_text.cursize);
 		}
 
-// execute the command line
+		// execute the command line
 		Cmd_ExecuteString (line);
-		
 	}
 }
 

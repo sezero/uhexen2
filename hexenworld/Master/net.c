@@ -1,10 +1,12 @@
+// net.c
+
 #include "defs.h"
 
 extern char	filters_file[256];
 
 byte		net_message_buffer[MAX_UDP_PACKET];
 sizebuf_t	net_message;
-int			net_socket;
+int		net_socket;
 #ifdef _WIN32
 WSADATA		winsockdata;
 #endif
@@ -189,70 +191,70 @@ int MSG_GetReadCount(void)
 int MSG_ReadChar (void)
 {
 	int	c;
-	
+
 	if (msg_readcount+1 > net_message.cursize)
 	{
 		msg_badread = true;
 		return -1;
 	}
-		
+
 	c = (signed char)net_message.data[msg_readcount];
 	msg_readcount++;
-	
+
 	return c;
 }
 
 int MSG_ReadByte (void)
 {
 	int	c;
-	
+
 	if (msg_readcount+1 > net_message.cursize)
 	{
 		msg_badread = true;
 		return -1;
 	}
-		
+
 	c = (unsigned char)net_message.data[msg_readcount];
 	msg_readcount++;
-	
+
 	return c;
 }
 
 int MSG_ReadShort (void)
 {
 	int	c;
-	
+
 	if (msg_readcount+2 > net_message.cursize)
 	{
 		msg_badread = true;
 		return -1;
 	}
-		
+
 	c = (short)(net_message.data[msg_readcount]
-	+ (net_message.data[msg_readcount+1]<<8));
-	
+			+ (net_message.data[msg_readcount+1]<<8));
+
 	msg_readcount += 2;
-	
+
 	return c;
 }
 
 int MSG_ReadLong (void)
 {
 	int	c;
-	
+
 	if (msg_readcount+4 > net_message.cursize)
 	{
 		msg_badread = true;
 		return -1;
 	}
-		
+
 	c = net_message.data[msg_readcount]
-	+ (net_message.data[msg_readcount+1]<<8)
-	+ (net_message.data[msg_readcount+2]<<16)
-	+ (net_message.data[msg_readcount+3]<<24);
-	
+			+ (net_message.data[msg_readcount+1]<<8)
+			+ (net_message.data[msg_readcount+2]<<16)
+			+ (net_message.data[msg_readcount+3]<<24);
+
 	msg_readcount += 4;
-	
+
 	return c;
 }
 
@@ -264,13 +266,13 @@ float MSG_ReadFloat (void)
 		float	f;
 		int	l;
 	} dat;
-	
-	dat.b[0] =	net_message.data[msg_readcount];
-	dat.b[1] =	net_message.data[msg_readcount+1];
-	dat.b[2] =	net_message.data[msg_readcount+2];
-	dat.b[3] =	net_message.data[msg_readcount+3];
+
+	dat.b[0] = net_message.data[msg_readcount];
+	dat.b[1] = net_message.data[msg_readcount+1];
+	dat.b[2] = net_message.data[msg_readcount+2];
+	dat.b[3] = net_message.data[msg_readcount+3];
 	msg_readcount += 4;
-	
+
 	dat.l = LittleLong (dat.l);
 
 	return dat.f;	
@@ -280,7 +282,7 @@ char *MSG_ReadString (void)
 {
 	static char	string[2048];
 	int		l,c;
-	
+
 	l = 0;
 	do
 	{
@@ -290,9 +292,9 @@ char *MSG_ReadString (void)
 		string[l] = c;
 		l++;
 	} while (l < sizeof(string)-1);
-	
+
 	string[l] = 0;
-	
+
 	return string;
 }
 
@@ -300,7 +302,7 @@ char *MSG_ReadStringLine (void)
 {
 	static char	string[2048];
 	int		l,c;
-	
+
 	l = 0;
 	do
 	{
@@ -310,16 +312,16 @@ char *MSG_ReadStringLine (void)
 		string[l] = c;
 		l++;
 	} while (l < sizeof(string)-1);
-	
+
 	string[l] = 0;
-	
+
 	return string;
 }
 
 void MSG_WriteChar (sizebuf_t *sb, int c)
 {
 	byte	*buf;
-	
+
 #ifdef PARANOID
 	if (c < -128 || c > 127)
 		Sys_Error ("MSG_WriteChar: range error");
@@ -332,7 +334,7 @@ void MSG_WriteChar (sizebuf_t *sb, int c)
 void MSG_WriteByte (sizebuf_t *sb, int c)
 {
 	byte	*buf;
-	
+
 #ifdef PARANOID
 	if (c < 0 || c > 255)
 		Sys_Error ("MSG_WriteByte: range error");
@@ -345,7 +347,7 @@ void MSG_WriteByte (sizebuf_t *sb, int c)
 void MSG_WriteShort (sizebuf_t *sb, int c)
 {
 	byte	*buf;
-	
+
 #ifdef PARANOID
 	if (c < ((short)0x8000) || c > (short)0x7fff)
 		Sys_Error ("MSG_WriteShort: range error");
@@ -359,7 +361,7 @@ void MSG_WriteShort (sizebuf_t *sb, int c)
 void MSG_WriteLong (sizebuf_t *sb, int c)
 {
 	byte	*buf;
-	
+
 	buf = (byte *)SZ_GetSpace (sb, 4);
 	buf[0] = c&0xff;
 	buf[1] = (c>>8)&0xff;
@@ -374,11 +376,10 @@ void MSG_WriteFloat (sizebuf_t *sb, float f)
 		float	f;
 		int	l;
 	} dat;
-	
-	
+
 	dat.f = f;
 	dat.l = LittleLong (dat.l);
-	
+
 	SZ_Write (sb, &dat.l, 4);
 }
 
@@ -500,19 +501,23 @@ int UDP_OpenSocket (int port)
 		Sys_Error ("UDP_OpenSocket: ioctl FIONBIO:", strerror(errno));
 
 	address.sin_family = AF_INET;
-//ZOID -- check for interface binding option
+	//ZOID -- check for interface binding option
 	if ((i = COM_CheckParm("-ip")) != 0 && i < com_argc) {
 		address.sin_addr.s_addr = inet_addr(com_argv[i+1]);
 		printf("Binding to IP Interface Address of %s\n",
 				inet_ntoa(address.sin_addr));
-	} else
+	}
+	else
+	{
 		address.sin_addr.s_addr = INADDR_ANY;
+	}
 
 	if (port == PORT_ANY)
 		address.sin_port = 0;
 	else
 		address.sin_port = htons((short)port);
-	if( bind (newsocket, /*(void *)*/(struct sockaddr *)&address, sizeof(address)) == -1)
+
+	if (bind(newsocket, (struct sockaddr *)&address, sizeof(address)) == -1)
 		Sys_Error ("UDP_OpenSocket: bind: %s", strerror(errno));
 
 	return newsocket;
@@ -530,6 +535,7 @@ qboolean NET_CompareAdr (netadr_t a, netadr_t b)
 {
 	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3] && a.port == b.port)
 		return true;
+
 	return false;
 }
 
@@ -537,6 +543,7 @@ qboolean NET_CompareAdrNoPort (netadr_t a, netadr_t b)
 {
 	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3])
 		return true;
+
 	return false;
 }
 
@@ -564,6 +571,7 @@ void NET_GetLocalAddress (void)
 	namelen = sizeof(address);
 	if (getsockname (net_socket, (struct sockaddr *)&address, &namelen) == -1)
 		Sys_Error ("NET_Init: getsockname:", strerror(errno));
+
 	net_local_adr.port = address.sin_port;
 
 	printf("IP address %s\n", NET_AdrToString (net_local_adr) );
@@ -572,7 +580,7 @@ void NET_GetLocalAddress (void)
 char	*NET_AdrToString (netadr_t a)
 {
 	static	char	s[64];
-	
+
 	sprintf (s, "%i.%i.%i.%i:%i", a.ip[0], a.ip[1], a.ip[2], a.ip[3], ntohs(a.port));
 
 	return s;
@@ -585,10 +593,9 @@ qboolean NET_StringToAdr (char *s, netadr_t *a)
 	char	*colon;
 	char	copy[128];
 	
-	
 	memset (&sadr, 0, sizeof(sadr));
 	sadr.sin_family = AF_INET;
-	
+
 	sadr.sin_port = 0;
 
 	strcpy (copy, s);
@@ -599,7 +606,7 @@ qboolean NET_StringToAdr (char *s, netadr_t *a)
 			*colon = 0;
 			sadr.sin_port = htons((short)atoi(colon+1));	
 		}
-	
+
 	if (copy[0] >= '0' && copy[0] <= '9')
 	{
 		*(int *)&sadr.sin_addr = inet_addr(copy);
@@ -608,9 +615,10 @@ qboolean NET_StringToAdr (char *s, netadr_t *a)
 	{
 		if ((h = gethostbyname(copy)) == 0)
 			return 0;
+
 		*(int *)&sadr.sin_addr = *(int *)h->h_addr_list[0];
 	}
-	
+
 	SockadrToNetadr (&sadr, a);
 
 	return true;
@@ -630,7 +638,6 @@ void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
 	*(int *)&a->ip = *(int *)&s->sin_addr;
 	a->port = s->sin_port;
 }
-
 
 void NET_SendPacket (int length, void *data, netadr_t to)
 {
@@ -671,11 +678,9 @@ void AnalysePacket()
 
 		if(i%8==7)
 			printf("\n");
-
 	}
 
-	printf("\n");
-	printf("\n");
+	printf("\n\n");
 
 	p = net_message.data;
 
@@ -696,7 +701,6 @@ void AnalysePacket()
 
 		if(i%8==7)
 			printf("\n");
-
 	}
 
 	printf("\n");
@@ -719,7 +723,6 @@ void Mst_SendList()
 	for(sv = sv_list;sv;sv = sv->next)
 		sv_num++;
 
-
 	MSG_WriteByte(&msg,255);
 	MSG_WriteByte(&msg,255);
 	MSG_WriteByte(&msg,255);
@@ -727,8 +730,6 @@ void Mst_SendList()
 	MSG_WriteByte(&msg,255);
 	MSG_WriteByte(&msg,'d');
 	MSG_WriteByte(&msg,'\n');
-
-	
 
 	if(sv_num>0)
 		for(sv = sv_list;sv;sv = sv->next)
@@ -810,14 +811,12 @@ void Mst_Packet()
 			AnalysePacket();
 		}
 	}
-
 }
 
 void SV_ReadPackets (void)
 {
 	while (NET_GetPacket ())
 	{
-
 		Mst_Packet();
 	}
 }
@@ -900,8 +899,9 @@ void Cmd_FilterAdd()
 		FL_Add(filter);
 	}
 	else
+	{
 		printf("%s already defined\n\n",Cmd_Argv(2+argv_index_add));
-
+	}
 }
 
 void Cmd_FilterRemove()
@@ -925,8 +925,9 @@ void Cmd_FilterRemove()
 		free(filter);
 	}
 	else
+	{
 		printf("Cannot find %s\n\n",Cmd_Argv(2+argv_index_add));
-
+	}
 }
 
 void Cmd_FilterList()
@@ -956,11 +957,17 @@ void Cmd_Filter_f()
 	argv_index_add = 0;
 
 	if(!strcmp(Cmd_Argv(1),"add"))
+	{
 		Cmd_FilterAdd();
+	}
 	else if(!strcmp(Cmd_Argv(1),"remove"))
+	{
 		Cmd_FilterRemove();
+	}
 	else if(!strcmp(Cmd_Argv(1),"clear"))
+	{
 		Cmd_FilterClear();
+	}
 	else if(Cmd_Argc()==3)
 	{
 		argv_index_add = -1;
@@ -972,7 +979,9 @@ void Cmd_Filter_f()
 		Cmd_FilterRemove();
 	}
 	else
+	{
 		Cmd_FilterList();
+	}
 }
 
 void SV_WriteFilterList()
@@ -995,5 +1004,4 @@ void SV_WriteFilterList()
 		}
 		fclose(filters);
 	}
-
 }

@@ -1,3 +1,5 @@
+// sys_main.c
+
 #include "defs.h"
 #include <limits.h>
 
@@ -35,7 +37,7 @@ short   ShortSwap (short l)
 
 int    LongSwap (int l)
 {
-	byte    b1,b2,b3,b4;
+	byte	b1,b2,b3,b4;
 
 	b1 = l&255;
 	b2 = (l>>8)&255;
@@ -52,13 +54,13 @@ float FloatSwap (float f)
 		float	f;
 		byte	b[4];
 	} dat1, dat2;
-	
-	
+
 	dat1.f = f;
 	dat2.b[0] = dat1.b[3];
 	dat2.b[1] = dat1.b[2];
 	dat2.b[2] = dat1.b[1];
 	dat2.b[3] = dat1.b[0];
+
 	return dat2.f;
 }
 
@@ -67,13 +69,11 @@ float FloatSwap (float f)
 
 void COM_InitArgv (int argc, char **argv)
 {
-
 	for (com_argc=0 ; (com_argc<MAX_NUM_ARGVS) && (com_argc < argc) ;
 		 com_argc++)
 	{
 		largv[com_argc] = argv[com_argc];
 	}
-
 
 	largv[com_argc] = argvdummy;
 	com_argv = largv;
@@ -82,7 +82,7 @@ void COM_InitArgv (int argc, char **argv)
 int COM_CheckParm (char *parm)
 {
 	int		i;
-	
+
 	for (i=1 ; i<com_argc ; i++)
 	{
 		if (!com_argv[i])
@@ -90,7 +90,7 @@ int COM_CheckParm (char *parm)
 		if (!strcmp (parm,com_argv[i]))
 			return i;
 	}
-		
+
 	return 0;
 }
 
@@ -98,22 +98,22 @@ char *COM_Parse (char *data)
 {
 	int		c;
 	int		len;
-	
+
 	len = 0;
 	com_token[0] = 0;
-	
+
 	if (!data)
 		return NULL;
-		
+
 // skip whitespace
 skipwhite:
 	while ( (c = *data) <= ' ')
 	{
 		if (c == 0)
-			return NULL;			// end of file;
+			return NULL;	// end of file;
 		data++;
 	}
-	
+
 // skip // comments
 	if (c=='/' && data[1] == '/')
 	{
@@ -121,7 +121,6 @@ skipwhite:
 			data++;
 		goto skipwhite;
 	}
-	
 
 // handle quoted strings specially
 	if (c == '\"')
@@ -148,7 +147,7 @@ skipwhite:
 		len++;
 		c = *data;
 	} while (c>32);
-	
+
 	com_token[len] = 0;
 	return data;
 }
@@ -162,7 +161,6 @@ void Sys_Error (char *error, ...)
 	vsprintf (text, error,argptr);
 	va_end (argptr);
 
-//    MessageBox(NULL, text, "Error", 0 /* MB_OK */ );
 	printf ("ERROR: %s\n", text);
 
 	exit (1);
@@ -182,15 +180,15 @@ void SZ_Clear (sizebuf_t *buf)
 void *SZ_GetSpace (sizebuf_t *buf, int length)
 {
 	void	*data;
-	
+
 	if (buf->cursize + length > buf->maxsize)
 	{
 		if (!buf->allowoverflow)
 			Sys_Error ("SZ_GetSpace: overflow without allowoverflow set (%d)", buf->maxsize);
-		
+
 		if (length > buf->maxsize)
 			Sys_Error ("SZ_GetSpace: %i is > full buffer size", length);
-			
+
 		printf ("SZ_GetSpace: overflow\n");	// because Con_Printf may be redirected
 		SZ_Clear (buf); 
 		buf->overflowed = true;
@@ -198,7 +196,7 @@ void *SZ_GetSpace (sizebuf_t *buf, int length)
 
 	data = buf->data + buf->cursize;
 	buf->cursize += length;
-	
+
 	return data;
 }
 
@@ -378,7 +376,7 @@ double Sys_DoubleTime (void)
 
 void SV_TimeOut()
 {
-	//Remove listed severs that havnt sent a heartbeat for some time
+	//Remove listed severs that havent sent a heartbeat for some time
 	double t = Sys_DoubleTime();
 
 	server_t *sv;
@@ -398,15 +396,14 @@ void SV_TimeOut()
 			sv = next;
 		}
 		else
+		{
 			sv = sv->next;
+		}
 	}
-	
-
 }
 
 void SV_Frame()
 {
-
 	Sys_CheckInput (net_socket);
 
 	SV_GetConsoleCommands ();
@@ -415,7 +412,7 @@ void SV_Frame()
 
 	SV_TimeOut();
 
-	SV_ReadPackets();	
+	SV_ReadPackets();
 }
 
 int main (int argc, char **argv)
@@ -447,6 +444,7 @@ int main (int argc, char **argv)
 	COM_InitArgv (argc, argv);
 
 #ifdef PLATFORM_UNIX
+// userdir stuff
 	if (getenv("HOME") == NULL)
 		Sys_Error ("Couldn't determine userspace directory");
 	sprintf(userdir, "%s/%s", getenv("HOME"), ".hwmaster");

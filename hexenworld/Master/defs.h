@@ -36,7 +36,7 @@ typedef int socklen_t;
 #endif
 
 //Defines
-#define VER_HWMASTER	"1.2.1"				// our version string
+#define VER_HWMASTER	"1.2.1"		// our version string
 
 #undef true
 #undef false
@@ -45,7 +45,7 @@ typedef enum {false, true}	qboolean;
 #define	MAX_ARGS	80
 #define MAX_NUM_ARGVS	50
 
-#define	MAX_MASTERS	8				// max recipients for heartbeat packets
+#define	MAX_MASTERS	8		// max recipients for heartbeat packets
 
 #define	PORT_ANY	-1
 
@@ -62,22 +62,22 @@ typedef enum {false, true}	qboolean;
 
 #define	S2C_CHALLENGE		'c'
 #define	S2C_CONNECTION		'j'
-#define	A2A_PING			'k'	// respond with an A2A_ACK
-#define	A2A_ACK				'l'	// general acknowledgement without info
-#define	A2A_NACK			'm'	// [+ comment] general failure
-#define A2A_ECHO			'e' // for echoing
-#define	A2C_PRINT			'n'	// print a message on client
+#define	A2A_PING		'k'	// respond with an A2A_ACK
+#define	A2A_ACK			'l'	// general acknowledgement without info
+#define	A2A_NACK		'm'	// [+ comment] general failure
+#define A2A_ECHO		'e'	// for echoing
+#define	A2C_PRINT		'n'	// print a message on client
 
 #define	S2M_HEARTBEAT		'a'	// + serverinfo + userlist + fraglist
 #define	A2C_CLIENT_COMMAND	'B'	// + command line
 #define	S2M_SHUTDOWN		'C'
 
 //KS:
-#define A2M_LIST			'o'
+#define A2M_LIST		'o'
 #define M2A_SENDLIST		'p'
 
-#define	MAX_MSGLEN		1450		// max length of a reliable message
-#define	MAX_DATAGRAM	1450		// max length of unreliable message
+#define	MAX_MSGLEN		1450	// max length of a reliable message
+#define	MAX_DATAGRAM		1450	// max length of unreliable message
 #define	MAX_UDP_PACKET	(MAX_MSGLEN*2)	// one more than msg + header
 
 #define	MAX_SERVERINFO_STRING	512
@@ -98,13 +98,13 @@ typedef struct
 
 typedef struct server_s
 {
-	netadr_t ip;
-	int		 heartbeat;
-	int		 players;
-	char	 info[MAX_SERVERINFO_STRING];
-	struct server_s *next;
-	struct server_s *previous;
-	double timeout;
+	netadr_t	ip;
+	int		heartbeat;
+	int		players;
+	char	info[MAX_SERVERINFO_STRING];
+	struct	server_s *next;
+	struct	server_s *previous;
+	double	timeout;
 } server_t;
 
 typedef struct sizebuf_s
@@ -121,13 +121,13 @@ typedef void (*xcommand_t) (void);
 typedef struct cmd_function_s
 {
 	struct cmd_function_s	*next;
-	char					*name;
-	xcommand_t				function;
+	char		*name;
+	xcommand_t	function;
 } cmd_function_t;
 
 //Function prototypes
 
-//net_test.cpp
+//net_test.c
 int COM_CheckParm (char *parm);
 char *COM_Parse (char *data);
 void Sys_Error (char *error, ...);
@@ -142,24 +142,23 @@ void SV_Frame();
 void SV_Shutdown();
 double Sys_DoubleTime (void);
 
-//cmds.cpp
-int		Cmd_Argc (void);
-char	*Cmd_Argv (int arg);
-void	Cmd_TokenizeString (char *text);
-void	Cmd_AddCommand (char *cmd_name, xcommand_t function);
-void	Cmd_Init();
-void	Cmd_ExecuteString (char *text);
-void	Cbuf_Init (void);
-void	Cbuf_AddText (char *text);
-void	Cbuf_InsertText (char *text);
-void	Cbuf_Execute (void);
+//cmds.c
+int Cmd_Argc (void);
+char *Cmd_Argv (int arg);
+void Cmd_TokenizeString (char *text);
+void Cmd_AddCommand (char *cmd_name, xcommand_t function);
+void Cmd_Init();
+void Cmd_ExecuteString (char *text);
+void Cbuf_Init (void);
+void Cbuf_AddText (char *text);
+void Cbuf_InsertText (char *text);
+void Cbuf_Execute (void);
 qboolean Cmd_Exists (char *cmd_name);
 
 void Cmd_Quit_f();
 void Cmd_ServerList_f();
 
-//net.cpp
-
+//net.c
 void MSG_WriteChar (sizebuf_t *sb, int c);
 void MSG_WriteByte (sizebuf_t *sb, int c);
 void MSG_WriteShort (sizebuf_t *sb, int c);
@@ -182,7 +181,7 @@ void SV_InitNet (void);
 int UDP_OpenSocket (int port);
 void NET_Shutdown (void);
 void NET_GetLocalAddress();
-char	*NET_AdrToString (netadr_t a);
+char *NET_AdrToString (netadr_t a);
 qboolean NET_StringToAdr (char *s, netadr_t *a);
 void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s);
 void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a);
@@ -190,7 +189,7 @@ void NET_SendPacket (int length, void *data, netadr_t to);
 void SV_ReadPackets (void);
 qboolean NET_GetPacket (void);
 void SV_ConnectionlessPacket (void);
-void	NET_CopyAdr (netadr_t *a, netadr_t *b);
+void NET_CopyAdr (netadr_t *a, netadr_t *b);
 qboolean NET_CompareAdr (netadr_t a, netadr_t b);
 qboolean NET_CompareAdrNoPort (netadr_t a, netadr_t b);
 void SVL_Add(server_t *sv);
@@ -211,14 +210,14 @@ extern int		com_argc;
 extern char	**com_argv;
 
 extern sizebuf_t	net_message;
-extern int			net_socket;
+extern int		net_socket;
 #ifdef _WIN32
 extern WSADATA		winsockdata;
 #endif
 extern	netadr_t	net_local_adr;
 
-extern netadr_t	master_adr[MAX_MASTERS];	// address of group servers
-extern int num_masters;
+extern netadr_t		master_adr[MAX_MASTERS];	// address of group servers
+extern int		num_masters;
 
 // endianness stuff: <sys/types.h> is supposed
 // to succeed in locating the correct endian.h
@@ -273,7 +272,7 @@ float	FloatSwap (float);
 
 extern netadr_t	net_from;
 
-extern int		msg_readcount;
-extern qboolean		msg_badread;
+extern int	msg_readcount;
+extern qboolean	msg_badread;
 
-extern server_t *sv_list;
+extern server_t	*sv_list;
