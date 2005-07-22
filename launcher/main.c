@@ -25,9 +25,9 @@ int main (int argc, char *argv[]) {
 
 	printf("\nLinux Hexen II Launcher, version %s\n", HOTL_VER);
 
-	if ( !(Sys_GetUserdir(userdir, sizeof(userdir))) ) {
+	if ((Sys_GetUserdir(userdir, sizeof(userdir))) != 0) {
 		fprintf (stderr,"Couldn't determine userspace directory");
-		exit(0);
+		exit(1);
 	}
 
 	memset(bin_dir,0,1024);

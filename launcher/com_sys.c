@@ -75,29 +75,28 @@ void Sys_FindBinDir (char *filename, char *out) {
 	strncpy(out,cmd,(strlen(cmd)-strlen(last)));
 }
 
-void Sys_mkdir (char *path) {
+int Sys_mkdir (char *path) {
 
-	mkdir (path, 0777);
+	int rc;
+
+	rc = mkdir (path, 0777);
+	if (rc != 0 && errno == EEXIST)
+		rc = 0;
+
+	return rc;
 }
 
 int Sys_GetUserdir(char *buff, unsigned int len) {
 
-	struct passwd *pwent;
+	if (getenv("HOME") == NULL)
+		return 1;
 
-	pwent = getpwuid( getuid() );
-
-	if ( pwent == NULL ) {
-		perror( "getpwuid" );
-		return 0;
+	if ( strlen(getenv("HOME")) + strlen(AOT_USERDIR) + 2 > len ) {
+		return 1;
 	}
 
-	if ( strlen( pwent->pw_dir ) + strlen( AOT_USERDIR) + 2 > (unsigned)len ) {
-		return 0;
-	}
+	sprintf (buff, "%s/%s", getenv("HOME"), AOT_USERDIR);
 
-	sprintf( buff, "%s/%s", pwent->pw_dir, AOT_USERDIR );
-	Sys_mkdir(buff);
-
-	return 1;
+	return Sys_mkdir(buff);
 }
 
