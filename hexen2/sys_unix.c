@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.32 2005-07-09 11:53:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.33 2005-07-22 17:06:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -426,26 +426,25 @@ void Sys_SendKeyEvents (void)
 	IN_SendKeyEvents();
 }
 
-int Sys_GetUserdir(char *buff, unsigned int len)
+int Sys_GetUserdir (char *buff, unsigned int len)
 {
-    if (getenv("HOME") == NULL)
-	return 1;
+	if (getenv("HOME") == NULL)
+		return 1;
 
 /* O.S:	We keep the userdir (and host_parms.userdir) as ~/.hexen2
 	here.  We'll change com_userdir in COM_InitFilesystem()
 	depending on H2MP and/or -game cmdline arg, instead.
    S.A:	Now using $HOME istead of the passwd struct */
 
-    if ( strlen( getenv("HOME") ) + strlen( AOT_USERDIR) + 2 > (unsigned)len )
-	return 1;
+	if (strlen(getenv("HOME")) + strlen(AOT_USERDIR) + 2 > len)
+		return 1;
 
-    sprintf( buff, "%s/%s", getenv("HOME"), AOT_USERDIR );
-    return Sys_mkdir(buff);
+	sprintf (buff, "%s/%s", getenv("HOME"), AOT_USERDIR);
+	return Sys_mkdir(buff);
 }
 
 void PrintVersion (void)
 {
-	printf ("\n");
 	printf ("Hammer of Thyrion, release %d.%d.%d\n",
 		HOT_VERSION_MAJ, HOT_VERSION_MID, HOT_VERSION_MIN);
 	printf ("running on Hexen II engine %4.2f (%s)\n\n",
@@ -606,6 +605,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2005/07/09 11:53:40  sezero
+ * moved the local unix version of strlwr to zone.c, its only user.
+ *
  * Revision 1.31  2005/07/09 07:02:09  sezero
  * tiny clean-up
  *

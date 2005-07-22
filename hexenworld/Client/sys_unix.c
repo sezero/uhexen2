@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.26 2005-07-09 11:53:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.27 2005-07-22 17:06:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -370,16 +370,16 @@ void Sys_SendKeyEvents (void)
 	IN_SendKeyEvents();
 }
 
-int Sys_GetUserdir(char *buff, unsigned int len)
+int Sys_GetUserdir (char *buff, unsigned int len)
 {
-    if (getenv("HOME") == NULL)
-	return 1;
+	if (getenv("HOME") == NULL)
+		return 1;
 
-    if ( strlen( getenv("HOME") ) + strlen( AOT_USERDIR) + 5 > (unsigned)len )
-	return 1;
+	if (strlen(getenv("HOME")) + strlen(AOT_USERDIR) + 5 > len)
+		return 1;
 
-    sprintf( buff, "%s/%s", getenv("HOME"), AOT_USERDIR );
-    return Sys_mkdir(buff);
+	sprintf (buff, "%s/%s", getenv("HOME"), AOT_USERDIR);
+	return Sys_mkdir(buff);
 }
 
 void PrintVersion (void)
@@ -529,6 +529,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2005/07/09 11:53:40  sezero
+ * moved the local unix version of strlwr to zone.c, its only user.
+ *
  * Revision 1.25  2005/07/09 07:00:03  sezero
  * SDL version refusal should not happen for dedicated servers
  *
