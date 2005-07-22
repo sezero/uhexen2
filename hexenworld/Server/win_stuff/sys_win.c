@@ -2,6 +2,8 @@
 #include <sys/timeb.h>
 #include <winsock.h>
 #include "qwsvdef.h"
+#include <errno.h>
+#include <io.h>
 #include <conio.h>
 
 cvar_t	sys_nostdout = {"sys_nostdout","0"};
