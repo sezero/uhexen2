@@ -1,10 +1,12 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.4 2005-06-12 07:28:54 sezero Exp $
+	$Id: sys_unix.c,v 1.5 2005-07-22 17:17:53 sezero Exp $
 
 	Unix system interface code
 */
 
+#include <errno.h>
+#include <sys/stat.h>
 #include <sys/time.h>
 #include <dirent.h>
 #include <unistd.h>
@@ -19,16 +21,16 @@ cvar_t	sys_nostdout = {"sys_nostdout","0"};
 Sys_GetUserdir
 ================
 */
-int Sys_GetUserdir(char *buff, unsigned int len)
+int Sys_GetUserdir (char *buff, unsigned int len)
 {
-    if (getenv("HOME") == NULL)
-	return 1;
+	if (getenv("HOME") == NULL)
+		return 1;
 
-    if ( strlen( getenv("HOME") ) + strlen( AOT_USERDIR) + 5 > (unsigned)len )
-	return 1;
+	if (strlen(getenv("HOME")) + strlen(AOT_USERDIR) + 5 > len)
+		return 1;
 
-    sprintf( buff, "%s/%s", getenv("HOME"), AOT_USERDIR );
-    return 0;
+	sprintf (buff, "%s/%s", getenv("HOME"), AOT_USERDIR);
+	return Sys_mkdir(buff);
 }
 
 /*
@@ -55,8 +57,15 @@ int	Sys_FileTime (char *path)
 Sys_mkdir
 ================
 */
-void Sys_mkdir (char *path)
+int Sys_mkdir (char *path)
 {
+	int rc;
+
+	rc = mkdir (path, 0777);
+	if (rc != 0 && errno == EEXIST)
+		rc = 0;
+
+	return rc;
 }
 
 

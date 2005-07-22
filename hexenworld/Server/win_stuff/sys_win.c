@@ -30,8 +30,15 @@ int	Sys_FileTime (char *path)
 Sys_mkdir
 ================
 */
-void Sys_mkdir (char *path)
+int Sys_mkdir (char *path)
 {
+	int rc;
+
+	rc = _mkdir (path);
+	if (rc != 0 && errno == EEXIST)
+		rc = 0;
+
+	return rc;
 }
 
 
