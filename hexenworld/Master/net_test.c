@@ -450,7 +450,9 @@ int main (int argc, char **argv)
 	if (getenv("HOME") == NULL)
 		Sys_Error ("Couldn't determine userspace directory");
 	sprintf(userdir, "%s/%s", getenv("HOME"), ".hwmaster");
-	mkdir (userdir, 0755);
+	t = mkdir (userdir, 0755);
+	if (t != 0 && errno != EEXIST)
+		Sys_Error ("Couldn't create user directory");
 	sprintf(filters_file, "%s/%s", userdir, "filters.ini");
 #else
 	sprintf(filters_file, "%s", "filters.ini");
