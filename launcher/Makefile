@@ -36,7 +36,7 @@ PROGRAMS = $(H2LAUNCH)
 
 # activate the line below if you activate NLS support
 #SUPPORT_OBJ= support.o
-OBJECTS = main.o com_sys.o config_file.o launch_bin.o \
+OBJECTS = main.o config_file.o launch_bin.o \
 	interface.o callbacks.o $(SUPPORT_OBJ)
 
 CFLAGS = -Wall -O2 -march=i586 -I. $(GTK_CFLAGS) -DHOTL_VER=\"$(VERSION)\" -DHOT_VER=\"$(HOT_VERSION)\"

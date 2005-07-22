@@ -1,4 +1,4 @@
-#include "com_sys.h"
+#include "common.h"
 #include "interface.h"
 #include "widget_defs.h"
 #include "callbacks.h"

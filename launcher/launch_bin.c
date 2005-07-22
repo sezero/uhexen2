@@ -1,4 +1,4 @@
-#include "com_sys.h"
+#include "common.h"
 #include "launch_bin.h"
 
 extern char *bin_dir;

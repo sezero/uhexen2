@@ -1,4 +1,4 @@
-#include "com_sys.h"
+#include "common.h"
 #include "launcher_defs.h"
 
 #define LAUNCHER_CONFIG_FILE "launcher_options"
