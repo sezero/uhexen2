@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.24 2005-07-02 11:47:02 sezero Exp $
+	$Id: snd_dma.c,v 1.25 2005-07-22 08:52:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -136,7 +136,7 @@ void S_GetSubsys (void)
 			SNDDMA_Shutdown	 = S_SDL_Shutdown;
 			SNDDMA_Submit	 = S_SDL_Submit;
 			break;
-#ifndef NO_ALSA
+#if defined(__linux__) && !defined(NO_ALSA)
 		case S_SYS_ALSA:
 			SNDDMA_Init	 = S_ALSA_Init;
 			SNDDMA_GetDMAPos = S_ALSA_GetDMAPos;
@@ -1102,6 +1102,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2005/07/02 11:47:02  sezero
+ * Minor cosmetic clean-up in S_Update_() for S_SYS_SDL
+ *
  * Revision 1.23  2005/06/15 06:14:54  sezero
  * properly ifdef'd unix-only sound things
  *
