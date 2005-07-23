@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.5 2005-05-20 15:26:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.6 2005-07-23 22:22:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -53,6 +53,7 @@ void Cmd_Wait_f (void)
 */
 
 sizebuf_t	cmd_text;
+byte		cmd_text_buf[8192];
 
 /*
 ============
@@ -61,7 +62,8 @@ Cbuf_Init
 */
 void Cbuf_Init (void)
 {
-	SZ_Alloc (&cmd_text, 8192);		// space for commands and script files
+	// space for commands and script files
+	SZ_Init (&cmd_text, cmd_text_buf, sizeof(cmd_text_buf));
 }
 
 
@@ -739,6 +741,11 @@ void ListCommands (char *prefix)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/05/20 15:26:33  sezero
+ * separated winquake.h into winquake.h and linquake.h
+ * changed all occurances of winquake.h to quakeinc.h,
+ * which includes the correct header
+ *
  * Revision 1.4  2005/05/20 12:29:37  sezero
  * leftovers after common.c sync-1
  *

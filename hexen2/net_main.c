@@ -31,7 +31,8 @@ PollProcedure	slistPollProcedure = {NULL, 0.0, Slist_Poll};
 
 
 sizebuf_t		net_message;
-int				net_activeconnections = 0;
+byte		net_message_buffer[NET_MAXMESSAGE];
+int			net_activeconnections = 0;
 
 int messagesSent = 0;
 int messagesReceived = 0;
@@ -45,7 +46,7 @@ qboolean	configRestored = false;
 
 cvar_t	net_allowmultiple = {"net_allowmultiple", "0", true};
 
-int	vcrFile = -1;
+FILE	*vcrFile = NULL;
 qboolean recording = false;
 
 // these two macros are to make the code more readable
@@ -435,8 +436,8 @@ qsocket_t *NET_CheckNewConnections (void)
 				vcrConnect.time = host_time;
 				vcrConnect.op = VCR_OP_CONNECT;
 				vcrConnect.session = (long)ret;
-				Sys_FileWrite (vcrFile, &vcrConnect, sizeof(vcrConnect));
-				Sys_FileWrite (vcrFile, ret->address, NET_NAMELEN);
+				fwrite (&vcrConnect, 1, sizeof(vcrConnect), vcrFile);
+				fwrite (ret->address, 1, NET_NAMELEN,vcrFile);
 			}
 			return ret;
 		}
@@ -447,7 +448,7 @@ qsocket_t *NET_CheckNewConnections (void)
 		vcrConnect.time = host_time;
 		vcrConnect.op = VCR_OP_CONNECT;
 		vcrConnect.session = 0;
-		Sys_FileWrite (vcrFile, &vcrConnect, sizeof(vcrConnect));
+		fwrite (&vcrConnect, 1, sizeof(vcrConnect), vcrFile);
 	}
 
 	return NULL;
@@ -544,8 +545,8 @@ int	NET_GetMessage (qsocket_t *sock)
 			vcrGetMessage.session = (long)sock;
 			vcrGetMessage.ret = ret;
 			vcrGetMessage.len = net_message.cursize;
-			Sys_FileWrite (vcrFile, &vcrGetMessage, 24);
-			Sys_FileWrite (vcrFile, net_message.data, net_message.cursize);
+			fwrite (&vcrGetMessage, 1, 24, vcrFile);
+			fwrite (net_message.data, 1, net_message.cursize, vcrFile);
 		}
 	}
 	else
@@ -556,7 +557,7 @@ int	NET_GetMessage (qsocket_t *sock)
 			vcrGetMessage.op = VCR_OP_GETMESSAGE;
 			vcrGetMessage.session = (long)sock;
 			vcrGetMessage.ret = ret;
-			Sys_FileWrite (vcrFile, &vcrGetMessage, 20);
+			fwrite (&vcrGetMessage, 1, 20, vcrFile);
 		}
 	}
 
@@ -607,7 +608,7 @@ int NET_SendMessage (qsocket_t *sock, sizebuf_t *data)
 		vcrSendMessage.op = VCR_OP_SENDMESSAGE;
 		vcrSendMessage.session = (long)sock;
 		vcrSendMessage.r = r;
-		Sys_FileWrite (vcrFile, &vcrSendMessage, 20);
+		fwrite (&vcrSendMessage, 1, 20, vcrFile);
 	}
 	
 	return r;
@@ -638,7 +639,7 @@ int NET_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *data)
 		vcrSendMessage.op = VCR_OP_SENDMESSAGE;
 		vcrSendMessage.session = (long)sock;
 		vcrSendMessage.r = r;
-		Sys_FileWrite (vcrFile, &vcrSendMessage, 20);
+		fwrite (&vcrSendMessage, 1, 20, vcrFile);
 	}
 	
 	return r;
@@ -673,7 +674,7 @@ qboolean NET_CanSendMessage (qsocket_t *sock)
 		vcrSendMessage.op = VCR_OP_CANSENDMESSAGE;
 		vcrSendMessage.session = (long)sock;
 		vcrSendMessage.r = r;
-		Sys_FileWrite (vcrFile, &vcrSendMessage, 20);
+		fwrite (&vcrSendMessage, 1, 20, vcrFile);
 	}
 	
 	return r;
@@ -809,7 +810,7 @@ void NET_Init (void)
 	}
 
 	// allocate space for network message buffer
-	SZ_Alloc (&net_message, NET_MAXMESSAGE);
+	SZ_Init (&net_message, net_message_buffer, sizeof(net_message_buffer));
 
 	Cvar_RegisterVariable (&net_messagetimeout);
 	Cvar_RegisterVariable (&hostname);
@@ -865,10 +866,10 @@ void		NET_Shutdown (void)
 		}
 	}
 
-	if (vcrFile != -1)
+	if (vcrFile)
 	{
 		Con_Printf ("Closing vcrfile.\n");
-		Sys_FileClose(vcrFile);
+		fclose (vcrFile);
 	}
 }
 

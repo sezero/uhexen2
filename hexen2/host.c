@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.24 2005-07-09 07:31:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.25 2005-07-23 22:22:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -884,7 +884,7 @@ void Host_Frame (float time)
 //============================================================================
 
 
-extern int vcrFile;
+extern FILE *vcrFile;
 #define	VCR_SIGNATURE	0x56435231
 // "VCR1"
 
@@ -898,22 +898,23 @@ void Host_InitVCR (quakeparms_t *parms)
 		if (com_argc != 2)
 			Sys_Error("No other parameters allowed with -playback\n");
 
-		Sys_FileOpenRead("quake.vcr", &vcrFile);
-		if (vcrFile == -1)
+		//vcrFile = fopen (va("%s/quake.vcr",com_userdir), "rb");
+		vcrFile = fopen (va("%s/quake.vcr",parms->userdir), "rb");
+		if (!vcrFile)
 			Sys_Error("playback file not found\n");
 
-		Sys_FileRead (vcrFile, &i, sizeof(int));
+		fread (&i, 1, sizeof(int), vcrFile);
 		if (i != VCR_SIGNATURE)
 			Sys_Error("Invalid signature in vcr file\n");
 
-		Sys_FileRead (vcrFile, &com_argc, sizeof(int));
+		fread (&com_argc, 1, sizeof(int), vcrFile);
 		com_argv = Z_Malloc(com_argc * sizeof(char *));
 		com_argv[0] = parms->argv[0];
 		for (i = 0; i < com_argc; i++)
 		{
-			Sys_FileRead (vcrFile, &len, sizeof(int));
+			fread (&len, 1, sizeof(int), vcrFile);
 			p = Z_Malloc(len);
-			Sys_FileRead (vcrFile, p, len);
+			fread (p, 1, len, vcrFile);
 			com_argv[i+1] = p;
 		}
 		com_argc++; /* add one for arg[0] */
@@ -923,24 +924,25 @@ void Host_InitVCR (quakeparms_t *parms)
 
 	if ( (n = COM_CheckParm("-record")) != 0)
 	{
-		vcrFile = Sys_FileOpenWrite("quake.vcr");
+		//vcrFile = fopen (va("%s/quake.vcr",com_userdir), "wb");
+		vcrFile = fopen (va("%s/quake.vcr",parms->userdir), "wb");
 
 		i = VCR_SIGNATURE;
-		Sys_FileWrite(vcrFile, &i, sizeof(int));
+		fwrite (&i, 1, sizeof(int), vcrFile);
 		i = com_argc - 1;
-		Sys_FileWrite(vcrFile, &i, sizeof(int));
+		fwrite (&i, 1, sizeof(int), vcrFile);
 		for (i = 1; i < com_argc; i++)
 		{
 			if (i == n)
 			{
 				len = 10;
-				Sys_FileWrite(vcrFile, &len, sizeof(int));
-				Sys_FileWrite(vcrFile, "-playback", len);
+				fwrite (&len, 1, sizeof(int), vcrFile);
+				fwrite ("-playback", 1, len, vcrFile);
 				continue;
 			}
 			len = strlen(com_argv[i]) + 1;
-			Sys_FileWrite(vcrFile, &len, sizeof(int));
-			Sys_FileWrite(vcrFile, com_argv[i], len);
+			fwrite (&len, 1, sizeof(int), vcrFile);
+			fwrite (com_argv[i], 1, len, vcrFile);
 		}
 	}
 	
@@ -1086,6 +1088,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2005/07/09 07:31:38  sezero
+ * use zone instead of malloc
+ *
  * Revision 1.23  2005/06/15 22:03:02  sezero
  * vid_setgamma command is for sdl versions only.
  * also added notes on the WITH_SDL define in quakedef.h

@@ -3,7 +3,7 @@
 #include "quakedef.h"
 #include "net_vcr.h"
 
-extern int vcrFile;
+extern FILE *vcrFile;
 
 // This is the playback portion of the VCR.  It reads the file produced
 // by the recorder and plays it back to the host.  The recording contains
@@ -30,13 +30,13 @@ int VCR_Init (void)
 	net_drivers[0].Close = VCR_Close;
 	net_drivers[0].Shutdown = VCR_Shutdown;
 
-	Sys_FileRead(vcrFile, &next, sizeof(next));
+	fread (&next, 1, sizeof(next), vcrFile);
 	return 0;
 }
 
 void VCR_ReadNext (void)
 {
-	if (Sys_FileRead(vcrFile, &next, sizeof(next)) == 0)
+	if (fread(&next, 1, sizeof(next), vcrFile) == 0)
 	{
 		next.op = 255;
 		Sys_Error ("=== END OF PLAYBACK===\n");
@@ -63,15 +63,15 @@ int VCR_GetMessage (qsocket_t *sock)
 	if (host_time != next.time || next.op != VCR_OP_GETMESSAGE || next.session != *(long *)(&sock->driverdata))
 		Sys_Error ("VCR missmatch");
 
-	Sys_FileRead(vcrFile, &ret, sizeof(int));
+	fread (&ret, 1, sizeof(int), vcrFile);
 	if (ret != 1)
 	{
 		VCR_ReadNext ();
 		return ret;
 	}
 
-	Sys_FileRead(vcrFile, &net_message.cursize, sizeof(int));
-	Sys_FileRead(vcrFile, net_message.data, net_message.cursize);
+	fread (&net_message.cursize, 1, sizeof(int), vcrFile);
+	fread (net_message.data, 1, net_message.cursize, vcrFile);
 
 	VCR_ReadNext ();
 
@@ -86,7 +86,7 @@ int VCR_SendMessage (qsocket_t *sock, sizebuf_t *data)
 	if (host_time != next.time || next.op != VCR_OP_SENDMESSAGE || next.session != *(long *)(&sock->driverdata))
 		Sys_Error ("VCR missmatch");
 
-	Sys_FileRead(vcrFile, &ret, sizeof(int));
+	fread (&ret, 1, sizeof(int), vcrFile);
 
 	VCR_ReadNext ();
 
@@ -101,7 +101,7 @@ qboolean VCR_CanSendMessage (qsocket_t *sock)
 	if (host_time != next.time || next.op != VCR_OP_CANSENDMESSAGE || next.session != *(long *)(&sock->driverdata))
 		Sys_Error ("VCR missmatch");
 
-	Sys_FileRead(vcrFile, &ret, sizeof(int));
+	fread (&ret, 1, sizeof(int), vcrFile);
 
 	VCR_ReadNext ();
 
@@ -141,7 +141,7 @@ qsocket_t *VCR_CheckNewConnections (void)
 	sock = NET_NewQSocket ();
 	*(long *)(&sock->driverdata) = next.session;
 
-	Sys_FileRead (vcrFile, sock->address, NET_NAMELEN);
+	fread (sock->address, 1, NET_NAMELEN, vcrFile);
 	VCR_ReadNext ();
 
 	return sock;

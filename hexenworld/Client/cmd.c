@@ -53,8 +53,8 @@ Cbuf_Init
 */
 void Cbuf_Init (void)
 {
-	cmd_text.data = cmd_text_buf;
-	cmd_text.maxsize = sizeof(cmd_text_buf);
+	// space for commands and script files
+	SZ_Init (&cmd_text, cmd_text_buf, sizeof(cmd_text_buf));
 }
 
 /*

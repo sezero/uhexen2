@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.14 2005-06-19 11:23:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.15 2005-07-23 22:22:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -40,6 +40,7 @@ cvar_t	m_side = {"m_side","0.8", true};
 
 client_static_t	cls;
 client_state_t	cl;
+byte		cls_message_buffer[1024];
 // FIXME: put these on hunk?
 efrag_t			cl_efrags[MAX_EFRAGS];
 entity_t		cl_entities[MAX_EDICTS];
@@ -962,13 +963,12 @@ CL_Init
 */
 void CL_Init (void)
 {	
-	SZ_Alloc (&cls.message, 1024);
+	SZ_Init (&cls.message, cls_message_buffer, sizeof(cls_message_buffer));
 
 	CL_InitInput ();
 	CL_InitTEnts ();
 	CL_InitEffects();
 
-	
 //
 // register our commands
 //
@@ -1009,6 +1009,16 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/06/19 11:23:23  sezero
+ * added wheelmouse support and conwidth support to hexen2. changed
+ * hexenworld's default behavior of default 640 conwidth to main width
+ * unless specified otherwise by the user. disabled startup splash
+ * screens for now. sycned hexen2 and hexnworld's GL_Init_Functions().
+ * disabled InitCommonControls()in gl_vidnt. moved RegisterWindowMessage
+ * for uMSG_MOUSEWHEEL to in_win where it belongs. bumped MAXIMUM_WIN_MEMORY
+ * to 32 MB. killed useless Sys_ConsoleInput in hwcl. several other sycning
+ * and clean-up
+ *
  * Revision 1.13  2005/06/12 07:28:51  sezero
  * clean-up of includes and a fix (hopefully) for endianness detection
  *

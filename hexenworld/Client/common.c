@@ -2,10 +2,10 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.12 2005-07-15 16:55:45 sezero Exp $
+	$Id: common.c,v 1.13 2005-07-23 22:22:10 sezero Exp $
 */
 
-#ifdef SERVERONLY 
+#if defined(H2W) && defined(SERVERONLY)
 #include "qwsvdef.h"
 #else
 #include "quakedef.h"
@@ -14,14 +14,13 @@
 #include <windows.h>
 #endif
 
-#define MAX_NUM_ARGVS	50
 #define NUM_SAFE_ARGVS	6
 
 static char	*largv[MAX_NUM_ARGVS + NUM_SAFE_ARGVS + 1];
 static char	*argvdummy = " ";
 
 static char	*safeargvs[NUM_SAFE_ARGVS] =
-	{"-stdvid", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse"};
+	{"-nomidi", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse"};
 
 cvar_t	registered = {"registered","0"};
 cvar_t	oem = {"oem","0"};
@@ -58,6 +57,9 @@ const char *dirdata[MAX_PAKDATA] = {
 };
 
 char	gamedirfile[MAX_OSPATH];
+
+#define CMDLINE_LENGTH	256
+char	com_cmdline[CMDLINE_LENGTH];
 
 // this graphic needs to be in the pak file to use registered features
 unsigned short pop[] =
@@ -279,6 +281,7 @@ void MSG_WriteAngle (sizebuf_t *sb, float f)
 	MSG_WriteByte (sb, (int)(f*256/360) & 255);
 }
 
+#ifdef H2W
 void MSG_WriteAngle16 (sizebuf_t *sb, float f)
 {
 	MSG_WriteShort (sb, (int)(f*65536/360) & 65535);
@@ -335,6 +338,7 @@ void MSG_WriteUsercmd (sizebuf_t *buf, usercmd_t *cmd, qboolean long_msg)
 	if (bits & CM_MSEC)
 		MSG_WriteByte (buf, cmd->msec);
 }
+#endif	// H2W
 
 
 //
@@ -460,6 +464,7 @@ char *MSG_ReadString (void)
 	return string;
 }
 
+#ifdef H2W
 char *MSG_ReadStringLine (void)
 {
 	static char	string[2048];
@@ -479,6 +484,7 @@ char *MSG_ReadStringLine (void)
 
 	return string;
 }
+#endif	// H2W
 
 float MSG_ReadCoord (void)
 {
@@ -490,11 +496,11 @@ float MSG_ReadAngle (void)
 	return MSG_ReadChar() * (360.0/256);
 }
 
+#ifdef H2W
 float MSG_ReadAngle16 (void)
 {
 	return MSG_ReadShort() * (360.0/65536);
 }
-
 
 void MSG_ReadUsercmd (usercmd_t *move, qboolean long_msg)
 {
@@ -548,9 +554,18 @@ void MSG_ReadUsercmd (usercmd_t *move, qboolean long_msg)
 	else
 		move->msec = 0;
 }
+#endif	// H2W
 
 
 //===========================================================================
+
+void SZ_Init (sizebuf_t *buf, byte *data, int length)
+{
+	memset (buf, 0, sizeof(*buf));
+	buf->data = data;
+	buf->maxsize = length;
+	//buf->cursize = 0;
+}
 
 void SZ_Clear (sizebuf_t *buf)
 {
@@ -570,7 +585,7 @@ void *SZ_GetSpace (sizebuf_t *buf, int length)
 		if (length > buf->maxsize)
 			Sys_Error ("SZ_GetSpace: %i is > full buffer size", length);
 			
-		Sys_Printf ("SZ_GetSpace: overflow %d\n",buf->maxsize);	// because Con_Printf may be redirected
+		Sys_Printf ("SZ_GetSpace: overflow\nCurrently %d of %d, requested %d\n",buf->cursize,buf->maxsize,length);
 		SZ_Clear (buf); 
 		buf->overflowed = true;
 	}
@@ -841,9 +856,8 @@ void COM_CheckRegistered (void)
 	{
 		Con_Printf ("Playing demo version.\n");
 #ifndef SERVERONLY
-// FIXME DEBUG -- only temporary
 		if (com_modified)
-			Sys_Error ("You must have the registered version to play HexenWorld");
+			Sys_Error ("You must have the full version to use modified games");
 #endif
 		return;
 	}
@@ -869,7 +883,27 @@ COM_InitArgv
 void COM_InitArgv (int argc, char **argv)
 {
 	qboolean	safe;
-	int			i;
+	int		i, j, n;
+
+// reconstitute the command line for the cmdline console command
+	n = 0;
+
+	for (j=0 ; (j<MAX_NUM_ARGVS) && (j< argc) ; j++)
+	{
+		i = 0;
+
+		while ((n < (CMDLINE_LENGTH - 1)) && argv[j][i])
+		{
+			com_cmdline[n++] = argv[j][i++];
+		}
+
+		if (n < (CMDLINE_LENGTH - 1))
+			com_cmdline[n++] = ' ';
+		else
+			break;
+	}
+
+	com_cmdline[n] = 0;
 
 	safe = false;
 
@@ -896,6 +930,7 @@ void COM_InitArgv (int argc, char **argv)
 	com_argv = largv;
 }
 
+#if 0
 /*
 ================
 COM_AddParm
@@ -907,7 +942,12 @@ void COM_AddParm (char *parm)
 {
 	largv[com_argc++] = parm;
 }
+#endif
 
+static void COM_Cmdline_f (void)
+{
+	Con_Printf ("cmdline is: \"%s\"\n", com_cmdline);
+}
 
 /*
 ================
@@ -919,6 +959,7 @@ void COM_Init (char *basedir)
 	Cvar_RegisterVariable (&registered);
 	Cvar_RegisterVariable (&oem);
 	Cmd_AddCommand ("path", COM_Path_f);
+	Cmd_AddCommand ("cmdline", COM_Cmdline_f);
 
 	COM_InitFilesystem ();
 	COM_CheckRegistered ();
@@ -1136,7 +1177,7 @@ void COM_CopyFile (char *netpath, char *cachepath)
 	int		remaining, count;
 	char	buf[4096];
 
-	remaining = COM_FileOpenRead (netpath, &in);		
+	remaining = COM_FileOpenRead (netpath, &in);
 	COM_CreatePath (cachepath);	// create directories up to the cache file
 	out = fopen(cachepath, "wb");
 	if (!out)
@@ -1202,11 +1243,17 @@ int COM_FOpenFile (char *filename, FILE **file, qboolean override_pack)
 		else
 		{
 	// check a file in the directory tree
-//			if (!static_registered && !override_pack)
-//			{	// if not a registered version, don't ever go beyond base
-//				if ( strchr (filename, '/') || strchr (filename,'\\'))
-//					continue;
-//			}
+#ifndef H2W
+			if (!static_registered && !override_pack)
+			{	// if not a registered version, don't ever go beyond base
+#ifdef PLATFORM_UNIX
+				if ( strchr (filename, '/'))
+#else
+				if ( strchr (filename, '/') || strchr (filename,'\\'))
+#endif
+					continue;
+			}
+#endif	// !H2W
 
 			sprintf (netpath, "%s/%s",search->filename, filename);
 
@@ -1276,17 +1323,14 @@ byte *COM_LoadFile (char *path, int usehunk)
 		Sys_Error ("COM_LoadFile: not enough space for %s", path);
 
 	((byte *)buf)[len] = 0;
-#ifndef SERVERONLY
-#ifndef GLQUAKE
+
+#if !defined(SERVERONLY) && !defined(GLQUAKE)
 	Draw_BeginDisc ();
-#endif
 #endif
 	fread (buf, 1, len, h);
 	fclose (h);
-#ifndef SERVERONLY
-#ifndef GLQUAKE
+#if !defined(SERVERONLY) && !defined(GLQUAKE)
 	Draw_EndDisc ();
-#endif
 #endif
 	return buf;
 }
@@ -1443,7 +1487,7 @@ void COM_AddGameDirectory (char *dir)
 //
 // add any pak files in the format pak0.pak pak1.pak, ...
 //
-	for (i=0 ; i<10 ; i++)
+	for (i=0 ; i < 10; i++)
 	{
 		sprintf (pakfile, "%s/pak%i.pak", dir, i);
 		pak = COM_LoadPackFile (pakfile, i);
@@ -1454,7 +1498,7 @@ void COM_AddGameDirectory (char *dir)
 		search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
 		search->pack = pak;
 		search->next = com_searchpaths;
-		com_searchpaths = search;		
+		com_searchpaths = search;
 	}
 
 //
@@ -1573,12 +1617,16 @@ void COM_InitFilesystem (void)
 	sprintf (com_userdir, "%s/data1", host_parms.userdir);
 #endif
 	COM_AddGameDirectory (va("%s/data1", com_basedir));
+#if defined(H2MP) || defined(H2W)
 	sprintf (com_userdir, "%s/portals", host_parms.userdir);
 	Sys_mkdir (com_userdir);
 	COM_AddGameDirectory (va("%s/portals", com_basedir));
+#endif
+#if defined(H2W)
 	sprintf (com_userdir, "%s/hw", host_parms.userdir);
 	Sys_mkdir (com_userdir);
 	COM_AddGameDirectory (va("%s/hw", com_basedir));
+#endif
 
 // -game <gamedir>
 // Adds basedir/gamedir as an override game
@@ -1592,12 +1640,13 @@ void COM_InitFilesystem (void)
 		COM_AddGameDirectory (va("%s/%s", com_basedir, com_argv[i+1]));
 	}
 
+	strcpy(com_savedir,com_userdir);
+
 	// any set gamedirs will be freed up to here
 	com_base_searchpaths = com_searchpaths;
 }
 
-
-
+#ifdef H2W
 /*
 =====================================================================
 
@@ -1749,7 +1798,6 @@ void Info_RemovePrefixedKeys (char *start, char prefix)
 
 }
 
-
 void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
 {
 	char	new[1024], *v;
@@ -1870,3 +1918,4 @@ void Info_Print (char *s)
 		Con_Printf ("%s\n", value);
 	}
 }
+#endif	// H2W

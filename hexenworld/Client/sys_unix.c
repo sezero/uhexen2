@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.27 2005-07-22 17:06:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.28 2005-07-23 22:22:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -41,30 +41,6 @@ void Sys_InitFloatTime (void);
 
 cvar_t		sys_delay = {"sys_delay","0", true};
 
-volatile int					sys_checksum;
-
-
-/*
-===============================================================================
-
-FILE IO
-
-===============================================================================
-*/
-
-#define	MAX_HANDLES		10
-FILE	*sys_handles[MAX_HANDLES];
-
-int		findhandle (void)
-{
-	int		i;
-	
-	for (i=1 ; i<MAX_HANDLES ; i++)
-		if (!sys_handles[i])
-			return i;
-	Sys_Error ("out of handles");
-	return -1;
-}
 
 void Sys_DebugLog(char *file, char *fmt, ...)
 {
@@ -79,116 +55,14 @@ void Sys_DebugLog(char *file, char *fmt, ...)
 	write(fd, data, strlen(data));
 	close(fd);
 };
+
 /*
-================
-Sys_FileLength
-================
+===============================================================================
+
+FILE IO
+
+===============================================================================
 */
-int Sys_FileLength (FILE *f)
-{
-	int		pos;
-	int		end;
-	int		t;
-
-	t = VID_ForceUnlockedAndReturnState ();
-
-	pos = ftell (f);
-	fseek (f, 0, SEEK_END);
-	end = ftell (f);
-	fseek (f, pos, SEEK_SET);
-
-	VID_ForceLockState (t);
-
-	return end;
-}
-
-int Sys_FileOpenRead (char *path, int *hndl)
-{
-	FILE	*f;
-	int		i, retval;
-	int		t;
-
-	t = VID_ForceUnlockedAndReturnState ();
-
-	i = findhandle ();
-
-	f = fopen(path, "rb");
-
-	if (!f)
-	{
-		*hndl = -1;
-		retval = -1;
-	}
-	else
-	{
-		sys_handles[i] = f;
-		*hndl = i;
-		retval = Sys_FileLength(f);
-	}
-
-	VID_ForceLockState (t);
-
-	return retval;
-}
-
-int Sys_FileOpenWrite (char *path)
-{
-	FILE	*f;
-	int		i;
-	int		t;
-
-	t = VID_ForceUnlockedAndReturnState ();
-	
-	i = findhandle ();
-
-	f = fopen(path, "wb");
-	if (!f)
-		Sys_Error ("Error opening %s: %s", path,strerror(errno));
-	sys_handles[i] = f;
-	
-	VID_ForceLockState (t);
-
-	return i;
-}
-
-void Sys_FileClose (int handle)
-{
-	int		t;
-
-	t = VID_ForceUnlockedAndReturnState ();
-	fclose (sys_handles[handle]);
-	sys_handles[handle] = NULL;
-	VID_ForceLockState (t);
-}
-
-void Sys_FileSeek (int handle, int position)
-{
-	int		t;
-
-	t = VID_ForceUnlockedAndReturnState ();
-	fseek (sys_handles[handle], position, SEEK_SET);
-	VID_ForceLockState (t);
-}
-
-int Sys_FileRead (int handle, void *dest, int count)
-{
-	int		t, x;
-
-	t = VID_ForceUnlockedAndReturnState ();
-	x = fread (dest, 1, count, sys_handles[handle]);
-	VID_ForceLockState (t);
-	return x;
-}
-
-int Sys_FileWrite (int handle, void *data, int count)
-{
-	int		t, x;
-
-	t = VID_ForceUnlockedAndReturnState ();
-	x = fwrite (data, 1, count, sys_handles[handle]);
-	VID_ForceLockState (t);
-	return x;
-}
 
 int	Sys_FileTime (char *path)
 {
@@ -375,6 +249,11 @@ int Sys_GetUserdir (char *buff, unsigned int len)
 	if (getenv("HOME") == NULL)
 		return 1;
 
+/* O.S:	We keep the userdir (and host_parms.userdir) as ~/.hexen2
+	here.  We'll change com_userdir in COM_InitFilesystem()
+	depending on H2MP, H2W and/or -game cmdline arg, instead.
+   S.A:	Now using $HOME istead of the passwd struct */
+
 	if (strlen(getenv("HOME")) + strlen(AOT_USERDIR) + 5 > len)
 		return 1;
 
@@ -384,7 +263,6 @@ int Sys_GetUserdir (char *buff, unsigned int len)
 
 void PrintVersion (void)
 {
-	printf ("\n");
 	printf ("Hammer of Thyrion, release %d.%d.%d\n",
 		HOT_VERSION_MAJ, HOT_VERSION_MID, HOT_VERSION_MIN);
 	printf ("running on HexenWorld engine %4.2f (%s)\n\n",
@@ -529,6 +407,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2005/07/22 17:06:43  sezero
+ * whitespace cleanup
+ *
  * Revision 1.26  2005/07/09 11:53:40  sezero
  * moved the local unix version of strlwr to zone.c, its only user.
  *

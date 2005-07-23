@@ -3,7 +3,7 @@
 #include "quakedef.h"
 #include <windows.h>
 #include "quakeinc.h"
-#include "errno.h"
+#include <errno.h>
 #include "resource.h"
 #include <io.h>
 #include "conproc.h"
@@ -91,131 +91,6 @@ FILE IO
 
 ===============================================================================
 */
-
-#define	MAX_HANDLES		10
-FILE	*sys_handles[MAX_HANDLES];
-
-int		findhandle (void)
-{
-	int		i;
-	
-	for (i=1 ; i<MAX_HANDLES ; i++)
-		if (!sys_handles[i])
-			return i;
-	Sys_Error ("out of handles");
-	return -1;
-}
-
-/*
-================
-Sys_FileLength
-================
-*/
-int Sys_FileLength (FILE *f)
-{
-	int		pos;
-	int		end;
-	int		t;
-
-	t = VID_ForceUnlockedAndReturnState ();
-
-	pos = ftell (f);
-	fseek (f, 0, SEEK_END);
-	end = ftell (f);
-	fseek (f, pos, SEEK_SET);
-
-	VID_ForceLockState (t);
-
-	return end;
-}
-
-int Sys_FileOpenRead (char *path, int *hndl)
-{
-	FILE	*f;
-	int		i, retval;
-	int		t;
-
-	t = VID_ForceUnlockedAndReturnState ();
-
-	i = findhandle ();
-
-	f = fopen(path, "rb");
-
-	if (!f)
-	{
-		*hndl = -1;
-		retval = -1;
-	}
-	else
-	{
-		sys_handles[i] = f;
-		*hndl = i;
-		retval = Sys_FileLength(f);
-	}
-
-	VID_ForceLockState (t);
-
-	return retval;
-}
-
-int Sys_FileOpenWrite (char *path)
-{
-	FILE	*f;
-	int		i;
-	int		t;
-
-	t = VID_ForceUnlockedAndReturnState ();
-	
-	i = findhandle ();
-
-	f = fopen(path, "wb");
-	if (!f)
-		Sys_Error ("Error opening %s: %s", path,strerror(errno));
-	sys_handles[i] = f;
-	
-	VID_ForceLockState (t);
-
-	return i;
-}
-
-void Sys_FileClose (int handle)
-{
-	int		t;
-
-	t = VID_ForceUnlockedAndReturnState ();
-	fclose (sys_handles[handle]);
-	sys_handles[handle] = NULL;
-	VID_ForceLockState (t);
-}
-
-void Sys_FileSeek (int handle, int position)
-{
-	int		t;
-
-	t = VID_ForceUnlockedAndReturnState ();
-	fseek (sys_handles[handle], position, SEEK_SET);
-	VID_ForceLockState (t);
-}
-
-int Sys_FileRead (int handle, void *dest, int count)
-{
-	int		t, x;
-
-	t = VID_ForceUnlockedAndReturnState ();
-	x = fread (dest, 1, count, sys_handles[handle]);
-	VID_ForceLockState (t);
-	return x;
-}
-
-int Sys_FileWrite (int handle, void *data, int count)
-{
-	int		t, x;
-
-	t = VID_ForceUnlockedAndReturnState ();
-	x = fwrite (data, 1, count, sys_handles[handle]);
-	VID_ForceLockState (t);
-	return x;
-}
 
 int	Sys_FileTime (char *path)
 {
@@ -869,6 +744,16 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/06/19 11:23:23  sezero
+ * added wheelmouse support and conwidth support to hexen2. changed
+ * hexenworld's default behavior of default 640 conwidth to main width
+ * unless specified otherwise by the user. disabled startup splash
+ * screens for now. sycned hexen2 and hexnworld's GL_Init_Functions().
+ * disabled InitCommonControls()in gl_vidnt. moved RegisterWindowMessage
+ * for uMSG_MOUSEWHEEL to in_win where it belongs. bumped MAXIMUM_WIN_MEMORY
+ * to 32 MB. killed useless Sys_ConsoleInput in hwcl. several other sycning
+ * and clean-up
+ *
  * Revision 1.13  2005/06/17 16:24:41  sezero
  * win32 fixes and clean-ups
  *
