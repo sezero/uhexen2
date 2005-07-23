@@ -2,10 +2,11 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.11 2005-05-19 12:46:56 sezero Exp $
+	$Id: midi_sdl.c,v 1.12 2005-07-23 11:34:51 sezero Exp $
 */
 
 #include "quakedef.h"
+#include <unistd.h>
 
 #ifdef USE_MIDI
 #include <SDL/SDL.h>
@@ -165,12 +166,8 @@ qboolean MIDI_Init(void)
 
 void MIDI_Play(char *Name)
 {
-	char Temp[MAX_OSPATH];
 	char *Data;
-	char midi_file_with_path[MAX_OSPATH];
 	FILE *f=NULL;
-
-	int size=0;
 
 	if (!bMidiInited)	//don't try to play if there is no midi
 		return;
@@ -181,32 +178,39 @@ void MIDI_Play(char *Name)
 		return;
 	}
 
-	sprintf(Temp, "midi/%s.mid", Name);
-	sprintf (midi_file_with_path, ".midi/%s.mid", Name); // without userdir for now
 	MIDI_Stop();
 
-	COM_FOpenFile (midi_file_with_path, &f, true);
+	// Note that midi/ is the standart quake search path, but
+	// .midi/ with the leading dot is the path in the userdir
+	COM_FOpenFile (va(".midi/%s.mid", Name), &f, true);	// sets com_filesize
 	if (f) {
-		Sys_Printf("MIDI: File %s already exists\n",Temp);
+		Sys_Printf("MIDI: .midi/%s.mid already exists\n",Name);
+		// the file may be found in the current searchpath but not
+		// necessarily in com_userdir/.midi which we will tell to
+		// SDL_mixer. Therefore we may need copying the file here
+		if(access(va("%s/.midi/%s.mid", com_userdir, Name), R_OK) != 0)
+		{
+			Data = Z_Malloc (com_filesize);
+			fread (Data, 1, com_filesize, f);
+			COM_WriteFile (va(".midi/%s.mid", Name), (void *)Data, com_filesize);
+			Z_Free (Data);
+		}
 		fclose(f);
 	} else {
-		Sys_Printf("MIDI: File %s needs to be extracted\n",Temp);
-		Data = (char *)COM_LoadHunkFile((char *)Temp);
+		Sys_Printf("MIDI: File midi/%s.mid needs to be extracted\n",Name);
+		Data = (char *)COM_LoadHunkFile(va("midi/%s.mid", Name));
 		if (!Data) {
-			Con_Printf("musicfile %s not found, not playing\n", Temp);
+			Con_Printf("musicfile midi/%s.mid not found, not playing\n", Name);
 			return;
 		}
-		size = com_filesize;
-		COM_WriteFile (midi_file_with_path, (void *)Data, size);
+		COM_WriteFile (va(".midi/%s.mid", Name), (void *)Data, com_filesize);
 	}
-	// now with full userdir path included, for SDL_mixer
-	sprintf (midi_file_with_path, "%s/.midi/%s.mid", com_userdir, Name);
-	music = Mix_LoadMUS(midi_file_with_path);
+	music = Mix_LoadMUS(va("%s/.midi/%s.mid", com_userdir, Name));
 	if ( music == NULL ) {
-		Sys_Printf("Couldn't load %s: %s\n", midi_file_with_path, SDL_GetError());
+		Sys_Printf("Couldn't load %s/.midi/%s.mid: %s\n", com_userdir, Name, SDL_GetError());
 	} else {
 		bFileOpen = 1;
-		Con_Printf("Playing midi file %s\n",Temp);
+		Con_Printf("Playing midi file midi/%s.mid\n",Name);
 		Mix_FadeInMusic(music,0,2000);
 		bPlaying = 1;
 	}
@@ -272,6 +276,9 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/05/19 12:46:56  sezero
+ * synced h2 and hw versions of midi stuff
+ *
  * Revision 1.10  2005/05/17 22:56:19  sezero
  * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
  * Q_strXcasecmp will now be used throughout the code which are implementation
