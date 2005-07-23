@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.12 2005-07-23 11:34:51 sezero Exp $
+	$Id: midi_sdl.c,v 1.13 2005-07-23 19:49:55 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -168,6 +168,7 @@ void MIDI_Play(char *Name)
 {
 	char *Data;
 	FILE *f=NULL;
+	int size;
 
 	if (!bMidiInited)	//don't try to play if there is no midi
 		return;
@@ -182,7 +183,7 @@ void MIDI_Play(char *Name)
 
 	// Note that midi/ is the standart quake search path, but
 	// .midi/ with the leading dot is the path in the userdir
-	COM_FOpenFile (va(".midi/%s.mid", Name), &f, true);	// sets com_filesize
+	size = COM_FOpenFile (va(".midi/%s.mid", Name), &f, true);
 	if (f) {
 		Sys_Printf("MIDI: .midi/%s.mid already exists\n",Name);
 		// the file may be found in the current searchpath but not
@@ -190,9 +191,9 @@ void MIDI_Play(char *Name)
 		// SDL_mixer. Therefore we may need copying the file here
 		if(access(va("%s/.midi/%s.mid", com_userdir, Name), R_OK) != 0)
 		{
-			Data = Z_Malloc (com_filesize);
-			fread (Data, 1, com_filesize, f);
-			COM_WriteFile (va(".midi/%s.mid", Name), (void *)Data, com_filesize);
+			Data = Z_Malloc (size);
+			fread (Data, 1, size, f);
+			COM_WriteFile (va(".midi/%s.mid", Name), (void *)Data, size);
 			Z_Free (Data);
 		}
 		fclose(f);
@@ -276,6 +277,10 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/07/23 11:34:51  sezero
+ * fixed midi not playing when midifile exists in
+ * the searchpath but not in com_userdir/.midi .
+ *
  * Revision 1.11  2005/05/19 12:46:56  sezero
  * synced h2 and hw versions of midi stuff
  *
