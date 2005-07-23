@@ -695,7 +695,7 @@ void R_LoadSkys (void)
 	for (i=0 ; i<6 ; i++)
 	{
 		sprintf (name, "gfx/env/bkgtst%s.tga", suf[i]);
-		COM_FOpenFile (name, &f);
+		COM_FOpenFile (name, &f, false);
 		if (!f)
 		{
 			Con_Printf ("Couldn't load %s\n", name);
