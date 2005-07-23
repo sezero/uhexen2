@@ -29,6 +29,6 @@
 #define HEAP_MINSIZE	8192	// minimum heap memory size in KB
 #define HEAP_DEFAULT	32768	// default heap memory size in KB
 #define HEAP_MAXSIZE	98304	// maximum heap memory size in KB
-#define ZONE_MINSIZE	128	// minimum zone memory size in KB
-#define ZONE_DEFAULT	128	// default zone memory size in KB
+#define ZONE_MINSIZE	256	// minimum zone memory size in KB
+#define ZONE_DEFAULT	256	// default zone memory size in KB
 #define ZONE_MAXSIZE	1024	// maximum zone memory size in KB

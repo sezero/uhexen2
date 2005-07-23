@@ -2,12 +2,12 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.14 2005-07-09 11:53:40 sezero Exp $
+	$Id: zone.c,v 1.15 2005-07-23 22:23:48 sezero Exp $
 */
 
 #include "quakedef.h"
 
-#define	DYNAMIC_SIZE	0x20000
+#define	DYNAMIC_SIZE	0x40000
 #define	ZONEID		0x1d4a11
 #define	HUNK_SENTINAL	0x1df001ed
 #define MINFRAGMENT	64
@@ -1109,15 +1109,15 @@ void Memory_Init (void *buf, int size)
 		if (p < com_argc-1) {
 			zonesize = atoi (com_argv[p+1]) * 1024;
 			if (zonesize < DYNAMIC_SIZE) {
-				// no less than 128 KB default
+				// no less than 256 KB default
 				Sys_Printf ("Requested zone size (%i Kb) too little.\n", zonesize/1024);
-				Sys_Printf ("Going with the default 128 KB size.\n");
-				zonesize = DYNAMIC_SIZE; // 128 KB
+				Sys_Printf ("Going with the default 256 KB size.\n");
+				zonesize = DYNAMIC_SIZE; // 256 Kb
 			} else if (zonesize > 1024*1024) {
 				// no bigger than 1 MB
 				Sys_Printf ("Requested zone size (%i Kb) too large.\n", zonesize/1024);
 				Sys_Printf ("Will try going with a 1 MB size.\n");
-				zonesize = 1024*1024;
+				zonesize = 1024*1024;	// 4*DYNAMIC_SIZE
 			}
 		} else {
 			Sys_Printf ("Memory_Init: No size specified after -zone. Ignoring.\n");
@@ -1133,6 +1133,9 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/07/09 11:53:40  sezero
+ * moved the local unix version of strlwr to zone.c, its only user.
+ *
  * Revision 1.13  2005/07/09 10:45:19  sezero
  * macroized the repetitive console+file printing routines for sys_*
  * console commands, fixed some string length oversights, performed
