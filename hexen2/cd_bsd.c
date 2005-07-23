@@ -1,6 +1,6 @@
 /*
 	cd_bsd.c
-	$Id: cd_bsd.c,v 1.4 2005-06-12 13:56:48 sezero Exp $
+	$Id: cd_bsd.c,v 1.5 2005-07-23 08:53:21 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	A few BSD bits taken from the Dark Places project for Hammer
@@ -386,12 +386,12 @@ void CDAudio_UpdateVolume(void)
 	if (cdfile == -1 || !enabled)
 		return;
 
-	if (bgmvolume.value != drv_vol.vol0)
+	if (bgmvolume.value != drv_vol.vol[0])
 	{
-		drv_vol.vol0 = drv_vol.vol2 =
-		drv_vol.vol1 = drv_vol.vol3 = bgmvolume.value * 255.0;
-		if (ioctl(cdfile, CDIOSETVOL, &drv_vol) == -1)
-			Con_DPrintf("ioctl CDIOSETVOL failed\n");
+		drv_vol.vol[0] = drv_vol.vol[2] =
+		drv_vol.vol[1] = drv_vol.vol[3] = bgmvolume.value * 255.0;
+		if (ioctl(cdfile, CDIOCSETVOL, &drv_vol) == -1)
+			Con_DPrintf("ioctl CDIOCSETVOL failed\n");
 	}
 }
 
@@ -433,16 +433,16 @@ int CDAudio_Init(void)
 	Con_Printf("CD Audio Initialized\n");
 
 	// get drives volume
-	if (ioctl(cdfile, CDIOGETVOL, &drv_vol0) == -1) {
-		Con_Printf("ioctl CDIOGETVOL failed\n");
-		drv_vol0.vol0 = drv_vol0.vol2 =
-		drv_vol0.vol1 = drv_vol0.vol3 = 255.0;
+	if (ioctl(cdfile, CDIOCGETVOL, &drv_vol0) == -1) {
+		Con_Printf("ioctl CDIOCGETVOL failed\n");
+		drv_vol0.vol[0] = drv_vol0.vol[2] =
+		drv_vol0.vol[1] = drv_vol0.vol[3] = 255.0;
 	}
 	// set our own volume
-	drv_vol.vol0 = drv_vol.vol2 =
-	drv_vol.vol1 = drv_vol.vol3 = bgmvolume.value * 255.0;
-	if (ioctl(cdfile, CDIOSETVOL, &drv_vol) == -1)
-		Con_Printf("ioctl CDIOSETVOL failed\n");
+	drv_vol.vol[0] = drv_vol.vol[2] =
+	drv_vol.vol[1] = drv_vol.vol[3] = bgmvolume.value * 255.0;
+	if (ioctl(cdfile, CDIOCSETVOL, &drv_vol) == -1)
+		Con_Printf("ioctl CDIOCSETVOL failed\n");
 
 	return 0;
 }
@@ -454,8 +454,8 @@ void CDAudio_Shutdown(void)
 		return;
 	CDAudio_Stop();
 	// put the drives old volume back
-	if (ioctl(cdfile, CDIOSETVOL, &drv_vol0) == -1)
-		Con_Printf("ioctl CDIOSETVOL failed\n");
+	if (ioctl(cdfile, CDIOCSETVOL, &drv_vol0) == -1)
+		Con_Printf("ioctl CDIOCSETVOL failed\n");
 	close(cdfile);
 	cdfile = -1;
 }
