@@ -131,9 +131,24 @@ explosion_t		cl_explosions[MAX_EXPLOSIONS];
 
 static stream_t cl_Streams[MAX_STREAMS];
 
-// this is unused but its absence results
-// in broken code for TE_LIGHTNINGEXPLODE
 #warning FIX THIS BROKEN StreamEntities CODE
+/* This StreamEntities seems unused, but its absence somehow results
+   in broken code for lightning streams, such as TE_SWORD_EXPLOSION,
+   TE_LIGHTNING_HAMMER and TE_LIGHTNINGEXPLODE (all of them have
+   stream->type = TE_STREAM_LIGHTNING in common.)
+
+   Original value of 10 streams causes a crash for TE_LIGHTNINGEXPLODE
+   (lightning ball of succubus hitting somewhere) either with gcc4, or
+   with any gcc and StreamEntities removed. If I increase the number of
+   other types of lightning streams, the same thing happens: hammer of
+   the Crusader and the sword of the Paladin behave similarly.  Even 8
+   streams can crash the game for TE_LIGHTNINGEXPLODE if compiled with
+   gcc4 (it must be optimizing away this unused decl.), such as when
+   there are beams on the scene.
+   On the other hand, if compiled with gcc3 and with this StreamEntities
+   thing in place, the client seems to survive even up to 20 streams.
+   I don't know the reason for this yet.
+*/
 static entity_t StreamEntities[MAX_STREAM_ENTITIES];
 //static int StreamEntityCount;
 
@@ -3312,16 +3327,6 @@ void CL_ParseTEnt (void)
 				{
 					S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning2, pos, 1, 1);
 				}
-
-				#warning FIX THIS BROKEN StreamEntities CODE
-				/* Oddity note: 10 streams crashes the game
-				   either with gcc4, or with any gcc and
-				   StreamEntities removed. I don't know the
-				   reason for this yet.
-				   Update: Even 8 streams can crash the game
-				   if compiled with gcc4, such as when there
-				   are beams on the scene.	*/
-				#warning FIX THIS BROKEN StreamEntities CODE
 
 				//for (i = 0; i < 10; i++)
 				for (i = 0; i < 8; i++)
