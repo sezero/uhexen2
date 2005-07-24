@@ -131,6 +131,12 @@ explosion_t		cl_explosions[MAX_EXPLOSIONS];
 
 static stream_t cl_Streams[MAX_STREAMS];
 
+// this is unused but its absence results
+// in broken code for TE_LIGHTNINGEXPLODE
+#warning FIX THIS BROKEN StreamEntities CODE
+static entity_t StreamEntities[MAX_STREAM_ENTITIES];
+//static int StreamEntityCount;
+
 static int		MultiGrenadeCurrentChannel;
 
 //sfx_t			*cl_sfx_wizhit;
@@ -3307,8 +3313,16 @@ void CL_ParseTEnt (void)
 					S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning2, pos, 1, 1);
 				}
 
-				// Oddity note:  10 used to crash the game either with gcc4,
-				// or with any gcc + static entity_t StreamEntities removed.
+				#warning FIX THIS BROKEN StreamEntities CODE
+				/* Oddity note: 10 streams crashes the game
+				   either with gcc4, or with any gcc and
+				   StreamEntities removed. I don't know the
+				   reason for this yet.
+				   Update: Even 8 streams can crash the game
+				   if compiled with gcc4, such as when there
+				   are beams on the scene.	*/
+				#warning FIX THIS BROKEN StreamEntities CODE
+
 				//for (i = 0; i < 10; i++)
 				for (i = 0; i < 8; i++)
 				{	// make some lightning
