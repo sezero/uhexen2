@@ -27,3 +27,16 @@ Known Bugs
   Coop mode of HexenWorld is broken (known problem since Raven's latest
   beta-0.15)
 
+  In cl_tent.c of hexenworld, variable StreamEntities[] seems unused, but
+  its absence somehow results in broken code for lightning streams, such
+  as TE_SWORD_EXPLOSION, TE_LIGHTNING_HAMMER and TE_LIGHTNINGEXPLODE (all
+  are of stream->type = TE_STREAM_LIGHTNING .)  The original value of 10
+  streams causes the client crash for TE_LIGHTNINGEXPLODE (lightning ball
+  of succubus hitting somewhere) either with gcc4, or with any gcc and
+  StreamEntities[] removed.  If I increase the number of other types of
+  lightning streams, the same thing happens: the Crusader's hammer and the
+  Paladin's sword behave similarly.  Even 8 streams can crash the client
+  for TE_LIGHTNINGEXPLODE if compiled with gcc4, such as when there are
+  beams on the scene.  On the other hand, if compiled with gcc3 and with
+  that StreamEntities[] thing in place, the client seems to survive with
+  stream numbers even as much as 20.
