@@ -789,8 +789,8 @@ void CL_ParseTEnt (void)
 {
 	int		cnt, cnt2, i, rnd;
 	int		type, damage, chType;
-	float		volume, scale;
-	float		dir, cosval, sinval;
+	float		scale = 1.0;	// init to 1, make compiler happy
+	float		dir, cosval, sinval, volume;
 	dlight_t	*dl;
 	explosion_t	*ex;
 	vec3_t		pos, vel, movedir, offset;
@@ -3703,7 +3703,8 @@ void CL_UpdateStreams(void)
 	int		i, offset, segmentCount;
 	stream_t	*stream;
 	vec3_t		dist, org, discard, right, up;
-	float		cosTime, sinTime, lifeTime, cos2Time, sin2Time;
+	float		cosTime = 0.0, sinTime = 0.0;	// init to 0, make compiler happy
+	float		cos2Time = 0.0, sin2Time = 0.0, lifeTime = 0.0;	// ditto
 	float		d, yaw, pitch, forward;
 	entity_t	*ent;
 	entity_state_t	*state;
