@@ -1,5 +1,36 @@
 ChangeLog:
 
+2005-07-24 (CVS, 1.2.5-pre11):
+    * it seems like reducing the number of lightning streams to 8
+      is not a good enough workaround for hexenworld client crash:
+      Updated docs/BUGS with a detailed description of the problem,
+      put the variable StreamEntities[] back in  for good binaries
+      compiled with gcc3
+    * hopefully fixed bsd cdrom compilation this time
+    * fixed midi not playing when midifile exists in the searchpath
+      but not in com_userdir/<mod_dir>/.midi
+    * re-fixed sdl-midi for better handling of file size
+    * unified the common functions for hexen2-hexenworld (big patch,
+      so please be on watch for anything broken)
+    * increased hexen2 minimum zone size to 256 KB to match that of
+      hexenworld's in order to handle the new changes
+    * added check for mkdir return code in userdir creation in
+      hexenworld master server
+    * made Sys_mkdir of the launcher use $HOME instead of the
+      passwd struct
+    * we may actually need a real Sys_mkdir in hwsv, so added one
+    * merged com_sys stuff back into main.c in launcher
+    * fixed gl_warp of hexenworld to give 3 args to COM_FOpenFile
+    * hexenworld server seemed to have sent the wrong message for
+      the cdtrack resulting in no cd music playing. fixed.
+    * I seem to have missed one place for linux-only alsa sound
+      conditionals which resulted in compile failure on bsd. fixed.
+    * separate icons for hexen2 and hexen2mp
+    * compile win32 resource as .o, not .res.  makefile fixes for
+      the new icon directory.
+    * killed the unused visualc stuff
+    * misc whitespace clean-ups
+
 2005-07-20 (CVS, 1.2.5-pre10):
     * killed fastfabs, not worthy of keeping anymore
     * made vid_initialized static
