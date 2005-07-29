@@ -1,6 +1,6 @@
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/progs.src,v 1.1.1.1 2004-11-29 11:28:44 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/progs.src,v 1.2 2005-07-29 11:06:13 sezero Exp $
  */
 
 hwprogs.dat
@@ -36,7 +36,6 @@ combat.hc
 
 artifact.hc		// Artifacts, items, and rings
 items.hc
-//cube.hc
 newcube.hc
 invntory.hc
 rings.hc
@@ -72,10 +71,10 @@ assgren.hc
 crossbow.hc
 setstaff.hc
 
-bldrain.hc
+bldrain.hc		// Succubus Weapons
 acidorb.hc
 flameorb.hc
-lightwp.hc		// Succubus Weapons
+lightwp.hc
 
 weapons.hc
 tripmine.hc		// UQ tripmines
