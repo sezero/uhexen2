@@ -1,6 +1,6 @@
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/progs.src,v 1.1.1.1 2004-11-29 11:33:40 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/progs.src,v 1.2 2005-07-29 11:35:13 sezero Exp $
  */
 
 progs.dat
@@ -99,14 +99,9 @@ plats_mp.hc
 misc.hc
 torch.hc
 
-//assassin.hc		// Player models
-//paladin.hc
-//crusader.hc
-//necro.hc
 newplay.hc
 setmodth.hc
 
-//t_head.hc
 fish.hc
 sheep.hc
 raven.hc
