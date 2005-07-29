@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/precache.hc,v 1.1 2005-01-26 17:26:12 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/precache.hc,v 1.2 2005-07-29 15:29:35 sezero Exp $
  */
 
 // called by worldspawn
@@ -627,7 +627,7 @@ void Precache_wav (void)
 	precache_sound ("imp/flybig.wav");
 	precache_sound ("imp/fireball.wav");
 	precache_sound ("imp/shard.wav");
-	precache_sound ("hydra/turn-s.wav");
+	precache_sound5 ("hydra/turn-s.wav");
 
 //SHARED PLAYER SOUNDS
 	//General body/physics sounds
@@ -1278,6 +1278,9 @@ void Precache_hw(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/01/26 17:26:12  sezero
+ * Raven's original Siege hcode.
+ *
  * 
  * 24    6/16/98 12:00p Ggribb
  * Art update

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/hydra.hc,v 1.1 2005-01-26 17:26:11 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/hydra.hc,v 1.2 2005-07-29 15:29:35 sezero Exp $
  */
 
 /*
@@ -833,7 +833,7 @@ void monster_hydra(void)
 	precache_sound("hydra/pain.wav");
 	precache_sound("hydra/die.wav");
 	precache_sound("hydra/open.wav");
-	precache_sound("hydra/turn-s.wav");
+	precache_sound5("hydra/turn-s.wav");
 	precache_sound("hydra/turn-b.wav");
 	precache_sound("hydra/swim.wav");
 	precache_sound("hydra/tent.wav");
@@ -843,6 +843,9 @@ void monster_hydra(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/01/26 17:26:11  sezero
+ * Raven's original Siege hcode.
+ *
  * 
  * 3     5/25/98 1:38p Mgummelt
  * 

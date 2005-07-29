@@ -3,7 +3,7 @@
 //**
 //** builtin.hc
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/builtin.hc,v 1.1.1.1 2004-11-29 11:25:09 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/builtin.hc,v 1.2 2005-07-29 15:29:28 sezero Exp $
 //**
 //**************************************************************************
 
@@ -235,4 +235,4 @@ string precache_sound5(string s) : 116;
 string precache_model5(string s) : 117;
 string precache_file5(string s) : 118;
 void setsiegeteam(entity who, float s_team) : 119;
-void PF_updateSiegeInfo(void) : 120;
+void updateSiegeInfo(void) : 120;

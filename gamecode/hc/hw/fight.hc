@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/fight.hc,v 1.1.1.1 2004-11-29 11:23:52 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/fight.hc,v 1.2 2005-07-29 15:29:28 sezero Exp $
  */
 
 
@@ -38,9 +38,9 @@ float MAX_SHORT_MISSILE = 8;
 
 float CheckAttack()
 {
-	local vector	spot1, spot2;	
-	local entity	targ;
-	local float		chance;
+vector	spot1, spot2;	
+entity	targ;
+float		chance;
 
 	targ = self.enemy;
 	
@@ -225,6 +225,9 @@ void ai_melee_side()
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:23:52  sezero
+ * Initial import
+ *
  * Revision 1.1.1.1  2001/11/09 17:05:03  theoddone33
  * Inital import
  *

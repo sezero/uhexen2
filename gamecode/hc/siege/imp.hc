@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/imp.hc,v 1.1 2005-01-26 17:26:11 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/imp.hc,v 1.2 2005-07-29 15:29:35 sezero Exp $
  */
 /*
 ==============================================================================
@@ -1516,7 +1516,7 @@ void init_imp (float which_skin)
 		precache_sound("imp/swoophit.wav");
 		precache_sound("imp/fireball.wav");
 		precache_sound("imp/shard.wav");
-		precache_sound("hydra/turn-s.wav");
+		precache_sound5("hydra/turn-s.wav");
 	}
 
 	self.solid = SOLID_SLIDEBOX;
