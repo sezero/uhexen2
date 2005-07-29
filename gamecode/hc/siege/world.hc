@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/world.hc,v 1.3 2005-06-08 17:14:00 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/world.hc,v 1.4 2005-07-29 08:40:59 sezero Exp $
  */
 
 //void() InitBodyQue;
@@ -114,24 +114,23 @@ void GetNextMap()
 {
 float line_id;
 float map_sequence_start;
-//float map_start;
-string map_name;
+string map_next;
 
 	line_id = 0;
-	while (map_name!="map_sequence_start"||map_name!="<1.you passed the end of the file, pal>")
+	while (map_next!="map_sequence_start"||map_next!="<1.you passed the end of the file, pal>")
 	{
 		line_id +=1;
-		map_name = getstring(line_id);
-		if(map_name=="map_sequence_start")
+		map_next = getstring(line_id);
+		if(map_next=="map_sequence_start")
 		{
 			break;
 		}
-		if(map_name=="<1.you passed the end of the file, pal>")
+		if(map_next=="<1.you passed the end of the file, pal>")
 		{
 			break;
 		}
 	}
-	if(map_name=="<1.you passed the end of the file, pal>")
+	if(map_next=="<1.you passed the end of the file, pal>")
 	{
 		return;
 	}
@@ -140,38 +139,35 @@ string map_name;
 
 	line_id = 0;
 
-	while(map_name!=mapname||map_name!="map_sequence_end"||map_name!="<1.you passed the end of the file, pal>")
+	while(map_next!=mapname||map_next!="map_sequence_end"||map_next!="<1.you passed the end of the file, pal>")
 	{
-		map_name = getstring(map_sequence_start+line_id+1);
+		map_next = getstring(map_sequence_start+line_id+1);
 		line_id +=1;
 
-		if(map_name==mapname)
+		if(map_next==mapname)
 		{
 			break;
 		}
-		if(map_name=="map_sequence_end")
+		if(map_next=="map_sequence_end")
 		{
 			break;
 		}
-		if(map_name=="<1.you passed the end of the file, pal>")
+		if(map_next=="<1.you passed the end of the file, pal>")
 		{
 			break;
 		}
 
 	}
-	if(map_name=="<1.you passed the end of the file, pal>")
+	if(map_next=="<1.you passed the end of the file, pal>")
 		return;
-	if(map_name=="map_sequence_end")
+	if(map_next=="map_sequence_end")
 		return;
-	map_name = getstring(map_sequence_start+line_id+1);
-	dprint("map_name == ");
-	dprint(map_name);
-	dprint("\n");	
-	if(map_name=="map_sequence_end")
-		map_name = getstring(map_sequence_start+1);
-	if(map_name=="*")
+	map_next = getstring(map_sequence_start+line_id+1);
+	if(map_next=="map_sequence_end")
+		map_next = getstring(map_sequence_start+1);
+	if(map_next=="*")
 		return;
-	self.next_map = map_name;
+	self.next_map = map_next;
 
 }
 
@@ -210,14 +206,12 @@ void() worldspawn =
 
 	GetNextMap();
 
-	dprint("mapname == ");	
+	dprint("Current Map: ");
 	dprint(mapname);
 	dprint("\n");
-	dprint("self.next_map == ");
+	dprint("Next Map   : ");
 	dprint(self.next_map);
 	dprint("\n");
-
-
 
 /*	don't want hardcoded values for hexenworld
 	if (self.model == "maps/mgtowers.bsp")
@@ -228,6 +222,7 @@ void() worldspawn =
 	else
 		cvar_set ("sv_gravity", "800");
 */
+
 // the area based ambient sounds MUST be the first precache_sounds
 
 // player precaches	

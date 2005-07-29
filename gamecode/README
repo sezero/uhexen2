@@ -4,13 +4,16 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
-2005-06-25 (1.14) :
+2005-07-29 (1.14) :
+===================
+- Map cycling: renamed map_name to a more intuitive map_next
+  Cleaned up some dprint's
+2005-06-25        :
 ===================
 - Bumped the teleport-push speed to a highest safe value of 225
   (250 is still safe, but just in case)  and restricted that to
   the Cathedral map when not in deathmatch.  Otherwise, Raven's
   original value (300) is used.
-
 2005-05-08	  :
 ===================
 - added Pa3PyX' fire delay bits for paladin's setstaff
