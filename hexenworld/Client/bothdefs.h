@@ -1,16 +1,19 @@
 
 // defs common to client and server
 
-#define GLQUAKE_VERSION 0.95
-#define	VERSION		0.15
-
+#define GLQUAKE_VERSION 1.00
+#define	VERSION		0.16
 #define HOT_VERSION_MAJ 1
-#define HOT_VERSION_MID 2
-#define HOT_VERSION_MIN 5
+#define HOT_VERSION_MID 3
+#define HOT_VERSION_MIN 0
+#if defined (PLATFORM_UNIX)
 #if defined (__linux__)
 #define VERSION_PLATFORM "Linux"
 #elif defined (__FreeBSD__)
 #define VERSION_PLATFORM "FreeBSD"
+#else
+#define VERSION_PLATFORM "Unix"
+#endif
 #elif defined (_WIN32)
 #define VERSION_PLATFORM "Windows"
 #else

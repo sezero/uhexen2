@@ -30,7 +30,7 @@ GTK_LIBS = `pkg-config --libs gtk+-2.0`
 endif
 
 VERSION = 0.6.1
-HOT_VERSION = 1.2.5
+HOT_VERSION = 1.3.0
 
 PROGRAMS = $(H2LAUNCH)
 

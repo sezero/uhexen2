@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.34 2005-06-17 16:24:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.35 2005-07-30 15:16:26 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -18,22 +18,25 @@
 #endif
 
 #define HOT_VERSION_MAJ 1
-#define HOT_VERSION_MID 2
-#define HOT_VERSION_MIN 5
+#define HOT_VERSION_MID 3
+#define HOT_VERSION_MIN 0
+#if defined (PLATFORM_UNIX)
 #if defined (__linux__)
 #define VERSION_PLATFORM "Linux"
 #elif defined (__FreeBSD__)
 #define VERSION_PLATFORM "FreeBSD"
+#else
+#define VERSION_PLATFORM "Unix"
+#endif
 #elif defined (_WIN32)
 #define VERSION_PLATFORM "Windows"
 #else
 #define VERSION_PLATFORM "Unknown"
 #endif
+#define GLQUAKE_VERSION		1.00
+#define HEXEN2_VERSION		1.14
 
 #define	QUAKE_GAME		// as opposed to utilities
-
-#define HEXEN2_VERSION		1.12
-
 //define	PARANOID	// speed sapping error checking
 
 #ifndef DEMOBUILD
@@ -433,6 +436,9 @@ void MIDI_Loop(int NewValue);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.34  2005/06/17 16:24:33  sezero
+ * win32 fixes and clean-ups
+ *
  * Revision 1.33  2005/06/15 22:03:02  sezero
  * vid_setgamma command is for sdl versions only.
  * also added notes on the WITH_SDL define in quakedef.h
