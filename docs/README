@@ -1,6 +1,6 @@
 Linux Hexen II
 -----------------------
-Hammer of Thyrion 1.2.5
+Hammer of Thyrion 1.3.0
 
 
 1. Installation
@@ -72,7 +72,7 @@ b. Manual install/update of datafiles (harder way):
    lower-cased, if not already, and can be done with mv_lowercase
    from the file-rename-utils archive (see Links). To patch your
    data files, type " sh update_h2 " (this update script and its
-   requirements are included in the HoT-1.2.5 binary package).
+   requirements are included in the HoT-1.3.0 binary package).
    Confirm the patching by checking with the following md5sums:
 
    c9675191e75dd25a3b9ed81ee7e05eff  data1/pak0.pak
