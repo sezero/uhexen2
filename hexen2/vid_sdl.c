@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.30 2005-07-09 08:56:17 sezero Exp $
+   $Id: vid_sdl.c,v 1.31 2005-07-30 11:36:42 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -218,6 +218,51 @@ void VID_CheckModedescFixup (int mode)
 }
 
 
+static void VID_SetIcon (void)
+{
+#if defined(H2W)
+	// hexenworld
+	#include "../icons/h2w_ico.xbm"
+#elif defined(H2MP)
+	// hexen2 with mission pack
+	#include "icons/h2mp_ico.xbm"
+#else
+	// plain hexen2
+	#include "icons/h2_ico.xbm"
+#endif
+	SDL_Surface *icon;
+	SDL_Color color;
+	Uint8 *ptr;
+	int i, mask;
+
+	icon = SDL_CreateRGBSurface(SDL_SWSURFACE, HOT_ICON_WIDTH, HOT_ICON_HEIGHT, 8, 0, 0, 0, 0);
+	if (icon == NULL)
+		return;	/* oh well... */
+	SDL_SetColorKey(icon, SDL_SRCCOLORKEY, 0);
+
+	color.r = 255;
+	color.g = 255;
+	color.b = 255;
+	SDL_SetColors(icon, &color, 0, 1);	/* just in case */
+	color.r = 128;
+	color.g = 0;
+	color.b = 0;
+	SDL_SetColors(icon, &color, 1, 1);
+
+	ptr = (Uint8 *)icon->pixels;
+	for (i = 0; i < sizeof(HOT_ICON_bits); i++)
+	{
+		for (mask = 1; mask != 0x100; mask <<= 1) {
+			*ptr = (HOT_ICON_bits[i] & mask) ? 1 : 0;
+			ptr++;
+		}		
+	}
+
+	SDL_WM_SetIcon(icon, NULL);
+	SDL_FreeSurface(icon);
+}
+
+
 qboolean VID_SetWindowedMode (int modenum)
 {
 	Uint32 flags = (SDL_SWSURFACE|SDL_HWPALETTE);
@@ -230,7 +275,9 @@ qboolean VID_SetWindowedMode (int modenum)
 	vid.width = vid.conwidth = modelist[modenum].width;
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
-	
+
+	VID_SetIcon();	// window manager icon using xbm data
+
 	if (!(screen = SDL_SetVideoMode(vid.width, vid.height, modelist[modenum].bpp, flags)))
 		return false;
 	else
@@ -259,9 +306,10 @@ qboolean VID_SetFullscreenMode (int modenum)
 	vid.height = vid.conheight = modelist[modenum].height;
 	vid.width = vid.conwidth = modelist[modenum].width;
 
+	VID_SetIcon();  // window manager icon using xbm data
+
 	// This doesn't work at 16 bpp.
 	// Looks like there's a heap of programing around 256 colours S.A
-
 	if (!(screen = SDL_SetVideoMode(vid.width, vid.height, 8, flags)))
 		return false;
 
@@ -894,6 +942,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2005/07/09 08:56:17  sezero
+ * the transtable externs are now unused
+ *
  * Revision 1.29  2005/07/09 07:29:40  sezero
  * use hunk instead of malloc
  *

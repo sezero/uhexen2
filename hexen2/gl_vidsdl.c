@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.76 2005-07-16 23:29:49 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.77 2005-07-30 11:36:42 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -167,6 +167,50 @@ void D_EndDirectRect (int x, int y, int width, int height)
 }
 
 
+static void VID_SetIcon (void)
+{
+#if defined(H2W)
+	// hexenworld
+	#include "../icons/h2w_ico.xbm"
+#elif defined(H2MP)
+	// hexen2 with mission pack
+	#include "icons/h2mp_ico.xbm"
+#else
+	// plain hexen2
+	#include "icons/h2_ico.xbm"
+#endif
+	SDL_Surface *icon;
+	SDL_Color color;
+	Uint8 *ptr;
+	int i, mask;
+
+	icon = SDL_CreateRGBSurface(SDL_SWSURFACE, HOT_ICON_WIDTH, HOT_ICON_HEIGHT, 8, 0, 0, 0, 0);
+	if (icon == NULL)
+		return;	/* oh well... */
+	SDL_SetColorKey(icon, SDL_SRCCOLORKEY, 0);
+
+	color.r = 255;
+	color.g = 255;
+	color.b = 255;
+	SDL_SetColors(icon, &color, 0, 1);	/* just in case */
+	color.r = 128;
+	color.g = 0;
+	color.b = 0;
+	SDL_SetColors(icon, &color, 1, 1);
+
+	ptr = (Uint8 *)icon->pixels;
+	for (i = 0; i < sizeof(HOT_ICON_bits); i++)
+	{
+		for (mask = 1; mask != 0x100; mask <<= 1) {
+			*ptr = (HOT_ICON_bits[i] & mask) ? 1 : 0;
+			ptr++;
+		}		
+	}
+
+	SDL_WM_SetIcon(icon, NULL);
+	SDL_FreeSurface(icon);
+}
+
 /* Init SDL */
 
 int VID_SetMode (int modenum)
@@ -230,6 +274,8 @@ int VID_SetMode (int modenum)
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisample);
 	}
+
+	VID_SetIcon();	// window manager icon using xbm data
 
 	//SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, modelist[modenum].bpp);
 	Con_Printf ("Requesting Mode: %dx%dx%d\n", vid.width, vid.height, modelist[modenum].bpp);
