@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.5 2005-07-22 17:17:53 sezero Exp $
+	$Id: sys_unix.c,v 1.6 2005-07-30 15:19:14 sezero Exp $
 
 	Unix system interface code
 */
@@ -224,10 +224,10 @@ int main (int argc, char **argv)
 	if (COM_CheckParm ("-help") || COM_CheckParm ("--help") ||
 	    COM_CheckParm ("-h")    || COM_CheckParm ("-?"))
 	{
-		printf ("\nHexenWorld server %4.2f (%s)\n", VERSION, VERSION_PLATFORM);
+		printf ("HexenWorld server %4.2f (%s)\n", VERSION, VERSION_PLATFORM);
 		printf ("(Hammer of Thyrion, release %d.%d.%d)\n",
 			 HOT_VERSION_MAJ, HOT_VERSION_MID, HOT_VERSION_MIN);
-		printf ("See the documentation for details\n\n");
+		printf ("See the documentation for details\n");
 		exit (0);
 	}
 

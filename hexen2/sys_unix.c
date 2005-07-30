@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.34 2005-07-23 22:22:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.35 2005-07-30 15:19:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -320,13 +320,14 @@ void PrintVersion (void)
 {
 	printf ("Hammer of Thyrion, release %d.%d.%d\n",
 		HOT_VERSION_MAJ, HOT_VERSION_MID, HOT_VERSION_MIN);
-	printf ("running on Hexen II engine %4.2f (%s)\n\n",
+	printf ("running on Hexen II engine %4.2f (%s)\n",
 		HEXEN2_VERSION, VERSION_PLATFORM);
 }
 
 void PrintHelp(char *name)
 {
 	PrintVersion();
+	printf ("\n");
 	printf ("Please send bug reports or patches to:\n");
 	printf ("     Steven Atkinson  <stevenaaus@users.sourceforge.net>\n");
 	printf ("     Ozkan Sezer      <sezero@users.sourceforge.net>\n");
@@ -371,8 +372,6 @@ int main(int argc, char *argv[])
 	if (Sys_GetUserdir(userdir,sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
 
-	Sys_Printf("userdir is: %s\n",userdir);
-
 	parms.basedir = cwd;
 	parms.cachedir = NULL;
 	parms.userdir = userdir;
@@ -402,6 +401,8 @@ int main(int argc, char *argv[])
 		PrintVersion();
 		exit (0);
 	}
+
+	Sys_Printf("userdir is: %s\n",userdir);
 
 	isDedicated = (COM_CheckParm ("-dedicated") != 0);
 
@@ -478,6 +479,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.34  2005/07/23 22:22:09  sezero
+ * unified the common funcntions for hexen2-hexenworld
+ *
  * Revision 1.33  2005/07/22 17:06:20  sezero
  * whitespace cleanup
  *
