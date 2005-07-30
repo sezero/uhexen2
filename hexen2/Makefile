@@ -54,6 +54,7 @@ ifdef DEBUG
 CFLAGS+= -DDEBUG -g -Wall
 endif
 GAMEFLAGS =
+X11FLAGS = -I/usr/X11R6/include
 SDLFLAGS = `sdl-config --cflags`
 SDLLINK = `sdl-config --libs`
 LDFLAGS =
@@ -87,7 +88,7 @@ endif
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(SDLFLAGS) $(GAMEFLAGS) -o $@ $<
+	$(CC) -c $(CFLAGS) $(X11FLAGS) $(SDLFLAGS) $(GAMEFLAGS) -o $@ $<
 %.o: %.asm
 	$(AS) $(ASFLAGS) -o $@ $<
 
