@@ -1321,7 +1321,7 @@ void Host_Init (quakeparms_t *parms)
 	host_colormap = (byte *)COM_LoadHunkFile ("gfx/colormap.lmp");
 	if (!host_colormap)
 		Sys_Error ("Couldn't load gfx/colormap.lmp");
-#ifdef __linux__
+#ifdef PLATFORM_UNIX
 
 	VID_Init (host_basepal);
 	IN_Init ();
