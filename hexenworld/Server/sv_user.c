@@ -531,7 +531,7 @@ void SV_Say (qboolean team)
 	char		text[2048];
 	char		t1[32], *t2;
 	int			speaknum = -1;
-	qboolean	IsRaven = false;
+	//qboolean	IsRaven = false;
 
 	if (Cmd_Argc () < 2)
 		return;
@@ -586,7 +586,7 @@ void SV_Say (qboolean team)
 		p[strlen(p)-1] = 0;
 	}
 
-	if (host_client->netchan.remote_address.ip[0] == 208 &&
+/*	if (host_client->netchan.remote_address.ip[0] == 208 &&
 	    host_client->netchan.remote_address.ip[1] == 135 &&
 	    host_client->netchan.remote_address.ip[2] == 137)
 	{
@@ -594,6 +594,8 @@ void SV_Say (qboolean team)
 	}
 
 	if (p[0] == '`' && ((!host_client->spectator && sv_allowtaunts.value) || IsRaven) )
+*/
+	if (p[0] == '`' && (!host_client->spectator && sv_allowtaunts.value) )
 	{
 		speaknum = atol(&p[1]);
 		if (speaknum <= 0 || speaknum > 255-PRINT_SOUND) 
