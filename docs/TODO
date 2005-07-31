@@ -4,5 +4,3 @@ TODO:
   Re-write midi code for wildmidi
   Add sequencer support for midi
 
-  Really fix OSS for good (mostly done, but there still
-  are a few reports of weird behavior)
