@@ -70,7 +70,7 @@ void	VID_Update (vrect_t *rects);
 // flushes the given rectangles from the view buffer to the screen
 
 #if defined(PLATFORM_UNIX) && defined(GLQUAKE)
-// doesn't use the palette arg anymore in GL mode. O.S. on unix/sdl
+// doesn't use the palette arg anymore in GL mode. on unix/sdl. O.S
 int VID_SetMode (int modenum);
 #else
 int VID_SetMode (int modenum, unsigned char *palette);
