@@ -7,7 +7,7 @@
 #define MAX_STACK_DEPTH 32
 #define LOCALSTACK_SIZE 2048
 
-#if defined(_MSC_VER) && defined(_WIN32) && defined(_DEBUG)
+#if defined(_MSC_VER) && defined(_WIN32) && defined(DEBUG_BUILD)
 // Uses the Pentium specific opcode RDTSC (ReaD TimeStamp Counter)
 #define TIMESNAP_ACTIVE
 #define TIMESNAP(clock) __asm push eax\

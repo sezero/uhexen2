@@ -53,7 +53,7 @@ typedef struct
 } hufftab_t;
 static huffnode_t *HuffTree=0;
 static hufftab_t HuffLookup[256];
-#if _DEBUG
+#if DEBUG_BUILD
 static int HuffIn=0;
 static int HuffOut=0;
 #endif
@@ -579,7 +579,7 @@ static float HuffFreq[256]=
 	0.00160896,
 };
 
-#ifdef _DEBUG
+#ifdef DEBUG_BUILD
 static int freqs[256];
 void ZeroFreq(void)
 {
@@ -617,7 +617,7 @@ void PrintFreqs(void)
 	}
 	ZeroFreq();
 }
-#endif
+#endif	// DEBUG_BUILD
 
 netadr_t	net_local_adr;
 
@@ -733,7 +733,7 @@ void BuildTree(float *freq)
 	}		
 	HuffTree=tmp;
 	FindTab(HuffTree,0,0);
-#if _DEBUG
+#if DEBUG_BUILD
 	for (i=0;i<256;i++)
 	{
 		if(!HuffLookup[i].len&&HuffLookup[i].len<=32)
@@ -795,8 +795,8 @@ void HuffEncode(unsigned char *in,unsigned char *out,int inlen,int *outlen)
 		memcpy(out+1,in,inlen);
 		*outlen=inlen+1;
 	}
-#if _DEBUG
 
+#ifdef DEBUG_BUILD
 	HuffIn+=inlen;
 	HuffOut+=*outlen;
 
@@ -814,7 +814,7 @@ void HuffEncode(unsigned char *in,unsigned char *out,int inlen,int *outlen)
 		}
 		free(buf);
 	}
-#endif
+#endif	// DEBUG_BUILD
 }
 
 
@@ -965,14 +965,14 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 	int 	err;
 #endif
 	struct sockaddr_in	addr;
-#ifdef _DEBUG
+#ifdef DEBUG_BUILD
 	char string[120];
 #endif
 
 	NetadrToSockadr (&to, &addr);
 	HuffEncode((unsigned char *)data,huffbuff,length,&outlen);
 
-#ifdef _DEBUG
+#ifdef DEBUG_BUILD
 	sprintf(string,"in: %d  out: %d  ratio: %f\n",HuffIn, HuffOut, 1-(float)HuffOut/(float)HuffIn);
 	OutputDebugString(string);
 
@@ -1054,7 +1054,7 @@ void NET_Init (int port)
 	int		r;
 #endif
 
-#ifdef _DEBUG
+#ifdef DEBUG_BUILD
 	ZeroFreq();
 #endif
 
@@ -1100,7 +1100,7 @@ void	NET_Shutdown (void)
 	WSACleanup ();
 #endif
 
-#ifdef _DEBUG
+#ifdef DEBUG_BUILD
 	PrintFreqs();
 #endif
 }

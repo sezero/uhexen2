@@ -69,7 +69,7 @@ extern qboolean m_return_onerror;
 extern char m_return_reason[32];
 
 
-#ifdef DEBUG
+#ifdef DEBUG_BUILD
 char *StrAddr (struct qsockaddr *addr)
 {
 	static char buf[34];
@@ -149,7 +149,7 @@ int Datagram_SendMessage (qsocket_t *sock, sizebuf_t *data)
 	unsigned int	dataLen;
 	unsigned int	eom;
 
-#ifdef DEBUG
+#ifdef DEBUG_BUILD
 	if (data->cursize == 0)
 		Sys_Error("Datagram_SendMessage: zero length message\n");
 
@@ -275,7 +275,7 @@ int Datagram_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *data)
 {
 	int 	packetLen;
 
-#ifdef DEBUG
+#ifdef DEBUG_BUILD
 	if (data->cursize == 0)
 		Sys_Error("Datagram_SendUnreliableMessage: zero length message\n");
 
@@ -328,7 +328,7 @@ int	Datagram_GetMessage (qsocket_t *sock)
 
 		if (sfunc.AddrCompare(&readaddr, &sock->addr) != 0)
 		{
-#ifdef DEBUG
+#ifdef DEBUG_BUILD
 			Con_DPrintf("Forged packet received\n");
 			Con_DPrintf("Expected: %s\n", StrAddr (&sock->addr));
 			Con_DPrintf("Received: %s\n", StrAddr (&readaddr));
@@ -1250,7 +1250,7 @@ static qsocket_t *_Datagram_Connect (char *host)
 				// is it from the right place?
 				if (sfunc.AddrCompare(&readaddr, &sendaddr) != 0)
 				{
-#ifdef DEBUG
+#ifdef DEBUG_BUILD
 					Con_Printf("wrong reply address\n");
 					Con_Printf("Expected: %s\n", StrAddr (&sendaddr));
 					Con_Printf("Received: %s\n", StrAddr (&readaddr));

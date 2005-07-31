@@ -1341,7 +1341,7 @@ void Master_Heartbeat (void)
 			NET_SendPacket (strlen(string), string, master_adr[i]);
 		}
 /*
-#ifndef _DEBUG
+#ifndef DEBUG_BUILD
 	// send to id master
 	NET_SendPacket (strlen(string), string, idmaster_adr);
 #endif
@@ -1371,7 +1371,7 @@ void Master_Shutdown (void)
 		}
 /*
 	// send to id master
-#ifndef _DEBUG
+#ifndef DEBUG_BUILD
 	NET_SendPacket (strlen(string), string, idmaster_adr);
 #endif
 */

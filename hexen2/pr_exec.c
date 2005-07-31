@@ -1,7 +1,7 @@
 /*
 	pr_exec.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.4 2005-05-05 17:17:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.5 2005-07-31 11:13:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -11,7 +11,7 @@
 #define MAX_STACK_DEPTH 32
 #define LOCALSTACK_SIZE 2048
 
-#if defined(_MSC_VER) && defined(_WIN32) && defined(_DEBUG)
+#if defined(_MSC_VER) && defined(_WIN32) && defined(DEBUG_BUILD)
 // Uses the Pentium specific opcode RDTSC (ReaD TimeStamp Counter)
 #define TIMESNAP_ACTIVE
 #define TIMESNAP(clock) __asm push eax\
@@ -1171,6 +1171,9 @@ static unsigned int ProgsTimer(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/05/05 17:17:51  sezero
+ * profile save cleanup (and another MAX_OSPATH fix)
+ *
  * Revision 1.3  2005/04/05 19:41:28  sezero
  * Save recorded demos, progs profiles and console debug
  * logs to com_userdir, not com_gamedir. Otherwise these

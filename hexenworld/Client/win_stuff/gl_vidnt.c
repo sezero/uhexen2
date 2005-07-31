@@ -982,7 +982,7 @@ void VID_SetPalette (unsigned char *palette)
 			if (m >= 1000)
 			{
 #if !defined(NO_SPLASHES)
-#ifdef _DEBUG
+#ifdef DEBUG_BUILD
 				sprintf(s, "Done - %d\n", i);
 				OutputDebugString(s);
 #endif

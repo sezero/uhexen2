@@ -61,7 +61,7 @@ void Sys_Error (char *error, ...)
 //	MessageBox(NULL, text, "Error", 0 /* MB_OK */ );
 	printf ("ERROR: %s\n", text);
 
-//#ifdef _DEBUG
+//#ifdef DEBUG_BUILD
 	getch();
 //#endif
 

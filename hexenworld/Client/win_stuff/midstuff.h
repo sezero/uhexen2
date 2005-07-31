@@ -53,7 +53,7 @@
 
 // In debug builds, TRACKERR will show us where the parser died
 //
-#ifdef DEBUG
+#ifdef DEBUG_BUILD
 #define TRACKERR(p,sz) ShowTrackError(p,sz);
 #else
 #define TRACKERR(p,sz)
@@ -120,7 +120,7 @@ typedef struct
     FILEOFF foTrackStart;   // Start of track -- used for walking the file
     FILEOFF foNextReadStart;// File offset of next read from disk
     DWORD   dwLeftOnDisk;   // Bytes left unread on disk
-#ifdef DEBUG
+#ifdef DEBUG_BUILD
     DWORD   nTrack;     // # of this track for debugging
 #endif
 } INTRACKSTATE, *PINTRACKSTATE;

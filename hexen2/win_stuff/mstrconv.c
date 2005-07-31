@@ -1,5 +1,5 @@
 /*
- * $Id: mstrconv.c,v 1.7 2005-07-09 07:22:56 sezero Exp $
+ * $Id: mstrconv.c,v 1.8 2005-07-31 11:13:52 sezero Exp $
  */
 
 #include <windows.h>
@@ -38,7 +38,7 @@ extern BOOL	bLooped;
 // Messages
 //
 static char szInitErrInFile[]	= "Read error on input file or file is corrupt.\n";
-#ifdef DEBUG
+#ifdef DEBUG_BUILD
 static char gteBadRunStat[]	= "Reference to missing running status.";
 static char gteRunStatMsgTrunc[]= "Running status message truncated";
 static char gteChanMsgTrunc[]	= "Channel message truncated";
@@ -59,7 +59,7 @@ static BOOL GetTrackVDWord( PINTRACKSTATE ptsTrack, LPDWORD lpdw );
 static BOOL RefillTrackBuffer( PINTRACKSTATE ptsTrack );
 static BOOL RewindConverter( void );
 
-#ifdef DEBUG
+#ifdef DEBUG_BUILD
 static void ShowTrackError (PINTRACKSTATE ptsTrack, char* szErr);
 #endif
 
@@ -1151,7 +1151,7 @@ static int AddEventToStreamBuffer (PTEMPEVENT pteTemp, CONVERTINFO *lpciInfo)
 }
 
 
-#ifdef DEBUG
+#ifdef DEBUG_BUILD
 static void ShowTrackError (PINTRACKSTATE ptsTrack, LPSTR lpszErr)
 {
 	wsprintf(szTemp, "Track buffer offset %lu",
@@ -1166,6 +1166,9 @@ static void ShowTrackError (PINTRACKSTATE ptsTrack, LPSTR lpszErr)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/07/09 07:22:56  sezero
+ * indentation and whitespace fixes
+ *
  * Revision 1.6  2005/07/09 07:21:13  sezero
  * use zone instead of malloc. other small stuff.
  *
