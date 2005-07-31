@@ -47,12 +47,16 @@ ifndef CC
 CC = gcc
 endif
 LINKER = $(CC)
-CFLAGS = -O2 -march=i586 -DPLATFORM_UNIX \
+
+ifdef DEBUG
+CFLAGS = -DDEBUG_BUILD -g -Wall -DPLATFORM_UNIX
+else
+CFLAGS = -O2 -march=i586 -Wall -DPLATFORM_UNIX \
 	-fomit-frame-pointer -ffast-math -fexpensive-optimizations \
 	-falign-loops=2 -falign-jumps=2 -falign-functions=2
-ifdef DEBUG
-CFLAGS+= -DDEBUG -g -Wall
+
 endif
+
 GAMEFLAGS =
 X11FLAGS = -I/usr/X11R6/include
 SDLFLAGS = `sdl-config --cflags`

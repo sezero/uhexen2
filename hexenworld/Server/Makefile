@@ -9,10 +9,13 @@ ifndef CC
 CC = gcc
 endif
 LINKER = $(CC)
-CFLAGS = -O2 -march=i586 -Wall -DPLATFORM_UNIX
+
 ifdef DEBUG
-CFLAGS += -DDEBUG -g
+CFLAGS = -DDEBUG_BUILD -g -Wall -DPLATFORM_UNIX
+else
+CFLAGS = -O2 -march=i586 -Wall -DPLATFORM_UNIX
 endif
+
 GAMEFLAGS = -DH2W -DSERVERONLY
 SVINCS = -I../Client/ -I.
 SDLFLAG = `sdl-config --cflags`

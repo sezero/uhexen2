@@ -5,10 +5,13 @@ BINARY=hwmaster.exe
 MINGWDIR=/mingw
 CC = gcc
 LINKER = $(CC)
-CFLAGS = -I. -I$(MINGWDIR)/include -O2 -march=i586 -Wall
+
 ifeq "$(DEBUG)" "yes"
-CFLAGS += -g
+CFLAGS = -I. -I$(MINGWDIR)/include -DDEBUG_BUILD -g -Wall
+else
+CFLAGS = -I. -I$(MINGWDIR)/include -O2 -march=i586 -Wall
 endif
+
 LDFLAGS = -L$(MINGWDIR)/lib -lm -lwsock32 -lwinmm -mconsole
 
 %.o: %.c

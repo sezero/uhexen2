@@ -11,16 +11,18 @@ MINGWDIR=/mingw
 AS = nasmw
 CC = gcc
 LINKER = $(CC)
-CFLAGS = -I. -I../w32stuff/dxsdk/inc -I$(MINGWDIR)/include \
-	-O2 -march=i586 -Wall \
+
+ifdef DEBUG
+CFLAGS = -DDEBUG_BUILD -g -Wall
+else
+CFLAGS = -O2 -march=i586 -Wall \
 	-fomit-frame-pointer -ffast-math -fexpensive-optimizations \
 	-falign-loops=2 -falign-jumps=2 -falign-functions=2
-ifdef DEBUG
-CFLAGS+= -DDEBUG -g
+
 endif
+CFLAGS+= -I. -I../w32stuff/dxsdk/inc -I$(MINGWDIR)/include
+
 LDFLAGS = -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mwindows
-#LDFLAGS+= -lcomctl32
-#LDFLAGS+= -mconsole
 GLFLAGS = -lopengl32
 ASFLAGS = -O2 -fwin32 -D__WIN32__ --prefix _
 GAMEFLAGS =

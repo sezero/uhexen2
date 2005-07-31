@@ -7,10 +7,13 @@ ifndef CC
 CC = gcc
 endif
 LINKER = $(CC)
-CFLAGS = -I. -O2 -march=i586 -Wall -DPLATFORM_UNIX
+
 ifeq "$(DEBUG)" "yes"
-CFLAGS += -g
+CFLAGS = -I. -DDEBUG_BUILD -g -Wall -DPLATFORM_UNIX
+else
+CFLAGS = -I. -O2 -march=i586 -Wall -DPLATFORM_UNIX
 endif
+
 LDFLAGS = -lm -lpthread
 LDSTATIC = -lm -lpthread -static
 

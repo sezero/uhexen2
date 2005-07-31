@@ -39,10 +39,13 @@ PROGRAMS = $(H2LAUNCH)
 OBJECTS = main.o config_file.o launch_bin.o \
 	interface.o callbacks.o $(SUPPORT_OBJ)
 
-CFLAGS = -Wall -O2 -march=i586 -I. $(GTK_CFLAGS) -DHOTL_VER=\"$(VERSION)\" -DHOT_VER=\"$(HOT_VERSION)\"
 ifdef DEBUG
-CFLAGS+=-g
+CFLAGS = -Wall -g -DDEBUG_BUILD
+else
+CFLAGS = -Wall -O2 -march=i586
 endif
+CFLAGS+= -I. $(GTK_CFLAGS) -DHOTL_VER=\"$(VERSION)\" -DHOT_VER=\"$(HOT_VERSION)\"
+
 ifdef DEMO
 CFLAGS+=-DDEMOBUILD
 endif

@@ -6,10 +6,13 @@ BINARY=hwsv.exe
 MINGWDIR=/mingw
 CC = gcc
 LINKER = $(CC)
-CFLAGS = -O2 -march=i586 -Wall -I$(MINGWDIR)/include
+
 ifdef DEBUG
-CFLAGS += -DDEBUG -g
+CFLAGS = -DDEBUG_BUILD -g -Wall -I$(MINGWDIR)/include
+else
+CFLAGS = -O2 -march=i586 -Wall -I$(MINGWDIR)/include
 endif
+
 SVINCS = -I../Client/ -I.
 
 GAMEFLAGS = -DH2W -DSERVERONLY
