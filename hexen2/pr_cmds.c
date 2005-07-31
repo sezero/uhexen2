@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.12 2005-07-31 00:45:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.13 2005-07-31 11:11:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -767,10 +767,10 @@ void PF_break (void)
 		DidIt = true;
 
 		Con_Printf ("break statement\n");
-#ifdef PLATFORM_UNIX
-		kill(getpid(), SIGKILL);
-#else
+#ifdef _WIN32
 		DebugBreak();
+#else
+		kill(getpid(), SIGKILL);
 #endif
 		//*(int *)-4 = 0;	// dump to debugger
 	}
@@ -3239,6 +3239,9 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/07/31 00:45:11  sezero
+ * platform defines cleanup
+ *
  * Revision 1.11  2005/07/16 23:23:52  sezero
  * killed fastfabs, not worthy of keeping anymore
  *

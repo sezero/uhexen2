@@ -945,7 +945,6 @@ break()
 */
 void PF_break (void)
 {
-#ifndef PLATFORM_UNIX
 	static qboolean DidIt = false;
 
 	if (!DidIt)
@@ -953,11 +952,14 @@ void PF_break (void)
 		DidIt = true;
 
 		Con_Printf ("break statement\n");
+#ifdef _WIN32
 		DebugBreak();
+#else
+		kill(getpid(), SIGKILL);
+#endif
 		//*(int *)-4 = 0;	// dump to debugger
 	}
 //	PR_RunError ("break statement");
-#endif
 }
 
 /*
