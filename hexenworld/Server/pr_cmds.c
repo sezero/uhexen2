@@ -2,6 +2,9 @@
 #include "qwsvdef.h"
 #ifdef _WIN32
 #include <windows.h>
+#else
+#include <signal.h>
+#include <unistd.h>
 #endif
 
 #define	RETURN_EDICT(e) (((int *)pr_globals)[OFS_RETURN] = EDICT_TO_PROG(e))
