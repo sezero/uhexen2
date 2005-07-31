@@ -1,12 +1,12 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.25 2005-07-09 09:07:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.26 2005-07-31 00:45:11 sezero Exp $
 */
 
 #include "quakedef.h"
 
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 #include <windows.h>
 #else
 #include <unistd.h>
@@ -2307,6 +2307,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2005/07/09 09:07:58  sezero
+ * changed all Hunk_Alloc() usage to Hunk_AllocName() for easier memory usage tracing.
+ *
  * Revision 1.24  2005/07/02 13:12:27  sezero
  * commands.txt and edicts.txt will be saved into com_userdir
  *

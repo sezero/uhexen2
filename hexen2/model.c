@@ -5,13 +5,13 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/model.c,v 1.8 2005-07-16 23:23:52 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/model.c,v 1.9 2005-07-31 00:45:11 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "r_local.h"
 
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 #include <windows.h>
 #endif
 
@@ -2282,6 +2282,9 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/07/16 23:23:52  sezero
+ * killed fastfabs, not worthy of keeping anymore
+ *
  * Revision 1.7  2005/06/05 16:10:15  sezero
  * patches I've been forgetting 3/6:
  * increase MAX_MOD_KNOWN for sofwware version as well

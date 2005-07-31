@@ -2,12 +2,12 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.15 2005-07-23 22:22:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.16 2005-07-31 00:45:10 sezero Exp $
 */
 
 #include "quakedef.h"
 
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 #include <windows.h>
 #else
 #include <dirent.h>
@@ -96,7 +96,7 @@ void CL_ClearState (void)
 void CL_RemoveGIPFiles (char *path)
 {
 	char	name[MAX_OSPATH],tempdir[MAX_OSPATH];
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 	int i;
 	HANDLE handle;
 	WIN32_FIND_DATA filedata;
@@ -165,7 +165,7 @@ void CL_RemoveGIPFiles (char *path)
 
 qboolean CL_CopyFiles(char *source, char *pat, char *dest)
 {
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 	char	name[MAX_OSPATH],tempdir[MAX_OSPATH];
 	HANDLE handle;
 	WIN32_FIND_DATA filedata;
@@ -1009,6 +1009,9 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/07/23 22:22:08  sezero
+ * unified the common funcntions for hexen2-hexenworld
+ *
  * Revision 1.14  2005/06/19 11:23:23  sezero
  * added wheelmouse support and conwidth support to hexen2. changed
  * hexenworld's default behavior of default 640 conwidth to main width

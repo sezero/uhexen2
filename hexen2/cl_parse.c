@@ -2,12 +2,12 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.11 2005-06-15 18:40:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.12 2005-07-31 00:45:11 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "r_shared.h"
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 #include <windows.h>
 #endif
 
@@ -1781,6 +1781,9 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/06/15 18:40:43  sezero
+ * fifth model is for h2mp only and we've been out of bounds for ages here
+ *
  * Revision 1.10  2005/05/29 08:53:57  sezero
  * get rid of silly name changes
  *

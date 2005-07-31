@@ -1347,6 +1347,7 @@ void Host_Init (quakeparms_t *parms)
 	Sbar_Init ();
 	CL_Init ();
 #else
+// _WIN32 version
 	VID_Init (host_basepal);
 	Draw_Init ();
 	SCR_Init ();

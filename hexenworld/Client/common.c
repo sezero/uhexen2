@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.13 2005-07-23 22:22:10 sezero Exp $
+	$Id: common.c,v 1.14 2005-07-31 00:45:12 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -10,7 +10,7 @@
 #else
 #include "quakedef.h"
 #endif
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 #include <windows.h>
 #endif
 

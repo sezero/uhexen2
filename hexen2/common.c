@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.17 2005-07-23 22:22:08 sezero Exp $
+	$Id: common.c,v 1.18 2005-07-31 00:45:11 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -10,7 +10,7 @@
 #else
 #include "quakedef.h"
 #endif
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 #include <windows.h>
 #endif
 
@@ -1922,6 +1922,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/07/23 22:22:08  sezero
+ * unified the common funcntions for hexen2-hexenworld
+ *
  * Revision 1.16  2005/07/15 16:55:31  sezero
  * documented the modified/unmodified detection
  *

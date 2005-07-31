@@ -1,12 +1,12 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.11 2005-07-16 23:23:52 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.12 2005-07-31 00:45:11 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "menu.h"
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 #include <windows.h>
 #else
 #include <signal.h>
@@ -3239,6 +3239,9 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/07/16 23:23:52  sezero
+ * killed fastfabs, not worthy of keeping anymore
+ *
  * Revision 1.10  2005/06/12 07:28:51  sezero
  * clean-up of includes and a fix (hopefully) for endianness detection
  *

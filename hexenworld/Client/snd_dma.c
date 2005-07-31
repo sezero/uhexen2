@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.23 2005-07-22 08:52:54 sezero Exp $
+	$Id: snd_dma.c,v 1.24 2005-07-31 00:45:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -294,7 +294,7 @@ void S_Init (void)
 // =======================================================================
 // Shutdown sound engine
 // =======================================================================
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 extern HINSTANCE hInstDS;
 #endif
 
@@ -312,7 +312,7 @@ void S_Shutdown(void)
 	SNDDMA_Shutdown();
 	shm = NULL;
 
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 	if (hInstDS)
 	{
 		FreeLibrary(hInstDS);
@@ -1102,6 +1102,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/07/22 08:52:54  sezero
+ * I seem to have missed one place for linux-only alsa sound conditionals
+ *
  * Revision 1.22  2005/07/02 11:47:08  sezero
  * Minor cosmetic clean-up in S_Update_() for S_SYS_SDL
  *

@@ -628,7 +628,7 @@ int			net_socket;
 #define	MAX_UDP_PACKET	(MAX_MSGLEN+9)	// one more than msg + header
 byte		net_message_buffer[MAX_UDP_PACKET];
 
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 WSADATA		winsockdata;
 #endif
 
@@ -922,7 +922,7 @@ qboolean NET_GetPacket (void)
 	ret = recvfrom (net_socket,(char *) huffbuff, sizeof(net_message_buffer), 0, (struct sockaddr *)&from, &fromlen);
 	if (ret == -1)
 	{
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 		//int errno = WSAGetLastError();
 		errno = WSAGetLastError();
 
@@ -972,7 +972,7 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 	ret = sendto (net_socket, (char *) huffbuff, outlen, 0, (struct sockaddr *)&addr, sizeof(addr) );
 	if (ret == -1)
 	{
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 		//int errno = WSAGetLastError();
 		errno = WSAGetLastError();
 #endif
@@ -1035,7 +1035,7 @@ NET_Init
 */
 void NET_Init (int port)
 {
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 	WORD	wVersionRequested; 
 	int		r;
 #endif
@@ -1046,7 +1046,7 @@ void NET_Init (int port)
 
 	BuildTree(HuffFreq);
 
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 	wVersionRequested = MAKEWORD(1, 1); 
 
 	r = WSAStartup (MAKEWORD(1, 1), &winsockdata);
@@ -1082,7 +1082,7 @@ NET_Shutdown
 void	NET_Shutdown (void)
 {
 	closesocket (net_socket);
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 	WSACleanup ();
 #endif
 

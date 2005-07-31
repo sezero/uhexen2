@@ -1,6 +1,6 @@
 
 #include "qwsvdef.h"
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 #include <windows.h>
 #else
 #include <dirent.h>
