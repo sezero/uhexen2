@@ -612,7 +612,11 @@ void PrintFreqs(void)
 		for (ix=0; ix<256; ix++)
 		{
 			sprintf(string, "\t%.8f,\n",((float)freqs[ix])/total);
+#ifdef _WIN32
 			OutputDebugString(string);
+#else
+			fprintf(stderr, "%s", string);
+#endif
 		}
 	}
 	ZeroFreq();
@@ -974,10 +978,13 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 
 #ifdef DEBUG_BUILD
 	sprintf(string,"in: %d  out: %d  ratio: %f\n",HuffIn, HuffOut, 1-(float)HuffOut/(float)HuffIn);
+#ifdef _WIN32
 	OutputDebugString(string);
-
-	CalcFreq((unsigned char *)data, length);
+#else
+	fprintf(stderr, "%s", string);
 #endif
+	CalcFreq((unsigned char *)data, length);
+#endif	// DEBUG_BUILD
 
 	ret = sendto (net_socket, (char *) huffbuff, outlen, 0, (struct sockaddr *)&addr, sizeof(addr) );
 	if (ret == -1)
