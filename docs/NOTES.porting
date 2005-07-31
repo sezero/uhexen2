@@ -1,0 +1,44 @@
+
+Draftish notes on porting Hexen II and HexenWorld:
+==================================================
+
+CPU Dependancy:
+------------------
+
+At present, the tree is i386-bound due to some asm code. Many
+of these (quake-origined ones) have their C counterparts, but
+some Raven-Hexen2 specific ones doesn't.
+
+
+Platform defines:
+------------------
+
+_WIN32		:  Code specific to Win32 only.
+
+PLATFORM_UNIX	:  Code specific to Unix only (should be
+		   explicitly defined in the makefiles.)
+
+Throughout the tree, there are instances of code like:
+
+#ifdef _WIN32
+ some Win32 code
+#else
+ some Unix code
+#endif
+
+or:
+
+#ifdef PLATFORM_UNIX
+ some Unix code
+#else
+ some Win32 code
+#endif
+
+... which may become incorrect in future and may need further
+clean-up someday.
+
+Currently our directory structure doesn't have arch separation.
+Instead, wrapper files are used which includes correct platform
+specific files according to some defines. cd_unix.c is one such
+example.
+
