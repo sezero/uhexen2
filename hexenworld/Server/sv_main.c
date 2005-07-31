@@ -18,7 +18,7 @@ double		realtime;				// without any filtering or bounding
 int			host_hunklevel;
 
 netadr_t	master_adr[MAX_MASTERS];	// address of group servers
-netadr_t	idmaster_adr;				// for global logging
+//netadr_t	idmaster_adr;				// for global logging
 
 client_t	*host_client;			// current client
 
@@ -1340,11 +1340,12 @@ void Master_Heartbeat (void)
 			Con_Printf ("Sending heartbeat to %s\n", NET_AdrToString (master_adr[i]));
 			NET_SendPacket (strlen(string), string, master_adr[i]);
 		}
-
+/*
 #ifndef _DEBUG
 	// send to id master
 	NET_SendPacket (strlen(string), string, idmaster_adr);
 #endif
+*/
 }
 
 /*
@@ -1368,11 +1369,12 @@ void Master_Shutdown (void)
 			Con_Printf ("Sending heartbeat to %s\n", NET_AdrToString (master_adr[i]));
 			NET_SendPacket (strlen(string), string, master_adr[i]);
 		}
-
+/*
 	// send to id master
 #ifndef _DEBUG
 	NET_SendPacket (strlen(string), string, idmaster_adr);
 #endif
+*/
 }
 
 /*
@@ -1516,7 +1518,7 @@ void SV_InitNet (void)
 	// heartbeats will allways be sent to the id master
 	svs.last_heartbeat = -99999;		// send immediately
 
-	NET_StringToAdr ("208.135.137.23:26900", &idmaster_adr);
+//	NET_StringToAdr ("208.135.137.23:26900", &idmaster_adr);
 }
 
 
