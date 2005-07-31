@@ -915,6 +915,9 @@ static unsigned char huffbuff[65536];
 qboolean NET_GetPacket (void)
 {
 	int 	ret;
+#ifdef _WIN32
+	int 	err;
+#endif
 	struct sockaddr_in	from;
 	socklen_t		fromlen;
 
@@ -923,15 +926,19 @@ qboolean NET_GetPacket (void)
 	if (ret == -1)
 	{
 #ifdef _WIN32
-		//int errno = WSAGetLastError();
-		errno = WSAGetLastError();
-
-		if (errno == WSAEWOULDBLOCK)
+		err = WSAGetLastError();
+		if (err == WSAEWOULDBLOCK)
+			return false;
+		if (err == WSAEMSGSIZE) {
+			Con_Printf ("Oversize packet from %s\n", NET_AdrToString (net_from));
+			return false;
+		}
+		Sys_Error ("NET_GetPacket: %s", strerror(err));
 #else
-		if (errno == EWOULDBLOCK)
-#endif
+		if (errno == EWOULDBLOCK || errno == ECONNREFUSED)
 			return false;
 		Sys_Error ("NET_GetPacket: %s", strerror(errno));
+#endif
 	}
 
 	SockadrToNetadr (&from, &net_from);
@@ -953,12 +960,15 @@ qboolean NET_GetPacket (void)
 //=============================================================================
 void NET_SendPacket (int length, void *data, netadr_t to)
 {
-	int ret;
-	int outlen;
+	int ret, outlen;
+#ifdef _WIN32
+	int 	err;
+#endif
 	struct sockaddr_in	addr;
 #ifdef _DEBUG
 	char string[120];
 #endif
+
 	NetadrToSockadr (&to, &addr);
 	HuffEncode((unsigned char *)data,huffbuff,length,&outlen);
 
@@ -973,11 +983,15 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 	if (ret == -1)
 	{
 #ifdef _WIN32
-		//int errno = WSAGetLastError();
-		errno = WSAGetLastError();
-#endif
-
+		err = WSAGetLastError();
+		if (err == WSAEWOULDBLOCK)
+			return;
+		Con_Printf ("NET_SendPacket ERROR: %i", err);
+#else
+		if (errno == EWOULDBLOCK || errno == ECONNREFUSED)
+			return;
 		Con_Printf ("NET_SendPacket ERROR: %i", errno);
+#endif
 	}
 }
 

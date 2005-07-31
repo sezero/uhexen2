@@ -642,6 +642,9 @@ void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
 void NET_SendPacket (int length, void *data, netadr_t to)
 {
 	int ret;
+#ifdef _WIN32
+	int err;
+#endif
 	struct sockaddr_in	addr;
 
 	NetadrToSockadr (&to, &addr);
@@ -650,8 +653,7 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 	if (ret == -1)
 	{
 #ifdef _WIN32
-		int err = WSAGetLastError();
-		// wouldblock is silent
+		err = WSAGetLastError();
 		if (err == WSAEWOULDBLOCK)
 #else
 		if (errno == EWOULDBLOCK)
@@ -823,7 +825,7 @@ void SV_ReadPackets (void)
 
 qboolean NET_GetPacket (void)
 {
-	int 	ret;
+	int 	ret, err;
 	struct sockaddr_in	from;
 	socklen_t		fromlen;
 
@@ -834,21 +836,19 @@ qboolean NET_GetPacket (void)
 	if (ret == -1) 
 	{
 #ifdef _WIN32
-		int err = WSAGetLastError();
+		err = WSAGetLastError();
 		if (err == WSAEWOULDBLOCK)
-#else
-		int err = errno;
-		if (err == EWOULDBLOCK)
-#endif
 			return false;
-#ifdef _WIN32
 		if (err == WSAEMSGSIZE) {
 			printf ("Warning:  Oversize packet from %s\n",
 				NET_AdrToString (net_from));
 			return false;
 		}
+#else
+		err = errno;
+		if (err == EWOULDBLOCK)
+			return false;
 #endif
-
 		//Sys_Error ("NET_GetPacket: %s", strerror(err));
 		printf ("Warning:  Unrecognized recvfrom error, error code = %i\n",err);
 		return false;
