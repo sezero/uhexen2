@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.24 2005-06-07 20:32:10 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.25 2005-08-02 18:07:02 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -787,13 +787,11 @@ enum
 	OPT_SNDVOL,	//8
 	OPT_ALWAYRUN,	//9
 	OPT_INVMOUSE,	//10
-	OPT_LOOKSPRING,	//11
-	OPT_LOOKSTRAFE,	//12
+	OPT_ALWAYSMLOOK,//11
+	OPT_USEMOUSE,	//12
 	OPT_CROSSHAIR,	//13
-	OPT_ALWAYSMLOOK,//14
-	OPT_USEMOUSE,	//15
-	OPT_FULLSCREEN,	//16
-	OPT_VIDEO,	//17
+	OPT_FULLSCREEN,	//14
+	OPT_VIDEO,	//15
 	OPTIONS_ITEMS
 };
 
@@ -912,18 +910,6 @@ void M_AdjustSliders (int dir)
 		Cvar_SetValue ("m_pitch", -m_pitch.value);
 		break;
 
-	case OPT_LOOKSPRING:	// lookspring
-		Cvar_SetValue ("lookspring", !lookspring.value);
-		break;
-
-	case OPT_LOOKSTRAFE:	// lookstrafe
-		Cvar_SetValue ("lookstrafe", !lookstrafe.value);
-		break;
-
-	case OPT_CROSSHAIR:
-		Cvar_SetValue ("crosshair", !crosshair.value);
-		break;
-
 	case OPT_ALWAYSMLOOK:
 		if (in_mlook.state & 1)
 			//IN_MLookUp();
@@ -931,6 +917,10 @@ void M_AdjustSliders (int dir)
 		else
 			//IN_MLookDown();
 			Cbuf_AddText("+mlook");
+		break;
+
+	case OPT_CROSSHAIR:
+		Cvar_SetValue ("crosshair", !crosshair.value);
 		break;
 
 	case OPT_VIDEO:
@@ -1024,20 +1014,14 @@ void M_Options_Draw (void)
 	M_Print (16, 60+(OPT_INVMOUSE*8),	"          Invert Mouse");
 	M_DrawCheckbox (220, 60+(OPT_INVMOUSE*8), m_pitch.value < 0);
 
-	M_Print (16, 60+(OPT_LOOKSPRING*8),	"            Lookspring");
-	M_DrawCheckbox (220, 60+(OPT_LOOKSPRING*8), lookspring.value);
-
-	M_Print (16, 60+(OPT_LOOKSTRAFE*8),	"            Lookstrafe");
-	M_DrawCheckbox (220, 60+(OPT_LOOKSTRAFE*8), lookstrafe.value);
-
-	M_Print (16, 60+(OPT_CROSSHAIR*8),	"        Show Crosshair");
-	M_DrawCheckbox (220, 60+(OPT_CROSSHAIR*8), crosshair.value);
-
 	M_Print (16,60+(OPT_ALWAYSMLOOK*8),	"            Mouse Look");
 	M_DrawCheckbox (220, 60+(OPT_ALWAYSMLOOK*8), in_mlook.state & 1);
 
 	M_Print (16, 60+(OPT_USEMOUSE*8),	"             Use Mouse");
 	M_DrawCheckbox (220, 60+(OPT_USEMOUSE*8), _enable_mouse.value);
+
+	M_Print (16, 60+(OPT_CROSSHAIR*8),	"        Show Crosshair");
+	M_DrawCheckbox (220, 60+(OPT_CROSSHAIR*8), crosshair.value);
 
 	M_Print (16, 60+(OPT_FULLSCREEN*8),	"            Fullscreen");
 	M_DrawCheckbox (220, 60+(OPT_FULLSCREEN*8), vid_mode.value);
@@ -1155,8 +1139,6 @@ char *bindnames[][2] =
 {"+lookup", 		"look up"},
 {"+lookdown", 		"look down"},
 {"centerview", 		"center view"},
-{"+mlook", 			"mouse look"},
-{"+klook", 			"keyboard look"},
 {"+moveup",			"swim up"},
 {"+movedown",		"swim down"},
 {"impulse 13", 		"use object"},
