@@ -96,7 +96,7 @@ int TempSoundChannel()
 // PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
 
 static void ParseStream(int type);
-static stream_t *NewStream(int ent, int tag, int *isNew);
+static stream_t *NewStream(int ent, int tag);
 
 void MultiGrenadeThink (explosion_t *ex);
 void MultiGrenadePieceThink (explosion_t *ex);
@@ -482,7 +482,7 @@ void CreateStream(int type, int ent, int flags, int tag, float duration, int ski
 		Sys_Error("CreateStream: bad type");
 	}
 
-	if((stream = NewStream(ent, tag, NULL)) == NULL)
+	if((stream = NewStream(ent, tag)) == NULL)
 	{
 		Con_Printf("stream list overflow\n");
 		return;
@@ -722,7 +722,7 @@ static void ParseStream(int type)
 		Sys_Error("ParseStream: bad type");
 	}
 
-	if((stream = NewStream(ent, tag, NULL)) == NULL)
+	if((stream = NewStream(ent, tag)) == NULL)
 	{
 		Con_Printf("stream list overflow\n");
 		return;
@@ -759,9 +759,9 @@ static void ParseStream(int type)
 //
 //==========================================================================
 
-static stream_t *NewStream(int ent, int tag, int *isNew)
+static stream_t *NewStream(int ent, int tag)
 {
-	int			i;
+	int		i;
 	stream_t	*stream;
 
 	// Search for a stream with matching entity and tag
@@ -769,17 +769,6 @@ static stream_t *NewStream(int ent, int tag, int *isNew)
 	{
 		if(stream->entity == ent && stream->tag == tag)
 		{
-			if(isNew)
-			{
-				if(stream->endTime > cl.time)
-				{
-					*isNew = 0;
-				}
-				else
-				{	// this stream was already used up
-					*isNew = 1;
-				}
-			}
 			return stream;
 		}
 	}
@@ -788,7 +777,6 @@ static stream_t *NewStream(int ent, int tag, int *isNew)
 	{
 		if(!stream->models[0] || stream->endTime < cl.time)
 		{
-			if(isNew)*isNew = 1;
 			return stream;
 		}
 	}
@@ -1757,7 +1745,7 @@ void CL_ParseTEnt (void)
 					{	// make some ice beams...
 						models[0] = Mod_ForName("models/stice.mdl", true);
 
-						if((stream = NewStream(ent, i, NULL)) == NULL)
+						if((stream = NewStream(ent, i)) == NULL)
 						{
 							Con_Printf("stream list overflow\n");
 							return;
@@ -1847,8 +1835,7 @@ void CL_ParseTEnt (void)
 						models[2] = Mod_ForName("models/stsunsf3.mdl", true);
 						models[3] = Mod_ForName("models/stsunsf4.mdl", true);
 
-						//if((stream = NewStream(ent, i, NULL)) == NULL)
-						if((stream = NewStream(ent, i, NULL)) == NULL)
+						if((stream = NewStream(ent, i)) == NULL)
 						{
 							Con_Printf("stream list overflow\n");
 							return;
@@ -1917,7 +1904,7 @@ void CL_ParseTEnt (void)
 					{	// make some lightning
 						models[0] = Mod_ForName("models/stlghtng.mdl", true);
 
-						if((stream = NewStream(ent, i, NULL)) == NULL)
+						if((stream = NewStream(ent, i)) == NULL)
 						{
 							Con_Printf("stream list overflow\n");
 							return;
@@ -2015,7 +2002,7 @@ void CL_ParseTEnt (void)
 					{	// make some lightning
 						models[0] = Mod_ForName("models/stlghtng.mdl", true);
 
-						if((stream = NewStream(ent, i, NULL)) == NULL)
+						if((stream = NewStream(ent, i)) == NULL)
 						{
 							Con_Printf("stream list overflow\n");
 							return;
@@ -2245,7 +2232,7 @@ void CL_ParseTEnt (void)
 					models[2] = Mod_ForName("models/stsunsf3.mdl", true);
 					models[3] = Mod_ForName("models/stsunsf4.mdl", true);
 
-					if((stream = NewStream(ent, 0, NULL)) == NULL)
+					if((stream = NewStream(ent, 0)) == NULL)
 					{
 						Con_Printf("stream list overflow\n");
 						return;
@@ -3333,7 +3320,7 @@ void CL_ParseTEnt (void)
 				{	// make some lightning
 					models[0] = Mod_ForName("models/stlghtng.mdl", true);
 
-					if((stream = NewStream(ent, i, NULL)) == NULL)
+					if((stream = NewStream(ent, i)) == NULL)
 					{
 						Con_Printf("stream list overflow\n");
 						return;
@@ -3461,7 +3448,7 @@ void CL_ParseTEnt (void)
 					// make the connecting lightning...
 					models[0] = Mod_ForName("models/stlghtng.mdl", true);
 
-					if((stream = NewStream(ent, temp, NULL)) == NULL)
+					if((stream = NewStream(ent, temp)) == NULL)
 					{
 						Con_Printf("stream list overflow\n");
 						return;
