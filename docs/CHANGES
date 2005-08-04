@@ -1,5 +1,36 @@
 ChangeLog:
 
+2005-08-04 (CVS, 1.3.0-rc1):
+    * enough changes went in, therefore let's bump the HoT version
+      to 1.3.0, hexen2 engine version to 1.14, hexenworld to 0.16
+    * sound: fixed hexenworld not initializing sound on freebsd
+      (from Steven.)
+    * menu: removed some outdated stuff (lookspring and lookstrafe
+      options and +mlook and +klook key bindings) from the menu
+    * buildsystem: platform defines cleanup
+    * buildsystem: debug defines clean-up
+    * buildsystem: compiler flags for debug builds
+    * buildsystem: added X11FLAGS for X11 includes. should help
+      distros that doesn't have symlinked /usr/X11R6/include/GL as
+      /usr/include/GL
+    * vid: added support for window manager icon using xbm format
+      data. stolen from the quake2 project at icculus, code probably
+      by relnev (Steven Fuller)
+    * hexenworld: tiny update for failure cases of NET_SendPacket
+      and NET_GetPacket
+    * hexenworld: disabled Raven/RJR privilege in rcon validation
+    * hexenworld: disabled idmaster logging
+    * hexenworld: disabled more Raven privileged stuff in SV_Say
+    * hcode: map cycling: renamed map_name to a more intuitive
+      map_next. cleaned up some dprint's.
+    * hcode: killed unused hcode files, moved them to a separate
+      directory for reference
+    * hcode: minor clean-up in hw and siege
+    * code clean-up: tidy up cl_tent.c of hexenworld (from Steve)
+    * code clean-up: probably some other tiny clean-ups.
+    * documentation: added draftish notes on porting. updated
+      all dother documentation.
+
 2005-07-24 (CVS, 1.2.5-pre11):
     * it seems like reducing the number of lightning streams to 8
       is not a good enough workaround for hexenworld client crash:
