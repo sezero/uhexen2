@@ -26,46 +26,47 @@ Hammer of Thyrion 1.3.0
   2.8 Thanks
   2.9 Contact
 
+3. Appendix
+
 
 ----------------------------------------------------------------
 
 
-1. Installation
+1. INSTALLATION
 ---------------
 
 
 1.1 Getting Started
 -------------------
 
-Linux Hexen II requires Hexen II game files updated to version
-1.11 or higher. There are two ways to do this:
+Hexen II requires game-data files updated to version 1.11 or
+higher. There are two ways to do this:
 
 a. Using the installer (easy way):
    The installer will get the files from your original cdroms,
    apply the latest patches (gamedata 1.14) and install the
-   binaries for you. The names of the Hexen2 binaries are:
-
-	hexen2	 -  Software Hexen II
-	glhexen2 -  OpenGL Hexen II
+   binaries for you.
 
    The second option will allow you to install the Mission Pack
    "Portal of Praevus", should you have it. All you need to do
    is choosing the Praevus support check-box and readying your
-   cdrom. The names of the binaries are:
-
-	h2mp	-  Software Portal of Praevus
-	glh2mp	-  OpenGL Portal of Praevus
+   cdrom.
 
    Third option on the installer is HexenWorld Multiplayer
-   support. No cdrom is necessary for this option. Names of
-   the binaries are:
+   support. No cdrom is necessary for this option.
 
-	hwcl	-  HexenWorld Client (software)
-	glhwcl	-  HexenWorld Client (OpenGL)
+   Here are the names of the binaries to be installed:
+
+	hexen2	-  Hexen II (software rendering)
+	glhexen2 - Hexen II (opengl rendering)
+	h2mp	-  Portal of Praevus (software rendering)
+	glh2mp	-  Portal of Praevus (opengl rendering)
+	hwcl	-  HexenWorld Client (software rendering)
+	glhwcl	-  HexenWorld Client (opengl rendering)
 	hwsv	-  HexenWorld Server
 	hwmaster-  HexenWorld Master Server
 
-b. Manual install/update of datafiles (harder way):
+b. Manual install/update of datafiles:
    Copy the "data1" directory from the Hexen2 CD to your Hexen2
    directory, do NOT overwrite what is already provided by the
    HoT packages. Do a " chmod 644 data1/* ". All files should be
@@ -107,20 +108,21 @@ command line. Choose your options and press "Launch Hexen2".
 
 Old school way of running the game: Go into the installation
 directory and run the binary. The default mode is windowed.
-Use "glhexen2 -f" to start the game in full-screen mode. The
-following options are accepted:
+Use the "-f" switch to start the game in full-screen mode.
+
+Here are some of the important command-line switches:
 
  -f | --fullscreen	Run the game fullscreen
  -g | --gllibrary	Select 3D rendering library
- -width Width		Select screen size
- -height Height		Must be used with -width
- -conwidth		Enables a bigger hud display and readable fonts
+ -width   N		Select screen size
+ -height  N		Optional, Must be used with -width
+ -conwidth  N		Enables a bigger hud display and readable fonts
 			at high resolutions. Valid conwidth values are
 			values equal or less than the screen width above,
 			640 is the sanest.
- -bpp			Color depth for GL fullscreen mode
+ -bpp  N		Color depth for GL fullscreen mode
  -nomouse		Disables mouse usage in game
- -heapsize Bytes	Heapsize (memory to allocate)
+ -heapsize  N		Heapsize (memory to allocate, in KB)
  -fsaa N		Enable N sample antialiasing (N: 0,2,4)
  -sync | -vsync		Enable syncing with monitor refresh (GL, Nvidia)
  -paltex		Enable 8-bit textures
@@ -134,14 +136,13 @@ following options are accepted:
 				/dev/cdrom for linux, /dev/acd0 for BSD)
  -nocdaudio		Disable cdrom music
  -nomidi		Disable MIDI music
- -listen N		Enable multiplayer with maximum N players
+ -listen  N		Enable multiplayer with maximum N players
+ -nolan			Disable networking
  -s | -nosound		Run the game without sound
  -v | --version		Display the game version
- -h | --help		Display this help message
+ -h | --help		Display short help message
 
-Others may work, but aren't really supported.
-
-If you wish to brighten the display, you can simply use the menu
+If you wish to brighten the display, simply use the game's menu
 entry. In the unlikely case that it doesn't work for you, you can
 use the "xgamma" utility: Here is the script I use for xgamma:
 
@@ -150,6 +151,9 @@ use the "xgamma" utility: Here is the script I use for xgamma:
     ./glhexen2 -width 800 -height 600 -f -heapsize 48000
 	    			# default heapsize is 32768
     xgamma -q -gamma 1;         # restore old brightness
+
+3dfx Voodoo1 and Voodoo2 users can employ the -3dfxgamma commandline
+switch to activate native 3dfx gamma controls.
 
 
 1.4 Sound Options
@@ -164,8 +168,8 @@ modules. It is compatible with most of the Linux distributions
 but it is known not to work for some people, too. If you use
 the game launcher, select the OSS option from the sound menu.
 If you use command line, no additional arguments are necessary
-for OSS sound. If OSS doesn't work for you, then please try
-the other options below.
+in order to activate OSS sound. If OSS doesn't work for you,
+then please try the other options below.
 
 b. ALSA sound code
 ------------------
@@ -216,23 +220,27 @@ and the ALSA site for alsa-sound support.
 1.6 Networking / Multiplayer
 ----------------------------
 
-Linux Hexen II binaries here WILL NOT play over network with
-Windows Hexen2-1.11 binaries:  Do not try, it simply WON'T.
-However: The mission pack IS compatible across platforms.
+Hammer of Thyrion binaries here WILL NOT play over network with
+Raven's Windows Hexen2 binaries. However, the mission pack is
+network-compatible across platforms. On the other hand we also
+provide Hammer of Thyrion Windows binaries which are fully
+compatible with unix versions.
 
-This has nothing to do with us: Raven didn't give us original
-Hexen2-1.11 source, and the network code had changes during
-the 1.11-1.12 transition. We only have the 1.12 sources.
+This has nothing to do with us: Raven's latest Hexen2 version
+is 1.11, and they didn't give us original 1.11 or older sources.
+The network code had changes during the 1.11-1.12 transition and
+we only have the 1.12 sources.
 
-Deathmatch, TeamPlay, etc:
+    Deathmatch, TeamPlay, etc:
 	- HexenWorld is highly recommended at both sides.
 
-Cooperative games:
+    Cooperative games:
 	- Linux side  : (gl)hexen2 or (gl)h2mp,
 
 	- Windows side: * (gl)h2mp (original CD version), or
-			* jshexen2 executables, or
-			* Pa3pyX' 1.14-1.15 executables
+			* Hammer of Thyrion Windows versions, or
+			* jshexen2,  or
+			* Pa3pyX's Hexen2 1.14-1.15
 
 	should work just fine with each other.
 
@@ -252,7 +260,7 @@ Binary		Windows		Linux	  Game		Status
 ==========	===========	========  ==========	======
 
 *) Recompiles/ports of the source such as the ones from Pa3Pyx
-   or jshexen2, newhexen and such.
+   or Hammer of Thyrion, jshexen2, newhexen and such.
 ==============================================================
 
 
@@ -271,13 +279,13 @@ For the Mission Pack, they are stored under ~/.hexen2/portals/
 -------------------------------------
 
 While playing the game, you can switch between fullscreen and
-windowed modes by pressing ALT + Enter combination, alternatively
+windowed modes by pressing ALT + Enter combination. Alternatively,
 you can use the relevant menu option.
 
 The menu option "Use Mouse" enables/disables mouse usage on the
 fly. While in windowed mode, disabling the mouse ungrabs the mouse
 pointer, so that you can easily use your desktop. You can also
-un-grab/re-grab the mouse pointer by pressing the CTRL + G key
+un-grab/re-grab the mouse pointer by pressing the  CTRL + G  key
 combination whenever you want.
 
 If you're using fluxbox,  the mouse may not start properly when
@@ -287,10 +295,9 @@ use fluxbox, changing into windowed mode and back into fullscreen
 mode should fix the mouse.
 
 ----------------------------------------------------------------
-----------------------------------------------------------------
 
 
-2. Notes
+2. NOTES
 --------
 
 
@@ -353,7 +360,7 @@ You can also override our -fsaa switch if you set Nvidia specific
 environment variable __GL_FSAA_MODE to an appropriate value.  The
 details for this can usually be found in Nvidia's readme file
 (/usr/share/doc/NVIDIA_GLX-1.0/README).  Briefly: Geforce 1 and 2
-use mode 3 or 4, others 1,2,4 or 5.
+use mode 3 or 4, others 1, 2, 4 or 5.
 
 
 2.2 Mods and Crazy Polygons
@@ -364,9 +371,9 @@ player and monster models to be drawn with lines all over the
 place.  To fix this, delete the directory  ~/.hexen2/glhexen
 and/or  ~/.hexen2/portals/glhexen.  When you next run the game,
 it will remake this directory and everything should be fine.
-HoT-1.2.5 and later have fixed this bug, but pre-existing mesh
+HoT-1.3.0 and later have fixed this bug, but pre-existing mesh
 files in those mentioned directories shall still cause this bad
-view, so delete them.  Mods installed after HoT-1.2.5 shall be
+view, so delete them.  Mods installed after HoT-1.3.0 shall be
 fine.
 
 The biggest mod I've seen for Hexen II is the awesome Fortress
@@ -473,3 +480,38 @@ Mega thanks to all the unheralded Doom/Quake/Hexen modders.
 -----------
     Steven Atkinson	<stevenaaus@users.sourceforge.net>
     Ozkan Sezer		<sezero@users.sourceforge.net>
+
+
+
+---------------------------------
+APPENDIX  A.  Some Legacy Options
+---------------------------------
+
+If, while running around, the screen occasionally twitches up
+and down, then you must disable lookspring by using the game
+console or by editing your config.cfg file.
+
+lookspring, lookstrafe and keyboard look (+klook) are legacy
+options for systems without a mouse which we actually didn't
+kill for historical reasons. They are pretty much of no use
+today. If you somehow accidentally enabled them, you most
+probably will need to disable them.
+
+These options and key bindings are removed from the menu system
+as of Hammer of Thyrion 1.3.0.  For reference, here are what
+they are meant to do, as written in the old manuals:
+
+  lookspring:	0 or 1. Returns your view immediately to straight
+		ahead when you release the look up / down key.
+		Otherwise, you must move forward for a step or
+		two before your view snaps back.
+  lookstrafe:	0 or 1. If you are using the look up / down key,
+		then this option causes you to sidestep instead
+		of turn when you try to move left or right.
+  keyboard look: If +klook is bound to a key, press that key to
+		use your movement keys to look up or down.
+  mouse look:	If +mlook is bound to a key, press that key to
+		allow your mouse to look up or down (by sliding
+		it forward and back), and to remain looking up
+		or down even if you move forward.
+
