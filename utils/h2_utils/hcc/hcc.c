@@ -3,7 +3,7 @@
 //**
 //** hcc.c
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/hcc.c,v 1.3 2005-08-05 13:53:27 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/hcc.c,v 1.4 2005-08-05 13:54:52 sezero Exp $
 //**
 //** Hash table modifications based on fastqcc by Jonathan Roy
 //** (roy@atlantic.net).
@@ -786,7 +786,7 @@ int main(int argc, char **argv)
 	{
 		MS_Error("No destination filename.  HCC -help for info.\n");
 	}
-	strcpy(destfile, ms_Token);
+	sprintf(destfile, "%s%s", sourcedir, ms_Token);
 
 	BeginCompilation();
 
@@ -856,7 +856,8 @@ int main(int argc, char **argv)
 	}
 
 	// write progdefs.h
-	crc = PR_WriteProgdefs("progdefs.h");
+	sprintf(filename, "%sprogdefs.h", sourcedir);
+	crc = PR_WriteProgdefs(filename);
 
 	// write data file
 	WriteData(crc);
