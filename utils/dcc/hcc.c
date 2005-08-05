@@ -778,7 +778,7 @@ void PrintFunction (char *name)
 main
 ============
 */
-void main (int argc, char **argv)
+int main (int argc, char **argv)
 {
 	char	*src;
 	char	*src2;
@@ -801,7 +801,7 @@ void main (int argc, char **argv)
 		printf ("to build a clean data tree: qcc -copy <srcdir> <destdir>\n");
 		printf ("to build a clean pak file: qcc -pak <srcdir> <packfile>\n");
 		printf ("to bsp all bmodels: qcc -bspmodels <gamedir>\n");
-		return;
+		exit(0);
 	}
 	
 	p = CheckParm ("-src");
@@ -835,7 +835,7 @@ void main (int argc, char **argv)
 
 		printf ("#define PROGHEADER_CRC %i %d\n", crc,(int)crc);
 		fclose (f);
-		return;
+		exit(0);
 	}
 
 	p = CheckParm ("-dcc");
@@ -847,6 +847,7 @@ void main (int argc, char **argv)
 		p = CheckParm ("-fix");
 		if(p)
 			FILE_NUM_FOR_NAME = 1;
+
 		memset(func_headers,0,MAX_FUNCTIONS*sizeof(char *));
 		memset(temp_val,0,MAX_REGS*sizeof(char *));
 
@@ -860,7 +861,7 @@ void main (int argc, char **argv)
 			printf("largest op %d\n",i); */
 			FindBuiltinParameters(1);
 
-			return;
+			exit(0);
 		}
 
 		p = CheckParm ("-ddd");
@@ -872,7 +873,7 @@ void main (int argc, char **argv)
 					break;
 				DccFunctionOP (atoi(argv[p]));
 			}
-			return;
+			exit(0);
 		}
 
 		p = CheckParm ("-info2");
@@ -886,7 +887,7 @@ void main (int argc, char **argv)
 			printf("globals\n");
 			printf("=======================\n");
 			PrintGlobals ();
-			return;
+			exit(0);
 		}
 
 		p = CheckParm ("-info");
@@ -916,7 +917,7 @@ void main (int argc, char **argv)
 			printf("statements\n");
 			printf("=======================\n");
 			Printstatements();
-			return;
+			exit(0);
 		}
 
 		p = CheckParm ("-asm");
@@ -934,7 +935,7 @@ void main (int argc, char **argv)
 			Dcc_Functions();
 		}
 
-		return;
+		exit(0);
 	}
 
 	sprintf (filename, "%sprogs.src", sourcedir);
@@ -995,4 +996,6 @@ void main (int argc, char **argv)
 
 	stop = I_FloatTime ();
 	printf ("%i seconds elapsed.\n", (int)(stop-start));
+
+	exit(0);
 }

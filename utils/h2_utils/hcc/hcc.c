@@ -3,7 +3,7 @@
 //**
 //** hcc.c
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/hcc.c,v 1.2 2005-04-14 07:43:14 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/hcc.c,v 1.3 2005-08-05 13:53:27 sezero Exp $
 //**
 //** Hash table modifications based on fastqcc by Jonathan Roy
 //** (roy@atlantic.net).
@@ -720,7 +720,7 @@ void PrintFunction (char *name)
 //
 //==========================================================================
 
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	char *src;
 	char *src2;
@@ -747,7 +747,7 @@ void main(int argc, char **argv)
 		printf(" -fileinfo        : Show object sizes per file\n");
 		printf(" -src <directory> : Specify source directory\n");
 		printf(" -name <source>   : Specify the name of the .src file\n");
-		return;
+		exit(0);
 	}
 
 	p = MS_CheckParm("-src");
@@ -869,4 +869,6 @@ void main(int argc, char **argv)
 
 	stop = MS_GetTime();
 	printf("\n%d seconds elapsed.\n", (int)(stop-start));
+
+	exit(0);
 }
