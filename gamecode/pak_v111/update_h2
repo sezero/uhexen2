@@ -1,0 +1,18 @@
+#!/bin/sh
+
+echo ""
+echo "=============================================================="
+echo "Hexen2 game data update 1.12h for HoT-1.2.4:"
+echo "This will patch Hexen2 PAK files (cdrom-1.03 version) to 1.11,"
+echo "which is a required update by Raven/Activision."
+echo -n "Would you like to apply this update? [Y/n]: "
+read answer
+case $answer in
+   [Nn]*)
+       ;;
+   *)
+       ./loki_patch h2_103_111.dat .
+   ;;
+esac
+
+echo "                "

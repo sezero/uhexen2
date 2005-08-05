@@ -1,0 +1,6 @@
+This directory contains hexen2 pak files 1.03 (cdrom) version
+to 1.11 version binary patches. You need loki_patch or xdelta
+1.13 in order to use them. The included "update_h2" script and
+the associated .dat file are for a loki_patch version posted
+on Hammer of Thyrion page. The original loki_patch CVS is at
+http://icculus.org ( http://cvs.icculus.org/cvs/ )
