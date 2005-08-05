@@ -3,7 +3,7 @@
 //**
 //** comp.c
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/pr_comp.c,v 1.1.1.1 2005-03-19 09:30:13 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/pr_comp.c,v 1.2 2005-08-05 13:56:08 sezero Exp $
 //**
 //**************************************************************************
 
@@ -60,6 +60,7 @@ def_t *pr_global_defs[MAX_REGS];	// to find def for a global variable
 def_t *pr_scope; // the function being parsed, or NULL
 
 string_t s_file; // filename for function definition
+int srcdir_len = 0; // length of source directory string
 
 int locals_end; // for tracking local variables vs temps
 
@@ -297,7 +298,9 @@ qboolean CO_CompileFile(char *fileText, char *fileName)
 
 	FrameIndex = -1;
 	inProgress = false;
-	s_file = CopyString(fileName);
+	//s_file = CopyString(fileName);
+	// no need to write source directory name into strings
+	s_file = CopyString(fileName+srcdir_len);
 
 	// Ugly hack to prevent longjmp failure from within
 	// LX_NewSourceFile().

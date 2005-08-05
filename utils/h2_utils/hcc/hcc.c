@@ -3,7 +3,7 @@
 //**
 //** hcc.c
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/hcc.c,v 1.4 2005-08-05 13:54:52 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/hcc.c,v 1.5 2005-08-05 13:56:08 sezero Exp $
 //**
 //** Hash table modifications based on fastqcc by Jonathan Roy
 //** (roy@atlantic.net).
@@ -28,6 +28,8 @@ static void BeginCompilation(void);
 static qboolean FinishCompilation(void);
 
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
+
+extern int srcdir_len;
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
@@ -756,6 +758,7 @@ int main(int argc, char **argv)
 		strcpy(sourcedir, argv[p+1]);
 		strcat(sourcedir, "/");
 		printf("Source directory: %s\n", sourcedir);
+		srcdir_len = strlen(sourcedir);
 	}
 	else
 	{
