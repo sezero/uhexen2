@@ -131,27 +131,6 @@ explosion_t		cl_explosions[MAX_EXPLOSIONS];
 
 static stream_t cl_Streams[MAX_STREAMS];
 
-#warning FIX THIS BROKEN StreamEntities CODE
-/* This StreamEntities seems unused, but its absence somehow results
-   in broken code for lightning streams, such as TE_SWORD_EXPLOSION,
-   TE_LIGHTNING_HAMMER and TE_LIGHTNINGEXPLODE (all of them have
-   stream->type = TE_STREAM_LIGHTNING in common.)
-
-   Original value of 10 streams causes a crash for TE_LIGHTNINGEXPLODE
-   (lightning ball of succubus hitting somewhere) either with gcc4, or
-   with any gcc and StreamEntities removed. If I increase the number of
-   other types of lightning streams, the same thing happens: hammer of
-   the Crusader and the sword of the Paladin behave similarly.  Even 8
-   streams can crash the game for TE_LIGHTNINGEXPLODE if compiled with
-   gcc4 (it must be optimizing away this unused decl.), such as when
-   there are beams on the scene.
-   On the other hand, if compiled with gcc3 and with this StreamEntities
-   thing in place, the client seems to survive even up to 20 streams.
-   I don't know the reason for this yet.
-*/
-static entity_t StreamEntities[MAX_STREAM_ENTITIES];
-//static int StreamEntityCount;
-
 static int		MultiGrenadeCurrentChannel;
 
 //sfx_t			*cl_sfx_wizhit;
@@ -3315,8 +3294,7 @@ void CL_ParseTEnt (void)
 					S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning2, pos, 1, 1);
 				}
 
-				//for (i = 0; i < 10; i++)
-				for (i = 0; i < 8; i++)
+				for (i = 0; i < 10; i++)
 				{	// make some lightning
 					models[0] = Mod_ForName("models/stlghtng.mdl", true);
 
@@ -3692,7 +3670,7 @@ void CL_UpdateExplosions (void)
 
 void CL_UpdateStreams(void)
 {
-	int		i, offset, segmentCount;
+	int		i, j, offset, segmentCount;
 	stream_t	*stream;
 	vec3_t		dist, org, discard, right, up;
 	float		cosTime = 0.0, sinTime = 0.0;	// init to 0, make compiler happy
@@ -3702,7 +3680,6 @@ void CL_UpdateStreams(void)
 	entity_state_t	*state;
 
 	// Update streams
-//	StreamEntityCount = 0;
 	for(i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
 	{
 		if(!stream->models[0])// || stream->endTime < cl.time)
@@ -3776,9 +3753,9 @@ void CL_UpdateStreams(void)
 		if(stream->type == TE_STREAM_ICECHUNKS)
 		{
 			offset = (int)(cl.time*40)%30;
-			for(i = 0; i < 3; i++)
+			for(j = 0; j < 3; j++)
 			{
-				org[i] += dist[i]*offset;
+				org[j] += dist[j]*offset;
 			}
 		}
 		while(d > 0)
@@ -3845,7 +3822,7 @@ void CL_UpdateStreams(void)
 				VectorMA(ent->origin, cos2Time * (40 * lifeTime), right,  ent->origin);
 				VectorMA(ent->origin, sin2Time * (40 * lifeTime), up,  ent->origin);
 
-				for(i = 0; i < 2; i++)
+				for(j = 0; j < 2; j++)
 				{
 					ent = CL_NewTempEntity();
 					if(!ent)
@@ -3924,43 +3901,13 @@ void CL_UpdateStreams(void)
 				ent->abslight = 128;
 				ent->frame = rand()%5;
 				break;
-
-/*				ent->angles[2] = (int)(cl.time*80)%360;
-				ent->origin[0] += (rand()%4)-2;
-				ent->origin[1] += (rand()%4)-2;
-				ent->origin[2] += (rand()%4)-2;
-				ent->frame = segmentCount%4;
-				ent->drawflags = MLS_ABSLIGHT;
-				ent->abslight = 128;
-				if((rand()&255) > 128)
-				{
-					break;
-				}
-				ent = NewStreamEntity();
-				if(!ent)
-				{
-					return;
-				}
-				VectorCopy(org, ent->origin);
-				ent->model = stream->models[0];
-				ent->angles[0] = pitch;
-				ent->angles[1] = yaw;
-				ent->angles[2] = rand()%360;
-				ent->origin[0] += (rand()%20)-10;
-				ent->origin[1] += (rand()%20)-10;
-				ent->origin[2] += (rand()%20)-10;
-				ent->frame = 4+(rand()&1);
-				ent->drawflags = MLS_ABSLIGHT;
-				ent->abslight = 128;
-				break;
-*/
 			default:
 				ent->angles[2] = 0;
 			}
 
-			for(i = 0; i < 3; i++)
+			for(j = 0; j < 3; j++)
 			{
-				org[i] += dist[i]*30;
+				org[j] += dist[j]*30;
 			}
 			d -= 30;
 			segmentCount++;
