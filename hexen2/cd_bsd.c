@@ -1,6 +1,6 @@
 /*
 	cd_bsd.c
-	$Id: cd_bsd.c,v 1.5 2005-07-23 08:53:21 sezero Exp $
+	$Id: cd_bsd.c,v 1.6 2005-08-07 10:57:14 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	A few BSD bits taken from the Dark Places project for Hammer
@@ -422,6 +422,8 @@ int CDAudio_Init(void)
 	initialized = true;
 	enabled = true;
 
+	Con_Printf("CDAudio initialized (using BSD ioctls)\n");
+
 	if (CDAudio_GetAudioDiskInfo())
 	{
 		Con_Printf("CDAudio_Init: No CD in drive\n");
@@ -429,8 +431,6 @@ int CDAudio_Init(void)
 	}
 
 	Cmd_AddCommand ("cd", CD_f);
-
-	Con_Printf("CD Audio Initialized\n");
 
 	// get drives volume
 	if (ioctl(cdfile, CDIOCGETVOL, &drv_vol0) == -1) {

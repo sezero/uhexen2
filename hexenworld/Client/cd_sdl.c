@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.1 2005-06-12 14:02:12 sezero Exp $
+	$Id: cd_sdl.c,v 1.2 2005-08-07 10:57:27 sezero Exp $
 
 	Copyright (C) 2001  Mark Baker <homer1@together.net>
 	Taken from SDLquake with modifications to make it work
@@ -287,6 +287,8 @@ int CDAudio_Init(void)
 	enabled = true;
 	cdValid = true;
 
+	Con_Printf("CDAudio initialized (using SDL)\n");
+
 	if (!CD_INDRIVE(SDL_CDStatus(cd_id)))
 	{
 		Con_Printf("CDAudio_Init: No CD in drive\n");
@@ -300,8 +302,6 @@ int CDAudio_Init(void)
 	}
 
 	Cmd_AddCommand ("cd", CD_f);
-
-	Con_Printf("CD Audio Initialized\n");
 
 	return 0;
 }
