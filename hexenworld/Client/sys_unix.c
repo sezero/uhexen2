@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.29 2005-07-30 15:19:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.30 2005-08-07 10:59:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -63,29 +63,6 @@ FILE IO
 
 ===============================================================================
 */
-
-int	Sys_FileTime (char *path)
-{
-	FILE	*f;
-	int		t, retval;
-
-	t = VID_ForceUnlockedAndReturnState ();
-	
-	f = fopen(path, "rb");
-
-	if (f)
-	{
-		fclose(f);
-		retval = 1;
-	}
-	else
-	{
-		retval = -1;
-	}
-	
-	VID_ForceLockState (t);
-	return retval;
-}
 
 int Sys_mkdir (char *path)
 {
@@ -408,6 +385,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2005/07/30 15:19:13  sezero
+ * insignificant cosmetics
+ *
  * Revision 1.28  2005/07/23 22:22:10  sezero
  * unified the common funcntions for hexen2-hexenworld
  *

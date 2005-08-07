@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.14 2005-07-31 00:45:12 sezero Exp $
+	$Id: common.c,v 1.15 2005-08-07 10:59:06 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -11,7 +11,10 @@
 #include "quakedef.h"
 #endif
 #ifdef _WIN32
+#include <io.h>
 #include <windows.h>
+#else
+#include <unistd.h>
 #endif
 
 #define NUM_SAFE_ARGVS	6
@@ -1213,7 +1216,6 @@ int COM_FOpenFile (char *filename, FILE **file, qboolean override_pack)
 	char		netpath[MAX_OSPATH];
 	pack_t		*pak;
 	int			i;
-	int			findtime;
 
 	file_from_pak = 0;
 
@@ -1256,9 +1258,7 @@ int COM_FOpenFile (char *filename, FILE **file, qboolean override_pack)
 #endif	// !H2W
 
 			sprintf (netpath, "%s/%s",search->filename, filename);
-
-			findtime = Sys_FileTime (netpath);
-			if (findtime == -1)
+			if (access(netpath, R_OK) == -1)
 				continue;
 
 			*file = fopen (netpath, "rb");

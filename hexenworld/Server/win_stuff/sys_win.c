@@ -10,25 +10,6 @@ cvar_t	sys_nostdout = {"sys_nostdout","0"};
 
 /*
 ================
-Sys_FileTime
-================
-*/
-int	Sys_FileTime (char *path)
-{
-	FILE	*f;
-
-	f = fopen(path, "rb");
-	if (f)
-	{
-		fclose(f);
-		return 1;
-	}
-
-	return -1;
-}
-
-/*
-================
 Sys_mkdir
 ================
 */

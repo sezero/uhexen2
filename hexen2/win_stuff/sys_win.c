@@ -92,29 +92,6 @@ FILE IO
 ===============================================================================
 */
 
-int	Sys_FileTime (char *path)
-{
-	FILE	*f;
-	int		t, retval;
-
-	t = VID_ForceUnlockedAndReturnState ();
-	
-	f = fopen(path, "rb");
-
-	if (f)
-	{
-		fclose(f);
-		retval = 1;
-	}
-	else
-	{
-		retval = -1;
-	}
-	
-	VID_ForceLockState (t);
-	return retval;
-}
-
 int Sys_mkdir (char *path)
 {
 	int rc;
@@ -744,6 +721,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/07/23 22:22:10  sezero
+ * unified the common funcntions for hexen2-hexenworld
+ *
  * Revision 1.14  2005/06/19 11:23:23  sezero
  * added wheelmouse support and conwidth support to hexen2. changed
  * hexenworld's default behavior of default 640 conwidth to main width

@@ -2,11 +2,16 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.10 2005-05-29 08:53:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.11 2005-08-07 10:59:05 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "r_local.h"
+#ifdef _WIN32
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
 
 // only the refresh window will be updated unless these variables are flagged 
 int			scr_copytop;
@@ -745,7 +750,7 @@ void SCR_ScreenShot_f (void)
 		pcxname[11] = i/10 + '0'; 
 		pcxname[12] = i%10 + '0'; 
 		sprintf (checkname, "%s/%s", com_userdir, pcxname);
-		if (Sys_FileTime(checkname) == -1)
+		if (access(checkname, F_OK) == -1)
 			break;	// file doesn't exist
 	} 
 	if (i==100) 
@@ -1464,6 +1469,9 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/05/29 08:53:57  sezero
+ * get rid of silly name changes
+ *
  * Revision 1.9  2005/05/22 11:51:00  sezero
  * changed default viewsize to 110
  *

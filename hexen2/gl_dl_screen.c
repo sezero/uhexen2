@@ -2,10 +2,15 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_dl_screen.c,v 1.15 2005-07-17 15:19:34 sezero Exp $
+	$Id: gl_dl_screen.c,v 1.16 2005-08-07 10:59:05 sezero Exp $
 */
 
 #include "quakedef.h"
+#ifdef _WIN32
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
 
 /*
 
@@ -699,7 +704,7 @@ void SCR_ScreenShot_f (void)
 		pcxname[11] = i/10 + '0';
 		pcxname[12] = i%10 + '0';
 		sprintf (checkname, "%s/%s", com_userdir, pcxname);
-		if (Sys_FileTime(checkname) == -1)
+		if (access(checkname, F_OK) == -1)
 			break;	// file doesn't exist
 	}
 	if (i==100)
@@ -1267,6 +1272,12 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/07/17 15:19:34  sezero
+ * added crosshair 2 support of hexenworld to hexen2.
+ * gl versions issue, that crosshair 2 won't show-up
+ * without a proper low conwidth, still remains to be
+ * solved.
+ *
  * Revision 1.14  2005/07/09 07:29:40  sezero
  * use hunk instead of malloc
  *

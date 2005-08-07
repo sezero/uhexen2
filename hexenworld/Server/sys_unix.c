@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.6 2005-07-30 15:19:14 sezero Exp $
+	$Id: sys_unix.c,v 1.7 2005-08-07 10:59:18 sezero Exp $
 
 	Unix system interface code
 */
@@ -31,25 +31,6 @@ int Sys_GetUserdir (char *buff, unsigned int len)
 
 	sprintf (buff, "%s/%s", getenv("HOME"), AOT_USERDIR);
 	return Sys_mkdir(buff);
-}
-
-/*
-================
-Sys_FileTime
-================
-*/
-int	Sys_FileTime (char *path)
-{
-	FILE	*f;
-
-	f = fopen(path, "rb");
-	if (f)
-	{
-		fclose(f);
-		return 1;
-	}
-
-	return -1;
 }
 
 /*

@@ -62,29 +62,6 @@ FILE IO
 ===============================================================================
 */
 
-int	Sys_FileTime (char *path)
-{
-	FILE	*f;
-	int		t, retval;
-
-	t = VID_ForceUnlockedAndReturnState ();
-	
-	f = fopen(path, "rb");
-
-	if (f)
-	{
-		fclose(f);
-		retval = 1;
-	}
-	else
-	{
-		retval = -1;
-	}
-	
-	VID_ForceLockState (t);
-	return retval;
-}
-
 int Sys_mkdir (char *path)
 {
 	int rc;

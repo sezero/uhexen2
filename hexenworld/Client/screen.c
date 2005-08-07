@@ -2,6 +2,11 @@
 
 #include "quakedef.h"
 #include "r_local.h"
+#ifdef _WIN32
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
 
 /*
 
@@ -688,7 +693,7 @@ void SCR_ScreenShot_f (void)
 		pcxname[8] = i/10 + '0'; 
 		pcxname[9] = i%10 + '0'; 
 		sprintf (checkname, "%s/%s", com_userdir, pcxname);
-		if (Sys_FileTime(checkname) == -1)
+		if (access(checkname, F_OK) == -1)
 			break;	// file doesn't exist
 	} 
 	if (i==100) 
