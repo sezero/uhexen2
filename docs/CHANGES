@@ -1,5 +1,13 @@
 ChangeLog:
 
+2005-08-08 (CVS, 1.3.0-rc2):
+    * Fixed the longstanding StreamEntities crash bug: the compiler
+      should have been picking up inappropriate nested loops. Steve,
+      you are the man ;)
+    * Updated cdaudio init messages
+    * Killed the Sys_FileTime crap. now using the standart access()
+      function
+
 2005-08-05 (CVS, 1.3.0-rc1):
     * hcc: made main's return type int.
     * hcc: made progs.dat and progdefs.h filenames honor -src option.
