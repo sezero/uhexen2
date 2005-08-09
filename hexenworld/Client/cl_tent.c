@@ -3830,7 +3830,7 @@ void CL_UpdateStreams(void)
 						return;
 					}
 					VectorCopy(org, ent->origin);
-					if(i)
+					if(j)
 					{
 						VectorMA(ent->origin, cos2Time * (40 * lifeTime), right,  ent->origin);
 						VectorMA(ent->origin, sin2Time * (40 * lifeTime), up,  ent->origin);
