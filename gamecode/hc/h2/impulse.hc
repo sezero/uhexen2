@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/impulse.hc,v 1.1.1.1 2004-11-29 11:38:52 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/impulse.hc,v 1.2 2005-08-09 09:11:54 sezero Exp $
  */
 
 void PlayerAdvanceLevel(float NewLevel);
@@ -246,9 +246,9 @@ void() ImpulseCommands =
 		dprintf("Serverflags are now: %s\n",serverflags);
 //	else if (self.impulse >149 && self.impulse <157)
 //		AddServerFlag(self.impulse - 149);
-//   else if (self.impulse == 21 )  // To activate torch
+//	else if (self.impulse == 21 )  // To activate torch
 //		UseTorch ();
-   else if (self.impulse == 23 )  // To use inventory item
+	else if (self.impulse == 23 )  // To use inventory item
 		UseInventoryItem ();
 	else if(self.impulse==33)
 		see_coop_view();
@@ -256,59 +256,51 @@ void() ImpulseCommands =
 		PanicButton();
 /*	else if (self.impulse == 27)//Uncomment this for a good time!
 		MakeCamera();*/
-/*	else if (self.impulse == 34)
-	{  // rjr - extremely temp - just for debugging purposes only
-		sprint(self,"Puzzle Inventory: [ ");
-		if (self.puzzle_inv1) 
+	else if (self.impulse == 34)
+	{	// S.A listing puzzle inventory is a good idea
+		sprint(self,"Puzzle Inventory: ");
+		if (self.puzzle_inv1)
 		{
-			sprint(self,"(");
 			sprint(self,self.puzzle_inv1);
-			sprint(self,")");
+			sprint(self," ");
 		}
-		if (self.puzzle_inv2) 
+		if (self.puzzle_inv2)
 		{
-			sprint(self,"(");
 			sprint(self,self.puzzle_inv2);
-			sprint(self,")");
+			sprint(self," ");
 		}
-		if (self.puzzle_inv3) 
+		if (self.puzzle_inv3)
 		{
-			sprint(self,"(");
 			sprint(self,self.puzzle_inv3);
-			sprint(self,")");
+			sprint(self," ");
 		}
-		if (self.puzzle_inv4) 
+		if (self.puzzle_inv4)
 		{
-			sprint(self,"(");
 			sprint(self,self.puzzle_inv4);
-			sprint(self,")");
+			sprint(self," ");
 		}
-		if (self.puzzle_inv5) 
+		if (self.puzzle_inv5)
 		{
-			sprint(self,"(");
 			sprint(self,self.puzzle_inv5);
-			sprint(self,")");
+			sprint(self," ");
 		}
-		if (self.puzzle_inv6) 
+		if (self.puzzle_inv6)
 		{
-			sprint(self,"(");
 			sprint(self,self.puzzle_inv6);
-			sprint(self,")");
+			sprint(self," ");
 		}
-		if (self.puzzle_inv7) 
+		if (self.puzzle_inv7)
 		{
-			sprint(self,"(");
 			sprint(self,self.puzzle_inv7);
-			sprint(self,")");
+			sprint(self," ");
 		}
-		if (self.puzzle_inv8) 
+		if (self.puzzle_inv8)
 		{
-			sprint(self,"(");
 			sprint(self,self.puzzle_inv8);
-			sprint(self,")");
+			sprint(self," ");
 		}
-		sprint(self," ] \n");
-	}*/
+		sprint(self,"\n");
+	}
 	else if (self.impulse==35&&skill<3)
 	{
 		search = nextent(world);
@@ -574,6 +566,9 @@ void() ImpulseCommands =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:38:52  sezero
+ * Initial import
+ *
  * 
  * 123   10/23/97 11:38a Mgummelt
  * 

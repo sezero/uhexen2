@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/impulse.hc,v 1.1.1.1 2004-11-29 11:32:58 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/impulse.hc,v 1.2 2005-08-09 09:11:57 sezero Exp $
  */
 
 void PlayerAdvanceLevel(float NewLevel);
@@ -364,7 +364,7 @@ void() ImpulseCommands =
 			self.flags2(+)FL2_TEST_TRACE;
 	else if (self.impulse == 99)
 		ClientKill();
-   else if (self.impulse == 23 )  // To use inventory item
+	else if (self.impulse == 23 )  // To use inventory item
 		UseInventoryItem ();
 	else if(self.impulse==33)
 	{
@@ -379,59 +379,51 @@ void() ImpulseCommands =
 		ToggleChaseCam(self);
 	else if (self.impulse == 28&&(!coop)&&(!deathmatch))
 		makeplayer();
-/*	else if (self.impulse == 34)
-	{  // rjr - extremely temp - just for debugging purposes only
-		sprint(self,"Puzzle Inventory: [ ");
-		if (self.puzzle_inv1) 
+	else if (self.impulse == 34)
+	{	// S.A listing puzzle inventory is a good idea
+		sprint(self,"Puzzle Inventory: ");
+		if (self.puzzle_inv1)
 		{
-			sprint(self,"(");
 			sprint(self,self.puzzle_inv1);
-			sprint(self,")");
+			sprint(self," ");
 		}
-		if (self.puzzle_inv2) 
+		if (self.puzzle_inv2)
 		{
-			sprint(self,"(");
 			sprint(self,self.puzzle_inv2);
-			sprint(self,")");
+			sprint(self," ");
 		}
-		if (self.puzzle_inv3) 
+		if (self.puzzle_inv3)
 		{
-			sprint(self,"(");
 			sprint(self,self.puzzle_inv3);
-			sprint(self,")");
+			sprint(self," ");
 		}
-		if (self.puzzle_inv4) 
+		if (self.puzzle_inv4)
 		{
-			sprint(self,"(");
 			sprint(self,self.puzzle_inv4);
-			sprint(self,")");
+			sprint(self," ");
 		}
-		if (self.puzzle_inv5) 
+		if (self.puzzle_inv5)
 		{
-			sprint(self,"(");
 			sprint(self,self.puzzle_inv5);
-			sprint(self,")");
+			sprint(self," ");
 		}
-		if (self.puzzle_inv6) 
+		if (self.puzzle_inv6)
 		{
-			sprint(self,"(");
 			sprint(self,self.puzzle_inv6);
-			sprint(self,")");
+			sprint(self," ");
 		}
-		if (self.puzzle_inv7) 
+		if (self.puzzle_inv7)
 		{
-			sprint(self,"(");
 			sprint(self,self.puzzle_inv7);
-			sprint(self,")");
+			sprint(self," ");
 		}
-		if (self.puzzle_inv8) 
+		if (self.puzzle_inv8)
 		{
-			sprint(self,"(");
 			sprint(self,self.puzzle_inv8);
-			sprint(self,")");
+			sprint(self," ");
 		}
-		sprint(self," ] \n");
-	}*/
+		sprint(self,"\n");
+	}
 	else if (self.impulse==35&&skill<3)
 	{
 		search = nextent(world);
@@ -764,6 +756,9 @@ void() ImpulseCommands =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:32:58  sezero
+ * Initial import
+ *
  * 
  * 32    3/27/98 2:14p Mgummelt
  * Sheephunt fix
