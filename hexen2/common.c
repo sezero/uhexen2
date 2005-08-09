@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.19 2005-08-07 10:59:04 sezero Exp $
+	$Id: common.c,v 1.20 2005-08-09 15:39:28 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1477,14 +1477,6 @@ void COM_AddGameDirectory (char *dir)
 	strcpy (com_gamedir, dir);
 
 //
-// add the directory to the search path
-//
-	search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
-	strcpy (search->filename, dir);
-	search->next = com_searchpaths;
-	com_searchpaths = search;
-
-//
 // add any pak files in the format pak0.pak pak1.pak, ...
 //
 	for (i=0 ; i < 10; i++)
@@ -1500,6 +1492,18 @@ void COM_AddGameDirectory (char *dir)
 		search->next = com_searchpaths;
 		com_searchpaths = search;
 	}
+
+//
+// add the directory to the search path
+// O.S: this needs to be done ~after~ adding the pakfiles in this dir, so
+// that the dir itself will be placed above the pakfiles in the search order
+// which, in turn, will allow override files: this way, data1/default.cfg
+// will be opened instead of data1/pak0.pak:/default.cfg
+//
+	search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
+	strcpy (search->filename, dir);
+	search->next = com_searchpaths;
+	com_searchpaths = search;
 
 //
 // add user's directory to the search path
@@ -1922,6 +1926,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2005/08/07 10:59:04  sezero
+ * killed the Sys_FileTime crap. now using standart access() function.
+ *
  * Revision 1.18  2005/07/31 00:45:11  sezero
  * platform defines cleanup
  *
