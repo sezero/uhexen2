@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/weapons.hc,v 1.1.1.1 2004-11-29 11:41:01 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/weapons.hc,v 1.2 2005-08-09 09:02:26 sezero Exp $
  */
 /*
 */
@@ -850,109 +850,90 @@ void() CheatCommand =
 };
 
 /*
+the cycle weapon commands fixed by S.A.
 ============
 CycleWeaponCommand
-
 Go to the next weapon with ammo
 ============
 */
 void() CycleWeaponCommand =
 {
-float	it, am;
-
+	float	am,fl;
 	if(self.attack_finished>time)
 		return;
-
 	self.impulse = 0;
-
 	self.items (+) IT_WEAPON1;
-	it = self.items;
-
-	while (1)
+	am = 1;
+	fl = self.weapon;
+	while (am)
 	{
-		am = 0;
-
-		if (self.weapon == IT_WEAPON4)
+		if (fl == IT_WEAPON1)
 		{
-			self.weapon = IT_WEAPON1;
+			fl = IT_WEAPON2;
 		}
-		else if (self.weapon == IT_WEAPON1)
+		else if (fl == IT_WEAPON2)
 		{
-			self.weapon = IT_WEAPON2;
-			if (self.bluemana < 1)
-			{
-				if (self.playerclass != CLASS_PALADIN)
-					am = 1;
-			}
+			fl = IT_WEAPON3;
 		}
-		else if (self.weapon == IT_WEAPON2)
+		else if (fl == IT_WEAPON3)
 		{
-			self.weapon = IT_WEAPON3;
-			if (self.greenmana < 1)
-				am = 1;
+			fl = IT_WEAPON4;
 		}		
-		else if (self.weapon == IT_WEAPON3)
+		else if (fl == IT_WEAPON4)
 		{
-			self.weapon = IT_WEAPON4;
-			if ((self.bluemana < 1) || (self.greenmana<1))
-				am = 1;
+			fl = IT_WEAPON1;
 		}
-	
-		if ((it & self.weapon) && am == 0)
+		if ((self.items & fl) && ((W_CheckNoAmmo(fl))||((self.playerclass == CLASS_PALADIN)&&(fl==IT_WEAPON2))))
 		{
-			W_SetCurrentWeapon ();
-			return;
+			am = 0;
 		}
 	}
-
+	self.weapon = fl;
+	
+	W_SetCurrentWeapon ();
+	return;
 };
-
 /*
 ============
 CycleWeaponReverseCommand
-
 Go to the prev weapon with ammo
 ============
 */
 void() CycleWeaponReverseCommand =
 {
-	local	float	it, am;
-	
-	it = self.items;
+	float	am,fl;
+	if(self.attack_finished>time)
+		return;
 	self.impulse = 0;
-
-	while (1)
+	self.items (+) IT_WEAPON1;
+	am = 1;
+	fl = self.weapon;
+	while (am)
 	{
-		am = 0;
-
-		if (self.weapon == IT_WEAPON4)
+		if (fl == IT_WEAPON1)
 		{
-			self.weapon = IT_WEAPON3;
-			if (self.greenmana < 1)
-				am = 1;
+			fl = IT_WEAPON4;
 		}
-		else if (self.weapon == IT_WEAPON3)
+		else if (fl == IT_WEAPON2)
 		{
-			self.weapon = IT_WEAPON2;
+			fl = IT_WEAPON1;
 		}
-		else if (self.weapon == IT_WEAPON2)
+		else if (fl == IT_WEAPON3)
 		{
-			self.weapon = IT_WEAPON1;
+			fl = IT_WEAPON2;
+		}		
+		else if (fl == IT_WEAPON4)
+		{
+			fl = IT_WEAPON3;
 		}
-		else if (self.weapon == IT_WEAPON1)
+		if ((self.items & fl) && ((W_CheckNoAmmo(fl))||((self.playerclass == CLASS_PALADIN)&&(fl==IT_WEAPON2))))
 		{
-			self.weapon = IT_WEAPON4;
-			if ((self.bluemana < 1) && (self.greenmana<1))
-				am = 1;
-		}
-	
-		if ( (it & self.weapon) && am == 0)
-		{
-			W_SetCurrentWeapon ();
-			return;
+			am = 0;
 		}
 	}
-
+	self.weapon = fl;
+	W_SetCurrentWeapon ();
+	return;
 };
 
 /*
@@ -1121,6 +1102,9 @@ void W_SetCurrentWeapon (void)
 }
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:41:01  sezero
+ * Initial import
+ *
  * 
  * 213   9/29/97 3:00p Rlove
  * 
