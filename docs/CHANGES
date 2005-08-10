@@ -9,6 +9,8 @@ ChangeLog:
     * Added the missing part of Steven's CL_UpdateStreams crash patch
     * Disallowed cycling to a weapon without proper mana (from Steve)
     * Enabled impulse 34, (puzzle piece inventory list) (from Steve)
+    * Added default.cfg override files according to the latest changes
+    * Updated the gamecode README file
 
 2005-08-08 (CVS, 1.3.0-rc2):
     * Fixed the longstanding StreamEntities crash bug: the compiler
