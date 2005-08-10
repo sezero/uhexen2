@@ -4,7 +4,11 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
-2005-07-29 (1.14) :
+2005-08-09 (1.14) :
+===================
+- Disallowed cycling to a weapon without proper mana (S.A)
+- Enabled impulse 34, (puzzle piece inventory list)  (S.A)
+2005-07-29        :
 ===================
 - Map cycling: renamed map_name to a more intuitive map_next
   Cleaned up some dprint's
