@@ -117,17 +117,17 @@ SYSTEM IO
 Sys_MakeCodeWriteable
 ================
 */
+#ifndef GLQUAKE
 void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 {
 	DWORD  flOldProtect;
 
 	if (!VirtualProtect((LPVOID)startaddr, length, PAGE_READWRITE, &flOldProtect))
-   		Sys_Error("Protection change failed\n");
+		Sys_Error("Protection change failed\n");
 }
-
+#endif	// !GLQUAKE
 
 #ifndef _M_IX86
-
 void Sys_SetFPCW (void)
 {
 }
@@ -143,8 +143,7 @@ void Sys_PopFPCW (void)
 void MaskExceptions (void)
 {
 }
-
-#endif
+#endif	// !_M_IX86
 
 /*
 ================
@@ -721,6 +720,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/08/07 10:59:06  sezero
+ * killed the Sys_FileTime crap. now using standart access() function.
+ *
  * Revision 1.15  2005/07/23 22:22:10  sezero
  * unified the common funcntions for hexen2-hexenworld
  *

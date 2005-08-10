@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.30 2005-08-07 10:59:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.31 2005-08-10 23:19:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -89,22 +89,24 @@ SYSTEM IO
 Sys_MakeCodeWriteable
 ================
 */
+#ifndef GLQUAKE
 void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 {
-        int                     r;
-        unsigned long   addr;
-        int                     psize = getpagesize();
+	int		r;
+	unsigned long	addr;
+	int		psize = getpagesize();
 
-        addr = (startaddr & ~(psize-1)) - psize;
+	addr = (startaddr & ~(psize-1)) - psize;
 
-//      fprintf(stderr, "writable code %lx(%lx)-%lx, length=%lx\n", startaddr,
-//                      addr, startaddr+length, length);
+//	fprintf(stderr, "writable code %lx(%lx)-%lx, length=%lx\n", startaddr,
+//		addr, startaddr+length, length);
 
-        r = mprotect ((char *) addr, length + startaddr - addr + psize, 7);
+	r = mprotect ((char *) addr, length + startaddr - addr + psize, 7);
 
 	if (r < 0)
 		Sys_Error("Protection change failed\n");
 }
+#endif	// !GLQUAKE
 
 /*
 ================
@@ -385,6 +387,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2005/08/07 10:59:18  sezero
+ * killed the Sys_FileTime crap. now using standart access() function.
+ *
  * Revision 1.29  2005/07/30 15:19:13  sezero
  * insignificant cosmetics
  *

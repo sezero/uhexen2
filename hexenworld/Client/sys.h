@@ -15,7 +15,9 @@ int Sys_mkdir (char *path);
 //
 // memory protection
 //
+#if !defined(GLQUAKE) && !defined(SERVERONLY)
 void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length);
+#endif
 
 //
 // system IO

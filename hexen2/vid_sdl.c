@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.31 2005-07-30 11:36:42 sezero Exp $
+   $Id: vid_sdl.c,v 1.32 2005-08-10 23:19:26 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -21,8 +21,8 @@
    For clarity I have removed the variable "windowed_default" and replaced
    it with MODE_WINDOWED. Functionality is the same.
 
-   Changed by O.S 8/02/05
-   - Removed cvar _vid_default_mode_win
+   Changed by O.S 10/08/05
+   - Removed cvars vid_default_mode, _vid_default_mode_win
    - Removed all mode descriptions
    - Removed all nummodes and VID_NumModes stuff
    - Removed all VID_GetXXX and VID_DescXXX stuff
@@ -47,7 +47,7 @@ extern cache_user_t	*intermissionScreen;
 
 static qboolean	vid_initialized = false, vid_palettized = true;
 static int	lockcount;
-qboolean	in_mode_set, is_mode0x13;
+qboolean	in_mode_set;
 static int	vid_stretched, enable_mouse;
 static qboolean	palette_changed;
 
@@ -55,7 +55,6 @@ viddef_t	vid;		// global video state
 
 // Note that 0 is MODE_WINDOWED and 1 is MODE_FULLSCREEN_DEFAULT
 cvar_t		vid_mode = {"vid_mode","0", false};
-cvar_t		_vid_default_mode = {"_vid_default_mode","0", true};
 cvar_t		vid_config_x = {"vid_config_x","800", true};
 cvar_t		vid_config_y = {"vid_config_y","600", true};
 cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1", true};
@@ -544,7 +543,6 @@ void	VID_Init (unsigned char *palette)
 		Sys_Error("VID: Couldn't load SDL: %s", SDL_GetError());
 		
 	Cvar_RegisterVariable (&vid_mode);
-	Cvar_RegisterVariable (&_vid_default_mode);
 	Cvar_RegisterVariable (&vid_config_x);
 	Cvar_RegisterVariable (&vid_config_y);
 	Cvar_RegisterVariable (&vid_stretch_by_2);
@@ -942,6 +940,10 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2005/07/30 11:36:42  sezero
+ * support for window manager icon using xbm format data. stolen from
+ * the quake2 project at icculus, code probably by relnev (Steven Fuller)
+ *
  * Revision 1.30  2005/07/09 08:56:17  sezero
  * the transtable externs are now unused
  *

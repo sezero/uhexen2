@@ -81,7 +81,6 @@ DWORD		WindowStyle, ExWindowStyle;
 HWND		mainwindow, dibwindow;
 
 int		vid_modenum = NO_MODE;
-int		vid_realmode;
 int		vid_default = MODE_WINDOWED;
 static int	windowed_default;
 unsigned char	vid_curpal[256*3];
@@ -105,6 +104,27 @@ unsigned	d_8to24table3dfx[256];
 unsigned char	d_15to8table[65536];
 float		RTint[256],GTint[256],BTint[256];
 
+static PIXELFORMATDESCRIPTOR pfd = {
+	sizeof(PIXELFORMATDESCRIPTOR),	// size of this pfd
+	1,				// version number
+	PFD_DRAW_TO_WINDOW 		// support window
+	|  PFD_SUPPORT_OPENGL 	// support OpenGL
+	|  PFD_DOUBLEBUFFER ,	// double buffered
+	PFD_TYPE_RGBA,			// RGBA type
+	24,				// 24-bit color depth
+	0, 0, 0, 0, 0, 0,		// color bits ignored
+	0,				// no alpha buffer
+	0,				// shift bit ignored
+	0,				// no accumulation buffer
+	0, 0, 0, 0, 			// accum bits ignored
+	32,				// 32-bit z-buffer	
+	0,				// no stencil buffer
+	0,				// no auxiliary buffer
+	PFD_MAIN_PLANE,			// main layer
+	0,				// reserved
+	0, 0, 0				// layer masks ignored
+};
+
 float		gldepthmin, gldepthmax;
 
 modestate_t	modestate = MS_UNINIT;
@@ -127,17 +147,9 @@ GAMMA_RAMP_FN SetDeviceGammaRamp_f;
 
 //====================================
 
-cvar_t		vid_mode = {"vid_mode","0", false};
 // Note that 0 is MODE_WINDOWED
-cvar_t		_vid_default_mode = {"_vid_default_mode","0", true};
 // Note that 3 is MODE_FULLSCREEN_DEFAULT
-cvar_t		_vid_default_mode_win = {"_vid_default_mode_win","3", true};
-cvar_t		vid_wait = {"vid_wait","0"};
-cvar_t		vid_nopageflip = {"vid_nopageflip","0", true};
-cvar_t		_vid_wait_override = {"_vid_wait_override", "0", true};
-cvar_t		vid_config_x = {"vid_config_x","800", true};
-cvar_t		vid_config_y = {"vid_config_y","600", true};
-cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1", true};
+cvar_t		vid_mode = {"vid_mode","0", false};
 cvar_t		_enable_mouse = {"_enable_mouse","0", true};
 
 int		window_center_x, window_center_y, window_x, window_y, window_width, window_height;
@@ -312,6 +324,8 @@ qboolean VID_SetFullDIBMode (int modenum)
 	int	lastmodestate, width, height;
 	RECT	rect;
 
+	pfd.cColorBits = modelist[modenum].bpp;
+
 	if (!leavecurrentmode)
 	{
 		gdevmode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
@@ -431,9 +445,9 @@ int VID_SetMode (int modenum, unsigned char *palette)
 		}
 		else
 		{
+			stat = VID_SetWindowedMode(modenum);
 			IN_DeactivateMouse ();
 			IN_ShowMouse ();
-			stat = VID_SetWindowedMode(modenum);
 		}
 	}
 	else if (modelist[modenum].type == MS_FULLDIB)
@@ -467,7 +481,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 // ourselves at the top of the z order, then grab the foreground again,
 // Who knows if it helps, but it probably doesn't hurt
 	SetForegroundWindow (mainwindow);
-	VID_SetPalette (palette);
+	//VID_SetPalette (palette);
 	vid_modenum = modenum;
 	Cvar_SetValue ("vid_mode", (float)vid_modenum);
 
@@ -491,9 +505,9 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	if (!msg_suppress_1)
 		Con_SafePrintf ("Video mode %s initialized.\n", VID_GetModeDescription (vid_modenum));
 
-	VID_SetPalette (palette);
+	//VID_SetPalette (palette);
 
-	vid.recalc_refdef = 1;
+	//vid.recalc_refdef = 1;
 
 	return true;
 }
@@ -1064,26 +1078,6 @@ void	VID_Shutdown (void)
 
 BOOL bSetupPixelFormat(HDC hDC)
 {
-    static PIXELFORMATDESCRIPTOR pfd = {
-	sizeof(PIXELFORMATDESCRIPTOR),	// size of this pfd
-	1,				// version number
-	PFD_DRAW_TO_WINDOW 		// support window
-	|  PFD_SUPPORT_OPENGL 	// support OpenGL
-	|  PFD_DOUBLEBUFFER ,	// double buffered
-	PFD_TYPE_RGBA,			// RGBA type
-	24,				// 24-bit color depth
-	0, 0, 0, 0, 0, 0,		// color bits ignored
-	0,				// no alpha buffer
-	0,				// shift bit ignored
-	0,				// no accumulation buffer
-	0, 0, 0, 0, 			// accum bits ignored
-	32,				// 32-bit z-buffer	
-	0,				// no stencil buffer
-	0,				// no auxiliary buffer
-	PFD_MAIN_PLANE,			// main layer
-	0,				// reserved
-	0, 0, 0				// layer masks ignored
-    };
     int pixelformat;
 
     if ( (pixelformat = ChoosePixelFormat(hDC, &pfd)) == 0 )
@@ -1804,20 +1798,12 @@ VID_Init
 void	VID_Init (unsigned char *palette)
 {
 	int	i, existingmode;
-	int	basenummodes, width, height, bpp, findbpp, done;
+	int	basenummodes, width, height, bpp, zbits, findbpp, done;
 	char	gldir[MAX_OSPATH];
 	HDC	hdc;
 	DEVMODE	devmode;
 
 	Cvar_RegisterVariable (&vid_mode);
-	Cvar_RegisterVariable (&vid_wait);
-	Cvar_RegisterVariable (&vid_nopageflip);
-	Cvar_RegisterVariable (&_vid_wait_override);
-	Cvar_RegisterVariable (&_vid_default_mode);
-	Cvar_RegisterVariable (&_vid_default_mode_win);
-	Cvar_RegisterVariable (&vid_config_x);
-	Cvar_RegisterVariable (&vid_config_y);
-	Cvar_RegisterVariable (&vid_stretch_by_2);
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&gl_ztrick);
 	Cvar_RegisterVariable (&gl_purge_maptex);
@@ -1830,7 +1816,6 @@ void	VID_Init (unsigned char *palette)
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
 
 	//InitCommonControls();
-	VID_SetPalette (palette);
 
 #ifdef GL_DLSYM
 	gl_library = "opengl32.dll";
@@ -1846,7 +1831,7 @@ void	VID_Init (unsigned char *palette)
 
 	VID_InitFullDIB (global_hInstance);
 
-	if (COM_CheckParm("-window"))
+	if (COM_CheckParm("-window") || COM_CheckParm("-w"))
 	{
 		hdc = GetDC (NULL);
 
@@ -2000,6 +1985,16 @@ void	VID_Init (unsigned char *palette)
 					}
 				} while (!done);
 
+				if (bpp)
+					pfd.cColorBits = bpp;
+
+				if (COM_CheckParm("-zbits"))
+				{
+					zbits = atoi(com_argv[COM_CheckParm("-zbits") + 1]);
+					if (zbits)
+						pfd.cDepthBits = zbits;
+				}
+
 				if (!vid_default)
 				{
 					Sys_Error ("Specified video mode not available");
@@ -2050,13 +2045,13 @@ void	VID_Init (unsigned char *palette)
 	sprintf (gldir, "%s/glhexen/puzzle", com_gamedir);
 	Sys_mkdir (gldir);
 
-	vid_realmode = vid_modenum;
-
 	VID_SetPalette (palette);
-	
+
 	// Check for 3DFX Extensions and initialize them.
 	if (COM_CheckParm("-paltex"))
 		VID_Init8bitPalette();
+
+	vid.recalc_refdef = 1;
 
 	vid_menudrawfn = VID_MenuDraw;
 	vid_menukeyfn = VID_MenuKey;

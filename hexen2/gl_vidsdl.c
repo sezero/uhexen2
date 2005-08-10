@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.77 2005-07-30 11:36:42 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.78 2005-08-10 23:19:26 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -15,8 +15,8 @@
 	- Mode 3 has been changed to "1" to allow it to be
 	  represented as a boolean (and a menu selection)
 
-	Changed 08/02/05 by O.S
-	- Removed cvar _vid_default_mode_win
+	Changed 10/08/05 by O.S
+	- Removed cvars vid_default_mode, _vid_default_mode_win
 	- Removed all mode descriptions
 	- Removed all nummodes and VID_NumModes stuff
 	- Removed all VID_GetXXX and VID_DescXXX stuff
@@ -64,7 +64,6 @@ modestate_t	modestate = MS_UNINIT;
 int		WRHeight, WRWidth;
 int		vid_default = MODE_WINDOWED;	// windowed mode is default
 cvar_t		vid_mode = {"vid_mode","0", false};
-cvar_t		_vid_default_mode = {"_vid_default_mode","0", true};
 static vmode_t	modelist[MAX_MODE_LIST];
 static qboolean	vid_initialized = false;
 
@@ -968,7 +967,6 @@ void	VID_Init (unsigned char *palette)
 	char	gldir[MAX_OSPATH];
 
 	Cvar_RegisterVariable (&vid_mode);
-	Cvar_RegisterVariable (&_vid_default_mode);
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&gl_ztrick);
 	Cvar_RegisterVariable (&gl_purge_maptex);
