@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.13 2005-07-05 17:20:01 sezero Exp $
+	$Id: snd_oss.c,v 1.14 2005-08-10 09:23:38 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -32,12 +32,9 @@
 #include <sys/mman.h>
 #include <sys/shm.h>
 #include <sys/wait.h>
-#if defined(__FreeBSD__)
+// FIXME: <sys/soundcard.h> is "by the book" but we should take care of
+// <soundcard.h>, <linux/soundcard.h> and <machine/soundcard.h> someday.
 #include <sys/soundcard.h>
-#endif
-#ifdef __linux__
-#include <linux/soundcard.h>
-#endif
 #include <errno.h>
 
 int audio_fd = -1;
