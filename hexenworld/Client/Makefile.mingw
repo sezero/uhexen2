@@ -22,7 +22,7 @@ CFLAGS+= -I. -I../../w32stuff/dxsdk/inc -I$(MINGWDIR)/include
 GAMEFLAGS = -DH2W
 LDFLAGS = -L$(MINGWDIR)/lib -lwinmm -lwsock32 -ldinput -ldxguid -mwindows
 GLFLAGS = -lopengl32
-ASFLAGS = -O2 -fwin32 -D__WIN32__ --prefix _
+ASFLAGS = -fwin32 -D__WIN32__ --prefix _
 
 ifdef DEMO
 GAMEFLAGS+= -DDEMOBUILD
