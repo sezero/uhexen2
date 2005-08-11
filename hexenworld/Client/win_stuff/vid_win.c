@@ -89,7 +89,7 @@ unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
 
 int     driver = grDETECT,mode;
-bool    useWinDirect = true, useDirectDraw = true;
+qboolean	useWinDirect = true, useDirectDraw = true;
 MGLDC	*mgldc = NULL,*memdc = NULL,*dibdc = NULL,*windc = NULL;
 
 typedef struct {
@@ -305,7 +305,7 @@ void VID_Fullscreen_f (void)
 	VID_SetMode ((int)vid_fullscreen_mode.value, vid_curpal);
 }
 
-int VID_Suspend (MGLDC *dc,m_int flags)
+int VID_Suspend (MGLDC *dc, int flags)
 {
 	int i;
 	if (flags & MGL_DEACTIVATE)
