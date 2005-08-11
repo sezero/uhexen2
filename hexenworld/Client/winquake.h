@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.11 2005-06-19 11:23:23 sezero Exp $
+	$Id: winquake.h,v 1.12 2005-08-11 12:34:41 sezero Exp $
 */
 
 #if !defined(__GNUC__)
@@ -16,9 +16,6 @@
 #include <ddraw.h>
 #include <dsound.h>
 #include <mmsystem.h>	// for LCC
-#ifndef GLQUAKE
-#include <mgraph.h>
-#endif
 #endif
 
 extern	HINSTANCE	global_hInstance;

@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.11 2005-06-19 11:23:23 sezero Exp $
+	$Id: winquake.h,v 1.12 2005-08-11 12:34:41 sezero Exp $
 */
 
 #if !defined(__GNUC__)
@@ -16,9 +16,6 @@
 #ifndef SERVERONLY
 #include <ddraw.h>
 #include <dsound.h>
-#ifndef GLQUAKE
-#include <mgraph.h>
-#endif
 #endif
 
 extern	HINSTANCE	global_hInstance;
@@ -102,6 +99,16 @@ int (PASCAL FAR *pgetsockname)(SOCKET s, struct sockaddr FAR *name,
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/06/19 11:23:23  sezero
+ * added wheelmouse support and conwidth support to hexen2. changed
+ * hexenworld's default behavior of default 640 conwidth to main width
+ * unless specified otherwise by the user. disabled startup splash
+ * screens for now. sycned hexen2 and hexnworld's GL_Init_Functions().
+ * disabled InitCommonControls()in gl_vidnt. moved RegisterWindowMessage
+ * for uMSG_MOUSEWHEEL to in_win where it belongs. bumped MAXIMUM_WIN_MEMORY
+ * to 32 MB. killed useless Sys_ConsoleInput in hwcl. several other sycning
+ * and clean-up
+ *
  * Revision 1.10  2005/06/17 16:24:33  sezero
  * win32 fixes and clean-ups
  *
