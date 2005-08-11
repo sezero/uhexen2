@@ -4,8 +4,7 @@
 #include "quakeinc.h"
 #include "d_local.h"
 #include "resource.h"
-
-#define	MINIMUM_MEMORY	0x550000
+#include <mgraph.h>
 
 #define MAX_MODE_LIST	30
 #define VID_ROW_SIZE	3
@@ -42,11 +41,6 @@ static qboolean	palette_changed, syscolchg, vid_mode_set, hide_window, pal_is_no
 static HICON	hIcon;
 
 viddef_t	vid;				// global video state
-
-#define MODE_WINDOWED			0
-#define MODE_SETTABLE_WINDOW	2
-#define NO_MODE					(MODE_WINDOWED - 1)
-#define MODE_FULLSCREEN_DEFAULT	(MODE_WINDOWED + 3)
 
 // Note that 0 is MODE_WINDOWED
 cvar_t		vid_mode = {"vid_mode","0", false};
@@ -345,51 +339,6 @@ int VID_Suspend (MGLDC *dc,m_int flags)
 
 	return 1;
 }
-
-#if 0
-int VID_Suspend (MGLDC *dc,m_int flags)
-{
-
-	if (flags & MGL_DEACTIVATE)
-	{
-	// FIXME: this doesn't currently work on NT
-		if (block_switch.value && !WinNT)
-		{
-			return MGL_NO_DEACTIVATE;
-		}
-
-		S_BlockSound ();
-		S_ClearBuffer ();
-
-		IN_RestoreOriginalMouseState ();
-		CDAudio_Pause ();
-
-	// keep WM_PAINT from trying to redraw
-		in_mode_set = true;
-
-		block_drawing = true;	// so we don't try to draw while switched away
-
-		return MGL_NO_SUSPEND_APP;
-	}
-	else if (flags & MGL_REACTIVATE)
-	{
-		IN_SetQuakeMouseState ();
-	// fix the leftover Alt from any Alt-Tab or the like that switched us away
-		ClearAllStates ();
-		CDAudio_Resume ();
-		S_UnblockSound ();
-
-		in_mode_set = false;
-
-		vid.recalc_refdef = 1;
-
-		block_drawing = false;
-
-		return MGL_NO_SUSPEND_APP;
-	}
-
-}
-#endif
 
 
 void registerAllDispDrivers(void)
@@ -1594,7 +1543,6 @@ void VID_RestoreOldMode (int original_mode)
 	inerror = false;
 }
 
-
 void VID_SetDefaultMode (void)
 {
 
@@ -1603,7 +1551,6 @@ void VID_SetDefaultMode (void)
 
 	IN_DeactivateMouse ();
 }
-
 
 int VID_SetMode (int modenum, unsigned char *palette)
 {
@@ -2042,7 +1989,6 @@ void VID_TestMode_f (void)
 }
 
 
-
 /*
 =================
 VID_Minimize_f
@@ -2056,7 +2002,6 @@ void VID_Minimize_f (void)
 	if (modestate == MS_WINDOWED)
 		ShowWindow (mainwindow, SW_MINIMIZE);
 }
-
 
 
 /*
@@ -3315,7 +3260,6 @@ void VID_MenuKey (int key)
 		break;
 
 	case K_LEFTARROW:
-
 		S_LocalSound ("raven/menu1.wav");
 		vid_line = ((vid_line / VID_ROW_SIZE) * VID_ROW_SIZE) +
 				   ((vid_line + 2) % VID_ROW_SIZE);
@@ -3391,4 +3335,12 @@ void VID_MenuKey (int key)
 	default:
 		break;
 	}
+}
+
+void ToggleFullScreenSA(void)
+{
+}
+
+void VID_ApplyGamma(void)
+{
 }
