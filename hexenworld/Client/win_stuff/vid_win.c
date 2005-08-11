@@ -30,7 +30,7 @@ int			window_center_x, window_center_y, window_x, window_y, window_width, window
 RECT		window_rect;
 
 static DEVMODE	gdevmode;
-static qboolean	startwindowed = 0, windowed_mode_set;
+static qboolean	startwindowed = 0, windowed_mode_set = 0;
 static int		firstupdate = 1;
 static qboolean	vid_initialized = false, vid_palettized;
 static int		lockcount;
@@ -108,10 +108,9 @@ typedef struct {
 
 static vmode_t	modelist[MAX_MODE_LIST];
 static int		nummodes;
-static vmode_t	*pcurrentmode;
 
-int		aPage;					// Current active display page
-int		vPage;					// Current visible display page
+int		aPage;	// Current active display page
+int		vPage;	// Current visible display page
 int		waitVRT = true;			// True to wait for retrace on flip
 
 static vmode_t	badmode;
@@ -377,7 +376,7 @@ void registerAllMemDrivers(void)
 
 void VID_InitMGLFull (HINSTANCE hInstance)
 {
-	int			i, xRes, yRes, bits, vMode, lowres, curmode, temp;
+	int			i, xRes, yRes, bits, lowres, curmode, temp;
 	int			lowstretchedres, stretchedmode, lowstretched;
     uchar		*m;
 
@@ -612,7 +611,6 @@ void VID_InitMGLDIB (HINSTANCE hInstance)
 {
 	WNDCLASS		wc;
 	HDC				hdc;
-	int				i;
 
 	hIcon = LoadIcon (hInstance, MAKEINTRESOURCE (IDI_ICON2));
 
@@ -703,7 +701,7 @@ VID_InitFullDIB
 void VID_InitFullDIB (HINSTANCE hInstance)
 {
 	DEVMODE	devmode;
-	int		i, j, modenum, cmodes, existingmode, originalnummodes, lowestres;
+	int		i, j, modenum, existingmode, originalnummodes, lowestres;
 	int		numlowresmodes, bpp, done;
 	int		cstretch, istretch, mstretch;
 	BOOL	stat;
@@ -1211,7 +1209,6 @@ qboolean VID_SetWindowedMode (int modenum)
 	pixel_format_t	pf;
 	qboolean		stretched;
 	int				lastmodestate;
-	LONG			wlong;
 
 	if (!windowed_mode_set)
 	{
@@ -1221,7 +1218,7 @@ qboolean VID_SetWindowedMode (int modenum)
 			Cvar_SetValue ("vid_window_y", 0.0);
 		}
 
-		windowed_mode_set;
+		windowed_mode_set = 1;
 	}
 
 	VID_CheckModedescFixup (modenum);
@@ -1554,7 +1551,7 @@ void VID_SetDefaultMode (void)
 
 int VID_SetMode (int modenum, unsigned char *palette)
 {
-	int				original_mode, temp, dummy;
+	int				original_mode, temp;
 	qboolean		stat;
     MSG				msg;
 	HDC				hdc;
@@ -2012,7 +2009,6 @@ VID_ForceMode_f
 void VID_ForceMode_f (void)
 {
 	int		modenum;
-	double	testduration;
 
 	if (!vid_testingmode)
 	{
@@ -2153,8 +2149,6 @@ void	VID_Init (unsigned char *palette)
 
 void	VID_Shutdown (void)
 {
-	HDC				hdc;
-
 	if (vid_initialized)
 	{
 		if (modestate == MS_FULLDIB)
@@ -2194,8 +2188,6 @@ FlipScreen
 */
 void FlipScreen(vrect_t *rects)
 {
-	HRESULT		ddrval;
-
 	// Flip the surfaces
 
 	if (DDActive)
@@ -2799,10 +2791,9 @@ LONG WINAPI MainWndProc (
     LPARAM  lParam)
 {
 	LONG			lRet = 0;
-	int				fwKeys, xPos, yPos, fActive, fMinimized, temp;
+	int				fActive, fMinimized, temp;
 	HDC				hdc;
 	PAINTSTRUCT		ps;
-	static int		recursiveflag;
 
 	if (uMsg == uMSG_MOUSEWHEEL && mwheelthreshold.value >= 1)
 	{
@@ -3067,7 +3058,6 @@ VID_MenuDraw
 */
 void VID_MenuDraw (void)
 {
-	qpic_t		*p;
 	char		*ptr;
 	int			lnummodes, i, j, k, column, row, dup, dupmode;
 	char		temp[100];

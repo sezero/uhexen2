@@ -712,7 +712,7 @@ VID_InitFullDIB
 void VID_InitFullDIB (HINSTANCE hInstance)
 {
 	DEVMODE	devmode;
-	int		i, j, modenum, cmodes, existingmode, originalnummodes, lowestres;
+	int		i, j, modenum, existingmode, originalnummodes, lowestres;
 	int		numlowresmodes, bpp, done;
 	int		cstretch, istretch, mstretch;
 	BOOL	stat;
@@ -3386,6 +3386,9 @@ void VID_ApplyGamma(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/08/11 17:33:43  sezero
+ * added -w and -window switches to vid_win.c
+ *
  * Revision 1.11  2005/08/11 12:57:45  sezero
  * merged Pa3PyX's bits to win32 software renderer for mgl-4.05. sw version
  * of both hexen2 and quake always used to crash on my box, but now it works
