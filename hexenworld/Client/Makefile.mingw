@@ -156,6 +156,8 @@ glhw_exe: GAMEFLAGS+= -DGLQUAKE
 glhw_exe: $(GLOBJS) $(COMMONOBJS)
 	$(LINKER) -o $(GL_BINARY) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS)
 
+hw_exe : CFLAGS+=-DMGL_DLL -I../../w32stuff/scitech 
+hw_exe : LDFLAGS+=-L../../w32stuff/scitech -lmglfxi
 hw_exe: $(SOFTOBJS) $(COMMONOBJS)
 	$(LINKER) -o $(BINARY) $(SOFTOBJS) $(COMMONOBJS) $(LDFLAGS)
 
