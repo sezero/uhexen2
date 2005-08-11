@@ -2128,7 +2128,7 @@ void	VID_Init (unsigned char *palette)
 			*ptmp = bestmatch;
 	}
 
-	if (COM_CheckParm("-startwindowed"))
+	if (COM_CheckParm("-startwindowed") || COM_CheckParm("-window") || COM_CheckParm("-w"))
 	{
 		startwindowed = 1;
 		vid_default = windowed_default;
@@ -3386,6 +3386,11 @@ void VID_ApplyGamma(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/08/11 12:57:45  sezero
+ * merged Pa3PyX's bits to win32 software renderer for mgl-4.05. sw version
+ * of both hexen2 and quake always used to crash on my box, but now it works
+ * nicely. cleaned-up zombie variables as well.
+ *
  * Revision 1.10  2005/08/10 23:19:26  sezero
  * slight tweaks
  *
