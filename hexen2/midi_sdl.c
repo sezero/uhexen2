@@ -2,15 +2,20 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.13 2005-07-23 19:49:55 sezero Exp $
+	$Id: midi_sdl.c,v 1.14 2005-08-12 08:12:51 sezero Exp $
 */
 
 #include "quakedef.h"
 #include <unistd.h>
 
 #ifdef USE_MIDI
-#include <SDL/SDL.h>
-#include <SDL/SDL_mixer.h>
+#include "SDL.h"
+
+#if defined(__FreeBSD__)
+#include "SDL_mixer.h"
+#else
+#include "SDL/SDL_mixer.h"
+#endif
 
 static Mix_Music *music = NULL;
 int audio_wasinit = 0;
@@ -277,6 +282,9 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/07/23 19:49:55  sezero
+ * better handling of midi file size
+ *
  * Revision 1.12  2005/07/23 11:34:51  sezero
  * fixed midi not playing when midifile exists in
  * the searchpath but not in com_userdir/.midi .
