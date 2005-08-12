@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.78 2005-08-10 23:19:26 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.79 2005-08-12 09:21:08 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -82,7 +82,12 @@ int		gl_max_size = 256;
 qboolean	is_3dfx = false;
 float		gldepthmin, gldepthmax;
 extern int	numgltextures;
+#if SDL_PATCHLEVEL > 5
 int		multisample = 0;
+#else
+#warning SDL_GL_MULTISAMPLESAMPLES not found. SDL version too old
+#warning Disabling FSAA option. Upgrade to SDL 1.2.6 or newer
+#endif
 
 typedef void	(*FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
 FX_SET_PALETTE_EXT	MyglColorTableEXT;
@@ -267,12 +272,14 @@ int VID_SetMode (int modenum)
 	if (SDL_GL_LoadLibrary(gl_library) < 0)
 		Sys_Error("VID: Couldn't load GL library: %s", SDL_GetError());
 
+#if SDL_PATCHLEVEL > 5
 	if ((i = COM_CheckParm ("-fsaa")))
 		multisample = atoi(com_argv[i+1]);
 	if (multisample) {
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisample);
 	}
+#endif
 
 	VID_SetIcon();	// window manager icon using xbm data
 
@@ -280,6 +287,7 @@ int VID_SetMode (int modenum)
 	Con_Printf ("Requesting Mode: %dx%dx%d\n", vid.width, vid.height, modelist[modenum].bpp);
 	screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags);
 	if (!screen) {
+#if SDL_PATCHLEVEL > 5
 		if (!multisample) {
 			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 		} else {
@@ -291,6 +299,9 @@ int VID_SetMode (int modenum)
 			if (!screen)
 				Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 		}
+#else
+		Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
+#endif
 	}
 
 	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &i);
@@ -298,10 +309,12 @@ int VID_SetMode (int modenum)
 	SDL_GL_GetAttribute(SDL_GL_STENCIL_SIZE, &i);
 	if (i)
 		Con_Printf ("%i bit stencil buffer\n", i);
+#if SDL_PATCHLEVEL > 5
 	if (multisample) {
 		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &multisample);
 		Con_Printf ("multisample buffer with %i samples\n", multisample);
 	}
+#endif
 
 #if defined(H2W)
 	SDL_WM_SetCaption("HexenWorld", "HexenWorld");
@@ -449,10 +462,12 @@ void GL_Init (void)
 //	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
+#if SDL_PATCHLEVEL > 5
 	if (multisample) {
 		glEnable_fp (GL_MULTISAMPLE_ARB);
 		Con_Printf ("enabled %i sample fsaa\n", multisample);
 	}
+#endif
 }
 
 

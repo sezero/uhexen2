@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.37 2005-08-10 23:19:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.38 2005-08-12 09:21:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -15,6 +15,7 @@
 #include <sys/mman.h>
 #include <signal.h>
 #include <dirent.h>
+//#include "SDL.h"
 #include "SDL_version.h"
 
 #ifdef ASSUMED_LITTLE_ENDIAN
@@ -31,7 +32,14 @@
 // minimum required SDL version
 #define	SDL_MIN_X	1
 #define	SDL_MIN_Y	2
+#if defined(GLQUAKE) && SDL_PATCHLEVEL > 5
+// for SDL_GL_MULTISAMPLESAMPLES
 #define	SDL_MIN_Z	6
+//#else if defined(SDL_BUTTON_WHEELUP)
+//#define	SDL_MIN_Z	5
+#else
+#define	SDL_MIN_Z	0
+#endif
 
 static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
@@ -458,6 +466,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.37  2005/08/10 23:19:26  sezero
+ * slight tweaks
+ *
  * Revision 1.36  2005/08/07 10:59:06  sezero
  * killed the Sys_FileTime crap. now using standart access() function.
  *
