@@ -1,5 +1,13 @@
 ChangeLog:
 
+2005-08-12 (CVS, 1.3.0-rc4a):
+    * updated all build scripts for freebsd gmake problem (Steve)
+    * updated sdl includes of midi for freebsd (from Steven)
+    * removed malloc.h from hwmaster. doesn't seem necessary and
+      bsd whines with it. (from Steven)
+    * loosened SDL version restrictions depending on the SDL version
+      on the build system. will issue a warning if less than 1.2.6
+
 2005-08-11 (CVS, 1.3.0-rc4):
     * 1.3.0-rc4. Everything seem to work fine and this should be
       the last -rc before 1.3.0-final
