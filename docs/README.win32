@@ -48,7 +48,7 @@ directory: hexen2, target names:
 
 directory: hexenworld/Client, target names:
   hw_exe	HexenWorld Client, software renderer
-  glh2_exe	HexenWorld Client, opengl renderer
+  glhw_exe	HexenWorld Client, opengl renderer
 
 directory: hexenworld/Server, targets:
   HexenWorld server, no target name necessary
