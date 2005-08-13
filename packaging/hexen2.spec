@@ -14,7 +14,7 @@ URL:		http://uhexen2.sourceforge.net/
 Version:	1.3.0
 Release:	1
 Summary:	Hexen II
-Source:		hexen2source-HoT-%{version}.tgz
+Source:		hexen2source-%{version}.tgz
 Source1:	loki_patch-src.tgz
 Source2:	hexenworld-pakfiles-0.15.tgz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
@@ -68,7 +68,7 @@ This package contains the Hexen 2 Game Launcher that provides a gui
 for launching different versions of the game.
 
 %prep
-%setup -q -n hexen2source-HoT-%{version} -a1 -a2
+%setup -q -n hexen2source-%{version} -a1 -a2
 
 %build
 # Build the main game binaries
