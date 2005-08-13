@@ -13,7 +13,7 @@ else
 CFLAGS = -O2 -march=i586 -Wall -I$(MINGWDIR)/include
 endif
 
-SVINCS = -I../Client/ -I.
+SVINCS = -I../Client -I.
 
 GAMEFLAGS = -DH2W -DSERVERONLY
 

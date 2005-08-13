@@ -17,7 +17,7 @@ CFLAGS = -O2 -march=i586 -Wall -DPLATFORM_UNIX
 endif
 
 GAMEFLAGS = -DH2W -DSERVERONLY
-SVINCS = -I../Client/ -I.
+SVINCS = -I../Client -I.
 SDLFLAG = `sdl-config --cflags`
 SDLLINK = `sdl-config --libs`
 
