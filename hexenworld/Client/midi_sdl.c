@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.12 2005-08-12 08:12:51 sezero Exp $
+	$Id: midi_sdl.c,v 1.13 2005-08-13 11:57:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,12 +10,7 @@
 
 #ifdef USE_MIDI
 #include "SDL.h"
-
-#if defined(__FreeBSD__)
 #include "SDL_mixer.h"
-#else
-#include "SDL/SDL_mixer.h"
-#endif
 
 static Mix_Music *music = NULL;
 int audio_wasinit = 0;
@@ -282,6 +277,9 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/08/12 08:12:51  sezero
+ * updated sdl includes of midi for freebsd (from Steven)
+ *
  * Revision 1.11  2005/07/23 19:49:55  sezero
  * better handling of midi file size
  *
