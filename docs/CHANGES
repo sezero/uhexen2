@@ -1,5 +1,15 @@
 ChangeLog:
 
+2005-08-17 (CVS, 1.3.0-rc5):
+    * Fixed R_DrawViewModel to not return until it determines the
+      light_level, otherwise the player will be considered invisible
+      to the monsters.
+    * Standardized SDL_mixer includes
+    * Makefile fixes for hexenworld server
+    * Updated win32 build instructions.
+    * Updated the rpm spec file according to the names of the files
+      to be released
+
 2005-08-12 (CVS, 1.3.0-rc4a):
     * updated all build scripts for freebsd gmake problem (Steve)
     * updated sdl includes of midi for freebsd (from Steven)
