@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.6 2005-07-09 07:29:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.7 2005-08-17 00:02:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -729,19 +729,8 @@ void R_DrawViewModel (void)
 	float		add;
 	dlight_t	*dl;
 	
-	if (!r_drawviewmodel.value || r_fov_greater_than_90)
-		return;
-
-	if (cl.items & IT_INVISIBILITY)
-		return;
-
-	if (cl.v.health <= 0)
-		return;
-
-	if (chase_active.value)
-		return;
-
 	currententity = &cl.viewent;
+
 	if (!currententity->model)
 		return;
 
@@ -755,6 +744,7 @@ void R_DrawViewModel (void)
 
 	if (j < 24)
 		j = 24;		// allways give some light on gun
+
 	r_viewlighting.ambientlight = j;
 	r_viewlighting.shadelight = j;
 
@@ -785,7 +775,6 @@ void R_DrawViewModel (void)
 		}
 	}
 
-
 // clamp lighting so it doesn't overbright as much
 	if (r_viewlighting.ambientlight > 128)
 		r_viewlighting.ambientlight = 128;
@@ -797,6 +786,15 @@ void R_DrawViewModel (void)
 	r_viewlighting.plightvec = lightvec;
 
 	cl.light_level = r_viewlighting.ambientlight;
+
+	if ((cl.items & IT_INVISIBILITY) ||
+	    (cl.v.health <= 0) ||
+	    (chase_active.value) ||
+	    (r_fov_greater_than_90) ||
+	    (!r_drawviewmodel.value))
+	{
+		return;
+	}
 
 	R_AliasDrawModel (&r_viewlighting);
 }
@@ -1303,6 +1301,9 @@ void R_InitTurb (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/07/09 07:29:40  sezero
+ * use hunk instead of malloc
+ *
  * Revision 1.5  2005/06/06 10:19:40  sezero
  * ChaseCam clipping fixes from quakeforge and quakesrc.org (FrikaC).
  * Still not perfect, but much better than what we previously had.

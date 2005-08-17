@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.23 2005-06-26 11:12:00 sezero Exp $
+	$Id: gl_rmain.c,v 1.24 2005-08-17 00:02:57 sezero Exp $
 */
 
 
@@ -1307,22 +1307,11 @@ void R_DrawViewModel (void)
 	float		add;
 	dlight_t	*dl;
 
-	if (!r_drawviewmodel.value || cl.spectator)
-		return;
-
-	if (envmap)
-		return;
-
-	if (!r_drawentities.value)
-		return;
-
-//rjr	if (cl.items & IT_INVISIBILITY)
-//rjr		return;
-
-	if (cl.v.health <= 0)
+	if (cl.spectator)
 		return;
 
 	currententity = &cl.viewent;
+
 	if (!currententity->model)
 		return;
 
@@ -1347,6 +1336,17 @@ void R_DrawViewModel (void)
 	}
 
 	cl.light_level = ambientlight;
+
+	if ((!r_drawviewmodel.value) ||
+	    (cl.v.health <= 0) ||
+	    (!r_drawentities.value) ||
+	    (envmap))
+	{
+		return;
+	}
+
+//rjr	if (cl.items & IT_INVISIBILITY)
+//rjr		return;
 
 	// hack the depth range to prevent view model from poking into walls
 	glDepthRange_fp (gldepthmin, gldepthmin + 0.3*(gldepthmax-gldepthmin));

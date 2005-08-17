@@ -750,16 +750,11 @@ void R_DrawViewModel (void)
 	float		add;
 	dlight_t	*dl;
 	
-	if (!r_drawviewmodel.value || r_fov_greater_than_90 || cl.spectator)
-		return;
-
-//rjr	if (cl.items & IT_INVISIBILITY)
-		//rjr return;
-
-	if (cl.v.health <= 0)
+	if (cl.spectator)
 		return;
 
 	currententity = &cl.viewent;
+
 	if (!currententity->model)
 		return;
 
@@ -773,6 +768,7 @@ void R_DrawViewModel (void)
 
 	if (j < 24)
 		j = 24;		// allways give some light on gun
+
 	r_viewlighting.ambientlight = j;
 	r_viewlighting.shadelight = j;
 
@@ -814,6 +810,16 @@ void R_DrawViewModel (void)
 	r_viewlighting.plightvec = lightvec;
 
 	cl.light_level = r_viewlighting.ambientlight;
+
+	if ((!r_drawviewmodel.value) ||
+	    (r_fov_greater_than_90) ||
+	    (cl.v.health <= 0))
+	{
+		return;
+	}
+
+//rjr	if (cl.items & IT_INVISIBILITY)
+//rjr		return;
 
 	R_AliasDrawModel (&r_viewlighting);
 }

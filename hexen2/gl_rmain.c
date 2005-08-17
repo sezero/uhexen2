@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.33 2005-06-26 11:11:57 sezero Exp $
+	$Id: gl_rmain.c,v 1.34 2005-08-17 00:02:57 sezero Exp $
 */
 
 
@@ -1293,25 +1293,8 @@ void R_DrawViewModel (void)
 	float		add;
 	dlight_t	*dl;
 
-	if (!r_drawviewmodel.value)
-		return;
-
-	if (chase_active.value)
-		return;
-
-	if (envmap)
-		return;
-
-	if (!r_drawentities.value)
-		return;
-
-	if (cl.items & IT_INVISIBILITY)
-		return;
-
-	if (cl.v.health <= 0)
-		return;
-
 	currententity = &cl.viewent;
+
 	if (!currententity->model)
 		return;
 
@@ -1336,6 +1319,16 @@ void R_DrawViewModel (void)
 	}
 
 	cl.light_level = ambientlight;
+
+	if ((cl.items & IT_INVISIBILITY) ||
+	    (cl.v.health <= 0) ||
+	    (chase_active.value) ||
+	    (!r_drawviewmodel.value) ||
+	    (!r_drawentities.value) ||
+	    (envmap))
+	{
+		return;
+	}
 
 	// hack the depth range to prevent view model from poking into walls
 	glDepthRange_fp (gldepthmin, gldepthmin + 0.3*(gldepthmax-gldepthmin));
@@ -1808,6 +1801,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.33  2005/06/26 11:11:57  sezero
+ * Changed those pointless glow style const ints to defines
+ *
  * Revision 1.32  2005/06/23 06:29:54  sezero
  * Ummm, spelling fixes (spesific <-> specific)
  *
