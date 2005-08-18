@@ -1,6 +1,6 @@
 /*
 	cd_bsd.c
-	$Id: cd_bsd.c,v 1.7 2005-08-18 14:20:28 sezero Exp $
+	$Id: cd_bsd.c,v 1.8 2005-08-18 17:25:46 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	A few BSD bits taken from the Dark Places project for Hammer
@@ -355,8 +355,13 @@ void CDAudio_Update(void)
 	if (cdfile == -1 || !enabled)
 		return;
 
-	if (bgmvolume.value != drv_vol.vol[0])
+	if ( (int)(255.0 * bgmvolume.value) != (int)drv_vol.vol[0])
 	{
+		if (bgmvolume.value > 1.0f)
+			Cvar_SetValue ("bgmvolume", 1.0f);
+		if (bgmvolume.value < 0.0f)
+			Cvar_SetValue ("bgmvolume", 0.0f);
+
 		drv_vol.vol[0] = drv_vol.vol[2] =
 		drv_vol.vol[1] = drv_vol.vol[3] = bgmvolume.value * 255.0;
 		if (ioctl(cdfile, CDIOCSETVOL, &drv_vol) == -1)

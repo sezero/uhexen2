@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.14 2005-08-18 14:20:28 sezero Exp $
+	$Id: cd_linux.c,v 1.15 2005-08-18 17:25:46 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -341,8 +341,13 @@ void CDAudio_Update(void)
 	if (cdfile == -1 || !enabled)
 		return;
 
-	if (bgmvolume.value != drv_vol.channel0)
+	if ( (int)(255.0 * bgmvolume.value) != (int)drv_vol.channel0)
 	{
+		if (bgmvolume.value > 1.0f)
+			Cvar_SetValue ("bgmvolume", 1.0f);
+		if (bgmvolume.value < 0.0f)
+			Cvar_SetValue ("bgmvolume", 0.0f);
+
 		drv_vol.channel0 = drv_vol.channel2 =
 		drv_vol.channel1 = drv_vol.channel3 = bgmvolume.value * 255.0;
 		if (ioctl(cdfile, CDROMVOLCTRL, &drv_vol) == -1 )
