@@ -454,8 +454,10 @@ int CDAudio_Init(void)
 	MCI_SET_PARMS	mciSetParms;
 	int				n;
 
+#ifndef H2W
 	if (cls.state == ca_dedicated)
 		return -1;
+#endif
 
 	if (COM_CheckParm("-nocdaudio"))
 		return -1;
@@ -488,6 +490,7 @@ int CDAudio_Init(void)
 	{
 		Con_Printf("CDAudio_Init: No CD in player.\n");
 		cdValid = false;
+		//enabled = false;
 	}
 
 	Cmd_AddCommand ("cd", CD_f);

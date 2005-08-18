@@ -19,7 +19,12 @@ static byte 	remap[100];
 static byte		playTrack;
 static byte		maxTrack;
 
+static UINT CD_ID;
+static unsigned long CD_OrigVolume;
+
 UINT	wDeviceID;
+
+void CD_SetVolume(unsigned long Volume);
 
 
 static void CDAudio_Eject(void)
@@ -232,7 +237,13 @@ static void CD_f (void)
 	int		n;
 
 	if (Cmd_Argc() < 2)
+	{
+		Con_Printf("commands:");
+		Con_Printf("on, off, reset, remap, \n");
+		Con_Printf("play, stop, loop, pause, resume\n");
+		Con_Printf("eject, close, info\n");
 		return;
+	}
 
 	command = Cmd_Argv (1);
 
@@ -385,22 +396,56 @@ void CDAudio_Update(void)
 		return;
 
 	if (bgmvolume.value != cdvolume)
+		CD_SetVolume(bgmvolume.value * 0xffff);
+
+	if ((!bgmvolume.value && cdvolume) ||
+		(bgmvolume.value && !cdvolume))
 	{
 		if (cdvolume)
 		{
-			Cvar_SetValue ("bgmvolume", 0.0);
-			cdvolume = bgmvolume.value;
+//			Cvar_SetValue ("bgmvolume", 0.0);
 			CDAudio_Pause ();
 		}
 		else
 		{
-			Cvar_SetValue ("bgmvolume", 1.0);
-			cdvolume = bgmvolume.value;
+//			Cvar_SetValue ("bgmvolume", 1.0);
 			CDAudio_Resume ();
+		}
+	}
+	cdvolume = bgmvolume.value;
+}
+
+
+void CD_FindCDAux(void)
+{
+	UINT NumDevs,counter;
+	MMRESULT Result;
+	AUXCAPS Caps;
+
+	CD_ID = -1;
+	if (!COM_CheckParm("-usecdvolume"))
+		return;
+	NumDevs = auxGetNumDevs();
+	for(counter=0;counter<NumDevs;counter++)
+	{
+		Result = auxGetDevCaps(counter,&Caps,sizeof(Caps));
+		if (!Result) // valid
+		{
+			if (Caps.wTechnology == AUXCAPS_CDAUDIO)
+			{
+				CD_ID = counter;
+				auxGetVolume(CD_ID,&CD_OrigVolume);
+				return;
+			}
 		}
 	}
 }
 
+void CD_SetVolume(unsigned long Volume)
+{
+	if (CD_ID != -1) 
+		auxSetVolume(CD_ID,(Volume<<16)+Volume);
+}
 
 int CDAudio_Init(void)
 {
@@ -409,10 +454,11 @@ int CDAudio_Init(void)
 	MCI_SET_PARMS	mciSetParms;
 	int				n;
 
-#if		0	// QW
+#ifndef H2W
 	if (cls.state == ca_dedicated)
 		return -1;
 #endif
+
 	if (COM_CheckParm("-nocdaudio"))
 		return -1;
 
@@ -444,12 +490,14 @@ int CDAudio_Init(void)
 	{
 		Con_Printf("CDAudio_Init: No CD in player.\n");
 		cdValid = false;
-		enabled = false;
+		//enabled = false;
 	}
 
 	Cmd_AddCommand ("cd", CD_f);
 
-//	Con_Printf("CD Audio Initialized\n");
+	CD_FindCDAux();
+
+	Con_Printf("CD Audio Initialized\n");
 
 	return 0;
 }
