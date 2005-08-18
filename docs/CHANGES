@@ -1,5 +1,10 @@
 ChangeLog:
 
+2005-08-18 (CVS, 1.3.0-rc5a):
+    * moved music volume update back into frame update. it has its
+      merits (such as correct bgmvolume on startup) this way..
+    * sync'ed h2 and h2w versions of cd_win.c
+
 2005-08-17 (CVS, 1.3.0-rc5):
     * Fixed R_DrawViewModel to not return until it determines the
       light_level, otherwise the player will be considered invisible
