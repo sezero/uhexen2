@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.35 2005-07-30 15:16:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.36 2005-08-18 14:20:28 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -432,10 +432,14 @@ void MIDI_Play(char *Name);
 void MIDI_Stop(void);
 void MIDI_Pause(int mode);
 void MIDI_Loop(int NewValue);
+void MIDI_UpdateVolume(void);
 
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.35  2005/07/30 15:16:26  sezero
+ * bumped both HoT and engine versions
+ *
  * Revision 1.34  2005/06/17 16:24:33  sezero
  * win32 fixes and clean-ups
  *

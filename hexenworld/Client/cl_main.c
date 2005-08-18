@@ -1265,6 +1265,7 @@ void Host_Frame (float time)
 		S_Update (vec3_origin, vec3_origin, vec3_origin, vec3_origin);
 	
 	CDAudio_Update();
+	MIDI_UpdateVolume();
 
 	if (host_speeds.value)
 	{

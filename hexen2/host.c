@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.25 2005-07-23 22:22:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.26 2005-08-18 14:20:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -831,6 +831,7 @@ void _Host_Frame (float time)
 		S_Update (vec3_origin, vec3_origin, vec3_origin, vec3_origin);
 	
 	CDAudio_Update();
+	MIDI_UpdateVolume();
 
 	if (host_speeds.value)
 	{
@@ -1088,6 +1089,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2005/07/23 22:22:08  sezero
+ * unified the common funcntions for hexen2-hexenworld
+ *
  * Revision 1.24  2005/07/09 07:31:38  sezero
  * use zone instead of malloc
  *

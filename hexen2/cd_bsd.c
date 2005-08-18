@@ -1,6 +1,6 @@
 /*
 	cd_bsd.c
-	$Id: cd_bsd.c,v 1.6 2005-08-07 10:57:14 sezero Exp $
+	$Id: cd_bsd.c,v 1.7 2005-08-18 14:20:28 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	A few BSD bits taken from the Dark Places project for Hammer
@@ -355,6 +355,14 @@ void CDAudio_Update(void)
 	if (cdfile == -1 || !enabled)
 		return;
 
+	if (bgmvolume.value != drv_vol.vol[0])
+	{
+		drv_vol.vol[0] = drv_vol.vol[2] =
+		drv_vol.vol[1] = drv_vol.vol[3] = bgmvolume.value * 255.0;
+		if (ioctl(cdfile, CDIOCSETVOL, &drv_vol) == -1)
+			Con_DPrintf("ioctl CDIOCSETVOL failed\n");
+	}
+
 	if (playing && lastchk < time(NULL)) {
 		lastchk = time(NULL) + 2; //two seconds between chks
 
@@ -378,20 +386,6 @@ void CDAudio_Update(void)
 		/*else {
 			playTrack = data.what.position.track_number;
 		}*/
-	}
-}
-
-void CDAudio_UpdateVolume(void)
-{
-	if (cdfile == -1 || !enabled)
-		return;
-
-	if (bgmvolume.value != drv_vol.vol[0])
-	{
-		drv_vol.vol[0] = drv_vol.vol[2] =
-		drv_vol.vol[1] = drv_vol.vol[3] = bgmvolume.value * 255.0;
-		if (ioctl(cdfile, CDIOCSETVOL, &drv_vol) == -1)
-			Con_DPrintf("ioctl CDIOCSETVOL failed\n");
 	}
 }
 

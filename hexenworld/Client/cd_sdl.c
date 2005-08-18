@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.2 2005-08-07 10:57:27 sezero Exp $
+	$Id: cd_sdl.c,v 1.3 2005-08-18 14:20:28 sezero Exp $
 
 	Copyright (C) 2001  Mark Baker <homer1@together.net>
 	Taken from SDLquake with modifications to make it work
@@ -233,8 +233,8 @@ void CDAudio_Update(void)
 		return;
 
 	// if SDL supports cdrom volume control some day
-	// I'll remove this block and write proper code
-	// in CDAudio_UpdateVolume() below.
+	// I'll write proper code in here
+
 	if (bgmvolume.value != cdvolume)
 	{
 		cdvolume = bgmvolume.value;
@@ -253,12 +253,6 @@ void CDAudio_Update(void)
 	if (playLooping && (SDL_CDStatus(cd_id) != CD_PLAYING)
 			&& (SDL_CDStatus(cd_id) != CD_PAUSED))
 		CDAudio_Play(cd_id->cur_track+1,true);
-}
-
-void CDAudio_UpdateVolume(void)
-{
-	// shame that SDL doesn't support
-	// cdrom volume control in any way
 }
 
 int CDAudio_Init(void)

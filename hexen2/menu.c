@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.40 2005-08-02 18:06:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.41 2005-08-18 14:20:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -12,11 +12,6 @@ extern  cvar_t  r_shadows, gl_glows, gl_missile_glows, gl_other_glows; // S.A
 #endif
 
 static void ReInitMusic(void);
-extern void MIDI_UpdateVolume(void);
-#ifdef PLATFORM_UNIX
-// dont know how win32 cdvol is controlled..
-extern void CDAudio_UpdateVolume(void);
-#endif
 
 extern	cvar_t	vid_mode;
 extern	float introTime;
@@ -1902,10 +1897,6 @@ void M_AdjustSliders (int dir)
 		if (bgmvolume.value > 1)
 			bgmvolume.value = 1;
 		Cvar_SetValue ("bgmvolume", bgmvolume.value);
-		MIDI_UpdateVolume();
-#ifdef PLATFORM_UNIX
-		CDAudio_UpdateVolume();
-#endif
 		break;
 	case OPT_SNDVOL:	// sfx volume
 		sfxvolume.value += dir * 0.1;
@@ -4087,6 +4078,10 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.40  2005/08/02 18:06:58  sezero
+ * removed lookspring and lookstrafe options and
+ * +mlook and +klook key bindings from the menu
+ *
  * Revision 1.39  2005/06/07 20:26:02  sezero
  * Draw help messages fullscreen for software version, as well
  *

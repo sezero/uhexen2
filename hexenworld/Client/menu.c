@@ -1,16 +1,11 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.25 2005-08-02 18:07:02 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.26 2005-08-18 14:20:28 sezero Exp $
  */
 
 #include "quakedef.h"
 #include "quakeinc.h"
 
 static void ReInitMusic(void);
-extern void MIDI_UpdateVolume(void);
-#ifdef PLATFORM_UNIX
-// dont know how win32 cdvol is controlled..
-extern void CDAudio_UpdateVolume(void);
-#endif
 
 extern char com_basedir[MAX_OSPATH];
 extern	cvar_t	vid_mode;
@@ -880,10 +875,6 @@ void M_AdjustSliders (int dir)
 		if (bgmvolume.value > 1)
 			bgmvolume.value = 1;
 		Cvar_SetValue ("bgmvolume", bgmvolume.value);
-		MIDI_UpdateVolume();
-#ifdef PLATFORM_UNIX
-		CDAudio_UpdateVolume();
-#endif
 		break;
 	case OPT_SNDVOL:	// sfx volume
 		sfxvolume.value += dir * 0.1;
