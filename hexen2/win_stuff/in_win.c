@@ -3,7 +3,6 @@
 
 #include "quakedef.h"
 #include "quakeinc.h"
-#include "dosisms.h"
 
 // mouse variables
 cvar_t	m_filter = {"m_filter","0"};
@@ -940,6 +939,9 @@ void IN_JoyMove (usercmd_t *cmd)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/07/16 23:23:55  sezero
+ * killed fastfabs, not worthy of keeping anymore
+ *
  * Revision 1.6  2005/06/19 11:23:23  sezero
  * added wheelmouse support and conwidth support to hexen2. changed
  * hexenworld's default behavior of default 640 conwidth to main width
