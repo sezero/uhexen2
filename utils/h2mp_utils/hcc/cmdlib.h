@@ -1,7 +1,7 @@
-// cmdlib.h
-
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/cmdlib.h,v 1.3 2005-05-17 22:56:27 sezero Exp $
+ * cmdlib.h
+ *
+ * $Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/cmdlib.h,v 1.4 2005-08-19 17:50:43 sezero Exp $
  */
 
 #ifndef __GNUC__
