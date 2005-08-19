@@ -466,13 +466,18 @@ int ParseNum (char *str)
 ============================================================================
 */
 
-#ifdef _SGI_SOURCE
-#define	__BIG_ENDIAN__
+#ifdef ASSUMED_LITTLE_ENDIAN
+#warning "Unable to determine CPU endianess. Defaulting to little endian"
+#endif
+#ifdef GUESSED_SUNOS_ENDIANNESS
+#warning "Made assumptions for undetermined SUNOS CPU endianess"
+#endif
+#ifdef GUESSED_WIN32_ENDIANNESS
+// not that it matters but to remember what I did
+#warning "CPU endianess for Win32 assumed to be little endian"
 #endif
 
-#ifdef __BIG_ENDIAN__
-
-short   LittleShort (short l)
+short   ShortSwap (short l)
 {
 	byte    b1,b2;
 
@@ -482,13 +487,7 @@ short   LittleShort (short l)
 	return (b1<<8) + b2;
 }
 
-short   BigShort (short l)
-{
-	return l;
-}
-
-
-int    LittleLong (int l)
+int    LongSwap (int l)
 {
 	byte    b1,b2,b3,b4;
 
@@ -500,86 +499,18 @@ int    LittleLong (int l)
 	return ((int)b1<<24) + ((int)b2<<16) + ((int)b3<<8) + b4;
 }
 
-int    BigLong (int l)
+float FloatSwap (float f)
 {
-	return l;
+	union
+	{
+		float	f;
+		byte	b[4];
+	} dat1, dat2;
+
+	dat1.f = f;
+	dat2.b[0] = dat1.b[3];
+	dat2.b[1] = dat1.b[2];
+	dat2.b[2] = dat1.b[1];
+	dat2.b[3] = dat1.b[0];
+	return dat2.f;
 }
-
-
-float	LittleFloat (float l)
-{
-	union {byte b[4]; float f;} in, out;
-	
-	in.f = l;
-	out.b[0] = in.b[3];
-	out.b[1] = in.b[2];
-	out.b[2] = in.b[1];
-	out.b[3] = in.b[0];
-	
-	return out.f;
-}
-
-float	BigFloat (float l)
-{
-	return l;
-}
-
-
-#else
-
-
-short   BigShort (short l)
-{
-	byte    b1,b2;
-
-	b1 = l&255;
-	b2 = (l>>8)&255;
-
-	return (b1<<8) + b2;
-}
-
-short   LittleShort (short l)
-{
-	return l;
-}
-
-
-int    BigLong (int l)
-{
-	byte    b1,b2,b3,b4;
-
-	b1 = l&255;
-	b2 = (l>>8)&255;
-	b3 = (l>>16)&255;
-	b4 = (l>>24)&255;
-
-	return ((int)b1<<24) + ((int)b2<<16) + ((int)b3<<8) + b4;
-}
-
-int    LittleLong (int l)
-{
-	return l;
-}
-
-float	BigFloat (float l)
-{
-	union {byte b[4]; float f;} in, out;
-	
-	in.f = l;
-	out.b[0] = in.b[3];
-	out.b[1] = in.b[2];
-	out.b[2] = in.b[1];
-	out.b[3] = in.b[0];
-	
-	return out.f;
-}
-
-float	LittleFloat (float l)
-{
-	return l;
-}
-
-
-
-#endif
-
