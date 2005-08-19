@@ -1,8 +1,11 @@
+
 #  if building for the demo version, run with
 #  make DEMO=yes [other stuff]
 
-H2_BINARY=hexen2.exe
-GLH2_BINARY=glhexen2.exe
+#H2_BINARY=hexen2.exe
+#GLH2_BINARY=glhexen2.exe
+H2_BINARY=h2.exe
+GLH2_BINARY=glh2.exe
 MP_BINARY=h2mp.exe
 GLMP_BINARY=glh2mp.exe
 
