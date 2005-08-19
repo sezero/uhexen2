@@ -1,5 +1,16 @@
 ChangeLog:
 
+2005-08-19 (CVS, 1.3.0-rc5b):
+    * finishing touches before 1.3.0-final:
+    * killed erroneous extra comma in snd_win.c
+    * replaced Makefile.packaging with Makefile.unix, updated build
+      scripts and rpm spec file, added hexenworld build_all scripts,
+      added build_win32 scripts.
+    * use the same exe names as Raven's versions for win32
+    * unix style line endings for more gamecode files
+    * replaced gnu.txt with a readable (line-wrapped) version from
+      gnu.org for hwmaster
+
 2005-08-18 (CVS, 1.3.0-rc5a):
     * moved music volume update back into frame update. it has its
       merits (such as correct bgmvolume on startup) this way..
