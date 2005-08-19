@@ -10,7 +10,6 @@ extern int			strofs;
 
 extern dstatement_t	statements[MAX_STATEMENTS];
 extern int			numstatements;
-extern int			statement_linenums[MAX_STATEMENTS];
 
 extern dfunction_t	functions[MAX_FUNCTIONS];
 extern int			numfunctions;
@@ -20,9 +19,6 @@ extern int			numglobaldefs;
 
 extern ddef_t		fields[MAX_FIELDS];
 extern int			numfielddefs;
-
-char			*DEC_FilesSeen[1024];
-int				DEC_FileCtr=0;
 
 char *type_names[8] = {
 	"void",
@@ -35,40 +31,43 @@ char *type_names[8] = {
 	"ev_pointer"
 };
 
-char *temp_val[MAX_REGS] = {0,0,0};
-char *func_headers[MAX_FUNCTIONS] = {0,0,0};
-dfunction_t *cfunc = 0;
-char *Make_Immediate(gofs_t ofs,char *line,int mode);
-int lindent;
-void PR_Indent();
-void PR_FunctionHeader(dfunction_t *df);
-void PR_Print(const char *s,...);
-char *PR_String (char *string);
-def_t *PR_DefForFieldOfs (gofs_t ofs);
-FILE *PR_FILE;
-unsigned short GetReturnType(int func);
-char *PR_PrintGlobal (gofs_t ofs ,def_t* typ);
-ddef_t *PR_GetField(char *name,ddef_t*);
-void Dcc_Functions();
-int DEC_GetFunctionIdxByName(char *name);
-void PR_LocalGlobals();
-int DEC_AlreadySeen(char *fname);
-ddef_t *DEC_GetParameter (gofs_t ofs);
-char * GetFieldFunctionHeader(char *s_name);
-int FILE_NUM_FOR_NAME = 0;
-int regs_used = 0;
-void FindBuiltinParameters(int func);
-unsigned short BackBuildReturnType(dfunction_t *df,dstatement_t *dsf, gofs_t ofs);
-unsigned short GetType(gofs_t ofs);
-void FindBuiltinParameters(int func);
-void DccFunctionOP(unsigned short op);
-void DccStatement(dfunction_t *df,dstatement_t *s, int *indent);
-void AddProgramFlowInfo(dfunction_t *df);
-void PR_Locals(dfunction_t *df);
-void PR_PrintFunction (char *name);
-char *DCC_ValueString (etype_t type, void *val);
-qboolean printassign = 0;
-unsigned short GetLastFunctionReturn(dfunction_t *df,dstatement_t *ds);
+FILE		*PR_FILE;
+int		FILE_NUM_FOR_NAME = 0;
+int		regs_used = 0;
+int		lindent;
+int		DEC_FileCtr=0;
+char		*DEC_FilesSeen[1024];
+char		*temp_val[MAX_REGS] = {0,0,0};
+char		*func_headers[MAX_FUNCTIONS] = {0,0,0};
+qboolean	printassign = 0;
+dfunction_t	*cfunc = 0;
+
+char	*Make_Immediate(gofs_t ofs,char *line,int mode);
+void	PR_Indent (void);
+void	PR_FunctionHeader (dfunction_t *df);
+void	PR_Print (const char *s,...);
+char	*PR_String (char *string);
+def_t	*PR_DefForFieldOfs (gofs_t ofs);
+char	*PR_PrintGlobal (gofs_t ofs ,def_t* typ);
+ddef_t	*PR_GetField (char *name,ddef_t*);
+void	Dcc_Functions (void);
+int	DEC_GetFunctionIdxByName (char *name);
+void	PR_LocalGlobals (void);
+int	DEC_AlreadySeen(char *fname);
+ddef_t	*DEC_GetParameter (gofs_t ofs);
+char	*GetFieldFunctionHeader (char *s_name);
+void	FindBuiltinParameters (int func);
+void	FindBuiltinParameters (int func);
+void	DccFunctionOP (unsigned short op);
+void	DccStatement (dfunction_t *df,dstatement_t *s, int *indent);
+void	AddProgramFlowInfo (dfunction_t *df);
+void	PR_Locals (dfunction_t *df);
+void	PR_PrintFunction (char *name);
+char	*DCC_ValueString (etype_t type, void *val);
+unsigned short GetReturnType (int func);
+unsigned short BackBuildReturnType (dfunction_t *df,dstatement_t *dsf, gofs_t ofs);
+unsigned short GetType (gofs_t ofs);
+unsigned short GetLastFunctionReturn (dfunction_t *df,dstatement_t *ds);
 
 
 char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
