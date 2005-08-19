@@ -6,7 +6,7 @@ BINARY=dhcc
 DESTDIR= ./bin
 CFLAGS = -O2 -Wall -D_GNU_SOURCE
 LDFLAGS = 
-LDLIBS= -lm
+LDLIBS= 
 
 all : $(BINARY)
 

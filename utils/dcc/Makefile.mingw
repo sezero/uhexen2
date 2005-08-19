@@ -7,7 +7,7 @@ BINARY=dhcc.exe
 DESTDIR= ./bin
 CFLAGS = -O2 -Wall -I$(MINGWDIR)/include
 LDFLAGS = -mconsole
-LDLIBS= -lm
+LDLIBS= 
 
 all : $(BINARY)
 
