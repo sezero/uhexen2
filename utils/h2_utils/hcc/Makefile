@@ -6,7 +6,7 @@ BINARY=hcc
 DESTDIR=../bin
 CFLAGS = -O2 -Wall
 LDFLAGS = 
-LDLIBS= 
+LDLIBS = 
 
 all : $(BINARY)
 

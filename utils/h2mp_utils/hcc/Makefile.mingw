@@ -1,4 +1,3 @@
-
 MINGWDIR=/mingw
 
 CC = gcc
