@@ -39,26 +39,15 @@ int			numfiles;
 
 //ADDED BY EMAN
 extern FILE *PR_FILE;
-extern dfunction_t *cfunc;
-
 extern char *temp_val[MAX_REGS];
 extern char *func_headers[MAX_FUNCTIONS];
-extern int lindent;
-void PR_Indent();
-void PR_FunctionHeader(dfunction_t *df);
-void PR_Print(const char *s,...);
-
 void Dcc_Functions();
-void PR_LocalGlobals();
-int DEC_AlreadySeen(char *fname);
-char * GetFieldFunctionHeader(char *s_name);
 void FindBuiltinParameters(int func);
 void DccFunctionOP(unsigned short op);
 void DEC_ReadData (char *srcfile);
 void PR_PrintFunction (char *name);
 
 extern int FILE_NUM_FOR_NAME;
-extern int regs_used;
 
 
 /*

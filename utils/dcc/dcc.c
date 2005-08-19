@@ -53,7 +53,6 @@ ddef_t *PR_GetField(char *name,ddef_t*);
 void Dcc_Functions();
 int DEC_GetFunctionIdxByName(char *name);
 void PR_LocalGlobals();
-extern char* type_names[8];
 int DEC_AlreadySeen(char *fname);
 ddef_t *DEC_GetParameter (gofs_t ofs);
 char * GetFieldFunctionHeader(char *s_name);
