@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MAKEFILE=Makefile.packaging
+MAKEFILE=Makefile.unix
 
 if test "`uname`" = "FreeBSD" ; then
 	MAKE=gmake

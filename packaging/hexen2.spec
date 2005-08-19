@@ -72,21 +72,21 @@ for launching different versions of the game.
 
 %build
 # Build the main game binaries
-make -C hexen2 -f Makefile.packaging h2_dynamic
+make -C hexen2 -f Makefile.unix h2_dynamic
 make -C hexen2 clean
-make -C hexen2 -f Makefile.packaging glh2_dynamic
+make -C hexen2 -f Makefile.unix glh2_dynamic
 make -C hexen2 clean
 # Mission Pack binaries
-make -C hexen2 -f Makefile.packaging mp_dynamic
+make -C hexen2 -f Makefile.unix mp_dynamic
 make -C hexen2 clean
-make -C hexen2 -f Makefile.packaging glmp_dynamic
+make -C hexen2 -f Makefile.unix glmp_dynamic
 make -C hexen2 clean
 # HexenWorld binaries
 make -C hexenworld/Server
 make -C hexenworld/Master
-make -C hexenworld/Client -f Makefile.packaging hw_dynamic
+make -C hexenworld/Client -f Makefile.unix hw_dynamic
 make -C hexenworld/Client clean
-make -C hexenworld/Client -f Makefile.packaging glhw_dynamic
+make -C hexenworld/Client -f Makefile.unix glhw_dynamic
 # 3dfx Voodoo1-Voodoo2 gamma library
 make -C lib3dfxgamma
 # Launcher binaries
@@ -270,5 +270,5 @@ rm -rf %{buildroot}
 %{?_without_freedesktop:%{_sysconfdir}/X11/applnk/Games/%{name}.desktop}
 
 %changelog
-* Thu Aug 10 2005 O.Sezer <sezero@users.sourceforge.net> 1.3.0-1
+* Thu Aug 19 2005 O.Sezer <sezero@users.sourceforge.net> 1.3.0-1
 - First sketchy spec file for RedHat and Fedora Core
