@@ -48,7 +48,6 @@ def_t *PR_DefForFieldOfs (gofs_t ofs);
 FILE *PR_FILE;
 unsigned short GetReturnType(int func);
 char *PR_PrintGlobal (gofs_t ofs ,def_t* typ);
-unsigned short OP_StoreValue(dstatement_t *ds);
 ddef_t *PR_GetField(char *name,ddef_t*);
 void Dcc_Functions();
 int DEC_GetFunctionIdxByName(char *name);
@@ -1084,7 +1083,7 @@ unsigned short GetReturnType(int func)
 	return rtype[0];
 }
 
-
+#if 0	// this is unused
 unsigned short OP_StoreValue(dstatement_t *ds)
 {
 	switch (ds->op)
@@ -1174,7 +1173,7 @@ unsigned short OP_StoreValue(dstatement_t *ds)
 
 	return ev_void;
 }
-
+#endif	// end of unused function
 
 ddef_t *PR_GetField(char *name,ddef_t *dd)
 {
