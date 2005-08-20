@@ -1,5 +1,19 @@
 ChangeLog:
 
+2005-08-20 (CVS, 1.3.0-rc5c):
+    * fixed temporary gip files not being removed and probably caused
+      "bad" savegames on win32. removed unnecessary platform defines
+      for directory path separators. favored unlink() over DeleteFile()
+      on win32. removed a left-over CL_RemoveGIPFiles() from sys_win.c.
+    * more finishing touches before 1.3.0-final:
+    * added dummy files to some empty directories to avoid build failures
+    * copied over endianness stuff from engine trees to the utils
+    * utils: removed unnecessary -lm from dcc
+    * killed unused dosisms.h header (win32/in_win.c)
+    * utils: killed unused stuff in dcc
+    * utils: some other minor cleanups
+    * moved more unused files to 00_unused
+
 2005-08-19 (CVS, 1.3.0-rc5b):
     * finishing touches before 1.3.0-final:
     * killed erroneous extra comma in snd_win.c
