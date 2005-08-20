@@ -247,27 +247,29 @@ extern int		num_masters;
 #endif
 #endif
 
-#if BYTE_ORDER == BIG_ENDIAN
-#define BigShort(s) (s)
-#define LittleShort(s) (ShortSwap(s))
-#define BigLong(l) (l)
-#define LittleLong(l) (LongSwap(l))
-#define BigFloat(f) (f)
-#define LittleFloat(f) (FloatSwap(f))
-#else
-// BYTE_ORDER == LITTLE_ENDIAN
-#define BigShort(s) (ShortSwap(s))
-#define LittleShort(s) (s)
-#define BigLong(l) (LongSwap(l))
-#define LittleLong(l) (l)
-#define BigFloat(f) (FloatSwap(f))
-#define LittleFloat(f) (f)
-#endif
-
 short	ShortSwap (short);
 int	LongSwap (int);
 float	FloatSwap (float);
+
+#if BYTE_ORDER == BIG_ENDIAN
+#define BigShort(s) (s)
+#define LittleShort(s) ShortSwap((s))
+#define BigLong(l) (l)
+#define LittleLong(l) LongSwap((l))
+#define BigFloat(f) (f)
+#define LittleFloat(f) FloatSwap((f))
+#else
+// BYTE_ORDER == LITTLE_ENDIAN
+#define BigShort(s) ShortSwap((s))
+#define LittleShort(s) (s)
+#define BigLong(l) LongSwap((l))
+#define LittleLong(l) (l)
+#define BigFloat(f) FloatSwap((f))
+#define LittleFloat(f) (f)
+#endif
+
 // end of endiannes stuff
+
 
 extern netadr_t	net_from;
 
