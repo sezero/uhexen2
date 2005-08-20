@@ -1,16 +1,15 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.26 2005-07-31 00:45:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.27 2005-08-20 13:06:34 sezero Exp $
 */
 
 #include "quakedef.h"
 
 #ifdef _WIN32
 #include <windows.h>
-#else
-#include <unistd.h>
 #endif
+#include <unistd.h>
 #include <time.h>
 
 extern cvar_t	pausable;
@@ -532,23 +531,9 @@ void Host_Savegame_f (void)
 
 	CL_RemoveGIPFiles(name);
 
-	//i = GetTempPath(sizeof(tempdir),tempdir);
-	i = 0;
-	if (!i) 
-	{
-#ifdef PLATFORM_UNIX
-		sprintf(tempdir,"%s/",com_savedir);
-#else
-		sprintf(tempdir,"%s\\",com_savedir);
-#endif
-	}
-
+	sprintf (tempdir,"%s/",com_savedir);
 	sprintf (name, "%sclients.gip",tempdir);
-#ifdef PLATFORM_UNIX
 	unlink(name);
-#else
-	DeleteFile(name);
-#endif
 
 	sprintf (name, "%s*.gip", tempdir);
 	sprintf (dest, "%s/%s/",com_savedir, Cmd_Argv(1));
@@ -644,17 +629,7 @@ void Host_Loadgame_f (void)
 
 	Con_Printf ("Loading game from %s...\n", name);
 
-	//i = GetTempPath(sizeof(tempdir),tempdir);
-	i = 0;
-	if (!i) 
-	{
-#ifdef PLATFORM_UNIX
-		sprintf(tempdir,"%s/",com_savedir);
-#else
-		sprintf(tempdir,"%s\\",com_savedir);
-#endif
-	}
-
+	sprintf(tempdir,"%s/",com_savedir);
 	sprintf(dest,"%s/info.dat",name);
 
 	f = fopen (dest, "r");
@@ -791,16 +766,7 @@ retry:
 
 	attempts++;
 
-	//i = GetTempPath(sizeof(tempdir),tempdir);
-	i = 0;
-	if (!i) 
-	{
-#ifdef PLATFORM_UNIX
-		sprintf(tempdir,"%s/",com_savedir);
-#else
-		sprintf(tempdir,"%s\\",com_savedir);
-#endif
-	}
+	sprintf(tempdir,"%s/",com_savedir);
 
 	if (ClientsOnly)
 	{
@@ -958,16 +924,7 @@ int LoadGamestate(char *level, char *startspot, int ClientsMode)
 //	float	spawn_parms[NUM_SPAWN_PARMS];
 	qboolean auto_correct = false;
 
-	//i = GetTempPath(sizeof(tempdir),tempdir);
-	i = 0;
-	if (!i) 
-	{
-#ifdef PLATFORM_UNIX
-		sprintf(tempdir,"%s/",com_savedir);
-#else
-		sprintf(tempdir,"%s\\",com_savedir);
-#endif
-	}
+	sprintf(tempdir,"%s/",com_savedir);
 
 	if (ClientsMode == 1)
 	{
@@ -2307,6 +2264,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2005/07/31 00:45:11  sezero
+ * platform defines cleanup
+ *
  * Revision 1.25  2005/07/09 09:07:58  sezero
  * changed all Hunk_Alloc() usage to Hunk_AllocName() for easier memory usage tracing.
  *

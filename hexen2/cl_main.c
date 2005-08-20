@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.16 2005-07-31 00:45:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.17 2005-08-20 13:06:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -12,8 +12,8 @@
 #else
 #include <dirent.h>
 #include <fnmatch.h>
-#include <unistd.h>
 #endif
+#include <unistd.h>
 
 // we need to declare some mouse variables here, because the menu system
 // references them even when on a unix system.
@@ -97,24 +97,24 @@ void CL_RemoveGIPFiles (char *path)
 {
 	char	name[MAX_OSPATH],tempdir[MAX_OSPATH];
 #ifdef _WIN32
-	int i;
 	HANDLE handle;
 	WIN32_FIND_DATA filedata;
 	BOOL retval;
+#else
+	DIR	*dir;
+	struct dirent	*dent;
+#endif
 
 	if (path)
 	{
-		sprintf(tempdir,"%s\\",path);
+		snprintf(tempdir, MAX_OSPATH, "%s/",path);
 	}
 	else
 	{
-		i = GetTempPath(sizeof(tempdir),tempdir);
-		if (!i) 
-		{
-			sprintf(tempdir,"%s\\",com_gamedir);
-		}
+		snprintf(tempdir, MAX_OSPATH, "%s/",com_userdir);
 	}
 
+#ifdef _WIN32
 	sprintf (name, "%s*.gip", tempdir);
 
 	handle = FindFirstFile(name,&filedata);
@@ -123,42 +123,33 @@ void CL_RemoveGIPFiles (char *path)
 	while (handle != INVALID_HANDLE_VALUE && retval)
 	{
 		sprintf(name,"%s%s", tempdir,filedata.cFileName);
-		DeleteFile(name);
+		unlink (name);
 
 		retval = FindNextFile(handle,&filedata);
 	}
 
 	if (handle != INVALID_HANDLE_VALUE)
 		FindClose(handle);
-#else
-	DIR	*dir;
-	struct dirent	*dent;
 
-	if (path)
-	{
-		snprintf(tempdir, MAX_OSPATH, "%s/",path);
-	
-	}
-	else
-	{
-		snprintf(tempdir, MAX_OSPATH, "%s/",com_userdir);
-
-	}
-
+#else	// here is the unix code
 	dir = opendir (tempdir);
-	if (dir == NULL) {
+
+	if (dir == NULL)
 		return;
-	}
+
 	do {
 		dent = readdir(dir);
-		if (dent != NULL) {
-			if (!fnmatch ("*.gip", dent->d_name,FNM_PATHNAME)) {
+		if (dent != NULL)
+		{
+			if (!fnmatch ("*.gip", dent->d_name,FNM_PATHNAME))
+			{
 				snprintf (name, MAX_OSPATH, "%s%s", tempdir,dent->d_name);
 			//	printf("unlinking %s\n",name);
 				unlink (name);
 			}
 		}
-	} while (dent != NULL);	
+	} while (dent != NULL);
+
 	closedir (dir);
 #endif
 }
@@ -1009,6 +1000,9 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/07/31 00:45:10  sezero
+ * platform defines cleanup
+ *
  * Revision 1.15  2005/07/23 22:22:08  sezero
  * unified the common funcntions for hexen2-hexenworld
  *

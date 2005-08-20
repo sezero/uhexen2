@@ -527,8 +527,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	if (hPrevInstance)
 		return 0;
 
-	CL_RemoveGIPFiles(NULL);
-
 	global_hInstance = hInstance;
 	global_nCmdShow = nCmdShow;
 
@@ -720,6 +718,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/08/10 23:19:26  sezero
+ * slight tweaks
+ *
  * Revision 1.16  2005/08/07 10:59:06  sezero
  * killed the Sys_FileTime crap. now using standart access() function.
  *

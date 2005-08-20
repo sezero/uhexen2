@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.20 2005-08-09 15:39:28 sezero Exp $
+	$Id: common.c,v 1.21 2005-08-20 13:06:33 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -10,11 +10,9 @@
 #else
 #include "quakedef.h"
 #endif
-#ifdef _WIN32
-#include <io.h>
-#include <windows.h>
-#else
 #include <unistd.h>
+#ifdef _WIN32
+#include <windows.h>
 #endif
 
 #define NUM_SAFE_ARGVS	6
@@ -1248,11 +1246,7 @@ int COM_FOpenFile (char *filename, FILE **file, qboolean override_pack)
 #ifndef H2W
 			if (!static_registered && !override_pack)
 			{	// if not a registered version, don't ever go beyond base
-#ifdef PLATFORM_UNIX
-				if ( strchr (filename, '/'))
-#else
 				if ( strchr (filename, '/') || strchr (filename,'\\'))
-#endif
 					continue;
 			}
 #endif	// !H2W
@@ -1926,6 +1920,12 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2005/08/09 15:39:28  sezero
+ * Prioritized a game directory over its pakfiles in the search order which is
+ * the behavior of HoT-1.2.4 and older. This bug, carried over from hexenworld,
+ * disallowed override files to be used. The ID guys probably had their concerns
+ * while doing this, which Raven did change in hexen2 but missed in hexenworld.
+ *
  * Revision 1.19  2005/08/07 10:59:04  sezero
  * killed the Sys_FileTime crap. now using standart access() function.
  *
