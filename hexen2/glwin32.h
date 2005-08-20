@@ -2,7 +2,7 @@
 	glwin32.h
 	glquake header for win32/wgl
 
-	$Id: glwin32.h,v 1.6 2005-06-17 16:24:33 sezero Exp $
+	$Id: glwin32.h,v 1.7 2005-08-20 20:19:59 sezero Exp $
 */
 
 
@@ -21,7 +21,7 @@
 // whether to dlsym gl and wgl function calls
 // dlsymming is broken for now, dont use it.
 //#define GL_DLSYM	1
-#undef GL_GLSYM
+#undef GL_DLSYM
 
 #ifdef GL_DLSYM
 #include "gl_func.h"
