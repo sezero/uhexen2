@@ -19,6 +19,7 @@ typedef enum {ev_void, ev_string, ev_float, ev_vector, ev_entity, ev_field, ev_f
 #define	OFS_PARM7		25
 #define	RESERVED_OFS	28
 
+#define	IMMEDIATE_VALUE	"I+"
 
 enum {
 	OP_DONE,

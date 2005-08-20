@@ -35,8 +35,6 @@ char		precache_files[MAX_FILES][MAX_DATA_PATH];
 int			precache_files_block[MAX_SOUNDS];
 int			numfiles;
 
-#define IMMEDIATE_VALUE   "I+"
-
 //ADDED BY EMAN
 extern FILE *PR_FILE;
 extern char *temp_val[MAX_REGS];

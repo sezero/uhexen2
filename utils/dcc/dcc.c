@@ -1,7 +1,5 @@
 #include "qcc.h"
 
-#define IMMEDIATE_VALUE   "I+"
-
 extern float		pr_globals[MAX_REGS];
 extern int			numpr_globals;
 
