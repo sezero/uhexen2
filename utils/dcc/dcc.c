@@ -809,7 +809,7 @@ void PR_Locals(dfunction_t *df)
 				continue;
 
 			PR_Print("local ");
-///typedef enum {ev_void, ev_string, ev_float, ev_vector, ev_entity, ev_field, ev_function, ev_pointer} etype_t;
+
 			switch (par->type)
 			{
 				case ev_string:
@@ -910,8 +910,6 @@ void PR_FunctionHeader(dfunction_t *df)
 	for(j=0;j<df->numparms;j++)
 	{
 		par = DEC_GetParameter (start);
-
-		///typedef enum {ev_void, ev_string, ev_float, ev_vector, ev_entity, ev_field, ev_function, ev_pointer} etype_t;
 
 		if(par)
 		{
@@ -2052,62 +2050,6 @@ int DEC_AlreadySeen(char *fname)
 
 	return 0;
 }
-
-
-/*
-static void PrintFunction (char *name)
-{
-	int		i;
-	dstatement_t	*ds;
-	dfunction_t	*df;
-	char		*arg1, *arg2;
-	def_t		*typ1, *typ2;
-
-	for (i=0 ; i<numfunctions ; i++)
-		if (!strcmp (name, strings + functions[i].s_name))
-			break;
-
-	if (i==numfunctions)
-		Error ("No function names \"%s\"", name);
-
-	df = functions + i;
-	cfunc = df;
-	printf("Statements for %s:\n", name);
-	ds = statements + df->first_statement;
-	Make_Immediate(0,0,0);
-	PR_LocalGlobals();
-	PR_FunctionHeader(df);
-
-	if(df->first_statement<0) {
-		PR_Print("\n%s%s = #%d;\n",func_headers[df-functions],strings + df->s_name,-df->first_statement);
-		return;
-	}
-
-	PR_Print("\n%s%s = ",func_headers[df-functions],strings + df->s_name);
-
-	if(ds->op == OP_STATE) {
-		typ1 = pr_opcodes[ds->op].type_a;
-		typ2 = pr_opcodes[ds->op].type_b;
-		arg1 = DCC_ValueString(typ1->type->type,&pr_globals[ds->a]);
-		arg2 = PR_PrintStringAtOfs(ds->b,typ2);
-		PR_Print(" [%s, %s]",arg1,arg2);
-	}
-
-	PR_Print(" {\n");
-	AddProgramFlowInfo(df);
-	PR_Locals(df);
-	lindent = 1;
-
-	while (1)
-	{
-		DccStatement(df,ds,&i);
-		//PR_PrintStatement (ds);
-		if (!ds->op)
-			break;
-		ds++;
-	}
-}
-*/
 
 
 void FixFunctionNames (void)
