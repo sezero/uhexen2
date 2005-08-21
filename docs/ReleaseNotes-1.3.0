@@ -1,0 +1,118 @@
+Hammer of Thyrion v1.3.0
+
+Summary of Changes since HoT-v1.2.4:
+
+Gameplay:
+ * Gamecode is now at version 1.14.
+ * Teleportation push-speed is now the same as Raven's original except
+   for single player game in the Cathedral level.
+ * Added Pa3PyX' fire delay bits for paladin's setstaff.
+ * Disallowed cycling to a weapon without proper mana.
+ * Enabled impulse 34, (puzzle piece inventory listing)
+ * Speed key now acts as slow key when "always run" is chosen.
+ * mlook and lookspring fixes.
+ * Multiplayer episode selection fixed.
+ * Mini-status is now allowed when hud transparency is set.
+
+General Bug-Fixes / Improvements:
+ * Engine version is now 1.14 for hexen2, 0.16 for hexenworld.
+ * Several pointer fixes which would lead to endless loops, "bad
+   movement" errors and such.
+ * Fixed a sneaky demo playback bug which caused a fake freeze-like
+   appearance when no next demos were found.
+ * ChaseCam clipping and pitch fixes (still not perfect, but much
+   better than what we previously had.)
+ * Endianness detection fixes (now decided at compile time not in
+   runtime.)
+ * We now allocate on the hunk (or zone) and don't malloc system
+   memory unless necessary.
+ * Increased hexen2 minimum zone size to 256 kb which now matches
+   that of hexenworld
+ * Fixed alsa minimum required version detection.
+ * Added missing console input code for dedicated server cases.
+ * Added lower/upper boundaries (8mb/96mb) for -heapsize argument.
+ * Added lower (256kb)/upper (1mb) boundaries for -zone argument.
+ * Many build system / makefile fixes.
+ * Huge code cleanup. The code should be gcc4-ready now. Many dead
+   or broken code are removed, as well.
+ * Other smallish fixes such as out-of-bound arrays, etc.
+
+General Video:
+ * Added support for window manager icon using xbm format.
+
+OpenGL Renderer:
+ * Improved support for 3dfx Voodoo Graphics and Voodoo2 accelerators
+   including native gamma support through the lib3dfxgamma library. A
+   small HOWTO for these boards is provided, as well.
+ * Added 2-TMU multitexturing support (doesn't work correctly for 3dfx
+   cards, yet.)
+ * Added 2 and 4 sample FSAA support (SDL >= 1.2.6 is required)
+ * Revived palettized textures support which helps saving video memory
+   on old low-end cards (activated by -paltex command-line argument.)
+ * Added texture checksumming which fixes "white" textures when
+   gl_purge_maptex is not set.
+ * Added support for the -conwidth argument which enables larger, thus
+   readable text and bigger hud in high resolutions.
+ * The mesh cache is now searched directly under com_userdir/glhexen,
+   not in search_path, fixing the crazy polygons in mods bug.
+ * Prevent Z fighting in shadows.
+ * Added a gl-gamma trick by LordHavoc which is activated if all other
+   methods of brightness control fail.
+ * Added and fixed (worked-around) "crosshair 2" support of hexenworld to
+   hexen2, which now uses 32x32 pixmaps (pixmap loading procedure stolen
+   from the twilight project). Also merged crosshaircolor (0-255) support
+   of original quake.
+
+Software Renderer:
+ * Added "crosshair 2" support of hexenworld to hexen2.
+ * Added transparent statusbar of hexenworld to hexen2 for software mode.
+   Cvar controlled:  "sbtrans N",  N = 0: solid, 1: slightly transparent,
+   2: very transparent.
+
+Music / Sound:
+ * Added device selection support (-ossdev) to OSS sound.
+ * OSS sound now mmaps /dev/dsp with PROT_READ flag set.
+ * Documented the sound and cdrom device selection options.
+ * Updated cdrom code so that it doesn't completely fail when there
+   is no disc in the drive during initialization.
+ * Fixed a cdrom volume update bug.
+ * Fixed music volume from config.cfg not taken into action on startup
+ * Added FreeBSD and SDL cdrom code.
+ * Fixed midi not playing when midifile exists in the game's searchpath
+   but not in <userdir>/.midi
+ * Fixed an oversight in reinit_music which resulted in a needless
+   restart of midi music upon pressing Esc twice.
+
+Filesystem:
+ * Userdir support is expanded to cover the whole code including server
+   logs, recorded demos, downloaded files and all others.
+ * COM_InitFilesystem is updated and demo/retail detection is improved.
+
+Mouse:
+ * Mouse code is re-visited with bug-fixes and cleaned-ups.
+ * The -nomouse option is revived to completely disable mouse usage
+   upon request.
+
+Hexenworld:
+ * Fixed a longstanding client crash with lightning streams.
+ * Ported all features and fixes (such as glow code, model recycling,
+   opengl texture flushing, hud fixes, etc) which resided in hexen2
+   to hexenworld. The two trees are now in sync feature-wise.
+ * Added hexenworld master server (by Marc Allaire, aka. Kor Skarn).
+ * Connection is no longer refused upon client/server version mismatches.
+   Such things should rely on protocol version, not simply version.
+ * Fixed Dwarf class was never being enabled in Siege game in the menu
+   system because of a com_gamedir oversight.
+ * Fixed server sending the wrong message for cdrom track which resulted
+   in cd music not playing on the client side.
+ * Tiny update for failure cases of NET_SendPacket and NET_GetPacket.
+
+Game Launcher:
+ * The game launcher is cleaned-up, bug-fixed and and updated to version
+   0.6.1 to support more options.
+
+Platform Support:
+ * FreeBSD: Updated the code to support FreeBSD ( >= 5.3 ).
+ * Win32: Restored code's compilability on Windows platform (using MinGW
+   and MSYS.) HoT tree is now functional on Win32.
+

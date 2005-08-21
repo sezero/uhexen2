@@ -1,0 +1,79 @@
+
+Hexen II for Linux: Hammer of Thyrion 1.2.3
+===========================================
+
+Changes since HoT-1.2.2:
+
+General:
+  - The user directory is ~/.hexen2 for the full version
+    and ~/.hexen2demo for the demo version, from now on.
+  - The demo ending screen message is fixed.
+
+Game Launcher:
+  - Highly fixed and tweaked, and also built a GTK2 version.
+
+Installer:
+  - Prepared graphical installers for both retail and demo
+    versions. The retail installer handles all the copying
+    from cdrom and patching jobs.
+  - Also prepared binaries against glibc-2.2.5 (using gcc-
+    2.96 on RedHat-7.3) and placed into the installer.
+
+GamePlay Fixes (automatically
+available from the installer):
+  - Typo fixes in strings.txt of Hexen2.
+  - Holy item in the Cathedral balcony was not reachable
+    (reduced the game's teleport-pushing speed.)
+  - Eidolon lost his hostility under certain conditions
+    (merged newer eidolon code of the mission pack.)
+  - Eidolon would fail landing after his initial jump.
+(If you're not using the installer, separate downloads
+ from the HoT site are necessary.)
+
+Documentation:
+  - Clarifications on network compatibility.
+  - Several other updates.
+
+Menu:
+  - Fixed GL Glows menu item and made it control
+    gl_other_glows, too.
+  - New menu item for "Previous Weapon".
+  - New menu item for Fullscreen/Windowed toglling.
+
+Input:
+  - Wheelmouse support added.
+  - Mouse2/Mouse3 buttons behavior is fixed.
+  - _windowed_mouse also defaults to 1 for opengl version.
+  - Mouse can now be disabled for fullscreen modes.
+
+Sound:
+  - Merged slightly newer snd_dma code from HexenWorld to
+    Hexen2 (small changes, though.)
+
+Filesystem:
+  - Hexen2/HW now correctly honor the -game argument for
+    the user directories.
+
+General Graphics:
+  - Intermission screens are drawn fullscreen even on high
+    resolutions. This includes the Help screens.
+
+OpenGL:
+  - Texture delete/reload support.
+  - No more dying on texture cache mismatches.
+  - Fixed textures going missing sometimes.
+  - gl_ztrick also disabled by default in HexenWorld.
+  - Fixed gl_other_glows option not being written into config.
+  - Maximum texture size is now detected using glGetIntegerv,
+    not vendor string.
+  - Removed second arg from the function EmitSkyPolys().
+  - Several other cleanups.
+
+Source Code:
+  - Big source code cleanup.
+  - More merges of fixes/features from hexen2 to hexenworld.
+
+Build System;
+  - Using redhat rpm style arch flags (-march=i386 -mcpu=i686).
+  - Added options for building for the demo version.
+

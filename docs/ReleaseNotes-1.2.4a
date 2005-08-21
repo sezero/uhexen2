@@ -1,0 +1,72 @@
+Hexen II for Linux: Hammer of Thyrion 1.2.4a
+============================================
+
+The primary focus of this new release may be considered as sound
+and music changes: Two new sound drivers, SDL and ALSA, were added.
+People who used to have issues with sound should now play the game
+with sound. Volume adjustment issues for music are also addressed.
+A more detailed list of changes is below.
+
+Summary of Changes (since HoT-1.2.4):
+-------------------------------------
+Merged tiny fixes from the HEAD branch & bumped to 1.2.4a:
+- updated the documentation
+- small sbar resizing fix in software mode
+- fixed an oversight in reinit_music which resulted in a
+  needless restart of midi music upon pressing Esc twice
+- added back console video mode reporting
+
+Summary of Changes (since HoT-1.2.3):
+-------------------------------------
+- SDL and ALSA sound drivers are added. These should help people
+  having sound problems with the OSS driver.
+  * Sound drivers can be chosen either by using the game launcher
+    or by command line switches,
+  * ALSA sound requires 1.0.X versions of alsa kernel modules and
+    alsa-libraries,
+  * For SDL sound, we recommend SDL-1.2.7 or newer versions.
+- Fixed cd music stopping upon changing volume.
+- Added working volume control for cdrom and midi music.
+- Midi music now works for HexenWorld.
+- Further small fixes to the core sound code and to OSS driver.
+- Fixed bug where demos played without models when the -nosound
+  command-line switch was in effect.
+- Added support for mouse buttons 4 and 5 (thanks Julien Langer)
+- Fixed statusbar being displayed with an ugly brown-colored band
+- Added sky alpha (transparency for lower sky layer)
+- Added transparency for console background (from hexenworld).
+- Fixed hexenworld bug causing mouse not being activated after
+  connecting to a server.
+- Fixed "flush_textures" decision which used to be always true.
+  Loading the same map should now be faster on old systems.
+- Ported many features/fixes from Hexen2 to HexenWorld. There
+  should be less difference between the two now.
+- The game launcher now scans for known hexenworld game-types
+  and hexen2 botmatch mods, and provides a list menu.
+- The launcher interface now has two modes, basic and detailed.
+- Many internal changes to the source code (see the CHANGES file
+  for such details.)
+- HexenWorld Gamecode changes/fixes:
+  * server no longer crashes on maps rider1a, rider2c, romeric6,
+    meso9 and eidolon
+  * added server map cycling for HexenWorld
+- Hexen2 Gameplay changes/fixes (merged from Pa3PyX' sources):
+  * fps independent crossbow, setstaff and flameorb fire rates 
+  * no more 20 tornadoes per second from meteor staff at 200 fps
+  * fix for ravenstaff bug where splitting missiles would collide
+    with each other.   * assasin cloak ability re-write.
+  * necromancer soul steal adjustments to make it really useful.
+  * fixes to demoness abilities according to the manual
+  * crusader's full-mana ability starts at level3, assasin's
+    backstab and crusader's holy strength start at level6.
+
+Known Problems:
+---------------
+- Midi music doesn't work with SDL sound driver. This is due to
+  conflicts between SDL and SDL_mixer calls and will be addressed
+  in future versions.
+
+Acknowledgement:
+----------------
+Many thanks to Levent Yavas for his remarkable patience in testing
+of this release.
