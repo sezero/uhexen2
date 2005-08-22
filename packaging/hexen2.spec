@@ -25,18 +25,19 @@ BuildRequires:	gtk+-devel libstdc++-devel
 %{!?_without_freedesktop:BuildRequires: desktop-file-utils}
 %{!?_without_gtk2:BuildRequires: gtk2-devel}
 Requires:	SDL >= 1.2.6
-Requires:	hexen2-launcher
 
 %description
 Hexen II is a class based shooter game by Raven Software from 1997.
 This is the Linux port of the GPL'ed source code released by Raven.
 This package contains the binaries that will run the original Hexen2
 game in software or OpenGL mode.
+Also included here is the Hexen 2 Game Launcher that provides a gui
+for launching different versions of the game.
 
 %package -n hexen2-missionpack
 Group:		Amusements/Games
 Summary:	Hexen II Mission Pack: Portal of Praevus
-Requires:	hexen2 hexen2-launcher
+Requires:	hexen2
 
 %description -n hexen2-missionpack
 Hexen II is a class based shooter game by Raven Software from 1997.
@@ -48,7 +49,7 @@ Pack: Portal of Praevus in software or OpenGL mode.
 Group:		Amusements/Games
 Summary:	HexenWorld Client and Server
 Requires:	SDL >= 1.2.6
-Requires:	hexen2 hexen2-launcher
+Requires:	hexen2
 
 %description -n hexenworld
 Hexen II is a class based shooter game by Raven Software from 1997.
@@ -56,16 +57,6 @@ This is the Linux port of the GPL'ed source code released by Raven.
 This package contains the binaries that are required to run a
 HexenWorld server or run HexenWorld Client in software or OpenGL
 mode.
-
-%package -n hexen2-launcher
-Group:		Amusements/Games
-Summary:	Hexen II game launcher
-
-%description -n hexen2-launcher
-Hexen II is a class based shooter game by Raven Software from 1997.
-This is the Linux port of the GPL'ed source code released by Raven.
-This package contains the Hexen 2 Game Launcher that provides a gui
-for launching different versions of the game.
 
 %prep
 %setup -q -n hexen2source-%{version} -a1 -a2
@@ -110,12 +101,7 @@ utils/h2mp_utils/bin/hcc -src gamecode/hc/hw -oi -on
 
 # Build game-update patcher loki_patch
 cd loki_patch-src
-patch -p1 < xdelta-1.1.3-aclocal.patch
-patch -p1 < xdelta-1.1.3-freegen.patch
-patch -p1 < xdelta-1.1.3-gcc4.patch
-patch -p1 < loki_setupdb-0.diff
-patch -p1 < loki_patch-1.diff
-patch -p1 < loki_patch-2.diff
+sh apply-patches.sh
 cd xdelta-1.1.3
 sh configure
 make
@@ -184,7 +170,7 @@ ln -s %{_prefix}/games/hexen2/h2launcher %{buildroot}/%{_bindir}/hexen2
 # Install the Hexen2 and H2MP xdelta updates
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdata/
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1
-%{__install} -D -m644 gamecode/pak_v111/update_h2 %{buildroot}/%{_prefix}/games/%{name}/update_h2
+%{__install} -D -m755 gamecode/pak_v111/update_h2 %{buildroot}/%{_prefix}/games/%{name}/update_h2
 %{__install} -D -m644 gamecode/pak_v111/patchdata/data1/pak0.pak.103_111 %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/pak0.pak.103_111
 %{__install} -D -m644 gamecode/pak_v111/patchdata/data1/pak1.pak.103_111 %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/pak1.pak.103_111
 %{__install} -D -m644 gamecode/pak_v111/h2_103_111.dat %{buildroot}/%{_prefix}/games/%{name}/h2_103_111.dat
@@ -238,6 +224,23 @@ rm -rf %{buildroot}
 %{_prefix}/games/%{name}/data1/hexen.rc
 %{_prefix}/games/%{name}/data1/strings.txt
 %{_prefix}/games/%{name}/data1/default.cfg
+%{_bindir}/hexen2
+%{_datadir}/pixmaps/%{name}.png
+%{_prefix}/games/%{name}/h2launcher
+%{_prefix}/games/%{name}/docs/README
+%{_prefix}/games/%{name}/docs/COPYING
+%{_prefix}/games/%{name}/docs/BUGS
+%{_prefix}/games/%{name}/docs/ABOUT
+%{_prefix}/games/%{name}/docs/CHANGES
+%{_prefix}/games/%{name}/docs/README.launcher
+%{_prefix}/games/%{name}/docs/README.hwmaster
+%{_prefix}/games/%{name}/docs/README.3dfx
+%{_prefix}/games/%{name}/docs/TODO
+%{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.3
+%{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.4a
+%{_prefix}/games/%{name}/docs/ReleaseNotes-%{version}
+%{!?_without_freedesktop:%{_datadir}/applications/%{desktop_vendor}-%{name}.desktop}
+%{?_without_freedesktop:%{_sysconfdir}/X11/applnk/Games/%{name}.desktop}
 
 %files -n hexen2-missionpack
 %defattr(-,root,root)
@@ -260,27 +263,6 @@ rm -rf %{buildroot}
 %{_prefix}/games/%{name}/hw/pak4.pak
 %{_prefix}/games/%{name}/hw/strings.txt
 %{_prefix}/games/%{name}/hw/default.cfg
-
-%files -n hexen2-launcher
-%defattr(-,root,root)
-%{_bindir}/hexen2
-%{_datadir}/pixmaps/%{name}.png
-%{_prefix}/games/%{name}/h2launcher
-%{_prefix}/games/%{name}/docs/README
-%{_prefix}/games/%{name}/docs/COPYING
-%{_prefix}/games/%{name}/docs/BUGS
-%{_prefix}/games/%{name}/docs/ABOUT
-%{_prefix}/games/%{name}/docs/CHANGES
-%{_prefix}/games/%{name}/docs/README.launcher
-%{_prefix}/games/%{name}/docs/README.hwmaster
-%{_prefix}/games/%{name}/docs/README.3dfx
-%{_prefix}/games/%{name}/docs/TODO
-%{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.3
-%{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.4a
-%{_prefix}/games/%{name}/docs/ReleaseNotes-%{version}
-%{!?_without_freedesktop:%{_datadir}/applications/%{desktop_vendor}-%{name}.desktop}
-%{?_without_freedesktop:%{_sysconfdir}/X11/applnk/Games/%{name}.desktop}
-
 
 %changelog
 * Thu Aug 21 2005 O.Sezer <sezero@users.sourceforge.net> 1.3.0-1
