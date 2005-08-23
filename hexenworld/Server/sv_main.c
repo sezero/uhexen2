@@ -430,7 +430,7 @@ void SVC_Log (void)
 	Con_DPrintf ("sending log %i to %s\n", svs.logsequence-1, NET_AdrToString(net_from));
 
 	sprintf (data, "stdlog %i\n", svs.logsequence-1);
-	strcat (data, svs.log_buf[((svs.logsequence-1)&1)]);
+	strcat (data, (char *)svs.log_buf[((svs.logsequence-1)&1)]);
 
 	NET_SendPacket (strlen(data)+1, data, net_from);
 }

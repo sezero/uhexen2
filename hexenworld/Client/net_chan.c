@@ -104,7 +104,7 @@ void Netchan_OutOfBandPrint (netadr_t adr, char *format, ...)
 	va_end (argptr);
 
 
-	Netchan_OutOfBand (adr, strlen(string), string);
+	Netchan_OutOfBand (adr, strlen(string), (byte *)string);
 }
 
 
