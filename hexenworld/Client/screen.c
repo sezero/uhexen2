@@ -701,10 +701,10 @@ void SCR_ScreenShot_f (void)
 	} 
 	if (i==100) 
 	{
-		Con_Printf ("SCR_ScreenShot_f: Couldn't create a PCX"); 
+		Con_Printf ("SCR_ScreenShot_f: Couldn't create a PCX file");
 		return;
 	}
- 
+
 // 
 // save the pcx file 
 // 
@@ -806,7 +806,7 @@ void SCR_UpdateScreen (void)
 		return;
 
 	if (scr_disabled_for_loading)
-		return;
+			return;
 
 #ifdef _WIN32
 	// don't suck up any cpu if minimized
@@ -878,10 +878,11 @@ void SCR_UpdateScreen (void)
 
 
 	SCR_SetUpToDrawConsole ();
-//	SCR_EraseCenterString ();
-	
+	//SCR_EraseCenterString ();
+
 	D_DisableBackBufferAccess ();	// for adapters that can't stay mapped in
-									//  for linear writes all the time
+						//  for linear writes all the time
+
 	if (cl.intermission < 1 || cl.intermission > 12)
 	{
 		VID_LockBuffer ();
@@ -900,18 +901,19 @@ void SCR_UpdateScreen (void)
 	}
 	else if (cl.intermission >= 1 && cl.intermission <= 12)
 	{
+#if 0	// not in H2W
 		SB_IntermissionOverlay();
-		SCR_DrawConsole();
-		M_Draw();
+		if (cl.intermission < 12)
+		{
+			SCR_DrawConsole();
+			M_Draw();
+		}
+#endif
 	}
 /*	else if (cl.intermission == 2 && key_dest == key_game)
 	{
 		SB_FinaleOverlay();
 		SCR_CheckDrawCenterString();
-	}
-	else if (cl.intermission == 3 && key_dest == key_game)
-	{
-		SCR_CheckDrawCenterString ();
 	}*/
 	else
 	{
@@ -921,16 +923,16 @@ void SCR_UpdateScreen (void)
 		SCR_DrawPause();
 		SCR_CheckDrawCenterString();
 		Sbar_Draw();
-		Plaque_Draw(plaquemessage,0);
-		SCR_DrawConsole();
-		M_Draw();
-		if (errormessage)
-			Plaque_Draw(errormessage,1);
+
+			Plaque_Draw(plaquemessage,0);
+			SCR_DrawConsole();
+			M_Draw();
+			if (errormessage)
+				Plaque_Draw(errormessage,1);
 	}
 
-
 	D_DisableBackBufferAccess ();	// for adapters that can't stay mapped in
-									//  for linear writes all the time
+						//  for linear writes all the time
 	if (pconupdate)
 	{
 		D_UpdateRects (pconupdate);
@@ -970,7 +972,7 @@ void SCR_UpdateScreen (void)
 		vrect.pnext = 0;
 	
 		VID_Update (&vrect);
-	}	
+	}
 }
 
 // This is also located in gl_screen.c
@@ -1084,7 +1086,7 @@ void I_Print (int cx, int cy, char *str)
 // SB_IntermissionOverlay
 //
 //==========================================================================
-
+#if 0	// the code is not used in H2W
 void SB_IntermissionOverlay(void)
 {
 	qpic_t	*pic;
@@ -1205,13 +1207,14 @@ void SB_IntermissionOverlay(void)
 	}
 //	Con_Printf("Time is %10.2f\n",elapsed);
 }
+#endif	// end of unused SB_IntermissionOverlay code
 
 //==========================================================================
 //
 // SB_FinaleOverlay
 //
 //==========================================================================
-
+#if 0	// the code is not used in H2W
 void SB_FinaleOverlay(void)
 {
 	qpic_t	*pic;
@@ -1221,6 +1224,7 @@ void SB_FinaleOverlay(void)
 	pic = Draw_CachePic("gfx/finale.lmp");
 	Draw_TransPic((vid.width-pic->width)/2, 16, pic);
 }
+#endif	// end of unused SB_FinaleOverlay code
 
 /*
 ==================

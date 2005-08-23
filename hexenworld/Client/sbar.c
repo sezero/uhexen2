@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.8 2005-07-16 23:35:19 sezero Exp $
+	$Id: sbar.c,v 1.9 2005-08-23 12:31:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2156,13 +2156,5 @@ static void DrawBarArtifactNumber(int x, int y, int number)
 void Sbar_Changed(void)
 {
 	SB_InvChanged();
-}
-
-void Sbar_FinaleOverlay(void)
-{
-}
-
-void Sbar_IntermissionOverlay(void)
-{
 }
 

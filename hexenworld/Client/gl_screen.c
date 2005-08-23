@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.14 2005-08-23 12:24:13 sezero Exp $
+	$Id: gl_screen.c,v 1.15 2005-08-23 12:31:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -101,8 +101,6 @@ viddef_t	vid;				// global video state
 vrect_t		scr_vrect;
 
 qboolean	scr_disabled_for_loading;
-qboolean	scr_drawloading;
-float		scr_disabled_time;
 
 qboolean	block_drawing;
 
@@ -515,25 +513,6 @@ void SCR_DrawPause (void)
 }
 
 
-/*
-==============
-SCR_DrawLoading
-==============
-*/
-void SCR_DrawLoading (void)
-{
-	qpic_t	*pic;
-
-	if (!scr_drawloading)
-		return;
-
-	pic = Draw_CachePic ("gfx/loading.lmp");
-	Draw_Pic ( (vid.width - pic->width)/2, 
-		(vid.height - 48 - pic->height)/2, pic);
-}
-
-
-
 //=============================================================================
 
 
@@ -545,10 +524,7 @@ SCR_SetUpToDrawConsole
 void SCR_SetUpToDrawConsole (void)
 {
 	Con_CheckResize ();
-	
-	if (scr_drawloading)
-		return;		// never a console with loading plaque
-		
+
 // decide on the height of the console
 	if (cls.state != ca_active)
 	{
@@ -854,7 +830,7 @@ void I_Print (int cx, int cy, char *str)
 // SB_IntermissionOverlay
 //
 //==========================================================================
-
+#if 0	// the code is not used in H2W
 void SB_IntermissionOverlay(void)
 {
 	qpic_t	*pic;
@@ -864,7 +840,8 @@ void SB_IntermissionOverlay(void)
 	scr_copyeverything = 1;
 	scr_fullupdate = 0;
 
-//rjr	if (cl.gametype == GAME_DEATHMATCH)
+//	if (cl.gametype == GAME_DEATHMATCH)
+	if(!cl_siege)
 	{
 		Sbar_DeathmatchOverlay ();
 		return;
@@ -972,13 +949,14 @@ void SB_IntermissionOverlay(void)
 	}
 //	Con_Printf("Time is %10.2f\n",elapsed);
 }
+#endif	// end of unused SB_IntermissionOverlay code
 
 //==========================================================================
 //
 // SB_FinaleOverlay
 //
 //==========================================================================
-
+#if 0	// the code is not used in H2W
 void SB_FinaleOverlay(void)
 {
 	qpic_t	*pic;
@@ -988,6 +966,7 @@ void SB_FinaleOverlay(void)
 	pic = Draw_CachePic("gfx/finale.lmp");
 	Draw_TransPic((vid.width-pic->width)/2, 16, pic);
 }
+#endif	// end of unused SB_FinaleOverlay code
 
 /*
 ==================
@@ -1011,15 +990,7 @@ void SCR_UpdateScreen (void)
 	scr_copyeverything = 0;
 
 	if (scr_disabled_for_loading)
-	{
-		if (realtime - scr_disabled_time > 60)
-		{
-			scr_disabled_for_loading = false;
-			Con_Printf ("load failed.\n");
-		}
-		else
 			return;
-	}
 
 	if (!scr_initialized || !con_initialized)
 		return;				// not initialized yet
@@ -1066,51 +1037,40 @@ void SCR_UpdateScreen (void)
 		SCR_DrawNotifyString ();
 		scr_copyeverything = true;
 	}
-//	Pa3PyX: this clobbers intermission screens
-/*	else if (scr_drawloading)
+	else if (cl.intermission >= 1 && cl.intermission <= 12)
 	{
-		Sbar_Draw ();
-		Draw_FadeScreen ();
-		SCR_DrawLoading ();
-	} */
-	else if (cl.intermission == 1 && key_dest == key_game)
-	{
-		Sbar_IntermissionOverlay ();
-		// Pa3PyX
-		if (scr_drawloading)
-			SCR_DrawLoading();
+#if 0	// not in H2W
+		SB_IntermissionOverlay();
+		if (cl.intermission < 12)
+		{
+			SCR_DrawConsole();
+			M_Draw();
+		}
+#endif
 	}
-	else if (cl.intermission == 2 && key_dest == key_game)
+/*	else if (cl.intermission == 2 && key_dest == key_game)
 	{
-		Sbar_FinaleOverlay ();
-		SCR_CheckDrawCenterString ();
-	}
+		SB_FinaleOverlay();
+		SCR_CheckDrawCenterString();
+	}*/
 	else
 	{
 		if (crosshair.value)
 			Draw_Crosshair();
 
-		SCR_DrawRam ();
-		SCR_DrawFPS ();
-		SCR_DrawTurtle ();
-		SCR_DrawPause ();
-		SCR_CheckDrawCenterString ();
-		Sbar_Draw ();
+		SCR_DrawRam();
+		SCR_DrawFPS();
+		SCR_DrawTurtle();
+		SCR_DrawPause();
+		SCR_CheckDrawCenterString();
+		Sbar_Draw();
 
-		// Pa3PyX: draw loading plaque and dim screen if loading
-		if (scr_drawloading)
-		{
-			Draw_FadeScreen();
-			SCR_DrawLoading();
-		}
-		else {
 			Plaque_Draw(plaquemessage,0);
 			SCR_DrawNet ();
-			SCR_DrawConsole ();     
-			M_Draw ();
+			SCR_DrawConsole();
+			M_Draw();
 			if (errormessage)
 				Plaque_Draw(errormessage,1);
-		}
 	}
 
 	V_UpdatePalette ();

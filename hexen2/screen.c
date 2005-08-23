@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.12 2005-08-23 12:24:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.13 2005-08-23 12:31:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -755,9 +755,9 @@ void SCR_ScreenShot_f (void)
 	} 
 	if (i==100) 
 	{
-		Con_Printf ("SCR_ScreenShot_f: Couldn't create a PCX file\n"); 
+		Con_Printf ("SCR_ScreenShot_f: Couldn't create a PCX file\n");
 		return;
- 	}
+	}
 
 // 
 // save the pcx file 
@@ -961,7 +961,7 @@ void SCR_UpdateScreen (void)
 	
 	if (vid.recalc_refdef)
 	{
-	// something changed, so reorder the screen
+		// something changed, so reorder the screen
 		SCR_CalcRefdef ();
 	}
 
@@ -969,7 +969,6 @@ void SCR_UpdateScreen (void)
 // do 3D refresh drawing, and then update the screen
 //
 	D_EnableBackBufferAccess ();	// of all overlay stuff if drawing directly
-
 
 	if (scr_needfull && (!plaquemessage || plaquemessage[0] == 0 || !SCR_CheckDrawCenterString2()))
 		scr_fullupdate = 0;
@@ -994,7 +993,7 @@ void SCR_UpdateScreen (void)
 	//SCR_EraseCenterString ();
 
 	D_DisableBackBufferAccess ();	// for adapters that can't stay mapped in
-									//  for linear writes all the time
+						//  for linear writes all the time
 
 	if (cl.intermission < 1 || cl.intermission > 12)
 	{
@@ -1036,10 +1035,6 @@ void SCR_UpdateScreen (void)
 	{
 		SB_FinaleOverlay();
 		SCR_CheckDrawCenterString();
-	}
-	else if (cl.intermission == 3 && key_dest == key_game)
-	{
-		SCR_CheckDrawCenterString ();
 	}*/
 	else
 	{
@@ -1057,20 +1052,20 @@ void SCR_UpdateScreen (void)
 			SCR_DrawLoading();
 		}
 		else {
-		Plaque_Draw(plaquemessage,0);
-		SCR_DrawConsole();
-		M_Draw();
-		if (errormessage)
-			Plaque_Draw(errormessage,1);
+			Plaque_Draw(plaquemessage,0);
+			SCR_DrawConsole();
+			M_Draw();
+			if (errormessage)
+				Plaque_Draw(errormessage,1);
 		
-		if (info_up)
-		{
+			if (info_up)
+			{
 #ifdef H2MP
-			UpdateInfoMessage();
+				UpdateInfoMessage();
 #endif
-			Info_Plaque_Draw(infomessage);
+				Info_Plaque_Draw(infomessage);
+			}
 		}
-	}
 	}
 
 	// Pa3PyX: this is now only called by actual loading procedures
@@ -1079,7 +1074,7 @@ void SCR_UpdateScreen (void)
 */
 
 	D_DisableBackBufferAccess ();	// for adapters that can't stay mapped in
-									//  for linear writes all the time
+						//  for linear writes all the time
 	if (pconupdate)
 	{
 		D_UpdateRects (pconupdate);
@@ -1090,7 +1085,6 @@ void SCR_UpdateScreen (void)
 //
 // update one of three areas
 //
-
 	if (scr_copyeverything)
 	{
 		vrect.x = 0;
@@ -1380,7 +1374,8 @@ void SB_IntermissionOverlay(void)
 		message = &pr_global_strings[pr_string_index[cl.intermission + 394]];
 /* O.S: Why do calculate and not say 408? Anyone weird enough to play the demo
    with strings.txt file from H2MP ?!!!! The thing below was off-by-one, btw..
-*/	else if (cl.intermission == 5)
+*/
+	else if (cl.intermission == 5)
 		message = &pr_global_strings[pr_string_index[ABILITIES_STR_INDEX+MAX_PLAYER_CLASS*2]];
 	else if (cl.intermission >= 6 && cl.intermission <= 8 && cl.intermission + 386 <= pr_string_count)
 		message = &pr_global_strings[pr_string_index[cl.intermission + 386]];
@@ -1427,7 +1422,7 @@ void SB_IntermissionOverlay(void)
 		bx = ((40-strlen(temp)) * 8) / 2;
 	  	if (cl.intermission < 6 || cl.intermission > 9)
 			I_Print (bx, by, temp);
-		else 
+		else
 			M_PrintWhite (bx, by, temp);
 
 		elapsed -= size;
@@ -1471,6 +1466,10 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/08/23 12:24:11  sezero
+ * safe clean-ups before 1.3.0-final #1:
+ * killed some stupid 'may be used uninitialized' warnings
+ *
  * Revision 1.11  2005/08/07 10:59:05  sezero
  * killed the Sys_FileTime crap. now using standart access() function.
  *

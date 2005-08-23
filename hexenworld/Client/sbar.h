@@ -1,7 +1,7 @@
 /*
 	sbar.h
 
-	$Id: sbar.h,v 1.3 2005-07-16 23:35:19 sezero Exp $
+	$Id: sbar.h,v 1.4 2005-08-23 12:31:43 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -15,8 +15,10 @@
 void SB_Init(void);
 void SB_Changed(void);
 void SB_Draw(void);
+#if 0
 void SB_IntermissionOverlay(void);
 void SB_FinaleOverlay(void);
+#endif
 void SB_InvChanged(void);
 void SB_InvReset(void);
 void SB_ViewSizeChanged(void);
@@ -25,8 +27,6 @@ void Sbar_DeathmatchOverlay(void);
 void Sbar_Init(void);
 void Sbar_Changed(void);
 void Sbar_Draw(void);
-void Sbar_IntermissionOverlay(void);
-void Sbar_FinaleOverlay(void);
 
 // PUBLIC DATA DECLARATIONS ------------------------------------------------
 
