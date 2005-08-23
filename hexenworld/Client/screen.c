@@ -98,6 +98,9 @@ qboolean	scr_disabled_for_loading;
 qboolean	scr_skipupdate;
 
 qboolean	block_drawing;
+#ifdef _WIN32
+extern int	Minimized;
+#endif
 
 static qboolean scr_needfull = false;
 
@@ -806,12 +809,9 @@ void SCR_UpdateScreen (void)
 		return;
 
 #ifdef _WIN32
-	{	// don't suck up any cpu if minimized
-		extern int Minimized;
-
-		if (Minimized)
-			return;
-	}
+	// don't suck up any cpu if minimized
+	if (Minimized)
+		return;
 #endif
 
 	scr_copytop = 0;
