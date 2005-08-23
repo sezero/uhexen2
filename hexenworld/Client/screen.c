@@ -1140,11 +1140,13 @@ void SB_IntermissionOverlay(void)
 		case 12://Attacker win 2 - wiped out
 			pic = Draw_CachePicResize("gfx/attwin2.lmp", vid.width, vid.height);
 			break;
-
 		default:
-			Sys_Error ("SB_IntermissionOverlay: Bad episode");
+			pic = NULL;
 			break;
 	}
+	if (pic == NULL)
+		Sys_Error ("SB_IntermissionOverlay: Bad episode");
+
 	// Pa3PyX: intermissions will now be always drawn full screen size
 //	Draw_Pic (((vid.width - 320)>>1),((vid.height - 200)>>1), pic);
 	Draw_Pic(0, 0, pic);

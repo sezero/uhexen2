@@ -458,8 +458,11 @@ void CreateStream(int type, int ent, int flags, int tag, float duration, int ski
 		models[0] = Mod_ForName("models/stmedgaz.mdl", true);
 		break;
 	default:
-		Sys_Error("CreateStream: bad type");
+		models[0] = NULL;
+		break;
 	}
+	if (models[0] == NULL)
+		Sys_Error("CreateStream: bad type");
 
 	if((stream = NewStream(ent, tag)) == NULL)
 	{
@@ -698,8 +701,11 @@ static void ParseStream(int type)
 		models[0] = Mod_ForName("models/stmedgaz.mdl", true);
 		break;
 	default:
-		Sys_Error("ParseStream: bad type");
+		models[0] = NULL;
+		break;
 	}
+	if (models[0] == NULL)
+		Sys_Error("ParseStream: bad type");
 
 	if((stream = NewStream(ent, tag)) == NULL)
 	{

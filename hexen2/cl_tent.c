@@ -2,7 +2,7 @@
 	cl_tent.c
 	Client side temporary entity effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.5 2004-12-18 14:15:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.6 2005-08-23 12:24:11 sezero Exp $
 */
 
 
@@ -332,8 +332,11 @@ static void ParseStream(int type)
 		models[0] = Mod_ForName("models/stmedgaz.mdl", true);
 		break;
 	default:
-		Sys_Error("ParseStream: bad type");
+		models[0] = NULL;
+		break;
 	}
+	if (models[0] == NULL)
+		Sys_Error("ParseStream: bad type");
 
 	if((stream = NewStream(ent, tag)) == NULL)
 	{

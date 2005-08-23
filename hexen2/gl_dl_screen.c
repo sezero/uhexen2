@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_dl_screen.c,v 1.16 2005-08-07 10:59:05 sezero Exp $
+	$Id: gl_dl_screen.c,v 1.17 2005-08-23 12:24:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1033,9 +1033,11 @@ void SB_IntermissionOverlay(void)
 			pic = Draw_CachePicNoTrans ("gfx/end-3.lmp");
 			break;
 		default:
-			Sys_Error ("SB_IntermissionOverlay: Bad episode");
+			pic = NULL;
 			break;
 	}
+	if (pic == NULL)
+		Sys_Error ("SB_IntermissionOverlay: Bad episode");
 
 	//Draw_Pic (((vid.width - 320)>>1),((vid.height - 200)>>1), pic);
 	Draw_IntermissionPic(pic);
@@ -1272,6 +1274,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/08/07 10:59:05  sezero
+ * killed the Sys_FileTime crap. now using standart access() function.
+ *
  * Revision 1.15  2005/07/17 15:19:34  sezero
  * added crosshair 2 support of hexenworld to hexen2.
  * gl versions issue, that crosshair 2 won't show-up

@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.11 2005-08-07 10:59:05 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.12 2005-08-23 12:24:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1348,11 +1348,13 @@ void SB_IntermissionOverlay(void)
 		case 12:
 			pic = Draw_CachePicResize("gfx/end-3.lmp", vid.width, vid.height);
 			break;
-
 		default:
-			Sys_Error ("SB_IntermissionOverlay: Bad episode");
+			pic = NULL;
 			break;
 	}
+	if (pic == NULL)
+		Sys_Error ("SB_IntermissionOverlay: Bad episode");
+
 	// Pa3PyX: intermissions will now be always drawn full screen size
 //	Draw_Pic (((vid.width - 320)>>1),((vid.height - 200)>>1), pic);
 	Draw_Pic(0, 0, pic);
@@ -1469,6 +1471,9 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/08/07 10:59:05  sezero
+ * killed the Sys_FileTime crap. now using standart access() function.
+ *
  * Revision 1.10  2005/05/29 08:53:57  sezero
  * get rid of silly name changes
  *

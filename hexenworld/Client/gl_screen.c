@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.13 2005-08-07 10:59:18 sezero Exp $
+	$Id: gl_screen.c,v 1.14 2005-08-23 12:24:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -909,9 +909,11 @@ void SB_IntermissionOverlay(void)
 			pic = Draw_CachePicNoTrans ("gfx/attwin2.lmp");
 			break;
 		default:
-			Sys_Error ("SB_IntermissionOverlay: Bad episode");
+			pic = NULL;
 			break;
 	}
+	if (pic == NULL)
+		Sys_Error ("SB_IntermissionOverlay: Bad episode");
 
 	//Draw_Pic (((vid.width - 320)>>1),((vid.height - 200)>>1), pic);
 	Draw_IntermissionPic(pic);
