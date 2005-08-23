@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.13 2005-08-23 12:31:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.14 2005-08-23 12:38:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -12,6 +12,54 @@
 #else
 #include <unistd.h>
 #endif
+
+/*
+
+background clear
+rendering
+turtle/net/ram icons
+sbar
+centerprint / slow centerprint
+notify lines
+intermission / finale overlay
+loading plaque
+console
+menu
+
+required background clears
+required update regions
+
+
+syncronous draw mode or async
+One off screen buffer, with updates either copied or xblited
+Need to double buffer?
+
+
+async draw will require the refresh area to be cleared, because it will be
+xblited, but sync draw can just ignore it.
+
+sync
+draw
+
+CenterPrint ()
+SlowPrint ()
+Screen_Update ();
+Con_Printf ();
+
+net 
+turn off messages option
+
+the refresh is allways rendered, unless the console is full screen
+
+
+console is:
+	notify lines
+	half
+	full
+	
+
+*/
+
 
 // only the refresh window will be updated unless these variables are flagged 
 int			scr_copytop;
@@ -1466,6 +1514,14 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/08/23 12:31:43  sezero
+ * safe clean-ups before 1.3.0-final #4: (gl)screen.c: cleaned-up some of
+ * the mess partially formed after merging the fullscreen intermissions
+ * code: indentation and whitespace fixes, if 0'ed SB_IntermissionOverlay
+ * and SB_FinaleOverlay of H2W, killed Sbar_IntermissionOverlay,
+ * Sbar_FinaleOverlay and SCR_DrawLoading of H2W along with associated
+ * vars. These probably need more clean-up and unification in future.
+ *
  * Revision 1.12  2005/08/23 12:24:11  sezero
  * safe clean-ups before 1.3.0-final #1:
  * killed some stupid 'may be used uninitialized' warnings
