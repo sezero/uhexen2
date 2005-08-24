@@ -101,15 +101,16 @@ utils/h2mp_utils/bin/hcc -src gamecode/hc/hw -oi -on
 
 # Build game-update patcher loki_patch
 cd loki_patch-src
-sh apply-patches.sh
-cd xdelta-1.1.3
-sh configure
-make
-cd ../loki_setupdb
+cd loki_setupdb
 sh autogen.sh
 sh configure
 make
 cd ../loki_patch
+tar xvfz libs/xdelta-1.1.3-patched.tar.gz
+cd xdelta-1.1.3
+sh configure
+make
+cd ..
 sh autogen.sh
 sh configure
 make
