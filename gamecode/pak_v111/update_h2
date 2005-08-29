@@ -1,8 +1,18 @@
 #!/bin/sh
 
+os=`uname -s`
+
+if [[ ! -f loki_patch.$os ]]; then
+	echo ""
+	echo "A loki_patch binary for your $os operating system cannot"
+	echo "be found. Please compile one from the sources and rename"
+	echo "to loki_patch.$os for this script to use it. Exitting..."
+	echo ""
+	exit 1
+fi
+
 echo ""
 echo "=============================================================="
-echo "Hexen2 game data update 1.12h for HoT-1.2.4:"
 echo "This will patch Hexen2 PAK files (cdrom-1.03 version) to 1.11,"
 echo "which is a required update by Raven/Activision."
 echo -n "Would you like to apply this update? [Y/n]: "
@@ -11,7 +21,7 @@ case $answer in
    [Nn]*)
        ;;
    *)
-       ./loki_patch h2_103_111.dat .
+       ./loki_patch.$os h2_103_111.dat .
    ;;
 esac
 
