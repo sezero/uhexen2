@@ -1,0 +1,130 @@
+Updates to sdl sound
+(copied QuakeForge bits. Sampling rates 44100 and
+48000 are just fine, 22050 seems good enough, but
+11025 has a noticable latency. 8000 rate is almost
+unusable. Mono sound is almost unusable as before.)
+
+New 2005-07-07: Allocate the buffer on the hunk
+
+diff -urNp uhexen2-20050703/hexen2/snd_dma.c uhexen2-20050703a/hexen2/snd_dma.c
+--- uhexen2-20050703/hexen2/snd_dma.c	2005-07-02 14:47:02.000000000 +0300
++++ uhexen2-20050703a/hexen2/snd_dma.c	2005-07-07 20:02:38.000000000 +0300
+@@ -939,10 +939,10 @@ void S_Update_(void)
+ {
+ 	unsigned        endtime;
+ 	int				samps;
+-#ifdef PLATFORM_UNIX
+-	if (snd_system == S_SYS_SDL)
+-		return;
+-#endif
++//#ifdef PLATFORM_UNIX
++//	if (snd_system == S_SYS_SDL)
++//		return;
++//#endif
+ 	if (!sound_started || (snd_blocked > 0))
+ 		return;
+ 
+diff -urNp uhexen2-20050703/hexen2/snd_sdl.c uhexen2-20050703a/hexen2/snd_sdl.c
+--- uhexen2-20050703/hexen2/snd_sdl.c	2005-07-05 20:16:52.000000000 +0300
++++ uhexen2-20050703a/hexen2/snd_sdl.c	2005-07-07 20:41:43.000000000 +0300
+@@ -9,19 +9,33 @@
+ #include "SDL.h"
+ #include "quakedef.h"
+ 
+-static int snd_inited;
++static int buffersize, snd_inited;
++static int allocMark = 0;
+ 
+ extern int desired_speed, desired_bits, desired_channels;
++extern int soundtime;
+ extern int tryrates[MAX_TRYRATES];
+ 
+ static void paint_audio(void *unused, Uint8 *stream, int len)
+ {
+-	if ( shm ) {
+-		shm->buffer = stream;
+-		shm->samplepos += len/(shm->samplebits/8)/2;
+-		// Check for samplepos overflow?
+-		S_PaintChannels (shm->samplepos);
++	int sampleposbytes, samplesbytes, streamsamples;
++
++	streamsamples = len / (shm->samplebits / 8);
++	sampleposbytes = shm->samplepos * (shm->samplebits / 8);
++	samplesbytes = shm->samples * (shm->samplebits / 8);
++
++	shm->samplepos += streamsamples;
++
++	while (shm->samplepos >= shm->samples)
++		shm->samplepos -= shm->samples;
++
++	if (shm->samplepos + streamsamples <= shm->samples) {
++		memcpy (stream, shm->buffer + sampleposbytes, len);
++	} else {
++		memcpy (stream, shm->buffer + sampleposbytes, samplesbytes - sampleposbytes);
++		memcpy (stream + samplesbytes - sampleposbytes, shm->buffer, len - (samplesbytes - sampleposbytes));
+ 	}
++	soundtime += streamsamples;
+ }
+ 
+ qboolean S_SDL_Init(void)
+@@ -83,6 +97,8 @@ qboolean S_SDL_Init(void)
+ 			break;
+ 	}
+ 
++	SDL_LockAudio();
++
+ 	/* Fill the audio DMA information block */
+ 	shm = &sn;
+ 	shm->splitbuffer = 0;
+@@ -91,13 +107,16 @@ qboolean S_SDL_Init(void)
+ 		Con_Printf ("Warning: Rate set (%i) didn't match requested rate (%i)!\n", obtained.freq, desired_speed);
+ 	shm->speed = obtained.freq;
+ 	shm->channels = obtained.channels;
+-	shm->samples = obtained.samples*shm->channels;
++	shm->samples = obtained.samples * shm->samplebits;
+ 	shm->samplepos = 0;
+ 	shm->submission_chunk = 1;
+ 
+-	shm->buffer = NULL;
++	buffersize = shm->samples * (shm->samplebits / 8);
++	allocMark = Hunk_LowMark();
++	shm->buffer = Hunk_AllocName(buffersize, "sdl_audio");
+ 
+ 	snd_inited = 1;
++	SDL_UnlockAudio();
+ 	SDL_PauseAudio(0);
+ 	Con_Printf("Audio Subsystem initialized in SDL mode.\n");
+ 	Con_Printf ("%5d stereo\n", shm->channels - 1);
+@@ -107,6 +126,7 @@ qboolean S_SDL_Init(void)
+ 	Con_Printf ("%5d submission_chunk\n", shm->submission_chunk);
+ 	Con_Printf ("%5d speed\n", shm->speed);
+ 	Con_Printf ("0x%x dma buffer address\n", (int) shm->buffer);
++	Con_Printf ("%5d buffer size\n", buffersize);
+ 	Con_Printf ("%5d total_channels\n", total_channels);
+ 	return 1;
+ }
+@@ -122,14 +142,23 @@ void S_SDL_Shutdown(void)
+ 	{
+ 		Con_Printf ("Shutting down SDL sound\n");
+ 		snd_inited = 0;
+-//		SDL_PauseAudio (1);
++		SDL_PauseAudio(1);
++		//SDL_UnlockAudio();
++		SDL_LockAudio();
+ 		SDL_CloseAudio();
++		if (allocMark) {
++			Hunk_FreeToLowMark(allocMark);
++			allocMark = 0;
++		}
++		shm = NULL;
+ 		SDL_QuitSubSystem(SDL_INIT_AUDIO);
+ 	}
+ }
+ 
+ void S_SDL_Submit(void)
+ {
++//	SDL_UnlockAudio();
++//	SDL_LockAudio();
+ }
+ 
+ /*
