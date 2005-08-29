@@ -60,6 +60,7 @@ mode.
 
 %prep
 %setup -q -n hexen2source-%{version} -a1 -a2
+patch -p1 < 00_Patches/update_script_no_os_check.patch
 
 %build
 # Build the main game binaries
@@ -266,6 +267,9 @@ rm -rf %{buildroot}
 %{_prefix}/games/%{name}/hw/default.cfg
 
 %changelog
+* Thu Aug 29 2005 O.Sezer <sezero@users.sourceforge.net> 1.3.0-2
+- Patch: We need to remove OS checks from the update_h2 script
+
 * Thu Aug 21 2005 O.Sezer <sezero@users.sourceforge.net> 1.3.0-1
 - First sketchy spec file for RedHat and Fedora Core
 
