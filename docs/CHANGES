@@ -1,5 +1,33 @@
 ChangeLog:
 
+2005-08-29 (1.3.0-final):
+    * released as 1.3.0-final
+    * update_h2.sh: updated the pakfile patch script to use OS specific
+      versions of loki_patch binary.
+    * hexen2.spec: updated according to the final loki_patch package
+    * Makefile.unix: fixed static linking and explained the requirements
+      for it
+    * updated TODO list
+    * README: added details for manual installation and patching
+    * README, README.demo: added requirements info for glibc
+2005-08-22/23:
+    * cl_tent.c, (gl_)screen.c: killed some stupid 'may be used
+      uninitialized' warnings
+    * net_chan.c, sv_main.c: fixed two gcc4 warnings of type "pointer
+      targets in passing argument N of 'X' differ in signedness"
+    * (gl)screen.c, sbar.c, sbar.h: cleaned-up some of the mess part of
+      which partially formed after the fullscreen intermissions merge:
+      indentation and whitespace fixes, if 0'ed SB_IntermissionOverlay
+      and SB_FinaleOverlay of H2W, killed Sbar_IntermissionOverlay,
+      Sbar_FinaleOverlay and SCR_DrawLoading of H2W along with associated
+      vars. Will probably need more clean-up and unification in future.
+    * screen.c: fixed a silly nested extern declaration
+    * screen.c: added the missing notes by ID to the H2 version
+    * glwin32.h: fixed a typo
+    * common.h, cmdlib.h, defs.h: cleaned up endianness macros
+    * added ReleaseNotes to the docs folder
+    * hexen2.spec: fixed and updateo the rpm spec file
+
 2005-08-20 (CVS, 1.3.0-rc5c):
     * fixed temporary gip files not being removed and probably caused
       "bad" savegames on win32. removed unnecessary platform defines
