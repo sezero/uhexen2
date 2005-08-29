@@ -72,11 +72,14 @@ SDLLINK = `sdl-config --libs`
 LDFLAGS =
 GLFLAGS = -L/usr/X11R6/lib
 ASFLAGS = -f elf
-LDSTATIC = -Wl,-Bstatic -L/usr/lib -lSDL_mixer -lSDL -L/usr/X11R6/lib -lX11 -lXext -ldl -L/usr/X11R6/lib -lXxf86dga -lXxf86vm -lXv -L/usr/lib/ -lsmpeg -lvorbisfile -lvorbis -logg -lm -Wl,-Bdynamic -lpthread
-
+# for static binaries, you need to compile SDL_mixer
+# with minimum features required only for midi
 ifeq "$(USEMIDI)" "yes"
 GAMEFLAGS+= -DUSE_MIDI
 SDLLINK+= -lSDL_mixer
+LDSTATIC = -Wl,-Bstatic -L/usr/lib -lSDL_mixer -lSDL -L/usr/X11R6/lib -lX11 -lXext -ldl -L/usr/X11R6/lib -lXxf86dga -lXxf86vm -lXv -L/usr/lib -lm -Wl,-Bdynamic -lpthread
+else
+LDSTATIC = -Wl,-Bstatic -L/usr/lib -lSDL -L/usr/X11R6/lib -lX11 -lXext -ldl -L/usr/X11R6/lib -lXxf86dga -lXxf86vm -lXv -L/usr/lib -lm -Wl,-Bdynamic -lpthread
 endif
 
 ifeq "$(USEALSA)" "no"
