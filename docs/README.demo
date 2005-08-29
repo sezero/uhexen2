@@ -81,6 +81,16 @@ the game.
    nasm (min.: 0.98)	  : x86 assembler (if you compile your
 			    own binaries.) 0.98.38 recommended
 
+   GLIBC		  : If you compile your own binaries
+			    any glibc >= 2.1 should be fine.
+			    If you are using our linux binary
+			    tarballs, you need glibc >= 2.3.
+			    The installer still supports both
+			    glibc2.2 >= 2.2.4 and glibc >= 2.3
+			    in one single file.
+			    As for FreeBSD, version >= 5.3 is
+			    required.
+
 
 1.3 Running the Game:
 ----------------------
