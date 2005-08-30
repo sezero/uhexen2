@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.41 2005-08-18 14:20:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.42 2005-08-30 21:25:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -925,7 +925,7 @@ void M_Class_Draw (void)
 	if (!m_enter_portals) {
 		if (m_class_cursor >= CLASS_ITEMS -1)
 			m_class_cursor = 0;
-}
+	}
 #endif
 
 	f = (int)(host_time * 10)%8;
@@ -4078,6 +4078,10 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.41  2005/08/18 14:20:28  sezero
+ * moved music volume update back into frame update. it has its merits (such as
+ * correct bgmvolume on startup) this way..
+ *
  * Revision 1.40  2005/08/02 18:06:58  sezero
  * removed lookspring and lookstrafe options and
  * +mlook and +klook key bindings from the menu
