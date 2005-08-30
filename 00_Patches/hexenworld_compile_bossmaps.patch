@@ -1,0 +1,316 @@
+allows compiling boss maps into hwprogs.dat of hexenworld.
+this is not of much use, because coop seems broken.. maybe
+someone messes with these someday...
+
+diff -urN uhexen2-20050830/gamecode/hc/h2/ai.hc uhexen2-20050830a/gamecode/hc/h2/ai.hc
+--- uhexen2-20050830/gamecode/hc/h2/ai.hc	2005-08-31 01:28:10.000000000 +0300
++++ uhexen2-20050830a/gamecode/hc/h2/ai.hc	2005-01-05 01:48:12.000000000 +0200
+@@ -35,13 +35,7 @@
+ void()spider_onwall_wait;
+ float(entity targ , entity from)infront_of_ent;
+ void(entity proj)mezzo_choose_roll;
+-void()multiplayer_health;
+-void()riderpath_init;
+-void(float move_speed)riderpath_move;
+-float(float move_speed)eidolon_riderpath_move;
+-void() eidolon_guarding;
+ void()hive_die;
+-float()eidolon_check_attack;
+ 
+ //void()check_climb;
+ 
+@@ -388,18 +382,7 @@
+ 			if (!infront (client))
+ 				return FALSE;
+ 		}
+-
+-	if (r == RANGE_NEAR)
+-	{
+-		if (client.show_hostile < time && !infront (client))
+-			return FALSE;
+-	}
+-	else if (r == RANGE_MID)
+-	{
+-		if (!infront (client))
+-			return FALSE;
+- 	}
+-
++	
+ 	if (!visible (client))
+ 		return FALSE;
+ 
+@@ -505,20 +488,7 @@
+ 	if (FindTarget (FALSE))
+ 		return;
+ 
+-	if(self.classname=="monster_eidolon")
+-	{
+-		if (!self.path_current)
+-			riderpath_init();
+-		if(!eidolon_riderpath_move(dist))
+-		{
+-			if(self.think==self.th_walk)
+-				self.think=eidolon_guarding;
+-		}
+-		else if(self.think==eidolon_guarding)
+-			self.think=self.th_walk;
+-	}
+-	else
+-		movetogoal (dist);
++	movetogoal (dist);
+ };
+ 
+ 
+@@ -628,11 +598,6 @@
+ 
+ 	if(self.goalentity==self.controller)
+ 		return FALSE;
+-	if(self.classname=="monster_eidolon")
+-		if(self.goalentity==self.controller)
+-			return FALSE;
+-		else
+-			return eidolon_check_attack();
+ 
+ 	return CheckAttack ();
+ };
+@@ -779,13 +744,11 @@
+ 
+ 	enemy_infront = infront(self.enemy);
+ 	enemy_range = range(self.enemy);
+-	if(self.classname!="monster_eidolon")
+-		enemy_yaw = vectoyaw(self.goalentity.origin - self.origin);
++	enemy_yaw = vectoyaw(self.goalentity.origin - self.origin);
+ 	
+ 	if ((self.attack_state == AS_MISSILE) || (self.attack_state == AS_MELEE))  // turning to attack
+ 	{
+-		if(self.classname!="monster_eidolon")
+-			ai_attack_face ();
++		ai_attack_face ();
+ 		return;
+ 	}
+ 
+@@ -801,20 +764,7 @@
+ // head straight in
+ //	if(self.netname=="spider")
+ //		check_climb();
+-	if(self.classname=="monster_eidolon")
+-	{
+-		if(!self.path_current)
+-			riderpath_init();
+-		if(!eidolon_riderpath_move(dist))
+-		{
+-			if(self.think==self.th_run)
+-				eidolon_guarding();
+-		}
+-		else if(self.think==eidolon_guarding)
+-			self.th_run();
+-	}
+-	else
+-		movetogoal (dist);		// done in C code...
++	movetogoal (dist);		// done in C code...
+ };
+ 
+ 
+@@ -1179,8 +1129,8 @@
+ 		self.use=spawnspot_activate;
+ }
+ 
+-//void hive_die(){}
+-//void spawn_ghost (entity attacker){}
++void hive_die(){}
++void spawn_ghost (entity attacker){}
+ 
+ 
+ /*
+diff -urN uhexen2-20050830/gamecode/hc/h2/progs.src uhexen2-20050830a/gamecode/hc/h2/progs.src
+--- uhexen2-20050830/gamecode/hc/h2/progs.src	2005-08-31 01:28:10.000000000 +0300
++++ uhexen2-20050830a/gamecode/hc/h2/progs.src	2004-11-29 13:39:59.000000000 +0200
+@@ -125,11 +125,11 @@
+ 
+ eric.hc
+ 
+-rider.hc
+-pstboar.hc
+-famhorse.hc
+-warhorse.hc
+-dthhorse.hc
+-eidolon.hc
++//rider.hc
++//pstboar.hc
++//famhorse.hc
++//warhorse.hc
++//dthhorse.hc
++//eidolon.hc
+ 
+ stats.hc
+diff -urN uhexen2-20050830/gamecode/hc/h2_single_prog/hcode.diff uhexen2-20050830a/gamecode/hc/h2_single_prog/hcode.diff
+--- uhexen2-20050830/gamecode/hc/h2_single_prog/hcode.diff	1970-01-01 02:00:00.000000000 +0200
++++ uhexen2-20050830a/gamecode/hc/h2_single_prog/hcode.diff	2005-01-05 02:00:47.000000000 +0200
+@@ -0,0 +1,145 @@
++
++this patch to the original-Hexen2 game-code allows running the
++game with a single progs.dat file instead of progs.dat + progs2.dat
++files. With this, you'll not need the change in pr_edict.c (in fact,
++you'd better revert that change).  Not tested much.
++
++--- h2/progs.src~	1997-08-29 16:49:38.000000000 +0300
+++++ h2/progs.src	2004-07-05 23:02:20.000000000 +0300
++@@ -125,11 +125,11 @@
++ 
++ eric.hc
++ 
++-//rider.hc
++-//pstboar.hc
++-//famhorse.hc
++-//warhorse.hc
++-//dthhorse.hc
++-//eidolon.hc
+++rider.hc
+++pstboar.hc
+++famhorse.hc
+++warhorse.hc
+++dthhorse.hc
+++eidolon.hc
++ 
++ stats.hc
++--- h2/ai.hc~	1997-09-25 14:17:02.000000000 +0300
+++++ h2/ai.hc	2004-07-05 23:18:07.000000000 +0300
++@@ -35,7 +35,13 @@
++ void()spider_onwall_wait;
++ float(entity targ , entity from)infront_of_ent;
++ void(entity proj)mezzo_choose_roll;
+++void()multiplayer_health;
+++void()riderpath_init;
+++void(float move_speed)riderpath_move;
+++float(float move_speed)eidolon_riderpath_move;
+++void() eidolon_guarding;
++ void()hive_die;
+++float()eidolon_check_attack;
++ 
++ //void()check_climb;
++ 
++@@ -382,7 +388,18 @@
++ 			if (!infront (client))
++ 				return FALSE;
++ 		}
++-	
+++
+++	if (r == RANGE_NEAR)
+++	{
+++		if (client.show_hostile < time && !infront (client))
+++			return FALSE;
+++	}
+++	else if (r == RANGE_MID)
+++	{
+++		if (!infront (client))
+++			return FALSE;
+++ 	}
+++
++ 	if (!visible (client))
++ 		return FALSE;
++ 
++@@ -488,7 +505,20 @@
++ 	if (FindTarget (FALSE))
++ 		return;
++ 
++-	movetogoal (dist);
+++	if(self.classname=="monster_eidolon")
+++	{
+++		if (!self.path_current)
+++			riderpath_init();
+++		if(!eidolon_riderpath_move(dist))
+++		{
+++			if(self.think==self.th_walk)
+++				self.think=eidolon_guarding;
+++		}
+++		else if(self.think==eidolon_guarding)
+++			self.think=self.th_walk;
+++	}
+++	else
+++		movetogoal (dist);
++ };
++ 
++ 
++@@ -598,6 +628,11 @@
++ 
++ 	if(self.goalentity==self.controller)
++ 		return FALSE;
+++	if(self.classname=="monster_eidolon")
+++		if(self.goalentity==self.controller)
+++			return FALSE;
+++		else
+++			return eidolon_check_attack();
++ 
++ 	return CheckAttack ();
++ };
++@@ -744,11 +779,13 @@
++ 
++ 	enemy_infront = infront(self.enemy);
++ 	enemy_range = range(self.enemy);
++-	enemy_yaw = vectoyaw(self.goalentity.origin - self.origin);
+++	if(self.classname!="monster_eidolon")
+++		enemy_yaw = vectoyaw(self.goalentity.origin - self.origin);
++ 	
++ 	if ((self.attack_state == AS_MISSILE) || (self.attack_state == AS_MELEE))  // turning to attack
++ 	{
++-		ai_attack_face ();
+++		if(self.classname!="monster_eidolon")
+++			ai_attack_face ();
++ 		return;
++ 	}
++ 
++@@ -764,7 +801,20 @@
++ // head straight in
++ //	if(self.netname=="spider")
++ //		check_climb();
++-	movetogoal (dist);		// done in C code...
+++	if(self.classname=="monster_eidolon")
+++	{
+++		if(!self.path_current)
+++			riderpath_init();
+++		if(!eidolon_riderpath_move(dist))
+++		{
+++			if(self.think==self.th_run)
+++				eidolon_guarding();
+++		}
+++		else if(self.think==eidolon_guarding)
+++			self.th_run();
+++	}
+++	else
+++		movetogoal (dist);		// done in C code...
++ };
++ 
++ 
++@@ -1129,8 +1179,8 @@
++ 		self.use=spawnspot_activate;
++ }
++ 
++-void hive_die(){}
++-void spawn_ghost (entity attacker){}
+++//void hive_die(){}
+++//void spawn_ghost (entity attacker){}
++ 
++ 
++ /*
+diff -urN uhexen2-20050830/gamecode/hc/h2_single_prog/README uhexen2-20050830a/gamecode/hc/h2_single_prog/README
+--- uhexen2-20050830/gamecode/hc/h2_single_prog/README	1970-01-01 02:00:00.000000000 +0200
++++ uhexen2-20050830a/gamecode/hc/h2_single_prog/README	2005-01-05 02:00:43.000000000 +0200
+@@ -0,0 +1,6 @@
++
++this patch to the original-Hexen2 game-code allows running the
++game with a single progs.dat file instead of progs.dat + progs2.dat
++files. With this, you'll not need the change in pr_edict.c (in fact,
++you'd better revert that change).  Not tested much.
++
+diff -urN uhexen2-20050830/hexen2/pr_edict.c uhexen2-20050830a/hexen2/pr_edict.c
+--- uhexen2-20050830/hexen2/pr_edict.c	2005-08-31 01:30:34.000000000 +0300
++++ uhexen2-20050830a/hexen2/pr_edict.c	2005-07-09 12:07:58.000000000 +0300
+@@ -1176,7 +1176,7 @@
+ 	*** BUT *** :  If you wish to compile progs.dat and progs2.dat together
+ 	into a single progs.dat for Hexen2 (don't ask ;), then you MUST replace
+ 	the " #ifndef H2MP " with an " #if 0 " below.			O.S. */
+-#if 0	//#ifndef H2MP
++#ifndef H2MP
+ 	COM_FOpenFile ("maplist.txt", &f, true);
+ 	if (f)
+ 	{

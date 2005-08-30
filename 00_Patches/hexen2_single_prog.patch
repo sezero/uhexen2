@@ -1,31 +1,22 @@
+Allows running the original Hexen2 game with a single
+progs.dat file instead of progs.dat + progs2.dat files.
+Not tested much.
 
-this patch to the original-Hexen2 game-code allows running the
-game with a single progs.dat file instead of progs.dat + progs2.dat
-files. With this, you'll not need the change in pr_edict.c (in fact,
-you'd better revert that change).  Not tested much.
-
---- h2/progs.src~	1997-08-29 16:49:38.000000000 +0300
-+++ h2/progs.src	2004-07-05 23:02:20.000000000 +0300
-@@ -125,11 +125,11 @@
- 
- eric.hc
- 
--//rider.hc
--//pstboar.hc
--//famhorse.hc
--//warhorse.hc
--//dthhorse.hc
--//eidolon.hc
-+rider.hc
-+pstboar.hc
-+famhorse.hc
-+warhorse.hc
-+dthhorse.hc
-+eidolon.hc
- 
- stats.hc
---- h2/ai.hc~	1997-09-25 14:17:02.000000000 +0300
-+++ h2/ai.hc	2004-07-05 23:18:07.000000000 +0300
+diff -urN uhexen2-20050829/hexen2/pr_edict.c uhexen2-20050830/hexen2/pr_edict.c
+--- uhexen2-20050829/hexen2/pr_edict.c	2005-07-09 12:07:58.000000000 +0300
++++ uhexen2-20050830/hexen2/pr_edict.c	2005-08-31 01:30:34.000000000 +0300
+@@ -1176,7 +1176,7 @@
+ 	*** BUT *** :  If you wish to compile progs.dat and progs2.dat together
+ 	into a single progs.dat for Hexen2 (don't ask ;), then you MUST replace
+ 	the " #ifndef H2MP " with an " #if 0 " below.			O.S. */
+-#ifndef H2MP
++#if 0	//#ifndef H2MP
+ 	COM_FOpenFile ("maplist.txt", &f, true);
+ 	if (f)
+ 	{
+diff -urN uhexen2-20050829/gamecode/hc/h2/ai.hc uhexen2-20050830/gamecode/hc/h2/ai.hc
+--- uhexen2-20050829/gamecode/hc/h2/ai.hc	2005-01-05 01:48:12.000000000 +0200
++++ uhexen2-20050830/gamecode/hc/h2/ai.hc	2005-08-31 01:28:10.000000000 +0300
 @@ -35,7 +35,13 @@
  void()spider_onwall_wait;
  float(entity targ , entity from)infront_of_ent;
@@ -143,3 +134,24 @@ you'd better revert that change).  Not tested much.
  
  
  /*
+diff -urN uhexen2-20050829/gamecode/hc/h2/progs.src uhexen2-20050830/gamecode/hc/h2/progs.src
+--- uhexen2-20050829/gamecode/hc/h2/progs.src	2004-11-29 13:39:59.000000000 +0200
++++ uhexen2-20050830/gamecode/hc/h2/progs.src	2005-08-31 01:28:10.000000000 +0300
+@@ -125,11 +125,11 @@
+ 
+ eric.hc
+ 
+-//rider.hc
+-//pstboar.hc
+-//famhorse.hc
+-//warhorse.hc
+-//dthhorse.hc
+-//eidolon.hc
++rider.hc
++pstboar.hc
++famhorse.hc
++warhorse.hc
++dthhorse.hc
++eidolon.hc
+ 
+ stats.hc
