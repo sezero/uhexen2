@@ -2,9 +2,22 @@ Allows running the original Hexen2 game with a single
 progs.dat file instead of progs.dat + progs2.dat files.
 Not tested much.
 
+If you use this patch, you need to use hcc from h2mp_utils
+in order to compile the gamecode, because hcc from h2_utils
+will segfault.
+
 diff -urN uhexen2-20050829/hexen2/pr_edict.c uhexen2-20050830/hexen2/pr_edict.c
 --- uhexen2-20050829/hexen2/pr_edict.c	2005-07-09 12:07:58.000000000 +0300
 +++ uhexen2-20050830/hexen2/pr_edict.c	2005-08-31 01:30:34.000000000 +0300
+@@ -1153,7 +1153,7 @@
+ void PR_LoadProgs (void)
+ {
+ 	int	i;
+-#ifndef H2MP
++#if 0	//#ifndef H2MP
+ 	int	j;
+ 	FILE	*f;
+ 	char	mapname[MAX_QPATH], progname[MAX_OSPATH];
 @@ -1176,7 +1176,7 @@
  	*** BUT *** :  If you wish to compile progs.dat and progs2.dat together
  	into a single progs.dat for Hexen2 (don't ask ;), then you MUST replace
