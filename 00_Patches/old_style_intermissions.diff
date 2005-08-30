@@ -1,5 +1,5 @@
 reverts fullscreen intermission code usage. intermissions and help
-screens will be drawn with their original size (320x160) no matter
+screens will be drawn with their original size (320x240) no matter
 what the resolution is.
 If you really want this, that is...
 
