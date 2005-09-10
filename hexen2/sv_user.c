@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.4 2005-05-19 16:47:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.5 2005-09-10 12:34:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -142,14 +142,16 @@ void SV_UserFriction (void)
 	trace = SV_Move (start, vec3_origin, vec3_origin, stop, true, sv_player);
 	sv_player->v.hull = save_hull;
 
+#ifdef H2MP
 	if (trace.fraction == 1.0)
 		friction = sv_friction.value*sv_edgefriction.value*sv_player->v.friction;
 	else
 		friction = sv_friction.value*sv_player->v.friction;
-
-#ifndef H2MP
+#else
+	// original Hexen2 only
 	friction = 6;
 #endif
+
 //	if(sv_player->v.friction!=1)//reset their friction to 1, only a trigger touching can change it again
 //		sv_player->v.friction=1;
 
@@ -738,6 +740,9 @@ void SV_RunClients (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/05/19 16:47:18  sezero
+ * killed client->privileged (was only available to IDGODS)
+ *
  * Revision 1.3  2005/05/19 16:41:50  sezero
  * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
  *
