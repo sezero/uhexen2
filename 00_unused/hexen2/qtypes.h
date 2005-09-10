@@ -1,6 +1,6 @@
 /*
 	qtypes.h
-	$Id: qtypes.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Id: qtypes.h,v 1.1 2005-09-10 12:04:48 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 1999,2000  contributors of the QuakeForge project

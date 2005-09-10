@@ -1,6 +1,6 @@
 /*
 	net_udp.h
-	$Id: net_udp.h,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Id: net_udp.h,v 1.3 2005-09-10 12:04:49 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -26,8 +26,6 @@
 
 #ifndef __net_udp_h
 #define __net_udp_h
-
-//#include "qtypes.h"
 
 int  UDP_Init (void);
 void UDP_Shutdown (void);
