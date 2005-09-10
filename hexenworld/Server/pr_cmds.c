@@ -2953,8 +2953,8 @@ void PF_turneffect (void)
 	dir = G_VECTOR(OFS_PARM2);
 
 	if(!sv.Effects[index].type) return;
-	VectorCopy(pos, sv.Effects[index].u.Missile.origin);
-	VectorCopy(dir, sv.Effects[index].u.Missile.velocity);
+	VectorCopy(pos, sv.Effects[index].ef.Missile.origin);
+	VectorCopy(dir, sv.Effects[index].ef.Missile.velocity);
 
 	MSG_WriteByte (&sv.multicast, svc_turn_effect);
 	MSG_WriteByte (&sv.multicast, index);
@@ -2989,13 +2989,13 @@ void PF_updateeffect (void)//type-specific what this will send
 	switch (type)
 	{
 	case CE_SCARABCHAIN://new ent to be attached to--pass in 0 for chain retract
-		sv.Effects[index].u.Chain.owner = G_INT(OFS_PARM2)&0x0fff;
-		sv.Effects[index].u.Chain.material = G_INT(OFS_PARM2)>>12;
+		sv.Effects[index].ef.Chain.owner = G_INT(OFS_PARM2)&0x0fff;
+		sv.Effects[index].ef.Chain.material = G_INT(OFS_PARM2)>>12;
 
-		if (sv.Effects[index].u.Chain.owner)
-			sv.Effects[index].u.Chain.state = 1;
+		if (sv.Effects[index].ef.Chain.owner)
+			sv.Effects[index].ef.Chain.state = 1;
 		else
-			sv.Effects[index].u.Chain.state = 2;
+			sv.Effects[index].ef.Chain.state = 2;
 
 		MSG_WriteShort (&sv.multicast, G_EDICTNUM(OFS_PARM2));
 		break;
@@ -3005,24 +3005,24 @@ void PF_updateeffect (void)//type-specific what this will send
 		MSG_WriteByte (&sv.multicast, cmd);
 		if (cmd & 1)
 		{
-			sv.Effects[index].u.Xbow.activebolts &= ~(1<<((cmd>>4)&7));
+			sv.Effects[index].ef.Xbow.activebolts &= ~(1<<((cmd>>4)&7));
 			MSG_WriteCoord (&sv.multicast, G_FLOAT(OFS_PARM3));
 		}
 		else
 		{
-			sv.Effects[index].u.Xbow.vel[(cmd>>4)&7][0] = G_FLOAT(OFS_PARM3);
-			sv.Effects[index].u.Xbow.vel[(cmd>>4)&7][1] = G_FLOAT(OFS_PARM4);
-			sv.Effects[index].u.Xbow.vel[(cmd>>4)&7][2] = 0;
+			sv.Effects[index].ef.Xbow.vel[(cmd>>4)&7][0] = G_FLOAT(OFS_PARM3);
+			sv.Effects[index].ef.Xbow.vel[(cmd>>4)&7][1] = G_FLOAT(OFS_PARM4);
+			sv.Effects[index].ef.Xbow.vel[(cmd>>4)&7][2] = 0;
 
 			MSG_WriteAngle (&sv.multicast, G_FLOAT(OFS_PARM3));
 			MSG_WriteAngle (&sv.multicast, G_FLOAT(OFS_PARM4));
 			if (cmd & 128)//send origin too
 			{
-				sv.Effects[index].u.Xbow.turnedbolts |= 1<<((cmd>>4)&7);
-				VectorCopy(G_VECTOR(OFS_PARM5), sv.Effects[index].u.Xbow.origin[(cmd>>4)&7]);
-				MSG_WriteCoord (&sv.multicast, sv.Effects[index].u.Xbow.origin[(cmd>>4)&7][0]);
-				MSG_WriteCoord (&sv.multicast, sv.Effects[index].u.Xbow.origin[(cmd>>4)&7][1]);
-				MSG_WriteCoord (&sv.multicast, sv.Effects[index].u.Xbow.origin[(cmd>>4)&7][2]);
+				sv.Effects[index].ef.Xbow.turnedbolts |= 1<<((cmd>>4)&7);
+				VectorCopy(G_VECTOR(OFS_PARM5), sv.Effects[index].ef.Xbow.origin[(cmd>>4)&7]);
+				MSG_WriteCoord (&sv.multicast, sv.Effects[index].ef.Xbow.origin[(cmd>>4)&7][0]);
+				MSG_WriteCoord (&sv.multicast, sv.Effects[index].ef.Xbow.origin[(cmd>>4)&7][1]);
+				MSG_WriteCoord (&sv.multicast, sv.Effects[index].ef.Xbow.origin[(cmd>>4)&7][2]);
 			}
 		}
 		break;
@@ -3039,15 +3039,15 @@ void PF_updateeffect (void)//type-specific what this will send
 		}
 		else
 		{
-			sv.Effects[index].u.Missile.angle[0] = G_FLOAT(OFS_PARM3);
+			sv.Effects[index].ef.Missile.angle[0] = G_FLOAT(OFS_PARM3);
 			MSG_WriteAngle (&sv.multicast, G_FLOAT(OFS_PARM3));
-			sv.Effects[index].u.Missile.angle[1] = G_FLOAT(OFS_PARM4);
+			sv.Effects[index].ef.Missile.angle[1] = G_FLOAT(OFS_PARM4);
 			MSG_WriteAngle (&sv.multicast, G_FLOAT(OFS_PARM4));
 
-			VectorCopy(G_VECTOR(OFS_PARM5), sv.Effects[index].u.Missile.origin);
-			MSG_WriteCoord (&sv.multicast, sv.Effects[index].u.Missile.origin[0]);
-			MSG_WriteCoord (&sv.multicast, sv.Effects[index].u.Missile.origin[1]);
-			MSG_WriteCoord (&sv.multicast, sv.Effects[index].u.Missile.origin[2]);
+			VectorCopy(G_VECTOR(OFS_PARM5), sv.Effects[index].ef.Missile.origin);
+			MSG_WriteCoord (&sv.multicast, sv.Effects[index].ef.Missile.origin[0]);
+			MSG_WriteCoord (&sv.multicast, sv.Effects[index].ef.Missile.origin[1]);
+			MSG_WriteCoord (&sv.multicast, sv.Effects[index].ef.Missile.origin[2]);
 		}
 		break;
 	}

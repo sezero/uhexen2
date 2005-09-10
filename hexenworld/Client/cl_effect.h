@@ -222,7 +222,7 @@ struct EffectT
 			int count;
 			float time_amount;
 		} Bubble;
-	} u;
+	} ef;
 };
 
 void CL_InitEffects (void);
