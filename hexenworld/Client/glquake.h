@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.24 2005-06-26 10:13:53 sezero Exp $
+	$Id: glquake.h,v 1.25 2005-09-12 08:17:46 sezero Exp $
 */
 
 
@@ -299,6 +299,7 @@ extern	cvar_t	gl_flashblend;
 extern	cvar_t	gl_nocolors;
 extern	cvar_t	gl_waterripple;
 extern	cvar_t	gl_waterwarp;
+extern	cvar_t	gl_stencilshadow;
 extern	cvar_t	gl_glows;
 extern	cvar_t	gl_other_glows;
 extern	cvar_t	gl_missile_glows;
@@ -324,6 +325,9 @@ extern	const char *gl_extensions;
 void R_TranslatePlayerSkin (int playernum);
 
 byte *playerTranslation;
+
+// Stencil shadows
+extern	qboolean have_stencil;
 
 // Multitexture
 extern	qboolean gl_mtexable;

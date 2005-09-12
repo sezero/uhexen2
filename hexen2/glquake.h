@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.32 2005-06-15 13:18:17 sezero Exp $
+	$Id: glquake.h,v 1.33 2005-09-12 08:17:46 sezero Exp $
 */
 
 
@@ -296,6 +296,7 @@ extern	cvar_t	gl_flashblend;
 extern	cvar_t	gl_nocolors;
 extern	cvar_t	gl_waterripple;
 extern	cvar_t	gl_waterwarp;
+extern	cvar_t	gl_stencilshadow;
 extern	cvar_t	gl_glows;
 extern	cvar_t	gl_other_glows;
 extern	cvar_t	gl_missile_glows;
@@ -322,12 +323,18 @@ void R_TranslatePlayerSkin (int playernum);
 
 byte *playerTranslation;
 
+// Stencil shadows
+extern	qboolean have_stencil;
+
 // Multitexture
 extern	qboolean gl_mtexable;
 
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2005/06/15 13:18:17  sezero
+ * killed the glfunc struct
+ *
  * Revision 1.31  2005/06/07 20:29:44  sezero
  * Added texture cheksumming (from Pa3PyX) for verification in GL_LoadTexture.
  * Die white textures, die die die!!!

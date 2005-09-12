@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.34 2005-08-17 00:02:57 sezero Exp $
+	$Id: gl_rmain.c,v 1.35 2005-09-12 08:17:46 sezero Exp $
 */
 
 
@@ -95,6 +95,7 @@ cvar_t	gl_keeptjunctions = {"gl_keeptjunctions","1", true};
 cvar_t	gl_reporttjunctions = {"gl_reporttjunctions","0"};
 cvar_t	gl_waterripple = {"gl_waterripple", "2", true};
 cvar_t	gl_waterwarp = {"gl_waterwarp", "0", true};
+cvar_t	gl_stencilshadow = {"gl_stencilshadow", "0",true};
 cvar_t	gl_glows = {"gl_glows","1",true};
 cvar_t	gl_other_glows = {"gl_other_glows","0",true};
 cvar_t	gl_missile_glows = {"gl_missile_glows","1",true};
@@ -590,6 +591,13 @@ void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 
 	height = -lheight + 1.0;
 
+	if (have_stencil == true && gl_stencilshadow.value != 0)
+	{
+		glEnable_fp(GL_STENCIL_TEST);
+		glStencilFunc_fp(GL_EQUAL,1,2);
+		glStencilOp_fp(GL_KEEP,GL_KEEP,GL_INCR);
+	}
+
 	while (1)
 	{
 		// get the vertex count and primitive type
@@ -626,6 +634,9 @@ void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 
 		glEnd_fp ();
 	}	
+
+	if (have_stencil == true && gl_stencilshadow.value != 0)
+		glDisable_fp(GL_STENCIL_TEST);
 }
 
 
@@ -1643,6 +1654,12 @@ void R_Clear (void)
 	}
 
 	glDepthRange_fp (gldepthmin, gldepthmax);
+
+	if (have_stencil == true && gl_stencilshadow.value > 0 && r_shadows.value > 0)
+	{
+		glClearStencil_fp(1);
+		glClear_fp(GL_STENCIL_BUFFER_BIT);
+	}
 }
 
 /*
@@ -1801,6 +1818,10 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.34  2005/08/17 00:02:57  sezero
+ * R_DrawViewModel should not return until it determines the light_level,
+ * otherwise the player will be considered invisible to the monsters.
+ *
  * Revision 1.33  2005/06/26 11:11:57  sezero
  * Changed those pointless glow style const ints to defines
  *

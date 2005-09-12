@@ -117,8 +117,8 @@ static PIXELFORMATDESCRIPTOR pfd = {
 	0,				// shift bit ignored
 	0,				// no accumulation buffer
 	0, 0, 0, 0, 			// accum bits ignored
-	32,				// 32-bit z-buffer	
-	0,				// no stencil buffer
+	24,				// 24-bit z-buffer
+	8,				// 8-bit stencil buffer
 	0,				// no auxiliary buffer
 	PFD_MAIN_PLANE,			// main layer
 	0,				// reserved
@@ -155,6 +155,7 @@ cvar_t		_enable_mouse = {"_enable_mouse","0", true};
 int		window_center_x, window_center_y, window_x, window_y, window_width, window_height;
 RECT		window_rect;
 
+qboolean	have_stencil = false;
 
 extern unsigned short	ramps[3][256];
 unsigned short	orig_ramps[3][256];
@@ -594,6 +595,30 @@ void CheckMultiTextureExtensions(void)
 	}
 }
 
+void CheckStencilBuffer(void)
+{
+	have_stencil = false;
+
+#ifdef GL_DLSYM
+	glStencilFunc_fp = (glStencilFunc_f) GetProcAddress(hInstGL, "glStencilFunc");
+	glStencilOp_fp = (glStencilOp_f) GetProcAddress(hInstGL, "glStencilOp");
+	glClearStencil_fp = (glClearStencil_f) GetProcAddress(hInstGL, "glClearStencil");
+	if ((glStencilFunc_fp == NULL) ||
+	    (glStencilOp_fp == NULL)   ||
+	    (glClearStencil_fp == NULL))
+	{
+		Con_Printf ("glStencil functions not available\n");
+		return;
+	}
+#endif
+
+	if (pfd.cStencilBits)
+	{
+		Con_Printf("Stencil buffer created with %d bits\n", pfd.cStencilBits);
+		have_stencil = true;
+	}
+}
+
 #ifdef GL_DLSYM
 static void GL_CloseLibrary(void)
 {
@@ -799,6 +824,7 @@ void GL_Init (void)
 	SetDeviceGammaRamp_f = NULL;
 	CheckMultiTextureExtensions ();
 	Check3DfxGammaControlExtension();
+	CheckStencilBuffer();
 
 	glClearColor_fp (1,0,0,0);
 	glCullFace_fp(GL_FRONT);

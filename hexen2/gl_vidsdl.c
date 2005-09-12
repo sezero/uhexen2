@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.79 2005-08-12 09:21:08 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.80 2005-09-12 08:17:46 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -119,6 +119,8 @@ void GL_Init (void);
 void GL_Init_Functions(void);
 void VID_SetGamma(float value);
 void VID_SetGamma_f(void);
+
+qboolean	have_stencil = false;
 
 #define USE_GAMMA_RAMPS	0	// change to 1 if want to use ramps for gamma
 
@@ -284,6 +286,7 @@ int VID_SetMode (int modenum)
 	VID_SetIcon();	// window manager icon using xbm data
 
 	//SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, modelist[modenum].bpp);
+	//SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 	Con_Printf ("Requesting Mode: %dx%dx%d\n", vid.width, vid.height, modelist[modenum].bpp);
 	screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags);
 	if (!screen) {
@@ -306,9 +309,6 @@ int VID_SetMode (int modenum)
 
 	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &i);
 	Con_Printf ("Video Mode Set : %dx%dx%d\n", vid.width, vid.height, i);
-	SDL_GL_GetAttribute(SDL_GL_STENCIL_SIZE, &i);
-	if (i)
-		Con_Printf ("%i bit stencil buffer\n", i);
 #if SDL_PATCHLEVEL > 5
 	if (multisample) {
 		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &multisample);
@@ -402,6 +402,31 @@ void CheckMultiTextureExtensions(void)
 	}
 }
 
+void CheckStencilBuffer(void)
+{
+	int stencil_size;
+
+	have_stencil = false;
+
+	glStencilFunc_fp = (glStencilFunc_f) SDL_GL_GetProcAddress("glStencilFunc");
+	glStencilOp_fp = (glStencilOp_f) SDL_GL_GetProcAddress("glStencilOp");
+	glClearStencil_fp = (glClearStencil_f) SDL_GL_GetProcAddress("glClearStencil");
+	if ((glStencilFunc_fp == NULL) ||
+	    (glStencilOp_fp == NULL)   ||
+	    (glClearStencil_fp == NULL))
+	{
+		Con_Printf ("glStencil functions not available\n");
+		return;
+	}
+
+	SDL_GL_GetAttribute(SDL_GL_STENCIL_SIZE, &stencil_size);
+	if (stencil_size)
+	{
+		Con_Printf("Stencil buffer created with %d bits\n", stencil_size);
+		have_stencil = true;
+	}
+}
+
 /*
 ===============
 GL_Init
@@ -440,6 +465,7 @@ void GL_Init (void)
 	}
 
 	CheckMultiTextureExtensions();
+	CheckStencilBuffer();
 
 	glClearColor_fp (1,0,0,0);
 	glCullFace_fp(GL_FRONT);

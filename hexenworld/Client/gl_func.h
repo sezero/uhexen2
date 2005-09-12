@@ -60,6 +60,10 @@ typedef void (APIENTRY *glGetIntegerv_f)(GLenum,GLint *);
 typedef void (APIENTRY *glActiveTextureARB_f)(GLenum);
 typedef void (APIENTRY *glMultiTexCoord2fARB_f)(GLenum,GLfloat,GLfloat);
 
+typedef void (APIENTRY *glStencilFunc_f)(GLenum,GLint,GLuint);
+typedef void (APIENTRY *glStencilOp_f)(GLenum,GLenum,GLenum);
+typedef void (APIENTRY *glClearStencil_f)(GLint);
+
 
 glBegin_f glBegin_fp;
 glEnd_f glEnd_fp;
@@ -122,4 +126,8 @@ glGetIntegerv_f glGetIntegerv_fp;
 
 glActiveTextureARB_f glActiveTextureARB_fp;
 glMultiTexCoord2fARB_f glMultiTexCoord2fARB_fp;
+
+glStencilFunc_f glStencilFunc_fp;
+glStencilOp_f glStencilOp_fp;
+glClearStencil_f glClearStencil_fp;
 

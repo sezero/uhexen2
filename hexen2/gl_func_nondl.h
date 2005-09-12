@@ -58,6 +58,10 @@
 
 #define glGetIntegerv_fp(a,b)		glGetIntegerv((a),(b))
 
+#define glStencilFunc_fp(a,b,c)		glStencilFunc((a),(b),(c))
+#define glStencilOp_fp(a,b,c)		glStencilOp((a),(b),(c))
+#define glClearStencil_fp(a)		glClearStencil((a))
+
 typedef void (APIENTRY *glActiveTextureARB_f)(GLenum);
 typedef void (APIENTRY *glMultiTexCoord2fARB_f)(GLenum,GLfloat,GLfloat);
 glActiveTextureARB_f glActiveTextureARB_fp;
