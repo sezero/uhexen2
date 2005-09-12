@@ -212,17 +212,17 @@ diff -urNp hexen2source-1.3.0/hexen2/gl_func.h hexen2source-1.3.0x/hexen2/gl_fun
 --- hexen2source-1.3.0/hexen2/gl_func.h	2005-06-15 16:18:17.000000000 +0300
 +++ hexen2source-1.3.0x/hexen2/gl_func.h	2005-08-29 17:14:29.000000000 +0300
 @@ -27,6 +27,11 @@ typedef void (*glColor3ubv_f)(const GLub
- typedef void (*glColor3f_f)(GLfloat,GLfloat,GLfloat);
- typedef void (*glClearColor_f)(GLclampf,GLclampf,GLclampf,GLclampf);
+ typedef void (APIENTRY *glColor3f_f)(GLfloat,GLfloat,GLfloat);
+ typedef void (APIENTRY *glClearColor_f)(GLclampf,GLclampf,GLclampf,GLclampf);
  
-+typedef void (*glFogf_f)(GLenum,GLfloat);
-+typedef void (*glFogfv_f)(GLenum, const GLfloat *);
-+typedef void (*glFogi_f)(GLenum,GLint);
-+typedef void (*glFogiv_f)(GLenum, const GLint *);
++typedef void (APIENTRY *glFogf_f)(GLenum,GLfloat);
++typedef void (APIENTRY *glFogfv_f)(GLenum, const GLfloat *);
++typedef void (APIENTRY *glFogi_f)(GLenum,GLint);
++typedef void (APIENTRY *glFogiv_f)(GLenum, const GLint *);
 +
- typedef void (*glAlphaFunc_f)(GLenum,GLclampf);
- typedef void (*glBlendFunc_f)(GLenum,GLenum);
- typedef void (*glShadeModel_f)(GLenum);
+ typedef void (APIENTRY *glAlphaFunc_f)(GLenum,GLclampf);
+ typedef void (APIENTRY *glBlendFunc_f)(GLenum,GLenum);
+ typedef void (APIENTRY *glShadeModel_f)(GLenum);
 @@ -102,6 +107,11 @@ glScalef_f glScalef_fp;
  glTexImage2D_f glTexImage2D_fp;
  glTexSubImage2D_f glTexSubImage2D_fp;
@@ -274,36 +274,36 @@ diff -urNp hexen2source-1.3.0/hexen2/win_stuff/gl_vidnt.c hexen2source-1.3.0x/he
 --- hexen2source-1.3.0/hexen2/win_stuff/gl_vidnt.c	2005-08-11 02:19:26.000000000 +0300
 +++ hexen2source-1.3.0x/hexen2/win_stuff/gl_vidnt.c	2005-08-29 17:14:29.000000000 +0300
 @@ -739,6 +739,15 @@ void GL_Init_Functions(void)
-   glDepthFunc_fp = (glDepthFunc_f) wglGetProcAddress_fp("glDepthFunc");
+   glDepthFunc_fp = (glDepthFunc_f) GetProcAddress(hInstGL, "glDepthFunc");
    if (glDepthFunc_fp == 0) {Sys_Error("glDepthFunc not found in GL library");}
  
-+  glFogf_fp = (glFogf_f) wglGetProcAddress("glFogf");
++  glFogf_fp = (glFogf_f) GetProcAddress(hInstGL, "glFogf");
 +  if (glFogf_fp == 0) {Sys_Error("glFogf not found in GL library");}
-+  glFogfv_fp = (glFogfv_f) wglGetProcAddress("glFogfv");
++  glFogfv_fp = (glFogfv_f) GetProcAddress(hInstGL, "glFogfv");
 +  if (glFogfv_fp == 0) {Sys_Error("glFogfv not found in GL library");}
-+  glFogi_fp = (glFogi_f) wglGetProcAddress("glFogi");
++  glFogi_fp = (glFogi_f) GetProcAddress(hInstGL, "glFogi");
 +  if (glFogi_fp == 0) {Sys_Error("glFogi not found in GL library");}
-+  glFogiv_fp = (glFogiv_f) wglGetProcAddress("glFogiv");
++  glFogiv_fp = (glFogiv_f) GetProcAddress(hInstGL, "glFogiv");
 +  if (glFogiv_fp == 0) {Sys_Error("glFogiv not found in GL library");}
 +
-   glDrawBuffer_fp = (glDrawBuffer_f) wglGetProcAddress_fp("glDrawBuffer");
+   glDrawBuffer_fp = (glDrawBuffer_f) GetProcAddress(hInstGL, "glDrawBuffer");
    if (glDrawBuffer_fp == 0) {Sys_Error("glDrawBuffer not found in GL library");}
-   glReadBuffer_fp = (glDrawBuffer_f) wglGetProcAddress_fp("glReadBuffer");
+   glReadBuffer_fp = (glDrawBuffer_f) GetProcAddress(hInstGL, "glReadBuffer");
 diff -urNp hexen2source-1.3.0/hexenworld/Client/gl_func.h hexen2source-1.3.0x/hexenworld/Client/gl_func.h
 --- hexen2source-1.3.0/hexenworld/Client/gl_func.h	2005-06-15 16:18:19.000000000 +0300
 +++ hexen2source-1.3.0x/hexenworld/Client/gl_func.h	2005-08-29 17:14:29.000000000 +0300
 @@ -27,6 +27,11 @@ typedef void (*glColor3ubv_f)(const GLub
- typedef void (*glColor3f_f)(GLfloat,GLfloat,GLfloat);
- typedef void (*glClearColor_f)(GLclampf,GLclampf,GLclampf,GLclampf);
+ typedef void (APIENTRY *glColor3f_f)(GLfloat,GLfloat,GLfloat);
+ typedef void (APIENTRY *glClearColor_f)(GLclampf,GLclampf,GLclampf,GLclampf);
  
-+typedef void (*glFogf_f)(GLenum,GLfloat);
-+typedef void (*glFogfv_f)(GLenum, const GLfloat *);
-+typedef void (*glFogi_f)(GLenum,GLint);
-+typedef void (*glFogiv_f)(GLenum, const GLint *);
++typedef void (APIENTRY *glFogf_f)(GLenum,GLfloat);
++typedef void (APIENTRY *glFogfv_f)(GLenum, const GLfloat *);
++typedef void (APIENTRY *glFogi_f)(GLenum,GLint);
++typedef void (APIENTRY *glFogiv_f)(GLenum, const GLint *);
 +
- typedef void (*glAlphaFunc_f)(GLenum,GLclampf);
- typedef void (*glBlendFunc_f)(GLenum,GLenum);
- typedef void (*glShadeModel_f)(GLenum);
+ typedef void (APIENTRY *glAlphaFunc_f)(GLenum,GLclampf);
+ typedef void (APIENTRY *glBlendFunc_f)(GLenum,GLenum);
+ typedef void (APIENTRY *glShadeModel_f)(GLenum);
 @@ -102,6 +107,11 @@ glScalef_f glScalef_fp;
  glTexImage2D_f glTexImage2D_fp;
  glTexSubImage2D_f glTexSubImage2D_fp;
@@ -555,18 +555,18 @@ diff -urNp hexen2source-1.3.0/hexenworld/Client/win_stuff/gl_vidnt.c hexen2sourc
 --- hexen2source-1.3.0/hexenworld/Client/win_stuff/gl_vidnt.c	2005-08-11 02:19:27.000000000 +0300
 +++ hexen2source-1.3.0x/hexenworld/Client/win_stuff/gl_vidnt.c	2005-08-29 17:14:29.000000000 +0300
 @@ -738,6 +738,15 @@ void GL_Init_Functions(void)
-   glDepthFunc_fp = (glDepthFunc_f) wglGetProcAddress_fp("glDepthFunc");
+   glDepthFunc_fp = (glDepthFunc_f) GetProcAddress(hInstGL, "glDepthFunc");
    if (glDepthFunc_fp == 0) {Sys_Error("glDepthFunc not found in GL library");}
  
-+  glFogf_fp = (glFogf_f) wglGetProcAddress("glFogf");
++  glFogf_fp = (glFogf_f) GetProcAddress(hInstGL, "glFogf");
 +  if (glFogf_fp == 0) {Sys_Error("glFogf not found in GL library");}
-+  glFogfv_fp = (glFogfv_f) wglGetProcAddress("glFogfv");
++  glFogfv_fp = (glFogfv_f) GetProcAddress(hInstGL, "glFogfv");
 +  if (glFogfv_fp == 0) {Sys_Error("glFogfv not found in GL library");}
-+  glFogi_fp = (glFogi_f) wglGetProcAddress("glFogi");
++  glFogi_fp = (glFogi_f) GetProcAddress(hInstGL, "glFogi");
 +  if (glFogi_fp == 0) {Sys_Error("glFogi not found in GL library");}
-+  glFogiv_fp = (glFogiv_f) wglGetProcAddress("glFogiv");
++  glFogiv_fp = (glFogiv_f) GetProcAddress(hInstGL, "glFogiv");
 +  if (glFogiv_fp == 0) {Sys_Error("glFogiv not found in GL library");}
 +
-   glDrawBuffer_fp = (glDrawBuffer_f) wglGetProcAddress_fp("glDrawBuffer");
+   glDrawBuffer_fp = (glDrawBuffer_f) GetProcAddress(hInstGL, "glDrawBuffer");
    if (glDrawBuffer_fp == 0) {Sys_Error("glDrawBuffer not found in GL library");}
-   glReadBuffer_fp = (glDrawBuffer_f) wglGetProcAddress_fp("glReadBuffer");
+   glReadBuffer_fp = (glDrawBuffer_f) GetProcAddress(hInstGL, "glReadBuffer");

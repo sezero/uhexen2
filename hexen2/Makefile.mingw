@@ -26,8 +26,19 @@ endif
 CFLAGS+= -I. -I../w32stuff/dxsdk/inc -I$(MINGWDIR)/include
 
 LDFLAGS = -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mwindows
+
+# whether to dlsym gl and wgl function calls
+WGL_DLSYM=yes
+ifeq "$(WGL_DLSYM)" "yes"
+GL_DEFS = -DGL_DLSYM
+GLFLAGS = 
+else
+GL_DEFS = 
 GLFLAGS = -lopengl32
+endif
+
 ASFLAGS = -fwin32 -D__WIN32__ --prefix _
+
 GAMEFLAGS =
 
 ifdef DEMO
@@ -174,11 +185,13 @@ clean:
 cleaner:
 	rm -f $(SOFTOBJS) $(GLOBJS) $(COMMONOBJS) $(GLMP_BINARY) $(GLH2_BINARY) $(MP_BINARY) $(H2_BINARY) core
 
+glmp_exe : CFLAGS+= $(GL_DEFS)
 glmp_exe : GAMEFLAGS+=-DGLQUAKE -DH2MP
 glmp_exe : ICO_FILE=h2mp.ico
 glmp_exe : $(GLOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(GLMP_BINARY) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS)
 
+glh2_exe : CFLAGS+= $(GL_DEFS)
 glh2_exe : GAMEFLAGS+=-DGLQUAKE
 glh2_exe : $(GLOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS)
