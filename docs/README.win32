@@ -66,3 +66,19 @@ make command.
 
 MinGW/MSYS homepage is at: http://mingw.sourceforge.net/
 NASM homepage is at	 : http://nasm.sourceforge.net/
+
+
+Installation Instructions for Win32:
+------------------------------------
+
+Install Hexen II from your cdrom, first. Apply the official 1.11
+patch of Raven software (you need a file named "ph2v111.exe" or
+"ph2v111.zip":  go to http://www.raven-games.com/, follow the link
+named "Essential Files").
+If you want the mission pack and/or hexenworld, install them, too.
+
+Now unzip the Hammer of Thyrion package into your installation
+folder. You must allow overwriting the existing files. It contains
+all of the updated program files and gamedata. Run the game as you
+normally would.
+
