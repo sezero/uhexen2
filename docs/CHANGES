@@ -1,5 +1,19 @@
 ChangeLog:
 
+2005-09-14 (CVS):
+    * Fixed win32 version for dlsym'ed gl and wgl function calls
+    * Cleaned-up h2/h2mp friction code
+    * Added stencil buffered shadows (from jshexen2, code by MrG)
+    * Added stencil shadow console option to the READMEs
+    * Used the same name for the EffectsT union of hexenworld as hexen2
+    * Renamed hwmaster/net_test.c to a more sensible sys_main.c
+    * Updated the TODO list
+    * Moved qtypes.h to 00_unused
+    * Inserted win32 installation instructions to README.win32
+    * Documentation tidy-up: Moved all gpl license files into the
+      docs directory; moved README.hwmaster to the docs directory;
+      renamed hcc.txt of dcc to a more sensible dcc.txt
+
 2005-08-29 (1.3.0-final):
     * released as 1.3.0-final
     * update_h2.sh: updated the pakfile patch script to use OS specific
