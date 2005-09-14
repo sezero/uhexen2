@@ -318,6 +318,9 @@ gl_purge_maptex	0|1	  : Purge opengl textures upon map
 			    because the textures won't keep
 			    accumulating from map to map
 
+gl_stencilshadow  0|1	  : Disable/Enable stencil buffered shadows
+			    on the fly. 0 is default.
+
 gl_ztrick	0|1	  : 3% performance tweak
 			    (some cards unsupported)
 
