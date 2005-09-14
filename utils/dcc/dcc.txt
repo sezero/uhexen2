@@ -78,5 +78,3 @@ float random(float a,floatb);//return a float between a and b
 ***(this is an op_code not supported as hexenc)  vector random();//return a vector between '0 0 0' and '1 1 1' *** this for has not been tested
 vector random(vector a);//return a vectorbetween '0 0 0' and a
 vector random(vector a,vector b);//return a vector between a and b
-
- 
