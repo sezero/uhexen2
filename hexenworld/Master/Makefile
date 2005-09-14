@@ -20,7 +20,7 @@ LDSTATIC = -lm -lpthread -static
 %.o: %.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
-MASTEROBJS = cmds.o net_test.o net.o
+MASTEROBJS = cmds.o sys_main.o net.o
 
 all: $(BINARY)
 static: $(BINARY_STATIC)

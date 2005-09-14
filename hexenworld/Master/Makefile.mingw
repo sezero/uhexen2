@@ -17,7 +17,7 @@ LDFLAGS = -L$(MINGWDIR)/lib -lm -lwsock32 -lwinmm -mconsole
 %.o: %.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
-MASTEROBJS = cmds.o net_test.o net.o
+MASTEROBJS = cmds.o sys_main.o net.o
 
 all: $(BINARY) 
 
