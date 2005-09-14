@@ -16,10 +16,9 @@ filter add xxx.xxx.xxx.xxx:port xxx.xxx.xxx.xxx:port	adds a filter
 filter remove xxx.xxx.xxx.xxx:port			removes a filter
 filter clear						removes all filters
 
-The program source code is included in the hwmaster_src directory, and is subject
-to the Quake General Public Liscence (see gnu.txt included) since most of the code
-is based from qw source.
+Most of the program source code, authored by Marc Allaire (aka. Kor Skarn),
+is based on the qw source, and is subject to the General Public Liscence v2.
 
-If you have questions, comments or suggestions, you can contact me at
-korskarn@hexenworld.com
+The original email address of the author was korskarn@hexenworld.com, but
+that address seems non-operational today.
 
