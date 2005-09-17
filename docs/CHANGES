@@ -1,5 +1,9 @@
 ChangeLog:
 
+2005-09-17 (CVS):
+    * minor ifdef, syntax and defines clean-up
+    * removed unnecessary stuff from launcher's Makefile
+
 2005-09-14 (CVS):
     * Fixed win32 version for dlsym'ed gl and wgl function calls
     * Cleaned-up h2/h2mp friction code
