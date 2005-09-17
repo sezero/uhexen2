@@ -9,10 +9,6 @@
 #  if you want debug symbols compiled in ( -g ), run with
 #  make DEBUG=1
 
-prefix = /usr
-#prefix = /usr/local
-
-PACKAGE = h2launcher
 ifdef DEMO
 TMPNAME = h2demo
 else
