@@ -2,11 +2,11 @@
 	glwin32.h
 	glquake header for win32/wgl
 
-	$Id: glwin32.h,v 1.8 2005-09-12 08:05:42 sezero Exp $
+	$Id: glwin32.h,v 1.9 2005-09-17 06:02:46 sezero Exp $
 */
 
 
-#if !defined(__GNUC__)
+#ifdef _MSC_VER
 // disable data conversion warnings
 #pragma warning(disable : 4244)     // MIPS
 #pragma warning(disable : 4136)     // X86

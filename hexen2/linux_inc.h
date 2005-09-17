@@ -1,6 +1,10 @@
 #ifndef _LINUX_INC
 #define _LINUX_INC
 
+#if defined(_WIN32)
+#error linux_inc.h and linquake.h is only meant to be used on Unix
+#endif
+
 #include <ctype.h>
 
 //#define _inline inline
@@ -19,10 +23,6 @@
 #define DWORD unsigned int
 #define LONG long
 #define LONGLONG long long
-
-#define stricmp(s1,s2) strcasecmp((s1),(s2))
-#define strcmpi(s1,s2) strcasecmp((s1),(s2))
-#define strnicmp(s1,s2,n) strncasecmp((s1),(s2),(n))
 
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 #define max(a, b) (((a) > (b)) ? (a) : (b))

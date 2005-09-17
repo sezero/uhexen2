@@ -2,10 +2,14 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.12 2005-08-11 12:34:41 sezero Exp $
+	$Id: winquake.h,v 1.13 2005-09-17 06:02:46 sezero Exp $
 */
 
-#if !defined(__GNUC__)
+#if !defined(_WIN32)
+#error winquake.h is only meant to be used on Windows
+#endif
+
+#ifdef _MSC_VER
 #pragma warning( disable : 4229 )  // mgraph gets this
 #endif
 #include <windows.h>

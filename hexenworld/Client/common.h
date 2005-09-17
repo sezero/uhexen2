@@ -167,11 +167,10 @@ void MSG_ReadUsercmd (struct usercmd_s *cmd, qboolean long_msg);
 
 //============================================================================
 
-#ifndef PLATFORM_UNIX
+#ifdef _WIN32
 #define Q_strncasecmp(s1,s2,n) strnicmp((s1),(s2),(n))
 #define Q_strcasecmp(s1,s2) stricmp((s1),(s2))
 #else
-// assuming __GNUC__
 #define Q_strncasecmp(s1,s2,n) strncasecmp((s1),(s2),(n))
 #define Q_strcasecmp(s1,s2) strcasecmp((s1),(s2))
 #endif

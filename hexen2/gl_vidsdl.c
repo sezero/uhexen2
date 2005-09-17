@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.80 2005-09-12 08:17:46 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.81 2005-09-17 06:02:46 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -176,14 +176,14 @@ void D_EndDirectRect (int x, int y, int width, int height)
 static void VID_SetIcon (void)
 {
 #if defined(H2W)
-	// hexenworld
-	#include "../icons/h2w_ico.xbm"
+// hexenworld
+#	include "../icons/h2w_ico.xbm"
 #elif defined(H2MP)
-	// hexen2 with mission pack
-	#include "icons/h2mp_ico.xbm"
+// hexen2 with mission pack
+#	include "icons/h2mp_ico.xbm"
 #else
-	// plain hexen2
-	#include "icons/h2_ico.xbm"
+// plain hexen2
+#	include "icons/h2_ico.xbm"
 #endif
 	SDL_Surface *icon;
 	SDL_Color color;

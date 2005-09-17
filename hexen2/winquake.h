@@ -2,10 +2,14 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.12 2005-08-11 12:34:41 sezero Exp $
+	$Id: winquake.h,v 1.13 2005-09-17 06:02:46 sezero Exp $
 */
 
-#if !defined(__GNUC__)
+#if !defined(_WIN32)
+#error winquake.h is only meant to be used on Windows
+#endif
+
+#ifdef _MSC_VER
 #pragma warning( disable : 4229 )  // mgraph gets this
 #endif
 #include <windows.h>
@@ -99,6 +103,9 @@ int (PASCAL FAR *pgetsockname)(SOCKET s, struct sockaddr FAR *name,
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/08/11 12:34:41  sezero
+ * mgraph.h is only needed in vid_win.c, no need to include it globally in here
+ *
  * Revision 1.11  2005/06/19 11:23:23  sezero
  * added wheelmouse support and conwidth support to hexen2. changed
  * hexenworld's default behavior of default 640 conwidth to main width

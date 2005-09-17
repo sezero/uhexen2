@@ -2,12 +2,12 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.36 2005-08-18 14:20:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.37 2005-09-17 06:02:46 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
 
-#if defined(_WIN32) && !defined(__GNUC__)
+#ifdef _MSC_VER
 #pragma warning(disable:4244)
 #endif
 
@@ -437,6 +437,10 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.36  2005/08/18 14:20:28  sezero
+ * moved music volume update back into frame update. it has its merits (such as
+ * correct bgmvolume on startup) this way..
+ *
  * Revision 1.35  2005/07/30 15:16:26  sezero
  * bumped both HoT and engine versions
  *
