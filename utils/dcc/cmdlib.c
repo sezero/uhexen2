@@ -35,7 +35,8 @@ void Error (char *error, ...)
 
 
 // here is a stpcpy replacement.
-#if !(defined (__GLIBC__) && defined (_STRING_H) && defined (_GNU_SOURCE))
+//#if !(defined (__GLIBC__) && defined (_STRING_H) && defined (_GNU_SOURCE))
+#if !(defined (__GLIBC__) && defined (_STRING_H))
 char *Q_stpcpy (char *qdest, const char *qsrc)
 {
 /* Copy QSRC to QDEST, returning the address

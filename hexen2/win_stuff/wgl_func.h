@@ -18,16 +18,16 @@ wglGetCurrentDC_f wglGetCurrentDC_fp;
 
 #else
 
-#define wglGetProcAddress_fp(a)		wglGetProcAddress((a))
-#define wglCreateContext_fp(a)		wglCreateContext((a))
-#define wglDeleteContext_fp(a)		wglDeleteContext((a))
-#define wglMakeCurrent_fp(a,b)		wglMakeCurrent((a),(b))
-#define wglGetCurrentContext_fp()	wglGetCurrentContext()
-#define wglGetCurrentDC_fp()		wglGetCurrentDC()
+#define wglGetProcAddress_fp	wglGetProcAddress
+#define wglCreateContext_fp	wglCreateContext
+#define wglDeleteContext_fp	wglDeleteContext
+#define wglMakeCurrent_fp	wglMakeCurrent
+#define wglGetCurrentContext_fp	wglGetCurrentContext
+#define wglGetCurrentDC_fp	wglGetCurrentDC
 
-//#define wglGetExtensionsStringARB_fp(a)	wglGetExtensionsStringARB((a))
-//#define wglSwapBuffers_fp(a)		wglSwapBuffers((a))
-//#define wglSwapIntervalEXT_fp(a)	wglSwapIntervalEXT((a))
+//#define wglGetExtensionsStringARB_fp	wglGetExtensionsStringARB
+//#define wglSwapBuffers_fp		wglSwapBuffers
+//#define wglSwapIntervalEXT_fp		wglSwapIntervalEXT
 
 #endif
 

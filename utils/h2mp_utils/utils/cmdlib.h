@@ -27,12 +27,12 @@ extern char **myargv;
 
 char *strupr (char *in);
 char *strlower (char *in);
-#ifndef __GNUC__
-#define Q_strncasecmp(s1,s2,n) strnicmp((s1),(s2),(n))
-#define Q_strcasecmp(s1,s2) stricmp((s1),(s2))
+#ifdef _WIN32
+#define Q_strncasecmp	strnicmp
+#define Q_strcasecmp	stricmp
 #else
-#define Q_strncasecmp(s1,s2,n) strncasecmp((s1),(s2),(n))
-#define Q_strcasecmp(s1,s2) strcasecmp((s1),(s2))
+#define Q_strncasecmp	strncasecmp
+#define Q_strcasecmp	strcasecmp
 #endif
 
 int	Q_filelength (FILE *f);

@@ -27,15 +27,16 @@ extern int myargc;
 extern char **myargv;
 
 #ifndef __GNUC__
-#define Q_strncasecmp(s1,s2,n) strnicmp((s1),(s2),(n))
-#define Q_strcasecmp(s1,s2) stricmp((s1),(s2))
+#define Q_strncasecmp	strnicmp
+#define Q_strcasecmp	stricmp
 #else
-#define Q_strncasecmp(s1,s2,n) strncasecmp((s1),(s2),(n))
-#define Q_strcasecmp(s1,s2) strcasecmp((s1),(s2))
+#define Q_strncasecmp	strncasecmp
+#define Q_strcasecmp	strcasecmp
 #endif
 
-#if defined (__GLIBC__) && defined (_STRING_H) && defined (_GNU_SOURCE)
-#define Q_stpcpy stpcpy
+//#if defined (__GLIBC__) && defined (_STRING_H) && defined (_GNU_SOURCE)
+#if defined (__GLIBC__) && defined (_STRING_H)
+#define Q_stpcpy	stpcpy
 #else
 char *Q_stpcpy (char *qdest, const char *qsrc);
 #endif
