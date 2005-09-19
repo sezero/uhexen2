@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.7 2005-08-17 00:02:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.8 2005-09-19 19:50:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -743,7 +743,7 @@ void R_DrawViewModel (void)
 	j = R_LightPoint (currententity->origin);
 
 	if (j < 24)
-		j = 24;		// allways give some light on gun
+		j = 24;		// always give some light on gun
 
 	r_viewlighting.ambientlight = j;
 	r_viewlighting.shadelight = j;
@@ -1301,6 +1301,10 @@ void R_InitTurb (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/08/17 00:02:57  sezero
+ * R_DrawViewModel should not return until it determines the light_level,
+ * otherwise the player will be considered invisible to the monsters.
+ *
  * Revision 1.6  2005/07/09 07:29:40  sezero
  * use hunk instead of malloc
  *

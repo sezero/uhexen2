@@ -421,7 +421,7 @@ void SVC_Log (void)
 		seq = -1;
 
 	if (seq == svs.logsequence-1 || !sv_fraglogfile)
-	{	// they allready have this data, or we aren't logging frags
+	{	// they already have this data, or we aren't logging frags
 		data[0] = A2A_NACK;
 		NET_SendPacket (1, data, net_from);
 		return;
@@ -524,7 +524,7 @@ void SVC_DirectConnect (void)
 	} else
 		strncpy (newcl->userinfo, userinfo, sizeof(newcl->userinfo)-1);
 
-	// if there is allready a slot for this ip, drop it
+	// if there is already a slot for this ip, drop it
 	for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
 	{
 		if (cl->state == cs_free)
@@ -1515,7 +1515,7 @@ void SV_InitNet (void)
 
 	Netchan_Init ();
 
-	// heartbeats will allways be sent to the id master
+	// heartbeats will always be sent to the id master
 	svs.last_heartbeat = -99999;		// send immediately
 
 //	NET_StringToAdr ("208.135.137.23:26900", &idmaster_adr);

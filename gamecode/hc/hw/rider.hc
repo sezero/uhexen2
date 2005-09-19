@@ -249,7 +249,7 @@ void rider_multi_trigger(void)
 {
 	if (self.nextthink > time)
 	{
-		return;		// allready been triggered
+		return;		// already been triggered
 	}
 	if (self.enemy.classname != "rider_war")
 	{

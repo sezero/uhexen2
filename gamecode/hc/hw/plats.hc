@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/plats.hc,v 1.1.1.1 2004-11-29 11:24:15 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/plats.hc,v 1.2 2005-09-19 19:50:09 sezero Exp $
  */
 void()func_train_mp;
 void() newplat_center_touch;
@@ -130,7 +130,7 @@ void() plat_outside_touch =
 void() plat_trigger_use =
 {
 	if (self.think)
-		return;		// allready activated
+		return;		// already activated
 	plat_go_down();
 };
 
@@ -1124,6 +1124,9 @@ void func_rotating_movechain (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:24:15  sezero
+ * Initial import
+ *
  * Revision 1.1.1.1  2001/11/09 17:05:10  theoddone33
  * Inital import
  *

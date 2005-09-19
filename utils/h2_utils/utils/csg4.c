@@ -198,7 +198,7 @@ void ClipInside (int splitplane, int frontside, qboolean precedence)
 		if (f->planenum == splitplane)
 		{	// exactly on, handle special
 			if ( frontside != f->planeside || precedence )
-			{	// allways clip off opposite faceing
+			{	// always clip off opposite faceing
 				frags[frontside] = NULL;
 				frags[!frontside] = f;
 			}

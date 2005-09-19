@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/constant.hc,v 1.1.1.1 2004-11-29 11:37:41 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/constant.hc,v 1.2 2005-09-19 19:50:09 sezero Exp $
  */
 
 //
@@ -452,7 +452,7 @@ float	STREAM_TRANSLUCENT			= 32;
 
 // sound channels
 // channel 0 never willingly overrides
-// other channels (1-7) allways override a playing sound on that channel
+// other channels (1-7) always override a playing sound on that channel
 float	CHAN_AUTO					= 0;
 float	CHAN_WEAPON					= 1;
 float	CHAN_VOICE					= 2;

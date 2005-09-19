@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/model.c,v 1.9 2005-07-31 00:45:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/model.c,v 1.10 2005-09-19 19:50:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -419,7 +419,7 @@ void Mod_LoadTextures (lump_t *l)
 		if (!tx || tx->name[0] != '+')
 			continue;
 		if (tx->anim_next)
-			continue;	// allready sequenced
+			continue;	// already sequenced
 
 	// find the number of frames in the animation
 		memset (anims, 0, sizeof(anims));
@@ -2282,6 +2282,9 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/07/31 00:45:11  sezero
+ * platform defines cleanup
+ *
  * Revision 1.8  2005/07/16 23:23:52  sezero
  * killed fastfabs, not worthy of keeping anymore
  *

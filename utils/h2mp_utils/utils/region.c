@@ -125,7 +125,7 @@ void RecursiveGrowRegion (dface_t *r, face_t *f)
 	{
 		e = f->edges[i];
 		if (!edgefaces[abs(e)][0])
-			continue;	// edge has allready been removed
+			continue;	// edge has already been removed
 		if (e > 0)
 			f2 = edgefaces[e][1];
 		else
@@ -134,7 +134,7 @@ void RecursiveGrowRegion (dface_t *r, face_t *f)
 		{
 			edgefaces[abs(e)][0] = NULL;
 			edgefaces[abs(e)][1] = NULL;
-			continue;	// allready merged
+			continue;	// already merged
 		}
 		if (f2 && CanJoinFaces (f, f2))
 		{	// remove the edge and merge the faces
@@ -416,7 +416,7 @@ void GrowNodeRegion_r (node_t *node)
 	for (f=node->faces ; f ; f=f->next)
 	{
 //		if (f->outputnumber != -1)
-//			continue;	// allready grown into an earlier region
+//			continue;	// already grown into an earlier region
 			
 	// emit a region
 

@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.26 2005-07-31 00:45:11 sezero Exp $
+	$Id: snd_dma.c,v 1.27 2005-09-19 19:50:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -423,7 +423,7 @@ channel_t *SND_PickChannel(int entnum, int entchannel)
 		if (entchannel != 0		// channel 0 never overrides
 		&& channels[ch_idx].entnum == entnum
 		&& (channels[ch_idx].entchannel == entchannel || entchannel == -1) )
-		{	// allways override sound from same entity
+		{	// always override sound from same entity
 			first_to_die = ch_idx;
 			break;
 		}
@@ -461,7 +461,7 @@ void SND_Spatialize(channel_t *ch)
     vec3_t source_vec;
     sfx_t *snd;
 
-// anything coming from the view entity will allways be full volume
+// anything coming from the view entity will always be full volume
 	if (ch->entnum == cl.viewentity)
 	{
 		ch->leftvol = ch->master_vol;
@@ -1102,6 +1102,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2005/07/31 00:45:11  sezero
+ * platform defines cleanup
+ *
  * Revision 1.25  2005/07/22 08:52:54  sezero
  * I seem to have missed one place for linux-only alsa sound conditionals
  *

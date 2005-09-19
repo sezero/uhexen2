@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.14 2005-08-23 12:38:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.15 2005-09-19 19:50:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -49,7 +49,7 @@ Con_Printf ();
 net 
 turn off messages option
 
-the refresh is allways rendered, unless the console is full screen
+the refresh is always rendered, unless the console is full screen
 
 
 console is:
@@ -1514,6 +1514,9 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/08/23 12:38:54  sezero
+ * added the missing notes of ID to H2 version of screen.c
+ *
  * Revision 1.13  2005/08/23 12:31:43  sezero
  * safe clean-ups before 1.3.0-final #4: (gl)screen.c: cleaned-up some of
  * the mess partially formed after merging the fullscreen intermissions

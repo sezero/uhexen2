@@ -56,7 +56,7 @@ typedef enum {false, true}	qboolean;
 // out of band message id bytes
 
 // M = master, S = server, C = client, A = any
-// the second character will allways be \n if the message isn't a single
+// the second character will always be \n if the message isn't a single
 // byte long (?? not true anymore?)
 
 #define	S2C_CHALLENGE		'c'

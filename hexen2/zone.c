@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.15 2005-07-23 22:23:48 sezero Exp $
+	$Id: zone.c,v 1.16 2005-09-19 19:50:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -353,7 +353,7 @@ void Hunk_Print (qboolean all, qboolean write_file)
 	// run consistancy checks
 	//
 		if (h->sentinal != HUNK_SENTINAL)
-			Sys_Error ("Hunk_Check: trahsed sentinal");
+			Sys_Error ("Hunk_Check: trashed sentinal");
 		if (h->size < 16 || h->size + (byte *)h - hunk_base > hunk_size)
 			Sys_Error ("Hunk_Check: bad size");
 
@@ -913,7 +913,7 @@ void *Cache_Alloc (cache_user_t *c, int size, char *name)
 	cache_system_t	*cs;
 
 	if (c->data)
-		Sys_Error ("Cache_Alloc: allready allocated");
+		Sys_Error ("Cache_Alloc: already allocated");
 	
 	if (size <= 0)
 		Sys_Error ("Cache_Alloc: size %i", size);
@@ -1133,6 +1133,10 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/07/23 22:23:48  sezero
+ * increased hexen2 minimum zone size to 256 KB to match that
+ * of hexenworld's in order to handle the new changes
+ *
  * Revision 1.14  2005/07/09 11:53:40  sezero
  * moved the local unix version of strlwr to zone.c, its only user.
  *

@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.35 2005-09-12 08:17:46 sezero Exp $
+	$Id: gl_rmain.c,v 1.36 2005-09-19 19:50:10 sezero Exp $
 */
 
 
@@ -716,7 +716,7 @@ void R_DrawAliasModel (entity_t *e)
 	adjust_origin[2] += (currententity->model->mins[2] + currententity->model->maxs[2]) / 2;
 	ambientlight = shadelight = R_LightPoint (adjust_origin);
 
-	// allways give the gun some light
+	// always give the gun some light
 	if (e == &cl.viewent && ambientlight < 24)
 		ambientlight = shadelight = 24;
 
@@ -1312,7 +1312,7 @@ void R_DrawViewModel (void)
 	ambientlight = R_LightPoint (currententity->origin);
 
 	if (ambientlight < 24)
-		ambientlight = 24;	// allways give some light on gun
+		ambientlight = 24;	// always give some light on gun
 
 // add dynamic lights		
 	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
@@ -1818,6 +1818,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.35  2005/09/12 08:17:46  sezero
+ * added stencil buffered shadows (extracted from jshexen2, code by MrG)
+ *
  * Revision 1.34  2005/08/17 00:02:57  sezero
  * R_DrawViewModel should not return until it determines the light_level,
  * otherwise the player will be considered invisible to the monsters.

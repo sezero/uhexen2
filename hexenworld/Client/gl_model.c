@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.13 2005-07-16 23:23:55 sezero Exp $
+	$Id: gl_model.c,v 1.14 2005-09-19 19:50:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -418,7 +418,7 @@ void Mod_LoadTextures (lump_t *l)
 		if (!tx || tx->name[0] != '+')
 			continue;
 		if (tx->anim_next)
-			continue;	// allready sequenced
+			continue;	// already sequenced
 
 	// find the number of frames in the animation
 		memset (anims, 0, sizeof(anims));

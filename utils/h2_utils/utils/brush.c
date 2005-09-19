@@ -503,7 +503,7 @@ void TestAddPlane (plane_t *plane)
 	int		counts[3];
 	plane_t	*pl;
 	
-// see if the plane has allready been added
+// see if the plane has already been added
 	for (i=0 ; i<numbrushfaces ; i++)
 	{
 		pl = &faces[i].plane;
@@ -594,7 +594,7 @@ int AddHullPoint (vec3_t p, int hullnum)
 ============
 AddHullEdge
 
-Creates all of the hull planes around the given edge, if not done allready
+Creates all of the hull planes around the given edge, if not done already
 =============
 */
 void AddHullEdge (vec3_t p1, vec3_t p2, int hullnum)
@@ -612,7 +612,7 @@ void AddHullEdge (vec3_t p1, vec3_t p2, int hullnum)
 	for (i=0 ; i<num_hull_edges ; i++)
 		if ( (hull_edges[i][0] == pt1 && hull_edges[i][1] == pt2)
 		|| (hull_edges[i][0] == pt2 && hull_edges[i][1] == pt1) )
-			return;	// allread added
+			return;	// already added
 		
 	if (num_hull_edges == MAX_HULL_EDGES)
 		Error ("MAX_HULL_EDGES");

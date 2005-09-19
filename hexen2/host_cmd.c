@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.28 2005-09-19 19:27:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.29 2005-09-19 19:50:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1492,7 +1492,7 @@ void Host_Kill_f (void)
 
 	if (sv_player->v.health <= 0 && sv_player->v.deadflag != DEAD_NO)
 	{
-		SV_ClientPrintf ("Can't suicide -- allready dead!\n");
+		SV_ClientPrintf ("Can't suicide -- already dead!\n");
 		return;
 	}
 	
@@ -1557,7 +1557,7 @@ void Host_PreSpawn_f (void)
 
 	if (host_client->spawned)
 	{
-		Con_Printf ("prespawn not valid -- allready spawned\n");
+		Con_Printf ("prespawn not valid -- already spawned\n");
 		return;
 	}
 	
@@ -1586,7 +1586,7 @@ void Host_Spawn_f (void)
 
 	if (host_client->spawned)
 	{
-		Con_Printf ("Spawn not valid -- allready spawned\n");
+		Con_Printf ("Spawn not valid -- already spawned\n");
 		return;
 	}
 
@@ -1595,7 +1595,7 @@ void Host_Spawn_f (void)
 
 // run the entrance script
 	if (sv.loadgame)
-	{	// loaded games are fully inited allready
+	{	// loaded games are fully inited already
 		// if this is the last client to be connected, unpause
 		sv.paused = false;
 	}
@@ -2264,6 +2264,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2005/09/19 19:27:09  sezero
+ * can't kill zombie patch (from Maddes / QIP)
+ *
  * Revision 1.27  2005/08/20 13:06:34  sezero
  * favored unlink() over DeleteFile() on win32. removed unnecessary
  * platform defines for directory path separators. removed a left-

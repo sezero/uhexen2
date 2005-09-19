@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/shambler.hc,v 1.1.1.1 2005-07-29 20:43:47 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/shambler.hc,v 1.2 2005-09-19 19:50:08 sezero Exp $
  */
 /*
 ==============================================================================
@@ -279,7 +279,7 @@ void(entity attacker, float damage)	sham_pain =
 	sound (self, CHAN_VOICE, "shambler/shurt2.wav", 1, ATTN_NORM);
 
 	if (self.health <= 0)
-		return;		// allready dying, don't go into pain frame
+		return;		// already dying, don't go into pain frame
 
 	if (random()*400 > damage)
 		return;		// didn't flinch
@@ -370,6 +370,9 @@ void() monster_shambler =
 };
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2005/07/29 20:43:47  sezero
+ * unused sources - initial import
+ *
  * Revision 1.1  2005/01/26 17:26:12  sezero
  * Raven's original Siege hcode.
  *

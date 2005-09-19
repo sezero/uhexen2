@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/hknight.hc,v 1.1.1.1 2005-07-29 20:43:10 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/hknight.hc,v 1.2 2005-09-19 19:50:08 sezero Exp $
  */
 /*
 ==============================================================================
@@ -366,7 +366,7 @@ void(entity attacker, float damage)	hknight_pain =
 	sound (self, CHAN_VOICE, "hknight/pain1.wav", 1, ATTN_NORM);
 
 	if (time - self.pain_finished > 5)
-	{	// allways go into pain frame if it has been a while
+	{	// always go into pain frame if it has been a while
 		hknight_pain1 ();
 		self.pain_finished = time + 1;
 		return;
@@ -446,6 +446,9 @@ void() monster_hell_knight =
 };
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2005/07/29 20:43:10  sezero
+ * unused sources - initial import
+ *
  * Revision 1.1  2005/01/26 17:26:11  sezero
  * Raven's original Siege hcode.
  *

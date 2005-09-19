@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.8 2005-07-17 19:28:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.9 2005-09-19 19:50:10 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -894,7 +894,7 @@ void V_CalcIntermissionRefdef (void)
 	view->model = NULL;
 	r_refdef.vieworg[2] += cl.viewheight;
 
-// allways idle in intermission
+// always idle in intermission
 	old = v_idlescale.value;
 	v_idlescale.value = 1;
 	V_AddIdle ();
@@ -1187,6 +1187,10 @@ void V_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/07/17 19:28:28  sezero
+ * added crosshair color from quake. performed some small cleanup.
+ * I hope I won't have to bother with this thing anymore.
+ *
  * Revision 1.7  2005/07/17 15:19:34  sezero
  * added crosshair 2 support of hexenworld to hexen2.
  * gl versions issue, that crosshair 2 won't show-up

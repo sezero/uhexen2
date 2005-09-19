@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.13 2005-07-31 11:11:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.14 2005-09-19 19:50:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -718,7 +718,7 @@ Each entity can have eight independant sound sources, like voice,
 weapon, feet, etc.
 
 Channel 0 is an auto-allocate channel, the others override anything
-allready running on that entity/channel pair.
+already running on that entity/channel pair.
 
 An attenuation of 0 will play full volume everywhere in the level.
 Larger attenuations will drop off.
@@ -3239,6 +3239,9 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/07/31 11:11:09  sezero
+ * platform defines cleanup
+ *
  * Revision 1.12  2005/07/31 00:45:11  sezero
  * platform defines cleanup
  *

@@ -336,7 +336,7 @@ void Cmd_Alias_f (void)
 		return;
 	}
 
-	// if the alias allready exists, reuse it
+	// if the alias already exists, reuse it
 	for (a = cmd_alias ; a ; a=a->next)
 	{
 		if (!strcmp(s, a->name))

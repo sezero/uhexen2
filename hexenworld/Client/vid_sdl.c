@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.28 2005-08-10 23:19:26 sezero Exp $
+   $Id: vid_sdl.c,v 1.29 2005-09-19 19:50:10 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -828,7 +828,7 @@ void VID_SetGamma_f (void)
 	}
 
 	/* if value==0 , just apply current settings.
-	   this is usefull at startup */
+	   this is useful at startup */
 
 	VID_ApplyGamma();
 }
@@ -940,6 +940,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2005/08/10 23:19:26  sezero
+ * slight tweaks
+ *
  * Revision 1.27  2005/07/30 11:36:43  sezero
  * support for window manager icon using xbm format data. stolen from
  * the quake2 project at icculus, code probably by relnev (Steven Fuller)

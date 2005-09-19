@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.26 2005-08-18 14:20:28 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.27 2005-09-19 19:50:10 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -884,7 +884,7 @@ void M_AdjustSliders (int dir)
 			sfxvolume.value = 1;
 		Cvar_SetValue ("volume", sfxvolume.value);
 		break;
-	case OPT_ALWAYRUN:	// allways run
+	case OPT_ALWAYRUN:	// always run
 		if (cl_forwardspeed.value > 200)
 		{
 			Cvar_SetValue ("cl_forwardspeed", 200);

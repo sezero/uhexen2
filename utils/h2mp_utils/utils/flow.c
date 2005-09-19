@@ -328,7 +328,7 @@ void RecursiveLeafFlow (int leafnum, threaddata_t *thread, pstack_t *prevstack)
 			continue;	// can't possibly see it
 		}
 
-	// if the portal can't see anything we haven't allready seen, skip it
+	// if the portal can't see anything we haven't already seen, skip it
 		if (p->status == stat_done)
 		{
 			c_vistest++;

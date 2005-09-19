@@ -575,7 +575,7 @@ void PlayerDie ()
 }
 
 void set_suicide_frame ()
-{	// used by klill command and diconnect command
+{	// used by kill command and disconnect command
 	if (self.model != self.init_model)
 		return;	// already gibbed
 //have a self.deathframe value?  Or just if-thens

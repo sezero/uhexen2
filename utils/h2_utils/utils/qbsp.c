@@ -838,7 +838,7 @@ GetStartupInfo(&StartupInfo);
 		exit (0);
 	}
 	
-// commanded to use the allready existing hulls 1 and 2
+// commanded to use the already existing hulls 1 and 2
 	if (usehulls)
 	{
 		CreateSingleHull ();

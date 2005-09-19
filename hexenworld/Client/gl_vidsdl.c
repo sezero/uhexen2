@@ -2,7 +2,7 @@
    gl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.74 2005-09-17 06:02:46 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.75 2005-09-19 19:50:10 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -735,7 +735,7 @@ void VID_SetGamma_f (void)
 	}
 
 	/* if value==0, just apply current settings.
-	   this is usefull at startup */
+	   this is useful at startup */
 	VID_ApplyGamma();
 }
 

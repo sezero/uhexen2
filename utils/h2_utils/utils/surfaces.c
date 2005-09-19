@@ -352,10 +352,10 @@ int	GetVertex (vec3_t in, int planenum)
 		{
 			hv->numedges++;
 			if (hv->numplanes == 3)
-				return hv->num;		// allready known to be a corner
+				return hv->num;		// already known to be a corner
 			for (i=0 ; i<hv->numplanes ; i++)
 				if (hv->planenums[i] == planenum)
-					return hv->num;		// allready know this plane
+					return hv->num;		// already know this plane
 			if (hv->numplanes == 2)
 				c_cornerverts++;
 			else

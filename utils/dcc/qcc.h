@@ -15,7 +15,7 @@ other pointer types for models and clients?
 
 compact string heap?
 
-allways initialize all variables to something safe
+always initialize all variables to something safe
 
 the def->type->type arrangement is really silly.
 
@@ -168,7 +168,7 @@ A profile counter is kept for each function, and incremented for each interprete
 
 
 afunc ( 4, bfunc(1,2,3));
-will fail because there is a shared parameter marshaling area, which will cause the 1 from bfunc to overwrite the 4 allready placed in parm0.  When a function is called, it copies the parms from the globals into it's privately scoped variables, so there is no collision when calling another function.
+will fail because there is a shared parameter marshaling area, which will cause the 1 from bfunc to overwrite the 4 already placed in parm0.  When a function is called, it copies the parms from the globals into it's privately scoped variables, so there is no collision when calling another function.
 
 total = factorial(3) + factorial(4);
 Will fail because the return value from functions is held in a single global area.  If this really gets on your nerves, tell me and I can work around it at a slight performance and space penalty by allocating a new register for the function call and copying it out.
@@ -213,7 +213,7 @@ There are no ++ / -- operators, or operate/assign operators.
 
 //=============================================================================
 
-// offsets are allways multiplied by 4 before using
+// offsets are always multiplied by 4 before using
 typedef int	gofs_t;				// offset in global data block
 typedef struct function_s function_t;
 
@@ -277,7 +277,7 @@ struct function_s
 	char				*file;		// source file with definition
 	int					file_line;
 	struct def_s		*def;
-	int					parm_ofs[MAX_PARMS];	// allways contiguous, right?
+	int					parm_ofs[MAX_PARMS];	// always contiguous, right?
 };
 
 

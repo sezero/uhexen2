@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.6 2005-07-23 22:22:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.7 2005-09-19 19:50:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -362,7 +362,7 @@ void Cmd_Alias_f (void)
 		return;
 	}
 
-	// if the alias allready exists, reuse it
+	// if the alias already exists, reuse it
 	for (a = cmd_alias ; a ; a=a->next)
 	{
 		if (!strcmp(s, a->name))
@@ -741,6 +741,9 @@ void ListCommands (char *prefix)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/07/23 22:22:08  sezero
+ * unified the common funcntions for hexen2-hexenworld
+ *
  * Revision 1.5  2005/05/20 15:26:33  sezero
  * separated winquake.h into winquake.h and linquake.h
  * changed all occurances of winquake.h to quakeinc.h,

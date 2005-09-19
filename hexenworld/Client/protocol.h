@@ -14,7 +14,7 @@
 // out of band message id bytes
 
 // M = master, S = server, C = client, A = any
-// the second character will allways be \n if the message isn't a single
+// the second character will always be \n if the message isn't a single
 // byte long (?? not true anymore?)
 
 #define A2S_ECHO			'g' // echo back a message
@@ -164,7 +164,7 @@
 //==============================================
 
 // playerinfo flags from server
-// playerinfo allways sends: playernum, flags, origin[] and framenumber
+// playerinfo always sends: playernum, flags, origin[] and framenumber
 
 #define	PF_MSEC			(1<<0)
 #define	PF_COMMAND		(1<<1)
@@ -188,7 +188,7 @@
 
 // if the high bit of the client to server byte is set, the low bits are
 // client move cmd bits
-// ms and angle2 are allways sent, the others are optional
+// ms and angle2 are always sent, the others are optional
 #define	CM_ANGLE1 	(1<<0)
 #define	CM_ANGLE3 	(1<<1)
 #define	CM_FORWARD	(1<<2)

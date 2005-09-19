@@ -2,7 +2,7 @@
 	refresh.h
 	public interface to refresh functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.6 2005-05-20 16:17:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.7 2005-09-19 19:50:10 sezero Exp $
 */
 
 #define	MAXCLIPPLANES	11
@@ -78,7 +78,7 @@ typedef struct
 	float		fvrectbottom;			// bottommost edge, for Alias clamping
 	float		horizontalFieldOfView;	// at Z = 1.0, this many X is visible 
 										// 2.0 = 90 degrees
-	float		xOrigin;			// should probably allways be 0.5
+	float		xOrigin;			// should probably always be 0.5
 	float		yOrigin;			// between be around 0.3 to 0.5
 
 	vec3_t		vieworg;
@@ -149,6 +149,9 @@ void R_SetVrect (vrect_t *pvrect, vrect_t *pvrectin, int lineadj);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/05/20 16:17:50  sezero
+ * keep ID style in declerations (less diff between h2/h2w...)
+ *
  * Revision 1.5  2005/01/01 21:43:47  sezero
  * prototypes clean-up
  *

@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.27 2005-09-19 06:18:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.28 2005-09-19 19:50:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,7 +10,7 @@
 
 /*
 
-A server can allways be started, even if the system started out as a client
+A server can always be started, even if the system started out as a client
 to a remote system.
 
 A client can NOT be started if the system started as a dedicated server.
@@ -1089,6 +1089,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2005/09/19 06:18:13  sezero
+ * check for isDedicated in Host_WriteConfiguration should be logical
+ *
  * Revision 1.26  2005/08/18 14:20:28  sezero
  * moved music volume update back into frame update. it has its merits (such as
  * correct bgmvolume on startup) this way..

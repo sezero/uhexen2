@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.16 2005-09-19 19:25:35 sezero Exp $
+	$Id: gl_screen.c,v 1.17 2005-09-19 19:50:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -48,7 +48,7 @@ Con_Printf ();
 net 
 turn off messages option
 
-the refresh is allways rendered, unless the console is full screen
+the refresh is always rendered, unless the console is full screen
 
 
 console is:

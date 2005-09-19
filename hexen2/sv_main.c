@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.21 2005-07-02 13:12:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.22 2005-09-19 19:50:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -299,7 +299,7 @@ Each entity can have eight independant sound sources, like voice,
 weapon, feet, etc.
 
 Channel 0 is an auto-allocate channel, the others override anything
-allready running on that entity/channel pair.
+already running on that entity/channel pair.
 
 An attenuation of 0 will play full volume everywhere in the level.
 Larger attenuations will drop off.  (max 4 attenuation)
@@ -2068,6 +2068,9 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2005/07/02 13:12:28  sezero
+ * commands.txt and edicts.txt will be saved into com_userdir
+ *
  * Revision 1.20  2005/06/07 07:06:32  sezero
  * Moved flush_textures decision to svmain.c:SV_SpawnServer() again, this
  * time fixing it by not clearing the server struct in Host_ShutdownServer().

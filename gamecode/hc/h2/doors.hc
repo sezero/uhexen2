@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/doors.hc,v 1.1.1.1 2004-11-29 11:36:57 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/doors.hc,v 1.2 2005-09-19 19:50:09 sezero Exp $
  */
 
 float DOOR_START_OPEN	= 1;
@@ -857,9 +857,9 @@ if two doors touch, they are assumed to be connected and operate as a unit.
 -----------------------FIELDS-------------------------
 TOGGLE causes the door to wait in both the start and end states for a trigger event.
 
-START_OPEN causes the door to move to its destination when spawned, and operate in reverse.  It is used to temporarily or permanently close off an area when triggered (not usefull for touch or takedamage doors).
+START_OPEN causes the door to move to its destination when spawned, and operate in reverse.  It is used to temporarily or permanently close off an area when triggered (not useful for touch or takedamage doors).
 
-Key doors are allways wait -1.
+Key doors are always wait -1.
 
 "message" is printed when the door is touched if it is a trigger door and it hasn't been fired yet
 "angle"	determines the opening direction
@@ -1017,9 +1017,9 @@ if two doors touch, they are assumed to be connected and operate as a unit.
 -----------------------FIELDS-------------------------
 TOGGLE causes the door to wait in both the start and end states for a trigger event.
 
-START_OPEN causes the door to move to its destination when spawned, and operate in reverse.  It is used to temporarily or permanently close off an area when triggered (not usefull for touch or takedamage doors).
+START_OPEN causes the door to move to its destination when spawned, and operate in reverse.  It is used to temporarily or permanently close off an area when triggered (not useful for touch or takedamage doors).
 
-Key doors are allways wait -1.
+Key doors are always wait -1.
 
 "message" is printed when the door is touched if it is a trigger door and it hasn't been fired yet
 "angle"	determines the opening direction
@@ -1367,10 +1367,10 @@ a trigger event.
 
 START_OPEN causes the door to move to its destination when spawned,  
 and operate in reverse.  It is used to temporarily or permanently  
-close off an area when triggered (not usefull for touch or  
+close off an area when triggered (not useful for touch or  
 takedamage doors).
 
-Key doors are allways wait -1.
+Key doors are always wait -1.
 
 You need to have an origin brush as part of this entity.  The  
 center of that brush will be
@@ -1532,6 +1532,9 @@ vector	vec;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:36:57  sezero
+ * Initial import
+ *
  * 
  * 79    8/30/97 6:58p Mgummelt
  * 

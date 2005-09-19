@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.42 2005-08-30 21:25:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.43 2005-09-19 19:50:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1907,7 +1907,7 @@ void M_AdjustSliders (int dir)
 		Cvar_SetValue ("volume", sfxvolume.value);
 		break;
 
-	case OPT_ALWAYRUN:	// allways run
+	case OPT_ALWAYRUN:	// always run
 		if (cl_forwardspeed.value > 200)
 		{
 			Cvar_SetValue ("cl_forwardspeed", 200);
@@ -4078,6 +4078,9 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.42  2005/08/30 21:25:14  sezero
+ * indentation fix for readablity and cosmetics
+ *
  * Revision 1.41  2005/08/18 14:20:28  sezero
  * moved music volume update back into frame update. it has its merits (such as
  * correct bgmvolume on startup) this way..

@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.18 2005-07-16 23:29:49 sezero Exp $
+	$Id: gl_model.c,v 1.19 2005-09-19 19:50:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -417,7 +417,7 @@ void Mod_LoadTextures (lump_t *l)
 		if (!tx || tx->name[0] != '+')
 			continue;
 		if (tx->anim_next)
-			continue;	// allready sequenced
+			continue;	// already sequenced
 
 	// find the number of frames in the animation
 		memset (anims, 0, sizeof(anims));
@@ -2307,6 +2307,9 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/07/16 23:29:49  sezero
+ * made vid_initialized static
+ *
  * Revision 1.17  2005/07/16 23:23:52  sezero
  * killed fastfabs, not worthy of keeping anymore
  *

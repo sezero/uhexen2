@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/plats.hc,v 1.1 2005-01-26 17:26:12 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/plats.hc,v 1.2 2005-09-19 19:50:10 sezero Exp $
  */
 void()func_train_mp;
 void() newplat_center_touch;
@@ -130,7 +130,7 @@ void() plat_outside_touch =
 void() plat_trigger_use =
 {
 	if (self.think)
-		return;		// allready activated
+		return;		// already activated
 	plat_go_down();
 };
 
@@ -1124,6 +1124,9 @@ void func_rotating_movechain (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/01/26 17:26:12  sezero
+ * Raven's original Siege hcode.
+ *
  * 
  * 6     5/25/98 1:39p Mgummelt
  * 

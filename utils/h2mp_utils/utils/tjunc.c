@@ -476,7 +476,7 @@ void tjunc (node_t *headnode)
 // identify all points on common edges
 //
 
-// origin points won't allways be inside the map, so extend the hash area 
+// origin points won't always be inside the map, so extend the hash area 
 	for (i=0 ; i<3 ; i++)
 	{
 		if ( fabs(brushset->maxs[i]) > fabs(brushset->mins[i]) )
