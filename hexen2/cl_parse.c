@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.12 2005-07-31 00:45:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.13 2005-09-19 19:20:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -240,7 +240,7 @@ void CL_ParseServerInfo (void)
 	i = MSG_ReadLong ();
 	if (i != PROTOCOL_VERSION)
 	{
-		Con_Printf ("Server returned version %i, not %i", i, PROTOCOL_VERSION);
+		Con_Printf ("Server returned version %i, not %i\n", i, PROTOCOL_VERSION);
 		return;
 	}
 
@@ -1781,6 +1781,9 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/07/31 00:45:11  sezero
+ * platform defines cleanup
+ *
  * Revision 1.11  2005/06/15 18:40:43  sezero
  * fifth model is for h2mp only and we've been out of bounds for ages here
  *
