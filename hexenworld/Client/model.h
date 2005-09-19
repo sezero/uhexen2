@@ -1,3 +1,9 @@
+/*
+	model.h
+	header for model loading and caching
+
+	$Id: model.h,v 1.3 2005-09-19 20:10:17 sezero Exp $
+*/
 
 #ifndef __MODEL__
 #define __MODEL__
@@ -13,30 +19,30 @@ m*_t structures are in-memory
 */
 
 // entity effects
-#define EF_ONFIRE				0x00000001
+#define	EF_ONFIRE			0x00000001
 #define	EF_MUZZLEFLASH 			0x00000002
 #define	EF_BRIGHTLIGHT 			0x00000004
 #define	EF_DIMLIGHT 			0x00000008
-#define EF_DARKLIGHT			0x00000010
-#define EF_DARKFIELD			0x00000020
-#define EF_LIGHT				0x00000040
-#define EF_NODRAW				0x00000080
+#define	EF_DARKLIGHT			0x00000010
+#define	EF_DARKFIELD			0x00000020
+#define	EF_LIGHT			0x00000040
+#define	EF_NODRAW			0x00000080
 
 #define	EF_BRIGHTFIELD			0x00000400
-#define EF_POWERFLAMEBURN		0x00000800
-#define EF_UPDATESOUND			0x00002000
+#define	EF_POWERFLAMEBURN		0x00000800
+#define	EF_UPDATESOUND			0x00002000
 
-#define EF_POISON_GAS			0x00200000
-#define EF_ACIDBLOB				0x00400000
-//#define EF_PURIFY2_EFFECT		0x00200000
-//#define EF_AXE_EFFECT			0x00400000
-//#define EF_SWORD_EFFECT		0x00800000
-//#define EF_TORNADO_EFFECT		0x01000000
-#define EF_ICESTORM_EFFECT		0x02000000
-//#define EF_ICEBALL_EFFECT		0x04000000
-//#define EF_METEOR_EFFECT		0x08000000
-#define EF_HAMMER_EFFECTS		0x10000000
-#define EF_BEETLE_EFFECTS		0x20000000
+#define	EF_POISON_GAS			0x00200000
+#define	EF_ACIDBLOB			0x00400000
+//#define	EF_PURIFY2_EFFECT		0x00200000
+//#define	EF_AXE_EFFECT			0x00400000
+//#define	EF_SWORD_EFFECT			0x00800000
+//#define	EF_TORNADO_EFFECT		0x01000000
+#define	EF_ICESTORM_EFFECT		0x02000000
+//#define	EF_ICEBALL_EFFECT		0x04000000
+//#define	EF_METEOR_EFFECT		0x08000000
+#define	EF_HAMMER_EFFECTS		0x10000000
+#define	EF_BEETLE_EFFECTS		0x20000000
 
 /*
 ==============================================================================
@@ -76,11 +82,11 @@ typedef struct texture_s
 {
 	char		name[16];
 	unsigned	width, height;
-	int			anim_total;				// total tenths in sequence ( 0 = no)
-	int			anim_min, anim_max;		// time for this frame min <=time< max
+	int		anim_total;		// total tenths in sequence ( 0 = no)
+	int		anim_min, anim_max;	// time for this frame min <=time< max
 	struct texture_s *anim_next;		// in the animation sequence
 	struct texture_s *alternate_anims;	// bmodels in frmae 1 use these
-	unsigned	offsets[MIPLEVELS];		// four mip maps stored
+	unsigned	offsets[MIPLEVELS];	// four mip maps stored
 } texture_t;
 
 
@@ -91,7 +97,6 @@ typedef struct texture_s
 #define SURF_DRAWTILED		0x20
 #define SURF_DRAWBACKGROUND	0x40
 #define SURF_TRANSLUCENT	0x80
-
 
 #define SURF_DRAWBLACK		0x400
 
@@ -107,21 +112,21 @@ typedef struct
 	float		vecs[2][4];
 	float		mipadjust;
 	texture_t	*texture;
-	int			flags;
+	int		flags;
 } mtexinfo_t;
 
 typedef struct msurface_s
 {
-	int			visframe;		// should be drawn when node is crossed
+	int		visframe;		// should be drawn when node is crossed
 
-	int			dlightframe;
-	int			dlightbits;
+	int		dlightframe;
+	int		dlightbits;
 
 	mplane_t	*plane;
-	int			flags;
+	int		flags;
 
-	int			firstedge;	// look up in model->surfedges[], negative numbers
-	int			numedges;	// are backwards edges
+	int		firstedge;	// look up in model->surfedges[], negative numbers
+	int		numedges;	// are backwards edges
 	
 // surface generation data
 	struct surfcache_s	*cachespots[MIPLEVELS];
@@ -139,8 +144,8 @@ typedef struct msurface_s
 typedef struct mnode_s
 {
 // common with leaf
-	int			contents;		// 0, to differentiate from leafs
-	int			visframe;		// node needs to be traversed if current
+	int		contents;		// 0, to differentiate from leafs
+	int		visframe;		// node needs to be traversed if current
 	
 	short		minmaxs[6];		// for bounding box culling
 
@@ -150,8 +155,8 @@ typedef struct mnode_s
 	mplane_t	*plane;
 	struct mnode_s	*children[2];	
 
-	unsigned short		firstsurface;
-	unsigned short		numsurfaces;
+	unsigned short	firstsurface;
+	unsigned short	numsurfaces;
 } mnode_t;
 
 
@@ -159,8 +164,8 @@ typedef struct mnode_s
 typedef struct mleaf_s
 {
 // common with node
-	int			contents;		// wil be a negative contents number
-	int			visframe;		// node needs to be traversed if current
+	int		contents;		// wil be a negative contents number
+	int		visframe;		// node needs to be traversed if current
 
 	short		minmaxs[6];		// for bounding box culling
 
@@ -171,8 +176,8 @@ typedef struct mleaf_s
 	struct efrag_s	*efrags;
 
 	msurface_t	**firstmarksurface;
-	int			nummarksurfaces;
-	int			key;			// BSP sequence number for leaf's contents
+	int		nummarksurfaces;
+	int		key;			// BSP sequence number for leaf's contents
 	byte		ambient_sound_level[NUM_AMBIENTS];
 } mleaf_t;
 
@@ -181,19 +186,19 @@ typedef struct
 {
 	dclipnode_t	*clipnodes;
 	mplane_t	*planes;
-	int			firstclipnode;
-	int			lastclipnode;
+	int		firstclipnode;
+	int		lastclipnode;
 	vec3_t		clip_mins;
 	vec3_t		clip_maxs;
 } hull_t;
 
-#define HULL_IMPLICIT		0	//Choose the hull based on bounding box- like in Quake
-#define HULL_POINT			1	//0 0 0, 0 0 0
-#define HULL_PLAYER			2	//'-16 -16 0', '16 16 56'
-#define HULL_SCORPION		3	//'-24 -24 -20', '24 24 20'
-#define HULL_CROUCH			4	//'-16 -16 0', '16 16 28'
-#define HULL_HYDRA			5	//'-28 -28 -24', '28 28 24'
-#define HULL_GOLEM			6	//???,???
+#define HULL_IMPLICIT	0	// Choose the hull based on bounding box- like in Quake
+#define HULL_POINT	1	// 0 0 0, 0 0 0
+#define HULL_PLAYER	2	// '-16 -16 0', '16 16 56'
+#define HULL_SCORPION	3	// '-24 -24 -20', '24 24 20'
+#define HULL_CROUCH	4	// '-16 -16 0', '16 16 28'
+#define HULL_HYDRA	5	// '-28 -28 -24', '28 28 24'
+#define HULL_GOLEM	6	// ???,???
 
 /*
 ==============================================================================
@@ -207,17 +212,17 @@ SPRITE MODELS
 // FIXME: shorten these?
 typedef struct mspriteframe_s
 {
-	short	width;
-	short	height;
-//	void	*pcachespot;			// remove?
-	float	up, down, left, right;
-	byte	pixels[4];
+	short		width;
+	short		height;
+	//void		*pcachespot;	// remove?
+	float		up, down, left, right;
+	byte		pixels[4];
 } mspriteframe_t;
 
 typedef struct
 {
-	short			numframes;
-	float			*intervals;
+	short		numframes;
+	float		*intervals;
 	mspriteframe_t	*frames[1];
 } mspritegroup_t;
 
@@ -229,12 +234,12 @@ typedef struct
 
 typedef struct
 {
-	short				type;
-	short				maxwidth;
-	short				maxheight;
-	short				numframes;
-	float				beamlength;		// remove?
-//	void				*cachespot;		// remove?
+	short			type;
+	short			maxwidth;
+	short			maxheight;
+	short			numframes;
+	float			beamlength;		// remove?
+	//void			*cachespot;		// remove?
 	mspriteframedesc_t	frames[1];
 } msprite_t;
 
@@ -251,52 +256,52 @@ Alias models are position independent, so the cache manager can move them.
 typedef struct
 {
 	aliasframetype_t	type;
-	trivertx_t			bboxmin;
-	trivertx_t			bboxmax;
-	int					frame;
-	char				name[16];
+	trivertx_t		bboxmin;
+	trivertx_t		bboxmax;
+	int			frame;
+	char			name[16];
 } maliasframedesc_t;
 
 typedef struct
 {
 	aliasskintype_t		type;
-	void				*pcachespot;
-	int					skin;
+	void			*pcachespot;
+	int			skin;
 } maliasskindesc_t;
 
 typedef struct
 {
-	trivertx_t			bboxmin;
-	trivertx_t			bboxmax;
-	int					frame;
+	trivertx_t		bboxmin;
+	trivertx_t		bboxmax;
+	int			frame;
 } maliasgroupframedesc_t;
 
 typedef struct
 {
-	int						numframes;
-	int						intervals;
+	int			numframes;
+	int			intervals;
 	maliasgroupframedesc_t	frames[1];
 } maliasgroup_t;
 
 typedef struct
 {
-	int					numskins;
-	int					intervals;
+	int			numskins;
+	int			intervals;
 	maliasskindesc_t	skindescs[1];
 } maliasskingroup_t;
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
 typedef struct mtriangle_s {
-	int					facesfront;
+	int			facesfront;
 	unsigned short		vertindex[3];
 	unsigned short		stindex[3];
 } mtriangle_t;
 
 typedef struct {
-	int					model;
-	int					stverts;
-	int					skindesc;
-	int					triangles;
+	int			model;
+	int			stverts;
+	int			skindesc;
+	int			triangles;
 	maliasframedesc_t	frames[1];
 } aliashdr_t;
 
@@ -309,33 +314,33 @@ typedef struct {
 typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 
 // EF_ changes must also be made in gl_model.h
-#define	EF_ROCKET		       1			// leave a trail
-#define	EF_GRENADE		       2			// leave a trail
-#define	EF_GIB			       4			// leave a trail
-#define	EF_ROTATE		       8			// rotate (bonus items)
-#define	EF_TRACER		      16			// green split trail
-#define	EF_ZOMGIB			  32			// small blood trail
-#define	EF_TRACER2			  64			// orange split trail + rotate
-#define	EF_TRACER3			 128			// purple trail
-#define  EF_FIREBALL		 256			// Yellow transparent trail in all directions
-#define  EF_ICE				 512			// Blue-white transparent trail, with gravity
-#define  EF_MIP_MAP			1024			// This model has mip-maps
-#define  EF_SPIT			2048			// Black transparent trail with negative light
-#define  EF_TRANSPARENT		4096		    // Transparent sprite
-#define  EF_SPELL			8192			// Vertical spray of particles
-#define  EF_HOLEY		   16384			// Solid model with color 0
-#define  EF_SPECIAL_TRANS  32768			// Translucency through the particle table
-#define  EF_FACE_VIEW	   65536			// Poly Model always faces you
-#define  EF_VORP_MISSILE  131072			// leave a trail at top and bottom of model
-#define  EF_SET_STAFF     262144			// slowly move up and left/right
-#define  EF_MAGICMISSILE  524288            // a trickle of blue/white particles with gravity
-#define  EF_BONESHARD    1048576           // a trickle of brown particles with gravity
-#define  EF_SCARAB       2097152           // white transparent particles with little gravity
-#define  EF_ACIDBALL	 4194304			// Green drippy acid shit
-#define  EF_BLOODSHOT	 8388608			// Blood rain shot trail
 
-#define  EF_MIP_MAP_FAR	  0x1000000	// Set per frame, this model will use the far mip map
+#define	EF_ROCKET	       1	// leave a trail
+#define	EF_GRENADE	       2	// leave a trail
+#define	EF_GIB		       4	// leave a trail
+#define	EF_ROTATE	       8	// rotate (bonus items)
+#define	EF_TRACER	      16	// green split trail
+#define	EF_ZOMGIB	      32	// small blood trail
+#define	EF_TRACER2	      64	// orange split trail + rotate
+#define	EF_TRACER3	     128	// purple trail
+#define	EF_FIREBALL	     256	// Yellow transparent trail in all directions
+#define	EF_ICE		     512	// Blue-white transparent trail, with gravity
+#define	EF_MIP_MAP	    1024	// This model has mip-maps
+#define	EF_SPIT		    2048	// Black transparent trail with negative light
+#define	EF_TRANSPARENT	    4096	// Transparent sprite
+#define	EF_SPELL	    8192	// Vertical spray of particles
+#define	EF_HOLEY	   16384	// Solid model with color 0
+#define	EF_SPECIAL_TRANS   32768	// Translucency through the particle table
+#define	EF_FACE_VIEW	   65536	// Poly Model always faces you
+#define	EF_VORP_MISSILE	  131072	// leave a trail at top and bottom of model
+#define	EF_SET_STAFF	  262144	// slowly move up and left/right
+#define	EF_MAGICMISSILE	  524288	// a trickle of blue/white particles with gravity
+#define	EF_BONESHARD	 1048576	// a trickle of brown particles with gravity
+#define	EF_SCARAB	 2097152	// white transparent particles with little gravity
+#define	EF_ACIDBALL	 4194304	// Green drippy acid shit
+#define	EF_BLOODSHOT	 8388608	// Blood rain shot trail
 
+#define	EF_MIP_MAP_FAR	0x1000000	// Set per frame, this model will use the far mip map
 
 typedef struct model_s
 {
@@ -343,10 +348,10 @@ typedef struct model_s
 	qboolean	needload;		// bmodels and sprites don't cache normally
 
 	modtype_t	type;
-	int			numframes;
+	int		numframes;
 	synctype_t	synctype;
 	
-	int			flags;
+	int		flags;
 
 //
 // volume occupied by the model graphics
@@ -363,44 +368,44 @@ typedef struct model_s
 //
 // brush model
 //
-	int			firstmodelsurface, nummodelsurfaces;
+	int		firstmodelsurface, nummodelsurfaces;
 
-	int			numsubmodels;
+	int		numsubmodels;
 	dmodel_t	*submodels;
 
-	int			numplanes;
+	int		numplanes;
 	mplane_t	*planes;
 
-	int			numleafs;		// number of visible leafs, not counting 0
+	int		numleafs;		// number of visible leafs, not counting 0
 	mleaf_t		*leafs;
 
-	int			numvertexes;
+	int		numvertexes;
 	mvertex_t	*vertexes;
 
-	int			numedges;
+	int		numedges;
 	medge_t		*edges;
 
-	int			numnodes;
+	int		numnodes;
 	mnode_t		*nodes;
 
-	int			numtexinfo;
+	int		numtexinfo;
 	mtexinfo_t	*texinfo;
 
-	int			numsurfaces;
+	int		numsurfaces;
 	msurface_t	*surfaces;
 
-	int			numsurfedges;
-	int			*surfedges;
+	int		numsurfedges;
+	int		*surfedges;
 
-	int			numclipnodes;
+	int		numclipnodes;
 	dclipnode_t	*clipnodes;
 
-	int			nummarksurfaces;
+	int		nummarksurfaces;
 	msurface_t	**marksurfaces;
 
 	hull_t		hulls[MAX_MAP_HULLS];
 
-	int			numtextures;
+	int		numtextures;
 	texture_t	**textures;
 
 	byte		*visdata;
@@ -418,8 +423,8 @@ typedef struct model_s
 
 void	Mod_Init (void);
 void	Mod_ClearAll (void);
-model_t *Mod_FindName (char *name);
 model_t *Mod_ForName (char *name, qboolean crash);
+model_t *Mod_FindName (char *name);
 void	*Mod_Extradata (model_t *mod);	// handles caching
 void	Mod_TouchModel (char *name);
 

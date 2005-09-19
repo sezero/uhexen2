@@ -1,19 +1,15 @@
 /*
-
-	models.c
+	model.c
 	model loading and caching
+
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/model.c,v 1.10 2005-09-19 19:50:10 sezero Exp $
+	$Id: model.c,v 1.11 2005-09-19 20:10:17 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "r_local.h"
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
 
 model_t	*loadmodel;
 char	loadname[32];	// for hunk tags
@@ -30,12 +26,13 @@ byte	mod_novis[MAX_MAP_LEAFS/8];
 #define	MAX_MOD_KNOWN	2048
 model_t	mod_known[MAX_MOD_KNOWN];
 int		mod_numknown;
+
 static vec3_t	mins,maxs;
 
 // values for model_t's needload
-#define NL_PRESENT		0
-#define NL_NEEDS_LOADED	1
-#define NL_UNREFERENCED	2
+#define	NL_PRESENT	0
+#define	NL_NEEDS_LOADED	1
+#define	NL_UNREFERENCED	2
 
 extern float	aliastransform[3][4];
 
@@ -83,7 +80,6 @@ mleaf_t *Mod_PointInLeaf (vec3_t p, model_t *model)
 	mnode_t		*node;
 	float		d;
 	mplane_t	*plane;
-	
 
 	if (!model)
 		Sys_Error ("Mod_PointInLeaf: NULL model");
@@ -168,7 +164,6 @@ void Mod_ClearAll (void)
 {
 	int		i;
 	model_t	*mod;
-
 
 	for (i=0 , mod=mod_known ; i<mod_numknown ; i++, mod++)
 		mod->needload = NL_UNREFERENCED;
@@ -259,7 +254,6 @@ model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 	unsigned *buf;
 	byte	stackbuf[1024];		// avoid dirtying the cache heap
 
-
 	if (mod->type == mod_alias)
 	{
 		if (Cache_Check (&mod->cache))
@@ -268,10 +262,9 @@ model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 			return mod;
 		}
 	}
-	else
+	else if (mod->needload == NL_PRESENT)
 	{
-		if (mod->needload == NL_PRESENT)
-			return mod;
+		return mod;
 	}
 
 //
@@ -307,11 +300,9 @@ model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 	case IDPOLYHEADER:
 		Mod_LoadAliasModel (mod, buf);
 		break;
-		
 	case IDSPRITEHEADER:
 		Mod_LoadSpriteModel (mod, buf);
 		break;
-	
 	default:
 		Mod_LoadBrushModel (mod, buf);
 		break;
@@ -331,11 +322,6 @@ model_t *Mod_ForName (char *name, qboolean crash)
 {
 	model_t	*mod;
 	
-/*	if (Q_strcasecmp(name,"models/boss/dthrider.mdl") == 0)// ||
-//		Q_strcasecmp(name,"models/h_golem.mdl") == 0)
-		DebugBreak();
-*/
-
 	mod = Mod_FindName (name);
 	
 	return Mod_LoadModel (mod, crash);
@@ -405,7 +391,7 @@ void Mod_LoadTextures (lump_t *l)
 			tx->offsets[j] = mt->offsets[j] + sizeof(texture_t) - sizeof(miptex_t);
 		// the pixels immediately follow the structures
 		memcpy ( tx+1, mt+1, pixels);
-		
+
 		if (!strncmp(mt->name,"sky",3))	
 			R_InitSky (tx);
 	}
@@ -516,8 +502,8 @@ void Mod_LoadLighting (lump_t *l)
 		loadmodel->lightdata = NULL;
 		return;
 	}
-//	loadmodel->lightdata = Hunk_AllocName ( l->filelen, loadname);	
-	loadmodel->lightdata = Hunk_AllocName ( l->filelen, "light");	
+//	loadmodel->lightdata = Hunk_AllocName ( l->filelen, loadname);
+	loadmodel->lightdata = Hunk_AllocName ( l->filelen, "light");
 	memcpy (loadmodel->lightdata, mod_base + l->fileofs, l->filelen);
 }
 
@@ -534,8 +520,8 @@ void Mod_LoadVisibility (lump_t *l)
 		loadmodel->visdata = NULL;
 		return;
 	}
-//	loadmodel->visdata = Hunk_AllocName ( l->filelen, loadname);	
-	loadmodel->visdata = Hunk_AllocName ( l->filelen, "vis");	
+//	loadmodel->visdata = Hunk_AllocName ( l->filelen, loadname);
+	loadmodel->visdata = Hunk_AllocName ( l->filelen, "vis");
 	memcpy (loadmodel->visdata, mod_base + l->fileofs, l->filelen);
 }
 
@@ -552,8 +538,8 @@ void Mod_LoadEntities (lump_t *l)
 		loadmodel->entities = NULL;
 		return;
 	}
-//	loadmodel->entities = Hunk_AllocName ( l->filelen, loadname);	
-	loadmodel->entities = Hunk_AllocName ( l->filelen, "entities");	
+//	loadmodel->entities = Hunk_AllocName ( l->filelen, loadname);
+	loadmodel->entities = Hunk_AllocName ( l->filelen, "entities");
 	memcpy (loadmodel->entities, mod_base + l->fileofs, l->filelen);
 	entity_file_size = l->filelen;
 }
@@ -574,8 +560,8 @@ void Mod_LoadVertexes (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-//	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
-	out = Hunk_AllocName ( count*sizeof(*out), "vertexes");	
+//	out = Hunk_AllocName ( count*sizeof(*out), loadname);
+	out = Hunk_AllocName ( count*sizeof(*out), "vertexes");
 
 	loadmodel->vertexes = out;
 	loadmodel->numvertexes = count;
@@ -603,8 +589,8 @@ void Mod_LoadSubmodels (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-//	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
-	out = Hunk_AllocName ( count*sizeof(*out), "submodels");	
+//	out = Hunk_AllocName ( count*sizeof(*out), loadname);
+	out = Hunk_AllocName ( count*sizeof(*out), "submodels");
 
 	loadmodel->submodels = out;
 	loadmodel->numsubmodels = count;
@@ -640,8 +626,8 @@ void Mod_LoadEdges (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-//	out = Hunk_AllocName ( (count + 1) * sizeof(*out), loadname);	
-	out = Hunk_AllocName ( (count + 1) * sizeof(*out), "edges");	
+//	out = Hunk_AllocName ( (count + 1) * sizeof(*out), loadname);
+	out = Hunk_AllocName ( (count + 1) * sizeof(*out), "edges");
 
 	loadmodel->edges = out;
 	loadmodel->numedges = count;
@@ -670,8 +656,8 @@ void Mod_LoadTexinfo (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-//	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
-	out = Hunk_AllocName ( count*sizeof(*out), "texture");	
+//	out = Hunk_AllocName ( count*sizeof(*out), loadname);
+	out = Hunk_AllocName ( count*sizeof(*out), "texture");
 
 	loadmodel->texinfo = out;
 	loadmodel->numtexinfo = count;
@@ -790,8 +776,8 @@ void Mod_LoadFaces (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-//	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
-	out = Hunk_AllocName ( count*sizeof(*out), "faces");	
+//	out = Hunk_AllocName ( count*sizeof(*out), loadname);
+	out = Hunk_AllocName ( count*sizeof(*out), "faces");
 
 	loadmodel->surfaces = out;
 	loadmodel->numsurfaces = count;
@@ -840,28 +826,17 @@ void Mod_LoadFaces (lump_t *l)
 			}
 			out->flags |= (SURF_DRAWTURB | SURF_DRAWTILED);
 
-			// stupid stupid way of doing this:
-/*			if (r_transwater.value && 
-				Q_strncasecmp(out->texinfo->texture->name,"*lava",5) &&
-				Q_strncasecmp(out->texinfo->texture->name,"*slime",6) &&
-				Q_strncasecmp(out->texinfo->texture->name,"*cur_90",7) &&
-				Q_strncasecmp(out->texinfo->texture->name,"*cur_0",6) &&
-				Q_strncasecmp(out->texinfo->texture->name,"*cur_270",8) &&
-				Q_strncasecmp(out->texinfo->texture->name,"*cur_180",8) &&
-				Q_strncasecmp(out->texinfo->texture->name,"*cur_up",7) &&
-				Q_strncasecmp(out->texinfo->texture->name,"*cur_dwn",8))
-				out->flags |= SURF_TRANSLUCENT;
-*/
-			if (r_transwater.value && 
-				( (!Q_strncasecmp(out->texinfo->texture->name,"*rtex078",8)) ||
-				  (!Q_strncasecmp(out->texinfo->texture->name,"*lowlight",9)) ) )
-				out->flags |= SURF_TRANSLUCENT;
-
 			for (i=0 ; i<2 ; i++)
 			{
 				out->extents[i] = 16384;
 				out->texturemins[i] = -8192;
 			}
+
+			if (r_transwater.value)
+			    if ( (!Q_strncasecmp(out->texinfo->texture->name,"*rtex078",8)) ||
+				 (!Q_strncasecmp(out->texinfo->texture->name,"*lowlight",9)) )
+				out->flags |= SURF_TRANSLUCENT;
+
 			continue;
 		}
 	}
@@ -897,8 +872,8 @@ void Mod_LoadNodes (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-//	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
-	out = Hunk_AllocName ( count*sizeof(*out), "nodes");	
+//	out = Hunk_AllocName ( count*sizeof(*out), loadname);
+	out = Hunk_AllocName ( count*sizeof(*out), "nodes");
 
 	loadmodel->nodes = out;
 	loadmodel->numnodes = count;
@@ -945,8 +920,8 @@ void Mod_LoadLeafs (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-//	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
-	out = Hunk_AllocName ( count*sizeof(*out), "leafs");	
+//	out = Hunk_AllocName ( count*sizeof(*out), loadname);
+	out = Hunk_AllocName ( count*sizeof(*out), "leafs");
 
 	loadmodel->leafs = out;
 	loadmodel->numleafs = count;
@@ -993,8 +968,8 @@ void Mod_LoadClipnodes (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-//	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
-	out = Hunk_AllocName ( count*sizeof(*out), "clipnodes");	
+//	out = Hunk_AllocName ( count*sizeof(*out), loadname);
+	out = Hunk_AllocName ( count*sizeof(*out), "clipnodes");
 
 	loadmodel->clipnodes = out;
 	loadmodel->numclipnodes = count;
@@ -1044,7 +1019,7 @@ void Mod_LoadClipnodes (lump_t *l)
 	hull->firstclipnode = 0;
 	hull->lastclipnode = count-1;
 	hull->planes = loadmodel->planes;
-#if 0	
+#if 0
 	hull->clip_mins[0] = -40;
 	hull->clip_mins[1] = -40;
 	hull->clip_mins[2] = -42;
@@ -1108,8 +1083,8 @@ void Mod_MakeHull0 (void)
 	
 	in = loadmodel->nodes;
 	count = loadmodel->numnodes;
-//	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
-	out = Hunk_AllocName ( count*sizeof(*out), "hull0");	
+//	out = Hunk_AllocName ( count*sizeof(*out), loadname);
+	out = Hunk_AllocName ( count*sizeof(*out), "hull0");
 
 	hull->clipnodes = out;
 	hull->firstclipnode = 0;
@@ -1145,8 +1120,8 @@ void Mod_LoadMarksurfaces (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-//	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
-	out = Hunk_AllocName ( count*sizeof(*out), "marksurfaces");	
+//	out = Hunk_AllocName ( count*sizeof(*out), loadname);
+	out = Hunk_AllocName ( count*sizeof(*out), "marksurfaces");
 
 	loadmodel->marksurfaces = out;
 	loadmodel->nummarksurfaces = count;
@@ -1174,8 +1149,8 @@ void Mod_LoadSurfedges (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-//	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
-	out = Hunk_AllocName ( count*sizeof(*out), "surfedges");	
+//	out = Hunk_AllocName ( count*sizeof(*out), loadname);
+	out = Hunk_AllocName ( count*sizeof(*out), "surfedges");
 
 	loadmodel->surfedges = out;
 	loadmodel->numsurfedges = count;
@@ -1183,6 +1158,7 @@ void Mod_LoadSurfedges (lump_t *l)
 	for ( i=0 ; i<count ; i++)
 		out[i] = LittleLong (in[i]);
 }
+
 
 /*
 =================
@@ -1201,8 +1177,8 @@ void Mod_LoadPlanes (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-//	out = Hunk_AllocName ( count*2*sizeof(*out), loadname);	
-	out = Hunk_AllocName ( count*2*sizeof(*out), "planes");	
+//	out = Hunk_AllocName ( count*2*sizeof(*out), loadname);
+	out = Hunk_AllocName ( count*2*sizeof(*out), "planes");
 	
 	loadmodel->planes = out;
 	loadmodel->numplanes = count;
@@ -1302,14 +1278,15 @@ void Mod_LoadBrushModel (model_t *mod, void *buffer)
 			mod->hulls[j].firstclipnode = bm->headnode[j];
 			mod->hulls[j].lastclipnode = mod->numclipnodes-1;
 		}
-		
+
 		mod->firstmodelsurface = bm->firstface;
 		mod->nummodelsurfaces = bm->numfaces;
-		
+
 		VectorCopy (bm->maxs, mod->maxs);
 		VectorCopy (bm->mins, mod->mins);
+
 		mod->radius = RadiusFromBounds (mod->mins, mod->maxs);
-	
+
 		mod->numleafs = bm->visleafs;
 
 		if (i < mod->numsubmodels-1)
@@ -1817,7 +1794,7 @@ void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
 	memcpy (mod->cache.data, pheader, total);
 
 	Hunk_FreeToLowMark (start);
-}	
+}
 
 /*
 =================
@@ -2270,7 +2247,7 @@ void Mod_Print (void)
 	Con_Printf ("Cached models:\n");
 	for (i=0, mod=mod_known ; i < mod_numknown ; i++, mod++)
 	{
-		Con_Printf ("%8p : %s",mod->cache.data, mod->name);
+		Con_Printf ("%i (%8p): %s", i, mod->cache.data, mod->name);
 		if (mod->needload & NL_UNREFERENCED)
 			Con_Printf (" (!R)");
 		if (mod->needload & NL_NEEDS_LOADED)
@@ -2282,6 +2259,9 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/09/19 19:50:10  sezero
+ * fixed those famous spelling errors
+ *
  * Revision 1.9  2005/07/31 00:45:11  sezero
  * platform defines cleanup
  *

@@ -1,6 +1,9 @@
 /*
- * $Id: gl_model.h,v 1.4 2005-06-26 10:13:53 sezero Exp $
- */
+	model.h
+	header for model loading and caching
+
+	$Id: gl_model.h,v 1.5 2005-09-19 20:10:17 sezero Exp $
+*/
 
 #ifndef __MODEL__
 #define __MODEL__

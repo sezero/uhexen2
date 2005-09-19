@@ -1,10 +1,12 @@
+/*
+	model.h
+	header for model loading and caching
+
+	$Id: model.h,v 1.5 2005-09-19 20:10:17 sezero Exp $
+*/
 
 #ifndef __MODEL__
 #define __MODEL__
-
-/*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/model.h,v 1.4 2004-12-18 14:20:40 sezero Exp $
- */
 
 #include "genmodel.h"
 #include "spritegn.h"
@@ -256,7 +258,7 @@ typedef struct
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
 typedef struct mtriangle_s {
-	int					facesfront;
+	int			facesfront;
 	unsigned short		vertindex[3];
 	unsigned short		stindex[3];
 } mtriangle_t;
@@ -318,7 +320,7 @@ typedef struct model_s
 	int		flags;
 
 //
-// volume occupied by the model
+// volume occupied by the model graphics
 //		
 	vec3_t		mins, maxs;
 	float		radius;
@@ -393,6 +395,10 @@ byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/18 14:20:40  sezero
+ * Clean-up and kill warnings: 11
+ * A lot of whitespace cleanups.
+ *
  * Revision 1.3  2004/12/18 13:59:25  sezero
  * Clean-up and kill warnings 8:
  * Missing prototypes.

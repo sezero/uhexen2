@@ -1,6 +1,9 @@
 /*
- * $Id: gl_model.h,v 1.5 2005-05-26 22:56:27 sezero Exp $
- */
+	model.h
+	header for model loading and caching
+
+	$Id: gl_model.h,v 1.6 2005-09-19 20:10:17 sezero Exp $
+*/
 
 #ifndef __MODEL__
 #define __MODEL__
@@ -446,6 +449,9 @@ byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/05/26 22:56:27  sezero
+ * whitespace...
+ *
  * Revision 1.4  2004/12/18 14:20:40  sezero
  * Clean-up and kill warnings: 11
  * A lot of whitespace cleanups.
