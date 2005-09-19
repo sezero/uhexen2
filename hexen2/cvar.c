@@ -121,8 +121,21 @@ Cvar_SetValue
 void Cvar_SetValue (char *var_name, float value)
 {
 	char	val[32];
-	
-	snprintf (val, 32, "%f",value);
+	int	i;
+
+	if (value == (int)value)
+	{
+		snprintf (val, 32, "%i", (int)value);
+	}
+	else
+	{
+		snprintf (val, 32, "%1f", value);	// no leading spaces
+		for (i=strlen(val)-1 ; i>0 && val[i]=='0' && val[i-1]!='.' ; i--)	// no trailing zeroes
+		{
+			val[i] = 0;
+		}
+	}
+
 	Cvar_Set (var_name, val);
 }
 
