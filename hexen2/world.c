@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.6 2005-07-16 23:23:52 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.7 2005-09-19 19:33:07 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -124,7 +124,7 @@ hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t offset,
 		model = sv.models[ (int)ent->v.modelindex ];
 
 		if (!model || model->type != mod_brush)
-			Sys_Error ("MOVETYPE_PUSH with a non bsp model");
+			Sys_Error ("SOLID_BSP with a non bsp model");
 
 		VectorSubtract (maxs, mins, size);
 //THIS IS WHERE THE MONSTER STEPPING ERROR WAS- IN CHECKBOTTOM,
@@ -1015,6 +1015,9 @@ trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, e
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/07/16 23:23:52  sezero
+ * killed fastfabs, not worthy of keeping anymore
+ *
  * Revision 1.5  2005/05/22 11:59:53  sezero
  * killed cvar sys_quake2 (I dont think anyone uses it)
  *
