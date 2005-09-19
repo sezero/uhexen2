@@ -1,5 +1,25 @@
 ChangeLog:
 
+2005-09-19 (CVS):
+    * startings of model code unification. mostly cosmetic for now,
+      more will follow.
+    * fixed a check for isDedicated in Host_WriteConfiguration which
+      should be logical
+    * added missing newline
+    * prevent unnecessary extra zeroes in cvars (from Maddes / QIP)
+    * fixed a divide-by-float (matched the software renderer counterpart)
+    * can't kill zombie patch (from Maddes / QIP)
+    * prevented (in fact, partially) coop and deathmatch cvars being
+      both set at the same time (from Maddes / QIP)
+    * allowed compilability of the ipx driver with lcc
+    * fixed an error message: "MOVETYPE_PUSH with a non bsp model"
+      (from Maddes / QIP)
+    * When a velocity is checked against sv_maxvelocity the Quake engine
+      checks the vector's components (x, y, z) instead of it's resulting
+      length. The check should be done just like the sv_maxspeed check.
+      (From Maddes QIP)
+    * fixed those famous spelling errors
+
 2005-09-17 (CVS):
     * minor ifdef, syntax and defines clean-up
     * removed unnecessary stuff from launcher's Makefile
