@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_dl_screen.c,v 1.17 2005-08-23 12:24:11 sezero Exp $
+	$Id: gl_dl_screen.c,v 1.18 2005-09-19 19:25:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -349,7 +349,7 @@ static void SCR_CalcRefdef (void)
 		size = 100;
 		sb_lines = 0;
 	}
-	size /= 100;
+	size /= 100.0;
 
 	h = vid.height - sb_lines;
 	r_refdef.vrect.width = vid.width * size;
@@ -1274,6 +1274,10 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/08/23 12:24:11  sezero
+ * safe clean-ups before 1.3.0-final #1:
+ * killed some stupid 'may be used uninitialized' warnings
+ *
  * Revision 1.16  2005/08/07 10:59:05  sezero
  * killed the Sys_FileTime crap. now using standart access() function.
  *

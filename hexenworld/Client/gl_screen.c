@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.15 2005-08-23 12:31:43 sezero Exp $
+	$Id: gl_screen.c,v 1.16 2005-09-19 19:25:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -289,7 +289,7 @@ static void SCR_CalcRefdef (void)
 		size = 100;
 		sb_lines = 0;
 	}
-	size /= 100;
+	size /= 100.0;
 
 	h = vid.height - sb_lines;
 	r_refdef.vrect.width = vid.width * size;
