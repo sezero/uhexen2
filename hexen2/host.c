@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.26 2005-08-18 14:20:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.27 2005-09-19 06:18:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -289,7 +289,7 @@ void Host_WriteConfiguration (char *fname)
 
 // dedicated servers initialize the host but don't parse and set the
 // config.cfg cvars
-	if (host_initialized & !isDedicated)
+	if (host_initialized && !isDedicated)
 	{
 		f = fopen (va("%s/%s",com_userdir,fname), "w");
 		if (!f)
@@ -1089,6 +1089,10 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2005/08/18 14:20:28  sezero
+ * moved music volume update back into frame update. it has its merits (such as
+ * correct bgmvolume on startup) this way..
+ *
  * Revision 1.25  2005/07/23 22:22:08  sezero
  * unified the common funcntions for hexen2-hexenworld
  *
