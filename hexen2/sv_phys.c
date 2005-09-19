@@ -1,7 +1,7 @@
 /*
 	sv_phys.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.9 2005-07-16 23:23:52 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.10 2005-09-19 19:37:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -76,6 +76,7 @@ SV_CheckVelocity
 void SV_CheckVelocity (edict_t *ent)
 {
 	int		i;
+	float		w;
 
 //
 // bound velocity
@@ -92,10 +93,12 @@ void SV_CheckVelocity (edict_t *ent)
 			Con_DPrintf ("Got a NaN origin on %s\n", pr_strings + ent->v.classname);
 			ent->v.origin[i] = 0;
 		}
-		if (ent->v.velocity[i] > sv_maxvelocity.value)
-			ent->v.velocity[i] = sv_maxvelocity.value;
-		else if (ent->v.velocity[i] < -sv_maxvelocity.value)
-			ent->v.velocity[i] = -sv_maxvelocity.value;
+	}
+
+	w = Length(ent->v.velocity);
+	if (w > sv_maxvelocity.value)
+	{	// sv_maxvelocity fix by Maddes
+		VectorScale (ent->v.velocity, sv_maxvelocity.value/w, ent->v.velocity);
 	}
 }
 
@@ -2134,6 +2137,9 @@ trace_t SV_Trace_Toss (edict_t *ent, edict_t *ignore)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/07/16 23:23:52  sezero
+ * killed fastfabs, not worthy of keeping anymore
+ *
  * Revision 1.8  2005/05/19 16:44:13  sezero
  * removed all unused (never used) RJNETa and RJNET2 code
  *

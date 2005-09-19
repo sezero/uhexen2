@@ -76,6 +76,7 @@ SV_CheckVelocity
 void SV_CheckVelocity (edict_t *ent)
 {
 	int		i;
+	float		w;
 
 //
 // bound velocity
@@ -92,10 +93,12 @@ void SV_CheckVelocity (edict_t *ent)
 			Con_Printf ("Got a NaN origin on %s\n", pr_strings + ent->v.classname);
 			ent->v.origin[i] = 0;
 		}
-		if (ent->v.velocity[i] > sv_maxvelocity.value)
-			ent->v.velocity[i] = sv_maxvelocity.value;
-		else if (ent->v.velocity[i] < -sv_maxvelocity.value)
-			ent->v.velocity[i] = -sv_maxvelocity.value;
+	}
+
+	w = Length(ent->v.velocity);
+	if (w > sv_maxvelocity.value)
+	{	// sv_maxvelocity fix by Maddes
+		VectorScale (ent->v.velocity, sv_maxvelocity.value/w, ent->v.velocity);
 	}
 }
 
