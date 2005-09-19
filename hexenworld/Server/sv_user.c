@@ -719,7 +719,7 @@ SV_Kill_f
 */
 void SV_Kill_f (void)
 {
-	if (sv_player->v.health <= 0)
+	if (sv_player->v.health <= 0 && sv_player->v.deadflag != DEAD_NO)
 	{
 		SV_ClientPrintf (host_client, PRINT_HIGH, "Can't suicide -- allready dead!\n");
 		return;

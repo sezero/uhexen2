@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.27 2005-08-20 13:06:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.28 2005-09-19 19:27:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1490,7 +1490,7 @@ void Host_Kill_f (void)
 		return;
 	}
 
-	if (sv_player->v.health <= 0)
+	if (sv_player->v.health <= 0 && sv_player->v.deadflag != DEAD_NO)
 	{
 		SV_ClientPrintf ("Can't suicide -- allready dead!\n");
 		return;
@@ -2264,6 +2264,12 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2005/08/20 13:06:34  sezero
+ * favored unlink() over DeleteFile() on win32. removed unnecessary
+ * platform defines for directory path separators. removed a left-
+ * over CL_RemoveGIPFiles() from sys_win.c. fixed temporary gip files
+ * not being removed and probably causing "bad" savegames on win32.
+ *
  * Revision 1.26  2005/07/31 00:45:11  sezero
  * platform defines cleanup
  *
