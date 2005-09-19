@@ -5,6 +5,20 @@
 #include <wsipx.h>
 #include "net_wipx.h"
 
+#ifdef __LCC__
+// no wsipx.h in lcc
+#define NSPROTO_IPX	1000
+#define NSPROTO_SPX	1256
+#define NSPROTO_SPXII	1257
+
+typedef struct sockaddr_ipx {
+	short sa_family;
+	char sa_netnum[4];
+	char sa_nodenum[6];
+	unsigned short sa_socket;
+} SOCKADDR_IPX, *PSOCKADDR_IPX, *LPSOCKADDR_IPX;
+#endif	// __LCC__
+
 extern cvar_t hostname;
 
 #define MAXHOSTNAMELEN		256
