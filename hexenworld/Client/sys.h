@@ -22,8 +22,6 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length);
 //
 // system IO
 //
-void Sys_DebugLog(char *file, char *fmt, ...);
-
 void Sys_Error (char *error, ...);
 // an error will cause the entire program to exit
 
@@ -36,6 +34,10 @@ double Sys_DoubleTime (void);
 
 char *Sys_ConsoleInput (void);
 
+#if !defined(SERVERONLY)
+
+void Sys_DebugLog(char *file, char *fmt, ...);
+
 void Sys_Sleep (void);
 // called to yield for a little bit so as
 // not to hog cpu when paused or debugging
@@ -43,6 +45,12 @@ void Sys_Sleep (void);
 void Sys_SendKeyEvents (void);
 // Perform Key_Event () callbacks until the input que is empty
 
+#else
+
+void Sys_Init (void);
+// hexenworld server calls this from SV_Init
+
+#endif
 
 // platform specific definitions
 
@@ -88,6 +96,7 @@ void	Sys_PushFPCW_SetHigh (void);
 
 #	define	id386		0
 #	define	UNALIGNED_OK	0
+#   if !defined(SERVERONLY)
 #	define	VID_LockBuffer()
 #	define	VID_UnlockBuffer()
 #	define	void MaskExceptions()
@@ -96,6 +105,6 @@ void	Sys_PushFPCW_SetHigh (void);
 #	define	Sys_HighFPPrecision()
 #	define	Sys_PopFPCW()
 #	define	Sys_PushFPCW_SetHigh()
-
+#   endif
 #endif
 
