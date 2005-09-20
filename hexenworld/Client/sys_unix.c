@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.32 2005-08-12 09:21:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.33 2005-09-20 21:17:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -44,7 +44,6 @@
 static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
 
-void MaskExceptions (void);
 void Sys_InitFloatTime (void);
 
 cvar_t		sys_delay = {"sys_delay","0", true};
@@ -395,6 +394,10 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2005/08/12 09:21:09  sezero
+ * loosened SDL version restrictions depending on the SDL version
+ * on the build system. will issue a warning if less than 1.2.6
+ *
  * Revision 1.31  2005/08/10 23:19:26  sezero
  * slight tweaks
  *

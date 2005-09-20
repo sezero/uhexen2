@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.37 2005-09-17 06:02:46 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.38 2005-09-20 21:17:25 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -20,19 +20,6 @@
 #define HOT_VERSION_MAJ 1
 #define HOT_VERSION_MID 3
 #define HOT_VERSION_MIN 0
-#if defined (PLATFORM_UNIX)
-#if defined (__linux__)
-#define VERSION_PLATFORM "Linux"
-#elif defined (__FreeBSD__)
-#define VERSION_PLATFORM "FreeBSD"
-#else
-#define VERSION_PLATFORM "Unix"
-#endif
-#elif defined (_WIN32)
-#define VERSION_PLATFORM "Windows"
-#else
-#define VERSION_PLATFORM "Unknown"
-#endif
 #define GLQUAKE_VERSION		1.00
 #define HEXEN2_VERSION		1.14
 
@@ -52,40 +39,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <setjmp.h>
-
-#if defined(_WIN32) && !defined(WINDED) || defined(PLATFORM_UNIX)
-
-#if defined(_M_IX86)
-#define __i386__	1
-#endif
-
-void	VID_LockBuffer (void);
-void	VID_UnlockBuffer (void);
-
-#else
-
-#define	VID_LockBuffer()
-#define	VID_UnlockBuffer()
-
-#endif
-
-/* From Dan Olson:
-   The code isn't compilable on non-intel until all of the asm is
-   taken out.  Don't worry about the id386 define *yet*, and even
-   after all of the assembly is replaced  you may still need it
-   defined for non-x86 compiles. The eventual goal should probably
-   be to get rid of all x86 specific stuff. */
-#ifdef __i386__
-#define id386	1
-#else
-#define id386	0
-#endif
-
-#if id386
-#define UNALIGNED_OK	1	// set to 0 if unaligned accesses are not supported
-#else
-#define UNALIGNED_OK	0
-#endif
 
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
 #define CACHE_SIZE	32	// used to align key data structures
@@ -437,6 +390,9 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.37  2005/09/17 06:02:46  sezero
+ * minor ifdef, syntax and defines clean-up
+ *
  * Revision 1.36  2005/08/18 14:20:28  sezero
  * moved music volume update back into frame update. it has its merits (such as
  * correct bgmvolume on startup) this way..

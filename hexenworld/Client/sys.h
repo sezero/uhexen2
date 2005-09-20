@@ -43,7 +43,59 @@ void Sys_Sleep (void);
 void Sys_SendKeyEvents (void);
 // Perform Key_Event () callbacks until the input que is empty
 
-void Sys_LowFPPrecision (void);
-void Sys_HighFPPrecision (void);
-void Sys_SetFPCW (void);
+
+// platform specific definitions
+
+#if defined (PLATFORM_UNIX)
+#	if defined (__linux__)
+#		define VERSION_PLATFORM "Linux"
+#	elif defined (__FreeBSD__)
+#		define VERSION_PLATFORM "FreeBSD"
+#	else
+#		define VERSION_PLATFORM "Unix"
+#	endif
+#elif defined (_WIN32)
+#	define VERSION_PLATFORM "Windows"
+#else
+#	define VERSION_PLATFORM "Unknown"
+#	warning "Platform is UNKNOWN"
+#endif
+
+/* From Dan Olson:
+   The code isn't compilable on non-intel until all of the asm is
+   taken out.  Don't worry about the id386 define *yet*, and even
+   after all of the assembly is replaced  you may still need it
+   defined for non-x86 compiles. The eventual goal should probably
+   be to get rid of all x86 specific stuff.
+*/
+
+#if ( defined(_M_IX86) || defined(__i386__) ) && !defined(SERVERONLY) && !defined(WINDED)
+
+#	define	id386		1
+#	define	UNALIGNED_OK	1	// set to 0 if unaligned accesses are not supported
+// vid buffer locking
+void	VID_LockBuffer (void);
+void	VID_UnlockBuffer (void);
+// fpu stuff
+void	MaskExceptions (void);
+void	Sys_SetFPCW (void);
+void	Sys_LowFPPrecision (void);
+void	Sys_HighFPPrecision (void);
+void	Sys_PopFPCW (void);
+void	Sys_PushFPCW_SetHigh (void);
+
+#else	// not i386 on no intel asm
+
+#	define	id386		0
+#	define	UNALIGNED_OK	0
+#	define	VID_LockBuffer()
+#	define	VID_UnlockBuffer()
+#	define	void MaskExceptions()
+#	define	Sys_SetFPCW()
+#	define	Sys_LowFPPrecision()
+#	define	Sys_HighFPPrecision()
+#	define	Sys_PopFPCW()
+#	define	Sys_PushFPCW_SetHigh()
+
+#endif
 

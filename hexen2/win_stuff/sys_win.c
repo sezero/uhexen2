@@ -48,10 +48,7 @@ static HANDLE	hFile;
 static HANDLE	heventParent;
 static HANDLE	heventChild;
 
-void MaskExceptions (void);
 void Sys_InitFloatTime (void);
-void Sys_PushFPCW_SetHigh (void);
-void Sys_PopFPCW (void);
 
 cvar_t		sys_delay = {"sys_delay","0", true};
 
@@ -126,24 +123,6 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 		Sys_Error("Protection change failed\n");
 }
 #endif	// !GLQUAKE
-
-#ifndef _M_IX86
-void Sys_SetFPCW (void)
-{
-}
-
-void Sys_PushFPCW_SetHigh (void)
-{
-}
-
-void Sys_PopFPCW (void)
-{
-}
-
-void MaskExceptions (void)
-{
-}
-#endif	// !_M_IX86
 
 /*
 ================
@@ -718,6 +697,12 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/08/20 13:06:34  sezero
+ * favored unlink() over DeleteFile() on win32. removed unnecessary
+ * platform defines for directory path separators. removed a left-
+ * over CL_RemoveGIPFiles() from sys_win.c. fixed temporary gip files
+ * not being removed and probably causing "bad" savegames on win32.
+ *
  * Revision 1.17  2005/08/10 23:19:26  sezero
  * slight tweaks
  *

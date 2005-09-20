@@ -99,5 +99,3 @@ void ToggleFullScreenSA (void);	// from Steven
 void D_ShowLoadingSize(void);
 #endif
 
-void VID_LockBuffer (void);
-void VID_UnlockBuffer (void);

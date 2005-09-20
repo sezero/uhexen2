@@ -35,10 +35,7 @@ static int			lowshift;
 
 HANDLE		qwclsemaphore;
 
-void MaskExceptions (void);
 void Sys_InitFloatTime (void);
-void Sys_PushFPCW_SetHigh (void);
-void Sys_PopFPCW (void);
 
 void Sys_DebugLog(char *file, char *fmt, ...)
 {
