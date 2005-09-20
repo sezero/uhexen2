@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.33 2005-09-20 21:17:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.34 2005-09-20 21:19:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -25,8 +25,8 @@
 #warning "Made assumptions for undetermined SUNOS CPU endianess"
 #endif
 
-#define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error running
-										//  dedicated before exiting
+#define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error
+					// before exiting
 #define MAXPRINTMSG		4096
 
 // minimum required SDL version
@@ -130,19 +130,22 @@ void Sys_Error (char *error, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
+//	double		starttime;
 
-	VID_ForceUnlockedAndReturnState ();
+	Host_Shutdown ();
 
 	va_start (argptr, error);
 	vsnprintf (text, MAXPRINTMSG, error, argptr);
 	va_end (argptr);
 
-	// switch to windowed so the message box is visible
-	VID_SetDefaultMode ();
-	fprintf(stderr, "ERROR: %s\n", text);
+	fprintf(stderr, "\nFATAL ERROR: %s\n\n", text);
 
-	Host_Shutdown ();
-
+/*	starttime = Sys_DoubleTime ();
+	while (!Sys_ConsoleInput () &&
+		((Sys_DoubleTime () - starttime) < CONSOLE_ERROR_TIMEOUT))
+	{
+	}
+*/
 	exit (1);
 }
 
@@ -150,7 +153,7 @@ void Sys_Printf (char *fmt, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
-	
+
 	va_start (argptr,fmt);
 	vsnprintf (text, MAXPRINTMSG, fmt, argptr);
 	va_end (argptr);
@@ -160,9 +163,6 @@ void Sys_Printf (char *fmt, ...)
 
 void Sys_Quit (void)
 {
-
-	VID_ForceUnlockedAndReturnState ();
-
 	Host_Shutdown();
 
 	exit (0);
@@ -394,6 +394,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.33  2005/09/20 21:17:26  sezero
+ * Moved VERSION_PLATFORM and id386 defines to sys.h, where they belong.
+ *
  * Revision 1.32  2005/08/12 09:21:09  sezero
  * loosened SDL version restrictions depending on the SDL version
  * on the build system. will issue a warning if less than 1.2.6

@@ -169,21 +169,12 @@ void VID_HandlePause (qboolean pause)
 {
 }
 
-void VID_ForceLockState (int lk)
-{
-}
-
 void VID_LockBuffer (void)
 {
 }
 
 void VID_UnlockBuffer (void)
 {
-}
-
-int VID_ForceUnlockedAndReturnState (void)
-{
-	return 0;
 }
 
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
@@ -1054,12 +1045,6 @@ void	VID_ShiftPalette (unsigned char *palette)
 {
 	if (gammaworks && SetDeviceGammaRamp_f)
 		SetDeviceGammaRamp_f (maindc, ramps);
-}
-
-
-void VID_SetDefaultMode (void)
-{
-	IN_DeactivateMouse ();
 }
 
 

@@ -161,7 +161,7 @@ void Sys_Error (char *error, ...)
 	vsprintf (text, error,argptr);
 	va_end (argptr);
 
-	printf ("ERROR: %s\n", text);
+	printf ("\nFATAL ERROR: %s\n\n", text);
 
 	exit (1);
 }

@@ -180,7 +180,7 @@ void Sys_Error (char *error, ...)
 	vsprintf (text, error, argptr);
 	va_end (argptr);
 
-	MessageBox(NULL, text, "Error", 0 /* MB_OK */ );
+	MessageBox(NULL, text, "HexenWorld Error", 0 /* MB_OK */ );
 
 #ifndef SERVERONLY
 	CloseHandle (qwclsemaphore);
@@ -200,8 +200,6 @@ void Sys_Printf (char *fmt, ...)
 
 void Sys_Quit (void)
 {
-	VID_ForceUnlockedAndReturnState ();
-
 	Host_Shutdown();
 #ifndef SERVERONLY
 	if (qwclsemaphore)

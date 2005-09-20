@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.7 2005-08-07 10:59:18 sezero Exp $
+	$Id: sys_unix.c,v 1.8 2005-09-20 21:19:45 sezero Exp $
 
 	Unix system interface code
 */
@@ -64,7 +64,7 @@ void Sys_Error (char *error, ...)
 	vsprintf (text, error,argptr);
 	va_end (argptr);
 
-	printf ("ERROR: %s\n", text);
+	printf ("\nFATAL ERROR: %s\n\n", text);
 
 	exit (1);
 }

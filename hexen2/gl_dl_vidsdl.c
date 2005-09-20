@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_dl_vidsdl.c,v 1.82 2005-09-19 19:50:10 sezero Exp $
+   $Id: gl_dl_vidsdl.c,v 1.83 2005-09-20 21:19:44 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -147,21 +147,12 @@ void VID_HandlePause (qboolean pause)
 }
 #endif
 
-void VID_ForceLockState (int lk)
-{
-}
-
 void VID_LockBuffer (void)
 {
 }
 
 void VID_UnlockBuffer (void)
 {
-}
-
-int VID_ForceUnlockedAndReturnState (void)
-{
-	return 0;
 }
 
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
@@ -907,12 +898,6 @@ void VID_SetPalette (unsigned char *palette)
 	}
 
 	d_8to24table[255] &= 0xffffff;	// 255 is transparent
-}
-
-
-void VID_SetDefaultMode (void)
-{
-	IN_DeactivateMouse ();
 }
 
 

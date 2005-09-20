@@ -39,8 +39,8 @@ void Sys_Error (char *error, ...)
 	vsprintf (text, error,argptr);
 	va_end (argptr);
 
-//	MessageBox(NULL, text, "Error", 0 /* MB_OK */ );
-	printf ("ERROR: %s\n", text);
+//	MessageBox(NULL, text, "HW Server Error", 0 /* MB_OK */ );
+	printf ("\nFATAL ERROR: %s\n\n", text);
 
 //#ifdef DEBUG_BUILD
 	getch();

@@ -90,10 +90,6 @@ void VID_HandlePause (qboolean pause);
 void VID_ApplyGamma (void);
 // really applies gamma correction after the v_gamma variable is changed
 
-
-void VID_ForceLockState (int lk);
-int VID_ForceUnlockedAndReturnState (void);
-void VID_SetDefaultMode (void);
 void ToggleFullScreenSA (void);	// from Steven
 #ifndef H2W
 void D_ShowLoadingSize(void);

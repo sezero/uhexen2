@@ -187,7 +187,7 @@ void Sys_Error (char *error, ...)
 	DWORD		dummy;
 	double		starttime;
 
-	VID_ForceUnlockedAndReturnState ();
+	Host_Shutdown ();
 
 	va_start (argptr, error);
 	vsprintf (text, error, argptr);
@@ -206,23 +206,17 @@ void Sys_Error (char *error, ...)
 		WriteFile (houtput, text3, strlen (text3), &dummy, NULL);
 		WriteFile (houtput, text4, strlen (text4), &dummy, NULL);
 
-
 		starttime = Sys_DoubleTime ();
 		sc_return_on_enter = true;	// so Enter will get us out of here
-
 		while (!Sys_ConsoleInput () &&
-				((Sys_DoubleTime () - starttime) < CONSOLE_ERROR_TIMEOUT))
+			((Sys_DoubleTime () - starttime) < CONSOLE_ERROR_TIMEOUT))
 		{
 		}
 	}
 	else
 	{
-	// switch to windowed so the message box is visible
-		VID_SetDefaultMode ();
 		MessageBox(NULL, text, "Hexen II Error", MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 	}
-
-	Host_Shutdown ();
 
 // shut down QHOST hooks if necessary
 	DeinitConProc ();
@@ -235,7 +229,7 @@ void Sys_Printf (char *fmt, ...)
 	va_list		argptr;
 	char		text[1024];
 	DWORD		dummy;
-	
+
 	if (isDedicated)
 	{
 		va_start (argptr,fmt);
@@ -248,8 +242,6 @@ void Sys_Printf (char *fmt, ...)
 
 void Sys_Quit (void)
 {
-	VID_ForceUnlockedAndReturnState ();
-
 	Host_Shutdown();
 
 	if (tevent)
@@ -697,6 +689,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2005/09/20 21:17:26  sezero
+ * Moved VERSION_PLATFORM and id386 defines to sys.h, where they belong.
+ *
  * Revision 1.18  2005/08/20 13:06:34  sezero
  * favored unlink() over DeleteFile() on win32. removed unnecessary
  * platform defines for directory path separators. removed a left-

@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.29 2005-09-19 19:50:10 sezero Exp $
+   $Id: vid_sdl.c,v 1.30 2005-09-20 21:19:45 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -349,14 +349,6 @@ void VID_RestoreOldMode (int original_mode)
 	inerror = false;
 }
 
-void VID_SetDefaultMode (void)
-{
-	if (vid_initialized)
-		VID_SetMode (0, vid_curpal);
-
-	IN_DeactivateMouse ();
-}
-
 int VID_SetMode (int modenum, unsigned char *palette)
 {
 	int			original_mode, temp;
@@ -476,34 +468,6 @@ void VID_UnlockBuffer (void)
 
 // to turn up any unlocked accesses
 	//vid.buffer = vid.conbuffer = vid.direct = d_viewbuffer = NULL;
-}
-
-
-int VID_ForceUnlockedAndReturnState (void)
-{
-	int	lk;
-
-	if (!lockcount)
-		return 0;
-
-	lk = lockcount;
-
-	lockcount = 1;
-	VID_UnlockBuffer ();
-
-	return lk;
-}
-
-
-void VID_ForceLockState (int lk)
-{
-	if (lk)
-	{
-		lockcount = 0;
-		VID_LockBuffer ();
-	}
-
-	lockcount = lk;
 }
 
 
@@ -672,6 +636,9 @@ void	VID_Shutdown (void)
 {
 	if (vid_initialized)
 	{
+		if (screen != NULL && lockcount > 0)
+			SDL_UnlockSurface (screen);
+
 		vid_initialized = 0;
 		SDL_Quit();
 	}
@@ -940,6 +907,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2005/09/19 19:50:10  sezero
+ * fixed those famous spelling errors
+ *
  * Revision 1.28  2005/08/10 23:19:26  sezero
  * slight tweaks
  *

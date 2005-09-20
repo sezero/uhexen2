@@ -1567,15 +1567,6 @@ void VID_RestoreOldMode (int original_mode)
 	inerror = false;
 }
 
-void VID_SetDefaultMode (void)
-{
-
-	if (vid_initialized)
-		VID_SetMode (0, vid_curpal);
-
-	IN_DeactivateMouse ();
-}
-
 int VID_SetMode (int modenum, unsigned char *palette)
 {
 	int				original_mode, temp;
@@ -1809,42 +1800,6 @@ void VID_UnlockBuffer (void)
 // to turn up any unlocked accesses
 	vid.buffer = vid.conbuffer = vid.direct = d_viewbuffer = NULL;
 
-}
-
-
-int VID_ForceUnlockedAndReturnState (void)
-{
-	int	lk;
-
-	if (!lockcount)
-		return 0;
-
-	lk = lockcount;
-
-	if (dibdc)
-	{
-		lockcount = 0;
-	}
-	else
-	{
-		lockcount = 1;
-		VID_UnlockBuffer ();
-	}
-
-	return lk;
-}
-
-
-void VID_ForceLockState (int lk)
-{
-
-	if (!dibdc && lk)
-	{
-		lockcount = 0;
-		VID_LockBuffer ();
-	}
-
-	lockcount = lk;
 }
 
 
@@ -2178,6 +2133,9 @@ void	VID_Shutdown (void)
 {
 	if (vid_initialized)
 	{
+		if (lockcount && !dibdc)
+			MGL_endDirectAccess();
+
 #if !defined(NO_SPLASHES)
 		if (hwnd_dialog)
 		{
@@ -3386,6 +3344,9 @@ void VID_ApplyGamma(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/08/11 20:45:01  sezero
+ * more cleanups in vid_win.c (zombie stuff, statements with no effect)
+ *
  * Revision 1.12  2005/08/11 17:33:43  sezero
  * added -w and -window switches to vid_win.c
  *

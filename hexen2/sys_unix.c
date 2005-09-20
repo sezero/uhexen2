@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.39 2005-09-20 21:17:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.40 2005-09-20 21:19:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -25,8 +25,8 @@
 #warning "Made assumptions for undetermined SUNOS CPU endianess"
 #endif
 
-#define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error running
-										//  dedicated before exiting
+#define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error
+					// before exiting
 #define MAXPRINTMSG		4096
 
 // minimum required SDL version
@@ -44,7 +44,6 @@
 static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
 qboolean		isDedicated;
-static qboolean		sc_return_on_enter = false;
 
 void Sys_InitFloatTime (void);
 
@@ -118,39 +117,22 @@ void Sys_Error (char *error, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
-	double		starttime;
+//	double		starttime;
 
-	VID_ForceUnlockedAndReturnState ();
+	Host_Shutdown ();
 
 	va_start (argptr, error);
 	vsnprintf (text, MAXPRINTMSG, error, argptr);
 	va_end (argptr);
 
-	if (isDedicated)
+	fprintf(stderr, "\nFATAL ERROR: %s\n\n", text);
+
+/*	starttime = Sys_DoubleTime ();
+	while (!Sys_ConsoleInput () &&
+		((Sys_DoubleTime () - starttime) < CONSOLE_ERROR_TIMEOUT))
 	{
-		va_start (argptr, error);
-		vsnprintf (text, MAXPRINTMSG, error, argptr);
-		va_end (argptr);
-
-		fprintf(stderr, "ERROR: %s\n", text);
-
-		starttime = Sys_DoubleTime ();
-		sc_return_on_enter = true;	// so Enter will get us out of here
-
-		while (!Sys_ConsoleInput () &&
-				((Sys_DoubleTime () - starttime) < CONSOLE_ERROR_TIMEOUT))
-		{
-		}
 	}
-	else
-	{
-	// switch to windowed so the message box is visible
-		VID_SetDefaultMode ();
-		fprintf(stderr, "ERROR: %s\n", text);
-	}
-
-	Host_Shutdown ();
-
+*/
 	exit (1);
 }
 
@@ -158,25 +140,16 @@ void Sys_Printf (char *fmt, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
-	
+
 	va_start (argptr,fmt);
 	vsnprintf (text, MAXPRINTMSG, fmt, argptr);
 	va_end (argptr);
 
-	if (isDedicated)
-	{
-		va_start (argptr,fmt);
-		vsnprintf (text, MAXPRINTMSG, fmt, argptr);
-		va_end (argptr);
-	}
 	fprintf(stderr, "%s", text);
 }
 
 void Sys_Quit (void)
 {
-
-	VID_ForceUnlockedAndReturnState ();
-
 	Host_Shutdown();
 
 	exit (0);
@@ -465,6 +438,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.39  2005/09/20 21:17:25  sezero
+ * Moved VERSION_PLATFORM and id386 defines to sys.h, where they belong.
+ *
  * Revision 1.38  2005/08/12 09:21:08  sezero
  * loosened SDL version restrictions depending on the SDL version
  * on the build system. will issue a warning if less than 1.2.6
