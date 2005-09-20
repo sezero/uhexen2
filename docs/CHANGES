@@ -1,5 +1,15 @@
 ChangeLog:
 
+2005-09-20 (CVS):
+    * Moved VERSION_PLATFORM and id386 defines to sys.h, where they belong.
+    * Sys_Quit and Sys_Error clean-up: VID_SetDefaultMode, VID_ForceLockState and
+      VID_ForceUnlockedAndReturnState are history. Host_Shutdown is called before
+      quit/error messages. Placed SDL_UnlockSurface() and MGL_endDirectAccess()
+      to VID_Shutdown, just in case. Added the word "HexenWorld" to win32 version
+      of hexenworld error window label. Took care of some accidentally repeated
+      code. "Fatalized" and added extra linefeeds to the sys_error messages.
+    * Fixed hwsv compilation (killed Server/sys.h).
+
 2005-09-19 (CVS):
     * startings of model code unification. mostly cosmetic for now,
       more will follow.
