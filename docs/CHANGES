@@ -1,5 +1,10 @@
 ChangeLog:
 
+2005-09-21 (CVS):
+    * added cross compilation support on unix for the win32 version
+    * removed backslash dir separators from hexenworld includes: they
+      used to break cross compilation
+
 2005-09-20 (CVS):
     * Moved VERSION_PLATFORM and id386 defines to sys.h, where they belong.
     * Sys_Quit and Sys_Error clean-up: VID_SetDefaultMode, VID_ForceLockState and
