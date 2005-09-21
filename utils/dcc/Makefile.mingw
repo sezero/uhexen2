@@ -1,8 +1,13 @@
-
+ifndef MINGWDIR
 MINGWDIR=/mingw
-
-CC = gcc
-LINKER = $(CC)
+endif
+ifndef WIN32CC
+WIN32CC = gcc
+endif
+ifndef W32STRIP
+W32STRIP = strip
+endif
+LINKER = $(WIN32CC)
 BINARY=dhcc.exe
 DESTDIR= ./bin
 CFLAGS = -O2 -Wall -I$(MINGWDIR)/include
@@ -16,7 +21,7 @@ clean :
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) -o $@ $<
+	$(WIN32CC) -c $(CFLAGS) -o $@ $<
 
 DHCCOBJS= cmdlib.o \
 	pr_comp.o \
@@ -26,3 +31,7 @@ DHCCOBJS= cmdlib.o \
 
 $(BINARY) : $(DHCCOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BINARY) $(DHCCOBJS) $(LDFLAGS) $(LDLIBS)
+
+strip:
+	$(W32STRIP) $(DESTDIR)/$(BINARY)
+

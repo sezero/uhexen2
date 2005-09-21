@@ -1,6 +1,23 @@
 Compiling the Hammer of Thyrion code on Win32:
 ----------------------------------------------
 
+a. On Linux, using MinGW cross compiler:
+----------------------------------------
+
+See the MinGW FAQ on the MinGW homepage:
+	http://mingw.sourceforge.net/
+Visit this link:
+	http://www.libsdl.org/extras/win32/cross/
+The latter link has a good README and prebuilt cross compiler
+tools. Download and install them, or prepare your own cross
+compiler. You can then use the "build_cross_win32.sh" scripts
+residing in all the win32-buildable directories. Read the
+scripts for information and edit them as necessary. Execute
+them to build win32 versions of Hammer of Thyrion.
+
+b. On Windows, using Win32-Native MinGW compiler:
+-------------------------------------------------
+
 First download this package and install it to C:\MinGW :
   http://prdownloads.sourceforge.net/mingw/MinGW-3.1.0-1.exe?download
 

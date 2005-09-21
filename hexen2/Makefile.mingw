@@ -1,4 +1,3 @@
-
 #  if building for the demo version, run with
 #  make DEMO=yes [other stuff]
 
@@ -9,11 +8,22 @@ GLH2_BINARY=glh2.exe
 MP_BINARY=h2mp.exe
 GLMP_BINARY=glh2mp.exe
 
+ifndef MINGWDIR
 MINGWDIR=/mingw
-
-AS = nasmw
-CC = gcc
-LINKER = $(CC)
+endif
+ifndef WIN32AS
+WIN32AS = nasmw
+endif
+ifndef WIN32CC
+WIN32CC = gcc
+endif
+ifndef WINDRES
+WIN32RES = windres
+endif
+ifndef W32STRIP
+W32STRIP = strip
+endif
+LINKER = $(WIN32CC)
 
 ifdef DEBUG
 CFLAGS = -DDEBUG_BUILD -g -Wall
@@ -52,12 +62,12 @@ GAMEFLAGS+= -DNO_SPLASHES
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(GAMEFLAGS) -o $@ $<
+	$(WIN32CC) -c $(CFLAGS) $(GAMEFLAGS) -o $@ $<
 %.o: %.asm
-	$(AS) $(ASFLAGS) -o $@ $<
+	$(WIN32AS) $(ASFLAGS) -o $@ $<
 win32res.o: win_stuff/hexen2.rc
 	cp icons/$(ICO_FILE) resource.ico
-	windres --include=$(MINGWDIR)/include --output=coff -o $@ $<
+	$(WIN32RES) --include=$(MINGWDIR)/include --output=coff -o $@ $<
 	rm -f resource.ico
 
 SOFTOBJS = d_edge.o \
@@ -207,3 +217,7 @@ h2_exe : CFLAGS+=-DMGL_DLL -I../w32stuff/scitech
 h2_exe : LDFLAGS+=-L../w32stuff/scitech -lmglfxi
 h2_exe : $(SOFTOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(H2_BINARY) $(SOFTOBJS) $(COMMONOBJS) $(LDFLAGS)
+
+strip:
+	$(W32STRIP) $(H2_BINARY) $(GLH2_BINARY) $(MP_BINARY) $(GLMP_BINARY)
+

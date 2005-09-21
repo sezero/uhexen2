@@ -1,0 +1,18 @@
+#!/bin/sh
+
+PREFIX=/usr/local/cross-tools
+TARGET=i386-mingw32msvc
+PATH="$PREFIX/bin:$PREFIX/$TARGET/bin:$PATH"
+export PATH
+MAKEFILE=Makefile.mingw
+
+if [ "$1" = "all" ]
+then
+make -f $MAKEFILE clean
+make -f $MAKEFILE WIN32CC=$TARGET-gcc WIN32AS=nasm WIN32RES=$TARGET-windres W32STRIP=$TARGET-strip MINGWDIR=$TARGET $2 $3 $4 glhw_exe
+make -f $MAKEFILE clean
+make -f $MAKEFILE WIN32CC=$TARGET-gcc WIN32AS=nasm WIN32RES=$TARGET-windres W32STRIP=$TARGET-strip MINGWDIR=$TARGET $2 $3 $4 hw_exe
+make -f $MAKEFILE clean
+else
+exec make -f $MAKEFILE WIN32CC=$TARGET-gcc WIN32AS=nasm WIN32RES=$TARGET-windres W32STRIP=$TARGET-strip MINGWDIR=$TARGET $*
+fi

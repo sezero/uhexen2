@@ -4,10 +4,22 @@
 BINARY=hwcl.exe
 GL_BINARY=glhwcl.exe
 
+ifndef MINGWDIR
 MINGWDIR=/mingw
-AS = nasmw
-CC = gcc
-LINKER = $(CC)
+endif
+ifndef WIN32AS
+WIN32AS = nasmw
+endif
+ifndef WIN32CC
+WIN32CC = gcc
+endif
+ifndef WIN32RES
+WIN32RES = windres
+endif
+ifndef W32STRIP
+W32STRIP = strip
+endif
+LINKER = $(WIN32CC)
 
 ifdef DEBUG
 CFLAGS = -DDEBUG_BUILD -g -Wall
@@ -46,12 +58,12 @@ GAMEFLAGS+= -DNO_SPLASHES
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(GAMEFLAGS) -o $@ $<
+	$(WIN32CC) -c $(CFLAGS) $(GAMEFLAGS) -o $@ $<
 %.o: %.asm
-	$(AS) $(ASFLAGS) -o $@ $<
+	$(WIN32AS) $(ASFLAGS) -o $@ $<
 win32res.o: win_stuff/hexenworld.rc
 	cp ../icons/$(ICO_FILE) resource.ico
-	windres --include=$(MINGWDIR)/include --output=coff -o $@ $<
+	$(WIN32RES) --include=$(MINGWDIR)/include --output=coff -o $@ $<
 	rm -f resource.ico
 
 SOFTOBJS = d_edge.o \
@@ -177,4 +189,7 @@ clean:
 	rm -f $(SOFTOBJS) $(GLOBJS) $(COMMONOBJS) core
 cleaner:
 	rm -f $(SOFTOBJS) $(GLOBJS) $(COMMONOBJS) $(BINARY) $(BINARY_STATIC) $(GL_BINARY) core
+
+strip:
+	$(W32STRIP) $(BINARY) $(GL_BINARY)
 

@@ -3,9 +3,16 @@
 
 BINARY=hwsv.exe
 
+ifndef MINGWDIR
 MINGWDIR=/mingw
-CC = gcc
-LINKER = $(CC)
+endif
+ifndef WIN32CC
+WIN32CC = gcc
+endif
+ifndef W32STRIP
+W32STRIP = strip
+endif
+LINKER = $(WIN32CC)
 
 ifdef DEBUG
 CFLAGS = -DDEBUG_BUILD -g -Wall -I$(MINGWDIR)/include
@@ -23,9 +30,9 @@ endif
 LDFLAGS = -L$(MINGWDIR)/lib -lm -lwsock32 -mconsole
 
 %.o: %.c
-	$(CC) -c $(SVINCS) $(CFLAGS) $(GAMEFLAGS) -o $@ $<
+	$(WIN32CC) -c $(SVINCS) $(CFLAGS) $(GAMEFLAGS) -o $@ $<
 cl_objs/%.o: ../Client/%.c
-	$(CC) -c $(SVINCS) $(CFLAGS) $(GAMEFLAGS) -o $@ $<
+	$(WIN32CC) -c $(SVINCS) $(CFLAGS) $(GAMEFLAGS) -o $@ $<
 
 COMMONOBJS = model.o \
 	cl_objs/cmd.o \
@@ -61,4 +68,7 @@ $(BINARY) : $(COMMONOBJS)
 
 clean:
 	rm -f $(COMMONOBJS) core
+
+strip:
+	$(W32STRIP) $(BINARY)
 

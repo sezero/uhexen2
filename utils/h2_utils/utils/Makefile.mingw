@@ -1,8 +1,13 @@
-
+ifndef MINGWDIR
 MINGWDIR=/mingw
-
-CC = gcc
-LINKER = $(CC)
+endif
+ifndef WIN32CC
+WIN32CC = gcc
+endif
+ifndef W32STRIP
+W32STRIP = strip
+endif
+LINKER = $(WIN32CC)
 
 QBSP=qbsp.exe
 LIGHT=light.exe
@@ -20,7 +25,7 @@ clean :
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) -o $@ $<
+	$(WIN32CC) -c $(CFLAGS) -o $@ $<
 
 
 COMMONOBJS= cmdlib.o \
@@ -60,4 +65,7 @@ $(VIS) : $(COMMONOBJS) $(VISOBJS)
 
 $(QBSP) : $(COMMONOBJS) $(QBSPOBJS)
 	$(LINKER) -o $(DESTDIR)/$(QBSP) $(COMMONOBJS) $(QBSPOBJS) $(LDFLAGS) $(LDLIBS)
+
+strip:
+	$(W32STRIP) $(DESTDIR)/$(LIGHT) $(DESTDIR)/$(VIS) $(DESTDIR)/$(QBSP)
 
