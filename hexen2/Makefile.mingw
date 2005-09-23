@@ -207,14 +207,14 @@ glh2_exe : $(GLOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS)
 
 mp_exe : CFLAGS+=-DMGL_DLL -I../w32stuff/scitech
-mp_exe : LDFLAGS+=-L../w32stuff/scitech -lmglfxi
+mp_exe : LDFLAGS+=-L../w32stuff/scitech -lmglfx
 mp_exe : GAMEFLAGS+=-DH2MP
 mp_exe : ICO_FILE=h2mp.ico
 mp_exe : $(SOFTOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(MP_BINARY) $(SOFTOBJS) $(COMMONOBJS) $(LDFLAGS)
 
 h2_exe : CFLAGS+=-DMGL_DLL -I../w32stuff/scitech
-h2_exe : LDFLAGS+=-L../w32stuff/scitech -lmglfxi
+h2_exe : LDFLAGS+=-L../w32stuff/scitech -lmglfx
 h2_exe : $(SOFTOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(H2_BINARY) $(SOFTOBJS) $(COMMONOBJS) $(LDFLAGS)
 
