@@ -738,7 +738,7 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 				modelist[nummodes].fullscreen = 1;
 				modelist[nummodes].bpp = devmode.dmBitsPerPel;
 				sprintf (modelist[nummodes].modedesc, "%dx%d",
-						 devmode.dmPelsWidth, devmode.dmPelsHeight);
+						(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight);
 
 			// if the width is more than twice the height, reduce it by half because this
 			// is probably a dual-screen monitor
@@ -817,7 +817,7 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 					modelist[nummodes].fullscreen = 1;
 					modelist[nummodes].bpp = devmode.dmBitsPerPel;
 					sprintf (modelist[nummodes].modedesc, "%dx%d",
-							 devmode.dmPelsWidth, devmode.dmPelsHeight);
+							(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight);
 
 				// if the width is more than twice the height, reduce it by half because this
 				// is probably a dual-screen monitor
@@ -901,7 +901,7 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 					modelist[nummodes].fullscreen = 1;
 					modelist[nummodes].bpp = devmode.dmBitsPerPel;
 					sprintf (modelist[nummodes].modedesc, "%dx%d",
-							 devmode.dmPelsWidth, devmode.dmPelsHeight);
+							(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight);
 
 			// we only want the lowest-bpp version of each mode
 				for (i=originalnummodes, existingmode = 0 ; i<nummodes ; i++)

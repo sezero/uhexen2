@@ -1,13 +1,14 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.29 2005-09-19 19:50:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.30 2005-09-24 23:50:36 sezero Exp $
 */
 
 #include "quakedef.h"
 
 #ifdef _WIN32
 #include <windows.h>
+#include <ctype.h>
 #endif
 #include <unistd.h>
 #include <time.h>
@@ -2264,6 +2265,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2005/09/19 19:50:10  sezero
+ * fixed those famous spelling errors
+ *
  * Revision 1.28  2005/09/19 19:27:09  sezero
  * can't kill zombie patch (from Maddes / QIP)
  *

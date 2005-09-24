@@ -1,5 +1,5 @@
 /*
- * $Id: midi.c,v 1.6 2005-07-09 07:19:04 sezero Exp $
+ * $Id: midi.c,v 1.7 2005-09-24 23:50:37 sezero Exp $
  */
 
 #include <windows.h>
@@ -90,7 +90,7 @@ void MIDI_SetVolume(float volume_frac)
 	volume_frac = (volume_frac <= 1.0f) ? volume_frac : 1.0f;
 	if (hw_vol_capable) {
 		volume_int = (int)(volume_frac * 65535.0f);
-		midiOutSetVolume(hStream, (volume_int << 16) + volume_int);
+		midiOutSetVolume((HMIDIOUT)hStream, (volume_int << 16) + volume_int);
 	} else {
 		volume_int = (int)(volume_frac * 1000.0f);
 		SetAllChannelVolumes(volume_int);
@@ -640,6 +640,9 @@ void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/07/09 07:19:04  sezero
+ * use zone instead of malloc. other small stuff.
+ *
  * Revision 1.5  2005/06/17 16:24:42  sezero
  * win32 fixes and clean-ups
  *

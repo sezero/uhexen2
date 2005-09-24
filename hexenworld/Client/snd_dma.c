@@ -2,13 +2,15 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.25 2005-09-19 19:50:10 sezero Exp $
+	$Id: snd_dma.c,v 1.26 2005-09-24 23:50:36 sezero Exp $
 */
 
 #include "quakedef.h"
 
-#ifndef PLATFORM_UNIX
-#include "quakeinc.h"
+//#include "quakeinc.h"
+#ifdef _WIN32
+#include "winquake.h"
+extern void IN_Accumulate(void);
 #endif
 
 void S_Play(void);
@@ -1102,6 +1104,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2005/09/19 19:50:10  sezero
+ * fixed those famous spelling errors
+ *
  * Revision 1.24  2005/07/31 00:45:12  sezero
  * platform defines cleanup
  *

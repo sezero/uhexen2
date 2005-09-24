@@ -355,12 +355,11 @@ char *Sys_ConsoleInput (void)
 	static char	text[256];
 	static int		len;
 	INPUT_RECORD	recs[1024];
-	int		dummy;
-	int		ch, numread, numevents;
+	int		ch;
+	DWORD		dummy, numread, numevents;
 
 	if (!isDedicated)
 		return NULL;
-
 
 	for ( ;; )
 	{
@@ -689,6 +688,14 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2005/09/20 21:19:45  sezero
+ * Sys_Quit and Sys_Error clean-up: VID_SetDefaultMode, VID_ForceLockState and
+ * VID_ForceUnlockedAndReturnState are history. Host_Shutdown is called before
+ * quit/error messages. Placed SDL_UnlockSurface() and MGL_endDirectAccess()
+ * to VID_Shutdown, just in case. Added the word "HexenWorld" to win32 version
+ * of hexenworld error window label. Took care of some accidentally repeated
+ * code. "Fatalized" and added extra linefeeds to the sys_error messages.
+ *
  * Revision 1.19  2005/09/20 21:17:26  sezero
  * Moved VERSION_PLATFORM and id386 defines to sys.h, where they belong.
  *

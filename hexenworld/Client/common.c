@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.17 2005-08-20 13:06:34 sezero Exp $
+	$Id: common.c,v 1.18 2005-09-24 23:50:36 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -13,6 +13,7 @@
 #include <unistd.h>
 #ifdef _WIN32
 #include <windows.h>
+#include <ctype.h>
 #endif
 
 #define NUM_SAFE_ARGVS	6

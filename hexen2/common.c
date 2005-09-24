@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.21 2005-08-20 13:06:33 sezero Exp $
+	$Id: common.c,v 1.22 2005-09-24 23:50:36 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -13,6 +13,7 @@
 #include <unistd.h>
 #ifdef _WIN32
 #include <windows.h>
+#include <ctype.h>
 #endif
 
 #define NUM_SAFE_ARGVS	6
@@ -1920,6 +1921,12 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2005/08/20 13:06:33  sezero
+ * favored unlink() over DeleteFile() on win32. removed unnecessary
+ * platform defines for directory path separators. removed a left-
+ * over CL_RemoveGIPFiles() from sys_win.c. fixed temporary gip files
+ * not being removed and probably causing "bad" savegames on win32.
+ *
  * Revision 1.20  2005/08/09 15:39:28  sezero
  * Prioritized a game directory over its pakfiles in the search order which is
  * the behavior of HoT-1.2.4 and older. This bug, carried over from hexenworld,

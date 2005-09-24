@@ -584,6 +584,7 @@ PDWORD RawValuePointer (int axis)
 	case JOY_AXIS_V:
 		return &ji.dwVpos;
 	}
+	return NULL;
 }
 
 
@@ -939,6 +940,9 @@ void IN_JoyMove (usercmd_t *cmd)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/08/19 18:32:14  sezero
+ * killed unused dosisms.h header
+ *
  * Revision 1.7  2005/07/16 23:23:55  sezero
  * killed fastfabs, not worthy of keeping anymore
  *

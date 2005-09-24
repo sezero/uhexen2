@@ -1,10 +1,13 @@
 /*
 	pr_exec.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.5 2005-07-31 11:13:52 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.6 2005-09-24 23:50:36 sezero Exp $
 */
 
 #include "quakedef.h"
+#ifdef _WIN32
+#include <ctype.h>
+#endif
 
 // MACROS ------------------------------------------------------------------
 
@@ -1171,6 +1174,9 @@ static unsigned int ProgsTimer(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/07/31 11:13:52  sezero
+ * debug defines
+ *
  * Revision 1.4  2005/05/05 17:17:51  sezero
  * profile save cleanup (and another MAX_OSPATH fix)
  *

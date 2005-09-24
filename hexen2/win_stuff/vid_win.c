@@ -749,7 +749,7 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 				modelist[nummodes].fullscreen = 1;
 				modelist[nummodes].bpp = devmode.dmBitsPerPel;
 				sprintf (modelist[nummodes].modedesc, "%dx%d",
-						 devmode.dmPelsWidth, devmode.dmPelsHeight);
+						(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight);
 
 			// if the width is more than twice the height, reduce it by half because this
 			// is probably a dual-screen monitor
@@ -828,7 +828,7 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 					modelist[nummodes].fullscreen = 1;
 					modelist[nummodes].bpp = devmode.dmBitsPerPel;
 					sprintf (modelist[nummodes].modedesc, "%dx%d",
-							 devmode.dmPelsWidth, devmode.dmPelsHeight);
+							(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight);
 
 				// if the width is more than twice the height, reduce it by half because this
 				// is probably a dual-screen monitor
@@ -912,7 +912,7 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 					modelist[nummodes].fullscreen = 1;
 					modelist[nummodes].bpp = devmode.dmBitsPerPel;
 					sprintf (modelist[nummodes].modedesc, "%dx%d",
-							 devmode.dmPelsWidth, devmode.dmPelsHeight);
+							(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight);
 
 				for (i=originalnummodes, existingmode = 0 ; i<nummodes ; i++)
 				{
@@ -3344,6 +3344,14 @@ void VID_ApplyGamma(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/09/20 21:19:45  sezero
+ * Sys_Quit and Sys_Error clean-up: VID_SetDefaultMode, VID_ForceLockState and
+ * VID_ForceUnlockedAndReturnState are history. Host_Shutdown is called before
+ * quit/error messages. Placed SDL_UnlockSurface() and MGL_endDirectAccess()
+ * to VID_Shutdown, just in case. Added the word "HexenWorld" to win32 version
+ * of hexenworld error window label. Took care of some accidentally repeated
+ * code. "Fatalized" and added extra linefeeds to the sys_error messages.
+ *
  * Revision 1.13  2005/08/11 20:45:01  sezero
  * more cleanups in vid_win.c (zombie stuff, statements with no effect)
  *
