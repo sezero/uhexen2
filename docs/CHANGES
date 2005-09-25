@@ -4,6 +4,8 @@ ChangeLog:
     * fixed a bunch of compiler warnings
     * fixed and activated start-up splash screens of the win32
       version for mingw. removed the ms vc versions
+    * widened text splash window for hexenworld to fit
+    * different splash text fon h2 h2mp and hexenworld
 
 2005-09-23 (CVS):
     * fixed win32 software version's linkage: added proper libmglfx.a
