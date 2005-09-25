@@ -4,7 +4,9 @@
 #include "quakeinc.h"
 #include "resource.h"
 #include "wgl_func.h"
-//#include <commctrl.h>
+#if !defined(NO_SPLASHES)
+#include <commctrl.h>
+#endif
 
 #define MAX_MODE_LIST	30
 #define VID_ROW_SIZE	3
@@ -908,8 +910,6 @@ void VID_SetPalette (unsigned char *palette)
 	FILE		*f;
 	char		s[MAX_OSPATH];
 #if !defined(NO_SPLASHES)
-// if this is to be activated, resource.h and the
-// rc file needs syncing with hexenworld, as well
 	HWND		hDlg, hProgress;
 #endif
 
@@ -1826,7 +1826,10 @@ void	VID_Init (unsigned char *palette)
 
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
 
-	//InitCommonControls();
+#if !defined(NO_SPLASHES)
+	InitCommonControls();
+	VID_SetPalette (palette);
+#endif
 
 #ifdef GL_DLSYM
 	i = COM_CheckParm("-gllibrary");

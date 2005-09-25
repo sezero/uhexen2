@@ -55,10 +55,11 @@ ifdef DEMO
 GAMEFLAGS+= -DDEMOBUILD
 endif
 
-ICO_FILE = hexen2.ico
-
-# disable startup splash screens
+# enable or disable startup splash screens
+WITH_SPLASHES=yes
+ifeq "$(WITH_SPLASHES)" "no"
 GAMEFLAGS+= -DNO_SPLASHES
+endif
 
 # Rules for turning source files into .o files
 %.o: %.c
@@ -66,9 +67,7 @@ GAMEFLAGS+= -DNO_SPLASHES
 %.o: %.asm
 	$(WIN32AS) $(ASFLAGS) -o $@ $<
 win32res.o: win_stuff/hexen2.rc
-	cp icons/$(ICO_FILE) resource.ico
-	$(WIN32RES) --include=$(MINGWDIR)/include --output=coff -o $@ $<
-	rm -f resource.ico
+	$(WIN32RES) $(GAMEFLAGS) --include=$(MINGWDIR)/include --output=coff -o $@ $<
 
 SOFTOBJS = d_edge.o \
 	d_fill.o \
@@ -197,19 +196,23 @@ cleaner:
 
 glmp_exe : CFLAGS+= $(GL_DEFS)
 glmp_exe : GAMEFLAGS+=-DGLQUAKE -DH2MP
-glmp_exe : ICO_FILE=h2mp.ico
+ifeq "$(WITH_SPLASHES)" "yes"
+glmp_exe : LDFLAGS+=-lcomctl32
+endif
 glmp_exe : $(GLOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(GLMP_BINARY) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS)
 
 glh2_exe : CFLAGS+= $(GL_DEFS)
 glh2_exe : GAMEFLAGS+=-DGLQUAKE
+ifeq "$(WITH_SPLASHES)" "yes"
+glh2_exe : LDFLAGS+=-lcomctl32
+endif
 glh2_exe : $(GLOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS)
 
 mp_exe : CFLAGS+=-DMGL_DLL -I../w32stuff/scitech
 mp_exe : LDFLAGS+=-L../w32stuff/scitech -lmglfx
 mp_exe : GAMEFLAGS+=-DH2MP
-mp_exe : ICO_FILE=h2mp.ico
 mp_exe : $(SOFTOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(MP_BINARY) $(SOFTOBJS) $(COMMONOBJS) $(LDFLAGS)
 

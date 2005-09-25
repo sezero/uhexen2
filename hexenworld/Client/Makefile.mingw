@@ -51,10 +51,11 @@ ifdef DEMO
 GAMEFLAGS+= -DDEMOBUILD
 endif
 
-ICO_FILE = hexenworld.ico
-
-# disable startup splash screens
+# enable or disable startup splash screens
+WITH_SPLASHES=yes
+ifeq "$(WITH_SPLASHES)" "no"
 GAMEFLAGS+= -DNO_SPLASHES
+endif
 
 # Rules for turning source files into .o files
 %.o: %.c
@@ -62,9 +63,7 @@ GAMEFLAGS+= -DNO_SPLASHES
 %.o: %.asm
 	$(WIN32AS) $(ASFLAGS) -o $@ $<
 win32res.o: win_stuff/hexenworld.rc
-	cp ../icons/$(ICO_FILE) resource.ico
-	$(WIN32RES) --include=$(MINGWDIR)/include --output=coff -o $@ $<
-	rm -f resource.ico
+	$(WIN32RES) $(GAMEFLAGS) --include=$(MINGWDIR)/include --output=coff -o $@ $<
 
 SOFTOBJS = d_edge.o \
 	d_fill.o \
@@ -177,6 +176,9 @@ COMMONOBJS = win_stuff/cd_win.o \
 
 glhw_exe: CFLAGS+= $(GL_DEFS)
 glhw_exe: GAMEFLAGS+= -DGLQUAKE
+ifeq "$(WITH_SPLASHES)" "yes"
+glhw_exe: LDFLAGS+=-lcomctl32
+endif
 glhw_exe: $(GLOBJS) $(COMMONOBJS)
 	$(LINKER) -o $(GL_BINARY) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS)
 
