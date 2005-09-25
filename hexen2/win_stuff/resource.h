@@ -19,8 +19,10 @@
 //
 #if defined(H2W)
 #define H2_STRING	"HexenWorld"
+#elif defined(H2MP)
+#define H2_STRING	"Hexen II+"
 #else
-#define H2_STRING	"HexenII"
+#define H2_STRING	"Hexen II"
 #endif
 
 // Bitmap
