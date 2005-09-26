@@ -71,24 +71,24 @@ lmode_t	lowresmodes[] = {
 	{512, 384},
 };
 
-int			vid_modenum = NO_MODE;
-int			vid_testingmode, vid_realmode;
+int		vid_modenum = NO_MODE;
+int		vid_testingmode, vid_realmode;
 double		vid_testendtime;
-int			vid_default = MODE_WINDOWED;
+int		vid_default = MODE_WINDOWED;
 static int	windowed_default;
 
 modestate_t	modestate = MS_UNINIT;
 
 static byte		*vid_surfcache;
-static int		vid_surfcachesize;
-static int		VID_highhunkmark;
+static int	vid_surfcachesize;
+static int	VID_highhunkmark;
 
 unsigned char	vid_curpal[256*3];
 
 unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
 
-int     driver = grDETECT,mode;
+int		driver = grDETECT, mode;
 qboolean	useWinDirect = true, useDirectDraw = true;
 MGLDC	*mgldc = NULL,*memdc = NULL,*dibdc = NULL,*windc = NULL;
 
@@ -137,7 +137,7 @@ void VID_RememberWindowPos (void)
 	{
 		if ((rect.left < GetSystemMetrics (SM_CXSCREEN)) &&
 			(rect.top < GetSystemMetrics (SM_CYSCREEN))  &&
-			(rect.right > 0)                             &&
+			(rect.right > 0)			     &&
 			(rect.bottom > 0))
 		{
 			Cvar_SetValue ("vid_window_x", (float)rect.left);
@@ -157,7 +157,7 @@ void VID_CheckWindowXY (void)
 
 	if (((int)vid_window_x.value > (GetSystemMetrics (SM_CXSCREEN) - 160)) ||
 		((int)vid_window_y.value > (GetSystemMetrics (SM_CYSCREEN) - 120)) ||
-		((int)vid_window_x.value < 0)									   ||
+		((int)vid_window_x.value < 0)					   ||
 		((int)vid_window_y.value < 0))
 	{
 		Cvar_SetValue ("vid_window_x", 0.0);
@@ -353,7 +353,8 @@ void registerAllDispDrivers(void)
 	/* Register display drivers */
 	if (useWinDirect)
 	{
-//we don't want VESA 1.X drivers		MGL_registerDriver(MGL_SVGA8NAME,SVGA8_driver);
+		//we don't want VESA 1.X drivers
+		//MGL_registerDriver(MGL_SVGA8NAME,SVGA8_driver);
 		MGL_registerDriver(MGL_LINEAR8NAME,LINEAR8_driver);
 
 		if (!COM_CheckParm ("-novbeaf"))
@@ -378,7 +379,7 @@ void VID_InitMGLFull (HINSTANCE hInstance)
 {
 	int			i, xRes, yRes, bits, lowres, curmode, temp;
 	int			lowstretchedres, stretchedmode, lowstretched;
-    uchar		*m;
+	uchar		*m;
 
 // FIXME: NT is checked for because MGL currently has a bug that causes it
 // to try to use WinDirect modes even on NT
@@ -542,7 +543,7 @@ MGLDC *createDisplayDC(int forcemem)
 *
 ****************************************************************************/
 {
-    MGLDC			*dc;
+	MGLDC			*dc;
 	pixel_format_t	pf;
 	int				npages;
 
@@ -615,18 +616,18 @@ void VID_InitMGLDIB (HINSTANCE hInstance)
 	hIcon = LoadIcon (hInstance, MAKEINTRESOURCE (IDI_ICON2));
 
 	/* Register the frame class */
-    wc.style         = 0;
-    wc.lpfnWndProc   = (WNDPROC)MainWndProc;
-    wc.cbClsExtra    = 0;
-    wc.cbWndExtra    = 0;
-    wc.hInstance     = hInstance;
-    wc.hIcon         = 0;
-    wc.hCursor       = LoadCursor (NULL,IDC_ARROW);
+	wc.style	 = 0;
+	wc.lpfnWndProc	 = (WNDPROC)MainWndProc;
+	wc.cbClsExtra	 = 0;
+	wc.cbWndExtra	 = 0;
+	wc.hInstance	 = hInstance;
+	wc.hIcon	 = 0;
+	wc.hCursor	 = LoadCursor (NULL,IDC_ARROW);
 	wc.hbrBackground = NULL;
-    wc.lpszMenuName  = 0;
-    wc.lpszClassName = "HexenWorld";
+	wc.lpszMenuName	 = 0;
+	wc.lpszClassName = "HexenWorld";
 
-    if (!RegisterClass (&wc) )
+	if (!RegisterClass (&wc) )
 		Sys_Error ("Couldn't register window class");
 
 	/* Find the size for the DIB window */
@@ -1255,8 +1256,7 @@ qboolean VID_SetWindowedMode (int modenum)
 	}
 
 	WindowStyle = WS_OVERLAPPED | WS_BORDER | WS_CAPTION | WS_SYSMENU |
-				  WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_CLIPSIBLINGS |
-				  WS_CLIPCHILDREN;
+			  WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 	ExWindowStyle = 0;
 	AdjustWindowRectEx(&WindowRect, WindowStyle, FALSE, 0);
 
@@ -1292,12 +1292,11 @@ qboolean VID_SetWindowedMode (int modenum)
 	}
 
 	if (!SetWindowPos (mainwindow,
-						   NULL,
-						   0, 0,
-						   WindowRect.right - WindowRect.left,
-						   WindowRect.bottom - WindowRect.top,
-						   SWP_NOCOPYBITS | SWP_NOZORDER |
-						    SWP_HIDEWINDOW))
+				NULL,
+				0, 0,
+				WindowRect.right - WindowRect.left,
+				WindowRect.bottom - WindowRect.top,
+				SWP_NOCOPYBITS | SWP_NOZORDER | SWP_HIDEWINDOW))
 		{
 			Sys_Error ("Couldn't resize DIB window");
 		}
@@ -1464,11 +1463,11 @@ qboolean VID_SetFullDIBMode (int modenum)
 	SetWindowLong(mainwindow, GWL_EXSTYLE, ExWindowStyle);
 
 	if (!SetWindowPos (mainwindow,
-						   NULL,
-						   0, 0,
-						   WindowRect.right - WindowRect.left,
-						   WindowRect.bottom - WindowRect.top,
-						   SWP_NOCOPYBITS | SWP_NOZORDER))
+				NULL,
+				0, 0,
+				WindowRect.right - WindowRect.left,
+				WindowRect.bottom - WindowRect.top,
+				SWP_NOCOPYBITS | SWP_NOZORDER))
 		{
 			Sys_Error ("Couldn't resize DIB window");
 		}
@@ -1544,7 +1543,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 {
 	int				original_mode, temp;
 	qboolean		stat;
-    MSG				msg;
+	MSG				msg;
 	HDC				hdc;
 
 	while ((modenum >= nummodes) || (modenum < 0))
@@ -1668,8 +1667,8 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	while (PeekMessage (&msg, NULL, 0, 0, PM_REMOVE))
 	{
-      	TranslateMessage (&msg);
-      	DispatchMessage (&msg);
+		TranslateMessage (&msg);
+		DispatchMessage (&msg);
 	}
 
 	Sleep (100);
@@ -1763,7 +1762,7 @@ void	VID_SetPalette (unsigned char *palette)
 {
 	INT			i;
 	palette_t	pal[256];
-    HDC			hdc;
+	HDC			hdc;
 
 	if (!Minimized)
 	{
@@ -2586,8 +2585,8 @@ void AppActivate(BOOL fActive, BOOL minimize)
 *
 ****************************************************************************/
 {
-    HDC			hdc;
-    int			i, t;
+	HDC			hdc;
+	int			i, t;
 	static BOOL	sound_active;
 
 	ActiveApp = fActive;
@@ -2595,9 +2594,9 @@ void AppActivate(BOOL fActive, BOOL minimize)
 // messy, but it seems to work
 	if (vid_fulldib_on_focus_mode)
 	{
-	Minimized = minimize;
+		Minimized = minimize;
 
-	if (Minimized)
+		if (Minimized)
 			ActiveApp = false;
 	}
 
@@ -2614,14 +2613,14 @@ void AppActivate(BOOL fActive, BOOL minimize)
 			{
 				if ((modestate == MS_WINDOWED) || (modestate == MS_FULLDIB))
 				{
-				if (GetSystemPaletteUse(hdc) == SYSPAL_STATIC)
-				{
-				// switch to SYSPAL_NOSTATIC and remap the colors
-					SetSystemPaletteUse(hdc, SYSPAL_NOSTATIC);
-					syscolchg = true;
+					if (GetSystemPaletteUse(hdc) == SYSPAL_STATIC)
+					{
+						// switch to SYSPAL_NOSTATIC and remap the colors
+						SetSystemPaletteUse(hdc, SYSPAL_NOSTATIC);
+						syscolchg = true;
 						pal_is_nostatic = true;
+					}
 				}
-			}
 			}
 			else if (pal_is_nostatic)
 			{
@@ -2754,10 +2753,9 @@ MAIN WINDOW
 ===================================================================
 */
 
-LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
 static int MWheelAccumulator;
 extern cvar_t mwheelthreshold;
+LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 /* main window procedure */
 LONG WINAPI MainWndProc (
@@ -2806,15 +2804,15 @@ LONG WINAPI MainWndProc (
 						force_mode_set = true;
 						VID_SetMode (vid_modenum, vid_curpal);
 						force_mode_set = false;
-			}
+					}
 
 					VID_SetMode ((int)vid_fullscreen_mode.value, vid_curpal);
 					break;
 
-                case SC_SCREENSAVE:
-                case SC_MONITORPOWER:
+				case SC_SCREENSAVE:
+				case SC_MONITORPOWER:
 					if (modestate != MS_WINDOWED)
-			{
+					{
 					// don't call DefWindowProc() because we don't want to start
 					// the screen saver fullscreen
 						break;
@@ -2823,18 +2821,18 @@ LONG WINAPI MainWndProc (
 				// fall through windowed and allow the screen saver to start
 
 				default:
-				if (!in_mode_set)
-				{
-					S_BlockSound ();
-					S_ClearBuffer ();
-				}
+					if (!in_mode_set)
+					{
+						S_BlockSound ();
+						S_ClearBuffer ();
+					}
 
-				lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
+					lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
 
-				if (!in_mode_set)
-				{
-					S_UnblockSound ();
-				}
+					if (!in_mode_set)
+					{
+						S_UnblockSound ();
+					}
 			}
 			break;
 
@@ -2926,6 +2924,7 @@ LONG WINAPI MainWndProc (
 				IN_MouseEvent (temp);
 			}
 			break;
+
 		// JACK: This is the mouse wheel with the Intellimouse
 		// Its delta is either positive or neg, and we generate the proper
 		// Event.
@@ -2938,6 +2937,7 @@ LONG WINAPI MainWndProc (
 				Key_Event(K_MWHEELDOWN, false);
 			}
 			break;
+
 		// KJB: Added these new palette functions
 		case WM_PALETTECHANGED:
 			if ((HWND)wParam == hWnd)
@@ -2974,7 +2974,7 @@ LONG WINAPI MainWndProc (
 			}
 			break;
 
-   	    case WM_CLOSE:
+		case WM_CLOSE:
 		// this causes Close in the right-click task bar menu not to work, but right
 		// now bad things happen if Close is handled in that case (garbage and a
 		// crash on Win95)
@@ -2989,17 +2989,17 @@ LONG WINAPI MainWndProc (
 			break;
 
 		case MM_MCINOTIFY:
-            lRet = CDAudio_MessageHandler (hWnd, uMsg, wParam, lParam);
+			lRet = CDAudio_MessageHandler (hWnd, uMsg, wParam, lParam);
 			break;
 
 		default:
-            /* pass all unhandled messages to DefWindowProc */
-            lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
-	        break;
-    }
+			/* pass all unhandled messages to DefWindowProc */
+			lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
+			break;
+	}
 
-    /* return 0 if handled message, 1 if not */
-    return lRet;
+	/* return 0 if handled message, 1 if not */
+	return lRet;
 }
 
 
@@ -3080,7 +3080,7 @@ void VID_MenuDraw (void)
 				}
 			}
 
-			if (dup || (vid_wmodes < MAX_MODEDESCS))       
+			if (dup || (vid_wmodes < MAX_MODEDESCS))
 			{
 				if (!dup || !modedescs[dupmode].ismode13 || COM_CheckParm("-noforcevga"))
 				{

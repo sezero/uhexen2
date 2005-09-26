@@ -91,24 +91,24 @@ lmode_t	lowresmodes[] = {
 	{512, 384},
 };
 
-int			vid_modenum = NO_MODE;
-int			vid_testingmode, vid_realmode;
+int		vid_modenum = NO_MODE;
+int		vid_testingmode, vid_realmode;
 double		vid_testendtime;
-int			vid_default = MODE_WINDOWED;
+int		vid_default = MODE_WINDOWED;
 static int	windowed_default;
 
 modestate_t	modestate = MS_UNINIT;
 
 static byte		*vid_surfcache;
-static int		vid_surfcachesize;
-static int		VID_highhunkmark;
+static int	vid_surfcachesize;
+static int	VID_highhunkmark;
 
 unsigned char	vid_curpal[256*3];
 
 unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
 
-int     driver = grDETECT,mode;
+int		driver = grDETECT, mode;
 
 qboolean	useWinDirect = false;
 qboolean	useDirectDraw = false;
@@ -555,7 +555,7 @@ MGLDC *createDisplayDC(int forcemem)
 		initFatalError();
 
 	if ((dc = MGL_createDisplayDC(MGL_availablePages(mode))) == NULL)
-        initFatalError();
+		initFatalError();
 
 	// Pa3PyX: check if the user wants to do page flips (default: no)
 	if (!vid_nopageflip.value && (vid_maxpages.value > 1) &&
@@ -1693,8 +1693,8 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	while (PeekMessage (&msg, NULL, 0, 0, PM_REMOVE))
 	{
-      	TranslateMessage (&msg);
-      	DispatchMessage (&msg);
+		TranslateMessage (&msg);
+		DispatchMessage (&msg);
 	}
 
 	Sleep (100);
@@ -2093,7 +2093,7 @@ void	VID_Init (unsigned char *palette)
 	if (hwnd_dialog)
 	{
 		DestroyWindow (hwnd_dialog);
-		hwnd_dialog=NULL;
+		hwnd_dialog = NULL;
 	}
 #endif
 
@@ -2140,7 +2140,7 @@ void	VID_Shutdown (void)
 		if (hwnd_dialog)
 		{
 			DestroyWindow (hwnd_dialog);
-			hwnd_dialog=NULL;
+			hwnd_dialog = NULL;
 		}
 #endif
 
@@ -2810,7 +2810,6 @@ MAIN WINDOW
 */
 
 static int MWheelAccumulator;
-
 extern cvar_t mwheelthreshold;
 LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -3001,7 +3000,7 @@ LONG WINAPI MainWndProc (
 			}
 			break;
 
-   	    case WM_CLOSE:
+		case WM_CLOSE:
 			// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
 			if (DDActive)
 				break;
@@ -3111,7 +3110,7 @@ void VID_MenuDraw (void)
 				}
 			}
 
-			if (dup || (vid_wmodes < MAX_MODEDESCS))       
+			if (dup || (vid_wmodes < MAX_MODEDESCS))
 			{
 				if (!dup || !modedescs[dupmode].ismode13 || COM_CheckParm("-noforcevga"))
 				{
@@ -3344,6 +3343,11 @@ void VID_ApplyGamma(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/09/26 18:27:41  sezero
+ * update the vid_modes only after host_initialized is set to true.
+ * fixes the issue about correct resolution setting from config.cfg
+ * not being restored for the win32 software version.
+ *
  * Revision 1.15  2005/09/24 23:50:36  sezero
  * fixed a bunch of compiler warnings
  *
