@@ -1,5 +1,15 @@
 ChangeLog:
 
+2005-09-26 (CVS):
+    * flush the command buffer before setting host_initialized to true
+    * update the vid_modes only after host_initialized is set to true.
+      fixes the issue about correct resolution setting from config.cfg
+      not being restored for the win32 software version.
+    * merged a few safe fixes of Pa3PyX from hexen2 to hexenworld vid_win.c
+    * whitespace and indentation fixes in vid_win.c
+    * updated the list of known bugs
+    * updated the todo list
+
 2005-09-25 (CVS):
     * fixed a bunch of compiler warnings
     * fixed and activated start-up splash screens of the win32
