@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.28 2005-09-19 19:50:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.29 2005-09-26 18:26:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1035,6 +1035,7 @@ void Host_Init (quakeparms_t *parms)
 #endif
 
 	Cbuf_InsertText ("exec hexen.rc\n");
+	Cbuf_Execute();
 
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
@@ -1089,6 +1090,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2005/09/19 19:50:10  sezero
+ * fixed those famous spelling errors
+ *
  * Revision 1.27  2005/09/19 06:18:13  sezero
  * check for isDedicated in Host_WriteConfiguration should be logical
  *

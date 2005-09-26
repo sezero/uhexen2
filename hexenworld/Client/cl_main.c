@@ -1373,6 +1373,7 @@ void Host_Init (quakeparms_t *parms)
 	Cbuf_InsertText ("vid_setgamma\n");
 #endif
 	Cbuf_InsertText ("exec hexen.rc\n");
+	Cbuf_Execute();
 	Cbuf_AddText ("cl_warncmd 1\n");
 
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
