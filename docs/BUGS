@@ -26,6 +26,3 @@ Known Bugs
 
   Coop mode of HexenWorld is broken (known problem since Raven's latest
   beta-0.15)
-
-  Win32 version of the software renderer doesn't change into the latest
-  used resolution automatically
