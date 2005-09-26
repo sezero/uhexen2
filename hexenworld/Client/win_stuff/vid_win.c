@@ -2080,16 +2080,32 @@ void	VID_Init (unsigned char *palette)
 // gets displayed
 
 // keep the window minimized until we're ready for the first real mode set
-	hide_window = true;
-	VID_SetMode (MODE_WINDOWED, palette);
+	//hide_window = true;
+	//VID_SetMode (MODE_WINDOWED, palette);
+	//hide_window = false;
+
+	// Pa3PyX: see below
 	hide_window = false;
+	if (!VID_SetMode(MODE_WINDOWED, palette))
+	{
+		force_mode_set = true;
+		VID_SetMode(vid_default, palette);
+		force_mode_set = false;
+	}
+
 	S_Init ();
 
 	vid_initialized = true;
 
-	force_mode_set = true;
-	VID_SetMode (vid_default, palette);
-	force_mode_set = false;
+/*	Pa3PyX: will now avoid setting default fullscreen mode unless
+	absolutely necessary (windowed default failed). Reason: no need to
+	rape the monitor by switching video modes 3 times on initialization,
+	plus there may be problems switching from fullscreen VGA to VESA,
+	for instance. The game will switch to the right mode anyway, when
+	it has parsed its configs. */
+//	force_mode_set = true;
+//	VID_SetMode (vid_default, palette);
+//	force_mode_set = false;
 
 	vid_realmode = vid_modenum;
 
@@ -2267,8 +2283,10 @@ void	VID_Update (vrect_t *rects)
 			}
 		}
 
-		if ((_vid_default_mode_win.value != vid_default) &&
-			(!startwindowed || (_vid_default_mode_win.value < MODE_FULLSCREEN_DEFAULT)))
+		/* Pa3PyX: Since VID_Init() will not switch modes back and
+		   forth now, video mode from configs has to be set even if
+		   it is the same as hardcoded default */
+		if (!startwindowed || _vid_default_mode_win.value < MODE_FULLSCREEN_DEFAULT)
 		{
 			firstupdate = 0;
 
@@ -3028,7 +3046,8 @@ void VID_MenuDraw (void)
 	{
 		ptr = VID_GetModeDescriptionMemCheck (i);
 		modedescs[i].modenum = modelist[i].modenum;
-		modedescs[i].desc = ptr;
+		// avoid null pointer if not enough memory for mode. Pa3PyX
+		modedescs[i].desc = ptr ? ptr : "N/A";
 		modedescs[i].ismode13 = 0;
 		modedescs[i].iscur = 0;
 
