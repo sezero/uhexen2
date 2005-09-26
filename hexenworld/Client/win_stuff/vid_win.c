@@ -2245,7 +2245,7 @@ void	VID_Update (vrect_t *rects)
 		rects = &rect;
 	}
 
-	if (firstupdate)
+	if (firstupdate && host_initialized)
 	{
 		if (modestate == MS_WINDOWED)
 		{

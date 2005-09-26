@@ -2289,7 +2289,7 @@ void	VID_Update (vrect_t *rects)
 		rects = &rect;
 	}
 
-	if (firstupdate)
+	if (firstupdate && host_initialized)
 	{
 		/* Pa3PyX: Since VID_Init() will not switch modes back and
 		   forth now, video mode from configs has to be set even if
@@ -3344,6 +3344,9 @@ void VID_ApplyGamma(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/09/24 23:50:36  sezero
+ * fixed a bunch of compiler warnings
+ *
  * Revision 1.14  2005/09/20 21:19:45  sezero
  * Sys_Quit and Sys_Error clean-up: VID_SetDefaultMode, VID_ForceLockState and
  * VID_ForceUnlockedAndReturnState are history. Host_Shutdown is called before
