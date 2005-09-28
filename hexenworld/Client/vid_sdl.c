@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.30 2005-09-20 21:19:45 sezero Exp $
+   $Id: vid_sdl.c,v 1.31 2005-09-28 06:07:32 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -859,13 +859,13 @@ void VID_MenuDraw (void)
 
 /*
 ================
-ToggleFullScreenSA
+VID_ToggleFullscreen
 Handles switching between fullscreen/windowed modes
 and brings the mouse to a proper state afterwards
 ================
 */
 extern qboolean mousestate_sa;
-void ToggleFullScreenSA ()
+void VID_ToggleFullscreen (void)
 {
 	if (SDL_WM_ToggleFullScreen(screen)==1) {
 		Cvar_SetValue ("vid_mode", !vid_mode.value);
@@ -907,6 +907,14 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2005/09/20 21:19:45  sezero
+ * Sys_Quit and Sys_Error clean-up: VID_SetDefaultMode, VID_ForceLockState and
+ * VID_ForceUnlockedAndReturnState are history. Host_Shutdown is called before
+ * quit/error messages. Placed SDL_UnlockSurface() and MGL_endDirectAccess()
+ * to VID_Shutdown, just in case. Added the word "HexenWorld" to win32 version
+ * of hexenworld error window label. Took care of some accidentally repeated
+ * code. "Fatalized" and added extra linefeeds to the sys_error messages.
+ *
  * Revision 1.29  2005/09/19 19:50:10  sezero
  * fixed those famous spelling errors
  *

@@ -3304,7 +3304,7 @@ void VID_MenuKey (int key)
 	}
 }
 
-void ToggleFullScreenSA(void)
+void VID_ToggleFullscreen (void)
 {
 }
 

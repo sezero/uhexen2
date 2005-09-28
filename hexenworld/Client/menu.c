@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.27 2005-09-19 19:50:10 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.28 2005-09-28 06:07:32 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -919,7 +919,7 @@ void M_AdjustSliders (int dir)
 		break;
 
 	case OPT_FULLSCREEN:	// vid_mode
-		ToggleFullScreenSA();
+		VID_ToggleFullscreen();
 		break;
 
 	case OPT_USEMOUSE:	// _enable_mouse

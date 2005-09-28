@@ -2212,7 +2212,7 @@ void D_ShowLoadingSize(void)
 }
 #endif
 
-void ToggleFullScreenSA(void)
+void VID_ToggleFullscreen (void)
 {
 }
 

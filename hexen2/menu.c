@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.43 2005-09-19 19:50:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.44 2005-09-28 06:07:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1954,7 +1954,7 @@ void M_AdjustSliders (int dir)
 		break;
 
 	case OPT_FULLSCREEN:	// vid_mode
-		ToggleFullScreenSA();
+		VID_ToggleFullscreen();
 		break;
 
 	case OPT_USEMOUSE:	// _enable_mouse
@@ -4078,6 +4078,9 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.43  2005/09/19 19:50:10  sezero
+ * fixed those famous spelling errors
+ *
  * Revision 1.42  2005/08/30 21:25:14  sezero
  * indentation fix for readablity and cosmetics
  *

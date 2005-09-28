@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_dl_vidsdl.c,v 1.83 2005-09-20 21:19:44 sezero Exp $
+   $Id: gl_dl_vidsdl.c,v 1.84 2005-09-28 06:07:32 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -1153,13 +1153,13 @@ void VID_MenuDraw (void)
 
 /*
 ================
-ToggleFullScreenSA
+VID_ToggleFullscreen
 Handles switching between fullscreen/windowed modes
 and brings the mouse to a proper state afterwards
 ================
 */
 extern qboolean mousestate_sa;
-void ToggleFullScreenSA ()
+void VID_ToggleFullscreen (void)
 {
 	// This doesn't seem to cause any trouble even
 	// with is_3dfx == true and FX_GLX_MESA == f

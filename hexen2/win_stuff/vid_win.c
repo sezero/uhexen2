@@ -3333,7 +3333,7 @@ void VID_MenuKey (int key)
 	}
 }
 
-void ToggleFullScreenSA(void)
+void VID_ToggleFullscreen (void)
 {
 }
 
@@ -3343,6 +3343,9 @@ void VID_ApplyGamma(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/09/26 18:29:41  sezero
+ * whitespace and indentation fixes in vid_win.c
+ *
  * Revision 1.16  2005/09/26 18:27:41  sezero
  * update the vid_modes only after host_initialized is set to true.
  * fixes the issue about correct resolution setting from config.cfg

@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.23 2005-07-16 23:23:55 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.24 2005-09-28 06:07:32 sezero Exp $
 */
 
 #include "SDL.h"
@@ -139,7 +139,7 @@ void IN_HideMouse (void)
      This state is stored in mousestate_sa as true
    - In fullscreen mode, we don't disable the mouse in menus,
      if we toggle windowed/fullscreen, the above state variable
-     is used to correct this in ToggleFullScreenSA()
+     is used to correct this in VID_ToggleFullscreen()
    - In the console mode and in the options menu-group, mouse
      is not disabled, and mousestate_sa is set to false
    - Starting a or connecting to a server activates the mouse
@@ -877,7 +877,7 @@ void IN_SendKeyEvents (void)
 				    (event.key.keysym.mod & KMOD_ALT))
 				{
 				//	SDL_WM_ToggleFullScreen (SDL_GetVideoSurface());
-					ToggleFullScreenSA ();
+					VID_ToggleFullscreen();
 					break;
 				}
 				else if ((event.key.keysym.sym == SDLK_g) &&
@@ -1114,6 +1114,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/07/16 23:23:55  sezero
+ * killed fastfabs, not worthy of keeping anymore
+ *
  * Revision 1.22  2005/06/06 13:10:21  sezero
  * mlook and lookspring fixes by J.Krige
  * ( http://www.quakesrc.org/tutorials/old/1 )
