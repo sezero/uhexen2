@@ -12,6 +12,7 @@ typedef void (APIENTRY *glEnable_f)(GLenum);
 typedef void (APIENTRY *glDisable_f)(GLenum);
 typedef GLboolean (APIENTRY *glIsEnabled_f)(GLenum);
 typedef void (APIENTRY *glFinish_f)(void);
+typedef void (APIENTRY *glFlush_f)(void);
 typedef void (APIENTRY *glClear_f)(GLbitfield);
 
 typedef void (APIENTRY *glVertex2f_f)(GLfloat,GLfloat);
@@ -71,6 +72,7 @@ glEnable_f glEnable_fp;
 glDisable_f glDisable_fp;
 glIsEnabled_f glIsEnabled_fp;
 glFinish_f glFinish_fp;
+glFlush_f glFlush_fp;
 glClear_f glClear_fp;
 
 glOrtho_f glOrtho_fp;

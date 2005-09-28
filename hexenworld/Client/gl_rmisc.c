@@ -416,23 +416,19 @@ void R_TimeRefresh_f (void)
 		return;
 	}
 
-	glDrawBuffer_fp (GL_FRONT);
-	glFinish_fp ();
-
 	start = Sys_DoubleTime ();
 	for (i=0 ; i<128 ; i++)
 	{
+		GL_BeginRendering(&glx, &gly, &glwidth, &glheight);
 		r_refdef.viewangles[1] = i/128.0*360.0;
 		R_RenderView ();
+		GL_EndRendering ();
 	}
 
 	glFinish_fp ();
 	stop = Sys_DoubleTime ();
 	time = stop-start;
 	Con_Printf ("%f seconds (%f fps)\n", time, 128/time);
-
-	glDrawBuffer_fp (GL_BACK);
-	GL_EndRendering ();
 }
 
 /* D_ClearOpenGLTexture

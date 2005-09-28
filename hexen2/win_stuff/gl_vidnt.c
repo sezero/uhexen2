@@ -673,6 +673,8 @@ void GL_Init_Functions(void)
 #endif
   glFinish_fp = (glFinish_f) GetProcAddress(hInstGL, "glFinish");
   if (glFinish_fp == 0) {Sys_Error("glFinish not found in GL library");}
+  glFlush_fp = (glFlush_f) GetProcAddress(hInstGL, "glFlush");
+  if (glFlush_fp == 0) {Sys_Error("glFlush not found in GL library");}
   glClear_fp = (glClear_f) GetProcAddress(hInstGL, "glClear");
   if (glClear_fp == 0) {Sys_Error("glClear not found in GL library");}
 
@@ -2202,6 +2204,8 @@ void D_ShowLoadingSize(void)
 	SCR_DrawLoading();
 
 	glDrawBuffer_fp (GL_BACK);
+
+	glFlush_fp();
 }
 #endif
 

@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.19 2005-09-19 19:50:10 sezero Exp $
+	$Id: gl_screen.c,v 1.20 2005-09-28 06:09:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -82,6 +82,8 @@ extern	cvar_t	crosshair;
 extern void Draw_Crosshair(void);
 
 qboolean	scr_initialized;		// ready to draw
+qboolean	ls_invalid = true;		// whether we need to redraw the loading screen plaque
+static int	ls_offset;
 
 qpic_t		*scr_ram;
 qpic_t		*scr_net;
@@ -548,15 +550,21 @@ SCR_DrawLoading
 */
 void SCR_DrawLoading (void)
 {
-	int	size, count, offset;
+	int	size, count;
 	qpic_t	*pic;
 
 	if (!scr_drawloading && loading_stage == 0)
 		return;
 
-	pic = Draw_CachePic ("gfx/menu/loading.lmp");
-	offset = (vid.width - pic->width)/2;
-	Draw_TransPic (offset , 0, pic);
+/*	draw first time only (since drawing this into GL_FRONT).
+	otherwise the image flickers because of redrawing
+*/
+	if (ls_invalid)
+	{
+		pic = Draw_CachePic ("gfx/menu/loading.lmp");
+		ls_offset = (vid.width - pic->width)/2;
+		Draw_TransPic (ls_offset , 0, pic);
+	}
 
 	if (loading_stage == 0)
 		return;
@@ -571,18 +579,18 @@ void SCR_DrawLoading (void)
 	else
 		count = 106;
 
-	Draw_Fill (offset+42, 87, count, 1, 136);
-	Draw_Fill (offset+42, 87+1, count, 4, 138);
-	Draw_Fill (offset+42, 87+5, count, 1, 136);
+	Draw_Fill (ls_offset+42, 87, count, 1, 136);
+	Draw_Fill (ls_offset+42, 87+1, count, 4, 138);
+	Draw_Fill (ls_offset+42, 87+5, count, 1, 136);
 
 	if (loading_stage == 2)
 		count = size;
 	else
 		count = 0;
 
-	Draw_Fill (offset+42, 97, count, 1, 168);
-	Draw_Fill (offset+42, 97+1, count, 4, 170);
-	Draw_Fill (offset+42, 97+5, count, 1, 168);
+	Draw_Fill (ls_offset+42, 97, count, 1, 168);
+	Draw_Fill (ls_offset+42, 97+1, count, 4, 170);
+	Draw_Fill (ls_offset+42, 97+5, count, 1, 168);
 }
 
 
@@ -1164,6 +1172,8 @@ void SCR_UpdateScreen (void)
 			scr_disabled_for_loading = false;
 			total_loading_size = 0;
 			loading_stage = 0;
+			// loading plaque redraw needed
+			ls_invalid = true;
 			Con_Printf ("load failed.\n");
 		}
 		else
@@ -1274,6 +1284,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2005/09/19 19:50:10  sezero
+ * fixed those famous spelling errors
+ *
  * Revision 1.18  2005/09/19 19:25:35  sezero
  * matched the software renderer counterpart
  *

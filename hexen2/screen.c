@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.15 2005-09-19 19:50:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.16 2005-09-28 06:09:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -79,6 +79,8 @@ cvar_t		scr_showpause = {"showpause","1"};
 cvar_t		scr_printspeed = {"scr_printspeed","8"};
 
 qboolean	scr_initialized;		// ready to draw
+qboolean	ls_invalid = true;		// whether we need to redraw the loading screen plaque
+static int	ls_offset;
 
 qpic_t		*scr_ram;
 qpic_t		*scr_net;
@@ -566,15 +568,19 @@ SCR_DrawLoading
 */
 void SCR_DrawLoading (void)
 {
-	int		size, count, offset;
+	int		size, count;
 	qpic_t	*pic;
 
 	if (!scr_drawloading && loading_stage == 0)
 		return;
-		
-	pic = Draw_CachePic ("gfx/menu/loading.lmp");
-	offset = (vid.width - pic->width)/2;
-	Draw_TransPic (offset , 0, pic);
+
+	/* draw first time only, so that the image does not flicker */
+	if (ls_invalid)
+	{		
+		pic = Draw_CachePic ("gfx/menu/loading.lmp");
+		ls_offset = (vid.width - pic->width)/2;
+		Draw_TransPic (ls_offset , 0, pic);
+	}
 
 	if (loading_stage == 0)
 		return;
@@ -589,18 +595,18 @@ void SCR_DrawLoading (void)
 	else
 		count = 106;
 
-	Draw_Fill (offset+42, 87, count, 1, 136);
-	Draw_Fill (offset+42, 87+1, count, 4, 138);
-	Draw_Fill (offset+42, 87+5, count, 1, 136);
+	Draw_Fill (ls_offset+42, 87, count, 1, 136);
+	Draw_Fill (ls_offset+42, 87+1, count, 4, 138);
+	Draw_Fill (ls_offset+42, 87+5, count, 1, 136);
 
 	if (loading_stage == 2)
 		count = size;
 	else
 		count = 0;
 
-	Draw_Fill (offset+42, 97, count, 1, 168);
-	Draw_Fill (offset+42, 97+1, count, 4, 170);
-	Draw_Fill (offset+42, 97+5, count, 1, 168);
+	Draw_Fill (ls_offset+42, 97, count, 1, 168);
+	Draw_Fill (ls_offset+42, 97+1, count, 4, 170);
+	Draw_Fill (ls_offset+42, 97+5, count, 1, 168);
 }
 
 
@@ -968,6 +974,8 @@ void SCR_UpdateScreen (void)
 			scr_disabled_for_loading = false;
 			total_loading_size = 0;
 			loading_stage = 0;
+			// loading plaque redraw needed
+			ls_invalid = true;
 			Con_Printf ("load failed.\n");
 		}
 		else
@@ -1514,6 +1522,9 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/09/19 19:50:10  sezero
+ * fixed those famous spelling errors
+ *
  * Revision 1.14  2005/08/23 12:38:54  sezero
  * added the missing notes of ID to H2 version of screen.c
  *

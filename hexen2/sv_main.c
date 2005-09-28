@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.22 2005-09-19 19:50:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.23 2005-09-28 06:09:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1929,6 +1929,8 @@ void SV_SpawnServer (char *server, char *startspot)
 	total_loading_size = 100;
 	current_loading_size = 0;
 	loading_stage = 1;
+	// display loading bar before we start loading progs
+	D_ShowLoadingSize();
 	PR_LoadProgs ();
 	current_loading_size += 10;
 	D_ShowLoadingSize();
@@ -1992,6 +1994,8 @@ void SV_SpawnServer (char *server, char *startspot)
 		sv.active = false;
 		total_loading_size = 0;
 		loading_stage = 0;
+		// loading plaque redraw needed
+		ls_invalid = true;
 		return;
 	}
 	sv.models[1] = sv.worldmodel;
@@ -2068,6 +2072,9 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2005/09/19 19:50:10  sezero
+ * fixed those famous spelling errors
+ *
  * Revision 1.21  2005/07/02 13:12:28  sezero
  * commands.txt and edicts.txt will be saved into com_userdir
  *

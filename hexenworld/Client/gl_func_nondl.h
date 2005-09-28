@@ -12,6 +12,7 @@
 #define glDisable_fp		glDisable
 #define glIsEnabled_fp		glIsEnabled
 #define glFinish_fp		glFinish
+#define glFlush_fp		glFlush
 #define glClear_fp		glClear
 
 #define glVertex2f_fp		glVertex2f

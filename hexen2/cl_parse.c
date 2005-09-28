@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.13 2005-09-19 19:20:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.14 2005-09-28 06:09:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -361,7 +361,8 @@ void CL_ParseServerInfo (void)
 
 	total_loading_size = 0;
 	loading_stage = 0;
-
+	// loading plaque redraw needed
+	ls_invalid = true;
 
 // local state
 	cl_entities[0].model = cl.worldmodel = cl.model_precache[1];
@@ -1781,6 +1782,9 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/09/19 19:20:31  sezero
+ * added missing newline
+ *
  * Revision 1.12  2005/07/31 00:45:11  sezero
  * platform defines cleanup
  *

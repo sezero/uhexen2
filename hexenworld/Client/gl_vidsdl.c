@@ -2,7 +2,7 @@
    gl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.78 2005-09-28 06:08:47 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.79 2005-09-28 06:09:32 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -508,6 +508,8 @@ void GL_Init_Functions(void)
 #endif
   glFinish_fp = (glFinish_f) SDL_GL_GetProcAddress("glFinish");
   if (glFinish_fp == 0) {Sys_Error("glFinish not found in GL library");}
+  glFlush_fp = (glFlush_f) SDL_GL_GetProcAddress("glFlush");
+  if (glFlush_fp == 0) {Sys_Error("glFlush not found in GL library");}
   glClear_fp = (glClear_f) SDL_GL_GetProcAddress("glClear");
   if (glClear_fp == 0) {Sys_Error("glClear not found in GL library");}
 
@@ -1228,5 +1230,7 @@ void D_ShowLoadingSize(void)
 	SCR_DrawLoading();
 
 	glDrawBuffer_fp  (GL_BACK);
+
+	glFlush_fp();
 }
 #endif
