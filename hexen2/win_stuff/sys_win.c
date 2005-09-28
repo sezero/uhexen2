@@ -50,9 +50,9 @@ static HANDLE	heventChild;
 
 void Sys_InitFloatTime (void);
 
-cvar_t		sys_delay = {"sys_delay","0", true};
+volatile int		sys_checksum;
 
-volatile int					sys_checksum;
+//=============================================================================
 
 
 /*
@@ -640,8 +640,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	oldtime = Sys_DoubleTime ();
 
-	Cvar_RegisterVariable (&sys_delay);
-
     /* main window message loop */
 	while (1)
 	{
@@ -675,9 +673,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 			time = newtime - oldtime;
 		}
 
-		if (sys_delay.value) 
-			Sleep(sys_delay.value);
-
 		Host_Frame (time);
 		oldtime = newtime;
 	}
@@ -688,6 +683,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2005/09/24 23:50:36  sezero
+ * fixed a bunch of compiler warnings
+ *
  * Revision 1.20  2005/09/20 21:19:45  sezero
  * Sys_Quit and Sys_Error clean-up: VID_SetDefaultMode, VID_ForceLockState and
  * VID_ForceUnlockedAndReturnState are history. Host_Shutdown is called before

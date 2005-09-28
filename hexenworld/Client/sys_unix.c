@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.34 2005-09-20 21:19:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.35 2005-09-28 06:06:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -46,7 +46,7 @@ static double		lastcurtime = 0.0;
 
 void Sys_InitFloatTime (void);
 
-cvar_t		sys_delay = {"sys_delay","0", true};
+//=============================================================================
 
 
 void Sys_DebugLog(char *file, char *fmt, ...)
@@ -378,8 +378,6 @@ int main(int argc, char *argv[])
 
 	oldtime = Sys_DoubleTime ();
 
-	Cvar_RegisterVariable (&sys_delay);
-
     /* main window message loop */
 	while (1)
 	{
@@ -394,6 +392,14 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.34  2005/09/20 21:19:45  sezero
+ * Sys_Quit and Sys_Error clean-up: VID_SetDefaultMode, VID_ForceLockState and
+ * VID_ForceUnlockedAndReturnState are history. Host_Shutdown is called before
+ * quit/error messages. Placed SDL_UnlockSurface() and MGL_endDirectAccess()
+ * to VID_Shutdown, just in case. Added the word "HexenWorld" to win32 version
+ * of hexenworld error window label. Took care of some accidentally repeated
+ * code. "Fatalized" and added extra linefeeds to the sys_error messages.
+ *
  * Revision 1.33  2005/09/20 21:17:26  sezero
  * Moved VERSION_PLATFORM and id386 defines to sys.h, where they belong.
  *

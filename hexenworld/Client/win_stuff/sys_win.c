@@ -37,6 +37,9 @@ HANDLE		qwclsemaphore;
 
 void Sys_InitFloatTime (void);
 
+//=============================================================================
+
+
 void Sys_DebugLog(char *file, char *fmt, ...)
 {
 	va_list argptr;
