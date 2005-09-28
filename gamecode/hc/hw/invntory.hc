@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/invntory.hc,v 1.1.1.1 2004-11-29 11:27:40 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/invntory.hc,v 1.2 2005-09-28 06:11:08 sezero Exp $
  */
 
 void teleport_touch (void);
@@ -693,7 +693,7 @@ void()Use_Fireball;
 
 void poisong_die()
 {
-	dprint("Poisong_die\n");
+	//dprint("Poisong_die\n");
 	stopSound(self,0);
 	SmallExplosion();
 }
@@ -1223,6 +1223,9 @@ void Inventory_Quick(float which)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:27:40  sezero
+ * Initial import
+ *
  * Revision 1.1.1.1  2001/11/09 17:05:06  theoddone33
  * Inital import
  *

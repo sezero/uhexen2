@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/invntory.hc,v 1.2 2005-01-27 11:50:19 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/invntory.hc,v 1.3 2005-09-28 06:11:08 sezero Exp $
  */
 
 void teleport_touch (void);
@@ -780,7 +780,7 @@ void()Use_Fireball;
 
 void poisong_die()
 {
-	dprint("Poisong_die\n");
+	//dprint("Poisong_die\n");
 	stopSound(self,0);
 	SmallExplosion();
 }
@@ -1415,6 +1415,10 @@ void Inventory_Quick(float which)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/01/27 11:50:19  sezero
+ * - Kor Skarn's further changes to the Siege hcode: This is the code to the
+ *   hwprogs.dat in "sgcycle.zip" Seems to be first intended for Rival Kingdoms?
+ *
  * Revision 1.1  2005/01/26 17:26:11  sezero
  * Raven's original Siege hcode.
  *
