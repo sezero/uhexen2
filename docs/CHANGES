@@ -1,5 +1,16 @@
 ChangeLog:
 
+2005-09-28 (CVS):
+    * took care of flickering problem while drawing the loading
+      plaque (from Pa3PyX.) glFlush is now required.
+    * killed the cvar sys_delay
+    * avoid running timerefresh when not connected
+    * changed ref value of glAlphaFunc from 0.666 to 0.632 (1 - 1/e) in
+      order to avoid clipping of smaller fonts/graphics (from Pa3PyX).
+    * renamed ToggleFullScreenSA to VID_ToggleFullscreen which actually
+      is of VID_ class and now is easier to locate
+    * killed the irritating Poisong_die dprint in hexenworld progs.
+
 2005-09-26 (CVS):
     * flush the command buffer before setting host_initialized to true
     * update the vid_modes only after host_initialized is set to true.
