@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_dl_vidsdl.c,v 1.84 2005-09-28 06:07:32 sezero Exp $
+   $Id: gl_dl_vidsdl.c,v 1.85 2005-09-28 06:08:47 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -463,7 +463,7 @@ void GL_Init (void)
 	glEnable_fp(GL_TEXTURE_2D);
 
 	glEnable_fp(GL_ALPHA_TEST);
-	glAlphaFunc_fp(GL_GREATER, 0.666);
+	glAlphaFunc_fp(GL_GREATER, 0.632); // 1 - e^-1 : replaced 0.666 to avoid clipping of smaller fonts/graphics
 
 	glPolygonMode_fp (GL_FRONT_AND_BACK, GL_FILL);
 	glShadeModel_fp (GL_FLAT);

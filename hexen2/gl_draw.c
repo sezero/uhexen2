@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.52 2005-07-19 20:08:19 sezero Exp $
+	$Id: gl_draw.c,v 1.53 2005-09-28 06:08:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1285,7 +1285,7 @@ void Draw_FadeScreen (void)
 	glEnable_fp (GL_TEXTURE_2D);
 	glDisable_fp (GL_BLEND);
 
-	glAlphaFunc_fp(GL_GREATER, 0.666);
+	glAlphaFunc_fp(GL_GREATER, 0.632);
 
 	SB_Changed();
 }
@@ -2001,6 +2001,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.52  2005/07/19 20:08:19  sezero
+ * added comments about the crosshair code/art.
+ *
  * Revision 1.51  2005/07/17 19:28:28  sezero
  * added crosshair color from quake. performed some small cleanup.
  * I hope I won't have to bother with this thing anymore.
