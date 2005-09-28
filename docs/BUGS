@@ -19,9 +19,6 @@ Known Bugs
 
   3dfx Voodoo: Doesn't work correctly with multitexturing, yet.
 
-  Multisampling: When multisampling is enabled (-fsaa N), the "Loading
-  widget" isn't displayed correctly, at least on Nvidia.
-
   Matrox G200: GL games may not display menus correctly (Matrox bug?)
 
   Coop mode of HexenWorld is broken (known problem since Raven's latest

@@ -2,7 +2,9 @@ ChangeLog:
 
 2005-09-28 (CVS):
     * took care of flickering problem while drawing the loading
-      plaque (from Pa3PyX.) glFlush is now required.
+      plaque (from Pa3PyX.) glFlush is now required. this also
+      fixes the problem of loading plaque not being displayed
+      when antialiasing is in effect.
     * killed the cvar sys_delay
     * avoid running timerefresh when not connected
     * changed ref value of glAlphaFunc from 0.666 to 0.632 (1 - 1/e) in
