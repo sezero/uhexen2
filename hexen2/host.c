@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.29 2005-09-26 18:26:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.30 2005-09-29 14:04:06 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -580,7 +580,7 @@ void Host_GetConsoleCommands (void)
 	char	*cmd;
 
 	if (!isDedicated)
-		return;
+		return;	// no stdin necessary in graphical mode
 
 	while (1)
 	{
@@ -791,11 +791,11 @@ void _Host_Frame (float time)
 			CL_ReadFromServer ();
 		}
 
-
 		R_UpdateParticles ();
 		CL_UpdateEffects ();
 
-		if (!sys_adaptive.value) break;
+		if (!sys_adaptive.value)
+			break;
 
 		total_host_frametime -= 0.05;
 		if (total_host_frametime > 0 && total_host_frametime < 0.05) 
@@ -829,7 +829,7 @@ void _Host_Frame (float time)
 	}
 	else
 		S_Update (vec3_origin, vec3_origin, vec3_origin, vec3_origin);
-	
+
 	CDAudio_Update();
 	MIDI_UpdateVolume();
 
@@ -981,58 +981,51 @@ void Host_Init (quakeparms_t *parms)
 
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
 	Con_Printf ("%4.1f megabyte heap\n",parms->memsize/ (1024*1024.0));
-	
+
 	R_InitTextures ();		// needed even for dedicated servers
- 
-	if (cls.state != ca_dedicated)
+
+	if (cls.state != ca_dedicated)	// decided in Host_InitLocal() by calling Host_FindMaxClients()
 	{
 		host_basepal = (byte *)COM_LoadHunkFile ("gfx/palette.lmp");
 		if (!host_basepal)
 			Sys_Error ("Couldn't load gfx/palette.lmp");
+
 		host_colormap = (byte *)COM_LoadHunkFile ("gfx/colormap.lmp");
 		if (!host_colormap)
 			Sys_Error ("Couldn't load gfx/colormap.lmp");
 
 		VID_Init (host_basepal);
-
 		Draw_Init ();
 		SCR_Init ();
 		R_Init ();
-#ifndef	_WIN32
+
+#if defined(PLATFORM_UNIX)
+		// various sound drivers are possible for unix
 		if (COM_CheckParm("-nosound") || COM_CheckParm("--nosound") || COM_CheckParm("-s"))
 			snd_system = S_SYS_NULL;
 		else if (COM_CheckParm ("-sndsdl"))
 			snd_system = S_SYS_SDL;
-#if defined(__linux__) && !defined(NO_ALSA)
+#  if defined(__linux__) && !defined(NO_ALSA)
+		// allow ALSA only on linux
 		else if (COM_CheckParm ("-sndalsa"))
 			snd_system = S_SYS_ALSA;
-#endif
+#  endif
 		else
 			snd_system = S_SYS_OSS;
-	// on Win32, sound initialization has to come before video initialization, so we
-	// can put up a popup if the sound hardware is in use
-		S_Init ();
-#else
+#endif
 
-#ifdef	GLQUAKE
-	// FIXME: doesn't use the new one-window approach yet
+#if defined(GLQUAKE) || defined(PLATFORM_UNIX)
+	// VID_Init of vid_win.c already is responsible for S_Init
+	// FIXME: gl_vidnt.c doesn't use the new one-window approach yet
 		S_Init ();
 #endif
 
-#endif	// _WIN32
 		CDAudio_Init();
 		MIDI_Init();
 		SB_Init();
 		CL_Init();
 		IN_Init();
 	}
-
-#ifdef WITH_SDL
-	// apply gamma settings at startup, after having read the config.cfg
-	// this is for SDL versions, practically unix-only.
-	// native win32 version handles things differently.
-	Cbuf_InsertText ("vid_setgamma\n");
-#endif
 
 	Cbuf_InsertText ("exec hexen.rc\n");
 	Cbuf_Execute();
@@ -1046,9 +1039,16 @@ void Host_Init (quakeparms_t *parms)
 	gl_texlevel = numgltextures;
 #endif
 
+#ifdef WITH_SDL
+	// apply gamma settings at startup, after having read the config.cfg
+	// this is for SDL versions, practically unix-only.
+	// native win32 version handles things differently.
+	Cbuf_AddText ("vid_setgamma\n");
+#endif
+
 	host_initialized = true;
-	
-	Sys_Printf("======== Hexen II Initialized =========\n");
+
+	Con_Printf("\n======== Hexen II Initialized =========\n\n");
 }
 
 
@@ -1076,20 +1076,23 @@ void Host_Shutdown(void)
 
 	Host_WriteConfiguration ("config.cfg"); 
 
-	CDAudio_Shutdown ();
-    MIDI_Cleanup();
 	NET_Shutdown ();
-	S_Shutdown();
-	IN_Shutdown ();
 
 	if (cls.state != ca_dedicated)
 	{
+		CDAudio_Shutdown ();
+		MIDI_Cleanup();
+		S_Shutdown();
+		IN_Shutdown ();
 		VID_Shutdown();
 	}
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2005/09/26 18:26:41  sezero
+ * flush the command buffer before setting host_initialized to true
+ *
  * Revision 1.28  2005/09/19 19:50:10  sezero
  * fixed those famous spelling errors
  *

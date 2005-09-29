@@ -1,6 +1,6 @@
 /*
 	cd_bsd.c
-	$Id: cd_bsd.c,v 1.8 2005-08-18 17:25:46 sezero Exp $
+	$Id: cd_bsd.c,v 1.9 2005-09-29 14:04:06 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	A few BSD bits taken from the Dark Places project for Hammer
@@ -398,10 +398,6 @@ int CDAudio_Init(void)
 {
 	int i;
 
-#ifndef H2W
-	if (cls.state == ca_dedicated)
-		return -1;
-#endif
 	if (COM_CheckParm("-nocdaudio"))
 		return -1;
 

@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.15 2005-08-18 17:25:46 sezero Exp $
+	$Id: cd_linux.c,v 1.16 2005-09-29 14:04:06 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -375,10 +375,6 @@ int CDAudio_Init(void)
 {
 	int i;
 
-#ifndef H2W
-	if (cls.state == ca_dedicated)
-		return -1;
-#endif
 	if (COM_CheckParm("-nocdaudio"))
 		return -1;
 

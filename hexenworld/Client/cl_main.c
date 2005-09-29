@@ -1301,7 +1301,7 @@ void Host_Init (quakeparms_t *parms)
 	V_Init ();
 
 	COM_Init (parms->basedir);
-	
+
 	NET_Init (PORT_CLIENT);
 	Netchan_Init ();
 
@@ -1310,52 +1310,43 @@ void Host_Init (quakeparms_t *parms)
 	Con_Init ();	
 	M_Init ();	
 	Mod_Init ();
-	
-//	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
+
+	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
 	Con_Printf ("%4.1f megs RAM used.\n",parms->memsize/ (1024*1024.0));
-	
+
 	R_InitTextures ();
- 
+
 	host_basepal = (byte *)COM_LoadHunkFile ("gfx/palette.lmp");
 	if (!host_basepal)
 		Sys_Error ("Couldn't load gfx/palette.lmp");
+
 	host_colormap = (byte *)COM_LoadHunkFile ("gfx/colormap.lmp");
 	if (!host_colormap)
 		Sys_Error ("Couldn't load gfx/colormap.lmp");
-#ifdef PLATFORM_UNIX
 
 	VID_Init (host_basepal);
-	IN_Init ();
 	Draw_Init ();
 	SCR_Init ();
 	R_Init ();
 
+#if defined(PLATFORM_UNIX)
+	// various sound drivers are possible for unix
 	if (COM_CheckParm("-nosound") || COM_CheckParm("--nosound") || COM_CheckParm("-s"))
 		snd_system = S_SYS_NULL;
 	else if (COM_CheckParm ("-sndsdl"))
 		snd_system = S_SYS_SDL; 
-#if defined(__linux__) && !defined(NO_ALSA)
+#  if defined(__linux__) && !defined(NO_ALSA)
+	// allow ALSA only on linux
 	else if (COM_CheckParm ("-sndalsa")) 
 		snd_system = S_SYS_ALSA; 
-#endif
+#  endif
 	else 
 		snd_system = S_SYS_OSS;
+#endif
+
+#if defined(GLQUAKE) || defined(PLATFORM_UNIX)
+	// VID_Init of vid_win.c already is responsible for S_Init
 	S_Init ();
-	CDAudio_Init ();
-	MIDI_Init ();	// this had better come after S_Init()
-	
-	cls.state = ca_disconnected;
-	Sbar_Init ();
-	CL_Init ();
-#else
-// _WIN32 version
-	VID_Init (host_basepal);
-	Draw_Init ();
-	SCR_Init ();
-	R_Init ();
-//	S_Init ();		// S_Init is now done as part of VID. Sigh.
-#ifdef GLQUAKE
-	S_Init();
 #endif
 
 	cls.state = ca_disconnected;
@@ -1364,14 +1355,7 @@ void Host_Init (quakeparms_t *parms)
 	Sbar_Init ();
 	CL_Init ();
 	IN_Init ();
-#endif
 
-#ifdef WITH_SDL
-	// apply gamma settings at startup, after having read the config.cfg
-	// this is for SDL versions, practically unix-only.
-	// native win32 version handles things differently.
-	Cbuf_InsertText ("vid_setgamma\n");
-#endif
 	Cbuf_InsertText ("exec hexen.rc\n");
 	Cbuf_Execute();
 	Cbuf_AddText ("cl_warncmd 1\n");
@@ -1384,9 +1368,16 @@ void Host_Init (quakeparms_t *parms)
 	gl_texlevel = numgltextures;
 #endif
 
+#ifdef WITH_SDL
+	// apply gamma settings at startup, after having read the config.cfg
+	// this is for SDL versions, practically unix-only.
+	// native win32 version handles things differently.
+	Cbuf_AddText ("vid_setgamma\n");
+#endif
+
 	host_initialized = true;
-	
-	Con_Printf ("ÄÅÅÅÅÅÅ HexenWorld Initialized ÅÅÅÅÅÅÇ\n");	
+
+	Con_Printf ("\n======= HexenWorld Initialized ========\n\n");
 }
 
 

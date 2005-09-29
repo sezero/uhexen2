@@ -452,12 +452,7 @@ int CDAudio_Init(void)
 	DWORD	dwReturn;
 	MCI_OPEN_PARMS	mciOpenParms;
 	MCI_SET_PARMS	mciSetParms;
-	int				n;
-
-#ifndef H2W
-	if (cls.state == ca_dedicated)
-		return -1;
-#endif
+	int	n;
 
 	if (COM_CheckParm("-nocdaudio"))
 		return -1;

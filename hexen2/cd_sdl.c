@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.3 2005-08-18 14:20:28 sezero Exp $
+	$Id: cd_sdl.c,v 1.4 2005-09-29 14:04:06 sezero Exp $
 
 	Copyright (C) 2001  Mark Baker <homer1@together.net>
 	Taken from SDLquake with modifications to make it work
@@ -257,10 +257,6 @@ void CDAudio_Update(void)
 
 int CDAudio_Init(void)
 {
-#ifndef H2W
-	if (cls.state == ca_dedicated)
-		return -1;
-#endif
 	if (COM_CheckParm("-nocdaudio"))
 		return -1;
 
