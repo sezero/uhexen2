@@ -56,18 +56,24 @@ void CRC_ProcessByte(unsigned short *crcvalue, byte data)
 	*crcvalue = (*crcvalue << 8) ^ crctable[(*crcvalue >> 8) ^ data];
 }
 
+void CRC_ProcessBlock (byte *start, unsigned short *crcvalue, int count)
+{
+	unsigned short crc = *crcvalue;
+	while (count--)
+		crc = (crc << 8) ^ crctable[(crc >> 8) ^ *start++];
+	*crcvalue = crc;
+}
+
 unsigned short CRC_Value(unsigned short crcvalue)
 {
 	return crcvalue ^ CRC_XOR_VALUE;
 }
 
-int CRC_Block (byte *start, int count)
+unsigned short CRC_Block (byte *start, int count)
 {
 	unsigned short	crc;
 
 	CRC_Init (&crc);
-	while (count--)
-		CRC_ProcessByte (&crc, *start++);
-
+	CRC_ProcessBlock (start, &crc, count);
 	return crc;
 }
