@@ -1,5 +1,17 @@
 ChangeLog:
 
+2005-09-29 (CVS):
+    * break the loop from CRC_Block into CRC_ProcessBlock so that crcs
+      can be calculated over multiple blocks (from QuakeForge, for future
+      use.)
+    * hexenworld/Server/pr_edict.c: CRC_Block() now returns unsigned short
+    * added major light speedup version of R_MarkLights by Lord Havoc
+    * cleaned-up Host_Init and Host_Shutdown stuff. removed unnecessary
+      ca_dedicated checks from CDAudio_Init.
+    * cleaned-up hash check stuff in GL_LoadTexture. added crc check as
+      an alternative (disabled by default.)
+    * avoid glhexen2 and glh2mp segfaults when run as dedicated server
+
 2005-09-28 (CVS):
     * took care of flickering problem while drawing the loading
       plaque (from Pa3PyX.) glFlush is now required. this also
