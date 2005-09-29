@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_dl_draw.c,v 1.53 2005-09-28 06:08:47 sezero Exp $
+	$Id: gl_dl_draw.c,v 1.54 2005-09-29 14:05:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1867,30 +1867,6 @@ void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean a
 	Hunk_FreeToLowMark(mark);
 }
 
-// Simple checksum functions for verification of texture. From Pa3PyX
-qboolean GL_SumCheckTexData(byte *data, int size, qboolean is_rgba, unsigned long sum_value)
-{
-	int i;
-	unsigned long real_value = 0;
-
-	if (is_rgba)
-		size *= 4;
-	for (i = 0; i < size; i++)
-		real_value += data[i];
-	return (real_value == sum_value);
-}
-
-unsigned long GL_ComputeTexDataSum(byte *data, int size, qboolean is_rgba)
-{
-	int i;
-	unsigned long sum_value = 0;
-
-	if (is_rgba)
-		size *= 4;
-	for (i = 0; i < size; i++)
-		sum_value += data[i];
-	return sum_value;
-}
 
 /*
 ================
@@ -1899,9 +1875,22 @@ GL_LoadTexture
 */
 int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba)
 {
-	int		i;
+	int		i, size;
+	unsigned long	hash = 0;
+//	unsigned short	crc;
 	gltexture_t	*glt;
 
+	size = width * height;
+	if (rgba)
+		size *= 4;
+
+	// generate texture checksum
+	for (i = 0; i < size; i++)
+		hash += data[i];
+
+/*	// alternative: use stock crc functions for checksumming
+	crc = CRC_Block (data, size);
+*/
 	// see if the texture is already present
 	if (identifier[0])
 	{
@@ -1909,50 +1898,52 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 		{
 			if (!strcmp (identifier, glt->identifier))
 			{
-				if (width != glt->width || height != glt->height || mipmap != glt->mipmap ||
-				    !GL_SumCheckTexData(data, width * height, rgba, glt->hash))
-				{
-				// Not the same texture - dont die, delete and rebind to new image
+				//if ( crc != glt->crc ||
+				if ( hash != glt->hash ||
+					width  != glt->width  ||
+					height != glt->height ||
+					mipmap != glt->mipmap )
+				{	// Not the same texture. dont die,
+					// delete and rebind to new image
 					Con_Printf ("GL_LoadTexture: reloading tex due to cache mismatch\n");
 					glDeleteTextures_fp (1, &(glt->texnum));
-					glt->width = width;
-					glt->height = height;
-					glt->mipmap = mipmap;
-					glt->hash = GL_ComputeTexDataSum(data, width * height, rgba);
-					GL_Bind (glt->texnum);
-					if (rgba)
-						GL_Upload32 ((unsigned *)data, width, height, mipmap, alpha, false);
-					else
-						GL_Upload8 (data, width, height, mipmap, alpha, mode);
-					return glt->texnum;
-				} else {
-					// No need to rebind
+					goto gl_rebind;
+				}
+				else
+				{	// No need to rebind
 					return gltextures[i].texnum;
 				}
 			}
 		}
-	} else {
-		glt = &gltextures[numgltextures];
 	}
-	numgltextures++;
 
+	if (numgltextures >= MAX_GLTEXTURES)
+	{
+		Sys_Error ("GL_LoadTexture: cache full, max is %i textures.\n"
+			   "Consider setting gl_purge_maptex option to 1 .",
+			   MAX_GLTEXTURES);
+	}
+
+	glt = &gltextures[numgltextures];
+	numgltextures++;
 	strcpy (glt->identifier, identifier);
 	glt->texnum = texture_extension_number;
+	texture_extension_number++;
+
+gl_rebind:
 	glt->width = width;
 	glt->height = height;
 	glt->mipmap = mipmap;
-	glt->hash = GL_ComputeTexDataSum(data, width * height, rgba);
+//	glt->crc = crc;
+	glt->hash = hash;
 
-	GL_Bind (texture_extension_number);
-
+	GL_Bind (glt->texnum);
 	if (rgba)
 		GL_Upload32 ((unsigned *)data, width, height, mipmap, alpha, false);
 	else
 		GL_Upload8 (data, width, height, mipmap, alpha, mode);
 
-	texture_extension_number++;
-
-	return texture_extension_number-1;
+	return glt->texnum;
 }
 
 /*
@@ -2001,6 +1992,10 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.53  2005/09/28 06:08:47  sezero
+ * changed ref value of glAlphaFunc from 0.666 to 0.632 (1 - 1/e) in
+ * order to avoid clipping of smaller fonts/graphics (from Pa3PyX).
+ *
  * Revision 1.52  2005/07/19 20:08:19  sezero
  * added comments about the crosshair code/art.
  *

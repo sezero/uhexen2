@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.33 2005-09-12 08:17:46 sezero Exp $
+	$Id: glquake.h,v 1.34 2005-09-29 14:05:45 sezero Exp $
 */
 
 
@@ -102,6 +102,7 @@ typedef struct
 	char	identifier[64];
 	int		width, height;
 	qboolean	mipmap;
+//	unsigned short	crc;
 	unsigned long	hash;
 } gltexture_t;
 
@@ -332,6 +333,9 @@ extern	qboolean gl_mtexable;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.33  2005/09/12 08:17:46  sezero
+ * added stencil buffered shadows (extracted from jshexen2, code by MrG)
+ *
  * Revision 1.32  2005/06/15 13:18:17  sezero
  * killed the glfunc struct
  *
