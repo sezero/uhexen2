@@ -176,6 +176,7 @@ DYNAMIC LIGHTS
 R_MarkLights
 =============
 */
+#if 0	// This is the original ID version
 void R_MarkLights (dlight_t *light, int bit, mnode_t *node)
 {
 	mplane_t	*splitplane;
@@ -215,6 +216,73 @@ void R_MarkLights (dlight_t *light, int bit, mnode_t *node)
 	R_MarkLights (light, bit, node->children[0]);
 	R_MarkLights (light, bit, node->children[1]);
 }
+#else	// This is the major speedup version by Lord Havoc
+void R_MarkLights (dlight_t *light, int bit, mnode_t *node)
+{
+	mplane_t	*splitplane;
+	float		l, dist, maxdist;
+	msurface_t	*surf;
+	int		i, j, s, t;
+	vec3_t		impact;
+
+loc0:
+	if (node->contents < 0)
+		return;
+
+	splitplane = node->plane;
+	if (splitplane->type < 3)
+		dist = light->origin[splitplane->type] - splitplane->dist;
+	else
+		dist = DotProduct (light->origin, splitplane->normal) - splitplane->dist;
+
+	if (dist > light->radius)
+	{
+		node = node->children[0];
+		goto loc0;
+	}
+	if (dist < -light->radius)
+	{
+		node = node->children[1];
+		goto loc0;
+	}
+
+	maxdist = light->radius*light->radius;
+
+// mark the polygons
+	surf = cl.worldmodel->surfaces + node->firstsurface;
+	for (i=0 ; i<node->numsurfaces ; i++, surf++)
+	{	// eliminates marking of surfaces too far away from light,
+		// thus preventing unnecessary renders and uploads
+		for (j=0 ; j<3 ; j++)
+			impact[j] = light->origin[j] - surf->plane->normal[j]*dist;
+
+		// clamp center of light to corner and check brightness
+		l = DotProduct (impact, surf->texinfo->vecs[0]) + surf->texinfo->vecs[0][3] - surf->texturemins[0];
+		s = l+0.5;if (s < 0) s = 0;else if (s > surf->extents[0]) s = surf->extents[0];
+		s = l - s;
+		l = DotProduct (impact, surf->texinfo->vecs[1]) + surf->texinfo->vecs[1][3] - surf->texturemins[1];
+		t = l+0.5;if (t < 0) t = 0;else if (t > surf->extents[1]) t = surf->extents[1];
+		t = l - t;
+
+		// compare to minimum light
+		if ((s*s+t*t+dist*dist) < maxdist)
+		{
+			if (surf->dlightframe != r_dlightframecount)
+			{	// not dynamic until now
+				surf->dlightbits = bit;
+				surf->dlightframe = r_dlightframecount;
+			}
+			else	// already dynamic
+				surf->dlightbits |= bit;
+		}
+	}
+
+	if (node->children[0]->contents >= 0)
+		R_MarkLights (light, bit, node->children[0]);
+	if (node->children[1]->contents >= 0)
+		R_MarkLights (light, bit, node->children[1]);
+}
+#endif	// end of 2 R_MarkLights versions
 
 
 /*
