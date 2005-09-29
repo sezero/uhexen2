@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_dl_draw.c,v 1.55 2005-09-29 14:08:29 sezero Exp $
+	$Id: gl_dl_draw.c,v 1.56 2005-09-29 15:57:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1906,7 +1906,9 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 				{	// Not the same texture. dont die,
 					// delete and rebind to new image
 					Con_Printf ("GL_LoadTexture: reloading tex due to cache mismatch\n");
+#				if !defined (H2W)
 					if (cls.state != ca_dedicated)
+#				endif
 						glDeleteTextures_fp (1, &(glt->texnum));
 					goto gl_rebind;
 				}
@@ -2001,6 +2003,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.55  2005/09/29 14:08:29  sezero
+ * avoid glhexen2 and glh2mp segfaults when run as dedicated server
+ *
  * Revision 1.54  2005/09/29 14:05:45  sezero
  * cleaned-up hash check stuff in GL_LoadTexture. added
  * crc check as an alternative (disabled by default.)
