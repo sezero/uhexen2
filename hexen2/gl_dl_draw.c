@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_dl_draw.c,v 1.54 2005-09-29 14:05:45 sezero Exp $
+	$Id: gl_dl_draw.c,v 1.55 2005-09-29 14:08:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1906,7 +1906,8 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 				{	// Not the same texture. dont die,
 					// delete and rebind to new image
 					Con_Printf ("GL_LoadTexture: reloading tex due to cache mismatch\n");
-					glDeleteTextures_fp (1, &(glt->texnum));
+					if (cls.state != ca_dedicated)
+						glDeleteTextures_fp (1, &(glt->texnum));
 					goto gl_rebind;
 				}
 				else
@@ -1937,12 +1938,20 @@ gl_rebind:
 //	glt->crc = crc;
 	glt->hash = hash;
 
+#if !defined (H2W)
+	if (cls.state == ca_dedicated)
+		goto dedicated;
+#endif
+
 	GL_Bind (glt->texnum);
 	if (rgba)
 		GL_Upload32 ((unsigned *)data, width, height, mipmap, alpha, false);
 	else
 		GL_Upload8 (data, width, height, mipmap, alpha, mode);
 
+#if !defined (H2W)
+dedicated:
+#endif
 	return glt->texnum;
 }
 
@@ -1992,6 +2001,10 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.54  2005/09/29 14:05:45  sezero
+ * cleaned-up hash check stuff in GL_LoadTexture. added
+ * crc check as an alternative (disabled by default.)
+ *
  * Revision 1.53  2005/09/28 06:08:47  sezero
  * changed ref value of glAlphaFunc from 0.666 to 0.632 (1 - 1/e) in
  * order to avoid clipping of smaller fonts/graphics (from Pa3PyX).
