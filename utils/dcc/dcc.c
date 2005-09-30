@@ -1594,16 +1594,6 @@ void FindBuiltinParameters(int func)
 		return;
 	}
 
-/*
-typedef struct {
-	char		*name;
-	char		*opname;
-	float		priority;
-	qboolean	right_associative;
-	def_t		*type_a, *type_b, *type_c;
-} opcode_t;
-*/
-
 	j = ((dsf->op - OP_CALL0));
 	type[8] = ev_void;
 
