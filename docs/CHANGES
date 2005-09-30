@@ -1,5 +1,13 @@
 ChangeLog:
 
+2005-09-30 (CVS):
+    * removed unnecessary -lm LDFLAG from hwmaster
+    * removed unnecessary -lm LDFLAGs from MinGW compilations
+    * killed dcc warning about zero-length format string
+    * added back the _GNU_SOURCE flag to dcc, required for stpcpy()
+    * removed commented-out typedef from dcc (already is in its header
+      file)
+
 2005-09-29 (CVS):
     * break the loop from CRC_Block into CRC_ProcessBlock so that crcs
       can be calculated over multiple blocks (from QuakeForge, for future
