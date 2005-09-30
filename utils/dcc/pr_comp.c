@@ -110,15 +110,6 @@ opcode_t pr_opcodes[] =
  {"|", "BITOR", 2, false, &def_float, &def_float, &def_float},
 
  //added by hexen2
-/*typedef struct
-{
-	char		*name;
-	char		*opname;
-	float		priority;
-	qboolean	right_associative;
-	def_t		*type_a, *type_b, *type_c;
-} opcode_t;
-*/
   {"*=", "MUL_E_FF", 5, true, &def_float, &def_float, &def_float},
   {"*=", "MUL_E_FV", 5, true, &def_vector, &def_float, &def_vector},
   {"*=", "MULP_E_FV", 5, true, &def_pointer, &def_float, &def_float},
