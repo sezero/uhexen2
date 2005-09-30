@@ -1729,10 +1729,10 @@ void FindBuiltinParameters(int func)
 		sprintf(plist,".");
 		type[8] -= (type[8] & (1<<15));
 	}
-	else
-	{
-		sprintf(plist,"");
-	}
+//	else
+//	{
+//		sprintf(plist,"");
+//	}
 
 	switch (type[8])
 	{
