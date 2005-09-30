@@ -5,7 +5,8 @@ LINKER = $(CC)
 BINARY=dhcc
 DESTDIR= ./bin
 CFLAGS = -O2 -Wall
-#CFLAGS+= -D_GNU_SOURCE
+# _GNU_SOURCE is required for stpcpy()
+CFLAGS+= -D_GNU_SOURCE
 LDFLAGS = 
 LDLIBS= 
 
