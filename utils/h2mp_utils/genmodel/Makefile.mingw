@@ -12,7 +12,7 @@ BINARY=genmodel.exe
 DESTDIR=../bin
 CFLAGS = -I$(MINGWDIR)/include -O2 -Wall
 LDFLAGS = -mconsole
-LDLIBS= -lm
+LDLIBS =
 
 all : $(BINARY)
 
