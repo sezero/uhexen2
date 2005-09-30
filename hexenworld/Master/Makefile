@@ -14,8 +14,8 @@ else
 CFLAGS = -I. -O2 -march=i586 -Wall -DPLATFORM_UNIX
 endif
 
-LDFLAGS = -lm -lpthread
-LDSTATIC = -lm -lpthread -static
+LDFLAGS = -lpthread
+LDSTATIC = -lpthread -static
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) -o $@ $<

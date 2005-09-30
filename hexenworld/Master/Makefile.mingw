@@ -19,7 +19,7 @@ else
 CFLAGS = -I. -I$(MINGWDIR)/include -O2 -march=i586 -Wall
 endif
 
-LDFLAGS = -L$(MINGWDIR)/lib -lm -lwsock32 -lwinmm -mconsole
+LDFLAGS = -L$(MINGWDIR)/lib -lwsock32 -lwinmm -mconsole
 
 %.o: %.c
 	$(WIN32CC) -c $(CFLAGS) -o $@ $<
