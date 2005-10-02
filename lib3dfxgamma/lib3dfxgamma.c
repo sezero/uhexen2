@@ -119,7 +119,7 @@ int Check_3DfxGammaRamp (void)
 int glSetDeviceGammaRamp3DFX (void *arrays)
 {
 	int tableSize = 0;
-	int i, inc, index;
+	int i, inc, idx;
 	unsigned short *red, *green, *blue;
 	unsigned int gammaTableR[256], gammaTableG[256], gammaTableB[256];
 
@@ -136,10 +136,10 @@ int glSetDeviceGammaRamp3DFX (void *arrays)
 	green = (unsigned short *)arrays + 256;
 	blue = (unsigned short *)arrays + 512;
 
-	for (i = 0, index = 0; i < tableSize; i++, index += inc) {
-		gammaTableR[i] = red[index] >> 8;
-		gammaTableG[i] = green[index] >> 8;
-		gammaTableB[i] = blue[index] >> 8;
+	for (i = 0, idx = 0; i < tableSize; i++, idx += inc) {
+		gammaTableR[i] = red[idx] >> 8;
+		gammaTableG[i] = green[idx] >> 8;
+		gammaTableB[i] = blue[idx] >> 8;
 	}
 
 	FX_LoadGammaTable(tableSize, gammaTableR, gammaTableG, gammaTableB);
