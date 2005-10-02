@@ -1,5 +1,11 @@
 ChangeLog:
 
+2005-10-02 (CVS):
+    * killed -Wshadow warnings
+    * killed lcd_x and lcd_yaw (the stereoscopic stuff.
+      never tested, never used.)
+    * removed unnecessary scitech mgl headers
+
 2005-09-30 (CVS):
     * removed unnecessary -lm LDFLAG from hwmaster
     * removed unnecessary -lm LDFLAGs from MinGW compilations
