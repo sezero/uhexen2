@@ -3232,7 +3232,8 @@ void	MGLAPI MGL_setACCELDriver(void *driver);
 #endif	/* __cplusplus */
 
 /* Include soon to be obsolete 3D functions definitions */
-#include "mgl3d.h"
+// this is not not needed in Hexen2
+//#include "mgl3d.h"
 
 /* Include appropriate platform specific bindings */
 
