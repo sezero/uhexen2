@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.36 2005-10-02 15:43:08 sezero Exp $
+   $Id: vid_sdl.c,v 1.37 2005-10-02 15:45:27 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -448,9 +448,6 @@ void VID_LockBuffer (void)
 		screenwidth = WARP_WIDTH;
 	else
 		screenwidth = vid.rowbytes;
-
-	if (lcd_x.value)
-		screenwidth <<= 1;
 }
 		
 		
@@ -907,6 +904,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.36  2005/10/02 15:43:08  sezero
+ * killed -Wshadow warnings
+ *
  * Revision 1.35  2005/09/28 06:07:32  sezero
  * renamed ToggleFullScreenSA to VID_ToggleFullscreen which
  * actually is of VID_ class and now is easier to locate

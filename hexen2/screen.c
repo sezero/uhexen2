@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.16 2005-09-28 06:09:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.17 2005-10-02 15:45:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -958,7 +958,6 @@ needs almost the entire 256k of stack space!
 void SCR_UpdateScreen (void)
 {
 	static float	oldscr_viewsize;
-	static float	oldlcd_x;
 	vrect_t		vrect;
 	
 	if (scr_skipupdate)
@@ -1003,12 +1002,6 @@ void SCR_UpdateScreen (void)
 		vid.recalc_refdef = true;
 	}
 
-	if (oldlcd_x != lcd_x.value)
-	{
-		oldlcd_x = lcd_x.value;
-		vid.recalc_refdef = true;
-	}
-	
 	if (oldscreensize != scr_viewsize.value)
 	{
 		oldscreensize = scr_viewsize.value;
@@ -1522,6 +1515,10 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/09/28 06:09:31  sezero
+ * took care of flickering problem while drawing the loading
+ * plaque (from Pa3PyX.) glFlush is now required.
+ *
  * Revision 1.15  2005/09/19 19:50:10  sezero
  * fixed those famous spelling errors
  *

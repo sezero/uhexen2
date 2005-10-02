@@ -1776,9 +1776,6 @@ void VID_LockBuffer (void)
 		screenwidth = WARP_WIDTH;
 	else
 		screenwidth = vid.rowbytes;
-
-	if (lcd_x.value)
-		screenwidth <<= 1;
 }
 		
 		
@@ -3343,6 +3340,9 @@ void VID_ApplyGamma(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2005/10/02 15:43:08  sezero
+ * killed -Wshadow warnings
+ *
  * Revision 1.18  2005/09/28 06:07:32  sezero
  * renamed ToggleFullScreenSA to VID_ToggleFullscreen which
  * actually is of VID_ class and now is easier to locate

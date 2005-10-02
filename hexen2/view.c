@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.10 2005-10-02 15:43:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.11 2005-10-02 15:45:27 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -13,9 +13,6 @@
 
 #include "quakedef.h"
 #include "r_local.h"
-
-cvar_t		lcd_x = {"lcd_x","0"};
-cvar_t		lcd_yaw = {"lcd_yaw","0"};
 
 cvar_t	scr_ofsx = {"scr_ofsx","0", false};
 cvar_t	scr_ofsy = {"scr_ofsy","0", false};
@@ -1088,41 +1085,7 @@ void V_RenderView (void)
 
 	R_PushDlights ();
 
-	if (lcd_x.value)
-	{
-		//
-		// render two interleaved views
-		//
-		int		i;
-
-		vid.rowbytes <<= 1;
-		vid.aspect *= 0.5;
-
-		r_refdef.viewangles[YAW] -= lcd_yaw.value;
-		for (i=0 ; i<3 ; i++)
-			r_refdef.vieworg[i] -= right[i]*lcd_x.value;
-		R_RenderView ();
-
-		vid.buffer += vid.rowbytes>>1;
-
-		R_PushDlights ();
-
-		r_refdef.viewangles[YAW] += lcd_yaw.value*2;
-		for (i=0 ; i<3 ; i++)
-			r_refdef.vieworg[i] += 2*right[i]*lcd_x.value;
-		R_RenderView ();
-
-		vid.buffer -= vid.rowbytes>>1;
-
-		r_refdef.vrect.height <<= 1;
-
-		vid.rowbytes >>= 1;
-		vid.aspect *= 2;
-	}
-	else
-	{
-		R_RenderView ();
-	}
+	R_RenderView ();
 
 #ifndef GLQUAKE
 	if (crosshair.value)
@@ -1145,9 +1108,6 @@ void V_Init (void)
 	Cmd_AddCommand ("wf", V_WhiteFlash_f);
 
 	Cmd_AddCommand ("centerview", V_StartPitchDrift);
-
-	Cvar_RegisterVariable (&lcd_x);
-	Cvar_RegisterVariable (&lcd_yaw);
 
 	Cvar_RegisterVariable (&v_centermove);
 	Cvar_RegisterVariable (&v_centerspeed);
@@ -1186,6 +1146,9 @@ void V_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/10/02 15:43:08  sezero
+ * killed -Wshadow warnings
+ *
  * Revision 1.9  2005/09/19 19:50:10  sezero
  * fixed those famous spelling errors
  *

@@ -461,7 +461,7 @@ r_refdef.viewangles[2]=    0;
 	r_dowarpold = r_dowarp;
 	r_dowarp = r_waterwarp.value && (r_viewleaf->contents <= CONTENTS_WATER);
 
-	if ((r_dowarp != r_dowarpold) || r_viewchanged || lcd_x.value)
+	if ((r_dowarp != r_dowarpold) || r_viewchanged)
 	{
 		if (r_dowarp)
 		{

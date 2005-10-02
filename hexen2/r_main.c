@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.8 2005-09-19 19:50:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.9 2005-10-02 15:45:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -382,16 +382,6 @@ void R_SetVrect (vrect_t *pvrectin, vrect_t *pvrect, int lineadj)
 
 	pvrect->x = (pvrectin->width - pvrect->width)/2;
 	pvrect->y = (h - pvrect->height)/2;
-
-	// Screwy block here from the id 1.07 update
-
-	{
-		if (lcd_x.value)
-		{
-			pvrect->y >>= 1;
-			pvrect->height >>= 1;
-		}
-	}
 }
 
 
@@ -1301,6 +1291,9 @@ void R_InitTurb (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/09/19 19:50:10  sezero
+ * fixed those famous spelling errors
+ *
  * Revision 1.7  2005/08/17 00:02:57  sezero
  * R_DrawViewModel should not return until it determines the light_level,
  * otherwise the player will be considered invisible to the monsters.

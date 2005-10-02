@@ -12,8 +12,6 @@ when crossing a water boudnary.
 
 */
 
-cvar_t	lcd_x = {"lcd_x", "0"};	// FIXME: make this work sometime...
-
 cvar_t	cl_rollspeed = {"cl_rollspeed", "200"};
 cvar_t	cl_rollangle = {"cl_rollangle", "2.0"};
 
