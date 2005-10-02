@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.30 2005-09-24 23:50:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.31 2005-10-02 15:43:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -600,7 +600,7 @@ void Host_Loadgame_f (void)
 {
 	FILE	*f;
 	char	mapname[MAX_QPATH];
-	float	time, tfloat;
+	float	playtime, tfloat;
 	char	str[32768];
 	int	i;
 	edict_t	*ent;
@@ -662,7 +662,7 @@ void Host_Loadgame_f (void)
 	Cvar_SetValue ("randomclass", 0);
 
 	fscanf (f, "%s\n",mapname);
-	fscanf (f, "%f\n",&time);
+	fscanf (f, "%f\n",&playtime);
 
 	tempi = -1;
 	fscanf (f, "%d\n",&tempi);
@@ -916,7 +916,7 @@ int LoadGamestate(char *level, char *startspot, int ClientsMode)
 //	char	name[MAX_OSPATH],tempdir[MAX_OSPATH];
 	FILE	*f;
 	char	mapname[MAX_QPATH];
-	float	time, sk;
+	float	playtime, sk;
 	char	str[32768], *start;
 	int		i, r;
 	edict_t	*ent;
@@ -966,7 +966,7 @@ int LoadGamestate(char *level, char *startspot, int ClientsMode)
 		Cvar_SetValue ("skill", sk);
 
 		fscanf (f, "%s\n",mapname);
-		fscanf (f, "%f\n",&time);
+		fscanf (f, "%f\n",&playtime);
 				
 		SV_SpawnServer (mapname, startspot);
 
@@ -1055,7 +1055,7 @@ int LoadGamestate(char *level, char *startspot, int ClientsMode)
 //	sv.num_edicts = entnum;
 	if (ClientsMode == 0)
 	{
-		sv.time = time;
+		sv.time = playtime;
 		sv.paused = true;
 
 		pr_global_struct->serverflags = svs.serverflags;
@@ -1064,11 +1064,11 @@ int LoadGamestate(char *level, char *startspot, int ClientsMode)
 	}
 	else if (ClientsMode == 2)
 	{
-		sv.time = time;
+		sv.time = playtime;
 	}
 	else if (ClientsMode == 3)
 	{
-		sv.time = time;
+		sv.time = playtime;
 
 		pr_global_struct->serverflags = svs.serverflags;
 		
@@ -1435,7 +1435,7 @@ Host_Color_f
 void Host_Color_f(void)
 {
 	int		top, bottom;
-	int		playercolor;
+	int		plyrcolor;
 	
 	if (Cmd_Argc() == 1)
 	{
@@ -1459,17 +1459,17 @@ void Host_Color_f(void)
 	if (bottom > 13)
 		bottom = 13;
 	
-	playercolor = top*16 + bottom;
+	plyrcolor = top*16 + bottom;
 
 	if (cmd_source == src_command)
 	{
-		Cvar_SetValue ("_cl_color", playercolor);
+		Cvar_SetValue ("_cl_color", plyrcolor);
 		if (cls.state == ca_connected)
 			Cmd_ForwardToServer ();
 		return;
 	}
 
-	host_client->colors = playercolor;
+	host_client->colors = plyrcolor;
 	host_client->edict->v.team = bottom + 1;
 
 // send notification to all clients
@@ -2265,6 +2265,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2005/09/24 23:50:36  sezero
+ * fixed a bunch of compiler warnings
+ *
  * Revision 1.29  2005/09/19 19:50:10  sezero
  * fixed those famous spelling errors
  *

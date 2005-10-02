@@ -261,11 +261,11 @@ ErrorReturn:
 
 //=============================================================================
 
-int WINS_CloseSocket (int socket)
+int WINS_CloseSocket (int mysocket)
 {
-	if (socket == net_broadcastsocket)
+	if (mysocket == net_broadcastsocket)
 		net_broadcastsocket = 0;
-	return pclosesocket (socket);
+	return pclosesocket (mysocket);
 }
 
 
@@ -328,7 +328,7 @@ static int PartialIPAddress (char *in, struct qsockaddr *hostaddr)
 }
 //=============================================================================
 
-int WINS_Connect (int socket, struct qsockaddr *addr)
+int WINS_Connect (int mysocket, struct qsockaddr *addr)
 {
 	return 0;
 }
@@ -351,12 +351,12 @@ int WINS_CheckNewConnections (void)
 
 //=============================================================================
 
-int WINS_Read (int socket, byte *buf, int len, struct qsockaddr *addr)
+int WINS_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 {
 	int addrlen = sizeof (struct qsockaddr);
 	int ret;
 
-	ret = precvfrom (socket, buf, len, 0, (struct sockaddr *)addr, &addrlen);
+	ret = precvfrom (mysocket, buf, len, 0, (struct sockaddr *)addr, &addrlen);
 	if (ret == -1)
 	{
 		//int errno = pWSAGetLastError();
@@ -371,29 +371,29 @@ int WINS_Read (int socket, byte *buf, int len, struct qsockaddr *addr)
 
 //=============================================================================
 
-int WINS_MakeSocketBroadcastCapable (int socket)
+int WINS_MakeSocketBroadcastCapable (int mysocket)
 {
 	int	i = 1;
 
 	// make this socket broadcast capable
-	if (psetsockopt(socket, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i)) < 0)
+	if (psetsockopt(mysocket, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i)) < 0)
 		return -1;
-	net_broadcastsocket = socket;
+	net_broadcastsocket = mysocket;
 
 	return 0;
 }
 
 //=============================================================================
 
-int WINS_Broadcast (int socket, byte *buf, int len)
+int WINS_Broadcast (int mysocket, byte *buf, int len)
 {
 	int ret;
 
-	if (socket != net_broadcastsocket)
+	if (mysocket != net_broadcastsocket)
 	{
 		if (net_broadcastsocket != 0)
 			Sys_Error("Attempted to use multiple broadcasts sockets\n");
-		ret = WINS_MakeSocketBroadcastCapable (socket);
+		ret = WINS_MakeSocketBroadcastCapable (mysocket);
 		if (ret == -1)
 		{
 			Con_Printf("Unable to make socket broadcast capable\n");
@@ -401,16 +401,16 @@ int WINS_Broadcast (int socket, byte *buf, int len)
 		}
 	}
 
-	return WINS_Write (socket, buf, len, &broadcastaddr);
+	return WINS_Write (mysocket, buf, len, &broadcastaddr);
 }
 
 //=============================================================================
 
-int WINS_Write (int socket, byte *buf, int len, struct qsockaddr *addr)
+int WINS_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 {
 	int ret;
 
-	ret = psendto (socket, buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
+	ret = psendto (mysocket, buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
 	if (ret == -1)
 		if (pWSAGetLastError() == WSAEWOULDBLOCK)
 			return 0;
@@ -448,13 +448,13 @@ int WINS_StringToAddr (char *string, struct qsockaddr *addr)
 
 //=============================================================================
 
-int WINS_GetSocketAddr (int socket, struct qsockaddr *addr)
+int WINS_GetSocketAddr (int mysocket, struct qsockaddr *addr)
 {
 	int addrlen = sizeof(struct qsockaddr);
 	unsigned int a;
 
 	memset(addr, 0, sizeof(struct qsockaddr));
-	pgetsockname(socket, (struct sockaddr *)addr, &addrlen);
+	pgetsockname(mysocket, (struct sockaddr *)addr, &addrlen);
 	a = ((struct sockaddr_in *)addr)->sin_addr.s_addr;
 	if (a == 0 || a == inet_addr("127.0.0.1"))
 		((struct sockaddr_in *)addr)->sin_addr.s_addr = myAddr;

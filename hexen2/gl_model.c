@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.20 2005-09-19 20:10:17 sezero Exp $
+	$Id: gl_model.c,v 1.21 2005-10-02 15:43:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -734,14 +734,14 @@ Fills in s->texturemins[] and s->extents[]
 */
 void CalcSurfaceExtents (msurface_t *s)
 {
-	float	min_s[2], max_s[2], val;
+	float	mins_local[2], maxs_local[2], val;
 	int		i,j, e;
 	mvertex_t	*v;
 	mtexinfo_t	*tex;
 	int		bmins[2], bmaxs[2];
 
-	min_s[0] = min_s[1] = 999999;
-	max_s[0] = max_s[1] = -99999;
+	mins_local[0] = mins_local[1] = 999999;
+	maxs_local[0] = maxs_local[1] = -99999;
 
 	tex = s->texinfo;
 	
@@ -759,17 +759,17 @@ void CalcSurfaceExtents (msurface_t *s)
 				v->position[1] * tex->vecs[j][1] +
 				v->position[2] * tex->vecs[j][2] +
 				tex->vecs[j][3];
-			if (val < min_s[j])
-				min_s[j] = val;
-			if (val > max_s[j])
-				max_s[j] = val;
+			if (val < mins_local[j])
+				mins_local[j] = val;
+			if (val > maxs_local[j])
+				maxs_local[j] = val;
 		}
 	}
 
 	for (i=0 ; i<2 ; i++)
 	{	
-		bmins[i] = floor(min_s[i]/16);
-		bmaxs[i] = ceil(max_s[i]/16);
+		bmins[i] = floor(mins_local[i]/16);
+		bmaxs[i] = ceil(maxs_local[i]/16);
 
 		s->texturemins[i] = bmins[i] * 16;
 		s->extents[i] = (bmaxs[i] - bmins[i]) * 16;
@@ -1228,14 +1228,14 @@ void Mod_LoadPlanes (lump_t *l)
 RadiusFromBounds
 =================
 */
-float RadiusFromBounds (vec3_t min_ss, vec3_t max_ss)
+float RadiusFromBounds (vec3_t arg_mins, vec3_t arg_maxs)
 {
 	int		i;
 	vec3_t	corner;
 
 	for (i=0 ; i<3 ; i++)
 	{
-		corner[i] = fabs(min_ss[i]) > fabs(max_ss[i]) ? fabs(min_ss[i]) : fabs(max_ss[i]);
+		corner[i] = fabs(arg_mins[i]) > fabs(arg_maxs[i]) ? fabs(arg_mins[i]) : fabs(arg_maxs[i]);
 	}
 
 	return Length (corner);
@@ -2344,6 +2344,10 @@ void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2005/09/19 20:10:17  sezero
+ * startings of model code unification. mostly
+ * cosmetic for now, more will follow.
+ *
  * Revision 1.19  2005/09/19 19:50:10  sezero
  * fixed those famous spelling errors
  *

@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.14 2005-09-28 06:09:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.15 2005-10-02 15:43:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1084,12 +1084,12 @@ void CL_ParseStaticSound (void)
 
 void CL_Plaque(void)
 {
-	int index;
+	int idx;
 
-	index = MSG_ReadShort ();
+	idx = MSG_ReadShort ();
 
-	if (index > 0 && index <= pr_string_count)
-		plaquemessage = &pr_global_strings[pr_string_index[index-1]];
+	if (idx > 0 && idx <= pr_string_count)
+		plaquemessage = &pr_global_strings[pr_string_index[idx-1]];
 	else
 		plaquemessage = "";
 }
@@ -1782,6 +1782,10 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/09/28 06:09:31  sezero
+ * took care of flickering problem while drawing the loading
+ * plaque (from Pa3PyX.) glFlush is now required.
+ *
  * Revision 1.13  2005/09/19 19:20:31  sezero
  * added missing newline
  *

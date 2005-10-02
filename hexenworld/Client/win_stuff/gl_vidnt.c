@@ -168,7 +168,7 @@ qboolean	gl_dogamma = false;
 
 // direct draw software compatability stuff
 
-void VID_HandlePause (qboolean pause)
+void VID_HandlePause (qboolean paused)
 {
 }
 

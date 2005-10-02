@@ -985,19 +985,19 @@ void CL_MuzzleFlash (void)
 
 void CL_Plaque(void)
 {
-	int index;
+	int idx;
 
-	index = MSG_ReadShort ();
+	idx = MSG_ReadShort ();
 
-	if (index > 0 && index <= pr_string_count)
-		plaquemessage = &pr_global_strings[pr_string_index[index-1]];
+	if (idx > 0 && idx <= pr_string_count)
+		plaquemessage = &pr_global_strings[pr_string_index[idx-1]];
 	else
 		plaquemessage = "";
 }
 
 void CL_IndexedPrint(void)
 {
-	int index,i;
+	int idx,i;
 
 	i = MSG_ReadByte ();
 	if (i == PRINT_CHAT)
@@ -1006,11 +1006,11 @@ void CL_IndexedPrint(void)
 		con_ormask = 1;
 	}
 
-	index = MSG_ReadShort ();
+	idx = MSG_ReadShort ();
 
-	if (index > 0 && index <= pr_string_count)
+	if (idx > 0 && idx <= pr_string_count)
 	{
-		Con_Printf ("%s",&pr_global_strings[pr_string_index[index-1]]);
+		Con_Printf ("%s",&pr_global_strings[pr_string_index[idx-1]]);
 	}
 	else
 	{
@@ -1021,7 +1021,7 @@ void CL_IndexedPrint(void)
 
 void CL_NamePrint(void)
 {
-	int index,i;
+	int idx,i;
 
 	i = MSG_ReadByte ();
 	if (i == PRINT_CHAT)
@@ -1030,11 +1030,11 @@ void CL_NamePrint(void)
 		con_ormask = 1;
 	}
 
-	index = MSG_ReadByte ();
+	idx = MSG_ReadByte ();
 
-	if (index >= 0 && index < MAX_CLIENTS)
+	if (idx >= 0 && idx < MAX_CLIENTS)
 	{
-		Con_Printf ("%s",&cl.players[index].name);
+		Con_Printf ("%s",&cl.players[idx].name);
 	}
 	else
 	{
@@ -1209,7 +1209,6 @@ void CL_ParseServerMessage (void)
 			//is on the ent, this update_channels field could
 			//be set automatically by each sound and stopSound
 			//called for this ent?
-			vec3_t  pos;
 			int 	channel, ent;
 			
 			channel = MSG_ReadShort ();

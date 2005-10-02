@@ -83,7 +83,7 @@ int VID_SetMode (int modenum, unsigned char *palette);
 // base mode) on memory allocation failures
 
 #ifndef H2W
-void VID_HandlePause (qboolean pause);
+void VID_HandlePause (qboolean paused);
 // called only on Win32, when pause happens, so the mouse can be released
 #endif
 

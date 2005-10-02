@@ -729,7 +729,7 @@ ReadClipHull
 Read the files written out by the child processes
 =================
 */
-void ReadClipHull (int hullnum)
+void ReadClipHull (int hullnumber)
 {
 	FILE            *f;
 	int                     i, j, n;
@@ -741,7 +741,7 @@ void ReadClipHull (int hullnum)
 	int                     junk;
 	vec3_t          norm;
 
-	hullfilename[strlen(hullfilename)-1] = '0' + hullnum;
+	hullfilename[strlen(hullfilename)-1] = '0' + hullnumber;
 
 	f = fopen (hullfilename, "r");
 	if (!f)
@@ -756,7 +756,7 @@ void ReadClipHull (int hullnum)
 	for (i=0 ; i<n ; i++)
 	{
 		fscanf (f, "%i\n", &j);
-		dmodels[i].headnode[hullnum] = numclipnodes + j;
+		dmodels[i].headnode[hullnumber] = numclipnodes + j;
 	}
 	
 	

@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.31 2005-09-28 06:07:32 sezero Exp $
+   $Id: vid_sdl.c,v 1.32 2005-10-02 15:43:09 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -193,14 +193,14 @@ qboolean VID_AllocBuffers (int width, int height)
 VID_CheckModedescFixup
 =================
 */
-void VID_CheckModedescFixup (int mode)
+void VID_CheckModedescFixup (int modenum)
 {
 	int		x, y, stretch;
 
-	if (mode == MODE_SETTABLE_WINDOW)
+	if (modenum == MODE_SETTABLE_WINDOW)
 	{
-		modelist[mode].stretched = (int)vid_stretch_by_2.value;
-		stretch = modelist[mode].stretched;
+		modelist[modenum].stretched = (int)vid_stretch_by_2.value;
+		stretch = modelist[modenum].stretched;
 
 		if (vid_config_x.value < (320 << stretch))
 			vid_config_x.value = 320 << stretch;
@@ -210,9 +210,9 @@ void VID_CheckModedescFixup (int mode)
 
 		x = (int)vid_config_x.value;
 		y = (int)vid_config_y.value;
-		sprintf (modelist[mode].modedesc, "%dx%d", x, y);
-		modelist[mode].width = x;
-		modelist[mode].height = y;
+		sprintf (modelist[modenum].modedesc, "%dx%d", x, y);
+		modelist[modenum].width = x;
+		modelist[modenum].height = y;
 	}
 }
 
@@ -807,7 +807,7 @@ void VID_SetGamma_f (void)
 VID_HandlePause
 ================
 */
-void VID_HandlePause (qboolean pause)
+void VID_HandlePause (qboolean paused)
 {
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
 	if ((modestate == MS_WINDOWED) && _enable_mouse.value)
@@ -816,7 +816,7 @@ void VID_HandlePause (qboolean pause)
 #endif
 	{
 		// for consistency , don't show pointer S.A
-		if (pause)
+		if (paused)
 		{
 			IN_DeactivateMouse ();
 			// IN_ShowMouse ();
@@ -907,6 +907,10 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2005/09/28 06:07:32  sezero
+ * renamed ToggleFullScreenSA to VID_ToggleFullscreen which
+ * actually is of VID_ class and now is easier to locate
+ *
  * Revision 1.30  2005/09/20 21:19:45  sezero
  * Sys_Quit and Sys_Error clean-up: VID_SetDefaultMode, VID_ForceLockState and
  * VID_ForceUnlockedAndReturnState are history. Host_Shutdown is called before

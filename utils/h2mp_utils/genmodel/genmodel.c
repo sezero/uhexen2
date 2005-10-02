@@ -1490,25 +1490,25 @@ void GrabFrame (char *frame, int isgroup)
 //
 	for (i=0 ; i<model.numverts ; i++)
 	{
-		int		j;
+		int		l;
 		vec3_t	v;
 		float	maxdot;
 		int		maxdotindex;
 
 		if (vnorms[i].numnormals > 0)
 		{
-			for (j=0 ; j<3 ; j++)
+			for (l=0 ; l<3 ; l++)
 			{
-				int		k;
+				int		m;
 	
-				v[j] = 0;
+				v[l] = 0;
 				
-				for (k=0 ; k<vnorms[i].numnormals ; k++)
+				for (m=0 ; m<vnorms[i].numnormals ; m++)
 				{
-					v[j] += vnorms[i].normals[k][j];
+					v[l] += vnorms[i].normals[m][l];
 				}
 	
-				v[j] /= vnorms[i].numnormals;
+				v[l] /= vnorms[i].numnormals;
 			}
 		}
 		else
@@ -1521,15 +1521,15 @@ void GrabFrame (char *frame, int isgroup)
 		maxdot = -999999.0;
 		maxdotindex = -1;
 
-		for (j=0 ; j<NUMVERTEXNORMALS ; j++)
+		for (l=0 ; l<NUMVERTEXNORMALS ; l++)
 		{
 			float	dot;
 
-			dot = DotProduct (v, avertexnormals[j]);
+			dot = DotProduct (v, avertexnormals[l]);
 			if (dot > maxdot)
 			{
 				maxdot = dot;
-				maxdotindex = j;
+				maxdotindex = l;
 			}
 		}
 

@@ -2,7 +2,7 @@
 	r_local.h
 	private refresh defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_local.h,v 1.4 2005-05-20 16:17:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_local.h,v 1.5 2005-10-02 15:43:08 sezero Exp $
 */
 
 #ifndef GLQUAKE
@@ -215,7 +215,6 @@ void	R_ZDrawSubmodelPolys (model_t *clmodel);
 #define ALIAS_Z_CLIP_PLANE	5
 
 extern int				numverts;
-extern int				a_skinwidth;
 extern mtriangle_t		*ptriangles;
 extern int				numtriangles;
 extern aliashdr_t		*paliashdr;
@@ -311,6 +310,9 @@ extern int TransCount;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/05/20 16:17:50  sezero
+ * keep ID style in declerations (less diff between h2/h2w...)
+ *
  * Revision 1.3  2005/01/01 21:43:47  sezero
  * prototypes clean-up
  *

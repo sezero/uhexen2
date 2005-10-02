@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.7 2005-09-19 19:33:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.8 2005-10-02 15:43:08 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -113,7 +113,7 @@ hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t offset,
 	vec3_t		size;
 	vec3_t		hullmins, hullmaxs;
 	hull_t		*hull;
-	int			index;
+	int			idx;
 
 // decide which clipping hull to use, based on the size
 	if (ent->v.solid == SOLID_BSP)
@@ -135,8 +135,8 @@ hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t offset,
 //MAXS OF THE MONSTER!  WILL CHECK FOR SIDE EFFECTS...
 		if (move_ent->v.hull)  // Entity is specifying which hull to use
 		{
-			index=move_ent->v.hull-1;
-			hull = &model->hulls[index];
+			idx=move_ent->v.hull-1;
+			hull = &model->hulls[idx];
 			if (!hull)  // Invalid hull
 			{
 				Con_Printf ("ERROR: hull %d is null.\n",hull);
@@ -1015,6 +1015,9 @@ trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, e
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/09/19 19:33:07  sezero
+ * fixed an error message (from Maddes / QIP)
+ *
  * Revision 1.6  2005/07/16 23:23:52  sezero
  * killed fastfabs, not worthy of keeping anymore
  *

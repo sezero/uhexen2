@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.86 2005-09-28 06:09:31 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.87 2005-10-02 15:43:08 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -142,7 +142,7 @@ qboolean	gl_dogamma = false;	// none of the above two, use gl tricks
 
 // direct draw software compatability stuff
 #ifndef H2W
-void VID_HandlePause (qboolean pause)
+void VID_HandlePause (qboolean paused)
 {
 }
 #endif

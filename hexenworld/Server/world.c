@@ -114,7 +114,7 @@ hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t offset,
 	vec3_t		size;
 	vec3_t		hullmins, hullmaxs;
 	hull_t		*hull;
-	int			index;
+	int			idx;
 
 // decide which clipping hull to use, based on the size
 	if (ent->v.solid == SOLID_BSP)
@@ -130,8 +130,8 @@ hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t offset,
 		VectorSubtract (maxs, mins, size);
 		if (move_ent->v.hull)  // Entity is specifying which hull to use
 		{
-			index=move_ent->v.hull-1;
-			hull = &model->hulls[index];
+			idx=move_ent->v.hull-1;
+			hull = &model->hulls[idx];
 			if (!hull)  // Invalid hull
 			{
 				Con_Printf ("ERROR: hull %d is null.\n",hull);

@@ -33,18 +33,18 @@ SV_FlushRedirect
 */
 void SV_FlushRedirect (void)
 {
-	char	send[8000+6];
+	char	senddata[8000+6];
 
 	if (sv_redirected == RD_PACKET)
 	{
-		send[0] = 0xff;
-		send[1] = 0xff;
-		send[2] = 0xff;
-		send[3] = 0xff;
-		send[4] = A2C_PRINT;
-		memcpy (send+5, outputbuf, strlen(outputbuf)+1);
+		senddata[0] = 0xff;
+		senddata[1] = 0xff;
+		senddata[2] = 0xff;
+		senddata[3] = 0xff;
+		senddata[4] = A2C_PRINT;
+		memcpy (senddata+5, outputbuf, strlen(outputbuf)+1);
 
-		NET_SendPacket (strlen(send)+1, send, net_from);
+		NET_SendPacket (strlen(senddata)+1, senddata, net_from);
 	}
 	else if (sv_redirected == RD_CLIENT)
 	{

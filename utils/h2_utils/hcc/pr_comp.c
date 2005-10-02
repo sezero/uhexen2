@@ -3,7 +3,7 @@
 //**
 //** comp.c
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/pr_comp.c,v 1.2 2005-08-05 13:56:08 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/pr_comp.c,v 1.3 2005-10-02 15:43:09 sezero Exp $
 //**
 //**************************************************************************
 
@@ -430,18 +430,18 @@ void CO_GenCodeDirect(opcode_t *op, def_t *var_a, def_t *var_b,
 def_t *CO_ParseImmediate(void)
 {
 	def_t *cn = NULL;
-	int index = 0;
+	int idx = 0;
 	struct hash_element *cell = NULL;
 
 	if(pr_immediate_type == &type_string)
 	{
-		index = MS_Hash(pr_immediate_string);
+		idx = MS_Hash(pr_immediate_string);
 	}
 	else if(pr_immediate_type == &type_float)
 	{
 		char tmpchar[40];
 		sprintf(tmpchar, "%.4f", pr_immediate._float);
-		index = MS_Hash(tmpchar);
+		idx = MS_Hash(tmpchar);
 	}
 	else if(pr_immediate_type == &type_vector)
 	{
@@ -449,14 +449,14 @@ def_t *CO_ParseImmediate(void)
 		sprintf(tmpchar, "%.4f,%.4f,%.4f",
 			pr_immediate.vector[0], pr_immediate.vector[1],
 			pr_immediate.vector[2]);
-		index = MS_Hash(tmpchar);
+		idx = MS_Hash(tmpchar);
 	}
 	else
 	{
 		MS_ParseError("weird immediate type");
 	}
 
-	for(cell = HashTable[index]; cell != NULL; cell = cell->next)
+	for(cell = HashTable[idx]; cell != NULL; cell = cell->next)
 	{
 		cn = cell->def;
 		if(!cn->initialized || (cn->type != pr_immediate_type))
@@ -505,9 +505,9 @@ def_t *CO_ParseImmediate(void)
 				if(!STRCMP(G_STRING(cn->ofs), pr_immediate_string))
 				{
 					cell = malloc(sizeof(struct hash_element));
-					cell->next = HashTable[index];
+					cell->next = HashTable[idx];
 					cell->def = cn;
-					HashTable[index] = cell;
+					HashTable[idx] = cell;
 					return cn;
 				}
 			}
@@ -516,9 +516,9 @@ def_t *CO_ParseImmediate(void)
 				if(G_FLOAT(cn->ofs) == pr_immediate._float)
 				{
 					cell = malloc(sizeof(struct hash_element));
-					cell->next = HashTable[index];
+					cell->next = HashTable[idx];
 					cell->def = cn;
-					HashTable[index] = cell;
+					HashTable[idx] = cell;
 					return cn;
 				}
 			}
@@ -529,9 +529,9 @@ def_t *CO_ParseImmediate(void)
 					&& ( G_FLOAT(cn->ofs+2) == pr_immediate.vector[2]))
 				{
 					cell = malloc(sizeof(struct hash_element));
-					cell->next = HashTable[index];
+					cell->next = HashTable[idx];
 					cell->def = cn;
-					HashTable[index] = cell;
+					HashTable[idx] = cell;
 					return cn;
 				}
 			}
@@ -550,9 +550,9 @@ def_t *CO_ParseImmediate(void)
 	pr.def_tail = cn;
 
 	cell = malloc(sizeof(struct hash_element));
-	cell->next = HashTable[index];
+	cell->next = HashTable[idx];
 	cell->def = cn;
-	HashTable[index] = cell;
+	HashTable[idx] = cell;
 
 	cn->type = pr_immediate_type;
 	//cn->name = "IMMEDIATE";
@@ -800,20 +800,20 @@ def_t *PR_GetDef(type_t *type, char *name, def_t *scope,
 	char element[MAX_NAME];
 
 	char key[100];
-	int index = 0;
+	int idx = 0;
 	struct hash_element *cell = NULL;
 
 	if(scope != NULL)
 	{
 		sprintf(key, "%s:%s", name, scope->name);
-		index = MS_Hash(key);
+		idx = MS_Hash(key);
 	}
 	else
 	{
-		index = MS_Hash(name);
+		idx = MS_Hash(name);
 	}
 
-	for(cell = HashTable[index]; cell != NULL; cell = cell->next)
+	for(cell = HashTable[idx]; cell != NULL; cell = cell->next)
 	{
 		def = cell->def;
 		if(!STRCMP(def->name, name))
@@ -832,8 +832,8 @@ def_t *PR_GetDef(type_t *type, char *name, def_t *scope,
 
 	if(scope != NULL)
 	{
-		index = MS_Hash(name);
-		for(cell = HashTable[index]; cell != NULL; cell = cell->next)
+		idx = MS_Hash(name);
+		for(cell = HashTable[idx]; cell != NULL; cell = cell->next)
 		{
 			def = cell->def;
 			if(!STRCMP(def->name, name))
@@ -866,9 +866,9 @@ def_t *PR_GetDef(type_t *type, char *name, def_t *scope,
 
 	// Add to hash table
 	cell = malloc(sizeof(struct hash_element));
-	cell->next = HashTable[index];
+	cell->next = HashTable[idx];
 	cell->def = def;
-	HashTable[index] = cell;
+	HashTable[idx] = cell;
 
 	def->name = malloc(strlen(name)+1);
 	strcpy(def->name, name);
@@ -1109,7 +1109,7 @@ static def_t *GetFieldArrayDef(char *name, type_t *type,
 static def_t *NewVarDef(char *name, type_t *type)
 {
 	def_t *def;
-	int index;
+	int idx;
 	struct hash_element *cell;
 	char key[100];
 
@@ -1124,16 +1124,16 @@ static def_t *NewVarDef(char *name, type_t *type)
 	if(pr_scope != NULL)
 	{
 		sprintf(key, "%s:%s", name, pr_scope->name);
-		index = MS_Hash(key);
+		idx = MS_Hash(key);
 	}
 	else
 	{
-		index = MS_Hash(name);
+		idx = MS_Hash(name);
 	}
 	cell = malloc(sizeof(struct hash_element));
-	cell->next = HashTable[index];
+	cell->next = HashTable[idx];
 	cell->def = def;
-	HashTable[index] = cell;
+	HashTable[idx] = cell;
 
 	def->name = malloc(strlen(name)+1);
 	strcpy(def->name, name);

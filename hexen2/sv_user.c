@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.5 2005-09-10 12:34:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.6 2005-10-02 15:43:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -264,7 +264,8 @@ void SV_FlightMove (void)
 {
 	int		i;
 	vec3_t	wishvel;
-	float	speed, newspeed, wishspeed, addspeed, accelspeed;
+	float	speed, newspeed, addspeed, accelspeed;
+	//float	wishspeed;
 
 //	cl.pitchvel = v_centerspeed.value;
 	cl.nodrift = false;
@@ -327,7 +328,8 @@ void SV_WaterMove (void)
 {
 	int		i;
 	vec3_t	wishvel;
-	float	speed, newspeed, wishspeed, addspeed, accelspeed;
+	float	speed, newspeed, addspeed, accelspeed;
+	//float	wishspeed;
 
 //
 // user intentions
@@ -586,7 +588,7 @@ Returns false if the client should be killed
 qboolean SV_ReadClientMessage (void)
 {
 	int		ret;
-	int		cmd;
+	int		ccmd;
 	char		*s;
 	
 	do
@@ -614,9 +616,9 @@ nextmsg:
 				return false;
 			}	
 	
-			cmd = MSG_ReadChar ();
+			ccmd = MSG_ReadChar ();
 			
-			switch (cmd)
+			switch (ccmd)
 			{
 			case -1:
 				goto nextmsg;		// end of message
@@ -740,6 +742,9 @@ void SV_RunClients (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/09/10 12:34:59  sezero
+ * cleaned-up h2/h2mp friction code
+ *
  * Revision 1.4  2005/05/19 16:47:18  sezero
  * killed client->privileged (was only available to IDGODS)
  *

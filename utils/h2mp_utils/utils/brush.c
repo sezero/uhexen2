@@ -557,7 +557,7 @@ AddHullPoint
 Doesn't add if duplicated
 =============
 */
-int AddHullPoint (vec3_t p, int hullnum)
+int AddHullPoint (vec3_t p, int hullnumber)
 {
 	int		i;
 	double	*c;
@@ -575,9 +575,9 @@ int AddHullPoint (vec3_t p, int hullnum)
 		for (y=0 ; y<2 ; y++)
 			for (z=0; z<2 ; z++)
 			{
-				c[0] = p[0] + hull_size[hullnum][x][0];
-				c[1] = p[1] + hull_size[hullnum][y][1];
-				c[2] = p[2] + hull_size[hullnum][z][2];
+				c[0] = p[0] + hull_size[hullnumber][x][0];
+				c[1] = p[1] + hull_size[hullnumber][y][1];
+				c[2] = p[2] + hull_size[hullnumber][z][2];
 				c += 3;
 			}
 	
@@ -597,7 +597,7 @@ AddHullEdge
 Creates all of the hull planes around the given edge, if not done already
 =============
 */
-void AddHullEdge (vec3_t p1, vec3_t p2, int hullnum)
+void AddHullEdge (vec3_t p1, vec3_t p2, int hullnumber)
 {
 	int		pt1, pt2;
 	int		i;
@@ -606,8 +606,8 @@ void AddHullEdge (vec3_t p1, vec3_t p2, int hullnum)
 	plane_t	plane;
 	double	l;
 	
-	pt1 = AddHullPoint (p1, hullnum);
-	pt2 = AddHullPoint (p2, hullnum);
+	pt1 = AddHullPoint (p1, hullnumber);
+	pt2 = AddHullPoint (p2, hullnumber);
 	
 	for (i=0 ; i<num_hull_edges ; i++)
 		if ( (hull_edges[i][0] == pt1 && hull_edges[i][1] == pt2)
@@ -632,8 +632,8 @@ void AddHullEdge (vec3_t p1, vec3_t p2, int hullnum)
 			for (e=0 ; e<=1 ; e++)
 			{
 				VectorCopy (p1, planeorg);
-				planeorg[b] += hull_size[hullnum][d][b];
-				planeorg[c] += hull_size[hullnum][e][c];
+				planeorg[b] += hull_size[hullnumber][d][b];
+				planeorg[c] += hull_size[hullnumber][e][c];
 				
 				VectorCopy (vec3_origin, planevec);
 				planevec[a] = 1;
@@ -655,7 +655,7 @@ void AddHullEdge (vec3_t p1, vec3_t p2, int hullnum)
 ExpandBrush
 =============
 */
-void ExpandBrush (int hullnum)
+void ExpandBrush (int hullnumber)
 {
 	int		i, x, s;
 	vec3_t	corner;
@@ -668,7 +668,7 @@ void ExpandBrush (int hullnum)
 // create all the hull points
 	for (f=brush_faces ; f ; f=f->next)
 		for (i=0 ; i<f->numpoints ; i++)
-			AddHullPoint (f->pts[i], hullnum);
+			AddHullPoint (f->pts[i], hullnumber);
 
 // expand all of the planes
 	for (i=0 ; i<numbrushfaces ; i++)
@@ -678,9 +678,9 @@ void ExpandBrush (int hullnum)
 		for (x=0 ; x<3 ; x++)
 		{
 			if (p->normal[x] > 0)
-				corner[x] = hull_size[hullnum][1][x];
+				corner[x] = hull_size[hullnumber][1][x];
 			else if (p->normal[x] < 0)
-				corner[x] = hull_size[hullnum][0][x];
+				corner[x] = hull_size[hullnumber][0][x];
 		}
 		p->dist += DotProduct (corner, p->normal);		
 	}
@@ -693,16 +693,16 @@ void ExpandBrush (int hullnum)
 			VectorCopy (vec3_origin, plane.normal);
 			plane.normal[x] = s;
 			if (s == -1)
-				plane.dist = -brush_mins[x] + -hull_size[hullnum][0][x];
+				plane.dist = -brush_mins[x] + -hull_size[hullnumber][0][x];
 			else
-				plane.dist = brush_maxs[x] + hull_size[hullnum][1][x];
+				plane.dist = brush_maxs[x] + hull_size[hullnumber][1][x];
 			AddBrushPlane (&plane);
 		}
 
 // add all of the edge bevels
 	for (f=brush_faces ; f ; f=f->next)
 		for (i=0 ; i<f->numpoints ; i++)
-			AddHullEdge (f->pts[i], f->pts[(i+1)%f->numpoints], hullnum);
+			AddHullEdge (f->pts[i], f->pts[(i+1)%f->numpoints], hullnumber);
 }
 
 //============================================================================
@@ -715,7 +715,7 @@ LoadBrush
 Converts a mapbrush to a bsp brush
 ===============
 */
-brush_t *LoadBrush (mbrush_t *mb, int hullnum)
+brush_t *LoadBrush (mbrush_t *mb, int hullnumber)
 {
 	brush_t		*b;
 	int			contents;
@@ -729,7 +729,7 @@ brush_t *LoadBrush (mbrush_t *mb, int hullnum)
 //	
 	name = miptex[texinfo[mb->faces->texinfo].miptex];
 
-	if (!Q_strcasecmp(name, "clip") && hullnum == 0)
+	if (!Q_strcasecmp(name, "clip") && hullnumber == 0)
 		return NULL;		// "clip" brushes don't show up in the draw hull
 	
 	if (name[0] == '*' && worldmodel)		// entities never use water merging
@@ -741,12 +741,12 @@ brush_t *LoadBrush (mbrush_t *mb, int hullnum)
 		else			
 			contents = CONTENTS_WATER;
 	}
-	else if (!Q_strncasecmp (name, "sky",3) && worldmodel && hullnum == 0)
+	else if (!Q_strncasecmp (name, "sky",3) && worldmodel && hullnumber == 0)
 		contents = CONTENTS_SKY;
 	else
 		contents = CONTENTS_SOLID;
 
-	if (hullnum && contents != CONTENTS_SOLID && contents != CONTENTS_SKY)
+	if (hullnumber && contents != CONTENTS_SOLID && contents != CONTENTS_SKY)
 		return NULL;		// water brushes don't show up in clipping hulls
 
 // no seperate textures on clip hull
@@ -760,7 +760,7 @@ brush_t *LoadBrush (mbrush_t *mb, int hullnum)
 	for (f=mb->faces ; f ; f=f->next)
 	{
 		faces[numbrushfaces] = *f;
-		if (hullnum)
+		if (hullnumber)
 			faces[numbrushfaces].texinfo = 0;
 		numbrushfaces++;
 	}
@@ -773,9 +773,9 @@ brush_t *LoadBrush (mbrush_t *mb, int hullnum)
 		return NULL;
 	}
 
-	if (hullnum)
+	if (hullnumber)
 	{
-		ExpandBrush (hullnum);
+		ExpandBrush (hullnumber);
 		CreateBrushFaces ();
 	}
 	
@@ -822,7 +822,7 @@ void Brush_DrawAll (brushset_t *bs)
 Brush_LoadEntity
 ============
 */
-brushset_t *Brush_LoadEntity (entity_t *ent, int hullnum)
+brushset_t *Brush_LoadEntity (entity_t *ent, int hullnumber)
 {
 	brush_t		*b, *next, *water, *other;
 	mbrush_t	*mbr;
@@ -840,7 +840,7 @@ brushset_t *Brush_LoadEntity (entity_t *ent, int hullnum)
 
 	for (mbr = ent->brushes ; mbr ; mbr=mbr->next)
 	{
-		b = LoadBrush (mbr, hullnum);
+		b = LoadBrush (mbr, hullnumber);
 		if (!b)
 			continue;
 		

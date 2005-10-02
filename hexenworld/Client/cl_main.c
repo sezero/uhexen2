@@ -621,7 +621,7 @@ Contents allows \n escape character
 */
 void CL_Packet_f (void)
 {
-	char	send[2048];
+	char	senddata[2048];
 	int		i, l;
 	char	*in, *out;
 	netadr_t	adr;
@@ -639,8 +639,8 @@ void CL_Packet_f (void)
 	}
 
 	in = Cmd_Argv(2);
-	out = send+4;
-	send[0] = send[1] = send[2] = send[3] = 0xff;
+	out = senddata+4;
+	senddata[0] = senddata[1] = senddata[2] = senddata[3] = 0xff;
 
 	l = strlen (in);
 	for (i=0 ; i<l ; i++)
@@ -655,7 +655,7 @@ void CL_Packet_f (void)
 	}
 	*out = 0;
 
-	NET_SendPacket (out-send, send, adr);
+	NET_SendPacket (out-senddata, senddata, adr);
 }
 
 

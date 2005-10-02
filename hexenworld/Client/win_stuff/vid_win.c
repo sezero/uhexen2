@@ -1016,14 +1016,14 @@ vmode_t *VID_GetModePtr (int modenum)
 VID_CheckModedescFixup
 =================
 */
-void VID_CheckModedescFixup (int mode)
+void VID_CheckModedescFixup (int modenum)
 {
 	int		x, y, stretch;
 
-	if (mode == MODE_SETTABLE_WINDOW)
+	if (modenum == MODE_SETTABLE_WINDOW)
 	{
-		modelist[mode].stretched = (int)vid_stretch_by_2.value;
-		stretch = modelist[mode].stretched;
+		modelist[modenum].stretched = (int)vid_stretch_by_2.value;
+		stretch = modelist[modenum].stretched;
 
 		if (vid_config_x.value < (320 << stretch))
 			vid_config_x.value = 320 << stretch;
@@ -1033,9 +1033,9 @@ void VID_CheckModedescFixup (int mode)
 
 		x = (int)vid_config_x.value;
 		y = (int)vid_config_y.value;
-		sprintf (modelist[mode].modedesc, "%dx%d", x, y);
-		modelist[mode].width = x;
-		modelist[mode].height = y;
+		sprintf (modelist[modenum].modedesc, "%dx%d", x, y);
+		modelist[modenum].width = x;
+		modelist[modenum].height = y;
 	}
 }
 
@@ -1045,17 +1045,17 @@ void VID_CheckModedescFixup (int mode)
 VID_GetModeDescriptionMemCheck
 =================
 */
-char *VID_GetModeDescriptionMemCheck (int mode)
+char *VID_GetModeDescriptionMemCheck (int modenum)
 {
 	char		*pinfo;
 	vmode_t		*pv;
 
-	if ((mode < 0) || (mode >= nummodes))
+	if ((modenum < 0) || (modenum >= nummodes))
 		return NULL;
 
-	VID_CheckModedescFixup (mode);
+	VID_CheckModedescFixup (modenum);
 
-	pv = VID_GetModePtr (mode);
+	pv = VID_GetModePtr (modenum);
 	pinfo = pv->modedesc;
 
 	if (VID_CheckAdequateMem (pv->width, pv->height))
@@ -1074,17 +1074,17 @@ char *VID_GetModeDescriptionMemCheck (int mode)
 VID_GetModeDescription
 =================
 */
-char *VID_GetModeDescription (int mode)
+char *VID_GetModeDescription (int modenum)
 {
 	char		*pinfo;
 	vmode_t		*pv;
 
-	if ((mode < 0) || (mode >= nummodes))
+	if ((modenum < 0) || (modenum >= nummodes))
 		return NULL;
 
-	VID_CheckModedescFixup (mode);
+	VID_CheckModedescFixup (modenum);
 
-	pv = VID_GetModePtr (mode);
+	pv = VID_GetModePtr (modenum);
 	pinfo = pv->modedesc;
 	return pinfo;
 }
@@ -1097,23 +1097,23 @@ VID_GetModeDescription2
 Tacks on "windowed" or "fullscreen"
 =================
 */
-char *VID_GetModeDescription2 (int mode)
+char *VID_GetModeDescription2 (int modenum)
 {
 	static char	pinfo[40];
 	vmode_t		*pv;
 
-	if ((mode < 0) || (mode >= nummodes))
+	if ((modenum < 0) || (modenum >= nummodes))
 		return NULL;
 
-	VID_CheckModedescFixup (mode);
+	VID_CheckModedescFixup (modenum);
 
-	pv = VID_GetModePtr (mode);
+	pv = VID_GetModePtr (modenum);
 
-	if (modelist[mode].type == MS_FULLSCREEN)
+	if (modelist[modenum].type == MS_FULLSCREEN)
 	{
 		sprintf(pinfo,"%s fullscreen", pv->modedesc);
 	}
-	else if (modelist[mode].type == MS_FULLDIB)
+	else if (modelist[modenum].type == MS_FULLDIB)
 	{
 		sprintf(pinfo,"%s fullscreen", pv->modedesc);
 	}
@@ -1128,23 +1128,23 @@ char *VID_GetModeDescription2 (int mode)
 
 // KJB: Added this to return the mode driver name in description for console
 
-char *VID_GetExtModeDescription (int mode)
+char *VID_GetExtModeDescription (int modenum)
 {
 	static char	pinfo[40];
 	vmode_t		*pv;
 
-	if ((mode < 0) || (mode >= nummodes))
+	if ((modenum < 0) || (modenum >= nummodes))
 		return NULL;
 
-	VID_CheckModedescFixup (mode);
+	VID_CheckModedescFixup (modenum);
 
-	pv = VID_GetModePtr (mode);
-	if (modelist[mode].type == MS_FULLSCREEN)
+	pv = VID_GetModePtr (modenum);
+	if (modelist[modenum].type == MS_FULLSCREEN)
 	{
 		sprintf(pinfo,"%s fullscreen %s",pv->modedesc,
 				MGL_modeDriverName(pv->modenum));
 	}
-	else if (modelist[mode].type == MS_FULLDIB)
+	else if (modelist[modenum].type == MS_FULLDIB)
 	{
 		sprintf(pinfo,"%s fullscreen DIB", pv->modedesc);
 	}
@@ -2726,12 +2726,12 @@ void AppActivate(BOOL fActive, BOOL minimize)
 VID_HandlePause
 ================
 */
-void VID_HandlePause (qboolean pause)
+void VID_HandlePause (qboolean paused)
 {
 
 	if ((modestate == MS_WINDOWED) && _enable_mouse.value)
 	{
-		if (pause)
+		if (paused)
 		{
 			IN_DeactivateMouse ();
 			IN_ShowMouse ();

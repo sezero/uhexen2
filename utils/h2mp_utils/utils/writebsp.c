@@ -288,7 +288,7 @@ BumpModel
 Used by the clipping hull processes that only need to store headclipnode
 ==================
 */
-void BumpModel (int hullnum)
+void BumpModel (int hullnumber)
 {
 	dmodel_t	*bm;
 
@@ -298,7 +298,7 @@ void BumpModel (int hullnum)
 	bm = &dmodels[nummodels];
 	nummodels++;
 	
-	bm->headnode[hullnum] = headclipnode;
+	bm->headnode[hullnumber] = headclipnode;
 }
 
 //=============================================================================

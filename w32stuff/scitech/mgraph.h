@@ -2450,12 +2450,12 @@ void 	MGLAPI MGL_lineRelCoord(int dx,int dy);
 int 	MGLAPI MGL_getX(void);
 int 	MGLAPI MGL_getY(void);
 void	MGLAPI MGL_getCP(point_t* CP);
-void 	MGLAPI MGL_lineCoord(int x1,int y1,int x2,int y2);
-void 	MGLAPI MGL_lineCoordFX(fix32_t x1,fix32_t y1,fix32_t x2,fix32_t y2);
-void    MGLAPI MGL_lineEngine(fix32_t x1,fix32_t y1,fix32_t x2,fix32_t y2,void (ASMAPI *plotPoint)(int x,int y));
-ibool	MGLAPI MGL_clipLineFX(fix32_t *x1,fix32_t *y1,fix32_t *x2,fix32_t *y2,fix32_t left,fix32_t top,fix32_t right,fix32_t bottom);
+void 	MGLAPI MGL_lineCoord(int xx1,int yy1,int xx2,int yy2);
+void 	MGLAPI MGL_lineCoordFX(fix32_t xx1,fix32_t yy1,fix32_t xx2,fix32_t yy2);
+void    MGLAPI MGL_lineEngine(fix32_t xx1,fix32_t yy1,fix32_t xx2,fix32_t yy2,void (ASMAPI *plotPoint)(int x,int y));
+ibool	MGLAPI MGL_clipLineFX(fix32_t *xx1,fix32_t *yy1,fix32_t *xx2,fix32_t *yy2,fix32_t left,fix32_t top,fix32_t right,fix32_t bottom);
 #ifndef	MGL_LITE
-void 	ASMAPI MGL_scanLine(int y,int x1,int x2);
+void 	ASMAPI MGL_scanLine(int y,int xx1,int xx2);
 #endif
 
 /* Routines to perform bank switching for banked framebuffers for custom
@@ -2522,8 +2522,8 @@ int		ASMAPI MGL_scanLeftWhileColor(int x,int y,color_t color);
 
 #ifndef	MGL_LITE
 void	MGLAPI MGL_drawBorderCoord(int left,int top,int right,int bottom,int style,int thickness);
-void 	MGLAPI MGL_drawHDivider(int y,int x1,int x2);
-void 	MGLAPI MGL_drawVDivider(int x,int y1,int y2);
+void 	MGLAPI MGL_drawHDivider(int y,int xx1,int xx2);
+void 	MGLAPI MGL_drawVDivider(int x,int yy1,int yy2);
 #endif
 
 /* Ellipse drawing */
@@ -2622,8 +2622,8 @@ void 	MGLAPI MGL_drawRegion(int x,int y,const region_t *r);
 /* Region generation primitives */
 
 #ifndef	MGL_LITE
-region_t * MGLAPI MGL_rgnLineCoord(int x1,int y1,int x2,int y2,const region_t *pen);
-region_t * MGLAPI MGL_rgnLineCoordFX(fix32_t x1,fix32_t y1,fix32_t x2,fix32_t y2,const region_t *pen);
+region_t * MGLAPI MGL_rgnLineCoord(int xx1,int yy1,int xx2,int yy2,const region_t *pen);
+region_t * MGLAPI MGL_rgnLineCoordFX(fix32_t xx1,fix32_t yy1,fix32_t xx2,fix32_t yy2,const region_t *pen);
 /*region_t * MGLAPI MGL_rgnPolygon(int count,point_t *vArray);*/
 /*region_t * MGLAPI MGL_rgnPolygonCnvx(int count,point_t *vArray);*/
 region_t * MGLAPI MGL_rgnSolidRectCoord(int left,int top,int right,int bottom);
@@ -3038,7 +3038,7 @@ extern int _VARAPI PACKED32_driver[];
 #endif
 
 void MGL_availableMemory(ulong *physical,ulong *total);
-void MGL_useLocalMalloc(void _HUGE * (*malloc)(long size),void (*free)(void _HUGE *p));
+void MGL_useLocalMalloc(void _HUGE * (*my_malloc)(long size),void (*my_free)(void _HUGE *p));
 void * MGLAPI MGL_malloc(long size);
 void * MGLAPI MGL_calloc(long size,long n);
 void MGLAPI MGL_free(void _HUGE *p);

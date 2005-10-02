@@ -212,7 +212,6 @@ void	R_ZDrawSubmodelPolys (model_t *clmodel);
 #define ALIAS_Z_CLIP_PLANE	5
 
 extern int				numverts;
-extern int				a_skinwidth;
 extern mtriangle_t		*ptriangles;
 extern int				numtriangles;
 extern aliashdr_t		*paliashdr;

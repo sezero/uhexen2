@@ -452,4 +452,4 @@ void SV_WriteInventory (client_t *host_cl, edict_t *ent, sizebuf_t *msg);
 // sv_effect.c
 //
 void SV_ParseEffect (sizebuf_t *sb);
-void SV_SendEffect (sizebuf_t *sb, int index);
+void SV_SendEffect (sizebuf_t *sb, int idx);

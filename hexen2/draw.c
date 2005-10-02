@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.9 2005-07-17 19:28:28 sezero Exp $
+	$Id: draw.c,v 1.10 2005-10-02 15:43:08 sezero Exp $
 */
 
 
@@ -1663,17 +1663,18 @@ Call before beginning any disc IO.
 */
 void Draw_BeginDisc (void)
 {
-	static int index = 0;
+	static int disc_idx = 0;
 
-	if (!draw_disc[index] || loading_stage)
+	if (!draw_disc[disc_idx] || loading_stage)
 	{
 		return;
 	}
 
-	index++;
-	if (index >= MAX_DISC) index = 0;
+	disc_idx++;
+	if (disc_idx >= MAX_DISC)
+		disc_idx = 0;
 
-	D_BeginDirectRect (vid.width - 28, 0, draw_disc[index]->data, 28, 24);
+	D_BeginDirectRect (vid.width - 28, 0, draw_disc[disc_idx]->data, 28, 24);
 	scr_topupdate = 0;
 }
 
@@ -1698,6 +1699,10 @@ void Draw_EndDisc (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/07/17 19:28:28  sezero
+ * added crosshair color from quake. performed some small cleanup.
+ * I hope I won't have to bother with this thing anymore.
+ *
  * Revision 1.8  2005/07/17 15:33:06  sezero
  * took those crosshair externs out of the fuctions
  *

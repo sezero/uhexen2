@@ -283,17 +283,17 @@ CL_AllocExplosion
 */
 explosion_t *CL_AllocExplosion (void)
 {
-	int	i, index, freeSlot;
+	int	i, idx, freeSlot;
 	float	time;
 
-	index = 0;
+	idx = 0;
 	freeSlot = false;
 
 	for (i=0 ; i<MAX_EXPLOSIONS ; i++)
 	{
 		if (!cl_explosions[i].model)
 		{
-			index = i;
+			idx = i;
 			freeSlot = true;
 			break;
 		}
@@ -309,15 +309,15 @@ explosion_t *CL_AllocExplosion (void)
 			if (cl_explosions[i].startTime < time)
 			{
 				time = cl_explosions[i].startTime;
-				index = i;
+				idx = i;
 			}
 		}
 	}
 
 	//zero out velocity and acceleration, funcs
-	memset (&cl_explosions[index], 0, sizeof(explosion_t));
+	memset (&cl_explosions[idx], 0, sizeof(explosion_t));
 
-	return &cl_explosions[index];
+	return &cl_explosions[idx];
 }
 
 /*

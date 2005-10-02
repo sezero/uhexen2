@@ -172,7 +172,7 @@ Expands the PVS and calculates the PHS
 void SV_CalcPHS (void)
 {
 	int		rowbytes, rowwords;
-	int		i, j, k, l, index, num;
+	int		i, j, k, l, idx, num;
 	int		bitbyte;
 	unsigned	*dest, *src;
 	byte	*scan;
@@ -221,10 +221,10 @@ void SV_CalcPHS (void)
 					continue;
 				// or this pvs row into the phs
 				// +1 because pvs is 1 based
-				index = ((j<<3)+k+1);
-				if (index >= num)
+				idx = ((j<<3)+k+1);
+				if (idx >= num)
 					continue;
-				src = (unsigned *)sv.pvs + index*rowwords;
+				src = (unsigned *)sv.pvs + idx*rowwords;
 				for (l=0 ; l<rowwords ; l++)
 					dest[l] |= src[l];
 			}

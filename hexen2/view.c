@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.9 2005-09-19 19:50:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.10 2005-10-02 15:43:08 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -63,10 +63,9 @@ V_CalcRoll
 Used by view and sv_user
 ===============
 */
-vec3_t	forward, right, up;
-
 float V_CalcRoll (vec3_t angles, vec3_t velocity)
 {
+	vec3_t	forward, right, up;
 	float	sign;
 	float	side;
 	float	value;
@@ -1187,6 +1186,9 @@ void V_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/09/19 19:50:10  sezero
+ * fixed those famous spelling errors
+ *
  * Revision 1.8  2005/07/17 19:28:28  sezero
  * added crosshair color from quake. performed some small cleanup.
  * I hope I won't have to bother with this thing anymore.

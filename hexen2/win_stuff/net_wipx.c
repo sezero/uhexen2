@@ -198,10 +198,10 @@ ErrorReturn:
 
 int WIPX_CloseSocket (int handle)
 {
-	int socket = ipxsocket[handle];
+	int mysocket = ipxsocket[handle];
 	int ret;
 
-	ret =  pclosesocket (socket);
+	ret =  pclosesocket (mysocket);
 	ipxsocket[handle] = 0;
 	return ret;
 }
@@ -240,10 +240,10 @@ static byte netpacketBuffer[NET_MAXMESSAGE + 4];
 int WIPX_Read (int handle, byte *buf, int len, struct qsockaddr *addr)
 {
 	int addrlen = sizeof (struct qsockaddr);
-	int socket = ipxsocket[handle];
+	int mysocket = ipxsocket[handle];
 	int ret;
 
-	ret = precvfrom (socket, netpacketBuffer, len+4, 0, (struct sockaddr *)addr, &addrlen);
+	ret = precvfrom (mysocket, netpacketBuffer, len+4, 0, (struct sockaddr *)addr, &addrlen);
 	if (ret == -1)
 	{
 		//int errno = pWSAGetLastError();
@@ -275,7 +275,7 @@ int WIPX_Broadcast (int handle, byte *buf, int len)
 
 int WIPX_Write (int handle, byte *buf, int len, struct qsockaddr *addr)
 {
-	int socket = ipxsocket[handle];
+	int mysocket = ipxsocket[handle];
 	int ret;
 
 	// build packet with sequence number
@@ -284,7 +284,7 @@ int WIPX_Write (int handle, byte *buf, int len, struct qsockaddr *addr)
 	memcpy(&netpacketBuffer[4], buf, len);
 	len += 4;
 
-	ret = psendto (socket, netpacketBuffer, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
+	ret = psendto (mysocket, netpacketBuffer, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
 	if (ret == -1)
 		if (pWSAGetLastError() == WSAEWOULDBLOCK)
 			return 0;
@@ -354,11 +354,11 @@ int WIPX_StringToAddr (char *string, struct qsockaddr *addr)
 
 int WIPX_GetSocketAddr (int handle, struct qsockaddr *addr)
 {
-	int socket = ipxsocket[handle];
+	int mysocket = ipxsocket[handle];
 	int addrlen = sizeof(struct qsockaddr);
 
 	memset(addr, 0, sizeof(struct qsockaddr));
-	if(pgetsockname(socket, (struct sockaddr *)addr, &addrlen) != 0)
+	if(pgetsockname(mysocket, (struct sockaddr *)addr, &addrlen) != 0)
 	{
 		//int errno = pWSAGetLastError();
 		errno = pWSAGetLastError();

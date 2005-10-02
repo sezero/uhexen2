@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.14 2005-09-19 19:50:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.15 2005-10-02 15:43:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2856,16 +2856,16 @@ void PF_starteffect (void)
 
 void PF_endeffect (void)
 {
-	int index;
+	int idx;
 
-	index = G_FLOAT(OFS_PARM0);
-	index = G_FLOAT(OFS_PARM1);
+	idx = G_FLOAT(OFS_PARM0);
+	idx = G_FLOAT(OFS_PARM1);
 
-	if (!sv.Effects[index].type) return;
+	if (!sv.Effects[idx].type) return;
 
-	sv.Effects[index].type = 0;
+	sv.Effects[idx].type = 0;
 	MSG_WriteByte (&sv.reliable_datagram, svc_end_effect);
-	MSG_WriteByte (&sv.reliable_datagram, index);
+	MSG_WriteByte (&sv.reliable_datagram, idx);
 }
 
 void PF_randomrange(void)
@@ -3050,15 +3050,15 @@ void PF_matchAngleToSlope(void)
 void PF_updateInfoPlaque (void)
 {
 	unsigned int check;
-	unsigned int index, mode;
+	unsigned int idx, mode;
 	long *use;
 	long tmp_mask;
 	int  ofs = 0;
 
-	index = G_FLOAT(OFS_PARM0);
+	idx = G_FLOAT(OFS_PARM0);
 	mode = G_FLOAT(OFS_PARM1);
 
-	if (index > 31) 
+	if (idx > 31) 
 	{
 		tmp_mask = info_mask2;
 		ofs = 32;
@@ -3069,7 +3069,7 @@ void PF_updateInfoPlaque (void)
 	}
 	use = (long *)&tmp_mask;
 		
-	check = (long) (1 << (index - ofs));
+	check = (long) (1 << (idx - ofs));
 		
 	if (((mode & 1) && ((*use) & check)) || ((mode & 2) && !((*use) & check)));
 	else
@@ -3239,6 +3239,9 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/09/19 19:50:10  sezero
+ * fixed those famous spelling errors
+ *
  * Revision 1.13  2005/07/31 11:11:09  sezero
  * platform defines cleanup
  *

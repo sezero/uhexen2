@@ -29,7 +29,6 @@
 #warning "CPU endianess for Win32 assumed to be little endian"
 #endif
 
-int		starttime;
 qboolean	ActiveApp, Minimized;
 qboolean	WinNT;
 
@@ -683,6 +682,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2005/09/28 06:06:38  sezero
+ * killed the cvar sys_delay
+ *
  * Revision 1.21  2005/09/24 23:50:36  sezero
  * fixed a bunch of compiler warnings
  *

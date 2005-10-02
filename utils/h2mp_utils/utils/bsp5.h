@@ -132,7 +132,7 @@ typedef struct
 extern	int			numbrushplanes;
 extern	plane_t		planes[MAX_MAP_PLANES];
 
-brushset_t *Brush_LoadEntity (entity_t *ent, int hullnum);
+brushset_t *Brush_LoadEntity (entity_t *ent, int hullnumber);
 int	PlaneTypeForNormal (vec3_t normal);
 int	FindPlane (plane_t *dplane, int *side);
 
@@ -223,7 +223,7 @@ void WriteNodePlanes (node_t *headnode);
 void WriteClipNodes (node_t *headnode);
 void WriteDrawNodes (node_t *headnode);
 
-void BumpModel (int hullnum);
+void BumpModel (int hullnumber);
 int FindFinalPlane (dplane_t *p);
 
 void BeginBSPFile (void);

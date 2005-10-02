@@ -68,23 +68,23 @@ Sends an out-of-band datagram
 */
 void Netchan_OutOfBand (netadr_t adr, int length, byte *data)
 {
-	sizebuf_t	send;
+	sizebuf_t	senddata;
 	byte		send_buf[MAX_MSGLEN + PACKET_HEADER];
 
 // write the packet header
-	send.data = send_buf;
-	send.maxsize = sizeof(send_buf);
-	send.cursize = 0;
+	senddata.data = send_buf;
+	senddata.maxsize = sizeof(send_buf);
+	senddata.cursize = 0;
 	
-	MSG_WriteLong (&send, -1);	// -1 sequence means out of band
-	SZ_Write (&send, data, length);
+	MSG_WriteLong (&senddata, -1);	// -1 sequence means out of band
+	SZ_Write (&senddata, data, length);
 
 // send the datagram
 	//zoid, no input in demo playback mode
 #ifndef SERVERONLY
 	if (!cls.demoplayback)
 #endif
-		NET_SendPacket (send.cursize, send.data, adr);
+		NET_SendPacket (senddata.cursize, senddata.data, adr);
 }
 
 /*
@@ -173,7 +173,7 @@ A 0 length will still generate a packet and deal with the reliable messages.
 */
 void Netchan_Transmit (netchan_t *chan, int length, byte *data)
 {
-	sizebuf_t	send;
+	sizebuf_t	senddata;
 	byte		send_buf[MAX_MSGLEN + PACKET_HEADER];
 	qboolean	send_reliable;
 	unsigned	w1, w2;
@@ -206,44 +206,44 @@ void Netchan_Transmit (netchan_t *chan, int length, byte *data)
 	}
 
 // write the packet header
-	send.data = send_buf;
-	send.maxsize = sizeof(send_buf);
-	send.cursize = 0;
+	senddata.data = send_buf;
+	senddata.maxsize = sizeof(send_buf);
+	senddata.cursize = 0;
 
 	w1 = chan->outgoing_sequence | (send_reliable<<31);
 	w2 = chan->incoming_sequence | (chan->incoming_reliable_sequence<<31);
 
 	chan->outgoing_sequence++;
 
-	MSG_WriteLong (&send, w1);
-	MSG_WriteLong (&send, w2);
+	MSG_WriteLong (&senddata, w1);
+	MSG_WriteLong (&senddata, w2);
 
 // copy the reliable message to the packet first
 	if (send_reliable)
 	{
-		SZ_Write (&send, chan->reliable_buf, chan->reliable_length);
+		SZ_Write (&senddata, chan->reliable_buf, chan->reliable_length);
 		chan->last_reliable_sequence = chan->outgoing_sequence;
 	}
 	
 // add the unreliable part if space is available
-	if (send.maxsize - send.cursize >= length)
-		SZ_Write (&send, data, length);
+	if (senddata.maxsize - senddata.cursize >= length)
+		SZ_Write (&senddata, data, length);
 
 // send the datagram
 	i = chan->outgoing_sequence & (MAX_LATENT-1);
-	chan->outgoing_size[i] = send.cursize;
+	chan->outgoing_size[i] = senddata.cursize;
 	chan->outgoing_time[i] = realtime;
 
 	//zoid, no input in demo playback mode
 #ifndef SERVERONLY
 	if (!cls.demoplayback)
 #endif
-		NET_SendPacket (send.cursize, send.data, chan->remote_address);
+		NET_SendPacket (senddata.cursize, senddata.data, chan->remote_address);
 
 	if (chan->cleartime < realtime)
-		chan->cleartime = realtime + send.cursize*chan->rate;
+		chan->cleartime = realtime + senddata.cursize*chan->rate;
 	else
-		chan->cleartime += send.cursize*chan->rate;
+		chan->cleartime += senddata.cursize*chan->rate;
 
 	if (showpackets.value)
 		Con_Printf ("--> s=%i(%i) a=%i(%i) %i\n"
@@ -251,7 +251,7 @@ void Netchan_Transmit (netchan_t *chan, int length, byte *data)
 			, send_reliable
 			, chan->incoming_sequence
 			, chan->incoming_reliable_sequence
-			, send.cursize);
+			, senddata.cursize);
 
 }
 

@@ -220,7 +220,8 @@ void PM_GroundMove (void)
 {
 	vec3_t	start, dest;
 	pmtrace_t	trace;
-	vec3_t	original, originalvel, down, up, downvel;
+	vec3_t	original, originalvel, down, downvel;
+	//vec3_t	up;
 	float	downdist, updist;
 
 	pmove.velocity[2] = 0;
