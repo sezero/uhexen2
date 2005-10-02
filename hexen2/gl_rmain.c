@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.36 2005-09-19 19:50:10 sezero Exp $
+	$Id: gl_rmain.c,v 1.37 2005-10-02 20:02:41 sezero Exp $
 */
 
 
@@ -1082,6 +1082,12 @@ void R_DrawGlow (entity_t *e)
 		VectorCopy(currententity->origin, lightorigin);
 
 		radius = 20.0f;
+
+		// for mana make it bit bigger
+
+		if ( !Q_strncasecmp (clmodel->name, "models/i_btmana",15) )
+			radius += 5.0f;
+
 		VectorSubtract(lightorigin, r_origin, vp2);
 
 		// See if view is outside the light.
@@ -1100,6 +1106,13 @@ void R_DrawGlow (entity_t *e)
 				glTranslatef_fp( cos(e->angles[1]/180*M_PI)*8.0f,sin(e->angles[1]/180*M_PI)*8.0f, 16.0f);
 			    else
 				glTranslatef_fp(0.0f, 0.0f, 8.0f);
+			}
+
+			// 'floating' movement
+
+			if(clmodel->flags & EF_ROTATE)
+			{
+				glTranslatef_fp(0,0,sin(currententity->origin[0]+currententity->origin[1]+(cl.time*3))*5.5 );
 			}
 
 			glBegin_fp(GL_TRIANGLE_FAN);
@@ -1818,6 +1831,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.36  2005/09/19 19:50:10  sezero
+ * fixed those famous spelling errors
+ *
  * Revision 1.35  2005/09/12 08:17:46  sezero
  * added stencil buffered shadows (extracted from jshexen2, code by MrG)
  *
