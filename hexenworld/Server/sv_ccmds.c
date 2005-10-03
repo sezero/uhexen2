@@ -84,7 +84,7 @@ void SV_Logfile_f (void)
 		return;
 	}
 
-	sprintf (name, "%s/qconsole.log", com_userdir);
+	sprintf (name, "%s/hwsv.log", com_userdir);
 	Con_Printf ("Logging text to %s.\n", name);
 	sv_logfile = fopen (name, "w");
 	if (!sv_logfile)
