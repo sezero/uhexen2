@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.10 2005-10-13 15:17:29 sezero Exp $
+	$Id: net_udp.c,v 1.11 2005-10-13 15:18:08 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -163,7 +163,7 @@ int UDP_OpenSocket (int port)
 	return newsocket;
 
 ErrorReturn:
-	close (newsocket);
+	UDP_CloseSocket (newsocket);
 	return -1;
 }
 
