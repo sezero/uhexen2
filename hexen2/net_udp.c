@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.11 2005-10-13 15:18:08 sezero Exp $
+	$Id: net_udp.c,v 1.12 2005-10-13 15:18:53 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -242,6 +242,7 @@ int UDP_Connect (int mysocket, struct qsockaddr *addr)
 int UDP_CheckNewConnections (void)
 {
 	unsigned long	available;
+	char		buff[1];
 
 	if (net_acceptsocket == -1)
 		return -1;
@@ -250,6 +251,8 @@ int UDP_CheckNewConnections (void)
 		Sys_Error ("UDP: ioctlsocket (FIONREAD) failed");
 	if (available)
 		return net_acceptsocket;
+	// quietly absorb empty packets
+	recvfrom (net_acceptsocket, buff, 0, 0, NULL, NULL);
 	return -1;
 }
 
