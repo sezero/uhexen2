@@ -1,5 +1,32 @@
 ChangeLog:
 
+2005-10-13 (CVS):
+    * net_wipx.c: fixed wsipx.h include for lcc
+    * net_wins.c: conditionalized win32 socklen_t define to non-winsock2 case
+    * net_dgrm.c: used standart headers for unix
+    * net_udp.c: made UDP_MakeSocketBroadcastCapable static
+    * net_udp.c: cosmetic clean-up
+    * net_udp.c: removed unnecessary prototypes
+    * net_udp.c: close the socket by UDP_CloseSocket in UDP_OpenSocket failures
+    * net_udp.c: quietly absorb empty packets
+    * hexen2/net_wins.c: mostly cosmetic clean-ups
+    * net_wipx.c: clean-ups
+    * hexenworld/net*: added ip interface binding option (-ip xxx.xxx.xxx.xxx)
+      to hexenworld server. added sanity checking to and fixed the off by one
+      error in -ip option of the master server.
+    * opengl: moved gl_lightmap format setup to GL_Init
+    * gl_rsurf.c: added a missing glDisable(GL_BLEND) for multitextured rendering
+      (from Michal Wozniak.)
+    * menu.c: M_ScanSaves() and M_ScanMSaves() should actually use com_savedir,
+      not com_userdir. By default, they are the same but this is for correctness.
+    * hexen2/cl_tent.c: added comment: why break in the middle skipping dlights??
+
+2005-10-03 (CVS):
+    * Fix glows of floating models (eg. mana) not floating along with the
+      model. Also a fix intersecting of mana boxes with glow. from Michal
+      Wozniak.
+    * changed hexenworld server log filename from qconsole.log to hwsv.log
+
 2005-10-02 (CVS):
     * killed -Wshadow warnings
     * killed lcd_x and lcd_yaw (the stereoscopic stuff.
