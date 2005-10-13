@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.8 2005-10-13 15:15:51 sezero Exp $
+	$Id: net_udp.c,v 1.9 2005-10-13 15:16:45 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -96,7 +96,7 @@ int UDP_Init (void)
 	myAddr = *(int *)local->h_addr_list[0];
 
 	if ((net_controlsocket = UDP_OpenSocket (0)) == -1)
-		Sys_Error("UDP_Init: Unable to open control socket\n");
+		Sys_Error("UDP_Init: Unable to open control socket");
 
 	((struct sockaddr_in *)&broadcastaddr)->sin_family = AF_INET;
 	((struct sockaddr_in *)&broadcastaddr)->sin_addr.s_addr = INADDR_BROADCAST;
@@ -132,7 +132,7 @@ void UDP_Listen (qboolean state)
 		if (net_acceptsocket != -1)
 			return;
 		if ((net_acceptsocket = UDP_OpenSocket (net_hostport)) == -1)
-			Sys_Error ("UDP_Listen: Unable to open accept socket\n");
+			Sys_Error ("UDP_Listen: Unable to open accept socket");
 		return;
 	}
 
@@ -193,12 +193,8 @@ static int PartialIPAddress (char *in, struct qsockaddr *hostaddr)
 {
 	char buff[256];
 	char *b;
-	int addr;
-	int num;
-	int mask;
-	int run;
-	int port;
-	
+	int addr, mask, num, port, run;
+
 	buff[0] = '.';
 	b = buff;
 	strcpy(buff+1, in);
@@ -254,7 +250,7 @@ int UDP_CheckNewConnections (void)
 		return -1;
 
 	if (ioctl (net_acceptsocket, FIONREAD, &available) == -1)
-		Sys_Error ("UDP: ioctlsocket (FIONREAD) failed\n");
+		Sys_Error ("UDP: ioctlsocket (FIONREAD) failed");
 	if (available)
 		return net_acceptsocket;
 	return -1;
@@ -296,7 +292,7 @@ int UDP_Broadcast (int mysocket, byte *buf, int len)
 	if (mysocket != net_broadcastsocket)
 	{
 		if (net_broadcastsocket != 0)
-			Sys_Error("Attempted to use multiple broadcasts sockets\n");
+			Sys_Error("Attempted to use multiple broadcasts sockets");
 		ret = UDP_MakeSocketBroadcastCapable (mysocket);
 		if (ret == -1)
 		{
@@ -336,8 +332,7 @@ char *UDP_AddrToString (struct qsockaddr *addr)
 
 int UDP_StringToAddr (char *string, struct qsockaddr *addr)
 {
-	int ha1, ha2, ha3, ha4, hp;
-	int ipaddr;
+	int ha1, ha2, ha3, ha4, hp, ipaddr;
 
 	sscanf(string, "%d.%d.%d.%d:%d", &ha1, &ha2, &ha3, &ha4, &hp);
 	ipaddr = (ha1 << 24) | (ha2 << 16) | (ha3 << 8) | ha4;
