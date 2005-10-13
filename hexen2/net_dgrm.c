@@ -10,11 +10,12 @@
 #if defined(_WIN32)
 #include <windows.h>
 #include <winsock.h>	// for LCC
-#elif defined (NeXT)
+#elif defined(PLATFORM_UNIX)
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#else
+#else	// Eh ??
 #define AF_INET 		2	/* internet */
+// these actually seem to be winsock defines
 struct in_addr
 {
 	union
@@ -84,8 +85,14 @@ char *StrAddr (struct qsockaddr *addr)
 
 
 #ifdef BAN_TEST
+
+#if defined(PLATFORM_UNIX)
+uint32_t banAddr = 0x00000000;
+uint32_t banMask = 0xffffffff;
+#else	// _WIN32 or whatever
 unsigned long banAddr = 0x00000000;
 unsigned long banMask = 0xffffffff;
+#endif
 
 void NET_Ban_f (void)
 {
