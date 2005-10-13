@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.44 2005-09-28 06:07:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.45 2005-10-13 15:26:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1116,7 +1116,7 @@ void M_ScanSaves (void)
 	{
 		strcpy (m_filenames[i], "--- UNUSED SLOT ---");
 		loadable[i] = false;
-		sprintf (name, "%s/s%i/info.dat", com_userdir, i);
+		sprintf (name, "%s/s%i/info.dat", com_savedir, i);
 		f = fopen (name, "r");
 		if (!f)
 			continue;
@@ -1274,7 +1274,7 @@ void M_ScanMSaves (void)
 	{
 		strcpy (m_filenames[i], "--- UNUSED SLOT ---");
 		loadable[i] = false;
-		sprintf (name, "%s/ms%i/info.dat", com_userdir, i);
+		sprintf (name, "%s/ms%i/info.dat", com_savedir, i);
 		f = fopen (name, "r");
 		if (!f)
 			continue;
@@ -4078,6 +4078,10 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.44  2005/09/28 06:07:32  sezero
+ * renamed ToggleFullScreenSA to VID_ToggleFullscreen which
+ * actually is of VID_ class and now is easier to locate
+ *
  * Revision 1.43  2005/09/19 19:50:10  sezero
  * fixed those famous spelling errors
  *
