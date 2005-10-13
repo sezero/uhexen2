@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_dl_vidsdl.c,v 1.87 2005-10-02 15:43:08 sezero Exp $
+   $Id: gl_dl_vidsdl.c,v 1.88 2005-10-13 15:23:21 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -104,6 +104,8 @@ cvar_t		gl_ztrick = {"gl_ztrick","0",true};
 cvar_t		gl_purge_maptex = {"gl_purge_maptex", "1", true};
 		/* whether or not map-specific OGL textures
 		   are flushed from map. default == yes  */
+
+extern int	lightmap_bytes;	// in gl_rsurf.c
 
 // multitexturing
 qboolean	gl_mtexable = false;
@@ -425,7 +427,37 @@ GL_Init
 */
 void GL_Init (void)
 {
+	// setup lightmaps format
+	gl_lightmap_format = GL_LUMINANCE;
+	if (COM_CheckParm ("-lm_1"))
+		gl_lightmap_format = GL_LUMINANCE;
+	else if (COM_CheckParm ("-lm_a"))
+		gl_lightmap_format = GL_ALPHA;
+	else if (COM_CheckParm ("-lm_i"))
+		gl_lightmap_format = GL_INTENSITY;
+//	else if (COM_CheckParm ("-lm_2"))
+//		gl_lightmap_format = GL_RGBA4;
+	else if (COM_CheckParm ("-lm_4"))
+		gl_lightmap_format = GL_RGBA;
+
+	switch (gl_lightmap_format)
+	{
+	case GL_RGBA:
+		lightmap_bytes = 4;
+		break;
+//	case GL_RGBA4:
+//		lightmap_bytes = 2;
+//		break;
+	case GL_LUMINANCE:
+	case GL_INTENSITY:
+	case GL_ALPHA:
+		lightmap_bytes = 1;
+		break;
+	}
+
+	// initialize gl function pointers
 	GL_Init_Functions();
+
 	gl_vendor = (const char *)glGetString_fp (GL_VENDOR);
 	Con_Printf ("GL_VENDOR: %s\n", gl_vendor);
 	gl_renderer = (const char *)glGetString_fp (GL_RENDERER);

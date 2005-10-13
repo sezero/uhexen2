@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.56 2005-09-29 15:57:18 sezero Exp $
+	$Id: gl_draw.c,v 1.57 2005-10-13 15:23:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -80,7 +80,6 @@ static char *cs_data = {
 byte		conback_buffer[sizeof(qpic_t) + sizeof(glpic_t)];
 qpic_t		*conback = (qpic_t *)&conback_buffer;
 
-int		gl_lightmap_format = 4;
 int		gl_solid_format = 3;
 int		gl_alpha_format = 4;
 
@@ -2003,6 +2002,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.56  2005/09/29 15:57:18  sezero
+ * fixed gl_draw compilation for h2w
+ *
  * Revision 1.55  2005/09/29 14:08:29  sezero
  * avoid glhexen2 and glh2mp segfaults when run as dedicated server
  *

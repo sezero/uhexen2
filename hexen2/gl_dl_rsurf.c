@@ -4,13 +4,8 @@
 
 int			skytexturenum;
 
-#ifndef GL_RGBA4
-#define	GL_RGBA4	0
-#endif
-
-
-int		lightmap_bytes;		// 1, 2, or 4
-
+int		gl_lightmap_format = GL_RGBA;
+int		lightmap_bytes = 4;		// 1, 2, or 4. default is 4 for GL_RGBA
 int		lightmap_textures;
 
 unsigned	blocklights[18*18];
@@ -1445,30 +1440,6 @@ void GL_BuildLightmaps (void)
 	{
 		lightmap_textures = texture_extension_number;
 		texture_extension_number += MAX_LIGHTMAPS;
-	}
-
-	gl_lightmap_format = GL_LUMINANCE;
-	if (COM_CheckParm ("-lm_1"))
-		gl_lightmap_format = GL_LUMINANCE;
-	if (COM_CheckParm ("-lm_a"))
-		gl_lightmap_format = GL_ALPHA;
-	if (COM_CheckParm ("-lm_i"))
-		gl_lightmap_format = GL_INTENSITY;
-	if (COM_CheckParm ("-lm_2"))
-		gl_lightmap_format = GL_RGBA;	// was GL_RGBA4
-	if (COM_CheckParm ("-lm_4"))
-		gl_lightmap_format = GL_RGBA;
-
-	switch (gl_lightmap_format)
-	{
-	case GL_RGBA:
-		lightmap_bytes = 4;
-		break;
-	case GL_LUMINANCE:
-	case GL_INTENSITY:
-	case GL_ALPHA:
-		lightmap_bytes = 1;
-		break;
 	}
 
 	for (j=1 ; j<MAX_MODELS ; j++)

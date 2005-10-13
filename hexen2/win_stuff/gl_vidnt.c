@@ -128,6 +128,7 @@ static PIXELFORMATDESCRIPTOR pfd = {
 };
 
 float		gldepthmin, gldepthmax;
+extern int	lightmap_bytes;	// in gl_rsurf.c
 
 modestate_t	modestate = MS_UNINIT;
 
@@ -787,7 +788,36 @@ GL_Init
 */
 void GL_Init (void)
 {
+	// setup lightmaps format
+	gl_lightmap_format = GL_LUMINANCE;
+	if (COM_CheckParm ("-lm_1"))
+		gl_lightmap_format = GL_LUMINANCE;
+	else if (COM_CheckParm ("-lm_a"))
+		gl_lightmap_format = GL_ALPHA;
+	else if (COM_CheckParm ("-lm_i"))
+		gl_lightmap_format = GL_INTENSITY;
+//	else if (COM_CheckParm ("-lm_2"))
+//		gl_lightmap_format = GL_RGBA4;
+	else if (COM_CheckParm ("-lm_4"))
+		gl_lightmap_format = GL_RGBA;
+
+	switch (gl_lightmap_format)
+	{
+	case GL_RGBA:
+		lightmap_bytes = 4;
+		break;
+//	case GL_RGBA4:
+//		lightmap_bytes = 2;
+//		break;
+	case GL_LUMINANCE:
+	case GL_INTENSITY:
+	case GL_ALPHA:
+		lightmap_bytes = 1;
+		break;
+	}
+
 #ifdef GL_DLSYM
+	// initialize gl function pointers
 	GL_Init_Functions();
 #endif
 	gl_vendor = glGetString_fp (GL_VENDOR);

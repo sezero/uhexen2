@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.40 2005-09-29 15:57:19 sezero Exp $
+	$Id: gl_draw.c,v 1.41 2005-10-13 15:23:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -80,7 +80,6 @@ static char *cs_data = {
 byte		conback_buffer[sizeof(qpic_t) + sizeof(glpic_t)];
 qpic_t		*conback = (qpic_t *)&conback_buffer;
 
-int		gl_lightmap_format = 4;
 int		gl_solid_format = 3;
 int		gl_alpha_format = 4;
 
