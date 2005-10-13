@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.9 2005-10-13 15:16:45 sezero Exp $
+	$Id: net_udp.c,v 1.10 2005-10-13 15:17:29 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -46,9 +46,6 @@
 #endif
 
 #include "quakedef.h"
-
-//extern int gethostname (char *, int);
-extern int close (int);
 
 static int net_acceptsocket = -1;		// socket for fielding new connections
 static int net_controlsocket;
