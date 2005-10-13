@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.7 2005-10-02 15:43:08 sezero Exp $
+	$Id: net_udp.c,v 1.8 2005-10-13 15:15:51 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -275,7 +275,7 @@ int UDP_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 
 //=============================================================================
 
-int UDP_MakeSocketBroadcastCapable (int mysocket)
+static int UDP_MakeSocketBroadcastCapable (int mysocket)
 {
 	int				i = 1;
 
