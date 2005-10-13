@@ -2,8 +2,6 @@
 
 #include "quakedef.h"
 #include "quakeinc.h"
-#include <wsipx.h>
-#include "net_wipx.h"
 
 #ifdef __LCC__
 // no wsipx.h in lcc
@@ -17,7 +15,12 @@ typedef struct sockaddr_ipx {
 	char sa_nodenum[6];
 	unsigned short sa_socket;
 } SOCKADDR_IPX, *PSOCKADDR_IPX, *LPSOCKADDR_IPX;
-#endif	// __LCC__
+#else
+// not LCC, include the header
+#include <wsipx.h>
+#endif
+
+#include "net_wipx.h"
 
 extern cvar_t hostname;
 
