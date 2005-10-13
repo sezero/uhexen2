@@ -1006,7 +1006,7 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 
 int UDP_OpenSocket (int port)
 {
-	int newsocket;
+	int i, newsocket;
 	struct sockaddr_in address;
 	unsigned long _true = true;
 
@@ -1017,7 +1017,18 @@ int UDP_OpenSocket (int port)
 		Sys_Error ("UDP_OpenSocket: ioctl FIONBIO:", strerror(errno));
 
 	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = INADDR_ANY;
+	//ZOID -- check for interface binding option
+	if ((i = COM_CheckParm("-ip")) != 0 && i < com_argc - 1)
+	{
+		address.sin_addr.s_addr = inet_addr(com_argv[i+1]);
+		if (address.sin_addr.s_addr == INADDR_NONE)
+			Sys_Error ("%s is not a valid IP address", com_argv[i+1]);
+		Con_Printf("Binding to IP Interface Address of %s\n", inet_ntoa(address.sin_addr));
+	}
+	else
+	{
+		address.sin_addr.s_addr = INADDR_ANY;
+	}
 
 	if (port == PORT_ANY)
 		address.sin_port = 0;
