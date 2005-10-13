@@ -659,6 +659,11 @@ void R_RenderBrushPolyMTex (msurface_t *fa, qboolean override)
 		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		intensity = 1.0;
 	}
+	else
+	{
+		/* KIERO: Seems it's enabled when we enter here. */
+		glDisable_fp (GL_BLEND);
+	}
 
 	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
 	{
