@@ -29,10 +29,10 @@
 #define LPIN_ADDR struct in_addr*
 #define SOCKET_ERROR -1
 #define INVALID_SOCKET -1
-#endif
+#endif	// end of unix stuff
 
-#ifdef _WIN32
-// Hrmph....
+#if defined(_WIN32) && !( defined(_WS2TCPIP_H) || defined(_WS2TCPIP_H_) )
+// on win32, socklen_t seems to be a winsock2 thing
 typedef int	socklen_t;
 #endif
 

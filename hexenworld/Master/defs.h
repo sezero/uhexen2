@@ -18,8 +18,10 @@
 
 #ifdef _WIN32
 #include <windows.h>
-// Hrmph....
+#  if !( defined(_WS2TCPIP_H) || defined(_WS2TCPIP_H_) )
+// on win32, socklen_t seems to be a winsock2 thing
 typedef int socklen_t;
+#  endif
 #else
 #include <errno.h>
 #include <sys/stat.h>
