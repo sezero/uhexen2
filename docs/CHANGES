@@ -1,5 +1,8 @@
 ChangeLog:
 
+2005-10-14 (CVS):
+    * Updated the documentation for sound problems and workarounds
+
 2005-10-13 (CVS):
     * net_wipx.c: fixed wsipx.h include for lcc
     * net_wins.c: conditionalized win32 socklen_t define to non-winsock2 case
