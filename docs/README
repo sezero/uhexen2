@@ -337,6 +337,19 @@ combination whenever you want.
 2.1 Sound Problems
 ------------------
 
+First, we recommend using high sampling rates. This can be done either
+by a commandline argument like "-sndspeed 44100" or "-sndspeed 48000",
+or by using the game launcher. SDL and ALSA are the drivers of choice.
+
+If you have problems making sound to work correctly, using the arts
+sound server may help you:    artsd & ; artsdsp -m glhexen2 -sndoss
+You may notice some lag in sound but if all fails this may be a good
+enough workaround.
+
+We have reports that some i8x0 sound chips not working correctly with
+hexen2, and this is overcome either by using alsa driver of hexen2 at
+48000 sampling rate, or by the arts workaround mentioned above.
+
 If none of the three sound drivers work and you're using the older
 linux 2.4 kernel and built-in sound modules, you may try swapping to
 the ALSA kernel sound modules. This is not simple process, with good
