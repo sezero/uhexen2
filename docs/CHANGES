@@ -1,5 +1,9 @@
 ChangeLog:
 
+2005-10-16 (CVS):
+    * added math optimization flags to utilities and
+      hwsv CFLAS. they are now compiled for i586.
+
 2005-10-14 (CVS):
     * Updated the documentation for sound problems and workarounds
 
