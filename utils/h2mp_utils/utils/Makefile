@@ -9,7 +9,7 @@ LIGHT=light
 VIS=vis
 
 DESTDIR=../bin
-CFLAGS = -O2 -Wall
+CFLAGS = -march=i586 -O2 -Wall -ffast-math -fexpensive-optimizations
 LDFLAGS = 
 LDLIBS= -lm
 

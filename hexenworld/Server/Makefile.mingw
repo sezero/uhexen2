@@ -17,7 +17,7 @@ LINKER = $(WIN32CC)
 ifdef DEBUG
 CFLAGS = -DDEBUG_BUILD -g -Wall -I$(MINGWDIR)/include
 else
-CFLAGS = -O2 -march=i586 -Wall -I$(MINGWDIR)/include
+CFLAGS = -O2 -march=i586 -Wall -ffast-math -fexpensive-optimizations -I$(MINGWDIR)/include
 endif
 
 SVINCS = -I../Client -I.

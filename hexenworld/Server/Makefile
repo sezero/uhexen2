@@ -13,7 +13,7 @@ LINKER = $(CC)
 ifdef DEBUG
 CFLAGS = -DDEBUG_BUILD -g -Wall -DPLATFORM_UNIX
 else
-CFLAGS = -O2 -march=i586 -Wall -DPLATFORM_UNIX
+CFLAGS = -O2 -march=i586 -Wall -ffast-math -fexpensive-optimizations -DPLATFORM_UNIX
 endif
 
 GAMEFLAGS = -DH2W -DSERVERONLY

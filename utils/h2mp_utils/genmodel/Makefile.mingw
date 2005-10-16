@@ -10,7 +10,7 @@ endif
 LINKER = $(WIN32CC)
 BINARY=genmodel.exe
 DESTDIR=../bin
-CFLAGS = -I$(MINGWDIR)/include -O2 -Wall
+CFLAGS = -I$(MINGWDIR)/include -march=i586 -O2 -Wall -ffast-math -fexpensive-optimizations
 LDFLAGS = -mconsole
 LDLIBS =
 
