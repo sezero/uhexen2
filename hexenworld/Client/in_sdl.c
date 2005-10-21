@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.24 2005-09-28 06:07:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.25 2005-10-21 18:13:20 sezero Exp $
 */
 
 #include "SDL.h"
@@ -252,6 +252,7 @@ void IN_Init (void)
 	IN_StartupJoystick ();
 
 	SDL_EnableUNICODE(1); /* needed for input in console */
+	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL*2);
 }
 
 /*
@@ -1114,6 +1115,10 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2005/09/28 06:07:32  sezero
+ * renamed ToggleFullScreenSA to VID_ToggleFullscreen which
+ * actually is of VID_ class and now is easier to locate
+ *
  * Revision 1.23  2005/07/16 23:23:55  sezero
  * killed fastfabs, not worthy of keeping anymore
  *

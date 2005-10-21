@@ -686,13 +686,20 @@ void Key_Event (int key, qboolean down)
 	if (down)
 	{
 		key_repeats[key]++;
-		if (key != K_BACKSPACE 
+
+/*		if (key != K_BACKSPACE 
 			&& key != K_PAUSE 
 			&& key != K_PGUP 
 			&& key != K_PGDN
 			&& key_repeats[key] > 1)
 			return;	// ignore most autorepeats
-			
+*/
+		// ignore all autorepeats unless chatting or in console
+		if (key_dest != key_console &&
+		    key_dest != key_message &&
+		    key_repeats[key] > 1)
+			return;
+
 		if (key >= 200 && !keybindings[key])
 			Con_Printf ("%s is unbound, hit F4 to set.\n", Key_KeynumToString (key) );
 	}
