@@ -1,5 +1,18 @@
 ChangeLog:
 
+2005-10-21 (CVS):
+    * added support for systems without OSS sound.
+    * added a paranoid case to S_SoundInfo.
+    * killed a few unnecessary sound prints.
+    * added more platform defines.
+    * added NetBSD and OpenBSD to cd_bsd.
+    * merged the gl headers back into glquake.h.
+    * merged gl_func_nondl.h into gl_func.h.
+    * added a unix makefile option for linking to gl functions at
+      runtime, similar to win32 version.
+    * hexenworld server shall now flush its logfiles upon every print.
+    * made key repeats work.
+
 2005-10-16 (CVS):
     * added math optimization flags to utilities and
       hwsv CFLAS. they are now compiled for i586.
