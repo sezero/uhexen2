@@ -88,7 +88,9 @@ void SV_Logfile_f (void)
 	Con_Printf ("Logging text to %s.\n", name);
 	sv_logfile = fopen (name, "w");
 	if (!sv_logfile)
-		Con_Printf ("failed.\n");
+		Con_Printf ("Failed opening hwsv.log\n");
+	else
+		fflush (sv_logfile);
 }
 
 
@@ -132,6 +134,7 @@ void SV_Fraglogfile_f (void)
 	}
 
 	Con_Printf ("Logging frags to %s.\n", name);
+	fflush (sv_fraglogfile);
 }
 
 

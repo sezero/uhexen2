@@ -2349,7 +2349,10 @@ void PF_logfrag (void)
 
 	SZ_Print (&svs.log[svs.logsequence&1], s);
 	if (sv_fraglogfile)
+	{
 		fprintf (sv_fraglogfile, s);
+		fflush (sv_fraglogfile);
+	}
 }
 
 
