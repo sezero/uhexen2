@@ -65,8 +65,18 @@ LDFLAGS =
 GLFLAGS = -L/usr/X11R6/lib
 ASFLAGS = -f elf
 
+# whether to dlsym gl and wgl function calls
+GLX_DLSYM=yes
+ifeq "$(GLX_DLSYM)" "yes"
+GL_DEFS = -DGL_DLSYM
+else
+GL_DEFS = 
+GLFLAGS+= -lGL
+endif
+
 ifeq "$(BUILDGL)" "yes"
 GAMEFLAGS+= -DGLQUAKE
+CFLAGS+= $(GL_DEFS)
 endif
 
 ifeq "$(BUILDMP)" "yes"

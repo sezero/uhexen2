@@ -71,6 +71,16 @@ SDLFLAGS = `sdl-config --cflags`
 SDLLINK = `sdl-config --libs`
 LDFLAGS =
 GLFLAGS = -L/usr/X11R6/lib
+
+# whether to dlsym gl and wgl function calls
+GLX_DLSYM=yes
+ifeq "$(GLX_DLSYM)" "yes"
+GL_DEFS = -DGL_DLSYM
+else
+GL_DEFS = 
+GLFLAGS+= -lGL
+endif
+
 ASFLAGS = -f elf
 # for static binaries, you need to compile SDL_mixer
 # with minimum features required only for midi
@@ -224,18 +234,22 @@ cleaner:
 	rm -f *.o core $(GLMP_BINARY) $(GLMP_BINARY_STATIC) $(GLH2_BINARY) $(GLH2_BINARY_STATIC)\
 	$(MP_BINARY) $(MP_BINARY_STATIC) $(H2_BINARY) $(H2_BINARY_STATIC)
 
+glmp_static : CFLAGS+= $(GL_DEFS)
 glmp_static : GAMEFLAGS+= -DGLQUAKE -DH2MP
 glmp_static : $(GLOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(GLMP_BINARY_STATIC) $(GLOBJS) $(COMMONOBJS) $(LDSTATIC)
 
+glmp_dynamic : CFLAGS+= $(GL_DEFS)
 glmp_dynamic : GAMEFLAGS+=-DGLQUAKE -DH2MP
 glmp_dynamic : $(GLOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(GLMP_BINARY) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
+glh2_static : CFLAGS+= $(GL_DEFS)
 glh2_static : GAMEFLAGS+=-DGLQUAKE
 glh2_static : $(GLOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(GLH2_BINARY_STATIC) $(GLOBJS) $(COMMONOBJS) $(LDSTATIC)
 
+glh2_dynamic : CFLAGS+= $(GL_DEFS)
 glh2_dynamic : GAMEFLAGS+=-DGLQUAKE
 glh2_dynamic : $(GLOBJS) $(COMMONOBJS)
 		$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)

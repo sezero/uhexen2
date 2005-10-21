@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_dl_vidsdl.c,v 1.88 2005-10-13 15:23:21 sezero Exp $
+   $Id: gl_dl_vidsdl.c,v 1.89 2005-10-21 18:02:06 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -77,7 +77,9 @@ const char	*gl_vendor;
 const char	*gl_renderer;
 const char	*gl_version;
 const char	*gl_extensions;
+#ifdef GL_DLSYM
 char		*gl_library;
+#endif
 int		gl_max_size = 256;
 qboolean	is_3dfx = false;
 float		gldepthmin, gldepthmax;
@@ -264,8 +266,10 @@ int VID_SetMode (int modenum)
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		Sys_Error ("Couldn't init video: %s", SDL_GetError());
 
+#ifdef GL_DLSYM
 	if (SDL_GL_LoadLibrary(gl_library) < 0)
 		Sys_Error("VID: Couldn't load GL library: %s", SDL_GetError());
+#endif
 
 #if SDL_PATCHLEVEL > 5
 	if ((i = COM_CheckParm ("-fsaa")))
@@ -401,6 +405,7 @@ void CheckStencilBuffer(void)
 
 	have_stencil = false;
 
+#ifdef GL_DLSYM
 	glStencilFunc_fp = (glStencilFunc_f) SDL_GL_GetProcAddress("glStencilFunc");
 	glStencilOp_fp = (glStencilOp_f) SDL_GL_GetProcAddress("glStencilOp");
 	glClearStencil_fp = (glClearStencil_f) SDL_GL_GetProcAddress("glClearStencil");
@@ -411,6 +416,7 @@ void CheckStencilBuffer(void)
 		Con_Printf ("glStencil functions not available\n");
 		return;
 	}
+#endif
 
 	SDL_GL_GetAttribute(SDL_GL_STENCIL_SIZE, &stencil_size);
 	if (stencil_size)
@@ -455,9 +461,10 @@ void GL_Init (void)
 		break;
 	}
 
+#ifdef GL_DLSYM
 	// initialize gl function pointers
 	GL_Init_Functions();
-
+#endif
 	gl_vendor = (const char *)glGetString_fp (GL_VENDOR);
 	Con_Printf ("GL_VENDOR: %s\n", gl_vendor);
 	gl_renderer = (const char *)glGetString_fp (GL_RENDERER);
@@ -519,7 +526,7 @@ void GL_Init (void)
 #endif
 }
 
-
+#ifdef GL_DLSYM
 void GL_Init_Functions(void)
 {
   glBegin_fp = (glBegin_f) SDL_GL_GetProcAddress("glBegin");
@@ -641,7 +648,7 @@ void GL_Init_Functions(void)
   glGetFloatv_fp = (glGetFloatv_f) SDL_GL_GetProcAddress("glGetFloatv");
   if (glGetFloatv_fp == 0) {Sys_Error("glGetFloatv not found in GL library");}
 }
-
+#endif
 
 void Gamma_Init(void)
 {
@@ -1033,6 +1040,7 @@ void	VID_Init (unsigned char *palette)
 
 	Cmd_AddCommand ("vid_setgamma", VID_SetGamma_f);
 
+#ifdef GL_DLSYM
 	gl_library=NULL;
 	if (COM_CheckParm("--gllibrary")) {
 		gl_library = com_argv[COM_CheckParm("--gllibrary")+1];
@@ -1042,6 +1050,7 @@ void	VID_Init (unsigned char *palette)
 		gl_library = com_argv[COM_CheckParm("-g")+1];
 		Con_Printf("Using GL library: %s\n",gl_library);
 	}
+#endif
 
 	modelist[0].type = MS_WINDOWED;
 	modelist[0].width = 640;

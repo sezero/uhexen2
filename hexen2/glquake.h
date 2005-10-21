@@ -2,14 +2,25 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.34 2005-09-29 14:05:45 sezero Exp $
+	$Id: glquake.h,v 1.35 2005-10-21 18:02:06 sezero Exp $
 */
 
 
 #ifdef _WIN32
-#include "glwin32.h"
-#else
-#include "glxunix.h"
+#include <windows.h>
+#endif
+
+#include <GL/gl.h>
+#include <GL/glu.h>
+
+#include "gl_func.h"
+
+#ifndef	GLX_3DFX_WINDOW_MODE_MESA
+#define	GLX_3DFX_WINDOW_MODE_MESA		0x1
+#endif
+
+#ifndef	GLX_3DFX_FULLSCREEN_MODE_MESA
+#define	GLX_3DFX_FULLSCREEN_MODE_MESA		0x2
 #endif
 
 #ifndef	GL_TEXTURE0_ARB
@@ -333,6 +344,10 @@ extern	qboolean gl_mtexable;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.34  2005/09/29 14:05:45  sezero
+ * cleaned-up hash check stuff in GL_LoadTexture. added
+ * crc check as an alternative (disabled by default.)
+ *
  * Revision 1.33  2005/09/12 08:17:46  sezero
  * added stencil buffered shadows (extracted from jshexen2, code by MrG)
  *
