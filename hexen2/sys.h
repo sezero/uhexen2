@@ -59,6 +59,12 @@ void Sys_Init (void);
 #		define VERSION_PLATFORM "Linux"
 #	elif defined (__FreeBSD__)
 #		define VERSION_PLATFORM "FreeBSD"
+#	elif defined (__NetBSD__)
+#		define VERSION_PLATFORM "NetBSD"
+#	elif defined (__OpenBSD__)
+#		define VERSION_PLATFORM "OpenBSD"
+#	elif defined (__MORPHOS__)
+#		define VERSION_PLATFORM "MorphOS"
 #	else
 #		define VERSION_PLATFORM "Unix"
 #	endif
