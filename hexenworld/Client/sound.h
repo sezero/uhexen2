@@ -14,6 +14,12 @@ extern unsigned short	snd_system;
 #define	S_SYS_OSS	1
 #define	S_SYS_SDL	2
 #define	S_SYS_ALSA	3
+
+// add more systems with OSS here
+#if defined(__linux__) || defined(__FreeBSD__)
+#define HAVE_OSS_SOUND
+#endif
+
 #endif
 
 #define MAX_TRYRATES	4
@@ -123,11 +129,13 @@ void (*SNDDMA_Shutdown)(void);
 
 void (*SNDDMA_Submit)(void);
 
+#if defined(HAVE_OSS_SOUND)
 // OSS versions of the above
 extern qboolean S_OSS_Init(void);
 extern int S_OSS_GetDMAPos(void);
 extern void S_OSS_Shutdown(void);
 extern void S_OSS_Submit(void);
+#endif	// HAVE_OSS_SOUND
 // SDL versions of the above
 extern qboolean S_SDL_Init(void);
 extern int S_SDL_GetDMAPos(void);

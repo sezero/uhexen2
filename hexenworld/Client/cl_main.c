@@ -1334,14 +1334,18 @@ void Host_Init (quakeparms_t *parms)
 	if (COM_CheckParm("-nosound") || COM_CheckParm("--nosound") || COM_CheckParm("-s"))
 		snd_system = S_SYS_NULL;
 	else if (COM_CheckParm ("-sndsdl"))
-		snd_system = S_SYS_SDL; 
+		snd_system = S_SYS_SDL;
 #  if defined(__linux__) && !defined(NO_ALSA)
 	// allow ALSA only on linux
-	else if (COM_CheckParm ("-sndalsa")) 
-		snd_system = S_SYS_ALSA; 
+	else if (COM_CheckParm ("-sndalsa"))
+		snd_system = S_SYS_ALSA;
 #  endif
-	else 
+	else
+#  if defined(HAVE_OSS_SOUND)
 		snd_system = S_SYS_OSS;
+#  else
+		snd_system = S_SYS_SDL;
+#  endif
 #endif
 
 #if defined(GLQUAKE) || defined(PLATFORM_UNIX)

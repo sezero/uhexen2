@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.14 2005-08-10 09:23:38 sezero Exp $
+	$Id: snd_oss.c,v 1.15 2005-10-21 17:57:14 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -25,6 +25,8 @@
 */
 
 #include "quakedef.h"
+
+#if defined(HAVE_OSS_SOUND)
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -286,4 +288,6 @@ Send sound to device if buffer isn't really the dma buffer
 void S_OSS_Submit(void)
 {
 }
+
+#endif	// HAVE_OSS_SOUND
 

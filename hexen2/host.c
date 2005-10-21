@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.30 2005-09-29 14:04:06 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.31 2005-10-21 17:57:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1011,7 +1011,11 @@ void Host_Init (quakeparms_t *parms)
 			snd_system = S_SYS_ALSA;
 #  endif
 		else
+#  if defined(HAVE_OSS_SOUND)
 			snd_system = S_SYS_OSS;
+#  else
+			snd_system = S_SYS_SDL;
+#  endif
 #endif
 
 #if defined(GLQUAKE) || defined(PLATFORM_UNIX)
@@ -1090,6 +1094,10 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2005/09/29 14:04:06  sezero
+ * cleaned-up Host_Init and Host_Shutdown stuff. removed
+ * unnecessary ca_dedicated checks from CDAudio_Init.
+ *
  * Revision 1.29  2005/09/26 18:26:41  sezero
  * flush the command buffer before setting host_initialized to true
  *

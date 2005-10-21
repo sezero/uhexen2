@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.26 2005-09-24 23:50:36 sezero Exp $
+	$Id: snd_dma.c,v 1.27 2005-10-21 17:57:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -103,9 +103,11 @@ void S_SoundInfo_f(void)
 	
 #ifdef PLATFORM_UNIX
 	switch (snd_system) {
+#if defined(HAVE_OSS_SOUND)
 	case S_SYS_OSS:
 		s_sys = "OSS";
 		break;
+#endif
 	case S_SYS_SDL:
 		s_sys = "SDL";
 		break;
@@ -114,6 +116,10 @@ void S_SoundInfo_f(void)
 		s_sys = "ALSA";
 		break;
 #endif
+	case S_SYS_NULL:
+	default:
+		// this should not have happened
+		s_sys = "NULL";
 	}
 	Con_Printf("Driver: %s\n", s_sys);
 #endif
@@ -146,12 +152,14 @@ void S_GetSubsys (void)
 			SNDDMA_Submit	 = S_ALSA_Submit;
 			break;
 #endif
+#if defined(HAVE_OSS_SOUND)
 		case S_SYS_OSS:
 			SNDDMA_Init	 = S_OSS_Init;
 			SNDDMA_GetDMAPos = S_OSS_GetDMAPos;
 			SNDDMA_Shutdown	 = S_OSS_Shutdown;
 			SNDDMA_Submit	 = S_OSS_Submit;
 			break;
+#endif
 		case S_SYS_NULL:
 		default:
 		// Paranoia: We should never have come this far!..
@@ -212,9 +220,7 @@ void S_Startup (void)
 
 	if (!rc)
 	{
-#ifndef	_WIN32
-		Con_Printf("S_Startup: SNDDMA_Init failed.\n");
-#endif
+		Con_Printf("Failed initializing sound\n");
 		sound_started = 0;
 		return;
 	}
@@ -264,7 +270,6 @@ void S_Init (void)
 		Con_Printf ("loading all sounds as 8bit\n");
 	}
 
-
 	snd_initialized = true;
 
 	S_Startup ();
@@ -276,10 +281,6 @@ void S_Init (void)
 
 	known_sfx = Hunk_AllocName (MAX_SFX*sizeof(sfx_t), "sfx_t");
 	num_sfx = 0;
-
-	if ( shm ) {
-		Con_Printf ("Sound sampling rate: %i\n", shm->speed);
-	}
 
 	// provides a tick sound until washed clean
 
@@ -1104,6 +1105,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2005/09/24 23:50:36  sezero
+ * fixed a bunch of compiler warnings
+ *
  * Revision 1.25  2005/09/19 19:50:10  sezero
  * fixed those famous spelling errors
  *
