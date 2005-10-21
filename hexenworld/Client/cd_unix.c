@@ -1,6 +1,6 @@
 /*
 	cd_unix.c
-	$Id: cd_unix.c,v 1.3 2005-07-15 06:12:58 sezero Exp $
+	$Id: cd_unix.c,v 1.4 2005-10-21 17:59:07 sezero Exp $
 
 	Wrapper file to include correct cdaudio code
 
@@ -30,7 +30,7 @@
 #include "cd_sdl.c"
 #elif defined (__linux__)
 #include "cd_linux.c"
-#elif defined (__FreeBSD__) 
+#elif defined (__FreeBSD__) || defined (__OpenBSD__) || defined (__NetBSD__)
 #include "cd_bsd.c"
 #else
 #include "cd_sdl.c"

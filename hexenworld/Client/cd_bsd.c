@@ -1,6 +1,6 @@
 /*
 	cd_bsd.c
-	$Id: cd_bsd.c,v 1.9 2005-09-29 14:04:06 sezero Exp $
+	$Id: cd_bsd.c,v 1.10 2005-10-21 17:59:07 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	A few BSD bits taken from the Dark Places project for Hammer
@@ -49,8 +49,12 @@ static byte	playTrack;
 static byte	maxTrack;
 
 static int cdfile = -1;
-//static char cd_dev[64] = _PATH_DEV "cd0";
-static char cd_dev[64] = _PATH_DEV "acd0"; // user can always do -cddev
+// default path to cdrom device. user can always do -cddev
+#if !defined(__FreeBSD__)
+static char cd_dev[64] = _PATH_DEV "cd0";
+#else
+static char cd_dev[64] = _PATH_DEV "acd0";
+#endif
 static struct ioc_vol drv_vol0;	// orig. setting to be restored upon exit
 static struct ioc_vol drv_vol;	// the volume setting we'll be using
 
