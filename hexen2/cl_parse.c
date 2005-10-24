@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.15 2005-10-02 15:43:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.16 2005-10-24 21:20:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1459,7 +1459,7 @@ void CL_ParseServerMessage (void)
 			i = MSG_ReadByte ();
 			if (i < 0 || i >= MAX_CL_STATS)
 				Sys_Error ("svc_updatestat: %i is invalid", i);
-			cl.stats[i] = MSG_ReadLong ();;
+			cl.stats[i] = MSG_ReadLong ();
 			break;
 			
 		case svc_spawnstaticsound:
@@ -1782,6 +1782,9 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/10/02 15:43:08  sezero
+ * killed -Wshadow warnings
+ *
  * Revision 1.14  2005/09/28 06:09:31  sezero
  * took care of flickering problem while drawing the loading
  * plaque (from Pa3PyX.) glFlush is now required.

@@ -2,7 +2,7 @@
 	sv_move.c
 	monster movement
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.3 2004-12-18 14:08:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.4 2005-10-24 21:20:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -41,7 +41,7 @@ qboolean SV_CheckBottom (edict_t *ent)
 	if(ent->v.hull)
 	{
 		index = ent->v.hull-1;
-		wclip_hull = &model->hulls[index];;
+		wclip_hull = &model->hulls[index];
 		if (!wclip_hull)  // Invalid hull
 		{
 			Con_Printf ("ERROR: hull %d is null.\n",wclip_hull);
@@ -588,6 +588,10 @@ void SV_MoveToGoal (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/18 14:08:08  sezero
+ * Clean-up and kill warnings 9:
+ * Kill many unused vars.
+ *
  * Revision 1.2  2004/12/12 14:14:43  sezero
  * style changes to our liking
  *

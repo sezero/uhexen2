@@ -274,7 +274,7 @@ void Key_Console (int key)
 					if (i>0) {
 						textCopied[i]=0;
 						strcat(key_lines[edit_line], textCopied);
-						key_linepos+=i;;
+						key_linepos+=i;
 					}
 					Z_Free(textCopied);
 				}

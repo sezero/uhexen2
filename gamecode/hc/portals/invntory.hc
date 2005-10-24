@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/invntory.hc,v 1.1.1.1 2004-11-29 11:33:05 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/invntory.hc,v 1.2 2005-10-24 21:20:26 sezero Exp $
  */
 
 entity SelectSpawnPoint(void);
@@ -340,7 +340,7 @@ void TimeBombTouch()
 void Use_TimeBomb()
 {
 	newmis=spawn();
-	newmis.owner=self;;
+	newmis.owner=self;
 	newmis.classname="timebomb";
 	newmis.solid=SOLID_BBOX;
 	if(deathmatch&&!coop)
@@ -1046,6 +1046,9 @@ void Inventory_Quick(float which)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:33:05  sezero
+ * Initial import
+ *
  * 
  * 20    3/19/98 12:17a Mgummelt
  * last bug fixes

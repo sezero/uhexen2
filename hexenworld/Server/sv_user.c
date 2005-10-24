@@ -243,7 +243,7 @@ void SV_Spawn_f (void)
 		ent->v.team = 0;	// FIXME
 	ent->v.netname = host_client->name - pr_strings;
 	//ent->v.playerclass = host_client->playerclass = 
-	ent->v.next_playerclass = host_client->next_playerclass;;
+	ent->v.next_playerclass = host_client->next_playerclass;
 	ent->v.has_portals = host_client->portals;
 
 	host_client->entgravity = 1.0;
