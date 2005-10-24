@@ -347,9 +347,8 @@ void R_AliasSetUpTransform (int trivial_accept)
 	static float	tmatrix[3][4];
 	static float	viewmatrix[3][4];
 	vec3_t			angles;
-	float entScale;
-	float xyfact;
-	float zfact;
+	float	entScale;
+	float	xyfact = 1.0, zfact = 1.0; // avoid compiler warning
 	float	forward;
 	float	yaw, pitch;
 

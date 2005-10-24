@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.37 2005-10-02 20:02:41 sezero Exp $
+	$Id: gl_rmain.c,v 1.38 2005-10-24 23:01:15 sezero Exp $
 */
 
 
@@ -689,7 +689,8 @@ void R_DrawAliasModel (entity_t *e)
 	aliashdr_t	*paliashdr;
 	float		an;
 	static float	tmatrix[3][4];
-	float		entScale, xyfact, zfact;
+	float		entScale;
+	float		xyfact = 1.0, zfact = 1.0; // avoid compiler warning
 	qpic_t		*stonepic;
 	glpic_t		*gl;
 	char		temp[40];
@@ -1831,6 +1832,10 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.37  2005/10/02 20:02:41  sezero
+ * Fix glows of floating models (eg. mana) not floating along with the model.
+ * Also a fix intersecting of mana boxes with glow. from Michal Wozniak.
+ *
  * Revision 1.36  2005/09/19 19:50:10  sezero
  * fixed those famous spelling errors
  *

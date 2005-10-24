@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.27 2005-10-02 20:02:41 sezero Exp $
+	$Id: gl_rmain.c,v 1.28 2005-10-24 23:01:15 sezero Exp $
 */
 
 
@@ -663,7 +663,8 @@ void R_DrawAliasModel (entity_t *e)
 	float		an;
 	int		anim;
 	static float	tmatrix[3][4];
-	float		entScale, xyfact, zfact;
+	float		entScale;
+	float		xyfact = 1.0, zfact = 1.0; // avoid compiler warning
 	qpic_t		*stonepic;
 	glpic_t		*gl;
 	char		temp[80];
