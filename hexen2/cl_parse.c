@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.16 2005-10-24 21:20:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.17 2005-10-24 23:12:06 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1235,6 +1235,7 @@ void CL_ParseServerMessage (void)
 			
 		case svc_disconnect:
 			Host_EndGame ("Server disconnected\n");
+			break;
 
 		case svc_print:
 			if(intro_playing)
@@ -1782,6 +1783,9 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/10/24 21:20:27  sezero
+ * fixed those double semicolons
+ *
  * Revision 1.15  2005/10/02 15:43:08  sezero
  * killed -Wshadow warnings
  *
