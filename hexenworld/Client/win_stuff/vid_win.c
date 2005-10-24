@@ -2031,6 +2031,7 @@ void	VID_Init (unsigned char *palette)
 // GDI doesn't let us remap palette index 0, so we'll remap color
 // mappings from that black to another one
 	bestmatchmetric = 256*256*3;
+	bestmatch = 0;	// FIXME - uninitialized, guessing 0...
 
 	for (i=1 ; i<256 ; i++)
 	{

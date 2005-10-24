@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.37 2005-10-02 15:45:27 sezero Exp $
+   $Id: vid_sdl.c,v 1.38 2005-10-24 22:54:48 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -550,6 +550,7 @@ void	VID_Init (unsigned char *palette)
 // GDI doesn't let us remap palette index 0, so we'll remap color
 // mappings from that black to another one
 	bestmatchmetric = 256*256*3;
+	bestmatch = 0;	// FIXME - uninitialized, guessing 0...
 
 	for (i=1 ; i<256 ; i++)
 	{
@@ -904,6 +905,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.37  2005/10/02 15:45:27  sezero
+ * killed lcd_x and lcd_yaw (the stereoscopic stuff.) never tested, never used.
+ *
  * Revision 1.36  2005/10/02 15:43:08  sezero
  * killed -Wshadow warnings
  *
