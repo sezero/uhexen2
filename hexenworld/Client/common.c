@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.18 2005-09-24 23:50:36 sezero Exp $
+	$Id: common.c,v 1.19 2005-10-24 21:22:15 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -275,18 +275,31 @@ void MSG_WriteString (sizebuf_t *sb, char *s)
 
 void MSG_WriteCoord (sizebuf_t *sb, float f)
 {
-	MSG_WriteShort (sb, (int)(f*8));
+//	MSG_WriteShort (sb, (int)(f*8));
+	if (f >= 0)
+		MSG_WriteShort (sb, (int)(f * 8.0 + 0.5));
+	else
+		MSG_WriteShort (sb, (int)(f * 8.0 - 0.5));
 }
 
 void MSG_WriteAngle (sizebuf_t *sb, float f)
 {
-	MSG_WriteByte (sb, (int)(f*256/360) & 255);
+//	MSG_WriteByte (sb, (int)(f*256/360) & 255);
+//	LordHavoc: round to nearest value, rather than rounding toward zero
+	if (f >= 0)
+		MSG_WriteByte (sb, (int)(f*(256.0/360.0) + 0.5) & 255);
+	else
+		MSG_WriteByte (sb, (int)(f*(256.0/360.0) - 0.5) & 255);
 }
 
 #ifdef H2W
 void MSG_WriteAngle16 (sizebuf_t *sb, float f)
 {
-	MSG_WriteShort (sb, (int)(f*65536/360) & 65535);
+//	MSG_WriteShort (sb, (int)(f*65536/360) & 65535);
+	if (f >= 0)
+		MSG_WriteShort (sb, (int)(f*(65536.0/360.0) + 0.5) & 65535);
+	else
+		MSG_WriteShort (sb, (int)(f*(65536.0/360.0) - 0.5) & 65535);
 }
 
 void MSG_WriteUsercmd (sizebuf_t *buf, usercmd_t *cmd, qboolean long_msg)
@@ -490,18 +503,18 @@ char *MSG_ReadStringLine (void)
 
 float MSG_ReadCoord (void)
 {
-	return MSG_ReadShort() * (1.0/8);
+	return MSG_ReadShort() * (1.0/8.0);
 }
 
 float MSG_ReadAngle (void)
 {
-	return MSG_ReadChar() * (360.0/256);
+	return MSG_ReadChar() * (360.0/256.0);
 }
 
 #ifdef H2W
 float MSG_ReadAngle16 (void)
 {
-	return MSG_ReadShort() * (360.0/65536);
+	return MSG_ReadShort() * (360.0/65536.0);
 }
 
 void MSG_ReadUsercmd (usercmd_t *move, qboolean long_msg)
