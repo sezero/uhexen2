@@ -1,3 +1,8 @@
+/*
+	menu.h
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.h,v 1.3 2005-10-25 20:08:41 sezero Exp $
+*/
 
 //
 // the net drivers should just set the apropriate bits in m_activenet,

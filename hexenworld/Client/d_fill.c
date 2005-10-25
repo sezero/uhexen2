@@ -1,7 +1,10 @@
-// d_clear: clears a specified rectangle to the specified color
+/*
+	d_clear.c
+	clears a specified rectangle to the specified color
+
+*/
 
 #include "quakedef.h"
-
 
 /*
 ================
@@ -33,7 +36,7 @@ void D_FillRect (vrect_t *rect, int color)
 		rwidth = vid.width - rx;
 	if (ry+rheight > vid.height)
 		rheight = vid.height - rx;
-		
+
 	if (rwidth < 1 || rheight < 1)
 		return;
 

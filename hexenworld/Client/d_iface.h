@@ -1,9 +1,14 @@
-// d_iface.h: interface header file for rasterization driver modules
+/*
+	d_iface.h
+	interface header file for rasterization driver modules
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_iface.h,v 1.4 2005-10-25 20:08:41 sezero Exp $
+*/
 
 #define WARP_WIDTH		320
 #define WARP_HEIGHT		200
 
-#define MAX_SKIN_HEIGHT	480
+#define MAX_SKIN_HEIGHT		480
 
 typedef struct
 {
@@ -71,7 +76,7 @@ typedef enum
 	rt_bloodshot
 } rt_type_t;
 
-// !!! if this is changed, it must be changed in d_ifacea.h too !!!
+// !!! if this is changed, it must be changed in glquake.h too !!!
 typedef struct particle_s
 {
 // driver-usable fields
@@ -108,15 +113,15 @@ typedef struct finalvert_s {
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
 typedef struct
 {
-	void				*pskin;
+	void			*pskin;
 	maliasskindesc_t	*pskindesc;
-	int					skinwidth;
-	int					skinheight;
-	mtriangle_t			*ptriangles;
-	finalvert_t			*pfinalverts;
-	int					numtriangles;
-	int					drawtype;
-	int					seamfixupX16;
+	int			skinwidth;
+	int			skinheight;
+	mtriangle_t		*ptriangles;
+	finalvert_t		*pfinalverts;
+	int			numtriangles;
+	int			drawtype;
+	int			seamfixupX16;
 } affinetridesc_t;
 
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
@@ -126,54 +131,54 @@ typedef struct {
 
 typedef struct
 {
-	int			nump;
+	int		nump;
 	emitpoint_t	*pverts;	// there's room for an extra element at [nump], 
-							//  if the driver wants to duplicate element [0] at
-							//  element [nump] to avoid dealing with wrapping
+					//  if the driver wants to duplicate element [0] at
+					//  element [nump] to avoid dealing with wrapping
 	mspriteframe_t	*pspriteframe;
-	vec3_t			vup, vright, vpn;	// in worldspace
-	float			nearzi;
+	vec3_t		vup, vright, vpn;	// in worldspace
+	float		nearzi;
 } spritedesc_t;
 
 typedef struct
 {
 	int		u, v;
-	float	zi;
+	float		zi;
 	int		color;
 } zpointdesc_t;
 
 extern cvar_t	r_drawflat;
 extern int		d_spanpixcount;
-extern int		r_framecount;		// sequence # of current frame since Quake
-									//  started
+extern int		r_framecount;	// sequence # of current frame since Quake
+					//  started
 extern qboolean	r_drawpolys;		// 1 if driver wants clipped polygons
-									//  rather than a span list
+					//  rather than a span list
 extern qboolean	r_drawculledpolys;	// 1 if driver wants clipped polygons that
-									//  have been culled by the edge list
+					//  have been culled by the edge list
 extern qboolean	r_worldpolysbacktofront;	// 1 if driver wants polygons
-											//  delivered back to front rather
-											//  than front to back
+						//  delivered back to front rather
+						//  than front to back
 extern qboolean	r_recursiveaffinetriangles;	// true if a driver wants to use
-											//  recursive triangular subdivison
-											//  and vertex drawing via
-											//  D_PolysetDrawFinalVerts() past
-											//  a certain distance (normally 
-											//  only used by the software
-											//  driver)
+						//  recursive triangular subdivison
+						//  and vertex drawing via
+						//  D_PolysetDrawFinalVerts() past
+						//  a certain distance (normally 
+						//  only used by the software
+						//  driver)
 extern float	r_aliasuvscale;		// scale-up factor for screen u and v
-									//  on Alias vertices passed to driver
-extern int		r_pixbytes;
+					//  on Alias vertices passed to driver
+extern int	r_pixbytes;
 extern qboolean	r_dowarp;
 
 extern affinetridesc_t	r_affinetridesc;
-extern spritedesc_t		r_spritedesc;
-extern zpointdesc_t		r_zpointdesc;
-extern polydesc_t		r_polydesc;
+extern spritedesc_t	r_spritedesc;
+extern zpointdesc_t	r_zpointdesc;
+extern polydesc_t	r_polydesc;
 
 extern int		d_con_indirect;	// if 0, Quake will draw console directly
-								//  to vid.buffer; if 1, Quake will
-								//  draw console via D_DrawRect. Must be
-								//  defined by driver
+					//  to vid.buffer; if 1, Quake will
+					//  draw console via D_DrawRect. Must be
+					//  defined by driver
 
 extern vec3_t	r_pright, r_pup, r_ppn;
 
@@ -237,7 +242,7 @@ extern int				r_skydirect;
 extern byte				*r_skysource;
 
 // transparency types for D_DrawRect ()
-#define DR_SOLID		0
+#define DR_SOLID	0
 #define DR_TRANSPARENT	1
 
 // !!! must be kept the same as in quakeasm.h !!!
@@ -252,14 +257,14 @@ extern void *acolormap;	// FIXME: should go away
 typedef struct
 {
 	pixel_t		*surfdat;	// destination for generated surface
-	int			rowbytes;	// destination logical width in bytes
+	int		rowbytes;	// destination logical width in bytes
 	msurface_t	*surf;		// description for surface to generate
 	fixed8_t	lightadj[MAXLIGHTMAPS];
-							// adjust for lightmap levels for dynamic lighting
+						// adjust for lightmap levels for dynamic lighting
 	texture_t	*texture;	// corrected for animating textures
-	int			surfmip;	// mipmapped ratio of surface texels / world pixels
-	int			surfwidth;	// in mipmapped texels
-	int			surfheight;	// in mipmapped texels
+	int		surfmip;	// mipmapped ratio of surface texels / world pixels
+	int		surfwidth;	// in mipmapped texels
+	int		surfheight;	// in mipmapped texels
 } drawsurf_t;
 
 extern drawsurf_t	r_drawsurf;
@@ -272,19 +277,19 @@ void R_GenTile (msurface_t *psurf, void *pdest);
 #define TURB_TEX_SIZE	64		// base turbulent texture size
 
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
-#define	CYCLE			128		// turbulent cycle size
+#define	CYCLE		128		// turbulent cycle size
 
-#define TILE_SIZE		128		// size of textures generated by R_GenTiledSurf
+#define TILE_SIZE	128		// size of textures generated by R_GenTiledSurf
 
-#define SKYSHIFT		7
-#define	SKYSIZE			(1 << SKYSHIFT)
-#define SKYMASK			(SKYSIZE - 1)
+#define SKYSHIFT	7
+#define	SKYSIZE		(1 << SKYSHIFT)
+#define SKYMASK		(SKYSIZE - 1)
 
 extern float	skyspeed, skyspeed2;
 extern float	skytime;
 
-extern int		c_surf;
+extern int	c_surf;
 extern vrect_t	scr_vrect;
 
-extern byte		*r_warpbuffer;
+extern byte	*r_warpbuffer;
 

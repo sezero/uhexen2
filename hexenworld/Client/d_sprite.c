@@ -2,7 +2,7 @@
 	d_sprite.c:
 	software top-level rasterization driver module for drawing sprites
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_sprite.c,v 1.2 2005-10-25 20:04:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_sprite.c,v 1.3 2005-10-25 20:08:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -174,7 +174,6 @@ NextSpan:
 }
 
 #endif
-
 
 #if	!id386
 

@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.5 2004-12-19 14:38:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.6 2005-10-25 20:08:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -93,7 +93,6 @@ int		skinwidth;
 byte	*skinstart;
 
 #warning FIXME: The code isnt compilable on non-Intel
-#warning FIXME: until all of the asm is taken out!....
 
 void D_PolysetSetEdgeTable (void);
 void D_RasterizeAliasPolySmooth (void);
@@ -800,13 +799,13 @@ void D_RasterizeAliasPolySmooth (void)
 		D_PolysetSetUpForLineScan(plefttop[0], plefttop[1],
 							  pleftbottom[0], pleftbottom[1]);
 
-	#if	id386
+#if	id386
 		d_pzbasestep = (d_zwidth + ubasestep) << 1;
 		d_pzextrastep = d_pzbasestep + 2;
-	#else
+#else
 		d_pzbasestep = d_zwidth + ubasestep;
 		d_pzextrastep = d_pzbasestep + 1;
-	#endif
+#endif
 
 		d_pdestbasestep = screenwidth + ubasestep;
 		d_pdestextrastep = d_pdestbasestep + 1;
@@ -825,26 +824,26 @@ void D_RasterizeAliasPolySmooth (void)
 		d_ptexbasestep = ((r_sstepy + r_sstepx * ubasestep) >> 16) +
 				((r_tstepy + r_tstepx * ubasestep) >> 16) *
 				r_affinetridesc.skinwidth;
-	#if	id386
+#if	id386
 		d_sfracbasestep = (r_sstepy + r_sstepx * ubasestep) << 16;
 		d_tfracbasestep = (r_tstepy + r_tstepx * ubasestep) << 16;
-	#else
+#else
 		d_sfracbasestep = (r_sstepy + r_sstepx * ubasestep) & 0xFFFF;
 		d_tfracbasestep = (r_tstepy + r_tstepx * ubasestep) & 0xFFFF;
-	#endif
+#endif
 		d_lightbasestep = r_lstepy + working_lstepx * ubasestep;
 		d_zibasestep = r_zistepy + r_zistepx * ubasestep;
 
 		d_ptexextrastep = ((r_sstepy + r_sstepx * d_countextrastep) >> 16) +
 				((r_tstepy + r_tstepx * d_countextrastep) >> 16) *
 				r_affinetridesc.skinwidth;
-	#if	id386
+#if	id386
 		d_sfracextrastep = (r_sstepy + r_sstepx*d_countextrastep) << 16;
 		d_tfracextrastep = (r_tstepy + r_tstepx*d_countextrastep) << 16;
-	#else
+#else
 		d_sfracextrastep = (r_sstepy + r_sstepx*d_countextrastep) & 0xFFFF;
 		d_tfracextrastep = (r_tstepy + r_tstepx*d_countextrastep) & 0xFFFF;
-	#endif
+#endif
 		d_lightextrastep = d_lightbasestep + working_lstepx;
 		d_ziextrastep = d_zibasestep + r_zistepx;
 
@@ -910,13 +909,13 @@ void D_RasterizeAliasPolySmooth (void)
 			d_pdestbasestep = screenwidth + ubasestep;
 			d_pdestextrastep = d_pdestbasestep + 1;
 
-	#if	id386
+#if	id386
 			d_pzbasestep = (d_zwidth + ubasestep) << 1;
 			d_pzextrastep = d_pzbasestep + 2;
-	#else
+#else
 			d_pzbasestep = d_zwidth + ubasestep;
 			d_pzextrastep = d_pzbasestep + 1;
-	#endif
+#endif
 
 			if (ubasestep < 0)
 				working_lstepx = r_lstepx - 1;
@@ -927,26 +926,26 @@ void D_RasterizeAliasPolySmooth (void)
 			d_ptexbasestep = ((r_sstepy + r_sstepx * ubasestep) >> 16) +
 					((r_tstepy + r_tstepx * ubasestep) >> 16) *
 					r_affinetridesc.skinwidth;
-	#if	id386
+#if	id386
 			d_sfracbasestep = (r_sstepy + r_sstepx * ubasestep) << 16;
 			d_tfracbasestep = (r_tstepy + r_tstepx * ubasestep) << 16;
-	#else
+#else
 			d_sfracbasestep = (r_sstepy + r_sstepx * ubasestep) & 0xFFFF;
 			d_tfracbasestep = (r_tstepy + r_tstepx * ubasestep) & 0xFFFF;
-	#endif
+#endif
 			d_lightbasestep = r_lstepy + working_lstepx * ubasestep;
 			d_zibasestep = r_zistepy + r_zistepx * ubasestep;
 
 			d_ptexextrastep = ((r_sstepy + r_sstepx * d_countextrastep) >> 16) +
 					((r_tstepy + r_tstepx * d_countextrastep) >> 16) *
 					r_affinetridesc.skinwidth;
-	#if	id386
+#if	id386
 			d_sfracextrastep = ((r_sstepy+r_sstepx*d_countextrastep) & 0xFFFF)<<16;
 			d_tfracextrastep = ((r_tstepy+r_tstepx*d_countextrastep) & 0xFFFF)<<16;
-	#else
+#else
 			d_sfracextrastep = (r_sstepy+r_sstepx*d_countextrastep) & 0xFFFF;
 			d_tfracextrastep = (r_tstepy+r_tstepx*d_countextrastep) & 0xFFFF;
-	#endif
+#endif
 			d_lightextrastep = d_lightbasestep + working_lstepx;
 			d_ziextrastep = d_zibasestep + r_zistepx;
 
@@ -1159,6 +1158,9 @@ split:
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/12/19 14:38:10  sezero
+ * fix the compile sillyness
+ *
  * Revision 1.4  2004/12/19 10:35:30  sezero
  * - Add "implicitly declared" functions as externs: Software rendering files.
  * - Add comments on the asm/non-Intel status of the code

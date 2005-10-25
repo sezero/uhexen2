@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.14 2005-10-25 20:04:17 sezero Exp $
+	$Id: draw.c,v 1.15 2005-10-25 20:08:41 sezero Exp $
 */
 
 
@@ -58,7 +58,7 @@ qpic_t	*Draw_CachePic (char *path)
 	cachepic_t	*pic;
 	int			i;
 	qpic_t		*dat;
-	
+
 	for (pic=menu_cachepics, i=0 ; i<menu_numcachepics ; pic++, i++)
 		if (!strcmp (path, pic->name))
 			break;
@@ -80,7 +80,7 @@ qpic_t	*Draw_CachePic (char *path)
 // load the pic from disk
 //
 	COM_LoadCacheFile (path, &pic->cache);
-	
+
 	dat = (qpic_t *)pic->cache.data;
 	if (!dat)
 	{
@@ -140,8 +140,10 @@ qpic_t  *Draw_CachePicResize(char *path, int targetWidth, int targetHeight)
 	dat->height = targetHeight;
 	sourceWidth = temp->width;
 	sourceHeight = temp->height;
-	for (j = 0; j < targetHeight; j++) {
-		for (i = 0; i < targetWidth; i++) {
+	for (j = 0; j < targetHeight; j++)
+	{
+		for (i = 0; i < targetWidth; i++)
+		{
 			dat->data[i + targetWidth * j] = temp->data[(i * sourceWidth / targetWidth) + sourceWidth * (j * sourceHeight / targetHeight)];
 		}
 	}
@@ -193,11 +195,11 @@ void Draw_Character (int x, int y, unsigned int num)
 	byte			*dest;
 	byte			*source;
 	unsigned short	*pusdest;
-	int				drawline;	
+	int				drawline;
 	int				row, col;
 
 	num &= 511;
-	
+
 	if (y <= -8)
 		return;			// totally off screen
 
@@ -219,11 +221,10 @@ void Draw_Character (int x, int y, unsigned int num)
 	else
 		drawline = 8;
 
-
 	if (r_pixbytes == 1)
 	{
 		dest = vid.conbuffer + y*vid.conrowbytes + x;
-	
+
 		while (drawline--)
 		{
 			switch(trans_level)
@@ -372,7 +373,7 @@ void Draw_Crosshair(void)
 	int x, y;
 	byte c = (byte)crosshaircolor.value;
 
-	x = scr_vrect.x + scr_vrect.width/2 + cl_crossx.value; 
+	x = scr_vrect.x + scr_vrect.width/2 + cl_crossx.value;
 	y = scr_vrect.y + scr_vrect.height/2 + cl_crossy.value;
 
 	if ((int)crosshair.value == 2)
@@ -403,11 +404,9 @@ void Draw_Crosshair(void)
 
 void Draw_SmallCharacter(int x, int y, int num)
 {
-	byte *dest;
-	byte *source;
-	unsigned short *pusdest;
-	int height;
-	int row, col;
+	byte		*dest, *source;
+	unsigned short	*pusdest;
+	int		height, row, col;
 
 	if(num < 32)
 	{
@@ -569,9 +568,9 @@ Draw_Pic
 */
 void Draw_Pic (int x, int y, qpic_t *pic)
 {
-	byte			*dest, *source;
+	byte		*dest, *source;
 	unsigned short	*pusdest;
-	int				v, u;
+	int		v, u;
 
 	if ((x < 0) ||
 		(x + pic->width > vid.width) ||
@@ -623,10 +622,9 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 
 void Draw_PicCropped(int x, int y, qpic_t *pic)
 {
-	byte *dest, *source;
-	unsigned short *pusdest;
-	int v, u;
-	int height;
+	byte		*dest, *source;
+	unsigned short	*pusdest;
+	int		v, u, height;
 
 	if((x < 0) || (x+pic->width > vid.width))
 	{
@@ -642,7 +640,7 @@ void Draw_PicCropped(int x, int y, qpic_t *pic)
 	{
 		height = vid.height-y;
 	}
-	else if (y < 0) 
+	else if (y < 0)
 	{
 		height = pic->height+y;
 	}
@@ -716,9 +714,9 @@ Draw_TransPic
 */
 void Draw_TransPic (int x, int y, qpic_t *pic)
 {
-	byte	*dest, *source, tbyte;
+	byte		*dest, *source, tbyte;
 	unsigned short	*pusdest;
-	int	v, u;
+	int		v, u;
 
 	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
 		 (unsigned)(y + pic->height) > vid.height)
@@ -739,7 +737,7 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 				for (u=0 ; u<pic->width ; u++)
 					if ( (tbyte=source[u]) != TRANSPARENT_COLOR)
 						dest[u] = tbyte;
-	
+
 				dest += vid.rowbytes;
 				source += pic->width;
 			}
@@ -806,10 +804,9 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 
 void Draw_SubPicCropped(int x, int y, int h, qpic_t *pic)
 {
-	byte *dest, *source;
-	unsigned short *pusdest;
-	int v, u;
-	int height;
+	byte		*dest, *source;
+	unsigned short	*pusdest;
+	int		v, u, height;
 
 	if((x < 0) || (x+pic->width > vid.width))
 	{
@@ -825,7 +822,7 @@ void Draw_SubPicCropped(int x, int y, int h, qpic_t *pic)
 	{
 		height = vid.height-y;
 	}
-	else if (y < 0) 
+	else if (y < 0)
 	{
 		height = pic->height+y;
 	}
@@ -840,7 +837,7 @@ void Draw_SubPicCropped(int x, int y, int h, qpic_t *pic)
 	}
 
 	source = pic->data;
-	if (y < 0) 
+	if (y < 0)
 	{
 		source += (pic->width * (-y));
 		y = 0;
@@ -907,10 +904,9 @@ void Draw_SubPicCropped(int x, int y, int h, qpic_t *pic)
 
 void Draw_TransPicCropped(int x, int y, qpic_t *pic)
 {
-	byte *dest, *source, tbyte;
-	unsigned short *pusdest;
-	int v, u;
-	int height;
+	byte		*dest, *source, tbyte;
+	unsigned short	*pusdest;
+	int		v, u, height;
 
 	if((x < 0) || (x+pic->width > vid.width))
 	{
@@ -926,7 +922,7 @@ void Draw_TransPicCropped(int x, int y, qpic_t *pic)
 	{
 		height = vid.height-y;
 	}
-	else if (y < 0) 
+	else if (y < 0)
 	{
 		height = pic->height+y;
 	}
@@ -936,7 +932,7 @@ void Draw_TransPicCropped(int x, int y, qpic_t *pic)
 	}
 
 	source = pic->data;
-	if (y < 0) 
+	if (y < 0)
 	{
 		source += (pic->width * (-y));
 		y = 0;
@@ -1083,7 +1079,6 @@ void Draw_TransPicCropped(int x, int y, qpic_t *pic)
 }
 
 
-
 /*
 =============
 Draw_SubPic
@@ -1091,9 +1086,9 @@ Draw_SubPic
 */
 void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height)
 {
-	byte			*dest, *source;
+	byte		*dest, *source;
 	unsigned short	*pusdest;
-	int				v, u;
+	int		v, u;
 
 	if ((x < 0) ||
 		(x + width > vid.width) ||
@@ -1141,16 +1136,16 @@ Draw_TransPicTranslate
 */
 void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 {
-	byte	*dest, *source, tbyte;
+	byte		*dest, *source, tbyte;
 	unsigned short	*pusdest;
-	int				v, u;
+	int		v, u;
 
 	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
 		 (unsigned)(y + pic->height) > vid.height)
 	{
 		Sys_Error ("Draw_TransPic: bad coordinates");
 	}
-		
+
 	source = pic->data;
 
 	if (r_pixbytes == 1)
@@ -1255,12 +1250,12 @@ Draw_ConsoleBackground
 */
 void Draw_ConsoleBackground (int lines)
 {
-	int				x, y, v;
-	byte			*src, *dest;
+	int			x, y, v;
+	byte		*src, *dest;
 	unsigned short	*pusdest;
-	int				f, fstep;
-	qpic_t			*conback;
-	char			ver[100];
+	int			f, fstep;
+	qpic_t		*conback;
+	char		ver[100];
 #if defined(H2W)
 	//static		char saveback[320*8];
 
@@ -1693,6 +1688,10 @@ void Draw_EndDisc (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2005/10/25 20:04:17  sezero
+ * static functions part-1: started making local functions static,
+ * killing nested externs, const vars clean-up.
+ *
  * Revision 1.13  2005/10/25 19:58:33  sezero
  * killed Draw_DebugChar
  *

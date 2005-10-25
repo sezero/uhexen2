@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.16 2005-09-29 14:04:06 sezero Exp $
+	$Id: cd_linux.c,v 1.17 2005-10-25 20:08:41 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -354,16 +354,19 @@ void CDAudio_Update(void)
 			Con_DPrintf("ioctl CDROMVOLCTRL failed\n");
 	}
 
-	if (playing && lastchk < time(NULL)) {
+	if (playing && lastchk < time(NULL))
+	{
 		lastchk = time(NULL) + 2; //two seconds between chks
 		subchnl.cdsc_format = CDROM_MSF;
-		if (ioctl(cdfile, CDROMSUBCHNL, &subchnl) == -1 ) {
+		if (ioctl(cdfile, CDROMSUBCHNL, &subchnl) == -1 )
+		{
 			Con_DPrintf("ioctl CDROMSUBCHNL failed\n");
 			playing = false;
 			return;
 		}
 		if (subchnl.cdsc_audiostatus != CDROM_AUDIO_PLAY &&
-			subchnl.cdsc_audiostatus != CDROM_AUDIO_PAUSED) {
+			subchnl.cdsc_audiostatus != CDROM_AUDIO_PAUSED)
+		{
 			playing = false;
 			if (playLooping)
 				CDAudio_Play(playTrack, true);
@@ -378,12 +381,14 @@ int CDAudio_Init(void)
 	if (COM_CheckParm("-nocdaudio"))
 		return -1;
 
-	if ((i = COM_CheckParm("-cddev")) != 0 && i < com_argc - 1) {
+	if ((i = COM_CheckParm("-cddev")) != 0 && i < com_argc - 1)
+	{
 		strncpy(cd_dev, com_argv[i + 1], sizeof(cd_dev));
 		cd_dev[sizeof(cd_dev) - 1] = 0;
 	}
 
-	if ((cdfile = open(cd_dev, O_RDONLY | O_NONBLOCK)) == -1) {
+	if ((cdfile = open(cd_dev, O_RDONLY | O_NONBLOCK)) == -1)
+	{
 		Con_Printf("CDAudio_Init: open of \"%s\" failed (%i)\n", cd_dev, errno);
 		cdfile = -1;
 		return -1;
@@ -405,7 +410,8 @@ int CDAudio_Init(void)
 	Cmd_AddCommand ("cd", CD_f);
 
 	// get drives volume
-	if (ioctl(cdfile, CDROMVOLREAD, &drv_vol0) == -1) {
+	if (ioctl(cdfile, CDROMVOLREAD, &drv_vol0) == -1)
+	{
 		Con_Printf("ioctl CDROMVOLREAD failed\n");
 		drv_vol0.channel0 = drv_vol0.channel2 =
 		drv_vol0.channel1 = drv_vol0.channel3 = 255.0;

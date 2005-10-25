@@ -38,7 +38,7 @@ kbutton_t	in_strafe, in_speed, in_use, in_jump, in_attack;
 kbutton_t	in_up, in_down, in_crouch;
 kbutton_t	in_infoplaque;
 
-int					in_impulse;
+int		in_impulse;
 extern qboolean		info_up;
 
 static void KeyDown (kbutton_t *b)
@@ -54,7 +54,7 @@ static void KeyDown (kbutton_t *b)
 
 	if (k == b->down[0] || k == b->down[1])
 		return;		// repeating key
-	
+
 	if (!b->down[0])
 		b->down[0] = k;
 	else if (!b->down[1])
@@ -64,7 +64,7 @@ static void KeyDown (kbutton_t *b)
 		Con_Printf ("Three keys down for a button!\n");
 		return;
 	}
-	
+
 	if (b->state & 1)
 		return;		// still down
 	b->state |= 1 + 2;	// down + impulse down
@@ -74,10 +74,12 @@ static void KeyUp (kbutton_t *b)
 {
 	int		k;
 	char	*c;
-	
+
 	c = Cmd_Argv(1);
 	if (c[0])
+	{
 		k = atoi(c);
+	}
 	else
 	{ // typed manually at the console, assume for unsticking, so clear all
 		b->down[0] = b->down[1] = 0;
@@ -119,9 +121,9 @@ static void IN_MLookDown (void)
 
 static void IN_MLookUp (void)
 {
-KeyUp(&in_mlook);
-if ( !(in_mlook.state&1) &&  lookspring.value)
-	V_StartPitchDrift();
+	KeyUp(&in_mlook);
+	if ( !(in_mlook.state&1) && lookspring.value)
+		V_StartPitchDrift();
 }
 
 static void IN_UpDown (void)
@@ -349,31 +351,35 @@ static float CL_KeyState (kbutton_t *key)
 {
 	float		val;
 	qboolean	impulsedown, impulseup, down;
-	
+
 	impulsedown = key->state & 2;
 	impulseup = key->state & 4;
 	down = key->state & 1;
 	val = 0;
-	
-	if (impulsedown && !impulseup) {
+
+	if (impulsedown && !impulseup)
+	{
 		if (down)
 			val = 0.5;	// pressed and held this frame
 		else
 			val = 0;	//	I_Error ();
 	}
-	if (impulseup && !impulsedown) {
+	if (impulseup && !impulsedown)
+	{
 		if (down)
 			val = 0;	//	I_Error ();
 		else
 			val = 0;	// released this frame
 	}
-	if (!impulsedown && !impulseup) {
+	if (!impulsedown && !impulseup)
+	{
 		if (down)
 			val = 1.0;	// held the entire frame
 		else
 			val = 0;	// up the entire frame
 	}
-	if (impulsedown && impulseup) {
+	if (impulsedown && impulseup)
+	{
 		if (down)
 			val = 0.75;	// released and re-pressed this frame
 		else
@@ -381,11 +387,9 @@ static float CL_KeyState (kbutton_t *key)
 	}
 
 	key->state &= 1;		// clear impulses
-	
+
 	return val;
 }
-
-
 
 
 //==========================================================================
@@ -416,7 +420,7 @@ static void CL_AdjustAngles (void)
 {
 	float	speed;
 	float	up, down;
-	
+
 	if (in_speed.state & 1)
 		speed = host_frametime * cl_anglespeedkey.value;
 	else
@@ -445,16 +449,15 @@ static void CL_AdjustAngles (void)
 	else
 		cl.idealroll=0;
 
-	
 	up = CL_KeyState (&in_lookup);
 	down = CL_KeyState(&in_lookdown);
-	
+
 	cl.viewangles[PITCH] -= speed*cl_pitchspeed.value * up;
 	cl.viewangles[PITCH] += speed*cl_pitchspeed.value * down;
 
 	if (up || down)
 		V_StopPitchDrift ();
-		
+
 	if (cl.viewangles[PITCH] > 80)
 		cl.viewangles[PITCH] = 80;
 	if (cl.viewangles[PITCH] < -70)
@@ -464,7 +467,6 @@ static void CL_AdjustAngles (void)
 		cl.viewangles[ROLL] = 50;
 	if (cl.viewangles[ROLL] < -50)
 		cl.viewangles[ROLL] = -50;
-		
 }
 
 /*
@@ -478,7 +480,7 @@ void CL_BaseMove (usercmd_t *cmd)
 {	
 	if (cls.signon != SIGNONS)
 		return;
-			
+
 	if (cl.v.cameramode)	// Stuck in a different camera so don't move
 	{
 		memset (cmd, 0, sizeof(*cmd));
@@ -486,9 +488,9 @@ void CL_BaseMove (usercmd_t *cmd)
 	}
 
 	CL_AdjustAngles ();
-	
+
 	memset (cmd, 0, sizeof(*cmd));
-	
+
 	if (in_strafe.state & 1)
 	{
 //		cmd->sidemove += cl_sidespeed.value * CL_KeyState (&in_right);
@@ -538,7 +540,6 @@ void CL_BaseMove (usercmd_t *cmd)
 }
 
 
-
 /*
 ==============
 CL_SendMove
@@ -550,11 +551,11 @@ void CL_SendMove (usercmd_t *cmd)
 	int		bits;
 	sizebuf_t	buf;
 	byte	data[128];
-	
+
 	buf.maxsize = 128;
 	buf.cursize = 0;
 	buf.data = data;
-	
+
 	cl.cmd = *cmd;
 
 //
@@ -570,30 +571,32 @@ void CL_SendMove (usercmd_t *cmd)
 
 	for (i=0 ; i<3 ; i++)
 		MSG_WriteAngle (&buf, cl.viewangles[i]);
-	
-    MSG_WriteShort (&buf, cmd->forwardmove);
-    MSG_WriteShort (&buf, cmd->sidemove);
-    MSG_WriteShort (&buf, cmd->upmove);
+
+	MSG_WriteShort (&buf, cmd->forwardmove);
+	MSG_WriteShort (&buf, cmd->sidemove);
+	MSG_WriteShort (&buf, cmd->upmove);
 
 //
 // send button bits
 //
 	bits = 0;
-	
+
 	if ( in_attack.state & 3 )
 		bits |= 1;
+
 	in_attack.state &= ~2;
-	
+
 	if (in_jump.state & 3)
 		bits |= 2;
+
 	in_jump.state &= ~2;
-	
+
 	if (in_crouch.state & 1)
 		bits |= 4;
 
-    MSG_WriteByte (&buf, bits);
+	MSG_WriteByte (&buf, bits);
 
-    MSG_WriteByte (&buf, in_impulse);
+	MSG_WriteByte (&buf, in_impulse);
 	in_impulse = 0;
 
 //
@@ -613,7 +616,7 @@ void CL_SendMove (usercmd_t *cmd)
 //
 	if (++cl.movemessages <= 2)
 		return;
-	
+
 	if (NET_SendUnreliableMessage (cls.netcon, &buf) == -1)
 	{
 		Con_Printf ("CL_SendMove: lost server connection\n");

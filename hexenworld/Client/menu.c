@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.30 2005-10-25 20:04:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.31 2005-10-25 20:08:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -17,9 +17,21 @@ extern	cvar_t	crosshair;
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);
 
-
-enum {m_none, m_main, m_multiplayer, m_setup, m_net, m_options, m_video, 
-		m_keys, m_help, m_quit, m_class, m_mconnect} m_state;
+enum
+{
+	m_none = 0,
+	m_main,
+	m_multiplayer,
+	m_setup,
+	m_net,
+	m_options,
+	m_video,
+	m_keys,
+	m_help,
+	m_quit,
+	m_class,
+	m_mconnect
+} m_state;
 
 void M_Menu_Main_f (void);
 	void M_Menu_MultiPlayer_f (void);
@@ -771,6 +783,8 @@ void M_Class_Key (int key)
 //=============================================================================
 /* OPTIONS MENU */
 
+#define	SLIDER_RANGE	10
+
 enum
 {
 	OPT_CUSTOMIZE = 0,
@@ -791,8 +805,6 @@ enum
 	OPT_VIDEO,	//15
 	OPTIONS_ITEMS
 };
-
-#define	SLIDER_RANGE	10
 
 int	options_cursor;
 

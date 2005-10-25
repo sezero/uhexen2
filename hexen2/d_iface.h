@@ -2,13 +2,13 @@
 	d_iface.h
 	interface header file for rasterization driver modules
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_iface.h,v 1.4 2004-12-19 10:35:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_iface.h,v 1.5 2005-10-25 20:08:41 sezero Exp $
 */
 
-#define WARP_WIDTH 320
-#define WARP_HEIGHT 200
+#define WARP_WIDTH		320
+#define WARP_HEIGHT		200
 
-#define MAX_SKIN_HEIGHT 480
+#define MAX_SKIN_HEIGHT		480
 
 typedef struct
 {
@@ -70,7 +70,7 @@ typedef enum
 	rt_boneshard,
 	rt_scarab,
 	rt_acidball,
-	rt_bloodshot,
+	rt_bloodshot
 } rt_type_t;
 
 // !!! if this is changed, it must be changed in glquake.h too !!!
@@ -165,7 +165,7 @@ extern qboolean	r_recursiveaffinetriangles;	// true if a driver wants to use
 						//  D_PolysetDrawFinalVerts() past
 						//  a certain distance (normally 
 						//  only used by the software
-											//  driver)
+						//  driver)
 extern float	r_aliasuvscale;		// scale-up factor for screen u and v
 					//  on Alias vertices passed to driver
 extern int	r_pixbytes;
@@ -296,6 +296,10 @@ extern byte	*r_warpbuffer;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2004/12/19 10:35:30  sezero
+ * - Add "implicitly declared" functions as externs: Software rendering files.
+ * - Add comments on the asm/non-Intel status of the code
+ *
  * Revision 1.3  2004/12/18 14:20:40  sezero
  * Clean-up and kill warnings: 11
  * A lot of whitespace cleanups.

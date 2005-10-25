@@ -2,7 +2,7 @@
 	cl_tent.c
 	Client side temporary entity effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.8 2005-10-13 15:28:55 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.9 2005-10-25 20:08:41 sezero Exp $
 */
 
 
@@ -12,23 +12,23 @@
 
 // MACROS ------------------------------------------------------------------
 
-#define MAX_STREAMS				32
+#define MAX_STREAMS			32
 #define MAX_STREAM_ENTITIES		128
 #define STREAM_ATTACHED			16
 #define STREAM_TRANSLUCENT		32
 
-#define	TE_SPIKE				0
+#define	TE_SPIKE			0
 #define	TE_SUPERSPIKE			1
-#define	TE_GUNSHOT				2
+#define	TE_GUNSHOT			2
 #define	TE_EXPLOSION			3
 //#define	TE_TAREXPLOSION			4
 #define	TE_LIGHTNING1			5
 #define	TE_LIGHTNING2			6
-#define	TE_WIZSPIKE				7
+#define	TE_WIZSPIKE			7
 #define	TE_KNIGHTSPIKE			8
 #define	TE_LIGHTNING3			9
 #define	TE_LAVASPLASH			10
-#define	TE_TELEPORT				11
+#define	TE_TELEPORT			11
 //#define TE_EXPLOSION2			12
 #define TE_STREAM_CHAIN			25
 #define TE_STREAM_SUNSTAFF1		26
@@ -38,23 +38,23 @@
 #define TE_STREAM_ICECHUNKS		30
 #define TE_STREAM_GAZE			31
 #define TE_STREAM_FAMINE		32
-#define TE_STREAM_LIGHTNING_SMALL		24
+#define TE_STREAM_LIGHTNING_SMALL	24
 
 // TYPES -------------------------------------------------------------------
 
 typedef struct
 {
-	int type;
-	int entity;
-	int tag;
-	int flags;
-	int skin;
+	int		type;
+	int		entity;
+	int		tag;
+	int		flags;
+	int		skin;
 	struct model_s *models[4];
-	vec3_t source;
-	vec3_t dest;
-	vec3_t offset;
-	float endTime;
-	float lastTrailTime;
+	vec3_t	source;
+	vec3_t	dest;
+	vec3_t	offset;
+	float	endTime;
+	float	lastTrailTime;
 } stream_t;
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
@@ -140,23 +140,23 @@ void CL_ParseTEnt(void)
 	type = MSG_ReadByte();
 	switch(type)
 	{
-	case TE_WIZSPIKE:			// spike hitting wall
+	case TE_WIZSPIKE:	// spike hitting wall
 		pos[0] = MSG_ReadCoord ();
 		pos[1] = MSG_ReadCoord ();
 		pos[2] = MSG_ReadCoord ();
 		R_RunParticleEffect (pos, vec3_origin, 20, 30);
 //		S_StartSound (-1, 0, cl_sfx_wizhit, pos, 1, 1);
 		break;
-		
-	case TE_KNIGHTSPIKE:			// spike hitting wall
+
+	case TE_KNIGHTSPIKE:	// spike hitting wall
 		pos[0] = MSG_ReadCoord ();
 		pos[1] = MSG_ReadCoord ();
 		pos[2] = MSG_ReadCoord ();
 		R_RunParticleEffect (pos, vec3_origin, 226, 20);
 //		S_StartSound (-1, 0, cl_sfx_knighthit, pos, 1, 1);
 		break;
-		
-	case TE_SPIKE:			// spike hitting wall
+
+	case TE_SPIKE:		// spike hitting wall
 		pos[0] = MSG_ReadCoord ();
 		pos[1] = MSG_ReadCoord ();
 		pos[2] = MSG_ReadCoord ();
@@ -178,7 +178,8 @@ void CL_ParseTEnt(void)
 				S_StartSound (-1, 0, cl_sfx_ric3, pos, 1, 1);
 		}
 		break;
-	case TE_SUPERSPIKE:			// super spike hitting wall
+
+	case TE_SUPERSPIKE:	// super spike hitting wall
 		pos[0] = MSG_ReadCoord ();
 		pos[1] = MSG_ReadCoord ();
 		pos[2] = MSG_ReadCoord ();
@@ -197,15 +198,15 @@ void CL_ParseTEnt(void)
 				S_StartSound (-1, 0, cl_sfx_ric3, pos, 1, 1);
 		}
 		break;
-		
-	case TE_GUNSHOT:			// bullet hitting wall
+
+	case TE_GUNSHOT:	// bullet hitting wall
 		pos[0] = MSG_ReadCoord ();
 		pos[1] = MSG_ReadCoord ();
 		pos[2] = MSG_ReadCoord ();
 		R_RunParticleEffect (pos, vec3_origin, 0, 20);
 		break;
-		
-	case TE_EXPLOSION:			// rocket explosion
+
+	case TE_EXPLOSION:	// rocket explosion
 		pos[0] = MSG_ReadCoord ();
 		pos[1] = MSG_ReadCoord ();
 		pos[2] = MSG_ReadCoord ();
@@ -268,15 +269,11 @@ void CL_ParseTEnt(void)
 
 static void ParseStream(int type)
 {
-	int ent;
-	int tag;
-	int flags;
-	int skin;
-	vec3_t source;
-	vec3_t dest;
-	stream_t *stream;
-	float duration;
-	model_t *models[4];
+	int		ent, tag, flags, skin;
+	vec3_t	source, dest;
+	float	duration;
+	stream_t	*stream;
+	model_t		*models[4];
 
 	ent = MSG_ReadShort();
 	flags = MSG_ReadByte();
@@ -370,8 +367,8 @@ static void ParseStream(int type)
 
 static stream_t *NewStream(int ent, int tag)
 {
-	int i;
-	stream_t *stream;
+	int			i;
+	stream_t	*stream;
 
 	// Search for a stream with matching entity and tag
 	for(i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
@@ -400,16 +397,13 @@ static stream_t *NewStream(int ent, int tag)
 
 void CL_UpdateTEnts(void)
 {
-	int i;
-	stream_t *stream;
-	vec3_t dist;
-	vec3_t org;
-	float d;
-	entity_t *ent;
-	float yaw, pitch;
-	float forward;
-	int segmentCount;
-	int offset;
+	int			i;
+	stream_t	*stream;
+	vec3_t	dist, org;
+	float	d;
+	entity_t	*ent;
+	float	yaw, pitch, forward;
+	int		segmentCount, offset;
 
 	// Update streams
 	StreamEntityCount = 0;
@@ -430,7 +424,7 @@ void CL_UpdateTEnts(void)
 		if(stream->flags&STREAM_ATTACHED&&stream->endTime >= cl.time)
 		{ // Attach the start position to owner
 			VectorAdd(cl_entities[stream->entity].origin, stream->offset,
-				stream->source);
+					stream->source);
 		}
 
 		VectorSubtract(stream->dest, stream->source, dist);
@@ -475,14 +469,17 @@ void CL_UpdateTEnts(void)
 		while(d > 0)
 		{
 			ent = NewStreamEntity();
+
 			if(!ent)
 			{
 				return;
 			}
+
 			VectorCopy(org, ent->origin);
 			ent->model = stream->models[0];
 			ent->angles[0] = pitch;
 			ent->angles[1] = yaw;
+
 			switch(stream->type)
 			{
 			case TE_STREAM_CHAIN:
@@ -600,13 +597,16 @@ void CL_UpdateTEnts(void)
 			default:
 				ent->angles[2] = 0;
 			}
+
 			for(i = 0; i < 3; i++)
 			{
 				org[i] += dist[i]*30;
 			}
+
 			d -= 30;
 			segmentCount++;
 		}
+
 		if(stream->type == TE_STREAM_SUNSTAFF1
 			|| stream->type == TE_STREAM_SUNSTAFF2)
 		{
@@ -621,6 +621,7 @@ void CL_UpdateTEnts(void)
 			{
 				return;
 			}
+
 			VectorCopy(stream->dest, ent->origin);
 			ent->model = stream->models[2];
 			ent->drawflags = MLS_ABSLIGHT;
@@ -633,6 +634,7 @@ void CL_UpdateTEnts(void)
 			{
 				return;
 			}
+
 			VectorCopy(stream->dest, ent->origin);
 			ent->model = stream->models[3];
 			ent->drawflags = MLS_ABSLIGHT|DRF_TRANSLUCENT;
@@ -656,13 +658,17 @@ static entity_t *NewStreamEntity(void)
 	{
 		return NULL;
 	}
+
 	if(StreamEntityCount == MAX_STREAM_ENTITIES)
 	{
 		return NULL;
 	}
+
 	ent = &StreamEntities[StreamEntityCount++];
 	memset(ent, 0, sizeof(*ent));
 	cl_visedicts[cl_numvisedicts++] = ent;
 	ent->colormap = vid.colormap;
+
 	return ent;
 }
+

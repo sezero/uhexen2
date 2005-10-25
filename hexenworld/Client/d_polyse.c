@@ -1,5 +1,10 @@
-// d_polyset.c: routines for drawing sets of polygons sharing the same
-// texture (used for Alias models)
+/*
+	d_polyset.c
+	routines for drawing sets of polygons sharing the same
+	texture (used for Alias models)
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_polyse.c,v 1.4 2005-10-25 20:08:41 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "r_local.h"
@@ -8,7 +13,7 @@
 // TODO: put in span spilling to shrink list size
 // !!! if this is changed, it must be changed in d_polysa.s too !!!
 #define DPS_MAXSPANS			MAXHEIGHT+1	
-									// 1 extra for spanpackage that marks end
+// 1 extra for spanpackage that marks end
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
 typedef struct {
@@ -63,16 +68,16 @@ int				d_aspancount, d_countextrastep;
 
 spanpackage_t			*a_spans;
 spanpackage_t			*d_pedgespanpackage;
-static int				ystart;
-byte					*d_pdest, *d_ptex;
-short					*d_pz;
-int						d_sfrac, d_tfrac, d_light, d_zi;
-int						d_ptexextrastep, d_sfracextrastep;
-int						d_tfracextrastep, d_lightextrastep, d_pdestextrastep;
-int						d_lightbasestep, d_pdestbasestep, d_ptexbasestep;
-int						d_sfracbasestep, d_tfracbasestep;
-int						d_ziextrastep, d_zibasestep;
-int						d_pzextrastep, d_pzbasestep;
+static int			ystart;
+byte				*d_pdest, *d_ptex;
+short				*d_pz;
+int				d_sfrac, d_tfrac, d_light, d_zi;
+int				d_ptexextrastep, d_sfracextrastep;
+int				d_tfracextrastep, d_lightextrastep, d_pdestextrastep;
+int				d_lightbasestep, d_pdestbasestep, d_ptexbasestep;
+int				d_sfracbasestep, d_tfracbasestep;
+int				d_ziextrastep, d_zibasestep;
+int				d_pzextrastep, d_pzbasestep;
 
 typedef struct {
 	int		quotient;
@@ -88,7 +93,6 @@ int		skinwidth;
 byte	*skinstart;
 
 #warning FIXME: The code isnt compilable on non-Intel
-#warning FIXME: until all of the asm is taken out!....
 
 void D_PolysetSetEdgeTable (void);
 void D_RasterizeAliasPolySmooth (void);

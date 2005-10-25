@@ -2,7 +2,7 @@
 	d_surf.c
 	rasterization driver surface heap manager
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_surf.c,v 1.4 2005-10-25 20:04:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_surf.c,v 1.5 2005-10-25 20:08:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,38 +10,37 @@
 #include "r_local.h"
 
 static float	surfscale;
-qboolean        r_cache_thrash;         // set if surface cache is thrashing
+qboolean	r_cache_thrash;		// set if surface cache is thrashing
 
 static int				sc_size;
-surfcache_t                     *sc_rover, *sc_base;
+surfcache_t			*sc_rover, *sc_base;
 
 #define GUARDSIZE       4
 
 
-int     D_SurfaceCacheForRes (int width, int height)
+int D_SurfaceCacheForRes (int width, int height)
 {
-	int             size, pix;
+	int		size, pix;
 
 	if (COM_CheckParm ("-surfcachesize"))
 	{
 		size = atoi(com_argv[COM_CheckParm("-surfcachesize")+1]) * 1024;
 		return size;
 	}
-	
+
 	size = SURFCACHE_SIZE_AT_320X200;
 
 	pix = width*height;
 	if (pix > 64000)
 		size += (pix-64000)*3;
-		
 
 	return size;
 }
 
 static void D_CheckCacheGuard (void)
 {
-	byte    *s;
-	int             i;
+	byte	*s;
+	int		i;
 
 	s = (byte *)sc_base + sc_size;
 	for (i=0 ; i<GUARDSIZE ; i++)
@@ -51,9 +50,9 @@ static void D_CheckCacheGuard (void)
 
 static void D_ClearCacheGuard (void)
 {
-	byte    *s;
-	int             i;
-	
+	byte	*s;
+	int		i;
+
 	s = (byte *)sc_base + sc_size;
 	for (i=0 ; i<GUARDSIZE ; i++)
 		s[i] = (byte)i;
@@ -68,18 +67,17 @@ D_InitCaches
 */
 void D_InitCaches (void *buffer, int size)
 {
-
 	if (!msg_suppress_1)
 		Con_Printf ("%ik surface cache\n", size/1024);
 
 	sc_size = size - GUARDSIZE;
 	sc_base = (surfcache_t *)buffer;
 	sc_rover = sc_base;
-	
+
 	sc_base->next = NULL;
 	sc_base->owner = NULL;
 	sc_base->size = sc_size;
-	
+
 	D_ClearCacheGuard ();
 }
 
@@ -91,8 +89,8 @@ D_FlushCaches
 */
 void D_FlushCaches (void)
 {
-	surfcache_t     *c;
-	
+	surfcache_t	*c;
+
 	if (!sc_base)
 		return;
 
@@ -101,7 +99,7 @@ void D_FlushCaches (void)
 		if (c->owner)
 			*c->owner = NULL;
 	}
-	
+
 	sc_rover = sc_base;
 	sc_base->next = NULL;
 	sc_base->owner = NULL;
@@ -115,15 +113,15 @@ D_SCAlloc
 */
 static surfcache_t *D_SCAlloc (int width, int size)
 {
-	surfcache_t             *new;
-	qboolean                wrapped_this_time;
+	surfcache_t		*new;
+	qboolean		wrapped_this_time;
 
 	if ((width < 0) || (width > 256))
 		Sys_Error ("D_SCAlloc: bad cache width %d\n", width);
 
 	if ((size <= 0) || (size > 0x10000))
 		Sys_Error ("D_SCAlloc: bad cache size %d\n", size);
-	
+
 	size = (int)&((surfcache_t *)0)->data[size];
 	size = (size + 3) & ~3;
 	if (size > sc_size)
@@ -140,12 +138,12 @@ static surfcache_t *D_SCAlloc (int width, int size)
 		}
 		sc_rover = sc_base;
 	}
-		
+
 // colect and free surfcache_t blocks until the rover block is large enough
 	new = sc_rover;
 	if (sc_rover->owner)
 		*sc_rover->owner = NULL;
-	
+
 	while (new->size < size)
 	{
 	// free another
@@ -154,7 +152,7 @@ static surfcache_t *D_SCAlloc (int width, int size)
 			Sys_Error ("D_SCAlloc: hit the end of memory");
 		if (sc_rover->owner)
 			*sc_rover->owner = NULL;
-			
+
 		new->size += sc_rover->size;
 		new->next = sc_rover->next;
 	}
@@ -172,13 +170,13 @@ static surfcache_t *D_SCAlloc (int width, int size)
 	}
 	else
 		sc_rover = new->next;
-	
+
 	new->width = width;
 // DEBUG
 	if (width > 0)
 		new->height = (size - sizeof(*new) + sizeof(new->data)) / width;
 
-	new->owner = NULL;              // should be set properly after return
+	new->owner = NULL;		// should be set properly after return
 
 	if (d_roverwrapped)
 	{
@@ -190,7 +188,7 @@ static surfcache_t *D_SCAlloc (int width, int size)
 		d_roverwrapped = true;
 	}
 
-D_CheckCacheGuard ();   // DEBUG
+	D_CheckCacheGuard ();	// DEBUG
 	return new;
 }
 
@@ -203,7 +201,7 @@ D_SCDump
 #if 0	// unused
 static void D_SCDump (void)
 {
-	surfcache_t             *test;
+	surfcache_t		*test;
 
 	for (test = sc_base ; test ; test = test->next)
 	{
@@ -233,10 +231,10 @@ static int MaskForNum (int num)
 
 static int D_log2 (int num)
 {
-	int     c;
-	
+	int	c;
+
 	c = 0;
-	
+
 	while (num>>=1)
 		c++;
 	return c;
@@ -252,8 +250,8 @@ D_CacheSurface
 */
 surfcache_t *D_CacheSurface (msurface_t *surface, int miplevel)
 {
-	surfcache_t     *cache;
-	qboolean DoSurface;
+	surfcache_t	*cache;
+	qboolean		DoSurface;
 
 //
 // if the surface is animating or flashing, flush the cache
@@ -263,7 +261,7 @@ surfcache_t *D_CacheSurface (msurface_t *surface, int miplevel)
 	r_drawsurf.lightadj[1] = d_lightstylevalue[surface->styles[1]];
 	r_drawsurf.lightadj[2] = d_lightstylevalue[surface->styles[2]];
 	r_drawsurf.lightadj[3] = d_lightstylevalue[surface->styles[3]];
-	
+
 //
 // see if the cache holds apropriate data
 //
@@ -300,11 +298,11 @@ surfcache_t *D_CacheSurface (msurface_t *surface, int miplevel)
 	r_drawsurf.surfwidth = surface->extents[0] >> miplevel;
 	r_drawsurf.rowbytes = r_drawsurf.surfwidth;
 	r_drawsurf.surfheight = surface->extents[1] >> miplevel;
-	
+
 //
 // allocate memory if needed
 //
-	if (!cache)     // if a texture just animated, don't reallocate it
+	if (!cache)	// if a texture just animated, don't reallocate it
 	{
 		cache = D_SCAlloc (r_drawsurf.surfwidth,
 						   r_drawsurf.surfwidth * r_drawsurf.surfheight);
@@ -312,7 +310,7 @@ surfcache_t *D_CacheSurface (msurface_t *surface, int miplevel)
 		cache->owner = &surface->cachespots[miplevel];
 		cache->mipscale = surfscale;
 	}
-	
+
 	cache->drawflags = currententity->drawflags;
 	cache->abslight = currententity->abslight;
 
@@ -322,7 +320,7 @@ surfcache_t *D_CacheSurface (msurface_t *surface, int miplevel)
 		cache->dlight = 0;
 
 	r_drawsurf.surfdat = (pixel_t *)cache->data;
-	
+
 	cache->texture = r_drawsurf.texture;
 	cache->lightadj[0] = r_drawsurf.lightadj[0];
 	cache->lightadj[1] = r_drawsurf.lightadj[1];
@@ -343,6 +341,10 @@ surfcache_t *D_CacheSurface (msurface_t *surface, int miplevel)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/10/25 20:04:17  sezero
+ * static functions part-1: started making local functions static,
+ * killing nested externs, const vars clean-up.
+ *
  * Revision 1.3  2004/12/18 13:48:52  sezero
  * Clean-up and kill warnings 3:
  * Kill " suggest parentheses around XXX " warnings

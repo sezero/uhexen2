@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.47 2005-10-25 20:04:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.48 2005-10-25 20:08:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -22,10 +22,30 @@ extern	float introTime;
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);
 
-
-enum {m_none, m_main, m_singleplayer, m_load, m_save, m_multiplayer, m_setup, m_net, m_options, m_video, 
-		m_keys, m_help, m_quit, m_lanconfig, m_gameoptions, m_search, m_slist, 
-		m_class, m_difficulty, m_mload, m_msave} m_state;
+enum
+{
+	m_none = 0,
+	m_main,
+	m_singleplayer,
+	m_load,
+	m_save,
+	m_multiplayer,
+	m_setup,
+	m_net,
+	m_options,
+	m_video,
+	m_keys,
+	m_help,
+	m_quit,
+	m_lanconfig,
+	m_gameoptions,
+	m_search,
+	m_slist,
+	m_class,
+	m_difficulty,
+	m_mload,
+	m_msave
+} m_state;
 
 void M_Menu_Main_f (void);
 void M_Menu_SinglePlayer_f (void);
@@ -744,7 +764,7 @@ void M_Main_Key (int key)
 	switch (key)
 	{
 	case K_ESCAPE:
-		// leaving the main menu, reactivate mouse S.A.
+		// leaving the main menu, reactivate mouse - S.A.
 		mousestate_sa = false;
 		IN_ActivateMouse ();
 		// and check we haven't changed the music type
@@ -992,7 +1012,6 @@ void M_Class_Key (int key)
 		m_state = m_none;
 		break;
 	}
-
 }
 
 
@@ -1777,6 +1796,7 @@ again:
 			break;
 	}
 }
+
 
 //=============================================================================
 /* OPTIONS MENU */
@@ -4075,6 +4095,10 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.47  2005/10/25 20:04:17  sezero
+ * static functions part-1: started making local functions static,
+ * killing nested externs, const vars clean-up.
+ *
  * Revision 1.46  2005/10/25 17:14:23  sezero
  * added a STRINGIFY macro. unified version macros. simplified version
  * printing. simplified and enhanced version watermark print onto console

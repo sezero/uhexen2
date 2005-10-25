@@ -1,6 +1,8 @@
-// d_scan.c
-//
-// Portable C scan-level rasterization code, all pixel depths.
+/*
+	d_scan.c
+	Portable C scan-level rasterization code, all pixel depths.
+
+*/
 
 #include "quakedef.h"
 #include "r_local.h"
@@ -59,6 +61,7 @@ void D_WarpScreen (void)
 	{
 		col = &column[turb[v]];
 		row = &rowptr[v];
+
 		for (u=0 ; u<scr_vrect.width ; u+=4)
 		{
 			dest[u+0] = row[turb[u+0]][col[u+0]];
@@ -92,6 +95,7 @@ static void D_DrawTurbulent8Span (void)
 }
 
 #endif	// !id386
+
 
 void D_DrawSpans8T (espan_t *pspan)
 {
@@ -242,7 +246,7 @@ void Turbulent8 (surf_t *s)
 	espan_t			*pspan;
 
 	pspan = s->spans;
-	
+
 	r_turb_turb = sintable + ((int)(cl.time*SPEED)&(CYCLE-1));
 
 	r_turb_sstep = 0;	// keep compiler happy
@@ -586,3 +590,4 @@ void D_DrawZSpans (espan_t *pspan)
 }
 
 #endif
+

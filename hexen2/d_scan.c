@@ -97,8 +97,6 @@ static void D_DrawTurbulent8Span (void)
 #endif	// !id386
 
 
-
-
 void D_DrawSpans8T (espan_t *pspan)
 {
 	int				count, spancount;
@@ -245,9 +243,10 @@ void Turbulent8 (surf_t *s)
 	float			sdivz, tdivz, zi, z, du, dv, spancountminus1;
 	float			sdivz16stepu, tdivz16stepu, zi16stepu;
 	byte			origscanList[SCAN_SIZE];
-	espan_t *pspan;
+	espan_t			*pspan;
 
 	pspan = s->spans;
+
 	r_turb_turb = sintable + ((int)(cl.time*SPEED)&(CYCLE-1));
 
 	r_turb_sstep = 0;	// keep compiler happy

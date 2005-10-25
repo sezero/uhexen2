@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.44 2005-10-25 20:04:17 sezero Exp $
+	$Id: gl_draw.c,v 1.45 2005-10-25 20:08:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -492,7 +492,7 @@ void Draw_Init (void)
 	char	ver[40];*/
 	glpic_t	*gl;
 	int	start;
-	byte    *ncdata;
+	byte	*ncdata;
 
 	Cvar_RegisterVariable (&gl_picmip);
 	Cvar_RegisterVariable (&gl_spritemip);
@@ -537,7 +537,7 @@ void Draw_Init (void)
 
 	start = Hunk_LowMark ();
 
-	cb = (qpic_t *)COM_LoadHunkFile ("gfx/menu/conback.lmp");	
+	cb = (qpic_t *)COM_LoadHunkFile ("gfx/menu/conback.lmp");
 	if (!cb)
 		Sys_Error ("Couldn't load gfx/menu/conback.lmp");
 	SwapPic (cb);
@@ -551,7 +551,7 @@ void Draw_Init (void)
 	conback->width = cb->width;
 	conback->height = cb->height;
 	ncdata = cb->data;
-	
+
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
@@ -1079,9 +1079,9 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 	for( i = 0; i < PLAYER_PIC_WIDTH; i++ )
 	{
 		for( j = 0; j < PLAYER_PIC_HEIGHT; j++ )
-			{
+		{
 			trans[j * PLAYER_DEST_WIDTH + i] = d_8to24table[translation[menuplyr_pixels[which_class-1][j * PLAYER_PIC_WIDTH + i]]];
-			}
+		}
 	}
 
 	// See if the texture has already been loaded; if not, do it (Pa3PyX)

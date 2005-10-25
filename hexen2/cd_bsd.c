@@ -1,6 +1,6 @@
 /*
 	cd_bsd.c
-	$Id: cd_bsd.c,v 1.10 2005-10-21 17:59:07 sezero Exp $
+	$Id: cd_bsd.c,v 1.11 2005-10-25 20:08:40 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	A few BSD bits taken from the Dark Places project for Hammer
@@ -132,7 +132,7 @@ void CDAudio_Play(byte track, qboolean looping)
 	}
 
 	// don't try to play a non-audio track
-	#define CDROM_DATA_TRACK 4
+#	define CDROM_DATA_TRACK 4
 	memset((char *)&toc_buffer, 0, sizeof(toc_buffer));
 	entry.data_len = sizeof(toc_buffer);
 	entry.data = &toc_buffer;
@@ -184,7 +184,8 @@ void CDAudio_Stop(void)
 	if (!playing)
 		return;
 
-	if ( ioctl(cdfile, CDIOCSTOP) == -1 ) {
+	if ( ioctl(cdfile, CDIOCSTOP) == -1 )
+	{
 		Con_DPrintf("ioctl CDIOCSTOP failed (%d)\n", errno);
 		return;
 	}
@@ -372,7 +373,8 @@ void CDAudio_Update(void)
 			Con_DPrintf("ioctl CDIOCSETVOL failed\n");
 	}
 
-	if (playing && lastchk < time(NULL)) {
+	if (playing && lastchk < time(NULL))
+	{
 		lastchk = time(NULL) + 2; //two seconds between chks
 
 		memset (&subchnl, 0, sizeof(subchnl));
@@ -381,18 +383,21 @@ void CDAudio_Update(void)
 		subchnl.address_format = CD_MSF_FORMAT;
 		subchnl.data_format = CD_CURRENT_POSITION;
 		subchnl.track = playTrack;
-		if (ioctl(cdfile, CDIOCREADSUBCHANNEL, &subchnl) == -1 ) {
+		if (ioctl(cdfile, CDIOCREADSUBCHANNEL, &subchnl) == -1 )
+		{
 			Con_DPrintf("ioctl CDIOCREADSUBCHANNEL failed\n");
 			playing = false;
 			return;
 		}
 		if (data.header.audio_status != CD_AS_PLAY_IN_PROGRESS &&
-			data.header.audio_status != CD_AS_PLAY_PAUSED) {
+			data.header.audio_status != CD_AS_PLAY_PAUSED)
+		{
 			playing = false;
 			if (playLooping)
 				CDAudio_Play(playTrack, true);
 		}
-		/*else {
+		/*else
+		{
 			playTrack = data.what.position.track_number;
 		}*/
 	}
@@ -405,12 +410,14 @@ int CDAudio_Init(void)
 	if (COM_CheckParm("-nocdaudio"))
 		return -1;
 
-	if ((i = COM_CheckParm("-cddev")) != 0 && i < com_argc - 1) {
+	if ((i = COM_CheckParm("-cddev")) != 0 && i < com_argc - 1)
+	{
 		strlcpy(cd_dev, com_argv[i + 1], sizeof(cd_dev));
 		cd_dev[sizeof(cd_dev) - 1] = 0;
 	}
 
-	if ((cdfile = open(cd_dev, O_RDONLY | O_NONBLOCK)) == -1) {
+	if ((cdfile = open(cd_dev, O_RDONLY | O_NONBLOCK)) == -1)
+	{
 		Con_Printf("CDAudio_Init: open of \"%s\" failed (%i)\n", cd_dev, errno);
 		cdfile = -1;
 		return -1;
@@ -432,7 +439,8 @@ int CDAudio_Init(void)
 	Cmd_AddCommand ("cd", CD_f);
 
 	// get drives volume
-	if (ioctl(cdfile, CDIOCGETVOL, &drv_vol0) == -1) {
+	if (ioctl(cdfile, CDIOCGETVOL, &drv_vol0) == -1)
+	{
 		Con_Printf("ioctl CDIOCGETVOL failed\n");
 		drv_vol0.vol[0] = drv_vol0.vol[2] =
 		drv_vol0.vol[1] = drv_vol0.vol[3] = 255.0;

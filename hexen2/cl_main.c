@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.18 2005-10-25 20:04:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.19 2005-10-25 20:08:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -45,7 +45,7 @@ static byte	cls_message_buffer[1024];
 efrag_t			cl_efrags[MAX_EFRAGS];
 entity_t		cl_entities[MAX_EDICTS];
 entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
-lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
+lightstyle_t		cl_lightstyle[MAX_LIGHTSTYLES];
 dlight_t		cl_dlights[MAX_DLIGHTS];
 
 //static int			lastc = 0;
@@ -189,35 +189,39 @@ qboolean CL_CopyFiles(char *source, char *pat, char *dest)
 	DIR	*dir;
 	struct dirent	*dent;
 
-/*
-pat is assumed to be <source> / *.gip
-as this function is currently only used for saving/loading games.
-plus, COM_CopyFile doesn't return anything, so there is no way to tell if it
-failed.
-*/
+	/* pat is assumed to be <source> / *.gip
+	   This function is currently only used for
+	   saving/loading games.
+	   COM_CopyFile doesn't return anything, so
+	   there is no way to tell if it failed.
+	*/
+
 	dir = opendir (source);
-	if (dir == NULL) {
+	if (dir == NULL)
+	{
 		return true;
 	}
-	
+
 	fpat = strrchr(pat, '/');
 	if (fpat == NULL)
 		fpat = pat;
 	else
 		fpat++; /* skip the '/' */
-			
+
 	do {
 		dent = readdir(dir);
-		if (dent != NULL) {
-			if (!fnmatch (fpat, dent->d_name,FNM_PATHNAME)) {
+		if (dent != NULL)
+		{
+			if (!fnmatch (fpat, dent->d_name,FNM_PATHNAME))
+			{
 				sprintf(name,"%s%s", source, dent->d_name);
 				sprintf(tempdir,"%s%s", dest, dent->d_name);
 				COM_CopyFile(name,tempdir);
 			}
 		}
-	} while (dent != NULL);	
+	} while (dent != NULL);
 	closedir (dir);
-	
+
 	return false;	// assuming no error
 #endif
 }
@@ -235,7 +239,7 @@ extern void R_ClearParticles (void);
 void CL_Disconnect (void)
 {
 	R_ClearParticles ();	//jfm: need to clear parts because some now check world
-	S_StopAllSounds (true);// stop sounds (especially looping!)
+	S_StopAllSounds (true);	// stop sounds (especially looping!)
 	loading_stage = 0;
 
 // bring the console down and fade the colors back to normal
@@ -243,7 +247,9 @@ void CL_Disconnect (void)
 
 // if running a local server, shut it down
 	if (cls.demoplayback)
+	{
 		CL_StopPlayback ();
+	}
 	else if (cls.state == ca_connected)
 	{
 		if (cls.demorecording)
@@ -298,7 +304,7 @@ void CL_EstablishConnection (char *host)
 	if (!cls.netcon)
 		Host_Error ("CL_Connect: connect failed\n");
 	Con_DPrintf ("CL_EstablishConnection: connected to %s\n", host);
-	
+
 	cls.demonum = -1;			// not in the demo loop now
 	cls.state = ca_connected;
 	cls.signon = 0;				// need all the signon messages before playing
@@ -313,9 +319,9 @@ An svc_signonnum has been received, perform a client side setup
 */
 void CL_SignonReply (void)
 {
-	char 	str[8192];
+	char	str[8192];
 
-Con_DPrintf ("CL_SignonReply: %i\n", cls.signon);
+	Con_DPrintf ("CL_SignonReply: %i\n", cls.signon);
 
 	switch (cls.signon)
 	{
@@ -323,11 +329,11 @@ Con_DPrintf ("CL_SignonReply: %i\n", cls.signon);
 		MSG_WriteByte (&cls.message, clc_stringcmd);
 		MSG_WriteString (&cls.message, "prespawn");
 		break;
-		
-	case 2:		
+
+	case 2:
 		MSG_WriteByte (&cls.message, clc_stringcmd);
 		MSG_WriteString (&cls.message, va("name \"%s\"\n", cl_name.string));
-	
+
 		MSG_WriteByte (&cls.message, clc_stringcmd);
 		MSG_WriteString (&cls.message, va("playerclass %i\n", (int)cl_playerclass.value));
 
@@ -338,15 +344,15 @@ Con_DPrintf ("CL_SignonReply: %i\n", cls.signon);
 		sprintf (str, "spawn %s", cls.spawnparms);
 		MSG_WriteString (&cls.message, str);
 		break;
-		
-	case 3:	
+
+	case 3:
 		MSG_WriteByte (&cls.message, clc_stringcmd);
 		MSG_WriteString (&cls.message, "begin");
 		Cache_Report ();		// print remaining memory
 		break;
-		
+
 	case 4:
-		SCR_EndLoadingPlaque ();		// allow normal screen updates
+		SCR_EndLoadingPlaque ();	// allow normal screen updates
 		break;
 	}
 }
@@ -393,7 +399,7 @@ static void CL_PrintEntities_f (void)
 {
 	entity_t	*ent;
 	int			i;
-	
+
 	for (i=0,ent=cl_entities ; i<cl.num_entities ; i++,ent++)
 	{
 		Con_Printf ("%3i:",i);
@@ -402,8 +408,15 @@ static void CL_PrintEntities_f (void)
 			Con_Printf ("EMPTY\n");
 			continue;
 		}
-		Con_Printf ("%s:%2i  (%5.1f,%5.1f,%5.1f) [%5.1f %5.1f %5.1f]\n"
-		,ent->model->name,ent->frame, ent->origin[0], ent->origin[1], ent->origin[2], ent->angles[0], ent->angles[1], ent->angles[2]);
+		Con_Printf ("%s:%2i  (%5.1f,%5.1f,%5.1f) [%5.1f %5.1f %5.1f]\n",
+				ent->model->name,
+				ent->frame,
+				ent->origin[0],
+				ent->origin[1],
+				ent->origin[2],
+				ent->angles[0],
+				ent->angles[1],
+				ent->angles[2] );
 	}
 }
 
@@ -421,7 +434,7 @@ static void SetPal (int i)
 	static int old;
 	byte	pal[768];
 	int		c;
-	
+
 	if (i == old)
 		return;
 	old = i;
@@ -507,7 +520,7 @@ void CL_DecayLights (void)
 	int			i;
 	dlight_t	*dl;
 	float		time;
-	
+
 	time = cl.time - cl.oldtime;
 
 	dl = cl_dlights;
@@ -515,7 +528,7 @@ void CL_DecayLights (void)
 	{
 		if (dl->die < cl.time || !dl->radius)
 			continue;
-		
+
 		if (dl->radius > 0)
 		{
 			dl->radius -= time*dl->decay;
@@ -545,27 +558,27 @@ static float CL_LerpPoint (void)
 	float	f, frac;
 
 	f = cl.mtime[0] - cl.mtime[1];
-	
+
 	if (!f || cl_nolerp.value || cls.timedemo || sv.active)
 	{
 		cl.time = cl.mtime[0];
 		return 1;
 	}
-		
+
 	if (f > 0.1)
 	{	// dropped packet, or start of demo
 		cl.mtime[1] = cl.mtime[0] - 0.1;
 		f = 0.1;
 	}
 	frac = (cl.time - cl.mtime[1]) / f;
-//Con_Printf ("frac: %f\n",frac);
+	//Con_Printf ("frac: %f\n",frac);
 	if (frac < 0)
 	{
 		if (frac < -0.01)
 		{
-SetPal(1);
+			SetPal(1);
 			cl.time = cl.mtime[1];
-//				Con_Printf ("low frac\n");
+//			Con_Printf ("low frac\n");
 		}
 		frac = 0;
 	}
@@ -573,15 +586,15 @@ SetPal(1);
 	{
 		if (frac > 1.01)
 		{
-SetPal(2);
+			SetPal(2);
 			cl.time = cl.mtime[0];
-//				Con_Printf ("high frac\n");
+//			Con_Printf ("high frac\n");
 		}
 		frac = 1;
 	}
 	else
 		SetPal(0);
-		
+
 	return frac;
 }
 
@@ -603,7 +616,7 @@ static void CL_RelinkEntities (void)
 
 	//c = 0;
 
-// determine partial update time	
+// determine partial update time
 	frac = CL_LerpPoint ();
 
 	cl_numvisedicts = 0;
@@ -628,7 +641,7 @@ static void CL_RelinkEntities (void)
 			cl.viewangles[j] = cl.mviewangles[1][j] + frac*d;
 		}
 	}
-	
+
 // start on the entity after the world
 	for (i=1,ent=cl_entities+1 ; i<cl.num_entities ; i++,ent++)
 	{
@@ -677,7 +690,7 @@ static void CL_RelinkEntities (void)
 					d += 360;
 				ent->angles[j] = ent->msg_angles[1][j] + f*d;
 			}
-			
+
 		}
 
 		//c++;
@@ -695,7 +708,6 @@ static void CL_RelinkEntities (void)
 				VectorCopy (ent->origin,  dl->origin);
 				dl->origin[2] += 16;
 				AngleVectors (ent->angles, fv, rv, uv);
-				 
 				VectorMA (dl->origin, 18, fv, dl->origin);
 				dl->radius = 200 + (rand()&31);
 				dl->minlight = 32;
@@ -703,7 +715,7 @@ static void CL_RelinkEntities (void)
 			}
 		}
 		if (ent->effects & EF_BRIGHTLIGHT)
-		{			
+		{
 			if (cl_prettylights.value)
 			{
 				dl = CL_AllocDlight (i);
@@ -714,7 +726,7 @@ static void CL_RelinkEntities (void)
 			}
 		}
 		if (ent->effects & EF_DIMLIGHT)
-		{			
+		{
 			if (cl_prettylights.value)
 			{
 				dl = CL_AllocDlight (i);
@@ -725,7 +737,7 @@ static void CL_RelinkEntities (void)
 		}
 
 		if (ent->effects & EF_DARKLIGHT)
-		{			
+		{
 			if (cl_prettylights.value)
 			{
 				dl = CL_AllocDlight (i);
@@ -736,7 +748,7 @@ static void CL_RelinkEntities (void)
 			}
 		}
 		if (ent->effects & EF_LIGHT)
-		{			
+		{
 			if (cl_prettylights.value)
 			{
 				dl = CL_AllocDlight (i);
@@ -846,7 +858,8 @@ static void CL_RelinkEntities (void)
 	{
 		Con_Printf("Number of entities: %d\n",c);
 		lastc = c;
-	}*/
+	}
+*/
 }
 
 
@@ -863,7 +876,7 @@ int CL_ReadFromServer (void)
 
 	cl.oldtime = cl.time;
 	cl.time += host_frametime;
-	
+
 	do
 	{
 		ret = CL_GetMessage ();
@@ -871,11 +884,11 @@ int CL_ReadFromServer (void)
 			Host_Error ("CL_ReadFromServer: lost server connection");
 		if (!ret)
 			break;
-		
+
 		cl.last_received_message = realtime;
 		CL_ParseServerMessage ();
 	} while (ret && cls.state == ca_connected);
-	
+
 	if (cl_shownet.value)
 		Con_Printf ("\n");
 
@@ -904,13 +917,12 @@ void CL_SendCmd (void)
 	{
 	// get basic movement from keyboard
 		CL_BaseMove (&cmd);
-	
+
 	// allow mice or other external controllers to add to the move
 		IN_Move (&cmd);
-	
+
 	// send the unreliable message
 		CL_SendMove (&cmd);
-	
 	}
 
 	if (cls.demoplayback)
@@ -918,11 +930,11 @@ void CL_SendCmd (void)
 		SZ_Clear (&cls.message);
 		return;
 	}
-	
+
 // send the reliable message
 	if (!cls.message.cursize)
 		return;		// no message at all
-	
+
 	if (!NET_CanSendMessage (cls.netcon))
 	{
 		Con_DPrintf ("CL_WriteToServer: can't send\n");
@@ -948,13 +960,14 @@ static void CL_Sensitivity_save_f (void)
 	else if (Q_strcasecmp(Cmd_Argv(1),"restore") == 0)
 		Cvar_SetValue ("sensitivity", save_sensitivity);
 }
+
 /*
 =================
 CL_Init
 =================
 */
 void CL_Init (void)
-{	
+{
 	SZ_Init (&cls.message, cls_message_buffer, sizeof(cls_message_buffer));
 
 	CL_InitInput ();
@@ -989,7 +1002,7 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&cl_prettylights);
 
 //	Cvar_RegisterVariable (&cl_autofire);
-	
+
 	Cmd_AddCommand ("entities", CL_PrintEntities_f);
 	Cmd_AddCommand ("disconnect", CL_Disconnect_f);
 	Cmd_AddCommand ("record", CL_Record_f);
@@ -1001,6 +1014,10 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/10/25 20:04:17  sezero
+ * static functions part-1: started making local functions static,
+ * killing nested externs, const vars clean-up.
+ *
  * Revision 1.17  2005/08/20 13:06:33  sezero
  * favored unlink() over DeleteFile() on win32. removed unnecessary
  * platform defines for directory path separators. removed a left-

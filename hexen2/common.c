@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.24 2005-10-25 20:04:17 sezero Exp $
+	$Id: common.c,v 1.25 2005-10-25 20:08:41 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -132,6 +132,7 @@ void InsertLinkBefore (link_t *l, link_t *before)
 	l->prev->next = l;
 	l->next->prev = l;
 }
+
 void InsertLinkAfter (link_t *l, link_t *after)
 {
 	l->next = after->next;
@@ -148,9 +149,9 @@ void InsertLinkAfter (link_t *l, link_t *after)
 ============================================================================
 */
 
-short   ShortSwap (short l)
+short ShortSwap (short l)
 {
-	byte    b1,b2;
+	byte	b1, b2;
 
 	b1 = l&255;
 	b2 = (l>>8)&255;
@@ -158,9 +159,9 @@ short   ShortSwap (short l)
 	return (b1<<8) + b2;
 }
 
-int    LongSwap (int l)
+int LongSwap (int l)
 {
-	byte    b1,b2,b3,b4;
+	byte	b1, b2, b3, b4;
 
 	b1 = l&255;
 	b2 = (l>>8)&255;
@@ -412,7 +413,7 @@ int MSG_ReadShort (void)
 	}
 
 	c = (short)(net_message.data[msg_readcount]
-	+ (net_message.data[msg_readcount+1]<<8));
+			+ (net_message.data[msg_readcount+1]<<8));
 
 	msg_readcount += 2;
 
@@ -430,9 +431,9 @@ int MSG_ReadLong (void)
 	}
 
 	c = net_message.data[msg_readcount]
-	+ (net_message.data[msg_readcount+1]<<8)
-	+ (net_message.data[msg_readcount+2]<<16)
-	+ (net_message.data[msg_readcount+3]<<24);
+			+ (net_message.data[msg_readcount+1]<<8)
+			+ (net_message.data[msg_readcount+2]<<16)
+			+ (net_message.data[msg_readcount+3]<<24);
 
 	msg_readcount += 4;
 
@@ -596,10 +597,10 @@ void *SZ_GetSpace (sizebuf_t *buf, int length)
 	{
 		if (!buf->allowoverflow)
 			Sys_Error ("SZ_GetSpace: overflow without allowoverflow set");
-		
+
 		if (length > buf->maxsize)
 			Sys_Error ("SZ_GetSpace: %i is > full buffer size", length);
-			
+
 		Sys_Printf ("SZ_GetSpace: overflow\nCurrently %d of %d, requested %d\n",buf->cursize,buf->maxsize,length);
 		SZ_Clear (buf); 
 		buf->overflowed = true;
@@ -691,7 +692,7 @@ COM_FileBase
 */
 void COM_FileBase (char *in, char *out)
 {
-	char *s, *s2;
+	char	*s, *s2;
 
 	s = in + strlen(in) - 1;
 
@@ -702,7 +703,8 @@ void COM_FileBase (char *in, char *out)
 	   game randomly upon loading progs, for instance (or in any other
 	   instance where one would supply a filename witout a path */
 //	for (s2 = s ; *s2 && *s2 != '/' ; s2--);
-	for (s2 = s; *s2 && *s2 != '/' && s2 >= in; s2--);
+	for (s2 = s; *s2 && *s2 != '/' && s2 >= in; s2--)
+		;
 
 	if (s-s2 < 2)
 		strcpy (out,"?model?");
@@ -722,7 +724,7 @@ COM_DefaultExtension
 */
 void COM_DefaultExtension (char *path, char *extension)
 {
-	char    *src;
+	char	*src;
 //
 // if path doesn't have a .EXT, append extension
 // (extension should include the .)
@@ -780,7 +782,6 @@ skipwhite:
 			data++;
 		goto skipwhite;
 	}
-
 
 // handle quoted strings specially
 	if (c == '\"')
@@ -990,7 +991,7 @@ varargs versions of all text functions.
 FIXME: make this buffer size safe someday
 ============
 */
-char	*va(char *format, ...)
+char *va(char *format, ...)
 {
 	va_list		argptr;
 	static char		string[1024];
@@ -1004,7 +1005,7 @@ char	*va(char *format, ...)
 
 #if 0
 /// just for debugging
-int	memsearch (byte *start, int count, int search)
+int memsearch (byte *start, int count, int search)
 {
 	int		i;
 
@@ -1163,7 +1164,7 @@ COM_CreatePath
 Only used for CopyFile and download
 ============
 */
-void	COM_CreatePath (char *path)
+void COM_CreatePath (char *path)
 {
 	char	*ofs;
 
@@ -1935,6 +1936,10 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2005/10/25 20:04:17  sezero
+ * static functions part-1: started making local functions static,
+ * killing nested externs, const vars clean-up.
+ *
  * Revision 1.23  2005/10/24 21:22:15  sezero
  * round to nearest value, rather than rounding toward zero while
  * sending angles and coords. (from the darkplaces project where

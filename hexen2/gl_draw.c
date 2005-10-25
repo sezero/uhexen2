@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.60 2005-10-25 20:04:17 sezero Exp $
+	$Id: gl_draw.c,v 1.61 2005-10-25 20:08:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1079,9 +1079,9 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 	for( i = 0; i < PLAYER_PIC_WIDTH; i++ )
 	{
 		for( j = 0; j < PLAYER_PIC_HEIGHT; j++ )
-			{
+		{
 			trans[j * PLAYER_DEST_WIDTH + i] = d_8to24table[translation[menuplyr_pixels[setup_class-1][j * PLAYER_PIC_WIDTH + i]]];
-			}
+		}
 	}
 
 	// See if the texture has already been loaded; if not, do it (Pa3PyX)
@@ -2015,6 +2015,10 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.60  2005/10/25 20:04:17  sezero
+ * static functions part-1: started making local functions static,
+ * killing nested externs, const vars clean-up.
+ *
  * Revision 1.59  2005/10/25 19:58:33  sezero
  * killed Draw_DebugChar
  *

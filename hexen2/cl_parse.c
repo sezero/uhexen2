@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.18 2005-10-25 20:04:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.19 2005-10-25 20:08:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -25,31 +25,31 @@ static const char *svc_strings[] =
 	"svc_updatestat",
 	"svc_version",		// [long] server version
 	"svc_setview",		// [short] entity number
-	"svc_sound",			// <see code>
-	"svc_time",			// [float] server time
-	"svc_print",			// [string] null terminated string
-	"svc_stufftext",		// [string] stuffed into client's console buffer
-						// the string should be \n terminated
+	"svc_sound",		// <see code>
+	"svc_time",		// [float] server time
+	"svc_print",		// [string] null terminated string
+	"svc_stufftext",	// [string] stuffed into client's console buffer
+				// the string should be \n terminated
 	"svc_setangle",		// [vec3] set the view angle to this absolute value
-	
-	"svc_serverinfo",		// [long] version
-						// [string] signon string
-						// [string]..[0]model cache [string]...[0]sounds cache
-						// [string]..[0]item cache
-	"svc_lightstyle",		// [byte] [string]
-	"svc_updatename",		// [byte] [string]
+
+	"svc_serverinfo",	// [long] version
+				// [string] signon string
+				// [string]..[0]model cache [string]...[0]sounds cache
+				// [string]..[0]item cache
+	"svc_lightstyle",	// [byte] [string]
+	"svc_updatename",	// [byte] [string]
 	"svc_updatefrags",	// [byte] [short]
-	"svc_clientdata",		// <shortbits + data>
-	"svc_stopsound",		// <see code>
+	"svc_clientdata",	// <shortbits + data>
+	"svc_stopsound",	// <see code>
 	"svc_updatecolors",	// [byte] [byte]
 	"svc_particle",		// [vec3] <variable>
-	"svc_damage",			// [byte] impact [byte] blood [vec3] from
-	
+	"svc_damage",		// [byte] impact [byte] blood [vec3] from
+
 	"svc_spawnstatic",
 	"svc_raineffect",
 	"svc_spawnbaseline",
-	
-	"svc_temp_entity",		// <variable>
+
+	"svc_temp_entity",	// <variable>
 	"svc_setpause",
 	"svc_signonnum",
 	"svc_centerprint",
@@ -57,13 +57,13 @@ static const char *svc_strings[] =
 	"svc_foundsecret",
 	"svc_spawnstaticsound",
 	"svc_intermission",
-	"svc_finale",			// [string] music [string] text
-	"svc_cdtrack",			// [byte] track [byte] looptrack
+	"svc_finale",		// [string] music [string] text
+	"svc_cdtrack",		// [byte] track [byte] looptrack
 	"svc_sellscreen",
-	"svc_particle2",		// [vec3] <variable>
+	"svc_particle2",	// [vec3] <variable>
 	"svc_cutscene",
 	"svc_midi_name",
-	"svc_updateclass",  // [byte] client [byte] class
+	"svc_updateclass",	// [byte] client [byte] class
 	"svc_particle3",
 	"svc_particle4",
 	"svc_set_view_flags",
@@ -106,7 +106,7 @@ static entity_t *CL_EntityNum (int num)
 			cl.num_entities++;
 		}
 	}
-		
+
 	return &cl_entities[num];
 }
 
@@ -118,29 +118,27 @@ CL_ParseStartSoundPacket
 */
 static void CL_ParseStartSoundPacket(void)
 {
-    vec3_t  pos;
-    int 	channel, ent;
-    int 	sound_num;
-    int 	volume;
-    int 	field_mask;
-    float 	attenuation;  
- 	int		i;
-	           
-    field_mask = MSG_ReadByte(); 
+	vec3_t	pos;
+	int		channel, ent;
+	int		sound_num, volume, field_mask;
+	float	attenuation;
+	int		i;
 
-    if (field_mask & SND_VOLUME)
+	field_mask = MSG_ReadByte();
+
+	if (field_mask & SND_VOLUME)
 		volume = MSG_ReadByte ();
 	else
 		volume = DEFAULT_SOUND_PACKET_VOLUME;
-	
-    if (field_mask & SND_ATTENUATION)
+
+	if (field_mask & SND_ATTENUATION)
 		attenuation = MSG_ReadByte () / 64.0;
 	else
 		attenuation = DEFAULT_SOUND_PACKET_ATTENUATION;
-	
+
 	channel = MSG_ReadShort ();
 	sound_num = MSG_ReadByte ();
-    if (field_mask & SND_OVERFLOW)
+	if (field_mask & SND_OVERFLOW)
 		sound_num += 256;
 
 	ent = channel >> 3;
@@ -148,12 +146,12 @@ static void CL_ParseStartSoundPacket(void)
 
 	if (ent > MAX_EDICTS)
 		Host_Error ("CL_ParseStartSoundPacket: ent = %i", ent);
-	
+
 	for (i=0 ; i<3 ; i++)
 		pos[i] = MSG_ReadCoord ();
- 
-    S_StartSound (ent, channel, cl.sound_precache[sound_num], pos, volume/255.0, attenuation);
-}       
+
+	S_StartSound (ent, channel, cl.sound_precache[sound_num], pos, volume/255.0, attenuation);
+}
 
 /*
 ==================
@@ -170,7 +168,7 @@ static void CL_KeepaliveMessage (void)
 	int		ret;
 	sizebuf_t	old;
 	byte		olddata[NET_MAXMESSAGE];
-	
+
 	if (sv.active)
 		return;		// no need if server is local
 	if (cls.demoplayback)
@@ -179,14 +177,14 @@ static void CL_KeepaliveMessage (void)
 // read messages from server, should just be nops
 	old = net_message;
 	memcpy (olddata, net_message.data, net_message.cursize);
-	
+
 	do
 	{
 		ret = CL_GetMessage ();
 		switch (ret)
 		{
 		default:
-			Host_Error ("CL_KeepaliveMessage: CL_GetMessage failed");		
+			Host_Error ("CL_KeepaliveMessage: CL_GetMessage failed");
 		case 0:
 			break;	// nothing waiting
 		case 1:
@@ -229,7 +227,7 @@ static void CL_ParseServerInfo (void)
 	char	model_precache[MAX_MODELS][MAX_QPATH];
 	char	sound_precache[MAX_SOUNDS][MAX_QPATH];
 // rjr	edict_t		*ent;
-	
+
 	Con_DPrintf ("Serverinfo packet received.\n");
 //
 // wipe the client_state_t struct
@@ -255,7 +253,7 @@ static void CL_ParseServerInfo (void)
 
 // parse gametype
 	cl.gametype = MSG_ReadByte ();
-	
+
 	if (cl.gametype == GAME_DEATHMATCH)
 		sv_kingofhill = MSG_ReadShort ();
 
@@ -371,18 +369,18 @@ static void CL_ParseServerInfo (void)
 	{
 		sv.worldmodel = cl.worldmodel;
 		sv.models[1] = sv.worldmodel;
-		
+
 		// load progs to get entity field count
 		PR_LoadProgs ();
 
 		// allocate server memory
 		sv.max_edicts = MAX_EDICTS;
-		
+
 		sv.edicts = Hunk_AllocName (sv.max_edicts*pr_edict_size, "edicts");
 
 		sv.num_edicts = 1;
 		sv.models[1] = sv.worldmodel;
-		
+
 		//
 		// clear world interaction links
 		//
@@ -397,20 +395,21 @@ static void CL_ParseServerInfo (void)
 		ent->v.movetype = MOVETYPE_PUSH;
 	}
 */
-	
+
 	R_NewMap ();
 
 /*	if (!sv.active)
 	{
 		PR_LoadStrings();
 		PR_LoadInfoStrings();
-	}*/
+	}
+*/
 
 	puzzle_strings = (char *)COM_LoadHunkFile ("puzzles.txt");
 
 	Hunk_Check ();		// make sure nothing is hurt
-	
-	noclip_anglehack = false;		// noclip is turned off at start	
+
+	noclip_anglehack = false;	// noclip is turned off at start
 }
 
 
@@ -519,7 +518,7 @@ static void CL_ParseUpdate (int bits)
 		forcelink = false;
 
 	ent->msgtime = cl.mtime[0];
-	
+
 	if (bits & U_MODEL)
 	{
 		modnum = MSG_ReadShort ();
@@ -528,7 +527,7 @@ static void CL_ParseUpdate (int bits)
 	}
 	else
 		modnum = ref_ent->modelindex;
-		
+
 	model = cl.model_precache[modnum];
 	set_ent->modelindex = modnum;
 	if (model != ent->model)
@@ -551,7 +550,7 @@ static void CL_ParseUpdate (int bits)
 			R_TranslatePlayerSkin (num - 1);
 #endif
 	}
-	
+
 	if (bits & U_FRAME)
 		set_ent->frame = ent->frame = MSG_ReadByte ();
 	else
@@ -601,12 +600,14 @@ static void CL_ParseUpdate (int bits)
 	if (bits & U_EFFECTS)
 	{
 		set_ent->effects = ent->effects = MSG_ReadByte();
-//		if (num == 2) fprintf(FH,"Read effects %d\n",set_ent->effects);
+	//	if (num == 2)
+	//		fprintf(FH,"Read effects %d\n",set_ent->effects);
 	}
 	else
 	{
 		ent->effects = ref_ent->effects;
-		//if (num == 2) fprintf(FH,"restored effects %d\n",ref_ent->effects);
+		//if (num == 2)
+		//	fprintf(FH,"restored effects %d\n",ref_ent->effects);
 	}
 
 // shift the known values for interpolation
@@ -616,13 +617,16 @@ static void CL_ParseUpdate (int bits)
 	if (bits & U_ORIGIN1)
 	{
 		set_ent->origin[0] = ent->msg_origins[0][0] = MSG_ReadCoord ();
-		//if (num == 2) fprintf(FH,"Read origin[0] %f\n",set_ent->angles[0]);
+		//if (num == 2)
+		//	fprintf(FH,"Read origin[0] %f\n",set_ent->angles[0]);
 	}
 	else
 	{
 		ent->msg_origins[0][0] = ref_ent->origin[0];
-		//if (num == 2) fprintf(FH,"Restored origin[0] %f\n",ref_ent->angles[0]);
+		//if (num == 2)
+		//	fprintf(FH,"Restored origin[0] %f\n",ref_ent->angles[0]);
 	}
+
 	if (bits & U_ANGLE1)
 		set_ent->angles[0] = ent->msg_angles[0][0] = MSG_ReadAngle();
 	else
@@ -632,6 +636,7 @@ static void CL_ParseUpdate (int bits)
 		set_ent->origin[1] = ent->msg_origins[0][1] = MSG_ReadCoord ();
 	else
 		ent->msg_origins[0][1] = ref_ent->origin[1];
+
 	if (bits & U_ANGLE2)
 		set_ent->angles[1] = ent->msg_angles[0][1] = MSG_ReadAngle();
 	else
@@ -641,6 +646,7 @@ static void CL_ParseUpdate (int bits)
 		set_ent->origin[2] = ent->msg_origins[0][2] = MSG_ReadCoord ();
 	else
 		ent->msg_origins[0][2] = ref_ent->origin[2];
+
 	if (bits & U_ANGLE3)
 		set_ent->angles[2] = ent->msg_angles[0][2] = MSG_ReadAngle();
 	else
@@ -669,7 +675,6 @@ static void CL_ParseUpdate (int bits)
 		ent->forcelink = true;
 	}
 
-
 //	if (sv.active || num != 2)
 //		return;
 }
@@ -690,16 +695,16 @@ static void CL_ParseUpdate2 (int bits)
 		bits |= (i<<16);
 	}
 
-	if (bits & U_LONGENTITY)	
+	if (bits & U_LONGENTITY)
 		MSG_ReadShort ();
 	else
 		MSG_ReadByte ();
-	
+
 	if (bits & U_MODEL)
 	{
 		MSG_ReadShort ();
 	}
-		
+
 	if (bits & U_FRAME)
 		MSG_ReadByte ();
 
@@ -717,16 +722,19 @@ static void CL_ParseUpdate2 (int bits)
 
 	if (bits & U_ORIGIN1)
 		MSG_ReadCoord ();
+
 	if (bits & U_ANGLE1)
 		MSG_ReadAngle();
 
 	if (bits & U_ORIGIN2)
 		MSG_ReadCoord ();
+
 	if (bits & U_ANGLE2)
 		MSG_ReadAngle();
 
 	if (bits & U_ORIGIN3)
 		MSG_ReadCoord ();
+
 	if (bits & U_ANGLE3)
 		MSG_ReadAngle();
 
@@ -745,7 +753,7 @@ CL_ParseBaseline
 static void CL_ParseBaseline (entity_t *ent)
 {
 	int			i;
-	
+
 	ent->baseline.modelindex = MSG_ReadShort ();
 	ent->baseline.frame = MSG_ReadByte ();
 	ent->baseline.colormap = MSG_ReadByte();
@@ -789,10 +797,10 @@ static void CL_ParseClientdata (int bits)
 	}
 
 	if (bits & SU_IDEALROLL)
-		cl.idealroll = MSG_ReadChar ();	
+		cl.idealroll = MSG_ReadChar ();
 //rjr	else
 //rjr		cl.idealroll = 0;
-	
+
 	VectorCopy (cl.mvelocity[0], cl.mvelocity[1]);
 	for (i=0 ; i<3 ; i++)
 	{
@@ -818,9 +826,9 @@ static void CL_ParseClientdata (int bits)
 				cl.item_gettime[j] = cl.time;
 		cl.items = i;
 	}
-		
-	cl.onground = (bits & SU_ONGROUND) != 0;
-	cl.inwater = (bits & SU_INWATER) != 0;
+
+	cl.onground = ((bits & SU_ONGROUND) != 0);
+	cl.inwater  = ((bits & SU_INWATER)  != 0);
 
 	if (bits & SU_WEAPONFRAME)
 		cl.stats[STAT_WEAPONFRAME] = MSG_ReadByte ();
@@ -960,7 +968,9 @@ static void CL_ParseClientdata (int bits)
 		SB_Changed();
 
 	if ((sc1 & SC1_INV) || (sc2 & SC2_INV))
-		SB_InvChanged();*/
+		SB_InvChanged();
+*/
+
 }
 
 #ifndef GLQUAKE	// otherwise in gl_rmisc.c
@@ -988,7 +998,7 @@ static void CL_NewTranslation (int slot)
 	int		top, bottom;
 	byte	*dest, *source, *sourceA, *sourceB, *colorA, *colorB;
 #endif
-	
+
 	if (slot > cl.maxclients)
 		Sys_Error ("CL_NewTranslation: slot > cl.maxclients");
 	if (!cl.scores[slot].playerclass)
@@ -1009,8 +1019,11 @@ static void CL_NewTranslation (int slot)
 	{
 		Con_Printf("Invalid Player Color: %d,%d\n",top,bottom);
 	}
-	if (top > 10) top = 0;
-	if (bottom > 10) bottom = 0;
+
+	if (top > 10)
+		top = 0;
+	if (bottom > 10)
+		bottom = 0;
 
 	top -= 1;
 	bottom -= 1;
@@ -1024,9 +1037,9 @@ static void CL_NewTranslation (int slot)
 		sourceB = colorB + 256 + (bottom * 256);
 		for(j=0;j<256;j++,colorA++,colorB++,sourceA++,sourceB++)
 		{
-			if (top >= 0 && (*colorA != 255)) 
+			if (top >= 0 && (*colorA != 255))
 				dest[j] = source[*sourceA];
-			if (bottom >= 0 && (*colorB != 255)) 
+			if (bottom >= 0 && (*colorB != 255))
 				dest[j] = source[*sourceB];
 		}
 	}
@@ -1042,7 +1055,7 @@ static void CL_ParseStatic (void)
 {
 	entity_t *ent;
 	int		i;
-		
+
 	i = cl.num_statics;
 	if (i >= MAX_STATIC_ENTITIES)
 		Host_Error ("Too many static entities");
@@ -1061,7 +1074,7 @@ static void CL_ParseStatic (void)
 	ent->abslight = ent->baseline.abslight;
 
 	VectorCopy (ent->baseline.origin, ent->origin);
-	VectorCopy (ent->baseline.angles, ent->angles);	
+	VectorCopy (ent->baseline.angles, ent->angles);
 	R_AddEfrags (ent);
 }
 
@@ -1075,21 +1088,21 @@ static void CL_ParseStaticSound (void)
 	vec3_t		org;
 	int			sound_num, vol, atten;
 	int			i;
-	
+
 	for (i=0 ; i<3 ; i++)
 		org[i] = MSG_ReadCoord ();
 
 	sound_num = MSG_ReadShort ();
 	vol = MSG_ReadByte ();
 	atten = MSG_ReadByte ();
-	
+
 	S_StaticSound (cl.sound_precache[sound_num], org, vol, atten);
 }
 
 
 static void CL_Plaque(void)
 {
-	int idx;
+	int	idx;
 
 	idx = MSG_ReadShort ();
 
@@ -1171,13 +1184,13 @@ void CL_ParseServerMessage (void)
 	}
 	else if (cl_shownet.value == 2)
 		Con_Printf ("------------------\n");
-	
-	cl.onground = false;	// unless the server says otherwise	
+
+	cl.onground = false;	// unless the server says otherwise
 //
 // parse the message
 //
 	MSG_BeginReading ();
-	
+
 	while (1)
 	{
 		if (msg_badread)
@@ -1210,34 +1223,34 @@ void CL_ParseServerMessage (void)
 		}
 
 		SHOWNET(svc_strings[cmd]);
-	
+
 	// other commands
 		switch (cmd)
 		{
 		default:
 			Host_Error ("CL_ParseServerMessage: Illegible server message\n");
 			break;
-			
+
 		case svc_nop:
 //			Con_Printf ("svc_nop\n");
 			break;
-			
+
 		case svc_time:
 			cl.mtime[1] = cl.mtime[0];
-			cl.mtime[0] = MSG_ReadFloat ();			
+			cl.mtime[0] = MSG_ReadFloat ();
 			break;
-			
+
 		case svc_clientdata:
 			i = MSG_ReadShort ();
 			CL_ParseClientdata (i);
 			break;
-		
+
 		case svc_version:
 			i = MSG_ReadLong ();
 			if (i != PROTOCOL_VERSION)
 				Host_Error ("CL_ParseServerMessage: Server is protocol %i instead of %i\n", i, PROTOCOL_VERSION);
 			break;
-			
+
 		case svc_disconnect:
 			Host_EndGame ("Server disconnected\n");
 			break;
@@ -1248,37 +1261,34 @@ void CL_ParseServerMessage (void)
 			else
 				Con_Printf ("%s", MSG_ReadString ());
 			break;
-			
+
 		case svc_centerprint:
 			//Bottom_Plaque_Draw(MSG_ReadString(),true);
 			SCR_CenterPrint (MSG_ReadString ());
 			break;
-			
+
 		case svc_stufftext:
 			Cbuf_AddText (MSG_ReadString ());
 			break;
-			
+
 		case svc_damage:
 			V_ParseDamage ();
 			break;
-			
+
 		case svc_serverinfo:
 			CL_ParseServerInfo ();
 			vid.recalc_refdef = true;	// leave intermission full screen
 			break;
-			
+
 		case svc_setangle:
 			for (i=0 ; i<3 ; i++)
 				cl.viewangles[i] = MSG_ReadAngle ();
-
 			break;
 
 		case svc_setangle_interpolate:
-			
 			compangles[0][0] = MSG_ReadAngle();
 			compangles[0][1] = MSG_ReadAngle();
 			compangles[0][2] = MSG_ReadAngle();
-
 			for (i=0 ; i<3 ; i++)
 			{
 				compangles[1][i] = cl.viewangles[i];
@@ -1295,7 +1305,7 @@ void CL_ParseServerMessage (void)
 				}
 				//get delta
 				deltaangles[i] = compangles[0][i] - compangles[1][i];
-					//cap delta to <=180,>=-180
+				//cap delta to <=180,>=-180
 				if(deltaangles[i]>180)
 					deltaangles[i]+=-360;
 				else if(deltaangles[i]<-180)
@@ -1313,11 +1323,11 @@ void CL_ParseServerMessage (void)
 					cl.viewangles[i]+=360;
 			}
 			break;
-			
+
 		case svc_setview:
 			cl.viewentity = MSG_ReadShort ();
 			break;
-					
+
 		case svc_lightstyle:
 			i = MSG_ReadByte ();
 			if (i >= MAX_LIGHTSTYLES)
@@ -1325,19 +1335,19 @@ void CL_ParseServerMessage (void)
 			strcpy (cl_lightstyle[i].map,  MSG_ReadString());
 			cl_lightstyle[i].length = strlen(cl_lightstyle[i].map);
 			break;
-			
+
 		case svc_sound:
 			CL_ParseStartSoundPacket();
 			break;
-		
+
 		case svc_sound_update_pos:
 		{//FIXME: put a field on the entity that lists the channels
 			//it should update when it moves- if a certain flag
 			//is on the ent, this update_channels field could
 			//be set automatically by each sound and stopSound
 			//called for this ent?
-			vec3_t  pos;
-			int 	channel, entt;
+			vec3_t	pos;
+			int	channel, entt;
 
 			channel = MSG_ReadShort ();
 
@@ -1358,7 +1368,7 @@ void CL_ParseServerMessage (void)
 			i = MSG_ReadShort();
 			S_StopSound(i>>3, i&7);
 			break;
-		
+
 		case svc_updatename:
 			SB_Changed();
 			i = MSG_ReadByte ();
@@ -1375,14 +1385,14 @@ void CL_ParseServerMessage (void)
 			cl.scores[i].playerclass = (float)MSG_ReadByte();
 			CL_NewTranslation(i); // update the color
 			break;
-		
+
 		case svc_updatefrags:
 			SB_Changed();
 			i = MSG_ReadByte ();
 			if (i >= cl.maxclients)
 				Host_Error ("CL_ParseServerMessage: svc_updatefrags > MAX_SCOREBOARD");
 			cl.scores[i].frags = MSG_ReadShort ();
-			break;			
+			break;
 
 		case svc_update_kingofhill:
 			sv_kingofhill = MSG_ReadShort() - 1;
@@ -1396,7 +1406,7 @@ void CL_ParseServerMessage (void)
 			cl.scores[i].colors = MSG_ReadByte ();
 			CL_NewTranslation (i);
 			break;
-			
+
 		case svc_particle:
 			R_ParseParticleEffect ();
 			break;
@@ -1418,7 +1428,7 @@ void CL_ParseServerMessage (void)
 			break;
 		case svc_spawnstatic:
 			CL_ParseStatic ();
-			break;			
+			break;
 
 		case svc_raineffect:
 			CL_ParseRainEffect();
@@ -1444,7 +1454,7 @@ void CL_ParseServerMessage (void)
 				}
 			}
 			break;
-			
+
 		case svc_signonnum:
 			i = MSG_ReadByte ();
 			if (i <= cls.signon)
@@ -1467,7 +1477,7 @@ void CL_ParseServerMessage (void)
 				Sys_Error ("svc_updatestat: %i is invalid", i);
 			cl.stats[i] = MSG_ReadLong ();
 			break;
-			
+
 		case svc_spawnstaticsound:
 			CL_ParseStaticSound ();
 			break;
@@ -1483,14 +1493,14 @@ void CL_ParseServerMessage (void)
 					CDAudio_Play ((byte)cl.cdtrack, true);
 			}
 			else
-			   CDAudio_Stop();
+				CDAudio_Stop();
 			break;
 
 		case svc_midi_name:
 			strcpy(cl.midi_name,MSG_ReadString ());
 			if (Q_strcasecmp(bgmtype.string,"midi") == 0)
 				MIDI_Play(cl.midi_name);
-			else 
+			else
 				MIDI_Stop();
 			break;
 
@@ -1511,20 +1521,20 @@ void CL_ParseServerMessage (void)
 			cl.intermission = 2;
 			cl.completed_time = cl.time;
 			vid.recalc_refdef = true;	// go to full screen
-			SCR_CenterPrint (MSG_ReadString ());			
+			SCR_CenterPrint (MSG_ReadString ());
 			break;
 
 		case svc_cutscene:
 			cl.intermission = 3;
 			cl.completed_time = cl.time;
 			vid.recalc_refdef = true;	// go to full screen
-			SCR_CenterPrint (MSG_ReadString ());			
+			SCR_CenterPrint (MSG_ReadString ());
 			break;
 
 		case svc_sellscreen:
 			Cmd_ExecuteString ("help", src_command);
-			break;*/
-
+			break;
+*/
 			case svc_set_view_flags:
 				cl.viewent.drawflags |= MSG_ReadByte();
 				break;
@@ -1783,11 +1793,14 @@ void CL_ParseServerMessage (void)
 				break;
 		}
 	}
-
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/10/25 20:04:17  sezero
+ * static functions part-1: started making local functions static,
+ * killing nested externs, const vars clean-up.
+ *
  * Revision 1.17  2005/10/24 23:12:06  sezero
  * a break seems missing in CL_ParseServerMessage of hexen2
  *

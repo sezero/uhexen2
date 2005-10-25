@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.4 2005-09-29 14:04:06 sezero Exp $
+	$Id: cd_sdl.c,v 1.5 2005-10-25 20:08:40 sezero Exp $
 
 	Copyright (C) 2001  Mark Baker <homer1@together.net>
 	Taken from SDLquake with modifications to make it work
@@ -260,7 +260,8 @@ int CDAudio_Init(void)
 	if (COM_CheckParm("-nocdaudio"))
 		return -1;
 
-	if (SDL_InitSubSystem(SDL_INIT_CDROM) < 0) {
+	if (SDL_InitSubSystem(SDL_INIT_CDROM) < 0)
+	{
 		Con_Printf("Couldn't init SDL cdrom: %s\n", SDL_GetError());
 		return -1;
 	}

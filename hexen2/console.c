@@ -17,16 +17,16 @@ qboolean	con_initialized;
 static int	con_linewidth;		// characters across screen
 static int	con_vislines;
 int		con_notifylines;	// scan lines to clear for notify lines
-int			con_totallines;		// total lines in console scrollback
-int			con_backscroll;		// lines up from bottom to display
+int		con_totallines;		// total lines in console scrollback
+int		con_backscroll;		// lines up from bottom to display
 static int	con_current;		// where next message will be printed
 static int	con_x;			// offset in current line for next print
-static short		*con_text=0;
+static short	*con_text=0;
 static float	con_cursorspeed = 4;
 qboolean 	con_forcedup;		// because no entities to refresh
 
 cvar_t		sys_nostdout = {"sys_nostdout", "1"};	// - DDOI
-cvar_t		con_notifytime = {"con_notifytime","3"};		//seconds
+cvar_t		con_notifytime = {"con_notifytime","3"};	//seconds
 
 #define	NUM_CON_TIMES 4
 static float	con_times[NUM_CON_TIMES];	// realtime time the line was generated
@@ -69,10 +69,11 @@ void Con_ToggleConsole_f (void)
 			M_Menu_Main_f ();
 		}
 	}
-	else {
+	else
+	{
 		key_dest = key_console;
 	}
-	
+
 	SCR_EndLoadingPlaque ();
 	memset (con_times, 0, sizeof(con_times));
 }
@@ -90,7 +91,7 @@ static void Con_Clear_f (void)
 		con_text[i] = ' ';
 }
 
-						
+
 /*
 ================
 Con_ClearNotify
@@ -99,12 +100,12 @@ Con_ClearNotify
 void Con_ClearNotify (void)
 {
 	int		i;
-	
+
 	for (i=0 ; i<NUM_CON_TIMES ; i++)
 		con_times[i] = 0;
 }
 
-						
+
 /*
 ================
 Con_MessageMode_f
@@ -118,7 +119,7 @@ static void Con_MessageMode_f (void)
 	team_message = false;
 }
 
-						
+
 /*
 ================
 Con_MessageMode2_f
@@ -130,7 +131,7 @@ static void Con_MessageMode2_f (void)
 	team_message = true;
 }
 
-						
+
 /*
 ================
 Con_CheckResize
@@ -167,7 +168,7 @@ void Con_CheckResize (void)
 			numlines = con_totallines;
 
 		numchars = oldwidth;
-	
+
 		if (con_linewidth < numchars)
 			numchars = con_linewidth;
 
@@ -218,7 +219,7 @@ void Con_Init (void)
 	Con_Clear_f();
 	con_linewidth = -1;
 	Con_CheckResize ();
-	
+
 	Con_Printf ("Console initialized.\n");
 
 //
@@ -272,7 +273,7 @@ static void Con_Print (char *txt)
 	int		c, l;
 	static int	cr;
 	int		mask;
-	
+
 	con_backscroll = 0;
 
 	if (txt[0] == 1)
@@ -289,7 +290,6 @@ static void Con_Print (char *txt)
 	}
 	else
 		mask = 0;
-
 
 	while ( (c = *txt) )
 	{
@@ -310,7 +310,6 @@ static void Con_Print (char *txt)
 			cr = false;
 		}
 
-		
 		if (!con_x)
 		{
 			Con_Linefeed ();
@@ -338,7 +337,6 @@ static void Con_Print (char *txt)
 				con_x = 0;
 			break;
 		}
-		
 	}
 }
 
@@ -350,16 +348,16 @@ Con_DebugLog
 */
 static void Con_DebugLog(char *file, char *fmt, ...)
 {
-    va_list argptr; 
-    static char data[1024];
-    int fd;
-    
-    va_start(argptr, fmt);
-    vsnprintf(data, 1023, fmt, argptr);
-    va_end(argptr);
-    fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
-    write(fd, data, strlen(data));
-    close(fd);
+	va_list	argptr;
+	static char	data[1024];
+	int			fd;
+
+	va_start(argptr, fmt);
+	vsnprintf(data, 1023, fmt, argptr);
+	va_end(argptr);
+	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
+	write(fd, data, strlen(data));
+	close(fd);
 }
 
 
@@ -376,11 +374,11 @@ void Con_Printf (char *fmt, ...)
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
 	static qboolean	inupdate;
-	
+
 	va_start (argptr,fmt);
 	vsnprintf (msg,MAXPRINTMSG - 1,fmt,argptr);
 	va_end (argptr);
-	
+
 // also echo to debugging console
 	Sys_Printf ("%s", msg);	// also echo to debugging console
 
@@ -390,13 +388,13 @@ void Con_Printf (char *fmt, ...)
 
 	if (!con_initialized)
 		return;
-		
+
 	if (cls.state == ca_dedicated)
 		return;		// no graphics mode
 
 // write it to the scrollable buffer
 	Con_Print (msg);
-	
+
 // update the screen if the console is displayed
 	if (cls.signon != SIGNONS && !scr_disabled_for_loading )
 	{
@@ -411,6 +409,7 @@ void Con_Printf (char *fmt, ...)
 	}
 }
 
+
 /*
 ================
 Con_DPrintf
@@ -422,14 +421,14 @@ void Con_DPrintf (char *fmt, ...)
 {
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
-		
+
 	if (!developer.value)
 		return;			// don't confuse non-developers with techie stuff...
 
 	va_start (argptr,fmt);
 	vsnprintf(msg, MAXPRINTMSG - 1, fmt, argptr);
 	va_end (argptr);
-	
+
 	Con_Printf ("%s", msg);
 }
 
@@ -446,7 +445,7 @@ void Con_SafePrintf (char *fmt, ...)
 	va_list		argptr;
 	char		msg[1024];
 	int			temp;
-		
+
 	va_start (argptr,fmt);
 	vsnprintf(msg, MAXPRINTMSG - 1, fmt, argptr);
 	va_end (argptr);
@@ -484,18 +483,18 @@ static void Con_DrawInput (void)
 		return;		// don't draw anything
 
 	text = key_lines[edit_line];
-	
+
 // add the cursor frame
 	text[key_linepos] = 10+((int)(realtime*con_cursorspeed)&1);
-	
+
 // fill out remainder with spaces
 	for (i=key_linepos+1 ; i< con_linewidth ; i++)
 		text[i] = ' ';
-		
+
 //	prestep if horizontally scrolling
 	if (key_linepos >= con_linewidth)
 		text += 1 + key_linepos - con_linewidth;
-		
+
 // draw it
 	y = con_vislines-16;
 
@@ -534,7 +533,7 @@ void Con_DrawNotify (void)
 		if (time > con_notifytime.value)
 			continue;
 		text = con_text + (i % con_totallines)*con_linewidth;
-		
+
 		clearnotify = 0;
 		scr_copytop = 1;
 
@@ -544,14 +543,13 @@ void Con_DrawNotify (void)
 		v += 8;
 	}
 
-
 	if (key_dest == key_message)
 	{
 		clearnotify = 0;
 		scr_copytop = 1;
-	
+
 		x = 0;
-		
+
 		Draw_String (8, v, "say:");
 		while(chat_buffer[x])
 		{
@@ -561,7 +559,7 @@ void Con_DrawNotify (void)
 		Draw_Character ( (x+5)<<3, v, 10+((int)(realtime*con_cursorspeed)&1));
 		v += 8;
 	}
-	
+
 	if (v > con_notifylines)
 		con_notifylines = v;
 }
@@ -576,11 +574,10 @@ The typing input line at the bottom should only be drawn if typing is allowed
 */
 void Con_DrawConsole (int lines, qboolean drawinput)
 {
-	int				i, x, y;
+	int				i, j, x, y;
 	int				rows;
 	short			*text;
-	int				j;
-	
+
 	if (lines <= 0)
 		return;
 
@@ -636,11 +633,11 @@ void Con_NotifyBox (char *text)
 		SCR_UpdateScreen ();
 		Sys_SendKeyEvents ();
 		t2 = Sys_DoubleTime ();
-		realtime += t2-t1;		// make the cursor blink
+		realtime += t2-t1;	// make the cursor blink
 	} while (key_count < 0);
 
 	Con_Printf ("\n");
 	key_dest = key_game;
-	realtime = 0;				// put the cursor back to invisible
+	realtime = 0;		// put the cursor back to invisible
 }
 

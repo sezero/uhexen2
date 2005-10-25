@@ -1,4 +1,8 @@
-// d_init.c: rasterization driver initialization
+/*
+	d_init.c
+	rasterization driver initialization
+
+*/
 
 #include "quakedef.h"
 #include "d_local.h"
@@ -28,7 +32,6 @@ D_Init
 */
 void D_Init (void)
 {
-
 	r_skydirect = 1;
 
 	Cvar_RegisterVariable (&d_subdiv16);
@@ -69,7 +72,6 @@ D_EnableBackBufferAccess
 */
 void D_EnableBackBufferAccess (void)
 {
-
 	VID_LockBuffer ();
 }
 

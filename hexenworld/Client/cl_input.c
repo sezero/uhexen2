@@ -32,13 +32,13 @@ kbutton_t	in_lookup, in_lookdown, in_moveleft, in_moveright;
 kbutton_t	in_strafe, in_speed, in_use, in_jump, in_attack;
 kbutton_t	in_up, in_down, in_crouch;
 
-int			in_impulse;
+int		in_impulse;
 
 static void KeyDown (kbutton_t *b)
 {
 	int		k;
 	char	*c;
-	
+
 	c = Cmd_Argv(1);
 	if (c[0])
 		k = atoi(c);
@@ -47,7 +47,7 @@ static void KeyDown (kbutton_t *b)
 
 	if (k == b->down[0] || k == b->down[1])
 		return;		// repeating key
-	
+
 	if (!b->down[0])
 		b->down[0] = k;
 	else if (!b->down[1])
@@ -57,7 +57,7 @@ static void KeyDown (kbutton_t *b)
 		Con_Printf ("Three keys down for a button!\n");
 		return;
 	}
-	
+
 	if (b->state & 1)
 		return;		// still down
 	b->state |= 1 + 2;	// down + impulse down
@@ -67,10 +67,12 @@ static void KeyUp (kbutton_t *b)
 {
 	int		k;
 	char	*c;
-	
+
 	c = Cmd_Argv(1);
 	if (c[0])
+	{
 		k = atoi(c);
+	}
 	else
 	{ // typed manually at the console, assume for unsticking, so clear all
 		b->down[0] = b->down[1] = 0;
@@ -112,9 +114,9 @@ static void IN_MLookDown (void)
 
 static void IN_MLookUp (void)
 {
-KeyUp(&in_mlook);
-if ( !(in_mlook.state&1) &&  lookspring.value)
-	V_StartPitchDrift();
+	KeyUp(&in_mlook);
+	if ( !(in_mlook.state&1) && lookspring.value)
+		V_StartPitchDrift();
 }
 
 static void IN_UpDown (void)
@@ -309,42 +311,45 @@ static float CL_KeyState (kbutton_t *key)
 {
 	float		val;
 	qboolean	impulsedown, impulseup, down;
-	
+
 	impulsedown = key->state & 2;
 	impulseup = key->state & 4;
 	down = key->state & 1;
 	val = 0;
-	
-	if (impulsedown && !impulseup) {
+
+	if (impulsedown && !impulseup)
+	{
 		if (down)
 			val = 0.5;	// pressed and held this frame
 		else
 			val = 0;	//	I_Error ();
 	}
-	if (impulseup && !impulsedown) {
+	if (impulseup && !impulsedown)
+	{
 		if (down)
 			val = 0;	//	I_Error ();
 		else
 			val = 0;	// released this frame
 	}
-	if (!impulsedown && !impulseup) {
+	if (!impulsedown && !impulseup)
+	{
 		if (down)
 			val = 1.0;	// held the entire frame
 		else
 			val = 0;	// up the entire frame
 	}
-	if (impulsedown && impulseup) {
+	if (impulsedown && impulseup)
+	{
 		if (down)
 			val = 0.75;	// released and re-pressed this frame
 		else
 			val = 0.25;	// pressed and released this frame
 	}
+
 	key->state &= 1;		// clear impulses
-	
+
 	return val;
 }
-
-
 
 
 //==========================================================================
@@ -374,7 +379,7 @@ static void CL_AdjustAngles (void)
 {
 	float	speed;
 	float	up, down;
-	
+
 	if ((in_speed.state & 1) || cl.spectator)
 		speed = host_frametime * cl_anglespeedkey.value;
 	else
@@ -392,7 +397,7 @@ static void CL_AdjustAngles (void)
 		cl.viewangles[PITCH] -= speed*cl_pitchspeed.value * CL_KeyState (&in_forward);
 		cl.viewangles[PITCH] += speed*cl_pitchspeed.value * CL_KeyState (&in_back);
 	}
-	
+
 	// FIXME: This is a cheap way of doing this, it belongs in V_CalcViewRoll
 	// but I don't see where I can get the yaw velocity, I have to get on to other things so here it is
 
@@ -405,13 +410,13 @@ static void CL_AdjustAngles (void)
 
 	up = CL_KeyState (&in_lookup);
 	down = CL_KeyState(&in_lookdown);
-	
+
 	cl.viewangles[PITCH] -= speed*cl_pitchspeed.value * up;
 	cl.viewangles[PITCH] += speed*cl_pitchspeed.value * down;
 
 	if (up || down)
 		V_StopPitchDrift ();
-		
+
 	if (cl.viewangles[PITCH] > 80)
 		cl.viewangles[PITCH] = 80;
 	if (cl.viewangles[PITCH] < -70)
@@ -421,7 +426,6 @@ static void CL_AdjustAngles (void)
 		cl.viewangles[ROLL] = 50;
 	if (cl.viewangles[ROLL] < -50)
 		cl.viewangles[ROLL] = -50;
-		
 }
 
 /*
@@ -434,14 +438,14 @@ Send the intended movement message to the server
 void CL_BaseMove (usercmd_t *cmd)
 {	
 	CL_AdjustAngles ();
-	
+
 	memset (cmd, 0, sizeof(*cmd));
 
 	if (cl.v.cameramode)	// Stuck in a different camera so don't move
 	{
 		return;
 	}
-	
+
 	VectorCopy (cl.viewangles, cmd->angles);
 	if (in_strafe.state & 1)
 	{
@@ -475,7 +479,7 @@ void CL_BaseMove (usercmd_t *cmd)
 		cmd->forwardmove *= cl_movespeedkey.value;
 		cmd->sidemove *= cl_movespeedkey.value;
 		cmd->upmove *= cl_movespeedkey.value;
-	}	
+	}
 
 	// Hasted player?
 	if (cl.v.hasted)
@@ -516,13 +520,15 @@ static void CL_FinishMove (usercmd_t *cmd)
 		return;
 //
 // figure button bits
-//	
+//
 	if ( in_attack.state & 3 )
 		cmd->buttons |= 1;
+
 	in_attack.state &= ~2;
 	
 	if (in_jump.state & 3)
 		cmd->buttons |= 2;
+
 	in_jump.state &= ~2;
 
 	if (in_crouch.state & 1)
@@ -538,7 +544,6 @@ static void CL_FinishMove (usercmd_t *cmd)
 
 	cmd->impulse = in_impulse;
 	in_impulse = 0;
-
 
 //
 // chop down so no extra bits are kept that the server wouldn't get
@@ -633,7 +638,6 @@ void CL_SendCmd (void)
 //
 	Netchan_Transmit (&cls.netchan, buf.cursize, buf.data);	
 }
-
 
 
 /*

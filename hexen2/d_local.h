@@ -2,7 +2,7 @@
 	d_local.h
 	private rasterization driver defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.4 2005-10-25 20:04:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.5 2005-10-25 20:08:41 sezero Exp $
 */
 
 #include "r_shared.h"
@@ -18,30 +18,29 @@
 
 #define DS_SPAN_LIST_END	-128
 
-//old surface cache - rj     #define SURFCACHE_SIZE_AT_320X200	600*1024
+//#define SURFCACHE_SIZE_AT_320X200	600*1024
 #define SURFCACHE_SIZE_AT_320X200	768*1024
-
 
 typedef struct surfcache_s
 {
 	struct surfcache_s	*next;
 	struct surfcache_s 	**owner;		// NULL is an empty chunk of memory
-	int					lightadj[MAXLIGHTMAPS]; // checked for strobe flush
-	int					dlight;
-	int					size;		// including header
-	unsigned			width;
-	unsigned			height;		// DEBUG only needed for debug
-	float				mipscale;
+	int			lightadj[MAXLIGHTMAPS]; // checked for strobe flush
+	int			dlight;
+	int			size;		// including header
+	unsigned		width;
+	unsigned		height;		// DEBUG only needed for debug
+	float			mipscale;
 	struct texture_s	*texture;	// checked for animating textures
-	int					drawflags;
-	int					abslight;
-	byte				data[4];	// width*height elements
+	int			drawflags;
+	int			abslight;
+	byte			data[4];	// width*height elements
 } surfcache_t;
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
 typedef struct sspan_s
 {
-	int				u, v, count;
+	int			u, v, count;
 } sspan_t;
 
 extern cvar_t	d_subdiv16;
@@ -132,7 +131,6 @@ extern float	d_scalemip[3];
 
 extern void (*d_drawspans) (espan_t *pspan);
 
-
 #define SCAN_SIZE 2048
 
 extern byte			scanList[SCAN_SIZE];
@@ -140,6 +138,10 @@ extern byte			scanList[SCAN_SIZE];
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/10/25 20:04:17  sezero
+ * static functions part-1: started making local functions static,
+ * killing nested externs, const vars clean-up.
+ *
  * Revision 1.3  2004/12/19 10:35:30  sezero
  * - Add "implicitly declared" functions as externs: Software rendering files.
  * - Add comments on the asm/non-Intel status of the code
