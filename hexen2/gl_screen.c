@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.20 2005-09-28 06:09:31 sezero Exp $
+	$Id: gl_screen.c,v 1.21 2005-10-25 19:59:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -79,7 +79,6 @@ cvar_t		scr_showturtle = {"showturtle","0"};
 cvar_t		scr_showpause = {"showpause","1"};
 cvar_t		scr_printspeed = {"scr_printspeed","8"};
 extern	cvar_t	crosshair;
-extern void Draw_Crosshair(void);
 
 qboolean	scr_initialized;		// ready to draw
 qboolean	ls_invalid = true;		// whether we need to redraw the loading screen plaque
@@ -1284,6 +1283,10 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2005/09/28 06:09:31  sezero
+ * took care of flickering problem while drawing the loading
+ * plaque (from Pa3PyX.) glFlush is now required.
+ *
  * Revision 1.19  2005/09/19 19:50:10  sezero
  * fixed those famous spelling errors
  *

@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.11 2005-10-02 15:45:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.12 2005-10-25 19:59:45 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -48,10 +48,6 @@ float	v_dmg_time, v_dmg_roll, v_dmg_pitch;
 
 extern	int			in_forward, in_forward2, in_back;
 extern	cvar_t	sv_idealrollscale;
-
-#ifndef GLQUAKE
-extern void Draw_Crosshair(void);
-#endif
 
 /*
 ===============
@@ -1146,6 +1142,9 @@ void V_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/10/02 15:45:27  sezero
+ * killed lcd_x and lcd_yaw (the stereoscopic stuff.) never tested, never used.
+ *
  * Revision 1.10  2005/10/02 15:43:08  sezero
  * killed -Wshadow warnings
  *

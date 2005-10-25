@@ -3,7 +3,7 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.8 2005-10-25 19:58:33 sezero Exp $
+	$Id: draw.h,v 1.9 2005-10-25 19:59:45 sezero Exp $
 */
 
 
@@ -22,6 +22,7 @@ void Draw_TransPic (int x, int y, qpic_t *pic);
 void Draw_TransPicCropped(int x, int y, qpic_t *pic);
 void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation);
 void Draw_ConsoleBackground (int lines);
+void Draw_Crosshair(void);
 #ifndef GLQUAKE
 void Draw_BeginDisc (void);
 void Draw_EndDisc (void);

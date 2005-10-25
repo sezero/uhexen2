@@ -49,10 +49,6 @@ extern	int	in_forward, in_forward2, in_back;
 frame_t		*view_frame;
 player_state_t	*view_message;
 
-#ifndef GLQUAKE
-extern void Draw_Crosshair(void);
-#endif
-
 /*
 ===============
 V_CalcRoll
