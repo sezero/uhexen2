@@ -147,11 +147,218 @@ void D_CalcGradients (msurface_t *pface)
 }
 
 
+#if defined (H2W)
+//color for sky given a certain light level 0 - 25
+static const int SiegeFlatSkyFadeTable[25] =
+{
+	0,//1
+	0,//2
+	0,//3
+	1,//4
+	2,//5
+	2,//6
+	3,//7
+	3,//8
+	3,//9
+	4,//10
+	4,
+	4,
+	32,
+	32,
+	32,//15
+	33,
+	33,
+	33,
+	34,
+	34,//20
+	35,
+	35,
+	36,
+	36,
+	37//25
+};
+#endif	// H2W
+
+
 /*
 ==============
 D_DrawSurfaces
 ==============
 */
+#if 0
+/* original id version of draw surfaces */
+void D_DrawSurfaces2 (qboolean Translucent)
+{
+	surf_t			*s;
+	msurface_t		*pface;
+	surfcache_t		*pcurrentcache;
+	vec3_t			world_transformed_modelorg;
+	vec3_t			local_modelorg;
+
+#if defined (H2W)
+	currententity = &r_worldentity;
+#else
+	currententity = &cl_entities[0];
+#endif
+	TransformVector (modelorg, transformed_modelorg);
+	VectorCopy (transformed_modelorg, world_transformed_modelorg);
+
+// TODO: could preset a lot of this at mode set time
+	if (r_drawflat.value)
+	{
+		for (s = &surfaces[1] ; s<surface_p ; s++)
+		{
+			if (!s->spans)
+				continue;
+
+			d_zistepu = s->d_zistepu;
+			d_zistepv = s->d_zistepv;
+			d_ziorigin = s->d_ziorigin;
+
+			D_DrawSolidSurface (s, (int)s->data & 0xFF);
+			D_DrawZSpans (s->spans);
+		}
+	}
+	else
+	{
+		for (s = &surfaces[1] ; s<surface_p ; s++)
+		{
+			if (!s->spans)
+				continue;
+
+			r_drawnpolycount++;
+
+			d_zistepu = s->d_zistepu;
+			d_zistepv = s->d_zistepv;
+			d_ziorigin = s->d_ziorigin;
+
+			if (s->flags & SURF_DRAWSKY)
+			{
+				if (!r_skymade)
+				{
+					R_MakeSky ();
+				}
+
+				D_DrawSkyScans8 (s->spans);
+				D_DrawZSpans (s->spans);
+			}
+			else if (s->flags & SURF_DRAWBACKGROUND)
+			{
+			// set up a gradient for the background surface that places it
+			// effectively at infinity distance from the viewpoint
+				d_zistepu = 0;
+				d_zistepv = 0;
+				d_ziorigin = -0.9;
+
+				D_DrawSolidSurface (s, (int)r_clearcolor.value & 0xFF);
+				D_DrawZSpans (s->spans);
+			}
+			else if (s->flags & SURF_DRAWTURB)
+			{
+				pface = s->data;
+				miplevel = 0;
+				cacheblock = (pixel_t *)
+						((byte *)pface->texinfo->texture +
+						pface->texinfo->texture->offsets[0]);
+				cachewidth = 64;
+
+				if (s->insubmodel)
+				{
+				// FIXME: we don't want to do all this for every polygon!
+				// TODO: store once at start of frame
+					currententity = s->entity;	//FIXME: make this passed in to
+												// R_RotateBmodel ()
+					VectorSubtract (r_origin, currententity->origin,
+							local_modelorg);
+					TransformVector (local_modelorg, transformed_modelorg);
+
+					R_RotateBmodel ();	// FIXME: don't mess with the frustum,
+										// make entity passed in
+				}
+
+				D_CalcGradients (pface);
+
+				Turbulent8 (s);
+				D_DrawZSpans (s->spans);
+
+				if (s->insubmodel)
+				{
+				//
+				// restore the old drawing state
+				// FIXME: we don't want to do this every time!
+				// TODO: speed up
+				//
+#		if defined (H2W)
+					currententity = &r_worldentity;
+#		else
+					currententity = &cl_entities[0];
+#		endif
+					VectorCopy (world_transformed_modelorg,
+								transformed_modelorg);
+					VectorCopy (base_vpn, vpn);
+					VectorCopy (base_vup, vup);
+					VectorCopy (base_vright, vright);
+					VectorCopy (base_modelorg, modelorg);
+					R_TransformFrustum ();
+				}
+			}
+			else
+			{
+				if (s->insubmodel)
+				{
+				// FIXME: we don't want to do all this for every polygon!
+				// TODO: store once at start of frame
+					currententity = s->entity;	//FIXME: make this passed in to
+												// R_RotateBmodel ()
+					VectorSubtract (r_origin, currententity->origin, local_modelorg);
+					TransformVector (local_modelorg, transformed_modelorg);
+
+					R_RotateBmodel ();	// FIXME: don't mess with the frustum,
+										// make entity passed in
+				}
+
+				pface = s->data;
+				miplevel = D_MipLevelForScale (s->nearzi * scale_for_mip
+								* pface->texinfo->mipadjust);
+
+			// FIXME: make this passed in to D_CacheSurface
+				pcurrentcache = D_CacheSurface (pface, miplevel);
+
+				cacheblock = (pixel_t *)pcurrentcache->data;
+				cachewidth = pcurrentcache->width;
+
+				D_CalcGradients (pface);
+
+				(*d_drawspans) (s->spans);
+
+				D_DrawZSpans (s->spans);
+
+				if (s->insubmodel)
+				{
+				//
+				// restore the old drawing state
+				// FIXME: we don't want to do this every time!
+				// TODO: speed up
+				//
+					VectorCopy (world_transformed_modelorg,
+								transformed_modelorg);
+					VectorCopy (base_vpn, vpn);
+					VectorCopy (base_vup, vup);
+					VectorCopy (base_vright, vright);
+					VectorCopy (base_modelorg, modelorg);
+					R_TransformFrustum ();
+#		if defined (H2W)
+					currententity = &r_worldentity;
+#		else
+					currententity = &cl_entities[0];
+#		endif
+				}
+			}
+		}
+	}
+}
+#endif	// 0
+
 void D_DrawSurfaces (qboolean Translucent)
 {
 	surf_t			*s;
@@ -163,7 +370,11 @@ void D_DrawSurfaces (qboolean Translucent)
 	int count;
 
 	// Restore the settings
+#if defined (H2W)
+	currententity = &r_worldentity;
+#else
 	currententity = &cl_entities[0];
+#endif
 //	VectorCopy (world_transformed_modelorg,
 //				transformed_modelorg);
 	VectorCopy (base_vpn, vpn);
@@ -178,7 +389,8 @@ void D_DrawSurfaces (qboolean Translucent)
 // TODO: could preset a lot of this at mode set time
 	if (r_drawflat.value)
 	{
-		if (Translucent) return;
+		if (Translucent)
+			return;
 
 		for (s = &surfaces[1] ; s<surface_p ; s++)
 		{
@@ -217,7 +429,12 @@ void D_DrawSurfaces (qboolean Translucent)
 				//if(!strncmp(pface->texinfo->texture->name,"*BLACK",6))
 				if (s->flags & SURF_DRAWBLACK)
 				{
-					D_DrawSolidSurface (s, 0);//black vis-breaker, no turb
+#		if defined (H2W)
+					if(cl_siege)
+						D_DrawSolidSurface (s,SiegeFlatSkyFadeTable[(int)floor(d_lightstylevalue[0]/22)]);//black vis-breaker, no turb
+					else
+#		endif
+						D_DrawSolidSurface (s,0);//black vis-breaker, no turb
 					D_DrawZSpans (s->spans);
 					continue;
 				}
@@ -276,7 +493,11 @@ void D_DrawSurfaces (qboolean Translucent)
 					// FIXME: we don't want to do this every time!
 					// TODO: speed up
 					//
+#		if defined (H2W)
+						currententity = &r_worldentity;
+#		else
 						currententity = &cl_entities[0];
+#		endif
 						VectorCopy (world_transformed_modelorg,
 									transformed_modelorg);
 						VectorCopy (base_vpn, vpn);
@@ -303,7 +524,7 @@ void D_DrawSurfaces (qboolean Translucent)
 
 					pface = s->data;
 					miplevel = D_MipLevelForScale (s->nearzi * scale_for_mip
-					* pface->texinfo->mipadjust);
+									* pface->texinfo->mipadjust);
 
 				// FIXME: make this passed in to D_CacheSurface
 					pcurrentcache = D_CacheSurface (pface, miplevel);
@@ -324,7 +545,11 @@ void D_DrawSurfaces (qboolean Translucent)
 					// FIXME: we don't want to do this every time!
 					// TODO: speed up
 					//
+#		if defined (H2W)
+						currententity = &r_worldentity;
+#		else
 						currententity = &cl_entities[0];
+#		endif
 						VectorCopy (world_transformed_modelorg,
 									transformed_modelorg);
 						VectorCopy (base_vpn, vpn);
@@ -352,11 +577,15 @@ void D_DrawSurfaces (qboolean Translucent)
 				d_zistepv = s->d_zistepv;
 				d_ziorigin = s->d_ziorigin;
 
-
 				//if(!strncmp(pface->texinfo->texture->name,"*BLACK",6))
 				if (s->flags & SURF_DRAWBLACK)
 				{
-					D_DrawSolidSurface (s, 0);//black vis-breaker, no turb
+#		if defined (H2W)
+					if(cl_siege)
+						D_DrawSolidSurface (s,SiegeFlatSkyFadeTable[(int)floor(d_lightstylevalue[0]/22)]);//black vis-breaker, no turb
+					else
+#		endif
+						D_DrawSolidSurface (s, 0);//black vis-breaker, no turb
 					D_DrawZSpans (s->spans);
 					continue;
 				}
@@ -385,7 +614,7 @@ void D_DrawSurfaces (qboolean Translucent)
 
 					D_CalcGradients (pface);
 					Turbulent8 (s);
-	//				D_DrawZSpans (s->spans);
+				//	D_DrawZSpans (s->spans);
 
 					if (s->insubmodel)
 					{
@@ -394,7 +623,11 @@ void D_DrawSurfaces (qboolean Translucent)
 					// FIXME: we don't want to do this every time!
 					// TODO: speed up
 					//
+#		if defined (H2W)
+						currententity = &r_worldentity;
+#		else
 						currententity = &cl_entities[0];
+#		endif
 						VectorCopy (world_transformed_modelorg,
 									transformed_modelorg);
 						VectorCopy (base_vpn, vpn);
@@ -421,7 +654,7 @@ void D_DrawSurfaces (qboolean Translucent)
 
 					pface = s->data;
 					miplevel = D_MipLevelForScale (s->nearzi * scale_for_mip
-					* pface->texinfo->mipadjust);
+									* pface->texinfo->mipadjust);
 
 				// FIXME: make this passed in to D_CacheSurface
 					pcurrentcache = D_CacheSurface (pface, miplevel);
@@ -431,10 +664,10 @@ void D_DrawSurfaces (qboolean Translucent)
 
 					D_CalcGradients (pface);
 
-		//				(*d_drawspans) (s->spans);
+				//	(*d_drawspans) (s->spans);
 					D_DrawSpans16T(s->spans);
 
-		//				D_DrawZSpans (s->spans);
+				//	D_DrawZSpans (s->spans);
 
 					if (s->insubmodel)
 					{
@@ -443,7 +676,11 @@ void D_DrawSurfaces (qboolean Translucent)
 					// FIXME: we don't want to do this every time!
 					// TODO: speed up
 					//
+#		if defined (H2W)
+						currententity = &r_worldentity;
+#		else
 						currententity = &cl_entities[0];
+#		endif
 						VectorCopy (world_transformed_modelorg,
 									transformed_modelorg);
 						VectorCopy (base_vpn, vpn);
