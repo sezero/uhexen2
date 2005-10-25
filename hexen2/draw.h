@@ -3,7 +3,7 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.6 2005-07-16 23:35:19 sezero Exp $
+	$Id: draw.h,v 1.7 2005-10-25 17:14:22 sezero Exp $
 */
 
 
@@ -38,8 +38,20 @@ qpic_t *Draw_CachePic (char *path);
 qpic_t *Draw_CachePicNoTrans (char *path);
 qpic_t *Draw_CachePicResize (char *path, int targetWidth, int targetHeight);
 
+// game/engine name to draw on the console
+#if defined(H2MP)
+#define GAME_MOD_NAME		"H2mp"
+#else
+#define GAME_MOD_NAME		ENGINE_NAME
+#endif
+#define ENGINE_WATERMARK	GAME_MOD_NAME " " STRINGIFY(ENGINE_VERSION) " (" VERSION_PLATFORM ")"
+
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/07/16 23:35:19  sezero
+ * added transparent sbar of hexenworld to hexen2 for software mode.
+ * style fixes in draw.c, draw.h, sbar.c, sbar.h. tiny synchronization.
+ *
  * Revision 1.5  2005/06/07 20:30:49  sezero
  * More syncing: software version draw.c between hexen2/hexenworld
  *

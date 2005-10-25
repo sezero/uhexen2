@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.41 2005-10-13 15:23:21 sezero Exp $
+	$Id: gl_draw.c,v 1.42 2005-10-25 17:14:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -381,7 +381,8 @@ qpic_t *Draw_CachePicNoTrans(char *path)
 	return &pic->pic;
 }
 
-void Draw_CharToConback (int num, byte *dest)
+#if 0
+static void Draw_CharToConback (int num, byte *dest)
 {
 	int		row, col;
 	byte	*source;
@@ -399,11 +400,12 @@ void Draw_CharToConback (int num, byte *dest)
 		for (x=0 ; x<8 ; x++)
 			if (source[x] != 255)
 				dest[x] = 0x60 + source[x];
+
 		source += 256;
 		dest += 320;
 	}
-
 }
+#endif
 
 typedef struct
 {
@@ -538,7 +540,7 @@ void Draw_Init (void)
 	SwapPic (cb);
 
 /*	// hack the version number directly into the pic
-	sprintf (ver, "%4.2f (%s)", VERSION, VERSION_PLATFORM);
+	sprintf (ver, ENGINE_WATERMARK);
 	dest = cb->data + 320 + 320*186 - 11 - 8*strlen(ver);
 	for (x=0 ; x<strlen(ver) ; x++)
 		Draw_CharToConback (ver[x], dest+(x<<3));
@@ -1194,16 +1196,16 @@ void Draw_ConsoleBackground (int lines)
 	else
 		Draw_AlphaPic (0, lines - vid.height, conback, (float)(1.1 * lines)/y);
 
-	// hack the version number directly into the pic
+	// print the version number and platform
 //	y = lines-186;
 	y = lines-14;
+	sprintf (ver, ENGINE_WATERMARK);
+	x = vid.conwidth - (strlen(ver)*8 + 11);
+#if defined(H2W)
 	if (!cls.download)
-	{
-		sprintf (ver, "HexenWorld %4.2f (%s)", VERSION, VERSION_PLATFORM); // JACK: ZOID! Passing parms?!
-		x = vid.conwidth - (strlen(ver)*8 + 11);
+#endif
 		for (i=0 ; i<strlen(ver) ; i++)
 			Draw_Character (x + i * 8, y, ver[i] | 0x100);
-	}
 }
 
 

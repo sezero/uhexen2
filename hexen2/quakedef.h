@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.38 2005-09-20 21:17:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.39 2005-10-25 17:14:23 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -11,17 +11,22 @@
 #pragma warning(disable:4244)
 #endif
 
+#define __STRINGIFY(x) #x
+#define STRINGIFY(x) __STRINGIFY(x)
+
 #ifdef PLATFORM_UNIX
 #include "linux_inc.h"
 #define WITH_SDL	/* for the mouse2/3 hack in keys.c */
 			/* also enables some SDL-only things such as the vid_setgamma command */
 #endif
 
-#define HOT_VERSION_MAJ 1
-#define HOT_VERSION_MID 3
-#define HOT_VERSION_MIN 0
-#define GLQUAKE_VERSION		1.00
-#define HEXEN2_VERSION		1.14
+#define	HOT_VERSION_MAJ		1
+#define	HOT_VERSION_MID		3
+#define	HOT_VERSION_MIN		0
+#define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
+#define	GLQUAKE_VERSION		1.00
+#define	ENGINE_VERSION		1.14
+#define	ENGINE_NAME		"Hexen2"
 
 #define	QUAKE_GAME		// as opposed to utilities
 //define	PARANOID	// speed sapping error checking
@@ -390,6 +395,9 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.38  2005/09/20 21:17:25  sezero
+ * Moved VERSION_PLATFORM and id386 defines to sys.h, where they belong.
+ *
  * Revision 1.37  2005/09/17 06:02:46  sezero
  * minor ifdef, syntax and defines clean-up
  *

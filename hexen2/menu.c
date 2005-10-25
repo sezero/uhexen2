@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.45 2005-10-13 15:26:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.46 2005-10-25 17:14:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2814,7 +2814,7 @@ char *Credit2Text[MAX_LINES2] =
    "",
 };
 
-#define QUIT_SIZE 18
+#define QUIT_SIZE 16	// was 18. reduced two lines for two HoT strings
 
 void M_Menu_Quit_f (void)
 {
@@ -2895,8 +2895,11 @@ void M_Quit_Draw (void)
 
 	y = 12;
 	M_DrawTextBox (0, 0, 38, 23);
-	M_PrintWhite (16, y,  "        Hexen II version 1.12       ");	y += 8;
-	M_PrintWhite (16, y,  "         by Raven Software          ");	y += 16;
+	M_Print      (16, y,    "        Hexen II version " STRINGIFY(ENGINE_VERSION));
+	M_Print      (16, y+8,  "         by Raven Software          ");
+	M_PrintWhite (16, y+16, "       Hammer of Thyrion " HOT_VERSION_STR);
+	M_PrintWhite (16, y+24, "             Source Port            ");
+	y += 40;
 
 	if (LinePos > 55 && !SoundPlayed && LineText == Credit2Text)
 	{
@@ -4078,6 +4081,10 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.45  2005/10/13 15:26:10  sezero
+ * M_ScanSaves() and M_ScanMSaves() should actually use com_savedir, not
+ * com_userdir. By default, they are the same but this is for correctness.
+ *
  * Revision 1.44  2005/09/28 06:07:32  sezero
  * renamed ToggleFullScreenSA to VID_ToggleFullscreen which
  * actually is of VID_ class and now is easier to locate

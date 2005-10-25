@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.35 2005-09-28 06:06:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.36 2005-10-25 17:14:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -249,10 +249,9 @@ int Sys_GetUserdir (char *buff, unsigned int len)
 
 void PrintVersion (void)
 {
-	printf ("Hammer of Thyrion, release %d.%d.%d\n",
-		HOT_VERSION_MAJ, HOT_VERSION_MID, HOT_VERSION_MIN);
-	printf ("running on HexenWorld engine %4.2f (%s)\n",
-		VERSION, VERSION_PLATFORM);
+	printf ("Hammer of Thyrion, release " HOT_VERSION_STR "\n");
+	printf ("running on " ENGINE_NAME " engine %4.2f (" VERSION_PLATFORM ")\n",
+		ENGINE_VERSION);
 }
 
 void PrintHelp(char *name)
@@ -392,6 +391,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.35  2005/09/28 06:06:38  sezero
+ * killed the cvar sys_delay
+ *
  * Revision 1.34  2005/09/20 21:19:45  sezero
  * Sys_Quit and Sys_Error clean-up: VID_SetDefaultMode, VID_ForceLockState and
  * VID_ForceUnlockedAndReturnState are history. Host_Shutdown is called before

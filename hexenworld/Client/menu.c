@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.28 2005-09-28 06:07:32 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.29 2005-10-25 17:14:23 sezero Exp $
  */
 
 #include "quakedef.h"
@@ -1869,7 +1869,7 @@ char *Credit2Text[MAX_LINES2] =
    "   Out of Traction, Back in Action!",
 };
 
-#define QUIT_SIZE 18
+#define QUIT_SIZE 16	// was 18. reduced two lines for two HoT strings
 
 void M_Menu_Quit_f (void)
 {
@@ -1921,9 +1921,6 @@ void M_Quit_Key (int key)
 	}
 }
 
-#define VSTR(x) #x
-#define VSTR2(x) VSTR(x)
-
 void M_Quit_Draw (void)
 {
 	int i,x,y,place,topy;
@@ -1952,8 +1949,11 @@ void M_Quit_Draw (void)
 
 	y = 12;
 	M_DrawTextBox (0, 0, 38, 23);
-	M_PrintWhite (16, y,  "      Hexen2World version " VSTR2(VERSION) "      ");	y += 8;
-	M_PrintWhite (16, y,  "         by Raven Software          ");	y += 16;
+	M_Print      (16, y,    "      Hexen2World version " STRINGIFY(ENGINE_VERSION));
+	M_Print      (16, y+8,  "         by Raven Software          ");
+	M_PrintWhite (16, y+16, "       Hammer of Thyrion " HOT_VERSION_STR);
+	M_PrintWhite (16, y+24, "             Source Port            ");
+	y += 40;
 
 	if (LinePos > 55 && !SoundPlayed && LineText == Credit2Text)
 	{

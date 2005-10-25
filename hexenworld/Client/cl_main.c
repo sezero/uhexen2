@@ -144,7 +144,7 @@ CL_Version_f
 */
 void CL_Version_f (void)
 {
-	Con_Printf ("Version %4.2f\n", VERSION);
+	Con_Printf ("Version %4.2f\n", ENGINE_VERSION);
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
 }
 
@@ -519,14 +519,14 @@ void CL_FullServerinfo_f (void)
 	// this is a bit overkill today
 	// if someone did a newer version, they should
 	// have bumped the PROTOCOL_VERSION
-			if((int)(server_version*100)>(int)(VERSION*100))
+			if((int)(server_version*100)>(int)(ENGINE_VERSION*100))
 			{
-				Con_Printf("The server is running v%4.2f, you have v%4.2f, please go to www.hexenworld.com and update your client to join\n",server_version,VERSION);
+				Con_Printf("The server is running v%4.2f, you have v%4.2f, please go to www.hexenworld.com and update your client to join\n",server_version,ENGINE_VERSION);
 				CL_Disconnect_f ();
 			}
-			if((int)(server_version*100)<(int)(VERSION*100))
+			if((int)(server_version*100)<(int)(ENGINE_VERSION*100))
 			{
-				Con_Printf("The server is running an old version (v%4.2f), you have v%4.2f, please ask server admin to update to latest version\n",server_version,VERSION);
+				Con_Printf("The server is running an old version (v%4.2f), you have v%4.2f, please ask server admin to update to latest version\n",server_version,ENGINE_VERSION);
 				CL_Disconnect_f ();
 			}
 #endif

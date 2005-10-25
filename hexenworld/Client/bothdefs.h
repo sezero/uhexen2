@@ -1,11 +1,16 @@
 
 // defs common to client and server
 
-#define GLQUAKE_VERSION 1.00
-#define	VERSION		0.16
-#define HOT_VERSION_MAJ 1
-#define HOT_VERSION_MID 3
-#define HOT_VERSION_MIN 0
+#define __STRINGIFY(x) #x
+#define STRINGIFY(x) __STRINGIFY(x)
+
+#define	HOT_VERSION_MAJ		1
+#define	HOT_VERSION_MID		3
+#define	HOT_VERSION_MIN		0
+#define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
+#define	GLQUAKE_VERSION		1.00
+#define	ENGINE_VERSION		0.16
+#define	ENGINE_NAME		"HexenWorld"
 
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
 #define CACHE_SIZE	32		// used to align key data structures

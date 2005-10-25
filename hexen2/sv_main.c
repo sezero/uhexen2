@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.23 2005-09-28 06:09:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.24 2005-10-25 17:14:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -401,7 +401,7 @@ void SV_SendServerinfo (client_t *client)
 	char			message[2048];
 
 	MSG_WriteByte (&client->message, svc_print);
-	sprintf (message, "%c\nVERSION %4.2f SERVER (%i CRC)", 2, HEXEN2_VERSION, pr_crc);
+	sprintf (message, "%c\nVERSION %4.2f SERVER (%i CRC)", 2, ENGINE_VERSION, pr_crc);
 	MSG_WriteString (&client->message,message);
 
 	MSG_WriteByte (&client->message, svc_serverinfo);
@@ -2072,6 +2072,10 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/09/28 06:09:31  sezero
+ * took care of flickering problem while drawing the loading
+ * plaque (from Pa3PyX.) glFlush is now required.
+ *
  * Revision 1.22  2005/09/19 19:50:10  sezero
  * fixed those famous spelling errors
  *

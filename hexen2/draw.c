@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.10 2005-10-02 15:43:08 sezero Exp $
+	$Id: draw.c,v 1.11 2005-10-25 17:14:22 sezero Exp $
 */
 
 
@@ -1255,7 +1255,8 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 }
 
 
-void Draw_CharToConback (int num, byte *dest)
+#if 0
+static void Draw_CharToConback (int num, byte *dest)
 {
 	int		row, col;
 	byte	*source;
@@ -1273,11 +1274,12 @@ void Draw_CharToConback (int num, byte *dest)
 		for (x=0 ; x<8 ; x++)
 			if (source[x])
 				dest[x] = 0x60 + source[x];
+
 		source += 256;
 		dest += 320;
 	}
-
 }
+#endif
 
 /*
 ================
@@ -1293,15 +1295,26 @@ void Draw_ConsoleBackground (int lines)
 	int				f, fstep;
 	qpic_t			*conback;
 	char			ver[100];
+#if defined(H2W)
+	//static		char saveback[320*8];
+
+	if (cls.download)
+		sprintf (ver, STRINGIFY(ENGINE_VERSION));
+	else
+#endif
+		sprintf (ver, ENGINE_WATERMARK);
 
 	conback = Draw_CachePic ("gfx/menu/conback.lmp");
 
-// hack the version number directly into the pic
-	sprintf (ver, "%4.2f (%s)", HEXEN2_VERSION, VERSION_PLATFORM);
-	dest = conback->data + 320 - (strlen(ver)*8 + 11) + 320*186;
-
+/*
+	// hack the version number directly into the pic
+	dest = conback->data + 320 + 320*186 - 11 - 8*strlen(ver);
+#ifdef H2W
+	memcpy(saveback, conback->data + 320*186, 320*8);
+#endif
 	for (x=0 ; x<strlen(ver) ; x++)
 		Draw_CharToConback (ver[x], dest+(x<<3));
+*/
 
 // draw the pic
 	if (r_pixbytes == 1)
@@ -1357,6 +1370,18 @@ void Draw_ConsoleBackground (int lines)
 			}
 		}
 	}
+
+/*
+#ifdef H2W
+	// put it back
+	memcpy(conback->data + 320*186, saveback, 320*8);
+#endif
+*/
+
+// print the version number and platform
+	y = vid.conwidth - (strlen(ver)*8 + 11);
+	for (x=0 ; x<strlen(ver) ; x++)
+		Draw_Character (y + x * 8, lines - 14, ver[x] | 0x100);
 }
 
 
@@ -1699,6 +1724,9 @@ void Draw_EndDisc (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/10/02 15:43:08  sezero
+ * killed -Wshadow warnings
+ *
  * Revision 1.9  2005/07/17 19:28:28  sezero
  * added crosshair color from quake. performed some small cleanup.
  * I hope I won't have to bother with this thing anymore.

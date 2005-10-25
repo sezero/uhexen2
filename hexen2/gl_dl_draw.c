@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_dl_draw.c,v 1.57 2005-10-13 15:23:21 sezero Exp $
+	$Id: gl_dl_draw.c,v 1.58 2005-10-25 17:14:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -381,7 +381,8 @@ qpic_t *Draw_CachePicNoTrans(char *path)
 	return &pic->pic;
 }
 
-void Draw_CharToConback (int num, byte *dest)
+#if 0
+static void Draw_CharToConback (int num, byte *dest)
 {
 	int		row, col;
 	byte	*source;
@@ -399,11 +400,12 @@ void Draw_CharToConback (int num, byte *dest)
 		for (x=0 ; x<8 ; x++)
 			if (source[x] != 255)
 				dest[x] = 0x60 + source[x];
+
 		source += 256;
 		dest += 320;
 	}
-
 }
+#endif
 
 typedef struct
 {
@@ -482,10 +484,12 @@ void Draw_Init (void)
 {
 	int	i;
 	qpic_t	*cb, *mf;
-	byte	*dest;
+/*	byte	*dest;
 	int	x;
-	char	ver[40];
+	char	ver[40];*/
 	glpic_t	*gl;
+	int	start;
+	byte	*ncdata;
 
 	Cvar_RegisterVariable (&gl_picmip);
 	Cvar_RegisterVariable (&gl_spritemip);
@@ -528,25 +532,37 @@ void Draw_Init (void)
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
-	cb = (qpic_t *)COM_LoadTempFile ("gfx/menu/conback.lmp");
+	start = Hunk_LowMark ();
+
+	cb = (qpic_t *)COM_LoadHunkFile ("gfx/menu/conback.lmp");
 	if (!cb)
 		Sys_Error ("Couldn't load gfx/menu/conback.lmp");
 	SwapPic (cb);
 
-	// hack the version number directly into the pic
-	sprintf (ver, "%4.2f (%s)", HEXEN2_VERSION, VERSION_PLATFORM);
+/*	// hack the version number directly into the pic
+	sprintf (ver, ENGINE_WATERMARK);
 	dest = cb->data + 320 + 320*186 - 11 - 8*strlen(ver);
 	for (x=0 ; x<strlen(ver) ; x++)
 		Draw_CharToConback (ver[x], dest+(x<<3));
+*/
+	conback->width = cb->width;
+	conback->height = cb->height;
+	ncdata = cb->data;
+
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
 	gl = (glpic_t *)conback->data;
-	gl->texnum = GL_LoadTexture ("conback", cb->width, cb->height, cb->data, false, false, 0, false);
+	gl->texnum = GL_LoadTexture ("conback", conback->width, conback->height, ncdata, false, false, 0, false);
 	gl->sl = 0;
 	gl->sh = 1;
 	gl->tl = 0;
 	gl->th = 1;
 	conback->width = vid.conwidth;
 	conback->height = vid.conheight;
+
+	// free loaded console
+	Hunk_FreeToLowMark (start);
 
 	// save slots for scraps
 	scrap_texnum = texture_extension_number;
@@ -1160,6 +1176,8 @@ Draw_ConsoleBackground
 */
 void Draw_ConsoleBackground (int lines)
 {
+	char ver[80];
+	int x, i;
 	int y;
 
 	y = (vid.height * 3) >> 2;
@@ -1167,6 +1185,17 @@ void Draw_ConsoleBackground (int lines)
 		Draw_Pic (0, lines-vid.height, conback);
 	else
 		Draw_AlphaPic (0, lines - vid.height, conback, (float)(1.1 * lines)/y);
+
+	// print the version number and platform
+//	y = lines-186;
+	y = lines-14;
+	sprintf (ver, ENGINE_WATERMARK);
+	x = vid.conwidth - (strlen(ver)*8 + 11);
+#if defined(H2W)
+	if (!cls.download)
+#endif
+		for (i=0 ; i<strlen(ver) ; i++)
+			Draw_Character (x + i * 8, y, ver[i] | 0x100);
 }
 
 
@@ -2002,6 +2031,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.57  2005/10/13 15:23:21  sezero
+ * moved gl_lightmap format setup to GL_Init
+ *
  * Revision 1.56  2005/09/29 15:57:18  sezero
  * fixed gl_draw compilation for h2w
  *

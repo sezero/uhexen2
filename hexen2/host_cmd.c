@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.31 2005-10-02 15:43:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.32 2005-10-25 17:14:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -79,7 +79,7 @@ void Host_Status_f (void)
 		print = SV_ClientPrintf;
 
 	print ("host:    %s\n", Cvar_VariableString ("hostname"));
-	print ("version: %4.2f\n", HEXEN2_VERSION);
+	print ("version: %4.2f\n", ENGINE_VERSION);
 	if (tcpipAvailable)
 		print ("tcp/ip:  %s\n", my_tcpip_address);
 	if (ipxAvailable)
@@ -1288,12 +1288,13 @@ float time1,time2,r1,r2;
 	{
 		Con_Printf ("loop 1 is faster by %f\n", r2-r1);
 	}
-	Con_Printf ("Version %4.2f\n", HEXEN2_VERSION);
+	Con_Printf ("Version %4.2f\n", ENGINE_VERSION);
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
 }
 #else
 void Host_Version_f (void)
-{	Con_Printf ("Version %4.2f\n", HEXEN2_VERSION);
+{
+	Con_Printf ("Version %4.2f\n", ENGINE_VERSION);
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
 }
 #endif
@@ -2265,6 +2266,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2005/10/02 15:43:08  sezero
+ * killed -Wshadow warnings
+ *
  * Revision 1.30  2005/09/24 23:50:36  sezero
  * fixed a bunch of compiler warnings
  *
