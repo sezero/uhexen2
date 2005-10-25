@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.11 2005-10-25 17:14:22 sezero Exp $
+	$Id: draw.c,v 1.12 2005-10-25 17:28:42 sezero Exp $
 */
 
 
@@ -1714,9 +1714,8 @@ Call after completing any disc IO
 */
 void Draw_EndDisc (void)
 {
-	if (!draw_disc[0]) return;
-
-	return;
+	if (!draw_disc[0])
+		return;
 
 	D_EndDirectRect (vid.width - 28, 0, 28, 24);
 	scr_topupdate = 0;
@@ -1724,6 +1723,11 @@ void Draw_EndDisc (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/10/25 17:14:22  sezero
+ * added a STRINGIFY macro. unified version macros. simplified version
+ * printing. simplified and enhanced version watermark print onto console
+ * background. added HoT lines to the quit menu (shameless plug)
+ *
  * Revision 1.10  2005/10/02 15:43:08  sezero
  * killed -Wshadow warnings
  *

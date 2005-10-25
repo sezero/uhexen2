@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.10 2005-10-25 17:14:23 sezero Exp $
+	$Id: draw.c,v 1.11 2005-10-25 17:28:43 sezero Exp $
 */
 
 
@@ -1724,9 +1724,8 @@ Call after completing any disc IO
 */
 void Draw_EndDisc (void)
 {
-	if (!draw_disc[0]) return;
-
-	return;
+	if (!draw_disc[0])
+		return;
 
 	D_EndDirectRect (vid.width - 28, 0, 28, 24);
 //rjr	scr_topupdate = 0;
