@@ -1589,7 +1589,7 @@ void R_DrawParticles (void)
 	VectorScale (vup, 1.5, up);
 	VectorScale (vright, 1.5, right);
 #else
-	D_StartParticles ();
+//	D_StartParticles ();	// not used by software driver
 
 	VectorScale (vright, xscaleshrink, r_pright);
 	VectorScale (vup, yscaleshrink, r_pup);
@@ -1957,7 +1957,7 @@ void R_DrawParticles (void)
 		glEnable_fp(GL_ALPHA_TEST);
 	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 #else
-	D_EndParticles ();
+//	D_EndParticles ();	// not used by software driver
 #endif
 }
 

@@ -1,9 +1,13 @@
-// d_part.c: software driver module for drawing particles
+/*
+	d_part.c
+	software driver module for drawing particles
+
+*/
 
 #include "quakedef.h"
 #include "d_local.h"
 
-
+#if 0
 /*
 ==============
 D_EndParticles
@@ -24,6 +28,7 @@ void D_StartParticles (void)
 {
 // not used by software driver
 }
+#endif	// 0
 
 
 #if	!id386
