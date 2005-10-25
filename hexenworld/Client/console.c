@@ -2,27 +2,27 @@
 
 #include "quakedef.h"
 
-int			con_ormask;
+
 console_t	con_main;
 console_t	con_chat;
 console_t	*con;			// point to either con_main or con_chat
 
-int 		con_linewidth;	// characters across screen
-int			con_totallines;		// total lines in console scrollback
+qboolean	con_initialized;
 
-float		con_cursorspeed = 4;
-
+static int	con_linewidth;		// characters across screen
+static int	con_vislines;
+int		con_notifylines;	// scan lines to clear for notify lines
+int		con_totallines;		// total lines in console scrollback
+static float	con_cursorspeed = 4;
+int		con_ormask;
 
 cvar_t		con_notifytime = {"con_notifytime","3"};		//seconds
 
 #define	NUM_CON_TIMES 4
-float		con_times[NUM_CON_TIMES];	// realtime time the line was generated
+static float	con_times[NUM_CON_TIMES];	// realtime time the line was generated
 						// for transparent notify lines
 
-int			con_vislines;
-int			con_notifylines;		// scan lines to clear for notify lines
-
-qboolean	con_debuglog;
+static qboolean	con_debuglog;
 
 #define		MAXCMDLINE	256
 extern	char	key_lines[32][MAXCMDLINE];
@@ -32,10 +32,8 @@ extern qboolean		mousestate_sa;
 extern void	IN_ActivateMouse (void);
 extern void	IN_DeactivateMouse (void);
 
-qboolean	con_initialized;
 
-
-void Key_ClearTyping (void)
+static void Key_ClearTyping (void)
 {
 	key_lines[edit_line][1] = 0;	// clear any typing
 	key_linepos = 1;
@@ -71,7 +69,7 @@ void Con_ToggleConsole_f (void)
 Con_ToggleChat_f
 ================
 */
-void Con_ToggleChat_f (void)
+static void Con_ToggleChat_f (void)
 {
 	Key_ClearTyping ();
 
@@ -91,7 +89,7 @@ void Con_ToggleChat_f (void)
 Con_Clear_f
 ================
 */
-void Con_Clear_f (void)
+static void Con_Clear_f (void)
 {
 	memset (con_main.text, ' ', CON_TEXTSIZE);
 	memset (con_main.text_attr, 0, CON_TEXTSIZE);
@@ -119,7 +117,7 @@ void Con_ClearNotify (void)
 Con_MessageMode_f
 ================
 */
-void Con_MessageMode_f (void)
+static void Con_MessageMode_f (void)
 {
 	chat_team = false;
 	key_dest = key_message;
@@ -130,7 +128,7 @@ void Con_MessageMode_f (void)
 Con_MessageMode2_f
 ================
 */
-void Con_MessageMode2_f (void)
+static void Con_MessageMode2_f (void)
 {
 	chat_team = true;
 	key_dest = key_message;
@@ -142,7 +140,7 @@ Con_Resize
 
 ================
 */
-void Con_Resize (console_t *cons)
+static void Con_Resize (console_t *cons)
 {
 	int		i, j, width, oldwidth, oldtotallines, numlines, numchars;
 	char	tbuf[CON_TEXTSIZE], tbuf_attr[CON_TEXTSIZE];
@@ -250,7 +248,7 @@ void Con_Init (void)
 Con_Linefeed
 ===============
 */
-void Con_Linefeed (void)
+static void Con_Linefeed (void)
 {
 	con->x = 0;
 	if (con->display == con->current)
@@ -269,7 +267,7 @@ All console printing must go through this in order to be logged to disk
 If no console is visible, the notify window will pop up.
 ================
 */
-void Con_Print (char *txt)
+static void Con_Print (char *txt)
 {
 	int		y;
 	int		c, l;
@@ -405,6 +403,31 @@ void Con_DPrintf (char *fmt, ...)
 	Con_Printf ("%s", msg);
 }
 
+
+/*
+==================
+Con_SafePrintf
+
+Okay to call even when the screen can't be updated
+==================
+*/
+void Con_SafePrintf (char *fmt, ...)
+{
+	va_list		argptr;
+	char		msg[1024];
+	int			temp;
+
+	va_start (argptr,fmt);
+	vsnprintf(msg, MAXPRINTMSG - 1, fmt, argptr);
+	va_end (argptr);
+
+	temp = scr_disabled_for_loading;
+	scr_disabled_for_loading = true;
+	Con_Printf ("%s", msg);
+	scr_disabled_for_loading = temp;
+}
+
+
 /*
 ==============================================================================
 
@@ -421,7 +444,7 @@ Con_DrawInput
 The input line scrolls horizontally if typing goes beyond the right edge
 ================
 */
-void Con_DrawInput (void)
+static void Con_DrawInput (void)
 {
 	int		y;
 	int		i;
@@ -665,29 +688,5 @@ void Con_NotifyBox (char *text)
 	Con_Printf ("\n");
 	key_dest = key_game;
 	realtime = 0;				// put the cursor back to invisible
-}
-
-
-/*
-==================
-Con_SafePrintf
-
-Okay to call even when the screen can't be updated
-==================
-*/
-void Con_SafePrintf (char *fmt, ...)
-{
-	va_list		argptr;
-	char		msg[1024];
-	int			temp;
-		
-	va_start (argptr,fmt);
-	vsnprintf(msg, MAXPRINTMSG - 1, fmt, argptr);
-	va_end (argptr);
-	
-	temp = scr_disabled_for_loading;
-	scr_disabled_for_loading = true;
-	Con_Printf ("%s", msg);
-	scr_disabled_for_loading = temp;
 }
 

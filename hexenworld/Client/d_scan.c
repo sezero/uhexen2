@@ -13,9 +13,6 @@ int				r_turb_spancount;
 byte			scanList[SCAN_SIZE];
 int				ZScanCount;
 
-void D_DrawTurbulent8Span (void);
-void D_DrawTurbulent8TSpan (void);
-
 
 /*
 =============
@@ -80,7 +77,7 @@ void D_WarpScreen (void)
 D_DrawTurbulent8Span
 =============
 */
-void D_DrawTurbulent8Span (void)
+static void D_DrawTurbulent8Span (void)
 {
 	int		sturb, tturb;
 

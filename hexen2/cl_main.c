@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.17 2005-08-20 13:06:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.18 2005-10-25 20:04:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -40,7 +40,7 @@ cvar_t	m_side = {"m_side","0.8", true};
 
 client_static_t	cls;
 client_state_t	cl;
-byte		cls_message_buffer[1024];
+static byte	cls_message_buffer[1024];
 // FIXME: put these on hunk?
 efrag_t			cl_efrags[MAX_EFRAGS];
 entity_t		cl_entities[MAX_EDICTS];
@@ -48,8 +48,12 @@ entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
 lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
 dlight_t		cl_dlights[MAX_DLIGHTS];
 
+//static int			lastc = 0;
+
 int				cl_numvisedicts;
 entity_t		*cl_visedicts[MAX_VISEDICTS];
+
+
 /*
 =====================
 CL_ClearState
@@ -385,7 +389,7 @@ void CL_NextDemo (void)
 CL_PrintEntities_f
 ==============
 */
-void CL_PrintEntities_f (void)
+static void CL_PrintEntities_f (void)
 {
 	entity_t	*ent;
 	int			i;
@@ -411,7 +415,7 @@ SetPal
 Debugging tool, just flashes the screen
 ===============
 */
-void SetPal (int i)
+static void SetPal (int i)
 {
 #if 0
 	static int old;
@@ -536,7 +540,7 @@ Determines the fraction between the last two messages that the objects
 should be put at.
 ===============
 */
-float	CL_LerpPoint (void)
+static float CL_LerpPoint (void)
 {
 	float	f, frac;
 
@@ -587,19 +591,18 @@ SetPal(2);
 CL_RelinkEntities
 ===============
 */
-void CL_RelinkEntities (void)
+static void CL_RelinkEntities (void)
 {
 	entity_t	*ent;
 	int			i, j;
 	float		frac, f, d;
 	vec3_t		delta;
-//	float		bobjrotate;
 	vec3_t		oldorg;
 	dlight_t	*dl;
-	int c;
-//	static int lastc = 0;
+	//int			c;
 
-	c = 0;
+	//c = 0;
+
 // determine partial update time	
 	frac = CL_LerpPoint ();
 
@@ -625,8 +628,6 @@ void CL_RelinkEntities (void)
 			cl.viewangles[j] = cl.mviewangles[1][j] + frac*d;
 		}
 	}
-	
-	//bobjrotate = anglemod(100*(cl.time+ent->origin[0]+ent->origin[1]));
 	
 // start on the entity after the world
 	for (i=1,ent=cl_entities+1 ; i<cl.num_entities ; i++,ent++)
@@ -679,7 +680,7 @@ void CL_RelinkEntities (void)
 			
 		}
 
-		c++;
+		//c++;
 
 		if (ent->effects & EF_DARKFIELD)
 			R_DarkFieldParticles (ent);
@@ -934,7 +935,7 @@ void CL_SendCmd (void)
 	SZ_Clear (&cls.message);
 }
 
-void CL_Sensitivity_save_f (void)
+static void CL_Sensitivity_save_f (void)
 {
 	if (Cmd_Argc() != 2)
 	{
@@ -1000,6 +1001,12 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/08/20 13:06:33  sezero
+ * favored unlink() over DeleteFile() on win32. removed unnecessary
+ * platform defines for directory path separators. removed a left-
+ * over CL_RemoveGIPFiles() from sys_win.c. fixed temporary gip files
+ * not being removed and probably causing "bad" savegames on win32.
+ *
  * Revision 1.16  2005/07/31 00:45:10  sezero
  * platform defines cleanup
  *

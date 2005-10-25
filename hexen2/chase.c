@@ -11,11 +11,12 @@ cvar_t	chase_up = {"chase_up", "16"};
 cvar_t	chase_right = {"chase_right", "0"};
 cvar_t	chase_active = {"chase_active", "0"};
 
-vec3_t	chase_pos;
-vec3_t	chase_angles;
-
-vec3_t	chase_dest;
-vec3_t	chase_dest_angles;
+#if 0
+static	vec3_t	chase_pos;
+static	vec3_t	chase_angles;
+static	vec3_t	chase_dest_angles;
+#endif
+static	vec3_t	chase_dest;
 
 
 void Chase_Init (void)
@@ -32,7 +33,7 @@ void Chase_Reset (void)
 //	start position 12 units behind head
 }
 
-void TraceLine (vec3_t start, vec3_t end, vec3_t impact)
+static void TraceLine (vec3_t start, vec3_t end, vec3_t impact)
 {
 	trace_t	trace;
 

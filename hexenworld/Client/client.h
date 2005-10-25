@@ -380,7 +380,7 @@ extern	entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
 extern	lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
 extern	dlight_t		cl_dlights[MAX_DLIGHTS];
 
-extern	int				color_offsets[MAX_PLAYER_CLASS];
+extern	const int			color_offsets[MAX_PLAYER_CLASS];
 
 //=============================================================================
 
@@ -443,7 +443,6 @@ void CL_WriteToServer (usercmd_t *cmd);
 void CL_BaseMove (usercmd_t *cmd);
 
 
-float CL_KeyState (kbutton_t *key);
 char *Key_KeynumToString (int keynum);
 
 //

@@ -2,7 +2,7 @@
 	d_sprite.c:
 	software top-level rasterization driver module for drawing sprites
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_sprite.c,v 1.2 2004-12-12 14:14:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_sprite.c,v 1.3 2005-10-25 20:04:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -19,7 +19,7 @@ static sspan_t	*sprite_spans;
 D_SpriteDrawSpans
 =====================
 */
-void D_SpriteDrawSpans (sspan_t *pspan)
+static void D_SpriteDrawSpans (sspan_t *pspan)
 {
 	int			count, spancount, izistep;
 	int			izi;
@@ -338,7 +338,7 @@ NextSpan:
 D_SpriteScanLeftEdge
 =====================
 */
-void D_SpriteScanLeftEdge (void)
+static void D_SpriteScanLeftEdge (void)
 {
 	int			i, v, itop, ibottom, lmaxindex;
 	emitpoint_t	*pvert, *pnext;
@@ -400,7 +400,7 @@ void D_SpriteScanLeftEdge (void)
 D_SpriteScanRightEdge
 =====================
 */
-void D_SpriteScanRightEdge (void)
+static void D_SpriteScanRightEdge (void)
 {
 	int			i, v, itop, ibottom;
 	emitpoint_t	*pvert, *pnext;
@@ -482,7 +482,7 @@ void D_SpriteScanRightEdge (void)
 D_SpriteCalculateGradients
 =====================
 */
-void D_SpriteCalculateGradients (void)
+static void D_SpriteCalculateGradients (void)
 {
 	vec3_t		p_normal, p_saxis, p_taxis, p_temp1;
 	float		distinv;
@@ -590,6 +590,9 @@ void D_DrawSprite (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2004/12/12 14:14:42  sezero
+ * style changes to our liking
+ *
  * Revision 1.1.1.1  2004/11/28 00:02:32  sezero
  * Initial import of AoT 1.2.0 code
  *

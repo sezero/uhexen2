@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.23 2005-10-24 21:22:15 sezero Exp $
+	$Id: common.c,v 1.24 2005-10-25 20:04:17 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -27,20 +27,20 @@ static char	*safeargvs[NUM_SAFE_ARGVS] =
 cvar_t	registered = {"registered","0"};
 cvar_t	oem = {"oem","0"};
 
-qboolean	com_modified;	// set true if using non-id files
+static qboolean	com_modified;	// set true if using non-id files
 qboolean	com_portals = false;
 
-int		static_registered = 1;	// only for startup check, then set
+static int	static_registered = 1;	// only for startup check, then set
 
 qboolean		msg_suppress_1 = 0;
 
-void COM_InitFilesystem (void);
-void COM_Path_f (void);
+static void COM_InitFilesystem (void);
+static void COM_Path_f (void);
 
 // look-up table of pak filenames: { numfiles, crc }
 // if a packfile directory differs from this, it is assumed to be hacked
 #define MAX_PAKDATA	6
-const int pakdata[MAX_PAKDATA][2] = {
+static const int pakdata[MAX_PAKDATA][2] = {
 	{ 696,	34289 },	/* pak0.pak, registered	*/
 	{ 523,	2995  },	/* pak1.pak, registered	*/
 	{ 183,	4807  },	/* pak2.pak, oem, data needs verification */
@@ -49,7 +49,7 @@ const int pakdata[MAX_PAKDATA][2] = {
 	{ 797,	22780 }		/* pak0.pak, demo	*/
 };
 // loacations of pak filenames as shipped by raven
-const char *dirdata[MAX_PAKDATA] = {
+static const char *dirdata[MAX_PAKDATA] = {
 	"data1",	/* pak0.pak, registered	*/
 	"data1",	/* pak1.pak, registered	*/
 	"data1",	/* pak2.pak, oem	*/
@@ -61,10 +61,10 @@ const char *dirdata[MAX_PAKDATA] = {
 char	gamedirfile[MAX_OSPATH];
 
 #define CMDLINE_LENGTH	256
-char	com_cmdline[CMDLINE_LENGTH];
+static char	com_cmdline[CMDLINE_LENGTH];
 
 // this graphic needs to be in the pak file to use registered features
-unsigned short pop[] =
+static const unsigned short pop[] =
 {
  0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000
 ,0x0000,0x0000,0x6600,0x0000,0x0000,0x0000,0x6600,0x0000
@@ -1002,7 +1002,7 @@ char	*va(char *format, ...)
 	return string;
 }
 
-
+#if 0
 /// just for debugging
 int	memsearch (byte *start, int count, int search)
 {
@@ -1013,6 +1013,7 @@ int	memsearch (byte *start, int count, int search)
 			return i;
 	return -1;
 }
+#endif
 
 /*
 =============================================================================
@@ -1073,15 +1074,15 @@ typedef struct searchpath_s
 	struct	searchpath_s *next;
 } searchpath_t;
 
-searchpath_t	*com_searchpaths;
-searchpath_t	*com_base_searchpaths;	// without gamedirs
+static searchpath_t	*com_searchpaths;
+static searchpath_t	*com_base_searchpaths;	// without gamedirs
 
 /*
 ================
 COM_filelength
 ================
 */
-int COM_filelength (FILE *f)
+static int COM_filelength (FILE *f)
 {
 	int		pos;
 	int		end;
@@ -1094,7 +1095,7 @@ int COM_filelength (FILE *f)
 	return end;
 }
 
-int COM_FileOpenRead (char *path, FILE **hndl)
+static int COM_FileOpenRead (char *path, FILE **hndl)
 {
 	FILE	*f;
 
@@ -1115,7 +1116,7 @@ COM_Path_f
 
 ============
 */
-void COM_Path_f (void)
+static void COM_Path_f (void)
 {
 	searchpath_t	*s;
 
@@ -1289,10 +1290,10 @@ Filename are reletive to the quake directory.
 Allways appends a 0 byte to the loaded data.
 ============
 */
-cache_user_t *loadcache;
-byte	*loadbuf;
-int		loadsize;
-byte *COM_LoadFile (char *path, int usehunk)
+static cache_user_t *loadcache;
+static byte	*loadbuf;
+static int		loadsize;
+static byte *COM_LoadFile (char *path, int usehunk)
 {
 	FILE	*h;
 	byte	*buf;
@@ -1381,7 +1382,7 @@ Loads the header and directory, adding the files at the beginning
 of the list so they override previous pack files.
 =================
 */
-pack_t *COM_LoadPackFile (char *packfile, int paknum)
+static pack_t *COM_LoadPackFile (char *packfile, int paknum)
 {
 	dpackheader_t	header;
 	int				i;
@@ -1470,7 +1471,7 @@ Sets com_gamedir, adds the directory to the head of the path,
 then loads and adds pak1.pak pak2.pak ... 
 ================
 */
-void COM_AddGameDirectory (char *dir)
+static void COM_AddGameDirectory (char *dir)
 {
 	int				i;
 	searchpath_t		*search;
@@ -1605,7 +1606,7 @@ void COM_Gamedir (char *dir)
 COM_InitFilesystem
 ================
 */
-void COM_InitFilesystem (void)
+static void COM_InitFilesystem (void)
 {
 	int		i;
 
@@ -1934,6 +1935,11 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/10/24 21:22:15  sezero
+ * round to nearest value, rather than rounding toward zero while
+ * sending angles and coords. (from the darkplaces project where
+ * it fixes the crosshair problem.)
+ *
  * Revision 1.22  2005/09/24 23:50:36  sezero
  * fixed a bunch of compiler warnings
  *

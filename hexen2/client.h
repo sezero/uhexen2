@@ -1,6 +1,6 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.5 2005-05-19 16:41:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.6 2005-10-25 20:04:17 sezero Exp $
 */
 
 typedef struct
@@ -325,7 +325,6 @@ void CL_WriteToServer (usercmd_t *cmd);
 void CL_BaseMove (usercmd_t *cmd);
 
 
-float CL_KeyState (kbutton_t *key);
 char *Key_KeynumToString (int keynum);
 
 //
@@ -343,7 +342,6 @@ void CL_TimeDemo_f (void);
 // cl_parse.c
 //
 void CL_ParseServerMessage (void);
-void CL_NewTranslation (int slot);
 
 //
 // view
@@ -368,6 +366,9 @@ void CL_UpdateTEnts(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/05/19 16:41:50  sezero
+ * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
+ *
  * Revision 1.4  2005/01/01 21:43:47  sezero
  * prototypes clean-up
  *

@@ -3,7 +3,7 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.9 2005-10-25 19:59:44 sezero Exp $
+	$Id: draw.h,v 1.10 2005-10-25 20:04:17 sezero Exp $
 */
 
 
@@ -33,6 +33,7 @@ void Draw_FadeScreen (void);
 void Draw_String (int x, int y, char *str);
 void Draw_SmallCharacter(int x, int y, int num);
 void Draw_SmallString(int x, int y, char *str);
+void Draw_RedString (int x, int y, char *str);
 qpic_t *Draw_PicFromWad (char *name);
 qpic_t *Draw_CachePic (char *path);
 qpic_t *Draw_CachePicNoTrans (char *path);
@@ -48,6 +49,9 @@ qpic_t *Draw_CachePicResize (char *path, int targetWidth, int targetHeight);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/10/25 19:59:44  sezero
+ * added a prototype for Draw_Crosshair to draw.h
+ *
  * Revision 1.8  2005/10/25 19:58:33  sezero
  * killed Draw_DebugChar
  *

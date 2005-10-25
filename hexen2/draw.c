@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.13 2005-10-25 19:58:33 sezero Exp $
+	$Id: draw.c,v 1.14 2005-10-25 20:04:17 sezero Exp $
 */
 
 
@@ -19,14 +19,13 @@ typedef struct {
 
 static rectdesc_t	r_rectdesc;
 
-byte *draw_smallchars; // Small characters for status bar
-
-byte		*draw_chars;				// 8*8 graphic characters
+static byte	*draw_smallchars;	// Small characters for status bar
+static byte	*draw_chars;		// 8*8 graphic characters
+static qpic_t	*draw_backtile;
 qpic_t		*draw_disc[MAX_DISC] = 
 {
 	NULL  // make the first one null for sure
 };
-qpic_t		*draw_backtile;
 
 int	trans_level = 0;
 
@@ -40,8 +39,8 @@ typedef struct cachepic_s
 } cachepic_t;
 
 #define	MAX_CACHED_PICS		256
-cachepic_t	menu_cachepics[MAX_CACHED_PICS];
-int			menu_numcachepics;
+static cachepic_t	menu_cachepics[MAX_CACHED_PICS];
+static int		menu_numcachepics;
 
 
 qpic_t	*Draw_PicFromWad (char *name)
@@ -335,7 +334,17 @@ void Draw_String (int x, int y, char *str)
 	}
 }
 
-void Draw_Pixel(int x, int y, byte color)
+void Draw_RedString (int x, int y, char *str)
+{
+	while (*str)
+	{
+		Draw_Character (x, y, ((unsigned char)(*str))+256);
+		str++;
+		x += 8;
+	}
+}
+
+static void Draw_Pixel(int x, int y, byte color)
 {
 	byte			*dest;
 	unsigned short	*pusdest;
@@ -1647,7 +1656,11 @@ void Draw_BeginDisc (void)
 {
 	static int disc_idx = 0;
 
-	if (!draw_disc[disc_idx] || loading_stage)
+	if (!draw_disc[disc_idx]
+#ifndef H2W
+		|| loading_stage
+#endif
+	   )
 	{
 		return;
 	}
@@ -1680,6 +1693,9 @@ void Draw_EndDisc (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/10/25 19:58:33  sezero
+ * killed Draw_DebugChar
+ *
  * Revision 1.12  2005/10/25 17:28:42  sezero
  * fixed a bug causing Draw_EndDisc() to return unconditionally
  * without doing anything. coding style is not just cosmetics..

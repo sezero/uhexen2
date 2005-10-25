@@ -811,7 +811,8 @@ void CL_ParseClientdata (void)
 	}	
 }
 
-int color_offsets[MAX_PLAYER_CLASS] =
+#ifndef GLQUAKE	// otherwise in gl_rmisc.c
+const int color_offsets[MAX_PLAYER_CLASS] =
 {
 	2*14*256,
 	0,
@@ -820,6 +821,7 @@ int color_offsets[MAX_PLAYER_CLASS] =
 	2*14*256,
 	2*14*256
 };
+#endif	// GLQUAKE
 
 /*
 =====================

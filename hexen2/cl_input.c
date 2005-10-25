@@ -41,7 +41,7 @@ kbutton_t	in_infoplaque;
 int					in_impulse;
 extern qboolean		info_up;
 
-void KeyDown (kbutton_t *b)
+static void KeyDown (kbutton_t *b)
 {
 	int		k;
 	char	*c;
@@ -70,7 +70,7 @@ void KeyDown (kbutton_t *b)
 	b->state |= 1 + 2;	// down + impulse down
 }
 
-void KeyUp (kbutton_t *b)
+static void KeyUp (kbutton_t *b)
 {
 	int		k;
 	char	*c;
@@ -91,58 +91,249 @@ void KeyUp (kbutton_t *b)
 		b->down[1] = 0;
 	else
 		return;		// key up without coresponding down (menu pass through)
+
 	if (b->down[0] || b->down[1])
 		return;		// some other key is still holding it down
 
 	if (!(b->state & 1))
 		return;		// still up (this should not happen)
+
 	b->state &= ~1;		// now up
 	b->state |= 4; 		// impulse up
 }
 
-void IN_KLookDown (void) {KeyDown(&in_klook);}
-void IN_KLookUp (void) {KeyUp(&in_klook);}
-void IN_MLookDown (void) {KeyDown(&in_mlook);}
-void IN_MLookUp (void) {
+static void IN_KLookDown (void)
+{
+	KeyDown(&in_klook);
+}
+
+static void IN_KLookUp (void)
+{
+	KeyUp(&in_klook);
+}
+
+static void IN_MLookDown (void)
+{
+	KeyDown(&in_mlook);
+}
+
+static void IN_MLookUp (void)
+{
 KeyUp(&in_mlook);
 if ( !(in_mlook.state&1) &&  lookspring.value)
 	V_StartPitchDrift();
 }
-void IN_UpDown(void) {KeyDown(&in_up);}
-void IN_UpUp(void) {KeyUp(&in_up);}
-void IN_DownDown(void) {KeyDown(&in_down);}
-void IN_DownUp(void) {KeyUp(&in_down);}
-void IN_LeftDown(void) {KeyDown(&in_left);}
-void IN_LeftUp(void) {KeyUp(&in_left);}
-void IN_RightDown(void) {KeyDown(&in_right);}
-void IN_RightUp(void) {KeyUp(&in_right);}
-void IN_ForwardDown(void) {KeyDown(&in_forward);}
-void IN_ForwardUp(void) {KeyUp(&in_forward);}
-void IN_BackDown(void) {KeyDown(&in_back);}
-void IN_BackUp(void) {KeyUp(&in_back);}
-void IN_LookupDown(void) {KeyDown(&in_lookup);}
-void IN_LookupUp(void) {KeyUp(&in_lookup);}
-void IN_LookdownDown(void) {KeyDown(&in_lookdown);}
-void IN_LookdownUp(void) {KeyUp(&in_lookdown);}
-void IN_MoveleftDown(void) {KeyDown(&in_moveleft);}
-void IN_MoveleftUp(void) {KeyUp(&in_moveleft);}
-void IN_MoverightDown(void) {KeyDown(&in_moveright);}
-void IN_MoverightUp(void) {KeyUp(&in_moveright);}
 
-void IN_SpeedDown(void) {KeyDown(&in_speed);}
-void IN_SpeedUp(void) {KeyUp(&in_speed);}
-void IN_StrafeDown(void) {KeyDown(&in_strafe);}
-void IN_StrafeUp(void) {KeyUp(&in_strafe);}
+static void IN_UpDown (void)
+{
+	KeyDown(&in_up);
+}
 
-void IN_AttackDown(void) {KeyDown(&in_attack);}
-void IN_AttackUp(void) {KeyUp(&in_attack);}
+static void IN_UpUp (void)
+{
+	KeyUp(&in_up);
+}
 
-void IN_UseDown (void) {KeyDown(&in_use);}
-void IN_UseUp (void) {KeyUp(&in_use);}
-void IN_JumpDown (void) {KeyDown(&in_jump);}
-void IN_JumpUp (void) {KeyUp(&in_jump);}
+static void IN_DownDown (void)
+{
+	KeyDown(&in_down);
+}
 
-void IN_Impulse (void) {in_impulse=atoi(Cmd_Argv(1));}
+static void IN_DownUp (void)
+{
+	KeyUp(&in_down);
+}
+
+static void IN_LeftDown (void)
+{
+	KeyDown(&in_left);
+}
+
+static void IN_LeftUp (void)
+{
+	KeyUp(&in_left);
+}
+
+static void IN_RightDown (void)
+{
+	KeyDown(&in_right);
+}
+
+static void IN_RightUp (void)
+{
+	KeyUp(&in_right);
+}
+
+static void IN_ForwardDown (void)
+{
+	KeyDown(&in_forward);
+}
+
+static void IN_ForwardUp (void)
+{
+	KeyUp(&in_forward);
+}
+
+static void IN_BackDown (void)
+{
+	KeyDown(&in_back);
+}
+
+static void IN_BackUp (void)
+{
+	KeyUp(&in_back);
+}
+
+static void IN_LookupDown (void)
+{
+	KeyDown(&in_lookup);
+}
+
+static void IN_LookupUp (void)
+{
+	KeyUp(&in_lookup);
+}
+
+static void IN_LookdownDown (void)
+{
+	KeyDown(&in_lookdown);
+}
+
+static void IN_LookdownUp (void)
+{
+	KeyUp(&in_lookdown);
+}
+
+static void IN_MoveleftDown (void)
+{
+	KeyDown(&in_moveleft);
+}
+
+static void IN_MoveleftUp (void)
+{
+	KeyUp(&in_moveleft);
+}
+
+static void IN_MoverightDown (void)
+{
+	KeyDown(&in_moveright);
+}
+
+static void IN_MoverightUp (void)
+{
+	KeyUp(&in_moveright);
+}
+
+static void IN_SpeedDown (void)
+{
+	KeyDown(&in_speed);
+}
+
+static void IN_SpeedUp (void)
+{
+	KeyUp(&in_speed);
+}
+
+static void IN_StrafeDown (void)
+{
+	KeyDown(&in_strafe);
+}
+
+static void IN_StrafeUp (void)
+{
+	KeyUp(&in_strafe);
+}
+
+static void IN_AttackDown (void)
+{
+	KeyDown(&in_attack);
+}
+
+static void IN_AttackUp (void)
+{
+	KeyUp(&in_attack);
+}
+
+static void IN_UseDown (void)
+{
+	KeyDown(&in_use);
+}
+
+static void IN_UseUp (void)
+{
+	KeyUp(&in_use);
+}
+
+static void IN_JumpDown (void)
+{
+	KeyDown(&in_jump);
+}
+
+static void IN_JumpUp (void)
+{
+	KeyUp(&in_jump);
+}
+
+static void IN_Impulse (void)
+{
+	in_impulse=atoi(Cmd_Argv(1));
+}
+
+static void IN_CrouchDown (void)
+{
+	int state;
+
+	if (key_dest == key_game)
+	{
+		state = in_crouch.state;
+		KeyDown(&in_crouch);
+
+//		if (!(state & 1) && (in_crouch.state & 1))
+//			in_impulse = 22;
+	}
+}
+
+static void IN_CrouchUp (void)
+{
+	int state;
+
+	if (key_dest == key_game)
+	{
+		state = in_crouch.state;
+
+		KeyUp(&in_crouch);
+//		if ((state & 1) && !(in_crouch.state & 1))
+//			in_impulse = 22;
+	}
+}
+
+static void IN_infoPlaqueUp(void)
+{
+	if (key_dest == key_game)
+	{
+		//They want to lower the plaque
+		/*if (!infomessage)
+		{
+			infomessage=Z_Malloc(1028);//"Objectives:@";
+		}*/
+
+		info_up = 0;
+		KeyUp(&in_infoplaque);
+	}
+}
+
+static void IN_infoPlaqueDown(void)
+{
+	if (key_dest == key_game)
+	{
+		//They want to see the plaque
+		/*if (infomessage[0] == '\0')
+			strcpy(infomessage, "Objectives:");*/
+
+		info_up = 1;
+		KeyDown(&in_infoplaque);
+	}
+}
 
 /*
 ===============
@@ -154,7 +345,7 @@ Returns 0.25 if a key was pressed and released during the frame,
 1.0 if held for the entire time
 ===============
 */
-float CL_KeyState (kbutton_t *key)
+static float CL_KeyState (kbutton_t *key)
 {
 	float		val;
 	qboolean	impulsedown, impulseup, down;
@@ -221,7 +412,7 @@ CL_AdjustAngles
 Moves the local angle positions
 ================
 */
-void CL_AdjustAngles (void)
+static void CL_AdjustAngles (void)
 {
 	float	speed;
 	float	up, down;
@@ -430,62 +621,6 @@ void CL_SendMove (usercmd_t *cmd)
 	}
 }
 
-void IN_CrouchDown (void)
-{
-	int state;
-
-	if (key_dest == key_game)
-	{
-		state = in_crouch.state;
-		KeyDown(&in_crouch);
-
-//		if (!(state & 1) && (in_crouch.state & 1))
-//			in_impulse = 22;
-	}
-}
-
-void IN_CrouchUp (void)
-{
-	int state;
-
-	if (key_dest == key_game)
-	{
-		state = in_crouch.state;
-
-		KeyUp(&in_crouch);
-//		if ((state & 1) && !(in_crouch.state & 1))
-//			in_impulse = 22;
-	}
-}
-
-void IN_infoPlaqueUp(void)
-{
-	if (key_dest == key_game)
-	{
-		//They want to lower the plaque
-		/*if (!infomessage)
-		{
-			infomessage=Z_Malloc(1028);//"Objectives:@";
-		}*/
-		
-		info_up = 0;
-		KeyUp(&in_infoplaque);
-	}
-}
-
-void IN_infoPlaqueDown(void)
-{
-	if (key_dest == key_game)
-	{
-		//They want to see the plaque
-		/*if (infomessage[0] == '\0')
-			strcpy(infomessage, "Objectives:");*/
-
-		info_up = 1;
-		KeyDown(&in_infoplaque);
-	}
-}
-
 /*
 ============
 CL_InitInput
@@ -542,9 +677,9 @@ void CL_InitInput (void)
 CL_ClearStates
 ============
 */
+#if 0
 void CL_ClearStates (void)
 {
-
 	in_mlook.state = 0;
 	in_klook.state = 0;
 	in_left.state = 0;
@@ -564,3 +699,4 @@ void CL_ClearStates (void)
 	in_down.state = 0;
 	in_crouch.state = 0;
 }
+#endif

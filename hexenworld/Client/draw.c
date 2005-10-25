@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.12 2005-10-25 19:58:33 sezero Exp $
+	$Id: draw.c,v 1.13 2005-10-25 20:04:17 sezero Exp $
 */
 
 
@@ -19,14 +19,13 @@ typedef struct {
 
 static rectdesc_t	r_rectdesc;
 
-byte *draw_smallchars; // Small characters for status bar
-
-byte		*draw_chars;				// 8*8 graphic characters
+static byte	*draw_smallchars;	// Small characters for status bar
+static byte	*draw_chars;		// 8*8 graphic characters
+static qpic_t	*draw_backtile;
 qpic_t		*draw_disc[MAX_DISC] = 
 {
 	NULL  // make the first one null for sure
 };
-qpic_t		*draw_backtile;
 
 int	trans_level = 0;
 
@@ -40,8 +39,8 @@ typedef struct cachepic_s
 } cachepic_t;
 
 #define	MAX_CACHED_PICS		256
-cachepic_t	menu_cachepics[MAX_CACHED_PICS];
-int			menu_numcachepics;
+static cachepic_t	menu_cachepics[MAX_CACHED_PICS];
+static int		menu_numcachepics;
 
 
 qpic_t	*Draw_PicFromWad (char *name)
@@ -345,7 +344,7 @@ void Draw_RedString (int x, int y, char *str)
 	}
 }
 
-void Draw_Pixel(int x, int y, byte color)
+static void Draw_Pixel(int x, int y, byte color)
 {
 	byte			*dest;
 	unsigned short	*pusdest;
@@ -1657,7 +1656,11 @@ void Draw_BeginDisc (void)
 {
 	static int disc_idx = 0;
 
-	if (!draw_disc[disc_idx])// rjr || loading_stage)
+	if (!draw_disc[disc_idx]
+#ifndef H2W
+		|| loading_stage
+#endif
+	   )
 	{
 		return;
 	}

@@ -1,6 +1,8 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.29 2005-10-25 17:14:23 sezero Exp $
- */
+	menu.c
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.30 2005-10-25 20:04:17 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "quakeinc.h"
@@ -8,13 +10,13 @@
 static void ReInitMusic(void);
 
 extern char com_basedir[MAX_OSPATH];
+extern	modestate_t	modestate;
 extern	cvar_t	vid_mode;
 extern	cvar_t	crosshair;
 
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);
 
-extern modestate_t	modestate;
 
 enum {m_none, m_main, m_multiplayer, m_setup, m_net, m_options, m_video, 
 		m_keys, m_help, m_quit, m_class, m_mconnect} m_state;
@@ -164,7 +166,7 @@ void M_DrawTransPicCropped (int x, int y, qpic_t *pic)
 
 byte identityTable[256];
 byte translationTable[256];
-extern int color_offsets[MAX_PLAYER_CLASS];
+extern const int color_offsets[MAX_PLAYER_CLASS];
 extern byte *playerTranslation;
 
 void M_BuildTranslationTable(int top, int bottom)
@@ -903,10 +905,8 @@ void M_AdjustSliders (int dir)
 
 	case OPT_ALWAYSMLOOK:
 		if (in_mlook.state & 1)
-			//IN_MLookUp();
 			Cbuf_AddText("-mlook");
 		else
-			//IN_MLookDown();
 			Cbuf_AddText("+mlook");
 		break;
 

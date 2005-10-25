@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.43 2005-10-25 19:58:33 sezero Exp $
+	$Id: gl_draw.c,v 1.44 2005-10-25 20:04:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -22,6 +22,9 @@ extern int	gl_max_size;
 cvar_t		gl_picmip = {"gl_picmip", "0"};
 cvar_t		gl_spritemip = {"gl_spritemip", "0"};
 
+extern int	setup_top;
+extern int	setup_bottom;
+extern int	which_class;
 qboolean	plyrtex[MAX_PLAYER_CLASS][16][16];	// whether or not the corresponding player textures
 							// (in multiplayer config screens) have been loaded
 byte		*draw_chars;				// 8*8 graphic characters
@@ -501,7 +504,7 @@ void Draw_Init (void)
 	// by hand, because we need to write the version
 	// string into the background before turning
 	// it into a texture
-
+	//draw_chars = W_GetLumpName ("conchars");
 	draw_chars = COM_LoadHunkFile ("gfx/menu/conchars.lmp");
 	for (i=0 ; i<256*128 ; i++)
 		if (draw_chars[i] == 0)
@@ -1044,7 +1047,7 @@ Only used for the player color selection menu
 */
 void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 {
-	int			v, u;
+	int			i, j, v, u;
 	unsigned		trans[PLAYER_DEST_WIDTH * PLAYER_DEST_HEIGHT], *dest;
 	byte			*src;
 	int			p;
@@ -1052,9 +1055,6 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 	// texture handle, name and trackers (Pa3PyX)
 	char texname[20];
 	static qboolean first_time = true;
-	extern int setup_top;
-	extern int setup_bottom;
-	extern int which_class;
 
 	// Initialize array of texnums
 	if (first_time) {
@@ -1076,24 +1076,11 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 		}
 	}
 
-#if 0
+	for( i = 0; i < PLAYER_PIC_WIDTH; i++ )
 	{
-		int i;
-
-		for( i = 0; i < 64 * 64; i++ )
-		{
-			trans[i] = d_8to24table[translation[menuplyr_pixels[i]]];
-		}
-	}
-#endif
-
-	{
-		int xi, yi;
-
-		for( xi = 0; xi < PLAYER_PIC_WIDTH; xi++ )
-			for( yi = 0; yi < PLAYER_PIC_HEIGHT; yi++ )
+		for( j = 0; j < PLAYER_PIC_HEIGHT; j++ )
 			{
-				trans[yi * PLAYER_DEST_WIDTH + xi] = d_8to24table[translation[menuplyr_pixels[which_class-1][yi * PLAYER_PIC_WIDTH + xi]]];
+			trans[j * PLAYER_DEST_WIDTH + i] = d_8to24table[translation[menuplyr_pixels[which_class-1][j * PLAYER_PIC_WIDTH + i]]];
 			}
 	}
 

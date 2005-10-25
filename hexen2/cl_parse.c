@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.17 2005-10-24 23:12:06 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.18 2005-10-25 20:04:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -17,7 +17,7 @@ extern 	cvar_t	bgmtype;
 
 model_t *player_models[MAX_PLAYER_CLASS];
 
-char *svc_strings[] =
+static const char *svc_strings[] =
 {
 	"svc_bad",
 	"svc_nop",
@@ -94,7 +94,7 @@ CL_EntityNum
 This error checks and tracks the total number of entities
 ===============
 */
-entity_t	*CL_EntityNum (int num)
+static entity_t *CL_EntityNum (int num)
 {
 	if (num >= cl.num_entities)
 	{
@@ -116,7 +116,7 @@ entity_t	*CL_EntityNum (int num)
 CL_ParseStartSoundPacket
 ==================
 */
-void CL_ParseStartSoundPacket(void)
+static void CL_ParseStartSoundPacket(void)
 {
     vec3_t  pos;
     int 	channel, ent;
@@ -163,7 +163,7 @@ When the client is taking a long time to load stuff, send keepalive messages
 so the server doesn't disconnect.
 ==================
 */
-void CL_KeepaliveMessage (void)
+static void CL_KeepaliveMessage (void)
 {
 	float	time;
 	static float lastmsg;
@@ -221,7 +221,7 @@ void CL_KeepaliveMessage (void)
 CL_ParseServerInfo
 ==================
 */
-void CL_ParseServerInfo (void)
+static void CL_ParseServerInfo (void)
 {
 	char	*str;
 	int		i;
@@ -423,7 +423,7 @@ If an entities model or origin changes from frame to frame, it must be
 relinked.  Other attributes can change without relinking.
 ==================
 */
-void CL_ParseUpdate (int bits)
+static void CL_ParseUpdate (int bits)
 {
 	int		i;
 	model_t		*model;
@@ -674,7 +674,7 @@ void CL_ParseUpdate (int bits)
 //		return;
 }
 
-void CL_ParseUpdate2 (int bits)
+static void CL_ParseUpdate2 (int bits)
 {
 	int		i;
 
@@ -742,7 +742,7 @@ void CL_ParseUpdate2 (int bits)
 CL_ParseBaseline
 ==================
 */
-void CL_ParseBaseline (entity_t *ent)
+static void CL_ParseBaseline (entity_t *ent)
 {
 	int			i;
 	
@@ -768,7 +768,7 @@ CL_ParseClientdata
 Server information pertaining to this client only
 ==================
 */
-void CL_ParseClientdata (int bits)
+static void CL_ParseClientdata (int bits)
 {
 	int	i, j;
 
@@ -963,27 +963,31 @@ void CL_ParseClientdata (int bits)
 		SB_InvChanged();*/
 }
 
-int color_offsets[MAX_PLAYER_CLASS] =
+#ifndef GLQUAKE	// otherwise in gl_rmisc.c
+const int color_offsets[MAX_PLAYER_CLASS] =
 {
 	2*14*256,
 	0,
 	1*14*256,
-	2*14*256,
-#ifdef H2MP
 	2*14*256
+#ifdef H2MP
+	, 2*14*256
 #endif
 };
+#endif	// GLQUAKE
 
 /*
 =====================
 CL_NewTranslation
 =====================
 */
-void CL_NewTranslation (int slot)
+static void CL_NewTranslation (int slot)
 {
+#ifndef GLQUAKE
 	int		i, j;
 	int		top, bottom;
 	byte	*dest, *source, *sourceA, *sourceB, *colorA, *colorB;
+#endif
 	
 	if (slot > cl.maxclients)
 		Sys_Error ("CL_NewTranslation: slot > cl.maxclients");
@@ -993,7 +997,7 @@ void CL_NewTranslation (int slot)
 #ifdef GLQUAKE
 	R_TranslatePlayerSkin (slot);
 	return;
-#endif
+#else
 
 	dest = cl.scores[slot].translations;
 	source = vid.colormap;
@@ -1026,6 +1030,7 @@ void CL_NewTranslation (int slot)
 				dest[j] = source[*sourceB];
 		}
 	}
+#endif
 }
 
 /*
@@ -1033,7 +1038,7 @@ void CL_NewTranslation (int slot)
 CL_ParseStatic
 =====================
 */
-void CL_ParseStatic (void)
+static void CL_ParseStatic (void)
 {
 	entity_t *ent;
 	int		i;
@@ -1065,7 +1070,7 @@ void CL_ParseStatic (void)
 CL_ParseStaticSound
 ===================
 */
-void CL_ParseStaticSound (void)
+static void CL_ParseStaticSound (void)
 {
 	vec3_t		org;
 	int			sound_num, vol, atten;
@@ -1082,7 +1087,7 @@ void CL_ParseStaticSound (void)
 }
 
 
-void CL_Plaque(void)
+static void CL_Plaque(void)
 {
 	int idx;
 
@@ -1094,7 +1099,7 @@ void CL_Plaque(void)
 		plaquemessage = "";
 }
 
-void CL_ParticleExplosion(void)
+static void CL_ParticleExplosion(void)
 {
 	vec3_t org;
 	short color, radius, counter;
@@ -1109,7 +1114,7 @@ void CL_ParticleExplosion(void)
 	R_ColoredParticleExplosion(org,color,radius,counter);
 }
 
-void CL_ParseRainEffect(void)
+static void CL_ParseRainEffect(void)
 {
 	vec3_t		org, e_size;
 	short		color,count;
@@ -1783,6 +1788,9 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/10/24 23:12:06  sezero
+ * a break seems missing in CL_ParseServerMessage of hexen2
+ *
  * Revision 1.16  2005/10/24 21:20:27  sezero
  * fixed those double semicolons
  *

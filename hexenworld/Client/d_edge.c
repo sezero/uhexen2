@@ -33,7 +33,7 @@ void D_DrawPoly (void)
 D_MipLevelForScale
 =============
 */
-int D_MipLevelForScale (float scale)
+static int D_MipLevelForScale (float scale)
 {
 	int		lmiplevel;
 
@@ -56,12 +56,11 @@ int D_MipLevelForScale (float scale)
 /*
 ==============
 D_DrawSolidSurface
-==============
-*/
 
 // FIXME: clean this up
-
-void D_DrawSolidSurface (surf_t *surf, int color)
+==============
+*/
+static void D_DrawSolidSurface (surf_t *surf, int color)
 {
 	espan_t	*span;
 	byte	*pdest;
@@ -101,7 +100,7 @@ void D_DrawSolidSurface (surf_t *surf, int color)
 D_CalcGradients
 ==============
 */
-void D_CalcGradients (msurface_t *pface)
+static void D_CalcGradients (msurface_t *pface)
 {
 	mplane_t	*pplane;
 	float		mipscale;

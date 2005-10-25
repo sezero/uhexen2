@@ -1,4 +1,9 @@
-// d_local.h:  private rasterization driver defs
+/*
+	d_local.h
+	private rasterization driver defs
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_local.h,v 1.3 2005-10-25 20:04:17 sezero Exp $
+*/
 
 #include "r_shared.h"
 
@@ -50,19 +55,13 @@ extern float	d_sdivzstepu, d_tdivzstepu, d_zistepu;
 extern float	d_sdivzstepv, d_tdivzstepv, d_zistepv;
 extern float	d_sdivzorigin, d_tdivzorigin, d_ziorigin;
 
-fixed16_t	sadjust, tadjust;
-fixed16_t	bbextents, bbextentt;
+extern fixed16_t	sadjust, tadjust;
+extern fixed16_t	bbextents, bbextentt;
 
 
 void D_DrawSpans8 (espan_t *pspans);
-void D_DrawSpans16 (espan_t *pspans);
-void D_DrawSpans16T (espan_t *pspans);
 void D_DrawZSpans (espan_t *pspans);
-void D_DrawSingleZSpans (espan_t *pspans);
 void Turbulent8 (surf_t *s);
-void D_SpriteDrawSpans (sspan_t *pspan);
-void D_SpriteDrawSpansT (sspan_t *pspan);
-void D_SpriteDrawSpansT2 (sspan_t *pspan);
 
 void D_DrawSkyScans8 (espan_t *pspan);
 void D_DrawSkyScans16 (espan_t *pspan);
@@ -72,8 +71,6 @@ void D_Patch (void);
 void R_ShowSubDiv (void);
 void (*prealspandrawer)(void);
 surfcache_t	*D_CacheSurface (msurface_t *surface, int miplevel);
-
-extern int D_MipLevelForScale (float scale);
 
 #if id386
 extern void D_PolysetAff8Start (void);
@@ -88,10 +85,17 @@ extern void D_PolysetAff8StartT5 (void);
 extern void D_PolysetAff8EndT5 (void);
 extern void D_Draw16StartT (void);
 extern void D_Draw16EndT (void);
+extern void D_SpriteDrawSpans (sspan_t *pspan);
+extern void D_SpriteDrawSpansT (sspan_t *pspan);
+extern void D_SpriteDrawSpansT2 (sspan_t *pspan);
 extern void D_SpriteSpansStartT (void);
 extern void D_SpriteSpansEndT (void);
 extern void D_SpriteSpansStartT2 (void);
 extern void D_SpriteSpansEndT2 (void);
+extern void D_DrawSpans16 (espan_t *pspans);
+extern void D_DrawSpans16T (espan_t *pspans);
+extern void D_DrawSingleZSpans (espan_t *pspans);
+extern void D_DrawTurbulent8Span (void);
 extern void D_DrawTurbulent8TSpan (void);
 extern void D_DrawTurbulent8TQuickSpan (void);
 extern void D_DrawTurbulent8TSpanEnd (void);
@@ -130,3 +134,4 @@ extern void (*d_drawspans) (espan_t *pspan);
 #define SCAN_SIZE 2048
 
 extern byte			scanList[SCAN_SIZE];
+

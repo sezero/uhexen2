@@ -2,17 +2,17 @@
 	d_surf.c
 	rasterization driver surface heap manager
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_surf.c,v 1.3 2004-12-18 13:48:52 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_surf.c,v 1.4 2005-10-25 20:04:17 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "d_local.h"
 #include "r_local.h"
 
-float           surfscale;
+static float	surfscale;
 qboolean        r_cache_thrash;         // set if surface cache is thrashing
 
-int                                     sc_size;
+static int				sc_size;
 surfcache_t                     *sc_rover, *sc_base;
 
 #define GUARDSIZE       4
@@ -38,7 +38,7 @@ int     D_SurfaceCacheForRes (int width, int height)
 	return size;
 }
 
-void D_CheckCacheGuard (void)
+static void D_CheckCacheGuard (void)
 {
 	byte    *s;
 	int             i;
@@ -49,7 +49,7 @@ void D_CheckCacheGuard (void)
 			Sys_Error ("D_CheckCacheGuard: failed");
 }
 
-void D_ClearCacheGuard (void)
+static void D_ClearCacheGuard (void)
 {
 	byte    *s;
 	int             i;
@@ -113,7 +113,7 @@ void D_FlushCaches (void)
 D_SCAlloc
 =================
 */
-surfcache_t     *D_SCAlloc (int width, int size)
+static surfcache_t *D_SCAlloc (int width, int size)
 {
 	surfcache_t             *new;
 	qboolean                wrapped_this_time;
@@ -200,7 +200,8 @@ D_CheckCacheGuard ();   // DEBUG
 D_SCDump
 =================
 */
-void D_SCDump (void)
+#if 0	// unused
+static void D_SCDump (void)
 {
 	surfcache_t             *test;
 
@@ -211,12 +212,13 @@ void D_SCDump (void)
 		printf ("%p : %i bytes     %i width\n",test, test->size, test->width);
 	}
 }
+#endif
 
 //=============================================================================
 
 // if the num is not a power of 2, assume it will not repeat
-
-int     MaskForNum (int num)
+#if 0	// unused
+static int MaskForNum (int num)
 {
 	if (num==128)
 		return 127;
@@ -229,7 +231,7 @@ int     MaskForNum (int num)
 	return 255;
 }
 
-int D_log2 (int num)
+static int D_log2 (int num)
 {
 	int     c;
 	
@@ -239,6 +241,7 @@ int D_log2 (int num)
 		c++;
 	return c;
 }
+#endif
 
 //=============================================================================
 
@@ -340,6 +343,10 @@ surfcache_t *D_CacheSurface (msurface_t *surface, int miplevel)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2004/12/18 13:48:52  sezero
+ * Clean-up and kill warnings 3:
+ * Kill " suggest parentheses around XXX " warnings
+ *
  * Revision 1.2  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

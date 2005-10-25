@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.46 2005-10-25 17:14:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.47 2005-10-25 20:04:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -13,14 +13,15 @@ extern  cvar_t  r_shadows, gl_glows, gl_missile_glows, gl_other_glows; // S.A
 
 static void ReInitMusic(void);
 
+extern	modestate_t	modestate;
 extern	cvar_t	vid_mode;
-extern	float introTime;
 extern	cvar_t	crosshair;
+extern	qboolean introPlaying;
+extern	float introTime;
 
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);
 
-extern modestate_t	modestate;
 
 enum {m_none, m_main, m_singleplayer, m_load, m_save, m_multiplayer, m_setup, m_net, m_options, m_video, 
 		m_keys, m_help, m_quit, m_lanconfig, m_gameoptions, m_search, m_slist, 
@@ -106,10 +107,6 @@ static double message_time;
 
 void M_ConfigureNetSubsystem(void);
 void M_Menu_Class_f (void);
-
-extern qboolean introPlaying;
-
-extern float introTime;
 
 char *ClassNames[MAX_PLAYER_CLASS] = 
 {
@@ -250,9 +247,8 @@ void M_DrawTransPicCropped (int x, int y, qpic_t *pic)
 
 byte identityTable[256];
 byte translationTable[256];
-extern int color_offsets[MAX_PLAYER_CLASS];
+extern const int color_offsets[MAX_PLAYER_CLASS];
 extern byte *playerTranslation;
-extern int setup_class;
 
 void M_BuildTranslationTable(int top, int bottom)
 {
@@ -1926,10 +1922,8 @@ void M_AdjustSliders (int dir)
 
 	case OPT_ALWAYSMLOOK:
 		if (in_mlook.state & 1)
-			//IN_MLookUp();
 			Cbuf_AddText("-mlook");
 		else
-			//IN_MLookDown();
 			Cbuf_AddText("+mlook");
 		break;
 
@@ -4081,6 +4075,11 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.46  2005/10/25 17:14:23  sezero
+ * added a STRINGIFY macro. unified version macros. simplified version
+ * printing. simplified and enhanced version watermark print onto console
+ * background. added HoT lines to the quit menu (shameless plug)
+ *
  * Revision 1.45  2005/10/13 15:26:10  sezero
  * M_ScanSaves() and M_ScanMSaves() should actually use com_savedir, not
  * com_userdir. By default, they are the same but this is for correctness.

@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.6 2005-10-02 15:43:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.7 2005-10-25 20:04:17 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -120,14 +120,14 @@ void CL_ClearEffects(void)
 	EffectEntityCount = 0;
 }
 
-void SV_ClearEffects(void)
+static void SV_ClearEffects(void)
 {
 	memset(sv.Effects,0,sizeof(sv.Effects));
 }
 
 // All changes need to be in SV_SendEffect(), SV_ParseEffect(),
 // SV_SaveEffects(), SV_LoadEffects(), CL_ParseEffect()
-void SV_SendEffect(sizebuf_t *sb, int idx)
+static void SV_SendEffect(sizebuf_t *sb, int idx)
 {
 	qboolean	DoTest;
 	vec3_t		TestO1,Diff;
@@ -1089,7 +1089,7 @@ void SV_LoadEffects(FILE *FH)
 	}
 }
 
-void CL_FreeEffect(int idx)
+static void CL_FreeEffect(int idx)
 {	
 	int i;
 
@@ -1962,7 +1962,7 @@ void CL_EndEffect(void)
 	CL_FreeEffect(idx);
 }
 
-void CL_LinkEntity(entity_t *ent)
+static void CL_LinkEntity(entity_t *ent)
 {
 	if (cl_numvisedicts < MAX_VISEDICTS)
 	{
@@ -2524,6 +2524,9 @@ static void FreeEffectEntity(int idx)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/10/02 15:43:08  sezero
+ * killed -Wshadow warnings
+ *
  * Revision 1.5  2005/01/01 21:43:47  sezero
  * prototypes clean-up
  *

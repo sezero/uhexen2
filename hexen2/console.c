@@ -9,30 +9,30 @@
 #include <fcntl.h>
 #include "quakedef.h"
 
-int 		con_linewidth;
-
-float		con_cursorspeed = 4;
 
 #define		CON_TEXTSIZE	16384
 
-qboolean 	con_forcedup;		// because no entities to refresh
+qboolean	con_initialized;
 
+static int	con_linewidth;		// characters across screen
+static int	con_vislines;
+int		con_notifylines;	// scan lines to clear for notify lines
 int			con_totallines;		// total lines in console scrollback
 int			con_backscroll;		// lines up from bottom to display
-int			con_current;		// where next message will be printed
-int			con_x;				// offset in current line for next print
+static int	con_current;		// where next message will be printed
+static int	con_x;			// offset in current line for next print
 static short		*con_text=0;
+static float	con_cursorspeed = 4;
+qboolean 	con_forcedup;		// because no entities to refresh
 
 cvar_t		sys_nostdout = {"sys_nostdout", "1"};	// - DDOI
 cvar_t		con_notifytime = {"con_notifytime","3"};		//seconds
 
 #define	NUM_CON_TIMES 4
-float		con_times[NUM_CON_TIMES];	// realtime time the line was generated
+static float	con_times[NUM_CON_TIMES];	// realtime time the line was generated
 						// for transparent notify lines
 
-int			con_vislines;
-
-qboolean	con_debuglog;
+static qboolean	con_debuglog;
 
 #define		MAXCMDLINE	256
 extern	char	key_lines[32][MAXCMDLINE];
@@ -41,10 +41,6 @@ extern	int		key_linepos;
 extern qboolean		mousestate_sa;
 extern void	IN_ActivateMouse (void);
 extern void	IN_DeactivateMouse (void);
-
-qboolean	con_initialized;
-
-int			con_notifylines;		// scan lines to clear for notify lines
 
 extern void M_Menu_Main_f (void);
 
@@ -86,7 +82,7 @@ void Con_ToggleConsole_f (void)
 Con_Clear_f
 ================
 */
-void Con_Clear_f (void)
+static void Con_Clear_f (void)
 {
 	short i;
 
@@ -116,7 +112,7 @@ Con_MessageMode_f
 */
 extern qboolean team_message;
 
-void Con_MessageMode_f (void)
+static void Con_MessageMode_f (void)
 {
 	key_dest = key_message;
 	team_message = false;
@@ -128,7 +124,7 @@ void Con_MessageMode_f (void)
 Con_MessageMode2_f
 ================
 */
-void Con_MessageMode2_f (void)
+static void Con_MessageMode2_f (void)
 {
 	key_dest = key_message;
 	team_message = true;
@@ -249,7 +245,7 @@ void Con_Init (void)
 Con_Linefeed
 ===============
 */
-void Con_Linefeed (void)
+static void Con_Linefeed (void)
 {
 	int i,j;
 
@@ -270,7 +266,7 @@ All console printing must go through this in order to be logged to disk
 If no console is visible, the notify window will pop up.
 ================
 */
-void Con_Print (char *txt)
+static void Con_Print (char *txt)
 {
 	int		y;
 	int		c, l;
@@ -352,7 +348,7 @@ void Con_Print (char *txt)
 Con_DebugLog
 ================
 */
-void Con_DebugLog(char *file, char *fmt, ...)
+static void Con_DebugLog(char *file, char *fmt, ...)
 {
     va_list argptr; 
     static char data[1024];
@@ -478,7 +474,7 @@ Con_DrawInput
 The input line scrolls horizontally if typing goes beyond the right edge
 ================
 */
-void Con_DrawInput (void)
+static void Con_DrawInput (void)
 {
 	int		y;
 	int		i;
@@ -518,13 +514,13 @@ Con_DrawNotify
 Draws the last few lines of output transparently over the game top
 ================
 */
+extern char chat_buffer[];
 void Con_DrawNotify (void)
 {
 	int		x, v;
 	short	*text;
 	int		i;
 	float	time;
-	extern char chat_buffer[];
 
 	v = 0;
 	for (i= con_current-NUM_CON_TIMES+1 ; i<=con_current ; i++)

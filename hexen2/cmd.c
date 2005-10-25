@@ -2,14 +2,14 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.7 2005-09-19 19:50:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.8 2005-10-25 20:04:17 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "quakeinc.h"
 
 void Cmd_ForwardToServer (void);
-void ListCommands (char *prefix);
+static void ListCommands (char *prefix);
 
 #define	MAX_ALIAS_NAME	32
 
@@ -20,12 +20,9 @@ typedef struct cmdalias_s
 	char	*value;
 } cmdalias_t;
 
-cmdalias_t	*cmd_alias;
+static cmdalias_t	*cmd_alias;
 
-int trashtest;
-int *trashspot;
-
-qboolean	cmd_wait;
+static qboolean	cmd_wait;
 
 
 //=============================================================================
@@ -52,8 +49,8 @@ void Cmd_Wait_f (void)
 =============================================================================
 */
 
-sizebuf_t	cmd_text;
-byte		cmd_text_buf[8192];
+static sizebuf_t	cmd_text;
+static byte	cmd_text_buf[8192];
 
 /*
 ============
@@ -200,7 +197,7 @@ quake +prog jctest.qp +cmd amlev1
 quake -nosound +cmd amlev1
 ===============
 */
-void Cmd_StuffCmds_f (void)
+static void Cmd_StuffCmds_f (void)
 {
 	int		i, j;
 	int		s;
@@ -269,7 +266,7 @@ void Cmd_StuffCmds_f (void)
 Cmd_Exec_f
 ===============
 */
-void Cmd_Exec_f (void)
+static void Cmd_Exec_f (void)
 {
 	char	*f;
 	int		mark;
@@ -301,7 +298,7 @@ Cmd_Echo_f
 Just prints the rest of the line to the console
 ===============
 */
-void Cmd_Echo_f (void)
+static void Cmd_Echo_f (void)
 {
 	int		i;
 	
@@ -317,7 +314,7 @@ Cmd_List_f
 Lists the commands to the console
 ===============
 */
-void Cmd_List_f(void)
+static void Cmd_List_f(void)
 {
 //	int		i;
 	ListCommands (Cmd_Argv(1));
@@ -330,17 +327,7 @@ Cmd_Alias_f
 Creates a new command that executes a command string (possibly ; seperated)
 ===============
 */
-
-char *CopyString (char *in)
-{
-	char	*out;
-	
-	out = Z_Malloc (strlen(in)+1);
-	strcpy (out, in);
-	return out;
-}
-
-void Cmd_Alias_f (void)
+static void Cmd_Alias_f (void)
 {
 	cmdalias_t	*a;
 	char		cmd[1024];
@@ -391,7 +378,8 @@ void Cmd_Alias_f (void)
 	}
 	strcat (cmd, "\n");
 	
-	a->value = CopyString (cmd);
+	a->value = Z_Malloc (strlen (cmd) + 1);
+	strcpy (a->value, cmd);
 }
 
 /*
@@ -485,7 +473,7 @@ Cmd_TokenizeString
 Parses the given string into command line tokens.
 ============
 */
-void Cmd_TokenizeString (char *text)
+static void Cmd_TokenizeString (char *text)
 {
 	int		i;
 	
@@ -695,7 +683,7 @@ void Cmd_ForwardToServer (void)
 		SZ_Print (&cls.message, "\n");
 }
 
-
+#if 0
 /*
 ================
 Cmd_CheckParm
@@ -704,7 +692,6 @@ Returns the position (1 to argc-1) in the command's argument list
 where the given parameter apears, or 0 if not present
 ================
 */
-
 int Cmd_CheckParm (char *parm)
 {
 	int i;
@@ -718,6 +705,7 @@ int Cmd_CheckParm (char *parm)
 			
 	return 0;
 }
+#endif
 
 void WriteCommands (FILE *FH)
 {
@@ -727,7 +715,7 @@ void WriteCommands (FILE *FH)
 		fprintf(FH,"   %s\n", cmd->name);
 }
 
-void ListCommands (char *prefix)
+static void ListCommands (char *prefix)
 {
 	cmd_function_t	*cmd;
 	int preLen = strlen(prefix);
@@ -741,6 +729,9 @@ void ListCommands (char *prefix)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/09/19 19:50:10  sezero
+ * fixed those famous spelling errors
+ *
  * Revision 1.6  2005/07/23 22:22:08  sezero
  * unified the common funcntions for hexen2-hexenworld
  *
