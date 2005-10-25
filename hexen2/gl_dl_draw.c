@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_dl_draw.c,v 1.58 2005-10-25 17:14:22 sezero Exp $
+	$Id: gl_dl_draw.c,v 1.59 2005-10-25 19:58:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -747,19 +747,6 @@ void Draw_SmallString(int x, int y, char *str)
 		str++;
 		x += 6;
 	}
-}
-
-/*
-================
-Draw_DebugChar
-
-Draws a single character directly to the upper right corner of the screen.
-This is for debugging lockups by drawing different chars in different parts
-of the code.
-================
-*/
-void Draw_DebugChar (char num)
-{
 }
 
 /*
@@ -2031,6 +2018,11 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.58  2005/10/25 17:14:22  sezero
+ * added a STRINGIFY macro. unified version macros. simplified version
+ * printing. simplified and enhanced version watermark print onto console
+ * background. added HoT lines to the quit menu (shameless plug)
+ *
  * Revision 1.57  2005/10/13 15:23:21  sezero
  * moved gl_lightmap format setup to GL_Init
  *

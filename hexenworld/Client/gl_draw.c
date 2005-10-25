@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.42 2005-10-25 17:14:23 sezero Exp $
+	$Id: gl_draw.c,v 1.43 2005-10-25 19:58:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -757,19 +757,6 @@ void Draw_SmallString(int x, int y, char *str)
 		str++;
 		x += 6;
 	}
-}
-
-/*
-================
-Draw_DebugChar
-
-Draws a single character directly to the upper right corner of the screen.
-This is for debugging lockups by drawing different chars in different parts
-of the code.
-================
-*/
-void Draw_DebugChar (char num)
-{
 }
 
 /*

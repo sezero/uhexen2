@@ -3,7 +3,7 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.7 2005-10-25 17:14:23 sezero Exp $
+	$Id: draw.h,v 1.8 2005-10-25 19:58:33 sezero Exp $
 */
 
 
@@ -13,7 +13,6 @@ extern	qpic_t		*draw_disc[MAX_DISC]; // also used on sbar
 
 void Draw_Init (void);
 void Draw_Character (int x, int y, unsigned int num);
-void Draw_DebugChar (char num);
 void Draw_Pic (int x, int y, qpic_t *pic);
 void Draw_IntermissionPic (qpic_t *pic);
 void Draw_PicCropped(int x, int y, qpic_t *pic);

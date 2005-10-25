@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.12 2005-10-25 17:28:42 sezero Exp $
+	$Id: draw.c,v 1.13 2005-10-25 19:58:33 sezero Exp $
 */
 
 
@@ -550,49 +550,6 @@ void Draw_SmallString(int x, int y, char *str)
 		Draw_SmallCharacter(x, y, *str);
 		str++;
 		x += 6;
-	}
-}
-
-/*
-================
-Draw_DebugChar
-
-Draws a single character directly to the upper right corner of the screen.
-This is for debugging lockups by drawing different chars in different parts
-of the code.
-================
-*/
-void Draw_DebugChar (char num)
-{
-	byte			*dest;
-	byte			*source;
-	int				drawline;	
-	extern byte		*draw_chars;
-	int				row, col;
-
-	if (!vid.direct)
-		return;		// don't have direct FB access, so no debugchars...
-
-	drawline = 8;
-
-	row = num>>5;
-	col = num&31;
-	source = draw_chars + (row<<11) + (col<<3);
-
-	dest = vid.direct + 312;
-
-	while (drawline--)
-	{
-		dest[0] = source[0];
-		dest[1] = source[1];
-		dest[2] = source[2];
-		dest[3] = source[3];
-		dest[4] = source[4];
-		dest[5] = source[5];
-		dest[6] = source[6];
-		dest[7] = source[7];
-		source += 256;
-		dest += 320;
 	}
 }
 
@@ -1723,6 +1680,10 @@ void Draw_EndDisc (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/10/25 17:28:42  sezero
+ * fixed a bug causing Draw_EndDisc() to return unconditionally
+ * without doing anything. coding style is not just cosmetics..
+ *
  * Revision 1.11  2005/10/25 17:14:22  sezero
  * added a STRINGIFY macro. unified version macros. simplified version
  * printing. simplified and enhanced version watermark print onto console
