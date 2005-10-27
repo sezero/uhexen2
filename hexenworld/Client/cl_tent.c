@@ -1388,8 +1388,6 @@ void CL_ParseTEnt (void)
 			i = (host_frametime < .07) ? 0 : 4;	// based on framerate
 			for( ; i < 8; i++)
 			{
-				float final;
-
 				ex = CL_AllocExplosion();
 				VectorCopy(pos,ex->origin);
 				ex->frameFunc = ChunkThink;
@@ -1412,7 +1410,6 @@ void CL_ParseTEnt (void)
 				ex->scale = 45 + rand()%10;
 				ex->data = THINGTYPE_METEOR;
 
-				final = (rand()%100)*.01;
 				ex->model = Mod_ForName("models/tempmetr.mdl", true);
 				ex->skin = 0;
 				VectorScale(ex->avel, 4.0, ex->avel);
