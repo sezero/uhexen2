@@ -130,7 +130,7 @@ beam_t			cl_beams[MAX_BEAMS];
 explosion_t		cl_explosions[MAX_EXPLOSIONS];
 
 static stream_t cl_Streams[MAX_STREAMS];
-
+static float	playIceSound = .6;
 static int		MultiGrenadeCurrentChannel;
 
 //sfx_t			*cl_sfx_wizhit;
@@ -1716,7 +1716,6 @@ void CL_ParseTEnt (void)
 				stream_t	*stream;
 				model_t		*models[2];
 				entity_state_t	*state;
-				static float	playIceSound = .6;
 
 				ent = MSG_ReadShort();
 
@@ -5013,7 +5012,6 @@ void CL_UpdateIceStorm(entity_t *ent, int edict_num)
 	vec3_t		center, side1;
 	vec3_t		side2 = {160, 160, 128};
 	entity_state_t	*state;
-	static float	playIceSound = .6;
 
 	state = FindState(edict_num);
 	if (state)
