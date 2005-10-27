@@ -1,13 +1,9 @@
+/*
+	cl_effect.c
+	Client side effects.
 
-//**************************************************************************
-//**
-//** cl_effect.c
-//**
-//** Client side effects.
-//**
-//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.c,v 1.5 2005-10-02 15:43:09 sezero Exp $
-//**
-//**************************************************************************
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.c,v 1.6 2005-10-27 06:47:12 sezero Exp $
+*/
 
 // HEADER FILES ------------------------------------------------------------
 
@@ -51,7 +47,7 @@ static void vectoangles(vec3_t vec, vec3_t ang)
 {
 	float	forward;
 	float	yaw, pitch;
-	
+
 	if (vec[1] == 0 && vec[0] == 0)
 	{
 		yaw = 0;
@@ -103,13 +99,13 @@ sfx_t	*cl_fxsfx_drillashoot;
 sfx_t	*cl_fxsfx_drillaspin;
 sfx_t	*cl_fxsfx_drillameat;
 
+sfx_t	*cl_fxsfx_arr2flsh;
+sfx_t	*cl_fxsfx_arr2wood;
+sfx_t	*cl_fxsfx_met2stn;
 
-sfx_t			*cl_fxsfx_arr2flsh;
-sfx_t			*cl_fxsfx_arr2wood;
-sfx_t			*cl_fxsfx_met2stn;
+sfx_t	*cl_fxsfx_ripple;
+sfx_t	*cl_fxsfx_splash;
 
-sfx_t			*cl_fxsfx_ripple;
-sfx_t			*cl_fxsfx_splash;
 void CL_InitEffects(void)
 {
 	cl_fxsfx_bone = S_PrecacheSound ("necro/bonefnrm.wav");
@@ -273,7 +269,6 @@ void CL_FreeEffect(int idx)
 		case CE_HWEIDOLONSTAR:
 			FreeEffectEntity(cl.Effects[idx].ef.Star.ent1);
 			FreeEffectEntity(cl.Effects[idx].ef.Star.entity_index);
-
 			break;
 		default:
 //			Con_Printf("Freeing unknown effect type\n");
@@ -389,7 +384,7 @@ void CL_ParseEffect(void)
 				VectorCopy(cl.Effects[idx].ef.Smoke.origin, ent->origin);
 
 				if ((cl.Effects[idx].type == CE_WHITE_SMOKE) || 
-					(cl.Effects[idx].type == CE_SLOW_WHITE_SMOKE))
+						(cl.Effects[idx].type == CE_SLOW_WHITE_SMOKE))
 					ent->model = Mod_ForName("models/whtsmk1.spr", true);
 				else if (cl.Effects[idx].type == CE_GREEN_SMOKE)
 					ent->model = Mod_ForName("models/grnsmk1.spr", true);
@@ -425,7 +420,7 @@ void CL_ParseEffect(void)
 						ent->model = Mod_ForName("models/firewal2.spr", true);
 					else
 						ent->model = Mod_ForName("models/firewal3.spr", true);
-					
+
 					ent->drawflags = DRF_TRANSLUCENT;
 					ent->abslight = 1;
 					ent->frame = cl.Effects[idx].ef.Smoke.frame;
@@ -441,6 +436,7 @@ void CL_ParseEffect(void)
 						R_SplashParticleEffect (cl.Effects[idx].ef.Smoke.origin, 100, 406+rand()%8, pt_slowgrav, 20);//splash
 					else
 						S_StartSound (TempSoundChannel(), 1, cl_fxsfx_ripple, cl.Effects[idx].ef.Smoke.origin, 1, 1);
+
 					cl.Effects[idx].ef.Smoke.framelength=0.05;
 					ent->model = Mod_ForName("models/ripple.spr", true);
 					ent->drawflags = DRF_TRANSLUCENT;//|SCALE_TYPE_XYONLY|SCALE_ORIGIN_CENTER;
@@ -469,6 +465,7 @@ void CL_ParseEffect(void)
 					ent->drawflags = DRF_TRANSLUCENT | MLS_ABSLIGHT;
 					ent->abslight = .5;
 				}
+
 				if (cl.Effects[idx].type == CE_TELESMK1)
 				{
 					S_StartSound (TempSoundChannel(), 1, cl_fxsfx_ravenfire, cl.Effects[idx].ef.Smoke.origin, 1, 1);
@@ -483,7 +480,9 @@ void CL_ParseEffect(void)
 				}
 			}
 			else
+			{
 				ImmediateFree = true;
+			}
 			break;
 
 		case CE_SM_WHITE_FLASH:
@@ -549,7 +548,6 @@ void CL_ParseEffect(void)
 				{
 					ent->model = Mod_ForName("models/sm_expld.spr", true);
 					S_StartSound (TempSoundChannel(), 1, cl_fxsfx_explode, cl.Effects[idx].ef.Smoke.origin, 1, 1);
-
 				}
 				else if (cl.Effects[idx].type == CE_BG_EXPLOSION)
 				{
@@ -651,7 +649,6 @@ void CL_ParseEffect(void)
 					S_StartSound (TempSoundChannel(), 1, cl_fxsfx_ravensplit, cl.Effects[idx].ef.Flash.origin, 1, 1);
 				}
 				ent->drawflags = DRF_TRANSLUCENT;
-
 			}
 			else
 			{
@@ -669,7 +666,7 @@ void CL_ParseEffect(void)
 			cl.Effects[idx].ef.Teleporter.origin[0] = MSG_ReadCoord ();
 			cl.Effects[idx].ef.Teleporter.origin[1] = MSG_ReadCoord ();
 			cl.Effects[idx].ef.Teleporter.origin[2] = MSG_ReadCoord ();
-				
+
 			cl.Effects[idx].ef.Teleporter.framelength = .05;
 			dir = 0;
 			for (i=0;i<8;++i)
@@ -705,7 +702,7 @@ void CL_ParseEffect(void)
 			cl.Effects[idx].ef.Teleporter.velocity[0][2] = MSG_ReadFloat ();
 
 			skinnum = MSG_ReadFloat ();
-			
+
 			cl.Effects[idx].ef.Teleporter.framelength = .05;
 			dir = 0;
 			if ((cl.Effects[idx].ef.Teleporter.entity_index[0] = NewEffectEntity()) != -1)
@@ -752,9 +749,12 @@ void CL_ParseEffect(void)
 				}
 			}
 			else
+			{
 				ImmediateFree = true;
+			}
 
 			break;
+
 		case CE_BONESHARD:
 		case CE_HWRAVENSTAFF:
 		case CE_HWRAVENPOWER:
@@ -790,8 +790,11 @@ void CL_ParseEffect(void)
 				}
 			}
 			else
+			{
 				ImmediateFree = true;
+			}
 			break;
+
 		case CE_DEATHBUBBLES:
 			cl.Effects[idx].ef.Bubble.owner = MSG_ReadShort();
 			cl.Effects[idx].ef.Bubble.offset[0] = MSG_ReadByte();
@@ -800,6 +803,7 @@ void CL_ParseEffect(void)
 			cl.Effects[idx].ef.Bubble.count = MSG_ReadByte();//num of bubbles
 			cl.Effects[idx].ef.Bubble.time_amount = 0;
 			break;
+
 		case CE_HWXBOWSHOOT:
 			origin[0] = MSG_ReadCoord ();
 			origin[1] = MSG_ReadCoord ();
@@ -822,7 +826,7 @@ void CL_ParseEffect(void)
 
 			VectorNormalize(forward);
 			VectorCopy(forward, cl.Effects[idx].ef.Xbow.velocity);
-//			VectorScale(forward, 1000, cl.Effects[idx].ef.Xbow.velocity);
+		//	VectorScale(forward, 1000, cl.Effects[idx].ef.Xbow.velocity);
 
 			if (cl.Effects[idx].ef.Xbow.bolts == 3)
 			{
@@ -838,7 +842,7 @@ void CL_ParseEffect(void)
 				cl.Effects[idx].ef.Xbow.gonetime[i] = 1 + seedrand()*2;
 				cl.Effects[idx].ef.Xbow.state[i] = 0;
 
-				if ((1<<i)&	cl.Effects[idx].ef.Xbow.turnedbolts)
+				if ((1<<i) & cl.Effects[idx].ef.Xbow.turnedbolts)
 				{
 					cl.Effects[idx].ef.Xbow.origin[i][0]=MSG_ReadCoord();
 					cl.Effects[idx].ef.Xbow.origin[i][1]=MSG_ReadCoord();
@@ -878,6 +882,7 @@ void CL_ParseEffect(void)
 			}
 
 			break;
+
 		case CE_HWSHEEPINATOR:
 			origin[0] = MSG_ReadCoord ();
 			origin[1] = MSG_ReadCoord ();
@@ -899,7 +904,7 @@ void CL_ParseEffect(void)
 			VectorNormalize(forward);
 			VectorCopy(forward, cl.Effects[idx].ef.Xbow.velocity);
 
-//			S_StartSound (TempSoundChannel(), 1, cl_fxsfx_xbowshoot, origin, 1, 1);
+		//	S_StartSound (TempSoundChannel(), 1, cl_fxsfx_xbowshoot, origin, 1, 1);
 
 			for (i=0;i<cl.Effects[idx].ef.Xbow.bolts;i++)
 			{
@@ -907,7 +912,7 @@ void CL_ParseEffect(void)
 				cl.Effects[idx].ef.Xbow.state[i] = 0;
 
 
-				if ((1<<i)&	cl.Effects[idx].ef.Xbow.turnedbolts)
+				if ((1<<i) & cl.Effects[idx].ef.Xbow.turnedbolts)
 				{
 					cl.Effects[idx].ef.Xbow.origin[i][0]=MSG_ReadCoord();
 					cl.Effects[idx].ef.Xbow.origin[i][1]=MSG_ReadCoord();
@@ -936,6 +941,7 @@ void CL_ParseEffect(void)
 			}
 
 			break;
+
 		case CE_HWDRILLA:
 			cl.Effects[idx].ef.Missile.origin[0] = MSG_ReadCoord ();
 			cl.Effects[idx].ef.Missile.origin[1] = MSG_ReadCoord ();
@@ -961,8 +967,11 @@ void CL_ParseEffect(void)
 				ent->model = Mod_ForName("models/scrbstp1.mdl", true);
 			}
 			else
+			{
 				ImmediateFree = true;
+			}
 			break;
+
 		case CE_SCARABCHAIN:
 			cl.Effects[idx].ef.Chain.origin[0] = MSG_ReadCoord ();
 			cl.Effects[idx].ef.Chain.origin[1] = MSG_ReadCoord ();
@@ -987,8 +996,11 @@ void CL_ParseEffect(void)
 				ent->model = Mod_ForName("models/scrbpbdy.mdl", true);
 			}
 			else
+			{
 				ImmediateFree = true;
+			}
 			break;
+
 		case CE_TRIPMINE:
 			cl.Effects[idx].ef.Chain.origin[0] = MSG_ReadCoord ();
 			cl.Effects[idx].ef.Chain.origin[1] = MSG_ReadCoord ();
@@ -1005,10 +1017,13 @@ void CL_ParseEffect(void)
 				ent->model = Mod_ForName("models/twspike.mdl", true);
 			}
 			else
+			{
 				ImmediateFree = true;
+			}
 			break;
+
 		case CE_TRIPMINESTILL:
-//			Con_DPrintf("Allocating chain effect...\n");
+		//	Con_DPrintf("Allocating chain effect...\n");
 			cl.Effects[idx].ef.Chain.origin[0] = MSG_ReadCoord ();
 			cl.Effects[idx].ef.Chain.origin[1] = MSG_ReadCoord ();
 			cl.Effects[idx].ef.Chain.origin[2] = MSG_ReadCoord ();
@@ -1025,10 +1040,11 @@ void CL_ParseEffect(void)
 			}
 			else
 			{
-//				Con_DPrintf("ERROR: Couldn't allocate chain effect!\n");
+			//	Con_DPrintf("ERROR: Couldn't allocate chain effect!\n");
 				ImmediateFree = true;
 			}
 			break;
+
 		case CE_HWMISSILESTAR:
 		case CE_HWEIDOLONSTAR:
 			cl.Effects[idx].ef.Star.origin[0] = MSG_ReadCoord ();
@@ -1049,11 +1065,13 @@ void CL_ParseEffect(void)
 				ent->model = Mod_ForName("models/ball.mdl", true);
 			}
 			else
+			{
 				ImmediateFree = true;
+			}
 
 			cl.Effects[idx].ef.Star.scaleDir = 1;
 			cl.Effects[idx].ef.Star.scale = 0.3;
-			
+
 			if ((cl.Effects[idx].ef.Star.ent1 = NewEffectEntity()) != -1)
 			{
 				ent = &EffectEntities[cl.Effects[idx].ef.Star.ent1];
@@ -1066,7 +1084,6 @@ void CL_ParseEffect(void)
 					ent->model = Mod_ForName("models/star.mdl", true);	
 					ent->scale = 0.3;
 					S_StartSound (TempSoundChannel(), 1, cl_fxsfx_mmfire, ent->origin, 1, 1);
-
 				}
 				else
 				{
@@ -1138,22 +1155,22 @@ void XbowImpactPuff(vec3_t origin, int material)//hopefully can use this with xb
 		part_color = 256 + 8 * 16 + rand()%9;				//Blood red
 		break;
 	case XBOW_IMPACT_STONE:
-		part_color = 256 + 20 + rand()%8;			// Gray
+		part_color = 256 + 20 + rand()%8;	// Gray
 		break;
 	case XBOW_IMPACT_METAL:
-		part_color = 256 + (8 * 15);			// Sparks
+		part_color = 256 + (8 * 15);		// Sparks
 		break;
 	case XBOW_IMPACT_WOOD:
-		part_color = 256 + (5 * 16) + rand()%8;			// Wood chunks
+		part_color = 256 + (5 * 16) + rand()%8;	// Wood chunks
 		break;
 	case XBOW_IMPACT_ICE:
-		part_color = 406+rand()%8;				// Ice particles
+		part_color = 406+rand()%8;		// Ice particles
 		break;
 	case XBOW_IMPACT_GREENFLESH:
-		part_color = 256 + 183 + rand()%8;		// Spider's have green blood
+		part_color = 256 + 183 + rand()%8;	// Spider's have green blood
 		break;
 	default:
-		part_color = 256 + (3 * 16) + 4;		// Dust Brown
+		part_color = 256 + (3 * 16) + 4;	// Dust Brown
 		break;
 	}
 
@@ -1162,15 +1179,14 @@ void XbowImpactPuff(vec3_t origin, int material)//hopefully can use this with xb
 
 void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everything
 				// in this message, even if the effect is not the right kind or invalid,
-				// or else client is sure to crash.	
+				// or else client is sure to crash.
 {
-	int idx,type,revisionCode;
-	int curEnt,material,takedamage;
+	int	idx, type, revisionCode;
+	int	curEnt,material,takedamage;
 	entity_t	*ent;
 	vec3_t	forward,right,up,pos;
 	float	dist,speed;
 	entity_state_t	*es;
-
 
 	idx = MSG_ReadByte ();
 	type = MSG_ReadByte ();
@@ -1197,21 +1213,22 @@ void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everythi
 					}
 				}
 				else
+				{
 					cl.Effects[idx].ef.Chain.state = 2;
+				}
 			}
 			break;
 		case CE_HWXBOWSHOOT:
 			revisionCode = MSG_ReadByte();
 			//this is one packed byte!
 			//highest bit: for impact revision, indicates whether damage is done
-			//				for redirect revision, indicates whether new origin was sent
+			//		for redirect revision, indicates whether new origin was sent
 			//next 3 high bits: for all revisions, indicates which bolt is to be revised
 			//highest 3 of the low 4 bits: for impact revision, indicates the material that was hit
 			//lowest bit: indicates whether revision is of impact or redirect variety
 
-
 			curEnt = (revisionCode>>4)&7;
-			if (revisionCode & 1)//impact effect: 
+			if (revisionCode & 1)//impact effect:
 			{
 				cl.Effects[idx].ef.Xbow.activebolts &= ~(1<<curEnt);
 				dist = MSG_ReadCoord();
@@ -1236,7 +1253,7 @@ void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everythi
 					{
 						cl.Effects[idx].ef.Xbow.gonetime[curEnt] += cl.time;
 					}
-					
+
 					VectorCopy(cl.Effects[idx].ef.Xbow.vel[curEnt],forward);
 					VectorNormalize(forward);
 					VectorScale(forward,8,forward);
@@ -1384,7 +1401,6 @@ void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everythi
 			}
 			break;
 
-
 		case CE_HWDRILLA:
 			revisionCode = MSG_ReadByte();
 			if (revisionCode == 0)//impact
@@ -1400,7 +1416,7 @@ void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everythi
 				if ((material == XBOW_IMPACT_GREENFLESH) || (material == XBOW_IMPACT_GREENFLESH))
 				{//meaty sound and some chunks too
 					S_StartSound (TempSoundChannel(), 0, cl_fxsfx_drillameat, pos, 1, 1);
-					
+
 					//todo: the chunks
 				}
 
@@ -1482,9 +1498,9 @@ void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everythi
 					MSG_ReadCoord();
 					MSG_ReadCoord();
 
-					// create a clc message to retrieve effect information
-//					MSG_WriteByte (&cls.netchan.message, clc_get_effect);
-//					MSG_WriteByte (&cls.netchan.message, idx);
+				// create a clc message to retrieve effect information
+				//	MSG_WriteByte (&cls.netchan.message, clc_get_effect);
+				//	MSG_WriteByte (&cls.netchan.message, idx);
 				}
 			}
 			break;
@@ -1505,9 +1521,9 @@ void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everythi
 					MSG_ReadCoord();
 					MSG_ReadCoord();
 
-					// create a clc message to retrieve effect information
-//					MSG_WriteByte (&cls.netchan.message, clc_get_effect);
-//					MSG_WriteByte (&cls.netchan.message, idx);
+				// create a clc message to retrieve effect information
+				//	MSG_WriteByte (&cls.netchan.message, clc_get_effect);
+				//	MSG_WriteByte (&cls.netchan.message, idx);
 				}
 			}
 			break;
@@ -1529,9 +1545,9 @@ void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everythi
 				MSG_ReadCoord();
 				MSG_ReadCoord();
 
-				// create a clc message to retrieve effect information
-//				MSG_WriteByte (&cls.netchan.message, clc_get_effect);
-//				MSG_WriteByte (&cls.netchan.message, idx);
+			// create a clc message to retrieve effect information
+			//	MSG_WriteByte (&cls.netchan.message, clc_get_effect);
+			//	MSG_WriteByte (&cls.netchan.message, idx);
 
 			}
 			break;
@@ -1545,7 +1561,7 @@ void UpdateMissilePath(vec3_t oldorg, vec3_t neworg, vec3_t newvel, float time)
 	float delta;
 
 	delta = cl.time - time;
-	
+
 	VectorMA(neworg, delta, newvel, endpos); 
 	VectorCopy(neworg, oldorg);	//set orig, maybe vel too
 }
@@ -1553,10 +1569,10 @@ void UpdateMissilePath(vec3_t oldorg, vec3_t neworg, vec3_t newvel, float time)
 
 void CL_TurnEffect(void)
 {
-	int idx;
-	entity_t *ent;
-	vec3_t pos, vel;
-	float time;
+	int		idx;
+	entity_t	*ent;
+	vec3_t		pos, vel;
+	float		time;
 
 	idx = MSG_ReadByte ();
 	time = MSG_ReadFloat ();
@@ -1591,10 +1607,10 @@ void CL_TurnEffect(void)
 		}
 		break;
 	case 0:
-		// create a clc message to retrieve effect information
-//		MSG_WriteByte (&cls.netchan.message, clc_get_effect);
-//		MSG_WriteByte (&cls.netchan.message, idx);
-//		Con_Printf("CL_TurnEffect: null effect %d\n", idx);
+	// create a clc message to retrieve effect information
+	//	MSG_WriteByte (&cls.netchan.message, clc_get_effect);
+	//	MSG_WriteByte (&cls.netchan.message, idx);
+	//	Con_Printf("CL_TurnEffect: null effect %d\n", idx);
 		break;
 	default:
 		Con_Printf ("CL_TurnEffect: bad type %d\n", cl.Effects[idx].type);
@@ -1625,13 +1641,13 @@ void RiderParticle(int count, vec3_t origin);
 
 void CL_UpdateEffects(void)
 {
-	int		idx,cur_frame;
-	vec3_t		mymin,mymax;
+	int		idx, cur_frame;
+	vec3_t		mymin, mymax;
 	float		frametime;
 //	edict_t		test;
 //	trace_t		trace;
-	vec3_t		org,org2,old_origin;
-	int		x_dir,y_dir;
+	vec3_t		org, org2, old_origin;
+	int		x_dir, y_dir;
 	entity_t	*ent, *ent2;
 	float		smoketime;
 	int		i;
@@ -1639,7 +1655,8 @@ void CL_UpdateEffects(void)
 	mleaf_t		*l;
 
 	frametime = host_frametime;
-	if (!frametime) return;
+	if (!frametime)
+		return;
 //	Con_Printf("Here at %f\n",cl.time);
 
 	for(idx=0;idx<MAX_EFFECTS;idx++)
@@ -1660,7 +1677,7 @@ void CL_UpdateEffects(void)
 
 				x_dir = cl.Effects[idx].ef.Rain.dir[0];
 				y_dir = cl.Effects[idx].ef.Rain.dir[1];
-				
+
 				cl.Effects[idx].ef.Rain.next_time += frametime;
 				if (cl.Effects[idx].ef.Rain.next_time >= cl.Effects[idx].ef.Rain.wait)
 				{		
@@ -1700,9 +1717,10 @@ void CL_UpdateEffects(void)
 				R_RunParticleEffect2 (cl.Effects[idx].ef.Fountain.pos,mymin,mymax,
 					                  cl.Effects[idx].ef.Fountain.color,2,cl.Effects[idx].ef.Fountain.cnt);
 
-/*				memset(&test,0,sizeof(test));
+			/*	memset(&test,0,sizeof(test));
 				trace = SV_Move (cl.Effects[idx].ef.Fountain.pos, mymin, mymax, mymin, false, &test);
-				Con_Printf("Fraction is %f\n",trace.fraction);*/
+				Con_Printf("Fraction is %f\n",trace.fraction);
+			*/
 				break;
 
 			case CE_QUAKE:
@@ -1729,9 +1747,10 @@ void CL_UpdateEffects(void)
 					CL_FreeEffect(idx);
 				}
 				else
+				{
 					CL_LinkEntity(ent);
+				}
 				break;
-
 
 			case CE_WHITE_SMOKE:
 			case CE_GREEN_SMOKE:
@@ -1767,13 +1786,10 @@ void CL_UpdateEffects(void)
 				}
 
 				if (ent->frame >= ent->model->numframes)
-				{
 					CL_FreeEffect(idx);
-				}
 				else
 					CL_LinkEntity(ent);
 
-				
 				if(cl.Effects[idx].type == CE_TELESMK1)
 				{
 					ent = &EffectEntities[cl.Effects[idx].ef.Smoke.entity_index2];
@@ -1844,13 +1860,14 @@ void CL_UpdateEffects(void)
 					}
 				}
 
-
 				if (ent->frame >= ent->model->numframes)
 				{
 					CL_FreeEffect(idx);
 				}
 				else
+				{
 					CL_LinkEntity(ent);
+				}
 
 				break;
 
@@ -1874,10 +1891,11 @@ void CL_UpdateEffects(void)
 						}
 						else
 							ent->frame++;
-
-					}	
+					}
 					else
+					{
 						ent->frame--;
+					}
 
 					cl.Effects[idx].ef.Flash.time_amount -= HX_FRAME_TIME;
 				}
@@ -1887,7 +1905,10 @@ void CL_UpdateEffects(void)
 					CL_FreeEffect(idx);
 				}
 				else
+				{
 					CL_LinkEntity(ent);
+				}
+
 				break;
 
 			case CE_RIDER_DEATH:
@@ -1919,7 +1940,7 @@ void CL_UpdateEffects(void)
 					}
 					else if (cl.Effects[idx].ef.RD.stage > 13) 
 					{
-//						cl.Effects[idx].ef.RD.stage = 0;
+					//	cl.Effects[idx].ef.RD.stage = 0;
 						CL_FreeEffect(idx);
 					}
 				}
@@ -1955,6 +1976,7 @@ void CL_UpdateEffects(void)
 					CL_LinkEntity(ent);
 				}
 				break;
+
 			case CE_TELEPORTERBODY:
 				cl.Effects[idx].ef.Teleporter.time_amount += frametime;
 				smoketime = cl.Effects[idx].ef.Teleporter.framelength;
@@ -2002,6 +2024,7 @@ void CL_UpdateEffects(void)
 
 				CL_LinkEntity(ent);
 				break;
+
 			case CE_HWXBOWSHOOT:
 				cl.Effects[idx].ef.Xbow.time_amount += frametime;
 				for (i=0;i<cl.Effects[idx].ef.Xbow.bolts;i++)
@@ -2063,18 +2086,20 @@ void CL_UpdateEffects(void)
 									cl.Effects[idx].ef.Xbow.gonetime[i] += HX_FRAME_TIME * 0.75;
 								}
 
-
 								if (ent->frame >= ent->model->numframes)
 								{
 									cl.Effects[idx].ef.Xbow.state[i] = 2;//if anim is over, set me to inactive state
 								}
 								else
+								{
 									CL_LinkEntity(ent);
+								}
 							}
 						}
 					}
 				}
 				break;
+
 			case CE_HWSHEEPINATOR:
 				cl.Effects[idx].ef.Xbow.time_amount += frametime;
 				for (i=0;i<cl.Effects[idx].ef.Xbow.bolts;i++)
@@ -2096,6 +2121,7 @@ void CL_UpdateEffects(void)
 					}
 				}
 				break;
+
 			case CE_DEATHBUBBLES:
 				cl.Effects[idx].ef.Bubble.time_amount += frametime;
 				if (cl.Effects[idx].ef.Bubble.time_amount > 0.1)//10 bubbles a sec
@@ -2123,6 +2149,7 @@ void CL_UpdateEffects(void)
 				if (cl.Effects[idx].ef.Bubble.count <= 0)
 					CL_FreeEffect(idx);
 				break;
+
 			case CE_SCARABCHAIN:
 				cl.Effects[idx].ef.Chain.time_amount += frametime;
 				ent = &EffectEntities[cl.Effects[idx].ef.Chain.ent1];
@@ -2194,15 +2221,16 @@ void CL_UpdateEffects(void)
 				CreateStream(TE_STREAM_CHAIN, cl.Effects[idx].ef.Chain.ent1, 1, cl.Effects[idx].ef.Chain.tag, 0.1, 0, org, org2);
 
 				break;
+
 			case CE_TRIPMINESTILL:
 				cl.Effects[idx].ef.Chain.time_amount += frametime;
 				ent = &EffectEntities[cl.Effects[idx].ef.Chain.ent1];
 
-//				if (cl.Effects[idx].ef.Chain.ent1 < 0)//fixme: remove this!!!
-//					Con_DPrintf("OHSHITOHSHIT--bad chain ent\n");
+			//	if (cl.Effects[idx].ef.Chain.ent1 < 0)//fixme: remove this!!!
+			//		Con_DPrintf("OHSHITOHSHIT--bad chain ent\n");
 
 				CL_LinkEntity(ent);
-//				Con_DPrintf("Chain Ent at: %d %d %d\n",(int)cl.Effects[idx].ef.Chain.origin[0],(int)cl.Effects[idx].ef.Chain.origin[1],(int)cl.Effects[idx].ef.Chain.origin[2]);
+			//	Con_DPrintf("Chain Ent at: %d %d %d\n",(int)cl.Effects[idx].ef.Chain.origin[0],(int)cl.Effects[idx].ef.Chain.origin[1],(int)cl.Effects[idx].ef.Chain.origin[2]);
 
 				//damndamndamn--add stream stuff here!
 				VectorCopy(cl.Effects[idx].ef.Chain.origin, org);
@@ -2210,6 +2238,7 @@ void CL_UpdateEffects(void)
 				CreateStream(TE_STREAM_CHAIN, cl.Effects[idx].ef.Chain.ent1, 1, 1, 0.1, 0, org, org2);
 
 				break;
+
 			case CE_TRIPMINE:
 				cl.Effects[idx].ef.Chain.time_amount += frametime;
 				ent = &EffectEntities[cl.Effects[idx].ef.Chain.ent1];
@@ -2226,6 +2255,7 @@ void CL_UpdateEffects(void)
 				CreateStream(TE_STREAM_CHAIN, cl.Effects[idx].ef.Chain.ent1, 1, 1, 0.1, 0, org, org2);
 
 				break;
+
 			case CE_BONESHARD:
 			case CE_BONESHRAPNEL:
 			case CE_HWBONEBALL:
@@ -2234,9 +2264,9 @@ void CL_UpdateEffects(void)
 				cl.Effects[idx].ef.Missile.time_amount += frametime;
 				ent = &EffectEntities[cl.Effects[idx].ef.Missile.entity_index];
 
-//		ent->angles[0] = cl.Effects[idx].ef.Missile.angle[0];
-//		ent->angles[1] = cl.Effects[idx].ef.Missile.angle[1];
-//		ent->angles[2] = cl.Effects[idx].ef.Missile.angle[2];
+			//	ent->angles[0] = cl.Effects[idx].ef.Missile.angle[0];
+			//	ent->angles[1] = cl.Effects[idx].ef.Missile.angle[1];
+			//	ent->angles[2] = cl.Effects[idx].ef.Missile.angle[2];
 
 				ent->angles[0] += frametime * cl.Effects[idx].ef.Missile.avelocity[0];
 				ent->angles[1] += frametime * cl.Effects[idx].ef.Missile.avelocity[1];
@@ -2266,6 +2296,7 @@ void CL_UpdateEffects(void)
 
 				}
 				break;
+
 			case CE_HWMISSILESTAR:
 			case CE_HWEIDOLONSTAR:
 				// update scale
@@ -2285,7 +2316,7 @@ void CL_UpdateEffects(void)
 						cl.Effects[idx].ef.Star.scaleDir = 1;
 					}
 				}
-				
+
 				cl.Effects[idx].ef.Star.time_amount += frametime;
 				ent = &EffectEntities[cl.Effects[idx].ef.Star.entity_index];
 
@@ -2298,7 +2329,7 @@ void CL_UpdateEffects(void)
 				ent->origin[2] += frametime * cl.Effects[idx].ef.Star.velocity[2];
 
 				CL_LinkEntity(ent);
-				
+
 				if (cl.Effects[idx].ef.Star.ent1 != -1)
 				{
 					ent2= &EffectEntities[cl.Effects[idx].ef.Star.ent1];
@@ -2319,8 +2350,8 @@ void CL_UpdateEffects(void)
 						ent2->angles[2] += frametime * -400;
 						CL_LinkEntity(ent2);
 					}
-				}					
-				if(rand() % 10 < 3)		
+				}
+				if(rand() % 10 < 3)
 				{
 					R_RunParticleEffect4 (ent->origin, 7, 148 + rand() % 11, pt_grav, 10 + rand() % 10);
 				}
@@ -2334,9 +2365,9 @@ void CL_UpdateEffects(void)
 void CreateRavenExplosions(vec3_t pos);
 void CL_ParseMultiEffect(void)
 {
-	int type, idx, count;
-	vec3_t	orig, vel;
-	entity_t *ent;
+	int		type, idx, count;
+	vec3_t		orig, vel;
+	entity_t	*ent;
 
 	type = MSG_ReadByte();
 	switch(type)
@@ -2369,9 +2400,7 @@ void CL_ParseMultiEffect(void)
 		break;
 	default:
 		Sys_Error ("CL_ParseMultiEffect: bad type");
-
 	}	
-	
 }
 
 
@@ -2384,7 +2413,7 @@ void CL_ParseMultiEffect(void)
 static int NewEffectEntity(void)
 {
 	entity_t	*ent;
-	int counter;
+	int	counter;
 
 	if(cl_numvisedicts == MAX_VISEDICTS)
 	{
@@ -2429,6 +2458,9 @@ static void FreeEffectEntity(int idx)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/10/02 15:43:09  sezero
+ * killed -Wshadow warnings
+ *
  * Revision 1.4  2005/09/10 13:15:57  sezero
  * used the same name for the EffectsT union as in hexen2
  *

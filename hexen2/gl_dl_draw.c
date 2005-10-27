@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_dl_draw.c,v 1.61 2005-10-25 20:08:41 sezero Exp $
+	$Id: gl_dl_draw.c,v 1.62 2005-10-27 06:47:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -341,10 +341,10 @@ colors (e.g. in intermission screens)
 */
 qpic_t *Draw_CachePicNoTrans(char *path)
 {
-	cachepic_t      *pic;
-	int                     i;
-	qpic_t          *dat;
-	glpic_t         *gl;
+	cachepic_t	*pic;
+	int			i;
+	qpic_t		*dat;
+	glpic_t		*gl;
 
 	for (pic=menu_cachepics, i=0 ; i<menu_numcachepics ; pic++, i++)
 		if (!strcmp (path, pic->name))
@@ -596,7 +596,7 @@ void Draw_Character (int x, int y, unsigned int num)
 	num &= 511;
 
 	if (y <= -8)
-		return;			// totally off screen
+		return;		// totally off screen
 
 	row = num>>5;
 	col = num&31;
@@ -718,7 +718,7 @@ void Draw_SmallCharacter (int x, int y, int num)
 	if (num == 0) return;
 
 	if (y <= -8)
-		return; 		// totally off screen
+		return; 	// totally off screen
 
 	if(y >= vid.height)
 	{ // Totally off screen
@@ -866,13 +866,13 @@ void Draw_IntermissionPic (qpic_t *pic)
 void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height)
 {
 	glpic_t			*gl;
-	float newsl, newtl, newsh, newth;
-	float oldglwidth, oldglheight;
+	float	newsl, newtl, newsh, newth;
+	float	oldglwidth, oldglheight;
 
 	if (scrap_dirty)
 		Scrap_Upload ();
 	gl = (glpic_t *)pic->data;
-	
+
 	oldglwidth = gl->sh - gl->sl;
 	oldglheight = gl->th - gl->tl;
 
@@ -881,7 +881,7 @@ void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int h
 
 	newtl = gl->tl + (srcy*oldglheight)/pic->height;
 	newth = newtl + (height*oldglheight)/pic->height;
-	
+
 	glColor4f_fp (1,1,1,1);
 	GL_Bind (gl->texnum);
 	glBegin_fp (GL_QUADS);
@@ -898,9 +898,9 @@ void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int h
 
 void Draw_PicCropped(int x, int y, qpic_t *pic)
 {
-	int height;
-	glpic_t 		*gl;
-	float th,tl;
+	int		height;
+	glpic_t 	*gl;
+	float		th,tl;
 
 	if((x < 0) || (x+pic->width > vid.width))
 	{
@@ -939,7 +939,6 @@ void Draw_PicCropped(int x, int y, qpic_t *pic)
 		th = gl->th;//(height-0.01)/pic->height;
 	}
 
-
 	glColor4f_fp (1,1,1,1);
 	GL_Bind (gl->texnum);
 	glBegin_fp (GL_QUADS);
@@ -956,9 +955,9 @@ void Draw_PicCropped(int x, int y, qpic_t *pic)
 
 void Draw_SubPicCropped(int x, int y, int h, qpic_t *pic)
 {
-	int height;
-	glpic_t 		*gl;
-	float th,tl;
+	int		height;
+	glpic_t 	*gl;
+	float		th,tl;
 
 	if((x < 0) || (x+pic->width > vid.width))
 	{
@@ -1023,7 +1022,6 @@ Draw_TransPic
 */
 void Draw_TransPic (int x, int y, qpic_t *pic)
 {
-
 	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
 		 (unsigned)(y + pic->height) > vid.height)
 	{
@@ -1047,10 +1045,10 @@ Only used for the player color selection menu
 */
 void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 {
-	int			i, j, v, u;
-	unsigned		trans[PLAYER_DEST_WIDTH * PLAYER_DEST_HEIGHT], *dest;
-	byte			*src;
-	int			p;
+	int		i, j, v, u;
+	unsigned	trans[PLAYER_DEST_WIDTH * PLAYER_DEST_HEIGHT], *dest;
+	byte		*src;
+	int		p;
 
 	// texture handle, name and trackers (Pa3PyX)
 	char texname[20];
@@ -1085,7 +1083,8 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 	}
 
 	// See if the texture has already been loaded; if not, do it (Pa3PyX)
-	if (!plyrtex[setup_class - 1][setup_top][setup_bottom]) {
+	if (!plyrtex[setup_class - 1][setup_top][setup_bottom])
+	{
 		snprintf(texname, 19, "plyrmtex%i%i%i", setup_class, setup_top, setup_bottom);
 		plyrtex[setup_class - 1][setup_top][setup_bottom] = GL_LoadTexture(texname, PLAYER_DEST_WIDTH, PLAYER_DEST_HEIGHT, (byte *)trans, false, true, 0, true);
 	}
@@ -1106,20 +1105,25 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 
 int M_DrawBigCharacter (int x, int y, int num, int numNext)
 {
-	int			row, col;
-	float			frow, fcol, xsize,ysize;
-	int			add;
+	int		row, col;
+	float		frow, fcol, xsize,ysize;
+	int		add;
 
-	if (num == ' ') return 32;
+	if (num == ' ')
+		return 32;
 
-	if (num == '/') num = 26;
-	else num -= 65;
+	if (num == '/')
+		num = 26;
+	else
+		num -= 65;
 
 	if (num < 0 || num >= 27)  // only a-z and /
 		return 0;
 
-	if (numNext == '/') numNext = 26;
-	else numNext -= 65;
+	if (numNext == '/')
+		numNext = 26;
+	else
+		numNext -= 65;
 
 	row = num/8;
 	col = num%8;
@@ -1142,7 +1146,8 @@ int M_DrawBigCharacter (int x, int y, int num, int numNext)
 	glVertex2f_fp (x, y+20);
 	glEnd_fp ();
 
-	if (numNext < 0 || numNext >= 27) return 0;
+	if (numNext < 0 || numNext >= 27)
+		return 0;
 
 	add = 0;
 	if (num == (int)'C'-65 && numNext == (int)'P'-65)
@@ -1160,9 +1165,8 @@ Draw_ConsoleBackground
 */
 void Draw_ConsoleBackground (int lines)
 {
-	char ver[80];
-	int x, i;
-	int y;
+	char	ver[80];
+	int	i, x, y;
 
 	y = (vid.height * 3) >> 2;
 	if (lines > y)
@@ -1243,7 +1247,7 @@ Draw_FadeScreen
 */
 void Draw_FadeScreen (void)
 {
-	int bx,by,ex,ey;
+	int bx, by, ex, ey;
 	int c;
 
 #if 0
@@ -1255,7 +1259,8 @@ void Draw_FadeScreen (void)
 	// It only seems to break when using an old binary
 	// mesaGL from a quake3 package.		O.S.
 
-	if (is_3dfx) return;
+	if (is_3dfx)
+		return;
 #endif
 
 	glAlphaFunc_fp(GL_ALWAYS, 0);
@@ -1280,10 +1285,14 @@ void Draw_FadeScreen (void)
 		by = rand() % vid.height-20;
 		ex = bx + (rand() % 40) + 20;
 		ey = by + (rand() % 40) + 20;
-		if (bx < 0) bx = 0;
-		if (by < 0) by = 0;
-		if (ex > vid.width) ex = vid.width;
-		if (ey > vid.height) ey = vid.height;
+		if (bx < 0)
+			bx = 0;
+		if (by < 0)
+			by = 0;
+		if (ex > vid.width)
+			ex = vid.width;
+		if (ey > vid.height)
+			ey = vid.height;
 
 		glBegin_fp (GL_QUADS);
 		glVertex2f_fp (bx, by);
@@ -1456,7 +1465,7 @@ void GL_MipMap8Bit (byte *in, int width, int height)
 	height >>= 1;
 	out = in;
 	for (i=0 ; i<height ; i++, in+=width)
-//	{
+	{
 		for (j=0 ; j<width ; j+=2, out+=1, in+=2)
 		{
 			at1 = (byte *) &d_8to24table[in[0]];
@@ -1474,7 +1483,7 @@ void GL_MipMap8Bit (byte *in, int width, int height)
 //			out[2] = (in[2] + in[6] + in[width+2] + in[width+6])>>2;
 //			out[3] = (in[3] + in[7] + in[width+3] + in[width+7])>>2;
 		}
-//	}
+	}
 }
 
 /*
@@ -1484,13 +1493,14 @@ GL_Upload32
 */
 void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite)
 {
-	int			samples;
-	unsigned		*scaled;
-	int			mark = 0;
-	int			scaled_width, scaled_height;
+	int		samples;
+	unsigned	*scaled;
+	int		mark = 0;
+	int		scaled_width, scaled_height;
 
 	for (scaled_width = 1 ; scaled_width < width ; scaled_width<<=1)
 		;
+
 	for (scaled_height = 1 ; scaled_height < height ; scaled_height<<=1)
 		;
 
@@ -1504,17 +1514,16 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 		scaled_width >>= (int)gl_picmip.value;
 		scaled_height >>= (int)gl_picmip.value;
 	}
+
 	if (scaled_width < 1)
-	{
 		scaled_width = 1;
-	}
+
 	if (scaled_height < 1)
-	{
 		scaled_height = 1;
-	}
 
 	if (scaled_width > gl_max_size)
 		scaled_width = gl_max_size;
+
 	if (scaled_height > gl_max_size)
 		scaled_height = gl_max_size;
 
@@ -1612,8 +1621,10 @@ void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboole
 		if (alpha && noalpha)
 			alpha = false;
 	}
+
 	for (scaled_width = 1 ; scaled_width < width ; scaled_width<<=1)
 		;
+
 	for (scaled_height = 1 ; scaled_height < height ; scaled_height<<=1)
 		;
 
@@ -1627,17 +1638,16 @@ void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboole
 		scaled_width >>= (int)gl_picmip.value;
 		scaled_height >>= (int)gl_picmip.value;
 	}
+
 	if (scaled_width < 1)
-	{
 		scaled_width = 1;
-	}
+
 	if (scaled_height < 1)
-	{
 		scaled_height = 1;
-	}
 
 	if (scaled_width > gl_max_size)
 		scaled_width = gl_max_size;
+
 	if (scaled_height > gl_max_size)
 		scaled_height = gl_max_size;
 
@@ -1766,8 +1776,8 @@ void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean a
 				unsigned long neighbors[9];
 				int num_neighbors_valid = 0;
 				int neighbor_u, neighbor_v;
-
 				int u, v;
+
 				u = s % width;
 				v = s / width;
 
@@ -1808,7 +1818,7 @@ void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean a
 					b = 255;
 
 				trans[i] = ( b << 16  ) | ( g << 8 ) | r;
-//				trans[i] = 0;
+			//	trans[i] = 0;
 			}
 		}
 
@@ -1869,7 +1879,8 @@ void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean a
 		}
 	}
 
-	if (is8bit && !alpha && (data!=scrap_texels[0])) {
+	if (is8bit && !alpha && (data!=scrap_texels[0]))
+	{
 		GL_Upload8_EXT (data, width, height, mipmap, alpha, sprite);
 		Hunk_FreeToLowMark(mark);
 		return;
@@ -2015,6 +2026,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.61  2005/10/25 20:08:41  sezero
+ * coding style and whitespace cleanup.
+ *
  * Revision 1.60  2005/10/25 20:04:17  sezero
  * static functions part-1: started making local functions static,
  * killing nested externs, const vars clean-up.

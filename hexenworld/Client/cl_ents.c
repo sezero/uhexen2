@@ -16,31 +16,31 @@ static struct predicted_player {
 
 #define	U_MODEL		(1<<16)
 #define U_SOUND		(1<<17)
-#define U_DRAWFLAGS (1<<18)
-#define U_ABSLIGHT  (1<<19)
+#define U_DRAWFLAGS	(1<<18)
+#define U_ABSLIGHT	(1<<19)
 
 char *parsedelta_strings[] =
 {
 	"U_ANGLE1",	//0
 	"U_ANGLE3",	//1
 	"U_SCALE",	//2
-	"U_COLORMAP",//3
+	"U_COLORMAP",	//3
 	"U_SKIN",	//4
 	"U_EFFECTS",	//5
-	"U_MODEL16",//6
-	"U_MOREBITS2",			//7 
-	"",			//8 is unused
+	"U_MODEL16",	//6
+	"U_MOREBITS2",	//7 
+	"",		//8 is unused
 	"U_ORIGIN1",	//9
 	"U_ORIGIN2",	//10
 	"U_ORIGIN3",	//11
 	"U_ANGLE2",	//12
 	"U_FRAME",	//13
 	"U_REMOVE",	//14
-	"U_MOREBITS",//15
-	"U_MODEL",//16
-	"U_SOUND",//17
-	"U_DRAWFLAGS",//18
-	"U_ABSLIGHT"//19
+	"U_MOREBITS",	//15
+	"U_MODEL",	//16
+	"U_SOUND",	//17
+	"U_DRAWFLAGS",	//18
+	"U_ABSLIGHT"	//19
 };
 
 //============================================================
@@ -105,22 +105,29 @@ void CL_NewDlight (int key, float x, float y, float z, float radius, float time,
 	dl->origin[2] = z;
 	dl->radius = radius;
 	dl->die = cl.time + time;
-	if (type == 0) {
+	if (type == 0)
+	{
 		dl->color[0] = 0.2;
 		dl->color[1] = 0.1;
 		dl->color[2] = 0.05;
 		dl->color[3] = 0.7;
-	} else if (type == 1) {
+	}
+	else if (type == 1)
+	{
 		dl->color[0] = 0.05;
 		dl->color[1] = 0.05;
 		dl->color[2] = 0.3;
 		dl->color[3] = 0.7;
-	} else if (type == 2) {
+	}
+	else if (type == 2)
+	{
 		dl->color[0] = 0.5;
 		dl->color[1] = 0.05;
 		dl->color[2] = 0.05;
 		dl->color[3] = 0.7;
-	} else if (type == 3) {
+	}
+	else if (type == 3)
+	{
 		dl->color[0]=0.5;
 		dl->color[1] = 0.05;
 		dl->color[2] = 0.4;
@@ -145,7 +152,7 @@ void CL_DecayLights (void)
 	{
 		if (dl->die < cl.time || !dl->radius)
 			continue;
-		
+
 		if (dl->radius > 0)
 		{
 			dl->radius -= host_frametime*dl->decay;
@@ -235,7 +242,7 @@ void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int bits)
 			bitcounts[i]++;
 
 	to->flags = bits;
-	
+
 	if (bits & U_MODEL)
 	{
 		if (bits & U_MODEL16)
@@ -247,7 +254,7 @@ void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int bits)
 			to->modelindex = MSG_ReadByte ();
 		}
 	}
-		
+
 	if (bits & U_FRAME)
 		to->frame = MSG_ReadByte ();
 
@@ -267,19 +274,19 @@ void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int bits)
 
 	if (bits & U_ORIGIN1)
 		to->origin[0] = MSG_ReadCoord ();
-		
+
 	if (bits & U_ANGLE1)
 		to->angles[0] = MSG_ReadAngle();
 
 	if (bits & U_ORIGIN2)
 		to->origin[1] = MSG_ReadCoord ();
-		
+
 	if (bits & U_ANGLE2)
 		to->angles[1] = MSG_ReadAngle();
 
 	if (bits & U_ORIGIN3)
 		to->origin[2] = MSG_ReadCoord ();
-		
+
 	if (bits & U_ANGLE3)
 		to->angles[2] = MSG_ReadAngle();
 
@@ -287,15 +294,16 @@ void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int bits)
 	{
 		to->scale = MSG_ReadByte();
 	}
+
 	if (bits & U_ABSLIGHT)
 		to->abslight = MSG_ReadByte();
+
 	if (bits & U_SOUND)
 	{
 		i = MSG_ReadShort();
 		S_StartSound(to->number, 1, cl.sound_precache[i], to->origin, 1.0, 1.0);
 	}
 }
-
 
 
 /*
@@ -363,7 +371,9 @@ void CL_ParsePacketEntities (qboolean delta)
 			Con_DPrintf ("WARNING: from mismatch\n");
 	}
 	else
+	{
 		oldpacket = -1;
+	}
 
 	full = false;
 	if (oldpacket != -1)
@@ -402,7 +412,7 @@ void CL_ParsePacketEntities (qboolean delta)
 		{
 			while (oldindex < oldp->num_entities)
 			{	// copy all the rest of the entities from the old packet
-//Con_Printf ("copy %i\n", oldp->entities[oldindex].number);
+				//Con_Printf ("copy %i\n", oldp->entities[oldindex].number);
 				if (newindex >= MAX_PACKET_ENTITIES)
 					Host_EndGame ("CL_ParsePacketEntities: newindex == MAX_PACKET_ENTITIES");
 				newp->entities[newindex] = oldp->entities[oldindex];
@@ -423,7 +433,7 @@ void CL_ParsePacketEntities (qboolean delta)
 				return;
 			}
 
-//Con_Printf ("copy %i\n", oldnum);
+			//Con_Printf ("copy %i\n", oldnum);
 			// copy one of the old entities over to the new packet unchanged
 			if (newindex >= MAX_PACKET_ENTITIES)
 				Host_EndGame ("CL_ParsePacketEntities: newindex == MAX_PACKET_ENTITIES");
@@ -435,7 +445,7 @@ void CL_ParsePacketEntities (qboolean delta)
 
 		if (newnum < oldnum)
 		{	// new from baseline
-//Con_Printf ("baseline %i\n", newnum);
+			//Con_Printf ("baseline %i\n", newnum);
 			if (word & U_REMOVE)
 			{
 				if (full)
@@ -466,12 +476,11 @@ void CL_ParsePacketEntities (qboolean delta)
 				oldindex++;
 				continue;
 			}
-//Con_Printf ("delta %i\n",newnum);
+			//Con_Printf ("delta %i\n",newnum);
 			CL_ParseDelta (&oldp->entities[oldindex], &newp->entities[newindex], word);
 			newindex++;
 			oldindex++;
 		}
-
 	}
 
 	newp->num_entities = newindex;
@@ -480,8 +489,8 @@ void CL_ParsePacketEntities (qboolean delta)
 
 void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 {
-	dlight_t			*dl;
-	int					rotateSet = 0;
+	dlight_t	*dl;
+	int	rotateSet = 0;
 
 	// Effect Flags
 	if (effects & EF_BRIGHTFIELD)
@@ -498,8 +507,10 @@ void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 
 		R_BrightFieldSource (ent->origin);
 	}
+
 	if (effects & EF_DARKFIELD)
 		R_DarkFieldParticles (ent);
+
 	if (effects & EF_MUZZLEFLASH)
 	{
 		vec3_t		fv, rv, uv;
@@ -508,14 +519,15 @@ void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 		VectorCopy (ent->origin,  dl->origin);
 		dl->origin[2] += 16;
 		AngleVectors (ent->angles, fv, rv, uv);
-		 
+
 		VectorMA (dl->origin, 18, fv, dl->origin);
 		dl->radius = 200 + (rand()&31);
 		dl->minlight = 32;
 		dl->die = cl.time + 0.1;
 	}
+
 	if (effects & EF_BRIGHTLIGHT)
-	{			
+	{
 		dl = CL_AllocDlight (number);
 		VectorCopy (ent->origin,  dl->origin);
 		dl->origin[2] += 16;
@@ -523,33 +535,34 @@ void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 		dl->die = cl.time + 0.001;
 	}
 	if (effects & EF_DIMLIGHT)
-	{			
+	{
 		dl = CL_AllocDlight (number);
 		VectorCopy (ent->origin,  dl->origin);
 		dl->radius = 200 + (rand()&31);
 		dl->die = cl.time + 0.001;
 	}
 /*	if (effects & EF_DARKLIGHT)
-	{			
+	{
 		dl = CL_AllocDlight (number);
 		VectorCopy (ent->origin,  dl->origin);
 		dl->radius = 200.0 + (rand()&31);
 		dl->die = cl.time + 0.001;
 //rjr		dl->dark = true;
-	}*/
+	}
+*/
 	if (effects & EF_LIGHT)
-	{			
+	{
 		dl = CL_AllocDlight (number);
 		VectorCopy (ent->origin,  dl->origin);
 		dl->radius = 200;
 		dl->die = cl.time + 0.001;
 	}
 
-
 	if(effects & EF_POISON_GAS)
 	{
 		CL_UpdatePoisonGas(ent, number);
 	}
+
 	if(effects & EF_ACIDBLOB)
 	{
 		ent->angleAdd[0] = 0;
@@ -560,18 +573,22 @@ void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 
 		CL_UpdateAcidBlob(ent, number);
 	}
+
 	if(effects & EF_ONFIRE)
 	{
 		CL_UpdateOnFire(ent, number);
 	}
+
 	if(effects & EF_POWERFLAMEBURN)
 	{
 		CL_UpdatePowerFlameBurn(ent, number);
 	}
+
 	if(effects & EF_ICESTORM_EFFECT)
 	{
 		CL_UpdateIceStorm(ent, number);
 	}
+
 	if (effects & EF_HAMMER_EFFECTS)
 	{
 		ent->angleAdd[0] = 200 * cl.time;
@@ -582,10 +599,12 @@ void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 
 		CL_UpdateHammer(ent, number);
 	}
+
 	if (effects & EF_BEETLE_EFFECTS)
 	{
 		CL_UpdateBug(ent);
 	}
+
 	if (effects & EF_DARKLIGHT)//EF_INVINC_CIRC)
 	{
 		R_SuccubusInvincibleParticles (ent);
@@ -595,7 +614,6 @@ void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 	{
 		S_UpdateSoundPos (number, 7, ent->origin);
 	}
-
 
 	if(!rotateSet)
 	{
@@ -660,7 +678,7 @@ void CL_LinkPacketEntities (void)
 
 		ent->keynum = s1->number;
 		ent->model = model = cl.model_precache[s1->modelindex];
-	
+
 		ent->sourcecolormap = vid.colormap;
 		if (!s1->colormap)
 		{
@@ -674,7 +692,7 @@ void CL_LinkPacketEntities (void)
 			ent->colormap = globalcolormap;
 			ent->scoreboard = NULL;
 		}
-		
+
 /*		// set colormap
 		if (s1->colormap && (s1->colormap < MAX_CLIENTS) 
 			&& !strcmp(ent->model->name,"models/paladin.mdl") )
@@ -691,7 +709,7 @@ void CL_LinkPacketEntities (void)
 
 		// set skin
 		ent->skinnum = s1->skinnum;
-		
+
 		// set frame
 		ent->frame = s1->frame;
 
@@ -724,8 +742,7 @@ void CL_LinkPacketEntities (void)
 
 		// calculate origin
 		for (i=0 ; i<3 ; i++)
-			ent->origin[i] = s2->origin[i] + 
-			f * (s1->origin[i] - s2->origin[i]);
+			ent->origin[i] = s2->origin[i] + f * (s1->origin[i] - s2->origin[i]);
 
 		// scan the old entity display list for a matching
 		for (i=0 ; i<cl_oldnumvisedicts ; i++)
@@ -736,6 +753,7 @@ void CL_LinkPacketEntities (void)
 				break;
 			}
 		}
+
 		if (i == cl_oldnumvisedicts)
 			continue;		// not in last message
 
@@ -749,15 +767,17 @@ void CL_LinkPacketEntities (void)
 
 		// some of the effects need to know how far the thing has moved...
 
-//		cl.players[s1->number].invis=false;
+	//	cl.players[s1->number].invis=false;
 		if(cl_siege)
+		{
 			if((int)s1->effects & EF_NODRAW)
 			{
 				ent->skinnum=101;//ice, but in siege will be invis skin for dwarf to see
 				ent->drawflags|=DRF_TRANSLUCENT;
 				s1->effects &= ~EF_NODRAW;
-//				cl.players[s1->number].invis=true;
+			//	cl.players[s1->number].invis=true;
 			}
+		}
 
 		HandleEffects(s1->effects, s1->number, ent, old_origin);
 
@@ -780,7 +800,8 @@ void CL_LinkPacketEntities (void)
 /*			dl = CL_AllocDlight (i);
 			VectorCopy (ent->origin, dl->origin);
 			dl->radius = 200;
-			dl->die = cl.time + 0.01;*/
+			dl->die = cl.time + 0.01;
+*/
 		}
 		else if (ent->model->flags & EF_FIREBALL)
 		{
@@ -808,11 +829,13 @@ void CL_LinkPacketEntities (void)
 		}
 		else if (ent->model->flags & EF_GRENADE)
 		{
-//			R_RunParticleEffect4(old_origin,3,284,pt_slowgrav,3);
+		//	R_RunParticleEffect4(old_origin,3,284,pt_slowgrav,3);
 			R_RocketTrail (old_origin, ent->origin, rt_grensmoke);
 		}
 		else if (ent->model->flags & EF_TRACER3)
+		{
 			R_RocketTrail (old_origin, ent->origin, 6);
+		}
 		else if (ent->model->flags & EF_VORP_MISSILE)
 		{
 			R_RocketTrail (old_origin, ent->origin, rt_vorpal);
@@ -857,7 +880,7 @@ typedef struct
 
 #define	MAX_PROJECTILES	32
 projectile_t	cl_projectiles[MAX_PROJECTILES];
-int				cl_num_projectiles;
+int		cl_num_projectiles;
 
 extern int cl_ravenindex, cl_raven2index;
 
@@ -976,7 +999,7 @@ typedef struct
 
 #define	MAX_MISSILES 32
 missile_t	cl_missiles[MAX_MISSILES];
-int				cl_num_missiles;
+int		cl_num_missiles;
 
 extern int cl_ballindex, cl_missilestarindex;
 
@@ -1042,7 +1065,7 @@ void CL_LinkMissiles (void)
 		if (cl_numvisedicts == MAX_VISEDICTS)
 			break;		// object list is full
 		ent = &cl_visedicts[cl_numvisedicts];
-		if(rand() % 10 < 3)		
+		if(rand() % 10 < 3)
 		{
 			R_RunParticleEffect4 (ent->origin, 7, 148 + rand() % 11, pt_grav, 10 + rand() % 10);
 		}
@@ -1071,7 +1094,7 @@ void CL_LinkMissiles (void)
 
 //========================================
 
-extern	int		cl_spikeindex, cl_playerindex[MAX_PLAYER_CLASS], cl_flagindex;
+extern int cl_spikeindex, cl_playerindex[MAX_PLAYER_CLASS], cl_flagindex;
 
 entity_t *CL_NewTempEntity (void);
 
@@ -1095,7 +1118,7 @@ void CL_SavePlayer (void)
 
 	info = &cl.players[num];
 	state = &cl.frames[parsecountmod].playerstate[num];
-	
+
 	state->messagenum = cl.parsecount;
 	state->state_time = parsecounttime;
 }
@@ -1136,7 +1159,9 @@ void CL_ParsePlayerinfo (void)
 		state->state_time = parsecounttime - msec*0.001;
 	}
 	else
+	{
 		state->state_time = parsecounttime;
+	}
 
 	if (flags & PF_COMMAND)
 		MSG_ReadUsercmd (&state->command, false);
@@ -1150,7 +1175,9 @@ void CL_ParsePlayerinfo (void)
 	}
 
 	if (flags & PF_MODEL)
+	{
 		state->modelindex = MSG_ReadShort ();
+	}
 	else
 	{
 		playermodel = true;
@@ -1191,38 +1218,26 @@ void CL_ParsePlayerinfo (void)
 		state->weaponframe = 0;
 
 	if (flags & PF_DRAWFLAGS)
-	{
 		state->drawflags = MSG_ReadByte();
-	}
 	else
-	{
 		state->drawflags = 0;
-	}
 
 	if (flags & PF_SCALE)
-	{
 		state->scale = MSG_ReadByte();
-	}
 	else
-	{
 		state->scale = 0;
-	}
 
 	if (flags & PF_ABSLIGHT)
-	{
 		state->abslight = MSG_ReadByte();
-	}
 	else
-	{
 		state->abslight = 0;
-	}
-	
+
 	if(flags & PF_SOUND)
 	{
 		i = MSG_ReadShort ();
 		S_StartSound(num, 1, cl.sound_precache[i], state->origin, 1.0, 1.0);
 	}
-	
+
 	VectorCopy (state->command.angles, state->viewangles);
 }
 
@@ -1245,27 +1260,49 @@ void CL_AddFlagModels (entity_t *ent, int team)
 		return;
 
 	f = 14;
-	if (ent->frame >= 29 && ent->frame <= 40) {
-		if (ent->frame >= 29 && ent->frame <= 34) { //axpain
-			if      (ent->frame == 29) f = f + 2; 
-			else if (ent->frame == 30) f = f + 8;
-			else if (ent->frame == 31) f = f + 12;
-			else if (ent->frame == 32) f = f + 11;
-			else if (ent->frame == 33) f = f + 10;
-			else if (ent->frame == 34) f = f + 4;
-		} else if (ent->frame >= 35 && ent->frame <= 40) { // pain
-			if      (ent->frame == 35) f = f + 2; 
-			else if (ent->frame == 36) f = f + 10;
-			else if (ent->frame == 37) f = f + 10;
-			else if (ent->frame == 38) f = f + 8;
-			else if (ent->frame == 39) f = f + 4;
-			else if (ent->frame == 40) f = f + 2;
+	if (ent->frame >= 29 && ent->frame <= 40)
+	{
+		if (ent->frame >= 29 && ent->frame <= 34)
+		{ //axpain
+			if (ent->frame == 29)
+				f = f + 2; 
+			else if (ent->frame == 30)
+				f = f + 8;
+			else if (ent->frame == 31)
+				f = f + 12;
+			else if (ent->frame == 32)
+				f = f + 11;
+			else if (ent->frame == 33)
+				f = f + 10;
+			else if (ent->frame == 34)
+				f = f + 4;
 		}
-	} else if (ent->frame >= 103 && ent->frame <= 118) {
-		if      (ent->frame >= 103 && ent->frame <= 104) f = f + 6;  //nailattack
-		else if (ent->frame >= 105 && ent->frame <= 106) f = f + 6;  //light 
-		else if (ent->frame >= 107 && ent->frame <= 112) f = f + 7;  //rocketattack
-		else if (ent->frame >= 112 && ent->frame <= 118) f = f + 7;  //shotattack
+		else if (ent->frame >= 35 && ent->frame <= 40)
+		{ // pain
+			if (ent->frame == 35)
+				f = f + 2; 
+			else if (ent->frame == 36)
+				f = f + 10;
+			else if (ent->frame == 37)
+				f = f + 10;
+			else if (ent->frame == 38)
+				f = f + 8;
+			else if (ent->frame == 39)
+				f = f + 4;
+			else if (ent->frame == 40)
+				f = f + 2;
+		}
+	}
+	else if (ent->frame >= 103 && ent->frame <= 118)
+	{
+		if (ent->frame >= 103 && ent->frame <= 104)
+			f = f + 6;  //nailattack
+		else if (ent->frame >= 105 && ent->frame <= 106)
+			f = f + 6;  //light 
+		else if (ent->frame >= 107 && ent->frame <= 112)
+			f = f + 7;  //rocketattack
+		else if (ent->frame >= 112 && ent->frame <= 118)
+			f = f + 7;  //shotattack
 	}
 
 	newent = CL_NewTempEntity ();
@@ -1401,12 +1438,14 @@ void CL_LinkPlayers (void)
 		}
 
 		if(cl_siege)
+		{
 			if((int)state->effects & EF_NODRAW)
 			{
 				ent->skinnum=101;//ice, but in siege will be invis skin for dwarf to see
 				ent->drawflags|=DRF_TRANSLUCENT;
 				state->effects &= ~EF_NODRAW;
 			}
+		}
 
 		HandleEffects(state->effects, j+1, ent, NULL);
 
@@ -1498,7 +1537,7 @@ void CL_SetUpPlayerPrediction(qboolean dopred)
 
 	for (j=0, pplayer = predicted_players, state=frame->playerstate; 
 		j < MAX_CLIENTS;
-		j++, pplayer++, state++) 
+		j++, pplayer++, state++)
 	{
 
 		pplayer->active = false;
@@ -1514,12 +1553,12 @@ void CL_SetUpPlayerPrediction(qboolean dopred)
 
 		// note that the local player is special, since he moves locally
 		// we use his last predicted postition
-		if (j == cl.playernum) 
+		if (j == cl.playernum)
 		{
 			VectorCopy(cl.frames[cls.netchan.outgoing_sequence&UPDATE_MASK].playerstate[cl.playernum].origin,
-				pplayer->origin);
-		} 
-		else 
+					pplayer->origin);
+		}
+		else
 		{
 			// only predict half the move to minimize overruns
 			msec = 500*(playertime - state->state_time);
@@ -1528,7 +1567,7 @@ void CL_SetUpPlayerPrediction(qboolean dopred)
 				!dopred)
 			{
 				VectorCopy (state->origin, pplayer->origin);
-	//Con_DPrintf ("nopredict\n");
+				//Con_DPrintf ("nopredict\n");
 			}
 			else
 			{
@@ -1536,7 +1575,7 @@ void CL_SetUpPlayerPrediction(qboolean dopred)
 				if (msec > 255)
 					msec = 255;
 				state->command.msec = msec;
-	//Con_DPrintf ("predict: %i\n", msec);
+				//Con_DPrintf ("predict: %i\n", msec);
 
 				CL_PredictUsercmd (state, &exact, &state->command, false);
 				VectorCopy (exact.origin, pplayer->origin);
@@ -1555,12 +1594,10 @@ pmove must be setup with world and solid entity hulls before calling
 (via CL_PredictMove)
 ===============
 */
+extern	vec3_t	player_mins, player_maxs, player_maxs_crouch;
 void CL_SetSolidPlayers (int playernum)
 {
 	int		j;
-	extern	vec3_t	player_mins;
-	extern	vec3_t	player_maxs;
-	extern	vec3_t	player_maxs_crouch;
 	struct predicted_player *pplayer;
 	physent_t *pent;
 
@@ -1571,7 +1608,6 @@ void CL_SetSolidPlayers (int playernum)
 
 	for (j=0, pplayer = predicted_players; j < MAX_CLIENTS;	j++, pplayer++) 
 	{
-
 		if (!pplayer->active)
 			continue;	// not present this frame
 

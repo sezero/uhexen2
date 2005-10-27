@@ -54,7 +54,7 @@ void CL_WriteDemoCmd (usercmd_t *pcmd)
 	byte	c;
 	usercmd_t cmd;
 
-//Con_Printf("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
+	//Con_Printf("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
 
 	fl = LittleFloat((float)realtime);
 	fwrite (&fl, sizeof(fl), 1, cls.demofile);
@@ -95,7 +95,7 @@ void CL_WriteDemoMessage (sizebuf_t *msg)
 	float	fl;
 	byte	c;
 
-//Con_Printf("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
+	//Con_Printf("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
 
 	if (!cls.demorecording)
 		return;
@@ -128,51 +128,62 @@ qboolean CL_GetDemoMessage (void)
 	byte	c;
 	usercmd_t *pcmd;
 
-
 	// read the time from the packet
 	fread(&demotime, sizeof(demotime), 1, cls.demofile);
 	demotime = LittleFloat(demotime);
 
-// decide if it is time to grab the next message		
-	if (cls.timedemo) {
+	// decide if it is time to grab the next message
+	if (cls.timedemo)
+	{
 		if (cls.td_lastframe < 0)
+		{
 			cls.td_lastframe = demotime;
-		else if (demotime > cls.td_lastframe) {
+		}
+		else if (demotime > cls.td_lastframe)
+		{
 			cls.td_lastframe = demotime;
 			// rewind back to time
-			fseek(cls.demofile, ftell(cls.demofile) - sizeof(demotime),
-					SEEK_SET);
-			return 0;		// already read this frame's message
+			fseek(cls.demofile, ftell(cls.demofile) - sizeof(demotime), SEEK_SET);
+			return 0;	// already read this frame's message
 		}
-		if (!cls.td_starttime && cls.state == ca_active) {
+
+		if (!cls.td_starttime && cls.state == ca_active)
+		{
 			cls.td_starttime = Sys_DoubleTime();
 			cls.td_startframe = host_framecount;
 		}
 		realtime = demotime; // warp
-	} else if (cls.state >= ca_onserver) {	// always grab until fully connected
-		if (realtime + 1.0 < demotime) {
+	}
+	else if (cls.state >= ca_onserver)
+	{	// always grab until fully connected
+		if (realtime + 1.0 < demotime)
+		{
 			// too far back
 			realtime = demotime - 1.0;
 			// rewind back to time
-			fseek(cls.demofile, ftell(cls.demofile) - sizeof(demotime),
-					SEEK_SET);
+			fseek(cls.demofile, ftell(cls.demofile) - sizeof(demotime), SEEK_SET);
 			return 0;
-		} else if (realtime < demotime) {
-			// rewind back to time
-			fseek(cls.demofile, ftell(cls.demofile) - sizeof(demotime),
-					SEEK_SET);
-			return 0;		// don't need another message yet
 		}
-	} else
+		else if (realtime < demotime)
+		{
+			// rewind back to time
+			fseek(cls.demofile, ftell(cls.demofile) - sizeof(demotime), SEEK_SET);
+			return 0;	// don't need another message yet
+		}
+	}
+	else
+	{
 		realtime = demotime; // we're warping
+	}
 
 	if (cls.state < ca_demostart)
 		Host_Error ("CL_GetDemoMessage: cls.state != ca_active");
-	
+
 	// get the msg type
 	fread (&c, sizeof(c), 1, cls.demofile);
-	
-	switch (c) {
+
+	switch (c)
+	{
 	case dem_cmd :
 		// user sent input
 		i = cls.netchan.outgoing_sequence & UPDATE_MASK;
@@ -190,7 +201,7 @@ qboolean CL_GetDemoMessage (void)
 		pcmd->sidemove    = LittleShort(pcmd->sidemove);
 		pcmd->upmove      = LittleShort(pcmd->upmove);
 		cl.frames[i].senttime = demotime;
-		cl.frames[i].receivedtime = -1;		// we haven't gotten a reply yet
+		cl.frames[i].receivedtime = -1;	// we haven't gotten a reply yet
 		cls.netchan.outgoing_sequence++;
 		for (i=0 ; i<3 ; i++)
 		{
@@ -203,7 +214,7 @@ qboolean CL_GetDemoMessage (void)
 		// get the next message
 		fread (&net_message.cursize, 4, 1, cls.demofile);
 		net_message.cursize = LittleLong (net_message.cursize);
-	//Con_Printf("read: %ld bytes\n", net_message.cursize);
+		//Con_Printf("read: %ld bytes\n", net_message.cursize);
 		if (net_message.cursize > MAX_MSGLEN)
 			Sys_Error ("Demo message > MAX_MSGLEN");
 		r = fread (net_message.data, net_message.cursize, 1, cls.demofile);
@@ -232,14 +243,14 @@ Handles recording and playback of demos, on top of NET_ code
 */
 qboolean CL_GetMessage (void)
 {
-	if	(cls.demoplayback)
+	if (cls.demoplayback)
 		return CL_GetDemoMessage ();
 
 	if (!NET_GetPacket ())
 		return false;
 
 	CL_WriteDemoMessage (&net_message);
-	
+
 	return true;
 }
 
@@ -294,7 +305,7 @@ void CL_Record_f (void)
 
 	if (cls.demorecording)
 		CL_Stop_f();
-  
+
 	sprintf (name, "%s/%s", com_userdir, Cmd_Argv(1));
 
 //
@@ -311,14 +322,14 @@ void CL_Record_f (void)
 
 	if (cls.state != ca_disconnected)
 		CL_Disconnect();
-	
+
 	Con_Printf ("recording to %s.\n", name);
 	cls.demorecording = true;
 
 //
 // start the map up
 //
-	Cmd_ExecuteString ( va("connect %s", Cmd_Argv(2)));	
+	Cmd_ExecuteString ( va("connect %s", Cmd_Argv(2)));
 }
 
 /*
@@ -340,14 +351,15 @@ void CL_ReRecord_f (void)
 		return;
 	}
 
-	if (!*cls.servername) {
+	if (!*cls.servername)
+	{
 		Con_Printf("No server to reconnect to...\n");
 		return;
 	}
 
 	if (cls.demorecording)
 		CL_Stop_f();
-  
+
 	sprintf (name, "%s/%s", com_userdir, Cmd_Argv(1));
 
 //
@@ -391,7 +403,7 @@ void CL_PlayDemo_f (void)
 // disconnect from server
 //
 	CL_Disconnect ();
-	
+
 //
 // open the demo file
 //
@@ -403,7 +415,7 @@ void CL_PlayDemo_f (void)
 	if (!cls.demofile)
 	{
 		Con_Printf ("ERROR: couldn't open.\n");
-		cls.demonum = -1;		// stop demo loop
+		cls.demonum = -1;	// stop demo loop
 		return;
 	}
 
@@ -423,9 +435,9 @@ void CL_FinishTimeDemo (void)
 {
 	int		frames;
 	float	time;
-	
+
 	cls.timedemo = false;
-	
+
 // the first frame didn't count
 	frames = (host_framecount - cls.td_startframe) - 1;
 	time = Sys_DoubleTime() - cls.td_starttime;
@@ -450,16 +462,16 @@ void CL_TimeDemo_f (void)
 	}
 
 	CL_PlayDemo_f ();
-	
+
 //	if (cls.state != ca_active)
 //		return;
 
 // cls.td_starttime will be grabbed at the second frame of the demo, so
 // all the loading time doesn't get counted
-	
+
 	cls.timedemo = true;
 	cls.td_starttime = 0;
 	cls.td_startframe = host_framecount;
-	cls.td_lastframe = -1;		// get a new message this frame
+	cls.td_lastframe = -1;	// get a new message this frame
 }
 

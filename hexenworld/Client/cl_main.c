@@ -17,9 +17,7 @@
 
 qboolean	noclip_anglehack;		// remnant from old quake
 
-
 cvar_t	rcon_password = {"rcon_password", "", false};
-
 cvar_t	rcon_address = {"rcon_address", ""};
 
 cvar_t	cl_timeout = {"cl_timeout", "60"};
@@ -60,17 +58,18 @@ cvar_t	noaim = {"noaim","0", true, true};
 cvar_t  talksounds = {"talksounds", "1", true};
 cvar_t	msg = {"msg","1", true, true};
 
-extern cvar_t cl_hightrack;
-
+extern	cvar_t		baseskin;
+extern	cvar_t		noskins;
+extern	cvar_t		cl_hightrack;
 
 client_static_t	cls;
 client_state_t	cl;
 
 entity_state_t	cl_baselines[MAX_EDICTS];
-efrag_t			cl_efrags[MAX_EFRAGS];
-entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
+efrag_t		cl_efrags[MAX_EFRAGS];
+entity_t	cl_static_entities[MAX_STATIC_ENTITIES];
 lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
-dlight_t		cl_dlights[MAX_DLIGHTS];
+dlight_t	cl_dlights[MAX_DLIGHTS];
 
 // refresh list
 // this is double buffered so the last frame
@@ -79,18 +78,17 @@ int				cl_numvisedicts, cl_oldnumvisedicts;
 entity_t		*cl_visedicts, *cl_oldvisedicts;
 entity_t		cl_visedicts_list[2][MAX_VISEDICTS];
 
-double			connect_time = -1;		// for connection retransmits
+double			connect_time = -1;	// for connection retransmits
 
 quakeparms_t host_parms;
 
-qboolean	host_initialized;		// true if into command execution
+qboolean	host_initialized;	// true if into command execution
 qboolean	nomaster;
 
 double		host_frametime;
-double		realtime;				// without any filtering or bounding
-double		oldrealtime;			// last frame run
+double		realtime;		// without any filtering or bounding
+double		oldrealtime;		// last frame run
 int			host_framecount;
-
 int			host_hunklevel;
 
 byte		*host_basepal;
@@ -101,10 +99,10 @@ extern int	gl_texlevel;
 extern int	numgltextures;
 #endif
 
-netadr_t	master_adr;				// address of the master server
+netadr_t	master_adr;			// address of the master server
 
-cvar_t	host_speeds = {"host_speeds","0"};			// set for running times
-cvar_t	show_fps = {"show_fps","0"};			// set for running times
+cvar_t	host_speeds = {"host_speeds","0"};	// set for running times
+cvar_t	show_fps = {"show_fps","0"};		// set for running times
 cvar_t	developer = {"developer","0"};
 
 int			fps_count;
@@ -163,8 +161,8 @@ void CL_SendConnectPacket (void)
 	char	data[2048];
 	double t1, t2;
 // JACK: Fixed bug where DNS lookups would cause two connects real fast
-//       Now, adds lookup time to the connect time.
-//		 Should I add it to realtime instead?!?!
+//	 Now, adds lookup time to the connect time.
+//	 Should I add it to realtime instead?!?!
 
 	t1 = Sys_DoubleTime ();
 
@@ -174,15 +172,17 @@ void CL_SendConnectPacket (void)
 		connect_time = -1;
 		return;
 	}
+
 	if (adr.port == 0)
 		adr.port = BigShort (PORT_SERVER);
+
 	t2 = Sys_DoubleTime ();
 
 	connect_time = realtime+t2-t1;	// for retransmit requests
 
 	Con_Printf ("Connecting to %s...\n", cls.servername);
 	sprintf (data, "%c%c%c%cconnect %d \"%s\"\n",
-		255, 255, 255, 255,	com_portals, cls.userinfo);
+			255, 255, 255, 255,	com_portals, cls.userinfo);
 	NET_SendPacket (strlen(data), data, adr);
 
 	// When we connect to a server, check the mouse is going - S.A.
@@ -224,7 +224,7 @@ void CL_Connect_f (void)
 		Con_Printf ("usage: connect <server>\n");
 		return;	
 	}
-	
+
 	server = Cmd_Argv (1);
 
 	CL_Disconnect ();
@@ -273,14 +273,16 @@ void CL_Rcon_f (void)
 	}
 
 	if (cls.state >= ca_connected)
+	{
 		to = cls.netchan.remote_address;
+	}
 	else
 	{
 		if (!strlen(rcon_address.string))
 		{
 			Con_Printf ("You must either be connected,\n"
-						"or set the 'rcon_address' cvar\n"
-						"to issue rcon commands\n");
+					"or set the 'rcon_address' cvar\n"
+					"to issue rcon commands\n");
 
 			return;
 		}
@@ -290,9 +292,8 @@ void CL_Rcon_f (void)
 			to.port = BigShort (PORT_SERVER);
 		}
 	}
-	
-	NET_SendPacket (strlen(message)+1, message
-		, to);
+
+	NET_SendPacket (strlen(message)+1, message, to);
 }
 
 
@@ -322,7 +323,7 @@ void CL_ClearState (void)
 
 	SZ_Clear (&cls.netchan.message);
 
-// clear other arrays	
+// clear other arrays
 	memset (cl_efrags, 0, sizeof(cl_efrags));
 	memset (cl_dlights, 0, sizeof(cl_dlights));
 	memset (cl_lightstyle, 0, sizeof(cl_lightstyle));
@@ -359,12 +360,14 @@ void CL_Disconnect (void)
 #endif
 
 // stop sounds (especially looping!)
-	cl_siege=false;//no more siege display, etc.
+	cl_siege=false;	//no more siege display, etc.
 	S_StopAllSounds (true);
-	
+
 // if running a local server, shut it down
 	if (cls.demoplayback)
+	{
 		CL_StopPlayback ();
+	}
 	else if (cls.state != ca_disconnected)
 	{
 		if (cls.demorecording)
@@ -381,7 +384,6 @@ void CL_Disconnect (void)
 		cls.demoplayback = cls.demorecording = cls.timedemo = false;
 	}
 	Cam_Reset();
-
 }
 
 void CL_Disconnect_f (void)
@@ -416,7 +418,7 @@ void CL_User_f (void)
 		if (!cl.players[i].name[0])
 			continue;
 		if (cl.players[i].userid == uid
-		|| !strcmp(cl.players[i].name, Cmd_Argv(1)) )
+				|| !strcmp(cl.players[i].name, Cmd_Argv(1)) )
 		{
 			Info_Print (cl.players[i].userinfo);
 			return;
@@ -468,20 +470,22 @@ void CL_Color_f (void)
 	}
 
 	if (Cmd_Argc() == 2)
+	{
 		top = bottom = atoi(Cmd_Argv(1));
+	}
 	else
 	{
 		top = atoi(Cmd_Argv(1));
 		bottom = atoi(Cmd_Argv(2));
 	}
-	
+
 	top &= 15;
 	if (top > 13)
 		top = 13;
 	bottom &= 15;
 	if (bottom > 13)
 		bottom = 13;
-	
+
 	sprintf (num, "%i", top);
 	Cvar_Set ("topcolor", num);
 	sprintf (num, "%i", bottom);
@@ -497,8 +501,8 @@ Sent by server when serverinfo changes
 */
 void CL_FullServerinfo_f (void)
 {
-	char *p;
-	float v;
+	char	*p;
+	float	v;
 
 	if (Cmd_Argc() != 2)
 	{
@@ -508,9 +512,10 @@ void CL_FullServerinfo_f (void)
 
 	strcpy (cl.serverinfo, Cmd_Argv(1));
 
-	if ((p = Info_ValueForKey(cl.serverinfo, "*version")) && *p) {
+	if ((p = Info_ValueForKey(cl.serverinfo, "*version")) && *p)
+	{
 		v = atof(p);
-		if (v) 
+		if (v)
 		{
 			if (!server_version)
 				Con_Printf("Version %1.2f Server\n", v);
@@ -651,7 +656,9 @@ void CL_Packet_f (void)
 			i++;
 		}
 		else
+		{
 			*out++ = in[i];
+		}
 	}
 	*out = 0;
 
@@ -671,7 +678,7 @@ void CL_NextDemo (void)
 	char	str[1024];
 
 	if (cls.demonum == -1)
-		return;		// don't play demos
+		return;	// don't play demos
 
 	if (!cls.demos[cls.demonum][0] || cls.demonum == MAX_DEMOS)
 	{
@@ -718,14 +725,16 @@ void CL_Reconnect_f (void)
 {
 	S_StopAllSounds (true);
 
-	if (cls.state == ca_connected) {
+	if (cls.state == ca_connected)
+	{
 		Con_Printf ("reconnecting...\n");
 		MSG_WriteChar (&cls.netchan.message, clc_stringcmd);
 		MSG_WriteString (&cls.netchan.message, "new");
 		return;
 	}
 
-	if (!*cls.servername) {
+	if (!*cls.servername)
+	{
 		Con_Printf("No server to reconnect to...\n");
 		return;
 	}
@@ -746,8 +755,8 @@ void CL_ConnectionlessPacket (void)
 	char	*s;
 	int		c;
 
-    MSG_BeginReading ();
-    MSG_ReadLong ();        // skip the -1
+	MSG_BeginReading ();
+	MSG_ReadLong ();	// skip the -1
 
 	c = MSG_ReadByte ();
 	if (!cls.demoplayback)
@@ -763,7 +772,7 @@ void CL_ConnectionlessPacket (void)
 		}
 		Netchan_Setup (&cls.netchan, net_from);
 		MSG_WriteChar (&cls.netchan.message, clc_stringcmd);
-		MSG_WriteString (&cls.netchan.message, "new");	
+		MSG_WriteString (&cls.netchan.message, "new");
 		cls.state = ca_connected;
 		Con_Printf ("Connected.\n");
 		return;
@@ -774,7 +783,7 @@ void CL_ConnectionlessPacket (void)
 		if ((*(unsigned *)net_from.ip != *(unsigned *)net_local_adr.ip
 			&& *(unsigned *)net_from.ip != htonl(INADDR_LOOPBACK)) )
 		{
-			Con_Printf ("Command packet from remote host.  Ignored.\n");
+			Con_Printf ("Command packet from remote host. Ignored.\n");
 			return;
 		}
 #ifdef _WIN32
@@ -804,12 +813,13 @@ void CL_ConnectionlessPacket (void)
 		data[3] = 0xff;
 		data[4] = A2A_ACK;
 		data[5] = 0;
-		
+
 		NET_SendPacket (6, &data, net_from);
 		return;
 	}
 
-	if (c == svc_disconnect) {
+	if (c == svc_disconnect)
+	{
 		Host_EndGame ("Server disconnected\n");
 		return;
 	}
@@ -849,12 +859,12 @@ void CL_ReadPackets (void)
 		if (!cls.demoplayback && 
 			!NET_CompareAdr (net_from, cls.netchan.remote_address))
 		{
-			Con_Printf ("%s:sequenced packet without connection\n"
-				,NET_AdrToString(net_from));
+			Con_Printf ("%s: sequenced packet without connection\n",
+						NET_AdrToString(net_from));
 			continue;
 		}
 		if (!Netchan_Process(&cls.netchan))
-			continue;		// wasn't accepted for some reason
+			continue;	// wasn't accepted for some reason
 		CL_ParseServerMessage ();
 
 //		if (cls.demoplayback && cls.state >= ca_active && !CL_DemoBehind())
@@ -865,13 +875,12 @@ void CL_ReadPackets (void)
 	// check timeout
 	//
 	if (cls.state >= ca_connected
-	 && realtime - cls.netchan.last_received > cl_timeout.value)
+		 && realtime - cls.netchan.last_received > cl_timeout.value)
 	{
 		Con_Printf ("\nServer connection timed out.\n");
 		CL_Disconnect ();
 		return;
 	}
-	
 }
 
 //=============================================================================
@@ -911,7 +920,8 @@ void CL_Download_f (void)
 CL_Minimize_f
 =================
 */
-void CL_Windows_f (void) {
+void CL_Windows_f (void)
+{
 //	if (modestate == MS_WINDOWED)
 //		ShowWindow(mainwindow, SW_MINIMIZE);
 //	else
@@ -947,9 +957,6 @@ CL_Init
 void Host_SaveConfig_f (void);
 void CL_Init (void)
 {
-	extern	cvar_t		baseskin;
-	extern	cvar_t		noskins;
-
 	cls.state = ca_disconnected;
 
 	Info_SetValueForKey (cls.userinfo, "name", "unnamed", MAX_INFO_STRING);
@@ -965,7 +972,7 @@ void CL_Init (void)
 	CL_InitEffects ();
 	CL_InitCam ();
 	Pmove_Init ();
-	
+
 //
 // register our commands
 //
@@ -1024,7 +1031,6 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&msg);
 	Cvar_RegisterVariable (&noaim);
 	Cvar_RegisterVariable (&talksounds);
-
 
 	Cmd_AddCommand ("version", CL_Version_f);
 
@@ -1086,14 +1092,14 @@ void Host_EndGame (char *message, ...)
 {
 	va_list		argptr;
 	char		string[1024];
-	
+
 	va_start (argptr,message);
 	vsprintf (string,message,argptr);
 	va_end (argptr);
 	Con_Printf ("\n===========================\n");
 	Con_Printf ("Host_EndGame: %s\n",string);
 	Con_Printf ("===========================\n\n");
-	
+
 	CL_Disconnect ();
 
 	longjmp (host_abort, 1);
@@ -1111,16 +1117,16 @@ void Host_Error (char *error, ...)
 	va_list		argptr;
 	char		string[1024];
 	static	qboolean inerror = false;
-	
+
 	if (inerror)
 		Sys_Error ("Host_Error: recursively entered");
 	inerror = true;
-	
+
 	va_start (argptr,error);
 	vsprintf (string,error,argptr);
 	va_end (argptr);
 	Con_Printf ("Host_Error: %s\n",string);
-	
+
 	CL_Disconnect ();
 	cls.demonum = -1;
 
@@ -1150,11 +1156,11 @@ void Host_WriteConfiguration (char *fname)
 			Con_Printf ("Couldn't write %s.\n",fname);
 			return;
 		}
-		
+
 		Key_WriteBindings (f);
 		Cvar_WriteVariables (f);
 
-		if (in_mlook.state & 1)		//if mlook was down, keep it that way
+		if (in_mlook.state & 1)	//if mlook was down, keep it that way
 			fprintf (f, "+mlook\n");
 
 		fclose (f);
@@ -1163,7 +1169,6 @@ void Host_WriteConfiguration (char *fname)
 
 void Host_SaveConfig_f (void)
 {
-
 	if (Cmd_Argc() != 2)
 	{
 		Con_Printf ("saveconfig <savename> : save a config file\n");
@@ -1196,8 +1201,9 @@ void Host_Frame (float time)
 	static double		time3 = 0;
 	int			pass1, pass2, pass3;
 	float fps;
+
 	if (setjmp (host_abort) )
-		return;			// something bad happened, or the server disconnected
+		return;	// something bad happened, or the server disconnected
 
 	// decide the simulation time
 	realtime += time;
@@ -1207,12 +1213,12 @@ void Host_Frame (float time)
 	fps = max(30.0, min(rate.value/80.0, 72.0));
 
 	if (!cls.timedemo && realtime - oldrealtime < 1.0/fps)
-		return;			// framerate is too high
+		return;	// framerate is too high
 	host_frametime = realtime - oldrealtime;
 	oldrealtime = realtime;
 	if (host_frametime > 0.2)
 		host_frametime = 0.2;
-		
+
 	// get new key events
 	Sys_SendKeyEvents ();
 
@@ -1227,12 +1233,14 @@ void Host_Frame (float time)
 
 	// send intentions now
 	// resend a connection request if necessary
-	if (cls.state == ca_disconnected) 
+	if (cls.state == ca_disconnected)
 	{
 		CL_CheckForResend ();
 	}
 	else
+	{
 		CL_SendCmd ();
+	}
 
 	// Set up prediction for other players
 	CL_SetUpPlayerPrediction(false);
@@ -1254,7 +1262,7 @@ void Host_Frame (float time)
 
 	if (host_speeds.value)
 		time2 = Sys_DoubleTime ();
-		
+
 	// update audio
 	if (cls.state == ca_active)
 	{
@@ -1262,8 +1270,10 @@ void Host_Frame (float time)
 		CL_DecayLights ();
 	}
 	else
+	{
 		S_Update (vec3_origin, vec3_origin, vec3_origin, vec3_origin);
-	
+	}
+
 	CDAudio_Update();
 	MIDI_UpdateVolume();
 
@@ -1307,8 +1317,8 @@ void Host_Init (quakeparms_t *parms)
 
 	W_LoadWadFile ("gfx.wad");
 	Key_Init ();
-	Con_Init ();	
-	M_Init ();	
+	Con_Init ();
+	M_Init ();
 	Mod_Init ();
 
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
@@ -1396,7 +1406,7 @@ to run quit through here before the final handoff to the sys code.
 void Host_Shutdown(void)
 {
 	static qboolean isdown = false;
-	
+
 	if (isdown)
 	{
 		printf ("recursive shutdown\n");
@@ -1405,7 +1415,7 @@ void Host_Shutdown(void)
 	isdown = true;
 
 	Host_WriteConfiguration ("config.cfg"); 
-		
+
 	CDAudio_Shutdown ();
 	MIDI_Cleanup ();
 	NET_Shutdown ();

@@ -29,22 +29,22 @@
 
 struct EffectT
 {
-	int type;
-	float expire_time;
+	int		type;
+	float	expire_time;
 
 	union
 	{
 		struct
 		{
 			vec3_t e_size, dir, min_org, max_org;
-			float next_time,wait;
-			int color, count , veer , flags;
+			float next_time, wait;
+			int color, count, veer, flags;
 		} Rain;
 		struct
 		{
-			vec3_t pos,angle,movedir;
-			vec3_t vforward,vup,vright;
-			int color,cnt;
+			vec3_t pos, angle, movedir;
+			vec3_t vforward, vup, vright;
+			int color, cnt;
 		} Fountain;
 		struct
 		{
@@ -56,7 +56,7 @@ struct EffectT
 			vec3_t origin;
 			vec3_t velocity;
 			int entity_index;
-			float time_amount,framelength,frame;
+			float time_amount, framelength, frame;
 		} Smoke;
 		struct
 		{
@@ -79,7 +79,7 @@ struct EffectT
 			int entity_index[16];
 			vec3_t origin;
 			vec3_t velocity[16];
-			float time_amount,framelength;
+			float time_amount, framelength;
 			float skinnum;
 		} Teleporter;
 		struct
@@ -102,18 +102,18 @@ struct EffectT
 			unsigned char numChunks;
 			float	time_amount;
 			float	aveScale;
-		}Chunk;
+		} Chunk;
 
 	} ef;
 };
 
-void CL_InitEffects(void);
-void CL_ClearEffects(void);
-void CL_EndEffect(void);
-void CL_ParseEffect(void);
+void CL_InitEffects (void);
+void CL_ClearEffects (void);
+void CL_EndEffect (void);
+void CL_ParseEffect (void);
 void CL_UpdateEffects (void);
-void SV_ParseEffect(sizebuf_t *sb);
-void SV_UpdateEffects(sizebuf_t *sb);
-void SV_SaveEffects(FILE *FH);
-void SV_LoadEffects(FILE *FH);
+void SV_ParseEffect (sizebuf_t *sb);
+void SV_UpdateEffects (sizebuf_t *sb);
+void SV_SaveEffects (FILE *FH);
+void SV_LoadEffects (FILE *FH);
 

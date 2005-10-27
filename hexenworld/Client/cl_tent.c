@@ -8,7 +8,6 @@
 
 #define	MAX_BEAMS			8
 #define MAX_STREAMS			32
-#define MAX_STREAM_ENTITIES		128
 #define STREAM_ATTACHED			16
 #define STREAM_TRANSLUCENT		32
 #define	MAX_EXPLOSIONS			128
@@ -89,7 +88,8 @@ int TempSoundChannel()
 {
 	static int last = -1;
 	last--;
-	if(last<-20) last=-1;
+	if(last<-20)
+		last=-1;
 	return last;
 }
 
@@ -231,12 +231,11 @@ void CL_InitTEnts (void)
 	cl_sfx_ravengo = S_PrecacheSound ("raven/ravengo.wav");
 }
 
-
 static void vectoangles(vec3_t vec, vec3_t ang)
 {
 	float	forward;
 	float	yaw, pitch;
-	
+
 	if (vec[1] == 0 && vec[0] == 0)
 	{
 		yaw = 0;
@@ -348,6 +347,7 @@ void CL_ParseBeam (model_t *m)
 
 // override any beam with the same entity
 	for (i=0, b=cl_beams ; i< MAX_BEAMS ; i++, b++)
+	{
 		if (b->entity == ent)
 		{
 			b->entity = ent;
@@ -357,6 +357,7 @@ void CL_ParseBeam (model_t *m)
 			VectorCopy (end, b->end);
 			return;
 		}
+	}
 
 // find a free beam
 	for (i=0, b=cl_beams ; i< MAX_BEAMS ; i++, b++)
@@ -371,7 +372,7 @@ void CL_ParseBeam (model_t *m)
 			return;
 		}
 	}
-	Con_Printf ("beam list overflow!\n");	
+	Con_Printf ("beam list overflow!\n");
 }
 
 entity_state_t *FindState(int EntNum)
@@ -786,30 +787,32 @@ void CL_ParseTEnt (void)
 	type = MSG_ReadByte ();
 	switch (type)
 	{
-		case TE_WIZSPIKE:			// spike hitting wall
+		case TE_WIZSPIKE:	// spike hitting wall
 			pos[0] = MSG_ReadCoord ();
 			pos[1] = MSG_ReadCoord ();
 			pos[2] = MSG_ReadCoord ();
 			R_RunParticleEffect (pos, vec3_origin, 20, 30);
-//			S_StartSound (-1, 0, cl_sfx_wizhit, pos, 1, 1);
+		//	S_StartSound (-1, 0, cl_sfx_wizhit, pos, 1, 1);
 			break;
 
-		case TE_KNIGHTSPIKE:			// spike hitting wall
+		case TE_KNIGHTSPIKE:	// spike hitting wall
 			pos[0] = MSG_ReadCoord ();
 			pos[1] = MSG_ReadCoord ();
 			pos[2] = MSG_ReadCoord ();
 			R_RunParticleEffect (pos, vec3_origin, 226, 20);
-//			S_StartSound (-1, 0, cl_sfx_knighthit, pos, 1, 1);
+		//	S_StartSound (-1, 0, cl_sfx_knighthit, pos, 1, 1);
 			break;
 
-		case TE_SPIKE:			// spike hitting wall
+		case TE_SPIKE:		// spike hitting wall
 			pos[0] = MSG_ReadCoord ();
 			pos[1] = MSG_ReadCoord ();
 			pos[2] = MSG_ReadCoord ();
 			R_RunParticleEffect (pos, vec3_origin, 0, 10);
 
 			if ( rand() % 5 )
+			{
 				S_StartSound (TempSoundChannel(), 0, cl_sfx_tink1, pos, 1, 1);
+			}
 			else
 			{
 				rnd = rand() & 3;
@@ -822,14 +825,16 @@ void CL_ParseTEnt (void)
 			}
 			break;
 
-		case TE_SUPERSPIKE:		// super spike hitting wall
+		case TE_SUPERSPIKE:	// super spike hitting wall
 			pos[0] = MSG_ReadCoord ();
 			pos[1] = MSG_ReadCoord ();
 			pos[2] = MSG_ReadCoord ();
 			R_RunParticleEffect (pos, vec3_origin, 0, 20);
 
 			if ( rand() % 5 )
+			{
 				S_StartSound (TempSoundChannel(), 0, cl_sfx_tink1, pos, 1, 1);
+			}
 			else
 			{
 				rnd = rand() & 3;
@@ -858,7 +863,7 @@ void CL_ParseTEnt (void)
 			S_StartSound (TempSoundChannel(), 0, cl_sfx_explode, pos, 1, 1);
 			break;
 
-		case TE_EXPLOSION:		// rocket explosion
+		case TE_EXPLOSION:	// rocket explosion
 		// particles
 			pos[0] = MSG_ReadCoord ();
 			pos[1] = MSG_ReadCoord ();
@@ -878,7 +883,7 @@ void CL_ParseTEnt (void)
 			S_StartSound (TempSoundChannel(), 0, cl_sfx_r_exp3, pos, 1, 1);
 			break;
 
-		case TE_TAREXPLOSION:		// tarbaby explosion
+		case TE_TAREXPLOSION:	// tarbaby explosion
 			pos[0] = MSG_ReadCoord ();
 			pos[1] = MSG_ReadCoord ();
 			pos[2] = MSG_ReadCoord ();
@@ -887,15 +892,15 @@ void CL_ParseTEnt (void)
 			S_StartSound (TempSoundChannel(), 0, cl_sfx_r_exp3, pos, 1, 1);
 			break;
 
-		case TE_LIGHTNING1:		// lightning bolts
+		case TE_LIGHTNING1:	// lightning bolts
 			CL_ParseBeam (NULL);
 			break;
 
-		case TE_LIGHTNING2:		// lightning bolts
+		case TE_LIGHTNING2:	// lightning bolts
 			CL_ParseBeam (NULL);
 			break;
 
-		case TE_LIGHTNING3:		// lightning bolts
+		case TE_LIGHTNING3:	// lightning bolts
 			CL_ParseBeam (NULL);
 			break;
 
@@ -925,7 +930,7 @@ void CL_ParseTEnt (void)
 			R_TeleportSplash (pos);
 			break;
 
-		case TE_GUNSHOT:		// bullet hitting wall
+		case TE_GUNSHOT:	// bullet hitting wall
 			cnt = MSG_ReadByte ();
 			pos[0] = MSG_ReadCoord ();
 			pos[1] = MSG_ReadCoord ();
@@ -933,7 +938,7 @@ void CL_ParseTEnt (void)
 			R_RunParticleEffect (pos, vec3_origin, 0, 20*cnt);
 			break;
 
-		case TE_BLOOD:			// bullets hitting body
+		case TE_BLOOD:		// bullets hitting body
 			cnt = MSG_ReadByte ();
 			pos[0] = MSG_ReadCoord ();
 			pos[1] = MSG_ReadCoord ();
@@ -941,14 +946,14 @@ void CL_ParseTEnt (void)
 			R_RunParticleEffect (pos, vec3_origin, 73, 20*cnt);
 			break;
 
-		case TE_LIGHTNINGBLOOD:		// lightning hitting body
+		case TE_LIGHTNINGBLOOD:	// lightning hitting body
 			pos[0] = MSG_ReadCoord ();
 			pos[1] = MSG_ReadCoord ();
 			pos[2] = MSG_ReadCoord ();
 			R_RunParticleEffect (pos, vec3_origin, 225, 50);
 			break;
 
-		case TE_BIGGRENADE:		// effect for big grenade
+		case TE_BIGGRENADE:	// effect for big grenade
 			pos[0] = MSG_ReadCoord ();
 			pos[1] = MSG_ReadCoord ();
 			pos[2] = MSG_ReadCoord ();
@@ -1076,7 +1081,7 @@ void CL_ParseTEnt (void)
 						ex->model = Mod_ForName ("models/shard3.mdl", true);
 					else if (final<0.80)
 						ex->model = Mod_ForName ("models/shard4.mdl", true);
-					else 
+					else
 						ex->model = Mod_ForName ("models/shard5.mdl", true);
 
 					if (chType==THINGTYPE_CLEARGLASS)
@@ -1102,7 +1107,7 @@ void CL_ParseTEnt (void)
 						ex->model = Mod_ForName ("models/splnter2.mdl", true);
 					else if (final < 0.75)
 						ex->model = Mod_ForName ("models/splnter3.mdl", true);
-					else 
+					else
 						ex->model = Mod_ForName ("models/splnter4.mdl", true);
 				}
 				else if (chType==THINGTYPE_METAL)
@@ -1113,7 +1118,7 @@ void CL_ParseTEnt (void)
 						ex->model = Mod_ForName ("models/metlchk2.mdl", true);
 					else if (final < 0.75)
 						ex->model = Mod_ForName ("models/metlchk3.mdl", true);
-					else 
+					else
 						ex->model = Mod_ForName ("models/metlchk4.mdl", true);
 				}
 				else if (chType==THINGTYPE_FLESH)
@@ -1133,7 +1138,7 @@ void CL_ParseTEnt (void)
 						ex->model = Mod_ForName ("models/schunk2.mdl", true);
 					else if (final < 0.75)
 						ex->model = Mod_ForName ("models/schunk3.mdl", true);
-					else 
+					else
 						ex->model = Mod_ForName ("models/schunk4.mdl", true);
 					ex->skin = 1;
 				}
@@ -1145,7 +1150,7 @@ void CL_ParseTEnt (void)
 						ex->model = Mod_ForName ("models/clshard2.mdl", true);
 					else if (final < 0.75)
 						ex->model = Mod_ForName ("models/clshard3.mdl", true);
-					else 
+					else
 						ex->model = Mod_ForName ("models/clshard4.mdl", true);
 				}
 				else if (chType==THINGTYPE_LEAVES)
@@ -1154,7 +1159,7 @@ void CL_ParseTEnt (void)
 						ex->model = Mod_ForName ("models/leafchk1.mdl", true);
 					else if (final < 0.66)
 						ex->model = Mod_ForName ("models/leafchk2.mdl", true);
-					else 
+					else
 						ex->model = Mod_ForName ("models/leafchk3.mdl", true);
 				}
 				else if (chType==THINGTYPE_HAY)
@@ -1163,7 +1168,7 @@ void CL_ParseTEnt (void)
 						ex->model = Mod_ForName ("models/hay1.mdl", true);
 					else if (final < 0.66)
 						ex->model = Mod_ForName ("models/hay2.mdl", true);
-					else 
+					else
 						ex->model = Mod_ForName ("models/hay3.mdl", true);
 				}
 				else if (chType==THINGTYPE_CLOTH)
@@ -1172,7 +1177,7 @@ void CL_ParseTEnt (void)
 						ex->model = Mod_ForName ("models/clthchk1.mdl", true);
 					else if (final < 0.66)
 						ex->model = Mod_ForName ("models/clthchk2.mdl", true);
-					else 
+					else
 						ex->model = Mod_ForName ("models/clthchk3.mdl", true);
 				}
 				else if (chType==THINGTYPE_WOOD_LEAF)
@@ -1189,7 +1194,7 @@ void CL_ParseTEnt (void)
 						ex->model = Mod_ForName ("models/splnter3.mdl", true);
 					else if (final < 0.84)
 						ex->model = Mod_ForName ("models/leafchk3.mdl", true);
-					else 
+					else
 						ex->model = Mod_ForName ("models/splnter4.mdl", true);
 				}
 				else if (chType==THINGTYPE_WOOD_METAL)
@@ -1208,7 +1213,7 @@ void CL_ParseTEnt (void)
 						ex->model = Mod_ForName ("models/metlchk3.mdl", true);
 					else if (final < 0.875)
 						ex->model = Mod_ForName ("models/splnter4.mdl", true);
-					else 
+					else
 						ex->model = Mod_ForName ("models/metlchk4.mdl", true);
 				}
 				else if (chType==THINGTYPE_WOOD_STONE)
@@ -1227,7 +1232,7 @@ void CL_ParseTEnt (void)
 						ex->model = Mod_ForName ("models/schunk3.mdl", true);
 					else if (final < 0.875)
 						ex->model = Mod_ForName ("models/splnter4.mdl", true);
-					else 
+					else
 						ex->model = Mod_ForName ("models/schunk4.mdl", true);
 				}
 				else if (chType==THINGTYPE_METAL_STONE)
@@ -1246,7 +1251,7 @@ void CL_ParseTEnt (void)
 						ex->model = Mod_ForName ("models/schunk3.mdl", true);
 					else if (final < 0.875)
 						ex->model = Mod_ForName ("models/metlchk4.mdl", true);
-					else 
+					else
 						ex->model = Mod_ForName ("models/schunk4.mdl", true);
 				}
 				else if (chType==THINGTYPE_METAL_CLOTH)
@@ -1263,7 +1268,7 @@ void CL_ParseTEnt (void)
 						ex->model = Mod_ForName ("models/metlchk3.mdl", true);
 					else if (final < 0.84)
 						ex->model = Mod_ForName ("models/clthchk3.mdl", true);
-					else 
+					else
 						ex->model = Mod_ForName ("models/metlchk4.mdl", true);
 				}
 				else if (chType==THINGTYPE_ICE)
@@ -1305,7 +1310,7 @@ void CL_ParseTEnt (void)
 						ex->model = Mod_ForName ("models/schunk2.mdl", true);
 					else if (final < 0.75)
 						ex->model = Mod_ForName ("models/schunk3.mdl", true);
-					else 
+					else
 						ex->model = Mod_ForName ("models/schunk4.mdl", true);
 					ex->skin = 0;
 				}
@@ -1331,13 +1336,13 @@ void CL_ParseTEnt (void)
 			switch (chType)
 			{
 			case THINGTYPE_FLESH:
-//				S_StartSound (TempSoundChannel(), 0, cl_sfx_arr2flsh, pos, 1, 1);
+			//	S_StartSound (TempSoundChannel(), 0, cl_sfx_arr2flsh, pos, 1, 1);
 				break;
 			case THINGTYPE_WOOD:
-//				S_StartSound (TempSoundChannel(), 0, cl_sfx_arr2wood, pos, 1, 1);
+			//	S_StartSound (TempSoundChannel(), 0, cl_sfx_arr2wood, pos, 1, 1);
 				break;
 			default:
-//				S_StartSound (TempSoundChannel(), 0, cl_sfx_met2stn, pos, 1, 1);
+			//	S_StartSound (TempSoundChannel(), 0, cl_sfx_met2stn, pos, 1, 1);
 				break;
 			}
 
@@ -1430,13 +1435,14 @@ void CL_ParseTEnt (void)
 				ex->velocity[1] = (ex->origin[1] - pos[1])*12;
 				ex->velocity[2] = (ex->origin[2] - pos[2])*12;
 
-/*				ex->origin[0] += rand()%10 - 5;
+			/*	ex->origin[0] += rand()%10 - 5;
 				ex->origin[1] += rand()%10 - 5;
 				ex->origin[2] += rand()%10 - 5;
 
 				ex->velocity[0] = (ex->origin[0] - pos[0])*10;
 				ex->velocity[1] = (ex->origin[1] - pos[1])*10;
-				ex->velocity[2] = (ex->origin[2] - pos[2])*10 + 200;*/
+				ex->velocity[2] = (ex->origin[2] - pos[2])*10 + 200;
+			*/
 
 				switch(rand()%4)
 				{
@@ -1498,7 +1504,7 @@ void CL_ParseTEnt (void)
 				ex->flags = DRF_TRANSLUCENT | MLS_ABSLIGHT;
 				ex->startTime = cl.time;
 				ex->endTime = ex->startTime + ex->model->numframes * 0.1;
-			}			
+			}
 			for(cnt2=0; cnt2<20; cnt2++)
 			{
 				// want faster velocity to hide the fact that these 
@@ -1543,7 +1549,7 @@ void CL_ParseTEnt (void)
 			ex->model = Mod_ForName("models/whtsmk1.spr", true);
 			ex->startTime = cl.time;
 			ex->endTime = ex->startTime + ex->model->numframes * 0.1;
-	
+
 			//sound
 			if(cnt2)
 			{
@@ -1555,7 +1561,7 @@ void CL_ParseTEnt (void)
 			}
 
 			R_RunParticleEffect4 (pos, 3, 368 + rand() % 16, pt_grav, 7);
-//			particle4(self.origin,3,random(368,384),PARTICLETYPE_GRAV,self.dmg/2);
+		//	particle4(self.origin,3,random(368,384),PARTICLETYPE_GRAV,self.dmg/2);
 			break;
 
 		case TE_HWRAVENDIE:
@@ -1585,7 +1591,7 @@ void CL_ParseTEnt (void)
 			ex->model = Mod_ForName("models/whtsmk1.spr", true);
 			ex->startTime = cl.time;
 			ex->endTime = ex->startTime + HX_FRAME_TIME * 10;
-			
+
 			S_StartSound(TempSoundChannel(), 1, cl_sfx_ravendie, pos, 1, 1);
 			break;
 
@@ -1736,7 +1742,7 @@ void CL_ParseTEnt (void)
 							return;
 						}
 						stream->type = TE_STREAM_ICECHUNKS;
-						stream->tag = (i)&15;// FIXME
+						stream->tag = (i)&15;	// FIXME
 						stream->flags = (i+STREAM_ATTACHED);
 						stream->entity = ent;
 						stream->skin = 0;
@@ -1811,7 +1817,7 @@ void CL_ParseTEnt (void)
 							points[i][j] = tempVal;
 						}
 					}
-					
+
 					// actually create the sun model pieces
 					for ( i = 0; i < reflect_count + 1; i++)
 					{
@@ -1933,7 +1939,7 @@ void CL_ParseTEnt (void)
 			ex->flags = SCALE_TYPE_XYONLY | DRF_TRANSLUCENT;
 			ex->skin = cnt;
 			ex->scale = 100;
-			
+
 			for(dir=0; dir<360; dir+=45)
 			{
 				cosval = 10 * cos(dir *M_PI*2 / 360);
@@ -2066,11 +2072,11 @@ void CL_ParseTEnt (void)
 				{
 				case 0:
 				case 1:
-					ex->model = Mod_ForName("models/xpspblue.spr", true);	
+					ex->model = Mod_ForName("models/xpspblue.spr", true);
 					break;
 				case 2:
 				case 3:
-					ex->model = Mod_ForName("models/xpspblue.spr", true);	
+					ex->model = Mod_ForName("models/xpspblue.spr", true);
 					ex->flags |= MLS_ABSLIGHT|DRF_TRANSLUCENT;
 					break;
 				case 4:
@@ -2153,7 +2159,7 @@ void CL_ParseTEnt (void)
 			ex->avel[0] = 50;
 			ex->avel[1] = 50;
 			ex->avel[2] = 50;
-		
+
 			S_StartSound (TempSoundChannel(), 0, cl_sfx_fireBall, pos, 1, 1);
 			break;
 
@@ -2824,8 +2830,8 @@ void CL_ParseTEnt (void)
 				{
 					cVal = cos((svTime + (i*.3/8.0))*8)*10;
 					sVal = sin((svTime + (i*.3/8.0))*8)*10;
-//					cVal = cos((svTime + (i*.3/8.0))*16)*35;
-//					sVal = sin((svTime + (i*.3/8.0))*16)*35;
+				//	cVal = cos((svTime + (i*.3/8.0))*16)*35;
+				//	sVal = sin((svTime + (i*.3/8.0))*16)*35;
 
 					ex = CL_AllocExplosion();
 					VectorCopy(curPos, ex->origin);
@@ -3234,12 +3240,12 @@ void CL_ParseTEnt (void)
 				tag = 0;
 				duration = 0.1;
 				skin = rand()%5;
-//				source[0] = MSG_ReadCoord();
-//				source[1] = MSG_ReadCoord();
-//				source[2] = MSG_ReadCoord();
-//				dest[0] = MSG_ReadCoord();
-//				dest[1] = MSG_ReadCoord();
-//				dest[2] = MSG_ReadCoord();
+			//	source[0] = MSG_ReadCoord();
+			//	source[1] = MSG_ReadCoord();
+			//	source[2] = MSG_ReadCoord();
+			//	dest[0] = MSG_ReadCoord();
+			//	dest[1] = MSG_ReadCoord();
+			//	dest[2] = MSG_ReadCoord();
 
 				state = FindState(ent);
 				state2 = FindState(ent2);
@@ -3250,19 +3256,22 @@ void CL_ParseTEnt (void)
 					{
 						VectorCopy(state->origin, source);
 					}
-					else//don't know where the damn cube is--prolly won't see beam anyway then, so put it all at the target
-					{
+					else	//don't know where the damn cube is--prolly
+					{	//won't see beam anyway then, so put it all
+						//at the target
 						VectorCopy(state2->origin, source);
 						source[2]+=10;
 					}
 
 					if (state2)
 					{
-						VectorCopy(state2->origin, dest);//in case they're both valid, copy me again
+						//in case they're both valid, copy me again
+						VectorCopy(state2->origin, dest);
 						dest[2]+=30;
 					}
-					else//don't know where the damn victim is--prolly won't see beam anyway then, so put it all at the cube
-					{
+					else	//don't know where the damn victim is--prolly
+					{	//won't see beam anyway then, so put it all
+						//at the cube
 						VectorCopy(source, dest);
 						dest[2]+=10;
 					}
@@ -3388,7 +3397,6 @@ void CL_ParseTEnt (void)
 				ex->scale = 230;
 
 				//ex->exflags = EXFLAG_ROTATE;
-
 				//ex->avel[0] = 200;
 				//ex->avel[1] = 200;
 				//ex->avel[2] = 200;
@@ -3510,7 +3518,7 @@ void CL_UpdateBeams (void)
 	vec3_t		dist, org;
 	entity_t	*ent;
 
-// update lightning
+	// update lightning
 	for (i=0, b=cl_beams ; i< MAX_BEAMS ; i++, b++)
 	{
 		if (!b->model || b->endtime < cl.time)
@@ -3539,7 +3547,7 @@ void CL_UpdateBeams (void)
 			yaw = (int) (atan2(dist[1], dist[0]) * 180 / M_PI);
 			if (yaw < 0)
 				yaw += 360;
-	
+
 			forward = sqrt (dist[0]*dist[0] + dist[1]*dist[1]);
 			pitch = (int) (atan2(dist[2], forward) * 180 / M_PI);
 			if (pitch < 0)
@@ -3598,7 +3606,8 @@ void CL_UpdateExplosions (void)
 			}
 		}
 
-		// if we hit endTime, get rid of explosion (i assume endTime is greater than startTime, etc)
+		// if we hit endTime, get rid of explosion
+		// (i assume endTime is greater than startTime, etc)
 		if (ex->endTime <= cl.time)
 		{
 			if (ex->removeFunc)
@@ -3636,7 +3645,9 @@ void CL_UpdateExplosions (void)
 		{
 			VectorMA(ex->angles, host_frametime, ex->avel, ex->angles);
 		}
-		// you can set startTime to some point in the future to delay the explosion showing up or thinking; it'll still move, though
+		// you can set startTime to some point in the future
+		// to delay the explosion showing up or thinking;
+		// it'll still move, though
 		if (ex->startTime > cl.time)
 			continue;
 
@@ -3695,14 +3706,14 @@ void CL_UpdateStreams(void)
 
 		if(stream->endTime < cl.time)
 		{ // Inactive
-			if(stream->type!=TE_STREAM_LIGHTNING&&stream->type!=TE_STREAM_LIGHTNING_SMALL)
+			if(stream->type!=TE_STREAM_LIGHTNING && stream->type!=TE_STREAM_LIGHTNING_SMALL)
 				continue;
 			else if(stream->endTime + 0.25 < cl.time)
 				continue;
 		}
 
 		if(stream->flags&STREAM_ATTACHED&&stream->endTime >= cl.time)
-			{ // Attach the start position to owner
+		{ // Attach the start position to owner
 			state = FindState(stream->entity);
 			if (state)
 			{
@@ -3969,7 +3980,7 @@ void CL_UpdateTEnts (void)
 
 void MultiGrenadeExplodeSound (explosion_t *ex)
 {
-//plug up all of -1's channels w/ grenade sounds
+	//plug up all of -1's channels w/ grenade sounds
 	if (!(rand()&7))
 	{
 		if (MultiGrenadeCurrentChannel>=MAX_DYNAMIC_CHANNELS || MultiGrenadeCurrentChannel<0)
@@ -4015,7 +4026,7 @@ void MultiGrenadeThink (explosion_t *ex)
 		switch (attack_counter % 3)
 		{
 		case 2:
-		    missile->frameFunc = MultiGrenadePieceThink;
+			missile->frameFunc = MultiGrenadePieceThink;
 			missile->velocity[0]=(rand()%600)-300;
 			missile->velocity[1]=(rand()%600)-300;
 			missile->velocity[2]=0;//(rand()%100)+50;
@@ -4177,9 +4188,9 @@ void MultiGrenadePiece2Think (explosion_t *ex)
 
 void ChunkThink(explosion_t *ex)
 {
-	vec3_t oldorg;
+	vec3_t	oldorg;
 	mleaf_t		*l;
-	int			moving = 1;
+	int	moving = 1;
 
 	l = Mod_PointInLeaf (ex->origin, cl.worldmodel);
 	if(l->contents!=CONTENTS_EMPTY) //||in_solid==true
@@ -4256,7 +4267,8 @@ void ChunkThink(explosion_t *ex)
 	case THINGTYPE_METAL:
 		break;
 	case THINGTYPE_FLESH:
-		if(moving)R_RocketTrail (ex->oldorg, ex->origin, rt_blood);
+		if(moving)
+			R_RocketTrail (ex->oldorg, ex->origin, rt_blood);
 		break;
 	case THINGTYPE_FIRE:
 		break;
@@ -4287,14 +4299,16 @@ void ChunkThink(explosion_t *ex)
 		break;
 	case THINGTYPE_ICE:
 		ex->velocity[2] += host_frametime * movevars.gravity * 0.5; // lower gravity for ice chunks
-		if(moving)R_RocketTrail (ex->oldorg, ex->origin, rt_ice);
+		if(moving)
+			R_RocketTrail (ex->oldorg, ex->origin, rt_ice);
 		break;
 	case THINGTYPE_CLEARGLASS:
 		break;
 	case THINGTYPE_REDGLASS:
 		break;
 	case THINGTYPE_ACID:
-		if(moving)R_RocketTrail (ex->oldorg, ex->origin, 16);
+		if(moving)
+			R_RocketTrail (ex->oldorg, ex->origin, 16);
 		break;
 	case THINGTYPE_METEOR:
 		VectorCopy(ex->oldorg, oldorg);
@@ -4329,12 +4343,12 @@ void BubbleThink(explosion_t *ex)
 				ex->velocity[0] = 5;
 			if (ex->velocity[0] < -10)
 				ex->velocity[0] = -5;
-				
+
 			if (ex->velocity[1] > 10)
 				ex->velocity[1] = 5;
 			if (ex->velocity[1] < -10)
 				ex->velocity[1] = -5;
-				
+
 			if (ex->velocity[2] < 10)
 				ex->velocity[2] = 15;
 			if (ex->velocity[2] > 30)
@@ -4347,7 +4361,6 @@ void BubbleThink(explosion_t *ex)
 	{
 		ex->endTime= cl.time;
 	}
-
 }
 
 void MissileFlashThink(explosion_t *ex)
@@ -4447,7 +4460,7 @@ void CreateExplosionWithSound(vec3_t pos)
 	ex->startTime = cl.time;
 	ex->endTime = ex->startTime + HX_FRAME_TIME * 10;
 	ex->model = Mod_ForName("models/sm_expld.spr", true);
-	
+
 	S_StartSound (TempSoundChannel(), 1, cl_sfx_explode, pos, 1, 1);
 }
 
@@ -4916,7 +4929,7 @@ void PowerFlameBurnRemove(explosion_t *ex)
 
 	ex2->flags |= MLS_ABSLIGHT|DRF_TRANSLUCENT;
 	ex2->abslight = 128;
-	
+
 	if (rand()&1)
 		S_StartSound(TempSoundChannel(), 1, cl_sfx_flameend, ex2->origin, 1, 1);
 }
@@ -5158,7 +5171,8 @@ void CL_UpdateTargetBall(void)
 		return;
 	}
 
-	// search for the two thingies.  If they don't exist, make new ones and set v_oldTargOrg
+	// search for the two thingies.  If they
+	// don't exist, make new ones and set v_oldTargOrg
 
 	iceMod = Mod_ForName("models/iceshot2.mdl", true);
 

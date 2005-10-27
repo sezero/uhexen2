@@ -59,7 +59,7 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 		return;
 	}
 
-	//Con_Printf("O  %hd %hd %hd\n",u->forwardmove, u->sidemove, u->upmove);
+//	Con_Printf("O  %hd %hd %hd\n",u->forwardmove, u->sidemove, u->upmove);
 
 	VectorCopy (from->origin, pmove.origin);
 //	VectorCopy (from->viewangles, pmove.angles);
@@ -78,8 +78,8 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 	pmove.crouched = player_crouching;
 
 	PlayerMove ();
-//for (i=0 ; i<3 ; i++)
-//pmove.origin[i] = ((int)(pmove.origin[i]*8))*0.125;
+//	for (i=0 ; i<3 ; i++)
+//		pmove.origin[i] = ((int)(pmove.origin[i]*8))*0.125;
 	to->waterjumptime = pmove.waterjumptime;
 	to->oldbuttons = pmove.cmd.buttons;
 	VectorCopy (pmove.origin, to->origin);
@@ -89,7 +89,6 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 
 	to->weaponframe = from->weaponframe;
 }
-
 
 
 /*
@@ -152,13 +151,16 @@ void CL_PredictMove (void)
 //	to = &cl.frames[cls.netchan.incoming_sequence & UPDATE_MASK];
 
 	for (i=1 ; i<UPDATE_BACKUP-1 && cls.netchan.incoming_sequence+i <
-			cls.netchan.outgoing_sequence; i++)
+					cls.netchan.outgoing_sequence; i++)
 	{
 		to = &cl.frames[(cls.netchan.incoming_sequence+i) & UPDATE_MASK];
-		CL_PredictUsercmd (&from->playerstate[cl.playernum]
-			, &to->playerstate[cl.playernum], &to->cmd, cl.spectator);
+		CL_PredictUsercmd (&from->playerstate[cl.playernum],
+					&to->playerstate[cl.playernum],
+					&to->cmd, cl.spectator);
+
 		if (to->senttime >= cl.time)
 			break;
+
 		from = to;
 	}
 
@@ -169,7 +171,9 @@ void CL_PredictMove (void)
 
 	// now interpolate some fraction of the final frame
 	if (to->senttime == from->senttime)
+	{
 		f = 0;
+	}
 	else
 	{
 		f = (cl.time - from->senttime) / (to->senttime - from->senttime);
@@ -181,13 +185,15 @@ void CL_PredictMove (void)
 	}
 
 	for (i=0 ; i<3 ; i++)
+	{
 		if ( fabs(from->playerstate[cl.playernum].origin[i] - to->playerstate[cl.playernum].origin[i]) > 128)
 		{	// teleported, so don't lerp
 			VectorCopy (to->playerstate[cl.playernum].velocity, cl.simvel);
 			VectorCopy (to->playerstate[cl.playernum].origin, cl.simorg);
 			return;
 		}
-		
+	}
+
 	for (i=0 ; i<3 ; i++)
 	{
 		cl.simorg[i] = from->playerstate[cl.playernum].origin[i] 
@@ -196,13 +202,14 @@ void CL_PredictMove (void)
 			+ f*(to->playerstate[cl.playernum].velocity[i] - from->playerstate[cl.playernum].velocity[i]);
 	}		
 
-	/*Con_Printf("(%5.2f %5.2f %5.2f)  (%5.2f %5.2f %5.2f)\n",
-		cl.simorg[0] - to->playerstate[cl.playernum].origin[0],
-		cl.simorg[1] - to->playerstate[cl.playernum].origin[1],
-		cl.simorg[2] - to->playerstate[cl.playernum].origin[2],
-		cl.simvel[0] - to->playerstate[cl.playernum].velocity[0],
-		cl.simvel[1] - to->playerstate[cl.playernum].velocity[1],
-		cl.simvel[2] - to->playerstate[cl.playernum].velocity[2]);*/
+/*	Con_Printf("(%5.2f %5.2f %5.2f)  (%5.2f %5.2f %5.2f)\n",
+			cl.simorg[0] - to->playerstate[cl.playernum].origin[0],
+			cl.simorg[1] - to->playerstate[cl.playernum].origin[1],
+			cl.simorg[2] - to->playerstate[cl.playernum].origin[2],
+			cl.simvel[0] - to->playerstate[cl.playernum].velocity[0],
+			cl.simvel[1] - to->playerstate[cl.playernum].velocity[1],
+			cl.simvel[2] - to->playerstate[cl.playernum].velocity[2]);
+*/
 }
 
 
