@@ -1216,20 +1216,20 @@ void CL_ParseServerMessage (void)
 			//is on the ent, this update_channels field could
 			//be set automatically by each sound and stopSound
 			//called for this ent?
-			int	channel, ent;
+			int	channel, ent_num;
 
 			channel = MSG_ReadShort ();
 
-			ent = channel >> 3;
+			ent_num = channel >> 3;
 			channel &= 7;
 
-			if (ent > MAX_EDICTS)
-				Host_Error ("svc_sound_update_pos: ent = %i", ent);
+			if (ent_num > MAX_EDICTS)
+				Host_Error ("svc_sound_update_pos: ent = %i", ent_num);
 
 			for (i=0 ; i<3 ; i++)
 				pos[i] = MSG_ReadCoord ();
 
-			S_UpdateSoundPos (ent, channel, pos);
+			S_UpdateSoundPos (ent_num, channel, pos);
 		}
 			break;
 
