@@ -17,6 +17,9 @@
 #define BUTTON_ATTACK	1
 #define MAX_ANGLE_TURN	10
 
+#define CAM_NONE	0
+#define CAM_TRACK	1
+
 static vec3_t desired_position; // where the camera wants to be
 static qboolean locked = false;
 static int oldbuttons;
@@ -26,12 +29,13 @@ cvar_t cl_hightrack = {"cl_hightrack", "0" };
 //cvar_t cl_camera_maxpitch = {"cl_camera_maxpitch", "10" };
 //cvar_t cl_camera_maxyaw = {"cl_camera_maxyaw", "30" };
 
-qboolean cam_forceview;
-vec3_t cam_viewangles;
-double cam_lastviewtime;
-
-int spec_track = 0; // player# of who we are tracking
-int autocam = CAM_NONE;
+static qboolean cam_forceview;
+static double cam_lastviewtime;
+#if 0
+static vec3_t cam_viewangles;
+#endif
+static int spec_track = 0; // player# of who we are tracking
+static int autocam = CAM_NONE;
 
 static void vectoangles(vec3_t vec, vec3_t ang)
 {
@@ -63,12 +67,7 @@ static void vectoangles(vec3_t vec, vec3_t ang)
 	ang[2] = 0;
 }
 
-static float vlen(vec3_t v)
-{
-	return sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
-}
-
-void Cam_Unlock(void)
+static void Cam_Unlock(void)
 {
 	if (autocam)
 	{
@@ -80,7 +79,7 @@ void Cam_Unlock(void)
 	}
 }
 
-void Cam_Lock(int playernum)
+static void Cam_Lock(int playernum)
 {
 	char st[40];
 
@@ -93,7 +92,7 @@ void Cam_Lock(int playernum)
 	Sbar_Changed();
 }
 
-pmtrace_t Cam_DoTrace(vec3_t vec1, vec3_t vec2)
+static pmtrace_t Cam_DoTrace(vec3_t vec1, vec3_t vec2)
 {
 #if 0
 	memset(&pmove, 0, sizeof(pmove));
@@ -126,13 +125,13 @@ static float Cam_TryFlyby(player_state_t *self, player_state_t *player, vec3_t v
 		return 9999;
 	VectorCopy(trace.endpos, vec);
 	VectorSubtract(trace.endpos, player->origin, v);
-	len = sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+	len = Length(v);
 	if (len < 32 || len > 800)
 		return 9999;
 	if (checkvis)
 	{
 		VectorSubtract(trace.endpos, self->origin, v);
-		len = sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+		len = Length(v);
 
 		trace = Cam_DoTrace(self->origin, vec);
 		if (trace.fraction != 1 || trace.inwater)
@@ -153,7 +152,7 @@ static qboolean Cam_IsVisible(player_state_t *player, vec3_t vec)
 		return false;
 	// check distance, don't let the player get too far away or too close
 	VectorSubtract(player->origin, vec, v);
-	d = vlen(v);
+	d = Length(v);
 	if (d < 16)
 		return false;
 	return true;
@@ -367,7 +366,7 @@ void Cam_Track(usercmd_t *cmd)
 	// Ok, move to our desired position and set our angles to view
 	// the player
 	VectorSubtract(desired_position, self->origin, vec);
-	len = vlen(vec);
+	len = Length(vec);
 	cmd->forwardmove = cmd->sidemove = cmd->upmove = 0;
 	if (len > 16)
 	{ // close enough?

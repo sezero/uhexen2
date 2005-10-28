@@ -384,13 +384,6 @@ extern	const int			color_offsets[MAX_PLAYER_CLASS];
 
 //=============================================================================
 
-extern	qboolean	nomaster;
-
-#define CAM_NONE	0
-#define CAM_TRACK	1
-
-extern	int		autocam;
-extern int spec_track; // player# of who we are tracking
 extern float	server_version;	// version of server we connected to
 
 //
@@ -405,7 +398,6 @@ void CL_SendConnectPacket (void);
 void CL_EstablishConnection (char *host);
 
 void CL_Disconnect (void);
-void CL_Disconnect_f (void);
 void CL_NextDemo (void);
 qboolean CL_DemoBehind(void);
 
@@ -436,8 +428,6 @@ void CL_UpdateTEnts (void);
 
 void CL_ClearState (void);
 
-void CL_ReadPackets (void);
-
 int  CL_ReadFromServer (void);
 void CL_WriteToServer (usercmd_t *cmd);
 void CL_BaseMove (usercmd_t *cmd);
@@ -463,7 +453,6 @@ void CL_WriteDemoCmd (usercmd_t *pcmd);
 // cl_parse.c
 //
 void CL_ParseServerMessage (void);
-void CL_NewTranslation (int slot);
 qboolean CL_CheckOrDownloadFile (char *filename);
 
 //

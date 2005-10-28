@@ -83,7 +83,7 @@ char	*Cmd_Args (void);
 // Returns the position (1 to argc-1) in the command's argument list
 // where the given parameter apears, or 0 if not present
 
-//void Cmd_TokenizeString (char *text);
+void Cmd_TokenizeString (char *text);
 // Takes a null terminated string.  Does not need to be /n terminated.
 // breaks the string up into arg tokens.
 
@@ -98,3 +98,4 @@ void	Cmd_ForwardToServer (void);
 
 void	WriteCommands (FILE *FH);
 
+void Cmd_StuffCmds_f (void);

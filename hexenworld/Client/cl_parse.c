@@ -3,7 +3,7 @@
 #include "quakedef.h"
 #include "r_shared.h"
 
-char *svc_strings[] =
+static const char *svc_strings[] =
 {
 	"svc_bad",
 	"svc_nop",
@@ -105,7 +105,7 @@ char *svc_strings[] =
 	"NEW PROTOCOL"
 };
 
-int	oldparsecountmod;
+static int	oldparsecountmod;
 int	parsecountmod;
 double	parsecounttime;
 
@@ -177,7 +177,7 @@ qboolean CL_CheckOrDownloadFile (char *filename)
 Model_NextDownload
 =================
 */
-void Model_NextDownload (void)
+static void Model_NextDownload (void)
 {
 	char	*s;
 	int		i;
@@ -233,7 +233,7 @@ void Model_NextDownload (void)
 Sound_NextDownload
 =================
 */
-void Sound_NextDownload (void)
+static void Sound_NextDownload (void)
 {
 	char	*s;
 	int		i;
@@ -272,7 +272,7 @@ void Sound_NextDownload (void)
 CL_RequestNextDownload
 ======================
 */
-void CL_RequestNextDownload (void)
+static void CL_RequestNextDownload (void)
 {
 	switch (cls.downloadtype)
 	{
@@ -300,7 +300,7 @@ CL_ParseDownload
 A download message has been received from the server
 =====================
 */
-void CL_ParseDownload (void)
+static void CL_ParseDownload (void)
 {
 	int		size, percent;
 	char	name[MAX_OSPATH];
@@ -434,7 +434,7 @@ CL_ParseServerData
 */
 int	cl_keyholder = -1;
 int	cl_doc = -1;
-void CL_ParseServerData (void)
+static void CL_ParseServerData (void)
 {
 	char	*str;
 	FILE	*f;
@@ -547,7 +547,7 @@ void CL_ParseServerData (void)
 CL_ParseSoundlist
 ==================
 */
-void CL_ParseSoundlist (void)
+static void CL_ParseSoundlist (void)
 {
 	int	numsounds;
 	char	*str;
@@ -574,7 +574,7 @@ void CL_ParseSoundlist (void)
 CL_ParseModellist
 ==================
 */
-void CL_ParseModellist (void)
+static void CL_ParseModellist (void)
 {
 	int	nummodels;
 	char	*str;
@@ -647,7 +647,7 @@ void CL_ParseModellist (void)
 CL_ParseBaseline
 ==================
 */
-void CL_ParseBaseline (entity_state_t *es)
+static void CL_ParseBaseline (entity_state_t *es)
 {
 	int			i;
 
@@ -675,7 +675,7 @@ Static entities are non-interactive world objects
 like torches
 =====================
 */
-void CL_ParseStatic (void)
+static void CL_ParseStatic (void)
 {
 	entity_t *ent;
 	int		i;
@@ -709,7 +709,7 @@ void CL_ParseStatic (void)
 CL_ParseStaticSound
 ===================
 */
-void CL_ParseStaticSound (void)
+static void CL_ParseStaticSound (void)
 {
 	vec3_t		org;
 	int			sound_num, vol, atten;
@@ -738,7 +738,7 @@ ACTION MESSAGES
 CL_ParseStartSoundPacket
 ==================
 */
-void CL_ParseStartSoundPacket(void)
+static void CL_ParseStartSoundPacket(void)
 {
 	vec3_t	pos;
 	int		channel, ent;
@@ -780,7 +780,7 @@ CL_ParseClientdata
 Server information pertaining to this client only, sent every frame
 ==================
 */
-void CL_ParseClientdata (void)
+static void CL_ParseClientdata (void)
 {
 	int		i;
 	float		latency;
@@ -832,7 +832,7 @@ const int color_offsets[MAX_PLAYER_CLASS] =
 CL_NewTranslation
 =====================
 */
-void CL_NewTranslation (int slot)
+static void CL_NewTranslation (int slot)
 {
 #ifdef GLQUAKE
 	if (slot > MAX_CLIENTS)
@@ -890,7 +890,7 @@ void CL_NewTranslation (int slot)
 CL_UpdateUserinfo
 ==============
 */
-void CL_UpdateUserinfo (void)
+static void CL_UpdateUserinfo (void)
 {
 	int		slot;
 	player_info_t	*player;
@@ -931,7 +931,7 @@ void CL_UpdateUserinfo (void)
 CL_SetStat
 =====================
 */
-void CL_SetStat (int stat, int value)
+static void CL_SetStat (int stat, int value)
 {
 	int	j;
 
@@ -956,7 +956,7 @@ void CL_SetStat (int stat, int value)
 CL_MuzzleFlash
 ==============
 */
-void CL_MuzzleFlash (void)
+static void CL_MuzzleFlash (void)
 {
 	vec3_t		fv, rv, uv;
 	dlight_t	*dl;
@@ -990,7 +990,7 @@ void CL_MuzzleFlash (void)
 	dl->color[3] = 0.7;
 }
 
-void CL_Plaque(void)
+static void CL_Plaque(void)
 {
 	int	idx;
 
@@ -1002,7 +1002,7 @@ void CL_Plaque(void)
 		plaquemessage = "";
 }
 
-void CL_IndexedPrint(void)
+static void CL_IndexedPrint(void)
 {
 	int	idx, i;
 
@@ -1026,7 +1026,7 @@ void CL_IndexedPrint(void)
 	con_ormask = 0;
 }
 
-void CL_NamePrint(void)
+static void CL_NamePrint(void)
 {
 	int idx, i;
 
@@ -1050,7 +1050,7 @@ void CL_NamePrint(void)
 	con_ormask = 0;
 }
 
-void CL_ParticleExplosion(void)
+static void CL_ParticleExplosion(void)
 {
 	vec3_t org;
 	short color, radius, counter;
@@ -1072,7 +1072,7 @@ void CL_ParticleExplosion(void)
 CL_ParseServerMessage
 =====================
 */
-int	received_framecount;
+static int	received_framecount;
 int LastServerMessageSize = 0;
 
 qboolean cl_siege;

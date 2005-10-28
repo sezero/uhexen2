@@ -649,7 +649,6 @@ SV_Serverinfo_f
   Examine or change the serverinfo string
 ===========
 */
-char *CopyString(char *s);
 void SV_Serverinfo_f (void)
 {
 	cvar_t	*var;
@@ -678,8 +677,12 @@ void SV_Serverinfo_f (void)
 	var = Cvar_FindVar (Cmd_Argv(1));
 	if (var)
 	{
+		char	*c;
+
 		Z_Free (var->string);	// free the old value string	
-		var->string = CopyString (Cmd_Argv(2));
+		c = Cmd_Argv(2);
+		var->string = Z_Malloc (strlen(c) + 1);
+		strcpy (var->string, c);
 		var->value = atof (var->string);
 	}
 
@@ -694,7 +697,6 @@ SV_Serverinfo_f
   Examine or change the serverinfo string
 ===========
 */
-char *CopyString(char *s);
 void SV_Localinfo_f (void)
 {
 	if (Cmd_Argc() == 1)

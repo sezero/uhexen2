@@ -52,14 +52,14 @@ typedef struct
 	float	lastTrailTime;
 } stream_t;
 
-typedef struct explosion_t explosion_t;
-
 typedef enum
 {
 	EXFLAG_ROTATE = 1,
 	EXFLAG_COLLIDE = 2,
 	EXFLAG_STILL_FRAME = 4
 } exflags_t;
+
+typedef struct explosion_t explosion_t;
 
 struct explosion_t
 {
@@ -84,7 +84,7 @@ struct explosion_t
 
 // PUBLIC FUNCTION DEFINITIONS ---------------------------------------------
 
-int TempSoundChannel()
+int TempSoundChannel (void)
 {
 	static int last = -1;
 	last--;
@@ -98,82 +98,83 @@ int TempSoundChannel()
 static void ParseStream(int type);
 static stream_t *NewStream(int ent, int tag);
 
-void MultiGrenadeThink (explosion_t *ex);
-void MultiGrenadePieceThink (explosion_t *ex);
-void MultiGrenadePiece2Think (explosion_t *ex);
-void ChunkThink(explosion_t *ex);
-void BubbleThink(explosion_t *ex);
-void MissileFlashThink(explosion_t *ex);
-void TeleportFlashThink(explosion_t *ex);
-void CheckSpaceThink(explosion_t *ex);
-void SwordFrameFunc(explosion_t *ex);
-void zapFrameFunc(explosion_t *ex);
-void fireBallUpdate(explosion_t *ex);
-void sunBallUpdate(explosion_t *ex);
-void sunPowerUpdate(explosion_t *ex);
-void purify1Update(explosion_t *ex);
-void telEffectUpdate (explosion_t *ex);
-void CL_UpdateTargetBall(void);
-void updateBloodRain(explosion_t *ex);
-void updatePurify2(explosion_t *ex);
-void updateSwordShot(explosion_t *ex);
-void updateIceShot(explosion_t *ex);
-void updateMeteor(explosion_t *ex);
-void SmokeRingFrameFunc(explosion_t *ex);
-void updateAcidBlob(explosion_t *ex);
-void updateAcidBall(explosion_t *ex);
-void MeteorCrushSpawnThink(explosion_t *ex);
+static void MultiGrenadeThink (explosion_t *ex);
+static void MultiGrenadePieceThink (explosion_t *ex);
+static void MultiGrenadePiece2Think (explosion_t *ex);
+static void ChunkThink(explosion_t *ex);
+static void BubbleThink(explosion_t *ex);
+static void MissileFlashThink(explosion_t *ex);
+static void TeleportFlashThink(explosion_t *ex);
+static void CheckSpaceThink(explosion_t *ex);
+static void SwordFrameFunc(explosion_t *ex);
+static void zapFrameFunc(explosion_t *ex);
+static void fireBallUpdate(explosion_t *ex);
+static void sunBallUpdate(explosion_t *ex);
+static void sunPowerUpdate(explosion_t *ex);
+#if 0
+static void purify1Update(explosion_t *ex);
+#endif
+static void telEffectUpdate (explosion_t *ex);
+static void CL_UpdateTargetBall(void);
+static void updateBloodRain(explosion_t *ex);
+static void updatePurify2(explosion_t *ex);
+static void updateSwordShot(explosion_t *ex);
+static void updateIceShot(explosion_t *ex);
+static void updateMeteor(explosion_t *ex);
+static void SmokeRingFrameFunc(explosion_t *ex);
+static void updateAcidBlob(explosion_t *ex);
+static void updateAcidBall(explosion_t *ex);
+static void MeteorCrushSpawnThink(explosion_t *ex);
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
-beam_t			cl_beams[MAX_BEAMS];
-explosion_t		cl_explosions[MAX_EXPLOSIONS];
-
-static stream_t cl_Streams[MAX_STREAMS];
+static beam_t		cl_beams[MAX_BEAMS];
+static explosion_t	cl_explosions[MAX_EXPLOSIONS];
+static stream_t		cl_Streams[MAX_STREAMS];
 static float	playIceSound = .6;
 static int		MultiGrenadeCurrentChannel;
 
-//sfx_t			*cl_sfx_wizhit;
-//sfx_t			*cl_sfx_knighthit;
-sfx_t			*cl_sfx_tink1;
-sfx_t			*cl_sfx_ric1;
-sfx_t			*cl_sfx_ric2;
-sfx_t			*cl_sfx_ric3;
-sfx_t			*cl_sfx_r_exp3;
-sfx_t			*cl_sfx_explode;
-sfx_t			*cl_sfx_bonehit;
-sfx_t			*cl_sfx_bonewal;
-sfx_t			*cl_sfx_bonephit;
-sfx_t			*cl_sfx_ravendie;
-sfx_t			*cl_sfx_buzzbee;
+//static sfx_t		*cl_sfx_wizhit;
+//static sfx_t		*cl_sfx_knighthit;
+static sfx_t		*cl_sfx_tink1;
+static sfx_t		*cl_sfx_ric1;
+static sfx_t		*cl_sfx_ric2;
+static sfx_t		*cl_sfx_ric3;
+static sfx_t		*cl_sfx_r_exp3;
+static sfx_t		*cl_sfx_explode;
+static sfx_t		*cl_sfx_bonehit;
+static sfx_t		*cl_sfx_bonewal;
+static sfx_t		*cl_sfx_bonephit;
+static sfx_t		*cl_sfx_ravendie;
+static sfx_t		*cl_sfx_buzzbee;
 
-sfx_t			*cl_sfx_iceflesh;
-sfx_t			*cl_sfx_icewall;
-sfx_t			*cl_sfx_iceshatter;
-sfx_t			*cl_sfx_icestorm;
-sfx_t			*cl_sfx_sunstaff;
-sfx_t			*cl_sfx_sunhit;
-sfx_t			*cl_sfx_lightning1;
-sfx_t			*cl_sfx_lightning2;
-sfx_t			*cl_sfx_hammersound;
-sfx_t			*cl_sfx_tornado;
-sfx_t			*cl_sfx_swordExplode;
-sfx_t			*cl_sfx_axeBounce;
-sfx_t			*cl_sfx_axeExplode;
-sfx_t			*cl_sfx_fireBall;
-sfx_t			*cl_sfx_purify2;
-sfx_t			*cl_sfx_telefrag;
-sfx_t			*cl_sfx_big_gib;
-sfx_t			*cl_sfx_gib1;
-sfx_t			*cl_sfx_gib2;
-sfx_t			*cl_sfx_purify1_fire;
-sfx_t			*cl_sfx_purify1_hit;
-sfx_t			*cl_sfx_acidhit;
-sfx_t			*cl_sfx_dropfizzle;
-sfx_t			*cl_sfx_flameend;
+static sfx_t		*cl_sfx_iceflesh;
+static sfx_t		*cl_sfx_icewall;
+static sfx_t		*cl_sfx_iceshatter;
+static sfx_t		*cl_sfx_icestorm;
+static sfx_t		*cl_sfx_sunstaff;
+static sfx_t		*cl_sfx_sunhit;
+static sfx_t		*cl_sfx_lightning1;
+static sfx_t		*cl_sfx_lightning2;
+static sfx_t		*cl_sfx_hammersound;
+static sfx_t		*cl_sfx_tornado;
+static sfx_t		*cl_sfx_swordExplode;
+static sfx_t		*cl_sfx_axeBounce;
+static sfx_t		*cl_sfx_axeExplode;
+static sfx_t		*cl_sfx_fireBall;
+static sfx_t		*cl_sfx_purify2;
+static sfx_t		*cl_sfx_telefrag;
+static sfx_t		*cl_sfx_big_gib;
+static sfx_t		*cl_sfx_gib1;
+static sfx_t		*cl_sfx_gib2;
+static sfx_t		*cl_sfx_purify1_fire;
+static sfx_t		*cl_sfx_purify1_hit;
+static sfx_t		*cl_sfx_acidhit;
+static sfx_t		*cl_sfx_dropfizzle;
+static sfx_t		*cl_sfx_flameend;
 
-sfx_t			*cl_sfx_teleport[5];
-sfx_t			*cl_sfx_ravengo;
+static sfx_t		*cl_sfx_teleport[5];
+static sfx_t		*cl_sfx_ravengo;
 
 
 /*
@@ -280,7 +281,7 @@ CL_AllocExplosion
 **** CAREFUL!!! This may overwrite an explosion!!!!!
 =================
 */
-explosion_t *CL_AllocExplosion (void)
+static explosion_t *CL_AllocExplosion (void)
 {
 	int	i, idx, freeSlot;
 	float	time;
@@ -324,7 +325,7 @@ explosion_t *CL_AllocExplosion (void)
 CL_ParseBeam
 =================
 */
-void CL_ParseBeam (model_t *m)
+static void CL_ParseBeam (model_t *m)
 {
 	int	i, ent;
 	vec3_t	start, end;
@@ -3506,7 +3507,7 @@ entity_t *CL_NewTempEntity (void)
 CL_UpdateBeams
 =================
 */
-void CL_UpdateBeams (void)
+static void CL_UpdateBeams (void)
 {
 	int		i;
 	float		d, yaw, pitch, forward;
@@ -3576,7 +3577,7 @@ void CL_UpdateBeams (void)
 CL_UpdateExplosions
 =================
 */
-void CL_UpdateExplosions (void)
+static void CL_UpdateExplosions (void)
 {
 	int		i, f;
 	explosion_t	*ex;
@@ -3681,7 +3682,7 @@ void CL_UpdateExplosions (void)
 	}
 }
 
-void CL_UpdateStreams(void)
+static void CL_UpdateStreams(void)
 {
 	int		i, j, offset, segmentCount;
 	stream_t	*stream;
@@ -3974,7 +3975,7 @@ void CL_UpdateTEnts (void)
 	CL_UpdateTargetBall();
 }
 
-void MultiGrenadeExplodeSound (explosion_t *ex)
+static void MultiGrenadeExplodeSound (explosion_t *ex)
 {
 	//plug up all of -1's channels w/ grenade sounds
 	if (!(rand()&7))
@@ -3991,7 +3992,7 @@ void MultiGrenadeExplodeSound (explosion_t *ex)
 }
 
 
-void MultiGrenadeThink (explosion_t *ex)
+static void MultiGrenadeThink (explosion_t *ex)
 {//FIXME: too messy
 	explosion_t *missile;
 	int	attack_counter,number_explosions;
@@ -4062,7 +4063,7 @@ void MultiGrenadeThink (explosion_t *ex)
 	}
 }
 
-void MultiGrenadePieceThink (explosion_t *ex)
+static void MultiGrenadePieceThink (explosion_t *ex)
 {//FIXME: too messy
 	explosion_t *missile;
 	int	attack_counter,number_explosions;
@@ -4126,7 +4127,7 @@ void MultiGrenadePieceThink (explosion_t *ex)
 	}
 }
 
-void MultiGrenadePiece2Think (explosion_t *ex)
+static void MultiGrenadePiece2Think (explosion_t *ex)
 {//FIXME: too messy
 	explosion_t *missile;
 	int	attack_counter,number_explosions;
@@ -4182,7 +4183,7 @@ void MultiGrenadePiece2Think (explosion_t *ex)
 	}
 }
 
-void ChunkThink(explosion_t *ex)
+static void ChunkThink(explosion_t *ex)
 {
 	vec3_t	oldorg;
 	mleaf_t		*l;
@@ -4322,7 +4323,7 @@ void ChunkThink(explosion_t *ex)
 	}
 }
 
-void BubbleThink(explosion_t *ex)
+static void BubbleThink(explosion_t *ex)
 {
 	mleaf_t		*l;
 
@@ -4359,7 +4360,7 @@ void BubbleThink(explosion_t *ex)
 	}
 }
 
-void MissileFlashThink(explosion_t *ex)
+static void MissileFlashThink(explosion_t *ex)
 {
 	ex->abslight-=(0.05*256);
 	ex->scale+=5;
@@ -4368,7 +4369,7 @@ void MissileFlashThink(explosion_t *ex)
 }
 
 
-void TeleportFlashThink(explosion_t *ex)
+static void TeleportFlashThink(explosion_t *ex)
 {
 	ex->scale -= 15;
 	if(ex->scale < 10)
@@ -4376,7 +4377,7 @@ void TeleportFlashThink(explosion_t *ex)
 }
 
 // remove tent if not in open air
-void CheckSpaceThink(explosion_t *ex)
+static void CheckSpaceThink(explosion_t *ex)
 {
 	mleaf_t		*l;
 
@@ -4460,7 +4461,7 @@ void CreateExplosionWithSound(vec3_t pos)
 	S_StartSound (TempSoundChannel(), 1, cl_sfx_explode, pos, 1, 1);
 }
 
-void SwordFrameFunc(explosion_t *ex)
+static void SwordFrameFunc(explosion_t *ex)
 {
 	ex->scale = (ex->endTime - cl.time)*150 + 1;
 	if(((int)(cl.time * 20.0))%2)
@@ -4473,7 +4474,7 @@ void SwordFrameFunc(explosion_t *ex)
 	}
 }
 
-void zapFrameFunc(explosion_t *ex)
+static void zapFrameFunc(explosion_t *ex)
 {
 	ex->scale = (ex->endTime - cl.time)*(150/.3) + 1;
 	//ex->abslight = (224/.3) * (ex->endTime - cl.time) + 1;
@@ -4487,25 +4488,27 @@ void zapFrameFunc(explosion_t *ex)
 	}
 }
 
-void fireBallUpdate(explosion_t *ex)
+static void fireBallUpdate(explosion_t *ex)
 {
 	ex->scale = (int)(((cl.time - ex->startTime) / 1.0) * 250)+1;
 }
 
-void sunBallUpdate(explosion_t *ex)
+static void sunBallUpdate(explosion_t *ex)
 {
 	ex->scale = 121 - (int)(((cl.time - ex->startTime) / .8) * 120);
 }
 
-void sunPowerUpdate(explosion_t *ex)
+static void sunPowerUpdate(explosion_t *ex)
 {
 }
 
-void purify1Update(explosion_t *ex)
+#if 0	// not used
+static void purify1Update(explosion_t *ex)
 {
 	R_RocketTrail (ex->oldorg, ex->origin, rt_purify);
 	//R_RocketTrail (ex->oldorg, ex->origin, rt_setstaff);
 }
+#endif
 
 void MeteorBlastThink(explosion_t *ex)
 {
@@ -4588,7 +4591,7 @@ void MeteorBlastThink(explosion_t *ex)
 	}
 }
 
-void MeteorCrushSpawnThink(explosion_t *ex)
+static void MeteorCrushSpawnThink(explosion_t *ex)
 {
 	float chance;
 	explosion_t *ex2;
@@ -4640,7 +4643,7 @@ void MeteorCrushSpawnThink(explosion_t *ex)
 	}
 }
 
-void updateBloodRain(explosion_t *ex)
+static void updateBloodRain(explosion_t *ex)
 {
 	R_RocketTrail (ex->oldorg, ex->origin, rt_blood);
 
@@ -4651,7 +4654,7 @@ void updateBloodRain(explosion_t *ex)
 	}
 }
 
-void updatePurify2(explosion_t *ex)
+static void updatePurify2(explosion_t *ex)
 {
 	explosion_t	*ex2;
 	int	numSprites;
@@ -4690,7 +4693,7 @@ void updatePurify2(explosion_t *ex)
 	}
 }
 
-void updateSwordShot(explosion_t *ex)
+static void updateSwordShot(explosion_t *ex)
 {
 	int testVal;
 
@@ -4713,17 +4716,17 @@ void updateSwordShot(explosion_t *ex)
 	}
 }
 
-void updateIceShot(explosion_t *ex)
+static void updateIceShot(explosion_t *ex)
 {
 	R_RocketTrail (ex->oldorg, ex->origin, rt_ice);
 }
 
-void updateMeteor(explosion_t *ex)
+static void updateMeteor(explosion_t *ex)
 {
 	R_RocketTrail (ex->oldorg, ex->origin, rt_smoke);
 }
 
-void updateAcidBlob(explosion_t *ex)
+static void updateAcidBlob(explosion_t *ex)
 {
 	explosion_t	*ex2;
 	int testVal, testVal2;
@@ -4758,7 +4761,7 @@ void updateAcidBlob(explosion_t *ex)
 	}
 }
 
-void updateAcidBall(explosion_t *ex)
+static void updateAcidBall(explosion_t *ex)
 {
 	R_RocketTrail (ex->oldorg, ex->origin, rt_acidball);
 }
@@ -4900,7 +4903,7 @@ void CL_UpdateOnFire(entity_t *ent, int edict_num)
 	}
 }
 
-void PowerFlameBurnRemove(explosion_t *ex)
+static void PowerFlameBurnRemove(explosion_t *ex)
 {
 	explosion_t *ex2;
 
@@ -5071,7 +5074,7 @@ void CL_UpdateIceStorm(entity_t *ent, int edict_num)
 	}
 }
 
-void telPuffMove (explosion_t *ex)
+static void telPuffMove (explosion_t *ex)
 {
 	vec3_t	tvec, tvec2;
 
@@ -5100,7 +5103,7 @@ void telPuffMove (explosion_t *ex)
 //	ex->accel[2] += FRANDOM()*3.0;
 }
 
-void telEffectUpdate (explosion_t *ex)
+static void telEffectUpdate (explosion_t *ex)
 {
 	explosion_t	*ex2;
 	float	angle;
@@ -5152,7 +5155,7 @@ void telEffectUpdate (explosion_t *ex)
 	}
 }
 
-void CL_UpdateTargetBall(void)
+static void CL_UpdateTargetBall(void)
 {
 	int	i;
 	explosion_t *ex1 = NULL;
@@ -5258,7 +5261,7 @@ void CL_UpdateTargetBall(void)
 	R_TargetBallEffect (ex1->origin);
 }
 
-void SmokeRingFrameFunc(explosion_t *ex)
+static void SmokeRingFrameFunc(explosion_t *ex)
 {
 	if(cl.time - ex->startTime < .3)
 	{

@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.9 2005-10-25 20:08:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.10 2005-10-28 21:13:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -196,7 +196,7 @@ quake +prog jctest.qp +cmd amlev1
 quake -nosound +cmd amlev1
 ===============
 */
-static void Cmd_StuffCmds_f (void)
+void Cmd_StuffCmds_f (void)
 {
 	int		i, j;
 	int		s;
@@ -472,7 +472,7 @@ Cmd_TokenizeString
 Parses the given string into command line tokens.
 ============
 */
-static void Cmd_TokenizeString (char *text)
+void Cmd_TokenizeString (char *text)
 {
 	int		i;
 
@@ -725,6 +725,9 @@ static void ListCommands (char *prefix)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/10/25 20:08:41  sezero
+ * coding style and whitespace cleanup.
+ *
  * Revision 1.8  2005/10/25 20:04:17  sezero
  * static functions part-1: started making local functions static,
  * killing nested externs, const vars clean-up.

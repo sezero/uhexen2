@@ -19,7 +19,7 @@ static struct predicted_player {
 #define U_DRAWFLAGS	(1<<18)
 #define U_ABSLIGHT	(1<<19)
 
-char *parsedelta_strings[] =
+static const char *parsedelta_strings[] =
 {
 	"U_ANGLE1",	//0
 	"U_ANGLE3",	//1
@@ -94,8 +94,8 @@ dlight_t *CL_AllocDlight (int key)
 CL_NewDlight
 ===============
 */
-void CL_NewDlight (int key, float x, float y, float z, float radius, float time,
-				   int type)
+#if 0	// all of the uses are commented out
+static void CL_NewDlight (int key, float x, float y, float z, float radius, float time, int type)
 {
 	dlight_t	*dl;
 
@@ -134,7 +134,7 @@ void CL_NewDlight (int key, float x, float y, float z, float radius, float time,
 		dl->color[3] = 0.7;
 	}
 }
-
+#endif
 
 /*
 ===============
@@ -211,8 +211,8 @@ static void ShowNetParseDelta(int x)
 	Con_Printf("\n");
 }
 
-int	bitcounts[32];	/// just for protocol profiling
-void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int bits)
+static int	bitcounts[32];	/// just for protocol profiling
+static void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int bits)
 {
 	int			i;
 
@@ -311,7 +311,7 @@ void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int bits)
 FlushEntityPacket
 =================
 */
-void FlushEntityPacket (void)
+static void FlushEntityPacket (void)
 {
 	int			word;
 	entity_state_t	olde, newe;
@@ -487,7 +487,7 @@ void CL_ParsePacketEntities (qboolean delta)
 }
 
 
-void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
+static void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 {
 	dlight_t	*dl;
 	int	rotateSet = 0;
@@ -629,7 +629,7 @@ CL_LinkPacketEntities
 
 ===============
 */
-void CL_LinkPacketEntities (void)
+static void CL_LinkPacketEntities (void)
 {
 	entity_t			*ent;
 	packet_entities_t	*pack;
@@ -879,8 +879,8 @@ typedef struct
 } projectile_t;
 
 #define	MAX_PROJECTILES	32
-projectile_t	cl_projectiles[MAX_PROJECTILES];
-int		cl_num_projectiles;
+static projectile_t	cl_projectiles[MAX_PROJECTILES];
+static int		cl_num_projectiles;
 
 extern int cl_ravenindex, cl_raven2index;
 
@@ -954,7 +954,7 @@ CL_LinkProjectiles
 
 =============
 */
-void CL_LinkProjectiles (void)
+static void CL_LinkProjectiles (void)
 {
 	int		i;
 	projectile_t	*pr;
@@ -998,8 +998,8 @@ typedef struct
 } missile_t;
 
 #define	MAX_MISSILES 32
-missile_t	cl_missiles[MAX_MISSILES];
-int		cl_num_missiles;
+static missile_t	cl_missiles[MAX_MISSILES];
+static int		cl_num_missiles;
 
 extern int cl_ballindex, cl_missilestarindex;
 
@@ -1048,9 +1048,9 @@ CL_LinkMissile
 =============
 */
 
-vec3_t missilestar_angle; 
+static vec3_t missilestar_angle; 
 
-void CL_LinkMissiles (void)
+static void CL_LinkMissiles (void)
 {
 	int		i;
 	missile_t	*pr;
@@ -1249,7 +1249,7 @@ CL_AddFlagModels
 Called when the CTF flags are set
 ================
 */
-void CL_AddFlagModels (entity_t *ent, int team)
+static void CL_AddFlagModels (entity_t *ent, int team)
 {
 	int		i;
 	float	f;
@@ -1327,7 +1327,7 @@ Create visible entities in the correct position
 for all current players
 =============
 */
-void CL_LinkPlayers (void)
+static void CL_LinkPlayers (void)
 {
 	int			j;
 	player_info_t		*info;

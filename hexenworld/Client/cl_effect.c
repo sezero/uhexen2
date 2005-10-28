@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.c,v 1.6 2005-10-27 06:47:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.c,v 1.7 2005-10-28 21:13:05 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -20,7 +20,7 @@ extern void CreateStream(int type, int ent, int flags, int tag, float duration, 
 extern void CLTENT_XbowImpact(vec3_t pos, vec3_t vel, int chType, int damage, int arrowType);//so xbow effect can use tents
 extern void CLTENT_SpawnDeathBubble(vec3_t pos);
 entity_state_t *FindState(int EntNum);
-int	TempSoundChannel();
+int	TempSoundChannel(void);
 void setseed(unsigned int seed);
 float seedrand(void);
 
@@ -80,31 +80,31 @@ static void vectoangles(vec3_t vec, vec3_t ang)
 //
 //==========================================================================
 
-sfx_t	*cl_fxsfx_bone;
-sfx_t	*cl_fxsfx_bonefpow;
-sfx_t	*cl_fxsfx_xbowshoot;
-sfx_t	*cl_fxsfx_xbowfshoot;
-sfx_t	*cl_fxsfx_explode;
-sfx_t	*cl_fxsfx_mmfire;
-sfx_t	*cl_fxsfx_eidolon;
-sfx_t	*cl_fxsfx_scarabwhoosh;
-sfx_t	*cl_fxsfx_scarabgrab;
-sfx_t	*cl_fxsfx_scarabhome;
-sfx_t	*cl_fxsfx_scarabrip;
-sfx_t	*cl_fxsfx_scarabbyebye;
-sfx_t	*cl_fxsfx_ravensplit;
-sfx_t	*cl_fxsfx_ravenfire;
-sfx_t	*cl_fxsfx_ravengo;
-sfx_t	*cl_fxsfx_drillashoot;
-sfx_t	*cl_fxsfx_drillaspin;
-sfx_t	*cl_fxsfx_drillameat;
+static sfx_t	*cl_fxsfx_bone;
+static sfx_t	*cl_fxsfx_bonefpow;
+static sfx_t	*cl_fxsfx_xbowshoot;
+static sfx_t	*cl_fxsfx_xbowfshoot;
+static sfx_t	*cl_fxsfx_explode;
+static sfx_t	*cl_fxsfx_mmfire;
+static sfx_t	*cl_fxsfx_eidolon;
+static sfx_t	*cl_fxsfx_scarabwhoosh;
+static sfx_t	*cl_fxsfx_scarabgrab;
+static sfx_t	*cl_fxsfx_scarabhome;
+static sfx_t	*cl_fxsfx_scarabrip;
+static sfx_t	*cl_fxsfx_scarabbyebye;
+static sfx_t	*cl_fxsfx_ravensplit;
+static sfx_t	*cl_fxsfx_ravenfire;
+static sfx_t	*cl_fxsfx_ravengo;
+static sfx_t	*cl_fxsfx_drillashoot;
+static sfx_t	*cl_fxsfx_drillaspin;
+static sfx_t	*cl_fxsfx_drillameat;
 
-sfx_t	*cl_fxsfx_arr2flsh;
-sfx_t	*cl_fxsfx_arr2wood;
-sfx_t	*cl_fxsfx_met2stn;
+static sfx_t	*cl_fxsfx_arr2flsh;
+static sfx_t	*cl_fxsfx_arr2wood;
+static sfx_t	*cl_fxsfx_met2stn;
 
-sfx_t	*cl_fxsfx_ripple;
-sfx_t	*cl_fxsfx_splash;
+static sfx_t	*cl_fxsfx_ripple;
+static sfx_t	*cl_fxsfx_splash;
 
 void CL_InitEffects(void)
 {
@@ -142,7 +142,7 @@ void CL_ClearEffects(void)
 	EffectEntityCount = 0;
 }
 
-void CL_FreeEffect(int idx)
+static void CL_FreeEffect(int idx)
 {
 	int i;
 
@@ -1145,7 +1145,7 @@ void CL_EndEffect(void)
 	CL_FreeEffect(idx);
 }
 
-void XbowImpactPuff(vec3_t origin, int material)//hopefully can use this with xbow & chain both
+static void XbowImpactPuff(vec3_t origin, int material)//hopefully can use this with xbow & chain both
 {
 	int		part_color;
 
@@ -1555,7 +1555,7 @@ void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everythi
 	}
 }
 
-void UpdateMissilePath(vec3_t oldorg, vec3_t neworg, vec3_t newvel, float time)
+static void UpdateMissilePath(vec3_t oldorg, vec3_t neworg, vec3_t newvel, float time)
 {
 	vec3_t endpos;	//the position it should be at currently
 	float delta;
@@ -1619,7 +1619,7 @@ void CL_TurnEffect(void)
 
 }
 
-void CL_LinkEntity(entity_t *ent)
+static void CL_LinkEntity(entity_t *ent)
 {
 	if (cl_numvisedicts == MAX_VISEDICTS)
 	{	// object list is full
@@ -2458,6 +2458,9 @@ static void FreeEffectEntity(int idx)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/10/27 06:47:12  sezero
+ * coding style and whitespace cleanup.
+ *
  * Revision 1.5  2005/10/02 15:43:09  sezero
  * killed -Wshadow warnings
  *

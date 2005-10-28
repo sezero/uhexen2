@@ -5,8 +5,9 @@ cvar_t	cl_nopred = {"cl_nopred","0"};
 cvar_t	cl_pushlatency = {"pushlatency","-50", true};
 
 extern	frame_t		*view_frame;
-qboolean player_crouching;
+static	qboolean player_crouching;
 
+#if 0	// not used
 /*
 =================
 CL_NudgePosition
@@ -37,6 +38,7 @@ void CL_NudgePosition (void)
 	}
 	Con_DPrintf ("CL_NudgePosition: stuck\n");
 }
+#endif
 
 /*
 ==============

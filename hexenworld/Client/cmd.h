@@ -68,7 +68,7 @@ char	*Cmd_Args (void);
 // functions. Cmd_Argv () will return an empty string, not a NULL
 // if arg > argc, so string operations are always safe.
 
-int Cmd_CheckParm (char *parm);
+//int Cmd_CheckParm (char *parm);
 // Returns the position (1 to argc-1) in the command's argument list
 // where the given parameter apears, or 0 if not present
 

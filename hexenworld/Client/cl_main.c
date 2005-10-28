@@ -74,22 +74,21 @@ dlight_t	cl_dlights[MAX_DLIGHTS];
 // refresh list
 // this is double buffered so the last frame
 // can be scanned for oldorigins of trailing objects
-int				cl_numvisedicts, cl_oldnumvisedicts;
-entity_t		*cl_visedicts, *cl_oldvisedicts;
-entity_t		cl_visedicts_list[2][MAX_VISEDICTS];
+int		cl_numvisedicts, cl_oldnumvisedicts;
+entity_t	*cl_visedicts, *cl_oldvisedicts;
+entity_t	cl_visedicts_list[2][MAX_VISEDICTS];
 
-double			connect_time = -1;	// for connection retransmits
+static double	connect_time = -1;	// for connection retransmits
 
 quakeparms_t host_parms;
 
 qboolean	host_initialized;	// true if into command execution
-qboolean	nomaster;
 
 double		host_frametime;
 double		realtime;		// without any filtering or bounding
-double		oldrealtime;		// last frame run
+static double	oldrealtime;		// last frame run
 int			host_framecount;
-int			host_hunklevel;
+static int		host_hunklevel;
 
 byte		*host_basepal;
 byte		*host_colormap;
@@ -109,8 +108,6 @@ int			fps_count;
 
 jmp_buf 	host_abort;
 
-void Master_Connect_f (void);
-
 float	server_version = 0;	// version of server we connected to
 
 #ifdef PLATFORM_UNIX
@@ -124,7 +121,7 @@ unsigned short snd_system;
 CL_Quit_f
 ==================
 */
-void CL_Quit_f (void)
+static void CL_Quit_f (void)
 {
 	if (1 /* key_dest != key_console */ /* && cls.state != ca_dedicated */)
 	{
@@ -140,7 +137,7 @@ void CL_Quit_f (void)
 CL_Version_f
 ======================
 */
-void CL_Version_f (void)
+static void CL_Version_f (void)
 {
 	Con_Printf ("Version %4.2f\n", ENGINE_VERSION);
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
@@ -198,7 +195,7 @@ Resend a connect message if the last one has timed out
 
 =================
 */
-void CL_CheckForResend (void)
+static void CL_CheckForResend (void)
 {
 	if (connect_time == -1)
 		return;
@@ -215,7 +212,7 @@ CL_Connect_f
 
 ================
 */
-void CL_Connect_f (void)
+static void CL_Connect_f (void)
 {
 	char	*server;
 
@@ -242,7 +239,7 @@ CL_Rcon_f
   an unconnected command.
 =====================
 */
-void CL_Rcon_f (void)
+static void CL_Rcon_f (void)
 {
 	char	message[1024];
 	int		i;
@@ -386,7 +383,7 @@ void CL_Disconnect (void)
 	Cam_Reset();
 }
 
-void CL_Disconnect_f (void)
+static void CL_Disconnect_f (void)
 {
 	CL_Disconnect ();
 }
@@ -400,7 +397,7 @@ user <name or userid>
 Dump userdata / masterdata for a user
 ====================
 */
-void CL_User_f (void)
+static void CL_User_f (void)
 {
 	int		uid;
 	int		i;
@@ -434,7 +431,7 @@ CL_Users_f
 Dump userids for all current players
 ====================
 */
-void CL_Users_f (void)
+static void CL_Users_f (void)
 {
 	int		i;
 	int		c;
@@ -454,7 +451,7 @@ void CL_Users_f (void)
 	Con_Printf ("%i total users\n", c);
 }
 
-void CL_Color_f (void)
+static void CL_Color_f (void)
 {
 	// just for quake compatability...
 	int		top, bottom;
@@ -499,7 +496,7 @@ CL_FullServerinfo_f
 Sent by server when serverinfo changes
 ==================
 */
-void CL_FullServerinfo_f (void)
+static void CL_FullServerinfo_f (void)
 {
 	char	*p;
 	float	v;
@@ -546,7 +543,7 @@ CL_FullInfo_f
 Allow clients to change userinfo
 ==================
 */
-void CL_FullInfo_f (void)
+static void CL_FullInfo_f (void)
 {
 	char	key[512];
 	char	value[512];
@@ -595,7 +592,7 @@ CL_SetInfo_f
 Allow clients to change userinfo
 ==================
 */
-void CL_SetInfo_f (void)
+static void CL_SetInfo_f (void)
 {
 	if (Cmd_Argc() == 1)
 	{
@@ -624,7 +621,7 @@ packet <destination> <contents>
 Contents allows \n escape character
 ====================
 */
-void CL_Packet_f (void)
+static void CL_Packet_f (void)
 {
 	char	senddata[2048];
 	int		i, l;
@@ -705,7 +702,7 @@ Just sent as a hint to the client that they should
 drop to full console
 =================
 */
-void CL_Changing_f (void)
+static void CL_Changing_f (void)
 {
 	S_StopAllSounds (true);
 	cl.intermission = 0;
@@ -721,7 +718,7 @@ CL_Reconnect_f
 The server is changing levels
 =================
 */
-void CL_Reconnect_f (void)
+static void CL_Reconnect_f (void)
 {
 	S_StopAllSounds (true);
 
@@ -750,7 +747,7 @@ CL_ConnectionlessPacket
 Responses to broadcasts, etc
 =================
 */
-void CL_ConnectionlessPacket (void)
+static void CL_ConnectionlessPacket (void)
 {
 	char	*s;
 	int		c;
@@ -833,7 +830,7 @@ void CL_ConnectionlessPacket (void)
 CL_ReadPackets
 =================
 */
-void CL_ReadPackets (void)
+static void CL_ReadPackets (void)
 {
 //	while (NET_GetPacket ())
 	while (CL_GetMessage())
@@ -890,7 +887,7 @@ void CL_ReadPackets (void)
 CL_Download_f
 =====================
 */
-void CL_Download_f (void)
+static void CL_Download_f (void)
 {
 	if (cls.state == ca_disconnected)
 	{
@@ -920,7 +917,7 @@ void CL_Download_f (void)
 CL_Minimize_f
 =================
 */
-void CL_Windows_f (void)
+static void CL_Windows_f (void)
 {
 //	if (modestate == MS_WINDOWED)
 //		ShowWindow(mainwindow, SW_MINIMIZE);
@@ -929,7 +926,7 @@ void CL_Windows_f (void)
 }
 #endif
 
-void CL_Sensitivity_save_f (void)
+static void CL_Sensitivity_save_f (void)
 {
 	static float save_sensitivity = 3;
 
@@ -954,7 +951,7 @@ void CL_Sensitivity_save_f (void)
 CL_Init
 =================
 */
-void Host_SaveConfig_f (void);
+static void Host_SaveConfig_f (void);
 void CL_Init (void)
 {
 	cls.state = ca_disconnected;
@@ -1167,7 +1164,7 @@ void Host_WriteConfiguration (char *fname)
 	}
 }
 
-void Host_SaveConfig_f (void)
+static void Host_SaveConfig_f (void)
 {
 	if (Cmd_Argc() != 2)
 	{
@@ -1193,7 +1190,6 @@ Host_Frame
 Runs all active servers
 ==================
 */
-int		nopacketcount;
 void Host_Frame (float time)
 {
 	static double		time1 = 0;

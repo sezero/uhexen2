@@ -13,9 +13,9 @@ typedef struct cmdalias_s
 	char	*value;
 } cmdalias_t;
 
-cmdalias_t	*cmd_alias;
+static cmdalias_t	*cmd_alias;
 
-qboolean	cmd_wait;
+static qboolean	cmd_wait;
 
 cvar_t cl_warncmd = {"cl_warncmd", "0"};
 
@@ -30,7 +30,7 @@ next frame.  This allows commands like:
 bind g "impulse 5 ; +attack ; wait ; -attack ; impulse 2"
 ============
 */
-void Cmd_Wait_f (void)
+static void Cmd_Wait_f (void)
 {
 	cmd_wait = true;
 }
@@ -43,8 +43,8 @@ void Cmd_Wait_f (void)
 =============================================================================
 */
 
-sizebuf_t	cmd_text;
-byte		cmd_text_buf[8192];
+static sizebuf_t	cmd_text;
+static byte		cmd_text_buf[8192];
 
 /*
 ============
@@ -253,7 +253,7 @@ void Cmd_StuffCmds_f (void)
 Cmd_Exec_f
 ===============
 */
-void Cmd_Exec_f (void)
+static void Cmd_Exec_f (void)
 {
 	char	*f;
 	int		mark;
@@ -287,7 +287,7 @@ Cmd_Echo_f
 Just prints the rest of the line to the console
 ===============
 */
-void Cmd_Echo_f (void)
+static void Cmd_Echo_f (void)
 {
 	int		i;
 
@@ -303,17 +303,7 @@ Cmd_Alias_f
 Creates a new command that executes a command string (possibly ; seperated)
 ===============
 */
-
-char *CopyString (char *in)
-{
-	char	*out;
-	
-	out = Z_Malloc (strlen(in)+1);
-	strcpy (out, in);
-	return out;
-}
-
-void Cmd_Alias_f (void)
+static void Cmd_Alias_f (void)
 {
 	cmdalias_t	*a;
 	char		cmd[1024];
@@ -364,7 +354,8 @@ void Cmd_Alias_f (void)
 	}
 	strcat (cmd, "\n");
 
-	a->value = CopyString (cmd);
+	a->value = Z_Malloc (strlen (cmd) + 1);
+	strcpy (a->value, cmd);
 }
 
 /*
@@ -671,7 +662,7 @@ void Cmd_ExecuteString (char *text)
 		Con_Printf ("Unknown command \"%s\"\n", Cmd_Argv(0));
 }
 
-
+#if 0
 /*
 ================
 Cmd_CheckParm
@@ -693,6 +684,7 @@ int Cmd_CheckParm (char *parm)
 
 	return 0;
 }
+#endif
 
 /*
 ============

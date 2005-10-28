@@ -1,7 +1,7 @@
 
 #include "quakedef.h"
 
-void CL_FinishTimeDemo (void);
+static void CL_FinishTimeDemo (void);
 
 /*
 ==============================================================================
@@ -89,7 +89,7 @@ CL_WriteDemoMessage
 Dumps the current net message, prefixed by the length and view angles
 ====================
 */
-void CL_WriteDemoMessage (sizebuf_t *msg)
+static void CL_WriteDemoMessage (sizebuf_t *msg)
 {
 	int	len;
 	float	fl;
@@ -120,7 +120,7 @@ CL_GetDemoMessage
   FIXME...
 ====================
 */
-qboolean CL_GetDemoMessage (void)
+static qboolean CL_GetDemoMessage (void)
 {
 	int	r, i, j;
 	float	f;
@@ -431,7 +431,7 @@ CL_FinishTimeDemo
 
 ====================
 */
-void CL_FinishTimeDemo (void)
+static void CL_FinishTimeDemo (void)
 {
 	int		frames;
 	float	time;
