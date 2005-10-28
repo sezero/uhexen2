@@ -4,14 +4,9 @@
 #include <limits.h>
 
 #ifndef _WIN32
-int		do_stdin = 1;
-qboolean	stdin_ready;
+static int	do_stdin = 1;
+static qboolean	stdin_ready;
 #endif
-
-int		sv_mode;
-
-sizebuf_t	cmd_text;
-byte		cmd_text_buf[8192];
 
 char		com_token[1024];
 int		com_argc;
@@ -21,13 +16,16 @@ static char	*largv[MAX_NUM_ARGVS + 1];
 static char	*argvdummy = " ";
 
 #ifdef PLATFORM_UNIX
-char		userdir[240];
+static char	userdir[240];
 #endif
 char		filters_file[256];
 
-short   ShortSwap (short l)
+
+//=============================================================================
+
+short ShortSwap (short l)
 {
-	byte    b1,b2;
+	byte	b1, b2;
 
 	b1 = l&255;
 	b2 = (l>>8)&255;
@@ -35,9 +33,9 @@ short   ShortSwap (short l)
 	return (b1<<8) + b2;
 }
 
-int    LongSwap (int l)
+int LongSwap (int l)
 {
-	byte	b1,b2,b3,b4;
+	byte	b1, b2, b3, b4;
 
 	b1 = l&255;
 	b2 = (l>>8)&255;
@@ -65,12 +63,11 @@ float FloatSwap (float f)
 }
 
 
-////////////////////////////////
+//=============================================================================
 
-void COM_InitArgv (int argc, char **argv)
+static void COM_InitArgv (int argc, char **argv)
 {
-	for (com_argc=0 ; (com_argc<MAX_NUM_ARGVS) && (com_argc < argc) ;
-		 com_argc++)
+	for (com_argc=0 ; (com_argc<MAX_NUM_ARGVS) && (com_argc < argc) ; com_argc++)
 	{
 		largv[com_argc] = argv[com_argc];
 	}
@@ -152,6 +149,9 @@ skipwhite:
 	return data;
 }
 
+
+//=============================================================================
+
 void Sys_Error (char *error, ...)
 {
 	va_list		argptr;
@@ -170,6 +170,9 @@ void Sys_Quit (void)
 {
 	exit (0);
 }
+
+
+//=============================================================================
 
 void SZ_Clear (sizebuf_t *buf)
 {
@@ -190,7 +193,7 @@ void *SZ_GetSpace (sizebuf_t *buf, int length)
 			Sys_Error ("SZ_GetSpace: %i is > full buffer size", length);
 
 		printf ("SZ_GetSpace: overflow\n");	// because Con_Printf may be redirected
-		SZ_Clear (buf); 
+		SZ_Clear (buf);
 		buf->overflowed = true;
 	}
 
@@ -202,12 +205,12 @@ void *SZ_GetSpace (sizebuf_t *buf, int length)
 
 void SZ_Write (sizebuf_t *buf, void *data, int length)
 {
-	memcpy (SZ_GetSpace(buf,length),data,length);		
+	memcpy (SZ_GetSpace(buf,length),data,length);
 }
 
-/////////////////////////////////////////////////////////////
+//=============================================================================
 
-void SV_WriteFilterList();
+void SV_WriteFilterList(void);
 
 void SV_Shutdown (void)
 {
@@ -217,15 +220,18 @@ void SV_Shutdown (void)
 	SV_WriteFilterList();
 }
 
+
+//=============================================================================
+
 /* sys_dead_sleep: When set, the server gets NO cpu if no clients are connected
    and there's no other activity. *MIGHT* cause problems with some mods. */
-qboolean sys_dead_sleep	= 0;
+static qboolean sys_dead_sleep	= 0;
 
 #ifndef max
 # define max(a,b) ((a) > (b) ? (a) : (b))
 #endif
 
-int Sys_CheckInput (int ns)
+static int Sys_CheckInput (int ns)
 {
 	fd_set		fdset;
 	int		res;
@@ -264,7 +270,7 @@ int Sys_CheckInput (int ns)
 	return 1;
 }
 
-char *Sys_ConsoleInput (void)
+static char *Sys_ConsoleInput (void)
 {
 	static char	text[256];
 	static int		len;
@@ -273,17 +279,21 @@ char *Sys_ConsoleInput (void)
 	int		c;
 
 	// read a line out
-	while (_kbhit ()) {
+	while (_kbhit ())
+	{
 		c = _getch ();
 		putch (c);
-		if (c == '\r') {
+		if (c == '\r')
+		{
 			text[len] = 0;
 			putch ('\n');
 			len = 0;
 			return text;
 		}
-		if (c == 8) {
-			if (len) {
+		if (c == 8)
+		{
+			if (len)
+			{
 				putch (' ');
 				putch (c);
 				len--;
@@ -305,8 +315,8 @@ char *Sys_ConsoleInput (void)
 	stdin_ready = false;
 
 	len = read (0, text, sizeof (text));
-	if (len == 0) {
-		// end of file
+	if (len == 0)
+	{	// end of file
 		do_stdin = 0;
 		return NULL;
 	}
@@ -318,7 +328,7 @@ char *Sys_ConsoleInput (void)
 #endif
 }
 
-void SV_GetConsoleCommands (void)
+static void SV_GetConsoleCommands (void)
 {
 	char	*cmd;
 
@@ -340,7 +350,8 @@ double Sys_DoubleTime (void)
 
 	now = timeGetTime();
 
-	if (first) {
+	if (first)
+	{
 		first = false;
 		starttime = now;
 		return 0.0;
@@ -363,7 +374,8 @@ double Sys_DoubleTime (void)
 
 	now = tp.tv_sec + tp.tv_usec / 1e6;
 
-	if (first) {
+	if (first)
+	{
 		first = false;
 		start_time = now;
 	}
@@ -374,7 +386,7 @@ double Sys_DoubleTime (void)
 
 #define SV_TIMEOUT 450
 
-void SV_TimeOut()
+static void SV_TimeOut(void)
 {
 	//Remove listed severs that havent sent a heartbeat for some time
 	double t = Sys_DoubleTime();
@@ -402,7 +414,7 @@ void SV_TimeOut()
 	}
 }
 
-void SV_Frame()
+static void SV_Frame(void)
 {
 	Sys_CheckInput (net_socket);
 
@@ -415,12 +427,17 @@ void SV_Frame()
 	SV_ReadPackets();
 }
 
+
+//=============================================================================
+
 int main (int argc, char **argv)
 {
 	int t;
 
-	if (argc>=1) {
-	    for (t=1;t<argc;t++) {
+	if (argc>=1)
+	{
+	    for (t=1;t<argc;t++)
+	    {
 		if ((strcmp(argv[t], "-h"    ) == 0 ||
 		     strcmp(argv[t], "-help" ) == 0 ||
 		     strcmp(argv[t], "--help") == 0 ||
@@ -457,7 +474,7 @@ int main (int argc, char **argv)
 #endif
 
 	Cbuf_Init();
-	Cmd_Init ();	
+	Cmd_Init ();
 
 	SV_InitNet();
 

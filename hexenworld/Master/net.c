@@ -4,20 +4,27 @@
 
 extern char	filters_file[256];
 
-byte		net_message_buffer[MAX_UDP_PACKET];
-sizebuf_t	net_message;
+static byte	net_message_buffer[MAX_UDP_PACKET];
+static sizebuf_t	net_message;
 int		net_socket;
 #ifdef _WIN32
-WSADATA		winsockdata;
+statc WSADATA	winsockdata;
 #endif
-netadr_t	net_local_adr;
-netadr_t	net_from;
+static netadr_t	net_local_adr;
+static netadr_t	net_from;
 
+static int UDP_OpenSocket (int port);
+static qboolean NET_CompareAdr (netadr_t a, netadr_t b);
+static qboolean NET_CompareAdrNoPort (netadr_t a, netadr_t b);
+static void NET_CopyAdr (netadr_t *a, netadr_t *b);
+static void NET_GetLocalAddress (void);
+static qboolean NET_StringToAdr (char *s, netadr_t *a);
+static void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s);
+static void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a);
+static void NET_SendPacket (int length, void *data, netadr_t to);
+static qboolean NET_GetPacket (void);
 
-int		msg_readcount;
-qboolean	msg_badread;
-
-////////////////////////
+//=============================================================================
 typedef struct filter_s
 {
 	netadr_t from;
@@ -26,9 +33,9 @@ typedef struct filter_s
 	struct filter_s *previous;
 }filter_t;
 
-filter_t	*filter_list = NULL;
+static filter_t	*filter_list = NULL;
 
-void FL_Remove(filter_t *filter)
+static void FL_Remove(filter_t *filter)
 {
 	if(filter->previous)
 		filter->previous->next = filter->next;
@@ -42,7 +49,7 @@ void FL_Remove(filter_t *filter)
 		filter_list = NULL;
 }
 
-void FL_Clear()
+static void FL_Clear(void)
 {
 	filter_t *filter;
 
@@ -61,9 +68,10 @@ void FL_Clear()
 	filter_list = NULL;
 }
 
-filter_t* FL_New(netadr_t adr1,netadr_t adr2)
+static filter_t* FL_New(netadr_t adr1,netadr_t adr2)
 {
 	filter_t *filter;
+
 	filter = (filter_t *)malloc(sizeof(filter_t));
 	NET_CopyAdr(&filter->from,&adr1);
 	NET_CopyAdr(&filter->to,&adr2);
@@ -71,7 +79,7 @@ filter_t* FL_New(netadr_t adr1,netadr_t adr2)
 	return filter;
 }
 
-void FL_Add(filter_t *filter)
+static void FL_Add(filter_t *filter)
 {
 	filter->next = filter_list;
 	filter->previous = NULL;
@@ -80,7 +88,7 @@ void FL_Add(filter_t *filter)
 	filter_list = filter;
 }
 
-filter_t* FL_Find(netadr_t adr)
+static filter_t* FL_Find(netadr_t adr)
 {
 	filter_t *filter;
 
@@ -93,10 +101,12 @@ filter_t* FL_Find(netadr_t adr)
 	return NULL;
 }
 
-////////////////////////
+//=============================================================================
+
 server_t *sv_list = NULL;
 
-void SVL_Clear()
+#if 0	// not used
+void SVL_Clear(void)
 {
 	server_t *sv;
 
@@ -114,12 +124,13 @@ void SVL_Clear()
 
 	sv_list = NULL;
 }
+#endif
 
-server_t* SVL_New(netadr_t adr)
+static server_t* SVL_New(netadr_t adr)
 {
 	server_t *sv;
-	sv = (server_t *)malloc(sizeof(server_t));
 
+	sv = (server_t *)malloc(sizeof(server_t));
 	sv->heartbeat = 0;
 	sv->info[0] = 0;
 	sv->ip.ip[0] = 
@@ -137,7 +148,7 @@ server_t* SVL_New(netadr_t adr)
 	return sv;
 }
 
-void SVL_Add(server_t *sv)
+static void SVL_Add(server_t *sv)
 {
 	sv->next = sv_list;
 	sv->previous = NULL;
@@ -158,10 +169,9 @@ void SVL_Remove(server_t *sv)
 
 	sv->next = NULL;
 	sv->previous = NULL;
-
 }
 
-server_t* SVL_Find(netadr_t adr)
+static server_t* SVL_Find(netadr_t adr)
 {
 	server_t *sv;
 
@@ -174,164 +184,9 @@ server_t* SVL_Find(netadr_t adr)
 	return NULL;
 }
 
-////////////////////////
+//=============================================================================
 
-void MSG_BeginReading (void)
-{
-	msg_readcount = 0;
-	msg_badread = false;
-}
-
-int MSG_GetReadCount(void)
-{
-	return msg_readcount;
-}
-
-// returns -1 and sets msg_badread if no more characters are available
-int MSG_ReadChar (void)
-{
-	int	c;
-
-	if (msg_readcount+1 > net_message.cursize)
-	{
-		msg_badread = true;
-		return -1;
-	}
-
-	c = (signed char)net_message.data[msg_readcount];
-	msg_readcount++;
-
-	return c;
-}
-
-int MSG_ReadByte (void)
-{
-	int	c;
-
-	if (msg_readcount+1 > net_message.cursize)
-	{
-		msg_badread = true;
-		return -1;
-	}
-
-	c = (unsigned char)net_message.data[msg_readcount];
-	msg_readcount++;
-
-	return c;
-}
-
-int MSG_ReadShort (void)
-{
-	int	c;
-
-	if (msg_readcount+2 > net_message.cursize)
-	{
-		msg_badread = true;
-		return -1;
-	}
-
-	c = (short)(net_message.data[msg_readcount]
-			+ (net_message.data[msg_readcount+1]<<8));
-
-	msg_readcount += 2;
-
-	return c;
-}
-
-int MSG_ReadLong (void)
-{
-	int	c;
-
-	if (msg_readcount+4 > net_message.cursize)
-	{
-		msg_badread = true;
-		return -1;
-	}
-
-	c = net_message.data[msg_readcount]
-			+ (net_message.data[msg_readcount+1]<<8)
-			+ (net_message.data[msg_readcount+2]<<16)
-			+ (net_message.data[msg_readcount+3]<<24);
-
-	msg_readcount += 4;
-
-	return c;
-}
-
-float MSG_ReadFloat (void)
-{
-	union
-	{
-		byte	b[4];
-		float	f;
-		int	l;
-	} dat;
-
-	dat.b[0] = net_message.data[msg_readcount];
-	dat.b[1] = net_message.data[msg_readcount+1];
-	dat.b[2] = net_message.data[msg_readcount+2];
-	dat.b[3] = net_message.data[msg_readcount+3];
-	msg_readcount += 4;
-
-	dat.l = LittleLong (dat.l);
-
-	return dat.f;	
-}
-
-char *MSG_ReadString (void)
-{
-	static char	string[2048];
-	int		l,c;
-
-	l = 0;
-	do
-	{
-		c = MSG_ReadChar ();
-		if (c == -1 || c == 0)
-			break;
-		string[l] = c;
-		l++;
-	} while (l < sizeof(string)-1);
-
-	string[l] = 0;
-
-	return string;
-}
-
-char *MSG_ReadStringLine (void)
-{
-	static char	string[2048];
-	int		l,c;
-
-	l = 0;
-	do
-	{
-		c = MSG_ReadChar ();
-		if (c == -1 || c == 0 || c == '\n')
-			break;
-		string[l] = c;
-		l++;
-	} while (l < sizeof(string)-1);
-
-	string[l] = 0;
-
-	return string;
-}
-
-void MSG_WriteChar (sizebuf_t *sb, int c)
-{
-	byte	*buf;
-
-#ifdef PARANOID
-	if (c < -128 || c > 127)
-		Sys_Error ("MSG_WriteChar: range error");
-#endif
-
-	buf = (byte *)SZ_GetSpace (sb, 1);
-	buf[0] = c;
-}
-
-void MSG_WriteByte (sizebuf_t *sb, int c)
+static void MSG_WriteByte (sizebuf_t *sb, int c)
 {
 	byte	*buf;
 
@@ -344,7 +199,7 @@ void MSG_WriteByte (sizebuf_t *sb, int c)
 	buf[0] = c;
 }
 
-void MSG_WriteShort (sizebuf_t *sb, int c)
+static void MSG_WriteShort (sizebuf_t *sb, int c)
 {
 	byte	*buf;
 
@@ -358,47 +213,14 @@ void MSG_WriteShort (sizebuf_t *sb, int c)
 	buf[1] = c>>8;
 }
 
-void MSG_WriteLong (sizebuf_t *sb, int c)
+
+//=============================================================================
+
+static void NET_Filter(void)
 {
-	byte	*buf;
-
-	buf = (byte *)SZ_GetSpace (sb, 4);
-	buf[0] = c&0xff;
-	buf[1] = (c>>8)&0xff;
-	buf[2] = (c>>16)&0xff;
-	buf[3] = c>>24;
-}
-
-void MSG_WriteFloat (sizebuf_t *sb, float f)
-{
-	union
-	{
-		float	f;
-		int	l;
-	} dat;
-
-	dat.f = f;
-	dat.l = LittleLong (dat.l);
-
-	SZ_Write (sb, &dat.l, 4);
-}
-
-void MSG_WriteString (sizebuf_t *sb, char *s)
-{
-	if (!s)
-		SZ_Write (sb, "", 1);
-	else
-		SZ_Write (sb, s, strlen(s)+1);
-}
-
-
-////////////////////////
-
-void NET_Filter()
-{
-	filter_t *filter;
-	netadr_t filter_adr;
-	int hold_port;
+	filter_t	*filter;
+	netadr_t	filter_adr;
+	int		hold_port;
 
 	hold_port = net_from.port;
 
@@ -423,13 +245,13 @@ void NET_Filter()
 	}
 }
 
-void NET_Init (int port)
+static void NET_Init (int port)
 {
 #ifdef _WIN32
-	WORD	wVersionRequested; 
+	WORD	wVersionRequested;
 	int		r;
 
-	wVersionRequested = MAKEWORD(1, 1); 
+	wVersionRequested = MAKEWORD(1, 1);
 
 	r = WSAStartup (MAKEWORD(1, 1), &winsockdata);
 
@@ -487,12 +309,12 @@ void SV_InitNet (void)
 	}
 }
 
-int UDP_OpenSocket (int port)
+static int UDP_OpenSocket (int port)
 {
-	int newsocket;
-	struct sockaddr_in address;
+	int	newsocket;
+	struct sockaddr_in	address;
 	unsigned long _true = true;
-	int i;
+	int		i;
 
 	if ((newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
 		Sys_Error ("UDP_OpenSocket: socket:", strerror(errno));
@@ -525,7 +347,7 @@ int UDP_OpenSocket (int port)
 	return newsocket;
 }
 
-void	NET_Shutdown (void)
+void NET_Shutdown (void)
 {
 	closesocket (net_socket);
 #ifdef _WIN32
@@ -533,7 +355,7 @@ void	NET_Shutdown (void)
 #endif
 }
 
-qboolean NET_CompareAdr (netadr_t a, netadr_t b)
+static qboolean NET_CompareAdr (netadr_t a, netadr_t b)
 {
 	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3] && a.port == b.port)
 		return true;
@@ -541,7 +363,7 @@ qboolean NET_CompareAdr (netadr_t a, netadr_t b)
 	return false;
 }
 
-qboolean NET_CompareAdrNoPort (netadr_t a, netadr_t b)
+static qboolean NET_CompareAdrNoPort (netadr_t a, netadr_t b)
 {
 	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3])
 		return true;
@@ -549,7 +371,7 @@ qboolean NET_CompareAdrNoPort (netadr_t a, netadr_t b)
 	return false;
 }
 
-void	NET_CopyAdr (netadr_t *a, netadr_t *b)
+static void NET_CopyAdr (netadr_t *a, netadr_t *b)
 {
 	a->ip[0] = b->ip[0];
 	a->ip[1] = b->ip[1];
@@ -559,7 +381,7 @@ void	NET_CopyAdr (netadr_t *a, netadr_t *b)
 	a->pad = b->pad;
 }
 
-void NET_GetLocalAddress (void)
+static void NET_GetLocalAddress (void)
 {
 	char	buff[512];
 	struct sockaddr_in	address;
@@ -579,7 +401,7 @@ void NET_GetLocalAddress (void)
 	printf("IP address %s\n", NET_AdrToString (net_local_adr) );
 }
 
-char	*NET_AdrToString (netadr_t a)
+char *NET_AdrToString (netadr_t a)
 {
 	static	char	s[64];
 
@@ -588,13 +410,13 @@ char	*NET_AdrToString (netadr_t a)
 	return s;
 }
 
-qboolean NET_StringToAdr (char *s, netadr_t *a)
+static qboolean NET_StringToAdr (char *s, netadr_t *a)
 {
 	struct hostent	*h;
 	struct sockaddr_in sadr;
 	char	*colon;
 	char	copy[128];
-	
+
 	memset (&sadr, 0, sizeof(sadr));
 	sadr.sin_family = AF_INET;
 
@@ -603,11 +425,13 @@ qboolean NET_StringToAdr (char *s, netadr_t *a)
 	strcpy (copy, s);
 	// strip off a trailing :port if present
 	for (colon = copy ; *colon ; colon++)
+	{
 		if (*colon == ':')
 		{
 			*colon = 0;
-			sadr.sin_port = htons((short)atoi(colon+1));	
+			sadr.sin_port = htons((short)atoi(colon+1));
 		}
+	}
 
 	if (copy[0] >= '0' && copy[0] <= '9')
 	{
@@ -626,7 +450,7 @@ qboolean NET_StringToAdr (char *s, netadr_t *a)
 	return true;
 }
 
-void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s)
+static void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s)
 {
 	memset (s, 0, sizeof(*s));
 	s->sin_family = AF_INET;
@@ -635,17 +459,17 @@ void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s)
 	s->sin_port = a->port;
 }
 
-void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
+static void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
 {
 	*(int *)&a->ip = *(int *)&s->sin_addr;
 	a->port = s->sin_port;
 }
 
-void NET_SendPacket (int length, void *data, netadr_t to)
+static void NET_SendPacket (int length, void *data, netadr_t to)
 {
-	int ret;
+	int	ret;
 #ifdef _WIN32
-	int err;
+	int	err;
 #endif
 	struct sockaddr_in	addr;
 
@@ -665,11 +489,11 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 	}
 }
 
-void AnalysePacket()
+static void AnalysePacket(void)
 {
-	byte c;
-	byte *p;
-	int i;
+	byte	c;
+	byte	*p;
+	int		i;
 
 	printf("%s sending packet:\n",NET_AdrToString(net_from));
 
@@ -710,7 +534,7 @@ void AnalysePacket()
 	printf("\n");
 }
 
-void Mst_SendList()
+static void Mst_SendList(void)
 {
 	byte		buf[MAX_DATAGRAM];
 	sizebuf_t	msg;
@@ -736,6 +560,7 @@ void Mst_SendList()
 	MSG_WriteByte(&msg,'\n');
 
 	if(sv_num>0)
+	{
 		for(sv = sv_list;sv;sv = sv->next)
 		{
 			MSG_WriteByte(&msg,sv->ip.ip[0]);
@@ -744,14 +569,15 @@ void Mst_SendList()
 			MSG_WriteByte(&msg,sv->ip.ip[3]);
 			MSG_WriteShort(&msg,sv->ip.port);
 		}
+	}
 
 	NET_SendPacket(msg.cursize,msg.data,net_from);
 }
 
-void Mst_Packet()
+static void Mst_Packet(void)
 {
-	char msg;
-	server_t *sv;
+	char		msg;
+	server_t	*sv;
 
 	//NET_Filter();
 
@@ -798,7 +624,7 @@ void Mst_Packet()
 	}
 	else
 	{
-		byte *p;
+		byte	*p;
 		p = net_message.data;
 
 		printf("%s >> ",NET_AdrToString(net_from));
@@ -825,9 +651,9 @@ void SV_ReadPackets (void)
 	}
 }
 
-qboolean NET_GetPacket (void)
+static qboolean NET_GetPacket (void)
 {
-	int 	ret, err;
+	int	ret, err;
 	struct sockaddr_in	from;
 	socklen_t		fromlen;
 
@@ -835,13 +661,14 @@ qboolean NET_GetPacket (void)
 	ret = recvfrom (net_socket, (char *)net_message_buffer, sizeof(net_message_buffer), 0, (struct sockaddr *)&from, &fromlen);
 	SockadrToNetadr (&from, &net_from);
 
-	if (ret == -1) 
+	if (ret == -1)
 	{
 #ifdef _WIN32
 		err = WSAGetLastError();
 		if (err == WSAEWOULDBLOCK)
 			return false;
-		if (err == WSAEMSGSIZE) {
+		if (err == WSAEMSGSIZE)
+		{
 			printf ("Warning:  Oversize packet from %s\n",
 				NET_AdrToString (net_from));
 			return false;
@@ -866,17 +693,19 @@ qboolean NET_GetPacket (void)
 	return ret;
 }
 
+#if 0	// not used
 void SV_ConnectionlessPacket (void)
 {
 	printf("%s>>%s\n",NET_AdrToString(net_from),net_message.data);
 }
+#endif
 
-int argv_index_add;
+static int argv_index_add;
 
-void Cmd_FilterAdd()
+static void Cmd_FilterAdd(void)
 {
-	filter_t *filter;
-	netadr_t to,from;
+	filter_t	*filter;
+	netadr_t	to, from;
 
 	if(Cmd_Argc()<4+argv_index_add)
 	{
@@ -906,10 +735,10 @@ void Cmd_FilterAdd()
 	}
 }
 
-void Cmd_FilterRemove()
+static void Cmd_FilterRemove(void)
 {
-	filter_t *filter;
-	netadr_t from;
+	filter_t	*filter;
+	netadr_t	from;
 
 	if(Cmd_Argc()<3+argv_index_add)
 	{
@@ -932,9 +761,9 @@ void Cmd_FilterRemove()
 	}
 }
 
-void Cmd_FilterList()
+static void Cmd_FilterList(void)
 {
-	filter_t *filter;
+	filter_t	*filter;
 
 	for(filter = filter_list;filter;filter = filter->next)
 	{
@@ -948,13 +777,13 @@ void Cmd_FilterList()
 	printf("\n");
 }
 
-void Cmd_FilterClear()
+static void Cmd_FilterClear(void)
 {
 	printf("Removed all filters\n\n");
 	FL_Clear();
 }
 
-void Cmd_Filter_f()
+void Cmd_Filter_f(void)
 {
 	argv_index_add = 0;
 
@@ -986,10 +815,10 @@ void Cmd_Filter_f()
 	}
 }
 
-void SV_WriteFilterList()
+void SV_WriteFilterList(void)
 {
-	FILE  *filters;
-	filter_t *filter;
+	FILE	*filters;
+	filter_t	*filter;
 
 	if((filters = fopen(filters_file,"wt")))
 	{

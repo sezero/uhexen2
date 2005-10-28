@@ -36,6 +36,9 @@ typedef int socklen_t;
 #define DWORD unsigned int
 #endif
 
+
+//=============================================================================
+
 //Defines
 #define VER_HWMASTER	"1.2.1"		// our version string
 
@@ -84,6 +87,8 @@ typedef enum {false, true}	qboolean;
 #define	MAX_SERVERINFO_STRING	512
 #define	MAX_CLIENTS		32
 
+
+//=============================================================================
 //Typedefs
 
 typedef unsigned char byte;
@@ -126,9 +131,11 @@ typedef struct cmd_function_s
 	xcommand_t	function;
 } cmd_function_t;
 
+
+//=============================================================================
 //Function prototypes
 
-//net_test.c
+//sys_main.c
 int COM_CheckParm (char *parm);
 char *COM_Parse (char *data);
 void Sys_Error (char *error, ...);
@@ -137,9 +144,6 @@ void SZ_Clear (sizebuf_t *buf);
 void *SZ_GetSpace (sizebuf_t *buf, int length);
 void SZ_Write (sizebuf_t *buf, void *data, int length);
 
-char *Sys_ConsoleInput (void);
-void SV_GetConsoleCommands (void);
-void SV_Frame();
 void SV_Shutdown();
 double Sys_DoubleTime (void);
 
@@ -156,70 +160,31 @@ void Cbuf_InsertText (char *text);
 void Cbuf_Execute (void);
 qboolean Cmd_Exists (char *cmd_name);
 
-void Cmd_Quit_f();
-void Cmd_ServerList_f();
-
 //net.c
-void MSG_WriteChar (sizebuf_t *sb, int c);
-void MSG_WriteByte (sizebuf_t *sb, int c);
-void MSG_WriteShort (sizebuf_t *sb, int c);
-void MSG_WriteLong (sizebuf_t *sb, int c);
-void MSG_WriteFloat (sizebuf_t *sb, float f);
-void MSG_WriteString (sizebuf_t *sb, char *s);
-
-void MSG_BeginReading (void);
-int MSG_GetReadCount(void);
-int MSG_ReadChar (void);
-int MSG_ReadByte (void);
-int MSG_ReadShort (void);
-int MSG_ReadLong (void);
-float MSG_ReadFloat (void);
-char *MSG_ReadString (void);
-char *MSG_ReadStringLine (void);
-
-void NET_Init (int port);
 void SV_InitNet (void);
-int UDP_OpenSocket (int port);
 void NET_Shutdown (void);
-void NET_GetLocalAddress();
 char *NET_AdrToString (netadr_t a);
-qboolean NET_StringToAdr (char *s, netadr_t *a);
-void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s);
-void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a);
-void NET_SendPacket (int length, void *data, netadr_t to);
 void SV_ReadPackets (void);
-qboolean NET_GetPacket (void);
-void SV_ConnectionlessPacket (void);
-void NET_CopyAdr (netadr_t *a, netadr_t *b);
-qboolean NET_CompareAdr (netadr_t a, netadr_t b);
-qboolean NET_CompareAdrNoPort (netadr_t a, netadr_t b);
-void SVL_Add(server_t *sv);
 void SVL_Remove(server_t *sv);
-void SVL_Clear();
-server_t* SVL_Find(netadr_t adr);
-server_t* SVL_New(netadr_t adr);
-void Cmd_Filter_f();
+void Cmd_Filter_f (void);
 
 
+//=============================================================================
 //Globals
-
-extern sizebuf_t	cmd_text;
-extern byte		cmd_text_buf[8192];
 
 extern char		com_token[1024];
 extern int		com_argc;
 extern char	**com_argv;
 
-extern sizebuf_t	net_message;
 extern int		net_socket;
-#ifdef _WIN32
-extern WSADATA		winsockdata;
-#endif
-extern	netadr_t	net_local_adr;
+
+extern server_t	*sv_list;
 
 extern netadr_t		master_adr[MAX_MASTERS];	// address of group servers
 extern int		num_masters;
 
+
+//=============================================================================
 // endianness stuff: <sys/types.h> is supposed
 // to succeed in locating the correct endian.h
 // this BSD style may not work everywhere, eg. on WIN32
@@ -272,10 +237,3 @@ float	FloatSwap (float);
 
 // end of endiannes stuff
 
-
-extern netadr_t	net_from;
-
-extern int	msg_readcount;
-extern qboolean	msg_badread;
-
-extern server_t	*sv_list;

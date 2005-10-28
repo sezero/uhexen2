@@ -6,6 +6,8 @@ static	int		cmd_argc;
 static	char	*cmd_argv[MAX_ARGS];
 static	char	*cmd_null_string = "";
 static	char	*cmd_args = NULL;
+static	sizebuf_t	cmd_text;
+static	byte		cmd_text_buf[8192];
 
 static	cmd_function_t	*cmd_functions;		// possible commands to execute
 
@@ -19,20 +21,20 @@ char *Cmd_Argv (int arg)
 	if (arg >= cmd_argc)
 		return cmd_null_string;
 
-	return cmd_argv[arg];	
+	return cmd_argv[arg];
 }
 
 void Cmd_TokenizeString (char *text)
 {
 	int		i;
-	
+
 	// clear the args from the last string
 	for (i=0 ; i<cmd_argc ; i++)
 		free (cmd_argv[i]);
-		
+
 	cmd_argc = 0;
 	cmd_args = NULL;
-	
+
 	while (1)
 	{	// skip whitespace up to a /n
 		while (*text && *text <= ' ' && *text != '\n')
@@ -50,7 +52,7 @@ void Cmd_TokenizeString (char *text)
 			return;
 
 		if (cmd_argc == 1)
-			 cmd_args = text;
+			cmd_args = text;
 
 		text = COM_Parse (text);
 		if (!text)
@@ -86,15 +88,8 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 	cmd_functions = cmd;
 }
 
-void Cmd_Init()
-{
-	Cmd_AddCommand("quit",Cmd_Quit_f);
-	Cmd_AddCommand("list",Cmd_ServerList_f);
-	Cmd_AddCommand("filter",Cmd_Filter_f);
-}
-
 void Cmd_ExecuteString (char *text)
-{	
+{
 	cmd_function_t	*cmd;
 
 	Cmd_TokenizeString (text);
@@ -230,7 +225,7 @@ qboolean Cmd_Exists (char *cmd_name)
 
 //Commands
 
-void Cmd_Quit_f()
+static void Cmd_Quit_f()
 {
 	printf ("Shutting down.\n");
 	SV_Shutdown ();
@@ -238,10 +233,18 @@ void Cmd_Quit_f()
 	Sys_Quit();
 }
 
-void Cmd_ServerList_f()
+static void Cmd_ServerList_f()
 {
 	server_t *sv;
 
 	for(sv = sv_list;sv;sv = sv->next)
 		printf("%s  %i players\n",NET_AdrToString(sv->ip),sv->players);
 }
+
+void Cmd_Init()
+{
+	Cmd_AddCommand("quit",Cmd_Quit_f);
+	Cmd_AddCommand("list",Cmd_ServerList_f);
+	Cmd_AddCommand("filter",Cmd_Filter_f);
+}
+
