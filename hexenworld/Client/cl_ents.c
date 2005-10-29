@@ -1241,7 +1241,7 @@ void CL_ParsePlayerinfo (void)
 	VectorCopy (state->command.angles, state->viewangles);
 }
 
-
+#if 0	// not used
 /*
 ================
 CL_AddFlagModels
@@ -1318,6 +1318,7 @@ static void CL_AddFlagModels (entity_t *ent, int team)
 	VectorCopy (ent->angles, newent->angles)
 	newent->angles[2] -= 45;
 }
+#endif
 
 /*
 =============
