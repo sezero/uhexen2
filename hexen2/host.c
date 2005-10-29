@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.33 2005-10-29 21:43:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.34 2005-10-29 23:52:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1040,6 +1040,7 @@ void Host_Init (quakeparms_t *parms)
 
 	Cbuf_InsertText ("exec hexen.rc\n");
 	Cbuf_Execute();
+	Cbuf_AddText ("cl_warncmd 1\n");
 
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
@@ -1095,6 +1096,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.33  2005/10/29 21:43:22  sezero
+ * unified cmd layer
+ *
  * Revision 1.32  2005/10/29 13:50:25  sezero
  * set the gl_texlevel before execing hexen.rc, otherwise an +map xxx
  * console command shall end up with a broken display
