@@ -329,7 +329,7 @@ void CL_Record_f (void)
 //
 // start the map up
 //
-	Cmd_ExecuteString ( va("connect %s", Cmd_Argv(2)));
+	Cmd_ExecuteString ( va("connect %s", Cmd_Argv(2)), src_command);
 }
 
 /*

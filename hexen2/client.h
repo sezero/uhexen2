@@ -1,6 +1,6 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.7 2005-10-25 20:08:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.8 2005-10-29 21:43:22 sezero Exp $
 */
 
 typedef struct
@@ -238,6 +238,7 @@ extern	cvar_t	cl_name;
 extern	cvar_t	cl_color;
 extern	cvar_t	cl_playerclass;
 
+extern	cvar_t	cl_warncmd;
 extern	cvar_t	cl_upspeed;
 extern	cvar_t	cl_forwardspeed;
 extern	cvar_t	cl_backspeed;
@@ -307,6 +308,12 @@ extern	int				cl_numvisedicts;
 extern	entity_t		*cl_visedicts[MAX_VISEDICTS];
 
 //
+// cl_cmd
+//
+void Cmd_ForwardToServer (void);
+void CL_Cmd_Init (void);
+
+//
 // cl_input
 //
 typedef struct
@@ -371,6 +378,9 @@ void CL_UpdateTEnts(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/10/25 20:08:41  sezero
+ * coding style and whitespace cleanup.
+ *
  * Revision 1.6  2005/10/25 20:04:17  sezero
  * static functions part-1: started making local functions static,
  * killing nested externs, const vars clean-up.

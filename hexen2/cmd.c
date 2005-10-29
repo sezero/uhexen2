@@ -2,16 +2,15 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.10 2005-10-28 21:13:05 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.11 2005-10-29 21:43:22 sezero Exp $
 */
 
 #include "quakedef.h"
-#include "quakeinc.h"
-
-void Cmd_ForwardToServer (void);
-static void ListCommands (char *prefix);
 
 #define	MAX_ALIAS_NAME	32
+#define	MAX_ARGS	80
+
+cmd_source_t	cmd_source;
 
 typedef struct cmdalias_s
 {
@@ -20,9 +19,24 @@ typedef struct cmdalias_s
 	char	*value;
 } cmdalias_t;
 
+typedef struct cmd_function_s
+{
+	struct cmd_function_s	*next;
+	char					*name;
+	xcommand_t				function;
+} cmd_function_t;
+
 static cmdalias_t	*cmd_alias;
+static cmd_function_t	*cmd_functions;
+
+static	int			cmd_argc;
+static	char		*cmd_argv[MAX_ARGS];
+static	char		*cmd_null_string = "";
+static	char		*cmd_args = NULL;
 
 static qboolean	cmd_wait;
+
+cvar_t cl_warncmd = {"cl_warncmd", "0"};
 
 
 //=============================================================================
@@ -36,7 +50,7 @@ next frame.  This allows commands like:
 bind g "impulse 5 ; +attack ; wait ; -attack ; impulse 2"
 ============
 */
-void Cmd_Wait_f (void)
+static void Cmd_Wait_f (void)
 {
 	cmd_wait = true;
 }
@@ -113,7 +127,7 @@ void Cbuf_InsertText (char *text)
 
 // add the entire text of the file
 	Cbuf_AddText (text);
-
+	SZ_Write (&cmd_text, "\n", 1);
 // add the copied off data
 	if (templen)
 	{
@@ -202,12 +216,6 @@ void Cmd_StuffCmds_f (void)
 	int		s;
 	char	*text, *build, c;
 
-	if (Cmd_Argc () != 1)
-	{
-		Con_Printf ("stuffcmds : execute command line parameters\n");
-		return;
-	}
-
 // build the combined string to parse from
 	s = 0;
 	for (i=1 ; i<com_argc ; i++)
@@ -260,6 +268,7 @@ void Cmd_StuffCmds_f (void)
 	Z_Free (build);
 }
 
+
 /*
 ===============
 Cmd_Exec_f
@@ -276,6 +285,7 @@ static void Cmd_Exec_f (void)
 		return;
 	}
 
+	// FIXME: is this safe freeing the hunk here???
 	mark = Hunk_LowMark ();
 	f = (char *)COM_LoadHunkFile (Cmd_Argv(1));
 	if (!f)
@@ -283,7 +293,8 @@ static void Cmd_Exec_f (void)
 		Con_Printf ("couldn't exec %s\n",Cmd_Argv(1));
 		return;
 	}
-	Con_Printf ("execing %s\n",Cmd_Argv(1));
+	if (!Cvar_Command () && (cl_warncmd.value || developer.value))
+		Con_Printf ("execing %s\n",Cmd_Argv(1));
 
 	Cbuf_InsertText (f);
 	Hunk_FreeToLowMark (mark);
@@ -304,19 +315,6 @@ static void Cmd_Echo_f (void)
 	for (i=1 ; i<Cmd_Argc() ; i++)
 		Con_Printf ("%s ",Cmd_Argv(i));
 	Con_Printf ("\n");
-}
-
-/*
-===============
-Cmd_List_f
-
-Lists the commands to the console
-===============
-*/
-static void Cmd_List_f(void)
-{
-//	int		i;
-	ListCommands (Cmd_Argv(1));
 }
 
 /*
@@ -389,49 +387,6 @@ static void Cmd_Alias_f (void)
 =============================================================================
 */
 
-typedef struct cmd_function_s
-{
-	struct cmd_function_s	*next;
-	char					*name;
-	xcommand_t				function;
-} cmd_function_t;
-
-
-#define	MAX_ARGS		80
-
-static	int			cmd_argc;
-static	char		*cmd_argv[MAX_ARGS];
-static	char		*cmd_null_string = "";
-static	char		*cmd_args = NULL;
-
-cmd_source_t	cmd_source;
-
-#define MAX_CMDS 170
-
-static cmd_function_t cmds[MAX_CMDS];
-static int NumCmds = 0;
-
-static	cmd_function_t	*cmd_functions;		// possible commands to execute
-
-/*
-============
-Cmd_Init
-============
-*/
-void Cmd_Init (void)
-{
-//
-// register our commands
-//
-	Cmd_AddCommand ("stuffcmds",Cmd_StuffCmds_f);
-	Cmd_AddCommand ("exec",Cmd_Exec_f);
-	Cmd_AddCommand ("echo",Cmd_Echo_f);
-	Cmd_AddCommand ("alias",Cmd_Alias_f);
-	Cmd_AddCommand ("cmd", Cmd_ForwardToServer);
-	Cmd_AddCommand ("wait", Cmd_Wait_f);
-	Cmd_AddCommand ("list", Cmd_List_f);
-}
-
 /*
 ============
 Cmd_Argc
@@ -457,10 +412,14 @@ char *Cmd_Argv (int arg)
 /*
 ============
 Cmd_Args
+
+Returns a single string containing argv(1) to argv(argc()-1)
 ============
 */
 char *Cmd_Args (void)
 {
+	if (!cmd_args)
+		return "";
 	return cmd_args;
 }
 
@@ -546,19 +505,11 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 		}
 	}
 
-	if (NumCmds >= MAX_CMDS)
-	{
-		Con_Printf("Could not add command %s\n",cmd_name);
-		return;
-	}
-
-	cmd = &cmds[NumCmds];
+	cmd = Hunk_AllocName (sizeof(cmd_function_t), "commands");
 	cmd->name = cmd_name;
 	cmd->function = function;
 	cmd->next = cmd_functions;
 	cmd_functions = cmd;
-
-	NumCmds++;
 }
 
 /*
@@ -589,16 +540,28 @@ char *Cmd_CompleteCommand (char *partial)
 {
 	cmd_function_t	*cmd;
 	int			len;
+	cmdalias_t	*a;
 
 	len = strlen(partial);
 
 	if (!len)
 		return NULL;
 
-// check functions
+// check for exact match
+	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
+		if (!strcmp (partial,cmd->name))
+			return cmd->name;
+	for (a=cmd_alias ; a ; a=a->next)
+		if (!strcmp (partial, a->name))
+			return a->name;
+
+// check for partial match
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
 		if (!strncmp (partial,cmd->name, len))
 			return cmd->name;
+	for (a=cmd_alias ; a ; a=a->next)
+		if (!strncmp (partial, a->name, len))
+			return a->name;
 
 	return NULL;
 }
@@ -628,7 +591,17 @@ void Cmd_ExecuteString (char *text, cmd_source_t src)
 	{
 		if (!Q_strcasecmp (cmd_argv[0],cmd->name))
 		{
-			cmd->function ();
+#if defined(H2W)
+			if (!cmd->function)
+#ifndef SERVERONLY
+				Cmd_ForwardToServer ();
+#else
+				Sys_Printf ("FIXME: command %s has NULL handler function\n", cmd->name);
+#endif
+			else
+#endif
+				cmd->function ();
+
 			return;
 		}
 	}
@@ -644,39 +617,8 @@ void Cmd_ExecuteString (char *text, cmd_source_t src)
 	}
 
 // check cvars
-	if (!Cvar_Command ())
+	if (!Cvar_Command () && (cl_warncmd.value || developer.value))
 		Con_Printf ("Unknown command \"%s\"\n", Cmd_Argv(0));
-}
-
-
-/*
-===================
-Cmd_ForwardToServer
-
-Sends the entire command line over to the server
-===================
-*/
-void Cmd_ForwardToServer (void)
-{
-	if (cls.state != ca_connected)
-	{
-		Con_Printf ("Can't \"%s\", not connected\n", Cmd_Argv(0));
-		return;
-	}
-
-	if (cls.demoplayback)
-		return;		// not really connected
-
-	MSG_WriteByte (&cls.message, clc_stringcmd);
-	if (Q_strcasecmp(Cmd_Argv(0), "cmd") != 0)
-	{
-		SZ_Print (&cls.message, Cmd_Argv(0));
-		SZ_Print (&cls.message, " ");
-	}
-	if (Cmd_Argc() > 1)
-		SZ_Print (&cls.message, Cmd_Args());
-	else
-		SZ_Print (&cls.message, "\n");
 }
 
 #if 0
@@ -703,14 +645,14 @@ int Cmd_CheckParm (char *parm)
 }
 #endif
 
-void WriteCommands (FILE *FH)
-{
-	cmd_function_t	*cmd;
+#ifndef SERVERONLY
+/*
+===============
+Cmd_List_f
 
-	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
-		fprintf(FH,"   %s\n", cmd->name);
-}
-
+Lists the commands to the console
+===============
+*/
 static void ListCommands (char *prefix)
 {
 	cmd_function_t	*cmd;
@@ -723,8 +665,67 @@ static void ListCommands (char *prefix)
 	}
 }
 
+static void Cmd_List_f(void)
+{
+	ListCommands (Cmd_Argv(1));
+}
+
+static void Cmd_WriteCommands_f (void)
+{
+	FILE	*FH;
+	cmd_function_t	*cmd;
+	cvar_t		*var;
+	cmdalias_t	*a;
+
+	FH = fopen(va("%s/commands.txt", com_userdir),"w");
+	if (!FH)
+	{
+		return;
+	}
+
+	fprintf(FH,"\n\nConsole Commands:\n");
+	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
+		fprintf(FH,"   %s\n", cmd->name);
+
+	fprintf(FH,"\n\nAlias Commands:\n");
+	for (a=cmd_alias ; a ; a=a->next)
+		fprintf(FH,"   %s :\n\t%s\n", a->name, a->value);
+
+	fprintf(FH,"\n\nConsole Variables:\n");
+	for (var = cvar_vars ; var ; var = var->next)
+		fprintf(FH,"   %s\n", var->name);
+
+	fclose(FH);
+}
+#endif
+
+/*
+============
+Cmd_Init
+============
+*/
+void Cmd_Init (void)
+{
+//
+// register our commands
+//
+	Cmd_AddCommand ("stuffcmds",Cmd_StuffCmds_f);
+	Cmd_AddCommand ("exec",Cmd_Exec_f);
+	Cmd_AddCommand ("echo",Cmd_Echo_f);
+	Cmd_AddCommand ("alias",Cmd_Alias_f);
+	Cmd_AddCommand ("wait", Cmd_Wait_f);
+#ifndef SERVERONLY
+	Cmd_AddCommand ("commands", Cmd_WriteCommands_f);
+	Cmd_AddCommand ("cmdlist", Cmd_List_f);
+#endif
+}
+
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/10/28 21:13:05  sezero
+ * static functions part-2: making local functions static,
+ * killing nested externs, const vars clean-up.
+ *
  * Revision 1.9  2005/10/25 20:08:41  sezero
  * coding style and whitespace cleanup.
  *

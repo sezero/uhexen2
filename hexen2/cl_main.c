@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.19 2005-10-25 20:08:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.20 2005-10-29 21:43:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -980,6 +980,7 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&cl_name);
 	Cvar_RegisterVariable (&cl_color);
 	Cvar_RegisterVariable (&cl_playerclass);
+	Cvar_RegisterVariable (&cl_warncmd);
 	Cvar_RegisterVariable (&cl_upspeed);
 	Cvar_RegisterVariable (&cl_forwardspeed);
 	Cvar_RegisterVariable (&cl_backspeed);
@@ -1014,6 +1015,9 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2005/10/25 20:08:40  sezero
+ * coding style and whitespace cleanup.
+ *
  * Revision 1.18  2005/10/25 20:04:17  sezero
  * static functions part-1: started making local functions static,
  * killing nested externs, const vars clean-up.

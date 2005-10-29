@@ -407,6 +407,12 @@ extern	entity_t		*cl_visedicts, *cl_oldvisedicts;
 extern	entity_t		cl_visedicts_list[2][MAX_VISEDICTS];
 
 //
+// cl_cmd
+//
+void Cmd_ForwardToServer (void);
+void CL_Cmd_Init (void);
+
+//
 // cl_input
 //
 typedef struct

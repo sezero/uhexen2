@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.32 2005-10-29 13:50:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.33 2005-10-29 21:43:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -964,6 +964,7 @@ void Host_Init (quakeparms_t *parms)
 	Memory_Init (parms->membase, parms->memsize);
 	Cbuf_Init ();
 	Cmd_Init ();	
+	CL_Cmd_Init ();
 	V_Init ();
 	Chase_Init ();
 	Host_InitVCR (parms);
@@ -1094,6 +1095,10 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2005/10/29 13:50:25  sezero
+ * set the gl_texlevel before execing hexen.rc, otherwise an +map xxx
+ * console command shall end up with a broken display
+ *
  * Revision 1.31  2005/10/21 17:57:14  sezero
  * added support for systems without OSS sound.
  * added a paranoid case to S_SoundInfo.

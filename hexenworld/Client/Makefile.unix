@@ -181,6 +181,7 @@ COMMONOBJS = cd_unix.o \
 	cl_parse.o \
 	cl_pred.o \
 	cl_tent.o \
+	cl_cmd.o \
 	cmd.o \
 	common.o \
 	console.o \

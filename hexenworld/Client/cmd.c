@@ -1,10 +1,16 @@
-// cmd.c -- Quake script command processing module
+/*
+	cmd.c
+	Quake script command processing module
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.7 2005-10-29 21:43:22 sezero Exp $
+*/
 
 #include "quakedef.h"
 
-void Cmd_ForwardToServer (void);
-
 #define	MAX_ALIAS_NAME	32
+#define	MAX_ARGS	80
+
+cmd_source_t	cmd_source;
 
 typedef struct cmdalias_s
 {
@@ -13,11 +19,25 @@ typedef struct cmdalias_s
 	char	*value;
 } cmdalias_t;
 
+typedef struct cmd_function_s
+{
+	struct cmd_function_s	*next;
+	char					*name;
+	xcommand_t				function;
+} cmd_function_t;
+
 static cmdalias_t	*cmd_alias;
+static cmd_function_t	*cmd_functions;
+
+static	int			cmd_argc;
+static	char		*cmd_argv[MAX_ARGS];
+static	char		*cmd_null_string = "";
+static	char		*cmd_args = NULL;
 
 static qboolean	cmd_wait;
 
 cvar_t cl_warncmd = {"cl_warncmd", "0"};
+
 
 //=============================================================================
 
@@ -44,7 +64,7 @@ static void Cmd_Wait_f (void)
 */
 
 static sizebuf_t	cmd_text;
-static byte		cmd_text_buf[8192];
+static byte	cmd_text_buf[8192];
 
 /*
 ============
@@ -56,6 +76,7 @@ void Cbuf_Init (void)
 	// space for commands and script files
 	SZ_Init (&cmd_text, cmd_text_buf, sizeof(cmd_text_buf));
 }
+
 
 /*
 ============
@@ -75,7 +96,7 @@ void Cbuf_AddText (char *text)
 		Con_Printf ("Cbuf_AddText: overflow\n");
 		return;
 	}
-	SZ_Write (&cmd_text, text, strlen (text));
+	SZ_Write (&cmd_text, text, l);
 }
 
 
@@ -160,7 +181,7 @@ void Cbuf_Execute (void)
 		}
 
 // execute the command line
-		Cmd_ExecuteString (line);
+		Cmd_ExecuteString (line, src_command);
 
 		if (cmd_wait)
 		{	// skip out while text still remains in buffer, leaving it
@@ -366,22 +387,6 @@ static void Cmd_Alias_f (void)
 =============================================================================
 */
 
-typedef struct cmd_function_s
-{
-	struct cmd_function_s	*next;
-	char					*name;
-	xcommand_t				function;
-} cmd_function_t;
-
-#define	MAX_ARGS		80
-
-static	int			cmd_argc;
-static	char		*cmd_argv[MAX_ARGS];
-static	char		*cmd_null_string = "";
-static	char		*cmd_args = NULL;
-
-static	cmd_function_t	*cmd_functions;		// possible commands to execute
-
 /*
 ============
 Cmd_Argc
@@ -401,7 +406,7 @@ char *Cmd_Argv (int arg)
 {
 	if ( (unsigned)arg >= cmd_argc )
 		return cmd_null_string;
-	return cmd_argv[arg];	
+	return cmd_argv[arg];
 }
 
 /*
@@ -534,8 +539,8 @@ Cmd_CompleteCommand
 char *Cmd_CompleteCommand (char *partial)
 {
 	cmd_function_t	*cmd;
-	int				len;
-	cmdalias_t		*a;
+	int			len;
+	cmdalias_t	*a;
 
 	len = strlen(partial);
 
@@ -561,60 +566,6 @@ char *Cmd_CompleteCommand (char *partial)
 	return NULL;
 }
 
-#ifndef SERVERONLY		// FIXME
-/*
-===================
-Cmd_ForwardToServer
-
-adds the current command line as a clc_stringcmd to the client message.
-things like godmode, noclip, etc, are commands directed to the server,
-so when they are typed in at the console, they will need to be forwarded.
-===================
-*/
-void Cmd_ForwardToServer (void)
-{
-	if (cls.state == ca_disconnected)
-	{
-		Con_Printf ("Can't \"%s\", not connected\n", Cmd_Argv(0));
-		return;
-	}
-
-	if (cls.demoplayback)
-		return;		// not really connected
-
-	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-	SZ_Print (&cls.netchan.message, Cmd_Argv(0));
-	if (Cmd_Argc() > 1)
-	{
-		SZ_Print (&cls.netchan.message, " ");
-		SZ_Print (&cls.netchan.message, Cmd_Args());
-	}
-}
-
-// don't forward the first argument
-void Cmd_ForwardToServer_f (void)
-{
-	if (cls.state == ca_disconnected)
-	{
-		Con_Printf ("Can't \"%s\", not connected\n", Cmd_Argv(0));
-		return;
-	}
-
-	if (cls.demoplayback)
-		return;		// not really connected
-
-	if (Cmd_Argc() > 1)
-	{
-		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-		SZ_Print (&cls.netchan.message, Cmd_Args());
-	}
-}
-#else
-void Cmd_ForwardToServer (void)
-{
-}
-#endif
-
 /*
 ============
 Cmd_ExecuteString
@@ -623,11 +574,12 @@ A complete command line has been parsed, so try to execute it
 FIXME: lookupnoadd the token to speed search?
 ============
 */
-void Cmd_ExecuteString (char *text)
+void Cmd_ExecuteString (char *text, cmd_source_t src)
 {
 	cmd_function_t	*cmd;
 	cmdalias_t		*a;
 
+	cmd_source = src;
 	Cmd_TokenizeString (text);
 
 // execute the command line
@@ -639,10 +591,17 @@ void Cmd_ExecuteString (char *text)
 	{
 		if (!Q_strcasecmp (cmd_argv[0],cmd->name))
 		{
+#if defined(H2W)
 			if (!cmd->function)
+#ifndef SERVERONLY
 				Cmd_ForwardToServer ();
+#else
+				Sys_Printf ("FIXME: command %s has NULL handler function\n", cmd->name);
+#endif
 			else
+#endif
 				cmd->function ();
+
 			return;
 		}
 	}
@@ -686,6 +645,60 @@ int Cmd_CheckParm (char *parm)
 }
 #endif
 
+#ifndef SERVERONLY
+/*
+===============
+Cmd_List_f
+
+Lists the commands to the console
+===============
+*/
+static void ListCommands (char *prefix)
+{
+	cmd_function_t	*cmd;
+	int preLen = strlen(prefix);
+
+	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
+	{
+		if(!Q_strncasecmp(prefix,cmd->name,preLen))
+			Con_Printf ("%s\n", cmd->name);
+	}
+}
+
+static void Cmd_List_f(void)
+{
+	ListCommands (Cmd_Argv(1));
+}
+
+static void Cmd_WriteCommands_f (void)
+{
+	FILE	*FH;
+	cmd_function_t	*cmd;
+	cvar_t		*var;
+	cmdalias_t	*a;
+
+	FH = fopen(va("%s/commands.txt", com_userdir),"w");
+	if (!FH)
+	{
+		return;
+	}
+
+	fprintf(FH,"\n\nConsole Commands:\n");
+	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
+		fprintf(FH,"   %s\n", cmd->name);
+
+	fprintf(FH,"\n\nAlias Commands:\n");
+	for (a=cmd_alias ; a ; a=a->next)
+		fprintf(FH,"   %s :\n\t%s\n", a->name, a->value);
+
+	fprintf(FH,"\n\nConsole Variables:\n");
+	for (var = cvar_vars ; var ; var = var->next)
+		fprintf(FH,"   %s\n", var->name);
+
+	fclose(FH);
+}
+#endif
+
 /*
 ============
 Cmd_Init
@@ -702,7 +715,8 @@ void Cmd_Init (void)
 	Cmd_AddCommand ("alias",Cmd_Alias_f);
 	Cmd_AddCommand ("wait", Cmd_Wait_f);
 #ifndef SERVERONLY
-	Cmd_AddCommand ("cmd", Cmd_ForwardToServer_f);
+	Cmd_AddCommand ("commands", Cmd_WriteCommands_f);
+	Cmd_AddCommand ("cmdlist", Cmd_List_f);
 #endif
 }
 

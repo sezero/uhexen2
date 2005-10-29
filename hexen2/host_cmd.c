@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.32 2005-10-25 17:14:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.33 2005-10-29 21:43:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1730,23 +1730,6 @@ int strdiff(char *s1, char *s2)
 	return i;
 }
 
-void Host_Commands_f(void)
-{
-	FILE *FH;
-	cvar_t	*var;
-
-	FH = fopen(va("%s/commands.txt", com_userdir),"w");
-
-	fprintf(FH,"\n\nConsole Commands:\n");
-	WriteCommands (FH);
-
-	fprintf(FH,"\n\nConsole Variables:\n");
-	for (var = cvar_vars ; var ; var = var->next)
-		fprintf (FH, "   %s\n", var->name);
-
-	fclose(FH);
-}
-
 void Host_Create_f(void)
 {
 	char *FindName;
@@ -2260,12 +2243,16 @@ void Host_InitCommands (void)
 	Cmd_AddCommand ("mcache", Mod_Print);
 
 	Cmd_AddCommand ("create", Host_Create_f);
-	Cmd_AddCommand ("commands", Host_Commands_f);
 
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2005/10/25 17:14:22  sezero
+ * added a STRINGIFY macro. unified version macros. simplified version
+ * printing. simplified and enhanced version watermark print onto console
+ * background. added HoT lines to the quit menu (shameless plug)
+ *
  * Revision 1.31  2005/10/02 15:43:08  sezero
  * killed -Wshadow warnings
  *
