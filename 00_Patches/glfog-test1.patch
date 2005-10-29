@@ -14,7 +14,7 @@ diff -urNp uhexen2-20051021/hexen2/gl_dl_rlight.c uhexen2-20051021-fog/hexen2/gl
 @@ -115,6 +115,10 @@ void R_RenderDlights (void)
  
  	r_dlightframecount = r_framecount + 1;	// because the count hasn't
- 											//  advanced yet for this frame
+ 						//  advanced yet for this frame
 +
 +	// disable drawing fog on lights
 +	if (gl_fogenable.value)
@@ -351,7 +351,7 @@ diff -urNp uhexen2-20051021/hexenworld/Client/gl_rlight.c uhexen2-20051021-fog/h
 @@ -141,6 +141,10 @@ void R_RenderDlights (void)
  
  	r_dlightframecount = r_framecount + 1;	// because the count hasn't
- 											//  advanced yet for this frame
+ 						//  advanced yet for this frame
 +
 +	// disable drawing fog on lights
 +	if (gl_fogenable.value)
