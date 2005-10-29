@@ -1366,17 +1366,18 @@ void Host_Init (quakeparms_t *parms)
 	CL_Init ();
 	IN_Init ();
 
+#ifdef GLQUAKE
+/*	analogous to host_hunklevel, this will mark OpenGL texture
+	beyond which everything will need to be purged on new map */
+	gl_texlevel = numgltextures;
+#endif
+
 	Cbuf_InsertText ("exec hexen.rc\n");
 	Cbuf_Execute();
 	Cbuf_AddText ("cl_warncmd 1\n");
 
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
-#ifdef GLQUAKE
-/*	analogouos to host_hunklevel, this will mark OpenGL texture
-	beyond which everything will need to be purged on new map */
-	gl_texlevel = numgltextures;
-#endif
 
 #ifdef WITH_SDL
 	// apply gamma settings at startup, after having read the config.cfg

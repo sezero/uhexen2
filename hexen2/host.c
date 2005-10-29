@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.31 2005-10-21 17:57:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.32 2005-10-29 13:50:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1031,17 +1031,17 @@ void Host_Init (quakeparms_t *parms)
 		IN_Init();
 	}
 
+#ifdef GLQUAKE
+/*	analogous to host_hunklevel, this will mark OpenGL texture
+	beyond which everything will need to be purged on new map */
+	gl_texlevel = numgltextures;
+#endif
+
 	Cbuf_InsertText ("exec hexen.rc\n");
 	Cbuf_Execute();
 
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
-
-#ifdef GLQUAKE
-/*	analogouos to host_hunklevel, this will mark OpenGL texture
-	beyond which everything will need to be purged on new map */
-	gl_texlevel = numgltextures;
-#endif
 
 #ifdef WITH_SDL
 	// apply gamma settings at startup, after having read the config.cfg
@@ -1094,6 +1094,11 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2005/10/21 17:57:14  sezero
+ * added support for systems without OSS sound.
+ * added a paranoid case to S_SoundInfo.
+ * killed a few unnecessary prints.
+ *
  * Revision 1.30  2005/09/29 14:04:06  sezero
  * cleaned-up Host_Init and Host_Shutdown stuff. removed
  * unnecessary ca_dedicated checks from CDAudio_Init.
