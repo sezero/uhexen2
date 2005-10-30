@@ -28,6 +28,7 @@ static qboolean	con_debuglog;
 extern	char	key_lines[32][MAXCMDLINE];
 extern	int		edit_line;
 extern	int		key_linepos;
+extern	int		key_insert;
 extern qboolean		mousestate_sa;
 extern void	IN_ActivateMouse (void);
 extern void	IN_DeactivateMouse (void);
@@ -447,19 +448,22 @@ static void Con_DrawInput (void)
 {
 	int		y;
 	int		i;
-	char	*text;
+	char	editlinecopy[256], *text;
 
 	if (key_dest != key_console && cls.state == ca_active)
 		return;		// don't draw anything (always draw if not active)
 
-	text = key_lines[edit_line];
+	text = strcpy(editlinecopy, key_lines[edit_line]);
 
-// add the cursor frame
-	text[key_linepos] = 10+((int)(realtime*con_cursorspeed)&1);
+	y = strlen(text);
 
 // fill out remainder with spaces
-	for (i=key_linepos+1 ; i< con_linewidth ; i++)
+	for (i = y; i < 256; i++)
 		text[i] = ' ';
+
+// add the cursor frame
+	if ((int)(realtime * con_cursorspeed) & 1)	// cursor is visible
+		text[key_linepos] = 95 - 84 * key_insert; // underscore for overwrite mode, square for insert
 
 //	prestep if horizontally scrolling
 	if (key_linepos >= con_linewidth)
@@ -472,7 +476,7 @@ static void Con_DrawInput (void)
 		Draw_Character ( (i+1)<<3, con_vislines - 22, text[i]);
 
 // remove cursor
-	key_lines[edit_line][key_linepos] = 0;
+	//key_lines[edit_line][key_linepos] = 0;
 }
 
 

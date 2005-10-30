@@ -14,6 +14,7 @@ char	key_lines[32][MAXCMDLINE];
 int		key_linepos;
 int		shift_down=false;
 int		key_lastpress;
+int		key_insert;	// insert key toggle
 
 int		edit_line=0;
 int		history_line=0;
@@ -141,9 +142,25 @@ keyname_t keynames[] =
 
 void CompleteCommand (void)
 {
-	char	*cmd = NULL, *s;
+	char	*cmd = NULL, *s, stmp[256];
+	qboolean	editing = false;
+
+	if (key_linepos < 2)
+		return;
+
+	if (strlen(key_lines[edit_line]+1) > key_linepos)
+	{
+		editing = true;
+		// make a copy of the text starting from the
+		// cursor position (see below)
+		strcpy(stmp, key_lines[edit_line]+key_linepos);
+	}
 
 	s = key_lines[edit_line]+1;
+	// complete the text only up to the cursor position:
+	// bash style. cut off the rest for now.
+	if (editing)
+		s[key_linepos-1] = 0;
 
 	// skip the leading whitespace and command markers
 	while (*s)
@@ -178,9 +195,25 @@ void CompleteCommand (void)
 		strcpy (key_lines[edit_line]+1, cmd);
 		key_linepos = strlen(cmd)+1;
 
+		if (editing)
+		{
+			// put back the remainder of the original text after
+			// the auto-completed cmd without an extra space
+			strcpy (key_lines[edit_line]+key_linepos, stmp);
+			key_lines[edit_line][key_linepos+strlen(stmp)+1] = 0;
+			return;
+		}
+
 		key_lines[edit_line][key_linepos] = ' ';
 		key_linepos++;
 		key_lines[edit_line][key_linepos] = 0;
+	}
+	else if (editing)
+	{
+		// put back the remainder of the original text
+		// which was lost after the trimming
+		strcpy (key_lines[edit_line]+key_linepos, stmp);
+		key_lines[edit_line][key_linepos+strlen(stmp)+1] = 0;
 	}
 }
 
@@ -193,8 +226,8 @@ Interactive line editing and console scrollback
 */
 void Key_Console (int key)
 {
-#ifdef _WIN32
 	int		i;
+#ifdef _WIN32
 	HANDLE	th;
 	char	*clipText, *textCopied;
 #endif
@@ -206,6 +239,7 @@ void Key_Console (int key)
 		edit_line = (edit_line + 1) & 31;
 		history_line = edit_line;
 		key_lines[edit_line][0] = ']';
+		key_lines[edit_line][1] = 0;	// null terminate
 		key_linepos = 1;
 		if (cls.state == ca_disconnected)
 			SCR_UpdateScreen ();	// force an update, because the command
@@ -219,10 +253,52 @@ void Key_Console (int key)
 		return;
 	}
 	
-	if (key == K_BACKSPACE || key == K_LEFTARROW)
+	// left arrow will just move left one w/o earsing, backspace will
+	// actually erase charcter
+	if (key == K_LEFTARROW)
 	{
 		if (key_linepos > 1)
+		key_linepos--;
+		return;
+	}
+
+	if (key == K_BACKSPACE)	// delete char before cursor
+	{
+		if (key_linepos > 1)
+		{
+			strcpy(key_lines[edit_line] + key_linepos - 1, key_lines[edit_line] + key_linepos);
 			key_linepos--;
+		}
+		return;
+	}
+
+	if (key == K_DEL)	// delete char on cursor
+	{
+		if (key_linepos < strlen(key_lines[edit_line]))
+			strcpy(key_lines[edit_line] + key_linepos, key_lines[edit_line] + key_linepos + 1);
+		return;
+	}
+
+	// if we're at the end, get one character from previous line,
+	// otherwise just go right one
+	if (key == K_RIGHTARROW)
+	{
+		if (strlen(key_lines[edit_line]) == key_linepos)
+		{
+			if (strlen(key_lines[(edit_line + 31) & 31]) <= key_linepos)
+				return;	// no character to get
+			key_lines[edit_line][key_linepos] = key_lines[(edit_line + 31) & 31][key_linepos];
+			key_linepos++;
+			key_lines[edit_line][key_linepos] = 0;
+		}
+		else
+			key_linepos++;
+		return;
+	}
+
+	if (key == K_INS)
+	{	// toggle insert mode
+		key_insert ^= 1;
 		return;
 	}
 
@@ -280,13 +356,21 @@ void Key_Console (int key)
 
 	if (key == K_HOME)
 	{
-		con_backscroll = con_totallines - (vid.height>>3) - 1;
+		if (shift_down)
+			con_backscroll = con_totallines - (vid.height>>3) - 1;
+		else
+			key_linepos = 1;
+
 		return;
 	}
 
 	if (key == K_END)
 	{
-		con_backscroll = 0;
+		if (shift_down)
+			con_backscroll = 0;
+		else
+			key_linepos = strlen(key_lines[edit_line]);
+
 		return;
 	}
 	
@@ -324,9 +408,21 @@ void Key_Console (int key)
 		
 	if (key_linepos < MAXCMDLINE-1)
 	{
+		// check insert mode
+		if (key_insert)
+		{	// can't do strcpy to move string to right
+			i = strlen(key_lines[edit_line]) - 1;
+			if (i == 254)
+				i--;
+			for (; i >= key_linepos; i--)
+				key_lines[edit_line][i + 1] = key_lines[edit_line][i];
+		}
+		// only null terminate if at the end
+		i = key_lines[edit_line][key_linepos];
 		key_lines[edit_line][key_linepos] = key;
 		key_linepos++;
-		key_lines[edit_line][key_linepos] = 0;
+		if (!i)
+			key_lines[edit_line][key_linepos] = 0;
 	}
 
 }
@@ -597,6 +693,8 @@ void Key_Init (void)
 	consolekeys[K_UPARROW] = true;
 	consolekeys[K_DOWNARROW] = true;
 	consolekeys[K_BACKSPACE] = true;
+	consolekeys[K_DEL] = true;
+	consolekeys[K_INS] = true;
 	consolekeys[K_HOME] = true;
 	consolekeys[K_END] = true;
 	consolekeys[K_PGUP] = true;
