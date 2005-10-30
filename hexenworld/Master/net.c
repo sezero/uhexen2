@@ -8,7 +8,7 @@ static byte	net_message_buffer[MAX_UDP_PACKET];
 static sizebuf_t	net_message;
 int		net_socket;
 #ifdef _WIN32
-statc WSADATA	winsockdata;
+static WSADATA	winsockdata;
 #endif
 static netadr_t	net_local_adr;
 static netadr_t	net_from;
