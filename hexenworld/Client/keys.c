@@ -164,24 +164,44 @@ qboolean CheckForCommand (void)
 
 void CompleteCommand (void)
 {
-	char	*cmd, *s;
+	char	*cmd = NULL, *s;
 
 	s = key_lines[edit_line]+1;
-	if (*s == '\\' || *s == '/')
-		s++;
 
-	cmd = Cmd_CompleteCommand (s);
-	if (!cmd)
-		cmd = Cvar_CompleteVariable (s);
+	// skip the leading whitespace and command markers
+	while (*s)
+	{
+		if (*s != '\\' && *s != '/' && *s > ' ')
+			break;
+		s++;
+	}
+
+	// if the remainder line still has a length and does
+	// not contain spaces, check for possible matches
+	if (strlen(s) && !strstr(s," "))
+	{
+		cmd = Cmd_CompleteCommand (s);
+		if (!cmd)
+			cmd = Cvar_CompleteVariable (s);
+	}
+
+	// if there really are candidates, list them now
+	// and complete to the first possible match
 	if (cmd)
 	{
+		Con_Printf("\n\n====================\n\nPossible matches :\n\n");
+		Cbuf_AddText(va("cmdlist %s\n",s));
+		Cbuf_AddText(va("cvarlist %s\n",s));
+		Cbuf_AddText(va("aliaslist %s\n",s));
+		Cbuf_AddText("echo\n");
+
 		key_lines[edit_line][1] = '/';
 		strcpy (key_lines[edit_line]+2, cmd);
 		key_linepos = strlen(cmd)+2;
+
 		key_lines[edit_line][key_linepos] = ' ';
 		key_linepos++;
 		key_lines[edit_line][key_linepos] = 0;
-		return;
 	}
 }
 

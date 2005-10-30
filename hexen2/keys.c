@@ -139,6 +139,50 @@ keyname_t keynames[] =
 ==============================================================================
 */
 
+void CompleteCommand (void)
+{
+	char	*cmd = NULL, *s;
+
+	s = key_lines[edit_line]+1;
+
+	// skip the leading whitespace and command markers
+	while (*s)
+	{
+		if (*s != '\\' && *s != '/' && *s > ' ')
+			break;
+		s++;
+	}
+
+	// if the remainder line still has a length and does
+	// not contain spaces, check for possible matches
+	if (strlen(s) && !strstr(s," "))
+	{
+		cmd = Cmd_CompleteCommand (s);
+		if (!cmd)
+			cmd = Cvar_CompleteVariable (s);
+	}
+
+	// if there really are candidates, list them now
+	// and complete to the first possible match
+	if (cmd)
+	{
+		Con_Printf("\n\n====================\n\nPossible matches :\n\n");
+		Cbuf_AddText(va("cmdlist %s\n",s));
+		Cbuf_AddText(va("cvarlist %s\n",s));
+		Cbuf_AddText(va("aliaslist %s\n",s));
+		Cbuf_AddText("echo\n");
+
+	//	key_lines[edit_line][1] = '/';
+	//	strcpy (key_lines[edit_line]+2, cmd);
+	//	key_linepos = strlen(cmd)+2;
+		strcpy (key_lines[edit_line]+1, cmd);
+		key_linepos = strlen(cmd)+1;
+
+		key_lines[edit_line][key_linepos] = ' ';
+		key_linepos++;
+		key_lines[edit_line][key_linepos] = 0;
+	}
+}
 
 /*
 ====================
@@ -149,7 +193,6 @@ Interactive line editing and console scrollback
 */
 void Key_Console (int key)
 {
-	char	*cmd;
 #ifdef _WIN32
 	int		i;
 	HANDLE	th;
@@ -172,18 +215,8 @@ void Key_Console (int key)
 
 	if (key == K_TAB)
 	{	// command completion
-		cmd = Cmd_CompleteCommand (key_lines[edit_line]+1);
-		if (!cmd)
-			cmd = Cvar_CompleteVariable (key_lines[edit_line]+1);
-		if (cmd)
-		{
-			strcpy (key_lines[edit_line]+1, cmd);
-			key_linepos = strlen(cmd)+1;
-			key_lines[edit_line][key_linepos] = ' ';
-			key_linepos++;
-			key_lines[edit_line][key_linepos] = 0;
-			return;
-		}
+		CompleteCommand ();
+		return;
 	}
 	
 	if (key == K_BACKSPACE || key == K_LEFTARROW)
