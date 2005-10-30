@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.11 2005-10-29 21:43:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.12 2005-10-30 13:20:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -661,13 +661,61 @@ static void ListCommands (char *prefix)
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
 	{
 		if(!Q_strncasecmp(prefix,cmd->name,preLen))
-			Con_Printf ("%s\n", cmd->name);
+			Con_Printf (" %s\n", cmd->name);
 	}
 }
 
 static void Cmd_List_f(void)
 {
 	ListCommands (Cmd_Argv(1));
+}
+
+/*
+===============
+Cmd_ListCvar_f
+
+Lists the cvars to the console
+===============
+*/
+static void ListCvars (char *prefix)
+{
+	cvar_t		*var;
+	int preLen = strlen(prefix);
+
+	for (var=cvar_vars ; var ; var=var->next)
+	{
+		if(!Q_strncasecmp(prefix,var->name,preLen))
+			Con_Printf (" %s\n", var->name);
+	}
+}
+
+static void Cmd_ListCvar_f(void)
+{
+	ListCvars (Cmd_Argv(1));
+}
+
+/*
+===============
+Cmd_ListAlias_f
+
+Lists the cvars to the console
+===============
+*/
+static void ListAlias (char *prefix)
+{
+	cmdalias_t	*a;
+	int preLen = strlen(prefix);
+
+	for (a=cmd_alias ; a ; a=a->next)
+	{
+		if(!Q_strncasecmp(prefix,a->name,preLen))
+			Con_Printf (" %s\n", a->name);
+	}
+}
+
+static void Cmd_ListAlias_f(void)
+{
+	ListAlias (Cmd_Argv(1));
 }
 
 static void Cmd_WriteCommands_f (void)
@@ -717,11 +765,16 @@ void Cmd_Init (void)
 #ifndef SERVERONLY
 	Cmd_AddCommand ("commands", Cmd_WriteCommands_f);
 	Cmd_AddCommand ("cmdlist", Cmd_List_f);
+	Cmd_AddCommand ("cvarlist", Cmd_ListCvar_f);
+	Cmd_AddCommand ("aliaslist", Cmd_ListAlias_f);
 #endif
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/10/29 21:43:22  sezero
+ * unified cmd layer
+ *
  * Revision 1.10  2005/10/28 21:13:05  sezero
  * static functions part-2: making local functions static,
  * killing nested externs, const vars clean-up.
