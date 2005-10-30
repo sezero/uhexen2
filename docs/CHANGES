@@ -1,5 +1,48 @@
 ChangeLog:
 
+2005-10-22 / 30 (CVS):
+    * added list commands for cvars and aliases (cvarlist and
+      aliaslist.) changed the old command lister name from list
+      to cmdlist.
+    * implemented console tab completion
+    * adapted insert/overwrite mode console editing by Radix (see at
+      quakesrc.org). overwrite mode is default, INS key will toggle
+      insert mode. changed the cursor blink to underscore/full-square.
+      adapted the tab-completion code to mimic bash style completion.
+      changed HOME and END keys' behavior, old habit of displaying the
+      topmost/endmost history page is accomplished only when the shift
+      key is pressed along, otherwise the cursor will be moved to the
+      first/end position.
+    * bugfix: set the gl_texlevel before execing hexen.rc, otherwise
+      a +map xxx console command shall end up with a broken display.
+    * unified the cmd layer of hexen2 and hexenworld
+    * round to nearest value, rather than rounding toward zero while
+      sending angles and coords. (from the darkplaces project where
+      it fixes the crosshair problem.)
+    * added a STRINGIFY macro. unified version macros. simplified
+      version printing. simplified and enhanced version watermark
+      print onto console background. added HoT lines to the quit menu
+      (shameless plug)
+    * started making local functions static, killing nested externs,
+      and const vars clean-up. still not finished even halfway, more
+      will follow.
+    * fixed "might be used uninitialized" warnings for xyfact and zfact
+    * fixed "bestmatch might be used uninitialized" warning, although a
+      better understanding is necessary for it.
+    * added a missing break in CL_ParseServerMessage of hexen2.
+    * fixed those double semicolons.
+    * moved d_ifacea.h to <topdir>/asm. the nasm files arent actually
+      using it now.
+    * fixed a bug causing Draw_EndDisc() to return unconditionally
+      without doing anything. coding style is not just cosmetics..
+    * syced h2 and h2w versions of D_DrawSurfaces
+    * killed pointless calls to D_EndParticles and D_StartParticles
+    * killed Draw_DebugChar
+    * added a prototype for Draw_Crosshair to draw.h
+    * fixed a typo in Sys_error message of FindColor
+    * probably a few other clean-ups here and there.
+    * a lot of whitespace and coding style clean-ups.
+
 2005-10-21 (CVS):
     * added support for systems without OSS sound.
     * added a paranoid case to S_SoundInfo.
