@@ -1,5 +1,10 @@
 ChangeLog:
 
+2005-11-01 (CVS):
+    * set the playerclass cvar default to paladin. that way, a new
+      installation of original hexen2 shall not fail when run first
+      time using a +map X commandline argument.
+
 2005-10-22 / 30 (CVS):
     * added list commands for cvars and aliases (cvarlist and
       aliaslist.) changed the old command lister name from list
