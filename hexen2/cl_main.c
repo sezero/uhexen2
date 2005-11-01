@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.20 2005-10-29 21:43:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.21 2005-11-01 18:11:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -21,7 +21,7 @@
 // these two are not intended to be set directly
 cvar_t	cl_name = {"_cl_name", "player", true};
 cvar_t	cl_color = {"_cl_color", "0", true};
-cvar_t	cl_playerclass = {"_cl_playerclass", "5", true};
+cvar_t	cl_playerclass = {"_cl_playerclass", "1", true};
 
 cvar_t	cl_shownet = {"cl_shownet","0"};	// can be 0, 1, or 2
 cvar_t	cl_nolerp = {"cl_nolerp","0"};
@@ -1015,6 +1015,9 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2005/10/29 21:43:22  sezero
+ * unified cmd layer
+ *
  * Revision 1.19  2005/10/25 20:08:40  sezero
  * coding style and whitespace cleanup.
  *

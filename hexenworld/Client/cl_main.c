@@ -48,7 +48,7 @@ cvar_t	cl_solid_players = {"cl_solid_players", "1"};
 cvar_t	password = {"password", "", false, true};
 cvar_t	spectator = {"spectator", "", false, true};
 cvar_t	name = {"name","unnamed", true, true};
-cvar_t	playerclass = {"playerclass", "0", true, true};
+cvar_t	playerclass = {"playerclass", "1", true, true};
 cvar_t	team = {"team","", true, true};
 cvar_t	skin = {"skin","", true, true};
 cvar_t	topcolor = {"topcolor","0", true, true};
@@ -957,7 +957,7 @@ void CL_Init (void)
 	cls.state = ca_disconnected;
 
 	Info_SetValueForKey (cls.userinfo, "name", "unnamed", MAX_INFO_STRING);
-	Info_SetValueForKey (cls.userinfo, "playerclass", "0", MAX_INFO_STRING);
+	Info_SetValueForKey (cls.userinfo, "playerclass", "1", MAX_INFO_STRING);
 	Info_SetValueForKey (cls.userinfo, "topcolor", "0", MAX_INFO_STRING);
 	Info_SetValueForKey (cls.userinfo, "bottomcolor", "0", MAX_INFO_STRING);
 	Info_SetValueForKey (cls.userinfo, "rate", "2500", MAX_INFO_STRING);
