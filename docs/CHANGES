@@ -1,5 +1,20 @@
 ChangeLog:
 
+2005-11-02 (CVS):
+    * shortened midi file opening for SDL_mixer. the midi cache
+      will be directly under <com_userdir>/.midi from now on.
+    * set host_hunklevel before execing hexen.rc
+    * updated hexen2 version of Cvar_CompleteVariable
+    * updated Cvar_RegisterVariable of hexen2 from hexenworld.
+      replaced strcpy() in there with a strncpy().
+    * killed a silly quake left-over code in Host_Startdemos_f
+    * more checks for coop and deathmatch not be set at the same time
+    * noexit is supposed to matter only for deathmatch, not for coop
+      and singleplayer
+    * CheckRules (timelimit and fraglimit) is supposed to matter only
+      for deathmatch, not for coop and singleplayer
+    * fixed a typo in misc_fireball() (from QIP)
+
 2005-11-01 (CVS):
     * set the playerclass cvar default to paladin. that way, a new
       installation of original hexen2 shall not fail when run first
