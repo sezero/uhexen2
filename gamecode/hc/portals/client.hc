@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/client.hc,v 1.1.1.1 2004-11-29 11:31:13 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/client.hc,v 1.2 2005-11-02 18:46:53 sezero Exp $
  */
 
 // prototypes
@@ -339,7 +339,7 @@ entity found;
 	if (other.classname != "player")//||(!infront_of_ent(self,other)))
 		return;
 
-	if ((cvar("noexit") == 1) || ((cvar("noexit") == 2) && (mapname != "start")))
+	if (deathmatch && (cvar("noexit") == 1) || ((cvar("noexit") == 2)))
 	{
 // rjr quake2 change		T_Damage (other, self, self, 50000, 1000, TRUE);
 		T_Damage (other, self, self, 50000);
@@ -3090,6 +3090,9 @@ string deathstring, deathstring2,iclass;
 };
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:31:13  sezero
+ * Initial import
+ *
  * 
  * 72    3/23/98 1:08p Mgummelt
  * 

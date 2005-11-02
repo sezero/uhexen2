@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/client.hc,v 1.3 2005-01-27 14:22:31 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/client.hc,v 1.4 2005-11-02 18:46:53 sezero Exp $
  */
 
 // prototypes
@@ -315,7 +315,7 @@ void() changelevel_touch =
 	if (other.classname != "player")//||(!infront_of_ent(self,other)))
 		return;
 
-	if ((cvar("noexit") == 1) || ((cvar("noexit") == 2) && (mapname != "start")))
+	if (deathmatch && (cvar("noexit") == 1) || ((cvar("noexit") == 2)))
 	{
 // rjr quake2 change		T_Damage (other, self, self, 50000, 1000, TRUE);
 		T_Damage (other, self, self, 50000);
@@ -3164,6 +3164,9 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 };
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/01/27 14:22:31  sezero
+ * fix hexenworld's map-cycling a little
+ *
  * Revision 1.2  2005/01/26 16:54:52  sezero
  *
  * Map cycling for HW (by Kor Skarn):  This is a server side mod, so

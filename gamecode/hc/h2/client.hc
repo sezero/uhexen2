@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/client.hc,v 1.1.1.1 2004-11-29 11:37:31 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/client.hc,v 1.2 2005-11-02 18:46:52 sezero Exp $
  */
 
 // prototypes
@@ -306,7 +306,7 @@ void() changelevel_touch =
 	if (other.classname != "player")//||(!infront_of_ent(self,other)))
 		return;
 
-	if ((cvar("noexit") == 1) || ((cvar("noexit") == 2) && (mapname != "start")))
+	if (deathmatch && (cvar("noexit") == 1) || ((cvar("noexit") == 2)))
 	{
 // rjr quake2 change		T_Damage (other, self, self, 50000, 1000, TRUE);
 		T_Damage (other, self, self, 50000);
@@ -2655,6 +2655,9 @@ string deathstring, deathstring2,iclass;
 };
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:37:31  sezero
+ * Initial import
+ *
  * 
  * 286   10/23/97 11:34a Mgummelt
  * 
