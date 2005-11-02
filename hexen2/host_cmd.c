@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.33 2005-10-29 21:43:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.34 2005-11-02 18:44:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2133,8 +2133,8 @@ void Host_Startdemos_f (void)
 
 	if (cls.state == ca_dedicated)
 	{
-		if (!sv.active)
-			Cbuf_AddText ("map start\n");
+	//	if (!sv.active)
+	//		Cbuf_AddText ("map start\n");
 		return;
 	}
 
@@ -2248,6 +2248,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.33  2005/10/29 21:43:22  sezero
+ * unified cmd layer
+ *
  * Revision 1.32  2005/10/25 17:14:22  sezero
  * added a STRINGIFY macro. unified version macros. simplified version
  * printing. simplified and enhanced version watermark print onto console
