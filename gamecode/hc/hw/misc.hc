@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/misc.hc,v 1.1.1.1 2004-11-29 11:24:07 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/misc.hc,v 1.2 2005-11-02 18:52:45 sezero Exp $
  */
 
 /*QUAKED info_null (0 0.5 0) (-4 -4 -4) (4 4 4)
@@ -117,7 +117,7 @@ void misc_fireball()
 	thinktime self : random(5);
 	self.think = fire_fly;
 	if (!self.speed)
-		self.speed == 1000;
+		self.speed = 1000;
 }
 
 void fire_fly()
@@ -1275,6 +1275,9 @@ void() func_angletrigger =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:24:07  sezero
+ * Initial import
+ *
  * Revision 1.1.1.1  2001/11/09 17:05:08  theoddone33
  * Inital import
  *

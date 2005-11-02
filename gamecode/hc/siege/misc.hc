@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/misc.hc,v 1.1 2005-01-26 17:26:11 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/misc.hc,v 1.2 2005-11-02 18:52:45 sezero Exp $
  */
 
 /*QUAKED info_null (0 0.5 0) (-4 -4 -4) (4 4 4)
@@ -117,7 +117,7 @@ void misc_fireball()
 	thinktime self : random(5);
 	self.think = fire_fly;
 	if (!self.speed)
-		self.speed == 1000;
+		self.speed = 1000;
 }
 
 void fire_fly()
@@ -1368,6 +1368,9 @@ void misc_ripples()
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/01/26 17:26:11  sezero
+ * Raven's original Siege hcode.
+ *
  * 
  * 15    5/31/98 2:59p Mgummelt
  * 

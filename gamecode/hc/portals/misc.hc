@@ -1,6 +1,6 @@
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/misc.hc,v 1.1.1.1 2004-11-29 11:33:09 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/misc.hc,v 1.2 2005-11-02 18:52:45 sezero Exp $
  */
 float DONT_REMOVE = 1;
 /*QUAKED miscellaneous_info (0 0 0) ?
@@ -146,7 +146,7 @@ void misc_fireball()
 	thinktime self : random(5);
 	self.think = fire_fly;
 	if (!self.speed)
-		self.speed == 1000;
+		self.speed = 1000;
 }
 
 void fire_fly()
@@ -1355,6 +1355,9 @@ void func_obstacle ()
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:33:09  sezero
+ * Initial import
+ *
  * 
  * 18    2/26/98 2:03p Mgummelt
  * 
