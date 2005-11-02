@@ -116,6 +116,12 @@ void Cvar_Set (char *var_name, char *value)
 		if (sv.active)
 			SV_BroadcastPrintf ("\"%s\" changed to \"%s\"\n", var->name, var->string);
 	}
+
+	// Don't allow deathmatch and coop at the same time
+	if (!strcmp(var->name, deathmatch.name) && var->value != 0)
+		Cvar_Set("coop", "0");
+	if (!strcmp(var->name, coop.name) && var->value != 0)
+		Cvar_Set("deathmatch", "0");
 }
 
 /*

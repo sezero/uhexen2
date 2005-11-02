@@ -125,6 +125,14 @@ void Cvar_Set (char *var_name, char *value)
 	var->string = Z_Malloc (strlen(value)+1);
 	strcpy (var->string, value);
 	var->value = atof (var->string);
+
+#ifdef SERVERONLY
+	// Don't allow deathmatch and coop at the same time
+	if (!strcmp(var->name, deathmatch.name) && var->value != 0)
+		Cvar_Set("coop", "0");
+	if (!strcmp(var->name, coop.name) && var->value != 0)
+		Cvar_Set("deathmatch", "0");
+#endif
 }
 
 /*
