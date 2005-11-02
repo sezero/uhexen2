@@ -154,7 +154,7 @@ Adds a freestanding variable to the variable list.
 */
 void Cvar_RegisterVariable (cvar_t *variable)
 {
-	char	*oldstr;
+	char	value[512];
 
 // first check to see if it has already been defined
 	if (Cvar_FindVar (variable->name))
@@ -170,15 +170,17 @@ void Cvar_RegisterVariable (cvar_t *variable)
 		return;
 	}
 
-// copy the value off, because future sets will Z_Free it
-	oldstr = variable->string;
-	variable->string = Z_Malloc (strlen(variable->string)+1);	
-	strcpy (variable->string, oldstr);
-	variable->value = atof (variable->string);
-
 // link the variable in
 	variable->next = cvar_vars;
 	cvar_vars = variable;
+
+// copy the value off, because future sets will Z_Free it
+	strncpy (value, variable->string, 511);
+	value[511] = '\0';
+	variable->string = Z_Malloc (1);
+
+// set it through the function to be consistant
+	Cvar_Set (variable->name, value);
 }
 
 /*
