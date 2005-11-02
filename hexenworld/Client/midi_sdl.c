@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.13 2005-08-13 11:57:45 sezero Exp $
+	$Id: midi_sdl.c,v 1.14 2005-11-02 18:39:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -167,8 +167,6 @@ qboolean MIDI_Init(void)
 void MIDI_Play(char *Name)
 {
 	char *Data;
-	FILE *f=NULL;
-	int size;
 
 	if (!bMidiInited)	//don't try to play if there is no midi
 		return;
@@ -183,25 +181,11 @@ void MIDI_Play(char *Name)
 
 	// Note that midi/ is the standart quake search path, but
 	// .midi/ with the leading dot is the path in the userdir
-	size = COM_FOpenFile (va(".midi/%s.mid", Name), &f, true);
-	if (f) {
-		Sys_Printf("MIDI: .midi/%s.mid already exists\n",Name);
-		// the file may be found in the current searchpath but not
-		// necessarily in com_userdir/.midi which we will tell to
-		// SDL_mixer. Therefore we may need copying the file here
-		if(access(va("%s/.midi/%s.mid", com_userdir, Name), R_OK) != 0)
-		{
-			Data = Z_Malloc (size);
-			fread (Data, 1, size, f);
-			COM_WriteFile (va(".midi/%s.mid", Name), (void *)Data, size);
-			Z_Free (Data);
-		}
-		fclose(f);
-	} else {
-		Sys_Printf("MIDI: File midi/%s.mid needs to be extracted\n",Name);
+	if(access(va("%s/.midi/%s.mid", com_userdir, Name), R_OK) != 0) {
+		Sys_Printf("File midi/%s.mid needs to be extracted\n",Name);
 		Data = (char *)COM_LoadHunkFile(va("midi/%s.mid", Name));
 		if (!Data) {
-			Con_Printf("musicfile midi/%s.mid not found, not playing\n", Name);
+			Con_Printf("musicfile midi/%s.mid not found\n", Name);
 			return;
 		}
 		COM_WriteFile (va(".midi/%s.mid", Name), (void *)Data, com_filesize);
@@ -277,6 +261,9 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/08/13 11:57:45  sezero
+ * Standardized SDL_mixer includes
+ *
  * Revision 1.12  2005/08/12 08:12:51  sezero
  * updated sdl includes of midi for freebsd (from Steven)
  *
