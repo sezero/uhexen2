@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/client.hc,v 1.4 2005-11-02 18:46:53 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/client.hc,v 1.5 2005-11-02 18:48:44 sezero Exp $
  */
 
 // prototypes
@@ -1220,7 +1220,7 @@ void() CheckRules =
 float		timelimit;
 float		fraglimit;
 	
-	if (gameover)	// someone else quit the game already
+	if (gameover || !deathmatch)	// someone else quit the game already
 		return;
 		
 	timelimit = cvar("timelimit") * 60;
@@ -3164,6 +3164,9 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 };
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/11/02 18:46:53  sezero
+ * noexit is supposed to matter only for deathmatch, not for coop and singleplayer
+ *
  * Revision 1.3  2005/01/27 14:22:31  sezero
  * fix hexenworld's map-cycling a little
  *

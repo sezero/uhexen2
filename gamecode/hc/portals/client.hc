@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/client.hc,v 1.2 2005-11-02 18:46:53 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/client.hc,v 1.3 2005-11-02 18:48:44 sezero Exp $
  */
 
 // prototypes
@@ -1198,7 +1198,7 @@ void() CheckRules =
 float		timelimit;
 float		fraglimit;
 	
-	if (gameover)	// someone else quit the game already
+	if (gameover || !deathmatch)	// someone else quit the game already
 		return;
 		
 	timelimit = cvar("timelimit") * 60;
@@ -3090,6 +3090,9 @@ string deathstring, deathstring2,iclass;
 };
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/11/02 18:46:53  sezero
+ * noexit is supposed to matter only for deathmatch, not for coop and singleplayer
+ *
  * Revision 1.1.1.1  2004/11/29 11:31:13  sezero
  * Initial import
  *
