@@ -1373,12 +1373,12 @@ void Host_Init (quakeparms_t *parms)
 	gl_texlevel = numgltextures;
 #endif
 
+	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
+	host_hunklevel = Hunk_LowMark ();
+
 	Cbuf_InsertText ("exec hexen.rc\n");
 	Cbuf_Execute();
 	Cbuf_AddText ("cl_warncmd 1\n");
-
-	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
-	host_hunklevel = Hunk_LowMark ();
 
 #ifdef WITH_SDL
 	// apply gamma settings at startup, after having read the config.cfg
