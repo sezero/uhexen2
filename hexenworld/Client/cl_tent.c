@@ -3684,7 +3684,7 @@ static void CL_UpdateExplosions (void)
 
 static void CL_UpdateStreams(void)
 {
-	int		i, j, offset, segmentCount;
+	int		i, j, offset;
 	stream_t	*stream;
 	vec3_t		dist, org, discard, right, up;
 	float		cosTime = 0.0, sinTime = 0.0;	// init to 0, make compiler happy
@@ -3763,7 +3763,6 @@ static void CL_UpdateStreams(void)
 			sin2Time = sin(cl.time*5 + 3.14);
 		}
 
-		segmentCount = 0;
 		if(stream->type == TE_STREAM_ICECHUNKS)
 		{
 			offset = (int)(cl.time*40)%30;
@@ -3924,7 +3923,6 @@ static void CL_UpdateStreams(void)
 				org[j] += dist[j]*30;
 			}
 			d -= 30;
-			segmentCount++;
 		}
 
 		if(stream->type == TE_STREAM_SUNSTAFF1)

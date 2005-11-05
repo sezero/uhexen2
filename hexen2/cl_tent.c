@@ -2,7 +2,7 @@
 	cl_tent.c
 	Client side temporary entity effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.9 2005-10-25 20:08:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.10 2005-11-05 20:19:21 sezero Exp $
 */
 
 
@@ -403,7 +403,7 @@ void CL_UpdateTEnts(void)
 	float	d;
 	entity_t	*ent;
 	float	yaw, pitch, forward;
-	int		segmentCount, offset;
+	int		offset;
 
 	// Update streams
 	StreamEntityCount = 0;
@@ -457,7 +457,7 @@ void CL_UpdateTEnts(void)
 
 		VectorCopy(stream->source, org);
 		d = VectorNormalize(dist);
-		segmentCount = 0;
+
 		if(stream->type == TE_STREAM_ICECHUNKS)
 		{
 			offset = (int)(cl.time*40)%30;
@@ -466,6 +466,7 @@ void CL_UpdateTEnts(void)
 				org[i] += dist[i]*offset;
 			}
 		}
+
 		while(d > 0)
 		{
 			ent = NewStreamEntity();
@@ -565,35 +566,6 @@ void CL_UpdateTEnts(void)
 				ent->frame = rand()%5;
 				break;
 
-/*				ent->angles[2] = (int)(cl.time*80)%360;
-				ent->origin[0] += (rand()%4)-2;
-				ent->origin[1] += (rand()%4)-2;
-				ent->origin[2] += (rand()%4)-2;
-				ent->frame = segmentCount%4;
-				ent->drawflags = MLS_ABSLIGHT;
-				ent->abslight = 128;
-				if((rand()&255) > 128)
-				{
-					break;
-				}
-				ent = NewStreamEntity();
-				if(!ent)
-				{
-					return;
-				}
-				VectorCopy(org, ent->origin);
-				ent->model = stream->models[0];
-				ent->angles[0] = pitch;
-				ent->angles[1] = yaw;
-				ent->angles[2] = rand()%360;
-				ent->origin[0] += (rand()%20)-10;
-				ent->origin[1] += (rand()%20)-10;
-				ent->origin[2] += (rand()%20)-10;
-				ent->frame = 4+(rand()&1);
-				ent->drawflags = MLS_ABSLIGHT;
-				ent->abslight = 128;
-				break;
-*/
 			default:
 				ent->angles[2] = 0;
 			}
@@ -604,7 +576,6 @@ void CL_UpdateTEnts(void)
 			}
 
 			d -= 30;
-			segmentCount++;
 		}
 
 		if(stream->type == TE_STREAM_SUNSTAFF1
