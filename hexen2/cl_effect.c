@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.8 2005-10-27 06:47:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.9 2005-11-05 20:22:10 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -1073,11 +1073,11 @@ void SV_LoadEffects(FILE *FH)
 				fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.origin[0]);
 				fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.origin[1]);
 				fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.origin[2]);
-				fscanf(FH, "%d ", &sv.Effects[idx].ef.Chunk.type);
+				fscanf(FH, "%u ", (unsigned int *)&sv.Effects[idx].ef.Chunk.type);
 				fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.srcVel[0]);
 				fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.srcVel[1]);
 				fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.srcVel[2]);
-				fscanf(FH, "%d ", &sv.Effects[idx].ef.Chunk.numChunks);
+				fscanf(FH, "%u ", (unsigned int *)&sv.Effects[idx].ef.Chunk.numChunks);
 				break;
 
 			default:
@@ -2525,6 +2525,9 @@ static void FreeEffectEntity(int idx)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/10/27 06:47:12  sezero
+ * coding style and whitespace cleanup.
+ *
  * Revision 1.7  2005/10/25 20:04:17  sezero
  * static functions part-1: started making local functions static,
  * killing nested externs, const vars clean-up.

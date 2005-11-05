@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.34 2005-11-02 18:44:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.35 2005-11-05 20:22:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1305,7 +1305,7 @@ void Host_Say(qboolean teamonly)
 	client_t *save;
 	int		j;
 	char	*p;
-	unsigned char	text[64];
+	char	text[64];
 	qboolean	fromServer = false;
 
 	if (cmd_source == src_command)
@@ -2248,6 +2248,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.34  2005/11/02 18:44:11  sezero
+ * killed a silly quake left-over code in Host_Startdemos_f
+ *
  * Revision 1.33  2005/10/29 21:43:22  sezero
  * unified cmd layer
  *

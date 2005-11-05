@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.12 2005-10-25 20:04:17 sezero Exp $
+	$Id: sbar.c,v 1.13 2005-11-05 20:22:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1105,7 +1105,7 @@ void Sbar_SmallDeathmatchOverlay(void)
 	int		i, k, l;
 	int		top, bottom;
 	int		x, y, f;
-	unsigned char	num[12];
+	char		num[12];
 	scoreboard_t	*s;
 
 	if ((int)DMMode.value == 2 && BarHeight != BAR_TOP_HEIGHT)
