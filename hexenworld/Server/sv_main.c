@@ -516,9 +516,10 @@ void SVC_DirectConnect (void)
 
 	// works properly
 	if (!sv_highchars.value) {
-		unsigned char *p, *q;
+		byte *p, *q;
 
-		for (p = newcl->userinfo, q = userinfo; *q; q++)
+		for (p = (byte *)newcl->userinfo, q = (byte *)userinfo;
+			*q && p < (byte *)newcl->userinfo + sizeof(newcl->userinfo)-1; q++)
 			if (*q > 31 && *q <= 127)
 				*p++ = *q;
 	} else
