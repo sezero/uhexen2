@@ -62,7 +62,7 @@ endif
 	$(WIN32CC) -c $(CFLAGS) $(GAMEFLAGS) -o $@ $<
 %.o: %.asm
 	$(WIN32AS) $(ASFLAGS) -o $@ $<
-win32res.o: win_stuff/hexenworld.rc
+%.o: %.rc
 	$(WIN32RES) $(GAMEFLAGS) --include=$(MINGWDIR)/include --output=coff -o $@ $<
 
 SOFTOBJS = d_edge.o \
@@ -172,7 +172,7 @@ COMMONOBJS = win_stuff/cd_win.o \
 	math.o \
 	snd_mixa.o \
 	sys_wina.o \
-	win32res.o
+	win_stuff/win32res.o
 
 
 glhw_exe: CFLAGS+= $(GL_DEFS)
