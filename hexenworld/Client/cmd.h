@@ -103,3 +103,10 @@ void Cmd_StuffCmds_f (void);
 // Executes the commandline parameters with a leading "+" as script
 // statements.
 
+int ListCommands (char *prefix);
+int ListCvars (char *prefix);
+int ListAlias (char *prefix);
+// These three listers are either used privately in the respective
+// list commands, or by keys.c in console tab-completion. They
+// return the number of matches.
+

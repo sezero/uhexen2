@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.8 2005-10-30 13:20:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.9 2005-11-05 20:18:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -653,16 +653,21 @@ Cmd_List_f
 Lists the commands to the console
 ===============
 */
-static void ListCommands (char *prefix)
+int ListCommands (char *prefix)
 {
 	cmd_function_t	*cmd;
 	int preLen = strlen(prefix);
+	int i = 0;
 
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
 	{
 		if(!Q_strncasecmp(prefix,cmd->name,preLen))
+		{
 			Con_Printf (" %s\n", cmd->name);
+			i++;
+		}
 	}
+	return i;
 }
 
 static void Cmd_List_f(void)
@@ -677,16 +682,21 @@ Cmd_ListCvar_f
 Lists the cvars to the console
 ===============
 */
-static void ListCvars (char *prefix)
+int ListCvars (char *prefix)
 {
 	cvar_t		*var;
 	int preLen = strlen(prefix);
+	int i = 0;
 
 	for (var=cvar_vars ; var ; var=var->next)
 	{
 		if(!Q_strncasecmp(prefix,var->name,preLen))
+		{
 			Con_Printf (" %s\n", var->name);
+			i++;
+		}
 	}
+	return i;
 }
 
 static void Cmd_ListCvar_f(void)
@@ -701,16 +711,21 @@ Cmd_ListAlias_f
 Lists the cvars to the console
 ===============
 */
-static void ListAlias (char *prefix)
+int ListAlias (char *prefix)
 {
 	cmdalias_t	*a;
 	int preLen = strlen(prefix);
+	int i = 0;
 
 	for (a=cmd_alias ; a ; a=a->next)
 	{
 		if(!Q_strncasecmp(prefix,a->name,preLen))
+		{
 			Con_Printf (" %s\n", a->name);
+			i++;
+		}
 	}
+	return i;
 }
 
 static void Cmd_ListAlias_f(void)

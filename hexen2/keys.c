@@ -144,11 +144,12 @@ void CompleteCommand (void)
 {
 	char	*cmd = NULL, *s, stmp[256];
 	qboolean	editing = false;
+	int	count = 0;
 
 	if (key_linepos < 2)
 		return;
 
-	if (strlen(key_lines[edit_line]+1) > key_linepos)
+	if (strlen(key_lines[edit_line]+1) >= key_linepos)
 	{
 		editing = true;
 		// make a copy of the text starting from the
@@ -184,29 +185,39 @@ void CompleteCommand (void)
 	if (cmd)
 	{
 		Con_Printf("\n\n====================\n\nPossible matches :\n\n");
-		Cbuf_AddText(va("cmdlist %s\n",s));
-		Cbuf_AddText(va("cvarlist %s\n",s));
-		Cbuf_AddText(va("aliaslist %s\n",s));
-		Cbuf_AddText("echo\n");
+		count += ListCommands(s);
+		count += ListCvars(s);
+		count += ListAlias(s);
+		Con_Printf("\n");
 
-	//	key_lines[edit_line][1] = '/';
-	//	strcpy (key_lines[edit_line]+2, cmd);
-	//	key_linepos = strlen(cmd)+2;
-		strcpy (key_lines[edit_line]+1, cmd);
-		key_linepos = strlen(cmd)+1;
+		// make Steve happy and do not auto-complete
+		// unless there is only one match ;)
+		if (count == 1)
+		{
+		//	key_lines[edit_line][1] = '/';
+		//	strcpy (key_lines[edit_line]+2, cmd);
+		//	key_linepos = strlen(cmd)+2;
+			strcpy (key_lines[edit_line]+1, cmd);
+			key_linepos = strlen(cmd)+1;
+			key_lines[edit_line][key_linepos] = ' ';
+			key_linepos++;
+		}
+		else
+		{
+			Con_Printf("%d matches found\n\n", count);
+		}
 
 		if (editing)
 		{
 			// put back the remainder of the original text after
-			// the auto-completed cmd without an extra space
+			// the latest cursor position
 			strcpy (key_lines[edit_line]+key_linepos, stmp);
 			key_lines[edit_line][key_linepos+strlen(stmp)+1] = 0;
-			return;
 		}
-
-		key_lines[edit_line][key_linepos] = ' ';
-		key_linepos++;
-		key_lines[edit_line][key_linepos] = 0;
+		else if (count == 1)
+		{
+			key_lines[edit_line][key_linepos] = 0;
+		}
 	}
 	else if (editing)
 	{
