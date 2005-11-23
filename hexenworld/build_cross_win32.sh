@@ -1,32 +1,38 @@
 #!/bin/sh
 
-# Note:
-# Do NOT use clean or strip as an argument for this script.
-# This script already performs stripping. As for clean, use
-# the clean_win32.sh script, instead.
+UHEXEN2_TOP=..
+. $UHEXEN2_TOP/scripts/cross_defs
 
-PREFIX=/usr/local/cross-tools
-TARGET=i386-mingw32msvc
-PATH="$PREFIX/bin:$PREFIX/$TARGET/bin:$PATH"
-export PATH
+BIN_FILES="Master/hwmaster.exe Server/hwsv.exe Client/hwcl.exe Client/glhwcl.exe"
 
-MAKEFILE=Makefile.mingw
+if [ "$1" = "strip" ]
+then
+echo "Stripping all HexenWorld binaries"
+	for i in ${BIN_FILES}
+	do
+	    $STRIPPER ${i}${EXE_EXT}
+	done
+exit 0
+fi
+
+if [ "$1" = "clean" ]
+then
+make -s -C Client clean
+make -s -C Master clean
+make -s -C Server clean
+exit 0
+fi
 
 echo "Building HexenWorld Server"
-make -C Server -f $MAKEFILE WIN32CC=$TARGET-gcc MINGWDIR=$PREFIX/$TARGET $*
+make -C Server $SENDARGS $*
 
 echo "" && echo "Building HexenWorld Master Server"
-make -C Master -f $MAKEFILE WIN32CC=$TARGET-gcc MINGWDIR=$PREFIX/$TARGET $*
+make -C Master $SENDARGS $*
 
 echo "" && echo "Building HexenWorld Client (Software renderer)"
-make -C Client -f $MAKEFILE WIN32CC=$TARGET-gcc WIN32AS=nasm WIN32RES=$TARGET-windres MINGWDIR=$PREFIX/$TARGET $* hw_exe
+make -C Client $SENDARGS $* hw
 
 echo "" && echo "Building HexenWorld Client (OpenGL renderer)"
-make -C Client -f $MAKEFILE clean
-make -C Client -f $MAKEFILE WIN32CC=$TARGET-gcc WIN32AS=nasm WIN32RES=$TARGET-windres MINGWDIR=$PREFIX/$TARGET $* glhw_exe
-
-echo "" && echo "Stripping all HexenWorld binaries"
-make -C Server -f $MAKEFILE W32STRIP=$TARGET-strip strip
-make -C Master -f $MAKEFILE W32STRIP=$TARGET-strip strip
-make -C Client -f $MAKEFILE W32STRIP=$TARGET-strip strip
+make -C Client clean
+make -C Client $SENDARGS $* glhw
 

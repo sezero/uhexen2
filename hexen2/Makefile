@@ -1,111 +1,226 @@
-
-################ PLEASE edit below to select what you would like to build
-
-# BUILDGL :	yes = OpenGL support, no = software mode
-BUILDGL=yes
-
-# BUILDMP :	yes = build mission pack, no = normal hexen2
-BUILDMP=no
-
-# USEMIDI :	MIDI needs SDL_mixer (built with Timidity support)
-#		and Timidity patches
-USEMIDI=yes
-
-# USEALSA :	no   =	Don't include alsa support.
-#		yes  =	Include ALSA sound support. Requires alsa-lib
-#			and alsa-kernel modules >= 1.0.1
-#		On platforms other than linux, it will already be disabled
-USEALSA=yes
-
+#
+# Type "make help" to see the valid targets.
+#
+# It is ESSENTIAL that you run make clean between different
+# types of builds or different types of targets.
+#
+# To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
+# argument to make. It would be best if you examine the script named
+# build_cross_win32.sh for cross compilation.
+#
+# Build Options:
+#
+# USE_ALSA :	yes  =	Include ALSA sound support (default).
+# (for Unix)	no   =	Don't include alsa support.
+#		Requires alsa-lib and alsa-kernel modules >= 1.0.1
+#		(0.9.8 and 1.0.0 should also work, but isn't supported.)
+#		On any platform other than Linux, ALSA support will be
+#		automatically be disabled.
+#
 # USE_SDLCD:	no   =	Don't use SDL cdaudio (default); platform specific
-#			cdrom code will be used.  The only problem with
+# (for Unix)		cdrom code will be used.  The only problem with
 #			SDL_cdrom is that it lacks proper volume controls.
 #		yes  =	Use SDL for cdaudio instead of platform specific code
+#
+# USE_MIDI :	yes  =	Include MIDI music support (default).
+# (for Unix)	no   =	Don't include MIDI music support.
+#		MIDI needs SDL_mixer (built with Timidity support)
+#		and Timidity patches.
+#
+# WITH_SPLASHES	yes  =	(default) enable startup splash screens
+# (for Win32)	no   =	disable startup splash screens
+#
+# LINK_GL_LIBS	no  =	(default) Don't link to the opengl libraries at compile
+#			time. The binaries will dlopen() the necessary libs
+#		yes =	link to the opengl libraries at compile time
+#
+# OPT_EXTRA	yes  =  Some extra optimization flags will be added (default)
+#		no   =	No extra optimizations will be made
+#
+# To build static binaries: You need to compile SDL_mixer with minimum features
+# required ONLY for MIDI. Besides, you may need to change some hard-coded paths
+# and X linkage flags (see the LDSTATIC setting)
+#
+# The default compiler is gcc
+# To build with a different compiler:	make CC=compiler_name [other stuff]
+#
+# To build for the demo version:	make DEMO=1 [other stuff]
+#
+# if building a debug version :		make DEBUG=1 [other stuff]
+#
+
+# Path settings:
+# main uhexen2 relative path
+UHEXEN2_TOP=..
+
+# General options (see explanations at the top)
+USE_MIDI=yes
+USE_ALSA=yes
 USE_SDLCD=no
+OPT_EXTRA=yes
+LINK_GL_LIBS=no
 
-# To build for the demo version, run with make DEMO=yes [other stuff]
+# build environment sanity checks
+CHECK_NASM=1
+CHECK_SDL=1
+CHECK_WINDRES=1
 
+# include the common dirty stuff
+include $(UHEXEN2_TOP)/scripts/makefile.inc
 
-################ You shouldn't need to edit anything below here.
+# include file for sanity checks
+include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
-ifeq "$(BUILDGL)" "yes"
-ifeq "$(BUILDMP)" "yes"
-BINARY=glh2mp
+# Names of the binaries
+ifeq "$(TARGET_OS)" "WIN32"
+H2_BINARY=h2.exe
+MP_BINARY=h2mp.exe
+GLH2_BINARY=glh2.exe
+GLMP_BINARY=glh2mp.exe
 else
-BINARY=glhexen2
+H2_BINARY=hexen2
+MP_BINARY=h2mp
+GLH2_BINARY=glhexen2
+GLMP_BINARY=glh2mp
+H2_STATIC=hexen2.static
+MP_STATIC=h2mp.static
+GLH2_STATIC=glhexen2.static
+GLMP_STATIC=glh2mp.static
 endif
+
+# Compiler flags
+ifndef DEBUG
+CFLAGS := -O2 -march=i586 -Wall -ffast-math -fexpensive-optimizations
+
+# this prevents some bad compilations with gcc4
+CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
+
+ifeq "$(OPT_EXTRA)" "yes"
+# Note: re-check these flags for non-ia32 machines
+CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
+CFLAGS := $(CFLAGS) -fomit-frame-pointer
+endif
+endif
+
+# Other build flags
+EXT_FLAGS:=
+
+ifeq "$(TARGET_OS)" "WIN32"
+# Main win32 specific includes and flags
+INCLUDES:= -I. -I$(UHEXEN2_TOP)/w32stuff/dxsdk/inc -I$(MINGWDIR)/include
+LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mwindows
 else
-ifeq "$(BUILDMP)" "yes"
-BINARY=h2mp
+# Main unix specific includes and flags
+INCLUDES:= -I$(X11_PATH)/include
+LDFLAGS :=
+EXT_FLAGS+= -DPLATFORM_UNIX
+endif
+
+GL_DEFS := -DGLQUAKE
+GLFLAGS :=
+
+ifeq "$(LINK_GL_LIBS)" "no"
+GL_DEFS+= -DGL_DLSYM
 else
-BINARY=hexen2
-endif
-endif
-
-AS = nasm
-ifndef CC
-CC = gcc
-endif
-LINKER = $(CC)
-
-ifdef DEBUG
-CFLAGS = -DDEBUG_BUILD -g -Wall -DPLATFORM_UNIX
-else
-CFLAGS = -O2 -march=i586 -Wall -DPLATFORM_UNIX \
-	-fomit-frame-pointer -ffast-math -fexpensive-optimizations \
-	-falign-loops=2 -falign-jumps=2 -falign-functions=2
-
-endif
-
-GAMEFLAGS =
-X11FLAGS = -I/usr/X11R6/include
-SDLFLAGS = `sdl-config --cflags`
-SDLLINK = `sdl-config --libs`
-LDFLAGS =
-GLFLAGS = -L/usr/X11R6/lib
-ASFLAGS = -f elf
-
-# whether to dlsym gl and wgl function calls
-GLX_DLSYM=yes
-ifeq "$(GLX_DLSYM)" "yes"
-GL_DEFS = -DGL_DLSYM
-else
-GL_DEFS = 
-GLFLAGS+= -lGL
-endif
-
-ifeq "$(BUILDGL)" "yes"
-GAMEFLAGS+= -DGLQUAKE
-CFLAGS+= $(GL_DEFS)
-endif
-
-ifeq "$(BUILDMP)" "yes"
-GAMEFLAGS+= -DH2MP
-endif
-
-ifeq "$(USEMIDI)" "yes"
-GAMEFLAGS+= -DUSE_MIDI
-SDLLINK+= -lSDL_mixer
-endif
-
-ifeq "$(USEALSA)" "no"
-GAMEFLAGS+= -DNO_ALSA
-endif
-
-ifeq "$(USE_SDLCD)" "yes"
-GAMEFLAGS+= -DWITH_SDLCD
+GLFLAGS+= $(GL_LINK)
 endif
 
 ifdef DEMO
-GAMEFLAGS+= -DDEMOBUILD
+EXT_FLAGS+= -DDEMOBUILD
 endif
+
+ifdef DEBUG
+# This activates come extra code in hexen2/hexenworld C source
+EXT_FLAGS+= -DDEBUG_BUILD
+endif
+
+ifeq "$(TARGET_OS)" "UNIX"
+# Start Unix-specific extra flags/settings
+
+ifeq "$(USE_ALSA)" "no"
+EXT_FLAGS+= -DNO_ALSA
+endif
+
+ifeq "$(USE_SDLCD)" "yes"
+EXT_FLAGS+= -DWITH_SDLCD
+endif
+
+ifeq "$(USE_MIDI)" "yes"
+SDLLINK+= -lSDL_mixer
+LDSTATIC= -Wl,-Bstatic -L/usr/lib -lSDL_mixer -lSDL -L$(X11_PATH)/lib -lX11 -lXext -ldl -L$(X11_PATH)/lib -lXxf86dga -lXxf86vm -lXv -L/usr/lib -lm -Wl,-Bdynamic -lpthread
+else
+EXT_FLAGS+= -DNO_MIDIMUSIC
+LDSTATIC= -Wl,-Bstatic -L/usr/lib -lSDL -L$(X11_PATH)/lib -lX11 -lXext -ldl -L$(X11_PATH)/lib -lXxf86dga -lXxf86vm -lXv -L/usr/lib -lm -Wl,-Bdynamic -lpthread
+endif
+# End of Unix specific extras
+endif
+
+ifeq "$(TARGET_OS)" "WIN32"
+# Start Win32-specific extra flags/settings
+
+ifeq "$(WITH_SPLASHES)" "no"
+EXT_FLAGS+= -DNO_SPLASHES
+else
+# gl version needs linking to comctl32.dll
+# because of that progress bar thingy
+GLFLAGS+=-lcomctl32
+endif
+# End of Win32 specific extras
+endif
+
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(X11FLAGS) $(SDLFLAGS) $(GAMEFLAGS) -o $@ $<
+	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) $(SDLFLAGS) -o $@ $<
 %.o: %.asm
-	$(AS) $(ASFLAGS) -o $@ $<
+	$(NASM) $(NASMFLAGS) -o $@ $<
+%.o: %.rc
+	$(WINDRES) $(EXT_FLAGS) --include=$(MINGWDIR)/include --output=coff -o $@ $<
 
+# Objects
+# Platform specific object settings
+SOFT_SDL_VID = vid_sdl.o
+SOFT_WIN32VID = win_stuff/vid_win.o
+GL_SDL_VID = gl_dl_vidsdl.o
+GL_WIN32VID = win_stuff/gl_vidnt.o
+INPUT_SDL = in_sdl.o
+INPUT_WIN32 = win_stuff/in_win.o
+NET_UNIX = net_bsd.o \
+	net_udp.o
+NET_WIN32 = win_stuff/net_win.o \
+	win_stuff/net_wins.o \
+	win_stuff/net_wipx.o
+SND_UNIX = snd_oss.o \
+	snd_sdl.o \
+	snd_alsa.o \
+	cd_unix.o \
+	midi_sdl.o
+SND_WIN32 = win_stuff/snd_win.o \
+	win_stuff/cd_win.o \
+	win_stuff/midi.o \
+	win_stuff/mstrconv.o
+SYS_UNIX = sys_unix.o
+SYS_WIN32 = win_stuff/conproc.o \
+	win_stuff/sys_win.o \
+	win_stuff/win32res.o
+
+ifeq "$(TARGET_OS)" "WIN32"
+SYSOBJ_NET = $(NET_WIN32)
+SYSOBJ_SND = $(SND_WIN32)
+SYSOBJ_SYS = $(SYS_WIN32)
+SYSOBJ_INPUT = $(INPUT_WIN32)
+SYSOBJ_GL_VID = $(GL_WIN32VID)
+SYSOBJ_SOFT_VID = $(SOFT_WIN32VID)
+else
+SYSOBJ_NET = $(NET_UNIX)
+SYSOBJ_SND = $(SND_UNIX)
+SYSOBJ_SYS = $(SYS_UNIX)
+SYSOBJ_INPUT = $(INPUT_SDL)
+SYSOBJ_GL_VID = $(GL_SDL_VID)
+SYSOBJ_SOFT_VID = $(SOFT_SDL_VID)
+endif
+
+# Final list of objects
 SOFTOBJS = d_edge.o \
 	d_fill.o \
 	d_init.o \
@@ -134,8 +249,71 @@ SOFTOBJS = d_edge.o \
 	r_surf.o \
 	r_vars.o \
 	screen.o \
-	vid_sdl.o \
-	d_draw.o \
+	$(SYSOBJ_SOFT_VID)
+
+GLOBJS = gl_dl_draw.o \
+	gl_mesh.o \
+	gl_model.o \
+	gl_refrag.o \
+	gl_dl_rlight.o \
+	gl_dl_rmain.o \
+	gl_dl_rmisc.o \
+	gl_dl_rsurf.o \
+	gl_dl_screen.o \
+	gl_dl_test.o \
+	gl_dl_warp.o \
+	$(SYSOBJ_GL_VID)
+
+COMMONOBJS = chase.o \
+	cl_demo.o \
+	cl_effect.o \
+	cl_input.o \
+	cl_main.o \
+	cl_parse.o \
+	cl_tent.o \
+	cl_cmd.o \
+	cmd.o \
+	common.o \
+	console.o \
+	crc.o \
+	cvar.o \
+	host.o \
+	host_cmd.o \
+	$(SYSOBJ_INPUT) \
+	keys.o \
+	mathlib.o \
+	menu.o \
+	$(SYSOBJ_NET) \
+	net_dgrm.o \
+	net_loop.o \
+	net_main.o \
+	net_vcr.o \
+	pr_cmds.o \
+	pr_edict.o \
+	pr_exec.o \
+	r_dl_part.o \
+	sbar.o \
+	snd_dma.o \
+	snd_mix.o \
+	snd_mem.o \
+	$(SYSOBJ_SND) \
+	sv_main.o \
+	sv_move.o \
+	sv_phys.o \
+	sv_user.o \
+	view.o \
+	wad.o \
+	world.o \
+	zone.o \
+	$(SYSOBJ_SYS)
+
+# Intel asm objects
+COMMON_ASM = math.o \
+	snd_mixa.o \
+	worlda.o \
+	sys_wina.o
+
+SOFT_ASM = d_draw.o \
 	d_draw16.o \
 	d_draw16t.o \
 	d_parta.o \
@@ -155,84 +333,88 @@ SOFTOBJS = d_edge.o \
 	r_edgea.o \
 	r_edgeb.o \
 	r_varsa.o \
-	surf16.o \
-	surf8.o
+	surf8.o \
+	surf16.o
 
-GLOBJS = gl_dl_draw.o \
-	gl_mesh.o \
-	gl_model.o \
-	gl_refrag.o \
-	gl_dl_rlight.o \
-	gl_dl_rmain.o \
-	gl_dl_rmisc.o \
-	gl_dl_rsurf.o \
-	gl_dl_screen.o \
-	gl_dl_test.o \
-	gl_dl_warp.o \
-	gl_dl_vidsdl.o
 
-COMMONOBJS = cd_unix.o \
-	chase.o \
-	cl_demo.o \
-	cl_effect.o \
-	cl_input.o \
-	cl_main.o \
-	cl_parse.o \
-	cl_tent.o \
-	cl_cmd.o \
-	cmd.o \
-	common.o \
-	console.o \
-	crc.o \
-	cvar.o \
-	host.o \
-	host_cmd.o \
-	in_sdl.o \
-	keys.o \
-	mathlib.o \
-	menu.o \
-	midi_sdl.o \
-	net_bsd.o \
-	net_dgrm.o \
-	net_loop.o \
-	net_main.o \
-	net_udp.o \
-	net_vcr.o \
-	pr_cmds.o \
-	pr_edict.o \
-	pr_exec.o \
-	r_dl_part.o \
-	sbar.o \
-	snd_dma.o \
-	snd_mix.o \
-	snd_mem.o \
-	snd_oss.o \
-	snd_sdl.o \
-	snd_alsa.o \
-	sv_main.o \
-	sv_move.o \
-	sv_phys.o \
-	sv_user.o \
-	sys_unix.o \
-	view.o \
-	wad.o \
-	world.o \
-	zone.o \
-	math.o \
-	snd_mixa.o \
-	sys_wina.o \
-	worlda.o
+# Targets
+.PHONY: help clean cleaner
 
-all : $(BINARY)
+#default: glh2
+#all: default
+
+help:
+	@echo
+	@echo "Valid targets: (read/edit the makefile for several options)"
+	@echo
+	@echo "* $(MAKE) help        : this help"
+	@echo "* $(MAKE) clean       : delete all files produced by the build"
+	@echo "* $(MAKE) h2          : hexen2 binary, software renderer"
+	@echo "* $(MAKE) glh2        : hexen2 binary, opengl renderer"
+	@echo "* $(MAKE) mp          : mission pack binary, software renderer"
+	@echo "* $(MAKE) glmp        : mission pack binary, opengl renderer"
+	@echo
+ifneq "$(TARGET_OS)" "WIN32"
+	@echo "===== Static binaries: ====="
+	@echo "* $(MAKE) h2_static   : hexen2 binary, software renderer"
+	@echo "* $(MAKE) glh2_static : hexen2 binary, opengl renderer"
+	@echo "* $(MAKE) mp_static   : mission pack binary, software renderer"
+	@echo "* $(MAKE) glmp_static : mission pack binary, opengl renderer"
+	@echo
+endif
+
+hexen2: h2
+glhexen2: glh2
+h2mp: mp
+glh2mp: glmp
+
+# include file for sanity check target
+include $(UHEXEN2_TOP)/scripts/sanity2.inc
+
+h2: EXT_FLAGS+=$(MGL_FLAG)
+h2: INCLUDES+=$(MGL_INCL)
+h2: sanity $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
+	$(LINKER) -o $(H2_BINARY) $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK) $(MGL_LINK)
+
+glh2: EXT_FLAGS+= $(GL_DEFS)
+glh2: sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
+	$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
+
+mp: EXT_FLAGS+=-DH2MP $(MGL_FLAG)
+mp: INCLUDES+=$(MGL_INCL)
+mp: sanity $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
+	$(LINKER) -o $(MP_BINARY) $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK) $(MGL_LINK)
+
+glmp: EXT_FLAGS+= -DH2MP $(GL_DEFS)
+glmp: sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
+	$(LINKER) -o $(GLMP_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
+
+# static builds are not tested on win32
+ifneq "$(TARGET_OS)" "WIN32"
+
+h2_static : sanity $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
+	$(LINKER) -o $(H2_STATIC) $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS) $(LDSTATIC)
+
+glh2_static : EXT_FLAGS+= $(GL_DEFS)
+glh2_static : sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
+	$(LINKER) -o $(GLH2_STATIC) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDSTATIC) $(GLFLAGS)
+
+mp_static : EXT_FLAGS+=-DH2MP
+mp_static : sanity $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
+	$(LINKER) -o $(MP_STATIC) $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS) $(LDSTATIC)
+
+glmp_static : EXT_FLAGS+= -DH2MP $(GL_DEFS)
+glmp_static : sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
+	$(LINKER) -o $(GLMP_STATIC) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDSTATIC) $(GLFLAGS)
+
+# End of static binary targets
+endif
 
 clean:
-	rm -f *.o core
+	rm -f *.o win_stuff/*.o core .tmp *.tmp
 
-ifeq "$(BUILDGL)" "no"
-$(BINARY) : $(SOFTOBJS) $(COMMONOBJS)
-	$(LINKER) -o $(BINARY) $(SOFTOBJS) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK)
-else
-$(BINARY) : $(GLOBJS) $(COMMONOBJS)
-	$(LINKER) -o $(BINARY) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
-endif
+cleaner:
+	rm -f *.o win_stuff/*.o core .tmp *.tmp \
+		$(GLMP_BINARY) $(GLH2_BINARY) $(MP_BINARY) $(H2_BINARY) \
+		$(H2_STATIC) $(GLMP_STATIC) $(GLH2_STATIC) $(MP_STATIC)
 

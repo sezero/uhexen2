@@ -1,9 +1,13 @@
 #!/bin/sh
 
-PREFIX=/usr/local/cross-tools
-TARGET=i386-mingw32msvc
-PATH="$PREFIX/bin:$PREFIX/$TARGET/bin:$PATH"
-export PATH
-MAKEFILE=Makefile.mingw
+UHEXEN2_TOP=../..
+. $UHEXEN2_TOP/scripts/cross_defs
 
-exec make -f $MAKEFILE WIN32CC=$TARGET-gcc W32STRIP=$TARGET-strip MINGWDIR=$PREFIX/$TARGET $*
+if [ "$1" = "strip" ]
+then
+$STRIPPER hwmaster.exe
+exit 0
+fi
+
+exec make $SENDARGS $*
+

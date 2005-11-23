@@ -16,13 +16,13 @@ TMPNAME = h2launcher
 endif
 ifdef GTK1
 H2LAUNCH = $(TMPNAME).gtk1
-GTK_CFLAGS = `gtk-config --cflags`
-GTK_LIBS = `gtk-config --libs`
+GTK_CFLAGS := $(shell gtk-config --cflags)
+GTK_LIBS := $(shell gtk-config --libs)
 else
 #H2LAUNCH = $(TMPNAME).gtk2
 H2LAUNCH = $(TMPNAME)
-GTK_CFLAGS = `pkg-config --cflags gtk+-2.0`
-GTK_LIBS = `pkg-config --libs gtk+-2.0`
+GTK_CFLAGS := $(shell pkg-config --cflags gtk+-2.0)
+GTK_LIBS := $(shell pkg-config --libs gtk+-2.0)
 endif
 
 VERSION = 0.6.1
@@ -36,23 +36,21 @@ OBJECTS = main.o config_file.o launch_bin.o \
 	interface.o callbacks.o $(SUPPORT_OBJ)
 
 ifdef DEBUG
-CFLAGS = -Wall -g -DDEBUG_BUILD
+CFLAGS := -Wall -g -DDEBUG_BUILD
 else
-CFLAGS = -Wall -O2 -march=i586
+CFLAGS := -Wall -O2 -march=i586
 endif
-CFLAGS+= -I. $(GTK_CFLAGS) -DHOTL_VER=\"$(VERSION)\" -DHOT_VER=\"$(HOT_VERSION)\"
+CFLAGS := $(CFLAGS) -I. $(GTK_CFLAGS) -DHOTL_VER=\"$(VERSION)\" -DHOT_VER=\"$(HOT_VERSION)\"
 
 ifdef DEMO
-CFLAGS+=-DDEMOBUILD
+CFLAGS := $(CFLAGS) -DDEMOBUILD
 endif
 ifdef GTK1
-CFLAGS+=-DWITH_GTK1
+CFLAGS := $(CFLAGS) -DWITH_GTK1
 endif
 LDFLAGS =
 
-ifndef CC
-CC = gcc
-endif
+CC ?= gcc
 
 COMPILE = $(CC) $(CFLAGS)
 CCLD = $(CC)
@@ -70,8 +68,8 @@ $(H2LAUNCH): $(OBJECTS)
 all: $(PROGRAMS)
 
 clean:
-	-rm -f *.o core *.core
+	-rm -f *.o core
 
 cleaner:
-	-rm -f *.o core *.core $(PROGRAMS)
+	-rm -f *.o core $(PROGRAMS)
 

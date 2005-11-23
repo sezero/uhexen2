@@ -1,9 +1,41 @@
 #!/bin/sh
 
+EXE_EXT=
+BIN_FILES="dcc/bin/dhcc h2_utils/bin/hcc h2mp_utils/bin/hcc 
+h2_utils/bin/vis h2_utils/bin/qbsp h2_utils/bin/light 
+h2mp_utils/bin/vis h2_utils/bin/qbsp h2_utils/bin/light 
+h2mp_utils/bin/qfiles h2mp_utils/bin/genmodel"
+
+if env | grep -i windir > __tmp.tmp; then
+EXE_EXT=".exe";
+fi
+rm -f __tmp.tmp
+
 if test "`uname`" = "FreeBSD" ; then
 	MAKE=gmake
 else
 	MAKE=make
+fi
+
+if [ "$1" = "strip" ]
+then
+	for i in ${BIN_FILES}
+	do
+	    strip ${i}${EXE_EXT}
+	done
+exit 0
+fi
+
+if [ "$1" = "clean" ]
+then
+make -s -C h2mp_utils/hcc clean
+make -s -C h2_utils/hcc clean
+make -s -C h2mp_utils/qfiles clean
+make -s -C h2mp_utils/genmodel clean
+make -s -C h2mp_utils/utils clean
+make -s -C h2_utils/utils clean
+make -s -C dcc clean
+exit 0
 fi
 
 echo "Building hcc, the HexenC compiler.."

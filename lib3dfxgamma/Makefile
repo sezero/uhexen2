@@ -1,9 +1,7 @@
 # quick'n'dirty (and silly) makefile for lib3dfxgamma.so
 # sigh, do we even need one for this!?
 
-ifndef CC
-CC = gcc
-endif
+CC ?= gcc
 LINKER = $(CC)
 FXLIB=lib3dfxgamma.so
 CFLAGS = -O2 -Wall -shared -march=i586

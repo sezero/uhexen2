@@ -1,37 +1,77 @@
+# To build for the demo version:	make DEMO=1 [other stuff]
+# if building a debug version :		make DEBUG=1 [other stuff]
 
-#  if building for the demo version, run with
-#  make DEMO=yes [other stuff]
+# To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
+# argument to make. It would be best if you examine the script named
+# build_cross_win32.sh for cross compilation.
 
+# Path settings:
+# main uhexen2 relative path
+UHEXEN2_TOP=../..
+
+# include the common dirty stuff
+include $(UHEXEN2_TOP)/scripts/makefile.inc
+
+# include file for sanity checks
+include $(UHEXEN2_TOP)/scripts/sanity1.inc
+
+# Names of the binaries
+ifeq "$(TARGET_OS)" "WIN32"
+BINARY=hwsv.exe
+else
 BINARY=hwsv
 BINARY_STATIC=hwsv.static
-
-ifndef CC
-CC = gcc
 endif
-LINKER = $(CC)
 
-ifdef DEBUG
-CFLAGS = -DDEBUG_BUILD -g -Wall -DPLATFORM_UNIX
+# Compiler flags
+ifndef DEBUG
+CFLAGS := -O2 -march=i586 -Wall -ffast-math -fexpensive-optimizations
+
+# this may prevent some bad compilations with gcc4
+CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
+endif
+
+# Other build flags
+EXT_FLAGS:= -DH2W -DSERVERONLY
+INCLUDES := -I../Client -I.
+
+ifeq "$(TARGET_OS)" "WIN32"
+INCLUDES += -I$(MINGWDIR)/include
+LDFLAGS  := -L$(MINGWDIR)/lib -lm -lwsock32 -mconsole
 else
-CFLAGS = -O2 -march=i586 -Wall -ffast-math -fexpensive-optimizations -DPLATFORM_UNIX
+EXT_FLAGS+= -DPLATFORM_UNIX
+LDFLAGS  := -lm -lpthread
+LDSTATIC := -lm -lpthread -static
 endif
-
-GAMEFLAGS = -DH2W -DSERVERONLY
-SVINCS = -I../Client -I.
-SDLFLAG = `sdl-config --cflags`
-SDLLINK = `sdl-config --libs`
 
 ifdef DEMO
-GAMEFLAGS+= -DDEMOBUILD
+EXT_FLAGS+= -DDEMOBUILD
 endif
-LDFLAGS = -lm -lpthread
-LDSTATIC = -lm -lpthread -static
 
+ifdef DEBUG
+# This activates come extra code in hexen2/hexenworld C source
+EXT_FLAGS+= -DDEBUG_BUILD
+endif
+
+
+# Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(SVINCS) $(CFLAGS) $(GAMEFLAGS) -o $@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) $(EXT_FLAGS) -o $@ $<
 cl_objs/%.o: ../Client/%.c
-	$(CC) -c $(SVINCS) $(CFLAGS) $(GAMEFLAGS) -o $@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) $(EXT_FLAGS) -o $@ $<
 
+# Objects
+# Platform specific object settings
+SYS_UNIX = sys_unix.o
+SYS_WIN32 = win_stuff/sys_win.o
+
+ifeq "$(TARGET_OS)" "WIN32"
+SYSOBJ_SYS = $(SYS_WIN32)
+else
+SYSOBJ_SYS = $(SYS_UNIX)
+endif
+
+# Final list of objects
 COMMONOBJS = model.o \
 	cl_objs/cmd.o \
 	cl_objs/common.o \
@@ -56,18 +96,31 @@ COMMONOBJS = model.o \
 	sv_phys.o \
 	sv_send.o \
 	sv_user.o \
-	sys_unix.o \
-	world.o
+	world.o \
+	$(SYSOBJ_SYS)
 
-all: $(BINARY)
-static: $(BINARY_STATIC)
+
+# Targets
+default: $(BINARY)
+all: default
+
+# include file for sanity check target
+include $(UHEXEN2_TOP)/scripts/sanity2.inc
 
 $(BINARY) : $(COMMONOBJS)
 	$(LINKER) -o $(BINARY) $(COMMONOBJS) $(LDFLAGS)
 
+# static builds are not tested on win32
+ifneq "$(TARGET_OS)" "WIN32"
+
+static: $(BINARY_STATIC)
+
 $(BINARY_STATIC) : $(COMMONOBJS)
 	$(LINKER) -o $(BINARY_STATIC) $(COMMONOBJS) $(LDSTATIC)
 
+# End of static binary targets
+endif
+
 clean:
-	rm -f $(COMMONOBJS) core
+	rm -f *.o cl_objs/*.o win_stuff/*.o core .tmp *.tmp
 

@@ -1,0 +1,16 @@
+# -*-Shell-script-*-
+
+# This file contains all common Win32 cross compilation definitions for
+# use with all other build_cross_win32.sh scripts for the uhexen2 tree.
+
+# This script is written with the cross-tools and instructions found at
+# http://www.libsdl.org/extras/win32/cross/ in mind.  Change it to meet
+# your needs and environment.
+
+PREFIX=/usr/local/cross-tools
+TARGET=i386-mingw32msvc
+PATH="$PREFIX/bin:$PREFIX/$TARGET/bin:$PATH"
+export PATH
+SENDARGS="WINBUILD=1 CC=$TARGET-gcc NASM=nasm WINDRES=$TARGET-windres MINGWDIR=$PREFIX/$TARGET"
+STRIPPER=$TARGET-strip
+

@@ -1,35 +1,53 @@
 #!/bin/sh
 
-# Valid arguments:
-# clean : performs a "make clean" operation in all utils directories.
-# strip : performs a "make strip" in all utils directories (strips all pre-built binaries)
-# no args : builds all util binaries for win32
+UHEXEN2_TOP=..
+. $UHEXEN2_TOP/scripts/cross_defs
 
-PREFIX=/usr/local/cross-tools
-TARGET=i386-mingw32msvc
-PATH="$PREFIX/bin:$PREFIX/$TARGET/bin:$PATH"
-export PATH
+BIN_FILES="dcc/bin/dhcc.exe h2_utils/bin/hcc.exe h2mp_utils/bin/hcc.exe
+h2_utils/bin/vis.exe h2_utils/bin/qbsp.exe h2_utils/bin/light.exe
+h2mp_utils/bin/vis.exe h2mp_utils/bin/qbsp.exe h2mp_utils/bin/light.exe
+h2mp_utils/bin/qfiles.exe h2mp_utils/bin/genmodel.exe"
 
-MAKEFILE=Makefile.mingw
+if [ "$1" = "strip" ]
+then
+echo "Stripping all hexen2-util binaries"
+	for i in ${BIN_FILES}
+	do
+	    $STRIPPER ${i}${EXE_EXT}
+	done
+exit 0
+fi
+
+if [ "$1" = "clean" ]
+then
+make -s -C h2mp_utils/hcc clean
+make -s -C h2_utils/hcc clean
+make -s -C h2mp_utils/qfiles clean
+make -s -C h2mp_utils/genmodel clean
+make -s -C h2mp_utils/utils clean
+make -s -C h2_utils/utils clean
+make -s -C dcc clean
+exit 0
+fi
 
 echo "Building hcc, the HexenC compiler.."
-make -C h2mp_utils/hcc -f $MAKEFILE WIN32CC=$TARGET-gcc W32STRIP=$TARGET-strip MINGWDIR=$PREFIX/$TARGET $*
+make -C h2mp_utils/hcc $SENDARGS
 
 echo "" && echo "Now building hcc, old version"
-make -C h2_utils/hcc -f $MAKEFILE WIN32CC=$TARGET-gcc W32STRIP=$TARGET-strip MINGWDIR=$PREFIX/$TARGET $*
+make -C h2_utils/hcc $SENDARGS
 
 echo "" && echo "Now building qfiles.."
-make -C h2mp_utils/qfiles -f $MAKEFILE WIN32CC=$TARGET-gcc W32STRIP=$TARGET-strip MINGWDIR=$PREFIX/$TARGET $*
+make -C h2mp_utils/qfiles $SENDARGS
 
 echo "" && echo "Now building genmodel.."
-make -C h2mp_utils/genmodel -f $MAKEFILE WIN32CC=$TARGET-gcc W32STRIP=$TARGET-strip MINGWDIR=$PREFIX/$TARGET $*
+make -C h2mp_utils/genmodel $SENDARGS
 
 echo "" && echo "Now building light, vis and qbsp.."
-make -C h2mp_utils/utils -f $MAKEFILE WIN32CC=$TARGET-gcc W32STRIP=$TARGET-strip MINGWDIR=$PREFIX/$TARGET $*
+make -C h2mp_utils/utils $SENDARGS
 
 echo "" && echo "Now building light, vis and qbsp, old versions.."
-make -C h2_utils/utils -f $MAKEFILE WIN32CC=$TARGET-gcc W32STRIP=$TARGET-strip MINGWDIR=$PREFIX/$TARGET $*
+make -C h2_utils/utils $SENDARGS
 
 echo "" && echo "Now building dhcc, a progs.dat decompiler.."
-make -C dcc -f $MAKEFILE WIN32CC=$TARGET-gcc W32STRIP=$TARGET-strip MINGWDIR=$PREFIX/$TARGET $*
+make -C dcc $SENDARGS
 

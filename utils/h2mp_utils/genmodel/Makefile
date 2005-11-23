@@ -1,24 +1,50 @@
+# if building a debug version :		make DEBUG=1 [other stuff]
 
-ifndef CC
-CC = gcc
-endif
-LINKER = $(CC)
+# To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
+# argument to make. It would be best if you examine the script named
+# build_cross_win32.sh for cross compilation.
+
+# Path settings:
+# main uhexen2 relative path
+UHEXEN2_TOP=../../..
+# where to put the binaries
+DESTDIR =../bin
+
+# include the common dirty stuff
+include $(UHEXEN2_TOP)/scripts/makefile.inc
+
+# include file for sanity checks
+include $(UHEXEN2_TOP)/scripts/sanity1.inc
+
+# Names of the binaries
+ifeq "$(TARGET_OS)" "WIN32"
+BINARY=genmodel.exe
+else
 BINARY=genmodel
-DESTDIR=../bin
-CFLAGS = -march=i586 -O2 -Wall -ffast-math -fexpensive-optimizations
-LDFLAGS = 
-LDLIBS= -lm
+endif
 
-all : $(BINARY)
+# Compiler flags
+ifndef DEBUG
+CFLAGS := -march=i586 -O2 -Wall -ffast-math -fexpensive-optimizations
+endif
 
-clean : 
-	rm -f *.o core
+# Other build flags
+
+ifeq "$(TARGET_OS)" "WIN32"
+INCLUDES:= -I$(MINGWDIR)/include
+LDFLAGS := -mconsole
+LDLIBS  :=
+else
+INCLUDES:=
+LDFLAGS :=
+LDLIBS  := -lm
+endif
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) -o $@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
-
+# Objects
 GENMODELOBJS= cmdlib.o \
 	mathlib.o \
 	loadtri.o \
@@ -26,5 +52,15 @@ GENMODELOBJS= cmdlib.o \
 	token.o \
 	genmodel.o
 
+# Targets
+all : $(BINARY)
+
+# include file for sanity check target
+include $(UHEXEN2_TOP)/scripts/sanity2.inc
+
 $(BINARY) : $(GENMODELOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BINARY) $(GENMODELOBJS) $(LDFLAGS) $(LDLIBS)
+
+clean : 
+	rm -f *.o core .tmp *.tmp
+

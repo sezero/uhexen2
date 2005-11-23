@@ -8,6 +8,7 @@ See the MinGW FAQ on the MinGW homepage:
 	http://mingw.sourceforge.net/
 Visit this link:
 	http://www.libsdl.org/extras/win32/cross/
+
 The latter link has a good README and prebuilt cross compiler
 tools. Download and install them, or prepare your own cross
 compiler. You can then use the "build_cross_win32.sh" scripts
@@ -20,52 +21,42 @@ b. On Windows, using Win32-Native MinGW compiler:
 
 First download this package and install it to C:\MinGW :
   http://prdownloads.sourceforge.net/mingw/MinGW-3.1.0-1.exe?download
-
 Then download this one and install to c:\msys :
   http://prdownloads.sourceforge.net/mingw/MSYS-1.0.11-2004.04.30-1.exe?download
-
-I did this on a Win98 installation and, FWIW, I also added
-these lines to my autoexec.bat:
-
-  PATH=%PATH%;C:\MinGW\bin;C:\MinGW\mingw32\bin
-
-This version of MinGW comes with a 3.2.3 version of gcc (GNU C
-compiler) Newer versions of MinGW and MSYS may or may not work.
-(UPDATE: MinGW 4.1.1 / gcc-3.4.2 also seem to work fine.)
-
 For assembly sources, download nasm:
   http://prdownloads.sourceforge.net/nasm/nasm-0.98.39-win32.zip?download
-and put the nasmw.exe into the C:\MinGW\bin directory.
 
-Open up a command.com (cmd.exe for NT/XP users) console, cd
-into \msys and type
+Adding the mingw directory to your PATH may be a good idea, too.
+This version of MinGW comes with a 3.2.3 version of gcc (GNU C
+compiler.) MinGW 4.1.1 or 5.0, on the other hand, comes gcc-3.4.2
+and they seem to work fine, too. I am currently using MinGW-5.0.0
+when I compile on Windows.  To finalize compilers' installation,
+put nasmw.exe into the C:\MinGW\bin directory. Open a command.com
+(cmd.exe for NT/XP users) console, cd into \msys and type
 
   msys sh.exe
 
-You'll be in a unixish sh environment. The rest is just like
-doing things in linux:  cd into your fake "home directory",
-explode the HoT tarball, then change into the newly formed
-Hammer of Thyrion directory.
+You'll be in a unixish sh environment. The rest is just like doing
+things in linux:  cd into your fake "home directory", explode the
+HoT tarball, then change into the newly formed Hammer of Thyrion
+directory. Change into each subdirectory you want to build and type,
 
-Change into each subdirectory you want to build and type,
+  make <target_name>
 
-  make -f Makefile.mingw <target_name>
-
-without the brackets, of course. Remember to type,
-
-  make -f Makefile.mingw clean
-
+without the brackets, of course.  Note that "make" may be named
+"mingw32-make". In that case, you may want to try "mingw32-make"
+if "make" command itself fails to run. Remember to do a make clean
 between each different build. Here are the valid target names:
 
 directory: hexen2, target names:
-  h2_exe	Hexen2, standart version, software renderer
-  glh2_exe	Hexen2, standart version, opengl renderer
-  mp_exe	Hexen2, mission pack, software renderer
-  glmp_exe	Hexen2, mission pack, opengl renderer
+  h2	Hexen2, standart version, software renderer
+  glh2	Hexen2, standart version, opengl renderer
+  mp	Hexen2, mission pack, software renderer
+  glmp	Hexen2, mission pack, opengl renderer
 
 directory: hexenworld/Client, target names:
-  hw_exe	HexenWorld Client, software renderer
-  glhw_exe	HexenWorld Client, opengl renderer
+  hw	HexenWorld Client, software renderer
+  glhw	HexenWorld Client, opengl renderer
 
 directory: hexenworld/Server, targets:
   HexenWorld server, no target name necessary
