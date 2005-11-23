@@ -11,8 +11,11 @@
 #include <windows.h>
 #include <winsock.h>	// for LCC
 #elif defined(PLATFORM_UNIX)
+#include <sys/types.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
 #include <arpa/inet.h>
+#include <sys/param.h>
 #else	// Eh ??
 #define AF_INET 		2	/* internet */
 // these actually seem to be winsock defines
