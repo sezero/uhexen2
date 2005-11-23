@@ -1,5 +1,22 @@
 ChangeLog:
 
+2005-11-23 (CVS):
+    * hopefully fixed bsd compilation of net_dgram.c
+    * changed USE_MIDI definition usage with a NO_MIDIMUSIC definition
+    * Major build system update. Includes a workaround for a gcc4
+      problem we have been encountering.
+
+2005-11-05 (CVS):
+    * better tab-completion: fixed an off-by-one error in deciding
+      whether we are in inline-edit mode; made it to report the match
+      count if there are more than one matches; cancelled auto-completion
+      to the first possible match unless there is only one
+    * renamed win32 resource files to win32res.rc, adjusted the makefiles
+    * removed dead code using the dead segmentCount variable
+    * fixed gcc4 signedness warnings in hexenworld/Server/sv_main.c,
+      matched the sv_highchars code to to that of quakeworld
+    * fixed some gcc4 warnings
+
 2005-11-02 (CVS):
     * shortened midi file opening for SDL_mixer. the midi cache
       will be directly under <com_userdir>/.midi from now on.
