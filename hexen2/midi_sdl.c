@@ -2,13 +2,13 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.16 2005-11-02 18:39:21 sezero Exp $
+	$Id: midi_sdl.c,v 1.17 2005-11-23 18:05:51 sezero Exp $
 */
 
 #include "quakedef.h"
 #include <unistd.h>
 
-#ifdef USE_MIDI
+#ifndef NO_MIDIMUSIC
 #include "SDL.h"
 #include "SDL_mixer.h"
 
@@ -16,7 +16,7 @@ static Mix_Music *music = NULL;
 int audio_wasinit = 0;
 
 void (*midi_endmusicfnc)(void);
-#endif	// USE_MIDI
+#endif	// !NO_MIDIMUSIC
 
 byte bMidiInited,bFileOpen, bPlaying, bBuffersPrepared;
 byte bPaused, bLooped;
@@ -42,7 +42,7 @@ void MIDI_Pause_f (void)
 	MIDI_Pause(0);
 }
 
-#ifndef USE_MIDI
+#ifdef NO_MIDIMUSIC
 // placeholders
 void MIDI_Loop_f (void) {}
 void MIDI_EndMusicFinished(void) {}
@@ -261,6 +261,10 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/11/02 18:39:21  sezero
+ * shortened midi file opening for SDL_mixer. the midi cache
+ * will be directly under <com_userdir>/.midi from now on.
+ *
  * Revision 1.15  2005/08/13 11:57:45  sezero
  * Standardized SDL_mixer includes
  *
