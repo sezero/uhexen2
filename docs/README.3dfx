@@ -132,13 +132,20 @@ or, for mesa-3.4.2:
 # cp libGL.so.1.2.030402 libVoodooGL.so.3.4
 
 The last command creates a copy of Mesa OpenGL library, we will
-use it with Hexen2. Copy this new library to any place you want,
-for example, into /home/NAME/lib . Now run the Hexen2 game with
-the command:
+use it with Hexen2. Copy this new library to the hexen2 installation
+directory. Now run the game with the command:
 
 # export MESA_GLX_FX=f
-# ./glhexen2 -f -width 640 --gllibrary /home/NAME/lib/libVoodooGL.so.6.2
+# ./glhexen2 -f -width 640 --gllibrary libVoodooGL.so.6.2
 (you may use additional arguments)
+
+If you copied the library to the hexen2 installation directory, you
+needn't specify any path to it on the command line: HoT-1.3.1 and
+later versions will find it in its basedir. Alternatively, you can
+copy the library to any place you want: in that case you have to
+specify the full path to it on the command line for hexen2 to find
+it. Example:
+# ./glhexen2 -f -width 640 -g /usr/local/lib/libVoodooGL.so.6.2
 
 Mesa-3.0 and Mesa-3.2.1 should also work fine. In my experience,
 Mesa-4.0.4 and 5.0.2 didn't work, they may or may not work for

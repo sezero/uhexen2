@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_dl_vidsdl.c,v 1.89 2005-10-21 18:02:06 sezero Exp $
+   $Id: gl_dl_vidsdl.c,v 1.90 2005-12-04 11:16:14 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -35,6 +35,7 @@
 
 #include "SDL.h"
 #include <dlfcn.h>
+#include <unistd.h>
 
 #define MAX_MODE_LIST	30
 #define VID_ROW_SIZE	3
@@ -78,7 +79,9 @@ const char	*gl_renderer;
 const char	*gl_version;
 const char	*gl_extensions;
 #ifdef GL_DLSYM
-char		*gl_library;
+static char	*gl_library  = NULL;
+static char	*gl_liblocal = NULL;
+static qboolean	GL_OpenLibrary(const char *name, const char *altern_name);
 #endif
 int		gl_max_size = 256;
 qboolean	is_3dfx = false;
@@ -212,6 +215,49 @@ static void VID_SetIcon (void)
 	SDL_FreeSurface(icon);
 }
 
+#ifdef GL_DLSYM
+static qboolean GL_OpenLibrary(const char *name, const char *altern_name)
+{
+	int	ret;
+
+	// If we are given an alternative name, that means the user
+	// provided a library name without any path: The alternative
+	// name actually is the same as the first name, but prefixed
+	// with our very own basedir path. We will first start with
+	// the first name: loading may succeed either in case it is
+	// a globally installed library, or it is on the path that
+	// LD_LIBRARY_PATH environment knows about.
+
+	ret = SDL_GL_LoadLibrary(name);
+
+	if (ret < 0)
+	{
+		if (name && altern_name)
+		{
+			Con_Printf ("Failed loading gl library %s\n"
+				    "Trying to load %s\n", name, altern_name);
+			ret = SDL_GL_LoadLibrary(altern_name);
+
+			if (ret < 0)
+				return false;
+
+			Con_Printf("Using GL library: %s\n", altern_name);
+			return true;
+		}
+
+		return false;
+	}
+
+	if (name)
+		Con_Printf("Using GL library: %s\n", name);
+	else
+		Con_Printf("Using system GL library\n");
+
+	return true;
+}
+#endif	// GL_DLSYM
+
+
 /* Init SDL */
 
 int VID_SetMode (int modenum)
@@ -267,8 +313,8 @@ int VID_SetMode (int modenum)
 		Sys_Error ("Couldn't init video: %s", SDL_GetError());
 
 #ifdef GL_DLSYM
-	if (SDL_GL_LoadLibrary(gl_library) < 0)
-		Sys_Error("VID: Couldn't load GL library: %s", SDL_GetError());
+	if (!GL_OpenLibrary(gl_library, gl_liblocal))
+		Sys_Error ("Unable to load GL library %s", gl_library);
 #endif
 
 #if SDL_PATCHLEVEL > 5
@@ -1041,14 +1087,24 @@ void	VID_Init (unsigned char *palette)
 	Cmd_AddCommand ("vid_setgamma", VID_SetGamma_f);
 
 #ifdef GL_DLSYM
-	gl_library=NULL;
-	if (COM_CheckParm("--gllibrary")) {
+	if (COM_CheckParm("--gllibrary"))
 		gl_library = com_argv[COM_CheckParm("--gllibrary")+1];
-		Con_Printf("Using GL library: %s\n",gl_library);
-	}
-	else if (COM_CheckParm("-g")) {
+	else if (COM_CheckParm("-g"))
 		gl_library = com_argv[COM_CheckParm("-g")+1];
-		Con_Printf("Using GL library: %s\n",gl_library);
+	else
+		gl_library=NULL; // trust SDL's wisdom here
+
+	// In case of user-specified gl library, look for it under the
+	// installation directory, too: the user may forget providing
+	// a valid path information. In that case, make sure it doesnt
+	// contain any path information and exists in our own basedir,
+	// then store it to the var gl_liblocal
+	gl_liblocal = NULL;
+	if ( gl_library && !(strcmp(gl_library, COM_SkipPath(gl_library))) )
+	{
+		gl_liblocal = va("%s/%s", com_basedir, COM_SkipPath(gl_library));
+		if (access(gl_liblocal, R_OK) == -1)
+			gl_liblocal = NULL;
 	}
 #endif
 
