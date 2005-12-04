@@ -212,7 +212,7 @@ opengl library usage: See the sample command lines above employing
 the -g or --gllibrary argument.
 If any other game you want to play uses opengl but does not have
 support for user specified opengl libraries, it will try to open the
-system opengl library, namely libGL.so or libGLso.1. To cheat such a
+system opengl library, namely libGL.so or libGL.so.1. To cheat such a
 game to use the fxMesa library, copy the library to where the game
 is installed and rename the library to libGL.so or libGL.so.1. Then
 run the game with a command line like:
