@@ -179,7 +179,7 @@ void Sys_Init (void)
 void Sys_Error (char *error, ...)
 {
 	va_list		argptr;
-	char		text[1024], text2[1024];
+	char		text[MAXPRINTMSG], text2[MAXPRINTMSG];
 	char		*text3 = "Press Enter to exit\n";
 	char		*text4 = "***********************************\n";
 	char		*text5 = "\n";
@@ -189,16 +189,16 @@ void Sys_Error (char *error, ...)
 	Host_Shutdown ();
 
 	va_start (argptr, error);
-	vsprintf (text, error, argptr);
+	vsnprintf (text, sizeof (text), error, argptr);
 	va_end (argptr);
 
 	if (isDedicated)
 	{
 		va_start (argptr, error);
-		vsprintf (text, error, argptr);
+		vsnprintf (text, sizeof (text), error, argptr);
 		va_end (argptr);
 
-		sprintf (text2, "ERROR: %s\n", text);
+		snprintf (text2, sizeof (text2), "ERROR: %s\n", text);
 		WriteFile (houtput, text5, strlen (text5), &dummy, NULL);
 		WriteFile (houtput, text4, strlen (text4), &dummy, NULL);
 		WriteFile (houtput, text2, strlen (text2), &dummy, NULL);
@@ -226,13 +226,13 @@ void Sys_Error (char *error, ...)
 void Sys_Printf (char *fmt, ...)
 {
 	va_list		argptr;
-	char		text[1024];
+	char		text[MAXPRINTMSG];
 	DWORD		dummy;
 
 	if (isDedicated)
 	{
 		va_start (argptr,fmt);
-		vsprintf (text, fmt, argptr);
+		vsnprintf (text, sizeof (text), fmt, argptr);
 		va_end (argptr);
 
 		WriteFile(houtput, text, strlen (text), &dummy, NULL);	
@@ -682,6 +682,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/10/02 15:43:08  sezero
+ * killed -Wshadow warnings
+ *
  * Revision 1.22  2005/09/28 06:06:38  sezero
  * killed the cvar sys_delay
  *

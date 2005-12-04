@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.9 2005-10-25 17:14:23 sezero Exp $
+	$Id: sys_unix.c,v 1.10 2005-12-04 11:14:38 sezero Exp $
 
 	Unix system interface code
 */
@@ -58,10 +58,10 @@ Sys_Error
 void Sys_Error (char *error, ...)
 {
 	va_list		argptr;
-	char		text[1024];
+	char		text[MAXPRINTMSG];
 
 	va_start (argptr,error);
-	vsprintf (text, error,argptr);
+	vsnprintf (text, sizeof (text), error, argptr);
 	va_end (argptr);
 
 	printf ("\nFATAL ERROR: %s\n\n", text);
@@ -147,13 +147,16 @@ Sys_Printf
 void Sys_Printf (char *fmt, ...)
 {
 	va_list		argptr;
+	char		text[MAXPRINTMSG];
 
 	if (sys_nostdout.value)
 		return;
 
 	va_start (argptr,fmt);
-	vprintf (fmt,argptr);
+	vsnprintf (text, sizeof (text), fmt, argptr);
 	va_end (argptr);
+
+	fprintf(stderr, "%s", text);
 }
 
 /*

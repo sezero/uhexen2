@@ -3,7 +3,7 @@
 //**
 //** misc.c
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/cmdlib.c,v 1.1.1.1 2005-03-19 09:30:08 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/cmdlib.c,v 1.2 2005-12-04 11:14:38 sezero Exp $
 //**
 //**************************************************************************
 
@@ -73,7 +73,7 @@ void MS_ParseError(char *error, ...)
 	char string[1024];
 
 	va_start(argptr, error);
-	vsprintf(string, error, argptr);
+	vsnprintf(string, sizeof (string), error, argptr);
 	va_end(argptr);
 	printf("%s(%d) : %s\n", strings+s_file, lx_SourceLine, string);
 	longjmp(pr_parse_abort, 1);
@@ -95,7 +95,7 @@ void MS_ParseWarning(char *error, ...)
 		return;
 	}
 	va_start(argptr, error);
-	vsprintf(string, error, argptr);
+	vsnprintf(string, sizeof (string), error, argptr);
 	va_end(argptr);
 	printf("%s(%d) : warning : %s\n", strings+s_file, lx_SourceLine,
 		string);

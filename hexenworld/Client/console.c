@@ -342,7 +342,6 @@ Con_Printf
 Handles cursor positioning, line wrapping, etc
 ================
 */
-#define	MAXPRINTMSG	4096
 void Con_Printf (char *fmt, ...)
 {
 	va_list		argptr;
@@ -350,7 +349,7 @@ void Con_Printf (char *fmt, ...)
 	static qboolean	inupdate;
 
 	va_start (argptr,fmt);
-	vsnprintf (msg,MAXPRINTMSG - 1,fmt,argptr);
+	vsnprintf (msg,sizeof(msg),fmt,argptr);
 	va_end (argptr);
 
 // also echo to debugging console
@@ -397,7 +396,7 @@ void Con_DPrintf (char *fmt, ...)
 		return;			// don't confuse non-developers with techie stuff...
 
 	va_start (argptr,fmt);
-	vsnprintf(msg, MAXPRINTMSG - 1, fmt, argptr);
+	vsnprintf(msg, sizeof (msg), fmt, argptr);
 	va_end (argptr);
 
 	Con_Printf ("%s", msg);
@@ -418,7 +417,7 @@ void Con_SafePrintf (char *fmt, ...)
 	int			temp;
 
 	va_start (argptr,fmt);
-	vsnprintf(msg, MAXPRINTMSG - 1, fmt, argptr);
+	vsnprintf(msg, sizeof (msg), fmt, argptr);
 	va_end (argptr);
 
 	temp = scr_disabled_for_loading;

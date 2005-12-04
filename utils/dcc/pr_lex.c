@@ -480,7 +480,7 @@ void PR_ParseError (char *error, ...)
 	char		string[1024];
 
 	va_start (argptr,error);
-	vsprintf (string,error,argptr);
+	vsnprintf (string,sizeof(string),error,argptr);
 	va_end (argptr);
 
 	printf ("%s:%i:%s\n", strings + s_file, pr_source_line, string);

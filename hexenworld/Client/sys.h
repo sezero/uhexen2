@@ -1,5 +1,8 @@
 // sys.h -- non-portable functions
 
+// maximum allowed print message length
+#define MAXPRINTMSG	4096
+
 //
 // file IO
 //

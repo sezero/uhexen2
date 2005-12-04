@@ -1091,7 +1091,7 @@ void Host_EndGame (char *message, ...)
 	char		string[1024];
 
 	va_start (argptr,message);
-	vsprintf (string,message,argptr);
+	vsnprintf (string,sizeof(string),message,argptr);
 	va_end (argptr);
 	Con_Printf ("\n===========================\n");
 	Con_Printf ("Host_EndGame: %s\n",string);
@@ -1120,7 +1120,7 @@ void Host_Error (char *error, ...)
 	inerror = true;
 
 	va_start (argptr,error);
-	vsprintf (string,error,argptr);
+	vsnprintf (string,sizeof(string),error,argptr);
 	va_end (argptr);
 	Con_Printf ("Host_Error: %s\n",string);
 

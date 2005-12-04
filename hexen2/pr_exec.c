@@ -1,7 +1,7 @@
 /*
 	pr_exec.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.6 2005-09-24 23:50:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.7 2005-12-04 11:14:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -852,7 +852,7 @@ void PR_RunError(char *error, ...)
 	char string[1024];
 
 	va_start(argptr,error);
-	vsprintf(string,error,argptr);
+	vsnprintf(string,sizeof(string),error,argptr);
 	va_end(argptr);
 
 	PrintStatement(pr_statements + pr_xstatement);
@@ -1174,6 +1174,9 @@ static unsigned int ProgsTimer(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/09/24 23:50:36  sezero
+ * fixed a bunch of compiler warnings
+ *
  * Revision 1.5  2005/07/31 11:13:52  sezero
  * debug defines
  *

@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.21 2005-10-25 20:08:41 sezero Exp $
+	$Id: common.c,v 1.22 2005-12-04 11:14:38 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -997,7 +997,7 @@ char *va(char *format, ...)
 	static char		string[1024];
 
 	va_start (argptr, format);
-	vsprintf (string, format,argptr);
+	vsnprintf (string, sizeof (string), format, argptr);
 	va_end (argptr);
 
 	return string;

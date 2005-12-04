@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.42 2005-10-25 17:14:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.43 2005-12-04 11:14:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -27,7 +27,6 @@
 
 #define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error
 					// before exiting
-#define MAXPRINTMSG		4096
 
 // minimum required SDL version
 #define	SDL_MIN_X	1
@@ -122,7 +121,7 @@ void Sys_Error (char *error, ...)
 	Host_Shutdown ();
 
 	va_start (argptr, error);
-	vsnprintf (text, MAXPRINTMSG, error, argptr);
+	vsnprintf (text, sizeof (text), error, argptr);
 	va_end (argptr);
 
 	fprintf(stderr, "\nFATAL ERROR: %s\n\n", text);
@@ -142,7 +141,7 @@ void Sys_Printf (char *fmt, ...)
 	char		text[MAXPRINTMSG];
 
 	va_start (argptr,fmt);
-	vsnprintf (text, MAXPRINTMSG, fmt, argptr);
+	vsnprintf (text, sizeof (text), fmt, argptr);
 	va_end (argptr);
 
 	fprintf(stderr, "%s", text);
@@ -432,6 +431,11 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.42  2005/10/25 17:14:23  sezero
+ * added a STRINGIFY macro. unified version macros. simplified version
+ * printing. simplified and enhanced version watermark print onto console
+ * background. added HoT lines to the quit menu (shameless plug)
+ *
  * Revision 1.41  2005/09/28 06:06:38  sezero
  * killed the cvar sys_delay
  *

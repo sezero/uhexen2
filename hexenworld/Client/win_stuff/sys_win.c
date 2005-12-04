@@ -43,11 +43,11 @@ void Sys_InitFloatTime (void);
 void Sys_DebugLog(char *file, char *fmt, ...)
 {
 	va_list argptr;
-	static char data[1024];
+	static char data[MAXPRINTMSG];
 	int fd;
 
 	va_start(argptr, fmt);
-	vsprintf(data, fmt, argptr);
+	vsnprintf(data, sizeof (data), fmt, argptr);
 	va_end(argptr);
 	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
 	write(fd, data, strlen(data));
@@ -175,12 +175,12 @@ void Sys_Init (void)
 void Sys_Error (char *error, ...)
 {
 	va_list		argptr;
-	char		text[1024];
+	char		text[MAXPRINTMSG];
 
 	Host_Shutdown ();
 
 	va_start (argptr, error);
-	vsprintf (text, error, argptr);
+	vsnprintf (text, sizeof (text), error, argptr);
 	va_end (argptr);
 
 	MessageBox(NULL, text, "HexenWorld Error", 0 /* MB_OK */ );

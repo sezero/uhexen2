@@ -33,10 +33,10 @@ Sys_Error
 void Sys_Error (char *error, ...)
 {
 	va_list		argptr;
-	char		text[1024];
+	char		text[MAXPRINTMSG];
 
 	va_start (argptr,error);
-	vsprintf (text, error,argptr);
+	vsnprintf (text, sizeof (text), error, argptr);
 	va_end (argptr);
 
 //	MessageBox(NULL, text, "HW Server Error", 0 /* MB_OK */ );
