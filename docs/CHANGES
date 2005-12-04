@@ -1,5 +1,15 @@
 ChangeLog:
 
+2005-12-04 (CVS):
+    * made com_basedir global
+    * updated the vsnprintf stuff
+    * updated the gamma stuff
+    * updated gl library dlopen()ing
+    * init stuff cleanup
+    * added some hints to README.3dfx about using
+      the fxMesa library with games without any
+      user-specified opengl library support
+
 2005-11-23 (CVS):
     * hopefully fixed bsd compilation of net_dgram.c
     * changed USE_MIDI definition usage with a NO_MIDIMUSIC definition
