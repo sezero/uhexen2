@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_dl_vidsdl.c,v 1.91 2005-12-04 11:19:18 sezero Exp $
+   $Id: gl_dl_vidsdl.c,v 1.92 2005-12-04 11:23:16 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -102,7 +102,7 @@ float		RTint[256],GTint[256],BTint[256];
 unsigned char	d_15to8table[65536];
 unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
-unsigned	d_8to24table3dfx[256];
+//unsigned	d_8to24table3dfx[256];
 unsigned	d_8to24TranslucentTable[256];
 
 cvar_t		gl_ztrick = {"gl_ztrick","0",true};
@@ -895,7 +895,8 @@ void VID_SetPalette (unsigned char *palette)
 	int     r1,g1,b1;
 	int		j,k,l,m;
 	unsigned short i, p, c;
-	unsigned	*table, *table3dfx;
+	unsigned	*table;
+//	unsigned	*table3dfx;
 	FILE	*f;
 	char	s[MAX_OSPATH];
 
@@ -904,7 +905,7 @@ void VID_SetPalette (unsigned char *palette)
 //
 	pal = palette;
 	table = d_8to24table;
-	table3dfx = d_8to24table3dfx;
+//	table3dfx = d_8to24table3dfx;
 	for (i=0 ; i<256 ; i++)
 	{
 		r = pal[0];
@@ -912,12 +913,10 @@ void VID_SetPalette (unsigned char *palette)
 		b = pal[2];
 		pal += 3;
 		
-//		v = (255<<24) + (r<<16) + (g<<8) + (b<<0);
-//		v = (255<<0) + (r<<8) + (g<<16) + (b<<24);
 		v = (255<<24) + (r<<0) + (g<<8) + (b<<16);
 		*table++ = v;
-		v = (255<<24) + (r<<16) + (g<<8) + (b<<0);
-		*table3dfx++ = v;
+//		v = (255<<24) + (r<<16) + (g<<8) + (b<<0);
+//		*table3dfx++ = v;
 	}
 
 	pal = palette;
