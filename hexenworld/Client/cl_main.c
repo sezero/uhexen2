@@ -1297,7 +1297,7 @@ Host_Init
 */
 void Host_Init (quakeparms_t *parms)
 {
-	COM_InitArgv (parms->argc, parms->argv);
+//	COM_InitArgv (parms->argc, parms->argv);
 
 	host_parms = *parms;
 
@@ -1307,7 +1307,7 @@ void Host_Init (quakeparms_t *parms)
 	CL_Cmd_Init ();
 	V_Init ();
 
-	COM_Init (parms->basedir);
+	COM_Init ();
 
 	NET_Init (PORT_CLIENT);
 	Netchan_Init ();

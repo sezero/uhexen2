@@ -147,14 +147,10 @@ void Sys_Quit (void)
 /*
 =============
 Sys_Init
-
-Quake calls this so the system can register variables before host_hunklevel
-is marked
 =============
 */
 void Sys_Init (void)
 {
-	Cvar_RegisterVariable (&sys_nostdout);
 }
 
 /*

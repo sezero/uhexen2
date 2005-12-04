@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.22 2005-12-04 11:14:38 sezero Exp $
+	$Id: common.c,v 1.23 2005-12-04 11:20:57 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -970,7 +970,7 @@ static void COM_Cmdline_f (void)
 COM_Init
 ================
 */
-void COM_Init (char *basedir)
+void COM_Init (void)
 {
 	Cvar_RegisterVariable (&registered);
 	Cvar_RegisterVariable (&oem);

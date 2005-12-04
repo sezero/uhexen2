@@ -48,11 +48,6 @@ void Sys_Sleep (void);
 void Sys_SendKeyEvents (void);
 // Perform Key_Event () callbacks until the input que is empty
 
-#else
-
-void Sys_Init (void);
-// hexenworld server calls this from SV_Init
-
 #endif
 
 // platform specific definitions

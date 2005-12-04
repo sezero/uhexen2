@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.10 2005-12-04 11:14:38 sezero Exp $
+	$Id: sys_unix.c,v 1.11 2005-12-04 11:20:57 sezero Exp $
 
 	Unix system interface code
 */
@@ -173,14 +173,10 @@ void Sys_Quit (void)
 /*
 =============
 Sys_Init
-
-Quake calls this so the system can register variables before host_hunklevel
-is marked
 =============
 */
 void Sys_Init (void)
 {
-	Cvar_RegisterVariable (&sys_nostdout);
 }
 
 /*

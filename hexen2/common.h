@@ -190,7 +190,7 @@ int COM_CheckParm (char *parm);
 #if 0
 void COM_AddParm (char *parm);
 #endif
-void COM_Init (char *path);
+void COM_Init (void);
 void COM_InitArgv (int argc, char **argv);
 
 char *COM_SkipPath (char *pathname);

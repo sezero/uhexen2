@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.37 2005-12-04 11:19:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.38 2005-12-04 11:20:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -968,7 +968,7 @@ void Host_Init (quakeparms_t *parms)
 	V_Init ();
 	Chase_Init ();
 	Host_InitVCR (parms);
-	COM_Init (parms->basedir);
+	COM_Init ();
 	CL_RemoveGIPFiles(NULL);
 	Host_InitLocal ();
 	W_LoadWadFile ("gfx.wad");
@@ -1089,6 +1089,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.37  2005/12/04 11:19:18  sezero
+ * gamma stuff update
+ *
  * Revision 1.36  2005/12/04 11:14:38  sezero
  * the big vsnprintf patch
  *

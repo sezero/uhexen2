@@ -1241,6 +1241,7 @@ void SV_InitLocal (void)
 	Cvar_RegisterVariable (&noexit);
 
 	Cvar_RegisterVariable (&developer);
+	Cvar_RegisterVariable (&sys_nostdout);
 
 	Cvar_RegisterVariable (&timeout);
 	Cvar_RegisterVariable (&zombietime);
@@ -1530,7 +1531,7 @@ SV_Init
 */
 void SV_Init (quakeparms_t *parms)
 {
-	COM_InitArgv (parms->argc, parms->argv);
+//	COM_InitArgv (parms->argc, parms->argv);
 //	COM_AddParm ("-game");
 //	COM_AddParm ("hw");
 
@@ -1540,7 +1541,7 @@ void SV_Init (quakeparms_t *parms)
 	Cbuf_Init ();
 	Cmd_Init ();	
 
-	COM_Init (parms->basedir);
+	COM_Init ();
 	
 	PR_Init ();
 	Mod_Init ();
@@ -1548,7 +1549,6 @@ void SV_Init (quakeparms_t *parms)
 	SV_InitNet ();
 
 	SV_InitLocal ();
-	Sys_Init ();
 	Pmove_Init ();
 
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
