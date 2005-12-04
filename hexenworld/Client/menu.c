@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.31 2005-10-25 20:08:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.32 2005-12-04 11:12:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -9,7 +9,6 @@
 
 static void ReInitMusic(void);
 
-extern char com_basedir[MAX_OSPATH];
 extern	modestate_t	modestate;
 extern	cvar_t	vid_mode;
 extern	cvar_t	crosshair;
