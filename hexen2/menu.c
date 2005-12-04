@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.48 2005-10-25 20:08:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.49 2005-12-04 11:19:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1871,7 +1871,6 @@ void M_AdjustSliders (int dir)
 		if (v_gamma.value > 1)
 			v_gamma.value = 1;
 		Cvar_SetValue ("gamma", v_gamma.value);
-		VID_ApplyGamma();
 		break;
 	case OPT_MOUSESPEED:	// mouse speed
 		sensitivity.value += dir * 0.5;
@@ -4095,6 +4094,9 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.48  2005/10/25 20:08:41  sezero
+ * coding style and whitespace cleanup.
+ *
  * Revision 1.47  2005/10/25 20:04:17  sezero
  * static functions part-1: started making local functions static,
  * killing nested externs, const vars clean-up.

@@ -3335,12 +3335,11 @@ void VID_ToggleFullscreen (void)
 {
 }
 
-void VID_ApplyGamma(void)
-{
-}
-
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2005/10/24 22:54:49  sezero
+ * fixed "bestmatch might be used uninitialized" warning
+ *
  * Revision 1.20  2005/10/02 15:45:27  sezero
  * killed lcd_x and lcd_yaw (the stereoscopic stuff.) never tested, never used.
  *

@@ -1069,10 +1069,6 @@ void VID_SetPalette (unsigned char *palette)
 	d_8to24table[255] &= 0xffffff;	// 255 is transparent
 }
 
-void VID_ApplyGamma(void)
-{
-}
-
 void	VID_ShiftPalette (unsigned char *palette)
 {
 	if (gammaworks && SetDeviceGammaRamp_f)

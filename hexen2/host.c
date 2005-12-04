@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.36 2005-12-04 11:14:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.37 2005-12-04 11:19:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1045,13 +1045,6 @@ void Host_Init (quakeparms_t *parms)
 	Cbuf_Execute();
 	Cbuf_AddText ("cl_warncmd 1\n");
 
-#ifdef WITH_SDL
-	// apply gamma settings at startup, after having read the config.cfg
-	// this is for SDL versions, practically unix-only.
-	// native win32 version handles things differently.
-	Cbuf_AddText ("vid_setgamma\n");
-#endif
-
 	host_initialized = true;
 
 	Con_Printf("\n======== Hexen II Initialized =========\n\n");
@@ -1096,6 +1089,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.36  2005/12/04 11:14:38  sezero
+ * the big vsnprintf patch
+ *
  * Revision 1.35  2005/11/02 18:40:21  sezero
  * set host_hunklevel before execing hexen.rc
  *

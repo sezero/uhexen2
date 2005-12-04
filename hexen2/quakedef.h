@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.39 2005-10-25 17:14:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.40 2005-12-04 11:19:18 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -17,7 +17,7 @@
 #ifdef PLATFORM_UNIX
 #include "linux_inc.h"
 #define WITH_SDL	/* for the mouse2/3 hack in keys.c */
-			/* also enables some SDL-only things such as the vid_setgamma command */
+			/* also enables some SDL-only things */
 #endif
 
 #define	HOT_VERSION_MAJ		1
@@ -395,6 +395,11 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.39  2005/10/25 17:14:23  sezero
+ * added a STRINGIFY macro. unified version macros. simplified version
+ * printing. simplified and enhanced version watermark print onto console
+ * background. added HoT lines to the quit menu (shameless plug)
+ *
  * Revision 1.38  2005/09/20 21:17:25  sezero
  * Moved VERSION_PLATFORM and id386 defines to sys.h, where they belong.
  *

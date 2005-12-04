@@ -3306,6 +3306,3 @@ void VID_ToggleFullscreen (void)
 {
 }
 
-void VID_ApplyGamma(void)
-{
-}

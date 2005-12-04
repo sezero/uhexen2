@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.32 2005-12-04 11:12:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.33 2005-12-04 11:19:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -846,7 +846,6 @@ void M_AdjustSliders (int dir)
 		if (v_gamma.value > 1)
 			v_gamma.value = 1;
 		Cvar_SetValue ("gamma", v_gamma.value);
-		VID_ApplyGamma();
 		break;
 	case OPT_MOUSESPEED:	// mouse speed
 		sensitivity.value += dir * 0.5;

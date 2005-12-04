@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.90 2005-12-04 11:16:14 sezero Exp $
+   $Id: gl_vidsdl.c,v 1.91 2005-12-04 11:19:18 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -124,26 +124,28 @@ void VID_MenuKey (int key);
 void ClearAllStates (void);
 void GL_Init (void);
 void GL_Init_Functions(void);
-void VID_SetGamma(float value);
-void VID_SetGamma_f(void);
 
 qboolean	have_stencil = false;
 
+// Gamma stuff
 #define USE_GAMMA_RAMPS	0	// change to 1 if want to use ramps for gamma
-
+#define	EVIL_3DFX_LIB	"lib3dfxgamma.so"
 #if USE_GAMMA_RAMPS
-unsigned short	orig_ramps[3][256];	// for hw- or 3dfx-gamma
+static unsigned short	orig_ramps[3][256];	// for hw- or 3dfx-gamma
 extern unsigned short	ramps[3][256];	// for hw- or 3dfx-gamma
-int	(*glGetDeviceGammaRamp3DFX_fp)(void *) = NULL;
-int	(*glSetDeviceGammaRamp3DFX_fp)(void *) = NULL;
+static int	(*glGetDeviceGammaRamp3DFX_fp)(void *) = NULL;
+static int	(*glSetDeviceGammaRamp3DFX_fp)(void *) = NULL;
+static void	VID_SetGammaRamp (void);
+#else
+static void	VID_SetGamma (void);
 #endif
 static void	*fx_gammalib = NULL;
-int		(*fxGammaCtl)(float) = NULL;
-#define	EVIL_3DFX_LIB	"./lib3dfxgamma.so"
-qboolean	fx_gamma   = false;	// 3dfx-specific gamma control
-qboolean	gammaworks = false;	// whether hw-gamma works
+static int	(*fxGammaCtl)(float) = NULL;
+static qboolean	fx_gamma   = false;	// 3dfx-specific gamma control
+static qboolean	gammaworks = false;	// whether hw-gamma works
 qboolean	gl_dogamma = false;	// none of the above two, use gl tricks
-
+static void	Gamma_Init (void);
+static qboolean	Check3dfxGamma(void);
 
 //====================================
 
@@ -696,58 +698,69 @@ void GL_Init_Functions(void)
 }
 #endif
 
-void Gamma_Init(void)
+static qboolean Check3dfxGamma(void)
 {
-	int gtmp;
+	if ( ! COM_CheckParm("-3dfxgamma") )
+		return false;
 
-	if (is_3dfx) {
+	// look for the 3dfx gamma library at the root of the installation
+	fx_gammalib = dlopen(va("%s/%s", com_basedir, EVIL_3DFX_LIB), RTLD_GLOBAL | RTLD_NOW);
+
+	if (!fx_gammalib) // look for a global installation then
+		fx_gammalib = dlopen(EVIL_3DFX_LIB, RTLD_GLOBAL | RTLD_NOW);
+
+	if (fx_gammalib)
+	{
+#if USE_GAMMA_RAMPS
+// not recommended for Voodoo1, currently crashes
+		glGetDeviceGammaRamp3DFX_fp = dlsym(fx_gammalib, "glGetDeviceGammaRamp3DFX");
+		glSetDeviceGammaRamp3DFX_fp = dlsym(fx_gammalib, "glSetDeviceGammaRamp3DFX");
+		if (glSetDeviceGammaRamp3DFX_fp != NULL && glSetDeviceGammaRamp3DFX_fp != NULL)
+		{
+			if (glGetDeviceGammaRamp3DFX_fp(orig_ramps) != 0)
+				return true;
+		}
+
+		glGetDeviceGammaRamp3DFX_fp = NULL;
+		glSetDeviceGammaRamp3DFX_fp = NULL;
+#else	// not using gamma ramps
+		fxGammaCtl = dlsym(fx_gammalib, "do3dfxGammaCtrl");
+		if (fxGammaCtl)
+		{
+			int gtmp;
+
+			gtmp = fxGammaCtl(-1);
+			switch (gtmp)
+			{
+			case 2:	// Glide2x
+			case 3:	// Glide3x
+				return true;
+			}
+		}
+
+		fxGammaCtl = NULL;
+#endif
+		dlclose (fx_gammalib);
+		fx_gammalib = NULL;
+	}
+
+	return false;
+}
+
+static void Gamma_Init(void)
+{
+	if (is_3dfx)
+	{
 	// we don't have WGL_3DFX_gamma_control or an equivalent
 	// in unix. If we have it one day, I'll put stuff checking
 	// for and linking to it here.
 	// Otherwise, assuming is_3dfx means Voodoo1 or Voodoo2,
 	// this means we dont have hw-gamma, just use gl_dogamma
 
-	// Here is a hack to abuse the Glide symbols exposed on us
-	   if (COM_CheckParm ("-3dfxgamma")) {
-		fx_gammalib = dlopen(EVIL_3DFX_LIB, RTLD_GLOBAL | RTLD_NOW);
-		if (fx_gammalib) {
-#if USE_GAMMA_RAMPS
-// not recommended for Voodoo1, currently crashes
-			glGetDeviceGammaRamp3DFX_fp = dlsym(fx_gammalib, "glGetDeviceGammaRamp3DFX");
-			glSetDeviceGammaRamp3DFX_fp = dlsym(fx_gammalib, "glSetDeviceGammaRamp3DFX");
-			if (glSetDeviceGammaRamp3DFX_fp != NULL && glSetDeviceGammaRamp3DFX_fp != NULL) {
-				if (glGetDeviceGammaRamp3DFX_fp(orig_ramps) != 0) {
-					fx_gamma = true;
-				} else {
-					glGetDeviceGammaRamp3DFX_fp = NULL;
-					glSetDeviceGammaRamp3DFX_fp = NULL;
-					dlclose (fx_gammalib);
-					fx_gammalib = NULL;
-				}
-			}
-#else
-			fxGammaCtl = dlsym(fx_gammalib, "do3dfxGammaCtrl");
-			if (fxGammaCtl) {
-				gtmp = fxGammaCtl(-1);
-				switch (gtmp) {
-					case 2:
-					case 3:
-						fx_gamma = true;
-						break;
-					default:
-						fxGammaCtl = NULL;
-						dlclose (fx_gammalib);
-						fx_gammalib = NULL;
-				}
-			}
-#endif
-			else {
-				dlclose (fx_gammalib);
-			}
-		}
-	    }
-	    if (!fx_gamma)
-		gl_dogamma = true;
+	// Here is an evil hack to abuse the Glide symbols exposed on us
+		fx_gamma = Check3dfxGamma();
+		if (!fx_gamma)
+			gl_dogamma = true;
 	}
 
 	if (!fx_gamma && !gl_dogamma)
@@ -777,49 +790,53 @@ void Gamma_Init(void)
 Gamma functions for UNIX/SDL
 ============================
 */
-void VID_SetGamma(float value)
-{// callback for VID_ApplyGamma ONLY
+#if USE_GAMMA_RAMPS
+/*
+============================
+VID_SetGammaRamp
+
+used when USE_GAMMA_RAMPS is
+defined to 1.
+============================
+*/
+static void VID_SetGammaRamp(void)
+{
+	if (glSetDeviceGammaRamp3DFX_fp != NULL && fx_gamma)
+		glSetDeviceGammaRamp3DFX_fp(ramps);
+	else if (!gl_dogamma && gammaworks)
+		SDL_SetGammaRamp(ramps[0], ramps[1], ramps[2]);
+}
+#else
+/*
+============================
+VID_SetGamma
+
+used when USE_GAMMA_RAMPS is
+defined to 0.
+============================
+*/
+static void VID_SetGamma(void)
+{
+	float value;
+
+	if ((v_gamma.value != 0)&&(v_gamma.value > (1/GAMMA_MAX)))
+		value = 1.0/v_gamma.value;
+	else
+		value = GAMMA_MAX;
+
 	if (fxGammaCtl != NULL && fx_gamma)
 		fxGammaCtl(value);
 	else if (!gl_dogamma && gammaworks)
 		SDL_SetGamma(value,value,value);
 }
-
-void VID_ApplyGamma (void)
-{
-#if !(USE_GAMMA_RAMPS)
-	if ((v_gamma.value != 0)&&(v_gamma.value > (1/GAMMA_MAX)))
-		VID_SetGamma(1/v_gamma.value);
-	else
-		VID_SetGamma(GAMMA_MAX);
 #endif
-}
 
-void VID_SetGamma_f (void)
-{
-	float value = 1;
-
-	value = atof (Cmd_Argv(1));
-
-	if (value != 0) {
-		if (value > (1/GAMMA_MAX))
-			v_gamma.value = value;
-		else
-			v_gamma.value =  1/GAMMA_MAX;
-	}
-
-	/* if value==0, just apply current settings.
-	   this is useful at startup */
-	VID_ApplyGamma();
-}
-
-void	VID_ShiftPalette (unsigned char *palette)
+void VID_ShiftPalette (unsigned char *palette)
 {
 #if USE_GAMMA_RAMPS
-	if (glSetDeviceGammaRamp3DFX_fp != NULL && fx_gamma)
-		glSetDeviceGammaRamp3DFX_fp(ramps);
-	else if (!gl_dogamma && gammaworks)
-		SDL_SetGammaRamp(ramps[0], ramps[1], ramps[2]);
+	VID_SetGammaRamp();
+#else
+	VID_SetGamma();
 #endif
 }
 
@@ -1083,8 +1100,6 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&gl_ztrick);
 	Cvar_RegisterVariable (&gl_purge_maptex);
-
-	Cmd_AddCommand ("vid_setgamma", VID_SetGamma_f);
 
 #ifdef GL_DLSYM
 	if (COM_CheckParm("--gllibrary"))

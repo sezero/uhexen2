@@ -87,10 +87,9 @@ void VID_HandlePause (qboolean paused);
 // called only on Win32, when pause happens, so the mouse can be released
 #endif
 
-void VID_ApplyGamma (void);
-// really applies gamma correction after the v_gamma variable is changed
-
 void VID_ToggleFullscreen (void);	// from Steven
+// toggles between windowed/fullscreen modes. for unix/sdl
+
 #ifndef H2W
 void D_ShowLoadingSize(void);
 #endif

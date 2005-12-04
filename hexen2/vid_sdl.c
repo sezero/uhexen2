@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.38 2005-10-24 22:54:48 sezero Exp $
+   $Id: vid_sdl.c,v 1.39 2005-12-04 11:19:18 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -96,8 +96,6 @@ static vmode_t	modelist[MAX_MODE_LIST];
 
 void VID_MenuDraw (void);
 void VID_MenuKey (int key);
-void VID_SetGamma(float value);
-void VID_SetGamma_f(void);
 
 
 /*
@@ -510,8 +508,6 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&vid_showload);
 
-	Cmd_AddCommand ("vid_setgamma", VID_SetGamma_f);
-
 	modelist[0].type = MS_WINDOWED;
 	modelist[0].width = 320;
 	modelist[0].height = 240;
@@ -765,38 +761,20 @@ void D_EndDirectRect (int x, int y, int width, int height)
 Gamma functions for UNIX/SDL
 ============================
 */
-
-void VID_SetGamma(float value)
+#if 0
+static void VID_SetGamma(void)
 {
+	float value;
+
+	if ((v_gamma.value != 0)&&(v_gamma.value > (1/GAMMA_MAX)))
+		value = 1.0/v_gamma.value;
+	else
+		value = GAMMA_MAX;
+
 	SDL_SetGamma(value,value,value);
 }
+#endif
 
-void VID_ApplyGamma (void)
-{
-	if ((v_gamma.value != 0)&&(v_gamma.value > (1/GAMMA_MAX)))
-		VID_SetGamma(1/v_gamma.value);
-	else
-		VID_SetGamma(GAMMA_MAX);
-}
-
-void VID_SetGamma_f (void)
-{
-	float value = 1;
-
-	value = atof (Cmd_Argv(1));
-
-	if (value != 0) {
-		if (value > (1/GAMMA_MAX))
-			v_gamma.value = value;
-		else
-			v_gamma.value =  1/GAMMA_MAX;
-	}
-
-	/* if value==0 , just apply current settings.
-	   this is useful at startup */
-
-	VID_ApplyGamma();
-}
 
 //==========================================================================
 #ifndef H2W
@@ -905,6 +883,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.38  2005/10/24 22:54:48  sezero
+ * fixed "bestmatch might be used uninitialized" warning
+ *
  * Revision 1.37  2005/10/02 15:45:27  sezero
  * killed lcd_x and lcd_yaw (the stereoscopic stuff.) never tested, never used.
  *
