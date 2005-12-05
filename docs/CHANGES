@@ -1,5 +1,8 @@
 ChangeLog:
 
+2005-12-05 (CVS):
+    * fixed compilation of gl_vidnt.c (missing semicolon)
+
 2005-12-04 (CVS):
     * made com_basedir global
     * updated the vsnprintf stuff
