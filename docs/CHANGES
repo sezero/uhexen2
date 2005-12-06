@@ -1,5 +1,9 @@
 ChangeLog:
 
+2005-12-06 (CVS):
+    * updated the 3dfx gamma library to v0.0.3 and added a version
+      that can be compiled into an application
+
 2005-12-05 (CVS):
     * fixed compilation of gl_vidnt.c (missing semicolon)
 
