@@ -86,7 +86,7 @@ void Shutdown_3dfxGamma (void)
 	FX_GammaControl2 = NULL;
 	FX_GammaControl3 = NULL;
 #if USE_GAMMA_RAMPS
-	FX_Get = dlsym = NULL;
+	FX_Get = NULL;
 	FX_LoadGammaTable = NULL;
 #endif
 }
@@ -190,3 +190,4 @@ int glGetDeviceGammaRamp3DFX (void *arrays)
 	return 1;
 }
 #endif
+

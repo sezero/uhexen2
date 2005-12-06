@@ -12,7 +12,7 @@
  * RTLD_GLOBAL flag is necessary so that the library's symbols would be
  * available to you: SDL_GL_LoadLibrary() is just fine in this regard.
  * In either case, if the gllib is an fxMesa library, then you will have
- * the necessary glide symbols exposed on you. Decide whether you have a
+ * the necessary glide symbols exposed on you. Decide whether you have
  * a Voodoo1/2, dlopen() this lib and then use the functions here.
  *
  * Issues:
