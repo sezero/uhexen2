@@ -7,10 +7,13 @@
  * gcc -o lib3dfxgamma.so -Wall -O2 -march=i586 -shared lib3dfxgamma.c
  *
  * How to use:
- * Do an SDL_GL_LoadLibrary(gllib) (or some equivalent of it) in your
- * app and create the context. If the gllib is an fxMesa library, then
- * you will have the necessary glide symbols exposed on you. dlopen()
- * this lib, do the querying and use it.
+ * If you are linking to the opengl library at compile time (-lGL),
+ * not much is necessary. If you dlopen() the opengl library, then
+ * RTLD_GLOBAL flag is necessary so that the library's symbols would be
+ * available to you: SDL_GL_LoadLibrary() is just fine in this regard.
+ * In either case, if the gllib is an fxMesa library, then you will have
+ * the necessary glide symbols exposed on you. Decide whether you have a
+ * a Voodoo1/2, dlopen() this lib and then use the functions here.
  *
  * Issues:
  * glSetDeviceGammaRamp3DFX works nicely with Voodoo2, but it crashes
@@ -22,6 +25,7 @@
  *			glGetDeviceGammaRamp3DFX & co need more care
  * v0.0.2, 2005-06-13:	tried following the exact win32 versions for
  *			glGetDeviceGammaRamp3DFX/glSetDeviceGammaRamp3DFX
+ * v0.0.3, 2005-12-05:	Updated documentation about the RTLD_GLOBAL flag.
  */
 
 #include <stdlib.h>
@@ -57,7 +61,8 @@ int Check_3DfxGammaCtrl (void)
 		return 3;
 
 	prjobj = dlopen(NULL, RTLD_LAZY);
-	if (prjobj != NULL) {
+	if (prjobj != NULL)
+	{
 		if ((FX_GammaControl2 = dlsym(prjobj, "grGammaCorrectionValue")) != NULL)
 			ret = 2;
 		else if ((FX_GammaControl3 = dlsym(prjobj, "guGammaCorrectionRGB")) != NULL)
@@ -100,7 +105,8 @@ int Check_3DfxGammaRamp (void)
 		return 1;
 
 	prjobj = dlopen(NULL, RTLD_LAZY);
-	if (prjobj != NULL) {
+	if (prjobj != NULL)
+	{
 		FX_Get = dlsym(prjobj, "grGet");
 		FX_LoadGammaTable = dlsym(prjobj, "grLoadGammaTable");
 		if ((FX_LoadGammaTable != NULL) && (FX_Get != NULL))
@@ -136,7 +142,8 @@ int glSetDeviceGammaRamp3DFX (void *arrays)
 	green = (unsigned short *)arrays + 256;
 	blue = (unsigned short *)arrays + 512;
 
-	for (i = 0, idx = 0; i < tableSize; i++, idx += inc) {
+	for (i = 0, idx = 0; i < tableSize; i++, idx += inc)
+	{
 		gammaTableR[i] = red[idx] >> 8;
 		gammaTableG[i] = green[idx] >> 8;
 		gammaTableB[i] = blue[idx] >> 8;
@@ -156,12 +163,14 @@ int glGetDeviceGammaRamp3DFX (void *arrays)
 	int	i;
 	unsigned short	gammaTable[3][256];
 
-	if ((FX_LoadGammaTable == NULL) || (FX_Get == NULL)) {
+	if ((FX_LoadGammaTable == NULL) || (FX_Get == NULL))
+	{
 		if (Check_3DfxGammaRamp() == 0)
 			return 0;
 	}
 
-	for (i=0 ; i<256 ; i++) {
+	for (i=0 ; i<256 ; i++)
+	{
 		 gammaTable[0][i] = i << 8;
 		 gammaTable[1][i] = i << 8;
 		 gammaTable[2][i] = i << 8;
