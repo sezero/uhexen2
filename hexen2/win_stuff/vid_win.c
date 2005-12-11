@@ -59,7 +59,7 @@ cvar_t		vid_wait = {"vid_wait", "-1", true};	// autodetect
    The more, the less chance there is to flicker, the better, but a lot of
    VESA drivers are buggy and report more video pages than there actually are.
    Thus, we limit this number to 3 by default (this was hardcoded before),
-   and then let the user pick whatever value they wish, -1 for all. */
+   and then let the user pick whatever value they wish. */
 cvar_t		vid_maxpages = {"vid_maxpages", "3", true};
 /* Pa3PyX: vid_nopageflip now has meaning (was defunct in previous versions)
    and defaults to 1. Reason: page flipping with direct linear framebuffer
@@ -580,7 +580,7 @@ MGLDC *createDisplayDC(int forcemem)
 		   (no need to - we are drawing everything to system
 		   memory first, then flushing it to screen in one blow.
 		   so there is no visible overdraw, even though writing
-		   directly to front buffer */
+		   directly to front buffer) */
 		vid.numpages = 1;
 		aPage = vPage = 0;
 		MGL_setActivePage(dc, aPage);
@@ -1723,7 +1723,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 		default: waitVRT = defaultVRT;
 	}
 
-	// now print number of video pages as well,
+	// print number of video pages as well,
 	// if page flipping is enabled. Pa3PyX
 	if (!msg_suppress_1)
 	{
@@ -3339,6 +3339,9 @@ void VID_ToggleFullscreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/12/11 12:00:59  sezero
+ * win32 wheelmouse cleanup
+ *
  * Revision 1.22  2005/12/04 11:19:18  sezero
  * gamma stuff update
  *
