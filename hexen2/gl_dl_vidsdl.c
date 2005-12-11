@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_dl_vidsdl.c,v 1.92 2005-12-04 11:23:16 sezero Exp $
+   $Id: gl_dl_vidsdl.c,v 1.93 2005-12-11 11:56:33 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -117,6 +117,7 @@ qboolean	gl_mtexable = false;
 int		num_tmus = 1;
 
 qboolean	scr_skipupdate;
+static		qboolean fullsbardraw = false;
 
 void VID_MenuDraw (void);
 void VID_MenuKey (int key);
@@ -542,6 +543,9 @@ void GL_Init (void)
 		is_3dfx = true;
 	}
 
+	if (Q_strncasecmp(gl_renderer,"PowerVR",7)==0)
+		fullsbardraw = true;
+
 	CheckMultiTextureExtensions();
 	CheckStencilBuffer();
 
@@ -873,6 +877,9 @@ void GL_EndRendering (void)
 
 			enable_mouse = (int)_enable_mouse.value;
 		}
+
+	if (fullsbardraw)
+		Sbar_Changed();
 }
 
 
@@ -1233,6 +1240,9 @@ void	VID_Init (unsigned char *palette)
 
 	vid_menudrawfn = VID_MenuDraw;
 	vid_menukeyfn = VID_MenuKey;
+
+	if (COM_CheckParm("-fullsbar"))
+		fullsbardraw = true;
 }
 
 

@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.48 2005-12-11 11:53:12 sezero Exp $
+	$Id: gl_draw.c,v 1.49 2005-12-11 11:56:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1305,7 +1305,7 @@ void Draw_FadeScreen (void)
 
 	glAlphaFunc_fp(GL_GREATER, 0.632);
 
-	SB_Changed();
+	Sbar_Changed();
 }
 
 //=============================================================================

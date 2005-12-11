@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.21 2005-10-25 19:59:44 sezero Exp $
+	$Id: gl_screen.c,v 1.22 2005-12-11 11:56:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -308,7 +308,7 @@ static void SCR_CalcRefdef (void)
 	vid.recalc_refdef = 0;
 
 // force the status bar to redraw
-	SB_Changed();
+	Sbar_Changed();
 
 // bound viewsize
 	if (scr_viewsize.value < 30)
@@ -638,7 +638,7 @@ void SCR_SetUpToDrawConsole (void)
 
 	if (clearconsole++ < vid.numpages)
 	{
-		SB_Changed();
+		Sbar_Changed();
 	}
 	else if (clearnotify++ < vid.numpages)
 	{
@@ -771,7 +771,7 @@ void SCR_BeginLoadingPlaque (void)
 
 	scr_drawloading = true;
 	scr_fullupdate = 0;
-	SB_Changed();
+	Sbar_Changed();
 	SCR_UpdateScreen ();
 	scr_drawloading = false;
 
@@ -1212,7 +1212,7 @@ void SCR_UpdateScreen (void)
 
 	if (scr_drawdialog)
 	{
-		SB_Draw();
+		Sbar_Draw();
 		Draw_FadeScreen ();
 		SCR_DrawNotifyString ();
 		scr_copyeverything = true;
@@ -1220,7 +1220,7 @@ void SCR_UpdateScreen (void)
 //	Pa3PyX: this clobbers intermission screens
 /*	else if (scr_drawloading)
 	{
-		SB_Draw();
+		Sbar_Draw();
 		Draw_FadeScreen ();
 		SCR_DrawLoading ();
 	} */
@@ -1251,7 +1251,7 @@ void SCR_UpdateScreen (void)
 		SCR_DrawTurtle();
 		SCR_DrawPause();
 		SCR_CheckDrawCenterString();
-		SB_Draw();
+		Sbar_Draw();
 
 		// Pa3PyX: draw loading plaque and dim screen if loading
 		if (scr_drawloading)
@@ -1283,6 +1283,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2005/10/25 19:59:44  sezero
+ * added a prototype for Draw_Crosshair to draw.h
+ *
  * Revision 1.20  2005/09/28 06:09:31  sezero
  * took care of flickering problem while drawing the loading
  * plaque (from Pa3PyX.) glFlush is now required.

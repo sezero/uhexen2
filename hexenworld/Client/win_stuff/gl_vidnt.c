@@ -897,7 +897,7 @@ void GL_BeginRendering (int *x, int *y, int *width, int *height)
 
 void GL_EndRendering (void)
 {
-	if (!scr_skipupdate || block_drawing)
+	if (!scr_skipupdate)
 		SwapBuffers(maindc);
 
 // handle the mouse state when windowed if that's changed

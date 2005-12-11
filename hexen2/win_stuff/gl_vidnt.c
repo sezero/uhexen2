@@ -86,6 +86,7 @@ int		vid_modenum = NO_MODE;
 int		vid_default = MODE_WINDOWED;
 static int	windowed_default;
 unsigned char	vid_curpal[256*3];
+static qboolean fullsbardraw = false;
 
 HGLRC		baseRC;
 HDC		maindc;
@@ -421,7 +422,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 
-	Snd_ReleaseBuffer ();
 	CDAudio_Pause ();
 
 	if (vid_modenum == NO_MODE)
@@ -466,7 +466,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	VID_UpdateWindowStatus ();
 
 	CDAudio_Resume ();
-	Snd_AcquireBuffer ();
 	scr_disabled_for_loading = temp;
 
 // now we try to make sure we get the focus on the mode switch, because
@@ -845,6 +844,9 @@ void GL_Init (void)
 		is_3dfx = true;
 	}
 
+	if (Q_strncasecmp(gl_renderer,"PowerVR",7)==0)
+		fullsbardraw = true;
+
 	GetDeviceGammaRamp_f = NULL;
 	SetDeviceGammaRamp_f = NULL;
 	CheckMultiTextureExtensions ();
@@ -917,6 +919,8 @@ void GL_EndRendering (void)
 			enable_mouse = (int)_enable_mouse.value;
 		}
 	}
+	if (fullsbardraw)
+		Sbar_Changed();
 }
 
 
@@ -2100,6 +2104,9 @@ void	VID_Init (unsigned char *palette)
 
 	strcpy (badmode.modedesc, "Bad mode");
 	vid_canalttab = true;
+
+	if (COM_CheckParm("-fullsbar"))
+		fullsbardraw = true;
 }
 
 

@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.11 2005-10-25 20:04:17 sezero Exp $
+	$Id: sbar.c,v 1.12 2005-12-11 11:56:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -15,7 +15,6 @@
 #define BAR_TOTAL_HEIGHT		(BAR_TOP_HEIGHT+BAR_BOTTOM_HEIGHT)
 #define BAR_BUMP_HEIGHT			23.0
 #define INVENTORY_DISPLAY_TIME		4
-#define ABILITIES_STR_INDEX		400
 
 #define RING_FLIGHT			1
 #define RING_WATER			2
@@ -168,15 +167,15 @@ static int AbilityLineIndex[MAX_PLAYER_CLASS] =
 	402,		// Crusader
 	404,		// Necromancer
 	406,		// Assassin
-	590,		// Demoness
-	594		// Dwarf
+	589,		// Demoness	// was 590, should be an accidental +1
+	593		// Dwarf	// was 594, ditto
 };
 
 // CODE --------------------------------------------------------------------
 
 //==========================================================================
 //
-// SB_Init
+// Sbar_Init
 //
 //==========================================================================
 
@@ -266,7 +265,7 @@ void SB_PlacePlayerNames(void)
 
 //==========================================================================
 //
-// SB_Draw
+// Sbar_Draw
 //
 //==========================================================================
 
@@ -747,8 +746,9 @@ static int CalcAC(void)
 	int a;
 	int playerClass;
 
-	playerClass = cl.v.playerclass;
-	if(playerClass < 1 || playerClass > MAX_PLAYER_CLASS)
+	//playerClass = cl.v.playerclass;
+	playerClass = cl.players[cl.playernum].playerclass - 1;
+	if(playerClass < 0 || playerClass >= MAX_PLAYER_CLASS)
 	{
 		playerClass = 1;
 	}
@@ -778,11 +778,11 @@ static int CalcAC(void)
 
 //==========================================================================
 //
-// SB_Changed
+// Sbar_Changed
 //
 //==========================================================================
 
-void SB_Changed(void)
+void Sbar_Changed(void)
 {
 	sb_updates = 0;	// Update next frame
 }
@@ -2147,14 +2147,5 @@ static void DrawBarArtifactNumber(int x, int y, int number)
 	}
 	artiNumName[11] = '0'+number%10;
 	Sbar_DrawTransPic(x, y, Draw_CachePic(artiNumName));
-}
-
-
-
-// rjr
-
-void Sbar_Changed(void)
-{
-	SB_InvChanged();
 }
 

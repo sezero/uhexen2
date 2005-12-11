@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.13 2005-11-05 20:22:10 sezero Exp $
+	$Id: sbar.c,v 1.14 2005-12-11 11:56:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -157,11 +157,11 @@ static int HelmetAC[MAX_PLAYER_CLASS] =
 
 //==========================================================================
 //
-// SB_Init
+// Sbar_Init
 //
 //==========================================================================
 
-void SB_Init(void)
+void Sbar_Init(void)
 {
 	int i;
 
@@ -192,11 +192,11 @@ void SB_Init(void)
 
 //==========================================================================
 //
-// SB_Draw
+// Sbar_Draw
 //
 //==========================================================================
 
-void SB_Draw(void)
+void Sbar_Draw(void)
 {
 	float delta;
 	char tempStr[80];
@@ -492,8 +492,8 @@ static void DrawLowerBar(void)
 	//playerClass = cl.v.playerclass;
 	playerClass = cl_playerclass.value;
 	if(playerClass < 1 || playerClass > MAX_PLAYER_CLASS)
-	{ // Default to demoness
-		playerClass = MAX_PLAYER_CLASS-1;
+	{ // Default to paladin
+		playerClass = 1;
 	}
 
 	// Backdrop
@@ -657,7 +657,7 @@ static int CalcAC(void)
 	playerClass = cl_playerclass.value -1 ;
 	if(playerClass < 0 || playerClass >= MAX_PLAYER_CLASS)
 	{
-		playerClass = MAX_PLAYER_CLASS-1;
+		playerClass = 1;
 	}
 	a = 0;
 	if(cl.v.armor_amulet > 0)
@@ -685,11 +685,11 @@ static int CalcAC(void)
 
 //==========================================================================
 //
-// SB_Changed
+// Sbar_Changed
 //
 //==========================================================================
 
-void SB_Changed(void)
+void Sbar_Changed(void)
 {
 	sb_updates = 0;	// Update next frame
 }
@@ -1756,3 +1756,4 @@ static void DrawBarArtifactNumber(int x, int y, int number)
 	artiNumName[11] = '0'+number%10;
 	Sbar_DrawTransPic(x, y, Draw_CachePic(artiNumName));
 }
+

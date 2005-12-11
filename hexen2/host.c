@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.38 2005-12-04 11:20:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.39 2005-12-11 11:56:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1027,7 +1027,7 @@ void Host_Init (quakeparms_t *parms)
 
 		CDAudio_Init();
 		MIDI_Init();
-		SB_Init();
+		Sbar_Init();
 		CL_Init();
 		IN_Init();
 	}
@@ -1089,6 +1089,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.38  2005/12/04 11:20:57  sezero
+ * init stuff cleanup
+ *
  * Revision 1.37  2005/12/04 11:19:18  sezero
  * gamma stuff update
  *

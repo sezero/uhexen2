@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.20 2005-10-27 18:21:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.21 2005-12-11 11:56:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -820,7 +820,7 @@ static void CL_ParseClientdata (int bits)
 
 	if (cl.items != i)
 	{	// set flash times
-		SB_Changed();
+		Sbar_Changed();
 		for (j=0 ; j<32 ; j++)
 			if ( (i & (1<<j)) && !(cl.items & (1<<j)))
 				cl.item_gettime[j] = cl.time;
@@ -838,13 +838,13 @@ static void CL_ParseClientdata (int bits)
 	if (bits & SU_ARMOR)
 	{
 		cl.stats[STAT_ARMOR] = MSG_ReadByte ();
-		SB_Changed();
+		Sbar_Changed();
 	}
 
 	if (bits & SU_WEAPON)
 	{
 		cl.stats[STAT_WEAPON] = MSG_ReadShort ();
-		SB_Changed();
+		Sbar_Changed();
 	}
 
 /*	sc1 = sc2 = 0;
@@ -965,7 +965,7 @@ static void CL_ParseClientdata (int bits)
 		cl.v.flags = MSG_ReadFloat();
 
 	if ((sc1 & SC1_STAT_BAR) || (sc2 & SC2_STAT_BAR))
-		SB_Changed();
+		Sbar_Changed();
 
 	if ((sc1 & SC1_INV) || (sc2 & SC2_INV))
 		SB_InvChanged();
@@ -1370,7 +1370,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_updatename:
-			SB_Changed();
+			Sbar_Changed();
 			i = MSG_ReadByte ();
 			if (i >= cl.maxclients)
 				Host_Error ("CL_ParseServerMessage: svc_updatename > MAX_SCOREBOARD");
@@ -1378,7 +1378,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_updateclass:
-			SB_Changed();
+			Sbar_Changed();
 			i = MSG_ReadByte ();
 			if (i >= cl.maxclients)
 				Host_Error ("CL_ParseServerMessage: svc_updateclass > MAX_SCOREBOARD");
@@ -1387,7 +1387,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_updatefrags:
-			SB_Changed();
+			Sbar_Changed();
 			i = MSG_ReadByte ();
 			if (i >= cl.maxclients)
 				Host_Error ("CL_ParseServerMessage: svc_updatefrags > MAX_SCOREBOARD");
@@ -1399,7 +1399,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_updatecolors:
-			SB_Changed();
+			Sbar_Changed();
 			i = MSG_ReadByte ();
 			if (i >= cl.maxclients)
 				Host_Error ("CL_ParseServerMessage: svc_updatecolors > MAX_SCOREBOARD");
@@ -1786,7 +1786,7 @@ void CL_ParseServerMessage (void)
 					cl.info_mask2 = MSG_ReadLong();
 
 				if ((sc1 & SC1_STAT_BAR) || (sc2 & SC2_STAT_BAR))
-					SB_Changed();
+					Sbar_Changed();
 
 				if ((sc1 & SC1_INV) || (sc2 & SC2_INV))
 					SB_InvChanged();
@@ -1797,6 +1797,9 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2005/10/27 18:21:07  sezero
+ * more sensible var names for ent number in CL_ParseServerMessage
+ *
  * Revision 1.19  2005/10/25 20:08:41  sezero
  * coding style and whitespace cleanup.
  *

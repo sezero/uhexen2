@@ -1634,7 +1634,7 @@ void CL_ParseServerMessage (void)
 				cl.v.flags = MSG_ReadFloat();
 
 			if ((sc1 & SC1_STAT_BAR) || (sc2 & SC2_STAT_BAR))
-				SB_Changed();
+				Sbar_Changed();
 
 			if ((sc1 & SC1_INV) || (sc2 & SC2_INV))
 				SB_InvChanged();

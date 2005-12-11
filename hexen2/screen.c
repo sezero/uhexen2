@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.17 2005-10-02 15:45:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.18 2005-12-11 11:56:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -331,7 +331,7 @@ static void SCR_CalcRefdef (void)
 	vid.recalc_refdef = 0;
 
 // force the status bar to redraw
-	SB_Changed();
+	Sbar_Changed();
 
 //========================================
 	
@@ -657,7 +657,7 @@ void SCR_SetUpToDrawConsole (void)
 	{
 		scr_copytop = 1;
 		Draw_TileClear (0,(int)scr_con_current,vid.width, vid.height - (int)scr_con_current);
-		SB_Changed();
+		Sbar_Changed();
 	}
 	else if (clearnotify++ < vid.numpages)
 	{
@@ -854,7 +854,7 @@ void SCR_BeginLoadingPlaque (void)
 
 	scr_drawloading = true;
 	scr_fullupdate = 0;
-	SB_Changed();
+	Sbar_Changed();
 	SCR_UpdateScreen ();
 	scr_drawloading = false;
 
@@ -1026,13 +1026,13 @@ void SCR_UpdateScreen (void)
 	{	// clear the entire screen
 		scr_copyeverything = 1;
 		Draw_TileClear (0,0,vid.width,vid.height);
-		SB_Changed();
+		Sbar_Changed();
 	}
 	else if (scr_topupdate++ < vid.numpages)
 	{
 		scr_copyeverything = 1;
 		Draw_TileClear (0,0,vid.width,100);
-		SB_Changed();
+		Sbar_Changed();
 	}
 
 	pconupdate = NULL;
@@ -1055,7 +1055,7 @@ void SCR_UpdateScreen (void)
 
 	if (scr_drawdialog)
 	{
-		SB_Draw();
+		Sbar_Draw();
 		Draw_FadeScreen ();
 		SCR_DrawNotifyString ();
 		scr_copyeverything = true;
@@ -1063,7 +1063,7 @@ void SCR_UpdateScreen (void)
 //	Pa3PyX: would clobber intermission screens (else if)
 /*	else if (scr_drawloading)
 	{
-		SB_Draw();
+		Sbar_Draw();
 		Draw_FadeScreen ();
 		SCR_DrawLoading ();
 	}
@@ -1092,7 +1092,7 @@ void SCR_UpdateScreen (void)
 		SCR_DrawTurtle();
 		SCR_DrawPause();
 		SCR_CheckDrawCenterString();
-		SB_Draw();
+		Sbar_Draw();
 
 		// Pa3PyX: dim screen and draw plaque if loading, the rest
 		//	   otherwise
@@ -1515,6 +1515,9 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/10/02 15:45:27  sezero
+ * killed lcd_x and lcd_yaw (the stereoscopic stuff.) never tested, never used.
+ *
  * Revision 1.16  2005/09/28 06:09:31  sezero
  * took care of flickering problem while drawing the loading
  * plaque (from Pa3PyX.) glFlush is now required.
