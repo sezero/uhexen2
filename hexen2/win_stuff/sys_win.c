@@ -30,7 +30,7 @@
 #endif
 
 qboolean	ActiveApp, Minimized;
-qboolean	WinNT;
+qboolean	Win95, WinNT;
 
 static double		pfreq;
 static double		curtime = 0.0;
@@ -173,6 +173,9 @@ void Sys_Init (void)
 		WinNT = true;
 	else
 		WinNT = false;
+
+	if ((vinfo.dwMajorVersion == 4) && (vinfo.dwMinorVersion == 0))
+		Win95 = true;
 }
 
 
@@ -682,6 +685,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2005/12/04 11:14:38  sezero
+ * the big vsnprintf patch
+ *
  * Revision 1.23  2005/10/02 15:43:08  sezero
  * killed -Wshadow warnings
  *

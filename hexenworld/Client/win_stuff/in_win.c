@@ -457,6 +457,8 @@ void IN_StartupMouse (void)
 IN_Init
 ===========
 */
+extern qboolean Win95;	// for the MSWHEEL_ROLLMSG
+
 void IN_Init (void)
 {
 	// mouse variables
@@ -486,14 +488,15 @@ void IN_Init (void)
 	Cmd_AddCommand ("force_centerview", Force_CenterView_f);
 	Cmd_AddCommand ("joyadvancedupdate", Joy_AdvancedUpdate_f);
 
+	if (Win95)
+	{	// FIXME: Move this to WM_CREATE event handling in vid_xxx?
+		uMSG_MOUSEWHEEL = RegisterWindowMessage("MSWHEEL_ROLLMSG");
+		if (!uMSG_MOUSEWHEEL)
+			Con_Printf ("couldn't register mousewheel\n");
+	}
+
 	IN_StartupMouse ();
 	IN_StartupJoystick ();
-
-	uMSG_MOUSEWHEEL = RegisterWindowMessage("MSWHEEL_ROLLMSG");
-	if (!uMSG_MOUSEWHEEL)
-	{
-		Sys_Error ("Error Registering Message\n");
-	}
 }
 
 /*

@@ -2767,8 +2767,9 @@ LONG WINAPI MainWndProc (
 	HDC				hdc;
 	PAINTSTRUCT		ps;
 
-	if (uMsg == uMSG_MOUSEWHEEL && mwheelthreshold.value >= 1)
-	{
+	if (uMSG_MOUSEWHEEL && uMsg == uMSG_MOUSEWHEEL && mwheelthreshold.value >= 1)
+	{	// win95 and nt-3.51 code. raven's original,
+		// keeping it here for reference
 		MWheelAccumulator += *(int *)&wParam;
 		while (MWheelAccumulator >= mwheelthreshold.value)
 		{
@@ -2782,6 +2783,7 @@ LONG WINAPI MainWndProc (
 			Key_Event(K_MWHEELDOWN, false);
 			MWheelAccumulator += mwheelthreshold.value;
 		}
+		return DefWindowProc (hWnd, uMsg, wParam, lParam);
 	}
 
 	switch (uMsg)
@@ -2923,18 +2925,18 @@ LONG WINAPI MainWndProc (
 			}
 			break;
 
-		// JACK: This is the mouse wheel with the Intellimouse
-		// Its delta is either positive or neg, and we generate the proper
-		// Event.
-		case WM_MOUSEWHEEL: 
-			if ((short) HIWORD(wParam) > 0) {
+		case WM_MOUSEWHEEL:
+			if ((short) HIWORD(wParam) > 0)
+			{
 				Key_Event(K_MWHEELUP, true);
 				Key_Event(K_MWHEELUP, false);
-			} else {
+			}
+			else
+			{
 				Key_Event(K_MWHEELDOWN, true);
 				Key_Event(K_MWHEELDOWN, false);
 			}
-			break;
+			return 0;
 
 		// KJB: Added these new palette functions
 		case WM_PALETTECHANGED:

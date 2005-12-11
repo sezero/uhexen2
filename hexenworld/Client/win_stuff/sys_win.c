@@ -26,7 +26,7 @@
 
 int		starttime;
 qboolean	ActiveApp, Minimized;
-qboolean	WinNT;
+qboolean	Win95, WinNT;
 
 static double		pfreq;
 static double		curtime = 0.0;
@@ -169,6 +169,9 @@ void Sys_Init (void)
 		WinNT = true;
 	else
 		WinNT = false;
+
+	if ((vinfo.dwMajorVersion == 4) && (vinfo.dwMinorVersion == 0))
+		Win95 = true;
 }
 
 
