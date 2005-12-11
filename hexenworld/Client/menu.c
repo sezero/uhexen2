@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.33 2005-12-04 11:19:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.34 2005-12-11 11:53:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -208,12 +208,6 @@ void M_BuildTranslationTable(int top, int bottom)
 		if (bottom >= 0 && (*colorB != 255)) 
 			dest[j] = source[*sourceB];
 	}
-}
-
-
-void M_DrawTransPicTranslate (int x, int y, qpic_t *pic)
-{
-	Draw_TransPicTranslate (x + ((vid.width - 320)>>1), y, pic, translationTable);
 }
 
 
@@ -2340,6 +2334,20 @@ void M_Menu_Setup_f (void)
 }
 
 
+#if 0
+void M_DrawTransPicTranslate (int x, int y, qpic_t *pic)
+{
+	Draw_TransPicTranslate (x + ((vid.width - 320)>>1), y, pic, translationTable);
+}
+#endif
+
+#ifdef GLQUAKE
+#define M_DrawTransPicTranslate(x,y,pic,p_class,top,bottom) Draw_TransPicTranslate(x + ((vid.width - 320)>>1), y, pic, translationTable, p_class, top, bottom)
+#else
+#define M_DrawTransPicTranslate(x,y,pic,p_class,top,bottom) Draw_TransPicTranslate(x + ((vid.width - 320)>>1), y, pic, translationTable)
+#endif
+
+
 void M_Setup_Draw (void)
 {
 	qpic_t			*p;
@@ -2426,16 +2434,9 @@ void M_Setup_Draw (void)
 	}
 	p = Draw_CachePic (va("gfx/menu/netp%i.lmp",which_class));
 	M_BuildTranslationTable(setup_top, setup_bottom);
-#if 0
-#ifdef GLQUAKE
-	M_DrawPic (220, 72, p);
-#else
-	M_DrawTransPicTranslate (220, 72, p);
-#endif
-#endif
 
 	/* garymct */
-	M_DrawTransPicTranslate (220, 72, p);
+	M_DrawTransPicTranslate (220, 72, p, which_class, setup_top, setup_bottom);
 
 	M_DrawCharacter (56, setup_cursor_table [setup_cursor], 12+((int)(realtime*4)&1));
 

@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.49 2005-12-04 11:19:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.50 2005-12-11 11:53:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -300,13 +300,6 @@ void M_BuildTranslationTable(int top, int bottom)
 	}
 
 }
-
-
-void M_DrawTransPicTranslate (int x, int y, qpic_t *pic)
-{
-	Draw_TransPicTranslate (x + ((vid.width - 320)>>1), y, pic, translationTable);
-}
-
 
 void M_DrawTextBox (int x, int y, int width, int lines)
 {
@@ -1534,6 +1527,19 @@ void M_Menu_Setup_f (void)
 }
 
 
+#if 0
+void M_DrawTransPicTranslate (int x, int y, qpic_t *pic)
+{
+	Draw_TransPicTranslate (x + ((vid.width - 320)>>1), y, pic, translationTable);
+}
+#endif
+
+#ifdef GLQUAKE
+#define M_DrawTransPicTranslate(x,y,pic,p_class,top,bottom) Draw_TransPicTranslate(x + ((vid.width - 320)>>1), y, pic, translationTable, p_class, top, bottom)
+#else
+#define M_DrawTransPicTranslate(x,y,pic,p_class,top,bottom) Draw_TransPicTranslate(x + ((vid.width - 320)>>1), y, pic, translationTable)
+#endif
+
 void M_Setup_Draw (void)
 {
 	qpic_t	*p;
@@ -1561,7 +1567,7 @@ void M_Setup_Draw (void)
 	M_BuildTranslationTable(setup_top, setup_bottom);
 
 	/* garymct */
-	M_DrawTransPicTranslate (220, 72, p);
+	M_DrawTransPicTranslate (220, 72, p, setup_class, setup_top, setup_bottom);
 
 	M_DrawCharacter (56, setup_cursor_table [setup_cursor], 12+((int)(realtime*4)&1));
 
@@ -4094,6 +4100,9 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.49  2005/12/04 11:19:18  sezero
+ * gamma stuff update
+ *
  * Revision 1.48  2005/10/25 20:08:41  sezero
  * coding style and whitespace cleanup.
  *

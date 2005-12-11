@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.47 2005-12-11 11:51:10 sezero Exp $
+	$Id: gl_draw.c,v 1.48 2005-12-11 11:53:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -22,9 +22,6 @@ extern int	gl_max_size;
 cvar_t		gl_picmip = {"gl_picmip", "0"};
 cvar_t		gl_spritemip = {"gl_spritemip", "0"};
 
-extern int	setup_top;
-extern int	setup_bottom;
-extern int	which_class;
 qboolean	plyrtex[MAX_PLAYER_CLASS][16][16];	// whether or not the corresponding player textures
 							// (in multiplayer config screens) have been loaded
 byte		*draw_chars;				// 8*8 graphic characters
@@ -1043,7 +1040,7 @@ Draw_TransPicTranslate
 Only used for the player color selection menu
 =============
 */
-void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
+void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p_class, int top, int bottom)
 {
 	int		i, j, v, u;
 	unsigned	trans[PLAYER_DEST_WIDTH * PLAYER_DEST_HEIGHT], *dest;
@@ -1063,7 +1060,7 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 	dest = trans;
 	for (v=0 ; v<64 ; v++, dest += 64)
 	{
-		src = &menuplyr_pixels[which_class-1][ ((v*pic->height)>>6) *pic->width];
+		src = &menuplyr_pixels[p_class-1][ ((v*pic->height)>>6) *pic->width];
 		for (u=0 ; u<64 ; u++)
 		{
 			p = src[(u*pic->width)>>6];
@@ -1078,17 +1075,17 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 	{
 		for( j = 0; j < PLAYER_PIC_HEIGHT; j++ )
 		{
-			trans[j * PLAYER_DEST_WIDTH + i] = d_8to24table[translation[menuplyr_pixels[which_class-1][j * PLAYER_PIC_WIDTH + i]]];
+			trans[j * PLAYER_DEST_WIDTH + i] = d_8to24table[translation[menuplyr_pixels[p_class-1][j * PLAYER_PIC_WIDTH + i]]];
 		}
 	}
 
 	// See if the texture has already been loaded; if not, do it (Pa3PyX)
-	if (!plyrtex[which_class - 1][setup_top][setup_bottom])
+	if (!plyrtex[p_class - 1][top][bottom])
 	{
-		snprintf(texname, 19, "plyrmtex%i%i%i", which_class, setup_top, setup_bottom);
-		plyrtex[which_class - 1][setup_top][setup_bottom] = GL_LoadTexture(texname, PLAYER_DEST_WIDTH, PLAYER_DEST_HEIGHT, (byte *)trans, false, true, 0, true);
+		snprintf(texname, 19, "plyrmtex%i%i%i", p_class, top, bottom);
+		plyrtex[p_class - 1][top][bottom] = GL_LoadTexture(texname, PLAYER_DEST_WIDTH, PLAYER_DEST_HEIGHT, (byte *)trans, false, true, 0, true);
 	}
-	GL_Bind(plyrtex[which_class - 1][setup_top][setup_bottom]);
+	GL_Bind(plyrtex[p_class - 1][top][bottom]);
 
 	glColor3f_fp (1,1,1);
 	glBegin_fp (GL_QUADS);
