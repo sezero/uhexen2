@@ -787,6 +787,7 @@ void IN_StartupJoystick (void)
  
  	// assume no joystick
 	joy_avail = false; 
+	mmr = ~JOYERR_NOERROR;	// shut up the compiler
 
 	// abort startup if user requests no joystick
 	if ( COM_CheckParm ("-nojoy") ) 

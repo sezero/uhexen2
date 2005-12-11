@@ -506,6 +506,7 @@ void IN_StartupJoystick (void)
  
  	// assume no joystick
 	joy_avail = false; 
+	mmr = ~JOYERR_NOERROR;	// shut up the compiler
 
 	// abort startup if user requests no joystick
 	if ( COM_CheckParm ("-nojoy") ) 
@@ -940,6 +941,9 @@ void IN_JoyMove (usercmd_t *cmd)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/09/24 23:50:36  sezero
+ * fixed a bunch of compiler warnings
+ *
  * Revision 1.8  2005/08/19 18:32:14  sezero
  * killed unused dosisms.h header
  *
