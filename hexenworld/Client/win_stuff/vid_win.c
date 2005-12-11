@@ -11,6 +11,13 @@
 
 qboolean	dibonly;
 
+// new variables. Pa3PyX
+MGL_surfaceAccessFlagsType	mgldcAccessMode = MGL_NO_ACCESS,
+				memdcAccessMode = MGL_NO_ACCESS,
+				mgldcWidth = 0,
+				memdcWidth = 0;
+LONG_PTR mgl_wnd_proc;
+
 byte globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
 byte *lastsourcecolormap = NULL;
 
@@ -48,7 +55,26 @@ cvar_t		vid_mode = {"vid_mode","0", false};
 cvar_t		_vid_default_mode = {"_vid_default_mode","0", true};
 // Note that 3 is MODE_FULLSCREEN_DEFAULT
 cvar_t		_vid_default_mode_win = {"_vid_default_mode_win","3", true};
-cvar_t		vid_nopageflip = {"vid_nopageflip","0", true};
+cvar_t		vid_wait = {"vid_wait", "-1", true};	// autodetect
+/* Pa3PyX: vid_maxpages: new variable: maximum number of video pages to use.
+   The more, the less chance there is to flicker, the better, but a lot of
+   VESA drivers are buggy and report more video pages than there actually are.
+   Thus, we limit this number to 3 by default (this was hardcoded before),
+   and then let the user pick whatever value they wish. */
+cvar_t		vid_maxpages = {"vid_maxpages", "3", true};
+/* Pa3PyX: vid_nopageflip now has meaning (was defunct in previous versions)
+   and defaults to 1. Reason: page flipping with direct linear framebuffer
+   access was fast for Quake which did not READ anything from frame buffer.
+   Hexen II does that A LOT, on transparent surfaces and the likes. Writing
+   directly into LFB is fast, but reading directly from it is generally
+   extremely slow - hence huge slowdowns on translucencies. Thus, we now
+   default to software buffering in VESA and DirectDraw modes, just like in
+   DIB, but with the exception that we can copy from software buffer to LFB
+   directly once the frame is drawn. This makes VESA/DirectDraw modes slightly
+   faster than DIB. DIB still remains the default for now, for compatibility
+   purposes (because it's only slightly slower, and VESA modes are usually
+   more trouble than they are worth, especially in Windows) */
+cvar_t		vid_nopageflip = {"vid_nopageflip","1", true};
 cvar_t		vid_config_x = {"vid_config_x","800", true};
 cvar_t		vid_config_y = {"vid_config_y","600", true};
 cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1", true};
@@ -111,10 +137,27 @@ static int		nummodes;
 
 int		aPage;	// Current active display page
 int		vPage;	// Current visible display page
-int		waitVRT = true;			// True to wait for retrace on flip
+
+/* Pa3PyX: in MGL 4.05, thare are actually
+   three values for waitVRT
+
+	triple buffer (0),
+	wait for vertical retrace (1),
+	and don't wait (2).
+
+   Triple buffering does not always work. So we will again
+   use vid_wait console variable (like in Quake DOS version)
+   for the user to supply desired page flipping mode for their
+   graphics hardware. Like in Quake, "0" would mean no wait,
+   "1" wait for vertical retrace, "2" triple buffer, and now
+   "-1" will mean autodetect.
+*/
+MGL_waitVRTFlagType	waitVRT = MGL_waitVRT,
+			defaultVRT = MGL_waitVRT;
 
 static vmode_t	badmode;
 
+//static byte	backingbuf[48*24];
 static byte	backingbuf[48*48];
 
 void VID_MenuDraw (void);
@@ -220,8 +263,13 @@ qboolean VID_CheckAdequateMem (int width, int height)
 
 // see if there's enough memory, allowing for the normal mode 0x13 pixel,
 // z, and surface buffers
-	if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
-		 0x10000 * 3) < MINIMUM_MEMORY)
+	//if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
+	//	 0x10000 * 3) < MINIMUM_MEMORY)
+	// Pa3PyX: using hopefully better estimation now
+	// Experimentation: the heap should have at least 12.0 megs
+	// remaining (after init) after setting video mode, otherwise
+	// it's Hunk_Alloc failures and cache thrashes upon level load
+	if (host_parms.memsize < tbuffersize + 0x180000 + 0xC00000)
 	{
 		return false;		// not enough memory for mode
 	}
@@ -247,8 +295,12 @@ qboolean VID_AllocBuffers (int width, int height)
 
 // see if there's enough memory, allowing for the normal mode 0x13 pixel,
 // z, and surface buffers
-	if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
-		 0x10000 * 3) < MINIMUM_MEMORY)
+	//if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
+	//	 0x10000 * 3) < MINIMUM_MEMORY)
+	// Pa3PyX: using hopefully better estimation now
+	// if total memory < needed surface cache + (minimum operational memory
+	// less surface cache for 320x200 and typical hunk state after init)
+	if (host_parms.memsize < tbuffersize + 0x180000 + 0xC00000)
 	{
 		Con_SafePrintf ("Not enough memory for video mode\n");
 		return false;		// not enough memory for mode
@@ -553,6 +605,7 @@ MGLDC *createDisplayDC(int forcemem)
 
 	npages = MGL_availablePages(mode);
 
+#if 0
 	if (npages > 3)
 		npages = 3;
 
@@ -563,46 +616,66 @@ MGLDC *createDisplayDC(int forcemem)
 			npages = 2;
 		}
 	}
+#endif
 
 	if ((dc = MGL_createDisplayDC(npages)) == NULL)
 		return NULL;
 
-	if (!forcemem && (MGL_surfaceAccessType(dc)) == MGL_LINEAR_ACCESS && (dc->mi.maxPage > 0))
+	// Pa3PyX: check if the user wants to do page flips (default: no)
+	if (!vid_nopageflip.value && (vid_maxpages.value > 1) &&
+	    !forcemem && (MGL_surfaceAccessType(dc) == MGL_LINEAR_ACCESS) &&
+	    (dc->mi.maxPage > 0))
 	{
+		// Page flipping used
 		MGL_makeCurrentDC(dc);
 		memdc = NULL;
+		vid.numpages = dc->mi.maxPage + 1;
+		if (vid.numpages > vid_maxpages.value)
+			vid.numpages = vid_maxpages.value;
+		MGL_setActivePage(dc, aPage = 1);
+		MGL_setVisualPage(dc, vPage = 0, false);
 	}
 	else
 	{
-		// Set up for blitting from a memory buffer
+		// No page flipping
 		memdc = MGL_createMemoryDC(MGL_sizex(dc)+1,MGL_sizey(dc)+1,8,&pf);
 		MGL_makeCurrentDC(memdc);
-	}
-
-	// Enable page flipping even for even for blitted surfaces
-	if (forcemem)
-	{
+		/* Pa3PyX: No page flipping on blitted modes anymore
+		   (no need to - we are drawing everything to system
+		   memory first, then flushing it to screen in one blow.
+		   so there is no visible overdraw, even though writing
+		   directly to front buffer) */
 		vid.numpages = 1;
+		aPage = vPage = 0;
+		MGL_setActivePage(dc, aPage);
+		MGL_setVisualPage(dc, vPage, false);
 	}
-	else
+	/* Pa3PyX: these will be needed if we want to copy surface
+	   to surface directly (faster, but need to make sure both
+	   contexts are accessible in either virtualized or linear
+	   mode (not MGL_NO_ACCESS == 0) */
+	if (dc)
 	{
-		vid.numpages = dc->mi.maxPage + 1;
-
-		if (vid.numpages > 1)
-		{
-			// Set up for page flipping
-			MGL_setActivePage(dc, aPage = 1);
-			MGL_setVisualPage(dc, vPage = 0, false);
-		}
-
-		if (vid.numpages > 3)
-			vid.numpages = 3;
+		mgldcAccessMode = MGL_surfaceAccessType(dc);
+		mgldcWidth = dc->mi.bytesPerLine * (dc->mi.bitsPerPixel / 8);
+	}
+	if (memdc)
+	{
+		memdcAccessMode = MGL_surfaceAccessType(memdc);
+		memdcWidth = memdc->mi.bytesPerLine * (memdc->mi.bitsPerPixel / 8);
 	}
 
-	if (vid.numpages == 2)
-		waitVRT = true;
+	// Pa3PyX: now more judicious about picking default mode
+	if (vid.numpages > 2)
+		// try triple buffering
+		defaultVRT = MGL_tripleBuffer;
+	else if (vid.numpages == 2)
+		// regular double buffering/vsync
+		defaultVRT = MGL_waitVRT;
 	else
-		waitVRT = false;
+		// only one video page (aPage == vPage)
+		// software buffer used, no need to sync
+		defaultVRT = MGL_dontWait;
 
 	return dc;
 }
@@ -1058,7 +1131,8 @@ char *VID_GetModeDescriptionMemCheck (int modenum)
 	pv = VID_GetModePtr (modenum);
 	pinfo = pv->modedesc;
 
-	if (VID_CheckAdequateMem (pv->width, pv->height))
+	// stretched modes are half width/height. Pa3PyX
+	if (VID_CheckAdequateMem (pv->width >> pv->stretched, pv->height >> pv->stretched))
 	{
 		return pinfo;
 	}
@@ -1373,8 +1447,9 @@ qboolean VID_SetFullscreenMode (int modenum)
 		MGL_destroyDC (memdc);
 	mgldc = memdc = NULL;
 
-	if ((mgldc = createDisplayDC (modelist[modenum].stretched ||
-		 (int)vid_nopageflip.value)) == NULL)
+	//if ((mgldc = createDisplayDC (modelist[modenum].stretched ||
+	//	 (int)vid_nopageflip.value)) == NULL)
+	if ((mgldc = createDisplayDC (modelist[modenum].stretched)) == NULL)
 	{
 		return false;
 	}
@@ -1403,6 +1478,18 @@ qboolean VID_SetFullscreenMode (int modenum)
 // shouldn't be needed, but Kendall needs to let us get the activation
 // message for this not to be needed on NT
 	AppActivate (true, false);
+
+/*	Pa3PyX: HACK: Override MGL's default wndproc by our own.
+	1) We don't want to handle minimize/restore on fullscreen modes,
+	especially in VESA modes and even VGA modes (which may cause
+	Windows to stop responding or give a blue screen in many
+	instances, since VESA modes access hardware directly);
+	2) MGL has a bug that prevents us from using the ALT key in
+	DirectDraw modes (WM_SYSKEYDOWN and WM_SYSKEYUP are not forwarded
+	to the user eventproc).
+*/
+	mgl_wnd_proc = (LONG_PTR)GetWindowLongPtr(mainwindow, GWL_WNDPROC);
+	SetWindowLongPtr(mainwindow, GWL_WNDPROC, (LONG_PTR)MainWndProc);
 
 	return true;
 }
@@ -1685,8 +1772,27 @@ int VID_SetMode (int modenum, unsigned char *palette)
 // fix the leftover Alt from any Alt-Tab or the like that switched us away
 	ClearAllStates ();
 
+	// Pa3PyX: set desired page flipping mode
+	switch ((int)vid_wait.value)
+	{
+		case 0:	waitVRT = MGL_dontWait;
+			break;
+		case 1:	waitVRT = MGL_waitVRT;
+			break;
+		case 2:	waitVRT = MGL_tripleBuffer;
+			break;
+		default: waitVRT = defaultVRT;
+	}
+
+	// print number of video pages as well,
+	// if page flipping is enabled. Pa3PyX
 	if (!msg_suppress_1)
-		Con_SafePrintf ("Video mode %s initialized\n", VID_GetModeDescription (vid_modenum));
+	{
+		if (vid.numpages > 1)
+			Con_SafePrintf("%s (hw buffer: %i pages)\n", VID_GetModeDescription(vid_modenum), vid.numpages);
+		else
+			Con_SafePrintf("%s (sw buffer)\n", VID_GetModeDescription(vid_modenum));
+	}
 
 	VID_SetPalette (palette);
 
@@ -1893,7 +1999,8 @@ void VID_DescribeModes_f (void)
 		pv = VID_GetModePtr (i);
 		pinfo = VID_GetExtModeDescription (i);
 
-		if (VID_CheckAdequateMem (pv->width, pv->height))
+		// stretched modes are half width/height. Pa3PyX
+		if (VID_CheckAdequateMem (pv->width >> pv->stretched, pv->height >> pv->stretched))
 		{
 			Con_Printf ("%2d: %s\n", i, pinfo);
 		}
@@ -1979,7 +2086,9 @@ void	VID_Init (unsigned char *palette)
 	byte	*ptmp;
 
 	Cvar_RegisterVariable (&vid_mode);
+	Cvar_RegisterVariable (&vid_wait);
 	Cvar_RegisterVariable (&vid_nopageflip);
+	Cvar_RegisterVariable (&vid_maxpages);
 	Cvar_RegisterVariable (&_vid_default_mode);
 	Cvar_RegisterVariable (&_vid_default_mode_win);
 	Cvar_RegisterVariable (&vid_config_x);
@@ -2125,10 +2234,19 @@ void	VID_Shutdown (void)
 		if (modestate == MS_FULLDIB)
 			ChangeDisplaySettings (NULL, CDS_FULLSCREEN);
 
+		/* Pa3PyX: restore MGL's original event handling procedure so
+		   that it can do any needed cleanup before we start minimizing
+		   and closing windows */
+		if (modestate == MS_FULLSCREEN && mainwindow && mgl_wnd_proc)
+		{
+			SetWindowLongPtr(mainwindow, GWL_WNDPROC, mgl_wnd_proc);
+		}
+
 		PostMessage (HWND_BROADCAST, WM_PALETTECHANGED, (WPARAM)mainwindow, (LPARAM)0);
 		PostMessage (HWND_BROADCAST, WM_SYSCOLORCHANGE, (WPARAM)0, (LPARAM)0);
 
 		AppActivate(false, false);
+
 		DestroyDIBWindow ();
 		DestroyFullscreenWindow ();
 		DestroyFullDIBWindow ();
@@ -2159,6 +2277,8 @@ FlipScreen
 */
 void FlipScreen(vrect_t *rects)
 {
+	int		i;
+
 	// Flip the surfaces
 
 	if (DDActive)
@@ -2183,11 +2303,23 @@ void FlipScreen(vrect_t *rects)
 					}
 					else
 					{
-						MGL_bitBltCoord(mgldc, memdc,
+					// Pa3PyX: if we have linear/virtual
+					// framebuffer access, it is much faster
+					// to copy surface to surface directly
+						if (mgldcAccessMode && memdcAccessMode)
+						{
+							for (i = 0; i < rects->height; i++) {
+								memcpy(((byte *)mgldc->surface) + ((rects->y + i) * mgldcWidth + rects->x), ((byte *)memdc->surface) + ((rects->y + i) * memdcWidth + rects->x), rects->width);
+							}
+						}
+						else
+						{
+							MGL_bitBltCoord(mgldc, memdc,
 									rects->x, rects->y,
 									(rects->x + rects->width),
 									(rects->y + rects->height),
 									rects->x, rects->y, MGL_REPLACE_MODE);
+						}
 					}
 
 					rects = rects->pnext;
@@ -2383,7 +2515,7 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 		{
 			for (j=0 ; j<reps ; j++)
 			{
-				memcpy (&backingbuf[(i + j) * width],
+				memcpy (&backingbuf[(i + j) * width] /* &backingbuf[(i + j) * 24] */,
 						vid.direct + x + ((y << repshift) + i + j) * vid.rowbytes,
 						width);
 				memcpy (vid.direct + x + ((y << repshift) + i + j) * vid.rowbytes,
@@ -2419,7 +2551,7 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 		{
 			for (j=0 ; j<reps ; j++)
 			{
-				memcpy (&backingbuf[(i + j) * width],
+				memcpy (&backingbuf[(i + j) * width] /* &backingbuf[(i + j) * 24] */,
 						(byte *)mgldc->surface + x +
 						 ((y << repshift) + i + j) * mgldc->mi.bytesPerLine,
 						width);
@@ -2479,7 +2611,7 @@ void D_EndDirectRect (int x, int y, int width, int height)
 			for (j=0 ; j<reps ; j++)
 			{
 				memcpy (vid.direct + x + ((y << repshift) + i + j) * vid.rowbytes,
-						&backingbuf[(i + j) * width],
+						&backingbuf[(i + j) * width] /* &backingbuf[(i + j) * 24] */,
 						width);
 			}
 		}
@@ -2513,7 +2645,7 @@ void D_EndDirectRect (int x, int y, int width, int height)
 			{
 				memcpy ((byte *)mgldc->surface + x +
 						 ((y << repshift) + i + j) * mgldc->mi.bytesPerLine,
-						&backingbuf[(i + j) * 24],
+						&backingbuf[(i + j) * width] /* &backingbuf[(i + j) * 24] */,
 						width);
 			}
 		}
@@ -2762,7 +2894,9 @@ LONG WINAPI MainWndProc (
     WPARAM  wParam,
     LPARAM  lParam)
 {
-	LONG			lRet = 0;
+	// Ignore all irrelevant messages when in DDRAW/VESA/VGA modes
+	//LONG			lRet = 0;
+	LONG			lRet = DDActive;
 	int				fActive, fMinimized, temp;
 	HDC				hdc;
 	PAINTSTRUCT		ps;
@@ -2792,8 +2926,11 @@ LONG WINAPI MainWndProc (
 			break;
 
 		case WM_SYSCOMMAND:
+			// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
+			if (DDActive)
+				break;
 
-		// Check for maximize being hit
+			// Check for maximize being hit
 			switch (wParam & ~0x0F)
 			{
 				case SC_MAXIMIZE:
@@ -2837,6 +2974,10 @@ LONG WINAPI MainWndProc (
 			break;
 
 		case WM_MOVE:
+			// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
+			if (DDActive)
+				break;
+
 			window_x = (int) LOWORD(lParam);
 			window_y = (int) HIWORD(lParam);
 			VID_UpdateWindowStatus ();
@@ -2847,6 +2988,10 @@ LONG WINAPI MainWndProc (
 			break;
 
 		case WM_SIZE:
+			// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
+			if (DDActive)
+				break;
+
 			Minimized = false;
 			
 			if (!(wParam & SIZE_RESTORED))
@@ -2966,6 +3111,10 @@ LONG WINAPI MainWndProc (
 			break;
 
 		case WM_DISPLAYCHANGE:
+			// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
+			if (DDActive)
+				break;
+
 			if (!in_mode_set && (modestate == MS_WINDOWED) && !vid_fulldib_on_focus_mode)
 			{
 				force_mode_set = true;
@@ -2975,6 +3124,9 @@ LONG WINAPI MainWndProc (
 			break;
 
 		case WM_CLOSE:
+		// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
+			if (DDActive)
+				break;
 		// this causes Close in the right-click task bar menu not to work, but right
 		// now bad things happen if Close is handled in that case (garbage and a
 		// crash on Win95)
@@ -2993,6 +3145,9 @@ LONG WINAPI MainWndProc (
 			break;
 
 		default:
+			// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
+			if (DDActive)
+				break;
 			/* pass all unhandled messages to DefWindowProc */
 			lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
 			break;
