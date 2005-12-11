@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.46 2005-10-27 06:47:12 sezero Exp $
+	$Id: gl_draw.c,v 1.47 2005-12-11 11:51:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1756,74 +1756,45 @@ void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean a
 	// texture even if it was specified as otherwise
 	if ((alpha || mode != 0))
 	{
+		i = 0;
 		noalpha = true;
-		for (i=0 ; i<s ; i++)
+		while (i<s)
 		{
-			p = data[i];
-			if (p == 255)
-				noalpha = false;
-			trans[i] = d_8to24table[p];
-		}
-
-		for (i=0 ; i<s ; i++)
-		{
-			int n;
-			int r = 0, g = 0, b = 0;
-
-			p = data[i];
-			if (p == 255)
+			if (data[i] == 255)
 			{
-				unsigned long neighbors[9];
-				int num_neighbors_valid = 0;
-				int neighbor_u, neighbor_v;
-				int u, v;
-
-				u = s % width;
-				v = s / width;
-
-				for( neighbor_u = u - 1; neighbor_u <= u + 1; neighbor_u++ )
-				{
-					for( neighbor_v = v - 1; neighbor_v <= v + 1; neighbor_v++ )
-					{
-						if( neighbor_u == neighbor_v )
-							continue;
-						// Make sure  that we are accessing a texel in the image, not out of range.
-						if( neighbor_u < 0 || neighbor_u > width || neighbor_v < 0 || neighbor_v > height )
-							continue;
-						if( data[neighbor_u + neighbor_v * width] == 255 )
-							continue;
-						neighbors[num_neighbors_valid++] = trans[neighbor_u + neighbor_v * width];
-					}
-				}
-
-				if( num_neighbors_valid == 0 )
-					continue;
-
-				for( n = 0; n < num_neighbors_valid; n++ )
-				{
-					r += neighbors[n] & 0xff;
-					g += ( neighbors[n] & 0xff00 ) >> 8;
-					b += ( neighbors[n] & 0xff0000 ) >> 16;
-				}
-
-				r /= num_neighbors_valid;
-				g /= num_neighbors_valid;
-				b /= num_neighbors_valid;
-
-				if( r > 255 )
-					r = 255;
-				if( g > 255 )
-					g = 255;
-				if( b > 255 )
-					b = 255;
-
-				trans[i] = ( b << 16  ) | ( g << 8 ) | r;
-			//	trans[i] = 0;
+				noalpha = false;
+				break;
 			}
+			i++;
 		}
 
 		if (alpha && noalpha)
 			alpha = false;
+
+		for (i=0 ; i<s ; i++)
+		{
+			p = data[i];
+			trans[i] = d_8to24table[p];
+
+			if (alpha && p == 255)
+			{	// transparent, so scan around for another color
+				// to avoid alpha fringes
+				if (i > width && data[i-width] != 255)
+					p = data[i-width];
+				else if (i < s-width && data[i+width] != 255)
+					p = data[i+width];
+				else if (i > 0 && data[i-1] != 255)
+					p = data[i-1];
+				else if (i < s-1 && data[i+1] != 255)
+					p = data[i+1];
+				else
+					p = 0;
+				// copy rgb components
+				((byte *)&trans[i])[0] = ((byte *)&d_8to24table[p])[0];
+				((byte *)&trans[i])[1] = ((byte *)&d_8to24table[p])[1];
+				((byte *)&trans[i])[2] = ((byte *)&d_8to24table[p])[2];
+			}
+		}
 
 		switch( mode )
 		{
