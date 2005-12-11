@@ -1,5 +1,31 @@
 ChangeLog:
 
+2005-12-11 (CVS):
+    * replaced some broken code in GL_Upload8 with code taken from quake2
+    * synchronized different sbar function names between h2 and h2w.
+      there was a mess about SB_Changed and Sbar_Changed in h2w, this
+      patch fixes that: h2 (and h2w) version of SB_Changed was never
+      functional. h2w actually called SB_InvChanged, who knows what
+      the original intention was, but that seemed serving to no purpose
+      to me. in any case, watching for any new weirdness in h2w would
+      be advisable. ability string indexes for the demoness and dwarf
+      classes in h2w are fixed. armor class display in h2w is fixed.
+      h2 and h2w versions of gl_vidsdl and gl_vidnt are synchronized.
+    * updated the software sdl renderer: removed a lot of unnecessary
+      things which aren't of use in its current state with no mode
+      switching feature. it now follows the same style as in the sdlgl
+      version. placed D_BeginDirectRect and D_EndDirectRect bits taken
+      from quakeforge, so the rotating skull now works. the loading
+      plaque now works in fullscreen modes, which it didn't before.
+    * added menu.c arguments to gl version of Draw_TransPicTranslate, and
+      macroized M_DrawTransPicTranslate accordingly. this synchronizes h2
+      and h2w versions of gl_draw.c
+    * ported all of Pa3PyX' changes in hexen2/vid_win.c to hexenworld
+    * fixed win32 window restore bug that prevented the screen from being
+      updated
+    * win32 wheelmouse cleanup
+    * killed a compiler warning in in_win.c
+
 2005-12-06 (CVS):
     * updated the 3dfx gamma library to v0.0.3 and added a version
       that can be compiled into an application
