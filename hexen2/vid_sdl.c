@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.39 2005-12-04 11:19:18 sezero Exp $
+   $Id: vid_sdl.c,v 1.40 2005-12-11 18:30:08 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -45,10 +45,10 @@ byte *lastsourcecolormap = NULL;
 //intermission screen cache reference (to flush on video mode switch)
 extern cache_user_t	*intermissionScreen;
 
-static qboolean	vid_initialized = false, vid_palettized = true;
+static qboolean	vid_initialized = false;
 static int	lockcount;
 qboolean	in_mode_set;
-static int	vid_stretched, enable_mouse;
+static int	enable_mouse;
 static qboolean	palette_changed;
 
 viddef_t	vid;		// global video state
@@ -57,13 +57,11 @@ viddef_t	vid;		// global video state
 cvar_t		vid_mode = {"vid_mode","0", false};
 cvar_t		vid_config_x = {"vid_config_x","800", true};
 cvar_t		vid_config_y = {"vid_config_y","600", true};
-cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1", true};
 cvar_t		_enable_mouse = {"_enable_mouse","1", true};
 cvar_t		vid_showload = {"vid_showload", "1"};
 
 int		vid_modenum = NO_MODE;
 int		vid_default = MODE_WINDOWED;
-static int	windowed_default;
 
 modestate_t	modestate = MS_UNINIT;
 
@@ -83,9 +81,6 @@ typedef struct {
 	int			width;
 	int			height;
 	int			modenum;
-	int			mode13;
-	int			stretched;
-	int			dib;
 	int			fullscreen;
 	int			bpp;
 	int			halfscreen;
@@ -115,31 +110,6 @@ void ClearAllStates (void)
 
 	Key_ClearStates ();
 	IN_ClearStates ();
-}
-
-
-/*
-================
-VID_CheckAdequateMem
-================
-*/
-qboolean VID_CheckAdequateMem (int width, int height)
-{
-	int		tbuffersize;
-
-	tbuffersize = width * height * sizeof (*d_pzbuffer);
-
-	tbuffersize += D_SurfaceCacheForRes (width, height);
-
-// see if there's enough memory, allowing for the normal mode 0x13 pixel,
-// z, and surface buffers
-	if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
-		 0x10000 * 3) < MINIMUM_MEMORY)
-	{
-		return false;		// not enough memory for mode
-	}
-
-	return true;
 }
 
 
@@ -186,35 +156,6 @@ qboolean VID_AllocBuffers (int width, int height)
 	return true;
 }
 
-/*
-=================
-VID_CheckModedescFixup
-=================
-*/
-void VID_CheckModedescFixup (int modenum)
-{
-	int		x, y, stretch;
-
-	if (modenum == MODE_SETTABLE_WINDOW)
-	{
-		modelist[modenum].stretched = (int)vid_stretch_by_2.value;
-		stretch = modelist[modenum].stretched;
-
-		if (vid_config_x.value < (320 << stretch))
-			vid_config_x.value = 320 << stretch;
-
-		if (vid_config_y.value < (200 << stretch))
-			vid_config_y.value = 200 << stretch;
-
-		x = (int)vid_config_x.value;
-		y = (int)vid_config_y.value;
-		sprintf (modelist[modenum].modedesc, "%dx%d", x, y);
-		modelist[modenum].width = x;
-		modelist[modenum].height = y;
-	}
-}
-
-
 static void VID_SetIcon (void)
 {
 #if defined(H2W)
@@ -260,149 +201,53 @@ static void VID_SetIcon (void)
 }
 
 
-qboolean VID_SetWindowedMode (int modenum)
-{
-	Uint32 flags = (SDL_SWSURFACE|SDL_HWPALETTE);
-
-	VID_CheckModedescFixup (modenum);
-
-	modestate = MS_WINDOWED;
-
-	vid.height = vid.conheight = modelist[modenum].height;
-	vid.width = vid.conwidth = modelist[modenum].width;
-	vid.maxwarpwidth = WARP_WIDTH;
-	vid.maxwarpheight = WARP_HEIGHT;
-
-	VID_SetIcon();	// window manager icon using xbm data
-
-	if (!(screen = SDL_SetVideoMode(vid.width, vid.height, modelist[modenum].bpp, flags)))
-		return false;
-	else
-		Con_SafePrintf ("Video Mode: %d x %d x %d\n", vid.width, vid.height, modelist[modenum].bpp);
-
-	vid.buffer = vid.conbuffer = vid.direct = screen->pixels;
-	vid.rowbytes = vid.conrowbytes = screen->pitch;
-	vid.numpages = 1;
-	vid.aspect = ((float)vid.height / (float)vid.width) *
-				(320.0 / 240.0);
-
-	vid_stretched = modelist[modenum].stretched;
-
-	return true;
-}
-
-
-qboolean VID_SetFullscreenMode (int modenum)
-{
-	Uint32 flags = (SDL_SWSURFACE|SDL_HWPALETTE|SDL_FULLSCREEN);
-	// (SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_HWPALETTE|SDL_FULLSCREEN);
-
-	mode = modelist[modenum].modenum;
-	modestate = MS_FULLSCREEN;
-
-	vid.height = vid.conheight = modelist[modenum].height;
-	vid.width = vid.conwidth = modelist[modenum].width;
-
-	VID_SetIcon();  // window manager icon using xbm data
-
-	// This doesn't work at 16 bpp.
-	// Looks like there's a heap of programing around 256 colours S.A
-	if (!(screen = SDL_SetVideoMode(vid.width, vid.height, 8, flags)))
-		return false;
-
-	vid.buffer = vid.conbuffer = vid.direct = screen->pixels;
-	vid.rowbytes = vid.conrowbytes = screen->pitch;
-	vid.maxwarpwidth = WARP_WIDTH;
-	vid.maxwarpheight = WARP_HEIGHT;
-	vid.aspect = ((float)vid.height / (float)vid.width) *
-				(320.0 / 240.0);
-
-	vid_stretched = modelist[modenum].stretched;
-
-	return true;
-}
-
-
-void VID_RestoreOldMode (int original_mode)
-{
-	static qboolean	inerror = false;
-
-	if (inerror)
-		return;
-
-	in_mode_set = false;
-	inerror = true;
-
-// make sure mode set happens (video mode changes)
-	vid_modenum = original_mode - 1;
-
-	if (!VID_SetMode (original_mode, vid_curpal))
-	{
-		vid_modenum = MODE_WINDOWED - 1;
-
-		if (!VID_SetMode (windowed_default, vid_curpal))
-			Sys_Error ("Can't set any video mode");
-	}
-
-	inerror = false;
-}
-
 int VID_SetMode (int modenum, unsigned char *palette)
 {
-	int			original_mode, temp;
-	qboolean		stat;
-
-// S.A. did this Cvar_SetValue & "if 0" 
-// It's pretty messy in here. Dunno much about it, probably alot of it
-// could go as it's used in dynamically changing/testing video modes
-
-	Cvar_SetValue ("vid_mode", (float)modenum);
-
-	if (modenum == vid_modenum)
-		return true;
+	Uint32 flags = (SDL_SWSURFACE|SDL_HWPALETTE);
+	int			temp;
 
 	// so Con_Printfs don't mess us up by forcing vid and snd updates
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 	in_mode_set = true;
 
+	if ((modelist[modenum].type != MS_WINDOWED) && (modelist[modenum].type != MS_FULLSCREEN))
+		Sys_Error ("VID_SetMode: Bad mode type in modelist");
+
 	//flush the intermission screen if it's cached (Pa3PyX)
 	if (intermissionScreen && intermissionScreen->data)
 		Cache_Free(intermissionScreen);
 
-	if (vid_modenum == NO_MODE)
-		original_mode = windowed_default;
+	if (modenum==0)
+		modestate = MS_WINDOWED;
 	else
-		original_mode = vid_modenum;
+		modestate = MS_FULLSCREEN;
 
-	/* Set either the fullscreen or windowed mode */
+	if (modestate == MS_FULLSCREEN)
+		flags |= SDL_FULLSCREEN;
 
-	if (modelist[modenum].type == MS_WINDOWED)
-		stat = VID_SetWindowedMode(modenum);
-	else
-		stat = VID_SetFullscreenMode(modenum);
+	VID_SetIcon();	// window manager icon using xbm data
+
+	// Set the mode
+	if (!(screen = SDL_SetVideoMode(modelist[modenum].width, modelist[modenum].height, modelist[modenum].bpp, flags)))
+		return false;
+
+	vid_modenum = modenum;
+	vid.height = vid.conheight = modelist[modenum].height;
+	vid.width = vid.conwidth = modelist[modenum].width;
+	vid.buffer = vid.conbuffer = vid.direct = screen->pixels;
+	vid.rowbytes = vid.conrowbytes = screen->pitch;
+	vid.numpages = 1;
+	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
 
 	IN_HideMouse ();
 
 	scr_disabled_for_loading = temp;
 
-	if (!stat)
-	{
-		VID_RestoreOldMode (original_mode);
-		return false;
-	}
-
-	VID_SetPalette (palette);
-
-	vid_modenum = modenum;
-	// S.A.removed: Cvar_SetValue ("vid_mode", (float)vid_modenum);
+//	VID_SetPalette (palette);
 
 	if (!VID_AllocBuffers (vid.width, vid.height))
-	{
-	// couldn't get memory for this mode; try to fall back to previous mode
-		VID_RestoreOldMode (original_mode);
 		return false;
-	}
 
 	D_InitCaches (vid_surfcache, vid_surfcachesize);
 
@@ -417,6 +262,10 @@ int VID_SetMode (int modenum, unsigned char *palette)
 #else
 	SDL_WM_SetCaption("Hexen II", "HEXEN2");
 #endif
+
+	Cvar_SetValue ("vid_mode", (float)modenum);
+
+	Con_SafePrintf ("Video Mode: %dx%dx%d\n", vid.width, vid.height, modelist[modenum].bpp);
 
 	in_mode_set = false;
 	vid.recalc_refdef = 1;
@@ -447,8 +296,7 @@ void VID_LockBuffer (void)
 	else
 		screenwidth = vid.rowbytes;
 }
-		
-		
+
 void VID_UnlockBuffer (void)
 {
 	lockcount--;
@@ -468,21 +316,21 @@ void VID_UnlockBuffer (void)
 
 void	VID_SetPalette (unsigned char *palette)
 {
-        int i;
-        SDL_Color colors[256];
+	int i;
+	SDL_Color colors[256];
 
 	palette_changed = true;
 
 	memcpy (vid_curpal, palette, sizeof(vid_curpal));
 
-        for ( i=0; i<256; ++i )
-        {
-                colors[i].r = *palette++;
-                colors[i].g = *palette++;
-                colors[i].b = *palette++;
-        }
+	for ( i=0; i<256; ++i )
+	{
+		colors[i].r = *palette++;
+		colors[i].g = *palette++;
+		colors[i].b = *palette++;
+	}
 
-        SDL_SetColors(screen, colors, 0, 256);
+	SDL_SetColors(screen, colors, 0, 256);
 }
 
 
@@ -494,9 +342,7 @@ void	VID_ShiftPalette (unsigned char *palette)
 
 void	VID_Init (unsigned char *palette)
 {
-	int		i, bestmatch, bestmatchmetric, t, dr, dg, db;
 	int		width,height;
-	byte	*ptmp;
 
 	if (SDL_Init(SDL_INIT_VIDEO)<0)
 		Sys_Error("VID: Couldn't load SDL: %s", SDL_GetError());
@@ -504,7 +350,6 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&vid_config_x);
 	Cvar_RegisterVariable (&vid_config_y);
-	Cvar_RegisterVariable (&vid_stretch_by_2);
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&vid_showload);
 
@@ -512,10 +357,7 @@ void	VID_Init (unsigned char *palette)
 	modelist[0].width = 320;
 	modelist[0].height = 240;
 	strcpy (modelist[0].modedesc, "320x240");
-	modelist[0].mode13 = 0;
 	modelist[0].modenum = MODE_WINDOWED;
-	modelist[0].stretched = 0;
-	modelist[0].dib = 1;
 	modelist[0].fullscreen = 0;
 	modelist[0].halfscreen = 0;
 	modelist[0].bpp = 8;
@@ -523,54 +365,21 @@ void	VID_Init (unsigned char *palette)
 	// mode[1] has been hacked to be like the (missing) mode[3] S.A.
 
 	modelist[1].type = MS_FULLSCREEN;
-	modelist[1].width = 640;
-	modelist[1].height = 480;
-	strcpy (modelist[1].modedesc, "640x480");
-	modelist[1].mode13 = 0;
+	modelist[1].width = 320;
+	modelist[1].height = 240;
+	strcpy (modelist[1].modedesc, "320x240");
 	modelist[1].modenum = MODE_FULLSCREEN_DEFAULT;
-	modelist[1].stretched = 1;
-	modelist[1].dib = 1;
 	modelist[1].fullscreen = 1;
 	modelist[1].halfscreen = 0;
 	modelist[1].bpp = 8;
 
 	// modelist[2-4] removed
 
-	vid_default = MODE_WINDOWED;
 
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
 	vid.colormap = host_colormap;
 	vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
-
-// GDI doesn't let us remap palette index 0, so we'll remap color
-// mappings from that black to another one
-	bestmatchmetric = 256*256*3;
-	bestmatch = 0;	// FIXME - uninitialized, guessing 0...
-
-	for (i=1 ; i<256 ; i++)
-	{
-		dr = palette[0] - palette[i*3];
-		dg = palette[1] - palette[i*3+1];
-		db = palette[2] - palette[i*3+2];
-
-		t = (dr * dr) + (dg * dg) + (db * db);
-
-		if (t < bestmatchmetric)
-		{
-			bestmatchmetric = t;
-			bestmatch = i;
-
-			if (t == 0)
-				break;
-		}
-	}
-
-	for (i=0, ptmp = vid.colormap ; i<(1<<(VID_CBITS+8)) ; i++, ptmp++)
-	{
-		if (*ptmp == 0)
-			*ptmp = bestmatch;
-	}
 
 
 	/*********************************
@@ -579,7 +388,6 @@ void	VID_Init (unsigned char *palette)
 
 	// default mode is windowed
 	vid_default = MODE_WINDOWED;
-
 	// see if the user wants fullscreen
 	if (COM_CheckParm("-fullscreen") || COM_CheckParm ("--fullscreen")
 			|| COM_CheckParm ("-f") || COM_CheckParm ("-fs"))
@@ -615,11 +423,10 @@ void	VID_Init (unsigned char *palette)
 	modelist[vid_default].height = height;
 	sprintf (modelist[vid_default].modedesc,"%dx%d",width,height);
 
+	if ( ! VID_SetMode(vid_default, palette) )
+		Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
+
 	vid_initialized = true;
-
-	VID_SetMode (vid_default, palette);
-
-	VID_SetPalette (palette);	// Useless (?) - DDOI
 
 	vid_menudrawfn = VID_MenuDraw;
 	vid_menukeyfn = VID_MenuKey;
@@ -657,7 +464,7 @@ void	VID_Update (vrect_t *rects)
 {
 	vrect_t	rect;
 
-	if (!vid_palettized && palette_changed)
+	if (palette_changed)
 	{
 		palette_changed = false;
 		rect.x = 0;
@@ -694,6 +501,35 @@ D_BeginDirectRect
 */
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 {
+//	these bits from quakeforge
+	Uint8      *offset;
+
+	if (!screen)
+		return;
+	if (x < 0)
+		x = screen->w + x - 1;
+	offset = (Uint8 *) screen->pixels + y * screen->pitch + x;
+	while (height--)
+	{
+		memcpy (offset, pbitmap, width);
+		offset += screen->pitch;
+		pbitmap += width;
+	}
+}
+
+/*
+================
+D_EndDirectRect
+================
+*/
+void D_EndDirectRect (int x, int y, int width, int height)
+{
+//	these bits from quakeforge
+	if (!screen)
+		return;
+	if (x < 0)
+		x = screen->w + x - 1;
+	SDL_UpdateRect (screen, x, y, width, height);
 }
 
 
@@ -746,15 +582,6 @@ void D_ShowLoadingSize (void)
 }
 #endif
 
-
-/*
-================
-D_EndDirectRect
-================
-*/
-void D_EndDirectRect (int x, int y, int width, int height)
-{
-}
 
 /*
 ============================
@@ -883,6 +710,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.39  2005/12/04 11:19:18  sezero
+ * gamma stuff update
+ *
  * Revision 1.38  2005/10/24 22:54:48  sezero
  * fixed "bestmatch might be used uninitialized" warning
  *
