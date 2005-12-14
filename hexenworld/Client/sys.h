@@ -85,9 +85,6 @@ void Sys_SendKeyEvents (void);
 
 #	define	id386		1
 #	define	UNALIGNED_OK	1	// set to 0 if unaligned accesses are not supported
-// vid buffer locking
-void	VID_LockBuffer (void);
-void	VID_UnlockBuffer (void);
 // fpu stuff
 void	MaskExceptions (void);
 void	Sys_SetFPCW (void);
@@ -101,9 +98,7 @@ void	Sys_PushFPCW_SetHigh (void);
 #	define	id386		0
 #	define	UNALIGNED_OK	0
 #   if !defined(SERVERONLY)
-#	define	VID_LockBuffer()
-#	define	VID_UnlockBuffer()
-#	define	void MaskExceptions()
+#	define	MaskExceptions()
 #	define	Sys_SetFPCW()
 #	define	Sys_LowFPPrecision()
 #	define	Sys_HighFPPrecision()
