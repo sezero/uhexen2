@@ -1,5 +1,11 @@
 ChangeLog:
 
+2005-12-15 (CVS):
+    * updated the documentation
+
+2005-12-14 (CVS):
+    * fixed my brain damage in sys.h
+
 2005-12-11 (CVS):
     * replaced some broken code in GL_Upload8 with code taken from quake2
     * synchronized different sbar function names between h2 and h2w.

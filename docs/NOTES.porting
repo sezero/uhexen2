@@ -5,9 +5,18 @@ Draftish notes on porting Hexen II and HexenWorld:
 CPU Dependancy:
 ------------------
 
-At present, the tree is i386-bound due to some asm code. Many
-of these (quake-origined ones) have their C counterparts, but
-some Raven-Hexen2 specific ones doesn't.
+At present, software renderer part of the tree is i386-bound due
+to some asm code. Many of these (quake-origined ones) have their
+C counterparts, but some Raven-Hexen2 specific ones doesn't. The
+opengl renderer doesn't have any such issues.
+
+There still may be a few lines of code with endianness issues.
+
+
+64-bit cleanness:
+------------------
+
+The whole tree needs to be checked / fixed for 64-bit platforms.
 
 
 Platform defines:
