@@ -226,9 +226,17 @@ void CompleteCommand (void)
 		{
 			// more than one match, list all of them
 			Con_Printf("\n");
+#if 0
+			// plain listing
 			for (i = 0; i< count && i < MAX_MATCHES; i++)
 				Con_Printf ("%s\n", matches[i]);
 			Con_Printf("\n%d matches found\n\n", count);
+#else
+			// S.A.: columnize the listing.
+			Con_Printf("%u possible completions:\n\n", count);
+			Con_ShowList (count, (const char**) matches);
+			Con_Printf("\n");
+#endif
 
 			// cycle throgh all matches and see
 			// if there is a partial completion
