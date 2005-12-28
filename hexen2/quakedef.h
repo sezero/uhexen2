@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.40 2005-12-04 11:19:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.41 2005-12-28 14:20:23 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -356,7 +356,7 @@ void Host_Frame (float time);
 void Host_Quit_f (void);
 void Host_ClientCommands (char *fmt, ...);
 void Host_ShutdownServer (qboolean crash);
-void SaveGamestate (qboolean ClientsOnly);
+qboolean SaveGamestate (qboolean ClientsOnly);
 
 extern qboolean		msg_suppress_1;		// suppresses resolution and cache size console output
 										//  an fullscreen DIB focus gain/loss
@@ -395,6 +395,9 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.40  2005/12/04 11:19:18  sezero
+ * gamma stuff update
+ *
  * Revision 1.39  2005/10/25 17:14:23  sezero
  * added a STRINGIFY macro. unified version macros. simplified version
  * printing. simplified and enhanced version watermark print onto console

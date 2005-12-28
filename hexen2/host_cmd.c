@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.35 2005-11-05 20:22:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.36 2005-12-28 14:20:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -22,7 +22,7 @@ static double		old_time;
 
 void Mod_Print (void);
 int LoadGamestate(char *level, char *startspot, int ClientsMode);
-void SaveGamestate(qboolean ClientsOnly);
+qboolean SaveGamestate(qboolean ClientsOnly);
 void RestoreClients(void);
 
 UINT	info_mask, info_mask2;
@@ -522,9 +522,12 @@ void Host_Savegame_f (void)
 		}
 	}
 
-	SaveGamestate(false);
+	error_state = SaveGamestate(false);
+	// don't bother doing more if SaveGamestate failed
+	if (error_state)
+		return;
 
-	retry:
+retry:
 	attempts++;
 
 	sprintf (name, "%s/%s", com_savedir, Cmd_Argv(1));
@@ -548,8 +551,8 @@ void Host_Savegame_f (void)
 	f = fopen (dest, "w");
 	if (!f)
 	{
-		Con_Printf ("ERROR: couldn't open.\n");
-		return;
+		error_state = true;
+		goto retrymsg;
 	}
 	
 	fprintf (f, "%i\n", SAVEGAME_VERSION);
@@ -574,7 +577,7 @@ void Host_Savegame_f (void)
 
 	fclose(f);
 
-	retrymsg:
+retrymsg:
 	if (error_state)
 	{
 		if (attempts == 1)
@@ -701,7 +704,7 @@ void Host_Loadgame_f (void)
 
 	CL_RemoveGIPFiles(tempdir);
 
-	retry:
+retry:
 	attempts++;
 
 	sprintf (name, "%s/%s/*.gip", com_savedir, Cmd_Argv(1));
@@ -751,7 +754,7 @@ void Host_Loadgame_f (void)
 	}
 }
 
-void SaveGamestate(qboolean ClientsOnly)
+qboolean SaveGamestate(qboolean ClientsOnly)
 {
 //	char	name[MAX_OSPATH],tempdir[MAX_OSPATH];
 	FILE	*f;
@@ -764,7 +767,6 @@ void SaveGamestate(qboolean ClientsOnly)
 	char *message;
 
 retry:
-
 	attempts++;
 
 	sprintf(tempdir,"%s/",com_savedir);
@@ -789,8 +791,8 @@ retry:
 	f = fopen (name, "w");
 	if (!f)
 	{
-		Con_Printf ("ERROR: couldn't open.\n");
-		return;
+		error_state = true;
+		goto retrymsg;
 	}
 	
 	fprintf (f, "%i\n", SAVEGAME_VERSION);
@@ -860,6 +862,7 @@ retry:
 	}
 	fclose (f);
 
+retrymsg:
 	if (error_state)
 	{
 		if (attempts == 1)
@@ -873,6 +876,8 @@ retry:
 			goto retry;
 		}
 	}
+
+	return error_state;
 }
 
 void RestoreClients(void)
@@ -2248,6 +2253,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.35  2005/11/05 20:22:10  sezero
+ * fixed some gcc4 warnings
+ *
  * Revision 1.34  2005/11/02 18:44:11  sezero
  * killed a silly quake left-over code in Host_Startdemos_f
  *

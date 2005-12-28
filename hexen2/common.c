@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.28 2005-12-28 12:07:02 sezero Exp $
+	$Id: common.c,v 1.29 2005-12-28 14:20:23 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1192,20 +1192,22 @@ void COM_CreatePath (char *path)
 COM_CopyFile
 
 Copies a file over from the net to the local cache, creating any directories
-needed.  This is for the convenience of developers using ISDN from home.
+needed. Used for saving the game. Returns 0 on success, non-zero on error.
 ===========
 */
-void COM_CopyFile (char *netpath, char *cachepath)
+int COM_CopyFile (char *netpath, char *cachepath)
 {
 	FILE	*in, *out;
-	int		remaining, count;
+	int		err = 0, remaining, count;
 	char	buf[4096];
 
 	remaining = COM_FileOpenRead (netpath, &in);
+	if (remaining == -1)
+		return 1;
 	COM_CreatePath (cachepath);	// create directories up to the cache file
 	out = fopen(cachepath, "wb");
 	if (!out)
-		Sys_Error ("Error opening %s", cachepath);
+		return 1;
 
 	while (remaining)
 	{
@@ -1214,12 +1216,20 @@ void COM_CopyFile (char *netpath, char *cachepath)
 		else
 			count = sizeof(buf);
 		fread (buf, 1, count, in);
+		err = ferror(in);
+		if (err)
+			goto errorout;
 		fwrite (buf, 1, count, out);
+		err = ferror(out);
+		if (err)
+			goto errorout;
 		remaining -= count;
 	}
 
+errorout:
 	fclose (in);
 	fclose (out);
+	return err;
 }
 
 /*
@@ -1943,6 +1953,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2005/12/28 12:07:02  sezero
+ * added COM_StrCompare as a quick'n'dirty string comparison function for use with qsort
+ *
  * Revision 1.27  2005/12/04 11:20:57  sezero
  * init stuff cleanup
  *

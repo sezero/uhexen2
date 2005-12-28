@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.21 2005-11-01 18:11:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.22 2005-12-28 14:20:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -188,20 +188,13 @@ qboolean CL_CopyFiles(char *source, char *pat, char *dest)
 	char	name[MAX_OSPATH],tempdir[MAX_OSPATH], *fpat;
 	DIR	*dir;
 	struct dirent	*dent;
-
-	/* pat is assumed to be <source> / *.gip
-	   This function is currently only used for
-	   saving/loading games.
-	   COM_CopyFile doesn't return anything, so
-	   there is no way to tell if it failed.
-	*/
+	qboolean error;
 
 	dir = opendir (source);
 	if (dir == NULL)
-	{
 		return true;
-	}
 
+	error = false;
 	fpat = strrchr(pat, '/');
 	if (fpat == NULL)
 		fpat = pat;
@@ -216,13 +209,14 @@ qboolean CL_CopyFiles(char *source, char *pat, char *dest)
 			{
 				sprintf(name,"%s%s", source, dent->d_name);
 				sprintf(tempdir,"%s%s", dest, dent->d_name);
-				COM_CopyFile(name,tempdir);
+				if (COM_CopyFile(name,tempdir))
+					error = true;
 			}
 		}
 	} while (dent != NULL);
 	closedir (dir);
 
-	return false;	// assuming no error
+	return error;
 #endif
 }
 
@@ -1015,6 +1009,11 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2005/11/01 18:11:20  sezero
+ * set the playerclass cvar default to paladin. that way, a new
+ * installation of original hexen2 shall not fail when run first
+ * time using a +map X commandline argument.
+ *
  * Revision 1.20  2005/10/29 21:43:22  sezero
  * unified cmd layer
  *
