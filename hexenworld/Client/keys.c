@@ -143,7 +143,7 @@ keyname_t keynames[] =
 qboolean CheckForCommand (void)
 {
 	char	command[128];
-	char	*cmd, *s;
+	char	*s;
 	int		i;
 
 	s = key_lines[edit_line]+1;
@@ -155,18 +155,13 @@ qboolean CheckForCommand (void)
 			command[i] = s[i];
 	command[i] = 0;
 
-	cmd = Cmd_CompleteCommand (command);
-	if (!cmd || strcmp (cmd, command))
-		cmd = Cvar_CompleteVariable (command);
-	if (!cmd  || strcmp (cmd, command) )
-		return false;		// just a chat message
-	return true;
+	return Cmd_CheckCommand (command);
 }
 
 void CompleteCommand (void)
 {
 	char	*matches[MAX_MATCHES];
-	char	*cmd = NULL, *s, stmp[256];
+	char	*s, stmp[256];
 	qboolean	editing, partial;
 	int	count = 0, i, j;
 
@@ -187,7 +182,9 @@ void CompleteCommand (void)
 	s = key_lines[edit_line]+1;
 	// complete the text only up to the cursor position:
 	// bash style. cut off the rest for now.
-	if (editing)
+	// 2005-12-15: actually no harm in trimming when not
+	// in edit mode as well
+	//if (editing)
 		s[key_linepos-1] = 0;
 
 	// skip the leading whitespace and command markers
@@ -198,32 +195,30 @@ void CompleteCommand (void)
 		s++;
 	}
 
-	// if the remainder line still has a length and does
-	// not contain spaces, check for possible matches
-	if (strlen(s) && !strstr(s," "))
-	{
-		cmd = Cmd_CompleteCommand (s);
-		if (!cmd)
-			cmd = Cvar_CompleteVariable (s);
-	}
+	// store the length of the relevant partial
+	j = strlen(s);
 
-	// if there really are candidates, list them now
-	// and complete to the first possible match
-	if (cmd)
-	{
-		count += ListCommands(s, matches, count);
-		count += ListCvars(s, matches, count);
-		count += ListAlias(s, matches, count);
+	// if the remainder line has no length or has
+	// spaces in it, don't bother
+	if (!j || strstr(s," "))
+		goto finish;
 
+	// start checking for matches, finally...
+	count += ListCommands(s, matches, count);
+	count += ListCvars(s, matches, count);
+	count += ListAlias(s, matches, count);
+
+	if (count)
+	{
 		// do not do a full auto-complete
 		// unless there is only one match
 		if (count == 1)
 		{
 			key_lines[edit_line][1] = '/';
-			strcpy (key_lines[edit_line]+2, cmd);
-			key_linepos = strlen(cmd)+2;
-		//	strcpy (key_lines[edit_line]+1, cmd);
-		//	key_linepos = strlen(cmd)+1;
+			strcpy (key_lines[edit_line]+2, matches[0]);
+			key_linepos = strlen(matches[0])+2;
+		//	strcpy (key_lines[edit_line]+1, matches[0]);
+		//	key_linepos = strlen(matches[0])+1;
 			key_lines[edit_line][key_linepos] = ' ';
 			key_linepos++;
 		}
@@ -237,7 +232,6 @@ void CompleteCommand (void)
 
 			// cycle throgh all matches and see
 			// if there is a partial completion
-			j = strlen(s);
 			while (partial)
 			{
 				for (i = 1; i < count && i < MAX_MATCHES; i++)
@@ -261,24 +255,14 @@ void CompleteCommand (void)
 			}
 		}
 
-		if (editing)
-		{
-			// put back the remainder of the original text after
-			// the latest cursor position
-			strcpy (key_lines[edit_line]+key_linepos, stmp);
-			key_lines[edit_line][key_linepos+strlen(stmp)+1] = 0;
-		}
-		else if (count == 1)
-		{
-			key_lines[edit_line][key_linepos] = 0;
-		}
+		key_lines[edit_line][key_linepos] = 0;
 	}
-	else if (editing)
+finish:
+	if (editing)
 	{
 		// put back the remainder of the original text
 		// which was lost after the trimming
 		strcpy (key_lines[edit_line]+key_linepos, stmp);
-		key_lines[edit_line][key_linepos+strlen(stmp)+1] = 0;
 	}
 }
 
@@ -291,7 +275,7 @@ Interactive line editing and console scrollback
 */
 void Key_Console (int key)
 {
-	int		i;
+	int		i, history_line_last;
 #ifdef _WIN32
 	HANDLE	th;
 	char	*clipText, *textCopied;
@@ -379,13 +363,14 @@ void Key_Console (int key)
 
 	if (key == K_UPARROW)
 	{
+		history_line_last = history_line;
 		do
 		{
 			history_line = (history_line - 1) & 31;
 		} while (history_line != edit_line
 				&& !key_lines[history_line][1]);
 		if (history_line == edit_line)
-			history_line = (edit_line+1)&31;
+			history_line = history_line_last;
 		strcpy(key_lines[edit_line], key_lines[history_line]);
 		key_linepos = strlen(key_lines[edit_line]);
 		return;
@@ -403,6 +388,7 @@ void Key_Console (int key)
 		if (history_line == edit_line)
 		{
 			key_lines[edit_line][0] = ']';
+			key_lines[edit_line][1] = 0;
 			key_linepos = 1;
 		}
 		else

@@ -59,35 +59,6 @@ char *Cvar_VariableString (char *var_name)
 
 /*
 ============
-Cvar_CompleteVariable
-============
-*/
-char *Cvar_CompleteVariable (char *partial)
-{
-	cvar_t		*cvar;
-	int			len;
-
-	len = strlen(partial);
-
-	if (!len)
-		return NULL;
-
-	// check exact match
-	for (cvar=cvar_vars ; cvar ; cvar=cvar->next)
-		if (!strcmp (partial,cvar->name))
-			return cvar->name;
-
-	// check partial match
-	for (cvar=cvar_vars ; cvar ; cvar=cvar->next)
-		if (!strncmp (partial,cvar->name, len))
-			return cvar->name;
-
-	return NULL;
-}
-
-
-/*
-============
 Cvar_Set
 ============
 */

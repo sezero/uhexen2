@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.10 2005-12-28 08:25:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.11 2005-12-28 08:37:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -533,37 +533,28 @@ qboolean Cmd_Exists (char *cmd_name)
 
 /*
 ============
-Cmd_CompleteCommand
+Cmd_CheckCommand
 ============
 */
-char *Cmd_CompleteCommand (char *partial)
+qboolean Cmd_CheckCommand (char *partial)
 {
 	cmd_function_t	*cmd;
-	int			len;
 	cmdalias_t	*a;
+	cvar_t		*var;
 
-	len = strlen(partial);
-
-	if (!len)
-		return NULL;
-
-// check for exact match
+	if (!strlen(partial))
+		return false;
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
 		if (!strcmp (partial,cmd->name))
-			return cmd->name;
+			return true;
+	for (var=cvar_vars ; var ; var=var->next)
+		if (!strcmp (partial, var->name))
+			return true;
 	for (a=cmd_alias ; a ; a=a->next)
 		if (!strcmp (partial, a->name))
-			return a->name;
+			return true;
 
-// check for partial match
-	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
-		if (!strncmp (partial,cmd->name, len))
-			return cmd->name;
-	for (a=cmd_alias ; a ; a=a->next)
-		if (!strncmp (partial, a->name, len))
-			return a->name;
-
-	return NULL;
+	return false;
 }
 
 /*
