@@ -206,7 +206,8 @@ void CompleteCommand (void)
 		}
 		else
 		{
-			// more than one match, list all of them
+			// more than one match, sort and list all of them
+			qsort (matches, count, sizeof(char *), COM_StrCompare);
 			Con_Printf("\n");
 #if 0
 			// plain listing
