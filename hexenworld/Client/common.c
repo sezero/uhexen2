@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.27 2005-12-28 20:32:09 sezero Exp $
+	$Id: common.c,v 1.28 2005-12-28 22:17:05 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -39,7 +39,9 @@ qboolean		msg_suppress_1 = 0;
 
 static void COM_InitFilesystem (void);
 static void COM_Path_f (void);
+#ifndef SERVERONLY
 static void COM_Maplist_f (void);
+#endif
 
 // look-up table of pak filenames: { numfiles, crc }
 // if a packfile directory differs from this, it is assumed to be hacked
@@ -987,7 +989,9 @@ void COM_Init (void)
 	Cvar_RegisterVariable (&oem);
 	Cmd_AddCommand ("path", COM_Path_f);
 	Cmd_AddCommand ("cmdline", COM_Cmdline_f);
+#ifndef SERVERONLY
 	Cmd_AddCommand ("maps", COM_Maplist_f);
+#endif
 
 	COM_InitFilesystem ();
 	COM_CheckRegistered ();
@@ -1244,6 +1248,7 @@ COM_Maplist_f
 Prints map filenames to the console
 ===========
 */
+#ifndef SERVERONLY
 static void COM_Maplist_f (void)
 {
 	int			i, len, run, cnt;
@@ -1374,6 +1379,7 @@ static void COM_Maplist_f (void)
 
 	free (maplist);
 }
+#endif
 
 /*
 ===========
