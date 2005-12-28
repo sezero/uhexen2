@@ -165,12 +165,16 @@ qboolean CheckForCommand (void)
 
 void CompleteCommand (void)
 {
+	char	*matches[MAX_MATCHES];
 	char	*cmd = NULL, *s, stmp[256];
-	qboolean	editing = false;
-	int	count = 0;
+	qboolean	editing, partial;
+	int	count = 0, i, j;
 
 	if (key_linepos < 2)
 		return;
+
+	editing = false;
+	partial = true;
 
 	if (strlen(key_lines[edit_line]+1) >= key_linepos)
 	{
@@ -207,14 +211,12 @@ void CompleteCommand (void)
 	// and complete to the first possible match
 	if (cmd)
 	{
-		Con_Printf("\n\n====================\n\nPossible matches :\n\n");
-		count += ListCommands(s);
-		count += ListCvars(s);
-		count += ListAlias(s);
-		Con_Printf("\n");
+		count += ListCommands(s, matches, count);
+		count += ListCvars(s, matches, count);
+		count += ListAlias(s, matches, count);
 
-		// make Steve happy and do not auto-complete
-		// unless there is only one match ;)
+		// do not do a full auto-complete
+		// unless there is only one match
 		if (count == 1)
 		{
 			key_lines[edit_line][1] = '/';
@@ -227,7 +229,36 @@ void CompleteCommand (void)
 		}
 		else
 		{
-			Con_Printf("%d matches found\n\n", count);
+			// more than one match, list all of them
+			Con_Printf("\n");
+			for (i = 0; i< count && i < MAX_MATCHES; i++)
+				Con_Printf ("%s\n", matches[i]);
+			Con_Printf("\n%d matches found\n\n", count);
+
+			// cycle throgh all matches and see
+			// if there is a partial completion
+			j = strlen(s);
+			while (partial)
+			{
+				for (i = 1; i < count && i < MAX_MATCHES; i++)
+				{
+					//if(memcmp(matches[0], matches[i], j+1))
+					if (strncmp(matches[0], matches[i], j+1))
+						partial = false;
+				}
+
+				if (partial)
+					j++;
+			}
+
+			if (j > strlen(s))	// found a partial match
+			{
+				key_lines[edit_line][1] = '/';
+				strncpy (key_lines[edit_line]+2, matches[0], j);
+				key_linepos = j+2;
+			//	strncpy (key_lines[edit_line]+1, matches[0], j);
+			//	key_linepos = j+1;
+			}
 		}
 
 		if (editing)

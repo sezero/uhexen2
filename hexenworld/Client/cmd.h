@@ -103,10 +103,12 @@ void Cmd_StuffCmds_f (void);
 // Executes the commandline parameters with a leading "+" as script
 // statements.
 
-int ListCommands (char *prefix);
-int ListCvars (char *prefix);
-int ListAlias (char *prefix);
+int ListCommands (char *prefix, char **buf, int pos);
+int ListCvars (char *prefix, char **buf, int pos);
+int ListAlias (char *prefix, char **buf, int pos);
 // These three listers are either used privately in the respective
 // list commands, or by keys.c in console tab-completion. They
 // return the number of matches.
+#define MAX_MATCHES	128
+// maximum number of matches for console tab completion
 

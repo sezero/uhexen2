@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.13 2005-11-05 20:18:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.14 2005-12-28 08:25:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -653,7 +653,7 @@ Cmd_List_f
 Lists the commands to the console
 ===============
 */
-int ListCommands (char *prefix)
+int ListCommands (char *prefix, char **buf, int pos)
 {
 	cmd_function_t	*cmd;
 	int preLen = strlen(prefix);
@@ -663,7 +663,14 @@ int ListCommands (char *prefix)
 	{
 		if(!Q_strncasecmp(prefix,cmd->name,preLen))
 		{
-			Con_Printf (" %s\n", cmd->name);
+			if (buf)
+			{
+				if (pos+i < MAX_MATCHES)
+					buf[pos+i]=cmd->name;
+			}
+			else
+				Con_Printf (" %s\n", cmd->name);
+
 			i++;
 		}
 	}
@@ -672,7 +679,7 @@ int ListCommands (char *prefix)
 
 static void Cmd_List_f(void)
 {
-	ListCommands (Cmd_Argv(1));
+	ListCommands (Cmd_Argv(1), NULL, 0);
 }
 
 /*
@@ -682,7 +689,7 @@ Cmd_ListCvar_f
 Lists the cvars to the console
 ===============
 */
-int ListCvars (char *prefix)
+int ListCvars (char *prefix, char **buf, int pos)
 {
 	cvar_t		*var;
 	int preLen = strlen(prefix);
@@ -692,7 +699,14 @@ int ListCvars (char *prefix)
 	{
 		if(!Q_strncasecmp(prefix,var->name,preLen))
 		{
-			Con_Printf (" %s\n", var->name);
+			if (buf)
+			{
+				if (pos+i < MAX_MATCHES)
+					buf[pos+i]=var->name;
+			}
+			else
+				Con_Printf (" %s\n", var->name);
+
 			i++;
 		}
 	}
@@ -701,7 +715,7 @@ int ListCvars (char *prefix)
 
 static void Cmd_ListCvar_f(void)
 {
-	ListCvars (Cmd_Argv(1));
+	ListCvars (Cmd_Argv(1), NULL, 0);
 }
 
 /*
@@ -711,7 +725,7 @@ Cmd_ListAlias_f
 Lists the cvars to the console
 ===============
 */
-int ListAlias (char *prefix)
+int ListAlias (char *prefix, char **buf, int pos)
 {
 	cmdalias_t	*a;
 	int preLen = strlen(prefix);
@@ -721,7 +735,14 @@ int ListAlias (char *prefix)
 	{
 		if(!Q_strncasecmp(prefix,a->name,preLen))
 		{
-			Con_Printf (" %s\n", a->name);
+			if (buf)
+			{
+				if (pos+i < MAX_MATCHES)
+					buf[pos+i]=a->name;
+			}
+			else
+				Con_Printf (" %s\n", a->name);
+
 			i++;
 		}
 	}
@@ -730,7 +751,7 @@ int ListAlias (char *prefix)
 
 static void Cmd_ListAlias_f(void)
 {
-	ListAlias (Cmd_Argv(1));
+	ListAlias (Cmd_Argv(1), NULL, 0);
 }
 
 static void Cmd_WriteCommands_f (void)
@@ -787,6 +808,11 @@ void Cmd_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/11/05 20:18:02  sezero
+ * fixed an off-by-one error in deciding whether we are in inline-edit mode.
+ * made it to report the match count if there are more than one matches.
+ * cancelled auto-complete to the first possible match unless there is only one.
+ *
  * Revision 1.12  2005/10/30 13:20:30  sezero
  * added list commands for cvars and aliases
  *
