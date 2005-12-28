@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.30 2005-12-28 20:00:15 sezero Exp $
+	$Id: common.c,v 1.31 2005-12-28 20:32:08 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1364,7 +1364,7 @@ static void COM_Maplist_f (void)
 
 	// sort the list
 	qsort (maplist, cnt, sizeof(char *), COM_StrCompare);
-	Con_Printf ("Found %d maps:\n\n");
+	Con_Printf ("Found %d maps:\n\n", cnt);
 	Con_ShowList (cnt, (const char**)maplist);
 	Con_Printf ("\n");
 
@@ -2096,6 +2096,12 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2005/12/28 20:00:15  sezero
+ * added "maps" command to list all the maps in the searchpath.
+ * from Steven. shortened and modified by O.S. to use fnmatch
+ * instead of scandir and to make win32 to list maps not residing
+ * in a pakfile.
+ *
  * Revision 1.29  2005/12/28 14:20:23  sezero
  * made COM_CopyFile return int and added ferror() calls after every fread()
  * and fwrite() calls, so that CL_CopyFiles can behave correctly under unix.

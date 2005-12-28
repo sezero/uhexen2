@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.26 2005-12-28 20:00:17 sezero Exp $
+	$Id: common.c,v 1.27 2005-12-28 20:32:09 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1364,7 +1364,7 @@ static void COM_Maplist_f (void)
 
 	// sort the list
 	qsort (maplist, cnt, sizeof(char *), COM_StrCompare);
-	Con_Printf ("Found %d maps:\n\n");
+	Con_Printf ("Found %d maps:\n\n", cnt);
 	Con_ShowList (cnt, (const char**)maplist);
 	Con_Printf ("\n");
 
