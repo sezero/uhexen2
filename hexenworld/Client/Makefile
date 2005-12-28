@@ -37,6 +37,10 @@
 # OPT_EXTRA	yes  =  Some extra optimization flags will be added (default)
 #		no   =	No extra optimizations will be made
 #
+# USE_X86_ASM	yes  =  Use x86 assembly on ia32 machines which is faster.
+#			Disable this manually for any other cpu.
+#		no   =	Do not use intel assembly even on ix86.
+#
 # To build static binaries: You need to compile SDL_mixer with minimum features
 # required ONLY for MIDI. Besides, you may need to change some hard-coded paths
 # and X linkage flags (see the LDSTATIC setting)
@@ -59,9 +63,12 @@ USE_ALSA=yes
 USE_SDLCD=no
 OPT_EXTRA=yes
 LINK_GL_LIBS=no
+USE_X86_ASM=yes
 
 # build environment sanity checks
+ifeq "$(USE_X86_ASM)" "yes"
 CHECK_NASM=1
+endif
 CHECK_SDL=1
 CHECK_WINDRES=1
 
@@ -93,6 +100,10 @@ ifeq "$(OPT_EXTRA)" "yes"
 # Note: re-check these flags for non-ia32 machines
 CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
 CFLAGS := $(CFLAGS) -fomit-frame-pointer
+endif
+
+ifeq "$(USE_X86_ASM)" "yes"
+CFLAGS := $(CFLAGS) -DUSE_INTEL_ASM
 endif
 endif
 
@@ -289,6 +300,7 @@ COMMONOBJS = cl_cam.o \
 	$(SYSOBJ_SYS)
 
 # Intel asm objects
+ifeq "$(USE_X86_ASM)" "yes"
 COMMON_ASM = math.o \
 	snd_mixa.o \
 	sys_wina.o
@@ -316,6 +328,12 @@ SOFT_ASM = d_draw.o \
 	surf8.o \
 	surf16.o
 
+
+else
+
+SOFT_ASM = 
+COMMON_ASM = 
+endif
 
 # Targets
 .PHONY: help clean cleaner

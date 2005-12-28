@@ -81,7 +81,7 @@ void Sys_SendKeyEvents (void);
    be to get rid of all x86 specific stuff.
 */
 
-#if ( defined(_M_IX86) || defined(__i386__) ) && !defined(SERVERONLY) && !defined(WINDED)
+#if ( defined(_M_IX86) || defined(__i386__) ) && defined(USE_INTEL_ASM) && !defined(SERVERONLY) && !defined(WINDED)
 
 #	define	id386		1
 #	define	UNALIGNED_OK	1	// set to 0 if unaligned accesses are not supported
