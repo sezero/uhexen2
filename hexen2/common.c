@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.29 2005-12-28 14:20:23 sezero Exp $
+	$Id: common.c,v 1.30 2005-12-28 20:00:15 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -14,6 +14,9 @@
 #ifdef _WIN32
 #include <windows.h>
 #include <ctype.h>
+#else
+#include <dirent.h>
+#include <fnmatch.h>
 #endif
 
 #define NUM_SAFE_ARGVS	6
@@ -36,6 +39,7 @@ qboolean		msg_suppress_1 = 0;
 
 static void COM_InitFilesystem (void);
 static void COM_Path_f (void);
+static void COM_Maplist_f (void);
 
 // look-up table of pak filenames: { numfiles, crc }
 // if a packfile directory differs from this, it is assumed to be hacked
@@ -983,6 +987,7 @@ void COM_Init (void)
 	Cvar_RegisterVariable (&oem);
 	Cmd_AddCommand ("path", COM_Path_f);
 	Cmd_AddCommand ("cmdline", COM_Cmdline_f);
+	Cmd_AddCommand ("maps", COM_Maplist_f);
 
 	COM_InitFilesystem ();
 	COM_CheckRegistered ();
@@ -1230,6 +1235,144 @@ errorout:
 	fclose (in);
 	fclose (out);
 	return err;
+}
+
+/*
+===========
+COM_Maplist_f
+
+Prints map filenames to the console
+===========
+*/
+static void COM_Maplist_f (void)
+{
+	int			i, len, run, cnt;
+	pack_t		*pak;
+	searchpath_t	*search;
+	char		**maplist = NULL, mappath[MAX_OSPATH];
+#ifdef _WIN32
+	HANDLE	handle;
+	WIN32_FIND_DATA	filedata;
+	BOOL	retval;
+#endif
+#ifdef PLATFORM_UNIX
+	DIR	*mapdir;
+	struct dirent	*namelist;
+#endif
+	// do two runs - first count the number of maps
+	// then collect their names into maplist
+	for (run = 1 ; run <= 2; run ++)
+	{
+		cnt = 0;
+
+		// search through the path, one element at a time
+		for (search = com_searchpaths; search; search = search->next)
+		{
+			// either "search->filename" or "search->pak" is defined
+			if (search->pack)
+			{
+				pak = search->pack;
+
+				for (i = 0; i < pak->numfiles; i++)
+				{
+					if (strncmp ("maps/", pak->files[i].name, 5) == 0  && 
+					    strstr(pak->files[i].name, ".bsp"))
+					{
+						// S.A.: remove those b_**** maps
+						// side effect: real maps named b_**** will be ignored :<
+						// O.S.: this is an issue with quake1 not hexen2.
+						// disabling this check.
+					//	if (strncmp ("b_", pak->files[i].name + 5, 2) == 0)
+					//		continue;
+
+						if (run == 2)
+						{
+							len = strlen (pak->files[i].name + 5) - 4 + 1;
+							// - ".bsp" (-4) +  "\0" (+1)
+
+							maplist[cnt] = malloc (len);
+							strncpy ((char *)maplist[cnt] , pak->files[i].name + 5, len);
+							// null terminate new string
+							maplist[cnt][len - 1] = 0;
+						}
+						cnt++;
+					}
+				}
+			}
+			else
+			{	// element is a filename, look for maps therein using scandir
+#ifdef PLATFORM_UNIX
+				snprintf (mappath, MAX_OSPATH, search->filename);
+				strcat (mappath, "/maps");
+				mapdir = opendir (mappath);
+				if (!mapdir)
+					continue;
+
+				do {
+					namelist = readdir(mapdir);
+					if (namelist != NULL)
+					{
+						if (!fnmatch ("*.bsp", namelist->d_name, FNM_PATHNAME))
+						{
+							if (run == 2)
+							{
+								// add to our maplist (the same as above)
+								len = strlen (namelist->d_name) - 4 + 1;
+								maplist[cnt] = malloc (len);
+								strncpy (maplist[cnt], namelist->d_name, len);
+								maplist[cnt][len - 1] = 0;
+							}
+							cnt++;
+						}
+					}
+				} while (namelist != NULL);
+
+				closedir (mapdir);
+#endif
+#ifdef _WIN32
+				snprintf (mappath, MAX_OSPATH, "%s/maps/*.bsp", search->filename);
+				handle = FindFirstFile(mappath, &filedata);
+				retval = TRUE;
+
+				while (handle != INVALID_HANDLE_VALUE && retval)
+				{
+					if (run == 2)
+					{
+						// add to our maplist (the same as above)
+						len = strlen (filedata.cFileName) - 4 + 1;
+						maplist[cnt] = malloc (len);
+						strncpy (maplist[cnt], filedata.cFileName, len);
+						maplist[cnt][len - 1] = 0;
+					}
+					cnt++;
+					retval = FindNextFile(handle,&filedata);
+				}
+
+				if (handle != INVALID_HANDLE_VALUE)
+					FindClose(handle);
+#endif
+			}
+		}
+
+		if (run == 1)
+		{
+			// after first run, we know how many maps we have
+			// should I use malloc or something else
+			maplist = malloc(cnt * sizeof (char *));
+		}
+	}
+
+	// sort the list
+	qsort (maplist, cnt, sizeof(char *), COM_StrCompare);
+	Con_Printf ("Found %d maps:\n\n");
+	Con_ShowList (cnt, (const char**)maplist);
+	Con_Printf ("\n");
+
+	// Free memory
+	for (i = 0; i < cnt; i++)
+		free (maplist[i]);
+
+	free (maplist);
 }
 
 /*
@@ -1953,6 +2096,13 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2005/12/28 14:20:23  sezero
+ * made COM_CopyFile return int and added ferror() calls after every fread()
+ * and fwrite() calls, so that CL_CopyFiles can behave correctly under unix.
+ * made SaveGamestate return qboolean, replaced the silly "ERROR: couldn't
+ * open" message by goto retry_message calls. made Host_Savegame_f to return
+ * immediately upon SaveGamestate failure.
+ *
  * Revision 1.28  2005/12/28 12:07:02  sezero
  * added COM_StrCompare as a quick'n'dirty string comparison function for use with qsort
  *
