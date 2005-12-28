@@ -764,6 +764,8 @@ Called by the system between frames for both key up and key down events
 Should NOT be called during an interrupt!
 ===================
 */
+extern int			m_state;
+#define	m_none	0		// enumerated type from menu.c
 void Key_Event (int key, qboolean down)
 {
 	char	*kb;
@@ -797,6 +799,7 @@ void Key_Event (int key, qboolean down)
 		// ignore all autorepeats unless chatting or in console
 		if (key_dest != key_console &&
 		    key_dest != key_message &&
+		    !(con_forcedup && m_state == 0) && /* hack to allow autorepeat in forcedup console */
 		    key_repeats[key] > 1)
 			return;
 
