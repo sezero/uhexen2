@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.27 2005-12-04 11:20:57 sezero Exp $
+	$Id: common.c,v 1.28 2005-12-28 12:07:02 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -739,6 +739,13 @@ void COM_DefaultExtension (char *path, char *extension)
 	}
 
 	strcat (path, extension);
+}
+
+
+// quick'n'dirty string comparison function for use with qsort
+int COM_StrCompare (const void *arg1, const void *arg2)
+{
+	return Q_strcasecmp ( *(char **) arg1, *(char **) arg2);
 }
 
 //============================================================================
@@ -1936,6 +1943,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2005/12/04 11:20:57  sezero
+ * init stuff cleanup
+ *
  * Revision 1.26  2005/12/04 11:14:38  sezero
  * the big vsnprintf patch
  *

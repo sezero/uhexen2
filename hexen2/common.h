@@ -201,6 +201,9 @@ void COM_DefaultExtension (char *path, char *extension);
 char	*va(char *format, ...);
 // does a varargs printf into a temp buffer
 
+int COM_StrCompare (const void *arg1, const void *arg2);
+// quick'n'dirty string comparison function for use with qsort
+
 
 //============================================================================
 
