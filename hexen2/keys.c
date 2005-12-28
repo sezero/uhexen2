@@ -367,7 +367,7 @@ void Key_Console (int key)
 
 	if (key == K_HOME)
 	{
-		if (shift_down)
+		if (keydown[K_CTRL])
 			con_backscroll = con_totallines - (vid.height>>3) - 1;
 		else
 			key_linepos = 1;
@@ -377,7 +377,7 @@ void Key_Console (int key)
 
 	if (key == K_END)
 	{
-		if (shift_down)
+		if (keydown[K_CTRL])
 			con_backscroll = 0;
 		else
 			key_linepos = strlen(key_lines[edit_line]);

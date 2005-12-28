@@ -398,7 +398,7 @@ void Key_Console (int key)
 
 	if (key == K_HOME)
 	{
-		if (shift_down)
+		if (keydown[K_CTRL])
 			con->display = con->current - con_totallines + 10;
 		else
 			key_linepos = 1;
@@ -408,7 +408,7 @@ void Key_Console (int key)
 
 	if (key == K_END)
 	{
-		if (shift_down)
+		if (keydown[K_CTRL])
 			con->display = con->current;
 		else
 			key_linepos = strlen(key_lines[edit_line]);
