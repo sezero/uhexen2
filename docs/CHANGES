@@ -1,5 +1,56 @@
 ChangeLog:
 
+2005-12-29 (CVS):
+    * small fixes/clean-ups after the commits from 2005-12-28
+
+2005-12-28 (CVS):
+    * added a USE_INTEL_ASM build flag which joins in deciding the value
+      of id386 and, apparently, intel assembly usage.
+      without the -DUSE_INTEL_ASM flag, the opengl version builds and runs
+      just fine, but the software version still needs fixing.
+    * the autorepeats patch I applied used does work all times but with this
+      exception: when not connected (either to a remote or through loop, aka
+      single player), the menu system and keys code does specifically not set
+      key_console: start hexen2 and press escape, you'll have the full-screen
+      console, but "it doesn't count" for the game, key_dest != key_console .
+      I am not sure about the reason for this yet, so here is a hack for auto
+      repeats to work in such cases, as well. any better solutions?
+    * bound the scroll-to-top/scroll-to-bottom keys to ctrl-home/ctrl-end
+      instead of shift-home/shitf-end. the latter used to work only in
+      fullscreen console, not in the in-game console.
+    * implemented partial tab completion: added char **buf, and int pos
+      arguments to the command lister functions. they will no longer print the
+      matches unless the buf argument is NULL. this way, command completion
+      will collect all the matches and print them at its will. this also allowed
+      implementing partial tab completion: typing men and pressing tab will no
+      longer stupidly stay at men, but will partially auto complete to menu_,
+      now.
+    * cleaned up the console tab completion:
+      - removed duplicate and unnecessary code, hopefully more readable now.
+      bug fixes:
+      - fixed edit line not resetting to emptiness when returning from history
+        by the down-arrow key
+      - fixed earliest history being displayed as an empty line when using the
+        up-arrow key (from QIP)
+      - fixed null-termination issues in partial completion where after first
+        displaying the history command lines (up key) and then going back to the
+        edit line (down key) the latest history got appended to the completion
+        (this bug was only visable after fixing the first mentioned bug above)
+    * added Steven's ShowList as a console function. prints a given list to the
+      console with a columnized formatting. ported from Tyrann's tyrquake tree.
+    * columnized the output from command completion. from Steven
+    * added COM_StrCompare as a quick'n'dirty string comparison function for
+      use with qsort
+    * sort the tab-completions (COM_StrCompare) before listing them
+    * made COM_CopyFile return int and added ferror() calls after every fread()
+      and fwrite() calls, so that CL_CopyFiles can behave correctly under unix.
+      made SaveGamestate return qboolean, replaced the silly "ERROR: couldn't
+      open" message by goto retry_message calls. made Host_Savegame_f to return
+      immediately upon SaveGamestate failure.
+    * added "maps" command to list all the maps in the searchpath. from Steven.
+      shortened and modified by O.S. to use fnmatch instead of scandir and to
+      make win32 to list maps not residing in a pakfile.
+
 2005-12-15 (CVS):
     * updated the documentation
 
