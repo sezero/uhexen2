@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.32 2005-12-28 22:17:04 sezero Exp $
+	$Id: common.c,v 1.33 2005-12-29 07:12:01 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1227,15 +1227,14 @@ int COM_CopyFile (char *netpath, char *cachepath)
 		fread (buf, 1, count, in);
 		err = ferror(in);
 		if (err)
-			goto errorout;
+			break;
 		fwrite (buf, 1, count, out);
 		err = ferror(out);
 		if (err)
-			goto errorout;
+			break;
 		remaining -= count;
 	}
 
-errorout:
 	fclose (in);
 	fclose (out);
 	return err;
@@ -2102,6 +2101,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2005/12/28 22:17:04  sezero
+ * fixed hexenworld server compilation
+ *
  * Revision 1.31  2005/12/28 20:32:08  sezero
  * fixed a typo in the maplist function
  *
