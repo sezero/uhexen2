@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.49 2005-12-11 11:56:33 sezero Exp $
+	$Id: gl_draw.c,v 1.50 2005-12-30 17:12:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1524,7 +1524,8 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 	if (scaled_height > gl_max_size)
 		scaled_height = gl_max_size;
 
-	// 3dfx has some aspect ratio constraints. . . can't go beyond 8 to 1 or below 1 to 8.
+	// 3dfx has some aspect ratio constraints.
+	// can't go beyond 8 to 1 or below 1 to 8.
 	if( is_3dfx )
 	{
 		if( scaled_width * 8 < scaled_height )
@@ -1541,6 +1542,9 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 
 	texels += scaled_width * scaled_height;
 
+	mark = Hunk_LowMark();
+	scaled = Hunk_AllocName(scaled_width * scaled_height * sizeof(unsigned int), "texbuf_upload32");
+
 	if (scaled_width == width && scaled_height == height)
 	{
 		if (!mipmap)
@@ -1548,13 +1552,10 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 			glTexImage2D_fp (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 			goto done;
 		}
-		//memcpy (scaled, data, width*height*4);
-		scaled = data;
+		memcpy (scaled, data, width * height * sizeof(unsigned int));
 	}
 	else
 	{
-		mark = Hunk_LowMark();
-		scaled = Hunk_AllocName(scaled_width * scaled_height * sizeof(unsigned), "texbuf_upload32");
 		GL_ResampleTexture (data, width, height, scaled, scaled_width, scaled_height);
 	}
 
@@ -1590,34 +1591,15 @@ done: ;
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 	}
 
-	if (mark)
-		Hunk_FreeToLowMark(mark);
+	Hunk_FreeToLowMark(mark);
 }
 
 void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite) 
 {
-	int			i, s;
-	qboolean		noalpha;
 	int			samples;
 	unsigned char 		*scaled;
 	int			mark = 0;
 	int			scaled_width, scaled_height;
-
-	s = width*height;
-	// if there are no transparent pixels, make it a 3 component
-	// texture even if it was specified as otherwise
-	if (alpha)
-	{
-		noalpha = true;
-		for (i=0 ; i<s ; i++)
-		{
-			if (data[i] == 255)
-				noalpha = false;
-		}
-
-		if (alpha && noalpha)
-			alpha = false;
-	}
 
 	for (scaled_width = 1 ; scaled_width < width ; scaled_width<<=1)
 		;
@@ -1648,7 +1630,8 @@ void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboole
 	if (scaled_height > gl_max_size)
 		scaled_height = gl_max_size;
 
-	// 3dfx has some aspect ratio constraints. . . can't go beyond 8 to 1 or below 1 to 8.
+	// 3dfx has some aspect ratio constraints.
+	// can't go beyond 8 to 1 or below 1 to 8.
 	if( is_3dfx )
 	{
 		if( scaled_width * 8 < scaled_height )
@@ -1665,6 +1648,9 @@ void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboole
 
 	texels += scaled_width * scaled_height;
 
+	mark = Hunk_LowMark();
+	scaled = Hunk_AllocName(scaled_width * scaled_height, "texbuf_upload8pal");
+
 	if (scaled_width == width && scaled_height == height)
 	{
 		if (!mipmap)
@@ -1672,13 +1658,10 @@ void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboole
 			glTexImage2D_fp (GL_TEXTURE_2D, 0, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX , GL_UNSIGNED_BYTE, data);
 			goto done;
 		}
-		//memcpy (scaled, data, width*height);
-		scaled = data;
+		memcpy (scaled, data, width*height);
 	}
 	else
 	{
-		mark = Hunk_LowMark();
-		scaled = Hunk_AllocName(scaled_width * scaled_height * sizeof(unsigned), "texbuf_upload8ext");
 		GL_Resample8BitTexture (data, width, height, scaled, scaled_width, scaled_height);
 	}
 
@@ -1714,8 +1697,7 @@ done: ;
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 	}
 
-	if (mark)
-		Hunk_FreeToLowMark(mark);
+	Hunk_FreeToLowMark(mark);
 }
 
 
@@ -1894,9 +1876,8 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 					width  != glt->width  ||
 					height != glt->height ||
 					mipmap != glt->mipmap )
-				{	// Not the same texture. dont die,
-					// delete and rebind to new image
-					Con_Printf ("GL_LoadTexture: reloading tex due to cache mismatch\n");
+				{	// not the same, delete and rebind to new image
+					Con_Printf ("Texture cache mismatch: %d, %s, reloading\n", glt->texnum, identifier);
 #				if !defined (H2W)
 					if (cls.state != ca_dedicated)
 #				endif
