@@ -2,12 +2,15 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.6 2005-09-19 19:50:10 sezero Exp $
+	$Id: zone.c,v 1.7 2006-01-06 12:41:42 sezero Exp $
 */
 
 #include "quakedef.h"
 
 #define	DYNAMIC_SIZE	0x40000
+#define DYNAMIC_SIZEMAX	0x100000
+#define	DYNAMIC_SIZE_KB		(DYNAMIC_SIZE / 1024)
+#define DYNAMIC_SIZEMAX_KB	(DYNAMIC_SIZEMAX / 1024)
 #define	ZONEID		0x1d4a11
 #define	HUNK_SENTINAL	0x1df001ed
 #define MINFRAGMENT	64
@@ -1105,22 +1108,20 @@ void Memory_Init (void *buf, int size)
 	
 	Cache_Init ();
 	p = COM_CheckParm ("-zone");
-	if (p) {
-		if (p < com_argc-1) {
-			zonesize = atoi (com_argv[p+1]) * 1024;
-			if (zonesize < DYNAMIC_SIZE) {
-				// no less than 256 KB default
-				Sys_Printf ("Requested zone size (%i Kb) too little.\n", zonesize/1024);
-				Sys_Printf ("Going with the default 256 KB size.\n");
-				zonesize = DYNAMIC_SIZE; // 256 Kb
-			} else if (zonesize > 1024*1024) {
-				// no bigger than 1 MB
-				Sys_Printf ("Requested zone size (%i Kb) too large.\n", zonesize/1024);
-				Sys_Printf ("Will try going with a 1 MB size.\n");
-				zonesize = 1024*1024;	// 4*DYNAMIC_SIZE
-			}
-		} else {
-			Sys_Printf ("Memory_Init: No size specified after -zone. Ignoring.\n");
+	if (p && p < com_argc-1)
+	{
+		zonesize = atoi (com_argv[p+1]) * 1024;
+		if ((zonesize < DYNAMIC_SIZE) && !(COM_CheckParm ("-forcemem")))
+		{
+			Sys_Printf ("Requested zone size (%d Kb) too little, using the default\n", zonesize/1024);
+			Sys_Printf ("%d Kb size.\nIf you are sure, use the -forcemem switch\n", DYNAMIC_SIZE_KB);
+			zonesize = DYNAMIC_SIZE; // 256 Kb
+		}
+		else if ((zonesize > DYNAMIC_SIZEMAX) && !(COM_CheckParm ("-forcemem")))
+		{
+			Sys_Printf ("Requested zone size (%d Kb) too large, using the default\n", zonesize/1024);
+			Sys_Printf ("%d Kb size. If you are sure, use the -forcemem switch\n", DYNAMIC_SIZEMAX_KB);
+			zonesize = DYNAMIC_SIZEMAX;
 		}
 	}
 	mainzone = Hunk_AllocName ( zonesize, "zone" );

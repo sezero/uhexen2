@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.38 2006-01-06 12:15:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.39 2006-01-06 12:41:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -19,12 +19,17 @@
 //#include "SDL.h"
 #include "SDL_version.h"
 
+
 #ifdef ASSUMED_LITTLE_ENDIAN
 #warning "Unable to determine CPU endianess. Defaulting to little endian"
 #endif
-#ifdef GUESSED_SUNOS_ENDIANNESS
-#warning "Made assumptions for undetermined SUNOS CPU endianess"
-#endif
+
+// heapsize: minimum 16mb, standart 32 mb, max is 96 mb.
+// -heapsize argument will abide by these min/max settings
+// unless the -forcemem argument is used
+#define MIN_MEM_ALLOC	0x1000000
+#define STD_MEM_ALLOC	0x2000000
+#define MAX_MEM_ALLOC	0x6000000
 
 #define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error
 					// before exiting
@@ -413,30 +418,31 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
-// take the greater of all the available memory or half the total memory,
-// but at least 8 Mb and no more than 16 Mb, unless they explicitly
-// request otherwise - now 32 Mb minimum (S.A)
-	parms.memsize = 32*1024*1024;
+	parms.memsize = STD_MEM_ALLOC;
 
-	if (((t = COM_CheckParm ("-heapsize")) != 0) && (t + 1 < com_argc))
+	t = COM_CheckParm ("-heapsize");
+	if (t && t < com_argc-1)
 	{
 		parms.memsize = atoi (com_argv[t + 1]) * 1024;
 
-		if (parms.memsize > 96*1024*1024) { // no bigger than 96 MB
-			Sys_Printf ("Requested memory (%d Mb) too large.\n", parms.memsize/(1024*1024));
-			Sys_Printf ("Will try going with a saner 96 Mb..\n");
-			parms.memsize = 96*1024*1024;
-		} else if (parms.memsize < 8*1024*1024) { // no less than 8 MB
-			Sys_Printf ("Requested memory (%d Mb) too little.\n", parms.memsize/(1024*1024));
-			Sys_Printf ("Will try going with a humble 8 Mb..\n");
-			parms.memsize = 8*1024*1024;
+		if ((parms.memsize > MAX_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
+		{
+			Sys_Printf ("Requested memory (%d Mb) too large, using the default\n", parms.memsize/(1024*1024));
+			Sys_Printf ("maximum. If you are sure, use the -forcemem switch\n");
+			parms.memsize = MAX_MEM_ALLOC;
+		}
+		else if ((parms.memsize < MIN_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
+		{
+			Sys_Printf ("Requested memory (%d Mb) too little, using the default\n", parms.memsize/(1024*1024));
+			Sys_Printf ("minimum. If you are sure, use the -forcemem switch\n");
+			parms.memsize = MIN_MEM_ALLOC;
 		}
 	}
 
 	parms.membase = malloc (parms.memsize);
 
 	if (!parms.membase)
-		Sys_Error ("Not enough memory free; check disk space\n");
+		Sys_Error ("Insufficient memory.\n");
 
 	Sys_Init ();
 
@@ -462,6 +468,16 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.38  2006/01/06 12:15:02  sezero
+ * added a simplified findfirst/findnext implementation: When given a
+ * directory and a wildcard match pattern, they will find/report the
+ * matches one after other. Unix implementation uses readdir()/fnmatch(),
+ * win32 uses FindFirstFile native functions.
+ * Sys_FindFirstFile and Sys_FindNextFile return filenames only, not a
+ * dirent struct, therefore there is no attribute matching. this is
+ * enough for what we presently need in this engine. may be improved in
+ * future.
+ *
  * Revision 1.37  2005/12/04 11:14:38  sezero
  * the big vsnprintf patch
  *

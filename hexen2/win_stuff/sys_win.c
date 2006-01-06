@@ -8,26 +8,21 @@
 #include <io.h>
 #include "conproc.h"
 
+
 //#define CRC_A 59461 // "Who's Ridin' With Chaos?"
 //#define CRC_B 54866 // "Santa needs a new sled!"
 
-#ifdef GLQUAKE
-	#define MINIMUM_WIN_MEMORY		0x1000000
-	#define MAXIMUM_WIN_MEMORY		0x2000000
-#else
-	#define MINIMUM_WIN_MEMORY		0x0C00000
-	#define MAXIMUM_WIN_MEMORY		0x2000000
-#endif
+// heapsize: minimum 16mb, standart 32 mb, max is 96 mb.
+// -heapsize argument will abide by these min/max settings
+// unless the -forcemem argument is used
+#define MIN_MEM_ALLOC	0x1000000
+#define STD_MEM_ALLOC	0x2000000
+#define MAX_MEM_ALLOC	0x6000000
 
 #define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error running
 										//  dedicated before exiting
 #define PAUSE_SLEEP		50				// sleep time on pause or minimization
 #define NOT_FOCUS_SLEEP	20				// sleep time when not focus
-
-#ifdef GUESSED_WIN32_ENDIANNESS
-// not that it matters but to remember what I did
-#warning "CPU endianess for Win32 assumed to be little endian"
-#endif
 
 qboolean	ActiveApp, Minimized;
 qboolean	Win95, WinNT;
@@ -612,31 +607,36 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 #endif
 
 // take the greater of all the available memory or half the total memory,
-// but at least 8 Mb and no more than 16 Mb, unless they explicitly
+// but at least 16 Mb and no more than 32 Mb, unless they explicitly
 // request otherwise
 	parms.memsize = lpBuffer.dwAvailPhys;
 
-	if (parms.memsize < MINIMUM_WIN_MEMORY)
-		parms.memsize = MINIMUM_WIN_MEMORY;
+	if (parms.memsize < MIN_MEM_ALLOC)
+		parms.memsize = MIN_MEM_ALLOC;
 
 	if (parms.memsize < (lpBuffer.dwTotalPhys >> 1))
 		parms.memsize = lpBuffer.dwTotalPhys >> 1;
 
-	if (parms.memsize > MAXIMUM_WIN_MEMORY)
-		parms.memsize = MAXIMUM_WIN_MEMORY;
+	if (parms.memsize > STD_MEM_ALLOC)
+		parms.memsize = STD_MEM_ALLOC;
 
-	if (COM_CheckParm ("-heapsize"))
+	if (isDedicated)
+		parms.memsize = MIN_MEM_ALLOC;
+
+	t = COM_CheckParm ("-heapsize");
+	if (t && t < com_argc-1)
 	{
-		t = COM_CheckParm("-heapsize") + 1;
-
-		if (t < com_argc)
-			parms.memsize = atoi (com_argv[t]) * 1024;
+		parms.memsize = atoi (com_argv[t + 1]) * 1024;
+		if ((parms.memsize > MAX_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
+			parms.memsize = MAX_MEM_ALLOC;
+		else if ((parms.memsize < MIN_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
+			parms.memsize = MIN_MEM_ALLOC;
 	}
 
 	parms.membase = malloc (parms.memsize);
 
 	if (!parms.membase)
-		Sys_Error ("Not enough memory free; check disk space\n");
+		Sys_Error ("Insufficient memory.\n");
 
 	if(COM_CheckParm("-nopagein") == 0)
 	{
@@ -733,6 +733,16 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2006/01/06 12:15:02  sezero
+ * added a simplified findfirst/findnext implementation: When given a
+ * directory and a wildcard match pattern, they will find/report the
+ * matches one after other. Unix implementation uses readdir()/fnmatch(),
+ * win32 uses FindFirstFile native functions.
+ * Sys_FindFirstFile and Sys_FindNextFile return filenames only, not a
+ * dirent struct, therefore there is no attribute matching. this is
+ * enough for what we presently need in this engine. may be improved in
+ * future.
+ *
  * Revision 1.25  2005/12/11 12:00:59  sezero
  * win32 wheelmouse cleanup
  *

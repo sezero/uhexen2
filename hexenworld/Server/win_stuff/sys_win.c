@@ -6,6 +6,14 @@
 #include <io.h>
 #include <conio.h>
 
+
+// heapsize: minimum 8 mb, standart 16 mb, max is 32 mb.
+// -heapsize argument will abide by these min/max settings
+// unless the -forcemem argument is used
+#define MIN_MEM_ALLOC	0x0800000
+#define STD_MEM_ALLOC	0x1000000
+#define MAX_MEM_ALLOC	0x2000000
+
 cvar_t	sys_nostdout = {"sys_nostdout","0"};
 
 /*
@@ -175,15 +183,25 @@ int main (int argc, char **argv)
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
-	parms.memsize = 16*1024*1024;
+	parms.memsize = STD_MEM_ALLOC;
 
-	if ((t = COM_CheckParm ("-heapsize")) != 0 &&
-		t + 1 < com_argc)
+	t = COM_CheckParm ("-heapsize");
+	if (t && t < com_argc-1)
+	{
 		parms.memsize = atoi (com_argv[t + 1]) * 1024;
-
-	if ((t = COM_CheckParm ("-mem")) != 0 &&
-		t + 1 < com_argc)
-		parms.memsize = atoi (com_argv[t + 1]) * 1024 * 1024;
+		if ((parms.memsize > MAX_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
+		{
+			Sys_Printf ("Requested memory (%d Mb) too large, using the default\n", parms.memsize/(1024*1024));
+			Sys_Printf ("maximum. If you are sure, use the -forcemem switch\n");
+			parms.memsize = MAX_MEM_ALLOC;
+		}
+		else if ((parms.memsize < MIN_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
+		{
+			Sys_Printf ("Requested memory (%d Mb) too little, using the default\n", parms.memsize/(1024*1024));
+			Sys_Printf ("minimum. If you are sure, use the -forcemem switch\n");
+			parms.memsize = MIN_MEM_ALLOC;
+		}
+	}
 
 	parms.membase = malloc (parms.memsize);
 

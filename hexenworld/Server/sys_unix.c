@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.11 2005-12-04 11:20:57 sezero Exp $
+	$Id: sys_unix.c,v 1.12 2006-01-06 12:41:42 sezero Exp $
 
 	Unix system interface code
 */
@@ -13,6 +13,17 @@
 
 #include "qwsvdef.h"
 
+
+#ifdef ASSUMED_LITTLE_ENDIAN
+#warning "Unable to determine CPU endianess. Defaulting to little endian"
+#endif
+
+// heapsize: minimum 8 mb, standart 16 mb, max is 32 mb.
+// -heapsize argument will abide by these min/max settings
+// unless the -forcemem argument is used
+#define MIN_MEM_ALLOC	0x0800000
+#define STD_MEM_ALLOC	0x1000000
+#define MAX_MEM_ALLOC	0x2000000
 
 cvar_t	sys_nostdout = {"sys_nostdout","0"};
 
@@ -216,22 +227,23 @@ int main (int argc, char **argv)
 		exit (0);
 	}
 
-	// Client uses 32 Mb minimum but this server-only situation
-	// should go well with 16 Mb. We can always use -heapsize..
-	parms.memsize = 16*1024*1024;
+	parms.memsize = STD_MEM_ALLOC;
 
-	if (((t = COM_CheckParm ("-heapsize")) != 0) && (t + 1 < com_argc))
+	t = COM_CheckParm ("-heapsize");
+	if (t && t < com_argc-1)
 	{
 		parms.memsize = atoi (com_argv[t + 1]) * 1024;
-
-		if (parms.memsize > 64*1024*1024) { // no bigger than 64 MB
-			Sys_Printf ("Requested memory (%d Mb) too large.\n", parms.memsize/(1024*1024));
-			Sys_Printf ("Will try going with a saner 64 Mb..\n");
-			parms.memsize = 64*1024*1024;
-		} else if (parms.memsize < 8*1024*1024) { // no less than 8 MB
-			Sys_Printf ("Requested memory (%d Mb) too little.\n", parms.memsize/(1024*1024));
-			Sys_Printf ("Will try going with a humble 8 Mb..\n");
-			parms.memsize = 8*1024*1024;
+		if ((parms.memsize > MAX_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
+		{
+			Sys_Printf ("Requested memory (%d Mb) too large, using the default\n", parms.memsize/(1024*1024));
+			Sys_Printf ("maximum. If you are sure, use the -forcemem switch\n");
+			parms.memsize = MAX_MEM_ALLOC;
+		}
+		else if ((parms.memsize < MIN_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
+		{
+			Sys_Printf ("Requested memory (%d Mb) too little, using the default\n", parms.memsize/(1024*1024));
+			Sys_Printf ("minimum. If you are sure, use the -forcemem switch\n");
+			parms.memsize = MIN_MEM_ALLOC;
 		}
 	}
 

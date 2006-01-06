@@ -8,21 +8,16 @@
 #include <io.h>
 #include <conio.h>
 
-#ifdef GLQUAKE
-	#define MINIMUM_WIN_MEMORY		0x1000000
-	#define MAXIMUM_WIN_MEMORY		0x2000000
-#else
-	#define MINIMUM_WIN_MEMORY		0x0C00000
-	#define MAXIMUM_WIN_MEMORY		0x2000000
-#endif
+
+// heapsize: minimum 16mb, standart 32 mb, max is 96 mb.
+// -heapsize argument will abide by these min/max settings
+// unless the -forcemem argument is used
+#define MIN_MEM_ALLOC	0x1000000
+#define STD_MEM_ALLOC	0x2000000
+#define MAX_MEM_ALLOC	0x6000000
 
 #define PAUSE_SLEEP		50				// sleep time on pause or minimization
 #define NOT_FOCUS_SLEEP	20				// sleep time when not focus
-
-#ifdef GUESSED_WIN32_ENDIANNESS
-// not that it matters but to remember what I did
-#warning "CPU endianess for Win32 assumed to be little endian"
-#endif
 
 int		starttime;
 qboolean	ActiveApp, Minimized;
@@ -497,25 +492,27 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 #endif
 
 // take the greater of all the available memory or half the total memory,
-// but at least 8 Mb and no more than 16 Mb, unless they explicitly
+// but at least 16 Mb and no more than 32 Mb, unless they explicitly
 // request otherwise
 	parms.memsize = lpBuffer.dwAvailPhys;
 
-	if (parms.memsize < MINIMUM_WIN_MEMORY)
-		parms.memsize = MINIMUM_WIN_MEMORY;
+	if (parms.memsize < MIN_MEM_ALLOC)
+		parms.memsize = MIN_MEM_ALLOC;
 
 	if (parms.memsize < (lpBuffer.dwTotalPhys >> 1))
 		parms.memsize = lpBuffer.dwTotalPhys >> 1;
 
-	if (parms.memsize > MAXIMUM_WIN_MEMORY)
-		parms.memsize = MAXIMUM_WIN_MEMORY;
+	if (parms.memsize > STD_MEM_ALLOC)
+		parms.memsize = STD_MEM_ALLOC;
 
-	if (COM_CheckParm ("-heapsize"))
+	t = COM_CheckParm ("-heapsize");
+	if (t && t < com_argc-1)
 	{
-		t = COM_CheckParm("-heapsize") + 1;
-
-		if (t < com_argc)
-			parms.memsize = atoi (com_argv[t]) * 1024;
+		parms.memsize = atoi (com_argv[t + 1]) * 1024;
+		if ((parms.memsize > MAX_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
+			parms.memsize = MAX_MEM_ALLOC;
+		else if ((parms.memsize < MIN_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
+			parms.memsize = MIN_MEM_ALLOC;
 	}
 
 	parms.membase = malloc (parms.memsize);
