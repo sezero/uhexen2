@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.37 2005-12-04 11:14:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.38 2006-01-06 12:15:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -15,6 +15,7 @@
 #include <sys/mman.h>
 #include <signal.h>
 #include <dirent.h>
+#include <fnmatch.h>
 //#include "SDL.h"
 #include "SDL_version.h"
 
@@ -81,6 +82,77 @@ int Sys_mkdir (char *path)
 	return rc;
 }
 
+/*
+=================================================
+simplified findfirst/findnext implementation:
+Sys_FindFirstFile and Sys_FindNextFile return
+filenames only, not a dirent struct. this is
+what we presently need in this engine.
+=================================================
+*/
+static DIR		*finddir;
+static struct dirent	*finddata;
+static char		*findpattern;
+
+char *Sys_FindFirstFile (char *path, char *pattern)
+{
+	int	len;
+
+	if (finddir)
+		Sys_Error ("Sys_FindFirst without FindClose");
+
+	finddir = opendir (path);
+	if (!finddir)
+		return NULL;
+
+	len = strlen (pattern);
+	findpattern = malloc (len + 1);
+	if (!findpattern)
+		return NULL;
+	strcpy (findpattern, pattern);
+
+	do {
+		finddata = readdir(finddir);
+		if (finddata != NULL)
+		{
+			if (!fnmatch (findpattern, finddata->d_name, FNM_PATHNAME))
+			{
+				return finddata->d_name;
+			}
+		}
+	} while (finddata != NULL);
+
+	return NULL;
+}
+
+char *Sys_FindNextFile (void)
+{
+	if (!finddir)
+		return NULL;
+
+	do {
+		finddata = readdir(finddir);
+		if (finddata != NULL)
+		{
+			if (!fnmatch (findpattern, finddata->d_name, FNM_PATHNAME))
+			{
+				return finddata->d_name;
+			}
+		}
+	} while (finddata != NULL);
+
+	return NULL;
+}
+
+void Sys_FindClose (void)
+{
+	if (finddir != NULL)
+		closedir(finddir);
+	finddir = NULL;
+	if (findpattern != NULL)
+		free (findpattern);
+	findpattern = NULL;
+}
 
 /*
 ===============================================================================
@@ -390,6 +462,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.37  2005/12/04 11:14:38  sezero
+ * the big vsnprintf patch
+ *
  * Revision 1.36  2005/10/25 17:14:23  sezero
  * added a STRINGIFY macro. unified version macros. simplified version
  * printing. simplified and enhanced version watermark print onto console

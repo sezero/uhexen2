@@ -15,6 +15,11 @@
 #endif
 int Sys_mkdir (char *path);
 
+// simplified findfirst/findnext implementation
+char *Sys_FindFirstFile (char *path, char *pattern);
+char *Sys_FindNextFile (void);
+void Sys_FindClose (void);
+
 //
 // memory protection
 //
