@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.36 2005-12-28 14:20:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.37 2006-01-06 12:19:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -430,7 +430,7 @@ LOAD / SAVE GAME
 #define ShortTime "%m/%d/%Y %H:%M"
 
 
-char	name[MAX_OSPATH],dest[MAX_OSPATH],tempdir[MAX_OSPATH];
+char	name[MAX_OSPATH],dest[MAX_OSPATH];
 
 /*
 ===============
@@ -473,7 +473,6 @@ void Host_Savegame_f (void)
 	FILE	*f;
 	int		i;
 	char	comment[SAVEGAME_COMMENT_LENGTH+1];
-//	char	name[MAX_OSPATH],dest[MAX_OSPATH],tempdir[MAX_OSPATH];
 	qboolean error_state = false;
 	int attempts = 0;
 	char *message;
@@ -535,15 +534,13 @@ retry:
 
 	CL_RemoveGIPFiles(name);
 
-	sprintf (tempdir,"%s/",com_savedir);
-	sprintf (name, "%sclients.gip",tempdir);
+	sprintf (name, "%s/clients.gip", com_savedir);
 	unlink(name);
 
-	sprintf (name, "%s*.gip", tempdir);
-	sprintf (dest, "%s/%s/",com_savedir, Cmd_Argv(1));
+	sprintf (dest, "%s/%s",com_savedir, Cmd_Argv(1));
 	Con_Printf ("Saving game to %s...\n", dest);
 
-	error_state = CL_CopyFiles(tempdir, name, dest);
+	error_state = CL_CopyFiles(com_savedir, "*.gip", dest);
 	if (error_state)
 		goto retrymsg;
 
@@ -611,7 +608,6 @@ void Host_Loadgame_f (void)
 	float	tempf;
 	int	tempi;
 	float	spawn_parms[NUM_SPAWN_PARMS];
-//	char	name[MAX_OSPATH],dest[MAX_OSPATH],tempdir[MAX_OSPATH];
 	qboolean error_state = false;
 	int	attempts = 0;
 	char *message;
@@ -633,7 +629,6 @@ void Host_Loadgame_f (void)
 
 	Con_Printf ("Loading game from %s...\n", name);
 
-	sprintf(tempdir,"%s/",com_savedir);
 	sprintf(dest,"%s/info.dat",name);
 
 	f = fopen (dest, "r");
@@ -702,16 +697,14 @@ void Host_Loadgame_f (void)
 
 	fclose (f);
 
-	CL_RemoveGIPFiles(tempdir);
+	CL_RemoveGIPFiles(com_savedir);
 
 retry:
 	attempts++;
 
-	sprintf (name, "%s/%s/*.gip", com_savedir, Cmd_Argv(1));
-	sprintf (dest, "%s/%s/",com_savedir, Cmd_Argv(1));
-	strcat(tempdir,"/");
+	sprintf (dest, "%s/%s",com_savedir, Cmd_Argv(1));
 
-	error_state = CL_CopyFiles(dest, name, tempdir);
+	error_state = CL_CopyFiles(dest, "*.gip", com_savedir);
 
 	if (error_state)
 	{
@@ -756,7 +749,6 @@ retry:
 
 qboolean SaveGamestate(qboolean ClientsOnly)
 {
-//	char	name[MAX_OSPATH],tempdir[MAX_OSPATH];
 	FILE	*f;
 	int		i;
 	char	comment[SAVEGAME_COMMENT_LENGTH+1];
@@ -769,21 +761,19 @@ qboolean SaveGamestate(qboolean ClientsOnly)
 retry:
 	attempts++;
 
-	sprintf(tempdir,"%s/",com_savedir);
-
 	if (ClientsOnly)
 	{
 		start = 1;
 		end = svs.maxclients+1;
 
-		sprintf (name, "%sclients.gip",tempdir);
+		sprintf (name, "%s/clients.gip", com_savedir);
 	}
 	else
 	{
 		start = 1;
 		end = sv.num_edicts;
 
-		sprintf (name, "%s%s.gip", tempdir, sv.name);
+		sprintf (name, "%s/%s.gip", com_savedir, sv.name);
 		
 //		Con_Printf ("Saving game to %s...\n", name);
 	}
@@ -918,7 +908,6 @@ void RestoreClients(void)
 
 int LoadGamestate(char *level, char *startspot, int ClientsMode)
 {
-//	char	name[MAX_OSPATH],tempdir[MAX_OSPATH];
 	FILE	*f;
 	char	mapname[MAX_QPATH];
 	float	playtime, sk;
@@ -930,16 +919,14 @@ int LoadGamestate(char *level, char *startspot, int ClientsMode)
 //	float	spawn_parms[NUM_SPAWN_PARMS];
 	qboolean auto_correct = false;
 
-	sprintf(tempdir,"%s/",com_savedir);
-
 	if (ClientsMode == 1)
 	{
-		sprintf (name, "%sclients.gip",tempdir);
+		sprintf (name, "%s/clients.gip", com_savedir);
 	}
 	else
 	{
-		sprintf (name, "%s%s.gip", tempdir, level);
-	
+		sprintf (name, "%s/%s.gip", com_savedir, level);
+
 		if (ClientsMode != 2 && ClientsMode != 3)
 			Con_Printf ("Loading game from %s...\n", name);
 	}
@@ -2253,6 +2240,13 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.36  2005/12/28 14:20:23  sezero
+ * made COM_CopyFile return int and added ferror() calls after every fread()
+ * and fwrite() calls, so that CL_CopyFiles can behave correctly under unix.
+ * made SaveGamestate return qboolean, replaced the silly "ERROR: couldn't
+ * open" message by goto retry_message calls. made Host_Savegame_f to return
+ * immediately upon SaveGamestate failure.
+ *
  * Revision 1.35  2005/11/05 20:22:10  sezero
  * fixed some gcc4 warnings
  *

@@ -212,7 +212,7 @@ struct cache_user_s;
 
 extern	char	com_basedir[MAX_OSPATH];
 extern	char	com_gamedir[MAX_OSPATH];
-extern	char	com_savedir[MAX_OSPATH];
+extern	char	com_savedir[MAX_OSPATH];	// temporary path for saving gip files
 extern	char	com_userdir[MAX_OSPATH];
 
 void COM_WriteFile (char *filename, void *data, int len);

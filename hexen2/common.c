@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.33 2005-12-29 07:12:01 sezero Exp $
+	$Id: common.c,v 1.34 2006-01-06 12:19:08 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -14,9 +14,6 @@
 #ifdef _WIN32
 #include <windows.h>
 #include <ctype.h>
-#else
-#include <dirent.h>
-#include <fnmatch.h>
 #endif
 
 #define NUM_SAFE_ARGVS	6
@@ -1082,7 +1079,7 @@ typedef struct
 char	com_gamedir[MAX_OSPATH];
 char	com_basedir[MAX_OSPATH];
 char	com_userdir[MAX_OSPATH];
-char	com_savedir[MAX_OSPATH];
+char	com_savedir[MAX_OSPATH];	// temporary path for saving gip files
 
 typedef struct searchpath_s
 {
@@ -1254,15 +1251,8 @@ static void COM_Maplist_f (void)
 	pack_t		*pak;
 	searchpath_t	*search;
 	char		**maplist = NULL, mappath[MAX_OSPATH];
-#ifdef _WIN32
-	HANDLE	handle;
-	WIN32_FIND_DATA	filedata;
-	BOOL	retval;
-#endif
-#ifdef PLATFORM_UNIX
-	DIR	*mapdir;
-	struct dirent	*namelist;
-#endif
+	char	*findname;
+
 	// do two runs - first count the number of maps
 	// then collect their names into maplist
 	for (run = 1 ; run <= 2; run ++)
@@ -1305,56 +1295,23 @@ static void COM_Maplist_f (void)
 			}
 			else
 			{	// element is a filename, look for maps therein using scandir
-#ifdef PLATFORM_UNIX
 				snprintf (mappath, MAX_OSPATH, search->filename);
 				strcat (mappath, "/maps");
-				mapdir = opendir (mappath);
-				if (!mapdir)
-					continue;
-
-				do {
-					namelist = readdir(mapdir);
-					if (namelist != NULL)
-					{
-						if (!fnmatch ("*.bsp", namelist->d_name, FNM_PATHNAME))
-						{
-							if (run == 2)
-							{
-								// add to our maplist (the same as above)
-								len = strlen (namelist->d_name) - 4 + 1;
-								maplist[cnt] = malloc (len);
-								strncpy (maplist[cnt], namelist->d_name, len);
-								maplist[cnt][len - 1] = 0;
-							}
-							cnt++;
-						}
-					}
-				} while (namelist != NULL);
-
-				closedir (mapdir);
-#endif
-#ifdef _WIN32
-				snprintf (mappath, MAX_OSPATH, "%s/maps/*.bsp", search->filename);
-				handle = FindFirstFile(mappath, &filedata);
-				retval = TRUE;
-
-				while (handle != INVALID_HANDLE_VALUE && retval)
+				findname = Sys_FindFirstFile (mappath, "*.bsp");
+				while (findname)
 				{
 					if (run == 2)
 					{
 						// add to our maplist (the same as above)
-						len = strlen (filedata.cFileName) - 4 + 1;
+						len = strlen(findname) - 4 + 1;
 						maplist[cnt] = malloc (len);
-						strncpy (maplist[cnt], filedata.cFileName, len);
+						strncpy (maplist[cnt], findname, len);
 						maplist[cnt][len - 1] = 0;
 					}
+					findname = Sys_FindNextFile ();
 					cnt++;
-					retval = FindNextFile(handle,&filedata);
 				}
-
-				if (handle != INVALID_HANDLE_VALUE)
-					FindClose(handle);
-#endif
+				Sys_FindClose ();
 			}
 		}
 
@@ -2101,6 +2058,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.33  2005/12/29 07:12:01  sezero
+ * cleaned up COM_CopyFile goto ugliness
+ *
  * Revision 1.32  2005/12/28 22:17:04  sezero
  * fixed hexenworld server compilation
  *

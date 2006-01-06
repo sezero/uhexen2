@@ -2,16 +2,13 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.22 2005-12-28 14:20:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.23 2006-01-06 12:19:08 sezero Exp $
 */
 
 #include "quakedef.h"
 
 #ifdef _WIN32
 #include <windows.h>
-#else
-#include <dirent.h>
-#include <fnmatch.h>
 #endif
 #include <unistd.h>
 
@@ -99,125 +96,50 @@ void CL_ClearState (void)
 
 void CL_RemoveGIPFiles (char *path)
 {
-	char	name[MAX_OSPATH],tempdir[MAX_OSPATH];
-#ifdef _WIN32
-	HANDLE handle;
-	WIN32_FIND_DATA filedata;
-	BOOL retval;
-#else
-	DIR	*dir;
-	struct dirent	*dent;
-#endif
+	char	*name, tempdir[MAX_OSPATH];
 
 	if (path)
-	{
-		snprintf(tempdir, MAX_OSPATH, "%s/",path);
-	}
+		snprintf(tempdir, MAX_OSPATH, "%s", path);
 	else
+		snprintf(tempdir, MAX_OSPATH, "%s", com_savedir);
+
+	name = Sys_FindFirstFile (tempdir, "*.gip");
+
+	while (name)
 	{
-		snprintf(tempdir, MAX_OSPATH, "%s/",com_userdir);
+		unlink (va("%s/%s", tempdir, name));
+
+		name = Sys_FindNextFile();
 	}
 
-#ifdef _WIN32
-	sprintf (name, "%s*.gip", tempdir);
-
-	handle = FindFirstFile(name,&filedata);
-	retval = TRUE;
-
-	while (handle != INVALID_HANDLE_VALUE && retval)
-	{
-		sprintf(name,"%s%s", tempdir,filedata.cFileName);
-		unlink (name);
-
-		retval = FindNextFile(handle,&filedata);
-	}
-
-	if (handle != INVALID_HANDLE_VALUE)
-		FindClose(handle);
-
-#else	// here is the unix code
-	dir = opendir (tempdir);
-
-	if (dir == NULL)
-		return;
-
-	do {
-		dent = readdir(dir);
-		if (dent != NULL)
-		{
-			if (!fnmatch ("*.gip", dent->d_name,FNM_PATHNAME))
-			{
-				snprintf (name, MAX_OSPATH, "%s%s", tempdir,dent->d_name);
-			//	printf("unlinking %s\n",name);
-				unlink (name);
-			}
-		}
-	} while (dent != NULL);
-
-	closedir (dir);
-#endif
+	Sys_FindClose();
 }
 
 qboolean CL_CopyFiles(char *source, char *pat, char *dest)
 {
-#ifdef _WIN32
-	char	name[MAX_OSPATH],tempdir[MAX_OSPATH];
-	HANDLE handle;
-	WIN32_FIND_DATA filedata;
-	BOOL retval,error;
-
-	handle = FindFirstFile(pat,&filedata);
-	retval = TRUE;
-	error = false;
-
-	while (handle != INVALID_HANDLE_VALUE && retval)
-	{
-		sprintf(name,"%s%s", source, filedata.cFileName);
-		sprintf(tempdir,"%s%s", dest, filedata.cFileName);
-		if (!CopyFile(name,tempdir,FALSE))
-			error = true;
-
-		retval = FindNextFile(handle,&filedata);
-	}
-
-	if (handle != INVALID_HANDLE_VALUE)
-		FindClose(handle);
-
-	return error;
-#else
-	char	name[MAX_OSPATH],tempdir[MAX_OSPATH], *fpat;
-	DIR	*dir;
-	struct dirent	*dent;
+	char	*name, tempdir[MAX_OSPATH], tempdir2[MAX_OSPATH];
 	qboolean error;
 
-	dir = opendir (source);
-	if (dir == NULL)
-		return true;
-
+	name = Sys_FindFirstFile(source, pat);
 	error = false;
-	fpat = strrchr(pat, '/');
-	if (fpat == NULL)
-		fpat = pat;
-	else
-		fpat++; /* skip the '/' */
 
-	do {
-		dent = readdir(dir);
-		if (dent != NULL)
-		{
-			if (!fnmatch (fpat, dent->d_name,FNM_PATHNAME))
-			{
-				sprintf(name,"%s%s", source, dent->d_name);
-				sprintf(tempdir,"%s%s", dest, dent->d_name);
-				if (COM_CopyFile(name,tempdir))
-					error = true;
-			}
-		}
-	} while (dent != NULL);
-	closedir (dir);
+	while (name)
+	{
+		sprintf(tempdir,"%s/%s", source, name);
+		sprintf(tempdir2,"%s/%s", dest, name);
+#ifdef _WIN32
+		if (!CopyFile(tempdir,tempdir2,FALSE))
+#else
+		if (COM_CopyFile(tempdir,tempdir2))
+#endif
+			error = true;
+
+		name = Sys_FindNextFile();
+	}
+
+	Sys_FindClose();
 
 	return error;
-#endif
 }
 
 /*
@@ -1009,6 +931,13 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2005/12/28 14:20:23  sezero
+ * made COM_CopyFile return int and added ferror() calls after every fread()
+ * and fwrite() calls, so that CL_CopyFiles can behave correctly under unix.
+ * made SaveGamestate return qboolean, replaced the silly "ERROR: couldn't
+ * open" message by goto retry_message calls. made Host_Savegame_f to return
+ * immediately upon SaveGamestate failure.
+ *
  * Revision 1.21  2005/11/01 18:11:20  sezero
  * set the playerclass cvar default to paladin. that way, a new
  * installation of original hexen2 shall not fail when run first
