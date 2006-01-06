@@ -1,12 +1,5 @@
 
 #include "qwsvdef.h"
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <dirent.h>
-#include <fnmatch.h>
-#include <unistd.h>
-#endif
 
 quakeparms_t host_parms;
 
