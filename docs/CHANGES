@@ -1,5 +1,30 @@
 ChangeLog:
 
+2006-01-06 (CVS):
+    * killed unnecessary includes in sv_main
+    * added a simplified findfirst/findnext implementation: When given a
+      directory and a wildcard match pattern, they will find/report the
+      matches one after other. Unix implementation uses readdir()/fnmatch(),
+      win32 uses FindFirstFile native functions. Sys_FindFirstFile and
+      Sys_FindNextFile return filenames only, not a dirent struct, therefore
+      there is no attribute matching. this is enough for what we presently
+      need in this engine. may be improved in future.
+    * put the new Sys_FindFirstFile/Sys_FindNextFile stuff into action.
+      also killed the tempdir and trailing slash funnies in host_cmd.c when
+      calling CL_CopyFiles and CL_RemoveGIPFiles in saving and loading games.
+    * increased minimum heapsize to 16 mb, otherwise hunk allocation errors
+      occur with old 8 mb minimum. added a -forcemem commandline switch which
+      enables forcing user memory args out of min/max limits when parsing
+      the -heapsize and -zone switches.
+
+2005-12-30 (CVS):
+    * gl_draw fixes/clean-ups: fixed palettized textures corruption upon
+      resolution changing (which will be available by an upcoming patch),
+      applied the same fix for scaled data allocation in other texture upload
+      functions just to be on the safe side, added detailed info when reporting
+      texture cache mismatches, killed unnecessary alpha checking in palettized
+      texture upload, several other whitespace clean-ups.
+
 2005-12-29 (CVS):
     * small fixes/clean-ups after the commits from 2005-12-28
 
