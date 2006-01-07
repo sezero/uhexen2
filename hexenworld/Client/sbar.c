@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.12 2005-12-11 11:56:33 sezero Exp $
+	$Id: sbar.c,v 1.13 2006-01-07 09:34:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -203,11 +203,12 @@ void Sbar_Init(void)
 	Cmd_AddCommand("invdrop", InvDrop_f);
 	Cmd_AddCommand("invoff", InvOff_f);
 	Cmd_AddCommand("toggle_dm", ToggleDM_f);
+
 	Cvar_RegisterVariable(&DMMode);
 	Cvar_RegisterVariable(&sbtrans);
-
 	Cvar_RegisterVariable(&BarSpeed);
 	Cvar_RegisterVariable(&sbtemp);
+
 	BarHeight = BarTargetHeight = BAR_TOP_HEIGHT;
 }
 
