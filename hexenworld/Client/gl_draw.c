@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.50 2005-12-30 17:12:38 sezero Exp $
+	$Id: gl_draw.c,v 1.51 2006-01-07 09:50:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -473,6 +473,10 @@ void Draw_TextureMode_f (void)
 			glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 		}
 	}
+
+	// Pa3PyX: force update of all lightmaps
+	for (i = 0; i < MAX_LIGHTMAPS; i++)
+		lightmap_modified[i] = true;
 }
 
 /*

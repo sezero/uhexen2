@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.35 2005-10-21 18:02:06 sezero Exp $
+	$Id: glquake.h,v 1.36 2006-01-07 09:50:09 sezero Exp $
 */
 
 
@@ -55,7 +55,8 @@ void GL_BeginRendering (int *x, int *y, int *width, int *height);
 void GL_EndRendering (void);
 
 extern	int texture_extension_number;
-
+extern	int gl_filter_min;
+extern	int gl_filter_max;
 extern	float	gldepthmin, gldepthmax;
 
 #define MAX_GLTEXTURES		2048
@@ -341,9 +342,19 @@ extern	qboolean have_stencil;
 // Multitexture
 extern	qboolean gl_mtexable;
 
+// Ligthmaps (gl_rsurf.c)
+#define	MAX_LIGHTMAPS	64
+extern	qboolean lightmap_modified[MAX_LIGHTMAPS];
+
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.35  2005/10/21 18:02:06  sezero
+ * merged the gl headers back into glquake.h.
+ * merged gl_func_nondl.h into gl_func.h.
+ * added a unix makefile option for linking to gl functions at runtime,
+ * similar to win32 version.
+ *
  * Revision 1.34  2005/09/29 14:05:45  sezero
  * cleaned-up hash check stuff in GL_LoadTexture. added
  * crc check as an alternative (disabled by default.)

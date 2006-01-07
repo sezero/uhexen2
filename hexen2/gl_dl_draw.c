@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_dl_draw.c,v 1.66 2005-12-30 17:12:37 sezero Exp $
+	$Id: gl_dl_draw.c,v 1.67 2006-01-07 09:50:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -473,6 +473,10 @@ void Draw_TextureMode_f (void)
 			glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 		}
 	}
+
+	// Pa3PyX: force update of all lightmaps
+	for (i = 0; i < MAX_LIGHTMAPS; i++)
+		lightmap_modified[i] = true;
 }
 
 /*
@@ -1975,6 +1979,14 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.66  2005/12/30 17:12:37  sezero
+ * gl_draw fixes/clean-ups: fixed palettized textures corruption upon resolution
+ * changing (which will be available by an upcoming patch), applied the same fix
+ * for scaled data allocation in other texture upload functions just to be on the
+ * safe side, added detailed info when reporting texture cache mismatches, killed
+ * unnecessary alpha checking in palettized texture upload, several other white-
+ * space clean-ups.
+ *
  * Revision 1.65  2005/12/11 11:56:33  sezero
  * synchronized different sbar function names between h2 and h2w.
  * there was a mess about SB_Changed and Sbar_Changed in h2w, this

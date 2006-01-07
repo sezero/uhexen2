@@ -13,7 +13,6 @@ unsigned	blocklights[18*18];
 #define	BLOCK_WIDTH	128
 #define	BLOCK_HEIGHT	128
 
-#define	MAX_LIGHTMAPS	64
 int			active_lightmaps;
 
 typedef struct glRect_s {
@@ -416,6 +415,9 @@ void R_BlendLightmaps (qboolean Translucent)
 		// if current lightmap was changed reload it and mark as not changed
 			lightmap_modified[i] = false;
 			theRect = &lightmap_rectchange[i];
+		// Pa3PyX: make sure filtering modes are correct on display mode change and gl_texturemode
+			glTexParameterf_fp (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+			glTexParameterf_fp (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 			glTexSubImage2D_fp(GL_TEXTURE_2D, 0, 0, theRect->t, 
 				BLOCK_WIDTH, theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
 				lightmaps+(i* BLOCK_HEIGHT + theRect->t) *BLOCK_WIDTH*lightmap_bytes);
@@ -493,6 +495,9 @@ void R_UpdateLightmaps (qboolean Translucent)
 		// if current lightmap was changed reload it and mark as not changed
 			lightmap_modified[i] = false;
 			theRect = &lightmap_rectchange[i];
+		// Pa3PyX: make sure filtering modes are correct on display mode change and gl_texturemode
+			glTexParameterf_fp (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+			glTexParameterf_fp (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 			glTexSubImage2D_fp(GL_TEXTURE_2D, 0, 0, theRect->t, 
 				BLOCK_WIDTH, theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
 				lightmaps+(i* BLOCK_HEIGHT + theRect->t) *BLOCK_WIDTH*lightmap_bytes);
@@ -1563,8 +1568,8 @@ void GL_BuildLightmaps (void)
 		lightmap_rectchange[i].w = 0;
 		lightmap_rectchange[i].h = 0;
 		GL_Bind(lightmap_textures + i);
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 		glTexImage2D_fp (GL_TEXTURE_2D, 0, lightmap_bytes, BLOCK_WIDTH,
 				BLOCK_HEIGHT, 0, gl_lightmap_format, GL_UNSIGNED_BYTE,
 				lightmaps+i*BLOCK_WIDTH*BLOCK_HEIGHT*lightmap_bytes);

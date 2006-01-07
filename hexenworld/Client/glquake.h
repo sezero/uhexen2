@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.27 2005-10-21 18:02:07 sezero Exp $
+	$Id: glquake.h,v 1.28 2006-01-07 09:50:10 sezero Exp $
 */
 
 
@@ -55,7 +55,8 @@ void GL_BeginRendering (int *x, int *y, int *width, int *height);
 void GL_EndRendering (void);
 
 extern	int texture_extension_number;
-
+extern	int gl_filter_min;
+extern	int gl_filter_max;
 extern	float	gldepthmin, gldepthmax;
 
 #define MAX_GLTEXTURES		2048
@@ -343,5 +344,9 @@ extern	qboolean have_stencil;
 
 // Multitexture
 extern	qboolean gl_mtexable;
+
+// Ligthmaps (gl_rsurf.c)
+#define	MAX_LIGHTMAPS	64
+extern	qboolean lightmap_modified[MAX_LIGHTMAPS];
 
 
