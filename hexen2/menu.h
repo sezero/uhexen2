@@ -1,7 +1,7 @@
 /*
 	menu.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.h,v 1.4 2005-01-01 21:43:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.h,v 1.5 2006-01-07 09:36:09 sezero Exp $
 */
 
 //
@@ -40,11 +40,16 @@ void M_DrawTransPic (int x, int y, qpic_t *pic);
 void M_DrawTextBox (int x, int y, int width, int lines);
 void M_DrawTextBox2 (int x, int y, int w, int l, qboolean b);
 
+void M_DrawCheckbox (int x, int y, int on);
+
 void ScrollTitle (char *name);
 
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/01/01 21:43:47  sezero
+ * prototypes clean-up
+ *
  * Revision 1.3  2004/12/18 13:59:25  sezero
  * Clean-up and kill warnings 8:
  * Missing prototypes.

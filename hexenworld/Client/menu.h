@@ -1,7 +1,7 @@
 /*
 	menu.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.h,v 1.3 2005-10-25 20:08:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.h,v 1.4 2006-01-07 09:36:09 sezero Exp $
 */
 
 //
@@ -41,5 +41,7 @@ void M_DrawPic (int x, int y, qpic_t *pic);
 void M_DrawTransPic (int x, int y, qpic_t *pic);
 void M_DrawTextBox (int x, int y, int width, int lines);
 void M_DrawTextBox2 (int x, int y, int width, int lines);
+
+void M_DrawCheckbox (int x, int y, int on);
 
 void ScrollTitle (char *name);
