@@ -1,5 +1,12 @@
 ChangeLog:
 
+2006-01-07 (CVS):
+    * cleanup and "static" stuff on the vid files
+    * added the last pieces (lightmaps) of adjustable filters which I've
+      been forgetting for a very long time
+    * made M_DrawCheckbox global
+    * tiny whitespace cleanup in sbar.c
+
 2006-01-06 (CVS):
     * killed unnecessary includes in sv_main
     * added a simplified findfirst/findnext implementation: When given a
