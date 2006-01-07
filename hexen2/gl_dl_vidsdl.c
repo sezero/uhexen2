@@ -2,7 +2,7 @@
    gl_dl_vidsdl.c -- SDL GL vid component
    Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_dl_vidsdl.c,v 1.93 2005-12-11 11:56:33 sezero Exp $
+   $Id: gl_dl_vidsdl.c,v 1.94 2006-01-07 09:54:29 sezero Exp $
 
 
 	Changed 7/11/04 by S.A.
@@ -58,12 +58,12 @@ typedef struct {
 	char		modedesc[33];
 } vmode_t;
 
-SDL_Surface	*screen;
+static SDL_Surface	*screen;
 
 viddef_t	vid;		// global video state
 modestate_t	modestate = MS_UNINIT;
-int		WRHeight, WRWidth;
-int		vid_default = MODE_WINDOWED;	// windowed mode is default
+static int	WRHeight, WRWidth;
+static int	vid_default = MODE_WINDOWED;	// windowed mode is default
 cvar_t		vid_mode = {"vid_mode","0", false};
 static vmode_t	modelist[MAX_MODE_LIST];
 static qboolean	vid_initialized = false;
@@ -80,15 +80,14 @@ const char	*gl_version;
 const char	*gl_extensions;
 #ifdef GL_DLSYM
 static char	*gl_library  = NULL;
-static char	*gl_liblocal = NULL;
-static qboolean	GL_OpenLibrary(const char *name, const char *altern_name);
+static qboolean	GL_OpenLibrary(const char *name);
 #endif
 int		gl_max_size = 256;
 qboolean	is_3dfx = false;
 float		gldepthmin, gldepthmax;
 extern int	numgltextures;
 #if SDL_PATCHLEVEL > 5
-int		multisample = 0;
+static int	multisample = 0;
 #else
 #warning SDL_GL_MULTISAMPLESAMPLES not found. SDL version too old
 #warning Disabling FSAA option. Upgrade to SDL 1.2.6 or newer
@@ -97,6 +96,7 @@ int		multisample = 0;
 typedef void	(*FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
 FX_SET_PALETTE_EXT	MyglColorTableEXT;
 qboolean	is8bit = false;
+static void VID_Init8bitPalette (void);
 
 float		RTint[256],GTint[256],BTint[256];
 unsigned char	d_15to8table[65536];
@@ -114,7 +114,7 @@ extern int	lightmap_bytes;	// in gl_rsurf.c
 
 // multitexturing
 qboolean	gl_mtexable = false;
-int		num_tmus = 1;
+static int	num_tmus = 1;
 
 qboolean	scr_skipupdate;
 static		qboolean fullsbardraw = false;
@@ -122,9 +122,11 @@ static		qboolean fullsbardraw = false;
 void VID_MenuDraw (void);
 void VID_MenuKey (int key);
 
-void ClearAllStates (void);
-void GL_Init (void);
-void GL_Init_Functions(void);
+static void ClearAllStates (void);
+static void GL_Init (void);
+#ifdef GL_DLSYM
+static void GL_Init_Functions(void);
+#endif
 
 qboolean	have_stencil = false;
 
@@ -145,17 +147,25 @@ static int	(*fxGammaCtl)(float) = NULL;
 static qboolean	fx_gamma   = false;	// 3dfx-specific gamma control
 static qboolean	gammaworks = false;	// whether hw-gamma works
 qboolean	gl_dogamma = false;	// none of the above two, use gl tricks
-static void	Gamma_Init (void);
-static qboolean	Check3dfxGamma(void);
+static void	VID_InitGamma (void);
+static void	VID_ShutdownGamma (void);
+static qboolean	VID_Check3dfxGamma(void);
+
+// window manager stuff
+#if defined(H2W)
+#	define WM_TITLEBAR_TEXT	"HexenWorld"
+#	define WM_ICON_TEXT	"HexenWorld"
+#elif defined(H2MP)
+#	define WM_TITLEBAR_TEXT	"Portal of Praevus"
+#	define WM_ICON_TEXT	"PRAEVUS"
+#else
+#	define WM_TITLEBAR_TEXT	"Hexen II"
+#	define WM_ICON_TEXT	"HEXEN2"
+#endif
 
 //====================================
 
-// direct draw software compatability stuff
-#ifndef H2W
-void VID_HandlePause (qboolean paused)
-{
-}
-#endif
+// for compatability with software renderer
 
 void VID_LockBuffer (void)
 {
@@ -173,9 +183,19 @@ void D_EndDirectRect (int x, int y, int width, int height)
 {
 }
 
+void VID_HandlePause (qboolean paused)
+{
+}
+
+
+//====================================
 
 static void VID_SetIcon (void)
 {
+	SDL_Surface *icon;
+	SDL_Color color;
+	Uint8 *ptr;
+	int i, mask;
 #if defined(H2W)
 // hexenworld
 #	include "../icons/h2w_ico.xbm"
@@ -186,10 +206,6 @@ static void VID_SetIcon (void)
 // plain hexen2
 #	include "icons/h2_ico.xbm"
 #endif
-	SDL_Surface *icon;
-	SDL_Color color;
-	Uint8 *ptr;
-	int i, mask;
 
 	icon = SDL_CreateRGBSurface(SDL_SWSURFACE, HOT_ICON_WIDTH, HOT_ICON_HEIGHT, 8, 0, 0, 0, 0);
 	if (icon == NULL)
@@ -208,7 +224,8 @@ static void VID_SetIcon (void)
 	ptr = (Uint8 *)icon->pixels;
 	for (i = 0; i < sizeof(HOT_ICON_bits); i++)
 	{
-		for (mask = 1; mask != 0x100; mask <<= 1) {
+		for (mask = 1; mask != 0x100; mask <<= 1)
+		{
 			*ptr = (HOT_ICON_bits[i] & mask) ? 1 : 0;
 			ptr++;
 		}		
@@ -219,32 +236,34 @@ static void VID_SetIcon (void)
 }
 
 #ifdef GL_DLSYM
-static qboolean GL_OpenLibrary(const char *name, const char *altern_name)
+static qboolean GL_OpenLibrary(const char *name)
 {
 	int	ret;
-
-	// If we are given an alternative name, that means the user
-	// provided a library name without any path: The alternative
-	// name actually is the same as the first name, but prefixed
-	// with our very own basedir path. We will first start with
-	// the first name: loading may succeed either in case it is
-	// a globally installed library, or it is on the path that
-	// LD_LIBRARY_PATH environment knows about.
+	char	gl_liblocal[MAX_OSPATH];
 
 	ret = SDL_GL_LoadLibrary(name);
 
 	if (ret < 0)
 	{
-		if (name && altern_name)
+		// In case of user-specified gl library, look for it under the
+		// installation directory, too: the user may forget providing
+		// a valid path information. In that case, make sure it doesnt
+		// contain any path information and exists in our own basedir,
+		// then try loading it
+		if ( name && !strchr(name, '/') )
 		{
-			Con_Printf ("Failed loading gl library %s\n"
-				    "Trying to load %s\n", name, altern_name);
-			ret = SDL_GL_LoadLibrary(altern_name);
+			snprintf (gl_liblocal, MAX_OSPATH, "%s/%s", com_basedir, name);
+			if (access(gl_liblocal, R_OK) == -1)
+				return false;
 
+			Con_Printf ("Failed loading gl library %s\n"
+				    "Trying to load %s\n", name, gl_liblocal);
+
+			ret = SDL_GL_LoadLibrary(gl_liblocal);
 			if (ret < 0)
 				return false;
 
-			Con_Printf("Using GL library: %s\n", altern_name);
+			Con_Printf("Using GL library: %s\n", gl_liblocal);
 			return true;
 		}
 
@@ -261,9 +280,7 @@ static qboolean GL_OpenLibrary(const char *name, const char *altern_name)
 #endif	// GL_DLSYM
 
 
-/* Init SDL */
-
-int VID_SetMode (int modenum)
+static int VID_SetMode (int modenum)
 {
 	Uint32	flags;
 	int	i, temp;
@@ -316,14 +333,16 @@ int VID_SetMode (int modenum)
 		Sys_Error ("Couldn't init video: %s", SDL_GetError());
 
 #ifdef GL_DLSYM
-	if (!GL_OpenLibrary(gl_library, gl_liblocal))
+	if (!GL_OpenLibrary(gl_library))
 		Sys_Error ("Unable to load GL library %s", gl_library);
 #endif
 
 #if SDL_PATCHLEVEL > 5
-	if ((i = COM_CheckParm ("-fsaa")))
+	i = COM_CheckParm ("-fsaa");
+	if (i && i < com_argc-1)
 		multisample = atoi(com_argv[i+1]);
-	if (multisample) {
+	if (multisample)
+	{
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisample);
 	}
@@ -335,11 +354,15 @@ int VID_SetMode (int modenum)
 	//SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 	Con_Printf ("Requesting Mode: %dx%dx%d\n", vid.width, vid.height, modelist[modenum].bpp);
 	screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags);
-	if (!screen) {
+	if (!screen)
+	{
 #if SDL_PATCHLEVEL > 5
-		if (!multisample) {
+		if (!multisample)
+		{
 			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
-		} else {
+		}
+		else
+		{
 			Con_Printf ("multisample window failed\n");
 			multisample = 0;
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
@@ -356,26 +379,22 @@ int VID_SetMode (int modenum)
 	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &i);
 	Con_Printf ("Video Mode Set : %dx%dx%d\n", vid.width, vid.height, i);
 #if SDL_PATCHLEVEL > 5
-	if (multisample) {
+	if (multisample)
+	{
 		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &multisample);
 		Con_Printf ("multisample buffer with %i samples\n", multisample);
 	}
 #endif
 
-#if defined(H2W)
-	SDL_WM_SetCaption("HexenWorld", "HexenWorld");
-#elif defined(H2MP)
-	SDL_WM_SetCaption("Portal of Praevus", "PRAEVUS");
-#else
-	SDL_WM_SetCaption("Hexen II", "HEXEN2");
-#endif
+	SDL_WM_SetCaption(WM_TITLEBAR_TEXT, WM_ICON_TEXT);
 
 	IN_HideMouse ();
 
 	// This will display a bigger hud and readable fonts at high
 	// resolutions. The fonts will be somewhat distorted, though
 	i = COM_CheckParm("-conwidth");
-	if (i != 0 && i < com_argc-1) {
+	if (i != 0 && i < com_argc-1)
+	{
 		vid.conwidth = atoi(com_argv[i+1]);
 		vid.conwidth &= 0xfff8; // make it a multiple of eight
 		if (vid.conwidth < 320)
@@ -409,7 +428,7 @@ int VID_SetMode (int modenum)
 
 int		texture_extension_number = 1;
 
-void CheckMultiTextureExtensions(void)
+static void CheckMultiTextureExtensions(void)
 {
 	gl_mtexable = false;
 
@@ -422,7 +441,8 @@ void CheckMultiTextureExtensions(void)
 		Con_Printf("ARB Multitexture extensions found\n");
 
 		glGetIntegerv_fp(GL_MAX_TEXTURE_UNITS_ARB, &num_tmus);
-		if (num_tmus < 2) {
+		if (num_tmus < 2)
+		{
 			Con_Printf("not enough TMUs, ignoring multitexture\n");
 			return;
 		}
@@ -430,7 +450,8 @@ void CheckMultiTextureExtensions(void)
 		glMultiTexCoord2fARB_fp = (void *) SDL_GL_GetProcAddress("glMultiTexCoord2fARB");
 		glActiveTextureARB_fp = (void *) SDL_GL_GetProcAddress("glActiveTextureARB");
 		if ((glMultiTexCoord2fARB_fp == NULL) ||
-		    (glActiveTextureARB_fp == NULL)) {
+		    (glActiveTextureARB_fp == NULL))
+		{
 			Con_Printf ("Couldn't link to multitexture functions\n");
 			return;
 		}
@@ -448,7 +469,7 @@ void CheckMultiTextureExtensions(void)
 	}
 }
 
-void CheckStencilBuffer(void)
+static void CheckStencilBuffer(void)
 {
 	int stencil_size;
 
@@ -475,14 +496,8 @@ void CheckStencilBuffer(void)
 	}
 }
 
-/*
-===============
-GL_Init
-===============
-*/
-void GL_Init (void)
+static void GL_InitLightmapBits (void)
 {
-	// setup lightmaps format
 	gl_lightmap_format = GL_LUMINANCE;
 	if (COM_CheckParm ("-lm_1"))
 		gl_lightmap_format = GL_LUMINANCE;
@@ -509,7 +524,15 @@ void GL_Init (void)
 		lightmap_bytes = 1;
 		break;
 	}
+}
 
+/*
+===============
+GL_Init
+===============
+*/
+static void GL_Init (void)
+{
 #ifdef GL_DLSYM
 	// initialize gl function pointers
 	GL_Init_Functions();
@@ -531,6 +554,7 @@ void GL_Init (void)
 		gl_max_size = 1024;
 	Con_Printf("OpenGL max.texture size: %i\n", gl_max_size);
 
+	is_3dfx = false;
 	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",  4)  ||
 	    !Q_strncasecmp ((char *)gl_renderer, "Glide", 5)  ||
 	    !Q_strncasecmp ((char *)gl_renderer, "Mesa Glide", 10))
@@ -548,6 +572,7 @@ void GL_Init (void)
 
 	CheckMultiTextureExtensions();
 	CheckStencilBuffer();
+	GL_InitLightmapBits();
 
 	glClearColor_fp (1,0,0,0);
 	glCullFace_fp(GL_FRONT);
@@ -571,7 +596,8 @@ void GL_Init (void)
 	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
 #if SDL_PATCHLEVEL > 5
-	if (multisample) {
+	if (multisample)
+	{
 		glEnable_fp (GL_MULTISAMPLE_ARB);
 		Con_Printf ("enabled %i sample fsaa\n", multisample);
 	}
@@ -579,7 +605,7 @@ void GL_Init (void)
 }
 
 #ifdef GL_DLSYM
-void GL_Init_Functions(void)
+static void GL_Init_Functions(void)
 {
   glBegin_fp = (glBegin_f) SDL_GL_GetProcAddress("glBegin");
   if (glBegin_fp == 0) {Sys_Error("glBegin not found in GL library");}
@@ -702,7 +728,7 @@ void GL_Init_Functions(void)
 }
 #endif
 
-static qboolean Check3dfxGamma(void)
+static qboolean VID_Check3dfxGamma(void)
 {
 	if ( ! COM_CheckParm("-3dfxgamma") )
 		return false;
@@ -751,7 +777,7 @@ static qboolean Check3dfxGamma(void)
 	return false;
 }
 
-static void Gamma_Init(void)
+static void VID_InitGamma(void)
 {
 	if (is_3dfx)
 	{
@@ -762,7 +788,7 @@ static void Gamma_Init(void)
 	// this means we dont have hw-gamma, just use gl_dogamma
 
 	// Here is an evil hack to abuse the Glide symbols exposed on us
-		fx_gamma = Check3dfxGamma();
+		fx_gamma = VID_Check3dfxGamma();
 		if (!fx_gamma)
 			gl_dogamma = true;
 	}
@@ -842,6 +868,23 @@ void VID_ShiftPalette (unsigned char *palette)
 #else
 	VID_SetGamma();
 #endif
+}
+
+static void VID_ShutdownGamma (void)
+{
+#if USE_GAMMA_RAMPS
+	// restore hardware gamma
+	if (glSetDeviceGammaRamp3DFX_fp != NULL && fx_gamma)
+		glSetDeviceGammaRamp3DFX_fp(orig_ramps);
+	else if (!fx_gamma && !gl_dogamma && gammaworks)
+		SDL_SetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]);
+	glGetDeviceGammaRamp3DFX_fp = NULL;
+	glSetDeviceGammaRamp3DFX_fp = NULL;
+#endif
+	fxGammaCtl = NULL;
+	if (fx_gammalib != NULL)
+		dlclose (fx_gammalib);
+	fx_gammalib = NULL;
 }
 
 /*
@@ -1013,20 +1056,7 @@ void VID_SetPalette (unsigned char *palette)
 
 void	VID_Shutdown (void)
 {
-#if USE_GAMMA_RAMPS
-	// restore hardware gamma
-	if (glSetDeviceGammaRamp3DFX_fp != NULL && fx_gamma)
-		glSetDeviceGammaRamp3DFX_fp(orig_ramps);
-	else if (!fx_gamma && !gl_dogamma && gammaworks)
-		SDL_SetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]);
-	glGetDeviceGammaRamp3DFX_fp = NULL;
-	glSetDeviceGammaRamp3DFX_fp = NULL;
-#endif
-	fxGammaCtl = NULL;
-	if (fx_gammalib != NULL)
-		dlclose (fx_gammalib);
-	fx_gammalib = NULL;
-
+	VID_ShutdownGamma();
 	SDL_Quit();
 }
 
@@ -1044,7 +1074,7 @@ MAIN WINDOW
 ClearAllStates
 ================
 */
-void ClearAllStates (void)
+static void ClearAllStates (void)
 {
 	int		i;
 	
@@ -1058,7 +1088,7 @@ void ClearAllStates (void)
 	IN_ClearStates ();
 }
 
-void VID_Init8bitPalette() 
+static void VID_Init8bitPalette (void)
 {
 	// Check for 8bit Extensions and initialize them.
 	int i;
@@ -1079,7 +1109,8 @@ void VID_Init8bitPalette()
 		oldPalette = (char *) d_8to24table; //d_8to24table3dfx;
 		newPalette = thePalette;
 
-		for (i=0;i<256;i++) {
+		for (i=0;i<256;i++)
+		{
 			*newPalette++ = *oldPalette++;
 			*newPalette++ = *oldPalette++;
 			*newPalette++ = *oldPalette++;
@@ -1099,7 +1130,7 @@ VID_Init
 */
 void	VID_Init (unsigned char *palette)
 {
-	int	width, height, bpp;
+	int	i, width, height, bpp;
 	char	gldir[MAX_OSPATH];
 
 	Cvar_RegisterVariable (&vid_mode);
@@ -1107,26 +1138,20 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&gl_ztrick);
 	Cvar_RegisterVariable (&gl_purge_maptex);
 
-#ifdef GL_DLSYM
-	if (COM_CheckParm("--gllibrary"))
-		gl_library = com_argv[COM_CheckParm("--gllibrary")+1];
-	else if (COM_CheckParm("-g"))
-		gl_library = com_argv[COM_CheckParm("-g")+1];
-	else
-		gl_library=NULL; // trust SDL's wisdom here
+	// prepare directories for caching mesh files
+	sprintf (gldir, "%s/glhexen", com_userdir);
+	Sys_mkdir (gldir);
+	sprintf (gldir, "%s/glhexen/boss", com_userdir);
+	Sys_mkdir (gldir);
+	sprintf (gldir, "%s/glhexen/puzzle", com_userdir);
+	Sys_mkdir (gldir);
 
-	// In case of user-specified gl library, look for it under the
-	// installation directory, too: the user may forget providing
-	// a valid path information. In that case, make sure it doesnt
-	// contain any path information and exists in our own basedir,
-	// then store it to the var gl_liblocal
-	gl_liblocal = NULL;
-	if ( gl_library && !(strcmp(gl_library, COM_SkipPath(gl_library))) )
-	{
-		gl_liblocal = va("%s/%s", com_basedir, COM_SkipPath(gl_library));
-		if (access(gl_liblocal, R_OK) == -1)
-			gl_liblocal = NULL;
-	}
+#ifdef GL_DLSYM
+	if ((i = COM_CheckParm("--gllibrary")))
+		gl_library = com_argv[i+1];
+	else if ((i = COM_CheckParm("-g")))
+		gl_library = com_argv[i+1];
+	// else: leave as NULL and trust SDL's wisdom here
 #endif
 
 	modelist[0].type = MS_WINDOWED;
@@ -1161,20 +1186,24 @@ void	VID_Init (unsigned char *palette)
 	// windowed mode is default
 	vid_default = MODE_WINDOWED;
 	// see if the user wants fullscreen
-	if (COM_CheckParm("-fullscreen") || COM_CheckParm("-f") ||
-		COM_CheckParm("-fs") || COM_CheckParm("--fullscreen"))
+	if (COM_CheckParm("-f") || COM_CheckParm("-fullscreen") || COM_CheckParm("--fullscreen"))
 	{
 		vid_default = MODE_FULLSCREEN_DEFAULT;
 	}
 
-	if (COM_CheckParm("-width"))
+	i = COM_CheckParm("-width");
+	if (i && i < com_argc-1)
 	{
-		width = atoi(com_argv[COM_CheckParm("-width")+1]);
-		if (COM_CheckParm("-height")) {
+		width = atoi(com_argv[i+1]);
+		i = COM_CheckParm("-height");
+		if (i && i < com_argc-1)
+		{
 			// we removed the old stuff, and now we need
 			// some sanity check here...
-			height = atoi(com_argv[COM_CheckParm("-height")+1]);
-		} else {
+			height = atoi(com_argv[i+1]);
+		}
+		else
+		{
 			// we currently do "normal" modes with 4/3 ratio
 			height = 3 * width / 4;
 		}
@@ -1190,9 +1219,10 @@ void	VID_Init (unsigned char *palette)
 		height = 3 * width / 4;
 	}
 
-	if (COM_CheckParm("-bpp"))
+	i = COM_CheckParm("-bpp");
+	if (i && i < com_argc-1)
 	{
-		bpp = atoi(com_argv[COM_CheckParm("-bpp")+1]);
+		bpp = atoi(com_argv[i+1]);
 	}
 	else
 	{
@@ -1215,16 +1245,9 @@ void	VID_Init (unsigned char *palette)
 	ClearAllStates ();
 
 	GL_Init ();
-	Gamma_Init();
+	VID_InitGamma();
 
-	// use com_userdir instead of com_gamedir to stock cached mesh files
-	sprintf (gldir, "%s/glhexen", com_userdir);
-	Sys_mkdir (gldir);
-	sprintf (gldir, "%s/glhexen/boss", com_userdir);
-	Sys_mkdir (gldir);
-	sprintf (gldir, "%s/glhexen/puzzle", com_userdir);
-	Sys_mkdir (gldir);
-
+	// set our palette
 	VID_SetPalette (palette);
 
 	// enable paletted textures if -paltex cmdline arg is used
@@ -1245,6 +1268,69 @@ void	VID_Init (unsigned char *palette)
 		fullsbardraw = true;
 }
 
+
+/*
+================
+VID_ToggleFullscreen
+Handles switching between fullscreen/windowed modes
+and brings the mouse to a proper state afterwards
+================
+*/
+extern qboolean mousestate_sa;
+void VID_ToggleFullscreen (void)
+{
+	// This doesn't seem to cause any trouble even
+	// with is_3dfx == true and FX_GLX_MESA == f
+	if (SDL_WM_ToggleFullScreen(screen)==1)
+	{
+		Cvar_SetValue ("vid_mode", !vid_mode.value);
+		modestate = (vid_mode.value) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
+		if (vid_mode.value)
+		{
+#if 0	// change to 1 if dont want to disable mouse in fullscreen
+			if (!_enable_mouse.value)
+				Cvar_SetValue ("_enable_mouse", 1);
+#endif
+			// activate mouse in fullscreen mode
+			// in_sdl.c handles other non-moused cases
+			if (mousestate_sa)
+				IN_ActivateMouse();
+		}
+		else
+		{	// windowed mode:
+			// deactivate mouse if we are in menus
+			if (mousestate_sa)
+				IN_DeactivateMouse();
+		}
+	}
+	else
+	{
+		Con_Printf ("SDL_WM_ToggleFullScreen failed\n");
+	}
+}
+
+
+#ifndef H2W
+//unused in hexenworld
+void D_ShowLoadingSize(void)
+{
+	if (!vid_initialized)
+		return;
+
+	glDrawBuffer_fp  (GL_FRONT);
+
+	SCR_DrawLoading();
+
+	glDrawBuffer_fp  (GL_BACK);
+
+	glFlush_fp();
+}
+#endif
+
+
+//========================================================
+// Video menu stuff
+//========================================================
 
 #define MAX_COLUMN_SIZE		9
 #define MODE_AREA_HEIGHT	(MAX_COLUMN_SIZE + 2)
@@ -1276,41 +1362,6 @@ void VID_MenuDraw (void)
 
 /*
 ================
-VID_ToggleFullscreen
-Handles switching between fullscreen/windowed modes
-and brings the mouse to a proper state afterwards
-================
-*/
-extern qboolean mousestate_sa;
-void VID_ToggleFullscreen (void)
-{
-	// This doesn't seem to cause any trouble even
-	// with is_3dfx == true and FX_GLX_MESA == f
-	if (SDL_WM_ToggleFullScreen(screen)==1) {
-		Cvar_SetValue ("vid_mode", !vid_mode.value);
-		modestate = (vid_mode.value) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
-		if (vid_mode.value) {
-#if 0	// change to 1 if dont want to disable mouse in fullscreen
-			if (!_enable_mouse.value)
-				Cvar_SetValue ("_enable_mouse", 1);
-#endif
-			// activate mouse in fullscreen mode
-			// in_sdl.c handles other non-moused cases
-			if (mousestate_sa)
-				IN_ActivateMouse();
-		} else {
-			// windowed mode:
-			// deactivate mouse if we are in menus
-			if (mousestate_sa)
-				IN_DeactivateMouse();
-		}
-	} else {
-		Con_Printf ("SDL_WM_ToggleFullScreen failed\n");
-	}
-}
-
-/*
-================
 VID_MenuKey
 ================
 */
@@ -1329,19 +1380,3 @@ void VID_MenuKey (int key)
 	}
 }
 
-#ifndef H2W
-//unused in hexenworld
-void D_ShowLoadingSize(void)
-{
-	if (!vid_initialized)
-		return;
-
-	glDrawBuffer_fp  (GL_FRONT);
-
-	SCR_DrawLoading();
-
-	glDrawBuffer_fp  (GL_BACK);
-
-	glFlush_fp();
-}
-#endif

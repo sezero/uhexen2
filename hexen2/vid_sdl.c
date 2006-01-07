@@ -3,7 +3,7 @@
    SDL video driver
    Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.40 2005-12-11 18:30:08 sezero Exp $
+   $Id: vid_sdl.c,v 1.41 2006-01-07 09:54:29 sezero Exp $
 
    Changed by S.A. 7/11/04, 27/12/04
 
@@ -38,7 +38,10 @@
 #define MAX_MODE_LIST	30
 #define VID_ROW_SIZE	3
 
-SDL_Surface	*screen;
+unsigned char	vid_curpal[256*3];
+unsigned short	d_8to16table[256];
+unsigned	d_8to24table[256];
+
 byte globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
 byte *lastsourcecolormap = NULL;
 
@@ -51,30 +54,24 @@ qboolean	in_mode_set;
 static int	enable_mouse;
 static qboolean	palette_changed;
 
+static SDL_Surface	*screen;
+
 viddef_t	vid;		// global video state
 
 // Note that 0 is MODE_WINDOWED and 1 is MODE_FULLSCREEN_DEFAULT
 cvar_t		vid_mode = {"vid_mode","0", false};
-cvar_t		vid_config_x = {"vid_config_x","800", true};
-cvar_t		vid_config_y = {"vid_config_y","600", true};
+cvar_t		vid_config_x = {"vid_config_x","320", true};
+cvar_t		vid_config_y = {"vid_config_y","240", true};
 cvar_t		_enable_mouse = {"_enable_mouse","1", true};
 cvar_t		vid_showload = {"vid_showload", "1"};
 
-int		vid_modenum = NO_MODE;
-int		vid_default = MODE_WINDOWED;
-
+static int	vid_modenum = NO_MODE;
+static int	vid_default = MODE_WINDOWED;
 modestate_t	modestate = MS_UNINIT;
 
 static byte		*vid_surfcache;
 static int		vid_surfcachesize;
 static int		VID_highhunkmark;
-
-unsigned char	vid_curpal[256*3];
-
-unsigned short	d_8to16table[256];
-unsigned	d_8to24table[256];
-
-int	mode;
 
 typedef struct {
 	modestate_t	type;
@@ -89,16 +86,31 @@ typedef struct {
 
 static vmode_t	modelist[MAX_MODE_LIST];
 
+static int VID_SetMode (int modenum, unsigned char *palette);
+
 void VID_MenuDraw (void);
 void VID_MenuKey (int key);
 
+// window manager stuff
+#if defined(H2W)
+#	define WM_TITLEBAR_TEXT	"HexenWorld"
+#	define WM_ICON_TEXT	"HexenWorld"
+#elif defined(H2MP)
+#	define WM_TITLEBAR_TEXT	"Portal of Praevus"
+#	define WM_ICON_TEXT	"PRAEVUS"
+#else
+#	define WM_TITLEBAR_TEXT	"Hexen II"
+#	define WM_ICON_TEXT	"HEXEN2"
+#endif
+
+//====================================
 
 /*
 ================
 ClearAllStates
 ================
 */
-void ClearAllStates (void)
+static void ClearAllStates (void)
 {
 	int		i;
 	
@@ -118,7 +130,7 @@ void ClearAllStates (void)
 VID_AllocBuffers
 ================
 */
-qboolean VID_AllocBuffers (int width, int height)
+static qboolean VID_AllocBuffers (int width, int height)
 {
 	int		tsize, tbuffersize;
 
@@ -158,6 +170,10 @@ qboolean VID_AllocBuffers (int width, int height)
 
 static void VID_SetIcon (void)
 {
+	SDL_Surface *icon;
+	SDL_Color color;
+	Uint8 *ptr;
+	int i, mask;
 #if defined(H2W)
 	// hexenworld
 	#include "../icons/h2w_ico.xbm"
@@ -168,10 +184,6 @@ static void VID_SetIcon (void)
 	// plain hexen2
 	#include "icons/h2_ico.xbm"
 #endif
-	SDL_Surface *icon;
-	SDL_Color color;
-	Uint8 *ptr;
-	int i, mask;
 
 	icon = SDL_CreateRGBSurface(SDL_SWSURFACE, HOT_ICON_WIDTH, HOT_ICON_HEIGHT, 8, 0, 0, 0, 0);
 	if (icon == NULL)
@@ -201,9 +213,9 @@ static void VID_SetIcon (void)
 }
 
 
-int VID_SetMode (int modenum, unsigned char *palette)
+static int VID_SetMode (int modenum, unsigned char *palette)
 {
-	Uint32 flags = (SDL_SWSURFACE|SDL_HWPALETTE);
+	Uint32 flags;
 	int			temp;
 
 	// so Con_Printfs don't mess us up by forcing vid and snd updates
@@ -223,6 +235,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	else
 		modestate = MS_FULLSCREEN;
 
+	flags = (SDL_SWSURFACE|SDL_HWPALETTE);
 	if (modestate == MS_FULLSCREEN)
 		flags |= SDL_FULLSCREEN;
 
@@ -255,13 +268,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	VID_SetPalette (palette);
 
-#if defined(H2W)
-	SDL_WM_SetCaption("HexenWorld", "HexenWorld");
-#elif defined(H2MP)
-	SDL_WM_SetCaption("Portal of Praevus", "PRAEVUS");
-#else
-	SDL_WM_SetCaption("Hexen II", "HEXEN2");
-#endif
+	SDL_WM_SetCaption(WM_TITLEBAR_TEXT, WM_ICON_TEXT);
 
 	Cvar_SetValue ("vid_mode", (float)modenum);
 
@@ -389,8 +396,7 @@ void	VID_Init (unsigned char *palette)
 	// default mode is windowed
 	vid_default = MODE_WINDOWED;
 	// see if the user wants fullscreen
-	if (COM_CheckParm("-fullscreen") || COM_CheckParm ("--fullscreen")
-			|| COM_CheckParm ("-f") || COM_CheckParm ("-fs"))
+	if (COM_CheckParm("-f") || COM_CheckParm("-fullscreen") || COM_CheckParm("--fullscreen"))
 	{
 		vid_default = MODE_FULLSCREEN_DEFAULT;
 	}
@@ -451,7 +457,7 @@ void	VID_Shutdown (void)
 FlipScreen
 ================
 */
-void FlipScreen(vrect_t *rects)
+static void FlipScreen(vrect_t *rects)
 {
 	while (rects) {
 		SDL_UpdateRect (screen, rects->x, rects->y, rects->width,
@@ -604,7 +610,7 @@ static void VID_SetGamma(void)
 
 
 //==========================================================================
-#ifndef H2W
+
 /*
 ================
 VID_HandlePause
@@ -631,7 +637,46 @@ void VID_HandlePause (qboolean paused)
 		}
 	}
 }
-#endif
+
+
+/*
+================
+VID_ToggleFullscreen
+Handles switching between fullscreen/windowed modes
+and brings the mouse to a proper state afterwards
+================
+*/
+extern qboolean mousestate_sa;
+void VID_ToggleFullscreen (void)
+{
+	if (SDL_WM_ToggleFullScreen(screen)==1)
+	{
+		Cvar_SetValue ("vid_mode", !vid_mode.value);
+		modestate = (vid_mode.value) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
+		if (vid_mode.value)
+		{
+			// activate mouse in fullscreen mode
+			// in_sdl.c handles other non-moused cases
+			if (mousestate_sa)
+				IN_ActivateMouse();
+		}
+		else
+		{	// windowed mode:
+			// deactivate mouse if we are in menus
+			if (mousestate_sa)
+				IN_DeactivateMouse();
+		}
+	}
+	else
+	{
+	    Con_Printf ("SDL_WM_ToggleFullScreen failed\n");
+	}
+}
+
+
+//========================================================
+// Video menu stuff
+//========================================================
 
 #define MAX_COLUMN_SIZE		5
 #define MODE_AREA_HEIGHT	(MAX_COLUMN_SIZE + 6)
@@ -662,35 +707,6 @@ void VID_MenuDraw (void)
 
 /*
 ================
-VID_ToggleFullscreen
-Handles switching between fullscreen/windowed modes
-and brings the mouse to a proper state afterwards
-================
-*/
-extern qboolean mousestate_sa;
-void VID_ToggleFullscreen (void)
-{
-	if (SDL_WM_ToggleFullScreen(screen)==1) {
-		Cvar_SetValue ("vid_mode", !vid_mode.value);
-		modestate = (vid_mode.value) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
-		if (vid_mode.value) {
-			// activate mouse in fullscreen mode
-			// in_sdl.c handles other non-moused cases
-			if (mousestate_sa)
-				IN_ActivateMouse();
-		} else {
-			// windowed mode:
-			// deactivate mouse if we are in menus
-			if (mousestate_sa)
-				IN_DeactivateMouse();
-		}
-	} else {
-	    Con_Printf ("SDL_WM_ToggleFullScreen failed\n");
-	}
-}
-
-/*
-================
 VID_MenuKey
 ================
 */
@@ -710,6 +726,14 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.40  2005/12/11 18:30:08  sezero
+ * updated the software sdl renderer: removed a lot of unnecessary
+ * things which aren't of use in its current state with no mode
+ * switching feature. it now follows the same style as in the sdlgl
+ * version. placed D_BeginDirectRect and D_EndDirectRect bits taken
+ * from quakeforge, so the rotating skull now works. the loading
+ * plaque now works in fullscreen modes, which it didn't before.
+ *
  * Revision 1.39  2005/12/04 11:19:18  sezero
  * gamma stuff update
  *

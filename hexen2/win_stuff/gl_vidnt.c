@@ -49,7 +49,7 @@ lmode_t	lowresmodes[] = {
 
 #ifdef GL_DLSYM
 HINSTANCE	hInstGL;
-const char	*gl_library;
+static const char	*gl_library;
 #endif
 const char	*gl_vendor;
 const char	*gl_renderer;
@@ -59,7 +59,7 @@ int		gl_max_size = 256;
 qboolean	is8bit = false;
 qboolean	is_3dfx = false;
 qboolean	gl_mtexable = false;
-int		num_tmus = 1;
+static int	num_tmus = 1;
 
 qboolean	DDActive;
 qboolean	scr_skipupdate;
@@ -76,27 +76,25 @@ static qboolean vid_wassuspended = false;
 static int	enable_mouse;
 static HICON	hIcon;
 
-int		DIBWidth, DIBHeight;
-RECT		WindowRect;
-DWORD		WindowStyle, ExWindowStyle;
+static int	DIBWidth, DIBHeight;
+static RECT	WindowRect;
+static DWORD	WindowStyle, ExWindowStyle;
 
 HWND		mainwindow, dibwindow;
 
-int		vid_modenum = NO_MODE;
-int		vid_default = MODE_WINDOWED;
+static int	vid_modenum = NO_MODE;
+static int	vid_default = MODE_WINDOWED;
 static int	windowed_default;
 unsigned char	vid_curpal[256*3];
 static qboolean fullsbardraw = false;
 
-HGLRC		baseRC;
-HDC		maindc;
+static HGLRC	baseRC;
+static HDC	maindc;
 
-cvar_t	gl_ztrick = {"gl_ztrick","0",true};
+cvar_t		gl_ztrick = {"gl_ztrick","0",true};
 cvar_t		gl_purge_maptex = {"gl_purge_maptex", "1", true};
 		/* whether or not map-specific OGL textures
 		   are flushed from map. default == yes  */
-
-HWND WINAPI InitializeWindow (HINSTANCE hInstance, int nCmdShow);
 
 viddef_t	vid;				// global video state
 
@@ -137,17 +135,17 @@ void VID_MenuDraw (void);
 void VID_MenuKey (int key);
 
 LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-void AppActivate(BOOL fActive, BOOL minimize);
-char *VID_GetModeDescription (int mode);
-void ClearAllStates (void);
-void VID_UpdateWindowStatus (void);
-void GL_Init (void);
+static void AppActivate(BOOL fActive, BOOL minimize);
+static char *VID_GetModeDescription (int mode);
+static void ClearAllStates (void);
+static void VID_UpdateWindowStatus (void);
+static void GL_Init (void);
 
 typedef void (APIENTRY *FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
-FX_SET_PALETTE_EXT MyglColorTableEXT;
+static FX_SET_PALETTE_EXT MyglColorTableEXT;
 typedef BOOL (APIENTRY *GAMMA_RAMP_FN)(HDC, LPVOID);
-GAMMA_RAMP_FN GetDeviceGammaRamp_f;
-GAMMA_RAMP_FN SetDeviceGammaRamp_f;
+static GAMMA_RAMP_FN GetDeviceGammaRamp_f;
+static GAMMA_RAMP_FN SetDeviceGammaRamp_f;
 
 //====================================
 
@@ -162,16 +160,13 @@ RECT		window_rect;
 qboolean	have_stencil = false;
 
 extern unsigned short	ramps[3][256];
-unsigned short	orig_ramps[3][256];
-qboolean	gammaworks = false;
+static unsigned short	orig_ramps[3][256];
+static qboolean	gammaworks = false;
 qboolean	gl_dogamma = false;
 
+//====================================
 
-// direct draw software compatability stuff
-
-void VID_HandlePause (qboolean paused)
-{
-}
+// for compatability with software renderer
 
 void VID_LockBuffer (void)
 {
@@ -189,8 +184,15 @@ void D_EndDirectRect (int x, int y, int width, int height)
 {
 }
 
+void VID_HandlePause (qboolean paused)
+{
+}
 
-void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
+
+
+//====================================
+
+static void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 {
 	int	CenterX, CenterY;
 
@@ -204,7 +206,7 @@ void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 			SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_DRAWFRAME);
 }
 
-void VID_ConWidth(int modenum)
+static void VID_ConWidth(int modenum)
 {
 	int i;
 
@@ -236,7 +238,7 @@ void VID_ConWidth(int modenum)
 	}
 }
 
-qboolean VID_SetWindowedMode (int modenum)
+static qboolean VID_SetWindowedMode (int modenum)
 {
 	HDC	hdc;
 	int	lastmodestate, width, height;
@@ -293,10 +295,10 @@ qboolean VID_SetWindowedMode (int modenum)
 
 	modestate = MS_WINDOWED;
 
-// because we have set the background brush for the window to NULL
-// (to avoid flickering when re-sizing the window on the desktop),
-// we clear the window to black when created, otherwise it will be
-// empty while Quake starts up.
+	// Because we have set the background brush for the window to NULL
+	// (to avoid flickering when re-sizing the window on the desktop),
+	// we clear the window to black when created, otherwise it will be
+	// empty while Quake starts up.
 	hdc = GetDC(dibwindow);
 	PatBlt(hdc,0,0,WindowRect.right,WindowRect.bottom,BLACKNESS);
 	ReleaseDC(dibwindow, hdc);
@@ -314,7 +316,7 @@ qboolean VID_SetWindowedMode (int modenum)
 }
 
 
-qboolean VID_SetFullDIBMode (int modenum)
+static qboolean VID_SetFullDIBMode (int modenum)
 {
 	HDC	hdc;
 	int	lastmodestate, width, height;
@@ -405,7 +407,7 @@ qboolean VID_SetFullDIBMode (int modenum)
 }
 
 
-int VID_SetMode (int modenum, unsigned char *palette)
+static int VID_SetMode (int modenum, unsigned char *palette)
 {
 	int		original_mode, temp;
 	qboolean	stat = false;
@@ -512,7 +514,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 VID_UpdateWindowStatus
 ================
 */
-void VID_UpdateWindowStatus (void)
+static void VID_UpdateWindowStatus (void)
 {
 	window_rect.left = window_x;
 	window_rect.top = window_y;
@@ -527,7 +529,7 @@ void VID_UpdateWindowStatus (void)
 
 //====================================
 
-void Check3DfxGammaControlExtension (void)
+static void VID_Check3dfxGamma (void)
 {
 	if (!strstr(gl_extensions, "WGL_3DFX_gamma_control"))
 	{
@@ -547,9 +549,30 @@ void Check3DfxGammaControlExtension (void)
 	}
 }
 
+static void VID_InitGamma (void)
+{
+	GetDeviceGammaRamp_f = NULL;
+	SetDeviceGammaRamp_f = NULL;
+
+	VID_Check3dfxGamma ();
+
+	if (GetDeviceGammaRamp_f)
+		gammaworks = GetDeviceGammaRamp_f(maindc, orig_ramps);
+	else
+		gammaworks = false;
+
+	if (!gammaworks)
+	{
+		// we can still adjust the brightness...
+		Con_Printf("gamma not available, using gl tricks\n");
+		gl_dogamma = true;
+	}
+}
+
+
 int		texture_extension_number = 1;
 
-void CheckMultiTextureExtensions(void)
+static void CheckMultiTextureExtensions(void)
 {
 	gl_mtexable = false;
 
@@ -588,7 +611,7 @@ void CheckMultiTextureExtensions(void)
 	}
 }
 
-void CheckStencilBuffer(void)
+static void CheckStencilBuffer(void)
 {
 	have_stencil = false;
 
@@ -612,6 +635,36 @@ void CheckStencilBuffer(void)
 	}
 }
 
+static void GL_InitLightmapBits (void)
+{
+	gl_lightmap_format = GL_LUMINANCE;
+	if (COM_CheckParm ("-lm_1"))
+		gl_lightmap_format = GL_LUMINANCE;
+	else if (COM_CheckParm ("-lm_a"))
+		gl_lightmap_format = GL_ALPHA;
+	else if (COM_CheckParm ("-lm_i"))
+		gl_lightmap_format = GL_INTENSITY;
+//	else if (COM_CheckParm ("-lm_2"))
+//		gl_lightmap_format = GL_RGBA4;
+	else if (COM_CheckParm ("-lm_4"))
+		gl_lightmap_format = GL_RGBA;
+
+	switch (gl_lightmap_format)
+	{
+	case GL_RGBA:
+		lightmap_bytes = 4;
+		break;
+//	case GL_RGBA4:
+//		lightmap_bytes = 2;
+//		break;
+	case GL_LUMINANCE:
+	case GL_INTENSITY:
+	case GL_ALPHA:
+		lightmap_bytes = 1;
+		break;
+	}
+}
+
 #ifdef GL_DLSYM
 static void GL_CloseLibrary(void)
 {
@@ -626,7 +679,7 @@ static void GL_CloseLibrary(void)
 	// free the library
 	if (hInstGL != NULL)
 		FreeLibrary(hInstGL);
-        hInstGL = NULL;
+	hInstGL = NULL;
 }
 
 static qboolean GL_OpenLibrary(const char *name)
@@ -657,7 +710,7 @@ static qboolean GL_OpenLibrary(const char *name)
 	return true;
 }
 
-void GL_Init_Functions(void)
+static void GL_Init_Functions(void)
 {
   glBegin_fp = (glBegin_f) GetProcAddress(hInstGL, "glBegin");
   if (glBegin_fp == 0) {Sys_Error("glBegin not found in GL library");}
@@ -785,36 +838,8 @@ void GL_Init_Functions(void)
 GL_Init
 ===============
 */
-void GL_Init (void)
+static void GL_Init (void)
 {
-	// setup lightmaps format
-	gl_lightmap_format = GL_LUMINANCE;
-	if (COM_CheckParm ("-lm_1"))
-		gl_lightmap_format = GL_LUMINANCE;
-	else if (COM_CheckParm ("-lm_a"))
-		gl_lightmap_format = GL_ALPHA;
-	else if (COM_CheckParm ("-lm_i"))
-		gl_lightmap_format = GL_INTENSITY;
-//	else if (COM_CheckParm ("-lm_2"))
-//		gl_lightmap_format = GL_RGBA4;
-	else if (COM_CheckParm ("-lm_4"))
-		gl_lightmap_format = GL_RGBA;
-
-	switch (gl_lightmap_format)
-	{
-	case GL_RGBA:
-		lightmap_bytes = 4;
-		break;
-//	case GL_RGBA4:
-//		lightmap_bytes = 2;
-//		break;
-	case GL_LUMINANCE:
-	case GL_INTENSITY:
-	case GL_ALPHA:
-		lightmap_bytes = 1;
-		break;
-	}
-
 #ifdef GL_DLSYM
 	// initialize gl function pointers
 	GL_Init_Functions();
@@ -836,6 +861,7 @@ void GL_Init (void)
 		gl_max_size = 1024;
 	Con_Printf("OpenGL max.texture size: %i\n", gl_max_size);
 
+	is_3dfx = false;
 	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",  4)  ||
 	    !Q_strncasecmp ((char *)gl_renderer, "Glide", 5)  ||
 	    !Q_strncasecmp ((char *)gl_renderer, "Mesa Glide", 10))
@@ -847,11 +873,11 @@ void GL_Init (void)
 	if (Q_strncasecmp(gl_renderer,"PowerVR",7)==0)
 		fullsbardraw = true;
 
-	GetDeviceGammaRamp_f = NULL;
-	SetDeviceGammaRamp_f = NULL;
+	VID_InitGamma ();
+
 	CheckMultiTextureExtensions ();
-	Check3DfxGammaControlExtension();
 	CheckStencilBuffer();
+	GL_InitLightmapBits();
 
 	glClearColor_fp (1,0,0,0);
 	glCullFace_fp(GL_FRONT);
@@ -1118,23 +1144,23 @@ void	VID_Shutdown (void)
 //==========================================================================
 
 
-BOOL bSetupPixelFormat(HDC hDC)
+static BOOL bSetupPixelFormat(HDC hDC)
 {
-    int pixelformat;
+	int pixelformat;
 
-    if ( (pixelformat = ChoosePixelFormat(hDC, &pfd)) == 0 )
-    {
-        MessageBox(NULL, "ChoosePixelFormat failed", "Error", MB_OK);
-        return FALSE;
-    }
+	if ( (pixelformat = ChoosePixelFormat(hDC, &pfd)) == 0 )
+	{
+		MessageBox(NULL, "ChoosePixelFormat failed", "Error", MB_OK);
+		return FALSE;
+	}
 
-    if (SetPixelFormat(hDC, pixelformat, &pfd) == FALSE)
-    {
-        MessageBox(NULL, "SetPixelFormat failed", "Error", MB_OK);
-        return FALSE;
-    }
+	if (SetPixelFormat(hDC, pixelformat, &pfd) == FALSE)
+	{
+		MessageBox(NULL, "SetPixelFormat failed", "Error", MB_OK);
+		return FALSE;
+	}
 
-    return TRUE;
+	return TRUE;
 }
 
 
@@ -1189,7 +1215,7 @@ MapKey
 Map from windows to quake keynums
 =======
 */
-int MapKey (int key)
+static int MapKey (int key)
 {
 	key = (key>>16)&255;
 	if (key > 127)
@@ -1212,7 +1238,7 @@ MAIN WINDOW
 ClearAllStates
 ================
 */
-void ClearAllStates (void)
+static void ClearAllStates (void)
 {
 	int		i;
 	
@@ -1226,7 +1252,7 @@ void ClearAllStates (void)
 	IN_ClearStates ();
 }
 
-void AppActivate(BOOL fActive, BOOL minimize)
+static void AppActivate(BOOL fActive, BOOL minimize)
 /****************************************************************************
 *
 * Function:     AppActivate
@@ -1301,7 +1327,9 @@ void AppActivate(BOOL fActive, BOOL minimize)
 	}
 }
 
+
 static int MWheelAccumulator;
+static UINT  uMSG_MOUSEWHEEL;
 extern cvar_t mwheelthreshold;
 extern LONG CDAudio_MessageHandler(HWND,UINT,WPARAM,LPARAM);
 
@@ -1338,6 +1366,12 @@ LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			break;
 
 		case WM_CREATE:
+			if (Win95)
+			{
+				uMSG_MOUSEWHEEL = RegisterWindowMessage("MSWHEEL_ROLLMSG");
+				if (!uMSG_MOUSEWHEEL)
+					Con_Printf ("couldn't register mousewheel\n");
+			}
 			break;
 
 		case WM_MOVE:
@@ -1450,18 +1484,18 @@ LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 VID_NumModes
 =================
 */
-int VID_NumModes (void)
+static int VID_NumModes (void)
 {
 	return nummodes;
 }
 
-	
+
 /*
 =================
 VID_GetModePtr
 =================
 */
-vmode_t *VID_GetModePtr (int modenum)
+static vmode_t *VID_GetModePtr (int modenum)
 {
 	if ((modenum >= 0) && (modenum < nummodes))
 		return &modelist[modenum];
@@ -1475,7 +1509,7 @@ vmode_t *VID_GetModePtr (int modenum)
 VID_GetModeDescription
 =================
 */
-char *VID_GetModeDescription (int mode)
+static char *VID_GetModeDescription (int mode)
 {
 	char		*pinfo;
 	vmode_t		*pv;
@@ -1503,7 +1537,7 @@ char *VID_GetModeDescription (int mode)
 
 // KJB: Added this to return the mode driver name in description for console
 
-char *VID_GetExtModeDescription (int mode)
+static char *VID_GetExtModeDescription (int mode)
 {
 	static char	pinfo[100];
 	vmode_t		*pv;
@@ -1542,7 +1576,7 @@ char *VID_GetExtModeDescription (int mode)
 VID_DescribeCurrentMode_f
 =================
 */
-void VID_DescribeCurrentMode_f (void)
+static void VID_DescribeCurrentMode_f (void)
 {
 	Con_Printf ("%s\n", VID_GetExtModeDescription (vid_modenum));
 }
@@ -1553,10 +1587,10 @@ void VID_DescribeCurrentMode_f (void)
 VID_NumModes_f
 =================
 */
-void VID_NumModes_f (void)
+static void VID_NumModes_f (void)
 {
 	if (nummodes == 1)
-		Con_Printf ("%d video mode is available\n", nummodes);
+		Con_Printf ("1 video mode is available\n");
 	else
 		Con_Printf ("%d video modes are available\n", nummodes);
 }
@@ -1567,7 +1601,7 @@ void VID_NumModes_f (void)
 VID_DescribeMode_f
 =================
 */
-void VID_DescribeMode_f (void)
+static void VID_DescribeMode_f (void)
 {
 	int	t, modenum;
 
@@ -1586,7 +1620,7 @@ void VID_DescribeMode_f (void)
 VID_DescribeModes_f
 =================
 */
-void VID_DescribeModes_f (void)
+static void VID_DescribeModes_f (void)
 {
 	int	i, lnummodes, t;
 	char	*pinfo;
@@ -1608,7 +1642,7 @@ void VID_DescribeModes_f (void)
 }
 
 
-void VID_InitDIB (HINSTANCE hInstance)
+static void VID_InitDIB (HINSTANCE hInstance)
 {
 	WNDCLASS	wc;
 
@@ -1667,14 +1701,14 @@ void VID_InitDIB (HINSTANCE hInstance)
 VID_InitFullDIB
 =================
 */
-void VID_InitFullDIB (HINSTANCE hInstance)
+static void VID_InitFullDIB (HINSTANCE hInstance)
 {
 	DEVMODE	devmode;
 	int	i, modenum, originalnummodes, existingmode, numlowresmodes;
 	int	j, bpp, done;
 	BOOL	stat;
 
-// enumerate >8 bpp modes
+	// enumerate >8 bpp modes
 	originalnummodes = nummodes;
 	modenum = 0;
 
@@ -1742,7 +1776,7 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 		modenum++;
 	} while (stat);
 
-// see if there are any low-res modes that aren't being reported
+	// see if there are any low-res modes that aren't being reported
 	numlowresmodes = sizeof(lowresmodes) / sizeof(lowresmodes[0]);
 	bpp = 16;
 	done = 0;
@@ -1808,7 +1842,7 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 		Con_SafePrintf ("No fullscreen DIB modes found\n");
 }
 
-void VID_Init8bitPalette() 
+static void VID_Init8bitPalette (void)
 {
 	// Check for 8bit Extensions and initialize them.
 	int	i;
@@ -1857,6 +1891,14 @@ void	VID_Init (unsigned char *palette)
 	Cmd_AddCommand ("vid_describemode", VID_DescribeMode_f);
 	Cmd_AddCommand ("vid_describemodes", VID_DescribeModes_f);
 
+	// prepare directories for caching mesh files
+	sprintf (gldir, "%s/glhexen", com_gamedir);
+	Sys_mkdir (gldir);
+	sprintf (gldir, "%s/glhexen/boss", com_gamedir);
+	Sys_mkdir (gldir);
+	sprintf (gldir, "%s/glhexen/puzzle", com_gamedir);
+	Sys_mkdir (gldir);
+
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
 
 #if !defined(NO_SPLASHES)
@@ -1882,19 +1924,17 @@ void	VID_Init (unsigned char *palette)
 	if (COM_CheckParm("-window") || COM_CheckParm("-w"))
 	{
 		hdc = GetDC (NULL);
-
 		if (GetDeviceCaps(hdc, RASTERCAPS) & RC_PALETTE)
 		{
 			Sys_Error ("Can't run in non-RGB mode");
 		}
-
 		ReleaseDC (NULL, hdc);
 
 		windowed = true;
 
 		vid_default = MODE_WINDOWED;
 	}
-	else
+	else	// fullscreen, default
 	{
 		if (nummodes == 1)
 			Sys_Error ("No RGB fullscreen modes available");
@@ -2075,24 +2115,7 @@ void	VID_Init (unsigned char *palette)
 
 	GL_Init ();
 
-	if (GetDeviceGammaRamp_f)
-		gammaworks = GetDeviceGammaRamp_f(maindc, orig_ramps);
-	else
-		gammaworks = false;
-	if (!gammaworks)
-	{
-		// we can still adjust the brightness...
-		Con_Printf("gamma not available, using gl tricks\n");
-		gl_dogamma = true;
-	}
-
-	sprintf (gldir, "%s/glhexen", com_gamedir);
-	Sys_mkdir (gldir);
-	sprintf (gldir, "%s/glhexen/boss", com_gamedir);
-	Sys_mkdir (gldir);
-	sprintf (gldir, "%s/glhexen/puzzle", com_gamedir);
-	Sys_mkdir (gldir);
-
+	// set our palette
 	VID_SetPalette (palette);
 
 	// Check for 3DFX Extensions and initialize them.
@@ -2110,6 +2133,29 @@ void	VID_Init (unsigned char *palette)
 	if (COM_CheckParm("-fullsbar"))
 		fullsbardraw = true;
 }
+
+
+void VID_ToggleFullscreen (void)
+{
+}
+
+
+#ifndef H2W
+//unused in hexenworld
+void D_ShowLoadingSize(void)
+{
+	if (!vid_initialized)
+		return;
+
+	glDrawBuffer_fp (GL_FRONT);
+
+	SCR_DrawLoading();
+
+	glDrawBuffer_fp (GL_BACK);
+
+	glFlush_fp();
+}
+#endif
 
 
 //========================================================
@@ -2224,26 +2270,5 @@ void VID_MenuKey (int key)
 	default:
 		break;
 	}
-}
-
-#ifndef H2W
-//unused in hexenworld
-void D_ShowLoadingSize(void)
-{
-	if (!vid_initialized)
-		return;
-
-	glDrawBuffer_fp (GL_FRONT);
-
-	SCR_DrawLoading();
-
-	glDrawBuffer_fp (GL_BACK);
-
-	glFlush_fp();
-}
-#endif
-
-void VID_ToggleFullscreen (void)
-{
 }
 

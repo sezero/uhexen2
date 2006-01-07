@@ -77,19 +77,8 @@ void	VID_LockBuffer (void);
 void	VID_UnlockBuffer (void);
 // vid buffer locking
 
-#if defined(PLATFORM_UNIX) && defined(GLQUAKE)
-// doesn't use the palette arg anymore in GL mode. on unix/sdl. O.S
-int VID_SetMode (int modenum);
-#else
-int VID_SetMode (int modenum, unsigned char *palette);
-#endif
-// sets the mode; only used by the Quake engine for resetting to mode 0 (the
-// base mode) on memory allocation failures
-
-#ifndef H2W
 void VID_HandlePause (qboolean paused);
 // called only on Win32, when pause happens, so the mouse can be released
-#endif
 
 void VID_ToggleFullscreen (void);	// from Steven
 // toggles between windowed/fullscreen modes. for unix/sdl

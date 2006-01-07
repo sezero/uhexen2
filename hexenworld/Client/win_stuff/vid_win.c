@@ -9,10 +9,8 @@
 #define MAX_MODE_LIST	30
 #define VID_ROW_SIZE	3
 
-qboolean	dibonly;
-
 // new variables. Pa3PyX
-MGL_surfaceAccessFlagsType	mgldcAccessMode = MGL_NO_ACCESS,
+static MGL_surfaceAccessFlagsType	mgldcAccessMode = MGL_NO_ACCESS,
 				memdcAccessMode = MGL_NO_ACCESS,
 				mgldcWidth = 0,
 				memdcWidth = 0;
@@ -21,19 +19,18 @@ LONG_PTR mgl_wnd_proc;
 byte globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
 byte *lastsourcecolormap = NULL;
 
+static qboolean	dibonly;
 HWND		mainwindow;
-
-HWND WINAPI InitializeWindow (HINSTANCE hInstance, int nCmdShow);
 
 //intermission screen cache reference (to flush on video mode switch)
 extern	cache_user_t	*intermissionScreen;
 
-int			DIBWidth, DIBHeight;
+static int	DIBWidth, DIBHeight;
 qboolean	DDActive;
-RECT		WindowRect;
-DWORD		WindowStyle, ExWindowStyle;
+static RECT	WindowRect;
+static DWORD	WindowStyle, ExWindowStyle;
 
-int			window_center_x, window_center_y, window_x, window_y, window_width, window_height;
+int		window_center_x, window_center_y, window_x, window_y, window_width, window_height;
 RECT		window_rect;
 
 static DEVMODE	gdevmode;
@@ -97,10 +94,10 @@ lmode_t	lowresmodes[] = {
 	{512, 384},
 };
 
-int		vid_modenum = NO_MODE;
-int		vid_testingmode, vid_realmode;
-double		vid_testendtime;
-int		vid_default = MODE_WINDOWED;
+static int	vid_modenum = NO_MODE;
+static int	vid_testingmode, vid_realmode;
+static double	vid_testendtime;
+static int	vid_default = MODE_WINDOWED;
 static int	windowed_default;
 
 modestate_t	modestate = MS_UNINIT;
@@ -114,9 +111,9 @@ unsigned char	vid_curpal[256*3];
 unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
 
-int		driver = grDETECT, mode;
-qboolean	useWinDirect = true, useDirectDraw = true;
-MGLDC	*mgldc = NULL,*memdc = NULL,*dibdc = NULL,*windc = NULL;
+static int	driver = grDETECT, mode;
+static qboolean	useWinDirect = true, useDirectDraw = true;
+static MGLDC	*mgldc = NULL,*memdc = NULL,*dibdc = NULL,*windc = NULL;
 
 typedef struct {
 	modestate_t	type;
@@ -135,8 +132,8 @@ typedef struct {
 static vmode_t	modelist[MAX_MODE_LIST];
 static int		nummodes;
 
-int		aPage;	// Current active display page
-int		vPage;	// Current visible display page
+static int		aPage;	// Current active display page
+static int		vPage;	// Current visible display page
 
 /* Pa3PyX: in MGL 4.05, thare are actually
    three values for waitVRT
@@ -152,8 +149,8 @@ int		vPage;	// Current visible display page
    "1" wait for vertical retrace, "2" triple buffer, and now
    "-1" will mean autodetect.
 */
-MGL_waitVRTFlagType	waitVRT = MGL_waitVRT,
-			defaultVRT = MGL_waitVRT;
+static MGL_waitVRTFlagType	waitVRT = MGL_waitVRT,
+				defaultVRT = MGL_waitVRT;
 
 static vmode_t	badmode;
 
@@ -163,8 +160,9 @@ static byte	backingbuf[48*48];
 void VID_MenuDraw (void);
 void VID_MenuKey (int key);
 
+static int VID_SetMode (int modenum, unsigned char *palette);
+static void AppActivate(BOOL fActive, BOOL minimize);
 LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-void AppActivate(BOOL fActive, BOOL minimize);
 
 
 /*
@@ -172,7 +170,7 @@ void AppActivate(BOOL fActive, BOOL minimize);
 VID_RememberWindowPos
 ================
 */
-void VID_RememberWindowPos (void)
+static void VID_RememberWindowPos (void)
 {
 	RECT	rect;
 
@@ -195,7 +193,7 @@ void VID_RememberWindowPos (void)
 VID_CheckWindowXY
 ================
 */
-void VID_CheckWindowXY (void)
+static void VID_CheckWindowXY (void)
 {
 
 	if (((int)vid_window_x.value > (GetSystemMetrics (SM_CXSCREEN) - 160)) ||
@@ -214,7 +212,7 @@ void VID_CheckWindowXY (void)
 VID_UpdateWindowStatus
 ================
 */
-void VID_UpdateWindowStatus (void)
+static void VID_UpdateWindowStatus (void)
 {
 
 	window_rect.left = window_x;
@@ -233,7 +231,7 @@ void VID_UpdateWindowStatus (void)
 ClearAllStates
 ================
 */
-void ClearAllStates (void)
+static void ClearAllStates (void)
 {
 	int		i;
 	
@@ -253,7 +251,7 @@ void ClearAllStates (void)
 VID_CheckAdequateMem
 ================
 */
-qboolean VID_CheckAdequateMem (int width, int height)
+static qboolean VID_CheckAdequateMem (int width, int height)
 {
 	int		tbuffersize;
 
@@ -283,7 +281,7 @@ qboolean VID_CheckAdequateMem (int width, int height)
 VID_AllocBuffers
 ================
 */
-qboolean VID_AllocBuffers (int width, int height)
+static qboolean VID_AllocBuffers (int width, int height)
 {
 	int		tsize, tbuffersize;
 
@@ -325,8 +323,7 @@ qboolean VID_AllocBuffers (int width, int height)
 	return true;
 }
 
-
-void initFatalError(void)
+static void initFatalError(void)
 {
 	MGL_exit();
 	MGL_fatalError(MGL_errorMsg(MGL_result()));
@@ -338,7 +335,7 @@ void initFatalError(void)
 VID_Windowed_f
 =================
 */
-void VID_Windowed_f (void)
+static void VID_Windowed_f (void)
 {
 
 	VID_SetMode ((int)vid_windowed_mode.value, vid_curpal);
@@ -350,13 +347,13 @@ void VID_Windowed_f (void)
 VID_Fullscreen_f
 =================
 */
-void VID_Fullscreen_f (void)
+static void VID_Fullscreen_f (void)
 {
 
 	VID_SetMode ((int)vid_fullscreen_mode.value, vid_curpal);
 }
 
-int VID_Suspend (MGLDC *dc, int flags)
+static int VID_Suspend (MGLDC *dc, int flags)
 {
 	int i;
 	if (flags & MGL_DEACTIVATE)
@@ -392,7 +389,7 @@ int VID_Suspend (MGLDC *dc, int flags)
 }
 
 
-void registerAllDispDrivers(void)
+static void registerAllDispDrivers(void)
 {
 	/* Event though these driver require WinDirect, we register
 	 * them so that they will still be available even if DirectDraw
@@ -420,14 +417,14 @@ void registerAllDispDrivers(void)
 }
 
 
-void registerAllMemDrivers(void)
+static void registerAllMemDrivers(void)
 {
 	/* Register memory context drivers */
 	MGL_registerDriver(MGL_PACKED8NAME,PACKED8_driver);
 }
 
 
-void VID_InitMGLFull (HINSTANCE hInstance)
+static void VID_InitMGLFull (HINSTANCE hInstance)
 {
 	int			i, xRes, yRes, bits, lowres, curmode, temp;
 	int			lowstretchedres, stretchedmode, lowstretched;
@@ -581,7 +578,7 @@ void VID_InitMGLFull (HINSTANCE hInstance)
 }
 
 
-MGLDC *createDisplayDC(int forcemem)
+static MGLDC *createDisplayDC(int forcemem)
 /****************************************************************************
 *
 * Function:     createDisplayDC
@@ -681,7 +678,7 @@ MGLDC *createDisplayDC(int forcemem)
 }
 
 
-void VID_InitMGLDIB (HINSTANCE hInstance)
+static void VID_InitMGLDIB (HINSTANCE hInstance)
 {
 	WNDCLASS		wc;
 	HDC				hdc;
@@ -772,7 +769,7 @@ void VID_InitMGLDIB (HINSTANCE hInstance)
 VID_InitFullDIB
 =================
 */
-void VID_InitFullDIB (HINSTANCE hInstance)
+static void VID_InitFullDIB (HINSTANCE hInstance)
 {
 	DEVMODE	devmode;
 	int		i, j, modenum, existingmode, originalnummodes, lowestres;
@@ -1063,7 +1060,7 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 VID_NumModes
 =================
 */
-int VID_NumModes (void)
+static int VID_NumModes (void)
 {
 	return nummodes;
 }
@@ -1074,7 +1071,7 @@ int VID_NumModes (void)
 VID_GetModePtr
 =================
 */
-vmode_t *VID_GetModePtr (int modenum)
+static vmode_t *VID_GetModePtr (int modenum)
 {
 
 	if ((modenum >= 0) && (modenum < nummodes))
@@ -1089,7 +1086,7 @@ vmode_t *VID_GetModePtr (int modenum)
 VID_CheckModedescFixup
 =================
 */
-void VID_CheckModedescFixup (int modenum)
+static void VID_CheckModedescFixup (int modenum)
 {
 	int		x, y, stretch;
 
@@ -1118,7 +1115,7 @@ void VID_CheckModedescFixup (int modenum)
 VID_GetModeDescriptionMemCheck
 =================
 */
-char *VID_GetModeDescriptionMemCheck (int modenum)
+static char *VID_GetModeDescriptionMemCheck (int modenum)
 {
 	char		*pinfo;
 	vmode_t		*pv;
@@ -1148,7 +1145,7 @@ char *VID_GetModeDescriptionMemCheck (int modenum)
 VID_GetModeDescription
 =================
 */
-char *VID_GetModeDescription (int modenum)
+static char *VID_GetModeDescription (int modenum)
 {
 	char		*pinfo;
 	vmode_t		*pv;
@@ -1171,7 +1168,7 @@ VID_GetModeDescription2
 Tacks on "windowed" or "fullscreen"
 =================
 */
-char *VID_GetModeDescription2 (int modenum)
+static char *VID_GetModeDescription2 (int modenum)
 {
 	static char	pinfo[40];
 	vmode_t		*pv;
@@ -1202,7 +1199,7 @@ char *VID_GetModeDescription2 (int modenum)
 
 // KJB: Added this to return the mode driver name in description for console
 
-char *VID_GetExtModeDescription (int modenum)
+static char *VID_GetExtModeDescription (int modenum)
 {
 	static char	pinfo[40];
 	vmode_t		*pv;
@@ -1231,7 +1228,7 @@ char *VID_GetExtModeDescription (int modenum)
 }
 
 
-void DestroyDIBWindow (void)
+static void DestroyDIBWindow (void)
 {
 
 	if (modestate == MS_WINDOWED)
@@ -1246,7 +1243,7 @@ void DestroyDIBWindow (void)
 }
 
 
-void DestroyFullscreenWindow (void)
+static void DestroyFullscreenWindow (void)
 {
 
 	if (modestate == MS_FULLSCREEN)
@@ -1261,8 +1258,7 @@ void DestroyFullscreenWindow (void)
 }
 
 
-
-void DestroyFullDIBWindow (void)
+static void DestroyFullDIBWindow (void)
 {
 	if (modestate == MS_FULLDIB)
 	{
@@ -1278,7 +1274,7 @@ void DestroyFullDIBWindow (void)
 }
 
 
-qboolean VID_SetWindowedMode (int modenum)
+static qboolean VID_SetWindowedMode (int modenum)
 {
 	HDC				hdc;
 	pixel_format_t	pf;
@@ -1430,9 +1426,8 @@ qboolean VID_SetWindowedMode (int modenum)
 }
 
 
-qboolean VID_SetFullscreenMode (int modenum)
+static qboolean VID_SetFullscreenMode (int modenum)
 {
-
 	DDActive = 1;
 
 	DestroyDIBWindow ();
@@ -1495,7 +1490,7 @@ qboolean VID_SetFullscreenMode (int modenum)
 }
 
 
-qboolean VID_SetFullDIBMode (int modenum)
+static qboolean VID_SetFullDIBMode (int modenum)
 {
 	HDC				hdc;
 	pixel_format_t	pf;
@@ -1602,7 +1597,7 @@ qboolean VID_SetFullDIBMode (int modenum)
 }
 
 
-void VID_RestoreOldMode (int original_mode)
+static void VID_RestoreOldMode (int original_mode)
 {
 	static qboolean	inerror = false;
 
@@ -1626,7 +1621,7 @@ void VID_RestoreOldMode (int original_mode)
 	inerror = false;
 }
 
-int VID_SetMode (int modenum, unsigned char *palette)
+static int VID_SetMode (int modenum, unsigned char *palette)
 {
 	int				original_mode, temp;
 	qboolean		stat;
@@ -1942,7 +1937,7 @@ void	VID_ShiftPalette (unsigned char *palette)
 VID_DescribeCurrentMode_f
 =================
 */
-void VID_DescribeCurrentMode_f (void)
+static void VID_DescribeCurrentMode_f (void)
 {
 	Con_Printf ("%s\n", VID_GetExtModeDescription (vid_modenum));
 }
@@ -1953,7 +1948,7 @@ void VID_DescribeCurrentMode_f (void)
 VID_NumModes_f
 =================
 */
-void VID_NumModes_f (void)
+static void VID_NumModes_f (void)
 {
 
 	if (nummodes == 1)
@@ -1968,7 +1963,7 @@ void VID_NumModes_f (void)
 VID_DescribeMode_f
 =================
 */
-void VID_DescribeMode_f (void)
+static void VID_DescribeMode_f (void)
 {
 	int		modenum;
 	
@@ -1983,7 +1978,7 @@ void VID_DescribeMode_f (void)
 VID_DescribeModes_f
 =================
 */
-void VID_DescribeModes_f (void)
+static void VID_DescribeModes_f (void)
 {
 	int			i, lnummodes;
 	char		*pinfo;
@@ -2023,7 +2018,7 @@ void VID_DescribeModes_f (void)
 VID_TestMode_f
 =================
 */
-void VID_TestMode_f (void)
+static void VID_TestMode_f (void)
 {
 	int		modenum;
 	double	testduration;
@@ -2049,7 +2044,7 @@ void VID_TestMode_f (void)
 VID_Minimize_f
 =================
 */
-void VID_Minimize_f (void)
+static void VID_Minimize_f (void)
 {
 
 // we only support minimizing windows; if you're fullscreen,
@@ -2064,7 +2059,7 @@ void VID_Minimize_f (void)
 VID_ForceMode_f
 =================
 */
-void VID_ForceMode_f (void)
+static void VID_ForceMode_f (void)
 {
 	int		modenum;
 
@@ -2275,7 +2270,7 @@ void	VID_Shutdown (void)
 FlipScreen
 ================
 */
-void FlipScreen(vrect_t *rects)
+static void FlipScreen(vrect_t *rects)
 {
 	int		i;
 
@@ -2694,7 +2689,7 @@ MapKey
 Map from windows to quake keynums
 =======
 */
-int MapKey (int key)
+static int MapKey (int key)
 {
 	key = (key>>16)&255;
 	if (key > 127)
@@ -2703,7 +2698,7 @@ int MapKey (int key)
 	return scantokey[key];
 }
 
-void AppActivate(BOOL fActive, BOOL minimize)
+static void AppActivate(BOOL fActive, BOOL minimize)
 /****************************************************************************
 *
 * Function:     AppActivate
@@ -2875,6 +2870,11 @@ void VID_HandlePause (qboolean paused)
 }
 
 			
+void VID_ToggleFullscreen (void)
+{
+}
+
+
 /*
 ===================================================================
 
@@ -2884,6 +2884,7 @@ MAIN WINDOW
 */
 
 static int MWheelAccumulator;
+static UINT  uMSG_MOUSEWHEEL;
 extern cvar_t mwheelthreshold;
 LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -2923,6 +2924,12 @@ LONG WINAPI MainWndProc (
 	switch (uMsg)
 	{
 		case WM_CREATE:
+			if (Win95)
+			{
+				uMSG_MOUSEWHEEL = RegisterWindowMessage("MSWHEEL_ROLLMSG");
+				if (!uMSG_MOUSEWHEEL)
+					Con_Printf ("couldn't register mousewheel\n");
+			}
 			break;
 
 		case WM_SYSCOMMAND:
@@ -3157,6 +3164,10 @@ LONG WINAPI MainWndProc (
 	return lRet;
 }
 
+
+//========================================================
+// Video menu stuff
+//========================================================
 
 extern void M_Menu_Options_f (void);
 extern void M_Print (int cx, int cy, char *str);
@@ -3457,9 +3468,5 @@ void VID_MenuKey (int key)
 	default:
 		break;
 	}
-}
-
-void VID_ToggleFullscreen (void)
-{
 }
 

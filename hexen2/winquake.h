@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.13 2005-09-17 06:02:46 sezero Exp $
+	$Id: winquake.h,v 1.14 2006-01-07 09:54:29 sezero Exp $
 */
 
 #if !defined(_WIN32)
@@ -28,15 +28,10 @@ extern	int			global_nCmdShow;
 #ifndef WM_MOUSEWHEEL
 #define	WM_MOUSEWHEEL		0x020A
 #endif
-UINT	uMSG_MOUSEWHEEL;
 
 #ifndef SERVERONLY
 extern LPDIRECTDRAW		lpDD;
 extern qboolean			DDActive;
-extern LPDIRECTDRAWSURFACE	lpPrimary;
-extern LPDIRECTDRAWSURFACE	lpFrontBuffer;
-extern LPDIRECTDRAWSURFACE	lpBackBuffer;
-extern LPDIRECTDRAWPALETTE	lpDDPal;
 extern LPDIRECTSOUND pDS;
 extern LPDIRECTSOUNDBUFFER pDSBuf;
 
@@ -50,7 +45,7 @@ void Snd_ReleaseBuffer (void);
 extern HWND			mainwindow;
 extern qboolean		ActiveApp, Minimized;
 
-extern qboolean	Win32AtLeastV4, WinNT;
+extern qboolean	Win95, WinNT;
 
 void IN_ShowMouse (void);
 void IN_DeactivateMouse (void);
@@ -76,7 +71,6 @@ extern HWND		hwnd_dialog;
 extern HANDLE	hinput, houtput;
 
 void IN_UpdateClipCursor (void);
-void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify);
 
 void S_BlockSound (void);
 void S_UnblockSound (void);
@@ -103,6 +97,9 @@ int (PASCAL FAR *pgetsockname)(SOCKET s, struct sockaddr FAR *name,
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2005/09/17 06:02:46  sezero
+ * minor ifdef, syntax and defines clean-up
+ *
  * Revision 1.12  2005/08/11 12:34:41  sezero
  * mgraph.h is only needed in vid_win.c, no need to include it globally in here
  *
