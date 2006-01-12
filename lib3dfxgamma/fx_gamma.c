@@ -55,7 +55,7 @@ static void (*FX_LoadGammaTable)(unsigned int, unsigned int*, unsigned int*, uns
  */
 int Init_3dfxGammaCtrl (void)
 {
-	void *prjobj;
+	void *symslist;
 	int ret = 0;
 
 	if (FX_GammaControl2 != NULL)
@@ -63,15 +63,15 @@ int Init_3dfxGammaCtrl (void)
 	if (FX_GammaControl3 != NULL)
 		return 3;
 
-	prjobj = dlopen(NULL, RTLD_LAZY);
-	if (prjobj != NULL)
+	symslist = dlopen(NULL, RTLD_LAZY);
+	if (symslist != NULL)
 	{
-		if ((FX_GammaControl2 = dlsym(prjobj, "grGammaCorrectionValue")) != NULL)
+		if ((FX_GammaControl2 = dlsym(symslist, "grGammaCorrectionValue")) != NULL)
 			ret = 2;
-		else if ((FX_GammaControl3 = dlsym(prjobj, "guGammaCorrectionRGB")) != NULL)
+		else if ((FX_GammaControl3 = dlsym(symslist, "guGammaCorrectionRGB")) != NULL)
 			ret = 3;
 
-		dlclose(prjobj);
+		dlclose(symslist);
 	}
 	else
 	{	// shouldn't happen.
@@ -108,16 +108,16 @@ int do3dfxGammaCtrl(float value)
 #if USE_GAMMA_RAMPS
 static int Check_3DfxGammaRamp (void)
 {
-	void *prjobj;
+	void *symslist;
 
 	if (FX_LoadGammaTable != NULL)
 		return 1;
 
-	prjobj = dlopen(NULL, RTLD_LAZY);
-	if (prjobj != NULL)
+	symslist = dlopen(NULL, RTLD_LAZY);
+	if (symslist != NULL)
 	{
-		FX_Get = dlsym(prjobj, "grGet");
-		FX_LoadGammaTable = dlsym(prjobj, "grLoadGammaTable");
+		FX_Get = dlsym(symslist, "grGet");
+		FX_LoadGammaTable = dlsym(symslist, "grLoadGammaTable");
 		if ((FX_LoadGammaTable != NULL) && (FX_Get != NULL))
 			return 1;
 	}
