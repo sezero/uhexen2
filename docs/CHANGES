@@ -1,5 +1,28 @@
 ChangeLog:
 
+2006-01-12 (CVS):
+    * added video modes enumeration via SDL. added on-the-fly video mode
+      changing partially based on the Pa3PyX hexen2 tree. TODO: make the
+      game remember its video settings, clean it up, fix it up...
+    * created an sdl_inc.h with all sdl version requirements and replaced
+      all SDL.h and SDL_mixer.h includes with it. Made the source to compile
+      against SDL versions older than 1.2.6 without disabling multisampling.
+      Multisampling (fsaa) option is now decided at runtime. Minimum required
+      SDL and SDL_mixer versions are now 1.2.4. If compiled without midi,
+      minimum SDL required is 1.2.0. Added SDL_mixer version checking to
+      sdl-midi with measures to prevent relocation errors.
+    * fixed incorrect compatibility define for DWORD
+    * small alsa buffersize update taken from the quakeforge tree. also added
+      a ALSA_CHECK_ERR macro to make the init procedure more readable. coding
+      style cleanup.
+    * moved init of platform specific vars and function pointers to snd_sys
+    * small update to the sdl sound driver
+    * do not change the desined_XXX sound variables in case of failures.
+    * sound wnitespace cleanup.
+    * used a more readable name for list of symbols in lib3dfxgamma
+    * merged quake3 bits to the alternative sdl sound patch to cure most of
+      the latency issues and re-diffed after the latest sound changes
+
 2006-01-07 (CVS):
     * cleanup and "static" stuff on the vid files
     * added the last pieces (lightmaps) of adjustable filters which I've
