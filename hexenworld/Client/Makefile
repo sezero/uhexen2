@@ -289,6 +289,7 @@ COMMONOBJS = cl_cam.o \
 	r_part.o \
 	sbar.o \
 	skin.o \
+	snd_sys.o \
 	snd_dma.o \
 	snd_mix.o \
 	snd_mem.o \

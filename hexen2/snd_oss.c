@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.15 2005-10-21 17:57:14 sezero Exp $
+	$Id: snd_oss.c,v 1.16 2006-01-12 12:57:45 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -24,7 +24,10 @@
 
 */
 
+#define _SND_SYS_MACROS_ONLY
+
 #include "quakedef.h"
+#include "snd_sys.h"
 
 #if defined(HAVE_OSS_SOUND)
 

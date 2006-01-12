@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.39 2005-12-11 11:56:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.40 2006-01-12 12:57:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -43,10 +43,6 @@ byte		*host_colormap;
 #ifdef GLQUAKE
 extern int	gl_texlevel;
 extern int	numgltextures;
-#endif
-
-#ifdef PLATFORM_UNIX
-unsigned short	snd_system;
 #endif
 
 cvar_t	host_framerate = {"host_framerate","0"};	// set for slow motion
@@ -1000,25 +996,6 @@ void Host_Init (quakeparms_t *parms)
 		SCR_Init ();
 		R_Init ();
 
-#if defined(PLATFORM_UNIX)
-		// various sound drivers are possible for unix
-		if (COM_CheckParm("-nosound") || COM_CheckParm("--nosound") || COM_CheckParm("-s"))
-			snd_system = S_SYS_NULL;
-		else if (COM_CheckParm ("-sndsdl"))
-			snd_system = S_SYS_SDL;
-#  if defined(__linux__) && !defined(NO_ALSA)
-		// allow ALSA only on linux
-		else if (COM_CheckParm ("-sndalsa"))
-			snd_system = S_SYS_ALSA;
-#  endif
-		else
-#  if defined(HAVE_OSS_SOUND)
-			snd_system = S_SYS_OSS;
-#  else
-			snd_system = S_SYS_SDL;
-#  endif
-#endif
-
 #if defined(GLQUAKE) || defined(PLATFORM_UNIX)
 	// VID_Init of vid_win.c already is responsible for S_Init
 	// FIXME: gl_vidnt.c doesn't use the new one-window approach yet
@@ -1089,6 +1066,17 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.39  2005/12/11 11:56:33  sezero
+ * synchronized different sbar function names between h2 and h2w.
+ * there was a mess about SB_Changed and Sbar_Changed in h2w, this
+ * patch fixes that: h2 (and h2w) version of SB_Changed was never
+ * functional. h2w actually called SB_InvChanged, who knows what
+ * the original intention was, but that seemed serving to no purpose
+ * to me. in any case, watching for any new weirdness in h2w would
+ * be advisable. ability string indexes for the demoness and dwarf
+ * classes in h2w are fixed. armor class display in h2w is fixed.
+ * h2 and h2w versions of gl_vidsdl and gl_vidnt are synchronized.
+ *
  * Revision 1.38  2005/12/04 11:20:57  sezero
  * init stuff cleanup
  *

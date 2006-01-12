@@ -304,6 +304,7 @@ COMMONOBJS = chase.o \
 	pr_exec.o \
 	r_dl_part.o \
 	sbar.o \
+	snd_sys.o \
 	snd_dma.o \
 	snd_mix.o \
 	snd_mem.o \

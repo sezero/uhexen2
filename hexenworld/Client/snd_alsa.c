@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.12 2006-01-12 12:48:12 sezero Exp $
+	$Id: snd_alsa.c,v 1.13 2006-01-12 12:57:45 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -42,6 +42,8 @@ static snd_pcm_sw_params_t *sw;
 extern int desired_bits, desired_speed, desired_channels;
 extern int tryrates[MAX_TRYRATES];
 extern int soundtime;
+
+int S_ALSA_GetDMAPos (void);
 
 #define HX2_ALSA(ret, func, params) \
 static ret (*hx2##func) params;
@@ -229,7 +231,7 @@ qboolean S_ALSA_Init (void)
 	shm->speed = desired_speed;
 
 	snd_inited = 1;
-	SNDDMA_GetDMAPos ();	// sets shm->buffer
+	S_ALSA_GetDMAPos ();	// sets shm->buffer
 	Con_Printf("Audio Subsystem initialized in ALSA mode.\n");
 
 	Con_Printf ("%5d stereo\n", shm->channels - 1);
@@ -321,6 +323,11 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2006/01/12 12:48:12  sezero
+ * small alsa buffersize update taken from the quakeforge tree. also added
+ * a ALSA_CHECK_ERR macro to make the init procedure more readable. coding
+ * style cleanup.
+ *
  * Revision 1.11  2005/07/05 17:12:01  sezero
  * Updated alsa driver (various insignificant things)
  *

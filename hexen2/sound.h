@@ -7,21 +7,6 @@
 #ifndef __SOUND__
 #define __SOUND__
 
-#ifdef PLATFORM_UNIX
-// Sound system definitions
-extern unsigned short	snd_system;
-#define	S_SYS_NULL	0
-#define	S_SYS_OSS	1
-#define	S_SYS_SDL	2
-#define	S_SYS_ALSA	3
-
-// add more systems with OSS here
-#if defined(__linux__) || defined(__FreeBSD__)
-#define HAVE_OSS_SOUND
-#endif
-
-#endif
-
 #define MAX_TRYRATES	4
 
 // !!! if this is changed, it must be changed in asm_i386.h too !!!
@@ -113,55 +98,6 @@ channel_t *SND_PickChannel(int entnum, int entchannel);
 
 // spatializes a channel
 void SND_Spatialize(channel_t *ch);
-
-#ifdef PLATFORM_UNIX
-// chooses functions to call depending on audio subsystem
-void S_GetSubsystem(void);
-
-// initializes cycling through a DMA buffer and returns information on it
-qboolean (*SNDDMA_Init)(void);
-
-// gets the current DMA position
-int (*SNDDMA_GetDMAPos)(void);
-
-// shutdown the DMA xfer.
-void (*SNDDMA_Shutdown)(void);
-
-void (*SNDDMA_Submit)(void);
-
-#if defined(HAVE_OSS_SOUND)
-// OSS versions of the above
-extern qboolean S_OSS_Init(void);
-extern int S_OSS_GetDMAPos(void);
-extern void S_OSS_Shutdown(void);
-extern void S_OSS_Submit(void);
-#endif	// HAVE_OSS_SOUND
-// SDL versions of the above
-extern qboolean S_SDL_Init(void);
-extern int S_SDL_GetDMAPos(void);
-extern void S_SDL_Shutdown(void);
-extern void S_SDL_Submit(void);
-#if defined(__linux__) && !defined(NO_ALSA)
-// ALSA versions of the above
-extern qboolean S_ALSA_Init(void);
-extern int S_ALSA_GetDMAPos(void);
-extern void S_ALSA_Submit(void);
-extern void S_ALSA_Shutdown(void);
-#endif	// NO_ALSA
-
-#else	// here goes the win32 version
-
-// initializes cycling through a DMA buffer and returns information on it
-qboolean SNDDMA_Init(void);
-
-// gets the current DMA position
-int SNDDMA_GetDMAPos(void);
-
-// shutdown the DMA xfer.
-void SNDDMA_Shutdown(void);
-
-void SNDDMA_Submit(void);
-#endif
 
 // ====================================================================
 // User-setable variables

@@ -2,12 +2,12 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.27 2005-10-21 17:57:15 sezero Exp $
+	$Id: snd_dma.c,v 1.28 2006-01-12 12:57:45 sezero Exp $
 */
 
 #include "quakedef.h"
+#include "snd_sys.h"
 
-//#include "quakeinc.h"
 #ifdef _WIN32
 #include "winquake.h"
 extern void IN_Accumulate(void);
@@ -35,6 +35,14 @@ int		total_channels;
 int		snd_blocked = 0;
 static qboolean	snd_ambient = 1;
 qboolean	snd_initialized = false;
+
+static const char *snd_drivers[S_SYS_MAX]={
+	"NULL",
+	"OSS",
+	"SDL",
+	"ALSA",
+	"WIN32"
+};
 
 // pointer should go away
 volatile dma_t  *shm = 0;
@@ -92,37 +100,13 @@ void S_AmbientOn (void)
 
 void S_SoundInfo_f(void)
 {
-#ifdef PLATFORM_UNIX
-	char *s_sys = NULL;
-#endif
 	if (!sound_started || !shm)
 	{
 		Con_Printf ("sound system not started\n");
 		return;
 	}
 	
-#ifdef PLATFORM_UNIX
-	switch (snd_system) {
-#if defined(HAVE_OSS_SOUND)
-	case S_SYS_OSS:
-		s_sys = "OSS";
-		break;
-#endif
-	case S_SYS_SDL:
-		s_sys = "SDL";
-		break;
-#if defined(__linux__) && !defined(NO_ALSA)
-	case S_SYS_ALSA:
-		s_sys = "ALSA";
-		break;
-#endif
-	case S_SYS_NULL:
-	default:
-		// this should not have happened
-		s_sys = "NULL";
-	}
-	Con_Printf("Driver: %s\n", s_sys);
-#endif
+	Con_Printf("Driver: %s\n", snd_drivers[snd_system]);
 	Con_Printf("%5d stereo\n", shm->channels - 1);
 	Con_Printf("%5d samples\n", shm->samples);
 	Con_Printf("%5d samplepos\n", shm->samplepos);
@@ -134,43 +118,6 @@ void S_SoundInfo_f(void)
 }
 
 
-#ifdef PLATFORM_UNIX
-void S_GetSubsys (void)
-{
-	switch (snd_system) {
-		case S_SYS_SDL:
-			SNDDMA_Init	 = S_SDL_Init;
-			SNDDMA_GetDMAPos = S_SDL_GetDMAPos;
-			SNDDMA_Shutdown	 = S_SDL_Shutdown;
-			SNDDMA_Submit	 = S_SDL_Submit;
-			break;
-#if defined(__linux__) && !defined(NO_ALSA)
-		case S_SYS_ALSA:
-			SNDDMA_Init	 = S_ALSA_Init;
-			SNDDMA_GetDMAPos = S_ALSA_GetDMAPos;
-			SNDDMA_Shutdown	 = S_ALSA_Shutdown;
-			SNDDMA_Submit	 = S_ALSA_Submit;
-			break;
-#endif
-#if defined(HAVE_OSS_SOUND)
-		case S_SYS_OSS:
-			SNDDMA_Init	 = S_OSS_Init;
-			SNDDMA_GetDMAPos = S_OSS_GetDMAPos;
-			SNDDMA_Shutdown	 = S_OSS_Shutdown;
-			SNDDMA_Submit	 = S_OSS_Submit;
-			break;
-#endif
-		case S_SYS_NULL:
-		default:
-		// Paranoia: We should never have come this far!..
-		// No function to point at, set snd_initialized to false.
-			snd_initialized = false;
-			break;
-	}
-}
-#endif	// PLATFORM_UNIX
-
-
 /*
 ================
 S_Startup
@@ -180,9 +127,8 @@ void S_Startup (void)
 {
 	int		rc, tmp;
 
-#ifdef PLATFORM_UNIX
-	S_GetSubsys();
-#endif
+	// point to correct platform versions of driver functions
+	S_InitPointers();
 
 	if (!snd_initialized)
 		return;
@@ -942,10 +888,12 @@ void S_Update_(void)
 {
 	unsigned        endtime;
 	int				samps;
-#ifdef PLATFORM_UNIX
+
+#if SDLSOUND_PAINTS_CHANNELS
 	if (snd_system == S_SYS_SDL)
 		return;
 #endif
+
 	if (!sound_started || (snd_blocked > 0))
 		return;
 
@@ -1105,6 +1053,11 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2005/10/21 17:57:15  sezero
+ * added support for systems without OSS sound.
+ * added a paranoid case to S_SoundInfo.
+ * killed a few unnecessary prints.
+ *
  * Revision 1.26  2005/09/24 23:50:36  sezero
  * fixed a bunch of compiler warnings
  *

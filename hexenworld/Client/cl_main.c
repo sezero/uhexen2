@@ -12,9 +12,6 @@
 #endif
 #endif
 
-// we need to declare some mouse variables here, because the menu system
-// references them even when on a unix system.
-
 qboolean	noclip_anglehack;		// remnant from old quake
 
 cvar_t	rcon_password = {"rcon_password", "", false};
@@ -109,11 +106,6 @@ int			fps_count;
 jmp_buf 	host_abort;
 
 float	server_version = 0;	// version of server we connected to
-
-#ifdef PLATFORM_UNIX
-// sound interface to use (oss, alsa, sdl), assigned at startup.
-unsigned short snd_system;
-#endif
 
 
 /*
@@ -1335,25 +1327,6 @@ void Host_Init (quakeparms_t *parms)
 	Draw_Init ();
 	SCR_Init ();
 	R_Init ();
-
-#if defined(PLATFORM_UNIX)
-	// various sound drivers are possible for unix
-	if (COM_CheckParm("-nosound") || COM_CheckParm("--nosound") || COM_CheckParm("-s"))
-		snd_system = S_SYS_NULL;
-	else if (COM_CheckParm ("-sndsdl"))
-		snd_system = S_SYS_SDL;
-#  if defined(__linux__) && !defined(NO_ALSA)
-	// allow ALSA only on linux
-	else if (COM_CheckParm ("-sndalsa"))
-		snd_system = S_SYS_ALSA;
-#  endif
-	else
-#  if defined(HAVE_OSS_SOUND)
-		snd_system = S_SYS_OSS;
-#  else
-		snd_system = S_SYS_SDL;
-#  endif
-#endif
 
 #if defined(GLQUAKE) || defined(PLATFORM_UNIX)
 	// VID_Init of vid_win.c already is responsible for S_Init

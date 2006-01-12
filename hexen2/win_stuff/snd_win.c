@@ -554,7 +554,7 @@ Try to find a sound device to mix for.
 Returns false if nothing is found.
 ==================
 */
-qboolean SNDDMA_Init(void)
+qboolean S_WIN32_Init(void)
 {
 	sndinitstat	stat;
 
@@ -639,7 +639,7 @@ inside the recirculating dma buffer, so the mixing code will know
 how many sample are required to fill it up.
 ===============
 */
-int SNDDMA_GetDMAPos(void)
+int S_WIN32_GetDMAPos(void)
 {
 	MMTIME	mmtime;
 	int		s;
@@ -671,7 +671,7 @@ SNDDMA_Submit
 Send sound to device if buffer isn't really the dma buffer
 ===============
 */
-void SNDDMA_Submit(void)
+void S_WIN32_Submit(void)
 {
 	LPWAVEHDR	h;
 	int			wResult;
@@ -729,7 +729,7 @@ SNDDMA_Shutdown
 Reset the sound device for exiting
 ===============
 */
-void SNDDMA_Shutdown(void)
+void S_WIN32_Shutdown(void)
 {
 	FreeSound ();
 }
