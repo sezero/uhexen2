@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.16 2005-10-02 15:43:09 sezero Exp $
+	$Id: gl_model.c,v 1.17 2006-01-12 12:34:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -41,6 +41,8 @@ extern	qboolean flush_textures;
 extern	cvar_t gl_purge_maptex;
 
 cvar_t gl_subdivide_size = {"gl_subdivide_size", "128", true};
+
+qboolean spr_reload_only = false;
 
 /*
 ===============
@@ -506,6 +508,76 @@ void Mod_LoadTextures (lump_t *l)
 			tx2->anim_next = altanims[ (j+1)%altmax ];
 			if (max)
 				tx2->alternate_anims = anims[0];
+		}
+	}
+}
+
+/*
+=================
+Mod_ReloadTextures
+
+Pa3PyX: Analogous to Mod_LoadTextures() below, except that we already
+have all models and textures allocated, only need to rebind and re-
+upload them to OpenGL pipeline. Called when video mode is changed upon
+which all OpenGL textures are gone.
+=================
+*/
+void Mod_ReloadTextures (void)
+{
+	int			j;
+	model_t		*mod;
+	texture_t	*tx;
+	player_info_t	*s;
+
+	// Reload world (brush models are submodels of world),
+	// don't touch if not yet loaded
+	mod = cl.worldmodel;
+	if (mod && !mod->needload)
+	{
+		for (j = 0; j < mod->numtextures; j++)
+		{
+			tx = mod->textures[j];
+			if (tx)
+			{
+				if (!strncmp(tx->name, "sky", 3))
+					R_InitSky(tx);
+				else
+					tx->gl_texturenum = GL_LoadTexture (tx->name, tx->width, tx->height, (byte *)(tx+1), true, false, 0, false);
+			}
+		}
+	}
+
+	// Force update of all lightmaps
+	//for (j = 0; j < MAX_LIGHTMAPS; j++)
+	//	lightmap_modified[j] = true;
+
+	// Reload alias models and sprites
+	for (j = 0; j < mod_numknown; j++)
+	{
+		if ((mod_known[j].type == mod_alias) && (mod_known[j].needload != NL_UNREFERENCED))
+		{
+			if (Cache_Check(&(mod_known[j].cache)))
+				Cache_Free(&(mod_known[j].cache));
+			mod_known[j].needload = NL_NEEDS_LOADED;
+			Mod_LoadModel(mod_known + j, false);
+		}
+		else if ((mod_known[j].type == mod_sprite) && (mod_known[j].needload != NL_UNREFERENCED))
+		{
+			mod_known[j].needload = NL_NEEDS_LOADED;
+			spr_reload_only = true;
+			Mod_LoadModel(mod_known + j, false);
+			spr_reload_only = false;
+		}
+	}
+
+	// Reload player skins
+	if (cls.state == ca_active)
+	{
+		for (j = 0; j < MAX_CLIENTS; j++)
+		{
+			s = &cl.players[j];
+			if (s->name[0] && !s->spectator)
+				R_TranslatePlayerSkin(j);
 		}
 	}
 }
@@ -2223,11 +2295,16 @@ void * Mod_LoadSpriteFrame (void * pin, mspriteframe_t **ppframe, int framenum)
 	height = LittleLong (pinframe->height);
 	size = width * height;
 
-	pspriteframe = Hunk_AllocName (sizeof (mspriteframe_t),loadname);
-
+	if (spr_reload_only && (*ppframe))
+	{
+		pspriteframe = *ppframe;
+	}
+	else
+	{
+		pspriteframe = Hunk_AllocName (sizeof (mspriteframe_t),loadname);
+		*ppframe = pspriteframe;
+	}
 	memset (pspriteframe, 0, sizeof (mspriteframe_t));
-
-	*ppframe = pspriteframe;
 
 	pspriteframe->width = width;
 	pspriteframe->height = height;
@@ -2264,18 +2341,29 @@ void * Mod_LoadSpriteGroup (void * pin, mspriteframe_t **ppframe, int framenum)
 
 	numframes = LittleLong (pingroup->numframes);
 
-	pspritegroup = Hunk_AllocName (sizeof (mspritegroup_t) +
-				(numframes - 1) * sizeof (pspritegroup->frames[0]), loadname);
+	if (spr_reload_only && (*ppframe))
+	{
+		pspritegroup = (mspritegroup_t *)(*ppframe);
+	}
+	else
+	{
+		pspritegroup = Hunk_AllocName(sizeof(mspritegroup_t) + (numframes - 1) * sizeof(pspritegroup->frames[0]), loadname);
+		*ppframe = (mspriteframe_t *)pspritegroup;
+	}
 
 	pspritegroup->numframes = numframes;
 
-	*ppframe = (mspriteframe_t *)pspritegroup;
-
 	pin_intervals = (dspriteinterval_t *)(pingroup + 1);
 
-	poutintervals = Hunk_AllocName (numframes * sizeof (float), loadname);
-
-	pspritegroup->intervals = poutintervals;
+	if (spr_reload_only && pspritegroup->intervals)
+	{
+		poutintervals = pspritegroup->intervals;
+	}
+	else
+	{
+		poutintervals = Hunk_AllocName (numframes * sizeof (float), loadname);
+		pspritegroup->intervals = poutintervals;
+	}
 
 	for (i=0 ; i<numframes ; i++)
 	{
@@ -2324,9 +2412,17 @@ void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 
 	size = sizeof (msprite_t) +	(numframes - 1) * sizeof (psprite->frames);
 
-	psprite = Hunk_AllocName (size, loadname);
-
-	mod->cache.data = psprite;
+	// Pa3PyX: if the pointer is set and needload == NL_NEEDS_LOADED,
+	// we are just reloading textures, and are already allocated
+	if (spr_reload_only && mod->cache.data)
+	{
+		psprite = mod->cache.data;
+	}
+	else
+	{
+		psprite = Hunk_AllocName (size, loadname);
+		mod->cache.data = psprite;
+	}
 
 	psprite->type = LittleLong (pin->type);
 	psprite->maxwidth = LittleLong (pin->width);

@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.34 2005-12-11 11:53:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.35 2006-01-12 12:34:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,7 +10,6 @@
 static void ReInitMusic(void);
 
 extern	modestate_t	modestate;
-extern	cvar_t	vid_mode;
 extern	cvar_t	crosshair;
 
 void (*vid_menudrawfn)(void);
@@ -794,8 +793,7 @@ enum
 	OPT_ALWAYSMLOOK,//11
 	OPT_USEMOUSE,	//12
 	OPT_CROSSHAIR,	//13
-	OPT_FULLSCREEN,	//14
-	OPT_VIDEO,	//15
+	OPT_VIDEO,	//14
 	OPTIONS_ITEMS
 };
 
@@ -922,10 +920,6 @@ void M_AdjustSliders (int dir)
 		Cvar_SetValue ("cl_sbar", !cl_sbar.value);
 		break;
 
-	case OPT_FULLSCREEN:	// vid_mode
-		VID_ToggleFullscreen();
-		break;
-
 	case OPT_USEMOUSE:	// _enable_mouse
 		Cvar_SetValue ("_enable_mouse", !_enable_mouse.value);
 		break;
@@ -1017,9 +1011,6 @@ void M_Options_Draw (void)
 
 	M_Print (16, 60+(OPT_CROSSHAIR*8),	"        Show Crosshair");
 	M_DrawCheckbox (220, 60+(OPT_CROSSHAIR*8), crosshair.value);
-
-	M_Print (16, 60+(OPT_FULLSCREEN*8),	"            Fullscreen");
-	M_DrawCheckbox (220, 60+(OPT_FULLSCREEN*8), vid_mode.value);
 
 	if (vid_menudrawfn)
 		M_Print (16, 60+(OPT_VIDEO*8),	"           Video Modes");

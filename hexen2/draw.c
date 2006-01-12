@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.15 2005-10-25 20:08:41 sezero Exp $
+	$Id: draw.c,v 1.16 2006-01-12 12:34:37 sezero Exp $
 */
 
 
@@ -28,6 +28,7 @@ qpic_t		*draw_disc[MAX_DISC] =
 };
 
 int	trans_level = 0;
+qboolean draw_reinit = false;	// for compatibility with the opengl version
 
 //=============================================================================
 /* Support Routines */
@@ -1688,6 +1689,9 @@ void Draw_EndDisc (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/10/25 20:08:41  sezero
+ * coding style and whitespace cleanup.
+ *
  * Revision 1.14  2005/10/25 20:04:17  sezero
  * static functions part-1: started making local functions static,
  * killing nested externs, const vars clean-up.

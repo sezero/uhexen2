@@ -1,33 +1,17 @@
 /*
-   gl_dl_vidsdl.c -- SDL GL vid component
-   Select window size and mode and init SDL in GL mode.
+	gl_vidsdl.c -- SDL GL vid component
+	Select window size and mode and init SDL in GL mode.
 
-   $Id: gl_vidsdl.c,v 1.94 2006-01-07 09:54:29 sezero Exp $
-
+	$Id: gl_vidsdl.c,v 1.95 2006-01-12 12:34:37 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
 	- Options are now: -fullscreen, -height, -width, -bpp
-
-	Changed 27/12/04
-	- Fullscreen modes are normally 3-5, but we only
-	  use the traditional modes 0 and 3.
-	- Mode 3 has been changed to "1" to allow it to be
-	  represented as a boolean (and a menu selection)
-
-	Changed 10/08/05 by O.S
-	- Removed cvars vid_default_mode, _vid_default_mode_win
-	- Removed all mode descriptions
-	- Removed all nummodes and VID_NumModes stuff
-	- Removed all VID_GetXXX and VID_DescXXX stuff
-
-	- cvar_t vid_mode is either:
-		MODE_WINDOWED		0
-		MODE_FULLSCREEN_DEFAULT	1
-
 	- The "-mode" option has been removed
-	- There was no on-the-fly video mode switching
-	  before, but we may implement that in future
+
+	Changed 7/01/06 by O.S
+	- Added video modes enumeration via SDL
+	- Added video mode changing on the fly.
 */
 
 #include "quakedef.h"
@@ -37,14 +21,13 @@
 #include <dlfcn.h>
 #include <unistd.h>
 
-#define MAX_MODE_LIST	30
-#define VID_ROW_SIZE	3
 #define WARP_WIDTH		320
 #define WARP_HEIGHT		200
 #define MAXWIDTH		10000
 #define MAXHEIGHT		10000
-#define BASEWIDTH		320
-#define BASEHEIGHT		200
+#define MIN_WIDTH		320
+//#define MIN_HEIGHT		200
+#define MIN_HEIGHT		240
 
 typedef struct {
 	modestate_t	type;
@@ -58,28 +41,77 @@ typedef struct {
 	char		modedesc[33];
 } vmode_t;
 
+typedef struct {
+	int	red,
+		green,
+		blue,
+		alpha,
+		depth,
+		stencil;
+} attributes_t;
+
+static attributes_t	vid_attribs;
+static int	num_fmodes;
+static int	num_wmodes;
+static int	*nummodes;
+qboolean	fullscreen = false;	// windowed mode is default
+static int	bpp = 16;
+static const SDL_VideoInfo	*vid_info;
 static SDL_Surface	*screen;
 
 viddef_t	vid;		// global video state
 modestate_t	modestate = MS_UNINIT;
 static int	WRHeight, WRWidth;
-static int	vid_default = MODE_WINDOWED;	// windowed mode is default
+static int	vid_default = -1;	// modenum of 640x480 as a safe default
+static int	vid_modenum = -1;	// current video mode, set after mode setting succeeds
+static int	vid_maxwidth = 640, vid_maxheight = 480;
+// cvar vid_mode must be set before calling VID_SetMode, VID_ChangeVideoMode or VID_Restart_f
 cvar_t		vid_mode = {"vid_mode","0", false};
-static vmode_t	modelist[MAX_MODE_LIST];
+cvar_t		vid_config_glx = {"vid_config_glx","640", true};
+cvar_t		vid_config_gly = {"vid_config_gly","480", true};
+
+typedef struct {
+	int	width;
+	int	height;
+} stdmode_t;
+
+#define RES_640X480	3
+static const stdmode_t	std_modes[] = {
+// NOTE: keep this list in order
+	{320, 240},	// 0
+	{400, 300},	// 1
+	{512, 384},	// 2
+	{640, 480},	// 3 == RES_640X480, this is our default, below
+			//		this is the lowresmodes region.
+			//		either do not change its order,
+			//		or change the above define, too
+	{800,  600},	// 4, RES_640X480 + 1
+	{1024, 768},	// 5, RES_640X480 + 2
+	{1280, 1024},	// 6
+	{1600, 1200}	// 7
+};
+
+#define MAX_MODE_LIST	40
+#define MAX_STDMODES	(sizeof(std_modes) / sizeof(std_modes[0]))
+#define NUM_LOWRESMODES	(RES_640X480)
+static vmode_t	fmodelist[MAX_MODE_LIST+1];	// list of enumerated fullscreen modes
+static vmode_t	wmodelist[MAX_STDMODES +1];	// list of standart 4:3 windowed modes
+static vmode_t	*modelist;	// modelist in use, points to one of the above lists
 static qboolean	vid_initialized = false;
+extern qboolean	draw_reinit;
 
 byte		globalcolormap[VID_GRADES*256];
 
 cvar_t		_enable_mouse = {"_enable_mouse","1", true};
 static int	enable_mouse;
-qboolean	in_mode_set = false;	// do we need this?..
+qboolean	in_mode_set = false;
 
 const char	*gl_vendor;
 const char	*gl_renderer;
 const char	*gl_version;
 const char	*gl_extensions;
 #ifdef GL_DLSYM
-static char	*gl_library  = NULL;
+static const char	*gl_library  = NULL;
 static qboolean	GL_OpenLibrary(const char *name);
 #endif
 int		gl_max_size = 256;
@@ -110,6 +142,7 @@ cvar_t		gl_purge_maptex = {"gl_purge_maptex", "1", true};
 		/* whether or not map-specific OGL textures
 		   are flushed from map. default == yes  */
 
+extern int	lightmap_textures;
 extern int	lightmap_bytes;	// in gl_rsurf.c
 
 // multitexturing
@@ -127,6 +160,7 @@ static void GL_Init (void);
 #ifdef GL_DLSYM
 static void GL_Init_Functions(void);
 #endif
+static void GL_ResetFunctions(void);
 
 qboolean	have_stencil = false;
 
@@ -150,6 +184,10 @@ qboolean	gl_dogamma = false;	// none of the above two, use gl tricks
 static void	VID_InitGamma (void);
 static void	VID_ShutdownGamma (void);
 static qboolean	VID_Check3dfxGamma(void);
+
+extern void	D_ClearOpenGLTextures(int);
+extern void	R_InitParticleTexture(void);
+extern void	Mod_ReloadTextures (void);
 
 // window manager stuff
 #if defined(H2W)
@@ -235,6 +273,202 @@ static void VID_SetIcon (void)
 	SDL_FreeSurface(icon);
 }
 
+static int sort_modes (const void *arg1, const void *arg2)
+{
+	const vmode_t *a1, *a2;
+	a1 = (vmode_t *) arg1;
+	a2 = (vmode_t *) arg2;
+
+	if (a1->width == a2->width)
+		return a1->height - a2->height;	// lowres-to-highres
+	//	return a2->height - a1->height;	// highres-to-lowres
+	else
+		return a1->width - a2->width;	// lowres-to-highres
+	//	return a2->width - a1->width;	// highres-to-lowres
+}
+
+static void VID_PrepareModes (SDL_Rect **sdl_modes)
+{
+	int	i, j;
+	qboolean	not_multiple;
+
+	num_fmodes = 0;
+	num_wmodes = 0;
+
+	// Add the standart 4:3 modes to the windowed modes list
+	// In an unlikely case that we receive no fullscreen modes,
+	// this will be our modes list (kind of...)
+	for (i = 0; i < MAX_STDMODES; i++)
+	{
+		wmodelist[num_wmodes].width = std_modes[i].width;
+		wmodelist[num_wmodes].height = std_modes[i].height;
+		wmodelist[num_wmodes].halfscreen = 0;
+		wmodelist[num_wmodes].fullscreen = 0;
+		wmodelist[num_wmodes].bpp = 16;
+		sprintf (wmodelist[num_wmodes].modedesc,"%d x %d",std_modes[i].width,std_modes[i].height);
+		num_wmodes++;
+	}
+
+	// disaster scenario #1: no fullscreen modes. bind to the
+	// windowed modes list. limit it to 640x480 max. because
+	// we don't know the desktop dimensions
+	if (sdl_modes == (SDL_Rect **)0)
+	{
+no_fmodes:
+		Con_Printf ("No fullscreen video modes available\n");
+		num_wmodes = RES_640X480 + 1;
+		modelist = (vmode_t *)wmodelist;
+		nummodes = &num_wmodes;
+		vid_default = RES_640X480;
+		return;
+	}
+
+	// another disaster scenario (#2)
+	if (sdl_modes == (SDL_Rect **)-1)
+	{	// Really should NOT HAVE happened! this return value is
+		// for windowed modes!  Since this means all resolutions
+		// are supported, use our standart modes as modes list.
+		Con_Printf ("Unexpectedly received -1 from SDL_ListModes\n");
+		vid_maxwidth = MAXWIDTH;
+		vid_maxheight = MAXHEIGHT;
+	//	num_fmodes = -1;
+		num_fmodes = num_wmodes;
+		nummodes = &num_wmodes;
+		modelist = (vmode_t *)wmodelist;
+		vid_default = RES_640X480;
+		return;
+	}
+
+#if 0
+	// print the un-processed modelist as reported by SDL
+	for (j = 0; sdl_modes[j]; ++j)
+	{
+		Con_Printf ("%d x %d\n", sdl_modes[j]->w, sdl_modes[j]->h);
+	}
+	Con_Printf ("Total %d entries\n", j);
+#endif
+
+	for (i = 0; sdl_modes[i] && num_fmodes < MAX_MODE_LIST; ++i)
+	{
+		// avoid multiple listings of the same dimension
+		not_multiple = true;
+		for (j = 0; j < num_fmodes; ++j)
+		{
+			if (fmodelist[j].width == sdl_modes[i]->w && fmodelist[j].height == sdl_modes[i]->h)
+			{
+				not_multiple = false;
+				break;
+			}
+		}
+
+		// avoid resolutions < 320x240
+		if (not_multiple && sdl_modes[i]->w >= MIN_WIDTH && sdl_modes[i]->h >= MIN_HEIGHT)
+		{
+			fmodelist[num_fmodes].width = sdl_modes[i]->w;
+			fmodelist[num_fmodes].height = sdl_modes[i]->h;
+			// FIXME: look at gl_vidnt.c and learn how to
+			// really functionalize the halfscreen field.
+			fmodelist[num_fmodes].halfscreen = 0;
+			fmodelist[num_fmodes].fullscreen = 1;
+			fmodelist[num_fmodes].bpp = 16;
+			sprintf (fmodelist[num_fmodes].modedesc,"%d x %d",sdl_modes[i]->w,sdl_modes[i]->h);
+			num_fmodes++;
+		}
+	}
+
+	if (!num_fmodes)
+		goto no_fmodes;
+
+	// At his point, we have a list of valid fullscreen modes:
+	// Let's bind to it and use it for windowed modes, as well.
+	// The only downside is that if SDL doesn't report any low
+	// resolutions to us, we shall not have any for windowed
+	// rendering where they would be perfectly legitimate...
+	// Since our fullscreen/windowed toggling is instant and
+	// doesn't require a vid_restart, switching lists won't be
+	// feasible, either. The -width/-height commandline args
+	// remain as the user's trusty old friends here.
+	nummodes = &num_fmodes;
+	modelist = (vmode_t *)fmodelist;
+
+	// SDL versions older than 1.2.8 have sorting problems
+	qsort(fmodelist, num_fmodes, sizeof fmodelist[0], sort_modes);
+
+	vid_maxwidth = fmodelist[num_fmodes-1].width;
+	vid_maxheight = fmodelist[num_fmodes-1].height;
+
+	// find the 640x480 default resolution. this shouldn't fail
+	// at all (for any adapter suporting the VGA/XGA legacy).
+	for (i = 0; i < num_fmodes; i++)
+	{
+		if (fmodelist[i].width == 640 && fmodelist[i].height == 480)
+		{
+			vid_default = i;
+			break;
+		}
+	}
+
+	if (vid_default < 0)
+	{
+		// No 640x480? Unexpected, at least today..
+		// Easiest thing is to set the default mode
+		// as the highest reported one.
+		Con_Printf("WARNING: 640x480 not found in fullscreen modes\n"
+			   "Using the largest reported dimension as default\n");
+		vid_default = num_fmodes;
+	}
+
+	// limit the windowed (standart) modes list to desktop dimensions
+	for (i = 0; i < num_wmodes; i++)
+	{
+		if (wmodelist[i].width > vid_maxwidth || wmodelist[i].height > vid_maxheight)
+			break;
+	}
+	if (i < num_wmodes)
+		num_wmodes = i;
+}
+
+static void VID_ListModes_f (void)
+{
+	int	i;
+
+	Con_Printf ("Maximum allowed mode: %d x %d\n", vid_maxwidth, vid_maxheight);
+	Con_Printf ("Windowed modes enabled:\n");
+	for (i = 0; i < num_wmodes; i++)
+		Con_Printf ("%2d:  %u x %u\n", i, wmodelist[i].width, wmodelist[i].height);
+	Con_Printf ("Fullscreen modes enumerated:");
+	if (num_fmodes)
+	{
+		Con_Printf ("\n");
+		for (i = 0; i < num_fmodes; i++)
+			Con_Printf ("%2d:  %u x %u\n", i, fmodelist[i].width, fmodelist[i].height);
+	}
+	else
+	{
+		Con_Printf (" None\n");
+	}
+}
+
+static void VID_NumModes_f (void)
+{
+	Con_Printf ("%d video modes in current list\n", *nummodes);
+}
+
+static void VID_ShowInfo_f (void)
+{
+	Con_Printf ("Video info:\n"
+			"BitsPerPixel: %d,\n"
+			"Rmask : %u, Gmask : %u, Bmask : %u\n"
+			"Rshift: %u, Gshift: %u, Bshift: %u\n"
+			"Rloss : %u, Gloss : %u, Bloss : %u\n"
+			"alpha : %u, colorkey: %u\n",
+			vid_info->vfmt->BitsPerPixel,
+			vid_info->vfmt->Rmask, vid_info->vfmt->Gmask, vid_info->vfmt->Bmask,
+			vid_info->vfmt->Rshift, vid_info->vfmt->Gshift, vid_info->vfmt->Bshift,
+			vid_info->vfmt->Rloss, vid_info->vfmt->Gloss, vid_info->vfmt->Bloss,
+			vid_info->vfmt->alpha, vid_info->vfmt->colorkey	);
+}
+
 #ifdef GL_DLSYM
 static qboolean GL_OpenLibrary(const char *name)
 {
@@ -283,59 +517,33 @@ static qboolean GL_OpenLibrary(const char *name)
 static int VID_SetMode (int modenum)
 {
 	Uint32	flags;
-	int	i, temp;
+	int	i;
 
-	// so Con_Printfs don't mess us up by forcing vid and snd updates
-	temp = scr_disabled_for_loading;
-	scr_disabled_for_loading = true;
+	in_mode_set = true;
 
-	if ((modelist[modenum].type != MS_WINDOWED) && (modelist[modenum].type != MS_FULLSCREEN))
-		Sys_Error ("VID_SetMode: Bad mode type in modelist");
+	//flags = (SDL_OPENGL|SDL_NOFRAME);
+	flags = (SDL_OPENGL);
+	if (fullscreen)
+		flags |= SDL_FULLSCREEN;
 
-	// handle both fullscreen and windowed modes -S.A
-
-/*	SDL doco recons you need this. S.A.
-	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
-	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
-	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
-	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
-	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 0 );
-*/
-
-	if (modenum == MODE_FULLSCREEN_DEFAULT )
-		flags = (SDL_OPENGL|SDL_FULLSCREEN);
-	else 
-		flags = (SDL_OPENGL);
-		// flags = (SDL_OPENGL|SDL_NOFRAME);
-
-	if (modenum==0)
-		modestate = MS_WINDOWED;
-	else	
-		modestate = MS_FULLSCREEN;
-
-	// set fxMesa mode to fullscreen, don't let it it cheat multitexturing
-	setenv ("MESA_GLX_FX","f",1);
-	setenv ("FX_DONT_FAKE_MULTITEX","1",1);
-
-	// enable vsync for nvidia geforce or newer - S.A
-	if (COM_CheckParm("-sync") || COM_CheckParm("-vsync"))
+	// setup the attributes
+	if (bpp >= 32)
 	{
-		setenv("__GL_SYNC_TO_VBLANK", "1", 1);
-		Con_Printf ("Nvidia GL vsync enabled\n");
+		SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
+		SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
+		SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
+		SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
+		SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
+		SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
 	}
-
-	WRWidth = vid.width = vid.conwidth =   modelist[modenum].width;
-	WRHeight = vid.height = vid.conheight = modelist[modenum].height;
-
-	vid.numpages = 2;
-	
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-		Sys_Error ("Couldn't init video: %s", SDL_GetError());
-
-#ifdef GL_DLSYM
-	if (!GL_OpenLibrary(gl_library))
-		Sys_Error ("Unable to load GL library %s", gl_library);
-#endif
+	else
+	{
+		SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
+		SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
+		SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
+		SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
+	}
+	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
 #if SDL_PATCHLEVEL > 5
 	i = COM_CheckParm ("-fsaa");
@@ -348,12 +556,8 @@ static int VID_SetMode (int modenum)
 	}
 #endif
 
-	VID_SetIcon();	// window manager icon using xbm data
-
-	//SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, modelist[modenum].bpp);
-	//SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-	Con_Printf ("Requesting Mode: %dx%dx%d\n", vid.width, vid.height, modelist[modenum].bpp);
-	screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags);
+	Con_Printf ("Requested mode %d: %dx%dx%d\n", modenum, modelist[modenum].width, modelist[modenum].height, bpp);
+	screen = SDL_SetVideoMode (modelist[modenum].width, modelist[modenum].height, bpp, flags);
 	if (!screen)
 	{
 #if SDL_PATCHLEVEL > 5
@@ -367,7 +571,7 @@ static int VID_SetMode (int modenum)
 			multisample = 0;
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisample);
-			screen = SDL_SetVideoMode (vid.width,vid.height,modelist[modenum].bpp, flags);
+			screen = SDL_SetVideoMode (modelist[modenum].width, modelist[modenum].height, bpp, flags);
 			if (!screen)
 				Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 		}
@@ -376,19 +580,11 @@ static int VID_SetMode (int modenum)
 #endif
 	}
 
-	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &i);
-	Con_Printf ("Video Mode Set : %dx%dx%d\n", vid.width, vid.height, i);
-#if SDL_PATCHLEVEL > 5
-	if (multisample)
-	{
-		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &multisample);
-		Con_Printf ("multisample buffer with %i samples\n", multisample);
-	}
-#endif
-
-	SDL_WM_SetCaption(WM_TITLEBAR_TEXT, WM_ICON_TEXT);
-
-	IN_HideMouse ();
+	// success. set vid_modenum properly and adjust other vars.
+	vid_modenum = modenum;
+	modestate = (fullscreen) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
+	WRWidth = vid.width = vid.conwidth = modelist[modenum].width;
+	WRHeight = vid.height = vid.conheight = modelist[modenum].height;
 
 	// This will display a bigger hud and readable fonts at high
 	// resolutions. The fonts will be somewhat distorted, though
@@ -397,13 +593,14 @@ static int VID_SetMode (int modenum)
 	{
 		vid.conwidth = atoi(com_argv[i+1]);
 		vid.conwidth &= 0xfff8; // make it a multiple of eight
-		if (vid.conwidth < 320)
-			vid.conwidth = 320;
+		if (vid.conwidth < MIN_WIDTH)
+			vid.conwidth = MIN_WIDTH;
 		// pick a conheight that matches with correct aspect
 		vid.conheight = vid.conwidth*3 / 4;
 		i = COM_CheckParm("-conheight");
 		if (i != 0 && i < com_argc-1)
 			vid.conheight = atoi(com_argv[i+1]);
+		//if (vid.conheight < MIN_HEIGHT)
 		if (vid.conheight < 200)
 			vid.conheight = 200;
 		if (vid.conwidth > modelist[modenum].width)
@@ -416,9 +613,34 @@ static int VID_SetMode (int modenum)
 	}
 	// end of conwidth hack
 
-	scr_disabled_for_loading = temp;
+	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &i);
+	Con_Printf ("Video Mode Set : %dx%dx%d\n", vid.width, vid.height, i);
+#if SDL_PATCHLEVEL > 5
+	if (multisample)
+	{
+		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &multisample);
+		Con_Printf ("multisample buffer with %i samples\n", multisample);
+	}
+#endif
 
-	Cvar_SetValue ("vid_mode", modenum);
+	// collect the actual attributes
+	memset (&vid_attribs, 0, sizeof(attributes_t));
+	SDL_GL_GetAttribute(SDL_GL_RED_SIZE, &vid_attribs.red);
+	SDL_GL_GetAttribute(SDL_GL_GREEN_SIZE, &vid_attribs.green);
+	SDL_GL_GetAttribute(SDL_GL_BLUE_SIZE, &vid_attribs.blue);
+	SDL_GL_GetAttribute(SDL_GL_ALPHA_SIZE, &vid_attribs.alpha);
+	SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &vid_attribs.depth);
+	SDL_GL_GetAttribute(SDL_GL_STENCIL_SIZE, &vid_attribs.stencil);
+	Con_Printf ("vid_info: red: %d, green: %d, blue: %d, alpha: %d, depth: %d\n",
+			vid_attribs.red, vid_attribs.green, vid_attribs.blue, vid_attribs.alpha, vid_attribs.depth);
+
+	// setup the window manager stuff
+	VID_SetIcon();
+	SDL_WM_SetCaption(WM_TITLEBAR_TEXT, WM_ICON_TEXT);
+
+	IN_HideMouse ();
+
+	in_mode_set = false;
 
 	return true;
 }
@@ -471,8 +693,6 @@ static void CheckMultiTextureExtensions(void)
 
 static void CheckStencilBuffer(void)
 {
-	int stencil_size;
-
 	have_stencil = false;
 
 #ifdef GL_DLSYM
@@ -488,10 +708,9 @@ static void CheckStencilBuffer(void)
 	}
 #endif
 
-	SDL_GL_GetAttribute(SDL_GL_STENCIL_SIZE, &stencil_size);
-	if (stencil_size)
+	if (vid_attribs.stencil)
 	{
-		Con_Printf("Stencil buffer created with %d bits\n", stencil_size);
+		Con_Printf("Stencil buffer created with %d bits\n", vid_attribs.stencil);
 		have_stencil = true;
 	}
 }
@@ -726,6 +945,92 @@ static void GL_Init_Functions(void)
   glGetFloatv_fp = (glGetFloatv_f) SDL_GL_GetProcAddress("glGetFloatv");
   if (glGetFloatv_fp == 0) {Sys_Error("glGetFloatv not found in GL library");}
 }
+
+static void GL_ResetFunctions(void)
+{
+  glBegin_fp = NULL;
+  glEnd_fp = NULL;
+  glEnable_fp = NULL;
+  glDisable_fp = NULL;
+  glIsEnabled_fp = NULL;
+  glFinish_fp = NULL;
+  glFlush_fp = NULL;
+  glClear_fp = NULL;
+
+  glOrtho_fp = NULL;
+  glFrustum_fp = NULL;
+  glViewport_fp = NULL;
+  glPushMatrix_fp = NULL;
+  glPopMatrix_fp = NULL;
+  glLoadIdentity_fp = NULL;
+  glMatrixMode_fp = NULL;
+  glLoadMatrixf_fp = NULL;
+
+  glVertex2f_fp = NULL;
+  glVertex3f_fp = NULL;
+  glVertex3fv_fp = NULL;
+  glTexCoord2f_fp = NULL;
+  glTexCoord3f_fp = NULL;
+  glColor4f_fp = NULL;
+  glColor4fv_fp = NULL;
+  glColor4ub_fp = NULL;
+  glColor4ubv_fp = NULL;
+  glColor3f_fp = NULL;
+  glColor3ubv_fp = NULL;
+  glClearColor_fp = NULL;
+
+  glRotatef_fp = NULL;
+  glTranslatef_fp = NULL;
+
+  glBindTexture_fp = NULL;
+  glDeleteTextures_fp = NULL;
+  glTexParameterf_fp = NULL;
+  glTexEnvf_fp = NULL;
+  glScalef_fp = NULL;
+  glTexImage2D_fp = NULL;
+  glTexSubImage2D_fp = NULL;
+
+  glAlphaFunc_fp = NULL;
+  glBlendFunc_fp = NULL;
+  glShadeModel_fp = NULL;
+  glPolygonMode_fp = NULL;
+  glDepthMask_fp = NULL;
+  glDepthRange_fp = NULL;
+  glDepthFunc_fp = NULL;
+
+  glDrawBuffer_fp = NULL;
+  glReadBuffer_fp = NULL;
+  glReadPixels_fp = NULL;
+  glHint_fp = NULL;
+  glCullFace_fp = NULL;
+
+  glGetIntegerv_fp = NULL;
+
+  glGetString_fp = NULL;
+  glGetFloatv_fp = NULL;
+
+  have_stencil = false;
+  glStencilFunc_fp = NULL;
+  glStencilOp_fp = NULL;
+  glClearStencil_fp = NULL;
+
+  gl_mtexable = false;
+  glActiveTextureARB_fp = NULL;
+  glMultiTexCoord2fARB_fp = NULL;
+
+  is8bit = false;
+  MyglColorTableEXT = NULL;
+}
+#else	// GL_DLSYM
+static void GL_ResetFunctions(void)
+{
+  gl_mtexable = false;
+  glActiveTextureARB_fp = NULL;
+  glMultiTexCoord2fARB_fp = NULL;
+
+  is8bit = false;
+  MyglColorTableEXT = NULL;
+}
 #endif
 
 static qboolean VID_Check3dfxGamma(void)
@@ -909,7 +1214,7 @@ void GL_EndRendering (void)
 
 // handle the mouse state when windowed if that's changed
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
-	if (modestate == MS_WINDOWED)
+	if (!fullscreen)
 #endif
 		if ((int)_enable_mouse.value != enable_mouse)
 		{
@@ -1054,6 +1359,112 @@ void VID_SetPalette (unsigned char *palette)
 }
 
 
+/*
+=================
+VID_ChangeVideoMode 
+intended only as a callback for VID_Restart_f 
+=================
+*/
+static void VID_ChangeVideoMode(int newmode)
+{
+	int j, temp;
+
+	if (!screen)
+		return;
+
+	temp = scr_disabled_for_loading;
+	scr_disabled_for_loading = true;
+
+	// restore gamma (just in case), reset gamma function pointers
+	VID_ShutdownGamma();
+	CDAudio_Pause ();
+	MIDI_Pause(2);
+	S_ClearBuffer ();
+
+	// Unload all textures and reset texture counts
+	D_ClearOpenGLTextures(0);
+	texture_extension_number = 1;
+	lightmap_textures = 0;
+	for (j = 0; j < MAX_LIGHTMAPS; j++)
+		lightmap_modified[j] = true;
+
+	// reset all opengl function pointers (just in case)
+	GL_ResetFunctions();
+
+	// Avoid the SDL_QUIT event
+	// Avoid re-registering commands and re-allocating memory
+	draw_reinit = true;
+
+	// temporarily disable input devices
+	IN_DeactivateMouse ();
+	IN_ShowMouse ();
+
+	// Kill device and rendering contexts
+	SDL_FreeSurface(screen);
+	SDL_QuitSubSystem(SDL_INIT_VIDEO);	// also unloads the opengl driver
+
+	// re-init sdl_video, set the mode and re-init opengl
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+		Sys_Error ("Couldn't init video: %s", SDL_GetError());
+#ifdef GL_DLSYM
+	if (!GL_OpenLibrary(gl_library))
+		Sys_Error ("Unable to load GL library %s", gl_library);
+#endif
+	VID_SetMode (newmode);
+	// re-get the video info since we re-inited sdl_video
+	vid_info = SDL_GetVideoInfo();
+	GL_Init();
+	VID_InitGamma();
+	if (COM_CheckParm("-paltex"))
+		VID_Init8bitPalette();
+
+	// re-init input devices
+	IN_Init ();
+	ClearAllStates ();
+	CDAudio_Resume ();
+	MIDI_Pause(1);
+
+	// Reload graphics wad file (Draw_PicFromWad writes glpic_t data (sizes,
+	// texnums) right on top of the original pic data, so the pic data will
+	// be dirty after gl textures are loaded the first time; we need to load
+	// a clean version)
+	W_LoadWadFile ("gfx.wad");
+
+	// Reload pre-map pics, fonts, console, etc
+	Draw_Init();
+	SCR_Init();
+	Sbar_Init();
+	// Reload the particle texture
+	R_InitParticleTexture();
+
+	vid.recalc_refdef = 1;
+
+	// Reload model textures and player skins
+	Mod_ReloadTextures();
+	// rebuild the lightmaps
+	GL_BuildLightmaps();
+
+	// finished reloading all images
+	draw_reinit = false;
+	scr_disabled_for_loading = temp;
+
+	// apply our gamma
+	VID_ShiftPalette(NULL);
+}
+
+static void VID_Restart_f (void)
+{
+	if ((int)vid_mode.value < 0 || (int)vid_mode.value >= *nummodes)
+	{
+		Con_Printf ("Bad video mode %d\n", (int)vid_mode.value);
+		Cvar_SetValue ("vid_mode", vid_modenum);
+		return;
+	}
+
+	Con_Printf ("Re-initializing video:\n");
+	VID_ChangeVideoMode ((int)vid_mode.value);
+}
+
 void	VID_Shutdown (void)
 {
 	VID_ShutdownGamma();
@@ -1130,13 +1541,21 @@ VID_Init
 */
 void	VID_Init (unsigned char *palette)
 {
-	int	i, width, height, bpp;
+	int	i, width, height;
 	char	gldir[MAX_OSPATH];
+	SDL_Rect	**enumlist;
 
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&gl_ztrick);
 	Cvar_RegisterVariable (&gl_purge_maptex);
+
+	Cmd_AddCommand ("vid_showinfo", &VID_ShowInfo_f);
+	Cmd_AddCommand ("vid_listmodes", &VID_ListModes_f);
+	Cmd_AddCommand ("vid_nummodes", &VID_NumModes_f);
+	Cmd_AddCommand ("vid_restart", &VID_Restart_f);
+
+	vid.numpages = 2;
 
 	// prepare directories for caching mesh files
 	sprintf (gldir, "%s/glhexen", com_userdir);
@@ -1146,106 +1565,126 @@ void	VID_Init (unsigned char *palette)
 	sprintf (gldir, "%s/glhexen/puzzle", com_userdir);
 	Sys_mkdir (gldir);
 
+	// enable vsync for nvidia geforce or newer - S.A
+	if (COM_CheckParm("-sync") || COM_CheckParm("-vsync"))
+	{
+		setenv("__GL_SYNC_TO_VBLANK", "1", 1);
+		Con_Printf ("Nvidia GL vsync enabled\n");
+	}
+
+	// set fxMesa mode to fullscreen, don't let it it cheat multitexturing
+	setenv ("MESA_GLX_FX","f",1);
+	setenv ("FX_DONT_FAKE_MULTITEX","1",1);
+
+	// init sdl
+	// the first check is actually unnecessary
+	if ( (SDL_WasInit(SDL_INIT_AUDIO)) == 0 )
+		if (SDL_Init(SDL_INIT_VIDEO) < 0)
+			Sys_Error ("Couldn't init video: %s", SDL_GetError());
+
 #ifdef GL_DLSYM
 	if ((i = COM_CheckParm("--gllibrary")))
 		gl_library = com_argv[i+1];
 	else if ((i = COM_CheckParm("-g")))
 		gl_library = com_argv[i+1];
-	// else: leave as NULL and trust SDL's wisdom here
+	else
+		gl_library = NULL;	// trust SDL's wisdom here
+
+	// load the opengl library
+	if (!GL_OpenLibrary(gl_library))
+		Sys_Error ("Unable to load GL library %s", gl_library);
 #endif
 
-	modelist[0].type = MS_WINDOWED;
-	modelist[0].width = 640;
-	modelist[0].height = 480;
-	strcpy (modelist[0].modedesc, "640x480");
-	modelist[0].modenum = MODE_WINDOWED;
-	modelist[0].dib = 1;
-	modelist[0].fullscreen = 0;
-	modelist[0].halfscreen = 0;
-	modelist[0].bpp = 16;
+	// this will contain the "best bpp" for the current display
+	// make sure to re-retrieve it if you ever re-init sdl_video
+	vid_info = SDL_GetVideoInfo();
 
-	// mode[1] has been hacked to be like the (missing) mode[3] S.A.
-
-	modelist[1].type = MS_FULLSCREEN;
-	modelist[1].width = 640;
-	modelist[1].height = 480;
-	strcpy (modelist[1].modedesc, "640x480");
-	modelist[1].modenum = MODE_FULLSCREEN_DEFAULT;
-	modelist[1].dib = 1;
-	modelist[1].fullscreen = 1;
-	modelist[1].halfscreen = 0;
-	modelist[1].bpp = 16;
-
-	// modelist[2-5] have been removed
-
-
-	/*********************************
-	 * command line processing (S.A) *
-	 *********************************/
-
-	// windowed mode is default
-	vid_default = MODE_WINDOWED;
-	// see if the user wants fullscreen
-	if (COM_CheckParm("-f") || COM_CheckParm("-fullscreen") || COM_CheckParm("--fullscreen"))
-	{
-		vid_default = MODE_FULLSCREEN_DEFAULT;
-	}
-
-	i = COM_CheckParm("-width");
-	if (i && i < com_argc-1)
-	{
-		width = atoi(com_argv[i+1]);
-		i = COM_CheckParm("-height");
-		if (i && i < com_argc-1)
-		{
-			// we removed the old stuff, and now we need
-			// some sanity check here...
-			height = atoi(com_argv[i+1]);
-		}
-		else
-		{
-			// we currently do "normal" modes with 4/3 ratio
-			height = 3 * width / 4;
-		}
-	}
-	else
-	{
-		if (vid_default == MODE_WINDOWED)
-			width=640;
-		else
-			width=800;
-
-		// we currently do "normal" modes with 4/3 ratio
-		height = 3 * width / 4;
-	}
+	// retrieve the list of fullscreen modes
+	enumlist = SDL_ListModes(NULL, SDL_OPENGL|SDL_FULLSCREEN);
 
 	i = COM_CheckParm("-bpp");
 	if (i && i < com_argc-1)
 	{
 		bpp = atoi(com_argv[i+1]);
 	}
-	else
+
+	// prepare the modelists, find the actual modenum for vid_default
+	VID_PrepareModes(enumlist);
+
+	// set vid_mode to our safe default first
+	Cvar_SetValue ("vid_mode", vid_default);
+
+	// windowed mode is default
+	// see if the user wants fullscreen
+	if (COM_CheckParm("-f") || COM_CheckParm("-fullscreen") || COM_CheckParm("--fullscreen"))
 	{
-		// this should be native bpp ??? S.A.
-		bpp = 16;
+		fullscreen = true;
+		if (!num_fmodes) // FIXME: see below, as well
+			Sys_Error ("No fullscreen modes available at this color depth");
 	}
-	modelist[vid_default].width = width;
-	modelist[vid_default].height = height;
-	modelist[vid_default].bpp = bpp;
-	// we even don't need this, but heck, here we go...
-	sprintf (modelist[vid_default].modedesc,"%dx%dx%d",width,height,bpp);
+
+	// user is always right ...
+	i = COM_CheckParm("-width");
+	if (i && i < com_argc-1)
+	{	// FIXME: this part doesn't know about a disaster case
+		// like we aren't reported any fullscreen modes.
+		width = atoi(com_argv[i+1]);
+
+		i = COM_CheckParm("-height");
+		if (i && i < com_argc-1)
+			height = atoi(com_argv[i+1]);
+		else	// proceed with 4/3 ratio
+			height = 3 * width / 4;
+
+		// scan existing modes to see if this is already available
+		// if not, add this as the last "valid" video mode and set
+		// vid_mode to it only if it doesn't go beyond vid_maxwidth
+		i = 0;
+		while (i < *nummodes)
+		{
+			if (modelist[i].width == width && modelist[i].height == height)
+				break;
+			i++;
+		}
+		if (i < *nummodes)
+		{
+			Cvar_SetValue ("vid_mode", i);
+		}
+		else if ( (width <= vid_maxwidth && width >= MIN_WIDTH &&
+			   height <= vid_maxheight && height >= MIN_HEIGHT) ||
+			  COM_CheckParm("-force") )
+		{
+			modelist[*nummodes].width = width;
+			modelist[*nummodes].height = height;
+			modelist[*nummodes].halfscreen = 0;
+			modelist[*nummodes].fullscreen = 1;
+			modelist[*nummodes].bpp = 16;
+			sprintf (modelist[*nummodes].modedesc,"%d x %d (user mode)",width,height);
+			Cvar_SetValue ("vid_mode", *nummodes);
+			(*nummodes)++;	// ugly, I know. but works
+		}
+		else
+		{
+			Con_Printf ("ignoring invalid -width and/or -height arguments\n");
+		}
+	}
 
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
 	vid.colormap = host_colormap;
 	vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
 
-	VID_SetMode (vid_default);
-
+	// so Con_Printfs don't mess us up by forcing vid and snd updates
+	i = scr_disabled_for_loading;
+	scr_disabled_for_loading = true;
+	//set the mode
+	VID_SetMode ((int)vid_mode.value);
 	ClearAllStates ();
-
 	GL_Init ();
 	VID_InitGamma();
+
+	// avoid the 3dfx splash screen on resolution changes
+	setenv ("FX_GLIDE_NO_SPLASH","0",1);
 
 	// set our palette
 	VID_SetPalette (palette);
@@ -1256,7 +1695,7 @@ void	VID_Init (unsigned char *palette)
 		VID_Init8bitPalette();
 
 	vid_initialized = true;
-
+	scr_disabled_for_loading = i;
 	vid.recalc_refdef = 1;
 
 	Con_SafePrintf ("Video initialized.\n");
@@ -1279,13 +1718,18 @@ and brings the mouse to a proper state afterwards
 extern qboolean mousestate_sa;
 void VID_ToggleFullscreen (void)
 {
+	if (!num_fmodes)
+		return;
+
+	S_ClearBuffer ();
+
 	// This doesn't seem to cause any trouble even
 	// with is_3dfx == true and FX_GLX_MESA == f
 	if (SDL_WM_ToggleFullScreen(screen)==1)
 	{
-		Cvar_SetValue ("vid_mode", !vid_mode.value);
-		modestate = (vid_mode.value) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
-		if (vid_mode.value)
+		fullscreen = !fullscreen;
+		modestate = (fullscreen) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
+		if (fullscreen)
 		{
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
 			if (!_enable_mouse.value)
@@ -1332,8 +1776,15 @@ void D_ShowLoadingSize(void)
 // Video menu stuff
 //========================================================
 
-#define MAX_COLUMN_SIZE		9
-#define MODE_AREA_HEIGHT	(MAX_COLUMN_SIZE + 2)
+static int	vid_menunum;
+static int	vid_cursor;
+static qboolean	vid_menu_firsttime = true;
+
+enum {
+	VID_FULLSCREEN,	// make sure the fullscreen entry (0)
+	VID_RESOLUTION,	// is lower than resolution entry (1)
+	VID_ITEMS
+};
 
 /*
 ================
@@ -1344,20 +1795,26 @@ void VID_MenuDraw (void)
 {
 	ScrollTitle("gfx/menu/title7.lmp");
 
-	M_Print (8*8, 4 + MODE_AREA_HEIGHT * 8 + 8*0,
-			 "Select video modes");
-	M_Print (8*8, 4 + MODE_AREA_HEIGHT * 8 + 8*1,
-			 "from the command line:");
-	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*4,
-			 "-window");
-	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*5,
-			 "-fullscreen");
-	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*6,
-			 "-width  <width>");
-	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*7,
-			 "-height <height>");
-	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*8,
-			 "-bpp    <depth>");
+	if (vid_menu_firsttime)
+	{	// settings for entering the menu first time
+		vid_menunum = vid_modenum;
+		vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
+		vid_menu_firsttime = false;
+	}
+
+	if (num_fmodes)
+	{
+		M_Print (76, 92 + 8*VID_FULLSCREEN, "Fullscreen: ");
+		M_DrawCheckbox (76+12*8, 92 + 8*VID_FULLSCREEN, modestate);
+	}
+
+	M_Print (76, 92 + 8*VID_RESOLUTION, "Resolution: ");
+	if (vid_menunum == vid_modenum)
+		M_PrintWhite (76+12*8, 92 + 8*VID_RESOLUTION, modelist[vid_menunum].modedesc);
+	else
+		M_Print (76+12*8, 92 + 8*VID_RESOLUTION, modelist[vid_menunum].modedesc);
+
+	M_DrawCharacter (64, 92 + vid_cursor*8, 12+((int)(realtime*4)&1));
 }
 
 /*
@@ -1369,11 +1826,73 @@ void VID_MenuKey (int key)
 {
 	switch (key)
 	{
-	case K_ESCAPE:
-	case K_ENTER:
+	case K_UPARROW:
 		S_LocalSound ("raven/menu1.wav");
+		vid_cursor--;
+		if (!num_fmodes && vid_cursor == VID_FULLSCREEN)
+			vid_cursor--;
+		if (vid_cursor < 0)
+			vid_cursor = VID_ITEMS-1;
+		break;
+
+	case K_DOWNARROW:
+		S_LocalSound ("raven/menu1.wav");
+		vid_cursor++;
+		if (vid_cursor >= VID_ITEMS)
+			vid_cursor = 0;
+		if (!num_fmodes && vid_cursor == VID_FULLSCREEN)
+			vid_cursor++;
+		break;
+
+	case K_ENTER:
+		switch (vid_cursor)
+		{
+		case VID_FULLSCREEN:
+			VID_ToggleFullscreen();
+			break;
+		case VID_RESOLUTION:
+			if (vid_menunum != vid_modenum)
+			{
+				Cvar_SetValue("vid_mode", vid_menunum);
+				VID_Restart_f();
+			}
+			break;
+		}
+		return;
+
+	case K_ESCAPE:
 		M_Menu_Options_f ();
 		break;
+
+	case K_LEFTARROW:
+		switch (vid_cursor)
+		{
+		case VID_FULLSCREEN:
+			VID_ToggleFullscreen();
+			break;
+		case VID_RESOLUTION:
+			S_LocalSound ("raven/menu1.wav");
+			vid_menunum--;
+			if (vid_menunum < 0)
+				vid_menunum = 0;
+			break;
+		}
+		return;
+
+	case K_RIGHTARROW:
+		switch (vid_cursor)
+		{
+		case VID_FULLSCREEN:
+			VID_ToggleFullscreen();
+			break;
+		case VID_RESOLUTION:
+			S_LocalSound ("raven/menu1.wav");
+			vid_menunum++;
+			if (vid_menunum >= *nummodes)
+				vid_menunum = *nummodes - 1;
+			break;
+		}
+		return;
 
 	default:
 		break;

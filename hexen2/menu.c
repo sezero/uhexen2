@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.50 2005-12-11 11:53:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.51 2006-01-12 12:34:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -14,7 +14,6 @@ extern  cvar_t  r_shadows, gl_glows, gl_missile_glows, gl_other_glows; // S.A
 static void ReInitMusic(void);
 
 extern	modestate_t	modestate;
-extern	cvar_t	vid_mode;
 extern	cvar_t	crosshair;
 extern	qboolean introPlaying;
 extern	float introTime;
@@ -1830,7 +1829,6 @@ enum
 	OPT_GL_GLOW,
 #endif
 	OPT_CHASE_ACTIVE,
-	OPT_FULLSCREEN,
 	OPT_VIDEO,
 	OPTIONS_ITEMS
 	// new definitions S.A.
@@ -1972,10 +1970,6 @@ void M_AdjustSliders (int dir)
 		Cvar_SetValue ("chase_active", !chase_active.value);
 		break;
 
-	case OPT_FULLSCREEN:	// vid_mode
-		VID_ToggleFullscreen();
-		break;
-
 	case OPT_USEMOUSE:	// _enable_mouse
 		Cvar_SetValue ("_enable_mouse", !_enable_mouse.value);
 		break;
@@ -2077,9 +2071,6 @@ void M_Options_Draw (void)
 #endif
 	M_Print (16, 60+(OPT_CHASE_ACTIVE*8),	"            Chase Mode");
 	M_DrawCheckbox (220, 60+(OPT_CHASE_ACTIVE*8), chase_active.value);
-
-	M_Print (16, 60+(OPT_FULLSCREEN*8),	"            Fullscreen");
-	M_DrawCheckbox (220, 60+(OPT_FULLSCREEN*8), vid_mode.value);
 
 	if (vid_menudrawfn)
 		M_Print (16, 60+(OPT_VIDEO*8),	"           Video Modes");
@@ -4100,6 +4091,11 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.50  2005/12/11 11:53:12  sezero
+ * added menu.c arguments to gl version of Draw_TransPicTranslate, and
+ * macroized M_DrawTransPicTranslate accordingly. this synchronizes h2
+ * and h2w versions of gl_draw.c
+ *
  * Revision 1.49  2005/12/04 11:19:18  sezero
  * gamma stuff update
  *

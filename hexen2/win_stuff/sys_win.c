@@ -25,7 +25,7 @@
 #define NOT_FOCUS_SLEEP	20				// sleep time when not focus
 
 qboolean	ActiveApp, Minimized;
-qboolean	Win95, WinNT;
+qboolean	Win95, Win95old, WinNT;
 
 static double		pfreq;
 static double		curtime = 0.0;
@@ -218,7 +218,12 @@ void Sys_Init (void)
 		WinNT = false;
 
 	if ((vinfo.dwMajorVersion == 4) && (vinfo.dwMinorVersion == 0))
+	{
 		Win95 = true;
+		// Win95-gold or Win95A can't switch bpp automatically
+		if (vinfo.szCSDVersion[1] != 'C' && vinfo.szCSDVersion[1] != 'B')
+			Win95old = true;
+	}
 }
 
 
@@ -733,6 +738,12 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2006/01/06 12:41:42  sezero
+ * increased minimum heapsize to 16 mb, otherwise hunk allocation errors occur
+ * with old 8 mb minimum. added a -forcemem commandline switch which enables
+ * forcing user memory args out of min/max limits when parsing the -heapsize
+ * and -zone switches.
+ *
  * Revision 1.26  2006/01/06 12:15:02  sezero
  * added a simplified findfirst/findnext implementation: When given a
  * directory and a wildcard match pattern, they will find/report the

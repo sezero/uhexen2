@@ -2,11 +2,14 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.27 2005-10-21 18:13:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.28 2006-01-12 12:34:38 sezero Exp $
 */
 
 #include "SDL.h"
 #include "quakedef.h"
+
+
+extern qboolean	draw_reinit;
 
 // mouse variables
 cvar_t	m_filter = {"m_filter","0"};
@@ -160,7 +163,7 @@ void IN_ActivateMouse (void)
 
 	if (!mouseactivatetoggle)
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
-		if ((modestate==MODE_FULLSCREEN_DEFAULT) || _enable_mouse.value)
+		if ((modestate!=MODE_WINDOWED) || _enable_mouse.value)
 #else
 		if (_enable_mouse.value)
 #endif
@@ -206,7 +209,7 @@ void IN_StartupMouse (void)
 
 	//if (mouseactivatetoggle)
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
-	if ((modestate==MODE_FULLSCREEN_DEFAULT) || _enable_mouse.value)
+	if ((modestate!=MODE_WINDOWED) || _enable_mouse.value)
 #else
 	if (_enable_mouse.value)
 #endif
@@ -221,32 +224,35 @@ IN_Init
 */
 void IN_Init (void)
 {
-	// mouse variables
-	Cvar_RegisterVariable (&m_filter);
+	if (!draw_reinit)
+	{
+		// mouse variables
+		Cvar_RegisterVariable (&m_filter);
 
-	// joystick variables
-	Cvar_RegisterVariable (&in_joystick);
-	Cvar_RegisterVariable (&joy_name);
-	Cvar_RegisterVariable (&joy_advanced);
-	Cvar_RegisterVariable (&joy_advaxisx);
-	Cvar_RegisterVariable (&joy_advaxisy);
-	Cvar_RegisterVariable (&joy_advaxisz);
-	Cvar_RegisterVariable (&joy_advaxisr);
-	Cvar_RegisterVariable (&joy_advaxisu);
-	Cvar_RegisterVariable (&joy_advaxisv);
-	Cvar_RegisterVariable (&joy_forwardthreshold);
-	Cvar_RegisterVariable (&joy_sidethreshold);
-	Cvar_RegisterVariable (&joy_pitchthreshold);
-	Cvar_RegisterVariable (&joy_yawthreshold);
-	Cvar_RegisterVariable (&joy_forwardsensitivity);
-	Cvar_RegisterVariable (&joy_sidesensitivity);
-	Cvar_RegisterVariable (&joy_pitchsensitivity);
-	Cvar_RegisterVariable (&joy_yawsensitivity);
-	Cvar_RegisterVariable (&joy_wwhack1);
-	Cvar_RegisterVariable (&joy_wwhack2);
+		// joystick variables
+		Cvar_RegisterVariable (&in_joystick);
+		Cvar_RegisterVariable (&joy_name);
+		Cvar_RegisterVariable (&joy_advanced);
+		Cvar_RegisterVariable (&joy_advaxisx);
+		Cvar_RegisterVariable (&joy_advaxisy);
+		Cvar_RegisterVariable (&joy_advaxisz);
+		Cvar_RegisterVariable (&joy_advaxisr);
+		Cvar_RegisterVariable (&joy_advaxisu);
+		Cvar_RegisterVariable (&joy_advaxisv);
+		Cvar_RegisterVariable (&joy_forwardthreshold);
+		Cvar_RegisterVariable (&joy_sidethreshold);
+		Cvar_RegisterVariable (&joy_pitchthreshold);
+		Cvar_RegisterVariable (&joy_yawthreshold);
+		Cvar_RegisterVariable (&joy_forwardsensitivity);
+		Cvar_RegisterVariable (&joy_sidesensitivity);
+		Cvar_RegisterVariable (&joy_pitchsensitivity);
+		Cvar_RegisterVariable (&joy_yawsensitivity);
+		Cvar_RegisterVariable (&joy_wwhack1);
+		Cvar_RegisterVariable (&joy_wwhack2);
 
-	Cmd_AddCommand ("force_centerview", Force_CenterView_f);
-	Cmd_AddCommand ("joyadvancedupdate", Joy_AdvancedUpdate_f);
+		Cmd_AddCommand ("force_centerview", Force_CenterView_f);
+		Cmd_AddCommand ("joyadvancedupdate", Joy_AdvancedUpdate_f);
+	}
 
 	IN_StartupMouse ();
 	IN_StartupJoystick ();
@@ -1032,7 +1038,7 @@ void IN_SendKeyEvents (void)
                                 Key_Event(sym, state);
                                 break;
                         case SDL_MOUSEBUTTONDOWN:
-				if (!mouseactive)
+				if (!mouseactive || in_mode_set)
 					break;
 				switch(event.button.button)
 				{
@@ -1064,7 +1070,7 @@ void IN_SendKeyEvents (void)
 				break;
 
                         case SDL_MOUSEBUTTONUP:
-				if (!mouseactive)
+				if (!mouseactive || in_mode_set)
 					break;
 				switch(event.button.button)
 				{
@@ -1095,15 +1101,14 @@ void IN_SendKeyEvents (void)
 				}
 				break;
 			case SDL_MOUSEMOTION:
-				if (!mouseactive)
+				if (!mouseactive || in_mode_set)
 					break;
-				if (!in_mode_set)
-				{
-					IN_MouseEvent (SDL_GetMouseState(NULL,NULL));
-				}
+				IN_MouseEvent (SDL_GetMouseState(NULL,NULL));
 				break;
 
 			case SDL_QUIT:
+				if (draw_reinit)
+					break;
 				CL_Disconnect ();
 				Sys_Quit ();
 				break;
@@ -1115,6 +1120,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2005/10/21 18:13:20  sezero
+ * made key repeats work
+ *
  * Revision 1.26  2005/09/28 06:07:32  sezero
  * renamed ToggleFullScreenSA to VID_ToggleFullscreen which
  * actually is of VID_ class and now is easier to locate

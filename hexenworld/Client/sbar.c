@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.13 2006-01-07 09:34:48 sezero Exp $
+	$Id: sbar.c,v 1.14 2006-01-12 12:34:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -76,6 +76,7 @@ static void DrawArtifactInventory(void);
 
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
+extern qboolean	draw_reinit;
 extern int in_impulse;
 extern int trans_level;
 
@@ -190,6 +191,9 @@ void Sbar_Init(void)
 	sb_nums[10] = Draw_PicFromWad("num_minus");
 	sb_colon = Draw_PicFromWad("num_colon");
 	sb_slash = Draw_PicFromWad("num_slash");
+
+	if (draw_reinit)
+		return;
 
 	Cmd_AddCommand("+showinfo", ShowInfoDown_f);
 	Cmd_AddCommand("-showinfo", ShowInfoUp_f);

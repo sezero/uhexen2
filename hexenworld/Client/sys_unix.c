@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.39 2006-01-06 12:41:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.40 2006-01-12 12:34:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -48,6 +48,7 @@
 
 static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
+extern qboolean		draw_reinit;
 
 void Sys_InitFloatTime (void);
 
@@ -208,6 +209,9 @@ void Sys_Error (char *error, ...)
 	char		text[MAXPRINTMSG];
 //	double		starttime;
 
+	// re-enable SDL_QUIT event which maybe disabled
+	// during a video mode change
+	draw_reinit = false;
 	Host_Shutdown ();
 
 	va_start (argptr, error);
@@ -468,6 +472,12 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.39  2006/01/06 12:41:42  sezero
+ * increased minimum heapsize to 16 mb, otherwise hunk allocation errors occur
+ * with old 8 mb minimum. added a -forcemem commandline switch which enables
+ * forcing user memory args out of min/max limits when parsing the -heapsize
+ * and -zone switches.
+ *
  * Revision 1.38  2006/01/06 12:15:02  sezero
  * added a simplified findfirst/findnext implementation: When given a
  * directory and a wildcard match pattern, they will find/report the

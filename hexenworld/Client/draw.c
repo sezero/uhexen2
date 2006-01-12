@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.14 2005-10-25 20:08:41 sezero Exp $
+	$Id: draw.c,v 1.15 2006-01-12 12:34:38 sezero Exp $
 */
 
 
@@ -28,6 +28,7 @@ qpic_t		*draw_disc[MAX_DISC] =
 };
 
 int	trans_level = 0;
+qboolean draw_reinit = false;	// for compatibility with the opengl version
 
 //=============================================================================
 /* Support Routines */

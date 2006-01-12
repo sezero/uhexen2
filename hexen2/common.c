@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.34 2006-01-06 12:19:08 sezero Exp $
+	$Id: common.c,v 1.35 2006-01-12 12:34:37 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1448,6 +1448,13 @@ static byte *COM_LoadFile (char *path, int usehunk)
 		else
 			buf = loadbuf;
 	}
+	else if (usehunk == 5)
+	{	// Pa3PyX: like 4, except uses hunk (not temp) if no space
+		if (len + 1 > loadsize)
+			buf = Hunk_AllocName(len + 1, path);
+		else
+			buf = loadbuf;
+	}
 	else
 		Sys_Error ("COM_LoadFile: bad usehunk");
 
@@ -1491,6 +1498,21 @@ byte *COM_LoadStackFile (char *path, void *buffer, int bufsize)
 	loadbuf = (byte *)buffer;
 	loadsize = bufsize;
 	buf = COM_LoadFile (path, 4);
+
+	return buf;
+}
+
+// Pa3PyX: Like COM_LoadStackFile, excepts loads onto
+// the hunk (instead of temp) if there is no space
+byte *COM_LoadBufFile (char *path, void *buffer, int *bufsize)
+{
+	byte	*buf;
+
+	loadbuf = (byte *)buffer;
+	loadsize = (*bufsize) + 1;
+	buf = COM_LoadFile (path, 5);
+	if (buf && !(*bufsize))
+		*bufsize = com_filesize;
 
 	return buf;
 }
@@ -2058,6 +2080,11 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.34  2006/01/06 12:19:08  sezero
+ * put the new Sys_FindFirstFile/Sys_FindNextFile stuff into action. also killed
+ * the tempdir and trailing slash funnies in host_cmd.c when calling CL_CopyFiles
+ * and CL_RemoveGIPFiles in saving and loading games.
+ *
  * Revision 1.33  2005/12/29 07:12:01  sezero
  * cleaned up COM_CopyFile goto ugliness
  *

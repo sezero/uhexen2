@@ -1,33 +1,17 @@
 /*
-   vid_sdl.c
-   SDL video driver
-   Select window size and mode and init SDL in SOFTWARE mode.
+	vid_sdl.c
+	SDL video driver
+	Select window size and mode and init SDL in SOFTWARE mode.
 
-   $Id: vid_sdl.c,v 1.37 2006-01-07 09:54:29 sezero Exp $
+	$Id: vid_sdl.c,v 1.38 2006-01-12 12:34:39 sezero Exp $
 
-   Changed by S.A. 7/11/04, 27/12/04
+	Changed by S.A. 7/11/04, 27/12/04
+	Options are now: -fullscreen | -window, -height , -width
+	Currently bpp is 8 bit , and it seems fairly hardwired at this depth
 
-   Options are now:
-     -fullscreen | -window, -height , -width 
-   Currently bpp is 8 bit , and it seems fairly hardwired at this depth
-   Interactive Video Modes switching have been disabled, we may put it
-   back in future.
-
-   The modes which are used are the traditional 0 and 3, but have redefined
-   MODE_FULLSCREEN_DEFAULT from 3 to 1 to be a boolean:
-
-	vid_mode = MODE_WINDOWED  0 || MODE_FULLSCREEN_DEFAULT 1
-
-   For clarity I have removed the variable "windowed_default" and replaced
-   it with MODE_WINDOWED. Functionality is the same.
-
-   Changed by O.S 10/08/05
-   - Removed cvars vid_default_mode, _vid_default_mode_win
-   - Removed all mode descriptions
-   - Removed all nummodes and VID_NumModes stuff
-   - Removed all VID_GetXXX and VID_DescXXX stuff
-   - Removed firstupdate things (VID_Update() cleanup)
-
+	Changed by O.S 7/01/06
+	- Added video modes enumeration via SDL
+	- Added video mode changing on the fly.
 */
 
 #include "quakedef.h"
@@ -35,8 +19,9 @@
 #include "d_local.h"
 #include "SDL.h"
 
-#define MAX_MODE_LIST	30
-#define VID_ROW_SIZE	3
+#define MIN_WIDTH		320
+//#define MIN_HEIGHT		200
+#define MIN_HEIGHT		240
 
 unsigned char	vid_curpal[256*3];
 unsigned short	d_8to16table[256];
@@ -54,19 +39,25 @@ qboolean	in_mode_set;
 static int	enable_mouse;
 static qboolean	palette_changed;
 
+static int	num_fmodes;
+static int	num_wmodes;
+static int	*nummodes;
+qboolean	fullscreen = false;	// windowed mode is default
+//static int	bpp = 8;
+static const SDL_VideoInfo	*vid_info;
 static SDL_Surface	*screen;
 
 viddef_t	vid;		// global video state
-
-// Note that 0 is MODE_WINDOWED and 1 is MODE_FULLSCREEN_DEFAULT
+// cvar vid_mode must be set before calling VID_SetMode, VID_ChangeVideoMode or VID_Restart_f
 cvar_t		vid_mode = {"vid_mode","0", false};
 cvar_t		vid_config_x = {"vid_config_x","320", true};
 cvar_t		vid_config_y = {"vid_config_y","240", true};
 cvar_t		_enable_mouse = {"_enable_mouse","1", true};
 cvar_t		vid_showload = {"vid_showload", "1"};
 
-static int	vid_modenum = NO_MODE;
-static int	vid_default = MODE_WINDOWED;
+static int	vid_default = -1;	// modenum of 320x240 as a safe default
+static int	vid_modenum = -1;	// current video mode, set after mode setting succeeds
+static int	vid_maxwidth = 640, vid_maxheight = 480;
 modestate_t	modestate = MS_UNINIT;
 
 static byte		*vid_surfcache;
@@ -84,7 +75,31 @@ typedef struct {
 	char		modedesc[13];
 } vmode_t;
 
-static vmode_t	modelist[MAX_MODE_LIST];
+typedef struct {
+	int	width;
+	int	height;
+} stdmode_t;
+
+#define RES_640X480	3
+static const stdmode_t	std_modes[] = {
+// NOTE: keep this list in order
+	{320, 240},	// 0
+	{400, 300},	// 1
+	{512, 384},	// 2
+	{640, 480},	// 3 == RES_640X480, this is our default, below
+			//		this is the lowresmodes region.
+			//		either do not change its order,
+			//		or change the above define, too
+	{800,  600},	// 4, RES_640X480 + 1
+	{1024, 768}	// 5, RES_640X480 + 2
+};
+
+#define MAX_MODE_LIST	30
+#define MAX_STDMODES	(sizeof(std_modes) / sizeof(std_modes[0]))
+#define NUM_LOWRESMODES	(RES_640X480)
+static vmode_t	fmodelist[MAX_MODE_LIST+1];	// list of enumerated fullscreen modes
+static vmode_t	wmodelist[MAX_STDMODES +1];	// list of standart 4:3 windowed modes
+static vmode_t	*modelist;	// modelist in use, points to one of the above lists
 
 static int VID_SetMode (int modenum, unsigned char *palette);
 
@@ -142,8 +157,12 @@ static qboolean VID_AllocBuffers (int width, int height)
 
 // see if there's enough memory, allowing for the normal mode 0x13 pixel,
 // z, and surface buffers
-	if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
-		 0x10000 * 3) < MINIMUM_MEMORY)
+	//if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
+	//	 0x10000 * 3) < MINIMUM_MEMORY)
+	// Pa3PyX: using hopefully better estimation now
+	// if total memory < needed surface cache + (minimum operational memory
+	// less surface cache for 320x200 and typical hunk state after init)
+	if (host_parms.memsize < tbuffersize + 0x180000 + 0xC00000)
 	{
 		Con_SafePrintf ("Not enough memory for video mode\n");
 		return false;		// not enough memory for mode
@@ -165,6 +184,35 @@ static qboolean VID_AllocBuffers (int width, int height)
 	vid_surfcache = (byte *)d_pzbuffer +
 			width * height * sizeof (*d_pzbuffer);
 	
+	return true;
+}
+
+/*
+================
+VID_CheckAdequateMem
+================
+*/
+static qboolean VID_CheckAdequateMem (int width, int height)
+{
+	int		tbuffersize;
+
+	tbuffersize = width * height * sizeof (*d_pzbuffer);
+
+	tbuffersize += D_SurfaceCacheForRes (width, height);
+
+// see if there's enough memory, allowing for the normal mode 0x13 pixel,
+// z, and surface buffers
+	//if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
+	//	 0x10000 * 3) < MINIMUM_MEMORY)
+	// Pa3PyX: using hopefully better estimation now
+	// Experimentation: the heap should have at least 12.0 megs
+	// remaining (after init) after setting video mode, otherwise
+	// it's Hunk_Alloc failures and cache thrashes upon level load
+	if (host_parms.memsize < tbuffersize + 0x180000 + 0xC00000)
+	{
+		return false;		// not enough memory for mode
+	}
+
 	return true;
 }
 
@@ -212,40 +260,235 @@ static void VID_SetIcon (void)
 	SDL_FreeSurface(icon);
 }
 
+static int sort_modes (const void *arg1, const void *arg2)
+{
+	const SDL_Rect *a1, *a2;
+	a1 = *(SDL_Rect **) arg1;
+	a2 = *(SDL_Rect **) arg2;
+
+	if (a1->w == a2->w)
+		return a1->h - a2->h;	// lowres-to-highres
+	//	return a2->h - a1->h;	// highres-to-lowres
+	else
+		return a1->w - a2->w;	// lowres-to-highres
+	//	return a2->w - a1->w;	// highres-to-lowres
+}
+
+static void VID_PrepareModes (SDL_Rect **sdl_modes)
+{
+	int	i, j;
+	qboolean	have_mem, not_multiple;
+
+	num_fmodes = 0;
+	num_wmodes = 0;
+
+	// Add the standart 4:3 modes to the windowed modes list
+	// In an unlikely case that we receive no fullscreen modes,
+	// this will be our modes list (kind of...)
+	for (i = 0; i < MAX_STDMODES; i++)
+	{
+		have_mem = VID_CheckAdequateMem(std_modes[i].width, std_modes[i].height);
+		if (!have_mem)
+			break;
+		wmodelist[num_wmodes].width = std_modes[i].width;
+		wmodelist[num_wmodes].height = std_modes[i].height;
+		wmodelist[num_wmodes].halfscreen = 0;
+		wmodelist[num_wmodes].fullscreen = 0;
+		wmodelist[num_wmodes].bpp = 8;
+		sprintf (wmodelist[num_wmodes].modedesc,"%d x %d",std_modes[i].width,std_modes[i].height);
+		num_wmodes++;
+	}
+
+	// disaster scenario #1: no fullscreen modes. bind to the
+	// windowed modes list. limit it to 640x480 max. because
+	// we don't know the desktop dimensions
+	if (sdl_modes == (SDL_Rect **)0)
+	{
+no_fmodes:
+		Con_Printf ("No fullscreen video modes available\n");
+		if (num_wmodes > RES_640X480)
+			num_wmodes = RES_640X480 + 1;
+		modelist = (vmode_t *)wmodelist;
+		nummodes = &num_wmodes;
+		vid_default = 0;
+		return;
+	}
+
+	// another disaster scenario (#2)
+	if (sdl_modes == (SDL_Rect **)-1)
+	{	// Really should NOT HAVE happened! this return value is
+		// for windowed modes!  Since this means all resolutions
+		// are supported, use our standart modes as modes list.
+		Con_Printf ("Unexpectedly received -1 from SDL_ListModes\n");
+		vid_maxwidth = MAXWIDTH;
+		vid_maxheight = MAXHEIGHT;
+	//	num_fmodes = -1;
+		num_fmodes = num_wmodes;
+		nummodes = &num_wmodes;
+		modelist = (vmode_t *)wmodelist;
+		vid_default = 0;
+		return;
+	}
+
+#if 0
+	// print the un-processed modelist as reported by SDL
+	for (j = 0; sdl_modes[j]; ++j)
+	{
+		Con_Printf ("%d x %d\n", sdl_modes[j]->w, sdl_modes[j]->h);
+	}
+	Con_Printf ("Total %d entries\n", j);
+#endif
+
+	// count the entries
+	j = 0;
+	while ( sdl_modes[j] )
+		j++;
+
+	// sort the original list from low-res to high-res
+	// so that the low resolutions take priority
+	qsort(sdl_modes, j, sizeof *sdl_modes, sort_modes);
+
+	for (i = 0; sdl_modes[i] && num_fmodes < MAX_MODE_LIST; ++i)
+	{
+		// avoid multiple listings of the same dimension
+		not_multiple = true;
+		for (j = 0; j < num_fmodes; ++j)
+		{
+			if (fmodelist[j].width == sdl_modes[i]->w && fmodelist[j].height == sdl_modes[i]->h)
+			{
+				not_multiple = false;
+				break;
+			}
+		}
+
+		// automatically strip-off resolutions that we
+		// don't have enough memory for
+		have_mem = VID_CheckAdequateMem(sdl_modes[i]->w, sdl_modes[i]->h);
+
+		// avoid resolutions < 320x240
+		if (not_multiple && have_mem && sdl_modes[i]->w >= MIN_WIDTH && sdl_modes[i]->h >= MIN_HEIGHT)
+		{
+			fmodelist[num_fmodes].width = sdl_modes[i]->w;
+			fmodelist[num_fmodes].height = sdl_modes[i]->h;
+			// FIXME: look at vid_win.c and learn how to
+			// really functionalize the halfscreen field.
+			fmodelist[num_fmodes].halfscreen = 0;
+			fmodelist[num_fmodes].fullscreen = 1;
+			fmodelist[num_fmodes].bpp = 8;
+			sprintf (fmodelist[num_fmodes].modedesc,"%d x %d",sdl_modes[i]->w,sdl_modes[i]->h);
+			num_fmodes++;
+		}
+	}
+
+	if (!num_fmodes)
+		goto no_fmodes;
+
+	// At his point, we have a list of valid fullscreen modes:
+	// Let's bind to it and use it for windowed modes, as well.
+	// The only downside is that if SDL doesn't report any low
+	// resolutions to us, we shall not have any for windowed
+	// rendering where they would be perfectly legitimate...
+	// Since our fullscreen/windowed toggling is instant and
+	// doesn't require a vid_restart, switching lists won't be
+	// feasible, either. The -width/-height commandline args
+	// remain as the user's trusty old friends here.
+	nummodes = &num_fmodes;
+	modelist = (vmode_t *)fmodelist;
+
+	vid_maxwidth = fmodelist[num_fmodes-1].width;
+	vid_maxheight = fmodelist[num_fmodes-1].height;
+
+	// see if we have 320x240 among the available modes
+	for (i = 0; i < num_fmodes; i++)
+	{
+		if (fmodelist[i].width == 320 && fmodelist[i].height == 240)
+		{
+			vid_default = i;
+			break;
+		}
+	}
+
+	if (vid_default < 0)
+	{
+		// 320x240 not found among the supported dimensions
+		// set default to the lowest resolution reported
+		vid_default = 0;
+	}
+
+	// limit the windowed (standart) modes list to desktop dimensions
+	for (i = 0; i < num_wmodes; i++)
+	{
+		if (wmodelist[i].width > vid_maxwidth || wmodelist[i].height > vid_maxheight)
+			break;
+	}
+	if (i < num_wmodes)
+		num_wmodes = i;
+}
+
+static void VID_ListModes_f (void)
+{
+	int	i;
+
+	Con_Printf ("Maximum allowed mode: %d x %d\n", vid_maxwidth, vid_maxheight);
+	Con_Printf ("Windowed modes enabled:\n");
+	for (i = 0; i < num_wmodes; i++)
+		Con_Printf ("%2d:  %u x %u\n", i, wmodelist[i].width, wmodelist[i].height);
+	Con_Printf ("Fullscreen modes enumerated:");
+	if (num_fmodes)
+	{
+		Con_Printf ("\n");
+		for (i = 0; i < num_fmodes; i++)
+			Con_Printf ("%2d:  %u x %u\n", i, fmodelist[i].width, fmodelist[i].height);
+	}
+	else
+	{
+		Con_Printf (" None\n");
+	}
+}
+
+static void VID_NumModes_f (void)
+{
+	Con_Printf ("%d video modes in current list\n", *nummodes);
+}
+
+static void VID_ShowInfo_f (void)
+{
+	Con_Printf ("Video info:\n"
+			"BitsPerPixel: %d,\n"
+			"Rmask : %u, Gmask : %u, Bmask : %u\n"
+			"Rshift: %u, Gshift: %u, Bshift: %u\n"
+			"Rloss : %u, Gloss : %u, Bloss : %u\n"
+			"alpha : %u, colorkey: %u\n",
+			vid_info->vfmt->BitsPerPixel,
+			vid_info->vfmt->Rmask, vid_info->vfmt->Gmask, vid_info->vfmt->Bmask,
+			vid_info->vfmt->Rshift, vid_info->vfmt->Gshift, vid_info->vfmt->Bshift,
+			vid_info->vfmt->Rloss, vid_info->vfmt->Gloss, vid_info->vfmt->Bloss,
+			vid_info->vfmt->alpha, vid_info->vfmt->colorkey	);
+}
 
 static int VID_SetMode (int modenum, unsigned char *palette)
 {
 	Uint32 flags;
-	int			temp;
 
-	// so Con_Printfs don't mess us up by forcing vid and snd updates
-	temp = scr_disabled_for_loading;
-	scr_disabled_for_loading = true;
 	in_mode_set = true;
-
-	if ((modelist[modenum].type != MS_WINDOWED) && (modelist[modenum].type != MS_FULLSCREEN))
-		Sys_Error ("VID_SetMode: Bad mode type in modelist");
 
 	//flush the intermission screen if it's cached (Pa3PyX)
 	if (intermissionScreen && intermissionScreen->data)
 		Cache_Free(intermissionScreen);
 
-	if (modenum==0)
-		modestate = MS_WINDOWED;
-	else
-		modestate = MS_FULLSCREEN;
+	if (screen)
+		SDL_FreeSurface(screen);
 
 	flags = (SDL_SWSURFACE|SDL_HWPALETTE);
-	if (modestate == MS_FULLSCREEN)
+	if (fullscreen)
 		flags |= SDL_FULLSCREEN;
 
-	VID_SetIcon();	// window manager icon using xbm data
-
 	// Set the mode
-	if (!(screen = SDL_SetVideoMode(modelist[modenum].width, modelist[modenum].height, modelist[modenum].bpp, flags)))
+	screen = SDL_SetVideoMode(modelist[modenum].width, modelist[modenum].height, modelist[modenum].bpp, flags);
+	if (!screen)
 		return false;
 
-	vid_modenum = modenum;
+	// initial success. adjust vid vars.
 	vid.height = vid.conheight = modelist[modenum].height;
 	vid.width = vid.conwidth = modelist[modenum].width;
 	vid.buffer = vid.conbuffer = vid.direct = screen->pixels;
@@ -253,24 +496,24 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	vid.numpages = 1;
 	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
 
-	IN_HideMouse ();
-
-	scr_disabled_for_loading = temp;
-
-//	VID_SetPalette (palette);
-
 	if (!VID_AllocBuffers (vid.width, vid.height))
 		return false;
 
 	D_InitCaches (vid_surfcache, vid_surfcachesize);
 
+	// real success. set vid_modenum properly.
+	vid_modenum = modenum;
+	modestate = (fullscreen) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
+
+	IN_HideMouse ();
+
 	ClearAllStates();
 
 	VID_SetPalette (palette);
 
+	// setup the window manager stuff
+	VID_SetIcon();
 	SDL_WM_SetCaption(WM_TITLEBAR_TEXT, WM_ICON_TEXT);
-
-	Cvar_SetValue ("vid_mode", (float)modenum);
 
 	Con_SafePrintf ("Video Mode: %dx%dx%d\n", vid.width, vid.height, modelist[modenum].bpp);
 
@@ -278,6 +521,55 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	vid.recalc_refdef = 1;
 
 	return true;
+}
+
+//
+// VID_ChangeVideoMode
+// intended only as a callback for VID_Restart_f
+//
+static void VID_ChangeVideoMode(int newmode)
+{
+	int		stat, temp;
+
+	if (!screen)
+		return;
+
+	temp = scr_disabled_for_loading;
+	scr_disabled_for_loading = true;
+	CDAudio_Pause ();
+	MIDI_Pause(2);
+	S_ClearBuffer ();
+
+	stat = VID_SetMode (newmode, vid_curpal);
+	if (!stat)
+	{
+		if (vid_modenum == newmode)
+			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
+
+		// failed setting mode, probably due to insufficient
+		// memory. go back to previous mode.
+		Cvar_SetValue ("vid_mode", vid_modenum);
+		stat = VID_SetMode (vid_modenum, vid_curpal);
+		if (!stat)
+			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
+	}
+
+	CDAudio_Resume (); 
+	MIDI_Pause(1);
+	scr_disabled_for_loading = temp;
+}
+
+static void VID_Restart_f (void)
+{
+	if ((int)vid_mode.value < 0 || (int)vid_mode.value >= *nummodes)
+	{
+		Con_Printf ("Bad video mode %d\n", (int)vid_mode.value);
+		Cvar_SetValue ("vid_mode", vid_modenum);
+		return;
+	}
+
+	Con_Printf ("Re-initializing video:\n");
+	VID_ChangeVideoMode ((int)vid_mode.value);
 }
 
 void VID_LockBuffer (void)
@@ -349,89 +641,115 @@ void	VID_ShiftPalette (unsigned char *palette)
 
 void	VID_Init (unsigned char *palette)
 {
-	int		width,height;
+	int		width, height, i, temp;
+	SDL_Rect	**enumlist;
 
-	if (SDL_Init(SDL_INIT_VIDEO)<0)
-		Sys_Error("VID: Couldn't load SDL: %s", SDL_GetError());
-		
+	temp = scr_disabled_for_loading;
+	scr_disabled_for_loading = true;
+
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&vid_config_x);
 	Cvar_RegisterVariable (&vid_config_y);
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&vid_showload);
 
-	modelist[0].type = MS_WINDOWED;
-	modelist[0].width = 320;
-	modelist[0].height = 240;
-	strcpy (modelist[0].modedesc, "320x240");
-	modelist[0].modenum = MODE_WINDOWED;
-	modelist[0].fullscreen = 0;
-	modelist[0].halfscreen = 0;
-	modelist[0].bpp = 8;
+	Cmd_AddCommand ("vid_showinfo", &VID_ShowInfo_f);
+	Cmd_AddCommand ("vid_listmodes", &VID_ListModes_f);
+	Cmd_AddCommand ("vid_nummodes", &VID_NumModes_f);
+	Cmd_AddCommand ("vid_restart", &VID_Restart_f);
 
-	// mode[1] has been hacked to be like the (missing) mode[3] S.A.
+	// init sdl
+	// the first check is actually unnecessary
+	if ( (SDL_WasInit(SDL_INIT_AUDIO)) == 0 )
+		if (SDL_Init(SDL_INIT_VIDEO) < 0)
+			Sys_Error("VID: Couldn't load SDL: %s", SDL_GetError());
 
-	modelist[1].type = MS_FULLSCREEN;
-	modelist[1].width = 320;
-	modelist[1].height = 240;
-	strcpy (modelist[1].modedesc, "320x240");
-	modelist[1].modenum = MODE_FULLSCREEN_DEFAULT;
-	modelist[1].fullscreen = 1;
-	modelist[1].halfscreen = 0;
-	modelist[1].bpp = 8;
+	// this will contain the "best bpp" for the current display
+	// make sure to re-retrieve it if you ever re-init sdl_video
+	vid_info = SDL_GetVideoInfo();
 
-	// modelist[2-4] removed
+	// retrieve the list of fullscreen modes
+	enumlist = SDL_ListModes(NULL, SDL_SWSURFACE|SDL_HWPALETTE|SDL_FULLSCREEN);
+	// prepare the modelists, find the actual modenum for vid_default
+	VID_PrepareModes(enumlist);
 
+	// set vid_mode to our safe default first
+	Cvar_SetValue ("vid_mode", vid_default);
+
+	// windowed mode is default
+	// see if the user wants fullscreen
+	if (COM_CheckParm("-f") || COM_CheckParm("-fullscreen") || COM_CheckParm("--fullscreen"))
+	{
+		fullscreen = true;
+		if (!num_fmodes) // FIXME: see below, as well
+			Sys_Error ("No fullscreen modes available at this color depth");
+	}
+
+	// user is always right ...
+	if (COM_CheckParm("-width"))
+	{	// FIXME: this part doesn't know about a disaster case
+		// like we aren't reported any fullscreen modes.
+		width = atoi(com_argv[COM_CheckParm("-width")+1]);
+
+		if (COM_CheckParm("-height"))
+			height = atoi(com_argv[COM_CheckParm("-height")+1]);
+		else	// proceed with 4/3 ratio
+			height = 3 * width / 4;
+
+		// scan existing modes to see if this is already available
+		// if not, add this as the last "valid" video mode and set
+		// vid_mode to it only if it doesn't go beyond vid_maxwidth
+		i = 0;
+		while (i < *nummodes)
+		{
+			if (modelist[i].width == width && modelist[i].height == height)
+				break;
+			i++;
+		}
+		if (i < *nummodes)
+		{
+			Cvar_SetValue ("vid_mode", i);
+		}
+		else if ( (width <= vid_maxwidth && width >= MIN_WIDTH &&
+			   height <= vid_maxheight && height >= MIN_HEIGHT) ||
+			  COM_CheckParm("-force") )
+		{
+			modelist[*nummodes].width = width;
+			modelist[*nummodes].height = height;
+			modelist[*nummodes].halfscreen = 0;
+			modelist[*nummodes].fullscreen = 1;
+			modelist[*nummodes].bpp = 8;
+			sprintf (modelist[*nummodes].modedesc,"%d x %d (user mode)",width,height);
+			Cvar_SetValue ("vid_mode", *nummodes);
+			(*nummodes)++;	// ugly, I know. but works
+		}
+		else
+		{
+			Con_Printf ("ignoring invalid -width and/or -height arguments\n");
+		}
+	}
 
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
 	vid.colormap = host_colormap;
 	vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
 
-
-	/*********************************
- 	 * command line processing (S.A) *
- 	 *********************************/
-
-	// default mode is windowed
-	vid_default = MODE_WINDOWED;
-	// see if the user wants fullscreen
-	if (COM_CheckParm("-f") || COM_CheckParm("-fullscreen") || COM_CheckParm("--fullscreen"))
+	i = VID_SetMode((int)vid_mode.value, palette);
+	if ( !i )
 	{
-		vid_default = MODE_FULLSCREEN_DEFAULT;
+		if ((int)vid_mode.value == vid_default)
+			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
+
+		Con_Printf ("Couldn't set video mode %d\n"
+			    "Trying the default mode\n", (int)vid_mode.value);
+		//fullscreen = false;
+		Cvar_SetValue ("vid_mode", vid_default);
+		i = VID_SetMode(vid_default, palette);
+		if ( !i )
+			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 	}
 
-	if (COM_CheckParm("-width"))
-	{
-		width = atoi(com_argv[COM_CheckParm("-width")+1]);
-		if (COM_CheckParm("-height")) {
-			// we removed the old stuff, and now we need
-			// some sanity check here...
-			height = atoi(com_argv[COM_CheckParm("-height")+1]);
-		} else {
-			// we currently do "normal" modes with 4/3 ratio
-			height = 3 * width / 4;
-		}
-	}
-	else
-	{
-		// make the default sizes for software mode smaller
-		if (vid_default == MODE_WINDOWED)
-			width=400;
-		else
-			width=512;
-
-		// we currently do "normal" modes with 4/3 ratio
-		height = 3 * width / 4;
-	}
-
-	modelist[vid_default].width = width;
-	modelist[vid_default].height = height;
-	sprintf (modelist[vid_default].modedesc,"%dx%d",width,height);
-
-	if ( ! VID_SetMode(vid_default, palette) )
-		Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
-
+	scr_disabled_for_loading = temp;
 	vid_initialized = true;
 
 	vid_menudrawfn = VID_MenuDraw;
@@ -649,11 +967,16 @@ and brings the mouse to a proper state afterwards
 extern qboolean mousestate_sa;
 void VID_ToggleFullscreen (void)
 {
+	if (!num_fmodes)
+		return;
+
+	S_ClearBuffer ();
+
 	if (SDL_WM_ToggleFullScreen(screen)==1)
 	{
-		Cvar_SetValue ("vid_mode", !vid_mode.value);
-		modestate = (vid_mode.value) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
-		if (vid_mode.value)
+		fullscreen = !fullscreen;
+		modestate = (fullscreen) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
+		if (fullscreen)
 		{
 			// activate mouse in fullscreen mode
 			// in_sdl.c handles other non-moused cases
@@ -678,31 +1001,57 @@ void VID_ToggleFullscreen (void)
 // Video menu stuff
 //========================================================
 
-#define MAX_COLUMN_SIZE		5
-#define MODE_AREA_HEIGHT	(MAX_COLUMN_SIZE + 6)
+#define MAX_ROWS		10
+static int	modes_cursor = 0, modes_top = 0;
+static qboolean	vid_cursor;	// 0 : resolution option
+				// 1 : fullscreen option. switched by TAB key
+static qboolean	vid_menu_firsttime = true;
 
 /*
 ================
 VID_MenuDraw
-================ S.A.
+================
 */
-
 void VID_MenuDraw (void)
 {
+	int		i, y;
+
+	if (vid_menu_firsttime)
+	{	// settings for entering the menu first time
+		vid_cursor = (num_fmodes) ? 0 : 1;
+		vid_menu_firsttime = false;
+	}
+
 	ScrollTitle("gfx/menu/title7.lmp");
 
-	M_Print (8*8, 4 + MODE_AREA_HEIGHT * 8 + 8*0,
-			 "Select video modes");
-	M_Print (8*8, 4 + MODE_AREA_HEIGHT * 8 + 8*1,
-			 "from the command line:");
-	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*4,
-			 "-window");
-	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*5,
-			 "-fullscreen");
-	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*6,
-			 "-width  <width>");
-	M_Print (13*8, 4 + MODE_AREA_HEIGHT * 8 + 8*7,
-			 "-height <height>");
+	M_Print (64, 72, "Press TAB to switch options");
+
+	if (num_fmodes)
+	{
+		M_Print (64, 84, "Fullscreen: ");
+		M_DrawCheckbox (184, 84, modestate);
+	}
+
+	if (modes_top)
+		M_DrawCharacter (160, 92, 128);
+	if (modes_top + MAX_ROWS < *nummodes)
+		M_DrawCharacter (160, 92 + ((MAX_ROWS-1)*8), 129);
+
+	M_Print (64, 76+16, "Resolution: ");
+	for (i=0 ; (i < MAX_ROWS) && (i+modes_top < *nummodes); i++)
+	{
+		y = 92 + 8*i;
+
+		if (i+modes_top == vid_modenum)
+			M_PrintWhite (184, y, modelist[i+modes_top].modedesc);
+		else
+			M_Print (184, y, modelist[i+modes_top].modedesc);
+	}
+
+	if (vid_cursor)
+		M_DrawCharacter (172, 92 + (modes_cursor-modes_top)*8, 12+((int)(realtime*4)&1));
+	else
+		M_DrawCharacter (172, 84, 12+((int)(realtime*4)&1));
 }
 
 /*
@@ -714,18 +1063,69 @@ void VID_MenuKey (int key)
 {
 	switch (key)
 	{
+	case K_TAB:
+		if (num_fmodes)
+			vid_cursor = !vid_cursor;
+		return;
+
 	case K_ESCAPE:
-	case K_ENTER:
-		S_LocalSound ("raven/menu1.wav");
 		M_Menu_Options_f ();
+		return;
+
+	case K_ENTER:
+		if (vid_cursor)	// set the resolution
+		{
+			if (modes_cursor != vid_modenum)
+			{
+				Cvar_SetValue("vid_mode", modes_cursor);
+				VID_Restart_f();
+			}
+		}
+		else	// toggle windowed/fullscreen
+		{
+			VID_ToggleFullscreen();
+		}
+		return;
+
+	case K_LEFTARROW:
+	case K_RIGHTARROW:
+		if (!vid_cursor)
+			VID_ToggleFullscreen();
+		return;
+
+	case K_UPARROW:
+		if (!vid_cursor)
+			return;
+		modes_cursor--;
+		if (modes_cursor < 0)
+			modes_cursor = *nummodes - 1;
+		S_LocalSound ("raven/menu1.wav");
 		break;
+
+	case K_DOWNARROW:
+		if (!vid_cursor)
+			return;
+		modes_cursor++;
+		if (modes_cursor >= *nummodes)
+			modes_cursor = 0;
+		S_LocalSound ("raven/menu1.wav");
+		break;
+
 	default:
-		break;
+		return;
 	}
+
+	if (modes_cursor < modes_top)
+		modes_top = modes_cursor;
+	else if (modes_cursor >= modes_top+MAX_ROWS)
+		modes_top = modes_cursor - MAX_ROWS + 1;
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.37  2006/01/07 09:54:29  sezero
+ * cleanup and "static" stuff on the vid files
+ *
  * Revision 1.36  2005/12/11 18:30:08  sezero
  * updated the software sdl renderer: removed a lot of unnecessary
  * things which aren't of use in its current state with no mode

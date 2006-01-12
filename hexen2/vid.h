@@ -17,11 +17,7 @@ typedef struct vrect_s
 typedef enum {MS_WINDOWED, MS_FULLSCREEN, MS_FULLDIB, MS_FULLDIRECT, MS_UNINIT} modestate_t;
 #define MODE_WINDOWED		0
 #define NO_MODE			(MODE_WINDOWED - 1)
-#if !defined(GLQUAKE) && defined(_WIN32)
 #define MODE_FULLSCREEN_DEFAULT	(MODE_WINDOWED + 3)
-#else
-#define MODE_FULLSCREEN_DEFAULT	(MODE_WINDOWED + 1)
-#endif
 #define MODE_SETTABLE_WINDOW	2
 
 typedef struct

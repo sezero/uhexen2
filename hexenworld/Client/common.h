@@ -221,6 +221,7 @@ int COM_CopyFile (char *netpath, char *cachepath);
 void COM_CloseFile (FILE *h);
 
 byte *COM_LoadStackFile (char *path, void *buffer, int bufsize);
+byte *COM_LoadBufFile (char *path, void *buffer, int *bufsize);
 byte *COM_LoadTempFile (char *path);
 byte *COM_LoadHunkFile (char *path);
 void COM_LoadCacheFile (char *path, struct cache_user_s *cu);

@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_dl_screen.c,v 1.22 2005-12-11 11:56:33 sezero Exp $
+	$Id: gl_dl_screen.c,v 1.23 2006-01-12 12:34:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -80,6 +80,7 @@ cvar_t		scr_showpause = {"showpause","1"};
 cvar_t		scr_printspeed = {"scr_printspeed","8"};
 extern	cvar_t	crosshair;
 
+extern qboolean	draw_reinit;
 qboolean	scr_initialized;		// ready to draw
 qboolean	ls_invalid = true;		// whether we need to redraw the loading screen plaque
 static int	ls_offset;
@@ -409,21 +410,22 @@ SCR_Init
 */
 void SCR_Init (void)
 {
-	Cvar_RegisterVariable (&scr_fov);
-	Cvar_RegisterVariable (&scr_viewsize);
-	Cvar_RegisterVariable (&scr_conspeed);
-	Cvar_RegisterVariable (&scr_showram);
-	Cvar_RegisterVariable (&scr_showturtle);
-	Cvar_RegisterVariable (&scr_showpause);
-	Cvar_RegisterVariable (&scr_centertime);
-	Cvar_RegisterVariable (&scr_printspeed);
+	if (!draw_reinit)
+	{
+		Cvar_RegisterVariable (&scr_fov);
+		Cvar_RegisterVariable (&scr_viewsize);
+		Cvar_RegisterVariable (&scr_conspeed);
+		Cvar_RegisterVariable (&scr_showram);
+		Cvar_RegisterVariable (&scr_showturtle);
+		Cvar_RegisterVariable (&scr_showpause);
+		Cvar_RegisterVariable (&scr_centertime);
+		Cvar_RegisterVariable (&scr_printspeed);
 
-//
-// register our commands
-//
-	Cmd_AddCommand ("screenshot",SCR_ScreenShot_f);
-	Cmd_AddCommand ("sizeup",SCR_SizeUp_f);
-	Cmd_AddCommand ("sizedown",SCR_SizeDown_f);
+		// register our commands
+		Cmd_AddCommand ("screenshot",SCR_ScreenShot_f);
+		Cmd_AddCommand ("sizeup",SCR_SizeUp_f);
+		Cmd_AddCommand ("sizedown",SCR_SizeDown_f);
+	}
 
 	scr_ram = Draw_PicFromWad ("ram");
 	scr_net = Draw_PicFromWad ("net");
@@ -1283,6 +1285,17 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2005/12/11 11:56:33  sezero
+ * synchronized different sbar function names between h2 and h2w.
+ * there was a mess about SB_Changed and Sbar_Changed in h2w, this
+ * patch fixes that: h2 (and h2w) version of SB_Changed was never
+ * functional. h2w actually called SB_InvChanged, who knows what
+ * the original intention was, but that seemed serving to no purpose
+ * to me. in any case, watching for any new weirdness in h2w would
+ * be advisable. ability string indexes for the demoness and dwarf
+ * classes in h2w are fixed. armor class display in h2w is fixed.
+ * h2 and h2w versions of gl_vidsdl and gl_vidnt are synchronized.
+ *
  * Revision 1.21  2005/10/25 19:59:44  sezero
  * added a prototype for Draw_Crosshair to draw.h
  *

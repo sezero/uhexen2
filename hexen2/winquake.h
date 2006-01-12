@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.14 2006-01-07 09:54:29 sezero Exp $
+	$Id: winquake.h,v 1.15 2006-01-12 12:34:38 sezero Exp $
 */
 
 #if !defined(_WIN32)
@@ -45,7 +45,7 @@ void Snd_ReleaseBuffer (void);
 extern HWND			mainwindow;
 extern qboolean		ActiveApp, Minimized;
 
-extern qboolean	Win95, WinNT;
+extern qboolean	Win95, Win95old, WinNT;
 
 void IN_ShowMouse (void);
 void IN_DeactivateMouse (void);
@@ -97,6 +97,9 @@ int (PASCAL FAR *pgetsockname)(SOCKET s, struct sockaddr FAR *name,
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2006/01/07 09:54:29  sezero
+ * cleanup and "static" stuff on the vid files
+ *
  * Revision 1.13  2005/09/17 06:02:46  sezero
  * minor ifdef, syntax and defines clean-up
  *

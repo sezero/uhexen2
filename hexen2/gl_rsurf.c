@@ -23,6 +23,7 @@ int		allocated[MAX_LIGHTMAPS][BLOCK_WIDTH];
 // the lightmap texture data needs to be kept in
 // main memory so texsubimage can update properly
 byte		lightmaps[4*MAX_LIGHTMAPS*BLOCK_WIDTH*BLOCK_HEIGHT];
+extern qboolean draw_reinit;
 
 
 /*
@@ -396,6 +397,15 @@ void R_BlendLightmaps (qboolean Translucent)
 		glEnable_fp (GL_BLEND);
 	}
 
+	// Pa3PyX: if lightmaps were hosed in a video mode change,
+	// make sure we allocate new slots for lightmaps, otherwise
+	// we'll probably overwrite some other existing textures.
+	if (!lightmap_textures)
+	{
+		lightmap_textures = texture_extension_number;
+		texture_extension_number += MAX_LIGHTMAPS;
+	}
+
 	for (i=0 ; i<MAX_LIGHTMAPS ; i++)
 	{
 		p = lightmap_polys[i];
@@ -465,6 +475,15 @@ void R_UpdateLightmaps (qboolean Translucent)
 	if (gl_mtexable == true && gl_multitexture.value == 1)
 	{
 		glActiveTextureARB_fp (GL_TEXTURE1_ARB);
+	}
+
+	// Pa3PyX: if lightmaps were hosed in a video mode change,
+	// make sure we allocate new slots for lightmaps, otherwise
+	// we'll probably overwrite some other existing textures.
+	if (!lightmap_textures)
+	{
+		lightmap_textures = texture_extension_number;
+		texture_extension_number += MAX_LIGHTMAPS;
 	}
 
 	for (i=0 ; i<MAX_LIGHTMAPS ; i++)
@@ -1472,7 +1491,8 @@ void GL_BuildLightmaps (void)
 			if ( m->surfaces[i].flags & SURF_DRAWSKY )
 				continue;
 #endif
-			BuildSurfaceDisplayList (m->surfaces + i);
+			if (!draw_reinit)
+				BuildSurfaceDisplayList (m->surfaces + i);
 		}
 	}
 

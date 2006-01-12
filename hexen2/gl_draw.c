@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.67 2006-01-07 09:50:09 sezero Exp $
+	$Id: gl_draw.c,v 1.68 2006-01-12 12:34:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,6 +10,8 @@
 #ifndef GL_COLOR_INDEX8_EXT
 #define GL_COLOR_INDEX8_EXT	0x80E5
 #endif
+
+qboolean draw_reinit = false;
 
 extern int ColorIndex[16];
 extern unsigned ColorPercent[16];
@@ -112,6 +114,11 @@ void GL_Texels_f (void)
 =============================================================================
 */
 
+// disabled scrap allocation. doesn't work good with vid_mode changes
+#define ENABLE_SCRAP	0
+
+#if ENABLE_SCRAP
+
 #define	MAX_SCRAPS		1
 #define	BLOCK_WIDTH		256
 #define	BLOCK_HEIGHT		256
@@ -172,6 +179,7 @@ void Scrap_Upload (void)
 	GL_Upload8 (scrap_texels[0], BLOCK_WIDTH, BLOCK_HEIGHT, false, true, 0);
 	scrap_dirty = false;
 }
+#endif	// ENABLE_SCRAP
 
 //=============================================================================
 /* Support Routines */
@@ -216,6 +224,27 @@ qpic_t *Draw_PicFromFile (char *name)
 	return p;
 }
 
+// Pa3PyX: Like Draw_PicFromFile, except loads pic into
+// a specified buffer if there is room
+qpic_t *Draw_PicFileBuf(char *name, void *p, int *size)
+{
+	glpic_t *gl;
+
+	p = (void *)COM_LoadBufFile(name, p, size);
+	if (!p)
+		return NULL;
+
+	gl = (glpic_t *)(((qpic_t *)p)->data);
+
+	gl->texnum = GL_LoadPicTexture(p);
+	gl->sl = 0;
+	gl->sh = 1;
+	gl->tl = 0;
+	gl->th = 1;
+
+	return p;
+}
+
 qpic_t *Draw_PicFromWad (char *name)
 {
 	qpic_t	*p;
@@ -224,6 +253,7 @@ qpic_t *Draw_PicFromWad (char *name)
 	p = W_GetLumpName (name);
 	gl = (glpic_t *)p->data;
 
+#if ENABLE_SCRAP
 	// load little ones into the scrap
 	if (p->width < 64 && p->height < 64)
 	{
@@ -248,16 +278,16 @@ qpic_t *Draw_PicFromWad (char *name)
 
 		pic_count++;
 		pic_texels += p->width*p->height;
+
+		return p;
 	}
-	else
-	{
 nonscrap:
-		gl->texnum = GL_LoadPicTexture (p);
-		gl->sl = 0;
-		gl->sh = 1;
-		gl->tl = 0;
-		gl->th = 1;
-	}
+#endif	// ENABLE_SCRAP
+	gl->texnum = GL_LoadPicTexture (p);
+	gl->sl = 0;
+	gl->sh = 1;
+	gl->tl = 0;
+	gl->th = 1;
 	return p;
 }
 
@@ -486,6 +516,7 @@ Draw_Init
 */
 void Draw_Init (void)
 {
+	static int bt_len;
 	int	i;
 	qpic_t	*cb, *mf;
 /*	byte	*dest;
@@ -495,21 +526,22 @@ void Draw_Init (void)
 	int	start;
 	byte	*ncdata;
 
-	Cvar_RegisterVariable (&gl_picmip);
-	Cvar_RegisterVariable (&gl_spritemip);
+	if (!draw_reinit)
+	{
+		Cvar_RegisterVariable (&gl_picmip);
+		Cvar_RegisterVariable (&gl_spritemip);
 
-	Cmd_AddCommand ("gl_texturemode", &Draw_TextureMode_f);
-	Cmd_AddCommand ("gl_texels", &GL_Texels_f);
-
-	// load the console background and the charset
-	// by hand, because we need to write the version
-	// string into the background before turning
-	// it into a texture
-	//draw_chars = W_GetLumpName ("conchars");
-	draw_chars = COM_LoadHunkFile ("gfx/menu/conchars.lmp");
-	for (i=0 ; i<256*128 ; i++)
-		if (draw_chars[i] == 0)
-			draw_chars[i] = 255;	// proper transparent color
+		Cmd_AddCommand ("gl_texturemode", &Draw_TextureMode_f);
+		Cmd_AddCommand ("gl_texels", &GL_Texels_f);
+		// load the console background and the charset
+		// by hand, because we need to write the version
+		// string into the background before turning
+		// it into a texture
+		draw_chars = COM_LoadHunkFile ("gfx/menu/conchars.lmp");
+		for (i=0 ; i<256*128 ; i++)
+			if (draw_chars[i] == 0)
+				draw_chars[i] = 255;	// proper transparent color
+	}
 
 	char_texture = GL_LoadTexture ("charset", 256, 128, draw_chars, false, true, 0, false);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
@@ -568,11 +600,14 @@ void Draw_Init (void)
 	// free loaded console
 	Hunk_FreeToLowMark (start);
 
+#if ENABLE_SCRAP
 	// save slots for scraps
 	scrap_texnum = texture_extension_number;
 	texture_extension_number += MAX_SCRAPS;
+#endif
 //	draw_backtile = Draw_PicFromWad ("backtile");
-	draw_backtile = Draw_PicFromFile ("gfx/menu/backtile.lmp");
+//	draw_backtile = Draw_PicFromFile ("gfx/menu/backtile.lmp");
+	draw_backtile = Draw_PicFileBuf("gfx/menu/backtile.lmp", draw_backtile, &bt_len);
 }
 
 
@@ -772,8 +807,10 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 {
 	glpic_t			*gl;
 
+#if ENABLE_SCRAP
 	if (scrap_dirty)
 		Scrap_Upload ();
+#endif
 	gl = (glpic_t *)pic->data;
 	glColor4f_fp (1,1,1,1);
 	GL_Bind (gl->texnum);
@@ -805,8 +842,10 @@ void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha)
 {
 	glpic_t			*gl;
 
+#if ENABLE_SCRAP
 	if (scrap_dirty)
 		Scrap_Upload ();
+#endif
 	gl = (glpic_t *)pic->data;
 	glDisable_fp(GL_ALPHA_TEST);
 	glEnable_fp (GL_BLEND);
@@ -840,8 +879,10 @@ void Draw_IntermissionPic (qpic_t *pic)
 {
 	glpic_t			*gl;
 
+#if ENABLE_SCRAP
 	if (scrap_dirty)
 		Scrap_Upload ();
+#endif
 	gl = (glpic_t *)pic->data;
 	glColor4f_fp (1,1,1,1);
 	GL_Bind (gl->texnum);
@@ -870,8 +911,10 @@ void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int h
 	float	newsl, newtl, newsh, newth;
 	float	oldglwidth, oldglheight;
 
+#if ENABLE_SCRAP
 	if (scrap_dirty)
 		Scrap_Upload ();
+#endif
 	gl = (glpic_t *)pic->data;
 
 	oldglwidth = gl->sh - gl->sl;
@@ -913,8 +956,10 @@ void Draw_PicCropped(int x, int y, qpic_t *pic)
 		return;
 	}
 
+#if ENABLE_SCRAP
 	if (scrap_dirty)
 		Scrap_Upload ();
+#endif
 	gl = (glpic_t *)pic->data;
 
 	// rjr tl/th need to be computed based upon pic->tl and pic->th
@@ -970,8 +1015,10 @@ void Draw_SubPicCropped(int x, int y, int h, qpic_t *pic)
 		return;
 	}
 
+#if ENABLE_SCRAP
 	if (scrap_dirty)
 		Scrap_Upload ();
+#endif
 	gl = (glpic_t *)pic->data;
 
 	// rjr tl/th need to be computed based upon pic->tl and pic->th
@@ -1833,7 +1880,11 @@ void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean a
 		}
 	}
 
-	if (is8bit && !alpha && (data!=scrap_texels[0]))
+	if (is8bit && 
+#if ENABLE_SCRAP
+		(data!=scrap_texels[0]) && 
+#endif
+		!alpha)
 	{
 		GL_Upload8_EXT (data, width, height, mipmap, alpha, sprite);
 		Hunk_FreeToLowMark(mark);
@@ -1979,6 +2030,10 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.67  2006/01/07 09:50:09  sezero
+ * added the last pieces (lightmaps) of adjustable filters which I've been
+ * forgetting for a very long time
+ *
  * Revision 1.66  2005/12/30 17:12:37  sezero
  * gl_draw fixes/clean-ups: fixed palettized textures corruption upon resolution
  * changing (which will be available by an upcoming patch), applied the same fix

@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.18 2005-10-25 19:59:45 sezero Exp $
+	$Id: gl_screen.c,v 1.19 2006-01-12 12:34:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -81,6 +81,7 @@ cvar_t		scr_printspeed = {"scr_printspeed","8"};
 cvar_t		gl_triplebuffer = {"gl_triplebuffer", "0", true };
 extern	cvar_t	crosshair;
 
+extern qboolean	draw_reinit;
 qboolean	scr_initialized;		// ready to draw
 
 qpic_t		*scr_ram;
@@ -350,22 +351,23 @@ SCR_Init
 */
 void SCR_Init (void)
 {
-	Cvar_RegisterVariable (&scr_fov);
-	Cvar_RegisterVariable (&scr_viewsize);
-	Cvar_RegisterVariable (&scr_conspeed);
-	Cvar_RegisterVariable (&scr_showram);
-	Cvar_RegisterVariable (&scr_showturtle);
-	Cvar_RegisterVariable (&scr_showpause);
-	Cvar_RegisterVariable (&scr_centertime);
-	Cvar_RegisterVariable (&scr_printspeed);
-	Cvar_RegisterVariable (&gl_triplebuffer);
+	if (!draw_reinit)
+	{
+		Cvar_RegisterVariable (&scr_fov);
+		Cvar_RegisterVariable (&scr_viewsize);
+		Cvar_RegisterVariable (&scr_conspeed);
+		Cvar_RegisterVariable (&scr_showram);
+		Cvar_RegisterVariable (&scr_showturtle);
+		Cvar_RegisterVariable (&scr_showpause);
+		Cvar_RegisterVariable (&scr_centertime);
+		Cvar_RegisterVariable (&scr_printspeed);
+		Cvar_RegisterVariable (&gl_triplebuffer);
 
-//
-// register our commands
-//
-	Cmd_AddCommand ("screenshot",SCR_ScreenShot_f);
-	Cmd_AddCommand ("sizeup",SCR_SizeUp_f);
-	Cmd_AddCommand ("sizedown",SCR_SizeDown_f);
+		// register our commands
+		Cmd_AddCommand ("screenshot",SCR_ScreenShot_f);
+		Cmd_AddCommand ("sizeup",SCR_SizeUp_f);
+		Cmd_AddCommand ("sizedown",SCR_SizeDown_f);
+	}
 
 	scr_ram = Draw_PicFromWad ("ram");
 	scr_net = Draw_PicFromWad ("net");

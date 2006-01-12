@@ -21,7 +21,7 @@
 
 int		starttime;
 qboolean	ActiveApp, Minimized;
-qboolean	Win95, WinNT;
+qboolean	Win95, Win95old, WinNT;
 
 static double		pfreq;
 static double		curtime = 0.0;
@@ -214,7 +214,12 @@ void Sys_Init (void)
 		WinNT = false;
 
 	if ((vinfo.dwMajorVersion == 4) && (vinfo.dwMinorVersion == 0))
+	{
 		Win95 = true;
+		// Win95-gold or Win95A can't switch bpp automatically
+		if (vinfo.szCSDVersion[1] != 'C' && vinfo.szCSDVersion[1] != 'B')
+			Win95old = true;
+	}
 }
 
 

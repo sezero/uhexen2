@@ -4,7 +4,8 @@
 
 int			wad_numlumps;
 lumpinfo_t	*wad_lumps;
-byte		*wad_base;
+byte		*wad_base = NULL;
+int		wad_len;
 
 void SwapPic (qpic_t *pic);
 
@@ -53,7 +54,22 @@ void W_LoadWadFile (char *filename)
 	unsigned		i;
 	int				infotableofs;
 	
-	wad_base = COM_LoadHunkFile (filename);
+	// Pa3PyX: check if the file has already been loaded. If so, reload at
+	//	   the same location.
+	// FIXME: Loading another wad (with bigger size) on top of a smaller one
+	//        may be treacherous (the hunk is purged upon changing maps),
+	//        although the game never does that except upon changing video
+	//        modes in OpenGL, where the wad file is the same (so it should
+	//        load on top of the old one with no problems).
+	if (wad_base)
+	{
+		wad_base = COM_LoadBufFile(filename, wad_base, &wad_len);
+	}
+	else
+	{
+		wad_base = COM_LoadHunkFile(filename);
+		wad_len = com_filesize;
+	}
 	if (!wad_base)
 		Sys_Error ("W_LoadWadFile: couldn't load %s", filename);
 

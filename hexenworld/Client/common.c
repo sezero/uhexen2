@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.30 2006-01-06 12:19:08 sezero Exp $
+	$Id: common.c,v 1.31 2006-01-12 12:34:38 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1448,6 +1448,13 @@ static byte *COM_LoadFile (char *path, int usehunk)
 		else
 			buf = loadbuf;
 	}
+	else if (usehunk == 5)
+	{	// Pa3PyX: like 4, except uses hunk (not temp) if no space
+		if (len + 1 > loadsize)
+			buf = Hunk_AllocName(len + 1, path);
+		else
+			buf = loadbuf;
+	}
 	else
 		Sys_Error ("COM_LoadFile: bad usehunk");
 
@@ -1491,6 +1498,21 @@ byte *COM_LoadStackFile (char *path, void *buffer, int bufsize)
 	loadbuf = (byte *)buffer;
 	loadsize = bufsize;
 	buf = COM_LoadFile (path, 4);
+
+	return buf;
+}
+
+// Pa3PyX: Like COM_LoadStackFile, excepts loads onto
+// the hunk (instead of temp) if there is no space
+byte *COM_LoadBufFile (char *path, void *buffer, int *bufsize)
+{
+	byte	*buf;
+
+	loadbuf = (byte *)buffer;
+	loadsize = (*bufsize) + 1;
+	buf = COM_LoadFile (path, 5);
+	if (buf && !(*bufsize))
+		*bufsize = com_filesize;
 
 	return buf;
 }
