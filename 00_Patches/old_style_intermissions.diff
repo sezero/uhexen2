@@ -3,10 +3,10 @@ screens will be drawn with their original size (320x240) no matter
 what the resolution is.
 If you really want this, that is...
 
-diff -urNp uhexen2-20051211/hexen2/gl_dl_screen.c uhexen2-20051211x/hexen2/gl_dl_screen.c
---- uhexen2-20051211/hexen2/gl_dl_screen.c	2005-12-11 13:56:33.000000000 +0200
-+++ uhexen2-20051211x/hexen2/gl_dl_screen.c	2005-12-11 21:03:43.000000000 +0200
-@@ -1004,40 +1004,40 @@ void SB_IntermissionOverlay(void)
+diff -urNp uhexen2-20060112/hexen2/gl_dl_screen.c uhexen2-20060112b/hexen2/gl_dl_screen.c
+--- uhexen2-20060112/hexen2/gl_dl_screen.c	2006-01-12 14:34:37.000000000 +0200
++++ uhexen2-20060112b/hexen2/gl_dl_screen.c	2006-01-12 15:56:06.000000000 +0200
+@@ -1006,40 +1006,40 @@ void SB_IntermissionOverlay(void)
  	switch(cl.intermission)
  	{
  		case 1:
@@ -59,7 +59,7 @@ diff -urNp uhexen2-20051211/hexen2/gl_dl_screen.c uhexen2-20051211x/hexen2/gl_dl
  			break;
  		default:
  			pic = NULL;
-@@ -1046,8 +1046,7 @@ void SB_IntermissionOverlay(void)
+@@ -1048,8 +1048,7 @@ void SB_IntermissionOverlay(void)
  	if (pic == NULL)
  		Sys_Error ("SB_IntermissionOverlay: Bad episode");
  
@@ -69,7 +69,7 @@ diff -urNp uhexen2-20051211/hexen2/gl_dl_screen.c uhexen2-20051211x/hexen2/gl_dl
  
  	if (cl.intermission >= 6 && cl.intermission <= 8)
  	{
-@@ -1196,9 +1195,7 @@ void SCR_UpdateScreen (void)
+@@ -1198,9 +1197,7 @@ void SCR_UpdateScreen (void)
  //
  	SCR_SetUpToDrawConsole ();
  	
@@ -80,10 +80,10 @@ diff -urNp uhexen2-20051211/hexen2/gl_dl_screen.c uhexen2-20051211x/hexen2/gl_dl
  	{
  		V_RenderView ();
  	}
-diff -urNp uhexen2-20051211/hexen2/menu.c uhexen2-20051211x/hexen2/menu.c
---- uhexen2-20051211/hexen2/menu.c	2005-12-11 13:53:12.000000000 +0200
-+++ uhexen2-20051211x/hexen2/menu.c	2005-12-11 21:03:43.000000000 +0200
-@@ -2440,11 +2440,7 @@ void M_Menu_Help_f (void)
+diff -urNp uhexen2-20060112/hexen2/menu.c uhexen2-20060112b/hexen2/menu.c
+--- uhexen2-20060112/hexen2/menu.c	2006-01-12 14:34:38.000000000 +0200
++++ uhexen2-20060112b/hexen2/menu.c	2006-01-12 15:56:06.000000000 +0200
+@@ -2431,11 +2431,7 @@ void M_Menu_Help_f (void)
  
  void M_Help_Draw (void)
  {
@@ -96,9 +96,9 @@ diff -urNp uhexen2-20051211/hexen2/menu.c uhexen2-20051211x/hexen2/menu.c
  }
  
  
-diff -urNp uhexen2-20051211/hexen2/screen.c uhexen2-20051211x/hexen2/screen.c
---- uhexen2-20051211/hexen2/screen.c	2005-12-11 13:56:33.000000000 +0200
-+++ uhexen2-20051211x/hexen2/screen.c	2005-12-11 21:03:43.000000000 +0200
+diff -urNp uhexen2-20060112/hexen2/screen.c uhexen2-20060112b/hexen2/screen.c
+--- uhexen2-20060112/hexen2/screen.c	2005-12-11 13:56:33.000000000 +0200
++++ uhexen2-20060112b/hexen2/screen.c	2006-01-12 15:56:06.000000000 +0200
 @@ -1354,42 +1354,41 @@ void SB_IntermissionOverlay(void)
  	
  	switch(cl.intermission)
@@ -165,10 +165,10 @@ diff -urNp uhexen2-20051211/hexen2/screen.c uhexen2-20051211x/hexen2/screen.c
  
  	if (cl.intermission >= 6 && cl.intermission <= 8)
  	{
-diff -urNp uhexen2-20051211/hexen2/vid_sdl.c uhexen2-20051211x/hexen2/vid_sdl.c
---- uhexen2-20051211/hexen2/vid_sdl.c	2005-12-11 20:30:08.000000000 +0200
-+++ uhexen2-20051211x/hexen2/vid_sdl.c	2005-12-11 21:03:43.000000000 +0200
-@@ -43,7 +43,7 @@ byte globalcolormap[VID_GRADES*256], las
+diff -urNp uhexen2-20060112/hexen2/vid_sdl.c uhexen2-20060112b/hexen2/vid_sdl.c
+--- uhexen2-20060112/hexen2/vid_sdl.c	2006-01-12 14:43:49.000000000 +0200
++++ uhexen2-20060112b/hexen2/vid_sdl.c	2006-01-12 15:56:06.000000000 +0200
+@@ -31,7 +31,7 @@ byte globalcolormap[VID_GRADES*256], las
  byte *lastsourcecolormap = NULL;
  
  //intermission screen cache reference (to flush on video mode switch)
@@ -177,8 +177,8 @@ diff -urNp uhexen2-20051211/hexen2/vid_sdl.c uhexen2-20051211x/hexen2/vid_sdl.c
  
  static qboolean	vid_initialized = false;
  static int	lockcount;
-@@ -215,8 +215,8 @@ int VID_SetMode (int modenum, unsigned c
- 		Sys_Error ("VID_SetMode: Bad mode type in modelist");
+@@ -473,8 +473,8 @@ static int VID_SetMode (int modenum, uns
+ 	in_mode_set = true;
  
  	//flush the intermission screen if it's cached (Pa3PyX)
 -	if (intermissionScreen && intermissionScreen->data)
@@ -186,21 +186,21 @@ diff -urNp uhexen2-20051211/hexen2/vid_sdl.c uhexen2-20051211x/hexen2/vid_sdl.c
 +//	if (intermissionScreen && intermissionScreen->data)
 +//		Cache_Free(intermissionScreen);
  
- 	if (modenum==0)
- 		modestate = MS_WINDOWED;
-diff -urNp uhexen2-20051211/hexen2/win_stuff/vid_win.c uhexen2-20051211x/hexen2/win_stuff/vid_win.c
---- uhexen2-20051211/hexen2/win_stuff/vid_win.c	2005-12-11 14:15:31.000000000 +0200
-+++ uhexen2-20051211x/hexen2/win_stuff/vid_win.c	2005-12-11 21:03:43.000000000 +0200
-@@ -25,7 +25,7 @@ HWND		mainwindow, dibwindow;
- HWND WINAPI InitializeWindow (HINSTANCE hInstance, int nCmdShow);
+ 	if (screen)
+ 		SDL_FreeSurface(screen);
+diff -urNp uhexen2-20060112/hexen2/win_stuff/vid_win.c uhexen2-20060112b/hexen2/win_stuff/vid_win.c
+--- uhexen2-20060112/hexen2/win_stuff/vid_win.c	2006-01-07 11:54:29.000000000 +0200
++++ uhexen2-20060112b/hexen2/win_stuff/vid_win.c	2006-01-12 15:56:06.000000000 +0200
+@@ -23,7 +23,7 @@ static qboolean	dibonly;
+ HWND		mainwindow, dibwindow;
  
  //intermission screen cache reference (to flush on video mode switch)
 -extern	cache_user_t	*intermissionScreen;
 +//extern	cache_user_t	*intermissionScreen;
  
- int			DIBWidth, DIBHeight;
+ static int	DIBWidth, DIBHeight;
  qboolean	DDActive;
-@@ -1608,8 +1608,8 @@ int VID_SetMode (int modenum, unsigned c
+@@ -1605,8 +1605,8 @@ static int VID_SetMode (int modenum, uns
  	CDAudio_Pause ();
  
  	//flush the intermission screen if it's cached (Pa3PyX)
@@ -211,10 +211,10 @@ diff -urNp uhexen2-20051211/hexen2/win_stuff/vid_win.c uhexen2-20051211x/hexen2/
  
  	if (vid_modenum == NO_MODE)
  		original_mode = windowed_default;
-diff -urNp uhexen2-20051211/hexenworld/Client/gl_screen.c uhexen2-20051211x/hexenworld/Client/gl_screen.c
---- uhexen2-20051211/hexenworld/Client/gl_screen.c	2005-10-25 22:59:45.000000000 +0300
-+++ uhexen2-20051211x/hexenworld/Client/gl_screen.c	2005-12-11 21:03:43.000000000 +0200
-@@ -849,40 +849,40 @@ void SB_IntermissionOverlay(void)
+diff -urNp uhexen2-20060112/hexenworld/Client/gl_screen.c uhexen2-20060112b/hexenworld/Client/gl_screen.c
+--- uhexen2-20060112/hexenworld/Client/gl_screen.c	2006-01-12 14:34:38.000000000 +0200
++++ uhexen2-20060112b/hexenworld/Client/gl_screen.c	2006-01-12 15:56:06.000000000 +0200
+@@ -851,40 +851,40 @@ void SB_IntermissionOverlay(void)
  	switch(cl.intermission)
  	{
  		case 1:
@@ -267,7 +267,7 @@ diff -urNp uhexen2-20051211/hexenworld/Client/gl_screen.c uhexen2-20051211x/hexe
  			break;
  		default:
  			pic = NULL;
-@@ -891,8 +891,7 @@ void SB_IntermissionOverlay(void)
+@@ -893,8 +893,7 @@ void SB_IntermissionOverlay(void)
  	if (pic == NULL)
  		Sys_Error ("SB_IntermissionOverlay: Bad episode");
  
@@ -277,7 +277,7 @@ diff -urNp uhexen2-20051211/hexenworld/Client/gl_screen.c uhexen2-20051211x/hexe
  
  	if (cl.intermission >= 6 && cl.intermission <= 8)
  	{
-@@ -1012,9 +1011,7 @@ void SCR_UpdateScreen (void)
+@@ -1014,9 +1013,7 @@ void SCR_UpdateScreen (void)
  //
  	SCR_SetUpToDrawConsole ();
  	
@@ -288,10 +288,10 @@ diff -urNp uhexen2-20051211/hexenworld/Client/gl_screen.c uhexen2-20051211x/hexe
  	{
  		V_RenderView ();
  	}
-diff -urNp uhexen2-20051211/hexenworld/Client/menu.c uhexen2-20051211x/hexenworld/Client/menu.c
---- uhexen2-20051211/hexenworld/Client/menu.c	2005-12-11 13:53:12.000000000 +0200
-+++ uhexen2-20051211x/hexenworld/Client/menu.c	2005-12-11 21:03:43.000000000 +0200
-@@ -1394,17 +1394,9 @@ void M_Menu_Help_f (void)
+diff -urNp uhexen2-20060112/hexenworld/Client/menu.c uhexen2-20060112b/hexenworld/Client/menu.c
+--- uhexen2-20060112/hexenworld/Client/menu.c	2006-01-12 14:34:38.000000000 +0200
++++ uhexen2-20060112b/hexenworld/Client/menu.c	2006-01-12 15:56:06.000000000 +0200
+@@ -1385,17 +1385,9 @@ void M_Menu_Help_f (void)
  void M_Help_Draw (void)
  {
  	if(cl_siege)
@@ -311,9 +311,9 @@ diff -urNp uhexen2-20051211/hexenworld/Client/menu.c uhexen2-20051211x/hexenworl
  }
  
  
-diff -urNp uhexen2-20051211/hexenworld/Client/screen.c uhexen2-20051211x/hexenworld/Client/screen.c
---- uhexen2-20051211/hexenworld/Client/screen.c	2005-09-19 22:50:10.000000000 +0300
-+++ uhexen2-20051211x/hexenworld/Client/screen.c	2005-12-11 21:03:43.000000000 +0200
+diff -urNp uhexen2-20060112/hexenworld/Client/screen.c uhexen2-20060112b/hexenworld/Client/screen.c
+--- uhexen2-20060112/hexenworld/Client/screen.c	2005-09-19 22:50:10.000000000 +0300
++++ uhexen2-20060112b/hexenworld/Client/screen.c	2006-01-12 15:56:06.000000000 +0200
 @@ -1105,42 +1105,41 @@ void SB_IntermissionOverlay(void)
  	
  	switch(cl.intermission)
@@ -380,10 +380,10 @@ diff -urNp uhexen2-20051211/hexenworld/Client/screen.c uhexen2-20051211x/hexenwo
  
  	if (cl.intermission >= 6 && cl.intermission <= 8)
  	{
-diff -urNp uhexen2-20051211/hexenworld/Client/vid_sdl.c uhexen2-20051211x/hexenworld/Client/vid_sdl.c
---- uhexen2-20051211/hexenworld/Client/vid_sdl.c	2005-12-11 20:30:08.000000000 +0200
-+++ uhexen2-20051211x/hexenworld/Client/vid_sdl.c	2005-12-11 21:03:43.000000000 +0200
-@@ -43,7 +43,7 @@ byte globalcolormap[VID_GRADES*256], las
+diff -urNp uhexen2-20060112/hexenworld/Client/vid_sdl.c uhexen2-20060112b/hexenworld/Client/vid_sdl.c
+--- uhexen2-20060112/hexenworld/Client/vid_sdl.c	2006-01-12 14:43:49.000000000 +0200
++++ uhexen2-20060112b/hexenworld/Client/vid_sdl.c	2006-01-12 15:56:06.000000000 +0200
+@@ -31,7 +31,7 @@ byte globalcolormap[VID_GRADES*256], las
  byte *lastsourcecolormap = NULL;
  
  //intermission screen cache reference (to flush on video mode switch)
@@ -392,8 +392,8 @@ diff -urNp uhexen2-20051211/hexenworld/Client/vid_sdl.c uhexen2-20051211x/hexenw
  
  static qboolean	vid_initialized = false;
  static int	lockcount;
-@@ -215,8 +215,8 @@ int VID_SetMode (int modenum, unsigned c
- 		Sys_Error ("VID_SetMode: Bad mode type in modelist");
+@@ -473,8 +473,8 @@ static int VID_SetMode (int modenum, uns
+ 	in_mode_set = true;
  
  	//flush the intermission screen if it's cached (Pa3PyX)
 -	if (intermissionScreen && intermissionScreen->data)
@@ -401,21 +401,21 @@ diff -urNp uhexen2-20051211/hexenworld/Client/vid_sdl.c uhexen2-20051211x/hexenw
 +//	if (intermissionScreen && intermissionScreen->data)
 +//		Cache_Free(intermissionScreen);
  
- 	if (modenum==0)
- 		modestate = MS_WINDOWED;
-diff -urNp uhexen2-20051211/hexenworld/Client/win_stuff/vid_win.c uhexen2-20051211x/hexenworld/Client/win_stuff/vid_win.c
---- uhexen2-20051211/hexenworld/Client/win_stuff/vid_win.c	2005-12-11 14:04:36.000000000 +0200
-+++ uhexen2-20051211x/hexenworld/Client/win_stuff/vid_win.c	2005-12-11 21:03:43.000000000 +0200
-@@ -26,7 +26,7 @@ HWND		mainwindow;
- HWND WINAPI InitializeWindow (HINSTANCE hInstance, int nCmdShow);
+ 	if (screen)
+ 		SDL_FreeSurface(screen);
+diff -urNp uhexen2-20060112/hexenworld/Client/win_stuff/vid_win.c uhexen2-20060112b/hexenworld/Client/win_stuff/vid_win.c
+--- uhexen2-20060112/hexenworld/Client/win_stuff/vid_win.c	2006-01-07 11:54:29.000000000 +0200
++++ uhexen2-20060112b/hexenworld/Client/win_stuff/vid_win.c	2006-01-12 15:56:06.000000000 +0200
+@@ -23,7 +23,7 @@ static qboolean	dibonly;
+ HWND		mainwindow;
  
  //intermission screen cache reference (to flush on video mode switch)
 -extern	cache_user_t	*intermissionScreen;
 +//extern	cache_user_t	*intermissionScreen;
  
- int			DIBWidth, DIBHeight;
+ static int	DIBWidth, DIBHeight;
  qboolean	DDActive;
-@@ -1667,8 +1667,8 @@ int VID_SetMode (int modenum, unsigned c
+@@ -1662,8 +1662,8 @@ static int VID_SetMode (int modenum, uns
  	S_ClearBuffer ();
  
  	//flush the intermission screen if it's cached (Pa3PyX)
