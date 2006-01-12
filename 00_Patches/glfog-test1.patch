@@ -8,10 +8,10 @@ Basic experimental fog code extracted from jshexen2 (activate with
   revied this crap is that the glowed missiles look
   somewhat better in fog (personal liking), sigh...
 
-diff -urNp uhexen2-20051021/hexen2/gl_dl_rlight.c uhexen2-20051021-fog/hexen2/gl_dl_rlight.c
---- uhexen2-20051021/hexen2/gl_dl_rlight.c	2005-09-29 16:58:03.000000000 +0300
-+++ uhexen2-20051021-fog/hexen2/gl_dl_rlight.c	2005-10-21 22:36:08.000000000 +0300
-@@ -115,6 +115,10 @@ void R_RenderDlights (void)
+diff -urNp uhexen2-20060112/hexen2/gl_dl_rlight.c uhexen2-20060112b/hexen2/gl_dl_rlight.c
+--- uhexen2-20060112/hexen2/gl_dl_rlight.c	2005-10-27 09:47:12.000000000 +0300
++++ uhexen2-20060112b/hexen2/gl_dl_rlight.c	2006-01-12 15:59:53.000000000 +0200
+@@ -114,6 +114,10 @@ void R_RenderDlights (void)
  
  	r_dlightframecount = r_framecount + 1;	// because the count hasn't
  						//  advanced yet for this frame
@@ -22,7 +22,7 @@ diff -urNp uhexen2-20051021/hexen2/gl_dl_rlight.c uhexen2-20051021-fog/hexen2/gl
  	glDepthMask_fp (0);
  	glDisable_fp (GL_TEXTURE_2D);
  	glShadeModel_fp (GL_SMOOTH);
-@@ -134,6 +138,9 @@ void R_RenderDlights (void)
+@@ -133,6 +137,9 @@ void R_RenderDlights (void)
  	glEnable_fp (GL_TEXTURE_2D);
  	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
  	glDepthMask_fp (1);
@@ -32,9 +32,9 @@ diff -urNp uhexen2-20051021/hexen2/gl_dl_rlight.c uhexen2-20051021-fog/hexen2/gl
  }
  
  
-diff -urNp uhexen2-20051021/hexen2/gl_dl_rmain.c uhexen2-20051021-fog/hexen2/gl_dl_rmain.c
---- uhexen2-20051021/hexen2/gl_dl_rmain.c	2005-10-02 23:02:41.000000000 +0300
-+++ uhexen2-20051021-fog/hexen2/gl_dl_rmain.c	2005-10-21 22:36:08.000000000 +0300
+diff -urNp uhexen2-20060112/hexen2/gl_dl_rmain.c uhexen2-20060112b/hexen2/gl_dl_rmain.c
+--- uhexen2-20060112/hexen2/gl_dl_rmain.c	2005-10-25 02:01:15.000000000 +0300
++++ uhexen2-20060112b/hexen2/gl_dl_rmain.c	2006-01-12 15:59:53.000000000 +0200
 @@ -67,6 +67,7 @@ void R_MarkLeaves (void);
  
  extern	cvar_t	v_gamma;
@@ -58,7 +58,7 @@ diff -urNp uhexen2-20051021/hexen2/gl_dl_rmain.c uhexen2-20051021-fog/hexen2/gl_
  
  extern	cvar_t	gl_ztrick;
  
-@@ -1203,6 +1212,9 @@ void R_DrawAllGlows(void)
+@@ -1204,6 +1213,9 @@ void R_DrawAllGlows(void)
  	if (!r_drawentities.value)
  		return;
  
@@ -68,7 +68,7 @@ diff -urNp uhexen2-20051021/hexen2/gl_dl_rmain.c uhexen2-20051021-fog/hexen2/gl_
  	glDepthMask_fp (0);
  	glDisable_fp (GL_TEXTURE_2D);
  	glShadeModel_fp (GL_SMOOTH);
-@@ -1221,6 +1233,9 @@ void R_DrawAllGlows(void)
+@@ -1222,6 +1234,9 @@ void R_DrawAllGlows(void)
  		}		
  	}
  
@@ -78,7 +78,7 @@ diff -urNp uhexen2-20051021/hexen2/gl_dl_rmain.c uhexen2-20051021-fog/hexen2/gl_
  	glDisable_fp (GL_BLEND);
  	glEnable_fp (GL_TEXTURE_2D);
  	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-@@ -1597,6 +1612,23 @@ void R_RenderScene (void)
+@@ -1598,6 +1613,23 @@ void R_RenderScene (void)
  
  	R_MarkLeaves ();	// done here so we know if we're in water
  
@@ -102,7 +102,7 @@ diff -urNp uhexen2-20051021/hexen2/gl_dl_rmain.c uhexen2-20051021-fog/hexen2/gl_
  	R_DrawWorld ();		// adds static entities to the list
  
  	S_ExtraUpdate ();	// don't let sound get messed up if going slow
-@@ -1605,6 +1637,8 @@ void R_RenderScene (void)
+@@ -1606,6 +1638,8 @@ void R_RenderScene (void)
  
  	R_DrawAllGlows();
  
@@ -111,7 +111,7 @@ diff -urNp uhexen2-20051021/hexen2/gl_dl_rmain.c uhexen2-20051021-fog/hexen2/gl_
  	R_RenderDlights ();
  
  #if 0
-@@ -1802,6 +1836,39 @@ void R_RenderView (void)
+@@ -1803,6 +1837,39 @@ void R_RenderView (void)
  
  	R_Clear ();
  
@@ -151,7 +151,7 @@ diff -urNp uhexen2-20051021/hexen2/gl_dl_rmain.c uhexen2-20051021-fog/hexen2/gl_
  	// render normal view
  	R_RenderScene ();
  
-@@ -1817,6 +1884,9 @@ void R_RenderView (void)
+@@ -1818,6 +1885,9 @@ void R_RenderView (void)
  
  	R_DrawViewModel();
  
@@ -161,7 +161,7 @@ diff -urNp uhexen2-20051021/hexen2/gl_dl_rmain.c uhexen2-20051021-fog/hexen2/gl_
  	// render mirror view
  	R_Mirror ();
  
-@@ -1826,6 +1896,8 @@ void R_RenderView (void)
+@@ -1827,6 +1897,8 @@ void R_RenderView (void)
  	{
  		R_PrintTimes ();
  	}
@@ -170,9 +170,9 @@ diff -urNp uhexen2-20051021/hexen2/gl_dl_rmain.c uhexen2-20051021-fog/hexen2/gl_
  }
  
  
-diff -urNp uhexen2-20051021/hexen2/gl_dl_rmisc.c uhexen2-20051021-fog/hexen2/gl_dl_rmisc.c
---- uhexen2-20051021/hexen2/gl_dl_rmisc.c	2005-09-28 09:09:31.000000000 +0300
-+++ uhexen2-20051021-fog/hexen2/gl_dl_rmisc.c	2005-10-21 22:36:08.000000000 +0300
+diff -urNp uhexen2-20060112/hexen2/gl_dl_rmisc.c uhexen2-20060112b/hexen2/gl_dl_rmisc.c
+--- uhexen2-20060112/hexen2/gl_dl_rmisc.c	2005-10-25 23:04:17.000000000 +0300
++++ uhexen2-20060112b/hexen2/gl_dl_rmisc.c	2006-01-12 15:59:53.000000000 +0200
 @@ -216,6 +216,15 @@ void R_Init (void)
  	Cvar_RegisterVariable (&gl_reporttjunctions);
  	Cvar_RegisterVariable (&gl_multitexture);
@@ -189,10 +189,10 @@ diff -urNp uhexen2-20051021/hexen2/gl_dl_rmisc.c uhexen2-20051021-fog/hexen2/gl_
  	Cvar_RegisterVariable (&gl_glows);
  	Cvar_RegisterVariable (&gl_missile_glows);
  	Cvar_RegisterVariable (&gl_other_glows);
-diff -urNp uhexen2-20051021/hexen2/gl_dl_vidsdl.c uhexen2-20051021-fog/hexen2/gl_dl_vidsdl.c
---- uhexen2-20051021/hexen2/gl_dl_vidsdl.c	2005-10-21 21:02:06.000000000 +0300
-+++ uhexen2-20051021-fog/hexen2/gl_dl_vidsdl.c	2005-10-21 22:36:08.000000000 +0300
-@@ -614,6 +614,15 @@ void GL_Init_Functions(void)
+diff -urNp uhexen2-20060112/hexen2/gl_dl_vidsdl.c uhexen2-20060112b/hexen2/gl_dl_vidsdl.c
+--- uhexen2-20060112/hexen2/gl_dl_vidsdl.c	2006-01-12 14:43:49.000000000 +0200
++++ uhexen2-20060112b/hexen2/gl_dl_vidsdl.c	2006-01-12 16:02:52.000000000 +0200
+@@ -903,6 +903,15 @@ static void GL_Init_Functions(void)
    if (glTexSubImage2D_fp == 0) {Sys_Error("glTexSubImage2D not found in GL library");}
  #endif
  
@@ -208,9 +208,21 @@ diff -urNp uhexen2-20051021/hexen2/gl_dl_vidsdl.c uhexen2-20051021-fog/hexen2/gl
    glAlphaFunc_fp = (glAlphaFunc_f) SDL_GL_GetProcAddress("glAlphaFunc");
    if (glAlphaFunc_fp == 0) {Sys_Error("glAlphaFunc not found in GL library");}
    glBlendFunc_fp = (glBlendFunc_f) SDL_GL_GetProcAddress("glBlendFunc");
-diff -urNp uhexen2-20051021/hexen2/gl_func.h uhexen2-20051021-fog/hexen2/gl_func.h
---- uhexen2-20051021/hexen2/gl_func.h	2005-10-21 21:02:06.000000000 +0300
-+++ uhexen2-20051021-fog/hexen2/gl_func.h	2005-10-21 22:38:57.000000000 +0300
+@@ -982,6 +991,11 @@ static void GL_ResetFunctions(void)
+   glTexImage2D_fp = NULL;
+   glTexSubImage2D_fp = NULL;
+ 
++  glFogf_fp = NULL;
++  glFogfv_fp = NULL;
++  glFogi_fp = NULL;
++  glFogiv_fp = NULL;
++
+   glAlphaFunc_fp = NULL;
+   glBlendFunc_fp = NULL;
+   glShadeModel_fp = NULL;
+diff -urNp uhexen2-20060112/hexen2/gl_func.h uhexen2-20060112b/hexen2/gl_func.h
+--- uhexen2-20060112/hexen2/gl_func.h	2005-10-21 21:02:06.000000000 +0300
++++ uhexen2-20060112b/hexen2/gl_func.h	2006-01-12 15:59:53.000000000 +0200
 @@ -34,6 +34,11 @@ typedef void (APIENTRY *glColor3ubv_f)(c
  typedef void (APIENTRY *glColor3f_f)(GLfloat,GLfloat,GLfloat);
  typedef void (APIENTRY *glClearColor_f)(GLclampf,GLclampf,GLclampf,GLclampf);
@@ -247,10 +259,10 @@ diff -urNp uhexen2-20051021/hexen2/gl_func.h uhexen2-20051021-fog/hexen2/gl_func
  #define glAlphaFunc_fp		glAlphaFunc
  #define glBlendFunc_fp		glBlendFunc
  #define glShadeModel_fp		glShadeModel
-diff -urNp uhexen2-20051021/hexen2/glquake.h uhexen2-20051021-fog/hexen2/glquake.h
---- uhexen2-20051021/hexen2/glquake.h	2005-10-21 21:02:06.000000000 +0300
-+++ uhexen2-20051021-fog/hexen2/glquake.h	2005-10-21 22:36:09.000000000 +0300
-@@ -313,6 +313,16 @@ extern	cvar_t	gl_glows;
+diff -urNp uhexen2-20060112/hexen2/glquake.h uhexen2-20060112b/hexen2/glquake.h
+--- uhexen2-20060112/hexen2/glquake.h	2006-01-07 11:50:09.000000000 +0200
++++ uhexen2-20060112b/hexen2/glquake.h	2006-01-12 15:59:53.000000000 +0200
+@@ -314,6 +314,16 @@ extern	cvar_t	gl_glows;
  extern	cvar_t	gl_other_glows;
  extern	cvar_t	gl_missile_glows;
  
@@ -267,10 +279,10 @@ diff -urNp uhexen2-20051021/hexen2/glquake.h uhexen2-20051021-fog/hexen2/glquake
  extern	int	gl_lightmap_format;
  extern	int	gl_solid_format;
  extern	int	gl_alpha_format;
-diff -urNp uhexen2-20051021/hexen2/win_stuff/gl_vidnt.c uhexen2-20051021-fog/hexen2/win_stuff/gl_vidnt.c
---- uhexen2-20051021/hexen2/win_stuff/gl_vidnt.c	2005-10-13 18:23:21.000000000 +0300
-+++ uhexen2-20051021-fog/hexen2/win_stuff/gl_vidnt.c	2005-10-21 22:36:09.000000000 +0300
-@@ -760,6 +760,15 @@ void GL_Init_Functions(void)
+diff -urNp uhexen2-20060112/hexen2/win_stuff/gl_vidnt.c uhexen2-20060112b/hexen2/win_stuff/gl_vidnt.c
+--- uhexen2-20060112/hexen2/win_stuff/gl_vidnt.c	2006-01-12 14:34:38.000000000 +0200
++++ uhexen2-20060112b/hexen2/win_stuff/gl_vidnt.c	2006-01-12 16:04:11.000000000 +0200
+@@ -819,6 +819,15 @@ static void GL_Init_Functions(void)
    glDepthFunc_fp = (glDepthFunc_f) GetProcAddress(hInstGL, "glDepthFunc");
    if (glDepthFunc_fp == 0) {Sys_Error("glDepthFunc not found in GL library");}
  
@@ -286,9 +298,21 @@ diff -urNp uhexen2-20051021/hexen2/win_stuff/gl_vidnt.c uhexen2-20051021-fog/hex
    glDrawBuffer_fp = (glDrawBuffer_f) GetProcAddress(hInstGL, "glDrawBuffer");
    if (glDrawBuffer_fp == 0) {Sys_Error("glDrawBuffer not found in GL library");}
    glReadBuffer_fp = (glDrawBuffer_f) GetProcAddress(hInstGL, "glReadBuffer");
-diff -urNp uhexen2-20051021/hexenworld/Client/gl_func.h uhexen2-20051021-fog/hexenworld/Client/gl_func.h
---- uhexen2-20051021/hexenworld/Client/gl_func.h	2005-10-21 21:02:07.000000000 +0300
-+++ uhexen2-20051021-fog/hexenworld/Client/gl_func.h	2005-10-21 22:39:57.000000000 +0300
+@@ -883,6 +892,11 @@ static void GL_ResetFunctions(void)
+   glTexImage2D_fp = NULL;
+   glTexSubImage2D_fp = NULL;
+ 
++  glFogf_fp = NULL;
++  glFogfv_fp = NULL;
++  glFogi_fp = NULL;
++  glFogiv_fp = NULL;
++
+   glAlphaFunc_fp = NULL;
+   glBlendFunc_fp = NULL;
+   glShadeModel_fp = NULL;
+diff -urNp uhexen2-20060112/hexenworld/Client/gl_func.h uhexen2-20060112b/hexenworld/Client/gl_func.h
+--- uhexen2-20060112/hexenworld/Client/gl_func.h	2005-10-21 21:02:07.000000000 +0300
++++ uhexen2-20060112b/hexenworld/Client/gl_func.h	2006-01-12 15:59:53.000000000 +0200
 @@ -34,6 +34,11 @@ typedef void (APIENTRY *glColor3ubv_f)(c
  typedef void (APIENTRY *glColor3f_f)(GLfloat,GLfloat,GLfloat);
  typedef void (APIENTRY *glClearColor_f)(GLclampf,GLclampf,GLclampf,GLclampf);
@@ -325,10 +349,10 @@ diff -urNp uhexen2-20051021/hexenworld/Client/gl_func.h uhexen2-20051021-fog/hex
  #define glAlphaFunc_fp		glAlphaFunc
  #define glBlendFunc_fp		glBlendFunc
  #define glShadeModel_fp		glShadeModel
-diff -urNp uhexen2-20051021/hexenworld/Client/glquake.h uhexen2-20051021-fog/hexenworld/Client/glquake.h
---- uhexen2-20051021/hexenworld/Client/glquake.h	2005-10-21 21:02:07.000000000 +0300
-+++ uhexen2-20051021-fog/hexenworld/Client/glquake.h	2005-10-21 22:36:11.000000000 +0300
-@@ -316,6 +316,16 @@ extern	cvar_t	gl_glows;
+diff -urNp uhexen2-20060112/hexenworld/Client/glquake.h uhexen2-20060112b/hexenworld/Client/glquake.h
+--- uhexen2-20060112/hexenworld/Client/glquake.h	2006-01-07 11:50:10.000000000 +0200
++++ uhexen2-20060112b/hexenworld/Client/glquake.h	2006-01-12 15:59:53.000000000 +0200
+@@ -317,6 +317,16 @@ extern	cvar_t	gl_glows;
  extern	cvar_t	gl_other_glows;
  extern	cvar_t	gl_missile_glows;
  
@@ -345,10 +369,10 @@ diff -urNp uhexen2-20051021/hexenworld/Client/glquake.h uhexen2-20051021-fog/hex
  extern	int	gl_lightmap_format;
  extern	int	gl_solid_format;
  extern	int	gl_alpha_format;
-diff -urNp uhexen2-20051021/hexenworld/Client/gl_rlight.c uhexen2-20051021-fog/hexenworld/Client/gl_rlight.c
---- uhexen2-20051021/hexenworld/Client/gl_rlight.c	2005-09-29 16:58:03.000000000 +0300
-+++ uhexen2-20051021-fog/hexenworld/Client/gl_rlight.c	2005-10-21 22:36:11.000000000 +0300
-@@ -141,6 +141,10 @@ void R_RenderDlights (void)
+diff -urNp uhexen2-20060112/hexenworld/Client/gl_rlight.c uhexen2-20060112b/hexenworld/Client/gl_rlight.c
+--- uhexen2-20060112/hexenworld/Client/gl_rlight.c	2005-10-27 09:47:12.000000000 +0300
++++ uhexen2-20060112b/hexenworld/Client/gl_rlight.c	2006-01-12 15:59:53.000000000 +0200
+@@ -139,6 +139,10 @@ void R_RenderDlights (void)
  
  	r_dlightframecount = r_framecount + 1;	// because the count hasn't
  						//  advanced yet for this frame
@@ -359,7 +383,7 @@ diff -urNp uhexen2-20051021/hexenworld/Client/gl_rlight.c uhexen2-20051021-fog/h
  	glDepthMask_fp (0);
  	glDisable_fp (GL_TEXTURE_2D);
  	glShadeModel_fp (GL_SMOOTH);
-@@ -160,6 +164,9 @@ void R_RenderDlights (void)
+@@ -158,6 +162,9 @@ void R_RenderDlights (void)
  	glEnable_fp (GL_TEXTURE_2D);
  	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
  	glDepthMask_fp (1);
@@ -369,9 +393,9 @@ diff -urNp uhexen2-20051021/hexenworld/Client/gl_rlight.c uhexen2-20051021-fog/h
  }
  
  
-diff -urNp uhexen2-20051021/hexenworld/Client/gl_rmain.c uhexen2-20051021-fog/hexenworld/Client/gl_rmain.c
---- uhexen2-20051021/hexenworld/Client/gl_rmain.c	2005-10-02 23:02:41.000000000 +0300
-+++ uhexen2-20051021-fog/hexenworld/Client/gl_rmain.c	2005-10-21 22:36:11.000000000 +0300
+diff -urNp uhexen2-20060112/hexenworld/Client/gl_rmain.c uhexen2-20060112b/hexenworld/Client/gl_rmain.c
+--- uhexen2-20060112/hexenworld/Client/gl_rmain.c	2005-10-25 02:01:15.000000000 +0300
++++ uhexen2-20060112b/hexenworld/Client/gl_rmain.c	2006-01-12 15:59:53.000000000 +0200
 @@ -67,6 +67,7 @@ void R_MarkLeaves (void);
  
  extern	cvar_t	v_gamma;
@@ -395,7 +419,7 @@ diff -urNp uhexen2-20051021/hexenworld/Client/gl_rmain.c uhexen2-20051021-fog/he
  
  extern	cvar_t	gl_ztrick;
  extern	cvar_t	scr_fov;
-@@ -1216,6 +1225,9 @@ void R_DrawAllGlows(void)
+@@ -1217,6 +1226,9 @@ void R_DrawAllGlows(void)
  	if (!r_drawentities.value)
  		return;
  
@@ -405,7 +429,7 @@ diff -urNp uhexen2-20051021/hexenworld/Client/gl_rmain.c uhexen2-20051021-fog/he
  	glDepthMask_fp (0);
  	glDisable_fp (GL_TEXTURE_2D);
  	glShadeModel_fp (GL_SMOOTH);
-@@ -1234,6 +1246,9 @@ void R_DrawAllGlows(void)
+@@ -1235,6 +1247,9 @@ void R_DrawAllGlows(void)
  		}		
  	}
  
@@ -415,7 +439,7 @@ diff -urNp uhexen2-20051021/hexenworld/Client/gl_rmain.c uhexen2-20051021-fog/he
  	glDisable_fp (GL_BLEND);
  	glEnable_fp (GL_TEXTURE_2D);
  	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-@@ -1671,6 +1686,23 @@ void R_RenderScene (void)
+@@ -1672,6 +1687,23 @@ void R_RenderScene (void)
  
  	R_MarkLeaves ();	// done here so we know if we're in water
  
@@ -439,7 +463,7 @@ diff -urNp uhexen2-20051021/hexenworld/Client/gl_rmain.c uhexen2-20051021-fog/he
  	R_DrawWorld ();		// adds static entities to the list
  
  	S_ExtraUpdate ();	// don't let sound get messed up if going slow
-@@ -1679,6 +1711,8 @@ void R_RenderScene (void)
+@@ -1680,6 +1712,8 @@ void R_RenderScene (void)
  
  	R_DrawAllGlows();
  
@@ -448,7 +472,7 @@ diff -urNp uhexen2-20051021/hexenworld/Client/gl_rmain.c uhexen2-20051021-fog/he
  	R_RenderDlights ();
  
  #ifdef GLTEST
-@@ -1874,6 +1908,39 @@ void R_RenderView (void)
+@@ -1875,6 +1909,39 @@ void R_RenderView (void)
  
  	R_Clear ();
  
@@ -488,7 +512,7 @@ diff -urNp uhexen2-20051021/hexenworld/Client/gl_rmain.c uhexen2-20051021-fog/he
  	// render normal view
  	R_RenderScene ();
  
-@@ -1889,6 +1956,9 @@ void R_RenderView (void)
+@@ -1890,6 +1957,9 @@ void R_RenderView (void)
  
  	R_DrawViewModel();
  
@@ -498,7 +522,7 @@ diff -urNp uhexen2-20051021/hexenworld/Client/gl_rmain.c uhexen2-20051021-fog/he
  	// render mirror view
  //	R_Mirror ();
  
-@@ -1898,6 +1968,8 @@ void R_RenderView (void)
+@@ -1899,6 +1969,8 @@ void R_RenderView (void)
  	{
  		R_PrintTimes ();
  	}
@@ -507,9 +531,9 @@ diff -urNp uhexen2-20051021/hexenworld/Client/gl_rmain.c uhexen2-20051021-fog/he
  }
  
  void R_DrawName(vec3_t origin, char *Name, int Red)
-diff -urNp uhexen2-20051021/hexenworld/Client/gl_rmisc.c uhexen2-20051021-fog/hexenworld/Client/gl_rmisc.c
---- uhexen2-20051021/hexenworld/Client/gl_rmisc.c	2005-09-28 09:09:32.000000000 +0300
-+++ uhexen2-20051021-fog/hexenworld/Client/gl_rmisc.c	2005-10-21 22:36:11.000000000 +0300
+diff -urNp uhexen2-20060112/hexenworld/Client/gl_rmisc.c uhexen2-20060112b/hexenworld/Client/gl_rmisc.c
+--- uhexen2-20060112/hexenworld/Client/gl_rmisc.c	2005-10-25 23:04:17.000000000 +0300
++++ uhexen2-20060112b/hexenworld/Client/gl_rmisc.c	2006-01-12 15:59:53.000000000 +0200
 @@ -196,6 +196,15 @@ void R_Init (void)
  	Cvar_RegisterVariable (&gl_multitexture);
  	Cvar_RegisterVariable (&r_teamcolor);
@@ -526,10 +550,10 @@ diff -urNp uhexen2-20051021/hexenworld/Client/gl_rmisc.c uhexen2-20051021-fog/he
  	Cvar_RegisterVariable (&gl_glows);
  	Cvar_RegisterVariable (&gl_missile_glows);
  	Cvar_RegisterVariable (&gl_other_glows);
-diff -urNp uhexen2-20051021/hexenworld/Client/gl_vidsdl.c uhexen2-20051021-fog/hexenworld/Client/gl_vidsdl.c
---- uhexen2-20051021/hexenworld/Client/gl_vidsdl.c	2005-10-21 21:02:07.000000000 +0300
-+++ uhexen2-20051021-fog/hexenworld/Client/gl_vidsdl.c	2005-10-21 22:36:11.000000000 +0300
-@@ -618,6 +618,15 @@ void GL_Init_Functions(void)
+diff -urNp uhexen2-20060112/hexenworld/Client/gl_vidsdl.c uhexen2-20060112b/hexenworld/Client/gl_vidsdl.c
+--- uhexen2-20060112/hexenworld/Client/gl_vidsdl.c	2006-01-12 14:43:49.000000000 +0200
++++ uhexen2-20060112b/hexenworld/Client/gl_vidsdl.c	2006-01-12 16:04:53.000000000 +0200
+@@ -903,6 +903,15 @@ static void GL_Init_Functions(void)
    if (glTexSubImage2D_fp == 0) {Sys_Error("glTexSubImage2D not found in GL library");}
  #endif
  
@@ -545,10 +569,22 @@ diff -urNp uhexen2-20051021/hexenworld/Client/gl_vidsdl.c uhexen2-20051021-fog/h
    glAlphaFunc_fp = (glAlphaFunc_f) SDL_GL_GetProcAddress("glAlphaFunc");
    if (glAlphaFunc_fp == 0) {Sys_Error("glAlphaFunc not found in GL library");}
    glBlendFunc_fp = (glBlendFunc_f) SDL_GL_GetProcAddress("glBlendFunc");
-diff -urNp uhexen2-20051021/hexenworld/Client/win_stuff/gl_vidnt.c uhexen2-20051021-fog/hexenworld/Client/win_stuff/gl_vidnt.c
---- uhexen2-20051021/hexenworld/Client/win_stuff/gl_vidnt.c	2005-10-13 18:23:21.000000000 +0300
-+++ uhexen2-20051021-fog/hexenworld/Client/win_stuff/gl_vidnt.c	2005-10-21 22:36:11.000000000 +0300
-@@ -759,6 +759,15 @@ void GL_Init_Functions(void)
+@@ -982,6 +991,11 @@ static void GL_ResetFunctions(void)
+   glTexImage2D_fp = NULL;
+   glTexSubImage2D_fp = NULL;
+ 
++  glFogf_fp = NULL;
++  glFogfv_fp = NULL;
++  glFogi_fp = NULL;
++  glFogiv_fp = NULL;
++
+   glAlphaFunc_fp = NULL;
+   glBlendFunc_fp = NULL;
+   glShadeModel_fp = NULL;
+diff -urNp uhexen2-20060112/hexenworld/Client/win_stuff/gl_vidnt.c uhexen2-20060112b/hexenworld/Client/win_stuff/gl_vidnt.c
+--- uhexen2-20060112/hexenworld/Client/win_stuff/gl_vidnt.c	2006-01-12 14:34:39.000000000 +0200
++++ uhexen2-20060112b/hexenworld/Client/win_stuff/gl_vidnt.c	2006-01-12 16:04:33.000000000 +0200
+@@ -819,6 +819,15 @@ static void GL_Init_Functions(void)
    glDepthFunc_fp = (glDepthFunc_f) GetProcAddress(hInstGL, "glDepthFunc");
    if (glDepthFunc_fp == 0) {Sys_Error("glDepthFunc not found in GL library");}
  
@@ -564,3 +600,15 @@ diff -urNp uhexen2-20051021/hexenworld/Client/win_stuff/gl_vidnt.c uhexen2-20051
    glDrawBuffer_fp = (glDrawBuffer_f) GetProcAddress(hInstGL, "glDrawBuffer");
    if (glDrawBuffer_fp == 0) {Sys_Error("glDrawBuffer not found in GL library");}
    glReadBuffer_fp = (glDrawBuffer_f) GetProcAddress(hInstGL, "glReadBuffer");
+@@ -883,6 +892,11 @@ static void GL_ResetFunctions(void)
+   glTexImage2D_fp = NULL;
+   glTexSubImage2D_fp = NULL;
+ 
++  glFogf_fp = NULL;
++  glFogfv_fp = NULL;
++  glFogi_fp = NULL;
++  glFogiv_fp = NULL;
++
+   glAlphaFunc_fp = NULL;
+   glBlendFunc_fp = NULL;
+   glShadeModel_fp = NULL;
