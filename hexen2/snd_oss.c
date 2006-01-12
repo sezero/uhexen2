@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.16 2006-01-12 12:57:45 sezero Exp $
+	$Id: snd_oss.c,v 1.17 2006-01-12 13:10:49 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -64,14 +64,16 @@ qboolean S_OSS_Init(void)
 	Con_Printf ("Using OSS device %s\n", ossdev);
 
 	audio_fd = open(ossdev, O_RDWR|O_NONBLOCK);
-	if (audio_fd < 0) {	// Failed open, retry up to 3 times
-		// if it's busy
+	if (audio_fd < 0)
+	{	// Failed open, retry up to 3 times if it's busy
 		while ((audio_fd < 0) && retries-- &&
-			((errno == EAGAIN) || (errno == EBUSY))) {
+			((errno == EAGAIN) || (errno == EBUSY)))
+		{
 			sleep (1);
 			audio_fd = open(ossdev, O_RDWR|O_NONBLOCK);
 		}
-		if (audio_fd < 0) {
+		if (audio_fd < 0)
+		{
 			perror(ossdev);
 			Con_Printf("Could not open %s\n", ossdev);
 			return 0;
@@ -103,7 +105,7 @@ qboolean S_OSS_Init(void)
 	}
 
 	if (ioctl(audio_fd, SNDCTL_DSP_GETOSPACE, &info)==-1)
-	{   
+	{
 		perror("GETOSPACE");
 		Con_Printf("Couldn't retrieve buffer status\n");
 		close(audio_fd);
@@ -115,70 +117,85 @@ qboolean S_OSS_Init(void)
 	shm->splitbuffer = 0;
 
 // set sample bits & speed
-
-	rc = (desired_bits == 16) ? AFMT_S16_LE : AFMT_U8;
-	rc = ioctl(audio_fd, SNDCTL_DSP_SETFMT, &rc);
+	i = desired_bits;
+	tmp = (desired_bits == 16) ? AFMT_S16_LE : AFMT_U8;
+	rc = ioctl(audio_fd, SNDCTL_DSP_SETFMT, &tmp);
 	if (rc < 0)
 	{
 		Con_Printf("Could not support %d-bit data, retrying..\n", desired_bits);
 		// try what the device gives us
-		ioctl(audio_fd, SNDCTL_DSP_GETFMTS, &rc);
-		if (rc & AFMT_S16_LE)
-			desired_bits = 16;
-		else if (rc & AFMT_U8)
-			desired_bits = 8;
-		else {
+		ioctl(audio_fd, SNDCTL_DSP_GETFMTS, &tmp);
+		if (tmp & AFMT_S16_LE)
+		{
+			i = 16;
+			tmp = AFMT_S16_LE;
+		}
+		else if (tmp & AFMT_U8)
+		{
+			i = 8;
+			tmp = AFMT_U8;
+		}
+		else
+		{
 			perror(ossdev);
 			Con_Printf("Could not retrieve supported sound formats!..\n");
 			close(audio_fd);
 			return 0;
 		}
-		rc = (desired_bits == 16) ? AFMT_S16_LE : AFMT_U8;
-		rc = ioctl(audio_fd, SNDCTL_DSP_SETFMT, &rc);
-		if (rc < 0) {
+		rc = ioctl(audio_fd, SNDCTL_DSP_SETFMT, &tmp);
+		if (rc < 0)
+		{
 			perror(ossdev);
 			Con_Printf("No supported sound formats!..\n");
 			close(audio_fd);
 			return 0;
 		}
 	}
-	shm->samplebits = desired_bits;
+	shm->samplebits = i;
 
 	tmp = desired_speed;
 	rc = ioctl(audio_fd, SNDCTL_DSP_SPEED, &tmp);
-	if (rc < 0) {
+	if (rc < 0)
+	{
 		Con_Printf("Problems setting dsp speed, trying alternatives..\n");
-		desired_speed = 0;
-		for (i=0 ; i<MAX_TRYRATES ; i++) {
+		shm->speed = 0;
+		for (i=0 ; i<MAX_TRYRATES ; i++)
+		{
 			tmp = tryrates[i];
 			rc= ioctl(audio_fd, SNDCTL_DSP_SPEED, &tmp);
-			if (rc < 0) {
+			if (rc < 0)
+			{
 				Con_DPrintf ("Could not set dsp to speed %d\n", tryrates[i]);
-			} else {
-				if (tmp != tryrates[i]) {
+			}
+			else
+			{
+				if (tmp != tryrates[i])
+				{
 					Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", tmp, tryrates[i]);
 				//	close(audio_fd);
 				//	return 0;
 				}
-				desired_speed = tmp;
+				shm->speed = tmp;
 				break;
 			}
 		}
-		if (desired_speed == 0) {
+		if (shm->speed == 0)
+		{
 			Con_Printf("Could not set %s speed!\n", ossdev);
 			close(audio_fd);
 			return 0;
 		}
 	}
-	else {
-		if (tmp != desired_speed) {
+	else
+	{
+		if (tmp != desired_speed)
+		{
 			Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", tmp, desired_speed);
 		//	close(audio_fd);
 		//	return 0;
-			desired_speed = tmp;
 		}
+		shm->speed = tmp;
 	}
-	shm->speed = desired_speed;
 
 	tmp = (desired_channels == 2) ? 1 : 0;
 	rc = ioctl(audio_fd, SNDCTL_DSP_STEREO, &tmp);
@@ -187,15 +204,15 @@ qboolean S_OSS_Init(void)
 		Con_Printf("Problems setting mono/stereo, retrying..\n");
 		tmp = (desired_channels == 2) ? 0 : 1;
 		rc = ioctl(audio_fd, SNDCTL_DSP_STEREO, &tmp);
-		if (rc < 0) {
+		if (rc < 0)
+		{
 			perror(ossdev);
 			Con_Printf("Could not set dsp to mono or stereo\n");
 			close(audio_fd);
 			return 0;
 		}
 	}
-	desired_channels = tmp +1;
-	shm->channels = desired_channels;
+	shm->channels = tmp +1;
 
 	shm->samples = info.fragstotal * info.fragsize / (shm->samplebits/8);
 	shm->submission_chunk = 1;
@@ -248,7 +265,8 @@ int S_OSS_GetDMAPos(void)
 {
 	struct count_info count;
 
-	if (!snd_inited) return 0;
+	if (!snd_inited)
+		return 0;
 
 	if (ioctl(audio_fd, SNDCTL_DSP_GETOPTR, &count)==-1)
 	{
@@ -256,6 +274,7 @@ int S_OSS_GetDMAPos(void)
 		Con_Printf("Uh, sound dead.\n");
 		munmap (shm->buffer, mmaplen);
 		close(audio_fd);
+		audio_fd = -1;
 		snd_inited = 0;
 		return 0;
 	}

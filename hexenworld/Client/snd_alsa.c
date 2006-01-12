@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.13 2006-01-12 12:57:45 sezero Exp $
+	$Id: snd_alsa.c,v 1.14 2006-01-12 13:11:16 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -96,6 +96,7 @@ qboolean S_ALSA_Init (void)
 {
 	int			i, err;
 	unsigned int		rate;
+	int			tmp_bits, tmp_chan;
 	snd_pcm_uframes_t	frag_size;
 
 	if (!load_libasound ())
@@ -121,21 +122,29 @@ qboolean S_ALSA_Init (void)
 	err = hx2snd_pcm_hw_params_set_access (pcm, hw, SND_PCM_ACCESS_MMAP_INTERLEAVED);
 	ALSA_CHECK_ERR(err, "unable to set interleaved access. %s\n", hx2snd_strerror (err));
 
-	err = hx2snd_pcm_hw_params_set_format (pcm, hw, desired_bits == 8 ? SND_PCM_FORMAT_U8 : SND_PCM_FORMAT_S16);
+	tmp_bits = (desired_bits == 8) ? SND_PCM_FORMAT_U8 : SND_PCM_FORMAT_S16;
+	err = hx2snd_pcm_hw_params_set_format (pcm, hw, tmp_bits);
 	if (err < 0)
 	{
-		Con_Printf ("Problems setting sndformat, retrying...\n");
-		desired_bits = (desired_bits == 8) ? 16 : 8;
-		err = hx2snd_pcm_hw_params_set_format (pcm, hw, desired_bits == 8 ? SND_PCM_FORMAT_U8 : SND_PCM_FORMAT_S16);
+		tmp_bits = (desired_bits == 8) ? 16 : 8;
+		Con_Printf ("Problems setting %d bit format, retrying for %d bit\n", desired_bits, tmp_bits);
+		tmp_bits = (desired_bits == 8) ? SND_PCM_FORMAT_S16 : SND_PCM_FORMAT_U8;
+		err = hx2snd_pcm_hw_params_set_format (pcm, hw, tmp_bits);
 		ALSA_CHECK_ERR(err, "Neither 8 nor 16 bit format supported. %s\n", hx2snd_strerror (err));
 	}
+	tmp_bits = (tmp_bits == SND_PCM_FORMAT_U8) ? 8 : 16;
 
-	err = hx2snd_pcm_hw_params_set_channels (pcm, hw, desired_channels);
+	tmp_chan = desired_channels;
+	err = hx2snd_pcm_hw_params_set_channels (pcm, hw, tmp_chan);
 	if (err < 0)
 	{
-		Con_Printf ("Problems setting mono/stereo, retrying..\n");
-		desired_channels = (desired_channels == 2) ? 1 : 2;
-		err = hx2snd_pcm_hw_params_set_channels (pcm, hw, desired_channels);
+		Con_Printf ("Problems setting channels to ");
+		if (desired_channels == 2)
+			Con_Printf ("stereo, retrying for mono\n");
+		else
+			Con_Printf ("mono, retrying for stereo\n");
+		tmp_chan = (desired_channels == 2) ? 1 : 2;
+		err = hx2snd_pcm_hw_params_set_channels (pcm, hw, tmp_chan);
 		ALSA_CHECK_ERR(err, "unable to set desired channels. %s\n", hx2snd_strerror (err));
 	}
 
@@ -144,7 +153,6 @@ qboolean S_ALSA_Init (void)
 	if (err < 0)
 	{
 		Con_Printf("Problems setting sample rate, trying alternatives..\n");
-		desired_speed = 0;
 		for (i=0 ; i<MAX_TRYRATES ; i++)
 		{
 			rate = tryrates[i];
@@ -152,6 +160,7 @@ qboolean S_ALSA_Init (void)
 			if (err < 0)
 			{
 				Con_DPrintf ("Unable to set sample rate %d\n", tryrates[i]);
+				rate = 0;
 			}
 			else
 			{
@@ -160,11 +169,10 @@ qboolean S_ALSA_Init (void)
 					Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", rate, tryrates[i]);
 				//	goto error;
 				}
-				desired_speed = rate;
 				break;
 			}
 		}
-		if (desired_speed == 0)
+		if (rate == 0)
 		{
 			Con_Printf ("ALSA: Unable to set any sample rate !\n");
 			goto error;
@@ -176,11 +184,10 @@ qboolean S_ALSA_Init (void)
 		{
 			Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", rate, desired_speed);
 		//	goto error;
-			desired_speed = rate;
 		}
 	}
 
-	frag_size = 8 * desired_bits * desired_speed / 11025;
+	frag_size = 8 * tmp_bits * rate / 11025;
 
 	err = hx2snd_pcm_hw_params_set_period_size_near (pcm, hw, &frag_size, 0);
 	ALSA_CHECK_ERR(err, "unable to set period size near %i. %s\n",
@@ -207,7 +214,7 @@ qboolean S_ALSA_Init (void)
 	shm = &sn;
 	memset ((dma_t *) shm, 0, sizeof (*shm));
 	shm->splitbuffer = 0;
-	shm->channels = desired_channels;
+	shm->channels = tmp_chan;
 
 	// don't mix less than this in mono samples:
 /*	err = hx2snd_pcm_hw_params_get_period_size (hw, 
@@ -216,7 +223,7 @@ qboolean S_ALSA_Init (void)
 */
 	shm->submission_chunk = 1;
 	shm->samplepos = 0;
-	shm->samplebits = desired_bits;
+	shm->samplebits = tmp_bits;
 	err = hx2snd_pcm_hw_params_get_buffer_size (hw, &buffer_size);
 	ALSA_CHECK_ERR(err, "unable to get buffer size. %s\n", hx2snd_strerror(err));
 
@@ -228,7 +235,7 @@ qboolean S_ALSA_Init (void)
 	}
 
 	shm->samples = buffer_size * shm->channels; // mono samples in buffer
-	shm->speed = desired_speed;
+	shm->speed = rate;
 
 	snd_inited = 1;
 	S_ALSA_GetDMAPos ();	// sets shm->buffer
@@ -323,6 +330,9 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2006/01/12 12:57:45  sezero
+ * moved init of platform specific variables and function pointers to snd_sys
+ *
  * Revision 1.12  2006/01/12 12:48:12  sezero
  * small alsa buffersize update taken from the quakeforge tree. also added
  * a ALSA_CHECK_ERR macro to make the init procedure more readable. coding
