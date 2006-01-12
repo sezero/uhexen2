@@ -3,7 +3,7 @@
 	SDL sound driver for Linux Hexen II,  based on the SDLquake
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 
-	$Id: snd_sdl.c,v 1.16 2006-01-12 12:43:49 sezero Exp $
+	$Id: snd_sdl.c,v 1.17 2006-01-12 13:07:09 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -16,12 +16,13 @@ extern int tryrates[MAX_TRYRATES];
 
 static void paint_audio(void *unused, Uint8 *stream, int len)
 {
-	if ( shm ) {
-		shm->buffer = stream;
-		shm->samplepos += len/(shm->samplebits/8)/2;
-		// Check for samplepos overflow?
-		S_PaintChannels (shm->samplepos);
-	}
+	if ( !shm )
+		return;
+
+	shm->buffer = stream;
+	shm->samplepos += len/(shm->samplebits/8)/2;
+	// Check for samplepos overflow?
+	S_PaintChannels (shm->samplepos);
 }
 
 qboolean S_SDL_Init(void)
@@ -30,14 +31,16 @@ qboolean S_SDL_Init(void)
 
 	snd_inited = 0;
 
-	if (SDL_InitSubSystem (SDL_INIT_AUDIO)<0) {
+	if (SDL_InitSubSystem (SDL_INIT_AUDIO) < 0)
+	{
 		Con_Printf("Couldn't init SDL audio: %s\n", SDL_GetError());
 		return 0;
 	}
 
 	/* Set up the desired format */
 	desired.freq = desired_speed;
-	switch (desired_bits) {
+	switch (desired_bits)
+	{
 		case 8:
 			desired.format = AUDIO_U8;
 			break;
@@ -55,13 +58,15 @@ qboolean S_SDL_Init(void)
 	desired.userdata = NULL;
 
 	/* Open the audio device */
-	if ( SDL_OpenAudio(&desired, &obtained) < 0 ) {
+	if ( SDL_OpenAudio(&desired, &obtained) < 0 )
+	{
 		Con_Printf("Couldn't open SDL audio: %s\n", SDL_GetError());
 		return 0;
 	}
 
 	/* Make sure we can support the audio format */
-	switch (obtained.format) {
+	switch (obtained.format)
+	{
 		case AUDIO_U8:
 			/* Supported */
 			break;
@@ -75,7 +80,8 @@ qboolean S_SDL_Init(void)
 			Con_Printf ("Warning: sound format / endianness mismatch\n");
 			Con_Printf ("Warning: will try forcing sdl audio\n");
 			SDL_CloseAudio();
-			if ( SDL_OpenAudio(&desired, NULL) < 0 ) {
+			if ( SDL_OpenAudio(&desired, NULL) < 0 )
+			{
 				Con_Printf("Couldn't open SDL audio: %s\n", SDL_GetError());
 				return 0;
 			}
@@ -134,6 +140,15 @@ void S_SDL_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2006/01/12 12:43:49  sezero
+ * Created an sdl_inc.h with all sdl version requirements and replaced all
+ * SDL.h and SDL_mixer.h includes with it. Made the source to compile against
+ * SDL versions older than 1.2.6 without disabling multisampling. Multisampling
+ * (fsaa) option is now decided at runtime. Minimum required SDL and SDL_mixer
+ * versions are now 1.2.4. If compiled without midi, minimum SDL required is
+ * 1.2.0. Added SDL_mixer version checking to sdl-midi with measures to prevent
+ * relocation errors.
+ *
  * Revision 1.15  2005/07/05 17:16:52  sezero
  * Updated sdl sound (added soundinfo to init, various insignificant things)
  *
