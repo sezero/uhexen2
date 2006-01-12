@@ -3,10 +3,10 @@
 	SDL sound driver for Linux Hexen II,  based on the SDLquake
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 
-	$Id: snd_sdl.c,v 1.11 2005-07-05 17:16:53 sezero Exp $
+	$Id: snd_sdl.c,v 1.12 2006-01-12 12:43:49 sezero Exp $
 */
 
-#include "SDL.h"
+#include "sdl_inc.h"
 #include "quakedef.h"
 
 static int snd_inited;
@@ -134,6 +134,9 @@ void S_SDL_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/07/05 17:16:53  sezero
+ * Updated sdl sound (added soundinfo to init, various insignificant things)
+ *
  * Revision 1.10  2005/06/28 17:20:32  sezero
  * Tiny cosmetic clean-up
  *

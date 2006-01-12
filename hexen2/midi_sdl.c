@@ -2,15 +2,16 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.17 2005-11-23 18:05:51 sezero Exp $
+	$Id: midi_sdl.c,v 1.18 2006-01-12 12:43:49 sezero Exp $
 */
 
 #include "quakedef.h"
 #include <unistd.h>
+#include <dlfcn.h>
 
 #ifndef NO_MIDIMUSIC
-#include "SDL.h"
-#include "SDL_mixer.h"
+#define _NEED_SDL_MIXER
+#include "sdl_inc.h"
 
 static Mix_Music *music = NULL;
 int audio_wasinit = 0;
@@ -114,15 +115,47 @@ qboolean MIDI_Init(void)
 	int audio_channels = 2;
 	int audio_buffers = 4096;
 	char	mididir[MAX_OSPATH];
+	void	*selfsyms;
+	const SDL_version *smixer_version;
+	SDL_version *(*Mix_Linked_Version_fp)(void) = NULL;
+
+	Con_Printf("MIDI_Init: ");
 
 	if (COM_CheckParm("-nomidi") || COM_CheckParm("-nosound")
 	   || COM_CheckParm("--nomidi") || COM_CheckParm("--nosound")) {
 
+		Con_Printf("disabled by commandline\n");
 		bMidiInited = 0;
 		return 0;
 	}
 
-	Con_Printf("MIDI_Init:\n");
+	// this is to avoid relocation errors with very old SDL_Mixer versions
+	selfsyms = dlopen(NULL, RTLD_LAZY);
+	if (selfsyms != NULL)
+	{
+		Mix_Linked_Version_fp = dlsym(selfsyms, "Mix_Linked_Version");
+		dlclose(selfsyms);
+	}
+	Con_Printf("SDL_Mixer ");
+	if (Mix_Linked_Version_fp == NULL)
+	{
+		Con_Printf("version can't be determined, disabled.\n");
+		goto bad_version;
+	}
+	Mix_Linked_Version_fp = NULL;
+	smixer_version = Mix_Linked_Version();
+	Con_Printf("v%d.%d.%d is ",smixer_version->major,smixer_version->minor,smixer_version->patch);
+	// reject running with SDL_Mixer versions older than what is stated in sdl_inc.h
+	if (SDL_VERSIONNUM(smixer_version->major,smixer_version->minor,smixer_version->patch) < MIX_REQUIREDVERSION)
+	{
+		Con_Printf("too old, disabled.\n");
+bad_version:
+		Con_Printf("You need at least v%d.%d.%d of SDL_Mixer\n",SDL_MIXER_MIN_X,SDL_MIXER_MIN_Y,SDL_MIXER_MIN_Z);
+		bMidiInited = 0;
+		return 0;
+	}
+	Con_Printf("found.\n");
+
 	sprintf (mididir, "%s/.midi", com_userdir);
 	Sys_mkdir (mididir);
 
@@ -261,6 +294,10 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/11/23 18:05:51  sezero
+ * changed USE_MIDI definition usage with a NO_MIDIMUSIC definition.
+ * associated makefile changes will follow.
+ *
  * Revision 1.16  2005/11/02 18:39:21  sezero
  * shortened midi file opening for SDL_mixer. the midi cache
  * will be directly under <com_userdir>/.midi from now on.

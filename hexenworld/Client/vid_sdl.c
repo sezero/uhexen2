@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.38 2006-01-12 12:34:39 sezero Exp $
+	$Id: vid_sdl.c,v 1.39 2006-01-12 12:43:49 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -17,7 +17,7 @@
 #include "quakedef.h"
 #include "quakeinc.h"
 #include "d_local.h"
-#include "SDL.h"
+#include "sdl_inc.h"
 
 #define MIN_WIDTH		320
 //#define MIN_HEIGHT		200
@@ -1123,6 +1123,11 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.38  2006/01/12 12:34:39  sezero
+ * added video modes enumeration via SDL. added on-the-fly video mode changing
+ * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its
+ * video settings, clean it up, fix it up...
+ *
  * Revision 1.37  2006/01/07 09:54:29  sezero
  * cleanup and "static" stuff on the vid files
  *

@@ -2,10 +2,10 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.26 2006-01-12 12:34:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.27 2006-01-12 12:43:49 sezero Exp $
 */
 
-#include "SDL.h"
+#include "sdl_inc.h"
 #include "quakedef.h"
 
 
@@ -1120,6 +1120,11 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2006/01/12 12:34:38  sezero
+ * added video modes enumeration via SDL. added on-the-fly video mode changing
+ * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its
+ * video settings, clean it up, fix it up...
+ *
  * Revision 1.25  2005/10/21 18:13:20  sezero
  * made key repeats work
  *

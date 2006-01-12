@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.40 2006-01-12 12:34:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.41 2006-01-12 12:43:49 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -16,8 +16,7 @@
 #include <signal.h>
 #include <dirent.h>
 #include <fnmatch.h>
-//#include "SDL.h"
-#include "SDL_version.h"
+#include "sdl_inc.h"
 
 
 #ifdef ASSUMED_LITTLE_ENDIAN
@@ -33,18 +32,6 @@
 
 #define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error
 					// before exiting
-
-// minimum required SDL version
-#define	SDL_MIN_X	1
-#define	SDL_MIN_Y	2
-#if defined(GLQUAKE) && SDL_PATCHLEVEL > 5
-// for SDL_GL_MULTISAMPLESAMPLES
-#define	SDL_MIN_Z	6
-//#else if defined(SDL_BUTTON_WHEELUP)
-//#define	SDL_MIN_Z	5
-#else
-#define	SDL_MIN_Z	0
-#endif
 
 static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
@@ -416,9 +403,9 @@ int main(int argc, char *argv[])
 
 	sdl_version = SDL_Linked_Version();
 	Sys_Printf("Found SDL version %i.%i.%i\n",sdl_version->major,sdl_version->minor,sdl_version->patch);
-	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_VERSIONNUM(SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z))
-	{	//reject running under SDL versions < 1.2.6
-		printf("You need at least version %i.%i.%i of SDL to run this game\n",SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
+	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
+	{	//reject running under SDL versions older than what is stated in sdl_inc.h
+		printf("You need at least v%d.%d.%d of SDL to run this game\n",SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
 		exit(0);
 	}
 
@@ -472,6 +459,11 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.40  2006/01/12 12:34:39  sezero
+ * added video modes enumeration via SDL. added on-the-fly video mode changing
+ * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its
+ * video settings, clean it up, fix it up...
+ *
  * Revision 1.39  2006/01/06 12:41:42  sezero
  * increased minimum heapsize to 16 mb, otherwise hunk allocation errors occur
  * with old 8 mb minimum. added a -forcemem commandline switch which enables

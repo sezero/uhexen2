@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.5 2005-10-25 20:08:41 sezero Exp $
+	$Id: cd_sdl.c,v 1.6 2006-01-12 12:43:49 sezero Exp $
 
 	Copyright (C) 2001  Mark Baker <homer1@together.net>
 	Taken from SDLquake with modifications to make it work
@@ -26,7 +26,7 @@
 
 */
 
-#include <SDL.h>
+#include "sdl_inc.h"
 #include "quakedef.h"
 
 static qboolean cdValid = false;

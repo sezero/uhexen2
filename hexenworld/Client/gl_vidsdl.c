@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.87 2006-01-12 12:34:38 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.88 2006-01-12 12:43:49 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -17,7 +17,7 @@
 #include "quakedef.h"
 #include "quakeinc.h"
 
-#include "SDL.h"
+#include "sdl_inc.h"
 #include <dlfcn.h>
 #include <unistd.h>
 
@@ -118,12 +118,9 @@ int		gl_max_size = 256;
 qboolean	is_3dfx = false;
 float		gldepthmin, gldepthmax;
 extern int	numgltextures;
-#if SDL_PATCHLEVEL > 5
-static int	multisample = 0;
-#else
-#warning SDL_GL_MULTISAMPLESAMPLES not found. SDL version too old
-#warning Disabling FSAA option. Upgrade to SDL 1.2.6 or newer
-#endif
+
+static int	multisample = 0; // never set this to non-zero if SDL isn't multisampling-capable
+static qboolean	sdl_has_multisample = false;
 
 typedef void	(*FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
 FX_SET_PALETTE_EXT	MyglColorTableEXT;
@@ -545,22 +542,24 @@ static int VID_SetMode (int modenum)
 	}
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
-#if SDL_PATCHLEVEL > 5
 	i = COM_CheckParm ("-fsaa");
 	if (i && i < com_argc-1)
 		multisample = atoi(com_argv[i+1]);
+	if (multisample && !sdl_has_multisample)
+	{
+		multisample = 0;
+		Con_Printf ("SDL ver < %d, multisampling disabled\n", SDL_VER_WITH_MULTISAMPLING);
+	}
 	if (multisample)
 	{
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisample);
 	}
-#endif
 
 	Con_Printf ("Requested mode %d: %dx%dx%d\n", modenum, modelist[modenum].width, modelist[modenum].height, bpp);
 	screen = SDL_SetVideoMode (modelist[modenum].width, modelist[modenum].height, bpp, flags);
 	if (!screen)
 	{
-#if SDL_PATCHLEVEL > 5
 		if (!multisample)
 		{
 			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
@@ -575,9 +574,6 @@ static int VID_SetMode (int modenum)
 			if (!screen)
 				Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 		}
-#else
-		Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
-#endif
 	}
 
 	// success. set vid_modenum properly and adjust other vars.
@@ -615,13 +611,11 @@ static int VID_SetMode (int modenum)
 
 	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &i);
 	Con_Printf ("Video Mode Set : %dx%dx%d\n", vid.width, vid.height, i);
-#if SDL_PATCHLEVEL > 5
 	if (multisample)
 	{
 		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &multisample);
 		Con_Printf ("multisample buffer with %i samples\n", multisample);
 	}
-#endif
 
 	// collect the actual attributes
 	memset (&vid_attribs, 0, sizeof(attributes_t));
@@ -814,13 +808,11 @@ static void GL_Init (void)
 //	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
-#if SDL_PATCHLEVEL > 5
 	if (multisample)
 	{
 		glEnable_fp (GL_MULTISAMPLE_ARB);
 		Con_Printf ("enabled %i sample fsaa\n", multisample);
 	}
-#endif
 }
 
 #ifdef GL_DLSYM
@@ -1544,6 +1536,7 @@ void	VID_Init (unsigned char *palette)
 	int	i, width, height;
 	char	gldir[MAX_OSPATH];
 	SDL_Rect	**enumlist;
+	const SDL_version	*sdl_version;
 
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&_enable_mouse);
@@ -1564,6 +1557,11 @@ void	VID_Init (unsigned char *palette)
 	Sys_mkdir (gldir);
 	sprintf (gldir, "%s/glhexen/puzzle", com_userdir);
 	Sys_mkdir (gldir);
+
+	// see if the SDL version we linked to is multisampling-capable
+	sdl_version = SDL_Linked_Version();
+	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) >= SDL_VER_WITH_MULTISAMPLING)
+		sdl_has_multisample = true;
 
 	// enable vsync for nvidia geforce or newer - S.A
 	if (COM_CheckParm("-sync") || COM_CheckParm("-vsync"))
