@@ -16,11 +16,11 @@
 #define PASCAL
 #define FAR
 #define SOCKET int
-#define WORD unsigned short
-#define BOOL int
 #define LPWSADATA int
+#define BOOL int
 #define UINT unsigned int
-#define DWORD unsigned int
+#define WORD unsigned short
+#define DWORD unsigned long
 #define LONG long
 #define LONGLONG long long
 
