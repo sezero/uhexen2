@@ -3,7 +3,7 @@
 	SDL sound driver for Linux Hexen II,  based on the SDLquake
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 
-	$Id: snd_sdl.c,v 1.17 2006-01-12 13:07:09 sezero Exp $
+	$Id: snd_sdl.c,v 1.18 2006-01-12 13:08:47 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -28,6 +28,7 @@ static void paint_audio(void *unused, Uint8 *stream, int len)
 qboolean S_SDL_Init(void)
 {
 	SDL_AudioSpec desired, obtained;
+	char	drivername[128];
 
 	snd_inited = 0;
 
@@ -75,9 +76,11 @@ qboolean S_SDL_Init(void)
 			if ( ((obtained.format == AUDIO_S16LSB) && (SDL_BYTEORDER == SDL_LIL_ENDIAN)) ||
 				((obtained.format == AUDIO_S16MSB) && (SDL_BYTEORDER == SDL_BIG_ENDIAN)) )
 				break;	/* Supported */
+			else
+				Con_Printf ("Warning: sound format / endianness mismatch\n");
 		default:
 			/* Not supported -- force SDL to do our bidding */
-			Con_Printf ("Warning: sound format / endianness mismatch\n");
+			Con_Printf ("Warning: unsupported audio format received\n");
 			Con_Printf ("Warning: will try forcing sdl audio\n");
 			SDL_CloseAudio();
 			if ( SDL_OpenAudio(&desired, NULL) < 0 )
@@ -92,7 +95,7 @@ qboolean S_SDL_Init(void)
 	/* Fill the audio DMA information block */
 	shm = &sn;
 	shm->splitbuffer = 0;
-	shm->samplebits = (obtained.format & 0xFF);
+	shm->samplebits = (obtained.format & 0xFF); // first byte of format is bits
 	if (obtained.freq != desired_speed)
 		Con_Printf ("Warning: Rate set (%i) didn't match requested rate (%i)!\n", obtained.freq, desired_speed);
 	shm->speed = obtained.freq;
@@ -103,9 +106,14 @@ qboolean S_SDL_Init(void)
 
 	shm->buffer = NULL;
 
+	if (SDL_AudioDriverName(drivername, sizeof (drivername)) == NULL)
+		strcpy(drivername, "(UNKNOWN)");
+
 	snd_inited = 1;
 	SDL_PauseAudio(0);
+
 	Con_Printf("Audio Subsystem initialized in SDL mode.\n");
+	Con_Printf ("SDL audio driver: %s\n", drivername);
 	Con_Printf ("%5d stereo\n", shm->channels - 1);
 	Con_Printf ("%5d samples\n", shm->samples);
 	Con_Printf ("%5d samplepos\n", shm->samplepos);
@@ -140,6 +148,9 @@ void S_SDL_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2006/01/12 13:07:09  sezero
+ * sound whitespace cleanup #1
+ *
  * Revision 1.16  2006/01/12 12:43:49  sezero
  * Created an sdl_inc.h with all sdl version requirements and replaced all
  * SDL.h and SDL_mixer.h includes with it. Made the source to compile against
