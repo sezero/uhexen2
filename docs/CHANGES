@@ -1,5 +1,10 @@
 ChangeLog:
 
+2006-01-14 (CVS):
+    * fixed fullscreen/windowed toggling in windows opengl version.
+    * fixed the incorrect (misled) usage of modestate values, although
+      the result doesn't change.
+
 2006-01-12 (CVS):
     * added video modes enumeration via SDL. added on-the-fly video mode
       changing partially based on the Pa3PyX hexen2 tree. TODO: make the
