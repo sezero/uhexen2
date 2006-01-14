@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.43 2006-01-12 12:43:49 sezero Exp $
+	$Id: vid_sdl.c,v 1.44 2006-01-14 08:39:24 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -503,7 +503,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 
 	// real success. set vid_modenum properly.
 	vid_modenum = modenum;
-	modestate = (fullscreen) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
+	modestate = (fullscreen) ? MS_FULLDIB : MS_WINDOWED;
 
 	IN_HideMouse ();
 
@@ -975,7 +975,7 @@ void VID_ToggleFullscreen (void)
 	if (SDL_WM_ToggleFullScreen(screen)==1)
 	{
 		fullscreen = !fullscreen;
-		modestate = (fullscreen) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
+		modestate = (fullscreen) ? MS_FULLDIB : MS_WINDOWED;
 		if (fullscreen)
 		{
 			// activate mouse in fullscreen mode
@@ -1123,6 +1123,15 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.43  2006/01/12 12:43:49  sezero
+ * Created an sdl_inc.h with all sdl version requirements and replaced all
+ * SDL.h and SDL_mixer.h includes with it. Made the source to compile against
+ * SDL versions older than 1.2.6 without disabling multisampling. Multisampling
+ * (fsaa) option is now decided at runtime. Minimum required SDL and SDL_mixer
+ * versions are now 1.2.4. If compiled without midi, minimum SDL required is
+ * 1.2.0. Added SDL_mixer version checking to sdl-midi with measures to prevent
+ * relocation errors.
+ *
  * Revision 1.42  2006/01/12 12:34:38  sezero
  * added video modes enumeration via SDL. added on-the-fly video mode changing
  * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its

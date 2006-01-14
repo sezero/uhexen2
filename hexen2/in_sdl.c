@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.29 2006-01-12 12:43:49 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.30 2006-01-14 08:39:24 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -163,7 +163,7 @@ void IN_ActivateMouse (void)
 
 	if (!mouseactivatetoggle)
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
-		if ((modestate!=MODE_WINDOWED) || _enable_mouse.value)
+		if ((modestate!=MS_WINDOWED) || _enable_mouse.value)
 #else
 		if (_enable_mouse.value)
 #endif
@@ -209,7 +209,7 @@ void IN_StartupMouse (void)
 
 	//if (mouseactivatetoggle)
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
-	if ((modestate!=MODE_WINDOWED) || _enable_mouse.value)
+	if ((modestate!=MS_WINDOWED) || _enable_mouse.value)
 #else
 	if (_enable_mouse.value)
 #endif
@@ -1120,6 +1120,15 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2006/01/12 12:43:49  sezero
+ * Created an sdl_inc.h with all sdl version requirements and replaced all
+ * SDL.h and SDL_mixer.h includes with it. Made the source to compile against
+ * SDL versions older than 1.2.6 without disabling multisampling. Multisampling
+ * (fsaa) option is now decided at runtime. Minimum required SDL and SDL_mixer
+ * versions are now 1.2.4. If compiled without midi, minimum SDL required is
+ * 1.2.0. Added SDL_mixer version checking to sdl-midi with measures to prevent
+ * relocation errors.
+ *
  * Revision 1.28  2006/01/12 12:34:38  sezero
  * added video modes enumeration via SDL. added on-the-fly video mode changing
  * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its

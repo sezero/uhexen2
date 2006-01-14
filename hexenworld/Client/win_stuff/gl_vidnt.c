@@ -2546,8 +2546,8 @@ void VID_MenuDraw (void)
 	{	// settings for entering the menu first time
 		vid_menunum = vid_modenum;
 		vid_menubpp = modelist[vid_modenum].bpp;
-		vid_menu_fs = (modestate != MODE_WINDOWED);
-		if (modestate == MODE_WINDOWED)
+		vid_menu_fs = (modestate != MS_WINDOWED);
+		if (modestate == MS_WINDOWED)
 			vid_menulist = (vmode_t *)wmodelist;
 		else
 			vid_menulist = (vmode_t *)fmodelist;
@@ -2557,7 +2557,7 @@ void VID_MenuDraw (void)
 	if ( vid_cursor == VID_BPP && (!vid_menu_fs || !num_fmodes || Win95old ))
 		vid_cursor = VID_RESOLUTION;
 
-	want_fstoggle = ( ((modestate == MODE_WINDOWED) && vid_menu_fs) || ((modestate != MODE_WINDOWED) && !vid_menu_fs) );
+	want_fstoggle = ( ((modestate == MS_WINDOWED) && vid_menu_fs) || ((modestate != MS_WINDOWED) && !vid_menu_fs) );
 
 	M_Print (76, 92 + 8*VID_FULLSCREEN, "Fullscreen: ");
 	if (want_fstoggle)
@@ -2710,7 +2710,7 @@ void VID_MenuKey (int key)
 				Cvar_SetValue("vid_mode", vid_menunum);
 				modelist = (vid_menu_fs) ? (vmode_t *)fmodelist : (vmode_t *)wmodelist;
 				VID_Restart_f();
-				windowed = (modestate == MODE_WINDOWED);
+				windowed = (modestate == MS_WINDOWED);
 			}
 			break;
 		}

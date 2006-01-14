@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_dl_vidsdl.c,v 1.96 2006-01-12 12:43:49 sezero Exp $
+	$Id: gl_dl_vidsdl.c,v 1.97 2006-01-14 08:39:23 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -578,7 +578,7 @@ static int VID_SetMode (int modenum)
 
 	// success. set vid_modenum properly and adjust other vars.
 	vid_modenum = modenum;
-	modestate = (fullscreen) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
+	modestate = (fullscreen) ? MS_FULLDIB : MS_WINDOWED;
 	WRWidth = vid.width = vid.conwidth = modelist[modenum].width;
 	WRHeight = vid.height = vid.conheight = modelist[modenum].height;
 
@@ -1726,7 +1726,7 @@ void VID_ToggleFullscreen (void)
 	if (SDL_WM_ToggleFullScreen(screen)==1)
 	{
 		fullscreen = !fullscreen;
-		modestate = (fullscreen) ? MODE_FULLSCREEN_DEFAULT : MODE_WINDOWED;
+		modestate = (fullscreen) ? MS_FULLDIB : MS_WINDOWED;
 		if (fullscreen)
 		{
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
