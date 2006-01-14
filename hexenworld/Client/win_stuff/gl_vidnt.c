@@ -2709,6 +2709,7 @@ void VID_MenuKey (int key)
 			{
 				Cvar_SetValue("vid_mode", vid_menunum);
 				modelist = (vid_menu_fs) ? (vmode_t *)fmodelist : (vmode_t *)wmodelist;
+				nummodes = (vid_menu_fs) ? &num_fmodes : &num_wmodes;
 				VID_Restart_f();
 				windowed = (modestate == MS_WINDOWED);
 			}
