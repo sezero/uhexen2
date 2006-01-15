@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.28 2006-01-07 09:50:10 sezero Exp $
+	$Id: glquake.h,v 1.29 2006-01-15 22:07:50 sezero Exp $
 */
 
 
@@ -50,6 +50,15 @@
 		glBindTexture_fp(GL_TEXTURE_2D, currenttexture);\
 	}\
 }
+
+#define INVERSE_PAL_R_BITS 6
+#define INVERSE_PAL_G_BITS 6
+#define INVERSE_PAL_B_BITS 6
+#define INVERSE_PAL_TOTAL_BITS	( INVERSE_PAL_R_BITS + INVERSE_PAL_G_BITS + INVERSE_PAL_B_BITS )
+// to use hexenworld (quake)'s newer palettized texture code instead of the
+// original hexen2 code, replace the #define below with an #undef. that will
+// result in lower quality. see gl_draw.c (and gl_vidXXX.c) for more details
+#define	OLD_8_BIT_PALETTE_CODE
 
 void GL_BeginRendering (int *x, int *y, int *width, int *height);
 void GL_EndRendering (void);

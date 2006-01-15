@@ -2,21 +2,27 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.68 2006-01-12 12:34:37 sezero Exp $
+	$Id: gl_draw.c,v 1.69 2006-01-15 22:07:47 sezero Exp $
 */
 
 #include "quakedef.h"
-
-#ifndef GL_COLOR_INDEX8_EXT
-#define GL_COLOR_INDEX8_EXT	0x80E5
-#endif
 
 qboolean draw_reinit = false;
 
 extern int ColorIndex[16];
 extern unsigned ColorPercent[16];
+
+#ifndef GL_COLOR_INDEX8_EXT
+#define GL_COLOR_INDEX8_EXT	0x80E5
+#endif
+
 extern qboolean	is8bit;
+#ifdef	OLD_8_BIT_PALETTE_CODE
+extern unsigned char inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
+#else
 extern unsigned char d_15to8table[65536];
+#endif
+
 extern vrect_t	scr_vrect;
 extern cvar_t	crosshair, cl_crossx, cl_crossy, crosshaircolor;
 
@@ -1414,40 +1420,10 @@ int GL_FindTexture (char *identifier)
 GL_ResampleTexture
 ================
 */
-void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigned *out,  int outwidth, int outheight)
+static void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigned *out,  int outwidth, int outheight)
 {
 	int		i, j;
 	unsigned	*inrow;
-	unsigned	frac, fracstep;
-
-	fracstep = inwidth*0x10000/outwidth;
-	for (i=0 ; i<outheight ; i++, out += outwidth)
-	{
-		inrow = in + inwidth*(i*inheight/outheight);
-		frac = fracstep >> 1;
-		for (j=0 ; j<outwidth ; j+=4)
-		{
-			out[j] = inrow[frac>>16];
-			frac += fracstep;
-			out[j+1] = inrow[frac>>16];
-			frac += fracstep;
-			out[j+2] = inrow[frac>>16];
-			frac += fracstep;
-			out[j+3] = inrow[frac>>16];
-			frac += fracstep;
-		}
-	}
-}
-
-/*
-================
-GL_Resample8BitTexture -- JACK
-================
-*/
-void GL_Resample8BitTexture (unsigned char *in, int inwidth, int inheight, unsigned char *out,  int outwidth, int outheight)
-{
-	int		i, j;
-	unsigned	char *inrow;
 	unsigned	frac, fracstep;
 
 	fracstep = inwidth*0x10000/outwidth;
@@ -1476,7 +1452,7 @@ GL_MipMap
 Operates in place, quartering the size of the texture
 ================
 */
-void GL_MipMap (byte *in, int width, int height)
+static void GL_MipMap (byte *in, int width, int height)
 {
 	int		i, j;
 	byte	*out;
@@ -1496,6 +1472,82 @@ void GL_MipMap (byte *in, int width, int height)
 	}
 }
 
+#ifdef OLD_8_BIT_PALETTE_CODE
+/*
+================
+fxPalTexImage2D
+
+Acts the same as glTexImage2D, except that it maps color
+into the current palette and uses paletteized textures.
+If you are on a 3Dfx card and your texture has no alpha,
+then download it as a palettized texture to save memory.
+
+This is original hexen2 code for palettized textures
+Hexenworld replaced it with quake's newer code below
+================
+*/
+static void fxPalTexImage2D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels, unsigned char *dest_image)
+{
+	long	i;
+	long	mip_width, mip_height;
+
+	mip_width = width;
+	mip_height = height;
+
+	// we don't want textures with alpha
+	if (internalformat != 3)
+		Sys_Error ("fxPalTexImage2D: internalformat != 3");
+
+	for (i = 0; i < mip_width * mip_height; i++)
+	{
+		int r, g, b, index;
+		r = ( ( unsigned char * )pixels )[i * 4];
+		g = ( ( unsigned char * )pixels )[i * 4+1];
+		b = ( ( unsigned char * )pixels )[i * 4+2];
+		r >>= 8 - INVERSE_PAL_R_BITS;
+		g >>= 8 - INVERSE_PAL_G_BITS;
+		b >>= 8 - INVERSE_PAL_B_BITS;
+		index = ( r << ( INVERSE_PAL_G_BITS + INVERSE_PAL_B_BITS ) ) |
+			( g << INVERSE_PAL_B_BITS ) |
+			  b;
+		dest_image[i] = inverse_pal[index];
+//		dest_image[i] = ( ( unsigned char * )pixels )[i*4];
+	}
+
+	glTexImage2D_fp(target, level, GL_COLOR_INDEX8_EXT, mip_width, mip_height, border, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, dest_image);
+}
+
+#else	// end of OLD_8_BIT_PALETTE_CODE
+/*
+================
+GL_Resample8BitTexture -- JACK
+================
+*/
+static void GL_Resample8BitTexture (unsigned char *in, int inwidth, int inheight, unsigned char *out,  int outwidth, int outheight)
+{
+	int		i, j;
+	unsigned	char *inrow;
+	unsigned	frac, fracstep;
+
+	fracstep = inwidth*0x10000/outwidth;
+	for (i=0 ; i<outheight ; i++, out += outwidth)
+	{
+		inrow = in + inwidth*(i*inheight/outheight);
+		frac = fracstep >> 1;
+		for (j=0 ; j<outwidth ; j+=4)
+		{
+			out[j] = inrow[frac>>16];
+			frac += fracstep;
+			out[j+1] = inrow[frac>>16];
+			frac += fracstep;
+			out[j+2] = inrow[frac>>16];
+			frac += fracstep;
+			out[j+3] = inrow[frac>>16];
+			frac += fracstep;
+		}
+	}
+}
+
 /*
 ================
 GL_MipMap8Bit
@@ -1503,7 +1555,7 @@ GL_MipMap8Bit
 Mipping for 8 bit textures
 ================
 */
-void GL_MipMap8Bit (byte *in, int width, int height)
+static void GL_MipMap8Bit (byte *in, int width, int height)
 {
 	int		i, j;
 	unsigned short     r,g,b;
@@ -1534,6 +1586,115 @@ void GL_MipMap8Bit (byte *in, int width, int height)
 	}
 }
 
+static void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite)
+{
+	unsigned char 		*scaled;
+	int			mark = 0;
+	int			scaled_width, scaled_height;
+
+	// Snap the height and width to a power of 2
+	for (scaled_width = 1 ; scaled_width < width ; scaled_width<<=1)
+		;
+
+	for (scaled_height = 1 ; scaled_height < height ; scaled_height<<=1)
+		;
+
+	if (sprite)
+	{
+		scaled_width >>= (int)gl_spritemip.value;
+		scaled_height >>= (int)gl_spritemip.value;
+	}
+	else
+	{
+		scaled_width >>= (int)gl_picmip.value;
+		scaled_height >>= (int)gl_picmip.value;
+	}
+
+	if (scaled_width < 1)
+		scaled_width = 1;
+
+	if (scaled_height < 1)
+		scaled_height = 1;
+
+	if (scaled_width > gl_max_size)
+		scaled_width = gl_max_size;
+
+	if (scaled_height > gl_max_size)
+		scaled_height = gl_max_size;
+
+	// 3dfx has some aspect ratio constraints.
+	// can't go beyond 8 to 1 or below 1 to 8.
+	if( is_3dfx )
+	{
+		if( scaled_width * 8 < scaled_height )
+		{
+			scaled_width = scaled_height >> 3;
+		}
+		else if( scaled_height * 8 < scaled_width )
+		{
+			scaled_height = scaled_width >> 3;
+		}
+	}
+
+	texels += scaled_width * scaled_height;
+	
+	mark = Hunk_LowMark();
+	scaled = Hunk_AllocName(scaled_width * scaled_height, "texbuf_upload8pal");
+
+	if (scaled_width == width && scaled_height == height)
+	{
+		if (!mipmap)
+		{
+			glTexImage2D_fp (GL_TEXTURE_2D, 0, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX , GL_UNSIGNED_BYTE, data);
+			goto done;
+		}
+		//scaled = data;
+		memcpy (scaled, data, width*height);
+	}
+	else
+	{
+		//mark = Hunk_LowMark();
+		//scaled = Hunk_AllocName(scaled_width * scaled_height, "texbuf_upload8pal");
+		GL_Resample8BitTexture (data, width, height, scaled, scaled_width, scaled_height);
+	}
+
+	glTexImage2D_fp (GL_TEXTURE_2D, 0, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, scaled);
+	if (mipmap)
+	{
+		int		miplevel;
+
+		miplevel = 0;
+		while (scaled_width > 1 || scaled_height > 1)
+		{
+			GL_MipMap8Bit ((byte *)scaled, scaled_width, scaled_height);
+			scaled_width >>= 1;
+			scaled_height >>= 1;
+			if (scaled_width < 1)
+				scaled_width = 1;
+			if (scaled_height < 1)
+				scaled_height = 1;
+			miplevel++;
+			glTexImage2D_fp (GL_TEXTURE_2D, miplevel, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, scaled);
+		}
+	}
+done: ;
+
+	if (mipmap)
+	{
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+	}
+	else
+	{
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+	}
+
+	if (mark)
+		Hunk_FreeToLowMark(mark);
+}
+#endif	// end of new 8_BIT_PALETTE_CODE
+
 /*
 ===============
 GL_Upload32
@@ -1545,7 +1706,11 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 	unsigned	*scaled;
 	int		mark = 0;
 	int		scaled_width, scaled_height;
+#ifdef OLD_8_BIT_PALETTE_CODE
+	unsigned char	*fxpal_buf = NULL;
+#endif
 
+	// Snap the height and width to a power of 2.
 	for (scaled_width = 1 ; scaled_width < width ; scaled_width<<=1)
 		;
 
@@ -1593,24 +1758,45 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 
 	texels += scaled_width * scaled_height;
 
-	mark = Hunk_LowMark();
-	scaled = Hunk_AllocName(scaled_width * scaled_height * sizeof(unsigned int), "texbuf_upload32");
-
 	if (scaled_width == width && scaled_height == height)
 	{
 		if (!mipmap)
 		{
-			glTexImage2D_fp (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+#ifdef OLD_8_BIT_PALETTE_CODE
+			if (is8bit && !alpha)
+			{
+				mark = Hunk_LowMark();
+				fxpal_buf = Hunk_AllocName(scaled_width * scaled_height, "texbuf_upload8pal");
+				fxPalTexImage2D (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data, fxpal_buf);
+				Hunk_FreeToLowMark(mark);
+				mark = 0;
+			}
+			else
+#endif
+				glTexImage2D_fp (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 			goto done;
 		}
-		memcpy (scaled, data, width * height * sizeof(unsigned int));
+		scaled = data;;
 	}
 	else
 	{
+		mark = Hunk_LowMark();
+		scaled = Hunk_AllocName(scaled_width * scaled_height * sizeof(unsigned int), "texbuf_upload32");
 		GL_ResampleTexture (data, width, height, scaled, scaled_width, scaled_height);
 	}
 
-	glTexImage2D_fp (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
+#ifdef OLD_8_BIT_PALETTE_CODE
+	if (is8bit && !alpha)
+	{
+		if (!mark)
+			mark = Hunk_LowMark();
+		fxpal_buf = Hunk_AllocName(scaled_width * scaled_height, "texbuf_upload8pal");
+		fxPalTexImage2D (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled, fxpal_buf);
+	}
+	else
+#endif
+		glTexImage2D_fp (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
+
 	if (mipmap)
 	{
 		int		miplevel;
@@ -1626,7 +1812,12 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 			if (scaled_height < 1)
 				scaled_height = 1;
 			miplevel++;
-			glTexImage2D_fp (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
+#ifdef OLD_8_BIT_PALETTE_CODE
+			if (is8bit && !alpha)
+				fxPalTexImage2D (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled, fxpal_buf);
+			else
+#endif
+				glTexImage2D_fp (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 		}
 	}
 done: ;
@@ -1642,115 +1833,9 @@ done: ;
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 	}
 
-	Hunk_FreeToLowMark(mark);
+	if (mark)
+		Hunk_FreeToLowMark(mark);
 }
-
-void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite) 
-{
-	int			samples;
-	unsigned char 		*scaled;
-	int			mark = 0;
-	int			scaled_width, scaled_height;
-
-	for (scaled_width = 1 ; scaled_width < width ; scaled_width<<=1)
-		;
-
-	for (scaled_height = 1 ; scaled_height < height ; scaled_height<<=1)
-		;
-
-	if (sprite)
-	{
-		scaled_width >>= (int)gl_spritemip.value;
-		scaled_height >>= (int)gl_spritemip.value;
-	}
-	else
-	{
-		scaled_width >>= (int)gl_picmip.value;
-		scaled_height >>= (int)gl_picmip.value;
-	}
-
-	if (scaled_width < 1)
-		scaled_width = 1;
-
-	if (scaled_height < 1)
-		scaled_height = 1;
-
-	if (scaled_width > gl_max_size)
-		scaled_width = gl_max_size;
-
-	if (scaled_height > gl_max_size)
-		scaled_height = gl_max_size;
-
-	// 3dfx has some aspect ratio constraints.
-	// can't go beyond 8 to 1 or below 1 to 8.
-	if( is_3dfx )
-	{
-		if( scaled_width * 8 < scaled_height )
-		{
-			scaled_width = scaled_height >> 3;
-		}
-		else if( scaled_height * 8 < scaled_width )
-		{
-			scaled_height = scaled_width >> 3;
-		}
-	}
-
-	samples = 1; // alpha ? gl_alpha_format : gl_solid_format;
-
-	texels += scaled_width * scaled_height;
-
-	mark = Hunk_LowMark();
-	scaled = Hunk_AllocName(scaled_width * scaled_height, "texbuf_upload8pal");
-
-	if (scaled_width == width && scaled_height == height)
-	{
-		if (!mipmap)
-		{
-			glTexImage2D_fp (GL_TEXTURE_2D, 0, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX , GL_UNSIGNED_BYTE, data);
-			goto done;
-		}
-		memcpy (scaled, data, width*height);
-	}
-	else
-	{
-		GL_Resample8BitTexture (data, width, height, scaled, scaled_width, scaled_height);
-	}
-
-	glTexImage2D_fp (GL_TEXTURE_2D, 0, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, scaled);
-	if (mipmap)
-	{
-		int		miplevel;
-
-		miplevel = 0;
-		while (scaled_width > 1 || scaled_height > 1)
-		{
-			GL_MipMap8Bit ((byte *)scaled, scaled_width, scaled_height);
-			scaled_width >>= 1;
-			scaled_height >>= 1;
-			if (scaled_width < 1)
-				scaled_width = 1;
-			if (scaled_height < 1)
-				scaled_height = 1;
-			miplevel++;
-			glTexImage2D_fp (GL_TEXTURE_2D, miplevel, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, scaled);
-		}
-	}
-done: ;
-
-	if (mipmap)
-	{
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
-	}
-	else
-	{
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
-	}
-
-	Hunk_FreeToLowMark(mark);
-}
-
 
 /*
 ===============
@@ -1880,16 +1965,18 @@ void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean a
 		}
 	}
 
+#ifndef OLD_8_BIT_PALETTE_CODE
 	if (is8bit && 
-#if ENABLE_SCRAP
+#   if ENABLE_SCRAP
 		(data!=scrap_texels[0]) && 
-#endif
+#   endif
 		!alpha)
 	{
 		GL_Upload8_EXT (data, width, height, mipmap, alpha, sprite);
 		Hunk_FreeToLowMark(mark);
 		return;
 	}
+#endif	// !OLD_8_BIT_PALETTE_CODE
 
 	GL_Upload32 (trans, width, height, mipmap, alpha, sprite);
 	Hunk_FreeToLowMark(mark);
@@ -2030,6 +2117,11 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.68  2006/01/12 12:34:37  sezero
+ * added video modes enumeration via SDL. added on-the-fly video mode changing
+ * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its
+ * video settings, clean it up, fix it up...
+ *
  * Revision 1.67  2006/01/07 09:50:09  sezero
  * added the last pieces (lightmaps) of adjustable filters which I've been
  * forgetting for a very long time

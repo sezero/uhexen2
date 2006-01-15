@@ -109,12 +109,16 @@ cvar_t		gl_purge_maptex = {"gl_purge_maptex", "1", true};
 
 viddef_t	vid;				// global video state
 
+float		RTint[256],GTint[256],BTint[256];
 unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
-unsigned	d_8to24TranslucentTable[256];
 //unsigned	d_8to24table3dfx[256];
+unsigned	d_8to24TranslucentTable[256];
+#ifdef	OLD_8_BIT_PALETTE_CODE
+unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1]; // +1: COM_LoadStackFile puts a 0 at the end of the data
+#else
 unsigned char	d_15to8table[65536];
-float		RTint[256],GTint[256],BTint[256];
+#endif
 
 static PIXELFORMATDESCRIPTOR pfd = {
 	sizeof(PIXELFORMATDESCRIPTOR),	// size of this pfd
@@ -1072,21 +1076,98 @@ unsigned ColorPercent[16] =
 	25, 51, 76, 102, 114, 127, 140, 153, 165, 178, 191, 204, 216, 229, 237, 247
 };
 
+#ifdef DO_BUILD
+// these two procedures should have been used by Raven to
+// generate the gfx/invpal.lmp file which resides in pak0
+static int ConvertTrueColorToPal (unsigned char *true_color, unsigned char *palette)
+{
+	int	i;
+	long	min_dist;
+	int	min_index;
+	long	r, g, b;
+
+	min_dist = 256 * 256 + 256 * 256 + 256 * 256;
+	min_index = -1;
+	r = ( long )true_color[0];
+	g = ( long )true_color[1];
+	b = ( long )true_color[2];
+
+	for (i = 0; i < 256; i++)
+	{
+		long palr, palg, palb, dist;
+		long dr, dg, db;
+
+		palr = palette[3*i];
+		palg = palette[3*i+1];
+		palb = palette[3*i+2];
+		dr = palr - r;
+		dg = palg - g;
+		db = palb - b;
+		dist = dr * dr + dg * dg + db * db;
+		if (dist < min_dist)
+		{
+			min_dist = dist;
+			min_index = i;
+		}
+	}
+	return min_index;
+}
+
+static void VID_CreateInversePalette (unsigned char *palette)
+{
+	FILE	*FH;
+	long	r, g, b;
+	long	index = 0;
+	unsigned char	true_color[3];
+	char	path[MAX_OSPATH];
+
+	for (r = 0; r < ( 1 << INVERSE_PAL_R_BITS ); r++)
+	{
+		for (g = 0; g < ( 1 << INVERSE_PAL_G_BITS ); g++)
+		{
+			for (b = 0; b < ( 1 << INVERSE_PAL_B_BITS ); b++)
+			{
+				true_color[0] = ( unsigned char )( r << ( 8 - INVERSE_PAL_R_BITS ) );
+				true_color[1] = ( unsigned char )( g << ( 8 - INVERSE_PAL_G_BITS ) );
+				true_color[2] = ( unsigned char )( b << ( 8 - INVERSE_PAL_B_BITS ) );
+				inverse_pal[index] = ConvertTrueColorToPal( true_color, palette );
+				index++;
+			}
+		}
+	}
+
+	snprintf (path, MAX_OSPATH, "%s/data1/gfx", com_basedir);
+	Sys_mkdir (path);
+	snprintf (path, MAX_OSPATH, "%s/data1/gfx/invpal.lmp", com_basedir);
+	FH = fopen(path, "wb");
+	if (!FH)
+		Sys_Error ("Couldn't create %s", path);
+	//fwrite (inverse_pal, 1, sizeof(inverse_pal), FH);
+	fwrite (inverse_pal, 1, (sizeof(inverse_pal))-1, FH);
+	fclose (FH);
+	Con_Printf ("Created %s\n", path);
+}
+#endif
+
+
 void VID_SetPalette (unsigned char *palette)
 {
-	byte		*pal;
+	byte	*pal;
 	unsigned short	r,g,b;
 	int		v;
-	int		r1,g1,b1;
-	int		j,k,l,m;
 	unsigned short	i, p, c;
 	unsigned	*table;
 //	unsigned	*table3dfx;
-	FILE		*f;
-	char		s[MAX_OSPATH];
+#ifndef OLD_8_BIT_PALETTE_CODE
+	int		r1,g1,b1;
+	int		j,k,l,m;
+	FILE	*f;
+	char	s[MAX_OSPATH];
 #if !defined(NO_SPLASHES)
 	HWND		hDlg, hProgress;
 #endif
+#endif
+	static qboolean	been_here = false;
 
 //
 // 8 8 8 encoding
@@ -1100,12 +1181,14 @@ void VID_SetPalette (unsigned char *palette)
 		g = pal[1];
 		b = pal[2];
 		pal += 3;
-		
+
 		v = (255<<24) + (r<<0) + (g<<8) + (b<<16);
 		*table++ = v;
 //		v = (255<<24) + (r<<16) + (g<<8) + (b<<0);
 //		*table3dfx++ = v;
 	}
+
+	d_8to24table[255] &= 0xffffff;	// 255 is transparent
 
 	pal = palette;
 	table = d_8to24TranslucentTable;
@@ -1124,23 +1207,35 @@ void VID_SetPalette (unsigned char *palette)
 			//v = (255<<24) + (r<<0) + (g<<8) + (b<<16);
 			*table++ = v;
 
-			RTint[i*16+p] = ((float)r) / ((float)ColorPercent[15-p]) ;
+			RTint[i*16+p] = ((float)r) / ((float)ColorPercent[15-p]);
 			GTint[i*16+p] = ((float)g) / ((float)ColorPercent[15-p]);
 			BTint[i*16+p] = ((float)b) / ((float)ColorPercent[15-p]);
 		}
 	}
 
-	// JACK: 3D distance calcs - k is last closest, l is the distance.
-	// FIXME: Precalculate this and cache to disk.
+	// Initialize the palettized textures data
+	if (been_here)
+		return;
 
+#ifdef OLD_8_BIT_PALETTE_CODE
+	// This is original hexen2 code for palettized textures
+	// Hexenworld replaced it with quake's newer code below
+#   ifdef DO_BUILD
+	VID_CreateInversePalette (palette);
+#   else
+	COM_LoadStackFile ("gfx/invpal.lmp", inverse_pal, sizeof(inverse_pal));
+#   endif
+
+#else // end of OLD_8_BIT_PALETTE_CODE
 	COM_FOpenFile("glhexen/15to8.pal", &f, true);
 	if (f)
 	{
 		fread(d_15to8table, 1<<15, 1, f);
 		fclose(f);
-	} 
-	else 
-	{
+	}
+	else
+	{	// JACK: 3D distance calcs:
+		// k is last closest, l is the distance
 #if !defined(NO_SPLASHES)
 		hDlg = CreateDialog(global_hInstance, MAKEINTRESOURCE(IDD_PROGRESS), 
 			NULL, NULL);
@@ -1148,31 +1243,31 @@ void VID_SetPalette (unsigned char *palette)
 		SendMessage(hProgress, PBM_SETSTEP, 1, 0);
 		SendMessage(hProgress, PBM_SETRANGE, 0, MAKELPARAM(0, 33));
 #endif
-		for (i=0,m=0; i < (1<<15); i++,m++) 
+		for (i=0,m=0; i < (1<<15); i++,m++)
 		{
 			/* Maps
- 			000000000000000
- 			000000000011111 = Red  = 0x1F
- 			000001111100000 = Blue = 0x03E0
- 			111110000000000 = Grn  = 0x7C00
- 			*/
- 			r = ((i & 0x1F) << 3)+4;
- 			g = ((i & 0x03E0) >> 2)+4;
- 			b = ((i & 0x7C00) >> 7)+4;
-#if 0
+			000000000000000
+			000000000011111 = Red  = 0x1F
+			000001111100000 = Blue = 0x03E0
+			111110000000000 = Grn  = 0x7C00
+			*/
+			r = ((i & 0x1F) << 3)+4;
+			g = ((i & 0x03E0) >> 2)+4;
+			b = ((i & 0x7C00) >> 7)+4;
+#   if 0
 			r = (i << 11);
 			g = (i << 6);
 			b = (i << 1);
 			r >>= 11;
 			g >>= 11;
 			b >>= 11;
-#endif
+#   endif
 			pal = (unsigned char *)d_8to24table;
 			for (v=0,k=0,l=10000; v<256; v++,pal+=4)
 			{
- 				r1 = r-pal[0];
- 				g1 = g-pal[1];
- 				b1 = b-pal[2];
+				r1 = r-pal[0];
+				g1 = g-pal[1];
+				b1 = b-pal[2];
 				j = sqrt(((r1*r1)+(g1*g1)+(b1*b1)));
 				if (j<l)
 				{
@@ -1194,7 +1289,7 @@ void VID_SetPalette (unsigned char *palette)
 			}
 		}
 		sprintf(s, "%s/glhexen", com_gamedir);
- 		Sys_mkdir (s);
+		Sys_mkdir (s);
 		sprintf(s, "%s/glhexen/15to8.pal", com_gamedir);
 		f = fopen(s, "wb");
 		if (f)
@@ -1206,8 +1301,8 @@ void VID_SetPalette (unsigned char *palette)
 		DestroyWindow(hDlg);
 #endif
 	}
-
-	d_8to24table[255] &= 0xffffff;	// 255 is transparent
+#endif	// end of new 8_BIT_PALETTE_CODE
+	been_here = true;
 }
 
 void	VID_ShiftPalette (unsigned char *palette)
