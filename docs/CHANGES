@@ -1,5 +1,11 @@
 ChangeLog:
 
+2006-01-15 (CVS):
+    * switched back to original hexen II code for palettized textures for
+      better quality, leaving the newer hexenworld (quake) code as option:
+      changing the macro OLD_8_BIT_PALETTE_CODE from define to undef in
+      glquake.h will do the switching.
+
 2006-01-14 (CVS):
     * fixed fullscreen/windowed toggling in windows opengl version.
     * fixed the incorrect (misled) usage of modestate values, although
