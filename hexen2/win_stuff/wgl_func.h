@@ -2,19 +2,24 @@
 
 #ifdef GL_DLSYM
 // These we can't do without
-typedef PROC (WINAPI *wglGetProcAddress_f)(LPCSTR);
-typedef HGLRC (WINAPI *wglCreateContext_f)(HDC);
-typedef BOOL (WINAPI *wglDeleteContext_f)(HGLRC);
-typedef BOOL (WINAPI *wglMakeCurrent_f)(HDC, HGLRC);
-typedef HGLRC (WINAPI *wglGetCurrentContext_f)(VOID);
-typedef HDC (WINAPI *wglGetCurrentDC_f)(VOID);
+#ifndef GL_FUNCTION
+#define UNDEF_GL_FUNCTION
+#define GL_FUNCTION(ret, func, params) \
+typedef ret (WINAPI *func##_f) params; \
+func##_f func##_fp;
+#endif
 
-wglGetProcAddress_f wglGetProcAddress_fp;
-wglCreateContext_f wglCreateContext_fp;
-wglDeleteContext_f wglDeleteContext_fp;
-wglMakeCurrent_f wglMakeCurrent_fp;
-wglGetCurrentContext_f wglGetCurrentContext_fp;
-wglGetCurrentDC_f wglGetCurrentDC_fp;
+GL_FUNCTION(PROC, wglGetProcAddress, (LPCSTR))
+GL_FUNCTION(HGLRC, wglCreateContext, (HDC))
+GL_FUNCTION(BOOL, wglDeleteContext, (HGLRC))
+GL_FUNCTION(BOOL, wglMakeCurrent, (HDC, HGLRC))
+GL_FUNCTION(HGLRC, wglGetCurrentContext, (VOID))
+GL_FUNCTION(HDC, wglGetCurrentDC, (VOID))
+
+#ifdef UNDEF_GL_FUNCTION
+#undef GL_FUNCTION
+#undef UNDEF_GL_FUNCTION
+#endif
 
 #else
 
@@ -31,10 +36,22 @@ wglGetCurrentDC_f wglGetCurrentDC_fp;
 
 #endif
 
+
 // These are optional
-typedef const char *(WINAPI *wglGetExtensionsStringARB_f)(HDC hdc);
-typedef BOOL (WINAPI *wglSwapBuffers_f)(HDC);
-typedef BOOL (WINAPI *wglSwapIntervalEXT_f)(int interval);
-wglGetExtensionsStringARB_f wglGetExtensionsStringARB_fp;
-wglSwapBuffers_f wglSwapBuffers_fp;
-wglSwapIntervalEXT_f wglSwapIntervalEXT_fp;
+
+#ifndef GL_FUNCTION_OPT
+#define UNDEF_GL_FUNCTION_OPT
+#define GL_FUNCTION_OPT(ret, func, params) \
+typedef ret (WINAPI *func##_f) params; \
+func##_f func##_fp;
+#endif
+
+GL_FUNCTION_OPT(const char *, wglGetExtensionsStringARB, (HDC hdc))
+GL_FUNCTION_OPT(BOOL, wglSwapBuffers, (HDC))
+GL_FUNCTION_OPT(BOOL, wglSwapIntervalEXT, (int))
+
+#ifdef UNDEF_GL_FUNCTION_OPT
+#undef GL_FUNCTION_OPT
+#undef UNDEF_GL_FUNCTION_OPT
+#endif
+

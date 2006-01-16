@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.90 2006-01-15 22:07:50 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.91 2006-01-16 16:43:23 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -693,19 +693,6 @@ static void CheckStencilBuffer(void)
 {
 	have_stencil = false;
 
-#ifdef GL_DLSYM
-	glStencilFunc_fp = (glStencilFunc_f) SDL_GL_GetProcAddress("glStencilFunc");
-	glStencilOp_fp = (glStencilOp_f) SDL_GL_GetProcAddress("glStencilOp");
-	glClearStencil_fp = (glClearStencil_f) SDL_GL_GetProcAddress("glClearStencil");
-	if ((glStencilFunc_fp == NULL) ||
-	    (glStencilOp_fp == NULL)   ||
-	    (glClearStencil_fp == NULL))
-	{
-		Con_Printf ("glStencil functions not available\n");
-		return;
-	}
-#endif
-
 	if (vid_attribs.stencil)
 	{
 		Con_Printf("Stencil buffer created with %d bits\n", vid_attribs.stencil);
@@ -822,212 +809,37 @@ static void GL_Init (void)
 #ifdef GL_DLSYM
 static void GL_Init_Functions(void)
 {
-  glBegin_fp = (glBegin_f) SDL_GL_GetProcAddress("glBegin");
-  if (glBegin_fp == 0) {Sys_Error("glBegin not found in GL library");}
-  glEnd_fp = (glEnd_f) SDL_GL_GetProcAddress("glEnd");
-  if (glEnd_fp == 0) {Sys_Error("glEnd not found in GL library");}
-  glEnable_fp = (glEnable_f) SDL_GL_GetProcAddress("glEnable");
-  if (glEnable_fp == 0) {Sys_Error("glEnable not found in GL library");}
-  glDisable_fp = (glDisable_f) SDL_GL_GetProcAddress("glDisable");
-  if (glDisable_fp == 0) {Sys_Error("glDisable not found in GL library");}
-#ifdef H2W
-  glIsEnabled_fp = (glIsEnabled_f) SDL_GL_GetProcAddress("glIsEnabled");
-  if (glIsEnabled_fp == 0) {Sys_Error("glIsEnabled not found in GL library");}
-#endif
-  glFinish_fp = (glFinish_f) SDL_GL_GetProcAddress("glFinish");
-  if (glFinish_fp == 0) {Sys_Error("glFinish not found in GL library");}
-  glFlush_fp = (glFlush_f) SDL_GL_GetProcAddress("glFlush");
-  if (glFlush_fp == 0) {Sys_Error("glFlush not found in GL library");}
-  glClear_fp = (glClear_f) SDL_GL_GetProcAddress("glClear");
-  if (glClear_fp == 0) {Sys_Error("glClear not found in GL library");}
-
-  glOrtho_fp = (glOrtho_f) SDL_GL_GetProcAddress("glOrtho");
-  if (glOrtho_fp == 0) {Sys_Error("glOrtho not found in GL library");}
-  glFrustum_fp = (glFrustum_f) SDL_GL_GetProcAddress("glFrustum");
-  if (glFrustum_fp == 0) {Sys_Error("glFrustum not found in GL library");}
-  glViewport_fp = (glViewport_f) SDL_GL_GetProcAddress("glViewport");
-  if (glViewport_fp == 0) {Sys_Error("glViewport not found in GL library");}
-  glPushMatrix_fp = (glPushMatrix_f) SDL_GL_GetProcAddress("glPushMatrix");
-  if (glPushMatrix_fp == 0) {Sys_Error("glPushMatrix not found in GL library");}
-  glPopMatrix_fp = (glPopMatrix_f) SDL_GL_GetProcAddress("glPopMatrix");
-  if (glPopMatrix_fp == 0) {Sys_Error("glPopMatrix not found in GL library");}
-  glLoadIdentity_fp = (glLoadIdentity_f) SDL_GL_GetProcAddress("glLoadIdentity");
-  if (glLoadIdentity_fp == 0) {Sys_Error("glLoadIdentity not found in GL library");}
-  glMatrixMode_fp = (glMatrixMode_f) SDL_GL_GetProcAddress("glMatrixMode");
-  if (glMatrixMode_fp == 0) {Sys_Error("glMatrixMode not found in GL library");}
-  glLoadMatrixf_fp = (glLoadMatrixf_f) SDL_GL_GetProcAddress("glLoadMatrixf");
-  if (glLoadMatrixf_fp == 0) {Sys_Error("glLoadMatrixf not found in GL library");}
-
-  glVertex2f_fp = (glVertex2f_f) SDL_GL_GetProcAddress("glVertex2f");
-  if (glVertex2f_fp == 0) {Sys_Error("glVertex2f not found in GL library");}
-  glVertex3f_fp = (glVertex3f_f) SDL_GL_GetProcAddress("glVertex3f");
-  if (glVertex3f_fp == 0) {Sys_Error("glVertex3f not found in GL library");}
-  glVertex3fv_fp = (glVertex3fv_f) SDL_GL_GetProcAddress("glVertex3fv");
-  if (glVertex3fv_fp == 0) {Sys_Error("glVertex3fv not found in GL library");}
-  glTexCoord2f_fp = (glTexCoord2f_f) SDL_GL_GetProcAddress("glTexCoord2f");
-  if (glTexCoord2f_fp == 0) {Sys_Error("glTexCoord2f not found in GL library");}
-  glTexCoord3f_fp = (glTexCoord3f_f) SDL_GL_GetProcAddress("glTexCoord3f");
-  if (glTexCoord3f_fp == 0) {Sys_Error("glTexCoord3f not found in GL library");}
-  glColor4f_fp = (glColor4f_f) SDL_GL_GetProcAddress("glColor4f");
-  if (glColor4f_fp == 0) {Sys_Error("glColor4f not found in GL library");}
-  glColor4fv_fp = (glColor4fv_f) SDL_GL_GetProcAddress("glColor4fv");
-  if (glColor4fv_fp == 0) {Sys_Error("glColor4fv not found in GL library");}
-#ifdef H2W
-  glColor4ub_fp = (glColor4ub_f) SDL_GL_GetProcAddress("glColor4ub");
-  if (glColor4ub_fp == 0) {Sys_Error("glColor4ub not found in GL library");}
-#endif
-  glColor4ubv_fp = (glColor4ubv_f) SDL_GL_GetProcAddress("glColor4ubv");
-  if (glColor4ubv_fp == 0) {Sys_Error("glColor4ubv not found in GL library");}
-  glColor3f_fp = (glColor3f_f) SDL_GL_GetProcAddress("glColor3f");
-  if (glColor3f_fp == 0) {Sys_Error("glColor3f not found in GL library");}
-  glColor3ubv_fp = (glColor3ubv_f) SDL_GL_GetProcAddress("glColor3ubv");
-  if (glColor3ubv_fp == 0) {Sys_Error("glColor3ubv not found in GL library");}
-  glClearColor_fp = (glClearColor_f) SDL_GL_GetProcAddress("glClearColor");
-  if (glClearColor_fp == 0) {Sys_Error("glClearColor not found in GL library");}
-
-  glRotatef_fp = (glRotatef_f) SDL_GL_GetProcAddress("glRotatef");
-  if (glRotatef_fp == 0) {Sys_Error("glRotatef not found in GL library");}
-  glTranslatef_fp = (glTranslatef_f) SDL_GL_GetProcAddress("glTranslatef");
-  if (glTranslatef_fp == 0) {Sys_Error("glTranslatef not found in GL library");}
-
-  glBindTexture_fp = (glBindTexture_f) SDL_GL_GetProcAddress("glBindTexture");
-  if (glBindTexture_fp == 0) {Sys_Error("glBindTexture not found in GL library");}
-  glDeleteTextures_fp = (glDeleteTextures_f) SDL_GL_GetProcAddress("glDeleteTextures");
-  if (glDeleteTextures_fp == 0) {Sys_Error("glDeleteTextures not found in GL library");}
-  glTexParameterf_fp = (glTexParameterf_f) SDL_GL_GetProcAddress("glTexParameterf");
-  if (glTexParameterf_fp == 0) {Sys_Error("glTexParameterf not found in GL library");}
-  glTexEnvf_fp = (glTexEnvf_f) SDL_GL_GetProcAddress("glTexEnvf");
-  if (glTexEnvf_fp == 0) {Sys_Error("glTexEnvf not found in GL library");}
-  glScalef_fp = (glScalef_f) SDL_GL_GetProcAddress("glScalef");
-  if (glScalef_fp == 0) {Sys_Error("glScalef not found in GL library");}
-  glTexImage2D_fp = (glTexImage2D_f) SDL_GL_GetProcAddress("glTexImage2D");
-  if (glTexImage2D_fp == 0) {Sys_Error("glTexImage2D not found in GL library");}
-#ifdef H2W
-  glTexSubImage2D_fp = (glTexSubImage2D_f) SDL_GL_GetProcAddress("glTexSubImage2D");
-  if (glTexSubImage2D_fp == 0) {Sys_Error("glTexSubImage2D not found in GL library");}
-#endif
-
-  glAlphaFunc_fp = (glAlphaFunc_f) SDL_GL_GetProcAddress("glAlphaFunc");
-  if (glAlphaFunc_fp == 0) {Sys_Error("glAlphaFunc not found in GL library");}
-  glBlendFunc_fp = (glBlendFunc_f) SDL_GL_GetProcAddress("glBlendFunc");
-  if (glBlendFunc_fp == 0) {Sys_Error("glBlendFunc not found in GL library");}
-  glShadeModel_fp = (glShadeModel_f) SDL_GL_GetProcAddress("glShadeModel");
-  if (glShadeModel_fp == 0) {Sys_Error("glShadeModel not found in GL library");}
-  glPolygonMode_fp = (glPolygonMode_f) SDL_GL_GetProcAddress("glPolygonMode");
-  if (glPolygonMode_fp == 0) {Sys_Error("glPolygonMode not found in GL library");}
-  glDepthMask_fp = (glDepthMask_f) SDL_GL_GetProcAddress("glDepthMask");
-  if (glDepthMask_fp == 0) {Sys_Error("glDepthMask not found in GL library");}
-  glDepthRange_fp = (glDepthRange_f) SDL_GL_GetProcAddress("glDepthRange");
-  if (glDepthRange_fp == 0) {Sys_Error("glDepthRange not found in GL library");}
-  glDepthFunc_fp = (glDepthFunc_f) SDL_GL_GetProcAddress("glDepthFunc");
-  if (glDepthFunc_fp == 0) {Sys_Error("glDepthFunc not found in GL library");}
-
-  glDrawBuffer_fp = (glDrawBuffer_f) SDL_GL_GetProcAddress("glDrawBuffer");
-  if (glDrawBuffer_fp == 0) {Sys_Error("glDrawBuffer not found in GL library");}
-  glReadBuffer_fp = (glDrawBuffer_f) SDL_GL_GetProcAddress("glReadBuffer");
-  if (glReadBuffer_fp == 0) {Sys_Error("glReadBuffer not found in GL library");}
-  glReadPixels_fp = (glReadPixels_f) SDL_GL_GetProcAddress("glReadPixels");
-  if (glReadPixels_fp == 0) {Sys_Error("glReadPixels not found in GL library");}
-  glHint_fp = (glHint_f) SDL_GL_GetProcAddress("glHint");
-  if (glHint_fp == 0) {Sys_Error("glHint not found in GL library");}
-  glCullFace_fp = (glCullFace_f) SDL_GL_GetProcAddress("glCullFace");
-  if (glCullFace_fp == 0) {Sys_Error("glCullFace not found in GL library");}
-
-  glGetIntegerv_fp = (glGetIntegerv_f) SDL_GL_GetProcAddress("glGetIntegerv");
-  if (glGetIntegerv_fp == 0) {Sys_Error("glGetIntegerv not found in GL library");}
-
-  glGetString_fp = (glGetString_f) SDL_GL_GetProcAddress("glGetString");
-  if (glGetString_fp == 0) {Sys_Error("glGetString not found in GL library");}
-  glGetFloatv_fp = (glGetFloatv_f) SDL_GL_GetProcAddress("glGetFloatv");
-  if (glGetFloatv_fp == 0) {Sys_Error("glGetFloatv not found in GL library");}
+#define GL_FUNCTION(ret, func, params) \
+	func##_fp = (func##_f) SDL_GL_GetProcAddress(#func); \
+	if (func##_fp == 0) \
+		Sys_Error("%s not found in GL library", #func);
+#define GL_FUNCTION_OPT(ret, func, params)
+#include "gl_func.h"
+#undef	GL_FUNCTION_OPT
+#undef	GL_FUNCTION
 }
+#endif	// GL_DLSYM
 
 static void GL_ResetFunctions(void)
 {
-  glBegin_fp = NULL;
-  glEnd_fp = NULL;
-  glEnable_fp = NULL;
-  glDisable_fp = NULL;
-  glIsEnabled_fp = NULL;
-  glFinish_fp = NULL;
-  glFlush_fp = NULL;
-  glClear_fp = NULL;
+#ifdef	GL_DLSYM
+#define GL_FUNCTION(ret, func, params) \
+	func##_fp = NULL;
+#define GL_FUNCTION_OPT(ret, func, params)
+#include "gl_func.h"
+#undef	GL_FUNCTION_OPT
+#undef	GL_FUNCTION
+#endif	// GL_DLSYM
 
-  glOrtho_fp = NULL;
-  glFrustum_fp = NULL;
-  glViewport_fp = NULL;
-  glPushMatrix_fp = NULL;
-  glPopMatrix_fp = NULL;
-  glLoadIdentity_fp = NULL;
-  glMatrixMode_fp = NULL;
-  glLoadMatrixf_fp = NULL;
+	have_stencil = false;
 
-  glVertex2f_fp = NULL;
-  glVertex3f_fp = NULL;
-  glVertex3fv_fp = NULL;
-  glTexCoord2f_fp = NULL;
-  glTexCoord3f_fp = NULL;
-  glColor4f_fp = NULL;
-  glColor4fv_fp = NULL;
-  glColor4ub_fp = NULL;
-  glColor4ubv_fp = NULL;
-  glColor3f_fp = NULL;
-  glColor3ubv_fp = NULL;
-  glClearColor_fp = NULL;
+	gl_mtexable = false;
+	glActiveTextureARB_fp = NULL;
+	glMultiTexCoord2fARB_fp = NULL;
 
-  glRotatef_fp = NULL;
-  glTranslatef_fp = NULL;
-
-  glBindTexture_fp = NULL;
-  glDeleteTextures_fp = NULL;
-  glTexParameterf_fp = NULL;
-  glTexEnvf_fp = NULL;
-  glScalef_fp = NULL;
-  glTexImage2D_fp = NULL;
-  glTexSubImage2D_fp = NULL;
-
-  glAlphaFunc_fp = NULL;
-  glBlendFunc_fp = NULL;
-  glShadeModel_fp = NULL;
-  glPolygonMode_fp = NULL;
-  glDepthMask_fp = NULL;
-  glDepthRange_fp = NULL;
-  glDepthFunc_fp = NULL;
-
-  glDrawBuffer_fp = NULL;
-  glReadBuffer_fp = NULL;
-  glReadPixels_fp = NULL;
-  glHint_fp = NULL;
-  glCullFace_fp = NULL;
-
-  glGetIntegerv_fp = NULL;
-
-  glGetString_fp = NULL;
-  glGetFloatv_fp = NULL;
-
-  have_stencil = false;
-  glStencilFunc_fp = NULL;
-  glStencilOp_fp = NULL;
-  glClearStencil_fp = NULL;
-
-  gl_mtexable = false;
-  glActiveTextureARB_fp = NULL;
-  glMultiTexCoord2fARB_fp = NULL;
-
-  is8bit = false;
-  MyglColorTableEXT = NULL;
+	is8bit = false;
+	MyglColorTableEXT = NULL;
 }
-#else	// GL_DLSYM
-static void GL_ResetFunctions(void)
-{
-  gl_mtexable = false;
-  glActiveTextureARB_fp = NULL;
-  glMultiTexCoord2fARB_fp = NULL;
-
-  is8bit = false;
-  MyglColorTableEXT = NULL;
-}
-#endif
 
 static qboolean VID_Check3dfxGamma(void)
 {
