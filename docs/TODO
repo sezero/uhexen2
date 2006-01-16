@@ -5,7 +5,6 @@ TODO:
   Add sequencer support for midi
   Add joystick support through sdl
   Add multisampling support to win32
-  Add back proper dynamic resolution changing someday?
   More unification of hexen2 and hexenworld trees
   Re-visit the extra patches, fix and merge (e.g.: fog, etc.)
   Check / fix the tree for 64-bit platforms
