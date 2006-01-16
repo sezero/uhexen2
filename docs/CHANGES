@@ -1,5 +1,9 @@
 ChangeLog:
 
+2006-01-16 (CVS):
+    * macroized dlsymming of gl functions (similar to dlsymming of alsa
+      functions) which freed a lot of crowd from gl_vidXXX files.
+
 2006-01-15 (CVS):
     * switched back to original hexen II code for palettized textures for
       better quality, leaving the newer hexenworld (quake) code as option:
