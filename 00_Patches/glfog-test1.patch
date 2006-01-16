@@ -189,80 +189,25 @@ diff -urNp uhexen2-20060112/hexen2/gl_dl_rmisc.c uhexen2-20060112b/hexen2/gl_dl_
  	Cvar_RegisterVariable (&gl_glows);
  	Cvar_RegisterVariable (&gl_missile_glows);
  	Cvar_RegisterVariable (&gl_other_glows);
-diff -urNp uhexen2-20060112/hexen2/gl_dl_vidsdl.c uhexen2-20060112b/hexen2/gl_dl_vidsdl.c
---- uhexen2-20060112/hexen2/gl_dl_vidsdl.c	2006-01-12 14:43:49.000000000 +0200
-+++ uhexen2-20060112b/hexen2/gl_dl_vidsdl.c	2006-01-12 16:02:52.000000000 +0200
-@@ -903,6 +903,15 @@ static void GL_Init_Functions(void)
-   if (glTexSubImage2D_fp == 0) {Sys_Error("glTexSubImage2D not found in GL library");}
- #endif
+diff -urN uhexen2-20060116/hexen2/gl_func.h uhexen2-20060116a/hexen2/gl_func.h
+--- uhexen2-20060116/hexen2/gl_func.h	2006-01-16 18:44:10.000000000 +0200
++++ uhexen2-20060116a/hexen2/gl_func.h	2006-01-16 18:53:30.000000000 +0200
+@@ -47,6 +47,11 @@
+ GL_FUNCTION(void, glColor3f, (GLfloat,GLfloat,GLfloat))
+ GL_FUNCTION(void, glClearColor, (GLclampf,GLclampf,GLclampf,GLclampf))
  
-+  glFogf_fp = (glFogf_f) SDL_GL_GetProcAddress("glFogf");
-+  if (glFogf_fp == 0) {Sys_Error("glFogf not found in GL library");}
-+  glFogfv_fp = (glFogfv_f) SDL_GL_GetProcAddress("glFogfv");
-+  if (glFogfv_fp == 0) {Sys_Error("glFogfv not found in GL library");}
-+  glFogi_fp = (glFogi_f) SDL_GL_GetProcAddress("glFogi");
-+  if (glFogi_fp == 0) {Sys_Error("glFogi not found in GL library");}
-+  glFogiv_fp = (glFogiv_f) SDL_GL_GetProcAddress("glFogiv");
-+  if (glFogiv_fp == 0) {Sys_Error("glFogiv not found in GL library");}
++GL_FUNCTION(void, glFogf, (GLenum,GLfloat))
++GL_FUNCTION(void, glFogfv, (GLenum, const GLfloat *))
++GL_FUNCTION(void, glFogi, (GLenum,GLint))
++GL_FUNCTION(void, glFogiv, (GLenum, const GLint *))
 +
-   glAlphaFunc_fp = (glAlphaFunc_f) SDL_GL_GetProcAddress("glAlphaFunc");
-   if (glAlphaFunc_fp == 0) {Sys_Error("glAlphaFunc not found in GL library");}
-   glBlendFunc_fp = (glBlendFunc_f) SDL_GL_GetProcAddress("glBlendFunc");
-@@ -982,6 +991,11 @@ static void GL_ResetFunctions(void)
-   glTexImage2D_fp = NULL;
-   glTexSubImage2D_fp = NULL;
- 
-+  glFogf_fp = NULL;
-+  glFogfv_fp = NULL;
-+  glFogi_fp = NULL;
-+  glFogiv_fp = NULL;
-+
-   glAlphaFunc_fp = NULL;
-   glBlendFunc_fp = NULL;
-   glShadeModel_fp = NULL;
-diff -urNp uhexen2-20060112/hexen2/gl_func.h uhexen2-20060112b/hexen2/gl_func.h
---- uhexen2-20060112/hexen2/gl_func.h	2005-10-21 21:02:06.000000000 +0300
-+++ uhexen2-20060112b/hexen2/gl_func.h	2006-01-12 15:59:53.000000000 +0200
-@@ -34,6 +34,11 @@ typedef void (APIENTRY *glColor3ubv_f)(c
- typedef void (APIENTRY *glColor3f_f)(GLfloat,GLfloat,GLfloat);
- typedef void (APIENTRY *glClearColor_f)(GLclampf,GLclampf,GLclampf,GLclampf);
- 
-+typedef void (APIENTRY *glFogf_f)(GLenum,GLfloat);
-+typedef void (APIENTRY *glFogfv_f)(GLenum, const GLfloat *);
-+typedef void (APIENTRY *glFogi_f)(GLenum,GLint);
-+typedef void (APIENTRY *glFogiv_f)(GLenum, const GLint *);
-+
- typedef void (APIENTRY *glAlphaFunc_f)(GLenum,GLclampf);
- typedef void (APIENTRY *glBlendFunc_f)(GLenum,GLenum);
- typedef void (APIENTRY *glShadeModel_f)(GLenum);
-@@ -111,6 +116,11 @@ glScalef_f glScalef_fp;
- glTexImage2D_f glTexImage2D_fp;
- glTexSubImage2D_f glTexSubImage2D_fp;
- 
-+glFogf_f glFogf_fp;
-+glFogfv_f glFogfv_fp;
-+glFogi_f glFogi_fp;
-+glFogiv_f glFogiv_fp;
-+
- glAlphaFunc_f glAlphaFunc_fp;
- glBlendFunc_f glBlendFunc_fp;
- glShadeModel_f glShadeModel_fp;
-@@ -165,6 +175,11 @@ glClearStencil_f glClearStencil_fp;
- #define glColor3f_fp		glColor3f
- #define glClearColor_fp		glClearColor
- 
-+#define glFogf_fp		glFogf
-+#define glFogfv_fp		glFogfv
-+#define glFogi_fp		glFogi
-+#define glFogiv_fp		glFogiv
-+
- #define glAlphaFunc_fp		glAlphaFunc
- #define glBlendFunc_fp		glBlendFunc
- #define glShadeModel_fp		glShadeModel
+ GL_FUNCTION(void, glAlphaFunc, (GLenum,GLclampf))
+ GL_FUNCTION(void, glBlendFunc, (GLenum,GLenum))
+ GL_FUNCTION(void, glShadeModel, (GLenum))
 diff -urNp uhexen2-20060112/hexen2/glquake.h uhexen2-20060112b/hexen2/glquake.h
 --- uhexen2-20060112/hexen2/glquake.h	2006-01-07 11:50:09.000000000 +0200
 +++ uhexen2-20060112b/hexen2/glquake.h	2006-01-12 15:59:53.000000000 +0200
-@@ -314,6 +314,16 @@ extern	cvar_t	gl_glows;
+@@ -323,6 +323,16 @@ extern	cvar_t	gl_glows;
  extern	cvar_t	gl_other_glows;
  extern	cvar_t	gl_missile_glows;
  
@@ -279,80 +224,25 @@ diff -urNp uhexen2-20060112/hexen2/glquake.h uhexen2-20060112b/hexen2/glquake.h
  extern	int	gl_lightmap_format;
  extern	int	gl_solid_format;
  extern	int	gl_alpha_format;
-diff -urNp uhexen2-20060112/hexen2/win_stuff/gl_vidnt.c uhexen2-20060112b/hexen2/win_stuff/gl_vidnt.c
---- uhexen2-20060112/hexen2/win_stuff/gl_vidnt.c	2006-01-12 14:34:38.000000000 +0200
-+++ uhexen2-20060112b/hexen2/win_stuff/gl_vidnt.c	2006-01-12 16:04:11.000000000 +0200
-@@ -819,6 +819,15 @@ static void GL_Init_Functions(void)
-   glDepthFunc_fp = (glDepthFunc_f) GetProcAddress(hInstGL, "glDepthFunc");
-   if (glDepthFunc_fp == 0) {Sys_Error("glDepthFunc not found in GL library");}
+diff -urN uhexen2-20060116/hexenworld/Client/gl_func.h uhexen2-20060116a/hexenworld/Client/gl_func.h
+--- uhexen2-20060116/hexenworld/Client/gl_func.h	2006-01-16 18:44:10.000000000 +0200
++++ uhexen2-20060116a/hexenworld/Client/gl_func.h	2006-01-16 18:54:09.000000000 +0200
+@@ -47,6 +47,11 @@
+ GL_FUNCTION(void, glColor3f, (GLfloat,GLfloat,GLfloat))
+ GL_FUNCTION(void, glClearColor, (GLclampf,GLclampf,GLclampf,GLclampf))
  
-+  glFogf_fp = (glFogf_f) GetProcAddress(hInstGL, "glFogf");
-+  if (glFogf_fp == 0) {Sys_Error("glFogf not found in GL library");}
-+  glFogfv_fp = (glFogfv_f) GetProcAddress(hInstGL, "glFogfv");
-+  if (glFogfv_fp == 0) {Sys_Error("glFogfv not found in GL library");}
-+  glFogi_fp = (glFogi_f) GetProcAddress(hInstGL, "glFogi");
-+  if (glFogi_fp == 0) {Sys_Error("glFogi not found in GL library");}
-+  glFogiv_fp = (glFogiv_f) GetProcAddress(hInstGL, "glFogiv");
-+  if (glFogiv_fp == 0) {Sys_Error("glFogiv not found in GL library");}
++GL_FUNCTION(void, glFogf, (GLenum,GLfloat))
++GL_FUNCTION(void, glFogfv, (GLenum, const GLfloat *))
++GL_FUNCTION(void, glFogi, (GLenum,GLint))
++GL_FUNCTION(void, glFogiv, (GLenum, const GLint *))
 +
-   glDrawBuffer_fp = (glDrawBuffer_f) GetProcAddress(hInstGL, "glDrawBuffer");
-   if (glDrawBuffer_fp == 0) {Sys_Error("glDrawBuffer not found in GL library");}
-   glReadBuffer_fp = (glDrawBuffer_f) GetProcAddress(hInstGL, "glReadBuffer");
-@@ -883,6 +892,11 @@ static void GL_ResetFunctions(void)
-   glTexImage2D_fp = NULL;
-   glTexSubImage2D_fp = NULL;
- 
-+  glFogf_fp = NULL;
-+  glFogfv_fp = NULL;
-+  glFogi_fp = NULL;
-+  glFogiv_fp = NULL;
-+
-   glAlphaFunc_fp = NULL;
-   glBlendFunc_fp = NULL;
-   glShadeModel_fp = NULL;
-diff -urNp uhexen2-20060112/hexenworld/Client/gl_func.h uhexen2-20060112b/hexenworld/Client/gl_func.h
---- uhexen2-20060112/hexenworld/Client/gl_func.h	2005-10-21 21:02:07.000000000 +0300
-+++ uhexen2-20060112b/hexenworld/Client/gl_func.h	2006-01-12 15:59:53.000000000 +0200
-@@ -34,6 +34,11 @@ typedef void (APIENTRY *glColor3ubv_f)(c
- typedef void (APIENTRY *glColor3f_f)(GLfloat,GLfloat,GLfloat);
- typedef void (APIENTRY *glClearColor_f)(GLclampf,GLclampf,GLclampf,GLclampf);
- 
-+typedef void (APIENTRY *glFogf_f)(GLenum,GLfloat);
-+typedef void (APIENTRY *glFogfv_f)(GLenum, const GLfloat *);
-+typedef void (APIENTRY *glFogi_f)(GLenum,GLint);
-+typedef void (APIENTRY *glFogiv_f)(GLenum, const GLint *);
-+
- typedef void (APIENTRY *glAlphaFunc_f)(GLenum,GLclampf);
- typedef void (APIENTRY *glBlendFunc_f)(GLenum,GLenum);
- typedef void (APIENTRY *glShadeModel_f)(GLenum);
-@@ -111,6 +116,11 @@ glScalef_f glScalef_fp;
- glTexImage2D_f glTexImage2D_fp;
- glTexSubImage2D_f glTexSubImage2D_fp;
- 
-+glFogf_f glFogf_fp;
-+glFogfv_f glFogfv_fp;
-+glFogi_f glFogi_fp;
-+glFogiv_f glFogiv_fp;
-+
- glAlphaFunc_f glAlphaFunc_fp;
- glBlendFunc_f glBlendFunc_fp;
- glShadeModel_f glShadeModel_fp;
-@@ -165,6 +175,11 @@ glClearStencil_f glClearStencil_fp;
- #define glColor3f_fp		glColor3f
- #define glClearColor_fp		glClearColor
- 
-+#define glFogf_fp		glFogf
-+#define glFogfv_fp		glFogfv
-+#define glFogi_fp		glFogi
-+#define glFogiv_fp		glFogiv
-+
- #define glAlphaFunc_fp		glAlphaFunc
- #define glBlendFunc_fp		glBlendFunc
- #define glShadeModel_fp		glShadeModel
+ GL_FUNCTION(void, glAlphaFunc, (GLenum,GLclampf))
+ GL_FUNCTION(void, glBlendFunc, (GLenum,GLenum))
+ GL_FUNCTION(void, glShadeModel, (GLenum))
 diff -urNp uhexen2-20060112/hexenworld/Client/glquake.h uhexen2-20060112b/hexenworld/Client/glquake.h
 --- uhexen2-20060112/hexenworld/Client/glquake.h	2006-01-07 11:50:10.000000000 +0200
 +++ uhexen2-20060112b/hexenworld/Client/glquake.h	2006-01-12 15:59:53.000000000 +0200
-@@ -317,6 +317,16 @@ extern	cvar_t	gl_glows;
+@@ -326,6 +326,16 @@ extern	cvar_t	gl_glows;
  extern	cvar_t	gl_other_glows;
  extern	cvar_t	gl_missile_glows;
  
@@ -550,65 +440,3 @@ diff -urNp uhexen2-20060112/hexenworld/Client/gl_rmisc.c uhexen2-20060112b/hexen
  	Cvar_RegisterVariable (&gl_glows);
  	Cvar_RegisterVariable (&gl_missile_glows);
  	Cvar_RegisterVariable (&gl_other_glows);
-diff -urNp uhexen2-20060112/hexenworld/Client/gl_vidsdl.c uhexen2-20060112b/hexenworld/Client/gl_vidsdl.c
---- uhexen2-20060112/hexenworld/Client/gl_vidsdl.c	2006-01-12 14:43:49.000000000 +0200
-+++ uhexen2-20060112b/hexenworld/Client/gl_vidsdl.c	2006-01-12 16:04:53.000000000 +0200
-@@ -903,6 +903,15 @@ static void GL_Init_Functions(void)
-   if (glTexSubImage2D_fp == 0) {Sys_Error("glTexSubImage2D not found in GL library");}
- #endif
- 
-+  glFogf_fp = (glFogf_f) SDL_GL_GetProcAddress("glFogf");
-+  if (glFogf_fp == 0) {Sys_Error("glFogf not found in GL library");}
-+  glFogfv_fp = (glFogfv_f) SDL_GL_GetProcAddress("glFogfv");
-+  if (glFogfv_fp == 0) {Sys_Error("glFogfv not found in GL library");}
-+  glFogi_fp = (glFogi_f) SDL_GL_GetProcAddress("glFogi");
-+  if (glFogi_fp == 0) {Sys_Error("glFogi not found in GL library");}
-+  glFogiv_fp = (glFogiv_f) SDL_GL_GetProcAddress("glFogiv");
-+  if (glFogiv_fp == 0) {Sys_Error("glFogiv not found in GL library");}
-+
-   glAlphaFunc_fp = (glAlphaFunc_f) SDL_GL_GetProcAddress("glAlphaFunc");
-   if (glAlphaFunc_fp == 0) {Sys_Error("glAlphaFunc not found in GL library");}
-   glBlendFunc_fp = (glBlendFunc_f) SDL_GL_GetProcAddress("glBlendFunc");
-@@ -982,6 +991,11 @@ static void GL_ResetFunctions(void)
-   glTexImage2D_fp = NULL;
-   glTexSubImage2D_fp = NULL;
- 
-+  glFogf_fp = NULL;
-+  glFogfv_fp = NULL;
-+  glFogi_fp = NULL;
-+  glFogiv_fp = NULL;
-+
-   glAlphaFunc_fp = NULL;
-   glBlendFunc_fp = NULL;
-   glShadeModel_fp = NULL;
-diff -urNp uhexen2-20060112/hexenworld/Client/win_stuff/gl_vidnt.c uhexen2-20060112b/hexenworld/Client/win_stuff/gl_vidnt.c
---- uhexen2-20060112/hexenworld/Client/win_stuff/gl_vidnt.c	2006-01-12 14:34:39.000000000 +0200
-+++ uhexen2-20060112b/hexenworld/Client/win_stuff/gl_vidnt.c	2006-01-12 16:04:33.000000000 +0200
-@@ -819,6 +819,15 @@ static void GL_Init_Functions(void)
-   glDepthFunc_fp = (glDepthFunc_f) GetProcAddress(hInstGL, "glDepthFunc");
-   if (glDepthFunc_fp == 0) {Sys_Error("glDepthFunc not found in GL library");}
- 
-+  glFogf_fp = (glFogf_f) GetProcAddress(hInstGL, "glFogf");
-+  if (glFogf_fp == 0) {Sys_Error("glFogf not found in GL library");}
-+  glFogfv_fp = (glFogfv_f) GetProcAddress(hInstGL, "glFogfv");
-+  if (glFogfv_fp == 0) {Sys_Error("glFogfv not found in GL library");}
-+  glFogi_fp = (glFogi_f) GetProcAddress(hInstGL, "glFogi");
-+  if (glFogi_fp == 0) {Sys_Error("glFogi not found in GL library");}
-+  glFogiv_fp = (glFogiv_f) GetProcAddress(hInstGL, "glFogiv");
-+  if (glFogiv_fp == 0) {Sys_Error("glFogiv not found in GL library");}
-+
-   glDrawBuffer_fp = (glDrawBuffer_f) GetProcAddress(hInstGL, "glDrawBuffer");
-   if (glDrawBuffer_fp == 0) {Sys_Error("glDrawBuffer not found in GL library");}
-   glReadBuffer_fp = (glDrawBuffer_f) GetProcAddress(hInstGL, "glReadBuffer");
-@@ -883,6 +892,11 @@ static void GL_ResetFunctions(void)
-   glTexImage2D_fp = NULL;
-   glTexSubImage2D_fp = NULL;
- 
-+  glFogf_fp = NULL;
-+  glFogfv_fp = NULL;
-+  glFogi_fp = NULL;
-+  glFogiv_fp = NULL;
-+
-   glAlphaFunc_fp = NULL;
-   glBlendFunc_fp = NULL;
-   glShadeModel_fp = NULL;
