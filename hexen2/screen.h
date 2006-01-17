@@ -25,6 +25,7 @@ extern	int			sb_lines;
 extern	int			clearnotify;	// set to 0 whenever notify text is drawn
 extern	qboolean	scr_disabled_for_loading;
 extern	qboolean	scr_skipupdate;
+extern	qboolean	block_drawing;
 
 extern	cvar_t		scr_viewsize;
 

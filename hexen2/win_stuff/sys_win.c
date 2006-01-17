@@ -713,7 +713,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		else
 		{
 		// yield the CPU for a little while when paused, minimized, or not the focus
-			if ((cl.paused && (!ActiveApp && !DDActive)) || Minimized)
+			if ((cl.paused && (!ActiveApp && !DDActive)) || Minimized || block_drawing)
 			{
 				SleepUntilInput (PAUSE_SLEEP);
 				scr_skipupdate = 1;		// no point in bothering to draw
@@ -738,6 +738,11 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2006/01/12 12:34:38  sezero
+ * added video modes enumeration via SDL. added on-the-fly video mode changing
+ * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its
+ * video settings, clean it up, fix it up...
+ *
  * Revision 1.27  2006/01/06 12:41:42  sezero
  * increased minimum heapsize to 16 mb, otherwise hunk allocation errors occur
  * with old 8 mb minimum. added a -forcemem commandline switch which enables

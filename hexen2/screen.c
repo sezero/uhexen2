@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.18 2005-12-11 11:56:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.19 2006-01-17 18:46:53 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -101,6 +101,11 @@ qboolean	scr_disabled_for_loading;
 qboolean	scr_drawloading;
 float		scr_disabled_time;
 qboolean	scr_skipupdate;
+
+qboolean	block_drawing;
+#ifdef _WIN32
+extern int	 Minimized;
+#endif
 
 int			total_loading_size, current_loading_size, loading_stage;
 
@@ -960,8 +965,14 @@ void SCR_UpdateScreen (void)
 	static float	oldscr_viewsize;
 	vrect_t		vrect;
 	
-	if (scr_skipupdate)
+	if (scr_skipupdate || block_drawing)
 		return;
+
+#ifdef _WIN32
+	// don't suck up any cpu if minimized
+	if (Minimized)
+		return;
+#endif
 
 	scr_copytop = 0;
 	scr_copyeverything = 0;
@@ -1515,6 +1526,17 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/12/11 11:56:33  sezero
+ * synchronized different sbar function names between h2 and h2w.
+ * there was a mess about SB_Changed and Sbar_Changed in h2w, this
+ * patch fixes that: h2 (and h2w) version of SB_Changed was never
+ * functional. h2w actually called SB_InvChanged, who knows what
+ * the original intention was, but that seemed serving to no purpose
+ * to me. in any case, watching for any new weirdness in h2w would
+ * be advisable. ability string indexes for the demoness and dwarf
+ * classes in h2w are fixed. armor class display in h2w is fixed.
+ * h2 and h2w versions of gl_vidsdl and gl_vidnt are synchronized.
+ *
  * Revision 1.17  2005/10/02 15:45:27  sezero
  * killed lcd_x and lcd_yaw (the stereoscopic stuff.) never tested, never used.
  *

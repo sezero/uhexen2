@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.23 2006-01-12 12:34:37 sezero Exp $
+	$Id: gl_screen.c,v 1.24 2006-01-17 18:46:53 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -104,6 +104,7 @@ viddef_t	vid;				// global video state
 vrect_t		scr_vrect;
 
 qboolean	scr_disabled_for_loading;
+qboolean	block_drawing;
 qboolean	scr_drawloading;
 float		scr_disabled_time;
 
@@ -1163,6 +1164,9 @@ needs almost the entire 256k of stack space!
 */
 void SCR_UpdateScreen (void)
 {
+	if (block_drawing)
+		return;
+
 	scr_copytop = 0;
 	scr_copyeverything = 0;
 
@@ -1285,6 +1289,11 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2006/01/12 12:34:37  sezero
+ * added video modes enumeration via SDL. added on-the-fly video mode changing
+ * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its
+ * video settings, clean it up, fix it up...
+ *
  * Revision 1.22  2005/12/11 11:56:33  sezero
  * synchronized different sbar function names between h2 and h2w.
  * there was a mess about SB_Changed and Sbar_Changed in h2w, this
