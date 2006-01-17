@@ -1287,6 +1287,7 @@ void Host_Frame (float time)
 Host_Init
 ====================
 */
+extern void VID_PostInitFix (void);
 void Host_Init (quakeparms_t *parms)
 {
 //	COM_InitArgv (parms->argc, parms->argv);
@@ -1351,6 +1352,8 @@ void Host_Init (quakeparms_t *parms)
 
 	Cbuf_InsertText ("exec hexen.rc\n");
 	Cbuf_Execute();
+	// fix the early-set cvars after init
+	VID_PostInitFix ();
 	Cbuf_AddText ("cl_warncmd 1\n");
 
 	host_initialized = true;

@@ -52,6 +52,9 @@ cvar_t		vid_mode = {"vid_mode","0", false};
 cvar_t		_vid_default_mode = {"_vid_default_mode","0", true};
 // Note that 3 is MODE_FULLSCREEN_DEFAULT
 cvar_t		_vid_default_mode_win = {"_vid_default_mode_win","3", true};
+cvar_t		vid_config_glx = {"vid_config_glx","640", true}; // compatibility with gl version
+cvar_t		vid_config_fscr  = {"vid_config_fscr", "1",   true}; // compatibility with gl version
+cvar_t		vid_config_gly = {"vid_config_gly","480", true}; // compatibility with gl version
 cvar_t		vid_wait = {"vid_wait", "-1", true};	// autodetect
 /* Pa3PyX: vid_maxpages: new variable: maximum number of video pages to use.
    The more, the less chance there is to flicker, the better, but a lot of
@@ -1999,6 +2002,10 @@ static void VID_ForceMode_f (void)
 }
 
 
+void VID_PostInitFix (void)
+{
+}
+
 void	VID_Init (unsigned char *palette)
 {
 	int		i, bestmatch, bestmatchmetric, t, dr, dg, db;
@@ -2013,6 +2020,9 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&_vid_default_mode_win);
 	Cvar_RegisterVariable (&vid_config_x);
 	Cvar_RegisterVariable (&vid_config_y);
+	Cvar_RegisterVariable (&vid_config_fscr);
+	Cvar_RegisterVariable (&vid_config_glx);
+	Cvar_RegisterVariable (&vid_config_gly);
 	Cvar_RegisterVariable (&vid_stretch_by_2);
 	Cvar_RegisterVariable (&_enable_mouse);
 
@@ -3348,6 +3358,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2006/01/07 09:54:29  sezero
+ * cleanup and "static" stuff on the vid files
+ *
  * Revision 1.24  2005/12/11 12:15:31  sezero
  * ported all of Pa3PyX' changes in hexen2/vid_win.c to hexenworld
  *

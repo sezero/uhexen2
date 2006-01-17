@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.40 2006-01-12 12:57:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.41 2006-01-17 17:36:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -950,6 +950,7 @@ void Host_InitVCR (quakeparms_t *parms)
 Host_Init
 ====================
 */
+extern void VID_PostInitFix (void);
 void Host_Init (quakeparms_t *parms)
 {
 	host_parms = *parms;
@@ -1020,6 +1021,9 @@ void Host_Init (quakeparms_t *parms)
 
 	Cbuf_InsertText ("exec hexen.rc\n");
 	Cbuf_Execute();
+	// fix the early-set cvars after init
+	if (cls.state != ca_dedicated)
+		VID_PostInitFix ();
 	Cbuf_AddText ("cl_warncmd 1\n");
 
 	host_initialized = true;
@@ -1066,6 +1070,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.40  2006/01/12 12:57:45  sezero
+ * moved init of platform specific variables and function pointers to snd_sys
+ *
  * Revision 1.39  2005/12/11 11:56:33  sezero
  * synchronized different sbar function names between h2 and h2w.
  * there was a mess about SB_Changed and Sbar_Changed in h2w, this

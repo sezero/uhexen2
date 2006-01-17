@@ -58,6 +58,7 @@ const char	*gl_version;
 const char	*gl_extensions;
 int		gl_max_size = 256;
 qboolean	is8bit = false;
+static qboolean	have8bit = false;
 qboolean	is_3dfx = false;
 qboolean	gl_mtexable = false;
 static int	num_tmus = 1;
@@ -79,7 +80,6 @@ static vmode_t	badmode;
 extern qboolean	draw_reinit;
 static DEVMODE	gdevmode;
 static qboolean	vid_initialized = false;
-static qboolean	windowed;
 static qboolean vid_canalttab = false;
 static qboolean vid_wassuspended = false;
 static int	enable_mouse;
@@ -165,10 +165,24 @@ static GAMMA_RAMP_FN SetDeviceGammaRamp_f;
 
 //====================================
 
+static cvar_t	vid_mode = {"vid_mode","0", false};
+static cvar_t	vid_config_glx = {"vid_config_glx","640", true};
+static cvar_t	vid_config_gly = {"vid_config_gly","480", true};
+static cvar_t	vid_config_fscr= {"vid_config_fscr", "1", true};
+static cvar_t	vid_config_bpp = {"vid_config_bpp","16",  true};
+static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit","0", true};
+cvar_t		_enable_mouse = {"_enable_mouse","0", true};
+// cvars for compatibility with the software version
+static cvar_t	vid_wait = {"vid_wait", "-1", true};
+static cvar_t	vid_maxpages = {"vid_maxpages", "3", true};
+static cvar_t	vid_nopageflip = {"vid_nopageflip","1", true};
 // Note that 0 is MODE_WINDOWED
 // Note that 3 is MODE_FULLSCREEN_DEFAULT
-cvar_t		vid_mode = {"vid_mode","0", false};
-cvar_t		_enable_mouse = {"_enable_mouse","0", true};
+static cvar_t	_vid_default_mode = {"_vid_default_mode","0", true};
+static cvar_t	_vid_default_mode_win = {"_vid_default_mode_win","3", true};
+static cvar_t	vid_stretch_by_2 = {"vid_stretch_by_2","1", true};
+static cvar_t	vid_config_x = {"vid_config_x","800", true};
+static cvar_t	vid_config_y = {"vid_config_y","600", true};
 
 int		window_center_x, window_center_y, window_x, window_y, window_width, window_height;
 RECT		window_rect;
@@ -318,6 +332,7 @@ static qboolean VID_SetWindowedMode (int modenum)
 	UpdateWindow (dibwindow);
 
 	modestate = MS_WINDOWED;
+	Cvar_SetValue ("vid_config_fscr", 0);
 
 	// Because we have set the background brush for the window to NULL
 	// (to avoid flickering when re-sizing the window on the desktop),
@@ -406,6 +421,7 @@ static qboolean VID_SetFullDIBMode (int modenum)
 	UpdateWindow (dibwindow);
 
 	modestate = MS_FULLDIB;
+	Cvar_SetValue ("vid_config_fscr", 1);
 
 	// Because we have set the background brush for the window to NULL
 	// (to avoid flickering when re-sizing the window on the desktop),
@@ -495,6 +511,10 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	SetForegroundWindow (mainwindow);
 	//VID_SetPalette (palette);
 	vid_modenum = modenum;
+	Cvar_SetValue ("vid_config_glx", modelist[vid_modenum].width);
+	Cvar_SetValue ("vid_config_gly", modelist[vid_modenum].height);
+	if (modestate != MS_WINDOWED)
+		Cvar_SetValue ("vid_config_bpp", modelist[vid_modenum].bpp);
 
 	while (PeekMessage (&msg, NULL, 0, 0, PM_REMOVE))
 	{
@@ -734,6 +754,7 @@ static void GL_ResetFunctions(void)
 	glActiveTextureARB_fp = NULL;
 	glMultiTexCoord2fARB_fp = NULL;
 
+	have8bit = false;
 	is8bit = false;
 	MyglColorTableEXT = NULL;
 
@@ -1847,26 +1868,41 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 static void VID_Init8bitPalette (void)
 {
 	// Check for 8bit Extensions and initialize them.
-	int	i;
-	char	thePalette[256*3];
-	char	*oldPalette, *newPalette;
+	int i;
+	char thePalette[256*3];
+	char *oldPalette, *newPalette;
 
-	MyglColorTableEXT = (void *)wglGetProcAddress_fp("glColorTableEXT");
-	if (MyglColorTableEXT && strstr(gl_extensions, "GL_EXT_shared_texture_palette"))
+	have8bit = false;
+	is8bit = false;
+	MyglColorTableEXT = NULL;
+
+	if (strstr(gl_extensions, "GL_EXT_shared_texture_palette"))
 	{
-		Con_SafePrintf("8-bit GL extensions enabled.\n");
-		glEnable_fp( GL_SHARED_TEXTURE_PALETTE_EXT );
+		MyglColorTableEXT = (FX_SET_PALETTE_EXT)wglGetProcAddress_fp("glColorTableEXT");
+		if (MyglColorTableEXT == NULL)
+		{
+			return;
+		}
+		have8bit = true;
+
+		if (!(int)vid_config_gl8bit.value)
+			return;
+
 		oldPalette = (char *) d_8to24table; //d_8to24table3dfx;
 		newPalette = thePalette;
-		for (i=0;i<256;i++) {
+		for (i=0;i<256;i++)
+		{
 			*newPalette++ = *oldPalette++;
 			*newPalette++ = *oldPalette++;
 			*newPalette++ = *oldPalette++;
 			oldPalette++;
 		}
-		MyglColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256, GL_RGB, GL_UNSIGNED_BYTE,
-			(void *) thePalette);
-		is8bit = TRUE;
+
+		glEnable_fp (GL_SHARED_TEXTURE_PALETTE_EXT);
+		MyglColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256,
+				GL_RGB, GL_UNSIGNED_BYTE, (void *) thePalette);
+		is8bit = true;
+		Con_Printf("8-bit palettized textures enabled\n");
 	}
 }
 
@@ -1950,9 +1986,7 @@ static void VID_ChangeVideoMode(int newmode)
 	draw_reinit = true;
 	// Initialize extensions and default OpenGL parameters
 	GL_Init();
-	// Check for 3DFX Extensions and initialize them.
-	if (COM_CheckParm("-paltex"))
-		VID_Init8bitPalette();
+	VID_Init8bitPalette();
 
 	// Reload pre-map pics, fonts, console, etc
 	Draw_Init();
@@ -2055,21 +2089,114 @@ static void VID_SortModes (void)
 
 /*
 ===================
+VID_EarlyReadConfig
+
+performs an early read of config.cfg. a temporary
+solution until we merge a better cvar system.
+===================
+*/
+static void VID_EarlyReadConfig (void)
+{
+	FILE	*cfg_file;
+	char	buff[1024], tmp[256];
+	int		i, j, len;
+	char *read_vars[] = {
+		"vid_config_fscr",
+		"vid_config_gl8bit",
+		"vid_config_bpp",
+		"vid_config_glx",
+		"vid_config_gly",
+		NULL
+	};
+
+	len = COM_FOpenFile ("config.cfg", &cfg_file, true);
+	if (!cfg_file)
+		return;
+
+	do {
+		fgets(buff, sizeof(buff), cfg_file);
+		if (!feof(cfg_file))
+		{
+			len = strlen(buff);
+			buff[len-1] = '\0';
+
+			for (i = 0; read_vars[i]; i++)
+			{
+				if (strstr(buff, va("%s \"",read_vars[i])) == buff)
+				{
+					j = strlen(read_vars[i]);
+					memset (tmp, 0, sizeof(tmp));
+
+				// we expect a line in the format that Cvar_WriteVariables
+				// writes to the config file. if the user screws it up
+				// by editing it, it is his fault.
+				// the first +2 is for the separating space and the initial
+				// quotation mark. the -3 is the first 2 plus the finishing
+				// quotation mark.
+					memcpy (tmp, buff+j+2, len-j-3);
+					tmp[len-j-4] = '\0';
+					Cvar_Set (read_vars[i], tmp);
+					break;
+				}
+			}
+		}
+	} while (!feof(cfg_file));
+
+	fclose (cfg_file);
+}
+
+void VID_PostInitFix (void)
+{
+	// if commandline overrides were used, the early-set cvars will
+	// be clobbered by the actual final read of config.cfg and when
+	// the game is run a second time, those overrides will be lost.
+	// here is a lame-ish workaround, to be called from Host_Init()
+	// after execing hexen.rc and flushing the command buffer.
+	Cvar_SetValue ("vid_config_glx", modelist[vid_modenum].width);
+	Cvar_SetValue ("vid_config_gly", modelist[vid_modenum].height);
+	if (have8bit)
+		Cvar_SetValue ("vid_config_gl8bit", is8bit);
+	if (modestate != MS_WINDOWED)
+	{
+		Cvar_SetValue ("vid_config_bpp", modelist[vid_modenum].bpp);
+		Cvar_SetValue ("vid_config_fscr", 1);
+	}
+	else
+	{
+		Cvar_SetValue ("vid_config_fscr", 0);
+	}
+}
+
+/*
+===================
 VID_Init
 ===================
 */
 void	VID_Init (unsigned char *palette)
 {
 	int	i, j, existingmode;
-	qboolean	usermode = false;
 	int	width, height, bpp, zbits, findbpp, done;
 	char	gldir[MAX_OSPATH];
 	HDC	hdc;
 
+	Cvar_RegisterVariable (&vid_config_gl8bit);
+	Cvar_RegisterVariable (&vid_config_fscr);
+	Cvar_RegisterVariable (&vid_config_bpp);
+	Cvar_RegisterVariable (&vid_config_gly);
+	Cvar_RegisterVariable (&vid_config_glx);
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&gl_ztrick);
 	Cvar_RegisterVariable (&gl_purge_maptex);
+	// these are for compatibility with the software version
+	Cvar_RegisterVariable (&vid_wait);
+	Cvar_RegisterVariable (&_vid_default_mode);
+	Cvar_RegisterVariable (&_vid_default_mode_win);
+	Cvar_RegisterVariable (&vid_config_x);
+	Cvar_RegisterVariable (&vid_config_y);
+	Cvar_RegisterVariable (&vid_stretch_by_2);
+	Cvar_RegisterVariable (&vid_maxpages);
+	Cvar_RegisterVariable (&vid_nopageflip);
 
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
 	Cmd_AddCommand ("vid_describecurrentmode", VID_DescribeCurrentMode_f);
@@ -2111,7 +2238,22 @@ void	VID_Init (unsigned char *palette)
 	// sort the modes
 	VID_SortModes();
 
+	// perform an early read of config.cfg
+	VID_EarlyReadConfig();
+
+	width = (int)vid_config_glx.value;
+	height = (int)vid_config_gly.value;
+
 	if (COM_CheckParm("-window") || COM_CheckParm("-w"))
+	{
+		Cvar_SetValue("vid_config_fscr", 0);
+	}
+	else if (COM_CheckParm("-fullscreen") || COM_CheckParm("-f"))
+	{
+		Cvar_SetValue("vid_config_fscr", 1);
+	}
+
+	if (!(int)vid_config_fscr.value)
 	{
 		hdc = GetDC (NULL);
 		if (GetDeviceCaps(hdc, RASTERCAPS) & RC_PALETTE)
@@ -2119,8 +2261,6 @@ void	VID_Init (unsigned char *palette)
 			Sys_Error ("Can't run in non-RGB mode");
 		}
 		ReleaseDC (NULL, hdc);
-
-		windowed = true;
 
 		modelist = (vmode_t *)wmodelist;
 		nummodes = &num_wmodes;
@@ -2132,53 +2272,51 @@ void	VID_Init (unsigned char *palette)
 		{
 			i = atoi(com_argv[COM_CheckParm("-width")+1]);
 			// don't allow requests larger than desktop
-			if (i <= vid_deskwidth)
+			if (i <= vid_deskwidth && i >= 320)
 			{
-				if (i < 320)
-					i = 320;
-				wmodelist[num_wmodes].width = i;
-				wmodelist[num_wmodes].height = wmodelist[num_wmodes].width * 3 / 4;
+				width = i;
+				height = width * 3 / 4;
 				i = COM_CheckParm("-height");
 				if (i && i < com_argc-1)
 				{
 					i = atoi(com_argv[COM_CheckParm("-height")+1]);
-					if (i <= vid_deskheight)
+					if (i <= vid_deskheight && i >= 240)
 					{
-						if (i < 240)
-							i = 240;
-						wmodelist[num_wmodes].height= i;
+						height= i;
 					}
-				}
-
-				wmodelist[num_wmodes].type = MS_WINDOWED;
-				sprintf (wmodelist[num_wmodes].modedesc, "%dx%d",
-					 wmodelist[num_wmodes].width, wmodelist[num_wmodes].height);
-				wmodelist[num_wmodes].modenum = MODE_WINDOWED;
-				wmodelist[num_wmodes].dib = 1;
-				wmodelist[num_wmodes].fullscreen = 0;
-				wmodelist[num_wmodes].halfscreen = 0;
-				wmodelist[num_wmodes].bpp = 0;
-
-				for (i=0, existingmode = 0; i < num_wmodes; i++)
-				{
-					if ((wmodelist[num_wmodes].width == wmodelist[i].width) &&
-						(wmodelist[num_wmodes].height == wmodelist[i].height))
-					{
-						existingmode = 1;
-						vid_default = i;
-						break;
-					}
-				}
-
-				if (!existingmode)
-				{
-					strcat (wmodelist[num_wmodes].modedesc, " (user mode)");
-					vid_default = num_wmodes;
-					num_wmodes++;
 				}
 			}
 		}
-		// end of parsing user request
+		// end of parsing user commandline
+
+		wmodelist[num_wmodes].width = width;
+		wmodelist[num_wmodes].height = height;
+		wmodelist[num_wmodes].type = MS_WINDOWED;
+		sprintf (wmodelist[num_wmodes].modedesc, "%dx%d",
+			 wmodelist[num_wmodes].width, wmodelist[num_wmodes].height);
+		wmodelist[num_wmodes].modenum = MODE_WINDOWED;
+		wmodelist[num_wmodes].dib = 1;
+		wmodelist[num_wmodes].fullscreen = 0;
+		wmodelist[num_wmodes].halfscreen = 0;
+		wmodelist[num_wmodes].bpp = 0;
+
+		for (i=0, existingmode = 0; i < num_wmodes; i++)
+		{
+			if ((wmodelist[num_wmodes].width == wmodelist[i].width) &&
+				(wmodelist[num_wmodes].height == wmodelist[i].height))
+			{
+				existingmode = 1;
+				vid_default = i;
+				break;
+			}
+		}
+
+		if (!existingmode)
+		{
+			strcat (wmodelist[num_wmodes].modedesc, " (user mode)");
+			vid_default = num_wmodes;
+			num_wmodes++;
+		}
 
 	}
 	else	// fullscreen, default
@@ -2188,16 +2326,13 @@ void	VID_Init (unsigned char *palette)
 			Sys_Error ("No RGB fullscreen modes available");
 		}
 
-		windowed = false;
-
 		modelist = (vmode_t *)fmodelist;
 		nummodes = &num_fmodes;
 		vid_default = -1;
 
-		width = std_modes[RES_640X480].width;
-		height = std_modes[RES_640X480].height;
 		findbpp = 1;
-		bpp = bpplist[0][0];
+		//bpp = bpplist[0][0];
+		bpp = (int)vid_config_bpp.value;
 		if (Win95old)
 		{	// don't bother with multiple bpp values on
 			// windows versions older than win95-osr2.
@@ -2228,6 +2363,7 @@ void	VID_Init (unsigned char *palette)
 				width = atoi(com_argv[i+1]);
 				if (width < 320)
 					width = 320;
+				height = 3 * width / 4;
 				i = COM_CheckParm("-height");
 				if (i && i < com_argc-1)
 				{
@@ -2235,11 +2371,6 @@ void	VID_Init (unsigned char *palette)
 					if (height < 240)
 						height = 240;
 				}
-				else
-				{	// proceed with 4/3 ratio
-					height = 3 * width / 4;
-				}
-				usermode = true;
 			}
 
 			i = COM_CheckParm("-bpp");
@@ -2247,7 +2378,6 @@ void	VID_Init (unsigned char *palette)
 			{
 				bpp = atoi(com_argv[i+1]);
 				findbpp = 0;
-				usermode = true;
 			}
 
 			// if they want to force it, add the specified mode to the list
@@ -2278,8 +2408,7 @@ void	VID_Init (unsigned char *palette)
 
 				if (!existingmode)
 				{
-					if (usermode)
-						strcat (fmodelist[num_fmodes].modedesc, " (user mode)");
+					strcat (fmodelist[num_fmodes].modedesc, " (user mode)");
 					num_fmodes++;
 					// re-sort the modes
 					VID_SortModes();
@@ -2326,7 +2455,11 @@ void	VID_Init (unsigned char *palette)
 
 			if (vid_default < 0)
 			{
-				Sys_Error ("Specified video mode not available");
+				Sys_Error ("Specified video mode not available:\n\n"
+					   "If you used -width,-height or -bpp commandline arguments,\n"
+					   "try changing their values. If your config.cfg has bad or stale\n"
+					   "video options, try changing them, or delete your config.cfg\n"
+					   "altogether and try again.");
 			}
 
 			//pfd.cColorBits = modelist[vid_default].bpp;
@@ -2352,6 +2485,9 @@ void	VID_Init (unsigned char *palette)
 	DestroyWindow (hwnd_dialog);
 #endif
 
+	if (COM_CheckParm("-paltex"))
+		Cvar_SetValue ("vid_config_gl8bit", 1);
+
 	// so Con_Printfs don't mess us up by forcing vid and snd updates
 	i = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
@@ -2373,9 +2509,8 @@ void	VID_Init (unsigned char *palette)
 	// set our palette
 	VID_SetPalette (palette);
 
-	// Check for 3DFX Extensions and initialize them.
-	if (COM_CheckParm("-paltex"))
-		VID_Init8bitPalette();
+	// enable paletted textures
+	VID_Init8bitPalette();
 
 	scr_disabled_for_loading = i;
 	vid.recalc_refdef = 1;
@@ -2430,9 +2565,28 @@ enum {
 	VID_FULLSCREEN,
 	VID_RESOLUTION,
 	VID_BPP,
+	VID_PALTEX,
 	VID_ITEMS
 };
 
+
+static void M_DrawYesNo (int x, int y, int on, int white)
+{
+	if (on)
+	{
+		if (white)
+			M_PrintWhite (x, y, "yes");
+		else
+			M_Print (x, y, "yes");
+	}
+	else
+	{
+		if (white)
+			M_PrintWhite (x, y, "no");
+		else
+			M_Print (x, y, "no");
+	}
+}
 
 /*
 ================
@@ -2461,20 +2615,7 @@ void VID_MenuDraw (void)
 	want_fstoggle = ( ((modestate == MS_WINDOWED) && vid_menu_fs) || ((modestate != MS_WINDOWED) && !vid_menu_fs) );
 
 	M_Print (76, 92 + 8*VID_FULLSCREEN, "Fullscreen: ");
-	if (want_fstoggle)
-	{
-		if (vid_menu_fs)
-			M_Print (76+12*8, 92 + 8*VID_FULLSCREEN, "yes");
-		else
-			M_Print (76+12*8, 92 + 8*VID_FULLSCREEN, "no");
-	}
-	else
-	{
-		if (vid_menu_fs)
-			M_PrintWhite (76+12*8, 92 + 8*VID_FULLSCREEN, "yes");
-		else
-			M_PrintWhite (76+12*8, 92 + 8*VID_FULLSCREEN, "no");
-	}
+	M_DrawYesNo (76+12*8, 92 + 8*VID_FULLSCREEN, vid_menu_fs, !want_fstoggle);
 
 	M_Print (76, 92 + 8*VID_RESOLUTION, "Resolution: ");
 	if (vid_menunum == vid_modenum)
@@ -2490,6 +2631,12 @@ void VID_MenuDraw (void)
 		else
 			M_Print (76+12*8, 92 + 8*VID_BPP, va("%d",vid_menubpp));
 	}
+
+	M_Print (76, 92 + 8*VID_PALTEX, "8 bit textures:");
+	if (have8bit)
+		M_DrawYesNo (76+16*8, 92 + 8*VID_PALTEX, (int)vid_config_gl8bit.value, (is8bit == (true && (int)vid_config_gl8bit.value)));
+	else
+		M_PrintWhite (76+16*8, 92 + 8*VID_PALTEX, "Not found");
 
 	M_DrawCharacter (64, 92 + vid_cursor*8, 12+((int)(realtime*4)&1));
 }
@@ -2606,13 +2753,14 @@ void VID_MenuKey (int key)
 		case VID_FULLSCREEN:
 		case VID_RESOLUTION:
 		case VID_BPP:
-			if (vid_menunum != vid_modenum || want_fstoggle)
+		case VID_PALTEX:
+			if (vid_menunum != vid_modenum || want_fstoggle ||
+			    (have8bit && (is8bit != (true && (int)vid_config_gl8bit.value))) )
 			{
 				Cvar_SetValue("vid_mode", vid_menunum);
 				modelist = (vid_menu_fs) ? (vmode_t *)fmodelist : (vmode_t *)wmodelist;
 				nummodes = (vid_menu_fs) ? &num_fmodes : &num_wmodes;
 				VID_Restart_f();
-				windowed = (modestate == MS_WINDOWED);
 			}
 			break;
 		}
@@ -2644,6 +2792,10 @@ void VID_MenuKey (int key)
 			//find a matching video mode for this bpp
 			vid_menunum = match_mode_to_bpp(i);
 			break;
+		case VID_PALTEX:
+			if (have8bit)
+				Cvar_SetValue ("vid_config_gl8bit", !(int)vid_config_gl8bit.value);
+			break;
 		}
 		return;
 
@@ -2671,6 +2823,10 @@ void VID_MenuKey (int key)
 			vid_menubpp = bpplist[i][0];
 			//find a matching video mode for this bpp
 			vid_menunum = match_mode_to_bpp(i);
+			break;
+		case VID_PALTEX:
+			if (have8bit)
+				Cvar_SetValue ("vid_config_gl8bit", !(int)vid_config_gl8bit.value);
 			break;
 		}
 		return;

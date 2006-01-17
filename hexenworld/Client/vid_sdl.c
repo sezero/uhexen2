@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.40 2006-01-14 08:39:26 sezero Exp $
+	$Id: vid_sdl.c,v 1.41 2006-01-17 17:36:45 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -42,16 +42,18 @@ static qboolean	palette_changed;
 static int	num_fmodes;
 static int	num_wmodes;
 static int	*nummodes;
-qboolean	fullscreen = false;	// windowed mode is default
 //static int	bpp = 8;
 static const SDL_VideoInfo	*vid_info;
 static SDL_Surface	*screen;
 
 viddef_t	vid;		// global video state
 // cvar vid_mode must be set before calling VID_SetMode, VID_ChangeVideoMode or VID_Restart_f
-cvar_t		vid_mode = {"vid_mode","0", false};
-cvar_t		vid_config_x = {"vid_config_x","320", true};
-cvar_t		vid_config_y = {"vid_config_y","240", true};
+static cvar_t	vid_mode = {"vid_mode","0", false};
+static cvar_t	vid_config_glx = {"vid_config_glx","640", true};
+static cvar_t	vid_config_gly = {"vid_config_gly","480", true};
+static cvar_t	vid_config_swx = {"vid_config_swx","320", true};
+static cvar_t	vid_config_swy = {"vid_config_swy","240", true};
+static cvar_t	vid_config_fscr= {"vid_config_fscr", "0", true};
 cvar_t		_enable_mouse = {"_enable_mouse","1", true};
 cvar_t		vid_showload = {"vid_showload", "1"};
 
@@ -311,6 +313,8 @@ no_fmodes:
 		modelist = (vmode_t *)wmodelist;
 		nummodes = &num_wmodes;
 		vid_default = 0;
+		Cvar_SetValue ("vid_config_swx", modelist[vid_default].width);
+		Cvar_SetValue ("vid_config_swy", modelist[vid_default].height);
 		return;
 	}
 
@@ -327,6 +331,8 @@ no_fmodes:
 		nummodes = &num_wmodes;
 		modelist = (vmode_t *)wmodelist;
 		vid_default = 0;
+		Cvar_SetValue ("vid_config_swx", modelist[vid_default].width);
+		Cvar_SetValue ("vid_config_swy", modelist[vid_default].height);
 		return;
 	}
 
@@ -423,6 +429,9 @@ no_fmodes:
 	}
 	if (i < num_wmodes)
 		num_wmodes = i;
+
+	Cvar_SetValue ("vid_config_swx", modelist[vid_default].width);
+	Cvar_SetValue ("vid_config_swy", modelist[vid_default].height);
 }
 
 static void VID_ListModes_f (void)
@@ -469,6 +478,7 @@ static void VID_ShowInfo_f (void)
 static int VID_SetMode (int modenum, unsigned char *palette)
 {
 	Uint32 flags;
+	int	is_fullscreen;
 
 	in_mode_set = true;
 
@@ -480,7 +490,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 		SDL_FreeSurface(screen);
 
 	flags = (SDL_SWSURFACE|SDL_HWPALETTE);
-	if (fullscreen)
+	if ((int)vid_config_fscr.value)
 		flags |= SDL_FULLSCREEN;
 
 	// Set the mode
@@ -503,7 +513,11 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 
 	// real success. set vid_modenum properly.
 	vid_modenum = modenum;
-	modestate = (fullscreen) ? MS_FULLDIB : MS_WINDOWED;
+	is_fullscreen = (screen->flags & SDL_FULLSCREEN) ? 1 : 0;
+	modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
+	Cvar_SetValue ("vid_config_swx", modelist[vid_modenum].width);
+	Cvar_SetValue ("vid_config_swy", modelist[vid_modenum].height);
+	Cvar_SetValue ("vid_config_fscr", is_fullscreen);
 
 	IN_HideMouse ();
 
@@ -639,6 +653,82 @@ void	VID_ShiftPalette (unsigned char *palette)
 }
 
 
+/*
+===================
+VID_EarlyReadConfig
+
+performs an early read of config.cfg. a temporary
+solution until we merge a better cvar system.
+===================
+*/
+void	VID_EarlyReadConfig (void)
+{
+	FILE	*cfg_file;
+	char	buff[1024], tmp[256];
+	int		i, j, len;
+	char *read_vars[] = {
+		"vid_config_fscr",
+		"vid_config_swx",
+		"vid_config_swy",
+		NULL
+	};
+
+	len = COM_FOpenFile ("config.cfg", &cfg_file, true);
+	if (!cfg_file)
+		return;
+
+	do {
+		fgets(buff, sizeof(buff), cfg_file);
+		if (!feof(cfg_file))
+		{
+			len = strlen(buff);
+			buff[len-1] = '\0';
+
+			for (i = 0; read_vars[i]; i++)
+			{
+				if (strstr(buff, va("%s \"",read_vars[i])) == buff)
+				{
+					j = strlen(read_vars[i]);
+					memset (tmp, 0, sizeof(tmp));
+
+				// we expect a line in the format that Cvar_WriteVariables
+				// writes to the config file. if the user screws it up
+				// by editing it, it is his fault.
+				// the first +2 is for the separating space and the initial
+				// quotation mark. the -3 is the first 2 plus the finishing
+				// quotation mark.
+					memcpy (tmp, buff+j+2, len-j-3);
+					tmp[len-j-4] = '\0';
+					Cvar_Set (read_vars[i], tmp);
+					break;
+				}
+			}
+		}
+	} while (!feof(cfg_file));
+
+	fclose (cfg_file);
+}
+
+void VID_PostInitFix (void)
+{
+	// if commandline overrides were used, the early-set cvars will
+	// be clobbered by the actual final read of config.cfg and when
+	// the game is run a second time, those overrides will be lost.
+	// here is a lame-ish workaround, to be called from Host_Init()
+	// after execing hexen.rc and flushing the command buffer.
+	Cvar_SetValue ("vid_config_swx", modelist[vid_modenum].width);
+	Cvar_SetValue ("vid_config_swy", modelist[vid_modenum].height);
+	if (screen->flags & SDL_FULLSCREEN)
+		Cvar_SetValue ("vid_config_fscr", 1);
+	else
+		Cvar_SetValue ("vid_config_fscr", 0);
+}
+
+/*
+===================
+VID_Init
+===================
+*/
 void	VID_Init (unsigned char *palette)
 {
 	int		width, height, i, temp;
@@ -647,9 +737,12 @@ void	VID_Init (unsigned char *palette)
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 
+	Cvar_RegisterVariable (&vid_config_fscr);
+	Cvar_RegisterVariable (&vid_config_swy);
+	Cvar_RegisterVariable (&vid_config_swx);
+	Cvar_RegisterVariable (&vid_config_gly);
+	Cvar_RegisterVariable (&vid_config_glx);
 	Cvar_RegisterVariable (&vid_mode);
-	Cvar_RegisterVariable (&vid_config_x);
-	Cvar_RegisterVariable (&vid_config_y);
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&vid_showload);
 
@@ -676,14 +769,25 @@ void	VID_Init (unsigned char *palette)
 	// set vid_mode to our safe default first
 	Cvar_SetValue ("vid_mode", vid_default);
 
+	// perform an early read of config.cfg
+	VID_EarlyReadConfig();
+
 	// windowed mode is default
 	// see if the user wants fullscreen
 	if (COM_CheckParm("-f") || COM_CheckParm("-fullscreen") || COM_CheckParm("--fullscreen"))
 	{
-		fullscreen = true;
-		if (!num_fmodes) // FIXME: see below, as well
-			Sys_Error ("No fullscreen modes available at this color depth");
+		Cvar_SetValue("vid_config_fscr", 1);
 	}
+	else if (COM_CheckParm("-w") || COM_CheckParm("-window") || COM_CheckParm("--window"))
+	{
+		Cvar_SetValue("vid_config_fscr", 0);
+	}
+
+	if ((int)vid_config_fscr.value && !num_fmodes) // FIXME: see below, as well
+		Sys_Error ("No fullscreen modes available at this color depth");
+
+	width = (int)vid_config_swx.value;
+	height = (int)vid_config_swy.value;
 
 	// user is always right ...
 	if (COM_CheckParm("-width"))
@@ -695,38 +799,40 @@ void	VID_Init (unsigned char *palette)
 			height = atoi(com_argv[COM_CheckParm("-height")+1]);
 		else	// proceed with 4/3 ratio
 			height = 3 * width / 4;
+	}
 
-		// scan existing modes to see if this is already available
-		// if not, add this as the last "valid" video mode and set
-		// vid_mode to it only if it doesn't go beyond vid_maxwidth
-		i = 0;
-		while (i < *nummodes)
-		{
-			if (modelist[i].width == width && modelist[i].height == height)
-				break;
-			i++;
-		}
-		if (i < *nummodes)
-		{
-			Cvar_SetValue ("vid_mode", i);
-		}
-		else if ( (width <= vid_maxwidth && width >= MIN_WIDTH &&
-			   height <= vid_maxheight && height >= MIN_HEIGHT) ||
-			  COM_CheckParm("-force") )
-		{
-			modelist[*nummodes].width = width;
-			modelist[*nummodes].height = height;
-			modelist[*nummodes].halfscreen = 0;
-			modelist[*nummodes].fullscreen = 1;
-			modelist[*nummodes].bpp = 8;
-			sprintf (modelist[*nummodes].modedesc,"%d x %d (user mode)",width,height);
-			Cvar_SetValue ("vid_mode", *nummodes);
-			(*nummodes)++;	// ugly, I know. but works
-		}
-		else
-		{
-			Con_Printf ("ignoring invalid -width and/or -height arguments\n");
-		}
+	// user requested a mode either from the config or from the
+	// command line
+	// scan existing modes to see if this is already available
+	// if not, add this as the last "valid" video mode and set
+	// vid_mode to it only if it doesn't go beyond vid_maxwidth
+	i = 0;
+	while (i < *nummodes)
+	{
+		if (modelist[i].width == width && modelist[i].height == height)
+			break;
+		i++;
+	}
+	if (i < *nummodes)
+	{
+		Cvar_SetValue ("vid_mode", i);
+	}
+	else if ( (width <= vid_maxwidth && width >= MIN_WIDTH &&
+		   height <= vid_maxheight && height >= MIN_HEIGHT) ||
+		  COM_CheckParm("-force") )
+	{
+		modelist[*nummodes].width = width;
+		modelist[*nummodes].height = height;
+		modelist[*nummodes].halfscreen = 0;
+		modelist[*nummodes].fullscreen = 1;
+		modelist[*nummodes].bpp = 8;
+		sprintf (modelist[*nummodes].modedesc,"%d x %d (user mode)",width,height);
+		Cvar_SetValue ("vid_mode", *nummodes);
+		(*nummodes)++;	// ugly, I know. but works
+	}
+	else
+	{
+		Con_Printf ("ignoring invalid -width and/or -height arguments\n");
 	}
 
 	vid.maxwarpwidth = WARP_WIDTH;
@@ -740,9 +846,10 @@ void	VID_Init (unsigned char *palette)
 		if ((int)vid_mode.value == vid_default)
 			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 
+		// just one more try before dying
 		Con_Printf ("Couldn't set video mode %d\n"
 			    "Trying the default mode\n", (int)vid_mode.value);
-		//fullscreen = false;
+		//Cvar_SetValue("vid_config_fscr", 0);
 		Cvar_SetValue ("vid_mode", vid_default);
 		i = VID_SetMode(vid_default, palette);
 		if ( !i )
@@ -967,16 +1074,21 @@ and brings the mouse to a proper state afterwards
 extern qboolean mousestate_sa;
 void VID_ToggleFullscreen (void)
 {
+	int	is_fullscreen;
+
 	if (!num_fmodes)
+		return;
+	if (!screen)
 		return;
 
 	S_ClearBuffer ();
 
 	if (SDL_WM_ToggleFullScreen(screen)==1)
 	{
-		fullscreen = !fullscreen;
-		modestate = (fullscreen) ? MS_FULLDIB : MS_WINDOWED;
-		if (fullscreen)
+		is_fullscreen = (screen->flags & SDL_FULLSCREEN) ? 1 : 0;
+		Cvar_SetValue("vid_config_fscr", is_fullscreen);
+		modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
+		if (is_fullscreen)
 		{
 			// activate mouse in fullscreen mode
 			// in_sdl.c handles other non-moused cases
@@ -1007,6 +1119,24 @@ static qboolean	vid_cursor;	// 0 : resolution option
 				// 1 : fullscreen option. switched by TAB key
 static qboolean	vid_menu_firsttime = true;
 
+static void M_DrawYesNo (int x, int y, int on, int white)
+{
+	if (on)
+	{
+		if (white)
+			M_PrintWhite (x, y, "yes");
+		else
+			M_Print (x, y, "yes");
+	}
+	else
+	{
+		if (white)
+			M_PrintWhite (x, y, "no");
+		else
+			M_Print (x, y, "no");
+	}
+}
+
 /*
 ================
 VID_MenuDraw
@@ -1026,11 +1156,8 @@ void VID_MenuDraw (void)
 
 	M_Print (64, 72, "Press TAB to switch options");
 
-	if (num_fmodes)
-	{
-		M_Print (64, 84, "Fullscreen: ");
-		M_DrawCheckbox (184, 84, modestate);
-	}
+	M_Print (64, 84, "Fullscreen: ");
+	M_DrawYesNo (184, 84, modestate, 1);
 
 	if (modes_top)
 		M_DrawCharacter (160, 92, 128);
@@ -1064,8 +1191,7 @@ void VID_MenuKey (int key)
 	switch (key)
 	{
 	case K_TAB:
-		if (num_fmodes)
-			vid_cursor = !vid_cursor;
+		vid_cursor = !vid_cursor;
 		return;
 
 	case K_ESCAPE:
@@ -1123,6 +1249,10 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.40  2006/01/14 08:39:26  sezero
+ * fixed the incorrect (mislead) usage of modestate values, although the result
+ * doesn't change.
+ *
  * Revision 1.39  2006/01/12 12:43:49  sezero
  * Created an sdl_inc.h with all sdl version requirements and replaced all
  * SDL.h and SDL_mixer.h includes with it. Made the source to compile against
