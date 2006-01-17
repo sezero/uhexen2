@@ -1,5 +1,32 @@
 ChangeLog:
 
+2006-01-17 (CVS):
+    * Made the game to remember its video settings:
+      We essentially do an early read of config.cfg while in VID_Init to
+      remember the settings (new procedure: VID_EarlyReadConfig). (new
+      cvars: vid_config_glx, vid_config_gly, vid_config_swx, vid_config_swy,
+      and vid_config_fscr). The commandline still acts as an override. Then,
+      it fixes the cvar screw-up caused by the actual read of config.cfg by
+      overwriting the affected cvars with the running settings (new tiny
+      procedure: VID_PostInitFix, called from Host_Init).
+      Implemented here are the screen dimensions, color bits (bpp, for win32,
+      cvar: vid_config_bpp), palettized textures and multisampling (fsaa, for
+      unix, cvars: vid_config_gl8bit and vid_config_fsaa) options with their
+      menu representations and cvar memorizations.
+      This method can probably be also used to store/remember the conwidth
+      settings. Also applicable is the sound settings, such as the driver,
+      sampling rate, format, etc.
+      Secondly, the patch sets the fullscreen cvar not by only looking at silly
+      values but by looking at the current SDL_Screen flags.
+    * Bound win32 window names and classnames to macros for better readablity
+    * Win32 software renderer: disabled windirect (vesa) modes by default,
+      because they aren't working reliably (at least not on my box). Enabled
+      directdraw modes by default, they seem to work OK, for now.
+    * Synced win32 software renderers: hexen2 now uses the new driver from h2w
+    * Added block_drawing stuff of h2w to hexen2 (new vid_win.c requires it.)
+    * Removed Snd_AcquireBuffer and Snd_ReleaseBuffer (was only used by the old
+      vid_win.c of hexen2.)
+
 2006-01-16 (CVS):
     * macroized dlsymming of gl functions (similar to dlsymming of alsa
       functions) which freed a lot of crowd from gl_vidXXX files.
