@@ -2595,6 +2595,75 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 }
 
 
+#ifndef H2W
+// unused in hexenworld
+void D_ShowLoadingSize (void)
+{
+	vrect_t	rect;
+	viddef_t	save_vid;	// global video state
+
+	if (!vid_initialized)
+		return;
+
+	save_vid = vid;
+	if (vid.numpages == 1)
+	{
+		VID_LockBuffer ();
+
+		if (!vid.direct)
+			Sys_Error ("NULL vid.direct pointer");
+
+		vid.buffer = vid.direct;
+
+		SCR_DrawLoading();
+
+		VID_UnlockBuffer ();
+
+		// Pa3PyX: tweaking sizes - faster redraw
+		//rect.x = 0;
+		//rect.y = 0;
+		//rect.width = vid.width;
+		rect.x = (vid.width >> 1) - 100;
+		rect.y = 0;
+		rect.width = 200;
+		rect.height = 112;
+		rect.pnext = NULL;
+
+		FlipScreen (&rect);
+	}
+	else
+	{
+	// unlock if locked
+		if (lockcount > 0)
+			MGL_endDirectAccess();
+
+	// set the active page to the displayed page
+		MGL_setActivePage (mgldc, vPage);
+
+	// lock the screen
+		MGL_beginDirectAccess ();
+
+		vid.buffer = (byte *)mgldc->surface;
+		vid.rowbytes = mgldc->mi.bytesPerLine;
+
+		SCR_DrawLoading();
+
+	// unlock the screen
+		MGL_endDirectAccess ();
+
+	// restore the original active page
+		MGL_setActivePage (mgldc, aPage);
+
+	// relock the screen if it was locked
+		if (lockcount > 0)
+			MGL_beginDirectAccess();
+	}
+
+	vid = save_vid;
+}
+#endif
+
+
 /*
 ================
 D_EndDirectRect
