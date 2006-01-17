@@ -8,6 +8,14 @@
 #include <commctrl.h>
 #endif
 
+#if defined(H2W)
+#define WM_CLASSNAME	"HexenWorld"
+#define WM_WINDOWNAME	"HexenWorld"
+#else
+#define WM_CLASSNAME	"HexenII"
+#define WM_WINDOWNAME	"HexenII"
+#endif
+
 #define WARP_WIDTH	320
 #define WARP_HEIGHT	200
 #define MAXWIDTH	10000
@@ -305,13 +313,8 @@ static qboolean VID_SetWindowedMode (int modenum)
 	// Create the DIB window
 	dibwindow = CreateWindowEx (
 		 ExWindowStyle,
-#ifndef H2W
-		 "HexenII",
-		 "HexenII",
-#else
-		 "HexenWorld",
-		 "HexenWorld",
-#endif
+		 WM_CLASSNAME,
+		 WM_WINDOWNAME,
 		 WindowStyle,
 		 rect.left, rect.top,
 		 width,
@@ -398,13 +401,8 @@ static qboolean VID_SetFullDIBMode (int modenum)
 	// Create the DIB window
 	dibwindow = CreateWindowEx (
 		 ExWindowStyle,
-#ifndef H2W
-		 "HexenII",
-		 "HexenII",
-#else
-		 "HexenWorld",
-		 "HexenWorld",
-#endif
+		 WM_CLASSNAME,
+		 WM_WINDOWNAME,
 		 WindowStyle,
 		 rect.left, rect.top,
 		 width,
@@ -1661,11 +1659,7 @@ static void VID_RegisterWndClass(HINSTANCE hInstance)
 	wc.hCursor       = LoadCursor (NULL,IDC_ARROW);
 	wc.hbrBackground = NULL;
 	wc.lpszMenuName  = 0;
-#ifndef H2W
-	wc.lpszClassName = "HexenII";
-#else
-	wc.lpszClassName = "HexenWorld";
-#endif
+	wc.lpszClassName = WM_CLASSNAME;
 
 	if (!RegisterClass(&wc))
 		Sys_Error ("Couldn't register main window class");
@@ -1947,11 +1941,7 @@ static void VID_ChangeVideoMode(int newmode)
 		DestroyWindow(mainwindow);
 	}
 	mainwindow = dibwindow = 0;
-#ifndef H2W
-	UnregisterClass("HexenII", global_hInstance);
-#else
-	UnregisterClass("HexenWorld", global_hInstance);
-#endif
+	UnregisterClass(WM_CLASSNAME, global_hInstance);
 
 #ifdef GL_DLSYM
 	// reload the opengl library

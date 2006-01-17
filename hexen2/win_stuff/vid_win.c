@@ -6,6 +6,14 @@
 #include "resource.h"
 #include <mgraph.h>
 
+#if defined(H2W)
+#define WM_CLASSNAME	"HexenWorld"
+#define WM_WINDOWNAME	"HexenWorld"
+#else
+#define WM_CLASSNAME	"HexenII"
+#define WM_WINDOWNAME	"HexenII"
+#endif
+
 #define MAX_MODE_LIST	30
 #define VID_ROW_SIZE	3
 
@@ -636,7 +644,7 @@ static void VID_InitMGLDIB (HINSTANCE hInstance)
 	wc.hCursor	 = LoadCursor (NULL,IDC_ARROW);
 	wc.hbrBackground = NULL;
 	wc.lpszMenuName	 = 0;
-	wc.lpszClassName = "HexenII";
+	wc.lpszClassName = WM_CLASSNAME;
 
 	if ( !RegisterClass(&wc) )
 		Sys_Error ("Couldn't register window class");
@@ -1271,8 +1279,8 @@ static qboolean VID_SetWindowedMode (int modenum)
 		// Create the DIB window
 		dibwindow = CreateWindowEx (
 			 ExWindowStyle,
-			 "HexenII",
-			 "HexenII",
+			 WM_CLASSNAME,
+			 WM_WINDOWNAME,
 			 WindowStyle,
 			 0, 0,
 			 WindowRect.right - WindowRect.left,
@@ -1470,8 +1478,8 @@ static qboolean VID_SetFullDIBMode (int modenum)
 		// Create the DIB window
 		dibwindow = CreateWindowEx (
 			 ExWindowStyle,
-			 "HexenII",
-			 "HexenII",
+			 WM_CLASSNAME,
+			 WM_WINDOWNAME,
 			 WindowStyle,
 			 0, 0,
 			 WindowRect.right - WindowRect.left,
@@ -3358,6 +3366,28 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2006/01/17 17:36:45  sezero
+ * A quick'n'dirty patch for making the game to remember its video settings:
+ * Essentially it does an early read of config.cfg while in VID_Init to
+ * remember the settings (new procedure: VID_EarlyReadConfig). (new cvars:
+ * vid_config_glx, vid_config_gly, vid_config_swx, vid_config_swy, and
+ * vid_config_fscr). the commandline still acts as an override. then, it fixes
+ * the cvar screw-up caused by the actual read of config.cfg by overwriting
+ * the affected cvars with the running settings (new tiny procedure:
+ * VID_PostInitFix, called from Host_Init).
+ *
+ * Implemented here are the screen dimensions, color bits (bpp, for win32,
+ * cvar: vid_config_bpp), palettized textures and multisampling (fsaa, for
+ * unix, cvars: vid_config_gl8bit and vid_config_fsaa) options with their
+ * menu representations and cvar memorizations.
+ *
+ * This method can probably be also used to store/remember the conwidth
+ * settings. Also applicable is the sound settings, such as the driver,
+ * sampling rate, format, etc.
+ *
+ * Secondly, the patch sets the fullscreen cvar not by only looking at silly
+ * values but by looking at the current SDL_Screen flags.
+ *
  * Revision 1.25  2006/01/07 09:54:29  sezero
  * cleanup and "static" stuff on the vid files
  *

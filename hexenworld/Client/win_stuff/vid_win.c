@@ -6,6 +6,14 @@
 #include "resource.h"
 #include <mgraph.h>
 
+#if defined(H2W)
+#define WM_CLASSNAME	"HexenWorld"
+#define WM_WINDOWNAME	"HexenWorld"
+#else
+#define WM_CLASSNAME	"HexenII"
+#define WM_WINDOWNAME	"HexenII"
+#endif
+
 #define MAX_MODE_LIST	30
 #define VID_ROW_SIZE	3
 
@@ -698,9 +706,9 @@ static void VID_InitMGLDIB (HINSTANCE hInstance)
 	wc.hCursor	 = LoadCursor (NULL,IDC_ARROW);
 	wc.hbrBackground = NULL;
 	wc.lpszMenuName	 = 0;
-	wc.lpszClassName = "HexenWorld";
+	wc.lpszClassName = WM_CLASSNAME;
 
-	if (!RegisterClass (&wc) )
+	if ( !RegisterClass(&wc) )
 		Sys_Error ("Couldn't register window class");
 
 	/* Find the size for the DIB window */
@@ -1339,8 +1347,8 @@ static qboolean VID_SetWindowedMode (int modenum)
 	{
 		mainwindow = CreateWindowEx (
 			 ExWindowStyle,
-			 "HexenWorld",
-			 "HexenWorld",
+			 WM_CLASSNAME,
+			 WM_WINDOWNAME,
 			 WindowStyle,
 			 0, 0,
 			 WindowRect.right - WindowRect.left,
