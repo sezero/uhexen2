@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.15 2006-01-12 12:34:38 sezero Exp $
+	$Id: winquake.h,v 1.16 2006-01-17 20:10:43 sezero Exp $
 */
 
 #if !defined(_WIN32)
@@ -37,9 +37,6 @@ extern LPDIRECTSOUNDBUFFER pDSBuf;
 
 extern DWORD gSndBufSize;
 //#define SNDBUFSIZE 65536
-
-void Snd_AcquireBuffer (void);
-void Snd_ReleaseBuffer (void);
 #endif
 
 extern HWND			mainwindow;
@@ -97,6 +94,11 @@ int (PASCAL FAR *pgetsockname)(SOCKET s, struct sockaddr FAR *name,
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2006/01/12 12:34:38  sezero
+ * added video modes enumeration via SDL. added on-the-fly video mode changing
+ * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its
+ * video settings, clean it up, fix it up...
+ *
  * Revision 1.14  2006/01/07 09:54:29  sezero
  * cleanup and "static" stuff on the vid files
  *

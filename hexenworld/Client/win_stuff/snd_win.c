@@ -148,49 +148,6 @@ void FreeSound (void)
 
 /*
 ==================
-Snd_ReleaseBuffer
-==================
-*/
-void Snd_ReleaseBuffer (void)
-{
-
-//@@@ this goes away completely once we keep the same window for the whole session
-	if (snd_isdirect)
-	{
-		snd_buffer_count--;
-
-		if (snd_buffer_count == 0)
-		{
-			S_ClearBuffer ();
-			S_Shutdown ();
-		}
-	}
-}
-
-
-/*
-==================
-Snd_AcquireBuffer
-==================
-*/
-void Snd_AcquireBuffer (void)
-{
-
-//@@@ this goes away completely once we keep the same window for the whole session
-	if (snd_isdirect)
-	{
-		snd_buffer_count++;
-
-		if (snd_buffer_count == 1)
-		{
-			S_Startup ();
-		}
-	}
-}
-
-
-/*
-==================
 SNDDMA_InitDirect
 
 Direct-Sound support
