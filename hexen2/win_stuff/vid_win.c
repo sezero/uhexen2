@@ -120,7 +120,7 @@ unsigned	d_8to24table[256];
 static int	driver = grDETECT, mode;
 
 static qboolean	useWinDirect = false;
-static qboolean	useDirectDraw = false;
+static qboolean	useDirectDraw = true;
 
 static MGLDC	*mgldc = NULL,*memdc = NULL,*dibdc = NULL,*windc = NULL;
 
@@ -388,22 +388,20 @@ static void VID_InitMGLFull (HINSTANCE hInstance)
 
 // FIXME: NT is checked for because MGL currently has a bug that causes it
 // to try to use WinDirect modes even on NT
-	if (COM_CheckParm("-nowindirect") ||
+/*	if (COM_CheckParm("-nowindirect") ||
 		COM_CheckParm("-nowd") ||
 		COM_CheckParm("-novesa") ||
 		WinNT)
 	{
 		useWinDirect = false;
 	}
-
-	if (COM_CheckParm("-usewindirect"))
+*/
+	if ( (COM_CheckParm("-usewindirect") || COM_CheckParm("-usevesa"))
+	     && !WinNT)
 		useWinDirect = true;
 
 	if (COM_CheckParm("-nodirectdraw") || COM_CheckParm("-noddraw") || COM_CheckParm("-nodd"))
 		useDirectDraw = false;
-
-	if (COM_CheckParm("-usedirectdraw"))
-		useDirectDraw = true;
 
 	MGL_setAppInstance(hInstance);
 	MGL_registerEventProc (MainWndProc);
@@ -3366,6 +3364,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2006/01/17 17:38:47  sezero
+ * bound win32 window names and classnames to macros for better readablity
+ *
  * Revision 1.26  2006/01/17 17:36:45  sezero
  * A quick'n'dirty patch for making the game to remember its video settings:
  * Essentially it does an early read of config.cfg while in VID_Init to

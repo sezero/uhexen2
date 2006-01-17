@@ -123,7 +123,10 @@ unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
 
 static int	driver = grDETECT, mode;
-static qboolean	useWinDirect = true, useDirectDraw = true;
+
+static qboolean	useWinDirect = false;
+static qboolean	useDirectDraw = true;
+
 static MGLDC	*mgldc = NULL,*memdc = NULL,*dibdc = NULL,*windc = NULL;
 
 typedef struct {
@@ -443,13 +446,17 @@ static void VID_InitMGLFull (HINSTANCE hInstance)
 
 // FIXME: NT is checked for because MGL currently has a bug that causes it
 // to try to use WinDirect modes even on NT
-	if (COM_CheckParm("-nowindirect") ||
+/*	if (COM_CheckParm("-nowindirect") ||
 		COM_CheckParm("-nowd") ||
 		COM_CheckParm("-novesa") ||
 		WinNT)
 	{
 		useWinDirect = false;
 	}
+*/
+	if ( (COM_CheckParm("-usewindirect") || COM_CheckParm("-usevesa"))
+	     && !WinNT)
+		useWinDirect = true;
 
 	if (COM_CheckParm("-nodirectdraw") || COM_CheckParm("-noddraw") || COM_CheckParm("-nodd"))
 		useDirectDraw = false;
