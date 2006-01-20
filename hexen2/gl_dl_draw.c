@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_dl_draw.c,v 1.69 2006-01-15 22:07:47 sezero Exp $
+	$Id: gl_dl_draw.c,v 1.70 2006-01-20 07:36:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -17,7 +17,7 @@ extern unsigned ColorPercent[16];
 #endif
 
 extern qboolean	is8bit;
-#ifdef	OLD_8_BIT_PALETTE_CODE
+#ifdef	USE_HEXEN2_PALTEX_CODE
 extern unsigned char inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
 #else
 extern unsigned char d_15to8table[65536];
@@ -1420,6 +1420,50 @@ int GL_FindTexture (char *identifier)
 GL_ResampleTexture
 ================
 */
+#ifdef USE_HEXEN2_RESAMPLER_CODE
+static void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigned *out,  int outwidth, int outheight)
+{
+	int		i, j;
+	unsigned	*inrow, *inrow2;
+	unsigned	frac, fracstep;
+	unsigned	p1[1024], p2[1024];
+	byte		*pix1, *pix2, *pix3, *pix4;
+
+	fracstep = inwidth*0x10000/outwidth;
+
+	frac = fracstep>>2;
+	for (i=0 ; i<outwidth ; i++)
+	{
+		p1[i] = 4*(frac>>16);
+		frac += fracstep;
+	}
+	frac = 3*(fracstep>>2);
+	for (i=0 ; i<outwidth ; i++)
+	{
+		p2[i] = 4*(frac>>16);
+		frac += fracstep;
+	}
+
+	for (i=0 ; i<outheight ; i++, out += outwidth)
+	{
+		inrow = in + inwidth*(int)((i+0.25)*inheight/outheight);
+		inrow2 = in + inwidth*(int)((i+0.75)*inheight/outheight);
+
+		frac = fracstep >> 1;
+		for (j=0 ; j<outwidth ; j++)
+		{
+			pix1 = (byte *)inrow + p1[j];
+			pix2 = (byte *)inrow + p2[j];
+			pix3 = (byte *)inrow2 + p1[j];
+			pix4 = (byte *)inrow2 + p2[j];
+			((byte *)(out+j))[0] = (pix1[0] + pix2[0] + pix3[0] + pix4[0])>>2;
+			((byte *)(out+j))[1] = (pix1[1] + pix2[1] + pix3[1] + pix4[1])>>2;
+			((byte *)(out+j))[2] = (pix1[2] + pix2[2] + pix3[2] + pix4[2])>>2;
+			((byte *)(out+j))[3] = (pix1[3] + pix2[3] + pix3[3] + pix4[3])>>2;
+		}
+	}
+}
+#else	// here is the hexenworld (quake) resampler
 static void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigned *out,  int outwidth, int outheight)
 {
 	int		i, j;
@@ -1444,6 +1488,7 @@ static void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigne
 		}
 	}
 }
+#endif
 
 /*
 ================
@@ -1472,7 +1517,7 @@ static void GL_MipMap (byte *in, int width, int height)
 	}
 }
 
-#ifdef OLD_8_BIT_PALETTE_CODE
+#ifdef USE_HEXEN2_PALTEX_CODE
 /*
 ================
 fxPalTexImage2D
@@ -1517,7 +1562,7 @@ static void fxPalTexImage2D (GLenum target, GLint level, GLint internalformat, G
 	glTexImage2D_fp(target, level, GL_COLOR_INDEX8_EXT, mip_width, mip_height, border, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, dest_image);
 }
 
-#else	// end of OLD_8_BIT_PALETTE_CODE
+#else	// end of HEXEN2_PALTEX_CODE
 /*
 ================
 GL_Resample8BitTexture -- JACK
@@ -1693,7 +1738,7 @@ done: ;
 	if (mark)
 		Hunk_FreeToLowMark(mark);
 }
-#endif	// end of new 8_BIT_PALETTE_CODE
+#endif	// end of hexenworld 8_BIT_PALETTE_CODE
 
 /*
 ===============
@@ -1706,7 +1751,7 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 	unsigned	*scaled;
 	int		mark = 0;
 	int		scaled_width, scaled_height;
-#ifdef OLD_8_BIT_PALETTE_CODE
+#ifdef USE_HEXEN2_PALTEX_CODE
 	unsigned char	*fxpal_buf = NULL;
 #endif
 
@@ -1762,7 +1807,7 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 	{
 		if (!mipmap)
 		{
-#ifdef OLD_8_BIT_PALETTE_CODE
+#ifdef USE_HEXEN2_PALTEX_CODE
 			if (is8bit && !alpha)
 			{
 				mark = Hunk_LowMark();
@@ -1785,7 +1830,7 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 		GL_ResampleTexture (data, width, height, scaled, scaled_width, scaled_height);
 	}
 
-#ifdef OLD_8_BIT_PALETTE_CODE
+#ifdef USE_HEXEN2_PALTEX_CODE
 	if (is8bit && !alpha)
 	{
 		if (!mark)
@@ -1812,7 +1857,7 @@ void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qbool
 			if (scaled_height < 1)
 				scaled_height = 1;
 			miplevel++;
-#ifdef OLD_8_BIT_PALETTE_CODE
+#ifdef USE_HEXEN2_PALTEX_CODE
 			if (is8bit && !alpha)
 				fxPalTexImage2D (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled, fxpal_buf);
 			else
@@ -1965,7 +2010,7 @@ void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean a
 		}
 	}
 
-#ifndef OLD_8_BIT_PALETTE_CODE
+#ifndef USE_HEXEN2_PALTEX_CODE
 	if (is8bit && 
 #   if ENABLE_SCRAP
 		(data!=scrap_texels[0]) && 
@@ -1976,7 +2021,7 @@ void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean a
 		Hunk_FreeToLowMark(mark);
 		return;
 	}
-#endif	// !OLD_8_BIT_PALETTE_CODE
+#endif
 
 	GL_Upload32 (trans, width, height, mipmap, alpha, sprite);
 	Hunk_FreeToLowMark(mark);
@@ -2117,6 +2162,12 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.69  2006/01/15 22:07:47  sezero
+ * switched back to original hexen II code for palettized textures for better
+ * quality, leaving the newer hexenworld (quake) code as option: changing the
+ * macro OLD_8_BIT_PALETTE_CODE from define to undef in glquake.h will do the
+ * switching.
+ *
  * Revision 1.68  2006/01/12 12:34:37  sezero
  * added video modes enumeration via SDL. added on-the-fly video mode changing
  * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its

@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.37 2006-01-15 22:07:48 sezero Exp $
+	$Id: glquake.h,v 1.38 2006-01-20 07:36:47 sezero Exp $
 */
 
 
@@ -55,10 +55,17 @@
 #define INVERSE_PAL_G_BITS 6
 #define INVERSE_PAL_B_BITS 6
 #define INVERSE_PAL_TOTAL_BITS	( INVERSE_PAL_R_BITS + INVERSE_PAL_G_BITS + INVERSE_PAL_B_BITS )
-// to use hexenworld (quake)'s newer palettized texture code instead of the
-// original hexen2 code, replace the #define below with an #undef. that will
-// result in lower quality. see gl_draw.c (and gl_vidXXX.c) for more details
-#define	OLD_8_BIT_PALETTE_CODE
+// to use hexenworld (quake)'s palettized texture code instead of the original
+// hexen2 code, replace the #define below with an #undef. that will result in
+// lower quality. see gl_draw.c (and gl_vidXXX.c) for more details
+#define	USE_HEXEN2_PALTEX_CODE
+
+// to use hexenworld (quake)'s texture resampler code instead of the original
+// hexen2 code, replace the #define below with an undef. that will result in
+// slightly sharper but "jaggier" textures here and there. see in gl_draw.c.
+// bad results especially detectable on help screens when using old cards with
+// small (256k) texture size support (read: old voodoo boards.)
+#define	USE_HEXEN2_RESAMPLER_CODE
 
 void GL_BeginRendering (int *x, int *y, int *width, int *height);
 void GL_EndRendering (void);
@@ -358,6 +365,12 @@ extern	qboolean lightmap_modified[MAX_LIGHTMAPS];
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.37  2006/01/15 22:07:48  sezero
+ * switched back to original hexen II code for palettized textures for better
+ * quality, leaving the newer hexenworld (quake) code as option: changing the
+ * macro OLD_8_BIT_PALETTE_CODE from define to undef in glquake.h will do the
+ * switching.
+ *
  * Revision 1.36  2006/01/07 09:50:09  sezero
  * added the last pieces (lightmaps) of adjustable filters which I've been
  * forgetting for a very long time
