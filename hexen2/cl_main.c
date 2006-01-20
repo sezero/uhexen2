@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.23 2006-01-06 12:19:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.24 2006-01-20 07:36:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -132,7 +132,10 @@ qboolean CL_CopyFiles(char *source, char *pat, char *dest)
 #else
 		if (COM_CopyFile(tempdir,tempdir2))
 #endif
+		{
+			Con_DPrintf ("Error copying %s to %s\n",tempdir,tempdir2);
 			error = true;
+		}
 
 		name = Sys_FindNextFile();
 	}
@@ -931,6 +934,11 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2006/01/06 12:19:08  sezero
+ * put the new Sys_FindFirstFile/Sys_FindNextFile stuff into action. also killed
+ * the tempdir and trailing slash funnies in host_cmd.c when calling CL_CopyFiles
+ * and CL_RemoveGIPFiles in saving and loading games.
+ *
  * Revision 1.22  2005/12/28 14:20:23  sezero
  * made COM_CopyFile return int and added ferror() calls after every fread()
  * and fwrite() calls, so that CL_CopyFiles can behave correctly under unix.
