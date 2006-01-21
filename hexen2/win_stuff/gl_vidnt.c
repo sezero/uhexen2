@@ -771,15 +771,14 @@ static void GL_Init (void)
 	PIXELFORMATDESCRIPTOR	new_pfd;
 
 	Con_Printf ("Video mode %s initialized\n", VID_GetModeDescription (vid_modenum));
-	if (!DescribePixelFormat(maindc, GetPixelFormat(maindc), sizeof(PIXELFORMATDESCRIPTOR), &new_pfd))
-		Sys_Error ("DescribePixelFormat failed\n");
-	Con_Printf("Pixel format: c: %d, z: %d, s: %d\n",
-		new_pfd.cColorBits, new_pfd.cDepthBits, new_pfd.cStencilBits);
-	if (new_pfd.dwFlags & PFD_GENERIC_FORMAT)
-		Con_Printf ("WARNING: Hardware acceleration not present\n");
-	else if (new_pfd.dwFlags & PFD_GENERIC_ACCELERATED)
-		Con_Printf ("Found MCD acceleration\n");
-	
+	// DescribePixelFormat fails with old 3dfx minigl drivers: don't Sys_Error
+	if (DescribePixelFormat(maindc, GetPixelFormat(maindc), sizeof(PIXELFORMATDESCRIPTOR), &new_pfd))
+	{
+		Con_Printf("Pixel format: c: %d, z: %d, s: %d\n",
+			new_pfd.cColorBits, new_pfd.cDepthBits, new_pfd.cStencilBits);
+		if (new_pfd.dwFlags & PFD_GENERIC_FORMAT)
+			Con_Printf ("WARNING: Hardware acceleration not present\n");
+	}
 
 #ifdef GL_DLSYM
 	// initialize gl function pointers
