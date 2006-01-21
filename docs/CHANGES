@@ -1,5 +1,9 @@
 ChangeLog:
 
+2006-01-21 (CVS):
+    * gl_vidnt.c: DescribePixelFormat fails with old 3dfx minigl drivers: don't
+      Sys_Error.
+
 2006-01-20 (CVS):
     * Switched back to original hexen2 version of GL_ResampleTexture: the h2w
       (quake) code gave slightly sharper but "jaggier" textures here and there.
