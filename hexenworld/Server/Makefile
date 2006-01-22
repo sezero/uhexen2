@@ -27,8 +27,16 @@ endif
 ifndef DEBUG
 CFLAGS := -O2 -march=i586 -Wall -ffast-math -fexpensive-optimizations
 
-# this may prevent some bad compilations with gcc4
+DISABLE_UNIT_AT_A_TIME ?=$(HAVE_GCC_4_0)
+# this prevents some bad compilations with unit-at-a-time mode active.
+# the bug seems to appear only with gcc-4.0.x, gcc-3.x/4.1 seems fine.
+ifeq "$(DISABLE_UNIT_AT_A_TIME)" "yes"
 CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
+else
+ifeq "$(DISABLE_UNIT_AT_A_TIME)" "1"
+CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
+endif
+endif
 endif
 
 # Other build flags

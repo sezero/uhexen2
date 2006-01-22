@@ -106,12 +106,14 @@ check_gcc = $(shell echo > .tmp; if $(CC) $(1) -S -o _tmp.tmp -xc .tmp > __tmp.t
 else
 check_gcc = $(shell if $(CC) $(1) -S -o /dev/null -xc /dev/null > /dev/null 2>&1; then echo "$(1)"; else echo "$(2)"; fi)
 endif
+HAVE_GCC_4_0:=$(shell sh $(UHEXEN2_TOP)/scripts/gcc40check.sh $(CC))
 else
 # sigh... resort to the fallback arg that we are sent.
 # if we reached here and using this cheat, chances are
 # that we are missing important things and the resulting
 # binaries may not be that reliable.
 check_gcc = $(2)
+HAVE_GCC_4_0:=yes
 endif
 
 # Determine common build flags:
