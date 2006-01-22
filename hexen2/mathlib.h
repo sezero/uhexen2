@@ -22,6 +22,7 @@ extern vec3_t vec3_origin;
 extern	int nanmask;
 
 #define	IS_NAN(x) (((*(int *)&x)&nanmask)==nanmask)
+int Q_isnan (float x);
 
 #define Length(v) (sqrt((v)[0]*(v)[0]+(v)[1]*(v)[1]+(v)[2]*(v)[2]))
 #define CrossProduct(v1,v2,cross) {(cross)[0]=(v1)[1]*(v2)[2]-(v1)[2]*(v2)[1];(cross)[1]=(v1)[2]*(v2)[0]-(v1)[0]*(v2)[2];(cross)[2]=(v1)[0]*(v2)[1]-(v1)[1]*(v2)[0];}

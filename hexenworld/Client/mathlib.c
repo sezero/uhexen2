@@ -2,7 +2,7 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.c,v 1.6 2005-07-09 07:24:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.c,v 1.7 2006-01-22 23:14:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -11,6 +11,29 @@ void Sys_Error (char *error, ...);
 
 vec3_t vec3_origin = {0,0,0};
 int nanmask = 255<<23;
+
+/*
+================
+Q_isnan
+
+For NaN tests with -ffast-math
+Don't pass doubles to this
+================
+*/
+int Q_isnan (float x)
+{
+	union
+	{
+		float f;
+		unsigned int i;
+	} t;
+
+	t.f = x;
+	t.i &= 0x7FFFFFFF;
+	t.i = 0x7F800000 - t.i;
+
+	return (int)( (unsigned int)t.i >> 31 );
+}
 
 
 float	anglemod(float a)
