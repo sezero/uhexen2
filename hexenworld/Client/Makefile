@@ -247,6 +247,7 @@ SOFTOBJS = d_edge.o \
 	r_surf.o \
 	r_vars.o \
 	screen.o \
+	nonintel.o \
 	$(SYSOBJ_SOFT_VID)
 
 GLOBJS = gl_draw.o \
