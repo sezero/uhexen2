@@ -1,5 +1,16 @@
 ChangeLog:
 
+2006-01-22 (CVS):
+    * added gcc version detection scripts. our unit-at-a-time problem seems to
+      be limited to gcc-4.0 series only. gcc-4.1 seems fine for now. limited
+      disabling of that feature to gcc-4.0.x compilers by default, but the
+      behavior can always be adjusted by adding a DISABLE_UNIT_AT_A_TIME=0 or
+      1 to the make commandline.
+    * added nonintel.c to compilation. although it's empty for i386, we can
+      make use of it one day.
+    * added a Q_isnan for NaN tests with -ffast-math, maybe of use someday.
+      taken from the icculus-quake3 project.
+
 2006-01-21 (CVS):
     * gl_vidnt.c: DescribePixelFormat fails with old 3dfx minigl drivers: don't
       Sys_Error.
