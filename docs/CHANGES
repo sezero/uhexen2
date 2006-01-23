@@ -1,5 +1,11 @@
 ChangeLog:
 
+2006-01-23 (CVS, 1.4.0-pre1):
+    * sys_unix.c: added code to sleep a bit when we have no focus or paused, and
+      sleep more when we are minimized. inspired from the q3 project at icculus.
+    * tidied up the version and help display stuff. bumped the HoT version to
+      1.4.0-pre1. added conditionals to properly display beta version strings.
+
 2006-01-22 (CVS):
     * added gcc version detection scripts. our unit-at-a-time problem seems to
       be limited to gcc-4.0 series only. gcc-4.1 seems fine for now. limited
