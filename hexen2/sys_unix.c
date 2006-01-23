@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.47 2006-01-12 12:43:49 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.48 2006-01-23 20:20:55 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -36,6 +36,7 @@
 static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
 qboolean		isDedicated;
+static Uint8		appState;
 extern qboolean		draw_reinit;
 
 void Sys_InitFloatTime (void);
@@ -482,17 +483,42 @@ int main(int argc, char *argv[])
     /* main window message loop */
 	while (1)
 	{
-		newtime = Sys_DoubleTime ();
-		time = newtime - oldtime;
-
 		if (isDedicated)
 		{
+			newtime = Sys_DoubleTime ();
+			time = newtime - oldtime;
+
 			while (time < sys_ticrate.value )
 			{
 				Sys_Sleep();
 				newtime = Sys_DoubleTime ();
 				time = newtime - oldtime;
 			}
+		}
+		else
+		{
+			appState = SDL_GetAppState();
+
+			// If we have no input focus at all, sleep a bit
+			if ( !(appState & (SDL_APPMOUSEFOCUS | SDL_APPINPUTFOCUS)) || cl.paused)
+			{
+				usleep (16000);
+				//printf ("usleep 16000\n");
+			}
+			// If we're minimised, sleep a bit more
+			if ( !(appState & SDL_APPACTIVE) )
+			{
+				scr_skipupdate = 1;
+				usleep (32000);
+				//printf ("usleep 32000\n");
+			}
+			else
+			{
+				scr_skipupdate = 0;
+			}
+
+			newtime = Sys_DoubleTime ();
+			time = newtime - oldtime;
 		}
 
 		Host_Frame (time);
@@ -503,6 +529,15 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.47  2006/01/12 12:43:49  sezero
+ * Created an sdl_inc.h with all sdl version requirements and replaced all
+ * SDL.h and SDL_mixer.h includes with it. Made the source to compile against
+ * SDL versions older than 1.2.6 without disabling multisampling. Multisampling
+ * (fsaa) option is now decided at runtime. Minimum required SDL and SDL_mixer
+ * versions are now 1.2.4. If compiled without midi, minimum SDL required is
+ * 1.2.0. Added SDL_mixer version checking to sdl-midi with measures to prevent
+ * relocation errors.
+ *
  * Revision 1.46  2006/01/12 12:34:38  sezero
  * added video modes enumeration via SDL. added on-the-fly video mode changing
  * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its
