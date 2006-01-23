@@ -40,7 +40,7 @@ typedef int socklen_t;
 //=============================================================================
 
 //Defines
-#define VER_HWMASTER	"1.2.1"		// our version string
+#define VER_HWMASTER	"1.2.2"		// our version string
 
 #undef true
 #undef false

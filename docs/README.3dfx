@@ -140,7 +140,7 @@ directory. Now run the game with the command:
 (you may use additional arguments)
 
 If you copied the library to the hexen2 installation directory, you
-needn't specify any path to it on the command line: HoT-1.3.1 and
+needn't specify any path to it on the command line: HoT-1.4.0 and
 later versions will find it in its basedir. Alternatively, you can
 copy the library to any place you want: in that case you have to
 specify the full path to it on the command line for hexen2 to find
@@ -160,9 +160,9 @@ Note:	The maximum resolution for a voodoo1 is 640. For a single
 	For performance reasons, 640x480 is recommended for a Voodoo2,
 	512x384 is recommended for a Voodoo Graphics.
 
-Note:	Hammer of Thyrion 1.3.0 automatically sets a few environment
-	variables for 3dfx/Mesa,  so you won't have to use the above
-	export command.
+Note:	Hammer of Thyrion 1.3.0 and later versions automatically set
+	a few environment variables for 3dfx/Mesa, so you won't have
+	to use the above export command.
 
 
 3.b.  RedHat-6.2, Slackware-7.1 :
@@ -189,9 +189,9 @@ hexen2. Otherwise use a command line like:
 4.  8-bit Texture extensions:
 -----------------------------
 
-If you use the -paltex argument with HoT-1.3.0, 8-bit texture
-extensions will be searched and used with very little quality loss
-and it helps saving video memory.
+If you use the -paltex argument with HoT-1.3.0 and newer versions,
+8-bit texture extensions will be searched and used with very little
+quality loss. This helps saving video memory.
 This options works with Mesa-6.x but not with Mesa-3.x.  It may or
 may not work correctly for you. The option is available on the game
 launcher, as well.
@@ -200,9 +200,9 @@ launcher, as well.
 5.  Gamma (brightness) support:
 -------------------------------
 
-If you run HoT-1.3.0 with -3dfxgamma command-line argument, some 3dfx
-specific hacks will be searched and activated for brightness control.
-This option is also available on the launcher.
+If you run HoT-1.4.0 and newer versions with -3dfxgamma command-line
+argument, some 3dfx specific hacks will be searched and activated for
+brightness control. This option is also available on the launcher.
 
 6.  Using the fxMesa opengl library for other games:
 ----------------------------------------------------
