@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.41 2005-12-28 14:20:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.42 2006-01-23 20:22:53 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -21,8 +21,13 @@
 #endif
 
 #define	HOT_VERSION_MAJ		1
-#define	HOT_VERSION_MID		3
+#define	HOT_VERSION_MID		4
 #define	HOT_VERSION_MIN		0
+#define	HOT_VERSION_BETA	1
+#if HOT_VERSION_BETA
+#define	HOT_VERSION_BETA_STR	"pre1"
+#define	HOT_VERSION_BETA_DATE	"2006-01-23"
+#endif
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
 #define	ENGINE_VERSION		1.14
@@ -395,6 +400,13 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.41  2005/12/28 14:20:23  sezero
+ * made COM_CopyFile return int and added ferror() calls after every fread()
+ * and fwrite() calls, so that CL_CopyFiles can behave correctly under unix.
+ * made SaveGamestate return qboolean, replaced the silly "ERROR: couldn't
+ * open" message by goto retry_message calls. made Host_Savegame_f to return
+ * immediately upon SaveGamestate failure.
+ *
  * Revision 1.40  2005/12/04 11:19:18  sezero
  * gamma stuff update
  *

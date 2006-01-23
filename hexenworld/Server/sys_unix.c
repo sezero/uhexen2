@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.12 2006-01-06 12:41:42 sezero Exp $
+	$Id: sys_unix.c,v 1.13 2006-01-23 20:22:53 sezero Exp $
 
 	Unix system interface code
 */
@@ -207,25 +207,35 @@ int main (int argc, char **argv)
 	int		t;
 	static char	userdir[MAX_OSPATH];
 
+	if (argc > 1)
+	{
+		for (t = 1; t < argc; t++)
+		{
+			if ( !(strcmp(argv[t], "-h")) || !(strcmp(argv[t], "-help")) ||
+			     !(strcmp(argv[t], "--help")) || !(strcmp(argv[t], "-?")) )
+			{
+				printf ("HexenWorld server %4.2f (%s)\n", ENGINE_VERSION, VERSION_PLATFORM);
+#if HOT_VERSION_BETA
+				printf ("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_BETA_DATE);
+#else
+				printf ("Hammer of Thyrion, release %s\n", HOT_VERSION_STR);
+#endif
+				printf ("See the documentation for details\n");
+				exit (0);
+			}
+			else if ( !(strcmp(argv[t], "-v")) || !(strcmp(argv[t], "-version")) ||
+				  !(strcmp(argv[t], "--version")) )
+			{
+				printf ("hwsv %4.2f (%s)\n", ENGINE_VERSION, VERSION_PLATFORM);
+				exit(0);
+			}
+		}
+	}
+
 	COM_InitArgv (argc, argv);
 
 	parms.argc = com_argc;
 	parms.argv = com_argv;
-
-	if (COM_CheckParm ("-help") || COM_CheckParm ("--help") ||
-	    COM_CheckParm ("-h")    || COM_CheckParm ("-?"))
-	{
-		printf ("HexenWorld server %4.2f (" VERSION_PLATFORM ")\n", ENGINE_VERSION);
-		printf ("Hammer of Thyrion, release " HOT_VERSION_STR "\n");
-		printf ("See the documentation for details\n");
-		exit (0);
-	}
-
-	if (COM_CheckParm ("-v") || COM_CheckParm ("-version") || COM_CheckParm ("--version"))
-	{
-		printf ("hwsv %4.2f (" VERSION_PLATFORM ")\n", ENGINE_VERSION);
-		exit (0);
-	}
 
 	parms.memsize = STD_MEM_ALLOC;
 

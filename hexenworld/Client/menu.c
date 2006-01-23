@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.35 2006-01-12 12:34:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.36 2006-01-23 20:22:53 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1946,7 +1946,11 @@ void M_Quit_Draw (void)
 	M_DrawTextBox (0, 0, 38, 23);
 	M_Print      (16, y,    "      Hexen2World version " STRINGIFY(ENGINE_VERSION));
 	M_Print      (16, y+8,  "         by Raven Software          ");
+#if HOT_VERSION_BETA
+	M_PrintWhite (16, y+16, "     Hammer of Thyrion " HOT_VERSION_STR "-" HOT_VERSION_BETA_STR);
+#else
 	M_PrintWhite (16, y+16, "       Hammer of Thyrion " HOT_VERSION_STR);
+#endif
 	M_PrintWhite (16, y+24, "             Source Port            ");
 	y += 40;
 

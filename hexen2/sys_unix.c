@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.48 2006-01-23 20:20:55 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.49 2006-01-23 20:22:53 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -343,40 +343,53 @@ int Sys_GetUserdir (char *buff, unsigned int len)
 	return Sys_mkdir(buff);
 }
 
-void PrintVersion (void)
+static void PrintVersion (void)
 {
-	printf ("Hammer of Thyrion, release " HOT_VERSION_STR "\n");
-	printf ("running on " ENGINE_NAME " engine %4.2f (" VERSION_PLATFORM ")\n",
-		ENGINE_VERSION);
+#if HOT_VERSION_BETA
+	printf ("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_BETA_DATE);
+#else
+	printf ("Hammer of Thyrion, release %s\n", HOT_VERSION_STR);
+#endif
+	printf ("running on %s engine %4.2f (%s)\n", ENGINE_NAME, ENGINE_VERSION, VERSION_PLATFORM);
 }
 
-void PrintHelp(char *name)
-{
-	PrintVersion();
-	printf ("\n");
-	printf ("Please send bug reports or patches to:\n");
-	printf ("     Steven Atkinson  <stevenaaus@users.sourceforge.net>\n");
-	printf ("     Ozkan Sezer      <sezero@users.sourceforge.net>\n");
-	printf ("Visit http://sf.net/projects/uhexen2/ for more info.\n");
-	printf ("\n");
-	printf ("Usage: %s [options]\n", name);
-	printf ("     [-v | --version]        Display the game version\n");
-	printf ("     [-f | --fullscreen]     Run the game fullscreen\n");
-	printf ("     [-width X [-height Y]]  Select screen size\n");
+static char *help_strings[] = {
+	"     [-v | --version]        Display the game version",
+	"     [-w | --window ]        Run the game windowed",
+	"     [-f | --fullscreen]     Run the game fullscreen",
+	"     [-width X [-height Y]]  Select screen size",
 #ifdef GLQUAKE
-	printf ("     [-bpp]                  Depth for GL fullscreen mode\n");
-	printf ("     [-vsync]                Enable sync with monitor refresh\n");
-	printf ("     [-g | --gllibrary]      Select 3D rendering library\n");
-	printf ("     [-fsaa N]               Enable N sample antialiasing\n");
-	printf ("     [-paltex]               Enable 8-bit GL extensions\n");
-	printf ("     [-nomtex]               Disable multitexture detection/usage\n");
+	"     [-bpp]                  Depth for GL fullscreen mode",
+	"     [-vsync]                Enable sync with monitor refresh",
+	"     [-g | --gllibrary]      Select 3D rendering library",
+	"     [-fsaa N]               Enable N sample antialiasing",
+	"     [-paltex]               Enable 8-bit textures",
+	"     [-nomtex]               Disable multitexture detection/usage",
 #endif
-	printf ("     [-s | --nosound]        Run the game without sound\n");
-	printf ("     [-sndalsa]              Use ALSA sound (alsa > 1.0.1)\n");
-	printf ("     [-sndsdl]               Use SDL sound\n");
-	printf ("     [-nomouse]              Disable mouse usage\n");
-	printf ("     [-listen N]             Enable multiplayer with max. N players\n");
-	printf ("     [-heapsize Bytes]       Heapsize (memory to allocate)\n");
+	"     [-s | --nosound]        Run the game without sound",
+#if defined(__linux__) && !defined(NO_ALSA)
+	"     [-sndalsa]              Use ALSA sound (alsa > 1.0.1)",
+#endif
+	"     [-sndsdl]               Use SDL sound",
+	"     [-nomouse]              Disable mouse usage",
+	"     [-listen N]             Enable multiplayer with max N players",
+	"     [-heapsize Bytes]       Heapsize (memory to allocate)",
+	"\n"
+	"More info / sending bug reports:  http://uhexen2.sourceforge.net\n",
+	NULL
+};
+
+static void PrintHelp(char *name)
+{
+	int i = 0;
+
+	printf ("\nUsage: %s [options]\n", name);
+	while (help_strings[i])
+	{
+		printf (help_strings[i]);
+		printf ("\n");
+		i++;
+	}
 }
 
 int main(int argc, char *argv[])
@@ -385,9 +398,28 @@ int main(int argc, char *argv[])
 	double	time, oldtime, newtime;
 	char	cwd[MAX_OSPATH];
 	char	userdir[MAX_OSPATH];
-	char	binary_name[MAX_OSPATH];
 	int	t;
 	const SDL_version *sdl_version;
+
+	PrintVersion();
+
+	if (argc > 1)
+	{
+		for (t = 1; t < argc; t++)
+		{
+			if ( !(strcmp(argv[t], "-v")) || !(strcmp(argv[t], "-version" )) ||
+				!(strcmp(argv[t], "--version")) )
+			{
+				exit(0);
+			}
+			else if ( !(strcmp(argv[t], "-h")) || !(strcmp(argv[t], "-help" )) ||
+				  !(strcmp(argv[t], "-?")) || !(strcmp(argv[t], "--help")) )
+			{
+				PrintHelp(argv[0]);
+				exit (0);
+			}
+		}
+	}
 
 	if (!(getcwd (cwd, sizeof(cwd))))
 		Sys_Error ("Couldn't determine current directory");
@@ -402,9 +434,6 @@ int main(int argc, char *argv[])
 	parms.cachedir = NULL;
 	parms.userdir = userdir;
 
-	memset(binary_name,0,sizeof(binary_name));
-	strncpy(binary_name,argv[0],sizeof(binary_name));
-
 	parms.argc = 1;
 	argv[0] = "";
 
@@ -414,19 +443,6 @@ int main(int argc, char *argv[])
 
 	parms.argc = com_argc;
 	parms.argv = com_argv;
-
-	if (COM_CheckParm ("-help") || COM_CheckParm ("--help") ||
-	    COM_CheckParm ("-h")    || COM_CheckParm ("-?"))
-	{
-		PrintHelp(binary_name);
-		exit (0);
-	}
-
-	if (COM_CheckParm ("-v") || COM_CheckParm ("-version") || COM_CheckParm ("--version"))
-	{
-		PrintVersion();
-		exit (0);
-	}
 
 	Sys_Printf("userdir is: %s\n",userdir);
 
@@ -529,6 +545,10 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.48  2006/01/23 20:20:55  sezero
+ * sys_unix.c: added code to sleep a bit when we have no focus or paused, and
+ * sleep more when we are minimized. inspired from the q3 project at icculus.
+ *
  * Revision 1.47  2006/01/12 12:43:49  sezero
  * Created an sdl_inc.h with all sdl version requirements and replaced all
  * SDL.h and SDL_mixer.h includes with it. Made the source to compile against

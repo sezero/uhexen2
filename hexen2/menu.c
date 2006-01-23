@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.51 2006-01-12 12:34:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.52 2006-01-23 20:22:49 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2907,7 +2907,11 @@ void M_Quit_Draw (void)
 	M_DrawTextBox (0, 0, 38, 23);
 	M_Print      (16, y,    "        Hexen II version " STRINGIFY(ENGINE_VERSION));
 	M_Print      (16, y+8,  "         by Raven Software          ");
+#if HOT_VERSION_BETA
+	M_PrintWhite (16, y+16, "     Hammer of Thyrion " HOT_VERSION_STR "-" HOT_VERSION_BETA_STR);
+#else
 	M_PrintWhite (16, y+16, "       Hammer of Thyrion " HOT_VERSION_STR);
+#endif
 	M_PrintWhite (16, y+24, "             Source Port            ");
 	y += 40;
 
@@ -4091,6 +4095,11 @@ static void ReInitMusic() {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.51  2006/01/12 12:34:38  sezero
+ * added video modes enumeration via SDL. added on-the-fly video mode changing
+ * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its
+ * video settings, clean it up, fix it up...
+ *
  * Revision 1.50  2005/12/11 11:53:12  sezero
  * added menu.c arguments to gl version of Draw_TransPicTranslate, and
  * macroized M_DrawTransPicTranslate accordingly. this synchronizes h2
