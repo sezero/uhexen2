@@ -2531,9 +2531,9 @@ void D_ShowLoadingSize(void)
 
 	SCR_DrawLoading();
 
-	glDrawBuffer_fp (GL_BACK);
-
 	glFlush_fp();
+
+	glDrawBuffer_fp (GL_BACK);
 }
 #endif
 

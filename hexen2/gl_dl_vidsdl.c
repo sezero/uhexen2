@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_dl_vidsdl.c,v 1.101 2006-01-20 07:36:47 sezero Exp $
+	$Id: gl_dl_vidsdl.c,v 1.102 2006-01-24 16:51:43 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1798,9 +1798,9 @@ void D_ShowLoadingSize(void)
 
 	SCR_DrawLoading();
 
-	glDrawBuffer_fp  (GL_BACK);
-
 	glFlush_fp();
+
+	glDrawBuffer_fp  (GL_BACK);
 }
 #endif
 
