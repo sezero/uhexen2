@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.54 2006-01-20 07:36:47 sezero Exp $
+	$Id: gl_draw.c,v 1.55 2006-01-24 16:50:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1304,26 +1304,12 @@ void Draw_FadeScreen (void)
 	int bx, by, ex, ey;
 	int c;
 
-#if 0
-	// fadescreen ripple effect stops help/quit screens
-	// from appearing on 3dfx with Mesa Glide.  S.A
-
-	// fadescreen actually works with supported versions
-	// of mesa, such as 3.0, 3.2.1, 3.4.2 and 6.2.1.
-	// It only seems to break when using an old binary
-	// mesaGL from a quake3 package.		O.S.
-
-	if (is_3dfx)
-		return;
-#endif
-
 	glAlphaFunc_fp(GL_ALWAYS, 0);
 
 	glEnable_fp (GL_BLEND);
 	glDisable_fp (GL_TEXTURE_2D);
 
-//	glColor4f_fp (248.0/255.0, 220.0/255.0, 120.0/255.0, 0.2);
-	glColor4f_fp (208.0/255.0, 180.0/255.0, 80.0/255.0, 0.2);
+	glColor4f_fp (248.0/255.0, 220.0/255.0, 120.0/255.0, 0.1);
 	glBegin_fp (GL_QUADS);
 
 	glVertex2f_fp (0,0);
@@ -1332,7 +1318,7 @@ void Draw_FadeScreen (void)
 	glVertex2f_fp (0, vid.height);
 	glEnd_fp ();
 
-	glColor4f_fp (208.0/255.0, 180.0/255.0, 80.0/255.0, 0.035);
+	glColor4f_fp (248.0/255.0, 220.0/255.0, 120.0/255.0, 0.018);
 	for(c=0;c<40;c++)
 	{
 		bx = rand() % vid.width-20;
