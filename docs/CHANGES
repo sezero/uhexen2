@@ -1,5 +1,11 @@
 ChangeLog:
 
+2006-01-24 (CVS, 1.4.0-pre2):
+    * fixed a silly opengl bug which used to display "weird things (TM)" on
+      win32 when antialiasing was set manually.
+    * small tweak to fade screen
+    * bumped version to 1.4.0-pre2 (2006-01-24)
+
 2006-01-23 (CVS, 1.4.0-pre1):
     * sys_unix.c: added code to sleep a bit when we have no focus or paused, and
       sleep more when we are minimized. inspired from the q3 project at icculus.
