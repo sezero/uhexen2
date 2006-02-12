@@ -32,6 +32,7 @@ typedef struct entity_s
 {
 	char	classname[64];
 	char	message[1024];
+	char	netname[1024];
 	vec3_t	origin;
 	float	angle;
 

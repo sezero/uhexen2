@@ -168,7 +168,7 @@ void LightThread (void *junk)
 
 		if (i >= numfaces)
 		{
-			printf("\n\nMHColour Completed.\n\n");
+			printf("\n\nJSH2colour Completed.\n\n");
 			return;
 		}
 
@@ -479,7 +479,7 @@ int main (int argc, char **argv)
 	DefaultExtension (source, ".bsp");
 
 	LoadBSPFile (source);
-	printf ("Processing \"%s\"...\n", source);
+	printf ("Map file : %s\n", source);
 
 	LoadEntities ();
 

@@ -573,6 +573,7 @@ void MakeDPLITFile (char *bspname)
 	fwrite (&newdlightdata, newlightdatasize, 1, litfile);
 
 	fclose (litfile);
+	printf ("Wrote litfile: %s\n", litname);
 }
 
 

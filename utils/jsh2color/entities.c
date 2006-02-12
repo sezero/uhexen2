@@ -219,6 +219,8 @@ void LoadEntities (void)
 				strcpy (entity->classname, com_token);
 			else if (!strcmp (key, "message"))
 				strcpy (entity->message, com_token);
+			else if (!strcmp (key, "netname"))
+				strcpy (entity->netname, com_token);
         		else if (!strcmp(key, "target"))
 				strcpy (entity->target, com_token);			
 			else if (!strcmp(key, "targetname"))
@@ -465,9 +467,14 @@ void LoadEntities (void)
 
 		if (!strcmp (entity->classname, "worldspawn"))
 		{
-			// this requires line number (entity->message)-1  to be
-			// read from strings.txt, therefore not worth the effort
-			//printf ("\nColouring \"%s\"...\n", entity->message);
+			// mapname according to the message field requires line
+			// number entity->message to be read from strings.txt
+			if (strlen(entity->netname))
+				printf ("Map name : \"%s\"\n\n", entity->netname);
+			else if (strlen(entity->message) && atoi(entity->message)>0)
+				printf ("Map name : at line %d in strings.txt\n\n", atoi(entity->message));
+			else
+				printf ("Map name : -- unknown --\n\n");
 
 			//printf("BSP is version %i\n", bsp_ver);
 
