@@ -61,7 +61,7 @@ extern int num_lights;
 // js features
 qboolean external;
 qboolean nodefault;
-char extfilename[MAX_PATH];
+char extfilename[MAX_OSPATH];
 tex_col_list tc_list;
 
 // get number of lines in text
@@ -97,8 +97,8 @@ void ParseDefFile(char* filename)
 	FILE* file = fopen(filename,"rt");
 	if (file != NULL)
 	{
-		num = __max(0,getNumLines(file));
-		num = __min(num , MAX_ENTRYNUM);
+		num = max(0,getNumLines(file));
+		num = min(num , MAX_ENTRYNUM);
 		tc_list.num = num;
 		tc_list.entries = (tex_col*) malloc(sizeof(tex_col) * num);
 
@@ -114,9 +114,9 @@ void ParseDefFile(char* filename)
 				if (strlen(name) > 0 )
 				{
 					strcpy(tc_list.entries[i].name,name);
-					tc_list.entries[i].red = __min(__max(r,1),255);
-					tc_list.entries[i].green = __min(__max(g,1),255);
-					tc_list.entries[i].blue = __min(__max(b,1),255);
+					tc_list.entries[i].red = min(max(r,1),255);
+					tc_list.entries[i].green = min(max(g,1),255);
+					tc_list.entries[i].blue = min(max(b,1),255);
 
 					i++;
 				}
@@ -128,7 +128,7 @@ void ParseDefFile(char* filename)
 
 		num = i;
 		tc_list.num = num;
-		printf("Loaded %d entries from file : %s\n", num, filename);
+		printf("Loaded %ld entries from file : %s\n", num, filename);
 	}
 	else
 		printf("Unable to open file named : %s \n", filename);
@@ -161,7 +161,10 @@ void LightThread (void *junk)
 		UNLOCK;
 
 		if (!facecounter)
+		{
 			printf("Lighting face %i of %i\r", i, numfaces);
+			fflush(stdout);
+		}
 
 		if (i >= numfaces)
 		{
@@ -190,7 +193,10 @@ void LightThread2 (void *junk)
 		UNLOCK;
 
 		if (!facecounter)
+		{
 			printf("Checking face %i of %i\r", i, numfaces);
+			fflush(stdout);
+		}
 
 		if (i >= numfaces)
 		{
@@ -203,10 +209,11 @@ void LightThread2 (void *junk)
 }
 
 
+extern int	nummodels;
+extern dmodel_t	dmodels[MAX_MAP_MODELS];
+
 void FindFaceOffsets( void )
 {
-	extern int	nummodels;
-	extern dmodel_t	dmodels[MAX_MAP_MODELS];
 	int		i, j;
 	entity_t	*ent;
 	char	name[ 20 ];
@@ -247,6 +254,10 @@ void FindFaceOffsets( void )
 	}
 }
 
+
+extern int	num_clights;
+extern int	numlighttex;
+
 /*
  * =============
  *  LightWorld
@@ -257,10 +268,7 @@ void LightWorld (void)
 	int	i;
 	int	j;
 	int	max;
-	float	mody;
 	int	num_colours;
-	extern int num_clights;
-	extern int numlighttex;
 
 	CheckTex ();
 	printf ("\n");
@@ -292,6 +300,7 @@ void LightWorld (void)
 	for (i = 0; i < num_entities; i++)
 	{
 		printf ("- Checking entity %i of %i\r", i + 1, num_entities);
+		fflush(stdout);
 
 		if (entities[i].light)
 		{
@@ -375,12 +384,10 @@ int main (int argc, char **argv)
 
 	//init_log("tyrlite.log");
 
-	printf ("---------------------\n");
-	printf ("JSH2Colour        1.1\n");
-	printf ("Based on JSColour 1.0\n");
-	printf ("Based on MHColour 0.5\n");
-	printf ("Based on Tyrlite  0.8\n");
-	printf ("---------------------\n");
+	printf ("---------------------------------------------------\n");
+	printf ("JSH2Colour " JSH2COLOR_VER "-" PLATFORM_VER "\n");
+	printf ("based on Tyrlite 0.8, MHColour 0.5 and JSColour 1.0\n");
+	printf ("---------------------------------------------------\n");
 
 	force = false;
 	makelit = true;
@@ -455,7 +462,11 @@ int main (int argc, char **argv)
 		ParseDefFile(extfilename);
 
 	if (i != argc - 1)
-		Error ("usage: jsh2colour [-light num] [-extra] [-force] [-dist num] \n\t\t        [-range num] [-nodefault] [-external file] bspfile");
+	{
+		printf ("Usage: jsh2colour [-light num] [-extra] [-force] [-dist num]\n"
+			"\t\t  [-range num] [-nodefault] [-external file] bspfile\n");
+		exit(0);
+	}
 
 	InitThreads ();
 
@@ -468,6 +479,8 @@ int main (int argc, char **argv)
 	DefaultExtension (source, ".bsp");
 
 	LoadBSPFile (source);
+	printf ("Processing \"%s\"...\n", source);
+
 	LoadEntities ();
 
 	MakeTnodes (&dmodels[0]);
@@ -491,3 +504,4 @@ int main (int argc, char **argv)
 
 	return 0;
 }
+

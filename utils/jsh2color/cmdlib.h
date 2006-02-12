@@ -47,22 +47,19 @@ extern char **myargv;
 
 char *strupr (char *in);
 char *strlower (char *in);
-int Q_strncasecmp (char *s1, char *s2, int n);
-int Q_strcasecmp (char *s1, char *s2);
+#ifdef _WIN32
+#define Q_strncasecmp	strnicmp
+#define Q_strcasecmp	stricmp
+#else
+#define Q_strncasecmp	strncasecmp
+#define Q_strcasecmp	strcasecmp
+#endif
 void Q_getwd (char *out);
 
-int filelength (FILE *f);
+int  Q_filelength (FILE *f);
 int  FileTime (char *path);
 
 void Q_mkdir (char *path);
-
-extern char qdir[1024];
-extern char gamedir[1024];
-
-void SetQdirFromPath (char *path);
-char *ExpandPath (char *path);
-char *ExpandPathAndArchive (char *path);
-
 
 double I_FloatTime (void);
 
@@ -88,20 +85,65 @@ void	ExtractFileExtension (char *path, char *dest);
 
 int 	ParseNum (char *str);
 
-short	BigShort (short l);
-short	LittleShort (short l);
-int		BigLong (int l);
-int		LittleLong (int l);
-float	BigFloat (float l);
-float	LittleFloat (float l);
+// endianness stuff: <sys/types.h> is supposed
+// to succeed in locating the correct endian.h
+// this BSD style may not work everywhere, eg. on WIN32
+#if !defined(BYTE_ORDER) || !defined(LITTLE_ENDIAN) || !defined(BIG_ENDIAN) || (BYTE_ORDER != LITTLE_ENDIAN && BYTE_ORDER != BIG_ENDIAN)
+#undef BYTE_ORDER
+#undef LITTLE_ENDIAN
+#undef BIG_ENDIAN
+#define LITTLE_ENDIAN 1234
+#define BIG_ENDIAN 4321
+#endif
+// assumptions in case we don't have endianness info
+#ifndef BYTE_ORDER
+#if defined(_WIN32)
+#define BYTE_ORDER LITTLE_ENDIAN
+#define GUESSED_WIN32_ENDIANNESS
+#else
+#if defined(SUNOS)
+// these bits from darkplaces project
+#define GUESSED_SUNOS_ENDIANNESS
+#if defined(__i386) || defined(__amd64)
+#define BYTE_ORDER LITTLE_ENDIAN
+#else
+#define BYTE_ORDER BIG_ENDIAN
+#endif
+#else
+#define ASSUMED_LITTLE_ENDIAN
+#define BYTE_ORDER LITTLE_ENDIAN
+#endif
+#endif
+#endif
+
+short	ShortSwap (short);
+int	LongSwap (int);
+float	FloatSwap (float);
+
+#if BYTE_ORDER == BIG_ENDIAN
+#define BigShort(s) (s)
+#define LittleShort(s) ShortSwap((s))
+#define BigLong(l) (l)
+#define LittleLong(l) LongSwap((l))
+#define BigFloat(f) (f)
+#define LittleFloat(f) FloatSwap((f))
+#else
+// BYTE_ORDER == LITTLE_ENDIAN
+#define BigShort(s) ShortSwap((s))
+#define LittleShort(s) (s)
+#define BigLong(l) LongSwap((l))
+#define LittleLong(l) (l)
+#define BigFloat(f) FloatSwap((f))
+#define LittleFloat(f) (f)
+#endif
+
+// end of endianness stuff
 
 
 char *COM_Parse (char *data);
 
 extern	char		com_token[1024];
 extern	qboolean	com_eof;
-
-#endif
 
 char *copystring(char *s);
 
@@ -112,7 +154,9 @@ unsigned short CRC_Value(unsigned short crcvalue);
 void CreatePath (char *path);
 void CopyFile (char *from, char *to);
 
-extern qboolean archive;
-extern char	archivedir[1024];
+#ifndef _WIN32
+int Sys_kbhit(void);
+#endif
+void DecisionTime (char *msg);
 
 #endif	// __CMDLIB__

@@ -28,15 +28,26 @@
 #include "cmdlib.h"
 #include "mathlib.h"
 #include "bspfile.h"
-#include "tyrlog.h"
+//#include "tyrlog.h"
 #include "entities.h"
 #include "threads.h"
+
+#define JSH2COLOR_VER	"1.2"	// version string
+#ifdef _WIN32
+#define PLATFORM_VER	"Win32"
+#else
+#define PLATFORM_VER	"Unix"
+#endif
 
 #define	ON_EPSILON	0.1
 #define	MAXLIGHTS			1024
 
 // js features
-#define	MAX_PATH	_MAX_PATH
+#ifdef _MAX_PATH
+#define	MAX_OSPATH	_MAX_PATH
+#else
+#define	MAX_OSPATH	256
+#endif
 #define	MAX_ENTRYNUM	32784
 #define	MAX_TEX_NAME	64
 

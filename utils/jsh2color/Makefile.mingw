@@ -11,7 +11,7 @@ LINKER = $(WIN32CC)
 
 BINARY=jsh2colour.exe
 
-CFLAGS = -I$(MINGWDIR)/include -O2 -Wall
+CFLAGS = -I$(MINGWDIR)/include -march=i586 -O2 -Wall -ffast-math -fexpensive-optimizations
 LDFLAGS = -mconsole
 LDLIBS=
 

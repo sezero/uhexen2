@@ -26,15 +26,15 @@
 
 #ifdef WIN32
 #include <direct.h>
+#include <conio.h>
+#else
+#include <unistd.h>
+#include <string.h>
+#include <sys/ioctl.h>
 #endif
 
 #ifdef NeXT
 #include <libc.h>
-#endif
-
-#ifdef LINUX
-#include <unistd.h>
-#include <string.h>
 #endif
 
 #define PATHSEPERATOR   '/'
@@ -45,85 +45,6 @@ char **myargv;
 
 char		com_token[1024];
 qboolean	com_eof;
-
-qboolean 	archive;
-char     	archivedir[1024];
-
-
-/*
- * qdir will hold the path up to the quake directory, including the slash
- *
- *  f:\quake\
- *  /raid/quake/
- *
- * gamedir will hold qdir + the game directory (id1, id2, etc)
- *
- */
-
-char qdir[1024];
-char gamedir[1024];
-
-void SetQdirFromPath (char *path)
-{
-	char temp[1024];
-	char *c;
-
-	if (!(path[0] == '/' || path[0] == '\\' || path[1] == ':'))
-	{
-		/* path is partial */
-		Q_getwd (temp);
-		strcat (temp, path);
-		path = temp;
-	}
-
-	/* search for "quake" in path */
-	for (c=path ; *c ; c++)
-		if (!Q_strncasecmp (c, "quake", 5))
-		{
-			strncpy (qdir, path, c+6-path);
-			printf ("qdir: %s\n", qdir);
-			c += 6;
-			while (*c)
-			{
-				if (*c == '/' || *c == '\\')
-				{
-					strncpy (gamedir, path, c+1-path);
-					printf ("gamedir: %s\n", gamedir);
-					return;
-				}
-				c++;
-			}
-			Error ("No gamedir in %s", path);
-			return;
-		}
-	Error ("SeetQdirFromPath: no 'quake' in %s", path);
-}
-
-char *ExpandPath (char *path)
-{
-	static char full[1024];
-	if (!qdir)
-		Error ("ExpandPath called without qdir set");
-	if (path[0] == '/' || path[0] == '\\' || path[1] == ':')
-		return path;
-	sprintf (full, "%s%s", qdir, path);
-	return full;
-}
-
-char *ExpandPathAndArchive (char *path)
-{
-	char	*expanded;
-	char	archivename[1024];
-
-	expanded = ExpandPath (path);
-
-	if (archive)
-	{
-		sprintf (archivename, "%s/%s", archivedir, path);
-		CopyFile (expanded, archivename);
-	}
-	return expanded;
-}
 
 char *copystring(char *s)
 {
@@ -171,21 +92,8 @@ void Q_getwd (char *out)
 	_getcwd (out, 256);
 	strcat (out, "\\");
 #else
-#ifdef LINUX
-	char	*pwd;
-	int	len;
-
-	pwd = getenv("PWD");
-	if (!pwd)
-		Error ("Couldn't get working directory - "
-			"PWD not set in environment\n");
-	len = strlen(pwd);
-	if (len > 255)
-		Error("Not enough space to hold working dir\n");
-	strcpy(out, pwd);
-#else
-	getwd (out);
-#endif
+	getcwd (out, 256);
+	strcat (out, "/");
 #endif
 }
 
@@ -298,40 +206,6 @@ skipwhite:
 }
 
 
-int Q_strncasecmp (char *s1, char *s2, int n)
-{
-	int		c1, c2;
-
-	while (1)
-	{
-		c1 = *s1++;
-		c2 = *s2++;
-
-		if (!n--)
-			return 0;		// strings are equal until end point
-
-		if (c1 != c2)
-		{
-			if (c1 >= 'a' && c1 <= 'z')
-				c1 -= ('a' - 'A');
-			if (c2 >= 'a' && c2 <= 'z')
-				c2 -= ('a' - 'A');
-			if (c1 != c2)
-				return -1;		// strings not equal
-		}
-		if (!c1)
-			return 0;		// strings are equal
-	}
-
-	return -1;
-}
-
-int Q_strcasecmp (char *s1, char *s2)
-{
-	return Q_strncasecmp (s1, s2, 99999);
-}
-
-
 char *strupr (char *start)
 {
 	char	*in;
@@ -408,13 +282,12 @@ int CheckParm (char *check)
 }
 
 
-
 /*
 ================
-filelength
+Q_filelength
 ================
 */
-int filelength (FILE *f)
+int Q_filelength (FILE *f)
 {
 	int		pos;
 	int		end;
@@ -467,7 +340,6 @@ void SafeWrite (FILE *f, void *buffer, int count)
 }
 
 
-
 /*
 ==============
 LoadFile
@@ -480,7 +352,7 @@ int	LoadFile (char *filename, void **bufferptr)
 	void	*buffer;
 
 	f = SafeOpenRead (filename);
-	length = filelength (f);
+	length = Q_filelength (f);
 	buffer = malloc (length+1);
 	((char *)buffer)[length] = 0;
 	SafeRead (f, buffer, length);
@@ -504,7 +376,6 @@ void	SaveFile (char *filename, void *buffer, int count)
 	SafeWrite (f, buffer, count);
 	fclose (f);
 }
-
 
 
 void DefaultExtension (char *path, char *extension)
@@ -676,13 +547,18 @@ int ParseNum (char *str)
 ============================================================================
 */
 
-#ifdef _SGI_SOURCE
-#define	__BIG_ENDIAN__
+#ifdef ASSUMED_LITTLE_ENDIAN
+#warning "Unable to determine CPU endianess. Defaulting to little endian"
+#endif
+#ifdef GUESSED_SUNOS_ENDIANNESS
+#warning "Made assumptions for undetermined SUNOS CPU endianess"
+#endif
+#ifdef GUESSED_WIN32_ENDIANNESS
+// not that it matters but to remember what I did
+#warning "CPU endianess for Win32 assumed to be little endian"
 #endif
 
-#ifdef __BIG_ENDIAN__
-
-short	LittleShort (short l)
+short	ShortSwap (short l)
 {
 	byte	b1, b2;
 
@@ -692,13 +568,7 @@ short	LittleShort (short l)
 	return (b1<<8) + b2;
 }
 
-short	BigShort (short l)
-{
-	return l;
-}
-
-
-int	LittleLong (int l)
+int	LongSwap (int l)
 {
 	byte	b1, b2, b3, b4;
 
@@ -710,13 +580,7 @@ int	LittleLong (int l)
 	return ((int)b1<<24) + ((int)b2<<16) + ((int)b3<<8) + b4;
 }
 
-int	BigLong (int l)
-{
-	return l;
-}
-
-
-float	LittleFloat (float l)
+float	FloatSwap (float l)
 {
 	union {
 		byte b[4];
@@ -732,68 +596,6 @@ float	LittleFloat (float l)
 	return out.f;
 }
 
-float	BigFloat (float l)
-{
-	return l;
-}
-
-#else
-
-short	BigShort (short l)
-{
-	byte	b1, b2;
-
-	b1 = l&255;
-	b2 = (l>>8)&255;
-
-	return (b1<<8) + b2;
-}
-
-short	LittleShort (short l)
-{
-	return l;
-}
-
-
-int	BigLong (int l)
-{
-	byte	b1, b2, b3, b4;
-
-	b1 = l&255;
-	b2 = (l>>8)&255;
-	b3 = (l>>16)&255;
-	b4 = (l>>24)&255;
-
-	return ((int)b1<<24) + ((int)b2<<16) + ((int)b3<<8) + b4;
-}
-
-int	LittleLong (int l)
-{
-	return l;
-}
-
-float	BigFloat (float l)
-{
-	union {
-		byte b[4];
-		float f;
-	} in, out;
-
-	in.f = l;
-	out.b[0] = in.b[3];
-	out.b[1] = in.b[2];
-	out.b[2] = in.b[1];
-	out.b[3] = in.b[0];
-
-	return out.f;
-}
-
-float	LittleFloat (float l)
-{
-	return l;
-}
-
-#endif
 
 /*
  * FIXME: byte swap?
@@ -897,3 +699,61 @@ void	CopyFile (char *from, char *to)
 	SaveFile (to, buffer, length);
 	free (buffer);
 }
+
+/* ========================================================================= */
+
+#ifndef _WIN32
+int	Sys_kbhit(void)
+{
+	int	n;
+
+	ioctl (0, FIONREAD, &n);
+	return n;
+}
+#endif
+
+extern qboolean force;
+
+void DecisionTime (char *msg)
+{
+	char	c;
+
+	// if we're forcing colouring irrespective of potential
+	// effectiveness (eg in a batch file), just get out
+	if (force)
+		return;
+
+	printf ("\nMHColour reports that it may not light this BSP effectively\n(%s)\n", msg);
+
+#ifdef _WIN32
+	printf ("Continue? [Y/N] ");
+	while (1)
+	{
+		c = getch ();
+
+		if (c == 'y' || c == 'Y' || c == 'n' || c == 'N')
+			break;
+	}
+
+	printf ("%c\n", c);
+#else
+	// lame solution for unix
+	while (1)
+	{
+		c = 0;
+		printf ("Continue? [Y/N] ");
+		fflush(stdout);
+		while (!Sys_kbhit())
+			;
+		c = getchar();
+		if (c == 'y' || c == 'Y' || c == 'n' || c == 'N')
+			break;
+	}
+	printf ("\n");
+	fflush(stdout);
+#endif
+
+	if (c == 'n' || c == 'N')
+		Error ("Program Terminated by user\n");
+}
+

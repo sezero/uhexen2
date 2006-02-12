@@ -54,8 +54,10 @@ vec_t CastRay (vec3_t p1, vec3_t p2)
 	for (i=0 ; i< 3 ; i++)
 		t += (p2[i]-p1[i]) * (p2[i]-p1[i]);
 
-	if (t == 0)
+	//if (t == 0)
+	if (t <= 0)
 		t = 1;		// don't blow up...
+
 	return sqrt(t);
 }
 
@@ -81,34 +83,13 @@ towards the center until it is valid.
 */
 
 #define	SINGLEMAP	(18*18*4)
-/*
 typedef struct
 {
-	double	lightmaps[MAXLIGHTMAPS][SINGLEMAP];
-	int		numlightstyles;
-	double	*light;
-	double	facedist;
-	vec3_t	facenormal;
-
-	int		numsurfpt;
-	vec3_t	surfpt[SINGLEMAP];
-
-	vec3_t	texorg;
-	vec3_t	worldtotex[2];	// s = (world - texorg) . worldtotex[0]
-	vec3_t	textoworld[2];	// world = texorg + s * textoworld[0]
-
-	double	exactmins[2], exactmaxs[2];
-
-	int		texmins[2], texsize[2];
-	int		lightstyles[256];
-	int		surfnum;
-	dface_t	*face;
-} lightinfo_t;
-*/
-typedef struct
-{
+//	double	lightmaps[MAXLIGHTMAPS][SINGLEMAP];
 	vec_t	lightmaps[MAXLIGHTMAPS][SINGLEMAP];
 	int		numlightstyles;
+//	double	*light;
+//	double	facedist;
 	vec_t	*light;
 	vec_t	facedist;
 	vec3_t	facenormal;
@@ -120,6 +101,7 @@ typedef struct
 	vec3_t	worldtotex[2];	// s = (world - texorg) . worldtotex[0]
 	vec3_t	textoworld[2];	// world = texorg + s * textoworld[0]
 
+//	double	exactmins[2], exactmaxs[2];
 	vec_t	exactmins[2], exactmaxs[2];
 
 	int		texmins[2], texsize[2];
@@ -214,8 +196,7 @@ Fills in s->texmins[] and s->texsize[]
 also sets exactmins[] and exactmaxs[]
 ================
 */
-//void CalcFaceExtents (lightinfo_t *l)
-void CalcFaceExtents (lightinfo_t *l, vec3_t faceoffset)
+void CalcFaceExtents (lightinfo_t *l, vec3_t faceoffset, qboolean fail)
 {
 	dface_t	*s;
 	//double	mins[2], maxs[2], val;
@@ -273,57 +254,8 @@ void CalcFaceExtents (lightinfo_t *l, vec3_t faceoffset)
 		l->texmins[i] = mins[i];
 		l->texsize[i] = maxs[i] - mins[i];
 
-		if (l->texsize[i] > 17)
+		if (fail && l->texsize[i] > 17)
 			Error ("Bad surface extents");
-	}
-}
-
-void CalcFaceExtentsNoErr (lightinfo_t *l, vec3_t faceoffset)
-{
-	dface_t	*s;
-	vec_t		mins[2], maxs[2], val;
-	int		i, j, e;
-	dvertex_t	*v;
-	texinfo_t	*tex;
-
-	s = l->face;
-
-	mins[0] = mins[1] = 999999;
-	maxs[0] = maxs[1] = -99999;
-
-	tex = &texinfo[s->texinfo];
-
-	for (i=0 ; i<s->numedges ; i++)
-	{
-		e = dsurfedges[s->firstedge+i];
-		if (e >= 0)
-			v = dvertexes + dedges[e].v[0];
-		else
-			v = dvertexes + dedges[-e].v[1];
-
-		for (j=0 ; j<2 ; j++)
-		{
-			val = (v->point[0]+faceoffset[0]) * tex->vecs[j][0]
-				+ (v->point[1]+faceoffset[1]) * tex->vecs[j][1]
-				+ (v->point[2]+faceoffset[2]) * tex->vecs[j][2]
-				+ tex->vecs[j][3];
-			if (val < mins[j])
-				mins[j] = val;
-			if (val > maxs[j])
-				maxs[j] = val;
-		}
-	}
-
-	for (i=0 ; i<2 ; i++)
-	{
-		l->exactmins[i] = mins[i];
-		l->exactmaxs[i] = maxs[i];
-
-		mins[i] = floor(mins[i]/16);
-		maxs[i] = ceil(maxs[i]/16);
-
-		l->texmins[i] = mins[i];
-		l->texsize[i] = maxs[i] - mins[i];
 	}
 }
 
@@ -335,7 +267,7 @@ For each texture aligned grid point, back project onto the plane
 to get the world xyz value of the sample point
 =================
 */
-int c_bad;
+int c_bad;	// FIXME: What is this??
 void CalcPoints (lightinfo_t *l)
 {
 	int		i;
@@ -663,7 +595,6 @@ void SingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset, int bo
 void SkyLightFace (lightinfo_t *l, vec3_t faceoffset)
 {
 	int		i, j;
-	int		k1, l1;
 	vec_t	*surf;
 	vec3_t	incoming;
 	vec_t	angle;
@@ -774,43 +705,6 @@ void FixMinlight (lightinfo_t *l)
 	}
 }
 
-/*
- * To (help) make the code below in SingleLightFace more readable, I'll use
- * these macros.
- *
- * light is the light intensity, needed to check if +ve or -ve.
- * src and dest are the source and destination color vectors (vec3_t).
- * dest becomes a copy of src where
- *    MakePosColoredLight removes negative light components.
- *    MakeNegColoredLight removes positive light components.
- */
-
-#define MakePosColoredLight(light,dest,src) {\
-	if (light >= 0) { \
-	    for (k=0 ; k<3 ; k++) \
-		if (src[k] < 0)	dest[k] = 0; \
-		else		dest[k] = src[k]; \
-	} else { \
-	    for (k=0 ; k<3 ; k++) \
-		if (src[k] > 0)	dest[k] = 0; \
-		else		dest[k] = src[k]; \
-	} \
-}
-
-#define MakeNegColoredLight(light,dest,src) {\
-	if (light >= 0) { \
-	    for (k=0 ; k<3 ; k++) \
-		if (src[k] > 0)	dest[k] = 0; \
-		else		dest[k] = src[k]; \
-	} else { \
-	    for (k=0 ; k<3 ; k++) \
-		if (src[k] < 0)	dest[k] = 0; \
-		else		dest[k] = src[k]; \
-	} \
-}
-
-//#define MakeNegColoredLight(light, dest, src) if (light >= 0) { for (k=0 ; k<3 ; k++) if (src[k] > 0) dest[k] = 0; else dest[k] = src[k]; } else { for (k=0 ; k<3 ; k++) if (src[k] < 0) dest[k] = 0; else dest[k] = src[k]; }
-
 
 /*
 ============
@@ -826,7 +720,6 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 	/* TYR - temp vars */
 	vec_t		max;
 	int		x1, x2, x3, x4;
-	int		k;	/* for the macros */
 
 	vec_t		total;
 	//double	total;
@@ -878,7 +771,7 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 
 	CalcFaceVectors (&l);
 	//CalcFaceExtents (&l);
-	CalcFaceExtents (&l, faceoffset);
+	CalcFaceExtents (&l, faceoffset, true);
 	CalcPoints (&l);
 
 	lightmapwidth = l.texsize[0]+1;
@@ -1025,9 +918,7 @@ void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset)
 	/* TYR - temp vars */
 	vec_t		max;
 	int		x1, x2, x3, x4;
-	int		k;	/* for the macros */
 
-	vec_t		total;
 	int		size;
 	int		lightmapwidth;
 	int		lightmapsize;
@@ -1072,7 +963,7 @@ void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset)
 	}
 
 	CalcFaceVectors (&l);
-	CalcFaceExtents (&l, faceoffset);
+	CalcFaceExtents (&l, faceoffset, true);
 	CalcPoints (&l);
 
 	lightmapwidth = l.texsize[0]+1;
@@ -1174,22 +1065,10 @@ void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset)
 void TestSingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset, int bouncelight)
 {
 	vec_t	dist;
-	vec3_t	incoming;
-	vec_t	angle;
 	vec_t	add;
 	vec_t	*surf;
-	vec_t	*lastsurf;
-	qboolean	hit;
-	int	mapnum;
-	int	size;
-	int	c, i;
+	int	c;
 	vec3_t	rel;
-	vec3_t	spotvec;
-	vec_t	falloff;
-	vec_t	*lightsamp;
-	/* Colored lighting */
-	vec3_t	*lightcoloursamp;
-
 	int	surf_r;
 	int	surf_g;
 	int	surf_b;
@@ -1245,26 +1124,8 @@ void TestLightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 {
 	dface_t	*f;
 	lightinfo_t	l;
-	int		s, t;
-	int		i, j, c;
-
-	/* TYR - temp vars */
-	vec_t		max;
-	int		x1, x2, x3, x4;
-	int		k;	/* for the macros */
-
-	vec_t		total;
-	int		size;
-	int		lightmapwidth;
-	int		lightmapsize;
-	byte	*out;
-	vec_t		*light;
-
-	/* TYR - colored lights */
-	vec3_t		*lightcolour;
-	vec3_t		totalcolours;
-
-	int		w, h;
+	int		i;
+	//int		j, c;
 	vec3_t		point;
 
 
@@ -1306,7 +1167,7 @@ void TestLightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 	CalcFaceVectors (&l);
 
 	// use the safe version here which will not give bad surface extents on special textures
-	CalcFaceExtentsNoErr (&l, faceoffset);
+	CalcFaceExtents(&l, faceoffset, false);
 
 	CalcPoints (&l);
 

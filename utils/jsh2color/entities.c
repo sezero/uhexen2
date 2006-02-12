@@ -34,6 +34,7 @@ int	numtexlights;
 entity_t texlights[MAX_MAP_FACES];
 int	num_clights;
 
+#if 0
 // find textures that could emit lights
 void FindTexLights (void)
 {
@@ -43,7 +44,7 @@ void FindTexLights (void)
 
 	numtexlights = 0;
 
-#if 0
+#   if 0
 	for (i = 0; i < numfaces; i++)
 	{
 		// make it more legible... and easier (less typing)
@@ -70,8 +71,9 @@ void FindTexLights (void)
 			numtexlights++;
 		}
 	}
-#endif
+#   endif
 }
+#endif
 
 /*
 ==============================================================================
@@ -151,6 +153,7 @@ void MatchTargets (void)
 LoadEntities
 ==================
 */
+extern int bsp_ver;
 void LoadEntities (void)
 {
 	char		*data;
@@ -357,7 +360,7 @@ void LoadEntities (void)
 
 			// Convert to Hexen2 Entities
 			// since the map has no colour info anyway, we don't need to test this
-			if (!strnicmp (entity->classname, "light_torch", 11))
+			if (!Q_strncasecmp(entity->classname, "light_torch", 11))
 			{
 			/*
 				In Hexen 2 :
@@ -373,7 +376,7 @@ void LoadEntities (void)
 				entity->lightcolour[1] = 128;
 				entity->lightcolour[2] = 64;
 			}
-			else if (!strnicmp (entity->classname, "light_flame", 11))
+			else if (!Q_strncasecmp(entity->classname, "light_flame", 11))
 			{
 				// make it orange
 			/*
@@ -455,10 +458,9 @@ void LoadEntities (void)
 
 		if (!strcmp (entity->classname, "worldspawn"))
 		{
-			extern int bsp_ver;
-
-			// just cos it's nice...
-			printf ("\nColouring \"%s\"...\n", entity->message);
+			// this requires line number (entity->message)-1  to be
+			// read from strings.txt, therefore not worth the effort
+			//printf ("\nColouring \"%s\"...\n", entity->message);
 
 			//printf("BSP is version %i\n", bsp_ver);
 

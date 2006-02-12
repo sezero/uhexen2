@@ -25,12 +25,10 @@
 //   at least looks better - yellow is really only suited to base maps
 // - added rogue, hipnotic and zerstorer textures
 
-#include <conio.h>
 #include "tyrlite.h"
 
 void FindTexlightColour (int *surf_r, int *surf_g, int *surf_b, char *texname)
 {
-
 	if (nodefault == false) // js feature
 	{
 		if (!strncmp (texname, "*lava000", 8))
@@ -567,31 +565,5 @@ void FindTexlightColourExt (int *surf_r, int *surf_g, int *surf_b, char *texname
 	if (*surf_b < 1)
 		*surf_b = 1;
 	*/
-}
-
-void DecisionTime (char *msg)
-{
-	char	c;
-
-	// if we're forcing colouring irrespective of potential effectiveness (eg in a batch file)
-	// just get out
-	if (force)
-		return;
-
-	printf ("\nMHColour reports that it may not light this BSP effectively\n(%s)\n", msg);
-	printf ("Continue? [Y/N] ");
-
-	while (1)
-	{
-		c = getch ();
-
-		if (c == 'y' || c == 'Y' || c == 'n' || c == 'N')
-			break;
-	}
-
-	printf ("%c\n", c);
-
-	if (c == 'n' || c == 'N')
-		Error ("Program Terminated by user\n");
 }
 

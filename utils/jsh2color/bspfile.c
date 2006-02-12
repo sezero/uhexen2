@@ -301,10 +301,11 @@ void FindColourName (char *name, int r, int g, int b)
 }
 
 
+extern int	num_clights;
+extern int	num_lights;
+
 void CheckTex (void)
 {
-	extern int num_clights;
-	extern int num_lights;
 	int i, j;
 	int r, g, b;
 	int count;
@@ -467,7 +468,7 @@ void	LoadBSPFile (char *filename)
 //
 // load the file header
 //
-	LoadFile (filename, (void **)&header);
+	LoadFile (filename, (void **)  (char *) &header);
 
 // swap the header
 	for (i=0 ; i< sizeof(dheader_t)/4 ; i++)

@@ -112,6 +112,7 @@ typedef struct
  * TYR - modified TestLine (a bit of a hack job...)
  * ==============
  */
+//qboolean TestLine (vec3_t start, vec3_t stop)
 qboolean TestLineOrSky (vec3_t start, vec3_t stop, qboolean sky_test)
 {
 	int		node;
@@ -204,120 +205,9 @@ qboolean TestLineOrSky (vec3_t start, vec3_t stop, qboolean sky_test)
 			continue;
 		}
 
-		side = front < 0;
+		side = (front < 0.0f) ? 1 : 0;
 
-		front = front / (front-back);
-
-		tstack_p->node = node;
-		tstack_p->side = side;
-		tstack_p->backpt[0] = backx;
-		tstack_p->backpt[1] = backy;
-		tstack_p->backpt[2] = backz;
-
-		tstack_p++;
-
-		backx = frontx + front*(backx-frontx);
-		backy = fronty + front*(backy-fronty);
-		backz = frontz + front*(backz-frontz);
-
-		node = tnode->children[side];
-	}
-}
-
-/*
-==============
-TestLine
-==============
-*/
-
-/*
-qboolean TestLine (vec3_t start, vec3_t stop)
-{
-	int				node;
-	float			front, back;
-	tracestack_t	*tstack_p;
-	int				side;
-	float 			frontx,fronty, frontz, backx, backy, backz;
-	tracestack_t	tracestack[64];
-	tnode_t			*tnode;
-
-	frontx = (float)start[0];
-	fronty = (float)start[1];
-	frontz = (float)start[2];
-	backx = (float)stop[0];
-	backy = (float)stop[1];
-	backz = (float)stop[2];
-
-	tstack_p = tracestack;
-	node = 0;
-
-	while (1)
-	{
-		while (node < 0 && node != CONTENTS_SOLID)
-		{
-		// pop up the stack for a back side
-			tstack_p--;
-			if (tstack_p < tracestack)
-				return true;
-			node = tstack_p->node;
-
-		// set the hit point for this plane
-
-			frontx = backx;
-			fronty = backy;
-			frontz = backz;
-
-		// go down the back side
-
-			backx = (float)tstack_p->backpt[0];
-			backy = (float)tstack_p->backpt[1];
-			backz = (float)tstack_p->backpt[2];
-
-			node = tnodes[tstack_p->node].children[!tstack_p->side];
-		}
-
-		if (node == CONTENTS_SOLID)
-			return false;	// DONE!
-
-		tnode = &tnodes[node];
-
-		switch (tnode->type)
-		{
-		case PLANE_X:
-			front = frontx - tnode->dist;
-			back = backx - tnode->dist;
-			break;
-		case PLANE_Y:
-			front = fronty - tnode->dist;
-			back = backy - tnode->dist;
-			break;
-		case PLANE_Z:
-			front = frontz - tnode->dist;
-			back = backz - tnode->dist;
-			break;
-		default:
-			front = (float)((frontx*tnode->normal[0] + fronty*tnode->normal[1] + frontz*tnode->normal[2]) - tnode->dist);
-			back = (float)((backx*tnode->normal[0] + backy*tnode->normal[1] + backz*tnode->normal[2]) - tnode->dist);
-			break;
-		}
-
-		if (front > -ON_EPSILON && back > -ON_EPSILON)
-//		if (front > 0 && back > 0)
-		{
-			node = tnode->children[0];
-			continue;
-		}
-
-		if (front < ON_EPSILON && back < ON_EPSILON)
-//		if (front <= 0 && back <= 0)
-		{
-			node = tnode->children[1];
-			continue;
-		}
-
-		side = front < 0;
-
-		front = front / (front-back);
+		front /= (front - back);
 
 		tstack_p->node = node;
 		tstack_p->side = side;
@@ -334,7 +224,7 @@ qboolean TestLine (vec3_t start, vec3_t stop)
 		node = tnode->children[side];
 	}
 }
-*/
+
 
 /*
  * ================
