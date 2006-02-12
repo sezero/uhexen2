@@ -61,7 +61,7 @@ qboolean VectorCompare (vec3_t v1, vec3_t v2);
 
 vec_t Q_rint (vec_t in);
 
-void VectorMA (vec3_t va, double scale, vec3_t vb, vec3_t vc);
+void VectorMA (vec3_t va, vec_t scale, vec3_t vb, vec3_t vc);
 
 void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross);
 vec_t VectorNormalize (vec3_t v);

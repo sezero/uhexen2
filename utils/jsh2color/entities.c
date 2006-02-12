@@ -160,7 +160,7 @@ void LoadEntities (void)
 	entity_t	*entity;
 	char		key[64];	
 	epair_t		*epair;
-	double		vec[3];
+	vec_t		vec[3];
 	int		i;
 
 	data = dentdata;
@@ -225,20 +225,15 @@ void LoadEntities (void)
 				strcpy (entity->targetname, com_token);
 			else if (!strcmp(key, "origin"))
 			{
-				/* scan into doubles, then assign        */
-				/* which makes it vec_t size independent */
-				if (sscanf(com_token, "%lf %lf %lf", &vec[0], &vec[1], &vec[2]) != 3)
-					Error ("LoadEntities: not 3 values for origin");
-
-				for (i=0 ; i<3 ; i++)
-					entity->origin[i] = vec[i];
-				/*
+#ifdef DOUBLEVEC_T
 				if (sscanf(com_token, "%lf %lf %lf",
+#else
+				if (sscanf(com_token, "%f %f %f",
+#endif
 						&entity->origin[0],
 						&entity->origin[1],
 						&entity->origin[2]) != 3)
 					Error ("LoadEntities: not 3 values for origin");
-				*/
 			}
 			else if (!strncmp(key, "light",5))
 				entity->light = atof(com_token);
@@ -264,9 +259,11 @@ void LoadEntities (void)
 				entity->formula = atoi(com_token);
 			else if (!strcmp(key, "mangle"))
 			{
-				/* scan into doubles, then assign		*/
-				/* which makes it vec_t size independent	*/
+#ifdef DOUBLEVEC_T
 				if (sscanf(com_token, "%lf %lf %lf", &vec[0], &vec[1], &vec[2]) != 3)
+#else
+				if (sscanf(com_token, "%f %f %f", &vec[0], &vec[1], &vec[2]) != 3)
+#endif
 					Error ("LoadEntities: not 3 values for mangle");
 
 				/* Precalculate the direction vector		*/
@@ -277,9 +274,11 @@ void LoadEntities (void)
 			}
 			else if (!strcmp(key, "_color")/* don't work with hipnotic particle fields || !strcmp(key, "color")*/)
 			{
-				/* scan into doubles, then assign		*/
-				/* which makes it vec_t size independent	*/
+#ifdef DOUBLEVEC_T
 				if (sscanf(com_token, "%lf %lf %lf", &vec[0], &vec[1], &vec[2]) != 3)
+#else
+				if (sscanf(com_token, "%f %f %f", &vec[0], &vec[1], &vec[2]) != 3)
+#endif
 					Error ("LoadEntities: not 3 values for colour");
 				for (i=0 ; i<3 ; i++)
 					entity->lightcolour[i] = vec[i];
@@ -288,9 +287,11 @@ void LoadEntities (void)
 				sunlight = atof(com_token);
 			else if (!strcmp(key, "_sun_mangle"))
 			{
-				/* scan into doubles, then assign		*/
-				/* which makes it vec_t size independent	*/
+#ifdef DOUBLEVEC_T
 				if (sscanf(com_token, "%lf %lf %lf", &vec[0], &vec[1], &vec[2]) != 3)
+#else
+				if (sscanf(com_token, "%f %f %f", &vec[0], &vec[1], &vec[2]) != 3)
+#endif
 					Error ("LoadEntities: not 3 values for _sun_mangle");
 
 				/* Precalculate sun vector and			*/
@@ -303,21 +304,27 @@ void LoadEntities (void)
 			}
 			else if (!strcmp(key, "_sunlight_color"))
 			{
-				/* scan into doubles, then assign		*/
-				/* which makes it vec_t size independent	*/
-				if (sscanf(com_token, "%lf %lf %lf", &vec[0], &vec[1], &vec[2]) != 3)
+#ifdef DOUBLEVEC_T
+				if (sscanf(com_token, "%lf %lf %lf",
+#else
+				if (sscanf(com_token, "%f %f %f",
+#endif
+						&sunlight_color[0],
+						&sunlight_color[1],
+						&sunlight_color[2]) != 3)
 					Error ("LoadEntities: not 3 values for _sunlight_color");
-				for (i=0 ; i<3 ; i++)
-					sunlight_color[i] = vec[i];
 			}
 			else if (!strcmp(key, "_minlight_color"))
 			{
-				/* scan into doubles, then assign		*/
-				/* which makes it vec_t size independent	*/
-				if (sscanf(com_token, "%lf %lf %lf", &vec[0], &vec[1], &vec[2]) != 3)
+#ifdef DOUBLEVEC_T
+				if (sscanf(com_token, "%lf %lf %lf",
+#else
+				if (sscanf(com_token, "%f %f %f",
+#endif
+						&minlight_color[0],
+						&minlight_color[1],
+						&minlight_color[2]) != 3)
 					Error ("LoadEntities: not 3 values for _minlight_color");
-				for (i=0 ; i<3 ; i++)
-					minlight_color[i] = vec[i];
 			}
 			/*
 			else if (!strcmp(key, "angle"))
@@ -543,7 +550,11 @@ void	GetVectorForKey (entity_t *ent, char *key, vec3_t vec)
 	char	*k;
 
 	k = ValueForKey (ent, key);
+#ifdef DOUBLEVEC_T
 	sscanf (k, "%lf %lf %lf", &vec[0], &vec[1], &vec[2]);
+#else
+	sscanf (k, "%f %f %f", &vec[0], &vec[1], &vec[2]);
+#endif
 }
 
 

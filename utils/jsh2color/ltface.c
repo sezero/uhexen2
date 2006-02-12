@@ -386,7 +386,7 @@ int		c_culldistplane, c_proper;
  * TYRLITE: Attenuation formulae setup functions
  * ==============================================
  */
-float scaledDistance (float distance, entity_t *light)
+vec_t scaledDistance (vec_t distance, entity_t *light)
 {
 	switch (light->formula)
 	{
@@ -403,9 +403,9 @@ float scaledDistance (float distance, entity_t *light)
 	}
 }
 
-float scaledLight (float distance, entity_t *light)
+vec_t scaledLight (vec_t distance, entity_t *light)
 {
-	float tmp = scaledist * light->atten * distance;
+	vec_t tmp = scaledist * light->atten * distance;
 	switch (light->formula)
 	{
 	case 3:
@@ -566,9 +566,9 @@ void SingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset, int bo
 			/* processing. x2.24 faster in profiler:		      */
 			add /= 255.0f;
 
-			lightcoloursamp[c][0] += (float)add * light->lightcolour[0];
-			lightcoloursamp[c][1] += (float)add * light->lightcolour[1];
-			lightcoloursamp[c][2] += (float)add * light->lightcolour[2];
+			lightcoloursamp[c][0] += add * light->lightcolour[0];
+			lightcoloursamp[c][1] += add * light->lightcolour[1];
+			lightcoloursamp[c][2] += add * light->lightcolour[2];
 		}
 
 		if (abs(lightsamp[c]) > 1)	/* ignore really tiny lights */
