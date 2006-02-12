@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.71 2006-01-24 16:50:07 sezero Exp $
+	$Id: gl_draw.c,v 1.72 2006-02-12 09:27:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2066,11 +2066,7 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 	}
 
 	if (numgltextures >= MAX_GLTEXTURES)
-	{
-		Sys_Error ("GL_LoadTexture: cache full, max is %i textures.\n"
-			   "Consider setting gl_purge_maptex option to 1 .",
-			   MAX_GLTEXTURES);
-	}
+		Sys_Error ("GL_LoadTexture: cache full, max is %i textures.", MAX_GLTEXTURES);
 
 	glt = &gltextures[numgltextures];
 	numgltextures++;
@@ -2148,6 +2144,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.71  2006/01/24 16:50:07  sezero
+ * small tweak to fade screen
+ *
  * Revision 1.70  2006/01/20 07:36:47  sezero
  * Switched back to original hexen2 version of GL_ResampleTexture: the h2w (quake)
  * code gave slightly sharper but "jaggier" textures here and there. bad results
