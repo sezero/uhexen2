@@ -1,14 +1,15 @@
 TODO:
 -----
 
-  Re-write midi code for wildmidi
-  Add sequencer support for midi
-  Add joystick support through sdl
-  Add multisampling support to win32
-  More unification of hexen2 and hexenworld trees
-  Re-visit the extra patches, fix and merge (e.g.: fog, etc.)
   Check / fix the tree for 64-bit platforms
   Make sure that we are big-endian-ready
   Make the software renderer "intel-free" someday
+  Clean-up the utilities and add pthread support
+  Add joystick support through sdl
   Do a clean-up of the opengl system
+  Add sequencer support for midi
+  Re-write midi code for wildmidi
+  Add multisampling support to win32
+  More unification of hexen2 and hexenworld trees
+  Re-visit the extra patches, fix and merge (e.g.: fog, etc.)
   Reduce the number of lines in BUGS ;)
