@@ -2,6 +2,7 @@
 
 EXE_EXT=
 BIN_FILES="dcc/bin/dhcc h2_utils/bin/hcc h2mp_utils/bin/hcc 
+jsh2color/jsh2colour
 h2_utils/bin/vis h2_utils/bin/qbsp h2_utils/bin/light 
 h2mp_utils/bin/vis h2_utils/bin/qbsp h2_utils/bin/light 
 h2mp_utils/bin/qfiles h2mp_utils/bin/genmodel"
@@ -35,6 +36,7 @@ make -s -C h2mp_utils/genmodel clean
 make -s -C h2mp_utils/utils clean
 make -s -C h2_utils/utils clean
 make -s -C dcc clean
+make -s -C jsh2color clean
 exit 0
 fi
 
@@ -52,4 +54,6 @@ echo "" && echo "Now building light, vis and qbsp, old versions.."
 $MAKE -C h2_utils/utils
 echo "" && echo "Now building dhcc, a progs.dat decompiler.."
 $MAKE -C dcc
+echo "" && echo "Now building jsh2colour, a lit file generator.."
+$MAKE -C jsh2color
 

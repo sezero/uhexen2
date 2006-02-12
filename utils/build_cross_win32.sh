@@ -4,6 +4,7 @@ UHEXEN2_TOP=..
 . $UHEXEN2_TOP/scripts/cross_defs
 
 BIN_FILES="dcc/bin/dhcc.exe h2_utils/bin/hcc.exe h2mp_utils/bin/hcc.exe
+jsh2color/jsh2colour.exe
 h2_utils/bin/vis.exe h2_utils/bin/qbsp.exe h2_utils/bin/light.exe
 h2mp_utils/bin/vis.exe h2mp_utils/bin/qbsp.exe h2mp_utils/bin/light.exe
 h2mp_utils/bin/qfiles.exe h2mp_utils/bin/genmodel.exe"
@@ -27,6 +28,7 @@ make -s -C h2mp_utils/genmodel clean
 make -s -C h2mp_utils/utils clean
 make -s -C h2_utils/utils clean
 make -s -C dcc clean
+make -s -C jsh2color clean
 exit 0
 fi
 
@@ -50,4 +52,7 @@ make -C h2_utils/utils $SENDARGS
 
 echo "" && echo "Now building dhcc, a progs.dat decompiler.."
 make -C dcc $SENDARGS
+
+echo "" && echo "Now building jsh2colour, a lit file generator.."
+make -C jsh2color $SENDARGS
 
