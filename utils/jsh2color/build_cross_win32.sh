@@ -1,14 +1,20 @@
 #!/bin/sh
 
-# Valid arguments:
-# clean : performs a "make clean" operation in all utils directories.
-# strip : performs a "make strip" in all utils directories (strips all pre-built binaries)
+UHEXEN2_TOP=../..
+. $UHEXEN2_TOP/scripts/cross_defs
 
-PREFIX=/usr/local/cross-tools
-TARGET=i386-mingw32msvc
-PATH="$PREFIX/bin:$PREFIX/$TARGET/bin:$PATH"
-export PATH
+if [ "$1" = "strip" ]
+then
+	echo "Stripping jsh2colour.exe"
+	$STRIPPER jsh2colour.exe
+	exit 0
+fi
 
-MAKEFILE=Makefile.mingw
+if [ "$1" = "clean" ]
+then
+	make -s clean
+	exit 0
+fi
 
-make -f $MAKEFILE WIN32CC=$TARGET-gcc W32STRIP=$TARGET-strip MINGWDIR=$PREFIX/$TARGET $*
+exec make $SENDARGS $*
+
