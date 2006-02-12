@@ -1,0 +1,66 @@
+2005-11-13 1.2.1 sezero
+Changes since 1.2:
+ * trace.c: fixed fpmath segfaults:
+   With vec_t defined as double, the front and back stuff
+   in TestLine() need to be vec_t as well:  While creating
+   lit files for demo2 or castle4, the gcc compiled binaries
+   segfault under either of these conditions:
+   - the program is not compiled with the -ffast-math flag.
+   - compiled with gcc v4 for arches >= pentiumpro: i686,
+     pentium2, or pentium3 without the -msse -mfpmath=sse
+     extra flags.
+ * entities.c, ltface.c, mathlib.c, mathlib.h: more double/vec_t
+   clean-up
+ * bspfile.c: killed unnecessary mathlib.h include
+ * bspfile.c, entities.c, entities.h, tyrlite.c: cosmetic stuff:
+   report the name of the lit file when finished, better reporting
+   of map name.
+ * tyrlite.h: bumped version to 1.2.1
+
+2005-10-18 1.2 sezero
+Changes since the original author's 1.1:
+ * coding style, whitespace / indentation clean-up.
+   also removed unused light.h includes.
+ * light.c, light.h, tyrlite.dsp, tyrlite.dsw, tyrlite.mak, tyrlite.ncb,
+   tyrlite.opt, tyrlite.plg: removed unused files.
+ * gnu.txt, COPYING: updated the gpl license file from gnu.org
+ * data_unix/colour.sh, data_unix/colourCastle.sh, data_unix/colourDm.sh,
+   data_unix/colourEgypt.sh, data_unix/colourMeso.sh, data_unix/colourRomeric.sh,
+   data_unix/default.def, data_unix/hexen2.def, data_unix/hexen2castle.def,
+   data_unix/hexen2egypt.def, data_unix/hexen2meso.def, data_unix/hexen2romeric.def:
+   added unix-style versions of data files
+ * Makefile, Makefile.mingw, build_cross_win32.sh: added makefiles and
+   build scripts
+ * Makefile, Makefile.mingw, bspfile.c, cmdlib.c, cmdlib.h, entities.c,
+   ltface.c, mathlib.c, mathlib.h, tex.c, trace.c, tyrlite.c, tyrlite.h:
+   made the initial unix port:
+   - several include fixes
+   - moved nested externs out of functions
+   - fixed type-punning gcc4 warning in LoadBSPFile
+   - removed several unnecessary functions from cmdlib
+   - synced cmdlib to what we did in HoT main tree:
+     strcasecmp/stricmp macros, endiannes stuff, getwd
+     fixes, etc.
+   - added an ioctl fucntion Sys_kbhit as a _kbhit() replacement
+   - moved the DecisionTime thing to cmdlib where it belongs.
+     added a simple _getch() replacement to it using getchar().
+   - added a paranoid negative check before a sqrt() call
+   - killed all unused variable warnings
+   - removed several commented-out stuff
+   - trying to print the map name through entity->message requires
+     line number (entity->message)-1  to be read from strings.txt,
+     therefore not worth the effort. commented it out. now printing
+     the map file name, only.
+   - merged CalcFaceExtentsNoErr into CalcFaceExtents
+   - removed unused macros in ltface.c
+   - added math optimization flag -ffast-math, which actually cures
+     a segfault when coloring demo2.bsp. Also added -march=i586 and
+     -fexpensive-optimizations flags.
+   - removed unnecessary underscored versions of math functions in
+     mathlib
+   - converted VectorLenth() into a macro, in mathlib
+   - added min/max macroes for unix
+   - added fflush(stdout) calls after all printf() calls which don't
+     print a newline.
+   - probably a few other minor stuff.
+   - bumped version to 1.2
