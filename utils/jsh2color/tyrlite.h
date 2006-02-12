@@ -32,7 +32,7 @@
 #include "entities.h"
 #include "threads.h"
 
-#define JSH2COLOR_VER	"1.2"	// version string
+#define JSH2COLOR_VER	"1.2.1"	// version string
 #ifdef _WIN32
 #define PLATFORM_VER	"Win32"
 #else
