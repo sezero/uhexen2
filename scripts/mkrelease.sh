@@ -15,6 +15,10 @@ fi
 rm -rf CVSROOT
 find -name CVS | xargs rm -rf 
 
+# move the spec file to the root
+mv packaging/hexen2.spec ./
+rm -rf packaging
+
 # change all shell scripts' permissions
 mv utils/build utils/build.sh
 find -name *.sh | xargs chmod 755 
