@@ -17,18 +17,15 @@
     See file, 'COPYING', for details.
 */
 
-#ifndef __COMMON_MATHLIB_H__
-#define __COMMON_MATHLIB_H__
+// mathlib.h
 
 #ifndef __MATHLIB__
 #define __MATHLIB__
 
-// mathlib.h
-
 #include <math.h>
 
-#define DOUBLEVEC_T	
-	
+#define DOUBLEVEC_T
+
 #ifdef DOUBLEVEC_T
 typedef double vec_t;
 #else
@@ -66,10 +63,8 @@ double VectorLength(vec3_t v);
 void VectorMA (vec3_t va, double scale, vec3_t vb, vec3_t vc);
 
 void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross);
-//void VectorNormalize (vec3_t v);
 vec_t VectorNormalize (vec3_t v);
 void VectorInverse (vec3_t v);
 void VectorScale (vec3_t v, vec_t scale, vec3_t out);
 
 #endif
-#endif /* __COMMON_MATHLIB_H__ */

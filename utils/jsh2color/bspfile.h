@@ -36,13 +36,12 @@
 #define	MAX_MAP_LEAFS		32767		// 
 #define	MAX_MAP_VERTS		65535
 #define	MAX_MAP_FACES		65535
-#define	MAX_MAP_MARKSURFACES 65535
+#define	MAX_MAP_MARKSURFACES	65535
 #define	MAX_MAP_TEXINFO		4096
 #define	MAX_MAP_EDGES		256000
 #define	MAX_MAP_SURFEDGES	512000
 #define	MAX_MAP_MIPTEX		0x200000
-//#define MAX_MAP_LIGHTING	0x100000
-#define MAX_MAP_LIGHTING   	0x400000 /* TYR - *4 for RGBA, was 0x100000 */
+#define MAX_MAP_LIGHTING	0x400000	/* TYR - *4 for RGBA, was 0x100000 */
 #define	MAX_MAP_VISIBILITY	0x100000
 
 // key / value pair sizes
@@ -54,9 +53,8 @@
 
 
 #define BSPVERSION	29
-/* TYR - #define BSPVERSION 29 */
-#define BSP_OLD_VERSION     29
-#define BSP_COLORED_VERSION 30
+#define BSP_OLD_VERSION		29
+#define BSP_COLORED_VERSION	30
 
 typedef struct
 {
@@ -281,10 +279,8 @@ extern	int			numsurfedges;
 extern	int			dsurfedges[MAX_MAP_SURFEDGES];
 
 
-
 void	LoadBSPFile (char *filename);
-/* TYR - was: void WriteBSPFile (char *filename); */
-void    WriteBSPFile (char *filename, int version);
+void	WriteBSPFile (char *filename, int version);
 void	PrintBSPFileSizes (void);
 
 #endif

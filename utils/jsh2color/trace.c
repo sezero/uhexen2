@@ -24,7 +24,6 @@
  */
 
 #include "tyrlite.h"
-#include "light.h"
 
 typedef struct tnode_s
 {
@@ -50,7 +49,7 @@ void MakeTnode (int nodenum)
 	dplane_t		*plane;
 	int				i;
 	dnode_t 		*node;
-	
+
 	t = tnode_p++;
 
 	node = dnodes + nodenum;
@@ -59,7 +58,7 @@ void MakeTnode (int nodenum)
 	t->type = plane->type;
 	VectorCopy (plane->normal, t->normal);
 	t->dist = plane->dist;
-	
+
 	for (i=0 ; i<2 ; i++)
 	{
 		if (node->children[i] < 0)
@@ -70,7 +69,6 @@ void MakeTnode (int nodenum)
 			MakeTnode (node->children[i]);
 		}
 	}
-			
 }
 
 
@@ -84,7 +82,7 @@ Loads the node structure out of a .bsp file to be used for light occlusion
 void MakeTnodes (dmodel_t *bm)
 {
 	tnode_p = tnodes = malloc(numnodes * sizeof(tnode_t));
-	
+
 	MakeTnode (0);
 }
 
@@ -108,8 +106,6 @@ typedef struct
 	int	node;
 } tracestack_t;
 
-
-
 /*
  * ==============
  * TestLineOrSky
@@ -118,114 +114,114 @@ typedef struct
  */
 qboolean TestLineOrSky (vec3_t start, vec3_t stop, qboolean sky_test)
 {
-    int          node;
-    float        front, back;
-    tracestack_t *tstack_p;
-    int          side;
-    float        frontx,fronty, frontz, backx, backy, backz;
-    tracestack_t tracestack[64];
-    tnode_t      *tnode;
+	int		node;
+	float		front, back;
+	tracestack_t	*tstack_p;
+	int		side;
+	float		frontx,fronty, frontz, backx, backy, backz;
+	tracestack_t	tracestack[64];
+	tnode_t		*tnode;
 
-    frontx = start[0];
-    fronty = start[1];
-    frontz = start[2];
-    backx = stop[0];
-    backy = stop[1];
-    backz = stop[2];
+	frontx = start[0];
+	fronty = start[1];
+	frontz = start[2];
+	backx = stop[0];
+	backy = stop[1];
+	backz = stop[2];
 
-    tstack_p = tracestack;
-    node = 0;
+	tstack_p = tracestack;
+	node = 0;
 
-    while (1) 
+	while (1)
 	{
-        while (node < 0 && node != CONTENTS_SOLID && (node != CONTENTS_SKY || !sky_test)) 
+		while (node < 0 && node != CONTENTS_SOLID && (node != CONTENTS_SKY || !sky_test))
 		{
-			// we can modify this to check if a vector hits a light casting node before hitting
-			// a one that doesn't, and include sky as a potential light casting node.
-			// in order to do this, we need to find a way of identifying a texture that may be
-			// on a node.
-		    /* pop up the stack for a back side */
-            tstack_p--;
-            if (tstack_p < tracestack) /* if sky_test is...                 */
-				return !sky_test;      /*    true  => We didn't hit sky     */
-	                               /*    false => no solid obstructions */
-            node = tstack_p->node;
+		// we can modify this to check if a vector hits a light casting node before hitting
+		// a one that doesn't, and include sky as a potential light casting node.
+		// in order to do this, we need to find a way of identifying a texture that may be
+		// on a node.
 
-		    /* set the hit point for this plane */
-            frontx = backx;
-            fronty = backy;
-            frontz = backz;
+		/* pop up the stack for a back side */
+			tstack_p--;
+			if (tstack_p < tracestack) /* if sky_test is...			*/
+				return !sky_test;  /*	true  => We didn't hit sky	*/
+					/*	false => no solid obstructions	*/
+			node = tstack_p->node;
 
-		    /* go down the back side */
-            backx = tstack_p->backpt[0];
-            backy = tstack_p->backpt[1];
-            backz = tstack_p->backpt[2];
+		/* set the hit point for this plane */
+			frontx = backx;
+			fronty = backy;
+			frontz = backz;
 
-            node = tnodes[tstack_p->node].children[!tstack_p->side];
-        }
+		/* go down the back side */
+			backx = tstack_p->backpt[0];
+			backy = tstack_p->backpt[1];
+			backz = tstack_p->backpt[2];
 
-        if (node == CONTENTS_SOLID)
-            return false; /* DONE! */
+			node = tnodes[tstack_p->node].children[!tstack_p->side];
+		}
 
-        else if (node == CONTENTS_SKY && sky_test)
-            return true;  /* DONE! */
+		if (node == CONTENTS_SOLID)
+			return false;	/* DONE! */
+		else if (node == CONTENTS_SKY && sky_test)
+			return true;	/* DONE! */
 
-        tnode = &tnodes[node];
+		tnode = &tnodes[node];
 
-        switch (tnode->type) 
+		switch (tnode->type)
 		{
-        case PLANE_X:
-            front = frontx - tnode->dist;
-            back = backx - tnode->dist;
-            break;
-        case PLANE_Y:
-            front = fronty - tnode->dist;
-            back = backy - tnode->dist;
-            break;
-        case PLANE_Z:
-            front = frontz - tnode->dist;
-            back = backz - tnode->dist;
-            break;
-        default:
-            front = (frontx*tnode->normal[0] + fronty*tnode->normal[1]
-		     + frontz*tnode->normal[2]) - tnode->dist;
-            back = (backx*tnode->normal[0] + backy*tnode->normal[1]
-		    + backz*tnode->normal[2]) - tnode->dist;
-            break;
-        }
+		case PLANE_X:
+			front = frontx - tnode->dist;
+			back = backx - tnode->dist;
+			break;
+		case PLANE_Y:
+			front = fronty - tnode->dist;
+			back = backy - tnode->dist;
+			break;
+		case PLANE_Z:
+			front = frontz - tnode->dist;
+			back = backz - tnode->dist;
+			break;
+		default:
+			front = (frontx*tnode->normal[0] + fronty*tnode->normal[1]
+							 + frontz*tnode->normal[2]) - tnode->dist;
+			back = (backx*tnode->normal[0] + backy*tnode->normal[1]
+							 + backz*tnode->normal[2]) - tnode->dist;
+			break;
+		}
 
-        /* if (front > 0 && back > 0) */
-        if (front > -ON_EPSILON && back > -ON_EPSILON) 
+		/* if (front > 0 && back > 0) */
+		if (front > -ON_EPSILON && back > -ON_EPSILON)
 		{
-            node = tnode->children[0];
-            continue;
-        }
-        
-        /* if (front <= 0 && back <= 0) */
-        if (front < ON_EPSILON && back < ON_EPSILON) 
+			node = tnode->children[0];
+			continue;
+		}
+
+		/* if (front <= 0 && back <= 0) */
+		if (front < ON_EPSILON && back < ON_EPSILON)
 		{
-            node = tnode->children[1];
-            continue;
-        }
+			node = tnode->children[1];
+			continue;
+		}
 
-        side = front < 0;
+		side = front < 0;
 
-        front = front / (front-back);
-    
-        tstack_p->node = node;
-        tstack_p->side = side;
-        tstack_p->backpt[0] = backx;
-        tstack_p->backpt[1] = backy;
-        tstack_p->backpt[2] = backz;
-        
-        tstack_p++;
-        
-        backx = frontx + front*(backx-frontx);
-        backy = fronty + front*(backy-fronty);
-        backz = frontz + front*(backz-frontz);
-        
-        node = tnode->children[side];        
-    }
+		front = front / (front-back);
+
+		tstack_p->node = node;
+		tstack_p->side = side;
+		tstack_p->backpt[0] = backx;
+		tstack_p->backpt[1] = backy;
+		tstack_p->backpt[2] = backz;
+
+		tstack_p++;
+
+		backx = frontx + front*(backx-frontx);
+		backy = fronty + front*(backy-fronty);
+		backz = frontz + front*(backz-frontz);
+
+		node = tnode->children[side];
+	}
 }
 
 /*
@@ -244,17 +240,17 @@ qboolean TestLine (vec3_t start, vec3_t stop)
 	float 			frontx,fronty, frontz, backx, backy, backz;
 	tracestack_t	tracestack[64];
 	tnode_t			*tnode;
-	
+
 	frontx = (float)start[0];
 	fronty = (float)start[1];
 	frontz = (float)start[2];
 	backx = (float)stop[0];
 	backy = (float)stop[1];
 	backz = (float)stop[2];
-	
+
 	tstack_p = tracestack;
 	node = 0;
-	
+
 	while (1)
 	{
 		while (node < 0 && node != CONTENTS_SOLID)
@@ -264,27 +260,27 @@ qboolean TestLine (vec3_t start, vec3_t stop)
 			if (tstack_p < tracestack)
 				return true;
 			node = tstack_p->node;
-			
+
 		// set the hit point for this plane
-			
+
 			frontx = backx;
 			fronty = backy;
 			frontz = backz;
-			
+
 		// go down the back side
 
 			backx = (float)tstack_p->backpt[0];
 			backy = (float)tstack_p->backpt[1];
 			backz = (float)tstack_p->backpt[2];
-			
+
 			node = tnodes[tstack_p->node].children[!tstack_p->side];
 		}
 
 		if (node == CONTENTS_SOLID)
 			return false;	// DONE!
-		
+
 		tnode = &tnodes[node];
-		
+
 		switch (tnode->type)
 		{
 		case PLANE_X:
@@ -311,7 +307,7 @@ qboolean TestLine (vec3_t start, vec3_t stop)
 			node = tnode->children[0];
 			continue;
 		}
-		
+
 		if (front < ON_EPSILON && back < ON_EPSILON)
 //		if (front <= 0 && back <= 0)
 		{
@@ -320,23 +316,23 @@ qboolean TestLine (vec3_t start, vec3_t stop)
 		}
 
 		side = front < 0;
-		
+
 		front = front / (front-back);
-	
+
 		tstack_p->node = node;
 		tstack_p->side = side;
 		tstack_p->backpt[0] = backx;
 		tstack_p->backpt[1] = backy;
 		tstack_p->backpt[2] = backz;
-		
+
 		tstack_p++;
-		
+
 		backx = frontx + front*(backx-frontx);
 		backy = fronty + front*(backy-fronty);
 		backz = frontz + front*(backz-frontz);
-		
-		node = tnode->children[side];		
-	}	
+
+		node = tnode->children[side];
+	}
 }
 */
 
@@ -347,8 +343,9 @@ qboolean TestLine (vec3_t start, vec3_t stop)
  * Returns true if the ray cast from point 'start' in the
  * direction of vector 'dirn' hits a CONTENTS_SKY node before
  * a CONTENTS_SOLID node.
- * this is major buggy - we really should be testing in a number of directions - up, down, right, left, in, out, and
- * various variations in between...
+ * this is major buggy - we really should be testing in a number of
+ * directions - up, down, right, left, in, out, and various variations
+ * in between...
  *
  * Wrapper functions for testing LOS between two points (TestLine)
  * and testing LOS to a sky brush along a direction vector (TestSky)
@@ -356,13 +353,14 @@ qboolean TestLine (vec3_t start, vec3_t stop)
 
 qboolean TestLine(vec3_t start, vec3_t stop)
 {
-    return TestLineOrSky(start, stop, false);
+	return TestLineOrSky(start, stop, false);
 }
 
 qboolean TestSky (vec3_t start, vec3_t dirn)
 {
-    vec3_t stop;
+	vec3_t	stop;
 
-    VectorAdd(dirn, start, stop);
-    return TestLineOrSky(start, stop, true);
+	VectorAdd(dirn, start, stop);
+	return TestLineOrSky(start, stop, true);
 }
+

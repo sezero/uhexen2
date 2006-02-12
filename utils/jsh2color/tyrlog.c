@@ -25,38 +25,40 @@
 #include "cmdlib.h"
 #include <stdio.h>
 
-FILE      *logfile;
-qboolean  log_ok;
+FILE		*logfile;
+qboolean	log_ok;
 
 void init_log(char *filename)
 {
 	// don't need this shit
-    log_ok = false;
-//    if ((logfile = fopen(filename,"w")))
-//        log_ok = true;
+	log_ok = false;
+//	if ((logfile = fopen(filename,"w")))
+//		log_ok = true;
 }
 
 void close_log()
 {
-    if (log_ok)
-        fclose(logfile);
+	if (log_ok)
+		fclose(logfile);
 }
 
 void logprint(const char *fmt, ...)
 {
-    va_list args;
+	va_list args;
 
-    va_start(args, fmt);
-    vprintf(fmt, args);
-    if (log_ok) {
-        vfprintf(logfile, fmt, args);
-    }
+	va_start(args, fmt);
+	vprintf(fmt, args);
+	if (log_ok)
+	{
+		vfprintf(logfile, fmt, args);
+	}
 }
 
 void logvprint(const char *fmt, va_list args)
 {
-    vprintf(fmt, args);
-    if (log_ok) {
-        vfprintf(logfile, fmt, args);
-    }
+	vprintf(fmt, args);
+	if (log_ok)
+	{
+		vfprintf(logfile, fmt, args);
+	}
 }

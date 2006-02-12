@@ -19,12 +19,8 @@
 
 // cmdlib.h
 
-#ifndef __COMMON_CMDLIB_H__
-#define __COMMON_CMDLIB_H__
-
 #ifndef __CMDLIB__
 #define __CMDLIB__
-
 
 #include <stdio.h>
 #include <string.h>
@@ -117,6 +113,6 @@ void CreatePath (char *path);
 void CopyFile (char *from, char *to);
 
 extern qboolean archive;
-extern char     archivedir[1024];
+extern char	archivedir[1024];
 
-#endif /* __COMMON_CMDLIB_H__ */
+#endif	// __CMDLIB__

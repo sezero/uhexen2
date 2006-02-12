@@ -78,8 +78,6 @@ extern qboolean makelit;
 
 //=============================================================================
 
-/* ========================================================================= */
-
 /*
  * =============
  * SwapBSPFile
@@ -92,7 +90,6 @@ void SwapBSPFile (qboolean todisk)
 	dmodel_t		*d;
 	dmiptexlump_t	*mtl;
 
-	
 // models	
 	for (i=0 ; i<nummodels ; i++)
 	{
@@ -104,7 +101,7 @@ void SwapBSPFile (qboolean todisk)
 		d->visleafs = LittleLong (d->visleafs);
 		d->firstface = LittleLong (d->firstface);
 		d->numfaces = LittleLong (d->numfaces);
-		
+
 		for (j=0 ; j<3 ; j++)
 		{
 			d->mins[j] = LittleFloat(d->mins[j]);
@@ -121,10 +118,10 @@ void SwapBSPFile (qboolean todisk)
 		for (j=0 ; j<3 ; j++)
 			dvertexes[i].point[j] = LittleFloat (dvertexes[i].point[j]);
 	}
-		
+
 //
 // planes
-//	
+//
 	for (i=0 ; i<numplanes ; i++)
 	{
 		for (j=0 ; j<3 ; j++)
@@ -132,10 +129,10 @@ void SwapBSPFile (qboolean todisk)
 		dplanes[i].dist = LittleFloat (dplanes[i].dist);
 		dplanes[i].type = LittleLong (dplanes[i].type);
 	}
-	
+
 //
 // texinfos
-//	
+//
 	for (i=0 ; i<numtexinfo ; i++)
 	{
 		for (j=0 ; j<8 ; j++)
@@ -143,7 +140,7 @@ void SwapBSPFile (qboolean todisk)
 		texinfo[i].miptex = LittleLong (texinfo[i].miptex);
 		texinfo[i].flags = LittleLong (texinfo[i].flags);
 	}
-	
+
 //
 // faces
 //
@@ -215,7 +212,7 @@ void SwapBSPFile (qboolean todisk)
 		for (i=0 ; i<c ; i++)
 			mtl->dataofs[i] = LittleLong(mtl->dataofs[i]);
 	}
-	
+
 //
 // marksurfaces
 //
@@ -247,10 +244,10 @@ int CopyLump (int lump, void *dest, int size)
 
 	length = header->lumps[lump].filelen;
 	ofs = header->lumps[lump].fileofs;
-	
+
 	if (length % size)
 		Error ("LoadBSPFile: odd lump size");
-	
+
 	memcpy (dest, (byte *)header + ofs, length);
 
 	return length / size;
@@ -299,7 +296,8 @@ void FindColourName (char *name, int r, int g, int b)
 		strcpy (name, "Magenta");
 	else if (r == 255 && g == 128 && b == 64)
 		strcpy (name, "Orange");
-	else strcpy (name, "Django"); // should never happen
+	else
+		strcpy (name, "Django"); // should never happen
 }
 
 
@@ -342,12 +340,8 @@ void CheckTex (void)
 	{
 		f = dfaces + i;
 
-	//++ [js] new feature
-    FindTexlightColour (&r, &g, &b, miptex[texinfo[f->texinfo].miptex].name);
-  	//	if (nodefault != true) FindTexlightColour (&r, &g, &b, miptex[texinfo[f->texinfo].miptex].name);
-	//	if (external == true) FindTexlightColourExt (&r, &g, &b, miptex[texinfo[f->texinfo].miptex].name, tc_list);    
-	//-- [js] new feature
-	
+		FindTexlightColour (&r, &g, &b, miptex[texinfo[f->texinfo].miptex].name);
+
 		if (r == g && g == b)
 			continue;
 
@@ -364,7 +358,8 @@ void CheckTex (void)
 			g2[j] = g;
 			b2[j] = b;
 			facecolours[j]++;
-			if (j >= count) count++;	// not already used
+			if (j >= count)
+				count++;	// not already used
 		}
 		else
 		{
@@ -392,7 +387,10 @@ void CheckTex (void)
 
 		printf ("- %i Unique Colour(s) used by Texture lighting\n", uniquecolours);
 	}
-	else bad = 1;
+	else
+	{
+		bad = 1;
+	}
 
 	printf ("- %i Faces out of %i will modify Light Colour\n", numlighttex, numfaces);
 
@@ -407,7 +405,8 @@ void CheckTex (void)
 
 			if (!strcmp (colour_name, "Orange"))
 				printf ("  This is normally not a problem - Orange is quite benign.");
-			else bad = 1;
+			else
+				bad = 1;
 		}
 	}
 
@@ -416,13 +415,13 @@ void CheckTex (void)
 	{
 		if (num_clights > (num_lights / 4))
 			DecisionTime ("Entity lights will probably still be effective - I suggest you continue");
-		else DecisionTime ("Entity lights probably won't help much - I suggest you quit");
+		else
+			DecisionTime ("Entity lights probably won't help much - I suggest you quit");
 	}
 }
 
 
 int bsp_ver;
-
 
 int faces_ltoffset[MAX_MAP_FACES];
 byte newdlightdata[MAX_MAP_LIGHTING];
@@ -464,7 +463,7 @@ LoadBSPFile
 void	LoadBSPFile (char *filename)
 {
 	int			i;
-	
+
 //
 // load the file header
 //
@@ -498,12 +497,12 @@ void	LoadBSPFile (char *filename)
 	entdatasize = CopyLump (LUMP_ENTITIES, dentdata, 1);
 
 	free (header);		// everything has been copied out
-		
+
 //
 // swap everything
-//	
+//
 	SwapBSPFile (false);
-	
+
 	ParseTexinfo ();
 
 	if (makelit) 
@@ -523,14 +522,15 @@ void AddLump (int lumpnum, void *data, int len)
 	lump_t *lump;
 
 	lump = &header->lumps[lumpnum];
-	
+
 	lump->fileofs = LittleLong( ftell(wadfile) );
 	lump->filelen = LittleLong(len);
 	SafeWrite (wadfile, data, (len+3)&~3);
 }
 
 /*
-Make a DarkPlaces format LIT file - we already have the lightdata in dlightdata so we just need
+Make a DarkPlaces format LIT file - we already have
+the lightdata in dlightdata so we just need
 to write out the appropriate header and we're there!
 */
 
@@ -571,7 +571,6 @@ void MakeDPLITFile (char *bspname)
 	fwrite (&litheader, sizeof (litheader), 1, litfile);
 	fwrite (&newdlightdata, newlightdatasize, 1, litfile);
 
-	// piece of piss
 	fclose (litfile);
 }
 
@@ -583,26 +582,25 @@ WriteBSPFile
 Swaps the bsp file in place, so it should not be referenced again
 =============
 */
-//void WriteBSPFile (char *filename)
 void WriteBSPFile (char *filename, int version)
-{		
-	if (makelit)
-		MakeDPLITFile (filename);
-	else
-	{
+{
+    if (makelit)
+	MakeDPLITFile (filename);
+    else
+    {
 	header = &outheader;
 	memset (header, 0, sizeof(dheader_t));
-	
+
 	SwapBSPFile (true);
 
 	header->version = LittleLong (version);
 
-		header->version = 30; //32;
+	header->version = 30; //32;
 
 	printf("Writing BSP version %i\n", (int)header->version);
-	   
+
 	//header->version = LittleLong (BSPVERSION);
-	
+
 	wadfile = SafeOpenWrite (filename);
 	SafeWrite (wadfile, header, sizeof(dheader_t));	// overwritten later
 
@@ -622,11 +620,11 @@ void WriteBSPFile (char *filename, int version)
 	AddLump (LUMP_VISIBILITY, dvisdata, visdatasize);
 	AddLump (LUMP_ENTITIES, dentdata, entdatasize);
 	AddLump (LUMP_TEXTURES, dtexdata, texdatasize);
-	
+
 	fseek (wadfile, 0, SEEK_SET);
 	SafeWrite (wadfile, header, sizeof(dheader_t));
 	fclose (wadfile);
-    }	
+    }
 }
 
 //============================================================================
@@ -668,5 +666,4 @@ void PrintBSPFileSizes (void)
 	printf ("      visdata      %6i\n", visdatasize);
 	printf ("      entdata      %6i\n", entdatasize);
 }
-
 

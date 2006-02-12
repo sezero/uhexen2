@@ -34,14 +34,14 @@ typedef struct entity_s
 	char	message[1024];
 	vec3_t	origin;
 	float	angle;
-	
-	   /* TYR - added fields */
-	int      formula;
-    	float    atten;
-    	vec3_t   mangle;
-    	qboolean use_mangle;
-    	int      lightcolour[3];
-	
+
+	/* TYR - added fields */
+	int	formula;
+	float	atten;
+	vec3_t	mangle;
+	qboolean	use_mangle;
+	int	lightcolour[3];
+
 	int	light;
 	int	style;
 	char	target[32];
@@ -63,13 +63,13 @@ typedef struct entity_s
  *    Takes a float as a value (default 1.0).
  *    This reflects how fast a light fades with distance.
  *    For example a value of 2 will fade twice as fast, and a value of 0.5
- *      will fade half as fast. (Just like arghlite)
+ *    will fade half as fast. (Just like arghlite)
  *
- *  mangle:
+ * mangle:
  *    If the entity is a light, then point the spotlight in this direction.
  *    If it is the worldspawn, then this is the sunlight mangle
  *
- *  lightcolour:
+ * lightcolour:
  *    Stores the RGB values to determine the light colour
  */
 
@@ -80,10 +80,10 @@ extern int            numtexlights;
 extern entity_t       texlights[MAX_MAP_FACES];
 
 entity_t *FindEntityWithKeyPair (char *key, char *value);
-char 	*ValueForKey (entity_t *ent, char *key);
-void 	SetKeyValue (entity_t *ent, char *key, char *value);
+char	*ValueForKey (entity_t *ent, char *key);
+void	SetKeyValue (entity_t *ent, char *key, char *value);
 float	FloatForKey (entity_t *ent, char *key);
-void 	GetVectorForKey (entity_t *ent, char *key, vec3_t vec);
+void	GetVectorForKey (entity_t *ent, char *key, vec3_t vec);
 
 void LoadEntities (void);
 void WriteEntitiesToString (void);

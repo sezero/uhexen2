@@ -32,13 +32,13 @@
 #include "entities.h"
 #include "threads.h"
 
-#define ON_EPSILON 0.1
-#define MAXLIGHTS  1024
+#define	ON_EPSILON	0.1
+#define	MAXLIGHTS			1024
 
-//++ [js] new feature
-#define MAX_PATH _MAX_PATH  
-#define MAX_ENTRYNUM 32784                  
-#define MAX_TEX_NAME 64
+// js features
+#define	MAX_PATH	_MAX_PATH
+#define	MAX_ENTRYNUM	32784
+#define	MAX_TEX_NAME	64
 
 typedef struct tex_col {
 	char name[MAX_TEX_NAME];
@@ -51,7 +51,7 @@ typedef struct tex_col_list {
 	int	num;
 	tex_col* entries;
 } tex_col_list;
-//-- [js] new feature
+// end of js features
 
 void LoadNodes (char *file);
 
@@ -68,38 +68,39 @@ void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset);
 void CheckTex (void);
 void MakeTnodes (dmodel_t *bm);
 
-extern float  scaledist;
-extern float  scalecos;
-extern float  rangescale;
-extern int    worldminlight;
-extern vec3_t minlight_color;
-extern int    sunlight;
-extern vec3_t sunlight_color;
-extern vec3_t sunmangle;
+extern float	scaledist;
+extern float	scalecos;
+extern float	rangescale;
+extern int	worldminlight;
+extern vec3_t	minlight_color;
+extern int	sunlight;
+extern vec3_t	sunlight_color;
+extern vec3_t	sunmangle;
 
-extern int    c_culldistplane;
-extern int    c_proper;
+extern int	c_culldistplane;
+extern int	c_proper;
 
-byte   *GetFileSpace (int size);
-extern byte *filebase;
+byte	*GetFileSpace (int size);
+extern byte	*filebase;
 
-extern vec3_t bsp_origin;
-extern vec3_t bsp_xvector;
-extern vec3_t bsp_yvector;
+extern vec3_t	bsp_origin;
+extern vec3_t	bsp_xvector;
+extern vec3_t	bsp_yvector;
 
 void TransformSample (vec3_t in, vec3_t out);
 void RotateSample (vec3_t in, vec3_t out);
 
-extern qboolean extrasamples;
-extern qboolean compress_ents;
-extern qboolean facecounter;
-extern qboolean colored;
-extern qboolean force;
-extern qboolean nominlimit;
-extern qboolean makelit;
-//++ [js] new feature 
-extern qboolean external;
-extern qboolean nodefault;
+extern qboolean	extrasamples;
+extern qboolean	compress_ents;
+extern qboolean	facecounter;
+extern qboolean	colored;
+extern qboolean	force;
+extern qboolean	nominlimit;
+extern qboolean	makelit;
+
+// js feature
+extern qboolean	external;
+extern qboolean	nodefault;
 extern tex_col_list tc_list;
-//-- [js] new feature
+
 #endif /* __TYRLITE_TYRLITE_H__ */

@@ -28,7 +28,7 @@ double VectorLength(vec3_t v)
 {
 	int		i;
 	double	length;
-	
+
 	length = 0;
 	for (i=0 ; i< 3 ; i++)
 		length += v[i]*v[i];
@@ -40,11 +40,11 @@ double VectorLength(vec3_t v)
 qboolean VectorCompare (vec3_t v1, vec3_t v2)
 {
 	int		i;
-	
+
 	for (i=0 ; i<3 ; i++)
 		if (fabs(v1[i]-v2[i]) > EQUAL_EPSILON)
 			return false;
-			
+
 	return true;
 }
 
@@ -93,24 +93,22 @@ void _VectorCopy (vec3_t in, vec3_t out)
 	out[2] = in[2];
 }
 
-//void VectorNormalize (vec3_t v)
 vec_t VectorNormalize (vec3_t v)
 {
 	int		i;
 	double	length;
-	
+
 	length = 0;
 	for (i=0 ; i< 3 ; i++)
 		length += v[i]*v[i];
 	length = sqrt (length);
 	if (length == 0)
-		//return;
 		return 0;
-		
+
 	for (i=0 ; i< 3 ; i++)
-		v[i] /= length;	
-    	
-    	return length;
+		v[i] /= length;
+
+	return length;
 }
 
 void VectorInverse (vec3_t v)
