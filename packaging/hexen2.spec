@@ -11,7 +11,7 @@ Name:		hexen2
 License:	GPL
 Group:		Amusements/Games
 URL:		http://uhexen2.sourceforge.net/
-Version:	1.3.0
+Version:	1.4.0
 Release:	1
 Summary:	Hexen II
 Source:		hexen2source-%{version}.tgz
@@ -19,12 +19,14 @@ Source1:	loki_patch-src.tgz
 Source2:	hexenworld-pakfiles-0.15.tgz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	nasm >= 0.98
-BuildRequires:	SDL-devel >= 1.2.6
+BuildRequires:	SDL-devel >= 1.2.4
+BuildRequires:	SDL_mixer-devel >= 1.2.4
 BuildRequires:	XFree86-devel XFree86-libs
 BuildRequires:	gtk+-devel libstdc++-devel
 %{!?_without_freedesktop:BuildRequires: desktop-file-utils}
 %{!?_without_gtk2:BuildRequires: gtk2-devel}
-Requires:	SDL >= 1.2.6
+Requires:	SDL >= 1.2.4
+Requires:	SDL_mixer >= 1.2.4
 
 %description
 Hexen II is a class based shooter game by Raven Software from 1997.
@@ -48,7 +50,8 @@ Pack: Portal of Praevus in software or OpenGL mode.
 %package -n hexenworld
 Group:		Amusements/Games
 Summary:	HexenWorld Client and Server
-Requires:	SDL >= 1.2.6
+Requires:	SDL >= 1.2.4
+Requires:	SDL_mixer >= 1.2.4
 Requires:	hexen2
 
 %description -n hexenworld
@@ -173,8 +176,8 @@ ln -s %{_prefix}/games/hexen2/h2launcher %{buildroot}/%{_bindir}/hexen2
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdata/
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1
 %{__install} -D -m755 gamecode/pak_v111/update_h2 %{buildroot}/%{_prefix}/games/%{name}/update_h2
-%{__install} -D -m644 gamecode/pak_v111/patchdata/data1/pak0.pak.103_111 %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/pak0.pak.103_111
-%{__install} -D -m644 gamecode/pak_v111/patchdata/data1/pak1.pak.103_111 %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/pak1.pak.103_111
+%{__install} -D -m644 gamecode/pak_v111/patchdata/data1/data1pak0.xd %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/data1pak0.xd
+%{__install} -D -m644 gamecode/pak_v111/patchdata/data1/data1pak1.xd %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/data1pak1.xd
 %{__install} -D -m644 gamecode/pak_v111/h2_103_111.dat %{buildroot}/%{_prefix}/games/%{name}/h2_103_111.dat
 
 # Install the update-patcher binaries
@@ -218,8 +221,8 @@ rm -rf %{buildroot}
 %{_prefix}/games/%{name}/loki_patch
 %{_prefix}/games/%{name}/lib3dfxgamma.so
 %{_prefix}/games/%{name}/update_h2
-%{_prefix}/games/%{name}/patchdata/data1/pak0.pak.103_111
-%{_prefix}/games/%{name}/patchdata/data1/pak1.pak.103_111
+%{_prefix}/games/%{name}/patchdata/data1/data1pak0.xd
+%{_prefix}/games/%{name}/patchdata/data1/data1pak1.xd
 %{_prefix}/games/%{name}/h2_103_111.dat
 %{_prefix}/games/%{name}/data1/progs.dat
 %{_prefix}/games/%{name}/data1/progs2.dat
@@ -267,6 +270,9 @@ rm -rf %{buildroot}
 %{_prefix}/games/%{name}/hw/default.cfg
 
 %changelog
+* Sun Feb 12 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-1
+- Updated for 1.4.0
+
 * Thu Aug 29 2005 O.Sezer <sezero@users.sourceforge.net> 1.3.0-2
 - Patch: We need to remove OS checks from the update_h2 script
 
