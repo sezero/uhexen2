@@ -172,7 +172,9 @@ Here are some of the important command-line switches:
  -heapsize  N		Heapsize (memory to allocate, in KB)
  -fsaa N		Enable N sample antialiasing (N: 0,2,4)
  -sync | -vsync		Enable syncing with monitor refresh (GL, Nvidia)
- -paltex		Enable 8-bit textures
+ -paltex		Enable 8 bit (palettized) textures: saves video
+			memory on old low-merory 3D accelerators if the
+			proper opengl extension is supported.
  -nomtex		Disable multitexture detection/usage
  -3dfxgamma		Special gamma support for old Voodoo1/2/Rush
  -ossdev		OSS Audio device to use (default: /dev/dsp)
