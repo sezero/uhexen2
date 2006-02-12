@@ -115,11 +115,21 @@ typedef struct
 //qboolean TestLine (vec3_t start, vec3_t stop)
 qboolean TestLineOrSky (vec3_t start, vec3_t stop, qboolean sky_test)
 {
-	int		node;
-	float		front, back;
+	int		node, side;
+	//float		front, back;
+	//float		frontx,fronty, frontz, backx, backy, backz;
+	/* With vec_t defined as double, these front and back stuff
+	   need to be vec_t as well:  While creating LIT files for
+	   demo2 or castle4, the gcc compiled program segfaults under
+	   either of these conditions:
+	   - the program is not compiled with the -ffast-math flag.
+	   - compiled with gcc v4 for arches >= pentiumpro: i686,
+	     pentium2, or pentium3 without the -msse -mfpmath=sse
+	     extra flags.
+	*/ 
+	vec_t		front, back;
+	vec_t		frontx,fronty, frontz, backx, backy, backz;
 	tracestack_t	*tstack_p;
-	int		side;
-	float		frontx,fronty, frontz, backx, backy, backz;
 	tracestack_t	tracestack[64];
 	tnode_t		*tnode;
 
