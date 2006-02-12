@@ -1,0 +1,47 @@
+This is version 0.5 of MHColour - use at your own peril!
+--------------------------------------------------------
+
+(...although I must admit it won't really cause you any problems...)
+
+MHColour is *not* a replacement light utility.  It is intended to be used on any existing
+BSP as a method of getting coloured light in.  In it's current incarnation, it's pretty
+accurate, if somewhat slow.
+
+In it's default mode, it will generate a (fake) BSP 30 map for you.
+
+You can also use it to generate a LIT file compatible with the DarkPlaces engine.  This
+will cause it to lose some accuracy in places since it must fiddle with the light offsets
+of the LIT file a little in order to avoid mutilating the BSP.
+
+BSP 30 is recommended as the most reliable method.
+
+
+Usage
+-----
+MHColour was derived from Tyrlite 0.8, so the usage is mostly similar.  The -colored switch
+has been removed because it makes no sense in this context.
+
+MHColour currently only supports the standard Quake, Rogue and Hipnotic texture sets.  I
+have received reports of it crashing on TF maps, but have been too busy with the new
+engine to look into this in detail.
+
+New command line switches
+-------------------------
+-force
+While running, MHColour will display loads of interesting information on how effective the
+colouring process is gonna be.  At any time it decides that the process will be ineffective
+you will get an option to abandon ship.  Use -force to override this and always continue,
+but don't say I didn't warn you if you don't like what you see.
+
+-lit
+Generate a LIT file.  Bear in mind the warning above.  The loss of accuracy will only
+occur in one or two places in one or two maps, so it's not really that big an issue.
+
+
+Boring legal stuff
+------------------
+MHColour was derived from Tyrlite 0.8 which was GPL'ed - consequently, the GPL also covers
+MHColour, even if *not explicitly stated* in the program files.  Any evil, bad or nasty
+people out there who like making money out of stuff that others have given away for free
+can go fuck off right now.
+

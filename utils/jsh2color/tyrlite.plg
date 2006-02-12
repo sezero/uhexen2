@@ -1,0 +1,147 @@
+--------------------Configuration: tyrlite - Win32 Release--------------------
+Begining build with project "D:\Temp\jsh2colour 1.1\tyrlite.dsp", at root.
+Active configuration is Win32 (x86) Console Application (based on Win32 (x86) Console Application)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /ML /W3 /GX /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FR"Release/" /Fp"Release/tyrlite.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c "
+			"Win32 Resource Compiler" with flags "/l 0x1809 /d "NDEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Release/tyrlite.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"Release/jsh2colour.pdb" /machine:I386 /out:"Release/jsh2colour.exe" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\WIN98\TEMP\RSPD235.TMP" with contents </nologo /ML /W3 /GX /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FR"Release/" /Fp"Release/tyrlite.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\Temp\jsh2colour 1.1\bspfile.c"
+"D:\Temp\jsh2colour 1.1\cmdlib.c"
+"D:\Temp\jsh2colour 1.1\entities.c"
+"D:\Temp\jsh2colour 1.1\ltface.c"
+"D:\Temp\jsh2colour 1.1\mathlib.c"
+"D:\Temp\jsh2colour 1.1\tex.c"
+"D:\Temp\jsh2colour 1.1\threads.c"
+"D:\Temp\jsh2colour 1.1\trace.c"
+"D:\Temp\jsh2colour 1.1\tyrlite.c"
+"D:\Temp\jsh2colour 1.1\tyrlog.c"
+>
+Creating command line "cl.exe @C:\WIN98\TEMP\RSPD235.TMP" 
+Creating temp file "C:\WIN98\TEMP\RSPD236.TMP" with contents <kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"Release/jsh2colour.pdb" /machine:I386 /out:"Release/jsh2colour.exe" 
+".\Release\bspfile.obj"
+".\Release\cmdlib.obj"
+".\Release\entities.obj"
+".\Release\ltface.obj"
+".\Release\mathlib.obj"
+".\Release\tex.obj"
+".\Release\threads.obj"
+".\Release\trace.obj"
+".\Release\tyrlite.obj"
+".\Release\tyrlog.obj">
+Creating command line "link.exe @C:\WIN98\TEMP\RSPD236.TMP" 
+Compiling...
+bspfile.c
+D:\Temp\jsh2colour 1.1\tyrlite.h(39) : warning C4005: 'MAX_PATH' : macro redefinition
+D:\Temp\jsh2colour 1.1\bspfile.c(418) : warning C4013: 'DecisionTime' undefined; assuming extern returning int
+cmdlib.c
+entities.c
+D:\Temp\jsh2colour 1.1\tyrlite.h(39) : warning C4005: 'MAX_PATH' : macro redefinition
+D:\Temp\jsh2colour 1.1\tyrlite.h(62) : warning C4031: second formal parameter list longer than the first list
+D:\Temp\jsh2colour 1.1\entities.c(74) : warning C4101: 'texname' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\entities.c(74) : warning C4101: 'hit' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\entities.c(74) : warning C4101: 'i' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\entities.c(241) : warning C4244: '=' : conversion from 'double ' to 'int ', possible loss of data
+D:\Temp\jsh2colour 1.1\entities.c(243) : warning C4244: '=' : conversion from 'double ' to 'int ', possible loss of data
+D:\Temp\jsh2colour 1.1\entities.c(257) : warning C4244: '=' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\entities.c(259) : warning C4244: '=' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\entities.c(282) : warning C4244: '=' : conversion from 'double ' to 'int ', possible loss of data
+D:\Temp\jsh2colour 1.1\entities.c(285) : warning C4244: '=' : conversion from 'double ' to 'int ', possible loss of data
+ltface.c
+D:\Temp\jsh2colour 1.1\tyrlite.h(39) : warning C4005: 'MAX_PATH' : macro redefinition
+D:\Temp\jsh2colour 1.1\light.h(16) : warning C4030: first formal parameter list longer than the second list
+D:\Temp\jsh2colour 1.1\ltface.c(172) : warning C4244: '=' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(275) : warning C4244: '=' : conversion from 'double ' to 'int ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(276) : warning C4244: '=' : conversion from 'double ' to 'int ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(323) : warning C4244: '=' : conversion from 'double ' to 'int ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(324) : warning C4244: '=' : conversion from 'double ' to 'int ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(464) : warning C4244: 'return' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(476) : warning C4244: 'return' : conversion from 'int ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(523) : warning C4244: 'function' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(595) : warning C4244: 'function' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(611) : warning C4244: 'function' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(637) : warning C4244: 'function' : conversion from 'double ' to 'int ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(701) : warning C4101: 'k1' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(701) : warning C4101: 'l1' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(815) : warning C4029: declared formal parameter list different from definition
+D:\Temp\jsh2colour 1.1\ltface.c(1000) : warning C4244: '=' : conversion from 'double ' to 'unsigned char ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(1001) : warning C4244: '=' : conversion from 'double ' to 'unsigned char ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(1002) : warning C4244: '=' : conversion from 'double ' to 'unsigned char ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(1005) : warning C4244: '=' : conversion from 'double ' to 'unsigned char ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(1010) : warning C4101: 'k' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1166) : warning C4244: '=' : conversion from 'double ' to 'unsigned char ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(1167) : warning C4244: '=' : conversion from 'double ' to 'unsigned char ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(1168) : warning C4244: '=' : conversion from 'double ' to 'unsigned char ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(1171) : warning C4101: 'total' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1171) : warning C4101: 'k' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1198) : warning C4244: 'function' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(1225) : warning C4244: 'function' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(1229) : warning C4244: 'function' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\ltface.c(1245) : warning C4101: 'hit' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1245) : warning C4101: 'size' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1245) : warning C4101: 'lightcoloursamp' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1245) : warning C4101: 'lightsamp' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1245) : warning C4101: 'angle' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1245) : warning C4101: 'lastsurf' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1245) : warning C4101: 'mapnum' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1245) : warning C4101: 'i' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1245) : warning C4101: 'falloff' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1245) : warning C4101: 'incoming' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1245) : warning C4101: 'spotvec' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'size' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'lightmapwidth' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'out' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'c' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 's' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'light' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 't' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'max' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'lightmapsize' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'w' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'total' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'h' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'x1' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'x2' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'x3' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'j' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'k' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'x4' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'totalcolours' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(1329) : warning C4101: 'lightcolour' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\ltface.c(637) : warning C4761: integral size mismatch in argument; conversion supplied
+mathlib.c
+tex.c
+D:\Temp\jsh2colour 1.1\tyrlite.h(39) : warning C4005: 'MAX_PATH' : macro redefinition
+threads.c
+trace.c
+D:\Temp\jsh2colour 1.1\tyrlite.h(39) : warning C4005: 'MAX_PATH' : macro redefinition
+D:\Temp\jsh2colour 1.1\light.h(16) : warning C4030: first formal parameter list longer than the second list
+D:\Temp\jsh2colour 1.1\trace.c(129) : warning C4244: '=' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\trace.c(130) : warning C4244: '=' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\trace.c(131) : warning C4244: '=' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\trace.c(132) : warning C4244: '=' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\trace.c(133) : warning C4244: '=' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\trace.c(134) : warning C4244: '=' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\trace.c(160) : warning C4244: '=' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\trace.c(161) : warning C4244: '=' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\trace.c(162) : warning C4244: '=' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\trace.c(191) : warning C4244: '=' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\trace.c(193) : warning C4244: '=' : conversion from 'double ' to 'float ', possible loss of data
+tyrlite.c
+D:\Temp\jsh2colour 1.1\tyrlite.h(39) : warning C4005: 'MAX_PATH' : macro redefinition
+D:\Temp\jsh2colour 1.1\tyrlite.c(340) : warning C4013: 'DecisionTime' undefined; assuming extern returning int
+D:\Temp\jsh2colour 1.1\tyrlite.c(352) : warning C4101: 'mody' : unreferenced local variable
+D:\Temp\jsh2colour 1.1\tyrlite.c(393) : warning C4244: '=' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\tyrlite.c(398) : warning C4244: '=' : conversion from 'double ' to 'float ', possible loss of data
+D:\Temp\jsh2colour 1.1\tyrlite.c(403) : warning C4244: '=' : conversion from 'double ' to 'int ', possible loss of data
+tyrlog.c
+Linking...
+
+
+
+jsh2colour.exe - 0 error(s), 94 warning(s)
