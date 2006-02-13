@@ -1,5 +1,9 @@
 ChangeLog:
 
+2006-02-13 (CVS, 1.4.0-pre3):
+    * added missing release notes to the spec file
+    * added release notes for future-1.4.0, in pre-release state though..
+
 2006-02-12 (CVS, 1.4.0-pre3):
     * removed bogus message from the MAX_GLTEXTURES Sys_Error
     * updated build requirements in the documentation
