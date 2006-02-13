@@ -150,6 +150,7 @@ ln -s %{_prefix}/games/hexen2/h2launcher %{buildroot}/%{_bindir}/hexen2
 %{__install} -D -m644 docs/README.hwmaster %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwmaster
 %{__install} -D -m644 docs/ReleaseNotes-1.2.3 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.3
 %{__install} -D -m644 docs/ReleaseNotes-1.2.4a %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.4a
+%{__install} -D -m644 docs/ReleaseNotes-1.3.0 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.3.0
 %{__install} -D -m644 docs/ReleaseNotes-%{version} %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-%{version}
 
 # Install the gamedata
@@ -243,6 +244,7 @@ rm -rf %{buildroot}
 %{_prefix}/games/%{name}/docs/TODO
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.3
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.4a
+%{_prefix}/games/%{name}/docs/ReleaseNotes-1.3.0
 %{_prefix}/games/%{name}/docs/ReleaseNotes-%{version}
 %{!?_without_freedesktop:%{_datadir}/applications/%{desktop_vendor}-%{name}.desktop}
 %{?_without_freedesktop:%{_sysconfdir}/X11/applnk/Games/%{name}.desktop}
