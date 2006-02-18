@@ -8,18 +8,10 @@ New 2005-07-07: Allocate the buffer on the hunk
 New 2006-01-12: Merged quake3 bits to cure most of the
 latency issues, re-diffed after the latest sound changes
 
-diff -urNp uhexen2-20060112/hexen2/snd_sdl.c uhexen2-20060112a/hexen2/snd_sdl.c
---- uhexen2-20060112/hexen2/snd_sdl.c	2006-01-12 15:08:47.000000000 +0200
-+++ uhexen2-20060112a/hexen2/snd_sdl.c	2006-01-12 15:14:55.000000000 +0200
-@@ -2,6 +2,7 @@
- 	snd_sdl.c
- 	SDL sound driver for Linux Hexen II,  based on the SDLquake
- 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
-+	Additional bits taken from QuakeForge and Quake3 projects.
- 
- 	$Id: snd_sdl-alternative.patch,v 1.3 2006-01-12 13:20:05 sezero Exp $
- */
-@@ -9,25 +10,58 @@
+diff -urNp uhexen2-20060217/hexen2/snd_sdl.c uhexen2-20060218/hexen2/snd_sdl.c
+--- uhexen2-20060217/hexen2/snd_sdl.c	2006-02-18 11:15:03.000000000 +0200
++++ uhexen2-20060218/hexen2/snd_sdl.c	2006-02-18 11:17:35.000000000 +0200
+@@ -10,25 +10,58 @@
  #include "sdl_inc.h"
  #include "quakedef.h"
  
@@ -84,7 +76,7 @@ diff -urNp uhexen2-20060112/hexen2/snd_sdl.c uhexen2-20060112a/hexen2/snd_sdl.c
  	char	drivername[128];
  
  	snd_inited = 0;
-@@ -54,7 +88,14 @@ qboolean S_SDL_Init(void)
+@@ -55,7 +88,14 @@ qboolean S_SDL_Init(void)
  	}
  
  	desired.channels = desired_channels;
@@ -100,7 +92,7 @@ diff -urNp uhexen2-20060112/hexen2/snd_sdl.c uhexen2-20060112a/hexen2/snd_sdl.c
  	desired.callback = paint_audio;
  	desired.userdata = NULL;
  
-@@ -92,6 +133,8 @@ qboolean S_SDL_Init(void)
+@@ -93,6 +133,8 @@ qboolean S_SDL_Init(void)
  			break;
  	}
  
@@ -109,7 +101,7 @@ diff -urNp uhexen2-20060112/hexen2/snd_sdl.c uhexen2-20060112a/hexen2/snd_sdl.c
  	/* Fill the audio DMA information block */
  	shm = &sn;
  	shm->splitbuffer = 0;
-@@ -100,16 +143,28 @@ qboolean S_SDL_Init(void)
+@@ -101,16 +143,28 @@ qboolean S_SDL_Init(void)
  		Con_Printf ("Warning: Rate set (%i) didn't match requested rate (%i)!\n", obtained.freq, desired_speed);
  	shm->speed = obtained.freq;
  	shm->channels = obtained.channels;
@@ -140,7 +132,7 @@ diff -urNp uhexen2-20060112/hexen2/snd_sdl.c uhexen2-20060112a/hexen2/snd_sdl.c
  	SDL_PauseAudio(0);
  
  	Con_Printf("Audio Subsystem initialized in SDL mode.\n");
-@@ -121,7 +176,9 @@ qboolean S_SDL_Init(void)
+@@ -122,7 +176,9 @@ qboolean S_SDL_Init(void)
  	Con_Printf ("%5d submission_chunk\n", shm->submission_chunk);
  	Con_Printf ("%5d speed\n", shm->speed);
  	Con_Printf ("0x%x dma buffer address\n", (int) shm->buffer);
@@ -150,7 +142,7 @@ diff -urNp uhexen2-20060112/hexen2/snd_sdl.c uhexen2-20060112a/hexen2/snd_sdl.c
  	return 1;
  }
  
-@@ -136,8 +193,15 @@ void S_SDL_Shutdown(void)
+@@ -137,8 +193,15 @@ void S_SDL_Shutdown(void)
  	{
  		Con_Printf ("Shutting down SDL sound\n");
  		snd_inited = 0;
@@ -167,9 +159,9 @@ diff -urNp uhexen2-20060112/hexen2/snd_sdl.c uhexen2-20060112a/hexen2/snd_sdl.c
  		SDL_QuitSubSystem(SDL_INIT_AUDIO);
  	}
  }
-diff -urNp uhexen2-20060112/hexen2/snd_sys.h uhexen2-20060112a/hexen2/snd_sys.h
---- uhexen2-20060112/hexen2/snd_sys.h	2006-01-12 14:57:45.000000000 +0200
-+++ uhexen2-20060112a/hexen2/snd_sys.h	2006-01-12 15:14:55.000000000 +0200
+diff -urNp uhexen2-20060217/hexen2/snd_sys.h uhexen2-20060218/hexen2/snd_sys.h
+--- uhexen2-20060217/hexen2/snd_sys.h	2006-01-12 14:57:45.000000000 +0200
++++ uhexen2-20060218/hexen2/snd_sys.h	2006-02-18 11:17:35.000000000 +0200
 @@ -20,7 +20,7 @@
  
  // this prevents running S_Update_() with the sdl sound driver
@@ -179,18 +171,10 @@ diff -urNp uhexen2-20060112/hexen2/snd_sys.h uhexen2-20060112a/hexen2/snd_sys.h
  
  #ifndef _SND_SYS_MACROS_ONLY
  
-diff -urNp uhexen2-20060112/hexenworld/Client/snd_sdl.c uhexen2-20060112a/hexenworld/Client/snd_sdl.c
---- uhexen2-20060112/hexenworld/Client/snd_sdl.c	2006-01-12 15:08:47.000000000 +0200
-+++ uhexen2-20060112a/hexenworld/Client/snd_sdl.c	2006-01-12 15:14:55.000000000 +0200
-@@ -2,6 +2,7 @@
- 	snd_sdl.c
- 	SDL sound driver for Linux Hexen II,  based on the SDLquake
- 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
-+	Additional bits taken from QuakeForge and Quake3 projects.
- 
- 	$Id: snd_sdl-alternative.patch,v 1.3 2006-01-12 13:20:05 sezero Exp $
- */
-@@ -9,25 +10,58 @@
+diff -urNp uhexen2-20060217/hexenworld/Client/snd_sdl.c uhexen2-20060218/hexenworld/Client/snd_sdl.c
+--- uhexen2-20060217/hexenworld/Client/snd_sdl.c	2006-02-18 11:15:03.000000000 +0200
++++ uhexen2-20060218/hexenworld/Client/snd_sdl.c	2006-02-18 11:17:35.000000000 +0200
+@@ -10,25 +10,58 @@
  #include "sdl_inc.h"
  #include "quakedef.h"
  
@@ -255,7 +239,7 @@ diff -urNp uhexen2-20060112/hexenworld/Client/snd_sdl.c uhexen2-20060112a/hexenw
  	char	drivername[128];
  
  	snd_inited = 0;
-@@ -54,7 +88,14 @@ qboolean S_SDL_Init(void)
+@@ -55,7 +88,14 @@ qboolean S_SDL_Init(void)
  	}
  
  	desired.channels = desired_channels;
@@ -271,7 +255,7 @@ diff -urNp uhexen2-20060112/hexenworld/Client/snd_sdl.c uhexen2-20060112a/hexenw
  	desired.callback = paint_audio;
  	desired.userdata = NULL;
  
-@@ -92,6 +133,8 @@ qboolean S_SDL_Init(void)
+@@ -93,6 +133,8 @@ qboolean S_SDL_Init(void)
  			break;
  	}
  
@@ -280,7 +264,7 @@ diff -urNp uhexen2-20060112/hexenworld/Client/snd_sdl.c uhexen2-20060112a/hexenw
  	/* Fill the audio DMA information block */
  	shm = &sn;
  	shm->splitbuffer = 0;
-@@ -100,16 +143,28 @@ qboolean S_SDL_Init(void)
+@@ -101,16 +143,28 @@ qboolean S_SDL_Init(void)
  		Con_Printf ("Warning: Rate set (%i) didn't match requested rate (%i)!\n", obtained.freq, desired_speed);
  	shm->speed = obtained.freq;
  	shm->channels = obtained.channels;
@@ -311,7 +295,7 @@ diff -urNp uhexen2-20060112/hexenworld/Client/snd_sdl.c uhexen2-20060112a/hexenw
  	SDL_PauseAudio(0);
  
  	Con_Printf("Audio Subsystem initialized in SDL mode.\n");
-@@ -121,7 +176,9 @@ qboolean S_SDL_Init(void)
+@@ -122,7 +176,9 @@ qboolean S_SDL_Init(void)
  	Con_Printf ("%5d submission_chunk\n", shm->submission_chunk);
  	Con_Printf ("%5d speed\n", shm->speed);
  	Con_Printf ("0x%x dma buffer address\n", (int) shm->buffer);
@@ -321,7 +305,7 @@ diff -urNp uhexen2-20060112/hexenworld/Client/snd_sdl.c uhexen2-20060112a/hexenw
  	return 1;
  }
  
-@@ -136,8 +193,15 @@ void S_SDL_Shutdown(void)
+@@ -137,8 +193,15 @@ void S_SDL_Shutdown(void)
  	{
  		Con_Printf ("Shutting down SDL sound\n");
  		snd_inited = 0;
@@ -338,9 +322,9 @@ diff -urNp uhexen2-20060112/hexenworld/Client/snd_sdl.c uhexen2-20060112a/hexenw
  		SDL_QuitSubSystem(SDL_INIT_AUDIO);
  	}
  }
-diff -urNp uhexen2-20060112/hexenworld/Client/snd_sys.h uhexen2-20060112a/hexenworld/Client/snd_sys.h
---- uhexen2-20060112/hexenworld/Client/snd_sys.h	2006-01-12 14:57:45.000000000 +0200
-+++ uhexen2-20060112a/hexenworld/Client/snd_sys.h	2006-01-12 15:14:55.000000000 +0200
+diff -urNp uhexen2-20060217/hexenworld/Client/snd_sys.h uhexen2-20060218/hexenworld/Client/snd_sys.h
+--- uhexen2-20060217/hexenworld/Client/snd_sys.h	2006-01-12 14:57:45.000000000 +0200
++++ uhexen2-20060218/hexenworld/Client/snd_sys.h	2006-02-18 11:17:35.000000000 +0200
 @@ -20,7 +20,7 @@
  
  // this prevents running S_Update_() with the sdl sound driver
