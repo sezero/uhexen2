@@ -1,5 +1,5 @@
 /*
- * $Id: midi.c,v 1.7 2005-09-24 23:50:37 sezero Exp $
+ * $Id: midi.c,v 1.8 2006-02-18 13:45:21 sezero Exp $
  */
 
 #include <windows.h>
@@ -14,17 +14,18 @@
 #include "quakedef.h"
 
 
-BOOL bMidiInited,bFileOpen, bPlaying, bBuffersPrepared;
-BOOL bPaused, bLooped;
-UINT uMIDIDeviceID = MIDI_MAPPER, uCallbackStatus;
-int nCurrentBuffer, nEmptyBuffers;
+static BOOL bMidiInited, bFileOpen, bPlaying, bBuffersPrepared, bPaused;
+BOOL bLooped;
+static UINT uMIDIDeviceID = MIDI_MAPPER, uCallbackStatus;
+static int nCurrentBuffer, nEmptyBuffers;
 DWORD dwBufferTickLength, dwTempoMultiplier, dwCurrentTempo, dwProgressBytes;
 extern cvar_t bgmvolume;
-DWORD dwVolCache[NUM_CHANNELS];
-qboolean hw_vol_capable = false;
+static float bgm_volume_old = -1.0f;
+static DWORD dwVolCache[NUM_CHANNELS];
+static qboolean hw_vol_capable = false;
 
-HMIDISTRM    hStream;
-CONVERTINFO  ciStreamBuffers[NUM_STREAM_BUFFERS];
+static HMIDISTRM	hStream;
+static CONVERTINFO	ciStreamBuffers[NUM_STREAM_BUFFERS];
 
 // From mstrconv.c
 extern INFILESTATE  ifs;
@@ -33,9 +34,13 @@ extern INFILESTATE  ifs;
 static HANDLE   hBufferReturnEvent;
 
 
-static void FreeBuffers(void);
+static void FreeBuffers (void);
+static BOOL StreamBufferSetup (char *Name);
+static void CALLBACK MidiProc (HMIDIIN, UINT, DWORD, DWORD, DWORD);
+static void SetAllChannelVolumes (DWORD dwVolumePercent);
+//static void SetChannelVolume (DWORD dwChannel, DWORD dwVolumePercent);
 
-void MidiErrorMessageBox(MMRESULT mmr)
+static void MidiErrorMessageBox(MMRESULT mmr)
 {
 	char temp[1024];
 
@@ -43,7 +48,7 @@ void MidiErrorMessageBox(MMRESULT mmr)
 	Con_Printf("MIDI: %s\n", temp);
 }
 
-void MIDI_Play_f (void)
+static void MIDI_Play_f (void)
 {
 	if (Cmd_Argc () == 2)
 	{
@@ -51,17 +56,17 @@ void MIDI_Play_f (void)
 	}
 }
 
-void MIDI_Stop_f (void)
+static void MIDI_Stop_f (void)
 {
 	MIDI_Stop();
 }
 
-void MIDI_Pause_f (void)
+static void MIDI_Pause_f (void)
 {
 	MIDI_Pause(0);
 }
 
-void MIDI_Loop_f (void)
+static void MIDI_Loop_f (void)
 {
 	if (Cmd_Argc () == 2)
 	{
@@ -79,7 +84,7 @@ void MIDI_Loop_f (void)
 		Con_Printf("MIDI music will not be looped\n");
 }
 
-void MIDI_SetVolume(float volume_frac)
+static void MIDI_SetVolume(float volume_frac)
 {
 	int volume_int;
 
@@ -88,10 +93,13 @@ void MIDI_SetVolume(float volume_frac)
 
 	volume_frac = (volume_frac >= 0.0f) ? volume_frac : 0.0f;
 	volume_frac = (volume_frac <= 1.0f) ? volume_frac : 1.0f;
-	if (hw_vol_capable) {
+	if (hw_vol_capable)
+	{
 		volume_int = (int)(volume_frac * 65535.0f);
 		midiOutSetVolume((HMIDIOUT)hStream, (volume_int << 16) + volume_int);
-	} else {
+	}
+	else
+	{
 		volume_int = (int)(volume_frac * 1000.0f);
 		SetAllChannelVolumes(volume_int);
 	}
@@ -99,8 +107,8 @@ void MIDI_SetVolume(float volume_frac)
 
 void MIDI_UpdateVolume(void)
 {
-	static float bgm_volume_old = -1.0f;
-	if (bgmvolume.value != bgm_volume_old) {
+	if (bgmvolume.value != bgm_volume_old)
+	{
 		bgm_volume_old = bgmvolume.value;
 		MIDI_SetVolume(bgm_volume_old);
 	}
@@ -120,7 +128,7 @@ qboolean MIDI_Init(void)
 	hBufferReturnEvent = CreateEvent(NULL,FALSE,FALSE,"Wait For Buffer Return");
 
 	mmrRetVal = midiStreamOpen(&hStream,&uMIDIDeviceID,(DWORD)1,(DWORD)MidiProc,(DWORD)0,CALLBACK_FUNCTION);
-	if(mmrRetVal != MMSYSERR_NOERROR )
+	if (mmrRetVal != MMSYSERR_NOERROR )
 	{
 		bMidiInited = 0;
 		MidiErrorMessageBox( mmrRetVal );
@@ -313,12 +321,12 @@ static void FreeBuffers(void)
 	DWORD idx;
 	MMRESULT mmrRetVal;
 
-	if(bBuffersPrepared)
+	if (bBuffersPrepared)
 	{
-		for(idx=0;idx<NUM_STREAM_BUFFERS;idx++)
+		for (idx=0;idx<NUM_STREAM_BUFFERS;idx++)
 		{
 			mmrRetVal = midiOutUnprepareHeader((HMIDIOUT)hStream,&ciStreamBuffers[idx].mhBuffer,sizeof(MIDIHDR));
-			if(mmrRetVal != MMSYSERR_NOERROR)
+			if (mmrRetVal != MMSYSERR_NOERROR)
 			{
 				MidiErrorMessageBox(mmrRetVal);
 			}
@@ -327,12 +335,14 @@ static void FreeBuffers(void)
 	}
 
 	// Free our stream buffers...
-	for(idx=0;idx<NUM_STREAM_BUFFERS;idx++)
-		if(ciStreamBuffers[idx].mhBuffer.lpData)
+	for (idx=0;idx<NUM_STREAM_BUFFERS;idx++)
+	{
+		if (ciStreamBuffers[idx].mhBuffer.lpData)
 		{
 			Z_Free(ciStreamBuffers[idx].mhBuffer.lpData);
 			ciStreamBuffers[idx].mhBuffer.lpData = NULL;
 		}
+	}
 }
 
 
@@ -343,7 +353,7 @@ static void FreeBuffers(void)
 /* open a MIDI file. Then it goes tabout converting at least the first part of*/
 /* that file into a midiStream buffer for playback.                          */
 /*****************************************************************************/
-BOOL StreamBufferSetup(char *Name)
+static BOOL StreamBufferSetup(char *Name)
 {
 	int nChkErr;
 	BOOL bFoundEnd = FALSE;
@@ -351,21 +361,21 @@ BOOL StreamBufferSetup(char *Name)
 	MMRESULT mmrRetVal;
 	MIDIPROPTIMEDIV mptd;
 
-	if(!hStream)
+	if (!hStream)
 	{
 		mmrRetVal = midiStreamOpen(&hStream,&uMIDIDeviceID,(DWORD)1,(DWORD)MidiProc,(DWORD)0,CALLBACK_FUNCTION);
-		if(mmrRetVal != MMSYSERR_NOERROR)
+		if (mmrRetVal != MMSYSERR_NOERROR)
 		{
 			MidiErrorMessageBox(mmrRetVal);
 			return(TRUE);
 		}
 	}
 
-	for(idx=0;idx<NUM_STREAM_BUFFERS;idx++)
+	for (idx=0;idx<NUM_STREAM_BUFFERS;idx++)
 	{
 		ciStreamBuffers[idx].mhBuffer.dwBufferLength = OUT_BUFFER_SIZE;
 		ciStreamBuffers[idx].mhBuffer.lpData = Z_Malloc(OUT_BUFFER_SIZE);
-		if(ciStreamBuffers[idx].mhBuffer.lpData == NULL)
+		if (ciStreamBuffers[idx].mhBuffer.lpData == NULL)
 		{
 		// Buffers we already allocated will be killed by WM_DESTROY
 		// after we fail on the create by returning with -1
@@ -373,18 +383,18 @@ BOOL StreamBufferSetup(char *Name)
 		}
 	}
 
-	if(ConverterInit(Name))
+	if (ConverterInit(Name))
 		return(TRUE);
 
 	// Initialize the volume cache array to some pre-defined value
-	for(idx=0;idx<NUM_CHANNELS;idx++)
+	for (idx=0;idx<NUM_CHANNELS;idx++)
 		dwVolCache[idx] = VOL_CACHE_INIT;
 
 	mptd.cbStruct = sizeof(mptd);
 	mptd.dwTimeDiv = ifs.dwTimeDivision;
 
 	mmrRetVal = midiStreamProperty(hStream,(LPBYTE)&mptd,MIDIPROP_SET | MIDIPROP_TIMEDIV);
-	if(mmrRetVal != MMSYSERR_NOERROR)
+	if (mmrRetVal != MMSYSERR_NOERROR)
 	{
 		MidiErrorMessageBox(mmrRetVal);
 		ConverterCleanup();
@@ -394,7 +404,7 @@ BOOL StreamBufferSetup(char *Name)
 	nEmptyBuffers = 0;
 	dwConvertFlag = CONVERTF_RESET;
 
-	for(nCurrentBuffer=0;nCurrentBuffer<NUM_STREAM_BUFFERS;nCurrentBuffer++)
+	for (nCurrentBuffer=0;nCurrentBuffer<NUM_STREAM_BUFFERS;nCurrentBuffer++)
 	{
 	// Tell the converter to convert up to one entire buffer's length of output
 	// data. Also, set a flag so it knows to reset any saved state variables it
@@ -420,10 +430,10 @@ BOOL StreamBufferSetup(char *Name)
 		}
 		ciStreamBuffers[nCurrentBuffer].mhBuffer.dwBytesRecorded = ciStreamBuffers[nCurrentBuffer].dwBytesRecorded;
 
-		if(!bBuffersPrepared)
+		if (!bBuffersPrepared)
 		{
 			mmrRetVal = midiOutPrepareHeader((HMIDIOUT)hStream,&ciStreamBuffers[nCurrentBuffer].mhBuffer,sizeof(MIDIHDR));
-			if(mmrRetVal != MMSYSERR_NOERROR)
+			if (mmrRetVal != MMSYSERR_NOERROR)
 			{
 				MidiErrorMessageBox(mmrRetVal);
 				ConverterCleanup();
@@ -432,14 +442,14 @@ BOOL StreamBufferSetup(char *Name)
 		}
 
 		mmrRetVal = midiStreamOut(hStream,&ciStreamBuffers[nCurrentBuffer].mhBuffer,sizeof(MIDIHDR));
-		if(mmrRetVal != MMSYSERR_NOERROR)
+		if (mmrRetVal != MMSYSERR_NOERROR)
 		{
 			MidiErrorMessageBox(mmrRetVal);
 			break;
 		}
 		dwConvertFlag = 0;
 
-		if(bFoundEnd)
+		if (bFoundEnd)
 			break;
 		}
 
@@ -456,7 +466,7 @@ BOOL StreamBufferSetup(char *Name)
 /*   This is the callback handler which continually refills MIDI data buffers*/
 /* as they're returned to us from the audio subsystem.                       */
 /*****************************************************************************/
-void CALLBACK MidiProc(HMIDIIN hMidi,UINT uMsg,DWORD dwInstance,DWORD dwParam1,DWORD dwParam2)
+static void CALLBACK MidiProc(HMIDIIN hMidi, UINT uMsg, DWORD dwInstance, DWORD dwParam1, DWORD dwParam2)
 {
 	static int nWaitingBuffers = 0;
 	MIDIEVENT *pme;
@@ -464,19 +474,19 @@ void CALLBACK MidiProc(HMIDIIN hMidi,UINT uMsg,DWORD dwInstance,DWORD dwParam1,D
 	MMRESULT mmrRetVal;
 	int nChkErr;
 
-	switch(uMsg)
+	switch (uMsg)
 	{
 		case MOM_DONE:
-			if(uCallbackStatus == STATUS_CALLBACKDEAD)
+			if (uCallbackStatus == STATUS_CALLBACKDEAD)
 			{
 				return;
 			}
 
 			nEmptyBuffers++;
 
-			if(uCallbackStatus == STATUS_WAITINGFOREND)
+			if (uCallbackStatus == STATUS_WAITINGFOREND)
 			{
-				if(nEmptyBuffers < NUM_STREAM_BUFFERS)
+				if (nEmptyBuffers < NUM_STREAM_BUFFERS)
 				{
 					return;
 				}
@@ -491,10 +501,10 @@ void CALLBACK MidiProc(HMIDIIN hMidi,UINT uMsg,DWORD dwInstance,DWORD dwParam1,D
 
 			// This flag is set whenever the callback is waiting for all buffers to
 			// come back.
-			if(uCallbackStatus == STATUS_KILLCALLBACK)
+			if (uCallbackStatus == STATUS_KILLCALLBACK)
 			{
 				// Count NUM_STREAM_BUFFERS-1 being returned for the last time
-				if(nEmptyBuffers < NUM_STREAM_BUFFERS)
+				if (nEmptyBuffers < NUM_STREAM_BUFFERS)
 				{
 					return;
 				}
@@ -513,7 +523,7 @@ void CALLBACK MidiProc(HMIDIIN hMidi,UINT uMsg,DWORD dwInstance,DWORD dwParam1,D
 			///////////////////////////////////////////////////////////////////////////////
 			// Fill an available buffer with audio data again...
 
-			if(bPlaying && nEmptyBuffers)
+			if (bPlaying && nEmptyBuffers)
 			{
 				ciStreamBuffers[nCurrentBuffer].dwStartOffset = 0;
 				ciStreamBuffers[nCurrentBuffer].dwMaxLength = OUT_BUFFER_SIZE;
@@ -522,9 +532,9 @@ void CALLBACK MidiProc(HMIDIIN hMidi,UINT uMsg,DWORD dwInstance,DWORD dwParam1,D
 				ciStreamBuffers[nCurrentBuffer].bTimesUp = FALSE;
 
 				nChkErr = ConvertToBuffer(0,&ciStreamBuffers[nCurrentBuffer]);
-				if(nChkErr != CONVERTERR_NOERROR)
+				if (nChkErr != CONVERTERR_NOERROR)
 				{
-					if(nChkErr == CONVERTERR_DONE)
+					if (nChkErr == CONVERTERR_DONE)
 					{
 						// Don't include this one in the count
 						nWaitingBuffers = NUM_STREAM_BUFFERS - 1;
@@ -542,7 +552,7 @@ void CALLBACK MidiProc(HMIDIIN hMidi,UINT uMsg,DWORD dwInstance,DWORD dwParam1,D
 				ciStreamBuffers[nCurrentBuffer].mhBuffer.dwBytesRecorded = ciStreamBuffers[nCurrentBuffer].dwBytesRecorded;
 
 				mmrRetVal = midiStreamOut(hStream,&ciStreamBuffers[nCurrentBuffer].mhBuffer,sizeof(MIDIHDR));
-				if(mmrRetVal != MMSYSERR_NOERROR )
+				if (mmrRetVal != MMSYSERR_NOERROR )
 				{
 					MidiErrorMessageBox( mmrRetVal );
 					ConverterCleanup();
@@ -590,7 +600,7 @@ void CALLBACK MidiProc(HMIDIIN hMidi,UINT uMsg,DWORD dwInstance,DWORD dwParam1,D
 /*   Given a percent in tenths of a percent, sets volume on all channels to */
 /* reflect the new value.                                                   */
 /****************************************************************************/
-void SetAllChannelVolumes(DWORD dwVolumePercent)
+static void SetAllChannelVolumes(DWORD dwVolumePercent)
 {
 	DWORD dwEvent, dwStatus, dwVol, idx;
 	MMRESULT mmrRetVal;
@@ -599,12 +609,12 @@ void SetAllChannelVolumes(DWORD dwVolumePercent)
 		return;
 */
 
-	for(idx=0,dwStatus=MIDI_CTRLCHANGE;idx<NUM_CHANNELS;idx++,dwStatus++)
+	for (idx=0,dwStatus=MIDI_CTRLCHANGE;idx<NUM_CHANNELS;idx++,dwStatus++)
 	{
 		dwVol = ( dwVolCache[idx] * dwVolumePercent ) / 1000;
 		dwEvent = dwStatus | ((DWORD)MIDICTRL_VOLUME << 8) | ((DWORD)dwVol << 16);
 		mmrRetVal = midiOutShortMsg((HMIDIOUT)hStream, dwEvent);
-		if(mmrRetVal != MMSYSERR_NOERROR )
+		if (mmrRetVal != MMSYSERR_NOERROR )
 		{
 			MidiErrorMessageBox(mmrRetVal);
 			return;
@@ -619,7 +629,8 @@ void SetAllChannelVolumes(DWORD dwVolumePercent)
 /*   Given a percent in tenths of a percent, sets volume on a specified     */
 /* channel to reflect the new value.                                        */
 /****************************************************************************/
-void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
+#if 0	// not used
+static void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 {
 	DWORD dwEvent, dwVol;
 	MMRESULT mmrRetVal;
@@ -637,9 +648,13 @@ void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 		return;
 	}
 }
+#endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2005/09/24 23:50:37  sezero
+ * fixed a bunch of compiler warnings
+ *
  * Revision 1.6  2005/07/09 07:19:04  sezero
  * use zone instead of malloc. other small stuff.
  *
