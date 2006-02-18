@@ -5,22 +5,20 @@
 #include "quakedef.h"
 #include <ctype.h>
 
-HANDLE	heventDone;
-HANDLE	hfileBuffer;
-HANDLE	heventChildSend;
-HANDLE	heventParentSend;
-HANDLE	hStdout;
-HANDLE	hStdin;
+static HANDLE	heventDone;
+static HANDLE	hfileBuffer;
+static HANDLE	heventChildSend, heventParentSend;
+static HANDLE	hStdout, hStdin;
 
-DWORD RequestProc (DWORD dwNichts);
-LPVOID GetMappedBuffer (HANDLE hfileBuf);
-void ReleaseMappedBuffer (LPVOID pBuffer);
-BOOL GetScreenBufferLines (int *piLines);
-BOOL SetScreenBufferLines (int iLines);
-BOOL ReadText (LPTSTR pszText, int iBeginLine, int iEndLine);
-BOOL WriteText (LPCTSTR szText);
-int CharToCode (char c);
-BOOL SetConsoleCXCY(HANDLE hStdoutput, int cx, int cy);
+static DWORD RequestProc (DWORD dwNichts);
+static LPVOID GetMappedBuffer (HANDLE hfileBuf);
+static void ReleaseMappedBuffer (LPVOID pBuffer);
+static BOOL GetScreenBufferLines (int *piLines);
+static BOOL SetScreenBufferLines (int iLines);
+static BOOL ReadText (LPTSTR pszText, int iBeginLine, int iEndLine);
+static BOOL WriteText (LPCTSTR szText);
+static int CharToCode (char c);
+static BOOL SetConsoleCXCY(HANDLE hStdoutput, int cx, int cy);
 
 
 void InitConProc (HANDLE hFile, HANDLE heventParent, HANDLE heventChild)
@@ -67,7 +65,7 @@ void DeinitConProc (void)
 }
 
 
-DWORD RequestProc (DWORD dwNichts)
+static DWORD RequestProc (DWORD dwNichts)
 {
 	int		*pBuffer;
 	DWORD	dwRet;
@@ -82,7 +80,7 @@ DWORD RequestProc (DWORD dwNichts)
 		dwRet = WaitForMultipleObjects (2, heventWait, FALSE, INFINITE);
 
 	// heventDone fired, so we're exiting.
-		if (dwRet == WAIT_OBJECT_0 + 1)	
+		if (dwRet == WAIT_OBJECT_0 + 1)
 			break;
 
 		pBuffer = (int *) GetMappedBuffer (hfileBuffer);
@@ -106,8 +104,7 @@ DWORD RequestProc (DWORD dwNichts)
 			// Param2 : End line
 				iBeginLine = pBuffer[1];
 				iEndLine = pBuffer[2];
-				pBuffer[0] = ReadText ((LPTSTR) (pBuffer + 1), iBeginLine, 
-									   iEndLine);
+				pBuffer[0] = ReadText ((LPTSTR) (pBuffer + 1), iBeginLine, iEndLine);
 				break;
 
 			case CCOM_GET_SCR_LINES:
@@ -129,7 +126,7 @@ DWORD RequestProc (DWORD dwNichts)
 }
 
 
-LPVOID GetMappedBuffer (HANDLE hfileBuf)
+static LPVOID GetMappedBuffer (HANDLE hfileBuf)
 {
 	LPVOID pBuffer;
 
@@ -139,16 +136,16 @@ LPVOID GetMappedBuffer (HANDLE hfileBuf)
 }
 
 
-void ReleaseMappedBuffer (LPVOID pBuffer)
+static void ReleaseMappedBuffer (LPVOID pBuffer)
 {
 	UnmapViewOfFile (pBuffer);
 }
 
 
-BOOL GetScreenBufferLines (int *piLines)
+static BOOL GetScreenBufferLines (int *piLines)
 {
-	CONSOLE_SCREEN_BUFFER_INFO	info;							  
-	BOOL						bRet;
+	CONSOLE_SCREEN_BUFFER_INFO	info;
+	BOOL					bRet;
 
 	bRet = GetConsoleScreenBufferInfo (hStdout, &info);
 
@@ -159,13 +156,13 @@ BOOL GetScreenBufferLines (int *piLines)
 }
 
 
-BOOL SetScreenBufferLines (int iLines)
+static BOOL SetScreenBufferLines (int iLines)
 {
 	return SetConsoleCXCY (hStdout, 80, iLines);
 }
 
 
-BOOL ReadText (LPTSTR pszText, int iBeginLine, int iEndLine)
+static BOOL ReadText (LPTSTR pszText, int iBeginLine, int iEndLine)
 {
 	COORD	coord;
 	DWORD	dwRead;
@@ -189,7 +186,7 @@ BOOL ReadText (LPTSTR pszText, int iBeginLine, int iEndLine)
 }
 
 
-BOOL WriteText (LPCTSTR szText)
+static BOOL WriteText (LPCTSTR szText)
 {
 	DWORD			dwWritten;
 	INPUT_RECORD	rec;
@@ -212,7 +209,7 @@ BOOL WriteText (LPCTSTR szText)
 		rec.Event.KeyEvent.wVirtualScanCode = CharToCode (*sz);
 		rec.Event.KeyEvent.uChar.AsciiChar = *sz;
 		rec.Event.KeyEvent.uChar.UnicodeChar = *sz;
-		rec.Event.KeyEvent.dwControlKeyState = isupper(*sz) ? 0x80 : 0x0; 
+		rec.Event.KeyEvent.dwControlKeyState = isupper(*sz) ? 0x80 : 0x0;
 
 		WriteConsoleInput(hStdin, &rec, 1, &dwWritten);
 
@@ -227,7 +224,7 @@ BOOL WriteText (LPCTSTR szText)
 }
 
 
-int CharToCode (char c)
+static int CharToCode (char c)
 {
 	char upper;
 
@@ -242,7 +239,7 @@ int CharToCode (char c)
 	}
 
 	if (isalpha(c))
-		return (30 + upper - 65); 
+		return (30 + upper - 65);
 
 	if (isdigit(c))
 		return (1 + upper - 47);
@@ -251,10 +248,10 @@ int CharToCode (char c)
 }
 
 
-BOOL SetConsoleCXCY(HANDLE hStdoutput, int cx, int cy)
+static BOOL SetConsoleCXCY(HANDLE hStdoutput, int cx, int cy)
 {
 	CONSOLE_SCREEN_BUFFER_INFO	info;
-	COORD						coordMax;
+	COORD				coordMax;
 
 	coordMax = GetLargestConsoleWindowSize(hStdoutput);
 
