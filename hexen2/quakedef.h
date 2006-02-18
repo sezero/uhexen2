@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.44 2006-02-12 12:22:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.45 2006-02-18 08:51:10 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -351,7 +351,6 @@ extern	double		realtime;		// not bounded in any way, changed at
 										// start of every frame, never reset
 
 void Host_ClearMemory (void);
-void Host_ServerFrame (void);
 void Host_InitCommands (void);
 void Host_Init (quakeparms_t *parms);
 void Host_Shutdown(void);
@@ -400,6 +399,9 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.44  2006/02/12 12:22:02  sezero
+ * bumped version to 1.4.0-pre3 (2006-02-12)
+ *
  * Revision 1.43  2006/01/24 17:09:27  sezero
  * bumped version to 1.4.0-pre2 (2006-01-24)
  *

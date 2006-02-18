@@ -12,23 +12,23 @@
 #define	MAXCMDLINE	256
 char	key_lines[32][MAXCMDLINE];
 int		key_linepos;
-int		shift_down=false;
+static int	shift_down=false;
 int		key_lastpress;
 int		key_insert;	// insert key toggle
 
 int		edit_line=0;
-int		history_line=0;
+static int	history_line=0;
 
 keydest_t	key_dest;
 
-int		key_count;			// incremented every key event
+int		key_count;		// incremented every key event
 
 char	*keybindings[256];
-qboolean	consolekeys[256];	// if true, can't be rebound while in console
-qboolean	menubound[256];	// if true, can't be rebound while in menu
-int		keyshift[256];		// key to map to if shift held down in console
-int		key_repeats[256];	// if > 1, it is autorepeating
-qboolean	keydown[256];
+static qboolean	consolekeys[256];	// if true, can't be rebound while in console
+static qboolean	menubound[256];		// if true, can't be rebound while in menu
+static int	keyshift[256];		// key to map to if shift held down in console
+static int	key_repeats[256];	// if > 1, it is autorepeating
+static qboolean	keydown[256];
 
 typedef struct
 {
@@ -36,7 +36,7 @@ typedef struct
 	int		keynum;
 } keyname_t;
 
-keyname_t keynames[] =
+static keyname_t keynames[] =
 {
 	{"TAB", K_TAB},
 	{"ENTER", K_ENTER},
@@ -140,7 +140,7 @@ keyname_t keynames[] =
 ==============================================================================
 */
 
-void CompleteCommand (void)
+static void CompleteCommand (void)
 {
 	char	*matches[MAX_MATCHES];
 	char	*s, stmp[256];
@@ -264,7 +264,7 @@ Key_Console
 Interactive line editing and console scrollback
 ====================
 */
-void Key_Console (int key)
+static void Key_Console (int key)
 {
 	int		i, history_line_last;
 #ifdef _WIN32
@@ -283,7 +283,7 @@ void Key_Console (int key)
 		key_linepos = 1;
 		if (cls.state == ca_disconnected)
 			SCR_UpdateScreen ();	// force an update, because the command
-									// may take some time
+								// may take some time
 		return;
 	}
 
@@ -292,7 +292,7 @@ void Key_Console (int key)
 		CompleteCommand ();
 		return;
 	}
-	
+
 	// left arrow will just move left one w/o earsing, backspace will
 	// actually erase charcter
 	if (key == K_LEFTARROW)
@@ -359,13 +359,15 @@ void Key_Console (int key)
 
 	if (key == K_DOWNARROW)
 	{
-		if (history_line == edit_line) return;
+		if (history_line == edit_line)
+			return;
+
 		do
 		{
 			history_line = (history_line + 1) & 31;
 		}
-		while (history_line != edit_line
-			&& !key_lines[history_line][1]);
+		while (history_line != edit_line && !key_lines[history_line][1]);
+
 		if (history_line == edit_line)
 		{
 			key_lines[edit_line][0] = ']';
@@ -415,14 +417,18 @@ void Key_Console (int key)
 
 		return;
 	}
-	
+
 #ifdef _WIN32
-	if ((key=='V' || key=='v') && GetKeyState(VK_CONTROL)<0) {
-		if (OpenClipboard(NULL)) {
+	if ((key=='V' || key=='v') && GetKeyState(VK_CONTROL) < 0)
+	{
+		if (OpenClipboard(NULL))
+		{
 			th = GetClipboardData(CF_TEXT);
-			if (th) {
+			if (th)
+			{
 				clipText = GlobalLock(th);
-				if (clipText) {
+				if (clipText)
+				{
 					textCopied = Z_Malloc(GlobalSize(th)+1);
 					strcpy(textCopied, clipText);
 					/* Substitute a NULL for every token */
@@ -430,7 +436,8 @@ void Key_Console (int key)
 					i = strlen(textCopied);
 					if (i+key_linepos>=MAXCMDLINE)
 						i=MAXCMDLINE-key_linepos;
-					if (i>0) {
+					if (i > 0)
+					{
 						textCopied[i]=0;
 						strcat(key_lines[edit_line], textCopied);
 						key_linepos+=i;
@@ -440,14 +447,14 @@ void Key_Console (int key)
 				GlobalUnlock(th);
 			}
 			CloseClipboard();
-		return;
+			return;
 		}
 	}
 #endif
 
 	if (key < 32 || key > 127)
 		return;	// non printable
-		
+
 	if (key_linepos < MAXCMDLINE-1)
 	{
 		// check insert mode
@@ -466,7 +473,6 @@ void Key_Console (int key)
 		if (!i)
 			key_lines[edit_line][key_linepos] = 0;
 	}
-
 }
 
 //============================================================================
@@ -474,7 +480,7 @@ void Key_Console (int key)
 char chat_buffer[32];
 qboolean team_message = false;
 
-void Key_Message (int key)
+static void Key_Message (int key)
 {
 	static int chat_bufferlen = 0;
 
@@ -533,10 +539,10 @@ the given string.  Single ascii characters return themselves, while
 the K_* names are matched up.
 ===================
 */
-int Key_StringToKeynum (char *str)
+static int Key_StringToKeynum (char *str)
 {
 	keyname_t	*kn;
-	
+
 	if (!str || !str[0])
 		return -1;
 	if (!str[1])
@@ -561,9 +567,9 @@ FIXME: handle quote special (general escape sequence?)
 */
 char *Key_KeynumToString (int keynum)
 {
-	keyname_t	*kn;	
+	keyname_t	*kn;
 	static	char	tinystr[2];
-	
+
 	if (keynum == -1)
 		return "<KEY NOT FOUND>";
 	if (keynum > 32 && keynum < 127)
@@ -572,7 +578,7 @@ char *Key_KeynumToString (int keynum)
 		tinystr[1] = 0;
 		return tinystr;
 	}
-	
+
 	for (kn=keynames ; kn->name ; kn++)
 		if (keynum == kn->keynum)
 			return kn->name;
@@ -590,7 +596,7 @@ void Key_SetBinding (int keynum, char *binding)
 {
 	char	*new;
 	int		l;
-			
+
 	if (keynum == -1)
 		return;
 
@@ -600,13 +606,13 @@ void Key_SetBinding (int keynum, char *binding)
 		Z_Free (keybindings[keynum]);
 		keybindings[keynum] = NULL;
 	}
-			
+
 // allocate memory for new binding
-	l = strlen (binding);	
+	l = strlen (binding);
 	new = Z_Malloc (l+1);
 	strcpy (new, binding);
 	new[l] = 0;
-	keybindings[keynum] = new;	
+	keybindings[keynum] = new;
 }
 
 /*
@@ -614,7 +620,7 @@ void Key_SetBinding (int keynum, char *binding)
 Key_Unbind_f
 ===================
 */
-void Key_Unbind_f (void)
+static void Key_Unbind_f (void)
 {
 	int		b;
 
@@ -623,7 +629,7 @@ void Key_Unbind_f (void)
 		Con_Printf ("unbind <key> : remove commands from a key\n");
 		return;
 	}
-	
+
 	b = Key_StringToKeynum (Cmd_Argv(1));
 	if (b==-1)
 	{
@@ -634,10 +640,10 @@ void Key_Unbind_f (void)
 	Key_SetBinding (b, "");
 }
 
-void Key_Unbindall_f (void)
+static void Key_Unbindall_f (void)
 {
 	int		i;
-	
+
 	for (i=0 ; i<256 ; i++)
 		if (keybindings[i])
 			Key_SetBinding (i, "");
@@ -649,11 +655,11 @@ void Key_Unbindall_f (void)
 Key_Bind_f
 ===================
 */
-void Key_Bind_f (void)
+static void Key_Bind_f (void)
 {
 	int			i, c, b;
 	char		cmd[1024];
-	
+
 	c = Cmd_Argc();
 
 	if (c != 2 && c != 3)
@@ -676,7 +682,7 @@ void Key_Bind_f (void)
 			Con_Printf ("\"%s\" is not bound\n", Cmd_Argv(1) );
 		return;
 	}
-	
+
 // copy the rest of the command line
 	cmd[0] = 0;		// start out with a null string
 	for (i=2 ; i< c ; i++)
@@ -722,7 +728,7 @@ void Key_Init (void)
 		key_lines[i][1] = 0;
 	}
 	key_linepos = 1;
-	
+
 //
 // init ascii characters in console mode
 //
@@ -783,8 +789,6 @@ void Key_Init (void)
 	Cmd_AddCommand ("bind",Key_Bind_f);
 	Cmd_AddCommand ("unbind",Key_Unbind_f);
 	Cmd_AddCommand ("unbindall",Key_Unbindall_f);
-
-
 }
 
 /*
@@ -830,7 +834,7 @@ void Key_Event (int key, qboolean down)
 		// ignore all autorepeats unless chatting or in console
 		if (key_dest != key_console &&
 		    key_dest != key_message &&
-		    !(con_forcedup && m_state == 0) && /* hack to allow autorepeat in forcedup console */
+		    !(con_forcedup && m_state == m_none) && /* hack to allow autorepeat in forcedup console */
 		    key_repeats[key] > 1)
 			return;
 
@@ -906,13 +910,13 @@ void Key_Event (int key, qboolean down)
 	{
 		Cbuf_AddText ("map keep1\n");
 	}
-		
+
 //
 // if not a consolekey, send to the interpreter no matter what mode is
 //
 	if ( (key_dest == key_menu && menubound[key])
-	|| (key_dest == key_console && !consolekeys[key])
-	|| (key_dest == key_game && ( !con_forcedup || !consolekeys[key] ) ) )
+		|| (key_dest == key_console && !consolekeys[key])
+		|| (key_dest == key_game && ( !con_forcedup || !consolekeys[key] )) )
 	{
 		kb = keybindings[key];
 		if (kb)

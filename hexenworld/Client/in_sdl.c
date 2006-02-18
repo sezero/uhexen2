@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.28 2006-01-14 08:39:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.29 2006-02-18 08:51:11 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -14,15 +14,15 @@ extern qboolean	draw_reinit;
 // mouse variables
 cvar_t	m_filter = {"m_filter","0"};
 
-int	mouse_buttons;
-int	mouse_oldbuttonstate;
-int	mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
-extern cvar_t		vid_mode, _enable_mouse;
+static int	mouse_buttons;
+static int	mouse_oldbuttonstate;
+static int	mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
+extern cvar_t	vid_mode, _enable_mouse;
 
 extern modestate_t	modestate;
 extern qboolean	in_mode_set;
 static qboolean	mouseactive = false;
-qboolean	mouseinitialized = false;
+static qboolean	mouseinitialized = false;
 static qboolean	mouseactivatetoggle = false;
 static qboolean	mouseshowtoggle = 1;
 
@@ -42,13 +42,13 @@ enum _ControlList
 {
 	AxisNada = 0, AxisForward, AxisLook, AxisSide, AxisTurn
 };
-DWORD	dwAxisFlags[JOY_MAX_AXES] =
+static DWORD	dwAxisFlags[JOY_MAX_AXES] =
 {
 	JOY_RETURNX, JOY_RETURNY, JOY_RETURNZ, JOY_RETURNR, JOY_RETURNU, JOY_RETURNV
 };
-DWORD	dwAxisMap[JOY_MAX_AXES];
-DWORD	dwControlMap[JOY_MAX_AXES];
-PDWORD	pdwRawValue[JOY_MAX_AXES];
+static DWORD	dwAxisMap[JOY_MAX_AXES];
+static DWORD	dwControlMap[JOY_MAX_AXES];
+static PDWORD	pdwRawValue[JOY_MAX_AXES];
 #endif
 
 // none of these cvars are saved over a session
@@ -76,28 +76,28 @@ cvar_t	joy_yawsensitivity = {"joyyawsensitivity", "-1.0"};
 cvar_t	joy_wwhack1 = {"joywwhack1", "0.0"};
 cvar_t	joy_wwhack2 = {"joywwhack2", "0.0"};
 
-qboolean	joy_avail, joy_advancedinit, joy_haspov;
 #if 0
-DWORD		joy_oldbuttonstate, joy_oldpovstate;
+static qboolean	joy_avail, joy_advancedinit, joy_haspov;
+static DWORD	joy_oldbuttonstate, joy_oldpovstate;
 
-int			joy_id;
-DWORD		joy_flags;
-DWORD		joy_numbuttons;
+static int		joy_id;
+static DWORD	joy_flags;
+static DWORD	joy_numbuttons;
 
 static JOYINFOEX	ji;
 #endif
 
 // forward-referenced functions
-void IN_StartupJoystick (void);
-void Joy_AdvancedUpdate_f (void);
-void IN_JoyMove (usercmd_t *cmd);
+static void IN_StartupJoystick (void);
+static void Joy_AdvancedUpdate_f (void);
+//static void IN_JoyMove (usercmd_t *cmd);
 
 /*
 ===========
 Force_CenterView_f
 ===========
 */
-void Force_CenterView_f (void)
+static void Force_CenterView_f (void)
 {
 	cl.viewangles[PITCH] = 0;
 }
@@ -196,10 +196,11 @@ void IN_DeactivateMouse (void)
 IN_StartupMouse
 ===========
 */
-void IN_StartupMouse (void)
+static void IN_StartupMouse (void)
 {
 	//IN_HideMouse ();
-	if ( COM_CheckParm ("-nomouse") ) {
+	if ( COM_CheckParm ("-nomouse") )
+	{
 		SDL_WM_GrabInput (SDL_GRAB_OFF);
 		return;
 	}
@@ -279,7 +280,7 @@ void IN_Shutdown (void)
 IN_MouseEvent
 ===========
 */
-void IN_MouseEvent (int mstate)
+static void IN_MouseEvent (int mstate)
 {
 	int		i;
 
@@ -299,8 +300,8 @@ void IN_MouseEvent (int mstate)
 			{
 					Key_Event (K_MOUSE1 + i, false);
 			}
-		}	
-			
+		}
+
 		mouse_oldbuttonstate = mstate;
 	}
 }
@@ -311,7 +312,7 @@ void IN_MouseEvent (int mstate)
 IN_MouseMove
 ===========
 */
-void IN_MouseMove (usercmd_t *cmd)
+static void IN_MouseMove (usercmd_t *cmd)
 {
 	int		mx, my;
 
@@ -343,11 +344,12 @@ void IN_MouseMove (usercmd_t *cmd)
 	else
 		cl.viewangles[YAW] -= m_yaw.value * mouse_x;
 
-	if (in_mlook.state & 1) {
+	if (in_mlook.state & 1)
+	{
 		if (mx || my)
 			V_StopPitchDrift ();
 	}
-		
+
 	if ( (in_mlook.state & 1) && !(in_strafe.state & 1))
 	{
 		cl.viewangles[PITCH] += m_pitch.value * mouse_y;
@@ -415,26 +417,26 @@ void IN_ClearStates (void)
 }
 
 
-/* 
-=============== 
-IN_StartupJoystick 
-=============== 
-*/  
-void IN_StartupJoystick (void) 
-{ 
+/*
+===============
+IN_StartupJoystick
+===============
+*/
+static void IN_StartupJoystick (void)
+{
 // FIXME - Stubbed for now - DDOI
-#if 0	
+#if 0
 	int			i, numdevs;
 	JOYCAPS		jc;
 	MMRESULT	mmr;
- 
- 	// assume no joystick
-	joy_avail = false; 
+
+	// assume no joystick
+	joy_avail = false;
 
 	// abort startup if user requests no joystick
-	if ( COM_CheckParm ("-nojoy") ) 
-		return; 
- 
+	if ( COM_CheckParm ("-nojoy") )
+		return;
+
 	// verify joystick driver is present
 	if ((numdevs = joyGetNumDevs ()) == 0)
 	{
@@ -451,7 +453,7 @@ void IN_StartupJoystick (void)
 
 		if ((mmr = joyGetPosEx (joy_id, &ji)) == JOYERR_NOERROR)
 			break;
-	} 
+	}
 
 	// abort startup if we didn't find a valid joystick
 	if (mmr != JOYERR_NOERROR)
@@ -465,7 +467,7 @@ void IN_StartupJoystick (void)
 	memset (&jc, 0, sizeof(jc));
 	if ((mmr = joyGetDevCaps (joy_id, &jc, sizeof(jc))) != JOYERR_NOERROR)
 	{
-		Con_Printf ("\njoystick not found -- invalid joystick capabilities (%x)\n\n", mmr); 
+		Con_Printf ("\njoystick not found -- invalid joystick capabilities (%x)\n\n", mmr);
 		return;
 	}
 
@@ -478,8 +480,8 @@ void IN_StartupJoystick (void)
 
 	// mark the joystick as available and advanced initialization not completed
 	// this is needed as cvars are not available during initialization
-	Con_Printf ("\njoystick found\n\n", mmr); 
-	joy_avail = true; 
+	Con_Printf ("\njoystick detected\n\n");
+	joy_avail = true;
 	joy_advancedinit = false;
 #endif
 }
@@ -491,7 +493,7 @@ RawValuePointer
 ===========
 */
 #if 0
-PDWORD RawValuePointer (int axis)
+static PDWORD RawValuePointer (int axis)
 {
 	switch (axis)
 	{
@@ -508,6 +510,7 @@ PDWORD RawValuePointer (int axis)
 	case JOY_AXIS_V:
 		return &ji.dwVpos;
 	}
+	return NULL;
 }
 #endif
 
@@ -517,7 +520,7 @@ PDWORD RawValuePointer (int axis)
 Joy_AdvancedUpdate_f
 ===========
 */
-void Joy_AdvancedUpdate_f (void)
+static void Joy_AdvancedUpdate_f (void)
 {
 #if 0
 	// called once by IN_ReadJoystick and by user whenever an update is needed
@@ -586,6 +589,42 @@ void Joy_AdvancedUpdate_f (void)
 
 
 /*
+===============
+IN_ReadJoystick
+===============
+*/
+#if 0
+static qboolean IN_ReadJoystick (void)
+{
+	memset (&ji, 0, sizeof(ji));
+	ji.dwSize = sizeof(ji);
+	ji.dwFlags = joy_flags;
+
+	if (joyGetPosEx (joy_id, &ji) == JOYERR_NOERROR)
+	{
+		// this is a hack -- there is a bug in the Logitech WingMan Warrior DirectInput Driver
+		// rather than having 32768 be the zero point, they have the zero point at 32668
+		// go figure -- anyway, now we get the full resolution out of the device
+		if (joy_wwhack1.value != 0.0)
+		{
+			ji.dwUpos += 100;
+		}
+		return true;
+	}
+	else
+	{
+		// read error occurred
+		// turning off the joystick seems too harsh for 1 read error,
+		// but what should be done?
+		// Con_Printf ("IN_ReadJoystick: no response\n");
+		// joy_avail = false;
+		return false;
+	}
+}
+#endif
+
+
+/*
 ===========
 IN_Commands
 ===========
@@ -603,7 +642,7 @@ void IN_Commands (void)
 
 	if (cls.state != ca_connected || cls.signon != SIGNONS)
 	{
-		if( joy_advancedinit != true )
+		if (joy_advancedinit != true)
 		{
 			Joy_AdvancedUpdate_f();
 			joy_advancedinit = true;
@@ -611,7 +650,7 @@ void IN_Commands (void)
 
 		IN_ReadJoystick ();
 	}
-	
+
 	// loop through the joystick buttons
 	// key a joystick event or auxillary event for higher number buttons for each state change
 	buttonstate = ji.dwButtons;
@@ -637,7 +676,7 @@ void IN_Commands (void)
 		// this avoids any potential problems related to moving from one
 		// direction to another without going through the center position
 		povstate = 0;
-		if(ji.dwPOV != JOY_POVCENTERED)
+		if (ji.dwPOV != JOY_POVCENTERED)
 		{
 			if (ji.dwPOV == JOY_POVFORWARD)
 				povstate |= 0x01;
@@ -667,58 +706,21 @@ void IN_Commands (void)
 }
 
 
-/* 
-=============== 
-IN_ReadJoystick
-=============== 
-*/  
-qboolean IN_ReadJoystick (void)
-{
-#if 0
-	memset (&ji, 0, sizeof(ji));
-	ji.dwSize = sizeof(ji);
-	ji.dwFlags = joy_flags;
-
-	if (joyGetPosEx (joy_id, &ji) == JOYERR_NOERROR)
-	{
-		// this is a hack -- there is a bug in the Logitech WingMan Warrior DirectInput Driver
-		// rather than having 32768 be the zero point, they have the zero point at 32668
-		// go figure -- anyway, now we get the full resolution out of the device
-		if (joy_wwhack1.value != 0.0)
-		{
-			ji.dwUpos += 100;
-		}
-		return true;
-	}
-	else
-	{
-		// read error occurred
-		// turning off the joystick seems too harsh for 1 read error,
-		// but what should be done?
-		// Con_Printf ("IN_ReadJoystick: no response\n");
-		// joy_avail = false;
-		return false;
-	}
-#endif
-	return false;	// <--- Just a stub - DDOI
-}
-
-
 /*
 ===========
 IN_JoyMove
 ===========
 */
-void IN_JoyMove (usercmd_t *cmd)
-{
 #if 0
+static void IN_JoyMove (usercmd_t *cmd)
+{
 	float	speed, aspeed;
 	float	fAxisValue, fTemp;
 	int		i;
 
 	// complete initialization if first time in
 	// this is needed as cvars are not available at initialization time
-	if( joy_advancedinit != true )
+	if (joy_advancedinit != true)
 	{
 		Joy_AdvancedUpdate_f();
 		joy_advancedinit = true;
@@ -727,9 +729,9 @@ void IN_JoyMove (usercmd_t *cmd)
 	// verify joystick is available and that the user wants to use it
 	if (!joy_avail || !in_joystick.value)
 	{
-		return; 
+		return;
 	}
- 
+
 	// collect the joystick data, if possible
 	if (IN_ReadJoystick () != true)
 	{
@@ -766,7 +768,7 @@ void IN_JoyMove (usercmd_t *cmd)
 			}
 		}
 
-		// convert range from -32768..32767 to -1..1 
+		// convert range from -32768..32767 to -1..1
 		fAxisValue /= 32768.0;
 
 		switch (dwAxisMap[i])
@@ -776,7 +778,7 @@ void IN_JoyMove (usercmd_t *cmd)
 			{
 				// user wants forward control to become look control
 				if (fabs(fAxisValue) > joy_pitchthreshold.value)
-				{		
+				{
 					// if mouse invert is on, invert the joystick pitch value
 					// only absolute control support here (joy_advanced is false)
 					if (m_pitch.value < 0.0)
@@ -824,7 +826,7 @@ void IN_JoyMove (usercmd_t *cmd)
 				// user wants turn control to be turn control
 				if (fabs(fAxisValue) > joy_yawthreshold.value)
 				{
-					if(dwControlMap[i] == JOY_ABSOLUTE_AXIS)
+					if (dwControlMap[i] == JOY_ABSOLUTE_AXIS)
 					{
 						cl.viewangles[YAW] += (fAxisValue * joy_yawsensitivity.value) * aspeed * cl_yawspeed.value;
 					}
@@ -832,7 +834,6 @@ void IN_JoyMove (usercmd_t *cmd)
 					{
 						cl.viewangles[YAW] += (fAxisValue * joy_yawsensitivity.value) * speed * 180.0;
 					}
-
 				}
 			}
 			break;
@@ -843,7 +844,7 @@ void IN_JoyMove (usercmd_t *cmd)
 				if (fabs(fAxisValue) > joy_pitchthreshold.value)
 				{
 					// pitch movement detected and pitch movement desired by user
-					if(dwControlMap[i] == JOY_ABSOLUTE_AXIS)
+					if (dwControlMap[i] == JOY_ABSOLUTE_AXIS)
 					{
 						cl.viewangles[PITCH] += (fAxisValue * joy_pitchsensitivity.value) * aspeed * cl_pitchspeed.value;
 					}
@@ -866,8 +867,8 @@ void IN_JoyMove (usercmd_t *cmd)
 		cl.viewangles[PITCH] = 80.0;
 	if (cl.viewangles[PITCH] < -70.0)
 		cl.viewangles[PITCH] = -70.0;
-#endif
 }
+#endif
 
 void IN_SendKeyEvents (void)
 {
@@ -877,8 +878,8 @@ void IN_SendKeyEvents (void)
 
 	while (SDL_PollEvent(&event))
 	{
-		switch (event.type) {
-
+		switch (event.type)
+		{
 			case SDL_KEYDOWN:
 				if ((event.key.keysym.sym == SDLK_RETURN) &&
 				    (event.key.keysym.mod & KMOD_ALT))
@@ -888,7 +889,7 @@ void IN_SendKeyEvents (void)
 					break;
 				}
 				else if ((event.key.keysym.sym == SDLK_g) &&
-				         (event.key.keysym.mod & KMOD_CTRL))
+					 (event.key.keysym.mod & KMOD_CTRL))
 				{
 					SDL_WM_GrabInput( (SDL_WM_GrabInput (SDL_GRAB_QUERY) == SDL_GRAB_ON) ? SDL_GRAB_OFF : SDL_GRAB_ON );
 					break;
@@ -899,145 +900,213 @@ void IN_SendKeyEvents (void)
 				state = event.key.state;
 				modstate = SDL_GetModState();
 
-				switch (key_dest) {
-				  case key_game: 
-				    if ((event.key.keysym.unicode != 0) || (modstate & KMOD_SHIFT))
-				    {
-					/* only use unicode for ~ and ` in game mode */
-					if ((event.key.keysym.unicode & 0xFF80) == 0 ) 
-					{
-					    if ( ((event.key.keysym.unicode & 0x7F) == '`') ||((event.key.keysym.unicode & 0x7F) == '~')) 
-						sym=event.key.keysym.unicode & 0x7F;
-					}
-
-				    }
-				    break;
-				  case key_message:
-				  case key_console:
-				    if ((event.key.keysym.unicode != 0) || (modstate & KMOD_SHIFT))
-				    {
-					if ((event.key.keysym.unicode & 0xFF80) == 0 )
-					  sym=event.key.keysym.unicode & 0x7F;
-
-					/* else: it's an international character */
-				    }
-				    //printf("You pressed %s (%d) (%c)\n",SDL_GetKeyName(sym),sym,sym);
-				    break;
-				  default:
-				    break;
+				switch (key_dest)
+				{
+					case key_game:
+						if ((event.key.keysym.unicode != 0) || (modstate & KMOD_SHIFT))
+						{	/* only use unicode for ~ and ` in game mode */
+							if ((event.key.keysym.unicode & 0xFF80) == 0)
+							{
+								if (((event.key.keysym.unicode & 0x7F) == '`') ||
+								    ((event.key.keysym.unicode & 0x7F) == '~') )
+									sym=event.key.keysym.unicode & 0x7F;
+							}
+						}
+						break;
+					case key_message:
+					case key_console:
+						if ((event.key.keysym.unicode != 0) || (modstate & KMOD_SHIFT))
+						{
+							if ((event.key.keysym.unicode & 0xFF80) == 0)
+								sym=event.key.keysym.unicode & 0x7F;
+							/* else: it's an international character */
+						}
+						//printf("You pressed %s (%d) (%c)\n",SDL_GetKeyName(sym),sym,sym);
+						break;
+					default:
+						break;
 				}
 
-                                switch(sym)
-                                {
-                                        case SDLK_DELETE: sym = K_DEL; break;
-                                        case SDLK_BACKSPACE: sym = K_BACKSPACE; break;
-                                        case SDLK_F1: sym = K_F1; break;
-                                        case SDLK_F2: sym = K_F2; break;
-                                        case SDLK_F3: sym = K_F3; break;
-                                        case SDLK_F4: sym = K_F4; break;
-                                        case SDLK_F5: sym = K_F5; break;
-                                        case SDLK_F6: sym = K_F6; break;
-                                        case SDLK_F7: sym = K_F7; break;
-                                        case SDLK_F8: sym = K_F8; break;
-                                        case SDLK_F9: sym = K_F9; break;
-                                        case SDLK_F10: sym = K_F10; break;
-                                        case SDLK_F11: sym = K_F11; break;
-                                        case SDLK_F12: sym = K_F12; break;
-                                        case SDLK_BREAK:
-                                        case SDLK_PAUSE: sym = K_PAUSE; break;
-                                        case SDLK_UP: sym = K_UPARROW; break;
-                                        case SDLK_DOWN: sym = K_DOWNARROW; break;
-                                        case SDLK_RIGHT: sym = K_RIGHTARROW; break;
-                                        case SDLK_LEFT: sym = K_LEFTARROW; break;
-                                        case SDLK_INSERT: sym = K_INS; break;
-                                        case SDLK_HOME: sym = K_HOME; break;
-                                        case SDLK_END: sym = K_END; break;
-                                        case SDLK_PAGEUP: sym = K_PGUP; break;
-                                        case SDLK_PAGEDOWN: sym = K_PGDN; break;
-                                        case SDLK_RSHIFT:
-                                        case SDLK_LSHIFT: sym = K_SHIFT; break;
-                                        case SDLK_RCTRL:
-                                        case SDLK_LCTRL: sym = K_CTRL; break;
-                                        case SDLK_RALT:
-                                        case SDLK_LALT: sym = K_ALT; break;
-                                        case SDLK_KP0:
-                                                if(modstate & KMOD_NUM)
-                                                        sym = K_INS;
-                                                else
-                                                        sym = SDLK_0;
-                                                break;
-                                        case SDLK_KP1:
-                                                if(modstate & KMOD_NUM)
-                                                        sym = K_END;
-                                                else
-                                                        sym = SDLK_1;
-                                                break;
-                                        case SDLK_KP2:
-                                                if(modstate & KMOD_NUM)
-                                                        sym = K_DOWNARROW;
-                                                else
-                                                        sym = SDLK_2;
-                                                break;
-                                        case SDLK_KP3:
-                                                if(modstate & KMOD_NUM)
-                                                        sym = K_PGDN;
-                                                else
-                                                        sym = SDLK_3;
-                                                break;
-                                        case SDLK_KP4:
-                                                if(modstate & KMOD_NUM)
-                                                        sym = K_LEFTARROW;
-                                                else
-                                                        sym = SDLK_4;
-                                                break;
-                                        case SDLK_KP5: sym = SDLK_5; break;
-                                        case SDLK_KP6:
-                                                if(modstate & KMOD_NUM)
-                                                        sym = K_RIGHTARROW;
-                                                else
-                                                        sym = SDLK_6;
-                                                break;
-                                        case SDLK_KP7:
-                                                if(modstate & KMOD_NUM)
-                                                        sym = K_HOME;
-                                                else
-                                                        sym = SDLK_7;
-                                                break;
-                                        case SDLK_KP8:
-                                                if(modstate & KMOD_NUM)
-                                                        sym = K_UPARROW;
-                                                else
-                                                        sym = SDLK_8;
-                                                break;
-                                        case SDLK_KP9:
-                                                if(modstate & KMOD_NUM)
-                                                        sym = K_PGUP;
-                                                else
-                                                        sym = SDLK_9;
-                                                break;
-                                        case SDLK_KP_PERIOD:
-                                                if(modstate & KMOD_NUM)
-                                                        sym = K_DEL;
-                                                else
-                                                        sym = SDLK_PERIOD;
-                                                break;
+				switch (sym)
+				{
+					case SDLK_DELETE:
+						sym = K_DEL;
+						break;
+					case SDLK_BACKSPACE:
+						sym = K_BACKSPACE;
+						break;
+					case SDLK_F1:
+						sym = K_F1;
+						break;
+					case SDLK_F2:
+						sym = K_F2;
+						break;
+					case SDLK_F3:
+						sym = K_F3;
+						break;
+					case SDLK_F4:
+						sym = K_F4;
+						break;
+					case SDLK_F5:
+						sym = K_F5;
+						break;
+					case SDLK_F6:
+						sym = K_F6;
+						break;
+					case SDLK_F7:
+						sym = K_F7;
+						break;
+					case SDLK_F8:
+						sym = K_F8;
+						break;
+					case SDLK_F9:
+						sym = K_F9;
+						break;
+					case SDLK_F10:
+						sym = K_F10;
+						break;
+					case SDLK_F11:
+						sym = K_F11;
+						break;
+					case SDLK_F12:
+						sym = K_F12;
+						break;
+					case SDLK_BREAK:
+					case SDLK_PAUSE:
+						sym = K_PAUSE;
+						break;
+					case SDLK_UP:
+						sym = K_UPARROW;
+						break;
+					case SDLK_DOWN:
+						sym = K_DOWNARROW;
+						break;
+					case SDLK_RIGHT:
+						sym = K_RIGHTARROW;
+						break;
+					case SDLK_LEFT:
+						sym = K_LEFTARROW;
+						break;
+					case SDLK_INSERT:
+						sym = K_INS;
+						break;
+					case SDLK_HOME:
+						sym = K_HOME;
+						break;
+					case SDLK_END:
+						sym = K_END;
+						break;
+					case SDLK_PAGEUP:
+						sym = K_PGUP;
+						break;
+					case SDLK_PAGEDOWN:
+						sym = K_PGDN;
+						break;
+					case SDLK_RSHIFT:
+					case SDLK_LSHIFT:
+						sym = K_SHIFT;
+						break;
+					case SDLK_RCTRL:
+					case SDLK_LCTRL:
+						sym = K_CTRL;
+						break;
+					case SDLK_RALT:
+					case SDLK_LALT:
+						sym = K_ALT;
+						break;
+					case SDLK_KP0:
+						if (modstate & KMOD_NUM)
+							sym = K_INS;
+						else
+							sym = SDLK_0;
+						break;
+					case SDLK_KP1:
+						if (modstate & KMOD_NUM)
+							sym = K_END;
+						else
+							sym = SDLK_1;
+						break;
+					case SDLK_KP2:
+						if (modstate & KMOD_NUM)
+							sym = K_DOWNARROW;
+						else
+							sym = SDLK_2;
+						break;
+					case SDLK_KP3:
+						if (modstate & KMOD_NUM)
+							sym = K_PGDN;
+						else
+							sym = SDLK_3;
+						break;
+					case SDLK_KP4:
+						if (modstate & KMOD_NUM)
+							sym = K_LEFTARROW;
+						else
+							sym = SDLK_4;
+						break;
+					case SDLK_KP5:
+						sym = SDLK_5;
+						break;
+					case SDLK_KP6:
+						if (modstate & KMOD_NUM)
+							sym = K_RIGHTARROW;
+						else
+							sym = SDLK_6;
+						break;
+					case SDLK_KP7:
+						if (modstate & KMOD_NUM)
+							sym = K_HOME;
+						else
+							sym = SDLK_7;
+						break;
+					case SDLK_KP8:
+						if (modstate & KMOD_NUM)
+							sym = K_UPARROW;
+						else
+							sym = SDLK_8;
+						break;
+					case SDLK_KP9:
+						if (modstate & KMOD_NUM)
+							sym = K_PGUP;
+						else
+							sym = SDLK_9;
+						break;
+					case SDLK_KP_PERIOD:
+						if (modstate & KMOD_NUM)
+							sym = K_DEL;
+						else
+							sym = SDLK_PERIOD;
+						break;
+					case SDLK_KP_DIVIDE:
+						sym = SDLK_SLASH;
+						break;
+					case SDLK_KP_MULTIPLY:
+						sym = SDLK_ASTERISK;
+						break;
+					case SDLK_KP_MINUS:
+						sym = SDLK_MINUS;
+						break;
+					case SDLK_KP_PLUS:
+						sym = SDLK_PLUS;
+						break;
+					case SDLK_KP_ENTER:
+						sym = SDLK_RETURN;
+						break;
+					case SDLK_KP_EQUALS:
+						sym = SDLK_EQUALS;
+						break;
+					case 178: /* the '²' key */
+						//sym = 178;
+						sym = '~';
+				}
+				// If we're not directly handled and still above
+				// 255 just force it to 0
+				if (sym > 255)
+					sym = 0;
+				Key_Event (sym, state);
+				break;
 
-                                        case SDLK_KP_DIVIDE: sym = SDLK_SLASH; break;
-                                        case SDLK_KP_MULTIPLY: sym = SDLK_ASTERISK; break;
-                                        case SDLK_KP_MINUS: sym = SDLK_MINUS; break;
-                                        case SDLK_KP_PLUS: sym = SDLK_PLUS; break;
-                                        case SDLK_KP_ENTER: sym = SDLK_RETURN; break;
-                                        case SDLK_KP_EQUALS: sym = SDLK_EQUALS; break;
-				case 178: /* the '²' key */
-				  //sym = 178; 
-				  sym = '~';
-                                }
-                                // If we're not directly handled and still above
-                                // 255 just force it to 0
-                                if(sym > 255) sym = 0;
-                                Key_Event(sym, state);
-                                break;
-                        case SDL_MOUSEBUTTONDOWN:
+			case SDL_MOUSEBUTTONDOWN:
 				if (!mouseactive || in_mode_set)
 					break;
 				switch(event.button.button)
@@ -1068,8 +1137,7 @@ void IN_SendKeyEvents (void)
 					break;
 				}
 				break;
-
-                        case SDL_MOUSEBUTTONUP:
+			case SDL_MOUSEBUTTONUP:
 				if (!mouseactive || in_mode_set)
 					break;
 				switch(event.button.button)
@@ -1120,6 +1188,10 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2006/01/14 08:39:26  sezero
+ * fixed the incorrect (mislead) usage of modestate values, although the result
+ * doesn't change.
+ *
  * Revision 1.27  2006/01/12 12:43:49  sezero
  * Created an sdl_inc.h with all sdl version requirements and replaced all
  * SDL.h and SDL_mixer.h includes with it. Made the source to compile against

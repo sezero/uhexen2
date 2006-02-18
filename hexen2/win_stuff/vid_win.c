@@ -3267,8 +3267,6 @@ extern void M_Menu_Options_f (void);
 extern void M_Print (int cx, int cy, char *str);
 extern void M_PrintWhite (int cx, int cy, char *str);
 extern void M_DrawCharacter (int cx, int line, int num);
-extern void M_DrawTransPic (int x, int y, qpic_t *pic);
-extern void M_DrawPic (int x, int y, qpic_t *pic);
 
 static int	vid_line, vid_wmodes;
 
@@ -3566,6 +3564,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2006/01/17 19:05:12  sezero
+ * missing part of vid_win synchronization (D_ShowLoadingSize)
+ *
  * Revision 1.29  2006/01/17 17:52:16  sezero
  * synced win32 software renderers: hexen2 now uses the new driver from h2w
  *

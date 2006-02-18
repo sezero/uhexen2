@@ -230,7 +230,6 @@ Performance monitoring tool
 */
 #define	MAX_TIMINGS 100
 #define GRAPH_TYPE_COUNT 2
-extern float mouse_x, mouse_y;
 extern int LastServerMessageSize;//uncompressed
 extern int LastCompMessageSize;//compressed
 void R_TimeGraph(void)
@@ -270,12 +269,6 @@ void R_TimeGraph(void)
 		LastServerMessageSize = 0;
 		r_timings2[timex] = a;
 	}
-
-//a = fabs(mouse_y * 0.05);
-//a = (int)((r_refdef.vieworg[2] + 1024)/1)%(int)r_graphheight.value;
-//a = fabs(velocity[0])/20;
-//a = ((int)fabs(origin[0])/8)%20;
-//a = (cl.idealpitch + 30)/5;
 
 	a = timex;
 

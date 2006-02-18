@@ -2,7 +2,7 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.9 2006-01-22 23:14:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.10 2006-02-18 08:51:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -91,36 +91,36 @@ int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, mplane_t *p)
 	switch (p->signbits)
 	{
 	case 0:
-dist1 = p->normal[0]*emaxs[0] + p->normal[1]*emaxs[1] + p->normal[2]*emaxs[2];
-dist2 = p->normal[0]*emins[0] + p->normal[1]*emins[1] + p->normal[2]*emins[2];
+		dist1 = p->normal[0]*emaxs[0] + p->normal[1]*emaxs[1] + p->normal[2]*emaxs[2];
+		dist2 = p->normal[0]*emins[0] + p->normal[1]*emins[1] + p->normal[2]*emins[2];
 		break;
 	case 1:
-dist1 = p->normal[0]*emins[0] + p->normal[1]*emaxs[1] + p->normal[2]*emaxs[2];
-dist2 = p->normal[0]*emaxs[0] + p->normal[1]*emins[1] + p->normal[2]*emins[2];
+		dist1 = p->normal[0]*emins[0] + p->normal[1]*emaxs[1] + p->normal[2]*emaxs[2];
+		dist2 = p->normal[0]*emaxs[0] + p->normal[1]*emins[1] + p->normal[2]*emins[2];
 		break;
 	case 2:
-dist1 = p->normal[0]*emaxs[0] + p->normal[1]*emins[1] + p->normal[2]*emaxs[2];
-dist2 = p->normal[0]*emins[0] + p->normal[1]*emaxs[1] + p->normal[2]*emins[2];
+		dist1 = p->normal[0]*emaxs[0] + p->normal[1]*emins[1] + p->normal[2]*emaxs[2];
+		dist2 = p->normal[0]*emins[0] + p->normal[1]*emaxs[1] + p->normal[2]*emins[2];
 		break;
 	case 3:
-dist1 = p->normal[0]*emins[0] + p->normal[1]*emins[1] + p->normal[2]*emaxs[2];
-dist2 = p->normal[0]*emaxs[0] + p->normal[1]*emaxs[1] + p->normal[2]*emins[2];
+		dist1 = p->normal[0]*emins[0] + p->normal[1]*emins[1] + p->normal[2]*emaxs[2];
+		dist2 = p->normal[0]*emaxs[0] + p->normal[1]*emaxs[1] + p->normal[2]*emins[2];
 		break;
 	case 4:
-dist1 = p->normal[0]*emaxs[0] + p->normal[1]*emaxs[1] + p->normal[2]*emins[2];
-dist2 = p->normal[0]*emins[0] + p->normal[1]*emins[1] + p->normal[2]*emaxs[2];
+		dist1 = p->normal[0]*emaxs[0] + p->normal[1]*emaxs[1] + p->normal[2]*emins[2];
+		dist2 = p->normal[0]*emins[0] + p->normal[1]*emins[1] + p->normal[2]*emaxs[2];
 		break;
 	case 5:
-dist1 = p->normal[0]*emins[0] + p->normal[1]*emaxs[1] + p->normal[2]*emins[2];
-dist2 = p->normal[0]*emaxs[0] + p->normal[1]*emins[1] + p->normal[2]*emaxs[2];
+		dist1 = p->normal[0]*emins[0] + p->normal[1]*emaxs[1] + p->normal[2]*emins[2];
+		dist2 = p->normal[0]*emaxs[0] + p->normal[1]*emins[1] + p->normal[2]*emaxs[2];
 		break;
 	case 6:
-dist1 = p->normal[0]*emaxs[0] + p->normal[1]*emins[1] + p->normal[2]*emins[2];
-dist2 = p->normal[0]*emins[0] + p->normal[1]*emaxs[1] + p->normal[2]*emaxs[2];
+		dist1 = p->normal[0]*emaxs[0] + p->normal[1]*emins[1] + p->normal[2]*emins[2];
+		dist2 = p->normal[0]*emins[0] + p->normal[1]*emaxs[1] + p->normal[2]*emaxs[2];
 		break;
 	case 7:
-dist1 = p->normal[0]*emins[0] + p->normal[1]*emins[1] + p->normal[2]*emins[2];
-dist2 = p->normal[0]*emaxs[0] + p->normal[1]*emaxs[1] + p->normal[2]*emaxs[2];
+		dist1 = p->normal[0]*emins[0] + p->normal[1]*emins[1] + p->normal[2]*emins[2];
+		dist2 = p->normal[0]*emaxs[0] + p->normal[1]*emaxs[1] + p->normal[2]*emaxs[2];
 		break;
 	default:
 		dist1 = dist2 = 0;		// shut up compiler
@@ -152,7 +152,6 @@ dist2 = p->normal[0]*emaxs[0] + p->normal[1]*emaxs[1] + p->normal[2]*emaxs[2];
 		sides = 1;
 	if (dist2 < 0)
 		sides |= 2;
-
 #endif
 
 	sides = 0;
@@ -162,8 +161,8 @@ dist2 = p->normal[0]*emaxs[0] + p->normal[1]*emaxs[1] + p->normal[2]*emaxs[2];
 		sides |= 2;
 
 #ifdef PARANOID
-if (sides == 0)
-	Sys_Error ("BoxOnPlaneSide: sides==0");
+	if (sides == 0)
+		Sys_Error ("BoxOnPlaneSide: sides==0");
 #endif
 
 	return sides;
@@ -176,7 +175,7 @@ void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 {
 	float		angle;
 	float		sr, sp, sy, cr, cp, cy;
-	
+
 	angle = angles[YAW] * (M_PI*2 / 360);
 	sy = sin(angle);
 	cy = cos(angle);
@@ -224,20 +223,28 @@ void R_ConcatRotations (float in1[3][3], float in2[3][3], float out[3][3])
 {
 	out[0][0] = in1[0][0] * in2[0][0] + in1[0][1] * in2[1][0] +
 				in1[0][2] * in2[2][0];
+
 	out[0][1] = in1[0][0] * in2[0][1] + in1[0][1] * in2[1][1] +
 				in1[0][2] * in2[2][1];
+
 	out[0][2] = in1[0][0] * in2[0][2] + in1[0][1] * in2[1][2] +
 				in1[0][2] * in2[2][2];
+
 	out[1][0] = in1[1][0] * in2[0][0] + in1[1][1] * in2[1][0] +
 				in1[1][2] * in2[2][0];
+
 	out[1][1] = in1[1][0] * in2[0][1] + in1[1][1] * in2[1][1] +
 				in1[1][2] * in2[2][1];
+
 	out[1][2] = in1[1][0] * in2[0][2] + in1[1][1] * in2[1][2] +
 				in1[1][2] * in2[2][2];
+
 	out[2][0] = in1[2][0] * in2[0][0] + in1[2][1] * in2[1][0] +
 				in1[2][2] * in2[2][0];
+
 	out[2][1] = in1[2][0] * in2[0][1] + in1[2][1] * in2[1][1] +
 				in1[2][2] * in2[2][1];
+
 	out[2][2] = in1[2][0] * in2[0][2] + in1[2][1] * in2[1][2] +
 				in1[2][2] * in2[2][2];
 }
@@ -252,26 +259,37 @@ void R_ConcatTransforms (float in1[3][4], float in2[3][4], float out[3][4])
 {
 	out[0][0] = in1[0][0] * in2[0][0] + in1[0][1] * in2[1][0] +
 				in1[0][2] * in2[2][0];
+
 	out[0][1] = in1[0][0] * in2[0][1] + in1[0][1] * in2[1][1] +
 				in1[0][2] * in2[2][1];
+
 	out[0][2] = in1[0][0] * in2[0][2] + in1[0][1] * in2[1][2] +
 				in1[0][2] * in2[2][2];
+
 	out[0][3] = in1[0][0] * in2[0][3] + in1[0][1] * in2[1][3] +
 				in1[0][2] * in2[2][3] + in1[0][3];
+
 	out[1][0] = in1[1][0] * in2[0][0] + in1[1][1] * in2[1][0] +
 				in1[1][2] * in2[2][0];
+
 	out[1][1] = in1[1][0] * in2[0][1] + in1[1][1] * in2[1][1] +
 				in1[1][2] * in2[2][1];
+
 	out[1][2] = in1[1][0] * in2[0][2] + in1[1][1] * in2[1][2] +
 				in1[1][2] * in2[2][2];
+
 	out[1][3] = in1[1][0] * in2[0][3] + in1[1][1] * in2[1][3] +
 				in1[1][2] * in2[2][3] + in1[1][3];
+
 	out[2][0] = in1[2][0] * in2[0][0] + in1[2][1] * in2[1][0] +
 				in1[2][2] * in2[2][0];
+
 	out[2][1] = in1[2][0] * in2[0][1] + in1[2][1] * in2[1][1] +
 				in1[2][2] * in2[2][1];
+
 	out[2][2] = in1[2][0] * in2[0][2] + in1[2][1] * in2[1][2] +
 				in1[2][2] * in2[2][2];
+
 	out[2][3] = in1[2][0] * in2[0][3] + in1[2][1] * in2[1][3] +
 				in1[2][2] * in2[2][3] + in1[2][3];
 }
@@ -286,9 +304,7 @@ numer and denom, both of which should contain no fractional part. The
 quotient must fit in 32 bits.
 ====================
 */
-
-void FloorDivMod (double numer, double denom, int *quotient,
-		int *rem)
+void FloorDivMod (double numer, double denom, int *quotient, int *rem)
 {
 	int		q, r;
 	double	x;
@@ -304,7 +320,6 @@ void FloorDivMod (double numer, double denom, int *quotient,
 
 	if (numer >= 0.0)
 	{
-
 		x = floor(numer / denom);
 		q = (int)x;
 		r = (int)floor(numer - (x * denom));
@@ -362,7 +377,6 @@ Invert24To16
 Inverts an 8.24 value to a 16.16 value
 ====================
 */
-
 fixed16_t Invert24To16(fixed16_t val)
 {
 	if (val < 256)
@@ -377,6 +391,10 @@ fixed16_t Invert24To16(fixed16_t val)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2006/01/22 23:14:44  sezero
+ * added a Q_isnan for NaN tests with -ffast-math, maybe of use someday. taken
+ * from the icculus-quake3 project.
+ *
  * Revision 1.8  2005/07/09 07:24:25  sezero
  * put back Q_log2() to mathlib, changes to snd_win requires that
  *

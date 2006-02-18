@@ -7,15 +7,15 @@
 // mouse variables
 cvar_t	m_filter = {"m_filter","0"};
 
-int			mouse_buttons;
-int			mouse_oldbuttonstate;
-POINT		current_pos;
-int			mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
+static int		mouse_buttons;
+static int		mouse_oldbuttonstate;
+static POINT		current_pos;
+static int		mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
 
 static qboolean	restore_spi;
 static int		originalmouseparms[3], newmouseparms[3] = {0, 0, 1};
 static qboolean	mouseactive;
-qboolean		mouseinitialized;
+static qboolean	mouseinitialized;
 static qboolean	mouseparmsvalid, mouseactivatetoggle;
 static qboolean	mouseshowtoggle = 1;
 
@@ -36,14 +36,14 @@ enum _ControlList
 	AxisNada = 0, AxisForward, AxisLook, AxisSide, AxisTurn
 };
 
-DWORD	dwAxisFlags[JOY_MAX_AXES] =
+static DWORD	dwAxisFlags[JOY_MAX_AXES] =
 {
 	JOY_RETURNX, JOY_RETURNY, JOY_RETURNZ, JOY_RETURNR, JOY_RETURNU, JOY_RETURNV
 };
 
-DWORD	dwAxisMap[JOY_MAX_AXES];
-DWORD	dwControlMap[JOY_MAX_AXES];
-PDWORD	pdwRawValue[JOY_MAX_AXES];
+static DWORD	dwAxisMap[JOY_MAX_AXES];
+static DWORD	dwControlMap[JOY_MAX_AXES];
+static PDWORD	pdwRawValue[JOY_MAX_AXES];
 
 // none of these cvars are saved over a session
 // this means that advanced controller configuration needs to be executed
@@ -70,19 +70,19 @@ cvar_t	joy_yawsensitivity = {"joyyawsensitivity", "-1.0"};
 cvar_t	joy_wwhack1 = {"joywwhack1", "0.0"};
 cvar_t	joy_wwhack2 = {"joywwhack2", "0.0"};
 
-qboolean	joy_avail, joy_advancedinit, joy_haspov;
-DWORD		joy_oldbuttonstate, joy_oldpovstate;
+static qboolean	joy_avail, joy_advancedinit, joy_haspov;
+static DWORD	joy_oldbuttonstate, joy_oldpovstate;
 
-int			joy_id;
-DWORD		joy_flags;
-DWORD		joy_numbuttons;
+static int		joy_id;
+static DWORD	joy_flags;
+static DWORD	joy_numbuttons;
 
 static JOYINFOEX	ji;
 
 // forward-referenced functions
-void IN_StartupJoystick (void);
-void Joy_AdvancedUpdate_f (void);
-void IN_JoyMove (usercmd_t *cmd);
+static void IN_StartupJoystick (void);
+static void Joy_AdvancedUpdate_f (void);
+static void IN_JoyMove (usercmd_t *cmd);
 
 
 /*
@@ -90,7 +90,7 @@ void IN_JoyMove (usercmd_t *cmd);
 Force_CenterView_f
 ===========
 */
-void Force_CenterView_f (void)
+static void Force_CenterView_f (void)
 {
 	cl.viewangles[PITCH] = 0;
 }
@@ -197,7 +197,7 @@ void IN_DeactivateMouse (void)
 		ClipCursor (NULL);
 		ReleaseCapture ();
 
-	    mouseactive = false;
+		mouseactive = false;
 	}
 }
 
@@ -227,26 +227,27 @@ void IN_RestoreOriginalMouseState (void)
 IN_StartupMouse
 ===========
 */
-void IN_StartupMouse (void)
+static void IN_StartupMouse (void)
 {
-	if ( COM_CheckParm ("-nomouse") ) 
-		return; 
+	if ( COM_CheckParm ("-nomouse") )
+		return;
 
 	mouseinitialized = true;
+
 	mouseparmsvalid = SystemParametersInfo (SPI_GETMOUSE, 0, originalmouseparms, 0);
 
 	if (mouseparmsvalid)
 	{
-		if ( COM_CheckParm ("-noforcemspd") ) 
+		if ( COM_CheckParm ("-noforcemspd") )
 			newmouseparms[2] = originalmouseparms[2];
 
-		if ( COM_CheckParm ("-noforcemaccel") ) 
+		if ( COM_CheckParm ("-noforcemaccel") )
 		{
 			newmouseparms[0] = originalmouseparms[0];
 			newmouseparms[1] = originalmouseparms[1];
 		}
 
-		if ( COM_CheckParm ("-noforcemparms") ) 
+		if ( COM_CheckParm ("-noforcemparms") )
 		{
 			newmouseparms[0] = originalmouseparms[0];
 			newmouseparms[1] = originalmouseparms[1];
@@ -339,8 +340,8 @@ void IN_MouseEvent (int mstate)
 			{
 					Key_Event (K_MOUSE1 + i, false);
 			}
-		}	
-			
+		}
+
 		mouse_oldbuttonstate = mstate;
 	}
 }
@@ -351,10 +352,9 @@ void IN_MouseEvent (int mstate)
 IN_MouseMove
 ===========
 */
-void IN_MouseMove (usercmd_t *cmd)
+static void IN_MouseMove (usercmd_t *cmd)
 {
 	int		mx, my;
-
 
 //	if (sv_player->v.cameramode)	// Stuck in a different camera, don't move
 //		return;
@@ -390,11 +390,12 @@ void IN_MouseMove (usercmd_t *cmd)
 	else
 		cl.viewangles[YAW] -= m_yaw.value * mouse_x;
 
-	if (in_mlook.state & 1) {
+	if (in_mlook.state & 1)
+	{
 		if (mx || my)
 			V_StopPitchDrift ();
 	}
-		
+
 	if ( (in_mlook.state & 1) && !(in_strafe.state & 1))
 	{
 		cl.viewangles[PITCH] += m_pitch.value * mouse_y;
@@ -487,25 +488,25 @@ void IN_ClearStates (void)
 }
 
 
-/* 
-=============== 
-IN_StartupJoystick 
-=============== 
-*/  
-void IN_StartupJoystick (void) 
-{ 
+/*
+===============
+IN_StartupJoystick
+===============
+*/
+static void IN_StartupJoystick (void)
+{
 	int		numdevs;
 	JOYCAPS		jc;
 	MMRESULT	mmr;
- 
- 	// assume no joystick
-	joy_avail = false; 
+
+	// assume no joystick
+	joy_avail = false;
 	mmr = ~JOYERR_NOERROR;	// shut up the compiler
 
 	// abort startup if user requests no joystick
-	if ( COM_CheckParm ("-nojoy") ) 
-		return; 
- 
+	if ( COM_CheckParm ("-nojoy") )
+		return;
+
 	// verify joystick driver is present
 	if ((numdevs = joyGetNumDevs ()) == 0)
 	{
@@ -522,7 +523,7 @@ void IN_StartupJoystick (void)
 
 		if ((mmr = joyGetPosEx (joy_id, &ji)) == JOYERR_NOERROR)
 			break;
-	} 
+	}
 
 	// abort startup if we didn't find a valid joystick
 	if (mmr != JOYERR_NOERROR)
@@ -536,7 +537,7 @@ void IN_StartupJoystick (void)
 	memset (&jc, 0, sizeof(jc));
 	if ((mmr = joyGetDevCaps (joy_id, &jc, sizeof(jc))) != JOYERR_NOERROR)
 	{
-		Con_Printf ("\njoystick not found -- invalid joystick capabilities (%x)\n\n", mmr); 
+		Con_Printf ("\njoystick not found -- invalid joystick capabilities (%x)\n\n", mmr);
 		return;
 	}
 
@@ -550,10 +551,10 @@ void IN_StartupJoystick (void)
 	// mark the joystick as available and advanced initialization not completed
 	// this is needed as cvars are not available during initialization
 
-	joy_avail = true; 
+	joy_avail = true;
 	joy_advancedinit = false;
 
-	Con_Printf ("\njoystick found\n\n", mmr); 
+	Con_Printf ("\njoystick detected\n\n");
 }
 
 
@@ -562,7 +563,7 @@ void IN_StartupJoystick (void)
 RawValuePointer
 ===========
 */
-PDWORD RawValuePointer (int axis)
+static PDWORD RawValuePointer (int axis)
 {
 	switch (axis)
 	{
@@ -588,9 +589,8 @@ PDWORD RawValuePointer (int axis)
 Joy_AdvancedUpdate_f
 ===========
 */
-void Joy_AdvancedUpdate_f (void)
+static void Joy_AdvancedUpdate_f (void)
 {
-
 	// called once by IN_ReadJoystick and by user whenever an update is needed
 	// cvars are now available
 	int	i;
@@ -655,14 +655,13 @@ void Joy_AdvancedUpdate_f (void)
 }
 
 
-/* 
-=============== 
+/*
+===============
 IN_ReadJoystick
-=============== 
-*/  
-qboolean IN_ReadJoystick (void)
+===============
+*/
+static qboolean IN_ReadJoystick (void)
 {
-
 	memset (&ji, 0, sizeof(ji));
 	ji.dwSize = sizeof(ji);
 	ji.dwFlags = joy_flags;
@@ -707,7 +706,7 @@ void IN_Commands (void)
 
 	if (cls.state != ca_connected || cls.signon != SIGNONS)
 	{
-		if( joy_advancedinit != true )
+		if (joy_advancedinit != true)
 		{
 			Joy_AdvancedUpdate_f();
 			joy_advancedinit = true;
@@ -715,7 +714,7 @@ void IN_Commands (void)
 
 		IN_ReadJoystick ();
 	}
-	
+
 	// loop through the joystick buttons
 	// key a joystick event or auxillary event for higher number buttons for each state change
 	buttonstate = ji.dwButtons;
@@ -775,7 +774,7 @@ void IN_Commands (void)
 IN_JoyMove
 ===========
 */
-void IN_JoyMove (usercmd_t *cmd)
+static void IN_JoyMove (usercmd_t *cmd)
 {
 	float	speed, aspeed;
 	float	fAxisValue, fTemp;
@@ -783,7 +782,7 @@ void IN_JoyMove (usercmd_t *cmd)
 
 	// complete initialization if first time in
 	// this is needed as cvars are not available at initialization time
-	if( joy_advancedinit != true )
+	if (joy_advancedinit != true)
 	{
 		Joy_AdvancedUpdate_f();
 		joy_advancedinit = true;
@@ -792,9 +791,9 @@ void IN_JoyMove (usercmd_t *cmd)
 	// verify joystick is available and that the user wants to use it
 	if (!joy_avail || !in_joystick.value)
 	{
-		return; 
+		return;
 	}
- 
+
 	// collect the joystick data, if possible
 	if (IN_ReadJoystick () != true)
 	{
@@ -831,7 +830,7 @@ void IN_JoyMove (usercmd_t *cmd)
 			}
 		}
 
-		// convert range from -32768..32767 to -1..1 
+		// convert range from -32768..32767 to -1..1
 		fAxisValue /= 32768.0;
 
 		switch (dwAxisMap[i])
@@ -841,7 +840,7 @@ void IN_JoyMove (usercmd_t *cmd)
 			{
 				// user wants forward control to become look control
 				if (fabs(fAxisValue) > joy_pitchthreshold.value)
-				{		
+				{
 					// if mouse invert is on, invert the joystick pitch value
 					// only absolute control support here (joy_advanced is false)
 					if (m_pitch.value < 0.0)
@@ -897,7 +896,6 @@ void IN_JoyMove (usercmd_t *cmd)
 					{
 						cl.viewangles[YAW] += (fAxisValue * joy_yawsensitivity.value) * speed * 180.0;
 					}
-
 				}
 			}
 			break;
@@ -908,7 +906,7 @@ void IN_JoyMove (usercmd_t *cmd)
 				if (fabs(fAxisValue) > joy_pitchthreshold.value)
 				{
 					// pitch movement detected and pitch movement desired by user
-					if(dwControlMap[i] == JOY_ABSOLUTE_AXIS)
+					if (dwControlMap[i] == JOY_ABSOLUTE_AXIS)
 					{
 						cl.viewangles[PITCH] += (fAxisValue * joy_pitchsensitivity.value) * aspeed * cl_pitchspeed.value;
 					}
@@ -935,6 +933,9 @@ void IN_JoyMove (usercmd_t *cmd)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2006/01/07 09:54:29  sezero
+ * cleanup and "static" stuff on the vid files
+ *
  * Revision 1.11  2005/12/11 12:00:59  sezero
  * win32 wheelmouse cleanup
  *

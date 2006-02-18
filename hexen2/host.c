@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.41 2006-01-17 17:36:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.42 2006-02-18 08:51:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -19,7 +19,7 @@ Memory is cleared / released when a server or client begins, not when they end.
 
 */
 
-void Host_WriteConfiguration (char *fname);
+static void Host_WriteConfiguration (char *fname);
 
 quakeparms_t host_parms;
 
@@ -28,7 +28,7 @@ qboolean	host_initialized;		// true if into command execution
 double		host_frametime;
 double		host_time;
 double		realtime;			// without any filtering or bounding
-double		oldrealtime;			// last frame run
+static double	oldrealtime;			// last frame run
 int		host_framecount;
 
 int		host_hunklevel;
@@ -64,9 +64,9 @@ cvar_t	developer = {"developer","1", true};	// should be 0 for release!
 cvar_t	developer = {"developer","0", true};
 #endif
 
-cvar_t	skill = {"skill","1"};						// 0 - 3
-cvar_t	deathmatch = {"deathmatch","0"};			// 0, 1, or 2
-cvar_t	randomclass = {"randomclass","0"};			// 0, 1, or 2
+cvar_t	skill = {"skill","1"};			// 0 - 3
+cvar_t	deathmatch = {"deathmatch","0"};	// 0, 1, or 2
+cvar_t	randomclass = {"randomclass","0"};	// 0, 1, or 2
 cvar_t	coop = {"coop","0"};			// 0 or 1
 
 cvar_t	pausable = {"pausable","1"};
@@ -84,18 +84,18 @@ void Host_EndGame (char *message, ...)
 {
 	va_list		argptr;
 	char		string[1024];
-	
+
 	va_start (argptr,message);
 	vsnprintf (string,sizeof(string),message,argptr);
 	va_end (argptr);
 	Con_DPrintf ("Host_EndGame: %s\n",string);
-	
+
 	if (sv.active)
 		Host_ShutdownServer (false);
 
 	if (cls.state == ca_dedicated)
 		Sys_Error ("Host_EndGame: %s\n",string);	// dedicated servers exit
-	
+
 	if (cls.demonum != -1)
 		CL_NextDemo ();
 	else
@@ -116,18 +116,18 @@ void Host_Error (char *error, ...)
 	va_list		argptr;
 	char		string[1024];
 	static	qboolean inerror = false;
-	
+
 	if (inerror)
 		Sys_Error ("Host_Error: recursively entered");
 	inerror = true;
-	
+
 	SCR_EndLoadingPlaque ();		// reenable screen updates
 
 	va_start (argptr,error);
 	vsnprintf (string,sizeof(string),error,argptr);
 	va_end (argptr);
 	Con_Printf ("Host_Error: %s\n",string);
-	
+
 	if (sv.active)
 		Host_ShutdownServer (false);
 
@@ -147,12 +147,12 @@ void Host_Error (char *error, ...)
 Host_FindMaxClients
 ================
 */
-void	Host_FindMaxClients (void)
+static void Host_FindMaxClients (void)
 {
 	int		i;
 
 	svs.maxclients = 1;
-		
+
 	i = COM_CheckParm ("-dedicated");
 	if (i)
 	{
@@ -198,9 +198,8 @@ void	Host_FindMaxClients (void)
 Host_SaveConfig_f
 ===============
 */
-void Host_SaveConfig_f (void)
+static void Host_SaveConfig_f (void)
 {
-
 	if (cmd_source != src_command)
 		return;
 
@@ -238,12 +237,12 @@ void Host_SaveConfig_f (void)
 Host_InitLocal
 ======================
 */
-void Host_InitLocal (void)
+static void Host_InitLocal (void)
 {
 	Cmd_AddCommand ("saveconfig", Host_SaveConfig_f);
 
 	Host_InitCommands ();
-	
+
 	Cvar_RegisterVariable (&host_framerate);
 	Cvar_RegisterVariable (&host_speeds);
 
@@ -268,7 +267,7 @@ void Host_InitLocal (void)
 	Cvar_RegisterVariable (&temp1);
 
 	Host_FindMaxClients ();
-	
+
 	host_time = 1.0;		// so a think at time 0 won't get called
 }
 
@@ -279,7 +278,7 @@ Host_WriteConfiguration
 Writes key bindings and archived cvars to config.cfg
 ===============
 */
-void Host_WriteConfiguration (char *fname)
+static void Host_WriteConfiguration (char *fname)
 {
 	FILE	*f;
 
@@ -293,10 +292,10 @@ void Host_WriteConfiguration (char *fname)
 			Con_Printf ("Couldn't write %s.\n",fname);
 			return;
 		}
-		
+
 		Key_WriteBindings (f);
 		Cvar_WriteVariables (f);
-		
+
 		if (in_mlook.state & 1)		//if mlook was down, keep it that way
 			fprintf (f, "+mlook\n");
 
@@ -317,11 +316,11 @@ void SV_ClientPrintf (char *fmt, ...)
 {
 	va_list		argptr;
 	char		string[1024];
-	
+
 	va_start (argptr,fmt);
 	vsnprintf (string, sizeof (string), fmt, argptr);
 	va_end (argptr);
-	
+
 	MSG_WriteByte (&host_client->message, svc_print);
 	MSG_WriteString (&host_client->message, string);
 }
@@ -338,11 +337,11 @@ void SV_BroadcastPrintf (char *fmt, ...)
 	va_list		argptr;
 	char		string[1024];
 	int			i;
-	
+
 	va_start (argptr,fmt);
 	vsnprintf (string, sizeof (string), fmt, argptr);
 	va_end (argptr);
-	
+
 	for (i=0 ; i<svs.maxclients ; i++)
 		if (svs.clients[i].active && svs.clients[i].spawned)
 		{
@@ -362,11 +361,11 @@ void Host_ClientCommands (char *fmt, ...)
 {
 	va_list		argptr;
 	char		string[1024];
-	
+
 	va_start (argptr,fmt);
 	vsnprintf (string, sizeof (string), fmt, argptr);
 	va_end (argptr);
-	
+
 	MSG_WriteByte (&host_client->message, svc_stufftext);
 	MSG_WriteString (&host_client->message, string);
 }
@@ -393,7 +392,7 @@ void SV_DropClient (qboolean crash)
 			MSG_WriteByte (&host_client->message, svc_disconnect);
 			NET_SendMessage (host_client->netconnection, &host_client->message);
 		}
-	
+
 		if (host_client->edict && host_client->spawned)
 		{
 		// call the prog function for removing a client
@@ -540,7 +539,7 @@ Host_FilterTime
 Returns false if the time is too short to run a frame
 ===================
 */
-qboolean Host_FilterTime (float time)
+static qboolean Host_FilterTime (float time)
 {
 	realtime += time;
 
@@ -559,7 +558,7 @@ qboolean Host_FilterTime (float time)
 		if (host_frametime < 0.001)
 			host_frametime = 0.001;
 	}
-	
+
 	return true;
 }
 
@@ -571,7 +570,7 @@ Host_GetConsoleCommands
 Add them exactly as if they had been typed at the console
 ===================
 */
-void Host_GetConsoleCommands (void)
+static void Host_GetConsoleCommands (void)
 {
 	char	*cmd;
 
@@ -598,14 +597,14 @@ Host_ServerFrame
 */
 #ifdef FPS_20
 
-void _Host_ServerFrame (void)
+static void _Host_ServerFrame (void)
 {
-// run the world state	
+// run the world state
 	pr_global_struct->frametime = host_frametime;
 
 // read client messages
 	SV_RunClients ();
-	
+
 // move things around and think
 // always pause in single player if in console or menus
 	if (!sv.paused && (svs.maxclients > 1 || key_dest == key_game) )
@@ -617,17 +616,17 @@ void _Host_ServerFrame (void)
 	}
 }
 
-void Host_ServerFrame (void)
+static void Host_ServerFrame (void)
 {
 	float	save_host_frametime;
 	float	temp_host_frametime;
 
-// run the world state	
+// run the world state
 	pr_global_struct->frametime = host_frametime;
 
 // set the time and clear the general datagram
 	SV_ClearDatagram ();
-	
+
 // check for new clients
 	SV_CheckForNewClients ();
 
@@ -649,20 +648,20 @@ void Host_ServerFrame (void)
 
 #else
 
-void Host_ServerFrame (void)
+static void Host_ServerFrame (void)
 {
-// run the world state	
+// run the world state
 	pr_global_struct->frametime = host_frametime;
 
 // set the time and clear the general datagram
 	SV_ClearDatagram ();
-	
+
 // check for new clients
 	SV_CheckForNewClients ();
 
 // read client messages
 	SV_RunClients ();
-	
+
 // move things around and think
 // always pause in single player if in console or menus
 	if (!sv.paused && (svs.maxclients > 1 || key_dest == key_game) )
@@ -681,7 +680,7 @@ Host_Frame
 Runs all active servers
 ==================
 */
-void _Host_Frame (float time)
+static void _Host_Frame (float time)
 {
 	static double		time1 = 0;
 	static double		time2 = 0;
@@ -696,11 +695,11 @@ void _Host_Frame (float time)
 
 // keep the random time dependent
 	rand ();
-	
+
 // decide the simulation time
 	if (!Host_FilterTime (time))
 		return;			// don't run too fast, or packets will flood out
-		
+
 // get new key events
 	Sys_SendKeyEvents ();
 
@@ -715,7 +714,7 @@ void _Host_Frame (float time)
 // if running the server locally, make intentions now
 	if (sv.active)
 		CL_SendCmd ();
-	
+
 //-------------------
 //
 // server operations
@@ -726,7 +725,7 @@ void _Host_Frame (float time)
 	Host_GetConsoleCommands ();
 
 #ifdef FPS_20
-	
+
 	if (sv.active)
 		Host_ServerFrame ();
 
@@ -754,13 +753,13 @@ void _Host_Frame (float time)
 	save_host_frametime = total_host_frametime = host_frametime;
 	if (sys_adaptive.value)
 	{
-		if (host_frametime > 0.05) 
+		if (host_frametime > 0.05)
 		{
 			host_frametime = 0.05;
 		}
 	}
 
-	if (total_host_frametime > 1.0) 
+	if (total_host_frametime > 1.0)
 		total_host_frametime = 0.05;
 
 	do
@@ -794,7 +793,7 @@ void _Host_Frame (float time)
 			break;
 
 		total_host_frametime -= 0.05;
-		if (total_host_frametime > 0 && total_host_frametime < 0.05) 
+		if (total_host_frametime > 0 && total_host_frametime < 0.05)
 		{
 			save_host_frametime -= total_host_frametime;
 			oldrealtime -= total_host_frametime;
@@ -803,7 +802,6 @@ void _Host_Frame (float time)
 
 	} while (total_host_frametime > 0);
 
-
 	host_frametime = save_host_frametime;
 
 #endif
@@ -811,12 +809,12 @@ void _Host_Frame (float time)
 // update video
 	if (host_speeds.value)
 		time1 = Sys_DoubleTime ();
-		
+
 	SCR_UpdateScreen ();
 
 	if (host_speeds.value)
 		time2 = Sys_DoubleTime ();
-		
+
 // update audio
 	if (cls.signon == SIGNONS)
 	{
@@ -838,7 +836,7 @@ void _Host_Frame (float time)
 		Con_Printf ("%3i tot %3i server %3i gfx %3i snd\n",
 					pass1+pass2+pass3, pass1, pass2, pass3);
 	}
-	
+
 	host_framecount++;
 }
 
@@ -854,14 +852,14 @@ void Host_Frame (float time)
 		_Host_Frame (time);
 		return;
 	}
-	
+
 	time1 = Sys_DoubleTime ();
 	_Host_Frame (time);
-	time2 = Sys_DoubleTime ();	
-	
+	time2 = Sys_DoubleTime ();
+
 	timetotal += time2 - time1;
 	timecount++;
-	
+
 	if (timecount < 1000)
 		return;
 
@@ -875,7 +873,7 @@ void Host_Frame (float time)
 			c++;
 	}
 
-	Con_Printf ("serverprofile: %2i clients %2i msec\n",  c,  m);
+	Con_Printf ("serverprofile: %2i clients %2i msec\n", c, m);
 }
 
 //============================================================================
@@ -885,11 +883,11 @@ extern FILE *vcrFile;
 #define	VCR_SIGNATURE	0x56435231
 // "VCR1"
 
-void Host_InitVCR (quakeparms_t *parms)
+static void Host_InitVCR (quakeparms_t *parms)
 {
 	int		i, len, n;
 	char	*p;
-	
+
 	if (COM_CheckParm("-playback"))
 	{
 		if (com_argc != 2)
@@ -942,7 +940,6 @@ void Host_InitVCR (quakeparms_t *parms)
 			fwrite (com_argv[i], 1, len, vcrFile);
 		}
 	}
-	
 }
 
 /*
@@ -960,7 +957,7 @@ void Host_Init (quakeparms_t *parms)
 
 	Memory_Init (parms->membase, parms->memsize);
 	Cbuf_Init ();
-	Cmd_Init ();	
+	Cmd_Init ();
 	CL_Cmd_Init ();
 	V_Init ();
 	Chase_Init ();
@@ -970,8 +967,8 @@ void Host_Init (quakeparms_t *parms)
 	Host_InitLocal ();
 	W_LoadWadFile ("gfx.wad");
 	Key_Init ();
-	Con_Init ();	
-	M_Init ();	
+	Con_Init ();
+	M_Init ();
 	PR_Init ();
 	Mod_Init ();
 	NET_Init ();
@@ -1043,7 +1040,7 @@ to run quit through here before the final handoff to the sys code.
 void Host_Shutdown(void)
 {
 	static qboolean isdown = false;
-	
+
 	if (isdown)
 	{
 		printf ("recursive shutdown\n");
@@ -1054,7 +1051,7 @@ void Host_Shutdown(void)
 // keep Con_Printf from trying to update the screen
 	scr_disabled_for_loading = true;
 
-	Host_WriteConfiguration ("config.cfg"); 
+	Host_WriteConfiguration ("config.cfg");
 
 	NET_Shutdown ();
 
@@ -1070,6 +1067,28 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.41  2006/01/17 17:36:44  sezero
+ * A quick'n'dirty patch for making the game to remember its video settings:
+ * Essentially it does an early read of config.cfg while in VID_Init to
+ * remember the settings (new procedure: VID_EarlyReadConfig). (new cvars:
+ * vid_config_glx, vid_config_gly, vid_config_swx, vid_config_swy, and
+ * vid_config_fscr). the commandline still acts as an override. then, it fixes
+ * the cvar screw-up caused by the actual read of config.cfg by overwriting
+ * the affected cvars with the running settings (new tiny procedure:
+ * VID_PostInitFix, called from Host_Init).
+ *
+ * Implemented here are the screen dimensions, color bits (bpp, for win32,
+ * cvar: vid_config_bpp), palettized textures and multisampling (fsaa, for
+ * unix, cvars: vid_config_gl8bit and vid_config_fsaa) options with their
+ * menu representations and cvar memorizations.
+ *
+ * This method can probably be also used to store/remember the conwidth
+ * settings. Also applicable is the sound settings, such as the driver,
+ * sampling rate, format, etc.
+ *
+ * Secondly, the patch sets the fullscreen cvar not by only looking at silly
+ * values but by looking at the current SDL_Screen flags.
+ *
  * Revision 1.40  2006/01/12 12:57:45  sezero
  * moved init of platform specific variables and function pointers to snd_sys
  *

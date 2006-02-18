@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.16 2006-01-17 20:10:43 sezero Exp $
+	$Id: winquake.h,v 1.17 2006-02-18 08:51:10 sezero Exp $
 */
 
 #if !defined(_WIN32)
@@ -59,8 +59,6 @@ extern cvar_t		_enable_mouse;
 extern int		window_center_x, window_center_y;
 extern RECT		window_rect;
 
-extern qboolean	mouseinitialized;
-
 #if !defined(NO_SPLASHES)
 extern HWND		hwnd_dialog;
 #endif
@@ -94,6 +92,10 @@ int (PASCAL FAR *pgetsockname)(SOCKET s, struct sockaddr FAR *name,
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2006/01/17 20:10:43  sezero
+ * missing parts of vid_win synchronization (remove Snd_AcquireBuffer and
+ * Snd_ReleaseBuffer which was only used by the old vid_win.c of hexen2.)
+ *
  * Revision 1.15  2006/01/12 12:34:38  sezero
  * added video modes enumeration via SDL. added on-the-fly video mode changing
  * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its

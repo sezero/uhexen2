@@ -101,7 +101,6 @@ typedef enum {key_game, key_console, key_message, key_menu} keydest_t;
 
 extern keydest_t	key_dest;
 extern char *keybindings[256];
-extern	int		key_repeats[256];
 extern	int		key_count;			// incremented every key event
 extern	int		key_lastpress;
 

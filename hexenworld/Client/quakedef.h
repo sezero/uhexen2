@@ -116,7 +116,6 @@ extern	int			host_framecount;	// incremented every frame, never reset
 extern	double		realtime;			// not bounded in any way, changed at
 										// start of every frame, never reset
 
-void Host_ServerFrame (void);
 void Host_InitCommands (void);
 void Host_Init (quakeparms_t *parms);
 void Host_Shutdown(void);

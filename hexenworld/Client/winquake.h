@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.15 2006-01-12 12:34:39 sezero Exp $
+	$Id: winquake.h,v 1.16 2006-02-18 08:51:11 sezero Exp $
 */
 
 #if !defined(_WIN32)
@@ -58,8 +58,6 @@ extern cvar_t		_enable_mouse;
 
 extern int		window_center_x, window_center_y;
 extern RECT		window_rect;
-
-extern qboolean	mouseinitialized;
 
 #if !defined(NO_SPLASHES)
 extern HWND		hwnd_dialog;

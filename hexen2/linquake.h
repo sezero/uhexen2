@@ -2,7 +2,7 @@
 	linquake.h
 	Unix-specific Quake header file
 
-	$Id: linquake.h,v 1.3 2005-06-01 14:10:42 sezero Exp $
+	$Id: linquake.h,v 1.4 2006-02-18 08:51:10 sezero Exp $
 */
 
 #include "linux_inc.h"
@@ -11,14 +11,15 @@ void IN_ShowMouse (void);
 void IN_DeactivateMouse (void);
 void IN_HideMouse (void);
 void IN_ActivateMouse (void);
-void IN_MouseEvent (int mstate);
 
 extern cvar_t		_enable_mouse;
 
-extern qboolean	mouseinitialized;
-
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/06/01 14:10:42  sezero
+ * removed win32-only net function prototypes from linquake.h
+ * and updated linux_inc.h. also moved win32-only ipx netcode
+ *
  * Revision 1.2  2005/05/21 17:04:16  sezero
  * - revived -nomouse that "disables mouse no matter what"
  * - renamed _windowed_mouse to _enable_mouse which is our intention,
