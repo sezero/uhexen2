@@ -1,6 +1,6 @@
 /*
 	net_bsd.c
-	$Id: net_bsd.c,v 1.3 2005-05-21 16:27:27 sezero Exp $
+	$Id: net_bsd.c,v 1.4 2006-02-18 21:59:23 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -24,9 +24,6 @@
 
 */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
 
 #include "quakedef.h"
 
@@ -36,37 +33,37 @@
 net_driver_t net_drivers[MAX_NET_DRIVERS] =
 {
 	{
-	"Loopback",
-	false,
-	Loop_Init,
-	Loop_Listen,
-	Loop_SearchForHosts,
-	Loop_Connect,
-	Loop_CheckNewConnections,
-	Loop_GetMessage,
-	Loop_SendMessage,
-	Loop_SendUnreliableMessage,
-	Loop_CanSendMessage,
-	Loop_CanSendUnreliableMessage,
-	Loop_Close,
-	Loop_Shutdown
-	}
-	,
+		"Loopback",
+		false,
+		Loop_Init,
+		Loop_Listen,
+		Loop_SearchForHosts,
+		Loop_Connect,
+		Loop_CheckNewConnections,
+		Loop_GetMessage,
+		Loop_SendMessage,
+		Loop_SendUnreliableMessage,
+		Loop_CanSendMessage,
+		Loop_CanSendUnreliableMessage,
+		Loop_Close,
+		Loop_Shutdown
+	},
+
 	{
-	"Datagram",
-	false,
-	Datagram_Init,
-	Datagram_Listen,
-	Datagram_SearchForHosts,
-	Datagram_Connect,
-	Datagram_CheckNewConnections,
-	Datagram_GetMessage,
-	Datagram_SendMessage,
-	Datagram_SendUnreliableMessage,
-	Datagram_CanSendMessage,
-	Datagram_CanSendUnreliableMessage,
-	Datagram_Close,
-	Datagram_Shutdown
+		"Datagram",
+		false,
+		Datagram_Init,
+		Datagram_Listen,
+		Datagram_SearchForHosts,
+		Datagram_Connect,
+		Datagram_CheckNewConnections,
+		Datagram_GetMessage,
+		Datagram_SendMessage,
+		Datagram_SendUnreliableMessage,
+		Datagram_CanSendMessage,
+		Datagram_CanSendUnreliableMessage,
+		Datagram_Close,
+		Datagram_Shutdown
 	}
 };
 
@@ -77,27 +74,27 @@ int net_numdrivers = 2;
 net_landriver_t	net_landrivers[MAX_NET_DRIVERS] =
 {
 	{
-	"UDP",
-	false,
-	0,
-	UDP_Init,
-	UDP_Shutdown,
-	UDP_Listen,
-	UDP_OpenSocket,
-	UDP_CloseSocket,
-	UDP_Connect,
-	UDP_CheckNewConnections,
-	UDP_Read,
-	UDP_Write,
-	UDP_Broadcast,
-	UDP_AddrToString,
-	UDP_StringToAddr,
-	UDP_GetSocketAddr,
-	UDP_GetNameFromAddr,
-	UDP_GetAddrFromName,
-	UDP_AddrCompare,
-	UDP_GetSocketPort,
-	UDP_SetSocketPort
+		"UDP",
+		false,
+		0,
+		UDP_Init,
+		UDP_Shutdown,
+		UDP_Listen,
+		UDP_OpenSocket,
+		UDP_CloseSocket,
+		UDP_Connect,
+		UDP_CheckNewConnections,
+		UDP_Read,
+		UDP_Write,
+		UDP_Broadcast,
+		UDP_AddrToString,
+		UDP_StringToAddr,
+		UDP_GetSocketAddr,
+		UDP_GetNameFromAddr,
+		UDP_GetAddrFromName,
+		UDP_AddrCompare,
+		UDP_GetSocketPort,
+		UDP_SetSocketPort
 	}
 };
 

@@ -34,7 +34,7 @@ int VCR_Init (void)
 	return 0;
 }
 
-void VCR_ReadNext (void)
+static void VCR_ReadNext (void)
 {
 	if (fread(&next, 1, sizeof(next), vcrFile) == 0)
 	{
@@ -59,7 +59,7 @@ void VCR_Shutdown (void)
 int VCR_GetMessage (qsocket_t *sock)
 {
 	int	ret;
-	
+
 	if (host_time != next.time || next.op != VCR_OP_GETMESSAGE || next.session != *(long *)(&sock->driverdata))
 		Sys_Error ("VCR missmatch");
 

@@ -47,7 +47,7 @@ int WIPX_Init (void)
 	struct qsockaddr addr;
 	char	*p;
 	int		r;
-	WORD	wVersionRequested; 
+	WORD	wVersionRequested;
 
 	if (COM_CheckParm ("-noipx"))
 		return -1;
@@ -58,7 +58,7 @@ int WIPX_Init (void)
 
 	if (winsock_initialized == 0)
 	{
-		wVersionRequested = MAKEWORD(1, 1); 
+		wVersionRequested = MAKEWORD(1, 1);
 
 		r = pWSAStartup (MAKEWORD(1, 1), &winsockdata);
 
@@ -209,7 +209,6 @@ int WIPX_CloseSocket (int handle)
 	return ret;
 }
 
-
 //=============================================================================
 
 int WIPX_Connect (int handle, struct qsockaddr *addr)
@@ -235,7 +234,6 @@ int WIPX_CheckNewConnections (void)
 
 //=============================================================================
 
-	
 //static byte netpacketBuffer[NET_DATAGRAMSIZE + 4];
 static byte netpacketBuffer[NET_MAXMESSAGE + 4];
 //_Datagram_SearchForHosts calls this with net_message.maxsize as len!
@@ -253,12 +251,11 @@ int WIPX_Read (int handle, byte *buf, int len, struct qsockaddr *addr)
 
 		if (err == WSAEWOULDBLOCK || err == WSAECONNREFUSED)
 			return 0;
-
 	}
 
 	if (ret < 4)
 		return 0;
-	
+
 	// remove sequence number, it's only needed for DOS IPX
 	ret -= 4;
 	memcpy(buf, netpacketBuffer+4, ret);
@@ -362,8 +359,10 @@ int WIPX_GetSocketAddr (int handle, struct qsockaddr *addr)
 	memset(addr, 0, sizeof(struct qsockaddr));
 	if(pgetsockname(mysocket, (struct sockaddr *)addr, &addrlen) != 0)
 	{
-		int err = pWSAGetLastError();
-		// and the oscar goes to ?...
+		int err;
+
+		err = pWSAGetLastError();
+		// FIXME: the oscar goes to ?...
 	}
 
 	return 0;
@@ -441,3 +440,4 @@ int WIPX_SetSocketPort (struct qsockaddr *addr, int port)
 }
 
 //=============================================================================
+

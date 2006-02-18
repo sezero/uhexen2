@@ -10,7 +10,7 @@ typedef struct
 } netadr_t;
 
 extern	netadr_t	net_local_adr;
-extern	netadr_t	net_from;		// address of who sent the packet
+extern	netadr_t	net_from;	// address of who sent the packet
 extern	sizebuf_t	net_message;
 
 extern	cvar_t	hostname;
@@ -29,7 +29,7 @@ qboolean	NET_StringToAdr (char *s, netadr_t *a);
 
 //============================================================================
 
-#define	OLD_AVG		0.99		// total = oldtotal*OLD_AVG + new*(1-OLD_AVG)
+#define	OLD_AVG		0.99	// total = oldtotal*OLD_AVG + new*(1-OLD_AVG)
 
 #define	MAX_LATENT	32
 
@@ -37,44 +37,44 @@ typedef struct
 {
 	qboolean	fatal_error;
 
-	float		last_received;		// for timeouts
+	float	last_received;		// for timeouts
 
-// the statistics are cleared at each client begin, because
-// the server connecting process gives a bogus picture of the data
-	float		frame_latency;		// rolling average
-	float		frame_rate;
+	// the statistics are cleared at each client begin, because
+	// the server connecting process gives a bogus picture of the data
 
-	int			drop_count;			// dropped packets, cleared each level
-	int			good_count;			// cleared each level
+	float	frame_latency;		// rolling average
+	float	frame_rate;
 
+	int	drop_count;		// dropped packets, cleared each level
+	int	good_count;		// cleared each level
 
 	netadr_t	remote_address;
 
-// bandwidth estimator
-	double		cleartime;			// if realtime > nc->cleartime, free to go
-	double		rate;				// seconds / byte
+	// bandwidth estimator
+	double	cleartime;		// if realtime > nc->cleartime, free to go
+	double	rate;			// seconds / byte
 
-// sequencing variables
-	int			incoming_sequence;
-	int			incoming_acknowledged;
-	int			incoming_reliable_acknowledged;	// single bit
+	// sequencing variables
+	int	incoming_sequence;
+	int	incoming_acknowledged;
+	int	incoming_reliable_acknowledged;	// single bit
 
-	int			incoming_reliable_sequence;		// single bit, maintained local
+	int	incoming_reliable_sequence;	// single bit, maintained local
 
-	int			outgoing_sequence;
-	int			reliable_sequence;			// single bit
-	int			last_reliable_sequence;		// sequence number of last send
+	int	outgoing_sequence;
+	int	reliable_sequence;		// single bit
+	int	last_reliable_sequence;		// sequence number of last send
 
-// reliable staging and holding areas
+	// reliable staging and holding areas
 	sizebuf_t	message;		// writing buffer to send to server
 	byte		message_buf[MAX_MSGLEN];
 
-	int			reliable_length;
-	byte		reliable_buf[MAX_MSGLEN];	// unacked reliable message
+	int	reliable_length;
+	byte	reliable_buf[MAX_MSGLEN];	// unacked reliable message
 
-// time and size data to calculate bandwidth
-	int			outgoing_size[MAX_LATENT];
-	double		outgoing_time[MAX_LATENT];
+	// time and size data to calculate bandwidth
+	int	outgoing_size[MAX_LATENT];
+	double	outgoing_time[MAX_LATENT];
 } netchan_t;
 
 extern	int	net_drop;		// packets dropped before this one

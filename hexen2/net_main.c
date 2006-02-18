@@ -26,12 +26,11 @@ static int		slistLastShown;
 
 static void Slist_Send(void);
 static void Slist_Poll(void);
-PollProcedure	slistSendProcedure = {NULL, 0.0, Slist_Send};
-PollProcedure	slistPollProcedure = {NULL, 0.0, Slist_Poll};
-
+static PollProcedure	slistSendProcedure = {NULL, 0.0, Slist_Send};
+static PollProcedure	slistPollProcedure = {NULL, 0.0, Slist_Poll};
 
 sizebuf_t		net_message;
-byte		net_message_buffer[NET_MAXMESSAGE];
+static byte		net_message_buffer[NET_MAXMESSAGE];
 int			net_activeconnections = 0;
 
 int messagesSent = 0;
@@ -42,19 +41,18 @@ int unreliableMessagesReceived = 0;
 cvar_t	net_messagetimeout = {"net_messagetimeout","300"};
 cvar_t	hostname = {"hostname", "UNNAMED"};
 
-qboolean	configRestored = false;
+static qboolean	configRestored = false;
 
 cvar_t	net_allowmultiple = {"net_allowmultiple", "0", true};
 
 FILE	*vcrFile = NULL;
-qboolean recording = false;
+static qboolean recording = false;
 
 // these two macros are to make the code more readable
 #define sfunc	net_drivers[sock->driver]
 #define dfunc	net_drivers[net_driverlevel]
 
 int	net_driverlevel;
-
 
 double			net_time;
 
@@ -159,7 +157,7 @@ static void NET_Listen_f (void)
 
 static void MaxPlayers_f (void)
 {
-	int 	n;
+	int	n;
 
 	if (Cmd_Argc () != 2)
 	{
@@ -206,7 +204,7 @@ static void MaxPlayers_f (void)
 
 static void NET_Port_f (void)
 {
-	int 	n;
+	int	n;
 
 	if (Cmd_Argc () != 2)
 	{
@@ -406,7 +404,7 @@ JustDoIt:
 		PrintSlist();
 		PrintSlistTrailer();
 	}
-	
+
 	return NULL;
 }
 
@@ -450,7 +448,7 @@ qsocket_t *NET_CheckNewConnections (void)
 			return ret;
 		}
 	}
-	
+
 	if (recording)
 	{
 		vcrConnect.time = host_time;
@@ -534,7 +532,6 @@ int	NET_GetMessage (qsocket_t *sock)
 		}
 	}
 
-
 	if (ret > 0)
 	{
 		if (sock->driver)
@@ -595,7 +592,7 @@ struct
 int NET_SendMessage (qsocket_t *sock, sizebuf_t *data)
 {
 	int		r;
-	
+
 	if (!sock)
 		return -1;
 
@@ -618,7 +615,7 @@ int NET_SendMessage (qsocket_t *sock, sizebuf_t *data)
 		vcrSendMessage.r = r;
 		fwrite (&vcrSendMessage, 1, 20, vcrFile);
 	}
-	
+
 	return r;
 }
 
@@ -626,7 +623,7 @@ int NET_SendMessage (qsocket_t *sock, sizebuf_t *data)
 int NET_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *data)
 {
 	int		r;
-	
+
 	if (!sock)
 		return -1;
 
@@ -649,7 +646,7 @@ int NET_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *data)
 		vcrSendMessage.r = r;
 		fwrite (&vcrSendMessage, 1, 20, vcrFile);
 	}
-	
+
 	return r;
 }
 
@@ -665,7 +662,7 @@ message to be transmitted.
 qboolean NET_CanSendMessage (qsocket_t *sock)
 {
 	int		r;
-	
+
 	if (!sock)
 		return false;
 
@@ -675,7 +672,7 @@ qboolean NET_CanSendMessage (qsocket_t *sock)
 	SetNetTime();
 
 	r = sfunc.CanSendMessage(sock);
-	
+
 	if (recording)
 	{
 		vcrSendMessage.time = host_time;
@@ -684,7 +681,7 @@ qboolean NET_CanSendMessage (qsocket_t *sock)
 		vcrSendMessage.r = r;
 		fwrite (&vcrSendMessage, 1, 20, vcrFile);
 	}
-	
+
 	return r;
 }
 
@@ -831,7 +828,7 @@ void NET_Init (void)
 
 	// initialize all the drivers
 	for (net_driverlevel=0 ; net_driverlevel<net_numdrivers ; net_driverlevel++)
-		{
+	{
 		controlSocket = net_drivers[net_driverlevel].Init();
 		if (controlSocket == -1)
 			continue;
@@ -839,7 +836,7 @@ void NET_Init (void)
 		net_drivers[net_driverlevel].controlSock = controlSocket;
 		if (listening)
 			net_drivers[net_driverlevel].Listen (true);
-		}
+	}
 
 	if (*my_ipx_address)
 		Con_DPrintf("IPX address %s\n", my_ipx_address);
@@ -853,7 +850,7 @@ NET_Shutdown
 ====================
 */
 
-void		NET_Shutdown (void)
+void NET_Shutdown (void)
 {
 	qsocket_t	*sock;
 

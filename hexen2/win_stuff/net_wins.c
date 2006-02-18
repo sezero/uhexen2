@@ -37,8 +37,8 @@ WSADATA		winsockdata;
 
 static double	blocktime;
 
-static BOOL PASCAL FAR BlockingHook(void)  
-{ 
+static BOOL PASCAL FAR BlockingHook(void)
+{
 	MSG	msg;
 	BOOL	ret;
 
@@ -116,7 +116,7 @@ int WINS_Init (void)
 
 	if (winsock_initialized == 0)
 	{
-		wVersionRequested = MAKEWORD(1, 1); 
+		wVersionRequested = MAKEWORD(1, 1);
 
 		r = pWSAStartup (MAKEWORD(1, 1), &winsockdata);
 
@@ -311,11 +311,12 @@ static int PartialIPAddress (char *in, struct qsockaddr *hostaddr)
 		port = net_hostport;
 
 	hostaddr->sa_family = AF_INET;
-	((struct sockaddr_in *)hostaddr)->sin_port = htons((short)port);	
+	((struct sockaddr_in *)hostaddr)->sin_port = htons((short)port);
 	((struct sockaddr_in *)hostaddr)->sin_addr.s_addr = (myAddr & htonl(mask)) | htonl(addr);
 
 	return 0;
 }
+
 //=============================================================================
 
 int WINS_Connect (int mysocket, struct qsockaddr *addr)
@@ -353,7 +354,6 @@ int WINS_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 
 		if (err == WSAEWOULDBLOCK || err == WSAECONNREFUSED)
 			return 0;
-
 	}
 	return ret;
 }
@@ -479,13 +479,13 @@ int WINS_GetAddrFromName(char *name, struct qsockaddr *addr)
 
 	if (name[0] >= '0' && name[0] <= '9')
 		return PartialIPAddress (name, addr);
-	
+
 	hostentry = pgethostbyname (name);
 	if (!hostentry)
 		return -1;
 
 	addr->sa_family = AF_INET;
-	((struct sockaddr_in *)addr)->sin_port = htons((unsigned short)net_hostport);	
+	((struct sockaddr_in *)addr)->sin_port = htons((unsigned short)net_hostport);
 	((struct sockaddr_in *)addr)->sin_addr.s_addr = *(int *)hostentry->h_addr_list[0];
 
 	return 0;
@@ -522,3 +522,4 @@ int WINS_SetSocketPort (struct qsockaddr *addr, int port)
 }
 
 //=============================================================================
+

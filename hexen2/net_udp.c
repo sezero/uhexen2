@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.12 2005-10-13 15:18:53 sezero Exp $
+	$Id: net_udp.c,v 1.13 2006-02-18 21:59:23 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -24,9 +24,6 @@
 
 */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -47,7 +44,7 @@
 
 #include "quakedef.h"
 
-static int net_acceptsocket = -1;		// socket for fielding new connections
+static int net_acceptsocket = -1;	// socket for fielding new connections
 static int net_controlsocket;
 static int net_broadcastsocket = 0;
 static struct qsockaddr broadcastaddr;
@@ -64,22 +61,24 @@ int UDP_Init (void)
 	char	buff[MAXHOSTNAMELEN];
 	struct qsockaddr addr;
 	char *colon;
-	
+
 	if (COM_CheckParm ("-noudp"))
 		return -1;
 
 	// determine my name & address
 
 	// sanity checking added by S.A.
-	if (gethostname(buff, MAXHOSTNAMELEN) != 0) {
-		printf ("gethostname failed,  errno = %i, disabling udp\n",errno);
+	if (gethostname(buff, MAXHOSTNAMELEN) != 0)
+	{
+		Sys_Printf ("gethostname failed, errno = %i, disabling udp\n", errno);
 		return -1;
 	}
 
 	local = gethostbyname(buff);
 
-	if (local==NULL) {
-		printf ("gethostbyname failed, errno = %i, disabling udp\n",h_errno);
+	if (local==NULL)
+	{
+		Sys_Printf ("gethostbyname failed, errno = %i, disabling udp\n", h_errno);
 		return -1;
 	}
 
@@ -176,8 +175,8 @@ int UDP_CloseSocket (int mysocket)
 	return close (mysocket);
 }
 
-
 //=============================================================================
+
 /*
 ============
 PartialIPAddress
@@ -207,9 +206,9 @@ static int PartialIPAddress (char *in, struct qsockaddr *hostaddr)
 		run = 0;
 		while (!( *b < '0' || *b > '9'))
 		{
-		  num = num*10 + *b++ - '0';
-		  if (++run > 3)
-		  	return -1;
+			num = num*10 + *b++ - '0';
+			if (++run > 3)
+				return -1;
 		}
 		if ((*b < '0' || *b > '9') && *b != '.' && *b != ':' && *b != 0)
 			return -1;
@@ -218,18 +217,19 @@ static int PartialIPAddress (char *in, struct qsockaddr *hostaddr)
 		mask<<=8;
 		addr = (addr<<8) + num;
 	}
-	
+
 	if (*b++ == ':')
 		port = atoi(b);
 	else
 		port = net_hostport;
 
 	hostaddr->sa_family = AF_INET;
-	((struct sockaddr_in *)hostaddr)->sin_port = htons((short)port);	
+	((struct sockaddr_in *)hostaddr)->sin_port = htons((short)port);
 	((struct sockaddr_in *)hostaddr)->sin_addr.s_addr = (myAddr & htonl(mask)) | htonl(addr);
-	
+
 	return 0;
 }
+
 //=============================================================================
 
 int UDP_Connect (int mysocket, struct qsockaddr *addr)
@@ -273,7 +273,7 @@ int UDP_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 
 static int UDP_MakeSocketBroadcastCapable (int mysocket)
 {
-	int				i = 1;
+	int	i = 1;
 
 	// make this socket broadcast capable
 	if (setsockopt(mysocket, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i)) < 0)
@@ -384,13 +384,13 @@ int UDP_GetAddrFromName(char *name, struct qsockaddr *addr)
 
 	if (name[0] >= '0' && name[0] <= '9')
 		return PartialIPAddress (name, addr);
-	
+
 	hostentry = gethostbyname (name);
 	if (!hostentry)
 		return -1;
 
 	addr->sa_family = AF_INET;
-	((struct sockaddr_in *)addr)->sin_port = htons(net_hostport);	
+	((struct sockaddr_in *)addr)->sin_port = htons(net_hostport);
 	((struct sockaddr_in *)addr)->sin_addr.s_addr = *(int *)hostentry->h_addr_list[0];
 
 	return 0;

@@ -3,9 +3,9 @@
 #include "quakedef.h"
 #include "net_loop.h"
 
-qboolean	localconnectpending = false;
-qsocket_t	*loop_client = NULL;
-qsocket_t	*loop_server = NULL;
+static qboolean	localconnectpending = false;
+static qsocket_t	*loop_client = NULL;
+static qsocket_t	*loop_server = NULL;
 
 int Loop_Init (void)
 {
@@ -47,7 +47,7 @@ qsocket_t *Loop_Connect (char *host)
 {
 	if (strcmp(host,"local") != 0)
 		return NULL;
-	
+
 	localconnectpending = true;
 
 	if (!loop_client)
@@ -78,8 +78,8 @@ qsocket_t *Loop_Connect (char *host)
 
 	loop_client->driverdata = (void *)loop_server;
 	loop_server->driverdata = (void *)loop_client;
-	
-	return loop_client;	
+
+	return loop_client;
 }
 
 
