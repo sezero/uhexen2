@@ -1,5 +1,5 @@
 /*
- * $Id: mstrconv.c,v 1.8 2005-07-31 11:13:52 sezero Exp $
+ * $Id: mstrconv.c,v 1.9 2006-02-18 13:44:17 sezero Exp $
  */
 
 #include <windows.h>
@@ -22,8 +22,8 @@ BOOL    bInsertTempo = FALSE;
 //static HANDLE	hInFile = INVALID_HANDLE_VALUE;
 INFILESTATE	ifs;
 static DWORD	tkCurrentTime;
-byte		*MidiData;
-int		MidiOffset,MidiSize;
+static byte	*MidiData;
+static int	MidiOffset, MidiSize;
 
 // Tracks how many malloc blocks exist. If there are any and we decide to shut
 // down, we must scan for them and free them.  Malloc blocks are only created as
@@ -63,7 +63,7 @@ static BOOL RewindConverter( void );
 static void ShowTrackError (PINTRACKSTATE ptsTrack, char* szErr);
 #endif
 
-int SetFilePointer2 (LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwMoveMethod)
+static int SetFilePointer2 (LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwMoveMethod)
 {
 	int	SaveMidi;
 
@@ -87,7 +87,7 @@ int SetFilePointer2 (LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwM
 }
 
 
-BOOL ReadFile2 (LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped)
+static BOOL ReadFile2 (LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped)
 {
 	if (MidiOffset+nNumberOfBytesToRead > MidiSize)
 	{
@@ -217,6 +217,7 @@ BOOL ConverterInit (LPSTR szInFile)
 			dwToRead = TRACK_BUFFER_SIZE;
 		else
 			dwToRead = ptsTrack->dwTrackLength;
+
 /*		if ( !ReadFile( hInFile, ptsTrack->pTrackStart, dwToRead, &cbRead, NULL )
 		    || ( cbRead != dwToRead ))
 		{
@@ -247,7 +248,7 @@ BOOL ConverterInit (LPSTR szInFile)
 
 		// Handle bozo MIDI files which contain empty track chunks
 		//
-		if( !ptsTrack->dwLeftInBuffer && !ptsTrack->dwLeftOnDisk )
+		if ( !ptsTrack->dwLeftInBuffer && !ptsTrack->dwLeftOnDisk )
 		{
 			ptsTrack->fdwTrack |= ITS_F_ENDOFTRK;
 			continue;
@@ -327,7 +328,8 @@ void ConverterCleanup (void)
 	if (ifs.pitsTracks)
 	{
 		// De-allocate all our track buffers
-		for (idx = 0; idx < ifs.dwTrackCount; idx++) {
+		for (idx = 0; idx < ifs.dwTrackCount; idx++)
+		{
 			if (ifs.pitsTracks[idx].pTrackStart)
 				Z_Free(ifs.pitsTracks[idx].pTrackStart);
 		}
@@ -1166,6 +1168,9 @@ static void ShowTrackError (PINTRACKSTATE ptsTrack, LPSTR lpszErr)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/07/31 11:13:52  sezero
+ * debug defines
+ *
  * Revision 1.7  2005/07/09 07:22:56  sezero
  * indentation and whitespace fixes
  *

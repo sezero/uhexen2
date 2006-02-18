@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.18 2006-01-12 12:43:49 sezero Exp $
+	$Id: midi_sdl.c,v 1.19 2006-02-18 13:44:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -12,20 +12,36 @@
 #ifndef NO_MIDIMUSIC
 #define _NEED_SDL_MIXER
 #include "sdl_inc.h"
-
-static Mix_Music *music = NULL;
-int audio_wasinit = 0;
-
-void (*midi_endmusicfnc)(void);
 #endif	// !NO_MIDIMUSIC
 
-byte bMidiInited,bFileOpen, bPlaying, bBuffersPrepared;
-byte bPaused, bLooped;
+
+#ifdef NO_MIDIMUSIC
+// placeholders
+qboolean MIDI_Init (void)
+{
+	Con_Printf("MIDI: disabled at compile time\n");
+	return false;
+}
+void MIDI_Play(char *Name) {}
+void MIDI_Pause(int mode) {}
+void MIDI_Loop(int NewValue) {}
+void MIDI_Stop(void) {}
+void MIDI_Cleanup(void) {}
+void MIDI_UpdateVolume(void) {}
+
+#else
+// use midi music: the actual thing...
+
+static Mix_Music *music = NULL;
+static int audio_wasinit = 0;
+
+static qboolean bMidiInited, bFileOpen, bPlaying, bPaused, bLooped;
 extern cvar_t bgmvolume;
-float bgm_volume_old = -1.0f;
+static float bgm_volume_old = -1.0f;
 
+static void (*midi_endmusicfnc)(void);
 
-void MIDI_Play_f (void)
+static void MIDI_Play_f (void)
 {
 	if (Cmd_Argc () == 2)
 	{
@@ -33,30 +49,17 @@ void MIDI_Play_f (void)
 	}
 }
 
-void MIDI_Stop_f (void)
+static void MIDI_Stop_f (void)
 {
 	MIDI_Stop();
 }
 
-void MIDI_Pause_f (void)
+static void MIDI_Pause_f (void)
 {
 	MIDI_Pause(0);
 }
 
-#ifdef NO_MIDIMUSIC
-// placeholders
-void MIDI_Loop_f (void) {}
-void MIDI_EndMusicFinished(void) {}
-qboolean MIDI_Init(void) { return true; }
-void MIDI_Play(char *Name) {}
-void MIDI_Pause(int mode) {}
-void MIDI_Loop(int NewValue) {}
-void MIDI_Stop(void) {}
-void MIDI_Cleanup(void) { Con_Printf("MIDI_Cleanup\n"); }
-void MIDI_UpdateVolume(void) {}
-#else
-// actual functions
-void MIDI_Loop_f (void)
+static void MIDI_Loop_f (void)
 {
 	if (Cmd_Argc () == 2)
 	{
@@ -86,21 +89,23 @@ static void MIDI_SetVolume(float volume_frac)
 
 void MIDI_UpdateVolume(void)
 {
-	if (bgmvolume.value != bgm_volume_old) {
+	if (bgmvolume.value != bgm_volume_old)
+	{
 		bgm_volume_old = bgmvolume.value;
 		MIDI_SetVolume(bgm_volume_old);
 	}
 }
 
-void MIDI_EndMusicFinished(void)
+static void MIDI_EndMusicFinished(void)
 {
-	printf("Music finished\n");
-	if (bLooped) {
-		printf("Looping enabled\n");
+	Sys_Printf("Music finished\n");
+	if (bLooped)
+	{
+		Sys_Printf("Looping enabled\n");
 		if (Mix_PlayingMusic())
 			Mix_HaltMusic();
 
-		printf("Playing again\n");
+		Sys_Printf("Playing again\n");
 		Mix_RewindMusic();
 		Mix_FadeInMusic(music,0,2000);
 		bPlaying = 1;
@@ -121,9 +126,9 @@ qboolean MIDI_Init(void)
 
 	Con_Printf("MIDI_Init: ");
 
-	if (COM_CheckParm("-nomidi") || COM_CheckParm("-nosound")
-	   || COM_CheckParm("--nomidi") || COM_CheckParm("--nosound")) {
-
+	if (COM_CheckParm("-nomidi") || COM_CheckParm("--nomidi")
+	   || COM_CheckParm("-nosound") || COM_CheckParm("--nosound"))
+	{
 		Con_Printf("disabled by commandline\n");
 		bMidiInited = 0;
 		return 0;
@@ -161,19 +166,24 @@ bad_version:
 
 	// Try initing the audio subsys if it hasn't been already
 	audio_wasinit = SDL_WasInit(SDL_INIT_AUDIO);
-	if (audio_wasinit == 0) {
-		if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
+	if (audio_wasinit == 0)
+	{
+		if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0)
+		{
 			Con_Printf("Cannot initialize SDL_AUDIO subsystem: %s\n",SDL_GetError());
 			bMidiInited = 0;
 			return 0;
-		} else {
+		}
+		else
+		{
 			Con_Printf("Audio subsystem opened for SDL_mixer.\n");
 		}
 	}
 	// Someone else (-> snd_sdl.c) opened it already. Don' try.
 	// But in this case, the following Mix_OpenAudio will fail anyway...
 
-	if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0) {
+	if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0)
+	{
 		bMidiInited = 0;
 		Con_Printf("SDL_mixer: open audio failed: %s\n", SDL_GetError());
 		return 0;
@@ -204,8 +214,8 @@ void MIDI_Play(char *Name)
 	if (!bMidiInited)	//don't try to play if there is no midi
 		return;
 
-	//printf("MIDI_Play\n");
-	if (strlen(Name)==0) {
+	if (strlen(Name)==0)
+	{
 		Sys_Printf("no midi music to play\n");
 		return;
 	}
@@ -214,19 +224,24 @@ void MIDI_Play(char *Name)
 
 	// Note that midi/ is the standart quake search path, but
 	// .midi/ with the leading dot is the path in the userdir
-	if(access(va("%s/.midi/%s.mid", com_userdir, Name), R_OK) != 0) {
+	if (access(va("%s/.midi/%s.mid", com_userdir, Name), R_OK) != 0)
+	{
 		Sys_Printf("File midi/%s.mid needs to be extracted\n",Name);
 		Data = (char *)COM_LoadHunkFile(va("midi/%s.mid", Name));
-		if (!Data) {
+		if (!Data)
+		{
 			Con_Printf("musicfile midi/%s.mid not found\n", Name);
 			return;
 		}
 		COM_WriteFile (va(".midi/%s.mid", Name), (void *)Data, com_filesize);
 	}
 	music = Mix_LoadMUS(va("%s/.midi/%s.mid", com_userdir, Name));
-	if ( music == NULL ) {
+	if ( music == NULL )
+	{
 		Sys_Printf("Couldn't load %s/.midi/%s.mid: %s\n", com_userdir, Name, SDL_GetError());
-	} else {
+	}
+	else
+	{
 		bFileOpen = 1;
 		Con_Printf("Playing midi file midi/%s.mid\n",Name);
 		Mix_FadeInMusic(music,0,2000);
@@ -239,11 +254,13 @@ void MIDI_Pause(int mode)
 	if (!bPlaying)
 		return;
 
-	//  printf("MIDI_Pause\n");
-	if((mode == 0 && bPaused) || mode == 1) {
+	if ((mode == 0 && bPaused) || mode == 1)
+	{
 		Mix_ResumeMusic();
 		bPaused = false;
-	} else {
+	}
+	else
+	{
 		Mix_PauseMusic();
 		bPaused = true;
 	}
@@ -251,7 +268,7 @@ void MIDI_Pause(int mode)
 
 void MIDI_Loop(int NewValue)
 {
-	printf("MIDI_Loop\n");
+	Sys_Printf("MIDI_Loop\n");
 	if (NewValue == 2)
 		bLooped = !bLooped;
 	else
@@ -262,11 +279,11 @@ void MIDI_Loop(int NewValue)
 
 void MIDI_Stop(void)
 {
-	// printf("MIDI_Stop\n");
 	if (!bMidiInited)	//Just to be safe
 		return;
 
-	if(bFileOpen || bPlaying) {
+	if(bFileOpen || bPlaying)
+	{
 		Mix_HaltMusic();
 		Mix_FreeMusic(music);
 	}
@@ -277,13 +294,15 @@ void MIDI_Stop(void)
 
 void MIDI_Cleanup(void)
 {
-	if ( bMidiInited == 1 ) {
+	if ( bMidiInited == 1 )
+	{
 		Con_Printf("MIDI_Cleanup\n");
 		MIDI_Stop();
 		Con_Printf("Closing SDL_mixer for midi music.\n");
 		Mix_CloseAudio();
 		// I'd better do this here...
-		if (audio_wasinit == 0) {
+		if (audio_wasinit == 0)
+		{
 			Con_Printf("Closing Audio subsystem for SDL_mixer.\n");
 			SDL_CloseAudio();
 		}
@@ -294,6 +313,15 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2006/01/12 12:43:49  sezero
+ * Created an sdl_inc.h with all sdl version requirements and replaced all
+ * SDL.h and SDL_mixer.h includes with it. Made the source to compile against
+ * SDL versions older than 1.2.6 without disabling multisampling. Multisampling
+ * (fsaa) option is now decided at runtime. Minimum required SDL and SDL_mixer
+ * versions are now 1.2.4. If compiled without midi, minimum SDL required is
+ * 1.2.0. Added SDL_mixer version checking to sdl-midi with measures to prevent
+ * relocation errors.
+ *
  * Revision 1.17  2005/11/23 18:05:51  sezero
  * changed USE_MIDI definition usage with a NO_MIDIMUSIC definition.
  * associated makefile changes will follow.
