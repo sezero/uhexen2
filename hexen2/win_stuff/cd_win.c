@@ -21,10 +21,8 @@ static byte		maxTrack;
 
 static UINT CD_ID;
 static unsigned long CD_OrigVolume;
-
-UINT	wDeviceID;
-
-void CD_SetVolume(unsigned long Volume);
+static UINT wDeviceID;
+static void CD_SetVolume(unsigned long Volume);
 
 
 static void CDAudio_Eject(void)
@@ -416,7 +414,7 @@ void CDAudio_Update(void)
 }
 
 
-void CD_FindCDAux(void)
+static void CD_FindCDAux(void)
 {
 	UINT NumDevs,counter;
 	MMRESULT Result;
@@ -441,7 +439,7 @@ void CD_FindCDAux(void)
 	}
 }
 
-void CD_SetVolume(unsigned long Volume)
+static void CD_SetVolume(unsigned long Volume)
 {
 	if (CD_ID != -1) 
 		auxSetVolume(CD_ID,(Volume<<16)+Volume);
