@@ -2,8 +2,9 @@
 	snd_sdl.c
 	SDL sound driver for Linux Hexen II,  based on the SDLquake
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
+	Additional bits taken from QuakeForge and Quake3 projects.
 
-	$Id: snd_sdl.c,v 1.14 2006-01-12 13:08:47 sezero Exp $
+	$Id: snd_sdl.c,v 1.15 2006-02-18 09:15:03 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -148,6 +149,9 @@ void S_SDL_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2006/01/12 13:08:47  sezero
+ * small update to the sdl sound driver
+ *
  * Revision 1.13  2006/01/12 13:07:13  sezero
  * sound whitespace cleanup #1
  *
