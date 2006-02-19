@@ -5,7 +5,6 @@
 */
 
 #include "quakedef.h"
-#include "quakeinc.h"
 
 cvar_t	*cvar_vars;
 static	char	*cvar_null_string = "";

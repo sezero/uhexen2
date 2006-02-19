@@ -7,7 +7,6 @@
  */
 
 #include "quakedef.h"
-#include "quakeinc.h"
 
 #define	PM_SPECTATORMAXSPEED	500
 #define	PM_STOPSPEED		100
@@ -274,7 +273,8 @@ static qboolean InitFlyby(player_state_t *self, player_state_t *player, int chec
 	}
 
 	// ack, can't find him
-	if (max >= 1000) {
+	if (max >= 1000)
+	{
 	//	Cam_Unlock();
 		return false;
 	}
