@@ -20,9 +20,9 @@
 #define MAX_MEM_ALLOC	0x6000000
 
 #define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error running
-										//  dedicated before exiting
-#define PAUSE_SLEEP		50				// sleep time on pause or minimization
-#define NOT_FOCUS_SLEEP	20				// sleep time when not focus
+						//  dedicated before exiting
+#define PAUSE_SLEEP		50	// sleep time on pause or minimization
+#define NOT_FOCUS_SLEEP		20	// sleep time when not focus
 
 qboolean	ActiveApp, Minimized;
 qboolean	Win95, Win95old, WinNT;
@@ -35,14 +35,14 @@ qboolean			isDedicated;
 static qboolean		sc_return_on_enter = false;
 static HANDLE		hinput, houtput;
 
-//static char			*tracking_tag = "Sticky Buns";
+//static char		*tracking_tag = "Sticky Buns";
 
 static HANDLE	tevent;
 static HANDLE	hFile;
 static HANDLE	heventParent;
 static HANDLE	heventChild;
 
-void Sys_InitFloatTime (void);
+static void Sys_InitFloatTime (void);
 
 volatile int		sys_checksum;
 
@@ -54,7 +54,7 @@ volatile int		sys_checksum;
 Sys_PageIn
 ================
 */
-void Sys_PageIn (void *ptr, int size)
+static void Sys_PageIn (void *ptr, int size)
 {
 	byte	*x;
 	int		m, n;
@@ -159,19 +159,21 @@ Sys_MakeCodeWriteable
 #ifndef GLQUAKE
 void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 {
-	DWORD  flOldProtect;
+	DWORD	flOldProtect;
 
+//@@@ copy on write or just read-write?
 	if (!VirtualProtect((LPVOID)startaddr, length, PAGE_READWRITE, &flOldProtect))
 		Sys_Error("Protection change failed\n");
 }
 #endif	// !GLQUAKE
+
 
 /*
 ================
 Sys_Init
 ================
 */
-void Sys_Init (void)
+static void Sys_Init (void)
 {
 	LARGE_INTEGER	PerformanceFreq;
 	unsigned int	lowpart, highpart;
@@ -209,9 +211,9 @@ void Sys_Init (void)
 	if ((vinfo.dwMajorVersion < 4) ||
 		(vinfo.dwPlatformId == VER_PLATFORM_WIN32s))
 	{
-		Sys_Error ("Hexen2 requires at least Win95 or NT 4.0");
+		Sys_Error ("%s requires at least Win95 or NT 4.0", ENGINE_NAME);
 	}
-	
+
 	if (vinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
 		WinNT = true;
 	else
@@ -265,7 +267,7 @@ void Sys_Error (char *error, ...)
 	}
 	else
 	{
-		MessageBox(NULL, text, "Hexen II Error", MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
+		MessageBox(NULL, text, ENGINE_NAME " Error", MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 	}
 
 // shut down QHOST hooks if necessary
@@ -286,7 +288,7 @@ void Sys_Printf (char *fmt, ...)
 		vsnprintf (text, sizeof (text), fmt, argptr);
 		va_end (argptr);
 
-		WriteFile(houtput, text, strlen (text), &dummy, NULL);	
+		WriteFile(houtput, text, strlen (text), &dummy, NULL);
 	}
 }
 
@@ -370,7 +372,7 @@ double Sys_DoubleTime (void)
 
 	Sys_PopFPCW ();
 
-    return curtime;
+	return curtime;
 }
 
 
@@ -379,7 +381,7 @@ double Sys_DoubleTime (void)
 Sys_InitFloatTime
 ================
 */
-void Sys_InitFloatTime (void)
+static void Sys_InitFloatTime (void)
 {
 	int		j;
 
@@ -402,7 +404,7 @@ void Sys_InitFloatTime (void)
 
 char *Sys_ConsoleInput (void)
 {
-	static char	text[256];
+	static char	con_text[256];
 	static int		len;
 	INPUT_RECORD	recs[1024];
 	int		ch;
@@ -434,26 +436,26 @@ char *Sys_ConsoleInput (void)
 				switch (ch)
 				{
 					case '\r':
-						WriteFile(houtput, "\r\n", 2, &dummy, NULL);	
+						WriteFile(houtput, "\r\n", 2, &dummy, NULL);
 
 						if (len)
 						{
-							text[len] = 0;
+							con_text[len] = 0;
 							len = 0;
-							return text;
+							return con_text;
 						}
 						else if (sc_return_on_enter)
 						{
 						// special case to allow exiting from the error handler on Enter
-							text[0] = '\r';
+							con_text[0] = '\r';
 							len = 0;
-							return text;
+							return con_text;
 						}
 
 						break;
 
 					case '\b':
-						WriteFile(houtput, "\b \b", 3, &dummy, NULL);	
+						WriteFile(houtput, "\b \b", 3, &dummy, NULL);
 						if (len)
 						{
 							len--;
@@ -463,8 +465,8 @@ char *Sys_ConsoleInput (void)
 					default:
 						if (ch >= ' ')
 						{
-							WriteFile(houtput, &ch, 1, &dummy, NULL);	
-							text[len] = ch;
+							WriteFile(houtput, &ch, 1, &dummy, NULL);
+							con_text[len] = ch;
 							len = (len + 1) & 0xff;
 						}
 
@@ -515,9 +517,8 @@ void Sys_SendKeyEvents (void)
 SleepUntilInput
 ==================
 */
-void SleepUntilInput (int time)
+static void SleepUntilInput (int time)
 {
-
 	MsgWaitForMultipleObjects(1, &tevent, FALSE, time, QS_ALLINPUT);
 }
 
@@ -542,6 +543,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	MEMORYSTATUS	lpBuffer;
 	static	char	cwd[1024];
 	int				t;
+#if !defined(NO_SPLASHES)
+	RECT			rect;
+#endif
 
 	/* previous instances do not exist in Win32 */
 	if (hPrevInstance)
@@ -584,7 +588,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 				*lpCmdLine = 0;
 				lpCmdLine++;
 			}
-			
 		}
 	}
 
@@ -604,6 +607,17 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 		if (hwnd_dialog)
 		{
+			if (GetWindowRect (hwnd_dialog, &rect))
+			{
+				if (rect.left > (rect.top * 2))
+				{
+					SetWindowPos (hwnd_dialog, 0,
+						(rect.left / 2) - ((rect.right - rect.left) / 2),
+						rect.top, 0, 0,
+						SWP_NOZORDER | SWP_NOSIZE);
+				}
+			}
+
 			ShowWindow (hwnd_dialog, SW_SHOWDEFAULT);
 			UpdateWindow (hwnd_dialog);
 			SetForegroundWindow (hwnd_dialog);
@@ -669,13 +683,13 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 			if (t < com_argc)
 				hFile = (HANDLE)atoi (com_argv[t+1]);
 		}
-			
+
 		if ((t = COM_CheckParm ("-HPARENT")) > 0)
 		{
 			if (t < com_argc)
 				heventParent = (HANDLE)atoi (com_argv[t+1]);
 		}
-			
+
 		if ((t = COM_CheckParm ("-HCHILD")) > 0)
 		{
 			if (t < com_argc)
@@ -695,7 +709,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	oldtime = Sys_DoubleTime ();
 
-    /* main window message loop */
+	/* main window message loop */
 	while (1)
 	{
 		if (isDedicated)
@@ -732,12 +746,15 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		oldtime = newtime;
 	}
 
-    /* return success of application */
-    return TRUE;
+	/* return success of application */
+	return TRUE;
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2006/01/17 18:46:53  sezero
+ * missing part of vid_win synchronization (block_drawing stuff)
+ *
  * Revision 1.28  2006/01/12 12:34:38  sezero
  * added video modes enumeration via SDL. added on-the-fly video mode changing
  * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its

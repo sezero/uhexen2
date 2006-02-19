@@ -1,12 +1,12 @@
 // sys_win.c -- Win32 system interface code
 
 #include "quakedef.h"
+#include <windows.h>
 #include "quakeinc.h"
 #include <errno.h>
 #include "resource.h"
-#include "fcntl.h"
 #include <io.h>
-#include <conio.h>
+#include <fcntl.h>
 
 
 // heapsize: minimum 16mb, standart 32 mb, max is 96 mb.
@@ -16,10 +16,9 @@
 #define STD_MEM_ALLOC	0x2000000
 #define MAX_MEM_ALLOC	0x6000000
 
-#define PAUSE_SLEEP		50				// sleep time on pause or minimization
-#define NOT_FOCUS_SLEEP	20				// sleep time when not focus
+#define PAUSE_SLEEP		50	// sleep time on pause or minimization
+#define NOT_FOCUS_SLEEP		20	// sleep time when not focus
 
-int		starttime;
 qboolean	ActiveApp, Minimized;
 qboolean	Win95, Win95old, WinNT;
 
@@ -28,18 +27,19 @@ static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
 static int			lowshift;
 
-HANDLE		qwclsemaphore;
+static HANDLE	qwclsemaphore;
 
-void Sys_InitFloatTime (void);
+static void Sys_InitFloatTime (void);
+
 
 //=============================================================================
 
 
 void Sys_DebugLog(char *file, char *fmt, ...)
 {
-	va_list argptr;
-	static char data[MAXPRINTMSG];
-	int fd;
+	va_list		argptr;
+	static char	data[MAXPRINTMSG];
+	int			fd;
 
 	va_start(argptr, fmt);
 	vsnprintf(data, sizeof (data), fmt, argptr);
@@ -133,7 +133,7 @@ Sys_MakeCodeWriteable
 #ifndef GLQUAKE
 void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 {
-	DWORD  flOldProtect;
+	DWORD	flOldProtect;
 
 //@@@ copy on write or just read-write?
 	if (!VirtualProtect((LPVOID)startaddr, length, PAGE_READWRITE, &flOldProtect))
@@ -147,7 +147,7 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 Sys_Init
 ================
 */
-void Sys_Init (void)
+static void Sys_Init (void)
 {
 	LARGE_INTEGER	PerformanceFreq;
 	unsigned int	lowpart, highpart;
@@ -158,19 +158,19 @@ void Sys_Init (void)
 	// front end can tell if it is alive
 
 	// mutex will fail if semephore already exists
-    qwclsemaphore = CreateMutex(
-        NULL,         /* Security attributes */
-        0,            /* owner       */
-        "hwcl"); /* Semaphore name      */
+	qwclsemaphore = CreateMutex(
+					NULL,	/* Security attributes	*/
+					0,	/* owner		*/
+					"hwcl");/* Semaphore name	*/
 	if (!qwclsemaphore)
 		Sys_Error ("HWCL is already running on this system");
 	CloseHandle (qwclsemaphore);
 
-    qwclsemaphore = CreateSemaphore(
-        NULL,         /* Security attributes */
-        0,            /* Initial count       */
-        1,            /* Maximum count       */
-        "hwcl"); /* Semaphore name      */
+	qwclsemaphore = CreateSemaphore(
+					NULL,	/* Security attributes	*/
+					0,	/* Initial count	*/
+					1,	/* Maximum count	*/
+					"hwcl");/* Semaphore name	*/
 #endif
 
 	MaskExceptions ();
@@ -205,9 +205,9 @@ void Sys_Init (void)
 	if ((vinfo.dwMajorVersion < 4) ||
 		(vinfo.dwPlatformId == VER_PLATFORM_WIN32s))
 	{
-		Sys_Error ("HexenWorld requires at least Win95 or NT 4.0");
+		Sys_Error ("%s requires at least Win95 or NT 4.0", ENGINE_NAME);
 	}
-	
+
 	if (vinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
 		WinNT = true;
 	else
@@ -234,7 +234,7 @@ void Sys_Error (char *error, ...)
 	vsnprintf (text, sizeof (text), error, argptr);
 	va_end (argptr);
 
-	MessageBox(NULL, text, "HexenWorld Error", 0 /* MB_OK */ );
+	MessageBox(NULL, text, ENGINE_NAME " Error", MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 
 #ifndef SERVERONLY
 	CloseHandle (qwclsemaphore);
@@ -246,7 +246,7 @@ void Sys_Error (char *error, ...)
 void Sys_Printf (char *fmt, ...)
 {
 	va_list		argptr;
-	
+
 	va_start (argptr,fmt);
 	vprintf (fmt, argptr);
 	va_end (argptr);
@@ -327,7 +327,7 @@ double Sys_DoubleTime (void)
 
 	Sys_PopFPCW ();
 
-    return curtime;
+	return curtime;
 }
 
 
@@ -336,7 +336,7 @@ double Sys_DoubleTime (void)
 Sys_InitFloatTime
 ================
 */
-void Sys_InitFloatTime (void)
+static void Sys_InitFloatTime (void)
 {
 	int		j;
 
@@ -387,15 +387,6 @@ void Sys_SendKeyEvents (void)
 
 ==============================================================================
 */
-
-void TimerMessage (void)
-{
-	Con_Printf ("Timer\n");
-}
-
-void UserMessage (void)
-{
-}
 
 
 /*
@@ -463,7 +454,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 				*lpCmdLine = 0;
 				lpCmdLine++;
 			}
-			
 		}
 	}
 
@@ -523,7 +513,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	parms.membase = malloc (parms.memsize);
 
 	if (!parms.membase)
-		Sys_Error ("Not enough memory free; check disk space\n");
+		Sys_Error ("Insufficient memory.\n");
 
 	Sys_Init ();
 
@@ -535,7 +525,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	oldtime = Sys_DoubleTime ();
 
-    /* main window message loop */
+	/* main window message loop */
 	while (1)
 	{
 	// yield the CPU for a little while when paused, minimized, or not the focus
@@ -556,7 +546,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		oldtime = newtime;
 	}
 
-    /* return success of application */
-    return TRUE;
+	/* return success of application */
+	return TRUE;
 }
 
