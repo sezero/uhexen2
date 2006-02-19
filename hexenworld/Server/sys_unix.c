@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.13 2006-01-23 20:22:53 sezero Exp $
+	$Id: sys_unix.c,v 1.14 2006-02-19 14:52:19 sezero Exp $
 
 	Unix system interface code
 */
@@ -32,7 +32,7 @@ cvar_t	sys_nostdout = {"sys_nostdout","0"};
 Sys_GetUserdir
 ================
 */
-int Sys_GetUserdir (char *buff, unsigned int len)
+static int Sys_GetUserdir (char *buff, unsigned int len)
 {
 	if (getenv("HOME") == NULL)
 		return 1;
@@ -88,13 +88,14 @@ Sys_DoubleTime
 */
 double Sys_DoubleTime (void)
 {
-	struct timeval  tp;
-	struct timezone tzp;
+	struct timeval	tp;
+	struct timezone	tzp;
 	static int	secbase;
 
 	gettimeofday(&tp, &tzp);
 
-	if (!secbase) {
+	if (!secbase)
+	{
 		secbase = tp.tv_sec;
 		return tp.tv_usec/1000000.0;
 	}
@@ -110,14 +111,14 @@ Sys_ConsoleInput
 */
 char *Sys_ConsoleInput (void)
 {
-	static char	text[256];
+	static char	con_text[256];
 	static int	len;
 	char	c;
 	fd_set		set;
 	struct timeval	timeout;
 
 	FD_ZERO (&set);
-	FD_SET (0, &set);	/* 0 is stdin?? */
+	FD_SET (0, &set);	// stdin
 	timeout.tv_sec = 0;
 	timeout.tv_usec = 0;
 
@@ -126,23 +127,23 @@ char *Sys_ConsoleInput (void)
 		read (0, &c, 1);
 		if (c == '\n' || c == '\r')
 		{
-			text[len] = 0;
+			con_text[len] = 0;
 			len = 0;
-			return text;
+			return con_text;
 		}
 		else if (c == 8)
 		{
 			if (len)
 			{
 				len--;
-				text[len] = 0;
+				con_text[len] = 0;
 			}
 			continue;
 		}
-		text[len] = c;
+		con_text[len] = c;
 		len++;
-		text[len] = 0;
-		if (len == sizeof(text))
+		con_text[len] = 0;
+		if (len == sizeof(con_text))
 			len = 0;
 	}
 
@@ -182,22 +183,11 @@ void Sys_Quit (void)
 
 
 /*
-=============
-Sys_Init
-=============
-*/
-void Sys_Init (void)
-{
-}
-
-/*
 ==================
 main
 
 ==================
 */
-char	*newargv[256];
-
 int main (int argc, char **argv)
 {
 	quakeparms_t	parms;
@@ -272,7 +262,7 @@ int main (int argc, char **argv)
 	SV_Init (&parms);
 
 // run one frame immediately for first heartbeat
-	SV_Frame (HX_FRAME_TIME);		
+	SV_Frame (HX_FRAME_TIME);
 
 // report the filesystem to the user
 	Sys_Printf("userdir is: %s\n",userdir);
@@ -304,5 +294,5 @@ int main (int argc, char **argv)
 		SV_Frame (time);
 	}
 
-	return true;
+	return 0;
 }

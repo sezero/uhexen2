@@ -47,12 +47,11 @@ void Sys_Error (char *error, ...)
 	vsnprintf (text, sizeof (text), error, argptr);
 	va_end (argptr);
 
-//	MessageBox(NULL, text, "HW Server Error", 0 /* MB_OK */ );
 	printf ("\nFATAL ERROR: %s\n\n", text);
 
-//#ifdef DEBUG_BUILD
+#ifdef DEBUG_BUILD
 	getch();
-//#endif
+#endif
 
 	exit (1);
 }
@@ -86,7 +85,7 @@ Sys_ConsoleInput
 */
 char *Sys_ConsoleInput (void)
 {
-	static char	text[256];
+	static char	con_text[256];
 	static int		len;
 	int		c;
 
@@ -97,10 +96,10 @@ char *Sys_ConsoleInput (void)
 		putch (c);
 		if (c == '\r')
 		{
-			text[len] = 0;
+			con_text[len] = 0;
 			putch ('\n');
 			len = 0;
-			return text;
+			return con_text;
 		}
 		if (c == 8)
 		{
@@ -109,14 +108,14 @@ char *Sys_ConsoleInput (void)
 				putch (' ');
 				putch (c);
 				len--;
-				text[len] = 0;
+				con_text[len] = 0;
 			}
 			continue;
 		}
-		text[len] = c;
+		con_text[len] = c;
 		len++;
-		text[len] = 0;
-		if (len == sizeof(text))
+		con_text[len] = 0;
+		if (len == sizeof(con_text))
 			len = 0;
 	}
 
@@ -153,22 +152,11 @@ void Sys_Quit (void)
 
 
 /*
-=============
-Sys_Init
-=============
-*/
-void Sys_Init (void)
-{
-}
-
-/*
 ==================
 main
 
 ==================
 */
-char	*newargv[256];
-
 int main (int argc, char **argv)
 {
 	quakeparms_t	parms;
@@ -246,6 +234,6 @@ int main (int argc, char **argv)
 		SV_Frame (time);
 	}
 
-	return true;
+	return 0;
 }
 
