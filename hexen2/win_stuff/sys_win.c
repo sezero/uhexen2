@@ -405,7 +405,7 @@ static void Sys_InitFloatTime (void)
 char *Sys_ConsoleInput (void)
 {
 	static char	con_text[256];
-	static int		len;
+	static int		textlen;
 	INPUT_RECORD	recs[1024];
 	int		ch;
 	DWORD		dummy, numread, numevents;
@@ -438,17 +438,17 @@ char *Sys_ConsoleInput (void)
 					case '\r':
 						WriteFile(houtput, "\r\n", 2, &dummy, NULL);
 
-						if (len)
+						if (textlen)
 						{
-							con_text[len] = 0;
-							len = 0;
+							con_text[textlen] = 0;
+							textlen = 0;
 							return con_text;
 						}
 						else if (sc_return_on_enter)
 						{
 						// special case to allow exiting from the error handler on Enter
 							con_text[0] = '\r';
-							len = 0;
+							textlen = 0;
 							return con_text;
 						}
 
@@ -456,9 +456,9 @@ char *Sys_ConsoleInput (void)
 
 					case '\b':
 						WriteFile(houtput, "\b \b", 3, &dummy, NULL);
-						if (len)
+						if (textlen)
 						{
-							len--;
+							textlen--;
 						}
 						break;
 
@@ -466,8 +466,8 @@ char *Sys_ConsoleInput (void)
 						if (ch >= ' ')
 						{
 							WriteFile(houtput, &ch, 1, &dummy, NULL);
-							con_text[len] = ch;
-							len = (len + 1) & 0xff;
+							con_text[textlen] = ch;
+							textlen = (textlen + 1) & 0xff;
 						}
 
 						break;
@@ -752,6 +752,11 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2006/02/19 14:19:39  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 11: sys_win.c). also did some synchronization between hwcl and
+ * h2 versions.
+ *
  * Revision 1.29  2006/01/17 18:46:53  sezero
  * missing part of vid_win synchronization (block_drawing stuff)
  *

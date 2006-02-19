@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.14 2006-02-19 14:52:19 sezero Exp $
+	$Id: sys_unix.c,v 1.15 2006-02-19 16:14:16 sezero Exp $
 
 	Unix system interface code
 */
@@ -32,12 +32,12 @@ cvar_t	sys_nostdout = {"sys_nostdout","0"};
 Sys_GetUserdir
 ================
 */
-static int Sys_GetUserdir (char *buff, unsigned int len)
+static int Sys_GetUserdir (char *buff, unsigned int path_len)
 {
 	if (getenv("HOME") == NULL)
 		return 1;
 
-	if (strlen(getenv("HOME")) + strlen(AOT_USERDIR) + 5 > len)
+	if (strlen(getenv("HOME")) + strlen(AOT_USERDIR) + 5 > path_len)
 		return 1;
 
 	sprintf (buff, "%s/%s", getenv("HOME"), AOT_USERDIR);
@@ -112,7 +112,7 @@ Sys_ConsoleInput
 char *Sys_ConsoleInput (void)
 {
 	static char	con_text[256];
-	static int	len;
+	static int	textlen;
 	char	c;
 	fd_set		set;
 	struct timeval	timeout;
@@ -127,24 +127,24 @@ char *Sys_ConsoleInput (void)
 		read (0, &c, 1);
 		if (c == '\n' || c == '\r')
 		{
-			con_text[len] = 0;
-			len = 0;
+			con_text[textlen] = 0;
+			textlen = 0;
 			return con_text;
 		}
 		else if (c == 8)
 		{
-			if (len)
+			if (textlen)
 			{
-				len--;
-				con_text[len] = 0;
+				textlen--;
+				con_text[textlen] = 0;
 			}
 			continue;
 		}
-		con_text[len] = c;
-		len++;
-		con_text[len] = 0;
-		if (len == sizeof(con_text))
-			len = 0;
+		con_text[textlen] = c;
+		textlen++;
+		con_text[textlen] = 0;
+		if (textlen == sizeof(con_text))
+			textlen = 0;
 	}
 
 	return NULL;

@@ -273,7 +273,7 @@ static int Sys_CheckInput (int ns)
 static char *Sys_ConsoleInput (void)
 {
 	static char	con_text[256];
-	static int		len;
+	static int		textlen;
 
 #ifdef _WIN32
 	int		c;
@@ -285,27 +285,27 @@ static char *Sys_ConsoleInput (void)
 		putch (c);
 		if (c == '\r')
 		{
-			con_text[len] = 0;
+			con_text[textlen] = 0;
 			putch ('\n');
-			len = 0;
+			textlen = 0;
 			return con_text;
 		}
 		if (c == 8)
 		{
-			if (len)
+			if (textlen)
 			{
 				putch (' ');
 				putch (c);
-				len--;
-				con_text[len] = 0;
+				textlen--;
+				con_text[textlen] = 0;
 			}
 			continue;
 		}
-		con_text[len] = c;
-		len++;
-		con_text[len] = 0;
-		if (len == sizeof (con_text))
-			len = 0;
+		con_text[textlen] = c;
+		textlen++;
+		con_text[textlen] = 0;
+		if (textlen == sizeof (con_text))
+			textlen = 0;
 	}
 
 	return NULL;
@@ -314,15 +314,15 @@ static char *Sys_ConsoleInput (void)
 		return NULL;	// the select didn't say it was ready
 	stdin_ready = false;
 
-	len = read (0, con_text, sizeof (con_text));
-	if (len == 0)
+	textlen = read (0, con_text, sizeof (con_text));
+	if (textlen == 0)
 	{	// end of file
 		do_stdin = 0;
 		return NULL;
 	}
-	if (len < 1)
+	if (textlen < 1)
 		return NULL;
-	con_text[len - 1] = 0;	// rip off the \n and terminate
+	con_text[textlen - 1] = 0;	// rip off the \n and terminate
 
 	return con_text;
 #endif

@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.43 2006-01-23 20:22:53 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.44 2006-02-19 16:14:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -33,21 +33,18 @@
 #define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error
 					// before exiting
 
-static double		curtime = 0.0;
-static double		lastcurtime = 0.0;
 static Uint8		appState;
 extern qboolean		draw_reinit;
 
-void Sys_InitFloatTime (void);
 
 //=============================================================================
 
 
 void Sys_DebugLog(char *file, char *fmt, ...)
 {
-	va_list argptr;
-	static char data[MAXPRINTMSG];
-	int fd;
+	va_list		argptr;
+	static char	data[MAXPRINTMSG];
+	int			fd;
 
 	va_start(argptr, fmt);
 	vsnprintf(data, sizeof (data), fmt, argptr);
@@ -90,7 +87,7 @@ static char		*findpattern;
 
 char *Sys_FindFirstFile (char *path, char *pattern)
 {
-	int	len;
+	int	pattern_len;
 
 	if (finddir)
 		Sys_Error ("Sys_FindFirst without FindClose");
@@ -99,8 +96,8 @@ char *Sys_FindFirstFile (char *path, char *pattern)
 	if (!finddir)
 		return NULL;
 
-	len = strlen (pattern);
-	findpattern = malloc (len + 1);
+	pattern_len = strlen (pattern);
+	findpattern = malloc (pattern_len + 1);
 	if (!findpattern)
 		return NULL;
 	strcpy (findpattern, pattern);
@@ -180,12 +177,13 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 }
 #endif	// !GLQUAKE
 
+
 /*
 ================
 Sys_Init
 ================
 */
-void Sys_Init (void)
+static void Sys_Init (void)
 {
 	Sys_SetFPCW();
 }
@@ -246,50 +244,24 @@ double Sys_DoubleTime (void)
 {
 	// This is Sys_DoubleTime from Quake, since Hexen 2's Sys_DoubleTime
 	// is inherently un-portable - DDOI
-        struct timeval  tp;
-        struct timezone tzp;
-        static int              secbase;
+	struct timeval	tp;
+	struct timezone	tzp;
+	static int		secbase;
 
-        gettimeofday(&tp, &tzp);
+	gettimeofday(&tp, &tzp);
 
-        if (!secbase) {
-                secbase = tp.tv_sec;
-                return tp.tv_usec/1000000.0;
-        }
-
-        return (tp.tv_sec - secbase) + tp.tv_usec/1000000.0;
-}
-
-
-/*
-================
-Sys_InitFloatTime
-================
-*/
-void Sys_InitFloatTime (void)
-{
-	int		j;
-
-	Sys_DoubleTime ();
-
-	j = COM_CheckParm("-starttime");
-
-	if (j)
+	if (!secbase)
 	{
-		curtime = (double) (atof(com_argv[j+1]));
-	}
-	else
-	{
-		curtime = 0.0;
+		secbase = tp.tv_sec;
+		return tp.tv_usec/1000000.0;
 	}
 
-	lastcurtime = curtime;
+	return (tp.tv_sec - secbase) + tp.tv_usec/1000000.0;
 }
 
 
 void Sys_Sleep (void)
 {
-	//Sleep (1);
 	usleep(1);
 }
 
@@ -298,7 +270,7 @@ void Sys_SendKeyEvents (void)
 	IN_SendKeyEvents();
 }
 
-int Sys_GetUserdir (char *buff, unsigned int len)
+static int Sys_GetUserdir (char *buff, unsigned int path_len)
 {
 	if (getenv("HOME") == NULL)
 		return 1;
@@ -308,7 +280,7 @@ int Sys_GetUserdir (char *buff, unsigned int len)
 	depending on H2MP, H2W and/or -game cmdline arg, instead.
    S.A:	Now using $HOME istead of the passwd struct */
 
-	if (strlen(getenv("HOME")) + strlen(AOT_USERDIR) + 5 > len)
+	if (strlen(getenv("HOME")) + strlen(AOT_USERDIR) + 5 > path_len)
 		return 1;
 
 	sprintf (buff, "%s/%s", getenv("HOME"), AOT_USERDIR);
@@ -453,15 +425,12 @@ int main(int argc, char *argv[])
 
 	Sys_Init ();
 
-// because sound is off until we become active
-	//S_BlockSound ();
-
 	Sys_Printf ("Host_Init\n");
 	Host_Init (&parms);
 
 	oldtime = Sys_DoubleTime ();
 
-    /* main window message loop */
+	/* main window message loop */
 	while (1)
 	{
 		appState = SDL_GetAppState();
@@ -470,14 +439,12 @@ int main(int argc, char *argv[])
 		if ( !(appState & (SDL_APPMOUSEFOCUS | SDL_APPINPUTFOCUS)) || cl.paused)
 		{
 			usleep (16000);
-			//printf ("usleep 16000\n");
 		}
 		// If we're minimised, sleep a bit more
 		if ( !(appState & SDL_APPACTIVE) )
 		{
 			scr_skipupdate = 1;
 			usleep (32000);
-			//printf ("usleep 32000\n");
 		}
 		else
 		{
@@ -491,10 +458,15 @@ int main(int argc, char *argv[])
 		oldtime = newtime;
 	}
 
+	return 0;
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.43  2006/01/23 20:22:53  sezero
+ * tidied up the version and help display stuff. bumped the HoT version to
+ * 1.4.0-pre1. added conditionals to properly display beta version strings.
+ *
  * Revision 1.42  2006/01/23 20:20:55  sezero
  * sys_unix.c: added code to sleep a bit when we have no focus or paused, and
  * sleep more when we are minimized. inspired from the q3 project at icculus.
