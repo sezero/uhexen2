@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.14 2006-01-12 13:11:16 sezero Exp $
+	$Id: snd_alsa.c,v 1.15 2006-02-19 12:33:24 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -52,7 +52,9 @@ static ret (*hx2##func) params;
 
 static qboolean load_libasound (void)
 {
-	if (!(alsa_handle = dlopen ("libasound.so.2", RTLD_GLOBAL | RTLD_NOW))) {
+	alsa_handle = dlopen ("libasound.so.2", RTLD_GLOBAL | RTLD_NOW);
+	if (!alsa_handle)
+	{
 		Con_Printf ("Couldn't load libasound.so.2: %s\n", dlerror ());
 		return false;
 	}
@@ -330,6 +332,10 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2006/01/12 13:11:16  sezero
+ * do not change the desined_XXX sound variables in case of failures.
+ * sound wnitespace cleanup #2 in snd_oss.
+ *
  * Revision 1.13  2006/01/12 12:57:45  sezero
  * moved init of platform specific variables and function pointers to snd_sys
  *

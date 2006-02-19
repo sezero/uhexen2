@@ -6,14 +6,12 @@
 
 #include "quakedef.h"
 
-int			cache_full_cycle;
-
 /*
 ================
 ResampleSfx
 ================
 */
-void ResampleSfx (sfx_t *sfx, int inrate, int inwidth, byte *data)
+static void ResampleSfx (sfx_t *sfx, int inrate, int inwidth, byte *data)
 {
 	int		outcount;
 	int		srcsample;
@@ -144,15 +142,13 @@ WAV loading
 ===============================================================================
 */
 
+static byte	*data_p;
+static byte	*iff_end;
+static byte	*last_chunk;
+static byte	*iff_data;
+static int	iff_chunk_len;
 
-byte	*data_p;
-byte 	*iff_end;
-byte 	*last_chunk;
-byte 	*iff_data;
-int 	iff_chunk_len;
-
-
-short GetLittleShort(void)
+static short GetLittleShort(void)
 {
 	short val = 0;
 	val = *data_p;
@@ -161,7 +157,7 @@ short GetLittleShort(void)
 	return val;
 }
 
-int GetLittleLong(void)
+static int GetLittleLong(void)
 {
 	int val = 0;
 	val = *data_p;
@@ -172,7 +168,7 @@ int GetLittleLong(void)
 	return val;
 }
 
-void FindNextChunk(char *name)
+static void FindNextChunk(char *name)
 {
 	while (1)
 	{
@@ -200,14 +196,14 @@ void FindNextChunk(char *name)
 	}
 }
 
-void FindChunk(char *name)
+static void FindChunk(char *name)
 {
 	last_chunk = iff_data;
 	FindNextChunk (name);
 }
 
-
-void DumpChunks(void)
+#if 0
+static void DumpChunks(void)
 {
 	char	str[5];
 
@@ -222,6 +218,7 @@ void DumpChunks(void)
 		data_p += (iff_chunk_len + 1) & ~1;
 	} while (data_p < iff_end);
 }
+#endif
 
 /*
 ============
@@ -231,9 +228,9 @@ GetWavinfo
 wavinfo_t GetWavinfo (char *name, byte *wav, int wavlength)
 {
 	wavinfo_t	info;
-	int     i;
-	int     format;
-	int		samples;
+	int	i;
+	int	format;
+	int	samples;
 
 	memset (&info, 0, sizeof(info));
 
@@ -253,7 +250,9 @@ wavinfo_t GetWavinfo (char *name, byte *wav, int wavlength)
 
 // get "fmt " chunk
 	iff_data = data_p + 12;
-// DumpChunks ();
+#if 0
+	DumpChunks ();
+#endif
 
 	FindChunk("fmt ");
 	if (!data_p)

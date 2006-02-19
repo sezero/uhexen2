@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.29 2006-01-12 13:07:13 sezero Exp $
+	$Id: snd_dma.c,v 1.30 2006-02-19 12:33:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -13,12 +13,12 @@
 extern void IN_Accumulate(void);
 #endif
 
-void S_Play(void);
-void S_PlayVol(void);
-void S_SoundList(void);
-void S_Update_();
-void S_StopAllSounds(qboolean clear);
-void S_StopAllSoundsC(void);
+static void S_Play (void);
+static void S_PlayVol (void);
+static void S_SoundList (void);
+static void S_Update_ (void);
+void S_StopAllSounds (qboolean clear);
+static void S_StopAllSoundsC (void);
 
 #ifdef H2W
 // QuakeWorld hack...
@@ -45,8 +45,8 @@ static const char *snd_drivers[S_SYS_MAX]={
 };
 
 // pointer should go away
-volatile dma_t  *shm = 0;
-volatile dma_t sn;
+volatile dma_t	*shm = 0;
+volatile dma_t	sn;
 
 vec3_t		listener_origin;
 vec3_t		listener_forward;
@@ -59,16 +59,16 @@ int		paintedtime;	// sample PAIRS
 
 
 #define	MAX_SFX		512
-sfx_t		*known_sfx;	// hunk allocated [MAX_SFX]
-int		num_sfx;
+static sfx_t	*known_sfx;	// hunk allocated [MAX_SFX]
+static int	num_sfx;
 
-sfx_t		*ambient_sfx[NUM_AMBIENTS];
+static sfx_t	*ambient_sfx[NUM_AMBIENTS];
 
 int 		desired_speed = 11025;
 int 		desired_bits = 16;
 int 		desired_channels = 2;
 
-int sound_started=0;
+static int	sound_started=0;
 int tryrates[MAX_TRYRATES] = { 11025, 22051, 44100, 8000 };
 
 cvar_t bgmvolume = {"bgmvolume", "1", true};
@@ -98,14 +98,14 @@ void S_AmbientOn (void)
 }
 
 
-void S_SoundInfo_f(void)
+static void S_SoundInfo_f(void)
 {
 	if (!sound_started || !shm)
 	{
 		Con_Printf ("sound system not started\n");
 		return;
 	}
-	
+
 	Con_Printf("Driver: %s\n", snd_drivers[snd_system]);
 	Con_Printf("%5d stereo\n", shm->channels - 1);
 	Con_Printf("%5d samples\n", shm->samples);
@@ -138,7 +138,8 @@ void S_Startup (void)
 		tmp = atoi(com_argv[tmp+1]);
 		/* I won't rely on users' precision in typing or their needs
 		   here. If you know what you're doing, then change this. */
-		switch (tmp) {
+		switch (tmp)
+		{
 			case  8000:
 			case 11025:
 			case 22050:
@@ -181,7 +182,6 @@ S_Init
 */
 void S_Init (void)
 {
-
 	// We need this thing even if the snd won't be initalized
 	// at all. Fixes the demos without models with -nosound
 	Cvar_RegisterVariable(&precache);
@@ -282,7 +282,7 @@ S_FindName
 
 ==================
 */
-sfx_t *S_FindName (char *name)
+static sfx_t *S_FindName (char *name)
 {
 	int		i;
 	sfx_t	*sfx;
@@ -295,10 +295,12 @@ sfx_t *S_FindName (char *name)
 
 // see if already loaded
 	for (i=0 ; i < num_sfx ; i++)
+	{
 		if (!strcmp(known_sfx[i].name, name))
 		{
 			return &known_sfx[i];
 		}
+	}
 
 	if (num_sfx == MAX_SFX)
 		Sys_Error ("S_FindName: out of sfx_t");
@@ -357,6 +359,8 @@ sfx_t *S_PrecacheSound (char *name)
 /*
 =================
 SND_PickChannel
+
+picks a channel based on priorities, empty slots, number of channels
 =================
 */
 channel_t *SND_PickChannel(int entnum, int entchannel)
@@ -401,6 +405,8 @@ channel_t *SND_PickChannel(int entnum, int entchannel)
 /*
 =================
 SND_Spatialize
+
+spatializes a channel
 =================
 */
 void SND_Spatialize(channel_t *ch)
@@ -535,7 +541,7 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 
 void S_StopSound(int entnum, int entchannel)
 {
-	int i;
+	int	i;
 
 	for (i=NUM_AMBIENTS  ; i<NUM_AMBIENTS + MAX_DYNAMIC_CHANNELS ; i++)
 	{
@@ -552,7 +558,7 @@ void S_StopSound(int entnum, int entchannel)
 
 void S_UpdateSoundPos (int entnum, int entchannel, vec3_t origin)
 {
-	int i;
+	int	i;
 
 	for (i=NUM_AMBIENTS  ; i<NUM_AMBIENTS + MAX_DYNAMIC_CHANNELS ; i++)
 	{
@@ -584,7 +590,7 @@ void S_StopAllSounds(qboolean clear)
 		S_ClearBuffer ();
 }
 
-void S_StopAllSoundsC (void)
+static void S_StopAllSoundsC (void)
 {
 	S_StopAllSounds (true);
 }
@@ -683,7 +689,7 @@ void S_StaticSound (sfx_t *sfx, vec3_t origin, float vol, float attenuation)
 	VectorCopy (origin, ss->origin);
 	ss->master_vol = vol;
 	ss->dist_mult = (attenuation/64) / sound_nominal_clip_dist;
-	ss->end = paintedtime + sc->length;	
+	ss->end = paintedtime + sc->length;
 
 	SND_Spatialize (ss);
 }
@@ -696,7 +702,7 @@ void S_StaticSound (sfx_t *sfx, vec3_t origin, float vol, float attenuation)
 S_UpdateAmbientSounds
 ===================
 */
-void S_UpdateAmbientSounds (void)
+static void S_UpdateAmbientSounds (void)
 {
 	mleaf_t		*l;
 	float		vol;
@@ -827,11 +833,13 @@ void S_Update(vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 		total = 0;
 		ch = channels;
 		for (i=0 ; i<total_channels; i++, ch++)
+		{
 			if (ch->sfx && (ch->leftvol || ch->rightvol) )
 			{
 				//Con_Printf ("%3i %3i %s\n", ch->leftvol, ch->rightvol, ch->sfx->name);
 				total++;
 			}
+		}
 
 		Con_Printf ("----(%i)----\n", total);
 	}
@@ -840,7 +848,7 @@ void S_Update(vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 	S_Update_();
 }
 
-void GetSoundtime(void)
+static void GetSoundtime(void)
 {
 	int		samplepos;
 	static	int		buffers;
@@ -881,7 +889,7 @@ void S_ExtraUpdate (void)
 	S_Update_();
 }
 
-void S_Update_(void)
+static void S_Update_ (void)
 {
 	unsigned int	endtime;
 	int		samps;
@@ -941,11 +949,11 @@ console functions
 ===============================================================================
 */
 
-void S_Play(void)
+static void S_Play(void)
 {
 	static int hash=345;
-	int 	i;
-	char name[256];
+	int		i;
+	char	name[256];
 	sfx_t	*sfx;
 
 	i = 1;
@@ -965,12 +973,12 @@ void S_Play(void)
 	}
 }
 
-void S_PlayVol(void)
+static void S_PlayVol(void)
 {
 	static int hash=543;
-	int i;
-	float vol;
-	char name[256];
+	int		i;
+	float	vol;
+	char	name[256];
 	sfx_t	*sfx;
 
 	i = 1;
@@ -991,7 +999,7 @@ void S_PlayVol(void)
 	}
 }
 
-void S_SoundList(void)
+static void S_SoundList(void)
 {
 	int		i;
 	sfx_t	*sfx;
@@ -1051,6 +1059,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2006/01/12 13:07:13  sezero
+ * sound whitespace cleanup #1
+ *
  * Revision 1.28  2006/01/12 12:57:45  sezero
  * moved init of platform specific variables and function pointers to snd_sys
  *

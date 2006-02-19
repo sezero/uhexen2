@@ -1,9 +1,9 @@
 #include "quakedef.h"
 #include "quakeinc.h"
 
-#define iDirectSoundCreate(a,b,c)	pDirectSoundCreate(a,b,c)
 
-HRESULT (WINAPI *pDirectSoundCreate)(GUID FAR *lpGUID, LPDIRECTSOUND FAR *lplpDS, IUnknown FAR *pUnkOuter);
+static HRESULT (WINAPI *pDirectSoundCreate)(GUID FAR *lpGUID, LPDIRECTSOUND FAR *lplpDS, IUnknown FAR *pUnkOuter);
+#define iDirectSoundCreate(a,b,c)	pDirectSoundCreate(a,b,c)
 
 // 64K is > 1 second at 16-bit, 22050 Hz
 #define	WAV_BUFFERS		128
@@ -31,23 +31,22 @@ static int	allocMark = 0;
 static int	ds_sbuf_size, wv_buf_size;
 extern int	desired_bits, desired_speed, desired_channels;
 
-/* 
- * Global variables. Must be visible to window-procedure function 
- *  so it can unlock and free the data block after it has been played. 
- */ 
+static HPSTR	lpData;
+static LPWAVEHDR	lpWaveHdr;
+static HWAVEOUT	hWaveOut;
+//WAVEOUTCAPS	wavecaps;
 
-HPSTR		lpData, lpData2;
-LPWAVEHDR	lpWaveHdr;
-HWAVEOUT	hWaveOut;
-WAVEOUTCAPS	wavecaps;
+/*
+ * Global variables. Must be visible to window-procedure function
+ * so it can unlock and free the data block after it has been played.
+ */
+
 DWORD		gSndBufSize;
 MMTIME		mmstarttime;
 
 LPDIRECTSOUND	pDS;
 LPDIRECTSOUNDBUFFER	pDSBuf, pDSPBuf;
 HINSTANCE	hInstDS;
-
-qboolean SNDDMA_InitWav (void);
 
 
 /*
@@ -57,8 +56,7 @@ S_BlockSound
 */
 void S_BlockSound (void)
 {
-
-// DirectSound takes care of blocking itself
+	// DirectSound takes care of blocking itself
 	if (snd_iswave)
 	{
 		snd_blocked++;
@@ -76,8 +74,7 @@ S_UnblockSound
 */
 void S_UnblockSound (void)
 {
-
-// DirectSound takes care of blocking itself
+	// DirectSound takes care of blocking itself
 	if (snd_iswave)
 	{
 		snd_blocked--;
@@ -90,7 +87,7 @@ void S_UnblockSound (void)
 FreeSound
 ==================
 */
-void FreeSound (void)
+static void FreeSound (void)
 {
 	int		i;
 
@@ -129,7 +126,8 @@ void FreeSound (void)
    case only if wave init failed, and we are here immediately after that,
    in which case it's safe to free whatever we allocated. In any other case,
    allocMark will be 0 and no action is performed.	Pa3PyX	*/
-		if (allocMark) {
+		if (allocMark)
+		{
 			Hunk_FreeToLowMark(allocMark);
 			allocMark = 0;
 		}
@@ -153,13 +151,13 @@ SNDDMA_InitDirect
 Direct-Sound support
 ==================
 */
-sndinitstat SNDDMA_InitDirect (void)
+static sndinitstat SNDDMA_InitDirect (void)
 {
 	DSBUFFERDESC	dsbuf;
 	DSBCAPS			dsbcaps;
 	DWORD			dwSize, dwWrite;
 	DSCAPS			dscaps;
-	WAVEFORMATEX	format, pformat; 
+	WAVEFORMATEX	format, pformat;
 	HRESULT			hresult;
 	int				reps;
 
@@ -284,7 +282,7 @@ sndinitstat SNDDMA_InitDirect (void)
 		memset (&dsbuf, 0, sizeof(dsbuf));
 		dsbuf.dwSize = sizeof(DSBUFFERDESC);
 		dsbuf.dwFlags = DSBCAPS_CTRLFREQUENCY | DSBCAPS_LOCSOFTWARE;
-		if (ds_sbuf_size < DSBSIZE_MIN) 
+		if (ds_sbuf_size < DSBSIZE_MIN)
 			ds_sbuf_size = 1 << (Q_log2(DSBSIZE_MIN) + 1);
 		if (ds_sbuf_size > DSBSIZE_MAX)
 			ds_sbuf_size = 1 << Q_log2(DSBSIZE_MAX);
@@ -365,7 +363,6 @@ sndinitstat SNDDMA_InitDirect (void)
 			FreeSound ();
 			return SIS_FAILURE;
 		}
-
 	}
 
 	memset(lpData, 0, dwSize);
@@ -374,7 +371,7 @@ sndinitstat SNDDMA_InitDirect (void)
 	pDSBuf->lpVtbl->Unlock(pDSBuf, lpData, dwSize, NULL, 0);
 
 	/* we don't want anyone to access the buffer directly w/o locking it first. */
-	lpData = NULL; 
+	lpData = NULL;
 
 	pDSBuf->lpVtbl->Stop(pDSBuf);
 	pDSBuf->lpVtbl->GetCurrentPosition(pDSBuf, &mmstarttime.u.sample, &dwWrite);
@@ -401,12 +398,12 @@ SNDDM_InitWav
 Crappy windows multimedia base
 ==================
 */
-qboolean SNDDMA_InitWav (void)
+static qboolean SNDDMA_InitWav (void)
 {
-	WAVEFORMATEX  format; 
+	WAVEFORMATEX	format;
 	int				i;
 	HRESULT			hr;
-	
+
 	snd_sent = 0;
 	snd_completed = 0;
 
@@ -421,13 +418,11 @@ qboolean SNDDMA_InitWav (void)
 	format.nChannels = shm->channels;
 	format.wBitsPerSample = shm->samplebits;
 	format.nSamplesPerSec = shm->speed;
-	format.nBlockAlign = format.nChannels
-		*format.wBitsPerSample / 8;
+	format.nBlockAlign = format.nChannels * format.wBitsPerSample / 8;
 	format.cbSize = 0;
-	format.nAvgBytesPerSec = format.nSamplesPerSec
-		*format.nBlockAlign; 
-	
-	/* Open a waveform device for output using window callback. */ 
+	format.nAvgBytesPerSec = format.nSamplesPerSec * format.nBlockAlign;
+
+	/* Open a waveform device for output using window callback. */
 	while ((hr = waveOutOpen((LPHWAVEOUT)&hWaveOut, WAVE_MAPPER, 
 					&format, 
 					0, 0L, CALLBACK_NULL)) != MMSYSERR_NOERROR)
@@ -448,28 +443,27 @@ qboolean SNDDMA_InitWav (void)
 					"  hardware already in use\n");
 			return false;
 		}
-	} 
+	}
 
-	/* 
+	/*
 	 * Allocate memory for the waveform data.
-	*/ 
+	*/
 	gSndBufSize = WAV_BUFFERS * wv_buf_size;
 	allocMark = Hunk_LowMark();
 	lpData = Hunk_AllocName(gSndBufSize, "sndbuff");
 
-	/* 
+	/*
 	 * Allocate memory for the header.
-	 */ 
+	 */
 	lpWaveHdr = Hunk_AllocName((DWORD)sizeof(WAVEHDR) * WAV_BUFFERS, "wavehdr");
 
-	/* After allocation, set up and prepare headers. */ 
+	/* After allocation, set up and prepare headers. */
 	for (i=0 ; i<WAV_BUFFERS ; i++)
 	{
 		lpWaveHdr[i].dwBufferLength = wv_buf_size;
 		lpWaveHdr[i].lpData = lpData + i * wv_buf_size;
 
-		if (waveOutPrepareHeader(hWaveOut, lpWaveHdr+i, sizeof(WAVEHDR)) !=
-				MMSYSERR_NOERROR)
+		if (waveOutPrepareHeader(hWaveOut, lpWaveHdr+i, sizeof(WAVEHDR)) != MMSYSERR_NOERROR)
 		{
 			Con_SafePrintf ("Sound: failed to prepare wave headers\n");
 			FreeSound ();
@@ -557,7 +551,6 @@ qboolean S_WIN32_Init(void)
 	{
 		if (snd_firsttime || snd_iswave)
 		{
-
 			snd_iswave = SNDDMA_InitWav ();
 
 			if (snd_iswave)
@@ -602,7 +595,7 @@ int S_WIN32_GetDMAPos(void)
 	int		s;
 	DWORD	dwWrite;
 
-	if (dsound_init) 
+	if (dsound_init)
 	{
 		mmtime.wType = TIME_SAMPLES;
 		pDSBuf->lpVtbl->GetCurrentPosition(pDSBuf, &mmtime.u.sample, &dwWrite);
@@ -612,7 +605,10 @@ int S_WIN32_GetDMAPos(void)
 	{
 		s = snd_sent * wv_buf_size;
 	}
-
+	else
+	{	// we should not reach here...
+		return 0;
+	}
 
 	s >>= sample16;
 
@@ -663,19 +659,19 @@ void S_WIN32_Submit(void)
 		h = lpWaveHdr + ( snd_sent&WAV_MASK );
 
 		snd_sent++;
-		/* 
-		 * Now the data block can be sent to the output device. The 
-		 * waveOutWrite function returns immediately and waveform 
-		 * data is sent to the output device in the background. 
-		 */ 
-		wResult = waveOutWrite(hWaveOut, h, sizeof(WAVEHDR)); 
+		/*
+		 * Now the data block can be sent to the output device. The
+		 * waveOutWrite function returns immediately and waveform
+		 * data is sent to the output device in the background.
+		 */
+		wResult = waveOutWrite(hWaveOut, h, sizeof(WAVEHDR));
 
 		if (wResult != MMSYSERR_NOERROR)
-		{ 
+		{
 			Con_SafePrintf ("Failed to write block to device\n");
 			FreeSound ();
-			return; 
-		} 
+			return;
+		}
 	}
 }
 

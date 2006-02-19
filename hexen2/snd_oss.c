@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.17 2006-01-12 13:10:49 sezero Exp $
+	$Id: snd_oss.c,v 1.18 2006-02-19 12:33:24 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -42,12 +42,12 @@
 #include <sys/soundcard.h>
 #include <errno.h>
 
-int audio_fd = -1;
-int snd_inited;
+static int audio_fd = -1;
+static int snd_inited;
 static char *ossdev = "/dev/dsp";
 extern int desired_bits, desired_speed, desired_channels;
 extern int tryrates[MAX_TRYRATES];
-unsigned long mmaplen;
+static unsigned long mmaplen;
 
 qboolean S_OSS_Init(void)
 {
