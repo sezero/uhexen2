@@ -3,7 +3,7 @@
 //**
 //** hcc.c
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/hcc.c,v 1.5 2005-08-05 13:56:08 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/hcc.c,v 1.6 2006-02-20 16:13:50 sezero Exp $
 //**
 //** Hash table modifications based on fastqcc by Jonathan Roy
 //** (roy@atlantic.net).
@@ -240,7 +240,7 @@ void WriteData(int crc)
 			&& def->type->type != ev_field
 			&& def->scope == NULL)
 		{
-			dd->type |= DEF_SAVEGLOBGAL;
+			dd->type |= DEF_SAVEGLOBAL;
 		}
 		if(hcc_OptimizeNameTable && def->scope != NULL)
 		{

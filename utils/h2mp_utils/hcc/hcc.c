@@ -3,7 +3,7 @@
 //**
 //** hcc.c
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/hcc.c,v 1.7 2005-08-05 13:56:08 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/hcc.c,v 1.8 2006-02-20 16:13:50 sezero Exp $
 //**
 //** Hash table modifications based on fastqcc by Jonathan Roy
 //** (roy@atlantic.net).
@@ -247,11 +247,11 @@ void WriteData(int crc)
 			&& def->scope == NULL)
 		{
 			if (strncmp (def->name,"STR_",4)!=0)	//str_ is a special case string constant
-				dd->type |= DEF_SAVEGLOBGAL;
+				dd->type |= DEF_SAVEGLOBAL;
 		}
 
 		if(hcc_OptimizeNameTable && ((def->scope != NULL) ||
-			(!(dd->type&DEF_SAVEGLOBGAL)&&(def->type->type < ev_field))))
+			(!(dd->type&DEF_SAVEGLOBAL)&&(def->type->type < ev_field))))
 		{
 			dd->s_name = localName;
 		}

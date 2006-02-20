@@ -243,7 +243,7 @@ void WriteData (int crc)
 		&& def->type->type != ev_function
 		&& def->type->type != ev_field
 		&& def->scope == NULL))
-			dd->type |= DEF_SAVEGLOBGAL;
+			dd->type |= DEF_SAVEGLOBAL;
 		dd->s_name = CopyString (def->name);
 		dd->ofs = def->ofs;
 	}
