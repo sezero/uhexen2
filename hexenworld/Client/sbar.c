@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.14 2006-01-12 12:34:38 sezero Exp $
+	$Id: sbar.c,v 1.15 2006-02-21 19:40:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -29,15 +29,16 @@
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
 
-void Sbar_DeathmatchOverlay(void);
-void Sbar_NormalOverlay(void);
-
-void Sbar_SmallDeathmatchOverlay(void);
-void M_DrawPic(int x, int y, qpic_t *pic);
+extern void M_DrawPic(int x, int y, qpic_t *pic);
 
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
 
+void Sbar_DeathmatchOverlay(void);
+
 // PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
+
+//static void Sbar_NormalOverlay(void);
+static void Sbar_SmallDeathmatchOverlay(void);
 
 static void Sbar_DrawPic(int x, int y, qpic_t *pic);
 static void Sbar_DrawSubPic(int x, int y, int h, qpic_t *pic);
@@ -45,7 +46,7 @@ static void Sbar_DrawTransPic(int x, int y, qpic_t *pic);
 static int Sbar_itoa(int num, char *buf);
 static void Sbar_DrawNum(int x, int y, int number, int digits);
 static void Sbar_SortFrags (qboolean includespec);
-static void Sbar_DrawString(int x, int y, char *str);
+//static void Sbar_DrawString(int x, int y, char *str);
 static void Sbar_DrawRedString (int cx, int cy, char *str);
 static void Sbar_DrawSmallString(int x, int y, char *str);
 static void DrawBarArtifactNumber(int x, int y, int number);
@@ -108,7 +109,7 @@ static qboolean sb_ShowInfo;
 static qboolean sb_ShowDM;
 static qboolean sb_ShowNames;
 
-qboolean inv_flg;			// true - show inventory interface
+static qboolean inv_flg;	// true - show inventory interface
 
 static float InventoryHideTime;
 
@@ -184,7 +185,7 @@ void Sbar_Init(void)
 {
 	int i;
 
-	for(i = 0; i < 10; i++)
+	for (i = 0; i < 10; i++)
 	{
 		sb_nums[i] = Draw_PicFromWad(va("num_%i",i));
 	}
@@ -201,7 +202,7 @@ void Sbar_Init(void)
 	Cmd_AddCommand("-showdm", ShowDMUp_f);
 	Cmd_AddCommand("+shownames", ShowNamesDown_f);
 	Cmd_AddCommand("-shownames", ShowNamesUp_f);
-  	Cmd_AddCommand("invleft", InvLeft_f);
+	Cmd_AddCommand("invleft", InvLeft_f);
 	Cmd_AddCommand("invright", InvRight_f);
 	Cmd_AddCommand("invuse", InvUse_f);
 	Cmd_AddCommand("invdrop", InvDrop_f);
@@ -217,51 +218,53 @@ void Sbar_Init(void)
 }
 
 
-void SB_PlacePlayerNames(void)
+static void SB_PlacePlayerNames(void)
 {
-	int			i,j;
+	int			i, j;
 	entity_t	*curr_ent;
 
-	for (j=0;j<cl_numvisedicts;j++)
+	for (j = 0; j < cl_numvisedicts; j++)
 	{
 		curr_ent = &cl_visedicts[j];
 
 		i = curr_ent->scoreboard - cl.players;
 /*		if (i >= 0 && i<MAX_CLIENTS && 
-				(
-					(cl.PIV & (1<<i))&&//in PIV and not invis or seen by dwarf MLS_INVIS = 5
-					(curr_ent->drawflags!=5||cl.v.playerclass==CLASS_DWARF)
-				)
-			)*/
+			(	(cl.PIV & (1<<i)) &&	// in PIV and not invis or seen by dwarf MLS_INVIS = 5
+				(curr_ent->drawflags!=5 || cl.v.playerclass==CLASS_DWARF) )	)
+*/
 		if (i >= 0 && i<MAX_CLIENTS && (cl.PIV & (1<<i)) )
 		{
-			if(!cl.players[i].shownames_off)
+			if (!cl.players[i].shownames_off)
 			{
-				if(cl_siege)
-				{//why the fuck does GL fuck this up??!!!
-					if(cl.players[i].siege_team==ST_ATTACKER)//attacker
-					{
+				if (cl_siege)
+				{	//why the fuck does GL fuck this up??!!!
+					if (cl.players[i].siege_team==ST_ATTACKER)
+					{	//attacker
 						if(i==cl_keyholder)
 							R_DrawName(curr_ent->origin, cl.players[i].name,10);
 						else
 							R_DrawName(curr_ent->origin, cl.players[i].name,false);
 					}
-					else if(cl.players[i].siege_team==ST_DEFENDER)//def
-					{
+					else if (cl.players[i].siege_team==ST_DEFENDER)
+					{	//def
 						if(i==cl_keyholder&&i==cl_doc)
 							R_DrawName(curr_ent->origin, cl.players[i].name,12);
-						else if(i==cl_keyholder)
+						else if (i==cl_keyholder)
 							R_DrawName(curr_ent->origin, cl.players[i].name,11);
-						else if(i==cl_doc)
+						else if (i==cl_doc)
 							R_DrawName(curr_ent->origin, cl.players[i].name,2);
 						else
 							R_DrawName(curr_ent->origin, cl.players[i].name,1);
 					}
 					else
+					{
 						R_DrawName(curr_ent->origin, cl.players[i].name,3);
+					}
 				}
 				else
+				{
 					R_DrawName(curr_ent->origin, cl.players[i].name,false);
+				}
 			}
 		}
 	}
@@ -276,11 +279,10 @@ void SB_PlacePlayerNames(void)
 
 void Sbar_Draw(void)
 {
-	float delta;
-	char tempStr[80];
-	int mana;
-	int maxMana;
-	int y;
+	float	delta;
+	char	tempStr[80];
+	int	mana, maxMana;
+	int		y;
 
 	if (sb_ShowNames)
 	{
@@ -296,10 +298,10 @@ void Sbar_Draw(void)
 	{
 		if (sb_ShowDM)
 		{
-//rjr		if (cl.gametype == GAME_DEATHMATCH)
-			Sbar_DeathmatchOverlay();
-//rjr		else
-//rjr			Sbar_NormalOverlay();
+//rjr			if (cl.gametype == GAME_DEATHMATCH)
+				Sbar_DeathmatchOverlay();
+//rjr			else
+//rjr				Sbar_NormalOverlay();
 		}
 		else if (DMMode.value)
 		{
@@ -319,49 +321,45 @@ void Sbar_Draw(void)
 	//if (sb_updates >= vid.numpages)
 	//	return;
 
-/*	if(BarHeight == BarTargetHeight)
+/*	if (BarHeight == BarTargetHeight)
 	{
 		return;
 	}
 */
 
-	if(BarHeight < BarTargetHeight)
+	if (BarHeight < BarTargetHeight)
 	{
-		delta = ((BarTargetHeight-BarHeight)*BarSpeed.value)
-			*host_frametime;
-		if(delta < 0.5)
+		delta = ((BarTargetHeight-BarHeight)*BarSpeed.value) * host_frametime;
+		if (delta < 0.5)
 		{
 			delta = 0.5;
 		}
 		BarHeight += delta;
-		if(BarHeight > BarTargetHeight)
+		if (BarHeight > BarTargetHeight)
 		{
 			BarHeight = BarTargetHeight;
 		}
 		scr_fullupdate = 0;
 	}
-	else if(BarHeight > BarTargetHeight)
+	else if (BarHeight > BarTargetHeight)
 	{
-		delta = ((BarHeight-BarTargetHeight)*BarSpeed.value)
-			*host_frametime;
-		if(delta < 0.5)
+		delta = ((BarHeight-BarTargetHeight)*BarSpeed.value) * host_frametime;
+		if (delta < 0.5)
 		{
 			delta = 0.5;
 		}
 		BarHeight -= delta;
-		if(BarHeight < BarTargetHeight)
+		if (BarHeight < BarTargetHeight)
 		{
 			BarHeight = BarTargetHeight;
 		}
 		scr_fullupdate = 0;
 	}
 
-
 	scr_copyeverything = 1;
 	sb_updates++;
 
-
-	if(BarHeight < 0)
+	if (BarHeight < 0)
 		DrawFullScreenInfo();
 
 	//Sbar_DrawPic(0, 0, Draw_CachePic("gfx/topbar.lmp"));
@@ -374,41 +372,39 @@ void Sbar_Draw(void)
 	maxMana = (int)cl.v.max_mana;
 	// Blue mana
 	mana = (int)cl.v.bluemana;
-	if(mana < 0)
+	if (mana < 0)
 	{
 		mana = 0;
 	}
-	if(mana > maxMana)
+	if (mana > maxMana)
 	{
 		mana = maxMana;
 	}
 	sprintf(tempStr, "%03d", mana);
 	Sbar_DrawSmallString(201, 22, tempStr);
-	if(mana)
+	if (mana)
 	{
 		y = (int)((mana*18.0)/(float)maxMana+0.5);
-		Sbar_DrawSubPic(190, 26-y, y+1,
-			Draw_CachePic("gfx/bmana.lmp"));
+		Sbar_DrawSubPic(190, 26-y, y+1, Draw_CachePic("gfx/bmana.lmp"));
 		Sbar_DrawPic(190, 27, Draw_CachePic("gfx/bmanacov.lmp"));
 	}
 
 	// Green mana
 	mana = (int)cl.v.greenmana;
-	if(mana < 0)
+	if (mana < 0)
 	{
 		mana = 0;
 	}
-	if(mana > maxMana)
+	if (mana > maxMana)
 	{
 		mana = maxMana;
 	}
 	sprintf(tempStr, "%03d", mana);
 	Sbar_DrawSmallString(243, 22, tempStr);
-	if(mana)
+	if (mana)
 	{
 		y = (int)((mana*18.0)/(float)maxMana+0.5);
-		Sbar_DrawSubPic(232, 26-y, y+1,
-			Draw_CachePic("gfx/gmana.lmp"));
+		Sbar_DrawSubPic(232, 26-y, y+1, Draw_CachePic("gfx/gmana.lmp"));
 		Sbar_DrawPic(232, 27, Draw_CachePic("gfx/gmanacov.lmp"));
 	}
 
@@ -418,28 +414,24 @@ void Sbar_Draw(void)
 	else
 		Sbar_DrawNum(58, 14, cl.v.health, 3);
 	SetChainPosition(cl.v.health, cl.v.max_health);
-	Sbar_DrawTransPic(45+((int)ChainPosition&7), 38,
-		Draw_CachePic("gfx/hpchain.lmp"));
-	Sbar_DrawTransPic(45+(int)ChainPosition, 36,
-		Draw_CachePic("gfx/hpgem.lmp"));
+	Sbar_DrawTransPic(45+((int)ChainPosition&7), 38, Draw_CachePic("gfx/hpchain.lmp"));
+	Sbar_DrawTransPic(45+(int)ChainPosition, 36, Draw_CachePic("gfx/hpgem.lmp"));
 	Sbar_DrawPic(43, 36, Draw_CachePic("gfx/chnlcov.lmp"));
 	Sbar_DrawPic(267, 36, Draw_CachePic("gfx/chnrcov.lmp"));
 
 	// AC
 	Sbar_DrawNum(105, 14, CalcAC(), 2);
 
-	if(BarHeight > BAR_TOP_HEIGHT)
+	if (BarHeight > BAR_TOP_HEIGHT)
 	{
 		DrawLowerBar();
 	}
 
 	// Current inventory item
-	if(cl.inv_selected >= 0)
+	if (cl.inv_selected >= 0)
 	{
 		DrawBarArtifactIcon(144, 3, cl.inv_order[cl.inv_selected]);
-
-		//Sbar_DrawTransPic(144, 3, Draw_CachePic(va("gfx/arti%02d.lmp",
-		//	cl.inv_order[cl.inv_selected])));
+	//	Sbar_DrawTransPic(144, 3, Draw_CachePic(va("gfx/arti%02d.lmp", cl.inv_order[cl.inv_selected])));
 	}
 
 	// FIXME: Check for deathmatch and draw frags
@@ -476,41 +468,41 @@ static qboolean SetChainPosition(float health, float maxHealth)
 	float delta;
 	float chainTargetPosition;
 
-	if(health < 0)
+	if (health < 0)
 	{
 		health = 0;
 	}
-	else if(health > maxHealth)
+	else if (health > maxHealth)
 	{
 		health = maxHealth;
 	}
 	chainTargetPosition = (health*195)/maxHealth;
-	if(fabs(ChainPosition-chainTargetPosition) < 0.1)
+	if (fabs(ChainPosition-chainTargetPosition) < 0.1)
 	{
 		return false;
 	}
-	if(ChainPosition < chainTargetPosition)
+	if (ChainPosition < chainTargetPosition)
 	{
 		delta = ((chainTargetPosition-ChainPosition)*5)*host_frametime;
-		if(delta < 0.5)
+		if (delta < 0.5)
 		{
 			delta = 0.5;
 		}
 		ChainPosition += delta;
-		if(ChainPosition > chainTargetPosition)
+		if (ChainPosition > chainTargetPosition)
 		{
 			ChainPosition = chainTargetPosition;
 		}
 	}
-	else if(ChainPosition > chainTargetPosition)
+	else if (ChainPosition > chainTargetPosition)
 	{
 		delta = ((ChainPosition-chainTargetPosition)*5)*host_frametime;
-		if(delta < 0.5)
+		if (delta < 0.5)
 		{
 			delta = 0.5;
 		}
 		ChainPosition -= delta;
-		if(ChainPosition < chainTargetPosition)
+		if (ChainPosition < chainTargetPosition)
 		{
 			ChainPosition = chainTargetPosition;
 		}
@@ -526,10 +518,9 @@ static qboolean SetChainPosition(float health, float maxHealth)
 
 static void DrawFullScreenInfo(void)
 {
-	int y;
-	int mana;
-	int maxMana;
-	char tempStr[80];
+	int		y;
+	int	mana, maxMana;
+	char	tempStr[80];
 
 	y = BarHeight-37;
 	Sbar_DrawPic(3, y, Draw_CachePic("gfx/bmmana.lmp"));
@@ -538,11 +529,11 @@ static void DrawFullScreenInfo(void)
 	maxMana = (int)cl.v.max_mana;
 	// Blue mana
 	mana = (int)cl.v.bluemana;
-	if(mana < 0)
+	if (mana < 0)
 	{
 		mana = 0;
 	}
-	if(mana > maxMana)
+	if (mana > maxMana)
 	{
 		mana = maxMana;
 	}
@@ -551,11 +542,11 @@ static void DrawFullScreenInfo(void)
 
 	// Green mana
 	mana = (int)cl.v.greenmana;
-	if(mana < 0)
+	if (mana < 0)
 	{
 		mana = 0;
 	}
-	if(mana > maxMana)
+	if (mana > maxMana)
 	{
 		mana = maxMana;
 	}
@@ -566,7 +557,7 @@ static void DrawFullScreenInfo(void)
 	Sbar_DrawNum(38, y+18, cl.v.health, 3);
 
 	// Current inventory item
-	if(cl.inv_selected >= 0)
+	if (cl.inv_selected >= 0)
 	{
 		DrawBarArtifactIcon(288, y+7, cl.inv_order[cl.inv_selected]);
 	}
@@ -580,16 +571,15 @@ static void DrawFullScreenInfo(void)
 
 static void DrawLowerBar(void)
 {
-	int i;
-//	int minutes, seconds, tens, units;
-	char tempStr[80];
-	int playerClass;
-	int piece;
-	int ringhealth;
+	int	i;
+//	int	minutes, seconds, tens, units;
+	char	tempStr[80];
+	int	playerClass;
+	int	piece;
+	int	ringhealth;
 
 	playerClass = cl.players[cl.playernum].playerclass;
-//	playerClass = playerclass.value;
-	if(playerClass < 1 || playerClass > MAX_PLAYER_CLASS)
+	if (playerClass < 1 || playerClass > MAX_PLAYER_CLASS)
 	{ // Default to paladin
 		playerClass = 1;
 	}
@@ -640,17 +630,15 @@ static void DrawLowerBar(void)
 	// Abilities
 	Sbar_DrawSmallString(11, 79, "abilities");
 	i = AbilityLineIndex[(playerClass-1)];
-	if(i+1 < pr_string_count)
+	if (i+1 < pr_string_count)
 	{
-		if(((int)cl.v.flags)&FL_SPECIAL_ABILITY1)
+		if (((int)cl.v.flags)&FL_SPECIAL_ABILITY1)
 		{
-			Sbar_DrawSmallString(8, 89,
-				&pr_global_strings[pr_string_index[i]]);
+			Sbar_DrawSmallString(8, 89, &pr_global_strings[pr_string_index[i]]);
 		}
-		if(((int)cl.v.flags)&FL_SPECIAL_ABILITY2)
+		if (((int)cl.v.flags)&FL_SPECIAL_ABILITY2)
 		{
-			Sbar_DrawSmallString(8, 96,
-				&pr_global_strings[pr_string_index[i+1]]);
+			Sbar_DrawSmallString(8, 96, &pr_global_strings[pr_string_index[i+1]]);
 		}
 	}
 
@@ -659,83 +647,82 @@ static void DrawLowerBar(void)
 	Sbar_DrawPic(134, 50, Draw_CachePic(tempStr));
 
 	// Armor
-	if(cl.v.armor_helmet > 0)
+	if (cl.v.armor_helmet > 0)
 	{
 		Sbar_DrawPic(164, 115, Draw_CachePic("gfx/armor1.lmp"));
 		sprintf(tempStr, "+%d", (int)cl.v.armor_helmet);
 		Sbar_DrawSmallString(168, 136, tempStr);
 	}
-	if(cl.v.armor_amulet > 0)
+	if (cl.v.armor_amulet > 0)
 	{
 		Sbar_DrawPic(205, 115, Draw_CachePic("gfx/armor2.lmp"));
 		sprintf(tempStr, "+%d", (int)cl.v.armor_amulet);
 		Sbar_DrawSmallString(208, 136, tempStr);
 	}
-	if(cl.v.armor_breastplate > 0)
+	if (cl.v.armor_breastplate > 0)
 	{
 		Sbar_DrawPic(246, 115, Draw_CachePic("gfx/armor3.lmp"));
 		sprintf(tempStr, "+%d", (int)cl.v.armor_breastplate);
 		Sbar_DrawSmallString(249, 136, tempStr);
 	}
-	if(cl.v.armor_bracer > 0)
+	if (cl.v.armor_bracer > 0)
 	{
 		Sbar_DrawPic(285, 115, Draw_CachePic("gfx/armor4.lmp"));
 		sprintf(tempStr, "+%d", (int)cl.v.armor_bracer);
 		Sbar_DrawSmallString(288, 136, tempStr);
 	}
 
-	// Rings 
-	if(cl.v.ring_flight > 0)
+	// Rings
+	if (cl.v.ring_flight > 0)
 	{
 		Sbar_DrawTransPic(6, 119, Draw_CachePic("gfx/ring_f.lmp"));
 
 		ringhealth = (int)cl.v.ring_flight;
-		if(ringhealth > 100)
+		if (ringhealth > 100)
 			ringhealth = 100;
-		Sbar_DrawPic(  35 - (int)(26 * (ringhealth/(float)100)),142,Draw_CachePic("gfx/ringhlth.lmp"));
-		Sbar_DrawPic( 35, 142, Draw_CachePic("gfx/rhlthcvr.lmp"));
+		Sbar_DrawPic(35 - (int)(26 * (ringhealth/(float)100)), 142, Draw_CachePic("gfx/ringhlth.lmp"));
+		Sbar_DrawPic(35, 142, Draw_CachePic("gfx/rhlthcvr.lmp"));
 	}
 
-	if(cl.v.ring_water > 0)
+	if (cl.v.ring_water > 0)
 	{
 		Sbar_DrawTransPic(44, 119, Draw_CachePic("gfx/ring_w.lmp"));
 		ringhealth = (int)cl.v.ring_water;
-		if(ringhealth > 100)
+		if (ringhealth > 100)
 			ringhealth = 100;
-		Sbar_DrawPic(  73 - (int)(26 * (ringhealth/(float)100)),142,Draw_CachePic("gfx/ringhlth.lmp"));
-		Sbar_DrawPic( 73, 142, Draw_CachePic("gfx/rhlthcvr.lmp"));
+		Sbar_DrawPic(73 - (int)(26 * (ringhealth/(float)100)), 142, Draw_CachePic("gfx/ringhlth.lmp"));
+		Sbar_DrawPic(73, 142, Draw_CachePic("gfx/rhlthcvr.lmp"));
 	}
 
-	if(cl.v.ring_turning > 0)
+	if (cl.v.ring_turning > 0)
 	{
 		Sbar_DrawTransPic(81, 119, Draw_CachePic("gfx/ring_t.lmp"));
 		ringhealth = (int)cl.v.ring_turning;
-		if(ringhealth > 100)
+		if (ringhealth > 100)
 			ringhealth = 100;
-		Sbar_DrawPic(  110 - (int)(26 * (ringhealth/(float)100)),142,Draw_CachePic("gfx/ringhlth.lmp"));
-		Sbar_DrawPic( 110, 142, Draw_CachePic("gfx/rhlthcvr.lmp"));
+		Sbar_DrawPic(110 - (int)(26 * (ringhealth/(float)100)), 142, Draw_CachePic("gfx/ringhlth.lmp"));
+		Sbar_DrawPic(110, 142, Draw_CachePic("gfx/rhlthcvr.lmp"));
 	}
 
-	if(cl.v.ring_regeneration > 0)
+	if (cl.v.ring_regeneration > 0)
 	{
 		Sbar_DrawTransPic(119, 119, Draw_CachePic("gfx/ring_r.lmp"));
 		ringhealth = (int)cl.v.ring_regeneration;
-		if(ringhealth > 100)
+		if (ringhealth > 100)
 			ringhealth = 100;
-		Sbar_DrawPic( 148 -(int)(26 * (ringhealth/(float)100)),142,Draw_CachePic("gfx/ringhlth.lmp"));
-		Sbar_DrawPic( 148, 142, Draw_CachePic("gfx/rhlthcv2.lmp"));
+		Sbar_DrawPic(148 -(int)(26 * (ringhealth/(float)100)), 142, Draw_CachePic("gfx/ringhlth.lmp"));
+		Sbar_DrawPic(148, 142, Draw_CachePic("gfx/rhlthcv2.lmp"));
 	}
 
 	// Puzzle pieces
 	piece = 0;
-	for(i = 0; i < 8; i++)
+	for (i = 0; i < 8; i++)
 	{
-		if(cl.puzzle_pieces[i][0] == 0)
+		if (cl.puzzle_pieces[i][0] == 0)
 		{
 			continue;
 		}
-		Sbar_DrawPic(194+(piece%4)*31, piece < 4 ? 51 : 82,
-			Draw_CachePic(va("gfx/puzzle/%s.lmp", cl.puzzle_pieces[i])));
+		Sbar_DrawPic(194+(piece%4)*31, piece < 4 ? 51 : 82, Draw_CachePic(va("gfx/puzzle/%s.lmp", cl.puzzle_pieces[i])));
 		piece++;
 	}
 }
@@ -748,32 +735,32 @@ static void DrawLowerBar(void)
 
 static int CalcAC(void)
 {
-	int a;
-	int playerClass;
+	int	a;
+	int	playerClass;
 
 	//playerClass = cl.v.playerclass;
 	playerClass = cl.players[cl.playernum].playerclass - 1;
-	if(playerClass < 0 || playerClass >= MAX_PLAYER_CLASS)
+	if (playerClass < 0 || playerClass >= MAX_PLAYER_CLASS)
 	{
 		playerClass = 1;
 	}
 	a = 0;
-	if(cl.v.armor_amulet > 0)
+	if (cl.v.armor_amulet > 0)
 	{
 		a += AmuletAC[playerClass];
 		a += cl.v.armor_amulet/5;
 	}
-	if(cl.v.armor_bracer > 0)
+	if (cl.v.armor_bracer > 0)
 	{
 		a += BracerAC[playerClass];
 		a += cl.v.armor_bracer/5;
 	}
-	if(cl.v.armor_breastplate > 0)
+	if (cl.v.armor_breastplate > 0)
 	{
 		a += BreastplateAC[playerClass];
 		a += cl.v.armor_breastplate/5;
 	}
-	if(cl.v.armor_helmet > 0)
+	if (cl.v.armor_helmet > 0)
 	{
 		a += HelmetAC[playerClass];
 		a += cl.v.armor_helmet/5;
@@ -800,19 +787,19 @@ void Sbar_Changed(void)
 
 static int Sbar_itoa(int num, char *buf)
 {
-	char *str;
-	int pow10;
-	int dig;
+	char	*str;
+	int		pow10;
+	int		dig;
 
 	str = buf;
-	if(num < 0)
+	if (num < 0)
 	{
 		*str++ = '-';
 		num = -num;
 	}
 
-	for(pow10 = 10; num >= pow10; pow10 *= 10)
-	;
+	for (pow10 = 10; num >= pow10; pow10 *= 10)
+		;
 
 	do
 	{
@@ -835,24 +822,24 @@ static int Sbar_itoa(int num, char *buf)
 
 static void Sbar_DrawNum(int x, int y, int number, int digits)
 {
-	char str[12];
-	char *ptr;
-	int l, frame;
+	char	str[12];
+	char	*ptr;
+	int		l, frame;
 
 	l = Sbar_itoa(number, str);
 	ptr = str;
-	if(l > digits)
+	if (l > digits)
 	{
 		ptr += (l-digits);
 	}
-	if(l < digits)
+	if (l < digits)
 	{
 		x += ((digits-l)*13)/2;
 	}
 
-	while(*ptr)
+	while (*ptr)
 	{
-		if(*ptr == '-')
+		if (*ptr == '-')
 		{
 			frame = STAT_MINUS;
 		}
@@ -876,14 +863,13 @@ static void Sbar_DrawNum(int x, int y, int number, int digits)
 
 static void Sbar_SortFrags (qboolean includespec)
 {
-	int i, j, k;
-		
-// sort by frags
+	int	i, j, k;
+
+	// sort by frags
 	scoreboardlines = 0;
 	for (i=0 ; i<MAX_CLIENTS ; i++)
 	{
-		if (cl.players[i].name[0] &&
-			(!cl.players[i].spectator || includespec))
+		if (cl.players[i].name[0] && (!cl.players[i].spectator || includespec))
 		{
 			fragsort[scoreboardlines] = i;
 			scoreboardlines++;
@@ -891,7 +877,7 @@ static void Sbar_SortFrags (qboolean includespec)
 				cl.players[i].frags = SPEC_FRAGS;
 		}
 	}
-		
+
 	for (i=0 ; i<scoreboardlines ; i++)
 		for (j=0 ; j<scoreboardlines-1-i ; j++)
 			if (cl.players[fragsort[j]].frags < cl.players[fragsort[j+1]].frags)
@@ -902,7 +888,8 @@ static void Sbar_SortFrags (qboolean includespec)
 			}
 }
 
-int	Sbar_ColorForMap (int m)
+#if 0	// unused stuff
+static int Sbar_ColorForMap (int m)
 {
 	return m < 128 ? m + 8 : m + 8;
 }
@@ -932,7 +919,7 @@ static void SoloScoreboard(void)
 	units = seconds - 10*tens;
 	sprintf (str,"Time :%3i:%i%i", minutes, tens, units);
 	Sbar_DrawString (184, 4, str);
-	
+
 	// draw level name
 	l = strlen (cl.levelname);
 	Sbar_DrawString (232 - l*4, 12, cl.levelname);
@@ -984,16 +971,17 @@ void Sbar_IntermissionNumber (int x, int y, int num, int digits, int color)
 		ptr++;
 	}
 }
+#endif	// end of unused stuff
 
 extern const int color_offsets[MAX_PLAYER_CLASS];
 extern byte *playerTranslation;
 
-void FindColor (int slot, int *color1, int *color2)
+static void FindColor (int slot, int *color1, int *color2)
 {
 	int		j;
 	int		top, bottom, done;
 	byte	*sourceA, *sourceB, *colorA, *colorB;
-	
+
 	if (slot > MAX_CLIENTS)
 		Sys_Error ("FindColor: slot > cl.maxclients");
 
@@ -1006,8 +994,10 @@ void FindColor (int slot, int *color1, int *color2)
 	top = cl.players[slot].topcolor;
 	bottom = cl.players[slot].bottomcolor;
 
-	if (top > 10) top = 0;
-	if (bottom > 10) bottom = 0;
+	if (top > 10)
+		top = 0;
+	if (bottom > 10)
+		bottom = 0;
 
 	top -= 1;
 	bottom -= 1;
@@ -1017,9 +1007,9 @@ void FindColor (int slot, int *color1, int *color2)
 	sourceA = colorB + 256 + (top * 256);
 	sourceB = colorB + 256 + (bottom * 256);
 	done = 0;
-	for(j=0;j<256;j++,colorA++,colorB++,sourceA++,sourceB++)
+	for (j=0; j<256; j++, colorA++, colorB++, sourceA++, sourceB++)
 	{
-		if ((*colorA != 255) && !(done & 1)) 
+		if ((*colorA != 255) && !(done & 1))
 		{
 			if (top >= 0)
 				*color1 = *sourceA;
@@ -1027,7 +1017,7 @@ void FindColor (int slot, int *color1, int *color2)
 				*color1 = *colorA;
 		//	done |= 1;
 		}
-		if ((*colorB != 255) && !(done & 2)) 
+		if ((*colorB != 255) && !(done & 2))
 		{
 			if (bottom >= 0)
 				*color2 = *sourceB;
@@ -1068,13 +1058,13 @@ void Sbar_DeathmatchOverlay(void)
 	pic = Draw_CachePic ("gfx/menu/title8.lmp");
 	M_DrawTransPic ((320-pic->width)/2, 0, pic);
 
-// scores	
+	// scores
 	Sbar_SortFrags (true);
 
-// draw the text
+	// draw the text
 	l = scoreboardlines;
-	
-	x = ((vid.width - 320)>>1);//was 8 + ...
+
+	x = ((vid.width - 320)>>1);	//was 80 + ...
 	y = 62;
 
 	Sbar_DrawRedString (x+4, y-1, "FRAG");
@@ -1094,7 +1084,6 @@ void Sbar_DeathmatchOverlay(void)
 		if (!s->name[0])
 			continue;
 
-		
 		if (s->frags != SPEC_FRAGS)
 		{
 			switch(s->playerclass)
@@ -1125,23 +1114,23 @@ void Sbar_DeathmatchOverlay(void)
 				break;
 			}
 
-			if(cl_siege)
+			if (cl_siege)
 			{
 				Sbar_DrawRedString (x+160, y, "6");
-				if(s->siege_team==1)
-					Draw_Character ( x+152 , y, 143);//shield
+				if (s->siege_team==1)
+					Draw_Character ( x+152 , y, 143);	//shield
 				else if(s->siege_team==2)
-					Draw_Character ( x+152 , y, 144);//sword
+					Draw_Character ( x+152 , y, 144);	//sword
 				else
-					Sbar_DrawRedString ( x+152 , y, "?");//no team
+					Sbar_DrawRedString ( x+152 , y, "?");	//no team
 
-				if(k==cl_keyholder)
-					Draw_Character ( x+144 , y, 145);//key
+				if (k==cl_keyholder)
+					Draw_Character ( x+144 , y, 145);	//key
 				else
 					Sbar_DrawRedString (x+144, y, "-");
 
-				if(k==cl_doc)
-					Draw_Character ( x+160 , y, 130);//crown
+				if (k==cl_doc)
+					Draw_Character ( x+160 , y, 130);	//crown
 				else
 					Sbar_DrawRedString (x+160, y, "6");
 
@@ -1149,9 +1138,9 @@ void Sbar_DeathmatchOverlay(void)
 			else
 			{
 				Sbar_DrawRedString (x+144, y, "-");
-				if(!s->level)
+				if (!s->level)
 					Sbar_DrawRedString (x+152, y, "01");
-				else if((int)s->level<10)
+				else if ((int)s->level<10)
 				{
 					Sbar_DrawRedString (x+152, y, "0");
 					sprintf(num, "%1d",s->level);
@@ -1166,22 +1155,22 @@ void Sbar_DeathmatchOverlay(void)
 
 			// draw background
 			FindColor (k, &top, &bottom);
-		
-			Draw_Fill ( x+8, y, 28, 4, top);//was x to 40
-			Draw_Fill ( x+8, y+4, 28, 4, bottom);//was x to 40
+
+			Draw_Fill (x+8, y, 28, 4, top);		//was x to 40
+			Draw_Fill (x+8, y+4, 28, 4, bottom);	//was x to 40
 
 			// draw number
 			f = s->frags;
 			sprintf (num, "%3i",f);
-			
-			Draw_Character ( x+10 , y-1, num[0]);//was 8
-			Draw_Character ( x+18 , y-1, num[1]);//was 16
-			Draw_Character ( x+26 , y-1, num[2]);//was 24
+
+			Draw_Character (x+10 , y-1, num[0]);	//was 8
+			Draw_Character (x+18 , y-1, num[1]);	//was 16
+			Draw_Character (x+26 , y-1, num[2]);	//was 24
 
 			if (k == cl.playernum)
 				Draw_Character ( x, y-1, 13);
 
-//rjr			if(k==sv_kingofhill)
+//rjr			if (k==sv_kingofhill)
 //rjr				Draw_Character ( x+40 , y-1, 130);
 			sprintf(num, "%4d",s->ping);
 			Draw_String(x+48, y, num);
@@ -1192,10 +1181,10 @@ void Sbar_DeathmatchOverlay(void)
 				total = realtime - s->entertime;
 			minutes = (int)total/60;
 			sprintf (num, "%4i", minutes);
-			Draw_String ( x+88 , y, num);
+			Draw_String (x+88 , y, num);
 
 			// draw name
-			if(cl_siege&&s->siege_team==2)//attacker
+			if (cl_siege && s->siege_team==2)	//attacker
 				Draw_String (x+178, y, s->name);
 			else
 				Sbar_DrawRedString (x+178, y, s->name);
@@ -1221,11 +1210,12 @@ void Sbar_DeathmatchOverlay(void)
 	}
 }
 
-void FindName(char *which, char *name)
+#if 0
+static void FindName(char *which, char *name)
 {
-	int j,length;
-	char *pos,*p2;
-	char test[40];
+	int		j;
+	char	*pos, *p2;
+	char	test[40];
 
 	strcpy(name, "Unknown");
 	j = atol(puzzle_strings);
@@ -1237,12 +1227,10 @@ void FindName(char *which, char *name)
 	if ((*pos) == 10 || (*pos) == 13)
 		pos++;
 
-	length = strlen(which);
-
-	for(;j;j--)
+	for ( ; j; j--)
 	{
 		p2 = strchr(pos,' ');
-		if (!p2) 
+		if (!p2)
 			return;
 
 		strncpy(test,pos,p2-pos);
@@ -1254,7 +1242,7 @@ void FindName(char *which, char *name)
 			if (pos)
 			{
 				pos++;
-				p2 = strchr(pos,13);
+				p2 = strchr(pos,13);	//look for newline after text
 				if (p2)
 				{
 					strncpy(name,pos,p2-pos);
@@ -1265,7 +1253,8 @@ void FindName(char *which, char *name)
 			return;
 		}
 		pos = strchr(pos,13);
-		if (!pos) return;
+		if (!pos)
+			return;
 		if ((*pos) == 10 || (*pos) == 13)
 			pos++;
 		if ((*pos) == 10 || (*pos) == 13)
@@ -1278,8 +1267,7 @@ void FindName(char *which, char *name)
 // Sbar_NormalOverlay
 //
 //==========================================================================
-
-void Sbar_NormalOverlay(void)
+static void Sbar_NormalOverlay(void)
 {
 	int		i, y, piece;
 	char		Name[40];
@@ -1289,27 +1277,26 @@ void Sbar_NormalOverlay(void)
 
 	piece = 0;
 	y = 40;
-	for(i = 0; i < 8; i++)
+	for (i = 0; i < 8; i++)
 	{
-		if(cl.puzzle_pieces[i][0] == 0)
+		if (cl.puzzle_pieces[i][0] == 0)
 		{
 			continue;
 		}
 
-		if (piece == 4) y = 40;
+		if (piece == 4)
+			y = 40;
 
 		FindName(cl.puzzle_pieces[i],Name);
 
 		if (piece < 4)
 		{
-			M_DrawPic(10, y,
-				Draw_CachePic(va("gfx/puzzle/%s.lmp", cl.puzzle_pieces[i])));
+			M_DrawPic(10, y, Draw_CachePic(va("gfx/puzzle/%s.lmp", cl.puzzle_pieces[i])));
 			M_PrintWhite (45, y, Name);
 		}
 		else
 		{
-			M_DrawPic(310-32, y,
-				Draw_CachePic(va("gfx/puzzle/%s.lmp", cl.puzzle_pieces[i])));
+			M_DrawPic(310-32, y, Draw_CachePic(va("gfx/puzzle/%s.lmp", cl.puzzle_pieces[i])));
 			M_PrintWhite (310-32-3-(strlen(Name)*8), 18+y, Name);
 		}
 
@@ -1317,6 +1304,7 @@ void Sbar_NormalOverlay(void)
 		piece++;
 	}
 }
+#endif
 
 //==========================================================================
 //
@@ -1324,9 +1312,9 @@ void Sbar_NormalOverlay(void)
 //
 //==========================================================================
 
-void DrawTime (int x, int y, int disp_time)
+static void DrawTime (int x, int y, int disp_time)
 {
-	int	show_min,show_sec;
+	int	show_min, show_sec;
 	char	num[40];
 
 	show_min = disp_time;
@@ -1336,18 +1324,18 @@ void DrawTime (int x, int y, int disp_time)
 	Sbar_DrawRedString ( x+8 , y, num);
 //	Draw_Character ( x+32 , y, 58);// ":"
 	sprintf(num, "%2d",show_sec);
-	if(show_sec>=10)
+	if (show_sec>=10)
 	{
-		Sbar_DrawRedString ( x+40 , y, num);
+		Sbar_DrawRedString (x+40 , y, num);
 	}
 	else
 	{
-		Sbar_DrawRedString ( x+40 , y, num);
-		Sbar_DrawRedString ( x+40 , y, "0");
+		Sbar_DrawRedString (x+40 , y, num);
+		Sbar_DrawRedString (x+40 , y, "0");
 	}
 }
 
-void Sbar_SmallDeathmatchOverlay(void)
+static void Sbar_SmallDeathmatchOverlay(void)
 {
 	int		i, k, l;
 	int		top, bottom;
@@ -1357,11 +1345,19 @@ void Sbar_SmallDeathmatchOverlay(void)
 //	unsigned char	num[12];
 	player_info_t	*s;
 
+	// prevent any possible screw-ups
+	if (DMMode.value != (int)DMMode.value)
+		Cvar_SetValue ("dm_mode", (int)DMMode.value);
+	if (!DMMode.value)
+		return;
+	if (DMMode.value > 2)
+		DMMode.value = 2;
+
 	if ((int)DMMode.value >= 2 && BarHeight != BAR_TOP_HEIGHT)
 		return;
 
 	trans_level = (int)((DMMode.value-floor(DMMode.value)+1E-3)*10);
-	if (trans_level > 2) 
+	if (trans_level > 2)
 	{
 		trans_level = 0;
 	}
@@ -1369,10 +1365,10 @@ void Sbar_SmallDeathmatchOverlay(void)
 	scr_copyeverything = 1;
 	scr_fullupdate = 0;
 
-// scores	
+	// scores
 	Sbar_SortFrags (false);
 
-// draw the text
+	// draw the text
 	l = scoreboardlines;
 
 	x = 10;
@@ -1380,36 +1376,36 @@ void Sbar_SmallDeathmatchOverlay(void)
 	{
 		i = (vid.height - 120) / 10;
 
-		if (l > i) 
+		if (l > i)
 			l = i;
 
 		y = 46;
 	}
-	else if ((int)DMMode.value == 2)
+	//else if ((int)DMMode.value == 2)
+	else
 	{
-		if (l > 4) 
+		if (l > 4)
 			l = 4;
 		y = vid.height - BAR_TOP_HEIGHT;
 	}
+
 	if (cl_siege)
 	{
-		if (l > i) 
-			l = i;
 		y = vid.height - BAR_TOP_HEIGHT - 24;
 		x-=4;
-		Draw_Character ( x , y, 142);//sundial
-		Draw_Character ( x+32 , y, 58);// ":"
-		if(cl_timelimit>cl.time+cl_server_time_offset)
+		Draw_Character (x , y, 142);	//sundial
+		Draw_Character (x+32 , y, 58);	// ":"
+		if (cl_timelimit>cl.time+cl_server_time_offset)
 		{
 			DrawTime(x,y,(int)(cl_timelimit - (cl.time + cl_server_time_offset)));
 		}
-		else if((int)cl.time%2)
+		else if ((int)cl.time%2)
 		{//odd number, draw 00:00, this will make it flash every second
-			Sbar_DrawRedString ( x+16 , y, "00");
-			Sbar_DrawRedString ( x+40 , y, "00");
+			Sbar_DrawRedString (x+16 , y, "00");
+			Sbar_DrawRedString (x+40 , y, "00");
 		}
 	}
-	
+
 	def_frags = att_frags = 0;
 	for (i=0 ; i<l ; i++)
 	{
@@ -1418,18 +1414,18 @@ void Sbar_SmallDeathmatchOverlay(void)
 		if (!s->name[0])
 			continue;
 
-		if(cl_siege)
+		if (cl_siege)
 		{
-			if(s->siege_team==1)
+			if (s->siege_team==1)
 			{//defender
-				if(s->frags>0)
+				if (s->frags>0)
 					def_frags+=s->frags;
 				else
 					att_frags-=s->frags;
 			}
-			else if(s->siege_team==2)
+			else if (s->siege_team==2)
 			{//attacker
-				if(s->frags>0)
+				if (s->frags>0)
 					att_frags+=s->frags;
 				else
 					def_frags-=s->frags;
@@ -1437,56 +1433,54 @@ void Sbar_SmallDeathmatchOverlay(void)
 		}
 		else
 		{
-			if ((int)DMMode.value == 2)
-			{
-			}
 			// draw background
 			FindColor (k, &top, &bottom);
-		
-			Draw_Fill ( x, y, 28, 4, top);
-			Draw_Fill ( x, y+4, 28, 4, bottom);
+
+			Draw_Fill (x, y, 28, 4, top);
+			Draw_Fill (x, y+4, 28, 4, bottom);
 
 			// draw number
 			f = s->frags;
 			sprintf (num, "%3i",f);
-			
+
 	/*
 			if (k != cl.playernum)
 			{
-				Draw_Character ( x+2 , y-1, num[0]);
-				Draw_Character ( x+10 , y-1, num[1]);
-				Draw_Character ( x+18 , y-1, num[2]);
+				Draw_Character (x+2 , y-1, num[0]);
+				Draw_Character (x+10 , y-1, num[1]);
+				Draw_Character (x+18 , y-1, num[2]);
 			}
 			else
 			{
-				Draw_Character ( x - 8, y-1, 13);
-				Draw_Character ( x+2 , y-1, num[0] + 256);
-				Draw_Character ( x+10 , y-1, num[1] + 256);
-				Draw_Character ( x+18 , y-1, num[2] + 256);
+				Draw_Character (x-8 , y-1, 13);
+				Draw_Character (x+2 , y-1, num[0] + 256);
+				Draw_Character (x+10 , y-1, num[1] + 256);
+				Draw_Character (x+18 , y-1, num[2] + 256);
 			}
 	*/
 
 			if (k == cl.playernum)
 			{
-				Draw_Character ( x - 8, y-1, 13);
+				Draw_Character (x - 8, y-1, 13);
 			}
-			Draw_Character ( x+2 , y-1, num[0]);
-			Draw_Character ( x+10 , y-1, num[1]);
-			Draw_Character ( x+18 , y-1, num[2]);
+			Draw_Character (x+2 , y-1, num[0]);
+			Draw_Character (x+10 , y-1, num[1]);
+			Draw_Character (x+18 , y-1, num[2]);
 	//rjr		if(k==sv_kingofhill)
 	//rjr			Draw_Character ( x+28 , y-1, 130);
 			y += 10;
 		}
 	}
-	if(cl_siege)
+
+	if (cl_siege)
 	{
-		if(cl.playernum == cl_keyholder)
-			Draw_Character ( x , y-10, 145);//key
-		if(cl.playernum == cl_doc)
-			Draw_Character ( x+8 , y-10, 130);//crown
-		if((int)cl.v.artifact_active&ARTFLAG_BOOTS)
-			Draw_Character ( x+16 , y-10, 146);//boots
-		
+		if (cl.playernum == cl_keyholder)
+			Draw_Character (x , y-10, 145);//key
+		if (cl.playernum == cl_doc)
+			Draw_Character (x+8 , y-10, 130);//crown
+		if ((int)cl.v.artifact_active&ARTFLAG_BOOTS)
+			Draw_Character (x+16 , y-10, 146);//boots
+
 		//Print defender losses
 		Draw_Character ( x , y+10, 143);//shield
 		sprintf (num, "%3i",defLosses);
@@ -1515,14 +1509,14 @@ void Sbar_SmallDeathmatchOverlay(void)
 // DrawActiveRings
 //
 //==========================================================================
-int art_col;
-int ring_row;
+static int art_col;
+static int ring_row;
 
 static void DrawActiveRings(void)
 {
-	int flag;
-	int frame;
-	char tempStr[24];
+	int		flag;
+	int		frame;
+	char	tempStr[24];
 
 	if (scr_con_current == vid.height)
 		return;		// console is full screen
@@ -1531,34 +1525,34 @@ static void DrawActiveRings(void)
 
 	flag = (int)cl.v.rings_active;
 
-	if(flag&RING_TURNING)
+	if (flag&RING_TURNING)
 	{
-		frame = 1+(int)(cl.time*16)%16;
+		frame = 1+((int)(cl.time*16)%16);
 		sprintf(tempStr, "gfx/rngtrn%d.lmp", frame);
 		Draw_TransPic(vid.width - 50, ring_row, Draw_CachePic(tempStr));
 		ring_row += 33;
 	}
 
-/*	if(flag&RING_REGENERATION)
+/*	if (flag&RING_REGENERATION)
 	{
-		frame = 1+(int)(cl.time*16)%16;
+		frame = 1+((int)(cl.time*16)%16);
 		sprintf(tempStr, "gfx/rngreg%d.lmp", frame);
 		Draw_TransPic(vid.width - 50, ring_row, Draw_CachePic(tempStr));
 		ring_row += 33;
 	}
 */
 
-	if(flag&RING_WATER)
+	if (flag&RING_WATER)
 	{
-		frame = 1+(int)(cl.time*16)%16;
+		frame = 1+((int)(cl.time*16)%16);
 		sprintf(tempStr, "gfx/rngwtr%d.lmp", frame);
 		Draw_TransPic(vid.width - 50, ring_row, Draw_CachePic(tempStr));
 		ring_row += 33;
 	}
 
-	if(flag&RING_FLIGHT)
+	if (flag&RING_FLIGHT)
 	{
-		frame = 1+(int)(cl.time*16)%16;
+		frame = 1+((int)(cl.time*16)%16);
 		sprintf(tempStr, "gfx/rngfly%d.lmp", frame);
 		Draw_TransPic(vid.width - 50, ring_row, Draw_CachePic(tempStr));
 		ring_row += 33;
@@ -1572,10 +1566,10 @@ static void DrawActiveRings(void)
 //==========================================================================
 static void DrawActiveArtifacts(void)
 {
-	int flag;
-	static int oldflags = 0;
-	int frame;
-	char tempStr[24];
+	int		flag;
+	static int	oldflags = 0;
+	int		frame;
+	char	tempStr[24];
 
 	if (scr_con_current == vid.height)
 		return;
@@ -1588,7 +1582,7 @@ static void DrawActiveArtifacts(void)
 	flag = (int)cl.v.artifact_active;
 	if (flag & ART_TOMEOFPOWER)
 	{
-		frame = 1+(int)(cl.time*16)%16;
+		frame = 1+((int)(cl.time*16)%16);
 		sprintf(tempStr, "gfx/pwrbook%d.lmp", frame);
 		Draw_TransPic(vid.width-art_col, 1, Draw_CachePic(tempStr));
 		art_col += 50;
@@ -1601,7 +1595,7 @@ static void DrawActiveArtifacts(void)
 
 	if (flag & ART_HASTE)
 	{
-		frame = 1+(int)(cl.time*16)%16;
+		frame = 1+((int)(cl.time*16)%16);
 		sprintf(tempStr, "gfx/durhst%d.lmp", frame);
 		Draw_TransPic(vid.width-art_col,1, Draw_CachePic(tempStr));
 		art_col += 50;
@@ -1614,7 +1608,7 @@ static void DrawActiveArtifacts(void)
 
 	if (flag & ART_INVINCIBILITY)
 	{
-		frame = 1+(int)(cl.time*16)%16;
+		frame = 1+((int)(cl.time*16)%16);
 		sprintf(tempStr, "gfx/durshd%d.lmp", frame);
 		Draw_TransPic(vid.width-art_col, 1, Draw_CachePic(tempStr));
 		art_col += 50;
@@ -1633,7 +1627,7 @@ static void DrawActiveArtifacts(void)
 
 void Inv_Update(qboolean force)
 {
-	if(inv_flg || force)
+	if (inv_flg || force)
 	{
 		// Just to be safe
 		if (cl.inv_selected >= 0 && cl.inv_count > 0)
@@ -1641,14 +1635,15 @@ void Inv_Update(qboolean force)
 		else
 			cl.v.inventory = 0;
 
-		if (!force) 
+		if (!force)
 		{
 			scr_fullupdate = 0;
-			inv_flg = false;  // Toggle menu off
+			inv_flg = false;	// Toggle menu off
 		}
 
 		if (cls.state == ca_active)
-		{	// This will cause the server to set the client's edict's inventory value
+		{
+		// This will cause the server to set the client's edict's inventory value
 			MSG_WriteByte (&cls.netchan.message, clc_inv_select);
 			MSG_WriteByte (&cls.netchan.message, cl.v.inventory);
 		}
@@ -1663,12 +1658,11 @@ void Inv_Update(qboolean force)
 
 static void DrawBarArtifactIcon(int x, int y, int artifact)
 {
-	int count;
+	int	count;
 
-	Sbar_DrawTransPic(x, y, Draw_CachePic(va("gfx/arti%02d.lmp",
-		artifact)));
-//	if((count = (int)(&cl.v.cnt_torch)[artifact]) > 1)
-	if((count = (int)(&cl.v.cnt_torch)[artifact]) > 0)
+	Sbar_DrawTransPic(x, y, Draw_CachePic(va("gfx/arti%02d.lmp", artifact)));
+//	if ((count = (int)(&cl.v.cnt_torch)[artifact]) > 1)
+	if ((count = (int)(&cl.v.cnt_torch)[artifact]) > 0)
 	{
 		DrawBarArtifactNumber(x+20, y+21, count);
 	}
@@ -1682,19 +1676,19 @@ static void DrawBarArtifactIcon(int x, int y, int artifact)
 
 static void DrawArtifactInventory(void)
 {
-	int i;
-	int x, y;
+	int	i;
+	int	x, y;
 
-	if(InventoryHideTime < cl.time)
+	if (InventoryHideTime < cl.time)
 	{
 		Inv_Update(false);
 		return;
 	}
-	if(!inv_flg)
+	if (!inv_flg)
 	{
 		return;
 	}
-	if(!cl.inv_count)
+	if (!cl.inv_count)
 	{
 		Inv_Update(false);
 		return;
@@ -1702,7 +1696,7 @@ static void DrawArtifactInventory(void)
 
 	//SB_InvChanged();
 
-	if(BarHeight < 0)
+	if (BarHeight < 0)
 	{
 		y = BarHeight-34;
 	}
@@ -1710,13 +1704,14 @@ static void DrawArtifactInventory(void)
 	{
 		y = -37;
 	}
-	for(i = 0, x = 64; i < INV_MAX_ICON; i++, x += 33)
+
+	for (i = 0, x = 64; i < INV_MAX_ICON; i++, x += 33)
 	{
-		if(cl.inv_startpos+i >= cl.inv_count)
+		if (cl.inv_startpos+i >= cl.inv_count)
 		{
 			break;
 		}
-		if(cl.inv_startpos+i == cl.inv_selected)
+		if (cl.inv_startpos+i == cl.inv_selected)
 		{ // Highlight icon
 			Sbar_DrawTransPic(x+9, y-12, Draw_CachePic("gfx/artisel.lmp"));
 		}
@@ -1725,10 +1720,12 @@ static void DrawArtifactInventory(void)
 
 	//Inv_DrawArrows (x, y);
 
-/*	if (cl.inv_startpos)  // Left arrow showing there are icons to the left 
+/*	// Left arrow showing there are icons to the left
+	if (cl.inv_startpos)
 		Draw_Fill ( x , y - 5, 3, 1, 30);
 
-	if (cl.inv_startpos + INV_MAX_ICON < cl.inv_count) // Right arrow showing there are icons to the right
+	// Right arrow showing there are icons to the right
+	if (cl.inv_startpos + INV_MAX_ICON < cl.inv_count)
 		Draw_Fill ( x + 200, y - 5 , 3, 1, 30);
 */
 }
@@ -1795,7 +1792,7 @@ static void ShowNamesUp_f(void)
 
 static void ShowInfoDown_f(void)
 {
-	if(sb_ShowInfo || cl.intermission)
+	if (sb_ShowInfo || cl.intermission)
 	{
 		return;
 	}
@@ -1813,8 +1810,8 @@ static void ShowInfoDown_f(void)
 
 static void ShowInfoUp_f(void)
 {
-	//if(cl.intermission || (scr_viewsize.value > 110.0 && !sbtrans.value))
-	if(cl.intermission || scr_viewsize.value > 110.0)
+//	if (cl.intermission || (scr_viewsize.value > 110.0 && !sbtrans.value))
+	if (cl.intermission || scr_viewsize.value > 110.0)
 	{
 		BarTargetHeight = 0.0-BAR_BUMP_HEIGHT;
 	}
@@ -1835,17 +1832,17 @@ static void ShowInfoUp_f(void)
 
 static void InvLeft_f(void)
 {
-	if(!cl.inv_count || cl.intermission)
+	if (!cl.inv_count || cl.intermission)
 	{
 		return;
 	}
 
-	if(inv_flg)
+	if (inv_flg)
 	{
-		if(cl.inv_selected > 0)
+		if (cl.inv_selected > 0)
 		{
 			cl.inv_selected--;
-			if(cl.inv_selected < cl.inv_startpos)
+			if (cl.inv_selected < cl.inv_startpos)
 			{
 				cl.inv_startpos = cl.inv_selected;
 			}
@@ -1868,14 +1865,14 @@ static void InvLeft_f(void)
 
 static void InvRight_f(void)
 {
-	if(!cl.inv_count || cl.intermission)
+	if (!cl.inv_count || cl.intermission)
 	{
 		return;
 	}
 
-	if(inv_flg)
+	if (inv_flg)
 	{
-		if(cl.inv_selected < cl.inv_count-1)
+		if (cl.inv_selected < cl.inv_count-1)
 		{
 			cl.inv_selected++;
 			if (cl.inv_selected - cl.inv_startpos >= INV_MAX_ICON)
@@ -1902,7 +1899,7 @@ static void InvRight_f(void)
 
 static void InvUse_f(void)
 {
-	if(!cl.inv_count || cl.intermission)
+	if (!cl.inv_count || cl.intermission)
 	{
 		return;
 	}
@@ -1922,7 +1919,7 @@ static void InvUse_f(void)
 
 static void InvDrop_f(void)
 {
-	if(!cl.inv_count || cl.intermission)
+	if (!cl.inv_count || cl.intermission)
 	{
 		return;
 	}
@@ -1967,21 +1964,20 @@ static void ToggleDM_f(void)
 
 void SB_InvChanged(void)
 {
-	int counter, position;
-	qboolean examined[INV_MAX_CNT];
-	qboolean ForceUpdate = false;
+	int		counter, position;
+	qboolean	examined[INV_MAX_CNT];
+	qboolean	ForceUpdate = false;
 
-	memset(examined,0,sizeof(examined)); // examined[x] = false
+	memset(examined,0,sizeof(examined));	// examined[x] = false
 
-	if(cl.inv_selected >= 0 &&
-	   (&cl.v.cnt_torch)[cl.inv_order[cl.inv_selected]] == 0)
+	if (cl.inv_selected >= 0 && (&cl.v.cnt_torch)[cl.inv_order[cl.inv_selected]] == 0)
 		ForceUpdate = true;
 
 	// removed items we no longer have from the order
-	for(counter=position=0;counter<cl.inv_count;counter++)
+	for (counter=position=0;counter<cl.inv_count;counter++)
 	{
 		//if (Inv_GetCount(cl.inv_order[counter]) >= 0)
-		if((&cl.v.cnt_torch)[cl.inv_order[counter]] > 0)
+		if ((&cl.v.cnt_torch)[cl.inv_order[counter]] > 0)
 		{
 			cl.inv_order[position] = cl.inv_order[counter];
 			examined[cl.inv_order[position]] = true;
@@ -1991,11 +1987,11 @@ void SB_InvChanged(void)
 	}
 
 	// add in the new items
-	for(counter=0;counter<INV_MAX_CNT;counter++)
+	for (counter=0;counter<INV_MAX_CNT;counter++)
 		if (!examined[counter])
 		{
 			//if (Inv_GetCount(counter) > 0)
-			if((&cl.v.cnt_torch)[counter] > 0)
+			if ((&cl.v.cnt_torch)[counter] > 0)
 			{
 				cl.inv_order[position] = counter;
 				position++;
@@ -2003,12 +1999,12 @@ void SB_InvChanged(void)
 		}
 
 	cl.inv_count = position;
-	if (cl.inv_selected >= cl.inv_count) 
+	if (cl.inv_selected >= cl.inv_count)
 	{
 		cl.inv_selected = cl.inv_count-1;
 		ForceUpdate = true;
 	}
-	if (cl.inv_count && cl.inv_selected < 0) 
+	if (cl.inv_count && cl.inv_selected < 0)
 	{
 		cl.inv_selected = 0;
 		ForceUpdate = true;
@@ -2021,7 +2017,8 @@ void SB_InvChanged(void)
 	if (cl.inv_startpos+INV_MAX_ICON > cl.inv_count)
 	{
 		cl.inv_startpos = cl.inv_count - INV_MAX_ICON;
-		if (cl.inv_startpos < 0) cl.inv_startpos = 0;
+		if (cl.inv_startpos < 0)
+			cl.inv_startpos = 0;
 	}
 }
 
@@ -2047,8 +2044,8 @@ void SB_InvReset(void)
 
 void SB_ViewSizeChanged(void)
 {
-	//if(cl.intermission || (scr_viewsize.value > 110.0 && !sbtrans.value))
-	if(cl.intermission || scr_viewsize.value > 110.0)
+//	if (cl.intermission || (scr_viewsize.value > 110.0 && !sbtrans.value))
+	if (cl.intermission || scr_viewsize.value > 110.0)
 	{
 		BarHeight = BarTargetHeight = 0.0-BAR_BUMP_HEIGHT;
 	}
@@ -2070,8 +2067,7 @@ void SB_ViewSizeChanged(void)
 
 static void Sbar_DrawPic(int x, int y, qpic_t *pic)
 {
-	Draw_PicCropped(x+((vid.width-320)>>1),
-		y+(vid.height-(int)BarHeight), pic);
+	Draw_PicCropped (x+((vid.width-320)>>1), y+(vid.height-(int)BarHeight), pic);
 }
 
 //==========================================================================
@@ -2084,8 +2080,7 @@ static void Sbar_DrawPic(int x, int y, qpic_t *pic)
 
 static void Sbar_DrawSubPic(int x, int y, int h, qpic_t *pic)
 {
-	Draw_SubPicCropped(x+((vid.width-320)>>1),
-		y+(vid.height-(int)BarHeight), h, pic);
+	Draw_SubPicCropped (x+((vid.width-320)>>1), y+(vid.height-(int)BarHeight), h, pic);
 }
 
 //==========================================================================
@@ -2098,8 +2093,7 @@ static void Sbar_DrawSubPic(int x, int y, int h, qpic_t *pic)
 
 static void Sbar_DrawTransPic(int x, int y, qpic_t *pic)
 {
-	Draw_TransPicCropped(x+((vid.width-320)>>1),
-		y+(vid.height-(int)BarHeight), pic);
+	Draw_TransPicCropped (x+((vid.width-320)>>1), y+(vid.height-(int)BarHeight), pic);
 }
 
 //==========================================================================
@@ -2107,11 +2101,12 @@ static void Sbar_DrawTransPic(int x, int y, qpic_t *pic)
 // Sbar_DrawString
 //
 //==========================================================================
-
+#if 0	// seems to have no users...
 static void Sbar_DrawString(int x, int y, char *str)
 {
-	Draw_String(x+((vid.width-320)>>1), y+vid.height-(int)BarHeight, str);
+	Draw_String (x+((vid.width-320)>>1), y+vid.height-(int)BarHeight, str);
 }
+#endif
 
 void Sbar_DrawRedString (int cx, int cy, char *str)
 {
@@ -2131,8 +2126,7 @@ void Sbar_DrawRedString (int cx, int cy, char *str)
 
 static void Sbar_DrawSmallString(int x, int y, char *str)
 {
-	Draw_SmallString(x+((vid.width-320)>>1),
-		y+vid.height-(int)BarHeight, str);
+	Draw_SmallString (x+((vid.width-320)>>1), y+vid.height-(int)BarHeight, str);
 }
 
 //==========================================================================
@@ -2145,7 +2139,7 @@ static void DrawBarArtifactNumber(int x, int y, int number)
 {
 	static char artiNumName[18] = "gfx/artinum0.lmp";
 
-	if(number >= 10)
+	if (number >= 10)
 	{
 		artiNumName[11] = '0'+(number%100)/10;
 		Sbar_DrawTransPic(x -4, y, Draw_CachePic(artiNumName));
