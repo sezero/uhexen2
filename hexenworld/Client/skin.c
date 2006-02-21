@@ -4,18 +4,18 @@
 cvar_t		baseskin = {"baseskin", "base"};
 cvar_t		noskins = {"noskins", "1"};
 
-char		allskins[128];
-#define	MAX_CACHED_SKINS		128
-skin_t		skins[MAX_CACHED_SKINS];
-int			numskins;
+static char	allskins[128];
+#define	MAX_CACHED_SKINS	128
+static skin_t	skins[MAX_CACHED_SKINS];
+static int		numskins;
+
 
 /*
 ================
 Skin_Find
 
-  Determines the best skin for the given scoreboard
-  slot, and sets scoreboard->skin
-
+Determines the best skin for the given scoreboard
+slot, and sets scoreboard->skin
 ================
 */
 void Skin_Find (player_info_t *sc)
@@ -85,8 +85,8 @@ byte	*Skin_Cache (skin_t *skin)
 	if (cls.downloadtype == dl_skin)
 		return NULL;		// use base until downloaded
 
-	if (noskins.value==1) // JACK: So NOSKINS > 1 will show skins, but
-		return NULL;	  // not download new ones.
+	if (noskins.value==1)	// JACK: So NOSKINS > 1 will show skins, but
+		return NULL;	//	 not download new ones.
 
 	if (skin->failedload)
 		return NULL;
@@ -129,7 +129,7 @@ byte	*Skin_Cache (skin_t *skin)
 		Con_Printf ("Bad skin %s\n", name);
 		return NULL;
 	}
-	
+
 	out = Cache_Alloc (&skin->cache, 320*200, skin->name);
 	if (!out)
 		Sys_Error ("Skin_Cache: couldn't allocate");
@@ -141,7 +141,7 @@ byte	*Skin_Cache (skin_t *skin)
 	{
 		for (x=0 ; x<=pcx->xmax ; )
 		{
-			if ((raw-(byte*)pcx) > com_filesize) 
+			if ((raw-(byte*)pcx) > com_filesize)
 			{
 				Cache_Free (&skin->cache);
 				skin->failedload = true;
@@ -150,10 +150,10 @@ byte	*Skin_Cache (skin_t *skin)
 			}
 			dataByte = *raw++;
 
-			if((dataByte & 0xC0) == 0xC0)
+			if ((dataByte & 0xC0) == 0xC0)
 			{
 				runLength = dataByte & 0x3F;
-				if ((raw-(byte*)pcx) > com_filesize) 
+				if ((raw-(byte*)pcx) > com_filesize)
 				{
 					Cache_Free (&skin->cache);
 					skin->failedload = true;
@@ -166,7 +166,8 @@ byte	*Skin_Cache (skin_t *skin)
 				runLength = 1;
 
 			// skin sanity check
-			if (runLength + x > pcx->xmax + 2) {
+			if (runLength + x > pcx->xmax + 2)
+			{
 				Cache_Free (&skin->cache);
 				skin->failedload = true;
 				Con_Printf ("Skin %s was malformed.  You should delete it.\n", name);
@@ -175,10 +176,9 @@ byte	*Skin_Cache (skin_t *skin)
 			while(runLength-- > 0)
 				pix[x++] = dataByte;
 		}
-
 	}
 
-	if ( raw - (byte *)pcx > com_filesize)
+	if (raw - (byte *)pcx > com_filesize)
 	{
 		Cache_Free (&skin->cache);
 		skin->failedload = true;
@@ -206,9 +206,7 @@ void Skin_NextDownload (void)
 		Con_Printf ("Checking skins...\n");
 	cls.downloadtype = dl_skin;
 
-	for ( 
-		; cls.downloadnumber != MAX_CLIENTS
-		; cls.downloadnumber++)
+	for ( ; cls.downloadnumber != MAX_CLIENTS; cls.downloadnumber++)
 	{
 		sc = &cl.players[cls.downloadnumber];
 		if (!sc->name[0])
@@ -237,9 +235,8 @@ void Skin_NextDownload (void)
 	if (cls.state != ca_active)
 	{	// get next signon phase
 		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-		MSG_WriteString (&cls.netchan.message,
-			va("begin %i", cl.servercount));
-		Cache_Report ();		// print remaining memory
+		MSG_WriteString (&cls.netchan.message, va("begin %i", cl.servercount));
+		Cache_Report ();	// print remaining memory
 	}
 }
 
@@ -287,3 +284,4 @@ void	Skin_AllSkins_f (void)
 
 	Skin_Skins_f ();
 }
+
