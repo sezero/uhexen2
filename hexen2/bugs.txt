@@ -1,70 +1,70 @@
-Bug/Problem									Priority	Status		Where to test it	
+Bug/Problem					Priority	Status		Where to test it
 ----------------------------------------	--------	------		----------------	
-big spider web causes pain sound			High		FIXED		keep4		
+big spider web causes pain sound		High		FIXED		keep4
 
-camera_remote allows mouse looking			HIGH		FIXED		
+camera_remote allows mouse looking		HIGH		FIXED		
 
-monster-dropped puzzle pieces don't			High		FIXED		
+monster-dropped puzzle pieces don't		High		FIXED		
 	have netnames
 
-Golems don't have a dormant flag			High		FIXED	
+Golems don't have a dormant flag		High		FIXED		
 
-Necromancer weapons broken (maybe 3			HIGH		FIXED		
+Necromancer weapons broken (maybe 3		HIGH		FIXED		
 	gets stuck)
 
-Death Message for Pentacles					High		SEMI-FIXED	
+Death Message for Pentacles			High		SEMI-FIXED	
 
 experience value default on pentacles		High		FIXED		
 
-Trains & stop sounds and decap all fucked	SUPERHIGH	FIXED!!!		Tibet4
+Trains & stop sounds and decap all fucked	SUPERHIGH	FIXED!!!	Tibet4
 	up!
 
-Monsters can't go up stairs and slopes		SUPERHIGH					Any
-	to NE nor down SW	
+Monsters can't go up stairs and slopes		SUPERHIGH			Any
+	to NE nor down SW
 
-Snow auto-adjust speed and count cap		SUPERHIGH	JFM
+Snow auto-adjust speed and count cap		SUPERHIGH	JFM		
 
-Snow shut-off at distance					SUPERHIGH	JFM
+Snow shut-off at distance			SUPERHIGH	JFM		
 
-Yaks and Mezzomen can't hit you if you're	HIGH		FIXED
-	above or below them						
+Yaks and Mezzomen can't hit you if you're	HIGH		FIXED		
+	above or below them
 
-Pentacles killing causes no free edicts		HIGH					
+Pentacles killing causes no free edicts		HIGH				
 	error?
 
-Too many gas glyphs crash game				High	FIXED				
+Too many gas glyphs crash game			High		FIXED				
 
-Move rest of chunks and particle			High		good enough			
+Move rest of chunks and particle		High		good enough	
 	effects to client
 
-Add delay to exploding glyphs to prevent	High	fixed	
+Add delay to exploding glyphs to prevent	High		fixed		
 	 cascade
 
-Tome of Power (use/die/can't use)			High?		CNR			
+Tome of Power (use/die/can't use)		High?		CNR		
 
-Proper death messages for Succubus			High		fixed
+Proper death messages for Succubus		High		fixed		
 
-ZEbrains spawns 5 blood sprites				LOW
+ZEbrains spawns 5 blood sprites			LOW				
 	- change to client effect
 
-Succubus must reset her gravity when dies	Med			fixed
+Succubus must reset her gravity when dies	Med		fixed		
 
-Fallen Angel & Imp flapping sound			Med			FIXED		Keep5
+Fallen Angel & Imp flapping sound		Med		FIXED		Keep5
 	doesn't stop
 
-Make yakman's attacks more network friendly	Med			fixed		
+Make yakman's attacks more network friendly	Med		fixed		
 
-Fadespeed on lights too fast				Low					
+Fadespeed on lights too fast			Low				
 
-bad push sound for Pentacles?				Low			MG			
+bad push sound for Pentacles?			Low		MG		
 
-Need to make player untargetable and		Low			fixed			
+Need to make player untargetable and		Low		fixed		
 	invincible when in camera mode
 
-Give exp for damaging a creature, and		Low			fixed		
+Give exp for damaging a creature, and		Low		fixed		
 	remove that exp from it's value
 
-Make everything network friendly			Low		good as it gets		
+Make everything network friendly		Low		good as it gets	
 
 
 
@@ -82,7 +82,7 @@ find function that works on any field-NO
 
 ability to turn off ambient sounds?-NO
 
-MG_DONE Invincibility effect on Succubus		
+MG_DONE Invincibility effect on Succubus	
 
 TEST! Succubus 2nd ability	- Done? (gain mana when taking damage)
 	check thresholds, and amounts
@@ -117,3 +117,4 @@ get autolooping sounds (C-side) to update their
 position when they start their loop again?
 
 More Funk _ never can get enough
+
