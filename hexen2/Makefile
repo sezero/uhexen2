@@ -115,10 +115,13 @@ ifeq "$(OPT_EXTRA)" "yes"
 CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
 CFLAGS := $(CFLAGS) -fomit-frame-pointer
 endif
+endif
+# end of compiler flags
 
+
+# whether to use x86 assembly
 ifeq "$(USE_X86_ASM)" "yes"
 CFLAGS := $(CFLAGS) -DUSE_INTEL_ASM
-endif
 endif
 
 # Other build flags
