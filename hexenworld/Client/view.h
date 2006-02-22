@@ -1,8 +1,14 @@
 // view.h
 
 extern	cvar_t		v_gamma;
+
 #ifdef GLQUAKE
-extern float v_blend[4];
+extern	float	v_blend[4];
+#endif
+
+#if 0
+extern	byte		gammatable[256];	// palette is sent through this
+extern	unsigned short	ramps[3][256];
 #endif
 
 void V_Init (void);
