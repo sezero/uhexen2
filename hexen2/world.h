@@ -24,6 +24,19 @@ typedef struct
 #define	MOVE_WATER		3
 #define	MOVE_PHASE		4
 
+typedef struct areanode_s
+{
+	int		axis;		// -1 = leaf node
+	float	dist;
+	struct areanode_s	*children[2];
+	link_t	trigger_edicts;
+	link_t	solid_edicts;
+} areanode_t;
+
+#define	AREA_DEPTH	4
+#define	AREA_NODES	32
+
+
 
 void SV_ClearWorld (void);
 // called after the world model has been loaded, before linking any entities
@@ -40,7 +53,9 @@ void SV_LinkEdict (edict_t *ent, qboolean touch_triggers);
 // if touchtriggers, calls prog functions for the intersected triggers
 
 int SV_PointContents (vec3_t p);
+#ifdef QUAKE2
 int SV_TruePointContents (vec3_t p);
+#endif
 // returns the CONTENTS_* value from the world at the given point.
 // does not check any entities at all
 // the non-true version remaps the water current contents to content_water
