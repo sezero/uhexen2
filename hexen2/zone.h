@@ -1,7 +1,7 @@
 /*
 	zone.h
 
-	$Id: zone.h,v 1.4 2005-07-06 08:35:23 sezero Exp $
+	$Id: zone.h,v 1.5 2006-02-23 11:01:42 sezero Exp $
 */
 
 
@@ -67,11 +67,15 @@ Zone block
 
 */
 
+
+typedef struct memzone_s memzone_t;
+
 void Memory_Init (void *buf, int size);
 
 void Z_Free (void *ptr);
 void *Z_Malloc (int size);			// returns 0 filled memory
 void *Z_TagMalloc (int size, int tag);
+void Z_ClearZone (memzone_t *zone, int size);
 
 void Z_DumpHeap (void);
 void Z_CheckHeap (void);
@@ -114,6 +118,9 @@ void Cache_Report (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/07/06 08:35:23  sezero
+ * style/whitespace changes and removal of weird alien stuff
+ *
  * Revision 1.3  2005/04/13 12:22:41  sezero
  * - Removed useless -minmemory cmdline argument
  * - Removed useless parms->memsize < minimum_memory check in Host_Init

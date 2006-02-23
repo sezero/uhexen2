@@ -1,7 +1,7 @@
 /*
 	zone.h
 
-	$Id: zone.h,v 1.2 2005-07-06 08:35:46 sezero Exp $
+	$Id: zone.h,v 1.3 2006-02-23 11:01:43 sezero Exp $
 */
 
 
@@ -67,11 +67,15 @@ Zone block
 
 */
 
+
+typedef struct memzone_s memzone_t;
+
 void Memory_Init (void *buf, int size);
 
 void Z_Free (void *ptr);
 void *Z_Malloc (int size);			// returns 0 filled memory
 void *Z_TagMalloc (int size, int tag);
+void Z_ClearZone (memzone_t *zone, int size);
 
 void Z_DumpHeap (void);
 void Z_CheckHeap (void);
