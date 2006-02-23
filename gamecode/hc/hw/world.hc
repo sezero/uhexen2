@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/world.hc,v 1.4 2005-07-29 08:40:55 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/world.hc,v 1.5 2006-02-23 09:15:56 sezero Exp $
  */
 
 //void() InitBodyQue;
@@ -197,12 +197,11 @@ void() worldspawn =
 
 	GetNextMap();
 
-	dprint("Current Map: ");
-	dprint(mapname);
-	dprint("\n");
-	dprint("Next Map   : ");
-	dprint(self.next_map);
-	dprint("\n");
+	bprint(PRINT_HIGH, "Current Map is  : ");
+	bprint(PRINT_HIGH, mapname);
+	bprint(PRINT_HIGH, ",\nNext Map will be: ");
+	bprint(PRINT_HIGH, self.next_map);
+	bprint(PRINT_HIGH, "\n");
 
 /*	don't want hardcoded values for hexenworld
 	if (self.model == "maps/mgtowers.bsp")
