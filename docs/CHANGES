@@ -1,5 +1,12 @@
 ChangeLog:
 
+2006-02-23 (CVS, 1.4.0-pre4):
+    * large amount of coding style / whitespace cleanup. continued to make
+      static functions and variables static and fixed a few warnings and a
+      few tiny bugs along the way.
+    * fixed a tiny Makefile bug about the USE_X86_ASM flag.
+    * marked the snapshot of 2006-02-23 as 1.4.0-pre4.
+
 2006-02-13 (CVS, 1.4.0-pre3):
     * added missing release notes to the spec file
     * added release notes for future-1.4.0, in pre-release state though..

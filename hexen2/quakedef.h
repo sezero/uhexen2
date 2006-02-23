@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.45 2006-02-18 08:51:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.46 2006-02-23 13:56:39 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -25,8 +25,8 @@
 #define	HOT_VERSION_MIN		0
 #define	HOT_VERSION_BETA	1
 #if HOT_VERSION_BETA
-#define	HOT_VERSION_BETA_STR	"pre3"
-#define	HOT_VERSION_BETA_DATE	"2006-02-12"
+#define	HOT_VERSION_BETA_STR	"pre4"
+#define	HOT_VERSION_BETA_DATE	"2006-02-23"
 #endif
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
@@ -399,6 +399,11 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.45  2006/02/18 08:51:10  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. also renamed the variables name and dest to savename and savedest in
+ * host_cmd.c to prevent any confusion and pollution.
+ *
  * Revision 1.44  2006/02/12 12:22:02  sezero
  * bumped version to 1.4.0-pre3 (2006-02-12)
  *
