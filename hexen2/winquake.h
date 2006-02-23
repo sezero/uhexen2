@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.17 2006-02-18 08:51:10 sezero Exp $
+	$Id: winquake.h,v 1.18 2006-02-23 11:20:18 sezero Exp $
 */
 
 #if !defined(_WIN32)
@@ -14,12 +14,12 @@
 #endif
 #include <windows.h>
 #include <winsock.h>	// for LCC
-#include <mmsystem.h>	// for LCC
 #include <ctype.h>
 
 #ifndef SERVERONLY
 #include <ddraw.h>
 #include <dsound.h>
+#include <mmsystem.h>	// for LCC
 #endif
 
 extern	HINSTANCE	global_hInstance;
@@ -76,22 +76,23 @@ int (PASCAL FAR *pWSACleanup)(void);
 int (PASCAL FAR *pWSAGetLastError)(void);
 SOCKET (PASCAL FAR *psocket)(int af, int type, int protocol);
 int (PASCAL FAR *pioctlsocket)(SOCKET s, long cmd, u_long FAR *argp);
-int (PASCAL FAR *psetsockopt)(SOCKET s, int level, int optname,
-							  const char FAR * optval, int optlen);
-int (PASCAL FAR *precvfrom)(SOCKET s, char FAR * buf, int len, int flags,
-							struct sockaddr FAR *from, int FAR * fromlen);
-int (PASCAL FAR *psendto)(SOCKET s, const char FAR * buf, int len, int flags,
-						  const struct sockaddr FAR *to, int tolen);
+int (PASCAL FAR *psetsockopt)(SOCKET s, int level, int optname, const char FAR * optval, int optlen);
+int (PASCAL FAR *precvfrom)(SOCKET s, char FAR * buf, int len, int flags, struct sockaddr FAR *from, int FAR * fromlen);
+int (PASCAL FAR *psendto)(SOCKET s, const char FAR * buf, int len, int flags, const struct sockaddr FAR *to, int tolen);
 int (PASCAL FAR *pclosesocket)(SOCKET s);
 int (PASCAL FAR *pgethostname)(char FAR * name, int namelen);
 struct hostent FAR * (PASCAL FAR *pgethostbyname)(const char FAR * name);
-struct hostent FAR * (PASCAL FAR *pgethostbyaddr)(const char FAR * addr,
-												  int len, int type);
-int (PASCAL FAR *pgetsockname)(SOCKET s, struct sockaddr FAR *name,
-							   int FAR * namelen);
+struct hostent FAR * (PASCAL FAR *pgethostbyaddr)(const char FAR * addr, int len, int type);
+int (PASCAL FAR *pgetsockname)(SOCKET s, struct sockaddr FAR *name, int FAR * namelen);
+
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2006/02/18 08:51:10  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. also renamed the variables name and dest to savename and savedest in
+ * host_cmd.c to prevent any confusion and pollution.
+ *
  * Revision 1.16  2006/01/17 20:10:43  sezero
  * missing parts of vid_win synchronization (remove Snd_AcquireBuffer and
  * Snd_ReleaseBuffer which was only used by the old vid_win.c of hexen2.)
