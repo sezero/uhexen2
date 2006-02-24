@@ -453,12 +453,22 @@ CL_TimeDemo_f
 timedemo [demoname]
 ====================
 */
+#define	m_none	0	// enumerated menu state from menu.c
+extern	int	m_state;
+
 void CL_TimeDemo_f (void)
 {
 	if (Cmd_Argc() != 2)
 	{
 		Con_Printf ("timedemo <demoname> : gets demo speeds\n");
 		return;
+	}
+
+	// get rid of the menu and/or console
+	if (key_dest == key_console || key_dest == key_menu)
+	{
+		key_dest = key_game;
+		m_state = m_none;
 	}
 
 	CL_PlayDemo_f ();
