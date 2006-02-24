@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.46 2006-02-23 13:56:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.47 2006-02-24 23:27:31 sezero Exp $
 */
 
 //#define	GLTEST			// experimental stuff
@@ -178,9 +178,9 @@
 #define ABILITIES_STR_INDEX	400
 
 #ifdef DEMOBUILD
-	#define	MAX_SCOREBOARD	8
+#	define	MAX_SCOREBOARD	8
 #else
-	#define	MAX_SCOREBOARD	16
+#	define	MAX_SCOREBOARD	16
 #endif
 
 #define	MAX_SCOREBOARDNAME	32
@@ -399,6 +399,9 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.46  2006/02/23 13:56:39  sezero
+ * Updated CHANGES: 2006-02-23, 1.4.0-pre4.
+ *
  * Revision 1.45  2006/02/18 08:51:10  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. also renamed the variables name and dest to savename and savedest in

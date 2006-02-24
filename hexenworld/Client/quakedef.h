@@ -1,8 +1,7 @@
 // quakedef.h -- primary header for client
 
-#define	QUAKE_GAME			// as opposed to utilities
-
-//define	PARANOID			// speed sapping error checking
+#define	QUAKE_GAME		// as opposed to utilities
+//define	PARANOID	// speed sapping error checking
 
 /* We keep the userdir (and host_parms.userdir) as ~/.hexen2 here. In
    COM_InitFilesystem, we'll first change com_userdir to ~/.hexen2/hw,
