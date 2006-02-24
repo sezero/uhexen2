@@ -90,11 +90,6 @@ static int		host_hunklevel;
 byte		*host_basepal;
 byte		*host_colormap;
 
-#ifdef GLQUAKE
-extern int	gl_texlevel;
-extern int	numgltextures;
-#endif
-
 netadr_t	master_adr;			// address of the master server
 
 cvar_t	host_speeds = {"host_speeds","0"};	// set for running times

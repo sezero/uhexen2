@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.17 2006-01-12 12:34:38 sezero Exp $
+	$Id: gl_model.c,v 1.18 2006-02-24 14:43:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -33,12 +33,6 @@ static vec3_t	mins,maxs;
 #define	NL_PRESENT	0
 #define	NL_NEEDS_LOADED	1
 #define	NL_UNREFERENCED	2
-#ifndef H2W
-// we can't detect mapname change early enough in hw,
-// so flush_textures is only for hexen2
-extern	qboolean flush_textures;
-#endif
-extern	cvar_t gl_purge_maptex;
 
 cvar_t gl_subdivide_size = {"gl_subdivide_size", "128", true};
 
@@ -177,6 +171,8 @@ void Mod_ClearAll (void)
 		if (mod->type == mod_alias)
 		{
 #ifndef H2W
+			// we can't detect mapname change early enough in hw,
+			// so flush_textures is only for hexen2
 			if (flush_textures && gl_purge_maptex.value)
 #else
 			if (gl_purge_maptex.value)

@@ -1,17 +1,11 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.53 2006-02-18 08:51:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.54 2006-02-24 14:43:55 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "quakeinc.h"
-
-#ifdef GLQUAKE
-extern  cvar_t  r_shadows, gl_glows, gl_missile_glows, gl_other_glows; // S.A
-#endif
-
-static void ReInitMusic(void);
 
 extern	modestate_t	modestate;
 extern	cvar_t	crosshair;
@@ -32,6 +26,9 @@ enum
 	m_setup,
 	m_net,
 	m_options,
+#ifdef GLQUAKE
+	m_opengl,
+#endif
 	m_video,
 	m_keys,
 	m_help,
@@ -106,7 +103,6 @@ qboolean	m_return_onerror;
 char		m_return_reason [32];
 
 qboolean	mousestate_sa = false;	// true if we're in menus and mouse is to be disabled
-static char	old_bgmtype[20];	// S.A
 
 static float TitlePercent = 0;
 static float TitleTargetPercent = 1;
@@ -728,6 +724,9 @@ void ScrollTitle (char *name)
 static int	m_main_cursor;
 #define	MAIN_ITEMS	5
 
+static void ReInitMusic(void);
+static char	old_bgmtype[20];	// S.A
+
 
 void M_Menu_Main_f (void)
 {
@@ -824,11 +823,16 @@ static void M_Main_Key (int key)
 	}
 }
 
+
+//=============================================================================
+
 char	*plaquemessage = NULL;   // Pointer to current plaque message
 char    *errormessage = NULL;
 
+
 //=============================================================================
 /* DIFFICULTY MENU */
+
 static void M_Menu_Difficulty_f (void)
 {
 	key_dest = key_menu;
@@ -906,8 +910,10 @@ static void M_Difficulty_Key (int key)
 	}
 }
 
+
 //=============================================================================
 /* CLASS CHOICE MENU */
+
 static int class_flag;
 
 static void M_Menu_Class_f (void)
@@ -1853,15 +1859,20 @@ enum
 	OPT_ALWAYSMLOOK,//11
 	OPT_USEMOUSE,	//12
 	OPT_CROSSHAIR,	//13
-#ifdef GLQUAKE
-	OPT_R_SHADOWS,
-	OPT_GL_GLOW,
-#endif
 	OPT_CHASE_ACTIVE,
+#ifdef GLQUAKE
+	OPT_OPENGL,
+#endif
 	OPT_VIDEO,
 	OPTIONS_ITEMS
-	// new definitions S.A.
 };
+
+#ifdef GLQUAKE
+// prototypes for the opengl menu
+static void M_Menu_OpenGL_f (void);
+static void M_OpenGL_Draw (void);
+static void M_OpenGL_Key (int k);
+#endif
 
 static int	options_cursor;
 
@@ -1982,24 +1993,15 @@ static void M_AdjustSliders (int dir)
 		Cvar_SetValue ("crosshair", !crosshair.value);
 		break;
 
-#ifdef GLQUAKE
-	case OPT_R_SHADOWS:	// r_shadows
-		Cvar_SetValue ("r_shadows", !r_shadows.value);
-		break;
-
-	case OPT_GL_GLOW:	// gl_glows
-		Cvar_SetValue ("gl_glows", !gl_glows.value);
-		Cvar_SetValue ("gl_missile_glows", gl_glows.value);
-		Cvar_SetValue ("gl_other_glows", gl_glows.value);
-		break;
-#endif
-
 	case OPT_CHASE_ACTIVE:	// chase_active
 		Cvar_SetValue ("chase_active", !chase_active.value);
 		break;
 
 	case OPT_USEMOUSE:	// _enable_mouse
 		Cvar_SetValue ("_enable_mouse", !_enable_mouse.value);
+		break;
+
+	default:
 		break;
 	}
 }
@@ -2037,23 +2039,23 @@ static void M_Options_Draw (void)
 
 	ScrollTitle("gfx/menu/title3.lmp");
 
-	M_Print (16, 60+(0*8), "    Customize controls");
-	M_Print (16, 60+(1*8), "         Go to console");
-	M_Print (16, 60+(2*8), "     Reset to defaults");
+	M_Print (16, 60+(0*8),	"    Customize controls");
+	M_Print (16, 60+(1*8),	"         Go to console");
+	M_Print (16, 60+(2*8),	"     Reset to defaults");
 
-	M_Print (16, 60+(3*8), "           Screen size");
+	M_Print (16, 60+(3*8),	"           Screen size");
 	r = (scr_viewsize.value - 30) / (120 - 30);
 	M_DrawSlider (220, 60+(3*8), r);
 
-	M_Print (16, 60+(4*8), "            Brightness");
+	M_Print (16, 60+(4*8),	"            Brightness");
 	r = (1.0 - v_gamma.value) / 0.5;
 	M_DrawSlider (220, 60+(4*8), r);
 
-	M_Print (16, 60+(5*8), "           Mouse Speed");
+	M_Print (16, 60+(5*8),	"           Mouse Speed");
 	r = (sensitivity.value - 1)/10;
 	M_DrawSlider (220, 60+(5*8), r);
 
-	M_Print (16, 60+(6*8), "            Music Type");
+	M_Print (16, 60+(6*8),	"            Music Type");
 	if (Q_strcasecmp(bgmtype.string,"midi") == 0)
 		M_Print (220, 60+(6*8), "MIDI");
 	else if (Q_strcasecmp(bgmtype.string,"cd") == 0)
@@ -2061,11 +2063,11 @@ static void M_Options_Draw (void)
 	else
 		M_Print (220, 60+(6*8), "None");
 
-	M_Print (16, 60+(7*8), "          Music Volume");
+	M_Print (16, 60+(7*8),	"          Music Volume");
 	r = bgmvolume.value;
 	M_DrawSlider (220, 60+(7*8), r);
 
-	M_Print (16, 60+(8*8), "          Sound Volume");
+	M_Print (16, 60+(8*8),	"          Sound Volume");
 	r = sfxvolume.value;
 	M_DrawSlider (220, 60+(8*8), r);
 
@@ -2085,12 +2087,9 @@ static void M_Options_Draw (void)
 	M_DrawCheckbox (220, 60+(OPT_CROSSHAIR*8), crosshair.value);
 
 #ifdef GLQUAKE
-	M_Print (16, 60+(OPT_R_SHADOWS*8),	"               Shadows");
-	M_DrawCheckbox (220, 60+(OPT_R_SHADOWS*8), r_shadows.value);
-
-	M_Print (16, 60+(OPT_GL_GLOW*8),	"              Gl Glows");
-	M_DrawCheckbox (220, 60+(OPT_GL_GLOW*8), gl_glows.value);
+	M_Print (16, 60+(OPT_OPENGL*8),		"       OpenGL Features");
 #endif
+
 	M_Print (16, 60+(OPT_CHASE_ACTIVE*8),	"            Chase Mode");
 	M_DrawCheckbox (220, 60+(OPT_CHASE_ACTIVE*8), chase_active.value);
 
@@ -2125,6 +2124,11 @@ static void M_Options_Key (int k)
 		case OPT_DEFAULTS:
 			Cbuf_AddText ("exec default.cfg\n");
 			break;
+#ifdef GLQUAKE
+		case OPT_OPENGL:
+			M_Menu_OpenGL_f ();
+			break;
+#endif
 		case OPT_VIDEO:
 			M_Menu_Video_f ();
 			break;
@@ -2177,6 +2181,184 @@ static void M_Options_Key (int k)
 			options_cursor = 0;
 	}
 }
+
+
+//=============================================================================
+/* OPENGL FEATURES MENU */
+
+#ifdef GLQUAKE
+
+enum
+{
+	OGL_MULTITEX,
+	OGL_PURGETEX,
+	OGL_GLOW1,
+	OGL_GLOW2,
+	OGL_GLOW3,
+	OGL_TEXFILTER,
+	OGL_SHADOWS,
+	OGL_STENCIL,
+	OGL_ITEMS
+};
+
+typedef struct
+{
+	char *name;
+	int	minimize, maximize;
+} glmode_t;
+
+// this must match modes[] in gl_draw.c
+#define MAX_GL_FILTERS	6
+extern glmode_t modes[];
+static int	tex_mode;
+static int	opengl_cursor;
+
+static void M_Menu_OpenGL_f (void)
+{
+	key_dest = key_menu;
+	m_state = m_opengl;
+	m_entersound = true;
+}
+
+
+static void M_OpenGL_Draw (void)
+{
+	int		i;
+
+	ScrollTitle("gfx/menu/title3.lmp");
+	M_PrintWhite (96, 72, "OpenGL Features:");
+
+	M_Print (32, 90 + 8*OGL_MULTITEX,	"        Multitexturing");
+	if (gl_mtexable)
+		M_DrawCheckbox (232, 90 + 8*OGL_MULTITEX, gl_multitexture.value);
+	else
+		M_Print (232, 90 + 8*OGL_MULTITEX, "Not found");
+
+	M_Print (32, 90 + 8*OGL_PURGETEX,	"    Purge map textures");
+	M_DrawCheckbox (232, 90 + 8*OGL_PURGETEX, gl_purge_maptex.value);
+
+	M_Print (32, 90 + 8*OGL_GLOW1,		"          Glow effects");
+	M_DrawCheckbox (232, 90 + 8*OGL_GLOW1, gl_glows.value);
+	M_Print (32, 90 + 8*OGL_GLOW2,		"         missile glows");
+	M_DrawCheckbox (232, 90 + 8*OGL_GLOW2, gl_missile_glows.value);
+	M_Print (32, 90 + 8*OGL_GLOW3,		"           other glows");
+	M_DrawCheckbox (232, 90 + 8*OGL_GLOW3, gl_other_glows.value);
+
+	M_Print (32, 90 + 8*OGL_TEXFILTER,	"     Texture filtering");
+	for (i = 0; i < MAX_GL_FILTERS; i++)
+	{
+		if (modes[i].minimize == gl_filter_min)
+		{
+			tex_mode = i;
+			M_Print (232, 90 + 8*OGL_TEXFILTER, modes[i].name);
+			break;
+		}
+	}
+
+	M_Print (32, 90 + 8*OGL_SHADOWS,	"               Shadows");
+	M_DrawCheckbox (232, 90 + 8*OGL_SHADOWS, r_shadows.value);
+	M_Print (32, 90 + 8*OGL_STENCIL,	"        Stencil buffer");
+	if (have_stencil)
+		M_DrawCheckbox (232, 90 + 8*OGL_STENCIL, gl_stencilshadow.value);
+	else
+		M_Print (232, 90 + 8*OGL_STENCIL, "Not found");
+
+	// cursor
+	M_DrawCharacter (216, 90 + opengl_cursor*8, 12+((int)(realtime*4)&1));
+}
+
+
+static void M_OpenGL_Key (int k)
+{
+	switch (k)
+	{
+	case K_ESCAPE:
+		M_Menu_Options_f ();
+		break;
+
+	case K_UPARROW:
+		S_LocalSound ("raven/menu1.wav");
+		opengl_cursor--;
+		if (opengl_cursor < 0)
+			opengl_cursor = OGL_ITEMS-1;
+		break;
+
+	case K_DOWNARROW:
+		S_LocalSound ("raven/menu1.wav");
+		opengl_cursor++;
+		if (opengl_cursor >= OGL_ITEMS)
+			opengl_cursor = 0;
+		break;
+
+	case K_ENTER:
+	case K_LEFTARROW:
+	case K_RIGHTARROW:
+		m_entersound = true;
+		switch (opengl_cursor)
+		{
+		case OGL_MULTITEX:	// multitexturing
+			Cvar_SetValue ("gl_multitexture", !gl_multitexture.value);
+			break;
+
+		case OGL_PURGETEX:	// purge gl textures on map change
+			Cvar_SetValue ("gl_purge_maptex", !gl_purge_maptex.value);
+			break;
+
+		case OGL_GLOW1:	// glow effects, main: torches
+			Cvar_SetValue ("gl_glows", !gl_glows.value);
+			break;
+
+		case OGL_GLOW2:	// glow effects, missiles
+			Cvar_SetValue ("gl_missile_glows", !gl_missile_glows.value);
+			break;
+
+		case OGL_GLOW3:	// glow effects, other: mana, etc.
+			Cvar_SetValue ("gl_other_glows", !gl_other_glows.value);
+			break;
+
+		case OGL_TEXFILTER:	// texture filter
+			switch (k)
+			{
+			case K_LEFTARROW:
+				tex_mode--;
+				if (tex_mode < 0)
+					tex_mode = 0;
+				break;
+			case K_RIGHTARROW:
+				tex_mode++;
+				if (tex_mode >= MAX_GL_FILTERS)
+					tex_mode = MAX_GL_FILTERS-1;
+				break;
+			default:
+				return;
+			}
+			if (modes[tex_mode].minimize != gl_filter_min)
+			{
+				Cbuf_AddText(va("gl_texturemode %s\n",modes[tex_mode].name));
+				Cbuf_Execute();
+			}
+			break;
+
+		case OGL_SHADOWS:	// shadows
+			Cvar_SetValue ("r_shadows", !r_shadows.value);
+			break;
+
+		case OGL_STENCIL:	// stencil buffered shadows
+			if (have_stencil)
+				Cvar_SetValue ("gl_stencilshadow", !gl_stencilshadow.value);
+			break;
+
+		default:
+			break;
+		}
+
+	default:
+		break;
+	}
+}
+
+#endif
+
 
 //=============================================================================
 /* KEYS MENU */
@@ -2253,6 +2435,7 @@ static void M_FindKeysForCommand (char *command, int *twokeys)
 	twokeys[0] = twokeys[1] = -1;
 	l = strlen(command);
 	count = 0;
+
 	for (j=0 ; j<256 ; j++)
 	{
 		b = keybindings[j];
@@ -2442,8 +2625,8 @@ static void M_Video_Key (int key)
 /* HELP MENU */
 
 static int		help_page;
-#define	NUM_HELP_PAGES	5
 
+#define	NUM_HELP_PAGES	5
 
 static void M_Menu_Help_f (void)
 {
@@ -2518,7 +2701,7 @@ static char *quitMessage [] =
   "   Palms too sweaty to  ",
   "     keep playing?      ",
   "                        ",
- 
+
   "  Watch your local store",
   "      for Hexen 2       ",
   "    plush toys and      ",
@@ -2528,7 +2711,7 @@ static char *quitMessage [] =
   "                        ",
   "    Too much is never   ",
   "        enough.         ",
- 
+
   "  Sure go ahead and     ",
   "  leave.  But I know    ",
   "  you'll be back.       ",
@@ -2898,7 +3081,6 @@ static void M_Quit_Key (int key)
 	default:
 		break;
 	}
-
 }
 
 static void M_Quit_Draw (void)
@@ -3862,6 +4044,7 @@ static void M_ServerList_Key (int k)
 	}
 }
 
+
 //=============================================================================
 /* Menu Subsystem */
 
@@ -3958,6 +4141,12 @@ void M_Draw (void)
 	case m_options:
 		M_Options_Draw ();
 		break;
+
+#ifdef GLQUAKE
+	case m_opengl:
+		M_OpenGL_Draw ();
+		break;
+#endif
 
 	case m_keys:
 		M_Keys_Draw ();
@@ -4059,6 +4248,12 @@ void M_Keydown (int key)
 		M_Options_Key (key);
 		return;
 
+#ifdef GLQUAKE
+	case m_opengl:
+		M_OpenGL_Key (key);
+		break;
+#endif
+
 	case m_keys:
 		M_Keys_Key (key);
 		return;
@@ -4130,6 +4325,11 @@ static void ReInitMusic (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.53  2006/02/18 08:51:10  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. also renamed the variables name and dest to savename and savedest in
+ * host_cmd.c to prevent any confusion and pollution.
+ *
  * Revision 1.52  2006/01/23 20:22:49  sezero
  * tidied up the version and help display stuff. bumped the HoT version to
  * 1.4.0-pre1. added conditionals to properly display beta version strings.

@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.94 2006-01-24 16:51:43 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.95 2006-02-24 14:43:56 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -119,7 +119,6 @@ static qboolean	GL_OpenLibrary(const char *name);
 int		gl_max_size = 256;
 qboolean	is_3dfx = false;
 float		gldepthmin, gldepthmax;
-extern int	numgltextures;
 
 static int	multisample = 0; // never set this to non-zero if SDL isn't multisampling-capable
 static qboolean	sdl_has_multisample = false;

@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.30 2006-01-20 07:36:47 sezero Exp $
+	$Id: glquake.h,v 1.31 2006-02-24 14:43:56 sezero Exp $
 */
 
 
@@ -294,6 +294,9 @@ extern	int	currenttexture;
 extern	int	particletexture;
 extern	int	netgraphtexture;	// netgraph texture
 extern	int	playertextures[16];
+extern	int	gl_texlevel;
+extern	int	numgltextures;
+extern	qboolean	flush_textures;
 
 extern	int	skytexturenum;		// index in cl.loadmodel, not gl texture object
 
@@ -319,6 +322,7 @@ extern	cvar_t	gl_clear;
 extern	cvar_t	gl_cull;
 extern	cvar_t	gl_poly;
 extern	cvar_t	gl_multitexture;
+extern	cvar_t	gl_purge_maptex;
 extern	cvar_t	gl_smoothmodels;
 extern	cvar_t	gl_affinemodels;
 extern	cvar_t	gl_polyblend;

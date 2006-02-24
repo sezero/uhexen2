@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.42 2006-02-18 08:51:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.43 2006-02-24 14:43:55 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -39,11 +39,6 @@ jmp_buf 	host_abortserver;
 
 byte		*host_basepal;
 byte		*host_colormap;
-
-#ifdef GLQUAKE
-extern int	gl_texlevel;
-extern int	numgltextures;
-#endif
 
 cvar_t	host_framerate = {"host_framerate","0"};	// set for slow motion
 cvar_t	host_speeds = {"host_speeds","0"};			// set for running times
@@ -1067,6 +1062,11 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.42  2006/02/18 08:51:09  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. also renamed the variables name and dest to savename and savedest in
+ * host_cmd.c to prevent any confusion and pollution.
+ *
  * Revision 1.41  2006/01/17 17:36:44  sezero
  * A quick'n'dirty patch for making the game to remember its video settings:
  * Essentially it does an early read of config.cfg while in VID_Init to

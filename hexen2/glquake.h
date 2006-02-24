@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.38 2006-01-20 07:36:47 sezero Exp $
+	$Id: glquake.h,v 1.39 2006-02-24 14:43:55 sezero Exp $
 */
 
 
@@ -293,6 +293,9 @@ extern	qboolean	envmap;
 extern	int	currenttexture;
 extern	int	particletexture;
 extern	int	playertextures[16];
+extern	int	gl_texlevel;
+extern	int	numgltextures;
+extern	qboolean	flush_textures;
 
 extern	int	skytexturenum;		// index in cl.loadmodel, not gl texture object
 
@@ -316,6 +319,7 @@ extern	cvar_t	gl_clear;
 extern	cvar_t	gl_cull;
 extern	cvar_t	gl_poly;
 extern	cvar_t	gl_multitexture;
+extern	cvar_t	gl_purge_maptex;
 extern	cvar_t	gl_smoothmodels;
 extern	cvar_t	gl_affinemodels;
 extern	cvar_t	gl_polyblend;
@@ -365,6 +369,16 @@ extern	qboolean lightmap_modified[MAX_LIGHTMAPS];
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.38  2006/01/20 07:36:47  sezero
+ * Switched back to original hexen2 version of GL_ResampleTexture: the h2w (quake)
+ * code gave slightly sharper but "jaggier" textures here and there. bad results
+ * were especially detectable on help screens when using old cards with small (256
+ * kb) texture size support (read: old voodoo boards). one can always use the h2w
+ * version by changing the macro USE_HEXEN2_RESAMPLER_CODE from define to undef in
+ * glquake.h.
+ * Also changed the palettized texture code macro name from OLD_8_BIT_PALETTE_CODE
+ * to USE_HEXEN2_PALTEX_CODE.
+ *
  * Revision 1.37  2006/01/15 22:07:48  sezero
  * switched back to original hexen II code for palettized textures for better
  * quality, leaving the newer hexenworld (quake) code as option: changing the
