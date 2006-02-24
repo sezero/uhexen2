@@ -2,14 +2,14 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.24 2005-10-25 17:14:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.25 2006-02-24 14:40:59 sezero Exp $
 */
 
 #include "quakedef.h"
 
 server_t	sv;
 server_static_t	svs;
-char	localmodels[MAX_MODELS][5];	// inline model names for precache
+static char	localmodels[MAX_MODELS][5];	// inline model names for precache
 
 cvar_t	sv_sound_distance	= {"sv_sound_distance","800", true};
 
@@ -21,6 +21,19 @@ cvar_t	sv_update_misc		= {"sv_update_misc","1", true};
 cvar_t	sv_ce_scale		= {"sv_ce_scale","0", true};
 cvar_t	sv_ce_max_size		= {"sv_ce_max_size","0", true};
 
+extern	cvar_t	sv_maxvelocity;
+extern	cvar_t	sv_gravity;
+extern	cvar_t	sv_nostep;
+extern	cvar_t	sv_friction;
+extern	cvar_t	sv_edgefriction;
+extern	cvar_t	sv_stopspeed;
+extern	cvar_t	sv_maxspeed;
+extern	cvar_t	sv_accelerate;
+extern	cvar_t	sv_idealpitchscale;
+extern	cvar_t	sv_idealrollscale;
+extern	cvar_t	sv_aim;
+extern	cvar_t	sv_walkpitch;
+extern	cvar_t	sv_flypitch;
 
 #ifdef GLQUAKE
 qboolean	flush_textures;
@@ -34,7 +47,7 @@ int			num_intro_msg = 0;
 
 //============================================================================
 
-void Sv_Edicts_f(void);
+static void Sv_Edicts_f(void);
 
 /*
 ===============
@@ -44,19 +57,6 @@ SV_Init
 void SV_Init (void)
 {
 	int		i;
-	extern	cvar_t	sv_maxvelocity;
-	extern	cvar_t	sv_gravity;
-	extern	cvar_t	sv_nostep;
-	extern	cvar_t	sv_friction;
-	extern	cvar_t	sv_edgefriction;
-	extern	cvar_t	sv_stopspeed;
-	extern	cvar_t	sv_maxspeed;
-	extern	cvar_t	sv_accelerate;
-	extern	cvar_t	sv_idealpitchscale;
-	extern	cvar_t	sv_idealrollscale;
-	extern	cvar_t	sv_aim;
-	extern	cvar_t	sv_walkpitch;
-	extern	cvar_t	sv_flypitch;
 
 	Cvar_RegisterVariable (&sv_maxvelocity);
 	Cvar_RegisterVariable (&sv_gravity);
@@ -84,14 +84,15 @@ void SV_Init (void)
 	for (i=0 ; i<MAX_MODELS ; i++)
 		sprintf (localmodels[i], "*%i", i);
 
-	sv_kingofhill=0;//Initialize King of Hill to world
+	// initialize King of Hill to world
+	sv_kingofhill=0;
 }
 
 void SV_Edicts(char *Name)
 {
-	FILE *FH;
-	int i;
-	edict_t *e;
+	FILE	*FH;
+	int		i;
+	edict_t	*e;
 
 	FH = fopen(va("%s/%s", com_userdir, Name),"w");
 	if (!FH)
@@ -117,9 +118,9 @@ void SV_Edicts(char *Name)
 	fclose(FH);
 }
 
-void Sv_Edicts_f(void)
+static void Sv_Edicts_f(void)
 {
-	char *Name;
+	char	*Name;
 
 	if (!sv.active)
 	{
@@ -131,7 +132,7 @@ void Sv_Edicts_f(void)
 	{
 		Name = "edicts.txt";
 	}
-	else 
+	else
 	{
 		Name = Cmd_Argv(1);
 	}
@@ -147,7 +148,7 @@ EVENT MESSAGES
 =============================================================================
 */
 
-/*  
+/*
 ==================
 SV_StartParticle
 
@@ -159,7 +160,7 @@ void SV_StartParticle (vec3_t org, vec3_t dir, int color, int count)
 	int		i, v;
 
 	if (sv.datagram.cursize > MAX_DATAGRAM-16)
-		return;	
+		return;
 	MSG_WriteByte (&sv.datagram, svc_particle);
 	MSG_WriteCoord (&sv.datagram, org[0]);
 	MSG_WriteCoord (&sv.datagram, org[1]);
@@ -175,9 +176,9 @@ void SV_StartParticle (vec3_t org, vec3_t dir, int color, int count)
 	}
 	MSG_WriteByte (&sv.datagram, count);
 	MSG_WriteByte (&sv.datagram, color);
-}           
+}
 
-/*  
+/*
 ==================
 SV_StartParticle2
 
@@ -187,7 +188,7 @@ Make sure the event gets sent to all clients
 void SV_StartParticle2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int effect, int count)
 {
 	if (sv.datagram.cursize > MAX_DATAGRAM-36)
-		return;	
+		return;
 	MSG_WriteByte (&sv.datagram, svc_particle2);
 	MSG_WriteCoord (&sv.datagram, org[0]);
 	MSG_WriteCoord (&sv.datagram, org[1]);
@@ -202,9 +203,9 @@ void SV_StartParticle2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int eff
 	MSG_WriteShort (&sv.datagram, color);
 	MSG_WriteByte (&sv.datagram, count);
 	MSG_WriteByte (&sv.datagram, effect);
-}           
+}
 
-/*  
+/*
 ==================
 SV_StartParticle3
 
@@ -214,7 +215,7 @@ Make sure the event gets sent to all clients
 void SV_StartParticle3 (vec3_t org, vec3_t box, int color, int effect, int count)
 {
 	if (sv.datagram.cursize > MAX_DATAGRAM-15)
-		return;	
+		return;
 	MSG_WriteByte (&sv.datagram, svc_particle3);
 	MSG_WriteCoord (&sv.datagram, org[0]);
 	MSG_WriteCoord (&sv.datagram, org[1]);
@@ -226,9 +227,9 @@ void SV_StartParticle3 (vec3_t org, vec3_t box, int color, int effect, int count
 	MSG_WriteShort (&sv.datagram, color);
 	MSG_WriteByte (&sv.datagram, count);
 	MSG_WriteByte (&sv.datagram, effect);
-}           
+}
 
-/*  
+/*
 ==================
 SV_StartParticle4
 
@@ -238,7 +239,7 @@ Make sure the event gets sent to all clients
 void SV_StartParticle4 (vec3_t org, float radius, int color, int effect, int count)
 {
 	if (sv.datagram.cursize > MAX_DATAGRAM-13)
-		return;	
+		return;
 	MSG_WriteByte (&sv.datagram, svc_particle4);
 	MSG_WriteCoord (&sv.datagram, org[0]);
 	MSG_WriteCoord (&sv.datagram, org[1]);
@@ -248,9 +249,9 @@ void SV_StartParticle4 (vec3_t org, float radius, int color, int effect, int cou
 	MSG_WriteShort (&sv.datagram, color);
 	MSG_WriteByte (&sv.datagram, count);
 	MSG_WriteByte (&sv.datagram, effect);
-}           
+}
 
-/*  
+/*
 ==================
 SV_StopSound
 ==================
@@ -260,7 +261,7 @@ void SV_StopSound (edict_t *entity, int channel)
 	int			ent;
 
 	if (sv.datagram.cursize > MAX_DATAGRAM-4)
-		return;	
+		return;
 
 	ent = NUM_FOR_EDICT(entity);
 	channel = (ent<<3) | channel;
@@ -269,7 +270,7 @@ void SV_StopSound (edict_t *entity, int channel)
 	MSG_WriteShort (&sv.datagram, channel);
 }
 
-/*  
+/*
 ==================
 SV_UpdateSoundPos
 ==================
@@ -277,10 +278,10 @@ SV_UpdateSoundPos
 void SV_UpdateSoundPos (edict_t *entity, int channel)
 {
 	int			ent;
-    int			i;
+	int			i;
 
 	if (sv.datagram.cursize > MAX_DATAGRAM-4)
-		return;	
+		return;
 
 	ent = NUM_FOR_EDICT(entity);
 	channel = (ent<<3) | channel;
@@ -291,7 +292,7 @@ void SV_UpdateSoundPos (edict_t *entity, int channel)
 		MSG_WriteCoord (&sv.datagram, entity->v.origin[i]+0.5*(entity->v.mins[i]+entity->v.maxs[i]));
 }
 
-/*  
+/*
 ==================
 SV_StartSound
 
@@ -303,22 +304,18 @@ already running on that entity/channel pair.
 
 An attenuation of 0 will play full volume everywhere in the level.
 Larger attenuations will drop off.  (max 4 attenuation)
-
 ==================
-*/  
+*/
 void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, float attenuation)
 {
-	int         sound_num;
-	int			field_mask;
-	int			i;
-	int			ent;
-
-	sizebuf_t   cm;
+	int			sound_num, field_mask, i, ent;
+	sizebuf_t	cm;
 	byte		datagram_buf[MAX_DATAGRAM];
+
 	cm.data = datagram_buf;
 	cm.maxsize = sizeof(datagram_buf);
 	cm.cursize = 0;
-	
+
 	if (Q_strcasecmp(sample,"misc/null.wav") == 0)
 	{
 		SV_StopSound(entity,channel);
@@ -335,20 +332,19 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 		Sys_Error ("SV_StartSound: channel = %i", channel);
 
 	if (sv.datagram.cursize > MAX_DATAGRAM-16)
-		return;	
+		return;
 
 // find precache number for sound
-    for (sound_num=1 ; sound_num<MAX_SOUNDS
-        && sv.sound_precache[sound_num] ; sound_num++)
-        if (!strcmp(sample, sv.sound_precache[sound_num]))
-            break;
-    
-    if ( sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num] )
-    {
-        Con_Printf ("SV_StartSound: %s not precached\n", sample);
-        return;
-    }
-    
+	for (sound_num=1 ; sound_num<MAX_SOUNDS && sv.sound_precache[sound_num] ; sound_num++)
+		if (!strcmp(sample, sv.sound_precache[sound_num]))
+			break;
+
+	if (sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num])
+	{
+		Con_Printf ("SV_StartSound: %s not precached\n", sample);
+		return;
+	}
+
 	ent = NUM_FOR_EDICT(entity);
 
 	channel = (ent<<3) | channel;
@@ -375,7 +371,7 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 	MSG_WriteByte (&sv.datagram, sound_num);
 	for (i=0 ; i<3 ; i++)
 		MSG_WriteCoord (&sv.datagram, entity->v.origin[i]+0.5*(entity->v.mins[i]+entity->v.maxs[i]));
-}           
+}
 
 /*
 ==============================================================================
@@ -422,7 +418,7 @@ void SV_SendServerinfo (client_t *client)
 	}
 	else
 	{
-//		MSG_WriteString(&client->message,"");
+	//	MSG_WriteString(&client->message,"");
 		MSG_WriteString(&client->message,sv.edicts->v.netname + pr_strings);
 	}
 
@@ -444,7 +440,7 @@ void SV_SendServerinfo (client_t *client)
 	MSG_WriteByte (&client->message, svc_midi_name);
 	MSG_WriteString (&client->message, sv.midi_name);
 
-// set view	
+// set view
 	MSG_WriteByte (&client->message, svc_setview);
 	MSG_WriteShort (&client->message, NUM_FOR_EDICT(client->edict));
 
@@ -452,10 +448,11 @@ void SV_SendServerinfo (client_t *client)
 	MSG_WriteByte (&client->message, 1);
 
 	client->sendsignon = true;
-	client->spawned = false;		// need prespawn, spawn, etc
+	client->spawned = false;	// need prespawn, spawn, etc
 
 // make sure the mouse is going - S.A.
-	if (!isDedicated) {
+	if (!isDedicated)
+	{
 		mousestate_sa = false;
 		IN_ActivateMouse();
 	}
@@ -469,7 +466,7 @@ Initializes a client_t for a new net connection.  This will only be called
 once for a player each game, not once for each level change.
 ================
 */
-void SV_ConnectClient (int clientnum)
+static void SV_ConnectClient (int clientnum)
 {
 	edict_t			*ent;
 	client_t		*client;
@@ -487,10 +484,10 @@ void SV_ConnectClient (int clientnum)
 	edictnum = clientnum+1;
 
 	ent = EDICT_NUM(edictnum);
-	
+
 // set up the client_t
 	netconnection = client->netconnection;
-	
+
 	if (sv.loadgame)
 		memcpy (spawn_parms, client->spawn_parms, sizeof(spawn_parms));
 	memset (client, 0, sizeof(*client));
@@ -504,7 +501,7 @@ void SV_ConnectClient (int clientnum)
 
 	client->message.data = client->msgbuf;
 	client->message.maxsize = sizeof(client->msgbuf);
-	client->message.allowoverflow = true;		// we can catch it
+	client->message.allowoverflow = true;	// we can catch it
 
 	client->datagram.data = client->datagram_buf;
 	client->datagram.maxsize = sizeof(client->datagram_buf);
@@ -540,7 +537,7 @@ void SV_CheckForNewClients (void)
 {
 	struct qsocket_s	*ret;
 	int				i;
-		
+
 //
 // check for new connections
 //
@@ -550,22 +547,21 @@ void SV_CheckForNewClients (void)
 		if (!ret)
 			break;
 
-	// 
+	//
 	// init a new client structure
-	//	
+	//
 		for (i=0 ; i<svs.maxclients ; i++)
 			if (!svs.clients[i].active)
 				break;
 		if (i == svs.maxclients)
 			Sys_Error ("Host_CheckForNewClients: no free clients");
-		
+
 		svs.clients[i].netconnection = ret;
-		SV_ConnectClient (i);	
-	
+		SV_ConnectClient (i);
+
 		net_activeconnections++;
 	}
 }
-
 
 
 /*
@@ -598,10 +594,10 @@ crosses a waterline.
 =============================================================================
 */
 
-int		fatbytes;
-byte	fatpvs[MAX_MAP_LEAFS/8];
+static int	fatbytes;
+static byte	fatpvs[MAX_MAP_LEAFS/8];
 
-void SV_AddToFatPVS (vec3_t org, mnode_t *node)
+static void SV_AddToFatPVS (vec3_t org, mnode_t *node)
 {
 	int		i;
 	byte	*pvs;
@@ -621,7 +617,7 @@ void SV_AddToFatPVS (vec3_t org, mnode_t *node)
 			}
 			return;
 		}
-	
+
 		plane = node->plane;
 		d = DotProduct (org, plane->normal) - plane->dist;
 		if (d > 8)
@@ -644,7 +640,7 @@ Calculates a PVS that is the inclusive or of all leafs within 8 pixels of the
 given point.
 =============
 */
-byte *SV_FatPVS (vec3_t org)
+static byte *SV_FatPVS (vec3_t org)
 {
 	fatbytes = (sv.worldmodel->numleafs+31)>>3;
 	memset (fatpvs, 0, fatbytes);
@@ -655,7 +651,7 @@ byte *SV_FatPVS (vec3_t org)
 #define CLIENT_FRAME_INIT	255
 #define CLIENT_FRAME_RESET	254
 
-void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_t *msg)
+static void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_t *msg)
 {
 	int		e, i;
 	int		bits;
@@ -666,15 +662,14 @@ void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_t *msg)
 	int		temp_index;
 	char	NewName[MAX_QPATH];
 	long	flagtest;
-	int				position = 0;
-	int				client_num;
-	unsigned long   client_bit;
-	client_frames_t *reference, *build;
-	client_state2_t  *state;
-	entity_state2_t *ref_ent,*set_ent,build_ent;
+	int			position = 0;
+	int			client_num;
+	unsigned long	client_bit;
+	client_frames_t	*reference, *build;
+	client_state2_t	*state;
+	entity_state2_t	*ref_ent, *set_ent, build_ent;
 	qboolean		FoundInList,DoRemove,DoPlayer,DoMonsters,DoMissiles,DoMisc,IgnoreEnt;
 	short			RemoveList[MAX_CLIENT_STATES],NumToRemove;
-
 
 	client_num = client-svs.clients;
 	client_bit = 1<<client_num;
@@ -683,7 +678,7 @@ void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_t *msg)
 
 	if (client->last_sequence != client->current_sequence)
 	{	// Old sequence
-//		Con_Printf("SV: Old sequence SV(%d,%d) CL(%d,%d)\n",client->current_sequence, client->current_frame, client->last_sequence, client->last_frame);
+	//	Con_Printf("SV: Old sequence SV(%d,%d) CL(%d,%d)\n",client->current_sequence, client->current_frame, client->last_sequence, client->last_frame);
 		client->current_frame++;
 		if (client->current_frame > MAX_FRAMES+1)
 			client->current_frame = MAX_FRAMES+1;
@@ -692,13 +687,13 @@ void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_t *msg)
 			 client->last_frame == 0 ||
 			 client->last_frame == MAX_FRAMES+1)
 	{	// Reference expired in current sequence
-//		Con_Printf("SV: Expired SV(%d,%d) CL(%d,%d)\n",client->current_sequence, client->current_frame, client->last_sequence, client->last_frame);
+	//	Con_Printf("SV: Expired SV(%d,%d) CL(%d,%d)\n",client->current_sequence, client->current_frame, client->last_sequence, client->last_frame);
 		client->current_frame = 1;
 		client->current_sequence++;
 	}
 	else if (client->last_frame >= 1 && client->last_frame <= client->current_frame)
 	{	// Got a valid frame
-//		Con_Printf("SV: Valid SV(%d,%d) CL(%d,%d)\n",client->current_sequence, client->current_frame, client->last_sequence, client->last_frame);
+	//	Con_Printf("SV: Valid SV(%d,%d) CL(%d,%d)\n",client->current_sequence, client->current_frame, client->last_sequence, client->last_frame);
 		*reference = state->frames[client->last_frame];
 
 		for(i=0;i<reference->count;i++)
@@ -721,7 +716,7 @@ void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_t *msg)
 	}
 	else
 	{	// Normal frame advance
-//		Con_Printf("SV: Normal SV(%d,%d) CL(%d,%d)\n",client->current_sequence, client->current_frame, client->last_sequence, client->last_frame);
+	//	Con_Printf("SV: Normal SV(%d,%d) CL(%d,%d)\n",client->current_sequence, client->current_frame, client->last_sequence, client->last_frame);
 		client->current_frame++;
 		if (client->current_frame > MAX_FRAMES+1)
 			client->current_frame = MAX_FRAMES+1;
@@ -782,7 +777,7 @@ void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_t *msg)
 			for (i=0 ; i < ent->num_leafs ; i++)
 				if (pvs[ent->leafnums[i] >> 3] & (1 << (ent->leafnums[i]&7) ))
 					break;
-				
+
 			if (i == ent->num_leafs)
 			{
 				DoRemove = true;
@@ -841,7 +836,7 @@ skipA:
 		}
 		else
 		{
-			if (DoRemove || IgnoreEnt) 
+			if (DoRemove || IgnoreEnt)
 				continue;
 
 			ref_ent = &build_ent;
@@ -894,28 +889,28 @@ skipA:
 			bits |= U_ANGLE1;
 			set_ent->angles[0] = ent->v.angles[0];
 		}
-			
+
 		if ( ent->v.angles[1] != ref_ent->angles[1] )
 		{
 			bits |= U_ANGLE2;
 			set_ent->angles[1] = ent->v.angles[1];
 		}
-			
+
 		if ( ent->v.angles[2] != ref_ent->angles[2] )
 		{
 			bits |= U_ANGLE3;
 			set_ent->angles[2] = ent->v.angles[2];
 		}
-			
+
 		if (ent->v.movetype == MOVETYPE_STEP)
 			bits |= U_NOLERP;	// don't mess up the step animation
-	
+
 		if (ref_ent->colormap != ent->v.colormap)
 		{
 			bits |= U_COLORMAP;
 			set_ent->colormap = ent->v.colormap;
 		}
-			
+
 		if (ref_ent->skin != ent->v.skin
 			|| ref_ent->drawflags != ent->v.drawflags)
 		{
@@ -929,14 +924,14 @@ skipA:
 			bits |= U_FRAME;
 			set_ent->frame = ent->v.frame;
 		}
-	
+
 		if (ref_ent->effects != ent->v.effects)
 		{
 			bits |= U_EFFECTS;
 			set_ent->effects = ent->v.effects;
 		}
 
-//		flagtest = (long)ent->v.flags;
+	//	flagtest = (long)ent->v.flags;
 		if (flagtest & 0xff000000)
 		{
 			Host_Error("Invalid flags setting for class %s",ent->v.classname + pr_strings);
@@ -992,7 +987,7 @@ skipA:
 	// write the message
 	//
 		MSG_WriteByte (msg,bits | U_SIGNAL);
-		
+
 		if (bits & U_MOREBITS)
 			MSG_WriteByte (msg, bits>>8);
 		if (bits & U_MOREBITS2)
@@ -1017,7 +1012,7 @@ skipA:
 		if (bits & U_EFFECTS)
 			MSG_WriteByte (msg, ent->v.effects);
 		if (bits & U_ORIGIN1)
-			MSG_WriteCoord (msg, ent->v.origin[0]);		
+			MSG_WriteCoord (msg, ent->v.origin[0]);
 		if (bits & U_ANGLE1)
 			MSG_WriteAngle(msg, ent->v.angles[0]);
 		if (bits & U_ORIGIN2)
@@ -1028,7 +1023,7 @@ skipA:
 			MSG_WriteCoord (msg, ent->v.origin[2]);
 		if (bits & U_ANGLE3)
 			MSG_WriteAngle(msg, ent->v.angles[2]);
-		if(bits & U_SCALE)
+		if (bits & U_SCALE)
 		{ // Used for scale and abslight
 			MSG_WriteByte(msg, (int)(ent->v.scale*100.0)&255);
 			MSG_WriteByte(msg, (int)(ent->v.abslight*255.0)&255);
@@ -1050,17 +1045,16 @@ SV_CleanupEnts
 
 =============
 */
-void SV_CleanupEnts (void)
+static void SV_CleanupEnts (void)
 {
 	int		e;
 	edict_t	*ent;
-	
+
 	ent = NEXT_EDICT(sv.edicts);
 	for (e=1 ; e<sv.num_edicts ; e++, ent = NEXT_EDICT(ent))
 	{
 		ent->v.effects = (int)ent->v.effects & ~EF_MUZZLEFLASH;
 	}
-
 }
 
 /*
@@ -1068,14 +1062,14 @@ void SV_CleanupEnts (void)
 SV_WriteClientdataToMessage
 
 ==================
-*/ 
+*/
 void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg)
 {
 	int	bits,sc1,sc2;
 	byte	test;
 	int	i;
 	edict_t	*other;
-	static  int next_update = 0;
+	static	int next_update = 0;
 	static	int next_count = 0;
 
 //
@@ -1089,7 +1083,7 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 		MSG_WriteByte (msg, ent->v.dmg_take);
 		for (i=0 ; i<3 ; i++)
 			MSG_WriteCoord (msg, other->v.origin[i] + 0.5*(other->v.mins[i] + other->v.maxs[i]));
-	
+
 		ent->v.dmg_take = 0;
 		ent->v.dmg_save = 0;
 	}
@@ -1097,10 +1091,10 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 //
 // send the current viewpos offset from the view entity
 //
-	SV_SetIdealPitch ();		// how much to look up / down ideally
+	SV_SetIdealPitch ();	// how much to look up / down ideally
 
 // a fixangle might get lost in a dropped packet.  Oh well.
-	if ( ent->v.fixangle )
+	if (ent->v.fixangle)
 	{
 		MSG_WriteByte (msg, svc_setangle);
 		for (i=0 ; i < 3 ; i++)
@@ -1109,25 +1103,25 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 	}
 
 	bits = 0;
-	
+
 	if (client->send_all_v)
 	{
 		bits = SU_VIEWHEIGHT | SU_IDEALPITCH | SU_IDEALROLL | 
-			   SU_VELOCITY1 | (SU_VELOCITY1<<1) | (SU_VELOCITY1<<2) | 
-			   SU_PUNCH1 | (SU_PUNCH1<<1) | (SU_PUNCH1<<2) | SU_WEAPONFRAME |
-			   SU_ARMOR | SU_WEAPON;
+			SU_VELOCITY1 | (SU_VELOCITY1<<1) | (SU_VELOCITY1<<2) | 
+			SU_PUNCH1 | (SU_PUNCH1<<1) | (SU_PUNCH1<<2) | SU_WEAPONFRAME | 
+			SU_ARMOR | SU_WEAPON;
 	}
 	else
 	{
 		if (ent->v.view_ofs[2] != client->old_v.view_ofs[2])
 			bits |= SU_VIEWHEIGHT;
-		
+
 		if (ent->v.idealpitch != client->old_v.idealpitch)
 			bits |= SU_IDEALPITCH;
-		
+
 		if (ent->v.idealroll != client->old_v.idealroll)
 			bits |= SU_IDEALROLL;
-		
+
 		for (i=0 ; i<3 ; i++)
 		{
 			if (ent->v.punchangle[i] != client->old_v.punchangle[i])
@@ -1135,22 +1129,21 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 			if (ent->v.velocity[i] != client->old_v.velocity[i])
 				bits |= (SU_VELOCITY1<<i);
 		}
-		
+
 		if (ent->v.weaponframe != client->old_v.weaponframe)
 			bits |= SU_WEAPONFRAME;
-		
+
 		if (ent->v.armorvalue != client->old_v.armorvalue)
 			bits |= SU_ARMOR;
-		
+
 		if (ent->v.weaponmodel != client->old_v.weaponmodel)
 			bits |= SU_WEAPON;
 	}
 
 // send the data
- 
 
 	//fjm: this wasn't in here b4, and the centerview command requires it.
-	if ( (int)ent->v.flags & FL_ONGROUND) 
+	if ( (int)ent->v.flags & FL_ONGROUND)
 		bits |= SU_ONGROUND;
 
 	next_count++;
@@ -1161,38 +1154,50 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 		if (next_update > 11)
 			next_update = 0;
 
-		switch(next_update)
+		switch (next_update)
 		{
-			case 0:bits |= SU_VIEWHEIGHT;
+			case 0:
+				bits |= SU_VIEWHEIGHT;
 				break;
-			case 1:bits |= SU_IDEALPITCH;
+			case 1:
+				bits |= SU_IDEALPITCH;
 				break;
-			case 2:bits |= SU_IDEALROLL;
+			case 2:
+				bits |= SU_IDEALROLL;
 				break;
-			case 3:bits |= SU_VELOCITY1;
+			case 3:
+				bits |= SU_VELOCITY1;
 				break;
-			case 4:bits |= (SU_VELOCITY1<<1);
+			case 4:
+				bits |= (SU_VELOCITY1<<1);
 				break;
-			case 5:bits |= (SU_VELOCITY1<<2);
+			case 5:
+				bits |= (SU_VELOCITY1<<2);
 				break;
-			case 6:bits |= SU_PUNCH1;
+			case 6:
+				bits |= SU_PUNCH1;
 				break;
-			case 7:bits |= (SU_PUNCH1<<1);
+			case 7:
+				bits |= (SU_PUNCH1<<1);
 				break;
-			case 8:bits |= (SU_PUNCH1<<2);
+			case 8:
+				bits |= (SU_PUNCH1<<2);
 				break;
-			case 9:bits |= SU_WEAPONFRAME;
+			case 9:
+				bits |= SU_WEAPONFRAME;
 				break;
-			case 10:bits |= SU_ARMOR;
+			case 10:
+				bits |= SU_ARMOR;
 				break;
-			case 11:bits |= SU_WEAPON;
+			case 11:
+				bits |= SU_WEAPON;
 				break;
 		}
 	}
 
 	MSG_WriteByte (msg, svc_clientdata);
 	MSG_WriteShort (msg, bits);
-	
+
 	if (bits & SU_VIEWHEIGHT)
 		MSG_WriteChar (msg, ent->v.view_ofs[2]);
 
@@ -1217,7 +1222,7 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 	if (bits & SU_WEAPON)
 		MSG_WriteShort (msg, SV_ModelIndex(pr_strings+ent->v.weaponmodel));
 
-	if (host_client->send_all_v) 
+	if (host_client->send_all_v)
 	{
 		sc1 = sc2 = 0xffffffff;
 		host_client->send_all_v = false;
@@ -1228,15 +1233,15 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 
 		if (ent->v.health != host_client->old_v.health)
 			sc1 |= SC1_HEALTH;
-		if(ent->v.level != host_client->old_v.level)
+		if (ent->v.level != host_client->old_v.level)
 			sc1 |= SC1_LEVEL;
-		if(ent->v.intelligence != host_client->old_v.intelligence)
+		if (ent->v.intelligence != host_client->old_v.intelligence)
 			sc1 |= SC1_INTELLIGENCE;
-		if(ent->v.wisdom != host_client->old_v.wisdom)
+		if (ent->v.wisdom != host_client->old_v.wisdom)
 			sc1 |= SC1_WISDOM;
-		if(ent->v.strength != host_client->old_v.strength)
+		if (ent->v.strength != host_client->old_v.strength)
 			sc1 |= SC1_STRENGTH;
-		if(ent->v.dexterity != host_client->old_v.dexterity)
+		if (ent->v.dexterity != host_client->old_v.dexterity)
 			sc1 |= SC1_DEXTERITY;
 		if (ent->v.weapon != host_client->old_v.weapon)
 			sc1 |= SC1_WEAPON;
@@ -1511,11 +1516,11 @@ end:
 SV_SendClientDatagram
 =======================
 */
-qboolean SV_SendClientDatagram (client_t *client)
+static qboolean SV_SendClientDatagram (client_t *client)
 {
 	byte		buf[NET_MAXMESSAGE];
 	sizebuf_t	msg;
-	
+
 	msg.data = buf;
 	msg.maxsize = sizeof(buf);
 	msg.cursize = 0;
@@ -1531,7 +1536,8 @@ qboolean SV_SendClientDatagram (client_t *client)
 /*	if ((rand() & 0xff) < 200)
 	{
 		return true;
-	}*/
+	}
+*/
 
 // copy the server datagram if there is space
 	if (msg.cursize + sv.datagram.cursize < msg.maxsize)
@@ -1542,10 +1548,11 @@ qboolean SV_SendClientDatagram (client_t *client)
 
 	SZ_Clear(&client->datagram);
 
-	//if (msg.cursize > 300)
-	//{
-	//	Con_DPrintf("WARNING: packet size is %i\n",msg.cursize);
-	//}
+/*	if (msg.cursize > 300)
+	{
+		Con_DPrintf("WARNING: packet size is %i\n",msg.cursize);
+	}
+*/
 
 // send the datagram
 	if (NET_SendUnreliableMessage (client->netconnection, &msg) == -1)
@@ -1553,7 +1560,7 @@ qboolean SV_SendClientDatagram (client_t *client)
 		SV_DropClient (true);// if the message couldn't send, kick off
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -1562,11 +1569,11 @@ qboolean SV_SendClientDatagram (client_t *client)
 SV_UpdateToReliableMessages
 =======================
 */
-void SV_UpdateToReliableMessages (void)
+static void SV_UpdateToReliableMessages (void)
 {
-	int	i, j;
-	client_t *client;
-	edict_t *ent;
+	int		i, j;
+	client_t	*client;
+	edict_t		*ent;
 
 // check for changes to be sent over the reliable streams
 	for (i=0, host_client = svs.clients ; i<svs.maxclients ; i++, host_client++)
@@ -1607,11 +1614,11 @@ Send a nop message without trashing or sending the accumulated client
 message buffer
 =======================
 */
-void SV_SendNop (client_t *client)
+static void SV_SendNop (client_t *client)
 {
 	sizebuf_t	msg;
 	byte		buf[4];
-	
+
 	msg.data = buf;
 	msg.maxsize = sizeof(buf);
 	msg.cursize = 0;
@@ -1631,7 +1638,7 @@ SV_SendClientMessages
 void SV_SendClientMessages (void)
 {
 	int			i;
-	
+
 // update frags, names, etc
 	SV_UpdateToReliableMessages ();
 
@@ -1651,7 +1658,7 @@ void SV_SendClientMessages (void)
 		// the player isn't totally in the game yet
 		// send small keepalive messages if too much time has passed
 		// send a full message when the next signon stage has been requested
-		// some other message data (name changes, etc) may accumulate 
+		// some other message data (name changes, etc) may accumulate
 		// between signon stages
 			if (!host_client->sendsignon)
 			{
@@ -1670,12 +1677,12 @@ void SV_SendClientMessages (void)
 			host_client->message.overflowed = false;
 			continue;
 		}
-			
+
 		if (host_client->message.cursize || host_client->dropasap)
 		{
 			if (!NET_CanSendMessage (host_client->netconnection))
 			{
-//				I_Printf ("can't write\n");
+			//	I_Printf ("can't write\n");
 				continue;
 			}
 
@@ -1683,8 +1690,8 @@ void SV_SendClientMessages (void)
 				SV_DropClient (false);	// went to another level
 			else
 			{
-				if (NET_SendMessage (host_client->netconnection
-				, &host_client->message) == -1)
+				if (NET_SendMessage (host_client->netconnection,
+						&host_client->message) == -1)
 					SV_DropClient (true);	// if the message couldn't send, kick off
 				SZ_Clear (&host_client->message);
 				host_client->last_message = realtime;
@@ -1692,8 +1699,7 @@ void SV_SendClientMessages (void)
 			}
 		}
 	}
-	
-	
+
 // clear muzzle flashes
 	SV_CleanupEnts ();
 }
@@ -1716,7 +1722,7 @@ SV_ModelIndex
 int SV_ModelIndex (char *name)
 {
 	int		i;
-	
+
 	if (!name || !name[0])
 		return 0;
 
@@ -1738,11 +1744,11 @@ SV_CreateBaseline
 
 ================
 */
-void SV_CreateBaseline (void)
+static void SV_CreateBaseline (void)
 {
 	int			i;
 	edict_t			*svent;
-	int				entnum;	
+	int				entnum;
 
 	for (entnum = 0; entnum < sv.num_edicts ; entnum++)
 	{
@@ -1775,7 +1781,7 @@ void SV_CreateBaseline (void)
 				SV_ModelIndex(pr_strings + svent->v.model);
 		}
 		memset(svent->baseline.ClearCount,99,sizeof(svent->baseline.ClearCount));
-		
+
 	//
 	// add to the message
 	//
@@ -1805,7 +1811,7 @@ SV_SendReconnect
 Tell all the clients that the server is changing levels
 ================
 */
-void SV_SendReconnect (void)
+static void SV_SendReconnect (void)
 {
 	byte	data[128];
 	sizebuf_t	msg;
@@ -1817,7 +1823,7 @@ void SV_SendReconnect (void)
 	MSG_WriteChar (&msg, svc_stufftext);
 	MSG_WriteString (&msg, "reconnect\n");
 	NET_SendToAll (&msg, 5);
-	
+
 	if (cls.state != ca_dedicated)
 #ifdef QUAKE2
 		Cbuf_InsertText ("reconnect\n");
@@ -1837,7 +1843,8 @@ transition to another level
 */
 void SV_SaveSpawnparms (void)
 {
-	int		i/*, j*/;
+	int		i;
+//	int		j;
 
 	svs.serverflags = pr_global_struct->serverflags;
 
@@ -1881,7 +1888,7 @@ void SV_SpawnServer (char *server, char *startspot)
 		stats_restored = true;
 		SaveGamestate(true);
 	}
-	else 
+	else
 		stats_restored = false;
 
 //
@@ -1911,12 +1918,11 @@ void SV_SpawnServer (char *server, char *startspot)
 		current_skill = 4;
 
 	Cvar_SetValue ("skill", (float)current_skill);
-	
+
 //
 // set up the new server
 //
 	Host_ClearMemory ();
-
 	//memset (&sv, 0, sizeof(sv));
 
 	strcpy (sv.name, server);
@@ -1946,21 +1952,21 @@ void SV_SpawnServer (char *server, char *startspot)
 	memset(sv.states,0,svs.maxclients * sizeof(client_state2_t));
 
 	sv.max_edicts = MAX_EDICTS;
-	
+
 	sv.edicts = Hunk_AllocName (sv.max_edicts*pr_edict_size, "edicts");
 
 	sv.datagram.maxsize = sizeof(sv.datagram_buf);
 	sv.datagram.cursize = 0;
 	sv.datagram.data = sv.datagram_buf;
-	
+
 	sv.reliable_datagram.maxsize = sizeof(sv.reliable_datagram_buf);
 	sv.reliable_datagram.cursize = 0;
 	sv.reliable_datagram.data = sv.reliable_datagram_buf;
-	
+
 	sv.signon.maxsize = sizeof(sv.signon_buf);
 	sv.signon.cursize = 0;
 	sv.signon.data = sv.signon_buf;
-	
+
 // leave slots at start for clients only
 	sv.num_edicts = svs.maxclients+1+max_temp_edicts.value;
 	for (i=0 ; i<svs.maxclients ; i++)
@@ -1974,16 +1980,16 @@ void SV_SpawnServer (char *server, char *startspot)
 	{
 		ent = EDICT_NUM(i+svs.maxclients+1);
 		ED_ClearEdict(ent);
-		
+
 		ent->free = true;
 		ent->freetime = -999;
 	}
-	
+
 	sv.state = ss_loading;
 	sv.paused = false;
 
 	sv.time = 1.0;
-	
+
 	strcpy (sv.name, server);
 	sprintf (sv.modelname,"maps/%s.bsp", server);
 
@@ -1999,7 +2005,7 @@ void SV_SpawnServer (char *server, char *startspot)
 		return;
 	}
 	sv.models[1] = sv.worldmodel;
-	
+
 //
 // clear world interaction links
 //
@@ -2017,7 +2023,7 @@ void SV_SpawnServer (char *server, char *startspot)
 
 //
 // load the rest of the entities
-//	
+//
 	ent = EDICT_NUM(0);
 	memset (&ent->v, 0, progs->entityfields * 4);
 	ent->free = false;
@@ -2039,7 +2045,7 @@ void SV_SpawnServer (char *server, char *startspot)
 
 	// serverflags are for cross level information (sigils)
 	pr_global_struct->serverflags = svs.serverflags;
-	
+
 	current_loading_size += 5;
 	D_ShowLoadingSize();
 	ED_LoadFromFile (sv.worldmodel->entities);
@@ -2063,7 +2069,7 @@ void SV_SpawnServer (char *server, char *startspot)
 			SV_SendServerinfo (host_client);
 
 	svs.changelevel_issued = false;		// now safe to issue another
-	
+
 	Con_DPrintf ("Server spawned.\n");
 
 	total_loading_size = 0;
@@ -2072,6 +2078,11 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2005/10/25 17:14:23  sezero
+ * added a STRINGIFY macro. unified version macros. simplified version
+ * printing. simplified and enhanced version watermark print onto console
+ * background. added HoT lines to the quit menu (shameless plug)
+ *
  * Revision 1.23  2005/09/28 06:09:31  sezero
  * took care of flickering problem while drawing the loading
  * plaque (from Pa3PyX.) glFlush is now required.
