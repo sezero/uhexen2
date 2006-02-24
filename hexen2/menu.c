@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.54 2006-02-24 14:43:55 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.55 2006-02-24 19:23:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -896,12 +896,15 @@ static void M_Difficulty_Key (int key)
 			key_dest = key_game;
 			m_state = m_none;
 			cls.demonum = m_save_demonum;
-
 			//Cbuf_AddText ("map keep1\n");
 		}
 		else
 #endif
-			Cbuf_AddText ("map demo1\n");
+		{
+		//	Cbuf_AddText ("map demo1\n");
+			m_state = m_none;
+			Cbuf_AddText ("wait; map demo1\n");
+		}
 		break;
 	default:
 		key_dest = key_game;
@@ -4325,6 +4328,12 @@ static void ReInitMusic (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.54  2006/02/24 14:43:55  sezero
+ * created a new "opengl features" entry under the options menu and moved opengl
+ * options under it. added new opengl menu options for texture filtering, glow
+ * effects, multitexturing, stencil buffered shadows and texture purging upon
+ * map change.
+ *
  * Revision 1.53  2006/02/18 08:51:10  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. also renamed the variables name and dest to savename and savedest in
