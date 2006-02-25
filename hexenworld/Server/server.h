@@ -440,7 +440,7 @@ void SV_EndRedirect (void);
 //
 // sv_ccmds.c
 //
-void SV_Status_f (void);
+//void SV_Status_f (void);
 
 //
 // sv_ents.c

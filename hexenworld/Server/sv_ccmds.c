@@ -1,7 +1,7 @@
 
 #include "qwsvdef.h"
 
-qboolean	sv_allow_cheats;
+static qboolean	sv_allow_cheats;
 
 int fp_messages=4, fp_persecond=4, fp_secondsdead=10;
 char fp_msg[255] = { 0 };
@@ -24,7 +24,7 @@ SV_SetMaster_f
 Make a master server current
 ====================
 */
-void SV_SetMaster_f (void)
+static void SV_SetMaster_f (void)
 {
 	char	data[2];
 	int		i;
@@ -59,7 +59,7 @@ void SV_SetMaster_f (void)
 SV_Quit_f
 ==================
 */
-void SV_Quit_f (void)
+static void SV_Quit_f (void)
 {
 	SV_FinalMessage ("server shutdown\n");
 	Con_Printf ("Shutting down.\n");
@@ -72,7 +72,7 @@ void SV_Quit_f (void)
 SV_Logfile_f
 ============
 */
-void SV_Logfile_f (void)
+static void SV_Logfile_f (void)
 {
 	char	name[MAX_OSPATH];
 
@@ -99,7 +99,7 @@ void SV_Logfile_f (void)
 SV_Fraglogfile_f
 ============
 */
-void SV_Fraglogfile_f (void)
+static void SV_Fraglogfile_f (void)
 {
 	char	name[MAX_OSPATH];
 	int		i;
@@ -145,7 +145,7 @@ SV_SetPlayer
 Sets host_client and sv_player to the player with idnum Cmd_Argv(1)
 ==================
 */
-qboolean SV_SetPlayer (void)
+static qboolean SV_SetPlayer (void)
 {
 	client_t	*cl;
 	int			i;
@@ -176,7 +176,7 @@ SV_God_f
 Sets client to godmode
 ==================
 */
-void SV_God_f (void)
+static void SV_God_f (void)
 {
 	if (!sv_allow_cheats)
 	{
@@ -195,7 +195,7 @@ void SV_God_f (void)
 }
 
 
-void SV_Noclip_f (void)
+static void SV_Noclip_f (void)
 {
 	if (!sv_allow_cheats)
 	{
@@ -224,23 +224,23 @@ void SV_Noclip_f (void)
 SV_Give_f
 ==================
 */
-void SV_Give_f (void)
+static void SV_Give_f (void)
 {
 	char	*t;
 	int		v;
-	
+
 	if (!sv_allow_cheats)
 	{
 		Con_Printf ("You must run the server with -cheats to enable this command.\n");
 		return;
 	}
-	
+
 	if (!SV_SetPlayer ())
 		return;
 
 	t = Cmd_Argv(2);
 	v = atoi (Cmd_Argv(3));
-	
+
 	switch (t[0])
 	{
 	case '2':
@@ -253,22 +253,22 @@ void SV_Give_f (void)
 	case '9':
 		sv_player->v.items = (int)sv_player->v.items | IT_SHOTGUN<< (t[0] - '2');
 		break;
-	
+
 	case 's':
 //rjr		sv_player->v.ammo_shells = v;
-		break;		
+		break;
 	case 'n':
 //rjr		sv_player->v.ammo_nails = v;
-		break;		
+		break;
 	case 'r':
 //rjr		sv_player->v.ammo_rockets = v;
-		break;		
+		break;
 	case 'h':
 		sv_player->v.health = v;
-		break;		
+		break;
 	case 'c':
 //rjr		sv_player->v.ammo_cells = v;
-		break;		
+		break;
 	}
 }
 
@@ -282,7 +282,7 @@ map <mapname>
 command from the console or progs.
 ======================
 */
-void SV_Map_f (void)
+static void SV_Map_f (void)
 {
 	char	level[MAX_QPATH];
 	char	expanded[MAX_QPATH];
@@ -293,6 +293,8 @@ void SV_Map_f (void)
 	if (Cmd_Argc() < 2)
 	{
 		Con_Printf ("map <levelname> : continue game on a new level\n");
+		if (sv.name)
+			Con_Printf ("Currently on: %s\n",sv.name);
 		return;
 	}
 	strcpy (level, Cmd_Argv(1));
@@ -333,8 +335,6 @@ void SV_Map_f (void)
 }
 
 
-
-
 /*
 ==================
 SV_Kick_f
@@ -342,14 +342,14 @@ SV_Kick_f
 Kick a user off of the server
 ==================
 */
-void SV_Kick_f (void)
+static void SV_Kick_f (void)
 {
 	int			i;
 	client_t	*cl;
 	int			uid;
 
 	uid = atoi(Cmd_Argv(1));
-	
+
 	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 	{
 		if (!cl->state)
@@ -360,8 +360,8 @@ void SV_Kick_f (void)
 			// print directly, because the dropped client won't get the
 			// SV_BroadcastPrintf message
 			SV_ClientPrintf (cl, PRINT_HIGH, "You were kicked from the game\n");
-			SV_DropClient (cl); 
-			
+			SV_DropClient (cl);
+
 			pr_global_struct->time = sv.time;
 			pr_global_struct->self = EDICT_TO_PROG(sv_player);
 			PR_ExecuteProgram (pr_global_struct->ClientKill);
@@ -378,7 +378,7 @@ void SV_Kick_f (void)
 SV_Smite_f
 ==================
 */
-void SV_Smite_f (void)
+static void SV_Smite_f (void)
 {
 	int			i;
 	client_t	*cl;
@@ -386,10 +386,10 @@ void SV_Smite_f (void)
 	int		old_self;
 
 	uid = atoi(Cmd_Argv(1));
-	
+
 	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 	{
-		if (cl->state!=cs_spawned)
+		if (cl->state != cs_spawned)
 			continue;
 		if (cl->userid == uid)
 		{
@@ -400,15 +400,15 @@ void SV_Smite_f (void)
 			}
 			SV_BroadcastPrintf (PRINT_HIGH, "%s was Smitten by GOD!\n", cl->name);
 
-//save this state
+			//save this state
 			old_self = pr_global_struct->self;
-			
-//call the hc SmitePlayer function
+
+			//call the hc SmitePlayer function
 			pr_global_struct->time = sv.time;
 			pr_global_struct->self = EDICT_TO_PROG(cl->edict);
 			PR_ExecuteProgram (pr_global_struct->SmitePlayer);
 
-//restore current state
+			//restore current state
 			pr_global_struct->self = old_self;
 			return;
 		}
@@ -416,19 +416,20 @@ void SV_Smite_f (void)
 	Con_Printf ("Couldn't find user number %i\n", uid);
 }
 
+
 /*
 ================
 SV_Status_f
 ================
 */
-void SV_Status_f (void)
+extern	redirect_t	sv_redirected;
+
+static void SV_Status_f (void)
 {
 	int			i, j, l, num_min, num_sec;
 	client_t	*cl;
 	float		cpu, avg, pak, t_limit,f_limit;
 	char		*s;
-	extern		redirect_t	sv_redirected;
-
 
 	cpu = (svs.stats.latched_active+svs.stats.latched_idle);
 	if (cpu)
@@ -442,7 +443,7 @@ void SV_Status_f (void)
 	Con_Printf ("packets/frame    : %5.2f\n", pak);
 	t_limit = Cvar_VariableValue("timelimit");
 	f_limit = Cvar_VariableValue("fraglimit");
-	if(dmMode.value==DM_SIEGE)
+	if (dmMode.value == DM_SIEGE)
 	{
 		num_min = floor((t_limit*60)-sv.time);
 		num_sec = (int)(t_limit - num_min)%60;
@@ -459,14 +460,14 @@ void SV_Status_f (void)
 		Con_Printf ("timelimit        : %i\n", t_limit);
 		Con_Printf ("fraglimit        : %i\n", f_limit);
 	}
-	
-// min fps lat drp
-	if (sv_redirected != RD_NONE) 
+
+	// min fps lat drp
+	if (sv_redirected != RD_NONE)
 	{
 		// most remote clients are 40 columns
 		//           0123456789012345678901234567890123456789
 		Con_Printf ("name               userid frags\n");
-        Con_Printf ("  address          rate ping drop\n");
+		Con_Printf ("  address          rate ping drop\n");
 		Con_Printf ("  ---------------- ---- ---- -----\n");
 		for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
 		{
@@ -478,7 +479,7 @@ void SV_Status_f (void)
 			Con_Printf ("%6i %5i", cl->userid, (int)cl->edict->v.frags);
 			if (cl->spectator)
 				Con_Printf(" (s)\n");
-			else			
+			else
 				Con_Printf("\n");
 
 			s = NET_BaseAdrToString ( cl->netchan.remote_address);
@@ -493,13 +494,13 @@ void SV_Status_f (void)
 				Con_Printf ("ZOMBIE\n");
 				continue;
 			}
-			Con_Printf ("%4i %4i %5.2f\n"
-				, (int)(1000*cl->netchan.frame_rate)
-				, (int)SV_CalcPing (cl)
-				, 100.0*cl->netchan.drop_count / cl->netchan.incoming_sequence);
+			Con_Printf ("%4i %4i %5.2f\n",
+					(int)(1000*cl->netchan.frame_rate),
+					(int)SV_CalcPing (cl),
+					100.0*cl->netchan.drop_count / cl->netchan.incoming_sequence);
 		}
-	} 
-	else 
+	}
+	else
 	{
 		Con_Printf ("frags userid address         name            rate ping drop  siege\n");
 		Con_Printf ("----- ------ --------------- --------------- ---- ---- ----- -----\n");
@@ -514,7 +515,7 @@ void SV_Status_f (void)
 			l = 16 - strlen(s);
 			for (j=0 ; j<l ; j++)
 				Con_Printf (" ");
-			
+
 			Con_Printf ("%s", cl->name);
 			l = 16 - strlen(cl->name);
 			for (j=0 ; j<l ; j++)
@@ -529,17 +530,17 @@ void SV_Status_f (void)
 				Con_Printf ("ZOMBIE\n");
 				continue;
 			}
-			Con_Printf ("%4i %4i %5.2f"
-				, (int)(1000*cl->netchan.frame_rate)
-				, (int)SV_CalcPing (cl)
-				, 100.0*cl->netchan.drop_count / cl->netchan.incoming_sequence);
+			Con_Printf ("%4i %4i %5.2f",
+					(int)(1000*cl->netchan.frame_rate),
+					(int)SV_CalcPing (cl),
+					100.0*cl->netchan.drop_count / cl->netchan.incoming_sequence);
 
 			if (cl->spectator)
 				Con_Printf(" (s)\n");
-			else			
+			else
 			{
 				Con_Printf(" ");
-				switch(cl->playerclass)
+				switch (cl->playerclass)
 				{
 				case CLASS_PALADIN:
 					Con_Printf("P");
@@ -563,7 +564,7 @@ void SV_Status_f (void)
 					Con_Printf("?");
 					break;
 				}
-				switch(cl->siege_team)
+				switch (cl->siege_team)
 				{
 				case ST_DEFENDER:
 					Con_Printf("D");
@@ -575,29 +576,28 @@ void SV_Status_f (void)
 					Con_Printf("?");
 					break;
 				}
-				if((int)cl->old_v.flags2&65536)//defender of crown
+				if ((int)cl->old_v.flags2&65536)//defender of crown
 					Con_Printf("D");
-				else 
+				else
 					Con_Printf("-");
-				if((int)cl->old_v.flags2&524288)//has siege key
+				if ((int)cl->old_v.flags2&524288)//has siege key
 					Con_Printf("K");
-				else 
+				else
 					Con_Printf("-");
 				Con_Printf("\n");
 			}
-
-				
 		}
 	}
 	Con_Printf ("\n");
 }
+
 
 /*
 ==================
 SV_ConSay_f
 ==================
 */
-void SV_ConSay_f(void)
+static void SV_ConSay_f(void)
 {
 	client_t *client;
 	int		j;
@@ -607,7 +607,7 @@ void SV_ConSay_f(void)
 	if (Cmd_Argc () < 2)
 		return;
 
-	if(dmMode.value==DM_SIEGE)
+	if (dmMode.value==DM_SIEGE)
 		strcpy (text, "GOD SAYS: ");
 	else
 		strcpy (text, "ServerAdmin: ");
@@ -636,7 +636,7 @@ void SV_ConSay_f(void)
 SV_Heartbeat_f
 ==================
 */
-void SV_Heartbeat_f (void)
+static void SV_Heartbeat_f (void)
 {
 	svs.last_heartbeat = -9999;
 }
@@ -646,10 +646,10 @@ void SV_Heartbeat_f (void)
 ===========
 SV_Serverinfo_f
 
-  Examine or change the serverinfo string
+Examine or change the serverinfo string
 ===========
 */
-void SV_Serverinfo_f (void)
+static void SV_Serverinfo_f (void)
 {
 	cvar_t	*var;
 
@@ -673,13 +673,13 @@ void SV_Serverinfo_f (void)
 	}
 	Info_SetValueForKey (svs.info, Cmd_Argv(1), Cmd_Argv(2), MAX_SERVERINFO_STRING);
 
-	// if this is a cvar, change it too	
+	// if this is a cvar, change it too
 	var = Cvar_FindVar (Cmd_Argv(1));
 	if (var)
 	{
 		char	*c;
 
-		Z_Free (var->string);	// free the old value string	
+		Z_Free (var->string);	// free the old value string
 		c = Cmd_Argv(2);
 		var->string = Z_Malloc (strlen(c) + 1);
 		strcpy (var->string, c);
@@ -692,12 +692,12 @@ void SV_Serverinfo_f (void)
 
 /*
 ===========
-SV_Serverinfo_f
+SV_Localinfo_f
 
-  Examine or change the serverinfo string
+Examine or change the localinfo string
 ===========
 */
-void SV_Localinfo_f (void)
+static void SV_Localinfo_f (void)
 {
 	if (Cmd_Argc() == 1)
 	{
@@ -728,7 +728,7 @@ SV_User_f
 Examine a users info strings
 ===========
 */
-void SV_User_f (void)
+static void SV_User_f (void)
 {
 	if (Cmd_Argc() != 2)
 	{
@@ -742,6 +742,7 @@ void SV_User_f (void)
 	Info_Print (host_client->userinfo);
 }
 
+
 /*
 ================
 SV_Gamedir
@@ -749,7 +750,7 @@ SV_Gamedir
 Sets the fake *gamedir to a different directory.
 ================
 */
-void SV_Gamedir (void)
+static void SV_Gamedir (void)
 {
 	char			*dir;
 
@@ -777,23 +778,25 @@ void SV_Gamedir (void)
 	Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
 }
 
+
 /*
 ================
 SV_Floodport_f
 ================
 */
-
-void SV_Floodprot_f (void)
+static void SV_Floodprot_f (void)
 {
-	int arg1, arg2, arg3;
-	
+	int	arg1, arg2, arg3;
+
 	if (Cmd_Argc() == 1)
 	{
-		if (fp_messages) {
+		if (fp_messages)
+		{
 			Con_Printf ("Current floodprot settings: \nAfter %d msgs per %d seconds, silence for %d seconds\n", 
 				fp_messages, fp_persecond, fp_secondsdead);
 			return;
-		} else
+		}
+		else
 			Con_Printf ("No floodprots enabled.\n");
 	}
 
@@ -808,33 +811,40 @@ void SV_Floodprot_f (void)
 	arg2 = atoi(Cmd_Argv(2));
 	arg3 = atoi(Cmd_Argv(3));
 
-	if (arg1<=0 || arg2 <= 0 || arg3<=0) {
+	if (arg1<=0 || arg2 <= 0 || arg3<=0)
+	{
 		Con_Printf ("All values must be positive numbers\n");
 		return;
 	}
-	
-	if (arg1 > 10) {
+
+	if (arg1 > 10)
+	{
 		Con_Printf ("Can only track up to 10 messages.\n");
 		return;
 	}
 
 	fp_messages	= arg1;
-	fp_persecond = arg2;
-	fp_secondsdead = arg3;
+	fp_persecond	= arg2;
+	fp_secondsdead	= arg3;
 }
 
-void SV_Floodprotmsg_f (void)
+
+static void SV_Floodprotmsg_f (void)
 {
-	if (Cmd_Argc() == 1) {
+	if (Cmd_Argc() == 1)
+	{
 		Con_Printf("Current msg: %s\n", fp_msg);
 		return;
-	} else if (Cmd_Argc() != 2) {
+	}
+	else if (Cmd_Argc() != 2)
+	{
 		Con_Printf("Usage: floodprotmsg \"<message>\"\n");
 		return;
 	}
 	sprintf(fp_msg, "%s", Cmd_Argv(1));
 }
-  
+
+
 /*
 ================
 SV_Gamedir_f
@@ -842,8 +852,7 @@ SV_Gamedir_f
 Sets the gamedir and path to a different directory.
 ================
 */
-char	gamedirfile[MAX_OSPATH];
-void SV_Gamedir_f (void)
+static void SV_Gamedir_f (void)
 {
 	char			*dir;
 
@@ -915,3 +924,4 @@ void SV_InitOperatorCommands (void)
 
 	cl_warncmd.value = 1;
 }
+

@@ -1,12 +1,13 @@
 
 #include "qwsvdef.h"
 
-server_static_t	svs;				// persistant server info
-server_t		sv;					// local server
+server_static_t	svs;			// persistant server info
+server_t		sv;		// local server
 
 char	localmodels[MAX_MODELS][5];	// inline model names for precache
 
-char localinfo[MAX_LOCALINFO_STRING+1]; // local game info
+char	localinfo[MAX_LOCALINFO_STRING+1]; // local game info
+
 
 /*
 ================
@@ -17,7 +18,7 @@ SV_ModelIndex
 int SV_ModelIndex (char *name)
 {
 	int		i;
-	
+
 	if (!name || !name[0])
 		return 0;
 
@@ -59,12 +60,12 @@ to the clients -- only the fields that differ from the
 baseline will be transmitted
 ================
 */
-void SV_CreateBaseline (void)
+static void SV_CreateBaseline (void)
 {
 	int			i;
 	edict_t			*svent;
-	int				entnum;	
-		
+	int				entnum;
+
 	for (entnum = 0; entnum < sv.num_edicts ; entnum++)
 	{
 		svent = EDICT_NUM(entnum);
@@ -85,7 +86,6 @@ void SV_CreateBaseline (void)
 		if (entnum > 0 && entnum <= MAX_CLIENTS)
 		{
 			svent->baseline.colormap = entnum;
-//			svent->baseline.modelindex = SV_ModelIndex("progs/player.mdl");
 			svent->baseline.modelindex = SV_ModelIndex("models/paladin.mdl");
 		}
 		else
@@ -107,7 +107,7 @@ void SV_CreateBaseline (void)
 		//
 		// add to the message
 		//
-		MSG_WriteByte (&sv.signon,svc_spawnbaseline);		
+		MSG_WriteByte (&sv.signon,svc_spawnbaseline);
 		MSG_WriteShort (&sv.signon,entnum);
 
 		MSG_WriteShort (&sv.signon, svent->baseline.modelindex);
@@ -130,7 +130,7 @@ void SV_CreateBaseline (void)
 ================
 SV_SaveSpawnparms
 
-Grabs the current state of the progs serverinfo flags 
+Grabs the current state of the progs serverinfo flags
 and each client for saving across the
 transition to another level
 ================
@@ -169,7 +169,7 @@ Expands the PVS and calculates the PHS
 (Potentially Hearable Set)
 ================
 */
-void SV_CalcPHS (void)
+static void SV_CalcPHS (void)
 {
 	int		rowbytes, rowwords;
 	int		i, j, k, l, idx, num;
@@ -201,7 +201,6 @@ void SV_CalcPHS (void)
 			}
 		}
 	}
-
 
 	sv.phs = Hunk_AllocName (rowbytes*num, "phs");
 	count = 0;
@@ -237,8 +236,8 @@ void SV_CalcPHS (void)
 				count++;
 	}
 
-	Con_Printf ("Average leafs visible / hearable / total: %i / %i / %i\n"
-		, vcount/num, count/num, num);
+	Con_Printf ("Average leafs visible / hearable / total: %i / %i / %i\n",
+						vcount/num, count/num, num);
 }
 
 /*
@@ -257,11 +256,11 @@ void SV_SpawnServer (char *server, char *startspot)
 	int			i;
 
 	Con_DPrintf ("SpawnServer: %s\n",server);
-	
+
 	SV_SaveSpawnparms ();
 
-	svs.spawncount++;		// any partially connected client will be
-							// restarted
+	svs.spawncount++;	// any partially connected client will be
+				// restarted
 
 	sv.state = ss_dead;
 
@@ -277,13 +276,13 @@ void SV_SpawnServer (char *server, char *startspot)
 
 	sv.reliable_datagram.maxsize = sizeof(sv.reliable_datagram_buf);
 	sv.reliable_datagram.data = sv.reliable_datagram_buf;
-	
+
 	sv.multicast.maxsize = sizeof(sv.multicast_buf);
 	sv.multicast.data = sv.multicast_buf;
-	
+
 	sv.master.maxsize = sizeof(sv.master_buf);
 	sv.master.data = sv.master_buf;
-	
+
 	sv.signon.maxsize = sizeof(sv.signon_buffers[0]);
 	sv.signon.data = sv.signon_buffers[0];
 	sv.num_signon_buffers = 1;
@@ -301,19 +300,19 @@ void SV_SpawnServer (char *server, char *startspot)
 
 	// allocate edicts
 	sv.edicts = Hunk_AllocName (MAX_EDICTS*pr_edict_size, "edicts");
-	
+
 	// leave slots at start for clients only
 	sv.num_edicts = MAX_CLIENTS+1+max_temp_edicts.value;
 	for (i=0 ; i<MAX_CLIENTS ; i++)
 	{
 		ent = EDICT_NUM(i+1);
 		svs.clients[i].edict = ent;
-//ZOID - make sure we update frags right
+		//ZOID - make sure we update frags right
 		svs.clients[i].old_frags = 0;
 	}
 
 	sv.time = 1.0;
-	
+
 	strcpy (sv.name, server);
 	sprintf (sv.modelname,"maps/%s.bsp", server);
 	sv.worldmodel = Mod_ForName (sv.modelname, true);
@@ -323,7 +322,7 @@ void SV_SpawnServer (char *server, char *startspot)
 	// clear physics interaction links
 	//
 	SV_ClearWorld ();
-	
+
 	sv.sound_precache[0] = pr_strings;
 
 	sv.model_precache[0] = pr_strings;
@@ -337,7 +336,7 @@ void SV_SpawnServer (char *server, char *startspot)
 
 	//
 	// spawn the rest of the entities on the map
-	//	
+	//
 
 	// precache and static commands can be issued during
 	// map initialization
@@ -346,7 +345,7 @@ void SV_SpawnServer (char *server, char *startspot)
 	ent = EDICT_NUM(0);
 	ent->free = false;
 	ent->v.model = sv.worldmodel->name - pr_strings;
-	ent->v.modelindex = 1;		// world model
+	ent->v.modelindex = 1;	// world model
 	ent->v.solid = SOLID_BSP;
 	ent->v.movetype = MOVETYPE_PUSH;
 
@@ -385,7 +384,7 @@ void SV_SpawnServer (char *server, char *startspot)
 	pr_global_struct->mapname = sv.name - pr_strings;
 	// serverflags are for cross level information (sigils)
 	pr_global_struct->serverflags = svs.serverflags;
-	
+
 	// run the frame start qc function to let progs check cvars
 	SV_ProgStartFrame ();
 
@@ -398,7 +397,7 @@ void SV_SpawnServer (char *server, char *startspot)
 	// all spawning is completed, any further precache statements
 	// or prog writes to the signon message are errors
 	sv.state = ss_active;
-	
+
 	// run two frames to allow everything to settle
 	host_frametime = HX_FRAME_TIME;
 	SV_Physics ();
@@ -414,6 +413,6 @@ void SV_SpawnServer (char *server, char *startspot)
 	Info_SetValueForKey (svs.info, "map", sv.name, MAX_SERVERINFO_STRING);
 	Con_DPrintf ("Server spawned.\n");
 
-	svs.changelevel_issued = false;		// now safe to issue another
+	svs.changelevel_issued = false;	// now safe to issue another
 }
 

@@ -12,10 +12,10 @@ crosses a waterline.
 =============================================================================
 */
 
-int		fatbytes;
-byte	fatpvs[MAX_MAP_LEAFS/8];
+static int	fatbytes;
+static byte	fatpvs[MAX_MAP_LEAFS/8];
 
-void SV_AddToFatPVS (vec3_t org, mnode_t *node)
+static void SV_AddToFatPVS (vec3_t org, mnode_t *node)
 {
 	int		i;
 	byte	*pvs;
@@ -35,7 +35,7 @@ void SV_AddToFatPVS (vec3_t org, mnode_t *node)
 			}
 			return;
 		}
-	
+
 		plane = node->plane;
 		d = DotProduct (org, plane->normal) - plane->dist;
 		if (d > 8)
@@ -58,7 +58,7 @@ Calculates a PVS that is the inclusive or of all leafs within 8 pixels of the
 given point.
 =============
 */
-byte *SV_FatPVS (vec3_t org)
+static byte *SV_FatPVS (vec3_t org)
 {
 	fatbytes = (sv.worldmodel->numleafs+31)>>3;
 	memset (fatpvs, 0, fatbytes);
@@ -73,8 +73,6 @@ byte *SV_FatPVS (vec3_t org)
 
 	RDM: changed to use packed missiles, this code left here in case we
 	decide to pack missiles which require a velocity as well
-
-
 
 #define	MAX_NAILS	32
 edict_t	*nails[MAX_NAILS];
@@ -128,18 +126,16 @@ void SV_EmitNailUpdate (sizebuf_t *msg)
 	}
 }
 */
-  
-#define	MAX_MISSILES	32
-edict_t	*missiles[MAX_MISSILES];
-edict_t	*ravens[MAX_MISSILES];
-edict_t	*raven2s[MAX_MISSILES];
-int		nummissiles, numravens, numraven2s;
 
+#define	MAX_MISSILES	32
+static	edict_t	*missiles[MAX_MISSILES];
+static	edict_t	*ravens[MAX_MISSILES];
+static	edict_t	*raven2s[MAX_MISSILES];
+static	int	nummissiles, numravens, numraven2s;
 extern	int	sv_magicmissmodel, sv_playermodel[MAX_PLAYER_CLASS], sv_ravenmodel, sv_raven2model;
 
-qboolean SV_AddMissileUpdate (edict_t *ent)
+static qboolean SV_AddMissileUpdate (edict_t *ent)
 {
-
 	if (ent->v.modelindex == sv_magicmissmodel)
 	{
 		if (nummissiles == MAX_MISSILES)
@@ -167,7 +163,7 @@ qboolean SV_AddMissileUpdate (edict_t *ent)
 	return false;
 }
 
-void SV_EmitMissileUpdate (sizebuf_t *msg)
+static void SV_EmitMissileUpdate (sizebuf_t *msg)
 {
 	byte	bits[5];	// [40 bits] xyz type 12 12 12 4
 	int		n, i;
@@ -186,9 +182,9 @@ void SV_EmitMissileUpdate (sizebuf_t *msg)
 		x = (int)(ent->v.origin[0]+4096)>>1;
 		y = (int)(ent->v.origin[1]+4096)>>1;
 		z = (int)(ent->v.origin[2]+4096)>>1;
-		if(fabs(ent->v.scale - 0.1)<0.05)
+		if (fabs(ent->v.scale - 0.1) < 0.05)
 			type = 1;	//assume ice mace
-		else 
+		else
 			type = 2;	//assume magic missile
 
 		bits[0] = x;
@@ -202,9 +198,9 @@ void SV_EmitMissileUpdate (sizebuf_t *msg)
 	}
 }
 
-void SV_EmitRavenUpdate (sizebuf_t *msg)
+static void SV_EmitRavenUpdate (sizebuf_t *msg)
 {
-	byte	bits[6];	// [48 bits] xyzpy 12 12 12 4 8 
+	byte	bits[6];	// [48 bits] xyzpy 12 12 12 4 8
 	int		n, i;
 	edict_t	*ent;
 	int		x, y, z, p, yaw, frame;
@@ -258,14 +254,14 @@ void SV_EmitRavenUpdate (sizebuf_t *msg)
 	}
 }
 
-void SV_EmitPackedEntities(sizebuf_t *msg)
+static void SV_EmitPackedEntities(sizebuf_t *msg)
 {
 	SV_EmitMissileUpdate(msg);
 	SV_EmitRavenUpdate(msg);
 }
 
-//=============================================================================
 
+//=============================================================================
 
 /*
 ==================
@@ -275,7 +271,7 @@ Writes part of a packetentities message.
 Can delta from either a baseline or a previous packet_entity
 ==================
 */
-void SV_WriteDelta (entity_state_t *from, entity_state_t *to, sizebuf_t *msg, qboolean force, edict_t *ent, client_t *client)
+static void SV_WriteDelta (entity_state_t *from, entity_state_t *to, sizebuf_t *msg, qboolean force, edict_t *ent, client_t *client)
 {
 	int		bits;
 	int		i;
@@ -285,7 +281,7 @@ void SV_WriteDelta (entity_state_t *from, entity_state_t *to, sizebuf_t *msg, qb
 
 // send an update
 	bits = 0;
-	
+
 	for (i=0 ; i<3 ; i++)
 	{
 		miss = to->origin[i] - from->origin[i];
@@ -295,16 +291,16 @@ void SV_WriteDelta (entity_state_t *from, entity_state_t *to, sizebuf_t *msg, qb
 
 	if ( to->angles[0] != from->angles[0] )
 		bits |= U_ANGLE1;
-		
+
 	if ( to->angles[1] != from->angles[1] )
 		bits |= U_ANGLE2;
-		
+
 	if ( to->angles[2] != from->angles[2] )
 		bits |= U_ANGLE3;
-		
+
 	if ( to->colormap != from->colormap )
 		bits |= U_COLORMAP;
-		
+
 	if ( to->skinnum != from->skinnum)
 	{
 		bits |= U_SKIN;
@@ -315,7 +311,7 @@ void SV_WriteDelta (entity_state_t *from, entity_state_t *to, sizebuf_t *msg, qb
 
 	if ( to->frame != from->frame )
 		bits |= U_FRAME;
-	
+
 	if ( to->effects != from->effects )
 		bits |= U_EFFECTS;
 
@@ -353,8 +349,8 @@ void SV_WriteDelta (entity_state_t *from, entity_state_t *to, sizebuf_t *msg, qb
 		bits |= U_ABSLIGHT;
 	}
 
-	if(to->wpn_sound)
-	{	//not delta'ed, sound gets cleared after send 
+	if (to->wpn_sound)
+	{	//not delta'ed, sound gets cleared after send
 		bits |= U_SOUND;
 	}
 
@@ -378,7 +374,7 @@ void SV_WriteDelta (entity_state_t *from, entity_state_t *to, sizebuf_t *msg, qb
 	if (i & U_REMOVE)
 		Sys_Error ("U_REMOVE");
 	MSG_WriteShort (msg, i & 0xffff);
-	
+
 	if (bits & U_MOREBITS)
 		MSG_WriteByte (msg, bits&255);
 	if (bits & U_MOREBITS2)
@@ -391,7 +387,7 @@ void SV_WriteDelta (entity_state_t *from, entity_state_t *to, sizebuf_t *msg, qb
 		}
 		else
 		{
-			MSG_WriteByte (msg,	temp_index);
+			MSG_WriteByte (msg, temp_index);
 		}
 	}
 	if (bits & U_FRAME)
@@ -405,7 +401,7 @@ void SV_WriteDelta (entity_state_t *from, entity_state_t *to, sizebuf_t *msg, qb
 	if (bits & U_EFFECTS)
 		MSG_WriteLong (msg, to->effects);
 	if (bits & U_ORIGIN1)
-		MSG_WriteCoord (msg, to->origin[0]);		
+		MSG_WriteCoord (msg, to->origin[0]);
 	if (bits & U_ANGLE1)
 		MSG_WriteAngle(msg, to->angles[0]);
 	if (bits & U_ORIGIN2)
@@ -429,10 +425,9 @@ void SV_WriteDelta (entity_state_t *from, entity_state_t *to, sizebuf_t *msg, qb
 SV_EmitPacketEntities
 
 Writes a delta update of a packet_entities_t to the message.
-
 =============
 */
-void SV_EmitPacketEntities (client_t *client, packet_entities_t *to, sizebuf_t *msg)
+static void SV_EmitPacketEntities (client_t *client, packet_entities_t *to, sizebuf_t *msg)
 {
 	edict_t	*ent;
 	client_frame_t	*fromframe;
@@ -461,8 +456,8 @@ void SV_EmitPacketEntities (client_t *client, packet_entities_t *to, sizebuf_t *
 
 	newindex = 0;
 	oldindex = 0;
-//Con_Printf ("---%i to %i ----\n", client->delta_sequence & UPDATE_MASK
-//			, client->netchan.outgoing_sequence & UPDATE_MASK);
+//	Con_Printf ("---%i to %i ----\n", client->delta_sequence & UPDATE_MASK,
+//				client->netchan.outgoing_sequence & UPDATE_MASK);
 	while (newindex < to->num_entities || oldindex < oldmax)
 	{
 		newnum = newindex >= to->num_entities ? 9999 : to->entities[newindex].number;
@@ -470,7 +465,7 @@ void SV_EmitPacketEntities (client_t *client, packet_entities_t *to, sizebuf_t *
 
 		if (newnum == oldnum)
 		{	// delta update from old position
-//Con_Printf ("delta %i\n", newnum);
+		//	Con_Printf ("delta %i\n", newnum);
 			SV_WriteDelta (&from->entities[oldindex], &to->entities[newindex], msg, false, EDICT_NUM(newnum), client);
 			oldindex++;
 			newindex++;
@@ -480,7 +475,7 @@ void SV_EmitPacketEntities (client_t *client, packet_entities_t *to, sizebuf_t *
 		if (newnum < oldnum)
 		{	// this is a new entity, send it from the baseline
 			ent = EDICT_NUM(newnum);
-//Con_Printf ("baseline %i\n", newnum);
+		//	Con_Printf ("baseline %i\n", newnum);
 			SV_WriteDelta (&ent->baseline, &to->entities[newindex], msg, true, ent, client);
 			newindex++;
 			continue;
@@ -488,7 +483,7 @@ void SV_EmitPacketEntities (client_t *client, packet_entities_t *to, sizebuf_t *
 
 		if (newnum > oldnum)
 		{	// the old entity isn't present in the new message
-//Con_Printf ("remove %i\n", oldnum);
+		//	Con_Printf ("remove %i\n", oldnum);
 			MSG_WriteShort (msg, oldnum | U_REMOVE);
 			oldindex++;
 			continue;
@@ -499,17 +494,12 @@ void SV_EmitPacketEntities (client_t *client, packet_entities_t *to, sizebuf_t *
 }
 
 
-
-
-
-
-
 void SV_WriteInventory (client_t *host_cl, edict_t *ent, sizebuf_t *msg)
 {
-	int		sc1,sc2;
+	int		sc1, sc2;
 	byte	test;
 
-	if (host_cl->send_all_v) 
+	if (host_cl->send_all_v)
 	{
 		sc1 = sc2 = 0xffffffff;
 		host_cl->send_all_v = false;
@@ -520,21 +510,21 @@ void SV_WriteInventory (client_t *host_cl, edict_t *ent, sizebuf_t *msg)
 
 		if (ent->v.health != host_cl->old_v.health)
 			sc1 |= SC1_HEALTH;
-		if(ent->v.level != host_cl->old_v.level)
+		if (ent->v.level != host_cl->old_v.level)
 			sc1 |= SC1_LEVEL;
-		if(ent->v.intelligence != host_cl->old_v.intelligence)
+		if (ent->v.intelligence != host_cl->old_v.intelligence)
 			sc1 |= SC1_INTELLIGENCE;
-		if(ent->v.wisdom != host_cl->old_v.wisdom)
+		if (ent->v.wisdom != host_cl->old_v.wisdom)
 			sc1 |= SC1_WISDOM;
-		if(ent->v.strength != host_cl->old_v.strength)
+		if (ent->v.strength != host_cl->old_v.strength)
 			sc1 |= SC1_STRENGTH;
-		if(ent->v.dexterity != host_cl->old_v.dexterity)
+		if (ent->v.dexterity != host_cl->old_v.dexterity)
 			sc1 |= SC1_DEXTERITY;
 		if (ent->v.teleport_time > sv.time)
 		{
-//			Con_Printf ("Teleport_time>time, sending bit\n");
+		//	Con_Printf ("Teleport_time>time, sending bit\n");
 			sc1 |= SC1_TELEPORT_TIME;
-//			ent->v.teleport_time = 0;
+		//	ent->v.teleport_time = 0;
 		}
 
 //		if (ent->v.weapon != host_cl->old_v.weapon)
@@ -804,13 +794,13 @@ the surface being equal in priority(0) and increasing linearly
 towards equal priority(1) along a straight line to the center.
 =============
 */
-float cardioid_rating (edict_t *targ , edict_t *self)
+static float cardioid_rating (edict_t *targ , edict_t *self)
 {
-	vec3_t	vec,spot1,spot2;
-	vec3_t	forward,right,up;
-	float	dot,dist;
+	vec3_t	vec, spot1, spot2;
+	vec3_t	forward, right, up;
+	float	dot, dist;
 
-    AngleVectors (self->v.v_angle,forward,right,up);
+	AngleVectors (self->v.v_angle,forward,right,up);
 
 	VectorAdd(self->v.origin,self->v.view_ofs,spot1);
 	VectorSubtract(targ->v.absmax,targ->v.absmin,spot2);
@@ -818,31 +808,31 @@ float cardioid_rating (edict_t *targ , edict_t *self)
 
 	VectorSubtract(spot2,spot1,vec);
 	dist = VectorNormalize(vec);
-	dot = DotProduct(vec,forward);//from 1 to -1
-	
-    if (dot < -0.3)//see only from -125 to 125 degrees
+	dot = DotProduct(vec,forward);	//from 1 to -1
+
+	if (dot < -0.3)	//see only from -125 to 125 degrees
 		return false;
-	
-	if(dot>0)//to front of perpendicular plane to forward
+
+	if (dot > 0)	//to front of perpendicular plane to forward
 		dot*=31;//much more distance leniency in front, max dist = 2048 directly in front
 	dot = (dot + 1) * 64;//64 = base distance if along the perpendicular plane, max is 2048 straight ahead
-	if(dist>=dot)//too far away for that angle to be important
+	if (dist >= dot)//too far away for that angle to be important
 		return false;
 
 	//from 0.000000? to almost 1
 	return 1 - (dist/dot);//The higher this number is, the more important it is to send this ent
 }
 
-int MAX_VISCLIENTS = 2;
+#define	MAX_VISCLIENTS	2
 /*
 =============
 SV_WritePlayersToClient
 
 =============
 */
-void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizebuf_t *msg)
+static void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizebuf_t *msg)
 {
-	int			i, j, k, l;
+	int			i, j;
 	client_t	*cl;
 	edict_t		*ent;
 	int			msec;
@@ -850,11 +840,13 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 	int			pflags;
 	int			invis_level;
 	qboolean	playermodel = false;
+	// vars for the cardioid_rating/MGNET code
+	int			k, l;
 	int			visclient[MAX_CLIENTS];
 	int			forcevisclient[MAX_CLIENTS];
 	int			cl_v_priority[MAX_CLIENTS];
 	int			cl_v_psort[MAX_CLIENTS];
-	int			numvc,forcevc,totalvc,num_eliminated;
+	int			numvc, forcevc, totalvc, num_eliminated;
 
 	for (j=0,cl=svs.clients,numvc=0,forcevc=0 ; j<MAX_CLIENTS ; j++,cl++)
 	{
@@ -863,23 +855,22 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 
 		ent = cl->edict;
 
-
 		// ZOID visibility tracking
 		invis_level = false;
 		if (ent != clent &&
-			!(client->spec_track && client->spec_track - 1 == j)) 
+			!(client->spec_track && client->spec_track - 1 == j))
 		{
 			if ((int)ent->v.effects & EF_NODRAW)
 			{
-				if(dmMode.value==DM_SIEGE&&clent->v.playerclass==CLASS_DWARF)
+				if (dmMode.value == DM_SIEGE && clent->v.playerclass == CLASS_DWARF)
 					invis_level = false;
 				else
-					invis_level = true;//still can hear
+					invis_level = true; //still can hear
 			}
 			//could be invisiblenow and still sent, cull out by other methods as well
 			if (cl->spectator)
 			{
-				invis_level = 2;//no vis or weaponsound
+				invis_level = 2; //no vis or weaponsound
 			}
 			else
 			{
@@ -888,13 +879,13 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 					if (pvs[ent->leafnums[i] >> 3] & (1 << (ent->leafnums[i]&7) ))
 						break;
 				if (i == ent->num_leafs)
-					invis_level = 2;//no vis or weaponsound
+					invis_level = 2; //no vis or weaponsound
 			}
 		}
-		
-		if(invis_level==true)
-		{//ok to send weaponsound
-			if(ent->v.wpn_sound)
+
+		if (invis_level == true)
+		{	//ok to send weaponsound
+			if (ent->v.wpn_sound)
 			{
 				MSG_WriteByte (msg, svc_player_sound);
 				MSG_WriteByte (msg, j);
@@ -903,16 +894,16 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 				MSG_WriteShort (msg, ent->v.wpn_sound);
 			}
 		}
-		if(invis_level>0)
+		if (invis_level > 0)
 			continue;
 
-		if(!cl->skipsend&&ent != clent)
-		{//don't count self
+		if (!cl->skipsend&&ent != clent)
+		{	//don't count self
 			visclient[numvc]=j;
 			numvc++;
 		}
 		else
-		{//Self, or Wasn't sent last time, must send this frame
+		{	//Self, or Wasn't sent last time, must send this frame
 			cl->skipsend = false;
 			forcevisclient[forcevc]=j;
 			forcevc++;
@@ -921,46 +912,61 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 	}
 
 	totalvc=numvc+forcevc;
-	if(totalvc>MAX_VISCLIENTS)//You have more than 5 clients in your view, cull some out
-	{//prioritize by 
-		//line of sight (20%)
-		//distance (50%)
-		//dot off v_forward (30%)
-		//put this in "priority" then sort by priority
-		//and send the highest priority
-		//number of highest priority sent depends on how
-		//many are forced through because they were skipped
-		//last send.  Ideally, no more than 5 are sent.
-		for (j=0; j<numvc, totalvc>MAX_VISCLIENTS ; j++)
-		{//priority 1 - if behind, cull out
-			for(k=0, cl = svs.clients; k<visclient[j]; k++, cl++);
-//			cl=svs.clients+visclient[j];
+	if (totalvc > MAX_VISCLIENTS)
+	{
+		// You have more than 5 clients in your view, cull some out
+		// prioritize by
+		//	line of sight (20%)
+		//	distance (50%)
+		//	dot off v_forward (30%)
+		// put this in "priority" then sort by priority
+		// and send the highest priority
+		// number of highest priority sent depends on how
+		// many are forced through because they were skipped
+		// last send.  Ideally, no more than 5 are sent.
+		for (j=0; j < numvc && totalvc > MAX_VISCLIENTS ; j++)
+		{	//priority 1 - if behind, cull out
+	// O.S.: FIXME!
+			for (k=0, cl = svs.clients; k < visclient[j]; k++, cl++);
+		//	cl=svs.clients+visclient[j];
 			ent = cl->edict;
 			cl_v_priority[j] = cardioid_rating(ent,clent);
-			if(!cl_v_priority[j])
-			{//% they won't be sent, l represents how many were forced through
+			if (!cl_v_priority[j])
+			{	//% they won't be sent, l represents how many
+				// were forced through
 				cl->skipsend = true;
 				totalvc--;
 			}
 		}
 
-		if(totalvc>MAX_VISCLIENTS)
-		{//still more than 5 inside cardioid, sort by priority
-		//and drop those after 5
+		if (totalvc > MAX_VISCLIENTS)
+		{
+			//still more than 5 inside cardioid, sort by priority
+			//and drop those after 5
 
 			//CHECK this make sure it works
-			for (i=0 ; i<numvc ; i++)//do this as many times as there are visclients
-				for (j=0 ; j<numvc-1-i ; j++)//go through the list
+
+			for (i=0 ; i < numvc ; i++)
+			{	//do this as many times as there are visclients
+				for (j=0 ; j<numvc-1-i ; j++)
+				{	//go through the list
 					if (cl_v_priority[j] < cl_v_priority[j+1])
 					{
-						k = cl_v_psort[j];//store lower one
-						cl_v_psort[j] = cl_v_psort[j+1];//put next one in it's spot
-						cl_v_psort[j+1] = k;//put lower one next
+						//store lower one
+						k = cl_v_psort[j];
+						//put next one in it's spot
+						cl_v_psort[j] = cl_v_psort[j+1];
+						//put lower one next
+						cl_v_psort[j+1] = k;
 					}
+				}
+			}
+
 			num_eliminated = 0;
-			while(totalvc>MAX_VISCLIENTS)
-			{//eliminate all over 5 unless not sent last time
-				if(!cl->skipsend)
+
+			while (totalvc > MAX_VISCLIENTS)
+			{	//eliminate all over 5 unless not sent last time
+				if (!cl->skipsend)
 				{
 					cl=svs.clients+cl_v_psort[numvc - num_eliminated];
 					cl->skipsend = true;
@@ -969,29 +975,31 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 				}
 			}
 		}
-		//Alternate Possibilities: ...?
-		//priority 2 - if too many numleafs away, cull out
-		//priority 3 - don't send those farthest away, flag for re-send next time
-		//priority 4 - flat percentage based on how many over 5
-/*			if(rand()%10<(numvc + l - 5))
+
+		// Alternate Possibilities: ...?
+		// priority 2 - if too many numleafs away, cull out
+		// priority 3 - don't send those farthest away, flag for re-send next time
+		// priority 4 - flat percentage based on how many over 5
+		/*	if(rand()%10<(numvc + l - 5))
 			{//% they won't be sent, l represents how many were forced through
 				cl->skipsend = true;
 				numvc--;
-			}*/
-		//priority 5 - send less info on clients
+			}
+		*/
+		// priority 5 - send less info on clients
 	}
 
-	for (j=0, l=0, k=0, cl=svs.clients; j<MAX_CLIENTS ; j++,cl++)
-	{//priority 1 - if behind, cull out
+	for (j=0, l=0, k=0, cl=svs.clients; j < MAX_CLIENTS ; j++,cl++)
+	{	//priority 1 - if behind, cull out
 		if(forcevisclient[l]==j&&l<=forcevc)
 			l++;
-		else if(visclient[k]==j&&k<=numvc)
-			k++;//clent is always forced
+		else if (visclient[k] == j && k <= numvc)
+			k++;	//clent is always forced
 		else
 			continue;//not in PVS or forced
 
-		if(cl->skipsend)
-		{//still 2 bytes, but what ya gonna do?
+		if (cl->skipsend)
+		{	//still 2 bytes, but what ya gonna do?
 			MSG_WriteByte (msg, svc_playerskipped);
 			MSG_WriteByte (msg, j);
 			continue;
@@ -1000,7 +1008,7 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 		ent = cl->edict;
 
 		pflags = PF_MSEC | PF_COMMAND;
-		
+
 		if (ent->v.modelindex != sv_playermodel[0] &&//paladin
 		    ent->v.modelindex != sv_playermodel[1] &&//crusader
 		    ent->v.modelindex != sv_playermodel[2] &&//necro
@@ -1020,10 +1028,10 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 			pflags |= PF_EFFECTS2;
 		if (ent->v.skin)
 		{
-			if(dmMode.value==DM_SIEGE&&playermodel&&ent->v.skin==1);
-			//in siege, don't send skin if 2nd skin and using
-			//playermodel, it will know on other side- saves
-			//us 1 byte per client per frame!
+			if (dmMode.value==DM_SIEGE&&playermodel&&ent->v.skin==1);
+			// in siege, don't send skin if 2nd skin and using
+			// playermodel, it will know on other side- saves
+			// us 1 byte per client per frame!
 			else
 				pflags |= PF_SKINNUM;
 		}
@@ -1065,7 +1073,7 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 
 		for (i=0 ; i<3 ; i++)
 			MSG_WriteCoord (msg, ent->v.origin[i]);
-		
+
 		MSG_WriteByte (msg, ent->v.frame);
 
 		if (pflags & PF_MSEC)
@@ -1075,7 +1083,7 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 				msec = 255;
 			MSG_WriteByte (msg, msec);
 		}
-		
+
 		if (pflags & PF_COMMAND)
 		{
 			cmd = cl->lastcmd;
@@ -1096,7 +1104,7 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 			if (pflags & (PF_VELOCITY1<<i) )
 				MSG_WriteShort (msg, ent->v.velocity[i]);
 
-//rjr
+		// rjr
 		if (pflags & PF_MODEL)
 			MSG_WriteShort (msg, ent->v.modelindex);
 
@@ -1131,14 +1139,17 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 	}
 }
 
+/*	End of MGNET code		*/
+
 #else
+
 /*
 =============
 SV_WritePlayersToClient
 
 =============
 */
-void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizebuf_t *msg)
+static void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizebuf_t *msg)
 {
 	int			i, j;
 	client_t	*cl;
@@ -1156,22 +1167,21 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 
 		ent = cl->edict;
 
-
 		// ZOID visibility tracking
 		invis_level = false;
 		if (ent != clent &&
-			!(client->spec_track && client->spec_track - 1 == j)) 
+			!(client->spec_track && client->spec_track - 1 == j))
 		{
 			if ((int)ent->v.effects & EF_NODRAW)
 			{
-				if(dmMode.value==DM_SIEGE&&clent->v.playerclass==CLASS_DWARF)
+				if (dmMode.value == DM_SIEGE && clent->v.playerclass == CLASS_DWARF)
 					invis_level = false;
 				else
-					invis_level = true;//still can hear
+					invis_level = true; //still can hear
 			}
 			else if (cl->spectator)
 			{
-				invis_level = 2;//no vis or weaponsound
+				invis_level = 2; //no vis or weaponsound
 			}
 			else
 			{
@@ -1180,13 +1190,13 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 					if (pvs[ent->leafnums[i] >> 3] & (1 << (ent->leafnums[i]&7) ))
 						break;
 				if (i == ent->num_leafs)
-					invis_level = 2;//no vis or weaponsound
+					invis_level = 2; //no vis or weaponsound
 			}
 		}
-		
-		if(invis_level==true)
-		{//ok to send weaponsound
-			if(ent->v.wpn_sound)
+
+		if (invis_level == true)
+		{	//ok to send weaponsound
+			if (ent->v.wpn_sound)
 			{
 				MSG_WriteByte (msg, svc_player_sound);
 				MSG_WriteByte (msg, j);
@@ -1195,11 +1205,11 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 				MSG_WriteShort (msg, ent->v.wpn_sound);
 			}
 		}
-		if(invis_level>0)
+		if (invis_level > 0)
 			continue;
 
 		pflags = PF_MSEC | PF_COMMAND;
-		
+
 		if (ent->v.modelindex != sv_playermodel[0] &&//paladin
 		    ent->v.modelindex != sv_playermodel[1] &&//crusader
 		    ent->v.modelindex != sv_playermodel[2] &&//necro
@@ -1219,10 +1229,10 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 			pflags |= PF_EFFECTS2;
 		if (ent->v.skin)
 		{
-			if(dmMode.value==DM_SIEGE&&playermodel&&ent->v.skin==1);
-			//in siege, don't send skin if 2nd skin and using
-			//playermodel, it will know on other side- saves
-			//us 1 byte per client per frame!
+			if (dmMode.value==DM_SIEGE&&playermodel&&ent->v.skin==1);
+			// in siege, don't send skin if 2nd skin and using
+			// playermodel, it will know on other side- saves
+			// us 1 byte per client per frame!
 			else
 				pflags |= PF_SKINNUM;
 		}
@@ -1264,7 +1274,7 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 
 		for (i=0 ; i<3 ; i++)
 			MSG_WriteCoord (msg, ent->v.origin[i]);
-		
+
 		MSG_WriteByte (msg, ent->v.frame);
 
 		if (pflags & PF_MSEC)
@@ -1274,7 +1284,7 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 				msec = 255;
 			MSG_WriteByte (msg, msec);
 		}
-		
+
 		if (pflags & PF_COMMAND)
 		{
 			cmd = cl->lastcmd;
@@ -1295,7 +1305,7 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 			if (pflags & (PF_VELOCITY1<<i) )
 				MSG_WriteShort (msg, ent->v.velocity[i]);
 
-//rjr
+		// rjr
 		if (pflags & PF_MODEL)
 			MSG_WriteShort (msg, ent->v.modelindex);
 
@@ -1362,7 +1372,7 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 
 	// send over the players in the PVS
 	SV_WritePlayersToClient (client, clent, pvs, msg);
-	
+
 	// put other visible entities into either a packet_entities or a nails message
 	pack = &frame->entities;
 	pack->num_entities = 0;
@@ -1377,7 +1387,7 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 		// ignore ents without visible models
 		if (!ent->v.modelindex || !pr_strings[ent->v.model])
 			continue;
-	
+
 		if ((int)ent->v.effects & EF_NODRAW)
 		{
 			continue;
@@ -1387,9 +1397,9 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 		for (i=0 ; i < ent->num_leafs ; i++)
 			if (pvs[ent->leafnums[i] >> 3] & (1 << (ent->leafnums[i]&7) ))
 				break;
-			
+
 		if (i == ent->num_leafs)
-			continue;		// not visible
+			continue;	// not visible
 
 //		if (SV_AddNailUpdate (ent))
 //			continue;
@@ -1428,3 +1438,4 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 //	SV_EmitNailUpdate (msg);
 	SV_EmitPackedEntities (msg);
 }
+

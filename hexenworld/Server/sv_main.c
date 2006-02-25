@@ -1,28 +1,28 @@
 
 #include "qwsvdef.h"
 
-quakeparms_t host_parms;
+quakeparms_t		host_parms;
 
 qboolean	host_initialized;		// true if into command execution (compatability)
 
 double		host_frametime;
-double		realtime;				// without any filtering or bounding
+double		realtime;			// without any filtering or bounding
 
 int			host_hunklevel;
 
 netadr_t	master_adr[MAX_MASTERS];	// address of group servers
-//netadr_t	idmaster_adr;				// for global logging
+//netadr_t	idmaster_adr;			// for global logging
 
 client_t	*host_client;			// current client
 
 cvar_t	sv_mintic = {"sv_mintic","0.03"};	// bound the size of the
-cvar_t	sv_maxtic = {"sv_maxtic","0.1"};	// physics time tic 
+cvar_t	sv_maxtic = {"sv_maxtic","0.1"};	// physics time tic
 
 cvar_t	developer = {"developer","0"};		// show extra messages
 
 cvar_t	timeout = {"timeout","65"};		// seconds without any message
 cvar_t	zombietime = {"zombietime", "2"};	// seconds to sink messages
-											// after disconnect
+						// after disconnect
 
 cvar_t	rcon_password = {"rcon_password", ""};	// password for remote server commands
 cvar_t	password = {"password", ""};	// password for entering the game
@@ -34,11 +34,10 @@ cvar_t	allow_download_models = {"allow_download_models", "1"};
 cvar_t	allow_download_sounds = {"allow_download_sounds", "1"};
 cvar_t	allow_download_maps = {"allow_download_maps", "1"};
 
-cvar_t sv_highchars = {"sv_highchars", "1"};
+cvar_t	sv_highchars = {"sv_highchars", "1"};
 
-cvar_t sv_phs = {"sv_phs", "1"};
-cvar_t sv_namedistance = {"sv_namedistance", "600"};
-
+cvar_t	sv_phs = {"sv_phs", "1"};
+cvar_t	sv_namedistance = {"sv_namedistance", "600"};
 
 //
 // game rules mirrored in svs.info
@@ -49,9 +48,9 @@ cvar_t	teamplay = {"teamplay","0",false,true};
 cvar_t	samelevel = {"samelevel","0", false, true};
 cvar_t	maxclients = {"maxclients","8", false, true};
 cvar_t	maxspectators = {"maxspectators","8", false, true};
-cvar_t	skill = {"skill","1", false, false};						// 0 - 3
-cvar_t	deathmatch = {"deathmatch","1", false, true};			// 0, 1, or 2
-cvar_t	coop = {"coop","0", false, true};			// 0, 1, or 2
+cvar_t	skill = {"skill","1", false, false};		// 0 - 3
+cvar_t	deathmatch = {"deathmatch","1", false, true};	// 0, 1, or 2
+cvar_t	coop = {"coop","0", false, true};		// 0, 1, or 2
 cvar_t	randomclass = {"randomclass","0", false, true};	
 cvar_t	damageScale = {"damagescale","1.0", false, true};
 cvar_t	shyRespawn = {"shyRespawn", "0", false, true};
@@ -71,16 +70,31 @@ cvar_t	spawn = {"spawn","0", false, true};
 
 cvar_t	hostname = {"hostname","unnamed", false, true};
 
-cvar_t	sv_ce_scale			= {"sv_ce_scale","1", true};
-cvar_t	sv_ce_max_size		= {"sv_ce_max_size","0", true};
+cvar_t	sv_ce_scale = {"sv_ce_scale","1", true};
+cvar_t	sv_ce_max_size = {"sv_ce_max_size","0", true};
 
 cvar_t	noexit = {"noexit", "0", false, true};
 
 FILE	*sv_logfile;
 FILE	*sv_fraglogfile;
 
-void SV_AcceptClient (netadr_t adr, int userid, char *userinfo);
-void Master_Shutdown (void);
+static void Master_Shutdown (void);
+
+
+//
+// external cvars
+//
+extern	cvar_t	sv_maxvelocity;
+extern	cvar_t	sv_gravity;
+extern	cvar_t	sv_aim;
+extern	cvar_t	sv_stopspeed;
+extern	cvar_t	sv_spectatormaxspeed;
+extern	cvar_t	sv_accelerate;
+extern	cvar_t	sv_airaccelerate;
+extern	cvar_t	sv_wateraccelerate;
+extern	cvar_t	sv_friction;
+extern	cvar_t	sv_waterfriction;
+
 
 //============================================================================
 
@@ -106,6 +120,7 @@ void SV_Shutdown (void)
 	}
 	NET_Shutdown ();
 }
+
 
 /*
 ================
@@ -133,11 +148,12 @@ void SV_Error (char *error, ...)
 	Con_Printf ("SV_Error: %s\n",string);
 
 	SV_FinalMessage (va("server crashed: %s\n", string));
-		
+
 	SV_Shutdown ();
 
 	Sys_Error ("SV_Error: %s\n",string);
 }
+
 
 /*
 ==================
@@ -153,7 +169,7 @@ void SV_FinalMessage (char *message)
 {
 	int			i;
 	client_t	*cl;
-	
+
 	SZ_Clear (&net_message);
 	MSG_WriteByte (&net_message, svc_print);
 	MSG_WriteByte (&net_message, PRINT_HIGH);
@@ -162,9 +178,9 @@ void SV_FinalMessage (char *message)
 
 	for (i=0, cl = svs.clients ; i<MAX_CLIENTS ; i++, cl++)
 		if (cl->state >= cs_spawned)
-			Netchan_Transmit (&cl->netchan, net_message.cursize
-			, net_message.data);
+			Netchan_Transmit (&cl->netchan, net_message.cursize, net_message.data);
 }
+
 
 /*
 =====================
@@ -177,11 +193,11 @@ or crashing.
 */
 void SV_DropClient (client_t *drop)
 {
-
 	// add the disconnect
 	MSG_WriteByte (&drop->netchan.message, svc_disconnect);
 
-	if (drop->state == cs_spawned) {
+	if (drop->state == cs_spawned)
+	{
 		if (!drop->spectator)
 		{
 			// call the prog function for removing a client
@@ -196,15 +212,18 @@ void SV_DropClient (client_t *drop)
 			pr_global_struct->self = EDICT_TO_PROG(drop->edict);
 			PR_ExecuteProgram (SpectatorDisconnect);
 		}
-	} else if(dmMode.value==DM_SIEGE)
-		if(Q_strcasecmp(drop->edict->v.puzzle_inv1+pr_strings,""))
+	}
+	else if (dmMode.value==DM_SIEGE)
+	{
+		if (Q_strcasecmp(drop->edict->v.puzzle_inv1+pr_strings,""))
 		{
-			//this guy has a puzzle piece, call this function anyway
-			//to make sure he leaves it behind
+			// this guy has a puzzle piece, call this function anyway
+			// to make sure he leaves it behind
 			Con_Printf("Client in unspawned state had puzzle piece, forcing drop\n");
 			pr_global_struct->self = EDICT_TO_PROG(drop->edict);
 			PR_ExecuteProgram (pr_global_struct->ClientDisconnect);
 		}
+	}
 
 	if (drop->spectator)
 		Con_Printf ("Spectator %s removed\n",drop->name);
@@ -225,7 +244,7 @@ void SV_DropClient (client_t *drop)
 	drop->name[0] = 0;
 	memset (drop->userinfo, 0, sizeof(drop->userinfo));
 
-// send notification to all remaining clients
+	// send notification to all remaining clients
 	SV_FullClientUpdate (drop, &sv.reliable_datagram);
 }
 
@@ -262,6 +281,7 @@ int SV_CalcPing (client_t *cl)
 	return ping*1000;
 }
 
+
 /*
 ===================
 SV_FullClientUpdate
@@ -269,8 +289,9 @@ SV_FullClientUpdate
 Writes all update values to a sizebuf
 ===================
 */
-unsigned int defLosses;	// Defenders losses in Siege
-unsigned int attLosses;	// Attackers Losses in Siege
+unsigned int	defLosses;	// Defenders losses in Siege
+unsigned int	attLosses;	// Attackers Losses in Siege
+
 void SV_FullClientUpdate (client_t *client, sizebuf_t *buf)
 {
 	int		i;
@@ -279,14 +300,14 @@ void SV_FullClientUpdate (client_t *client, sizebuf_t *buf)
 //	Con_Printf("SV_FullClientUpdate\n");
 	i = client - svs.clients;
 
-//Sys_Printf("SV_FullClientUpdate:  Updated frags for client %d\n", i);
+//	Sys_Printf("SV_FullClientUpdate:  Updated frags for client %d\n", i);
 
 	MSG_WriteByte (buf, svc_updatedminfo);
 	MSG_WriteByte (buf, i);
 	MSG_WriteShort (buf, client->old_frags);
 	MSG_WriteByte (buf, (client->playerclass<<5)|((int)client->edict->v.level&31));
-	
-	if(dmMode.value==DM_SIEGE)
+
+	if (dmMode.value==DM_SIEGE)
 	{
 		MSG_WriteByte (buf, svc_updatesiegeinfo);
 		MSG_WriteByte (buf, (int)ceil(timelimit.value));
@@ -307,7 +328,7 @@ void SV_FullClientUpdate (client_t *client, sizebuf_t *buf)
 	MSG_WriteByte (buf, svc_updateping);
 	MSG_WriteByte (buf, i);
 	MSG_WriteShort (buf, SV_CalcPing (client));
-	
+
 	MSG_WriteByte (buf, svc_updateentertime);
 	MSG_WriteByte (buf, i);
 	MSG_WriteFloat (buf, realtime - client->connection_started);
@@ -338,7 +359,7 @@ Responds with all the info that qplug or qspy can see
 This message can be up to around 5k with worst case string lengths.
 ================
 */
-void SVC_Status (void)
+static void SVC_Status (void)
 {
 	int		i;
 	client_t	*cl;
@@ -364,6 +385,7 @@ void SVC_Status (void)
 	SV_EndRedirect ();
 }
 
+
 /*
 ===================
 SV_CheckLog
@@ -371,8 +393,9 @@ SV_CheckLog
 ===================
 */
 #define	LOG_HIGHWATER	4096
-#define	LOG_FLUSH		10*60
-void SV_CheckLog (void)
+#define	LOG_FLUSH	10*60
+
+static void SV_CheckLog (void)
 {
 	sizebuf_t	*sz;
 
@@ -381,7 +404,7 @@ void SV_CheckLog (void)
 	// bump sequence if allmost full, or ten minutes have passed and
 	// there is something still sitting there
 	if (sz->cursize > LOG_HIGHWATER
-	|| (realtime - svs.logtime > LOG_FLUSH && sz->cursize) )
+		|| (realtime - svs.logtime > LOG_FLUSH && sz->cursize) )
 	{
 		// swap buffers and bump sequence
 		svs.logtime = realtime;
@@ -390,8 +413,8 @@ void SV_CheckLog (void)
 		sz->cursize = 0;
 		Con_Printf ("beginning fraglog sequence %i\n", svs.logsequence);
 	}
-
 }
+
 
 /*
 ================
@@ -403,7 +426,7 @@ the same as the current sequence, an A2A_NACK will be returned
 instead of the data.
 ================
 */
-void SVC_Log (void)
+static void SVC_Log (void)
 {
 	int		seq;
 	char	data[MAX_DATAGRAM+64];
@@ -428,6 +451,7 @@ void SVC_Log (void)
 	NET_SendPacket (strlen(data)+1, data, net_from);
 }
 
+
 /*
 ================
 SVC_Ping
@@ -435,7 +459,7 @@ SVC_Ping
 Just responds with an acknowledgement
 ================
 */
-void SVC_Ping (void)
+static void SVC_Ping (void)
 {
 	char	data;
 
@@ -444,6 +468,7 @@ void SVC_Ping (void)
 	NET_SendPacket (1, &data, net_from);
 }
 
+
 /*
 ==================
 SVC_DirectConnect
@@ -451,7 +476,7 @@ SVC_DirectConnect
 A connection request that did not come from the master
 ==================
 */
-void SVC_DirectConnect (void)
+static void SVC_DirectConnect (void)
 {
 	char		userinfo[1024];
 	static		int	userid;
@@ -508,15 +533,21 @@ void SVC_DirectConnect (void)
 	newcl->portals = atol(Cmd_Argv(1));
 
 	// works properly
-	if (!sv_highchars.value) {
-		byte *p, *q;
+	if (!sv_highchars.value)
+	{
+		byte	*p, *q;
 
 		for (p = (byte *)newcl->userinfo, q = (byte *)userinfo;
 			*q && p < (byte *)newcl->userinfo + sizeof(newcl->userinfo)-1; q++)
+		{
 			if (*q > 31 && *q <= 127)
 				*p++ = *q;
-	} else
+		}
+	}
+	else
+	{
 		strncpy (newcl->userinfo, userinfo, sizeof(newcl->userinfo)-1);
+	}
 
 	// if there is already a slot for this ip, drop it
 	for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
@@ -575,7 +606,6 @@ void SVC_DirectConnect (void)
 		return;
 	}
 
-	
 	// build a new connection
 	// accept the new client
 	// this is the only place a client_t is ever initialized
@@ -584,11 +614,11 @@ void SVC_DirectConnect (void)
 	Netchan_OutOfBandPrint (adr, "%c", S2C_CONNECTION );
 
 	edictnum = (newcl-svs.clients)+1;
-	
-	Netchan_Setup (&newcl->netchan , adr);
+
+	Netchan_Setup (&newcl->netchan, adr);
 
 	newcl->state = cs_connected;
-	
+
 	newcl->datagram.allowoverflow = true;
 	newcl->datagram.data = newcl->datagram_buf;
 	newcl->datagram.maxsize = sizeof(newcl->datagram_buf);
@@ -596,10 +626,10 @@ void SVC_DirectConnect (void)
 	// spectator mode can ONLY be set at join time
 	newcl->spectator = spectator;
 
-	ent = EDICT_NUM(edictnum);	
+	ent = EDICT_NUM(edictnum);
 	newcl->edict = ent;
 	ED_ClearEdict (ent);
-	
+
 	// parse some info from the info strings
 	SV_ExtractFromUserinfo (newcl);
 
@@ -620,7 +650,8 @@ void SVC_DirectConnect (void)
 		Con_DPrintf ("Client %s connected\n", newcl->name);
 }
 
-int Rcon_Validate (void)
+
+static int Rcon_Validate (void)
 {
 #if 0
 	if (net_from.ip[0] == 208 && net_from.ip[1] == 135 && net_from.ip[2] == 137
@@ -637,6 +668,7 @@ int Rcon_Validate (void)
 	return 1;
 }
 
+
 /*
 ===============
 SVC_RemoteCommand
@@ -646,7 +678,7 @@ Shift down the remaining args
 Redirect all printfs
 ===============
 */
-void SVC_RemoteCommand (void)
+static void SVC_RemoteCommand (void)
 {
 	int		i;
 	char	remaining[1024];
@@ -654,11 +686,9 @@ void SVC_RemoteCommand (void)
 	i = Rcon_Validate ();
 
 	if (i == 0)
-		Con_Printf ("Bad rcon from %s:\n%s\n"
-			, NET_AdrToString (net_from), net_message.data+4);
+		Con_Printf ("Bad rcon from %s:\n%s\n", NET_AdrToString (net_from), net_message.data+4);
 	if (i == 1)
-		Con_Printf ("Rcon from %s:\n%s\n"
-			, NET_AdrToString (net_from), net_message.data+4);
+		Con_Printf ("Rcon from %s:\n%s\n", NET_AdrToString (net_from), net_message.data+4);
 
 	SV_BeginRedirect (RD_PACKET);
 
@@ -693,13 +723,13 @@ Clients that are in the game can still send
 connectionless packets.
 =================
 */
-void SV_ConnectionlessPacket (void)
+static void SV_ConnectionlessPacket (void)
 {
 	char	*s;
 	char	*c;
 
 	MSG_BeginReading ();
-	MSG_ReadLong ();		// skip the -1 marker
+	MSG_ReadLong ();	// skip the -1 marker
 
 	s = MSG_ReadStringLine ();
 
@@ -740,41 +770,46 @@ void SV_ConnectionlessPacket (void)
 	else if (!strcmp(c, "rcon"))
 		SVC_RemoteCommand ();
 	else
-		Con_Printf ("bad connectionless packet from %s:\n%s\n"
-		, NET_AdrToString (net_from), s);
+		Con_Printf ("bad connectionless packet from %s:\n%s\n", NET_AdrToString (net_from), s);
 }
+
 
 /*
 ==============================================================================
 
 PACKET FILTERING
- 
 
 You can add or remove addresses from the filter list with:
 
 addip <ip>
 removeip <ip>
 
-The ip address is specified in dot format, and any unspecified digits will match any value, so you can specify an entire class C network with "addip 192.246.40".
+The ip address is specified in dot format, and any unspecified
+digits will match any value, so you can specify an entire class
+C network with "addip 192.246.40".
 
-Removeip will only remove an address specified exactly the same way.  You cannot addip a subnet, then removeip a single host.
+Removeip will only remove an address specified exactly the same
+way.  You cannot addip a subnet, then removeip a single host.
 
 listip
 Prints the current list of filters.
 
 writeip
-Dumps "addip <ip>" commands to listip.cfg so it can be execed at a later date.  The filter lists are not saved and restored by default, because I beleive it would cause too much confusion.
+Dumps "addip <ip>" commands to listip.cfg so it can be execed at
+a later date.  The filter lists are not saved and restored by
+default, because I beleive it would cause too much confusion.
 
 filterban <0 or 1>
 
-If 1 (the default), then ip addresses matching the current list will be prohibited from entering the game.  This is the default setting.
+If 1 (the default), then ip addresses matching the current list will
+be prohibited from entering the game.  This is the default setting.
 
-If 0, then only addresses matching the list will be allowed.  This lets you easily set up a private game, or a game that only allows players from your local network.
-
+If 0, then only addresses matching the list will be allowed.  This
+lets you easily set up a private game, or a game that only allows
+players from your local network.
 
 ==============================================================================
 */
-
 
 typedef struct
 {
@@ -784,29 +819,30 @@ typedef struct
 
 #define	MAX_IPFILTERS	1024
 
-ipfilter_t	ipfilters[MAX_IPFILTERS];
-int			numipfilters;
+static ipfilter_t	ipfilters[MAX_IPFILTERS];
+static int		numipfilters;
 
 cvar_t	filterban = {"filterban", "1"};
+
 
 /*
 =================
 StringToFilter
 =================
 */
-qboolean StringToFilter (char *s, ipfilter_t *f)
+static qboolean StringToFilter (char *s, ipfilter_t *f)
 {
 	char	num[128];
 	int		i, j;
 	byte	b[4];
 	byte	m[4];
-	
+
 	for (i=0 ; i<4 ; i++)
 	{
 		b[i] = 0;
 		m[i] = 0;
 	}
-	
+
 	for (i=0 ; i<4 ; i++)
 	{
 		if (*s < '0' || *s > '9')
@@ -814,7 +850,7 @@ qboolean StringToFilter (char *s, ipfilter_t *f)
 			Con_Printf ("Bad filter address: %s\n", s);
 			return false;
 		}
-		
+
 		j = 0;
 		while (*s >= '0' && *s <= '9')
 		{
@@ -829,25 +865,26 @@ qboolean StringToFilter (char *s, ipfilter_t *f)
 			break;
 		s++;
 	}
-	
+
 	f->mask = *(unsigned *)m;
 	f->compare = *(unsigned *)b;
-	
+
 	return true;
 }
+
 
 /*
 =================
 SV_AddIP_f
 =================
 */
-void SV_AddIP_f (void)
+static void SV_AddIP_f (void)
 {
 	int		i;
-	
+
 	for (i=0 ; i<numipfilters ; i++)
 		if (ipfilters[i].compare == 0xffffffff)
-			break;		// free spot
+			break;	// free spot
 	if (i == numipfilters)
 	{
 		if (numipfilters == MAX_IPFILTERS)
@@ -857,17 +894,18 @@ void SV_AddIP_f (void)
 		}
 		numipfilters++;
 	}
-	
+
 	if (!StringToFilter (Cmd_Argv(1), &ipfilters[i]))
 		ipfilters[i].compare = 0xffffffff;
 }
+
 
 /*
 =================
 SV_RemoveIP_f
 =================
 */
-void SV_RemoveIP_f (void)
+static void SV_RemoveIP_f (void)
 {
 	ipfilter_t	f;
 	int			i, j;
@@ -875,8 +913,7 @@ void SV_RemoveIP_f (void)
 	if (!StringToFilter (Cmd_Argv(1), &f))
 		return;
 	for (i=0 ; i<numipfilters ; i++)
-		if (ipfilters[i].mask == f.mask
-		&& ipfilters[i].compare == f.compare)
+		if (ipfilters[i].mask == f.mask && ipfilters[i].compare == f.compare)
 		{
 			for (j=i+1 ; j<numipfilters ; j++)
 				ipfilters[j-1] = ipfilters[j];
@@ -884,15 +921,17 @@ void SV_RemoveIP_f (void)
 			Con_Printf ("Removed.\n");
 			return;
 		}
+
 	Con_Printf ("Didn't find %s.\n", Cmd_Argv(1));
 }
+
 
 /*
 =================
 SV_ListIP_f
 =================
 */
-void SV_ListIP_f (void)
+static void SV_ListIP_f (void)
 {
 	int		i;
 	byte	b[4];
@@ -905,12 +944,13 @@ void SV_ListIP_f (void)
 	}
 }
 
+
 /*
 =================
 SV_WriteIP_f
 =================
 */
-void SV_WriteIP_f (void)
+static void SV_WriteIP_f (void)
 {
 	FILE	*f;
 	char	name[MAX_OSPATH];
@@ -927,22 +967,23 @@ void SV_WriteIP_f (void)
 		Con_Printf ("Couldn't open %s\n", name);
 		return;
 	}
-	
+
 	for (i=0 ; i<numipfilters ; i++)
 	{
 		*(unsigned *)b = ipfilters[i].compare;
 		fprintf (f, "addip %i.%i.%i.%i\n", b[0], b[1], b[2], b[3]);
 	}
-	
+
 	fclose (f);
 }
+
 
 /*
 =================
 SV_SendBan
 =================
 */
-void SV_SendBan (void)
+static void SV_SendBan (void)
 {
 	char		data[128];
 
@@ -950,20 +991,21 @@ void SV_SendBan (void)
 	data[4] = A2C_PRINT;
 	data[5] = 0;
 	strcat (data, "\nbanned.\n");
-	
+
 	NET_SendPacket (strlen(data), data, net_from);
 }
+
 
 /*
 =================
 SV_FilterPacket
 =================
 */
-qboolean SV_FilterPacket (void)
+static qboolean SV_FilterPacket (void)
 {
 	int		i;
 	unsigned	in;
-	
+
 	in = *(unsigned *)net_from.ip;
 
 	for (i=0 ; i<numipfilters ; i++)
@@ -973,6 +1015,7 @@ qboolean SV_FilterPacket (void)
 	return !filterban.value;
 }
 
+
 //============================================================================
 
 /*
@@ -980,7 +1023,7 @@ qboolean SV_FilterPacket (void)
 SV_ReadPackets
 =================
 */
-void SV_ReadPackets (void)
+static void SV_ReadPackets (void)
 {
 	int			i;
 	client_t	*cl;
@@ -1001,7 +1044,7 @@ void SV_ReadPackets (void)
 			SV_ConnectionlessPacket ();
 			continue;
 		}
-		
+
 		// check for packets from connected clients
 		for (i=0, cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
 		{
@@ -1019,15 +1062,15 @@ void SV_ReadPackets (void)
 			}
 			break;
 		}
-		
+
 		if (i != MAX_CLIENTS)
 			continue;
-	
+
 		// packet is not from a known client
-		//	Con_Printf ("%s:sequenced packet without connection\n"
-		// ,NET_AdrToString(net_from));
+		//	Con_Printf ("%s:sequenced packet without connection\n", NET_AdrToString(net_from));
 	}
 }
+
 
 /*
 ==================
@@ -1041,30 +1084,30 @@ for a few seconds to make sure any final reliable message gets resent
 if necessary
 ==================
 */
-void SV_CheckTimeouts (void)
+static void SV_CheckTimeouts (void)
 {
 	int		i;
 	client_t	*cl;
 	float	droptime;
-	
+
 	droptime = realtime - timeout.value;
 
 	for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
 	{
-		if ( (cl->state == cs_connected || cl->state == cs_spawned) 
+		if ( (cl->state == cs_connected || cl->state == cs_spawned)
 			&& cl->netchan.last_received < droptime)
 		{
 			SV_BroadcastPrintf (PRINT_HIGH, "%s timed out\n", cl->name);
-			SV_DropClient (cl); 
+			SV_DropClient (cl);
 			cl->state = cs_free;	// don't bother with zombie state
 		}
-		if (cl->state == cs_zombie
-		&& realtime - cl->connection_started > zombietime.value)
+		if (cl->state == cs_zombie && realtime - cl->connection_started > zombietime.value)
 		{
 			cl->state = cs_free;	// can now be reused
 		}
 	}
 }
+
 
 /*
 ===================
@@ -1073,7 +1116,7 @@ SV_GetConsoleCommands
 Add them exactly as if they had been typed at the console
 ===================
 */
-void SV_GetConsoleCommands (void)
+static void SV_GetConsoleCommands (void)
 {
 	char	*cmd;
 
@@ -1086,15 +1129,16 @@ void SV_GetConsoleCommands (void)
 	}
 }
 
+
 /*
 ===================
 SV_CheckVars
 
 ===================
 */
-void SV_CheckVars (void)
+static void SV_CheckVars (void)
 {
-	static char *pw, *spw;
+	static char	*pw, *spw;
 	int			v;
 
 	if (password.string == pw && spectator_password.string == spw)
@@ -1115,6 +1159,7 @@ void SV_CheckVars (void)
 		Info_SetValueForKey (svs.info, "needpass", va("%i",v), MAX_SERVERINFO_STRING);
 }
 
+
 /*
 ==================
 SV_Frame
@@ -1124,10 +1169,10 @@ SV_Frame
 void SV_Frame (float time)
 {
 	static double	start, end;
-	
+
 	start = Sys_DoubleTime ();
 	svs.stats.idle += start - end;
-	
+
 // keep the random time dependent
 	rand ();
 
@@ -1149,7 +1194,7 @@ void SV_Frame (float time)
 
 // check for commands typed to the host
 	SV_GetConsoleCommands ();
-	
+
 // process console commands
 	Cbuf_Execute ();
 
@@ -1176,28 +1221,19 @@ void SV_Frame (float time)
 	}
 }
 
+
 /*
 ===============
 SV_InitLocal
 ===============
 */
-void SV_InitLocal (void)
+static void SV_InitLocal (void)
 {
 	int		i;
-	extern	cvar_t	sv_maxvelocity;
-	extern	cvar_t	sv_gravity;
-	extern	cvar_t	sv_aim;
-	extern	cvar_t	sv_stopspeed;
-	extern	cvar_t	sv_spectatormaxspeed;
-	extern	cvar_t	sv_accelerate;
-	extern	cvar_t	sv_airaccelerate;
-	extern	cvar_t	sv_wateraccelerate;
-	extern	cvar_t	sv_friction;
-	extern	cvar_t	sv_waterfriction;
 
 	SV_InitOperatorCommands	();
 	SV_UserInit ();
-	
+
 	Cvar_RegisterVariable (&rcon_password);
 	Cvar_RegisterVariable (&password);
 	Cvar_RegisterVariable (&spectator_password);
@@ -1253,7 +1289,7 @@ void SV_InitLocal (void)
 	Cvar_RegisterVariable (&sv_aim);
 
 	Cvar_RegisterVariable (&filterban);
-	
+
 	Cvar_RegisterVariable (&allow_download);
 	Cvar_RegisterVariable (&allow_download_skins);
 	Cvar_RegisterVariable (&allow_download_models);
@@ -1319,14 +1355,12 @@ void Master_Heartbeat (void)
 	//
 	active = 0;
 	for (i=0 ; i<MAX_CLIENTS ; i++)
-		if (svs.clients[i].state == cs_connected ||
-		svs.clients[i].state == cs_spawned )
+		if (svs.clients[i].state == cs_connected || svs.clients[i].state == cs_spawned )
 			active++;
 
 	svs.heartbeat_sequence++;
 	sprintf (string, "%c\n%i\n%i\n", S2M_HEARTBEAT,
-		svs.heartbeat_sequence, active);
-
+			svs.heartbeat_sequence, active);
 
 	// send to group master
 	for (i=0 ; i<MAX_MASTERS ; i++)
@@ -1343,6 +1377,7 @@ void Master_Heartbeat (void)
 */
 }
 
+
 /*
 =================
 Master_Shutdown
@@ -1350,7 +1385,7 @@ Master_Shutdown
 Informs all masters that this server is going down
 =================
 */
-void Master_Shutdown (void)
+static void Master_Shutdown (void)
 {
 	char		string[2048];
 	int			i;
@@ -1372,6 +1407,7 @@ void Master_Shutdown (void)
 */
 }
 
+
 /*
 =================
 SV_ExtractFromUserinfo
@@ -1388,7 +1424,6 @@ void SV_ExtractFromUserinfo (client_t *cl)
 	int			dupc = 1;
 	char		newname[80];
 
-
 	// name for C code
 	val = Info_ValueForKey (cl->userinfo, "name");
 
@@ -1398,7 +1433,8 @@ void SV_ExtractFromUserinfo (client_t *cl)
 
 	for (p = newname; *p == ' ' && *p; p++)
 		;
-	if (p != newname && *p) {
+	if (p != newname && *p)
+	{
 		for (q = newname; *p; *q++ = *p++)
 			;
 		*q = 0;
@@ -1407,30 +1443,36 @@ void SV_ExtractFromUserinfo (client_t *cl)
 		;
 	p[1] = 0;
 
-	if (strcmp(val, newname)) {
+	if (strcmp(val, newname))
+	{
 		Info_SetValueForKey (cl->userinfo, "name", newname, MAX_INFO_STRING);
 		val = Info_ValueForKey (cl->userinfo, "name");
 	}
 
-	if (!val[0] || !Q_strcasecmp(val, "console")) {
+	if (!val[0] || !Q_strcasecmp(val, "console"))
+	{
 		Info_SetValueForKey (cl->userinfo, "name", "unnamed", MAX_INFO_STRING);
 		val = Info_ValueForKey (cl->userinfo, "name");
 	}
 
 	// check to see if another user by the same name exists
-	while (1) {
-		for (i=0, client = svs.clients ; i<MAX_CLIENTS ; i++, client++) {
+	while (1)
+	{
+		for (i=0, client = svs.clients ; i<MAX_CLIENTS ; i++, client++)
+		{
 			if (client->state != cs_spawned || client == cl)
 				continue;
 			if (!Q_strcasecmp(client->name, val))
 				break;
 		}
-		if (i != MAX_CLIENTS) { // dup name
+		if (i != MAX_CLIENTS)
+		{	// dup name
 			if (strlen(val) > sizeof(cl->name) - 1)
 				val[sizeof(cl->name) - 4] = 0;
 			p = val;
 
-			if (val[0] == '(') {
+			if (val[0] == '(')
+			{
 				if (val[2] == ')')
 					p = val + 3;
 				else if (val[3] == ')')
@@ -1439,11 +1481,12 @@ void SV_ExtractFromUserinfo (client_t *cl)
 			sprintf(newname, "(%d)%-.40s", dupc++, p);
 			Info_SetValueForKey (cl->userinfo, "name", newname, MAX_INFO_STRING);
 			val = Info_ValueForKey (cl->userinfo, "name");
-		} else
+		}
+		else
 			break;
 	}
-	
-	strncpy (cl->name, val, sizeof(cl->name)-1);	
+
+	strncpy (cl->name, val, sizeof(cl->name)-1);
 
 	// rate command
 	val = Info_ValueForKey (cl->userinfo, "rate");
@@ -1462,7 +1505,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 	if (strlen(val))
 	{
 		i = atoi(val);
-		if(i>CLASS_DEMON&&dmMode.value!=DM_SIEGE)
+		if (i > CLASS_DEMON && dmMode.value != DM_SIEGE)
 			i = CLASS_PALADIN;
 		if (i < 0 || i > MAX_PLAYER_CLASS || (!cl->portals && i == CLASS_DEMON))
 		{
@@ -1483,7 +1526,6 @@ void SV_ExtractFromUserinfo (client_t *cl)
 	{
 		cl->messagelevel = atoi(val);
 	}
-
 }
 
 
@@ -1494,7 +1536,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 SV_InitNet
 ====================
 */
-void SV_InitNet (void)
+static void SV_InitNet (void)
 {
 	int	port;
 	int	p;
@@ -1511,8 +1553,7 @@ void SV_InitNet (void)
 	Netchan_Init ();
 
 	// heartbeats will always be sent to the id master
-	svs.last_heartbeat = -99999;		// send immediately
-
+	svs.last_heartbeat = -99999;	// send immediately
 //	NET_StringToAdr ("208.135.137.23:26900", &idmaster_adr);
 }
 
@@ -1524,6 +1565,7 @@ SV_Init
 */
 void SV_Init (quakeparms_t *parms)
 {
+
 //	COM_InitArgv (parms->argc, parms->argv);
 //	COM_AddParm ("-game");
 //	COM_AddParm ("hw");
@@ -1532,10 +1574,10 @@ void SV_Init (quakeparms_t *parms)
 
 	Memory_Init (parms->membase, parms->memsize);
 	Cbuf_Init ();
-	Cmd_Init ();	
+	Cmd_Init ();
 
 	COM_Init ();
-	
+
 	PR_Init ();
 	Mod_Init ();
 
@@ -1550,17 +1592,16 @@ void SV_Init (quakeparms_t *parms)
 	Cbuf_InsertText ("exec server.cfg\n");
 
 	host_initialized = true;
-	
+
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
-	Con_Printf ("%4.1f megabyte heap\n",parms->memsize/ (1024*1024.0));	
+	Con_Printf ("%4.1f megabyte heap\n",parms->memsize/ (1024*1024.0));
 	Con_Printf ("======== HexenWorld Initialized ========\n");
-	
-// process command line arguments
+
+	// process command line arguments
 	Cmd_StuffCmds_f ();
 	Cbuf_Execute ();
 
-// if a map wasn't specified on the command line, spawn start.map
-
+	// if a map wasn't specified on the command line, spawn demo1.map
 	if (sv.state == ss_dead)
 		Cmd_ExecuteString ("map demo1", src_command);
 	if (sv.state == ss_dead)
