@@ -1341,7 +1341,7 @@ let it know we are alive, and log information
 #define	HEARTBEAT_SECONDS	300
 void Master_Heartbeat (void)
 {
-	char		string[2048];
+	char		text[2048];
 	int			active;
 	int			i;
 
@@ -1359,7 +1359,7 @@ void Master_Heartbeat (void)
 			active++;
 
 	svs.heartbeat_sequence++;
-	sprintf (string, "%c\n%i\n%i\n", S2M_HEARTBEAT,
+	sprintf (text, "%c\n%i\n%i\n", S2M_HEARTBEAT,
 			svs.heartbeat_sequence, active);
 
 	// send to group master
@@ -1367,12 +1367,12 @@ void Master_Heartbeat (void)
 		if (master_adr[i].port)
 		{
 			Con_Printf ("Sending heartbeat to %s\n", NET_AdrToString (master_adr[i]));
-			NET_SendPacket (strlen(string), string, master_adr[i]);
+			NET_SendPacket (strlen(text), text, master_adr[i]);
 		}
 /*
 #ifndef DEBUG_BUILD
 	// send to id master
-	NET_SendPacket (strlen(string), string, idmaster_adr);
+	NET_SendPacket (strlen(text), text, idmaster_adr);
 #endif
 */
 }
@@ -1387,22 +1387,22 @@ Informs all masters that this server is going down
 */
 static void Master_Shutdown (void)
 {
-	char		string[2048];
+	char		text[2048];
 	int			i;
 
-	sprintf (string, "%c\n", S2M_SHUTDOWN);
+	sprintf (text, "%c\n", S2M_SHUTDOWN);
 
 	// send to group master
 	for (i=0 ; i<MAX_MASTERS ; i++)
 		if (master_adr[i].port)
 		{
 			Con_Printf ("Sending heartbeat to %s\n", NET_AdrToString (master_adr[i]));
-			NET_SendPacket (strlen(string), string, master_adr[i]);
+			NET_SendPacket (strlen(text), text, master_adr[i]);
 		}
 /*
 	// send to id master
 #ifndef DEBUG_BUILD
-	NET_SendPacket (strlen(string), string, idmaster_adr);
+	NET_SendPacket (strlen(text), text, idmaster_adr);
 #endif
 */
 }
