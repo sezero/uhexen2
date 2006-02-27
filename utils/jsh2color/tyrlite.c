@@ -23,6 +23,9 @@
  */
 
 #include "tyrlite.h"
+#ifdef _WIN32
+#include <conio.h>
+#endif
 
 extern int numbounces;
 
@@ -366,6 +369,56 @@ void LightWorld (void)
 	lightdatasize = file_p - filebase;
 
 	//printf ("lightdatasize: %i\n", lightdatasize);
+}
+
+
+/*
+ * ==================
+ * DecisionTime
+ * Takes user's decision to continue or abort
+ * ==================
+ */
+void DecisionTime (char *msg)
+{
+	char	c;
+
+	// if we're forcing colouring irrespective of potential
+	// effectiveness (eg in a batch file), just get out
+	if (force)
+		return;
+
+	printf ("\nMHColour reports that it may not light this BSP effectively\n(%s)\n", msg);
+
+#ifdef _WIN32
+	printf ("Continue? [Y/N] ");
+	while (1)
+	{
+		c = getch ();
+
+		if (c == 'y' || c == 'Y' || c == 'n' || c == 'N')
+			break;
+	}
+
+	printf ("%c\n", c);
+#else
+	// lame solution for unix
+	while (1)
+	{
+		c = 0;
+		printf ("Continue? [Y/N] ");
+		fflush(stdout);
+	//	while (!Sys_kbhit())
+	//		;
+		c = getchar();
+		if (c == 'y' || c == 'Y' || c == 'n' || c == 'N')
+			break;
+	}
+	printf ("\n");
+	fflush(stdout);
+#endif
+
+	if (c == 'n' || c == 'N')
+		Error ("Program Terminated by user\n");
 }
 
 

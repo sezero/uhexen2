@@ -26,7 +26,6 @@
 
 #ifdef WIN32
 #include <direct.h>
-#include <conio.h>
 #else
 #include <unistd.h>
 #include <string.h>
@@ -711,49 +710,4 @@ int	Sys_kbhit(void)
 	return n;
 }
 #endif
-
-extern qboolean force;
-
-void DecisionTime (char *msg)
-{
-	char	c;
-
-	// if we're forcing colouring irrespective of potential
-	// effectiveness (eg in a batch file), just get out
-	if (force)
-		return;
-
-	printf ("\nMHColour reports that it may not light this BSP effectively\n(%s)\n", msg);
-
-#ifdef _WIN32
-	printf ("Continue? [Y/N] ");
-	while (1)
-	{
-		c = getch ();
-
-		if (c == 'y' || c == 'Y' || c == 'n' || c == 'N')
-			break;
-	}
-
-	printf ("%c\n", c);
-#else
-	// lame solution for unix
-	while (1)
-	{
-		c = 0;
-		printf ("Continue? [Y/N] ");
-		fflush(stdout);
-	//	while (!Sys_kbhit())
-	//		;
-		c = getchar();
-		if (c == 'y' || c == 'Y' || c == 'n' || c == 'N')
-			break;
-	}
-	printf ("\n");
-	fflush(stdout);
-#endif
-
-	if (c == 'n' || c == 'N')
-		Error ("Program Terminated by user\n");
-}
 

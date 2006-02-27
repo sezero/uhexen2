@@ -157,6 +157,5 @@ void CopyFile (char *from, char *to);
 #ifndef _WIN32
 int Sys_kbhit(void);
 #endif
-void DecisionTime (char *msg);
 
 #endif	// __CMDLIB__

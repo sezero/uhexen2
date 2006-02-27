@@ -110,8 +110,10 @@ extern qboolean	nominlimit;
 extern qboolean	makelit;
 
 // js feature
+extern qboolean	force;
 extern qboolean	external;
 extern qboolean	nodefault;
 extern tex_col_list tc_list;
+void DecisionTime (char *msg);
 
 #endif /* __TYRLITE_TYRLITE_H__ */
