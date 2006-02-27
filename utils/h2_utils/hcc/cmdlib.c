@@ -1,23 +1,21 @@
 /*
 	cmdlib.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/cmdlib.c,v 1.4 2006-02-27 13:34:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/cmdlib.c,v 1.5 2006-02-27 14:20:52 sezero Exp $
 */
 
 
 // HEADER FILES ------------------------------------------------------------
 
 #include <sys/types.h>
-#include <sys/stat.h>
 #ifdef _WIN32
 #include <direct.h>
 #endif
 #include "cmdlib.h"
-#include "hcc.h"
 
 // MACROS ------------------------------------------------------------------
 
-#define PATHSEPERATOR '/'
+#define PATHSEPERATOR	'/'
 
 // TYPES -------------------------------------------------------------------
 
@@ -178,45 +176,6 @@ void Error(char *error, ...)
 	va_end (argptr);
 	printf ("\n");
 	exit (1);
-}
-
-/*
-==============
-COM_ParseError
-
-==============
-*/
-void COM_ParseError(char *error, ...)
-{
-	va_list argptr;
-	char string[1024];
-
-	va_start (argptr, error);
-	vsnprintf (string, sizeof (string), error, argptr);
-	va_end (argptr);
-	printf ("%s(%d) : %s\n", strings+s_file, lx_SourceLine, string);
-	longjmp (pr_parse_abort, 1);
-}
-
-/*
-==============
-COM_ParseWarning
-
-==============
-*/
-void COM_ParseWarning(char *error, ...)
-{
-	va_list argptr;
-	char string[1024];
-
-	if (hcc_WarningsActive == false)
-	{
-		return;
-	}
-	va_start (argptr, error);
-	vsnprintf (string, sizeof (string), error, argptr);
-	va_end (argptr);
-	printf ("%s(%d) : warning : %s\n", strings+s_file, lx_SourceLine, string);
 }
 
 /*

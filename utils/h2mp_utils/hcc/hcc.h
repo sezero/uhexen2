@@ -1,13 +1,14 @@
 /*
 	hcc.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/hcc.h,v 1.2 2006-02-27 00:02:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/hcc.h,v 1.3 2006-02-27 14:20:52 sezero Exp $
 */
 
 
 // HEADER FILES ------------------------------------------------------------
 
 #include "pr_comp.h"
+#include <setjmp.h>
 
 // MACROS ------------------------------------------------------------------
 
@@ -23,8 +24,6 @@
 #define MAX_ERRORS		10
 #define MAX_NAME		64
 #define MAX_REGS		65536
-
-#define HASH_TABLE_SIZE		9973
 
 #define TK_CHECK(t)	(pr_tokenclass==t?(LX_Fetch(),true):(false))
 #define TK_TEST(t)	(pr_tokenclass==t)
@@ -184,6 +183,11 @@ def_t	*CO_ParseImmediate (void);
 void	CO_ParseDefs (void);
 def_t	*PR_GetDef (type_t *type, char *name, def_t *scope, qboolean allocate);
 
+// parseerr.c
+
+void	PR_ParseError(char *error, ...);
+void	PR_ParseWarning(char *error, ...);
+
 // expr.c
 
 void	EX_Init (void);
@@ -192,6 +196,7 @@ def_t	*EX_Expression (int priority);
 // stmt.c
 
 void	ST_ParseStatement (void);
+
 
 // PUBLIC DATA DECLARATIONS ------------------------------------------------
 

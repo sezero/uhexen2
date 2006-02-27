@@ -1,7 +1,7 @@
 /*
 	expr.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/expr.c,v 1.2 2006-02-27 00:02:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/expr.c,v 1.3 2006-02-27 14:20:52 sezero Exp $
 
 */
 
@@ -153,7 +153,7 @@ def_t *EX_Expression (int priority)
 				{
 					// The preceding statement was an array lookup.  Assignment
 					// is currently not allowed to arrays.
-					COM_ParseError("assignment not allowed to arrays");
+					PR_ParseError("assignment not allowed to arrays");
 				}
 */
 				e2 = EX_Expression(priority);
@@ -192,12 +192,12 @@ def_t *EX_Expression (int priority)
 				if (tag != op->tag)
 				{
 					op--;
-					COM_ParseError("type mismatch for %s", op->name);
+					PR_ParseError("type mismatch for %s", op->name);
 				}
 			}
 			if (type_a == ev_pointer && type_b != e->type->aux_type->type)
 			{
-				COM_ParseError("type mismatch for %s", op->name);
+				PR_ParseError("type mismatch for %s", op->name);
 			}
 
 			// Emit the statement
@@ -256,7 +256,7 @@ static def_t *Term (void)
 		else
 		{
 			e2 = NULL; // Shut up compiler warning
-			COM_ParseError("type mismatch for !");
+			PR_ParseError("type mismatch for !");
 		}
 		return e2;
 	}
@@ -284,7 +284,7 @@ static def_t *Term (void)
 	d = PR_GetDef(NULL, name, pr_scope, false);
 	if (!d)
 	{
-		COM_ParseError("unknown value \"%s\"", name);
+		PR_ParseError("unknown value \"%s\"", name);
 	}
 
 	d->referenceCount++;
@@ -302,11 +302,11 @@ static def_t *Term (void)
 		{
 			LX_Fetch();
 			e2 = EX_Expression(TOP_PRIORITY);
-			//COM_ParseError("assignment is not allowed to arrays");
+			//PR_ParseError("assignment is not allowed to arrays");
 
 			if (d->type->type != e2->type->type)
 			{
-				COM_ParseError("type mismatch for =");
+				PR_ParseError("type mismatch for =");
 			}
 			return NULL;
 		}
@@ -330,7 +330,7 @@ static def_t *Term (void)
 			break;
 		default:
 			e2 = NULL; // Shut up compiler warning
-			COM_ParseError("type mismatch for []");
+			PR_ParseError("type mismatch for []");
 			break;
 		}
 		return e2;
@@ -354,7 +354,7 @@ static def_t *ParseFunctionCall (def_t *func)
 	t = func->type;
 	if (t->type != ev_function)
 	{
-		COM_ParseError("not a function");
+		PR_ParseError("not a function");
 	}
 
 	argCount = 0;
@@ -366,11 +366,11 @@ static def_t *ParseFunctionCall (def_t *func)
 		{
 			if (argCount == 8)
 			{
-				COM_ParseError("more than eight parameters");
+				PR_ParseError("more than eight parameters");
 			}
 			if (t->num_parms != -1 && argCount >= t->num_parms)
 			{
-				COM_ParseError("too many parameters");
+				PR_ParseError("too many parameters");
 			}
 			e = EX_Expression(TOP_PRIORITY);
 
@@ -392,7 +392,7 @@ static def_t *ParseFunctionCall (def_t *func)
 
 			if (t->num_parms != -1 && (e->type != t->parm_types[argCount]))
 			{
-				COM_ParseError("type mismatch on parm %i", argCount);
+				PR_ParseError("type mismatch on parm %i", argCount);
 			}
 
 			def_parms[argCount].type = t->parm_types[argCount];
@@ -421,7 +421,7 @@ static def_t *ParseFunctionCall (def_t *func)
 
 	if (t->num_parms != -1 && argCount != t->num_parms)
 	{
-		COM_ParseError("too few parameters");
+		PR_ParseError("too few parameters");
 	}
 
 	CO_GenCodeDirect(&pr_opcodes[OP_CALL0+argCount], func, args[0], args[1]);
@@ -571,7 +571,7 @@ static def_t *ParseIntrinsicFunc (char *name)
 			expr1 = EX_Expression(TOP_PRIORITY);
 			if (expr1->type->type != ev_float)
 			{
-				COM_ParseError("'random' : incompatible "
+				PR_ParseError("'random' : incompatible "
 						"parameter type");
 			}
 			if (TK_CHECK(TK_COMMA))
@@ -579,7 +579,7 @@ static def_t *ParseIntrinsicFunc (char *name)
 				expr2 = EX_Expression(TOP_PRIORITY);
 				if (expr2->type->type != ev_float)
 				{
-					COM_ParseError("'random' : incompatible "
+					PR_ParseError("'random' : incompatible "
 							"parameter type");
 				}
 				LX_Require(")");
@@ -607,7 +607,7 @@ static def_t *ParseIntrinsicFunc (char *name)
 			expr1 = EX_Expression(TOP_PRIORITY);
 			if (expr1->type->type != ev_vector)
 			{
-				COM_ParseError("'randomv' : incompatible "
+				PR_ParseError("'randomv' : incompatible "
 						"parameter type");
 			}
 			if (TK_CHECK(TK_COMMA))
@@ -615,7 +615,7 @@ static def_t *ParseIntrinsicFunc (char *name)
 				expr2 = EX_Expression(TOP_PRIORITY);
 				if (expr2->type->type != ev_vector)
 				{
-					COM_ParseError("'randomv' : incompatible "
+					PR_ParseError("'randomv' : incompatible "
 							"parameter type");
 				}
 				LX_Require(")");

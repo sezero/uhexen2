@@ -1,7 +1,7 @@
 /*
 	stmt.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/stmt.c,v 1.2 2006-02-27 00:02:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/stmt.c,v 1.3 2006-02-27 14:20:52 sezero Exp $
 */
 
 
@@ -159,7 +159,7 @@ static void ParseStatement (scontext_t owner)
 {
 	if (StatementIndex == MAX_STATEMENT_DEPTH)
 	{
-		COM_ParseError("statement overflow");
+		PR_ParseError("statement overflow");
 	}
 	ContextHistory[StatementIndex++] = owner;
 
@@ -221,7 +221,7 @@ static void ParseStatement (scontext_t owner)
 	{
 		if (owner != SCONTEXT_SWITCH)
 		{
-			COM_ParseError("misplaced case");
+			PR_ParseError("misplaced case");
 		}
 		ParseCase();
 		StatementIndex--;
@@ -231,7 +231,7 @@ static void ParseStatement (scontext_t owner)
 	{
 		if (BreakAncestor() == false)
 		{
-			COM_ParseError("misplaced break");
+			PR_ParseError("misplaced break");
 		}
 		ParseBreak();
 		StatementIndex--;
@@ -241,7 +241,7 @@ static void ParseStatement (scontext_t owner)
 	{
 		if (ContinueAncestor() == false)
 		{
-			COM_ParseError("misplaced continue");
+			PR_ParseError("misplaced continue");
 		}
 		ParseContinue();
 		StatementIndex--;
@@ -300,7 +300,7 @@ static void ParseReturn (void)
 	{
 		if (st_ReturnType->type != ev_void)
 		{
-			COM_ParseError("missing return value");
+			PR_ParseError("missing return value");
 		}
 		CO_GenCode(&pr_opcodes[OP_RETURN], 0, 0);
 		LX_Fetch();
@@ -309,7 +309,7 @@ static void ParseReturn (void)
 	e = EX_Expression(TOP_PRIORITY);
 	if (e->type != st_ReturnType)
 	{
-		COM_ParseError("return type mismatch");
+		PR_ParseError("return type mismatch");
 	}
 	LX_Require(";");
 	CO_GenCode(&pr_opcodes[OP_RETURN], e, 0);
@@ -527,7 +527,7 @@ static void ParseSwitch (void)
 		opcode = OP_SWITCH_FNC;
 		break;
 	default:
-		COM_ParseError("bad type for switch");
+		PR_ParseError("bad type for switch");
 		opcode = 0;	// avoid compiler warning
 		break;
 	}
@@ -551,7 +551,7 @@ static void ParseSwitch (void)
 	count = GetCaseInfo(&cInfo);
 	if (count == 0)
 	{
-		COM_ParseError("switch has no case");
+		PR_ParseError("switch has no case");
 	}
 	defaultStatement = -1;
 	for (i = 0; i < count; i++, cInfo++)
@@ -563,7 +563,7 @@ static void ParseSwitch (void)
 		}
 		if (cInfo->type != switchType)
 		{
-			COM_ParseError("type mismatch within switch");
+			PR_ParseError("type mismatch within switch");
 		}
 		tempDef.ofs = &statements[cInfo->statement]
 				-&statements[numstatements];
@@ -612,7 +612,7 @@ static void ParseCase (void)
 			e2 = EX_Expression(TOP_PRIORITY);
 			if (e->type->type != ev_float || e2->type->type != ev_float)
 			{
-				COM_ParseError("type mismatch for case range");
+				PR_ParseError("type mismatch for case range");
 			}
 		}
 		else
@@ -635,7 +635,7 @@ static void AddCase(etype_t type, def_t *value1, def_t *value2, qboolean isDefau
 {
 	if (CaseIndex == MAX_CASE)
 	{
-		COM_ParseError("case overflow");
+		PR_ParseError("case overflow");
 	}
 	CaseInfo[CaseIndex].level = ContextLevel;
 	CaseInfo[CaseIndex].value1 = value1;
@@ -690,7 +690,7 @@ static void AddBreak (void)
 {
 	if (BreakIndex == MAX_BREAK)
 	{
-		COM_ParseError("break overflow");
+		PR_ParseError("break overflow");
 	}
 	BreakInfo[BreakIndex].level = ContextLevel;
 	BreakInfo[BreakIndex].patch = &statements[numstatements];
@@ -776,7 +776,7 @@ static void AddContinue (void)
 {
 	if (ContinueIndex == MAX_CONTINUE)
 	{
-		COM_ParseError("continue overflow");
+		PR_ParseError("continue overflow");
 	}
 	ContinueInfo[ContinueIndex].level = ContextLevel;
 	ContinueInfo[ContinueIndex].patch = &statements[numstatements];
@@ -844,7 +844,7 @@ static void ParseThinktime (void)
 	expr2 = EX_Expression(TOP_PRIORITY);
 	if (expr1->type->type != ev_entity || expr2->type->type != ev_float)
 	{
-		COM_ParseError("type mismatch for thinktime");
+		PR_ParseError("type mismatch for thinktime");
 	}
 	LX_Require(";");
 	CO_GenCode(&pr_opcodes[OP_THINKTIME], expr1, expr2);

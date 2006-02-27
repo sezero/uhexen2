@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/cmdlib.h,v 1.4 2006-02-27 00:02:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/cmdlib.h,v 1.5 2006-02-27 14:20:52 sezero Exp $
 */
 
 #ifndef __CMDLIB__
@@ -16,7 +16,6 @@
 #include <ctype.h>
 #include <time.h>
 #include <stdarg.h>
-#include <setjmp.h>
 
 
 // TYPES -------------------------------------------------------------------
@@ -56,8 +55,6 @@ int	Q_filelength(FILE *f);
 double	GetTime(void);
 
 void	Error (char *error, ...);
-void	COM_ParseError(char *error, ...);
-void	COM_ParseWarning(char *error, ...);
 int		CheckParm(char *check);
 
 FILE	*SafeOpenWrite(char *filename);
@@ -72,6 +69,9 @@ char	*COM_Parse(char *data);
 void	CRC_Init(unsigned short *crcvalue);
 void	CRC_ProcessByte(unsigned short *crcvalue, byte data);
 unsigned short	CRC_Value(unsigned short crcvalue);
+
+#define	HASH_TABLE_SIZE		9973
 int		COM_Hash(char *string);
 
-#endif
+#endif	// __CMDLIB__
+

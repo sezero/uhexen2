@@ -1,7 +1,7 @@
 /*
 	comp.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/pr_comp.c,v 1.4 2006-02-27 00:02:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/pr_comp.c,v 1.5 2006-02-27 14:20:52 sezero Exp $
 */
 
 
@@ -407,7 +407,7 @@ def_t *CO_ParseImmediate (void)
 	}
 	else
 	{
-		COM_ParseError("weird immediate type");
+		PR_ParseError("weird immediate type");
 	}
 
 	for (cell = HashTable[idx]; cell != NULL; cell = cell->next)
@@ -442,7 +442,7 @@ def_t *CO_ParseImmediate (void)
 		}
 		else
 		{
-			COM_ParseError("weird immediate type");
+			PR_ParseError("weird immediate type");
 		}
 	}
 
@@ -491,7 +491,7 @@ def_t *CO_ParseImmediate (void)
 			}
 			else
 			{
-				COM_ParseError("weird immediate type");
+				PR_ParseError("weird immediate type");
 			}
 		}
 	}
@@ -587,7 +587,7 @@ static void ParseState (void)
 		if(pr_token_type != tt_immediate
 			|| pr_immediate_type != &type_float)
 		{
-			COM_ParseError("state frame must be a number");
+			PR_ParseError("state frame must be a number");
 		}
 		frame1 = (int)pr_immediate._float;
 		s1 = CO_ParseImmediate();
@@ -596,7 +596,7 @@ static void ParseState (void)
 		if (pr_token_type != tt_immediate
 			|| pr_immediate_type != &type_float)
 		{
-			COM_ParseError("state frame must be a number");
+			PR_ParseError("state frame must be a number");
 		}
 		frame2 = (int)pr_immediate._float;
 		s2 = CO_ParseImmediate();
@@ -605,12 +605,12 @@ static void ParseState (void)
 		{
 			if (frame1 > frame2)
 			{
-				COM_ParseError("bad frame order in state cycle");
+				PR_ParseError("bad frame order in state cycle");
 			}
 		}
 		else if (frame1 < frame2)
 		{
-			COM_ParseError("bad frame order in state cycle");
+			PR_ParseError("bad frame order in state cycle");
 		}
 		LX_Require("]");
 		if (weapon == true)
@@ -627,7 +627,7 @@ static void ParseState (void)
 	if (pr_token_type != tt_immediate
 		|| pr_immediate_type != &type_float)
 	{
-		COM_ParseError("state frame must be a number");
+		PR_ParseError("state frame must be a number");
 	}
 	FrameIndex = (int)pr_immediate._float;
 	s1 = CO_ParseImmediate();
@@ -666,7 +666,7 @@ static function_t *ParseImmediateStatements (type_t *type)
 			|| pr_immediate_type != &type_float
 			|| pr_immediate._float != (int)pr_immediate._float)
 		{
-			COM_ParseError("bad builtin immediate");
+			PR_ParseError("bad builtin immediate");
 		}
 		f->builtin = (int)pr_immediate._float;
 		LX_Fetch();
@@ -682,7 +682,7 @@ static function_t *ParseImmediateStatements (type_t *type)
 		f->parm_ofs[i] = defs[i]->ofs;
 		if (i > 0 && f->parm_ofs[i] < f->parm_ofs[i-1])
 		{
-			COM_ParseError("bad parm order");
+			PR_ParseError("bad parm order");
 		}
 	}
 
@@ -713,19 +713,19 @@ static function_t *ParseImmediateStatements (type_t *type)
 				&& searchDef->referenceCount == 0
 				&& searchDef->parentVector == NULL)
 			{
-				COM_ParseWarning("unreferenced local variable '%s'", searchDef->name);
+				PR_ParseWarning("unreferenced local variable '%s'", searchDef->name);
 			}
 		}
 		if (type->aux_type->type != ev_void && st_ReturnParsed == false)
 		{
-			COM_ParseError("missing return");
+			PR_ParseError("missing return");
 		}
 
 		LX_Fetch();
 	}
 	else if (type->aux_type->type != ev_void && st_ReturnParsed == false)
 	{
-		COM_ParseError("missing return");
+		PR_ParseError("missing return");
 	}
 
 	// Emit an end of statements opcode
@@ -773,7 +773,7 @@ def_t *PR_GetDef(type_t *type, char *name, def_t *scope, qboolean allocate)
 			}
 			if (type && def->type != type)
 			{ // Type mismatch
-				COM_ParseError("type mismatch on redeclaration of %s", name);
+				PR_ParseError("type mismatch on redeclaration of %s", name);
 			}
 			return def;
 		}
@@ -793,7 +793,7 @@ def_t *PR_GetDef(type_t *type, char *name, def_t *scope, qboolean allocate)
 				}
 				if (type && def->type != type)
 				{ // Type mismatch
-					COM_ParseError("type mismatch on redeclaration of %s", name);
+					PR_ParseError("type mismatch on redeclaration of %s", name);
 				}
 				return def;
 			}
@@ -886,7 +886,7 @@ void CO_ParseDefs (void)
 	{
 		if (pr_scope)
 		{
-			COM_ParseError("unions must be global");
+			PR_ParseError("unions must be global");
 		}
 		ParseUnion();
 		return;
@@ -894,7 +894,7 @@ void CO_ParseDefs (void)
 
 	if (pr_scope && (type->type == ev_field || type->type == ev_function))
 	{
-		COM_ParseError("fields and functions must be global");
+		PR_ParseError("fields and functions must be global");
 	}
 
 	do
@@ -921,11 +921,11 @@ void CO_ParseDefs (void)
 		{
 			if (def->initialized)
 			{
-				COM_ParseError("'%s' : redefinition", name);
+				PR_ParseError("'%s' : redefinition", name);
 			}
 			if (type->type == ev_field)
 			{
-				COM_ParseError("fields cannot be initialized");
+				PR_ParseError("fields cannot be initialized");
 			}
 
 			if (elementCount != 0)
@@ -937,11 +937,11 @@ void CO_ParseDefs (void)
 				{
 					if (pr_token_type != tt_immediate)
 					{
-						COM_ParseError("immediate type required for %s", name);
+						PR_ParseError("immediate type required for %s", name);
 					}
 					if (pr_immediate_type->type != type->type)
 					{
-						COM_ParseError("wrong immediate type for %s", name);
+						PR_ParseError("wrong immediate type for %s", name);
 					}
 					memcpy(pr_globals+offset, &pr_immediate, 4*type_size[pr_immediate_type->type]);
 					offset += type_size[pr_immediate_type->type];
@@ -952,7 +952,7 @@ void CO_ParseDefs (void)
 				LX_Require("}");
 				if (i != elementCount)
 				{
-					COM_ParseError("element count mismatch in array"
+					PR_ParseError("element count mismatch in array"
 							" initialization");
 				}
 				def->initialized = 1;
@@ -965,7 +965,7 @@ void CO_ParseDefs (void)
 			}
 			else if (pr_immediate_type != type)
 			{
-				COM_ParseError("wrong immediate type for %s", name);
+				PR_ParseError("wrong immediate type for %s", name);
 			}
 			def->initialized = 1;
 			memcpy(pr_globals+def->ofs, &pr_immediate, 4*type_size[pr_immediate_type->type]);
@@ -1108,22 +1108,22 @@ static int ParseArray (char *name, type_t *type)
 	if (t != ev_float && t != ev_vector && t != ev_string
 		&& t != ev_entity && t != ev_function)
 	{
-		COM_ParseError("bad array type");
+		PR_ParseError("bad array type");
 	}
 	if (PR_GetDef(type, name, pr_scope, false) != NULL)
 	{
-		COM_ParseError("array redefinition");
+		PR_ParseError("array redefinition");
 	}
 	if (pr_token_type != tt_immediate
 		|| pr_immediate_type != &type_float
 		|| pr_immediate._float != (int)pr_immediate._float)
 	{
-		COM_ParseError("subscript is not integral");
+		PR_ParseError("subscript is not integral");
 	}
 	count = (int)pr_immediate._float;
 	if (count < 1 || count > MAX_ARRAY_ELEMENTS)
 	{
-		COM_ParseError("bad subscript: %d", count);
+		PR_ParseError("bad subscript: %d", count);
 	}
 	LX_Fetch();
 	LX_Require("]");
@@ -1208,7 +1208,7 @@ static type_t *ParseUnionType (void)
 	type = PR_ParseType();
 	if (type->type == ev_field)
 	{
-		COM_ParseError("union field types are implicit");
+		PR_ParseError("union field types are implicit");
 	}
 	memset(&newType, 0, sizeof(newType));
 	newType.type = ev_field;
@@ -1308,7 +1308,7 @@ static void ParseCStyleFunctionDef (char *funcName, type_t *type)
 
 	if (def->initialized)
 	{
-		COM_ParseError("%s redeclared", funcName);
+		PR_ParseError("%s redeclared", funcName);
 	}
 
 	if (TK_TEST(TK_LBRACE)
@@ -1318,7 +1318,7 @@ static void ParseCStyleFunctionDef (char *funcName, type_t *type)
 		initClass = pr_tokenclass;
 		if (def->initialized)
 		{
-			COM_ParseError("%s redeclared", name);
+			PR_ParseError("%s redeclared", name);
 		}
 		locals_start = locals_end = numpr_globals;
 		pr_scope = def;

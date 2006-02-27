@@ -1,7 +1,7 @@
 /*
 	lexi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/pr_lex.c,v 1.3 2006-02-27 00:02:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/pr_lex.c,v 1.4 2006-02-27 14:20:52 sezero Exp $
 */
 
 
@@ -200,20 +200,20 @@ static void LexString (void)
 	{
 		c = *pr_file_p++;
 		if (!c)
-			COM_ParseError("EOF inside quote");
+			PR_ParseError("EOF inside quote");
 		if (c=='\n')
-			COM_ParseError("newline inside quote");
+			PR_ParseError("newline inside quote");
 		if (c=='\\')
 		{ // Escape char
 			c = *pr_file_p++;
 			if (!c)
-				COM_ParseError("EOF inside quote");
+				PR_ParseError("EOF inside quote");
 			if (c == 'n')
 				c = '\n';
 			else if (c == '"')
 				c = '"';
 			else
-				COM_ParseError("unknown escape char");
+				PR_ParseError("unknown escape char");
 		}
 		else if (c=='\"')
 		{
@@ -288,7 +288,7 @@ static float LexNumber (void)
 		radix = intNumber;
 		if (radix < 2 || radix > 36)
 		{
-			COM_ParseError("bad radix in integer constant (%d)", radix);
+			PR_ParseError("bad radix in integer constant (%d)", radix);
 		}
 		intNumber = 0;
 		c = *pr_file_p;
@@ -394,7 +394,7 @@ static void LexVector (void)
 	LexWhitespace();
 	if (*pr_file_p != '\'')
 	{
-		COM_ParseError("bad vector");
+		PR_ParseError("bad vector");
 	}
 	pr_file_p++;
 }
@@ -621,7 +621,7 @@ static void LexPunctuation (void)
 		pr_tokenclass = TK_MINUS;
 		return;
 	default:
-		COM_ParseError("unknown punctuation");
+		PR_ParseError("unknown punctuation");
 	}
 }
 
@@ -723,7 +723,7 @@ static void FindFrameMacro (void)
 			return;
 		}
 	}
-	COM_ParseError("unknown frame macro $%s", pr_token);
+	PR_ParseError("unknown frame macro $%s", pr_token);
 }
 
 //==========================================================================
@@ -775,7 +775,7 @@ static void LexGrab (void)
 	pr_file_p++;
 	if (!SimpleGetToken())
 	{
-		COM_ParseError("hanging $");
+		PR_ParseError("hanging $");
 	}
 
 	if (!strcmp(pr_token, "frame"))
@@ -784,7 +784,7 @@ static void LexGrab (void)
 		{
 			if (FrameMacroIndex < 0 || FrameMacroIndex >= MAX_FRAME_INDEX)
 			{
-				COM_ParseError("bad frame value, %s = %d", pr_token, FrameMacroIndex);
+				PR_ParseError("bad frame value, %s = %d", pr_token, FrameMacroIndex);
 			}
 			strcpy(FrameMacroNames[FrameMacroCount], pr_token);
 			FrameMacroValues[FrameMacroCount] = FrameMacroIndex;
@@ -800,7 +800,7 @@ static void LexGrab (void)
 			|| pr_immediate_type != &type_float
 			|| pr_immediate._float != (int)pr_immediate._float)
 		{
-			COM_ParseError("$framevalue : bad frame immediate");
+			PR_ParseError("$framevalue : bad frame immediate");
 		}
 		FrameMacroIndex = (int)pr_immediate._float;
 		LX_Fetch();
@@ -809,11 +809,11 @@ static void LexGrab (void)
 	{
 		if (SimpleGetToken() == false)
 		{
-			COM_ParseError("$framesave : no bookmark");
+			PR_ParseError("$framesave : no bookmark");
 		}
 		if (pr_token[1] || *pr_token < 'a' || *pr_token > 'z')
 		{
-			COM_ParseError("$framesave : bad bookmark");
+			PR_ParseError("$framesave : bad bookmark");
 		}
 		mark = *pr_token-'a';
 		FrameMacroBookmarks[mark] = FrameMacroIndex;
@@ -823,16 +823,16 @@ static void LexGrab (void)
 	{
 		if (SimpleGetToken() == false)
 		{
-			COM_ParseError("$framerestore : no bookmark");
+			PR_ParseError("$framerestore : no bookmark");
 		}
 		if (pr_token[1] || *pr_token < 'a' || *pr_token > 'z')
 		{
-			COM_ParseError("$framerestore : bad bookmark");
+			PR_ParseError("$framerestore : bad bookmark");
 		}
 		mark = *pr_token-'a';
 		if (FrameMacroBookmarks[mark] == -1)
 		{
-			COM_ParseError("$framerestore : uninitialized bookmark");
+			PR_ParseError("$framerestore : uninitialized bookmark");
 		}
 		FrameMacroIndex = FrameMacroBookmarks[mark];
 		LX_Fetch();
@@ -924,7 +924,7 @@ void LX_Require (char *string)
 {
 	if (strcmp(string, pr_token))
 	{
-		COM_ParseError("expected %s, found %s", string, pr_token);
+		PR_ParseError("expected %s, found %s", string, pr_token);
 	}
 	LX_Fetch();
 }
@@ -975,11 +975,11 @@ char *PR_ParseName (void)
 
 	if (pr_token_type != tt_name)
 	{
-		COM_ParseError ("not a name");
+		PR_ParseError ("not a name");
 	}
 	if (strlen(pr_token) >= MAX_NAME-1)
 	{
-		COM_ParseError ("name too long");
+		PR_ParseError ("name too long");
 	}
 	strcpy(ident, pr_token);
 	LX_Fetch();
@@ -1080,7 +1080,7 @@ type_t *PR_ParseType (void)
 		type = &type_void;
 	else
 	{
-		COM_ParseError ("\"%s\" is not a type", pr_token);
+		PR_ParseError ("\"%s\" is not a type", pr_token);
 		type = &type_float;	// shut up compiler warning
 	}
 	LX_Fetch();
