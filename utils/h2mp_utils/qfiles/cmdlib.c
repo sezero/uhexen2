@@ -42,19 +42,6 @@ void Error (char *error, ...)
 	exit (1);
 }
 
-// only printf if in verbose mode
-qboolean verbose = false;
-void qprintf (char *format, ...)
-{
-	va_list argptr;
-
-	if (!verbose)
-		return;
-	va_start (argptr,format);
-	vprintf (format,argptr);
-	va_end (argptr);
-}
-
 
 /*
 
@@ -90,14 +77,14 @@ void SetQdirFromPath (char *path)
 		if (!Q_strncasecmp (c, BUILDDIR, sizeof(BUILDDIR)-1))
 		{
 			strncpy (qdir, path, c+5-path);
-			qprintf ("qdir: %s\n", qdir);
+			printf ("qdir: %s\n", qdir);
 			c += 5;
 			while (*c)
 			{
 				if (*c == '/' || *c == '\\')
 				{
 					strncpy (gamedir, path, c+1-path);
-					qprintf ("gamedir: %s\n", gamedir);
+					printf ("gamedir: %s\n", gamedir);
 					return;
 				}
 				c++;
