@@ -1,7 +1,7 @@
 /*
 	cmdlib.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/cmdlib.c,v 1.3 2006-02-27 00:02:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/cmdlib.c,v 1.4 2006-02-27 13:34:12 sezero Exp $
 */
 
 
@@ -9,7 +9,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef WIN32
+#ifdef _WIN32
 #include <direct.h>
 #endif
 #include "cmdlib.h"
