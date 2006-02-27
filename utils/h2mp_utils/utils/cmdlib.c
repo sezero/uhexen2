@@ -13,10 +13,10 @@ qboolean	com_eof;
 
 /*
 ================
-I_FloatTime
+GetTime
 ================
 */
-double I_FloatTime (void)
+double GetTime (void)
 {
 	time_t	t;
 	

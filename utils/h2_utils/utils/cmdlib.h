@@ -37,7 +37,7 @@ char *strlower (char *in);
 
 int	Q_filelength (FILE *f);
 
-double I_FloatTime (void);
+double	GetTime (void);
 
 void	Error (char *error, ...);
 int		CheckParm (char *check);

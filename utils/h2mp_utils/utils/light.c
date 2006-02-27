@@ -129,7 +129,7 @@ int main (int argc, char **argv)
 
 	InitThreads ();
 
-	start = I_FloatTime ();
+	start = GetTime ();
 
 	strcpy (source, argv[i]);
 	StripExtension (source);
@@ -145,7 +145,7 @@ int main (int argc, char **argv)
 	WriteEntitiesToString ();	
 	WriteBSPFile (source);
 
-	end = I_FloatTime ();
+	end = GetTime ();
 	printf ("%5.1f seconds elapsed\n", end-start);
 	
 	return 0;

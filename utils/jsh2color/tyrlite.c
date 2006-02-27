@@ -470,7 +470,7 @@ int main (int argc, char **argv)
 
 	InitThreads ();
 
-	start = I_FloatTime ();
+	start = GetTime ();
 
 	numbounces = 0;
 
@@ -495,7 +495,7 @@ int main (int argc, char **argv)
 	else
 		WriteBSPFile (source, BSP_OLD_VERSION);
 
-	end = I_FloatTime ();
+	end = GetTime ();
 	printf ("%0.1f seconds elapsed\n", end-start);
 
 	free(tc_list.entries);	// js feature

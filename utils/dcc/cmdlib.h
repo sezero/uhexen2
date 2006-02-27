@@ -43,7 +43,7 @@ char *Q_stpcpy (char *qdest, const char *qsrc);
 
 int	Q_filelength (FILE *f);
 
-double	I_FloatTime (void);
+double	GetTime (void);
 
 void	Error (char *error, ...);
 int	CheckParm (char *check);

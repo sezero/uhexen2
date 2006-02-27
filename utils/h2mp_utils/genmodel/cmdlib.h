@@ -49,7 +49,7 @@ char *ExpandPath (char *path);
 char *ExpandPathAndArchive (char *path);
 
 
-double I_FloatTime (void);
+double	GetTime (void);
 
 void	Error (char *error, ...);
 int		CheckParm (char *check);

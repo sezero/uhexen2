@@ -1254,9 +1254,9 @@ int main (int argc, char **argv)
 //
 // do it!
 //
-	start = I_FloatTime ();
+	start = GetTime ();
 	ProcessFile (sourcename, destname);
-	end = I_FloatTime ();
+	end = GetTime ();
 	printf ("%5.1f seconds elapsed\n", end-start);
 	
 	return 0;

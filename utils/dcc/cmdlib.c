@@ -54,10 +54,10 @@ char *Q_stpcpy (char *qdest, const char *qsrc)
 
 /*
 ================
-I_FloatTime
+GetTime
 ================
 */
-double I_FloatTime (void)
+double GetTime (void)
 {
 	time_t	t;
 	

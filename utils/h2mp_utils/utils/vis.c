@@ -1027,7 +1027,7 @@ int main (int argc, char **argv)
 	if (i != argc - 1)
 		Error ("usage: vis [-nogil] [-threads #] [-level 0-4] [-fast] [-v] bspfile");
 
-	start = I_FloatTime ();
+	start = GetTime ();
 
 	strcpy (source, argv[i]);
 	StripExtension (source);
@@ -1059,7 +1059,7 @@ int main (int argc, char **argv)
 //      unlink (portalfile);
 	if (GilMode)
 		PrintStats();
-	end = I_FloatTime ();
+	end = GetTime ();
 	printf ("%5.1f seconds elapsed\n", end-start);
 
 	return 0;

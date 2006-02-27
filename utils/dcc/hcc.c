@@ -776,7 +776,7 @@ int main (int argc, char **argv)
 	unsigned short		crc;
 	int		c;
 
-	start = I_FloatTime ();
+	start = GetTime ();
 
 	myargc = argc;
 	myargv = argv;
@@ -981,7 +981,7 @@ int main (int argc, char **argv)
 // write files.dat
 	WriteFiles ();
 
-	stop = I_FloatTime ();
+	stop = GetTime ();
 	printf ("%i seconds elapsed.\n", (int)(stop-start));
 
 	exit(0);

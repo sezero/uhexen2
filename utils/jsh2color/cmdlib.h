@@ -61,7 +61,7 @@ int  FileTime (char *path);
 
 void Q_mkdir (char *path);
 
-double I_FloatTime (void);
+double	GetTime (void);
 
 void	Error (char *error, ...);
 int		CheckParm (char *check);
