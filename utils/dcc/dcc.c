@@ -1532,7 +1532,7 @@ void FindBuiltinParameters(int func)
 	int		i, j;
 	unsigned short	type[9];
 	dstatement_t	*ds, *dsf = 0;
-	dfunction_t	*df, *dft;
+	dfunction_t	*df, *dft = 0;
 	char		*arg1, sname[400], plist[500], parm[100];
 
 	if(func_headers[func])
