@@ -1,14 +1,14 @@
+/*
+	expr.c
 
-//**************************************************************************
-//**
-//** expr.c
-//**
-//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/expr.c,v 1.1.1.1 2005-03-19 09:30:03 sezero Exp $
-//**
-//**************************************************************************
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/expr.c,v 1.2 2006-02-27 00:02:57 sezero Exp $
+
+*/
+
 
 // HEADER FILES ------------------------------------------------------------
 
+#include "cmdlib.h"
 #include "hcc.h"
 
 // MACROS ------------------------------------------------------------------
@@ -68,10 +68,10 @@ static int TokenToOp[] =
 	OP_SUB_F,			// TK_MINUS
 	OP_DONE,			// TK_INC
 	OP_DONE,			// TK_DEC
-	OP_MULSTORE_F,		// TK_MULASSIGN
-	OP_DIVSTORE_F,		// TK_DIVASSIGN
-	OP_ADDSTORE_F,		// TK_ADDASSIGN
-	OP_SUBSTORE_F,		// TK_SUBASSIGN
+	OP_MULSTORE_F,			// TK_MULASSIGN
+	OP_DIVSTORE_F,			// TK_DIVASSIGN
+	OP_ADDSTORE_F,			// TK_ADDASSIGN
+	OP_SUBSTORE_F,			// TK_SUBASSIGN
 	OP_DONE,			// TK_COLON
 	OP_DONE,			// TK_RANGE
 	OP_BITSET,			// TK_BITSET
@@ -86,7 +86,7 @@ static int TokenToOp[] =
 //
 //==========================================================================
 
-void EX_Init(void)
+void EX_Init (void)
 {
 	ex_FunctionCallCount = 0;
 }
@@ -97,50 +97,50 @@ void EX_Init(void)
 //
 //==========================================================================
 
-def_t *EX_Expression(int priority)
+def_t *EX_Expression (int priority)
 {
-	opcode_t *op;
-	def_t *e;
-	def_t *e2;
-	etype_t type_a;
-	etype_t type_b;
-	etype_t type_c;
-	int tag;
-	int opIndex;
+	opcode_t	*op;
+	def_t	*e;
+	def_t	*e2;
+	etype_t	type_a;
+	etype_t	type_b;
+	etype_t	type_c;
+	int		tag;
+	int		opIndex;
 
-	if(priority == 0)
+	if (priority == 0)
 	{
 		return Term();
 	}
 
 	e = EX_Expression(priority-1);
 
-	while(1)
+	while (1)
 	{
-		if(priority == 1 && TK_CHECK(TK_LPAREN))
+		if (priority == 1 && TK_CHECK(TK_LPAREN))
 		{
 			return ParseFunctionCall(e);
 		}
 
 		opIndex = TokenToOp[pr_tokenclass];
-		if(opIndex == OP_DONE)
+		if (opIndex == OP_DONE)
 		{
 			return e;
 		}
-		for(op = &pr_opcodes[opIndex]; op->name; op++)
+
+		for (op = &pr_opcodes[opIndex]; op->name; op++)
 		{
-			if(op->priority != priority)
+			if (op->priority != priority)
 			{
 				return e;
 			}
-			if(!LX_CheckFetch(op->name))
+			if (!LX_CheckFetch(op->name))
 			{
 				return e;
 			}
-			if(op->right_associative)
+			if (op->right_associative)
 			{
-				if((unsigned)
-					(statements[numstatements-1].op-OP_LOAD_F) < 6)
+				if ( (unsigned)(statements[numstatements-1].op-OP_LOAD_F) < 6)
 				{
 					// The preceding statement was an indirect.  Change it to
 					// an address of.
@@ -148,12 +148,12 @@ def_t *EX_Expression(int priority)
 					def_pointer.type->aux_type = e->type;
 					e->type = def_pointer.type;
 				}
-/*				else if((unsigned)
-					(statements[numstatements-1].op-OP_FETCH_GBL_F) < 5)
+/*
+				else if ( (unsigned)(statements[numstatements-1].op-OP_FETCH_GBL_F) < 5)
 				{
 					// The preceding statement was an array lookup.  Assignment
 					// is currently not allowed to arrays.
-					MS_ParseError("assignment not allowed to arrays");
+					COM_ParseError("assignment not allowed to arrays");
 				}
 */
 				e2 = EX_Expression(priority);
@@ -166,9 +166,9 @@ def_t *EX_Expression(int priority)
 			// Set types a, b, and c
 			type_a = e->type->type;
 			type_b = e2->type->type;
-			if(op->name[0] == '.')
+			if (op->name[0] == '.')
 			{ // Field access gets type from field
-				if(e2->type->aux_type)
+				if (e2->type->aux_type)
 				{
 					type_c = e2->type->aux_type->type;
 				}
@@ -184,24 +184,24 @@ def_t *EX_Expression(int priority)
 
 			// Find the opcode that matches the types
 			tag = op->tag;
-			while(type_a != op->type_a->type->type
+			while (type_a != op->type_a->type->type
 				|| type_b != op->type_b->type->type
 				|| (type_c != ev_void && type_c != op->type_c->type->type))
 			{
 				op++;
-				if(tag != op->tag)
+				if (tag != op->tag)
 				{
 					op--;
-					MS_ParseError("type mismatch for %s", op->name);
+					COM_ParseError("type mismatch for %s", op->name);
 				}
 			}
-			if(type_a == ev_pointer && type_b != e->type->aux_type->type)
+			if (type_a == ev_pointer && type_b != e->type->aux_type->type)
 			{
-				MS_ParseError("type mismatch for %s", op->name);
+				COM_ParseError("type mismatch for %s", op->name);
 			}
 
 			// Emit the statement
-			if(op->right_associative)
+			if (op->right_associative)
 			{
 				e = CO_GenCode(op, e2, e);
 			}
@@ -210,14 +210,15 @@ def_t *EX_Expression(int priority)
 				e = CO_GenCode(op, e, e2);
 			}
 
-			if(type_c != ev_void)
+			if (type_c != ev_void)
 			{ // Field access gets type from field
 				e->type = e2->type->aux_type;
 			}
 
 			break;
 		}
-		if(!op->name)
+
+		if (!op->name)
 		{ // Next token isn't at this priority level
 			break;
 		}
@@ -232,42 +233,42 @@ def_t *EX_Expression(int priority)
 //
 //==========================================================================
 
-static def_t *Term(void)
+static def_t *Term (void)
 {
-	def_t *d, *e, *e2;
-	etype_t t;
-	char *name;
+	def_t	*d, *e, *e2;
+	etype_t	t;
+	char	*name;
 
-	if(TK_CHECK(TK_NOT))
+	if (TK_CHECK(TK_NOT))
 	{
 		e = EX_Expression(NOT_PRIORITY);
 		t = e->type->type;
-		if(t == ev_float)
+		if (t == ev_float)
 			e2 = CO_GenCode(&pr_opcodes[OP_NOT_F], e, 0);
-		else if(t == ev_string)
+		else if (t == ev_string)
 			e2 = CO_GenCode(&pr_opcodes[OP_NOT_S], e, 0);
-		else if(t == ev_entity)
+		else if (t == ev_entity)
 			e2 = CO_GenCode(&pr_opcodes[OP_NOT_ENT], e, 0);
-		else if(t == ev_vector)
+		else if (t == ev_vector)
 			e2 = CO_GenCode(&pr_opcodes[OP_NOT_V], e, 0);
-		else if(t == ev_function)
+		else if (t == ev_function)
 			e2 = CO_GenCode(&pr_opcodes[OP_NOT_FNC], e, 0);
 		else
 		{
 			e2 = NULL; // Shut up compiler warning
-			MS_ParseError("type mismatch for !");
+			COM_ParseError("type mismatch for !");
 		}
 		return e2;
 	}
 
-	if(TK_CHECK(TK_LPAREN))
+	if (TK_CHECK(TK_LPAREN))
 	{
 		e = EX_Expression(TOP_PRIORITY);
 		LX_Require(")");
 		return e;
 	}
 
-	if(pr_token_type == tt_immediate)
+	if (pr_token_type == tt_immediate)
 	{
 		d = CO_ParseImmediate();
 		LX_Fetch();
@@ -275,43 +276,42 @@ static def_t *Term(void)
 	}
 
 	name = PR_ParseName();
-	if((d = ParseIntrinsicFunc(name)) != NULL)
+	if ((d = ParseIntrinsicFunc(name)) != NULL)
 	{ // Found and parsed an intrinsic function
 		return d;
 	}
 
 	d = PR_GetDef(NULL, name, pr_scope, false);
-	if(!d)
+	if (!d)
 	{
-		MS_ParseError("unknown value \"%s\"", name);
+		COM_ParseError("unknown value \"%s\"", name);
 	}
 
 	d->referenceCount++;
-	if(d->parentVector != NULL)
+	if (d->parentVector != NULL)
 	{
 		d->parentVector->referenceCount++;
 	}
 
-	if(TK_CHECK(TK_LBRACKET))
+	if (TK_CHECK(TK_LBRACKET))
 	{
 		e = EX_Expression(TOP_PRIORITY);
 		LX_Require("]");
 
-		if(TK_TEST(TK_ASSIGN))
+		if (TK_TEST(TK_ASSIGN))
 		{
 			LX_Fetch();
 			e2 = EX_Expression(TOP_PRIORITY);
-			//MS_ParseError("assignment is not allowed to arrays");
+			//COM_ParseError("assignment is not allowed to arrays");
 
-
-			if(d->type->type != e2->type->type)
+			if (d->type->type != e2->type->type)
 			{
-				MS_ParseError("type mismatch for =");
+				COM_ParseError("type mismatch for =");
 			}
 			return NULL;
 		}
 
-		switch(d->type->type)
+		switch (d->type->type)
 		{
 		case ev_float:
 			e2 = CO_GenCode(&pr_opcodes[OP_FETCH_GBL_F], d, e);
@@ -330,7 +330,7 @@ static def_t *Term(void)
 			break;
 		default:
 			e2 = NULL; // Shut up compiler warning
-			MS_ParseError("type mismatch for []");
+			COM_ParseError("type mismatch for []");
 			break;
 		}
 		return e2;
@@ -344,88 +344,87 @@ static def_t *Term(void)
 //
 //==========================================================================
 
-static def_t *ParseFunctionCall(def_t *func)
+static def_t *ParseFunctionCall (def_t *func)
 {
-	def_t *e;
-	def_t *args[2];
-	int argCount;
-	type_t *t;
+	def_t	*e;
+	def_t	*args[2];
+	int		argCount;
+	type_t	*t;
 
 	t = func->type;
-	if(t->type != ev_function)
+	if (t->type != ev_function)
 	{
-		MS_ParseError("not a function");
+		COM_ParseError("not a function");
 	}
 
 	argCount = 0;
 	args[0] = NULL;
 	args[1] = NULL;
-	if(!TK_CHECK(TK_RPAREN))
+	if (!TK_CHECK(TK_RPAREN))
 	{
 		do
 		{
-			if(argCount == 8)
+			if (argCount == 8)
 			{
-				MS_ParseError("more than eight parameters");
+				COM_ParseError("more than eight parameters");
 			}
-			if(t->num_parms != -1 && argCount >= t->num_parms)
+			if (t->num_parms != -1 && argCount >= t->num_parms)
 			{
-				MS_ParseError("too many parameters");
+				COM_ParseError("too many parameters");
 			}
 			e = EX_Expression(TOP_PRIORITY);
 
-			if(argCount == 0 && func->name)
+			if (argCount == 0 && func->name)
 			{ // Check for sound / model / file caching
-				if(!strncmp(func->name, "precache_sound", 14))
+				if (!strncmp(func->name, "precache_sound", 14))
 				{
 					PrecacheSound(e, func->name[14]);
 				}
-				else if(!strncmp(func->name, "precache_model", 14))
+				else if (!strncmp(func->name, "precache_model", 14))
 				{
 					PrecacheModel(e, func->name[14]);
 				}
-				else if(!strncmp(func->name, "precache_file", 13))
+				else if (!strncmp(func->name, "precache_file", 13))
 				{
 					PrecacheFile(e, func->name[13]);
 				}
 			}
 
-			if(t->num_parms != -1 && (e->type != t->parm_types[argCount]))
+			if (t->num_parms != -1 && (e->type != t->parm_types[argCount]))
 			{
-				MS_ParseError("type mismatch on parm %i", argCount);
+				COM_ParseError("type mismatch on parm %i", argCount);
 			}
 
 			def_parms[argCount].type = t->parm_types[argCount];
-			if(argCount < 2)
+			if (argCount < 2)
 			{
 				args[argCount] = e;
 			}
 			else
 			{
-				if(t->parm_types[argCount] == NULL // Variable args
+				if (t->parm_types[argCount] == NULL // Variable args
 					|| t->parm_types[argCount]->type == ev_vector)
 				{
 					CO_GenCode(&pr_opcodes[OP_STORE_V], e,
-						&def_parms[argCount]);
+							&def_parms[argCount]);
 				}
 				else
 				{
 					CO_GenCode(&pr_opcodes[OP_STORE_F], e,
-						&def_parms[argCount]);
+							&def_parms[argCount]);
 				}
 			}
 			argCount++;
-		} while(TK_CHECK(TK_COMMA));
+		} while (TK_CHECK(TK_COMMA));
 		LX_Require(")");
 	}
 
-	if(t->num_parms != -1 && argCount != t->num_parms)
+	if (t->num_parms != -1 && argCount != t->num_parms)
 	{
-		MS_ParseError("too few parameters");
+		COM_ParseError("too few parameters");
 	}
 
-	CO_GenCodeDirect(&pr_opcodes[OP_CALL0+argCount], func, args[0],
-		args[1]);
+	CO_GenCodeDirect(&pr_opcodes[OP_CALL0+argCount], func, args[0], args[1]);
 
 	ex_FunctionCallCount++;
 
@@ -439,29 +438,29 @@ static def_t *ParseFunctionCall(def_t *func)
 //
 //==========================================================================
 
-static void PrecacheSound(def_t *e, int ch)
+static void PrecacheSound (def_t *e, int ch)
 {
-	int i;
-	char *n;
+	int		i;
+	char	*n;
 
-	if(!e->ofs || !e->initialized)
+	if (!e->ofs || !e->initialized)
 	{
 		return;
 	}
 	n = G_STRING(e->ofs);
-	for(i = 0; i < numsounds; i++)
+	for (i = 0; i < numsounds; i++)
 	{
-		if(!strcmp(n, precache_sounds[i]))
+		if (!strcmp(n, precache_sounds[i]))
 		{
 			return;
 		}
 	}
-	if(numsounds == MAX_SOUNDS)
+	if (numsounds == MAX_SOUNDS)
 	{
-		MS_Error("PrecacheSound: numsounds == MAX_SOUNDS");
+		Error("PrecacheSound: numsounds == MAX_SOUNDS");
 	}
 	strcpy(precache_sounds[i], n);
-	if(ch >= '1'  && ch <= '9')
+	if (ch >= '1'  && ch <= '9')
 	{
 		precache_sounds_block[i] = ch - '0';
 	}
@@ -478,29 +477,29 @@ static void PrecacheSound(def_t *e, int ch)
 //
 //==========================================================================
 
-static void PrecacheModel(def_t *e, int ch)
+static void PrecacheModel (def_t *e, int ch)
 {
-	int i;
-	char *n;
+	int		i;
+	char	*n;
 
-	if(!e->ofs || !e->initialized)
+	if (!e->ofs || !e->initialized)
 	{
 		return;
 	}
 	n = G_STRING(e->ofs);
-	for(i = 0; i < nummodels; i++)
+	for (i = 0; i < nummodels; i++)
 	{
-		if(!strcmp(n, precache_models[i]))
+		if (!strcmp(n, precache_models[i]))
 		{
 			return;
 		}
 	}
-	if(nummodels == MAX_MODELS)
+	if (nummodels == MAX_MODELS)
 	{
-		MS_Error("PrecacheModels: nummodels == MAX_MODELS");
+		Error("PrecacheModels: nummodels == MAX_MODELS");
 	}
 	strcpy(precache_models[i], n);
-	if(ch >= '1'  && ch <= '9')
+	if (ch >= '1'  && ch <= '9')
 	{
 		precache_models_block[i] = ch - '0';
 	}
@@ -517,29 +516,29 @@ static void PrecacheModel(def_t *e, int ch)
 //
 //==========================================================================
 
-static void PrecacheFile(def_t *e, int ch)
+static void PrecacheFile (def_t *e, int ch)
 {
-	int i;
-	char *n;
+	int		i;
+	char	*n;
 
-	if(!e->ofs || !e->initialized)
+	if (!e->ofs || !e->initialized)
 	{
 		return;
 	}
 	n = G_STRING(e->ofs);
-	for(i = 0; i < numfiles; i++)
+	for (i = 0; i < numfiles; i++)
 	{
-		if(!strcmp(n, precache_files[i]))
+		if (!strcmp(n, precache_files[i]))
 		{
 			return;
 		}
 	}
-	if(numfiles == MAX_FILES)
+	if (numfiles == MAX_FILES)
 	{
-		MS_Error("PrecacheFile: numfiles == MAX_FILES");
+		Error("PrecacheFile: numfiles == MAX_FILES");
 	}
 	strcpy(precache_files[i], n);
-	if(ch >= '1'  && ch <= '9')
+	if (ch >= '1'  && ch <= '9')
 	{
 		precache_files_block[i] = ch - '0';
 	}
@@ -556,32 +555,32 @@ static void PrecacheFile(def_t *e, int ch)
 //
 //==========================================================================
 
-static def_t *ParseIntrinsicFunc(char *name)
+static def_t *ParseIntrinsicFunc (char *name)
 {
-	def_t *expr1, *expr2;
+	def_t	*expr1, *expr2;
 
-	if(strcmp(name, "random") == 0)
+	if (strcmp(name, "random") == 0)
 	{
 		LX_Require("(");
-		if(TK_CHECK(TK_RPAREN))
+		if (TK_CHECK(TK_RPAREN))
 		{
 			CO_GenCode(&pr_opcodes[OP_RAND0], NULL, NULL);
 		}
 		else
 		{
 			expr1 = EX_Expression(TOP_PRIORITY);
-			if(expr1->type->type != ev_float)
+			if (expr1->type->type != ev_float)
 			{
-				MS_ParseError("'random' : incompatible "
-					"parameter type");
+				COM_ParseError("'random' : incompatible "
+						"parameter type");
 			}
-			if(TK_CHECK(TK_COMMA))
+			if (TK_CHECK(TK_COMMA))
 			{
 				expr2 = EX_Expression(TOP_PRIORITY);
-				if(expr2->type->type != ev_float)
+				if (expr2->type->type != ev_float)
 				{
-					MS_ParseError("'random' : incompatible "
-						"parameter type");
+					COM_ParseError("'random' : incompatible "
+							"parameter type");
 				}
 				LX_Require(")");
 				CO_GenCode(&pr_opcodes[OP_RAND2], expr1, expr2);
@@ -596,28 +595,28 @@ static def_t *ParseIntrinsicFunc(char *name)
 		return &def_ret;
 	}
 
-	if(strcmp(name, "randomv") == 0)
+	if (strcmp(name, "randomv") == 0)
 	{
 		LX_Require("(");
-		if(TK_CHECK(TK_RPAREN))
+		if (TK_CHECK(TK_RPAREN))
 		{
 			CO_GenCode(&pr_opcodes[OP_RANDV0], NULL, NULL);
 		}
 		else
 		{
 			expr1 = EX_Expression(TOP_PRIORITY);
-			if(expr1->type->type != ev_vector)
+			if (expr1->type->type != ev_vector)
 			{
-				MS_ParseError("'randomv' : incompatible "
-					"parameter type");
+				COM_ParseError("'randomv' : incompatible "
+						"parameter type");
 			}
-			if(TK_CHECK(TK_COMMA))
+			if (TK_CHECK(TK_COMMA))
 			{
 				expr2 = EX_Expression(TOP_PRIORITY);
-				if(expr2->type->type != ev_vector)
+				if (expr2->type->type != ev_vector)
 				{
-					MS_ParseError("'randomv' : incompatible "
-						"parameter type");
+					COM_ParseError("'randomv' : incompatible "
+							"parameter type");
 				}
 				LX_Require(")");
 				CO_GenCode(&pr_opcodes[OP_RANDV2], expr1, expr2);
@@ -634,3 +633,4 @@ static def_t *ParseIntrinsicFunc(char *name)
 
 	return NULL;
 }
+

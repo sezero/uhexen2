@@ -1,22 +1,21 @@
+/*
+	stmt.c
 
-//**************************************************************************
-//**
-//** stmt.c
-//**
-//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/stmt.c,v 1.1.1.1 2005-03-19 09:31:54 sezero Exp $
-//**
-//**************************************************************************
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/stmt.c,v 1.2 2006-02-27 00:02:59 sezero Exp $
+*/
+
 
 // HEADER FILES ------------------------------------------------------------
 
+#include "cmdlib.h"
 #include "hcc.h"
 
 // MACROS ------------------------------------------------------------------
 
-#define MAX_STATEMENT_DEPTH 64
-#define MAX_CASE 256
-#define MAX_BREAK 256
-#define MAX_CONTINUE 128
+#define MAX_STATEMENT_DEPTH	64
+#define MAX_CASE		256
+#define MAX_BREAK		256
+#define MAX_CONTINUE		128
 
 // TYPES -------------------------------------------------------------------
 
@@ -34,18 +33,18 @@ typedef enum
 
 typedef struct
 {
-	int level;
-	dstatement_t *patch;
+	int		level;
+	dstatement_t	*patch;
 } patchInfo_t;
 
 typedef struct
 {
-	int level;
-	def_t *value1;
-	def_t *value2;
-	qboolean isDefault;
-	int statement;
-	etype_t type;
+	int		level;
+	def_t	*value1;
+	def_t	*value2;
+	qboolean	isDefault;
+	int		statement;
+	etype_t	type;
 } caseInfo_t;
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
@@ -68,8 +67,7 @@ static void ParseBreak(void);
 static void ParseContinue(void);
 static void ParseDefault(void);
 static void ParseThinktime(void);
-static void AddCase(etype_t type, def_t *value1, def_t *value2,
-	qboolean isDefault);
+static void AddCase(etype_t type, def_t *value1, def_t *value2, qboolean isDefault);
 static int GetCaseInfo(caseInfo_t **info);
 static void AddBreak(void);
 static qboolean BreakAncestor(void);
@@ -82,7 +80,7 @@ static void FixContinues(int statement);
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
-type_t *st_ReturnType;
+type_t	*st_ReturnType;
 qboolean st_ReturnParsed;
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
@@ -141,7 +139,7 @@ static qboolean ContinueAllowed[] =
 //
 //==========================================================================
 
-void ST_ParseStatement(void)
+void ST_ParseStatement (void)
 {
 	CaseIndex = 0;
 	BreakIndex = 0;
@@ -157,116 +155,117 @@ void ST_ParseStatement(void)
 //
 //==========================================================================
 
-static void ParseStatement(scontext_t owner)
+static void ParseStatement (scontext_t owner)
 {
-	if(StatementIndex == MAX_STATEMENT_DEPTH)
+	if (StatementIndex == MAX_STATEMENT_DEPTH)
 	{
-		MS_ParseError("statement overflow");
+		COM_ParseError("statement overflow");
 	}
 	ContextHistory[StatementIndex++] = owner;
 
-	if(TK_CHECK(TK_LBRACE))
+	if (TK_CHECK(TK_LBRACE))
 	{
 		ContextLevel += EnterContext[owner];
 		do
 		{
 			ParseStatement(owner);
-		} while(!TK_CHECK(TK_RBRACE));
+		} while (!TK_CHECK(TK_RBRACE));
+
 		ContextLevel -= EnterContext[owner];
 		StatementIndex--;
 		return;
 	}
 
-	if(TK_CHECK(TK_SEMICOLON))
+	if (TK_CHECK(TK_SEMICOLON))
 	{
 		StatementIndex--;
 		return;
 	}
-	if(LX_CheckFetch("return"))
+	if (LX_CheckFetch("return"))
 	{
 		ParseReturn();
 		StatementIndex--;
 		return;
 	}
-	if(LX_CheckFetch("loop"))
+	if (LX_CheckFetch("loop"))
 	{
 		ParseLoop();
 		StatementIndex--;
 		return;
 	}
-	if(LX_CheckFetch("while"))
+	if (LX_CheckFetch("while"))
 	{
 		ParseWhile();
 		StatementIndex--;
 		return;
 	}
-	if(LX_CheckFetch("until"))
+	if (LX_CheckFetch("until"))
 	{
 		ParseUntil();
 		StatementIndex--;
 		return;
 	}
-	if(LX_CheckFetch("do"))
+	if (LX_CheckFetch("do"))
 	{
 		ParseDo();
 		StatementIndex--;
 		return;
 	}
-	if(LX_CheckFetch("switch"))
+	if (LX_CheckFetch("switch"))
 	{
 		ParseSwitch();
 		StatementIndex--;
 		return;
 	}
-	if(LX_CheckFetch("case"))
+	if (LX_CheckFetch("case"))
 	{
-		if(owner != SCONTEXT_SWITCH)
+		if (owner != SCONTEXT_SWITCH)
 		{
-			MS_ParseError("misplaced case");
+			COM_ParseError("misplaced case");
 		}
 		ParseCase();
 		StatementIndex--;
 		return;
 	}
-	if(LX_CheckFetch("break"))
+	if (LX_CheckFetch("break"))
 	{
-		if(BreakAncestor() == false)
+		if (BreakAncestor() == false)
 		{
-			MS_ParseError("misplaced break");
+			COM_ParseError("misplaced break");
 		}
 		ParseBreak();
 		StatementIndex--;
 		return;
 	}
-	if(LX_CheckFetch("continue"))
+	if (LX_CheckFetch("continue"))
 	{
-		if(ContinueAncestor() == false)
+		if (ContinueAncestor() == false)
 		{
-			MS_ParseError("misplaced continue");
+			COM_ParseError("misplaced continue");
 		}
 		ParseContinue();
 		StatementIndex--;
 		return;
 	}
-	if(LX_CheckFetch("default"))
+	if (LX_CheckFetch("default"))
 	{
 		ParseDefault();
 		StatementIndex--;
 		return;
 	}
-	if(LX_CheckFetch("thinktime"))
+	if (LX_CheckFetch("thinktime"))
 	{
 		ParseThinktime();
 		StatementIndex--;
 		return;
 	}
-	if(LX_CheckFetch("local"))
+	if (LX_CheckFetch("local"))
 	{
 		ParseLocalDefs();
 		StatementIndex--;
 		return;
 	}
-	if(LX_Check("float") || LX_Check("vector")
+	if (LX_Check("float") || LX_Check("vector")
 		|| LX_Check("entity") || LX_Check("string")
 		|| LX_Check("void"))
 	{
@@ -274,7 +273,7 @@ static void ParseStatement(scontext_t owner)
 		StatementIndex--;
 		return;
 	}
-	if(LX_CheckFetch("if"))
+	if (LX_CheckFetch("if"))
 	{
 		ParseIf();
 		StatementIndex--;
@@ -292,25 +291,25 @@ static void ParseStatement(scontext_t owner)
 //
 //==========================================================================
 
-static void ParseReturn(void)
+static void ParseReturn (void)
 {
-	def_t *e;
+	def_t	*e;
 
-	//if(TK_CHECK(TK_SEMICOLON))
-	if(pr_tokenclass == TK_SEMICOLON)
+	//if (TK_CHECK(TK_SEMICOLON))
+	if (pr_tokenclass == TK_SEMICOLON)
 	{
-		if(st_ReturnType->type != ev_void)
+		if (st_ReturnType->type != ev_void)
 		{
-			MS_ParseError("missing return value");
+			COM_ParseError("missing return value");
 		}
 		CO_GenCode(&pr_opcodes[OP_RETURN], 0, 0);
 		LX_Fetch();
 		return;
 	}
 	e = EX_Expression(TOP_PRIORITY);
-	if(e->type != st_ReturnType)
+	if (e->type != st_ReturnType)
 	{
-		MS_ParseError("return type mismatch");
+		COM_ParseError("return type mismatch");
 	}
 	LX_Require(";");
 	CO_GenCode(&pr_opcodes[OP_RETURN], e, 0);
@@ -323,11 +322,11 @@ static void ParseReturn(void)
 //
 //==========================================================================
 
-static void ParseLoop(void)
+static void ParseLoop (void)
 {
-	dstatement_t *patch1;
-	def_t tempDef;
-	int contStatement;
+	dstatement_t	*patch1;
+	def_t	tempDef;
+	int	contStatement;
 
 	contStatement = numstatements;
 	patch1 = &statements[numstatements];
@@ -344,12 +343,12 @@ static void ParseLoop(void)
 //
 //==========================================================================
 
-static void ParseWhile(void)
+static void ParseWhile (void)
 {
-	def_t *e;
-	dstatement_t *patch1, *patch2;
-	def_t tempDef;
-	int contStatement;
+	def_t	*e;
+	dstatement_t	*patch1, *patch2;
+	def_t	tempDef;
+	int	contStatement;
 
 	LX_Require("(");
 	contStatement = numstatements;
@@ -373,12 +372,12 @@ static void ParseWhile(void)
 //
 //==========================================================================
 
-static void ParseUntil(void)
+static void ParseUntil (void)
 {
-	def_t *e;
-	dstatement_t *patch1, *patch2;
-	def_t tempDef;
-	int contStatement;
+	def_t	*e;
+	dstatement_t	*patch1, *patch2;
+	def_t	tempDef;
+	int	contStatement;
 
 	LX_Require("(");
 	contStatement = numstatements;
@@ -402,17 +401,17 @@ static void ParseUntil(void)
 //
 //==========================================================================
 
-static void ParseDo(void)
+static void ParseDo (void)
 {
-	def_t *e;
-	dstatement_t *patch1;
-	int ifOpcode;
-	def_t tempDef;
-	int contStatement;
+	def_t	*e;
+	dstatement_t	*patch1;
+	int	ifOpcode;
+	def_t	tempDef;
+	int	contStatement;
 
 	patch1 = &statements[numstatements];
 	ParseStatement(SCONTEXT_DO);
-	if(LX_CheckFetch("until"))
+	if (LX_CheckFetch("until"))
 	{
 		ifOpcode = OP_IFNOT;
 	}
@@ -438,13 +437,13 @@ static void ParseDo(void)
 //
 //==========================================================================
 
-static void ParseIf(void)
+static void ParseIf (void)
 {
-	def_t *e;
-	dstatement_t *patch1, *patch2;
-	int ifOpcode;
+	def_t	*e;
+	dstatement_t	*patch1, *patch2;
+	int	ifOpcode;
 
-	if(LX_CheckFetch("not"))
+	if (LX_CheckFetch("not"))
 	{
 		ifOpcode = OP_IF;
 	}
@@ -462,7 +461,7 @@ static void ParseIf(void)
 
 	ParseStatement(SCONTEXT_IF);
 
-	if(LX_CheckFetch("else"))
+	if (LX_CheckFetch("else"))
 	{
 		patch2 = &statements[numstatements];
 		CO_GenCode(&pr_opcodes[OP_GOTO], 0, 0);
@@ -482,7 +481,7 @@ static void ParseIf(void)
 //
 //==========================================================================
 
-static void ParseLocalDefs(void)
+static void ParseLocalDefs (void)
 {
 	CO_ParseDefs();
 	locals_end = numpr_globals;
@@ -494,23 +493,23 @@ static void ParseLocalDefs(void)
 //
 //==========================================================================
 
-static void ParseSwitch(void)
+static void ParseSwitch (void)
 {
-	int i;
-	def_t *e;
-	int count;
-	int opcode;
-	def_t tempDef;
-	caseInfo_t *cInfo;
-	dstatement_t *patch;
-	int defaultStatement;
-	etype_t switchType;
+	int		i;
+	def_t	*e;
+	int		count;
+	int		opcode;
+	def_t	tempDef;
+	caseInfo_t	*cInfo;
+	dstatement_t	*patch;
+	int	defaultStatement;
+	etype_t	switchType;
 
 	LX_Require("(");
 	e = EX_Expression(TOP_PRIORITY);
 	LX_Require(")");
 	switchType = e->type->type;
-	switch(switchType)
+	switch (switchType)
 	{
 	case ev_float:
 		opcode = OP_SWITCH_F;
@@ -528,7 +527,8 @@ static void ParseSwitch(void)
 		opcode = OP_SWITCH_FNC;
 		break;
 	default:
-		MS_ParseError("bad type for switch");
+		COM_ParseError("bad type for switch");
+		opcode = 0;	// avoid compiler warning
 		break;
 	}
 	patch = &statements[numstatements];
@@ -538,7 +538,7 @@ static void ParseSwitch(void)
 	// Switch opcode fixup
 	patch->b = &statements[numstatements]-patch;
 
-	if(statements[numstatements-1].op != OP_GOTO)
+	if (statements[numstatements-1].op != OP_GOTO)
 	{ // Implicit break
 		patch = &statements[numstatements];
 		CO_GenCode(&pr_opcodes[OP_GOTO], NULL, NULL);
@@ -549,43 +549,43 @@ static void ParseSwitch(void)
 	}
 
 	count = GetCaseInfo(&cInfo);
-	if(count == 0)
+	if (count == 0)
 	{
-		MS_ParseError("switch has no case");
+		COM_ParseError("switch has no case");
 	}
 	defaultStatement = -1;
-	for(i = 0; i < count; i++, cInfo++)
+	for (i = 0; i < count; i++, cInfo++)
 	{
-		if(cInfo->isDefault == true)
+		if (cInfo->isDefault == true)
 		{
 			defaultStatement = cInfo->statement;
 			continue;
 		}
-		if(cInfo->type != switchType)
+		if (cInfo->type != switchType)
 		{
-			MS_ParseError("type mismatch within switch");
+			COM_ParseError("type mismatch within switch");
 		}
 		tempDef.ofs = &statements[cInfo->statement]
-			-&statements[numstatements];
-		if(cInfo->value2 == NULL)
+				-&statements[numstatements];
+		if (cInfo->value2 == NULL)
 		{
 			CO_GenCodeDirect(&pr_opcodes[OP_CASE],
-				cInfo->value1, &tempDef, NULL);
+					cInfo->value1, &tempDef, NULL);
 		}
 		else
 		{
 			CO_GenCodeDirect(&pr_opcodes[OP_CASERANGE],
-				cInfo->value1, cInfo->value2, &tempDef);
+					cInfo->value1, cInfo->value2, &tempDef);
 		}
 	}
-	if(defaultStatement != -1)
+	if (defaultStatement != -1)
 	{
 		tempDef.ofs = &statements[defaultStatement]
-			-&statements[numstatements];
+				-&statements[numstatements];
 		CO_GenCode(&pr_opcodes[OP_GOTO], &tempDef, 0);
 	}
 
-	if(patch != NULL)
+	if (patch != NULL)
 	{ // Implicit break fixup
 		patch->a = &statements[numstatements]-patch;
 	}
@@ -599,20 +599,20 @@ static void ParseSwitch(void)
 //
 //==========================================================================
 
-static void ParseCase(void)
+static void ParseCase (void)
 {
-	def_t *e;
-	def_t *e2;
+	def_t	*e;
+	def_t	*e2;
 
 	do
 	{
 		e = EX_Expression(TOP_PRIORITY);
-		if(TK_CHECK(TK_RANGE))
+		if (TK_CHECK(TK_RANGE))
 		{
 			e2 = EX_Expression(TOP_PRIORITY);
-			if(e->type->type != ev_float || e2->type->type != ev_float)
+			if (e->type->type != ev_float || e2->type->type != ev_float)
 			{
-				MS_ParseError("type mismatch for case range");
+				COM_ParseError("type mismatch for case range");
 			}
 		}
 		else
@@ -620,7 +620,8 @@ static void ParseCase(void)
 			e2 = NULL;
 		}
 		AddCase(e->type->type, e, e2, false);
-	} while(TK_CHECK(TK_COMMA));
+	} while (TK_CHECK(TK_COMMA));
+
 	LX_Require(":");
 }
 
@@ -630,12 +631,11 @@ static void ParseCase(void)
 //
 //==========================================================================
 
-static void AddCase(etype_t type, def_t *value1, def_t *value2,
-	qboolean isDefault)
+static void AddCase(etype_t type, def_t *value1, def_t *value2, qboolean isDefault)
 {
-	if(CaseIndex == MAX_CASE)
+	if (CaseIndex == MAX_CASE)
 	{
-		MS_ParseError("case overflow");
+		COM_ParseError("case overflow");
 	}
 	CaseInfo[CaseIndex].level = ContextLevel;
 	CaseInfo[CaseIndex].value1 = value1;
@@ -652,13 +652,13 @@ static void AddCase(etype_t type, def_t *value1, def_t *value2,
 //
 //==========================================================================
 
-static int GetCaseInfo(caseInfo_t **info)
+static int GetCaseInfo (caseInfo_t **info)
 {
-	int i;
-	int count;
+	int		i;
+	int		count;
 
 	i = CaseIndex;
-	while(i > 0 && CaseInfo[i-1].level > ContextLevel)
+	while (i > 0 && CaseInfo[i-1].level > ContextLevel)
 	{
 		i--;
 	}
@@ -674,7 +674,7 @@ static int GetCaseInfo(caseInfo_t **info)
 //
 //==========================================================================
 
-static void ParseBreak(void)
+static void ParseBreak (void)
 {
 	LX_Require(";");
 	AddBreak();
@@ -686,11 +686,11 @@ static void ParseBreak(void)
 //
 //==========================================================================
 
-static void AddBreak(void)
+static void AddBreak (void)
 {
-	if(BreakIndex == MAX_BREAK)
+	if (BreakIndex == MAX_BREAK)
 	{
-		MS_ParseError("break overflow");
+		COM_ParseError("break overflow");
 	}
 	BreakInfo[BreakIndex].level = ContextLevel;
 	BreakInfo[BreakIndex].patch = &statements[numstatements];
@@ -704,18 +704,18 @@ static void AddBreak(void)
 //
 //==========================================================================
 
-static void FixBreaks(void)
+static void FixBreaks (void)
 {
-	if(BreakIndex == 0)
+	if (BreakIndex == 0)
 	{
 		return;
 	}
-	while(BreakInfo[BreakIndex-1].level > ContextLevel)
+	while (BreakInfo[BreakIndex-1].level > ContextLevel)
 	{
 		BreakIndex--;
 		BreakInfo[BreakIndex].patch->a =
-			&statements[numstatements]-BreakInfo[BreakIndex].patch;
-		if(BreakIndex == 0)
+				&statements[numstatements]-BreakInfo[BreakIndex].patch;
+		if (BreakIndex == 0)
 		{
 			return;
 		}
@@ -728,13 +728,13 @@ static void FixBreaks(void)
 //
 //==========================================================================
 
-static qboolean BreakAncestor(void)
+static qboolean BreakAncestor (void)
 {
-	int i;
+	int		i;
 
-	for(i = 0; i < StatementIndex; i++)
+	for (i = 0; i < StatementIndex; i++)
 	{
-		if(BreakAllowed[ContextHistory[i]])
+		if (BreakAllowed[ContextHistory[i]])
 		{
 			return true;
 		}
@@ -748,7 +748,7 @@ static qboolean BreakAncestor(void)
 //
 //==========================================================================
 
-static void ParseDefault(void)
+static void ParseDefault (void)
 {
 	LX_Require(":");
 	AddCase(ev_void, NULL, NULL, true);
@@ -760,7 +760,7 @@ static void ParseDefault(void)
 //
 //==========================================================================
 
-static void ParseContinue(void)
+static void ParseContinue (void)
 {
 	LX_Require(";");
 	AddContinue();
@@ -772,11 +772,11 @@ static void ParseContinue(void)
 //
 //==========================================================================
 
-static void AddContinue(void)
+static void AddContinue (void)
 {
-	if(ContinueIndex == MAX_CONTINUE)
+	if (ContinueIndex == MAX_CONTINUE)
 	{
-		MS_ParseError("continue overflow");
+		COM_ParseError("continue overflow");
 	}
 	ContinueInfo[ContinueIndex].level = ContextLevel;
 	ContinueInfo[ContinueIndex].patch = &statements[numstatements];
@@ -790,18 +790,18 @@ static void AddContinue(void)
 //
 //==========================================================================
 
-static void FixContinues(int statement)
+static void FixContinues (int statement)
 {
-	if(ContinueIndex == 0)
+	if (ContinueIndex == 0)
 	{
 		return;
 	}
-	while(ContinueInfo[ContinueIndex-1].level > ContextLevel)
+	while (ContinueInfo[ContinueIndex-1].level > ContextLevel)
 	{
 		ContinueIndex--;
 		ContinueInfo[ContinueIndex].patch->a =
-			&statements[statement]-ContinueInfo[ContinueIndex].patch;
-		if(ContinueIndex == 0)
+				&statements[statement]-ContinueInfo[ContinueIndex].patch;
+		if (ContinueIndex == 0)
 		{
 			return;
 		}
@@ -814,13 +814,13 @@ static void FixContinues(int statement)
 //
 //==========================================================================
 
-static qboolean ContinueAncestor(void)
+static qboolean ContinueAncestor (void)
 {
-	int i;
+	int		i;
 
-	for(i = 0; i < StatementIndex; i++)
+	for (i = 0; i < StatementIndex; i++)
 	{
-		if(ContinueAllowed[ContextHistory[i]])
+		if (ContinueAllowed[ContextHistory[i]])
 		{
 			return true;
 		}
@@ -834,17 +834,17 @@ static qboolean ContinueAncestor(void)
 //
 //==========================================================================
 
-static void ParseThinktime(void)
+static void ParseThinktime (void)
 {
-	def_t *expr1;
-	def_t *expr2;
+	def_t	*expr1;
+	def_t	*expr2;
 
 	expr1 = EX_Expression(TOP_PRIORITY);
 	LX_Require(":");
 	expr2 = EX_Expression(TOP_PRIORITY);
-	if(expr1->type->type != ev_entity || expr2->type->type != ev_float)
+	if (expr1->type->type != ev_entity || expr2->type->type != ev_float)
 	{
-		MS_ParseError("type mismatch for thinktime");
+		COM_ParseError("type mismatch for thinktime");
 	}
 	LX_Require(";");
 	CO_GenCode(&pr_opcodes[OP_THINKTIME], expr1, expr2);

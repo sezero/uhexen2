@@ -1,14 +1,12 @@
+/*
+	hcc.c
 
-//**************************************************************************
-//**
-//** hcc.c
-//**
-//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/hcc.c,v 1.8 2006-02-20 16:13:50 sezero Exp $
-//**
-//** Hash table modifications based on fastqcc by Jonathan Roy
-//** (roy@atlantic.net).
-//**
-//**************************************************************************
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/hcc.c,v 1.9 2006-02-27 00:02:59 sezero Exp $
+
+	Hash table modifications based on fastqcc by Jonathan Roy
+	(roy@atlantic.net).
+*/
+
 
 // HEADER FILES ------------------------------------------------------------
 
@@ -34,15 +32,10 @@ extern int srcdir_len;
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
-int hcc_OptimizeImmediates;
-int hcc_OptimizeNameTable;
-qboolean hcc_WarningsActive;
-qboolean hcc_ShowUnrefFuncs;
-
-// PRIVATE DATA DEFINITIONS ------------------------------------------------
-
-char		sourcedir[1024];
-char		destfile[1024];
+int		hcc_OptimizeImmediates;
+int		hcc_OptimizeNameTable;
+qboolean	hcc_WarningsActive;
+qboolean	hcc_ShowUnrefFuncs;
 
 float		pr_globals[MAX_REGS];
 int			numpr_globals;
@@ -75,6 +68,11 @@ char		precache_files[MAX_FILES][MAX_DATA_PATH];
 int			precache_files_block[MAX_SOUNDS];
 int			numfiles;
 
+// PRIVATE DATA DEFINITIONS ------------------------------------------------
+
+static char	sourcedir[1024];
+static char	destfile[1024];
+
 // CODE --------------------------------------------------------------------
 
 /*
@@ -86,7 +84,7 @@ WriteFiles
   processed by qfiles.exe
 ============
 */
-void WriteFiles (void)
+static void WriteFiles (void)
 {
 	FILE	*f;
 	int		i;
@@ -95,22 +93,19 @@ void WriteFiles (void)
 	sprintf (filename, "%sfiles.dat", sourcedir);
 	f = fopen (filename, "w");
 	if (!f)
-		MS_Error ("Couldn't open %s", filename);
+		Error ("Couldn't open %s", filename);
 
 	fprintf (f, "%i\n", numsounds);
 	for (i=0 ; i<numsounds ; i++)
-		fprintf (f, "%i %s\n", precache_sounds_block[i],
-			precache_sounds[i]);
+		fprintf (f, "%i %s\n", precache_sounds_block[i], precache_sounds[i]);
 
 	fprintf (f, "%i\n", nummodels);
 	for (i=0 ; i<nummodels ; i++)
-		fprintf (f, "%i %s\n", precache_models_block[i],
-			precache_models[i]);
+		fprintf (f, "%i %s\n", precache_models_block[i], precache_models[i]);
 
 	fprintf (f, "%i\n", numfiles);
 	for (i=0 ; i<numfiles ; i++)
-		fprintf (f, "%i %s\n", precache_files_block[i],
-			precache_files[i]);
+		fprintf (f, "%i %s\n", precache_files_block[i], precache_files[i]);
 
 	fclose (f);
 }
@@ -132,10 +127,11 @@ int	CopyString (char *str)
 	return old;
 }
 
-void PrintStrings (void)
+#if 0	// all uses are commented out
+static void PrintStrings (void)
 {
 	int		i, l, j;
-	
+
 	for (i=0 ; i<strofs ; i += l)
 	{
 		l = strlen(strings+i) + 1;
@@ -154,11 +150,11 @@ void PrintStrings (void)
 	}
 }
 
-void PrintFunctions (void)
+static void PrintFunctions (void)
 {
-	int		i,j;
+	int		i, j;
 	dfunction_t	*d;
-	
+
 	for (i=0 ; i<numfunctions ; i++)
 	{
 		d = &functions[i];
@@ -169,11 +165,11 @@ void PrintFunctions (void)
 	}
 }
 
-void PrintFields (void)
+static void PrintFields (void)
 {
 	int		i;
 	ddef_t	*d;
-	
+
 	for (i=0 ; i<numfielddefs ; i++)
 	{
 		d = &fields[i];
@@ -181,29 +177,29 @@ void PrintFields (void)
 	}
 }
 
-void PrintGlobals (void)
+static void PrintGlobals (void)
 {
 	int		i;
 	ddef_t	*d;
-	
+
 	for (i=0 ; i<numglobaldefs ; i++)
 	{
 		d = &globals[i];
 		printf ("%5i : (%i) %s\n", d->ofs, d->type, strings + d->s_name);
 	}
 }
+#endif	// end of unused stuff
 
-
-void InitData (void)
+static void InitData (void)
 {
 	int		i;
-	
+
 	numstatements = 1;
 	strofs = 1;
 	numfunctions = 1;
 	numglobaldefs = 1;
 	numfielddefs = 1;
-	
+
 	def_ret.ofs = OFS_RETURN;
 	for (i=0 ; i<MAX_PARMS ; i++)
 		def_parms[i].ofs = OFS_PARM0 + 3*i;
@@ -215,22 +211,22 @@ void InitData (void)
 //
 //==========================================================================
 
-void WriteData(int crc)
+static void WriteData (int crc)
 {
-	def_t *def;
-	ddef_t *dd;
-	dprograms_t progs;
-	FILE *h;
+	def_t	*def;
+	ddef_t	*dd;
+	dprograms_t	progs;
+	FILE	*h;
+	int	localName = 0;	// init to 0, silence compiler warning
 
-	int localName;
-
-	if(hcc_OptimizeNameTable)
+	if (hcc_OptimizeNameTable)
 	{
 		localName = CopyString("LCL+");
 	}
-	for(def = pr.def_head.next; def; def = def->next)
+
+	for (def = pr.def_head.next; def; def = def->next)
 	{
-		if(def->type->type == ev_field)
+		if (def->type->type == ev_field)
 		{
 			dd = &fields[numfielddefs];
 			numfielddefs++;
@@ -241,7 +237,7 @@ void WriteData(int crc)
 		dd = &globals[numglobaldefs];
 		numglobaldefs++;
 		dd->type = def->type->type;
-		if(!def->initialized
+		if (!def->initialized
 			&& def->type->type != ev_function
 			&& def->type->type != ev_field
 			&& def->scope == NULL)
@@ -250,7 +246,7 @@ void WriteData(int crc)
 				dd->type |= DEF_SAVEGLOBAL;
 		}
 
-		if(hcc_OptimizeNameTable && ((def->scope != NULL) ||
+		if (hcc_OptimizeNameTable && ((def->scope != NULL) ||
 			(!(dd->type&DEF_SAVEGLOBAL)&&(def->type->type < ev_field))))
 		{
 			dd->s_name = localName;
@@ -262,53 +258,48 @@ void WriteData(int crc)
 		dd->ofs = def->ofs;
 	}
 
-//PrintStrings ();
-//PrintFunctions ();
-//PrintFields ();
-//PrintGlobals ();
+//	PrintStrings ();
+//	PrintFunctions ();
+//	PrintFields ();
+//	PrintGlobals ();
 
-strofs = (strofs+3)&~3;
+	strofs = (strofs+3)&~3;
 
 	printf("object file %s\n", destfile);
-	printf("      registers: %-6d / %-6d (%6d)\n", numpr_globals,
-		MAX_REGS, numpr_globals*sizeof(float));
-	printf("     statements: %-10d / %-10d (%10d)\n", numstatements,
-		MAX_STATEMENTS, numstatements*sizeof(dstatement_t));
-	printf("      functions: %-6d / %-6d (%6d)\n", numfunctions,
-		MAX_FUNCTIONS, numfunctions*sizeof(dfunction_t));
-	printf("    global defs: %-6d / %-6d (%6d)\n", numglobaldefs,
-		MAX_GLOBALS, numglobaldefs*sizeof(ddef_t));
-	printf("     field defs: %-6d / %-6d (%6d)\n", numfielddefs,
-		MAX_FIELDS, numfielddefs*sizeof(ddef_t));
+	printf("      registers: %-6d / %-6d (%6d)\n", numpr_globals, MAX_REGS, numpr_globals*sizeof(float));
+	printf("     statements: %-10d / %-10d (%10d)\n", numstatements, MAX_STATEMENTS, numstatements*sizeof(dstatement_t));
+	printf("      functions: %-6d / %-6d (%6d)\n", numfunctions, MAX_FUNCTIONS, numfunctions*sizeof(dfunction_t));
+	printf("    global defs: %-6d / %-6d (%6d)\n", numglobaldefs, MAX_GLOBALS, numglobaldefs*sizeof(ddef_t));
+	printf("     field defs: %-6d / %-6d (%6d)\n", numfielddefs, MAX_FIELDS, numfielddefs*sizeof(ddef_t));
 	printf("    string heap: %-6d / %-6d\n", strofs, MAX_STRINGS);
 	printf("  entity fields: %d\n", pr.size_fields);
 
-	h = MS_SafeOpenWrite (destfile);
-	MS_SafeWrite (h, &progs, sizeof(progs));
+	h = SafeOpenWrite (destfile);
+	SafeWrite (h, &progs, sizeof(progs));
 
 	progs.ofs_strings = ftell (h);
 	progs.numstrings = strofs;
-	MS_SafeWrite (h, strings, strofs);
+	SafeWrite (h, strings, strofs);
 
 	progs.ofs_statements = ftell (h);
 	progs.numstatements = numstatements;
-	MS_SafeWrite (h, statements, numstatements*sizeof(dstatement_t));
+	SafeWrite (h, statements, numstatements*sizeof(dstatement_t));
 
 	progs.ofs_functions = ftell (h);
 	progs.numfunctions = numfunctions;
-	MS_SafeWrite (h, functions, numfunctions*sizeof(dfunction_t));
+	SafeWrite (h, functions, numfunctions*sizeof(dfunction_t));
 
 	progs.ofs_globaldefs = ftell (h);
 	progs.numglobaldefs = numglobaldefs;
-	MS_SafeWrite (h, globals, numglobaldefs*sizeof(ddef_t));
+	SafeWrite (h, globals, numglobaldefs*sizeof(ddef_t));
 
 	progs.ofs_fielddefs = ftell (h);
 	progs.numfielddefs = numfielddefs;
-	MS_SafeWrite (h, fields, numfielddefs*sizeof(ddef_t));
+	SafeWrite (h, fields, numfielddefs*sizeof(ddef_t));
 
 	progs.ofs_globals = ftell (h);
 	progs.numglobals = numpr_globals;
-	MS_SafeWrite (h, pr_globals, numpr_globals*4);
+	SafeWrite (h, pr_globals, numpr_globals*4);
 
 	printf("     total size: %d\n", (int)ftell(h));
 
@@ -317,7 +308,7 @@ strofs = (strofs+3)&~3;
 	progs.crc = crc;
 
 	fseek(h, 0, SEEK_SET);
-	MS_SafeWrite(h, &progs, sizeof(progs));
+	SafeWrite(h, &progs, sizeof(progs));
 	fclose(h);
 }
 
@@ -328,11 +319,11 @@ PR_String
 Returns a string suitable for printing (no newlines, max 60 chars length)
 ===============
 */
-char *PR_String (char *string)
+static char *PR_String (char *string)
 {
-	static char buf[80];
+	static char	buf[80];
 	char	*s;
-	
+
 	s = buf;
 	*s++ = '"';
 	while (string && *string)
@@ -365,12 +356,10 @@ char *PR_String (char *string)
 	return buf;
 }
 
-
-
-def_t	*PR_DefForFieldOfs (gofs_t ofs)
+static def_t *PR_DefForFieldOfs (gofs_t ofs)
 {
 	def_t	*d;
-	
+
 	for (d=pr.def_head.next ; d ; d=d->next)
 	{
 		if (d->type->type != ev_field)
@@ -378,7 +367,7 @@ def_t	*PR_DefForFieldOfs (gofs_t ofs)
 		if (*((int *)&pr_globals[d->ofs]) == ofs)
 			return d;
 	}
-	MS_Error ("PR_DefForFieldOfs: couldn't find %i",ofs);
+	Error ("PR_DefForFieldOfs: couldn't find %i",ofs);
 	return NULL;
 }
 
@@ -389,18 +378,18 @@ PR_ValueString
 Returns a string describing *data in a type specific manner
 =============
 */
-char *PR_ValueString (etype_t type, void *val)
+static char *PR_ValueString (etype_t type, void *val)
 {
 	static char	line[256];
 	def_t		*def;
 	dfunction_t	*f;
-	
+
 	switch (type)
 	{
 	case ev_string:
 		sprintf (line, "%s", PR_String(strings + *(int *)val));
 		break;
-	case ev_entity:	
+	case ev_entity:
 		sprintf (line, "entity %i", *(int *)val);
 		break;
 	case ev_function:
@@ -430,7 +419,7 @@ char *PR_ValueString (etype_t type, void *val)
 		sprintf (line, "bad type %i", type);
 		break;
 	}
-	
+
 	return line;
 }
 
@@ -442,37 +431,37 @@ Returns a string with a description and the contents of a global,
 padded to 20 field width
 ============
 */
-char *PR_GlobalStringNoContents (gofs_t ofs)
+static char *PR_GlobalStringNoContents (gofs_t ofs)
 {
 	int		i;
 	def_t	*def;
 	void	*val;
 	static char	line[128];
-	
+
 	val = (void *)&pr_globals[ofs];
 	def = pr_global_defs[ofs];
 	if (!def)
-//		MS_Error ("PR_GlobalString: no def for %i", ofs);
+	//	Error ("PR_GlobalString: no def for %i", ofs);
 		sprintf (line,"%i(?)", ofs);
 	else
 		sprintf (line,"%i(%s)", ofs, def->name);
-	
+
 	i = strlen(line);
 	for ( ; i<16 ; i++)
 		strcat (line," ");
 	strcat (line," ");
-		
+
 	return line;
 }
 
-char *PR_GlobalString (gofs_t ofs)
+static char *PR_GlobalString (gofs_t ofs)
 {
 	char	*s;
 	int		i;
 	def_t	*def;
 	void	*val;
 	static char	line[128];
-	
+
 	val = (void *)&pr_globals[ofs];
 	def = pr_global_defs[ofs];
 	if (!def)
@@ -484,12 +473,12 @@ char *PR_GlobalString (gofs_t ofs)
 	}
 	else
 		sprintf (line,"%i(%s)", ofs, def->name);
-	
+
 	i = strlen(line);
 	for ( ; i<16 ; i++)
 		strcat (line," ");
 	strcat (line," ");
-		
+
 	return line;
 }
 
@@ -498,26 +487,27 @@ char *PR_GlobalString (gofs_t ofs)
 PR_PrintOfs
 ============
 */
-void PR_PrintOfs (gofs_t ofs)
+#if 0
+static void PR_PrintOfs (gofs_t ofs)
 {
 	printf ("%s\n",PR_GlobalString(ofs));
 }
+#endif
 
 /*
 =================
 PR_PrintStatement
 =================
 */
-void PR_PrintStatement (dstatement_t *s)
+static void PR_PrintStatement (dstatement_t *s)
 {
 	int		i;
 
-	printf ("%4i : %4i : %s ", (int)(s - statements),
-		statement_linenums[s-statements], pr_opcodes[s->op].opname);
+	printf ("%4i : %4i : %s ", (int)(s - statements), statement_linenums[s-statements], pr_opcodes[s->op].opname);
 	i = strlen(pr_opcodes[s->op].opname);
 	for ( ; i<10 ; i++)
 		printf (" ");
-		
+
 	if (s->op == OP_IF || s->op == OP_IFNOT)
 		printf ("%sbranch %i",PR_GlobalString(s->a),s->b);
 	else if (s->op == OP_GOTO)
@@ -557,13 +547,13 @@ void PR_PrintStatement (dstatement_t *s)
 //
 //==========================================================================
 
-static void BeginCompilation(void)
+static void BeginCompilation (void)
 {
-	int i;
+	int		i;
 
 	numpr_globals = RESERVED_OFS;
 	pr.def_tail = &pr.def_head;
-	for(i = 0; i < RESERVED_OFS; i++)
+	for (i = 0; i < RESERVED_OFS; i++)
 	{
 		pr_global_defs[i] = &def_void;
 	}
@@ -584,26 +574,26 @@ static void BeginCompilation(void)
 //
 //==========================================================================
 
-static qboolean FinishCompilation(void)
+static qboolean FinishCompilation (void)
 {
-	def_t *d;
-	qboolean errors;
-	qboolean globals_done = false;
+	def_t	*d;
+	qboolean	errors;
+	qboolean	globals_done = false;
 
 	errors = false;
-	for(d = pr.def_head.next; d; d = d->next)
+	for (d = pr.def_head.next; d; d = d->next)
 	{
 		if (!strcmp (d->name, "end_sys_globals"))
 			globals_done = true;
 			
-		if(d->type->type == ev_function && !d->scope)
+		if (d->type->type == ev_function && !d->scope)
 		{
-			if(!d->initialized)
+			if (!d->initialized)
 			{ // Prototype, but no code
 				printf("function '%s' was not defined\n", d->name);
 				errors = true;
 			}
-			if(hcc_ShowUnrefFuncs && (d->referenceCount == 0) && globals_done)
+			if (hcc_ShowUnrefFuncs && (d->referenceCount == 0) && globals_done)
 			{ // Function never used
 				printf("unreferenced function '%s'\n", d->name);
 			}
@@ -621,23 +611,23 @@ Returns a crc of the header, to be stored in the progs file for comparison
 at load time.
 ============
 */
-int	PR_WriteProgdefs (char *filename)
+static int PR_WriteProgdefs (char *filename)
 {
 	def_t	*d;
 	FILE	*f;
 	unsigned short		crc;
 	int		c;
-	
+
 	printf ("writing %s\n", filename);
 	f = fopen (filename, "w");
-	
-// print global vars until the first field is defined
+
+	// print global vars until the first field is defined
 	fprintf (f,"\n/* generated by hcc, do not modify */\n\ntypedef struct\n{\tint\tpad[%i];\n", RESERVED_OFS);
 	for (d=pr.def_head.next ; d ; d=d->next)
 	{
 		if (!strcmp (d->name, "end_sys_globals"))
 			break;
-			
+
 		switch (d->type->type)
 		{
 		case ev_float:
@@ -645,7 +635,7 @@ int	PR_WriteProgdefs (char *filename)
 			break;
 		case ev_vector:
 			fprintf (f, "\tvec3_t\t%s;\n",d->name);
-			d=d->next->next->next;	// skip the elements
+			d = d->next->next->next;	// skip the elements
 			break;
 		case ev_string:
 			fprintf (f,"\tstring_t\t%s;\n",d->name);
@@ -663,16 +653,16 @@ int	PR_WriteProgdefs (char *filename)
 	}
 	fprintf (f,"} globalvars_t;\n\n");
 
-// print all fields
+	// print all fields
 	fprintf (f,"typedef struct\n{\n");
 	for (d=pr.def_head.next ; d ; d=d->next)
 	{
 		if (!strcmp (d->name, "end_sys_fields"))
 			break;
-			
+
 		if (d->type->type != ev_field)
 			continue;
-			
+
 		switch (d->type->aux_type->type)
 		{
 		case ev_float:
@@ -680,7 +670,7 @@ int	PR_WriteProgdefs (char *filename)
 			break;
 		case ev_vector:
 			fprintf (f,"\tvec3_t\t%s;\n",d->name);
-			d=d->next->next->next;	// skip the elements
+			d = d->next->next->next;	// skip the elements
 			break;
 		case ev_string:
 			fprintf (f,"\tstring_t\t%s;\n",d->name);
@@ -697,35 +687,34 @@ int	PR_WriteProgdefs (char *filename)
 		}
 	}
 	fprintf (f,"} entvars_t;\n\n");
-	
+
 	fclose (f);
-	
-// do a crc of the file
-	MS_CRCInit(&crc);
+
+	// do a crc of the file
+	CRC_Init(&crc);
 	f = fopen (filename, "r+");
 	while ((c = fgetc(f)) != EOF)
-		MS_CRCProcessByte(&crc, (byte)c);
-		
+		CRC_ProcessByte (&crc, (byte)c);
+
 	fprintf (f,"#define PROGHEADER_CRC %i\n", crc);
 	fclose (f);
 
 	return crc;
 }
 
-
-void PrintFunction (char *name)
+static void PrintFunction (char *name)
 {
 	int		i;
 	dstatement_t	*ds;
 	dfunction_t		*df;
-	
+
 	for (i=0 ; i<numfunctions ; i++)
 		if (!strcmp (name, strings + functions[i].s_name))
 			break;
 	if (i==numfunctions)
-		MS_Error ("No function names \"%s\"", name);
-	df = functions + i;	
-	
+		Error ("No function names \"%s\"", name);
+	df = functions + i;
+
 	printf ("Statements for %s:\n", name);
 	ds = statements + df->first_statement;
 	while (1)
@@ -745,29 +734,25 @@ void PrintFunction (char *name)
 
 int main(int argc, char **argv)
 {
-	char *src;
-	char *src2;
-	char filename[1024],infile[1024];
-	int p, crc;
-	double start, stop;
-	int registerCount;
-	int registerSize;
-	int statementCount;
-	int statementSize;
-	int functionCount;
-	int functionSize;
-	int fileInfo;
-	int quiet;
+	char	*src, *src2;
+	char	filename[1024], infile[1024];
+	int		p, crc;
+	double	start, stop;
+	int		registerCount, registerSize;
+	int		statementCount, statementSize;
+	int		functionCount, functionSize;
+	int		fileInfo;
+	int		quiet;
 
-	start = MS_GetTime();
+	start = GetTime();
 
 	myargc = argc;
 	myargv = argv;
 
-	if(MS_CheckParm("-?") || MS_CheckParm("-h") || MS_CheckParm("-help") || MS_CheckParm("--help"))
+	if (CheckParm("-?") || CheckParm("-h") || CheckParm("-help") || CheckParm("--help"))
 	{
-		printf(" -oi			  : Optimize Immediates\n");
-		printf(" -on			  : Optimize Name Table\n");
+		printf(" -oi              : Optimize Immediates\n");
+		printf(" -on              : Optimize Name Table\n");
 		printf(" -quiet           : Quiet mode\n");
 		printf(" -fileinfo        : Show object sizes per file\n");
 		printf(" -src <directory> : Specify source directory\n");
@@ -775,8 +760,8 @@ int main(int argc, char **argv)
 		exit(0);
 	}
 
-	p = MS_CheckParm("-src");
-	if(p && p < argc-1 )
+	p = CheckParm("-src");
+	if (p && p < argc-1)
 	{
 		strcpy(sourcedir, argv[p+1]);
 		strcat(sourcedir, "/");
@@ -788,8 +773,8 @@ int main(int argc, char **argv)
 		strcpy(sourcedir, "");
 	}
 
-	p = MS_CheckParm("-name");
-	if(p && p < argc-1 )
+	p = CheckParm("-name");
+	if (p && p < argc-1)
 	{
 		strcpy(infile, argv[p+1]);
 		printf("Input file: %s\n", infile);
@@ -805,46 +790,46 @@ int main(int argc, char **argv)
 	EX_Init();
 
 	sprintf(filename, "%s%s", sourcedir,infile);
-	MS_LoadFile(filename, (void *)&src);
+	LoadFile(filename, (void *)&src);
 
-	src = MS_Parse(src);
-	if(!src)
+	src = COM_Parse(src);
+	if (!src)
 	{
-		MS_Error("No destination filename.  HCC -help for info.\n");
+		Error("No destination filename.  HCC -help for info.\n");
 	}
-	sprintf(destfile, "%s%s", sourcedir, ms_Token);
+	sprintf(destfile, "%s%s", sourcedir, com_token);
 
 	BeginCompilation();
 
-	hcc_OptimizeImmediates = MS_CheckParm("-oi");
-	hcc_OptimizeNameTable = MS_CheckParm("-on");
-	hcc_WarningsActive = MS_CheckParm("-nowarnings") ? false : true;
-	hcc_ShowUnrefFuncs = MS_CheckParm("-urfunc") ? true : false;
+	hcc_OptimizeImmediates = CheckParm("-oi");
+	hcc_OptimizeNameTable = CheckParm("-on");
+	hcc_WarningsActive = CheckParm("-nowarnings") ? false : true;
+	hcc_ShowUnrefFuncs = CheckParm("-urfunc") ? true : false;
 
-	fileInfo = MS_CheckParm("-fileinfo");
-	quiet = MS_CheckParm("-quiet");
+	fileInfo = CheckParm("-fileinfo");
+	quiet = CheckParm("-quiet");
 
 	do
 	{
-		src = MS_Parse(src);
-		if(!src)
+		src = COM_Parse(src);
+		if (!src)
 		{
 			break;
 		}
 		registerCount = numpr_globals;
 		statementCount = numstatements;
 		functionCount = numfunctions;
-		sprintf(filename, "%s%s", sourcedir, ms_Token);
-		if(!quiet)
+		sprintf(filename, "%s%s", sourcedir, com_token);
+		if (!quiet)
 		{
 			printf("compiling %s\n", filename);
 		}
-		MS_LoadFile(filename, (void *)&src2);
-		if(!CO_CompileFile(src2, filename))
+		LoadFile(filename, (void *)&src2);
+		if (!CO_CompileFile(src2, filename))
 		{
 			exit(1);
 		}
-		if(!quiet && fileInfo)
+		if (!quiet && fileInfo)
 		{
 			registerCount = numpr_globals-registerCount;
 			registerSize = registerCount*sizeof(float);
@@ -852,28 +837,24 @@ int main(int argc, char **argv)
 			statementSize = statementCount*sizeof(dstatement_t);
 			functionCount = numfunctions-functionCount;
 			functionSize = functionCount*sizeof(dfunction_t);
-			printf("      registers: %d (%d)\n", registerCount,
-				registerSize);
-			printf("     statements: %d (%d)\n", statementCount,
-				statementSize);
-			printf("      functions: %d (%d)\n", functionCount,
-				functionSize);
-			printf("     total size: %d\n",
-				registerSize+statementSize+functionSize);
+			printf("      registers: %d (%d)\n", registerCount, registerSize);
+			printf("     statements: %d (%d)\n", statementCount, statementSize);
+			printf("      functions: %d (%d)\n", functionCount, functionSize);
+			printf("     total size: %d\n", registerSize+statementSize+functionSize);
 		}
-	} while(1);
+	} while (1);
 
-	if(!FinishCompilation())
+	if (!FinishCompilation())
 	{
-		MS_Error ("compilation errors");
+		Error ("compilation errors");
 	}
 
-	p = MS_CheckParm("-asm");
-	if(p)
+	p = CheckParm("-asm");
+	if (p)
 	{
-		for(p++; p < argc; p++)
+		for (p++; p < argc; p++)
 		{
-			if(argv[p][0] == '-')
+			if (argv[p][0] == '-')
 			{
 				break;
 			}
@@ -894,8 +875,9 @@ int main(int argc, char **argv)
 	printf(" precache_model: %d\n", nummodels);
 	printf("  precache_file: %d\n", numfiles);
 
-	stop = MS_GetTime();
+	stop = GetTime();
 	printf("\n%d seconds elapsed.\n", (int)(stop-start));
 
-	exit(0);
+	exit (0);
 }
+

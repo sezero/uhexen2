@@ -1,11 +1,9 @@
+/*
+	cmdlib.c
 
-//**************************************************************************
-//**
-//** misc.c
-//**
-//** $Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/cmdlib.c,v 1.2 2005-12-04 11:14:38 sezero Exp $
-//**
-//**************************************************************************
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/cmdlib.c,v 1.3 2006-02-27 00:02:59 sezero Exp $
+*/
+
 
 // HEADER FILES ------------------------------------------------------------
 
@@ -14,6 +12,7 @@
 #ifdef WIN32
 #include <direct.h>
 #endif
+#include "cmdlib.h"
 #include "hcc.h"
 
 // MACROS ------------------------------------------------------------------
@@ -32,116 +31,58 @@
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
+// set these before calling CheckParm
 int myargc;
 char **myargv;
-char ms_Token[1024];
-qboolean com_eof;
+
+char		com_token[1024];
+qboolean	com_eof;
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
 // CODE --------------------------------------------------------------------
 
-//==========================================================================
-//
-// MS_Error
-//
-// For abnormal program terminations.
-//
-//==========================================================================
+/*
+==============
+GetTime
 
-void MS_Error(char *error, ...)
-{
-	va_list argptr;
-
-	printf("************ ERROR ************\n");
-	va_start(argptr, error);
-	vprintf(error, argptr);
-	va_end(argptr);
-	printf("\n");
-	exit(1);
-}
-
-//==========================================================================
-//
-// MS_ParseError
-//
-//==========================================================================
-
-void MS_ParseError(char *error, ...)
-{
-	va_list argptr;
-	char string[1024];
-
-	va_start(argptr, error);
-	vsnprintf(string, sizeof (string), error, argptr);
-	va_end(argptr);
-	printf("%s(%d) : %s\n", strings+s_file, lx_SourceLine, string);
-	longjmp(pr_parse_abort, 1);
-}
-
-//==========================================================================
-//
-// MS_ParseWarning
-//
-//==========================================================================
-
-void MS_ParseWarning(char *error, ...)
-{
-	va_list argptr;
-	char string[1024];
-
-	if(hcc_WarningsActive == false)
-	{
-		return;
-	}
-	va_start(argptr, error);
-	vsnprintf(string, sizeof (string), error, argptr);
-	va_end(argptr);
-	printf("%s(%d) : warning : %s\n", strings+s_file, lx_SourceLine,
-		string);
-}
-
-//==========================================================================
-//
-// MS_GetTime
-//
-//==========================================================================
-
-double MS_GetTime(void)
+==============
+*/
+double GetTime (void)
 {
 	time_t	t;
 
 	time(&t);
+
 	return t;
 }
 
-//==========================================================================
-//
-// MS_Parse
-//
-//==========================================================================
+/*
+==============
+COM_Parse
 
-char *MS_Parse(char *data)
+Parse a token out of a string
+==============
+*/
+char *COM_Parse (char *data)
 {
-	int c;
-	int len;
-	qboolean done;
+	int		c;
+	int		len;
+	qboolean	done;
 
 	len = 0;
-	ms_Token[0] = 0;
+	com_token[0] = 0;
 
-	if(!data)
-	{
+	if (!data)
 		return NULL;
-	}
 
 	done = false;
 	do
 	{
 		// Skip whitespace
-		while((c = *data) <= ' ')
+		while ((c = *data) <= ' ')
 		{
-			if(c == 0)
+			if (c == 0)
 			{ // EOF
 				com_eof = true;
 				return NULL;
@@ -149,12 +90,13 @@ char *MS_Parse(char *data)
 			data++;
 		}
 
-		if(c == '/' && data[1] == '*')
-		{ // Skip comment
+		// skip comments
+		if (c == '/' && data[1] == '*')
+		{
 			data += 2;
 			while(!(*data == '*' && data[1] == '/'))
 			{
-				if(*data == 0)
+				if (*data == 0)
 				{ // EOF
 					com_eof = true;
 					return NULL;
@@ -174,87 +116,146 @@ char *MS_Parse(char *data)
 		{
 			done = true;
 		}
-	} while(done == false);
+	} while (done == false);
 
-	if(c == '\"')
-	{ // Parse quoted string
+	// Parse quoted string
+	if (c == '\"')
+	{
 		data++;
 		do
 		{
 			c = *data++;
 			if (c=='\"')
 			{
-				ms_Token[len] = 0;
+				com_token[len] = 0;
 				return data;
 			}
-			ms_Token[len] = c;
+			com_token[len] = c;
 			len++;
 		} while (1);
 	}
 
-	if(c == '{' || c == '}'|| c == '('|| c == ')'
-		|| c == '\'' || c == ':')
-	{ // Parse special character
-		ms_Token[len] = c;
+	// Parse special character
+	if (c == '{' || c == '}'|| c == '('|| c == ')' || c == '\'' || c == ':')
+	{
+		com_token[len] = c;
 		len++;
-		ms_Token[len] = 0;
+		com_token[len] = 0;
 		return data+1;
 	}
 
 	// Parse regular word
 	do
 	{
-		ms_Token[len] = c;
+		com_token[len] = c;
 		data++;
 		len++;
 		c = *data;
-		if(c == '{' || c == '}' || c == '(' || c == ')'
-			|| c == '\'' || c == ':')
+		if(c == '{' || c == '}' || c == '(' || c == ')' || c == '\'' || c == ':')
 		{
 			break;
 		}
-	} while(c > 32);
+	} while (c > 32);
 
-	ms_Token[len] = 0;
+	com_token[len] = 0;
 	return data;
 }
 
-//==========================================================================
-//
-// MS_StringCompare
-//
-// Compare two strings without regard to case.
-//
-//==========================================================================
+/*
+==============
+Error
 
-int MS_StringCompare(char *s1, char *s2)
+For abnormal program terminations.
+==============
+*/
+void Error(char *error, ...)
 {
-	for(; tolower(*s1) == tolower(*s2); s1++, s2++)
+	va_list argptr;
+
+	printf ("************ ERROR ************\n");
+	va_start (argptr, error);
+	vprintf (error, argptr);
+	va_end (argptr);
+	printf ("\n");
+	exit (1);
+}
+
+/*
+==============
+COM_ParseError
+
+==============
+*/
+void COM_ParseError(char *error, ...)
+{
+	va_list argptr;
+	char string[1024];
+
+	va_start (argptr, error);
+	vsnprintf (string, sizeof (string), error, argptr);
+	va_end (argptr);
+	printf ("%s(%d) : %s\n", strings+s_file, lx_SourceLine, string);
+	longjmp (pr_parse_abort, 1);
+}
+
+/*
+==============
+COM_ParseWarning
+
+==============
+*/
+void COM_ParseWarning(char *error, ...)
+{
+	va_list argptr;
+	char string[1024];
+
+	if (hcc_WarningsActive == false)
 	{
-		if(*s1 == '\0')
+		return;
+	}
+	va_start (argptr, error);
+	vsnprintf (string, sizeof (string), error, argptr);
+	va_end (argptr);
+	printf ("%s(%d) : warning : %s\n", strings+s_file, lx_SourceLine, string);
+}
+
+/*
+==============
+StringCompare
+
+Compare two strings without regard to case.
+==============
+*/
+#if 0
+int StringCompare(char *s1, char *s2)
+{
+	for ( ; tolower(*s1) == tolower(*s2); s1++, s2++)
+	{
+		if (*s1 == '\0')
 		{
 			return 0;
 		}
 	}
 	return tolower(*s1)-tolower(*s2);
 }
+#endif
 
-//==========================================================================
-//
-// MS_CheckParm
-//
-// Checks for the given parameter in the program's command line arguments.
-// Returns the argument number (1 to argc-1) or 0 if not present.
-//
-//==========================================================================
+/*
+==============
+CheckParm
 
-int MS_CheckParm(char *check)
+Checks for the given parameter in the program's command line arguments.
+Returns the argument number (1 to argc-1) or 0 if not present.
+==============
+*/
+int CheckParm (char *check)
 {
-	int i;
+	int		i;
 
-	for(i = 1; i < myargc; i++)
+	for (i = 1;i < myargc;i++)
 	{
-		if(!MS_StringCompare(check, myargv[i]))
+	//	if ( !StringCompare(check, myargv[i]) )
+		if ( !Q_strcasecmp(check, myargv[i]) )
 		{
 			return i;
 		}
@@ -262,106 +263,103 @@ int MS_CheckParm(char *check)
 	return 0;
 }
 
-//==========================================================================
-//
-// MS_FileLength
-//
-//==========================================================================
+/*
+==============
+Q_filelength
 
-int MS_FileLength(FILE *f)
+==============
+*/
+int Q_filelength(FILE *f)
 {
-	int pos;
-	int end;
+	int		pos;
+	int		end;
 
-	pos = ftell(f);
-	fseek(f, 0, SEEK_END);
+	pos = ftell (f);
+	fseek (f, 0, SEEK_END);
 	end = ftell (f);
-	fseek(f, pos, SEEK_SET);
+	fseek (f, pos, SEEK_SET);
 	return end;
 }
 
-//==========================================================================
-//
-// MS_SafeOpenWrite
-//
-//==========================================================================
+/*
+==============
+SafeOpenWrite
 
-FILE *MS_SafeOpenWrite(char *filename)
+==============
+*/
+FILE *SafeOpenWrite (char *filename)
 {
-	FILE *f;
+	FILE	*f;
 
 	f = fopen(filename, "wb");
-	if(!f)
-	{
-		MS_Error("Error opening %s: %s", filename, strerror(errno));
-	}
+
+	if (!f)
+		Error("Error opening %s: %s",filename,strerror(errno));
+
 	return f;
 }
 
-//==========================================================================
-//
-// MS_SafeOpenRead
-//
-//==========================================================================
+/*
+==============
+SafeOpenRead
 
-FILE *MS_SafeOpenRead(char *filename)
+==============
+*/
+FILE *SafeOpenRead (char *filename)
 {
-	FILE *f;
+	FILE	*f;
 
 	f = fopen(filename, "rb");
-	if(!f)
-	{
-		MS_Error("Error opening %s: %s", filename, strerror(errno));
-	}
+
+	if (!f)
+		Error("Error opening %s: %s",filename,strerror(errno));
+
 	return f;
 }
 
-//==========================================================================
-//
-// MS_SafeRead
-//
-//==========================================================================
+/*
+==============
+SafeRead
 
-void MS_SafeRead(FILE *f, void *buffer, int count)
+==============
+*/
+void SafeRead (FILE *f, void *buffer, int count)
 {
-	if(fread(buffer, 1, count, f) != (size_t)count)
-	{
-		MS_Error("File read failure");
-	}
+	if ( fread (buffer, 1, count, f) != (size_t)count)
+		Error("File read failure");
 }
 
-//==========================================================================
-//
-// MS_SafeWrite
-//
-//==========================================================================
+/*
+==============
+SafeWrite
 
-void MS_SafeWrite(FILE *f, void *buffer, int count)
+==============
+*/
+void SafeWrite (FILE *f, void *buffer, int count)
 {
-	if(fwrite(buffer, 1, count, f) != (size_t)count)
-	{
-		MS_Error("File read failure");
-	}
+	if (fwrite(buffer, 1, count, f) != (size_t)count)
+		Error("File read failure");
 }
 
-//==========================================================================
-//
-// MS_LoadFile
-//
-//==========================================================================
+/*
+==============
+LoadFile
 
-int MS_LoadFile(char *filename, void **bufferptr)
+==============
+*/
+int LoadFile (char *filename, void **bufferptr)
 {
-	FILE *f;
-	int length;
-	void *buffer;
+	FILE	*f;
+	int	length;
+	void	*buffer;
 
-	f = MS_SafeOpenRead(filename);
-	length = MS_FileLength(f);
-	buffer = malloc(length+1);
+	f = SafeOpenRead (filename);
+	length = Q_filelength (f);
+	buffer = malloc (length+1);
 	((char *)buffer)[length] = 0;
-	MS_SafeRead(f, buffer, length);
+	SafeRead(f, buffer, length);
 	fclose (f);
+
 	*bufferptr = buffer;
 	return length;
 }
@@ -415,49 +413,53 @@ static unsigned short crctable[256] =
 	0x6e17,	0x7e36,	0x4e55,	0x5e74,	0x2e93,	0x3eb2,	0x0ed1,	0x1ef0
 };
 
-void MS_CRCInit(unsigned short *crcvalue)
+void CRC_Init(unsigned short *crcvalue)
 {
 	*crcvalue = CRC_INIT_VALUE;
 }
 
-void MS_CRCProcessByte(unsigned short *crcvalue, byte data)
+void CRC_ProcessByte(unsigned short *crcvalue, byte data)
 {
 	*crcvalue = (*crcvalue << 8) ^ crctable[(*crcvalue >> 8) ^ data];
 }
 
-unsigned short MS_CRCValue(unsigned short crcvalue)
+unsigned short CRC_Value(unsigned short crcvalue)
 {
 	return crcvalue ^ CRC_XOR_VALUE;
 }
 
-//==========================================================================
-//
-// MS_Hash
-//
-//==========================================================================
+/*
+==============
+COM_Hash
 
-int MS_Hash(char *key)
+==============
+*/
+int COM_Hash(char *key)
 {
-	int i;
-	int length;
-	char *keyBack;
-	unsigned short hash;
+	int		i;
+	int		length;
+	char	*keyBack;
+	unsigned short	hash;
 
-	length = strlen(key);
-	keyBack = key+length-1;
+	length = strlen (key);
+	keyBack = key + length - 1;
 	hash = CRC_INIT_VALUE;
-	if(length > 20)
+
+	if (length > 20)
 	{
 		length = 20;
 	}
-	for(i = 0; i < length; i++)
+
+	for (i = 0; i < length; i++)
 	{
 		hash = (hash<<8)^crctable[(hash>>8)^*key++];
-		if(++i >= length)
+		if (++i >= length)
 		{
 			break;
 		}
 		hash = (hash<<8)^crctable[(hash>>8)^*keyBack--];
 	}
-	return hash%MS_HASH_TABLE_SIZE;
+
+	return hash%HASH_TABLE_SIZE;
 }
+

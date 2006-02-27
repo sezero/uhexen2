@@ -26,6 +26,8 @@ endif
 # Compiler flags
 ifndef DEBUG
 CFLAGS = -O2 -Wall
+# avoid the compiler warnings in pr_lex.c for now
+CFLAGS+= -Wno-char-subscripts
 endif
 
 # Other build flags

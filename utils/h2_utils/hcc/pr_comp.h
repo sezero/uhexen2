@@ -1,15 +1,5 @@
 
-/*
- * $Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/hcc/pr_comp.h,v 1.2 2006-02-20 16:13:50 sezero Exp $
- */
-
 // This file is shared by Hexen II and HCC
-
-#ifndef __BYTEBOOL__
-#define __BYTEBOOL__
-typedef enum { false, true } qboolean;
-typedef unsigned char byte;
-#endif
 
 typedef int	func_t;
 typedef int	string_t;
