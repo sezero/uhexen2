@@ -1,0 +1,85 @@
+This is version 1.2.x of JsH2Colour.
+------------------------------------
+
+JsH2Colour is a modification of MHColour v0.5 (which, in turn, was
+derived from Tyrlite v0.8), for use with Hexen II. It also uses code
+from the Hexen II light utility. This particular version is a cleaned
+up and updated for both linux/unix and windows operating systems.
+
+This is a light colouring utility that generates .LIT files. Colour
+is based on texture type of textures that are close to light source.
+Remember that JsH2Colour is NOT a replacement light utility:  It is
+intended to be used on an existing BSP as a method of getting colored
+light in.
+
+You can define colours for texture based coloring in an external file
+instead of having to define it in source code and recompiling it. To
+specify external definition file use -external switch with name of file
+as the parameter.
+
+JsH2Colour contains default values for a subset of Hexen II texture sets
+built into the source code. In case you don't want to use them, you can
+prevent it by using -nodefault switch on command line. I recomend this
+approach, because it enables you to set light colour values individualy
+for each map. Example files are included in distribution. Definition in
+an external file doesn't replace the built-in definition for the same
+texture unless you use the -nodefault switch AND define all the textures
+you want to use in coloring process externaly. I have exported all the
+default settings for built-in textures into the file default.def .
+
+New command line switches :
+---------------------------
+
+-force
+If JsH2Colour decides that the colouring process will be ineffective,
+you will get an option to abandon ship. Use -force to override this and
+always continue, but don't say I didn't warn you if you don't like what
+you see.
+
+-lit
+Generate a LIT file. Without this switch, it will generate a fake BSP 30
+map for you in its default mode.
+
+-external FILENAME
+Turns on the usage of external light colour definition file. External
+definition file name (FILENAME) must be specified.
+
+-nodefault
+Suppress the usage of built-in light color definition for default texture
+sets. Useful if you want to use light coloring for only limited subset of
+textures. Those to be used then must be defined in an external definition
+file.
+
+Format of external light colour definition file:
+------------------------------------------------
+It is pretty simple. Each entry is on a new line. Each entry starts with
+the texture name (just a string without qoutes) and is followed by colour
+triplet eg. red, green and blue components (integer numbers in range the
+of 0-255. They are separated by space. All entries end with a newline char
+(cr,lf).
+
+texture_name red_val green_val blue_val	<newline>
+[1-64 chars] [0-255] [0-255] [0-255] 
+
+Example:
+--------
+*lava000 255 100 10
+*lowlight 128 128 196
+*skulls 255 10 10
++0rune1 255 10 10
++0rune2 255 255 128
+marble 200 100 60
+marbleseam 200 100 60
+mtex402 10 128 10
+
+The file default.def contains the built-in values in external form.
+
+-------------------------------------------------------------------------
+
+Legal :
+-------
+JsH2Colour is open source software with GPL license: See the file COPYING,
+LICENSE or gnu.txt for details.  The original documentation included with
+the author's latest 1.1 version is still present in the orig_docs directory
+for reference.
+
