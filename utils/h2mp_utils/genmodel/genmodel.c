@@ -1872,7 +1872,8 @@ static void LoadPCXSkin(char *filename, byte **buffer)
 	byte length;
 
 	// Load file
-	LoadFile(filename, &pcx);
+//	LoadFile(filename, &pcx);
+	LoadFile(filename, (void **) (pcx_t *) &pcx);
 
 	// Check for a valid PCX header
 	w = pcx->xMax-pcx->xMin+1;
