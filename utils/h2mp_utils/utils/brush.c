@@ -719,7 +719,6 @@ brush_t *LoadBrush (mbrush_t *mb, int hullnumber)
 {
 	brush_t		*b;
 	int			contents;
-	int			i;
 	char		*name;
 	mface_t		*f;
 	face_t		*f2;
