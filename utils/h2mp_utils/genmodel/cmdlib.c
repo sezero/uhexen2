@@ -1,18 +1,40 @@
-// cmdlib.c
+/*
+	cmdlib.c
+
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/genmodel/cmdlib.c,v 1.10 2006-02-28 16:00:14 sezero Exp $
+*/
+
+
+// HEADER FILES ------------------------------------------------------------
 
 #include "cmdlib.h"
-#include <sys/types.h>
+//#include <sys/time.h>
+#include <time.h>
 #include <sys/stat.h>
+#include <errno.h>
 #ifdef _WIN32
 #include <conio.h>
 #include <direct.h>
 #endif
-
-#ifdef NeXT
-#include <libc.h>
+#ifndef _WIN32
+#include <sys/ioctl.h>
 #endif
 
-#define PATHSEPERATOR   '/'
+// MACROS ------------------------------------------------------------------
+
+#define PATHSEPERATOR	'/'
+
+// TYPES -------------------------------------------------------------------
+
+// EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
+
+// PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
+
+// PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
+
+// EXTERNAL DATA DECLARATIONS ----------------------------------------------
+
+// PUBLIC DATA DEFINITIONS -------------------------------------------------
 
 // set these before calling CheckParm
 int myargc;
@@ -21,54 +43,114 @@ char **myargv;
 char		com_token[1024];
 qboolean	com_eof;
 
+// PRIVATE DATA DEFINITIONS ------------------------------------------------
+
+// REPLACEMENTS FOR LIBRARY FUNCTIONS --------------------------------------
+
 /*
-=================
-Error
+==============
+Q_stpcpy
 
-For abnormal program terminations
-=================
+a stpcpy replacement.
+==============
 */
-void Error (char *error, ...)
+#if !(defined (__GLIBC__) && defined (_STRING_H) && defined (_GNU_SOURCE))
+char *Q_stpcpy (char *qdest, const char *qsrc)
 {
-	va_list argptr;
+/* Copy QSRC to QDEST, returning the address
+   of the terminating '\0' in QDEST.	*/
+	register char *qd = qdest;
+	register const char *qs = qsrc;
 
-	printf ("************ ERROR ************\n");
+	while ((*qd++ = *qs++) != '\0')
+		continue;
 
-	va_start (argptr,error);
-	vprintf (error,argptr);
-	va_end (argptr);
-	printf ("\n");
-
-#ifdef _DEBUG
-	getch();
+	return qd - 1;
+}
 #endif
 
-	exit (1);
-}
+/*
+==============
+Sys_kbhit
 
-
-void *SafeMalloc(size_t n, char *desc)
+a simple _kbhit() equivalent for unix
+==============
+*/
+#ifndef _WIN32
+int Sys_kbhit (void)
 {
-	void *p;
+	int	n;
 
-	if((p = malloc(n)) == NULL)
-	{
-		Error("Failed to allocate %d bytes for '%s'.\n", n, desc);
-	}
-	return p;
+	ioctl (0, FIONREAD, &n);
+	return n;
 }
+#endif
 
 /*
-================
+==============
+StringCompare
+
+Compare two strings without regard to case.
+==============
+*/
+#if 0
+int StringCompare(char *s1, char *s2)
+{
+	for ( ; tolower(*s1) == tolower(*s2); s1++, s2++)
+	{
+		if (*s1 == '\0')
+		{
+			return 0;
+		}
+	}
+	return tolower(*s1)-tolower(*s2);
+}
+#endif
+
+/*
+==============
+Q_strlwr and Q_strupr
+
+==============
+*/
+char *Q_strupr (char *start)
+{
+	char	*in;
+	in = start;
+	while (*in)
+	{
+		*in = toupper(*in);
+		in++;
+	}
+	return start;
+}
+
+char *Q_strlwr (char *start)
+{
+	char	*in;
+	in = start;
+	while (*in)
+	{
+		*in = tolower(*in);
+		in++;
+	}
+	return start;
+}
+
+// CODE --------------------------------------------------------------------
+
+/*
+==============
 GetTime
-================
+
+==============
 */
 double GetTime (void)
 {
 	time_t	t;
-	
-	time (&t);
-	
+
+	time(&t);
+
 	return t;
 #if 0
 // more precise, less portable
@@ -77,60 +159,33 @@ double GetTime (void)
 	static int		secbase;
 
 	gettimeofday(&tp, &tzp);
-	
+
 	if (!secbase)
 	{
 		secbase = tp.tv_sec;
 		return tp.tv_usec/1000000.0;
 	}
-	
+
 	return (tp.tv_sec - secbase) + tp.tv_usec/1000000.0;
 #endif
 }
 
-void Q_getwd (char *out)
-{
-#ifdef _WIN32
-   _getcwd (out, 256);
-   strcat (out, "\\");
-#else
-   getcwd (out, 256);
-   strcat (out, "/");
-#endif
-}
-
-
-void Q_mkdir (char *path)
-{
-#ifdef _WIN32
-	if (_mkdir (path) != -1)
-		return;
-#else
-	if (mkdir (path, 0777) != -1)
-		return;
-#endif
-	if (errno != EEXIST)
-		Error ("mkdir %s: %s",path, strerror(errno));
-}
-
 /*
-============
-FileTime
+==============
+SafeMalloc
 
-returns -1 if not present
-============
+==============
 */
-int Q_filetime (char *path)
+void *SafeMalloc (size_t n, char *desc)
 {
-	struct	stat	buf;
-	
-	if (stat (path,&buf) == -1)
-		return -1;
-	
-	return buf.st_mtime;
+	void	*p;
+
+	if ((p = malloc(n)) == NULL)
+	{
+		Error("Failed to allocate %d bytes for '%s'.\n", n, desc);
+	}
+	return p;
 }
-
-
 
 /*
 ==============
@@ -143,35 +198,85 @@ char *COM_Parse (char *data)
 {
 	int		c;
 	int		len;
-	
+	qboolean	done = false;
+
 	len = 0;
 	com_token[0] = 0;
-	
+
 	if (!data)
 		return NULL;
-		
-// skip whitespace
+
+#if 0
+/*	This is the original COM_Parse. It
+	doesn't parse/skip C style comments.
+*/
 skipwhite:
+	// skip whitespace
 	while ( (c = *data) <= ' ')
 	{
-		if (c == 0)
+		if (c == 0)	// end of file
 		{
 			com_eof = true;
-			return NULL;			// end of file;
+			return NULL;
 		}
 		data++;
 	}
-	
-// skip // comments
-	if (c=='/' && data[1] == '/')
+	// skip C++ style comments
+	if (c == '/' && data[1] == '/')
 	{
 		while (*data && *data != '\n')
 			data++;
 		goto skipwhite;
 	}
-	
+#else
+/*	This is the new version by Raven found in
+	HCC. It does parse/skip C style comments.
+*/
+	do
+	{
+	// skip whitespace
+		while ((c = *data) <= ' ')
+		{
+			if (c == 0)	// end of file
+			{
+				com_eof = true;
+				return NULL;
+			}
+			data++;
+		}
 
-// handle quoted strings specially
+	// skip C style comments
+		if (c == '/' && data[1] == '*')
+		{
+			data += 2;
+			while(!(*data == '*' && data[1] == '/'))
+			{
+				if (*data == 0)	// end of file
+				{
+					com_eof = true;
+					return NULL;
+				}
+				data++;
+			}
+			data += 2;
+		}
+	// skip C++ style comments
+		else
+		if (c == '/' && data[1] == '/')
+		{
+			while (*data && *data != '\n')
+			{
+				data++;
+			}
+		}
+		else
+		{
+			done = true;
+		}
+	} while (done == false);
+#endif
+
+	// handle quoted strings specially
 	if (c == '\"')
 	{
 		data++;
@@ -188,8 +293,8 @@ skipwhite:
 		} while (1);
 	}
 
-// parse single characters
-	if (c=='{' || c=='}'|| c==')'|| c=='(' || c=='\'' || c==':')
+	// parse special characters
+	if (c == '{' || c == '}' || c == '(' || c == ')' || c == '\'' || c == ':')
 	{
 		com_token[len] = c;
 		len++;
@@ -197,84 +302,113 @@ skipwhite:
 		return data+1;
 	}
 
-// parse a regular word
+	// parse a regular word
 	do
 	{
 		com_token[len] = c;
 		data++;
 		len++;
 		c = *data;
-	if (c=='{' || c=='}'|| c==')'|| c=='(' || c=='\'' || c==':')
+		if (c == '{' || c == '}' || c == '(' || c == ')' || c == '\'' || c == ':')
+		{
 			break;
-	} while (c>32);
-	
+		}
+	} while (c > 32);
+
 	com_token[len] = 0;
 	return data;
 }
 
-char *strupr (char *start)
-{
-	char	*in;
-	in = start;
-	while (*in)
-	{
-		*in = toupper(*in);
-		in++;
-	}
-	return start;
-}
-
-char *strlower (char *start)
-{
-	char	*in;
-	in = start;
-	while (*in)
-	{
-		*in = tolower(*in);
-		in++;
-	}
-	return start;
-}
-
-
 /*
-=============================================================================
+==============
+Error
 
-						MISC FUNCTIONS
-
-=============================================================================
+For abnormal program terminations.
+==============
 */
+void Error(char *error, ...)
+{
+	va_list argptr;
 
+	printf ("************ ERROR ************\n");
+	va_start (argptr, error);
+	vprintf (error, argptr);
+	va_end (argptr);
+	printf ("\n");
+	exit (1);
+}
 
 /*
-=================
+==============
 CheckParm
 
-Checks for the given parameter in the program's command line arguments
-Returns the argument number (1 to argc-1) or 0 if not present
-=================
+Checks for the given parameter in the program's command line arguments.
+Returns the argument number (1 to argc-1) or 0 if not present.
+==============
 */
 int CheckParm (char *check)
 {
-	int             i;
+	int		i;
 
-	for (i = 1;i<myargc;i++)
+	for (i = 1;i < myargc;i++)
 	{
+	//	if ( !StringCompare(check, myargv[i]) )
 		if ( !Q_strcasecmp(check, myargv[i]) )
+		{
 			return i;
+		}
 	}
-
 	return 0;
 }
 
+void Q_getwd (char *out)
+{
+#ifdef _WIN32
+	_getcwd (out, 256);
+	strcat (out, "\\");
+#else
+	getcwd (out, 256);
+	strcat (out, "/");
+#endif
+}
 
+void Q_mkdir (char *path)
+{
+#ifdef _WIN32
+	if (_mkdir (path) != -1)
+		return;
+#else
+	if (mkdir (path, 0777) != -1)
+		return;
+#endif
+	if (errno != EEXIST)
+		Error ("mkdir %s: %s",path, strerror(errno));
+}
 
 /*
-================
-Q_filelength
-================
+============
+Q_filetime
+
+returns -1 if not present
+============
 */
-int Q_filelength (FILE *f)
+int Q_filetime (char *path)
+{
+	struct	stat	buf;
+
+	if (stat (path,&buf) == -1)
+		return -1;
+
+	return buf.st_mtime;
+}
+
+/*
+==============
+Q_filelength
+
+==============
+*/
+int Q_filelength(FILE *f)
 {
 	int		pos;
 	int		end;
@@ -283,11 +417,15 @@ int Q_filelength (FILE *f)
 	fseek (f, 0, SEEK_END);
 	end = ftell (f);
 	fseek (f, pos, SEEK_SET);
-
 	return end;
 }
 
+/*
+==============
+SafeOpenWrite
 
+==============
+*/
 FILE *SafeOpenWrite (char *filename)
 {
 	FILE	*f;
@@ -295,11 +433,17 @@ FILE *SafeOpenWrite (char *filename)
 	f = fopen(filename, "wb");
 
 	if (!f)
-		Error ("Error opening %s: %s",filename,strerror(errno));
+		Error("Error opening %s: %s",filename,strerror(errno));
 
 	return f;
 }
 
+/*
+==============
+SafeOpenRead
+
+==============
+*/
 FILE *SafeOpenRead (char *filename)
 {
 	FILE	*f;
@@ -307,56 +451,65 @@ FILE *SafeOpenRead (char *filename)
 	f = fopen(filename, "rb");
 
 	if (!f)
-		Error ("Error opening %s: %s",filename,strerror(errno));
+		Error("Error opening %s: %s",filename,strerror(errno));
 
 	return f;
 }
 
+/*
+==============
+SafeRead
 
+==============
+*/
 void SafeRead (FILE *f, void *buffer, int count)
 {
 	if ( fread (buffer, 1, count, f) != (size_t)count)
-		Error ("File read failure");
+		Error("File read failure");
 }
 
+/*
+==============
+SafeWrite
 
+==============
+*/
 void SafeWrite (FILE *f, void *buffer, int count)
 {
-	if (fwrite (buffer, 1, count, f) != (size_t)count)
-		Error ("File read failure");
+	if (fwrite(buffer, 1, count, f) != (size_t)count)
+		Error("File read failure");
 }
-
-
 
 /*
 ==============
 LoadFile
+
 ==============
 */
-int    LoadFile (char *filename, void **bufferptr)
+int LoadFile (char *filename, void **bufferptr)
 {
 	FILE	*f;
-	int    length;
-	void    *buffer;
+	int	length;
+	void	*buffer;
 
 	f = SafeOpenRead (filename);
 	length = Q_filelength (f);
 	buffer = malloc (length+1);
 	((char *)buffer)[length] = 0;
-	SafeRead (f, buffer, length);
+	SafeRead(f, buffer, length);
 	fclose (f);
 
 	*bufferptr = buffer;
 	return length;
 }
 
-
 /*
 ==============
 SaveFile
+
 ==============
 */
-void    SaveFile (char *filename, void *buffer, int count)
+void SaveFile (char *filename, void *buffer, int count)
 {
 	FILE	*f;
 
@@ -365,11 +518,48 @@ void    SaveFile (char *filename, void *buffer, int count)
 	fclose (f);
 }
 
+/*
+============
+CreatePath
+============
+*/
+void CreatePath (char *path)
+{
+	char	*ofs, c;
 
+	for (ofs = path+1 ; *ofs ; ofs++)
+	{
+		c = *ofs;
+		if (c == '/' || c == '\\')
+		{	// create the directory
+			*ofs = 0;
+			Q_mkdir (path);
+			*ofs = c;
+		}
+	}
+}
+
+/*
+============
+Q_CopyFile
+
+Used to archive source files
+============
+*/
+void Q_CopyFile (char *from, char *to)
+{
+	void	*buffer;
+	int		length;
+
+	length = LoadFile (from, &buffer);
+	CreatePath (to);
+	SaveFile (to, buffer, length);
+	free (buffer);
+}
 
 void DefaultExtension (char *path, char *extension)
 {
-	char    *src;
+	char	*src;
 //
 // if path doesn't have a .EXT, append extension
 // (extension should include the .)
@@ -379,29 +569,28 @@ void DefaultExtension (char *path, char *extension)
 	while (*src != PATHSEPERATOR && src != path)
 	{
 		if (*src == '.')
-			return;                 // it has an extension
+			return;	// it has an extension
 		src--;
 	}
 
 	strcat (path, extension);
 }
 
-
 void DefaultPath (char *path, char *basepath)
 {
-	char    temp[128];
+	char	temp[128];
 
 	if (path[0] == PATHSEPERATOR)
-		return;                   // absolute path location
+		return;		// absolute path location
+
 	strcpy (temp,path);
 	strcpy (path,basepath);
 	strcat (path,temp);
 }
 
-
-void    StripFilename (char *path)
+void StripFilename (char *path)
 {
-	int             length;
+	int		length;
 
 	length = strlen(path)-1;
 	while (length > 0 && path[length] != PATHSEPERATOR)
@@ -409,9 +598,9 @@ void    StripFilename (char *path)
 	path[length] = 0;
 }
 
-void    StripExtension (char *path)
+void StripExtension (char *path)
 {
-	int             length;
+	int		length;
 
 	length = strlen(path)-1;
 	while (length > 0 && path[length] != '.')
@@ -424,22 +613,24 @@ void    StripExtension (char *path)
 		path[length] = 0;
 }
 
-
 /*
 ====================
 Extract file parts
+// FIXME: should include the slash, otherwise backing to
+// an empty path will be wrong when appending a slash
 ====================
 */
 void ExtractFilePath (char *path, char *dest)
 {
-	char    *src;
+	char	*src;
 
 	src = path + strlen(path) - 1;
 
 //
 // back up until a \ or the start
 //
-	while (src != path && *(src-1) != PATHSEPERATOR)
+//	while (src != path && *(src-1) != PATHSEPERATOR)
+	while (src != path && *(src-1) != '\\' && *(src-1) != '/')
 		src--;
 
 	memcpy (dest, path, src-path);
@@ -448,7 +639,7 @@ void ExtractFilePath (char *path, char *dest)
 
 void ExtractFileBase (char *path, char *dest)
 {
-	char    *src;
+	char	*src;
 
 	src = path + strlen(path) - 1;
 
@@ -467,7 +658,7 @@ void ExtractFileBase (char *path, char *dest)
 
 void ExtractFileExtension (char *path, char *dest)
 {
-	char    *src;
+	char	*src;
 
 	src = path + strlen(path) - 1;
 
@@ -493,8 +684,8 @@ ParseNum / ParseHex
 */
 int ParseHex (char *hex)
 {
-	char    *str;
-	int    num;
+	char	*str;
+	int		num;
 
 	num = 0;
 	str = hex;
@@ -516,7 +707,6 @@ int ParseHex (char *hex)
 	return num;
 }
 
-
 int ParseNum (char *str)
 {
 	if (str[0] == '$')
@@ -527,11 +717,10 @@ int ParseNum (char *str)
 }
 
 
-
 /*
 ============================================================================
 
-					BYTE ORDER FUNCTIONS
+BYTE ORDER FUNCTIONS
 
 ============================================================================
 */
@@ -544,12 +733,12 @@ int ParseNum (char *str)
 #endif
 #ifdef GUESSED_WIN32_ENDIANNESS
 // not that it matters but to remember what I did
-#warning "CPU endianess for Win32 assumed to be little endian"
+//#warning "CPU endianess for Win32 assumed to be little endian"
 #endif
 
-short   ShortSwap (short l)
+short ShortSwap (short l)
 {
-	byte    b1,b2;
+	byte	b1, b2;
 
 	b1 = l&255;
 	b2 = (l>>8)&255;
@@ -557,9 +746,9 @@ short   ShortSwap (short l)
 	return (b1<<8) + b2;
 }
 
-int    LongSwap (int l)
+int LongSwap (int l)
 {
-	byte    b1,b2,b3,b4;
+	byte    b1, b2, b3, b4;
 
 	b1 = l&255;
 	b2 = (l>>8)&255;
@@ -586,14 +775,17 @@ float FloatSwap (float f)
 }
 
 
-//=======================================================
-
-
+//==========================================================================
+//
+// CRC Functions
+//
+// This is a 16 bit, non-reflected CRC using the polynomial 0x1021 and the
+// initial and final xor values shown below...  in other words, the CCITT
+// standard CRC used by XMODEM.
+//
 // FIXME: byte swap?
-
-// this is a 16 bit, non-reflected CRC using the polynomial 0x1021
-// and the initial and final xor values shown below...  in other words, the
-// CCITT standard CRC used by XMODEM
+//
+//==========================================================================
 
 #define CRC_INIT_VALUE	0xffff
 #define CRC_XOR_VALUE	0x0000
@@ -648,44 +840,39 @@ unsigned short CRC_Value(unsigned short crcvalue)
 {
 	return crcvalue ^ CRC_XOR_VALUE;
 }
-//=============================================================================
 
 /*
-============
-CreatePath
-============
+==============
+COM_Hash
+
+==============
 */
-void	CreatePath (char *path)
+int COM_Hash(char *key)
 {
-	char	*ofs, c;
-	
-	for (ofs = path+1 ; *ofs ; ofs++)
-	{
-		c = *ofs;
-		if (c == '/' || c == '\\')
-		{	// create the directory
-			*ofs = 0;
-			Q_mkdir (path);
-			*ofs = c;
-		}
-	}
-}
-
-
-/*
-============
-CopyFile
-
-  Used to archive source files
-============
-*/
-void Q_CopyFile (char *from, char *to)
-{
-	void	*buffer;
+	int		i;
 	int		length;
+	char	*keyBack;
+	unsigned short	hash;
 
-	length = LoadFile (from, &buffer);
-	CreatePath (to);
-	SaveFile (to, buffer, length);
-	free (buffer);
+	length = strlen (key);
+	keyBack = key + length - 1;
+	hash = CRC_INIT_VALUE;
+
+	if (length > 20)
+	{
+		length = 20;
+	}
+
+	for (i = 0; i < length; i++)
+	{
+		hash = (hash<<8)^crctable[(hash>>8)^*key++];
+		if (++i >= length)
+		{
+			break;
+		}
+		hash = (hash<<8)^crctable[(hash>>8)^*keyBack--];
+	}
+
+	return hash%HASH_TABLE_SIZE;
 }
+

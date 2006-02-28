@@ -1,17 +1,24 @@
 /*
 	cmdlib.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/cmdlib.c,v 1.5 2006-02-27 14:20:52 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/hcc/cmdlib.c,v 1.6 2006-02-28 16:00:14 sezero Exp $
 */
 
 
 // HEADER FILES ------------------------------------------------------------
 
-#include <sys/types.h>
+#include "cmdlib.h"
+//#include <sys/time.h>
+#include <time.h>
+#include <sys/stat.h>
+#include <errno.h>
 #ifdef _WIN32
+#include <conio.h>
 #include <direct.h>
 #endif
-#include "cmdlib.h"
+#ifndef _WIN32
+#include <sys/ioctl.h>
+#endif
 
 // MACROS ------------------------------------------------------------------
 
@@ -38,6 +45,98 @@ qboolean	com_eof;
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
+// REPLACEMENTS FOR LIBRARY FUNCTIONS --------------------------------------
+
+/*
+==============
+Q_stpcpy
+
+a stpcpy replacement.
+==============
+*/
+#if !(defined (__GLIBC__) && defined (_STRING_H) && defined (_GNU_SOURCE))
+char *Q_stpcpy (char *qdest, const char *qsrc)
+{
+/* Copy QSRC to QDEST, returning the address
+   of the terminating '\0' in QDEST.	*/
+	register char *qd = qdest;
+	register const char *qs = qsrc;
+
+	while ((*qd++ = *qs++) != '\0')
+		continue;
+
+	return qd - 1;
+}
+#endif
+
+/*
+==============
+Sys_kbhit
+
+a simple _kbhit() equivalent for unix
+==============
+*/
+#ifndef _WIN32
+int Sys_kbhit (void)
+{
+	int	n;
+
+	ioctl (0, FIONREAD, &n);
+	return n;
+}
+#endif
+
+/*
+==============
+StringCompare
+
+Compare two strings without regard to case.
+==============
+*/
+#if 0
+int StringCompare(char *s1, char *s2)
+{
+	for ( ; tolower(*s1) == tolower(*s2); s1++, s2++)
+	{
+		if (*s1 == '\0')
+		{
+			return 0;
+		}
+	}
+	return tolower(*s1)-tolower(*s2);
+}
+#endif
+
+/*
+==============
+Q_strlwr and Q_strupr
+
+==============
+*/
+char *Q_strupr (char *start)
+{
+	char	*in;
+	in = start;
+	while (*in)
+	{
+		*in = toupper(*in);
+		in++;
+	}
+	return start;
+}
+
+char *Q_strlwr (char *start)
+{
+	char	*in;
+	in = start;
+	while (*in)
+	{
+		*in = tolower(*in);
+		in++;
+	}
+	return start;
+}
+
 // CODE --------------------------------------------------------------------
 
 /*
@@ -53,6 +152,39 @@ double GetTime (void)
 	time(&t);
 
 	return t;
+#if 0
+// more precise, less portable
+	struct timeval tp;
+	struct timezone tzp;
+	static int		secbase;
+
+	gettimeofday(&tp, &tzp);
+
+	if (!secbase)
+	{
+		secbase = tp.tv_sec;
+		return tp.tv_usec/1000000.0;
+	}
+
+	return (tp.tv_sec - secbase) + tp.tv_usec/1000000.0;
+#endif
+}
+
+/*
+==============
+SafeMalloc
+
+==============
+*/
+void *SafeMalloc (size_t n, char *desc)
+{
+	void	*p;
+
+	if ((p = malloc(n)) == NULL)
+	{
+		Error("Failed to allocate %d bytes for '%s'.\n", n, desc);
+	}
+	return p;
 }
 
 /*
@@ -66,7 +198,7 @@ char *COM_Parse (char *data)
 {
 	int		c;
 	int		len;
-	qboolean	done;
+	qboolean	done = false;
 
 	len = 0;
 	com_token[0] = 0;
@@ -74,28 +206,53 @@ char *COM_Parse (char *data)
 	if (!data)
 		return NULL;
 
-	done = false;
+#if 0
+/*	This is the original COM_Parse. It
+	doesn't parse/skip C style comments.
+*/
+skipwhite:
+	// skip whitespace
+	while ( (c = *data) <= ' ')
+	{
+		if (c == 0)	// end of file
+		{
+			com_eof = true;
+			return NULL;
+		}
+		data++;
+	}
+	// skip C++ style comments
+	if (c == '/' && data[1] == '/')
+	{
+		while (*data && *data != '\n')
+			data++;
+		goto skipwhite;
+	}
+#else
+/*	This is the new version by Raven found in
+	HCC. It does parse/skip C style comments.
+*/
 	do
 	{
-		// Skip whitespace
+	// skip whitespace
 		while ((c = *data) <= ' ')
 		{
-			if (c == 0)
-			{ // EOF
+			if (c == 0)	// end of file
+			{
 				com_eof = true;
 				return NULL;
 			}
 			data++;
 		}
 
-		// skip comments
+	// skip C style comments
 		if (c == '/' && data[1] == '*')
 		{
 			data += 2;
 			while(!(*data == '*' && data[1] == '/'))
 			{
-				if (*data == 0)
-				{ // EOF
+				if (*data == 0)	// end of file
+				{
 					com_eof = true;
 					return NULL;
 				}
@@ -103,9 +260,11 @@ char *COM_Parse (char *data)
 			}
 			data += 2;
 		}
-		else if(c == '/' && data[1] == '/')
-		{ // Skip CPP comment
-			while(*data && *data != '\n')
+	// skip C++ style comments
+		else
+		if (c == '/' && data[1] == '/')
+		{
+			while (*data && *data != '\n')
 			{
 				data++;
 			}
@@ -115,8 +274,9 @@ char *COM_Parse (char *data)
 			done = true;
 		}
 	} while (done == false);
+#endif
 
-	// Parse quoted string
+	// handle quoted strings specially
 	if (c == '\"')
 	{
 		data++;
@@ -133,8 +293,8 @@ char *COM_Parse (char *data)
 		} while (1);
 	}
 
-	// Parse special character
-	if (c == '{' || c == '}'|| c == '('|| c == ')' || c == '\'' || c == ':')
+	// parse special characters
+	if (c == '{' || c == '}' || c == '(' || c == ')' || c == '\'' || c == ':')
 	{
 		com_token[len] = c;
 		len++;
@@ -142,14 +302,14 @@ char *COM_Parse (char *data)
 		return data+1;
 	}
 
-	// Parse regular word
+	// parse a regular word
 	do
 	{
 		com_token[len] = c;
 		data++;
 		len++;
 		c = *data;
-		if(c == '{' || c == '}' || c == '(' || c == ')' || c == '\'' || c == ':')
+		if (c == '{' || c == '}' || c == '(' || c == ')' || c == '\'' || c == ':')
 		{
 			break;
 		}
@@ -180,27 +340,6 @@ void Error(char *error, ...)
 
 /*
 ==============
-StringCompare
-
-Compare two strings without regard to case.
-==============
-*/
-#if 0
-int StringCompare(char *s1, char *s2)
-{
-	for ( ; tolower(*s1) == tolower(*s2); s1++, s2++)
-	{
-		if (*s1 == '\0')
-		{
-			return 0;
-		}
-	}
-	return tolower(*s1)-tolower(*s2);
-}
-#endif
-
-/*
-==============
 CheckParm
 
 Checks for the given parameter in the program's command line arguments.
@@ -220,6 +359,47 @@ int CheckParm (char *check)
 		}
 	}
 	return 0;
+}
+
+void Q_getwd (char *out)
+{
+#ifdef _WIN32
+	_getcwd (out, 256);
+	strcat (out, "\\");
+#else
+	getcwd (out, 256);
+	strcat (out, "/");
+#endif
+}
+
+void Q_mkdir (char *path)
+{
+#ifdef _WIN32
+	if (_mkdir (path) != -1)
+		return;
+#else
+	if (mkdir (path, 0777) != -1)
+		return;
+#endif
+	if (errno != EEXIST)
+		Error ("mkdir %s: %s",path, strerror(errno));
+}
+
+/*
+============
+Q_filetime
+
+returns -1 if not present
+============
+*/
+int Q_filetime (char *path)
+{
+	struct	stat	buf;
+
+	if (stat (path,&buf) == -1)
+		return -1;
+
+	return buf.st_mtime;
 }
 
 /*
@@ -323,6 +503,278 @@ int LoadFile (char *filename, void **bufferptr)
 	return length;
 }
 
+/*
+==============
+SaveFile
+
+==============
+*/
+void SaveFile (char *filename, void *buffer, int count)
+{
+	FILE	*f;
+
+	f = SafeOpenWrite (filename);
+	SafeWrite (f, buffer, count);
+	fclose (f);
+}
+
+/*
+============
+CreatePath
+============
+*/
+void CreatePath (char *path)
+{
+	char	*ofs, c;
+
+	for (ofs = path+1 ; *ofs ; ofs++)
+	{
+		c = *ofs;
+		if (c == '/' || c == '\\')
+		{	// create the directory
+			*ofs = 0;
+			Q_mkdir (path);
+			*ofs = c;
+		}
+	}
+}
+
+/*
+============
+Q_CopyFile
+
+Used to archive source files
+============
+*/
+void Q_CopyFile (char *from, char *to)
+{
+	void	*buffer;
+	int		length;
+
+	length = LoadFile (from, &buffer);
+	CreatePath (to);
+	SaveFile (to, buffer, length);
+	free (buffer);
+}
+
+void DefaultExtension (char *path, char *extension)
+{
+	char	*src;
+//
+// if path doesn't have a .EXT, append extension
+// (extension should include the .)
+//
+	src = path + strlen(path) - 1;
+
+	while (*src != PATHSEPERATOR && src != path)
+	{
+		if (*src == '.')
+			return;	// it has an extension
+		src--;
+	}
+
+	strcat (path, extension);
+}
+
+void DefaultPath (char *path, char *basepath)
+{
+	char	temp[128];
+
+	if (path[0] == PATHSEPERATOR)
+		return;		// absolute path location
+
+	strcpy (temp,path);
+	strcpy (path,basepath);
+	strcat (path,temp);
+}
+
+void StripFilename (char *path)
+{
+	int		length;
+
+	length = strlen(path)-1;
+	while (length > 0 && path[length] != PATHSEPERATOR)
+		length--;
+	path[length] = 0;
+}
+
+void StripExtension (char *path)
+{
+	int		length;
+
+	length = strlen(path)-1;
+	while (length > 0 && path[length] != '.')
+	{
+		length--;
+		if (path[length] == '/')
+			return;		// no extension
+	}
+	if (length)
+		path[length] = 0;
+}
+
+/*
+====================
+Extract file parts
+// FIXME: should include the slash, otherwise backing to
+// an empty path will be wrong when appending a slash
+====================
+*/
+void ExtractFilePath (char *path, char *dest)
+{
+	char	*src;
+
+	src = path + strlen(path) - 1;
+
+//
+// back up until a \ or the start
+//
+//	while (src != path && *(src-1) != PATHSEPERATOR)
+	while (src != path && *(src-1) != '\\' && *(src-1) != '/')
+		src--;
+
+	memcpy (dest, path, src-path);
+	dest[src-path] = 0;
+}
+
+void ExtractFileBase (char *path, char *dest)
+{
+	char	*src;
+
+	src = path + strlen(path) - 1;
+
+//
+// back up until a \ or the start
+//
+	while (src != path && *(src-1) != PATHSEPERATOR)
+		src--;
+
+	while (*src && *src != '.')
+	{
+		*dest++ = *src++;
+	}
+	*dest = 0;
+}
+
+void ExtractFileExtension (char *path, char *dest)
+{
+	char	*src;
+
+	src = path + strlen(path) - 1;
+
+//
+// back up until a . or the start
+//
+	while (src != path && *(src-1) != '.')
+		src--;
+	if (src == path)
+	{
+		*dest = 0;	// no extension
+		return;
+	}
+
+	strcpy (dest,src);
+}
+
+
+/*
+==============
+ParseNum / ParseHex
+==============
+*/
+int ParseHex (char *hex)
+{
+	char	*str;
+	int		num;
+
+	num = 0;
+	str = hex;
+
+	while (*str)
+	{
+		num <<= 4;
+		if (*str >= '0' && *str <= '9')
+			num += *str-'0';
+		else if (*str >= 'a' && *str <= 'f')
+			num += 10 + *str-'a';
+		else if (*str >= 'A' && *str <= 'F')
+			num += 10 + *str-'A';
+		else
+			Error ("Bad hex number: %s",hex);
+		str++;
+	}
+
+	return num;
+}
+
+int ParseNum (char *str)
+{
+	if (str[0] == '$')
+		return ParseHex (str+1);
+	if (str[0] == '0' && str[1] == 'x')
+		return ParseHex (str+2);
+	return atol (str);
+}
+
+
+/*
+============================================================================
+
+BYTE ORDER FUNCTIONS
+
+============================================================================
+*/
+
+#ifdef ASSUMED_LITTLE_ENDIAN
+#warning "Unable to determine CPU endianess. Defaulting to little endian"
+#endif
+#ifdef GUESSED_SUNOS_ENDIANNESS
+#warning "Made assumptions for undetermined SUNOS CPU endianess"
+#endif
+#ifdef GUESSED_WIN32_ENDIANNESS
+// not that it matters but to remember what I did
+//#warning "CPU endianess for Win32 assumed to be little endian"
+#endif
+
+short ShortSwap (short l)
+{
+	byte	b1, b2;
+
+	b1 = l&255;
+	b2 = (l>>8)&255;
+
+	return (b1<<8) + b2;
+}
+
+int LongSwap (int l)
+{
+	byte    b1, b2, b3, b4;
+
+	b1 = l&255;
+	b2 = (l>>8)&255;
+	b3 = (l>>16)&255;
+	b4 = (l>>24)&255;
+
+	return ((int)b1<<24) + ((int)b2<<16) + ((int)b3<<8) + b4;
+}
+
+float FloatSwap (float f)
+{
+	union
+	{
+		float	f;
+		byte	b[4];
+	} dat1, dat2;
+
+	dat1.f = f;
+	dat2.b[0] = dat1.b[3];
+	dat2.b[1] = dat1.b[2];
+	dat2.b[2] = dat1.b[1];
+	dat2.b[3] = dat1.b[0];
+	return dat2.f;
+}
+
+
 //==========================================================================
 //
 // CRC Functions
@@ -331,10 +783,12 @@ int LoadFile (char *filename, void **bufferptr)
 // initial and final xor values shown below...  in other words, the CCITT
 // standard CRC used by XMODEM.
 //
+// FIXME: byte swap?
+//
 //==========================================================================
 
-#define CRC_INIT_VALUE 0xffff
-#define CRC_XOR_VALUE 0x0000
+#define CRC_INIT_VALUE	0xffff
+#define CRC_XOR_VALUE	0x0000
 
 static unsigned short crctable[256] =
 {

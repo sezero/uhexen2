@@ -1,33 +1,34 @@
-// cmdlib.h
+/*
+	cmdlib.h
+
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/genmodel/cmdlib.h,v 1.12 2006-02-28 16:00:14 sezero Exp $
+*/
 
 #ifndef __CMDLIB__
 #define __CMDLIB__
 
+// HEADER FILES ------------------------------------------------------------
+
+#include <sys/types.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <errno.h>
-#include <ctype.h>
-#include <time.h>
 #include <stdarg.h>
-#include <unistd.h>
+#include <ctype.h>
+
+
+// TYPES -------------------------------------------------------------------
 
 #ifndef __BYTEBOOL__
 #define __BYTEBOOL__
-typedef enum {false, true} qboolean;
+typedef enum { false, true } qboolean;
 typedef unsigned char byte;
 #endif
 
-// the dec offsetof macro doesn't work very well...
-#define myoffsetof(type,identifier) ((size_t)&((type *)0)->identifier)
 
+// MACROS ------------------------------------------------------------------
 
-// set these before calling CheckParm
-extern int myargc;
-extern char **myargv;
-
-char *strupr (char *in);
-char *strlower (char *in);
 #ifdef _WIN32
 #define Q_strncasecmp	strnicmp
 #define Q_strcasecmp	stricmp
@@ -35,38 +36,77 @@ char *strlower (char *in);
 #define Q_strncasecmp	strncasecmp
 #define Q_strcasecmp	strcasecmp
 #endif
-void Q_getwd (char *out);
 
-int	Q_filelength (FILE *f);
-int	Q_filetime (char *path);
+// the dec offsetof macro doesn't work very well...
+#define myoffsetof(type,identifier) ((size_t)&((type *)0)->identifier)
+
+
+// PUBLIC DATA DECLARATIONS ------------------------------------------------
+
+// set these before calling CheckParm
+extern int myargc;
+extern char **myargv;
+
+extern char com_token[1024];
+extern qboolean com_eof;
+
+
+// PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
+
+#if defined (__GLIBC__) && defined (_STRING_H) && defined (_GNU_SOURCE)
+#define Q_stpcpy	stpcpy
+#else
+char	*Q_stpcpy (char *qdest, const char *qsrc);
+#endif
+char	*Q_strupr (char *in);
+char	*Q_strlwr (char *in);
+
+#ifndef _WIN32
+int	Sys_kbhit(void);
+#endif
+
+void	*SafeMalloc(size_t n, char *desc);
 
 void	Q_mkdir (char *path);
+void	Q_getwd (char *out);
+int	Q_filelength(FILE *f);
+int	Q_filetime (char *path);
 
-double	GetTime (void);
+double	GetTime(void);
 
 void	Error (char *error, ...);
-int		CheckParm (char *check);
+int	CheckParm(char *check);
 
-void *SafeMalloc(size_t n, char *desc);
+FILE	*SafeOpenWrite(char *filename);
+FILE	*SafeOpenRead(char *filename);
+void	SafeRead(FILE *f, void *buffer, int count);
+void	SafeWrite(FILE *f, void *buffer, int count);
 
-FILE	*SafeOpenWrite (char *filename);
-FILE	*SafeOpenRead (char *filename);
-void	SafeRead (FILE *f, void *buffer, int count);
-void	SafeWrite (FILE *f, void *buffer, int count);
-
-int		LoadFile (char *filename, void **bufferptr);
+int	LoadFile(char *filename, void **bufferptr);
 void	SaveFile (char *filename, void *buffer, int count);
 
-void 	DefaultExtension (char *path, char *extension);
-void 	DefaultPath (char *path, char *basepath);
-void 	StripFilename (char *path);
-void 	StripExtension (char *path);
+void	DefaultExtension (char *path, char *extension);
+void	DefaultPath (char *path, char *basepath);
+void	StripFilename (char *path);
+void	StripExtension (char *path);
 
-void 	ExtractFilePath (char *path, char *dest);
-void 	ExtractFileBase (char *path, char *dest);
+void	ExtractFilePath (char *path, char *dest);
+void	ExtractFileBase (char *path, char *dest);
 void	ExtractFileExtension (char *path, char *dest);
 
-int 	ParseNum (char *str);
+void	CreatePath (char *path);
+void	Q_CopyFile (char *from, char *to);
+
+int	ParseNum (char *str);
+
+char	*COM_Parse(char *data);
+
+void	CRC_Init(unsigned short *crcvalue);
+void	CRC_ProcessByte(unsigned short *crcvalue, byte data);
+unsigned short	CRC_Value(unsigned short crcvalue);
+
+#define	HASH_TABLE_SIZE		9973
+int		COM_Hash(char *string);
 
 // endianness stuff: <sys/types.h> is supposed
 // to succeed in locating the correct endian.h
@@ -122,24 +162,5 @@ float	FloatSwap (float);
 
 // end of endianness stuff
 
+#endif	// __CMDLIB__
 
-char *COM_Parse (char *data);
-
-extern	char		com_token[1024];
-extern	qboolean	com_eof;
-
-char *copystring(char *s);
-
-
-void CRC_Init(unsigned short *crcvalue);
-void CRC_ProcessByte(unsigned short *crcvalue, byte data);
-unsigned short CRC_Value(unsigned short crcvalue);
-
-void	CreatePath (char *path);
-void	Q_CopyFile (char *from, char *to);
-
-extern	qboolean		archive;
-extern	char			archivedir[1024];
-
-
-#endif

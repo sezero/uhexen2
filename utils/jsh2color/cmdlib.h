@@ -1,52 +1,34 @@
-/*  Copyright (C) 1996-1997  Id Software, Inc.
+/*
+	cmdlib.h
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-
-    See file, 'COPYING', for details.
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/cmdlib.h,v 1.7 2006-02-28 16:00:15 sezero Exp $
 */
-
-// cmdlib.h
 
 #ifndef __CMDLIB__
 #define __CMDLIB__
 
+// HEADER FILES ------------------------------------------------------------
+
+#include <sys/types.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <errno.h>
-#include <ctype.h>
-#include <time.h>
 #include <stdarg.h>
+#include <ctype.h>
+
+
+// TYPES -------------------------------------------------------------------
 
 #ifndef __BYTEBOOL__
 #define __BYTEBOOL__
-
-typedef enum {false, true} qboolean;
+typedef enum { false, true } qboolean;
 typedef unsigned char byte;
 #endif
 
-// the dec offsetof macro doesn't work very well...
-#define myoffsetof(type,identifier) ((size_t)&((type *)0)->identifier)
 
+// MACROS ------------------------------------------------------------------
 
-// set these before calling CheckParm
-extern int myargc;
-extern char **myargv;
-
-char *strupr (char *in);
-char *strlower (char *in);
 #ifdef _WIN32
 #define Q_strncasecmp	strnicmp
 #define Q_strcasecmp	stricmp
@@ -54,36 +36,74 @@ char *strlower (char *in);
 #define Q_strncasecmp	strncasecmp
 #define Q_strcasecmp	strcasecmp
 #endif
-void Q_getwd (char *out);
 
-int  Q_filelength (FILE *f);
-int  Q_filetime (char *path);
+// the dec offsetof macro doesn't work very well...
+#define myoffsetof(type,identifier) ((size_t)&((type *)0)->identifier)
 
-void Q_mkdir (char *path);
 
-double	GetTime (void);
+// PUBLIC DATA DECLARATIONS ------------------------------------------------
+
+// set these before calling CheckParm
+extern int myargc;
+extern char **myargv;
+
+extern char com_token[1024];
+extern qboolean com_eof;
+
+
+// PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
+
+#if defined (__GLIBC__) && defined (_STRING_H) && defined (_GNU_SOURCE)
+#define Q_stpcpy	stpcpy
+#else
+char	*Q_stpcpy (char *qdest, const char *qsrc);
+#endif
+char	*Q_strupr (char *in);
+char	*Q_strlwr (char *in);
+
+#ifndef _WIN32
+int	Sys_kbhit(void);
+#endif
+
+void	*SafeMalloc(size_t n, char *desc);
+
+void	Q_mkdir (char *path);
+void	Q_getwd (char *out);
+int	Q_filelength(FILE *f);
+int	Q_filetime (char *path);
+
+double	GetTime(void);
 
 void	Error (char *error, ...);
-int		CheckParm (char *check);
+int	CheckParm(char *check);
 
-FILE	*SafeOpenWrite (char *filename);
-FILE	*SafeOpenRead (char *filename);
-void	SafeRead (FILE *f, void *buffer, int count);
-void	SafeWrite (FILE *f, void *buffer, int count);
+FILE	*SafeOpenWrite(char *filename);
+FILE	*SafeOpenRead(char *filename);
+void	SafeRead(FILE *f, void *buffer, int count);
+void	SafeWrite(FILE *f, void *buffer, int count);
 
-int		LoadFile (char *filename, void **bufferptr);
+int	LoadFile(char *filename, void **bufferptr);
 void	SaveFile (char *filename, void *buffer, int count);
 
-void 	DefaultExtension (char *path, char *extension);
-void 	DefaultPath (char *path, char *basepath);
-void 	StripFilename (char *path);
-void 	StripExtension (char *path);
+void	DefaultExtension (char *path, char *extension);
+void	DefaultPath (char *path, char *basepath);
+void	StripFilename (char *path);
+void	StripExtension (char *path);
 
-void 	ExtractFilePath (char *path, char *dest);
-void 	ExtractFileBase (char *path, char *dest);
+void	ExtractFilePath (char *path, char *dest);
+void	ExtractFileBase (char *path, char *dest);
 void	ExtractFileExtension (char *path, char *dest);
 
-int 	ParseNum (char *str);
+int	ParseNum (char *str);
+
+char	*COM_Parse(char *data);
+
+void	CRC_Init(unsigned short *crcvalue);
+void	CRC_ProcessByte(unsigned short *crcvalue, byte data);
+unsigned short	CRC_Value(unsigned short crcvalue);
+
+#define	HASH_TABLE_SIZE		9973
+int		COM_Hash(char *string);
 
 // endianness stuff: <sys/types.h> is supposed
 // to succeed in locating the correct endian.h
@@ -139,23 +159,5 @@ float	FloatSwap (float);
 
 // end of endianness stuff
 
-
-char *COM_Parse (char *data);
-
-extern	char		com_token[1024];
-extern	qboolean	com_eof;
-
-char *copystring(char *s);
-
-void CRC_Init(unsigned short *crcvalue);
-void CRC_ProcessByte(unsigned short *crcvalue, byte data);
-unsigned short CRC_Value(unsigned short crcvalue);
-
-void CreatePath (char *path);
-void Q_CopyFile (char *from, char *to);
-
-#ifndef _WIN32
-int Sys_kbhit(void);
-#endif
-
 #endif	// __CMDLIB__
+
