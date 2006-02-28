@@ -83,18 +83,17 @@ typedef struct
 
 // PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
 
-static void LoadHRC(char *fileName, triangle_t **triList,
-	int *triangleCount);
-static void LoadASC(char *fileName, triangle_t **triList,
-	int *triangleCount);
-static void LoadHTR(char *fileName, triangle_t **triList,
-	int *triangleCount);
-static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount);
+static void LoadHRC(char *fileName, triangle_t **triList, int *triangleCount);
+static void LoadASC(char *fileName, triangle_t **triList, int *triangleCount);
+static void LoadHTR(char *fileName, triangle_t **triList, int *triangleCount);
 static void LoadTRI(FILE *input, triangle_t **triList, int *triangleCount);
 
 static void ByteSwapTri(tf_triangle *tri);
 
+#if 0	// unused 3DS stuff
+static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount);
 static void _3DSError(char *message);
+
 static float ReadFloat(void);
 static unsigned long ReadLong(void);
 static unsigned short ReadShort(void);
@@ -102,6 +101,7 @@ static unsigned char ReadByte(void);
 static void SkipName(void);
 static void SeekTo(int position);
 static unsigned long FilePosition(void);
+#endif
 
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
@@ -592,7 +592,7 @@ static void LoadHTR(char *fileName, triangle_t **triList,
 // Load3DS
 //
 //==========================================================================
-
+#if 0	// 3DS stuff is unused. don't even know whether it's working
 static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 {
 	unsigned int i, j;
@@ -809,6 +809,7 @@ static unsigned long FilePosition(void)
 {
 	return ftell(InputFile);
 }
+#endif	// end of unused 3DS stuff
 
 //==========================================================================
 //
