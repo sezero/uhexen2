@@ -15,9 +15,9 @@
 
 // MACROS ------------------------------------------------------------------
 
-//#ifndef M_PI
-#define M_PI 3.14159265
-//#endif
+//#undef M_PI
+//#define M_PI	3.14159265
+#define MY_PI	3.14159265
 
 // 3DS binary files
 #define _3DS_MAIN3DS		0x4D4D
@@ -224,9 +224,9 @@ static void LoadHRC(char *fileName, triangle_t **triList,
 		TK_Fetch();
 	}
 
-	rx = (float)(((rotation[0]-90.0)/360.0)*2.0*M_PI);
-	ry = (float)((rotation[1]/360.0)*2.0*M_PI);
-	rz = (float)((rotation[2]/360.0)*2.0*M_PI);
+	rx = (float)(((rotation[0]-90.0)/360.0)*2.0*MY_PI);
+	ry = (float)((rotation[1]/360.0)*2.0*MY_PI);
+	rz = (float)((rotation[2]/360.0)*2.0*MY_PI);
 
 	TK_Beyond(TK_MESH);
 	TK_BeyondRequire(TK_VERTICES, TK_INTNUMBER);
@@ -374,10 +374,10 @@ static void LoadASC(char *fileName, triangle_t **triList,
 	*triList = tList;
 	TK_BeyondRequire(TK_C_VERTEX, TK_LIST);
 
-/*	rx = ((rotation[0]+90.0)/360.0)*2.0*M_PI;
-	//rx = (rotation[0]/360.0)*2.0*M_PI;
-	ry = (rotation[1]/360.0)*2.0*M_PI;
-	rz = (rotation[2]/360.0)*2.0*M_PI;
+/*	rx = ((rotation[0]+90.0)/360.0)*2.0*MY_PI;
+	//rx = (rotation[0]/360.0)*2.0*MY_PI;
+	ry = (rotation[1]/360.0)*2.0*MY_PI;
+	rz = (rotation[2]/360.0)*2.0*MY_PI;
 */
 	vList = SafeMalloc(vertexCount*sizeof vList[0], "Vertex list");
 	for(i = 0; i < vertexCount; i++)
@@ -513,10 +513,10 @@ static void LoadHTR(char *fileName, triangle_t **triList,
 	TK_FetchRequire(TK_FLOATNUMBER);
 	origin[2] = tk_FloatNumber;
 
-	//rx = 90.0/360.0*2.0*M_PI;
-	rx =(float)(FixHTRRotateX/360.0*2.0*M_PI);
-	ry =(float)(FixHTRRotateY/360.0*2.0*M_PI);
-	rz =(float)(FixHTRRotateZ/360.0*2.0*M_PI);
+	//rx = 90.0/360.0*2.0*MY_PI;
+	rx =(float)(FixHTRRotateX/360.0*2.0*MY_PI);
+	ry =(float)(FixHTRRotateY/360.0*2.0*MY_PI);
+	rz =(float)(FixHTRRotateZ/360.0*2.0*MY_PI);
 
 	// Get vertex list
 	for(i = 0; i < vertexCount; i++)
