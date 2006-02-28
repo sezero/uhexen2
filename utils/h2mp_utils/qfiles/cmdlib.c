@@ -74,11 +74,12 @@ void SetQdirFromPath (char *path)
 	// search for "quake" in path
 
 	for (c=path ; *c ; c++)
+	{
 		if (!Q_strncasecmp (c, BUILDDIR, sizeof(BUILDDIR)-1))
 		{
-			strncpy (qdir, path, c+5-path);
+			strncpy (qdir, path, c+sizeof(BUILDDIR)-path);
 			printf ("qdir: %s\n", qdir);
-			c += 5;
+			c += sizeof(BUILDDIR);
 			while (*c)
 			{
 				if (*c == '/' || *c == '\\')
@@ -92,7 +93,9 @@ void SetQdirFromPath (char *path)
 			Error ("No gamedir in %s", path);
 			return;
 		}
-	Error ("SetQdirFromPath: no '"BUILDDIR"' in %s", path);
+	}
+
+	Error ("SetQdirFromPath: no %s in %s", BUILDDIR, path);
 }
 
 char *ExpandArg (char *path)
