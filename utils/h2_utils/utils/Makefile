@@ -63,7 +63,7 @@ VISOBJS= flow.o \
 	soundpvs.o \
 	vis.o
 
-QBSPOBJS= brush.c \
+QBSPOBJS= brush.o \
 	csg4.o \
 	map.o \
 	merge.o \
