@@ -4,7 +4,7 @@ EXE_EXT=
 BIN_FILES="dcc/bin/dhcc h2_utils/bin/hcc h2mp_utils/bin/hcc 
 jsh2color/jsh2colour
 h2_utils/bin/vis h2_utils/bin/qbsp h2_utils/bin/light 
-h2mp_utils/bin/vis h2_utils/bin/qbsp h2_utils/bin/light 
+h2mp_utils/bin/vis h2mp_utils/bin/qbsp h2mp_utils/bin/light 
 h2mp_utils/bin/qfiles h2mp_utils/bin/genmodel"
 
 if env | grep -i windir > __tmp.tmp; then
