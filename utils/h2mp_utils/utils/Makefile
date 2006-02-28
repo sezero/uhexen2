@@ -21,10 +21,12 @@ ifeq "$(TARGET_OS)" "WIN32"
 QBSP=qbsp.exe
 LIGHT=light.exe
 VIS=vis.exe
+BSPINFO=bspinfo.exe
 else
 QBSP=qbsp
 LIGHT=light
 VIS=vis
+BSPINFO=bspinfo
 endif
 
 # Compiler flags
@@ -77,8 +79,10 @@ QBSPOBJS= brush.o \
 	tjunc.o \
 	writebsp.o
 
+BSPINFOBJS= bspinfo.o
+
 # Targets
-all : $(LIGHT) $(VIS) $(QBSP)
+all : $(LIGHT) $(VIS) $(QBSP) $(BSPINFO)
 
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc
@@ -91,6 +95,9 @@ $(VIS) : $(COMMONOBJS) $(VISOBJS)
 
 $(QBSP) : $(COMMONOBJS) $(QBSPOBJS)
 	$(LINKER) -o $(DESTDIR)/$(QBSP) $(COMMONOBJS) $(QBSPOBJS) $(LDFLAGS) $(LDLIBS)
+
+$(BSPINFO) : $(COMMONOBJS) $(BSPINFOBJS)
+	$(LINKER) -o $(DESTDIR)/$(BSPINFO) $(COMMONOBJS) $(BSPINFOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
 	rm -f *.o core .tmp *.tmp

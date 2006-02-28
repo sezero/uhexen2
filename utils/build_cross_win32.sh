@@ -7,6 +7,7 @@ BIN_FILES="dcc/bin/dhcc.exe h2_utils/bin/hcc.exe h2mp_utils/bin/hcc.exe
 jsh2color/jsh2colour.exe
 h2_utils/bin/vis.exe h2_utils/bin/qbsp.exe h2_utils/bin/light.exe
 h2mp_utils/bin/vis.exe h2mp_utils/bin/qbsp.exe h2mp_utils/bin/light.exe
+h2mp_utils/bin/bspinfo.exe
 h2mp_utils/bin/qfiles.exe h2mp_utils/bin/genmodel.exe"
 
 if [ "$1" = "strip" ]
