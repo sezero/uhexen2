@@ -1156,7 +1156,7 @@ void Cmd_Base (void)
 	//ExpandPathAndArchive (file1);
 
 	sprintf (file1, "%s/%s", cddir, token);
-	//time1 = FileTime (file1);
+	//time1 = Q_filetime (file1);
 	//if (time1 == -1)
 	//	Error ("%s doesn't exist", file1);
 
@@ -1253,7 +1253,7 @@ void Cmd_Skin (void)
 
 	sprintf (file1, "%s/%s.pcx", cddir, token);
 
-	time1 = FileTime (file1);
+	time1 = Q_filetime (file1);
 	if (time1 == -1)
 		Error ("%s not found", file1);
 	
@@ -1364,7 +1364,7 @@ void GrabFrame (char *frame, int isgroup)
 	//ExpandPathAndArchive (file1);
 
 	sprintf (file1, "%s/%s", cddir, frame);
-	//time1 = FileTime (file1);
+	//time1 = Q_filetime (file1);
 	//if (time1 == -1)
 	//	Error ("%s does not exist",file1);
 

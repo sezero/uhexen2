@@ -115,7 +115,7 @@ void Q_mkdir (char *path)
  * returns -1 if not present
  * ============
  */
-int    FileTime (char *path)
+int Q_filetime (char *path)
 {
 	struct stat	buf;
 
@@ -688,7 +688,7 @@ void	CreatePath (char *path)
  * Used to archive source files
  *============
  */
-void	CopyFile (char *from, char *to)
+void	Q_CopyFile (char *from, char *to)
 {
 	void	*buffer;
 	int	length;

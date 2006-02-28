@@ -38,7 +38,7 @@ char *strlower (char *in);
 void Q_getwd (char *out);
 
 int	Q_filelength (FILE *f);
-int	FileTime (char *path);
+int	Q_filetime (char *path);
 
 void	Q_mkdir (char *path);
 
@@ -142,7 +142,7 @@ void CRC_ProcessByte(unsigned short *crcvalue, byte data);
 unsigned short CRC_Value(unsigned short crcvalue);
 
 void	CreatePath (char *path);
-void	QCopyFile (char *from, char *to);
+void	Q_CopyFile (char *from, char *to);
 
 extern	qboolean		archive;
 extern	char			archivedir[1024];

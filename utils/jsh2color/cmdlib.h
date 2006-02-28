@@ -57,7 +57,7 @@ char *strlower (char *in);
 void Q_getwd (char *out);
 
 int  Q_filelength (FILE *f);
-int  FileTime (char *path);
+int  Q_filetime (char *path);
 
 void Q_mkdir (char *path);
 
@@ -152,7 +152,7 @@ void CRC_ProcessByte(unsigned short *crcvalue, byte data);
 unsigned short CRC_Value(unsigned short crcvalue);
 
 void CreatePath (char *path);
-void CopyFile (char *from, char *to);
+void Q_CopyFile (char *from, char *to);
 
 #ifndef _WIN32
 int Sys_kbhit(void);
