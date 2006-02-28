@@ -1,5 +1,6 @@
 
 #include "cmdlib.h"
+#include "qdir.h"
 
 #define	MAX_SOUNDS		1024
 #define	MAX_MODELS		1024

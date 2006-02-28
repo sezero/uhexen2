@@ -21,10 +21,6 @@ char **myargv;
 char		com_token[1024];
 qboolean	com_eof;
 
-qboolean		archive;
-char			archivedir[1024];
-
-
 /*
 =================
 Error
@@ -61,93 +57,6 @@ void *SafeMalloc(size_t n, char *desc)
 	}
 	return p;
 }
-
-/*
-
-qdir will hold the path up to the quake directory, including the slash
-
-  f:\quake\
-  /raid/quake/
-
-gamedir will hold qdir + the game directory (id1, id2, etc)
-
-  */
-
-char		qdir[1024];
-char		gamedir[1024];
-
-void SetQdirFromPath (char *path)
-{
-	char	temp[1024];
-	char	*c;
-
-	if (!(path[0] == '/' || path[0] == '\\' || path[1] == ':'))
-	{	// path is partial
-		Q_getwd (temp);
-		strcat (temp, path);
-		path = temp;
-	}
-
-	// search for "quake" in path
-
-	for (c=path ; *c ; c++)
-		if (!Q_strncasecmp (c, "quake", 5))
-		{
-			strncpy (qdir, path, c+6-path);
-			printf ("qdir: %s\n", qdir);
-			c += 6;
-			while (*c)
-			{
-				if (*c == '/' || *c == '\\')
-				{
-					strncpy (gamedir, path, c+1-path);
-					printf ("gamedir: %s\n", gamedir);
-					return;
-				}
-				c++;
-			}
-			Error ("No gamedir in %s", path);
-			return;
-		}
-	Error ("SeetQdirFromPath: no 'quake' in %s", path);
-}
-
-char *ExpandPath (char *path)
-{
-	static char full[1024];
-	if (!qdir)
-		Error ("ExpandPath called without qdir set");
-	if (path[0] == '/' || path[0] == '\\' || path[1] == ':')
-		return path;
-	sprintf (full, "%s%s", qdir, path);
-	return full;
-}
-
-char *ExpandPathAndArchive (char *path)
-{
-	char	*expanded;
-	char	archivename[1024];
-
-	expanded = ExpandPath (path);
-
-	if (archive)
-	{
-		sprintf (archivename, "%s/%s", archivedir, path);
-		Q_CopyFile (expanded, archivename);
-	}
-	return expanded;
-}
-
-
-char *copystring(char *s)
-{
-	char	*b;
-	b = malloc(strlen(s)+1);
-	strcpy (b, s);
-	return b;
-}
-
-
 
 /*
 ================

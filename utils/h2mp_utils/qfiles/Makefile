@@ -46,6 +46,7 @@ endif
 
 # Objects
 QFILESOBJS= cmdlib.o \
+	qdir.o \
 	qfiles.o
 
 # Targets

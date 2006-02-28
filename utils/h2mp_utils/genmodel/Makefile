@@ -46,6 +46,7 @@ endif
 
 # Objects
 GENMODELOBJS= cmdlib.o \
+	qdir.o \
 	mathlib.o \
 	loadtri.o \
 	scriplib.o \

@@ -28,6 +28,7 @@
 #include "mathlib.h"
 #include "loadtri.h"
 #include "genmodel.h"
+#include "qdir.h"
 
 // MACROS ------------------------------------------------------------------
 
