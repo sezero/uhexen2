@@ -94,14 +94,14 @@ make -C launcher GTK1=yes
 cp launcher/h2launcher.gtk1 launcher/h2launcher
 %endif
 # Build the hcode compilers
-make -C utils/h2_utils/hcc
-make -C utils/h2mp_utils/hcc
+make -C utils/hcc_old
+make -C utils/hcc
 # Build the game-code
-utils/h2_utils/bin/hcc -src gamecode/hc/h2
-utils/h2_utils/bin/hcc -src gamecode/hc/h2 -name progs2.src
-utils/h2mp_utils/bin/hcc -src gamecode/hc/portals -oi -on
-utils/h2mp_utils/bin/hcc -src gamecode/hc/hw -oi -on
-#utils/h2mp_utils/bin/hcc -src gamecode/hc/siege -oi -on
+utils/hcc_old/hcc -src gamecode/hc/h2
+utils/hcc_old/hcc -src gamecode/hc/h2 -name progs2.src
+utils/bin/hcc -src gamecode/hc/portals -oi -on
+utils/bin/hcc -src gamecode/hc/hw -oi -on
+#utils/bin/hcc -src gamecode/hc/siege -oi -on
 
 # Build game-update patcher loki_patch
 cd loki_patch-src
@@ -272,6 +272,9 @@ rm -rf %{buildroot}
 %{_prefix}/games/%{name}/hw/default.cfg
 
 %changelog
+* Wed Mar 01 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-2
+- Updated after the utilities reorganization
+
 * Sun Feb 12 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-1
 - Updated for 1.4.0
 
