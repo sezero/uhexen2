@@ -5,22 +5,21 @@
 //**
 //**************************************************************************
 
-#define MAXTRIANGLES 2048
+#define MAXTRIANGLES	2048
 
 typedef struct
 {
-	vec3_t verts[3];
+	vec3_t	verts[3];
 } triangle_t;
 
-void LoadTriangleList(char *fileName, triangle_t **triList,
-	int *triangleCount);
+void LoadTriangleList(char *fileName, triangle_t **triList, int *triangleCount);
 
-extern char InputFileName[1024];
+extern char	InputFileName[1024];
 
-extern float FixHTRRotateX;
-extern float FixHTRRotateY;
-extern float FixHTRRotateZ;
+extern float	FixHTRRotateX;
+extern float	FixHTRRotateY;
+extern float	FixHTRRotateZ;
 
-extern float FixHTRTranslateX;
-extern float FixHTRTranslateY;
-extern float FixHTRTranslateZ;
+extern float	FixHTRTranslateX;
+extern float	FixHTRTranslateY;
+extern float	FixHTRTranslateZ;

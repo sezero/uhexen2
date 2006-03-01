@@ -14,15 +14,6 @@
 
 // HEADER FILES ------------------------------------------------------------
 
-#include <sys/stat.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#include <string.h>
-#ifdef _WIN32
-#include <conio.h>
-#endif
-
 #include "cmdlib.h"
 #include "scriplib.h"
 #include "mathlib.h"
@@ -32,47 +23,46 @@
 
 // MACROS ------------------------------------------------------------------
 
-#define VERSION_TEXT "1.18"
+#define VERSION_TEXT	"1.18"
 
 #define MAXVERTS		2048
 #define MAXFRAMES		512
 #define MAXSKINS		100
 
-#define NUMVERTEXNORMALS 162
+#define NUMVERTEXNORMALS	162
 
-#define SKINPAGE_WIDTH 640
-#define SKINPAGE_HEIGHT 480
-#define SKINPAGE_SIZE (SKINPAGE_WIDTH*SKINPAGE_HEIGHT)
+#define SKINPAGE_WIDTH	640
+#define SKINPAGE_HEIGHT	480
+#define SKINPAGE_SIZE	(SKINPAGE_WIDTH*SKINPAGE_HEIGHT)
 
 // Must match definitions in genskin.c
-#define SCALE_ADJUST_FACTOR 0.96
-#define ENCODED_WIDTH_X 192
-#define ENCODED_WIDTH_Y 475
-#define ENCODED_HEIGHT_X 228
-#define ENCODED_HEIGHT_Y 475
+#define SCALE_ADJUST_FACTOR	0.96
+#define ENCODED_WIDTH_X		192
+#define ENCODED_WIDTH_Y		475
+#define ENCODED_HEIGHT_X	228
+#define ENCODED_HEIGHT_Y	475
 
 // TYPES -------------------------------------------------------------------
 
 typedef struct {
 	aliasframetype_t	type;		// single frame or group of frames
-	void				*pdata;		// either a daliasframe_t or group info
-	float				interval;	// only used for frames in groups
-	int					numgroupframes;	// only used by group headers
-	char				name[16];
+	void		*pdata;			// either a daliasframe_t or group info
+	float		interval;		// only used for frames in groups
+	int			numgroupframes;	// only used by group headers
+	char		name[16];
 } aliaspackage_t;
 
 typedef struct {
 	aliasskintype_t		type;		// single skin or group of skiins
-	void				*pdata;		// either a daliasskinframe_t or group info
-	float				interval;	// only used for skins in groups
-	int					numgroupskins;	// only used by group headers
+	void		*pdata;			// either a daliasskinframe_t or group info
+	float		interval;		// only used for skins in groups
+	int			numgroupskins;	// only used by group headers
 } aliasskinpackage_t;
 
 typedef struct {
 	int		numnormals;
 	float	normals[40][3];
 } vertexnormals;
-
 
 typedef struct {
 	vec3_t		v;
@@ -81,25 +71,25 @@ typedef struct {
 
 typedef struct
 {
-	byte tag;
-	byte version;
-	byte encoding;
-	byte pixelBits;
-	signed short xMin;
-	signed short yMin;
-	signed short xMax;
-	signed short yMax;
-	signed short horzRes;
-	signed short vertRes;
-	byte palette[48];
-	byte pad;
-	byte planes;
-	signed short lineBytes;
-	signed short palType;
-	unsigned short vidSizeX;
-	unsigned short vidSizeY;
-	byte reserved[54];
-	byte data;
+	byte	tag;
+	byte	version;
+	byte	encoding;
+	byte	pixelBits;
+	signed short	xMin;
+	signed short	yMin;
+	signed short	xMax;
+	signed short	yMax;
+	signed short	horzRes;
+	signed short	vertRes;
+	byte	palette[48];
+	byte	pad;
+	byte	planes;
+	signed short	lineBytes;
+	signed short	palType;
+	unsigned short	vidSizeX;
+	unsigned short	vidSizeY;
+	byte	reserved[54];
+	byte	data;
 } pcx_t;
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
@@ -122,54 +112,53 @@ static int ExtractDigit(byte *pic, int x, int y);
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
-trivert_t verts[MAXFRAMES][MAXVERTS];
-newmdl_t model;
+static trivert_t	verts[MAXFRAMES][MAXVERTS];
+static newmdl_t	model;
 
-char file1[1024];
-char file2[1024];
-char skinname[1024];
-char qbasename[1024];
-float scale, scale_up = 1.0;
+static char	file1[1024];
+static char	file2[1024];
+static char	skinname[1024];
+static char	qbasename[1024];
+static float	scale, scale_up = 1.0;
 
-float ScaleWidth;
-float ScaleHeight;
+static float	ScaleWidth;
+static float	ScaleHeight;
 
-vec3_t mins, maxs;
-vec3_t framesmins, framesmaxs;
-vec3_t adjust;
+static vec3_t	mins, maxs;
+static vec3_t	framesmins, framesmaxs;
+static vec3_t	adjust;
 
-aliaspackage_t frames[MAXFRAMES];
+static aliaspackage_t		frames[MAXFRAMES];
+static aliasskinpackage_t	skins[MAXSKINS];
 
-aliasskinpackage_t skins[MAXSKINS];
+static vec3_t	baseverts[MAXVERTS];
+static stvert_t	stverts[MAXVERTS];
+static dnewtriangle_t	triangles[MAXTRIANGLES];
+static int	degenerate[MAXTRIANGLES];
 
-vec3_t baseverts[MAXVERTS];
-stvert_t stverts[MAXVERTS];
-dnewtriangle_t triangles[MAXTRIANGLES];
-int degenerate[MAXTRIANGLES];
+static char	cdpartial[256];
+static char	cddir[256];
 
-char cdpartial[256];
-char cddir[256];
+static int	framecount, skincount;
+static qboolean	cdset;
+static int	degeneratetris;
+static int	firstframe = 1;
+static float	totsize, averagesize;
 
-int framecount, skincount;
-qboolean cdset;
-int degeneratetris;
-int firstframe = 1;
-float totsize, averagesize;
+static qboolean	DoOpts = false;
+static qboolean	ModelReadIn = false;
+static int	original_size = 0;
 
-static qboolean DoOpts = false;
-static qboolean ModelReadIn = false;
-static int		original_size = 0;
+static vertexnormals	vnorms[MAXVERTS];
 
-vertexnormals vnorms[MAXVERTS];
-
-double avertexnormals[NUMVERTEXNORMALS][3] =
+static double	avertexnormals[NUMVERTEXNORMALS][3] =
 {
 #include "anorms.h"
 };
 
-trivertx_t tarray[MAXVERTS];
+static trivertx_t	tarray[MAXVERTS];
 
-char outname[1024];
+static char	outname[1024];
 
 // Must match definitions in genskin.c
 static char *DigitDefs[] =
@@ -196,8 +185,8 @@ static char *DigitDefs[] =
 
 int main(int argc, char **argv)
 {
-	int i;
-	char path[1024], bakname[1024];
+	int		i;
+	char	path[1024], bakname[1024];
 
 	printf("GENMODEL Version "VERSION_TEXT" ("__DATE__")\n\n");
 
@@ -208,9 +197,9 @@ int main(int argc, char **argv)
 	}
 	path[0] = 0;
 
-	for(i=1; i<argc;i++)
+	for (i = 1; i < argc; i++)
 	{
-		if(!Q_strcasecmp(argv[i], "-archive"))
+		if (!Q_strcasecmp(argv[i], "-archive"))
 		{
 			archive = true;
 			strcpy(archivedir, argv[i+1]);
@@ -229,9 +218,8 @@ int main(int argc, char **argv)
 		}
 	}
 
-
 	// Init
-	for(i = 0; i < 3; i++)
+	for (i = 0; i < 3; i++)
 	{
 		framesmins[i] = 9999999;
 		framesmaxs[i] = -9999999;
@@ -256,11 +244,9 @@ int main(int argc, char **argv)
 	}
 	else
 	{
-
 		DefaultExtension(path, ".hc");
 		// Load the .hc script file
 		LoadScriptFile(path);
-
 
 		// Parse it
 		ParseScript();
@@ -308,31 +294,29 @@ static void ClearModel(void)
 //
 //==========================================================================
 
-void ReadFrame (FILE *FH, int framenum)
+static void ReadFrame (FILE *FH, int framenum)
 {
-	int				j, k;
-	trivert_t		*pframe;
+	int			j, k;
+	trivert_t	*pframe;
 	daliasframe_t	aframe;
 
 	SafeRead (FH, &aframe, sizeof (aframe));
-
 	SafeRead (FH, &tarray[0], model.numverts * sizeof(tarray[0]));
-
 
 	pframe = verts[framenum];
 	memcpy (frames[framenum].name, aframe.name, sizeof(aframe.name));
 	frames[framenum].pdata = pframe;
 
-	for (j=0 ; j<model.numverts ; j++)
+	for (j = 0 ; j < model.numverts ; j++)
 	{
 		// all of these are byte values, so no need to deal with endianness
 		pframe[j].lightnormalindex = tarray[j].lightnormalindex;
 
-		for (k=0 ; k<3 ; k++)
+		for (k = 0 ; k < 3 ; k++)
 		{	// scale to byte values & min/max check
 //			float v;
 //			byte b;
-			
+
 			pframe[j].v[k] = (tarray[j].v[k] * model.scale[k]) + model.scale_origin[k] + 0.001;
 
 //			v = (pframe[j].v[k] - model.scale_origin[k]) / model.scale[k];
@@ -347,33 +331,32 @@ void ReadFrame (FILE *FH, int framenum)
 //
 //==========================================================================
 
-void WriteFrame (FILE *modelouthandle, int framenum)
+static void WriteFrame (FILE *modelouthandle, int framenum)
 {
-	int				j, k;
-	trivert_t		*pframe;
+	int			j, k;
+	trivert_t	*pframe;
 	daliasframe_t	aframe;
-	float			v;
+	float		v;
 
 	pframe = verts[framenum];
 
 	memcpy (aframe.name, frames[framenum].name, sizeof(aframe.name));
 
-	for (j=0 ; j<3 ; j++)
+	for (j = 0 ; j < 3 ; j++)
 	{
 		aframe.bboxmin.v[j] = 255;
 		aframe.bboxmax.v[j] = 0;
 	}
 
-	for (j=0 ; j<model.numverts ; j++)
+	for (j = 0 ; j < model.numverts ; j++)
 	{
 	// all of these are byte values, so no need to deal with endianness
 		tarray[j].lightnormalindex = pframe[j].lightnormalindex;
 
 		if (tarray[j].lightnormalindex > NUMVERTEXNORMALS)
-			Error ("invalid lightnormalindex %d\n",
-					tarray[j].lightnormalindex);
+			Error ("invalid lightnormalindex %d\n", tarray[j].lightnormalindex);
 
-		for (k=0 ; k<3 ; k++)
+		for (k = 0 ; k < 3 ; k++)
 		{
 		// scale to byte values & min/max check
 			v = (pframe[j].v[k] - model.scale_origin[k]) / model.scale[k];
@@ -392,9 +375,7 @@ void WriteFrame (FILE *modelouthandle, int framenum)
 	}
 
 	SafeWrite (modelouthandle, &aframe, sizeof (aframe));
-
-	SafeWrite (modelouthandle, &tarray[0],
-			   model.numverts * sizeof(tarray[0]));
+	SafeWrite (modelouthandle, &tarray[0], model.numverts * sizeof(tarray[0]));
 }
 
 //==========================================================================
@@ -403,32 +384,30 @@ void WriteFrame (FILE *modelouthandle, int framenum)
 //
 //==========================================================================
 
-void WriteGroupBBox (FILE *modelouthandle, int numframes, int curframe)
+static void WriteGroupBBox (FILE *modelouthandle, int numframes, int curframe)
 {
-	int				i, j, k;
+	int			i, j, k;
 	daliasgroup_t	dagroup;
-	trivert_t		*pframe;
-
+	trivert_t	*pframe;
 
 	dagroup.numframes = LittleLong (numframes);
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0 ; i < 3 ; i++)
 	{
 		dagroup.bboxmin.v[i] = 255;
 		dagroup.bboxmax.v[i] = 0;
 	}
 
-	for (i=0 ; i<numframes ; i++)
+	for (i = 0 ; i < numframes ; i++)
 	{
 		pframe = (trivert_t *)frames[curframe].pdata;
 
-		for (j=0 ; j<model.numverts ; j++)
+		for (j = 0 ; j < model.numverts ; j++)
 		{
-			for (k=0 ; k<3 ; k++)
+			for (k = 0 ; k < 3 ; k++)
 			{
 			// scale to byte values & min/max check
-				tarray[j].v[k] = (pframe[j].v[k] - model.scale_origin[k]) /
-									model.scale[k];
+				tarray[j].v[k] = (pframe[j].v[k] - model.scale_origin[k]) / model.scale[k];
 				if (tarray[j].v[k] < dagroup.bboxmin.v[k])
 					dagroup.bboxmin.v[k] = tarray[j].v[k];
 				if (tarray[j].v[k] > dagroup.bboxmax.v[k])
@@ -448,21 +427,19 @@ void WriteGroupBBox (FILE *modelouthandle, int numframes, int curframe)
 //
 //==========================================================================
 
-void WriteModelFile (FILE *modelouthandle)
+static void WriteModelFile (FILE *modelouthandle)
 {
 	int			i, curframe, curskin;
 	float		dist[3];
 	mdl_t		modeltemp;
 	newmdl_t	newmodeltemp;
 
-
 // Calculate the bounding box for this model
 	if (!ModelReadIn)
 	{
-		for (i=0 ; i<3 ; i++)
+		for (i = 0 ; i < 3 ; i++)
 		{
-			printf ("framesmins[%d]: %f, framesmaxs[%d]: %f\n",
-					i, framesmins[i], i, framesmaxs[i]);
+			printf ("framesmins[%d]: %f, framesmaxs[%d]: %f\n", i, framesmins[i], i, framesmaxs[i]);
 			if (fabs (framesmins[i]) > fabs (framesmaxs[i]))
 				dist[i] = framesmins[i];
 			else
@@ -473,8 +450,8 @@ void WriteModelFile (FILE *modelouthandle)
 		}
 
 		model.boundingradius = sqrt(dist[0] * dist[0] +
-									dist[1] * dist[1] +
-									dist[2] * dist[2]);
+						dist[1] * dist[1] +
+						dist[2] * dist[2]);
 	}
 
 //
@@ -486,7 +463,7 @@ void WriteModelFile (FILE *modelouthandle)
 	newmodeltemp.version = LittleLong (ALIAS_NEWVERSION);
 	newmodeltemp.boundingradius = modeltemp.boundingradius = LittleFloat (model.boundingradius);
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0 ; i < 3 ; i++)
 	{
 		newmodeltemp.scale[i] = modeltemp.scale[i] = LittleFloat (model.scale[i]);
 		newmodeltemp.scale_origin[i] = modeltemp.scale_origin[i] = LittleFloat (model.scale_origin[i]);
@@ -528,13 +505,10 @@ void WriteModelFile (FILE *modelouthandle)
 //
 	curskin = 0;
 
-	for (i=0 ; i<model.numskins ; i++)
+	for (i = 0 ; i < model.numskins ; i++)
 	{
-		SafeWrite (modelouthandle, &skins[curskin].type,
-				   sizeof(skins[curskin].type));
-
-		SafeWrite (modelouthandle, skins[curskin].pdata,
-				   model.skinwidth * model.skinheight);
+		SafeWrite (modelouthandle, &skins[curskin].type, sizeof(skins[curskin].type));
+		SafeWrite (modelouthandle, skins[curskin].pdata, model.skinwidth * model.skinheight);
 
 		curskin++;
 	}
@@ -542,7 +516,7 @@ void WriteModelFile (FILE *modelouthandle)
 //
 // write out the base model (the s & t coordinates for the vertices)
 //
-	for (i=0 ; i<model.num_st_verts ; i++)
+	for (i = 0 ; i < model.num_st_verts ; i++)
 	{
 		if (stverts[i].onseam == 3)
 		{
@@ -564,7 +538,7 @@ void WriteModelFile (FILE *modelouthandle)
 //
 	if (DoOpts)
 	{
-		for (i=0 ; i<model.numtris ; i++)
+		for (i = 0 ; i < model.numtris ; i++)
 		{
 			int			j;
 			dnewtriangle_t	tri;
@@ -573,19 +547,19 @@ void WriteModelFile (FILE *modelouthandle)
 			{
 				tri.facesfront = LittleLong (triangles[i].facesfront);
 
-				for (j=0 ; j<3 ; j++)
+				for (j = 0 ; j < 3 ; j++)
 				{
 					tri.vertindex[j] = LittleShort (triangles[i].vertindex[j]);
 					tri.stindex[j] = LittleShort (triangles[i].stindex[j]);
 				}
 
-				SafeWrite (modelouthandle,&tri,sizeof(tri));
+				SafeWrite (modelouthandle, &tri, sizeof(tri));
 			}
 		}
 	}
 	else
 	{
-		for (i=0 ; i<model.numtris ; i++)
+		for (i = 0 ; i < model.numtris ; i++)
 		{
 			int			j;
 			dtriangle_t	tri;
@@ -594,7 +568,7 @@ void WriteModelFile (FILE *modelouthandle)
 			{
 				tri.facesfront = LittleLong (triangles[i].facesfront);
 
-				for (j=0 ; j<3 ; j++)
+				for (j = 0 ; j < 3 ; j++)
 				{
 					tri.vertindex[j] = LittleLong (triangles[i].vertindex[j]);
 				}
@@ -608,10 +582,9 @@ void WriteModelFile (FILE *modelouthandle)
 //
 	curframe = 0;
 
-	for (i=0 ; i<model.numframes ; i++)
+	for (i = 0 ; i < model.numframes ; i++)
 	{
-		SafeWrite (modelouthandle, &frames[curframe].type,
-				   sizeof(frames[curframe].type));
+		SafeWrite (modelouthandle, &frames[curframe].type, sizeof(frames[curframe].type));
 
 		if (frames[curframe].type == ALIAS_SINGLE)
 		{
@@ -623,8 +596,8 @@ void WriteModelFile (FILE *modelouthandle)
 		}
 		else
 		{
-			int					j, numframes, groupframe;
-			float				totinterval;
+			int		j, numframes, groupframe;
+			float	totinterval;
 
 			groupframe = curframe;
 			curframe++;
@@ -640,7 +613,7 @@ void WriteModelFile (FILE *modelouthandle)
 		//
 			totinterval = 0.0;
 
-			for (j=0 ; j<numframes ; j++)
+			for (j = 0 ; j < numframes ; j++)
 			{
 				daliasinterval_t	temp;
 
@@ -650,7 +623,7 @@ void WriteModelFile (FILE *modelouthandle)
 				SafeWrite (modelouthandle, &temp, sizeof(temp));
 			}
 
-			for (j=0 ; j<numframes ; j++)
+			for (j = 0 ; j < numframes ; j++)
 			{
 				WriteFrame (modelouthandle, curframe);
 				curframe++;
@@ -663,7 +636,7 @@ static void OptimizeVertices(void)
 {
 	qboolean		vert_used[MAXVERTS];
 	short			vert_replacement[MAXVERTS];
-	int				i,j,k;
+	int				i, j, k;
 	trivert_t		*in;
 	qboolean		Found;
 	int				num_unique;
@@ -674,14 +647,17 @@ static void OptimizeVertices(void)
 	num_unique = 0;
 
 	// search for common points among all the frames
-	for (i=0 ; i<model.numframes ; i++)
+	for (i = 0 ; i < model.numframes ; i++)
 	{
 		in = frames[i].pdata;
 
-		for(j=0;j<model.numverts;j++)
+		for (j = 0; j < model.numverts; j++)
 		{
-			for(k=0,Found=false;k<j;k++)
-			{	// starting from the beginning always ensures vert_replacement points to the first point in the array
+			for (k = 0, Found = false; k < j; k++)
+			{
+			// starting from the beginning always ensures
+			// vert_replacement points to the first point
+			// in the array
 				if (in[j].v[0] == in[k].v[0] &&
 					in[j].v[1] == in[k].v[1] &&
 					in[j].v[2] == in[k].v[2])
@@ -690,7 +666,6 @@ static void OptimizeVertices(void)
 					vert_replacement[j] = k;
 					break;
 				}
-
 			}
 
 			if (!Found)
@@ -705,11 +680,11 @@ static void OptimizeVertices(void)
 	}
 
 	// recompute the light normals
-	for (i=0 ; i<model.numframes ; i++)
+	for (i = 0 ; i < model.numframes ; i++)
 	{
 		in = frames[i].pdata;
 
-		for(j=0;j<model.numverts;j++)
+		for (j = 0; j < model.numverts; j++)
 		{
 			if (!vert_used[j])
 			{
@@ -720,7 +695,7 @@ static void OptimizeVertices(void)
 			}
 		}
 
-/*		for (j=0 ; j<model.numverts ; j++)
+/*		for (j = 0 ; j < model.numverts ; j++)
 		{
 			vec3_t	v;
 			float	maxdot;
@@ -737,7 +712,7 @@ static void OptimizeVertices(void)
 			maxdot = -999999.0;
 			maxdotindex = -1;
 
-			for (k=0 ; k<NUMVERTEXNORMALS ; k++)
+			for (k = 0 ; k < NUMVERTEXNORMALS ; k++)
 			{
 				float	dot;
 
@@ -755,7 +730,7 @@ static void OptimizeVertices(void)
 
 	// create substitution list
 	num_unique = 0;
-	for(i=0;i<model.numverts;i++)
+	for (i = 0; i < model.numverts; i++)
 	{
 		if (vert_used[i])
 		{
@@ -769,31 +744,32 @@ static void OptimizeVertices(void)
 	}
 
 	// substitute
-	for (i=0 ; i<model.numframes ; i++)
+	for (i = 0 ; i < model.numframes ; i++)
 	{
 		in = frames[i].pdata;
 
-		for(j=0;j<model.numverts;j++)
+		for (j = 0; j < model.numverts; j++)
 		{
 			in[vert_replacement[j]] = in[j];
 		}
 	}
 
-	for (i=0 ; i<model.numtris ; i++)
+	for (i = 0 ; i < model.numtris ; i++)
 	{
-		for (j=0 ; j<3 ; j++)
+		for (j = 0 ; j < 3 ; j++)
 		{
 			triangles[i].vertindex[j] = vert_replacement[triangles[i].vertindex[j]];
 		}
 	}
 
-/*	for (i=0;i<numcommands;i++)
+/*	for (i = 0; i < numcommands; i++)
 	{
 		j = commands[i];
-		if (!j) continue;
+		if (!j)
+			continue;
 
 		j = abs(j);
-		for(i++;j;j--,i+=3)
+		for (i++; j; j--, i+=3)
 		{
 			commands[i+2] = vert_replacement[commands[i+2]];
 		}
@@ -801,7 +777,7 @@ static void OptimizeVertices(void)
 	}
 */
 	printf("Reduced by %d\n",model.numverts - num_unique);
-	
+
 	model.numverts = num_unique;
 }
 
@@ -822,7 +798,7 @@ static void WriteModel (void)
 		printf ("no frames grabbed, no file generated\n");
 		return;
 	}
-	
+
 	if (!skincount)
 		Error ("frames with no skins\n");
 
@@ -831,15 +807,15 @@ static void WriteModel (void)
 
 	if (DoOpts)
 	{
-	   OptimizeVertices();
+		OptimizeVertices();
 	}
-	
+
 	printf ("---------------------\n");
 	printf ("writing %s:\n", outname);
 	modelouthandle = SafeOpenWrite (outname);
 
 	WriteModelFile (modelouthandle);
-	
+
 	printf ("%4d frame(s)\n", model.numframes);
 	printf ("%4d ungrouped frame(s), including group headers\n", framecount);
 	printf ("%4d skin(s)\n", model.numskins);
@@ -857,17 +833,17 @@ static void WriteModel (void)
 		printf ("file size: %d\n", (int)ftell (modelouthandle) );
 	}
 	printf ("---------------------\n");
-	
+
 	fclose (modelouthandle);
-	
+
 	ClearModel ();
 }
 
-void ReadModel(char *FileName)
+static void ReadModel(char *FileName)
 {
 	FILE	*FH;
 	mdl_t	mdl;
-	int		i,curframe;
+	int		i, curframe;
 
 	FH = fopen(FileName,"rb");
 	if (!FH)
@@ -885,7 +861,7 @@ void ReadModel(char *FileName)
 
 	model.boundingradius = LittleFloat (mdl.boundingradius);
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0 ; i < 3 ; i++)
 	{
 		model.scale[i] = LittleFloat (mdl.scale[i]);
 		model.scale_origin[i] = LittleFloat (mdl.scale_origin[i]);
@@ -907,9 +883,8 @@ void ReadModel(char *FileName)
 
 	model.num_st_verts = model.numverts;
 
-
 	// read in the skins
-	for (i=0 ; i<model.numskins ; i++)
+	for (i = 0 ; i < model.numskins ; i++)
 	{
 		SafeRead (FH, &skins[i].type, sizeof(skins[i].type));
 
@@ -920,7 +895,7 @@ void ReadModel(char *FileName)
 
 	// read in the st's
 	SafeRead (FH, stverts, model.num_st_verts * sizeof(stverts[0]));
-	for (i=0 ; i<model.num_st_verts ; i++)
+	for (i = 0 ; i < model.num_st_verts ; i++)
 	{
 		if (stverts[i].onseam == ALIAS_ONSEAM)
 		{
@@ -931,13 +906,12 @@ void ReadModel(char *FileName)
 			stverts[i].onseam = 0;
 		}
 
-
 		stverts[i].s = LittleLong (stverts[i].s);
 		stverts[i].t = LittleLong (stverts[i].t);
 	}
 
 	// read in the triangles
-	for (i=0 ; i<model.numtris ; i++)
+	for (i = 0 ; i < model.numtris ; i++)
 	{
 		int			j;
 		dtriangle_t	tri;
@@ -946,7 +920,7 @@ void ReadModel(char *FileName)
 
 		triangles[i].facesfront = LittleLong (tri.facesfront);
 
-		for (j=0 ; j<3 ; j++)
+		for (j = 0 ; j < 3 ; j++)
 		{
 			triangles[i].vertindex[j] = LittleLong (tri.vertindex[j]);
 			triangles[i].stindex[j] = triangles[i].vertindex[j];
@@ -955,7 +929,7 @@ void ReadModel(char *FileName)
 
 	// read in the frames
 	curframe = 0;
-	for (i=0 ; i<model.numframes ; i++)
+	for (i = 0 ; i < model.numframes ; i++)
 	{
 		SafeRead (FH, &frames[curframe].type, sizeof(frames[curframe].type));
 
@@ -968,8 +942,8 @@ void ReadModel(char *FileName)
 		{
 			Error("group frames not implemented");
 
-/*			int					j, numframes, groupframe;
-			float				totinterval;
+/*			int		j, numframes, groupframe;
+			float	totinterval;
 
 			groupframe = curframe;
 			curframe++;
@@ -985,7 +959,7 @@ void ReadModel(char *FileName)
 		//
 			totinterval = 0.0;
 
-			for (j=0 ; j<numframes ; j++)
+			for (j = 0 ; j < numframes ; j++)
 			{
 				daliasinterval_t	temp;
 
@@ -995,7 +969,7 @@ void ReadModel(char *FileName)
 				SafeWrite (modelouthandle, &temp, sizeof(temp));
 			}
 
-			for (j=0 ; j<numframes ; j++)
+			for (j = 0 ; j < numframes ; j++)
 			{
 				WriteFrame (modelouthandle, curframe);
 				curframe++;
@@ -1017,27 +991,27 @@ void ReadModel(char *FileName)
 //
 //==========================================================================
 
-void SetSkinValues (void)
+static void SetSkinValues (void)
 {
 	int			i;
 	float		v;
 	int			width, height, iwidth, iheight, skinwidth;
 	float		basex, basey;
-	float scw, sch;
+	float		scw, sch;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0 ; i < 3 ; i++)
 	{
 		mins[i] = 9999999;
 		maxs[i] = -9999999;
 	}
-	
-	for (i=0 ; i<model.numverts ; i++)
+
+	for (i = 0 ; i < model.numverts ; i++)
 	{
 		int		j;
 
 		stverts[i].onseam = 0;
 
-		for (j=0 ; j<3 ; j++)
+		for (j = 0 ; j < 3 ; j++)
 		{
 			v = baseverts[i][j];
 			if (v < mins[j])
@@ -1046,13 +1020,13 @@ void SetSkinValues (void)
 				maxs[j] = v;
 		}
 	}
-	
-	for (i=0 ; i<3 ; i++)
+
+	for (i = 0 ; i < 3 ; i++)
 	{
 		mins[i] = floor(mins[i]);
 		maxs[i] = ceil(maxs[i]);
 	}
-	
+
 	width = maxs[0] - mins[0];
 	height = maxs[2] - mins[2];
 
@@ -1062,31 +1036,29 @@ void SetSkinValues (void)
 	sch = ScaleHeight*SCALE_ADJUST_FACTOR;
 
 	scale = scw/width;
-	if(height*scale >= sch)
+	if (height*scale >= sch)
 	{
 		scale = sch/height;
 	}
 
 	iwidth = ceil(width*scale)+4;
 	iheight = ceil(height*scale)+4;
-	
+
 	printf ("scale: %f\n",scale);
 	printf ("iwidth: %i  iheight: %i\n",iwidth, iheight);
-	
+
 //
 // determine which side of each triangle to map the texture to
 //
-	for (i=0 ; i<model.numtris ; i++)
+	for (i = 0 ; i < model.numtris ; i++)
 	{
 		int		j;
 		vec3_t	vtemp1, vtemp2, normal;
 
 		VectorSubtract (baseverts[triangles[i].vertindex[0]],
-						baseverts[triangles[i].vertindex[1]],
-						vtemp1);
+				baseverts[triangles[i].vertindex[1]], vtemp1);
 		VectorSubtract (baseverts[triangles[i].vertindex[2]],
-						baseverts[triangles[i].vertindex[1]],
-						vtemp2);
+				baseverts[triangles[i].vertindex[1]], vtemp2);
 		CrossProduct (vtemp1, vtemp2, normal);
 
 		if (normal[1] > 0)
@@ -1100,8 +1072,8 @@ void SetSkinValues (void)
 			triangles[i].facesfront = 1;
 		}
 		basey = 2;
-		
-		for (j=0 ; j<3 ; j++)
+
+		for (j = 0 ; j < 3 ; j++)
 		{
 			float		*pbasevert;
 			stvert_t	*pstvert;
@@ -1143,12 +1115,12 @@ void SetSkinValues (void)
 Cmd_Base
 =================
 */
-void Cmd_Base (void)
+static void Cmd_Base (void)
 {
-	int i, j, k;
-	//int time1;
-	triangle_t *ptri;
-	byte *pskinbitmap;
+	int		i, j, k;
+	//int		time1;
+	triangle_t	*ptri;
+	byte	*pskinbitmap;
 
 	GetToken(false);
 	strcpy(qbasename, token);
@@ -1165,27 +1137,24 @@ void Cmd_Base (void)
 	GetToken(false);
 	sprintf(file2, "%s/%s.pcx", cddir, token);
 	LoadPCXSkin(file2, &pskinbitmap);
-	ScaleWidth = (float)ExtractNumber(pskinbitmap, ENCODED_WIDTH_X,
-		ENCODED_WIDTH_Y);
-	ScaleHeight = (float)ExtractNumber(pskinbitmap, ENCODED_HEIGHT_X,
-		ENCODED_HEIGHT_Y);
+	ScaleWidth = (float)ExtractNumber(pskinbitmap, ENCODED_WIDTH_X, ENCODED_WIDTH_Y);
+	ScaleHeight = (float)ExtractNumber(pskinbitmap, ENCODED_HEIGHT_X, ENCODED_HEIGHT_Y);
 	free(pskinbitmap);
 
 //
 // load the base triangles
 //
 	LoadTriangleList (file1, &ptri, &model.numtris);
-	printf("Number of triangles (including degenerate triangles): %d\n",
-			model.numtris);
+	printf("Number of triangles (including degenerate triangles): %d\n", model.numtris);
 
 //
 // run through all the base triangles, storing each unique vertex in the
 // base vertex list and setting the indirect triangles to point to the base
 // vertices
 //
-	for(i = 0; i < model.numtris; i++)
+	for (i = 0; i < model.numtris; i++)
 	{
-		if(VectorCompare(ptri[i].verts[0], ptri[i].verts[1])
+		if (VectorCompare(ptri[i].verts[0], ptri[i].verts[1])
 			|| VectorCompare(ptri[i].verts[1], ptri[i].verts[2])
 			|| VectorCompare(ptri[i].verts[2], ptri[i].verts[0]))
 		{
@@ -1197,18 +1166,20 @@ void Cmd_Base (void)
 			degenerate[i] = 0;
 		}
 
-		for(j = 0; j < 3; j++)
+		for (j = 0; j < 3; j++)
 		{
-			for(k = 0; k < model.numverts; k++)
+			for (k = 0; k < model.numverts; k++)
 			{
-				if(VectorCompare(ptri[i].verts[j], baseverts[k]))
-				{ // already in the base vertex list
+				if (VectorCompare(ptri[i].verts[j], baseverts[k]))
+				{
+					// already in the base vertex list
 					break;
 				}
 			}
 
-			if(k == model.numverts)
-			{ // new vertex
+			if (k == model.numverts)
+			{
+				// new vertex
 				VectorCopy(ptri[i].verts[j], baseverts[model.numverts]);
 				model.numverts++;
 				model.num_st_verts = model.numverts;
@@ -1223,7 +1194,7 @@ void Cmd_Base (void)
 	printf("Number of vertices: %i\n", model.numverts);
 
 	printf("Extracted scaling info: width %d, height %d\n",
-		(int)ScaleWidth, (int)ScaleHeight);
+			(int)ScaleWidth, (int)ScaleHeight);
 
 //
 // calculate s & t for each vertex, and set the skin width and height
@@ -1237,16 +1208,16 @@ void Cmd_Base (void)
 Cmd_Skin
 ===============
 */
-void Cmd_Skin (void)
+static void Cmd_Skin (void)
 {
 	//byte	*ppal;
 	byte	*pskinbitmap;
 	byte	*ptemp1, *ptemp2;
 	int		i;
 	int		time1;
-	float scw, sch;
+	float	scw, sch;
 
-	GetToken (false);	
+	GetToken (false);
 	strcpy (skinname, token);
 
 	//sprintf (file1, "%s/%s.lbm", cdpartial, token);
@@ -1257,7 +1228,7 @@ void Cmd_Skin (void)
 	time1 = Q_filetime (file1);
 	if (time1 == -1)
 		Error ("%s not found", file1);
-	
+
 	if (TokenAvailable ())
 	{
 		GetToken (false);
@@ -1269,23 +1240,20 @@ void Cmd_Skin (void)
 	{
 		skins[skincount].interval = 0.1F;
 	}
-	
+
 	//LoadFile(file1, &pskinbitmap);
 	LoadPCXSkin(file1, &pskinbitmap);
 
-	scw = (float)ExtractNumber(pskinbitmap, ENCODED_WIDTH_X,
-		ENCODED_WIDTH_Y);
-	sch = (float)ExtractNumber(pskinbitmap, ENCODED_HEIGHT_X,
-		ENCODED_HEIGHT_Y);
-	if(ScaleWidth != scw || ScaleHeight != sch)
+	scw = (float)ExtractNumber(pskinbitmap, ENCODED_WIDTH_X, ENCODED_WIDTH_Y);
+	sch = (float)ExtractNumber(pskinbitmap, ENCODED_HEIGHT_X, ENCODED_HEIGHT_Y);
+	if (ScaleWidth != scw || ScaleHeight != sch)
 	{
 		Error("Conflicting scale values in %s.\nBase info: %d, %d\n"
 			"Skin info: %d, %d", file1, (int)ScaleWidth, (int)ScaleHeight,
 			(int)scw, (int)sch);
 	}
 
-	skins[skincount].pdata =
-			malloc (model.skinwidth * model.skinheight);
+	skins[skincount].pdata = malloc (model.skinwidth * model.skinheight);
 	if(!skins[skincount].pdata)
 		Error ("couldn't get memory for skin texture");
 
@@ -1293,7 +1261,7 @@ void Cmd_Skin (void)
 	// loaded as 640x480 bitmaps
 	ptemp1 = skins[skincount].pdata;
 	ptemp2 = pskinbitmap;
-	for(i = 0; i < model.skinheight; i++)
+	for (i = 0; i < model.skinheight; i++)
 	{
 		memcpy(ptemp1, ptemp2, model.skinwidth);
 		ptemp1 += model.skinwidth;
@@ -1311,8 +1279,7 @@ void Cmd_Skin (void)
 
 static int ExtractNumber(byte *pic, int x, int y)
 {
-	return ExtractDigit(pic, x, y)*100+ExtractDigit(pic, x+6, y)*10
-		+ExtractDigit(pic, x+12, y);
+	return ExtractDigit(pic, x, y)*100 + ExtractDigit(pic, x+6, y)*10 + ExtractDigit(pic, x+12, y);
 }
 
 //==========================================================================
@@ -1320,46 +1287,46 @@ static int ExtractNumber(byte *pic, int x, int y)
 
 static int ExtractDigit(byte *pic, int x, int y)
 {
-	int i;
-	int r, c;
-	char digString[32];
-	char *buffer;
-	byte backColor;
+	int		i;
+	int		r, c;
+	char	digString[32];
+	char	*buffer;
+	byte	backColor;
 
 	backColor = pic[(SKINPAGE_HEIGHT-1)*SKINPAGE_WIDTH];
 	buffer = digString;
-	for(r = 0; r < 5; r++)
+	for (r = 0; r < 5; r++)
 	{
-		for(c = 0; c < 5; c++)
+		for (c = 0; c < 5; c++)
 		{
-			*buffer++ = (pic[(y+r)*SKINPAGE_WIDTH+x+c] == backColor)
-				? ' ' : '*';
+			*buffer++ = (pic[(y+r)*SKINPAGE_WIDTH+x+c] == backColor) ? ' ' : '*';
 		}
 	}
 	*buffer = '\0';
-	for(i = 0; i < 10; i++)
+	for (i = 0; i < 10; i++)
 	{
-		if(strcmp(DigitDefs[i], digString) == 0)
+		if (strcmp(DigitDefs[i], digString) == 0)
 		{
 			return i;
 		}
 	}
 	Error("Unable to extract scaling info from skin PCX.");
-	return -1; // shut-up the compiler
+	return -1;	// shut-up the compiler
 }
+
 
 /*
 ===============
 GrabFrame
 ===============
 */
-void GrabFrame (char *frame, int isgroup)
+static void GrabFrame (char *frame, int isgroup)
 {
 	triangle_t		*ptri;
 	int				i, j;
 	trivert_t		*ptrivert;
 	int				numtris;
-	//int		time1;
+	//int				time1;
 
 	//sprintf (file1, "%s/%s.tri", cdpartial, frame);
 	//ExpandPathAndArchive (file1);
@@ -1391,14 +1358,13 @@ void GrabFrame (char *frame, int isgroup)
 		GetToken (false);
 		frames[framecount].interval = atof (token);
 		if (frames[framecount].interval <= 0.0)
-			Error ("Non-positive interval %s %f", token,
-					frames[framecount].interval);
+			Error ("Non-positive interval %s %f", token, frames[framecount].interval);
 	}
 	else
 	{
 		frames[framecount].interval = 0.1F;
 	}
-	
+
 //
 // allocate storage for the frame's vertices
 //
@@ -1407,7 +1373,7 @@ void GrabFrame (char *frame, int isgroup)
 	frames[framecount].pdata = ptrivert;
 	frames[framecount].type = ALIAS_SINGLE;
 
-	for (i=0 ; i<model.numverts ; i++)
+	for (i = 0 ; i < model.numverts ; i++)
 	{
 		vnorms[i].numnormals = 0;
 	}
@@ -1417,7 +1383,7 @@ void GrabFrame (char *frame, int isgroup)
 // triangles and vertices in this frame are in exactly the same order as in the
 // base
 //
-	for (i=0 ; i<numtris ; i++)
+	for (i = 0 ; i < numtris ; i++)
 	{
 		vec3_t	vtemp1, vtemp2, normal;
 		float	ftemp;
@@ -1433,9 +1399,7 @@ void GrabFrame (char *frame, int isgroup)
 			VectorScale (vtemp2, scale_up, vtemp2);
 			CrossProduct (vtemp1, vtemp2, normal);
 
-			totsize += sqrt (normal[0] * normal[0] +
-							 normal[1] * normal[1] +
-							 normal[2] * normal[2]) / 2.0;
+			totsize += sqrt (normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2]) / 2.0;
 		}
 
 		VectorSubtract (ptri[i].verts[0], ptri[i].verts[1], vtemp1);
@@ -1449,7 +1413,7 @@ void GrabFrame (char *frame, int isgroup)
 		normal[0] = -normal[1];
 		normal[1] = ftemp;
 
-		for (j=0 ; j<3 ; j++)
+		for (j = 0 ; j < 3 ; j++)
 		{
 			int		k;
 			int		vertindex;
@@ -1459,14 +1423,11 @@ void GrabFrame (char *frame, int isgroup)
 		// rotate the vertices so the model faces down the positive x axis
 		// also adjust the vertices to the desired origin
 
-			ptrivert[vertindex].v[0] = ((-ptri[i].verts[j][1]) * scale_up) +
-										adjust[0];
-			ptrivert[vertindex].v[1] = (ptri[i].verts[j][0] * scale_up) +
-										adjust[1];
-			ptrivert[vertindex].v[2] = (ptri[i].verts[j][2] * scale_up) +
-										adjust[2];
+			ptrivert[vertindex].v[0] = ((-ptri[i].verts[j][1]) * scale_up) + adjust[0];
+			ptrivert[vertindex].v[1] = (ptri[i].verts[j][0] * scale_up) + adjust[1];
+			ptrivert[vertindex].v[2] = (ptri[i].verts[j][2] * scale_up) + adjust[2];
 
-			for (k=0 ; k<3 ; k++)
+			for (k = 0 ; k < 3 ; k++)
 			{
 				if (ptrivert[vertindex].v[k] < framesmins[k])
 					framesmins[k] = ptrivert[vertindex].v[k];
@@ -1475,11 +1436,7 @@ void GrabFrame (char *frame, int isgroup)
 					framesmaxs[k] = ptrivert[vertindex].v[k];
 			}
 
-			VectorCopy (normal,
-						vnorms[vertindex].
-						normals
-						[vnorms[vertindex].numnormals]
-						);
+			VectorCopy (normal, vnorms[vertindex].normals[vnorms[vertindex].numnormals] );
 
 			vnorms[vertindex].numnormals++;
 		}
@@ -1489,7 +1446,7 @@ void GrabFrame (char *frame, int isgroup)
 // calculate the vertex normals, match them to the template list, and store the
 // index of the best match
 //
-	for (i=0 ; i<model.numverts ; i++)
+	for (i = 0 ; i < model.numverts ; i++)
 	{
 		int		l;
 		vec3_t	v;
@@ -1498,17 +1455,17 @@ void GrabFrame (char *frame, int isgroup)
 
 		if (vnorms[i].numnormals > 0)
 		{
-			for (l=0 ; l<3 ; l++)
+			for (l = 0 ; l < 3 ; l++)
 			{
 				int		m;
-	
+
 				v[l] = 0;
-				
-				for (m=0 ; m<vnorms[i].numnormals ; m++)
+
+				for (m = 0 ; m < vnorms[i].numnormals ; m++)
 				{
 					v[l] += vnorms[i].normals[m][l];
 				}
-	
+
 				v[l] /= vnorms[i].numnormals;
 			}
 		}
@@ -1522,7 +1479,7 @@ void GrabFrame (char *frame, int isgroup)
 		maxdot = -999999.0;
 		maxdotindex = -1;
 
-		for (l=0 ; l<NUMVERTEXNORMALS ; l++)
+		for (l = 0 ; l < NUMVERTEXNORMALS ; l++)
 		{
 			float	dot;
 
@@ -1546,12 +1503,13 @@ void GrabFrame (char *frame, int isgroup)
 	firstframe = 0;
 }
 
+
 /*
 ===============
 Cmd_Frame	
 ===============
 */
-void Cmd_Frame (int isgroup)
+static void Cmd_Frame (int isgroup)
 {
 	while (TokenAvailable())
 	{
@@ -1565,10 +1523,10 @@ void Cmd_Frame (int isgroup)
 
 /*
 ===============
-Cmd_SkinGroupStart	
+Cmd_SkinGroupStart
 ===============
 */
-void Cmd_SkinGroupStart (void)
+static void Cmd_SkinGroupStart (void)
 {
 	int			groupskin;
 
@@ -1598,20 +1556,18 @@ void Cmd_SkinGroupStart (void)
 		{
 			Error ("$skin or $skingroupend expected\n");
 		}
-
 	}
 
 	if (skins[groupskin].numgroupskins == 0)
 		Error ("Empty group\n");
 }
 
-
 /*
 ===============
-Cmd_FrameGroupStart	
+Cmd_FrameGroupStart
 ===============
 */
-void Cmd_FrameGroupStart (void)
+static void Cmd_FrameGroupStart (void)
 {
 	int			groupframe;
 
@@ -1640,7 +1596,6 @@ void Cmd_FrameGroupStart (void)
 		{
 			Error ("$frame or $framegroupend expected\n");
 		}
-
 	}
 
 	frames[groupframe].numgroupframes += framecount - groupframe - 1;
@@ -1649,13 +1604,12 @@ void Cmd_FrameGroupStart (void)
 		Error ("Empty group\n");
 }
 
-
 /*
 =================
 Cmd_Origin
 =================
 */
-void Cmd_Origin (void)
+static void Cmd_Origin (void)
 {
 
 // rotate points into frame of reference so model points down the positive x
@@ -1670,13 +1624,12 @@ void Cmd_Origin (void)
 	adjust[2] = -atof (token);
 }
 
-
 /*
 =================
 Cmd_Eyeposition
 =================
 */
-void Cmd_Eyeposition (void)
+static void Cmd_Eyeposition (void)
 {
 
 // rotate points into frame of reference so model points down the positive x
@@ -1691,15 +1644,13 @@ void Cmd_Eyeposition (void)
 	model.eyeposition[2] = atof (token);
 }
 
-
 /*
 =================
 Cmd_ScaleUp
 =================
 */
-void Cmd_ScaleUp (void)
+static void Cmd_ScaleUp (void)
 {
-
 	GetToken (false);
 	scale_up = atof (token);
 }
@@ -1709,7 +1660,7 @@ void Cmd_ScaleUp (void)
 Cmd_Flags
 =================
 */
-void Cmd_Flags (void)
+static void Cmd_Flags (void)
 {
 	GetToken (false);
 	model.flags = atoi (token);
@@ -1720,7 +1671,7 @@ void Cmd_Flags (void)
 Cmd_RotateHTR
 =================
 */
-void Cmd_RotateHTR(void)
+static void Cmd_RotateHTR(void)
 {
 	GetToken(false);
 	FixHTRRotateX = atof(token);
@@ -1737,7 +1688,7 @@ void Cmd_RotateHTR(void)
 Cmd_TranslateHTR
 =================
 */
-void Cmd_TranslateHTR(void)
+static void Cmd_TranslateHTR(void)
 {
 	GetToken(false);
 	FixHTRTranslateX = atof(token);
@@ -1749,19 +1700,17 @@ void Cmd_TranslateHTR(void)
 	FixHTRTranslateZ = atof(token);
 }
 
-
 /*
 =================
 Cmd_Modelname
 =================
 */
-void Cmd_Modelname (void)
+static void Cmd_Modelname (void)
 {
 	WriteModel ();
 	GetToken (false);
 	strcpy (outname, token);
 }
-
 
 /*
 ===============
@@ -1778,11 +1727,11 @@ static void ParseScript (void)
 			if (endofscript)
 				return;
 			if (token[0] == '$')
-				break;				
+				break;
 			while (TokenAvailable())
 				GetToken (false);
 		} while (1);
-	
+
 		if (!strcmp (token, "$modelname"))
 		{
 			Cmd_Modelname ();
@@ -1836,7 +1785,7 @@ static void ParseScript (void)
 		{
 			Cmd_Skin ();
 			model.numskins++;
-		}		
+		}
 		else if (!strcmp (token, "$framegroupstart"))
 		{
 			Cmd_FrameGroupStart ();
@@ -1851,7 +1800,6 @@ static void ParseScript (void)
 		{
 			Error ("bad command %s\n", token);
 		}
-
 	}
 }
 
@@ -1863,13 +1811,13 @@ static void ParseScript (void)
 
 static void LoadPCXSkin(char *filename, byte **buffer)
 {
-	int i;
-	pcx_t *pcx;
-	int w, h;
-	int count;
-	byte controlByte, repeatByte;
-	byte *src, *dst;
-	byte length;
+	int		i;
+	pcx_t	*pcx;
+	int		w, h;
+	int		count;
+	byte	controlByte, repeatByte;
+	byte	*src, *dst;
+	byte	length;
 
 	// Load file
 //	LoadFile(filename, &pcx);
@@ -1878,7 +1826,7 @@ static void LoadPCXSkin(char *filename, byte **buffer)
 	// Check for a valid PCX header
 	w = pcx->xMax-pcx->xMin+1;
 	h = pcx->yMax-pcx->yMin+1;
-	if(pcx->tag != 10 || pcx->version != 5
+	if (pcx->tag != 10 || pcx->version != 5
 		|| pcx->encoding != 1 || pcx->pixelBits != 8
 		|| pcx->planes != 1 || pcx->lineBytes != w
 		|| w != SKINPAGE_WIDTH || h != SKINPAGE_HEIGHT)
@@ -1895,7 +1843,7 @@ static void LoadPCXSkin(char *filename, byte **buffer)
 	}
 
 	// Allocate page
-	if((dst = malloc(SKINPAGE_SIZE)) == NULL)
+	if ((dst = malloc(SKINPAGE_SIZE)) == NULL)
 	{
 		Error("Failed to allocate memory for skin page.\n");
 	}
@@ -1903,16 +1851,16 @@ static void LoadPCXSkin(char *filename, byte **buffer)
 	memset(dst, 0, SKINPAGE_SIZE);
 
 	// Decompress
-	for(src = &pcx->data, i = 0; i < SKINPAGE_HEIGHT;
+	for (src = &pcx->data, i = 0; i < SKINPAGE_HEIGHT;
 		//dst += SKINPAGE_WIDTH,
 		i++)
 	{
 		count = 0;
-		while(count < SKINPAGE_WIDTH)
+		while (count < SKINPAGE_WIDTH)
 		{
 			controlByte = *src++;
-			if((controlByte&0xc0) == 0xc0)
-			{ // Repeat run
+			if ((controlByte&0xc0) == 0xc0)
+			{	// Repeat run
 				length = controlByte&0x3f;
 				repeatByte = *src++;
 				memset(dst, repeatByte, length);
@@ -1925,10 +1873,11 @@ static void LoadPCXSkin(char *filename, byte **buffer)
 				count++;
 			}
 		}
-		if(count > SKINPAGE_WIDTH)
+		if (count > SKINPAGE_WIDTH)
 		{
 			Error("PCX decompression overflow.\n");
 		}
 	}
 	free(pcx);
 }
+

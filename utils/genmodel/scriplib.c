@@ -6,7 +6,7 @@
 /*
 =============================================================================
 
-						PARSING STUFF
+PARSING STUFF
 
 =============================================================================
 */
@@ -15,20 +15,18 @@ char    token[MAXTOKEN];
 char    *scriptbuffer,*script_p,*scriptend_p;
 int             grabbed;
 int             scriptline;
-qboolean endofscript;
-qboolean tokenready;                     // only true if UnGetToken was just called
+qboolean	endofscript;
+qboolean	tokenready;	// only true if UnGetToken was just called
 
 /*
 ==============
-=
-= LoadScriptFile
-=
+LoadScriptFile
+
 ==============
 */
-
 void LoadScriptFile (char *filename)
 {
-	int            size;
+	int		size;
 
 	size = LoadFile (filename, (void **) (char *) &scriptbuffer);
 
@@ -42,21 +40,18 @@ void LoadScriptFile (char *filename)
 
 /*
 ==============
-=
-= UnGetToken
-=
-= Signals that the current token was not used, and should be reported
-= for the next GetToken.  Note that
+UnGetToken
 
-GetToken (true);
-UnGetToken ();
-GetToken (false);
+Signals that the current token was not used, and should be reported
+for the next GetToken.  Note that
 
-= could cross a line boundary.
-=
+	GetToken (true);
+	UnGetToken ();
+	GetToken (false);
+
+could cross a line boundary.
 ==============
 */
-
 void UnGetToken (void)
 {
 	tokenready = true;
@@ -70,9 +65,9 @@ GetToken
 */
 qboolean GetToken (qboolean crossline)
 {
-	char    *token_p;
+	char	*token_p;
 
-	if (tokenready)                         // is a token already waiting?
+	if (tokenready)		// is a token already waiting?
 	{
 		tokenready = false;
 		return true;
@@ -115,10 +110,11 @@ skipspace:
 		return true;
 	}
 
-	if (*script_p == ';' || *script_p == '#')   // semicolon is comment field
-	{											// also make # a comment field
+	if (*script_p == ';' || *script_p == '#')	// semicolon is comment field
+	{							// also make # a comment field
 		if (!crossline)
 			Error ("Line %i is incomplete\n",scriptline);
+
 		while (*script_p++ != '\n')
 			if (script_p >= scriptend_p)
 			{
@@ -149,17 +145,14 @@ skipspace:
 
 /*
 ==============
-=
-= TokenAvailable
-=
-= Returns true if there is another token on the line
-=
+TokenAvailable
+
+Returns true if there is another token on the line
 ==============
 */
-
 qboolean TokenAvailable (void)
 {
-	char    *search_p;
+	char	*search_p;
 
 	search_p = script_p;
 
@@ -173,7 +166,6 @@ qboolean TokenAvailable (void)
 		search_p++;
 		if (search_p == scriptend_p)
 			return false;
-
 	}
 
 	if (*search_p == ';')
@@ -181,5 +173,4 @@ qboolean TokenAvailable (void)
 
 	return true;
 }
-
 

@@ -11,34 +11,34 @@
 #include "cmdlib.h"
 
 #ifndef TRUE
-#define TRUE 1
+#define TRUE	1
 #endif
 #ifndef FALSE
-#define FALSE 0
+#define FALSE	0
 #endif
 #ifndef YES
-#define YES 1
+#define YES	1
 #endif
 #ifndef NO
-#define NO 0
+#define NO	0
 #endif
-#define ASCII_SPACE 32
-#define ASCII_QUOTE 34
-#define ASCII_UNDERSCORE 95
-#define EOF_CHARACTER 127
-#define MAX_IDENTIFIER_LENGTH 64
-#define MAX_QUOTED_LENGTH 1024
-#define MAX_FILE_NAME_LENGTH 1024
+#define ASCII_SPACE		32
+#define ASCII_QUOTE		34
+#define ASCII_UNDERSCORE	95
+#define EOF_CHARACTER		127
+#define MAX_IDENTIFIER_LENGTH	64
+#define MAX_QUOTED_LENGTH	1024
+#define MAX_FILE_NAME_LENGTH	1024
 
 typedef enum
 {
 	TK_NONE,
 	TK_UNKNOWNCHAR,
 	TK_EOF,
-	TK_IDENTIFIER,			// VALUE: (char *) tk_String
-	TK_STRING,				// VALUE: (char *) tk_String
-	TK_INTNUMBER,			// VALUE: (int) tk_IntNumber
-	TK_FLOATNUMBER,			// VALUE: (float) tk_FloatNumber
+	TK_IDENTIFIER,		// VALUE: (char *) tk_String
+	TK_STRING,		// VALUE: (char *) tk_String
+	TK_INTNUMBER,		// VALUE: (int) tk_IntNumber
+	TK_FLOATNUMBER,		// VALUE: (float) tk_FloatNumber
 	TK_LPAREN,
 	TK_RPAREN,
 	TK_LBRACE,

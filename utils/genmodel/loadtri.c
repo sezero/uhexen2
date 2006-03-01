@@ -7,7 +7,6 @@
 
 // HEADER FILES ------------------------------------------------------------
 
-#include <stdio.h>
 #include "cmdlib.h"
 #include "mathlib.h"
 #include "loadtri.h"
@@ -37,7 +36,7 @@
 #define _3DS_EDIT_UNKNW09	0x2201
 #define _3DS_EDIT_UNKNW10	0x2210
 #define _3DS_EDIT_UNKNW11	0x2300
-#define _3DS_EDIT_UNKNW12	0x2302 
+#define _3DS_EDIT_UNKNW12	0x2302
 #define _3DS_EDIT_UNKNW13	0x3000
 #define _3DS_EDIT_UNKNW14	0xAFFF
 #define _3DS_EDIT_OBJECT	0x4000
@@ -52,29 +51,29 @@
 #define _3DS_TRI_FACEL1		0x4120
 
 // TRI binary files
-#define FLOAT_START 99999.0
-#define FLOAT_END -FLOAT_START
-#define TRI_MAGIC 123322
+#define FLOAT_START	99999.0
+#define FLOAT_END	-FLOAT_START
+#define TRI_MAGIC	123322
 
 // TYPES -------------------------------------------------------------------
 
 typedef struct
 {
-	float v[3];
+	float	v[3];
 } vector;
 
 typedef struct
 {
-	vector n;	// normal
-	vector p;	// point
-	vector c;	// color
-	float u;	// u
-	float v;	// v
+	vector	n;	// normal
+	vector	p;	// point
+	vector	c;	// color
+	float	u;	// u
+	float	v;	// v
 } aliaspoint_t;
 
 typedef struct
 {
-	aliaspoint_t pt[3];
+	aliaspoint_t	pt[3];
 } tf_triangle;
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
@@ -107,14 +106,14 @@ static unsigned long FilePosition(void);
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
-char InputFileName[1024];
-FILE *InputFile;
-float FixHTRRotateX = 0.0;
-float FixHTRRotateY = 0.0;
-float FixHTRRotateZ = 0.0;
-float FixHTRTranslateX = 0.0;
-float FixHTRTranslateY = 0.0;
-float FixHTRTranslateZ = 0.0;
+char	InputFileName[1024];
+FILE	*InputFile;
+float	FixHTRRotateX = 0.0;
+float	FixHTRRotateY = 0.0;
+float	FixHTRRotateZ = 0.0;
+float	FixHTRTranslateX = 0.0;
+float	FixHTRTranslateY = 0.0;
+float	FixHTRTranslateZ = 0.0;
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
@@ -126,15 +125,15 @@ float FixHTRTranslateZ = 0.0;
 //
 //==========================================================================
 
-void LoadTriangleList(char *fileName, triangle_t **triList,	int *triangleCount)
+void LoadTriangleList(char *fileName, triangle_t **triList, int *triangleCount)
 {
-	FILE *input;
+	FILE	*input;
 
 	strcpy(InputFileName, fileName);
 
 	StripExtension(InputFileName);
 	strcat(InputFileName, ".asc");
-	if((input = fopen(InputFileName, "rb")) != NULL)
+	if ((input = fopen(InputFileName, "rb")) != NULL)
 	{
 		fclose(input);
 		LoadASC(InputFileName, triList, triangleCount);
@@ -143,7 +142,7 @@ void LoadTriangleList(char *fileName, triangle_t **triList,	int *triangleCount)
 
 	StripExtension(InputFileName);
 	strcat(InputFileName, ".hrc");
-	if((input = fopen(InputFileName, "rb")) != NULL)
+	if ((input = fopen(InputFileName, "rb")) != NULL)
 	{
 		fclose(input);
 		LoadHRC(InputFileName, triList, triangleCount);
@@ -152,7 +151,7 @@ void LoadTriangleList(char *fileName, triangle_t **triList,	int *triangleCount)
 
 	StripExtension(InputFileName);
 	strcat(InputFileName, ".htr");
-	if((input = fopen(InputFileName, "rb")) != NULL)
+	if ((input = fopen(InputFileName, "rb")) != NULL)
 	{
 		fclose(input);
 		LoadHTR(InputFileName, triList, triangleCount);
@@ -161,7 +160,7 @@ void LoadTriangleList(char *fileName, triangle_t **triList,	int *triangleCount)
 
 	StripExtension(InputFileName);
 	strcat(InputFileName, ".tri");
-	if((input = fopen(InputFileName, "rb")) != NULL)
+	if ((input = fopen(InputFileName, "rb")) != NULL)
 	{
 		LoadTRI(input, triList, triangleCount);
 		fclose(input);
@@ -178,23 +177,22 @@ void LoadTriangleList(char *fileName, triangle_t **triList,	int *triangleCount)
 //
 //==========================================================================
 
-static void LoadHRC(char *fileName, triangle_t **triList,
-	int *triangleCount)
+static void LoadHRC(char *fileName, triangle_t **triList, int *triangleCount)
 {
-	int i, j;
-	int vertexCount;
+	int		i, j;
+	int		vertexCount;
 	struct
 	{
 		float v[3];
 	} *vList;
-	int triCount;
-	triangle_t *tList;
-	float scaling[3];
-	float rotation[3];
-	float translation[3];
-	float x, y, z;
-	float x2, y2, z2;
-	float rx, ry, rz;
+	int		triCount;
+	triangle_t	*tList;
+	float	scaling[3];
+	float	rotation[3];
+	float	translation[3];
+	float	x, y, z;
+	float	x2, y2, z2;
+	float	rx, ry, rz;
 
 	TK_Init();
 	TK_OpenSource(fileName);
@@ -203,21 +201,21 @@ static void LoadHRC(char *fileName, triangle_t **triList,
 	TK_FetchRequire(TK_SOFTIMAGE);
 	TK_Beyond(TK_MODEL);
 	TK_Beyond(TK_SCALING);
-	for(i = 0; i < 3; i++)
+	for (i = 0; i < 3; i++)
 	{
 		TK_Require(TK_FLOATNUMBER);
 		scaling[i] = tk_FloatNumber;
 		TK_Fetch();
 	}
 	TK_Beyond(TK_ROTATION);
-	for(i = 0; i < 3; i++)
+	for (i = 0; i < 3; i++)
 	{
 		TK_Require(TK_FLOATNUMBER);
 		rotation[i] = tk_FloatNumber;
 		TK_Fetch();
 	}
 	TK_Beyond(TK_TRANSLATION);
-	for(i = 0; i < 3; i++)
+	for (i = 0; i < 3; i++)
 	{
 		TK_Require(TK_FLOATNUMBER);
 		translation[i] = tk_FloatNumber;
@@ -232,13 +230,13 @@ static void LoadHRC(char *fileName, triangle_t **triList,
 	TK_BeyondRequire(TK_VERTICES, TK_INTNUMBER);
 	vertexCount = tk_IntNumber;
 	vList = SafeMalloc(vertexCount*sizeof vList[0], "Vertex list");
-	for(i = 0; i < vertexCount; i++)
+	for (i = 0; i < vertexCount; i++)
 	{
 		TK_BeyondRequire(TK_LBRACKET, TK_INTNUMBER);
-		if(tk_IntNumber != i)
+		if (tk_IntNumber != i)
 		{
 			Error("File '%s', line %d:\nVertex index mismatch.\n",
-				tk_SourceName, tk_Line);
+						tk_SourceName, tk_Line);
 		}
 		TK_Beyond(TK_POSITION);
 		// Apply the scaling, rotation, and translation in the order
@@ -271,31 +269,31 @@ static void LoadHRC(char *fileName, triangle_t **triList,
 	}
 	TK_BeyondRequire(TK_POLYGONS, TK_INTNUMBER);
 	triCount = tk_IntNumber;
-	if(triCount >= MAXTRIANGLES)
+	if (triCount >= MAXTRIANGLES)
 	{
 		Error("Too many triangles in file %s\n", InputFileName);
 	}
 	*triangleCount = triCount;
 	tList = SafeMalloc(MAXTRIANGLES*sizeof(triangle_t), "Triangle list");
 	*triList = tList;
-	for(i = 0; i < triCount; i++)
+	for (i = 0; i < triCount; i++)
 	{
 		TK_BeyondRequire(TK_LBRACKET, TK_INTNUMBER);
-		if(tk_IntNumber != i)
+		if (tk_IntNumber != i)
 		{
 			Error("File '%s', line %d:\nTriangle index mismatch.\n",
-				tk_SourceName, tk_Line);
+						tk_SourceName, tk_Line);
 		}
 		TK_BeyondRequire(TK_NODES, TK_INTNUMBER);
-		if(tk_IntNumber != 3)
+		if (tk_IntNumber != 3)
 		{
 			Error("File '%s', line %d:\nBad polygon vertex count: %d.",
-				tk_SourceName, tk_Line, tk_IntNumber);
+					tk_SourceName, tk_Line, tk_IntNumber);
 		}
-		for(j = 0; j < 3; j++)
+		for (j = 0; j < 3; j++)
 		{
 			TK_BeyondRequire(TK_LBRACKET, TK_INTNUMBER);
-			if(tk_IntNumber != j)
+			if (tk_IntNumber != j)
 			{
 				Error("File '%s', line %d:\nTriangle vertex index"
 					" mismatch.  %d should be %d\n", tk_SourceName, tk_Line,
@@ -328,27 +326,26 @@ static void LoadHRC(char *fileName, triangle_t **triList,
 //
 //==========================================================================
 
-static void LoadASC(char *fileName, triangle_t **triList,
-	int *triangleCount)
+static void LoadASC(char *fileName, triangle_t **triList, int *triangleCount)
 {
-	int i, j;
-	int vertexCount;
+	int		i, j;
+	int		vertexCount;
 	struct
 	{
 		float v[3];
 	} *vList;
-	int triCount;
-	triangle_t *tList;
-	float x, y, z;
-//	float x2, y2, z2;
-//	float rx, ry, rz;
+	int		triCount;
+	triangle_t	*tList;
+	float	x, y, z;
+//	float	x2, y2, z2;
+//	float	rx, ry, rz;
 	qboolean goodObject;
 
 	TK_Init();
 	TK_OpenSource(fileName);
 
 	goodObject = false;
-	while(goodObject == false)
+	while (goodObject == false)
 	{
 		TK_Beyond(TK_C_NAMED);
 		TK_Beyond(TK_OBJECT);
@@ -357,7 +354,7 @@ static void LoadASC(char *fileName, triangle_t **triList,
 		TK_BeyondRequire(TK_C_VERTICES, TK_COLON);
 		TK_FetchRequire(TK_INTNUMBER);
 		vertexCount = tk_IntNumber;
-		if(vertexCount > 0)
+		if (vertexCount > 0)
 		{
 			goodObject = true;
 		}
@@ -365,7 +362,7 @@ static void LoadASC(char *fileName, triangle_t **triList,
 	TK_BeyondRequire(TK_C_FACES, TK_COLON);
 	TK_FetchRequire(TK_INTNUMBER);
 	triCount = tk_IntNumber;
-	if(triCount >= MAXTRIANGLES)
+	if (triCount >= MAXTRIANGLES)
 	{
 		Error("Too many triangles in file %s\n", InputFileName);
 	}
@@ -380,13 +377,13 @@ static void LoadASC(char *fileName, triangle_t **triList,
 	rz = (rotation[2]/360.0)*2.0*MY_PI;
 */
 	vList = SafeMalloc(vertexCount*sizeof vList[0], "Vertex list");
-	for(i = 0; i < vertexCount; i++)
+	for (i = 0; i < vertexCount; i++)
 	{
 		TK_BeyondRequire(TK_C_VERTEX, TK_INTNUMBER);
-		if(tk_IntNumber != i)
+		if (tk_IntNumber != i)
 		{
 			Error("File '%s', line %d:\nVertex index mismatch.\n",
-				tk_SourceName, tk_Line);
+						tk_SourceName, tk_Line);
 		}
 		TK_FetchRequireFetch(TK_COLON);
 
@@ -415,19 +412,19 @@ static void LoadASC(char *fileName, triangle_t **triList,
 		vList[i].v[2] = z;
 	}
 	TK_BeyondRequire(TK_C_FACE, TK_LIST);
-	for(i = 0; i < triCount; i++)
+	for (i = 0; i < triCount; i++)
 	{
 		TK_BeyondRequire(TK_C_FACE, TK_INTNUMBER);
-		if(tk_IntNumber != i)
+		if (tk_IntNumber != i)
 		{
 			Error("File '%s', line %d:\nTriangle index mismatch.\n",
-				tk_SourceName, tk_Line);
+						tk_SourceName, tk_Line);
 		}
-		for(j = 0; j < 3; j++)
+		for (j = 0; j < 3; j++)
 		{
 			TK_BeyondRequire(TK_IDENTIFIER, TK_COLON);
 			TK_FetchRequire(TK_INTNUMBER);
-			if(tk_IntNumber >= vertexCount)
+			if (tk_IntNumber >= vertexCount)
 			{
 				Error("File '%s', line %d:\nVertex number"
 					" > vertexCount: %d\n", tk_SourceName, tk_Line,
@@ -459,22 +456,21 @@ static void LoadASC(char *fileName, triangle_t **triList,
 //
 //==========================================================================
 
-static void LoadHTR(char *fileName, triangle_t **triList,
-	int *triangleCount)
+static void LoadHTR(char *fileName, triangle_t **triList, int *triangleCount)
 {
-	int i, j;
-	int vertexCount;
-	int vertexNum;
+	int		i, j;
+	int		vertexCount;
+	int		vertexNum;
 	struct
 	{
 		float v[3];
 	} *vList;
-	int triCount;
-	float origin[3];
-	triangle_t *tList;
-	float x, y, z;
-	float x2, y2, z2;
-	float rx, ry, rz;
+	int		triCount;
+	float	origin[3];
+	triangle_t	*tList;
+	float	x, y, z;
+	float	x2, y2, z2;
+	float	rx, ry, rz;
 
 	TK_Init();
 	TK_OpenSource(fileName);
@@ -482,21 +478,21 @@ static void LoadHTR(char *fileName, triangle_t **triList,
 	TK_Beyond(TK_C_HEXEN);
 	TK_Beyond(TK_C_TRIANGLES);
 	TK_BeyondRequire(TK_C_VERSION, TK_INTNUMBER);
-	if(tk_IntNumber != 1)
+	if (tk_IntNumber != 1)
 	{
 		Error("Unsupported version (%d) in file %s\n", tk_IntNumber,
-			InputFileName);
+							InputFileName);
 	}
 
 	// Get vertex count
 	TK_BeyondRequire(TK_VERTICES, TK_INTNUMBER);
 	vertexCount = tk_IntNumber;
 	vList = SafeMalloc(vertexCount*sizeof vList[0], "Vertex list");
-	
+
 	// Get triangle count
 	TK_BeyondRequire(TK_FACES, TK_INTNUMBER);
 	triCount = tk_IntNumber;
-	if(triCount >= MAXTRIANGLES)
+	if (triCount >= MAXTRIANGLES)
 	{
 		Error("Too many triangles in file %s\n", InputFileName);
 	}
@@ -519,7 +515,7 @@ static void LoadHTR(char *fileName, triangle_t **triList,
 	rz =(float)(FixHTRRotateZ/360.0*2.0*MY_PI);
 
 	// Get vertex list
-	for(i = 0; i < vertexCount; i++)
+	for (i = 0; i < vertexCount; i++)
 	{
 		TK_FetchRequire(TK_VERTEX);
 		TK_FetchRequire(TK_FLOATNUMBER);
@@ -552,15 +548,15 @@ static void LoadHTR(char *fileName, triangle_t **triList,
 	}
 
 	// Get face list
-	for(i = 0; i < triCount; i++)
+	for (i = 0; i < triCount; i++)
 	{
 		TK_FetchRequire(TK_FACE);
 		TK_FetchRequire(TK_LPAREN);
-		for(j = 0; j < 3; j++)
+		for (j = 0; j < 3; j++)
 		{
 			TK_FetchRequire(TK_INTNUMBER);
 			vertexNum = tk_IntNumber-1;
-			if(vertexNum >= vertexCount)
+			if (vertexNum >= vertexCount)
 			{
 				Error("File '%s', line %d:\nVertex number"
 					" >= vertexCount: %d\n", tk_SourceName, tk_Line,
@@ -609,15 +605,15 @@ static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 		float v[3];
 	} *vList;
 	unsigned int triCount;
-	triangle_t *tList;
+	triangle_t	*tList;
 
 	InputFile = input;
-	if(ReadShort() != _3DS_MAIN3DS)
+	if (ReadShort() != _3DS_MAIN3DS)
 	{
 		_3DSError("Missing 3DS main chunk header.\n");
 	}
 	SeekTo(16);
-	if(ReadShort() != _3DS_EDIT3DS)
+	if (ReadShort() != _3DS_EDIT3DS)
 	{
 		_3DSError("Missing 3DS edit chunk header.\n");
 	}
@@ -625,18 +621,24 @@ static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 	editChunkSize = ReadLong();
 	editChunkPos = FilePosition()-6;
 	stop = false;
-	while(stop == false)
+	while (stop == false)
 	{
 		chunkPos = FilePosition();
 		chunkType = ReadShort();
-		switch(chunkType)
+		switch (chunkType)
 		{
-			case _3DS_EDIT_UNKNW01: case _3DS_EDIT_UNKNW02:
-			case _3DS_EDIT_UNKNW03: case _3DS_EDIT_UNKNW04:
-			case _3DS_EDIT_UNKNW05: case _3DS_EDIT_UNKNW06:
-			case _3DS_EDIT_UNKNW07: case _3DS_EDIT_UNKNW08:
-			case _3DS_EDIT_UNKNW09: case _3DS_EDIT_UNKNW10:
-			case _3DS_EDIT_UNKNW11: case _3DS_EDIT_UNKNW12:
+			case _3DS_EDIT_UNKNW01:
+			case _3DS_EDIT_UNKNW02:
+			case _3DS_EDIT_UNKNW03:
+			case _3DS_EDIT_UNKNW04:
+			case _3DS_EDIT_UNKNW05:
+			case _3DS_EDIT_UNKNW06:
+			case _3DS_EDIT_UNKNW07:
+			case _3DS_EDIT_UNKNW08:
+			case _3DS_EDIT_UNKNW09:
+			case _3DS_EDIT_UNKNW10:
+			case _3DS_EDIT_UNKNW11:
+			case _3DS_EDIT_UNKNW12:
 			case _3DS_EDIT_UNKNW13:
 			case _3DS_EDIT_MATERIAL:
 			case _3DS_EDIT_VIEW1:
@@ -649,7 +651,7 @@ static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 			default:
 				break;
 		}
-		if(FilePosition()-editChunkPos >= editChunkSize)
+		if (FilePosition()-editChunkPos >= editChunkSize)
 		{
 			_3DSError("Couldn't find OBJECT chunk.\n");
 		}
@@ -659,11 +661,11 @@ static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 	objectChunkPos = FilePosition()-6;
 	SkipName();
 	stop = false;
-	while(stop == false)
+	while (stop == false)
 	{
 		chunkPos = FilePosition();
 		chunkType = ReadShort();
-		switch(chunkType)
+		switch (chunkType)
 		{
 			case _3DS_OBJ_UNKNWN01:
 			case _3DS_OBJ_UNKNWN02:
@@ -676,7 +678,7 @@ static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 			default:
 				break;
 		}
-		if(FilePosition()-objectChunkPos >= objectChunkSize)
+		if (FilePosition()-objectChunkPos >= objectChunkSize)
 		{
 			_3DSError("Couldn't find TRIMESH chunk.\n");
 		}
@@ -686,11 +688,11 @@ static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 	meshChunkPos = FilePosition()-6;
 	stop = false;
 	foundVertexList = false;
-	while(stop == false)
+	while (stop == false)
 	{
 		chunkPos = FilePosition();
 		chunkType = ReadShort();
-		switch(chunkType)
+		switch (chunkType)
 		{
 			case _3DS_TRI_FACEL2:
 			case _3DS_TRI_VISIBLE:
@@ -699,8 +701,7 @@ static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 			case _3DS_TRI_VERTEXL:
 				chunkSize = ReadLong();
 				vertexCount = ReadShort();
-				vList = SafeMalloc(vertexCount*sizeof vList[0],
-					"Vertex list");
+				vList = SafeMalloc(vertexCount*sizeof vList[0], "Vertex list");
 				for(i = 0; i < vertexCount; i++)
 				{
 					vList[i].v[0] = ReadFloat();
@@ -713,18 +714,17 @@ static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 			case _3DS_TRI_FACEL1:
 				chunkSize = ReadLong();
 				triCount = ReadShort();
-				if(triCount >= MAXTRIANGLES)
+				if (triCount >= MAXTRIANGLES)
 				{
 					Error("Too many triangles in file %s\n",
-						InputFileName);
+								InputFileName);
 				}
 				*triangleCount = triCount;
-				tList = SafeMalloc(MAXTRIANGLES*sizeof(triangle_t),
-					"Triangle list");
+				tList = SafeMalloc(MAXTRIANGLES*sizeof(triangle_t), "Triangle list");
 				*triList = tList;
-				for(i = 0; i < triCount; i++)
+				for (i = 0; i < triCount; i++)
 				{
-					for(j = 0; j < 3; j++)
+					for (j = 0; j < 3; j++)
 					{
 						vertex = ReadShort();
 						tList[i].verts[j][0] = vList[vertex].v[0];
@@ -738,9 +738,9 @@ static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 			default:
 				break;
 		}
-		if(FilePosition()-meshChunkPos >= meshChunkSize)
+		if (FilePosition()-meshChunkPos >= meshChunkSize)
 		{
-			if(foundVertexList == false)
+			if (foundVertexList == false)
 			{
 				_3DSError("Couldn't find TRI_VERTEXL chunk.\n");
 			}
@@ -759,7 +759,7 @@ static void _3DSError(char *message)
 
 static float ReadFloat(void)
 {
-	float t;
+	float	t;
 
 	fread(&t, sizeof(float), 1, InputFile);
 	return t;
@@ -767,7 +767,7 @@ static float ReadFloat(void)
 
 static unsigned long ReadLong(void)
 {
-	unsigned long t;
+	unsigned long	t;
 
 	fread(&t, sizeof(unsigned long), 1, InputFile);
 	return t;
@@ -775,7 +775,7 @@ static unsigned long ReadLong(void)
 
 static unsigned short ReadShort(void)
 {
-	unsigned short t;
+	unsigned short	t;
 
 	fread(&t, sizeof(unsigned short), 1, InputFile);
 	return t;
@@ -783,7 +783,7 @@ static unsigned short ReadShort(void)
 
 static unsigned char ReadByte(void)
 {
-	unsigned char t;
+	unsigned char	t;
 
 	fread(&t, sizeof(unsigned char), 1, InputFile);
 	return t;
@@ -791,10 +791,10 @@ static unsigned char ReadByte(void)
 
 static void SkipName(void)
 {
-	int i;
-	int c;
+	int		i;
+	int		c;
 
-	for(i = 0, c = 1; i < 12 && c != 0; i++)
+	for (i = 0, c = 1; i < 12 && c != 0; i++)
 	{
 		c = ReadByte();
 	}
@@ -802,7 +802,7 @@ static void SkipName(void)
 
 static void SeekTo(int position)
 {
-  fseek(InputFile, position, SEEK_SET);
+	fseek(InputFile, position, SEEK_SET);
 }
 
 static unsigned long FilePosition(void)
@@ -819,15 +819,15 @@ static unsigned long FilePosition(void)
 
 static void LoadTRI(FILE *input, triangle_t **triList, int *triangleCount)
 {
-	int i, j, k;
-	float start;
-	char text[256];
-	int count;
-	int magic;
-	tf_triangle tri;
-	triangle_t *ptri;
-	int exitpattern;
-	float t;
+	int		i, j, k;
+	float	start;
+	char	text[256];
+	int		count;
+	int		magic;
+	tf_triangle	tri;
+	triangle_t	*ptri;
+	int		exitpattern;
+	float	t;
 
 	t = -FLOAT_START;
 	*((unsigned char *)&exitpattern + 0) = *((unsigned char *)&t + 3);
@@ -836,7 +836,7 @@ static void LoadTRI(FILE *input, triangle_t **triList, int *triangleCount)
 	*((unsigned char *)&exitpattern + 3) = *((unsigned char *)&t + 0);
 
 	fread(&magic, sizeof(int), 1, input);
-	if(BigLong(magic) != TRI_MAGIC)
+	if (BigLong(magic) != TRI_MAGIC)
 	{
 		Error("Bad .TRI file: %s\n", InputFileName);
 	}
@@ -845,26 +845,26 @@ static void LoadTRI(FILE *input, triangle_t **triList, int *triangleCount)
 
 	*triList = ptri;
 
-	while(feof(input) == 0)
+	while (feof(input) == 0)
 	{
 		fread(&start, sizeof(float), 1, input);
 		*(int *) (char *) &start = BigLong(*(int *) (char *) &start);
 
-		if(*(int *) (char *) &start != exitpattern)
+		if (*(int *) (char *) &start != exitpattern)
 		{
-			if(start == FLOAT_START)
+			if (start == FLOAT_START)
 			{ // Start of an object or group of objects
 				i = -1;
 				do
 				{
 					++i;
 					fread(&(text[i]), sizeof(char), 1, input);
-				} while(text[i] != '\0');
+				} while (text[i] != '\0');
 				//fprintf(stdout,"OBJECT START: %s\n", text);
 
 				fread(&count, sizeof(int), 1, input);
 				count = BigLong(count);
-				if(count != 0)
+				if (count != 0)
 				{
 					//fprintf(stdout,"NUMBER OF TRIANGLES: %d\n", count);
 					i = -1;
@@ -872,31 +872,31 @@ static void LoadTRI(FILE *input, triangle_t **triList, int *triangleCount)
 					{
 						++i;
 						fread(&(text[i]), sizeof( char ), 1, input);
-					} while(text[i] != '\0');
+					} while (text[i] != '\0');
 					//fprintf(stdout,"  Object texture name: '%s'\n", text);
 				}
 			}
-			else if(start == FLOAT_END)
+			else if (start == FLOAT_END)
 			{
 				i = -1;
 				do
 				{
 					++i;
 					fread(&(text[i]), sizeof(char), 1, input);
-				} while(text[i] != '\0');
+				} while (text[i] != '\0');
 				//fprintf(stdout,"OBJECT END: %s\n", text);
 				continue;
 			}
 		}
 
 		// Read the triangles
-		for(i = 0; i < count; ++i)
+		for (i = 0; i < count; ++i)
 		{
 			fread(&tri, sizeof(tf_triangle), 1, input);
 			ByteSwapTri(&tri);
-			for(j = 0; j < 3; j++)
+			for (j = 0; j < 3; j++)
 			{
-				for(k = 0; k < 3; k++)
+				for (k = 0; k < 3; k++)
 				{
 					ptri->verts[j][k] = tri.pt[j].p.v[k];
 				}
@@ -915,7 +915,7 @@ static void LoadTRI(FILE *input, triangle_t **triList, int *triangleCount)
 				ptri->verts[2][2]);
 */
 			ptri++;
-			if((ptri - *triList) >= MAXTRIANGLES)
+			if ((ptri - *triList) >= MAXTRIANGLES)
 			{
 				Error("Error: too many triangles; increase MAXTRIANGLES\n");
 			}
@@ -932,10 +932,11 @@ static void LoadTRI(FILE *input, triangle_t **triList, int *triangleCount)
 
 static void ByteSwapTri(tf_triangle *tri)
 {
-	int i;
+	int		i;
 
-	for(i = 0; i < sizeof(tf_triangle)/4; i++)
+	for (i = 0; i < sizeof(tf_triangle)/4; i++)
 	{
 		((int *)tri)[i] = BigLong(((int *)tri)[i]);
 	}
 }
+

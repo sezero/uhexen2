@@ -1,7 +1,7 @@
+// mathlib.h
+
 #ifndef __MATHLIB__
 #define __MATHLIB__
-
-// mathlib.h
 
 #include <math.h>
 
@@ -15,7 +15,7 @@ typedef vec_t vec3_t[3];
 
 #define	Q_PI	3.14159265358979323846
 
-extern vec3_t vec3_origin;
+extern vec3_t	vec3_origin;
 
 #define	EQUAL_EPSILON	0.001
 

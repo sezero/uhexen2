@@ -52,10 +52,10 @@ void PackFile (char *src, char *name)
 	FILE	*in;
 	int		remaining, count;
 	char	buf[4096];
-	
+
 	if ( (byte *)pf - (byte *)pfiles > sizeof(pfiles) )
 		Error ("Too many files in pak file");
-	
+
 	in = SafeOpenRead (src);
 	remaining = Q_filelength (in);
 
@@ -65,7 +65,7 @@ void PackFile (char *src, char *name)
 	printf ("%64s : %7i\n", pf->name, remaining);
 
 	packbytes += remaining;
-	
+
 	while (remaining)
 	{
 		if (remaining < sizeof(buf))
@@ -101,8 +101,8 @@ void CopyQFiles (int blocknum)
 
 	sprintf (destfile, "%spak%i.pak", gamedir, blocknum);
 	packhandle = SafeOpenWrite (destfile);
-	SafeWrite (packhandle, &header, sizeof(header));	
-	
+	SafeWrite (packhandle, &header, sizeof(header));
+
 	blocknum++;
 
 	for (i=0 ; i<numsounds ; i++)
@@ -133,7 +133,7 @@ void CopyQFiles (int blocknum)
 		sprintf (srcfile,"%s%s",gamedir, precache_files[i]);
 		PackFile (srcfile, precache_files[i]);
 	}
-	
+
 	header.id[0] = 'P';
 	header.id[1] = 'A';
 	header.id[2] = 'C';
@@ -141,12 +141,12 @@ void CopyQFiles (int blocknum)
 	dirlen = (byte *)pf - (byte *)pfiles;
 	header.dirofs = LittleLong(ftell (packhandle));
 	header.dirlen = LittleLong(dirlen);
-	
+
 	SafeWrite (packhandle, pfiles, dirlen);
 
 	fseek (packhandle, 0, SEEK_SET);
 	SafeWrite (packhandle, &header, sizeof(header));
-	fclose (packhandle);	
+	fclose (packhandle);
 
 // do a crc of the file
 	CRC_Init (&crc);
@@ -201,18 +201,15 @@ void ReadFiles (void)
 
 	fscanf (f, "%i\n", &numsounds);
 	for (i=0 ; i<numsounds ; i++)
-		fscanf (f, "%i %s\n", &precache_sounds_block[i],
-			precache_sounds[i]);
+		fscanf (f, "%i %s\n", &precache_sounds_block[i], precache_sounds[i]);
 
 	fscanf (f, "%i\n", &nummodels);
 	for (i=0 ; i<nummodels ; i++)
-		fscanf (f, "%i %s\n", &precache_models_block[i],
-			precache_models[i]);
+		fscanf (f, "%i %s\n", &precache_models_block[i], precache_models[i]);
 
 	fscanf (f, "%i\n", &numfiles);
 	for (i=0 ; i<numfiles ; i++)
-		fscanf (f, "%i %s\n", &precache_files_block[i],
-			precache_files[i]);
+		fscanf (f, "%i %s\n", &precache_files_block[i], precache_files[i]);
 
 	fclose (f);
 

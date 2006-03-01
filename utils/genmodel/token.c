@@ -39,29 +39,29 @@ static void NextChr(void);
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
-tokenType_t tk_Token;
-int tk_Line;
-int tk_IntNumber;
-float tk_FloatNumber;
-char *tk_String;
-char tk_SourceName[MAX_FILE_NAME_LENGTH];
+tokenType_t	tk_Token;
+int	tk_Line;
+int	tk_IntNumber;
+float	tk_FloatNumber;
+char	*tk_String;
+char	tk_SourceName[MAX_FILE_NAME_LENGTH];
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
-static char Chr;
-static char *FileStart;
-static char *FilePtr;
-static char *FileEnd;
-static qboolean SourceOpen;
-static char ASCIIToChrCode[256];
-static char TokenStringBuffer[MAX_QUOTED_LENGTH];
-static qboolean IncLineNumber;
-static char TempBuffer[2048];
+static char	Chr;
+static char	*FileStart;
+static char	*FilePtr;
+static char	*FileEnd;
+static qboolean	SourceOpen;
+static char	ASCIIToChrCode[256];
+static char	TokenStringBuffer[MAX_QUOTED_LENGTH];
+static qboolean	IncLineNumber;
+static char	TempBuffer[2048];
 
 static struct
 {
-	char *name;
-	tokenType_t token;
+	char	*name;
+	tokenType_t	token;
 } Keywords[] =
 {
 	{ "model",	TK_MODEL	},
@@ -136,21 +136,21 @@ static char *TokenNames[] =
 
 void TK_Init(void)
 {
-	int i;
+	int		i;
 
-	for(i = 0; i < 256; i++)
+	for (i = 0; i < 256; i++)
 	{
 		ASCIIToChrCode[i] = CHR_SPECIAL;
 	}
-	for(i = '0'; i <= '9'; i++)
+	for (i = '0'; i <= '9'; i++)
 	{
 		ASCIIToChrCode[i] = CHR_NUMBER;
 	}
-	for(i = 'A'; i <= 'Z'; i++)
+	for (i = 'A'; i <= 'Z'; i++)
 	{
 		ASCIIToChrCode[i] = CHR_LETTER;
 	}
-	for(i = 'a'; i <= 'z'; i++)
+	for (i = 'a'; i <= 'z'; i++)
 	{
 		ASCIIToChrCode[i] = CHR_LETTER;
 	}
@@ -170,7 +170,7 @@ void TK_Init(void)
 
 void TK_OpenSource(char *fileName)
 {
-	int size;
+	int		size;
 
 	TK_CloseSource();
 	size = LoadFile(fileName, (void **) (char *) &FileStart);
@@ -191,9 +191,7 @@ void TK_OpenSource(char *fileName)
 
 void TK_CloseSource(void)
 {
-//	int i;
-
-	if(SourceOpen)
+	if (SourceOpen)
 	{
 		free(FileStart);
 		SourceOpen = FALSE;
@@ -208,15 +206,15 @@ void TK_CloseSource(void)
 
 tokenType_t TK_Fetch(void)
 {
-	while(Chr == ASCII_SPACE)
+	while (Chr == ASCII_SPACE)
 	{
 		NextChr();
 	}
-	if(Chr == '-')
+	if (Chr == '-')
 	{
 		ProcessNumberToken();
 	}
-	else switch(ASCIIToChrCode[(byte)Chr])
+	else switch (ASCIIToChrCode[(byte)Chr])
 	{
 		case CHR_EOF:
 			tk_Token = TK_EOF;
@@ -245,13 +243,13 @@ tokenType_t TK_Fetch(void)
 
 void TK_Require(tokenType_t tokType)
 {
-	if(tokType == TK_FLOATNUMBER && tk_Token == TK_INTNUMBER)
+	if (tokType == TK_FLOATNUMBER && tk_Token == TK_INTNUMBER)
 	{
 		tk_FloatNumber = (float)tk_IntNumber;
 		tk_Token = TK_FLOATNUMBER;
 		return;
 	}
-	if(tk_Token != tokType)
+	if (tk_Token != tokType)
 	{
 		Error("File '%s', line %d:\nExpected '%s', found '%s'.\n",
 			tk_SourceName, tk_Line, TokenNames[tokType],
@@ -280,9 +278,9 @@ tokenType_t TK_FetchRequireFetch(tokenType_t tokType)
 
 tokenType_t TK_Beyond(tokenType_t tokType)
 {
-	while(tk_Token != tokType)
+	while (tk_Token != tokType)
 	{
-		if(TK_Fetch() == TK_EOF)
+		if (TK_Fetch() == TK_EOF)
 		{
 			Error("File '%s':\nCould not find token '%s'.\n",
 				tk_SourceName, TokenNames[tokType]);
@@ -305,15 +303,15 @@ void TK_BeyondRequire(tokenType_t bTok, tokenType_t rTok)
 
 static void ProcessLetterToken(void)
 {
-	int i;
-	char *text;
+	int		i;
+	char	*text;
 
 	i = 0;
 	text = TokenStringBuffer;
-	while(ASCIIToChrCode[(byte)Chr] == CHR_LETTER
+	while (ASCIIToChrCode[(byte)Chr] == CHR_LETTER
 		|| ASCIIToChrCode[(byte)Chr] == CHR_NUMBER)
 	{
-		if(++i == MAX_IDENTIFIER_LENGTH)
+		if (++i == MAX_IDENTIFIER_LENGTH)
 		{
 			Error("File '%s', line %d:\nIdentifier too long.\n",
 				tk_SourceName, tk_Line);
@@ -322,7 +320,7 @@ static void ProcessLetterToken(void)
 		NextChr();
 	}
 	*text = 0;
-	if(CheckForKeyword() == FALSE)
+	if (CheckForKeyword() == FALSE)
 	{
 		tk_Token = TK_IDENTIFIER;
 	}
@@ -336,11 +334,11 @@ static void ProcessLetterToken(void)
 
 static qboolean CheckForKeyword(void)
 {
-	int i;
+	int		i;
 
-	for(i = 0; Keywords[i].name != NULL; i++)
+	for (i = 0; Keywords[i].name != NULL; i++)
 	{
-		if(strcmp(tk_String, Keywords[i].name) == 0)
+		if (strcmp(tk_String, Keywords[i].name) == 0)
 		{
 			tk_Token = Keywords[i].token;
 			return TRUE;
@@ -357,21 +355,21 @@ static qboolean CheckForKeyword(void)
 
 static void ProcessNumberToken(void)
 {
-	char *buffer;
+	char	*buffer;
 
 	buffer = TempBuffer;
 	*buffer++ = Chr;
 	NextChr();
-	while(ASCIIToChrCode[(byte)Chr] == CHR_NUMBER)
+	while (ASCIIToChrCode[(byte)Chr] == CHR_NUMBER)
 	{
 		*buffer++ = Chr;
 		NextChr();
 	}
-	if(Chr == '.')
+	if (Chr == '.')
 	{ // Float
 		*buffer++ = Chr;
 		NextChr(); // Skip period
-		while(ASCIIToChrCode[(byte)Chr] == CHR_NUMBER)
+		while (ASCIIToChrCode[(byte)Chr] == CHR_NUMBER)
 		{
 			*buffer++ = Chr;
 			NextChr();
@@ -396,21 +394,20 @@ static void ProcessNumberToken(void)
 
 static void ProcessQuoteToken(void)
 {
-	int i;
-	char *text;
-//	int d1, d2;
+	int		i;
+	char	*text;
 
 	i = 0;
 	text = TokenStringBuffer;
 	NextChr();
-	while(Chr != ASCII_QUOTE)
+	while (Chr != ASCII_QUOTE)
 	{
-		if(Chr == EOF_CHARACTER)
+		if (Chr == EOF_CHARACTER)
 		{
 			Error("File '%s', line %d:\n<EOF> inside string.\n",
 				tk_SourceName, tk_Line);
 		}
-		if(++i > MAX_QUOTED_LENGTH-1)
+		if (++i > MAX_QUOTED_LENGTH-1)
 		{
 			Error("File '%s', line %d:\nString literal too long.\n",
 				tk_SourceName, tk_Line);
@@ -431,11 +428,11 @@ static void ProcessQuoteToken(void)
 
 static void ProcessSpecialToken(void)
 {
-	char c;
+	char	c;
 
 	c = Chr;
 	NextChr();
-	switch(c)
+	switch (c)
 	{
 		case '(':
 			tk_Token = TK_LPAREN;
@@ -472,23 +469,24 @@ static void ProcessSpecialToken(void)
 
 static void NextChr(void)
 {
-	if(FilePtr >= FileEnd)
+	if (FilePtr >= FileEnd)
 	{
 		Chr = EOF_CHARACTER;
 		return;
 	}
-	if(IncLineNumber == TRUE)
+	if (IncLineNumber == TRUE)
 	{
 		tk_Line++;
 		IncLineNumber = FALSE;
 	}
 	Chr = *FilePtr++;
-	if(Chr < ASCII_SPACE)
+	if (Chr < ASCII_SPACE)
 	{
-		if(Chr == '\n')
+		if (Chr == '\n')
 		{
 			IncLineNumber = TRUE;
 		}
 		Chr = ASCII_SPACE;
 	}
 }
+
