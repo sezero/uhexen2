@@ -1,13 +1,41 @@
 
 This package is put together essentially by merging two files
-released by Raven, namely H2_UTILS.EXE (for original Hexen2)
-and h2mputil.zip (for the mission pack).  Only a couple of
-trivial changes were needed to make them compile under Linux.
+released by Raven, namely H2_UTILS.EXE (for original Hexen II)
+and h2mputil.zip (for the mission pack), with addition of a few
+other tools written by the community.
 
-Another utility included here is jsh2color: it is a lit file
-generator taken from the old jshexen sources.
+The tools, as they were released lacked proper documentation.
+I extracted most of the information below from ID's GPL'ed quake
+utilities package.
 
-Also included here is dcc, a progs.dat compiler/decompiler
-for Hexen2 by Eric Hobbs. It is only interesting due to its
-decompiler facility.
+hcc	: HCode (HexenC) compiler. From Raven's h2mputils package.
+	  Reads "progs.src", then compiles all of the files listed
+	  there.  Generates progs.dat for use by hexen2 at runtime,
+	  progdefs.h for use in engine compilation, and files.dat
+	  to be used as input for qfiles.
+
+hcc_old	: Same as above, but the old version used for original
+	  Hexen II. From Raven's h2_utils package. It doesn't work
+	  for newer projects like the mission pack or hexenworld.
+
+maputils: Map compiling tools (qbsp, light, vis). From Raven's
+	  h2_utils package. Also includes bspinfo, which can be used
+	  for dumps the count and size statistics on a .bsp file.
+
+genmodel: The 3-D model grabber. From Raven's h2_utils package.
+	  Combines skin graphics with 3d frames to produce a .mdl
+	  file. The commands are parsed out of .hc files.
+
+qfiles	: From Raven's h2_utils package. Builds pak files based
+	  on the contents of "files.dat" writen out by hcc. It
+	  can also regenerate all of the .bsp models used in a
+	  project, which is required if any changes to the file
+	  format have been made.
+
+jsh2color: A light colouring utility that generates .LIT files.
+	  Taken from the old jshexen2 sources.
+
+dcc	: An old progs.dat decompiler (and compiler) for Hexen2 by
+	  Eric Hobbs. It may be of interest due to its decompiler
+	  facilities.
 
