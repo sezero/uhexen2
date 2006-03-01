@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_dl_rmain.c,v 1.38 2005-10-24 23:01:15 sezero Exp $
+	$Id: gl_dl_rmain.c,v 1.39 2006-03-01 21:24:42 sezero Exp $
 */
 
 
@@ -497,9 +497,9 @@ float	shadelight, ambientlight;
 
 // precalculated dot products for quantized angles
 #define SHADEDOT_QUANT 16
-float	r_avertexnormal_dots[SHADEDOT_QUANT][256] =
+float	r_avertexnormal_dots[SHADEDOT_QUANT][256] = {
 #include "anorm_dots.h"
-;
+};
 
 float	*shadedots = r_avertexnormal_dots[0];
 
@@ -1832,6 +1832,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.38  2005/10/24 23:01:15  sezero
+ * fixed "might be used uninitialized" warnings for xyfact and zfact
+ *
  * Revision 1.37  2005/10/02 20:02:41  sezero
  * Fix glows of floating models (eg. mana) not floating along with the model.
  * Also a fix intersecting of mana boxes with glow. from Michal Wozniak.

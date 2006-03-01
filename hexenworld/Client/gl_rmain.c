@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.28 2005-10-24 23:01:15 sezero Exp $
+	$Id: gl_rmain.c,v 1.29 2006-03-01 21:24:42 sezero Exp $
 */
 
 
@@ -416,9 +416,9 @@ float	shadelight, ambientlight;
 
 // precalculated dot products for quantized angles
 #define SHADEDOT_QUANT 16
-float	r_avertexnormal_dots[SHADEDOT_QUANT][256] =
+float	r_avertexnormal_dots[SHADEDOT_QUANT][256] = {
 #include "anorm_dots.h"
-;
+};
 
 float	*shadedots = r_avertexnormal_dots[0];
 
