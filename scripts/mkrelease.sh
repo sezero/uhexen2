@@ -15,6 +15,11 @@ fi
 rm -rf CVSROOT
 find -name CVS | xargs rm -rf 
 
+# kill the obsoleted empty directories
+rm -rf utils/h2_utils utils/h2mp_utils utils/dcc/bin
+rm -rf hexen2/obsolete hexenworld/Master/win_stuff launcher/obsolete
+rm -rf gamecode/hc/h2_single_prog gamecode/hc/hw_bossmaps
+
 # move the spec file to the root
 mv packaging/hexen2.spec ./
 rm -rf packaging
