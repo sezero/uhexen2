@@ -7,6 +7,8 @@
 # Path settings:
 # main uhexen2 relative path
 UHEXEN2_TOP=../..
+# where the common sources/objects are
+COMMONDIR=../common
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -29,11 +31,11 @@ endif
 # Other build flags
 
 ifeq "$(TARGET_OS)" "WIN32"
-INCLUDES:= -I$(MINGWDIR)/include
+INCLUDES:= -I$(COMMONDIR) -I$(MINGWDIR)/include
 LDFLAGS := -mconsole
 LDLIBS  :=
 else
-INCLUDES:=
+INCLUDES:= -I$(COMMONDIR)
 LDFLAGS :=
 LDLIBS  := -lm
 endif
@@ -43,11 +45,11 @@ endif
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-JS_OBJS= bspfile.o \
-	cmdlib.o \
+JS_OBJS= $(COMMONDIR)/cmdlib.o \
+	mathlib.o \
+	bspfile.o \
 	entities.o \
 	ltface.o \
-	mathlib.o \
 	tex.o \
 	threads.o \
 	trace.o \
@@ -63,5 +65,5 @@ $(BINARY) : $(JS_OBJS)
 	$(LINKER) -o $(BINARY) $(JS_OBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
-	rm -f *.o core .tmp *.tmp
+	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core
 

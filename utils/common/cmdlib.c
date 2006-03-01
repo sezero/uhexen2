@@ -1,7 +1,8 @@
 /*
 	cmdlib.c
+	functions common to all of the utilities
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2_utils/utils/cmdlib.c,v 1.7 2006-02-28 16:00:13 sezero Exp $
+	$Id: cmdlib.c,v 1.1 2006-03-01 09:00:53 sezero Exp $
 */
 
 
@@ -36,7 +37,6 @@
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
-// set these before calling CheckParm
 int myargc;
 char **myargv;
 

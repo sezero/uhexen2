@@ -7,6 +7,8 @@
 # Path settings:
 # main uhexen2 relative path
 UHEXEN2_TOP=../../..
+# where the common sources/objects are
+COMMONDIR=../../common
 # where to put the binaries
 DESTDIR =../bin
 
@@ -35,11 +37,11 @@ endif
 # Other build flags
 
 ifeq "$(TARGET_OS)" "WIN32"
-INCLUDES:= -I$(MINGWDIR)/include
+INCLUDES:= -I$(COMMONDIR) -I$(MINGWDIR)/include
 LDFLAGS := -mconsole
 LDLIBS  :=
 else
-INCLUDES:=
+INCLUDES:= -I$(COMMONDIR)
 LDFLAGS :=
 LDLIBS  := -lm
 endif
@@ -49,7 +51,7 @@ endif
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-COMMONOBJS= cmdlib.o \
+COMMONOBJS= $(COMMONDIR)/cmdlib.o \
 	mathlib.o \
 	bspfile.o
 
@@ -93,5 +95,5 @@ $(QBSP) : $(COMMONOBJS) $(QBSPOBJS)
 	$(LINKER) -o $(DESTDIR)/$(QBSP) $(COMMONOBJS) $(QBSPOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
-	rm -f *.o core .tmp *.tmp
+	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core
 

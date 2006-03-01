@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/h2mp_utils/genmodel/cmdlib.h,v 1.12 2006-02-28 16:00:14 sezero Exp $
+	$Id: cmdlib.h,v 1.1 2006-03-01 09:00:53 sezero Exp $
 */
 
 #ifndef __CMDLIB__

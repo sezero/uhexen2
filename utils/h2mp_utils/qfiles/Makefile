@@ -7,6 +7,8 @@
 # Path settings:
 # main uhexen2 relative path
 UHEXEN2_TOP=../../..
+# where the common sources/objects are
+COMMONDIR=../../common
 # where to put the binaries
 DESTDIR =../bin
 
@@ -25,17 +27,17 @@ endif
 
 # Compiler flags
 ifndef DEBUG
-CFLAGS = -O2 -Wall
+CFLAGS = -march=i586 -O2 -Wall
 endif
 
 # Other build flags
 
 ifeq "$(TARGET_OS)" "WIN32"
-INCLUDES:= -I$(MINGWDIR)/include
+INCLUDES:= -I$(COMMONDIR) -I$(MINGWDIR)/include
 LDFLAGS := -mconsole
 LDLIBS  :=
 else
-INCLUDES:=
+INCLUDES:= -I$(COMMONDIR)
 LDFLAGS :=
 LDLIBS  :=
 endif
@@ -45,8 +47,8 @@ endif
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-QFILESOBJS= cmdlib.o \
-	qdir.o \
+QFILESOBJS= $(COMMONDIR)/cmdlib.o \
+	$(COMMONDIR)/qdir.o \
 	qfiles.o
 
 # Targets
@@ -59,5 +61,5 @@ $(BINARY) : $(QFILESOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BINARY) $(QFILESOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
-	rm -f *.o core .tmp *.tmp
+	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core
 

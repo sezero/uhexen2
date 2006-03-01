@@ -1,3 +1,9 @@
+/*
+	qdir.c
+
+	$Id: qdir.c,v 1.1 2006-03-01 09:00:53 sezero Exp $
+*/
+
 
 #include "cmdlib.h"
 

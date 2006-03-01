@@ -7,6 +7,8 @@
 # Path settings:
 # main uhexen2 relative path
 UHEXEN2_TOP=../..
+# where the common sources/objects are
+COMMONDIR=../common
 # where to put the binaries
 DESTDIR =./bin
 
@@ -25,21 +27,21 @@ endif
 
 # Compiler flags
 ifndef DEBUG
-CFLAGS := -O2 -Wall
+CFLAGS := -march=i586 -O2 -Wall
 endif
 
 # Other build flags
 
 ifeq "$(TARGET_OS)" "WIN32"
-INCLUDES:= -I$(MINGWDIR)/include
+INCLUDES:= -I$(COMMONDIR) -I$(MINGWDIR)/include
 LDFLAGS := -mconsole
 LDLIBS  :=
 else
-INCLUDES:=
+INCLUDES:= -I$(COMMONDIR)
 LDFLAGS :=
 LDLIBS  :=
 # _GNU_SOURCE is required for stpcpy()
-CFLAGS  += -D_GNU_SOURCE
+#CFLAGS  += -D_GNU_SOURCE
 endif
 
 
@@ -48,7 +50,7 @@ endif
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-DHCCOBJS= cmdlib.o \
+DHCCOBJS= $(COMMONDIR)/cmdlib.o \
 	pr_comp.o \
 	pr_lex.o \
 	dcc.o \
@@ -64,5 +66,5 @@ $(BINARY) : $(DHCCOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BINARY) $(DHCCOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
-	rm -f *.o core .tmp *.tmp
+	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core
 

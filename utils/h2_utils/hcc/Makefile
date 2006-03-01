@@ -7,6 +7,8 @@
 # Path settings:
 # main uhexen2 relative path
 UHEXEN2_TOP=../../..
+# where the common sources/objects are
+COMMONDIR=../../common
 # where to put the binaries
 DESTDIR =../bin
 
@@ -25,7 +27,7 @@ endif
 
 # Compiler flags
 ifndef DEBUG
-CFLAGS = -O2 -Wall
+CFLAGS = -march=i586 -O2 -Wall
 # avoid the compiler warnings in pr_lex.c for now
 CFLAGS+= -Wno-char-subscripts
 endif
@@ -33,11 +35,11 @@ endif
 # Other build flags
 
 ifeq "$(TARGET_OS)" "WIN32"
-INCLUDES:= -I$(MINGWDIR)/include
+INCLUDES:= -I$(COMMONDIR) -I$(MINGWDIR)/include
 LDFLAGS := -mconsole
 LDLIBS  :=
 else
-INCLUDES:=
+INCLUDES:= -I$(COMMONDIR)
 LDFLAGS :=
 LDLIBS  :=
 endif
@@ -47,7 +49,7 @@ endif
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-HCCOBJS= cmdlib.o \
+HCCOBJS= $(COMMONDIR)/cmdlib.o \
 	expr.o \
 	hcc.o \
 	pr_comp.o \
@@ -65,5 +67,5 @@ $(BINARY) : $(HCCOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BINARY) $(HCCOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
-	rm -f *.o core .tmp *.tmp
+	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core
 
