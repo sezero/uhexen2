@@ -5,8 +5,8 @@ UHEXEN2_TOP=../..
 
 if [ "$1" = "strip" ]
 then
-	echo "Stripping dhcc.exe"
-	$STRIPPER ../bin/dhcc.exe
+	echo "Stripping hcc.exe"
+	$STRIPPER hcc.exe
 	exit 0
 fi
 

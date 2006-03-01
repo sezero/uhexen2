@@ -6,7 +6,7 @@ UHEXEN2_TOP=../..
 if [ "$1" = "strip" ]
 then
 	echo "Stripping jsh2colour.exe"
-	$STRIPPER jsh2colour.exe
+	$STRIPPER ../bin/jsh2colour.exe
 	exit 0
 fi
 

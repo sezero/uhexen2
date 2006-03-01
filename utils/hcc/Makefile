@@ -20,14 +20,16 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq "$(TARGET_OS)" "WIN32"
-BINARY=dhcc.exe
+BINARY=hcc.exe
 else
-BINARY=dhcc
+BINARY=hcc
 endif
 
 # Compiler flags
 ifndef DEBUG
-CFLAGS := -march=i586 -O2 -Wall
+CFLAGS = -march=i586 -O2 -Wall
+# avoid the compiler warnings in pr_lex.c for now
+CFLAGS+= -Wno-char-subscripts
 endif
 
 # Other build flags
@@ -40,21 +42,20 @@ else
 INCLUDES:= -I$(COMMONDIR)
 LDFLAGS :=
 LDLIBS  :=
-# _GNU_SOURCE is required for stpcpy()
-#CFLAGS  += -D_GNU_SOURCE
 endif
-
 
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-DHCCOBJS= $(COMMONDIR)/cmdlib.o \
+HCCOBJS= $(COMMONDIR)/cmdlib.o \
+	expr.o \
+	hcc.o \
 	pr_comp.o \
 	pr_lex.o \
-	dcc.o \
-	hcc.o
+	pr_parse.o \
+	stmt.o
 
 # Targets
 all : $(BINARY)
@@ -62,8 +63,8 @@ all : $(BINARY)
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc
 
-$(BINARY) : $(DHCCOBJS)
-	$(LINKER) -o $(DESTDIR)/$(BINARY) $(DHCCOBJS) $(LDFLAGS) $(LDLIBS)
+$(BINARY) : $(HCCOBJS)
+	$(LINKER) -o $(DESTDIR)/$(BINARY) $(HCCOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
 	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core

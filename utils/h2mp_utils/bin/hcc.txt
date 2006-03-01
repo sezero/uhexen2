@@ -1,1 +1,0 @@
-use -oi and -on to reduce the size of the progs.dat

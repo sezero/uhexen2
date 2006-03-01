@@ -9,6 +9,8 @@
 UHEXEN2_TOP=../..
 # where the common sources/objects are
 COMMONDIR=../common
+# where to put the binaries
+DESTDIR =../bin
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -62,7 +64,7 @@ all : $(BINARY)
 include $(UHEXEN2_TOP)/scripts/sanity2.inc
 
 $(BINARY) : $(JS_OBJS)
-	$(LINKER) -o $(BINARY) $(JS_OBJS) $(LDFLAGS) $(LDLIBS)
+	$(LINKER) -o $(DESTDIR)/$(BINARY) $(JS_OBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
 	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core

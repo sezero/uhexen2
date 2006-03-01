@@ -20,14 +20,20 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq "$(TARGET_OS)" "WIN32"
-BINARY=dhcc.exe
+QBSP=qbsp.exe
+LIGHT=light.exe
+VIS=vis.exe
+BSPINFO=bspinfo.exe
 else
-BINARY=dhcc
+QBSP=qbsp
+LIGHT=light
+VIS=vis
+BSPINFO=bspinfo
 endif
 
 # Compiler flags
 ifndef DEBUG
-CFLAGS := -march=i586 -O2 -Wall
+CFLAGS := -march=i586 -O2 -Wall -ffast-math -fexpensive-optimizations
 endif
 
 # Other build flags
@@ -39,31 +45,61 @@ LDLIBS  :=
 else
 INCLUDES:= -I$(COMMONDIR)
 LDFLAGS :=
-LDLIBS  :=
-# _GNU_SOURCE is required for stpcpy()
-#CFLAGS  += -D_GNU_SOURCE
+LDLIBS  := -lm
 endif
-
 
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-DHCCOBJS= $(COMMONDIR)/cmdlib.o \
-	pr_comp.o \
-	pr_lex.o \
-	dcc.o \
-	hcc.o
+COMMONOBJS= $(COMMONDIR)/cmdlib.o \
+	mathlib.o \
+	bspfile.o
+
+LIGHTOBJS= entities.o \
+	light.o \
+	ltface.o \
+	threads.o \
+	trace.o
+
+VISOBJS= flow.o \
+	soundpvs.o \
+	vis.o
+
+QBSPOBJS= brush.o \
+	csg4.o \
+	map.o \
+	merge.o \
+	nodraw.o \
+	outside.o \
+	portals.o \
+	qbsp.o \
+	region.o \
+	solidbsp.o \
+	surfaces.o \
+	tjunc.o \
+	writebsp.o
+
+BSPINFOBJS= bspinfo.o
 
 # Targets
-all : $(BINARY)
+all : $(LIGHT) $(VIS) $(QBSP) $(BSPINFO)
 
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc
 
-$(BINARY) : $(DHCCOBJS)
-	$(LINKER) -o $(DESTDIR)/$(BINARY) $(DHCCOBJS) $(LDFLAGS) $(LDLIBS)
+$(LIGHT) : $(COMMONOBJS) $(LIGHTOBJS)
+	$(LINKER) -o $(DESTDIR)/$(LIGHT) $(COMMONOBJS) $(LIGHTOBJS) $(LDFLAGS) $(LDLIBS)
+
+$(VIS) : $(COMMONOBJS) $(VISOBJS)
+	$(LINKER) -o $(DESTDIR)/$(VIS) $(COMMONOBJS) $(VISOBJS) $(LDFLAGS) $(LDLIBS)
+
+$(QBSP) : $(COMMONOBJS) $(QBSPOBJS)
+	$(LINKER) -o $(DESTDIR)/$(QBSP) $(COMMONOBJS) $(QBSPOBJS) $(LDFLAGS) $(LDLIBS)
+
+$(BSPINFO) : $(COMMONOBJS) $(BSPINFOBJS)
+	$(LINKER) -o $(DESTDIR)/$(BSPINFO) $(COMMONOBJS) $(BSPINFOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
 	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core

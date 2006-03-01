@@ -1,12 +1,10 @@
 #!/bin/sh
 
 EXE_EXT=
-BIN_FILES="dcc/bin/dhcc h2_utils/bin/hcc h2mp_utils/bin/hcc 
-jsh2color/jsh2colour
-h2_utils/bin/vis h2_utils/bin/qbsp h2_utils/bin/light 
-h2mp_utils/bin/vis h2mp_utils/bin/qbsp h2mp_utils/bin/light 
-h2mp_utils/bin/bspinfo
-h2mp_utils/bin/qfiles h2mp_utils/bin/genmodel"
+BIN_FILES="bin/hcc bin/vis bin/qbsp bin/light 
+bin/qfiles bin/genmodel bin/bspinfo
+bin/jsh2colour
+bin/dhcc hcc_old/hcc"
 
 if env | grep -i windir > __tmp.tmp; then
 EXE_EXT=".exe";
@@ -30,29 +28,26 @@ fi
 
 if [ "$1" = "clean" ]
 then
-make -s -C h2mp_utils/hcc clean
-make -s -C h2_utils/hcc clean
-make -s -C h2mp_utils/qfiles clean
-make -s -C h2mp_utils/genmodel clean
-make -s -C h2mp_utils/utils clean
-make -s -C h2_utils/utils clean
+make -s -C hcc clean
+make -s -C maputils clean
+make -s -C genmodel clean
+make -s -C qfiles clean
 make -s -C dcc clean
 make -s -C jsh2color clean
+make -s -C hcc_old clean
 exit 0
 fi
 
 echo "Building hcc, the HexenC compiler.."
-$MAKE -C h2mp_utils/hcc
+$MAKE -C hcc
 echo "" && echo "Now building hcc, old version"
-$MAKE -C h2_utils/hcc
+$MAKE -C hcc_old
 echo "" && echo "Now building qfiles.."
-$MAKE -C h2mp_utils/qfiles
+$MAKE -C qfiles
 echo "" && echo "Now building genmodel.."
-$MAKE -C h2mp_utils/genmodel
+$MAKE -C genmodel
 echo "" && echo "Now building light, vis and qbsp.."
-$MAKE -C h2mp_utils/utils
-echo "" && echo "Now building light, vis and qbsp, old versions.."
-$MAKE -C h2_utils/utils
+$MAKE -C maputils
 echo "" && echo "Now building dhcc, a progs.dat decompiler.."
 $MAKE -C dcc
 echo "" && echo "Now building jsh2colour, a lit file generator.."

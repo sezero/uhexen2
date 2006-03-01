@@ -3,12 +3,10 @@
 UHEXEN2_TOP=..
 . $UHEXEN2_TOP/scripts/cross_defs
 
-BIN_FILES="dcc/bin/dhcc.exe h2_utils/bin/hcc.exe h2mp_utils/bin/hcc.exe
-jsh2color/jsh2colour.exe
-h2_utils/bin/vis.exe h2_utils/bin/qbsp.exe h2_utils/bin/light.exe
-h2mp_utils/bin/vis.exe h2mp_utils/bin/qbsp.exe h2mp_utils/bin/light.exe
-h2mp_utils/bin/bspinfo.exe
-h2mp_utils/bin/qfiles.exe h2mp_utils/bin/genmodel.exe"
+BIN_FILES="bin/hcc.exe bin/vis.exe bin/qbsp.exe bin/light.exe
+bin/qfiles.exe bin/genmodel.exe bin/bspinfo.exe
+bin/jsh2colour.exe
+bin/dhcc.exe hcc_old/hcc.exe"
 
 if [ "$1" = "strip" ]
 then
@@ -22,34 +20,30 @@ fi
 
 if [ "$1" = "clean" ]
 then
-make -s -C h2mp_utils/hcc clean
-make -s -C h2_utils/hcc clean
-make -s -C h2mp_utils/qfiles clean
-make -s -C h2mp_utils/genmodel clean
-make -s -C h2mp_utils/utils clean
-make -s -C h2_utils/utils clean
+make -s -C hcc clean
+make -s -C maputils clean
+make -s -C genmodel clean
+make -s -C qfiles clean
 make -s -C dcc clean
 make -s -C jsh2color clean
+make -s -C hcc_old clean
 exit 0
 fi
 
 echo "Building hcc, the HexenC compiler.."
-make -C h2mp_utils/hcc $SENDARGS
+make -C hcc $SENDARGS
 
 echo "" && echo "Now building hcc, old version"
-make -C h2_utils/hcc $SENDARGS
+make -C hcc_old $SENDARGS
 
 echo "" && echo "Now building qfiles.."
-make -C h2mp_utils/qfiles $SENDARGS
+make -C qfiles $SENDARGS
 
 echo "" && echo "Now building genmodel.."
-make -C h2mp_utils/genmodel $SENDARGS
+make -C genmodel $SENDARGS
 
 echo "" && echo "Now building light, vis and qbsp.."
-make -C h2mp_utils/utils $SENDARGS
-
-echo "" && echo "Now building light, vis and qbsp, old versions.."
-make -C h2_utils/utils $SENDARGS
+make -C maputils $SENDARGS
 
 echo "" && echo "Now building dhcc, a progs.dat decompiler.."
 make -C dcc $SENDARGS
