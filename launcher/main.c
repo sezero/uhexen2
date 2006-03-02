@@ -4,25 +4,28 @@
 #include "interface.h"
 //#include "support.h"
 
-char bin_dir[1024];
-char userdir[1024];
+static char	bin_dir[1024];
+char		userdir[1024];
 
-static char *Sys_SearchCommand(char *filename)
+static char *Sys_SearchCommand (char *filename)
 {
 	static char pathname[1024];
-	char buff[1024];
-	char *path;
-	int m, n;
+	char	buff[1024];
+	char	*path;
+	int		m, n;
 
-	if (strchr (filename, '/') && filename[0] != '.') {
+	if (strchr (filename, '/') && filename[0] != '.')
+	{
 		return filename;
 	}
 
-	if (filename[0] == '.') {
-		char *cwd;
+	if (filename[0] == '.')
+	{
+		char	*cwd;
 
 		cwd = malloc(sizeof(char)*1024);
-		if (getcwd (cwd, 1024) == NULL) {
+		if (getcwd (cwd, 1024) == NULL)
+		{
 			perror("getcwd failed");
 		}
 		snprintf(pathname, 1024,"%s%s", cwd, filename+1);
@@ -30,61 +33,70 @@ static char *Sys_SearchCommand(char *filename)
 		return pathname;
 	}
 
-	for (path = getenv("PATH"); path && *path; path += m) {
-
-		if (strchr(path, ':')) {
+	for (path = getenv("PATH"); path && *path; path += m)
+	{
+		if (strchr(path, ':'))
+		{
 			n = strchr(path, ':') - path;
 			m = n + 1;
-		} else {
+		}
+		else
+		{
 			m = n = strlen(path);
 		}
 
 		strncpy(pathname, path, n);     
 
-		if (n && pathname[n - 1] != '/') {
+		if (n && pathname[n - 1] != '/')
+		{
 			pathname[n++] = '/';
 		}
 
 		strcpy(pathname + n, filename);
 
-		if (!access(pathname, F_OK)) {
-
+		if (!access(pathname, F_OK))
+		{
 			strncpy(buff, pathname, 1024);
 
-			if (readlink(buff, pathname, 1024) < 0) {
-				if (errno == EINVAL) {
+			if (readlink(buff, pathname, 1024) < 0)
+			{
+				if (errno == EINVAL)
+				{
 				  /* not a symbolic link */
-				} else
+				}
+				else
 					perror(NULL);
 			}
 
 			return pathname;
 		}
 	}
+
 	return filename;
 }
 
 static void Sys_FindBinDir (char *filename, char *out)
 {
-	char *cmd, *last, *tmp;
+	char	*cmd, *last, *tmp;
 
 	cmd = Sys_SearchCommand (filename);
 	last = cmd;
 	tmp = cmd;
 
-	while (*tmp) {
+	while (*tmp)
+	{
 		if (*tmp=='/')
 			last = tmp+1;
 		tmp++;
 	}
 
 	printf("Launcher : %s\n",last);
-	strncpy(out,cmd,(strlen(cmd)-strlen(last)));
+	strncpy (out, cmd, (strlen(cmd)-strlen(last)) );
 }
 
 static int Sys_mkdir (char *path)
 {
-	int rc;
+	int	rc;
 
 	rc = mkdir (path, 0777);
 	if (rc != 0 && errno == EEXIST)
@@ -93,12 +105,13 @@ static int Sys_mkdir (char *path)
 	return rc;
 }
 
-static int Sys_GetUserdir(char *buff, unsigned int len)
+static int Sys_GetUserdir (char *buff, unsigned int len)
 {
 	if (getenv("HOME") == NULL)
 		return 1;
 
-	if ( strlen(getenv("HOME")) + strlen(AOT_USERDIR) + 2 > len ) {
+	if ( strlen(getenv("HOME")) + strlen(AOT_USERDIR) + 2 > len )
+	{
 		return 1;
 	}
 
@@ -108,7 +121,8 @@ static int Sys_GetUserdir(char *buff, unsigned int len)
 }
 
 
-int main (int argc, char *argv[]) {
+int main (int argc, char *argv[])
+{
 
 	GtkWidget *window1;
 /*
@@ -125,9 +139,10 @@ int main (int argc, char *argv[]) {
 	add_pixmap_directory (PACKAGE_SOURCE_DIR "/pixmaps");
 */
 
-	printf("\nLinux Hexen II Launcher, version %s\n", HOTL_VER);
+	printf("\nLinux Hexen II Launcher, version %s\n", LAUNCHER_VERSION_STR);
 
-	if ((Sys_GetUserdir(userdir, sizeof(userdir))) != 0) {
+	if ((Sys_GetUserdir(userdir, sizeof(userdir))) != 0)
+	{
 		fprintf (stderr,"Couldn't determine userspace directory");
 		exit(1);
 	}
@@ -139,6 +154,7 @@ int main (int argc, char *argv[]) {
 
 	read_config_file();
 
+//	go into the binary's directory
 	chdir(bin_dir);
 
 /*

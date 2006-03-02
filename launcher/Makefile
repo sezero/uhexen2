@@ -14,19 +14,18 @@ TMPNAME = h2demo
 else
 TMPNAME = h2launcher
 endif
+
 ifdef GTK1
 H2LAUNCH = $(TMPNAME).gtk1
 GTK_CFLAGS := $(shell gtk-config --cflags)
 GTK_LIBS := $(shell gtk-config --libs)
 else
+
 #H2LAUNCH = $(TMPNAME).gtk2
 H2LAUNCH = $(TMPNAME)
 GTK_CFLAGS := $(shell pkg-config --cflags gtk+-2.0)
 GTK_LIBS := $(shell pkg-config --libs gtk+-2.0)
 endif
-
-VERSION = 0.6.2
-HOT_VERSION = 1.4.0
 
 PROGRAMS = $(H2LAUNCH)
 
@@ -40,7 +39,7 @@ CFLAGS := -Wall -g -DDEBUG_BUILD
 else
 CFLAGS := -Wall -O2 -march=i586
 endif
-CFLAGS := $(CFLAGS) -I. $(GTK_CFLAGS) -DHOTL_VER=\"$(VERSION)\" -DHOT_VER=\"$(HOT_VERSION)\"
+CFLAGS := $(CFLAGS) -I. $(GTK_CFLAGS)
 
 ifdef DEMO
 CFLAGS := $(CFLAGS) -DDEMOBUILD

@@ -9,4 +9,5 @@
 
 // from launch_bin.c
 void CheckExe (void);
-void launch_hexen2_bin(void);
+void launch_hexen2_bin (void);
+

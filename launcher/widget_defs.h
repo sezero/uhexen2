@@ -73,6 +73,9 @@ typedef struct {
 } gamewidget_t;
 
 
+// These crap are some supposed-to-be-friendlier macros for
+// the main window layout members..
+
 // Friendlier definitions for main window layout members
 #define MAIN_WINDOW	main_win.mywindow
 #define HOLDER_BOX	main_win.main_box

@@ -18,3 +18,4 @@ void on_SBITS (GtkButton *button, int *opt);
 void on_OGL (GtkToggleButton *button, gamewidget_t *wgt);
 void ReverseOpt (GtkObject *Unused, int *opt);
 void on_MORE (GtkButton *button, HoTWindow_t *window);
+

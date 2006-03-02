@@ -5,9 +5,9 @@
 #include "widget_defs.h"
 #include "callbacks.h"
 #include "support.h"
+#include "compat_gtk1.h"
 #include "config_file.h"
 
-unsigned short i;
 // from config_file.c
 extern int destiny;
 extern int mp_support;
@@ -36,7 +36,7 @@ extern int use_zone;
 extern int heapsize;
 extern int zonesize;
 // from launch_bin.c
-extern unsigned missingexe;
+extern int missingexe;
 extern const char *snddrv_names[MAX_SOUND][2];
 extern const char *snd_rates[MAX_RATES];
 #ifndef DEMOBUILD
@@ -49,8 +49,9 @@ extern const char *hwgame_names[MAX_HWGAMES][2];
 
 GtkWidget* create_window1 (void)
 {
-  static HoTWindow_t main_win;
+  int			i;
 
+  static HoTWindow_t main_win;
   static gamewidget_t Games;
   static sndwidget_t Sound;
 
@@ -100,9 +101,9 @@ GtkWidget* create_window1 (void)
   MAIN_WINDOW = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (MAIN_WINDOW), "mywindow", MAIN_WINDOW);
 #ifndef DEMOBUILD
-  gtk_window_set_title (GTK_WINDOW (MAIN_WINDOW), "Hexen2 Launcher " HOTL_VER);
+  gtk_window_set_title (GTK_WINDOW (MAIN_WINDOW), "Hexen2 Launcher " LAUNCHER_VERSION_STR);
 #else
-  gtk_window_set_title (GTK_WINDOW (MAIN_WINDOW), "Hexen2 demo Launcher " HOTL_VER);
+  gtk_window_set_title (GTK_WINDOW (MAIN_WINDOW), "Hexen2 demo Launcher " LAUNCHER_VERSION_STR);
 #endif
   gtk_window_set_resizable (GTK_WINDOW (MAIN_WINDOW), FALSE);
   gtk_widget_set_size_request(MAIN_WINDOW, 230, 354);
@@ -172,7 +173,7 @@ GtkWidget* create_window1 (void)
 /*********************************************************************/
 // Basic title representing the HoT-version the launcher is packed with
 
-  TxtTitle = gtk_label_new ("Hammer of Thyrion " HOT_VER);
+  TxtTitle = gtk_label_new ("Hammer of Thyrion " HOT_VERSION_STR);
   gtk_widget_ref (TxtTitle);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "TxtTitle", TxtTitle,
 				(GtkDestroyNotify) gtk_widget_unref);
@@ -683,14 +684,17 @@ GtkWidget* create_window1 (void)
 #ifndef DEMOBUILD
   gtk_combo_set_use_arrows (GTK_COMBO (WGT_H2GAME), FALSE);
   Title = (char *)malloc(32);
-  for (i=1; i<MAX_H2GAMES; i++) {
+  for (i=1; i<MAX_H2GAMES; i++)
+  {
 	strcpy (Title, h2game_names[i][0]);
 	strcat (Title, "/progs.dat");
 	printf("Looking for %s (%s) ... ", Title, (char *)h2game_names[i][1]);
-	if (access(Title, R_OK) == 0) {
+	if (access(Title, R_OK) == 0)
+	{
 		TmpList = g_list_append (TmpList, (char *)h2game_names[i][1]);
 		printf("Found OK.\n");
-	} else
+	}
+	else
 		printf("NOT found.\n");
   }
   free (Title);
@@ -730,14 +734,17 @@ GtkWidget* create_window1 (void)
   Title = (char *)malloc(32);
 #ifndef DEMOBUILD
   gtk_combo_set_use_arrows (GTK_COMBO (WGT_HWGAME), FALSE);
-  for (i=1; i<MAX_HWGAMES; i++) {
+  for (i=1; i<MAX_HWGAMES; i++)
+  {
 	strcpy (Title, hwgame_names[i][0]);
 	strcat (Title, "/hwprogs.dat");
 	printf("Looking for %s (%s) ... ", Title, (char *)hwgame_names[i][1]);
-	if (access(Title, R_OK) == 0) {
+	if (access(Title, R_OK) == 0)
+	{
 		TmpList = g_list_append (TmpList, (char *)hwgame_names[i][1]);
 		printf("Found OK.\n");
-	} else
+	}
+	else
 		printf("NOT found.\n");
   }
 #endif
@@ -750,16 +757,19 @@ GtkWidget* create_window1 (void)
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "HWG_Entry", HWG_Entry,
 				(GtkDestroyNotify) gtk_widget_unref);
 #ifndef DEMOBUILD
-  if (hwgame > 0) {
+  if (hwgame > 0)
+  {
 	strcpy (Title, hwgame_names[hwgame][0]);
 	strcat (Title, "/hwprogs.dat");
 	if (access(Title, R_OK) == 0)
 	    gtk_entry_set_text (GTK_ENTRY (HWG_Entry), (char *)hwgame_names[hwgame][1]);
-	else {
+	else
+	{
 	    gtk_entry_set_text (GTK_ENTRY (HWG_Entry), "DeathMatch");
 	    hwgame = 0;
 	}
-  } else
+  }
+  else
 #endif
 	gtk_entry_set_text (GTK_ENTRY (HWG_Entry), "DeathMatch");
   free (Title);

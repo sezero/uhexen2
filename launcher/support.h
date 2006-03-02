@@ -49,7 +49,6 @@ GtkWidget* lookup_widget (GtkWidget *widget, const gchar *widget_name);
 /* Use this function to set the directory containing installed pixmaps. */
 void add_pixmap_directory (const gchar     *directory);
 
-
 /*
  * Private Functions.
  */
@@ -57,9 +56,3 @@ void add_pixmap_directory (const gchar     *directory);
 /* This is used to create the pixmaps in the interface. */
 GtkWidget* create_pixmap (GtkWidget *widget, const gchar *filename);
 
-// "gtk-1.2 doesnt have it" wrappers...
-#ifdef WITH_GTK1
-#define gtk_widget_set_size_request gtk_widget_set_usize
-#define gtk_window_set_resizable(x, y) gtk_window_set_policy((x), (y), (y), (y))
-#define gtk_button_set_label(x, y) gtk_label_set_text (GTK_LABEL(GTK_BIN((x))->child), (y))
-#endif
