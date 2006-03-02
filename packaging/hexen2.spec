@@ -144,6 +144,7 @@ ln -s %{_prefix}/games/hexen2/h2launcher %{buildroot}/%{_bindir}/hexen2
 %{__install} -D -m644 docs/BUGS %{buildroot}/%{_prefix}/games/%{name}/docs/BUGS
 %{__install} -D -m644 docs/TODO %{buildroot}/%{_prefix}/games/%{name}/docs/TODO
 %{__install} -D -m644 docs/ABOUT %{buildroot}/%{_prefix}/games/%{name}/docs/ABOUT
+%{__install} -D -m644 docs/Features %{buildroot}/%{_prefix}/games/%{name}/docs/Features
 %{__install} -D -m644 docs/CHANGES %{buildroot}/%{_prefix}/games/%{name}/docs/CHANGES
 %{__install} -D -m644 docs/README.3dfx %{buildroot}/%{_prefix}/games/%{name}/docs/README.3dfx
 %{__install} -D -m644 docs/README.launcher %{buildroot}/%{_prefix}/games/%{name}/docs/README.launcher
@@ -237,6 +238,7 @@ rm -rf %{buildroot}
 %{_prefix}/games/%{name}/docs/COPYING
 %{_prefix}/games/%{name}/docs/BUGS
 %{_prefix}/games/%{name}/docs/ABOUT
+%{_prefix}/games/%{name}/docs/Features
 %{_prefix}/games/%{name}/docs/CHANGES
 %{_prefix}/games/%{name}/docs/README.launcher
 %{_prefix}/games/%{name}/docs/README.hwmaster
@@ -272,6 +274,9 @@ rm -rf %{buildroot}
 %{_prefix}/games/%{name}/hw/default.cfg
 
 %changelog
+* Thu Mar 02 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-3
+- Added Features to the packaged documentation
+
 * Wed Mar 01 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-2
 - Updated after the utilities reorganization
 

@@ -1,0 +1,44 @@
+
+Hammer of Thyrion: Features
+
+* Support for Hexen II, Hexen II demo, Portal of Praevus Mission
+  Pack and HexenWorld.
+
+* Tested with Linux, FreeBSD and Windows. Other unices should also
+  work. There is a seperate port to MorphOS.
+
+* Game save compatibility with Raven's latest windows versions.
+
+* Resolution changing on the fly, for both opengl and software
+  renderers. Instant fullscreen/windowed toggling on unix.
+
+* OpenGL enhancements including multitexturing, glow effects,
+  working brightness control, translucent console background.
+
+* Fullscreen intermissions and help dialogs.
+
+* MouseWheel support.
+
+* Improvements and fixes to the HexenC game code.
+
+* Improved sound support. A selection of three different sound drivers
+  (ALSA, OSS and SDL) for linux, and FreeBSD supported with SDL.
+
+* Working music volume controls and on the fly selection of CD or
+  MIDI music.
+
+* Full user directories support under unix: all users have their own
+  configuration files and game saves.
+
+* Improved console functionality and a maplist command.
+
+* ChaseCam clipping and pitch fixes.
+
+* Texture delete/reload support in opengl
+
+* No texture cache mismatches in opengl
+
+* No model mesh cache mismatches in opengl
+
+* Many other bug fixes and improvements
+
