@@ -1,5 +1,49 @@
 ChangeLog:
 
+2006-03-02 (CVS, 1.4.0-pre5):
+    * created a new "opengl features" entry under the options menu and
+      moved opengl options under it. added new opengl menu options for
+      texture filtering, glow effects, multitexturing, stencil buffered
+      shadows and texture purging upon map change.
+    * automatically get rid of the menu/console when playing a timedemo.
+      patch from Steven.
+    * got rid of the menu panels upon starting a new games through the
+      menu system
+    * extra large tidy-up operation in the utilities tree: killed a few
+      warnings about uninitialized variables, added -Wno-char-subscripts
+      to the hcc compiler flags to silence the "array subscript has type
+      char" warnings in pr_lex.c. added a README file for the jsh2color
+      utility. re-worked the utilities documentation. fixed an incredibly
+      stupid typo in the makefile which has been there for ages. added
+      cross compilation scripts to all of the individual util directories.
+      unified the cmdlib for all of the utilities; this includes the newer
+      version of COM_Parse() of hcc which aslo parses and skips C style
+      comments. commented out unused 3DS stuff in genmodel utility (don't
+      even know whether it's working.) allowed compilation of the tiny
+      bspinfo tool. created a directory named common under the utilities
+      and moved cmdlib and qdir stuff into it for shared usage. largely
+      reorganized the utilities directory layout:
+	- removed older version of map tools. still keeping the old version
+	  of hcc for compatibility reasons.
+	- moved several directories to the root of the utils directory:
+		h2mp_utils/hcc		->  hcc
+		h2_utils/hcc		->  hcc_old
+		h2mp_utils/utils	->  maputils
+		h2mp_utils/genmodel	->  genmodel
+		h2mp_utils/qfiles	->  qfiles
+	  the cvs history on the affected files are lost, but one can find
+	  them in the Attic, etc.
+	- probably several other smallish touches.
+    * updated the mkrelease script to kill the obsoleted empty directories
+    * added features list to the documents directory
+    * another large batch of coding style / whitespace cleanup: continued
+      to make static functions and variables static and fixed a few warnings
+      and a few tiny bugs along the way.
+    * updated the README for the gamecode and marked the snapshot of
+      2006-02-24 as version 1.15. I'll probably increment the engine
+      version to 1.15, too, when H.o.T.-1.4.0 is ready.
+    * marked the snapshot of 2006-03-02 as 1.4.0-pre5.
+
 2006-02-23 (CVS, 1.4.0-pre4):
     * large amount of coding style / whitespace cleanup. continued to make
       static functions and variables static and fixed a few warnings and a
