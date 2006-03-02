@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion, version 1.4.0
-[current state : 1.4.0-pre3 (pre-release)]
+[current state : 1.4.0-pre5 (pre-release)]
 
 Changes since HoT-1.3.0 :
 
@@ -19,12 +19,18 @@ Changes since HoT-1.3.0 :
   doesn't have focus.
 - Updated sdl software video driver and made the loading plaque and the
   rotating skull work
-- Moved sdl multisamling capability check from compile time to runtime
+- Moved sdl multisampling capability check from compile time to runtime
   for much better compatibility
 - Minimum required SDL (and SDL_mixer) version is now 1.2.4
+- Created a new "opengl features" entry under the options menu and moved
+  opengl options under it. added new opengl menu options.
+- The menu/console now automatically disappears when playing a timedemo
+- The menu panels now properly disappear upon starting a new game through
+  the menu system
 - host_hunklevel and gl_texlevel are now set before execing hexen.rc
   to prevent "bad things (TM)" from happening
 - Increased minimum heapsize to 16 mb to prevent hunk allocation errors
+- A big tidy-up in the utilities.
 - Fixed ability string indexes for the demoness and dwarf classes and
   armor class display in hexenworld
 - Added checks for coop and deathmatch not be set at the same time
