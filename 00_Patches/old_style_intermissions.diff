@@ -83,7 +83,7 @@ diff -urNp uhexen2-20060217/hexen2/gl_dl_screen.c uhexen2-20060218/hexen2/gl_dl_
 diff -urNp uhexen2-20060217/hexen2/menu.c uhexen2-20060218/hexen2/menu.c
 --- uhexen2-20060217/hexen2/menu.c	2006-02-18 10:51:10.000000000 +0200
 +++ uhexen2-20060218/hexen2/menu.c	2006-02-18 11:06:16.000000000 +0200
-@@ -2456,11 +2456,7 @@ static void M_Menu_Help_f (void)
+@@ -2642,11 +2642,7 @@ static void M_Menu_Help_f (void)
  
  static void M_Help_Draw (void)
  {
@@ -291,7 +291,7 @@ diff -urNp uhexen2-20060217/hexenworld/Client/gl_screen.c uhexen2-20060218/hexen
 diff -urNp uhexen2-20060217/hexenworld/Client/menu.c uhexen2-20060218/hexenworld/Client/menu.c
 --- uhexen2-20060217/hexenworld/Client/menu.c	2006-02-18 10:51:11.000000000 +0200
 +++ uhexen2-20060218/hexenworld/Client/menu.c	2006-02-18 11:06:16.000000000 +0200
-@@ -1290,17 +1290,9 @@ static void M_Menu_Help_f (void)
+@@ -1487,17 +1487,9 @@ static void M_Menu_Help_f (void)
  static void M_Help_Draw (void)
  {
  	if (cl_siege)
