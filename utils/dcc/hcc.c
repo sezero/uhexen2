@@ -1,8 +1,14 @@
+/*
+	hcc.c
+	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
+
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.9 2006-03-02 17:52:03 sezero Exp $
+*/
 
 #include "qcc.h"
 
-char		sourcedir[1024];
-char		destfile[1024];
+static char	sourcedir[1024];
+static char	destfile[1024];
 
 float		pr_globals[MAX_REGS];
 int			numpr_globals;
@@ -36,16 +42,16 @@ int			precache_files_block[MAX_SOUNDS];
 int			numfiles;
 
 //ADDED BY EMAN
-extern FILE *PR_FILE;
-extern char *temp_val[MAX_REGS];
-extern char *func_headers[MAX_FUNCTIONS];
-void Dcc_Functions();
-void FindBuiltinParameters(int func);
-void DccFunctionOP(unsigned short op);
-void DEC_ReadData (char *srcfile);
-void PR_PrintFunction (char *name);
+extern FILE	*PR_FILE;
+extern char	*temp_val[MAX_REGS];
+extern char	*func_headers[MAX_FUNCTIONS];
+extern void Dcc_Functions (void);
+extern void FindBuiltinParameters(int func);
+extern void DccFunctionOP(unsigned short op);
+extern void DEC_ReadData (char *srcfile);
+extern void PR_PrintFunction (char *name);
 
-extern int FILE_NUM_FOR_NAME;
+extern int	FILE_NUM_FOR_NAME;
 
 
 /*
@@ -57,7 +63,7 @@ WriteFiles
   processed by qfiles.exe
 ============
 */
-void WriteFiles (void)
+static void WriteFiles (void)
 {
 	FILE	*f;
 	int		i;
@@ -69,19 +75,16 @@ void WriteFiles (void)
 		Error ("Couldn't open %s", filename);
 
 	fprintf (f, "%i\n", numsounds);
-	for (i=0 ; i<numsounds ; i++)
-		fprintf (f, "%i %s\n", precache_sounds_block[i],
-			precache_sounds[i]);
+	for (i = 0 ; i < numsounds ; i++)
+		fprintf (f, "%i %s\n", precache_sounds_block[i], precache_sounds[i]);
 
 	fprintf (f, "%i\n", nummodels);
-	for (i=0 ; i<nummodels ; i++)
-		fprintf (f, "%i %s\n", precache_models_block[i],
-			precache_models[i]);
+	for (i = 0 ; i < nummodels ; i++)
+		fprintf (f, "%i %s\n", precache_models_block[i], precache_models[i]);
 
 	fprintf (f, "%i\n", numfiles);
-	for (i=0 ; i<numfiles ; i++)
-		fprintf (f, "%i %s\n", precache_files_block[i],
-			precache_files[i]);
+	for (i = 0 ; i < numfiles ; i++)
+		fprintf (f, "%i %s\n", precache_files_block[i], precache_files[i]);
 
 	fclose (f);
 }
@@ -93,33 +96,33 @@ int	CopyString (char *str)
 	int		old;
 	int		i, l;
 
-	for (i=0 ; i<strofs ; i += l)
+	for (i = 0 ; i < strofs ; i += l)
 	{
 		l = strlen(strings+i) + 1;
-		if(!strcmp(strings+i,str))
-		  return i;
+		if (!strcmp(strings+i,str))
+			return i;
 	}
 
 	old = strofs;
 	strcpy (strings+strofs, str);
 	strofs += strlen(str)+1;
 
-
 	//printf("\tsaving %s to string heap\n",str);
-	//if(!strcmp("modelindex",str))
-	  //getche();
+	//if (!strcmp("modelindex",str))
+	//	getche();
 	return old;
 }
 
-void PrintStrings (void)
+
+static void PrintStrings (void)
 {
 	int		i, l, j;
 
-	for (i=0 ; i<strofs ; i += l)
+	for (i = 0 ; i < strofs ; i += l)
 	{
 		l = strlen(strings+i) + 1;
 		printf ("%5i : ",i);
-		for (j=0 ; j<l ; j++)
+		for (j = 0 ; j < l ; j++)
 		{
 			if (strings[i+j] == '\n')
 			{
@@ -133,62 +136,61 @@ void PrintStrings (void)
 	}
 }
 
-
-void PrintFunctions (void)
+static void PrintFunctions (void)
 {
-	int		i,j;
+	int		i, j;
 	dfunction_t	*d;
-	
-	for (i=0 ; i<numfunctions ; i++)
+
+	for (i = 0 ; i < numfunctions ; i++)
 	{
 		d = &functions[i];
 		printf ("%s : %s : %i %i (", strings + d->s_file, strings + d->s_name, d->first_statement, d->parm_start);
-		for (j=0 ; j<d->numparms ; j++)
+		for (j = 0 ; j < d->numparms ; j++)
 			printf ("%i ",d->parm_size[j]);
 		printf (")\n");
 	}
 }
 
-void PrintFields (void)
+static void PrintFields (void)
 {
 	int		i;
 	ddef_t	*d;
-	
-	for (i=0 ; i<numfielddefs ; i++)
+
+	for (i = 0 ; i < numfielddefs ; i++)
 	{
 		d = &fields[i];
 		printf ("%5i %5i : (%i) %s\n", i, d->ofs, d->type, strings + d->s_name);
 	}
 }
 
-void PrintPRGlobals (void)
+static void PrintPRGlobals (void)
 {
 	int		i;
 
-	for (i=0 ; i<numpr_globals ; i++)
+	for (i = 0 ; i < numpr_globals ; i++)
 	{
 		printf ("%5i %5.5f %5d\n",i,pr_globals[i],*(int *)&pr_globals[i]);
 	}
 }
 
-void Printstatements (void)
+static void Printstatements (void)
 {
 	int		i;
-	dstatement_t *ds;
+	dstatement_t	*ds;
 
-	for (i=0 ; i<numstatements ; i++)
+	for (i = 0 ; i < numstatements ; i++)
 	{
 		ds = statements + i;
 		printf ("%5d op: %2d a: %5d b: %5d c: %5d\n",i,ds->op,ds->a,ds->b,ds->c);
 	}
 }
 
-void PrintGlobals (void)
+static void PrintGlobals (void)
 {
 	int		i;
 	ddef_t	*d;
-	
-	for (i=0 ; i<numglobaldefs ; i++)
+
+	for (i = 0 ; i < numglobaldefs ; i++)
 	{
 		d = &globals[i];
 		printf ("%5i : %5i : (%i) %s\n",i, d->ofs, d->type, strings + d->s_name);
@@ -196,23 +198,23 @@ void PrintGlobals (void)
 }
 
 
-void InitData (void)
+static void InitData (void)
 {
 	int		i;
-	
+
 	numstatements = 1;
 	strofs = 1;
 	numfunctions = 1;
 	numglobaldefs = 1;
 	numfielddefs = 1;
-	
+
 	def_ret.ofs = OFS_RETURN;
-	for (i=0 ; i<MAX_PARMS ; i++)
+	for (i = 0 ; i < MAX_PARMS ; i++)
 		def_parms[i].ofs = OFS_PARM0 + 3*i;
 }
 
 
-void WriteData (int crc)
+static void WriteData (int crc)
 {
 	def_t		*def;
 	ddef_t		*dd;
@@ -226,7 +228,6 @@ void WriteData (int crc)
 		{
 //			df = &functions[numfunctions];
 //			numfunctions++;
-
 		}
 		else if (def->type->type == ev_field)
 		{
@@ -240,19 +241,19 @@ void WriteData (int crc)
 		numglobaldefs++;
 		dd->type = def->type->type;
 		if (( !def->initialized
-		&& def->type->type != ev_function
-		&& def->type->type != ev_field
-		&& def->scope == NULL))
+				&& def->type->type != ev_function
+				&& def->type->type != ev_field
+				&& def->scope == NULL))
 			dd->type |= DEF_SAVEGLOBAL;
 		dd->s_name = CopyString (def->name);
 		dd->ofs = def->ofs;
 	}
 
-//PrintStrings ();
-//PrintFunctions ();
-//PrintFields ();
-//PrintGlobals ();
-strofs = (strofs+3)&~3;
+//	PrintStrings ();
+//	PrintFunctions ();
+//	PrintFields ();
+//	PrintGlobals ();
+	strofs = (strofs+3)&~3;
 
 	printf ("%6i strofs\n", strofs);
 	printf ("%6i numstatements\n", numstatements);
@@ -260,7 +261,7 @@ strofs = (strofs+3)&~3;
 	printf ("%6i numglobaldefs\n", numglobaldefs);
 	printf ("%6i numfielddefs\n", numfielddefs);
 	printf ("%6i numpr_globals\n", numpr_globals);
-	
+
 	h = SafeOpenWrite (destfile);
 	SafeWrite (h, &progs, sizeof(progs));
 
@@ -270,7 +271,7 @@ strofs = (strofs+3)&~3;
 
 	progs.ofs_statements = ftell (h);
 	progs.numstatements = numstatements;
-	for (i=0 ; i<numstatements ; i++)
+	for (i = 0 ; i < numstatements ; i++)
 	{
 		statements[i].op = LittleShort(statements[i].op);
 		statements[i].a = LittleShort(statements[i].a);
@@ -281,20 +282,20 @@ strofs = (strofs+3)&~3;
 
 	progs.ofs_functions = ftell (h);
 	progs.numfunctions = numfunctions;
-	for (i=0 ; i<numfunctions ; i++)
+	for (i = 0 ; i < numfunctions ; i++)
 	{
-	functions[i].first_statement = LittleLong (functions[i].first_statement);
-	functions[i].parm_start = LittleLong (functions[i].parm_start);
-	functions[i].s_name = LittleLong (functions[i].s_name);
-	functions[i].s_file = LittleLong (functions[i].s_file);
-	functions[i].numparms = LittleLong (functions[i].numparms);
-	functions[i].locals = LittleLong (functions[i].locals);
-	}	
+		functions[i].first_statement = LittleLong (functions[i].first_statement);
+		functions[i].parm_start = LittleLong (functions[i].parm_start);
+		functions[i].s_name = LittleLong (functions[i].s_name);
+		functions[i].s_file = LittleLong (functions[i].s_file);
+		functions[i].numparms = LittleLong (functions[i].numparms);
+		functions[i].locals = LittleLong (functions[i].locals);
+	}
 	SafeWrite (h, functions, numfunctions*sizeof(dfunction_t));
 
 	progs.ofs_globaldefs = ftell (h);
 	progs.numglobaldefs = numglobaldefs;
-	for (i=0 ; i<numglobaldefs ; i++)
+	for (i = 0 ; i < numglobaldefs ; i++)
 	{
 		globals[i].type = LittleShort (globals[i].type);
 		globals[i].ofs = LittleShort (globals[i].ofs);
@@ -304,7 +305,7 @@ strofs = (strofs+3)&~3;
 
 	progs.ofs_fielddefs = ftell (h);
 	progs.numfielddefs = numfielddefs;
-	for (i=0 ; i<numfielddefs ; i++)
+	for (i = 0 ; i < numfielddefs ; i++)
 	{
 		fields[i].type = LittleShort (fields[i].type);
 		fields[i].ofs = LittleShort (fields[i].ofs);
@@ -314,7 +315,7 @@ strofs = (strofs+3)&~3;
 
 	progs.ofs_globals = ftell (h);
 	progs.numglobals = numpr_globals;
-	for (i=0 ; i<numpr_globals ; i++)
+	for (i = 0 ; i < numpr_globals ; i++)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 	SafeWrite (h, pr_globals, numpr_globals*4);
 
@@ -324,16 +325,14 @@ strofs = (strofs+3)&~3;
 
 	progs.version = PROG_VERSION;
 	progs.crc = crc;
-	
+
 // byte swap the header and write it out
-	for (i=0 ; i<sizeof(progs)/4 ; i++)
-		((int *)&progs)[i] = LittleLong ( ((int *)&progs)[i] );		
+	for (i = 0 ; i < sizeof(progs)/4 ; i++)
+		((int *)&progs)[i] = LittleLong ( ((int *)&progs)[i] );
 	fseek (h, 0, SEEK_SET);
 	SafeWrite (h, &progs, sizeof(progs));
 	fclose (h);
-	
 }
-
 
 
 /*
@@ -345,9 +344,9 @@ Returns a string suitable for printing (no newlines, max 60 chars length)
 */
 char *PR_String (char *string)
 {
-	static char buf[80];
+	static char	buf[80];
 	char	*s;
-	
+
 	s = buf;
 	*s++ = '"';
 	while (string && *string)
@@ -381,12 +380,11 @@ char *PR_String (char *string)
 }
 
 
-
-def_t	*PR_DefForFieldOfs (gofs_t ofs)
+def_t *PR_DefForFieldOfs (gofs_t ofs)
 {
 	def_t	*d;
-	
-	for (d=pr.def_head.next ; d ; d=d->next)
+
+	for (d = pr.def_head.next ; d ; d = d->next)
 	{
 		if (d->type->type != ev_field)
 			continue;
@@ -409,13 +407,13 @@ char *PR_ValueString (etype_t type, void *val)
 	static char	line[256];
 	def_t		*def;
 	dfunction_t	*f;
-	
+
 	switch (type)
 	{
 	case ev_string:
 		sprintf (line, "%s", PR_String(strings + *(int *)val));
 		break;
-	case ev_entity:	
+	case ev_entity:
 		sprintf (line, "entity %i", *(int *)val);
 		break;
 	case ev_function:
@@ -445,7 +443,7 @@ char *PR_ValueString (etype_t type, void *val)
 		sprintf (line, "bad type %i", type);
 		break;
 	}
-	
+
 	return line;
 }
 
@@ -457,13 +455,13 @@ Returns a string with a description and the contents of a global,
 padded to 20 field width
 ============
 */
-char *PR_GlobalStringNoContents (gofs_t ofs)
+static char *PR_GlobalStringNoContents (gofs_t ofs)
 {
 	int		i;
 	def_t	*def;
 	void	*val;
 	static char	line[128];
-	
+
 	val = (void *)&pr_globals[ofs];
 	def = pr_global_defs[ofs];
 	if (!def)
@@ -471,23 +469,23 @@ char *PR_GlobalStringNoContents (gofs_t ofs)
 		sprintf (line,"%i(?)", ofs);
 	else
 		sprintf (line,"%i(%s)", ofs, def->name);
-	
+
 	i = strlen(line);
-	for ( ; i<16 ; i++)
+	for ( ; i < 16 ; i++)
 		strcat (line," ");
 	strcat (line," ");
-		
+
 	return line;
 }
 
-char *PR_GlobalString (gofs_t ofs)
+static char *PR_GlobalString (gofs_t ofs)
 {
 	char	*s;
 	int		i;
 	def_t	*def;
 	void	*val;
 	static char	line[128];
-	
+
 	val = (void *)&pr_globals[ofs];
 	def = pr_global_defs[ofs];
 	if (!def)
@@ -499,12 +497,12 @@ char *PR_GlobalString (gofs_t ofs)
 	}
 	else
 		sprintf (line,"%i(%s)", ofs, def->name);
-	
+
 	i = strlen(line);
-	for ( ; i<16 ; i++)
+	for ( ; i < 16 ; i++)
 		strcat (line," ");
 	strcat (line," ");
-		
+
 	return line;
 }
 
@@ -513,25 +511,27 @@ char *PR_GlobalString (gofs_t ofs)
 PR_PrintOfs
 ============
 */
+#if 0	// all uses are commented out
 void PR_PrintOfs (gofs_t ofs)
 {
 	printf ("%s\n",PR_GlobalString(ofs));
 }
+#endif
 
 /*
 =================
 PR_PrintStatement
 =================
 */
-void PR_PrintStatement (dstatement_t *s)
+static void PR_PrintStatement (dstatement_t *s)
 {
 	int		i;
-	
+
 	printf ("%4i : %4i : %s ", (int)(s - statements), statement_linenums[s-statements], pr_opcodes[s->op].opname);
 	i = strlen(pr_opcodes[s->op].opname);
-	for ( ; i<10 ; i++)
+	for ( ; i < 10 ; i++)
 		printf (" ");
-		
+
 	if (s->op == OP_IF || s->op == OP_IFNOT)
 		printf ("%sbranch %i",PR_GlobalString(s->a),s->b);
 	else if (s->op == OP_GOTO)
@@ -555,20 +555,20 @@ void PR_PrintStatement (dstatement_t *s)
 	printf ("\n");
 }
 
-
 /*
 ============
 PR_PrintDefs
 ============
 */
-void PR_PrintDefs (void)
+#if 0	// not used
+static void PR_PrintDefs (void)
 {
 	def_t	*d;
-	
-	for (d=pr.def_head.next ; d ; d=d->next)
+
+	for (d = pr.def_head.next ; d ; d = d->next)
 		PR_PrintOfs (d->ofs);
 }
-
+#endif
 
 /*
 ==============
@@ -577,20 +577,21 @@ PR_BeginCompilation
 called before compiling a batch of files, clears the pr struct
 ==============
 */
-void	PR_BeginCompilation (void *memory, int memsize)
+static void PR_BeginCompilation (void *memory, int memsize)
 {
 	int		i;
-	
+
 	pr.memory = memory;
 	pr.max_memory = memsize;
-	
+
 	numpr_globals = RESERVED_OFS;
 	pr.def_tail = &pr.def_head;
-	
-	for (i=0 ; i<RESERVED_OFS ; i++)
+
+	for (i = 0 ; i < RESERVED_OFS ; i++)
 		pr_global_defs[i] = &def_void;
-		
-// link the function type in so state forward declarations match proper type
+
+	// Link the function type in so state forward declarations match
+	// proper type
 	pr.types = &type_function;
 	type_function.next = NULL;
 	pr_error_count = 0;
@@ -604,20 +605,20 @@ called after all files are compiled to check for errors
 Returns false if errors were detected.
 ==============
 */
-qboolean	PR_FinishCompilation (void)
+static qboolean PR_FinishCompilation (void)
 {
 	def_t		*d;
 	qboolean	errors;
-	
+
 	errors = false;
-	
-// check to make sure all functions prototyped have code
-	for (d=pr.def_head.next ; d ; d=d->next)
+
+	// check to make sure all functions prototyped have code
+	for (d = pr.def_head.next ; d ; d = d->next)
 	{
-		if (d->type->type == ev_function && !d->scope)// function parms are ok
-		{
-//			f = G_FUNCTION(d->ofs);
-//			if (!f || (!f->code && !f->builtin) )
+		if (d->type->type == ev_function && !d->scope)
+		{ // function parms are ok
+		//	f = G_FUNCTION(d->ofs);
+		//	if (!f || (!f->code && !f->builtin) )
 			if (!d->initialized)
 			{
 				printf ("function %s was not defined\n",d->name);
@@ -640,7 +641,7 @@ Returns a crc of the header, to be stored in the progs file for comparison
 at load time.
 ============
 */
-int	PR_WriteProgdefs (char *filename)
+static int PR_WriteProgdefs (char *filename)
 {
 	def_t	*d;
 	FILE	*f;
@@ -648,16 +649,16 @@ int	PR_WriteProgdefs (char *filename)
 	int		c;
 
 	printf ("writing %s\n", filename);
-   printf("compacting string heap, this may take a while...\n");
+	printf ("compacting string heap, this may take a while...\n");
 	f = fopen (filename, "w");
-	
-// print global vars until the first field is defined
+
+	// print global vars until the first field is defined
 	fprintf (f,"\n/* file generated by qcc, do not modify */\n\ntypedef struct\n{\tint\tpad[%i];\n", RESERVED_OFS);
-	for (d=pr.def_head.next ; d ; d=d->next)
+	for (d = pr.def_head.next ; d ; d = d->next)
 	{
 		if (!strcmp (d->name, "end_sys_globals"))
 			break;
-			
+
 		switch (d->type->type)
 		{
 		case ev_float:
@@ -665,7 +666,7 @@ int	PR_WriteProgdefs (char *filename)
 			break;
 		case ev_vector:
 			fprintf (f, "\tvec3_t\t%s;\n",d->name);
-			d=d->next->next->next;	// skip the elements
+			d = d->next->next->next;	// skip the elements
 			break;
 		case ev_string:
 			fprintf (f,"\tstring_t\t%s;\n",d->name);
@@ -683,16 +684,16 @@ int	PR_WriteProgdefs (char *filename)
 	}
 	fprintf (f,"} globalvars_t;\n\n");
 
-// print all fields
+	// print all fields
 	fprintf (f,"typedef struct\n{\n");
-	for (d=pr.def_head.next ; d ; d=d->next)
+	for (d = pr.def_head.next ; d ; d = d->next)
 	{
 		if (!strcmp (d->name, "end_sys_fields"))
 			break;
-			
+
 		if (d->type->type != ev_field)
 			continue;
-			
+
 		switch (d->type->aux_type->type)
 		{
 		case ev_float:
@@ -700,7 +701,7 @@ int	PR_WriteProgdefs (char *filename)
 			break;
 		case ev_vector:
 			fprintf (f,"\tvec3_t\t%s;\n",d->name);
-			d=d->next->next->next;	// skip the elements
+			d = d->next->next->next;	// skip the elements
 			break;
 		case ev_string:
 			fprintf (f,"\tstring_t\t%s;\n",d->name);
@@ -717,35 +718,34 @@ int	PR_WriteProgdefs (char *filename)
 		}
 	}
 	fprintf (f,"} entvars_t;\n\n");
-	
+
 	fclose (f);
-	
-// do a crc of the file
+
+	// do a crc of the file
 	CRC_Init (&crc);
 	f = fopen (filename, "r+");
 	while ((c = fgetc(f)) != EOF)
 		CRC_ProcessByte (&crc, (byte)c);
-		
+
 	fprintf (f,"#define PROGHEADER_CRC %i\n", crc);
 	fclose (f);
 
 	return crc;
 }
 
-
-void PrintFunction (char *name)
+static void PrintFunction (char *name)
 {
 	int		i;
 	dstatement_t	*ds;
 	dfunction_t		*df;
-	
-	for (i=0 ; i<numfunctions ; i++)
+
+	for (i = 0 ; i < numfunctions ; i++)
 		if (!strcmp (name, strings + functions[i].s_name))
 			break;
-	if (i==numfunctions)
+	if (i == numfunctions)
 		Error ("No function names \"%s\"", name);
-	df = functions + i;	
-	
+	df = functions + i;
+
 	printf ("Statements for %s:\n", name);
 	ds = statements + df->first_statement;
 	while (1)
@@ -767,30 +767,29 @@ main
 */
 int main (int argc, char **argv)
 {
-	char	*src;
-	char	*src2;
+	char	*src, *src2;
 	char	filename[1024];
-	int		p;
+	int		p, c;
+	unsigned short		crc;
 	double	start, stop;
 	FILE	*f;
-	unsigned short		crc;
-	int		c;
 
 	start = GetTime ();
 
 	myargc = argc;
 	myargv = argv;
-	
+
 	if ( CheckParm ("--help") || CheckParm ("-help") || CheckParm ("-h") || CheckParm ("-?"))
 	{
-		printf ("qcc looks for progs.src in the current directory.\n");
-		printf ("to look in a different directory: qcc -src <directory>\n");
-		printf ("to build a clean data tree: qcc -copy <srcdir> <destdir>\n");
-		printf ("to build a clean pak file: qcc -pak <srcdir> <packfile>\n");
-		printf ("to bsp all bmodels: qcc -bspmodels <gamedir>\n");
+		printf(" Compiles progs.dat using progs.src in the current directory\n");
+		printf(" -src <directory> : Specify source directory\n");
+		printf(" -dcc : decompile the progs.dat in the current directory\n");
+		printf(" -dcc -fix : fixes mangled names during decompilation\n");
+		printf(" -dcc -asm <functionname> : decompile filename to the console\n");
+		printf(" -dcc -dump -asm <functionname> : same as above but will show\n\t\tinstructions (opcodes and parms) as well\n");
 		exit(0);
 	}
-	
+
 	p = CheckParm ("-src");
 	if (p && p < argc-1 )
 	{
@@ -811,10 +810,11 @@ int main (int argc, char **argv)
 	if (p)
 		pr_dumpasm = true;
 
-// do a crc of the file
+	// do a crc of the file
 	p = CheckParm ("-crc");
 
-	if (p) {
+	if (p)
+	{
 		CRC_Init (&crc);
 		f = fopen ("progdefs.h", "r");
 		while ((c = fgetc(f)) != EOF)
@@ -832,7 +832,7 @@ int main (int argc, char **argv)
 		DEC_ReadData ("progs.dat");
 		//fix mangled names if asked
 		p = CheckParm ("-fix");
-		if(p)
+		if (p)
 			FILE_NUM_FOR_NAME = 1;
 
 		memset(func_headers,0,MAX_FUNCTIONS*sizeof(char *));
@@ -842,8 +842,8 @@ int main (int argc, char **argv)
 		if (p)
 		{
 		/*	i= -999;
-			for(p = 0;p<numstatements;p++)
-				if((statements+p)->op > i)
+			for (p = 0; p < numstatements; p++)
+				if ((statements+p)->op > i)
 					i = (statements+p)->op;
 			printf("largest op %d\n",i); */
 			FindBuiltinParameters(1);
@@ -854,7 +854,7 @@ int main (int argc, char **argv)
 		p = CheckParm ("-ddd");
 		if (p)
 		{
-			for (p++ ; p<argc ; p++)
+			for (p++ ; p < argc ; p++)
 			{
 				if (argv[p][0] == '-')
 					break;
@@ -910,7 +910,7 @@ int main (int argc, char **argv)
 		p = CheckParm ("-asm");
 		if (p)
 		{
-			for (p++ ; p<argc ; p++)
+			for (p++ ; p < argc ; p++)
 			{
 				if (argv[p][0] == '-')
 					break;
@@ -939,7 +939,7 @@ int main (int argc, char **argv)
 
 	PR_BeginCompilation (malloc (0x100000), 0x100000);
 
-// compile all the files
+	// compile all the files
 	do
 	{
 		src = COM_Parse(src);
@@ -961,7 +961,7 @@ int main (int argc, char **argv)
 	p = CheckParm ("-asm");
 	if (p)
 	{
-		for (p++ ; p<argc ; p++)
+		for (p++ ; p < argc ; p++)
 		{
 			if (argv[p][0] == '-')
 				break;
@@ -969,16 +969,17 @@ int main (int argc, char **argv)
 		}
 	}
 
-// write progdefs.h
+	// write progdefs.h
 	crc = PR_WriteProgdefs ("progdefs.h");
 	printf ("#define PROGHEADER_CRC %i %d\n", crc,(int)crc);
-	//cheap hack for now!!!!!!!!!!!!!!!!!!!!
+// FIXME !!!!!!
+// cheap hack for now!!!!!!!!!!!!!!!!!!!!
 	crc = 14046;
 
-// write data file
+	// write data file
 	WriteData (crc);
 
-// write files.dat
+	// write files.dat
 	WriteFiles ();
 
 	stop = GetTime ();
@@ -986,3 +987,4 @@ int main (int argc, char **argv)
 
 	exit(0);
 }
+

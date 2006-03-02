@@ -1,7 +1,7 @@
 /*
 	comp.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/pr_comp.c,v 1.1 2006-03-01 09:42:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/pr_comp.c,v 1.2 2006-03-02 17:52:06 sezero Exp $
 */
 
 
@@ -584,7 +584,7 @@ static void ParseState (void)
 			LX_Require(")");
 			weapon = true;
 		}
-		if(pr_token_type != tt_immediate
+		if (pr_token_type != tt_immediate
 			|| pr_immediate_type != &type_float)
 		{
 			PR_ParseError("state frame must be a number");

@@ -51,10 +51,10 @@ endif
 
 # Objects
 DHCCOBJS= $(COMMONDIR)/cmdlib.o \
-	pr_comp.o \
-	pr_lex.o \
 	dcc.o \
-	hcc.o
+	hcc.o \
+	pr_comp.o \
+	pr_lex.o
 
 # Targets
 all : $(BINARY)
