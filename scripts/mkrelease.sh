@@ -25,7 +25,6 @@ mv packaging/hexen2.spec ./
 rm -rf packaging
 
 # change all shell scripts' permissions
-mv utils/build utils/build.sh
 find -name *.sh | xargs chmod 755 
 
 # move the unused/reference asm files directory into 00_unused
