@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.31 2006-02-24 14:43:56 sezero Exp $
+	$Id: glquake.h,v 1.32 2006-03-04 15:35:24 sezero Exp $
 */
 
 
@@ -44,6 +44,10 @@
 #define	GL_SHARED_TEXTURE_PALETTE_EXT		0x81FB
 #endif
 
+#ifndef GL_COLOR_INDEX8_EXT
+#define GL_COLOR_INDEX8_EXT			0x80E5
+#endif
+
 #define GL_Bind(texnum) {\
 	if (currenttexture != (texnum)) {\
 		currenttexture = (texnum);\
@@ -55,11 +59,14 @@
 #define INVERSE_PAL_G_BITS 6
 #define INVERSE_PAL_B_BITS 6
 #define INVERSE_PAL_TOTAL_BITS	( INVERSE_PAL_R_BITS + INVERSE_PAL_G_BITS + INVERSE_PAL_B_BITS )
+
+// COMPILE TIME OPTION:
 // to use hexenworld (quake)'s palettized texture code instead of the original
 // hexen2 code, replace the #define below with an #undef. that will result in
 // lower quality. see gl_draw.c (and gl_vidXXX.c) for more details
 #define	USE_HEXEN2_PALTEX_CODE
 
+// COMPILE TIME OPTION:
 // to use hexenworld (quake)'s texture resampler code instead of the original
 // hexen2 code, replace the #define below with an undef. that will result in
 // slightly sharper but "jaggier" textures here and there. see in gl_draw.c.
@@ -67,50 +74,24 @@
 // small (256k) texture size support (read: old voodoo boards.)
 #define	USE_HEXEN2_RESAMPLER_CODE
 
-void GL_BeginRendering (int *x, int *y, int *width, int *height);
-void GL_EndRendering (void);
+// COMPILE TIME OPTION:
+// scrap allocation is disabled by default. it doesn't work good with vid_mode
+// changes. if you want to enable it, change the define below to 1.
+#define ENABLE_SCRAP		0
 
-extern	int texture_extension_number;
-extern	int gl_filter_min;
-extern	int gl_filter_max;
-extern	float	gldepthmin, gldepthmax;
+// COMPILE TIME OPTION:
+// the macro GLTEST enables some experimentation stuff for developers. If you
+// want to enable it, un-comment the line below.
+//#define	GLTEST			// experimental stuff
 
+
+// misc. common glquake defines
 #define MAX_GLTEXTURES		2048
 #define MAX_EXTRA_TEXTURES	156   // 255-100+1
-extern	int	gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for models
+#define	MAX_LIGHTMAPS		64
 
-void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite);
-void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode);
-int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba);
-int GL_FindTexture (char *identifier);
-int GL_LoadPicTexture (qpic_t *pic);
-void GL_BuildLightmaps (void);
-void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr);
-void GL_Set2D (void);
-void GL_SubdivideSurface (msurface_t *fa);
-void EmitSkyPolys (msurface_t *fa);
-void EmitWaterPolys (msurface_t *fa);
-void EmitBothSkyLayers (msurface_t *fa);
-qboolean R_CullBox (vec3_t mins, vec3_t maxs);
-void R_DrawBrushModel (entity_t *e, qboolean Translucent);
-void R_DrawSkyChain (msurface_t *s);
-void R_DrawWorld (void);
-void R_DrawWaterSurfaces (void);
-void R_RenderBrushPoly (msurface_t *fa, qboolean override);
-void R_RenderDlights (void);
-void R_RotateForEntity (entity_t *e);
-void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
-void R_AnimateLight(void);
-int R_LightPoint (vec3_t p);
-void R_StoreEfrags (efrag_t **ppefrag);
-void R_InitParticles (void);
-void R_ClearParticles (void);
-void R_DrawParticles (void);
-void R_NetGraph (void);
 
-int M_DrawBigCharacter (int x, int y, int num, int numNext);
-// defined only for !GLQUAKE in menu.c
-
+// types for textures
 
 typedef struct
 {
@@ -135,14 +116,53 @@ typedef struct
 	unsigned long	hash;
 } gltexture_t;
 
-extern	int glx, gly, glwidth, glheight;
+
+extern	int	texture_extension_number;
+extern	int	gl_filter_min;
+extern	int	gl_filter_max;
+extern	float	gldepthmin, gldepthmax;
+extern	int	glx, gly, glwidth, glheight;
+extern	int	gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for models
+
+void GL_BeginRendering (int *x, int *y, int *width, int *height);
+void GL_EndRendering (void);
+
+void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite);
+void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode);
+int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba);
+int GL_FindTexture (char *identifier);
+int GL_LoadPicTexture (qpic_t *pic);
+int M_DrawBigCharacter (int x, int y, int num, int numNext);
+void GL_BuildLightmaps (void);
+void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr);
+void GL_Set2D (void);
+void GL_SubdivideSurface (msurface_t *fa);
+void EmitSkyPolys (msurface_t *fa);
+void EmitWaterPolys (msurface_t *fa);
+void EmitBothSkyLayers (msurface_t *fa);
+qboolean R_CullBox (vec3_t mins, vec3_t maxs);
+void R_DrawBrushModel (entity_t *e, qboolean Translucent);
+void R_DrawSkyChain (msurface_t *s);
+void R_DrawWorld (void);
+void R_DrawWaterSurfaces (void);
+void R_RenderBrushPoly (msurface_t *fa, qboolean override);
+void R_RenderDlights (void);
+void R_RotateForEntity (entity_t *e);
+void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
+void R_AnimateLight(void);
+int R_LightPoint (vec3_t p);
+void R_StoreEfrags (efrag_t **ppefrag);
+void R_InitParticles (void);
+void R_ClearParticles (void);
+void R_DrawParticles (void);
+void R_NetGraph (void);
 
 
 // r_local.h -- private refresh defs
 
 #define ALIAS_BASE_SIZE_RATIO		(1.0 / 11.0)
-					// normalizing factor so player model works out to about
-					//  1 pixel per triangle
+					// normalizing factor so player model works
+					// out to about 1 pixel per triangle
 #define	MAX_SKIN_HEIGHT		480
 
 #define TILE_SIZE		128	// size of textures generated by R_GenTiledSurf
@@ -153,10 +173,6 @@ extern	int glx, gly, glwidth, glheight;
 
 #define BACKFACE_EPSILON	0.01
 
-
-void R_TimeRefresh_f (void);
-void R_ReadPointFile_f (void);
-texture_t *R_TextureAnimation (texture_t *base);
 
 typedef struct surfcache_s
 {
@@ -222,7 +238,7 @@ typedef enum {
 // Changes to rtype_t must also be made in glquake.h
 typedef enum
 {
-   rt_rocket_trail = 0,
+	rt_rocket_trail = 0,
 	rt_smoke,
 	rt_blood,
 	rt_tracer,
@@ -245,7 +261,7 @@ typedef enum
 	rt_bloodshot
 } rt_type_t;
 
-// !!! if this is changed, it must be changed in d_iface.h too !!!
+// if this is changed, it must be changed in d_iface.h too !!!
 typedef struct particle_s
 {
 // driver-usable fields
@@ -258,6 +274,12 @@ typedef struct particle_s
 	float		die;
 	ptype_t		type;
 } particle_t;
+
+
+void R_TimeRefresh_f (void);
+void R_ReadPointFile_f (void);
+texture_t *R_TextureAnimation (texture_t *base);
+void R_TranslatePlayerSkin (int playernum);
 
 
 //====================================================
@@ -355,8 +377,6 @@ extern	const char *gl_renderer;
 extern	const char *gl_version;
 extern	const char *gl_extensions;
 
-void R_TranslatePlayerSkin (int playernum);
-
 byte *playerTranslation;
 
 // Stencil shadows
@@ -366,7 +386,6 @@ extern	qboolean have_stencil;
 extern	qboolean gl_mtexable;
 
 // Ligthmaps (gl_rsurf.c)
-#define	MAX_LIGHTMAPS	64
 extern	qboolean lightmap_modified[MAX_LIGHTMAPS];
 
 

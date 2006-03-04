@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_dl_draw.c,v 1.72 2006-02-12 09:27:57 sezero Exp $
+	$Id: gl_dl_draw.c,v 1.73 2006-03-04 15:35:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -11,10 +11,6 @@ qboolean draw_reinit = false;
 
 extern int ColorIndex[16];
 extern unsigned ColorPercent[16];
-
-#ifndef GL_COLOR_INDEX8_EXT
-#define GL_COLOR_INDEX8_EXT	0x80E5
-#endif
 
 extern qboolean	is8bit;
 #ifdef	USE_HEXEN2_PALTEX_CODE
@@ -120,10 +116,9 @@ void GL_Texels_f (void)
 =============================================================================
 */
 
-// disabled scrap allocation. doesn't work good with vid_mode changes
-#define ENABLE_SCRAP	0
-
 #if ENABLE_SCRAP
+// scrap allocation doesn't work good with vid_mode changes
+// you must edit glquake.h to enable or disable scraps.
 
 #define	MAX_SCRAPS		1
 #define	BLOCK_WIDTH		256
@@ -2144,6 +2139,9 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.72  2006/02/12 09:27:57  sezero
+ * removed bogus message from the MAX_GLTEXTURES Sys_Error
+ *
  * Revision 1.71  2006/01/24 16:50:07  sezero
  * small tweak to fade screen
  *

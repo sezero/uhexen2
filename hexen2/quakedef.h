@@ -2,10 +2,9 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.48 2006-03-02 20:02:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.49 2006-03-04 15:35:23 sezero Exp $
 */
 
-//#define	GLTEST			// experimental stuff
 
 #ifdef _MSC_VER
 #pragma warning(disable:4244)
@@ -399,6 +398,9 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.48  2006/03/02 20:02:36  sezero
+ * marked the snapshot of 2006-03-02 as 1.4.0-pre5
+ *
  * Revision 1.47  2006/02/24 23:27:31  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 28: protocol.h, quakedef.h, server.h, pmove.c, pmovetst.c,
