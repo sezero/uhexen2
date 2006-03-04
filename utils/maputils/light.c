@@ -2,25 +2,18 @@
 
 #include "light.h"
 
-/*
-
-NOTES
------
-
-*/
-
-float		scaledist = 1.0F;
-float		scalecos = 0.5F;
-float		rangescale = 0.5F;
-
-byte		*filebase, *file_p, *file_end;
-
-dmodel_t	*bspmodel;
-int			bspfileface;	// next surface to dispatch
-
-vec3_t	bsp_origin;
-
 qboolean	extrasamples;
+
+float		scaledist	= 1.0F;
+float		scalecos	= 0.5F;
+float		rangescale	= 0.5F;
+
+//dmodel_t	*bspmodel;
+int		bspfileface;	// next surface to dispatch
+vec3_t		bsp_origin;
+
+byte		*filebase;
+static byte	*file_p, *file_end;
 
 float		minlights[MAX_MAP_FACES];
 
@@ -28,7 +21,7 @@ float		minlights[MAX_MAP_FACES];
 byte *GetFileSpace (int size)
 {
 	byte	*buf;
-	
+
 	LOCK;
 	file_p = (byte *)(((long)file_p + 3)&~3);
 	buf = file_p;
@@ -43,7 +36,8 @@ byte *GetFileSpace (int size)
 void LightThread (void *junk)
 {
 	int			i;
-	printf("Thread %d started\n",(int)junk);
+
+	printf("Thread %d started\n", (int)junk);
 	while (1)
 	{
 		LOCK;
@@ -51,7 +45,7 @@ void LightThread (void *junk)
 		UNLOCK;
 		if (i >= numfaces)
 			return;
-		
+
 		LightFace (i);
 	}
 }
@@ -61,7 +55,7 @@ void LightThread (void *junk)
 LightWorld
 =============
 */
-void LightWorld (void)
+static void LightWorld (void)
 {
 	filebase = file_p = dlightdata;
 	file_end = filebase + MAX_MAP_LIGHTING;
@@ -69,7 +63,7 @@ void LightWorld (void)
 	RunThreadsOn (LightThread);
 
 	lightdatasize = file_p - filebase;
-	
+
 	printf ("lightdatasize: %i\n", lightdatasize);
 }
 
@@ -88,15 +82,15 @@ int main (int argc, char **argv)
 	char		source[1024];
 
 #ifdef __alpha
-#ifdef _WIN32
-	printf ("alpha,win32----- LightFaces ----\n");
-#else
-	printf ("alpha,----- LightFaces ----\n");
-#endif
+#  ifdef _WIN32
+	printf ("alpha, win32 ----- LightFaces ----\n");
+#  else
+	printf ("alpha, ----- LightFaces ----\n");
+#  endif
 #else
 	printf ("----- LightFaces ----\n");
 #endif
-	for (i=1 ; i<argc ; i++)
+	for (i = 1 ; i < argc ; i++)
 	{
 		if (!strcmp(argv[i],"-threads"))
 		{
@@ -134,20 +128,20 @@ int main (int argc, char **argv)
 	strcpy (source, argv[i]);
 	StripExtension (source);
 	DefaultExtension (source, ".bsp");
-	
+
 	LoadBSPFile (source);
 	LoadEntities ();
-		
+
 	MakeTnodes (&dmodels[0]);
 
 	LightWorld ();
 
-	WriteEntitiesToString ();	
+	WriteEntitiesToString ();
 	WriteBSPFile (source);
 
 	end = GetTime ();
 	printf ("%5.1f seconds elapsed\n", end-start);
-	
+
 	return 0;
 }
 

@@ -6,22 +6,24 @@
 
 typedef struct
 {
-	qboolean	original;			// don't free, it's part of the portal
-	qboolean	fixedsize; //allocated to 16;
+	qboolean	original;	// don't free, it's part of the portal
+	qboolean	fixedsize;	// allocated to 16;
 	int		numpoints;
-	vec3_t	points[8];			// variable sized
+	vec3_t	points[8];		// variable sized
 } winding_t;
+
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
 
 
+#define MAX_POINTS_ON_WINDING	64
 #define	MAX_PORTALS	32768
-
 #define	PORTALFILE	"PRT1"
 
 #define	ON_EPSILON	0.1
+
 
 typedef struct
 {
@@ -30,15 +32,14 @@ typedef struct
 } plane_t;
 
 
-#define MAX_POINTS_ON_WINDING	64
+typedef enum
+{
+	stat_none,
+	stat_working,
+	stat_done
+} vstatus_t;
 
-winding_t	*NewWinding (int points);
-void		FreeWinding (winding_t *w);
-winding_t *ClipWinding (winding_t *in, plane_t *split, qboolean keepon);
-winding_t	*CopyWinding (winding_t *w);
 
-
-typedef enum {stat_none, stat_working, stat_done} vstatus_t;
 typedef struct
 {
 	plane_t		plane;	// normal pointing into neighbor
@@ -51,6 +52,7 @@ typedef struct
 	int			numcansee;
 } portal_t;
 
+
 typedef struct seperating_plane_s
 {
 	struct seperating_plane_s *next;
@@ -61,9 +63,10 @@ typedef struct seperating_plane_s
 typedef struct passage_s
 {
 	struct passage_s	*next;
-	int			from, to;		// leaf numbers
-	sep_t				*planes;
+	int			from, to;	// leaf numbers
+	sep_t		*planes;
 } passage_t;
+
 
 #define	MAX_PORTALS_ON_LEAF		128
 typedef struct leaf_s
@@ -73,7 +76,7 @@ typedef struct leaf_s
 	portal_t	*portals[MAX_PORTALS_ON_LEAF];
 } leaf_t;
 
-	
+
 typedef struct pstack_s
 {
 	struct pstack_s	*next;
@@ -81,32 +84,42 @@ typedef struct pstack_s
 	portal_t	*portal;	// portal exiting
 	winding_t	*source, *pass;
 	plane_t		portalplane;
-	byte		*mightsee;		// bit string
+	byte		*mightsee;	// bit string
 } pstack_t;
+
 
 typedef struct
 {
-	byte		*leafvis;		// bit string
+	byte		*leafvis;	// bit string
 	portal_t	*base;
 	pstack_t	pstack_head;
 } threaddata_t;
 
 
 #ifdef __alpha
-#ifdef _WIN32
+
+#  ifdef _WIN32
+
 extern HANDLE my_mutex;
 #define	LOCK	WaitForSingleObject (my_mutex, INFINITE)
 #define	UNLOCK	ReleaseMutex (my_mutex)
-#else
+
+#  else
+
 #include <pthread.h>
 extern	pthread_mutex_t	*my_mutex;
 #define	LOCK	pthread_mutex_lock (my_mutex)
 #define	UNLOCK	pthread_mutex_unlock (my_mutex)
-#endif	//_win32
+
+#  endif  // _win32
+
 #else	//alpha
+
 #define	LOCK
 #define	UNLOCK
+
 #endif
+
 
 extern	int			numportals;
 extern	int			portalleafs;
@@ -119,21 +132,21 @@ extern	int			c_portalskip, c_leafskip;
 extern	int			c_vistest, c_mighttest;
 extern	int			c_chains;
 
-extern	byte	*vismap, *vismap_p, *vismap_end;	// past visfile
-
-extern	qboolean		showgetleaf;
 extern	int			testlevel;
 
 extern	byte		*uncompressed;
 extern	int			bitbytes;
 extern	int			bitlongs;
 
-extern int GilMode;
-void PrintStats(void);
+extern	int			GilMode;
 
-void LeafFlow (int leafnum);
-void BasePortalVis (void);
 
-void PortalFlow (portal_t *p);
+void	PrintStats(void);
+void	BasePortalVis (void);
+void	PortalFlow (portal_t *p);
+void	CalcAmbientSounds (void);
+winding_t	*NewWinding (int points);
+void		FreeWinding (winding_t *w);
+winding_t	*ClipWinding (winding_t *in, plane_t *split, qboolean keepon);
+winding_t	*CopyWinding (winding_t *w);
 
-void CalcAmbientSounds (void);

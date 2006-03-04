@@ -2,13 +2,12 @@
 
 #include "bsp5.h"
 
-int		leaffaces;
-int		nodefaces;
-int		splitnodes;
+static int		leaffaces;
+static int		nodefaces;
+static int		splitnodes;
+static int		c_solid, c_empty, c_water;
 
-int		c_solid, c_empty, c_water;
-
-qboolean		usemidsplit;
+static qboolean		usemidsplit;
 
 //============================================================================
 
@@ -19,19 +18,19 @@ FaceSide
 For BSP hueristic
 ==================
 */
-int FaceSide (face_t *in, plane_t *split)
+static int FaceSide (face_t *in, plane_t *split)
 {
 	int		frontcount, backcount;
 	double	dot;
 	int		i;
 	double	*p;
-	
-	
+
 	frontcount = backcount = 0;
-	
-// axial planes are fast
+
+	// axial planes are fast
 	if (split->type < 3)
-		for (i=0, p = in->pts[0]+split->type ; i<in->numpoints ; i++, p+=3)
+	{
+		for (i = 0, p = in->pts[0]+split->type ; i < in->numpoints ; i++, p+=3)
 		{
 			if (*p > split->dist + ON_EPSILON)
 			{
@@ -46,9 +45,11 @@ int FaceSide (face_t *in, plane_t *split)
 				backcount = 1;
 			}
 		}
-	else	
-// sloping planes take longer
-		for (i=0, p = in->pts[0] ; i<in->numpoints ; i++, p+=3)
+	}
+	else
+	{
+	// sloping planes take longer
+		for (i = 0, p = in->pts[0] ; i < in->numpoints ; i++, p+=3)
 		{
 			dot = DotProduct (p, split->normal);
 			dot -= split->dist;
@@ -65,12 +66,13 @@ int FaceSide (face_t *in, plane_t *split)
 				backcount = 1;
 			}
 		}
-	
+	}
+
 	if (!frontcount)
 		return SIDE_BACK;
 	if (!backcount)
 		return SIDE_FRONT;
-	
+
 	return SIDE_ON;
 }
 
@@ -81,9 +83,9 @@ ChooseMidPlaneFromList
 The clipping hull BSP doesn't worry about avoiding splits
 ==================
 */
-surface_t *ChooseMidPlaneFromList (surface_t *surfaces, vec3_t mins, vec3_t maxs)
+static surface_t *ChooseMidPlaneFromList (surface_t *surfaces, vec3_t mins, vec3_t maxs)
 {
-	int			j,l;
+	int			j, l;
 	surface_t	*p, *bestsurface;
 	double		bestvalue, value, dist;
 	plane_t		*plane;
@@ -93,14 +95,14 @@ surface_t *ChooseMidPlaneFromList (surface_t *surfaces, vec3_t mins, vec3_t maxs
 //
 	bestvalue = 6*8192*8192;
 	bestsurface = NULL;
-	
-	for (p=surfaces ; p ; p=p->next)
+
+	for (p = surfaces ; p ; p = p->next)
 	{
 		if (p->onnode)
 			continue;
 
 		plane = &planes[p->planenum];
-		
+
 	// check for axis aligned surfaces
 		l = plane->type;
 		if (l > PLANE_Z)
@@ -112,7 +114,7 @@ surface_t *ChooseMidPlaneFromList (surface_t *surfaces, vec3_t mins, vec3_t maxs
 		value = 0;
 
 		dist = plane->dist * plane->normal[l];
-		for (j=0 ; j<3 ; j++)
+		for (j = 0 ; j < 3 ; j++)
 		{
 			if (j == l)
 			{
@@ -122,10 +124,10 @@ surface_t *ChooseMidPlaneFromList (surface_t *surfaces, vec3_t mins, vec3_t maxs
 			else
 				value += 2*(maxs[j]-mins[j])*(maxs[j]-mins[j]);
 		}
-		
+
 		if (value > bestvalue)
 			continue;
-		
+
 	//
 	// currently the best!
 	//
@@ -140,10 +142,9 @@ surface_t *ChooseMidPlaneFromList (surface_t *surfaces, vec3_t mins, vec3_t maxs
 				return p;		// first valid surface
 		Error ("ChooseMidPlaneFromList: no valid planes");
 	}
-		
+
 	return bestsurface;
 }
-
 
 
 /*
@@ -153,22 +154,22 @@ ChoosePlaneFromList
 The real BSP hueristic
 ==================
 */
-surface_t *ChoosePlaneFromList (surface_t *surfaces, vec3_t mins, vec3_t maxs, qboolean usefloors)
+static surface_t *ChoosePlaneFromList (surface_t *surfaces, vec3_t mins, vec3_t maxs, qboolean usefloors)
 {
-	int			j,k,l;
+	int			j, k, l;
 	surface_t	*p, *p2, *bestsurface;
 	double		bestvalue, bestdistribution, value, dist;
 	plane_t		*plane;
 	face_t		*f;
-	
+
 //
 // pick the plane that splits the least
 //
 	bestvalue = 99999;
 	bestsurface = NULL;
 	bestdistribution = 9e30;
-	
-	for (p=surfaces ; p ; p=p->next)
+
+	for (p = surfaces ; p ; p = p->next)
 	{
 		if (p->onnode)
 			continue;
@@ -179,14 +180,14 @@ surface_t *ChoosePlaneFromList (surface_t *surfaces, vec3_t mins, vec3_t maxs, q
 		if (!usefloors && plane->normal[2] == 1)
 			continue;
 
-		for (p2=surfaces ; p2 ; p2=p2->next)
+		for (p2 = surfaces ; p2 ; p2 = p2->next)
 		{
 			if (p2 == p)
 				continue;
 			if (p2->onnode)
 				continue;
-				
-			for (f=p2->faces ; f ; f=f->next)
+
+			for (f = p2->faces ; f ; f = f->next)
 			{
 				if (FaceSide (f, plane) == SIDE_ON)
 				{
@@ -194,7 +195,6 @@ surface_t *ChoosePlaneFromList (surface_t *surfaces, vec3_t mins, vec3_t maxs, q
 					if (k >= bestvalue)
 						break;
 				}
-				
 			}
 			if (k > bestvalue)
 				break;
@@ -202,22 +202,22 @@ surface_t *ChoosePlaneFromList (surface_t *surfaces, vec3_t mins, vec3_t maxs, q
 
 		if (k > bestvalue)
 			continue;
-			
+
 	// if equal numbers, axial planes win, then decide on spatial subdivision
-	
+
 		if (k < bestvalue || (k == bestvalue && plane->type < PLANE_ANYX) )
 		{
 		// check for axis aligned surfaces
 			l = plane->type;
-	
+
 			if (l <= PLANE_Z)
-			{	// axial aligned						
+			{	// axial aligned
 			//
 			// calculate the split metric along axis l
 			//
 				value = 0;
-		
-				for (j=0 ; j<3 ; j++)
+
+				for (j = 0 ; j < 3 ; j++)
 				{
 					if (j == l)
 					{
@@ -228,7 +228,7 @@ surface_t *ChoosePlaneFromList (surface_t *surfaces, vec3_t mins, vec3_t maxs, q
 					else
 						value += 2*(maxs[j]-mins[j])*(maxs[j]-mins[j]);
 				}
-				
+
 				if (value > bestdistribution && k == bestvalue)
 					continue;
 				bestdistribution = value;
@@ -239,9 +239,7 @@ surface_t *ChoosePlaneFromList (surface_t *surfaces, vec3_t mins, vec3_t maxs, q
 			bestvalue = k;
 			bestsurface = p;
 		}
-
 	}
-
 
 	return bestsurface;
 }
@@ -255,9 +253,9 @@ Selects a surface from a linked list of surfaces to split the group on
 returns NULL if the surface list can not be divided any more (a leaf)
 ==================
 */
-surface_t *SelectPartition (surface_t *surfaces)
+static surface_t *SelectPartition (surface_t *surfaces)
 {
-	int			i,j;
+	int			i, j;
 	vec3_t		mins, maxs;
 	surface_t	*p, *bestsurface;
 
@@ -266,30 +264,30 @@ surface_t *SelectPartition (surface_t *surfaces)
 //
 	i = 0;
 	bestsurface = NULL;
-	for (p=surfaces ; p ; p=p->next)
+	for (p = surfaces ; p ; p = p->next)
 		if (!p->onnode)
 		{
 			i++;
 			bestsurface = p;
 		}
-		
-	if (i==0)
+
+	if (i == 0)
 		return NULL;
-		
-	if (i==1)
+
+	if (i == 1)
 		return bestsurface;	// this is a final split
-	
+
 //
 // calculate a bounding box of the entire surfaceset
 //
-	for (i=0 ; i<3 ; i++)
+	for (i = 0 ; i < 3 ; i++)
 	{
 		mins[i] = 99999;
 		maxs[i] = -99999;
 	}
 
-	for (p=surfaces ; p ; p=p->next)
-		for (j=0 ; j<3 ; j++)
+	for (p = surfaces ; p ; p = p->next)
+		for (j = 0 ; j < 3 ; j++)
 		{
 			if (p->mins[j] < mins[j])
 				mins[j] = p->mins[j];
@@ -297,15 +295,15 @@ surface_t *SelectPartition (surface_t *surfaces)
 				maxs[j] = p->maxs[j];
 		}
 
-	if (usemidsplit) // do fast way for clipping hull
+	if (usemidsplit)	// do fast way for clipping hull
 		return ChooseMidPlaneFromList (surfaces, mins, maxs);
-		
+
 // do slow way to save poly splits for drawing hull
 #if 0
 	bestsurface = ChoosePlaneFromList (surfaces, mins, maxs, false);
-	if (bestsurface)	
+	if (bestsurface)
 		return bestsurface;
-#endif		
+#endif
 	return ChoosePlaneFromList (surfaces, mins, maxs, true);
 }
 
@@ -320,27 +318,27 @@ Calculates the bounding box
 */
 void CalcSurfaceInfo (surface_t *surf)
 {
-	int		i,j;
+	int		i, j;
 	face_t	*f;
-	
+
 	if (!surf->faces)
 		Error ("CalcSurfaceInfo: surface without a face");
-		
+
 //
 // calculate a bounding box
 //
-	for (i=0 ; i<3 ; i++)
+	for (i = 0 ; i < 3 ; i++)
 	{
 		surf->mins[i] = 99999;
 		surf->maxs[i] = -99999;
 	}
 
-	for (f=surf->faces ; f ; f=f->next)
+	for (f = surf->faces ; f ; f = f->next)
 	{
-if (f->contents[0] >= 0 || f->contents[1] >= 0)
-Error ("Bad contents");
-		for (i=0 ; i<f->numpoints ; i++)
-			for (j=0 ; j<3 ; j++)
+		if (f->contents[0] >= 0 || f->contents[1] >= 0)
+			Error ("Bad contents");
+		for (i = 0 ; i < f->numpoints ; i++)
+			for (j = 0 ; j < 3 ; j++)
 			{
 				if (f->pts[i][j] < surf->mins[j])
 					surf->mins[j] = f->pts[i][j];
@@ -349,7 +347,6 @@ Error ("Bad contents");
 			}
 	}
 }
-
 
 
 /*
@@ -363,10 +360,10 @@ void DividePlane (surface_t *in, plane_t *split, surface_t **front, surface_t **
 	face_t		*frontlist, *backlist;
 	face_t		*frontfrag, *backfrag;
 	surface_t	*news;
-	plane_t		*inplane;	
-	
+	plane_t		*inplane;
+
 	inplane = &planes[in->planenum];
-	
+
 // parallel case is easy
 	if (VectorCompare (inplane->normal, split->normal))
 	{
@@ -380,8 +377,8 @@ void DividePlane (surface_t *in, plane_t *split, surface_t **front, surface_t **
 			in->faces = NULL;
 			news->faces = NULL;
 			in->onnode = news->onnode = true;
-			
-			for ( ; facet ; facet=next)
+
+			for ( ; facet ; facet = next)
 			{
 				next = facet->next;
 				if (facet->planeside == 1)
@@ -395,7 +392,7 @@ void DividePlane (surface_t *in, plane_t *split, surface_t **front, surface_t **
 					in->faces = facet;
 				}
 			}
-				
+
 			if (in->faces)
 				*front = in;
 			else
@@ -406,7 +403,7 @@ void DividePlane (surface_t *in, plane_t *split, surface_t **front, surface_t **
 				*back = NULL;
 			return;
 		}
-		
+
 		if (inplane->dist > split->dist)
 		{
 			*front = in;
@@ -419,12 +416,12 @@ void DividePlane (surface_t *in, plane_t *split, surface_t **front, surface_t **
 		}
 		return;
 	}
-	
+
 // do a real split.  may still end up entirely on one side
 // OPTIMIZE: use bounding box for fast test
 	frontlist = NULL;
 	backlist = NULL;
-	
+
 	for (facet = in->faces ; facet ; facet = next)
 	{
 		next = facet->next;
@@ -442,7 +439,7 @@ void DividePlane (surface_t *in, plane_t *split, surface_t **front, surface_t **
 	}
 
 // if nothing actually got split, just move the in plane
-	
+
 	if (frontlist == NULL)
 	{
 		*front = NULL;
@@ -458,20 +455,19 @@ void DividePlane (surface_t *in, plane_t *split, surface_t **front, surface_t **
 		in->faces = frontlist;
 		return;
 	}
-	
 
 // stuff got split, so allocate one new plane and reuse in
 	news = AllocSurface ();
 	*news = *in;
 	news->faces = backlist;
 	*back = news;
-	
+
 	in->faces = frontlist;
 	*front = in;
-	
+
 // recalc bboxes and flags
 	CalcSurfaceInfo (news);
-	CalcSurfaceInfo (in);	
+	CalcSurfaceInfo (in);
 }
 
 /*
@@ -479,7 +475,7 @@ void DividePlane (surface_t *in, plane_t *split, surface_t **front, surface_t **
 DivideNodeBounds
 ==================
 */
-void DivideNodeBounds (node_t *node, plane_t *split)
+static void DivideNodeBounds (node_t *node, plane_t *split)
 {
 	VectorCopy (node->mins, node->children[0]->mins);
 	VectorCopy (node->mins, node->children[1]->mins);
@@ -502,20 +498,20 @@ Determines the contents of the leaf and creates the final list of
 original faces that have some fragment inside this leaf
 ==================
 */
-void LinkConvexFaces (surface_t *planelist, node_t *leafnode)
+static void LinkConvexFaces (surface_t *planelist, node_t *leafnode)
 {
 	face_t		*f, *next;
 	surface_t	*surf, *pnext;
 	int			i, count;
-	
+
 	leafnode->faces = NULL;
 	leafnode->contents = 0;
 	leafnode->planenum = -1;
 
 	count = 0;
-	for ( surf = planelist ; surf ; surf = surf->next)
+	for (surf = planelist ; surf ; surf = surf->next)
 	{
-		for (f = surf->faces ; f ; f=f->next)
+		for (f = surf->faces ; f ; f = f->next)
 		{
 			count++;
 			if (!leafnode->contents)
@@ -527,7 +523,7 @@ void LinkConvexFaces (surface_t *planelist, node_t *leafnode)
 
 	if (!leafnode->contents)
 		leafnode->contents = CONTENTS_SOLID;
-		
+
 	switch (leafnode->contents)
 	{
 	case CONTENTS_EMPTY:
@@ -563,10 +559,10 @@ void LinkConvexFaces (surface_t *planelist, node_t *leafnode)
 	leaffaces += count;
 	leafnode->markfaces = malloc(sizeof(face_t *)*(count+1));
 	i = 0;
-	for ( surf = planelist ; surf ; surf = pnext)
+	for (surf = planelist ; surf ; surf = pnext)
 	{
 		pnext = surf->next;
-		for (f = surf->faces ; f ; f=next)
+		for (f = surf->faces ; f ; f = next)
 		{
 			next = f->next;
 			leafnode->markfaces[i] = f->original;
@@ -586,14 +582,13 @@ LinkNodeFaces
 Returns a duplicated list of all faces on surface
 ==================
 */
-face_t *LinkNodeFaces (surface_t *surface)
+static face_t *LinkNodeFaces (surface_t *surface)
 {
 	face_t	*f, *new, **prevptr;
 	face_t	*list;
-	
+
 	list = NULL;
-	
-	
+
 // subdivide
 	prevptr = &surface->faces;
 	while (1)
@@ -607,7 +602,7 @@ face_t *LinkNodeFaces (surface_t *surface)
 	}
 
 // copy
-	for (f=surface->faces ; f ; f=f->next)
+	for (f = surface->faces ; f ; f = f->next)
 	{
 		nodefaces++;
 		new = AllocFace ();
@@ -626,13 +621,13 @@ face_t *LinkNodeFaces (surface_t *surface)
 PartitionSurfaces
 ==================
 */
-void PartitionSurfaces (surface_t *surfaces, node_t *node)
+static void PartitionSurfaces (surface_t *surfaces, node_t *node)
 {
 	surface_t	*split, *p, *next;
 	surface_t	*frontlist, *backlist;
 	surface_t	*frontfrag, *backfrag;
 	plane_t		*splitplane;
-	
+
 	split = SelectPartition (surfaces);
 	if (!split)
 	{	// this is a leaf node
@@ -640,7 +635,7 @@ void PartitionSurfaces (surface_t *surfaces, node_t *node)
 		LinkConvexFaces (surfaces, node);
 		return;
 	}
-		
+
 	splitnodes++;
 	node->faces = LinkNodeFaces (split);
 	node->children[0] = AllocNode ();
@@ -648,17 +643,16 @@ void PartitionSurfaces (surface_t *surfaces, node_t *node)
 	node->planenum = split->planenum;
 
 	splitplane = &planes[split->planenum];
-	
-	DivideNodeBounds (node, splitplane);
 
+	DivideNodeBounds (node, splitplane);
 
 //
 // multiple surfaces, so split all the polysurfaces into front and back lists
 //
 	frontlist = NULL;
 	backlist = NULL;
-	
-	for (p=surfaces ; p ; p=next)
+
+	for (p = surfaces ; p ; p = next)
 	{
 		next = p->next;
 		DividePlane (p, splitplane, &frontfrag, &backfrag);
@@ -690,16 +684,17 @@ void PartitionSurfaces (surface_t *surfaces, node_t *node)
 	PartitionSurfaces (backlist, node->children[1]);
 }
 
+#if 0	// no users
 /*
 ==================
 DrawSurface
 ==================
 */
-void DrawSurface (surface_t *surf)
+static void DrawSurface (surface_t *surf)
 {
 	face_t	*f;
-	
-	for (f=surf->faces ; f ; f=f->next)
+
+	for (f = surf->faces ; f ; f = f->next)
 		Draw_DrawFace (f);
 }
 
@@ -709,7 +704,7 @@ DrawSurfaceList
 ==================
 */
 void DrawSurfaceList (surface_t *surf)
-{	
+{
 	Draw_ClearWindow ();
 	while (surf)
 	{
@@ -717,6 +712,7 @@ void DrawSurfaceList (surface_t *surf)
 		surf = surf->next;
 	}
 }
+#endif
 
 /*
 ==================
@@ -727,21 +723,21 @@ node_t *SolidBSP (surface_t *surfhead, qboolean midsplit)
 {
 	int		i;
 	node_t	*headnode;
-	
+
 	qprintf ("----- SolidBSP -----\n");
 
 	headnode = AllocNode ();
 	usemidsplit = midsplit;
-	
+
 //
 // calculate a bounding box for the entire model
 //
-	for (i=0 ; i<3 ; i++)
+	for (i = 0 ; i < 3 ; i++)
 	{
 		headnode->mins[i] = brushset->mins[i] - SIDESPACE;
 		headnode->maxs[i] = brushset->maxs[i] + SIDESPACE;
 	}
-	
+
 //
 // recursively partition everything
 //
@@ -759,7 +755,7 @@ node_t *SolidBSP (surface_t *surfhead, qboolean midsplit)
 	qprintf ("%5i water leafs\n", c_water);	
 	qprintf ("%5i leaffaces\n",leaffaces);
 	qprintf ("%5i nodefaces\n", nodefaces);
-	
+
 	return headnode;
 }
 

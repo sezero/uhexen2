@@ -3,27 +3,26 @@
 #include "bsp5.h"
 
 
-
 #define	MAXTOKEN	128
 
-char	token[MAXTOKEN];
-qboolean	unget;
-char	*script_p;
-int		scriptline;
-FILE	*f;
+static char	token[MAXTOKEN];
+static qboolean	unget;
+static char	*script_p;
+static int		scriptline;
+static FILE	*f;
 
-void	StartTokenParsing (char *data)
+static void StartTokenParsing (char *data)
 {
 	scriptline = 1;
 	script_p = data;
 	unget = false;
 }
 
-qboolean GetToken (qboolean crossline)
+static qboolean GetToken (qboolean crossline)
 {
-	char    *token_p;
+	char	*token_p;
 
-	if (unget)                         // is a token already waiting?
+	if (unget)	// is a token already waiting?
 	{
 		unget = false;
 		return true;
@@ -89,11 +88,11 @@ skipspace:
 	}
 
 	*token_p = 0;
-	
+
 	return true;
 }
 
-void UngetToken ()
+static void UngetToken (void)
 {
 	unget = true;
 }
@@ -101,36 +100,38 @@ void UngetToken ()
 
 //============================================================================
 
-int			num_entities;
-entity_t	entity;
-entity_t	*ent = &entity;
+static int		num_entities;
+static entity_t	entity;
+static entity_t	*ent = &entity;
 
-char 	*ValueForKey (entity_t *ent, char *key)
+#if 0
+static char *ValueForKey (entity_t *ent, char *key)
 {
 	epair_t	*ep;
-	
-	for (ep=ent->epairs ; ep ; ep=ep->next)
+
+	for (ep = ent->epairs ; ep ; ep = ep->next)
 		if (!strcmp (ep->key, key) )
 			return ep->value;
 	return "";
 }
+#endif
 
 /*
 =================
 MapEntity
 =================
 */
-void MapEntity (void)
+static void MapEntity (void)
 {
 #if 0
 	char	*class;
-	
+
 	class = ValueForKey (ent, "classname");
-	
+
 	if (!strcmp(class, "path_runcorner")
-	|| !strcmp(class, "path_stand")
-	|| !strcmp(class, "path_walkcorner")
-	|| !strcmp(class, "path_bow") )
+		|| !strcmp(class, "path_stand")
+		|| !strcmp(class, "path_walkcorner")
+		|| !strcmp(class, "path_bow") )
 	{
 		printf ("remapped %s\n", class);
 		strcpy (class, "path_corner");
@@ -144,20 +145,19 @@ void MapEntity (void)
 ParseEpair
 =================
 */
-void ParseEpair (void)
+static void ParseEpair (void)
 {
 	epair_t	*e;
-	
+
 	e = malloc (sizeof(epair_t));
 	memset (e, 0, sizeof(epair_t));
 	e->next = ent->epairs;
 	ent->epairs = e;
-	
+
 	strcpy (e->key, token);
 	GetToken (false);
 	strcpy (e->value, token);
 }
-
 
 /*
 =================
@@ -166,7 +166,7 @@ CopyBrush
 Just copy the brush to the output file
 =================
 */
-qboolean CopyBrush (void)
+static qboolean CopyBrush (void)
 {
 	int		i, j;
 	int		pts[3][3];
@@ -184,13 +184,13 @@ qboolean CopyBrush (void)
 		if (token[0] == '}')
 			break;
 		UngetToken ();
-		
-		for (i=0 ; i<3 ; i++)
+
+		for (i = 0 ; i < 3 ; i++)
 		{
 			GetToken (false);
 			if (token[0] != '(')
 				return false; //Error ("CopyBrush: couldn't parse");
-			for (j=0 ; j<3 ; j++)
+			for (j = 0 ; j < 3 ; j++)
 			{
 				GetToken (false);
 				pts[i][j] = atoi(token);
@@ -199,7 +199,7 @@ qboolean CopyBrush (void)
 			if (token[0] != ')')
 				return false; //Error ("CopyBrush: couldn't parse");
 		}
-		
+
 		GetToken (false);
 		strcpy (texname, token);
 		GetToken (false);
@@ -211,7 +211,7 @@ qboolean CopyBrush (void)
 
 //
 // convert to new definitions
-//		
+//
 		flags &= 7;
 
 		shift[0] = sofs;
@@ -221,7 +221,7 @@ qboolean CopyBrush (void)
 		scale[0] = 1;
 		scale[1] = 1;
 
-#define	TEX_FLIPAXIS	1
+#define	TEX_FLIPAXIS		1
 #define	TEX_FLIPS		2
 #define	TEX_FLIPT		4
 
@@ -240,18 +240,17 @@ qboolean CopyBrush (void)
 			if (flags & TEX_FLIPT)
 				scale[1] = -1;
 		}
-			
 
 	//
 	// write it out the new way
 	//
-		for (i=0 ; i<3 ; i++)
+		for (i = 0 ; i < 3 ; i++)
 			fprintf (f, "( %d %d %d ) ", pts[i][0], pts[i][1], pts[i][2]);
 		fprintf (f, "%s %d %d %d %d %d\n", texname, shift[0], shift[1], rotate, scale[0], scale[1]);
 	}
 
 	fprintf (f,"}\n");
-	
+
 	return true;
 }
 
@@ -260,20 +259,20 @@ qboolean CopyBrush (void)
 ParseEntity
 ================
 */
-int	ParseEntity (void)
+static int ParseEntity (void)
 {
 	epair_t	*ep;
-	
+
 	if (!GetToken (true))
 		return false;
 
 	if (strcmp (token, "{") )
 		Error ("ParseEntity: { not found");
-	
+
 	fprintf (f,"{\n");
-	
+
 	ent->epairs = NULL;
-	
+
 	do
 	{
 		if (!GetToken (true))
@@ -288,14 +287,14 @@ int	ParseEntity (void)
 		else
 			ParseEpair ();
 	} while (1);
-	
+
 // map the epairs
 	MapEntity ();
-	
+
 // write the epairs
-	for (ep = ent->epairs ; ep ; ep=ep->next)
+	for (ep = ent->epairs ; ep ; ep = ep->next)
 		fprintf (f,"\"%s\" \"%s\"\n", ep->key, ep->value);
-	
+
 	fprintf (f,"}\n");
 
 	return true;
@@ -306,7 +305,7 @@ int	ParseEntity (void)
 Remap
 ================
 */
-void Remap (char *filename)
+static void Remap (char *filename)
 {
 	char	*buf;
 	char	backname[1024];
@@ -314,7 +313,7 @@ void Remap (char *filename)
 	int		r;
 
 	printf ("--------------\n%s\n", filename);
-	
+
 	LoadFile (filename, (void **)&buf);
 	strcpy (backname, filename);
 	StripExtension (backname);
@@ -329,27 +328,27 @@ void Remap (char *filename)
 		Error ("Couldn't write to %s", backname);
 
 	StartTokenParsing (buf);
-	
+
 	num_entities = 0;
-	
+
 	while (1)
 	{
 		r = ParseEntity ();
 		if (r != 1)
-			break;	
+			break;
 		num_entities++;
 	}
-	
+
 	free (buf);
 
 	fclose (f);
-	
+
 	if (r == -1)
 	{
 		printf ("Error parsing %s\n", filename);
 		return;
 	}
-	
+
 	printf ("%5i entities\n", num_entities);
 	remove (backname);
 	rename (filename, backname);
@@ -357,14 +356,16 @@ void Remap (char *filename)
 }
 
 
-void main (int argc, char **argv)
+int main (int argc, char **argv)
 {
 	int		i;
-	
-	if (argc<2)
+
+	if (argc < 2)
 		Error ("USAGE: entmap [mapfile]\nRenames the map to .old, then remaps entity values");
-		
-	for (i=1 ; i<argc ; i++)
+
+	for (i = 1 ; i < argc ; i++)
 		Remap (argv[i]);
+
+	exit (0);
 }
 

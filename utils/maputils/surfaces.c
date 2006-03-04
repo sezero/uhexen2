@@ -3,16 +3,15 @@
 #include "bsp5.h"
 
 
-surface_t	newcopy_t;
-
 /*
 a surface has all of the faces that could be drawn on a given plane
 
-the outside filling stage can remove some of them so a better bsp can be generated
+the outside filling stage can remove some of them so a better bsp can
+be generated
 
 */
 
-int	subdivides;
+static int	subdivides;
 
 #if 0
 /*
@@ -27,11 +26,11 @@ void SubdivideFace (face_t *f, face_t **prevptr)
 {
 	vec3_t		mins, maxs;
 	double		v;
-	int			i,j;
+	int			i, j;
 	plane_t		plane;
 	face_t		*front, *back, *next;
 	float		size[3];
-	
+
 // special (non-surface cached) faces don't need subdivision
 	if ( texinfo[f->texturenum].flags & TEX_SPECIAL)
 		return;
@@ -40,9 +39,9 @@ void SubdivideFace (face_t *f, face_t **prevptr)
 	{
 		mins[0] = mins[1] = mins[2] = 9999;
 		maxs[0] = maxs[1] = maxs[2] = -9999;
-		
-		for (i=0 ; i<f->numpoints ; i++)
-			for (j=0 ; j<3 ; j++)
+
+		for (i = 0 ; i < f->numpoints ; i++)
+			for (j = 0 ; j < 3 ; j++)
 			{
 				v = f->pts[i][j];
 				if (v < mins[j])
@@ -50,28 +49,28 @@ void SubdivideFace (face_t *f, face_t **prevptr)
 				if (v > maxs[j])
 					maxs[j] = v;
 			}
-			
-		for (i=0 ; i<3 ; i++)
-			size[i] = maxs[i] - mins[i];
-			
-#if 0
-if ( !size[0] && size[1] <= 496 && size[2] <= 496 && size[1]*size[2]<0x10000)
-	return;
-if ( !size[1] && size[0] <= 496 && size[2] <= 496 && size[0]*size[2]<0x10000)
-	return;
-if ( !size[2] && size[0] <= 496 && size[1] <= 496 && size[0]*size[1]<0x10000)
-	return;
-#endif
 
-		for (i=0 ; i<3 ; i++)
+		for (i = 0 ; i < 3 ; i++)
+			size[i] = maxs[i] - mins[i];
+
+#	if 0
+		if ( !size[0] && size[1] <= 496 && size[2] <= 496 && size[1]*size[2]<0x10000)
+			return;
+		if ( !size[1] && size[0] <= 496 && size[2] <= 496 && size[0]*size[2]<0x10000)
+			return;
+		if ( !size[2] && size[0] <= 496 && size[1] <= 496 && size[0]*size[1]<0x10000)
+			return;
+#	endif
+
+		for (i = 0 ; i < 3 ; i++)
 		{
 			v = maxs[i] - mins[i];
 			if (v <= 240)	// NOT 256, because of 16 pixel edge crossings
 				continue;
-				
+
 		// split it
 			subdivides++;
-			
+
 			plane.normal[0] = plane.normal[1] = plane.normal[2] = 0;
 			plane.normal[i] = 1;
 			plane.dist = maxs[i] - 224;	// not 240, because of epsilons
@@ -85,7 +84,7 @@ if ( !size[2] && size[0] <= 496 && size[1] <= 496 && size[0]*size[1]<0x10000)
 			f = front;
 			break;
 		}
-		
+
 	} while (i < 3);
 }
 #endif
@@ -115,15 +114,14 @@ void SubdivideFace (face_t *f, face_t **prevptr)
 	if ( tex->flags & TEX_SPECIAL)
 		return;
 
-
 	for (axis = 0 ; axis < 2 ; axis++)
 	{
 		while (1)
 		{
 			mins = 9999;
 			maxs = -9999;
-			
-			for (i=0 ; i<f->numpoints ; i++)
+
+			for (i = 0 ; i < f->numpoints ; i++)
 			{
 				v = DotProduct (f->pts[i], tex->vecs[axis]);
 				if (v < mins)
@@ -131,16 +129,16 @@ void SubdivideFace (face_t *f, face_t **prevptr)
 				if (v > maxs)
 					maxs = v;
 			}
-		
+
 			if (maxs - mins <= 240)
 				break;
-			
+
 		// split it
 			subdivides++;
-			
+
 			VectorCopy (tex->vecs[axis], plane.normal);
 			v = VectorLength (plane.normal);
-			VectorNormalize (plane.normal);			
+			VectorNormalize (plane.normal);
 			plane.dist = (mins + 224)/v;
 			next = f->next;
 			SplitFace (f, &plane, &front, &back);
@@ -161,16 +159,17 @@ void SubdivideFace (face_t *f, face_t **prevptr)
 SubdivideFaces
 ================
 */
+// actually, this has no users.
 void SubdivideFaces (surface_t *surfhead)
 {
-	surface_t       *surf;
-	face_t          *f , **prevptr;
+	surface_t	*surf;
+	face_t		*f , **prevptr;
 
 	qprintf ("--- SubdivideFaces ---\n");
 
 	subdivides = 0;
 
-	for (surf = surfhead ; surf ; surf=surf->next)
+	for (surf = surfhead ; surf ; surf = surf->next)
 	{
 		prevptr = &surf->faces;
 		while (1)
@@ -185,7 +184,6 @@ void SubdivideFaces (surface_t *surfhead)
 	}
 
 	qprintf ("%i faces added by subdivision\n", subdivides);
-	
 }
 
 
@@ -198,17 +196,16 @@ Frees the current node tree and returns a new chain of the surfaces that
 have inside faces.
 =============================================================================
 */
-
-void GatherNodeFaces_r (node_t *node)
+static void GatherNodeFaces_r (node_t *node)
 {
 	face_t	*f, *next;
-	
+
 	if (node->planenum != PLANENUM_LEAF)
 	{
 //
 // decision node
 //
-		for (f=node->faces ; f ; f=next)
+		for (f = node->faces ; f ; f = next)
 		{
 			next = f->next;
 			if (!f->numpoints)
@@ -221,10 +218,10 @@ void GatherNodeFaces_r (node_t *node)
 				validfaces[f->planenum] = f;
 			}
 		}
-		
+
 		GatherNodeFaces_r (node->children[0]);
 		GatherNodeFaces_r (node->children[1]);
-		
+
 		free (node);
 	}
 	else
@@ -246,7 +243,7 @@ surface_t *GatherNodeFaces (node_t *headnode)
 {
 	memset (validfaces, 0, sizeof(validfaces));
 	GatherNodeFaces_r (headnode);
-	return BuildSurfaces ();	
+	return BuildSurfaces ();
 }
 
 //===========================================================================
@@ -263,11 +260,10 @@ typedef struct hashvert_s
 
 #define	POINT_EPSILON	0.01
 
+static hashvert_t	hvertex[MAX_MAP_VERTS];
+static hashvert_t	*hvert_p;
+
 int		c_cornerverts;
-
-hashvert_t	hvertex[MAX_MAP_VERTS];
-hashvert_t	*hvert_p;
-
 face_t		*edgefaces[MAX_MAP_EDGES][2];
 int		firstmodeledge = 1;
 int		firstmodelface;
@@ -276,28 +272,27 @@ int		firstmodelface;
 
 #define	NUM_HASH	4096
 
-hashvert_t	*hashverts[NUM_HASH];
-
+static	hashvert_t	*hashverts[NUM_HASH];
 static	vec3_t	hash_min, hash_scale;
 
-static	void InitHash (void)
+static void InitHash (void)
 {
 	vec3_t	size;
 	double	volume;
 	double	scale;
 	int		newsize[2];
 	int		i;
-	
+
 	memset (hashverts, 0, sizeof(hashverts));
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0 ; i < 3 ; i++)
 	{
 		hash_min[i] = -8000;
 		size[i] = 16000;
 	}
 
 	volume = size[0]*size[1];
-	
+
 	scale = sqrt(volume / NUM_HASH);
 
 	newsize[0] = size[0] / scale;
@@ -306,16 +301,16 @@ static	void InitHash (void)
 	hash_scale[0] = newsize[0] / size[0];
 	hash_scale[1] = newsize[1] / size[1];
 	hash_scale[2] = newsize[1];
-	
+
 	hvert_p = hvertex;
 }
 
-static	unsigned HashVec (vec3_t vec)
+static unsigned HashVec (vec3_t vec)
 {
 	unsigned	h;
-	
-	h =	hash_scale[0] * (vec[0] - hash_min[0]) * hash_scale[2]
-		+ hash_scale[1] * (vec[1] - hash_min[1]);
+
+	h = hash_scale[0] * (vec[0] - hash_min[0]) * hash_scale[2]
+			+ hash_scale[1] * (vec[1] - hash_min[1]);
 	if ( h >= NUM_HASH)
 		return NUM_HASH - 1;
 	return h;
@@ -327,35 +322,35 @@ static	unsigned HashVec (vec3_t vec)
 GetVertex
 =============
 */
-int	GetVertex (vec3_t in, int planenum)
+static int GetVertex (vec3_t in, int planenum)
 {
 	int			h;
 	int			i;
 	hashvert_t	*hv;
 	vec3_t		vert;
-	
-	for (i=0 ; i<3 ; i++)
+
+	for (i = 0 ; i < 3 ; i++)
 	{
 		if ( fabs(in[i] - Q_rint(in[i])) < 0.001)
 			vert[i] = Q_rint(in[i]);
 		else
 			vert[i] = in[i];
 	}
-	
+
 	h = HashVec (vert);
-	
-	for (hv=hashverts[h] ; hv ; hv=hv->next)
+
+	for (hv = hashverts[h] ; hv ; hv = hv->next)
 	{
 		if ( fabs(hv->point[0]-vert[0])<POINT_EPSILON
-		&& fabs(hv->point[1]-vert[1])<POINT_EPSILON
-		&& fabs(hv->point[2]-vert[2])<POINT_EPSILON )
+			&& fabs(hv->point[1]-vert[1])<POINT_EPSILON
+			&& fabs(hv->point[2]-vert[2])<POINT_EPSILON )
 		{
 			hv->numedges++;
 			if (hv->numplanes == 3)
 				return hv->num;		// already known to be a corner
-			for (i=0 ; i<hv->numplanes ; i++)
+			for (i = 0 ; i < hv->numplanes ; i++)
 				if (hv->planenums[i] == planenum)
-					return hv->num;		// already know this plane
+					return hv->num;	// already know this plane
 			if (hv->numplanes == 2)
 				c_cornerverts++;
 			else
@@ -364,7 +359,7 @@ int	GetVertex (vec3_t in, int planenum)
 			return hv->num;
 		}
 	}
-	
+
 	hv = hvert_p;
 	hv->numedges = 1;
 	hv->numplanes = 1;
@@ -376,7 +371,7 @@ int	GetVertex (vec3_t in, int planenum)
 	if (hv->num==MAX_MAP_VERTS)
 		Error ("GetVertex: MAX_MAP_VERTS");
 	hvert_p++;
-		
+
 // emit a vertex
 	if (numvertexes == MAX_MAP_VERTS)
 		Error ("numvertexes == MAX_MAP_VERTS");
@@ -401,7 +396,7 @@ Don't allow four way edges
 */
 int	c_tryedges;
 
-int GetEdge (vec3_t p1, vec3_t p2, face_t *f)
+static int GetEdge (vec3_t p1, vec3_t p2, face_t *f)
 {
 	int		v1, v2;
 	dedge_t	*edge;
@@ -410,21 +405,21 @@ int GetEdge (vec3_t p1, vec3_t p2, face_t *f)
 	if (!f->contents[0])
 		Error ("GetEdge: 0 contents");
 
-	c_tryedges++;		
+	c_tryedges++;
 	v1 = GetVertex (p1, f->planenum);
 	v2 = GetVertex (p2, f->planenum);
-	for (i=firstmodeledge ; i < numedges ; i++)
+	for (i = firstmodeledge ; i < numedges ; i++)
 	{
 		edge = &dedges[i];
 		if (v1 == edge->v[1] && v2 == edge->v[0]
-		&& !edgefaces[i][1]
-		&& edgefaces[i][0]->contents[0] == f->contents[0])
+			&& !edgefaces[i][1]
+			&& edgefaces[i][0]->contents[0] == f->contents[0])
 		{
 			edgefaces[i][1] = f;
 			return -i;
 		}
 	}
-	
+
 // emit an edge
 	if (numedges == MAX_MAP_EDGES)
 		Error ("numedges == MAX_MAP_EDGES");
@@ -433,7 +428,7 @@ int GetEdge (vec3_t p1, vec3_t p2, face_t *f)
 	edge->v[0] = v1;
 	edge->v[1] = v2;
 	edgefaces[i][0] = f;
-	
+
 	return i;
 }
 
@@ -443,17 +438,16 @@ int GetEdge (vec3_t p1, vec3_t p2, face_t *f)
 FindFaceEdges
 ==================
 */
-void FindFaceEdges (face_t *face)
+static void FindFaceEdges (face_t *face)
 {
 	int		i;
 
-	face->outputnumber = -1;	
+	face->outputnumber = -1;
 	if (face->numpoints > MAXEDGES)
 		Error ("WriteFace: %i points", face->numpoints);
 
-	for (i=0; i<face->numpoints ; i++)
-		face->edges[i] =  GetEdge
-		(face->pts[i], face->pts[(i+1)%face->numpoints], face);	
+	for (i = 0; i < face->numpoints ; i++)
+		face->edges[i] = GetEdge (face->pts[i], face->pts[(i+1)%face->numpoints], face);
 }
 
 /*
@@ -462,13 +456,14 @@ CheckVertexes
 // debugging
 =============
 */
-void CheckVertexes (void)
+#if 0	// all uses are commented out
+static void CheckVertexes (void)
 {
-	int		cb, c0, c1, c2, c3;	
+	int		cb, c0, c1, c2, c3;
 	hashvert_t	*hv;
-	
+
 	cb = c0 = c1 = c2 = c3 = 0;
-	for (hv=hvertex ; hv!=hvert_p ; hv++)
+	for (hv = hvertex ; hv != hvert_p ; hv++)
 	{
 		if (hv->numedges < 0 || hv->numedges & 1)
 			cb++;
@@ -481,7 +476,7 @@ void CheckVertexes (void)
 		else
 			c3++;
 	}
-	
+
 	qprintf ("%5i bad edge points\n", cb);
 	qprintf ("%5i 0 edge points\n", c0);
 	qprintf ("%5i 2 edge points\n", c1);
@@ -495,7 +490,7 @@ CheckEdges
 // debugging
 =============
 */
-void CheckEdges (void)
+static void CheckEdges (void)
 {
 	dedge_t	*edge;
 	int		i;
@@ -503,12 +498,12 @@ void CheckEdges (void)
 	face_t		*f1, *f2;
 	int		c_nonconvex;
 	int		c_multitexture;
-	
+
 	c_nonconvex = c_multitexture = 0;
-	
+
 //	CheckVertexes ();
-	
-	for (i=1 ; i < numedges ; i++)
+
+	for (i = 1 ; i < numedges ; i++)
 	{
 		edge = &dedges[i];
 		if (!edgefaces[i][1])
@@ -525,7 +520,7 @@ void CheckEdges (void)
 				continue;
 			if (f1->planenum != f2->planenum)
 				continue;
-				
+
 			// on the same plane, might be discardable
 			if (f1->texturenum == f2->texturenum)
 			{
@@ -544,6 +539,7 @@ void CheckEdges (void)
 
 //	CheckVertexes ();
 }
+#endif
 
 
 /*
@@ -551,16 +547,16 @@ void CheckEdges (void)
 MakeFaceEdges_r
 ================
 */
-void MakeFaceEdges_r (node_t *node)
+static void MakeFaceEdges_r (node_t *node)
 {
 	face_t	*f;
-	
+
 	if (node->planenum == PLANENUM_LEAF)
 		return;
-		
-	for (f=node->faces ; f ; f=f->next)
+
+	for (f = node->faces ; f ; f = f->next)
 		FindFaceEdges (f);
-		
+
 	MakeFaceEdges_r (node->children[0]);
 	MakeFaceEdges_r (node->children[1]);
 }
@@ -573,11 +569,11 @@ MakeFaceEdges
 void MakeFaceEdges (node_t *headnode)
 {
 	qprintf ("----- MakeFaceEdges -----\n");
-	
+
 	InitHash ();
 	c_tryedges = 0;
 	c_cornerverts = 0;
-	
+
 	MakeFaceEdges_r (headnode);
 
 //	CheckEdges ();

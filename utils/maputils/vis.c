@@ -2,54 +2,52 @@
 
 #include "vis.h"
 
-#define MAX_THREADS             4
 
-int GilMode=1;
+#define	MAX_THREADS		4
 
-int                     numportals;
-int                     portalleafs;
+int			GilMode = 1;
+int			numportals, portalleafs;
+int			c_portaltest, c_portalpass, c_portalcheck;
 
-portal_t        *portals;
-leaf_t          *leafs;
+portal_t		*portals;
+leaf_t			*leafs;
 
-int                     c_portaltest, c_portalpass, c_portalcheck;
-
-
-qboolean                showgetleaf = true;
-
-int             leafon;                 // the next leaf to be given to a thread to process
+int			leafon;		// the next leaf to be given
+					// to a thread to process
 
 #ifdef __alpha
-#ifdef _WIN32
-HANDLE my_mutex;
-#else
+
+#  ifdef _WIN32
+HANDLE		my_mutex;
+#  else
 pthread_mutex_t *my_mutex;
-#endif  //_win32
-#endif
-//alpha
+#  endif  // _win32
 
-byte    *vismap, *vismap_p, *vismap_end;        // past visfile
-int             originalvismapsize;
+#endif	// __alpha
 
-byte    *uncompressed;                  // [bitbytes*portalleafs]
+static byte	*vismap, *vismap_p, *vismap_end;        // past visfile
+static int		originalvismapsize;
 
-int             bitbytes;                               // (portalleafs+63)>>3
-int             bitlongs;
+byte		*uncompressed;			// [bitbytes*portalleafs]
+
+int			bitbytes;		// (portalleafs+63)>>3
+int			bitlongs;
 
 #ifdef __alpha
-int                     numthreads = 4;
+int			numthreads = 4;
 #else
-int                     numthreads = 1;
+int			numthreads = 1;
 #endif
 
-qboolean                fastvis;
-qboolean                verbose;
-int                     testlevel = 2;
+static qboolean		fastvis;
+qboolean		verbose;
+int			testlevel = 2;
+
 
 #if 0
 void NormalizePlane (plane_t *dp)
 {
-	double  ax, ay, az;
+	double	ax, ay, az;
 
 	if (dp->normal[0] == -1.0)
 	{
@@ -102,9 +100,9 @@ void NormalizePlane (plane_t *dp)
 }
 #endif
 
-void PlaneFromWinding (winding_t *w, plane_t *plane)
+static void PlaneFromWinding (winding_t *w, plane_t *plane)
 {
-	vec3_t          v1, v2;
+	vec3_t		v1, v2;
 
 // calc plane
 	VectorSubtract (w->points[2], w->points[1], v1);
@@ -122,30 +120,30 @@ NewWinding
 ==================
 */
 
-
-#define MAX_FREE_WINDINGS (10000)
-#define MAX_FAST_ALLOC_WINDINGS (16)
+#define MAX_FREE_WINDINGS	(10000)
+#define MAX_FAST_ALLOC_WINDINGS	(16)
 
 #ifdef _WIN32
-winding_t *OldNewWinding (int points)
+
+static winding_t *OldNewWinding (int points)
 {
-	winding_t       *w;
-	int             size;
+	winding_t	*w;
+	int			size;
 
 	if (points > MAX_POINTS_ON_WINDING)
 		Error ("NewWinding: %i points", points);
 
 	size = (int)((winding_t *)0)->points[points];
 	w = malloc (size);
-//    memset (w, 0, size);
-	w->fixedsize=0;
-    w->original=0;
-    w->numpoints=0;
+//	memset (w, 0, size);
+	w->fixedsize = 0;
+	w->original = 0;
+	w->numpoints = 0;
 
 	return w;
 }
 
-void OldFreeWinding (winding_t *w)
+static void OldFreeWinding (winding_t *w)
 {
 	if (!w->original)
 		free (w);
@@ -154,53 +152,54 @@ void OldFreeWinding (winding_t *w)
 __declspec( thread ) static int nFreeWindings=0;
 __declspec( thread ) static winding_t *FreeWindings[MAX_FREE_WINDINGS];
 
-
 winding_t *NewWinding (int points)
 {
-    winding_t *ret;
-    if (points>MAX_FAST_ALLOC_WINDINGS||!GilMode)
+	winding_t	*ret;
+
+	if (points > MAX_FAST_ALLOC_WINDINGS || !GilMode)
 	{
-	ret=OldNewWinding(points);
-		ret->fixedsize=0;
+		ret = OldNewWinding(points);
+		ret->fixedsize = 0;
 	}
-    else if (nFreeWindings)
-	ret=FreeWindings[--nFreeWindings];
-    else
+	else if (nFreeWindings)
+		ret = FreeWindings[--nFreeWindings];
+	else
 	{
-	ret=OldNewWinding(MAX_FAST_ALLOC_WINDINGS);
-		ret->fixedsize=1;
+		ret = OldNewWinding(MAX_FAST_ALLOC_WINDINGS);
+		ret->fixedsize = 1;
 	}
-    ret->original=0;
-    ret->numpoints=0;
-    return ret;
+	ret->original = 0;
+	ret->numpoints = 0;
+	return ret;
 }
 
 void FreeWinding (winding_t *w)
 {
 	if (!w->original)
-    {
-	if (nFreeWindings>=MAX_FREE_WINDINGS||!w->fixedsize)
-	    OldFreeWinding(w);
-	else
-	    FreeWindings[nFreeWindings++]=w;
-    }
+	{
+		if (nFreeWindings >= MAX_FREE_WINDINGS || !w->fixedsize)
+			OldFreeWinding(w);
+		else
+			FreeWindings[nFreeWindings++] = w;
+	}
 }
-#else   //old way
+
+#else	// old way
+
 winding_t *NewWinding (int points)
 {
-	winding_t       *w;
-	int                     size;
-	
+	winding_t	*w;
+	int			size;
+
 	if (points > MAX_POINTS_ON_WINDING)
 		Error ("NewWinding: %i points", points);
-	
+
 	size = (int)((winding_t *)0)->points[points];
 	w = malloc (size);
 	memset (w, 0, size);
-	
+
 	return w;
 }
-
 
 void FreeWinding (winding_t *w)
 {
@@ -210,40 +209,44 @@ void FreeWinding (winding_t *w)
 #endif
 
 
-void pw(winding_t *w)
+#if 0	// not used
+void pw (winding_t *w)
 {
-	int             i;
-	for (i=0 ; i<w->numpoints ; i++)
+	int			i;
+
+	for (i = 0 ; i < w->numpoints ; i++)
 		printf ("(%5.1f, %5.1f, %5.1f)\n",w->points[i][0], w->points[i][1],w->points[i][2]);
 }
 
 void prl(leaf_t *l)
 {
-	int                     i;
-	portal_t        *p;
-	plane_t         pl;
+	int			i;
+	portal_t	*p;
+	plane_t		pl;
 
-	for (i=0 ; i<l->numportals ; i++)
+	for (i = 0 ; i < l->numportals ; i++)
 	{
 		p = l->portals[i];
 		pl = p->plane;
 		printf ("portal %4i to leaf %4i : %7.1f : (%4.1f, %4.1f, %4.1f)\n",(int)(p-portals),p->leaf,pl.dist, pl.normal[0], pl.normal[1], pl.normal[2]);
 	}
 }
+#endif
+
 
 /*
 ==================
 CopyWinding
 ==================
 */
-winding_t       *CopyWinding (winding_t *w)
+winding_t *CopyWinding (winding_t *w)
 {
-	int                     size;
-	winding_t       *c;
+	int			size;
+	winding_t	*c;
+
 	size = (int)((winding_t *)0)->points[w->numpoints];
-/*
-	c = malloc (size);
-*/
+
+//	c = malloc (size);
 	c = NewWinding(w->numpoints);
 	memcpy (c, w, size);
 	c->original = false;
@@ -263,20 +266,20 @@ it will be clipped away.
 */
 winding_t *ClipWinding (winding_t *in, plane_t *split, qboolean keepon)
 {
-	double  dists[MAX_POINTS_ON_WINDING];
-	int             sides[MAX_POINTS_ON_WINDING];
-	int             counts[3];
-	double  dot;
-	int             i, j;
-	double  *p1, *p2;
-	vec3_t  mid;
-	winding_t       *neww;
-	int             maxpts;
+	double	dists[MAX_POINTS_ON_WINDING];
+	int		sides[MAX_POINTS_ON_WINDING];
+	int		counts[3];
+	double	dot;
+	int		i, j;
+	double	*p1, *p2;
+	vec3_t	mid;
+	winding_t	*neww;
+	int		maxpts;
 
 	counts[0] = counts[1] = counts[2] = 0;
 
 // determine sides for each point
-	for (i=0 ; i<in->numpoints ; i++)
+	for (i = 0 ; i < in->numpoints ; i++)
 	{
 		dot = DotProduct (in->points[i], split->normal);
 		dot -= split->dist;
@@ -305,11 +308,11 @@ winding_t *ClipWinding (winding_t *in, plane_t *split, qboolean keepon)
 	if (!counts[1])
 		return in;
 
-	maxpts = in->numpoints+4;       // can't use counts[0]+2 because
-								// of fp grouping errors
+	maxpts = in->numpoints + 4;	// can't use counts[0]+2 because
+					// of fp grouping errors
 	neww = NewWinding (maxpts);
 
-	for (i=0 ; i<in->numpoints ; i++)
+	for (i = 0 ; i < in->numpoints ; i++)
 	{
 		p1 = in->points[i];
 
@@ -333,8 +336,8 @@ winding_t *ClipWinding (winding_t *in, plane_t *split, qboolean keepon)
 		p2 = in->points[(i+1)%in->numpoints];
 
 		dot = dists[i] / (dists[i]-dists[i+1]);
-		for (j=0 ; j<3 ; j++)
-		{       // avoid round off error when possible
+		for (j = 0 ; j < 3 ; j++)
+		{	// avoid round off error when possible
 			if (split->normal[j] == 1)
 				mid[j] = split->dist;
 			else if (split->normal[j] == -1)
@@ -370,22 +373,21 @@ the earlier information.
 */
 #if 1
 //static int maxpercent=0;
-portal_t *GetNextPortal (void)
+static portal_t *GetNextPortal (void)
 {
-	int             j;
-	portal_t        *p, *tp;
-    int		min;
-	//int		ndone;
+	int			j;
+	portal_t	*p, *tp;
+	int			min;
+//	int			ndone;
+	const int		num2 = numportals*2;
 
-	const int       num2 = numportals*2;
-	
 	min = 99999;
 	p = NULL;
 
 	LOCK;
 
 //	ndone=0;
-	for (j=0, tp = portals ; j<num2 ; j++, tp++)
+	for (j = 0, tp = portals ; j < num2 ; j++, tp++)
 	{
 		if (tp->nummightsee < min && tp->status == stat_none)
 		{
@@ -402,41 +404,40 @@ portal_t *GetNextPortal (void)
 
 	UNLOCK;
 /*
-   if (GilMode)
+	if (GilMode)
 	{
-		ndone*=50;
-		ndone/=numportals;
-		if (ndone-1>maxpercent)
+		ndone *= 50;
+		ndone /= numportals;
+		if (ndone-1 > maxpercent)
 		{
-			maxpercent=ndone;
-			printf("%d %% done\t",ndone);
+			maxpercent = ndone;
+			printf("%d %% done\t", ndone);
 		}
 	}
-*/      
+*/
 
 	return p;
 }
 #else
-portal_t *GetNextPortal (void)
+static portal_t *GetNextPortal (void)
 {
-	int             j;
-	portal_t        *p, *tp;
-	int             min;
+	int			j;
+	portal_t	*p, *tp;
+	int			min;
 
 	LOCK;
 
-    min = -99999;
+	min = -99999;
 	p = NULL;
 
-	for (j=0, tp = portals ; j<numportals*2 ; j++, tp++)
+	for (j = 0, tp = portals ; j < numportals*2 ; j++, tp++)
 	{
-	if (tp->nummightsee > min && tp->status == stat_none)
+		if (tp->nummightsee > min && tp->status == stat_none)
 		{
 			min = tp->nummightsee;
 			p = tp;
 		}
 	}
-
 
 	if (p)
 		p->status = stat_working;
@@ -446,24 +447,26 @@ portal_t *GetNextPortal (void)
 	return p;
 }
 #endif
+
+
 /*
 ==============
 LeafThread
 ==============
 */
 #ifdef __alpha
-#ifdef _WIN32
-LPVOID LeafThread (LPVOID thread)
+#  ifdef _WIN32
+static	LPVOID	LeafThread (LPVOID thread)
+#  else
+static	pthread_addr_t	LeafThread (pthread_addr_t thread)
+#  endif
 #else
-pthread_addr_t LeafThread (pthread_addr_t thread)
-#endif
-#else
-void *LeafThread (int thread)
+static	void	*LeafThread (int thread)
 #endif
 {
-	portal_t        *p;
+	portal_t	*p;
 
-printf ("Begining LeafThread: %i\n",(int)thread);
+	printf ("Begining LeafThread: %i\n", (int)thread);
 	do
 	{
 		p = GetNextPortal ();
@@ -476,7 +479,7 @@ printf ("Begining LeafThread: %i\n",(int)thread);
 			printf ("portal:%4i  mightsee:%4i  cansee:%4i\n", (int)(p - portals), p->nummightsee, p->numcansee);
 	} while (1);
 
-printf ("Completed LeafThread: %i\n",(int)thread);
+	printf ("Completed LeafThread: %i\n", (int)thread);
 
 	return NULL;
 }
@@ -487,28 +490,29 @@ CompressRow
 
 ===============
 */
-int CompressRow (byte *vis, byte *dest)
+static int CompressRow (byte *vis, byte *dest)
 {
-	int             j;
-	int             rep;
-	int             visrow;
-	byte    *dest_p;
+	int		j;
+	int		rep;
+	int		visrow;
+	byte	*dest_p;
 
 	dest_p = dest;
 	visrow = (portalleafs + 7)>>3;
 
-	for (j=0 ; j<visrow ; j++)
+	for (j = 0 ; j < visrow ; j++)
 	{
 		*dest_p++ = vis[j];
 		if (vis[j])
 			continue;
 
 		rep = 1;
-		for ( j++; j<visrow ; j++)
+		for (j++; j < visrow ; j++)
 			if (vis[j] || rep == 255)
 				break;
 			else
 				rep++;
+
 		*dest_p++ = rep;
 		j--;
 	}
@@ -524,29 +528,29 @@ LeafFlow
 Builds the entire visibility list for a leaf
 ===============
 */
-int             totalvis;
+static int		totalvis;
 
-void LeafFlow (int leafnum)
+static void LeafFlow (int leafnum)
 {
-	leaf_t          *leaf;
-	byte            *outbuffer;
-	byte            compressed[MAX_MAP_LEAFS/8];
-	int                     i, j;
-	int                     numvis;
-	byte            *dest;
-	portal_t        *p;
+	leaf_t		*leaf;
+	byte		*outbuffer;
+	byte		compressed[MAX_MAP_LEAFS/8];
+	int			i, j;
+	int			numvis;
+	byte		*dest;
+	portal_t	*p;
 
 //
 // flow through all portals, collecting visible bits
 //
 	outbuffer = uncompressed + leafnum*bitbytes;
 	leaf = &leafs[leafnum];
-	for (i=0 ; i<leaf->numportals ; i++)
+	for (i = 0 ; i < leaf->numportals ; i++)
 	{
 		p = leaf->portals[i];
 		if (p->status != stat_done)
 			Error ("portal not done");
-		for (j=0 ; j<bitbytes ; j++)
+		for (j = 0 ; j < bitbytes ; j++)
 			outbuffer[j] |= p->visbits[j];
 	}
 
@@ -556,7 +560,7 @@ void LeafFlow (int leafnum)
 	outbuffer[leafnum>>3] |= (1<<(leafnum&7));
 
 	numvis = 0;
-	for (i=0 ; i<portalleafs ; i++)
+	for (i = 0 ; i < portalleafs ; i++)
 		if (outbuffer[i>>3] & (1<<(i&3)))
 			numvis++;
 
@@ -580,7 +584,7 @@ void LeafFlow (int leafnum)
 	if (vismap_p > vismap_end)
 		Error ("Vismap expansion overflow");
 
-	dleafs[leafnum+1].visofs = dest-vismap; // leaf 0 is a common solid
+	dleafs[leafnum+1].visofs = dest-vismap;	// leaf 0 is a common solid
 
 	memcpy (dest, compressed, i);
 }
@@ -591,14 +595,14 @@ void LeafFlow (int leafnum)
 CalcPortalVis
 ==================
 */
-void CalcPortalVis (void)
+static void CalcPortalVis (void)
 {
-	int             i;
+	int		i;
 
 // fastvis just uses mightsee for a very loose bound
 	if (fastvis)
 	{
-		for (i=0 ; i<numportals*2 ; i++)
+		for (i = 0 ; i < numportals*2 ; i++)
 		{
 			portals[i].visbits = portals[i].mightsee;
 			portals[i].status = stat_done;
@@ -609,42 +613,44 @@ void CalcPortalVis (void)
 	leafon = 0;
 
 #ifdef __alpha
-#ifdef _WIN32
-{
-	DWORD IDThread;
-	HANDLE work_threads[MAX_THREADS];
-	int             i;
-	
-	my_mutex = CreateMutex(NULL, FALSE, NULL);      //cleared
+#   ifdef _WIN32
+    {
+	DWORD	IDThread;
+	HANDLE	work_threads[MAX_THREADS];
+	int		i;
 
-	for (i=0 ; i<numthreads-1 ; i++)
+	my_mutex = CreateMutex(NULL, FALSE, NULL);	// cleared
+
+	for (i = 0 ; i < numthreads-1 ; i++)
 	{
-		work_threads[i] = CreateThread(NULL,	// no security attrib
-			0x100000,							// stack size
-			(LPTHREAD_START_ROUTINE) LeafThread,// thread function
-			(LPVOID) i,					// thread function arg
-			0,							// use default creation flags
-			&IDThread);
-		
+		work_threads[i] = CreateThread(
+						NULL,		// no security attrib
+						0x100000,	// stack size
+						(LPTHREAD_START_ROUTINE) LeafThread,	// thread function
+						(LPVOID) i,	// thread function arg
+						0,		// use default creation flags
+						&IDThread
+				);
+
 		if (work_threads[i] == NULL)
 			Error ("pthread_create failed");
 	}
 
 	LeafThread((LPVOID)(numthreads-1));
-	for (i=0 ; i<numthreads-1 ; i++)
+	for (i = 0 ; i < numthreads-1 ; i++)
 	{
 		WaitForSingleObject(work_threads[i], INFINITE);
 	}
 
 	CloseHandle (my_mutex);
-}
-#else
-{
-	pthread_t       work_threads[MAX_THREADS];
-	pthread_addr_t  status;
-	pthread_attr_t  attrib;
-	pthread_mutexattr_t     mattrib;
-	int             i;
+    }
+#   else
+    {
+	pthread_t	work_threads[MAX_THREADS];
+	pthread_addr_t	status;
+	pthread_attr_t	attrib;
+	pthread_mutexattr_t	mattrib;
+	int		i;
 
 	my_mutex = malloc (sizeof(*my_mutex));
 	if (pthread_mutexattr_create (&mattrib) == -1)
@@ -659,25 +665,28 @@ void CalcPortalVis (void)
 	if (pthread_attr_setstacksize (&attrib, 0x100000) == -1)
 		Error ("pthread_attr_setstacksize failed");
 
-	for (i=0 ; i<numthreads ; i++)
+	for (i = 0 ; i < numthreads ; i++)
 	{
-		if (pthread_create(&work_threads[i], attrib
-		, LeafThread, (pthread_addr_t)i) == -1)
+		if (pthread_create(&work_threads[i], attrib,
+				LeafThread, (pthread_addr_t)i) == -1)
 			Error ("pthread_create failed");
 	}
 
-	for (i=0 ; i<numthreads ; i++)
+	for (i = 0 ; i < numthreads ; i++)
 	{
 		if (pthread_join (work_threads[i], &status) == -1)
 			Error ("pthread_join failed");
 	}
 
 	if (pthread_mutex_destroy (my_mutex) == -1)
-			Error ("pthread_mutex_destroy failed");
+		Error ("pthread_mutex_destroy failed");
 }
-#endif  // _win32
-#else
+#   endif  // _win32
+
+#else	// not __alpha
+
 	LeafThread (0);
+
 #endif  // __alpha
 
 	if (verbose)
@@ -685,7 +694,6 @@ void CalcPortalVis (void)
 		printf ("portalcheck: %i  portaltest: %i  portalpass: %i\n",c_portalcheck, c_portaltest, c_portalpass);
 		printf ("c_vistest: %i  c_mighttest: %i\n",c_vistest, c_mighttest);
 	}
-
 }
 
 
@@ -694,9 +702,9 @@ void CalcPortalVis (void)
 CalcVis
 ==================
 */
-void CalcVis (void)
+static void CalcVis (void)
 {
-	int             i;
+	int		i;
 
 	BasePortalVis ();
 
@@ -705,11 +713,12 @@ void CalcVis (void)
 //
 // assemble the leaf vis lists by oring and compressing the portal lists
 //
-	for (i=0 ; i<portalleafs ; i++)
+	for (i = 0 ; i < portalleafs ; i++)
 		LeafFlow (i);
 
 	printf ("average leafs visible: %i\n", totalvis / portalleafs);
 }
+
 
 /*
 ==============================================================================
@@ -718,38 +727,38 @@ PASSAGE CALCULATION (not used yet...)
 
 ==============================================================================
 */
-
-int             count_sep;
+#if 0
+int		count_sep;
 
 qboolean PlaneCompare (plane_t *p1, plane_t *p2)
 {
-	int             i;
+	int		i;
 
 	if ( fabs(p1->dist - p2->dist) > 0.01)
 		return false;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0 ; i < 3 ; i++)
 		if ( fabs(p1->normal[i] - p2->normal[i] ) > 0.001)
 			return false;
 
 	return true;
 }
 
-sep_t   *Findpassages (winding_t *source, winding_t *pass)
+sep_t *Findpassages (winding_t *source, winding_t *pass)
 {
-	int                     i, j, k, l;
-	plane_t         plane;
-	vec3_t          v1, v2;
-	float           d;
-	double          length;
-	int                     counts[3];
-	qboolean                fliptest;
-	sep_t           *sep, *list;
+	int			i, j, k, l;
+	plane_t		plane;
+	vec3_t		v1, v2;
+	float		d;
+	double		length;
+	int			counts[3];
+	qboolean		fliptest;
+	sep_t		*sep, *list;
 
 	list = NULL;
 
 // check all combinations
-	for (i=0 ; i<source->numpoints ; i++)
+	for (i = 0 ; i < source->numpoints ; i++)
 	{
 		l = (i+1)%source->numpoints;
 		VectorSubtract (source->points[l] , source->points[i], v1);
@@ -757,7 +766,7 @@ sep_t   *Findpassages (winding_t *source, winding_t *pass)
 	// fing a vertex of pass that makes a plane that puts all of the
 	// vertexes of pass on the front side and all of the vertexes of
 	// source on the back side
-		for (j=0 ; j<pass->numpoints ; j++)
+		for (j = 0 ; j < pass->numpoints ; j++)
 		{
 			VectorSubtract (pass->points[j], source->points[i], v2);
 
@@ -768,13 +777,13 @@ sep_t   *Findpassages (winding_t *source, winding_t *pass)
 		// if points don't make a valid plane, skip it
 
 			length = plane.normal[0] * plane.normal[0]
-			+ plane.normal[1] * plane.normal[1]
-			+ plane.normal[2] * plane.normal[2];
+					+ plane.normal[1] * plane.normal[1]
+					+ plane.normal[2] * plane.normal[2];
 
 			if (length < ON_EPSILON)
 				continue;
 
-			length = 1/sqrt(length);
+			length = 1 / sqrt(length);
 
 			plane.normal[0] *= length;
 			plane.normal[1] *= length;
@@ -787,26 +796,26 @@ sep_t   *Findpassages (winding_t *source, winding_t *pass)
 		// source portal
 		//
 			fliptest = false;
-			for (k=0 ; k<source->numpoints ; k++)
+			for (k = 0 ; k < source->numpoints ; k++)
 			{
 				if (k == i || k == l)
 					continue;
 				d = (float) DotProduct (source->points[k], plane.normal) - plane.dist;
 				if (d < -ON_EPSILON)
-				{       // source is on the negative side, so we want all
+				{	// source is on the negative side, so we want all
 					// pass and target on the positive side
 					fliptest = false;
 					break;
 				}
 				else if (d > ON_EPSILON)
-				{       // source is on the positive side, so we want all
+				{	// source is on the positive side, so we want all
 					// pass and target on the negative side
 					fliptest = true;
 					break;
 				}
 			}
 			if (k == source->numpoints)
-				continue;               // planar with source portal
+				continue;	// planar with source portal
 
 		//
 		// flip the normal if the source portal is backwards
@@ -822,9 +831,9 @@ sep_t   *Findpassages (winding_t *source, winding_t *pass)
 		// this is the seperating plane
 		//
 			counts[0] = counts[1] = counts[2] = 0;
-			for (k=0 ; k<pass->numpoints ; k++)
+			for (k = 0 ; k < pass->numpoints ; k++)
 			{
-				if (k==j)
+				if (k == j)
 					continue;
 				d = (float) DotProduct (pass->points[k], plane.normal) - plane.dist;
 				if (d < -ON_EPSILON)
@@ -835,10 +844,10 @@ sep_t   *Findpassages (winding_t *source, winding_t *pass)
 					counts[2]++;
 			}
 			if (k != pass->numpoints)
-				continue;       // points on negative side, not a seperating plane
+				continue;	// points on negative side, not a seperating plane
 
 			if (!counts[0])
-				continue;       // planar with pass portal
+				continue;	// planar with pass portal
 
 		//
 		// save this out
@@ -854,7 +863,7 @@ sep_t   *Findpassages (winding_t *source, winding_t *pass)
 
 	return list;
 }
-
+#endif
 
 //=============================================================================
 
@@ -863,17 +872,17 @@ sep_t   *Findpassages (winding_t *source, winding_t *pass)
 LoadPortals
 ============
 */
-void LoadPortals (char *name)
+static void LoadPortals (char *name)
 {
-	int                     i, j;
-	portal_t        *p;
-	leaf_t          *l;
-	char            magic[80];
-	FILE            *f;
-	int                     numpoints;
-	winding_t       *w;
-	int                     leafnums[2];
-	plane_t         plane;
+	int			i, j;
+	portal_t	*p;
+	leaf_t		*l;
+	char		magic[80];
+	FILE		*f;
+	int			numpoints;
+	winding_t	*w;
+	int			leafnums[2];
+	plane_t		plane;
 
 	if (!strcmp(name,"-"))
 		f = stdin;
@@ -911,25 +920,23 @@ void LoadPortals (char *name)
 	vismap = vismap_p = dvisdata;
 	vismap_end = vismap + MAX_MAP_VISIBILITY;
 
-	for (i=0, p=portals ; i<numportals ; i++)
+	for (i = 0, p = portals ; i < numportals ; i++)
 	{
-		if (fscanf (f, "%i %i %i ", &numpoints, &leafnums[0], &leafnums[1])
-			!= 3)
+		if (fscanf (f, "%i %i %i ", &numpoints, &leafnums[0], &leafnums[1]) != 3)
 			Error ("LoadPortals: Error reading portal %i", i);
 		if (numpoints > MAX_POINTS_ON_WINDING)
 			Error ("LoadPortals: portal %i has too many points", i);
-		if ( leafnums[0] > portalleafs
-		|| leafnums[1] > portalleafs)
+		if ( leafnums[0] > portalleafs || leafnums[1] > portalleafs)
 			Error ("LoadPortals: portal %i, leafnums > portalleafs", i);
 
 		w = p->winding = NewWinding (numpoints);
 		w->original = true;
 		w->numpoints = numpoints;
 
-		for (j=0 ; j<numpoints ; j++)
+		for (j = 0 ; j < numpoints ; j++)
 		{
-			if (fscanf (f, "(%lf %lf %lf ) "
-			, &w->points[j][0], &w->points[j][1], &w->points[j][2]) != 3)
+			if (fscanf (f, "(%lf %lf %lf ) ",
+					&w->points[j][0], &w->points[j][1], &w->points[j][2]) != 3)
 				Error ("LoadPortals: reading portal %i", i);
 		}
 		fscanf (f, "\n");
@@ -961,7 +968,6 @@ void LoadPortals (char *name)
 		p->plane = plane;
 		p->leaf = leafnums[0];
 		p++;
-
 	}
 
 	fclose (f);
@@ -975,32 +981,32 @@ main
 */
 int main (int argc, char **argv)
 {
-	char    portalfile[1024];
-	char            source[1024];
-	int             i;
-	double          start, end;
+	char	portalfile[1024];
+	char	source[1024];
+	int		i;
+	double	start, end;
 
 #ifdef __alpha
-#ifdef _WIN32
+#  ifdef _WIN32
 	printf ("Alpha,Win32---- vis ----\n");
-#else        
+#  else
 	printf ("Alpha---- vis ----\n");
-#endif
-#else        
+#  endif
+#else
 	printf ("---- vis ----\n");
 #endif
-	
-	for (i=1 ; i<argc ; i++)
+
+	for (i = 1 ; i < argc ; i++)
 	{
 		if (!strcmp(argv[i],"-threads"))
 		{
 			numthreads = atoi (argv[i+1]);
 			i++;
 		}
-	else if (!strcmp(argv[i], "-nogil"))
+		else if (!strcmp(argv[i], "-nogil"))
 		{
 			printf ("Gil's optimizations disabled\n");
-	    GilMode=0;
+			GilMode = 0;
 		}
 		else if (!strcmp(argv[i], "-fast"))
 		{
@@ -1044,10 +1050,9 @@ int main (int argc, char **argv)
 	uncompressed = malloc(bitbytes*portalleafs);
 	memset (uncompressed, 0, bitbytes*portalleafs);
 
-
 	CalcVis ();
 
-	printf ("c_chains: %i\n",c_chains);
+	printf ("c_chains: %i\n", c_chains);
 
 	visdatasize = vismap_p - dvisdata;
 	printf ("visdatasize:%i  compressed from %i\n", visdatasize, originalvismapsize);
@@ -1056,7 +1061,7 @@ int main (int argc, char **argv)
 
 	WriteBSPFile (source);
 
-//      unlink (portalfile);
+//	unlink (portalfile);
 	if (GilMode)
 		PrintStats();
 	end = GetTime ();
@@ -1064,3 +1069,4 @@ int main (int argc, char **argv)
 
 	return 0;
 }
+

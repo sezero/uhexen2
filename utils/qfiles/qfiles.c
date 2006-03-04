@@ -105,7 +105,7 @@ void CopyQFiles (int blocknum)
 
 	blocknum++;
 
-	for (i=0 ; i<numsounds ; i++)
+	for (i = 0 ; i < numsounds ; i++)
 	{
 		if ((blocknum != 2 && precache_sounds_block[i] != blocknum) ||
 			(blocknum == 2 && precache_sounds_block[i] < blocknum))
@@ -115,7 +115,7 @@ void CopyQFiles (int blocknum)
 		sprintf (srcfile,"%s%s",gamedir, name);
 		PackFile (srcfile, name);
 	}
-	for (i=0 ; i<nummodels ; i++)
+	for (i = 0 ; i < nummodels ; i++)
 	{
 		if ((blocknum != 2 && precache_models_block[i] != blocknum) ||
 			(blocknum == 2 && precache_models_block[i] < blocknum))
@@ -124,7 +124,7 @@ void CopyQFiles (int blocknum)
 		sprintf (srcfile,"%s%s",gamedir, precache_models[i]);
 		PackFile (srcfile, precache_models[i]);
 	}
-	for (i=0 ; i<numfiles ; i++)
+	for (i = 0 ; i < numfiles ; i++)
 	{
 		if ((blocknum != 2 && precache_files_block[i] != blocknum) ||
 			(blocknum == 2 && precache_files_block[i] < blocknum))
@@ -150,7 +150,7 @@ void CopyQFiles (int blocknum)
 
 // do a crc of the file
 	CRC_Init (&crc);
-	for (i=0 ; i<dirlen ; i++)
+	for (i = 0 ; i < dirlen ; i++)
 		CRC_ProcessByte (&crc, ((byte *)pfiles)[i]);
 
 	i = pf - pfiles;
@@ -172,7 +172,7 @@ void BspModels (void)
 	char	cmd[1024];
 	char	name[256];
 
-	for (i=0 ; i<nummodels ; i++)
+	for (i = 0 ; i < nummodels ; i++)
 	{
 		m = precache_models[i];
 		if (strcmp(m+strlen(m)-4, ".bsp"))
@@ -200,15 +200,15 @@ void ReadFiles (void)
 	f = SafeOpenRead ("files.dat");
 
 	fscanf (f, "%i\n", &numsounds);
-	for (i=0 ; i<numsounds ; i++)
+	for (i = 0 ; i < numsounds ; i++)
 		fscanf (f, "%i %s\n", &precache_sounds_block[i], precache_sounds[i]);
 
 	fscanf (f, "%i\n", &nummodels);
-	for (i=0 ; i<nummodels ; i++)
+	for (i = 0 ; i < nummodels ; i++)
 		fscanf (f, "%i %s\n", &precache_models_block[i], precache_models[i]);
 
 	fscanf (f, "%i\n", &numfiles);
-	for (i=0 ; i<numfiles ; i++)
+	for (i = 0 ; i < numfiles ; i++)
 		fscanf (f, "%i %s\n", &precache_files_block[i], precache_files[i]);
 
 	fclose (f);

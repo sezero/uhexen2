@@ -14,14 +14,14 @@ If a light has a targetname, generate a unique style in the 32-63 range
 ==============================================================================
 */
 
-int		numlighttargets;
-char	lighttargets[32][64];
+static int		numlighttargets;
+static char	lighttargets[32][64];
 
-int LightStyleForTargetname (char *targetname, qboolean alloc)
+static int LightStyleForTargetname (char *targetname, qboolean alloc)
 {
 	int		i;
-	
-	for (i=0 ; i<numlighttargets ; i++)
+
+	for (i = 0 ; i < numlighttargets ; i++)
 		if (!strcmp (lighttargets[i], targetname))
 			return 32 + i;
 	if (!alloc)
@@ -37,37 +37,39 @@ int LightStyleForTargetname (char *targetname, qboolean alloc)
 MatchTargets
 ==================
 */
-void MatchTargets (void)
+static void MatchTargets (void)
 {
-	int		i,j;
-	
-	for (i=0 ; i<num_entities ; i++)
+	int		i, j;
+
+	for (i = 0 ; i < num_entities ; i++)
 	{
 		if (!entities[i].target[0])
 			continue;
-			
-		for (j=0 ; j<num_entities ; j++)
+
+		for (j = 0 ; j < num_entities ; j++)
 			if (!strcmp(entities[j].targetname, entities[i].target))
 			{
 				entities[i].targetent = &entities[j];
 				break;
 			}
-		if (j==num_entities)
+		if (j == num_entities)
 		{
-			printf ("WARNING: entity at (%i,%i,%i) (%s) has unmatched target\n", (int)entities[i].origin[0], (int)entities[i].origin[1], (int)entities[i].origin[2], entities[i].classname);
+			printf ("WARNING: entity at (%i,%i,%i) (%s) has unmatched target\n",
+					(int)entities[i].origin[0], (int)entities[i].origin[1],
+					(int)entities[i].origin[2], entities[i].classname);
 			continue;
 		}
-		
-// set the style on the source ent for switchable lights
+
+	// set the style on the source ent for switchable lights
 		if (entities[j].style)
 		{
 			char	s[16];
-			
+
 			entities[i].style = entities[j].style;
 			sprintf (s,"%i", entities[i].style);
 			SetKeyValue (&entities[i], "style", s);
 		}
-	}	
+	}
 }
 
 
@@ -78,21 +80,21 @@ LoadEntities
 */
 void LoadEntities (void)
 {
-	char 		*data;
+	char		*data;
 	entity_t	*entity;
-	char		key[64];	
+	char		key[64];
 	epair_t		*epair;
-	
+
 	data = dentdata;
 //
 // start parsing
 //
 	num_entities = 0;
-	
+
 // go through all the entities
 	while (1)
 	{
-	// parse the opening brace	
+	// parse the opening brace
 		data = COM_Parse (data);
 		if (!data)
 			break;
@@ -103,7 +105,7 @@ void LoadEntities (void)
 			Error ("LoadEntities: MAX_MAP_ENTITIES");
 		entity = &entities[num_entities];
 		num_entities++;
-		
+
 	// go through all the keys in this entity
 		while (1)
 		{
@@ -124,18 +126,18 @@ void LoadEntities (void)
 			c = com_token[0];
 			if (c == '}')
 				Error ("LoadEntities: closing brace without data");
-			
+
 			epair = malloc (sizeof(epair_t));
 			memset (epair, 0, sizeof(epair));
 			strcpy (epair->key, key);
 			strcpy (epair->value, com_token);
 			epair->next = entity->epairs;
 			entity->epairs = epair;
-			
+
 			if (!strcmp(key, "classname"))
 				strcpy (entity->classname, com_token);
 			else if (!strcmp(key, "target"))
-				strcpy (entity->target, com_token);			
+				strcpy (entity->target, com_token);
 			else if (!strcmp(key, "targetname"))
 				strcpy (entity->targetname, com_token);
 			else if (!strcmp(key, "origin"))
@@ -160,7 +162,6 @@ void LoadEntities (void)
 			{
 				entity->angle = (float)atof(com_token);
 			}
-		
 		}
 
 	// all fields have been parsed
@@ -172,7 +173,7 @@ void LoadEntities (void)
 			if (entity->targetname[0] && !entity->style)
 			{
 				char	s[16];
-				
+
 				entity->style = LightStyleForTargetname (entity->targetname, true);
 				sprintf (s,"%i", entity->style);
 				SetKeyValue (entity, "style", s);
@@ -185,26 +186,28 @@ void LoadEntities (void)
 	MatchTargets ();
 }
 
-char 	*ValueForKey (entity_t *ent, char *key)
+
+char *ValueForKey (entity_t *ent, char *key)
 {
 	epair_t	*ep;
-	
-	for (ep=ent->epairs ; ep ; ep=ep->next)
+
+	for (ep = ent->epairs ; ep ; ep = ep->next)
 		if (!strcmp (ep->key, key) )
 			return ep->value;
 	return "";
 }
 
-void 	SetKeyValue (entity_t *ent, char *key, char *value)
+void SetKeyValue (entity_t *ent, char *key, char *value)
 {
 	epair_t	*ep;
-	
-	for (ep=ent->epairs ; ep ; ep=ep->next)
+
+	for (ep = ent->epairs ; ep ; ep = ep->next)
 		if (!strcmp (ep->key, key) )
 		{
 			strcpy (ep->value, value);
 			return;
 		}
+
 	ep = malloc (sizeof(*ep));
 	ep->next = ent->epairs;
 	ent->epairs = ep;
@@ -212,22 +215,21 @@ void 	SetKeyValue (entity_t *ent, char *key, char *value)
 	strcpy (ep->value, value);
 }
 
-float	FloatForKey (entity_t *ent, char *key)
+float FloatForKey (entity_t *ent, char *key)
 {
 	char	*k;
-	
+
 	k = ValueForKey (ent, key);
 	return (float)atof(k);
 }
 
-void 	GetVectorForKey (entity_t *ent, char *key, vec3_t vec)
+void GetVectorForKey (entity_t *ent, char *key, vec3_t vec)
 {
 	char	*k;
-	
+
 	k = ValueForKey (ent, key);
 	sscanf (k, "%lf %lf %lf", &vec[0], &vec[1], &vec[2]);
 }
-
 
 
 /*
@@ -241,23 +243,23 @@ void WriteEntitiesToString (void)
 	epair_t	*ep;
 	char	line[128];
 	int		i;
-	
+
 	buf = dentdata;
 	end = buf;
 	*end = 0;
-	
+
 	printf ("%i switchable light styles\n", numlighttargets);
-	
-	for (i=0 ; i<num_entities ; i++)
+
+	for (i = 0 ; i < num_entities ; i++)
 	{
 		ep = entities[i].epairs;
 		if (!ep)
 			continue;	// ent got removed
-		
+
 		strcat (end,"{\n");
 		end += 2;
-				
-		for (ep = entities[i].epairs ; ep ; ep=ep->next)
+
+		for (ep = entities[i].epairs ; ep ; ep = ep->next)
 		{
 			sprintf (line, "\"%s\" \"%s\"\n", ep->key, ep->value);
 			strcat (end, line);

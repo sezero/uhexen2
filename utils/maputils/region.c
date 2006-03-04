@@ -1,4 +1,4 @@
-// region.h
+// region.c
 
 #include "bsp5.h"
 
@@ -22,34 +22,35 @@ face to region mapping numbers
 
 #define	MAX_EDGES_IN_REGION	32
 
-int		firstedge;
+static int		firstedge;
+static vec3_t	region_mins, region_maxs;
 
-vec3_t	region_mins, region_maxs;
-
-void AddPointToRegion (vec3_t p)
+static void AddPointToRegion (vec3_t p)
 {
 	int		i;
-	
-	for (i=0 ; i<3 ; i++)
+
+	for (i = 0 ; i < 3 ; i++)
 	{
 		if (p[i] < region_mins[i])
 			region_mins[i] = p[i];
 		if (p[i] > region_maxs[i])
 			region_maxs[i] = p[i];
-	}	
+	}
 }
 
-void ClearRegionSize (void)
+#if 0	// all uses are commented out
+static void ClearRegionSize (void)
 {
 	region_mins[0] = region_mins[1] = region_mins[2] = 9999;
 	region_maxs[0] = region_maxs[1] = region_maxs[2] = -9999;
 }
+#endif
 
-void AddFaceToRegionSize (face_t *f)
+static void AddFaceToRegionSize (face_t *f)
 {
 	int		i;
 
-	for (i=0 ; i<f->numpoints ; i++)
+	for (i = 0 ; i < f->numpoints ; i++)
 		AddPointToRegion (f->pts[i]);
 }
 
@@ -58,14 +59,14 @@ void AddFaceToRegionSize (face_t *f)
 CanJoinFaces
 ==============
 */
-qboolean CanJoinFaces (face_t *f, face_t *f2)
+static qboolean CanJoinFaces (face_t *f, face_t *f2)
 {
 	vec3_t		oldmins, oldmaxs;
 	int			i;
 
 	if (f2->planenum != f->planenum
-	|| f2->planeside != f->planeside
-	|| f2->texturenum != f->texturenum)
+			|| f2->planeside != f->planeside
+			|| f2->texturenum != f->texturenum)
 		return false;
 	if (f2->outputnumber != -1)
 		return false;
@@ -74,14 +75,14 @@ qboolean CanJoinFaces (face_t *f, face_t *f2)
 		printf ("CanJoinFaces: edge with different contents");
 		return false;
 	}
-	
+
 // check size constraints
 	if ( ! (texinfo[f->texturenum].flags & TEX_SPECIAL) )
-	{	
+	{
 		VectorCopy (region_mins, oldmins);
 		VectorCopy (region_maxs, oldmaxs);
 		AddFaceToRegionSize (f2);
-		for (i=0 ; i<3 ; i++)
+		for (i = 0 ; i < 3 ; i++)
 		{
 			if (region_maxs[i] - region_mins[i] > 240)
 			{
@@ -94,9 +95,9 @@ qboolean CanJoinFaces (face_t *f, face_t *f2)
 	else
 	{
 		if (numsurfedges - firstedge + f2->numpoints > MAX_EDGES_IN_REGION)
-			return false;		// a huge water or sky polygon
+			return false;	// a huge water or sky polygon
 	}
-	
+
 // check edge count constraints
 	return true;
 }
@@ -107,21 +108,21 @@ qboolean CanJoinFaces (face_t *f, face_t *f2)
 RecursiveGrowRegion
 ==============
 */
-void RecursiveGrowRegion (dface_t *r, face_t *f)
+static void RecursiveGrowRegion (dface_t *r, face_t *f)
 {
 	int		e;
 	face_t	*f2;
 	int		i;
-	
+
 	if (f->outputnumber == numfaces)
 		return;
 
 	if (f->outputnumber != -1)
 		Error ("RecursiveGrowRegion: region collision");
 	f->outputnumber = numfaces;
-	
-// add edges	
-	for (i=0 ; i<f->numpoints ; i++)
+
+// add edges
+	for (i = 0 ; i < f->numpoints ; i++)
 	{
 		e = f->edges[i];
 		if (!edgefaces[abs(e)][0])
@@ -151,17 +152,17 @@ void RecursiveGrowRegion (dface_t *r, face_t *f)
 			numsurfedges++;
 		}
 	}
-
 }
 
+#if 0	// no uses
 void PrintDface (int f)
 {	// for debugging
 	dface_t	*df;
 	dedge_t	*e;
 	int		i, n;
-	
+
 	df = &dfaces[f];
-	for (i=0 ; i<df->numedges ; i++)
+	for (i = 0 ; i < df->numedges ; i++)
 	{
 		n = dsurfedges[df->firstedge+i];
 		e = &dedges[abs(n)];
@@ -177,11 +178,11 @@ void FindVertexUse (int v)
 	int		i, j, n;
 	dface_t	*df;
 	dedge_t	*e;
-	
-	for (i=firstmodelface ; i<numfaces ; i++)
+
+	for (i = firstmodelface ; i < numfaces ; i++)
 	{
 		df = &dfaces[i];
-		for (j=0 ; j<df->numedges ; j++)
+		for (j = 0 ; j < df->numedges ; j++)
 		{
 			n = dsurfedges[df->firstedge+j];
 			e = &dedges[abs(n)];
@@ -198,11 +199,11 @@ void FindEdgeUse (int v)
 {	// for debugging
 	int		i, j, n;
 	dface_t	*df;
-	
-	for (i=firstmodelface ; i<numfaces ; i++)
+
+	for (i = firstmodelface ; i < numfaces ; i++)
 	{
 		df = &dfaces[i];
-		for (j=0 ; j<df->numedges ; j++)
+		for (j = 0 ; j < df->numedges ; j++)
 		{
 			n = dsurfedges[df->firstedge+j];
 			if (n == v || -n == v)
@@ -213,7 +214,10 @@ void FindEdgeUse (int v)
 		}
 	}
 }
+#endif
 
+
+#if 0	// all uses are commented out
 /*
 ================
 HealEdges
@@ -222,8 +226,8 @@ Extends e1 so that it goes all the way to e2, and removes all references
 to e2
 ================
 */
-int		edgemapping[MAX_MAP_EDGES];
-void HealEdges (int e1, int e2)
+static int		edgemapping[MAX_MAP_EDGES];
+static void HealEdges (int e1, int e2)
 {
 	int		i, j, n, saved;
 	dface_t	*df;
@@ -232,7 +236,9 @@ void HealEdges (int e1, int e2)
 	dface_t	*found[2];
 	int		foundj[2];
 
-return;	
+// FIXME !!!!!
+	return;
+
 	e1 = edgemapping[e1];
 	e2 = edgemapping[e2];
 
@@ -241,7 +247,7 @@ return;
 	ed2 = &dedges[e2];
 	VectorSubtract (dvertexes[ed->v[1]].point, dvertexes[ed->v[0]].point, v1);
 	VectorNormalize (v1);
-	
+
 	if (ed->v[0] == ed2->v[0])
 		ed->v[0] = ed2->v[1];
 	else if (ed->v[0] == ed2->v[1])
@@ -255,15 +261,15 @@ return;
 
 	VectorSubtract (dvertexes[ed->v[1]].point, dvertexes[ed->v[0]].point, v2);
 	VectorNormalize (v2);
-	
+
 	if (!VectorCompare (v1, v2))
 		Error ("HealEdges: edges not colinear");
 
 	edgemapping[e2] = e1;
 	saved = 0;
-	
+
 // remove all uses of e2
-	for (i=firstmodelface ; i<numfaces ; i++)
+	for (i = firstmodelface ; i < numfaces ; i++)
 	{
 		df = &dfaces[i];
 		for (j=0 ; j<df->numedges ; j++)
@@ -278,22 +284,20 @@ return;
 			}
 		}
 	}
-	
+
 	if (saved != 2)
 		printf ("WARNING: didn't find both faces for a saved edge\n");
 	else
 	{
-		for (i=0 ; i<2 ; i++)
+		for (i = 0 ; i < 2 ; i++)
 		{	// remove this edge
 			df = found[i];
 			j = foundj[i];
-			for (j++ ; j<df->numedges ; j++)
-				dsurfedges[df->firstedge+j-1] =
-				dsurfedges[df->firstedge+j];
+			for (j++ ; j < df->numedges ; j++)
+				dsurfedges[df->firstedge+j-1] = dsurfedges[df->firstedge+j];
 			dsurfedges[df->firstedge+j-1] = 0;
 			df->numedges--;
 		}
-
 
 		edgefaces[e2][0] = edgefaces[e2][1] = NULL;
 	}
@@ -305,31 +309,31 @@ typedef struct
 	int		edges[2];
 } checkpoint_t;
 
-checkpoint_t	checkpoints[MAX_MAP_VERTS];
+static checkpoint_t	checkpoints[MAX_MAP_VERTS];
 
 /*
 ==============
 RemoveColinearEdges
 ==============
 */
-void RemoveColinearEdges (void)
+static void RemoveColinearEdges (void)
 {
-	int		i,j, v;
+	int		i, j, v;
 	int		c0, c1, c2, c3;
 	checkpoint_t	*cp;
-	
+
 // no edges remapped yet
-	for (i=0 ; i<numedges ; i++)
+	for (i = 0 ; i < numedges ; i++)
 		edgemapping[i] = i;
-		
+
 // find vertexes that only have two edges
 	memset (checkpoints, 0, sizeof(checkpoints));
-	
-	for (i=firstmodeledge ; i<numedges ; i++)
+
+	for (i = firstmodeledge ; i < numedges ; i++)
 	{
 		if (!edgefaces[i][0])
-			continue;		// removed
-		for (j=0 ; j<2 ; j++)
+			continue;	// removed
+		for (j = 0 ; j < 2 ; j++)
 		{
 			v = dedges[i].v[j];
 			cp = &checkpoints[v];
@@ -338,11 +342,11 @@ void RemoveColinearEdges (void)
 			cp->numedges++;
 		}
 	}
-	
+
 // if a vertex only has two edges and they are colinear, it can be removed
 	c0 = c1 = c2 = c3 = 0;
-	
-	for (i=0 ; i<numvertexes ; i++)
+
+	for (i = 0 ; i < numvertexes ; i++)
 	{
 		cp = &checkpoints[i];
 		switch (cp->numedges)
@@ -362,33 +366,35 @@ void RemoveColinearEdges (void)
 			break;
 		}
 	}
-	
+
 //	qprintf ("%5i c0\n", c0);
 //	qprintf ("%5i c1\n", c1);
 //	qprintf ("%5i c2\n", c2);
 //	qprintf ("%5i c3+\n", c3);
 	qprintf ("%5i deges removed by tjunction healing\n", c2);
 }
+#endif
+
 
 /*
 ==============
 CountRealNumbers
 ==============
 */
-void CountRealNumbers (void)
+static void CountRealNumbers (void)
 {
 	int		i;
 	int		c;
-	
+
 	qprintf ("%5i regions\n", numfaces-firstmodelface);
 
 	c = 0;
-	for (i=firstmodelface ; i<numfaces ; i++)
+	for (i = firstmodelface ; i < numfaces ; i++)
 		c += dfaces[i].numedges;
 	qprintf ("%5i real marksurfaces\n", c);
-	
+
 	c = 0;
-	for (i=firstmodeledge ; i<numedges ; i++)
+	for (i = firstmodeledge ; i < numedges ; i++)
 		if (edgefaces[i][0])
 			c++;		// not removed
 
@@ -402,7 +408,7 @@ void CountRealNumbers (void)
 GrowNodeRegion_r
 ==============
 */
-void GrowNodeRegion_r (node_t *node)
+static void GrowNodeRegion_r (node_t *node)
 {
 	dface_t		*r;
 	face_t		*f;
@@ -413,13 +419,12 @@ void GrowNodeRegion_r (node_t *node)
 
 	node->firstface = numfaces;
 
-	for (f=node->faces ; f ; f=f->next)
+	for (f = node->faces ; f ; f = f->next)
 	{
-//		if (f->outputnumber != -1)
-//			continue;	// already grown into an earlier region
-			
-	// emit a region
+		//if (f->outputnumber != -1)
+		//	continue;	// already grown into an earlier region
 
+	// emit a region
 		if (numfaces == MAX_MAP_FACES)
 			Error ("MAX_MAP_FACES");
 		f->outputnumber = numfaces;
@@ -428,26 +433,25 @@ void GrowNodeRegion_r (node_t *node)
 		r->planenum = node->outputplanenum;
 		r->side = f->planeside;
 		r->texinfo = f->texturenum;
-		for (i=0 ; i<MAXLIGHTMAPS ; i++)
+		for (i = 0 ; i < MAXLIGHTMAPS ; i++)
 			r->styles[i] = 255;
 		r->lightofs = -1;
 
 	// add the face and mergable neighbors to it
-	
 #if 0
 		ClearRegionSize ();
 		AddFaceToRegionSize (f);
 		RecursiveGrowRegion (r, f);
 #endif
 		r->firstedge = firstedge = numsurfedges;
-		for (i=0 ; i<f->numpoints ; i++)
+		for (i = 0 ; i < f->numpoints ; i++)
 		{
 			if (numsurfedges == MAX_MAP_SURFEDGES)
 				Error ("numsurfedges == MAX_MAP_SURFEDGES");
 			dsurfedges[numsurfedges] = f->edges[i];
 			numsurfedges++;
 		}
-		
+
 		r->numedges = numsurfedges - r->firstedge;
 
 		LightValues[numfaces] = f->Light;
@@ -470,12 +474,13 @@ GrowNodeRegions
 void GrowNodeRegions (node_t *headnode)
 {
 	qprintf ("---- GrowRegions ----\n");
-		
+
 	GrowNodeRegion_r (headnode);
-		
-//RemoveColinearEdges ();
+
+	//RemoveColinearEdges ();
 	CountRealNumbers ();
 }
+
 
 /*
 ===============================================================================
@@ -488,26 +493,13 @@ typedef struct
 	vec3_t	dir;
 	vec3_t	origin;
 	vec3_t	p[2];
-} 
+}
 for all faces
 	for all edges
 		for all edges so far
 			if overlap
 				split
-				
 
 ===============================================================================
 */
-
-
-
-
-
-
-
-
-
-
-
-
 

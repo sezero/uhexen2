@@ -10,7 +10,7 @@ int main (int argc, char **argv)
 	if (argc == 1)
 		Error ("usage: bspinfo bspfile [bspfiles]");
 
-	for (i=1 ; i<argc ; i++)
+	for (i = 1 ; i < argc ; i++)
 	{
 		printf ("---------------------\n");
 		strcpy (source, argv[i]);

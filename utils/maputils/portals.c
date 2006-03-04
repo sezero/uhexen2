@@ -11,7 +11,7 @@ node_t	outside_node;		// portals outside the world face this
 AddPortalToNodes
 =============
 */
-void AddPortalToNodes (portal_t *p, node_t *front, node_t *back)
+static void AddPortalToNodes (portal_t *p, node_t *front, node_t *back)
 {
 	if (p->nodes[0] || p->nodes[1])
 		Error ("AddPortalToNode: already included");
@@ -19,7 +19,7 @@ void AddPortalToNodes (portal_t *p, node_t *front, node_t *back)
 	p->nodes[0] = front;
 	p->next[0] = front->portals;
 	front->portals = p;
-	
+
 	p->nodes[1] = back;
 	p->next[1] = back->portals;
 	back->portals = p;
@@ -31,19 +31,19 @@ void AddPortalToNodes (portal_t *p, node_t *front, node_t *back)
 RemovePortalFromNode
 =============
 */
-void RemovePortalFromNode (portal_t *portal, node_t *l)
+static void RemovePortalFromNode (portal_t *portal, node_t *l)
 {
 	portal_t	**pp, *t;
-	
+
 // remove reference to the current portal
 	pp = &l->portals;
 	while (1)
 	{
 		t = *pp;
 		if (!t)
-			Error ("RemovePortalFromNode: portal not in leaf");	
+			Error ("RemovePortalFromNode: portal not in leaf");
 
-		if ( t == portal )
+		if (t == portal)
 			break;
 
 		if (t->nodes[0] == l)
@@ -53,7 +53,7 @@ void RemovePortalFromNode (portal_t *portal, node_t *l)
 		else
 			Error ("RemovePortalFromNode: portal not bounding leaf");
 	}
-	
+
 	if (portal->nodes[0] == l)
 	{
 		*pp = portal->next[0];
@@ -61,23 +61,25 @@ void RemovePortalFromNode (portal_t *portal, node_t *l)
 	}
 	else if (portal->nodes[1] == l)
 	{
-		*pp = portal->next[1];	
+		*pp = portal->next[1];
 		portal->nodes[1] = NULL;
 	}
 }
 
 //============================================================================
 
+#if 0	// no users
 void PrintPortal (portal_t *p)
 {
 	int			i;
 	winding_t	*w;
-	
+
 	w = p->winding;
-	for (i=0 ; i<w->numpoints ; i++)
-		printf ("(%5.0f,%5.0f,%5.0f)\n",w->points[i][0]
-		, w->points[i][1], w->points[i][2]);
+	for (i = 0 ; i < w->numpoints ; i++)
+		printf ("(%5.0f,%5.0f,%5.0f)\n",w->points[i][0],
+				w->points[i][1], w->points[i][2]);
 }
+#endif
 
 /*
 ================
@@ -86,34 +88,35 @@ MakeHeadnodePortals
 The created portals will face the global outside_node
 ================
 */
-void MakeHeadnodePortals (node_t *node)
+static void MakeHeadnodePortals (node_t *node)
 {
 	vec3_t		bounds[2];
 	int			i, j, n;
 	portal_t	*p, *portals[6];
 	plane_t		bplanes[6], *pl;
 	int			side;
-	
+
 	Draw_ClearWindow ();
-	
+
 // pad with some space so there will never be null volume leafs
-	for (i=0 ; i<3 ; i++)
+	for (i = 0 ; i < 3 ; i++)
 	{
 		bounds[0][i] = brushset->mins[i] - SIDESPACE;
 		bounds[1][i] = brushset->maxs[i] + SIDESPACE;
 	}
-	
+
 	outside_node.contents = CONTENTS_SOLID;
 	outside_node.portals = NULL;
 
-	for (i=0 ; i<3 ; i++)
-		for (j=0 ; j<2 ; j++)
+	for (i = 0 ; i < 3 ; i++)
+	{
+		for (j = 0 ; j < 2 ; j++)
 		{
 			n = j*3 + i;
 
 			p = AllocPortal ();
 			portals[n] = p;
-			
+
 			pl = &bplanes[n];
 			memset (pl, 0, sizeof(*pl));
 			if (j)
@@ -127,18 +130,19 @@ void MakeHeadnodePortals (node_t *node)
 				pl->dist = bounds[j][i];
 			}
 			p->planenum = FindPlane (pl, &side);
-	
+
 			p->winding = BaseWindingForPlane (pl);
 			if (side)
 				AddPortalToNodes (p, &outside_node, node);
 			else
 				AddPortalToNodes (p, node, &outside_node);
 		}
-		
+	}
+
 // clip the basewindings by all the other planes
-	for (i=0 ; i<6 ; i++)
+	for (i = 0 ; i < 6 ; i++)
 	{
-		for (j=0 ; j<6 ; j++)
+		for (j = 0 ; j < 6 ; j++)
 		{
 			if (j == i)
 				continue;
@@ -149,43 +153,7 @@ void MakeHeadnodePortals (node_t *node)
 
 //============================================================================
 
-void CheckWindingInNode (winding_t *w, node_t *node)
-{
-	int		i, j;
-	
-	for (i=0 ; i<w->numpoints ; i++)
-	{
-		for (j=0 ; j<3 ; j++)
-			if (w->points[i][j] < node->mins[j] - 1
-			|| w->points[i][j] > node->maxs[j] + 1)
-			{
-				printf ("WARNING: CheckWindingInNode: outside\n");
-				return;
-			}
-	}
-}
-
-void CheckWindingArea (winding_t *w)
-{
-	int		i;
-	float	total, add;
-	vec3_t	v1, v2, cross;
-	
-	total = 0.0F;
-	for (i=1 ; i<w->numpoints ; i++)
-	{
-		VectorSubtract (w->points[i], w->points[0], v1);
-		VectorSubtract (w->points[i+1], w->points[0], v2);
-		CrossProduct (v1, v2, cross);
-		add = VectorLength (cross);
-		total += add*0.5;
-	}
-	if (total < 16)
-		printf ("WARNING: winding area %f\n", total);
-}
-
-
-void PlaneFromWinding (winding_t *w, plane_t *plane)
+static void PlaneFromWinding (winding_t *w, plane_t *plane)
 {
 	vec3_t		v1, v2;
 
@@ -197,7 +165,43 @@ void PlaneFromWinding (winding_t *w, plane_t *plane)
 	plane->dist = DotProduct (w->points[0], plane->normal);
 }
 
-void CheckLeafPortalConsistancy (node_t *node)
+#if 0	// all uses are commented out
+static void CheckWindingInNode (winding_t *w, node_t *node)
+{
+	int		i, j;
+
+	for (i = 0 ; i < w->numpoints ; i++)
+	{
+		for (j = 0 ; j < 3 ; j++)
+			if (w->points[i][j] < node->mins[j] - 1
+				|| w->points[i][j] > node->maxs[j] + 1)
+			{
+				printf ("WARNING: CheckWindingInNode: outside\n");
+				return;
+			}
+	}
+}
+
+static void CheckWindingArea (winding_t *w)
+{
+	int		i;
+	float	total, add;
+	vec3_t	v1, v2, cross;
+
+	total = 0.0F;
+	for (i = 1 ; i < w->numpoints ; i++)
+	{
+		VectorSubtract (w->points[i], w->points[0], v1);
+		VectorSubtract (w->points[i+1], w->points[0], v2);
+		CrossProduct (v1, v2, cross);
+		add = VectorLength (cross);
+		total += add*0.5;
+	}
+	if (total < 16)
+		printf ("WARNING: winding area %f\n", total);
+}
+
+static void CheckLeafPortalConsistancy (node_t *node)
 {
 	int			side, side2;
 	portal_t	*p, *p2;
@@ -221,9 +225,9 @@ void CheckLeafPortalConsistancy (node_t *node)
 
 	// check that the side orders are correct
 		plane = planes[p->planenum];
- 		PlaneFromWinding (p->winding, &plane2);
-		
-		for (p2 = node->portals ; p2 ; p2 = p2->next[side2])	
+		PlaneFromWinding (p->winding, &plane2);
+
+		for (p2 = node->portals ; p2 ; p2 = p2->next[side2])
 		{
 			if (p2->nodes[0] == node)
 				side2 = 0;
@@ -232,7 +236,7 @@ void CheckLeafPortalConsistancy (node_t *node)
 			else
 				Error ("CutNodePortals_r: mislinked portal");
 			w = p2->winding;
-			for (i=0 ; i<w->numpoints ; i++)
+			for (i = 0 ; i < w->numpoints ; i++)
 			{
 				dist = DotProduct (w->points[i], plane.normal) - plane.dist;
 				if ( (side == 0 && dist < -1) || (side == 1 && dist > 1) )
@@ -241,11 +245,12 @@ void CheckLeafPortalConsistancy (node_t *node)
 					return;
 				}
 			}
-			
 		}
 	}
 }
+#endif
 
+//============================================================================
 
 /*
 ================
@@ -253,9 +258,9 @@ CutNodePortals_r
 
 ================
 */
-void CutNodePortals_r (node_t *node)
+static void CutNodePortals_r (node_t *node)
 {
-	plane_t 	*plane, clipplane;
+	plane_t		*plane, clipplane;
 	node_t		*f, *b, *other_node;
 	portal_t	*p, *new_portal, *next_portal;
 	winding_t	*w, *frontwinding, *backwinding;
@@ -264,11 +269,11 @@ void CutNodePortals_r (node_t *node)
 //	CheckLeafPortalConsistancy (node);
 
 //
-// seperate the portals on node into it's children	
+// seperate the portals on node into it's children
 //
 	if (node->contents)
 	{
-		return;			// at a leaf, no more dividing
+		return;		// at a leaf, no more dividing
 	}
 
 	plane = &planes[node->planenum];
@@ -282,10 +287,10 @@ void CutNodePortals_r (node_t *node)
 //
 	new_portal = AllocPortal ();
 	new_portal->planenum = node->planenum;
-	
+
 	w = BaseWindingForPlane (&planes[node->planenum]);
 	side = 0;	// shut up compiler warning
-	for (p = node->portals ; p ; p = p->next[side])	
+	for (p = node->portals ; p ; p = p->next[side])
 	{
 		clipplane = planes[p->planenum];
 		if (p->nodes[0] == node)
@@ -306,18 +311,18 @@ void CutNodePortals_r (node_t *node)
 			break;
 		}
 	}
-	
+
 	if (w)
 	{
 	// if the plane was not clipped on all sides, there was an error
-		new_portal->winding = w;	
+		new_portal->winding = w;
 		AddPortalToNodes (new_portal, f, b);
 	}
 
 //
 // partition the portals
 //
-	for (p = node->portals ; p ; p = next_portal)	
+	for (p = node->portals ; p ; p = next_portal)
 	{
 		if (p->nodes[0] == node)
 			side = 0;
@@ -335,7 +340,7 @@ void CutNodePortals_r (node_t *node)
 // cut the portal into two portals, one on each side of the cut plane
 //
 		DivideWinding (p->winding, plane, &frontwinding, &backwinding);
-		
+
 		if (!frontwinding)
 		{
 			if (side == 0)
@@ -352,7 +357,7 @@ void CutNodePortals_r (node_t *node)
 				AddPortalToNodes (p, other_node, f);
 			continue;
 		}
-		
+
 	// the winding is split
 		new_portal = AllocPortal ();
 		*new_portal = *p;
@@ -371,13 +376,12 @@ void CutNodePortals_r (node_t *node)
 			AddPortalToNodes (new_portal, other_node, b);
 		}
 	}
-	
-DrawLeaf (f,1);
-DrawLeaf (b,2);	
 
-	CutNodePortals_r (f);	
-	CutNodePortals_r (b);	
+	DrawLeaf (f,1);
+	DrawLeaf (b,2);
 
+	CutNodePortals_r (f);
+	CutNodePortals_r (b);
 }
 
 
@@ -393,7 +397,7 @@ void PortalizeWorld (node_t *headnode)
 	qprintf ("----- portalize ----\n");
 
 	MakeHeadnodePortals (headnode);
-	CutNodePortals_r (headnode);	
+	CutNodePortals_r (headnode);
 }
 
 
@@ -406,14 +410,14 @@ FreeAllPortals
 void FreeAllPortals (node_t *node)
 {
 	portal_t	*p, *nextp;
-	
+
 	if (!node->contents)
 	{
 		FreeAllPortals (node->children[0]);
 		FreeAllPortals (node->children[1]);
 	}
-	
-	for (p=node->portals ; p ; p=nextp)
+
+	for (p = node->portals ; p ; p = nextp)
 	{
 		if (p->nodes[0] == node)
 			nextp = p->next[0];
@@ -436,11 +440,11 @@ PORTAL FILE GENERATION
 
 #define	PORTALFILE	"PRT1"
 
-FILE	*pf;
-int		num_visleafs;				// leafs the player can be in
-int		num_visportals;
+static FILE	*pf;
+static int		num_visleafs;	// leafs the player can be in
+static int		num_visportals;
 
-void WriteFloat (FILE *f, double v)
+static void WriteFloat (FILE *f, double v)
 {
 	if ( fabs(v - Q_rint(v)) < 0.001 )
 		fprintf (f,"%i ",(int)Q_rint(v));
@@ -450,9 +454,9 @@ void WriteFloat (FILE *f, double v)
 
 extern qboolean watervis;
 
-void WritePortalFile_r (node_t *node)
+static void WritePortalFile_r (node_t *node)
 {
-	int		i;	
+	int		i;
 	portal_t	*p;
 	winding_t	*w;
 	plane_t		*pl, plane2;
@@ -463,7 +467,7 @@ void WritePortalFile_r (node_t *node)
 		WritePortalFile_r (node->children[1]);
 		return;
 	}
-	
+
 	if (node->contents == CONTENTS_SOLID)
 		return;
 
@@ -473,12 +477,12 @@ void WritePortalFile_r (node_t *node)
 		if (w && p->nodes[0] == node)
 		{
 			if ( (watervis && 
-				 ((p->nodes[0]->contents == CONTENTS_WATER && p->nodes[1]->contents == CONTENTS_EMPTY) ||
-				  (p->nodes[0]->contents == CONTENTS_EMPTY && p->nodes[1]->contents == CONTENTS_WATER))) 
-				|| (p->nodes[0]->contents == p->nodes[1]->contents) )
+				((p->nodes[0]->contents == CONTENTS_WATER && p->nodes[1]->contents == CONTENTS_EMPTY) ||
+				 (p->nodes[0]->contents == CONTENTS_EMPTY && p->nodes[1]->contents == CONTENTS_WATER)) ) 
+			    || (p->nodes[0]->contents == p->nodes[1]->contents) )
 			{
 			// write out to the file
-			
+
 			// sometimes planes get turned around when they are very near
 			// the changeover point between different axis.  interpret the
 			// plane the same way vis will, and flip the side orders if needed
@@ -490,7 +494,7 @@ void WritePortalFile_r (node_t *node)
 				}
 				else
 					fprintf (pf,"%i %i %i ",w->numpoints, p->nodes[0]->visleafnum, p->nodes[1]->visleafnum);
-				for (i=0 ; i<w->numpoints ; i++)
+				for (i = 0 ; i < w->numpoints ; i++)
 				{
 					fprintf (pf,"(");
 					WriteFloat (pf, w->points[i][0]);
@@ -501,21 +505,20 @@ void WritePortalFile_r (node_t *node)
 				fprintf (pf,"\n");
 			}
 		}
-		
+
 		if (p->nodes[0] == node)
 			p = p->next[0];
 		else
 			p = p->next[1];
 	}
-
 }
-	
+
 /*
 ================
 NumberLeafs_r
 ================
 */
-void NumberLeafs_r (node_t *node)
+static void NumberLeafs_r (node_t *node)
 {
 	portal_t	*p;
 
@@ -526,10 +529,10 @@ void NumberLeafs_r (node_t *node)
 		NumberLeafs_r (node->children[1]);
 		return;
 	}
-	
+
 	Draw_ClearWindow ();
 	DrawLeaf (node, 1);
-	
+
 	if (node->contents == CONTENTS_SOLID)
 	{	// solid block, viewpoint never inside
 		node->visleafnum = -1;
@@ -537,22 +540,22 @@ void NumberLeafs_r (node_t *node)
 	}
 
 	node->visleafnum = num_visleafs++;
-	
+
 	for (p = node->portals ; p ; )
 	{
-		if (p->nodes[0] == node)		// only write out from first leaf
+		if (p->nodes[0] == node)	// only write out from first leaf
 		{
 			if ( (watervis &&
-				 ((p->nodes[0]->contents == CONTENTS_WATER && p->nodes[1]->contents == CONTENTS_EMPTY) ||
-				  (p->nodes[0]->contents == CONTENTS_EMPTY && p->nodes[1]->contents == CONTENTS_WATER))) 
-				|| (p->nodes[0]->contents == p->nodes[1]->contents) )
+				((p->nodes[0]->contents == CONTENTS_WATER && p->nodes[1]->contents == CONTENTS_EMPTY) ||
+				 (p->nodes[0]->contents == CONTENTS_EMPTY && p->nodes[1]->contents == CONTENTS_WATER)) )
+			    || (p->nodes[0]->contents == p->nodes[1]->contents) )
 				num_visportals++;
+
 			p = p->next[0];
 		}
 		else
-			p = p->next[1];		
+			p = p->next[1];
 	}
-
 }
 
 
@@ -567,20 +570,19 @@ void WritePortalfile (node_t *headnode)
 	num_visleafs = 0;
 	num_visportals = 0;
 	NumberLeafs_r (headnode);
-	
+
 // write the file
 	printf ("writing %s\n", portfilename);
 	pf = fopen (portfilename, "w");
 	if (!pf)
 		Error ("Error opening %s", portfilename);
-		
+
 	fprintf (pf, "%s\n", PORTALFILE);
 	fprintf (pf, "%i\n", num_visleafs);
 	fprintf (pf, "%i\n", num_visportals);
-	
+
 	WritePortalFile_r (headnode);
-	
+
 	fclose (pf);
 }
-
 

@@ -1,18 +1,19 @@
 
 
-#define	MAX_FACES		64 //16
+#define	MAX_FACES	64	// 16
+
 typedef struct mface_s
 {
 	struct mface_s	*next;
-	plane_t			plane;
-	int				texinfo;
+	plane_t		plane;
+	int			texinfo;
 } mface_t;
 
 typedef struct mbrush_s
 {
 	struct mbrush_s	*next;
 	mface_t *faces;
-	int				Light;
+	int			Light;
 } mbrush_t;
 
 typedef struct epair_s
@@ -38,14 +39,15 @@ extern	entity_t	entities[MAX_MAP_ENTITIES];
 extern	int			nummiptex;
 extern	char		miptex[MAX_MAP_TEXINFO][16];
 
-void 	LoadMapFile (char *filename);
+void	LoadMapFile (char *filename);
 
-int		FindMiptex (char *name);
+int	FindMiptex (char *name);
 
 void	PrintEntity (entity_t *ent);
-char 	*ValueForKey (entity_t *ent, char *key);
+char	*ValueForKey (entity_t *ent, char *key);
 void	SetKeyValue (entity_t *ent, char *key, char *value);
 float	FloatForKey (entity_t *ent, char *key);
-void 	GetVectorForKey (entity_t *ent, char *key, vec3_t vec);
+void	GetVectorForKey (entity_t *ent, char *key, vec3_t vec);
 
 void	WriteEntitiesToString (void);
+
