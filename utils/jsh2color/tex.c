@@ -27,9 +27,150 @@
 
 #include "tyrlite.h"
 
+typedef struct tex_col
+{
+	char	name[MAX_TEX_NAME];
+	int		red;
+	int		green;
+	int		blue;
+} tex_col;
+
+typedef struct tex_col_list
+{
+	int		num;
+	tex_col	*entries;
+} tex_col_list;
+
+static tex_col_list		tc_list;
+
+
+static long getNumLines (FILE* f)
+{
+	long	numlines = 0;
+	char	line [1024];
+	char	*txt = NULL;
+
+	while (NULL != fgets(line, 1024, f))
+	{
+		txt = strchr(line,'\n');
+		if (txt != NULL)
+		{
+			numlines++;
+		}
+		else
+			break;
+	}
+	fseek (f, 0, SEEK_SET);
+	return numlines;
+}
+
+static void ParseDefFile (char* filename)
+{
+	long	num = 0;
+	int	i = 0;
+	int	r, g, b;
+	char	name[64];
+	char	line [1024];
+
+	FILE*	FH = fopen(filename,"rt");
+
+	if (FH == NULL)
+	{
+		printf("Unable to open file named : %s \n", filename);
+		return;
+	}
+
+	num = max( 0, getNumLines(FH) );
+	num = min( num , MAX_ENTRYNUM );
+	tc_list.num = num;
+	tc_list.entries = (tex_col*) malloc(sizeof(tex_col) * num);
+
+	while (fgets(line, 1024, FH) != NULL)
+	{
+		if (line[strlen(line)-1] == '\n')
+			line[strlen(line)-1] = '\0';
+
+		if (strlen(line) > 0)
+		{
+			sscanf(line, "%s %d %d %d", name, &r, &g, &b);
+
+			if (strlen(name) > 0 )
+			{
+				strcpy(tc_list.entries[i].name,name);
+				tc_list.entries[i].red = min(max(r,1),255);
+				tc_list.entries[i].green = min(max(g,1),255);
+				tc_list.entries[i].blue = min(max(b,1),255);
+
+				i++;
+			}
+		}
+
+		if (i >= num)
+			break;
+	}
+
+	fclose (FH);
+	num = i;
+	tc_list.num = num;
+	printf("Loaded %ld entries from file : %s\n", num, filename);
+}
+
+void InitDefFile (char* fname)
+{
+	tc_list.entries = NULL;
+	if (external == true)
+		ParseDefFile (fname);
+}
+
+void CloseDefFile (void)
+{
+	if (tc_list.entries != NULL)
+		free(tc_list.entries);
+	tc_list.entries = NULL;
+}
+
+static void FindTexlightColourExt (int *surf_r, int *surf_g, int *surf_b, char *texname, tex_col_list list)
+{
+	int		i, len, num;
+	tex_col	*entry;
+
+	entry = NULL;
+	num = list.num;
+
+	// use default min values
+	*surf_r = 1;
+	*surf_g = 1;
+	*surf_b = 1;
+
+	// assign values based on external definition
+	for (i = 1; i < num; i++)
+	{
+		entry = &(list.entries[i]);
+		len = strlen(entry->name);
+		if((len > 0) && (strncmp (texname, entry->name, len) == 0))
+		{
+			*surf_r = entry->red;
+			*surf_g = entry->green;
+			*surf_b = entry->blue;
+
+			break;
+		}
+	}
+
+#if 0
+// sanity check
+	if (*surf_r < 1)
+		*surf_r = 1;
+	if (*surf_g < 1)
+		*surf_g = 1;
+	if (*surf_b < 1)
+		*surf_b = 1;
+#endif
+}
+
 void FindTexlightColour (int *surf_r, int *surf_g, int *surf_b, char *texname)
 {
-	if (nodefault == false) // js feature
+	if (nodefault == false)	// js feature
 	{
 		if (!strncmp (texname, "*lava000", 8))
 		{
@@ -525,45 +666,5 @@ void FindTexlightColour (int *surf_r, int *surf_g, int *surf_b, char *texname)
 			*surf_b = 1;
 		}
 	}
-}
-
-// js feature
-void FindTexlightColourExt (int *surf_r, int *surf_g, int *surf_b, char *texname, tex_col_list list)
-{
-	int		i, len, num;
-	tex_col	*entry;
-
-	entry = NULL;
-	num = list.num;
-
-	// use default min values
-	*surf_r = 1;
-	*surf_g = 1;
-	*surf_b = 1;
-
-	// assign values based on external definition
-	for (i = 1 ;i < num; i++)
-	{
-		entry = &(list.entries[i]);
-		len = strlen(entry->name);
-		if((len > 0) && (strncmp (texname, entry->name, len) == 0))
-		{
-			*surf_r = entry->red;
-			*surf_g = entry->green;
-			*surf_b = entry->blue;
-
-			break;
-		}
-	}
-
-	// sanity check
-	/*
-	if (*surf_r < 1)
-		*surf_r = 1;
-	if (*surf_g < 1)
-		*surf_g = 1;
-	if (*surf_b < 1)
-		*surf_b = 1;
-	*/
 }
 

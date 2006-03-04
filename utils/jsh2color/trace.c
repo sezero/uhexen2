@@ -27,14 +27,14 @@
 
 typedef struct tnode_s
 {
-	int	type;
+	int		type;
 	vec3_t	normal;
 	float	dist;
-	int	children[2];
-	int	pad;
+	int		children[2];
+	int		pad;
 } tnode_t;
 
-tnode_t	*tnodes, *tnode_p;
+static tnode_t		*tnodes, *tnode_p;
 
 /*
 ==============
@@ -43,7 +43,7 @@ MakeTnode
 Converts the disk node structure into the efficient tracing structure
 ==============
 */
-void MakeTnode (int nodenum)
+static void MakeTnode (int nodenum)
 {
 	tnode_t			*t;
 	dplane_t		*plane;
@@ -59,7 +59,7 @@ void MakeTnode (int nodenum)
 	VectorCopy (plane->normal, t->normal);
 	t->dist = plane->dist;
 
-	for (i=0 ; i<2 ; i++)
+	for (i = 0 ; i < 2 ; i++)
 	{
 		if (node->children[i] < 0)
 			t->children[i] = dleafs[-node->children[i] - 1].contents;
@@ -87,7 +87,6 @@ void MakeTnodes (dmodel_t *bm)
 }
 
 
-
 /*
 ==============================================================================
 
@@ -102,36 +101,34 @@ by recursive subdivision of the line by the BSP tree.
 typedef struct
 {
 	vec3_t	backpt;
-	int	side;
-	int	node;
+	int		side;
+	int		node;
 } tracestack_t;
 
+
 /*
- * ==============
- * TestLineOrSky
- * TYR - modified TestLine (a bit of a hack job...)
- * ==============
- */
+==============
+TestLineOrSky
+TYR - modified TestLine (a bit of a hack job...)
+==============
+*/
 //qboolean TestLine (vec3_t start, vec3_t stop)
-qboolean TestLineOrSky (vec3_t start, vec3_t stop, qboolean sky_test)
+static qboolean TestLineOrSky (vec3_t start, vec3_t stop, qboolean sky_test)
 {
-	int		node, side;
-	//float		front, back;
-	//float		frontx,fronty, frontz, backx, backy, backz;
-	/* With vec_t defined as double, these front and back stuff
-	   need to be vec_t as well:  While creating LIT files for
-	   demo2 or castle4, the gcc compiled program segfaults under
-	   either of these conditions:
-	   - the program is not compiled with the -ffast-math flag.
-	   - compiled with gcc v4 for arches >= pentiumpro: i686,
-	     pentium2, or pentium3 without the -msse -mfpmath=sse
-	     extra flags.
-	*/ 
+	int			node, side;
+/*	With vec_t defined as double, these front and back stuff need to
+	be vec_t as well:  While creating LIT files for demo2 or castle4,
+	the gcc compiled program segfaults under either of these conditions:
+	- the program is not compiled with the -ffast-math flag.
+	- compiled with gcc v4 for arches >= pentiumpro: i686, pentium2,
+	or pentium3 without the -msse -mfpmath=sse extra flags.		*/ 
+//	float		front, back;
+//	float		frontx, fronty, frontz, backx, backy, backz;
 	vec_t		front, back;
-	vec_t		frontx,fronty, frontz, backx, backy, backz;
+	vec_t		frontx, fronty, frontz, backx, backy, backz;
 	tracestack_t	*tstack_p;
 	tracestack_t	tracestack[64];
-	tnode_t		*tnode;
+	tnode_t			*tnode;
 
 	frontx = start[0];
 	fronty = start[1];
@@ -147,24 +144,26 @@ qboolean TestLineOrSky (vec3_t start, vec3_t stop, qboolean sky_test)
 	{
 		while (node < 0 && node != CONTENTS_SOLID && (node != CONTENTS_SKY || !sky_test))
 		{
-		// we can modify this to check if a vector hits a light casting node before hitting
-		// a one that doesn't, and include sky as a potential light casting node.
-		// in order to do this, we need to find a way of identifying a texture that may be
-		// on a node.
+		// pop up the stack for a back side
 
-		/* pop up the stack for a back side */
+		// we can modify this to check if a vector hits a light casting
+		// node before hitting a one that doesn't, and include sky as a
+		// potential light casting node. in order to do this, we need
+		// to find a way of identifying a texture that may be on a node
 			tstack_p--;
 			if (tstack_p < tracestack) /* if sky_test is...			*/
-				return !sky_test;  /*	true  => We didn't hit sky	*/
-					/*	false => no solid obstructions	*/
+				return !sky_test;  /*	true => We didn't hit sky	*/
+					/*	false => no solid obstructions		*/
 			node = tstack_p->node;
 
-		/* set the hit point for this plane */
+		// set the hit point for this plane
+
 			frontx = backx;
 			fronty = backy;
 			frontz = backz;
 
-		/* go down the back side */
+		// go down the back side
+
 			backx = tstack_p->backpt[0];
 			backy = tstack_p->backpt[1];
 			backz = tstack_p->backpt[2];
@@ -173,9 +172,9 @@ qboolean TestLineOrSky (vec3_t start, vec3_t stop, qboolean sky_test)
 		}
 
 		if (node == CONTENTS_SOLID)
-			return false;	/* DONE! */
+			return false;	// DONE!
 		else if (node == CONTENTS_SKY && sky_test)
-			return true;	/* DONE! */
+			return true;	// DONE!
 
 		tnode = &tnodes[node];
 
@@ -201,22 +200,24 @@ qboolean TestLineOrSky (vec3_t start, vec3_t stop, qboolean sky_test)
 			break;
 		}
 
-		/* if (front > 0 && back > 0) */
+	//	if (front > 0 && back > 0)
 		if (front > -ON_EPSILON && back > -ON_EPSILON)
 		{
 			node = tnode->children[0];
 			continue;
 		}
 
-		/* if (front <= 0 && back <= 0) */
+	//	if (front <= 0 && back <= 0)
 		if (front < ON_EPSILON && back < ON_EPSILON)
 		{
 			node = tnode->children[1];
 			continue;
 		}
 
+	//	side = front < 0;
 		side = (front < 0.0f) ? 1 : 0;
 
+	//	front = front / (front-back);
 		front /= (front - back);
 
 		tstack_p->node = node;
@@ -235,22 +236,21 @@ qboolean TestLineOrSky (vec3_t start, vec3_t stop, qboolean sky_test)
 	}
 }
 
-
 /*
- * ================
- * TestSky  -- TYR
- * ================
- * Returns true if the ray cast from point 'start' in the
- * direction of vector 'dirn' hits a CONTENTS_SKY node before
- * a CONTENTS_SOLID node.
- * this is major buggy - we really should be testing in a number of
- * directions - up, down, right, left, in, out, and various variations
- * in between...
- *
- * Wrapper functions for testing LOS between two points (TestLine)
- * and testing LOS to a sky brush along a direction vector (TestSky)
- */
+================
+TestSky  -- TYR
 
+Returns true if the ray cast from point 'start' in the
+direction of vector 'dirn' hits a CONTENTS_SKY node before
+a CONTENTS_SOLID node.
+this is major buggy - we really should be testing in a number of
+directions - up, down, right, left, in, out, and various variations
+in between...
+
+Wrapper functions for testing LOS between two points (TestLine)
+and testing LOS to a sky brush along a direction vector (TestSky)
+================
+*/
 qboolean TestLine(vec3_t start, vec3_t stop)
 {
 	return TestLineOrSky(start, stop, false);

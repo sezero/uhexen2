@@ -22,14 +22,17 @@
 #include "bspfile.h"
 #include "tyrlite.h"
 
-/* ========================================================================= */
-int numlighttex;
+//=============================================================================
+
+extern	qboolean	makelit;
 
 int			nummodels;
 dmodel_t	dmodels[MAX_MAP_MODELS];
 
 miptex_t		miptex[512];
 int				nummiptex;
+
+int				numlighttex;
 
 int			visdatasize;
 byte		dvisdata[MAX_MAP_VISIBILITY];
@@ -38,7 +41,7 @@ int			lightdatasize;
 byte		dlightdata[MAX_MAP_LIGHTING];
 
 int			texdatasize;
-byte		dtexdata[MAX_MAP_MIPTEX]; // (dmiptexlump_t)
+byte		dtexdata[MAX_MAP_MIPTEX];	// (dmiptexlump_t)
 
 int			entdatasize;
 char		dentdata[MAX_MAP_ENTSTRING];
@@ -73,36 +76,34 @@ unsigned short		dmarksurfaces[MAX_MAP_MARKSURFACES];
 int			numsurfedges;
 int			dsurfedges[MAX_MAP_SURFEDGES];
 
-extern qboolean makelit;
-
-
 //=============================================================================
 
 /*
- * =============
- * SwapBSPFile
- * Byte swaps all data in a bsp file.
- * =============
- */
-void SwapBSPFile (qboolean todisk)
+=============
+SwapBSPFile
+
+Byte swaps all data in a bsp file.
+=============
+*/
+static void SwapBSPFile (qboolean todisk)
 {
-	int				i, j, c;
-	dmodel_t		*d;
+	int			i, j, c;
+	dmodel_t	*d;
 	dmiptexlump_t	*mtl;
 
-// models	
-	for (i=0 ; i<nummodels ; i++)
+// models
+	for (i = 0 ; i < nummodels ; i++)
 	{
 		d = &dmodels[i];
 
-		for (j=0 ; j<MAX_MAP_HULLS ; j++)
+		for (j = 0 ; j < MAX_MAP_HULLS ; j++)
 			d->headnode[j] = LittleLong (d->headnode[j]);
 
 		d->visleafs = LittleLong (d->visleafs);
 		d->firstface = LittleLong (d->firstface);
 		d->numfaces = LittleLong (d->numfaces);
 
-		for (j=0 ; j<3 ; j++)
+		for (j = 0 ; j < 3 ; j++)
 		{
 			d->mins[j] = LittleFloat(d->mins[j]);
 			d->maxs[j] = LittleFloat(d->maxs[j]);
@@ -113,18 +114,18 @@ void SwapBSPFile (qboolean todisk)
 //
 // vertexes
 //
-	for (i=0 ; i<numvertexes ; i++)
+	for (i = 0 ; i < numvertexes ; i++)
 	{
-		for (j=0 ; j<3 ; j++)
+		for (j = 0 ; j < 3 ; j++)
 			dvertexes[i].point[j] = LittleFloat (dvertexes[i].point[j]);
 	}
 
 //
 // planes
 //
-	for (i=0 ; i<numplanes ; i++)
+	for (i = 0 ; i < numplanes ; i++)
 	{
-		for (j=0 ; j<3 ; j++)
+		for (j = 0 ; j < 3 ; j++)
 			dplanes[i].normal[j] = LittleFloat (dplanes[i].normal[j]);
 		dplanes[i].dist = LittleFloat (dplanes[i].dist);
 		dplanes[i].type = LittleLong (dplanes[i].type);
@@ -133,9 +134,9 @@ void SwapBSPFile (qboolean todisk)
 //
 // texinfos
 //
-	for (i=0 ; i<numtexinfo ; i++)
+	for (i = 0 ; i < numtexinfo ; i++)
 	{
-		for (j=0 ; j<8 ; j++)
+		for (j = 0 ; j < 8 ; j++)
 			texinfo[i].vecs[0][j] = LittleFloat (texinfo[i].vecs[0][j]);
 		texinfo[i].miptex = LittleLong (texinfo[i].miptex);
 		texinfo[i].flags = LittleLong (texinfo[i].flags);
@@ -144,7 +145,7 @@ void SwapBSPFile (qboolean todisk)
 //
 // faces
 //
-	for (i=0 ; i<numfaces ; i++)
+	for (i = 0 ; i < numfaces ; i++)
 	{
 		dfaces[i].texinfo = LittleShort (dfaces[i].texinfo);
 		dfaces[i].planenum = LittleShort (dfaces[i].planenum);
@@ -157,10 +158,10 @@ void SwapBSPFile (qboolean todisk)
 //
 // nodes
 //
-	for (i=0 ; i<numnodes ; i++)
+	for (i = 0 ; i < numnodes ; i++)
 	{
 		dnodes[i].planenum = LittleLong (dnodes[i].planenum);
-		for (j=0 ; j<3 ; j++)
+		for (j = 0 ; j < 3 ; j++)
 		{
 			dnodes[i].mins[j] = LittleShort (dnodes[i].mins[j]);
 			dnodes[i].maxs[j] = LittleShort (dnodes[i].maxs[j]);
@@ -174,10 +175,10 @@ void SwapBSPFile (qboolean todisk)
 //
 // leafs
 //
-	for (i=0 ; i<numleafs ; i++)
+	for (i = 0 ; i < numleafs ; i++)
 	{
 		dleafs[i].contents = LittleLong (dleafs[i].contents);
-		for (j=0 ; j<3 ; j++)
+		for (j = 0 ; j < 3 ; j++)
 		{
 			dleafs[i].mins[j] = LittleShort (dleafs[i].mins[j]);
 			dleafs[i].maxs[j] = LittleShort (dleafs[i].maxs[j]);
@@ -191,7 +192,7 @@ void SwapBSPFile (qboolean todisk)
 //
 // clipnodes
 //
-	for (i=0 ; i<numclipnodes ; i++)
+	for (i = 0 ; i < numclipnodes ; i++)
 	{
 		dclipnodes[i].planenum = LittleLong (dclipnodes[i].planenum);
 		dclipnodes[i].children[0] = LittleShort (dclipnodes[i].children[0]);
@@ -209,26 +210,26 @@ void SwapBSPFile (qboolean todisk)
 		else
 			c = LittleLong(mtl->nummiptex);
 		mtl->nummiptex = LittleLong (mtl->nummiptex);
-		for (i=0 ; i<c ; i++)
+		for (i = 0 ; i < c ; i++)
 			mtl->dataofs[i] = LittleLong(mtl->dataofs[i]);
 	}
 
 //
 // marksurfaces
 //
-	for (i=0 ; i<nummarksurfaces ; i++)
+	for (i = 0 ; i < nummarksurfaces ; i++)
 		dmarksurfaces[i] = LittleShort (dmarksurfaces[i]);
 
 //
 // surfedges
 //
-	for (i=0 ; i<numsurfedges ; i++)
+	for (i = 0 ; i < numsurfedges ; i++)
 		dsurfedges[i] = LittleLong (dsurfedges[i]);
 
 //
 // edges
 //
-	for (i=0 ; i<numedges ; i++)
+	for (i = 0 ; i < numedges ; i++)
 	{
 		dedges[i].v[0] = LittleShort (dedges[i].v[0]);
 		dedges[i].v[1] = LittleShort (dedges[i].v[1]);
@@ -236,9 +237,9 @@ void SwapBSPFile (qboolean todisk)
 }
 
 
-dheader_t	*header;
+static dheader_t	*header;
 
-int CopyLump (int lump, void *dest, int size)
+static int CopyLump (int lump, void *dest, int size)
 {
 	int		length, ofs;
 
@@ -253,7 +254,7 @@ int CopyLump (int lump, void *dest, int size)
 	return length / size;
 }
 
-void ParseTexinfo (void)
+static void ParseTexinfo (void)
 {
 	int	i;
 	miptex_t *out;
@@ -279,7 +280,7 @@ void ParseTexinfo (void)
 }
 
 
-void FindColourName (char *name, int r, int g, int b)
+static void FindColourName (char *name, int r, int g, int b)
 {
 	// return a colour name for a given rgb combo
 	if (r == 255 && g == 10 && b == 10)
@@ -306,19 +307,20 @@ extern int	num_lights;
 
 void CheckTex (void)
 {
-	int i, j;
-	int r, g, b;
-	int count;
-	int r2[100], g2[100], b2[100];
-	dface_t *f;
-	int facecolours[100];
-	int bad;
-	char colour_name[10];
-	int foundlava;
-	int foundslime;
-	int uniquecolours;
+	int		i, j;
+	int		r, g, b;
+	int		count;
+	int		r2[100], g2[100], b2[100];
+	dface_t	*f;
+	int		facecolours[100];
+	int		bad;
+	char	colour_name[10];
+	int		foundlava;
+	int		foundslime;
+	int		uniquecolours;
 
-	// there's never gonna be more than 100 unique colours in any map - 3 to 4 is the norm
+	// there's never gonna be more than 100 unique colours in any map
+	// 3 to 4 is the normal.
 	for (i = 0; i < 100; i++)
 	{
 		facecolours[i] = 0;
@@ -376,7 +378,7 @@ void CheckTex (void)
 	}
 
 	printf ("- %i Light sources out of %i have already been coloured (torches/flames/etc)\n", 
-		num_clights, num_lights);
+						num_clights, num_lights);
 
 	uniquecolours = count + foundlava + foundslime;
 	if (uniquecolours)
@@ -422,16 +424,16 @@ void CheckTex (void)
 }
 
 
-int bsp_ver;
+int	bsp_ver;
 
-int faces_ltoffset[MAX_MAP_FACES];
-byte newdlightdata[MAX_MAP_LIGHTING];
-int newlightdatasize;
+int	faces_ltoffset[MAX_MAP_FACES];
+byte	newdlightdata[MAX_MAP_LIGHTING];
+int	newlightdatasize;
 
-void StoreFaceInfo (void)
+static void StoreFaceInfo (void)
 {
-	int i;
-	dface_t *fa;
+	int		i;
+	dface_t	*fa;
 
 	for (i = 0; i < numfaces; i++)
 	{
@@ -441,9 +443,9 @@ void StoreFaceInfo (void)
 }
 
 
-void MakeNewLightData (void)
+static void MakeNewLightData (void)
 {
-	int i, j;
+	int		i, j;
 
 	for (i = 0, j = 0; i < lightdatasize; i++)
 	{
@@ -461,17 +463,17 @@ void MakeNewLightData (void)
 LoadBSPFile
 =============
 */
-void	LoadBSPFile (char *filename)
+void LoadBSPFile (char *filename)
 {
 	int			i;
 
 //
 // load the file header
 //
-	LoadFile (filename, (void **)  (char *) &header);
+	LoadFile (filename, (void **) (char *) &header);
 
 // swap the header
-	for (i=0 ; i< sizeof(dheader_t)/4 ; i++)
+	for (i = 0 ; i < sizeof(dheader_t)/4 ; i++)
 		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
 
 	/* TYR - fixed stupid error (using loop variable as version number??) */
@@ -515,12 +517,12 @@ void	LoadBSPFile (char *filename)
 
 //============================================================================
 
-FILE		*wadfile;
-dheader_t	outheader;
+static FILE		*wadfile;
+static dheader_t	outheader;
 
-void AddLump (int lumpnum, void *data, int len)
+static void AddLump (int lumpnum, void *data, int len)
 {
-	lump_t *lump;
+	lump_t	*lump;
 
 	lump = &header->lumps[lumpnum];
 
@@ -528,6 +530,8 @@ void AddLump (int lumpnum, void *data, int len)
 	lump->filelen = LittleLong(len);
 	SafeWrite (wadfile, data, (len+3)&~3);
 }
+
+//============================================================================
 
 /*
 Make a DarkPlaces format LIT file - we already have
@@ -538,16 +542,16 @@ to write out the appropriate header and we're there!
 // litfile header - darkplaces standard
 typedef struct litheader_s
 {
-	char ident[4];
-	int version;
+	char	ident[4];
+	int		version;
 } litheader_t;
 
 
-void MakeDPLITFile (char *bspname)
+static void MakeLITFile (char *bspname)
 {
-	char litname[1024];
-	FILE *litfile;
-	litheader_t litheader;
+	char	litname[1024];
+	FILE	*litfile;
+	litheader_t	litheader;
 
 	if (!makelit)
 		return;
@@ -586,22 +590,22 @@ Swaps the bsp file in place, so it should not be referenced again
 */
 void WriteBSPFile (char *filename, int version)
 {
-    if (makelit)
-	MakeDPLITFile (filename);
-    else
-    {
+	if (makelit)
+	{
+		MakeLITFile (filename);
+		return;
+	}
+
 	header = &outheader;
 	memset (header, 0, sizeof(dheader_t));
 
 	SwapBSPFile (true);
 
-	header->version = LittleLong (version);
-
-	header->version = 30; //32;
-
-	printf("Writing BSP version %i\n", (int)header->version);
-
 	//header->version = LittleLong (BSPVERSION);
+	header->version = LittleLong (version);
+// FIXME !!!
+	header->version = 30;
+	printf("Writing BSP version %i\n", (int)header->version);
 
 	wadfile = SafeOpenWrite (filename);
 	SafeWrite (wadfile, header, sizeof(dheader_t));	// overwritten later
@@ -626,7 +630,6 @@ void WriteBSPFile (char *filename, int version)
 	fseek (wadfile, 0, SEEK_SET);
 	SafeWrite (wadfile, header, sizeof(dheader_t));
 	fclose (wadfile);
-    }
 }
 
 //============================================================================
@@ -640,26 +643,26 @@ Dumps info about current file
 */
 void PrintBSPFileSizes (void)
 {
-	printf ("%5i planes       %6i\n"
-		,numplanes, (int)(numplanes*sizeof(dplane_t)));
-	printf ("%5i vertexes     %6i\n"
-		,numvertexes, (int)(numvertexes*sizeof(dvertex_t)));
-	printf ("%5i nodes        %6i\n"
-		,numnodes, (int)(numnodes*sizeof(dnode_t)));
-	printf ("%5i texinfo      %6i\n"
-		,numtexinfo, (int)(numtexinfo*sizeof(texinfo_t)));
-	printf ("%5i faces        %6i\n"
-		,numfaces, (int)(numfaces*sizeof(dface_t)));
-	printf ("%5i clipnodes    %6i\n"
-		,numclipnodes, (int)(numclipnodes*sizeof(dclipnode_t)));
-	printf ("%5i leafs        %6i\n"
-		,numleafs, (int)(numleafs*sizeof(dleaf_t)));
-	printf ("%5i marksurfaces %6i\n"
-		,nummarksurfaces, (int)(nummarksurfaces*sizeof(dmarksurfaces[0])));
-	printf ("%5i surfedges    %6i\n"
-		,numsurfedges, (int)(numsurfedges*sizeof(dmarksurfaces[0])));
-	printf ("%5i edges        %6i\n"
-		,numedges, (int)(numedges*sizeof(dedge_t)));
+	printf ("%5i planes       %6i\n",
+			numplanes, (int)(numplanes*sizeof(dplane_t)));
+	printf ("%5i vertexes     %6i\n",
+			numvertexes, (int)(numvertexes*sizeof(dvertex_t)));
+	printf ("%5i nodes        %6i\n",
+			numnodes, (int)(numnodes*sizeof(dnode_t)));
+	printf ("%5i texinfo      %6i\n",
+			numtexinfo, (int)(numtexinfo*sizeof(texinfo_t)));
+	printf ("%5i faces        %6i\n",
+			numfaces, (int)(numfaces*sizeof(dface_t)));
+	printf ("%5i clipnodes    %6i\n",
+			numclipnodes, (int)(numclipnodes*sizeof(dclipnode_t)));
+	printf ("%5i leafs        %6i\n",
+			numleafs, (int)(numleafs*sizeof(dleaf_t)));
+	printf ("%5i marksurfaces %6i\n",
+			nummarksurfaces, (int)(nummarksurfaces*sizeof(dmarksurfaces[0])));
+	printf ("%5i surfedges    %6i\n",
+			numsurfedges, (int)(numsurfedges*sizeof(dmarksurfaces[0])));
+	printf ("%5i edges        %6i\n",
+			numedges, (int)(numedges*sizeof(dedge_t)));
 	if (!texdatasize)
 		printf ("    0 textures          0\n");
 	else

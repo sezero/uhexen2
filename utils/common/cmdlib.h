@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.1 2006-03-01 09:00:53 sezero Exp $
+	$Id: cmdlib.h,v 1.2 2006-03-04 10:54:04 sezero Exp $
 */
 
 #ifndef __CMDLIB__
@@ -35,6 +35,14 @@ typedef unsigned char byte;
 #else
 #define Q_strncasecmp	strncasecmp
 #define Q_strcasecmp	strcasecmp
+#endif
+
+#if defined(_WIN32) && !defined(F_OK)
+// values for the second argument to access(). MS does not define them
+#define	R_OK	4		/* Test for read permission.  */
+#define	W_OK	2		/* Test for write permission.  */
+#define	X_OK	1		/* Test for execute permission.  */
+#define	F_OK	0		/* Test for existence.  */
 #endif
 
 // the dec offsetof macro doesn't work very well...

@@ -41,10 +41,10 @@ typedef struct entity_s
 	float	atten;
 	vec3_t	mangle;
 	qboolean	use_mangle;
-	int	lightcolour[3];
+	int		lightcolour[3];
 
-	int	light;
-	int	style;
+	int		light;
+	int		style;
 	char	target[32];
 	char	targetname[32];
 	struct epair_s	*epairs;
@@ -77,8 +77,8 @@ typedef struct entity_s
 extern	entity_t	entities[MAX_MAP_ENTITIES];
 extern	int			num_entities;
 
-extern int            numtexlights;
-extern entity_t       texlights[MAX_MAP_FACES];
+//extern int            numtexlights;
+//extern entity_t       texlights[MAX_MAP_FACES];
 
 entity_t *FindEntityWithKeyPair (char *key, char *value);
 char	*ValueForKey (entity_t *ent, char *key);
@@ -86,7 +86,7 @@ void	SetKeyValue (entity_t *ent, char *key, char *value);
 float	FloatForKey (entity_t *ent, char *key);
 void	GetVectorForKey (entity_t *ent, char *key, vec3_t vec);
 
-void LoadEntities (void);
-void WriteEntitiesToString (void);
+void	LoadEntities (void);
+void	WriteEntitiesToString (void);
 
 #endif /* __TYRLITE_ENTITIES_H__ */

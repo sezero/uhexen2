@@ -1,3 +1,15 @@
+2006-03-04 1.2.2 sezero
+Changes since 1.2.1:
+ * tex.c, tyrlie.c, tyrlite.h: moved external definition file
+   stuff to tex.c. small tidy-ups in args parsing.
+ * tyrlite.c: do not allow -the -nodefault switch to take effect
+   if the external color definition file cannot be accessed.
+ * entities.c: inserted a note about the fact that the effects of
+   the -light argument being zeroed. to be examined.
+ * made static function and variables static. a lot of coding style
+   and whitespace clean-up.
+ * tyrlite.h: bumped version to 1.2.2
+
 2005-11-13 1.2.1 sezero
 Changes since 1.2:
  * trace.c: fixed fpmath segfaults:

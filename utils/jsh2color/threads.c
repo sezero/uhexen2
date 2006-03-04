@@ -20,23 +20,30 @@
 #include "cmdlib.h"
 #include "threads.h"
 
+
 #ifdef __alpha
+
 int		numthreads = 4;
-#ifdef _WIN32
+
+#  ifdef _WIN32
 HANDLE	my_mutex;
-#else
+#  else
 pthread_mutex_t *my_mutex;
-#endif	//_win32
+#  endif //_win32
+
 #else
+
 int		numthreads = 1;
-#endif
+
+#endif	// __alpha
+
 
 void InitThreads (void)
 {
 #ifdef __alpha
-#ifdef _WIN32
+#  ifdef _WIN32
 	my_mutex = CreateMutex(NULL, FALSE, NULL);	//cleared
-#else
+#  else
 	pthread_mutexattr_t	mattrib;
 
 	my_mutex = malloc (sizeof(*my_mutex));
@@ -46,9 +53,8 @@ void InitThreads (void)
 		Error ("pthread_mutexattr_setkind_np failed");
 	if (pthread_mutex_init (my_mutex, mattrib) == -1)
 		Error ("pthread_mutex_init failed");
-#endif	//_win32
-#endif
-//alpha
+#  endif //_win32
+#endif		// __alpha
 }
 
 /*
@@ -59,9 +65,9 @@ RunThreadsOn
 void RunThreadsOn ( threadfunc_t func )
 {
 #ifdef __alpha
-#ifdef _WIN32
-	DWORD IDThread;
-	HANDLE work_threads[256];
+#  ifdef _WIN32
+	DWORD	IDThread;
+	HANDLE	work_threads[256];
 	int		i;
 
 	if (numthreads == 1)
@@ -70,7 +76,7 @@ void RunThreadsOn ( threadfunc_t func )
 		return;
 	}
 
-	for (i=0 ; i<numthreads ; i++)
+	for (i = 0 ; i < numthreads ; i++)
 	{
 		work_threads[i] = CreateThread(NULL,	// no security attrib
 			0x100000,			// stack size
@@ -83,13 +89,12 @@ void RunThreadsOn ( threadfunc_t func )
 			Error ("pthread_create failed");
 	}
 
-	for (i=0 ; i<numthreads ; i++)
+	for (i = 0 ; i < numthreads ; i++)
 	{
 		WaitForSingleObject(work_threads[i], INFINITE);
-
 	}
 
-#else
+#  else
 	pthread_t	work_threads[256];
 	pthread_addr_t	status;
 	pthread_attr_t	attrib;
@@ -106,20 +111,23 @@ void RunThreadsOn ( threadfunc_t func )
 	if (pthread_attr_setstacksize (&attrib, 0x100000) == -1)
 		Error ("pthread_attr_setstacksize failed");
 
-	for (i=0 ; i<numthreads ; i++)
+	for (i = 0 ; i < numthreads ; i++)
 	{
-		if (pthread_create(&work_threads[i], attrib
-					, (pthread_startroutine_t)func, (pthread_addr_t)i) == -1)
+		if ( pthread_create(&work_threads[i], attrib,
+					(pthread_startroutine_t)func,
+					(pthread_addr_t)i) == -1 )
 			Error ("pthread_create failed");
 	}
 
-	for (i=0 ; i<numthreads ; i++)
+	for (i = 0 ; i < numthreads ; i++)
 	{
 		if (pthread_join (work_threads[i], &status) == -1)
 			Error ("pthread_join failed");
 	}
-#endif	//_win32
+#  endif //_win32
+
 #else
 	func (NULL);
-#endif
+#endif		// __alpha
 }
+

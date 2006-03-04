@@ -26,15 +26,16 @@
 #include "tyrlite.h"
 #include "entities.h"
 
-entity_t entities[MAX_MAP_ENTITIES];
-int	num_entities;
-int	num_lights;
+entity_t	entities[MAX_MAP_ENTITIES];
+int			num_entities;
+int			num_lights;
+int			num_clights;
 
-int	numtexlights;
-entity_t texlights[MAX_MAP_FACES];
-int	num_clights;
 
-#if 0
+#if 0	// no users.
+static int		numtexlights;
+static entity_t	texlights[MAX_MAP_FACES];
+
 // find textures that could emit lights
 void FindTexLights (void)
 {
@@ -58,7 +59,8 @@ void FindTexLights (void)
 			texlights[numtexlights].lightcolour[1] = 64;
 			texlights[numtexlights].lightcolour[2] = 64;
 		}
-		else hit = 0;
+		else
+			hit = 0;
 
 		if (hit)
 		{
@@ -84,14 +86,14 @@ If a light has a targetname, generate a unique style in the 32-63 range
 ==============================================================================
 */
 
-int	numlighttargets;
-char	lighttargets[32][64];
+static int		numlighttargets;
+static char	lighttargets[32][64];
 
-int LightStyleForTargetname (char *targetname, qboolean alloc)
+static int LightStyleForTargetname (char *targetname, qboolean alloc)
 {
 	int		i;
 
-	for (i=0 ; i<numlighttargets ; i++)
+	for (i = 0 ; i < numlighttargets ; i++)
 		if (!strcmp (lighttargets[i], targetname))
 			return 32 + i;
 	if (!alloc)
@@ -112,30 +114,30 @@ int LightStyleForTargetname (char *targetname, qboolean alloc)
 MatchTargets
 ==================
 */
-void MatchTargets (void)
+static void MatchTargets (void)
 {
 	int		i, j;
 
-	for (i=0 ; i<num_entities ; i++)
+	for (i = 0 ; i < num_entities ; i++)
 	{
 		if (!entities[i].target[0])
 			continue;
 
-		for (j=0 ; j<num_entities ; j++)
+		for (j = 0 ; j < num_entities ; j++)
 			if (!strcmp(entities[j].targetname, entities[i].target))
 			{
 				entities[i].targetent = &entities[j];
 				break;
 			}
-		if (j==num_entities)
+		if (j == num_entities)
 		{
 			printf ("WARNING: entity at (%i,%i,%i) (%s) has unmatched target\n",
-			         (int)entities[i].origin[0], (int)entities[i].origin[1], 
-			         (int)entities[i].origin[2], entities[i].classname);
+					(int)entities[i].origin[0], (int)entities[i].origin[1],
+					(int)entities[i].origin[2], entities[i].classname);
 			continue;
 		}
 
-// set the style on the source ent for switchable lights
+	// set the style on the source ent for switchable lights
 		if (entities[j].style)
 		{
 			char	s[16];
@@ -153,12 +155,12 @@ void MatchTargets (void)
 LoadEntities
 ==================
 */
-extern int bsp_ver;
+extern int	bsp_ver;
 void LoadEntities (void)
 {
 	char		*data;
 	entity_t	*entity;
-	char		key[64];	
+	char		key[64];
 	epair_t		*epair;
 	vec_t		vec[3];
 	int		i;
@@ -172,9 +174,8 @@ void LoadEntities (void)
 // go through all the entities
 	while (1)
 	{
-		// parse the opening brace
+	// parse the opening brace
 		data = COM_Parse (data);
-
 		if (!data)
 			break;
 		if (com_token[0] != '{')
@@ -185,14 +186,15 @@ void LoadEntities (void)
 		entity = &entities[num_entities];
 		num_entities++;
 
-		/* Flag to indicate use of mangle key	*/
+	// flag to indicate use of mangle key
 		entity->use_mangle = false;
-		// go through all the keys in this entity
+
+	// go through all the keys in this entity
 		while (1)
 		{
-			int c;
+			int		c;
 
-			// parse key
+		// parse key
 			data = COM_Parse (data);
 			if (!data)
 				Error ("LoadEntities: EOF without closing brace");
@@ -200,7 +202,7 @@ void LoadEntities (void)
 				break;
 			strcpy (key, com_token);
 
-			// parse value
+		// parse value
 			data = COM_Parse (data);
 			if (!data)
 				Error ("LoadEntities: EOF without closing brace");
@@ -221,8 +223,8 @@ void LoadEntities (void)
 				strcpy (entity->message, com_token);
 			else if (!strcmp (key, "netname"))
 				strcpy (entity->netname, com_token);
-        		else if (!strcmp(key, "target"))
-				strcpy (entity->target, com_token);			
+			else if (!strcmp(key, "target"))
+				strcpy (entity->target, com_token);
 			else if (!strcmp(key, "targetname"))
 				strcpy (entity->targetname, com_token);
 			else if (!strcmp(key, "origin"))
@@ -237,16 +239,15 @@ void LoadEntities (void)
 						&entity->origin[2]) != 3)
 					Error ("LoadEntities: not 3 values for origin");
 			}
-			else if (!strncmp(key, "light",5))
-				entity->light = atof(com_token);
-			else if (!strncmp (key, "_light",6))
-				entity->light = atof(com_token);
-			/*
 			else if (!strncmp(key, "light", 5))
 			{
-				entity->light = atoi(com_token);
+				//entity->light = atoi(com_token);
+				entity->light = atof(com_token);
 			}
-			*/
+			else if (!strncmp (key, "_light", 6))
+			{
+				entity->light = atof(com_token);
+			}
 			else if (!strcmp(key, "style"))
 			{
 				entity->style = atoi(com_token);
@@ -336,10 +337,9 @@ void LoadEntities (void)
 			*/
 		}
 
-		/* All fields have been parsed. Check default settings	*/
-		/* and check for light value in worldspawn...		*/
-
-		/*
+	// all fields have been parsed
+	// check default settings and check for light value in worldspawn
+	/*
 		if (!strncmp (entity->classname, "light", 5) && !entity->light)
 			entity->light = DEFAULTLIGHTLEVEL;
 
@@ -354,7 +354,7 @@ void LoadEntities (void)
 				SetKeyValue (entity, "style", s);
 			}
 		}
-		*/
+	*/
 
 		if (!strncmp (entity->classname, "light", 5))
 		{
@@ -487,7 +487,10 @@ void LoadEntities (void)
 			{
 				printf("Using minlight value %i from command line.\n", worldminlight);
 			}
+
 			worldminlight = 0;
+				// WTF? Why nullify the -light cmdline arg??
+				// This was never in TyrLite but is in MHColour.
 		}
 	}
 
@@ -496,26 +499,28 @@ void LoadEntities (void)
 	MatchTargets ();
 }
 
-char	*ValueForKey (entity_t *ent, char *key)
+
+char *ValueForKey (entity_t *ent, char *key)
 {
 	epair_t	*ep;
 
-	for (ep=ent->epairs ; ep ; ep=ep->next)
+	for (ep = ent->epairs ; ep ; ep = ep->next)
 		if (!strcmp (ep->key, key) )
 			return ep->value;
 	return "";
 }
 
-void	SetKeyValue (entity_t *ent, char *key, char *value)
+void SetKeyValue (entity_t *ent, char *key, char *value)
 {
 	epair_t	*ep;
 
-	for (ep=ent->epairs ; ep ; ep=ep->next)
+	for (ep = ent->epairs ; ep ; ep = ep->next)
 		if (!strcmp (ep->key, key) )
 		{
 			strcpy (ep->value, value);
 			return;
 		}
+
 	ep = malloc (sizeof(*ep));
 	ep->next = ent->epairs;
 	ent->epairs = ep;
@@ -523,13 +528,34 @@ void	SetKeyValue (entity_t *ent, char *key, char *value)
 	strcpy (ep->value, value);
 }
 
-entity_t *FindEntityWithKeyPair( char *key, char *value )
+float FloatForKey (entity_t *ent, char *key)
+{
+	char	*k;
+
+	k = ValueForKey (ent, key);
+	return (float)atof(k);
+}
+
+void GetVectorForKey (entity_t *ent, char *key, vec3_t vec)
+{
+	char	*k;
+
+	k = ValueForKey (ent, key);
+#ifdef DOUBLEVEC_T
+	sscanf (k, "%lf %lf %lf", &vec[0], &vec[1], &vec[2]);
+#else
+	sscanf (k, "%f %f %f", &vec[0], &vec[1], &vec[2]);
+#endif
+}
+
+
+entity_t *FindEntityWithKeyPair (char *key, char *value)
 {
 	entity_t	*ent;
 	epair_t	*ep;
 	int			i;
 
-	for (i=0 ; i<num_entities ; i++)
+	for (i = 0 ; i < num_entities ; i++)
 	{
 		ent = &entities[ i ];
 		for (ep=ent->epairs ; ep ; ep=ep->next)
@@ -541,27 +567,6 @@ entity_t *FindEntityWithKeyPair( char *key, char *value )
 			}
 	}
 	return NULL;
-}
-
-
-float	FloatForKey (entity_t *ent, char *key)
-{
-	char	*k;
-
-	k = ValueForKey (ent, key);
-	return (float)atof(k);
-}
-
-void	GetVectorForKey (entity_t *ent, char *key, vec3_t vec)
-{
-	char	*k;
-
-	k = ValueForKey (ent, key);
-#ifdef DOUBLEVEC_T
-	sscanf (k, "%lf %lf %lf", &vec[0], &vec[1], &vec[2]);
-#else
-	sscanf (k, "%f %f %f", &vec[0], &vec[1], &vec[2]);
-#endif
 }
 
 
@@ -584,7 +589,7 @@ void WriteEntitiesToString (void)
 
 	printf ("%i switchable light styles\n", numlighttargets);
 
-	for (i=0 ; i<num_entities ; i++)
+	for (i = 0 ; i < num_entities ; i++)
 	{
 		ep = entities[i].epairs;
 		if (!ep)
@@ -593,9 +598,8 @@ void WriteEntitiesToString (void)
 		strcat (end,"{\n");
 		end += 2;
 
-		for (ep = entities[i].epairs ; ep ; ep=ep->next)
+		for (ep = entities[i].epairs ; ep ; ep = ep->next)
 		{
-			// mfah - made compression on by default
 			if (!strncmp(entities[i].classname, "light", 5) && compress_ents)
 			{
 				// mfah - added style and target here cos the engine needs them!

@@ -30,10 +30,9 @@ qboolean	log_ok;
 
 void init_log(char *filename)
 {
-	// don't need this shit
 	log_ok = false;
-//	if ((logfile = fopen(filename,"w")))
-//		log_ok = true;
+	if ((logfile = fopen(filename,"w")))
+		log_ok = true;
 }
 
 void close_log()

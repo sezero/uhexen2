@@ -27,116 +27,37 @@
 #include <conio.h>
 #endif
 
-extern int numbounces;
+float		scaledist	= 1.0F;
+float		scalecos	= 0.5F;
+float		rangescale	= 0.5F;
+int		worldminlight	= 0;
+vec3_t		minlight_color	= { 255, 255, 255 };	// defaults to white light
+int		sunlight	= 0;
+vec3_t		sunlight_color	= { 255, 255, 255 };	// defaults to white light
+vec3_t		sunmangle	= { 0, 0, 16384 };	// defaults to straight down
 
-int numhits[MAX_MAP_ENTITIES];
+//dmodel_t	*bspmodel;
+int		bspfileface;	// next surface to dispatch
+vec3_t		bsp_origin;
 
-float	scaledist	= 1.0;
-float	scalecos	= 0.5;
-float	rangescale	= 0.5;
-int	worldminlight	= 0;
-vec3_t	minlight_color	= { 255, 255, 255 };	/* defaults to white light   */
-int	sunlight	= 0;
-vec3_t	sunlight_color	= { 255, 255, 255 };	/* defaults to white light   */
-vec3_t	sunmangle	= { 0, 0, 16384 };	/* defaults to straight down */
+byte		*filebase;
+static byte	*file_p, *file_end;
 
-byte	*filebase;
-byte	*file_p;
-byte	*file_end;
+qboolean	nolightface[MAX_MAP_FACES];
+vec3_t		faceoffset[MAX_MAP_FACES];
+extern int	num_lights;
 
-dmodel_t *bspmodel;
-int	bspfileface;	/* next surface to dispatch */
-
-vec3_t	bsp_origin;
-
-qboolean extrasamples;
-qboolean compress_ents;
-qboolean facecounter;
-qboolean colored;
-qboolean nominlimit;
-qboolean force;
-qboolean makelit;
-
-qboolean nolightface[MAX_MAP_FACES];
-vec3_t   faceoffset[MAX_MAP_FACES];
-extern int num_lights;
-
+qboolean	extrasamples;
+qboolean	compress_ents;
+qboolean	colored;
+qboolean	nominlimit;
+qboolean	force;
+qboolean	makelit;
 // js features
-qboolean external;
-qboolean nodefault;
-char extfilename[MAX_OSPATH];
-tex_col_list tc_list;
+qboolean	external;
+qboolean	nodefault;
+char		extfilename[MAX_OSPATH];
 
-// get number of lines in text
-long getNumLines(FILE* file)
-{
-	long	numlines = 0;
-	char	line [1024];
-	char	*txt = NULL;
-
-	while (NULL != fgets(line, 1024, file))
-	{
-		txt = strchr(line,'\n');
-		if (txt != NULL)
-		{
-			numlines++;
-		}
-		else
-			break;
-	}
-	fseek(file,0,SEEK_SET);
-	return numlines;
-}
-
-// file parser
-void ParseDefFile(char* filename)
-{
-	long	num = 0;
-	int	i = 0;
-	int	r, g, b;
-	char	name[64];
-	char	line [1024];
-
-	FILE* file = fopen(filename,"rt");
-	if (file != NULL)
-	{
-		num = max(0,getNumLines(file));
-		num = min(num , MAX_ENTRYNUM);
-		tc_list.num = num;
-		tc_list.entries = (tex_col*) malloc(sizeof(tex_col) * num);
-
-		while (fgets(line,1024,file) != NULL)
-		{
-			if (line[strlen(line)-1] == '\n')
-				line[strlen(line)-1] = '\0';
-
-			if (strlen(line) > 0)
-			{
-				sscanf(line, "%s %d %d %d", name, &r, &g, &b);
-
-				if (strlen(name) > 0 )
-				{
-					strcpy(tc_list.entries[i].name,name);
-					tc_list.entries[i].red = min(max(r,1),255);
-					tc_list.entries[i].green = min(max(g,1),255);
-					tc_list.entries[i].blue = min(max(b,1),255);
-
-					i++;
-				}
-			}
-
-			if (i >= num)
-				break;
-		}
-
-		num = i;
-		tc_list.num = num;
-		printf("Loaded %ld entries from file : %s\n", num, filename);
-	}
-	else
-		printf("Unable to open file named : %s \n", filename);
-}
-// end of js features
 
 byte *GetFileSpace (int size)
 {
@@ -153,9 +74,9 @@ byte *GetFileSpace (int size)
 }
 
 
-void LightThread (void *junk)
+static void LightThread (void *junk)
 {
-	int	i;
+	int			i;
 
 	while (1)
 	{
@@ -163,11 +84,8 @@ void LightThread (void *junk)
 		i = bspfileface++;
 		UNLOCK;
 
-		if (!facecounter)
-		{
-			printf("Lighting face %i of %i\r", i, numfaces);
-			fflush(stdout);
-		}
+		printf("Lighting face %i of %i\r", i, numfaces);
+		fflush(stdout);
 
 		if (i >= numfaces)
 		{
@@ -183,9 +101,9 @@ void LightThread (void *junk)
 }
 
 
-void LightThread2 (void *junk)
+static void LightThread2 (void *junk)
 {
-	int	i, j;
+	int			i, j;
 
 	j = bspfileface;
 
@@ -195,11 +113,8 @@ void LightThread2 (void *junk)
 		i = j++;
 		UNLOCK;
 
-		if (!facecounter)
-		{
-			printf("Checking face %i of %i\r", i, numfaces);
-			fflush(stdout);
-		}
+		printf("Checking face %i of %i\r", i, numfaces);
+		fflush(stdout);
 
 		if (i >= numfaces)
 		{
@@ -215,7 +130,7 @@ void LightThread2 (void *junk)
 extern int	nummodels;
 extern dmodel_t	dmodels[MAX_MAP_MODELS];
 
-void FindFaceOffsets( void )
+static void FindFaceOffsets (void)
 {
 	int		i, j;
 	entity_t	*ent;
@@ -223,21 +138,20 @@ void FindFaceOffsets( void )
 	char	*classname;
 	vec3_t	org;
 
-	memset( nolightface, 0, sizeof( nolightface ) );
+	memset (nolightface, 0, sizeof(nolightface));
 
-	for( j = dmodels[ 0 ].firstface; j < dmodels[ 0 ].numfaces; j++ )
+	for (j = dmodels[ 0 ].firstface; j < dmodels[ 0 ].numfaces; j++)
 		nolightface[ j ] = 0;
 
-	for( i = 1; i < nummodels; i++ )
+	for (i = 1; i < nummodels; i++)
 	{
-		sprintf( name, "*%d", i );
-		ent = FindEntityWithKeyPair( "model", name );
+		sprintf (name, "*%d", i);
+		ent = FindEntityWithKeyPair("model", name);
 		if ( !ent )
-			Error("FindFaceOffsets: Couldn't find entity for model %s.\n",
- 										name );
+			Error("FindFaceOffsets: Couldn't find entity for model %s.\n", name);
 
-		classname = ValueForKey ( ent, "classname" );
-		if ( !strncmp( classname, "rotate_", 7 ) )
+		classname = ValueForKey (ent, "classname");
+		if ( !strncmp(classname, "rotate_", 7) )
 		{
 			int	start;
 			int	end;
@@ -246,12 +160,12 @@ void FindFaceOffsets( void )
 
 			start = dmodels[ i ].firstface;
 			end = start + dmodels[ i ].numfaces;
-			for( j = start; j < end; j++ )
+			for (j = start; j < end; j++)
 			{
-				nolightface[ j ] = 300;
-				faceoffset[ j ][ 0 ] = org[ 0 ];
-				faceoffset[ j ][ 1 ] = org[ 1 ];
-				faceoffset[ j ][ 2 ] = org[ 2 ];
+				nolightface[j] = 300;
+				faceoffset[j][0] = org[0];
+				faceoffset[j][1] = org[1];
+				faceoffset[j][2] = org[2];
 			}
 		}
 	}
@@ -262,11 +176,11 @@ extern int	num_clights;
 extern int	numlighttex;
 
 /*
- * =============
- *  LightWorld
- * =============
- */
-void LightWorld (void)
+=============
+LightWorld
+=============
+*/
+static void LightWorld (void)
 {
 	int	i;
 	int	j;
@@ -307,29 +221,34 @@ void LightWorld (void)
 
 		if (entities[i].light)
 		{
-			// hopefully this should never happen, but just in case...
+			// hopefully this should never happen,
+			// but just in case...
 			if (entities[i].lightcolour[0] == 0 &&
 				entities[i].lightcolour[1] == 0 && 
 				entities[i].lightcolour[2] == 0)
 			{
-				// a faint orange tinge keeps white lights from looking dull.
+				// a faint orange tinge keeps white
+				// lights from looking dull.
 				entities[i].lightcolour[0] = 255;
 				entities[i].lightcolour[1] = 225;
 				entities[i].lightcolour[2] = 200;
 
-				// the light is white, so we don't need to do anything more
+				// the light is white, so we don't need to
+				// do anything more
 				continue;
 			}
 
 			if (entities[i].lightcolour[0] == entities[i].lightcolour[1] &&
 				entities[i].lightcolour[1] == entities[i].lightcolour[2])
 			{
-				// a faint orange tinge keeps white lights from looking dull.
+				// a faint orange tinge keeps white
+				// lights from looking dull.
 				entities[i].lightcolour[0] = 255;
 				entities[i].lightcolour[1] = 225;
 				entities[i].lightcolour[2] = 200;
 
-				// the light is white, so we don't need to do anything more
+				// the light is white, so we don't need
+				// to do anything more
 				continue;
 			}
 
@@ -340,21 +259,22 @@ void LightWorld (void)
 				if (entities[i].lightcolour[j] > max)
 					max = entities[i].lightcolour[j];
 
-			// this condition will happen for any flame, torch or globe light.
+			// this condition will happen for any flame,
+			// torch or globe light.
 			if (max == 255)
 				continue;
 
-			// use 275 here instead of 255 because coloured lights can seem darker than white
-			// ones
+			// use 275 here instead of 255 because coloured lights
+			// can seem darker than white ones
 			for (j = 0; j < 3; j++)
 				entities[i].lightcolour[j] = (275 * entities[i].lightcolour[j]) / max;
 		}
 	}
 
 	printf ("- %i extra Light sources were coloured by Texture lighting\n", 
-		num_colours - num_clights);
+						num_colours - num_clights);
 	printf ("- A total of %i Light sources out of %i have now been coloured\n", 
-		num_colours, num_lights);
+						num_colours, num_lights);
 
 	if (num_colours < (num_lights / 4))
 		DecisionTime ("I suggest you don't continue, especially if you got the first warning too");
@@ -373,11 +293,11 @@ void LightWorld (void)
 
 
 /*
- * ==================
- * DecisionTime
- * Takes user's decision to continue or abort
- * ==================
- */
+==================
+DecisionTime
+Takes user's decision to continue or abort
+==================
+*/
 void DecisionTime (char *msg)
 {
 	char	c;
@@ -387,7 +307,7 @@ void DecisionTime (char *msg)
 	if (force)
 		return;
 
-	printf ("\nMHColour reports that it may not light this BSP effectively\n(%s)\n", msg);
+	printf ("\nJsH2Colour reports that it may not light this BSP effectively\n(%s)\n", msg);
 
 #ifdef _WIN32
 	printf ("Continue? [Y/N] ");
@@ -400,8 +320,8 @@ void DecisionTime (char *msg)
 	}
 
 	printf ("%c\n", c);
-#else
-	// lame solution for unix
+
+#else	// unix solution
 	while (1)
 	{
 		c = 0;
@@ -423,31 +343,35 @@ void DecisionTime (char *msg)
 
 
 /*
- * ==================
- * main
- * light modelfile
- * ==================
- */
+==================
+main
+light modelfile
+==================
+*/
 int main (int argc, char **argv)
 {
-	int	i;
-	double	start;
-	double	end;
-	char	source[1024];
-
-	//init_log("tyrlite.log");
+	int		i;
+	double		start, end;
+	char		source[1024];
+	qboolean	extfile_notfound = false;
 
 	printf ("---------------------------------------------------\n");
-	printf ("JSH2Colour " JSH2COLOR_VER "-" PLATFORM_VER "\n");
+	printf ("JSH2Colour %s - %s\n", JSH2COLOR_VER, PLATFORM_VER);
 	printf ("based on Tyrlite 0.8, MHColour 0.5 and JSColour 1.0\n");
 	printf ("---------------------------------------------------\n");
 
-	force = false;
+	// set the options we always want
 	makelit = true;
+	nominlimit = false;
+	colored = true;
+	compress_ents = false;
+
+	// defaults for the user settable options
+	force = false;
 	external = false;	// js feature
 	nodefault = false;	// js feature
 
-	for (i=1 ; i<argc ; i++)
+	for (i = 1 ; i < argc ; i++)
 	{
 		if (!strcmp(argv[i],"-extra"))
 		{
@@ -477,42 +401,46 @@ int main (int argc, char **argv)
 		else if (!strcmp (argv[i], "-lit"))
 		{
 			makelit = true;
-			printf ("Making a LIT file\n");
 		}
 		else if (!strcmp (argv[i], "-external") && argc > i)
 		{	// js feature
-			FILE* f = NULL;
 			strcpy(extfilename, argv[i+1]);
-			f = fopen(extfilename,"rt");
-
-			if ( f != NULL)
+			if (access(extfilename, R_OK) == -1)
+			{
+				printf ("No such file : %s, Ignoring this option\n", extfilename);
+				extfile_notfound = true;
+				if (nodefault == true)
+				{
+					printf ("and re-enabling the built-in color definitions\n");
+					nodefault = false;
+				}
+			}
+			else
 			{
 				external = true;
 				printf ("Using external definition file : %s\n",extfilename);
-				fclose(f);
 			}
-			else
-				printf ("No such file : %s Ignoring this option\n",extfilename);
-				i++;
+
+			i++;
 		}
 		else if (!strcmp (argv[i], "-nodefault"))
 		{	// js feature
-			nodefault = true;
-			printf ("Ignoring built-in color definition list\n");
+			if (extfile_notfound)
+			{
+				printf ("Ignoring the -nodefault option, because the external\n");
+				printf ("definition file specified can not be accessed\n");
+			}
+			else
+			{
+				nodefault = true;
+				printf ("Ignoring built-in color definition list\n");
+			}
 		}
 		else if (argv[i][0] == '-')
 			Error ("Unknown option \"%s\"", argv[i]);
 		else
 			break;
 	}
-
-	// set the options we always want
-	nominlimit = false;
-	colored = true;
-	compress_ents = false;
-
-	if (external == true)	// js feature
-		ParseDefFile(extfilename);
 
 	if (i != argc - 1)
 	{
@@ -521,11 +449,14 @@ int main (int argc, char **argv)
 		exit(0);
 	}
 
+	if (makelit == true)
+		printf ("Making a LIT file\n");
+
+	InitDefFile (extfilename);	// js feature
+
 	InitThreads ();
 
 	start = GetTime ();
-
-	numbounces = 0;
 
 	strcpy (source, argv[i]);
 	StripExtension (source);
@@ -548,12 +479,10 @@ int main (int argc, char **argv)
 	else
 		WriteBSPFile (source, BSP_OLD_VERSION);
 
+	CloseDefFile ();
+
 	end = GetTime ();
 	printf ("%0.1f seconds elapsed\n", end-start);
-
-	free(tc_list.entries);	// js feature
-
-	//close_log();
 
 	return 0;
 }
