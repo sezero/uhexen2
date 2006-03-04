@@ -1,5 +1,21 @@
 ChangeLog:
 
+2006-03-04 (CVS, 1.4.0-pre6):
+    * fixed the win32 cross compile scripts of the utilities.
+    * utils/jsh2color: moved external definition file stuff to tex.c;
+      small tidy-ups in args parsing; do not allow -the -nodefault switch
+      to take effect if the external color definition file cannot be
+      accessed; inserted a note about the fact that the effects of the
+      -light argument being zeroed (to be examined); bumped its version
+      to 1.2.2.
+    * re-organized the gl_vid files' layout a bit. win32 and sdl versions
+      should now be more "diffable".
+    * small opengl headers tidy-up.
+    * another large batch of coding style / whitespace cleanup, continued
+      to make static functions and variables static, fixed a few warnings
+      and a few tiny bugs along the way.
+    * marked the snapshot of 2006-03-04 as 1.4.0-pre6.
+
 2006-03-02 (CVS, 1.4.0-pre5):
     * created a new "opengl features" entry under the options menu and
       moved opengl options under it. added new opengl menu options for
