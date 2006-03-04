@@ -2,38 +2,30 @@
 
 #include "quakedef.h"
 #include "quakeinc.h"
+
 #include "resource.h"
 #include "wgl_func.h"
 #if !defined(NO_SPLASHES)
 #include <commctrl.h>
 #endif
 
-#if defined(H2W)
-#define WM_CLASSNAME	"HexenWorld"
-#define WM_WINDOWNAME	"HexenWorld"
-#else
-#define WM_CLASSNAME	"HexenII"
-#define WM_WINDOWNAME	"HexenII"
-#endif
 
-#define WARP_WIDTH	320
-#define WARP_HEIGHT	200
-#define MAXWIDTH	10000
-#define MAXHEIGHT	10000
-#define MAX_NUMBPP	8
-
-byte globalcolormap[VID_GRADES*256];
+#define WARP_WIDTH		320
+#define WARP_HEIGHT		200
+#define MAXWIDTH		10000
+#define MAXHEIGHT		10000
+#define MAX_NUMBPP		8
 
 typedef struct {
 	modestate_t	type;
-	int	width;
-	int	height;
-	int	modenum;
-	int	dib;
-	int	fullscreen;
-	int	bpp;
-	int	halfscreen;
-	char	modedesc[33];
+	int			width;
+	int			height;
+	int			modenum;
+	int			dib;
+	int			fullscreen;
+	int			bpp;
+	int			halfscreen;
+	char		modedesc[33];
 } vmode_t;
 
 typedef struct {
@@ -43,6 +35,7 @@ typedef struct {
 
 #define RES_640X480	3
 static const stdmode_t	std_modes[] = {
+// NOTE: keep this list in order
 	{320, 240},	// 0
 	{400, 300},	// 1
 	{512, 384},	// 2
@@ -56,77 +49,38 @@ static const stdmode_t	std_modes[] = {
 	{1600, 1200}	// 7
 };
 
-#ifdef GL_DLSYM
-HINSTANCE	hInstGL;
-static const char	*gl_library;
-#endif
-const char	*gl_vendor;
-const char	*gl_renderer;
-const char	*gl_version;
-const char	*gl_extensions;
-int		gl_max_size = 256;
-qboolean	is8bit = false;
-static qboolean	have8bit = false;
-qboolean	is_3dfx = false;
-qboolean	gl_mtexable = false;
-static int	num_tmus = 1;
-
-qboolean	DDActive;
-qboolean	scr_skipupdate;
-
 #define MAX_MODE_LIST	40
 #define MAX_STDMODES	(sizeof(std_modes) / sizeof(std_modes[0]))
 #define NUM_LOWRESMODES	(RES_640X480)
 static vmode_t	fmodelist[MAX_MODE_LIST+1];	// list of enumerated fullscreen modes
 static vmode_t	wmodelist[MAX_STDMODES +1];	// list of standart 4:3 windowed modes
 static vmode_t	*modelist;	// modelist in use, points to one of the above lists
+static int	bpplist[MAX_NUMBPP][2];
+
 static int	num_fmodes;
 static int	num_wmodes;
 static int	*nummodes;
 static vmode_t	badmode;
 
-extern qboolean	draw_reinit;
-static DEVMODE	gdevmode;
-static qboolean	vid_initialized = false;
-static qboolean vid_canalttab = false;
-static qboolean vid_wassuspended = false;
-static int	enable_mouse;
-static HICON	hIcon;
-
-static int	DIBWidth, DIBHeight;
-static RECT	WindowRect;
-static DWORD	WindowStyle, ExWindowStyle;
-
-HWND		mainwindow, dibwindow;
-
-static int	vid_modenum = NO_MODE;
-static int	vid_default = MODE_WINDOWED;
-static int	vid_deskwidth, vid_deskheight, vid_deskbpp, vid_deskmode;
-static int	bpplist[MAX_NUMBPP][2];
-static int	windowed_default;
-unsigned char	vid_curpal[256*3];
-static qboolean fullsbardraw = false;
+#if defined(H2W)
+#define WM_CLASSNAME	"HexenWorld"
+#define WM_WINDOWNAME	"HexenWorld"
+#else
+#define WM_CLASSNAME	"HexenII"
+#define WM_WINDOWNAME	"HexenII"
+#endif
 
 static HGLRC	baseRC;
 static HDC	maindc;
-
-cvar_t		gl_ztrick = {"gl_ztrick","0",true};
-cvar_t		gl_purge_maptex = {"gl_purge_maptex", "1", true};
-		/* whether or not map-specific OGL textures
-		   are flushed from map. default == yes  */
-
-viddef_t	vid;				// global video state
-
-float		RTint[256],GTint[256],BTint[256];
-unsigned short	d_8to16table[256];
-unsigned	d_8to24table[256];
-//unsigned	d_8to24table3dfx[256];
-unsigned	d_8to24TranslucentTable[256];
-#ifdef	USE_HEXEN2_PALTEX_CODE
-unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1]; // +1: COM_LoadStackFile puts a 0 at the end of the data
-#else
-unsigned char	d_15to8table[65536];
-#endif
+static DEVMODE	gdevmode;
+HWND		mainwindow, dibwindow;
+static HICON	hIcon;
+static int	DIBWidth, DIBHeight;
+static RECT	WindowRect;
+int		window_center_x, window_center_y, window_x, window_y, window_width, window_height;
+RECT		window_rect;
+static DWORD	WindowStyle, ExWindowStyle;
+qboolean	DDActive;
 
 static PIXELFORMATDESCRIPTOR pfd = {
 	sizeof(PIXELFORMATDESCRIPTOR),	// size of this pfd
@@ -149,37 +103,33 @@ static PIXELFORMATDESCRIPTOR pfd = {
 	0, 0, 0				// layer masks ignored
 };
 
-float		gldepthmin, gldepthmax;
-extern int	lightmap_textures;
-extern int	lightmap_bytes;	// in gl_rsurf.c
-
-modestate_t	modestate = MS_UNINIT;
-
-void VID_MenuDraw (void);
-void VID_MenuKey (int key);
-
+// main vid functions
 LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static void AppActivate(BOOL fActive, BOOL minimize);
-static char *VID_GetModeDescription (int mode);
-static void ClearAllStates (void);
 static void VID_UpdateWindowStatus (void);
-static void GL_Init (void);
+static char *VID_GetModeDescription (int mode);
 
-typedef void (APIENTRY *FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
-static FX_SET_PALETTE_EXT MyglColorTableEXT;
-typedef BOOL (APIENTRY *GAMMA_RAMP_FN)(HDC, LPVOID);
-static GAMMA_RAMP_FN GetDeviceGammaRamp_f;
-static GAMMA_RAMP_FN SetDeviceGammaRamp_f;
+// vars for vid state
+viddef_t	vid;			// global video state
+modestate_t	modestate = MS_UNINIT;
+static int	vid_default = MODE_WINDOWED;
+static int	vid_modenum = NO_MODE;	// current video mode, set after mode setting succeeds
+static int	vid_deskwidth, vid_deskheight, vid_deskbpp, vid_deskmode;
+static int	windowed_default;
 
-//====================================
+qboolean	scr_skipupdate;
+extern qboolean	draw_reinit;
+static qboolean	vid_initialized = false;
+static qboolean vid_canalttab = false;
+static qboolean vid_wassuspended = false;
 
+// cvar vid_mode must be set before calling
+// VID_SetMode, VID_ChangeVideoMode or VID_Restart_f
 static cvar_t	vid_mode = {"vid_mode","0", false};
 static cvar_t	vid_config_glx = {"vid_config_glx","640", true};
 static cvar_t	vid_config_gly = {"vid_config_gly","480", true};
-static cvar_t	vid_config_fscr= {"vid_config_fscr", "1", true};
 static cvar_t	vid_config_bpp = {"vid_config_bpp","16",  true};
-static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit","0", true};
-cvar_t		_enable_mouse = {"_enable_mouse","0", true};
+static cvar_t	vid_config_fscr= {"vid_config_fscr", "1", true};
 // cvars for compatibility with the software version
 static cvar_t	vid_wait = {"vid_wait", "-1", true};
 static cvar_t	vid_maxpages = {"vid_maxpages", "3", true};
@@ -192,23 +142,86 @@ static cvar_t	vid_stretch_by_2 = {"vid_stretch_by_2","1", true};
 static cvar_t	vid_config_x = {"vid_config_x","800", true};
 static cvar_t	vid_config_y = {"vid_config_y","600", true};
 
-int		window_center_x, window_center_y, window_x, window_y, window_width, window_height;
-RECT		window_rect;
+byte		globalcolormap[VID_GRADES*256];
+float		RTint[256], GTint[256], BTint[256];
+unsigned short	d_8to16table[256];
+unsigned	d_8to24table[256];
+//unsigned	d_8to24table3dfx[256];
+unsigned	d_8to24TranslucentTable[256];
+#ifdef	USE_HEXEN2_PALTEX_CODE
+unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1]; // +1: COM_LoadStackFile puts a 0 at the end of the data
+#else
+unsigned char	d_15to8table[65536];
+#endif
 
-qboolean	have_stencil = false;
+// gl stuff
+static void GL_Init (void);
 
-extern unsigned short	ramps[3][256];
-static unsigned short	orig_ramps[3][256];
-static qboolean	gammaworks = false;
+#ifdef GL_DLSYM
+HINSTANCE	hInstGL;
+static const char	*gl_library;
+#endif
+
+const char	*gl_vendor;
+const char	*gl_renderer;
+const char	*gl_version;
+const char	*gl_extensions;
+qboolean	is_3dfx = false;
+
+int		gl_max_size = 256;
+float		gldepthmin, gldepthmax;
+int		texture_extension_number = 1;
+
+// palettized textures
+typedef void	(APIENTRY *FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
+static FX_SET_PALETTE_EXT	MyglColorTableEXT;
+static qboolean	have8bit = false;
+qboolean	is8bit = false;
+static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit","0", true};
+
+// Gamma stuff
+typedef BOOL	(APIENTRY *GAMMA_RAMP_FN)(HDC, LPVOID);
+static GAMMA_RAMP_FN	GetDeviceGammaRamp_f;
+static GAMMA_RAMP_FN	SetDeviceGammaRamp_f;
+extern unsigned short	ramps[3][256];	// for hw- or 3dfx-gamma
+static unsigned short	orig_ramps[3][256];	// for hw- or 3dfx-gamma
+static qboolean	gammaworks = false;	// whether hw-gamma works
 qboolean	gl_dogamma = false;
 
-extern void	D_ClearOpenGLTextures(int); 
-extern void	R_InitParticleTexture(void); 
+// multitexturing
+qboolean	gl_mtexable = false;
+static int	num_tmus = 1;
+
+// stencil buffer
+qboolean	have_stencil = false;
+
+// misc gl tweaks
+static qboolean	fullsbardraw = false;
+cvar_t		gl_ztrick = {"gl_ztrick","0",true};
+cvar_t		gl_purge_maptex = {"gl_purge_maptex", "1", true};
+		/* whether or not map-specific OGL textures
+		   are flushed from map. default == yes  */
+
+// misc external data and functions
+extern void	D_ClearOpenGLTextures(int);
+extern void	R_InitParticleTexture(void);
 extern void	Mod_ReloadTextures (void);
+extern int	lightmap_textures;
+extern int	lightmap_bytes;	// in gl_rsurf.c
+
+// menu drawing
+void VID_MenuDraw (void);
+void VID_MenuKey (int key);
+
+// input stuff
+static void ClearAllStates (void);
+static int	enable_mouse;
+cvar_t		_enable_mouse = {"_enable_mouse","0", true};
+
 
 //====================================
 
-// for compatability with software renderer
+// functions for compatability with software renderer
 
 void VID_LockBuffer (void)
 {
@@ -247,17 +260,15 @@ static void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjus
 			SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_DRAWFRAME);
 }
 
-static void VID_ConWidth(int modenum)
+static void VID_ConWidth (int modenum)
 {
 	int i;
-
-	vid.width  = vid.conwidth  = modelist[modenum].width;
-	vid.height = vid.conheight = modelist[modenum].height;
 
 	// This will display a bigger hud and readable fonts at high
 	// resolutions. The fonts will be somewhat distorted, though
 	i = COM_CheckParm("-conwidth");
-	if (i != 0 && i < com_argc-1) {
+	if (i != 0 && i < com_argc-1)
+	{
 		vid.conwidth = atoi(com_argv[i+1]);
 		vid.conwidth &= 0xfff8; // make it a multiple of eight
 		if (vid.conwidth < 320)
@@ -345,6 +356,10 @@ static qboolean VID_SetWindowedMode (int modenum)
 	PatBlt(hdc,0,0,WindowRect.right,WindowRect.bottom,BLACKNESS);
 	ReleaseDC(dibwindow, hdc);
 
+	vid.width  = vid.conwidth  = modelist[modenum].width;
+	vid.height = vid.conheight = modelist[modenum].height;
+
+	// setup the effective console width
 	VID_ConWidth(modenum);
 
 	vid.numpages = 2;
@@ -429,6 +444,10 @@ static qboolean VID_SetFullDIBMode (int modenum)
 	PatBlt(hdc,0,0,WindowRect.right,WindowRect.bottom,BLACKNESS);
 	ReleaseDC(dibwindow, hdc);
 
+	vid.width  = vid.conwidth  = modelist[modenum].width;
+	vid.height = vid.conheight = modelist[modenum].height;
+
+	// setup the effective console width
 	VID_ConWidth(modenum);
 
 	vid.numpages = 2;
@@ -538,25 +557,48 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 }
 
 
-/*
-================
-VID_UpdateWindowStatus
-================
-*/
-static void VID_UpdateWindowStatus (void)
-{
-	window_rect.left = window_x;
-	window_rect.top = window_y;
-	window_rect.right = window_x + window_width;
-	window_rect.bottom = window_y + window_height;
-	window_center_x = (window_rect.left + window_rect.right) / 2;
-	window_center_y = (window_rect.top + window_rect.bottom) / 2;
-
-	IN_UpdateClipCursor ();
-}
-
-
 //====================================
+
+static void VID_Init8bitPalette (void)
+{
+	// Check for 8bit Extensions and initialize them.
+	int i;
+	char thePalette[256*3];
+	char *oldPalette, *newPalette;
+
+	have8bit = false;
+	is8bit = false;
+	MyglColorTableEXT = NULL;
+
+	if (strstr(gl_extensions, "GL_EXT_shared_texture_palette"))
+	{
+		MyglColorTableEXT = (FX_SET_PALETTE_EXT)wglGetProcAddress_fp("glColorTableEXT");
+		if (MyglColorTableEXT == NULL)
+		{
+			return;
+		}
+		have8bit = true;
+
+		if (!(int)vid_config_gl8bit.value)
+			return;
+
+		oldPalette = (char *) d_8to24table; //d_8to24table3dfx;
+		newPalette = thePalette;
+		for (i=0;i<256;i++)
+		{
+			*newPalette++ = *oldPalette++;
+			*newPalette++ = *oldPalette++;
+			*newPalette++ = *oldPalette++;
+			oldPalette++;
+		}
+
+		glEnable_fp (GL_SHARED_TEXTURE_PALETTE_EXT);
+		MyglColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256,
+				GL_RGB, GL_UNSIGNED_BYTE, (void *) thePalette);
+		is8bit = true;
+		Con_Printf("8-bit palettized textures enabled\n");
+	}
+}
 
 static void VID_Check3dfxGamma (void)
 {
@@ -571,7 +613,8 @@ static void VID_Check3dfxGamma (void)
 		SetDeviceGammaRamp_f = wglGetProcAddress_fp("wglSetDeviceGammaRamp3DFX");
 		if (GetDeviceGammaRamp_f && SetDeviceGammaRamp_f)
 			Con_Printf("Using 3Dfx specific gamma control\n");
-		else {
+		else
+		{
 			GetDeviceGammaRamp_f = GetDeviceGammaRamp;
 			SetDeviceGammaRamp_f = SetDeviceGammaRamp;
 		}
@@ -598,8 +641,12 @@ static void VID_InitGamma (void)
 	}
 }
 
+void VID_ShiftPalette (unsigned char *palette)
+{
+	if (gammaworks && SetDeviceGammaRamp_f)
+		SetDeviceGammaRamp_f (maindc, ramps);
+}
 
-int		texture_extension_number = 1;
 
 static void CheckMultiTextureExtensions(void)
 {
@@ -614,7 +661,8 @@ static void CheckMultiTextureExtensions(void)
 		Con_Printf("ARB Multitexture extensions found\n");
 
 		glGetIntegerv_fp(GL_MAX_TEXTURE_UNITS_ARB, &num_tmus);
-		if (num_tmus < 2) {
+		if (num_tmus < 2)
+		{
 			Con_Printf("not enough TMUs, ignoring multitexture\n");
 			return;
 		}
@@ -622,7 +670,8 @@ static void CheckMultiTextureExtensions(void)
 		glMultiTexCoord2fARB_fp = (void *) wglGetProcAddress_fp("glMultiTexCoord2fARB");
 		glActiveTextureARB_fp = (void *) wglGetProcAddress_fp("glActiveTextureARB");
 		if ((glMultiTexCoord2fARB_fp == NULL) ||
-		    (glActiveTextureARB_fp == NULL)) {
+		    (glActiveTextureARB_fp == NULL))
+		{
 			Con_Printf ("Couldn't link to multitexture functions\n");
 			return;
 		}
@@ -682,22 +731,6 @@ static void GL_InitLightmapBits (void)
 }
 
 #ifdef GL_DLSYM
-static void GL_CloseLibrary(void)
-{
-	// clear the wgl function pointers
-#define GL_FUNCTION(ret, func, params) \
-	func##_fp = NULL;
-#define GL_FUNCTION_OPT(ret, func, params)
-#include "wgl_func.h"
-#undef	GL_FUNCTION_OPT
-#undef	GL_FUNCTION
-
-	// free the library
-	if (hInstGL != NULL)
-		FreeLibrary(hInstGL);
-	hInstGL = NULL;
-}
-
 static qboolean GL_OpenLibrary(const char *name)
 {
 	Con_Printf("Loading OpenGL library %s\n", name);
@@ -720,6 +753,22 @@ static qboolean GL_OpenLibrary(const char *name)
 #undef	GL_FUNCTION
 
 	return true;
+}
+
+static void GL_CloseLibrary(void)
+{
+	// clear the wgl function pointers
+#define GL_FUNCTION(ret, func, params) \
+	func##_fp = NULL;
+#define GL_FUNCTION_OPT(ret, func, params)
+#include "wgl_func.h"
+#undef	GL_FUNCTION_OPT
+#undef	GL_FUNCTION
+
+	// free the library
+	if (hInstGL != NULL)
+		FreeLibrary(hInstGL);
+	hInstGL = NULL;
 }
 
 static void GL_Init_Functions(void)
@@ -784,14 +833,14 @@ static void GL_Init (void)
 	// initialize gl function pointers
 	GL_Init_Functions();
 #endif
-	gl_vendor = glGetString_fp (GL_VENDOR);
+	gl_vendor = (const char *)glGetString_fp (GL_VENDOR);
 	Con_Printf ("GL_VENDOR: %s\n", gl_vendor);
-	gl_renderer = glGetString_fp (GL_RENDERER);
+	gl_renderer = (const char *)glGetString_fp (GL_RENDERER);
 	Con_Printf ("GL_RENDERER: %s\n", gl_renderer);
 
-	gl_version = glGetString_fp (GL_VERSION);
+	gl_version = (const char *)glGetString_fp (GL_VERSION);
 	Con_Printf ("GL_VERSION: %s\n", gl_version);
-	gl_extensions = glGetString_fp (GL_EXTENSIONS);
+	gl_extensions = (const char *)glGetString_fp (GL_EXTENSIONS);
 	Con_DPrintf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
 	glGetIntegerv_fp(GL_MAX_TEXTURE_SIZE, &gl_max_size);
@@ -815,7 +864,7 @@ static void GL_Init (void)
 
 	VID_InitGamma ();
 
-	CheckMultiTextureExtensions ();
+	CheckMultiTextureExtensions();
 	CheckStencilBuffer();
 	GL_InitLightmapBits();
 
@@ -1112,9 +1161,9 @@ void VID_SetPalette (unsigned char *palette)
 				m=0;
 			}
 		}
-		sprintf(s, "%s/glhexen", com_gamedir);
+		sprintf(s, "%s/glhexen", com_userdir);
 		Sys_mkdir (s);
-		sprintf(s, "%s/glhexen/15to8.pal", com_gamedir);
+		sprintf(s, "%s/glhexen/15to8.pal", com_userdir);
 		f = fopen(s, "wb");
 		if (f)
 		{
@@ -1128,49 +1177,6 @@ void VID_SetPalette (unsigned char *palette)
 #endif	// end of hexenworld 8_BIT_PALETTE_CODE
 	been_here = true;
 }
-
-void	VID_ShiftPalette (unsigned char *palette)
-{
-	if (gammaworks && SetDeviceGammaRamp_f)
-		SetDeviceGammaRamp_f (maindc, ramps);
-}
-
-
-void	VID_Shutdown (void)
-{
-	HGLRC	hRC;
-	HDC	hDC;
-
-	if (vid_initialized)
-	{
-		vid_canalttab = false;
-		hRC = wglGetCurrentContext_fp();
-		hDC = wglGetCurrentDC_fp();
-
-		if (maindc && gammaworks && SetDeviceGammaRamp_f)
-			SetDeviceGammaRamp_f(maindc, orig_ramps);
-
-		wglMakeCurrent_fp(NULL, NULL);
-
-		if (hRC)
-			wglDeleteContext_fp(hRC);
-
-		if (hDC && dibwindow)
-			ReleaseDC(dibwindow, hDC);
-
-		if (modestate == MS_FULLDIB)
-			ChangeDisplaySettings (NULL, 0);
-
-		if (maindc && dibwindow)
-			ReleaseDC (dibwindow, maindc);
-
-		AppActivate(false, false);
-#ifdef GL_DLSYM
-		GL_CloseLibrary();
-#endif
-	}
-}
-
 
 //==========================================================================
 
@@ -1283,6 +1289,25 @@ static void ClearAllStates (void)
 	IN_ClearStates ();
 }
 
+
+/*
+================
+VID_UpdateWindowStatus
+================
+*/
+static void VID_UpdateWindowStatus (void)
+{
+	window_rect.left = window_x;
+	window_rect.top = window_y;
+	window_rect.right = window_x + window_width;
+	window_rect.bottom = window_y + window_height;
+	window_center_x = (window_rect.left + window_rect.right) / 2;
+	window_center_y = (window_rect.top + window_rect.bottom) / 2;
+
+	IN_UpdateClipCursor ();
+}
+
+
 static void AppActivate(BOOL fActive, BOOL minimize)
 /****************************************************************************
 *
@@ -1318,7 +1343,8 @@ static void AppActivate(BOOL fActive, BOOL minimize)
 		{
 			IN_ActivateMouse ();
 			IN_HideMouse ();
-			if (vid_canalttab && vid_wassuspended) {
+			if (vid_canalttab && vid_wassuspended)
+			{
 				vid_wassuspended = false;
 				ChangeDisplaySettings (&gdevmode, CDS_FULLSCREEN);
 				ShowWindow(mainwindow, SW_SHOWNORMAL);
@@ -1345,7 +1371,8 @@ static void AppActivate(BOOL fActive, BOOL minimize)
 		{
 			IN_DeactivateMouse ();
 			IN_ShowMouse ();
-			if (vid_canalttab) { 
+			if (vid_canalttab)
+			{ 
 				ChangeDisplaySettings (NULL, 0);
 				vid_wassuspended = true;
 			}
@@ -1858,47 +1885,12 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 		Con_SafePrintf ("No fullscreen DIB modes found\n");
 }
 
-static void VID_Init8bitPalette (void)
-{
-	// Check for 8bit Extensions and initialize them.
-	int i;
-	char thePalette[256*3];
-	char *oldPalette, *newPalette;
-
-	have8bit = false;
-	is8bit = false;
-	MyglColorTableEXT = NULL;
-
-	if (strstr(gl_extensions, "GL_EXT_shared_texture_palette"))
-	{
-		MyglColorTableEXT = (FX_SET_PALETTE_EXT)wglGetProcAddress_fp("glColorTableEXT");
-		if (MyglColorTableEXT == NULL)
-		{
-			return;
-		}
-		have8bit = true;
-
-		if (!(int)vid_config_gl8bit.value)
-			return;
-
-		oldPalette = (char *) d_8to24table; //d_8to24table3dfx;
-		newPalette = thePalette;
-		for (i=0;i<256;i++)
-		{
-			*newPalette++ = *oldPalette++;
-			*newPalette++ = *oldPalette++;
-			*newPalette++ = *oldPalette++;
-			oldPalette++;
-		}
-
-		glEnable_fp (GL_SHARED_TEXTURE_PALETTE_EXT);
-		MyglColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256,
-				GL_RGB, GL_UNSIGNED_BYTE, (void *) thePalette);
-		is8bit = true;
-		Con_Printf("8-bit palettized textures enabled\n");
-	}
-}
-
+/*
+=================
+VID_ChangeVideoMode 
+intended only as a callback for VID_Restart_f 
+=================
+*/
 static void VID_ChangeVideoMode(int newmode)
 {
 	int j, temp, temp2;
@@ -2194,11 +2186,11 @@ void	VID_Init (unsigned char *palette)
 	Cmd_AddCommand ("vid_restart", VID_Restart_f);
 
 	// prepare directories for caching mesh files
-	sprintf (gldir, "%s/glhexen", com_gamedir);
+	sprintf (gldir, "%s/glhexen", com_userdir);
 	Sys_mkdir (gldir);
-	sprintf (gldir, "%s/glhexen/boss", com_gamedir);
+	sprintf (gldir, "%s/glhexen/boss", com_userdir);
 	Sys_mkdir (gldir);
-	sprintf (gldir, "%s/glhexen/puzzle", com_gamedir);
+	sprintf (gldir, "%s/glhexen/puzzle", com_userdir);
 	Sys_mkdir (gldir);
 
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
@@ -2512,6 +2504,42 @@ void	VID_Init (unsigned char *palette)
 
 	if (COM_CheckParm("-fullsbar"))
 		fullsbardraw = true;
+}
+
+
+void	VID_Shutdown (void)
+{
+	HGLRC	hRC;
+	HDC	hDC;
+
+	if (vid_initialized)
+	{
+		vid_canalttab = false;
+		hRC = wglGetCurrentContext_fp();
+		hDC = wglGetCurrentDC_fp();
+
+		if (maindc && gammaworks && SetDeviceGammaRamp_f)
+			SetDeviceGammaRamp_f(maindc, orig_ramps);
+
+		wglMakeCurrent_fp(NULL, NULL);
+
+		if (hRC)
+			wglDeleteContext_fp(hRC);
+
+		if (hDC && dibwindow)
+			ReleaseDC(dibwindow, hDC);
+
+		if (modestate == MS_FULLDIB)
+			ChangeDisplaySettings (NULL, 0);
+
+		if (maindc && dibwindow)
+			ReleaseDC (dibwindow, maindc);
+
+		AppActivate(false, false);
+#ifdef GL_DLSYM
+		GL_CloseLibrary();
+#endif
+	}
 }
 
 

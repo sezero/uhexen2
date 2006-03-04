@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.95 2006-02-24 14:43:56 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.96 2006-03-04 14:27:04 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -20,6 +20,7 @@
 #include "sdl_inc.h"
 #include <dlfcn.h>
 #include <unistd.h>
+
 
 #define WARP_WIDTH		320
 #define WARP_HEIGHT		200
@@ -40,37 +41,6 @@ typedef struct {
 	int			halfscreen;
 	char		modedesc[33];
 } vmode_t;
-
-typedef struct {
-	int	red,
-		green,
-		blue,
-		alpha,
-		depth,
-		stencil;
-} attributes_t;
-
-static attributes_t	vid_attribs;
-static int	num_fmodes;
-static int	num_wmodes;
-static int	*nummodes;
-static int	bpp = 16;
-static const SDL_VideoInfo	*vid_info;
-static SDL_Surface	*screen;
-
-viddef_t	vid;		// global video state
-modestate_t	modestate = MS_UNINIT;
-static int	WRHeight, WRWidth;
-static int	vid_default = -1;	// modenum of 640x480 as a safe default
-static int	vid_modenum = -1;	// current video mode, set after mode setting succeeds
-static int	vid_maxwidth = 640, vid_maxheight = 480;
-// cvar vid_mode must be set before calling VID_SetMode, VID_ChangeVideoMode or VID_Restart_f
-static cvar_t	vid_mode = {"vid_mode","0", false};
-static cvar_t	vid_config_glx = {"vid_config_glx","640", true};
-static cvar_t	vid_config_gly = {"vid_config_gly","480", true};
-static cvar_t	vid_config_swx = {"vid_config_swx","320", true};
-static cvar_t	vid_config_swy = {"vid_config_swy","240", true};
-static cvar_t	vid_config_fscr= {"vid_config_fscr", "0", true};
 
 typedef struct {
 	int	width;
@@ -99,102 +69,12 @@ static const stdmode_t	std_modes[] = {
 static vmode_t	fmodelist[MAX_MODE_LIST+1];	// list of enumerated fullscreen modes
 static vmode_t	wmodelist[MAX_STDMODES +1];	// list of standart 4:3 windowed modes
 static vmode_t	*modelist;	// modelist in use, points to one of the above lists
-static qboolean	vid_initialized = false;
-extern qboolean	draw_reinit;
 
-byte		globalcolormap[VID_GRADES*256];
+static int	num_fmodes;
+static int	num_wmodes;
+static int	*nummodes;
+static int	bpp = 16;
 
-cvar_t		_enable_mouse = {"_enable_mouse","1", true};
-static int	enable_mouse;
-qboolean	in_mode_set = false;
-
-const char	*gl_vendor;
-const char	*gl_renderer;
-const char	*gl_version;
-const char	*gl_extensions;
-#ifdef GL_DLSYM
-static const char	*gl_library  = NULL;
-static qboolean	GL_OpenLibrary(const char *name);
-#endif
-int		gl_max_size = 256;
-qboolean	is_3dfx = false;
-float		gldepthmin, gldepthmax;
-
-static int	multisample = 0; // never set this to non-zero if SDL isn't multisampling-capable
-static qboolean	sdl_has_multisample = false;
-static cvar_t	vid_config_fsaa = {"vid_config_fsaa","0", true};
-
-typedef void	(*FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
-static FX_SET_PALETTE_EXT	MyglColorTableEXT;
-static qboolean	have8bit = false;
-qboolean	is8bit = false;
-static void VID_Init8bitPalette (void);
-static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit","0", true};
-
-float		RTint[256],GTint[256],BTint[256];
-unsigned short	d_8to16table[256];
-unsigned	d_8to24table[256];
-//unsigned	d_8to24table3dfx[256];
-unsigned	d_8to24TranslucentTable[256];
-#ifdef	USE_HEXEN2_PALTEX_CODE
-unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1]; // +1: COM_LoadStackFile puts a 0 at the end of the data
-#else
-unsigned char	d_15to8table[65536];
-#endif
-
-cvar_t		gl_ztrick = {"gl_ztrick","0",true};
-cvar_t		gl_purge_maptex = {"gl_purge_maptex", "1", true};
-		/* whether or not map-specific OGL textures
-		   are flushed from map. default == yes  */
-
-extern int	lightmap_textures;
-extern int	lightmap_bytes;	// in gl_rsurf.c
-
-// multitexturing
-qboolean	gl_mtexable = false;
-static int	num_tmus = 1;
-
-qboolean	scr_skipupdate;
-static		qboolean fullsbardraw = false;
-
-void VID_MenuDraw (void);
-void VID_MenuKey (int key);
-
-static void ClearAllStates (void);
-static void GL_Init (void);
-#ifdef GL_DLSYM
-static void GL_Init_Functions(void);
-#endif
-static void GL_ResetFunctions(void);
-
-qboolean	have_stencil = false;
-
-// Gamma stuff
-#define USE_GAMMA_RAMPS	0	// change to 1 if want to use ramps for gamma
-#define	EVIL_3DFX_LIB	"lib3dfxgamma.so"
-#if USE_GAMMA_RAMPS
-static unsigned short	orig_ramps[3][256];	// for hw- or 3dfx-gamma
-extern unsigned short	ramps[3][256];	// for hw- or 3dfx-gamma
-static int	(*glGetDeviceGammaRamp3DFX_fp)(void *) = NULL;
-static int	(*glSetDeviceGammaRamp3DFX_fp)(void *) = NULL;
-static void	VID_SetGammaRamp (void);
-#else
-static void	VID_SetGamma (void);
-#endif
-static void	*fx_gammalib = NULL;
-static int	(*fxGammaCtl)(float) = NULL;
-static qboolean	fx_gamma   = false;	// 3dfx-specific gamma control
-static qboolean	gammaworks = false;	// whether hw-gamma works
-qboolean	gl_dogamma = false;	// none of the above two, use gl tricks
-static void	VID_InitGamma (void);
-static void	VID_ShutdownGamma (void);
-static qboolean	VID_Check3dfxGamma(void);
-
-extern void	D_ClearOpenGLTextures(int);
-extern void	R_InitParticleTexture(void);
-extern void	Mod_ReloadTextures (void);
-
-// window manager stuff
 #if defined(H2W)
 #	define WM_TITLEBAR_TEXT	"HexenWorld"
 #	define WM_ICON_TEXT	"HexenWorld"
@@ -206,9 +86,132 @@ extern void	Mod_ReloadTextures (void);
 #	define WM_ICON_TEXT	"HEXEN2"
 #endif
 
+typedef struct {
+	int	red,
+		green,
+		blue,
+		alpha,
+		depth,
+		stencil;
+} attributes_t;
+
+static attributes_t	vid_attribs;
+static const SDL_VideoInfo	*vid_info;
+static SDL_Surface	*screen;
+
+// vars for vid state
+viddef_t	vid;			// global video state
+modestate_t	modestate = MS_UNINIT;
+static int	vid_default = -1;	// modenum of 640x480 as a safe default
+static int	vid_modenum = -1;	// current video mode, set after mode setting succeeds
+static int	vid_maxwidth = 640, vid_maxheight = 480;
+static int	WRHeight, WRWidth;
+
+qboolean	scr_skipupdate;
+extern qboolean	draw_reinit;
+static qboolean	vid_initialized = false;
+qboolean	in_mode_set = false;
+
+// cvar vid_mode must be set before calling
+// VID_SetMode, VID_ChangeVideoMode or VID_Restart_f
+static cvar_t	vid_mode = {"vid_mode","0", false};
+static cvar_t	vid_config_glx = {"vid_config_glx","640", true};
+static cvar_t	vid_config_gly = {"vid_config_gly","480", true};
+static cvar_t	vid_config_swx = {"vid_config_swx","320", true};
+static cvar_t	vid_config_fscr= {"vid_config_fscr", "0", true};
+// cvars for compatibility with the software version
+static cvar_t	vid_config_swy = {"vid_config_swy","240", true};
+
+byte		globalcolormap[VID_GRADES*256];
+float		RTint[256], GTint[256], BTint[256];
+unsigned short	d_8to16table[256];
+unsigned	d_8to24table[256];
+//unsigned	d_8to24table3dfx[256];
+unsigned	d_8to24TranslucentTable[256];
+#ifdef	USE_HEXEN2_PALTEX_CODE
+unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1]; // +1: COM_LoadStackFile puts a 0 at the end of the data
+#else
+unsigned char	d_15to8table[65536];
+#endif
+
+// gl stuff
+static void GL_Init (void);
+
+#ifdef GL_DLSYM
+static const char	*gl_library  = NULL;
+#endif
+
+const char	*gl_vendor;
+const char	*gl_renderer;
+const char	*gl_version;
+const char	*gl_extensions;
+qboolean	is_3dfx = false;
+
+int		gl_max_size = 256;
+float		gldepthmin, gldepthmax;
+int		texture_extension_number = 1;
+
+// palettized textures
+typedef void	(APIENTRY *FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
+static FX_SET_PALETTE_EXT	MyglColorTableEXT;
+static qboolean	have8bit = false;
+qboolean	is8bit = false;
+static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit","0", true};
+
+// Gamma stuff
+#define	EVIL_3DFX_LIB	"lib3dfxgamma.so"
+#define USE_GAMMA_RAMPS	0	// change to 1 if want to use ramps for gamma
+#if USE_GAMMA_RAMPS
+extern unsigned short	ramps[3][256];	// for hw- or 3dfx-gamma
+static unsigned short	orig_ramps[3][256];	// for hw- or 3dfx-gamma
+static int	(*glGetDeviceGammaRamp3DFX_fp)(void *) = NULL;
+static int	(*glSetDeviceGammaRamp3DFX_fp)(void *) = NULL;
+#endif
+static void	*fx_gammalib = NULL;
+static int	(*fxGammaCtl)(float) = NULL;
+static qboolean	fx_gamma   = false;	// 3dfx-specific gamma control
+static qboolean	gammaworks = false;	// whether hw-gamma works
+qboolean	gl_dogamma = false;	// none of the above two, use gl tricks
+
+// multitexturing
+qboolean	gl_mtexable = false;
+static int	num_tmus = 1;
+
+// multisampling
+static int	multisample = 0; // never set this to non-zero if SDL isn't multisampling-capable
+static qboolean	sdl_has_multisample = false;
+static cvar_t	vid_config_fsaa = {"vid_config_fsaa","0", true};
+
+// stencil buffer
+qboolean	have_stencil = false;
+
+// misc gl tweaks
+static qboolean	fullsbardraw = false;
+cvar_t		gl_ztrick = {"gl_ztrick","0",true};
+cvar_t		gl_purge_maptex = {"gl_purge_maptex", "1", true};
+		/* whether or not map-specific OGL textures
+		   are flushed from map. default == yes  */
+
+// misc external data and functions
+extern void	D_ClearOpenGLTextures(int);
+extern void	R_InitParticleTexture(void);
+extern void	Mod_ReloadTextures (void);
+extern int	lightmap_textures;
+extern int	lightmap_bytes;	// in gl_rsurf.c
+
+// menu drawing
+void VID_MenuDraw (void);
+void VID_MenuKey (int key);
+
+// input stuff
+static void ClearAllStates (void);
+static int	enable_mouse;
+cvar_t		_enable_mouse = {"_enable_mouse","1", true};
+
+
 //====================================
 
-// for compatability with software renderer
+// functions for compatability with software renderer
 
 void VID_LockBuffer (void)
 {
@@ -278,253 +281,36 @@ static void VID_SetIcon (void)
 	SDL_FreeSurface(icon);
 }
 
-static int sort_modes (const void *arg1, const void *arg2)
+static void VID_ConWidth (int modenum)
 {
-	const vmode_t *a1, *a2;
-	a1 = (vmode_t *) arg1;
-	a2 = (vmode_t *) arg2;
+	int i;
 
-	if (a1->width == a2->width)
-		return a1->height - a2->height;	// lowres-to-highres
-	//	return a2->height - a1->height;	// highres-to-lowres
-	else
-		return a1->width - a2->width;	// lowres-to-highres
-	//	return a2->width - a1->width;	// highres-to-lowres
-}
-
-static void VID_PrepareModes (SDL_Rect **sdl_modes)
-{
-	int	i, j;
-	qboolean	not_multiple;
-
-	num_fmodes = 0;
-	num_wmodes = 0;
-
-	// Add the standart 4:3 modes to the windowed modes list
-	// In an unlikely case that we receive no fullscreen modes,
-	// this will be our modes list (kind of...)
-	for (i = 0; i < MAX_STDMODES; i++)
+	// This will display a bigger hud and readable fonts at high
+	// resolutions. The fonts will be somewhat distorted, though
+	i = COM_CheckParm("-conwidth");
+	if (i != 0 && i < com_argc-1)
 	{
-		wmodelist[num_wmodes].width = std_modes[i].width;
-		wmodelist[num_wmodes].height = std_modes[i].height;
-		wmodelist[num_wmodes].halfscreen = 0;
-		wmodelist[num_wmodes].fullscreen = 0;
-		wmodelist[num_wmodes].bpp = 16;
-		sprintf (wmodelist[num_wmodes].modedesc,"%d x %d",std_modes[i].width,std_modes[i].height);
-		num_wmodes++;
-	}
+		vid.conwidth = atoi(com_argv[i+1]);
+		vid.conwidth &= 0xfff8; // make it a multiple of eight
+		if (vid.conwidth < MIN_WIDTH)
+			vid.conwidth = MIN_WIDTH;
+		// pick a conheight that matches with correct aspect
+		vid.conheight = vid.conwidth*3 / 4;
+		i = COM_CheckParm("-conheight");
+		if (i != 0 && i < com_argc-1)
+			vid.conheight = atoi(com_argv[i+1]);
+		//if (vid.conheight < MIN_HEIGHT)
+		if (vid.conheight < 200)
+			vid.conheight = 200;
+		if (vid.conwidth > modelist[modenum].width)
+			vid.conwidth = modelist[modenum].width;
+		if (vid.conheight > modelist[modenum].height)
+			vid.conheight = modelist[modenum].height;
 
-	// disaster scenario #1: no fullscreen modes. bind to the
-	// windowed modes list. limit it to 640x480 max. because
-	// we don't know the desktop dimensions
-	if (sdl_modes == (SDL_Rect **)0)
-	{
-no_fmodes:
-		Con_Printf ("No fullscreen video modes available\n");
-		num_wmodes = RES_640X480 + 1;
-		modelist = (vmode_t *)wmodelist;
-		nummodes = &num_wmodes;
-		vid_default = RES_640X480;
-		Cvar_SetValue ("vid_config_glx", modelist[vid_default].width);
-		Cvar_SetValue ("vid_config_gly", modelist[vid_default].height);
-		return;
-	}
-
-	// another disaster scenario (#2)
-	if (sdl_modes == (SDL_Rect **)-1)
-	{	// Really should NOT HAVE happened! this return value is
-		// for windowed modes!  Since this means all resolutions
-		// are supported, use our standart modes as modes list.
-		Con_Printf ("Unexpectedly received -1 from SDL_ListModes\n");
-		vid_maxwidth = MAXWIDTH;
-		vid_maxheight = MAXHEIGHT;
-	//	num_fmodes = -1;
-		num_fmodes = num_wmodes;
-		nummodes = &num_wmodes;
-		modelist = (vmode_t *)wmodelist;
-		vid_default = RES_640X480;
-		Cvar_SetValue ("vid_config_glx", modelist[vid_default].width);
-		Cvar_SetValue ("vid_config_gly", modelist[vid_default].height);
-		return;
-	}
-
-#if 0
-	// print the un-processed modelist as reported by SDL
-	for (j = 0; sdl_modes[j]; ++j)
-	{
-		Con_Printf ("%d x %d\n", sdl_modes[j]->w, sdl_modes[j]->h);
-	}
-	Con_Printf ("Total %d entries\n", j);
-#endif
-
-	for (i = 0; sdl_modes[i] && num_fmodes < MAX_MODE_LIST; ++i)
-	{
-		// avoid multiple listings of the same dimension
-		not_multiple = true;
-		for (j = 0; j < num_fmodes; ++j)
-		{
-			if (fmodelist[j].width == sdl_modes[i]->w && fmodelist[j].height == sdl_modes[i]->h)
-			{
-				not_multiple = false;
-				break;
-			}
-		}
-
-		// avoid resolutions < 320x240
-		if (not_multiple && sdl_modes[i]->w >= MIN_WIDTH && sdl_modes[i]->h >= MIN_HEIGHT)
-		{
-			fmodelist[num_fmodes].width = sdl_modes[i]->w;
-			fmodelist[num_fmodes].height = sdl_modes[i]->h;
-			// FIXME: look at gl_vidnt.c and learn how to
-			// really functionalize the halfscreen field.
-			fmodelist[num_fmodes].halfscreen = 0;
-			fmodelist[num_fmodes].fullscreen = 1;
-			fmodelist[num_fmodes].bpp = 16;
-			sprintf (fmodelist[num_fmodes].modedesc,"%d x %d",sdl_modes[i]->w,sdl_modes[i]->h);
-			num_fmodes++;
-		}
-	}
-
-	if (!num_fmodes)
-		goto no_fmodes;
-
-	// At his point, we have a list of valid fullscreen modes:
-	// Let's bind to it and use it for windowed modes, as well.
-	// The only downside is that if SDL doesn't report any low
-	// resolutions to us, we shall not have any for windowed
-	// rendering where they would be perfectly legitimate...
-	// Since our fullscreen/windowed toggling is instant and
-	// doesn't require a vid_restart, switching lists won't be
-	// feasible, either. The -width/-height commandline args
-	// remain as the user's trusty old friends here.
-	nummodes = &num_fmodes;
-	modelist = (vmode_t *)fmodelist;
-
-	// SDL versions older than 1.2.8 have sorting problems
-	qsort(fmodelist, num_fmodes, sizeof fmodelist[0], sort_modes);
-
-	vid_maxwidth = fmodelist[num_fmodes-1].width;
-	vid_maxheight = fmodelist[num_fmodes-1].height;
-
-	// find the 640x480 default resolution. this shouldn't fail
-	// at all (for any adapter suporting the VGA/XGA legacy).
-	for (i = 0; i < num_fmodes; i++)
-	{
-		if (fmodelist[i].width == 640 && fmodelist[i].height == 480)
-		{
-			vid_default = i;
-			break;
-		}
-	}
-
-	if (vid_default < 0)
-	{
-		// No 640x480? Unexpected, at least today..
-		// Easiest thing is to set the default mode
-		// as the highest reported one.
-		Con_Printf("WARNING: 640x480 not found in fullscreen modes\n"
-			   "Using the largest reported dimension as default\n");
-		vid_default = num_fmodes;
-	}
-
-	// limit the windowed (standart) modes list to desktop dimensions
-	for (i = 0; i < num_wmodes; i++)
-	{
-		if (wmodelist[i].width > vid_maxwidth || wmodelist[i].height > vid_maxheight)
-			break;
-	}
-	if (i < num_wmodes)
-		num_wmodes = i;
-
-	Cvar_SetValue ("vid_config_glx", modelist[vid_default].width);
-	Cvar_SetValue ("vid_config_gly", modelist[vid_default].height);
-}
-
-static void VID_ListModes_f (void)
-{
-	int	i;
-
-	Con_Printf ("Maximum allowed mode: %d x %d\n", vid_maxwidth, vid_maxheight);
-	Con_Printf ("Windowed modes enabled:\n");
-	for (i = 0; i < num_wmodes; i++)
-		Con_Printf ("%2d:  %u x %u\n", i, wmodelist[i].width, wmodelist[i].height);
-	Con_Printf ("Fullscreen modes enumerated:");
-	if (num_fmodes)
-	{
-		Con_Printf ("\n");
-		for (i = 0; i < num_fmodes; i++)
-			Con_Printf ("%2d:  %u x %u\n", i, fmodelist[i].width, fmodelist[i].height);
-	}
-	else
-	{
-		Con_Printf (" None\n");
+		vid.width = vid.conwidth;
+		vid.height = vid.conheight;
 	}
 }
-
-static void VID_NumModes_f (void)
-{
-	Con_Printf ("%d video modes in current list\n", *nummodes);
-}
-
-static void VID_ShowInfo_f (void)
-{
-	Con_Printf ("Video info:\n"
-			"BitsPerPixel: %d,\n"
-			"Rmask : %u, Gmask : %u, Bmask : %u\n"
-			"Rshift: %u, Gshift: %u, Bshift: %u\n"
-			"Rloss : %u, Gloss : %u, Bloss : %u\n"
-			"alpha : %u, colorkey: %u\n",
-			vid_info->vfmt->BitsPerPixel,
-			vid_info->vfmt->Rmask, vid_info->vfmt->Gmask, vid_info->vfmt->Bmask,
-			vid_info->vfmt->Rshift, vid_info->vfmt->Gshift, vid_info->vfmt->Bshift,
-			vid_info->vfmt->Rloss, vid_info->vfmt->Gloss, vid_info->vfmt->Bloss,
-			vid_info->vfmt->alpha, vid_info->vfmt->colorkey	);
-}
-
-#ifdef GL_DLSYM
-static qboolean GL_OpenLibrary(const char *name)
-{
-	int	ret;
-	char	gl_liblocal[MAX_OSPATH];
-
-	ret = SDL_GL_LoadLibrary(name);
-
-	if (ret < 0)
-	{
-		// In case of user-specified gl library, look for it under the
-		// installation directory, too: the user may forget providing
-		// a valid path information. In that case, make sure it doesnt
-		// contain any path information and exists in our own basedir,
-		// then try loading it
-		if ( name && !strchr(name, '/') )
-		{
-			snprintf (gl_liblocal, MAX_OSPATH, "%s/%s", com_basedir, name);
-			if (access(gl_liblocal, R_OK) == -1)
-				return false;
-
-			Con_Printf ("Failed loading gl library %s\n"
-				    "Trying to load %s\n", name, gl_liblocal);
-
-			ret = SDL_GL_LoadLibrary(gl_liblocal);
-			if (ret < 0)
-				return false;
-
-			Con_Printf("Using GL library: %s\n", gl_liblocal);
-			return true;
-		}
-
-		return false;
-	}
-
-	if (name)
-		Con_Printf("Using GL library: %s\n", name);
-	else
-		Con_Printf("Using system GL library\n");
-
-	return true;
-}
-#endif	// GL_DLSYM
-
 
 static int VID_SetMode (int modenum)
 {
@@ -598,32 +384,8 @@ static int VID_SetMode (int modenum)
 	WRWidth = vid.width = vid.conwidth = modelist[modenum].width;
 	WRHeight = vid.height = vid.conheight = modelist[modenum].height;
 
-	// This will display a bigger hud and readable fonts at high
-	// resolutions. The fonts will be somewhat distorted, though
-	i = COM_CheckParm("-conwidth");
-	if (i != 0 && i < com_argc-1)
-	{
-		vid.conwidth = atoi(com_argv[i+1]);
-		vid.conwidth &= 0xfff8; // make it a multiple of eight
-		if (vid.conwidth < MIN_WIDTH)
-			vid.conwidth = MIN_WIDTH;
-		// pick a conheight that matches with correct aspect
-		vid.conheight = vid.conwidth*3 / 4;
-		i = COM_CheckParm("-conheight");
-		if (i != 0 && i < com_argc-1)
-			vid.conheight = atoi(com_argv[i+1]);
-		//if (vid.conheight < MIN_HEIGHT)
-		if (vid.conheight < 200)
-			vid.conheight = 200;
-		if (vid.conwidth > modelist[modenum].width)
-			vid.conwidth = modelist[modenum].width;
-		if (vid.conheight > modelist[modenum].height)
-			vid.conheight = modelist[modenum].height;
-
-		vid.width = vid.conwidth;
-		vid.height = vid.conheight;
-	}
-	// end of conwidth hack
+	// setup the effective console width
+	VID_ConWidth(modenum);
 
 	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &i);
 	Con_Printf ("Video Mode Set : %dx%dx%d\n", vid.width, vid.height, i);
@@ -659,7 +421,202 @@ static int VID_SetMode (int modenum)
 
 //====================================
 
-int		texture_extension_number = 1;
+static void VID_Init8bitPalette (void)
+{
+	// Check for 8bit Extensions and initialize them.
+	int i;
+	char thePalette[256*3];
+	char *oldPalette, *newPalette;
+
+	have8bit = false;
+	is8bit = false;
+	MyglColorTableEXT = NULL;
+
+	if (strstr(gl_extensions, "GL_EXT_shared_texture_palette"))
+	{
+		MyglColorTableEXT = (FX_SET_PALETTE_EXT)SDL_GL_GetProcAddress("glColorTableEXT");
+		if (MyglColorTableEXT == NULL)
+		{
+			return;
+		}
+		have8bit = true;
+
+		if (!(int)vid_config_gl8bit.value)
+			return;
+
+		oldPalette = (char *) d_8to24table; //d_8to24table3dfx;
+		newPalette = thePalette;
+		for (i=0;i<256;i++)
+		{
+			*newPalette++ = *oldPalette++;
+			*newPalette++ = *oldPalette++;
+			*newPalette++ = *oldPalette++;
+			oldPalette++;
+		}
+
+		glEnable_fp (GL_SHARED_TEXTURE_PALETTE_EXT);
+		MyglColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256,
+				GL_RGB, GL_UNSIGNED_BYTE, (void *) thePalette);
+		is8bit = true;
+		Con_Printf("8-bit palettized textures enabled\n");
+	}
+}
+
+
+static qboolean VID_Check3dfxGamma (void)
+{
+	if ( ! COM_CheckParm("-3dfxgamma") )
+		return false;
+
+	// look for the 3dfx gamma library at the root of the installation
+	fx_gammalib = dlopen(va("%s/%s", com_basedir, EVIL_3DFX_LIB), RTLD_GLOBAL | RTLD_NOW);
+
+	if (!fx_gammalib) // look for a global installation then
+		fx_gammalib = dlopen(EVIL_3DFX_LIB, RTLD_GLOBAL | RTLD_NOW);
+
+	if (fx_gammalib)
+	{
+#if USE_GAMMA_RAMPS
+// not recommended for Voodoo1, currently crashes
+		glGetDeviceGammaRamp3DFX_fp = dlsym(fx_gammalib, "glGetDeviceGammaRamp3DFX");
+		glSetDeviceGammaRamp3DFX_fp = dlsym(fx_gammalib, "glSetDeviceGammaRamp3DFX");
+		if (glSetDeviceGammaRamp3DFX_fp != NULL && glSetDeviceGammaRamp3DFX_fp != NULL)
+		{
+			if (glGetDeviceGammaRamp3DFX_fp(orig_ramps) != 0)
+				return true;
+		}
+
+		glGetDeviceGammaRamp3DFX_fp = NULL;
+		glSetDeviceGammaRamp3DFX_fp = NULL;
+#else	// not using gamma ramps
+		fxGammaCtl = dlsym(fx_gammalib, "do3dfxGammaCtrl");
+		if (fxGammaCtl)
+		{
+			int gtmp;
+
+			gtmp = fxGammaCtl(-1);
+			switch (gtmp)
+			{
+			case 2:	// Glide2x
+			case 3:	// Glide3x
+				return true;
+			}
+		}
+
+		fxGammaCtl = NULL;
+#endif
+		dlclose (fx_gammalib);
+		fx_gammalib = NULL;
+	}
+
+	return false;
+}
+
+static void VID_InitGamma (void)
+{
+	if (is_3dfx)
+	{
+	// we don't have WGL_3DFX_gamma_control or an equivalent
+	// in unix. If we have it one day, I'll put stuff checking
+	// for and linking to it here.
+	// Otherwise, assuming is_3dfx means Voodoo1 or Voodoo2,
+	// this means we dont have hw-gamma, just use gl_dogamma
+
+	// Here is an evil hack to abuse the Glide symbols exposed on us
+		fx_gamma = VID_Check3dfxGamma();
+		if (!fx_gamma)
+			gl_dogamma = true;
+	}
+
+	if (!fx_gamma && !gl_dogamma)
+	{
+	// we may also use SDL_GetGammaRamp/SDL_SetGammaRamp
+	// but let's just stick to what AoT guys did for now.
+#if USE_GAMMA_RAMPS
+		// if the thing below works, it'll get the
+		// original gamma to be restored upon exit
+		if (SDL_GetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]) == 0)
+#else
+		if (SDL_SetGamma(v_gamma.value,v_gamma.value,v_gamma.value) == 0)
+#endif
+			gammaworks = true;
+		else
+			gl_dogamma = true;
+	}
+
+	if (fx_gamma)
+		Con_Printf("using 3dfx glide gamma controls\n");
+	if (gl_dogamma)
+		Con_Printf("gamma not available, using gl tricks\n");
+}
+
+static void VID_ShutdownGamma (void)
+{
+#if USE_GAMMA_RAMPS
+	// restore hardware gamma
+	if (glSetDeviceGammaRamp3DFX_fp != NULL && fx_gamma)
+		glSetDeviceGammaRamp3DFX_fp(orig_ramps);
+	else if (!fx_gamma && !gl_dogamma && gammaworks)
+		SDL_SetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]);
+	glGetDeviceGammaRamp3DFX_fp = NULL;
+	glSetDeviceGammaRamp3DFX_fp = NULL;
+#endif
+	fxGammaCtl = NULL;
+	if (fx_gammalib != NULL)
+		dlclose (fx_gammalib);
+	fx_gammalib = NULL;
+}
+
+#if USE_GAMMA_RAMPS
+/*
+============================
+VID_SetGammaRamp
+
+used when USE_GAMMA_RAMPS is
+defined to 1.
+============================
+*/
+static void VID_SetGammaRamp (void)
+{
+	if (glSetDeviceGammaRamp3DFX_fp != NULL && fx_gamma)
+		glSetDeviceGammaRamp3DFX_fp(ramps);
+	else if (!gl_dogamma && gammaworks)
+		SDL_SetGammaRamp(ramps[0], ramps[1], ramps[2]);
+}
+#else
+/*
+============================
+VID_SetGamma
+
+used when USE_GAMMA_RAMPS is
+defined to 0.
+============================
+*/
+static void VID_SetGamma (void)
+{
+	float value;
+
+	if ((v_gamma.value != 0)&&(v_gamma.value > (1/GAMMA_MAX)))
+		value = 1.0/v_gamma.value;
+	else
+		value = GAMMA_MAX;
+
+	if (fxGammaCtl != NULL && fx_gamma)
+		fxGammaCtl(value);
+	else if (!gl_dogamma && gammaworks)
+		SDL_SetGamma(value,value,value);
+}
+#endif
+
+void VID_ShiftPalette (unsigned char *palette)
+{
+#if USE_GAMMA_RAMPS
+	VID_SetGammaRamp();
+#else
+	VID_SetGamma();
+#endif
+}
+
 
 static void CheckMultiTextureExtensions(void)
 {
@@ -743,6 +700,87 @@ static void GL_InitLightmapBits (void)
 	}
 }
 
+#ifdef GL_DLSYM
+static qboolean GL_OpenLibrary(const char *name)
+{
+	int	ret;
+	char	gl_liblocal[MAX_OSPATH];
+
+	ret = SDL_GL_LoadLibrary(name);
+
+	if (ret < 0)
+	{
+		// In case of user-specified gl library, look for it under the
+		// installation directory, too: the user may forget providing
+		// a valid path information. In that case, make sure it doesnt
+		// contain any path information and exists in our own basedir,
+		// then try loading it
+		if ( name && !strchr(name, '/') )
+		{
+			snprintf (gl_liblocal, MAX_OSPATH, "%s/%s", com_basedir, name);
+			if (access(gl_liblocal, R_OK) == -1)
+				return false;
+
+			Con_Printf ("Failed loading gl library %s\n"
+				    "Trying to load %s\n", name, gl_liblocal);
+
+			ret = SDL_GL_LoadLibrary(gl_liblocal);
+			if (ret < 0)
+				return false;
+
+			Con_Printf("Using GL library: %s\n", gl_liblocal);
+			return true;
+		}
+
+		return false;
+	}
+
+	if (name)
+		Con_Printf("Using GL library: %s\n", name);
+	else
+		Con_Printf("Using system GL library\n");
+
+	return true;
+}
+#endif	// GL_DLSYM
+
+
+#ifdef GL_DLSYM
+static void GL_Init_Functions(void)
+{
+#define GL_FUNCTION(ret, func, params) \
+	func##_fp = (func##_f) SDL_GL_GetProcAddress(#func); \
+	if (func##_fp == 0) \
+		Sys_Error("%s not found in GL library", #func);
+#define GL_FUNCTION_OPT(ret, func, params)
+#include "gl_func.h"
+#undef	GL_FUNCTION_OPT
+#undef	GL_FUNCTION
+}
+#endif	// GL_DLSYM
+
+static void GL_ResetFunctions(void)
+{
+#ifdef	GL_DLSYM
+#define GL_FUNCTION(ret, func, params) \
+	func##_fp = NULL;
+#define GL_FUNCTION_OPT(ret, func, params)
+#include "gl_func.h"
+#undef	GL_FUNCTION_OPT
+#undef	GL_FUNCTION
+#endif	// GL_DLSYM
+
+	have_stencil = false;
+
+	gl_mtexable = false;
+	glActiveTextureARB_fp = NULL;
+	glMultiTexCoord2fARB_fp = NULL;
+
+	have8bit = false;
+	is8bit = false;
+	MyglColorTableEXT = NULL;
+}
+
 /*
 ===============
 GL_Init
@@ -817,201 +855,6 @@ static void GL_Init (void)
 		glEnable_fp (GL_MULTISAMPLE_ARB);
 		Con_Printf ("enabled %i sample fsaa\n", multisample);
 	}
-}
-
-#ifdef GL_DLSYM
-static void GL_Init_Functions(void)
-{
-#define GL_FUNCTION(ret, func, params) \
-	func##_fp = (func##_f) SDL_GL_GetProcAddress(#func); \
-	if (func##_fp == 0) \
-		Sys_Error("%s not found in GL library", #func);
-#define GL_FUNCTION_OPT(ret, func, params)
-#include "gl_func.h"
-#undef	GL_FUNCTION_OPT
-#undef	GL_FUNCTION
-}
-#endif	// GL_DLSYM
-
-static void GL_ResetFunctions(void)
-{
-#ifdef	GL_DLSYM
-#define GL_FUNCTION(ret, func, params) \
-	func##_fp = NULL;
-#define GL_FUNCTION_OPT(ret, func, params)
-#include "gl_func.h"
-#undef	GL_FUNCTION_OPT
-#undef	GL_FUNCTION
-#endif	// GL_DLSYM
-
-	have_stencil = false;
-
-	gl_mtexable = false;
-	glActiveTextureARB_fp = NULL;
-	glMultiTexCoord2fARB_fp = NULL;
-
-	have8bit = false;
-	is8bit = false;
-	MyglColorTableEXT = NULL;
-}
-
-static qboolean VID_Check3dfxGamma(void)
-{
-	if ( ! COM_CheckParm("-3dfxgamma") )
-		return false;
-
-	// look for the 3dfx gamma library at the root of the installation
-	fx_gammalib = dlopen(va("%s/%s", com_basedir, EVIL_3DFX_LIB), RTLD_GLOBAL | RTLD_NOW);
-
-	if (!fx_gammalib) // look for a global installation then
-		fx_gammalib = dlopen(EVIL_3DFX_LIB, RTLD_GLOBAL | RTLD_NOW);
-
-	if (fx_gammalib)
-	{
-#if USE_GAMMA_RAMPS
-// not recommended for Voodoo1, currently crashes
-		glGetDeviceGammaRamp3DFX_fp = dlsym(fx_gammalib, "glGetDeviceGammaRamp3DFX");
-		glSetDeviceGammaRamp3DFX_fp = dlsym(fx_gammalib, "glSetDeviceGammaRamp3DFX");
-		if (glSetDeviceGammaRamp3DFX_fp != NULL && glSetDeviceGammaRamp3DFX_fp != NULL)
-		{
-			if (glGetDeviceGammaRamp3DFX_fp(orig_ramps) != 0)
-				return true;
-		}
-
-		glGetDeviceGammaRamp3DFX_fp = NULL;
-		glSetDeviceGammaRamp3DFX_fp = NULL;
-#else	// not using gamma ramps
-		fxGammaCtl = dlsym(fx_gammalib, "do3dfxGammaCtrl");
-		if (fxGammaCtl)
-		{
-			int gtmp;
-
-			gtmp = fxGammaCtl(-1);
-			switch (gtmp)
-			{
-			case 2:	// Glide2x
-			case 3:	// Glide3x
-				return true;
-			}
-		}
-
-		fxGammaCtl = NULL;
-#endif
-		dlclose (fx_gammalib);
-		fx_gammalib = NULL;
-	}
-
-	return false;
-}
-
-static void VID_InitGamma(void)
-{
-	if (is_3dfx)
-	{
-	// we don't have WGL_3DFX_gamma_control or an equivalent
-	// in unix. If we have it one day, I'll put stuff checking
-	// for and linking to it here.
-	// Otherwise, assuming is_3dfx means Voodoo1 or Voodoo2,
-	// this means we dont have hw-gamma, just use gl_dogamma
-
-	// Here is an evil hack to abuse the Glide symbols exposed on us
-		fx_gamma = VID_Check3dfxGamma();
-		if (!fx_gamma)
-			gl_dogamma = true;
-	}
-
-	if (!fx_gamma && !gl_dogamma)
-	{
-	// we may also use SDL_GetGammaRamp/SDL_SetGammaRamp
-	// but let's just stick to what AoT guys did for now.
-#if USE_GAMMA_RAMPS
-		// if the thing below works, it'll get the
-		// original gamma to be restored upon exit
-		if (SDL_GetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]) == 0)
-#else
-		if (SDL_SetGamma(v_gamma.value,v_gamma.value,v_gamma.value) == 0)
-#endif
-			gammaworks = true;
-		else
-			gl_dogamma = true;
-	}
-
-	if (fx_gamma)
-		Con_Printf("using 3dfx glide gamma controls\n");
-	if (gl_dogamma)
-		Con_Printf("gamma not available, using gl tricks\n");
-}
-
-/*
-============================
-Gamma functions for UNIX/SDL
-============================
-*/
-#if USE_GAMMA_RAMPS
-/*
-============================
-VID_SetGammaRamp
-
-used when USE_GAMMA_RAMPS is
-defined to 1.
-============================
-*/
-static void VID_SetGammaRamp(void)
-{
-	if (glSetDeviceGammaRamp3DFX_fp != NULL && fx_gamma)
-		glSetDeviceGammaRamp3DFX_fp(ramps);
-	else if (!gl_dogamma && gammaworks)
-		SDL_SetGammaRamp(ramps[0], ramps[1], ramps[2]);
-}
-#else
-/*
-============================
-VID_SetGamma
-
-used when USE_GAMMA_RAMPS is
-defined to 0.
-============================
-*/
-static void VID_SetGamma(void)
-{
-	float value;
-
-	if ((v_gamma.value != 0)&&(v_gamma.value > (1/GAMMA_MAX)))
-		value = 1.0/v_gamma.value;
-	else
-		value = GAMMA_MAX;
-
-	if (fxGammaCtl != NULL && fx_gamma)
-		fxGammaCtl(value);
-	else if (!gl_dogamma && gammaworks)
-		SDL_SetGamma(value,value,value);
-}
-#endif
-
-void VID_ShiftPalette (unsigned char *palette)
-{
-#if USE_GAMMA_RAMPS
-	VID_SetGammaRamp();
-#else
-	VID_SetGamma();
-#endif
-}
-
-static void VID_ShutdownGamma (void)
-{
-#if USE_GAMMA_RAMPS
-	// restore hardware gamma
-	if (glSetDeviceGammaRamp3DFX_fp != NULL && fx_gamma)
-		glSetDeviceGammaRamp3DFX_fp(orig_ramps);
-	else if (!fx_gamma && !gl_dogamma && gammaworks)
-		SDL_SetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]);
-	glGetDeviceGammaRamp3DFX_fp = NULL;
-	glSetDeviceGammaRamp3DFX_fp = NULL;
-#endif
-	fxGammaCtl = NULL;
-	if (fx_gammalib != NULL)
-		dlclose (fx_gammalib);
-	fx_gammalib = NULL;
 }
 
 /*
@@ -1260,7 +1103,8 @@ void VID_SetPalette (unsigned char *palette)
 		sprintf(s, "%s/glhexen", com_userdir);
 		Sys_mkdir (s);
 		sprintf(s, "%s/glhexen/15to8.pal", com_userdir);
-		if ((f = fopen(s, "wb")))
+		f = fopen(s, "wb");
+		if (f)
 		{
 			fwrite(d_15to8table, 1<<15, 1, f);
 			fclose(f);
@@ -1271,6 +1115,33 @@ void VID_SetPalette (unsigned char *palette)
 	been_here = true;
 }
 
+
+/*
+===================================================================
+
+MAIN WINDOW
+
+===================================================================
+*/
+
+/*
+================
+ClearAllStates
+================
+*/
+static void ClearAllStates (void)
+{
+	int		i;
+	
+// send an up event for each key, to make sure the server clears them all
+	for (i=0 ; i<256 ; i++)
+	{
+		Key_Event (i, false);
+	}
+
+	Key_ClearStates ();
+	IN_ClearStates ();
+}
 
 /*
 =================
@@ -1377,81 +1248,167 @@ static void VID_Restart_f (void)
 	VID_ChangeVideoMode ((int)vid_mode.value);
 }
 
-void	VID_Shutdown (void)
+static int sort_modes (const void *arg1, const void *arg2)
 {
-	VID_ShutdownGamma();
-	SDL_Quit();
+	const vmode_t *a1, *a2;
+	a1 = (vmode_t *) arg1;
+	a2 = (vmode_t *) arg2;
+
+	if (a1->width == a2->width)
+		return a1->height - a2->height;	// lowres-to-highres
+	//	return a2->height - a1->height;	// highres-to-lowres
+	else
+		return a1->width - a2->width;	// lowres-to-highres
+	//	return a2->width - a1->width;	// highres-to-lowres
 }
 
-
-/*
-===================================================================
-
-MAIN WINDOW
-
-===================================================================
-*/
-
-/*
-================
-ClearAllStates
-================
-*/
-static void ClearAllStates (void)
+static void VID_PrepareModes (SDL_Rect **sdl_modes)
 {
-	int		i;
-	
-// send an up event for each key, to make sure the server clears them all
-	for (i=0 ; i<256 ; i++)
+	int	i, j;
+	qboolean	not_multiple;
+
+	num_fmodes = 0;
+	num_wmodes = 0;
+
+	// Add the standart 4:3 modes to the windowed modes list
+	// In an unlikely case that we receive no fullscreen modes,
+	// this will be our modes list (kind of...)
+	for (i = 0; i < MAX_STDMODES; i++)
 	{
-		Key_Event (i, false);
+		wmodelist[num_wmodes].width = std_modes[i].width;
+		wmodelist[num_wmodes].height = std_modes[i].height;
+		wmodelist[num_wmodes].halfscreen = 0;
+		wmodelist[num_wmodes].fullscreen = 0;
+		wmodelist[num_wmodes].bpp = 16;
+		sprintf (wmodelist[num_wmodes].modedesc,"%d x %d",std_modes[i].width,std_modes[i].height);
+		num_wmodes++;
 	}
 
-	Key_ClearStates ();
-	IN_ClearStates ();
-}
-
-static void VID_Init8bitPalette (void)
-{
-	// Check for 8bit Extensions and initialize them.
-	int i;
-	char thePalette[256*3];
-	char *oldPalette, *newPalette;
-
-	have8bit = false;
-	is8bit = false;
-	MyglColorTableEXT = NULL;
-
-	if (strstr(gl_extensions, "GL_EXT_shared_texture_palette"))
+	// disaster scenario #1: no fullscreen modes. bind to the
+	// windowed modes list. limit it to 640x480 max. because
+	// we don't know the desktop dimensions
+	if (sdl_modes == (SDL_Rect **)0)
 	{
-		MyglColorTableEXT = (FX_SET_PALETTE_EXT)SDL_GL_GetProcAddress("glColorTableEXT");
-		if (MyglColorTableEXT == NULL)
-		{
-			return;
-		}
-		have8bit = true;
-
-		if (!(int)vid_config_gl8bit.value)
-			return;
-
-		oldPalette = (char *) d_8to24table; //d_8to24table3dfx;
-		newPalette = thePalette;
-		for (i=0;i<256;i++)
-		{
-			*newPalette++ = *oldPalette++;
-			*newPalette++ = *oldPalette++;
-			*newPalette++ = *oldPalette++;
-			oldPalette++;
-		}
-
-		glEnable_fp (GL_SHARED_TEXTURE_PALETTE_EXT);
-		MyglColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256,
-				GL_RGB, GL_UNSIGNED_BYTE, (void *) thePalette);
-		is8bit = true;
-		Con_Printf("8-bit palettized textures enabled\n");
+no_fmodes:
+		Con_Printf ("No fullscreen video modes available\n");
+		num_wmodes = RES_640X480 + 1;
+		modelist = (vmode_t *)wmodelist;
+		nummodes = &num_wmodes;
+		vid_default = RES_640X480;
+		Cvar_SetValue ("vid_config_glx", modelist[vid_default].width);
+		Cvar_SetValue ("vid_config_gly", modelist[vid_default].height);
+		return;
 	}
-}
 
+	// another disaster scenario (#2)
+	if (sdl_modes == (SDL_Rect **)-1)
+	{	// Really should NOT HAVE happened! this return value is
+		// for windowed modes!  Since this means all resolutions
+		// are supported, use our standart modes as modes list.
+		Con_Printf ("Unexpectedly received -1 from SDL_ListModes\n");
+		vid_maxwidth = MAXWIDTH;
+		vid_maxheight = MAXHEIGHT;
+	//	num_fmodes = -1;
+		num_fmodes = num_wmodes;
+		nummodes = &num_wmodes;
+		modelist = (vmode_t *)wmodelist;
+		vid_default = RES_640X480;
+		Cvar_SetValue ("vid_config_glx", modelist[vid_default].width);
+		Cvar_SetValue ("vid_config_gly", modelist[vid_default].height);
+		return;
+	}
+
+#if 0
+	// print the un-processed modelist as reported by SDL
+	for (j = 0; sdl_modes[j]; ++j)
+	{
+		Con_Printf ("%d x %d\n", sdl_modes[j]->w, sdl_modes[j]->h);
+	}
+	Con_Printf ("Total %d entries\n", j);
+#endif
+
+	for (i = 0; sdl_modes[i] && num_fmodes < MAX_MODE_LIST; ++i)
+	{
+		// avoid multiple listings of the same dimension
+		not_multiple = true;
+		for (j = 0; j < num_fmodes; ++j)
+		{
+			if (fmodelist[j].width == sdl_modes[i]->w && fmodelist[j].height == sdl_modes[i]->h)
+			{
+				not_multiple = false;
+				break;
+			}
+		}
+
+		// avoid resolutions < 320x240
+		if (not_multiple && sdl_modes[i]->w >= MIN_WIDTH && sdl_modes[i]->h >= MIN_HEIGHT)
+		{
+			fmodelist[num_fmodes].width = sdl_modes[i]->w;
+			fmodelist[num_fmodes].height = sdl_modes[i]->h;
+			// FIXME: look at gl_vidnt.c and learn how to
+			// really functionalize the halfscreen field.
+			fmodelist[num_fmodes].halfscreen = 0;
+			fmodelist[num_fmodes].fullscreen = 1;
+			fmodelist[num_fmodes].bpp = 16;
+			sprintf (fmodelist[num_fmodes].modedesc,"%d x %d",sdl_modes[i]->w,sdl_modes[i]->h);
+			num_fmodes++;
+		}
+	}
+
+	if (!num_fmodes)
+		goto no_fmodes;
+
+	// At his point, we have a list of valid fullscreen modes:
+	// Let's bind to it and use it for windowed modes, as well.
+	// The only downside is that if SDL doesn't report any low
+	// resolutions to us, we shall not have any for windowed
+	// rendering where they would be perfectly legitimate...
+	// Since our fullscreen/windowed toggling is instant and
+	// doesn't require a vid_restart, switching lists won't be
+	// feasible, either. The -width/-height commandline args
+	// remain as the user's trusty old friends here.
+	nummodes = &num_fmodes;
+	modelist = (vmode_t *)fmodelist;
+
+	// SDL versions older than 1.2.8 have sorting problems
+	qsort(fmodelist, num_fmodes, sizeof fmodelist[0], sort_modes);
+
+	vid_maxwidth = fmodelist[num_fmodes-1].width;
+	vid_maxheight = fmodelist[num_fmodes-1].height;
+
+	// find the 640x480 default resolution. this shouldn't fail
+	// at all (for any adapter suporting the VGA/XGA legacy).
+	for (i = 0; i < num_fmodes; i++)
+	{
+		if (fmodelist[i].width == 640 && fmodelist[i].height == 480)
+		{
+			vid_default = i;
+			break;
+		}
+	}
+
+	if (vid_default < 0)
+	{
+		// No 640x480? Unexpected, at least today..
+		// Easiest thing is to set the default mode
+		// as the highest reported one.
+		Con_Printf("WARNING: 640x480 not found in fullscreen modes\n"
+			   "Using the largest reported dimension as default\n");
+		vid_default = num_fmodes;
+	}
+
+	// limit the windowed (standart) modes list to desktop dimensions
+	for (i = 0; i < num_wmodes; i++)
+	{
+		if (wmodelist[i].width > vid_maxwidth || wmodelist[i].height > vid_maxheight)
+			break;
+	}
+	if (i < num_wmodes)
+		num_wmodes = i;
+
+	Cvar_SetValue ("vid_config_glx", modelist[vid_default].width);
+	Cvar_SetValue ("vid_config_gly", modelist[vid_default].height);
+}
 
 /*
 ===================
@@ -1527,6 +1484,47 @@ void VID_PostInitFix (void)
 		Cvar_SetValue ("vid_config_fscr", 1);
 	else
 		Cvar_SetValue ("vid_config_fscr", 0);
+}
+
+static void VID_ListModes_f (void)
+{
+	int	i;
+
+	Con_Printf ("Maximum allowed mode: %d x %d\n", vid_maxwidth, vid_maxheight);
+	Con_Printf ("Windowed modes enabled:\n");
+	for (i = 0; i < num_wmodes; i++)
+		Con_Printf ("%2d:  %u x %u\n", i, wmodelist[i].width, wmodelist[i].height);
+	Con_Printf ("Fullscreen modes enumerated:");
+	if (num_fmodes)
+	{
+		Con_Printf ("\n");
+		for (i = 0; i < num_fmodes; i++)
+			Con_Printf ("%2d:  %u x %u\n", i, fmodelist[i].width, fmodelist[i].height);
+	}
+	else
+	{
+		Con_Printf (" None\n");
+	}
+}
+
+static void VID_NumModes_f (void)
+{
+	Con_Printf ("%d video modes in current list\n", *nummodes);
+}
+
+static void VID_ShowInfo_f (void)
+{
+	Con_Printf ("Video info:\n"
+			"BitsPerPixel: %d,\n"
+			"Rmask : %u, Gmask : %u, Bmask : %u\n"
+			"Rshift: %u, Gshift: %u, Bshift: %u\n"
+			"Rloss : %u, Gloss : %u, Bloss : %u\n"
+			"alpha : %u, colorkey: %u\n",
+			vid_info->vfmt->BitsPerPixel,
+			vid_info->vfmt->Rmask, vid_info->vfmt->Gmask, vid_info->vfmt->Bmask,
+			vid_info->vfmt->Rshift, vid_info->vfmt->Gshift, vid_info->vfmt->Bshift,
+			vid_info->vfmt->Rloss, vid_info->vfmt->Gloss, vid_info->vfmt->Bloss,
+			vid_info->vfmt->alpha, vid_info->vfmt->colorkey	);
 }
 
 /*
@@ -1732,6 +1730,13 @@ void	VID_Init (unsigned char *palette)
 
 	if (COM_CheckParm("-fullsbar"))
 		fullsbardraw = true;
+}
+
+
+void	VID_Shutdown (void)
+{
+	VID_ShutdownGamma();
+	SDL_Quit();
 }
 
 
