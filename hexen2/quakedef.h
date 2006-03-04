@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.49 2006-03-04 15:35:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.50 2006-03-04 15:50:38 sezero Exp $
 */
 
 
@@ -24,8 +24,8 @@
 #define	HOT_VERSION_MIN		0
 #define	HOT_VERSION_BETA	1
 #if HOT_VERSION_BETA
-#define	HOT_VERSION_BETA_STR	"pre5"
-#define	HOT_VERSION_BETA_DATE	"2006-03-02"
+#define	HOT_VERSION_BETA_STR	"pre6"
+#define	HOT_VERSION_BETA_DATE	"2006-03-04"
 #endif
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
@@ -398,6 +398,9 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.49  2006/03/04 15:35:23  sezero
+ * opengl headers tidy-up
+ *
  * Revision 1.48  2006/03/02 20:02:36  sezero
  * marked the snapshot of 2006-03-02 as 1.4.0-pre5
  *
