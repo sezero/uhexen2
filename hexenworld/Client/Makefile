@@ -294,6 +294,7 @@ COMMONOBJS = cl_cam.o \
 	keys.o \
 	mathlib.o \
 	menu.o \
+	huffman.o \
 	net_wins.o \
 	net_chan.o \
 	pmove.o \
