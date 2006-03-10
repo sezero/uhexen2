@@ -123,11 +123,12 @@ Here are some of the important command-line switches:
  -width   N		Select screen size (can also be set from the menu)
  -height  N		Optional, Must be used with -width (can also be set
 			from the menu)
+ -bpp  N		Color depth for GL fullscreen mode
  -conwidth  N		Enables a bigger hud display and readable fonts
 			at high resolutions. Valid conwidth values are
-			values equal or less than the screen width above,
-			640 is the sanest.
- -bpp  N		Color depth for GL fullscreen mode
+			values equal or less than the screen width above:
+			Smaller the number, bigger the text. 640 is the
+			sanest.
  -nomouse		Disables mouse usage in game
  -heapsize  N		Heapsize (memory to allocate, in KB)
  -fsaa N		Enable N sample antialiasing (N: 0,2,4) (can also be
