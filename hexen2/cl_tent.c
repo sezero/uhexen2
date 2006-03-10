@@ -2,7 +2,7 @@
 	cl_tent.c
 	Client side temporary entity effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.10 2005-11-05 20:19:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.11 2006-03-10 08:08:45 sezero Exp $
 */
 
 
@@ -211,12 +211,21 @@ void CL_ParseTEnt(void)
 		pos[1] = MSG_ReadCoord ();
 		pos[2] = MSG_ReadCoord ();
 		R_ParticleExplosion (pos);
-		break;	// ??? WTF ???
+	//	break;	// WTF ?.
 		dl = CL_AllocDlight (0);
 		VectorCopy (pos, dl->origin);
 		dl->radius = 350;
 		dl->die = cl.time + 0.5;
 		dl->decay = 300;
+#	ifdef GLQUAKE
+		if (gl_colored_dynamic_lights.value)
+		{	// Make the dynamic light red
+			dl->color[0] = 0.8;
+			dl->color[1] = 0.2;
+			dl->color[2] = 0.2;
+			dl->color[3] = 0.7;
+		}
+#	endif
 		S_StartSound (-1, 0, cl_sfx_r_exp3, pos, 1, 1);
 		break;
 	case TE_LIGHTNING1:

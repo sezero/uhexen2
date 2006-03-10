@@ -1,6 +1,6 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.8 2005-10-29 21:43:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.9 2006-03-10 08:08:45 sezero Exp $
 */
 
 typedef struct
@@ -62,6 +62,7 @@ typedef struct
 	float	minlight;			// don't add when contributing less
 	int		key;
 	qboolean	dark;			// subtracts light instead of adding
+	float	color[4];			// LordHavoc: colored lights support
 } dlight_t;
 
 #define	MAX_EFRAGS		640
@@ -378,6 +379,9 @@ void CL_UpdateTEnts(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2005/10/29 21:43:22  sezero
+ * unified cmd layer
+ *
  * Revision 1.7  2005/10/25 20:08:41  sezero
  * coding style and whitespace cleanup.
  *

@@ -9,6 +9,7 @@ int		lightmap_bytes = 4;		// 1, 2, or 4. default is 4 for GL_RGBA
 int		lightmap_textures;
 
 unsigned	blocklights[18*18];
+unsigned	blocklightscolor[18*18*3];	// LordHavoc: .lit support (*3 for RGB) to the definitions at the top
 
 #define	BLOCK_WIDTH	128
 #define	BLOCK_HEIGHT	128
@@ -41,6 +42,9 @@ void R_AddDynamicLights (msurface_t *surf)
 	int			i;
 	int			smax, tmax;
 	mtexinfo_t	*tex;
+	// LordHavoc: .lit support
+	float		cred, cgreen, cblue, brightness;
+	unsigned	*bl;
 
 	smax = (surf->extents[0]>>4)+1;
 	tmax = (surf->extents[1]>>4)+1;
@@ -72,6 +76,12 @@ void R_AddDynamicLights (msurface_t *surf)
 		local[0] -= surf->texturemins[0];
 		local[1] -= surf->texturemins[1];
 		
+		// LordHavoc: .lit support
+		bl = blocklightscolor;
+		cred = cl_dlights[lnum].color[0] * 256.0f;
+		cgreen = cl_dlights[lnum].color[1] * 256.0f;
+		cblue = cl_dlights[lnum].color[2] * 256.0f;
+
 		for (t = 0 ; t<tmax ; t++)
 		{
 			td = local[1] - t*16;
@@ -87,7 +97,16 @@ void R_AddDynamicLights (msurface_t *surf)
 				else
 					dist = td + (sd>>1);
 				if (dist < minlight)
+				{
+					brightness = rad - dist;
+					bl[0] += (int) (brightness * cred);
+					bl[1] += (int) (brightness * cgreen);
+					bl[2] += (int) (brightness * cblue);
+
 					blocklights[t*smax + s] += (rad - dist)*256;
+				}
+
+				bl += 3;
 			}
 		}
 	}
@@ -104,12 +123,13 @@ Combine and scale multiple lightmaps into the 8.8 format in blocklights
 void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 {
 	int		smax, tmax;
-	int		t;
+	int		t, r, s, q;
 	int		i, j, size;
 	byte		*lightmap;
 	unsigned	scale;
 	int		maps;
-	unsigned	*bl;
+	unsigned	*bl, *blcr, *blcg, *blcb;
+
 
 	surf->cached_dlight = (surf->dlightframe == r_framecount);
 
@@ -122,13 +142,23 @@ void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 	if (r_fullbright.value || !cl.worldmodel->lightdata)
 	{
 		for (i=0 ; i<size ; i++)
+		{
+		    if (gl_lightmap_format == GL_RGBA)
+			blocklightscolor[i*3+0] = blocklightscolor[i*3+1] = blocklightscolor[i*3+2] = 65280;
+		    else
 			blocklights[i] = 255*256;
+		}
 		goto store;
 	}
 
 // clear to no light
 	for (i=0 ; i<size ; i++)
+	{
+	    if (gl_lightmap_format == GL_RGBA)
+		blocklightscolor[i*3+0] = blocklightscolor[i*3+1] = blocklightscolor[i*3+2]  = 0;
+	    else
 		blocklights[i] = 0;
+	}
 
 // add all the lightmaps
 	if (lightmap)
@@ -137,9 +167,25 @@ void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 		{
 			scale = d_lightstylevalue[surf->styles[maps]];
 			surf->cached_light[maps] = scale;	// 8.8 fraction
-			for (i=0 ; i<size ; i++)
-				blocklights[i] += lightmap[i] * scale;
-			lightmap += size;	// skip to next lightmap
+
+			if (gl_lightmap_format == GL_RGBA)
+			{
+				for (i=0, j=0 ; i<size ; i++)
+				{
+					blocklightscolor[i*3+0] += lightmap[j] * scale;
+					blocklightscolor[i*3+1] += lightmap[++j] * scale;
+					blocklightscolor[i*3+2] += lightmap[++j] * scale;
+					j++;
+				}
+
+				lightmap += size * 3;
+			}
+			else
+			{
+				for (i=0 ; i<size ; i++)
+					blocklights[i] += lightmap[i] * scale;
+				lightmap += size;	// skip to next lightmap
+			}
 		}
 
 // add all the dynamic lights
@@ -152,17 +198,53 @@ store:
 	{
 	case GL_RGBA:
 		stride -= (smax<<2);
-		bl = blocklights;
+
+		blcr = &blocklightscolor[0];
+		blcg = &blocklightscolor[1];
+		blcb = &blocklightscolor[2];
+
 		for (i=0 ; i<tmax ; i++, dest += stride)
 		{
 			for (j=0 ; j<smax ; j++)
 			{
-				t = *bl++;
-				t >>= 7;
-				if (t > 255)
-					t = 255;
-				dest[3] = 255-t;
+				q = *blcr;
+				q >>= 7;
+				r = *blcg;
+				r >>= 7;
+				s = *blcb;
+				s >>= 7;
+
+				if (q > 255)
+					q = 255;
+				if (r > 255)
+					r = 255;
+				if (s > 255)
+					s = 255;
+
+				if ( gl_coloredlight.value > 0 )
+				{
+					dest[0] = q; //255 - q;
+					dest[1] = r; //255 - r;
+					dest[2] = s; //255 - s;
+					dest[3] = 255; //(q+r+s)/3;
+				}
+				else
+				{
+					t = (int) ( ((float)q*0.33f) + ((float) s*0.33f) + ((float) r*0.33f) );
+
+					if (t > 255)
+						t = 255;
+					dest[0] = t;
+					dest[1] = t;
+					dest[2] = t;
+					dest[3] = 255; //t;
+				}
+
 				dest += 4;
+
+				blcr += 3;
+				blcg += 3;
+				blcb += 3;
 			}
 		}
 		break;
@@ -391,6 +473,12 @@ void R_BlendLightmaps (qboolean Translucent)
 		glColor4f_fp (0.0f,0.0f,0.0f,1.0f);
 		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
+	else if (gl_lightmap_format == GL_RGBA)
+	{	// LordHavoc: .lit support
+		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		glColor4f_fp (1.0f,1.0f,1.0f, 1.0f);
+		glBlendFunc_fp (GL_ZERO, GL_SRC_COLOR);
+	}
 
 	if (!r_lightmap.value)
 	{
@@ -457,6 +545,10 @@ void R_BlendLightmaps (qboolean Translucent)
 	{
 		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 		glColor4f_fp (1.0f,1.0f,1.0f,1.0f);
+	}
+	else if (gl_lightmap_format == GL_RGBA)
+	{	// LordHavoc: .lit support
+		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	}
 
 	if (!Translucent)

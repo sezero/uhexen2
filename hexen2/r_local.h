@@ -2,7 +2,7 @@
 	r_local.h
 	private refresh defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_local.h,v 1.5 2005-10-02 15:43:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_local.h,v 1.6 2006-03-10 08:08:45 sezero Exp $
 */
 
 #ifndef GLQUAKE
@@ -297,6 +297,7 @@ void R_PrintTimes (void);
 void R_PrintDSpeeds (void);
 void R_AnimateLight (void);
 int R_LightPoint (vec3_t p);
+int *R_LightPointColour (vec3_t p);
 void R_SetupFrame (void);
 void R_cshift_f (void);
 void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1);
@@ -310,6 +311,9 @@ extern int TransCount;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/10/02 15:43:08  sezero
+ * killed -Wshadow warnings
+ *
  * Revision 1.4  2005/05/20 16:17:50  sezero
  * keep ID style in declerations (less diff between h2/h2w...)
  *

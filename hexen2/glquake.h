@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.40 2006-03-04 15:35:23 sezero Exp $
+	$Id: glquake.h,v 1.41 2006-03-10 08:08:45 sezero Exp $
 */
 
 
@@ -151,6 +151,7 @@ void R_RotateForEntity (entity_t *e);
 void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
 void R_AnimateLight(void);
 int R_LightPoint (vec3_t p);
+int *R_LightPointColour (vec3_t p);
 void R_StoreEfrags (efrag_t **ppefrag);
 void R_InitParticles (void);
 void R_ClearParticles (void);
@@ -356,6 +357,10 @@ extern	cvar_t	gl_glows;
 extern	cvar_t	gl_other_glows;
 extern	cvar_t	gl_missile_glows;
 
+extern	cvar_t	gl_coloredlight;
+extern	cvar_t	gl_colored_dynamic_lights;
+extern	cvar_t	gl_extra_dynamic_lights;
+
 extern	int	gl_lightmap_format;
 extern	int	gl_solid_format;
 extern	int	gl_alpha_format;
@@ -388,6 +393,9 @@ extern	qboolean lightmap_modified[MAX_LIGHTMAPS];
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.40  2006/03/04 15:35:23  sezero
+ * opengl headers tidy-up
+ *
  * Revision 1.39  2006/02/24 14:43:55  sezero
  * created a new "opengl features" entry under the options menu and moved opengl
  * options under it. added new opengl menu options for texture filtering, glow

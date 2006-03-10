@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.39 2006-03-01 21:24:42 sezero Exp $
+	$Id: gl_rmain.c,v 1.40 2006-03-10 08:08:45 sezero Exp $
 */
 
 
@@ -99,6 +99,10 @@ cvar_t	gl_stencilshadow = {"gl_stencilshadow", "0",true};
 cvar_t	gl_glows = {"gl_glows","1",true};
 cvar_t	gl_other_glows = {"gl_other_glows","0",true};
 cvar_t	gl_missile_glows = {"gl_missile_glows","1",true};
+
+cvar_t	gl_coloredlight = {"gl_coloredlight","0",true};
+cvar_t	gl_colored_dynamic_lights = {"gl_colored_dynamic_lights","0",true};
+cvar_t	gl_extra_dynamic_lights = {"gl_extra_dynamic_lights","0",true};
 
 extern	cvar_t	gl_ztrick;
 
@@ -501,6 +505,7 @@ float	r_avertexnormal_dots[SHADEDOT_QUANT][256] = {
 #include "anorm_dots.h"
 };
 
+float	shadelightcolor[4];
 float	*shadedots = r_avertexnormal_dots[0];
 
 int	lastposenum;
@@ -556,8 +561,18 @@ void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 			order += 2;
 
 			// normals and vertexes come from the frame list
-			l = shadedots[verts->lightnormalindex] * shadelight;
-			glColor4f_fp (r*l, g*l, b*l, model_constant_alpha);
+
+			if (gl_lightmap_format == GL_RGBA)
+			{
+				l = shadedots[verts->lightnormalindex];
+				glColor4f_fp (l * shadelightcolor[0], l * shadelightcolor[1], l * shadelightcolor[2], model_constant_alpha);
+			}
+			else
+			{
+				l = shadedots[verts->lightnormalindex] * shadelight;
+				glColor4f_fp (r*l, g*l, b*l, model_constant_alpha);
+			}
+
 			glVertex3f_fp (verts->v[0], verts->v[1], verts->v[2]);
 			verts++;
 		} while (--count);
@@ -695,6 +710,7 @@ void R_DrawAliasModel (entity_t *e)
 	glpic_t		*gl;
 	char		temp[40];
 	int		mls;
+	int		*lpc;
 	vec3_t		adjust_origin;
 
 	clmodel = currententity->model;
@@ -717,6 +733,16 @@ void R_DrawAliasModel (entity_t *e)
 	adjust_origin[2] += (currententity->model->mins[2] + currententity->model->maxs[2]) / 2;
 	ambientlight = shadelight = R_LightPoint (adjust_origin);
 
+	if (gl_lightmap_format == GL_RGBA)
+	{	// get lighting information
+		lpc = R_LightPointColour (adjust_origin);
+		shadelightcolor[0] = (float) lpc[0];
+		shadelightcolor[1] = (float) lpc[1];
+		shadelightcolor[2] = (float) lpc[2];
+		shadelightcolor[3] = (float) lpc[3];
+		ambientlight = shadelightcolor[3];
+	}
+
 	// always give the gun some light
 	if (e == &cl.viewent && ambientlight < 24)
 		ambientlight = shadelight = 24;
@@ -731,7 +757,13 @@ void R_DrawAliasModel (entity_t *e)
 			add = cl_dlights[lnum].radius - Length(dist);
 
 			if (add > 0)
+			{
 				ambientlight += add;
+				shadelightcolor[0] += (cl_dlights[lnum].color[0] * add);
+				shadelightcolor[1] += (cl_dlights[lnum].color[1] * add);
+				shadelightcolor[2] += (cl_dlights[lnum].color[2] * add);
+				shadelightcolor[3] += add;
+			}
 		}
 	}
 
@@ -750,16 +782,18 @@ void R_DrawAliasModel (entity_t *e)
 	}
 	else if (mls == MLS_ABSLIGHT)
 	{
-		ambientlight = shadelight = currententity->abslight;
+		shadelightcolor[0] = shadelightcolor[1] = shadelightcolor[2] = ambientlight = shadelight = currententity->abslight;
 	}
 	else if (mls != MLS_NONE)
 	{ // Use a model light style (25-30)
-		ambientlight = shadelight = d_lightstylevalue[24+mls]/2;
+		shadelightcolor[0] = shadelightcolor[1] = shadelightcolor[2] = ambientlight = shadelight = d_lightstylevalue[24+mls]/2;
 	}
 
 	shadedots = r_avertexnormal_dots[((int)(e->angles[1] * (SHADEDOT_QUANT / 360.0))) & (SHADEDOT_QUANT - 1)];
 	shadelight = shadelight / 200.0;
 	
+	VectorScale(shadelightcolor, 1.0f / 200.0f, shadelightcolor);
+
 	an = e->angles[1]/180*M_PI;
 	shadevector[0] = cos(-an);
 	shadevector[1] = sin(-an);
@@ -1317,16 +1351,29 @@ void R_DrawViewModel (void)
 	vec3_t		dist;
 	float		add;
 	dlight_t	*dl;
+	int		*lpc;
 
 	currententity = &cl.viewent;
 
 	if (!currententity->model)
 		return;
 
-	ambientlight = R_LightPoint (currententity->origin);
-
-	if (ambientlight < 24)
-		ambientlight = 24;	// always give some light on gun
+	if (gl_lightmap_format == GL_RGBA)
+	{
+		lpc = R_LightPointColour (currententity->origin);
+		// always give some light on gun
+		ambientlight = (float) lpc[3] > 24 ? lpc[3] : 24;
+		shadelightcolor[0] = (float) lpc[0] > 24 ? lpc[0] : 24;
+		shadelightcolor[1] = (float) lpc[1] > 24 ? lpc[1] : 24;
+		shadelightcolor[2] = (float) lpc[2] > 24 ? lpc[2] : 24;
+		shadelightcolor[3] = (float) lpc[3] > 24 ? lpc[3] : 24;
+	}
+	else
+	{
+		ambientlight = R_LightPoint (currententity->origin);
+		if (ambientlight < 24)
+			ambientlight = 24;	// always give some light on gun
+	}
 
 // add dynamic lights		
 	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
@@ -1340,7 +1387,21 @@ void R_DrawViewModel (void)
 		VectorSubtract (currententity->origin, dl->origin, dist);
 		add = dl->radius - Length(dist);
 		if (add > 0)
+		{
+			if (gl_lightmap_format == GL_RGBA)
+			{
+				shadelightcolor[0] += (float) (dl->color[0] * add);
+				shadelightcolor[1] += (float) (dl->color[1] * add);
+				shadelightcolor[2] += (float) (dl->color[2] * add);
+				shadelightcolor[3] += (float) add;
+			}
+/*			else
+			{
+				shadelight += (float) add;    // id left this out...
+			}
+*/
 			ambientlight += add;
+		}
 	}
 
 	cl.light_level = ambientlight;
@@ -1832,6 +1893,10 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.39  2006/03/01 21:24:42  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 35:  anorm_dots.h, gl_warp_sin.h).
+ *
  * Revision 1.38  2005/10/24 23:01:15  sezero
  * fixed "might be used uninitialized" warnings for xyfact and zfact
  *

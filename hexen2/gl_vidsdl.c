@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.104 2006-03-04 14:26:58 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.105 2006-03-10 08:08:45 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -672,7 +672,7 @@ static void CheckStencilBuffer(void)
 
 static void GL_InitLightmapBits (void)
 {
-	gl_lightmap_format = GL_LUMINANCE;
+	//gl_lightmap_format = GL_LUMINANCE;	// default is now RGBA
 	if (COM_CheckParm ("-lm_1"))
 		gl_lightmap_format = GL_LUMINANCE;
 	else if (COM_CheckParm ("-lm_a"))

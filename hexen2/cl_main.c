@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.24 2006-01-20 07:36:01 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.25 2006-03-10 08:08:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -404,6 +404,7 @@ dlight_t *CL_AllocDlight (int key)
 			{
 				memset (dl, 0, sizeof(*dl));
 				dl->key = key;
+				dl->color[0] = dl->color[1] = dl->color[2] = dl->color[3] = 1;
 				return dl;
 			}
 		}
@@ -417,6 +418,7 @@ dlight_t *CL_AllocDlight (int key)
 		{
 			memset (dl, 0, sizeof(*dl));
 			dl->key = key;
+			dl->color[0] = dl->color[1] = dl->color[2] = dl->color[3] = 1;
 			return dl;
 		}
 	}
@@ -424,6 +426,7 @@ dlight_t *CL_AllocDlight (int key)
 	dl = &cl_dlights[0];
 	memset (dl, 0, sizeof(*dl));
 	dl->key = key;
+	dl->color[0] = dl->color[1] = dl->color[2] = dl->color[3] = 1;
 	return dl;
 }
 
@@ -631,6 +634,15 @@ static void CL_RelinkEntities (void)
 				dl->radius = 200 + (rand()&31);
 				dl->minlight = 32;
 				dl->die = cl.time + 0.1;
+#		ifdef GLQUAKE
+				if (gl_colored_dynamic_lights.value)
+				{	// Make the dynamic light yellow
+					dl->color[0] = 1.0;
+					dl->color[1] = 1.0;
+					dl->color[2] = 0.5;
+					dl->color[3] = 0.7;
+				}
+#		endif
 			}
 		}
 		if (ent->effects & EF_BRIGHTLIGHT)
@@ -642,6 +654,15 @@ static void CL_RelinkEntities (void)
 				dl->origin[2] += 16;
 				dl->radius = 400 + (rand()&31);
 				dl->die = cl.time + 0.001;
+#		ifdef GLQUAKE
+				if (gl_colored_dynamic_lights.value)
+				{
+					dl->color[0] = 0.8;
+					dl->color[1] = 0.8;
+					dl->color[2] = 1.0;
+					dl->color[3] = 0.7;
+				}
+#		endif
 			}
 		}
 		if (ent->effects & EF_DIMLIGHT)
@@ -652,6 +673,15 @@ static void CL_RelinkEntities (void)
 				VectorCopy (ent->origin,  dl->origin);
 				dl->radius = 200 + (rand()&31);
 				dl->die = cl.time + 0.001;
+#		ifdef GLQUAKE
+				if (gl_colored_dynamic_lights.value)
+				{
+					dl->color[0] = 0.8;
+					dl->color[1] = 0.6;
+					dl->color[2] = 0.2;
+					dl->color[3] = 0.7;
+				}
+#		endif
 			}
 		}
 
@@ -674,6 +704,15 @@ static void CL_RelinkEntities (void)
 				VectorCopy (ent->origin,  dl->origin);
 				dl->radius = 200;
 				dl->die = cl.time + 0.001;
+#		ifdef GLQUAKE
+				if (gl_colored_dynamic_lights.value)
+				{
+					dl->color[0] = 0.8;
+					dl->color[1] = 0.4;
+					dl->color[2] = 0.2;
+					dl->color[3] = 0.7;
+				}
+#		endif
 			}
 		}
 
@@ -704,6 +743,15 @@ static void CL_RelinkEntities (void)
 				VectorCopy (ent->origin, dl->origin);
 				dl->radius = 120 - (rand() % 20);
 				dl->die = cl.time + 0.01;
+#		ifdef GLQUAKE
+				if (gl_colored_dynamic_lights.value)
+				{
+					dl->color[0] = 0.8;
+					dl->color[1] = 0.2;
+					dl->color[2] = 0.2;
+					dl->color[3] = 0.7;
+				}
+#		endif
 			}
 		}
 		else if (ent->model->flags & EF_ACIDBALL)
@@ -715,6 +763,15 @@ static void CL_RelinkEntities (void)
 				VectorCopy (ent->origin, dl->origin);
 				dl->radius = 120 - (rand() % 20);
 				dl->die = cl.time + 0.01;
+#		ifdef GLQUAKE
+				if (gl_colored_dynamic_lights.value)
+				{	// Make the dynamic light green
+					dl->color[0] = 0.2;
+					dl->color[1] = 0.8;
+					dl->color[2] = 0.2;
+					dl->color[3] = 0.7;
+				}
+#		endif
 			}
 		}
 		else if (ent->model->flags & EF_ICE)
@@ -730,6 +787,15 @@ static void CL_RelinkEntities (void)
 				VectorCopy (ent->origin, dl->origin);
 				dl->radius = -120 - (rand() % 20);
 				dl->die = cl.time + 0.05;
+#		ifdef GLQUAKE
+				if (gl_colored_dynamic_lights.value)
+				{	// Make the dynamic light green
+					dl->color[0] = 0.2;
+					dl->color[1] = 0.6;
+					dl->color[2] = 0.2;
+					dl->color[3] = 0.7;
+				}
+#		endif
 			}
 		}
 		else if (ent->model->flags & EF_SPELL)
@@ -743,6 +809,24 @@ static void CL_RelinkEntities (void)
 		else if (ent->model->flags & EF_VORP_MISSILE)
 		{
 			R_RocketTrail (oldorg, ent->origin, rt_vorpal);
+
+#		ifdef GLQUAKE
+			// extra dynamic lights
+			if (gl_extra_dynamic_lights.value)
+			{
+				dl = CL_AllocDlight (i);
+				VectorCopy (ent->origin, dl->origin);
+				dl->radius = 240 - (rand() % 20);
+				dl->die = cl.time + 0.01;
+				if (gl_colored_dynamic_lights.value)
+				{	// Make the dynamic light blue
+					dl->color[0] = 0.3;
+					dl->color[1] = 0.3;
+					dl->color[2] = 0.8;
+					dl->color[3] = 0.7;
+				}
+			}
+#		endif
 		}
 		else if (ent->model->flags & EF_SET_STAFF)
 		{
@@ -752,11 +836,51 @@ static void CL_RelinkEntities (void)
 		{
 			if ((rand() & 3) < 1)
 				R_RocketTrail (oldorg, ent->origin, rt_magicmissile);
+
+#		ifdef GLQUAKE
+			// extra dynamic lights
+			if (gl_extra_dynamic_lights.value)
+			{
+				dl = CL_AllocDlight (i);
+				VectorCopy (ent->origin, dl->origin);
+				dl->radius = 240 - (rand() % 20);
+				dl->die = cl.time + 0.01;
+				if (gl_colored_dynamic_lights.value)
+				{	// Make the dynamic light blue
+					dl->color[0] = 0.1;
+					dl->color[1] = 0.1;
+					dl->color[2] = 0.8;
+					dl->color[3] = 0.7;
+				}
+			}
+#		endif
 		}
 		else if (ent->model->flags & EF_BONESHARD)
+		{
 			R_RocketTrail (oldorg, ent->origin, rt_boneshard);
+		}
 		else if (ent->model->flags & EF_SCARAB)
+		{
 			R_RocketTrail (oldorg, ent->origin, rt_scarab);
+
+#		ifdef GLQUAKE
+			// extra dynamic lights
+			if (gl_extra_dynamic_lights.value)
+			{
+				dl = CL_AllocDlight (i);
+				VectorCopy (ent->origin, dl->origin);
+				dl->radius = 240 - (rand() % 20);
+				dl->die = cl.time + 0.01;
+				if (gl_colored_dynamic_lights.value)
+				{	// Make the dynamic light orange
+					dl->color[0] = 0.9;
+					dl->color[1] = 0.6;
+					dl->color[2] = 0.1;
+					dl->color[3] = 0.7;
+				}
+			}
+#		endif
+		}
 
 		ent->forcelink = false;
 
@@ -934,6 +1058,10 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2006/01/20 07:36:01  sezero
+ * added debug-mode error reporting to CL_CopyFiles, since we're dealing
+ * with multiple file access in there (from Steven.)
+ *
  * Revision 1.23  2006/01/06 12:19:08  sezero
  * put the new Sys_FindFirstFile/Sys_FindNextFile stuff into action. also killed
  * the tempdir and trailing slash funnies in host_cmd.c when calling CL_CopyFiles

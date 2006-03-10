@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.18 2006-02-24 14:43:56 sezero Exp $
+	$Id: gl_model.c,v 1.19 2006-03-10 08:08:46 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -585,14 +585,129 @@ Mod_LoadLighting
 */
 void Mod_LoadLighting (lump_t *l)
 {
-	if (!l->filelen)
+	// LordHavoc: .lit support
+	int	i;
+	byte	*in, *out, *data;
+	byte	d;
+	char	litfilename[1024];
+
+	if (gl_lightmap_format == GL_RGBA)
 	{
 		loadmodel->lightdata = NULL;
-		return;
+
+		if ( gl_coloredlight.value > 0)
+		{	// LordHavoc: check for a .lit file
+			strcpy(litfilename, loadmodel->name);
+			COM_StripExtension(litfilename, litfilename);
+			strcat(litfilename, ".lit");
+			Con_DPrintf("trying to load %s\n", litfilename);
+			data = (byte*) COM_LoadHunkFile (litfilename);
+			if (data)
+			{
+				if (data[0] == 'Q' && data[1] == 'L' && data[2] == 'I' && data[3] == 'T')
+				{
+					i = LittleLong(((int *)data)[1]);
+					if (i == 1)
+					{
+						Con_DPrintf("%s loaded\n", litfilename);
+						Con_Printf("Loaded colored light (32-bit)\n");
+						if ( gl_coloredlight.value == 1 )
+						{
+							loadmodel->lightdata = data + 8;
+							return;
+						}
+						else
+						{
+							int	min_light = 8;
+							int	k = 0;
+							int	mark, j, r, g, b;
+							float	l2lc = 0;
+							float	lc = 0;
+							float	li = 0;
+
+							if (!l->filelen)
+							{
+								loadmodel->lightdata = data + 8;
+								Con_Printf("No white light data. Using colored only\n");
+								return;
+							}
+							Con_Printf("Loaded white light.\n");
+
+							// allocate memory and load light data from .bsp
+							mark = Hunk_LowMark();
+							loadmodel->lightdata = Hunk_AllocName (l->filelen, "light");
+							memcpy (loadmodel->lightdata, mod_base + l->fileofs, l->filelen);
+
+							for (i = 0, j = 0, k = 0; i < l->filelen * 3; i += 3, j += 3)
+							{
+								// set some minimal light level
+								r = max(data[8+i], min_light);
+								g = max(data[8+i+1], min_light);
+								b = max(data[8+i+2], min_light);
+
+								// compute brightness of colored ligths present in .lit file
+								lc = (r + g + b) / 3.0f;
+								li = (float) loadmodel->lightdata[k];
+
+								if (li == 0)
+									li = min_light;
+								if (lc == 0)
+									lc = min_light;
+
+								// compute light amplification level
+								//l2lc = max((float) li/lc, 1);
+								l2lc = (float) li/lc;
+								if ( l2lc < 1.5f )
+									l2lc = 1;
+
+								// update colors
+								data[8+j]   = (byte) min(max( ceil(r*l2lc), min_light ),255);
+								data[8+j+1] = (byte) min(max( ceil(g*l2lc), min_light ),255);
+								data[8+j+2] = (byte) min(max( ceil(b*l2lc), min_light ),255);
+								k++;
+							}
+							Hunk_FreeToLowMark(mark);
+
+							loadmodel->lightdata = data + 8;
+							Con_Printf("Blended lightmaps.\n");
+							return;
+						}
+					}
+					else
+						Con_Printf("Unknown .lit file version (%d)\n", i);
+				}
+				else
+					Con_Printf("Corrupt .lit file (old version?), ignoring\n");
+			}
+		}
+		// no .lit found, expand the white lighting data to color
+		if (!l->filelen)
+			return;
+		loadmodel->lightdata = Hunk_AllocName ( l->filelen*3, litfilename);
+		in = loadmodel->lightdata + l->filelen*2; // place the file at the end, so it will not be overwritten until the very last write
+		out = loadmodel->lightdata;
+		memcpy (in, mod_base + l->fileofs, l->filelen);
+		for (i = 0; i < l->filelen; i++)
+		{
+			d = *in++;
+			*out++ = d;
+			*out++ = d;
+			*out++ = d;
+		}
+		Con_Printf("Loaded white light (32-bit)\n");
 	}
-//	loadmodel->lightdata = Hunk_AllocName ( l->filelen, loadname);
-	loadmodel->lightdata = Hunk_AllocName ( l->filelen, "light");
-	memcpy (loadmodel->lightdata, mod_base + l->fileofs, l->filelen);
+	else
+	{
+		if (!l->filelen)
+		{
+			loadmodel->lightdata = NULL;
+			return;
+		}
+	//	loadmodel->lightdata = Hunk_AllocName ( l->filelen, loadname);
+		loadmodel->lightdata = Hunk_AllocName ( l->filelen, "light");
+		memcpy (loadmodel->lightdata, mod_base + l->fileofs, l->filelen);
+		Con_Printf("Loaded white light (8-bit)\n");
+	}
 }
 
 
@@ -892,10 +1007,18 @@ void Mod_LoadFaces (lump_t *l)
 			out->styles[i] = in->styles[i];
 		i = LittleLong(in->lightofs);
 		if (i == -1)
+		{
 			out->samples = NULL;
+		}
 		else
-			out->samples = loadmodel->lightdata + i;
-		
+		{
+			//out->samples = loadmodel->lightdata + i;
+			if (gl_lightmap_format == GL_RGBA)
+				out->samples = loadmodel->lightdata + (i * 3); // LordHavoc
+			else
+				out->samples = loadmodel->lightdata + i;
+		}
+
 	// set the drawing flags flag
 		
 		if (!strncmp(out->texinfo->texture->name,"sky",3))	// sky

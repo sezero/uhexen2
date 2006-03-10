@@ -702,7 +702,7 @@ static void CheckStencilBuffer(void)
 
 static void GL_InitLightmapBits (void)
 {
-	gl_lightmap_format = GL_LUMINANCE;
+	//gl_lightmap_format = GL_LUMINANCE;	// default is now RGBA
 	if (COM_CheckParm ("-lm_1"))
 		gl_lightmap_format = GL_LUMINANCE;
 	else if (COM_CheckParm ("-lm_a"))
