@@ -17,7 +17,7 @@ extern int resolution;
 extern int use_con;
 extern int fxgamma;
 extern int is8bit;
-extern int mtex;
+extern int use_lm1;
 extern int vsync;
 extern int use_fsaa;
 extern int aasamples;
@@ -574,18 +574,18 @@ GtkWidget* create_window1 (void)
   GTK_WIDGET_UNSET_FLAGS (WGT_GL8BIT, GTK_CAN_FOCUS);
   gtk_tooltips_set_tip (tooltips, WGT_GL8BIT, _("Enable 8-bit OpenGL texture extensions"), NULL);
 
-// Disable Multitexture detection
-  WGT_MTEX = gtk_check_button_new_with_label (_("Disable Multitexturing"));
-  gtk_widget_ref (WGT_MTEX);
-  gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "bMTEX", WGT_MTEX,
+// Whether to use GL_LUMINANCE lightmap format (the -lm_1 and -lm_4 switches)
+  WGT_LM_BYTES = gtk_check_button_new_with_label (_("Use old lightmap format"));
+  gtk_widget_ref (WGT_LM_BYTES);
+  gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "bLM_BYTES", WGT_LM_BYTES,
 				(GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (WGT_MTEX);
-  gtk_fixed_put (GTK_FIXED (ADDON_TAB2), WGT_MTEX, 14, 182);
-  gtk_widget_set_size_request (WGT_MTEX, 180, 24);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_MTEX), !mtex);
-  GTK_WIDGET_UNSET_FLAGS (WGT_MTEX, GTK_CAN_FOCUS);
-  gtk_tooltips_set_tip (tooltips, WGT_MTEX, _("Disable multitexture detection"), NULL);
-  gtk_widget_set_sensitive (WGT_MTEX, opengl_support);
+  gtk_widget_show (WGT_LM_BYTES);
+  gtk_fixed_put (GTK_FIXED (ADDON_TAB2), WGT_LM_BYTES, 14, 182);
+  gtk_widget_set_size_request (WGT_LM_BYTES, 180, 24);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_LM_BYTES), use_lm1);
+  GTK_WIDGET_UNSET_FLAGS (WGT_LM_BYTES, GTK_CAN_FOCUS);
+  gtk_tooltips_set_tip (tooltips, WGT_LM_BYTES, _("GL_RGBA is default. Mark to use the old GL_LUMINANCE format"), NULL);
+  gtk_widget_set_sensitive (WGT_LM_BYTES, opengl_support);
 
 // Enable VSync
   WGT_VSYNC = gtk_check_button_new_with_label (_("Enable VSync"));
@@ -964,8 +964,8 @@ GtkWidget* create_window1 (void)
 			GTK_SIGNAL_FUNC (ReverseOpt), &fxgamma);
   gtk_signal_connect (GTK_OBJECT (WGT_GL8BIT), "toggled",
 			GTK_SIGNAL_FUNC (ReverseOpt), &is8bit);
-  gtk_signal_connect (GTK_OBJECT (WGT_MTEX), "toggled",
-			GTK_SIGNAL_FUNC (ReverseOpt), &mtex);
+  gtk_signal_connect (GTK_OBJECT (WGT_LM_BYTES), "toggled",
+			GTK_SIGNAL_FUNC (ReverseOpt), &use_lm1);
   gtk_signal_connect (GTK_OBJECT (WGT_VSYNC), "toggled",
 			GTK_SIGNAL_FUNC (ReverseOpt), &vsync);
   gtk_signal_connect (GTK_OBJECT (WGT_FSAA), "toggled",

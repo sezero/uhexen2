@@ -134,7 +134,7 @@ void on_OGL (GtkToggleButton *button, gamewidget_t *wgt)
 	}
 	gtk_widget_set_sensitive (wgt->TDFX_BUTTON, opengl_support);
 	gtk_widget_set_sensitive (wgt->GL8BIT_BUTTON, opengl_support);
-	gtk_widget_set_sensitive (wgt->MTEX_BUTTON, opengl_support);
+	gtk_widget_set_sensitive (wgt->LM_BUTTON, opengl_support);
 	gtk_widget_set_sensitive (wgt->VSYNC_BUTTON, opengl_support);
 	gtk_widget_set_sensitive (wgt->FSAA_BUTTON, opengl_support);
 	gtk_widget_set_sensitive (wgt->LIBGL_BUTTON, opengl_support);

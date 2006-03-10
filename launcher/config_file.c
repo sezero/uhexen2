@@ -16,7 +16,7 @@ int is8bit		= 0;
 int use_fsaa		= 0;
 int aasamples		= 2;
 int vsync		= 0;
-int mtex		= 1;
+int use_lm1		= 0;
 int gl_nonstd		= 0;
 char gllibrary[256]	= "libGL.so.1";
 int sound		= 1;
@@ -89,7 +89,7 @@ int write_config_file (void)
 		fprintf(cfg_file, "use_fsaa=%d\n",use_fsaa);
 		fprintf(cfg_file, "aasamples=%d\n",aasamples);
 		fprintf(cfg_file, "vsync=%d\n",vsync);
-		fprintf(cfg_file, "mtex=%d\n",mtex);
+		fprintf(cfg_file, "use_lm1=%d\n",use_lm1);
 		fprintf(cfg_file, "gl_nonstd=%d\n",gl_nonstd);
 		fprintf(cfg_file, "gllibrary=\"%s\"\n",gllibrary);
 		fprintf(cfg_file, "sound=%d\n",sound);
@@ -212,11 +212,11 @@ int read_config_file (void)
 					if (vsync != 0 && vsync != 1)
 							vsync = 0;
 				}
-				else if (strstr(buff, "mtex=") == buff)
+				else if (strstr(buff, "use_lm1=") == buff)
 				{
-					mtex = atoi(buff + 5);
-					if (mtex != 0 && mtex != 1)
-							mtex = 1;
+					use_lm1 = atoi(buff + 8);
+					if (use_lm1 != 0 && use_lm1 != 1)
+							use_lm1 = 0;
 				}
 				else if (strstr(buff, "gl_nonstd=") == buff)
 				{

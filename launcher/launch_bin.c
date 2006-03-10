@@ -13,7 +13,7 @@ extern int is8bit;
 extern int use_fsaa;
 extern int aasamples;
 extern int vsync;
-extern int mtex;
+extern int use_lm1;
 extern int gl_nonstd;
 extern char gllibrary[256];
 extern int midi;
@@ -188,8 +188,8 @@ void launch_hexen2_bin (void)
 	if ((opengl_support) && (vsync))
 		args[++i] = "-vsync";
 
-	if ((opengl_support) && (!mtex))
-		args[++i] = "-nomtex";
+	if ((opengl_support) && (use_lm1 == 1)) // -lm_4 is default already
+		args[++i] = "-lm_1";
 
 	if ((opengl_support) && (gl_nonstd) && (strlen(gllibrary) != 0))
 	{

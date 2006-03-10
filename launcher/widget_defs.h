@@ -36,7 +36,7 @@ struct Video_s {
 	GtkObject *adjFSAA;	// Multisampling adjustment
 	GtkWidget *spnFSAA;	// Multisampling entry
 	GtkWidget *bVSYNC;	// Enable vertical sync
-	GtkWidget *bMTEX;	// Disable multitexture detection
+	GtkWidget *bLM_BYTES;	// Whether to use GL_LUMINANCE lightmaps
 	GtkWidget *bLIBGL;	// Custom GL library toggle
 	GtkWidget *GL_Entry;	// Custom GL library path
 };
@@ -103,7 +103,7 @@ typedef struct {
 #define WGT_FULLSCR	Games.Video.bFULS
 #define WGT_3DFX	Games.Video.b3DFX
 #define WGT_GL8BIT	Games.Video.b8BIT
-#define WGT_MTEX	Games.Video.bMTEX
+#define WGT_LM_BYTES	Games.Video.bLM_BYTES
 #define WGT_VSYNC	Games.Video.bVSYNC
 #define WGT_FSAA	Games.Video.bFSAA
 #define WGT_ADJFSAA	Games.Video.adjFSAA
@@ -150,7 +150,7 @@ typedef struct {
 #define CONW_BUTTON_S	Video.bCONW
 #define TDFX_BUTTON	Video.b3DFX
 #define GL8BIT_BUTTON	Video.b8BIT
-#define MTEX_BUTTON	Video.bMTEX
+#define LM_BUTTON	Video.bLM_BYTES
 #define VSYNC_BUTTON	Video.bVSYNC
 #define FSAA_BUTTON	Video.bFSAA
 #define LIBGL_BUTTON	Video.bLIBGL
