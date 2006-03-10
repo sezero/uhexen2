@@ -117,10 +117,12 @@ Use the "-f" switch to start the game in full-screen mode.
 
 Here are some of the important command-line switches:
 
- -f | --fullscreen	Run the game fullscreen
+ -f | --fullscreen	Run the game fullscreen (can also be set from the menu)
+ -w | --window		Run the game windowed (can also be set from the menu)
  -g | --gllibrary	Select 3D rendering library
- -width   N		Select screen size
- -height  N		Optional, Must be used with -width
+ -width   N		Select screen size (can also be set from the menu)
+ -height  N		Optional, Must be used with -width (can also be set
+			from the menu)
  -conwidth  N		Enables a bigger hud display and readable fonts
 			at high resolutions. Valid conwidth values are
 			values equal or less than the screen width above,
@@ -128,7 +130,8 @@ Here are some of the important command-line switches:
  -bpp  N		Color depth for GL fullscreen mode
  -nomouse		Disables mouse usage in game
  -heapsize  N		Heapsize (memory to allocate, in KB)
- -fsaa N		Enable N sample antialiasing (N: 0,2,4)
+ -fsaa N		Enable N sample antialiasing (N: 0,2,4) (can also be
+			set from the menu)
  -sync | -vsync		Enable syncing with monitor refresh (GL, Nvidia)
  -lm_4			Set lightmap format to GL_RGBA, which is actually
 			the default format. RGBA lightmaps are required for
@@ -137,7 +140,8 @@ Here are some of the important command-line switches:
 			old format that hexen2 originally used.)
  -paltex		Enable 8 bit (palettized) textures: saves video
 			memory on old low-merory 3D accelerators if the
-			proper opengl extension is supported.
+			proper opengl extension is supported. (can also be
+			set from the menu)
  -nomtex		Disable multitexture detection/usage
  -3dfxgamma		Special gamma support for old Voodoo1/2/Rush
  -ossdev		OSS Audio device to use (default: /dev/dsp)
@@ -255,7 +259,12 @@ named  .hexen2demo  in your home folder:  ~/.hexen2demo
 
 While playing the game, you can switch between fullscreen and
 windowed modes by pressing ALT + Enter combination. Alternatively,
-you can use the relevant menu option.
+you can use the relevant menu option. The last setting will ba
+saved to the config and will be remembered by the game.
+
+You can also change the resolution from the menu system. Again,
+the last setting will ba saved to the config and will be remembered
+by the game.
 
 The menu option "Use Mouse" enables/disables mouse usage on the
 fly. While in windowed mode, disabling the mouse ungrabs the mouse
@@ -337,37 +346,55 @@ For users with slow video cards, changing the gl_ variables may
 speed up your system. Here are just a few of those that can be
 changed. For more info see various Quake tweaking sites.
 
-variable	values
---------	------
+variable	valid values
+--------	------------
+
 _snd_mixahead	0.1 - 0.9 : 0.1 = less latency,
 			    0.9 = better performance
 
-gl_multitexture	0|1	  : Disable/Enable multitexturing on
-			    the fly. 0 is default.
+gl_multitexture	0|1	  : Disable/Enable multitexturing on the fly. 0 is
+			    default. (also adjubtable from the menu.)
 
-gl_purge_maptex	0|1	  : Purge opengl textures upon map
-			    change. Saves a lot of video memory
-			    because the textures won't keep
-			    accumulating from map to map
+gl_purge_maptex	0|1	  : Purge opengl textures upon map change. Textures
+			    won't keep accumulating from map to map. Default
+			    is 1. (also adjubtable from the menu.)
 
-gl_stencilshadow  0|1	  : Disable/Enable stencil buffered shadows
-			    on the fly. 0 is default.
+gl_stencilshadow  0|1	  : Disable/Enable stencil buffered shadows on the
+			    fly. Default is 0. (also adjubtable from the
+			    menu.)
 
-gl_ztrick	0|1	  : 3% performance tweak
-			    (some cards unsupported)
+gl_coloredlight  0|1|2	  : Static colored lights. 0 is the white light that
+			    hexen2 traditionally uses. Mode 1 is colored
+			    lighting. Mode 2 is experimental which combines
+			    white and colored lighting (if available) and
+			    sometimes can give better results then just
+			    colored lighting. It is also slightly brighter
+			    then colored lighting. 0 is the default. (also
+			    adjubtable from the menu. Changing this option
+			    requires the level to be reloaded.)
 
-gl_picmip	0|1|2	  : 0 is default. 1 and 2 scale down
-			    the textures (low quality), but
-			    the help screens and some small
-			    fonts become unreadable and ugly.
+gl_colored_dynamic_lights  0|1 :
+			    Disable/Enable colored dynamic lights. 0 is the
+			    default. (also adjubtable from the menu.)
 
-gl_playermip	0|1|2
+gl_extra_dynamic_lights    0|1 :
+			    Disable/Enable extra dynamic lights. 0 is the
+			    default. (also adjubtable from the menu.)
+
+gl_ztrick	0|1	  : 3% performance tweak (some cards unsupported)
+
+gl_picmip	0|1|2	  : 0 is default. 1 and 2 scale down the textures
+			    (low quality), but the help screens and some
+			    small fonts become unreadable and ugly.
+
+gl_playermip	0|1|2	  : similar to gl_picmip, but for player textures.
 
 gl_texturemode	gl_nearest	(least quality, best speed)
 		gl_nearest_mipmap_nearest :	    ^
 		gl_linear_mipmap_nearest  :
 		gl_linear_mipmap_linear   :	    v
 				(best quality, least speed)
+		(also adjubtable from the menu.)
 
 
 3.1.1 Nvidia tweaks
