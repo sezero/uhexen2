@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.38 2006-02-24 14:43:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.39 2006-03-10 10:59:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1041,6 +1041,10 @@ enum
 	OGL_GLOW1,
 	OGL_GLOW2,
 	OGL_GLOW3,
+	OGL_COLOREDLIGHT,
+	OGL_COLOREDSTATIC,
+	OGL_COLOREDDYNAMIC,
+	OGL_COLOREDEXTRA,
 	OGL_TEXFILTER,
 	OGL_SHADOWS,
 	OGL_STENCIL,
@@ -1090,6 +1094,37 @@ static void M_OpenGL_Draw (void)
 	M_Print (32, 90 + 8*OGL_GLOW3,		"           other glows");
 	M_DrawCheckbox (232, 90 + 8*OGL_GLOW3, gl_other_glows.value);
 
+	M_Print (32, 90 + 8*OGL_COLOREDLIGHT,	"      Colored lights :");
+	M_Print (32, 90 + 8*OGL_COLOREDSTATIC,	"         static lights");
+	M_Print (32, 90 + 8*OGL_COLOREDDYNAMIC,	"        dynamic lights");
+	M_Print (32, 90 + 8*OGL_COLOREDEXTRA,	"          extra lights");
+	M_Print (232, 90 + 8*OGL_COLOREDLIGHT, "(requires level reload)");
+	if (gl_lightmap_format == GL_RGBA)
+	{
+		switch ((int)gl_coloredlight.value)
+		{
+		case 0:
+			M_Print (232, 90 + 8*OGL_COLOREDSTATIC, "none (white)");
+			break;
+		case 1:
+			M_Print (232, 90 + 8*OGL_COLOREDSTATIC, "colored");
+			break;
+		case 2:
+			M_Print (232, 90 + 8*OGL_COLOREDSTATIC, "blend");
+			break;
+		}
+	//	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDDYNAMIC, (int)gl_colored_dynamic_lights.value);
+	//	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDEXTRA, (int)gl_extra_dynamic_lights.value);
+	}
+	else
+	{
+		M_Print (232, 90 + 8*OGL_COLOREDSTATIC, "hot available");
+	//	M_Print (232, 90 + 8*OGL_COLOREDDYNAMIC, "hot available");
+	//	M_Print (232, 90 + 8*OGL_COLOREDEXTRA, "hot available");
+	}
+	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDDYNAMIC, (int)gl_colored_dynamic_lights.value);
+	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDEXTRA, (int)gl_extra_dynamic_lights.value);
+
 	M_Print (32, 90 + 8*OGL_TEXFILTER,	"     Texture filtering");
 	for (i = 0; i < MAX_GL_FILTERS; i++)
 	{
@@ -1125,6 +1160,8 @@ static void M_OpenGL_Key (int k)
 	case K_UPARROW:
 		S_LocalSound ("raven/menu1.wav");
 		opengl_cursor--;
+		if (opengl_cursor == OGL_COLOREDLIGHT)
+			opengl_cursor--;
 		if (opengl_cursor < 0)
 			opengl_cursor = OGL_ITEMS-1;
 		break;
@@ -1132,6 +1169,8 @@ static void M_OpenGL_Key (int k)
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
 		opengl_cursor++;
+		if (opengl_cursor == OGL_COLOREDLIGHT)
+			opengl_cursor++;
 		if (opengl_cursor >= OGL_ITEMS)
 			opengl_cursor = 0;
 		break;
@@ -1160,6 +1199,40 @@ static void M_OpenGL_Key (int k)
 
 		case OGL_GLOW3:	// glow effects, other: mana, etc.
 			Cvar_SetValue ("gl_other_glows", !gl_other_glows.value);
+			break;
+
+		case OGL_COLOREDSTATIC:	// static colored lights
+			if (gl_lightmap_format != GL_RGBA)
+				break;
+			switch (k)
+			{
+			case K_RIGHTARROW:
+				if ((int)gl_coloredlight.value >= 1)
+					Cvar_SetValue ("gl_coloredlight", 2);
+				else
+					Cvar_SetValue ("gl_coloredlight", 1);
+				break;
+			case K_LEFTARROW:
+				if ((int)gl_coloredlight.value <= 1)
+					Cvar_SetValue ("gl_coloredlight", 0);
+				else
+					Cvar_SetValue ("gl_coloredlight", 1);
+				break;
+			default:
+				break;
+			}
+			break;
+
+		case OGL_COLOREDDYNAMIC:	// dynamic colored lights
+		//	if (gl_lightmap_format != GL_RGBA)
+		//		break;
+			Cvar_SetValue ("gl_colored_dynamic_lights", !gl_colored_dynamic_lights.value);
+			break;
+
+		case OGL_COLOREDEXTRA:	// extra dynamic colored lights
+		//	if (gl_lightmap_format != GL_RGBA)
+		//		break;
+			Cvar_SetValue ("gl_extra_dynamic_lights", !gl_extra_dynamic_lights.value);
 			break;
 
 		case OGL_TEXFILTER:	// texture filter
