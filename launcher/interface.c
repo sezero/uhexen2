@@ -358,7 +358,7 @@ GtkWidget* create_window1 (void)
   gtk_widget_set_size_request (WGT_CONWBUTTON, 84, 24);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_CONWBUTTON), use_con);
   GTK_WIDGET_UNSET_FLAGS (WGT_CONWBUTTON, GTK_CAN_FOCUS);
-  gtk_tooltips_set_tip (tooltips, WGT_CONWBUTTON, _("Allow bigger/readable text and HUD in high resolutions. 640 is recommended"), NULL);
+  gtk_tooltips_set_tip (tooltips, WGT_CONWBUTTON, _("Allow bigger/readable text and HUD in high resolutions. Smaller the number, bigger the text. 640 is recommended"), NULL);
   gtk_widget_set_sensitive (WGT_CONWBUTTON, opengl_support);
 
 //conwidth combo
