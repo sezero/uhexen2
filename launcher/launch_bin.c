@@ -112,6 +112,8 @@ void launch_hexen2_bin (void)
 
 	if (fullscreen)
 		args[++i] = "-fullscreen";
+	else
+		args[++i] = "-window";
 
 	args[++i] = "-width";
 	args[++i] = resolution_args[resolution];
