@@ -13,7 +13,8 @@ Hammer of Thyrion: Features
   renderers. Instant fullscreen/windowed toggling on unix.
 
 * OpenGL enhancements including multitexturing, glow effects,
-  working brightness control, translucent console background.
+  working brightness control, translucent console background,
+  colored lights and support for external lit files.
 
 * Fullscreen intermissions and help dialogs.
 
