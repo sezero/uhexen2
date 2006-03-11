@@ -2,7 +2,7 @@
 
 #include "quakedef.h"
 
-int	r_dlightframecount;
+static int	r_dlightframecount;
 
 
 /*
@@ -10,13 +10,11 @@ int	r_dlightframecount;
 R_AnimateLight
 ==================
 */
-void R_AnimateLight(void)
+void R_AnimateLight (void)
 {
-	int i;
-	int v;
-	int c;
-	int defaultLocus;
-	int locusHz[3];
+	int	i, c, v;
+	int	defaultLocus;
+	int	locusHz[3];
 
 	defaultLocus = locusHz[0] = (int)(cl.time*10);
 	locusHz[1] = (int)(cl.time*20);
@@ -54,7 +52,7 @@ DYNAMIC LIGHTS BLEND RENDERING
 =============================================================================
 */
 
-void AddLightBlend (float r, float g, float b, float a2)
+static void AddLightBlend (float r, float g, float b, float a2)
 {
 	float	a;
 
@@ -67,7 +65,7 @@ void AddLightBlend (float r, float g, float b, float a2)
 	v_blend[2] = v_blend[2]*(1-a2) + b*a2;
 }
 
-void R_RenderDlight (dlight_t *light)
+static void R_RenderDlight (dlight_t *light)
 {
 	int		i, j;
 	float	a;
@@ -297,10 +295,10 @@ LIGHT SAMPLING
 =============================================================================
 */
 
-mplane_t		*lightplane;
+static mplane_t		*lightplane;
 vec3_t			lightspot;
 
-int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
+static int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 {
 	int			r;
 	float		front, back, frac;
@@ -357,8 +355,7 @@ int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 		s = DotProduct (mid, tex->vecs[0]) + tex->vecs[0][3];
 		t = DotProduct (mid, tex->vecs[1]) + tex->vecs[1][3];
 
-		if (s < surf->texturemins[0] ||
-		t < surf->texturemins[1])
+		if (s < surf->texturemins[0] || t < surf->texturemins[1])
 			continue;
 
 		ds = s - surf->texturemins[0];
@@ -420,7 +417,7 @@ int R_LightPoint (vec3_t p)
 // rgba lightmaps
 static int	myr[4];
 
-int *RecursiveLightPointColour (mnode_t *node, vec3_t start, vec3_t end)
+static int *RecursiveLightPointColour (mnode_t *node, vec3_t start, vec3_t end)
 {
 	int		*r = myr;
 	float		front, back, frac;

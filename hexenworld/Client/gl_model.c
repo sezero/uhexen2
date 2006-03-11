@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.19 2006-03-10 08:08:46 sezero Exp $
+	$Id: gl_model.c,v 1.20 2006-03-11 22:51:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -34,8 +34,6 @@ static vec3_t	mins,maxs;
 #define	NL_NEEDS_LOADED	1
 #define	NL_UNREFERENCED	2
 
-cvar_t gl_subdivide_size = {"gl_subdivide_size", "128", true};
-
 qboolean spr_reload_only = false;
 
 /*
@@ -45,7 +43,6 @@ Mod_Init
 */
 void Mod_Init (void)
 {
-	Cvar_RegisterVariable (&gl_subdivide_size);
 	memset (mod_novis, 0xff, sizeof(mod_novis));
 }
 

@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.33 2006-03-10 08:08:46 sezero Exp $
+	$Id: glquake.h,v 1.34 2006-03-11 22:51:20 sezero Exp $
 */
 
 
@@ -88,8 +88,11 @@
 // misc. common glquake defines
 #define MAX_GLTEXTURES		2048
 #define MAX_EXTRA_TEXTURES	156   // 255-100+1
+#define	MAX_CACHED_PICS		256
 #define	MAX_LIGHTMAPS		64
 
+#define	gl_solid_format		3
+#define	gl_alpha_format		4
 
 // types for textures
 
@@ -127,17 +130,19 @@ extern	int	gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for mode
 void GL_BeginRendering (int *x, int *y, int *width, int *height);
 void GL_EndRendering (void);
 
-void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite);
-void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode);
 int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba);
-int GL_FindTexture (char *identifier);
 int GL_LoadPicTexture (qpic_t *pic);
 int M_DrawBigCharacter (int x, int y, int num, int numNext);
 void GL_BuildLightmaps (void);
 void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr);
 void GL_Set2D (void);
 void GL_SubdivideSurface (msurface_t *fa);
-void EmitSkyPolys (msurface_t *fa);
+#ifdef QUAKE2
+void R_LoadSkys (void);
+void R_DrawSkyBox (void);
+void R_ClearSkyBox (void);
+#endif
+//void EmitSkyPolys (msurface_t *fa);
 void EmitWaterPolys (msurface_t *fa);
 void EmitBothSkyLayers (msurface_t *fa);
 qboolean R_CullBox (vec3_t mins, vec3_t maxs);
@@ -277,9 +282,7 @@ typedef struct particle_s
 } particle_t;
 
 
-void R_TimeRefresh_f (void);
 void R_ReadPointFile_f (void);
-texture_t *R_TextureAnimation (texture_t *base);
 void R_TranslatePlayerSkin (int playernum);
 
 
@@ -337,6 +340,8 @@ extern	cvar_t	r_wateralpha;
 extern	cvar_t	r_skyalpha;
 extern	cvar_t	r_dynamic;
 extern	cvar_t	r_novis;
+extern	cvar_t	r_wholeframe;
+
 extern	cvar_t	r_netgraph;
 extern	cvar_t	r_entdistance;
 extern	cvar_t	r_teamcolor;
@@ -365,8 +370,6 @@ extern	cvar_t	gl_colored_dynamic_lights;
 extern	cvar_t	gl_extra_dynamic_lights;
 
 extern	int	gl_lightmap_format;
-extern	int	gl_solid_format;
-extern	int	gl_alpha_format;
 
 extern	int	gl_max_size;
 extern	cvar_t	gl_playermip;

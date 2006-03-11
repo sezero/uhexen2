@@ -2,13 +2,13 @@
 
 #include "quakedef.h"
 
-byte *playerTranslation;
+byte			*playerTranslation;
 
 int			gl_texlevel;
 extern qboolean		plyrtex[MAX_PLAYER_CLASS][16][16];
-extern gltexture_t	gltextures[2048];
+extern gltexture_t	gltextures[MAX_GLTEXTURES];
 extern int		menu_numcachepics;
-extern cachepic_t	menu_cachepics[256];
+extern cachepic_t	menu_cachepics[MAX_CACHED_PICS];
 
 /*
 ==================
@@ -17,18 +17,18 @@ R_InitTextures
 */
 void	R_InitTextures (void)
 {
-	int		x,y, m;
+	int		x, y, m;
 	byte	*dest;
 
 // create a simple checkerboard texture for the default
 	r_notexture_mip = Hunk_AllocName (sizeof(texture_t) + 16*16+8*8+4*4+2*2, "notexture");
-	
+
 	r_notexture_mip->width = r_notexture_mip->height = 16;
 	r_notexture_mip->offsets[0] = sizeof(texture_t);
 	r_notexture_mip->offsets[1] = r_notexture_mip->offsets[0] + 16*16;
 	r_notexture_mip->offsets[2] = r_notexture_mip->offsets[1] + 8*8;
 	r_notexture_mip->offsets[3] = r_notexture_mip->offsets[2] + 4*4;
-	
+
 	for (m=0 ; m<4 ; m++)
 	{
 		dest = (byte *)r_notexture_mip + r_notexture_mip->offsets[m];
@@ -40,11 +40,12 @@ void	R_InitTextures (void)
 				else
 					*dest++ = 0xff;
 			}
-	}	
+	}
 }
 
+#define	TEXSIZE		16	// was 8
 /*
-byte	dottexture[8][8] =
+static byte dottexture[TEXSIZE][TEXSIZE] =
 {
 	{0,1,1,0,0,0,0,0},
 	{1,1,1,1,0,0,0,0},
@@ -57,7 +58,7 @@ byte	dottexture[8][8] =
 };
 */
 
-byte	dottexture[16][16] =
+static byte dottexture[TEXSIZE][TEXSIZE] =
 {
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},//1
 	{0,0,0,1,0,1,0,0,0,0,0,0,1,1,0,0},
@@ -79,16 +80,15 @@ byte	dottexture[16][16] =
 
 void R_InitParticleTexture (void)
 {
-	int		x,y;
-	byte	texsize = 16;//was 8
-	byte	data[16][16][4];
+	int		x, y;
+	byte	data[TEXSIZE][TEXSIZE][4];
 
 	//
 	// particle texture
 	//
-	for (x=0 ; x<texsize ; x++)
+	for (x = 0 ; x < TEXSIZE ; x++)
 	{
-		for (y=0 ; y<texsize ; y++)
+		for (y = 0 ; y < TEXSIZE ; y++)
 		{
 			data[y][x][0] = 255;
 			data[y][x][1] = 255;
@@ -97,7 +97,7 @@ void R_InitParticleTexture (void)
 		}
 	}
 
-	particletexture = GL_LoadTexture("", texsize, texsize, (byte *)data, false, true, 0, true);
+	particletexture = GL_LoadTexture("", TEXSIZE, TEXSIZE, (byte *)data, false, true, 0, true);
 	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
@@ -108,7 +108,7 @@ R_Envmap_f
 Grab six views for environment mapping tests
 ===============
 */
-void R_Envmap_f (void)
+static void R_Envmap_f (void)
 {
 	byte	buffer[256*256*4];
 
@@ -127,39 +127,39 @@ void R_Envmap_f (void)
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
 	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	COM_WriteFile ("env0.rgb", buffer, sizeof(buffer));		
+	COM_WriteFile ("env0.rgb", buffer, sizeof(buffer));
 
 	r_refdef.viewangles[1] = 90;
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
 	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	COM_WriteFile ("env1.rgb", buffer, sizeof(buffer));		
+	COM_WriteFile ("env1.rgb", buffer, sizeof(buffer));
 
 	r_refdef.viewangles[1] = 180;
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
 	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	COM_WriteFile ("env2.rgb", buffer, sizeof(buffer));		
+	COM_WriteFile ("env2.rgb", buffer, sizeof(buffer));
 
 	r_refdef.viewangles[1] = 270;
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
 	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	COM_WriteFile ("env3.rgb", buffer, sizeof(buffer));		
+	COM_WriteFile ("env3.rgb", buffer, sizeof(buffer));
 
 	r_refdef.viewangles[0] = -90;
 	r_refdef.viewangles[1] = 0;
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
 	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	COM_WriteFile ("env4.rgb", buffer, sizeof(buffer));		
+	COM_WriteFile ("env4.rgb", buffer, sizeof(buffer));
 
 	r_refdef.viewangles[0] = 90;
 	r_refdef.viewangles[1] = 0;
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
 	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	COM_WriteFile ("env5.rgb", buffer, sizeof(buffer));		
+	COM_WriteFile ("env5.rgb", buffer, sizeof(buffer));
 
 	envmap = false;
 	glDrawBuffer_fp (GL_BACK);
@@ -168,17 +168,50 @@ void R_Envmap_f (void)
 }
 
 /*
+====================
+R_TimeRefresh_f
+
+For program optimization
+====================
+*/
+static void R_TimeRefresh_f (void)
+{
+	int		i;
+	float		start, stop, time;
+
+	if (cls.state != ca_connected)
+	{
+		Con_Printf("Not connected to a server\n");
+		return;
+	}
+
+	start = Sys_DoubleTime ();
+	for (i=0 ; i<128 ; i++)
+	{
+		GL_BeginRendering(&glx, &gly, &glwidth, &glheight);
+		r_refdef.viewangles[1] = i/128.0*360.0;
+		R_RenderView ();
+		GL_EndRendering ();
+	}
+
+	glFinish_fp ();
+	stop = Sys_DoubleTime ();
+	time = stop-start;
+	Con_Printf ("%f seconds (%f fps)\n", time, 128/time);
+}
+
+/*
 ===============
 R_Init
 ===============
 */
 void R_Init (void)
-{	
+{
 	int	counter;
 
-	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);	
-	Cmd_AddCommand ("envmap", R_Envmap_f);	
-	Cmd_AddCommand ("pointfile", R_ReadPointFile_f);	
+	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);
+	Cmd_AddCommand ("envmap", R_Envmap_f);
+	Cmd_AddCommand ("pointfile", R_ReadPointFile_f);
 
 	Cvar_RegisterVariable (&r_norefresh);
 	Cvar_RegisterVariable (&r_lightmap);
@@ -225,7 +258,7 @@ void R_Init (void)
 	Test_Init ();
 #endif
 
-	for(counter=0;counter<MAX_EXTRA_TEXTURES;counter++)
+	for (counter = 0 ; counter < MAX_EXTRA_TEXTURES ; counter++)
 		gl_extra_textures[counter] = -1;
 
 	playerTranslation = (byte *)COM_LoadHunkFile ("gfx/player.lmp");
@@ -240,9 +273,11 @@ const int color_offsets[MAX_PLAYER_CLASS] =
 	1*14*256,
 	2*14*256
 #if defined(H2MP) || defined(H2W)
-	, 2*14*256
+	,
+	2*14*256
 #if defined(H2W)
-	, 2*14*256
+	,
+	2*14*256
 #endif
 #endif
 };
@@ -254,10 +289,10 @@ R_TranslatePlayerSkin
 Translates a skin texture by the per-player color lookup
 ===============
 */
+extern	byte	player_8bit_texels[MAX_PLAYER_CLASS][620*245];
+
 void R_TranslatePlayerSkin (int playernum)
 {
-	extern	byte	player_8bit_texels[MAX_PLAYER_CLASS][620*245];
-
 	int		top, bottom;
 	byte		translate[256];
 	unsigned	translate32[256];
@@ -280,8 +315,10 @@ void R_TranslatePlayerSkin (int playernum)
 	top = (cl.scores[playernum].colors & 0xf0) >> 4;
 	bottom = (cl.scores[playernum].colors & 15);
 
-	if (top > 10) top = 0;
-	if (bottom > 10) bottom = 0;
+	if (top > 10)
+		top = 0;
+	if (bottom > 10)
+		bottom = 0;
 
 	top -= 1;
 	bottom -= 1;
@@ -290,11 +327,11 @@ void R_TranslatePlayerSkin (int playernum)
 	colorB = colorA + 256;
 	sourceA = colorB + 256 + (top * 256);
 	sourceB = colorB + 256 + (bottom * 256);
-	for(i=0;i<256;i++,colorA++,colorB++,sourceA++,sourceB++)
+	for (i = 0 ; i < 256 ; i++, colorA++, colorB++, sourceA++, sourceB++)
 	{
-		if (top >= 0 && (*colorA != 255)) 
+		if (top >= 0 && (*colorA != 255))
 			translate[i] = *sourceA;
-		if (bottom >= 0 && (*colorB != 255)) 
+		if (bottom >= 0 && (*colorB != 255))
 			translate[i] = *sourceB;
 	}
 
@@ -308,8 +345,7 @@ void R_TranslatePlayerSkin (int playernum)
 	paliashdr = (aliashdr_t *)Mod_Extradata (model);
 	s = paliashdr->skinwidth * paliashdr->skinheight;
 
-	if (playerclass >= 1 && 
-		playerclass <= MAX_PLAYER_CLASS)
+	if (playerclass >= 1 && playerclass <= MAX_PLAYER_CLASS)
 		original = player_8bit_texels[playerclass-1];
 	else
 		original = player_8bit_texels[0];
@@ -327,7 +363,6 @@ void R_TranslatePlayerSkin (int playernum)
 		translated[i+2] = translate[original[i+2]];
 		translated[i+3] = translate[original[i+3]];
 	}
-
 
 	// don't mipmap these, because it takes too long
 	GL_Upload8 (translated, paliashdr->skinwidth, paliashdr->skinheight, false, false, true);
@@ -374,7 +409,7 @@ R_NewMap
 void R_NewMap (void)
 {
 	int		i;
-	
+
 	for (i=0 ; i<256 ; i++)
 		d_lightstylevalue[i] = 264;		// normal light value
 
@@ -385,7 +420,7 @@ void R_NewMap (void)
 // FIXME: is this one short?
 	for (i=0 ; i<cl.worldmodel->numleafs ; i++)
 		cl.worldmodel->leafs[i].efrags = NULL;
-		 	
+
 	r_viewleaf = NULL;
 	R_ClearParticles ();
 
@@ -409,39 +444,6 @@ void R_NewMap (void)
 }
 
 
-/*
-====================
-R_TimeRefresh_f
-
-For program optimization
-====================
-*/
-void R_TimeRefresh_f (void)
-{
-	int		i;
-	float		start, stop, time;
-
-	if (cls.state != ca_connected)
-	{
-		Con_Printf("Not connected to a server\n");
-		return;
-	}
-
-	start = Sys_DoubleTime ();
-	for (i=0 ; i<128 ; i++)
-	{
-		GL_BeginRendering(&glx, &gly, &glwidth, &glheight);
-		r_refdef.viewangles[1] = i/128.0*360.0;
-		R_RenderView ();
-		GL_EndRendering ();
-	}
-
-	glFinish_fp ();
-	stop = Sys_DoubleTime ();
-	time = stop-start;
-	Con_Printf ("%f seconds (%f fps)\n", time, 128/time);
-}
-
 /* D_ClearOpenGLTexture
    this procedure (called by Host_ClearMemory/SV_SpawnServer in hexen2 on new
    map, or by CL_ClearState/CL_ParseServerData in HW on new connection) will
@@ -454,7 +456,7 @@ void R_TimeRefresh_f (void)
 */
 void D_ClearOpenGLTextures (int last_tex)
 {
-	int i;
+	int		i;
 
 	Con_DPrintf ("Deleting OpenGL textures\n");
 	// Delete OpenGL textures

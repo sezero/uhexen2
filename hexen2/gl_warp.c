@@ -6,15 +6,14 @@ extern	model_t	*loadmodel;
 
 int		skytexturenum;
 
-int		solidskytexture;
-int		alphaskytexture;
-float	speedscale;		// for top sky and bottom sky
+static int	solidskytexture, alphaskytexture;
+static float	speedscale;	// for top sky and bottom sky
 
-msurface_t	*warpface;
+static msurface_t	*warpface;
 
 #define	SUBDIVIDE_SIZE	64
 
-void BoundPoly (int numverts, float *verts, vec3_t mins, vec3_t maxs)
+static void BoundPoly (int numverts, float *verts, vec3_t mins, vec3_t maxs)
 {
 	int		i, j;
 	float	*v;
@@ -23,6 +22,7 @@ void BoundPoly (int numverts, float *verts, vec3_t mins, vec3_t maxs)
 	maxs[0] = maxs[1] = maxs[2] = -9999;
 	v = verts;
 	for (i=0 ; i<numverts ; i++)
+	{
 		for (j=0 ; j<3 ; j++, v++)
 		{
 			if (*v < mins[j])
@@ -30,9 +30,10 @@ void BoundPoly (int numverts, float *verts, vec3_t mins, vec3_t maxs)
 			if (*v > maxs[j])
 				maxs[j] = *v;
 		}
+	}
 }
 
-void SubdividePolygon (int numverts, float *verts)
+static void SubdividePolygon (int numverts, float *verts)
 {
 	int		i, j, k;
 	vec3_t	mins, maxs;
@@ -156,9 +157,8 @@ void GL_SubdivideSurface (msurface_t *fa)
 //=========================================================
 
 
-
 // speed up sin calculations - Ed
-float	turbsin[] =
+static float	turbsin[] =
 {
 #include "gl_warp_sin.h"
 };
@@ -179,10 +179,10 @@ void EmitWaterPolys (msurface_t *fa)
 	float		s, t, os, ot;
 	vec3_t		nv;	// waterripple
 
-	if(gl_waterripple.value<0)
-		gl_waterripple.value=0;
-	if(gl_waterripple.value>10)
-		gl_waterripple.value=10;
+	if (gl_waterripple.value < 0)
+		gl_waterripple.value = 0;
+	if (gl_waterripple.value > 10)
+		gl_waterripple.value = 10;
 
 	for (p=fa->polys ; p ; p=p->next)
 	{
@@ -211,15 +211,12 @@ void EmitWaterPolys (msurface_t *fa)
 }
 
 
-
-
 /*
 =============
 EmitSkyPolys
 =============
 */
-
-void EmitSkyPolysMulti (msurface_t *fa)
+static void EmitSkyPolysMulti (msurface_t *fa)
 {
 	glpoly_t	*p;
 	float		*v;
@@ -268,7 +265,7 @@ void EmitSkyPolysMulti (msurface_t *fa)
 	glActiveTextureARB_fp (GL_TEXTURE0_ARB);
 }
 
-void EmitSkyPolys (msurface_t *fa)
+static void EmitSkyPolys (msurface_t *fa)
 {
 	glpoly_t	*p;
 	float		*v;
@@ -280,7 +277,7 @@ void EmitSkyPolys (msurface_t *fa)
 	for (p=fa->polys ; p ; p=p->next)
 	{
 		glBegin_fp (GL_POLYGON);
-		for (i=0,v=p->verts[0] ; i<p->numverts ; i++, v+=VERTEXSIZE)
+		for (i=0, v=p->verts[0] ; i < p->numverts ; i++, v+=VERTEXSIZE)
 		{
 			VectorSubtract (v, r_origin, dir);
 			dir[2] *= 3;	// flatten the sphere
@@ -319,9 +316,9 @@ void EmitBothSkyLayers (msurface_t *fa)
 		return;
 	}
 
-	GL_Bind (solidskytexture);
+	GL_Bind(solidskytexture);
 	speedscale = realtime*8;
-	speedscale -= (int)speedscale & ~127 ;
+	speedscale -= (int)speedscale & ~127;
 
 	EmitSkyPolys (fa);
 
@@ -330,7 +327,7 @@ void EmitBothSkyLayers (msurface_t *fa)
 	glColor4f_fp(1.0f, 1.0f, 1.0f, r_skyalpha.value);
 	GL_Bind (alphaskytexture);
 	speedscale = realtime*16;
-	speedscale -= (int)speedscale & ~127 ;
+	speedscale -= (int)speedscale & ~127;
 
 	EmitSkyPolys (fa);
 
@@ -357,7 +354,7 @@ void R_DrawSkyChain (msurface_t *s)
 
 	GL_Bind(solidskytexture);
 	speedscale = realtime*8;
-	speedscale -= (int)speedscale & ~127 ;
+	speedscale -= (int)speedscale & ~127;
 
 	for (fa=s ; fa ; fa=fa->texturechain)
 		EmitSkyPolys (fa);
@@ -367,7 +364,7 @@ void R_DrawSkyChain (msurface_t *s)
 	glColor4f_fp(1.0f, 1.0f, 1.0f, r_skyalpha.value);
 	GL_Bind (alphaskytexture);
 	speedscale = realtime*16;
-	speedscale -= (int)speedscale & ~127 ;
+	speedscale -= (int)speedscale & ~127;
 
 	for (fa=s ; fa ; fa=fa->texturechain)
 		EmitSkyPolys (fa);
@@ -378,42 +375,43 @@ void R_DrawSkyChain (msurface_t *s)
 
 #endif
 
+
 /*
 =================================================================
 
-  Quake 2 environment sky
+Quake 2 environment sky
 
 =================================================================
 */
 
 #ifdef QUAKE2
-int	sky_tex[6];
+static int	sky_tex[6];
 /*
 =================================================================
 
-  PCX Loading
+PCX Loading
 
 =================================================================
 */
 
 typedef struct
 {
-    char	manufacturer;
-    char	version;
-    char	encoding;
-    char	bits_per_pixel;
-    unsigned short	xmin,ymin,xmax,ymax;
-    unsigned short	hres,vres;
-    unsigned char	palette[48];
-    char	reserved;
-    char	color_planes;
-    unsigned short	bytes_per_line;
-    unsigned short	palette_type;
-    char	filler[58];
-    unsigned 	data;			// unbounded
+	char	manufacturer;
+	char	version;
+	char	encoding;
+	char	bits_per_pixel;
+	unsigned short	xmin,ymin,xmax,ymax;
+	unsigned short	hres,vres;
+	unsigned char	palette[48];
+	char	reserved;
+	char	color_planes;
+	unsigned short	bytes_per_line;
+	unsigned short	palette_type;
+	char	filler[58];
+	unsigned 	data;	// unbounded
 } pcx_t;
 
-byte	*pcx_rgb;
+static byte	*pcx_rgb;
 
 /*
 ============
@@ -456,14 +454,14 @@ void LoadPCX (FILE *f)
 	count = (pcx->xmax+1) * (pcx->ymax+1);
 	pcx_rgb = Hunk_AllocName(count * 4, "pcxfile_data");
 
-	for (y=0 ; y<=pcx->ymax ; y++)
+	for (y = 0 ; y <= pcx->ymax ; y++)
 	{
 		pix = pcx_rgb + 4*y*(pcx->xmax+1);
-		for (x=0 ; x<=pcx->ymax ; )
+		for (x = 0 ; x <= pcx->ymax ; )
 		{
 			dataByte = fgetc(f);
 
-			if((dataByte & 0xC0) == 0xC0)
+			if ((dataByte & 0xC0) == 0xC0)
 			{
 				runLength = dataByte & 0x3F;
 				dataByte = fgetc(f);
@@ -471,7 +469,7 @@ void LoadPCX (FILE *f)
 			else
 				runLength = 1;
 
-			while(runLength-- > 0)
+			while (runLength-- > 0)
 			{
 				pix[0] = palette[dataByte*3];
 				pix[1] = palette[dataByte*3+1];
@@ -492,17 +490,17 @@ TARGA LOADING
 =========================================================
 */
 
-typedef struct _TargaHeader {
-	unsigned char 	id_length, colormap_type, image_type;
+typedef struct _TargaHeader
+{
+	unsigned char	id_length, colormap_type, image_type;
 	unsigned short	colormap_index, colormap_length;
 	unsigned char	colormap_size;
 	unsigned short	x_origin, y_origin, width, height;
 	unsigned char	pixel_size, attributes;
 } TargaHeader;
 
-
-TargaHeader		targa_header;
-byte			*targa_rgba;
+static TargaHeader	targa_header;
+static byte		*targa_rgba;
 
 int fgetLittleShort (FILE *f)
 {
@@ -534,14 +532,14 @@ LoadTGA
 */
 void LoadTGA (FILE *fin)
 {
-	int				columns, rows, numPixels;
-	byte			*pixbuf;
-	int				row, column;
+	int		columns, rows, numPixels;
+	byte	*pixbuf;
+	int		row, column;
 
 	targa_header.id_length = fgetc(fin);
 	targa_header.colormap_type = fgetc(fin);
 	targa_header.image_type = fgetc(fin);
-	
+
 	targa_header.colormap_index = fgetLittleShort(fin);
 	targa_header.colormap_length = fgetLittleShort(fin);
 	targa_header.colormap_size = fgetc(fin);
@@ -552,12 +550,11 @@ void LoadTGA (FILE *fin)
 	targa_header.pixel_size = fgetc(fin);
 	targa_header.attributes = fgetc(fin);
 
-	if (targa_header.image_type!=2 
-		&& targa_header.image_type!=10) 
+	if (targa_header.image_type != 2 && targa_header.image_type != 10)
 		Sys_Error ("LoadTGA: Only type 2 and 10 targa RGB images supported\n");
 
-	if (targa_header.colormap_type !=0 
-		|| (targa_header.pixel_size!=32 && targa_header.pixel_size!=24))
+	if ((targa_header.pixel_size != 32 && targa_header.pixel_size != 24) ||
+			targa_header.colormap_type !=0)
 		Sys_Error ("Texture_LoadTGA: Only 32 or 24 bit images supported (no colormaps)\n");
 
 	columns = targa_header.width;
@@ -566,17 +563,98 @@ void LoadTGA (FILE *fin)
 
 	targa_rgba = Hunk_AllocName(numPixels * 4, "tgafile_data");
 
-	if (targa_header.id_length != 0)
-		fseek(fin, targa_header.id_length, SEEK_CUR);  // skip TARGA image comment
-	
-	if (targa_header.image_type==2) {  // Uncompressed, RGB images
-		for(row=rows-1; row>=0; row--) {
+	if (targa_header.id_length != 0)	// skip TARGA image comment
+		fseek(fin, targa_header.id_length, SEEK_CUR);
+
+	if (targa_header.image_type == 2)
+	{
+	// Uncompressed, RGB images
+		for (row = rows-1 ; row >= 0; row--)
+		{
 			pixbuf = targa_rgba + row*columns*4;
-			for(column=0; column<columns; column++) {
-				unsigned char red,green,blue,alphabyte;
-				switch (targa_header.pixel_size) {
+			for (column = 0; column < columns ; column++)
+			{
+				unsigned char	red, green, blue, alphabyte;
+				switch (targa_header.pixel_size)
+				{
+				case 24:
+					blue = getc(fin);
+					green = getc(fin);
+					red = getc(fin);
+					*pixbuf++ = red;
+					*pixbuf++ = green;
+					*pixbuf++ = blue;
+					*pixbuf++ = 255;
+					break;
+				case 32:
+					blue = getc(fin);
+					green = getc(fin);
+					red = getc(fin);
+					alphabyte = getc(fin);
+					*pixbuf++ = red;
+					*pixbuf++ = green;
+					*pixbuf++ = blue;
+					*pixbuf++ = alphabyte;
+					break;
+				}
+			}
+		}
+	}
+	else if (targa_header.image_type == 10)
+	{
+	// Runlength encoded RGB images
+		unsigned char	red, green, blue, alphabyte;
+		unsigned char	packetHeader, packetSize, j;
+		for (row = rows-1 ; row >= 0 ; row--)
+		{
+			pixbuf = targa_rgba + row*columns*4;
+			for (column = 0 ; column < columns ; )
+			{
+				packetHeader = getc(fin);
+				packetSize = 1 + (packetHeader & 0x7f);
+				if (packetHeader & 0x80)
+				{	// run-length packet
+					switch (targa_header.pixel_size)
+					{
 					case 24:
-							
+						blue = getc(fin);
+						green = getc(fin);
+						red = getc(fin);
+						alphabyte = 255;
+						break;
+					case 32:
+						blue = getc(fin);
+						green = getc(fin);
+						red = getc(fin);
+						alphabyte = getc(fin);
+						break;
+					}
+
+					for (j = 0 ;j < packetSize ; j++)
+					{
+						*pixbuf++ = red;
+						*pixbuf++ = green;
+						*pixbuf++ = blue;
+						*pixbuf++ = alphabyte;
+						column++;
+						if (column == columns)
+						{	// run spans across rows
+							column = 0;
+							if (row > 0)
+								row--;
+							else
+								goto breakOut;
+							pixbuf = targa_rgba + row*columns*4;
+						}
+					}
+				}
+				else
+				{	// non run-length packet
+					for (j = 0 ; j < packetSize ; j++)
+					{
+						switch (targa_header.pixel_size)
+						{
+						case 24:
 							blue = getc(fin);
 							green = getc(fin);
 							red = getc(fin);
@@ -585,7 +663,7 @@ void LoadTGA (FILE *fin)
 							*pixbuf++ = blue;
 							*pixbuf++ = 255;
 							break;
-					case 32:
+						case 32:
 							blue = getc(fin);
 							green = getc(fin);
 							red = getc(fin);
@@ -595,100 +673,39 @@ void LoadTGA (FILE *fin)
 							*pixbuf++ = blue;
 							*pixbuf++ = alphabyte;
 							break;
-				}
-			}
-		}
-	}
-	else if (targa_header.image_type==10) {   // Runlength encoded RGB images
-		unsigned char red,green,blue,alphabyte,packetHeader,packetSize,j;
-		for(row=rows-1; row>=0; row--) {
-			pixbuf = targa_rgba + row*columns*4;
-			for(column=0; column<columns; ) {
-				packetHeader=getc(fin);
-				packetSize = 1 + (packetHeader & 0x7f);
-				if (packetHeader & 0x80) {        // run-length packet
-					switch (targa_header.pixel_size) {
-						case 24:
-								blue = getc(fin);
-								green = getc(fin);
-								red = getc(fin);
-								alphabyte = 255;
-								break;
-						case 32:
-								blue = getc(fin);
-								green = getc(fin);
-								red = getc(fin);
-								alphabyte = getc(fin);
-								break;
-					}
-	
-					for(j=0;j<packetSize;j++) {
-						*pixbuf++=red;
-						*pixbuf++=green;
-						*pixbuf++=blue;
-						*pixbuf++=alphabyte;
+						}
 						column++;
-						if (column==columns) { // run spans across rows
-							column=0;
-							if (row>0)
+						if (column == columns)
+						{	// pixel packet run spans across rows
+							column = 0;
+							if (row > 0)
 								row--;
 							else
 								goto breakOut;
 							pixbuf = targa_rgba + row*columns*4;
 						}
-					}
-				}
-				else {                            // non run-length packet
-					for(j=0;j<packetSize;j++) {
-						switch (targa_header.pixel_size) {
-							case 24:
-									blue = getc(fin);
-									green = getc(fin);
-									red = getc(fin);
-									*pixbuf++ = red;
-									*pixbuf++ = green;
-									*pixbuf++ = blue;
-									*pixbuf++ = 255;
-									break;
-							case 32:
-									blue = getc(fin);
-									green = getc(fin);
-									red = getc(fin);
-									alphabyte = getc(fin);
-									*pixbuf++ = red;
-									*pixbuf++ = green;
-									*pixbuf++ = blue;
-									*pixbuf++ = alphabyte;
-									break;
-						}
-						column++;
-						if (column==columns) { // pixel packet run spans across rows
-							column=0;
-							if (row>0)
-								row--;
-							else
-								goto breakOut;
-							pixbuf = targa_rgba + row*columns*4;
-						}						
 					}
 				}
 			}
 			breakOut:;
 		}
 	}
-	
+
 	fclose(fin);
 }
+
 
 /*
 ==================
 R_LoadSkys
 ==================
 */
-char	*suf[6] = {"rt", "bk", "lf", "ft", "up", "dn"};
+
+static char	*suf[6] = {"rt", "bk", "lf", "ft", "up", "dn"};
+
 void R_LoadSkys (void)
 {
-	int	i. mark;
+	int	i, mark;
 	FILE	*f;
 	char	name[64], texname[20];
 
@@ -704,9 +721,9 @@ void R_LoadSkys (void)
 
 		mark = Hunk_LowMark();
 		LoadTGA (f);
-//		LoadPCX (f);
+	//	LoadPCX (f);
 
-		snprintf(texname, "skybox%i", i);
+		sprintf(texname, "skybox%i", i);
 		sky_tex[i] = GL_LoadTexture(texname, 256, 256, targa_rgba, false, false, 0, true);
 		Hunk_FreeToLowMark(mark);
 
@@ -716,68 +733,70 @@ void R_LoadSkys (void)
 }
 
 
-vec3_t	skyclip[6] = {
-	{1,1,0},
-	{1,-1,0},
-	{0,-1,1},
-	{0,1,1},
-	{1,0,1},
-	{-1,0,1} 
+static vec3_t	skyclip[6] =
+{
+	{  1,  1,  0 },
+	{  1, -1,  0 },
+	{  0, -1,  1 },
+	{  0,  1,  1 },
+	{  1,  0,  1 },
+	{ -1,  0,  1 }
 };
-int	c_sky;
+
+//int	c_sky;
 
 // 1 = s, 2 = t, 3 = 2048
-int	st_to_vec[6][3] =
+static int	st_to_vec[6][3] =
 {
-	{3,-1,2},
-	{-3,1,2},
+	{  3, -1,  2 },
+	{ -3,  1,  2 },
 
-	{1,3,2},
-	{-1,-3,2},
+	{  1,  3,  2 },
+	{ -1, -3,  2 },
 
-	{-2,-1,3},		// 0 degrees yaw, look straight up
-	{2,-1,-3}		// look straight down
+	{ -2, -1,  3 },	// 0 degrees yaw, look straight up
+	{  2, -1, -3 }	// look straight down
 
-//	{-1,2,3},
-//	{1,2,-3}
+//	{ -1,  2,  3 },
+//	{  1,  2, -3 }
 };
 
 // s = [0]/[2], t = [1]/[2]
-int	vec_to_st[6][3] =
+static int	vec_to_st[6][3] =
 {
-	{-2,3,1},
-	{2,3,-1},
+	{ -2,  3,  1 },
+	{  2,  3, -1 },
 
-	{1,3,2},
-	{-1,3,-2},
+	{  1,  3,  2 },
+	{ -1,  3, -2 },
 
-	{-2,-1,3},
-	{-2,1,-3}
+	{ -2, -1,  3 },
+	{ -2,  1, -3 }
 
-//	{-1,2,3},
-//	{1,2,-3}
+//	{ -1,  2,  3 },
+//	{  1,  2, -3 }
 };
 
-float	skymins[2][6], skymaxs[2][6];
+static float	skymins[2][6], skymaxs[2][6];
 
-void DrawSkyPolygon (int nump, vec3_t vecs)
+static void DrawSkyPolygon (int nump, vec3_t vecs)
 {
-	int		i,j;
+	int		i, j;
 	vec3_t	v, av;
 	float	s, t, dv;
 	int		axis;
 	float	*vp;
 
-	c_sky++;
+//	c_sky++;
 #if 0
-glBegin_fp (GL_POLYGON);
-for (i=0 ; i<nump ; i++, vecs+=3)
-{
-	VectorAdd(vecs, r_origin, v);
-	glVertex3fv_fp (v);
-}
-glEnd_fp();
-return;
+	glBegin_fp (GL_POLYGON);
+	for (i=0 ; i<nump ; i++, vecs+=3)
+	{
+		VectorAdd(vecs, r_origin, v);
+		glVertex3fv_fp (v);
+	}
+	glEnd_fp();
+	return;
 #endif
 	// decide which face it maps to
 	VectorCopy (vec3_origin, v);
@@ -842,7 +861,7 @@ return;
 }
 
 #define	MAX_CLIP_VERTS	64
-void ClipSkyPolygon (int nump, vec3_t vecs, int stage)
+static void ClipSkyPolygon (int nump, vec3_t vecs, int stage)
 {
 	float	*norm;
 	float	*v;
@@ -864,7 +883,7 @@ void ClipSkyPolygon (int nump, vec3_t vecs, int stage)
 
 	front = back = false;
 	norm = skyclip[stage];
-	for (i=0, v = vecs ; i<nump ; i++, v+=3)
+	for (i = 0, v = vecs ; i < nump ; i++, v+=3)
 	{
 		d = DotProduct (v, norm);
 		if (d > ON_EPSILON)
@@ -894,7 +913,7 @@ void ClipSkyPolygon (int nump, vec3_t vecs, int stage)
 	VectorCopy (vecs, (vecs+(i*3)) );
 	newc[0] = newc[1] = 0;
 
-	for (i=0, v = vecs ; i<nump ; i++, v+=3)
+	for (i = 0, v = vecs ; i < nump ; i++, v+=3)
 	{
 		switch (sides[i])
 		{
@@ -941,16 +960,14 @@ R_DrawSkyChain
 void R_DrawSkyChain (msurface_t *s)
 {
 	msurface_t	*fa;
-
 	int		i;
 	vec3_t	verts[MAX_CLIP_VERTS];
 	glpoly_t	*p;
 
-	c_sky = 0;
+//	c_sky = 0;
 	GL_Bind(solidskytexture);
 
 	// calculate vertex values for sky box
-
 	for (fa=s ; fa ; fa=fa->texturechain)
 	{
 		for (p=fa->polys ; p ; p=p->next)
@@ -982,10 +999,10 @@ void R_ClearSkyBox (void)
 }
 
 
-void MakeSkyVec (float s, float t, int axis)
+static void MakeSkyVec (float s, float t, int axis)
 {
-	vec3_t		v, b;
-	int			j, k;
+	vec3_t	v, b;
+	int		j, k;
 
 	b[0] = s*2048;
 	b[1] = t*2048;
@@ -1024,12 +1041,11 @@ void MakeSkyVec (float s, float t, int axis)
 R_DrawSkyBox
 ==============
 */
-int	skytexorder[6] = {0,2,1,3,4,5};
+static int	skytexorder[6] = {0, 2, 1, 3, 4, 5};
+
 void R_DrawSkyBox (void)
 {
-	int		i, j, k;
-	vec3_t	v;
-	float	s, t;
+	int		i;
 
 #if 0
 	glEnable_fp (GL_BLEND);
@@ -1065,9 +1081,10 @@ void R_DrawSkyBox (void)
 }
 
 
-#endif
+#endif	// end of Quake2 sky
 
 //===============================================================
+
 
 /*
 =============
@@ -1092,6 +1109,7 @@ void R_InitSky (texture_t *mt)
 
 	r = g = b = 0;
 	for (i=0 ; i<128 ; i++)
+	{
 		for (j=0 ; j<128 ; j++)
 		{
 			p = src[i*256 + j + 128];
@@ -1101,6 +1119,7 @@ void R_InitSky (texture_t *mt)
 			g += ((byte *)rgba)[1];
 			b += ((byte *)rgba)[2];
 		}
+	}
 
 	((byte *)&transpix)[0] = r/(128*128);
 	((byte *)&transpix)[1] = g/(128*128);
@@ -1110,6 +1129,7 @@ void R_InitSky (texture_t *mt)
 	solidskytexture = GL_LoadTexture("upsky", 128, 128, (byte *)trans, false, false, 0, true);
 
 	for (i=0 ; i<128 ; i++)
+	{
 		for (j=0 ; j<128 ; j++)
 		{
 			p = src[i*256 + j];
@@ -1118,6 +1138,7 @@ void R_InitSky (texture_t *mt)
 			else
 				trans[(i*128) + j] = d_8to24table[p];
 		}
+	}
 
 	alphaskytexture = GL_LoadTexture("lowsky", 128, 128, (byte *)trans, false, true, 0, true);
 }

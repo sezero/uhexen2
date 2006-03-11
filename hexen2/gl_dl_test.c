@@ -1,5 +1,5 @@
 /*
-	gl_dl_test.c
+	gl_test.c
 */
 
 #include "quakedef.h"
@@ -19,7 +19,7 @@ typedef struct
 
 #define	MAX_PUFFS	64
 
-puff_t	puffs[MAX_PUFFS];
+static puff_t	puffs[MAX_PUFFS];
 
 
 void Test_Init (void)
@@ -27,9 +27,8 @@ void Test_Init (void)
 }
 
 
-
-plane_t	junk;
-plane_t	*HitPlane (vec3_t start, vec3_t end)
+static plane_t	junk;
+static plane_t	*HitPlane (vec3_t start, vec3_t end)
 {
 	trace_t		trace;
 
@@ -55,7 +54,7 @@ void Test_Spawn (vec3_t origin)
 	plane_t	*plane;
 	float	d;
 
-	for (i=0,p=puffs ; i<MAX_PUFFS ; i++,p++)
+	for (i=0, p=puffs ; i < MAX_PUFFS ; i++, p++)
 	{
 		if (p->length <= 0)
 			break;
@@ -82,7 +81,7 @@ void Test_Spawn (vec3_t origin)
 	p->length = 8;
 }
 
-void DrawPuff (puff_t *p)
+static void DrawPuff (puff_t *p)
 {
 	vec3_t	pts[2][3];
 	int		i, j;
@@ -115,8 +114,8 @@ void DrawPuff (puff_t *p)
 	glBegin_fp (GL_LINES);
 	glVertex3fv_fp (p->origin);
 	glVertex3f_fp (p->origin[0] + p->length*p->reflect[0],
-		p->origin[1] + p->length*p->reflect[1],
-		p->origin[2] + p->length*p->reflect[2]);
+				p->origin[1] + p->length*p->reflect[1],
+				p->origin[2] + p->length*p->reflect[2]);
 
 	glVertex3fv_fp (pts[0][0]);
 	glVertex3fv_fp (pts[1][0]);
@@ -164,3 +163,4 @@ void Test_Draw (void)
 }
 
 #endif
+

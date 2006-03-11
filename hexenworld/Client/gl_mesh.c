@@ -2,7 +2,7 @@
 	gl_mesh.c
 	triangle model functions
 
-	$Id: gl_mesh.c,v 1.6 2005-07-09 09:08:00 sezero Exp $
+	$Id: gl_mesh.c,v 1.7 2006-03-11 22:51:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -15,34 +15,34 @@ ALIAS MODEL DISPLAY LIST GENERATION
 =================================================================
 */
 
-model_t		*aliasmodel;
-aliashdr_t	*paliashdr;
+static model_t		*aliasmodel;
+static aliashdr_t	*paliashdr;
 
-qboolean	used[8192];
+static qboolean		used[8192];
 
 // the command list holds counts and s/t values that are valid for
 // every frame
-int		commands[8192];
-int		numcommands;
+static int		commands[8192];
+static int		numcommands;
 
 // all frames will have their vertexes rearranged and expanded
 // so they are in the order expected by the command list
-int		vertexorder[8192];
-int		numorder;
+static int		vertexorder[8192];
+static int		numorder;
 
-int		allverts, alltris;
+//static int		allverts, alltris;
 
-int		stripverts[128];
-int		striptris[128];
-int		stripstverts[128];
-int		stripcount;
+static int		stripverts[128];
+static int		striptris[128];
+static int		stripstverts[128];
+static int		stripcount;
 
 /*
 ================
 StripLength
 ================
 */
-int	StripLength (int starttri, int startv)
+static int StripLength (int starttri, int startv)
 {
 	int			m1, m2;
 	int			st1, st2;
@@ -115,8 +115,8 @@ nexttri:
 			goto nexttri;
 		}
 	}
-done:
 
+done:
 	// clear the temp used flags
 	for (j=starttri+1 ; j<pheader->numtris ; j++)
 		if (used[j] == 2)
@@ -130,7 +130,7 @@ done:
 FanLength
 ===========
 */
-int	FanLength (int starttri, int startv)
+static int FanLength (int starttri, int startv)
 {
 	int		m1, m2;
 	int		st1, st2;
@@ -158,7 +158,6 @@ int	FanLength (int starttri, int startv)
 	st1 = last->stindex[(startv+2)%3];
 	m2 = last->vertindex[(startv+2)%3];
 	st2 = last->stindex[(startv+1)%3];
-
 
 	// look for a matching triangle
 nexttri:
@@ -196,8 +195,8 @@ nexttri:
 			goto nexttri;
 		}
 	}
-done:
 
+done:
 	// clear the temp used flags
 	for (j=starttri+1 ; j<pheader->numtris ; j++)
 		if (used[j] == 2)
@@ -215,7 +214,7 @@ Generate a list of trifans or strips
 for the model, which holds for all frames
 ================
 */
-void BuildTris (void)
+static void BuildTris (void)
 {
 	int		i, j, k;
 	int		startv;
@@ -225,6 +224,7 @@ void BuildTris (void)
 	int		besttris[1024];
 	int		beststverts[1024];
 	int		type;
+
 	//
 	// build tristrips
 	//
@@ -238,6 +238,7 @@ void BuildTris (void)
 			continue;
 
 		bestlen = 0;
+		besttype = 0;
 		for (type = 0 ; type < 2 ; type++)
 //	type = 1;
 		{
@@ -271,7 +272,6 @@ void BuildTris (void)
 		else
 			commands[numcommands++] = -(bestlen+2);
 
-		
 		for (j=0 ; j<bestlen+2 ; j++)
 		{
 			// emit a vertex into the reorder buffer
@@ -298,8 +298,8 @@ void BuildTris (void)
 
 	Con_DPrintf ("%3i tri %3i vert %3i cmd\n", pheader->numtris, numorder, numcommands);
 
-	allverts += numorder;
-	alltris += pheader->numtris;
+//	allverts += numorder;
+//	alltris += pheader->numtris;
 }
 
 
@@ -367,7 +367,6 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 		}
 	}
 
-
 	// save the data out
 
 	paliashdr->poseverts = numorder;
@@ -376,8 +375,7 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 	paliashdr->commands = (byte *)cmds - (byte *)paliashdr;
 	memcpy (cmds, commands, numcommands * 4);
 
-	verts = Hunk_AllocName (paliashdr->numposes * paliashdr->poseverts 
-		* sizeof(trivertx_t), "verts");
+	verts = Hunk_AllocName (paliashdr->numposes * paliashdr->poseverts * sizeof(trivertx_t), "verts");
 	paliashdr->posedata = (byte *)verts - (byte *)paliashdr;
 	for (i=0 ; i<paliashdr->numposes ; i++)
 		for (j=0 ; j<numorder ; j++)

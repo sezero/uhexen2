@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.41 2006-03-10 08:08:45 sezero Exp $
+	$Id: glquake.h,v 1.42 2006-03-11 22:51:16 sezero Exp $
 */
 
 
@@ -88,8 +88,11 @@
 // misc. common glquake defines
 #define MAX_GLTEXTURES		2048
 #define MAX_EXTRA_TEXTURES	156   // 255-100+1
+#define	MAX_CACHED_PICS		256
 #define	MAX_LIGHTMAPS		64
 
+#define	gl_solid_format		3
+#define	gl_alpha_format		4
 
 // types for textures
 
@@ -127,17 +130,19 @@ extern	int	gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for mode
 void GL_BeginRendering (int *x, int *y, int *width, int *height);
 void GL_EndRendering (void);
 
-void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite);
-void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode);
 int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba);
-int GL_FindTexture (char *identifier);
 int GL_LoadPicTexture (qpic_t *pic);
 int M_DrawBigCharacter (int x, int y, int num, int numNext);
 void GL_BuildLightmaps (void);
 void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr);
 void GL_Set2D (void);
 void GL_SubdivideSurface (msurface_t *fa);
-void EmitSkyPolys (msurface_t *fa);
+#ifdef QUAKE2
+void R_LoadSkys (void);
+void R_DrawSkyBox (void);
+void R_ClearSkyBox (void);
+#endif
+//void EmitSkyPolys (msurface_t *fa);
 void EmitWaterPolys (msurface_t *fa);
 void EmitBothSkyLayers (msurface_t *fa);
 qboolean R_CullBox (vec3_t mins, vec3_t maxs);
@@ -277,9 +282,7 @@ typedef struct particle_s
 } particle_t;
 
 
-void R_TimeRefresh_f (void);
 void R_ReadPointFile_f (void);
-texture_t *R_TextureAnimation (texture_t *base);
 void R_TranslatePlayerSkin (int playernum);
 
 
@@ -362,8 +365,6 @@ extern	cvar_t	gl_colored_dynamic_lights;
 extern	cvar_t	gl_extra_dynamic_lights;
 
 extern	int	gl_lightmap_format;
-extern	int	gl_solid_format;
-extern	int	gl_alpha_format;
 
 extern	int	gl_max_size;
 extern	cvar_t	gl_playermip;
@@ -393,6 +394,26 @@ extern	qboolean lightmap_modified[MAX_LIGHTMAPS];
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.41  2006/03/10 08:08:45  sezero
+ * Adds support for colored lights and .lit files. Initially extracted from
+ * jshexen2 (thanks Michal Wozniak). This is version 6 of the patch, it is
+ * against the uhexen2 cvs snapshot from March 04 (or 07), 2006.
+ * Colored lights and lit file support is now added to hexenworld, as well.
+ * The cvars gl_colored_dynamic_lights and gl_extra_dynamic_light are not
+ * functional there: hexenworld har some colored lights in it, and this patch
+ * doesn't change them.
+ * Colored lights member of the dligh_t in hexen2 is changed to be an array
+ * of 4, instead of the previous vec3_t, so that thins look more alike with
+ * the hexenworld version.
+ * The default lightmap format is changed to GL_RGBA, (was GL_LUMINANCE,
+ * previously.) One can use command line arguments to change the lightmap
+ * format, when starting the game:
+ * 	-lm_1 : GL_LUMINANCE
+ * 	-lm_4 : GL_RGBA (default)
+ * TODO: * The three new cvars will be added to the "opengl features" menu.
+ * * Would it be a good (AND a feasible) idea to add a menu+cvar control for
+ *   the lightmap format?
+ *
  * Revision 1.40  2006/03/04 15:35:23  sezero
  * opengl headers tidy-up
  *
