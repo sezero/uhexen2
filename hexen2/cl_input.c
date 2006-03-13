@@ -309,16 +309,12 @@ static void IN_CrouchUp (void)
 	}
 }
 
+#ifdef H2MP
 static void IN_infoPlaqueUp(void)
 {
 	if (key_dest == key_game)
 	{
 		//They want to lower the plaque
-		/*if (!infomessage)
-		{
-			infomessage=Z_Malloc(1028);//"Objectives:@";
-		}*/
-
 		info_up = 0;
 		KeyUp(&in_infoplaque);
 	}
@@ -329,13 +325,11 @@ static void IN_infoPlaqueDown(void)
 	if (key_dest == key_game)
 	{
 		//They want to see the plaque
-		/*if (infomessage[0] == '\0')
-			strcpy(infomessage, "Objectives:");*/
-
 		info_up = 1;
 		KeyDown(&in_infoplaque);
 	}
 }
+#endif
 
 /*
 ===============
@@ -669,9 +663,10 @@ void CL_InitInput (void)
 
 	Cmd_AddCommand ("+crouch", IN_CrouchDown);
 	Cmd_AddCommand ("-crouch", IN_CrouchUp);
-
+#ifdef H2MP
 	Cmd_AddCommand ("+infoplaque", IN_infoPlaqueDown);
 	Cmd_AddCommand ("-infoplaque", IN_infoPlaqueUp);
+#endif
 }
 
 

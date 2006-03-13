@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.25 2006-02-24 14:40:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.26 2006-03-13 22:28:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -39,7 +39,10 @@ extern	cvar_t	sv_flypitch;
 qboolean	flush_textures;
 #endif
 
+#ifdef H2MP
+// mission pack, objectives
 unsigned int	info_mask, info_mask2;
+#endif
 int		sv_kingofhill;
 qboolean	intro_playing = false;
 qboolean	skip_start = false;
@@ -1340,10 +1343,13 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 			sc2 |= SC2_MAXMANA;
 		if (ent->v.flags != host_client->old_v.flags)
 			sc2 |= SC2_FLAGS;
+#ifdef H2MP
+		// mission pack, objectives
 		if (info_mask != client->info_mask)
 			sc2 |= SC2_OBJ;
 		if (info_mask2 != client->info_mask2)
 			sc2 |= SC2_OBJ2;
+#endif
 	}
 
 	if (!sc1 && !sc2)
@@ -1496,6 +1502,8 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 		MSG_WriteByte(&host_client->message, ent->v.max_mana);
 	if (sc2 & SC2_FLAGS)
 		MSG_WriteFloat(&host_client->message, ent->v.flags);
+#ifdef H2MP
+// mission pack, objectives
 	if (sc2 & SC2_OBJ)
 	{
 		MSG_WriteLong(&host_client->message, info_mask);
@@ -1506,6 +1514,7 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 		MSG_WriteLong(&host_client->message, info_mask2);
 		client->info_mask2 = info_mask2;
 	}
+#endif
 
 end:
 	memcpy(&client->old_v,&ent->v,sizeof(client->old_v));
@@ -2078,6 +2087,10 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2006/02/24 14:40:59  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 27: hexen2/sv_main.c).
+ *
  * Revision 1.24  2005/10/25 17:14:23  sezero
  * added a STRINGIFY macro. unified version macros. simplified version
  * printing. simplified and enhanced version watermark print onto console

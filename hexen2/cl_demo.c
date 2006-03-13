@@ -28,11 +28,13 @@ void CL_StopPlayback (void)
 	if (!cls.demoplayback)
 		return;
 
+#ifdef H2MP
 	if (intro_playing)
 		M_ToggleMenu_f();
 
-	intro_playing=false;
-	num_intro_msg=0;
+	intro_playing = false;
+	num_intro_msg = 0;
+#endif
 
 	fclose (cls.demofile);
 	cls.demoplayback = false;
@@ -105,12 +107,13 @@ int CL_GetMessage (void)
 		}
 
 	// get the next message
-//		if(intro_playing&&num_intro_msg>0&&num_intro_msg<21)
-//			V_DarkFlash_f();//Fade into demo
+#ifdef H2MP
+//		if (intro_playing && num_intro_msg > 0 && num_intro_msg < 21)
+//			V_DarkFlash_f();	//Fade into demo
 
-/*		if(skip_start&&num_intro_msg>3)
+/*		if (skip_start && num_intro_msg > 3)
 		{
-			while(num_intro_msg<1110)
+			while (num_intro_msg < 1110)
 			{
 				fread (&net_message.cursize, 4, 1, cls.demofile);
 				VectorCopy (cl.mviewangles[0], cl.mviewangles[1]);
@@ -130,38 +133,41 @@ int CL_GetMessage (void)
 					CL_StopPlayback ();
 					return 0;
 				}
-				if(num_intro_msg==174||
-					num_intro_msg==178||
-					num_intro_msg==428||
-					num_intro_msg==553||
-					num_intro_msg==1012)
+				if (num_intro_msg == 174 ||
+					num_intro_msg == 178 ||
+					num_intro_msg == 428 ||
+					num_intro_msg == 553 ||
+					num_intro_msg == 1012)
 					break;
 			}
-			if(num_intro_msg==1110)
-				skip_start=false;
+			if (num_intro_msg == 1110)
+				skip_start = false;
+			goto skipit;
+		} */
+#endif
+		fread (&net_message.cursize, 4, 1, cls.demofile);
+		VectorCopy (cl.mviewangles[0], cl.mviewangles[1]);
+		for (i = 0 ; i < 3 ; i++)
+		{
+			r = fread (&f, 4, 1, cls.demofile);
+			cl.mviewangles[0][i] = LittleFloat (f);
 		}
-		else
-		{*/
-			fread (&net_message.cursize, 4, 1, cls.demofile);
-			VectorCopy (cl.mviewangles[0], cl.mviewangles[1]);
-			for (i=0 ; i<3 ; i++)
-			{
-				r = fread (&f, 4, 1, cls.demofile);
-				cl.mviewangles[0][i] = LittleFloat (f);
-			}
 
-			net_message.cursize = LittleLong (net_message.cursize);
-			num_intro_msg++;
-			if (net_message.cursize > MAX_MSGLEN)
-				Sys_Error ("Demo message > MAX_MSGLEN");
-			r = fread (net_message.data, net_message.cursize, 1, cls.demofile);
-			if (r != 1)
-			{
-				CL_StopPlayback ();
-				return 0;
-			}
-//		}
-
+		net_message.cursize = LittleLong (net_message.cursize);
+#ifdef H2MP
+		num_intro_msg++;
+#endif
+		if (net_message.cursize > MAX_MSGLEN)
+			Sys_Error ("Demo message > MAX_MSGLEN");
+		r = fread (net_message.data, net_message.cursize, 1, cls.demofile);
+		if (r != 1)
+		{
+			CL_StopPlayback ();
+			return 0;
+		}
+#ifdef H2MP
+//skipit:
+#endif
 //		if (cls.demorecording)
 //			CL_WriteDemoMessage ();
 
@@ -207,8 +213,10 @@ void CL_Stop_f (void)
 		return;
 	}
 
-	intro_playing=false;
-	num_intro_msg=0;
+#ifdef H2MP
+	intro_playing = false;
+	num_intro_msg = 0;
+#endif
 // write a disconnect message to the demo file
 	SZ_Clear (&net_message);
 	MSG_WriteByte (&net_message, svc_disconnect);
@@ -326,6 +334,7 @@ void CL_PlayDemo_f (void)
 // open the demo file
 //
 	strcpy (name, Cmd_Argv(1));
+#ifdef H2MP
 	if(!Q_strcasecmp(name,"t9"))
 	{
 		intro_playing=true;
@@ -335,16 +344,19 @@ void CL_PlayDemo_f (void)
 	{
 		intro_playing=false;
 	}
+#endif
 
 	COM_DefaultExtension (name, ".dem");
 
 	Con_Printf ("Playing demo from %s.\n", name);
+#ifdef H2MP
 /*	if(intro_playing)
 	{
 		cls.demorecording = true;
 		cls.introdemofile=fopen("t9.dem","wb");
 	}
 */
+#endif
 	COM_FOpenFile (name, &cls.demofile, false);
 	if (!cls.demofile)
 	{

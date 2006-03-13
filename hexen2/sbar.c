@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.17 2006-02-21 19:40:23 sezero Exp $
+	$Id: sbar.c,v 1.18 2006-03-13 22:28:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -115,9 +115,8 @@ static int AmuletAC[MAX_PLAYER_CLASS] =
 	8,		// Paladin
 	4,		// Crusader
 	2,		// Necromancer
-	6		// Assassin
+	6,		// Assassin
 #ifdef H2MP
-	,
 	6		// Demoness
 #endif
 };
@@ -127,9 +126,8 @@ static int BracerAC[MAX_PLAYER_CLASS] =
 	6,		// Paladin
 	8,		// Crusader
 	4,		// Necromancer
-	2		// Assassin
+	2,		// Assassin
 #ifdef H2MP
-	,
 	2		// Demoness
 #endif
 };
@@ -139,9 +137,8 @@ static int BreastplateAC[MAX_PLAYER_CLASS] =
 	2,		// Paladin
 	6,		// Crusader
 	8,		// Necromancer
-	4		// Assassin
+	4,		// Assassin
 #ifdef H2MP
-	,
 	4		// Demoness
 #endif
 };
@@ -151,9 +148,8 @@ static int HelmetAC[MAX_PLAYER_CLASS] =
 	4,		// Paladin
 	2,		// Crusader
 	6,		// Necromancer
-	8		// Assassin
+	8,		// Assassin
 #ifdef H2MP
-	,
 	8		// Demoness
 #endif
 };
@@ -211,12 +207,14 @@ void Sbar_Draw(void)
 	char	tempStr[80];
 	int	mana, maxMana;
 
+#ifdef H2MP
 	if (intro_playing)
 	{
 		scr_fullupdate = 0;
 		scr_copyeverything = 1;
 		return;
 	}
+#endif
 
 	if (scr_con_current == vid.height)
 	{ // console is full screen

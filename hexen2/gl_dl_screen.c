@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_dl_screen.c,v 1.26 2006-03-13 22:25:22 sezero Exp $
+	$Id: gl_dl_screen.c,v 1.27 2006-03-13 22:28:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -112,8 +112,10 @@ int		total_loading_size, current_loading_size, loading_stage;
 
 void SCR_ScreenShot_f (void);
 void Plaque_Draw (char *message, qboolean AlwaysDraw);
+#ifdef H2MP
 void Info_Plaque_Draw (char *message);
 void Bottom_Plaque_Draw (char *message);
+#endif
 
 /*
 ===============================================================================
@@ -134,17 +136,16 @@ static int lines;
 #define MAXLINES 27
 static int StartC[MAXLINES],EndC[MAXLINES];
 
+#ifdef H2MP
+// Objectives thing of the mission pack
 #define MAX_INFO 1024
 char infomessage[MAX_INFO];
 qboolean info_up = false;
 
 extern int	*pr_info_string_index;
-#ifdef H2MP
 extern char	*pr_global_info_strings;
-#endif
 extern int	 pr_info_string_count;
 
-#ifdef H2MP
 void UpdateInfoMessage(void)
 {
 	unsigned int i;
@@ -283,10 +284,14 @@ void SCR_CheckDrawCenterString (void)
 	if (key_dest != key_game)
 		return;
 
-	if(intro_playing)
+#ifdef H2MP
+	if (intro_playing)
+	{
 		Bottom_Plaque_Draw(scr_centerstring);
-	else
-		SCR_DrawCenterString ();
+		return;
+	}
+#endif
+	SCR_DrawCenterString ();
 }
 
 //=============================================================================
@@ -909,6 +914,7 @@ void Plaque_Draw (char *message, qboolean AlwaysDraw)
 	}
 }
 
+#ifdef H2MP
 void Info_Plaque_Draw (char *message)
 {
 	int i;
@@ -942,21 +948,6 @@ void Info_Plaque_Draw (char *message)
 	  	M_Print2 (bx, by, temp);
 	}
 }
-void I_DrawCharacter (int cx, int line, int num)
-{
-	Draw_Character ( cx + ((vid.width - 320)>>1), line + ((vid.height - 200)>>1), num);
-}
-
-void I_Print (int cx, int cy, char *str)
-{
-	while (*str)
-	{
-		I_DrawCharacter (cx, cy, ((unsigned char)(*str))+256);
-		str++;
-		cx += 8;
-	}
-}
-
 void Bottom_Plaque_Draw (char *message)
 {
 	int i;
@@ -982,6 +973,22 @@ void Bottom_Plaque_Draw (char *message)
 	  	M_Print(bx, by, temp);
 	}
 }
+#endif
+
+void I_DrawCharacter (int cx, int line, int num)
+{
+	Draw_Character ( cx + ((vid.width - 320)>>1), line + ((vid.height - 200)>>1), num);
+}
+
+void I_Print (int cx, int cy, char *str)
+{
+	while (*str)
+	{
+		I_DrawCharacter (cx, cy, ((unsigned char)(*str))+256);
+		str++;
+		cx += 8;
+	}
+}
 
 //==========================================================================
 //
@@ -1004,7 +1011,9 @@ void Bottom_Plaque_Draw (char *message)
 			// 408 for H2, 410 for H2MP strings.txt
 #endif
 
+#if defined(H2MP)
 float	introTime = 0.0;
+#endif
 
 void SB_IntermissionOverlay(void)
 {
@@ -1050,6 +1059,7 @@ void SB_IntermissionOverlay(void)
 		case 9:
 			pic = Load_IntermissonPic_FN ("gfx/castle.lmp", vid.width, vid.height);
 			break;
+#if defined(H2MP)
 		case 10:
 			pic = Load_IntermissonPic_FN ("gfx/mpend.lmp", vid.width, vid.height);
 			break;
@@ -1059,6 +1069,7 @@ void SB_IntermissionOverlay(void)
 		case 12:
 			pic = Load_IntermissonPic_FN ("gfx/end-3.lmp", vid.width, vid.height);
 			break;
+#endif
 		default:
 			pic = NULL;
 			break;
@@ -1077,12 +1088,14 @@ void SB_IntermissionOverlay(void)
 		elapsed -= 50;
 		if (elapsed < 0) elapsed = 0;
 	}
+#if defined(H2MP)
 	else if (cl.intermission == 12)
 	{
 		elapsed = (introTime);
 		if (introTime < 500)
 			introTime+=0.25;
 	}
+#endif
 	else
 	{
 		elapsed = (cl.time - cl.completed_time) * 20;
@@ -1096,15 +1109,16 @@ void SB_IntermissionOverlay(void)
 		message = &pr_global_strings[pr_string_index[cl.intermission + 386]];
 	else if (cl.intermission == 9)	// finale for the bundle (oem) version
 		message = &pr_global_strings[pr_string_index[391]];
-	else
-		message = "";
-	
-	if (cl.intermission == 10)
+#if defined(H2MP)
+	else if (cl.intermission == 10)
 		message = &pr_global_strings[pr_string_index[538]];
 	else if (cl.intermission == 11)
 		message = &pr_global_strings[pr_string_index[545]];
 	else if (cl.intermission == 12)
 		message = &pr_global_strings[pr_string_index[561]];
+#endif
+	else
+		message = "";
 
 	FindTextBreaks(message, 38);
 
@@ -1119,11 +1133,11 @@ void SB_IntermissionOverlay(void)
 	// each line is 8 pixels
 	if (cl.intermission >= 6 && cl.intermission <= 8)
 		by = (vid.height/2 - lines*4);
-
+#if defined(H2MP)
 	// different story for the mission pack
 	if (cl.intermission == 10)	// tibet10 cl.intermission == 10
 		by=33;
-
+#endif
 	// printf ("cl.intermission == %i, lines == %i,vid(x,y)=%i,%i by=%i\n\n",cl.intermission,lines,vid.width,vid.height,by);
 
 	for(i=0;i<lines;i++,by+=8)
@@ -1291,13 +1305,13 @@ void SCR_UpdateScreen (void)
 			if (errormessage)
 				Plaque_Draw(errormessage,1);
 
+#ifdef H2MP
 			if (info_up)
 			{
-#ifdef H2MP
 				UpdateInfoMessage();
-#endif
 				Info_Plaque_Draw(infomessage);
 			}
+#endif
 		}
 	}
 
@@ -1308,6 +1322,10 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2006/03/13 22:25:22  sezero
+ * properly macroized the fullscreen intermissions as a compile time
+ * option. editing only one line in screen.h is now enough.
+ *
  * Revision 1.25  2006/03/13 22:23:11  sezero
  * fixed a bug where with viewsize (scr_viewsize) being set to 120,
  * the game wouldn't start with a mini status bar unless the user did

@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.58 2006-03-13 22:25:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.59 2006-03-13 22:28:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -128,9 +128,9 @@ char *ClassNames[MAX_PLAYER_CLASS] =
 	"Paladin",
 	"Crusader",
 	"Necromancer",
-	"Assassin"
+	"Assassin",
 #ifdef H2MP
-	,"Demoness"
+	"Demoness"
 #endif
 };
 
@@ -139,9 +139,9 @@ static char *ClassNamesU[MAX_PLAYER_CLASS] =
 	"PALADIN",
 	"CRUSADER",
 	"NECROMANCER",
-	"ASSASSIN"
+	"ASSASSIN",
 #ifdef H2MP
-	, "DEMONESS"
+	"DEMONESS"
 #endif
 };
 
@@ -173,9 +173,8 @@ static char *DiffNames[MAX_PLAYER_CLASS][4] =
 		"CUTTHROAT",
 		"EXECUTIONER",
 		"WIDOW MAKER"
-	}
+	},
 #ifdef H2MP
-	,
 	{	// Demoness
 		"LARVA",
 		"SPAWN",
@@ -897,14 +896,12 @@ static void M_Difficulty_Key (int key)
 			m_state = m_none;
 			cls.demonum = m_save_demonum;
 			//Cbuf_AddText ("map keep1\n");
+			return;
 		}
-		else
 #endif
-		{
-		//	Cbuf_AddText ("map demo1\n");
-			m_state = m_none;
-			Cbuf_AddText ("wait; map demo1\n");
-		}
+		//Cbuf_AddText ("map demo1\n");
+		m_state = m_none;
+		Cbuf_AddText ("wait; map demo1\n");
 		break;
 	default:
 		key_dest = key_game;
@@ -1130,7 +1127,6 @@ static void M_SinglePlayer_Key (int key)
 		case 2:
 			M_Menu_Save_f ();
 			break;
-
 #ifdef H2MP
 		case 4:
 			key_dest = key_game;
@@ -2459,7 +2455,10 @@ static char *bindnames[][2] =
 	{"+showinfo",		"full inventory"},
 	{"+showdm",		"info / frags"},
 	{"toggle_dm",		"toggle frags"},
+#ifdef H2MP
+// command to display the mission pack's objectives
 	{"+infoplaque",		"objectives"},
+#endif
 	{"invleft",		"inv move left"},
 	{"invright",		"inv move right"},
 	{"impulse 100",		"inv:torch"},
@@ -4409,6 +4408,10 @@ static void ReInitMusic (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.58  2006/03/13 22:25:22  sezero
+ * properly macroized the fullscreen intermissions as a compile time
+ * option. editing only one line in screen.h is now enough.
+ *
  * Revision 1.57  2006/03/13 22:23:11  sezero
  * fixed a bug where with viewsize (scr_viewsize) being set to 120,
  * the game wouldn't start with a mini status bar unless the user did

@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.17 2006-03-13 22:21:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.18 2006-03-13 22:28:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -13,10 +13,11 @@
 #endif
 
 
+#ifdef H2MP
+// Objectives strings of the mission pack
 extern UINT	info_mask, info_mask2;
 extern int	*pr_info_string_index;
 extern int	 pr_info_string_count;
-#ifdef H2MP
 extern char	*pr_global_info_strings;
 #endif
 
@@ -3100,6 +3101,8 @@ static void PF_matchAngleToSlope(void)
 
 static void PF_updateInfoPlaque (void)
 {
+//update the objectives in the mission pack
+#ifdef H2MP
 	unsigned int check;
 	unsigned int idx, mode;
 	int  ofs = 0;
@@ -3130,6 +3133,7 @@ static void PF_updateInfoPlaque (void)
 	{
 		(*u.use) ^= check;
 	}
+#endif
 }
 
 extern void V_WhiteFlash_f(void);
@@ -3293,6 +3297,10 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2006/03/13 22:21:26  sezero
+ * fixed objectives in the expansion pack which was broken during
+ * the 1.3.0 development cycle by a bad gcc4 fix.
+ *
  * Revision 1.16  2006/02/20 16:12:51  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 14: pr_cmds.c, pr_comp.h)

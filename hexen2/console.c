@@ -237,6 +237,7 @@ void Con_Init (void)
 
 	PR_LoadStrings();
 #ifdef H2MP
+// mission pack, objectives strings
 	PR_LoadInfoStrings();
 #endif
 }

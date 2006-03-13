@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.38 2006-02-18 08:51:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.39 2006-03-13 22:28:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -25,7 +25,10 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode);
 qboolean SaveGamestate(qboolean ClientsOnly);
 static void RestoreClients(void);
 
+#ifdef H2MP
+// mission pack, objectives strings
 UINT	info_mask, info_mask2;
+#endif
 
 extern qboolean	mousestate_sa;
 extern void IN_ActivateMouse (void);
@@ -250,11 +253,13 @@ static void Host_Map_f (void)
 	key_dest = key_game;		// remove console or menu
 	SCR_BeginLoadingPlaque ();
 
+#ifdef H2MP
 	info_mask = 0;
 	if (!coop.value && deathmatch.value)
 		info_mask2 = 0x80000000;
 	else
 		info_mask2 = 0;
+#endif
 
 	cls.mapstring[0] = 0;
 	for (i=0 ; i<Cmd_Argc() ; i++)
@@ -566,9 +571,11 @@ retry:
 	fprintf (f, "%f\n",teamplay.value);
 	fprintf (f, "%f\n",randomclass.value);
 	fprintf (f, "%f\n",cl_playerclass.value);
+#ifdef H2MP
+	// mission pack, objectives strings
 	fprintf (f, "%d\n",info_mask);
 	fprintf (f, "%d\n",info_mask2);
-
+#endif
 	if (ferror(f))
 		error_state = true;
 
@@ -692,8 +699,11 @@ static void Host_Loadgame_f (void)
 	if (tempf >= 0)
 		Cvar_SetValue ("_cl_playerclass", tempf);
 
+#ifdef H2MP
+	// mission pack, objectives strings
 	fscanf (f, "%d\n",&info_mask);
 	fscanf (f, "%d\n",&info_mask2);
+#endif
 
 	fclose (f);
 
@@ -730,8 +740,8 @@ retry:
 
 	Cvar_SetValue ("_cl_playerclass", ent->v.playerclass);//this better be the same as above...
 
-	// this may be rudundant with the setting in PR_LoadProgs, but not sure so its here too
 #ifdef H2MP
+	// this may be rudundant with the setting in PR_LoadProgs, but not sure so its here too
 	pr_global_struct->cl_playerclass = ent->v.playerclass;
 #endif
 
@@ -796,8 +806,11 @@ retry:
 		fprintf (f, "%s\n", sv.name);
 		fprintf (f, "%f\n", sv.time);
 
+#ifdef H2MP
+// mission pack, objectives strings
 //		fprintf (f, "%d\n", info_mask);
 //		fprintf (f, "%d\n", info_mask2);
+#endif
 
 	// write the light styles
 
@@ -812,11 +825,14 @@ retry:
 		fprintf(f,"-1\n");
 		ED_WriteGlobals (f);
 	}
+#ifdef H2MP
 	else
 	{
-		/*fprintf(f, "%d\n", info_mask);
-		fprintf(f, "%d\n", info_mask2);*/
+// mission pack, objectives strings
+//		fprintf(f, "%d\n", info_mask);
+//		fprintf(f, "%d\n", info_mask2);
 	}
+#endif
 
 	host_client = svs.clients;
 
@@ -968,8 +984,11 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode)
 			return -1;
 		}
 
+#ifdef H2MP
+// mission pack, objectives strings
 //		fscanf (f, "%d\n",&info_mask);
 //		fscanf (f, "%d\n",&info_mask2);
+#endif
 
 	// load the light styles
 		for (i=0 ; i<MAX_LIGHTSTYLES ; i++)
@@ -1201,9 +1220,9 @@ static void Host_Class_f (void)
 	{
 		Cvar_SetValue ("_cl_playerclass", newClass);
 
+#ifdef H2MP
 		// when classes changes after map load, update cl_playerclass, cl_playerclass should 
 		// probably only be used in worldspawn, though
-#ifdef H2MP
 		if(pr_global_struct)
 			pr_global_struct->cl_playerclass = newClass;
 #endif
@@ -2238,6 +2257,11 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.38  2006/02/18 08:51:10  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. also renamed the variables name and dest to savename and savedest in
+ * host_cmd.c to prevent any confusion and pollution.
+ *
  * Revision 1.37  2006/01/06 12:19:08  sezero
  * put the new Sys_FindFirstFile/Sys_FindNextFile stuff into action. also killed
  * the tempdir and trailing slash funnies in host_cmd.c when calling CL_CopyFiles

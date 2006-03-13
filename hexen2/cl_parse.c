@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.21 2005-12-11 11:56:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.22 2006-03-13 22:28:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -979,9 +979,9 @@ const int color_offsets[MAX_PLAYER_CLASS] =
 	2*14*256,
 	0,
 	1*14*256,
-	2*14*256
+	2*14*256,
 #ifdef H2MP
-	, 2*14*256
+	2*14*256
 #endif
 };
 #endif	// GLQUAKE
@@ -1256,14 +1256,15 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_print:
-			if(intro_playing)
+#ifdef H2MP
+			if (intro_playing)
 				MSG_ReadString ();
 			else
+#endif
 				Con_Printf ("%s", MSG_ReadString ());
 			break;
 
 		case svc_centerprint:
-			//Bottom_Plaque_Draw(MSG_ReadString(),true);
 			SCR_CenterPrint (MSG_ReadString ());
 			break;
 
@@ -1780,11 +1781,12 @@ void CL_ParseServerMessage (void)
 					cl.v.max_mana = MSG_ReadByte();
 				if (sc2 & SC2_FLAGS)
 					cl.v.flags = MSG_ReadFloat();
+#ifdef H2MP
 				if (sc2 & SC2_OBJ)
 					cl.info_mask = MSG_ReadLong();
 				if (sc2 & SC2_OBJ2)
 					cl.info_mask2 = MSG_ReadLong();
-
+#endif
 				if ((sc1 & SC1_STAT_BAR) || (sc2 & SC2_STAT_BAR))
 					Sbar_Changed();
 
@@ -1797,6 +1799,17 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2005/12/11 11:56:33  sezero
+ * synchronized different sbar function names between h2 and h2w.
+ * there was a mess about SB_Changed and Sbar_Changed in h2w, this
+ * patch fixes that: h2 (and h2w) version of SB_Changed was never
+ * functional. h2w actually called SB_InvChanged, who knows what
+ * the original intention was, but that seemed serving to no purpose
+ * to me. in any case, watching for any new weirdness in h2w would
+ * be advisable. ability string indexes for the demoness and dwarf
+ * classes in h2w are fixed. armor class display in h2w is fixed.
+ * h2 and h2w versions of gl_vidsdl and gl_vidnt are synchronized.
+ *
  * Revision 1.20  2005/10/27 18:21:07  sezero
  * more sensible var names for ent number in CL_ParseServerMessage
  *

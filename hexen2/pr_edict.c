@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.15 2006-02-20 23:34:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.16 2006-03-13 22:28:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -22,9 +22,10 @@ int		*pr_string_index = NULL;
 int		pr_string_count = 0;
 char		*pr_global_strings = NULL;
 
+#ifdef H2MP
+// Objectives strings of the mission pack
 int		*pr_info_string_index = NULL;
 int		pr_info_string_count = 0;
-#ifdef H2MP
 char		*pr_global_info_strings = NULL;
 #endif
 
@@ -1293,6 +1294,7 @@ void PR_LoadProgs (void)
 
 
 #ifdef H2MP
+// loads the mission pack objectives strings
 void PR_LoadInfoStrings(void)
 {
 	int		i, count, start;
@@ -1454,6 +1456,10 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2006/02/20 23:34:39  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 16: pr_edict.c and progs.h)
+ *
  * Revision 1.14  2005/07/09 09:07:58  sezero
  * changed all Hunk_Alloc() usage to Hunk_AllocName() for easier memory usage tracing.
  *
