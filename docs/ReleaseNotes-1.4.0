@@ -5,6 +5,7 @@ Changes since HoT-1.3.0 :
 
 - Support for resolution changing on the fly for both opengl and software
   renderers
+- Suffort for colored lights and external lit files
 - Improved insert/overwrite mode console editing and command completion
 - Better error checking when saving games on unix
 - Added list commands for cvars and aliases (cvarlist and aliaslist),
@@ -27,6 +28,11 @@ Changes since HoT-1.3.0 :
 - The menu/console now automatically disappears when playing a timedemo
 - The menu panels now properly disappear upon starting a new game through
   the menu system
+- Fixed objectives display in the expansion pack which was broken during
+  the 1.3.0 development cycle
+- Fixed a bug where with viewsize (scr_viewsize) being set to 120, the
+  game wouldn't start with mini status bar unless the user did a size-up/
+  size-down
 - host_hunklevel and gl_texlevel are now set before execing hexen.rc
   to prevent "bad things (TM)" from happening
 - Increased minimum heapsize to 16 mb to prevent hunk allocation errors
