@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.19 2006-01-17 18:46:53 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.20 2006-03-13 22:23:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -335,11 +335,6 @@ static void SCR_CalcRefdef (void)
 	scr_fullupdate = 0;		// force a background redraw
 	vid.recalc_refdef = 0;
 
-// force the status bar to redraw
-	Sbar_Changed();
-
-//========================================
-	
 // bound viewsize
 	if (scr_viewsize.value < 30)
 		Cvar_Set ("viewsize","30");
@@ -351,6 +346,13 @@ static void SCR_CalcRefdef (void)
 		Cvar_Set ("fov","10");
 	if (scr_fov.value > 110)
 		Cvar_Set ("fov","110");
+
+	oldfov = scr_fov.value;
+	oldscreensize = scr_viewsize.value;
+
+// force the status bar to redraw
+	SB_ViewSizeChanged ();
+	Sbar_Changed();
 
 // intermission is always full screen	
 	if (cl.intermission)
@@ -404,10 +406,8 @@ Keybinding command
 void SCR_SizeUp_f (void)
 {
 	Cvar_SetValue ("viewsize",scr_viewsize.value+10);
-	SB_ViewSizeChanged();
 	vid.recalc_refdef = 1;
 }
-
 
 /*
 =================
@@ -419,7 +419,6 @@ Keybinding command
 void SCR_SizeDown_f (void)
 {
 	Cvar_SetValue ("viewsize",scr_viewsize.value-10);
-	SB_ViewSizeChanged();
 	vid.recalc_refdef = 1;
 }
 
@@ -962,7 +961,6 @@ needs almost the entire 256k of stack space!
 */
 void SCR_UpdateScreen (void)
 {
-	static float	oldscr_viewsize;
 	vrect_t		vrect;
 	
 	if (scr_skipupdate || block_drawing)
@@ -998,27 +996,13 @@ void SCR_UpdateScreen (void)
 	if (!scr_initialized || !con_initialized)
 		return;				// not initialized yet
 
-	if (scr_viewsize.value != oldscr_viewsize)
-	{
-		oldscr_viewsize = scr_viewsize.value;
-		vid.recalc_refdef = 1;
-	}
-	
 //
 // check for vid changes
 //
-	if (oldfov != scr_fov.value)
-	{
-		oldfov = scr_fov.value;
+	if (oldfov != scr_fov.value ||
+	    oldscreensize != scr_viewsize.value)
 		vid.recalc_refdef = true;
-	}
 
-	if (oldscreensize != scr_viewsize.value)
-	{
-		oldscreensize = scr_viewsize.value;
-		vid.recalc_refdef = true;
-	}
-	
 	if (vid.recalc_refdef)
 	{
 		// something changed, so reorder the screen
@@ -1526,6 +1510,9 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2006/01/17 18:46:53  sezero
+ * missing part of vid_win synchronization (block_drawing stuff)
+ *
  * Revision 1.18  2005/12/11 11:56:33  sezero
  * synchronized different sbar function names between h2 and h2w.
  * there was a mess about SB_Changed and Sbar_Changed in h2w, this

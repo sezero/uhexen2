@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.19 2006-01-12 12:34:38 sezero Exp $
+	$Id: gl_screen.c,v 1.20 2006-03-13 22:23:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -69,7 +69,9 @@ int			scr_copyeverything;
 float		scr_con_current;
 float		scr_conlines;		// lines of console to display
 
+float		oldsbar = 0;
 float		oldscreensize, oldfov;
+
 cvar_t		scr_viewsize = {"viewsize","110", true};
 cvar_t		scr_fov = {"fov","90"};	// 10 - 170
 cvar_t		scr_conspeed = {"scr_conspeed","300"};
@@ -246,9 +248,6 @@ static void SCR_CalcRefdef (void)
 	scr_fullupdate = 0;		// force a background redraw
 	vid.recalc_refdef = 0;
 
-// force the status bar to redraw
-	Sbar_Changed ();
-
 // bound viewsize
 	if (scr_viewsize.value < 30)
 		Cvar_Set ("viewsize","30");
@@ -260,6 +259,14 @@ static void SCR_CalcRefdef (void)
 		Cvar_Set ("fov","10");
 	if (scr_fov.value > 170)
 		Cvar_Set ("fov","170");
+
+	oldfov = scr_fov.value;
+	oldscreensize = scr_viewsize.value;
+	oldsbar = cl_sbar.value;
+
+// force the status bar to redraw
+	SB_ViewSizeChanged ();
+	Sbar_Changed ();
 
 // intermission is always full screen	
 	if (cl.intermission)
@@ -319,14 +326,9 @@ Keybinding command
 */
 void SCR_SizeUp_f (void)
 {
-	if (scr_viewsize.value < 120)
-	{
-		Cvar_SetValue ("viewsize",scr_viewsize.value+10);
-		vid.recalc_refdef = 1;
-		SB_ViewSizeChanged();
-	}
+	Cvar_SetValue ("viewsize",scr_viewsize.value+10);
+	vid.recalc_refdef = 1;
 }
-
 
 /*
 =================
@@ -339,7 +341,6 @@ void SCR_SizeDown_f (void)
 {
 	Cvar_SetValue ("viewsize",scr_viewsize.value-10);
 	vid.recalc_refdef = 1;
-	SB_ViewSizeChanged();
 }
 
 //============================================================================
@@ -779,8 +780,6 @@ void SCR_TileClear (void)
 	}
 }
 
-float oldsbar = 0;
-
 // This is also located in screen.c
 #define PLAQUE_WIDTH 26
 
@@ -1003,11 +1002,19 @@ void SCR_UpdateScreen (void)
 
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	
-	//
-	// determine size of refresh window
-	//
+//
+// check for vid changes
+//
+	if (oldfov != scr_fov.value ||
+	    oldsbar != cl_sbar.value ||
+	    oldscreensize != scr_viewsize.value)
+		vid.recalc_refdef = true;
+
 	if (vid.recalc_refdef)
+	{
+		// something changed, so reorder the screen
 		SCR_CalcRefdef ();
+	}
 
 //
 // do 3D refresh drawing, and then update the screen

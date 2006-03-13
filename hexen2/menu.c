@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.56 2006-03-10 10:59:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.57 2006-03-13 22:23:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1903,13 +1903,7 @@ static void M_AdjustSliders (int dir)
 	{
 	case OPT_SCRSIZE:	// screen size
 		scr_viewsize.value += dir * 10;
-		if (scr_viewsize.value < 30)
-			scr_viewsize.value = 30;
-		if (scr_viewsize.value > 120)
-			scr_viewsize.value = 120;
 		Cvar_SetValue ("viewsize", scr_viewsize.value);
-		SB_ViewSizeChanged();
-		vid.recalc_refdef = 1;
 		break;
 	case OPT_GAMMA:	// gamma
 		v_gamma.value -= dir * 0.05;
@@ -4401,6 +4395,9 @@ static void ReInitMusic (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.56  2006/03/10 10:59:38  sezero
+ * added colored light opions to the opengl features menu.
+ *
  * Revision 1.55  2006/02/24 19:23:16  sezero
  * got rid of the menu panels upon starting a new games through the menu system
  *

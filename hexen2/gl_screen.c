@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.24 2006-01-17 18:46:53 sezero Exp $
+	$Id: gl_screen.c,v 1.25 2006-03-13 22:23:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -309,9 +309,6 @@ static void SCR_CalcRefdef (void)
 	scr_fullupdate = 0;		// force a background redraw
 	vid.recalc_refdef = 0;
 
-// force the status bar to redraw
-	Sbar_Changed();
-
 // bound viewsize
 	if (scr_viewsize.value < 30)
 		Cvar_Set ("viewsize","30");
@@ -323,6 +320,13 @@ static void SCR_CalcRefdef (void)
 		Cvar_Set ("fov","10");
 	if (scr_fov.value > 170)
 		Cvar_Set ("fov","170");
+
+	oldfov = scr_fov.value;
+	oldscreensize = scr_viewsize.value;
+
+// force the status bar to redraw
+	SB_ViewSizeChanged ();
+	Sbar_Changed();
 
 // intermission is always full screen	
 	if (cl.intermission)
@@ -383,10 +387,8 @@ Keybinding command
 void SCR_SizeUp_f (void)
 {
 	Cvar_SetValue ("viewsize",scr_viewsize.value+10);
-	SB_ViewSizeChanged();
 	vid.recalc_refdef = 1;
 }
-
 
 /*
 =================
@@ -398,7 +400,6 @@ Keybinding command
 void SCR_SizeDown_f (void)
 {
 	Cvar_SetValue ("viewsize",scr_viewsize.value-10);
-	SB_ViewSizeChanged();
 	vid.recalc_refdef = 1;
 }
 
@@ -1191,11 +1192,18 @@ void SCR_UpdateScreen (void)
 
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	
-	//
-	// determine size of refresh window
-	//
+//
+// check for vid changes
+//
+	if (oldfov != scr_fov.value ||
+	    oldscreensize != scr_viewsize.value)
+		vid.recalc_refdef = true;
+
 	if (vid.recalc_refdef)
+	{
+		// something changed, so reorder the screen
 		SCR_CalcRefdef ();
+	}
 
 //
 // do 3D refresh drawing, and then update the screen
@@ -1289,6 +1297,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2006/01/17 18:46:53  sezero
+ * missing part of vid_win synchronization (block_drawing stuff)
+ *
  * Revision 1.23  2006/01/12 12:34:37  sezero
  * added video modes enumeration via SDL. added on-the-fly video mode changing
  * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its

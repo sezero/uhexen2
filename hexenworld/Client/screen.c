@@ -272,11 +272,6 @@ static void SCR_CalcRefdef (void)
 	scr_fullupdate = 0;		// force a background redraw
 	vid.recalc_refdef = 0;
 
-// force the status bar to redraw
-	Sbar_Changed ();
-
-//========================================
-	
 // bound viewsize
 	if (scr_viewsize.value < 30)
 		Cvar_Set ("viewsize","30");
@@ -288,6 +283,14 @@ static void SCR_CalcRefdef (void)
 		Cvar_Set ("fov","10");
 	if (scr_fov.value > 110)
 		Cvar_Set ("fov","110");
+
+	oldfov = scr_fov.value;
+	oldscreensize = scr_viewsize.value;
+	oldsbar = cl_sbar.value;
+
+// force the status bar to redraw
+	SB_ViewSizeChanged ();
+	Sbar_Changed ();
 
 // intermission is always full screen	
 	if (cl.intermission)
@@ -332,14 +335,9 @@ Keybinding command
 */
 void SCR_SizeUp_f (void)
 {
-	if (scr_viewsize.value < 120)
-	{
-		Cvar_SetValue ("viewsize",scr_viewsize.value+10);
-		SB_ViewSizeChanged();
-		vid.recalc_refdef = 1;
-	}
+	Cvar_SetValue ("viewsize",scr_viewsize.value+10);
+	vid.recalc_refdef = 1;
 }
-
 
 /*
 =================
@@ -351,7 +349,6 @@ Keybinding command
 void SCR_SizeDown_f (void)
 {
 	Cvar_SetValue ("viewsize",scr_viewsize.value-10);
-	SB_ViewSizeChanged();
 	vid.recalc_refdef = 1;
 }
 
@@ -799,7 +796,6 @@ needs almost the entire 256k of stack space!
 */
 void SCR_UpdateScreen (void)
 {
-	static float	oldscr_viewsize;
 	vrect_t		vrect;
 
 	if (scr_skipupdate || block_drawing)
@@ -820,33 +816,14 @@ void SCR_UpdateScreen (void)
 	if (!scr_initialized || !con_initialized)
 		return;				// not initialized yet
 
-	if (scr_viewsize.value != oldscr_viewsize)
-	{
-		oldscr_viewsize = scr_viewsize.value;
-		vid.recalc_refdef = 1;
-	}
-	
 //
 // check for vid changes
 //
-	if (oldfov != scr_fov.value)
-	{
-		oldfov = scr_fov.value;
+	if (oldfov != scr_fov.value ||
+	    oldsbar != cl_sbar.value ||
+	    oldscreensize != scr_viewsize.value)
 		vid.recalc_refdef = true;
-	}
-	
-	if (oldscreensize != scr_viewsize.value)
-	{
-		oldscreensize = scr_viewsize.value;
-		vid.recalc_refdef = true;
-	}
 
-	if (oldsbar != cl_sbar.value)
-	{
-		oldsbar = cl_sbar.value;
-		vid.recalc_refdef = true;
-	}
-	
 	if (vid.recalc_refdef)
 	{
 		// something changed, so reorder the screen

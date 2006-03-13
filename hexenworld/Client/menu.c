@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.39 2006-03-10 10:59:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.40 2006-03-13 22:23:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -749,13 +749,7 @@ static void M_AdjustSliders (int dir)
 	{
 	case OPT_SCRSIZE:	// screen size
 		scr_viewsize.value += dir * 10;
-		if (scr_viewsize.value < 30)
-			scr_viewsize.value = 30;
-		if (scr_viewsize.value > 120)
-			scr_viewsize.value = 120;
 		Cvar_SetValue ("viewsize", scr_viewsize.value);
-		SB_ViewSizeChanged();
-		vid.recalc_refdef = 1;
 		break;
 	case OPT_GAMMA:	// gamma
 		v_gamma.value -= dir * 0.05;
