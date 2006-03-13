@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.20 2006-03-13 22:23:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.21 2006-03-13 22:25:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -144,8 +144,6 @@ extern int	*pr_info_string_index;
 extern char	*pr_global_info_strings;
 #endif
 extern int	 pr_info_string_count;
-
-float introTime = 0.0;
 
 #ifdef H2MP
 void UpdateInfoMessage(void)
@@ -1039,7 +1037,12 @@ void SCR_UpdateScreen (void)
 	D_DisableBackBufferAccess ();	// for adapters that can't stay mapped in
 						//  for linear writes all the time
 
+#if FULLSCREEN_INTERMISSIONS
+	// no need to draw view in fullscreen intermission screens
 	if (cl.intermission < 1 || cl.intermission > 12)
+#else
+	if (cl.intermission > 1 || cl.intermission <= 12)
+#endif
 	{
 		VID_LockBuffer ();
 		V_RenderView ();
@@ -1055,14 +1058,6 @@ void SCR_UpdateScreen (void)
 		SCR_DrawNotifyString ();
 		scr_copyeverything = true;
 	}
-//	Pa3PyX: would clobber intermission screens (else if)
-/*	else if (scr_drawloading)
-	{
-		Sbar_Draw();
-		Draw_FadeScreen ();
-		SCR_DrawLoading ();
-	}
-*/
 	else if (cl.intermission >= 1 && cl.intermission <= 12)
 	{
 		SB_IntermissionOverlay();
@@ -1071,7 +1066,7 @@ void SCR_UpdateScreen (void)
 			SCR_DrawConsole();
 			M_Draw();
 		}
-		// Pa3PyX: draw loading plaque
+
 		if (scr_drawloading)
 			SCR_DrawLoading();
 	}
@@ -1079,7 +1074,8 @@ void SCR_UpdateScreen (void)
 	{
 		SB_FinaleOverlay();
 		SCR_CheckDrawCenterString();
-	}*/
+	}
+*/
 	else
 	{
 		SCR_DrawRam();
@@ -1332,6 +1328,23 @@ void I_Print (int cx, int cy, char *str)
 //
 //==========================================================================
 
+#if FULLSCREEN_INTERMISSIONS
+#	define	Load_IntermissonPic_FN(X,Y,Z)	Draw_CachePicResize((X),(Y),(Z))
+#	define	Draw_IntermissonPic_FN(X,Y,Z)	Draw_Pic(0,0,(Z))
+#else
+#	define	Load_IntermissonPic_FN(X,Y,Z)	Draw_CachePic((X))
+#	define	Draw_IntermissonPic_FN(X,Y,Z)	Draw_Pic((X),(Y),(Z))
+#endif
+
+#if defined(H2W)
+#define	DEMO_MSG_INDEX	408
+#else
+#define	DEMO_MSG_INDEX	(ABILITIES_STR_INDEX+MAX_PLAYER_CLASS*2)
+			// 408 for H2, 410 for H2MP strings.txt
+#endif
+
+float	introTime = 0.0;
+
 void SB_IntermissionOverlay(void)
 {
 	qpic_t	*pic;
@@ -1349,53 +1362,53 @@ void SB_IntermissionOverlay(void)
 	
 	switch(cl.intermission)
 	{
-		// Pa3PyX: pics are now resized to screen size upon load
 		case 1:
-			pic = Draw_CachePicResize("gfx/meso.lmp", vid.width, vid.height);
+			pic = Load_IntermissonPic_FN ("gfx/meso.lmp", vid.width, vid.height);
 			break;
 		case 2:
-			pic = Draw_CachePicResize("gfx/egypt.lmp", vid.width, vid.height);
+			pic = Load_IntermissonPic_FN ("gfx/egypt.lmp", vid.width, vid.height);
 			break;
 		case 3:
-			pic = Draw_CachePicResize("gfx/roman.lmp", vid.width, vid.height);
+			pic = Load_IntermissonPic_FN ("gfx/roman.lmp", vid.width, vid.height);
 			break;
 		case 4:
-			pic = Draw_CachePicResize("gfx/castle.lmp", vid.width, vid.height);
+			pic = Load_IntermissonPic_FN ("gfx/castle.lmp", vid.width, vid.height);
 			break;
 		case 5:
-			pic = Draw_CachePicResize("gfx/castle.lmp", vid.width, vid.height);
+			pic = Load_IntermissonPic_FN ("gfx/castle.lmp", vid.width, vid.height);
 			break;
 		case 6:
-			pic = Draw_CachePicResize("gfx/end-1.lmp", vid.width, vid.height);
+			pic = Load_IntermissonPic_FN ("gfx/end-1.lmp", vid.width, vid.height);
 			break;
 		case 7:
-			pic = Draw_CachePicResize("gfx/end-2.lmp", vid.width, vid.height);
+			pic = Load_IntermissonPic_FN ("gfx/end-2.lmp", vid.width, vid.height);
 			break;
 		case 8:
-			pic = Draw_CachePicResize("gfx/end-3.lmp", vid.width, vid.height);
+			pic = Load_IntermissonPic_FN ("gfx/end-3.lmp", vid.width, vid.height);
 			break;
 		case 9:
-			pic = Draw_CachePicResize("gfx/castle.lmp", vid.width, vid.height);
+			pic = Load_IntermissonPic_FN ("gfx/castle.lmp", vid.width, vid.height);
 			break;
 		case 10:
-			pic = Draw_CachePicResize("gfx/mpend.lmp", vid.width, vid.height);
+			pic = Load_IntermissonPic_FN ("gfx/mpend.lmp", vid.width, vid.height);
 			break;
 		case 11:
-			pic = Draw_CachePicResize("gfx/mpmid.lmp", vid.width, vid.height);
+			pic = Load_IntermissonPic_FN ("gfx/mpmid.lmp", vid.width, vid.height);
 			break;
 		case 12:
-			pic = Draw_CachePicResize("gfx/end-3.lmp", vid.width, vid.height);
+			pic = Load_IntermissonPic_FN ("gfx/end-3.lmp", vid.width, vid.height);
 			break;
 		default:
 			pic = NULL;
 			break;
 	}
 	if (pic == NULL)
-		Sys_Error ("SB_IntermissionOverlay: Bad episode");
+	{
+		Host_Error ("%s: Bad episode ending number %s", __FUNCTION__, cl.intermission);
+		return;
+	}
 
-	// Pa3PyX: intermissions will now be always drawn full screen size
-//	Draw_Pic (((vid.width - 320)>>1),((vid.height - 200)>>1), pic);
-	Draw_Pic(0, 0, pic);
+	Draw_IntermissonPic_FN (((vid.width - 320)>>1), ((vid.height - 200)>>1), pic);
 
 	if (cl.intermission >= 6 && cl.intermission <= 8)
 	{
@@ -1416,14 +1429,11 @@ void SB_IntermissionOverlay(void)
 
 	if (cl.intermission <= 4 && cl.intermission + 394 <= pr_string_count)
 		message = &pr_global_strings[pr_string_index[cl.intermission + 394]];
-/* O.S: Why do calculate and not say 408? Anyone weird enough to play the demo
-   with strings.txt file from H2MP ?!!!! The thing below was off-by-one, btw..
-*/
-	else if (cl.intermission == 5)
-		message = &pr_global_strings[pr_string_index[ABILITIES_STR_INDEX+MAX_PLAYER_CLASS*2]];
+	else if (cl.intermission == 5)	// finale for the demo
+		message = &pr_global_strings[pr_string_index[DEMO_MSG_INDEX]];
 	else if (cl.intermission >= 6 && cl.intermission <= 8 && cl.intermission + 386 <= pr_string_count)
 		message = &pr_global_strings[pr_string_index[cl.intermission + 386]];
-	else if (cl.intermission == 9)
+	else if (cl.intermission == 9)	// finale for the bundle (oem) version
 		message = &pr_global_strings[pr_string_index[391]];
 	else
 		message = "";
@@ -1510,6 +1520,11 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2006/03/13 22:23:11  sezero
+ * fixed a bug where with viewsize (scr_viewsize) being set to 120,
+ * the game wouldn't start with a mini status bar unless the user did
+ * a size-up/size-down.
+ *
  * Revision 1.19  2006/01/17 18:46:53  sezero
  * missing part of vid_win synchronization (block_drawing stuff)
  *

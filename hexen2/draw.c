@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.16 2006-01-12 12:34:37 sezero Exp $
+	$Id: draw.c,v 1.17 2006-03-13 22:25:22 sezero Exp $
 */
 
 
@@ -100,7 +100,7 @@ Draw_CachePicResize
 New function by Pa3PyX; will load a pic resizing it (needed for intermissions)
 ================
 */
-cache_user_t *intermissionScreen;
+cache_user_t *intermissionScreen = NULL;
 qpic_t  *Draw_CachePicResize(char *path, int targetWidth, int targetHeight)
 {
 	cachepic_t *pic;
@@ -1689,6 +1689,11 @@ void Draw_EndDisc (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2006/01/12 12:34:37  sezero
+ * added video modes enumeration via SDL. added on-the-fly video mode changing
+ * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its
+ * video settings, clean it up, fix it up...
+ *
  * Revision 1.15  2005/10/25 20:08:41  sezero
  * coding style and whitespace cleanup.
  *

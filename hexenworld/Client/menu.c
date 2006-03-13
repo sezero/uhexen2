@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.40 2006-03-13 22:23:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.41 2006-03-13 22:25:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1551,20 +1551,30 @@ static void M_Menu_Help_f (void)
 }
 
 
+#if FULLSCREEN_INTERMISSIONS
+#	ifdef GLQUAKE
+#		define	Load_HelpPic_FN(X,Y,Z)	Draw_CachePicNoTrans((X))
+#		define	Draw_HelpPic_FN(X,Y,Z)	Draw_IntermissionPic((Z))
+#	else
+#		define	Load_HelpPic_FN(X,Y,Z)	Draw_CachePicResize((X),(Y),(Z))
+#		define	Draw_HelpPic_FN(X,Y,Z)	Draw_Pic(0,0,(Z))
+#	endif
+#else
+#	ifdef GLQUAKE
+#		define	Load_HelpPic_FN(X,Y,Z)	Draw_CachePic((X))
+#		define	Draw_HelpPic_FN(X,Y,Z)	Draw_Pic((X),(Y),(Z))
+#	else
+#		define	Load_HelpPic_FN(X,Y,Z)	Draw_CachePic((X))
+#		define	Draw_HelpPic_FN(X,Y,Z)	Draw_Pic((X),(Y),(Z))
+#	endif
+#endif
+
 static void M_Help_Draw (void)
 {
 	if (cl_siege)
-#ifdef GLQUAKE
-		Draw_IntermissionPic(Draw_CachePicNoTrans(va("gfx/menu/sghelp%02i.lmp", help_page+1)));
-#else
-		Draw_Pic (0, 0, Draw_CachePicResize(va("gfx/menu/sghelp%02i.lmp", help_page+1), vid.width, vid.height));
-#endif
+		Draw_HelpPic_FN ((vid.width - 320)>>1, 0, Load_HelpPic_FN(va("gfx/menu/sghelp%02i.lmp", help_page+1), vid.width, vid.height));
 	else
-#ifdef GLQUAKE
-		Draw_IntermissionPic(Draw_CachePicNoTrans(va("gfx/menu/help%02i.lmp", help_page+1)));
-#else
-		Draw_Pic (0, 0, Draw_CachePicResize(va("gfx/menu/help%02i.lmp", help_page+1), vid.width, vid.height));
-#endif
+		Draw_HelpPic_FN ((vid.width - 320)>>1, 0, Load_HelpPic_FN(va("gfx/menu/help%02i.lmp", help_page+1), vid.width, vid.height));
 }
 
 

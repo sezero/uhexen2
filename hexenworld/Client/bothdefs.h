@@ -174,6 +174,7 @@
 
 // Player Classes
 #define MAX_PLAYER_CLASS			6
+#define ABILITIES_STR_INDEX	400
 
 #define CLASS_PALADIN				1
 #define CLASS_CLERIC 				2

@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.57 2006-03-13 22:23:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.58 2006-03-13 22:25:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2707,13 +2707,27 @@ static void M_Menu_Help_f (void)
 }
 
 
+#if FULLSCREEN_INTERMISSIONS
+#	ifdef GLQUAKE
+#		define	Load_HelpPic_FN(X,Y,Z)	Draw_CachePicNoTrans((X))
+#		define	Draw_HelpPic_FN(X,Y,Z)	Draw_IntermissionPic((Z))
+#	else
+#		define	Load_HelpPic_FN(X,Y,Z)	Draw_CachePicResize((X),(Y),(Z))
+#		define	Draw_HelpPic_FN(X,Y,Z)	Draw_Pic(0,0,(Z))
+#	endif
+#else
+#	ifdef GLQUAKE
+#		define	Load_HelpPic_FN(X,Y,Z)	Draw_CachePic((X))
+#		define	Draw_HelpPic_FN(X,Y,Z)	Draw_Pic((X),(Y),(Z))
+#	else
+#		define	Load_HelpPic_FN(X,Y,Z)	Draw_CachePic((X))
+#		define	Draw_HelpPic_FN(X,Y,Z)	Draw_Pic((X),(Y),(Z))
+#	endif
+#endif
+
 static void M_Help_Draw (void)
 {
-#ifdef GLQUAKE
-	Draw_IntermissionPic(Draw_CachePicNoTrans(va("gfx/menu/help%02i.lmp", help_page+1)));
-#else
-	Draw_Pic (0, 0, Draw_CachePicResize(va("gfx/menu/help%02i.lmp", help_page+1), vid.width, vid.height));
-#endif
+	Draw_HelpPic_FN ((vid.width - 320)>>1, 0, Load_HelpPic_FN(va("gfx/menu/help%02i.lmp", help_page+1), vid.width, vid.height));
 }
 
 
@@ -4395,6 +4409,11 @@ static void ReInitMusic (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.57  2006/03/13 22:23:11  sezero
+ * fixed a bug where with viewsize (scr_viewsize) being set to 120,
+ * the game wouldn't start with a mini status bar unless the user did
+ * a size-up/size-down.
+ *
  * Revision 1.56  2006/03/10 10:59:38  sezero
  * added colored light opions to the opengl features menu.
  *
