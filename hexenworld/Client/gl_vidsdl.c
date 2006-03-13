@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.97 2006-03-10 08:08:46 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.98 2006-03-13 22:34:42 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -107,7 +107,7 @@ static int	vid_modenum = -1;	// current video mode, set after mode setting succe
 static int	vid_maxwidth = 640, vid_maxheight = 480;
 static int	WRHeight, WRWidth;
 
-qboolean	scr_skipupdate;
+extern qboolean	scr_skipupdate;
 extern qboolean	draw_reinit;
 static qboolean	vid_initialized = false;
 qboolean	in_mode_set = false;

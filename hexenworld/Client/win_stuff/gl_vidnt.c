@@ -117,11 +117,11 @@ static int	vid_modenum = NO_MODE;	// current video mode, set after mode setting 
 static int	vid_deskwidth, vid_deskheight, vid_deskbpp, vid_deskmode;
 static int	windowed_default;
 
-qboolean	scr_skipupdate;
+extern qboolean	scr_skipupdate;
 extern qboolean	draw_reinit;
 static qboolean	vid_initialized = false;
-static qboolean vid_canalttab = false;
-static qboolean vid_wassuspended = false;
+static qboolean	vid_canalttab = false;
+static qboolean	vid_wassuspended = false;
 
 // cvar vid_mode must be set before calling
 // VID_SetMode, VID_ChangeVideoMode or VID_Restart_f

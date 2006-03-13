@@ -2,8 +2,51 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.27 2006-03-13 22:28:51 sezero Exp $
+	$Id: gl_screen.c,v 1.28 2006-03-13 22:34:36 sezero Exp $
 */
+
+/*=============================================================================
+
+	background clear
+	rendering
+	turtle/net/ram icons
+	sbar
+	centerprint / slow centerprint
+	notify lines
+	intermission / finale overlay
+	loading plaque
+	console
+	menu
+
+	required background clears
+	required update regions
+
+	syncronous draw mode or async
+	One off screen buffer, with updates either copied or xblited
+	Need to double buffer?
+
+	async draw will require the refresh area to be cleared, because
+	it will be xblited, but sync draw can just ignore it.
+
+	sync
+	draw
+
+	CenterPrint ()
+	SlowPrint ()
+	Screen_Update ();
+	Con_Printf ();
+
+	net
+	turn off messages option
+
+	the refresh is always rendered, unless the console is full screen
+
+	console is:
+		notify lines
+		half
+		full
+
+=============================================================================*/
 
 #include "quakedef.h"
 #ifdef _WIN32
@@ -12,64 +55,29 @@
 #include <unistd.h>
 #endif
 
-/*
 
-background clear
-rendering
-turtle/net/ram icons
-sbar
-centerprint / slow centerprint
-notify lines
-intermission / finale overlay
-loading plaque
-console
-menu
+static qboolean		scr_initialized;	// ready to draw
+extern qboolean		draw_reinit;
 
-required background clears
-required update regions
-
-
-syncronous draw mode or async
-One off screen buffer, with updates either copied or xblited
-Need to double buffer?
-
-
-async draw will require the refresh area to be cleared, because it will be
-xblited, but sync draw can just ignore it.
-
-sync
-draw
-
-CenterPrint ()
-SlowPrint ()
-Screen_Update ();
-Con_Printf ();
-
-net 
-turn off messages option
-
-the refresh is always rendered, unless the console is full screen
-
-
-console is:
-	notify lines
-	half
-	full
-	
-
-*/
-
-
+vrect_t			scr_vrect;
 int			glx, gly, glwidth, glheight;
 
-// only the refresh window will be updated unless these variables are flagged 
-int			scr_copytop;
-int			scr_copyeverything;
+// these are only functional in the software
+// renderer.
+int			scr_copytop;		// only the refresh window will be updated
+int			scr_copyeverything;	// unless these variables are flagged
+int			scr_topupdate;
+int			scr_fullupdate;
+static qboolean		scr_needfull = false;
+
+static int		clearconsole;
+int			clearnotify;
 
 float		scr_con_current;
 float		scr_conlines;		// lines of console to display
 
 float		oldscreensize, oldfov;
+
 cvar_t		scr_viewsize = {"viewsize","110", true};
 cvar_t		scr_fov = {"fov","90"};	// 10 - 170
 cvar_t		scr_conspeed = {"scr_conspeed","300"};
@@ -78,44 +86,29 @@ cvar_t		scr_showram = {"showram","1"};
 cvar_t		scr_showturtle = {"showturtle","0"};
 cvar_t		scr_showpause = {"showpause","1"};
 cvar_t		scr_printspeed = {"scr_printspeed","8"};
+
+static qboolean	scr_drawloading;
+static int	ls_offset;
+static float	scr_disabled_time;
+int		total_loading_size, current_loading_size, loading_stage;
+qboolean	ls_invalid = true;	// whether we need to redraw the loading screen plaque
+qboolean	scr_disabled_for_loading;
+qboolean	scr_skipupdate;
+qboolean	block_drawing;
+
+static qpic_t	*scr_ram;
+static qpic_t	*scr_net;
+static qpic_t	*scr_turtle;
+
 extern	cvar_t	crosshair;
 
-extern qboolean	draw_reinit;
-qboolean	scr_initialized;		// ready to draw
-qboolean	ls_invalid = true;		// whether we need to redraw the loading screen plaque
-static int	ls_offset;
-
-qpic_t		*scr_ram;
-qpic_t		*scr_net;
-qpic_t		*scr_turtle;
-
-int			scr_fullupdate;
-int			scr_topupdate;
-
-int			clearconsole;
-int			clearnotify;
-
-int			sb_lines;
-
-viddef_t	vid;				// global video state
-
-vrect_t		scr_vrect;
-
-qboolean	scr_disabled_for_loading;
-qboolean	block_drawing;
-qboolean	scr_drawloading;
-float		scr_disabled_time;
-
-static qboolean scr_needfull = false;
-
-int		total_loading_size, current_loading_size, loading_stage;
-
-void SCR_ScreenShot_f (void);
-void Plaque_Draw (char *message, qboolean AlwaysDraw);
+static void SCR_ScreenShot_f (void);
+static void Plaque_Draw (char *message, qboolean AlwaysDraw);
 #ifdef H2MP
-void Info_Plaque_Draw (char *message);
-void Bottom_Plaque_Draw (char *message);
+static void Info_Plaque_Draw (char *message);
+static void Bottom_Plaque_Draw (char *message);
 #endif
+
 
 /*
 ===============================================================================
@@ -125,28 +118,28 @@ CENTER PRINTING
 ===============================================================================
 */
 
-char		scr_centerstring[1024];
-float		scr_centertime_start;	// for slow victory printing
+static char	scr_centerstring[1024];
+static float	scr_centertime_start;	// for slow victory printing
 float		scr_centertime_off;
-int			scr_center_lines;
-int			scr_erase_lines;
-int			scr_erase_center;
+static int	scr_center_lines;
+static int	scr_erase_lines;
+static int	scr_erase_center;
 
-static int lines;
-#define MAXLINES 27
-static int StartC[MAXLINES],EndC[MAXLINES];
+#define	MAXLINES	27
+static int	lines;
+static int	StartC[MAXLINES], EndC[MAXLINES];
 
 #ifdef H2MP
 // Objectives thing of the mission pack
-#define MAX_INFO 1024
-char infomessage[MAX_INFO];
-qboolean info_up = false;
+#define	MAX_INFO	1024
+static char	infomessage[MAX_INFO];
+qboolean	info_up = false;
 
 extern int	*pr_info_string_index;
 extern char	*pr_global_info_strings;
 extern int	 pr_info_string_count;
 
-void UpdateInfoMessage(void)
+static void UpdateInfoMessage(void)
 {
 	unsigned int i;
 	unsigned int check;
@@ -183,18 +176,17 @@ void UpdateInfoMessage(void)
 }
 #endif
 
-void FindTextBreaks(char *message, int Width)
+static void FindTextBreaks (char *message, int Width)
 {
-	int length,pos,start,lastspace,oldlast;
+	int	length, pos, start, lastspace, oldlast;
 
 	length = strlen(message);
 	lines = pos = start = 0;
 	lastspace = -1;
 
-	while(1)
+	while (1)
 	{
-		if (pos-start >= Width || message[pos] == '@' ||
-			message[pos] == 0)
+		if (pos-start >= Width || message[pos] == '@' || message[pos] == 0)
 		{
 			oldlast = lastspace;
 			if (message[pos] == '@' || lastspace == -1 || message[pos] == 0)
@@ -215,11 +207,10 @@ void FindTextBreaks(char *message, int Width)
 			lastspace = -1;
 		}
 
-		if (message[pos] == 32) lastspace = pos;
+		if (message[pos] == 32)
+			lastspace = pos;
 		else if (message[pos] == 0)
-		{
 			break;
-		}
 
 		pos++;
 	}
@@ -243,8 +234,7 @@ void SCR_CenterPrint (char *str)
 	scr_center_lines = lines;
 }
 
-
-void SCR_DrawCenterString (void)
+static void SCR_DrawCenterString (void)
 {
 	int		i;
 	int		bx, by;
@@ -262,7 +252,8 @@ void SCR_DrawCenterString (void)
 	FindTextBreaks(scr_centerstring, 38);
 
 	by = ((25-lines) * 8) / 2;
-	for(i=0;i<lines;i++,by+=8)
+
+	for (i = 0 ; i < lines ; i++, by += 8)
 	{
 		strncpy(temp,&scr_centerstring[StartC[i]],EndC[i]-StartC[i]);
 		temp[EndC[i]-StartC[i]] = 0;
@@ -271,7 +262,7 @@ void SCR_DrawCenterString (void)
 	}
 }
 
-void SCR_CheckDrawCenterString (void)
+static void SCR_CheckDrawCenterString (void)
 {
 	scr_copytop = 1;
 	if (scr_center_lines > scr_erase_lines)
@@ -295,6 +286,7 @@ void SCR_CheckDrawCenterString (void)
 }
 
 //=============================================================================
+
 
 /*
 =================
@@ -331,7 +323,7 @@ static void SCR_CalcRefdef (void)
 	SB_ViewSizeChanged ();
 	Sbar_Changed();
 
-// intermission is always full screen	
+// intermission is always full screen
 	if (cl.intermission)
 		size = 110;
 	else
@@ -342,16 +334,12 @@ static void SCR_CalcRefdef (void)
 	else if (size >= 110)
 		sb_lines = 24;		// no inventory
 	else
-		sb_lines = 24+16+8;*/
-
+		sb_lines = 24+16+8;
+*/
 	if (size >= 110)
-	{ // No status bar
-		sb_lines = 0;
-	}
+		sb_lines = 0;		// no status bar
 	else
-	{
 		sb_lines = 36;
-	}
 
 	size = scr_viewsize.value > 100 ? 100 : scr_viewsize.value;
 	if (cl.intermission)
@@ -379,6 +367,8 @@ static void SCR_CalcRefdef (void)
 	scr_vrect = r_refdef.vrect;
 }
 
+//=============================================================================
+
 
 /*
 =================
@@ -387,7 +377,7 @@ SCR_SizeUp_f
 Keybinding command
 =================
 */
-void SCR_SizeUp_f (void)
+static void SCR_SizeUp_f (void)
 {
 	Cvar_SetValue ("viewsize",scr_viewsize.value+10);
 	vid.recalc_refdef = 1;
@@ -400,13 +390,14 @@ SCR_SizeDown_f
 Keybinding command
 =================
 */
-void SCR_SizeDown_f (void)
+static void SCR_SizeDown_f (void)
 {
 	Cvar_SetValue ("viewsize",scr_viewsize.value-10);
 	vid.recalc_refdef = 1;
 }
 
-//============================================================================
+//=============================================================================
+
 
 /*
 ==================
@@ -439,6 +430,7 @@ void SCR_Init (void)
 	scr_initialized = true;
 }
 
+//=============================================================================
 
 
 /*
@@ -446,7 +438,7 @@ void SCR_Init (void)
 SCR_DrawRam
 ==============
 */
-void SCR_DrawRam (void)
+static void SCR_DrawRam (void)
 {
 	if (!scr_showram.value)
 		return;
@@ -462,7 +454,7 @@ void SCR_DrawRam (void)
 SCR_DrawTurtle
 ==============
 */
-void SCR_DrawTurtle (void)
+static void SCR_DrawTurtle (void)
 {
 	static int	count;
 	
@@ -487,7 +479,7 @@ void SCR_DrawTurtle (void)
 SCR_DrawNet
 ==============
 */
-void SCR_DrawNet (void)
+static void SCR_DrawNet (void)
 {
 	if (realtime - cl.last_received_message < 0.3)
 		return;
@@ -502,7 +494,7 @@ void SCR_DrawNet (void)
 DrawPause
 ==============
 */
-void SCR_DrawPause (void)
+static void SCR_DrawPause (void)
 {
 	qpic_t	*pic;
 	float delta;
@@ -548,7 +540,6 @@ void SCR_DrawPause (void)
 	Draw_TransPicCropped ( (vid.width - pic->width)/2, finaly, pic);
 }
 
-
 /*
 ==============
 SCR_DrawLoading
@@ -556,15 +547,14 @@ SCR_DrawLoading
 */
 void SCR_DrawLoading (void)
 {
-	int	size, count;
+	int		size, count;
 	qpic_t	*pic;
 
 	if (!scr_drawloading && loading_stage == 0)
 		return;
 
-/*	draw first time only (since drawing this into GL_FRONT).
-	otherwise the image flickers because of redrawing
-*/
+	// draw first time only, so that the image does not flicker
+	// because of redrawing (since drawing this into GL_FRONT)
 	if (ls_invalid)
 	{
 		pic = Draw_CachePic ("gfx/menu/loading.lmp");
@@ -598,163 +588,6 @@ void SCR_DrawLoading (void)
 	Draw_Fill (ls_offset+42, 97+1, count, 4, 170);
 	Draw_Fill (ls_offset+42, 97+5, count, 1, 168);
 }
-
-
-
-//=============================================================================
-
-
-/*
-==================
-SCR_SetUpToDrawConsole
-==================
-*/
-void SCR_SetUpToDrawConsole (void)
-{
-	Con_CheckResize ();
-	
-	if (scr_drawloading)
-		return;		// never a console with loading plaque
-		
-// decide on the height of the console
-	con_forcedup = !cl.worldmodel || cls.signon != SIGNONS;
-
-	if (con_forcedup)
-	{
-		scr_conlines = vid.height;	// full screen
-		scr_con_current = scr_conlines;
-	}
-	else if (key_dest == key_console)
-		scr_conlines = vid.height/2;	// half screen
-	else
-		scr_conlines = 0;		// none visible
-
-	if (scr_conlines < scr_con_current)
-	{
-		scr_con_current -= scr_conspeed.value*host_frametime;
-		if (scr_conlines > scr_con_current)
-			scr_con_current = scr_conlines;
-
-	}
-	else if (scr_conlines > scr_con_current)
-	{
-		scr_con_current += scr_conspeed.value*host_frametime;
-		if (scr_conlines < scr_con_current)
-			scr_con_current = scr_conlines;
-	}
-
-	if (clearconsole++ < vid.numpages)
-	{
-		Sbar_Changed();
-	}
-	else if (clearnotify++ < vid.numpages)
-	{
-	}
-	else
-		con_notifylines = 0;
-}
-	
-/*
-==================
-SCR_DrawConsole
-==================
-*/
-void SCR_DrawConsole (void)
-{
-	if (scr_con_current)
-	{
-		scr_copyeverything = 1;
-		Con_DrawConsole (scr_con_current, true);
-		clearconsole = 0;
-	}
-	else
-	{
-		if (key_dest == key_game || key_dest == key_message)
-			Con_DrawNotify ();	// only draw notify in game
-	}
-}
-
-
-/*
-==============================================================================
-
-						SCREEN SHOTS
-
-==============================================================================
-*/
-
-typedef struct _TargaHeader {
-	unsigned char	id_length, colormap_type, image_type;
-	unsigned short	colormap_index, colormap_length;
-	unsigned char	colormap_size;
-	unsigned short	x_origin, y_origin, width, height;
-	unsigned char	pixel_size, attributes;
-} TargaHeader;
-
-
-/* 
-================== 
-SCR_ScreenShot_f
-================== 
-*/  
-void SCR_ScreenShot_f (void) 
-{
-	byte		*buffer;
-	char		pcxname[80]; 
-	char		checkname[MAX_OSPATH];
-	int			i, c, temp;
-	int			mark;
-
-	sprintf (checkname, "%s/shots", com_userdir);
-	Sys_mkdir (checkname);
-
-// 
-// find a file name to save it to 
-// 
-	strcpy(pcxname,"shots/hexen00.tga");
-
-	for (i=0 ; i<=99 ; i++)
-	{
-		pcxname[11] = i/10 + '0';
-		pcxname[12] = i%10 + '0';
-		sprintf (checkname, "%s/%s", com_userdir, pcxname);
-		if (access(checkname, F_OK) == -1)
-			break;	// file doesn't exist
-	}
-	if (i==100)
-	{
-		Con_Printf ("SCR_ScreenShot_f: Couldn't create a TGA file\n");
-		return;
-	}
-
-	mark = Hunk_LowMark();
-	buffer = Hunk_AllocName(glwidth * glheight * 3 + 18, "buffer_sshot");
-	memset (buffer, 0, 18);
-	buffer[2] = 2;		// uncompressed type
-	buffer[12] = glwidth&255;
-	buffer[13] = glwidth>>8;
-	buffer[14] = glheight&255;
-	buffer[15] = glheight>>8;
-	buffer[16] = 24;	// pixel size
-
-	glReadPixels_fp (glx, gly, glwidth, glheight, GL_RGB, GL_UNSIGNED_BYTE, buffer+18 );
-
-	// swap rgb to bgr
-	c = 18+glwidth*glheight*3;
-	for (i=18 ; i<c ; i+=3)
-	{
-		temp = buffer[i];
-		buffer[i] = buffer[i+2];
-		buffer[i+2] = temp;
-	}
-	COM_WriteFile (pcxname, buffer, glwidth*glheight*3 + 18 );
-
-	Hunk_FreeToLowMark(mark);
-	Con_Printf ("Wrote %s\n", pcxname);
-}
-
-
-//=============================================================================
 
 /*
 ===============
@@ -802,10 +635,162 @@ void SCR_EndLoadingPlaque (void)
 
 //=============================================================================
 
-char	*scr_notifystring;
-qboolean	scr_drawdialog;
 
-void SCR_DrawNotifyString (void)
+/*
+==================
+SCR_SetUpToDrawConsole
+==================
+*/
+static void SCR_SetUpToDrawConsole (void)
+{
+	Con_CheckResize ();
+	
+	if (scr_drawloading)
+		return;		// never a console with loading plaque
+
+// decide on the height of the console
+	con_forcedup = !cl.worldmodel || cls.signon != SIGNONS;
+
+	if (con_forcedup)
+	{
+		scr_conlines = vid.height;	// full screen
+		scr_con_current = scr_conlines;
+	}
+	else if (key_dest == key_console)
+		scr_conlines = vid.height/2;	// half screen
+	else
+		scr_conlines = 0;		// none visible
+
+	if (scr_conlines < scr_con_current)
+	{
+		scr_con_current -= scr_conspeed.value*host_frametime;
+		if (scr_conlines > scr_con_current)
+			scr_con_current = scr_conlines;
+
+	}
+	else if (scr_conlines > scr_con_current)
+	{
+		scr_con_current += scr_conspeed.value*host_frametime;
+		if (scr_conlines < scr_con_current)
+			scr_con_current = scr_conlines;
+	}
+
+	if (clearconsole++ < vid.numpages)
+	{
+		Sbar_Changed();
+	}
+	else if (clearnotify++ < vid.numpages)
+	{
+	}
+	else
+		con_notifylines = 0;
+}
+	
+/*
+==================
+SCR_DrawConsole
+==================
+*/
+static void SCR_DrawConsole (void)
+{
+	if (scr_con_current)
+	{
+		scr_copyeverything = 1;
+		Con_DrawConsole (scr_con_current, true);
+		clearconsole = 0;
+	}
+	else
+	{
+		if (key_dest == key_game || key_dest == key_message)
+			Con_DrawNotify ();	// only draw notify in game
+	}
+}
+
+
+/*
+==============================================================================
+
+SCREEN SHOTS
+
+==============================================================================
+*/
+
+typedef struct _TargaHeader {
+	unsigned char	id_length, colormap_type, image_type;
+	unsigned short	colormap_index, colormap_length;
+	unsigned char	colormap_size;
+	unsigned short	x_origin, y_origin, width, height;
+	unsigned char	pixel_size, attributes;
+} TargaHeader;
+
+
+/*
+==================
+SCR_ScreenShot_f
+==================
+*/
+static void SCR_ScreenShot_f (void)
+{
+	byte		*buffer;
+	char		pcxname[80];
+	char		checkname[MAX_OSPATH];
+	int			i, c, temp;
+	int			mark;
+
+	sprintf (checkname, "%s/shots", com_userdir);
+	Sys_mkdir (checkname);
+//
+// find a file name to save it to
+//
+	strcpy(pcxname,"shots/hexen00.tga");
+
+	for (i=0 ; i<=99 ; i++)
+	{
+		pcxname[11] = i/10 + '0';
+		pcxname[12] = i%10 + '0';
+		sprintf (checkname, "%s/%s", com_userdir, pcxname);
+		if (access(checkname, F_OK) == -1)
+			break;	// file doesn't exist
+	}
+	if (i==100)
+	{
+		Con_Printf ("SCR_ScreenShot_f: Couldn't create a TGA file\n");
+		return;
+	}
+
+	mark = Hunk_LowMark();
+	buffer = Hunk_AllocName(glwidth * glheight * 3 + 18, "buffer_sshot");
+	memset (buffer, 0, 18);
+	buffer[2] = 2;		// uncompressed type
+	buffer[12] = glwidth&255;
+	buffer[13] = glwidth>>8;
+	buffer[14] = glheight&255;
+	buffer[15] = glheight>>8;
+	buffer[16] = 24;	// pixel size
+
+	glReadPixels_fp (glx, gly, glwidth, glheight, GL_RGB, GL_UNSIGNED_BYTE, buffer+18);
+
+	// swap rgb to bgr
+	c = 18+glwidth*glheight*3;
+	for (i=18 ; i<c ; i+=3)
+	{
+		temp = buffer[i];
+		buffer[i] = buffer[i+2];
+		buffer[i+2] = temp;
+	}
+	COM_WriteFile (pcxname, buffer, glwidth*glheight*3 + 18);
+
+	Hunk_FreeToLowMark(mark);
+	Con_Printf ("Wrote %s\n", pcxname);
+}
+
+//=============================================================================
+
+
+static char	*scr_notifystring;
+static qboolean	scr_drawdialog;
+
+static void SCR_DrawNotifyString (void)
 {
 	Plaque_Draw(scr_notifystring,1);
 }
@@ -845,8 +830,8 @@ int SCR_ModalMessage (char *text)
 	return key_lastpress == 'y';
 }
 
-
 //=============================================================================
+
 
 /*
 ===============
@@ -855,6 +840,7 @@ SCR_BringDownConsole
 Brings the console down and fades the palettes back to normal
 ================
 */
+#if 0	// all uses are commented out
 void SCR_BringDownConsole (void)
 {
 	int		i;
@@ -867,55 +853,41 @@ void SCR_BringDownConsole (void)
 	cl.cshifts[0].percent = 0;		// no area contents palette on next frame
 	VID_SetPalette (host_basepal);
 }
+#endif
 
-void SCR_TileClear (void)
+//=============================================================================
+
+
+static void Plaque_Draw (char *message, qboolean AlwaysDraw)
 {
-	if (r_refdef.vrect.x > 0)
-	{
-		Draw_TileClear (0,0,r_refdef.vrect.x,vid.height);
-		Draw_TileClear (r_refdef.vrect.x + r_refdef.vrect.width, 0
-			, vid.width - r_refdef.vrect.x + r_refdef.vrect.width,vid.height);
-	}
-//	if (r_refdef.vrect.height < vid.height-44)
-	{
-		Draw_TileClear (r_refdef.vrect.x, 0, r_refdef.vrect.width, r_refdef.vrect.y);
-		Draw_TileClear (r_refdef.vrect.x, r_refdef.vrect.y + r_refdef.vrect.height,
-			r_refdef.vrect.width,
-			vid.height - (r_refdef.vrect.y + r_refdef.vrect.height) );
-	}
-}
-
-// This is also located in screen.c
-#define PLAQUE_WIDTH 26
-
-void Plaque_Draw (char *message, qboolean AlwaysDraw)
-{
-	int i;
-	char temp[80];
-	int bx,by;
+	int	i;
+	char	temp[80];
+	int	bx, by;
 
 	if (scr_con_current == vid.height && !AlwaysDraw)
 		return;		// console is full screen
 
-	if (!*message) 
+	if (!*message)
 		return;
+
+	scr_needfull = true;
 
 	FindTextBreaks(message, PLAQUE_WIDTH);
 
 	by = ((25-lines) * 8) / 2;
-	M_DrawTextBox2 (32, by-16, 30, lines+2,false);
+	M_DrawTextBox2 (32, by-16, PLAQUE_WIDTH+4, lines+2,false);
 
-	for(i=0;i<lines;i++,by+=8)
+	for (i = 0 ; i < lines ; i++, by += 8)
 	{
-		strncpy(temp,&message[StartC[i]],EndC[i]-StartC[i]);
+		strncpy (temp, &message[StartC[i]], EndC[i]-StartC[i]);
 		temp[EndC[i]-StartC[i]] = 0;
 		bx = ((40-strlen(temp)) * 8) / 2;
-	  	M_Print2 (bx, by, temp);
+		M_Print2 (bx, by, temp);
 	}
 }
 
 #ifdef H2MP
-void Info_Plaque_Draw (char *message)
+static void Info_Plaque_Draw (char *message)
 {
 	int i;
 	char temp[80];
@@ -948,7 +920,8 @@ void Info_Plaque_Draw (char *message)
 	  	M_Print2 (bx, by, temp);
 	}
 }
-void Bottom_Plaque_Draw (char *message)
+
+static void Bottom_Plaque_Draw (char *message)
 {
 	int i;
 	char temp[80];
@@ -963,7 +936,7 @@ void Bottom_Plaque_Draw (char *message)
 
 	by = (((vid.height)/8)-lines-2) * 8;
 
-	M_DrawTextBox2 (32, by-16, 30, lines+2,true);
+	M_DrawTextBox2 (32, by-16, PLAQUE_WIDTH+4, lines+2,true);
 
 	for(i=0;i<lines;i++,by+=8)
 	{
@@ -975,12 +948,15 @@ void Bottom_Plaque_Draw (char *message)
 }
 #endif
 
-void I_DrawCharacter (int cx, int line, int num)
+//=============================================================================
+
+
+static void I_DrawCharacter (int cx, int line, int num)
 {
 	Draw_Character ( cx + ((vid.width - 320)>>1), line + ((vid.height - 200)>>1), num);
 }
 
-void I_Print (int cx, int cy, char *str)
+static void I_Print (int cx, int cy, char *str)
 {
 	while (*str)
 	{
@@ -989,12 +965,6 @@ void I_Print (int cx, int cy, char *str)
 		cx += 8;
 	}
 }
-
-//==========================================================================
-//
-// SB_IntermissionOverlay
-//
-//==========================================================================
 
 #if FULLSCREEN_INTERMISSIONS
 #	define	Load_IntermissonPic_FN(X,Y,Z)	Draw_CachePicNoTrans((X))
@@ -1015,7 +985,12 @@ void I_Print (int cx, int cy, char *str)
 float	introTime = 0.0;
 #endif
 
-void SB_IntermissionOverlay(void)
+/*
+===============
+SB_IntermissionOverlay
+===============
+*/
+static void SB_IntermissionOverlay (void)
 {
 	qpic_t	*pic;
 	int		elapsed, size, bx, by, i;
@@ -1030,7 +1005,7 @@ void SB_IntermissionOverlay(void)
 		return;
 	}
 	
-	switch(cl.intermission)
+	switch (cl.intermission)
 	{
 		case 1:
 			pic = Load_IntermissonPic_FN ("gfx/meso.lmp", vid.width, vid.height);
@@ -1086,14 +1061,15 @@ void SB_IntermissionOverlay(void)
 	{
 		elapsed = (cl.time - cl.completed_time) * 20;
 		elapsed -= 50;
-		if (elapsed < 0) elapsed = 0;
+		if (elapsed < 0)
+			elapsed = 0;
 	}
 #if defined(H2MP)
 	else if (cl.intermission == 12)
 	{
 		elapsed = (introTime);
 		if (introTime < 500)
-			introTime+=0.25;
+			introTime += 0.25;
 	}
 #endif
 	else
@@ -1122,40 +1098,39 @@ void SB_IntermissionOverlay(void)
 
 	FindTextBreaks(message, 38);
 
-	if (cl.intermission == 8)
-		by = 16;
+	// hacks to print the final messages centered: "by" is the y offset
+	// in pixels to begin printing at. each line is 8 pixels - S.A
+	//if (cl.intermission == 8)
+	//	by = 16;
+	if (cl.intermission >= 6 && cl.intermission <= 8)
+		// eidolon, endings. num == 6,7,8
+		by = (vid.height/2 - lines*4);
+#if defined(H2MP)
+	else if (cl.intermission == 10)
+		// mission pack: tibet10. num == 10
+		by = 33;
+#endif
 	else
 		by = ((25-lines) * 8) / 2;
 
-	// final message hacks - S.A
-	// eidolon cl.intermission == 6,7,8
-	// "by" is the y offset in pixels to begin printing at
-	// each line is 8 pixels
-	if (cl.intermission >= 6 && cl.intermission <= 8)
-		by = (vid.height/2 - lines*4);
-#if defined(H2MP)
-	// different story for the mission pack
-	if (cl.intermission == 10)	// tibet10 cl.intermission == 10
-		by=33;
-#endif
-	// printf ("cl.intermission == %i, lines == %i,vid(x,y)=%i,%i by=%i\n\n",cl.intermission,lines,vid.width,vid.height,by);
-
-	for(i=0;i<lines;i++,by+=8)
+	for (i = 0 ; i < lines ; i++, by += 8)
 	{
 		size = EndC[i]-StartC[i];
 		strncpy(temp,&message[StartC[i]],size);
 
-		if (size > elapsed) size = elapsed;
+		if (size > elapsed)
+			size = elapsed;
 		temp[size] = 0;
 
 		bx = ((40-strlen(temp)) * 8) / 2;
-	  	if (cl.intermission < 6 || cl.intermission > 9)
+		if (cl.intermission < 6 || cl.intermission > 9)
 			I_Print (bx, by, temp);
 		else
 			M_PrintWhite (bx, by, temp);
 
 		elapsed -= size;
-		if (elapsed <= 0) break;
+		if (elapsed <= 0)
+			break;
 	}
 
 	if (i == lines && elapsed >= 300 && cl.intermission >= 6 && cl.intermission <= 7)
@@ -1163,16 +1138,15 @@ void SB_IntermissionOverlay(void)
 		cl.intermission++;
 		cl.completed_time = cl.time;
 	}
-//	Con_Printf("Time is %10.2f\n",elapsed);
 }
 
-//==========================================================================
-//
-// SB_FinaleOverlay
-//
-//==========================================================================
-
-void SB_FinaleOverlay(void)
+/*
+===============
+SB_FinaleOverlay
+===============
+*/
+#if 0	// not used in Hexen II
+static void SB_FinaleOverlay(void)
 {
 	qpic_t	*pic;
 
@@ -1181,6 +1155,35 @@ void SB_FinaleOverlay(void)
 	pic = Draw_CachePic("gfx/finale.lmp");
 	Draw_TransPic((vid.width-pic->width)/2, 16, pic);
 }
+#endif
+
+//=============================================================================
+
+
+/*
+===============
+SCR_TileClear
+
+================
+*/
+static void SCR_TileClear (void)
+{
+	if (r_refdef.vrect.x > 0)
+	{
+		Draw_TileClear (0, 0, r_refdef.vrect.x, vid.height);
+		Draw_TileClear (r_refdef.vrect.x + r_refdef.vrect.width, 0,
+			vid.width - r_refdef.vrect.x + r_refdef.vrect.width, vid.height);
+	}
+//	if (r_refdef.vrect.height < vid.height-44)
+	{
+		Draw_TileClear (r_refdef.vrect.x, 0, r_refdef.vrect.width, r_refdef.vrect.y);
+		Draw_TileClear (r_refdef.vrect.x, r_refdef.vrect.y + r_refdef.vrect.height,
+			r_refdef.vrect.width, vid.height - (r_refdef.vrect.y + r_refdef.vrect.height));
+	}
+}
+
+//=============================================================================
+
 
 /*
 ==================
@@ -1216,8 +1219,11 @@ void SCR_UpdateScreen (void)
 			return;
 	}
 
+	if (cls.state == ca_dedicated)
+		return;		// stdout only
+
 	if (!scr_initialized || !con_initialized)
-		return;				// not initialized yet
+		return;		// not initialized yet
 
 
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
@@ -1239,7 +1245,7 @@ void SCR_UpdateScreen (void)
 // do 3D refresh drawing, and then update the screen
 //
 	SCR_SetUpToDrawConsole ();
-	
+
 #if FULLSCREEN_INTERMISSIONS
 	// no need to draw view in fullscreen intermission screens
 	if (cl.intermission < 1 || cl.intermission > 12)
@@ -1257,7 +1263,7 @@ void SCR_UpdateScreen (void)
 
 	if (scr_drawdialog)
 	{
-		Sbar_Draw();
+		Sbar_Draw ();
 		Draw_FadeScreen ();
 		SCR_DrawNotifyString ();
 		scr_copyeverything = true;
@@ -1292,13 +1298,15 @@ void SCR_UpdateScreen (void)
 		SCR_CheckDrawCenterString();
 		Sbar_Draw();
 
-		// Pa3PyX: draw loading plaque and dim screen if loading
+		// dim screen and draw plaque if loading,
+		// the rest otherwise
 		if (scr_drawloading)
 		{
 			Draw_FadeScreen();
 			SCR_DrawLoading();
 		}
-		else {
+		else
+		{
 			Plaque_Draw(plaquemessage,0);
 			SCR_DrawConsole();
 			M_Draw();
@@ -1322,6 +1330,12 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2006/03/13 22:28:51  sezero
+ * removed the expansion pack only feature of objective strings from
+ * hexen2-only builds (many new ifdef H2MP stuff). removed the expansion
+ * pack only intermission picture and string searches from hexen2-only
+ * builds.
+ *
  * Revision 1.26  2006/03/13 22:25:22  sezero
  * properly macroized the fullscreen intermissions as a compile time
  * option. editing only one line in screen.h is now enough.
