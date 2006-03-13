@@ -1,5 +1,48 @@
 ChangeLog:
 
+2006-03-13 (CVS):
+    * Added support for colored lights and .lit files;. initially extracted
+      from jshexen2 (thanks Michal Wozniak). Colored lights and lit file
+      support is now added to hexenworld, as well, although the new cvars
+      gl_colored_dynamic_lights and gl_extra_dynamic_light aren't functional
+      for it: hexenworld had some sort of "colored" dynamic lights in it,
+      and they aren't changed by this patch. The cvars mentions are fully
+      functional for hexen2. Colored lights member of the dlight_t in h2
+      is changed to be an array of 4, instead of vec3_t as it used to appear
+      in jshexen2, so that things look more alike with the hw version. The
+      default lightmap format is changed to GL_RGBA, (previously it was
+      GL_LUMINANCE.) Command line arguments can be employed to change the
+      lightmap format:  -lm_1 : GL_LUMINANCE, -lm_4 : GL_RGBA (default).
+      (Note: Would it be a good (AND a feasible) idea to add a menu+cvar
+      control for the lightmap format?)
+    * added colored light opions to the opengl features menu.
+    * added the -lm_1 and -lm_4 commandline switches to the documentation.
+    * updated the documentation with regard to several cvar settings and
+      their menu entries. several updates to the features list and the
+      release notes.
+    * launcher: forcefully use the -window argument, since the fullscreen
+      and windowed settings are now remembered by the game.
+    * more clarification for the conwidth option on the launcher tooltips
+      and in the documentation
+    * launcher: removed the unnecessary -nomtex option, added a button to
+      enable the old GL_LUMINANCE format (the -lm_1 switch.)
+    * splitted the huffman stuff out of net.c to go into their own files
+    * fixed objectives in the expansion pack which was broken during the
+      1.3.0 development cycle by a bad gcc4 fix
+    * fixed a bug where with viewsize (scr_viewsize) being set to 120,
+      the game wouldn't start with a mini status bar unless the user did
+      a size-up/size-down
+    * properly macroized the fullscreen intermissions as a compile time
+      option. editing only one line in screen.h is now enough.
+    * removed the expansion pack only feature of objective strings from
+      hexen2-only builds (many new ifdef H2MP stuff).
+    * removed the expansion pack only intermission picture and string
+      searches from hexen2-only builds.
+    * continue making static functions and vars static, whitespace and
+      coding style cleanup. a few compiler warnings were fixed and tiny
+      synchronizations between h2 and h2w versions were done along the
+      way.
+
 2006-03-04 (CVS, 1.4.0-pre6):
     * fixed the win32 cross compile scripts of the utilities.
     * utils/jsh2color: moved external definition file stuff to tex.c;
