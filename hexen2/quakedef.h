@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.50 2006-03-04 15:50:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.51 2006-03-13 22:26:33 sezero Exp $
 */
 
 
@@ -60,48 +60,47 @@
 #define MAX_NUM_ARGVS	50
 
 // up / down
-#define	PITCH	0
+#define	PITCH		0
 
 // left / right
-#define	YAW	1
+#define	YAW		1
 
 // fall over
-#define	ROLL	2
+#define	ROLL		2
 
 
 // Timing macros
-#define HX_FRAME_TIME		0.05
-#define HX_FPS			20
+#define HX_FRAME_TIME	0.05
+#define HX_FPS		20
 
 
-#define	MAX_QPATH		64			// max length of a quake game pathname
+#define	MAX_QPATH	64		// max length of a quake game pathname
 
-#define	MAX_OSPATH		256			// max length of a filesystem pathname
-// S.A: MAX_OSPATH was previously 128. Variable MAX_PATH is never set and/or used in hexen2
+#define	MAX_OSPATH	256		// max length of a filesystem pathname
 
-#define	ON_EPSILON		0.1			// point on plane side epsilon
+#define	ON_EPSILON	0.1		// point on plane side epsilon
 
 //#define	MAX_MSGLEN		8000		// max length of a reliable message
 //#define	MAX_MSGLEN		16000		// max length of a reliable message
-#define	MAX_MSGLEN		20000		// for mission pack tibet2
+#define	MAX_MSGLEN	20000		// for mission pack tibet2
 
-#define	MAX_DATAGRAM		1024		// max length of unreliable message
+#define	MAX_DATAGRAM	1024		// max length of unreliable message
 //#define	MAX_DATAGRAM	2048		// max length of unreliable message  TEMP: This only for E3
 
 //
 // per-level limits
 //
-#define	MAX_EDICTS		600		// FIXME: ouch! ouch! ouch!
+#define	MAX_EDICTS	600		// FIXME: ouch! ouch! ouch!
 #define	MAX_LIGHTSTYLES	64
 
-#define	MAX_MODELS		512		// Sent over the net as a word
+#define	MAX_MODELS	512		// Sent over the net as a word
 
-#define	MAX_SOUNDS		512		// Sent over the net as a byte
+#define	MAX_SOUNDS	512		// Sent over the net as a byte
 
 
 #define	SAVEGAME_COMMENT_LENGTH	39
 
-#define	MAX_STYLESTRING	64
+#define	MAX_STYLESTRING		64
 
 //
 // stats are integers communicated to the client by the server
@@ -120,14 +119,14 @@
 //#define	STAT_ACTIVEWEAPON	10
 #define	STAT_TOTALSECRETS	11
 #define	STAT_TOTALMONSTERS	12
-#define	STAT_SECRETS		13		// bumped on client side by svc_foundsecret
-#define	STAT_MONSTERS		14		// bumped by svc_killedmonster
+#define	STAT_SECRETS		13	// bumped on client side by svc_foundsecret
+#define	STAT_MONSTERS		14	// bumped by svc_killedmonster
 //#define	STAT_BLUEMANA		15
 //#define	STAT_GREENMANA		16
 //#define	STAT_EXPERIENCE		17
 
 
-#define	MAX_INVENTORY		15		// Max inventory array size
+#define	MAX_INVENTORY		15	// Max inventory array size
 
 // stock defines
 
@@ -244,15 +243,15 @@ typedef struct
 	byte	abslight;
 } entity_state3_t;
 
-#define MAX_CLIENT_STATES 150
-#define MAX_FRAMES 5
-#define MAX_CLIENTS 8
-#define CLEAR_LIMIT 2
+#define MAX_CLIENT_STATES	150
+#define MAX_FRAMES		5
+#define MAX_CLIENTS		8
+#define CLEAR_LIMIT		2
 
 #define ENT_STATE_ON		1
-#define ENT_CLEARED			2
+#define ENT_CLEARED		2
 
-typedef struct 
+typedef struct
 {
 	entity_state2_t states[MAX_CLIENT_STATES];
 //	unsigned long frame;
@@ -260,7 +259,7 @@ typedef struct
 	int count;
 } client_frames_t;
 
-typedef struct 
+typedef struct
 {
 	entity_state2_t states[MAX_CLIENT_STATES*2];
 	int count;
@@ -398,6 +397,9 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.50  2006/03/04 15:50:38  sezero
+ * marked the snapshot of 2006-03-04 as 1.4.0-pre6
+ *
  * Revision 1.49  2006/03/04 15:35:23  sezero
  * opengl headers tidy-up
  *
