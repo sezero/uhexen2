@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.16 2006-02-20 16:12:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.17 2006-03-13 22:21:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -3102,31 +3102,33 @@ static void PF_updateInfoPlaque (void)
 {
 	unsigned int check;
 	unsigned int idx, mode;
-	long *use;
-	long tmp_mask;
 	int  ofs = 0;
+	union
+	{
+		UINT	*tmp;
+		long	*use;
+	} u;
 
 	idx = G_FLOAT(OFS_PARM0);
 	mode = G_FLOAT(OFS_PARM1);
 
 	if (idx > 31)
 	{
-		tmp_mask = info_mask2;
+		u.tmp = &info_mask2;
 		ofs = 32;
 	}
 	else
 	{
-		tmp_mask = info_mask;
+		u.tmp = &info_mask;
 	}
-	use = (long *)&tmp_mask;
 
 	check = (long) (1 << (idx - ofs));
 
-	if (((mode & 1) && ((*use) & check)) || ((mode & 2) && !((*use) & check)))
+	if (((mode & 1) && ((*u.use) & check)) || ((mode & 2) && !((*u.use) & check)))
 		;
 	else
 	{
-		(*use) ^= check;
+		(*u.use) ^= check;
 	}
 }
 
@@ -3291,6 +3293,10 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2006/02/20 16:12:51  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 14: pr_cmds.c, pr_comp.h)
+ *
  * Revision 1.15  2005/10/02 15:43:08  sezero
  * killed -Wshadow warnings
  *
