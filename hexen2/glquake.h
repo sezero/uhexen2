@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.42 2006-03-11 22:51:16 sezero Exp $
+	$Id: glquake.h,v 1.43 2006-03-14 11:44:19 sezero Exp $
 */
 
 
@@ -394,25 +394,28 @@ extern	qboolean lightmap_modified[MAX_LIGHTMAPS];
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.42  2006/03/11 22:51:16  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. part 41: gl_draw.c, gl_rlight.c, gl_rmain.c, gl_rmisc.c, gl_rsurf.c,
+ * gl_test.c, gl_warp.c, gl_mesh.c, gl_refrag.c, gl_ngraph.c.
+ * a few compiler warnings were fixed and tiny synchronizations between h2 and
+ * h2w versions were done along the way. more to come.
+ *
  * Revision 1.41  2006/03/10 08:08:45  sezero
- * Adds support for colored lights and .lit files. Initially extracted from
- * jshexen2 (thanks Michal Wozniak). This is version 6 of the patch, it is
- * against the uhexen2 cvs snapshot from March 04 (or 07), 2006.
- * Colored lights and lit file support is now added to hexenworld, as well.
- * The cvars gl_colored_dynamic_lights and gl_extra_dynamic_light are not
- * functional there: hexenworld har some colored lights in it, and this patch
- * doesn't change them.
- * Colored lights member of the dligh_t in hexen2 is changed to be an array
- * of 4, instead of the previous vec3_t, so that thins look more alike with
- * the hexenworld version.
- * The default lightmap format is changed to GL_RGBA, (was GL_LUMINANCE,
- * previously.) One can use command line arguments to change the lightmap
- * format, when starting the game:
- * 	-lm_1 : GL_LUMINANCE
- * 	-lm_4 : GL_RGBA (default)
- * TODO: * The three new cvars will be added to the "opengl features" menu.
- * * Would it be a good (AND a feasible) idea to add a menu+cvar control for
- *   the lightmap format?
+ * Added support for colored lights and .lit files;. initially extracted
+ * from jshexen2 (thanks Michal Wozniak). Colored lights and lit file
+ * support is now added to hexenworld, as well, although the new cvars
+ * gl_colored_dynamic_lights and gl_extra_dynamic_light aren't functional
+ * for it: hexenworld had some sort of "colored" dynamic lights in it,
+ * and they aren't changed by this patch. The cvars mentions are fully
+ * functional for hexen2. Colored lights member of the dlight_t in h2
+ * is changed to be an array of 4, instead of vec3_t as it used to appear
+ * in jshexen2, so that things look more alike with the hw version. The
+ * default lightmap format is changed to GL_RGBA, (previously it was
+ * GL_LUMINANCE.) Command line arguments can be employed to change the
+ * lightmap format:  -lm_1 : GL_LUMINANCE, -lm_4 : GL_RGBA (default).
+ * (Note: Would it be a good (AND a feasible) idea to add a menu+cvar
+ * control for the lightmap format?)
  *
  * Revision 1.40  2006/03/04 15:35:23  sezero
  * opengl headers tidy-up
