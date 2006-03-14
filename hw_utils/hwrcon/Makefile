@@ -1,0 +1,83 @@
+# if building a debug version :		make DEBUG=1 [other stuff]
+
+# To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
+# argument to make. It would be best if you examine the script named
+# build_cross_win32.sh for cross compilation.
+
+# Path settings:
+# main uhexen2 relative path
+UHEXEN2_TOP=../..
+
+# include the common dirty stuff
+include $(UHEXEN2_TOP)/scripts/makefile.inc
+
+# include file for sanity checks
+include $(UHEXEN2_TOP)/scripts/sanity1.inc
+
+# Names of the binaries
+ifeq "$(TARGET_OS)" "WIN32"
+HWRCON=hwrcon.exe
+HWTERM=hwterm.exe
+else
+HWRCON=hwrcon
+HWTERM=hwterm
+endif
+
+# Whether to use Huffman encoding with the simple hwrcon tool
+# Note: The hwterm tool already uses Huffman in order to read
+# and correctly echo the server response.
+USE_HUFFMAN ?=0
+
+# Compiler flags
+ifndef DEBUG
+CFLAGS := -O2 -march=i386 -Wall
+endif
+
+# Other build flags
+EXT_FLAGS:=
+
+ifeq "$(TARGET_OS)" "WIN32"
+INCLUDES := -I$(MINGWDIR)/include
+LDFLAGS  := -L$(MINGWDIR)/lib -lwsock32 -mconsole
+else
+INCLUDES := -I.
+LDFLAGS  :=
+EXT_FLAGS+= -DPLATFORM_UNIX
+endif
+
+
+# Rules for turning source files into .o files
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
+
+# Objects
+COMMONOBJ = huffman.o
+RCON_OBJS = hwrcon.o
+TERM_OBJS = hwterm.o
+
+ifeq ($(USE_HUFFMAN),yes)
+RCON_OBJS:= huffman.o $(RCON_OBJS)
+EXT_FLAGS:= $(EXT_FLAGS) -DUSE_HUFFMAN
+else
+ifeq ($(USE_HUFFMAN),1)
+RCON_OBJS:= huffman.o $(RCON_OBJS)
+EXT_FLAGS:= $(EXT_FLAGS) -DUSE_HUFFMAN
+endif
+endif
+
+# Targets
+all: $(HWRCON) $(HWTERM)
+default: all
+
+# include file for sanity check target
+include $(UHEXEN2_TOP)/scripts/sanity2.inc
+
+$(HWRCON) : $(RCON_OBJS)
+	$(LINKER) -o $(HWRCON) $(RCON_OBJS) $(LDFLAGS)
+
+$(HWTERM) : $(COMMONOBJ) $(TERM_OBJS)
+	$(LINKER) -o $(HWTERM) $(COMMONOBJ) $(TERM_OBJS) $(LDFLAGS)
+
+clean:
+	rm -f *.o core .tmp *.tmp
+

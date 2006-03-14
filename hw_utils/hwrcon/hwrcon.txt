@@ -1,0 +1,57 @@
+HWRCON(n)							HWRCON(n)
+
+NAME
+	hwrcon -- HexenWorld Remote CONsole
+
+SYNOPSIS
+	hwrcon ipaddress[:address] password commands ...
+
+DESCRIPTION
+	This is a remote interface to the HexenWorld rcon command.
+	It acts as a light-weight hexenworld client that will send
+	rcon commands on your behalf.  It will send only one command
+	at a time.  This allows you to administer the server without
+	being at the console, and without starting a full hexenworld
+	client.  It can also be embedded in shell scripts and cron
+	jobs.
+
+OPTIONS
+	None.
+
+SEE ALSO
+	hwterm - Interactive version of this
+	tail(1) - output the last part of files
+
+NOTES
+	You need to know the rcon_password to use this program on a
+	server.  It will not return ANY RESPONSES!!  You might think
+	that you could just tail the server log. (log_file 2) This
+	is a neat idea, but it doesn't work either, unless you operate
+	your command through an alias.
+	   alias whatsup status
+	   set rcon_password boom
+
+	   $ hwrcon 127.0.0.1 boom whatsup
+
+	This will produce output on the console log.  Note that hwrcon
+	will not pull out this output, however.
+
+AUTHOR
+	O.Sezer <sezero@users.sourceforge.net>, based on RCon v1.1 by
+	Michael Dwyer/N0ZAP <mdwyer@holly.colostate.edu>
+
+BUGS
+	None. Please report, if you find any.
+
+COPYRIGHT
+	Copyright (C) 1998 Michael Dwyer
+	Copyright (C) 2006 O. Sezer
+
+	HWRcon is free software;  you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published
+	by the Free  Software  Foundation; either version 2, or (at your
+	option) any later version.
+
+hwrcon Version 1.2.2		07-March-2006			1
+
+HWRCON(n)							HWRCON(n)
