@@ -3,7 +3,7 @@ Hexen II: Hammer of Thyrion
 ChangeLog:
 ---------------------------
 
-2006-03-13 (CVS):
+2006-03-14 (CVS):
     * Added support for colored lights and .lit files;. initially extracted
       from jshexen2 (thanks Michal Wozniak). Colored lights and lit file
       support is now added to hexenworld, as well, although the new cvars
@@ -41,6 +41,8 @@ ChangeLog:
       hexen2-only builds (many new ifdef H2MP stuff).
     * removed the expansion pack only intermission picture and string
       searches from hexen2-only builds.
+    * created a hw_utils module to contain standalone hexenworld utilities
+      and imported the rcon tool sources
     * continue making static functions and vars static, whitespace and
       coding style cleanup. a few compiler warnings were fixed and tiny
       synchronizations between h2 and h2w versions were done along the

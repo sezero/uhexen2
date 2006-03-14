@@ -64,8 +64,11 @@ Changes since HoT-1.3.0 :
 - Made udp to quietly absorb empty packets
 - Added ip interface binding option (-ip xxx.xxx.xxx.xxx) to hexenworld
   server
+- Added standalone hexenworld rcon and terminal tools (hwrcon and hwterm)
+  which make it possible to remotely administer hexenworld servers without
+  installing a full client.
 - Added sanity checking to and fixed the off by one error in -ip option
-  of the hexenworld master server
+  of the standalone hexenworld master server
 - Hexenworld server shall now flush its logfiles upon every print
 - Changed hexenworld server log filename from qconsole.log to hwsv.log
 - Added support for systems without OSS sound
