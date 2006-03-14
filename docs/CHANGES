@@ -3,7 +3,7 @@ Hexen II: Hammer of Thyrion
 ChangeLog:
 ---------------------------
 
-2006-03-14 (CVS):
+2006-03-14 (CVS, 1.4.0-pre7):
     * Added support for colored lights and .lit files;. initially extracted
       from jshexen2 (thanks Michal Wozniak). Colored lights and lit file
       support is now added to hexenworld, as well, although the new cvars
@@ -47,6 +47,7 @@ ChangeLog:
       coding style cleanup. a few compiler warnings were fixed and tiny
       synchronizations between h2 and h2w versions were done along the
       way.
+    * marked the snapshot of 2006-03-14 as 1.4.0-pre7.
 
 2006-03-04 (CVS, 1.4.0-pre6):
     * fixed the win32 cross compile scripts of the utilities.
