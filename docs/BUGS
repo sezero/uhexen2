@@ -1,5 +1,7 @@
+Hexen II: Hammer of Thyrion
+
 Known Bugs
-----------
+---------------------------
 
   Midi music doesn't work with SDL sound driver due to conflicting
   SDL and SDL_mixer calls. There are a few other problems related

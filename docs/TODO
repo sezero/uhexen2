@@ -1,5 +1,7 @@
+Hexen II: Hammer of Thyrion
+
 TODO:
------
+---------------------------
 
   Check / fix the tree for 64-bit platforms
   Make sure that we are big-endian-ready

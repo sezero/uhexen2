@@ -1,4 +1,7 @@
+Hexen II: Hammer of Thyrion
+
 ChangeLog:
+---------------------------
 
 2006-03-13 (CVS):
     * Added support for colored lights and .lit files;. initially extracted

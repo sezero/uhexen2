@@ -1,8 +1,12 @@
-HW Master Server 1.2.2
+HexenWorld Master Server
+Version 1.2.2
+------------------------
 
-Command line params:
--port xxxxx    select a port other than default (26900)
+This is a small, stand-alone command line only program even with no need
+of any hexen2 game installed. It uses 26900 as the default port.
 
+Command line parameters:
+-port xxxxx	select a port other than default (26900)
 
 Console commands:
 
@@ -16,8 +20,9 @@ filter add xxx.xxx.xxx.xxx:port xxx.xxx.xxx.xxx:port	adds a filter
 filter remove xxx.xxx.xxx.xxx:port			removes a filter
 filter clear						removes all filters
 
-Most of the program source code, authored by Marc Allaire (aka. Kor Skarn),
-is based on the qw source, and is subject to the General Public Liscence v2.
+The program source code, initially put together by Marc Allaire (aka. Kor
+Skarn), is based on the quakeworld source, and is subject to the General
+Public Liscence v2.
 
 The original email address of the author was korskarn@hexenworld.com, but
 that address seems non-operational today.
