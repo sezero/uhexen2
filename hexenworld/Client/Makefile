@@ -198,7 +198,8 @@ endif
 # Platform specific object settings
 SOFT_SDL_VID = vid_sdl.o
 SOFT_WIN32VID = win_stuff/vid_win.o
-GL_SDL_VID = gl_vidsdl.o
+GL_SDL_VID = gl_vidsdl.o \
+	fx_gamma.o
 GL_WIN32VID = win_stuff/gl_vidnt.o
 INPUT_SDL = in_sdl.o
 INPUT_WIN32 = win_stuff/in_win.o
