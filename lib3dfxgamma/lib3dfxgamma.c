@@ -19,6 +19,10 @@
  * glSetDeviceGammaRamp3DFX works nicely with Voodoo2, but it crashes
  * Voodoo1. The ramp functions are added for completeness sake anyway.
  * do3dfxGammaCtrl works just fine for both Voodoo1 and Voodoo2.
+ * Besides, the GammaRamp3DFX functions are only available for Glide3:
+ * Glide2 users cannot benefit them, but the gamma control option is
+ * available for both Glide2 and Glide3. Therefore employing the gamma
+ * control option seems more beneficial.
  *
  * Revision history:
  * v0.0.1, 2005-06-04:	Initial version, do3dfxGammaCtrl works fine,
@@ -26,6 +30,10 @@
  * v0.0.2, 2005-06-13:	tried following the exact win32 versions for
  *			glGetDeviceGammaRamp3DFX/glSetDeviceGammaRamp3DFX
  * v0.0.3, 2005-12-05:	Updated documentation about the RTLD_GLOBAL flag.
+ * v0.0.4, 2006-03-16:	Fixed incorrect prototype for the grGet function
+ *			(it takes a signed int param*, not unsigned).
+ *			Also renamed FX_Get to FX_GetInteger to be more
+ *			explicit.
  */
 
 #include <stdlib.h>
@@ -41,7 +49,7 @@ void (*FX_GammaControl3)(float,float,float) = NULL;
 
 // 3dfx glide3 funcs to make a replacement wglSetDeviceGammaRamp3DFX
 #define GR_GAMMA_TABLE_ENTRIES	0x05
-unsigned int (*FX_Get)(unsigned int, unsigned int, unsigned int *) = NULL;
+static unsigned int (*FX_GetInteger)(unsigned int, unsigned int, signed int *) = NULL;
 void (*FX_LoadGammaTable)(unsigned int, unsigned int*, unsigned int*, unsigned int*) = NULL;
 
 /**********************************************************************/
@@ -107,9 +115,9 @@ int Check_3DfxGammaRamp (void)
 	symslist = dlopen(NULL, RTLD_LAZY);
 	if (symslist != NULL)
 	{
-		FX_Get = dlsym(symslist, "grGet");
+		FX_GetInteger = dlsym(symslist, "grGet");
 		FX_LoadGammaTable = dlsym(symslist, "grLoadGammaTable");
-		if ((FX_LoadGammaTable != NULL) && (FX_Get != NULL))
+		if ((FX_LoadGammaTable != NULL) && (FX_GetInteger != NULL))
 			return 1;
 	}
 
@@ -129,10 +137,10 @@ int glSetDeviceGammaRamp3DFX (void *arrays)
 	unsigned short *red, *green, *blue;
 	unsigned int gammaTableR[256], gammaTableG[256], gammaTableB[256];
 
-	if ((FX_LoadGammaTable == NULL) || (FX_Get == NULL))
+	if ((FX_LoadGammaTable == NULL) || (FX_GetInteger == NULL))
 		return 0;
 
-	FX_Get (GR_GAMMA_TABLE_ENTRIES, 4, &tableSize);
+	FX_GetInteger (GR_GAMMA_TABLE_ENTRIES, 4, &tableSize);
 	if (!tableSize)
 		return 0;
 
@@ -163,7 +171,7 @@ int glGetDeviceGammaRamp3DFX (void *arrays)
 	int	i;
 	unsigned short	gammaTable[3][256];
 
-	if ((FX_LoadGammaTable == NULL) || (FX_Get == NULL))
+	if ((FX_LoadGammaTable == NULL) || (FX_GetInteger == NULL))
 	{
 		if (Check_3DfxGammaRamp() == 0)
 			return 0;
