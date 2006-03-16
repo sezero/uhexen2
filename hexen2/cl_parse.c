@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.22 2006-03-13 22:28:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.23 2006-03-16 21:19:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1781,12 +1781,20 @@ void CL_ParseServerMessage (void)
 					cl.v.max_mana = MSG_ReadByte();
 				if (sc2 & SC2_FLAGS)
 					cl.v.flags = MSG_ReadFloat();
-#ifdef H2MP
+
+				// SC2_OBJ and SC2_OBJ2 are actually only legible for the
+				// mission pack (the objectives).  still keeping them as
+				// H2-legible here, so that we remain net-compatible with
+				// Hammer of Thyrion versions prior to 1.4.0 and with other
+				// hexen2 source ports and demos recorded can still be
+				// played back. The info_mask and infomask2 members of the
+				// client structure will not be processed by the rest of
+				// the code for pure hexen2 builds, though.
 				if (sc2 & SC2_OBJ)
 					cl.info_mask = MSG_ReadLong();
 				if (sc2 & SC2_OBJ2)
 					cl.info_mask2 = MSG_ReadLong();
-#endif
+
 				if ((sc1 & SC1_STAT_BAR) || (sc2 & SC2_STAT_BAR))
 					Sbar_Changed();
 
@@ -1799,6 +1807,12 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2006/03/13 22:28:51  sezero
+ * removed the expansion pack only feature of objective strings from
+ * hexen2-only builds (many new ifdef H2MP stuff). removed the expansion
+ * pack only intermission picture and string searches from hexen2-only
+ * builds.
+ *
  * Revision 1.21  2005/12/11 11:56:33  sezero
  * synchronized different sbar function names between h2 and h2w.
  * there was a mess about SB_Changed and Sbar_Changed in h2w, this

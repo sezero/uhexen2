@@ -1,6 +1,6 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.11 2006-03-14 11:44:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.12 2006-03-16 21:19:00 sezero Exp $
 */
 
 typedef struct
@@ -227,10 +227,9 @@ typedef struct
 
 	client_frames2_t frames[3]; // 0 = base, 1 = building, 2 = 0 & 1 merged
 	short	RemoveList[MAX_CLIENT_STATES], NumToRemove;
-#ifdef H2MP
+
 // mission pack, objectives strings
 	long	info_mask, info_mask2;
-#endif
 } client_state_t;
 
 
@@ -381,6 +380,9 @@ void CL_UpdateTEnts(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2006/03/14 11:44:18  sezero
+ * arghhh... cvs changelogs...
+ *
  * Revision 1.10  2006/03/13 22:28:51  sezero
  * removed the expansion pack only feature of objective strings from
  * hexen2-only builds (many new ifdef H2MP stuff). removed the expansion

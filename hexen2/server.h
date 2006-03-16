@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.8 2006-03-13 22:28:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.9 2006-03-16 21:19:01 sezero Exp $
 */
 
 typedef struct
@@ -105,10 +105,9 @@ typedef struct client_s
 
 	byte			current_frame, last_frame;
 	byte			current_sequence, last_sequence;
-#ifdef H2MP
+
 // mission pack, objectives strings
 	long			info_mask, info_mask2;
-#endif
 } client_t;
 
 
@@ -312,6 +311,12 @@ void SV_SpawnServer (char *server, char *startspot);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2006/03/13 22:28:51  sezero
+ * removed the expansion pack only feature of objective strings from
+ * hexen2-only builds (many new ifdef H2MP stuff). removed the expansion
+ * pack only intermission picture and string searches from hexen2-only
+ * builds.
+ *
  * Revision 1.7  2006/02/24 23:27:31  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 28: protocol.h, quakedef.h, server.h, pmove.c, pmovetst.c,
