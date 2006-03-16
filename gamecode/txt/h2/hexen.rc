@@ -10,6 +10,7 @@ exec config.cfg
 // run a user script file if present
 exec autoexec.cfg
 
+// display the main menu
 menu_main
 
 //
