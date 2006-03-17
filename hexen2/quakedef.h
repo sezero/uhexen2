@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.52 2006-03-14 13:19:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.53 2006-03-17 14:12:48 sezero Exp $
 */
 
 
@@ -369,10 +369,9 @@ extern int		current_skill;		// skill level for currently loaded level (in case
 extern qboolean		isDedicated;
 
 extern int		sv_kingofhill;
-extern qboolean		intro_playing;
-extern qboolean		skip_start;
-extern int		num_intro_msg;
-extern qboolean		check_bottom;
+extern qboolean		intro_playing;	// whether the mission pack intro is playing
+extern qboolean		skip_start;	// for the mission pack intro
+extern int		num_intro_msg;	// for the mission pack intro
 //
 // chase
 //
@@ -397,6 +396,9 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.52  2006/03/14 13:19:42  sezero
+ * marked the snapshot of 2006-03-14 as 1.4.0-pre7
+ *
  * Revision 1.51  2006/03/13 22:26:33  sezero
  * continue making static functions and vars static. whitespace and
  * coding style cleanup. part 42: quakedef.h, bothdefs.h

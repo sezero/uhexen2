@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.59 2006-03-13 22:28:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.60 2006-03-17 14:12:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -9,7 +9,6 @@
 
 extern	modestate_t	modestate;
 extern	cvar_t	crosshair;
-extern	qboolean introPlaying;
 extern	float introTime;
 
 void (*vid_menudrawfn)(void);
@@ -839,9 +838,7 @@ static void M_Menu_Difficulty_f (void)
 }
 
 static int	m_diff_cursor;
-#ifdef H2MP
-static int	m_enter_portals;
-#endif
+static int	m_enter_portals = 0;
 #define	DIFF_ITEMS	NUM_DIFFLEVELS
 
 static void M_Difficulty_Draw (void)
@@ -886,7 +883,6 @@ static void M_Difficulty_Key (int key)
 	case K_ENTER:
 		Cvar_SetValue ("skill", m_diff_cursor);
 		m_entersound = true;
-#ifdef H2MP
 		if (m_enter_portals)
 		{
 			introTime = 0.0;
@@ -898,7 +894,6 @@ static void M_Difficulty_Key (int key)
 			//Cbuf_AddText ("map keep1\n");
 			return;
 		}
-#endif
 		//Cbuf_AddText ("map demo1\n");
 		m_state = m_none;
 		Cbuf_AddText ("wait; map demo1\n");
@@ -1099,9 +1094,7 @@ static void M_SinglePlayer_Key (int key)
 		break;
 	case K_ENTER:
 		m_entersound = true;
-#ifdef H2MP
 		m_enter_portals = 0;
-#endif
 		switch (m_singleplayer_cursor)
 		{
 		case 0:
@@ -2455,10 +2448,8 @@ static char *bindnames[][2] =
 	{"+showinfo",		"full inventory"},
 	{"+showdm",		"info / frags"},
 	{"toggle_dm",		"toggle frags"},
-#ifdef H2MP
 // command to display the mission pack's objectives
 	{"+infoplaque",		"objectives"},
-#endif
 	{"invleft",		"inv move left"},
 	{"invright",		"inv move right"},
 	{"impulse 100",		"inv:torch"},
@@ -4408,6 +4399,12 @@ static void ReInitMusic (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.59  2006/03/13 22:28:51  sezero
+ * removed the expansion pack only feature of objective strings from
+ * hexen2-only builds (many new ifdef H2MP stuff). removed the expansion
+ * pack only intermission picture and string searches from hexen2-only
+ * builds.
+ *
  * Revision 1.58  2006/03/13 22:25:22  sezero
  * properly macroized the fullscreen intermissions as a compile time
  * option. editing only one line in screen.h is now enough.

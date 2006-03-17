@@ -39,7 +39,7 @@ kbutton_t	in_up, in_down, in_crouch;
 kbutton_t	in_infoplaque;
 
 int		in_impulse;
-extern qboolean		info_up;
+qboolean	info_up = false;
 
 static void KeyDown (kbutton_t *b)
 {
@@ -309,7 +309,6 @@ static void IN_CrouchUp (void)
 	}
 }
 
-#ifdef H2MP
 static void IN_infoPlaqueUp(void)
 {
 	if (key_dest == key_game)
@@ -329,7 +328,6 @@ static void IN_infoPlaqueDown(void)
 		KeyDown(&in_infoplaque);
 	}
 }
-#endif
 
 /*
 ===============
@@ -663,10 +661,9 @@ void CL_InitInput (void)
 
 	Cmd_AddCommand ("+crouch", IN_CrouchDown);
 	Cmd_AddCommand ("-crouch", IN_CrouchUp);
-#ifdef H2MP
+
 	Cmd_AddCommand ("+infoplaque", IN_infoPlaqueDown);
 	Cmd_AddCommand ("-infoplaque", IN_infoPlaqueUp);
-#endif
 }
 
 

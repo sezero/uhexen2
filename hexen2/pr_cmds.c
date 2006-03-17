@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.18 2006-03-13 22:28:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.19 2006-03-17 14:12:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -13,20 +13,14 @@
 #endif
 
 
-#ifdef H2MP
-// Objectives strings of the mission pack
-extern UINT	info_mask, info_mask2;
-extern int	*pr_info_string_index;
-extern int	 pr_info_string_count;
-extern char	*pr_global_info_strings;
-#endif
-
 #define	RETURN_EDICT(e) (((int *)pr_globals)[OFS_RETURN] = EDICT_TO_PROG(e))
 
 #define	MSG_BROADCAST	0		// unreliable to all
 #define	MSG_ONE		1		// reliable to one (msg_entity)
 #define	MSG_ALL		2		// reliable to all
 #define	MSG_INIT	3		// write to the init string
+
+extern unsigned int	info_mask, info_mask2;	// mission pack objectives
 
 
 /*
@@ -3102,13 +3096,12 @@ static void PF_matchAngleToSlope(void)
 static void PF_updateInfoPlaque (void)
 {
 //update the objectives in the mission pack
-#ifdef H2MP
 	unsigned int check;
 	unsigned int idx, mode;
 	int  ofs = 0;
 	union
 	{
-		UINT	*tmp;
+		unsigned int	*tmp;
 		long	*use;
 	} u;
 
@@ -3133,7 +3126,6 @@ static void PF_updateInfoPlaque (void)
 	{
 		(*u.use) ^= check;
 	}
-#endif
 }
 
 extern void V_WhiteFlash_f(void);
@@ -3297,6 +3289,12 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2006/03/13 22:28:51  sezero
+ * removed the expansion pack only feature of objective strings from
+ * hexen2-only builds (many new ifdef H2MP stuff). removed the expansion
+ * pack only intermission picture and string searches from hexen2-only
+ * builds.
+ *
  * Revision 1.17  2006/03/13 22:21:26  sezero
  * fixed objectives in the expansion pack which was broken during
  * the 1.3.0 development cycle by a bad gcc4 fix.

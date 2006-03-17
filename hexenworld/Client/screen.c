@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.14 2006-03-13 22:34:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.15 2006-03-17 14:12:49 sezero Exp $
 */
 
 
@@ -52,6 +52,7 @@
 #include "quakedef.h"
 #include "r_local.h"
 #ifdef _WIN32
+#include "winquake.h"
 #include <io.h>
 #else
 #include <unistd.h>
@@ -93,9 +94,6 @@ cvar_t		scr_printspeed = {"scr_printspeed","8"};
 qboolean	scr_disabled_for_loading;
 qboolean	scr_skipupdate;
 qboolean	block_drawing;
-#ifdef _WIN32
-extern int	Minimized;
-#endif
 
 static qpic_t	*scr_ram;
 static qpic_t	*scr_net;
@@ -253,8 +251,10 @@ static qboolean SCR_CheckDrawCenterString2 (void)
 
 static void SCR_CheckDrawCenterString (void)
 {
-	if (SCR_CheckDrawCenterString2())
-		SCR_DrawCenterString ();
+	if (! SCR_CheckDrawCenterString2())
+		return;
+
+	SCR_DrawCenterString ();
 }
 
 //=============================================================================

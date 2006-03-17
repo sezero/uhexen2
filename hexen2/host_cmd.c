@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.39 2006-03-13 22:28:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.40 2006-03-17 14:12:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -25,10 +25,7 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode);
 qboolean SaveGamestate(qboolean ClientsOnly);
 static void RestoreClients(void);
 
-#ifdef H2MP
-// mission pack, objectives strings
-UINT	info_mask, info_mask2;
-#endif
+unsigned int	info_mask, info_mask2;	// mission pack objectives
 
 extern qboolean	mousestate_sa;
 extern void IN_ActivateMouse (void);
@@ -253,13 +250,11 @@ static void Host_Map_f (void)
 	key_dest = key_game;		// remove console or menu
 	SCR_BeginLoadingPlaque ();
 
-#ifdef H2MP
 	info_mask = 0;
 	if (!coop.value && deathmatch.value)
 		info_mask2 = 0x80000000;
 	else
 		info_mask2 = 0;
-#endif
 
 	cls.mapstring[0] = 0;
 	for (i=0 ; i<Cmd_Argc() ; i++)
@@ -571,11 +566,9 @@ retry:
 	fprintf (f, "%f\n",teamplay.value);
 	fprintf (f, "%f\n",randomclass.value);
 	fprintf (f, "%f\n",cl_playerclass.value);
-#ifdef H2MP
 	// mission pack, objectives strings
 	fprintf (f, "%d\n",info_mask);
 	fprintf (f, "%d\n",info_mask2);
-#endif
 	if (ferror(f))
 		error_state = true;
 
@@ -699,11 +692,9 @@ static void Host_Loadgame_f (void)
 	if (tempf >= 0)
 		Cvar_SetValue ("_cl_playerclass", tempf);
 
-#ifdef H2MP
 	// mission pack, objectives strings
 	fscanf (f, "%d\n",&info_mask);
 	fscanf (f, "%d\n",&info_mask2);
-#endif
 
 	fclose (f);
 
@@ -806,11 +797,9 @@ retry:
 		fprintf (f, "%s\n", sv.name);
 		fprintf (f, "%f\n", sv.time);
 
-#ifdef H2MP
 // mission pack, objectives strings
 //		fprintf (f, "%d\n", info_mask);
 //		fprintf (f, "%d\n", info_mask2);
-#endif
 
 	// write the light styles
 
@@ -825,14 +814,12 @@ retry:
 		fprintf(f,"-1\n");
 		ED_WriteGlobals (f);
 	}
-#ifdef H2MP
 	else
 	{
 // mission pack, objectives strings
 //		fprintf(f, "%d\n", info_mask);
 //		fprintf(f, "%d\n", info_mask2);
 	}
-#endif
 
 	host_client = svs.clients;
 
@@ -984,11 +971,9 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode)
 			return -1;
 		}
 
-#ifdef H2MP
 // mission pack, objectives strings
 //		fscanf (f, "%d\n",&info_mask);
 //		fscanf (f, "%d\n",&info_mask2);
-#endif
 
 	// load the light styles
 		for (i=0 ; i<MAX_LIGHTSTYLES ; i++)
@@ -1223,7 +1208,7 @@ static void Host_Class_f (void)
 #ifdef H2MP
 		// when classes changes after map load, update cl_playerclass, cl_playerclass should 
 		// probably only be used in worldspawn, though
-		if(pr_global_struct)
+		if (pr_global_struct)
 			pr_global_struct->cl_playerclass = newClass;
 #endif
 
@@ -2257,6 +2242,12 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.39  2006/03/13 22:28:51  sezero
+ * removed the expansion pack only feature of objective strings from
+ * hexen2-only builds (many new ifdef H2MP stuff). removed the expansion
+ * pack only intermission picture and string searches from hexen2-only
+ * builds.
+ *
  * Revision 1.38  2006/02/18 08:51:10  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. also renamed the variables name and dest to savename and savedest in

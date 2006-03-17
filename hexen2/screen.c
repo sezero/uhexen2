@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.23 2006-03-13 22:34:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.24 2006-03-17 14:12:48 sezero Exp $
 */
 
 /*=============================================================================
@@ -51,6 +51,7 @@
 #include "quakedef.h"
 #include "r_local.h"
 #ifdef _WIN32
+#include "winquake.h"
 #include <io.h>
 #else
 #include <unistd.h>
@@ -96,9 +97,6 @@ qboolean	ls_invalid = true;	// whether we need to redraw the loading screen plaq
 qboolean	scr_disabled_for_loading;
 qboolean	scr_skipupdate;
 qboolean	block_drawing;
-#ifdef _WIN32
-extern int	Minimized;
-#endif
 
 static qpic_t	*scr_ram;
 static qpic_t	*scr_net;
@@ -106,12 +104,13 @@ static qpic_t	*scr_turtle;
 
 extern	cvar_t	crosshair;
 
+float	introTime = 0.0;	// time for mission pack entry screen
+
 static void SCR_ScreenShot_f (void);
 static void Plaque_Draw (char *message, qboolean AlwaysDraw);
-#ifdef H2MP
+// procedures for the mission pack intro messages
 static void Info_Plaque_Draw (char *message);
 static void Bottom_Plaque_Draw (char *message);
-#endif
 
 
 /*
@@ -133,17 +132,16 @@ static int	scr_erase_center;
 static int	lines;
 static int	StartC[MAXLINES], EndC[MAXLINES];
 
-#ifdef H2MP
 // Objectives thing of the mission pack
 #define	MAX_INFO	1024
 static char	infomessage[MAX_INFO];
-qboolean	info_up = false;
+extern qboolean	info_up;
 
 extern int	*pr_info_string_index;
 extern char	*pr_global_info_strings;
 extern int	 pr_info_string_count;
 
-static void UpdateInfoMessage(void)
+static void UpdateInfoMessage (void)
 {
 	unsigned int i;
 	unsigned int check;
@@ -151,7 +149,7 @@ static void UpdateInfoMessage(void)
 
 	strcpy(infomessage, "Objectives:");
 
-	if (!pr_global_info_strings)
+	if (!pr_info_string_count || !pr_global_info_strings)
 		return;
 
 	for (i = 0; i < 32; i++)
@@ -178,7 +176,6 @@ static void UpdateInfoMessage(void)
 		}
 	}
 }
-#endif
 
 static void FindTextBreaks (char *message, int Width)
 {
@@ -302,17 +299,15 @@ static qboolean SCR_CheckDrawCenterString2 (void)
 
 static void SCR_CheckDrawCenterString (void)
 {
-	if (SCR_CheckDrawCenterString2())
+	if (! SCR_CheckDrawCenterString2())
+		return;
+
+	if (intro_playing)
 	{
-#ifdef H2MP
-		if (intro_playing)
-		{
-			Bottom_Plaque_Draw(scr_centerstring);
-			return;
-		}
-#endif
-		SCR_DrawCenterString ();
+		Bottom_Plaque_Draw(scr_centerstring);
+		return;
 	}
+	SCR_DrawCenterString ();
 }
 
 //=============================================================================
@@ -1025,7 +1020,6 @@ static void Plaque_Draw (char *message, qboolean AlwaysDraw)
 	}
 }
 
-#ifdef H2MP
 static void Info_Plaque_Draw (char *message)
 {
 	int i;
@@ -1035,7 +1029,7 @@ static void Info_Plaque_Draw (char *message)
 	if (scr_con_current == vid.height)
 		return;		// console is full screen
 
-	if (!*message) 
+	if (!pr_info_string_count || !*message)
 		return;
 
 	scr_needfull = true;
@@ -1066,7 +1060,7 @@ static void Bottom_Plaque_Draw (char *message)
 	char temp[80];
 	int bx,by;
 
-	if (!*message) 
+	if (!*message)
 		return;
 
 	scr_needfull = true;
@@ -1085,7 +1079,6 @@ static void Bottom_Plaque_Draw (char *message)
 	  	M_Print(bx, by, temp);
 	}
 }
-#endif
 
 //=============================================================================
 
@@ -1118,10 +1111,6 @@ static void I_Print (int cx, int cy, char *str)
 #else
 #define	DEMO_MSG_INDEX	(ABILITIES_STR_INDEX+MAX_PLAYER_CLASS*2)
 			// 408 for H2, 410 for H2MP strings.txt
-#endif
-
-#if defined(H2MP)
-float	introTime = 0.0;
 #endif
 
 /*
@@ -1204,7 +1193,7 @@ static void SB_IntermissionOverlay (void)
 			elapsed = 0;
 	}
 #if defined(H2MP)
-	else if (cl.intermission == 12)
+	else if (cl.intermission == 12)	// mission pack entry screen
 	{
 		elapsed = (introTime);
 		if (introTime < 500)
@@ -1452,13 +1441,11 @@ void SCR_UpdateScreen (void)
 			if (errormessage)
 				Plaque_Draw(errormessage,1);
 
-#ifdef H2MP
 			if (info_up)
 			{
 				UpdateInfoMessage();
 				Info_Plaque_Draw(infomessage);
 			}
-#endif
 		}
 	}
 
@@ -1519,6 +1506,11 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2006/03/13 22:34:36  sezero
+ * continue making static functions and vars static. whitespace and coding
+ * style cleanup. part 43: screen.c and gl_screen.c. tiny synchronizations
+ * between h2 and h2w versions of gl_screen.c and screen.c along the way.
+ *
  * Revision 1.22  2006/03/13 22:28:51  sezero
  * removed the expansion pack only feature of objective strings from
  * hexen2-only builds (many new ifdef H2MP stuff). removed the expansion

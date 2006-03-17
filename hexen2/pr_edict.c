@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.16 2006-03-13 22:28:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.17 2006-03-17 14:12:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -22,12 +22,10 @@ int		*pr_string_index = NULL;
 int		pr_string_count = 0;
 char		*pr_global_strings = NULL;
 
-#ifdef H2MP
 // Objectives strings of the mission pack
 int		*pr_info_string_index = NULL;
 int		pr_info_string_count = 0;
 char		*pr_global_info_strings = NULL;
-#endif
 
 qboolean	ignore_precache = false;
 
@@ -1293,9 +1291,8 @@ void PR_LoadProgs (void)
 }
 
 
-#ifdef H2MP
 // loads the mission pack objectives strings
-void PR_LoadInfoStrings(void)
+void PR_LoadInfoStrings (void)
 {
 	int		i, count, start;
 	char	NewLineChar;
@@ -1345,9 +1342,8 @@ void PR_LoadInfoStrings(void)
 	pr_info_string_count = count;
 	Con_Printf("Read in %d objectives\n",count);
 }
-#endif
 
-void PR_LoadStrings(void)
+void PR_LoadStrings (void)
 {
 	int		i, count, start;
 	char	NewLineChar;
@@ -1456,6 +1452,12 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2006/03/13 22:28:51  sezero
+ * removed the expansion pack only feature of objective strings from
+ * hexen2-only builds (many new ifdef H2MP stuff). removed the expansion
+ * pack only intermission picture and string searches from hexen2-only
+ * builds.
+ *
  * Revision 1.15  2006/02/20 23:34:39  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 16: pr_edict.c and progs.h)

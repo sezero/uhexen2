@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.18 2006-03-13 22:28:51 sezero Exp $
+	$Id: sbar.c,v 1.19 2006-03-17 14:12:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -207,14 +207,13 @@ void Sbar_Draw(void)
 	char	tempStr[80];
 	int	mana, maxMana;
 
-#ifdef H2MP
 	if (intro_playing)
 	{
+		// the mission pack intro is active
 		scr_fullupdate = 0;
 		scr_copyeverything = 1;
 		return;
 	}
-#endif
 
 	if (scr_con_current == vid.height)
 	{ // console is full screen
