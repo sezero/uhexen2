@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.54 2006-03-17 20:23:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.55 2006-03-17 22:33:11 sezero Exp $
 */
 
 
@@ -24,8 +24,8 @@
 #define	HOT_VERSION_MIN		0
 #define	HOT_VERSION_BETA	1
 #if HOT_VERSION_BETA
-#define	HOT_VERSION_BETA_STR	"pre7"
-#define	HOT_VERSION_BETA_DATE	"2006-03-14"
+#define	HOT_VERSION_BETA_STR	"pre8"
+#define	HOT_VERSION_BETA_DATE	"2006-03-17"
 #endif
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
@@ -406,6 +406,21 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.54  2006/03/17 20:23:17  sezero
+ * Updates to COM_LoadPackFile, COM_CheckRegistered and COM_InitFilesystem:
+ * killed variables com_modified, com_portals and static_registered. Combined
+ * all such info into an unsigned gameflags var. If correct versions of pak
+ * files are installed at correct places, the state will be set: whether we
+ * have the demo, oem or registered pakfiles, whether the registered game pak
+ * files are version 1.11, whether it is a modified game (extra pak files in
+ * the game directory or -game among the commandline switches), and whether
+ * we have correct versions portals and hexnworld pakfiles. The game will
+ * refuse to run on incorrect instances, h2mp will refuse to run if portals
+ * isn't set and hexenworld will refuse to run if hexenworld isn't set.
+ * Also activated the hexenworld progs crc check which was comment out (who
+ * knows why): Server will refuse to run if it detects an incorrect crc for
+ * its hwprogs.dat.
+ *
  * Revision 1.53  2006/03/17 14:12:48  sezero
  * put back mission-pack only objectives stuff back into pure h2 builds.
  * it was a total screw-up...
