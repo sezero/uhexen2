@@ -1075,12 +1075,14 @@ CL_ParseServerMessage
 static int	received_framecount;
 int LastServerMessageSize = 0;
 
-qboolean cl_siege;
-byte cl_fraglimit;
-float cl_timelimit;
-float cl_server_time_offset;
+// global vars for siege.
+qboolean	cl_siege;
+byte	cl_fraglimit;
+float	cl_timelimit;
+float	cl_server_time_offset;
 unsigned int	defLosses;	// Defenders losses in Siege
 unsigned int	attLosses;	// Attackers Losses in Siege
+
 void CL_ParseServerMessage (void)
 {
 	int		cmd;
@@ -1297,7 +1299,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_updatesiegeinfo:
-		// This dude killed someone, update his frags and level
+		// We are on a siege server, set cl_siege
 			cl_siege = true;
 			cl_timelimit = MSG_ReadByte () * 60;
 			cl_fraglimit = MSG_ReadByte ();

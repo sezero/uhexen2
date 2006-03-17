@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.31 2006-01-12 12:34:38 sezero Exp $
+	$Id: common.c,v 1.32 2006-03-17 20:23:19 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -27,10 +27,7 @@ static char	*safeargvs[NUM_SAFE_ARGVS] =
 cvar_t	registered = {"registered","0"};
 cvar_t	oem = {"oem","0"};
 
-static qboolean	com_modified;	// set true if using non-id files
-qboolean	com_portals = false;
-
-static int	static_registered = 1;	// only for startup check, then set
+unsigned int	gameflags;
 
 qboolean		msg_suppress_1 = 0;
 
@@ -864,9 +861,7 @@ int COM_CheckParm (char *parm)
 COM_CheckRegistered
 
 Looks for the pop.txt file and verifies it.
-Sets the "registered" cvar.
-Immediately exits out if an alternate game was attempted to be started without
-being registered.
+Sets the registered flag.
 ================
 */
 void COM_CheckRegistered (void)
@@ -876,17 +871,9 @@ void COM_CheckRegistered (void)
 	int			i;
 
 	COM_FOpenFile("gfx/pop.lmp", &h, false);
-	static_registered = 0;
 
 	if (!h)
-	{
-		Con_Printf ("Playing demo version.\n");
-#ifndef SERVERONLY
-		if (com_modified)
-			Sys_Error ("You must have the full version to use modified games");
-#endif
 		return;
-	}
 
 	fread (check, 1, sizeof(check), h);
 	fclose (h);
@@ -895,9 +882,11 @@ void COM_CheckRegistered (void)
 		if (pop[i] != (unsigned short)BigShort (check[i]))
 			Sys_Error ("Corrupted data file.");
 
-	Cvar_Set ("registered", "1");
-	static_registered = 1;
-	Con_Printf ("Playing registered version.\n");
+	// check if we have 1.11 versions of pak0.pak and pak1.pak
+	if (!(gameflags & GAME_REGISTERED0) || !(gameflags & GAME_REGISTERED1))
+		Sys_Error ("You must patch your installation with Raven's 1.11 update");
+
+	gameflags |= GAME_REGISTERED;
 }
 
 
@@ -991,7 +980,6 @@ void COM_Init (void)
 #endif
 
 	COM_InitFilesystem ();
-	COM_CheckRegistered ();
 }
 
 
@@ -1382,7 +1370,7 @@ int COM_FOpenFile (char *filename, FILE **file, qboolean override_pack)
 		{
 	// check a file in the directory tree
 #ifndef H2W
-			if (!static_registered && !override_pack)
+			if (!(gameflags & GAME_REGISTERED) && !override_pack)
 			{	// if not a registered version, don't ever go beyond base
 				if ( strchr (filename, '/') || strchr (filename,'\\'))
 					continue;
@@ -1565,28 +1553,73 @@ static pack_t *COM_LoadPackFile (char *packfile, int paknum)
 		CRC_ProcessByte (&crc, ((byte *)info)[i]);
 
 // check for modifications
-	if (paknum <= MAX_PAKDATA-2) {
-		if (strcmp(gamedirfile, dirdata[paknum]) != 0) {
-			com_modified = true;    // raven didnt ship like that
-		} else if (numpackfiles != pakdata[paknum][0]) {
-			if (paknum == 0) { // demo ??
-				if (numpackfiles != pakdata[MAX_PAKDATA-1][0]) {
-					com_modified = true;    // not original
-				} else if (crc != pakdata[MAX_PAKDATA-1][1]) {
-					com_modified = true;    // not original
+	if (paknum <= MAX_PAKDATA-2)
+	{
+		if (strcmp(gamedirfile, dirdata[paknum]) != 0)
+		{
+			// raven didnt ship like that
+			gameflags |= GAME_MODIFIED;
+		}
+		else if (numpackfiles != pakdata[paknum][0])
+		{
+			if (paknum == 0)
+			{
+				// demo ??
+				if (numpackfiles != pakdata[MAX_PAKDATA-1][0])
+				{
+				// not original
+					gameflags |= GAME_MODIFIED;
 				}
+				else if (crc != pakdata[MAX_PAKDATA-1][1])
+				{
+				// not original
+					gameflags |= GAME_MODIFIED;
+				}
+				else
+				{
 				// both crc and numfiles matched the demo
-			} else {
-				com_modified = true;    // not original
+					gameflags |= GAME_DEMO;
+				}
 			}
-		} else if (crc != pakdata[paknum][1]) {
-			com_modified = true;    // not original
-		} else if (paknum == 3) {
-			com_portals = true;
+			else
+			{
+			// not original
+				gameflags |= GAME_MODIFIED;
+			}
+		}
+		else if (crc != pakdata[paknum][1])
+		{
+		// not original
+			gameflags |= GAME_MODIFIED;
+		}
+		else
+		{
+			switch (paknum)
+			{
+			case 0:	// pak0 of full version 1.11
+				gameflags |= GAME_REGISTERED0;
+				break;
+			case 1:	// pak1 of full version 1.11
+				gameflags |= GAME_REGISTERED1;
+				break;
+			case 2:	// bundle version
+				gameflags |= GAME_OEM;
+				break;
+			case 3:	// mission pack
+				gameflags |= GAME_PORTALS;
+				break;
+			case 4:	// hexenworld
+				gameflags |= GAME_HEXENWORLD;
+				break;
+			default:// we shouldn't reach here
+				break;
+			}
 		}
 		// both crc and numfiles are good, we are still original
-	} else {
-		com_modified = true;
+	}
+	else
+	{
+		gameflags |= GAME_MODIFIED;
 	}
 
 // parse the directory
@@ -1639,8 +1672,6 @@ static void COM_AddGameDirectory (char *dir)
 		pak = COM_LoadPackFile (pakfile, i);
 		if (!pak)
 			continue;
-		if (i == 2)
-			Cvar_Set ("oem", "1");
 		search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
 		search->pack = pak;
 		search->next = com_searchpaths;
@@ -1754,6 +1785,7 @@ COM_InitFilesystem
 static void COM_InitFilesystem (void)
 {
 	int		i;
+	char		temp[12];
 
 //
 // -basedir <path>
@@ -1775,33 +1807,86 @@ static void COM_InitFilesystem (void)
 	sprintf (com_userdir, "%s/data1", host_parms.userdir);
 #endif
 	COM_AddGameDirectory (va("%s/data1", com_basedir));
-#if defined(H2MP) || defined(H2W)
-	sprintf (com_userdir, "%s/portals", host_parms.userdir);
-	Sys_mkdir (com_userdir);
-	COM_AddGameDirectory (va("%s/portals", com_basedir));
+
+	// check if we are playing the registered version
+	COM_CheckRegistered ();
+	// check for mix'n'match screw-ups
+	if ((gameflags & GAME_REGISTERED) && ((gameflags & GAME_DEMO) || (gameflags & GAME_OEM)))
+		Sys_Error ("Bad Hexen II installation");
+#ifndef SERVERONLY
+	if ((gameflags & GAME_MODIFIED) && !(gameflags & GAME_REGISTERED))
+		Sys_Error ("You must have the full version of Hexen II to play modified games");
 #endif
+
+#if defined(H2MP)
+	// mission pack requires the registered version
+	if (!(gameflags & GAME_REGISTERED) || (gameflags & GAME_DEMO) || (gameflags & GAME_OEM))
+		Sys_Error ("Portal of Praevus requires registered version of Hexen II");
+#endif
+
+#if defined(H2MP) || defined(H2W)
+	if (gameflags & GAME_REGISTERED)
+	{
+		sprintf (com_userdir, "%s/portals", host_parms.userdir);
+		Sys_mkdir (com_userdir);
+		COM_AddGameDirectory (va("%s/portals", com_basedir));
+	}
+#   if defined(H2MP)
+	// error out for H2MP builds if GAME_PORTALS isn't set
+	if (!(gameflags & GAME_PORTALS))
+		Sys_Error ("Portal of Praevus game data not found");
+#   endif
+#endif
+
 #if defined(H2W)
 	sprintf (com_userdir, "%s/hw", host_parms.userdir);
 	Sys_mkdir (com_userdir);
 	COM_AddGameDirectory (va("%s/hw", com_basedir));
+	// error out for H2W builds if GAME_HEXENWORLD isn't set
+	if (!(gameflags & GAME_HEXENWORLD))
+		Sys_Error ("You must have the HexenWorld data installed");
 #endif
 
 // -game <gamedir>
 // Adds basedir/gamedir as an override game
 //
-	i = COM_CheckParm ("-game");
-	if (i && i < com_argc-1)
+	if (gameflags & GAME_REGISTERED)
 	{
-		com_modified = true;
-		sprintf (com_userdir, "%s/%s", host_parms.userdir, com_argv[i+1]);
-		Sys_mkdir (com_userdir);
-		COM_AddGameDirectory (va("%s/%s", com_basedir, com_argv[i+1]));
+		i = COM_CheckParm ("-game");
+		if (i && i < com_argc-1)
+		{
+			gameflags |= GAME_MODIFIED;
+			sprintf (com_userdir, "%s/%s", host_parms.userdir, com_argv[i+1]);
+			Sys_mkdir (com_userdir);
+			COM_AddGameDirectory (va("%s/%s", com_basedir, com_argv[i+1]));
+		}
+
 	}
 
 	strcpy(com_savedir,com_userdir);
 
 	// any set gamedirs will be freed up to here
 	com_base_searchpaths = com_searchpaths;
+
+	if (gameflags & GAME_REGISTERED)
+	{
+		sprintf (temp, "registered");
+		Cvar_Set ("registered", "1");
+	}
+	else if (gameflags & GAME_OEM)
+	{
+		sprintf (temp, "oem");
+		Cvar_Set ("oem", "1");
+	}
+	else if (gameflags & GAME_DEMO)
+	{
+		sprintf (temp, "demo");
+	}
+	else
+	{	// Umm??
+		sprintf (temp, "unknown");
+	}
+	Con_Printf ("Playing %s version.\n", temp);
 }
 
 #ifdef H2W

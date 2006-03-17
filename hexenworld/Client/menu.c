@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.41 2006-03-13 22:25:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.42 2006-03-17 20:23:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2484,8 +2484,8 @@ static void M_Menu_Setup_f (void)
 	setup_top = setup_oldtop = (int)topcolor.value;
 	setup_bottom = setup_oldbottom = (int)bottomcolor.value;
 
-	if (!com_portals)
-		if (playerclass.value==CLASS_DEMON)
+	if (!(gameflags & GAME_PORTALS))
+		if (playerclass.value == CLASS_DEMON)
 			playerclass.value = 0;
 	if (Q_strcasecmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
 		if (playerclass.value==CLASS_DWARF)
@@ -2493,7 +2493,7 @@ static void M_Menu_Setup_f (void)
 
 	setup_class = playerclass.value;
 
-//	if (com_portals||cl_siege)//FIXME!!!
+//	if ((gameflags & GAME_PORTALS) || cl_siege)//FIXME!!!
 //	{
 		class_limit = MAX_PLAYER_CLASS;
 //	}
@@ -2546,7 +2546,7 @@ static void M_Setup_Draw (void)
 
 	M_Print (64, 88, "Current Class: ");
 
-	if (!com_portals)
+	if (!(gameflags & GAME_PORTALS))
 		if (setup_class==CLASS_DEMON)
 			setup_class = 0;
 	if (Q_strcasecmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
@@ -2580,7 +2580,7 @@ static void M_Setup_Draw (void)
 
 		if ((i == 0 && !wait) || which_class == 0)
 		{
-			if (!com_portals)
+			if (!(gameflags & GAME_PORTALS))
 			{//not succubus
 				if(Q_strcasecmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
 					which_class = (rand() % CLASS_THEIF) + 1;

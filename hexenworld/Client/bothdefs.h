@@ -170,6 +170,16 @@
 #define SCALE_ORIGIN_TOP		64	// Scaling origin at object top
 #define DRF_TRANSLUCENT			128
 
+// game data flags
+#define	GAME_DEMO		1
+#define	GAME_OEM		2
+#define	GAME_MODIFIED		4
+#define	GAME_REGISTERED		8
+#define	GAME_REGISTERED0	16
+#define	GAME_REGISTERED1	32
+#define	GAME_PORTALS		64
+#define	GAME_HEXENWORLD		128
+
 // Player Classes
 #define MAX_PLAYER_CLASS	6
 #define ABILITIES_STR_INDEX	400

@@ -166,7 +166,9 @@ void CL_SendConnectPacket (void)
 
 	Con_Printf ("Connecting to %s...\n", cls.servername);
 	sprintf (data, "%c%c%c%cconnect %d \"%s\"\n",
-			255, 255, 255, 255,	com_portals, cls.userinfo);
+			255, 255, 255, 255,
+			((gameflags & GAME_PORTALS) == GAME_PORTALS),
+			cls.userinfo);
 	NET_SendPacket (strlen(data), data, adr);
 
 	// When we connect to a server, check the mouse is going - S.A.
@@ -343,8 +345,9 @@ void CL_Disconnect (void)
 	SetWindowText (mainwindow, "HexenWorld: disconnected");
 #endif
 
+// no more siege display, etc.
+	cl_siege = false;
 // stop sounds (especially looping!)
-	cl_siege=false;	//no more siege display, etc.
 	S_StopAllSounds (true);
 
 // if running a local server, shut it down

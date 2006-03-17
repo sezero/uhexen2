@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.53 2006-03-17 14:12:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.54 2006-03-17 20:23:17 sezero Exp $
 */
 
 
@@ -167,6 +167,16 @@
 #define ARTFLAG_DIVINE_INTERVENTION	512
 
 //===========================================
+
+// game data flags
+#define	GAME_DEMO		1
+#define	GAME_OEM		2
+#define	GAME_MODIFIED		4
+#define	GAME_REGISTERED		8
+#define	GAME_REGISTERED0	16
+#define	GAME_REGISTERED1	32
+#define	GAME_PORTALS		64
+#define	GAME_HEXENWORLD		128
 
 #ifdef H2MP
 #define MAX_PLAYER_CLASS	5
@@ -396,6 +406,10 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.53  2006/03/17 14:12:48  sezero
+ * put back mission-pack only objectives stuff back into pure h2 builds.
+ * it was a total screw-up...
+ *
  * Revision 1.52  2006/03/14 13:19:42  sezero
  * marked the snapshot of 2006-03-14 as 1.4.0-pre7
  *

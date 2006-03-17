@@ -230,7 +230,7 @@ void COM_Gamedir (char *dir);
 
 extern	struct cvar_s	registered;
 extern	struct cvar_s	oem;
-extern qboolean		com_portals;
+extern unsigned int	gameflags;
 
 #ifdef H2W
 char *Info_ValueForKey (char *s, char *key);
@@ -240,6 +240,7 @@ void Info_SetValueForKey (char *s, char *key, char *value, int maxsize);
 void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize);
 void Info_Print (char *s);
 
+// global vars for siege.
 extern qboolean cl_siege;
 extern byte cl_fraglimit;
 extern float cl_timelimit;
