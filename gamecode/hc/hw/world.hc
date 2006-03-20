@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/world.hc,v 1.5 2006-02-23 09:15:56 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/world.hc,v 1.6 2006-03-20 13:15:51 sezero Exp $
  */
 
 //void() InitBodyQue;
@@ -305,6 +305,7 @@ void UpdateCTT(void)
 {
 	entity	token, curPlayer, spawnSpot, tokenHolder;
 	float	tokenInUse = 0;
+	float	numPlayers;	// see below - O.S.
 	vector	tokenLine, curAngs;
 
 	token = find(world, netname, "artifact");
@@ -334,7 +335,11 @@ void UpdateCTT(void)
 		curPlayer = find(curPlayer, classname, "player");
 	}
 
-	if(tokenInUse == 0)
+	//if(tokenInUse == 0)
+	// band-aid for the crash when the server is
+	// spawned with dmmode == 1	- O.S.
+	numPlayers = countPlayers();
+	if(numPlayers && (tokenInUse == 0))
 	{
 		token = find(world,classname,"dmMode1_token");
 		if(!token)
