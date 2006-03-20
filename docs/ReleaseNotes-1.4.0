@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion, version 1.4.0
-[current state : 1.4.0-pre7 (pre-release)]
+[current state : 1.4.0-pre8 (pre-release)]
 
 Changes since HoT-1.3.0 :
 
@@ -39,6 +39,8 @@ Changes since HoT-1.3.0 :
 - A big tidy-up in the utilities.
 - Fixed ability string indexes for the demoness and dwarf classes and
   armor class display in hexenworld
+- Fixed the hexenworld server crash when the server is spawned with
+  dmmode 1.
 - Added checks for coop and deathmatch not be set at the same time
 - Made noexit, timelimit and fraglimit to matter only for deathmatch,
   not for coop and single player, as they should
