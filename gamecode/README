@@ -4,8 +4,13 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
-2006-02-23 (1.15) :
+2006-03-20 (1.15) :
 ===================
+- hw: fixed the server crash when the server is spawned with dmmode 1.
+  solution found in the ghost mod.
+- hw: properly notify users when dmmode is changed. also remove the
+  brightfield from the icon holder when dmmode 1 is abandoned. code
+  found in the the ghost mode.
 - hw / siege: broadcast the names of the current map and the
   next map in cycle to all clients
 - noexit is supposed to matter only for deathmatch, not for coop

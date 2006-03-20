@@ -3,6 +3,18 @@ Hexen II: Hammer of Thyrion
 ChangeLog:
 ---------------------------
 
+2006-03-20 (CVS, 1.4.0-pre8):
+    * sbar cvars update: killed non-functional sbtemp. killed cl_sbar
+      and cl_hudswap in hexenworld which was a non-functional left-over
+      from quakeworld. added a dmtrans cvar (0,1,2) for the software
+      renderer deathmatch overlay translucency which was lost after the
+      recent DMMode cvar update.
+    * hexenworld hcode: fixed the server crash when the server is spawned
+      with dmmode 1. solution found in the ghost mod.
+    * hexenworld hcode: properly notify users when dmmode is changed.
+      also remove the brightfield from the icon holder when dmmode 1
+      is abandoned. code found in the the ghost mode.
+
 2006-03-17 (CVS, 1.4.0-pre8):
     * Fixed the snd_scaletable init breakage with gcc-4.1 and -O1 and higher.
       Thanks to Kevin Shanahan (aka Tyrann).
