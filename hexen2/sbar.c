@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.19 2006-03-17 14:12:48 sezero Exp $
+	$Id: sbar.c,v 1.20 2006-03-20 15:18:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -88,9 +88,9 @@ static int sb_updates; // if >= vid.numpages, no update needed
 static float BarHeight;
 static float BarTargetHeight;
 cvar_t BarSpeed = { "barspeed", "5" };
-cvar_t sbtemp = { "sbtemp", "5" };
 cvar_t DMMode = { "dm_mode", "1", true };
 cvar_t sbtrans = { "sbtrans", "0", true };
+cvar_t dmtrans = { "dmtrans", "0", true };
 
 static qpic_t *sb_nums[11];
 static qpic_t *sb_colon, *sb_slash;
@@ -189,8 +189,8 @@ void Sbar_Init(void)
 
 	Cvar_RegisterVariable(&DMMode);
 	Cvar_RegisterVariable(&sbtrans);
+	Cvar_RegisterVariable(&dmtrans);
 	Cvar_RegisterVariable(&BarSpeed);
-	Cvar_RegisterVariable(&sbtemp);
 
 	BarHeight = BarTargetHeight = BAR_TOP_HEIGHT;
 }
@@ -1105,7 +1105,6 @@ static void Sbar_SmallDeathmatchOverlay(void)
 	char		num[12];
 	scoreboard_t	*s;
 
-	// prevent any possible screw-ups
 	if (DMMode.value != (int)DMMode.value)
 		Cvar_SetValue ("dm_mode", (int)DMMode.value);
 	if (!DMMode.value)
@@ -1116,8 +1115,8 @@ static void Sbar_SmallDeathmatchOverlay(void)
 	if ((int)DMMode.value == 2 && BarHeight != BAR_TOP_HEIGHT)
 		return;
 
-	trans_level = (int)((DMMode.value-floor(DMMode.value)+1E-3)*10);
-	if (trans_level > 2)
+	trans_level = (int)dmtrans.value;
+	if (trans_level < 0 || trans_level > 2)
 	{
 		trans_level = 0;
 	}

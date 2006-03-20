@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.42 2006-03-17 20:23:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.43 2006-03-20 15:18:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -833,10 +833,6 @@ static void M_AdjustSliders (int dir)
 
 	case OPT_CROSSHAIR:
 		Cvar_SetValue ("crosshair", !crosshair.value);
-		break;
-
-	case OPT_VIDEO:
-		Cvar_SetValue ("cl_sbar", !cl_sbar.value);
 		break;
 
 	case OPT_USEMOUSE:	// _enable_mouse

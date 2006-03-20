@@ -380,13 +380,11 @@ void R_SetVrect (vrect_t *pvrectin, vrect_t *pvrect, int lineadj)
 	}
 	size /= 100.0;
 
-	if (!cl_sbar.value && full)
+	if (full)
 		h = pvrectin->height;
 	else
 		h = pvrectin->height - lineadj;
 
-//	h = (!cl_sbar.value && size==1.0) ? pvrectin->height : (pvrectin->height - lineadj);
-//	h = pvrectin->height - lineadj;
 	if (full)
 	{
 		pvrect->width = pvrectin->width;
@@ -403,7 +401,7 @@ void R_SetVrect (vrect_t *pvrectin, vrect_t *pvrect, int lineadj)
 	}
 	pvrect->width &= ~7;
 	pvrect->height = h * size;
-	if (cl_sbar.value || !full)
+	if (!full)
 	{
 		if (pvrect->height > pvrectin->height - lineadj)
 		{

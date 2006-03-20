@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.15 2006-03-17 14:12:49 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.16 2006-03-20 15:18:09 sezero Exp $
 */
 
 
@@ -290,7 +290,6 @@ static void SCR_CalcRefdef (void)
 
 	oldfov = scr_fov.value;
 	oldscreensize = scr_viewsize.value;
-	oldsbar = cl_sbar.value;
 
 // force the status bar to redraw
 	SB_ViewSizeChanged ();
@@ -1109,7 +1108,6 @@ void SCR_UpdateScreen (void)
 // check for vid changes
 //
 	if (oldfov != scr_fov.value ||
-	    oldsbar != cl_sbar.value ||
 	    oldscreensize != scr_viewsize.value)
 		vid.recalc_refdef = true;
 
