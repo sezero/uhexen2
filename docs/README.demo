@@ -357,6 +357,9 @@ sbtrans		0|1|2	  : HUD (status bar) transparency. 0: None (solid),
 			    1: slightly transparent, 2: very transparent.
 			    Default: 0. (software renderer only.)
 
+dmtrans		0|1|2	  : Same as the sbtrans above, but used for the
+			    small deathmatch overlay in multiplayer.
+
 gl_multitexture	0|1	  : Disable/Enable multitexturing on the fly. 0 is
 			    default. (also adjubtable from the menu.)
 
