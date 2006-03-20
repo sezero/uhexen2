@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/precache.hc,v 1.1.1.1 2004-11-29 11:28:44 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/precache.hc,v 1.2 2006-03-20 15:07:05 sezero Exp $
  */
 
 // called by worldspawn
@@ -873,6 +873,8 @@ void Precache_Id_mdl (void)
 //**********************************************
 // ***************  Raven models
 //**********************************************
+float InvincibleCache;
+
 void Precache_mdl (void)
 {
 //REMOVE!!!
@@ -932,6 +934,7 @@ void Precache_mdl (void)
 //	precache_model("models/a_mirror.mdl");
 	precache_model("models/a_cube.mdl");
 	precache_model("models/a_invinc.mdl");
+	InvincibleCache = 1; // notify UpdateCTT() that dmMode1_token is cached
 //	precache_model("models/a_growth.mdl");
 //	precache_model("models/a_xray.mdl");
 	precache_model("models/a_invis.mdl");
@@ -1253,6 +1256,9 @@ void Precache_hw(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:28:44  sezero
+ * Initial import
+ *
  * Revision 1.1.1.1  2001/11/09 17:05:10  theoddone33
  * Inital import
  *
