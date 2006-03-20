@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/world.hc,v 1.7 2006-03-20 15:07:05 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/world.hc,v 1.8 2006-03-20 15:08:52 sezero Exp $
  */
 
 //void() InitBodyQue;
@@ -459,6 +459,11 @@ void UpdateHunter(void)
 
 void() StartFrame =
 {
+	local float	olddmmode = 0;
+	entity		curPlayer;
+	entity		temp;
+
+	olddmmode = dmMode;
 	teamplay = cvar("teamplay");
 	skill = cvar("skill");
 	damageScale = cvar("damagescale");
@@ -479,11 +484,51 @@ void() StartFrame =
 
 	if(dmMode == DM_CAPTURE_THE_TOKEN)
 	{
+		if(olddmmode != DM_CAPTURE_THE_TOKEN)
+		{
+			curPlayer = find(world, classname, "player");
+			while(curPlayer != world)
+			{
+				centerprint (curPlayer, "Hoard the Icon DM Mode activated");
+				curPlayer = find(curPlayer, classname, "player");
+			}
+		}
 		UpdateCTT();
 	}
-	else if(dmMode == DM_HUNTER)
+	else
 	{
-		UpdateHunter();
+		if(dmMode == DM_HUNTER)
+		{
+			UpdateHunter();
+		}
+		if(olddmmode == DM_CAPTURE_THE_TOKEN)
+		{
+			curPlayer = find(world, classname, "player");
+			while(curPlayer != world)
+			{
+				centerprint(curPlayer, "Hoard the Icon mode deactivated");
+				curPlayer.targetPlayer = curPlayer;
+				curPlayer.targetPlayer = world;
+				curPlayer.targDist = 0;
+				curPlayer.targAng = 0;
+				curPlayer.targPitch = 0;
+				if(curPlayer.gameFlags & GF_HAS_TOKEN)
+				{
+					curPlayer.gameFlags (-) GF_HAS_TOKEN;
+					curPlayer.effects (-) EF_BRIGHTFIELD;
+					curPlayer.effects (-) EF_LIGHT;
+				}
+				curPlayer = find(curPlayer, classname, "player");
+			}
+
+			curPlayer = find(world, classname, "dmMode1_token");
+			while(curPlayer != world)
+			{
+				temp = curPlayer;
+				curPlayer = find (curPlayer, classname, "dmMode1_token");
+				remove (temp);
+			}
+		}
 	}
 };
 
