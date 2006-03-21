@@ -9,8 +9,6 @@ Features:
 * Tested with Linux, FreeBSD and Windows. Other unices should also
   work. There is a seperate port to MorphOS.
 
-* Game save compatibility with Raven's latest windows versions.
-
 * Resolution changing on the fly, for both opengl and software
   renderers. Instant fullscreen/windowed toggling on unix.
 
