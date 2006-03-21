@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.40 2006-03-17 14:12:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.41 2006-03-21 22:24:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -20,7 +20,6 @@ extern	cvar_t	sv_walkpitch;
 int	current_skill;
 static double		old_time;
 
-void Mod_Print (void);
 static int LoadGamestate(char *level, char *startspot, int ClientsMode);
 qboolean SaveGamestate(qboolean ClientsOnly);
 static void RestoreClients(void);
@@ -2235,13 +2234,15 @@ void Host_InitCommands (void)
 	Cmd_AddCommand ("viewnext", Host_Viewnext_f);
 	Cmd_AddCommand ("viewprev", Host_Viewprev_f);
 
-	Cmd_AddCommand ("mcache", Mod_Print);
-
 	Cmd_AddCommand ("create", Host_Create_f);
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.40  2006/03/17 14:12:48  sezero
+ * put back mission-pack only objectives stuff back into pure h2 builds.
+ * it was a total screw-up...
+ *
  * Revision 1.39  2006/03/13 22:28:51  sezero
  * removed the expansion pack only feature of objective strings from
  * hexen2-only builds (many new ifdef H2MP stuff). removed the expansion
