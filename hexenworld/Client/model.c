@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.12 2006-03-21 22:24:13 sezero Exp $
+	$Id: model.c,v 1.13 2006-03-21 22:25:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -165,8 +165,7 @@ void Mod_ClearAll (void)
 	model_t	*mod;
 
 	for (i=0 , mod=mod_known ; i<mod_numknown ; i++, mod++)
-		if (mod->type != mod_alias)
-			mod->needload = true;
+		mod->needload = NL_UNREFERENCED;
 }
 
 /*
@@ -179,6 +178,7 @@ model_t *Mod_FindName (char *name)
 {
 	int		i;
 	model_t	*mod;
+	model_t	*avail = NULL;
 
 	if (!name[0])
 		Sys_Error ("Mod_ForName: NULL name");
@@ -187,16 +187,36 @@ model_t *Mod_FindName (char *name)
 // search the currently loaded models
 //
 	for (i = 0, mod = mod_known ; i < mod_numknown ; i++, mod++)
+	{
 		if (!strcmp (mod->name, name) )
 			break;
+		if (mod->needload == NL_UNREFERENCED)
+			if (!avail || mod->type != mod_alias)
+				avail = mod;
+	}
 
 	if (i == mod_numknown)
 	{
 		if (mod_numknown == MAX_MOD_KNOWN)
-			Sys_Error ("mod_numknown == MAX_MOD_KNOWN");
+		{
+			if (avail)
+			{
+				mod = avail;
+				if (mod->type == mod_alias)
+				{
+					if (Cache_Check (&mod->cache))
+						Cache_Free (&mod->cache);
+				}
+				else if (mod->type == mod_sprite)
+					mod->cache.data = NULL;
+			}
+			else
+				Sys_Error ("mod_numknown == MAX_MOD_KNOWN");
+		}
+		else
+			mod_numknown++;
 		strcpy (mod->name, name);
-		mod->needload = true;
-		mod_numknown++;
+		mod->needload = NL_NEEDS_LOADED;
 	}
 
 	return mod;
@@ -214,7 +234,7 @@ void Mod_TouchModel (char *name)
 
 	mod = Mod_FindName (name);
 
-	if (!mod->needload)
+	if (mod->needload == NL_PRESENT)
 	{
 		if (mod->type == mod_alias)
 			Cache_Check (&mod->cache);
@@ -230,20 +250,20 @@ Loads a model into the cache
 */
 static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 {
-	void	*d;
 	unsigned *buf;
 	byte	stackbuf[1024];		// avoid dirtying the cache heap
 
-	if (!mod->needload)
+	if (mod->type == mod_alias)
 	{
-		if (mod->type == mod_alias)
+		if (Cache_Check(&mod->cache))
 		{
-			d = Cache_Check (&mod->cache);
-			if (d)
-				return mod;
+			mod->needload = NL_PRESENT;
+			return mod;
 		}
-		else
-			return mod;		// not cached at all
+	}
+	else if (mod->needload == NL_PRESENT)
+	{
+		return mod;
 	}
 
 //
@@ -269,7 +289,7 @@ static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 //
 
 // call the apropriate loader
-	mod->needload = false;
+	mod->needload = NL_PRESENT;
 
 	switch (LittleLong(*(unsigned *)buf))
 	{
@@ -2191,7 +2211,12 @@ static void Mod_Print (void)
 	MOD_Printf (FH, "Cached models:\n");
 	for (i=0, mod=mod_known ; i < mod_numknown ; i++, mod++)
 	{
-		MOD_Printf (FH, "%4i (%8p): %s\n", i, mod->cache.data, mod->name);
+		MOD_Printf (FH, "%4i (%8p): %s", i, mod->cache.data, mod->name);
+		if (mod->needload & NL_UNREFERENCED)
+			MOD_Printf (FH, " (!R)");
+		if (mod->needload & NL_NEEDS_LOADED)
+			MOD_Printf (FH, " (!P)");
+		MOD_Printf (FH, "\n");
 	}
 	if (FH)
 	{
