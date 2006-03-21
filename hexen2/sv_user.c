@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.7 2006-02-26 12:28:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.8 2006-03-21 22:20:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -142,16 +142,30 @@ static void SV_UserFriction (void)
 	trace = SV_Move (start, vec3_origin, vec3_origin, stop, true, sv_player);
 	sv_player->v.hull = save_hull;
 
-#ifdef H2MP
+// Hexen II v1.11 progs doesn't initialize the friction properly (always 0).
+// In fact, applying a patch to the progs can easily solve this issue, but
+// in that case several unpatched mods would be left broken. Note: Compared
+// to the AoT solution down below, this makes pure-hexen2 to feel slightly
+// more slippery.
+	//fprintf (stdout, "F0 :  %f\n", sv_player->v.friction);
+	if (progs->crc == PROGS_V111_CRC)
+		sv_player->v.friction = 1.0f;
+
 	if (trace.fraction == 1.0)
 		friction = sv_friction.value*sv_edgefriction.value*sv_player->v.friction;
 	else
 		friction = sv_friction.value*sv_player->v.friction;
-#else
-	// original Hexen2 only
-	friction = 6;
-#endif
 
+	//fprintf (stdout, "F1 :  %f\n", friction);
+
+//#ifndef H2MP
+// This was the solution by the Anvil of Thyrion source port for the original
+// hexen2 friction emulation. See above.
+//	friction = 6;
+//#endif
+
+// These lines were found as commented out in Raven's H2MP source. It probably
+// was their pre-mission pack solution.
 //	if (sv_player->v.friction != 1)	//reset their friction to 1, only a trigger touching can change it again
 //		sv_player->v.friction = 1;
 
@@ -752,6 +766,10 @@ void SV_RunClients (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2006/02/26 12:28:16  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 31:  sv_send.c, sv_user.c).
+ *
  * Revision 1.6  2005/10/02 15:43:08  sezero
  * killed -Wshadow warnings
  *

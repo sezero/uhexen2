@@ -219,8 +219,11 @@ typedef struct
 	float	string_index;
 } entvars_t;
 
+#define PROGS_V111_CRC 38488
+#define PROGS_V112_CRC 26905
+
 #ifdef H2MP
-#define PROGHEADER_CRC 26905
+#define PROGHEADER_CRC PROGS_V112_CRC
 #else
-#define PROGHEADER_CRC 38488
+#define PROGHEADER_CRC PROGS_V111_CRC
 #endif
