@@ -459,7 +459,6 @@ void D_ClearOpenGLTextures (int last_tex)
 {
 	int		i;
 
-	Con_DPrintf ("Deleting OpenGL textures\n");
 	// Delete OpenGL textures
 	for (i = last_tex; i < numgltextures; i++)
 		glDeleteTextures_fp(1, &(gltextures[i].texnum));
@@ -476,6 +475,7 @@ void D_ClearOpenGLTextures (int last_tex)
 
 	// Clear player pic cache
 	memset(plyrtex, 0, MAX_PLAYER_CLASS * 16 * 16 * sizeof(qboolean));
+	Con_Printf ("Purged OpenGL textures\n");
 }
 
 void D_FlushCaches (void)
