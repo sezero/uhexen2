@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.24 2006-03-20 15:18:09 sezero Exp $
+	$Id: gl_screen.c,v 1.25 2006-03-22 20:04:39 sezero Exp $
 */
 
 /*=============================================================================
@@ -77,7 +77,6 @@ int			clearnotify;
 float		scr_con_current;
 float		scr_conlines;		// lines of console to display
 
-float		oldsbar = 0;
 float		oldscreensize, oldfov;
 
 cvar_t		scr_viewsize = {"viewsize","110", true};

@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.16 2006-03-20 15:18:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.17 2006-03-22 20:04:41 sezero Exp $
 */
 
 
@@ -79,7 +79,6 @@ int			clearnotify;
 float		scr_con_current;
 float		scr_conlines;		// lines of console to display
 
-float		oldsbar = 0;
 float		oldscreensize, oldfov;
 
 cvar_t		scr_viewsize = {"viewsize","110", true};
