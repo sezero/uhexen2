@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.58 2006-03-11 22:51:20 sezero Exp $
+	$Id: gl_draw.c,v 1.59 2006-03-22 20:03:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1516,17 +1516,17 @@ static void fxPalTexImage2D (GLenum target, GLint level, GLint internalformat, G
 
 	for (i = 0; i < mip_width * mip_height; i++)
 	{
-		int r, g, b, index;
+		int r, g, b, idx;
 		r = ( ( unsigned char * )pixels )[i * 4];
 		g = ( ( unsigned char * )pixels )[i * 4+1];
 		b = ( ( unsigned char * )pixels )[i * 4+2];
 		r >>= 8 - INVERSE_PAL_R_BITS;
 		g >>= 8 - INVERSE_PAL_G_BITS;
 		b >>= 8 - INVERSE_PAL_B_BITS;
-		index = ( r << ( INVERSE_PAL_G_BITS + INVERSE_PAL_B_BITS ) ) |
+		idx =	( r << ( INVERSE_PAL_G_BITS + INVERSE_PAL_B_BITS ) ) |
 			( g << INVERSE_PAL_B_BITS ) |
 			  b;
-		dest_image[i] = inverse_pal[index];
+		dest_image[i] = inverse_pal[idx];
 //		dest_image[i] = ( ( unsigned char * )pixels )[i*4];
 	}
 
