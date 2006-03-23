@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.99 2006-03-16 17:14:09 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.100 2006-03-23 19:48:23 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1447,22 +1447,36 @@ static void VID_EarlyReadConfig (void)
 	fclose (cfg_file);
 }
 
+static void VID_LockCvars (void)
+{
+	// prevent the early-read cvar values to get overwritten by the
+	// actual final read of config.cfg (which will be the case when
+	// commandline overrides were used):  mark them read only until
+	// Host_Init() completely finishes its job. this is a temporary
+	// solution until we adopt a better init sequence employing the
+	// +set arguments like those in quake2 and quake3.
+	vid_config_fscr.flags |= CVAR_ROM;
+	vid_config_gl8bit.flags |= CVAR_ROM;
+	vid_config_fsaa.flags |= CVAR_ROM;
+	vid_config_glx.flags |= CVAR_ROM;
+	vid_config_gly.flags |= CVAR_ROM;
+}
+
+static void VID_UnlockCvars (void)
+{
+	// to be called from Host_Init() after execing
+	// hexen.rc and flushing the command buffer:
+	// remove the r/o bit from the relevant cvars.
+	vid_config_fscr.flags &= ~CVAR_ROM;
+	vid_config_gl8bit.flags &= ~CVAR_ROM;
+	vid_config_fsaa.flags &= ~CVAR_ROM;
+	vid_config_glx.flags &= ~CVAR_ROM;
+	vid_config_gly.flags &= ~CVAR_ROM;
+}
+
 void VID_PostInitFix (void)
 {
-	// if commandline overrides were used, the early-set cvars will
-	// be clobbered by the actual final read of config.cfg and when
-	// the game is run a second time, those overrides will be lost.
-	// here is a lame-ish workaround, to be called from Host_Init()
-	// after execing hexen.rc and flushing the command buffer.
-	Cvar_SetValue ("vid_config_glx", modelist[vid_modenum].width);
-	Cvar_SetValue ("vid_config_gly", modelist[vid_modenum].height);
-	Cvar_SetValue ("vid_config_fsaa", multisample);
-	if (have8bit)
-		Cvar_SetValue ("vid_config_gl8bit", is8bit);
-	if (screen->flags & SDL_FULLSCREEN)
-		Cvar_SetValue ("vid_config_fscr", 1);
-	else
-		Cvar_SetValue ("vid_config_fscr", 0);
+	VID_UnlockCvars ();
 }
 
 static void VID_ListModes_f (void)
@@ -1697,6 +1711,10 @@ void	VID_Init (unsigned char *palette)
 
 	// enable paletted textures
 	VID_Init8bitPalette();
+
+	// set the rom bit on the early-read
+	// cvars until Host_Init() is finished
+	VID_LockCvars ();
 
 	vid_initialized = true;
 	scr_disabled_for_loading = i;

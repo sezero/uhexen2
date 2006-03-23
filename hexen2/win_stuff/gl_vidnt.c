@@ -2126,26 +2126,36 @@ static void VID_EarlyReadConfig (void)
 	fclose (cfg_file);
 }
 
+static void VID_LockCvars (void)
+{
+	// prevent the early-read cvar values to get overwritten by the
+	// actual final read of config.cfg (which will be the case when
+	// commandline overrides were used):  mark them read only until
+	// Host_Init() completely finishes its job. this is a temporary
+	// solution until we adopt a better init sequence employing the
+	// +set arguments like those in quake2 and quake3.
+	vid_config_fscr.flags |= CVAR_ROM;
+	vid_config_gl8bit.flags |= CVAR_ROM;
+	vid_config_bpp.flags |= CVAR_ROM;
+	vid_config_glx.flags |= CVAR_ROM;
+	vid_config_gly.flags |= CVAR_ROM;
+}
+
+static void VID_UnlockCvars (void)
+{
+	// to be called from Host_Init() after execing
+	// hexen.rc and flushing the command buffer:
+	// remove the r/o bit from the relevant cvars.
+	vid_config_fscr.flags &= ~CVAR_ROM;
+	vid_config_gl8bit.flags &= ~CVAR_ROM;
+	vid_config_bpp.flags &= ~CVAR_ROM;
+	vid_config_glx.flags &= ~CVAR_ROM;
+	vid_config_gly.flags &= ~CVAR_ROM;
+}
+
 void VID_PostInitFix (void)
 {
-	// if commandline overrides were used, the early-set cvars will
-	// be clobbered by the actual final read of config.cfg and when
-	// the game is run a second time, those overrides will be lost.
-	// here is a lame-ish workaround, to be called from Host_Init()
-	// after execing hexen.rc and flushing the command buffer.
-	Cvar_SetValue ("vid_config_glx", modelist[vid_modenum].width);
-	Cvar_SetValue ("vid_config_gly", modelist[vid_modenum].height);
-	if (have8bit)
-		Cvar_SetValue ("vid_config_gl8bit", is8bit);
-	if (modestate != MS_WINDOWED)
-	{
-		Cvar_SetValue ("vid_config_bpp", modelist[vid_modenum].bpp);
-		Cvar_SetValue ("vid_config_fscr", 1);
-	}
-	else
-	{
-		Cvar_SetValue ("vid_config_fscr", 0);
-	}
+	VID_UnlockCvars ();
 }
 
 /*
@@ -2492,6 +2502,10 @@ void	VID_Init (unsigned char *palette)
 
 	// enable paletted textures
 	VID_Init8bitPalette();
+
+	// set the rom bit on the early-read
+	// cvars until Host_Init() is finished
+	VID_LockCvars ();
 
 	scr_disabled_for_loading = i;
 	vid.recalc_refdef = 1;

@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.45 2006-01-17 17:36:44 sezero Exp $
+	$Id: vid_sdl.c,v 1.46 2006-03-23 19:48:16 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -709,19 +709,32 @@ void	VID_EarlyReadConfig (void)
 	fclose (cfg_file);
 }
 
+static void VID_LockCvars (void)
+{
+	// prevent the early-read cvar values to get overwritten by the
+	// actual final read of config.cfg (which will be the case when
+	// commandline overrides were used):  mark them read only until
+	// Host_Init() completely finishes its job. this is a temporary
+	// solution until we adopt a better init sequence employing the
+	// +set arguments like those in quake2 and quake3.
+	vid_config_fscr.flags |= CVAR_ROM;
+	vid_config_swx.flags |= CVAR_ROM;
+	vid_config_swy.flags |= CVAR_ROM;
+}
+
+static void VID_UnlockCvars (void)
+{
+	// to be called from Host_Init() after execing
+	// hexen.rc and flushing the command buffer:
+	// remove the r/o bit from the relevant cvars.
+	vid_config_fscr.flags &= ~CVAR_ROM;
+	vid_config_swx.flags &= ~CVAR_ROM;
+	vid_config_swy.flags &= ~CVAR_ROM;
+}
+
 void VID_PostInitFix (void)
 {
-	// if commandline overrides were used, the early-set cvars will
-	// be clobbered by the actual final read of config.cfg and when
-	// the game is run a second time, those overrides will be lost.
-	// here is a lame-ish workaround, to be called from Host_Init()
-	// after execing hexen.rc and flushing the command buffer.
-	Cvar_SetValue ("vid_config_swx", modelist[vid_modenum].width);
-	Cvar_SetValue ("vid_config_swy", modelist[vid_modenum].height);
-	if (screen->flags & SDL_FULLSCREEN)
-		Cvar_SetValue ("vid_config_fscr", 1);
-	else
-		Cvar_SetValue ("vid_config_fscr", 0);
+	VID_UnlockCvars ();
 }
 
 /*
@@ -855,6 +868,10 @@ void	VID_Init (unsigned char *palette)
 		if ( !i )
 			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 	}
+
+	// set the rom bit on the early-read
+	// cvars until Host_Init() is finished
+	VID_LockCvars ();
 
 	scr_disabled_for_loading = temp;
 	vid_initialized = true;
@@ -1249,6 +1266,28 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.45  2006/01/17 17:36:44  sezero
+ * A quick'n'dirty patch for making the game to remember its video settings:
+ * Essentially it does an early read of config.cfg while in VID_Init to
+ * remember the settings (new procedure: VID_EarlyReadConfig). (new cvars:
+ * vid_config_glx, vid_config_gly, vid_config_swx, vid_config_swy, and
+ * vid_config_fscr). the commandline still acts as an override. then, it fixes
+ * the cvar screw-up caused by the actual read of config.cfg by overwriting
+ * the affected cvars with the running settings (new tiny procedure:
+ * VID_PostInitFix, called from Host_Init).
+ *
+ * Implemented here are the screen dimensions, color bits (bpp, for win32,
+ * cvar: vid_config_bpp), palettized textures and multisampling (fsaa, for
+ * unix, cvars: vid_config_gl8bit and vid_config_fsaa) options with their
+ * menu representations and cvar memorizations.
+ *
+ * This method can probably be also used to store/remember the conwidth
+ * settings. Also applicable is the sound settings, such as the driver,
+ * sampling rate, format, etc.
+ *
+ * Secondly, the patch sets the fullscreen cvar not by only looking at silly
+ * values but by looking at the current SDL_Screen flags.
+ *
  * Revision 1.44  2006/01/14 08:39:24  sezero
  * fixed the incorrect (mislead) usage of modestate values, although the result
  * doesn't change.
