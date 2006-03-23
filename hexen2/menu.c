@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.60 2006-03-17 14:12:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.61 2006-03-23 18:44:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -264,7 +264,6 @@ static void M_DrawTransPicCropped (int x, int y, qpic_t *pic)
 static byte identityTable[256];
 static byte translationTable[256];
 extern const int color_offsets[MAX_PLAYER_CLASS];
-extern byte *playerTranslation;
 
 static void M_BuildTranslationTable(int top, int bottom)
 {
@@ -4399,6 +4398,10 @@ static void ReInitMusic (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.60  2006/03/17 14:12:48  sezero
+ * put back mission-pack only objectives stuff back into pure h2 builds.
+ * it was a total screw-up...
+ *
  * Revision 1.59  2006/03/13 22:28:51  sezero
  * removed the expansion pack only feature of objective strings from
  * hexen2-only builds (many new ifdef H2MP stuff). removed the expansion

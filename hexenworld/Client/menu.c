@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.43 2006-03-20 15:18:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.44 2006-03-23 18:44:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -157,7 +157,6 @@ static void M_DrawTransPicCropped (int x, int y, qpic_t *pic)
 static byte identityTable[256];
 static byte translationTable[256];
 extern const int color_offsets[MAX_PLAYER_CLASS];
-extern byte *playerTranslation;
 
 static void M_BuildTranslationTable(int top, int bottom)
 {

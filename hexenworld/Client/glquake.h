@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.34 2006-03-11 22:51:20 sezero Exp $
+	$Id: glquake.h,v 1.35 2006-03-23 18:44:30 sezero Exp $
 */
 
 
@@ -318,13 +318,13 @@ extern	int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 extern	qboolean	envmap;
 extern	int	currenttexture;
 extern	int	particletexture;
+extern	int	skytexturenum;		// index in cl.loadmodel, not gl texture object
 extern	int	netgraphtexture;	// netgraph texture
 extern	int	playertextures[16];
+extern	byte	*playerTranslation;
 extern	int	gl_texlevel;
 extern	int	numgltextures;
 extern	qboolean	flush_textures;
-
-extern	int	skytexturenum;		// index in cl.loadmodel, not gl texture object
 
 extern	cvar_t	r_norefresh;
 extern	cvar_t	r_drawentities;
@@ -370,6 +370,10 @@ extern	cvar_t	gl_colored_dynamic_lights;
 extern	cvar_t	gl_extra_dynamic_lights;
 
 extern	int	gl_lightmap_format;
+extern	qboolean lightmap_modified[MAX_LIGHTMAPS];
+
+extern	qboolean gl_mtexable;
+extern	qboolean have_stencil;
 
 extern	int	gl_max_size;
 extern	cvar_t	gl_playermip;
@@ -384,16 +388,5 @@ extern	const char *gl_vendor;
 extern	const char *gl_renderer;
 extern	const char *gl_version;
 extern	const char *gl_extensions;
-
-byte *playerTranslation;
-
-// Stencil shadows
-extern	qboolean have_stencil;
-
-// Multitexture
-extern	qboolean gl_mtexable;
-
-// Ligthmaps (gl_rsurf.c)
-extern	qboolean lightmap_modified[MAX_LIGHTMAPS];
 
 

@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.43 2006-03-14 11:44:19 sezero Exp $
+	$Id: glquake.h,v 1.44 2006-03-23 18:44:27 sezero Exp $
 */
 
 
@@ -318,12 +318,12 @@ extern	int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 extern	qboolean	envmap;
 extern	int	currenttexture;
 extern	int	particletexture;
+extern	int	skytexturenum;		// index in cl.loadmodel, not gl texture object
 extern	int	playertextures[16];
+extern	byte	*playerTranslation;
 extern	int	gl_texlevel;
 extern	int	numgltextures;
 extern	qboolean	flush_textures;
-
-extern	int	skytexturenum;		// index in cl.loadmodel, not gl texture object
 
 extern	cvar_t	r_norefresh;
 extern	cvar_t	r_drawentities;
@@ -365,6 +365,10 @@ extern	cvar_t	gl_colored_dynamic_lights;
 extern	cvar_t	gl_extra_dynamic_lights;
 
 extern	int	gl_lightmap_format;
+extern	qboolean lightmap_modified[MAX_LIGHTMAPS];
+
+extern	qboolean gl_mtexable;
+extern	qboolean have_stencil;
 
 extern	int	gl_max_size;
 extern	cvar_t	gl_playermip;
@@ -380,20 +384,12 @@ extern	const char *gl_renderer;
 extern	const char *gl_version;
 extern	const char *gl_extensions;
 
-byte *playerTranslation;
-
-// Stencil shadows
-extern	qboolean have_stencil;
-
-// Multitexture
-extern	qboolean gl_mtexable;
-
-// Ligthmaps (gl_rsurf.c)
-extern	qboolean lightmap_modified[MAX_LIGHTMAPS];
-
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.43  2006/03/14 11:44:19  sezero
+ * arghhh... cvs changelogs...
+ *
  * Revision 1.42  2006/03/11 22:51:16  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. part 41: gl_draw.c, gl_rlight.c, gl_rmain.c, gl_rmisc.c, gl_rsurf.c,
