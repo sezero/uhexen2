@@ -178,9 +178,11 @@ Here are some of the important command-line switches:
  -sync | -vsync		Enable syncing with monitor refresh (GL, Nvidia)
  -lm_4			Set lightmap format to GL_RGBA, which is actually
 			the default format. RGBA lightmaps are required for
-			colored lights.
+			colored lights. Can also be set from the menu.
  -lm_1			Set lightmap format to GL_LUMINANCE. (this was the
-			old format that hexen2 originally used.)
+			old format that hexen2 originally used and it is
+			a little faster than RGBA lightmaps). Can also be
+			set from the menu.
  -paltex		Enable 8 bit (palettized) textures: saves video
 			memory on old low-merory 3D accelerators if the
 			proper opengl extension is supported. (can also be
