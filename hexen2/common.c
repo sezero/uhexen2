@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.36 2006-03-17 20:23:17 sezero Exp $
+	$Id: common.c,v 1.37 2006-03-23 19:45:09 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1887,6 +1887,10 @@ static void COM_InitFilesystem (void)
 		sprintf (temp, "unknown");
 	}
 	Con_Printf ("Playing %s version.\n", temp);
+
+	// mark these cvars as read-only
+	oem.flags |= CVAR_ROM;
+	registered.flags |= CVAR_ROM;
 }
 
 #ifdef H2W
@@ -2165,6 +2169,21 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.36  2006/03/17 20:23:17  sezero
+ * Updates to COM_LoadPackFile, COM_CheckRegistered and COM_InitFilesystem:
+ * killed variables com_modified, com_portals and static_registered. Combined
+ * all such info into an unsigned gameflags var. If correct versions of pak
+ * files are installed at correct places, the state will be set: whether we
+ * have the demo, oem or registered pakfiles, whether the registered game pak
+ * files are version 1.11, whether it is a modified game (extra pak files in
+ * the game directory or -game among the commandline switches), and whether
+ * we have correct versions portals and hexnworld pakfiles. The game will
+ * refuse to run on incorrect instances, h2mp will refuse to run if portals
+ * isn't set and hexenworld will refuse to run if hexenworld isn't set.
+ * Also activated the hexenworld progs crc check which was comment out (who
+ * knows why): Server will refuse to run if it detects an incorrect crc for
+ * its hwprogs.dat.
+ *
  * Revision 1.35  2006/01/12 12:34:37  sezero
  * added video modes enumeration via SDL. added on-the-fly video mode changing
  * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its

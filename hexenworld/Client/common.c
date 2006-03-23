@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.32 2006-03-17 20:23:19 sezero Exp $
+	$Id: common.c,v 1.33 2006-03-23 19:45:14 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1887,6 +1887,10 @@ static void COM_InitFilesystem (void)
 		sprintf (temp, "unknown");
 	}
 	Con_Printf ("Playing %s version.\n", temp);
+
+	// mark these cvars as read-only
+	oem.flags |= CVAR_ROM;
+	registered.flags |= CVAR_ROM;
 }
 
 #ifdef H2W
