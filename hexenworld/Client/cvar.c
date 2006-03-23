@@ -73,6 +73,9 @@ void Cvar_Set (char *var_name, char *value)
 		return;
 	}
 
+	if (var->flags & CVAR_ROM)
+		return;	// cvar is marked read-only
+
 #ifdef SERVERONLY
 	if (var->info)
 	{

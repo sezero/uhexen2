@@ -34,6 +34,8 @@ Cvars are restricted from having the same names as commands to keep this
 interface from being ambiguous.
 */
 
+#define	CVAR_ROM			64
+
 typedef struct cvar_s
 {
 	char	*name;
@@ -41,6 +43,7 @@ typedef struct cvar_s
 	qboolean archive;		// set to true to cause it to be saved to vars.rc
 	qboolean server;		// notifies players when changed
 	float	value;
+	unsigned	flags;
 	struct cvar_s *next;
 } cvar_t;
 

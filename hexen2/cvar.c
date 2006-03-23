@@ -74,6 +74,9 @@ void Cvar_Set (char *var_name, char *value)
 		return;
 	}
 
+	if (var->flags & CVAR_ROM)
+		return;	// cvar is marked read-only
+
 	changed = strcmp(var->string, value);
 
 	Z_Free (var->string);	// free the old value string
