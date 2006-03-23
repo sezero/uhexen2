@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.21 2006-03-23 18:44:27 sezero Exp $
+	$Id: sbar.c,v 1.22 2006-03-23 19:02:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -877,6 +877,7 @@ void Sbar_IntermissionNumber (int x, int y, int num, int digits, int color)
 }
 #endif	// end of unused stuff
 
+extern byte *playerTranslation;
 extern const int color_offsets[MAX_PLAYER_CLASS];
 
 static void FindColor (int slot, int *color1, int *color2)
