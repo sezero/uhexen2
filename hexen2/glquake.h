@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.44 2006-03-23 18:44:27 sezero Exp $
+	$Id: glquake.h,v 1.45 2006-03-23 20:01:33 sezero Exp $
 */
 
 
@@ -134,6 +134,7 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 int GL_LoadPicTexture (qpic_t *pic);
 int M_DrawBigCharacter (int x, int y, int num, int numNext);
 void GL_BuildLightmaps (void);
+void GL_SetupLightmapFmt (qboolean check_cmdline);
 void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr);
 void GL_Set2D (void);
 void GL_SubdivideSurface (msurface_t *fa);
@@ -363,7 +364,9 @@ extern	cvar_t	gl_missile_glows;
 extern	cvar_t	gl_coloredlight;
 extern	cvar_t	gl_colored_dynamic_lights;
 extern	cvar_t	gl_extra_dynamic_lights;
+extern	int	gl_coloredstatic;
 
+extern	cvar_t	gl_lightmapfmt;
 extern	int	gl_lightmap_format;
 extern	qboolean lightmap_modified[MAX_LIGHTMAPS];
 
@@ -387,6 +390,9 @@ extern	const char *gl_extensions;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.44  2006/03/23 18:44:27  sezero
+ * killed unnecessary includes, tiny tidy-up
+ *
  * Revision 1.43  2006/03/14 11:44:19  sezero
  * arghhh... cvs changelogs...
  *

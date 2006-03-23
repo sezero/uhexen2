@@ -207,7 +207,6 @@ extern void	D_ClearOpenGLTextures(int);
 extern void	R_InitParticleTexture(void);
 extern void	Mod_ReloadTextures (void);
 extern int	lightmap_textures;
-extern int	lightmap_bytes;	// in gl_rsurf.c
 
 // menu drawing
 void VID_MenuDraw (void);
@@ -700,35 +699,6 @@ static void CheckStencilBuffer(void)
 	}
 }
 
-static void GL_InitLightmapBits (void)
-{
-	//gl_lightmap_format = GL_LUMINANCE;	// default is now RGBA
-	if (COM_CheckParm ("-lm_1"))
-		gl_lightmap_format = GL_LUMINANCE;
-	else if (COM_CheckParm ("-lm_a"))
-		gl_lightmap_format = GL_ALPHA;
-	else if (COM_CheckParm ("-lm_i"))
-		gl_lightmap_format = GL_INTENSITY;
-//	else if (COM_CheckParm ("-lm_2"))
-//		gl_lightmap_format = GL_RGBA4;
-	else if (COM_CheckParm ("-lm_4"))
-		gl_lightmap_format = GL_RGBA;
-
-	switch (gl_lightmap_format)
-	{
-	case GL_RGBA:
-		lightmap_bytes = 4;
-		break;
-//	case GL_RGBA4:
-//		lightmap_bytes = 2;
-//		break;
-	case GL_LUMINANCE:
-	case GL_INTENSITY:
-	case GL_ALPHA:
-		lightmap_bytes = 1;
-		break;
-	}
-}
 
 #ifdef GL_DLSYM
 static qboolean GL_OpenLibrary(const char *name)
@@ -866,7 +836,6 @@ static void GL_Init (void)
 
 	CheckMultiTextureExtensions();
 	CheckStencilBuffer();
-	GL_InitLightmapBits();
 
 	glClearColor_fp (1,0,0,0);
 	glCullFace_fp(GL_FRONT);
@@ -2087,6 +2056,7 @@ static void VID_EarlyReadConfig (void)
 		"vid_config_bpp",
 		"vid_config_glx",
 		"vid_config_gly",
+		"gl_lightmapfmt",
 		NULL
 	};
 
@@ -2139,6 +2109,7 @@ static void VID_LockCvars (void)
 	vid_config_bpp.flags |= CVAR_ROM;
 	vid_config_glx.flags |= CVAR_ROM;
 	vid_config_gly.flags |= CVAR_ROM;
+	gl_lightmapfmt.flags |= CVAR_ROM;
 }
 
 static void VID_UnlockCvars (void)
@@ -2151,6 +2122,7 @@ static void VID_UnlockCvars (void)
 	vid_config_bpp.flags &= ~CVAR_ROM;
 	vid_config_glx.flags &= ~CVAR_ROM;
 	vid_config_gly.flags &= ~CVAR_ROM;
+	gl_lightmapfmt.flags &= ~CVAR_ROM;
 }
 
 void VID_PostInitFix (void)
@@ -2179,6 +2151,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&gl_ztrick);
 	Cvar_RegisterVariable (&gl_purge_maptex);
+	Cvar_RegisterVariable (&gl_lightmapfmt);
 	// these are for compatibility with the software version
 	Cvar_RegisterVariable (&vid_wait);
 	Cvar_RegisterVariable (&_vid_default_mode);
@@ -2495,6 +2468,7 @@ void	VID_Init (unsigned char *palette)
 	if (!wglMakeCurrent_fp( maindc, baseRC ))
 		Sys_Error ("wglMakeCurrent failed");
 
+	GL_SetupLightmapFmt(true);
 	GL_Init ();
 
 	// set our palette

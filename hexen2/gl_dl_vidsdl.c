@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_dl_vidsdl.c,v 1.108 2006-03-23 19:48:15 sezero Exp $
+	$Id: gl_dl_vidsdl.c,v 1.109 2006-03-23 20:01:33 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -203,7 +203,6 @@ extern void	D_ClearOpenGLTextures(int);
 extern void	R_InitParticleTexture(void);
 extern void	Mod_ReloadTextures (void);
 extern int	lightmap_textures;
-extern int	lightmap_bytes;	// in gl_rsurf.c
 
 // menu drawing
 void VID_MenuDraw (void);
@@ -649,35 +648,6 @@ static void CheckStencilBuffer(void)
 	}
 }
 
-static void GL_InitLightmapBits (void)
-{
-	//gl_lightmap_format = GL_LUMINANCE;	// default is now RGBA
-	if (COM_CheckParm ("-lm_1"))
-		gl_lightmap_format = GL_LUMINANCE;
-	else if (COM_CheckParm ("-lm_a"))
-		gl_lightmap_format = GL_ALPHA;
-	else if (COM_CheckParm ("-lm_i"))
-		gl_lightmap_format = GL_INTENSITY;
-//	else if (COM_CheckParm ("-lm_2"))
-//		gl_lightmap_format = GL_RGBA4;
-	else if (COM_CheckParm ("-lm_4"))
-		gl_lightmap_format = GL_RGBA;
-
-	switch (gl_lightmap_format)
-	{
-	case GL_RGBA:
-		lightmap_bytes = 4;
-		break;
-//	case GL_RGBA4:
-//		lightmap_bytes = 2;
-//		break;
-	case GL_LUMINANCE:
-	case GL_INTENSITY:
-	case GL_ALPHA:
-		lightmap_bytes = 1;
-		break;
-	}
-}
 
 #ifdef GL_DLSYM
 static qboolean GL_OpenLibrary(const char *name)
@@ -806,7 +776,6 @@ static void GL_Init (void)
 
 	CheckMultiTextureExtensions();
 	CheckStencilBuffer();
-	GL_InitLightmapBits();
 
 	glClearColor_fp (1,0,0,0);
 	glCullFace_fp(GL_FRONT);
@@ -1408,6 +1377,7 @@ static void VID_EarlyReadConfig (void)
 		"vid_config_fsaa",
 		"vid_config_glx",
 		"vid_config_gly",
+		"gl_lightmapfmt",
 		NULL
 	};
 
@@ -1460,6 +1430,7 @@ static void VID_LockCvars (void)
 	vid_config_fsaa.flags |= CVAR_ROM;
 	vid_config_glx.flags |= CVAR_ROM;
 	vid_config_gly.flags |= CVAR_ROM;
+	gl_lightmapfmt.flags |= CVAR_ROM;
 }
 
 static void VID_UnlockCvars (void)
@@ -1472,6 +1443,7 @@ static void VID_UnlockCvars (void)
 	vid_config_fsaa.flags &= ~CVAR_ROM;
 	vid_config_glx.flags &= ~CVAR_ROM;
 	vid_config_gly.flags &= ~CVAR_ROM;
+	gl_lightmapfmt.flags &= ~CVAR_ROM;
 }
 
 void VID_PostInitFix (void)
@@ -1543,6 +1515,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&gl_ztrick);
 	Cvar_RegisterVariable (&gl_purge_maptex);
+	Cvar_RegisterVariable (&gl_lightmapfmt);
 
 	Cmd_AddCommand ("vid_showinfo", &VID_ShowInfo_f);
 	Cmd_AddCommand ("vid_listmodes", &VID_ListModes_f);
@@ -1700,6 +1673,8 @@ void	VID_Init (unsigned char *palette)
 	//set the mode
 	VID_SetMode ((int)vid_mode.value);
 	ClearAllStates ();
+
+	GL_SetupLightmapFmt(true);
 	GL_Init ();
 	VID_InitGamma();
 

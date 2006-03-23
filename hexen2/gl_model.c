@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.25 2006-03-21 22:24:08 sezero Exp $
+	$Id: gl_model.c,v 1.26 2006-03-23 20:01:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -587,6 +587,16 @@ static void Mod_LoadLighting (lump_t *l)
 	byte	*in, *out, *data;
 	byte	d;
 	char	litfilename[1024];
+
+	GL_SetupLightmapFmt(false);	// setup the lightmap format to reflect any
+					// changes via the cvar gl_lightmapfmt
+
+	// bound the gl_coloredlight value
+	if (gl_coloredlight.value < 0)
+		Cvar_SetValue ("gl_coloredlight", 0);
+	gl_coloredstatic = (int)gl_coloredlight.value;
+	if (gl_coloredstatic != gl_coloredlight.value)
+		Cvar_SetValue ("gl_coloredlight", gl_coloredstatic);
 
 	if (gl_lightmap_format == GL_RGBA)
 	{
@@ -2624,6 +2634,11 @@ static void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2006/03/21 22:24:08  sezero
+ * continue making static functions and vars static. whitespace and coding
+ * style cleanup. part 44: model.c, gl_model.c. also moved the mcache cmd
+ * addition to Mod_Init and added save-to-file functionality.
+ *
  * Revision 1.24  2006/03/10 08:08:45  sezero
  * Added support for colored lights and .lit files;. initially extracted
  * from jshexen2 (thanks Michal Wozniak). Colored lights and lit file

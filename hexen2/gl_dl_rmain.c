@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_dl_rmain.c,v 1.42 2006-03-14 11:44:18 sezero Exp $
+	$Id: gl_dl_rmain.c,v 1.43 2006-03-23 20:01:33 sezero Exp $
 */
 
 
@@ -57,6 +57,9 @@ extern	int	glwidth, glheight;
 texture_t	*r_notexture_mip;
 
 int		d_lightstylevalue[256];	// 8.8 fraction of base light value
+
+int		gl_coloredstatic;	// used to store what type of static light
+					// we loaded in Mod_LoadLighting()
 
 static	qboolean AlwaysDrawModel;
 
@@ -1968,6 +1971,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.42  2006/03/14 11:44:18  sezero
+ * arghhh... cvs changelogs...
+ *
  * Revision 1.41  2006/03/11 22:51:16  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. part 41: gl_draw.c, gl_rlight.c, gl_rmain.c, gl_rmisc.c, gl_rsurf.c,

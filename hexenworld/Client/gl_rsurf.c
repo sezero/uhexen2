@@ -3,6 +3,7 @@
 #include "quakedef.h"
 
 int		gl_lightmap_format = GL_RGBA;
+cvar_t		gl_lightmapfmt = {"gl_lightmapfmt","GL_RGBA",true};
 int		lightmap_bytes = 4;		// 1, 2, or 4. default is 4 for GL_RGBA
 int		lightmap_textures;
 
@@ -111,6 +112,83 @@ static void R_AddDynamicLights (msurface_t *surf)
 	}
 }
 
+
+/*
+===============
+GL_SetupLightmapFmt
+
+Used to setup the lightmap_format and lightmap_bytes
+at every level change and at first video initialization.
+Best to be called from Mod_LoadLighting() in gl_model.c
+===============
+*/
+void GL_SetupLightmapFmt (qboolean check_cmdline)
+{
+	// only GL_LUMINANCE and GL_RGBA are actually supported
+	// commenting out other options
+	if (!Q_strcasecmp(gl_lightmapfmt.string, "GL_LUMINANCE"))
+		gl_lightmap_format = GL_LUMINANCE;
+	else if (!Q_strcasecmp(gl_lightmapfmt.string, "GL_RGBA"))
+		gl_lightmap_format = GL_RGBA;
+#if 0
+	else if (!Q_strcasecmp(gl_lightmapfmt.string, "GL_ALPHA"))
+		gl_lightmap_format = GL_ALPHA;
+	else if (!Q_strcasecmp(gl_lightmapfmt.string, "GL_INTENSITY"))
+		gl_lightmap_format = GL_INTENSITY;
+#endif
+	else
+	{
+		gl_lightmap_format = GL_RGBA;
+		Cvar_Set ("gl_lightmapfmt", "GL_RGBA");
+	}
+
+	// check for commandline overrides
+	if (check_cmdline)
+	{
+		if (COM_CheckParm ("-lm_1"))
+		{
+			gl_lightmap_format = GL_LUMINANCE;
+			Cvar_Set ("gl_lightmapfmt", "GL_LUMINANCE");
+		}
+		else if (COM_CheckParm ("-lm_4"))
+		{
+			gl_lightmap_format = GL_RGBA;
+			Cvar_Set ("gl_lightmapfmt", "GL_RGBA");
+		}
+#if 0
+//		else if (COM_CheckParm ("-lm_2"))
+//		{
+//			gl_lightmap_format = GL_RGBA4;
+//			Cvar_Set ("gl_lightmapfmt", "GL_RGBA4");
+//		}
+		else if (COM_CheckParm ("-lm_a"))
+		{
+			gl_lightmap_format = GL_ALPHA;
+			Cvar_Set ("gl_lightmapfmt", "GL_ALPHA");
+		}
+		else if (COM_CheckParm ("-lm_i"))
+		{
+			gl_lightmap_format = GL_INTENSITY;
+			Cvar_Set ("gl_lightmapfmt", "GL_INTENSITY");
+		}
+#endif
+	}
+
+	switch (gl_lightmap_format)
+	{
+	case GL_RGBA:
+		lightmap_bytes = 4;
+		break;
+//	case GL_RGBA4:
+//		lightmap_bytes = 2;
+//		break;
+	case GL_LUMINANCE:
+	case GL_INTENSITY:
+	case GL_ALPHA:
+		lightmap_bytes = 1;
+		break;
+	}
+}
 
 /*
 ===============

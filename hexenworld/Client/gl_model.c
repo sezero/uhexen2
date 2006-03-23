@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.21 2006-03-21 22:24:13 sezero Exp $
+	$Id: gl_model.c,v 1.22 2006-03-23 20:01:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -590,6 +590,16 @@ static void Mod_LoadLighting (lump_t *l)
 	byte	*in, *out, *data;
 	byte	d;
 	char	litfilename[1024];
+
+	GL_SetupLightmapFmt(false);	// setup the lightmap format to reflect any
+					// changes via the cvar gl_lightmapfmt
+
+	// bound the gl_coloredlight value
+	if (gl_coloredlight.value < 0)
+		Cvar_SetValue ("gl_coloredlight", 0);
+	gl_coloredstatic = (int)gl_coloredlight.value;
+	if (gl_coloredstatic != gl_coloredlight.value)
+		Cvar_SetValue ("gl_coloredlight", gl_coloredstatic);
 
 	if (gl_lightmap_format == GL_RGBA)
 	{

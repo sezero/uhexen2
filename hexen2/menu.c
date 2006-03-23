@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.62 2006-03-23 19:02:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.63 2006-03-23 20:01:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2181,6 +2181,7 @@ enum
 	OGL_GLOW1,
 	OGL_GLOW2,
 	OGL_GLOW3,
+	OGL_LIGHTMAPFMT,
 	OGL_COLOREDLIGHT,
 	OGL_COLOREDSTATIC,
 	OGL_COLOREDDYNAMIC,
@@ -2193,6 +2194,27 @@ enum
 
 typedef struct
 {
+	char	*name;	// legible string value
+	char	*desc;	// description for user
+	int	glenum;	// opengl enum
+} lmformat_t;
+
+static lmformat_t lm_formats[] =
+{
+	{ "gl_luminance",	"gl_luminance (8 bit)",	GL_LUMINANCE	},
+#if 0
+	{ "gl_intensity",	"gl_intensity",		GL_INTENSITY	},
+	{ "gl_alpha",		"gl_alpha",		GL_ALPHA	},
+//	{ "gl_rgba4",		"gl_rgba4",		GL_RGBA4	},
+#endif
+	{ "gl_rgba",		"gl_rgba (32 bit)",	GL_RGBA		},
+	{ " ",			"Unknown value (?)",	0		}
+};
+
+#define	MAX_LMFORMATS	(sizeof(lm_formats) / sizeof(lm_formats[0]))
+
+typedef struct
+{
 	char *name;
 	int	minimize, maximize;
 } glmode_t;
@@ -2201,6 +2223,7 @@ typedef struct
 #define MAX_GL_FILTERS	6
 extern glmode_t modes[];
 static int	tex_mode;
+static int	lm_format;
 static int	opengl_cursor;
 
 static void M_Menu_OpenGL_f (void)
@@ -2234,33 +2257,35 @@ static void M_OpenGL_Draw (void)
 	M_Print (32, 90 + 8*OGL_GLOW3,		"           other glows");
 	M_DrawCheckbox (232, 90 + 8*OGL_GLOW3, gl_other_glows.value);
 
+	M_Print (32, 90 + 8*OGL_LIGHTMAPFMT,	"      Lightmap Format:");
+	for (i = 0; i < MAX_LMFORMATS; i++)
+	{
+		if (!Q_strcasecmp(gl_lightmapfmt.string, lm_formats[i].name))
+			break;
+	}
+	lm_format = i;
+	M_Print (232, 90 + 8*OGL_LIGHTMAPFMT, lm_formats[lm_format].desc);
+
 	M_Print (32, 90 + 8*OGL_COLOREDLIGHT,	"      Colored lights :");
 	M_Print (32, 90 + 8*OGL_COLOREDSTATIC,	"         static lights");
 	M_Print (32, 90 + 8*OGL_COLOREDDYNAMIC,	"        dynamic lights");
 	M_Print (32, 90 + 8*OGL_COLOREDEXTRA,	"          extra lights");
-	M_Print (232, 90 + 8*OGL_COLOREDLIGHT, "(requires level reload)");
-	if (gl_lightmap_format == GL_RGBA)
+	// bound the gl_coloredlight value
+	if (gl_coloredlight.value < 0)
+		Cvar_SetValue ("gl_coloredlight", 0);
+	if (gl_coloredlight.value != (int)gl_coloredlight.value)
+		Cvar_SetValue ("gl_coloredlight", (int)gl_coloredlight.value);
+	switch ((int)gl_coloredlight.value)
 	{
-		switch ((int)gl_coloredlight.value)
-		{
-		case 0:
-			M_Print (232, 90 + 8*OGL_COLOREDSTATIC, "none (white)");
-			break;
-		case 1:
-			M_Print (232, 90 + 8*OGL_COLOREDSTATIC, "colored");
-			break;
-		case 2:
-			M_Print (232, 90 + 8*OGL_COLOREDSTATIC, "blend");
-			break;
-		}
-	//	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDDYNAMIC, (int)gl_colored_dynamic_lights.value);
-	//	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDEXTRA, (int)gl_extra_dynamic_lights.value);
-	}
-	else
-	{
-		M_Print (232, 90 + 8*OGL_COLOREDSTATIC, "hot available");
-	//	M_Print (232, 90 + 8*OGL_COLOREDDYNAMIC, "hot available");
-	//	M_Print (232, 90 + 8*OGL_COLOREDEXTRA, "hot available");
+	case 0:
+		M_Print (232, 90 + 8*OGL_COLOREDSTATIC, "none (white)");
+		break;
+	case 1:
+		M_Print (232, 90 + 8*OGL_COLOREDSTATIC, "colored");
+		break;
+	default:
+		M_Print (232, 90 + 8*OGL_COLOREDSTATIC, "blend");
+		break;
 	}
 	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDDYNAMIC, (int)gl_colored_dynamic_lights.value);
 	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDEXTRA, (int)gl_extra_dynamic_lights.value);
@@ -2282,10 +2307,43 @@ static void M_OpenGL_Draw (void)
 	if (have_stencil)
 		M_DrawCheckbox (232, 90 + 8*OGL_STENCIL, gl_stencilshadow.value);
 	else
-		M_Print (232, 90 + 8*OGL_STENCIL, "Not found");
+		M_Print (232, 90 + 8*OGL_STENCIL, "Not available");
 
 	// cursor
 	M_DrawCharacter (216, 90 + opengl_cursor*8, 12+((int)(realtime*4)&1));
+
+	if (opengl_cursor == OGL_LIGHTMAPFMT && gl_lightmap_format != lm_formats[lm_format].glenum)
+	{
+		int	x = (320-25*8)/2;
+		for (i = 0; i < MAX_LMFORMATS-1; i++)
+			if (gl_lightmap_format == lm_formats[i].glenum)
+				break;
+		M_DrawTextBox (x, 94 + 8*(OGL_LIGHTMAPFMT), 25, 5);
+		M_Print (x+16, 98 + 8*(OGL_LIGHTMAPFMT+1), "currently running with:");
+		M_Print (x+16, 98 + 8*(OGL_LIGHTMAPFMT+2), lm_formats[i].desc);
+		M_Print (x+16, 98 + 8*(OGL_LIGHTMAPFMT+3), "your selection will take");
+		M_Print (x+16, 98 + 8*(OGL_LIGHTMAPFMT+4), "effect upon level reload");
+	}
+	else if (opengl_cursor == OGL_COLOREDSTATIC)
+	{
+		int	x = (320-25*8)/2;
+
+		if (gl_lightmap_format != GL_RGBA)
+		{
+			if (gl_coloredlight.value)
+			{
+				M_DrawTextBox (x, 94 + 8*(OGL_COLOREDSTATIC), 25, 3);
+				M_Print (x+16, 98 + 8*(OGL_COLOREDSTATIC+1), "  rgba lightmap format  ");
+				M_Print (x+16, 98 + 8*(OGL_COLOREDSTATIC+2), "      is required");
+			}
+		}
+		else if (gl_coloredlight.value != gl_coloredstatic)
+		{
+			M_DrawTextBox (x, 94 + 8*(OGL_COLOREDSTATIC), 25, 3);
+			M_Print (x+16, 98 + 8*(OGL_COLOREDSTATIC+1), "your selection will take");
+			M_Print (x+16, 98 + 8*(OGL_COLOREDSTATIC+2), "effect upon level reload");
+		}
+	}
 }
 
 
@@ -2341,9 +2399,27 @@ static void M_OpenGL_Key (int k)
 			Cvar_SetValue ("gl_other_glows", !gl_other_glows.value);
 			break;
 
-		case OGL_COLOREDSTATIC:	// static colored lights
-			if (gl_lightmap_format != GL_RGBA)
+		case OGL_LIGHTMAPFMT:	// lightmap format
+			switch (k)
+			{
+			case K_RIGHTARROW:
+				lm_format++;
+				if (lm_format >= MAX_LMFORMATS-1)
+					lm_format = MAX_LMFORMATS-2;
+				Cvar_Set ("gl_lightmapfmt", lm_formats[lm_format].name);
 				break;
+			case K_LEFTARROW:
+				lm_format--;
+				if (lm_format < 0)
+					lm_format = 0;
+				Cvar_Set ("gl_lightmapfmt", lm_formats[lm_format].name);
+				break;
+			default:
+				break;
+			}
+			break;
+
+		case OGL_COLOREDSTATIC:	// static colored lights
 			switch (k)
 			{
 			case K_RIGHTARROW:
@@ -2364,14 +2440,10 @@ static void M_OpenGL_Key (int k)
 			break;
 
 		case OGL_COLOREDDYNAMIC:	// dynamic colored lights
-		//	if (gl_lightmap_format != GL_RGBA)
-		//		break;
 			Cvar_SetValue ("gl_colored_dynamic_lights", !gl_colored_dynamic_lights.value);
 			break;
 
 		case OGL_COLOREDEXTRA:	// extra dynamic colored lights
-		//	if (gl_lightmap_format != GL_RGBA)
-		//		break;
 			Cvar_SetValue ("gl_extra_dynamic_lights", !gl_extra_dynamic_lights.value);
 			break;
 
@@ -4399,6 +4471,9 @@ static void ReInitMusic (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.62  2006/03/23 19:02:25  sezero
+ * fixed software version's compilation (my bad)
+ *
  * Revision 1.61  2006/03/23 18:44:27  sezero
  * killed unnecessary includes, tiny tidy-up
  *

@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.31 2006-03-11 22:51:20 sezero Exp $
+	$Id: gl_rmain.c,v 1.32 2006-03-23 20:01:39 sezero Exp $
 */
 
 
@@ -57,6 +57,9 @@ extern	int	glwidth, glheight;
 texture_t	*r_notexture_mip;
 
 int		d_lightstylevalue[256];	// 8.8 fraction of base light value
+
+int		gl_coloredstatic;	// used to store what type of static light
+					// we loaded in Mod_LoadLighting()
 
 static	qboolean AlwaysDrawModel;
 
