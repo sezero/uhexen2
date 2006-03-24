@@ -2771,6 +2771,38 @@ void VID_MenuKey (int key)
 		}
 		return;
 
+	case K_LEFTARROW:
+		switch (vid_cursor)
+		{
+		case VID_FULLSCREEN:
+			if (!num_fmodes)
+				break;
+			vid_menu_fs = !vid_menu_fs;
+			vid_menunum = match_windowed_fullscr_modes();
+			vid_menulist = (vid_menu_fs) ? (vmode_t *)fmodelist : (vmode_t *)wmodelist;
+			vid_menubpp = vid_menulist[vid_menunum].bpp;
+			break;
+		case VID_RESOLUTION:
+			S_LocalSound ("raven/menu1.wav");
+			vid_menunum--;
+			if (vid_menunum < 0 || vid_menubpp != vid_menulist[vid_menunum].bpp)
+				vid_menunum++;
+			break;
+		case VID_BPP:
+			i = find_bppnum (-1);
+			if (vid_menubpp == bpplist[i][0])
+				break;
+			vid_menubpp = bpplist[i][0];
+			//find a matching video mode for this bpp
+			vid_menunum = match_mode_to_bpp(i);
+			break;
+		case VID_PALTEX:
+			if (have8bit)
+				Cvar_SetValue ("vid_config_gl8bit", !(int)vid_config_gl8bit.value);
+			break;
+		}
+		return;
+
 	case K_RIGHTARROW:
 		switch (vid_cursor)
 		{
@@ -2791,38 +2823,6 @@ void VID_MenuKey (int key)
 			break;
 		case VID_BPP:
 			i = find_bppnum (1);
-			if (vid_menubpp == bpplist[i][0])
-				break;
-			vid_menubpp = bpplist[i][0];
-			//find a matching video mode for this bpp
-			vid_menunum = match_mode_to_bpp(i);
-			break;
-		case VID_PALTEX:
-			if (have8bit)
-				Cvar_SetValue ("vid_config_gl8bit", !(int)vid_config_gl8bit.value);
-			break;
-		}
-		return;
-
-	case K_LEFTARROW:
-		switch (vid_cursor)
-		{
-		case VID_FULLSCREEN:
-			if (!num_fmodes)
-				break;
-			vid_menu_fs = !vid_menu_fs;
-			vid_menunum = match_windowed_fullscr_modes();
-			vid_menulist = (vid_menu_fs) ? (vmode_t *)fmodelist : (vmode_t *)wmodelist;
-			vid_menubpp = vid_menulist[vid_menunum].bpp;
-			break;
-		case VID_RESOLUTION:
-			S_LocalSound ("raven/menu1.wav");
-			vid_menunum--;
-			if (vid_menunum < 0 || vid_menubpp != vid_menulist[vid_menunum].bpp)
-				vid_menunum++;
-			break;
-		case VID_BPP:
-			i = find_bppnum (-1);
 			if (vid_menubpp == bpplist[i][0])
 				break;
 			vid_menubpp = bpplist[i][0];
