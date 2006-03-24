@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.11 2005-12-28 08:37:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.12 2006-03-24 15:05:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -36,7 +36,7 @@ static	char		*cmd_args = NULL;
 
 static qboolean	cmd_wait;
 
-cvar_t cl_warncmd = {"cl_warncmd", "0"};
+cvar_t cl_warncmd = {"cl_warncmd", "0", CVAR_NONE};
 
 
 //=============================================================================

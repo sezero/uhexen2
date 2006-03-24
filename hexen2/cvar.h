@@ -34,17 +34,22 @@ Cvars are restricted from having the same names as commands to keep this
 interface from being ambiguous.
 */
 
-#define	CVAR_ROM			64
+#define	CVAR_NONE		0
+#define	CVAR_ARCHIVE		1	// if set, causes it to be saved to config
+#define	CVAR_NOTIFY		2	// changes will be broadcasted to all players (H2)
+#define	CVAR_SERVERINFO		4	// added to serverinfo will be sent to clients (H2/net_dgrm.c and H2W)
+#define	CVAR_USERINFO		8	// added to userinfo, will be sent to server (H2W)
+#define	CVAR_ROM		64
+
 
 typedef struct cvar_s
 {
 	char	*name;
 	char	*string;
-	qboolean archive;		// set to true to cause it to be saved to vars.rc
-	qboolean server;		// notifies players when changed
-	float	value;
 	unsigned	flags;
-	struct cvar_s *next;
+	float		value;
+//	int		integer;
+	struct cvar_s	*next;
 } cvar_t;
 
 void 	Cvar_RegisterVariable (cvar_t *variable);

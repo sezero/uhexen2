@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.27 2006-03-17 14:12:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.28 2006-03-24 15:05:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -11,15 +11,15 @@ server_t	sv;
 server_static_t	svs;
 static char	localmodels[MAX_MODELS][5];	// inline model names for precache
 
-cvar_t	sv_sound_distance	= {"sv_sound_distance","800", true};
+static	cvar_t	sv_sound_distance	= {"sv_sound_distance", "800", CVAR_ARCHIVE};
 
-cvar_t	sv_update_player	= {"sv_update_player","1", true};
-cvar_t	sv_update_monsters	= {"sv_update_monsters","1", true};
-cvar_t	sv_update_missiles	= {"sv_update_missiles","1", true};
-cvar_t	sv_update_misc		= {"sv_update_misc","1", true};
+static	cvar_t	sv_update_player	= {"sv_update_player", "1", CVAR_ARCHIVE};
+static	cvar_t	sv_update_monsters	= {"sv_update_monsters", "1", CVAR_ARCHIVE};
+static	cvar_t	sv_update_missiles	= {"sv_update_missiles", "1", CVAR_ARCHIVE};
+static	cvar_t	sv_update_misc		= {"sv_update_misc", "1", CVAR_ARCHIVE};
 
-cvar_t	sv_ce_scale		= {"sv_ce_scale","0", true};
-cvar_t	sv_ce_max_size		= {"sv_ce_max_size","0", true};
+cvar_t	sv_ce_scale		= {"sv_ce_scale", "0", CVAR_ARCHIVE};
+cvar_t	sv_ce_max_size		= {"sv_ce_max_size", "0", CVAR_ARCHIVE};
 
 extern	cvar_t	sv_maxvelocity;
 extern	cvar_t	sv_gravity;
@@ -2082,6 +2082,10 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2006/03/17 14:12:48  sezero
+ * put back mission-pack only objectives stuff back into pure h2 builds.
+ * it was a total screw-up...
+ *
  * Revision 1.26  2006/03/13 22:28:51  sezero
  * removed the expansion pack only feature of objective strings from
  * hexen2-only builds (many new ifdef H2MP stuff). removed the expansion

@@ -1,8 +1,8 @@
 #include "quakedef.h"
 #include "quakeinc.h"
 
-cvar_t	cl_nopred = {"cl_nopred","0"};
-cvar_t	cl_pushlatency = {"pushlatency","-50", true};
+static	cvar_t	cl_nopred = {"cl_nopred", "0", CVAR_NONE};
+static	cvar_t	cl_pushlatency = {"pushlatency", "-50", CVAR_ARCHIVE};
 
 extern	frame_t		*view_frame;
 static	qboolean player_crouching;

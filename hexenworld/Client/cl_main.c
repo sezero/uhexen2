@@ -14,47 +14,46 @@
 
 qboolean	noclip_anglehack;		// remnant from old quake
 
-cvar_t	rcon_password = {"rcon_password", "", false};
-cvar_t	rcon_address = {"rcon_address", ""};
+static	cvar_t	rcon_password = {"rcon_password", "", CVAR_NONE};
+static	cvar_t	rcon_address = {"rcon_address", "", CVAR_NONE};
 
-cvar_t	cl_timeout = {"cl_timeout", "60"};
+static	cvar_t	cl_timeout = {"cl_timeout", "60", CVAR_NONE};
 
-cvar_t	cl_shownet = {"cl_shownet","0"};	// can be 0, 1, or 2
+cvar_t	cl_shownet = {"cl_shownet", "0", CVAR_NONE};	// can be 0, 1, or 2
 
-cvar_t	lookspring = {"lookspring","0", true};
-cvar_t	lookstrafe = {"lookstrafe","0", true};
-cvar_t	sensitivity = {"sensitivity","3", true};
-cvar_t	mwheelthreshold = {"mwheelthreshold","120", true};
+cvar_t	lookspring = {"lookspring", "0", CVAR_ARCHIVE};
+cvar_t	lookstrafe = {"lookstrafe", "0", CVAR_ARCHIVE};
+cvar_t	sensitivity = {"sensitivity", "3", CVAR_ARCHIVE};
+cvar_t	mwheelthreshold = {"mwheelthreshold", "120", CVAR_ARCHIVE};
 
-cvar_t	m_pitch = {"m_pitch","0.022", true};
-cvar_t	m_yaw = {"m_yaw","0.022"};
-cvar_t	m_forward = {"m_forward","1"};
-cvar_t	m_side = {"m_side","0.8"};
+cvar_t	m_pitch = {"m_pitch", "0.022", CVAR_ARCHIVE};
+cvar_t	m_yaw = {"m_yaw", "0.022", CVAR_NONE};
+cvar_t	m_forward = {"m_forward", "1", CVAR_NONE};
+cvar_t	m_side = {"m_side", "0.8", CVAR_NONE};
 
-cvar_t	entlatency = {"entlatency", "20"};
-cvar_t	cl_predict_players = {"cl_predict_players", "1"};
-cvar_t	cl_predict_players2 = {"cl_predict_players2", "1"};
-cvar_t	cl_solid_players = {"cl_solid_players", "1"};
+cvar_t	entlatency = {"entlatency", "20", CVAR_NONE};
+cvar_t	cl_predict_players = {"cl_predict_players", "1", CVAR_NONE};
+cvar_t	cl_predict_players2 = {"cl_predict_players2", "1", CVAR_NONE};
+cvar_t	cl_solid_players = {"cl_solid_players", "1", CVAR_NONE};
 
 //
 // info mirrors
 //
-cvar_t	password = {"password", "", false, true};
-cvar_t	spectator = {"spectator", "", false, true};
-cvar_t	name = {"name","unnamed", true, true};
-cvar_t	playerclass = {"playerclass", "1", true, true};
-cvar_t	team = {"team","", true, true};
-cvar_t	skin = {"skin","", true, true};
-cvar_t	topcolor = {"topcolor","0", true, true};
-cvar_t	bottomcolor = {"bottomcolor","0", true, true};
-cvar_t	rate = {"rate","2500", true, true};
-cvar_t	noaim = {"noaim","0", true, true};
-cvar_t  talksounds = {"talksounds", "1", true};
-cvar_t	msg = {"msg","1", true, true};
+cvar_t	password = {"password", "", CVAR_USERINFO};
+cvar_t	spectator = {"spectator", "", CVAR_USERINFO};
+cvar_t	name = {"name", "unnamed", CVAR_USERINFO|CVAR_ARCHIVE};
+cvar_t	playerclass = {"playerclass", "1", CVAR_USERINFO|CVAR_ARCHIVE};
+cvar_t	team = {"team", "", CVAR_USERINFO|CVAR_ARCHIVE};
+cvar_t	skin = {"skin", "", CVAR_USERINFO|CVAR_ARCHIVE};
+cvar_t	topcolor = {"topcolor", "0", CVAR_USERINFO|CVAR_ARCHIVE};
+cvar_t	bottomcolor = {"bottomcolor", "0", CVAR_USERINFO|CVAR_ARCHIVE};
+cvar_t	rate = {"rate", "2500", CVAR_USERINFO|CVAR_ARCHIVE};
+cvar_t	noaim = {"noaim", "0", CVAR_USERINFO|CVAR_ARCHIVE};
+cvar_t	talksounds = {"talksounds", "1", CVAR_ARCHIVE};
+cvar_t	msg = {"msg", "1", CVAR_USERINFO|CVAR_ARCHIVE};
 
 extern	cvar_t		baseskin;
 extern	cvar_t		noskins;
-extern	cvar_t		cl_hightrack;
 
 client_static_t	cls;
 client_state_t	cl;
@@ -89,9 +88,9 @@ byte		*host_colormap;
 
 netadr_t	master_adr;			// address of the master server
 
-cvar_t	host_speeds = {"host_speeds","0"};	// set for running times
-cvar_t	show_fps = {"show_fps","0"};		// set for running times
-cvar_t	developer = {"developer","0"};
+static	cvar_t	host_speeds = {"host_speeds", "0", CVAR_NONE};	// set for running times
+cvar_t	show_fps = {"show_fps", "0", CVAR_NONE};	// set for running times
+cvar_t	developer = {"developer", "0", CVAR_NONE};
 
 int			fps_count;
 

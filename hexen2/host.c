@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.43 2006-02-24 14:43:55 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.44 2006-03-24 15:05:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -40,34 +40,30 @@ jmp_buf 	host_abortserver;
 byte		*host_basepal;
 byte		*host_colormap;
 
-cvar_t	host_framerate = {"host_framerate","0"};	// set for slow motion
-cvar_t	host_speeds = {"host_speeds","0"};			// set for running times
+cvar_t		sys_ticrate = {"sys_ticrate", "0.05", CVAR_NONE};
+static	cvar_t	sys_adaptive = {"sys_adaptive", "1", CVAR_ARCHIVE};
+static	cvar_t	host_framerate = {"host_framerate", "0", CVAR_NONE};	// set for slow motion
+static	cvar_t	host_speeds = {"host_speeds", "0", CVAR_NONE};		// set for running times
 
-cvar_t	sys_ticrate = {"sys_ticrate","0.05"};
-cvar_t	serverprofile = {"serverprofile","0"};
+static	cvar_t	serverprofile = {"serverprofile", "0", CVAR_NONE};
 
-cvar_t	fraglimit = {"fraglimit","0",false,true};
-cvar_t	timelimit = {"timelimit","0",false,true};
-cvar_t	teamplay = {"teamplay","0",false,true};
+cvar_t	fraglimit = {"fraglimit", "0", CVAR_NOTIFY|CVAR_SERVERINFO};
+cvar_t	timelimit = {"timelimit", "0", CVAR_NOTIFY|CVAR_SERVERINFO};
+cvar_t	teamplay = {"teamplay", "0", CVAR_NOTIFY|CVAR_SERVERINFO};
 
-cvar_t	samelevel = {"samelevel","0"};
-cvar_t	noexit = {"noexit","0",false,true};
+cvar_t	samelevel = {"samelevel", "0", CVAR_NONE};
+cvar_t	noexit = {"noexit", "0", CVAR_NOTIFY|CVAR_SERVERINFO};
 
-#ifdef QUAKE2
-cvar_t	developer = {"developer","1", true};	// should be 0 for release!
-#else
-cvar_t	developer = {"developer","0", true};
-#endif
+cvar_t	developer = {"developer", "0", CVAR_ARCHIVE};
 
-cvar_t	skill = {"skill","1"};			// 0 - 3
-cvar_t	deathmatch = {"deathmatch","0"};	// 0, 1, or 2
-cvar_t	randomclass = {"randomclass","0"};	// 0, 1, or 2
-cvar_t	coop = {"coop","0"};			// 0 or 1
+cvar_t	skill = {"skill", "1", CVAR_NONE};		// 0 - 3
+cvar_t	deathmatch = {"deathmatch", "0", CVAR_NONE};	// 0, 1, or 2
+cvar_t	randomclass = {"randomclass", "0", CVAR_NONE};	// 0, 1, or 2
+cvar_t	coop = {"coop", "0", CVAR_NONE};		// 0 or 1
 
-cvar_t	pausable = {"pausable","1"};
-cvar_t	sys_adaptive = {"sys_adaptive","1",true};
+cvar_t	pausable = {"pausable", "1", CVAR_NONE};
 
-cvar_t	temp1 = {"temp1","0"};
+cvar_t	temp1 = {"temp1", "0", CVAR_NONE};
 
 
 /*
@@ -1062,6 +1058,12 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.43  2006/02/24 14:43:55  sezero
+ * created a new "opengl features" entry under the options menu and moved opengl
+ * options under it. added new opengl menu options for texture filtering, glow
+ * effects, multitexturing, stencil buffered shadows and texture purging upon
+ * map change.
+ *
  * Revision 1.42  2006/02/18 08:51:09  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. also renamed the variables name and dest to savename and savedest in

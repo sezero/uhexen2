@@ -1,6 +1,6 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.12 2006-03-16 21:19:00 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.13 2006-03-24 15:05:39 sezero Exp $
 */
 
 typedef struct
@@ -244,7 +244,6 @@ extern	cvar_t	cl_warncmd;
 extern	cvar_t	cl_upspeed;
 extern	cvar_t	cl_forwardspeed;
 extern	cvar_t	cl_backspeed;
-extern  cvar_t	cl_prettylights;
 extern	cvar_t	cl_sidespeed;
 
 extern	cvar_t	cl_movespeedkey;
@@ -380,6 +379,19 @@ void CL_UpdateTEnts(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2006/03/16 21:19:00  sezero
+ * Restored net compatibility with SC2_OBJ and SC2_OBJ2:
+ * SC2_OBJ and SC2_OBJ2 are actually only legible for the
+ * mission pack (the objectives).  still keeping them as
+ * H2-legible here, so that we remain net-compatible with
+ * Hammer of Thyrion versions prior to 1.4.0 and with other
+ * hexen2 source ports and demos recorded can still be
+ * played back. The info_mask and infomask2 members of the
+ * client structure will not be processed by the rest of
+ * the code for pure hexen2 builds, though.
+ * It would be much better if we'd made the engine handle
+ * both H2 and H2MP cases *correctly*. Hmm...
+ *
  * Revision 1.11  2006/03/14 11:44:18  sezero
  * arghhh... cvs changelogs...
  *

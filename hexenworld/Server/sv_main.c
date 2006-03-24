@@ -15,65 +15,65 @@ netadr_t	master_adr[MAX_MASTERS];	// address of group servers
 
 client_t	*host_client;			// current client
 
-cvar_t	sv_mintic = {"sv_mintic","0.03"};	// bound the size of the
-cvar_t	sv_maxtic = {"sv_maxtic","0.1"};	// physics time tic
+cvar_t	sv_mintic = {"sv_mintic", "0.03", CVAR_NONE};	// bound the size of the
+cvar_t	sv_maxtic = {"sv_maxtic", "0.1", CVAR_NONE};	// physics time tic
 
-cvar_t	developer = {"developer","0"};		// show extra messages
+cvar_t	developer = {"developer", "0", CVAR_NONE};	// show extra messages
 
-cvar_t	timeout = {"timeout","65"};		// seconds without any message
-cvar_t	zombietime = {"zombietime", "2"};	// seconds to sink messages
-						// after disconnect
+static	cvar_t	timeout = {"timeout", "65", CVAR_NONE};		// seconds without any message
+static	cvar_t	zombietime = {"zombietime", "2", CVAR_NONE};	// seconds to sink messages
+								// after disconnect
 
-cvar_t	rcon_password = {"rcon_password", ""};	// password for remote server commands
-cvar_t	password = {"password", ""};	// password for entering the game
-cvar_t	spectator_password = {"spectator_password", ""};	// password for entering as a sepctator
+static	cvar_t	rcon_password = {"rcon_password", "", CVAR_NONE};	// password for remote server commands
+static	cvar_t	password = {"password", "", CVAR_NONE};		// password for entering the game
+static	cvar_t	spectator_password = {"spectator_password", "", CVAR_NONE};	// password for entering as a sepctator
 
-cvar_t	allow_download = {"allow_download", "1"};
-cvar_t	allow_download_skins = {"allow_download_skins", "1"};
-cvar_t	allow_download_models = {"allow_download_models", "1"};
-cvar_t	allow_download_sounds = {"allow_download_sounds", "1"};
-cvar_t	allow_download_maps = {"allow_download_maps", "1"};
+cvar_t	sv_highchars = {"sv_highchars", "1", CVAR_NONE};
 
-cvar_t	sv_highchars = {"sv_highchars", "1"};
+cvar_t	sv_phs = {"sv_phs", "1", CVAR_NONE};
+cvar_t	sv_namedistance = {"sv_namedistance", "600", CVAR_NONE};
 
-cvar_t	sv_phs = {"sv_phs", "1"};
-cvar_t	sv_namedistance = {"sv_namedistance", "600"};
+cvar_t	allow_download = {"allow_download", "1", CVAR_NONE};
+cvar_t	allow_download_skins = {"allow_download_skins", "1", CVAR_NONE};
+cvar_t	allow_download_models = {"allow_download_models", "1", CVAR_NONE};
+cvar_t	allow_download_sounds = {"allow_download_sounds", "1", CVAR_NONE};
+cvar_t	allow_download_maps = {"allow_download_maps", "1", CVAR_NONE};
 
 //
 // game rules mirrored in svs.info
 //
-cvar_t	fraglimit = {"fraglimit","0",false,true};
-cvar_t	timelimit = {"timelimit","0",false,true};
-cvar_t	teamplay = {"teamplay","0",false,true};
-cvar_t	samelevel = {"samelevel","0", false, true};
-cvar_t	maxclients = {"maxclients","8", false, true};
-cvar_t	maxspectators = {"maxspectators","8", false, true};
-cvar_t	skill = {"skill","1", false, false};		// 0 - 3
-cvar_t	deathmatch = {"deathmatch","1", false, true};	// 0, 1, or 2
-cvar_t	coop = {"coop","0", false, true};		// 0, 1, or 2
-cvar_t	randomclass = {"randomclass","0", false, true};	
-cvar_t	damageScale = {"damagescale","1.0", false, true};
-cvar_t	shyRespawn = {"shyRespawn", "0", false, true};
-cvar_t	spartanPrint = {"spartanPrint", "1.0", false, true};
-cvar_t	meleeDamScale = {"meleeDamScale","0.66666", false, true};
-cvar_t	manaScale = {"manascale", "1.0", false, true};
-cvar_t	tomeMode = {"tomemode", "0", false, true};
-cvar_t	tomeRespawn = {"tomerespawn", "0", false, true};
-cvar_t	w2Respawn = {"w2respawn", "0", false, true};
-cvar_t	altRespawn = {"altrespawn", "0", false, true};
-cvar_t	fixedLevel = {"fixedlevel", "0", false, true};
-cvar_t	autoItems = {"autoitems", "0", false, true};
-cvar_t	dmMode = {"dmmode", "0", false, true};
-cvar_t	easyFourth = {"easyfourth", "0", false, true};
-cvar_t	patternRunner= {"patternrunner", "0", false, true};
-cvar_t	spawn = {"spawn","0", false, true};
+cvar_t	fraglimit = {"fraglimit", "0", CVAR_NOTIFY|CVAR_SERVERINFO};
+cvar_t	timelimit = {"timelimit", "0", CVAR_NOTIFY|CVAR_SERVERINFO};
+cvar_t	teamplay = {"teamplay", "0", CVAR_NOTIFY|CVAR_SERVERINFO};
+cvar_t	samelevel = {"samelevel", "0", CVAR_NOTIFY|CVAR_SERVERINFO};
+cvar_t	maxclients = {"maxclients","8", CVAR_SERVERINFO};
+cvar_t	maxspectators = {"maxspectators","8", CVAR_SERVERINFO};
+cvar_t	skill = {"skill","1", CVAR_NONE};		// 0 - 3
+cvar_t	deathmatch = {"deathmatch", "1", CVAR_SERVERINFO};	// 0, 1, or 2
+cvar_t	coop = {"coop", "0", CVAR_SERVERINFO};		// 0, 1, or 2
+cvar_t	randomclass = {"randomclass", "0", CVAR_SERVERINFO};	
+cvar_t	damageScale = {"damagescale", "1.0", CVAR_SERVERINFO};
+cvar_t	shyRespawn = {"shyRespawn", "0", CVAR_SERVERINFO};
+cvar_t	spartanPrint = {"spartanPrint", "1.0", CVAR_SERVERINFO};
+cvar_t	meleeDamScale = {"meleeDamScale", "0.66666", CVAR_SERVERINFO};
+cvar_t	manaScale = {"manascale", "1.0", CVAR_SERVERINFO};
+cvar_t	tomeMode = {"tomemode", "0", CVAR_SERVERINFO};
+cvar_t	tomeRespawn = {"tomerespawn", "0", CVAR_SERVERINFO};
+cvar_t	w2Respawn = {"w2respawn", "0", CVAR_SERVERINFO};
+cvar_t	altRespawn = {"altrespawn", "0", CVAR_SERVERINFO};
+cvar_t	fixedLevel = {"fixedlevel", "0", CVAR_SERVERINFO};
+cvar_t	autoItems = {"autoitems", "0", CVAR_SERVERINFO};
+cvar_t	dmMode = {"dmmode", "0", CVAR_SERVERINFO};
+cvar_t	easyFourth = {"easyfourth", "0", CVAR_SERVERINFO};
+cvar_t	patternRunner= {"patternrunner", "0", CVAR_SERVERINFO};
+cvar_t	spawn = {"spawn", "0", CVAR_SERVERINFO};
 
-cvar_t	hostname = {"hostname","unnamed", false, true};
+cvar_t	hostname = {"hostname", "unnamed", CVAR_SERVERINFO};
 
-cvar_t	sv_ce_scale = {"sv_ce_scale","1", true};
-cvar_t	sv_ce_max_size = {"sv_ce_max_size","0", true};
+cvar_t	sv_ce_scale = {"sv_ce_scale", "1", CVAR_ARCHIVE};
+cvar_t	sv_ce_max_size = {"sv_ce_max_size", "0", CVAR_ARCHIVE};
 
-cvar_t	noexit = {"noexit", "0", false, true};
+cvar_t	noexit = {"noexit", "0", CVAR_NOTIFY|CVAR_SERVERINFO};
 
 FILE	*sv_logfile;
 FILE	*sv_fraglogfile;
@@ -822,7 +822,7 @@ typedef struct
 static ipfilter_t	ipfilters[MAX_IPFILTERS];
 static int		numipfilters;
 
-cvar_t	filterban = {"filterban", "1"};
+static	cvar_t	filterban = {"filterban", "1", CVAR_NONE};
 
 
 /*

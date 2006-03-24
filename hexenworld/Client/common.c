@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.33 2006-03-23 19:45:14 sezero Exp $
+	$Id: common.c,v 1.34 2006-03-24 15:05:44 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -24,8 +24,8 @@ static char	*argvdummy = " ";
 static char	*safeargvs[NUM_SAFE_ARGVS] =
 	{"-nomidi", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse"};
 
-cvar_t	registered = {"registered","0"};
-cvar_t	oem = {"oem","0"};
+cvar_t	registered = {"registered", "0", CVAR_ROM};
+cvar_t	oem = {"oem", "0", CVAR_ROM};
 
 unsigned int	gameflags;
 
@@ -1868,6 +1868,8 @@ static void COM_InitFilesystem (void)
 	// any set gamedirs will be freed up to here
 	com_base_searchpaths = com_searchpaths;
 
+	oem.flags &= ~CVAR_ROM;
+	registered.flags &= ~CVAR_ROM;
 	if (gameflags & GAME_REGISTERED)
 	{
 		sprintf (temp, "registered");

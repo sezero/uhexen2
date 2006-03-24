@@ -45,8 +45,8 @@ address spoofing.
 */
 
 int		net_drop;
-cvar_t	showpackets = {"showpackets", "0"};
-cvar_t	showdrop = {"showdrop", "0"};
+static	cvar_t	showpackets = {"showpackets", "0", CVAR_NONE};
+static	cvar_t	showdrop = {"showdrop", "0", CVAR_NONE};
 
 /*
 ===============

@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.32 2006-03-23 20:01:39 sezero Exp $
+	$Id: gl_rmain.c,v 1.33 2006-03-24 15:05:44 sezero Exp $
 */
 
 
@@ -66,48 +66,48 @@ static	qboolean AlwaysDrawModel;
 extern	qboolean gl_dogamma;
 extern	cvar_t	v_gamma;
 
-cvar_t	r_norefresh = {"r_norefresh","0"};
-cvar_t	r_drawentities = {"r_drawentities","1"};
-cvar_t	r_drawviewmodel = {"r_drawviewmodel","1"};
-cvar_t	r_speeds = {"r_speeds","0"};
-cvar_t	r_fullbright = {"r_fullbright","0"};
-cvar_t	r_lightmap = {"r_lightmap","0"};
-cvar_t	r_shadows = {"r_shadows","0", true};
-cvar_t	r_mirroralpha = {"r_mirroralpha","1"};
-cvar_t	r_wateralpha = {"r_wateralpha","0.33", true};
-cvar_t	r_skyalpha = {"r_skyalpha", "0.67", true};
-cvar_t	r_dynamic = {"r_dynamic","1"};
-cvar_t	r_novis = {"r_novis","0"};
-cvar_t	r_wholeframe = {"r_wholeframe", "1", true};
+cvar_t	r_norefresh = {"r_norefresh", "0", CVAR_NONE};
+cvar_t	r_drawentities = {"r_drawentities", "1", CVAR_NONE};
+cvar_t	r_drawviewmodel = {"r_drawviewmodel", "1", CVAR_NONE};
+cvar_t	r_speeds = {"r_speeds", "0", CVAR_NONE};
+cvar_t	r_fullbright = {"r_fullbright", "0", CVAR_NONE};
+cvar_t	r_lightmap = {"r_lightmap", "0", CVAR_NONE};
+cvar_t	r_shadows = {"r_shadows", "0", CVAR_ARCHIVE};
+cvar_t	r_mirroralpha = {"r_mirroralpha", "1", CVAR_NONE};
+cvar_t	r_wateralpha = {"r_wateralpha", "0.33", CVAR_ARCHIVE};
+cvar_t	r_skyalpha = {"r_skyalpha", "0.67", CVAR_ARCHIVE};
+cvar_t	r_dynamic = {"r_dynamic", "1", CVAR_NONE};
+cvar_t	r_novis = {"r_novis", "0", CVAR_NONE};
+cvar_t	r_wholeframe = {"r_wholeframe", "1", CVAR_ARCHIVE};
 
-cvar_t	r_entdistance = {"r_entdistance", "0", true};
-cvar_t	r_netgraph = {"r_netgraph","0"};
-cvar_t	r_teamcolor = {"r_teamcolor", "187", true};
+cvar_t	r_entdistance = {"r_entdistance", "0", CVAR_ARCHIVE};
+cvar_t	r_netgraph = {"r_netgraph", "0", CVAR_NONE};
+cvar_t	r_teamcolor = {"r_teamcolor", "187", CVAR_ARCHIVE};
 
 extern	cvar_t	scr_fov;
-extern	cvar_t	gl_ztrick;
 
-cvar_t	gl_clear = {"gl_clear","0"};
-cvar_t	gl_cull = {"gl_cull","1"};
-cvar_t	gl_multitexture = {"gl_multitexture","0",true};
-cvar_t	gl_smoothmodels = {"gl_smoothmodels","1"};
-cvar_t	gl_affinemodels = {"gl_affinemodels","0"};
-cvar_t	gl_polyblend = {"gl_polyblend","1"};
-cvar_t	gl_flashblend = {"gl_flashblend","0"};
-cvar_t	gl_playermip = {"gl_playermip","0"};
-cvar_t	gl_nocolors = {"gl_nocolors","0"};
-cvar_t	gl_keeptjunctions = {"gl_keeptjunctions","1", true};
-cvar_t	gl_reporttjunctions = {"gl_reporttjunctions","0"};
-cvar_t	gl_waterripple = {"gl_waterripple", "2", true};
-cvar_t	gl_waterwarp = {"gl_waterwarp", "0", true};
-cvar_t	gl_stencilshadow = {"gl_stencilshadow", "0",true};
-cvar_t	gl_glows = {"gl_glows","1",true};
-cvar_t	gl_other_glows = {"gl_other_glows","0",true};
-cvar_t	gl_missile_glows = {"gl_missile_glows","1",true};
+cvar_t	gl_clear = {"gl_clear", "0", CVAR_NONE};
+cvar_t	gl_cull = {"gl_cull", "1", CVAR_NONE};
+cvar_t	gl_ztrick = {"gl_ztrick", "0", CVAR_ARCHIVE};
+cvar_t	gl_multitexture = {"gl_multitexture", "0", CVAR_ARCHIVE};
+cvar_t	gl_smoothmodels = {"gl_smoothmodels", "1", CVAR_NONE};
+cvar_t	gl_affinemodels = {"gl_affinemodels", "0", CVAR_NONE};
+cvar_t	gl_polyblend = {"gl_polyblend", "1", CVAR_NONE};
+cvar_t	gl_flashblend = {"gl_flashblend", "0", CVAR_NONE};
+cvar_t	gl_playermip = {"gl_playermip", "0", CVAR_NONE};
+cvar_t	gl_nocolors = {"gl_nocolors", "0", CVAR_NONE};
+cvar_t	gl_keeptjunctions = {"gl_keeptjunctions", "1", CVAR_ARCHIVE};
+cvar_t	gl_reporttjunctions = {"gl_reporttjunctions", "0", CVAR_NONE};
+cvar_t	gl_waterripple = {"gl_waterripple", "2", CVAR_ARCHIVE};
+cvar_t	gl_waterwarp = {"gl_waterwarp", "0", CVAR_ARCHIVE};
+cvar_t	gl_stencilshadow = {"gl_stencilshadow", "0", CVAR_ARCHIVE};
+cvar_t	gl_glows = {"gl_glows", "1", CVAR_ARCHIVE};
+cvar_t	gl_other_glows = {"gl_other_glows", "0", CVAR_ARCHIVE};
+cvar_t	gl_missile_glows = {"gl_missile_glows", "1", CVAR_ARCHIVE};
 
-cvar_t	gl_coloredlight = {"gl_coloredlight","0",true};
-cvar_t	gl_colored_dynamic_lights = {"gl_colored_dynamic_lights","0",true};
-cvar_t	gl_extra_dynamic_lights = {"gl_extra_dynamic_lights","0",true};
+cvar_t	gl_coloredlight = {"gl_coloredlight", "0", CVAR_ARCHIVE};
+cvar_t	gl_colored_dynamic_lights = {"gl_colored_dynamic_lights", "0", CVAR_ARCHIVE};
+cvar_t	gl_extra_dynamic_lights = {"gl_extra_dynamic_lights", "0", CVAR_ARCHIVE};
 
 //=============================================================================
 

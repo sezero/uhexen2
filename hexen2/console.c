@@ -25,8 +25,8 @@ static short	*con_text=0;
 static float	con_cursorspeed = 4;
 qboolean 	con_forcedup;		// because no entities to refresh
 
-cvar_t		sys_nostdout = {"sys_nostdout", "1"};	// - DDOI
-cvar_t		con_notifytime = {"con_notifytime","3"};	//seconds
+cvar_t		sys_nostdout = {"sys_nostdout", "1", CVAR_NONE};	// - DDOI
+static	cvar_t	con_notifytime = {"con_notifytime", "3", CVAR_NONE};	//seconds
 
 #define	NUM_CON_TIMES 4
 static float	con_times[NUM_CON_TIMES];	// realtime time the line was generated

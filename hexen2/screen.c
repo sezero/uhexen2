@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.24 2006-03-17 14:12:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.25 2006-03-24 15:05:39 sezero Exp $
 */
 
 /*=============================================================================
@@ -80,14 +80,14 @@ float		scr_conlines;		// lines of console to display
 
 float		oldscreensize, oldfov;
 
-cvar_t		scr_viewsize = {"viewsize","110", true};
-cvar_t		scr_fov = {"fov","90"};	// 10 - 170
-cvar_t		scr_conspeed = {"scr_conspeed","300"};
-cvar_t		scr_centertime = {"scr_centertime","4"};
-cvar_t		scr_showram = {"showram","1"};
-cvar_t		scr_showturtle = {"showturtle","0"};
-cvar_t		scr_showpause = {"showpause","1"};
-cvar_t		scr_printspeed = {"scr_printspeed","8"};
+cvar_t		scr_viewsize = {"viewsize", "110", CVAR_ARCHIVE};
+cvar_t		scr_fov = {"fov", "90", CVAR_NONE};	// 10 - 170
+static	cvar_t	scr_conspeed = {"scr_conspeed", "300", CVAR_NONE};
+static	cvar_t	scr_centertime = {"scr_centertime", "4", CVAR_NONE};
+static	cvar_t	scr_showram = {"showram", "1", CVAR_NONE};
+static	cvar_t	scr_showturtle = {"showturtle", "0", CVAR_NONE};
+static	cvar_t	scr_showpause = {"showpause", "1", CVAR_NONE};
+static	cvar_t	scr_printspeed = {"scr_printspeed", "8", CVAR_NONE};
 
 static qboolean	scr_drawloading;
 static int	ls_offset;
@@ -1506,6 +1506,10 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2006/03/17 14:12:48  sezero
+ * put back mission-pack only objectives stuff back into pure h2 builds.
+ * it was a total screw-up...
+ *
  * Revision 1.23  2006/03/13 22:34:36  sezero
  * continue making static functions and vars static. whitespace and coding
  * style cleanup. part 43: screen.c and gl_screen.c. tiny synchronizations

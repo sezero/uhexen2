@@ -125,22 +125,22 @@ static qboolean	vid_wassuspended = false;
 
 // cvar vid_mode must be set before calling
 // VID_SetMode, VID_ChangeVideoMode or VID_Restart_f
-static cvar_t	vid_mode = {"vid_mode","0", false};
-static cvar_t	vid_config_glx = {"vid_config_glx","640", true};
-static cvar_t	vid_config_gly = {"vid_config_gly","480", true};
-static cvar_t	vid_config_bpp = {"vid_config_bpp","16",  true};
-static cvar_t	vid_config_fscr= {"vid_config_fscr", "1", true};
+static cvar_t	vid_mode = {"vid_mode", "0", CVAR_NONE};
+static cvar_t	vid_config_glx = {"vid_config_glx", "640", CVAR_ARCHIVE};
+static cvar_t	vid_config_gly = {"vid_config_gly", "480", CVAR_ARCHIVE};
+static cvar_t	vid_config_bpp = {"vid_config_bpp", "16", CVAR_ARCHIVE};
+static cvar_t	vid_config_fscr= {"vid_config_fscr", "1", CVAR_ARCHIVE};
 // cvars for compatibility with the software version
-static cvar_t	vid_wait = {"vid_wait", "-1", true};
-static cvar_t	vid_maxpages = {"vid_maxpages", "3", true};
-static cvar_t	vid_nopageflip = {"vid_nopageflip","1", true};
+static cvar_t	vid_wait = {"vid_wait", "-1", CVAR_ARCHIVE};
+static cvar_t	vid_maxpages = {"vid_maxpages", "3", CVAR_ARCHIVE};
+static cvar_t	vid_nopageflip = {"vid_nopageflip", "1", CVAR_ARCHIVE};
 // Note that 0 is MODE_WINDOWED
 // Note that 3 is MODE_FULLSCREEN_DEFAULT
-static cvar_t	_vid_default_mode = {"_vid_default_mode","0", true};
-static cvar_t	_vid_default_mode_win = {"_vid_default_mode_win","3", true};
-static cvar_t	vid_stretch_by_2 = {"vid_stretch_by_2","1", true};
-static cvar_t	vid_config_x = {"vid_config_x","800", true};
-static cvar_t	vid_config_y = {"vid_config_y","600", true};
+static cvar_t	_vid_default_mode = {"_vid_default_mode", "0", CVAR_ARCHIVE};
+static cvar_t	_vid_default_mode_win = {"_vid_default_mode_win", "3", CVAR_ARCHIVE};
+static cvar_t	vid_stretch_by_2 = {"vid_stretch_by_2", "1", CVAR_ARCHIVE};
+static cvar_t	vid_config_x = {"vid_config_x", "800", CVAR_ARCHIVE};
+static cvar_t	vid_config_y = {"vid_config_y", "600", CVAR_ARCHIVE};
 
 byte		globalcolormap[VID_GRADES*256];
 float		RTint[256], GTint[256], BTint[256];
@@ -177,7 +177,7 @@ typedef void	(APIENTRY *FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*
 static FX_SET_PALETTE_EXT	MyglColorTableEXT;
 static qboolean	have8bit = false;
 qboolean	is8bit = false;
-static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit","0", true};
+static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit", "0", CVAR_ARCHIVE};
 
 // Gamma stuff
 typedef BOOL	(APIENTRY *GAMMA_RAMP_FN)(HDC, LPVOID);
@@ -197,10 +197,6 @@ qboolean	have_stencil = false;
 
 // misc gl tweaks
 static qboolean	fullsbardraw = false;
-cvar_t		gl_ztrick = {"gl_ztrick","0",true};
-cvar_t		gl_purge_maptex = {"gl_purge_maptex", "1", true};
-		/* whether or not map-specific OGL textures
-		   are flushed from map. default == yes  */
 
 // misc external data and functions
 extern void	D_ClearOpenGLTextures(int);
@@ -215,7 +211,7 @@ void VID_MenuKey (int key);
 // input stuff
 static void ClearAllStates (void);
 static int	enable_mouse;
-cvar_t		_enable_mouse = {"_enable_mouse","0", true};
+cvar_t		_enable_mouse = {"_enable_mouse", "0", CVAR_ARCHIVE};
 
 
 //====================================
@@ -2149,8 +2145,6 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&vid_config_glx);
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&_enable_mouse);
-	Cvar_RegisterVariable (&gl_ztrick);
-	Cvar_RegisterVariable (&gl_purge_maptex);
 	Cvar_RegisterVariable (&gl_lightmapfmt);
 	// these are for compatibility with the software version
 	Cvar_RegisterVariable (&vid_wait);

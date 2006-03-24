@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.17 2006-03-17 14:12:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.18 2006-03-24 15:05:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -62,19 +62,20 @@ static gefv_cache	gefvCache[GEFV_CACHESIZE] =
 		{ NULL,	"" }
 };
 
-cvar_t	max_temp_edicts = {"max_temp_edicts", "30", true};
+cvar_t	max_temp_edicts = {"max_temp_edicts", "30", CVAR_ARCHIVE};
 
-cvar_t	nomonsters = {"nomonsters", "0"};
-cvar_t	gamecfg = {"gamecfg", "0"};
-cvar_t	savedgamecfg = {"savedgamecfg", "0", true};
-cvar_t	scratch1 = {"scratch1", "0"};
-cvar_t	scratch2 = {"scratch2", "0"};
-cvar_t	scratch3 = {"scratch3", "0"};
-cvar_t	scratch4 = {"scratch4", "0"};
-cvar_t	saved1 = {"saved1", "0", true};
-cvar_t	saved2 = {"saved2", "0", true};
-cvar_t	saved3 = {"saved3", "0", true};
-cvar_t	saved4 = {"saved4", "0", true};
+cvar_t	nomonsters = {"nomonsters", "0", CVAR_NONE};
+
+static	cvar_t	gamecfg = {"gamecfg", "0", CVAR_NONE};
+static	cvar_t	savedgamecfg = {"savedgamecfg", "0", CVAR_ARCHIVE};
+static	cvar_t	saved1 = {"saved1", "0", CVAR_ARCHIVE};
+static	cvar_t	saved2 = {"saved2", "0", CVAR_ARCHIVE};
+static	cvar_t	saved3 = {"saved3", "0", CVAR_ARCHIVE};
+static	cvar_t	saved4 = {"saved4", "0", CVAR_ARCHIVE};
+static	cvar_t	scratch1 = {"scratch1", "0", CVAR_NONE};
+static	cvar_t	scratch2 = {"scratch2", "0", CVAR_NONE};
+static	cvar_t	scratch3 = {"scratch3", "0", CVAR_NONE};
+static	cvar_t	scratch4 = {"scratch4", "0", CVAR_NONE};
 
 //===========================================================================
 
@@ -1452,6 +1453,10 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2006/03/17 14:12:48  sezero
+ * put back mission-pack only objectives stuff back into pure h2 builds.
+ * it was a total screw-up...
+ *
  * Revision 1.16  2006/03/13 22:28:51  sezero
  * removed the expansion pack only feature of objective strings from
  * hexen2-only builds (many new ifdef H2MP stuff). removed the expansion

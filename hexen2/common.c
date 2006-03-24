@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.37 2006-03-23 19:45:09 sezero Exp $
+	$Id: common.c,v 1.38 2006-03-24 15:05:39 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -24,8 +24,8 @@ static char	*argvdummy = " ";
 static char	*safeargvs[NUM_SAFE_ARGVS] =
 	{"-nomidi", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse"};
 
-cvar_t	registered = {"registered","0"};
-cvar_t	oem = {"oem","0"};
+cvar_t	registered = {"registered", "0", CVAR_ROM};
+cvar_t	oem = {"oem", "0", CVAR_ROM};
 
 unsigned int	gameflags;
 
@@ -1868,6 +1868,8 @@ static void COM_InitFilesystem (void)
 	// any set gamedirs will be freed up to here
 	com_base_searchpaths = com_searchpaths;
 
+	oem.flags &= ~CVAR_ROM;
+	registered.flags &= ~CVAR_ROM;
 	if (gameflags & GAME_REGISTERED)
 	{
 		sprintf (temp, "registered");
@@ -2169,6 +2171,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.37  2006/03/23 19:45:09  sezero
+ * Marked the cvars oem and registered as read-only in COM_InitFilesystem
+ *
  * Revision 1.36  2006/03/17 20:23:17  sezero
  * Updates to COM_LoadPackFile, COM_CheckRegistered and COM_InitFilesystem:
  * killed variables com_modified, com_portals and static_registered. Combined

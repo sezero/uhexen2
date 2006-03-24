@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.15 2005-12-28 08:37:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.16 2006-03-24 15:05:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -36,7 +36,7 @@ static	char		*cmd_args = NULL;
 
 static qboolean	cmd_wait;
 
-cvar_t cl_warncmd = {"cl_warncmd", "0"};
+cvar_t cl_warncmd = {"cl_warncmd", "0", CVAR_NONE};
 
 
 //=============================================================================
@@ -799,6 +799,19 @@ void Cmd_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2005/12/28 08:37:42  sezero
+ * cleaned up the console tab completion:
+ * * removed duplicate and unnecessary code, hopefully more readable now.
+ * bug fixes:
+ * * fixed edit line not resetting to emptiness when returning from history by
+ *   the down-arrow key
+ * * fixed earliest history being displayed as an empty line when using the
+ *   up-arrow key (from QIP)
+ * * fixed null-termination issues in partial completion where after first
+ *   displaying the history command lines (up key) and then going back to the
+ *   edit line (down key) the latest history got appended to the completion
+ *   (this bug was only visable after fixing the first mentioned bug above)
+ *
  * Revision 1.14  2005/12/28 08:25:28  sezero
  * implemented partial tab completion:
  * added char **buf, and int pos arguments to the command lister

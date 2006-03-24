@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.31 2006-02-18 08:51:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.32 2006-03-24 15:05:39 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -12,12 +12,12 @@
 extern qboolean	draw_reinit;
 
 // mouse variables
-cvar_t	m_filter = {"m_filter","0"};
+static cvar_t	m_filter = {"m_filter", "0", CVAR_NONE};
 
 static int	mouse_buttons;
 static int	mouse_oldbuttonstate;
 static int	mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
-extern cvar_t	vid_mode, _enable_mouse;
+extern cvar_t	_enable_mouse;
 
 extern modestate_t	modestate;
 extern qboolean	in_mode_set;
@@ -56,25 +56,25 @@ static PDWORD	pdwRawValue[JOY_MAX_AXES];
 // each time.  this avoids any problems with getting back to a default usage
 // or when changing from one controller to another.  this way at least something
 // works.
-cvar_t	in_joystick = {"joystick","1"};
-cvar_t	joy_name = {"joyname", "joystick"};
-cvar_t	joy_advanced = {"joyadvanced", "0"};
-cvar_t	joy_advaxisx = {"joyadvaxisx", "0"};
-cvar_t	joy_advaxisy = {"joyadvaxisy", "0"};
-cvar_t	joy_advaxisz = {"joyadvaxisz", "0"};
-cvar_t	joy_advaxisr = {"joyadvaxisr", "0"};
-cvar_t	joy_advaxisu = {"joyadvaxisu", "0"};
-cvar_t	joy_advaxisv = {"joyadvaxisv", "0"};
-cvar_t	joy_forwardthreshold = {"joyforwardthreshold", "0.15"};
-cvar_t	joy_sidethreshold = {"joysidethreshold", "0.15"};
-cvar_t	joy_pitchthreshold = {"joypitchthreshold", "0.15"};
-cvar_t	joy_yawthreshold = {"joyyawthreshold", "0.15"};
-cvar_t	joy_forwardsensitivity = {"joyforwardsensitivity", "-1.0"};
-cvar_t	joy_sidesensitivity = {"joysidesensitivity", "-1.0"};
-cvar_t	joy_pitchsensitivity = {"joypitchsensitivity", "1.0"};
-cvar_t	joy_yawsensitivity = {"joyyawsensitivity", "-1.0"};
-cvar_t	joy_wwhack1 = {"joywwhack1", "0.0"};
-cvar_t	joy_wwhack2 = {"joywwhack2", "0.0"};
+static	cvar_t	in_joystick = {"joystick", "1", CVAR_NONE};
+static	cvar_t	joy_name = {"joyname", "joystick", CVAR_NONE};
+static	cvar_t	joy_advanced = {"joyadvanced", "0", CVAR_NONE};
+static	cvar_t	joy_advaxisx = {"joyadvaxisx", "0", CVAR_NONE};
+static	cvar_t	joy_advaxisy = {"joyadvaxisy", "0", CVAR_NONE};
+static	cvar_t	joy_advaxisz = {"joyadvaxisz", "0", CVAR_NONE};
+static	cvar_t	joy_advaxisr = {"joyadvaxisr", "0", CVAR_NONE};
+static	cvar_t	joy_advaxisu = {"joyadvaxisu", "0", CVAR_NONE};
+static	cvar_t	joy_advaxisv = {"joyadvaxisv", "0", CVAR_NONE};
+static	cvar_t	joy_forwardthreshold = {"joyforwardthreshold", "0.15", CVAR_NONE};
+static	cvar_t	joy_sidethreshold = {"joysidethreshold", "0.15", CVAR_NONE};
+static	cvar_t	joy_pitchthreshold = {"joypitchthreshold", "0.15", CVAR_NONE};
+static	cvar_t	joy_yawthreshold = {"joyyawthreshold", "0.15", CVAR_NONE};
+static	cvar_t	joy_forwardsensitivity = {"joyforwardsensitivity", "-1.0", CVAR_NONE};
+static	cvar_t	joy_sidesensitivity = {"joysidesensitivity", "-1.0", CVAR_NONE};
+static	cvar_t	joy_pitchsensitivity = {"joypitchsensitivity", "1.0", CVAR_NONE};
+static	cvar_t	joy_yawsensitivity = {"joyyawsensitivity", "-1.0", CVAR_NONE};
+static	cvar_t	joy_wwhack1 = {"joywwhack1", "0.0", CVAR_NONE};
+static	cvar_t	joy_wwhack2 = {"joywwhack2", "0.0", CVAR_NONE};
 
 #if 0
 static qboolean	joy_avail, joy_advancedinit, joy_haspov;
@@ -1188,6 +1188,11 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2006/02/18 08:51:10  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. also renamed the variables name and dest to savename and savedest in
+ * host_cmd.c to prevent any confusion and pollution.
+ *
  * Revision 1.30  2006/01/14 08:39:24  sezero
  * fixed the incorrect (mislead) usage of modestate values, although the result
  * doesn't change.

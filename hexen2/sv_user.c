@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.8 2006-03-21 22:20:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.9 2006-03-24 15:05:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,7 +10,7 @@
 edict_t	*sv_player = NULL;
 
 extern	cvar_t	sv_friction;
-cvar_t	sv_edgefriction = {"edgefriction", "2"};
+cvar_t	sv_edgefriction = {"edgefriction", "2", CVAR_NONE};
 extern	cvar_t	sv_stopspeed;
 
 static	vec3_t		forward, right, up;
@@ -27,8 +27,8 @@ static	qboolean	onground;
 
 static	usercmd_t	cmd;
 
-cvar_t	sv_idealpitchscale = {"sv_idealpitchscale","0.8"};
-cvar_t	sv_idealrollscale = {"sv_idealrollscale","0.8"};
+cvar_t	sv_idealpitchscale = {"sv_idealpitchscale", "0.8", CVAR_NONE};
+cvar_t	sv_idealrollscale = {"sv_idealrollscale", "0.8", CVAR_NONE};
 
 
 /*
@@ -189,13 +189,13 @@ SV_Accelerate
 ==============
 */
 
-//cvar_t	sv_maxspeed = {"sv_maxspeed", "320", false, true};
-cvar_t	sv_maxspeed = {"sv_maxspeed", "640", false, true};
-cvar_t	sv_accelerate = {"sv_accelerate", "10"};
+//cvar_t	sv_maxspeed = {"sv_maxspeed", "320", CVAR_NOTIFY|CVAR_SERVERINFO};
+cvar_t	sv_maxspeed = {"sv_maxspeed", "640", CVAR_NOTIFY|CVAR_SERVERINFO};
+cvar_t	sv_accelerate = {"sv_accelerate", "10", CVAR_NONE};
 
 /* Old values before the id 1.07 update
-cvar_t	sv_maxspeed = {"sv_maxspeed", "640", false, true};
-cvar_t	sv_accelerate = {"sv_accelerate", "100"};
+cvar_t	sv_maxspeed = {"sv_maxspeed", "640", CVAR_NOTIFY|CVAR_SERVERINFO};
+cvar_t	sv_accelerate = {"sv_accelerate", "100", CVAR_NONE};
 */
 
 #if 0
@@ -287,7 +287,6 @@ static void SV_FlightMove (void)
 	float	speed, newspeed, addspeed, accelspeed;
 	//float	wishspeed;
 
-//	cl.pitchvel = v_centerspeed.value;
 	cl.nodrift = false;
 	cl.driftmove = 0;
 
@@ -766,6 +765,15 @@ void SV_RunClients (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2006/03/21 22:20:59  sezero
+ * Commented out Anvil of Thyrion solution for the original hexen2 friction
+ * emulation which was hard-set at 6. Merged the solution found in pa3pyx's
+ * tree.  v1.11 progs doesn't initialize the friction properly (always 0).
+ * In fact, applying a patch to the progs can easily solve this issue, but
+ * in that case several unpatched mods would be left broken. Note: Compared
+ * to the AoT solution down below, this makes pure-hexen2 to feel slightly
+ * more slippery.
+ *
  * Revision 1.7  2006/02/26 12:28:16  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 31:  sv_send.c, sv_user.c).

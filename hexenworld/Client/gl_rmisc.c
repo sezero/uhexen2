@@ -4,6 +4,10 @@
 
 byte			*playerTranslation;
 
+cvar_t			gl_purge_maptex = {"gl_purge_maptex", "1", CVAR_ARCHIVE};
+				// whether or not map-specific OGL textures
+				// are purged on map change. default == yes
+
 int			gl_texlevel;
 extern qboolean		plyrtex[MAX_PLAYER_CLASS][16][16];
 extern gltexture_t	gltextures[MAX_GLTEXTURES];
@@ -222,6 +226,9 @@ void R_Init (void)
 	Cvar_RegisterVariable (&gl_nocolors);
 	Cvar_RegisterVariable (&gl_waterripple);
 	Cvar_RegisterVariable (&gl_waterwarp);
+
+	Cvar_RegisterVariable (&gl_ztrick);
+	Cvar_RegisterVariable (&gl_purge_maptex);
 
 	Cvar_RegisterVariable (&gl_keeptjunctions);
 	Cvar_RegisterVariable (&gl_reporttjunctions);

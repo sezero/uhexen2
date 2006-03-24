@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.19 2006-03-17 14:12:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.20 2006-03-24 15:05:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2118,7 +2118,7 @@ Pick a vector for the player to shoot along
 vector aim(entity, missilespeed)
 =============
 */
-cvar_t	sv_aim = {"sv_aim", "0.93"};
+cvar_t	sv_aim = {"sv_aim", "0.93", CVAR_NONE};
 static void PF_aim (void)
 {
 	edict_t	*ent, *check, *bestent;
@@ -3289,6 +3289,10 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2006/03/17 14:12:48  sezero
+ * put back mission-pack only objectives stuff back into pure h2 builds.
+ * it was a total screw-up...
+ *
  * Revision 1.18  2006/03/13 22:28:51  sezero
  * removed the expansion pack only feature of objective strings from
  * hexen2-only builds (many new ifdef H2MP stuff). removed the expansion

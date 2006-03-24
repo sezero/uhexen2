@@ -55,21 +55,21 @@ static HICON	hIcon;
 viddef_t	vid;				// global video state
 
 // Note that 0 is MODE_WINDOWED
-cvar_t		vid_mode = {"vid_mode","0", false};
+static	cvar_t	vid_mode = {"vid_mode", "0", CVAR_NONE};
 // Note that 0 is MODE_WINDOWED
-cvar_t		_vid_default_mode = {"_vid_default_mode","0", true};
+static	cvar_t	_vid_default_mode = {"_vid_default_mode", "0", CVAR_ARCHIVE};
 // Note that 3 is MODE_FULLSCREEN_DEFAULT
-cvar_t		_vid_default_mode_win = {"_vid_default_mode_win","3", true};
-cvar_t		vid_config_glx = {"vid_config_glx","640", true}; // compatibility with gl version
-cvar_t		vid_config_fscr  = {"vid_config_fscr", "1",   true}; // compatibility with gl version
-cvar_t		vid_config_gly = {"vid_config_gly","480", true}; // compatibility with gl version
-cvar_t		vid_wait = {"vid_wait", "-1", true};	// autodetect
+static	cvar_t	_vid_default_mode_win = {"_vid_default_mode_win", "3", CVAR_ARCHIVE};
+static	cvar_t	vid_config_glx = {"vid_config_glx", "640", CVAR_ARCHIVE}; // compatibility with gl version
+static	cvar_t	vid_config_fscr  = {"vid_config_fscr", "1", CVAR_ARCHIVE}; // compatibility with gl version
+static	cvar_t	vid_config_gly = {"vid_config_gly", "480", CVAR_ARCHIVE}; // compatibility with gl version
+static	cvar_t	vid_wait = {"vid_wait", "-1", CVAR_ARCHIVE};	// autodetect
 /* Pa3PyX: vid_maxpages: new variable: maximum number of video pages to use.
    The more, the less chance there is to flicker, the better, but a lot of
    VESA drivers are buggy and report more video pages than there actually are.
    Thus, we limit this number to 3 by default (this was hardcoded before),
    and then let the user pick whatever value they wish. */
-cvar_t		vid_maxpages = {"vid_maxpages", "3", true};
+static	cvar_t	vid_maxpages = {"vid_maxpages", "3", CVAR_ARCHIVE};
 /* Pa3PyX: vid_nopageflip now has meaning (was defunct in previous versions)
    and defaults to 1. Reason: page flipping with direct linear framebuffer
    access was fast for Quake which did not READ anything from frame buffer.
@@ -82,16 +82,17 @@ cvar_t		vid_maxpages = {"vid_maxpages", "3", true};
    faster than DIB. DIB still remains the default for now, for compatibility
    purposes (because it's only slightly slower, and VESA modes are usually
    more trouble than they are worth, especially in Windows) */
-cvar_t		vid_nopageflip = {"vid_nopageflip","1", true};
-cvar_t		vid_config_x = {"vid_config_x","800", true};
-cvar_t		vid_config_y = {"vid_config_y","600", true};
-cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1", true};
-cvar_t		_enable_mouse = {"_enable_mouse","0", true};
-cvar_t		vid_fullscreen_mode = {"vid_fullscreen_mode","3", true};
-cvar_t		vid_windowed_mode = {"vid_windowed_mode","0", true};
-cvar_t		block_switch = {"block_switch","0", true};
-cvar_t		vid_window_x = {"vid_window_x", "0", true};
-cvar_t		vid_window_y = {"vid_window_y", "0", true};
+static	cvar_t	vid_nopageflip = {"vid_nopageflip", "1", CVAR_ARCHIVE};
+static	cvar_t	vid_config_x = {"vid_config_x", "800", CVAR_ARCHIVE};
+static	cvar_t	vid_config_y = {"vid_config_y", "600", CVAR_ARCHIVE};
+static	cvar_t	vid_stretch_by_2 = {"vid_stretch_by_2", "1", CVAR_ARCHIVE};
+static	cvar_t	vid_fullscreen_mode = {"vid_fullscreen_mode", "3", CVAR_ARCHIVE};
+static	cvar_t	vid_windowed_mode = {"vid_windowed_mode", "0", CVAR_ARCHIVE};
+static	cvar_t	block_switch = {"block_switch", "0", CVAR_ARCHIVE};
+static	cvar_t	vid_window_x = {"vid_window_x", "0", CVAR_ARCHIVE};
+static	cvar_t	vid_window_y = {"vid_window_y", "0", CVAR_ARCHIVE};
+
+cvar_t		_enable_mouse = {"_enable_mouse", "0", CVAR_ARCHIVE};
 
 typedef struct {
 	int		width;

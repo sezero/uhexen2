@@ -1,7 +1,7 @@
 /*
 	sv_phys.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.11 2006-02-26 00:47:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.12 2006-03-24 15:05:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -26,13 +26,13 @@ solid_edge items only clip against bsp models.
 
 */
 
-cvar_t	sv_maxvelocity		= { "sv_maxvelocity","2000" };
-cvar_t	sv_nostep		= { "sv_nostep","0" };
-cvar_t	sv_gravity		= { "sv_gravity", "800", false, true };
-cvar_t	sv_stopspeed		= { "sv_stopspeed", "100" };
-cvar_t	sv_friction		= { "sv_friction", "4", false, true };
-cvar_t	sv_flypitch		= { "sv_flypitch","20" };
-cvar_t	sv_walkpitch		= { "sv_walkpitch","0" };
+cvar_t	sv_maxvelocity		= { "sv_maxvelocity", "2000", CVAR_NONE };
+cvar_t	sv_nostep		= { "sv_nostep", "0", CVAR_NONE };
+cvar_t	sv_gravity		= { "sv_gravity", "800", CVAR_NOTIFY|CVAR_SERVERINFO };
+cvar_t	sv_stopspeed		= { "sv_stopspeed", "100", CVAR_NONE };
+cvar_t	sv_friction		= { "sv_friction", "4", CVAR_NOTIFY|CVAR_SERVERINFO };
+cvar_t	sv_flypitch		= { "sv_flypitch", "20", CVAR_NONE };
+cvar_t	sv_walkpitch		= { "sv_walkpitch", "0", CVAR_NONE };
 
 #ifdef QUAKE2
 static	vec3_t	vec_origin = {0.0, 0.0, 0.0};
@@ -2256,6 +2256,10 @@ trace_t SV_Trace_Toss (edict_t *ent, edict_t *ignore)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2006/02/26 00:47:03  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 30:  sv_phys.c).
+ *
  * Revision 1.10  2005/09/19 19:37:07  sezero
  * When a velocity is checked against sv_maxvelocity the Quake engine
  * checks the vector's components (x, y, z) instead of it's resulting

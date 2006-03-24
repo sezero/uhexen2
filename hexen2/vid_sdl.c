@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.46 2006-03-23 19:48:16 sezero Exp $
+	$Id: vid_sdl.c,v 1.47 2006-03-24 15:05:39 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -48,14 +48,16 @@ static SDL_Surface	*screen;
 
 viddef_t	vid;		// global video state
 // cvar vid_mode must be set before calling VID_SetMode, VID_ChangeVideoMode or VID_Restart_f
-static cvar_t	vid_mode = {"vid_mode","0", false};
-static cvar_t	vid_config_glx = {"vid_config_glx","640", true};
-static cvar_t	vid_config_gly = {"vid_config_gly","480", true};
-static cvar_t	vid_config_swx = {"vid_config_swx","320", true};
-static cvar_t	vid_config_swy = {"vid_config_swy","240", true};
-static cvar_t	vid_config_fscr= {"vid_config_fscr", "0", true};
-cvar_t		_enable_mouse = {"_enable_mouse","1", true};
-cvar_t		vid_showload = {"vid_showload", "1"};
+static cvar_t	vid_mode = {"vid_mode", "0", CVAR_NONE};
+static cvar_t	vid_config_glx = {"vid_config_glx", "640", CVAR_ARCHIVE};
+static cvar_t	vid_config_gly = {"vid_config_gly", "480", CVAR_ARCHIVE};
+static cvar_t	vid_config_swx = {"vid_config_swx", "320", CVAR_ARCHIVE};
+static cvar_t	vid_config_swy = {"vid_config_swy", "240", CVAR_ARCHIVE};
+static cvar_t	vid_config_fscr= {"vid_config_fscr", "0", CVAR_ARCHIVE};
+
+static cvar_t	vid_showload = {"vid_showload", "1", CVAR_NONE};
+
+cvar_t		_enable_mouse = {"_enable_mouse", "1", CVAR_ARCHIVE};
 
 static int	vid_default = -1;	// modenum of 320x240 as a safe default
 static int	vid_modenum = -1;	// current video mode, set after mode setting succeeds
@@ -1266,6 +1268,10 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.46  2006/03/23 19:48:16  sezero
+ * Updated the earl-read-cvars in VID_Init and VID_PostInitFix to use the
+ * new CVAR_ROM flag: they look less clumsy now.
+ *
  * Revision 1.45  2006/01/17 17:36:44  sezero
  * A quick'n'dirty patch for making the game to remember its video settings:
  * Essentially it does an early read of config.cfg while in VID_Init to

@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.32 2006-02-19 12:33:24 sezero Exp $
+	$Id: snd_dma.c,v 1.33 2006-03-24 15:05:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -68,22 +68,21 @@ int 		desired_speed = 11025;
 int 		desired_bits = 16;
 int 		desired_channels = 2;
 
-static int	sound_started=0;
-int tryrates[MAX_TRYRATES] = { 11025, 22051, 44100, 8000 };
+static int	sound_started = 0;
+int		tryrates[MAX_TRYRATES] = { 11025, 22051, 44100, 8000 };
 
-cvar_t bgmvolume = {"bgmvolume", "1", true};
-cvar_t bgmtype = {"bgmtype", "cd", true};   // cd or midi
-cvar_t sfxvolume = {"volume", "0.7", true};
+cvar_t		bgmvolume = {"bgmvolume", "1", CVAR_ARCHIVE};
+cvar_t		bgmtype = {"bgmtype", "cd", CVAR_ARCHIVE};	// cd or midi
+cvar_t		sfxvolume = {"volume", "0.7", CVAR_ARCHIVE};
+cvar_t		precache = {"precache", "1", CVAR_NONE};
+cvar_t		loadas8bit = {"loadas8bit", "0", CVAR_NONE};
 
-cvar_t nosound = {"nosound", "0"};
-cvar_t precache = {"precache", "1"};
-cvar_t loadas8bit = {"loadas8bit", "0"};
-cvar_t bgmbuffer = {"bgmbuffer", "4096"};
-cvar_t ambient_level = {"ambient_level", "0.3"};
-cvar_t ambient_fade = {"ambient_fade", "100"};
-cvar_t snd_noextraupdate = {"snd_noextraupdate", "0"};
-cvar_t snd_show = {"snd_show", "0"};
-cvar_t _snd_mixahead = {"_snd_mixahead", "0.1", true};
+static	cvar_t	nosound = {"nosound", "0", CVAR_NONE};
+static	cvar_t	ambient_level = {"ambient_level", "0.3", CVAR_NONE};
+static	cvar_t	ambient_fade = {"ambient_fade", "100", CVAR_NONE};
+static	cvar_t	snd_noextraupdate = {"snd_noextraupdate", "0", CVAR_NONE};
+static	cvar_t	snd_show = {"snd_show", "0", CVAR_NONE};
+static	cvar_t	_snd_mixahead = {"_snd_mixahead", "0.1", CVAR_ARCHIVE};
 
 
 void S_AmbientOff (void)
@@ -203,7 +202,6 @@ void S_Init (void)
 	Cvar_RegisterVariable(&loadas8bit);
 	Cvar_RegisterVariable(&bgmvolume);
 	Cvar_RegisterVariable(&bgmtype);
-	Cvar_RegisterVariable(&bgmbuffer);
 	Cvar_RegisterVariable(&ambient_level);
 	Cvar_RegisterVariable(&ambient_fade);
 	Cvar_RegisterVariable(&snd_noextraupdate);
@@ -1059,6 +1057,10 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2006/02/19 12:33:24  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 10: sound).
+ *
  * Revision 1.31  2006/01/12 13:07:09  sezero
  * sound whitespace cleanup #1
  *

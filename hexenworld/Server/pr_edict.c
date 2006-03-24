@@ -45,7 +45,7 @@ static gefv_cache	gefvCache[GEFV_CACHESIZE] =
 		{ NULL,	"" }
 };
 
-cvar_t	max_temp_edicts = {"max_temp_edicts", "30", true};
+cvar_t	max_temp_edicts = {"max_temp_edicts", "30", CVAR_ARCHIVE};
 
 func_t SpectatorConnect;
 func_t SpectatorThink;

@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.102 2006-03-24 14:55:36 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.103 2006-03-24 15:05:44 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -113,13 +113,13 @@ qboolean	in_mode_set = false;
 
 // cvar vid_mode must be set before calling
 // VID_SetMode, VID_ChangeVideoMode or VID_Restart_f
-static cvar_t	vid_mode = {"vid_mode","0", false};
-static cvar_t	vid_config_glx = {"vid_config_glx","640", true};
-static cvar_t	vid_config_gly = {"vid_config_gly","480", true};
-static cvar_t	vid_config_swx = {"vid_config_swx","320", true};
-static cvar_t	vid_config_fscr= {"vid_config_fscr", "0", true};
+static cvar_t	vid_mode = {"vid_mode", "0", CVAR_NONE};
+static cvar_t	vid_config_glx = {"vid_config_glx", "640", CVAR_ARCHIVE};
+static cvar_t	vid_config_gly = {"vid_config_gly", "480", CVAR_ARCHIVE};
+static cvar_t	vid_config_swx = {"vid_config_swx", "320", CVAR_ARCHIVE};
+static cvar_t	vid_config_fscr= {"vid_config_fscr", "0", CVAR_ARCHIVE};
 // cvars for compatibility with the software version
-static cvar_t	vid_config_swy = {"vid_config_swy","240", true};
+static cvar_t	vid_config_swy = {"vid_config_swy", "240", CVAR_ARCHIVE};
 
 byte		globalcolormap[VID_GRADES*256];
 float		RTint[256], GTint[256], BTint[256];
@@ -155,7 +155,7 @@ typedef void	(APIENTRY *FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*
 static FX_SET_PALETTE_EXT	MyglColorTableEXT;
 static qboolean	have8bit = false;
 qboolean	is8bit = false;
-static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit","0", true};
+static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit", "0", CVAR_ARCHIVE};
 
 // Gamma stuff
 #define USE_GAMMA_RAMPS	0	// change to 1 if want to use ramps for gamma
@@ -186,17 +186,13 @@ static int	num_tmus = 1;
 // multisampling
 static int	multisample = 0; // never set this to non-zero if SDL isn't multisampling-capable
 static qboolean	sdl_has_multisample = false;
-static cvar_t	vid_config_fsaa = {"vid_config_fsaa","0", true};
+static cvar_t	vid_config_fsaa = {"vid_config_fsaa", "0", CVAR_ARCHIVE};
 
 // stencil buffer
 qboolean	have_stencil = false;
 
 // misc gl tweaks
 static qboolean	fullsbardraw = false;
-cvar_t		gl_ztrick = {"gl_ztrick","0",true};
-cvar_t		gl_purge_maptex = {"gl_purge_maptex", "1", true};
-		/* whether or not map-specific OGL textures
-		   are flushed from map. default == yes  */
 
 // misc external data and functions
 extern void	D_ClearOpenGLTextures(int);
@@ -211,7 +207,7 @@ void VID_MenuKey (int key);
 // input stuff
 static void ClearAllStates (void);
 static int	enable_mouse;
-cvar_t		_enable_mouse = {"_enable_mouse","1", true};
+cvar_t		_enable_mouse = {"_enable_mouse", "1", CVAR_ARCHIVE};
 
 
 //====================================
@@ -1513,8 +1509,6 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&vid_config_glx);
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&_enable_mouse);
-	Cvar_RegisterVariable (&gl_ztrick);
-	Cvar_RegisterVariable (&gl_purge_maptex);
 	Cvar_RegisterVariable (&gl_lightmapfmt);
 
 	Cmd_AddCommand ("vid_showinfo", &VID_ShowInfo_f);

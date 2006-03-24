@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.25 2006-03-22 20:04:39 sezero Exp $
+	$Id: gl_screen.c,v 1.26 2006-03-24 15:05:44 sezero Exp $
 */
 
 /*=============================================================================
@@ -79,15 +79,15 @@ float		scr_conlines;		// lines of console to display
 
 float		oldscreensize, oldfov;
 
-cvar_t		scr_viewsize = {"viewsize","110", true};
-cvar_t		scr_fov = {"fov","90"};	// 10 - 170
-cvar_t		scr_conspeed = {"scr_conspeed","300"};
-cvar_t		scr_centertime = {"scr_centertime","4"};
-cvar_t		scr_showram = {"showram","1"};
-cvar_t		scr_showturtle = {"showturtle","0"};
-cvar_t		scr_showpause = {"showpause","1"};
-cvar_t		scr_printspeed = {"scr_printspeed","8"};
-cvar_t		gl_triplebuffer = {"gl_triplebuffer", "0", true };
+cvar_t		scr_viewsize = {"viewsize", "110", CVAR_ARCHIVE};
+cvar_t		scr_fov = {"fov", "90", CVAR_NONE};	// 10 - 170
+static	cvar_t	scr_conspeed = {"scr_conspeed", "300", CVAR_NONE};
+static	cvar_t	scr_centertime = {"scr_centertime", "4", CVAR_NONE};
+static	cvar_t	scr_showram = {"showram", "1", CVAR_NONE};
+static	cvar_t	scr_showturtle = {"showturtle", "0", CVAR_NONE};
+static	cvar_t	scr_showpause = {"showpause", "1", CVAR_NONE};
+static	cvar_t	scr_printspeed = {"scr_printspeed", "8", CVAR_NONE};
+static	cvar_t	gl_triplebuffer = {"gl_triplebuffer", "0", CVAR_ARCHIVE};
 
 qboolean	scr_disabled_for_loading;
 qboolean	scr_skipupdate;

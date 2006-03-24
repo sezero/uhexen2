@@ -1,8 +1,8 @@
 
 #include "quakedef.h"
 
-cvar_t		baseskin = {"baseskin", "base"};
-cvar_t		noskins = {"noskins", "1"};
+cvar_t		baseskin = {"baseskin", "base", CVAR_NONE};
+cvar_t		noskins = {"noskins", "1", CVAR_NONE};
 
 static char	allskins[128];
 #define	MAX_CACHED_SKINS	128

@@ -77,13 +77,13 @@ void Cvar_Set (char *var_name, char *value)
 		return;	// cvar is marked read-only
 
 #ifdef SERVERONLY
-	if (var->info)
+	if (var->flags & CVAR_SERVERINFO)
 	{
 		Info_SetValueForKey (svs.info, var_name, value, MAX_SERVERINFO_STRING);
 		SV_BroadcastCommand ("fullserverinfo \"%s\"\n", svs.info);
 	}
 #else
-	if (var->info)
+	if (var->flags & CVAR_USERINFO)
 	{
 		Info_SetValueForKey (cls.userinfo, var_name, value, MAX_INFO_STRING);
 		if (cls.state >= ca_connected)
@@ -146,6 +146,7 @@ Adds a freestanding variable to the variable list.
 void Cvar_RegisterVariable (cvar_t *variable)
 {
 	char	value[512];
+	qboolean	set_rom = false;
 
 // first check to see if it has already been defined
 	if (Cvar_FindVar (variable->name))
@@ -171,7 +172,11 @@ void Cvar_RegisterVariable (cvar_t *variable)
 	variable->string = Z_Malloc (1);
 
 // set it through the function to be consistant
+	set_rom = (variable->flags & CVAR_ROM);
+	variable->flags &= ~CVAR_ROM;
 	Cvar_Set (variable->name, value);
+	if (set_rom)
+		variable->flags |= CVAR_ROM;
 }
 
 /*
@@ -215,7 +220,7 @@ void Cvar_WriteVariables (FILE *f)
 	cvar_t	*var;
 
 	for (var = cvar_vars ; var ; var = var->next)
-		if (var->archive)
+		if (var->flags & CVAR_ARCHIVE)
 			fprintf (f, "%s \"%s\"\n", var->name, var->string);
 }
 

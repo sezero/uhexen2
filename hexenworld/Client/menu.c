@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.46 2006-03-23 20:01:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.47 2006-03-24 15:05:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2341,16 +2341,16 @@ static void M_MultiPlayer_Key (int key)
 #define MAX_HOST_SIZE 80
 static char save_names[MAX_HOST_NAMES][MAX_HOST_SIZE];
 
-cvar_t	hostname1 = {"host1","", true};
-cvar_t	hostname2 = {"host2","", true};
-cvar_t	hostname3 = {"host3","", true};
-cvar_t	hostname4 = {"host4","", true};
-cvar_t	hostname5 = {"host5","", true};
-cvar_t	hostname6 = {"host6","", true};
-cvar_t	hostname7 = {"host7","", true};
-cvar_t	hostname8 = {"host8","", true};
-cvar_t	hostname9 = {"host9","", true};
-cvar_t	hostname10 = {"host10","", true};
+static cvar_t	hostname1 = {"host1", "", CVAR_ARCHIVE};
+static cvar_t	hostname2 = {"host2", "", CVAR_ARCHIVE};
+static cvar_t	hostname3 = {"host3", "", CVAR_ARCHIVE};
+static cvar_t	hostname4 = {"host4", "", CVAR_ARCHIVE};
+static cvar_t	hostname5 = {"host5", "", CVAR_ARCHIVE};
+static cvar_t	hostname6 = {"host6", "", CVAR_ARCHIVE};
+static cvar_t	hostname7 = {"host7", "", CVAR_ARCHIVE};
+static cvar_t	hostname8 = {"host8", "", CVAR_ARCHIVE};
+static cvar_t	hostname9 = {"host9", "", CVAR_ARCHIVE};
+static cvar_t	hostname10 = {"host10", "", CVAR_ARCHIVE};
 
 static int connect_cursor = 0;
 #define MAX_CONNECT_CMDS 11

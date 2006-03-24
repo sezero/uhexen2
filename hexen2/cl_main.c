@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.25 2006-03-10 08:08:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.26 2006-03-24 15:05:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -16,23 +16,25 @@
 // references them even when on a unix system.
 
 // these two are not intended to be set directly
-cvar_t	cl_name = {"_cl_name", "player", true};
-cvar_t	cl_color = {"_cl_color", "0", true};
-cvar_t	cl_playerclass = {"_cl_playerclass", "1", true};
+cvar_t	cl_name = {"_cl_name", "player", CVAR_ARCHIVE};
+cvar_t	cl_color = {"_cl_color", "0", CVAR_ARCHIVE};
+cvar_t	cl_playerclass = {"_cl_playerclass", "1", CVAR_ARCHIVE};
 
-cvar_t	cl_shownet = {"cl_shownet","0"};	// can be 0, 1, or 2
-cvar_t	cl_nolerp = {"cl_nolerp","0"};
+cvar_t	cl_shownet = {"cl_shownet", "0", CVAR_NONE};	// can be 0, 1, or 2
+cvar_t	cl_nolerp = {"cl_nolerp", "0", CVAR_NONE};
 
-cvar_t	lookspring = {"lookspring","0", true};
-cvar_t	lookstrafe = {"lookstrafe","0", true};
-cvar_t	sensitivity = {"sensitivity","3", true};
-cvar_t	mwheelthreshold = {"mwheelthreshold","120", true};
+cvar_t	lookspring = {"lookspring", "0", CVAR_ARCHIVE};
+cvar_t	lookstrafe = {"lookstrafe", "0", CVAR_ARCHIVE};
+cvar_t	sensitivity = {"sensitivity", "3", CVAR_ARCHIVE};
+cvar_t	mwheelthreshold = {"mwheelthreshold", "120", CVAR_ARCHIVE};
 static float save_sensitivity;
 
-cvar_t	m_pitch = {"m_pitch","0.022", true};
-cvar_t	m_yaw = {"m_yaw","0.022", true};
-cvar_t	m_forward = {"m_forward","1", true};
-cvar_t	m_side = {"m_side","0.8", true};
+cvar_t	m_pitch = {"m_pitch", "0.022", CVAR_ARCHIVE};
+cvar_t	m_yaw = {"m_yaw", "0.022", CVAR_ARCHIVE};
+cvar_t	m_forward = {"m_forward", "1", CVAR_ARCHIVE};
+cvar_t	m_side = {"m_side", "0.8", CVAR_ARCHIVE};
+
+static	cvar_t	cl_prettylights = {"cl_prettylights", "1", CVAR_NONE};
 
 
 client_static_t	cls;
@@ -1058,6 +1060,22 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2006/03/10 08:08:45  sezero
+ * Added support for colored lights and .lit files;. initially extracted
+ * from jshexen2 (thanks Michal Wozniak). Colored lights and lit file
+ * support is now added to hexenworld, as well, although the new cvars
+ * gl_colored_dynamic_lights and gl_extra_dynamic_light aren't functional
+ * for it: hexenworld had some sort of "colored" dynamic lights in it,
+ * and they aren't changed by this patch. The cvars mentions are fully
+ * functional for hexen2. Colored lights member of the dlight_t in h2
+ * is changed to be an array of 4, instead of vec3_t as it used to appear
+ * in jshexen2, so that things look more alike with the hw version. The
+ * default lightmap format is changed to GL_RGBA, (previously it was
+ * GL_LUMINANCE.) Command line arguments can be employed to change the
+ * lightmap format:  -lm_1 : GL_LUMINANCE, -lm_4 : GL_RGBA (default).
+ * (Note: Would it be a good (AND a feasible) idea to add a menu+cvar
+ * control for the lightmap format?)
+ *
  * Revision 1.24  2006/01/20 07:36:01  sezero
  * added debug-mode error reporting to CL_CopyFiles, since we're dealing
  * with multiple file access in there (from Steven.)

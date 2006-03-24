@@ -14,7 +14,7 @@
 #define STD_MEM_ALLOC	0x1000000
 #define MAX_MEM_ALLOC	0x2000000
 
-cvar_t	sys_nostdout = {"sys_nostdout","0"};
+cvar_t	sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 
 /*
 ================

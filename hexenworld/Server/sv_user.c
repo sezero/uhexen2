@@ -9,10 +9,10 @@ edict_t	*sv_player;
 
 static	usercmd_t	cmd;
 
-cvar_t	cl_rollspeed = {"cl_rollspeed", "200"};
-cvar_t	cl_rollangle = {"cl_rollangle", "2.0"};
-cvar_t	sv_spectalk = {"sv_spectalk", "1"};
-cvar_t	sv_allowtaunts = {"sv_allowtaunts", "1"};
+static	cvar_t	cl_rollspeed = {"cl_rollspeed", "200", CVAR_NONE};
+static	cvar_t	cl_rollangle = {"cl_rollangle", "2.0", CVAR_NONE};
+static	cvar_t	sv_spectalk = {"sv_spectalk", "1", CVAR_NONE};
+static	cvar_t	sv_allowtaunts = {"sv_allowtaunts", "1", CVAR_NONE};
 
 extern	cvar_t	allow_download;
 extern	cvar_t	allow_download_skins;

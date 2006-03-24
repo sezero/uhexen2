@@ -3,7 +3,7 @@
 #include "quakedef.h"
 
 int		gl_lightmap_format = GL_RGBA;
-cvar_t		gl_lightmapfmt = {"gl_lightmapfmt","GL_RGBA",true};
+cvar_t		gl_lightmapfmt = {"gl_lightmapfmt", "GL_RGBA", CVAR_ARCHIVE};
 int		lightmap_bytes = 4;		// 1, 2, or 4. default is 4 for GL_RGBA
 int		lightmap_textures;
 

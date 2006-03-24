@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.22 2006-03-23 19:02:25 sezero Exp $
+	$Id: sbar.c,v 1.23 2006-03-24 15:05:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -87,10 +87,10 @@ static int sb_updates; // if >= vid.numpages, no update needed
 
 static float BarHeight;
 static float BarTargetHeight;
-cvar_t BarSpeed = { "barspeed", "5" };
-cvar_t DMMode = { "dm_mode", "1", true };
-cvar_t sbtrans = { "sbtrans", "0", true };
-cvar_t dmtrans = { "dmtrans", "0", true };
+static cvar_t BarSpeed = {"barspeed", "5", CVAR_NONE};
+static cvar_t DMMode = {"dm_mode", "1", CVAR_ARCHIVE};
+static cvar_t sbtrans = {"sbtrans", "0", CVAR_ARCHIVE};
+static cvar_t dmtrans = {"dmtrans", "0", CVAR_ARCHIVE};
 
 static qpic_t *sb_nums[11];
 static qpic_t *sb_colon, *sb_slash;

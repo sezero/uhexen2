@@ -24,9 +24,9 @@ static qboolean locked = false;
 static int oldbuttons;
 
 // track high fragger
-cvar_t cl_hightrack = {"cl_hightrack", "0" };
-//cvar_t cl_camera_maxpitch = {"cl_camera_maxpitch", "10" };
-//cvar_t cl_camera_maxyaw = {"cl_camera_maxyaw", "30" };
+static cvar_t cl_hightrack = {"cl_hightrack", "0", CVAR_NONE};
+//static cvar_t cl_camera_maxpitch = {"cl_camera_maxpitch", "10", CVAR_NONE};
+//static cvar_t cl_camera_maxyaw = {"cl_camera_maxyaw", "30", CVAR_NONE};
 
 static qboolean cam_forceview;
 static double cam_lastviewtime;

@@ -16,7 +16,7 @@ int		con_totallines;		// total lines in console scrollback
 static float	con_cursorspeed = 4;
 int		con_ormask;
 
-cvar_t		con_notifytime = {"con_notifytime","3"};	//seconds
+static	cvar_t	con_notifytime = {"con_notifytime", "3", CVAR_NONE};	//seconds
 
 #define	NUM_CON_TIMES 4
 static float	con_times[NUM_CON_TIMES];	// realtime time the line was generated

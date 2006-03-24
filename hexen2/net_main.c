@@ -38,12 +38,12 @@ int messagesReceived = 0;
 int unreliableMessagesSent = 0;
 int unreliableMessagesReceived = 0;
 
-cvar_t	net_messagetimeout = {"net_messagetimeout","300"};
-cvar_t	hostname = {"hostname", "UNNAMED"};
+static	cvar_t	net_messagetimeout = {"net_messagetimeout", "300", CVAR_NONE};
+cvar_t	hostname = {"hostname", "UNNAMED", CVAR_NONE};
 
 static qboolean	configRestored = false;
 
-cvar_t	net_allowmultiple = {"net_allowmultiple", "0", true};
+cvar_t	net_allowmultiple = {"net_allowmultiple", "0", CVAR_ARCHIVE};
 
 FILE	*vcrFile = NULL;
 static qboolean recording = false;

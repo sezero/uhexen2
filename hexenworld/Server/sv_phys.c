@@ -22,19 +22,19 @@ solid_edge items only clip against bsp models.
 
 */
 
-cvar_t	sv_maxvelocity		= { "sv_maxvelocity","2000" };
-cvar_t	sv_nostep		= { "sv_nostep","0" };
-cvar_t	sv_gravity		= { "sv_gravity", "800" };
-cvar_t	sv_stopspeed		= { "sv_stopspeed", "100" };
-cvar_t	sv_maxspeed		= { "sv_maxspeed", "360", false, true };
-cvar_t	sv_spectatormaxspeed	= { "sv_spectatormaxspeed", "500" };
-cvar_t	sv_accelerate		= { "sv_accelerate", "10" };
-cvar_t	sv_airaccelerate	= { "sv_airaccelerate", "0.7" };
-cvar_t	sv_wateraccelerate	= { "sv_wateraccelerate", "10" };
-cvar_t	sv_friction		= { "sv_friction", "4" };
-cvar_t	sv_waterfriction	= { "sv_waterfriction", "1" };
-cvar_t	sv_flypitch		= { "sv_flypitch","20" };
-cvar_t	sv_walkpitch		= { "sv_walkpitch","0" };
+cvar_t	sv_maxvelocity		= { "sv_maxvelocity","2000", CVAR_NONE };
+//cvar_t	sv_nostep		= { "sv_nostep","0", CVAR_NONE };
+cvar_t	sv_gravity		= { "sv_gravity", "800", CVAR_NONE };
+cvar_t	sv_stopspeed		= { "sv_stopspeed", "100", CVAR_NONE };
+cvar_t	sv_maxspeed		= { "sv_maxspeed", "360", CVAR_NOTIFY|CVAR_SERVERINFO };
+cvar_t	sv_spectatormaxspeed	= { "sv_spectatormaxspeed", "500", CVAR_NONE };
+cvar_t	sv_accelerate		= { "sv_accelerate", "10", CVAR_NONE };
+cvar_t	sv_airaccelerate	= { "sv_airaccelerate", "0.7", CVAR_NONE };
+cvar_t	sv_wateraccelerate	= { "sv_wateraccelerate", "10", CVAR_NONE };
+cvar_t	sv_friction		= { "sv_friction", "4", CVAR_NONE };
+cvar_t	sv_waterfriction	= { "sv_waterfriction", "1", CVAR_NONE };
+cvar_t	sv_flypitch		= { "sv_flypitch", "20", CVAR_NONE };
+cvar_t	sv_walkpitch		= { "sv_walkpitch", "0", CVAR_NONE };
 
 #if 0
 static	vec3_t	vec_origin = {0.0, 0.0, 0.0};

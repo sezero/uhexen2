@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.45 2006-03-23 20:01:33 sezero Exp $
+	$Id: glquake.h,v 1.46 2006-03-24 15:05:39 sezero Exp $
 */
 
 
@@ -345,6 +345,7 @@ extern	cvar_t	r_wholeframe;
 extern	cvar_t	gl_clear;
 extern	cvar_t	gl_cull;
 extern	cvar_t	gl_poly;
+extern	cvar_t	gl_ztrick;
 extern	cvar_t	gl_multitexture;
 extern	cvar_t	gl_purge_maptex;
 extern	cvar_t	gl_smoothmodels;
@@ -390,6 +391,14 @@ extern	const char *gl_extensions;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.45  2006/03/23 20:01:33  sezero
+ * made the lightmap format configurable via the menu system using a new
+ * cvar gl_lightmapfmt. -lm_1 and -lm_4 are still functional as commandline
+ * overrides even with commandline options dictating a direct load of a map,
+ * such as +playdemo xxx or +load xxx. updated the opengl features menu with
+ * new proper notifications about the colored lighting option's level reload
+ * necessity and with new entries for the ligthmap format.
+ *
  * Revision 1.44  2006/03/23 18:44:27  sezero
  * killed unnecessary includes, tiny tidy-up
  *

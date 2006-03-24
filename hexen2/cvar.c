@@ -84,7 +84,7 @@ void Cvar_Set (char *var_name, char *value)
 	var->string = Z_Malloc (strlen(value)+1);
 	strcpy (var->string, value);
 	var->value = atof (var->string);
-	if (var->server && changed)
+	if ((var->flags & CVAR_NOTIFY) && changed)
 	{
 		if (sv.active)
 			SV_BroadcastPrintf ("\"%s\" changed to \"%s\"\n", var->name, var->string);
@@ -134,6 +134,7 @@ Adds a freestanding variable to the variable list.
 void Cvar_RegisterVariable (cvar_t *variable)
 {
 	char	value[512];
+	qboolean	set_rom = false;
 
 // first check to see if it has already been defined
 	if (Cvar_FindVar (variable->name))
@@ -159,7 +160,11 @@ void Cvar_RegisterVariable (cvar_t *variable)
 	variable->string = Z_Malloc (1);
 
 // set it through the function to be consistant
+	set_rom = (variable->flags & CVAR_ROM);
+	variable->flags &= ~CVAR_ROM;
 	Cvar_Set (variable->name, value);
+	if (set_rom)
+		variable->flags |= CVAR_ROM;
 }
 
 /*
@@ -203,7 +208,7 @@ void Cvar_WriteVariables (FILE *f)
 	cvar_t	*var;
 
 	for (var = cvar_vars ; var ; var = var->next)
-		if (var->archive)
+		if (var->flags & CVAR_ARCHIVE)
 			fprintf (f, "%s \"%s\"\n", var->name, var->string);
 }
 

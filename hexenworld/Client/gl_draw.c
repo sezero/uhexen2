@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.59 2006-03-22 20:03:41 sezero Exp $
+	$Id: gl_draw.c,v 1.60 2006-03-24 15:05:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -24,8 +24,8 @@ extern vrect_t	scr_vrect;
 extern cvar_t	crosshair, cl_crossx, cl_crossy, crosshaircolor;
 
 extern int	gl_max_size;
-cvar_t		gl_picmip = {"gl_picmip", "0"};
-cvar_t		gl_spritemip = {"gl_spritemip", "0"};
+static cvar_t	gl_picmip = {"gl_picmip", "0", CVAR_NONE};
+static cvar_t	gl_spritemip = {"gl_spritemip", "0", CVAR_NONE};
 
 static byte	*draw_chars;				// 8*8 graphic characters
 static byte	*draw_smallchars;			// Small characters for status bar

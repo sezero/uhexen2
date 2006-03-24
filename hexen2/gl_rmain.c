@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.43 2006-03-23 20:01:33 sezero Exp $
+	$Id: gl_rmain.c,v 1.44 2006-03-24 15:05:39 sezero Exp $
 */
 
 
@@ -66,43 +66,42 @@ static	qboolean AlwaysDrawModel;
 extern	qboolean gl_dogamma;
 extern	cvar_t	v_gamma;
 
-cvar_t	r_norefresh = {"r_norefresh","0"};
-cvar_t	r_drawentities = {"r_drawentities","1"};
-cvar_t	r_drawviewmodel = {"r_drawviewmodel","1"};
-cvar_t	r_speeds = {"r_speeds","0"};
-cvar_t	r_fullbright = {"r_fullbright","0"};
-cvar_t	r_lightmap = {"r_lightmap","0"};
-cvar_t	r_shadows = {"r_shadows","0", true};
-cvar_t	r_mirroralpha = {"r_mirroralpha","1"};
-cvar_t	r_wateralpha = {"r_wateralpha","0.33", true};
-cvar_t	r_skyalpha = {"r_skyalpha", "0.67", true};
-cvar_t	r_dynamic = {"r_dynamic","1"};
-cvar_t	r_novis = {"r_novis","0"};
-cvar_t	r_wholeframe = {"r_wholeframe", "1", true};
+cvar_t	r_norefresh = {"r_norefresh", "0", CVAR_NONE};
+cvar_t	r_drawentities = {"r_drawentities", "1", CVAR_NONE};
+cvar_t	r_drawviewmodel = {"r_drawviewmodel", "1", CVAR_NONE};
+cvar_t	r_speeds = {"r_speeds", "0", CVAR_NONE};
+cvar_t	r_fullbright = {"r_fullbright", "0", CVAR_NONE};
+cvar_t	r_lightmap = {"r_lightmap", "0", CVAR_NONE};
+cvar_t	r_shadows = {"r_shadows", "0", CVAR_ARCHIVE};
+cvar_t	r_mirroralpha = {"r_mirroralpha", "1", CVAR_NONE};
+cvar_t	r_wateralpha = {"r_wateralpha", "0.33", CVAR_ARCHIVE};
+cvar_t	r_skyalpha = {"r_skyalpha", "0.67", CVAR_ARCHIVE};
+cvar_t	r_dynamic = {"r_dynamic", "1", CVAR_NONE};
+cvar_t	r_novis = {"r_novis", "0", CVAR_NONE};
+cvar_t	r_wholeframe = {"r_wholeframe", "1", CVAR_ARCHIVE};
 
-extern	cvar_t	gl_ztrick;
+cvar_t	gl_clear = {"gl_clear", "0", CVAR_NONE};
+cvar_t	gl_cull = {"gl_cull", "1", CVAR_NONE};
+cvar_t	gl_ztrick = {"gl_ztrick", "0", CVAR_ARCHIVE};
+cvar_t	gl_multitexture = {"gl_multitexture", "0",CVAR_ARCHIVE};
+cvar_t	gl_smoothmodels = {"gl_smoothmodels", "1", CVAR_NONE};
+cvar_t	gl_affinemodels = {"gl_affinemodels", "0", CVAR_NONE};
+cvar_t	gl_polyblend = {"gl_polyblend", "1", CVAR_NONE};
+cvar_t	gl_flashblend = {"gl_flashblend", "0", CVAR_NONE};
+cvar_t	gl_playermip = {"gl_playermip", "0", CVAR_NONE};
+cvar_t	gl_nocolors = {"gl_nocolors", "0", CVAR_NONE};
+cvar_t	gl_keeptjunctions = {"gl_keeptjunctions", "1", CVAR_ARCHIVE};
+cvar_t	gl_reporttjunctions = {"gl_reporttjunctions", "0", CVAR_NONE};
+cvar_t	gl_waterripple = {"gl_waterripple", "2", CVAR_ARCHIVE};
+cvar_t	gl_waterwarp = {"gl_waterwarp", "0", CVAR_ARCHIVE};
+cvar_t	gl_stencilshadow = {"gl_stencilshadow", "0", CVAR_ARCHIVE};
+cvar_t	gl_glows = {"gl_glows", "1", CVAR_ARCHIVE};
+cvar_t	gl_other_glows = {"gl_other_glows", "0", CVAR_ARCHIVE};
+cvar_t	gl_missile_glows = {"gl_missile_glows", "1", CVAR_ARCHIVE};
 
-cvar_t	gl_clear = {"gl_clear","0"};
-cvar_t	gl_cull = {"gl_cull","1"};
-cvar_t	gl_multitexture = {"gl_multitexture","0",true};
-cvar_t	gl_smoothmodels = {"gl_smoothmodels","1"};
-cvar_t	gl_affinemodels = {"gl_affinemodels","0"};
-cvar_t	gl_polyblend = {"gl_polyblend","1"};
-cvar_t	gl_flashblend = {"gl_flashblend","0"};
-cvar_t	gl_playermip = {"gl_playermip","0"};
-cvar_t	gl_nocolors = {"gl_nocolors","0"};
-cvar_t	gl_keeptjunctions = {"gl_keeptjunctions","1", true};
-cvar_t	gl_reporttjunctions = {"gl_reporttjunctions","0"};
-cvar_t	gl_waterripple = {"gl_waterripple", "2", true};
-cvar_t	gl_waterwarp = {"gl_waterwarp", "0", true};
-cvar_t	gl_stencilshadow = {"gl_stencilshadow", "0",true};
-cvar_t	gl_glows = {"gl_glows","1",true};
-cvar_t	gl_other_glows = {"gl_other_glows","0",true};
-cvar_t	gl_missile_glows = {"gl_missile_glows","1",true};
-
-cvar_t	gl_coloredlight = {"gl_coloredlight","0",true};
-cvar_t	gl_colored_dynamic_lights = {"gl_colored_dynamic_lights","0",true};
-cvar_t	gl_extra_dynamic_lights = {"gl_extra_dynamic_lights","0",true};
+cvar_t	gl_coloredlight = {"gl_coloredlight", "0", CVAR_ARCHIVE};
+cvar_t	gl_colored_dynamic_lights = {"gl_colored_dynamic_lights", "0", CVAR_ARCHIVE};
+cvar_t	gl_extra_dynamic_lights = {"gl_extra_dynamic_lights", "0", CVAR_ARCHIVE};
 
 //=============================================================================
 
@@ -1971,6 +1970,14 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.43  2006/03/23 20:01:33  sezero
+ * made the lightmap format configurable via the menu system using a new
+ * cvar gl_lightmapfmt. -lm_1 and -lm_4 are still functional as commandline
+ * overrides even with commandline options dictating a direct load of a map,
+ * such as +playdemo xxx or +load xxx. updated the opengl features menu with
+ * new proper notifications about the colored lighting option's level reload
+ * necessity and with new entries for the ligthmap format.
+ *
  * Revision 1.42  2006/03/14 11:44:18  sezero
  * arghhh... cvs changelogs...
  *

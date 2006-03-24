@@ -1,7 +1,7 @@
 /*
 	r_part.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_dl_part.c,v 1.10 2005-07-09 07:29:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_dl_part.c,v 1.11 2006-03-24 15:05:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -35,21 +35,20 @@ int		ramp9[16] = { 416,416+1,416+2,416+3,416+4,416+5,416+6,416+7,416+8,416+9,416
 int		ramp10[16] = { 432,432+1,432+2,432+3,432+4,432+5,432+6,432+7,432+8,432+9,432+10,432+11,432+12,432+13,432+14,432+15};
 int		ramp11[8] = { 424,424+1,424+2,424+3,424+4,424+5,424+6,424+7};
 int		ramp12[8] = { 136,137,138,139,140,141,142,143};
-byte *transTable;
-byte MyTable[256];
 
+byte		*transTable;
+byte		MyTable[256];
 particle_t	*active_particles, *free_particles;
-
 particle_t	*particles;
 int			r_numparticles;
 
 vec3_t			r_pright, r_pup, r_ppn;
-static vec3_t		rider_origin;
+static	vec3_t		rider_origin;
 
-cvar_t		leak_color = {"leak_color","251", true};
+static	cvar_t	snow_flurry= {"snow_flurry", "1", CVAR_ARCHIVE};
+static	cvar_t	snow_active= {"snow_active", "1", CVAR_ARCHIVE};
 
-cvar_t		snow_flurry= {"snow_flurry","1", true};
-cvar_t		snow_active= {"snow_active","1", true};
+static	cvar_t	leak_color = {"leak_color", "251", CVAR_ARCHIVE};
 
 static particle_t *AllocParticle(void);
 
@@ -1943,6 +1942,9 @@ void R_UpdateParticles (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2005/07/09 07:29:40  sezero
+ * use hunk instead of malloc
+ *
  * Revision 1.9  2005/06/15 13:18:17  sezero
  * killed the glfunc struct
  *

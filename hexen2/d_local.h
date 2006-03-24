@@ -2,7 +2,7 @@
 	d_local.h
 	private rasterization driver defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.5 2005-10-25 20:08:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.6 2006-03-24 15:05:39 sezero Exp $
 */
 
 #include "r_shared.h"
@@ -42,8 +42,6 @@ typedef struct sspan_s
 {
 	int			u, v, count;
 } sspan_t;
-
-extern cvar_t	d_subdiv16;
 
 extern float	scale_for_mip;
 
@@ -138,6 +136,9 @@ extern byte			scanList[SCAN_SIZE];
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/10/25 20:08:41  sezero
+ * coding style and whitespace cleanup.
+ *
  * Revision 1.4  2005/10/25 20:04:17  sezero
  * static functions part-1: started making local functions static,
  * killing nested externs, const vars clean-up.

@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.13 2006-02-22 20:19:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.14 2006-03-24 15:05:39 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -14,35 +14,34 @@
 #include "quakedef.h"
 #include "r_local.h"
 
-cvar_t	scr_ofsx = {"scr_ofsx","0", false};
-cvar_t	scr_ofsy = {"scr_ofsy","0", false};
-cvar_t	scr_ofsz = {"scr_ofsz","0", false};
+static	cvar_t	scr_ofsx = {"scr_ofsx", "0", CVAR_NONE};
+static	cvar_t	scr_ofsy = {"scr_ofsy", "0", CVAR_NONE};
+static	cvar_t	scr_ofsz = {"scr_ofsz", "0", CVAR_NONE};
 
-cvar_t	cl_rollspeed = {"cl_rollspeed", "200"};
-cvar_t	cl_rollangle = {"cl_rollangle", "2.0"};
+static	cvar_t	cl_rollspeed = {"cl_rollspeed", "200", CVAR_NONE};
+static	cvar_t	cl_rollangle = {"cl_rollangle", "2.0", CVAR_NONE};
 
-cvar_t	cl_bob = {"cl_bob","0.02", false};
-cvar_t	cl_bobcycle = {"cl_bobcycle","0.6", false};
-cvar_t	cl_bobup = {"cl_bobup","0.5", false};
+static	cvar_t	cl_bob = {"cl_bob", "0.02", CVAR_NONE};
+static	cvar_t	cl_bobcycle = {"cl_bobcycle", "0.6", CVAR_NONE};
+static	cvar_t	cl_bobup = {"cl_bobup", "0.5", CVAR_NONE};
 
-cvar_t	v_kicktime = {"v_kicktime", "0.5", false};
-cvar_t	v_kickroll = {"v_kickroll", "0.6", false};
-cvar_t	v_kickpitch = {"v_kickpitch", "0.6", false};
+static	cvar_t	v_kicktime = {"v_kicktime", "0.5", CVAR_NONE};
+static	cvar_t	v_kickroll = {"v_kickroll", "0.6", CVAR_NONE};
+static	cvar_t	v_kickpitch = {"v_kickpitch", "0.6", CVAR_NONE};
 
-cvar_t	v_iyaw_cycle = {"v_iyaw_cycle", "2", false};
-cvar_t	v_iroll_cycle = {"v_iroll_cycle", "0.5", false};
-cvar_t	v_ipitch_cycle = {"v_ipitch_cycle", "1", false};
-cvar_t	v_iyaw_level = {"v_iyaw_level", "0.3", false};
-cvar_t	v_iroll_level = {"v_iroll_level", "0.1", false};
-cvar_t	v_ipitch_level = {"v_ipitch_level", "0.3", false};
+static	cvar_t	v_iyaw_cycle = {"v_iyaw_cycle", "2", CVAR_NONE};
+static	cvar_t	v_iroll_cycle = {"v_iroll_cycle", "0.5", CVAR_NONE};
+static	cvar_t	v_ipitch_cycle = {"v_ipitch_cycle", "1", CVAR_NONE};
+static	cvar_t	v_iyaw_level = {"v_iyaw_level", "0.3", CVAR_NONE};
+static	cvar_t	v_iroll_level = {"v_iroll_level", "0.1", CVAR_NONE};
+static	cvar_t	v_ipitch_level = {"v_ipitch_level", "0.3", CVAR_NONE};
 
-cvar_t	v_idlescale = {"v_idlescale", "0", false};
+static	cvar_t	v_idlescale = {"v_idlescale", "0", CVAR_NONE};
 
-cvar_t	crosshair = {"crosshair", "0", true};
-
-cvar_t	cl_crossx = {"cl_crossx", "0", true};
-cvar_t	cl_crossy = {"cl_crossy", "0", true};
-cvar_t	crosshaircolor = {"crosshaircolor", "75", true}; // 79 seemed too bright
+cvar_t	crosshair = {"crosshair", "0", CVAR_ARCHIVE};
+cvar_t	cl_crossx = {"cl_crossx", "0", CVAR_ARCHIVE};
+cvar_t	cl_crossy = {"cl_crossy", "0", CVAR_ARCHIVE};
+cvar_t	crosshaircolor = {"crosshaircolor", "75", CVAR_ARCHIVE}; // 79 seemed too bright
 
 static	float	v_dmg_time, v_dmg_roll, v_dmg_pitch;
 
@@ -118,10 +117,9 @@ static float V_CalcBob (void)
 //=============================================================================
 
 
-cvar_t	v_centermove = {"v_centermove", "0.15", false};
-cvar_t	v_centerspeed = {"v_centerspeed","500"};
-
-cvar_t	v_centerrollspeed = {"v_centerrollspeed","125"};
+static	cvar_t	v_centermove = {"v_centermove", "0.15", CVAR_NONE};
+static	cvar_t	v_centerspeed = {"v_centerspeed", "500", CVAR_NONE};
+static	cvar_t	v_centerrollspeed = {"v_centerrollspeed", "125", CVAR_NONE};
 
 void V_StartPitchDrift (void)
 {
@@ -282,7 +280,7 @@ cshift_t	cshift_water = { {130,80,50}, 128 };
 cshift_t	cshift_slime = { {0,25,5}, 150 };
 cshift_t	cshift_lava = { {255,80,0}, 150 };
 
-cvar_t		v_gamma = {"gamma", "1", true};
+cvar_t		v_gamma = {"gamma", "1", CVAR_ARCHIVE};
 
 byte		gammatable[256];	// palette is sent through this
 
@@ -1139,6 +1137,10 @@ void V_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2006/02/22 20:19:07  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 23: wiev.c, wiev.h).
+ *
  * Revision 1.12  2005/10/25 19:59:45  sezero
  * added a prototype for Draw_Crosshair to draw.h
  *
