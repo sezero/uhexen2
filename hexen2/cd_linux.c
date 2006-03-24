@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.17 2005-10-25 20:08:40 sezero Exp $
+	$Id: cd_linux.c,v 1.18 2006-03-24 15:45:22 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -23,6 +23,11 @@
 		Boston, MA  02111-1307, USA
 
 */
+
+
+#include "cd_unix.h"
+
+#ifdef	__USE_LINUX_CDROM__
 
 #include "quakedef.h"
 
@@ -437,4 +442,6 @@ void CDAudio_Shutdown(void)
 	close(cdfile);
 	cdfile = -1;
 }
+
+#endif	// __USE_LINUX_CDROM__
 

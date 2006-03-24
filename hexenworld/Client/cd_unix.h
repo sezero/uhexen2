@@ -1,8 +1,8 @@
 /*
-	cd_unix.c
-	$Id: cd_unix.c,v 1.4 2005-10-21 17:59:07 sezero Exp $
+	cd_unix.h
+	$Id: cd_unix.h,v 1.1 2006-03-24 15:45:35 sezero Exp $
 
-	Wrapper file to include correct cdaudio code
+	Unix include file to compile the correct cdaudio code
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -24,16 +24,31 @@
 
 */
 
+
+#undef	__USE_BSD_CDROM__
+#undef	__USE_LINUX_CDROM__
+#undef	__USE_SDL_CDROM__
+#undef	__USE_NULL_CDROM__
+
+
 #if defined (WITH_SDLCD)
+
 // for this to happen, you need to
 // edit the makefiles for USE_SDLCD
-#include "cd_sdl.c"
+#	define	__USE_SDL_CDROM__
+
 #elif defined (__linux__)
-#include "cd_linux.c"
+
+#	define	__USE_LINUX_CDROM__
+
 #elif defined (__FreeBSD__) || defined (__OpenBSD__) || defined (__NetBSD__)
-#include "cd_bsd.c"
+
+#	define	__USE_BSD_CDROM__
+
 #else
-#include "cd_sdl.c"
-//#include "cd_null.c"
+
+#	define	__USE_SDL_CDROM__
+//#	define	__USE_NULL_CDROM__
+
 #endif
 

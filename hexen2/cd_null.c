@@ -1,6 +1,6 @@
 /*
 	cd_null.c
-	$Id: cd_null.c,v 1.2 2005-08-18 14:20:28 sezero Exp $
+	$Id: cd_null.c,v 1.3 2006-03-24 15:45:22 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -21,6 +21,11 @@
 		Boston, MA  02111-1307, USA
 
 */
+
+
+#include "cd_unix.h"
+
+#ifdef	__USE_NULL_CDROM__
 
 #include "quakedef.h"
 
@@ -53,4 +58,6 @@ int CDAudio_Init(void)
 void CDAudio_Shutdown(void)
 {
 }
+
+#endif	// __USE_NULL_CDROM__
 

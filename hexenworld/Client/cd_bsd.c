@@ -1,6 +1,6 @@
 /*
 	cd_bsd.c
-	$Id: cd_bsd.c,v 1.11 2005-10-25 20:08:41 sezero Exp $
+	$Id: cd_bsd.c,v 1.12 2006-03-24 15:45:35 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	A few BSD bits taken from the Dark Places project for Hammer
@@ -25,6 +25,11 @@
 		Boston, MA  02111-1307, USA
 
 */
+
+
+#include "cd_unix.h"
+
+#ifdef	__USE_BSD_CDROM__
 
 #include "quakedef.h"
 
@@ -466,4 +471,6 @@ void CDAudio_Shutdown(void)
 	close(cdfile);
 	cdfile = -1;
 }
+
+#endif	// __USE_BSD_CDROM__
 

@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.6 2006-01-12 12:43:49 sezero Exp $
+	$Id: cd_sdl.c,v 1.7 2006-03-24 15:45:35 sezero Exp $
 
 	Copyright (C) 2001  Mark Baker <homer1@together.net>
 	Taken from SDLquake with modifications to make it work
@@ -25,6 +25,11 @@
 		Boston, MA  02111-1307, USA
 
 */
+
+
+#include "cd_unix.h"
+
+#ifdef	__USE_SDL_CDROM__
 
 #include "sdl_inc.h"
 #include "quakedef.h"
@@ -307,4 +312,6 @@ void CDAudio_Shutdown(void)
 	cd_id = NULL;
 	SDL_QuitSubSystem(SDL_INIT_CDROM);
 }
+
+#endif	// __USE_SDL_CDROM__
 

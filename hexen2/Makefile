@@ -216,7 +216,10 @@ NET_WIN32 = win_stuff/net_win.o \
 SND_UNIX = snd_oss.o \
 	snd_sdl.o \
 	snd_alsa.o \
-	cd_unix.o \
+	cd_null.o \
+	cd_sdl.o \
+	cd_bsd.o \
+	cd_linux.o \
 	midi_sdl.o
 SND_WIN32 = win_stuff/snd_win.o \
 	win_stuff/cd_win.o \
