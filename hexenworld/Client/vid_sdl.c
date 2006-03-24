@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.44 2006-03-24 17:34:25 sezero Exp $
+	$Id: vid_sdl.c,v 1.45 2006-03-24 18:43:37 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -225,16 +225,7 @@ static void VID_SetIcon (void)
 	SDL_Color color;
 	Uint8 *ptr;
 	int i, mask;
-#if defined(H2W)
-	// hexenworld
-	#include "../icons/h2w_ico.xbm"
-#elif defined(H2MP)
-	// hexen2 with mission pack
-	#include "icons/h2mp_ico.xbm"
-#else
-	// plain hexen2
-	#include "icons/h2_ico.xbm"
-#endif
+#	include "xbm_icon.h"
 
 	icon = SDL_CreateRGBSurface(SDL_SWSURFACE, HOT_ICON_WIDTH, HOT_ICON_HEIGHT, 8, 0, 0, 0, 0);
 	if (icon == NULL)
@@ -1267,6 +1258,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.44  2006/03/24 17:34:25  sezero
+ * includes cleanup
+ *
  * Revision 1.43  2006/03/24 15:05:44  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also

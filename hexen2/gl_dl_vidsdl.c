@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_dl_vidsdl.c,v 1.112 2006-03-24 17:34:20 sezero Exp $
+	$Id: gl_dl_vidsdl.c,v 1.113 2006-03-24 18:43:34 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -242,16 +242,7 @@ static void VID_SetIcon (void)
 	SDL_Color color;
 	Uint8 *ptr;
 	int i, mask;
-#if defined(H2W)
-// hexenworld
-#	include "../icons/h2w_ico.xbm"
-#elif defined(H2MP)
-// hexen2 with mission pack
-#	include "icons/h2mp_ico.xbm"
-#else
-// plain hexen2
-#	include "icons/h2_ico.xbm"
-#endif
+#	include "xbm_icon.h"
 
 	icon = SDL_CreateRGBSurface(SDL_SWSURFACE, HOT_ICON_WIDTH, HOT_ICON_HEIGHT, 8, 0, 0, 0, 0);
 	if (icon == NULL)
