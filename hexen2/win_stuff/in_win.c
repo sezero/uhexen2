@@ -2,7 +2,7 @@
 // 02/21/97 JCB Added extended DirectInput code to support external controllers.
 
 #include "quakedef.h"
-#include "quakeinc.h"
+#include "winquake.h"
 
 // mouse variables
 static cvar_t	m_filter = {"m_filter", "0", CVAR_NONE};
@@ -933,6 +933,11 @@ static void IN_JoyMove (usercmd_t *cmd)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2006/03/24 15:05:42  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.13  2006/02/18 08:51:11  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. also renamed the variables name and dest to savename and savedest in

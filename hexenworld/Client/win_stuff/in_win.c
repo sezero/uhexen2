@@ -2,7 +2,7 @@
 // 02/21/97 JCB Added extended DirectInput code to support external controllers.
 
 #include "quakedef.h"
-#include "quakeinc.h"
+#include "winquake.h"
 #include <dinput.h>
 
 #define DINPUT_BUFFERSIZE           16

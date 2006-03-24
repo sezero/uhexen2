@@ -1,11 +1,10 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.63 2006-03-23 20:01:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.64 2006-03-24 17:34:20 sezero Exp $
 */
 
 #include "quakedef.h"
-#include "quakeinc.h"
 
 extern	modestate_t	modestate;
 extern	cvar_t	crosshair;
@@ -4471,6 +4470,14 @@ static void ReInitMusic (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.63  2006/03/23 20:01:33  sezero
+ * made the lightmap format configurable via the menu system using a new
+ * cvar gl_lightmapfmt. -lm_1 and -lm_4 are still functional as commandline
+ * overrides even with commandline options dictating a direct load of a map,
+ * such as +playdemo xxx or +load xxx. updated the opengl features menu with
+ * new proper notifications about the colored lighting option's level reload
+ * necessity and with new entries for the ligthmap format.
+ *
  * Revision 1.62  2006/03/23 19:02:25  sezero
  * fixed software version's compilation (my bad)
  *

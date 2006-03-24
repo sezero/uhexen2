@@ -1,8 +1,7 @@
 // sys_win.c -- Win32 system interface code
 
 #include "quakedef.h"
-#include <windows.h>
-#include "quakeinc.h"
+#include "winquake.h"
 #include <errno.h>
 #include "resource.h"
 #include <io.h>

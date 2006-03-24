@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.47 2006-03-24 15:05:39 sezero Exp $
+	$Id: vid_sdl.c,v 1.48 2006-03-24 17:34:20 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -15,7 +15,6 @@
 */
 
 #include "quakedef.h"
-#include "quakeinc.h"
 #include "d_local.h"
 #include "sdl_inc.h"
 
@@ -1268,6 +1267,11 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.47  2006/03/24 15:05:39  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.46  2006/03/23 19:48:16  sezero
  * Updated the earl-read-cvars in VID_Init and VID_PostInitFix to use the
  * new CVAR_ROM flag: they look less clumsy now.

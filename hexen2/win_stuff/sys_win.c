@@ -1,8 +1,7 @@
 // sys_win.c -- Win32 system interface code
 
 #include "quakedef.h"
-#include <windows.h>
-#include "quakeinc.h"
+#include "winquake.h"
 #include <errno.h>
 #include "resource.h"
 #include <io.h>
@@ -752,6 +751,10 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2006/02/19 16:14:16  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 13: more sys_XXX.c, along with more variable name clean-up.)
+ *
  * Revision 1.30  2006/02/19 14:19:39  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 11: sys_win.c). also did some synchronization between hwcl and

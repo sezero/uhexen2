@@ -1,5 +1,7 @@
 #include "quakedef.h"
-#include "quakeinc.h"
+#if defined(_WIN32)
+#include "winquake.h"
+#endif
 
 static	cvar_t	cl_nopred = {"cl_nopred", "0", CVAR_NONE};
 static	cvar_t	cl_pushlatency = {"pushlatency", "-50", CVAR_ARCHIVE};
@@ -131,8 +133,8 @@ void CL_PredictMove (void)
 	if (cls.state == ca_onserver)
 	{	// first update is the final signon stage
 		char		text[1024];
-
 		cls.state = ca_active;
+
 		sprintf (text, "HexenWorld: %s", cls.servername);
 #ifdef _WIN32
 		SetWindowText (mainwindow, text);

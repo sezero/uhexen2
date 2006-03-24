@@ -2,16 +2,11 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.31 2006-03-24 15:05:44 sezero Exp $
+	$Id: snd_dma.c,v 1.32 2006-03-24 17:34:25 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "snd_sys.h"
-
-#ifdef _WIN32
-#include "winquake.h"
-extern void IN_Accumulate(void);
-#endif
 
 static void S_Play (void);
 static void S_PlayVol (void);
@@ -20,8 +15,8 @@ static void S_Update_ (void);
 void S_StopAllSounds (qboolean clear);
 static void S_StopAllSoundsC (void);
 
-#ifdef H2W
-// QuakeWorld hack...
+#if defined(H2W)
+// HexenWorld hack...
 #define	viewentity	playernum+1
 #endif
 
@@ -1057,6 +1052,11 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2006/03/24 15:05:44  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.30  2006/02/19 12:33:24  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 10: sound).

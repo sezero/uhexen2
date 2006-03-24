@@ -1,7 +1,6 @@
 // net_wins.c
 
 #include "quakedef.h"
-#include "quakeinc.h"
 #include "huffman.h"
 
 // unix includes and compatibility macros
@@ -33,9 +32,12 @@
 #define INVALID_SOCKET -1
 #endif	// end of unix stuff
 
+#if defined(_WIN32)
+#include "winquake.h"
 // socklen_t: on win32, it seems to be a winsock2 thing
-#if defined(_WIN32) && !( defined(_WS2TCPIP_H) || defined(_WS2TCPIP_H_) )
+#if !( defined(_WS2TCPIP_H) || defined(_WS2TCPIP_H_) )
 typedef int	socklen_t;
+#endif
 #endif
 
 

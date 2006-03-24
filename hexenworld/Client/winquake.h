@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.17 2006-02-23 11:20:19 sezero Exp $
+	$Id: winquake.h,v 1.18 2006-03-24 17:34:25 sezero Exp $
 */
 
 #if !defined(_WIN32)
@@ -44,17 +44,12 @@ extern qboolean		ActiveApp, Minimized;
 
 extern qboolean	Win95, Win95old, WinNT;
 
-void IN_ShowMouse (void);
-void IN_DeactivateMouse (void);
-void IN_HideMouse (void);
-void IN_ActivateMouse (void);
 void IN_RestoreOriginalMouseState (void);
 void IN_SetQuakeMouseState (void);
 void IN_MouseEvent (int mstate);
+void IN_Accumulate (void);
 
 extern qboolean	winsock_lib_initialized;
-
-extern cvar_t		_enable_mouse;
 
 extern int		window_center_x, window_center_y;
 extern RECT		window_rect;

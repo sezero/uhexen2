@@ -1,7 +1,7 @@
 // vid_win.c -- Win32 video driver
 
 #include "quakedef.h"
-#include "quakeinc.h"
+#include "winquake.h"
 #include "d_local.h"
 #include "resource.h"
 #include <mgraph.h>

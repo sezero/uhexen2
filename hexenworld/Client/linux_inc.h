@@ -2,7 +2,7 @@
 #define _LINUX_INC
 
 #if defined(_WIN32)
-#error linux_inc.h and linquake.h is only meant to be used on Unix
+#error linux_inc.h is not meant to be used for Windows
 #endif
 
 #include <ctype.h>

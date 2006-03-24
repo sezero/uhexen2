@@ -1,7 +1,7 @@
 // net_wipx.c
 
 #include "quakedef.h"
-#include "quakeinc.h"
+#include "winquake.h"
 
 #ifdef __LCC__
 // no wsipx.h in lcc

@@ -16,4 +16,14 @@ void IN_ModeChanged (void);
 void IN_ClearStates (void);
 // restores all button and position states to defaults
 
+
+// for window manager events
+void IN_ShowMouse (void);
+void IN_DeactivateMouse (void);
+void IN_HideMouse (void);
+void IN_ActivateMouse (void);
+
+extern	cvar_t		_enable_mouse;
+
 void IN_SendKeyEvents (void);
+

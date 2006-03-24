@@ -1,11 +1,10 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.47 2006-03-24 15:05:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.48 2006-03-24 17:34:25 sezero Exp $
 */
 
 #include "quakedef.h"
-#include "quakeinc.h"
 
 extern	modestate_t	modestate;
 extern	cvar_t	crosshair;

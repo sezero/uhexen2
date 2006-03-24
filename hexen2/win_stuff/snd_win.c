@@ -1,5 +1,5 @@
 #include "quakedef.h"
-#include "quakeinc.h"
+#include "winquake.h"
 
 
 static HRESULT (WINAPI *pDirectSoundCreate)(GUID FAR *lpGUID, LPDIRECTSOUND FAR *lplpDS, IUnknown FAR *pUnkOuter);

@@ -1,10 +1,9 @@
 // cl_main.c  -- client main loop
 
 #include "quakedef.h"
-#include "quakeinc.h"
 
 #ifdef _WIN32
-#include "winsock.h"
+#include "winquake.h"
 #else
 #include <netinet/in.h>
 #ifndef INADDR_LOOPBACK

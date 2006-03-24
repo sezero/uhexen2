@@ -2,7 +2,7 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.1 2006-01-12 12:57:45 sezero Exp $
+	$Id: snd_sys.h,v 1.2 2006-03-24 17:34:25 sezero Exp $
 */
 
 // add more systems with OSS here
@@ -21,6 +21,12 @@
 // this prevents running S_Update_() with the sdl sound driver
 // if the snd_sdl implementation already calls S_PaintChannels.
 #define SDLSOUND_PAINTS_CHANNELS	1
+
+#if defined(_WIN32)
+// for the windows crap used in snd_dma.c
+#include "winquake.h"
+#endif	//  _WIN32
+
 
 #ifndef _SND_SYS_MACROS_ONLY
 

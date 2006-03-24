@@ -1,7 +1,7 @@
 // net_wins.c
 
 #include "quakedef.h"
-#include "quakeinc.h"
+#include "winquake.h"
 
 #define MAXHOSTNAMELEN		256
 

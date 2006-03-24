@@ -1,7 +1,7 @@
 // vid_win.c -- Win32 video driver
 
 #include "quakedef.h"
-#include "quakeinc.h"
+#include "winquake.h"
 #include "d_local.h"
 #include "resource.h"
 #include <mgraph.h>
@@ -3565,6 +3565,11 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2006/03/24 15:05:42  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.31  2006/02/18 08:51:11  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. also renamed the variables name and dest to savename and savedest in
