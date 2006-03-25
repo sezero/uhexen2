@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.43 2006-03-25 19:12:11 sezero Exp $
+	$Id: common.c,v 1.44 2006-03-25 20:40:44 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1656,6 +1656,7 @@ static void COM_AddGameDirectory (char *dir, qboolean base_fs)
 	pack_t			*pak;
 	char			pakfile[MAX_OSPATH];
 	char			*p;
+	qboolean		been_here = false;
 
 	if ((p = strrchr(dir, '/')) != NULL)
 		strcpy(gamedirfile, ++p);
@@ -1666,9 +1667,13 @@ static void COM_AddGameDirectory (char *dir, qboolean base_fs)
 //
 // add any pak files in the format pak0.pak pak1.pak, ...
 //
+add_pakfile:
 	for (i=0 ; i < 10; i++)
 	{
-		sprintf (pakfile, "%s/pak%i.pak", dir, i);
+		if (been_here)
+			sprintf (pakfile, "%s/pak%i.pak", com_userdir, i);
+		else
+			sprintf (pakfile, "%s/pak%i.pak", dir, i);
 		pak = COM_LoadPackFile (pakfile, i, base_fs);
 		if (!pak)
 			continue;
@@ -1678,7 +1683,6 @@ static void COM_AddGameDirectory (char *dir, qboolean base_fs)
 		com_searchpaths = search;
 	}
 
-//
 // add the directory to the search path
 // O.S: this needs to be done ~after~ adding the pakfiles in
 // this dir, so that the dir itself will be placed above the
@@ -1686,23 +1690,22 @@ static void COM_AddGameDirectory (char *dir, qboolean base_fs)
 // override files:
 // this way, data1/default.cfg will be opened instead of
 // data1/pak0.pak:/default.cfg
-//
 	search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
-	strcpy (search->filename, dir);
+	if (been_here)
+		strcpy (search->filename, com_userdir);
+	else
+		strcpy (search->filename, dir);
 	search->next = com_searchpaths;
 	com_searchpaths = search;
 
-//
+	if (been_here)
+		return;
+	been_here = true;
+
 // add user's directory to the search path
-// we don't need to set it on win32 platforms
-// since it's exactly com_gamedir.
-// FIXME: how about pak files in user's directory??
-//
+// add any pak files in the user's directory
 #ifdef PLATFORM_UNIX
-	search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
-	strcpy (search->filename, com_userdir);
-	search->next = com_searchpaths;
-	com_searchpaths = search;
+	goto add_pakfile;
 #endif
 }
 
@@ -1719,11 +1722,12 @@ void COM_Gamedir (char *dir)
 	int				i;
 	pack_t			*pak;
 	char			pakfile[MAX_OSPATH];
+	qboolean		been_here = false;
 
 	if (strstr(dir, "..") || strstr(dir, "/")
 		|| strstr(dir, "\\") || strstr(dir, ":") )
 	{
-		Con_Printf ("Gamedir should be a single filename, not a path\n");
+		Con_Printf ("Gamedir should be a single directory name, not a path\n");
 		return;
 	}
 
@@ -1760,9 +1764,13 @@ void COM_Gamedir (char *dir)
 //
 // add any pak files in the format pak0.pak pak1.pak, ...
 //
+add_pakfiles:
 	for (i=0 ; i < 10 ; i++)
 	{
-		sprintf (pakfile, "%s/pak%i.pak", com_gamedir, i);
+		if (been_here)
+			sprintf (pakfile, "%s/pak%i.pak", com_userdir, i);
+		else
+			sprintf (pakfile, "%s/pak%i.pak", com_gamedir, i);
 		pak = COM_LoadPackFile (pakfile, i, false);
 		if (!pak)
 			continue;
@@ -1772,37 +1780,38 @@ void COM_Gamedir (char *dir)
 		com_searchpaths = search;
 	}
 
-//
 // add the directory to the search path
 // O.S: this needs to be done ~after~ adding the pakfiles in
 // this dir, so that the dir itself will be placed above the
 // pakfiles in the search order
-//
 	search = Z_Malloc (sizeof(searchpath_t));
-	strcpy (search->filename, com_gamedir);
+	if (been_here)
+		strcpy (search->filename, com_userdir);
+	else
+		strcpy (search->filename, com_gamedir);
 	search->next = com_searchpaths;
 	com_searchpaths = search;
+
+	if (been_here)
+		return;
+	been_here = true;
 
 #if defined(H2W) && defined(SERVERONLY)
 // change the *gamedir serverinfo properly
 	Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
 #endif
 
-//
-// add user's directory to the search path, as well
-// FIXME: how about pak files in user's directory??
-//
+// add user's directory to the search path
 #ifdef PLATFORM_UNIX
 	sprintf (com_userdir, "%s/%s", host_parms.userdir, dir);
 	Sys_mkdir (com_userdir);
-	search = Z_Malloc (sizeof(searchpath_t));
-	strcpy (search->filename, com_userdir);
-	search->next = com_searchpaths;
-	com_searchpaths = search;
 #else
 	sprintf (com_userdir, com_gamedir);
 #endif
 	sprintf (com_savedir, com_userdir);
+// add any pak files in the user's directory
+	if (strcmp(com_gamedir, com_userdir))
+		goto add_pakfiles;
 }
 
 /*
