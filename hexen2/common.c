@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.42 2006-03-25 10:02:06 sezero Exp $
+	$Id: common.c,v 1.43 2006-03-25 10:26:28 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1776,6 +1776,22 @@ void COM_Gamedir (char *dir)
 		search->next = com_searchpaths;
 		com_searchpaths = search;
 	}
+
+	//
+	// add user's directory to the search path, as well
+	// FIXME: how about pak files in user's directory??
+	//
+#ifdef PLATFORM_UNIX
+	sprintf (com_userdir, "%s/%s", host_parms.userdir, dir);
+	Sys_mkdir (com_userdir);
+	search = Z_Malloc (sizeof(searchpath_t));
+	strcpy (search->filename, com_userdir);
+	search->next = com_searchpaths;
+	com_searchpaths = search;
+#else
+	sprintf (com_userdir, com_gamedir);
+#endif
+	sprintf (com_savedir, com_userdir);
 }
 
 /*
@@ -2172,6 +2188,10 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.42  2006/03/25 10:02:06  sezero
+ * modified check in COM_LoadPackFile() should only be done for the base
+ * filesystem directories, otherwise it is always modified game.
+ *
  * Revision 1.41  2006/03/25 09:33:01  sezero
  * hw directory check in COM_Gamedir is only for hexenworld game
  *

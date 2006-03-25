@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.38 2006-03-25 10:02:12 sezero Exp $
+	$Id: common.c,v 1.39 2006-03-25 10:26:29 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1776,6 +1776,22 @@ void COM_Gamedir (char *dir)
 		search->next = com_searchpaths;
 		com_searchpaths = search;
 	}
+
+	//
+	// add user's directory to the search path, as well
+	// FIXME: how about pak files in user's directory??
+	//
+#ifdef PLATFORM_UNIX
+	sprintf (com_userdir, "%s/%s", host_parms.userdir, dir);
+	Sys_mkdir (com_userdir);
+	search = Z_Malloc (sizeof(searchpath_t));
+	strcpy (search->filename, com_userdir);
+	search->next = com_searchpaths;
+	com_searchpaths = search;
+#else
+	sprintf (com_userdir, com_gamedir);
+#endif
+	sprintf (com_savedir, com_userdir);
 }
 
 /*

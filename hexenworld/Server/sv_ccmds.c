@@ -879,9 +879,6 @@ static void SV_Gamedir_f (void)
 
 	COM_Gamedir (dir);
 	Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
-	// Many mods changes the gamedir not by a -game cmdline arg,
-	// but by a "+exec mod.cfg". So, let's change com_userdir here
-	sprintf (com_userdir, "%s/%s", host_parms.userdir, com_gamedir+1+strlen(com_basedir));
 }
 
 
