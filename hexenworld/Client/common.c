@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.37 2006-03-25 09:33:05 sezero Exp $
+	$Id: common.c,v 1.38 2006-03-25 10:02:12 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1515,7 +1515,7 @@ Loads the header and directory, adding the files at the beginning
 of the list so they override previous pack files.
 =================
 */
-static pack_t *COM_LoadPackFile (char *packfile, int paknum)
+static pack_t *COM_LoadPackFile (char *packfile, int paknum, qboolean base_fs)
 {
 	dpackheader_t	header;
 	int				i;
@@ -1553,7 +1553,7 @@ static pack_t *COM_LoadPackFile (char *packfile, int paknum)
 		CRC_ProcessByte (&crc, ((byte *)info)[i]);
 
 // check for modifications
-	if (paknum <= MAX_PAKDATA-2)
+	if (base_fs && paknum <= MAX_PAKDATA-2)
 	{
 		if (strcmp(gamedirfile, dirdata[paknum]) != 0)
 		{
@@ -1649,7 +1649,7 @@ Sets com_gamedir, adds the directory to the head of the path,
 then loads and adds pak1.pak pak2.pak ... 
 ================
 */
-static void COM_AddGameDirectory (char *dir)
+static void COM_AddGameDirectory (char *dir, qboolean base_fs)
 {
 	int				i;
 	searchpath_t		*search;
@@ -1669,7 +1669,7 @@ static void COM_AddGameDirectory (char *dir)
 	for (i=0 ; i < 10; i++)
 	{
 		sprintf (pakfile, "%s/pak%i.pak", dir, i);
-		pak = COM_LoadPackFile (pakfile, i);
+		pak = COM_LoadPackFile (pakfile, i, base_fs);
 		if (!pak)
 			continue;
 		search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
@@ -1768,7 +1768,7 @@ void COM_Gamedir (char *dir)
 	for (i=0 ; i < 10 ; i++)
 	{
 		sprintf (pakfile, "%s/pak%i.pak", com_gamedir, i);
-		pak = COM_LoadPackFile (pakfile, i);
+		pak = COM_LoadPackFile (pakfile, i, false);
 		if (!pak)
 			continue;
 		search = Z_Malloc (sizeof(searchpath_t));
@@ -1807,7 +1807,7 @@ static void COM_InitFilesystem (void)
 	// Let's keep the game's old win32 behavior
 	sprintf (com_userdir, "%s/data1", host_parms.userdir);
 #endif
-	COM_AddGameDirectory (va("%s/data1", com_basedir));
+	COM_AddGameDirectory (va("%s/data1", com_basedir), true);
 
 	// check if we are playing the registered version
 	COM_CheckRegistered ();
@@ -1830,7 +1830,7 @@ static void COM_InitFilesystem (void)
 	{
 		sprintf (com_userdir, "%s/portals", host_parms.userdir);
 		Sys_mkdir (com_userdir);
-		COM_AddGameDirectory (va("%s/portals", com_basedir));
+		COM_AddGameDirectory (va("%s/portals", com_basedir), true);
 	}
 #   if defined(H2MP)
 	// error out for H2MP builds if GAME_PORTALS isn't set
@@ -1842,7 +1842,7 @@ static void COM_InitFilesystem (void)
 #if defined(H2W)
 	sprintf (com_userdir, "%s/hw", host_parms.userdir);
 	Sys_mkdir (com_userdir);
-	COM_AddGameDirectory (va("%s/hw", com_basedir));
+	COM_AddGameDirectory (va("%s/hw", com_basedir), true);
 	// error out for H2W builds if GAME_HEXENWORLD isn't set
 	if (!(gameflags & GAME_HEXENWORLD))
 		Sys_Error ("You must have the HexenWorld data installed");
@@ -1859,7 +1859,7 @@ static void COM_InitFilesystem (void)
 			gameflags |= GAME_MODIFIED;
 			sprintf (com_userdir, "%s/%s", host_parms.userdir, com_argv[i+1]);
 			Sys_mkdir (com_userdir);
-			COM_AddGameDirectory (va("%s/%s", com_basedir, com_argv[i+1]));
+			COM_AddGameDirectory (va("%s/%s", com_basedir, com_argv[i+1]), false);
 		}
 
 	}
