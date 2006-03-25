@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.42 2006-03-25 14:50:04 sezero Exp $
+	$Id: common.c,v 1.43 2006-03-25 19:12:11 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1924,7 +1924,28 @@ static void COM_InitFilesystem (void)
 	Con_Printf ("Playing %s version.\n", temp);
 }
 
-#ifdef H2W
+/*
+============
+COM_FileInGamedir
+
+Reports the existance of a file with read
+permissions in com_gamedir or com_userdir.
+-1 is returned on failure, ie. the return
+value of the access() function
+============
+*/
+int COM_FileInGamedir (char *fname)
+{
+	int	ret;
+
+	ret = access (va("%s/%s", com_userdir, fname), R_OK);
+	if (ret == -1)
+		ret = access (va("%s/%s", com_gamedir, fname), R_OK);
+
+	return ret;
+}
+
+
 /*
 =====================================================================
 
@@ -1932,7 +1953,7 @@ static void COM_InitFilesystem (void)
 
 =====================================================================
 */
-
+#ifdef H2W
 /*
 ===============
 Info_ValueForKey

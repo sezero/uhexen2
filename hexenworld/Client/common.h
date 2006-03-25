@@ -227,6 +227,7 @@ byte *COM_LoadHunkFile (char *path);
 void COM_LoadCacheFile (char *path, struct cache_user_s *cu);
 void COM_CreatePath (char *path);
 void COM_Gamedir (char *dir);
+int COM_FileInGamedir (char *fname);
 
 extern	struct cvar_s	registered;
 extern	struct cvar_s	oem;
