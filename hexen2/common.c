@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.43 2006-03-25 10:26:28 sezero Exp $
+	$Id: common.c,v 1.44 2006-03-25 10:39:19 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1864,26 +1864,26 @@ static void COM_InitFilesystem (void)
 		Sys_Error ("You must have the HexenWorld data installed");
 #endif
 
-// -game <gamedir>
-// Adds basedir/gamedir as an override game
-//
-	if (gameflags & GAME_REGISTERED)
-	{
-		i = COM_CheckParm ("-game");
-		if (i && i < com_argc-1)
-		{
-			gameflags |= GAME_MODIFIED;
-			sprintf (com_userdir, "%s/%s", host_parms.userdir, com_argv[i+1]);
-			Sys_mkdir (com_userdir);
-			COM_AddGameDirectory (va("%s/%s", com_basedir, com_argv[i+1]), false);
-		}
-
-	}
-
-	strcpy(com_savedir,com_userdir);
-
-	// any set gamedirs will be freed up to here
+// any set gamedirs, such as those from -game commandline
+// arguments, from exec'ed configs or the ones dictated by
+// the server, will be freed up to here upon a new gamedir
+// command
 	com_base_searchpaths = com_searchpaths;
+
+	sprintf (com_savedir, com_userdir);
+
+	i = COM_CheckParm ("-game");
+	if (i && !(gameflags & GAME_REGISTERED))
+	{
+	// only registered versions can do -game
+		Sys_Error ("You must have the full version of Hexen II to play modified games");
+	}
+	else
+	{
+	// add basedir/gamedir as an override game
+		if (i && i < com_argc-1)
+			COM_Gamedir (com_argv[i+1]);
+	}
 
 // finish the filesystem setup
 	oem.flags &= ~CVAR_ROM;
@@ -2188,6 +2188,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.43  2006/03/25 10:26:28  sezero
+ * COM_Gamedir() should add user directories to the searchpath, as well
+ *
  * Revision 1.42  2006/03/25 10:02:06  sezero
  * modified check in COM_LoadPackFile() should only be done for the base
  * filesystem directories, otherwise it is always modified game.
