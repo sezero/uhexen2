@@ -437,8 +437,6 @@ int	cl_doc = -1;
 static void CL_ParseServerData (void)
 {
 	char	*str;
-	FILE	*f;
-	char	fn[MAX_OSPATH];
 	qboolean	cflag = false;
 	int		protover;
 
@@ -478,15 +476,19 @@ static void CL_ParseServerData (void)
 	//if it exists
 	if (cflag)
 	{
-		sprintf(fn, "%s/%s", com_gamedir, "config.cfg");
-		if ((f = fopen(fn, "r")) != NULL)
+		Cbuf_AddText ("cl_warncmd 0\n");
+		if (COM_FileInGamedir("config.cfg") != -1)
 		{
-			fclose(f);
-			Cbuf_AddText ("cl_warncmd 0\n");
+		// remove any weird mod specific key bindings
+			Cbuf_AddText("unbindall\n");
+			Cbuf_AddText("exec autoexec.cfg\n");
 			Cbuf_AddText("exec config.cfg\n");
-			Cbuf_AddText("exec frontend.cfg\n");
-			Cbuf_AddText ("cl_warncmd 1\n");
 		}
+		// gamespy crap
+		if (COM_FileInGamedir("frontend.cfg") != -1)
+			Cbuf_AddText("exec frontend.cfg\n");
+
+		Cbuf_AddText ("cl_warncmd 1\n");
 	}
 
 	// parse player slot, high bit means spectator
