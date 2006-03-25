@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.41 2006-03-25 14:48:26 sezero Exp $
+	$Id: common.c,v 1.42 2006-03-25 14:50:04 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1782,6 +1782,11 @@ void COM_Gamedir (char *dir)
 	strcpy (search->filename, com_gamedir);
 	search->next = com_searchpaths;
 	com_searchpaths = search;
+
+#if defined(H2W) && defined(SERVERONLY)
+// change the *gamedir serverinfo properly
+	Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
+#endif
 
 //
 // add user's directory to the search path, as well

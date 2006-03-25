@@ -471,6 +471,7 @@ static void CL_ParseServerData (void)
 		cflag = true;
 	}
 
+	Con_Printf("Server set the gamedir to %s\n", str);
 	COM_Gamedir(str);
 
 	//ZOID--run the autoexec.cfg in the gamedir

@@ -878,7 +878,9 @@ static void SV_Gamedir_f (void)
 	}
 
 	COM_Gamedir (dir);
-	Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
+
+// *gamedir is now changed in COM_Gamedir()
+//	Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
 }
 
 

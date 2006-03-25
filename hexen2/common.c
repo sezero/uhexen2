@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.45 2006-03-25 14:48:22 sezero Exp $
+	$Id: common.c,v 1.46 2006-03-25 14:49:59 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1783,6 +1783,11 @@ void COM_Gamedir (char *dir)
 	search->next = com_searchpaths;
 	com_searchpaths = search;
 
+#if defined(H2W) && defined(SERVERONLY)
+// change the *gamedir serverinfo properly
+	Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
+#endif
+
 //
 // add user's directory to the search path, as well
 // FIXME: how about pak files in user's directory??
@@ -2195,6 +2200,11 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.45  2006/03/25 14:48:22  sezero
+ * COM_Gamedir: add the directory to the searchpath ~after~ adding the
+ * pakfiles in that dir, so that the dir itself will be placed above the
+ * pakfiles in the search order.
+ *
  * Revision 1.44  2006/03/25 10:39:19  sezero
  * com_base_searchpaths is only what its name implies: the base game
  * directories.  so, moved -game argument handling to COM_Gamedir().
