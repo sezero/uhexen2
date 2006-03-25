@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.35 2006-03-25 09:16:31 sezero Exp $
+	$Id: common.c,v 1.36 2006-03-25 09:25:39 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1693,6 +1693,7 @@ static void COM_AddGameDirectory (char *dir)
 //
 // add user's directory to the search path
 // we don't need to set it on win32 platforms since it's exactly com_gamedir
+// FIXME: how about pak files in user's directory??
 //
 #ifdef PLATFORM_UNIX
 	search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
@@ -1868,6 +1869,7 @@ static void COM_InitFilesystem (void)
 	// any set gamedirs will be freed up to here
 	com_base_searchpaths = com_searchpaths;
 
+// finish the filesystem setup
 	oem.flags &= ~CVAR_ROM;
 	registered.flags &= ~CVAR_ROM;
 	if (gameflags & GAME_REGISTERED)
@@ -1888,11 +1890,10 @@ static void COM_InitFilesystem (void)
 	{	// Umm??
 		sprintf (temp, "unknown");
 	}
-	Con_Printf ("Playing %s version.\n", temp);
-
-	// mark these cvars as read-only
 	oem.flags |= CVAR_ROM;
 	registered.flags |= CVAR_ROM;
+
+	Con_Printf ("Playing %s version.\n", temp);
 }
 
 #ifdef H2W

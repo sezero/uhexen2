@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.39 2006-03-25 09:16:29 sezero Exp $
+	$Id: common.c,v 1.40 2006-03-25 09:25:38 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1693,6 +1693,7 @@ static void COM_AddGameDirectory (char *dir)
 //
 // add user's directory to the search path
 // we don't need to set it on win32 platforms since it's exactly com_gamedir
+// FIXME: how about pak files in user's directory??
 //
 #ifdef PLATFORM_UNIX
 	search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
@@ -1868,6 +1869,7 @@ static void COM_InitFilesystem (void)
 	// any set gamedirs will be freed up to here
 	com_base_searchpaths = com_searchpaths;
 
+// finish the filesystem setup
 	oem.flags &= ~CVAR_ROM;
 	registered.flags &= ~CVAR_ROM;
 	if (gameflags & GAME_REGISTERED)
@@ -1888,11 +1890,10 @@ static void COM_InitFilesystem (void)
 	{	// Umm??
 		sprintf (temp, "unknown");
 	}
-	Con_Printf ("Playing %s version.\n", temp);
-
-	// mark these cvars as read-only
 	oem.flags |= CVAR_ROM;
 	registered.flags |= CVAR_ROM;
+
+	Con_Printf ("Playing %s version.\n", temp);
 }
 
 #ifdef H2W
@@ -2171,6 +2172,10 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.39  2006/03/25 09:16:29  sezero
+ * Fixed COM_Gamedir() to properly update com_gamedir in case of directory
+ * names already in com_base_searchpaths.
+ *
  * Revision 1.38  2006/03/24 15:05:39  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also
