@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.34 2006-03-24 15:05:44 sezero Exp $
+	$Id: common.c,v 1.35 2006-03-25 09:16:31 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1748,10 +1748,10 @@ void COM_Gamedir (char *dir)
 	//
 	Cache_Flush ();
 
+	sprintf (com_gamedir, "%s/%s", com_basedir, dir);
+
 	if (!strcmp(dir,"data1") || !strcmp(dir, "hw"))
 		return;
-
-	sprintf (com_gamedir, "%s/%s", com_basedir, dir);
 
 	//
 	// add the directory to the search path

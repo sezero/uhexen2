@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.38 2006-03-24 15:05:39 sezero Exp $
+	$Id: common.c,v 1.39 2006-03-25 09:16:29 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1748,10 +1748,10 @@ void COM_Gamedir (char *dir)
 	//
 	Cache_Flush ();
 
+	sprintf (com_gamedir, "%s/%s", com_basedir, dir);
+
 	if (!strcmp(dir,"data1") || !strcmp(dir, "hw"))
 		return;
-
-	sprintf (com_gamedir, "%s/%s", com_basedir, dir);
 
 	//
 	// add the directory to the search path
@@ -2171,6 +2171,11 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.38  2006/03/24 15:05:39  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.37  2006/03/23 19:45:09  sezero
  * Marked the cvars oem and registered as read-only in COM_InitFilesystem
  *
