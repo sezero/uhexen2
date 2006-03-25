@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.40 2006-03-25 09:25:38 sezero Exp $
+	$Id: common.c,v 1.41 2006-03-25 09:33:01 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1751,7 +1751,7 @@ void COM_Gamedir (char *dir)
 
 	sprintf (com_gamedir, "%s/%s", com_basedir, dir);
 
-	if (!strcmp(dir,"data1") || !strcmp(dir, "hw"))
+	if (!strcmp(dir,"data1") || ((gameflags & GAME_HEXENWORLD) && !strcmp(dir, "hw")))
 		return;
 
 	//
@@ -2172,6 +2172,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.40  2006/03/25 09:25:38  sezero
+ * small tidy-ups
+ *
  * Revision 1.39  2006/03/25 09:16:29  sezero
  * Fixed COM_Gamedir() to properly update com_gamedir in case of directory
  * names already in com_base_searchpaths.

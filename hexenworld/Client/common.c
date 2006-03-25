@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.36 2006-03-25 09:25:39 sezero Exp $
+	$Id: common.c,v 1.37 2006-03-25 09:33:05 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1751,7 +1751,7 @@ void COM_Gamedir (char *dir)
 
 	sprintf (com_gamedir, "%s/%s", com_basedir, dir);
 
-	if (!strcmp(dir,"data1") || !strcmp(dir, "hw"))
+	if (!strcmp(dir,"data1") || ((gameflags & GAME_HEXENWORLD) && !strcmp(dir, "hw")))
 		return;
 
 	//
