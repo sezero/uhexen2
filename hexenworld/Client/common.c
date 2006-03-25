@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.40 2006-03-25 10:39:22 sezero Exp $
+	$Id: common.c,v 1.41 2006-03-25 14:48:26 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1680,10 +1680,12 @@ static void COM_AddGameDirectory (char *dir, qboolean base_fs)
 
 //
 // add the directory to the search path
-// O.S: this needs to be done ~after~ adding the pakfiles in this dir, so
-// that the dir itself will be placed above the pakfiles in the search order
-// which, in turn, will allow override files: this way, data1/default.cfg
-// will be opened instead of data1/pak0.pak:/default.cfg
+// O.S: this needs to be done ~after~ adding the pakfiles in
+// this dir, so that the dir itself will be placed above the
+// pakfiles in the search order which, in turn, will allow
+// override files:
+// this way, data1/default.cfg will be opened instead of
+// data1/pak0.pak:/default.cfg
 //
 	search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
 	strcpy (search->filename, dir);
@@ -1692,7 +1694,8 @@ static void COM_AddGameDirectory (char *dir, qboolean base_fs)
 
 //
 // add user's directory to the search path
-// we don't need to set it on win32 platforms since it's exactly com_gamedir
+// we don't need to set it on win32 platforms
+// since it's exactly com_gamedir.
 // FIXME: how about pak files in user's directory??
 //
 #ifdef PLATFORM_UNIX
@@ -1728,9 +1731,9 @@ void COM_Gamedir (char *dir)
 		return;		// still the same
 	strcpy (gamedirfile, dir);
 
-	//
-	// free up any current game dir info
-	//
+//
+// free up any current game dir info
+//
 	while (com_searchpaths != com_base_searchpaths)
 	{
 		if (com_searchpaths->pack)
@@ -1744,9 +1747,9 @@ void COM_Gamedir (char *dir)
 		com_searchpaths = next;
 	}
 
-	//
-	// flush all data, so it will be forced to reload
-	//
+//
+// flush all data, so it will be forced to reload
+//
 	Cache_Flush ();
 
 	sprintf (com_gamedir, "%s/%s", com_basedir, dir);
@@ -1754,17 +1757,9 @@ void COM_Gamedir (char *dir)
 	if (!strcmp(dir,"data1") || ((gameflags & GAME_HEXENWORLD) && !strcmp(dir, "hw")))
 		return;
 
-	//
-	// add the directory to the search path
-	//
-	search = Z_Malloc (sizeof(searchpath_t));
-	strcpy (search->filename, com_gamedir);
-	search->next = com_searchpaths;
-	com_searchpaths = search;
-
-	//
-	// add any pak files in the format pak0.pak pak1.pak, ...
-	//
+//
+// add any pak files in the format pak0.pak pak1.pak, ...
+//
 	for (i=0 ; i < 10 ; i++)
 	{
 		sprintf (pakfile, "%s/pak%i.pak", com_gamedir, i);
@@ -1777,10 +1772,21 @@ void COM_Gamedir (char *dir)
 		com_searchpaths = search;
 	}
 
-	//
-	// add user's directory to the search path, as well
-	// FIXME: how about pak files in user's directory??
-	//
+//
+// add the directory to the search path
+// O.S: this needs to be done ~after~ adding the pakfiles in
+// this dir, so that the dir itself will be placed above the
+// pakfiles in the search order
+//
+	search = Z_Malloc (sizeof(searchpath_t));
+	strcpy (search->filename, com_gamedir);
+	search->next = com_searchpaths;
+	com_searchpaths = search;
+
+//
+// add user's directory to the search path, as well
+// FIXME: how about pak files in user's directory??
+//
 #ifdef PLATFORM_UNIX
 	sprintf (com_userdir, "%s/%s", host_parms.userdir, dir);
 	Sys_mkdir (com_userdir);
@@ -1864,6 +1870,7 @@ static void COM_InitFilesystem (void)
 		Sys_Error ("You must have the HexenWorld data installed");
 #endif
 
+// this is the end of our base searchpath:
 // any set gamedirs, such as those from -game commandline
 // arguments, from exec'ed configs or the ones dictated by
 // the server, will be freed up to here upon a new gamedir
