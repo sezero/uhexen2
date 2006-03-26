@@ -27,26 +27,3 @@ Known Bugs
   beta-0.15)
 
 
-Compiler problems :
----------------------------
-
-  GCC versions in the 2.95.x/2.96 and 3.x series work fine.
-
-  4.0.x series has a problem when unit-at-a-time mode is active, such
-  as with optimizations -O2 and -O3, with the resulting hexen2 binary
-  segfaulting when a crusader class player uses his tomed ice mace.
-  This bug showed up after the cmd layer synchronization between hexen2
-  and hexenworld trees (october 2005). The build system automatically
-  disables unit-at-a-time if it detects gcc-4.0.x series compilers, so
-  there will be no problems with the default build options. With gcc
-  version 4.1.0, this problem doesn't exist. Unit-at-a-time mode can be
-  forcefully enabled/disabled by adding a DISABLE_UNIT_AT_A_TIME=yes
-  (or no) statement on the make commandline or by exporting it as an
-  environment variable.
-
-  Gcc version 2.91.66 (aka. egcs-1.1.2) still seems to work OK, but the
-  resulting binaries are not tested much. Even version 2.7.2 is reported
-  to compile fine, but it doen't like the -march option.
-
-  No other compiler (such as LCC, MS VC, etc) is tested.
-

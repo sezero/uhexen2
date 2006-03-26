@@ -1,0 +1,124 @@
+
+Hexen II: Hammer of Thyrion
+
+Instructions for Compiling:
+---------------------------
+
+To compile the your own binaries, you need a unix build environment. The
+makefiles also present several build options, please read them. Makefiles
+rely on some scripts residing in the scripts directory. You may be able
+to modify them to meet your needs, if necessary, but the defaults should
+work just fine. Here is the recommended software for building:
+
+Tools needed:
+
+Make	:	The GNU make utility.
+		Minimum version required is 3.78.  Versions 3.79.1 and
+		newer are recommended.
+
+binutils:	A GNU collection of binary utilities.
+		Minimum version required is 2.9.5. Tested with versions
+		2.11.9x and newer. Recent versions are recommended.
+
+NASM	:	Netwide Assembler. An x86 assembler.
+		Minimum version required is 0.98.  Versions 0.98.38 and
+		0.98.39 recommended.
+		Nasm is required for compiling hexen2 and hexenworld on
+		ia32 machines. The makefile presents an option to not use
+		x86 assembly even on ia32 machines, but this only works
+		for the opengl renderer for now. 
+
+GCC	:	GNU C Compiler. No other compilers (such as LCC, MS VC,
+		etc) are tested.
+
+		Minimum version required is GCC 2.95.  GCC versions in
+		the 2.95/2.96 and 3.x series work fine.  Gcc 3.2.2 and
+		newer recommended.
+
+		Gcc-2.91.66 (aka. egcs-1.1.2) still seems to work, but
+		the resulting binaries are not tested much. Even 2.7.2
+		is reported to compile fine (it doesn't like the -march
+		option, though.)
+
+		Gcc-4.0 quirks:
+		Gcc 4.0.x series has a problem when unit-at-a-time mode
+		is active, such as with optimizations -O2 and -O3, with
+		the resulting hexen2 binary segfaulting when a crusader
+		class player uses his tome'd ice mace.
+		When the build system detects gcc-4.0.x series compilers,
+		it automatically disables unit-at-a-time, therefore there
+		will be no problems with the default build options.
+		With GCC 4.1.0, this problem doesn't exist.
+		The blocking against unit-at-a-time mode can be forcefully
+		enabled/disabled by adding a DISABLE_UNIT_AT_A_TIME=yes
+		(or no) statement on the make commandline or by exporting
+		it as an environment variable.
+		This problem showed up after the cmd layer synchronization
+		between hexen2 and hexenworld trees (october 2005).
+
+Libraries needed:
+
+GLIBC	:	Linux C libraries.
+		Any glibc >= 2.1 should be fine. Not tested with anything
+		older. As for FreeBSD, only version >= 5.3 is tested.
+
+SDL	:	Simple DirectMedia Layer libraries.
+		Minimum version required is 1.2.4.
+		Required for compiling hexen2 and hexenworld client on
+		unix systems.
+
+SDL_mixer:	SDL mixer library.
+		Minimum version required is 1.2.4. 1.2.5 and newer highly
+		recommended at runtime.
+		Required for midi playback support on unix. Should be
+		compiled with timidity+ support. The makefiles present
+		an option for disabling midi support, in that case this
+		library will not be necessary.
+
+ALSA	:	Advanced Linux Sound Architecture libraries.
+		Minimum version required is 1.0.1. Version 0.9.8 should
+		theoretically work, but not tested. 1.0.7 or newer are
+		recommended at runtime.
+		Necessary, if you want to sbupport ALSA sound on Linux.
+		The makefiles present an option of disabling ALSA support,
+		in that case this library will not be necessary.
+
+Compiling for Windows:
+
+a. On Linux, using MinGW cross compiler:
+----------------------------------------
+See the MinGW FAQ on the MinGW homepage, and visit the icculus.org cross
+compiling tips (link down below). The icculus.org page gives prebuilt
+cross compiler tools. Download and install them, or prepare your own cross
+compiler. You can then run the "build_cross_win32.sh" scripts residing in
+all directories. Read the scripts and edit them as necessary.
+
+b. On Windows, using win32-native MinGW compiler:
+-------------------------------------------------
+Download a prebuilt MinGW installer and install it to C:\MinGW .  Then
+download MSys (as of this writing, latest is 1.0.11-2004.04.30), and
+install to c:\msys . For assembly, download nasm (0.98.39 is latest)
+and put the nasmw.exe into the C:\MinGW\bin directory. Adding the mingw
+directory to your PATH may be a good idea, too. MinGW-3.1.0 comes with
+gcc-3.2.3.  MinGW 4.1.1 or 5.0, on the other hand, come with gcc-3.4.2.
+I currently use MinGW-5.0.2 when I compile on Windows.
+Open a console window, cd into \msys and type "msys sh.exe". You'll be
+in a unixish sh environment. The rest is just like doing things in linux:
+cd into your fake "home directory", extract the HoT tarball, then change
+into into each subdirectory you want to build and normally use the make
+commands to compile.
+Note that "make" may be named "mingw32-make". In that case, you may want
+to try "mingw32-make" if "make" command itself fails to run. Remember to
+do a make clean between each different build.
+
+
+Links:
+
+SOL homepage		:	http://www.libsdl.org/
+SOL_mixer homepage	:	http://www.libsdl.org/projects/SDL_mixer
+ALSA homepage		:	http://www.alsa-project.org/
+GCC homepage		:	http://gcc.gnu.org/
+NASM homepage		:	http://nasm.sourceforge.net/
+MinGW/MSYS homepage	:	http://mingw.sourceforge.net/
+MinGW cros compiling tips:	http://www.libsdl.org/extras/win32/cross/
+
