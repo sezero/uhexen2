@@ -1,0 +1,123 @@
+HexenWorld Server Modes
+-----------------------
+
+There are different modes that you can run your HexenWorld server in.
+These are only for unmodified hexenworld. Some community created mods,
+such as the Ghost mod, may modify the meaning and behavior of these
+options. This is not a complete listing, more may be found on the net.
+
+
+Tome Mode:
+----------
+
+tomemode 0	Default
+
+tomemode 1	Each player can select the tome of power version of a weapon
+		by pressing the impulse for the weapon twice. (ie.: if your
+		3rd weapon is bound to your 3 key, press it twice.)
+
+tomemode 2	Players gain the ability at any point to turn on a powered up
+		version of a weapon once a tome of power has been acquired.
+		The weapon will stay tomed until the player dies.
+
+
+Damage Scaling:
+---------------
+
+damagescale 1.0	This is the default setting. This will scale all damage by
+		the scale entered.
+
+
+Spawning:
+---------
+
+tomerespawn 1	Players will respawn with a tome of power active.
+
+w2respawn 1	Players will respawn with their second weapon already in
+		their inventory and selected.
+
+altrespawn 1	When a player dies, he will drop his selected weapon, drop
+		1/2 of his remaining weapons, lose half of his mana, and
+		drop half of his inventory. He will keep the rest when he
+		respawns.
+
+shyRespawn 1	Artifacts taken from a place will be shy to respawn unless
+		there is no one around them. Items affected: Mystic Urn,
+		Krater of Might, Tome of Power, Invisibility Sphere, Seal
+		of the Ovinomancer, Ring of Flight, Icon of the Defender,
+		and the Purifier Pieces. Default: 0.
+
+patternrunner 1	Some respawn times will be scaled with the rumber of players.
+		Default 0.
+
+
+Item Usage:
+-----------
+
+autoitems 1	Artifacts taken will be automatically used. Affected items:
+		Invisibility Sphere, Boots of Speed, Force Cube, Mystic Urn,
+		Krater of Might, Icon of the Defender.  Default is 0.  Not
+		functional in dmmode 1.
+
+easyfourth 1	If a player gets a purifier piece, the complementary piece
+		will be automatically added and he will "easily" have the
+		fourth weapon. Default is 0.
+
+autoitems 1	Artifacts taken will be automatically used. Affected items
+		are: Invisibility Sphere, Boots of Speed, Force Cube, Mystic
+		Urn, Krater of Might, Icon of the Defender. Not functional
+		in dmmode 1. Default is 0.
+
+easyfourth 1	If a player gets a purifier piece, the complementary piece
+		will be automatically added and he will "easily" have the
+		fourth weapon. Default is 0.
+
+
+Player Levels:
+--------------
+
+fixedlevel #	Forces all players to stay at one particualr level. No
+		experience is accumulated in this mode. The number entered
+		is the level number that each player will stay at.
+
+
+Deathmatch Modes:
+-----------------
+
+dmmode 0	Normal deathmatch. Default.
+
+dmmode 1	Hoard the Icon. The goal is to capture the icon. The only
+		person that can score a frag is the person with the icon.
+		In this mode, the icon allows the carrier to do double
+		damage and take half damage. The icon has no time limit and
+		you can not pick up any weapons or items while you have it.
+		When the player with icon is killed, it will randomly respawn
+		somewhere else in the level.
+
+dmmode 2	Hunter. Each player has a specific target that they must
+		kill. If you kill your target, you will gain your target's
+		old target and the person you killed will respawn with you as
+		his target. You gain a frag for killing your target, lose a
+		frag for killing any one not your target, and you gain nothing
+		if you kill a player who is targeting you.
+
+
+Teamplay Modes:
+---------------
+
+teamplay 0	Default
+
+teamplay 1	Cannot hurt yourself or teammates
+
+teamplay 2	If you kill yourself or teammate, you lose a frag
+
+teamplay 3	Cannot hurt your teammates, but you can hurt yourself.
+
+
+Mesage broadcasting:
+--------------------
+
+spartanPrint 1	Only sends chat and relevant death messages to clients.
+		Default is 1.
+
+
