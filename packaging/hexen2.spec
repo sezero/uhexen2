@@ -148,6 +148,8 @@ ln -s %{_prefix}/games/hexen2/h2launcher %{buildroot}/%{_bindir}/hexen2
 %{__install} -D -m644 docs/CHANGES %{buildroot}/%{_prefix}/games/%{name}/docs/CHANGES
 %{__install} -D -m644 docs/README.3dfx %{buildroot}/%{_prefix}/games/%{name}/docs/README.3dfx
 %{__install} -D -m644 docs/README.launcher %{buildroot}/%{_prefix}/games/%{name}/docs/README.launcher
+%{__install} -D -m644 docs/README.hwcl %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwcl
+%{__install} -D -m644 docs/README.hwsv %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwsv
 %{__install} -D -m644 docs/README.hwmaster %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwmaster
 %{__install} -D -m644 docs/ReleaseNotes-1.2.3 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.3
 %{__install} -D -m644 docs/ReleaseNotes-1.2.4a %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.4a
@@ -241,7 +243,6 @@ rm -rf %{buildroot}
 %{_prefix}/games/%{name}/docs/Features
 %{_prefix}/games/%{name}/docs/CHANGES
 %{_prefix}/games/%{name}/docs/README.launcher
-%{_prefix}/games/%{name}/docs/README.hwmaster
 %{_prefix}/games/%{name}/docs/README.3dfx
 %{_prefix}/games/%{name}/docs/TODO
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.3
@@ -272,8 +273,14 @@ rm -rf %{buildroot}
 %{_prefix}/games/%{name}/hw/pak4.pak
 %{_prefix}/games/%{name}/hw/strings.txt
 %{_prefix}/games/%{name}/hw/default.cfg
+%{_prefix}/games/%{name}/docs/README.hwcl
+%{_prefix}/games/%{name}/docs/README.hwsv
+%{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Thu Mar 26 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-4
+- Moved hexenworld related documentation to the hexenworld package
+
 * Thu Mar 02 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-3
 - Added Features to the packaged documentation
 
