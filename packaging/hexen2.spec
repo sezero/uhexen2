@@ -82,8 +82,6 @@ make -C hexenworld/Master
 make -C hexenworld/Client hw
 make -C hexenworld/Client clean
 make -C hexenworld/Client glhw
-# 3dfx Voodoo1-Voodoo2 gamma library
-make -C lib3dfxgamma
 # Launcher binaries
 %if %{!?_without_gtk2:1}0
 # Build for GTK2
@@ -132,7 +130,6 @@ cd ../..
 %{__install} -D -m755 hexenworld/Master/hwmaster %{buildroot}/%{_prefix}/games/%{name}/hwmaster
 %{__install} -D -m755 hexenworld/Client/hwcl %{buildroot}/%{_prefix}/games/%{name}/hwcl
 %{__install} -D -m755 hexenworld/Client/glhwcl %{buildroot}/%{_prefix}/games/%{name}/glhwcl
-%{__install} -D -m755 lib3dfxgamma/lib3dfxgamma.so %{buildroot}/%{_prefix}/games/%{name}/lib3dfxgamma.so
 %{__install} -D -m755 launcher/h2launcher %{buildroot}/%{_prefix}/games/%{name}/h2launcher
 # Make a symlink of the game-launcher
 %{__mkdir_p} %{buildroot}/%{_bindir}
@@ -223,7 +220,6 @@ rm -rf %{buildroot}
 %{_prefix}/games/%{name}/hexen2
 %{_prefix}/games/%{name}/glhexen2
 %{_prefix}/games/%{name}/loki_patch
-%{_prefix}/games/%{name}/lib3dfxgamma.so
 %{_prefix}/games/%{name}/update_h2
 %{_prefix}/games/%{name}/patchdata/data1/data1pak0.xd
 %{_prefix}/games/%{name}/patchdata/data1/data1pak1.xd
@@ -278,8 +274,9 @@ rm -rf %{buildroot}
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Thu Mar 26 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-4
+* Mon Mar 26 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-4
 - Moved hexenworld related documentation to the hexenworld package
+  lib3dfxgamma is no longer needed. not packaging it.
 
 * Thu Mar 02 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-3
 - Added Features to the packaged documentation
