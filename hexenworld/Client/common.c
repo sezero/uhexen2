@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.44 2006-03-25 20:40:44 sezero Exp $
+	$Id: common.c,v 1.45 2006-03-26 00:51:33 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1235,7 +1235,7 @@ Prints map filenames to the console
 #ifndef SERVERONLY
 static void COM_Maplist_f (void)
 {
-	int			i, len, run, cnt;
+	int			i, cnt, dups = 0;
 	pack_t		*pak;
 	searchpath_t	*search;
 	char		**maplist = NULL, mappath[MAX_OSPATH];
@@ -1243,78 +1243,105 @@ static void COM_Maplist_f (void)
 
 	// do two runs - first count the number of maps
 	// then collect their names into maplist
-	for (run = 1 ; run <= 2; run ++)
+scanmaps:
+	cnt = 0;
+	// search through the path, one element at a time
+	// either "search->filename" or "search->pak" is defined
+	for (search = com_searchpaths; search; search = search->next)
 	{
-		cnt = 0;
-
-		// search through the path, one element at a time
-		for (search = com_searchpaths; search; search = search->next)
+		if (search->pack)
 		{
-			// either "search->filename" or "search->pak" is defined
-			if (search->pack)
+			pak = search->pack;
+
+			for (i = 0; i < pak->numfiles; i++)
 			{
-				pak = search->pack;
-
-				for (i = 0; i < pak->numfiles; i++)
+				if (strncmp ("maps/", pak->files[i].name, 5) == 0  && 
+				    strstr(pak->files[i].name, ".bsp"))
 				{
-					if (strncmp ("maps/", pak->files[i].name, 5) == 0  && 
-					    strstr(pak->files[i].name, ".bsp"))
+					if (maplist)
 					{
-						// S.A.: remove those b_**** maps
-						// side effect: real maps named b_**** will be ignored :<
-						// O.S.: this is an issue with quake1 not hexen2.
-						// disabling this check.
-					//	if (strncmp ("b_", pak->files[i].name + 5, 2) == 0)
-					//		continue;
-
-						if (run == 2)
+						size_t	len;
+						int	dup = 0, j;
+						// add to our maplist
+						len = strlen (pak->files[i].name + 5) - 4 + 1;
+								// - ".bsp" (-4) +  "\0" (+1)
+						for (j = 0 ; j < cnt ; j++)
 						{
-							len = strlen (pak->files[i].name + 5) - 4 + 1;
-							// - ".bsp" (-4) +  "\0" (+1)
-
+							if (!Q_strncasecmp(maplist[j], pak->files[i].name + 5, len-1))
+							{
+								dup = 1;
+								dups++;
+								break;
+							}
+						}
+						if (!dup)
+						{
 							maplist[cnt] = malloc (len);
 							strncpy ((char *)maplist[cnt] , pak->files[i].name + 5, len);
 							// null terminate new string
 							maplist[cnt][len - 1] = 0;
+							cnt++;
 						}
-						cnt++;
 					}
+					else
+						cnt++;
 				}
 			}
-			else
-			{	// element is a filename, look for maps therein using scandir
-				snprintf (mappath, MAX_OSPATH, search->filename);
-				strcat (mappath, "/maps");
-				findname = Sys_FindFirstFile (mappath, "*.bsp");
-				while (findname)
+		}
+		else
+		{	// element is a filename
+			snprintf (mappath, MAX_OSPATH, search->filename);
+			strcat (mappath, "/maps");
+			findname = Sys_FindFirstFile (mappath, "*.bsp");
+			while (findname)
+			{
+				if (maplist)
 				{
-					if (run == 2)
+					size_t	len;
+					int	dup = 0, j;
+					// add to our maplist
+					len = strlen(findname) - 4 + 1;
+					for (j = 0 ; j < cnt ; j++)
 					{
-						// add to our maplist (the same as above)
-						len = strlen(findname) - 4 + 1;
+						if (!Q_strncasecmp(maplist[j], findname, len-1))
+						{
+							dup = 1;
+							dups++;
+							break;
+						}
+					}
+					if (!dup)
+					{
 						maplist[cnt] = malloc (len);
 						strncpy (maplist[cnt], findname, len);
 						maplist[cnt][len - 1] = 0;
+						cnt++;
 					}
-					findname = Sys_FindNextFile ();
-					cnt++;
 				}
-				Sys_FindClose ();
+				else
+					cnt++;
+				findname = Sys_FindNextFile ();
 			}
+			Sys_FindClose ();
 		}
+	}
 
-		if (run == 1)
-		{
-			// after first run, we know how many maps we have
-			// should I use malloc or something else
-			maplist = malloc(cnt * sizeof (char *));
-		}
+	if (maplist == NULL)
+	{
+		// after first run, we know how many maps we have
+		// should I use malloc or something else
+		Con_Printf ("Found %d maps:\n\n", cnt);
+		if (!cnt)
+			return;
+		maplist = malloc(cnt * sizeof (char *));
+		goto scanmaps;
 	}
 
 	// sort the list
 	qsort (maplist, cnt, sizeof(char *), COM_StrCompare);
-	Con_Printf ("Found %d maps:\n\n", cnt);
 	Con_ShowList (cnt, (const char**)maplist);
+	if (dups)
+		Con_Printf ("\neliminated %d duplicate names\n", dups);
 	Con_Printf ("\n");
 
 	// Free memory
