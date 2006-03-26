@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.56 2006-03-26 14:10:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.57 2006-03-26 16:53:58 sezero Exp $
 */
 
 
@@ -24,8 +24,8 @@
 #define	HOT_VERSION_MIN		0
 #define	HOT_VERSION_BETA	1
 #if HOT_VERSION_BETA
-#define	HOT_VERSION_BETA_STR	"pre8"
-#define	HOT_VERSION_BETA_DATE	"2006-03-17"
+#define	HOT_VERSION_BETA_STR	"RC1"
+#define	HOT_VERSION_BETA_DATE	"2006-03-26"
 #endif
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
@@ -406,6 +406,10 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.56  2006/03/26 14:10:39  sezero
+ * 1.4.0 development has put in enough changes: Engine version is incremented
+ * to 1.15 for hexen2 and 0.17 for hexenworld.
+ *
  * Revision 1.55  2006/03/17 22:33:11  sezero
  * Updated CHANGES: 2006-03-17, 1.4.0-pre8
  *

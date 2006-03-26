@@ -3,11 +3,12 @@ Hexen II: Hammer of Thyrion
 ChangeLog:
 ---------------------------
 
-2006-03-26 (CVS, 1.4.0-pre8):
+2006-03-26 (CVS, 1.4.0-RC1):
     * Incremented engine version to 1.15 for hexen2 and 0.17 for hexenworld
     * Updated documentation for compiler support
     * Added basic documentation for hwsv and hwcl
     * Several documentation updates
+    * Marked the snapshot of 2006-03-26 as 1.4.0-RC1 (-RC state, finally.)
 
 2006-03-25 (CVS, 1.4.0-pre8):
     * Fixed COM_Gamedir() to properly update com_gamedir in case of directory
