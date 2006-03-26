@@ -92,10 +92,10 @@ the game.
    Make (min.: 3.78)	  : The GNU make command. Versions 3.79.1
 			    and newer are recommended.
 
-   GCC (min. 2.95)	  : GNU C Compiler. Version 2.91.66 (aka.
-			    egcs-1.1.2) still seems to work, but
-			    not tested. Versions 3.2.2 and newer
-			    are recommended.
+   GCC (min. 2.95)	  : GNU C Compiler. Versions 3.2.2 and newer
+			    are recommended. Versions 2.95.x / 2.96
+			    work just fine. For compiler problems and
+			    workarounds, see the BUGS file.
 
    binutils (min. 2.9.5)  : A GNU collection of binary utilities.
 			    Tested with versions 2.11.9x and newer.
