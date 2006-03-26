@@ -14,7 +14,7 @@
 #endif
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
-#define	ENGINE_VERSION		0.16
+#define	ENGINE_VERSION		0.17
 #define	ENGINE_NAME		"HexenWorld"
 
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!

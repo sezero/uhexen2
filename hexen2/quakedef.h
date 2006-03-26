@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.55 2006-03-17 22:33:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.56 2006-03-26 14:10:39 sezero Exp $
 */
 
 
@@ -29,7 +29,7 @@
 #endif
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
-#define	ENGINE_VERSION		1.14
+#define	ENGINE_VERSION		1.15
 #define	ENGINE_NAME		"Hexen2"
 
 #define	QUAKE_GAME		// as opposed to utilities
@@ -406,6 +406,9 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.55  2006/03/17 22:33:11  sezero
+ * Updated CHANGES: 2006-03-17, 1.4.0-pre8
+ *
  * Revision 1.54  2006/03/17 20:23:17  sezero
  * Updates to COM_LoadPackFile, COM_CheckRegistered and COM_InitFilesystem:
  * killed variables com_modified, com_portals and static_registered. Combined
