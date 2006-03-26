@@ -3,6 +3,85 @@ Hexen II: Hammer of Thyrion
 ChangeLog:
 ---------------------------
 
+2006-03-25 (CVS, 1.4.0-pre8):
+    * Fixed COM_Gamedir() to properly update com_gamedir in case of directory
+      names already in com_base_searchpaths.
+    * hw directory check in COM_Gamedir should be only for hexenworld game
+    * modified check in COM_LoadPackFile() should only be done for the base
+      filesystem directories, otherwise it is always modified game.
+    * COM_Gamedir() should add user directories to the searchpath, as well
+    * com_base_searchpaths is only what its name implies: the base game
+      directories.  so, moved -game argument handling to COM_Gamedir().
+      demo versions are not allowed to -game, as usual.
+    * COM_Gamedir: add the directory to the searchpath ~after~ adding the
+      pakfiles in that dir, so that the dir itself will be placed above the
+      pakfiles in the search order.
+    * Change the *gamedir serverinfo key properly in COM_Gamedir(), not in
+      SV_Gamedir_f(), so that it is properly set when the server is started
+      by a -game argument.
+    * Added a simple COM_FileInGamedir() which reports the existance of a file
+      with read permissions in com_gamedir or com_userdir. -1 is returned on
+      failure, ie the return value of the access() function
+    * Hexenworld client::CL_ParseServerData(): exec autoexec.cfg upon gamedir
+      change as well.  if we are to exec config.cfg, do an unbindall in order
+      to clear any weird mod specific key bindings.  for file existance check,
+      use the new COM_FileInGamedir().
+    * Added support for pak files in the users' directories.
+    * Eliminated multiple listings of maps with the same name.
+    * Changed the name of the maps command to maplist for consistancy
+    * Tiny tidy-ups.
+
+2006-03-24 (CVS, 1.4.0-pre8):
+    * Weird patch (TM) :  not just a silly debug message place and content
+      change. it actually prevents a weird segfault ;) [here's the deal:
+      after merging in the colored lights patch, the game would always
+      segfault when run with a command line like "glhexen2 +load s0" with
+      the cvar gl_purge_maptex set to 1. It seems like actually printing
+      something on the console just after the textures are purged cures
+      this thing. this patch is just a band-aid..]
+    * Added a flags member to the cvar structure. For now, only a CVAR_ROM
+      is defined and employed: is that flag is set, the cvar cannot be set
+      unless the CVAR_ROM bit is cleared by the C code. This is still
+      incomplete work.
+    * Marked the cvars oem and registered as read-only in COM_InitFilesystem
+    * Updated the earl-read-cvars in VID_Init and VID_PostInitFix to use the
+      new CVAR_ROM flag: they look less clumsy now.
+    * made the lightmap format configurable via the menu system using a new
+      cvar gl_lightmapfmt. -lm_1 and -lm_4 are still functional as commandline
+      overrides even with commandline options dictating a direct load of a map,
+      such as +playdemo xxx or +load xxx. updated the opengl features menu with
+      new proper notifications about the colored lighting option's level reload
+      necessity and with new entries for the ligthmap format.
+    * updated the documentation about the lightmap format configurability
+      in the menu system.
+    * killed the archive, server and info members of the cvar structure. the
+      new flags member is now employed for all those purposes. also made all
+      non-globally used cvars static.
+    * killed cd_unix.c and made a cd_unix.h to be included in all cdaudio
+      files for unix. all unix cdaudio files will be compiled, since they are
+      protected by the cd_unix.h include.
+    * includes cleanup
+    * moved include macros for different xbm icons to a new xbm_icon.h header
+    * killed a few -Wshadow warnings. killed some more left-over vars.
+      killed unnecessary includes, tiny tidy-ups. windows resource files
+      clean-up
+    * re-diff'ed (again) some of the extra patches after today's changes.
+
+2006-03-21 (CVS, 1.4.0-pre8):
+    * Commented out Anvil of Thyrion solution for the original hexen2 friction
+      emulation which was hard-set at 6. Merged the solution found in pa3pyx's
+      tree.  v1.11 progs doesn't initialize the friction properly (always 0).
+      In fact, applying a patch to the progs can easily solve this issue, but
+      in that case several unpatched mods would be left broken. Note: Compared
+      to the AoT solution down below, this makes pure-hexen2 to feel slightly
+      more slippery.
+    * there is no savegame compatibility with the Raven's 1.11 versions.
+      updated the features list properly.
+    * merged needload stuff of model.c from hexen2 to hexenworld client.
+    * continued making static functions and vars static. whitespace and coding
+      style cleanup. this time in model.c and gl_model.c. also moved the mcache
+      cmd addition to Mod_Init and added save-to-file functionality.
+
 2006-03-20 (CVS, 1.4.0-pre8):
     * sbar cvars update: killed non-functional sbtemp. killed cl_sbar
       and cl_hudswap in hexenworld which was a non-functional left-over
