@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.49 2006-03-26 00:51:28 sezero Exp $
+	$Id: common.c,v 1.50 2006-03-26 00:57:33 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -976,7 +976,7 @@ void COM_Init (void)
 	Cmd_AddCommand ("path", COM_Path_f);
 	Cmd_AddCommand ("cmdline", COM_Cmdline_f);
 #ifndef SERVERONLY
-	Cmd_AddCommand ("maps", COM_Maplist_f);
+	Cmd_AddCommand ("maplist", COM_Maplist_f);
 #endif
 
 	COM_InitFilesystem ();
@@ -2257,6 +2257,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.49  2006/03/26 00:51:28  sezero
+ * eliminated multiple listings of maps with the same name
+ *
  * Revision 1.48  2006/03/25 20:40:38  sezero
  * added support for pak files in the userdir
  *

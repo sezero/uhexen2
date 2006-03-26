@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.45 2006-03-26 00:51:33 sezero Exp $
+	$Id: common.c,v 1.46 2006-03-26 00:57:35 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -976,7 +976,7 @@ void COM_Init (void)
 	Cmd_AddCommand ("path", COM_Path_f);
 	Cmd_AddCommand ("cmdline", COM_Cmdline_f);
 #ifndef SERVERONLY
-	Cmd_AddCommand ("maps", COM_Maplist_f);
+	Cmd_AddCommand ("maplist", COM_Maplist_f);
 #endif
 
 	COM_InitFilesystem ();
