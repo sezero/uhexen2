@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.50 2006-03-26 00:57:33 sezero Exp $
+	$Id: common.c,v 1.51 2006-03-27 19:54:23 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1261,7 +1261,7 @@ scanmaps:
 					if (maplist)
 					{
 						size_t	len;
-						int	dup = 0, j;
+						int	dupl = 0, j;
 						// add to our maplist
 						len = strlen (pak->files[i].name + 5) - 4 + 1;
 								// - ".bsp" (-4) +  "\0" (+1)
@@ -1269,12 +1269,12 @@ scanmaps:
 						{
 							if (!Q_strncasecmp(maplist[j], pak->files[i].name + 5, len-1))
 							{
-								dup = 1;
+								dupl = 1;
 								dups++;
 								break;
 							}
 						}
-						if (!dup)
+						if (!dupl)
 						{
 							maplist[cnt] = malloc (len);
 							strncpy ((char *)maplist[cnt] , pak->files[i].name + 5, len);
@@ -1298,19 +1298,19 @@ scanmaps:
 				if (maplist)
 				{
 					size_t	len;
-					int	dup = 0, j;
+					int	dupl = 0, j;
 					// add to our maplist
 					len = strlen(findname) - 4 + 1;
 					for (j = 0 ; j < cnt ; j++)
 					{
 						if (!Q_strncasecmp(maplist[j], findname, len-1))
 						{
-							dup = 1;
+							dupl = 1;
 							dups++;
 							break;
 						}
 					}
-					if (!dup)
+					if (!dupl)
 					{
 						maplist[cnt] = malloc (len);
 						strncpy (maplist[cnt], findname, len);
@@ -2257,6 +2257,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.50  2006/03/26 00:57:33  sezero
+ * changed the name of the maps command to maplist for consistancy
+ *
  * Revision 1.49  2006/03/26 00:51:28  sezero
  * eliminated multiple listings of maps with the same name
  *

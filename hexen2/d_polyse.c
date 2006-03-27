@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.6 2005-10-25 20:08:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.7 2006-03-27 19:53:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -148,28 +148,28 @@ void D_PolysetDraw (void)
 D_PolysetDrawFinalVerts
 ================
 */
-void D_PolysetDrawFinalVerts (finalvert_t *fv, int numverts)
+void D_PolysetDrawFinalVerts (finalvert_t *fvert, int num_verts)
 {
 	int		i, z;
 	short	*zbuf;
 
-	for (i=0 ; i<numverts ; i++, fv++)
+	for (i=0 ; i<num_verts ; i++, fvert++)
 	{
 	// valid triangle coordinates for filling can include the bottom and
 	// right clip edges, due to the fill rule; these shouldn't be drawn
-		if ((fv->v[0] < r_refdef.vrectright) &&
-			(fv->v[1] < r_refdef.vrectbottom))
+		if ((fvert->v[0] < r_refdef.vrectright) &&
+			(fvert->v[1] < r_refdef.vrectbottom))
 		{
-			z = fv->v[5]>>16;
-			zbuf = zspantable[fv->v[1]] + fv->v[0];
+			z = fvert->v[5]>>16;
+			zbuf = zspantable[fvert->v[1]] + fvert->v[0];
 			if (z >= *zbuf)
 			{
 				int		pix;
-				
+
 				*zbuf = z;
-				pix = skintable[fv->v[3]>>16][fv->v[2]>>16];
-				pix = ((byte *)acolormap)[pix + (fv->v[4] & 0xFF00) ];
-				d_viewbuffer[d_scantable[fv->v[1]] + fv->v[0]] = pix;
+				pix = skintable[fvert->v[3]>>16][fvert->v[2]>>16];
+				pix = ((byte *)acolormap)[pix + (fvert->v[4] & 0xFF00) ];
+				d_viewbuffer[d_scantable[fvert->v[1]] + fvert->v[0]] = pix;
 			}
 		}
 	}
@@ -529,7 +529,7 @@ void D_PolysetSetUpForLineScan(fixed8_t startvertu, fixed8_t startvertv,
 D_PolysetCalcGradients
 ================
 */
-void D_PolysetCalcGradients (int skinwidth)
+static void D_PolysetCalcGradients (int skin_width)
 {
 	float	xstepdenominv, ystepdenominv, t0, t1;
 	float	p01_minus_p21, p11_minus_p21, p00_minus_p20, p10_minus_p20;
@@ -582,7 +582,7 @@ void D_PolysetCalcGradients (int skinwidth)
 	a_tstepxfrac = r_tstepx & 0xFFFF;
 #endif
 
-	a_ststepxwhole = skinwidth * (r_tstepx >> 16) + (r_sstepx >> 16);
+	a_ststepxwhole = skin_width * (r_tstepx >> 16) + (r_sstepx >> 16);
 }
 
 #endif	// !id386
@@ -1158,6 +1158,9 @@ split:
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/10/25 20:08:41  sezero
+ * coding style and whitespace cleanup.
+ *
  * Revision 1.5  2004/12/19 14:38:10  sezero
  * fix the compile sillyness
  *
