@@ -2,7 +2,7 @@
 	d_iface.h
 	interface header file for rasterization driver modules
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_iface.h,v 1.4 2005-10-25 20:08:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_iface.h,v 1.5 2006-03-27 19:58:33 sezero Exp $
 */
 
 #define WARP_WIDTH		320
@@ -184,7 +184,9 @@ extern vec3_t	r_pright, r_pup, r_ppn;
 
 #if !id386
 void D_Aff8Patch (void *pcolormap);
+void D_PolysetDraw (void);
 #endif
+
 #if id386
 extern void D_Aff8Patch (void *pcolormap);
 extern void D_DrawParticle (particle_t *pparticle);
@@ -195,6 +197,7 @@ extern void D_PolysetDrawT2 (void);
 extern void D_PolysetDrawT3 (void);
 extern void D_PolysetDrawT5 (void);
 extern void D_PolysetDrawFinalVerts (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+// FIXME: non-intel version is void D_PolysetDrawFinalVerts (finalvert_t *fvert, int num_verts);
 extern void D_PolysetDrawFinalVertsT (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
 extern void D_PolysetDrawFinalVertsT2 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
 extern void D_PolysetDrawFinalVertsT3 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
@@ -212,6 +215,7 @@ extern void D_PolysetScanLeftEdgeT2 (int height);
 extern void D_PolysetScanLeftEdgeT3 (int height);
 extern void D_PolysetScanLeftEdgeT5 (int height);
 #endif
+
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height);
 void D_DisableBackBufferAccess (void);
 void D_EndDirectRect (int x, int y, int width, int height);

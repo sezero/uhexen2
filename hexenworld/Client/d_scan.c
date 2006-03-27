@@ -27,7 +27,7 @@ D_WarpScreen
 void D_WarpScreen (void)
 {
 	int		w, h;
-	int		u,v;
+	int		u, v;
 	byte	*dest;
 	int		*turb;
 	int		*col;
@@ -216,7 +216,6 @@ void D_DrawSpans8T (espan_t *pspan)
 				else
 					scanList[spancount+count-1] = 0;
 
-
 				pdest++;
 				s += sstep;
 				t += tstep;
@@ -227,7 +226,7 @@ void D_DrawSpans8T (espan_t *pspan)
 
 		} while (count > 0);
 
-	} 
+	}
 }
 
 
