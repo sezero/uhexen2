@@ -79,15 +79,15 @@ ALSA	:	Advanced Linux Sound Architecture libraries.
 		Minimum version required is 1.0.1. Version 0.9.8 should
 		theoretically work, but not tested. 1.0.7 or newer are
 		recommended at runtime.
-		Necessary, if you want to sbupport ALSA sound on Linux.
-		The makefiles present an option of disabling ALSA support,
-		in that case this library will not be necessary.
+		Necessary, if you want to support ALSA sound on Linux.
+		The makefiles present an option for disabling ALSA sound
+		support, in that case this library will not be necessary.
 
 Compiling for Windows:
 
 a. On Linux, using MinGW cross compiler:
 ----------------------------------------
-See the MinGW FAQ on the MinGW homepage, and visit the icculus.org cross
+See the MinGW FAQ on the MinGW homepage, and read the icculus.org cross
 compiling tips (link down below). The icculus.org page gives prebuilt
 cross compiler tools. Download and install them, or prepare your own cross
 compiler. You can then run the "build_cross_win32.sh" scripts residing in
