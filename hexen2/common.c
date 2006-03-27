@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.51 2006-03-27 19:54:23 sezero Exp $
+	$Id: common.c,v 1.52 2006-03-27 20:12:35 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1694,7 +1694,9 @@ static void COM_AddGameDirectory (char *dir, qboolean base_fs)
 //
 // add any pak files in the format pak0.pak pak1.pak, ...
 //
+#ifdef PLATFORM_UNIX
 add_pakfile:
+#endif
 	for (i=0 ; i < 10; i++)
 	{
 		if (been_here)
@@ -1791,7 +1793,9 @@ void COM_Gamedir (char *dir)
 //
 // add any pak files in the format pak0.pak pak1.pak, ...
 //
+#ifdef PLATFORM_UNIX
 add_pakfiles:
+#endif
 	for (i=0 ; i < 10 ; i++)
 	{
 		if (been_here)
@@ -1832,13 +1836,13 @@ add_pakfiles:
 #ifdef PLATFORM_UNIX
 	sprintf (com_userdir, "%s/%s", host_parms.userdir, dir);
 	Sys_mkdir (com_userdir);
-#else
-	sprintf (com_userdir, com_gamedir);
-#endif
 	sprintf (com_savedir, com_userdir);
 // add any pak files in the user's directory
-	if (strcmp(com_gamedir, com_userdir))
-		goto add_pakfiles;
+	goto add_pakfiles;
+#else
+	sprintf (com_userdir, com_gamedir);
+	sprintf (com_savedir, com_userdir);
+#endif
 }
 
 /*
@@ -2257,6 +2261,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.51  2006/03/27 19:54:23  sezero
+ * fixed -Wshadow warnings
+ *
  * Revision 1.50  2006/03/26 00:57:33  sezero
  * changed the name of the maps command to maplist for consistancy
  *
