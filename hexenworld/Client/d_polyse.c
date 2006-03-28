@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_polyse.c,v 1.6 2006-03-27 19:58:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_polyse.c,v 1.7 2006-03-28 19:53:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -91,8 +91,6 @@ static adivtab_t	adivtab[32*32] = {
 byte	*skintable[MAX_SKIN_HEIGHT];
 int		skinwidth;
 byte	*skinstart;
-
-#warning FIXME: The code isnt compilable on non-Intel
 
 void D_PolysetSetEdgeTable (void);
 void D_RasterizeAliasPolySmooth (void);

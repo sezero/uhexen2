@@ -2,7 +2,7 @@
 	d_local.h
 	private rasterization driver defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_local.h,v 1.5 2006-03-24 15:05:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_local.h,v 1.6 2006-03-28 19:53:24 sezero Exp $
 */
 
 #include "r_shared.h"
@@ -97,6 +97,7 @@ extern void D_DrawTurbulent8Span (void);
 extern void D_DrawTurbulent8TSpan (void);
 extern void D_DrawTurbulent8TQuickSpan (void);
 extern void D_DrawTurbulent8TSpanEnd (void);
+extern void D_Aff8Patch (void *pcolormap);
 extern void D_Aff8PatchT(void *pcolormap);
 extern void D_Aff8PatchT2(void *pcolormap);
 extern void D_Aff8PatchT3(void *pcolormap);

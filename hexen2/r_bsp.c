@@ -9,25 +9,32 @@
 qboolean		insubmodel;
 entity_t		*currententity;
 vec3_t			modelorg, base_modelorg;
-								// modelorg is the viewpoint reletive to
-								// the currently rendering entity
-vec3_t			r_entorigin;	// the currently rendering entity in world
-								// coordinates
+				// modelorg is the viewpoint reletive to
+				// the currently rendering entity
+
+vec3_t			r_entorigin;
+				// the currently rendering entity in world
+				// coordinates
 
 float			entity_rotation[3][3];
 
 vec3_t			r_worldmodelorg;
 
-int				r_currentbkey;
+int			r_currentbkey;
 
-typedef enum {touchessolid, drawnode, nodrawnode} solidstate_t;
+typedef enum
+{
+	touchessolid,
+	drawnode,
+	nodrawnode
+} solidstate_t;
 
-#define MAX_BMODEL_VERTS	500			// 6K
+#define MAX_BMODEL_VERTS	500		// 6K
 #define MAX_BMODEL_EDGES	1000		// 12K
 
 static mvertex_t	*pbverts;
 static bedge_t		*pbedges;
-static int			numbverts, numbedges;
+static int		numbverts, numbedges;
 
 static mvertex_t	*pfrontenter, *pfrontexit;
 
@@ -41,7 +48,7 @@ static qboolean		makeclippededge;
 R_EntityRotate
 ================
 */
-void R_EntityRotate (vec3_t vec)
+static void R_EntityRotate (vec3_t vec)
 {
 	vec3_t	tvec;
 
@@ -67,7 +74,7 @@ void R_RotateBmodel (void)
 // TODO: share work with R_SetUpAliasTransform
 
 // yaw
-	angle = currententity->angles[YAW];		
+	angle = currententity->angles[YAW];
 	angle = angle * M_PI*2 / 360;
 	s = sin(angle);
 	c = cos(angle);
@@ -82,9 +89,8 @@ void R_RotateBmodel (void)
 	temp1[2][1] = 0;
 	temp1[2][2] = 1;
 
-
 // pitch
-	angle = currententity->angles[PITCH];		
+	angle = currententity->angles[PITCH];
 	angle = angle * M_PI*2 / 360;
 	s = sin(angle);
 	c = cos(angle);
@@ -102,7 +108,7 @@ void R_RotateBmodel (void)
 	R_ConcatRotations (temp2, temp1, temp3);
 
 // roll
-	angle = currententity->angles[ROLL];		
+	angle = currententity->angles[ROLL];
 	angle = angle * M_PI*2 / 360;
 	s = sin(angle);
 	c = cos(angle);
@@ -136,10 +142,10 @@ void R_RotateBmodel (void)
 R_RecursiveClipBPoly
 ================
 */
-void R_RecursiveClipBPoly (bedge_t *pedges, mnode_t *pnode, msurface_t *psurf)
+static void R_RecursiveClipBPoly (bedge_t *pedges, mnode_t *pnode, msurface_t *psurf)
 {
 	bedge_t		*psideedges[2], *pnextedge, *ptedge;
-	int			i, side, lastside;
+	int		i, side, lastside;
 	float		dist, frac, lastdist;
 	mplane_t	*splitplane, tplane;
 	mvertex_t	*pvert, *plastvert, *ptvert;
@@ -166,8 +172,7 @@ void R_RecursiveClipBPoly (bedge_t *pedges, mnode_t *pnode, msurface_t *psurf)
 	// set the status for the last point as the previous point
 	// FIXME: cache this stuff somehow?
 		plastvert = pedges->v[0];
-		lastdist = DotProduct (plastvert->position, tplane.normal) -
-				   tplane.dist;
+		lastdist = DotProduct (plastvert->position, tplane.normal) - tplane.dist;
 
 		if (lastdist > 0)
 			lastside = 0;
@@ -193,14 +198,14 @@ void R_RecursiveClipBPoly (bedge_t *pedges, mnode_t *pnode, msurface_t *psurf)
 			frac = lastdist / (lastdist - dist);
 			ptvert = &pbverts[numbverts++];
 			ptvert->position[0] = plastvert->position[0] +
-					frac * (pvert->position[0] -
-					plastvert->position[0]);
+						frac * (pvert->position[0] -
+						plastvert->position[0]);
 			ptvert->position[1] = plastvert->position[1] +
-					frac * (pvert->position[1] -
-					plastvert->position[1]);
+						frac * (pvert->position[1] -
+						plastvert->position[1]);
 			ptvert->position[2] = plastvert->position[2] +
-					frac * (pvert->position[2] -
-					plastvert->position[2]);
+						frac * (pvert->position[2] -
+						plastvert->position[2]);
 
 		// split into two edges, one on each side, and remember entering
 		// and exiting points
@@ -271,15 +276,17 @@ void R_RecursiveClipBPoly (bedge_t *pedges, mnode_t *pnode, msurface_t *psurf)
 	}
 
 // draw or recurse further
-	for (i=0 ; i<2 ; i++)
+	for (i = 0 ; i < 2 ; i++)
 	{
 		if (psideedges[i])
 		{
-		// draw if we've reached a non-solid leaf, done if all that's left is a
-		// solid leaf, and continue down the tree if it's not a leaf
+		// draw if we've reached a non-solid leaf, done if all
+		// that's left is a solid leaf, and continue down the
+		// tree if it's not a leaf
 			pn = pnode->children[i];
 
-		// we're done with this branch if the node or leaf isn't in the PVS
+		// we're done with this branch if the node or leaf isn't
+		// in the PVS
 			if (pn->visframe == r_visframecount)
 			{
 				if (pn->contents < 0)
@@ -323,7 +330,7 @@ void R_DrawSolidClippedSubmodelPolygons (model_t *pmodel)
 	numsurfaces = pmodel->nummodelsurfaces;
 	pedges = pmodel->edges;
 
-	for (i=0 ; i<numsurfaces ; i++, psurf++)
+	for (i = 0 ; i < numsurfaces ; i++, psurf++)
 	{
 	// find which side of the node we are on
 		pplane = psurf->plane;
@@ -331,15 +338,16 @@ void R_DrawSolidClippedSubmodelPolygons (model_t *pmodel)
 		dot = DotProduct (modelorg, pplane->normal) - pplane->dist;
 
 	// draw the polygon
-		if (((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||
-			(!(psurf->flags & SURF_PLANEBACK) && (dot > BACKFACE_EPSILON)))
+		if ( ((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||
+			(!(psurf->flags & SURF_PLANEBACK) && (dot > BACKFACE_EPSILON)) )
 		{
 		// FIXME: use bounding-box-based frustum clipping info?
 
-		// copy the edges to bedges, flipping if necessary so always
-		// clockwise winding
-		// FIXME: if edges and vertices get caches, these assignments must move
-		// outside the loop, and overflow checking must be done here
+		// copy the edges to bedges, flipping if necessary
+		// so always clockwise winding
+		// FIXME: if edges and vertices get caches, these
+		//	  assignments must move outside the loop,
+		//	  and overflow checking must be done here
 			pbverts = bverts;
 			pbedges = bedges;
 			numbverts = numbedges = 0;
@@ -349,9 +357,9 @@ void R_DrawSolidClippedSubmodelPolygons (model_t *pmodel)
 				pbedge = &bedges[numbedges];
 				numbedges += psurf->numedges;
 
-				for (j=0 ; j<psurf->numedges ; j++)
+				for (j = 0 ; j < psurf->numedges ; j++)
 				{
-				   lindex = pmodel->surfedges[psurf->firstedge+j];
+					lindex = pmodel->surfedges[psurf->firstedge+j];
 
 					if (lindex > 0)
 					{
@@ -401,7 +409,7 @@ void R_DrawSubmodelPolygons (model_t *pmodel, int clipflags)
 	psurf = &pmodel->surfaces[pmodel->firstmodelsurface];
 	numsurfaces = pmodel->nummodelsurfaces;
 
-	for (i=0 ; i<numsurfaces ; i++, psurf++)
+	for (i = 0 ; i < numsurfaces ; i++, psurf++)
 	{
 	// find which side of the node we are on
 		pplane = psurf->plane;
@@ -409,8 +417,8 @@ void R_DrawSubmodelPolygons (model_t *pmodel, int clipflags)
 		dot = DotProduct (modelorg, pplane->normal) - pplane->dist;
 
 	// draw the polygon
-		if (((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||
-			(!(psurf->flags & SURF_PLANEBACK) && (dot > BACKFACE_EPSILON)))
+		if ( ((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||
+			(!(psurf->flags & SURF_PLANEBACK) && (dot > BACKFACE_EPSILON)) )
 		{
 			r_currentkey = ((mleaf_t *)currententity->topnode)->key;
 
@@ -426,7 +434,7 @@ void R_DrawSubmodelPolygons (model_t *pmodel, int clipflags)
 R_RecursiveWorldNode
 ================
 */
-void R_RecursiveWorldNode (mnode_t *node, int clipflags)
+static void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 {
 	int			i, c, side, *pindex;
 	vec3_t		acceptpt, rejectpt;
@@ -442,25 +450,25 @@ void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 		return;
 
 // cull the clipping planes if not trivial accept
-// FIXME: the compiler is doing a lousy job of optimizing here; it could be
-//  twice as fast in ASM
+// FIXME: the compiler is doing a lousy job of optimizing
+//	  here; it could be twice as fast in ASM
 	if (clipflags)
 	{
-		for (i=0 ; i<4 ; i++)
+		for (i = 0 ; i < 4 ; i++)
 		{
 			if (! (clipflags & (1<<i)) )
 				continue;	// don't need to clip against it
 
 		// generate accept and reject points
-		// FIXME: do with fast look-ups or integer tests based on the sign bit
-		// of the floating point values
+		// FIXME: do with fast look-ups or integer tests based
+		//	  on the sign bit of the floating point values
 
 			pindex = pfrustum_indexes[i];
 
 			rejectpt[0] = (float)node->minmaxs[pindex[0]];
 			rejectpt[1] = (float)node->minmaxs[pindex[1]];
 			rejectpt[2] = (float)node->minmaxs[pindex[2]];
-			
+
 			d = DotProduct (rejectpt, view_clipplanes[i].normal);
 			d -= view_clipplanes[i].dist;
 
@@ -478,7 +486,7 @@ void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 				clipflags &= ~(1<<i);	// node is entirely on screen
 		}
 	}
-	
+
 // if a leaf node, draw stuff
 	if (node->contents < 0)
 	{
@@ -503,12 +511,11 @@ void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 		}
 
 		pleaf->key = r_currentkey;
-		r_currentkey++;		// all bmodels in a leaf share the same key
+		r_currentkey++;	// all bmodels in a leaf share the same key
 	}
 	else
 	{
 	// node is just a decision point, so go down the apropriate sides
-
 	// find which side of the node we are on
 		plane = node->plane;
 
@@ -527,7 +534,7 @@ void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 			dot = DotProduct (modelorg, plane->normal) - plane->dist;
 			break;
 		}
-	
+
 		if (dot >= 0)
 			side = 0;
 		else
@@ -556,8 +563,7 @@ void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 							{
 								if (numbtofpolys < MAX_BTOFPOLYS)
 								{
-									pbtofpolys[numbtofpolys].clipflags =
-											clipflags;
+									pbtofpolys[numbtofpolys].clipflags = clipflags;
 									pbtofpolys[numbtofpolys].psurf = surf;
 									numbtofpolys++;
 								}
@@ -589,8 +595,7 @@ void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 							{
 								if (numbtofpolys < MAX_BTOFPOLYS)
 								{
-									pbtofpolys[numbtofpolys].clipflags =
-											clipflags;
+									pbtofpolys[numbtofpolys].clipflags = clipflags;
 									pbtofpolys[numbtofpolys].psurf = surf;
 									numbtofpolys++;
 								}
@@ -620,7 +625,6 @@ void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 }
 
 
-
 /*
 ================
 R_RenderWorld
@@ -641,8 +645,8 @@ void R_RenderWorld (void)
 
 	R_RecursiveWorldNode (clmodel->nodes, 15);
 
-// if the driver wants the polygons back to front, play the visible ones back
-// in that order
+// if the driver wants the polygons back to front,
+// play the visible ones back in that order
 	if (r_worldpolysbacktofront)
 	{
 		for (i=numbtofpolys-1 ; i>=0 ; i--)
@@ -651,5 +655,4 @@ void R_RenderWorld (void)
 		}
 	}
 }
-
 

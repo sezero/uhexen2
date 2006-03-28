@@ -365,6 +365,7 @@ void D_DrawSurfaces (qboolean Translucent)
 	surfcache_t		*pcurrentcache;
 	vec3_t			world_transformed_modelorg;
 	vec3_t			local_modelorg;
+// O.S: FIXME: Raven commented this out. See r_edge.c for FoundTrans non-Intel usage
 //	static int		FoundTrans = 0;
 	int count;
 

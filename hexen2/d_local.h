@@ -2,7 +2,7 @@
 	d_local.h
 	private rasterization driver defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.6 2006-03-24 15:05:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.7 2006-03-28 19:53:23 sezero Exp $
 */
 
 #include "r_shared.h"
@@ -97,6 +97,7 @@ extern void D_DrawTurbulent8Span (void);
 extern void D_DrawTurbulent8TSpan (void);
 extern void D_DrawTurbulent8TQuickSpan (void);
 extern void D_DrawTurbulent8TSpanEnd (void);
+extern void D_Aff8Patch (void *pcolormap);
 extern void D_Aff8PatchT(void *pcolormap);
 extern void D_Aff8PatchT2(void *pcolormap);
 extern void D_Aff8PatchT3(void *pcolormap);
@@ -136,6 +137,11 @@ extern byte			scanList[SCAN_SIZE];
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2006/03/24 15:05:39  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.5  2005/10/25 20:08:41  sezero
  * coding style and whitespace cleanup.
  *

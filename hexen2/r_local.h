@@ -2,7 +2,7 @@
 	r_local.h
 	private refresh defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_local.h,v 1.6 2006-03-10 08:08:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_local.h,v 1.7 2006-03-28 19:53:23 sezero Exp $
 */
 
 #ifndef GLQUAKE
@@ -150,9 +150,6 @@ void R_AliasDrawModel (alight_t *plighting);
 void R_BeginEdgeFrame (void);
 void R_ScanEdges (qboolean Translucent);
 void D_DrawSurfaces (qboolean Translucent);
-void R_InsertNewEdges (edge_t *edgestoadd, edge_t *edgelist);
-void R_StepActiveU (edge_t *pedge);
-void R_RemoveEdges (edge_t *pedge);
 
 extern void R_Surf8Start (void);
 extern void R_Surf8End (void);
@@ -300,8 +297,6 @@ int R_LightPoint (vec3_t p);
 int *R_LightPointColour (vec3_t p);
 void R_SetupFrame (void);
 void R_cshift_f (void);
-void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1);
-void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
 void R_SplitEntityOnNode2 (mnode_t *node);
 void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
 
@@ -311,6 +306,22 @@ extern int TransCount;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2006/03/10 08:08:45  sezero
+ * Added support for colored lights and .lit files;. initially extracted
+ * from jshexen2 (thanks Michal Wozniak). Colored lights and lit file
+ * support is now added to hexenworld, as well, although the new cvars
+ * gl_colored_dynamic_lights and gl_extra_dynamic_light aren't functional
+ * for it: hexenworld had some sort of "colored" dynamic lights in it,
+ * and they aren't changed by this patch. The cvars mentions are fully
+ * functional for hexen2. Colored lights member of the dlight_t in h2
+ * is changed to be an array of 4, instead of vec3_t as it used to appear
+ * in jshexen2, so that things look more alike with the hw version. The
+ * default lightmap format is changed to GL_RGBA, (previously it was
+ * GL_LUMINANCE.) Command line arguments can be employed to change the
+ * lightmap format:  -lm_1 : GL_LUMINANCE, -lm_4 : GL_RGBA (default).
+ * (Note: Would it be a good (AND a feasible) idea to add a menu+cvar
+ * control for the lightmap format?)
+ *
  * Revision 1.5  2005/10/02 15:43:08  sezero
  * killed -Wshadow warnings
  *

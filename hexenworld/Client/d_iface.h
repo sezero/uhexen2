@@ -2,7 +2,7 @@
 	d_iface.h
 	interface header file for rasterization driver modules
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_iface.h,v 1.5 2006-03-27 19:58:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_iface.h,v 1.6 2006-03-28 19:53:24 sezero Exp $
 */
 
 #define WARP_WIDTH		320
@@ -182,14 +182,9 @@ extern int		d_con_indirect;	// if 0, Quake will draw console directly
 
 extern vec3_t	r_pright, r_pup, r_ppn;
 
-#if !id386
-void D_Aff8Patch (void *pcolormap);
-void D_PolysetDraw (void);
-#endif
 
-#if id386
-extern void D_Aff8Patch (void *pcolormap);
 extern void D_DrawParticle (particle_t *pparticle);
+#if id386
 extern void D_DrawParticle1x1b (particle_t *pparticle);
 extern void D_PolysetDraw (void);
 extern void D_PolysetDrawT (void);

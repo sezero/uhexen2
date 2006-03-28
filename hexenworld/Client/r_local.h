@@ -147,9 +147,6 @@ void R_AliasDrawModel (alight_t *plighting);
 void R_BeginEdgeFrame (void);
 void R_ScanEdges (qboolean Translucent);
 void D_DrawSurfaces (qboolean Translucent);
-void R_InsertNewEdges (edge_t *edgestoadd, edge_t *edgelist);
-void R_StepActiveU (edge_t *pedge);
-void R_RemoveEdges (edge_t *pedge);
 
 extern void R_Surf8Start (void);
 extern void R_Surf8End (void);
@@ -300,8 +297,6 @@ int R_LightPoint (vec3_t p);
 int *R_LightPointColour (vec3_t p);
 void R_SetupFrame (void);
 void R_cshift_f (void);
-void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1);
-void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
 void R_SplitEntityOnNode2 (mnode_t *node);
 void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
 
