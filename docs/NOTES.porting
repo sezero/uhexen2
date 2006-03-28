@@ -7,8 +7,9 @@ CPU Dependancy:
 
 At present, software renderer part of the tree is i386-bound due
 to some asm code. Many of these (quake-origined ones) have their
-C counterparts, but some Raven-Hexen2 specific ones doesn't. The
-opengl renderer doesn't have any such issues.
+C counterparts, but some Raven-Hexen2 specific ones doesn't. See
+the file NonIntel.log for some details. The opengl renderer does
+not have such issues.
 
 
 Endianness:
