@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.3 2006-03-29 14:51:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.4 2006-03-29 14:53:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -30,7 +30,7 @@ int		ramp4[16] = { 416,416+1,416+2,416+3,416+4,416+5,416+6,416+7,416+8,416+9,416
 int		ramp5[16] = { 400,400+1,400+2,400+3,400+4,400+5,400+6,400+7,400+8,400+9,400+10,400+11,400+12,400+13,400+14,400+15};
 int		ramp6[16] = { 256,256+1,256+2,256+3,256+4,256+5,256+6,256+7,256+8,256+9,256+10,256+11,256+12,256+13,256+14,256+15};
 int		ramp7[16] = { 384,384+1,384+2,384+3,384+4,384+5,384+6,384+7,384+8,384+9,384+10,384+11,384+12,384+13,384+14,384+15};
-int     ramp8[16] = {175, 174, 173, 172, 171, 170, 169, 168, 167, 166, 13, 14, 15, 16, 17, 18};
+int		ramp8[16] = {175, 174, 173, 172, 171, 170, 169, 168, 167, 166, 13, 14, 15, 16, 17, 18};
 //int		ramp9[16] = { 272,272+1,272+2,272+3,272+4,272+5,272+6,272+7,272+8,272+9,272+10,272+11,272+12,272+13,272+14,272+15};
 int		ramp9[16] = { 416,416+1,416+2,416+3,416+4,416+5,416+6,416+7,416+8,416+9,416+10,416+11,416+12,416+13,416+14,416+15};
 int		ramp10[16] = { 432,432+1,432+2,432+3,432+4,432+5,432+6,432+7,432+8,432+9,432+10,432+11,432+12,432+13,432+14,432+15};
@@ -1415,8 +1415,6 @@ void R_DrawParticles (void)
 }
 
 
-
-
 void R_UpdateParticles (void)
 {
 	particle_t		*p, *kill;
@@ -1953,6 +1951,10 @@ void R_UpdateParticles (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2006/03/29 14:51:11  sezero
+ * removed some already commented-out functions and code fragments.
+ * they seem to be of no-future use. remove some unused functions.
+ *
  * Revision 1.2  2006/03/29 14:50:30  sezero
  * added parentheses to avoid compiler warnings about ambiguities
  *
