@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.5 2006-03-29 14:53:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.6 2006-03-29 14:54:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -106,7 +106,6 @@ void R_InitParticles (void)
 
 }	
 
-#ifdef QUAKE2RJ
 void R_DarkFieldParticles (entity_t *ent)
 {
 	int			i, j, k;
@@ -143,14 +142,13 @@ void R_DarkFieldParticles (entity_t *ent)
 				VectorScale (dir, vel, p->vel);
 			}
 }
-#endif
+
 
 //==========================================================================
 //
 // AllocParticle
 //
 //==========================================================================
-
 static particle_t *AllocParticle(void)
 {
 	particle_t *p;
@@ -1950,6 +1948,9 @@ void R_UpdateParticles (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2006/03/29 14:53:56  sezero
+ * removed unused variables.
+ *
  * Revision 1.4  2006/03/29 14:53:18  sezero
  * tiny whitespace clean-ups
  *
