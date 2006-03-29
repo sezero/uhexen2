@@ -192,7 +192,12 @@ void R_StoreEfrags (efrag_t **ppefrag)
 			if ((pent->visframe != r_framecount) &&
 				(cl_numvisedicts < MAX_VISEDICTS))
 			{
+
+#if defined (H2W)
 				cl_visedicts[cl_numvisedicts++] = *pent;
+#else
+				cl_visedicts[cl_numvisedicts++] = pent;
+#endif
 
 			// mark that we've recorded this entity for this frame
 				pent->visframe = r_framecount;
