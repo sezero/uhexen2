@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.46 2006-03-24 15:05:39 sezero Exp $
+	$Id: glquake.h,v 1.47 2006-03-29 20:46:02 sezero Exp $
 */
 
 
@@ -261,7 +261,7 @@ typedef enum
 	rt_boneshard,
 	rt_scarab,
 	rt_acidball,
-	rt_bloodshot,
+	rt_bloodshot
 } rt_type_t;
 
 // if this is changed, it must be changed in d_iface.h too !!!
@@ -391,6 +391,11 @@ extern	const char *gl_extensions;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.46  2006/03/24 15:05:39  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.45  2006/03/23 20:01:33  sezero
  * made the lightmap format configurable via the menu system using a new
  * cvar gl_lightmapfmt. -lm_1 and -lm_4 are still functional as commandline
