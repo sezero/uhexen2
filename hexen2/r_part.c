@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.4 2006-03-29 14:53:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.5 2006-03-29 14:53:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -617,7 +617,7 @@ R_RunQuakeEffect
 */
 void R_RunQuakeEffect (vec3_t org, float distance)
 {
-	int			i, j;
+	int		i;
 	particle_t	*p;
 	float		num,num2;
 
@@ -702,9 +702,8 @@ void R_SunStaffTrail(vec3_t source, vec3_t dest)
 
 void RiderParticle(int count, vec3_t origin)
 {
-	int			i, j;
+	int		i;
 	particle_t	*p;
-	float		num;
 	float radius,angle;
 
 	VectorCopy(origin, rider_origin);
@@ -738,9 +737,8 @@ void RiderParticle(int count, vec3_t origin)
 
 void GravityWellParticle(int count, vec3_t origin, int color)
 {
-	int			i, j;
+	int		i;
 	particle_t	*p;
-	float		num;
 	float radius,angle;
 
 	VectorCopy(origin, rider_origin);
@@ -1203,10 +1201,11 @@ extern	cvar_t	sv_gravity;
 void R_DrawParticles (void)
 {
 	particle_t		*p, *kill;
-	int				i;
+#ifndef GLQUAKE
+	int			i;
 	float			vel0, vel1, vel2;
 	vec3_t			save_org;
-
+#endif
 #ifdef GLQUAKE
 	float			scale;
 
@@ -1418,16 +1417,16 @@ void R_DrawParticles (void)
 void R_UpdateParticles (void)
 {
 	particle_t		*p, *kill;
-	float			grav,grav2,percent,speed;
-	int				i,j;
-	qboolean		in_solid;
+	float			grav,grav2,percent/*,speed*/;
+	int			i;
+//	qboolean		in_solid;
 	float			time2, time3, time4;
 	float			time1;
 	float			dvel;
 	float			frametime;
 	float			vel0, vel1, vel2;
 	float			colindex;
-	vec3_t			diff,save_org;
+	vec3_t			diff/*, save_org*/;
 
 	if (cls.state == ca_disconnected)
 		return;
@@ -1951,6 +1950,9 @@ void R_UpdateParticles (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2006/03/29 14:53:18  sezero
+ * tiny whitespace clean-ups
+ *
  * Revision 1.3  2006/03/29 14:51:11  sezero
  * removed some already commented-out functions and code fragments.
  * they seem to be of no-future use. remove some unused functions.
