@@ -203,7 +203,7 @@ endif
 # Platform specific object settings
 SOFT_SDL_VID = vid_sdl.o
 SOFT_WIN32VID = win_stuff/vid_win.o
-GL_SDL_VID = gl_dl_vidsdl.o \
+GL_SDL_VID = gl_vidsdl.o \
 	fx_gamma.o
 GL_WIN32VID = win_stuff/gl_vidnt.o
 INPUT_SDL = in_sdl.o
@@ -278,17 +278,17 @@ SOFTOBJS = d_edge.o \
 	nonintel.o \
 	$(SYSOBJ_SOFT_VID)
 
-GLOBJS = gl_dl_draw.o \
+GLOBJS = gl_draw.o \
 	gl_mesh.o \
 	gl_model.o \
 	gl_refrag.o \
-	gl_dl_rlight.o \
-	gl_dl_rmain.o \
-	gl_dl_rmisc.o \
-	gl_dl_rsurf.o \
-	gl_dl_screen.o \
-	gl_dl_test.o \
-	gl_dl_warp.o \
+	gl_rlight.o \
+	gl_rmain.o \
+	gl_rmisc.o \
+	gl_rsurf.o \
+	gl_screen.o \
+	gl_test.o \
+	gl_warp.o \
 	$(SYSOBJ_GL_VID)
 
 COMMONOBJS = chase.o \
@@ -318,7 +318,7 @@ COMMONOBJS = chase.o \
 	pr_cmds.o \
 	pr_edict.o \
 	pr_exec.o \
-	r_dl_part.o \
+	r_part.o \
 	sbar.o \
 	snd_sys.o \
 	snd_dma.o \

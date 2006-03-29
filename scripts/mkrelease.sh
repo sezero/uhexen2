@@ -28,10 +28,5 @@ rm -rf packaging
 find -name *.sh | xargs chmod 755 
 
 # move the unused/reference asm files directory into 00_unused
-mv asm 00_unused
-
-# rename the weird xdelta files
-mv gamecode/pak_v111/patchdata/data1/pak0.pak.103_111 gamecode/pak_v111/patchdata/data1/data1pak0.xd
-mv gamecode/pak_v111/patchdata/data1/pak1.pak.103_111 gamecode/pak_v111/patchdata/data1/data1pak1.xd
-patch gamecode/pak_v111/h2_103_111.dat scripts/patchdat.pat
+mv asm 00_unused/asm_ref
 
