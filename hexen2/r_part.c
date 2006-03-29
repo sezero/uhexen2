@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.6 2006-03-29 14:54:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.7 2006-03-29 14:55:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1208,10 +1208,10 @@ void R_DrawParticles (void)
 	float			scale;
 
 	GL_Bind(particletexture);
-	glfunc.glEnable_fp (GL_BLEND);
-	glfunc.glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	glfunc.glBegin_fp (GL_TRIANGLES);
+	glEnable_fp (GL_BLEND);
+	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glBegin_fp (GL_TRIANGLES);
 
 	VectorScale (vup, 1.5, r_pup);
 	VectorScale (vright, 1.5, r_pright);
@@ -1261,17 +1261,17 @@ void R_DrawParticles (void)
 			else
 				scale = 1 + scale * 0.004;
 			if (p->color <= 255)
-				glfunc.glColor3ubv_fp ((byte *)&d_8to24table[(int)p->color]);
+				glColor3ubv_fp ((byte *)&d_8to24table[(int)p->color]);
 			else
-				glfunc.glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[(int)p->color-256]);
+				glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[(int)p->color-256]);
 			
 			//fixme: need rain texture
-			glfunc.glTexCoord2f_fp (1,0);
-			glfunc.glVertex3fv_fp (p->org);
-			glfunc.glTexCoord2f_fp (1,0.5);
-			glfunc.glVertex3f_fp (p->org[0] + r_pup[0]*scale, p->org[1] + r_pup[1]*scale, p->org[2] + r_pup[2]*scale);
-			glfunc.glTexCoord2f_fp (0.5,0);
-			glfunc.glVertex3f_fp (p->org[0] + r_pright[0]*scale, p->org[1] + r_pright[1]*scale, p->org[2] + r_pright[2]*scale);
+			glTexCoord2f_fp (1,0);
+			glVertex3fv_fp (p->org);
+			glTexCoord2f_fp (1,0.5);
+			glVertex3f_fp (p->org[0] + r_pup[0]*scale, p->org[1] + r_pup[1]*scale, p->org[2] + r_pup[2]*scale);
+			glTexCoord2f_fp (0.5,0);
+			glVertex3f_fp (p->org[0] + r_pright[0]*scale, p->org[1] + r_pright[1]*scale, p->org[2] + r_pright[2]*scale);
 #else
 			VectorCopy(p->org,save_org);
 
@@ -1304,41 +1304,41 @@ void R_DrawParticles (void)
 				scale = p->count/10 + scale * 0.004;
 
 			if (p->color <= 255)
-				glfunc.glColor3ubv_fp ((byte *)&d_8to24table[(int)p->color]);
+				glColor3ubv_fp ((byte *)&d_8to24table[(int)p->color]);
 			else
-				glfunc.glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[(int)p->color-256]);
+				glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[(int)p->color-256]);
 	
 			if(p->count>=69)
-				glfunc.glTexCoord2f_fp (1,1);//happy snow!- bottom right
+				glTexCoord2f_fp (1,1);//happy snow!- bottom right
 			else if(p->count>=40)	
-				glfunc.glTexCoord2f_fp (0,0);	//normal snow - top left
+				glTexCoord2f_fp (0,0);	//normal snow - top left
 			else if(p->count>=30)
-				glfunc.glTexCoord2f_fp (0,1);	//bottom left
+				glTexCoord2f_fp (0,1);	//bottom left
 			else
-				glfunc.glTexCoord2f_fp (1,0);	//top right
+				glTexCoord2f_fp (1,0);	//top right
 
-			glfunc.glVertex3fv_fp (p->org);
+			glVertex3fv_fp (p->org);
 			if(p->count>=69)
-				glfunc.glTexCoord2f_fp (1,.18);//top right
+				glTexCoord2f_fp (1,.18);//top right
 			else if(p->count>=40)	
-				glfunc.glTexCoord2f_fp (.815,0);//top right
+				glTexCoord2f_fp (.815,0);//top right
 			else if(p->count>=30)
-				glfunc.glTexCoord2f_fp (0.5,1);//bottom middle
+				glTexCoord2f_fp (0.5,1);//bottom middle
 			else
-				glfunc.glTexCoord2f_fp (1,0.5);//middle right
+				glTexCoord2f_fp (1,0.5);//middle right
 
-			glfunc.glVertex3f_fp (p->org[0] + r_pup[0]*scale, p->org[1] + r_pup[1]*scale, p->org[2] + r_pup[2]*scale);
+			glVertex3f_fp (p->org[0] + r_pup[0]*scale, p->org[1] + r_pup[1]*scale, p->org[2] + r_pup[2]*scale);
 
 			if(p->count>=69)
-				glfunc.glTexCoord2f_fp (.18,1);//bottom left
+				glTexCoord2f_fp (.18,1);//bottom left
 			else if(p->count>=40)	
-				glfunc.glTexCoord2f_fp (0,.815);//bottom left
+				glTexCoord2f_fp (0,.815);//bottom left
 			else if(p->count>=30)
-				glfunc.glTexCoord2f_fp (0,0.5);//left middle
+				glTexCoord2f_fp (0,0.5);//left middle
 			else
-				glfunc.glTexCoord2f_fp (0.5,0);//middle top
+				glTexCoord2f_fp (0.5,0);//middle top
 			
-			glfunc.glVertex3f_fp (p->org[0] + r_pright[0]*scale, p->org[1] + r_pright[1]*scale, p->org[2] + r_pright[2]*scale);
+			glVertex3f_fp (p->org[0] + r_pright[0]*scale, p->org[1] + r_pright[1]*scale, p->org[2] + r_pright[2]*scale);
 #else
 			VectorCopy(p->org,save_org);
 			D_DrawParticle (p);
@@ -1389,15 +1389,15 @@ void R_DrawParticles (void)
 			else
 				scale = 1 + scale * 0.004;
 			if (p->color <= 255)
-				glfunc.glColor3ubv_fp ((byte *)&d_8to24table[(int)p->color]);
+				glColor3ubv_fp ((byte *)&d_8to24table[(int)p->color]);
 			else
-				glfunc.glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[(int)p->color-256]);
-			glfunc.glTexCoord2f_fp (1,0);
-			glfunc.glVertex3fv_fp (p->org);
-			glfunc.glTexCoord2f_fp (1,0.5);
-			glfunc.glVertex3f_fp (p->org[0] + r_pup[0]*scale, p->org[1] + r_pup[1]*scale, p->org[2] + r_pup[2]*scale);
-			glfunc.glTexCoord2f_fp (0.5,0);
-			glfunc.glVertex3f_fp (p->org[0] + r_pright[0]*scale, p->org[1] + r_pright[1]*scale, p->org[2] + r_pright[2]*scale);
+				glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[(int)p->color-256]);
+			glTexCoord2f_fp (1,0);
+			glVertex3fv_fp (p->org);
+			glTexCoord2f_fp (1,0.5);
+			glVertex3f_fp (p->org[0] + r_pup[0]*scale, p->org[1] + r_pup[1]*scale, p->org[2] + r_pup[2]*scale);
+			glTexCoord2f_fp (0.5,0);
+			glVertex3f_fp (p->org[0] + r_pright[0]*scale, p->org[1] + r_pright[1]*scale, p->org[2] + r_pright[2]*scale);
 #else
 			D_DrawParticle (p);
 #endif
@@ -1405,9 +1405,9 @@ void R_DrawParticles (void)
 	}
 
 #ifdef GLQUAKE
-	glfunc.glEnd_fp ();
-	glfunc.glDisable_fp (GL_BLEND);
-	glfunc.glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glEnd_fp ();
+	glDisable_fp (GL_BLEND);
+	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 #endif
 }
 
@@ -1948,6 +1948,9 @@ void R_UpdateParticles (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2006/03/29 14:54:36  sezero
+ * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
+ *
  * Revision 1.5  2006/03/29 14:53:56  sezero
  * removed unused variables.
  *
