@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.8 2006-03-29 14:55:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.9 2006-03-29 14:58:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1944,6 +1944,9 @@ void R_UpdateParticles (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2006/03/29 14:55:58  sezero
+ * use hunk instead of malloc
+ *
  * Revision 1.7  2006/03/29 14:55:15  sezero
  * killed the glfunc struct
  *
@@ -1970,9 +1973,6 @@ void R_UpdateParticles (void)
  *
  * Revision 1.1  2002/01/02 15:14:44  phneutre
  * dlsym'ed all calls to GL functions with SDL_GL_GetProcAddress
- *
- * Revision 1.1.1.1  2001/11/09 17:04:06  theoddone33
- * Inital import
  *
  * 
  * 54    4/01/98 6:43p Jmonroe
