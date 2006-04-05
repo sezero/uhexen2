@@ -64,8 +64,6 @@ a. Using the installer (easy way):
 
 	hexen2	-  Hexen II (software rendering)
 	glhexen2 - Hexen II (opengl rendering)
-	h2mp	-  Portal of Praevus (software rendering)
-	glh2mp	-  Portal of Praevus (opengl rendering)
 	hwcl	-  HexenWorld Client (software rendering)
 	glhwcl	-  HexenWorld Client (opengl rendering)
 	hwsv	-  HexenWorld Server
@@ -140,12 +138,20 @@ Simplest way of running the game is running the game launcher.
 Either choose it from your start menu, or type "hexen2" on the
 command line. Choose your options and press "Launch Hexen2".
 
-Old school way of running the game: Go into the installation
-directory and run the binary. The default mode is windowed.
-Use the "-f" switch to start the game in full-screen mode.
+Running the game from a console and command line switches:
+Go into the installation directory and run the binary. The default
+mode is windowed. Use the "-f" switch to start the game in full-
+screen mode.
+
+Playing the mission pack:
+By default, the game will not activate its mission pack support.
+If you want to play the Portal of Praevus mission pack, use the
+"-portals" or "-missionpack" switch (both are the same).
 
 Here are some of the important command-line switches:
 
+ -portals | -h2mp	Activate the mission pack support: Necessary for
+			playing the Portal of Praevus misson pack.
  -f | --fullscreen	Run the game fullscreen (can also be set from the menu)
  -w | --window		Run the game windowed (can also be set from the menu)
  -g | --gllibrary	Select 3D rendering library

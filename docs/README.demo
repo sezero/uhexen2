@@ -42,17 +42,11 @@ Hexen II: Hammer of Thyrion 1.4.0 (demo version)
 -------------------
 
 All necessary binaries and the data files for Hexen II Demo can be
-installed by the installer, no extra effort is necessary. A second
-option on the installer is HexenWorld Multiplayer support. It is
-recommended for network-games.
-
-Here are the names of the binaries to be installed:
+installed by the installer, no extra effort is necessary. Here are
+the names of the binaries to be installed:
 
 	hexen2	-  Hexen II (software rendering)
 	glhexen2 - Hexen II (opengl rendering)
-	hwcl	-  HexenWorld Client (software rendering)
-	glhwcl	-  HexenWorld Client (opengl rendering)
-	hwsv	-  HexenWorld Server
 
 If you don't want to use the installer, grab the demo tarball from
 the HoT website, extract it in any place and you'll be ready to run
@@ -98,9 +92,10 @@ Simplest way of running the game is running the game launcher.
 Either choose it from your start menu, or type "hexen2demo" on the
 command line. Choose your options and press "Launch Hexen2".
 
-Old school way of running the game: Go into the installation
-directory and run the binary. The default mode is windowed.
-Use the "-f" switch to start the game in full-screen mode.
+Running the game from a console and command line switches:
+Go into the installation directory and run the binary. The default
+mode is windowed. Use the "-f" switch to start the game in full-
+screen mode.
 
 Here are some of the important command-line switches:
 
@@ -232,9 +227,9 @@ before compiling SDL_mixer, to point to your timidity data files.
 Hexen2 binaries from Raven's official Windows demo WON'T play
 over network with Linux Hexen2-demo binaries:  Don't try, it
 simply WON'T work. If this is a big issue for you, please use
-HexenWorld for deathmatch. It's included in the installer.
-Alternatively, Windows people can use win32 versions of Hammer
-of Thyrion, and there will be no compatibility problems.
+HexenWorld for deathmatch.  Alternatively, Windows people can
+use win32 versions of Hammer of Thyrion, and there will be no
+compatibility problems.
 
 
 1.6 SaveGames and Configuration files
