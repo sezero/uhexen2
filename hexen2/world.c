@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.9 2006-02-22 22:56:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.10 2006-04-05 06:10:44 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -309,6 +309,21 @@ static void SV_TouchLinks (edict_t *ent, areanode_t *node)
 				|| ent->v.absmax[2] < touch->v.absmin[2] )
 			continue;
 
+		if (old_progdefs)
+		{
+			old_self = pr_global_struct_v111->self;
+			old_other = pr_global_struct_v111->other;
+
+			pr_global_struct_v111->self = EDICT_TO_PROG(touch);
+			pr_global_struct_v111->other = EDICT_TO_PROG(ent);
+			pr_global_struct_v111->time = sv.time;
+			PR_ExecuteProgram (touch->v.touch);
+
+			pr_global_struct_v111->self = old_self;
+			pr_global_struct_v111->other = old_other;
+
+			continue;
+		}
 		old_self = pr_global_struct->self;
 		old_other = pr_global_struct->other;
 
@@ -1004,6 +1019,10 @@ trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, e
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2006/02/22 22:56:24  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 24: world.c, world.h).
+ *
  * Revision 1.8  2005/10/02 15:43:08  sezero
  * killed -Wshadow warnings
  *

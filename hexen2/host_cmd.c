@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.42 2006-04-05 06:09:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.43 2006-04-05 06:10:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -121,7 +121,7 @@ static void Host_God_f (void)
 		return;
 	}
 
-	if (pr_global_struct->deathmatch || pr_global_struct->coop || skill.value > 2)
+	if (pr_global_struct(deathmatch) || pr_global_struct(coop) || skill.value > 2)
 		return;
 
 	sv_player->v.flags = (int)sv_player->v.flags ^ FL_GODMODE;
@@ -139,7 +139,7 @@ static void Host_Notarget_f (void)
 		return;
 	}
 
-	if (pr_global_struct->deathmatch || skill.value > 2)
+	if (pr_global_struct(deathmatch) || skill.value > 2)
 		return;
 
 	sv_player->v.flags = (int)sv_player->v.flags ^ FL_NOTARGET;
@@ -159,7 +159,7 @@ static void Host_Noclip_f (void)
 		return;
 	}
 
-	if (pr_global_struct->deathmatch || pr_global_struct->coop || skill.value > 2)
+	if (pr_global_struct(deathmatch) || pr_global_struct(coop) || skill.value > 2)
 		return;
 
 	if (sv_player->v.movetype != MOVETYPE_NOCLIP)
@@ -881,7 +881,8 @@ static void RestoreClients(void)
 
 	time_diff = sv.time - old_time;
 
-	for (i=0,host_client = svs.clients ; i<svs.maxclients ; i++, host_client++)
+	for (i = 0, host_client = svs.clients ; i < svs.maxclients ; i++, host_client++)
+	{
 		if (host_client->active)
 		{
 			ent = host_client->edict;
@@ -891,18 +892,31 @@ static void RestoreClients(void)
 			ent->v.netname = host_client->name - pr_strings;
 			ent->v.playerclass = host_client->playerclass;
 
+
+			if (old_progdefs)
+			{
 			// copy spawn parms out of the client_t
-
-			for (j=0 ; j< NUM_SPAWN_PARMS ; j++)
-				(&pr_global_struct->parm1)[j] = host_client->spawn_parms[j];
-
+				for (j = 0 ; j < NUM_SPAWN_PARMS ; j++)
+					(&pr_global_struct_v111->parm1)[j] = host_client->spawn_parms[j];
 			// call the spawn function
-
-			pr_global_struct->time = sv.time;
-			pr_global_struct->self = EDICT_TO_PROG(ent);
-			G_FLOAT(OFS_PARM0) = time_diff;
-			PR_ExecuteProgram (pr_global_struct->ClientReEnter);
+				pr_global_struct_v111->time = sv.time;
+				pr_global_struct_v111->self = EDICT_TO_PROG(ent);
+				G_FLOAT(OFS_PARM0) = time_diff;
+				PR_ExecuteProgram (pr_global_struct_v111->ClientReEnter);
+			}
+			else
+			{
+			// copy spawn parms out of the client_t
+				for (j = 0 ; j < NUM_SPAWN_PARMS ; j++)
+					(&pr_global_struct->parm1)[j] = host_client->spawn_parms[j];
+			// call the spawn function
+				pr_global_struct->time = sv.time;
+				pr_global_struct->self = EDICT_TO_PROG(ent);
+				G_FLOAT(OFS_PARM0) = time_diff;
+				PR_ExecuteProgram (pr_global_struct->ClientReEnter);
+			}
 		}
+	}
 
 	SaveGamestate(true);
 }
@@ -1015,7 +1029,10 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode)
 		{
 			ED_ParseGlobals (start);
 			// Need to restore this
-			pr_global_struct->startspot = sv.startspot - pr_strings;
+			if (old_progdefs)
+				pr_global_struct_v111->startspot = sv.startspot - pr_strings;
+			else
+				pr_global_struct->startspot = sv.startspot - pr_strings;
 		}
 		else
 		{
@@ -1052,7 +1069,10 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode)
 		sv.time = playtime;
 		sv.paused = true;
 
-		pr_global_struct->serverflags = svs.serverflags;
+		if (old_progdefs)
+			pr_global_struct_v111->serverflags = svs.serverflags;
+		else
+			pr_global_struct->serverflags = svs.serverflags;
 
 		RestoreClients();
 	}
@@ -1064,7 +1084,10 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode)
 	{
 		sv.time = playtime;
 
-		pr_global_struct->serverflags = svs.serverflags;
+		if (old_progdefs)
+			pr_global_struct_v111->serverflags = svs.serverflags;
+		else
+			pr_global_struct->serverflags = svs.serverflags;
 
 		RestoreClients();
 	}
@@ -1231,8 +1254,16 @@ static void Host_Class_f (void)
 	host_client->edict->v.playerclass = newClass;
 
 	// Change the weapon model used
-	pr_global_struct->self = EDICT_TO_PROG(host_client->edict);
-	PR_ExecuteProgram (pr_global_struct->ClassChangeWeapon);
+	if (old_progdefs)
+	{
+		pr_global_struct_v111->self = EDICT_TO_PROG(host_client->edict);
+		PR_ExecuteProgram (pr_global_struct_v111->ClassChangeWeapon);
+	}
+	else
+	{
+		pr_global_struct->self = EDICT_TO_PROG(host_client->edict);
+		PR_ExecuteProgram (pr_global_struct->ClassChangeWeapon);
+	}
 
 // send notification to all clients
 
@@ -1495,9 +1526,18 @@ static void Host_Kill_f (void)
 		return;
 	}
 
-	pr_global_struct->time = sv.time;
-	pr_global_struct->self = EDICT_TO_PROG(sv_player);
-	PR_ExecuteProgram (pr_global_struct->ClientKill);
+	if (old_progdefs)
+	{
+		pr_global_struct_v111->time = sv.time;
+		pr_global_struct_v111->self = EDICT_TO_PROG(sv_player);
+		PR_ExecuteProgram (pr_global_struct_v111->ClientKill);
+	}
+	else
+	{
+		pr_global_struct->time = sv.time;
+		pr_global_struct->self = EDICT_TO_PROG(sv_player);
+		PR_ExecuteProgram (pr_global_struct->ClientKill);
+	}
 }
 
 
@@ -1612,21 +1652,31 @@ static void Host_Spawn_f (void)
 			ent->v.netname = host_client->name - pr_strings;
 			ent->v.playerclass = host_client->playerclass;
 
+			if (old_progdefs)
+			{
 			// copy spawn parms out of the client_t
-
-			for (i=0 ; i< NUM_SPAWN_PARMS ; i++)
-				(&pr_global_struct->parm1)[i] = host_client->spawn_parms[i];
-
+				for (i=0 ; i < NUM_SPAWN_PARMS ; i++)
+					(&pr_global_struct_v111->parm1)[i] = host_client->spawn_parms[i];
 			// call the spawn function
-
-			pr_global_struct->time = sv.time;
-			pr_global_struct->self = EDICT_TO_PROG(sv_player);
-			PR_ExecuteProgram (pr_global_struct->ClientConnect);
+				pr_global_struct_v111->time = sv.time;
+				pr_global_struct_v111->self = EDICT_TO_PROG(sv_player);
+				PR_ExecuteProgram (pr_global_struct_v111->ClientConnect);
+			}
+			else
+			{
+			// copy spawn parms out of the client_t
+				for (i=0 ; i < NUM_SPAWN_PARMS ; i++)
+					(&pr_global_struct->parm1)[i] = host_client->spawn_parms[i];
+			// call the spawn function
+				pr_global_struct->time = sv.time;
+				pr_global_struct->self = EDICT_TO_PROG(sv_player);
+				PR_ExecuteProgram (pr_global_struct->ClientConnect);
+			}
 
 			if ((Sys_DoubleTime() - host_client->netconnection->connecttime) <= sv.time)
 				Sys_Printf ("%s entered the game\n", host_client->name);
 
-			PR_ExecuteProgram (pr_global_struct->PutClientInServer);
+			PR_ExecuteProgram (pr_global_struct(PutClientInServer));
 		}
 	}
 
@@ -1666,19 +1716,19 @@ static void Host_Spawn_f (void)
 //
 	MSG_WriteByte (&host_client->message, svc_updatestat);
 	MSG_WriteByte (&host_client->message, STAT_TOTALSECRETS);
-	MSG_WriteLong (&host_client->message, pr_global_struct->total_secrets);
+	MSG_WriteLong (&host_client->message, pr_global_struct(total_secrets));
 
 	MSG_WriteByte (&host_client->message, svc_updatestat);
 	MSG_WriteByte (&host_client->message, STAT_TOTALMONSTERS);
-	MSG_WriteLong (&host_client->message, pr_global_struct->total_monsters);
+	MSG_WriteLong (&host_client->message, pr_global_struct(total_monsters));
 
 	MSG_WriteByte (&host_client->message, svc_updatestat);
 	MSG_WriteByte (&host_client->message, STAT_SECRETS);
-	MSG_WriteLong (&host_client->message, pr_global_struct->found_secrets);
+	MSG_WriteLong (&host_client->message, pr_global_struct(found_secrets));
 
 	MSG_WriteByte (&host_client->message, svc_updatestat);
 	MSG_WriteByte (&host_client->message, STAT_MONSTERS);
-	MSG_WriteLong (&host_client->message, pr_global_struct->killed_monsters);
+	MSG_WriteLong (&host_client->message, pr_global_struct(killed_monsters));
 
 	SV_UpdateEffects(&host_client->message);
 
@@ -1815,7 +1865,10 @@ static void Host_Create_f(void)
 	ent->v.absmax[1] += 16;
 	ent->v.absmax[2] += 16;
 
-	pr_global_struct->self = EDICT_TO_PROG(ent);
+	if (old_progdefs)
+		pr_global_struct_v111->self = EDICT_TO_PROG(ent);
+	else
+		pr_global_struct->self = EDICT_TO_PROG(ent);
 	ignore_precache = true;
 	PR_ExecuteProgram (func - pr_functions);
 	ignore_precache = false;
@@ -1863,7 +1916,7 @@ static void Host_Kick_f (void)
 			return;
 		}
 	}
-	else if (pr_global_struct->deathmatch)
+	else if (pr_global_struct(deathmatch))
 		return;
 
 	save = host_client;
@@ -1952,7 +2005,7 @@ static void Host_Give_f (void)
 		return;
 	}
 
-	if (pr_global_struct->deathmatch || skill.value > 2)
+	if (pr_global_struct(deathmatch) || skill.value > 2)
 		return;
 
 	t = Cmd_Argv(1);
@@ -2242,6 +2295,17 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.42  2006/04/05 06:09:23  sezero
+ * killed (almost) all H2MP ifdefs: this is the first step in making a single
+ * binary which handles both h2 and h2mp properly. the only H2MP ifdefs left
+ * are actually the ones for determining the icon and window manager text, so
+ * nothing serious. the binary normally will only run the original h2 game.
+ * if given a -portals or -missionpack or -h2mp argument, it will look for the
+ * mission pack and run it (this is the same logic that quake used.) The only
+ * serious side effect is that h2 and h2mp progs being different: This will be
+ * solved by the next patch by adding support for the two progs versions into
+ * a single binary.
+ *
  * Revision 1.41  2006/03/21 22:24:08  sezero
  * continue making static functions and vars static. whitespace and coding
  * style cleanup. part 44: model.c, gl_model.c. also moved the mcache cmd

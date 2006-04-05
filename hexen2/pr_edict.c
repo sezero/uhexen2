@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.19 2006-04-05 06:09:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.20 2006-04-05 06:10:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -14,6 +14,8 @@ ddef_t			*pr_fielddefs;
 ddef_t			*pr_globaldefs;
 dstatement_t	*pr_statements;
 globalvars_t	*pr_global_struct;
+globalvars_v111_t	*pr_global_struct_v111;
+qboolean	old_progdefs;	// whether we have a Hexen2-v1.11 globals struct
 float		*pr_globals;		// same as pr_global_struct
 int		pr_edict_size;		// in bytes
 
@@ -1015,7 +1017,10 @@ void ED_LoadFromFile (char *data)
 
 	ent = NULL;
 	inhibit = 0;
-	pr_global_struct->time = sv.time;
+	if (old_progdefs)
+		pr_global_struct_v111->time = sv.time;
+	else
+		pr_global_struct->time = sv.time;
 	orig = data;
 
 	start_amount = current_loading_size;
@@ -1153,7 +1158,10 @@ void ED_LoadFromFile (char *data)
 			continue;
 		}
 
-		pr_global_struct->self = EDICT_TO_PROG(ent);
+		if (old_progdefs)
+			pr_global_struct_v111->self = EDICT_TO_PROG(ent);
+		else
+			pr_global_struct->self = EDICT_TO_PROG(ent);
 		PR_ExecuteProgram (func - pr_functions);
 	}
 
@@ -1231,7 +1239,7 @@ void PR_LoadProgs (void)
 
 	if (progs->version != PROG_VERSION)
 		Sys_Error ("progs.dat has wrong version number (%i should be %i)", progs->version, PROG_VERSION);
-	if (progs->crc != PROGHEADER_CRC)
+	if (progs->crc != PROGS_V111_CRC && progs->crc != PROGS_V112_CRC)
 		Sys_Error ("progs.dat system vars have been modified, progdefs.h is out of date");
 
 	pr_functions = (dfunction_t *)((byte *)progs + progs->ofs_functions);
@@ -1240,8 +1248,23 @@ void PR_LoadProgs (void)
 	pr_fielddefs = (ddef_t *)((byte *)progs + progs->ofs_fielddefs);
 	pr_statements = (dstatement_t *)((byte *)progs + progs->ofs_statements);
 
-	pr_global_struct = (globalvars_t *)((byte *)progs + progs->ofs_globals);
-	pr_globals = (float *)pr_global_struct;
+	Con_Printf ("Loaded %s ", finalprogname);
+	if (progs->crc == PROGS_V111_CRC)
+	{
+		Con_Printf ("(%d crc: 1.11)\n", PROGS_V111_CRC);
+		old_progdefs = true;
+		pr_global_struct_v111 = (globalvars_v111_t *)((byte *)progs + progs->ofs_globals);
+		pr_globals = (float *)pr_global_struct_v111;
+		pr_global_struct = NULL;
+	}
+	else
+	{
+		Con_Printf ("(%d crc: 1.12)\n", PROGS_V112_CRC);
+		old_progdefs = false;
+		pr_global_struct = (globalvars_t *)((byte *)progs + progs->ofs_globals);
+		pr_globals = (float *)pr_global_struct;
+		pr_global_struct_v111 = NULL;
+	}
 
 	pr_edict_size = progs->entityfields * 4 + sizeof (edict_t) - sizeof(entvars_t);
 
@@ -1452,6 +1475,17 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2006/04/05 06:09:23  sezero
+ * killed (almost) all H2MP ifdefs: this is the first step in making a single
+ * binary which handles both h2 and h2mp properly. the only H2MP ifdefs left
+ * are actually the ones for determining the icon and window manager text, so
+ * nothing serious. the binary normally will only run the original h2 game.
+ * if given a -portals or -missionpack or -h2mp argument, it will look for the
+ * mission pack and run it (this is the same logic that quake used.) The only
+ * serious side effect is that h2 and h2mp progs being different: This will be
+ * solved by the next patch by adding support for the two progs versions into
+ * a single binary.
+ *
  * Revision 1.18  2006/03/24 15:05:39  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also

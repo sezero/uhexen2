@@ -41,6 +41,7 @@ extern	ddef_t			*pr_globaldefs;
 extern	ddef_t			*pr_fielddefs;
 extern	dstatement_t	*pr_statements;
 extern	globalvars_t	*pr_global_struct;
+#define	pr_global_struct(parm)	(pr_global_struct->parm)
 extern	float			*pr_globals;		// same as pr_global_struct
 
 extern	int				pr_edict_size;	// in bytes
@@ -57,13 +58,20 @@ extern	int				pr_string_count;
 	it will load a map-specific prog file. Without this, the rider bosses
 	shall not appear in the original Hexen2. The mission pack & HexenWorld
 	uses a single prog file, so they don't need this.
+	2006-03-31: We now use a single binary for both original hexen2 and
+	for the mission pack. So we enable it even for the mission pack, but
+	we place a maplist.txt file with a 0 in it in the portals directory.
 	If you wish to compile progs.dat and progs2.dat together into a single
-	progs.dat for Hexen2, then you must change the definition below to 0 .
+	progs.dat for original Hexen2, then keep the definition below intact,
+	but put a maplist.txt file with only a 0 in it in the data1 directory.
+	This way, if you find an old mod which uses multiple progs.dat files,
+	it will continue to work properly.
 */
 #define	USE_MULTIPLE_PROGS	1
 
 // USE_MULTIPLE_PROGS is only for original hexen2...
-#if defined(H2MP) || defined(H2W)
+//#if defined(H2MP) || defined(H2W)
+#if defined(H2W)
 #undef	USE_MULTIPLE_PROGS
 #define	USE_MULTIPLE_PROGS	0
 #endif

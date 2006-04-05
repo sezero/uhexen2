@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.28 2006-03-24 15:05:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.29 2006-04-05 06:10:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -518,9 +518,14 @@ static void SV_ConnectClient (int clientnum)
 //	else
 //	{
 	// call the progs to get default spawn parms for the new client
-	//	PR_ExecuteProgram (pr_global_struct->SetNewParms);
+	//	PR_ExecuteProgram (pr_global_struct(SetNewParms));
 	//	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
+	//	{
+	//	    if (old_progdefs)
+	//		client->spawn_parms[i] = (&pr_global_struct_v111->parm1)[i];
+	//	    else
 	//		client->spawn_parms[i] = (&pr_global_struct->parm1)[i];
+	//	}
 //	}
 
 	SV_SendServerinfo (client);
@@ -1850,7 +1855,7 @@ void SV_SaveSpawnparms (void)
 	int		i;
 //	int		j;
 
-	svs.serverflags = pr_global_struct->serverflags;
+	svs.serverflags = pr_global_struct(serverflags);
 
 	for (i=0, host_client = svs.clients ; i<svs.maxclients ; i++, host_client++)
 	{
@@ -1858,10 +1863,20 @@ void SV_SaveSpawnparms (void)
 			continue;
 
 	// call the progs to get default spawn parms for the new client
-//		pr_global_struct->self = EDICT_TO_PROG(host_client->edict);
-//		PR_ExecuteProgram (pr_global_struct->SetChangeParms);
-//		for (j=0 ; j<NUM_SPAWN_PARMS ; j++)
-//			host_client->spawn_parms[j] = (&pr_global_struct->parm1)[j];
+//		if (old_progdefs)
+//		{
+//			pr_global_struct_v111->self = EDICT_TO_PROG(host_client->edict);
+//			PR_ExecuteProgram (pr_global_struct_v111->SetChangeParms);
+//			for (j=0 ; j<NUM_SPAWN_PARMS ; j++)
+//				host_client->spawn_parms[j] = (&pr_global_struct_v111->parm1)[j];
+//		}
+//		else
+//		{
+//			pr_global_struct->self = EDICT_TO_PROG(host_client->edict);
+//			PR_ExecuteProgram (pr_global_struct->SetChangeParms);
+//			for (j=0 ; j<NUM_SPAWN_PARMS ; j++)
+//				host_client->spawn_parms[j] = (&pr_global_struct->parm1)[j];
+//		}
 	}
 }
 
@@ -2036,19 +2051,32 @@ void SV_SpawnServer (char *server, char *startspot)
 	ent->v.solid = SOLID_BSP;
 	ent->v.movetype = MOVETYPE_PUSH;
 
-	if (coop.value)
-		pr_global_struct->coop = coop.value;
+	if (old_progdefs)
+	{
+		if (coop.value)
+			pr_global_struct_v111->coop = coop.value;
+		else
+			pr_global_struct_v111->deathmatch = deathmatch.value;
+
+		pr_global_struct_v111->randomclass = randomclass.value;
+		pr_global_struct_v111->mapname = sv.name - pr_strings;
+		pr_global_struct_v111->startspot = sv.startspot - pr_strings;
+		// serverflags are for cross level information (sigils)
+		pr_global_struct_v111->serverflags = svs.serverflags;
+	}
 	else
-		pr_global_struct->deathmatch = deathmatch.value;
+	{
+		if (coop.value)
+			pr_global_struct->coop = coop.value;
+		else
+			pr_global_struct->deathmatch = deathmatch.value;
 
-	pr_global_struct->randomclass = randomclass.value;
-
-	pr_global_struct->mapname = sv.name - pr_strings;
-
-	pr_global_struct->startspot = sv.startspot - pr_strings;
-
-	// serverflags are for cross level information (sigils)
-	pr_global_struct->serverflags = svs.serverflags;
+		pr_global_struct->randomclass = randomclass.value;
+		pr_global_struct->mapname = sv.name - pr_strings;
+		pr_global_struct->startspot = sv.startspot - pr_strings;
+		// serverflags are for cross level information (sigils)
+		pr_global_struct->serverflags = svs.serverflags;
+	}
 
 	current_loading_size += 5;
 	D_ShowLoadingSize();
@@ -2082,6 +2110,11 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2006/03/24 15:05:39  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.27  2006/03/17 14:12:48  sezero
  * put back mission-pack only objectives stuff back into pure h2 builds.
  * it was a total screw-up...

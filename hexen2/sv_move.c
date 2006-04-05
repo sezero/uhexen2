@@ -2,7 +2,7 @@
 	sv_move.c
 	monster movement
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.5 2006-02-25 19:40:52 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.6 2006-04-05 06:10:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -184,6 +184,24 @@ realcheck:	// check it for real...
 
 static void set_move_trace(trace_t *trace)
 {
+	if (old_progdefs)
+	{
+		pr_global_struct_v111->trace_allsolid = trace->allsolid;
+		pr_global_struct_v111->trace_startsolid = trace->startsolid;
+		pr_global_struct_v111->trace_fraction = trace->fraction;
+		pr_global_struct_v111->trace_inwater = trace->inwater;
+		pr_global_struct_v111->trace_inopen = trace->inopen;
+		VectorCopy (trace->endpos, pr_global_struct_v111->trace_endpos);
+		VectorCopy (trace->plane.normal, pr_global_struct_v111->trace_plane_normal);
+		pr_global_struct_v111->trace_plane_dist =  trace->plane.dist;
+		if (trace->ent)
+			pr_global_struct_v111->trace_ent = EDICT_TO_PROG(trace->ent);
+		else
+			pr_global_struct_v111->trace_ent = EDICT_TO_PROG(sv.edicts);
+
+		return;
+	}
+
 	pr_global_struct->trace_allsolid = trace->allsolid;
 	pr_global_struct->trace_startsolid = trace->startsolid;
 	pr_global_struct->trace_fraction = trace->fraction;
@@ -551,12 +569,12 @@ void SV_MoveToGoal (void)
 	edict_t		*enemy;
 #endif
 
-	ent = PROG_TO_EDICT(pr_global_struct->self);	// Entity moving
+	ent = PROG_TO_EDICT(pr_global_struct(self));	// Entity moving
 	goal = PROG_TO_EDICT(ent->v.goalentity);	// its goalentity
 	dist = G_FLOAT(OFS_PARM0);			// how far to move
 
 	// Reset trace_plane_normal
-	VectorCopy(vec3_origin,pr_global_struct->trace_plane_normal);
+	VectorCopy(vec3_origin,pr_global_struct(trace_plane_normal));
 
 	// If not onground, flying, or swimming, return 0
 	if ( !( (int)ent->v.flags & (FL_ONGROUND|FL_FLY|FL_SWIM) ) )
@@ -602,6 +620,11 @@ void SV_MoveToGoal (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2006/02/25 19:40:52  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 29:  hexen2/sv_move.c, hwsv/server.h, sv_ccmds.c, sv_ents.c,
+ * sv_init.c, sv_main.c, sv_move.c, world.h).
+ *
  * Revision 1.4  2005/10/24 21:20:27  sezero
  * fixed those double semicolons
  *
