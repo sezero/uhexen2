@@ -4,26 +4,27 @@
 #include "r_local.h"
 #include "d_local.h"
 
-int		iskyspeed = 4;
-int		iskyspeed2 = 1;
-float	skyspeed, skyspeed2;
 
+static int	iskyspeed = 4;
+static int	iskyspeed2 = 1;
+float		skyspeed, skyspeed2;
 float		skytime;
 
 byte		*r_skysource;
 
-int r_skymade;
-int r_skydirect;		// not used?
+int		r_skymade;
+int		r_skydirect;	// actually not used
 
 
 // TODO: clean up these routines
 
-byte	bottomsky[128*131];
-byte	bottommask[128*131];
-byte	newsky[128*256];	// newsky and topsky both pack in here, 128 bytes
-							//  of newsky on the left of each scan, 128 bytes
-							//  of topsky on the right, because the low-level
-							//  drawers need 256-byte scan widths
+static byte	bottomsky[128*131];
+static byte	bottommask[128*131];
+static byte	newsky[128*256];
+		// newsky and topsky both pack in here, 128 bytes
+		//  of newsky on the left of each scan, 128 bytes
+		//  of topsky on the right, because the low-level
+		//  drawers need 256-byte scan widths
 
 
 /*
@@ -64,7 +65,7 @@ void R_InitSky (texture_t *mt)
 			}
 		}
 	}
-	
+
 	r_skysource = newsky;
 }
 
@@ -90,7 +91,7 @@ void R_MakeSky (void)
 
 	xlast = xshift;
 	ylast = yshift;
-	
+
 	pnewsky = (unsigned *)&newsky[0];
 
 	for (y=0 ; y<SKYSIZE ; y++)
@@ -166,8 +167,8 @@ void R_GenSkyTile (void *pdest)
 		// PORT: unaligned dword access to bottommask and bottomsky
 
 			*pd = (*(pnewsky + (128 / sizeof (unsigned))) &
-				   *(unsigned *)&bottommask[ofs]) |
-				   *(unsigned *)&bottomsky[ofs];
+						*(unsigned *)&bottommask[ofs]) |
+						*(unsigned *)&bottomsky[ofs];
 			pnewsky++;
 			pd++;
 		}
@@ -199,10 +200,10 @@ R_GenSkyTile16
 */
 void R_GenSkyTile16 (void *pdest)
 {
-	int				x, y;
-	int				ofs, baseofs;
-	int				xshift, yshift;
-	byte			*pnewsky;
+	int			x, y;
+	int			ofs, baseofs;
+	int			xshift, yshift;
+	byte		*pnewsky;
 	unsigned short	*pd;
 
 	xshift = skytime * skyspeed;
@@ -222,8 +223,8 @@ void R_GenSkyTile16 (void *pdest)
 			ofs = baseofs + ((x+xshift) & SKYMASK);
 
 			*pd = d_8to16table[(*(pnewsky + 128) &
-					*(byte *)&bottommask[ofs]) |
-					*(byte *)&bottomsky[ofs]];
+						*(byte *)&bottommask[ofs]) |
+						*(byte *)&bottomsky[ofs]];
 			pnewsky++;
 			pd++;
 		}
@@ -252,7 +253,7 @@ void R_SetSkyFrame (void)
 	temp = SKYSIZE * s1 * s2;
 
 	skytime = cl.time - ((int)(cl.time / temp) * temp);
-	
 
 	r_skymade = 0;
 }
+

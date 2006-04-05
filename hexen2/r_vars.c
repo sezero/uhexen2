@@ -18,7 +18,7 @@
 // FIXME: make into one big structure, like cl or sv
 // FIXME: do separately for refresh engine and driver
 
-int	r_bmodelactive;
+int		r_bmodelactive;
 
 #endif	// !id386
 
