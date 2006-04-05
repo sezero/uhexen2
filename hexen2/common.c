@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.52 2006-03-27 20:12:35 sezero Exp $
+	$Id: common.c,v 1.53 2006-04-05 06:07:31 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1734,7 +1734,8 @@ add_pakfile:
 // add user's directory to the search path
 // add any pak files in the user's directory
 #ifdef PLATFORM_UNIX
-	goto add_pakfile;
+	if (strcmp(com_gamedir, com_userdir))
+		goto add_pakfile;
 #endif
 }
 
@@ -1838,7 +1839,8 @@ add_pakfiles:
 	Sys_mkdir (com_userdir);
 	sprintf (com_savedir, com_userdir);
 // add any pak files in the user's directory
-	goto add_pakfiles;
+	if (strcmp(com_gamedir, com_userdir))
+		goto add_pakfiles;
 #else
 	sprintf (com_userdir, com_gamedir);
 	sprintf (com_savedir, com_userdir);
@@ -2261,6 +2263,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.52  2006/03/27 20:12:35  sezero
+ * fixed compiler warnings (win32)
+ *
  * Revision 1.51  2006/03/27 19:54:23  sezero
  * fixed -Wshadow warnings
  *
