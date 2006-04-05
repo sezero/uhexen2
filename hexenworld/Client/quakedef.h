@@ -62,8 +62,8 @@
 #include "menu.h"
 #include "crc.h"
 #include "cdaudio.h"
-#include "pmove.h"
 #include "mididef.h"
+#include "pmove.h"
 
 #ifdef GLQUAKE
 #include "glquake.h"

@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.59 2006-04-05 06:19:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.60 2006-04-05 18:22:59 sezero Exp $
 */
 
 
@@ -308,6 +308,7 @@ typedef struct
 #include "menu.h"
 #include "crc.h"
 #include "cdaudio.h"
+#include "mididef.h"
 
 #ifdef GLQUAKE
 #include "glquake.h"
@@ -389,20 +390,11 @@ void Chase_Reset (void);
 void Chase_Update (void);
 
 
-// Midi Stuff
-// Put it here cuz I didn't want to make all the files
-// include the window components
-qboolean MIDI_Init(void);
-void MIDI_Cleanup(void);
-void MIDI_Play(char *Name);
-void MIDI_Stop(void);
-void MIDI_Pause(int mode);
-void MIDI_Loop(int NewValue);
-void MIDI_UpdateVolume(void);
-
-
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.59  2006/04/05 06:19:07  sezero
+ * Marked the sanpshot of 2006-04-04 as 1.4.0-RC2.
+ *
  * Revision 1.58  2006/04/05 06:09:23  sezero
  * killed (almost) all H2MP ifdefs: this is the first step in making a single
  * binary which handles both h2 and h2mp properly. the only H2MP ifdefs left
