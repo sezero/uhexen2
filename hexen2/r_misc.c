@@ -3,12 +3,13 @@
 #include "quakedef.h"
 #include "r_local.h"
 
+
 /*
 ===============
 R_CheckVariables
 ===============
 */
-void R_CheckVariables (void)
+static void R_CheckVariables (void)
 {
 	static float	oldbright;
 
@@ -27,6 +28,7 @@ Show
 Debugging use
 ============
 */
+#if 0
 void Show (void)
 {
 	vrect_t	vr;
@@ -37,6 +39,7 @@ void Show (void)
 	vr.pnext = NULL;
 	VID_Update (&vr);
 }
+#endif
 
 
 /*
@@ -60,7 +63,7 @@ void R_TimeRefresh_f (void)
 	}
 
 	startangle = r_refdef.viewangles[1];
-	
+
 	start = Sys_DoubleTime ();
 	for (i=0 ; i<128 ; i++)
 	{
@@ -82,17 +85,16 @@ void R_TimeRefresh_f (void)
 	stop = Sys_DoubleTime ();
 	time = stop-start;
 	Con_Printf ("%f seconds (%f fps)\n", time, 128/time);
-	
+
 	r_refdef.viewangles[1] = startangle;
 }
-
 
 /*
 ================
 R_LineGraph
 ================
 */
-void R_LineGraph(int x, int y, int h, int drawType, int marker)
+static void R_LineGraph (int x, int y, int h, int drawType, int marker)
 {
 	int		i;
 	byte	*dest;
@@ -114,36 +116,38 @@ void R_LineGraph(int x, int y, int h, int drawType, int marker)
 	y += r_refdef.vrect.y;
 	dest = vid.buffer + vid.rowbytes*y + x;
 	s = r_graphheight.value;
-	if(s > r_refdef.vrect.height)
+	if (s > r_refdef.vrect.height)
 	{
 		s = r_refdef.vrect.height;
 	}
-	if(h > s)
+
+	if (h > s)
 	{
 		h = s;
 	}
-	for(i = 0; i < h; i++, dest -= vid.rowbytes)
+	for (i = 0; i < h; i++, dest -= vid.rowbytes)
 	{
 		dest[0] = ((i+1)%marker == 0) ? 143 : 255;
-		if(!(drawType&1))
+		if (!(drawType&1))
 		{ // Expanded
-			if(!(drawType&2))
+			if (!(drawType&2))
 			{ // Solid
 				*(dest-vid.rowbytes) = 53;
 			}
 			dest -= vid.rowbytes;
 		}
 	}
-	if(drawType&4)
+
+	if (drawType&4)
 	{ // No background
 		return;
 	}
-	for(; i < s; i++, dest -= vid.rowbytes)
+	for ( ; i < s; i++, dest -= vid.rowbytes)
 	{
 		dest[0] = 53;
-		if(!(drawType&1))
+		if (!(drawType&1))
 		{ // Expanded
-			if(!(drawType&2))
+			if (!(drawType&2))
 			{ // Solid
 				*(dest-vid.rowbytes) = 53;
 			}
@@ -159,33 +163,31 @@ R_TimeGraph
 Performance monitoring tool
 ==============
 */
-#define	MAX_TIMINGS 100
-#define GRAPH_TYPE_COUNT 2
+#define	MAX_TIMINGS		100
+#define GRAPH_TYPE_COUNT	2
 extern int LastServerMessageSize;
-void R_TimeGraph(void)
+void R_TimeGraph (void)
 {
-	int a;
-	int x;
-	int drawType;
-	int graphType;
-	static int timex;
-	static byte r_timings[MAX_TIMINGS];
-	static int graphMarkers[GRAPH_TYPE_COUNT] =
+	int	a, x;
+	int	drawType, graphType;
+	static int	timex;
+	static byte	r_timings[MAX_TIMINGS];
+	static int	graphMarkers[GRAPH_TYPE_COUNT] =
 	{
 		10000,
 		10
 	};
 
 	graphType = (int)r_timegraph.value;
-	if(graphType < 1 || graphType > GRAPH_TYPE_COUNT)
+	if (graphType < 1 || graphType > GRAPH_TYPE_COUNT)
 	{
 		return;
 	}
 	drawType = (int)((r_timegraph.value-floor(r_timegraph.value)+1E-3)*10);
 
-	if(graphType == 1)
+	if (graphType == 1)
 	{ // Frame times
-		a = (Sys_DoubleTime()-r_time1)/0.01;
+		a = (Sys_DoubleTime() - r_time1) / 0.01;
 	}
 	else
 	{ // Packet sizes
@@ -196,31 +198,30 @@ void R_TimeGraph(void)
 	r_timings[timex] = a;
 	a = timex;
 
-	if(r_refdef.vrect.width <= MAX_TIMINGS)
+	if (r_refdef.vrect.width <= MAX_TIMINGS)
 	{
 		x = r_refdef.vrect.width-1;
 	}
 	else
 	{
-		x = r_refdef.vrect.width
-			-(r_refdef.vrect.width-MAX_TIMINGS)/2;
+		x = r_refdef.vrect.width - (r_refdef.vrect.width-MAX_TIMINGS)/2;
 	}
 
 	do
 	{
 		R_LineGraph(x, r_refdef.vrect.height-2, r_timings[a], drawType,
-			graphMarkers[graphType-1]);
-		if(x == 0)
+						graphMarkers[graphType-1]);
+		if (x == 0)
 		{
-			break; // screen too small to hold entire thing
+			break;	// screen too small to hold entire thing
 		}
 		x--;
 		a--;
-		if(a == -1)
+		if (a == -1)
 		{
 			a = MAX_TIMINGS-1;
 		}
-	} while(a != timex);
+	} while (a != timex);
 
 	timex = (timex+1)%MAX_TIMINGS;
 }
@@ -232,8 +233,8 @@ R_PrintTimes
 */
 void R_PrintTimes(void)
 {
-	float r_time2;
-	float ms, fps;
+	float	r_time2;
+	float	ms, fps;
 
 	r_lasttime1 = r_time2 = Sys_DoubleTime();
 
@@ -242,6 +243,7 @@ void R_PrintTimes(void)
 
 	Con_Printf("%3.1f fps %5.0f ms\n%3i/%3i/%3i poly %3i surf\n",
 		fps, ms, c_faceclip, r_polycount, r_drawnpolycount, c_surf);
+
 	c_surf = 0;
 }
 
@@ -290,8 +292,8 @@ void R_TransformFrustum (void)
 {
 	int		i;
 	vec3_t	v, v2;
-	
-	for (i=0 ; i<4 ; i++)
+
+	for (i = 0 ; i < 4 ; i++)
 	{
 		v[0] = screenedge[i].normal[2];
 		v[1] = -screenedge[i].normal[0];
@@ -319,7 +321,7 @@ void TransformVector (vec3_t in, vec3_t out)
 {
 	out[0] = DotProduct(in,vright);
 	out[1] = DotProduct(in,vup);
-	out[2] = DotProduct(in,vpn);		
+	out[2] = DotProduct(in,vpn);
 }
 
 #endif
@@ -333,7 +335,7 @@ R_TransformPlane
 void R_TransformPlane (mplane_t *p, float *normal, float *dist)
 {
 	float	d;
-	
+
 	d = DotProduct (r_origin, p->normal);
 	*dist = p->dist - d;
 // TODO: when we have rotating entities, this will need to use the view matrix
@@ -346,15 +348,15 @@ void R_TransformPlane (mplane_t *p, float *normal, float *dist)
 R_SetUpFrustumIndexes
 ===============
 */
-void R_SetUpFrustumIndexes (void)
+static void R_SetUpFrustumIndexes (void)
 {
 	int		i, j, *pindex;
 
 	pindex = r_frustum_indexes;
 
-	for (i=0 ; i<4 ; i++)
+	for (i = 0 ; i < 4 ; i++)
 	{
-		for (j=0 ; j<3 ; j++)
+		for (j = 0 ; j < 3 ; j++)
 		{
 			if (view_clipplanes[i].normal[j] < 0)
 			{
@@ -382,9 +384,9 @@ R_SetupFrame
 */
 void R_SetupFrame (void)
 {
-	int				edgecount;
-	vrect_t			vrect;
-	float			w, h;
+	int		edgecount;
+	vrect_t		vrect;
+	float		w, h;
 
 // don't allow cheats in multiplayer
 	if (cl.maxclients > 1)
@@ -422,23 +424,23 @@ void R_SetupFrame (void)
 
 	if (!sv.active)
 		r_draworder.value = 0;	// don't let cheaters look behind walls
-		
+
 	R_CheckVariables ();
-	
+
 	R_AnimateLight ();
 
 	r_framecount++;
 
 	numbtofpolys = 0;
 
-// debugging
 #if 0
-r_refdef.vieworg[0]=  80;
-r_refdef.vieworg[1]=      64;
-r_refdef.vieworg[2]=      40;
-r_refdef.viewangles[0]=    0;
-r_refdef.viewangles[1]=    46.763641357;
-r_refdef.viewangles[2]=    0;
+// debugging
+	r_refdef.vieworg[0]	= 80;
+	r_refdef.vieworg[1]	= 64;
+	r_refdef.vieworg[2]	= 40;
+	r_refdef.viewangles[0]	= 0;
+	r_refdef.viewangles[1]	= 46.763641357;
+	r_refdef.viewangles[2]	= 0;
 #endif
 
 // build the transformation matrix for the given view angles
@@ -491,9 +493,8 @@ r_refdef.viewangles[2]=    0;
 				vrect.height = (int)h;
 
 				R_ViewChanged (&vrect,
-							   (int)((float)sb_lines * (h/(float)vid.height)),
-							   vid.aspect * (h / w) *
-								 ((float)vid.width / (float)vid.height));
+						(int)((float)sb_lines * (h/(float)vid.height)),
+						vid.aspect * (h / w) * ((float)vid.width / (float)vid.height));
 			}
 		}
 		else

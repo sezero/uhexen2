@@ -3,21 +3,22 @@
 #include "quakedef.h"
 #include "r_local.h"
 
-static int				clip_current;
-static vec5_t			clip_verts[2][MAXWORKINGVERTS];
-static int				sprite_width, sprite_height;
+static int		clip_current;
+static vec5_t		clip_verts[2][MAXWORKINGVERTS];
+static int		sprite_width, sprite_height;
 
-spritedesc_t			r_spritedesc;
-	
+spritedesc_t		r_spritedesc;
+
+
 /*
 ================
 R_RotateSprite
 ================
 */
-void R_RotateSprite (float beamlength)
+static void R_RotateSprite (float beamlength)
 {
 	vec3_t	vec;
-	
+
 	if (beamlength == 0.0)
 		return;
 
@@ -35,7 +36,7 @@ Clips the winding at clip_verts[clip_current] and changes clip_current
 Throws out the back side
 ==============
 */
-int R_ClipSpriteFace (int nump, clipplane_t *pclipplane)
+static int R_ClipSpriteFace (int nump, clipplane_t *pclipplane)
 {
 	int		i, outcount;
 	float	dists[MAXWORKINGVERTS+1];
@@ -44,7 +45,7 @@ int R_ClipSpriteFace (int nump, clipplane_t *pclipplane)
 
 	clipdist = pclipplane->dist;
 	pclipnormal = pclipplane->normal;
-	
+
 // calc dists
 	if (clip_current)
 	{
@@ -58,23 +59,22 @@ int R_ClipSpriteFace (int nump, clipplane_t *pclipplane)
 		outstep = clip_verts[1][0];
 		clip_current = 1;
 	}
-	
+
 	instep = in;
-	for (i=0 ; i<nump ; i++, instep += sizeof (vec5_t) / sizeof (float))
+	for (i = 0 ; i < nump ; i++, instep += sizeof (vec5_t) / sizeof (float))
 	{
 		dists[i] = DotProduct (instep, pclipnormal) - clipdist;
 	}
-	
+
 // handle wraparound case
 	dists[nump] = dists[0];
 	memcpy (instep, in, sizeof (vec5_t));
-
 
 // clip the winding
 	instep = in;
 	outcount = 0;
 
-	for (i=0 ; i<nump ; i++, instep += sizeof (vec5_t) / sizeof (float))
+	for (i = 0 ; i < nump ; i++, instep += sizeof (vec5_t) / sizeof (float))
 	{
 		if (dists[i] >= 0)
 		{
@@ -88,12 +88,12 @@ int R_ClipSpriteFace (int nump, clipplane_t *pclipplane)
 
 		if ( (dists[i] > 0) == (dists[i+1] > 0) )
 			continue;
-			
+
 	// split it into a new vertex
 		frac = dists[i] / (dists[i] - dists[i+1]);
-			
+
 		vert2 = instep + sizeof (vec5_t) / sizeof (float);
-		
+
 		outstep[0] = instep[0] + frac*(vert2[0] - instep[0]);
 		outstep[1] = instep[1] + frac*(vert2[1] - instep[1]);
 		outstep[2] = instep[2] + frac*(vert2[2] - instep[2]);
@@ -102,8 +102,8 @@ int R_ClipSpriteFace (int nump, clipplane_t *pclipplane)
 
 		outstep += sizeof (vec5_t) / sizeof (float);
 		outcount++;
-	}	
-	
+	}
+
 	return outcount;
 }
 
@@ -113,7 +113,7 @@ int R_ClipSpriteFace (int nump, clipplane_t *pclipplane)
 R_SetupAndDrawSprite
 ================
 */
-void R_SetupAndDrawSprite ()
+static void R_SetupAndDrawSprite (void)
 {
 	int			i, nump;
 	float		dot, scale, *pv;
@@ -163,7 +163,7 @@ void R_SetupAndDrawSprite ()
 	nump = 4;
 	clip_current = 0;
 
-	for (i=0 ; i<4 ; i++)
+	for (i = 0 ; i < 4 ; i++)
 	{
 		nump = R_ClipSpriteFace (nump, &view_clipplanes[i]);
 		if (nump < 3)
@@ -176,7 +176,7 @@ void R_SetupAndDrawSprite ()
 	pv = &clip_verts[clip_current][0][0];
 	r_spritedesc.nearzi = -999999;
 
-	for (i=0 ; i<nump ; i++)
+	for (i = 0 ; i < nump ; i++)
 	{
 		VectorSubtract (pv, r_origin, local);
 		TransformVector (local, transformed);
@@ -191,7 +191,7 @@ void R_SetupAndDrawSprite ()
 
 		pout->s = pv[3];
 		pout->t = pv[4];
-		
+
 		scale = xscale * pout->zi;
 		pout->u = (xcenter + scale * transformed[0]);
 
@@ -213,12 +213,12 @@ void R_SetupAndDrawSprite ()
 R_GetSpriteframe
 ================
 */
-mspriteframe_t *R_GetSpriteframe (msprite_t *psprite)
+static mspriteframe_t *R_GetSpriteframe (msprite_t *psprite)
 {
 	mspritegroup_t	*pspritegroup;
 	mspriteframe_t	*pspriteframe;
-	int				i, numframes, frame;
-	float			*pintervals, fullinterval, targettime, time;
+	int			i, numframes, frame;
+	float		*pintervals, fullinterval, targettime, time;
 
 	frame = currententity->frame;
 
@@ -241,11 +241,11 @@ mspriteframe_t *R_GetSpriteframe (msprite_t *psprite)
 
 		time = cl.time + currententity->syncbase;
 
-	// when loading in Mod_LoadSpriteGroup, we guaranteed all interval values
-	// are positive, so we don't have to worry about division by 0
+	// when loading in Mod_LoadSpriteGroup, we guaranteed all interval
+	// values are positive, so we don't have to worry about division by 0
 		targettime = time - ((int)(time / fullinterval)) * fullinterval;
 
-		for (i=0 ; i<(numframes-1) ; i++)
+		for (i = 0 ; i < (numframes-1) ; i++)
 		{
 			if (pintervals[i] > targettime)
 				break;
@@ -265,10 +265,10 @@ R_DrawSprite
 */
 void R_DrawSprite (void)
 {
-	int				i;
-	msprite_t		*psprite;
-	vec3_t			tvec;
-	float			dot, angle, sr, cr;
+	int			i;
+	msprite_t	*psprite;
+	vec3_t		tvec;
+	float		dot, angle, sr, cr;
 
 	psprite = currententity->model->cache.data;
 
@@ -337,7 +337,7 @@ void R_DrawSprite (void)
 		r_spritedesc.vup[1] = 0;
 		r_spritedesc.vup[2] = 1;
 		r_spritedesc.vright[0] = vpn[1];
-										// CrossProduct (r_spritedesc.vup, vpn,
+							// CrossProduct (r_spritedesc.vup, vpn,
 		r_spritedesc.vright[1] = -vpn[0];	//  r_spritedesc.vright)
 		r_spritedesc.vright[2] = 0;
 		VectorNormalize (r_spritedesc.vright);

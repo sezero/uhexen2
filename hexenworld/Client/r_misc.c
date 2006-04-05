@@ -9,7 +9,7 @@
 R_CheckVariables
 ===============
 */
-void R_CheckVariables (void)
+static void R_CheckVariables (void)
 {
 	static float	oldbright;
 
@@ -28,6 +28,7 @@ Show
 Debugging use
 ============
 */
+#if 0
 void Show (void)
 {
 	vrect_t	vr;
@@ -38,6 +39,8 @@ void Show (void)
 	vr.pnext = NULL;
 	VID_Update (&vr);
 }
+#endif
+
 
 /*
 ====================
@@ -60,7 +63,7 @@ void R_TimeRefresh_f (void)
 	}
 
 	startangle = r_refdef.viewangles[1];
-	
+
 	start = Sys_DoubleTime ();
 	for (i=0 ; i<128 ; i++)
 	{
@@ -82,7 +85,7 @@ void R_TimeRefresh_f (void)
 	stop = Sys_DoubleTime ();
 	time = stop-start;
 	Con_Printf ("%f seconds (%f fps)\n", time, 128/time);
-	
+
 	r_refdef.viewangles[1] = startangle;
 }
 
@@ -93,7 +96,7 @@ R_LineGraph
 Only called by R_DisplayTime
 ================
 */
-void R_LineGraph (int x, int y, int h)
+static void R_LineGraph (int x, int y, int h)
 {
 	int		i;
 	byte	*dest;
@@ -101,12 +104,12 @@ void R_LineGraph (int x, int y, int h)
 	int		color;
 
 // FIXME: should be disabled on no-buffer adapters, or should be in the driver
-	
+
 //	x += r_refdef.vrect.x;
 //	y += r_refdef.vrect.y;
-	
+
 	dest = vid.buffer + vid.rowbytes*y + x;
-	
+
 	s = r_graphheight.value;
 
 	if (h == 10000)
@@ -118,16 +121,16 @@ void R_LineGraph (int x, int y, int h)
 	else
 		color = 242;	// pink
 
-	if (h>s)
+	if (h > s)
 		h = s;
-	
-	for (i=0 ; i<h ; i++, dest -= vid.rowbytes*2)
+
+	for (i = 0; i < h; i++, dest -= vid.rowbytes*2)
 	{
 		dest[0] = color;
 //		*(dest-vid.rowbytes) = 0x30;
 	}
 #if 0
-	for ( ; i<s ; i++, dest -= vid.rowbytes*2)
+	for ( ; i < s; i++, dest -= vid.rowbytes*2)
 	{
 		dest[0] = 0x30;
 		*(dest-vid.rowbytes) = 0x30;
@@ -140,7 +143,7 @@ void R_LineGraph (int x, int y, int h)
 R_LineGraph
 ================
 */
-void R_LineGraph2(int x, int y, int h, int h2, int drawType, int marker)
+void R_LineGraph2 (int x, int y, int h, int h2, int drawType, int marker)
 {
 	int		i;
 	byte	*dest;
@@ -162,22 +165,22 @@ void R_LineGraph2(int x, int y, int h, int h2, int drawType, int marker)
 	y += r_refdef.vrect.y;
 	dest = vid.buffer + vid.rowbytes*y + x;
 	s = r_graphheight.value;
-	if(s > r_refdef.vrect.height)
+	if (s > r_refdef.vrect.height)
 	{
 		s = r_refdef.vrect.height;
 	}
 
-	//show actual received bytes here (h)
-	if(h > s)
+	// show actual received bytes here (h)
+	if (h > s)
 	{
 		h = s;
 	}
-	for(i = 0; i < h; i++, dest -= vid.rowbytes)
+	for (i = 0; i < h; i++, dest -= vid.rowbytes)
 	{
 		dest[0] = ((i+1)%marker == 0) ? 143 : 255;
-		if(!(drawType&1))
+		if (!(drawType&1))
 		{ // Expanded
-			if(!(drawType&2))
+			if (!(drawType&2))
 			{ // Solid
 				*(dest-vid.rowbytes) = 53;
 			}
@@ -185,17 +188,17 @@ void R_LineGraph2(int x, int y, int h, int h2, int drawType, int marker)
 		}
 	}
 
-	//show uncompressed bytes here (h2)
-	if(h2 > s)
+	// show uncompressed bytes here (h2)
+	if (h2 > s)
 	{
 		h2 = s;
 	}
-	for(i = h; i < h2; i++, dest -= vid.rowbytes)
+	for (i = h; i < h2; i++, dest -= vid.rowbytes)
 	{
 		dest[0] = ((i+1)%marker == 0) ? 130 : 244;
-		if(!(drawType&1))
+		if (!(drawType&1))
 		{ // Expanded
-			if(!(drawType&2))
+			if (!(drawType&2))
 			{ // Solid
 				*(dest-vid.rowbytes) = 53;
 			}
@@ -203,16 +206,16 @@ void R_LineGraph2(int x, int y, int h, int h2, int drawType, int marker)
 		}
 	}
 
-	if(drawType&4)
+	if (drawType&4)
 	{ // No background
 		return;
 	}
-	for(; i < s; i++, dest -= vid.rowbytes)
+	for ( ; i < s; i++, dest -= vid.rowbytes)
 	{
 		dest[0] = 53;
-		if(!(drawType&1))
+		if (!(drawType&1))
 		{ // Expanded
-			if(!(drawType&2))
+			if (!(drawType&2))
 			{ // Solid
 				*(dest-vid.rowbytes) = 53;
 			}
@@ -228,35 +231,33 @@ R_TimeGraph
 Performance monitoring tool
 ==============
 */
-#define	MAX_TIMINGS 100
-#define GRAPH_TYPE_COUNT 2
-extern int LastServerMessageSize;//uncompressed
-extern int LastCompMessageSize;//compressed
-void R_TimeGraph(void)
+#define	MAX_TIMINGS		100
+#define GRAPH_TYPE_COUNT	2
+extern int LastServerMessageSize;	// uncompressed
+extern int LastCompMessageSize;		// compressed
+void R_TimeGraph (void)
 {
-	int a;
-	int x;
-	int drawType;
-	int graphType;
-	static int timex;
-	static byte r_timings[MAX_TIMINGS];//compressed
-	static byte r_timings2[MAX_TIMINGS];//uncompressed
-	static int graphMarkers[GRAPH_TYPE_COUNT] =
+	int	a, x;
+	int	drawType, graphType;
+	static int	timex;
+	static byte	r_timings[MAX_TIMINGS];	//compressed
+	static byte	r_timings2[MAX_TIMINGS];//uncompressed
+	static int	graphMarkers[GRAPH_TYPE_COUNT] =
 	{
 		10000,
 		10
 	};
 
 	graphType = (int)r_timegraph.value;
-	if(graphType < 1 || graphType > GRAPH_TYPE_COUNT)
+	if (graphType < 1 || graphType > GRAPH_TYPE_COUNT)
 	{
 		return;
 	}
 	drawType = (int)((r_timegraph.value-floor(r_timegraph.value)+1E-3)*10);
 
-	if(graphType == 1)
+	if (graphType == 1)
 	{ // Frame times
-		a = (Sys_DoubleTime () - r_time1) / 0.01;
+		a = (Sys_DoubleTime() - r_time1) / 0.01;
 		r_timings[timex] = a;
 		r_timings2[timex] = a;
 	}
@@ -272,31 +273,30 @@ void R_TimeGraph(void)
 
 	a = timex;
 
-	if(r_refdef.vrect.width <= MAX_TIMINGS)
+	if (r_refdef.vrect.width <= MAX_TIMINGS)
 	{
 		x = r_refdef.vrect.width-1;
 	}
 	else
 	{
-		x = r_refdef.vrect.width
-			-(r_refdef.vrect.width-MAX_TIMINGS)/2;
+		x = r_refdef.vrect.width - (r_refdef.vrect.width-MAX_TIMINGS)/2;
 	}
 
 	do
 	{
 		R_LineGraph2(x, r_refdef.vrect.height-2, r_timings[a], r_timings2[a], drawType,
-			graphMarkers[graphType-1]);
-		if(x == 0)
+						graphMarkers[graphType-1]);
+		if (x == 0)
 		{
-			break; // screen too small to hold entire thing
+			break;	// screen too small to hold entire thing
 		}
 		x--;
 		a--;
-		if(a == -1)
+		if (a == -1)
 		{
 			a = MAX_TIMINGS-1;
 		}
-	} while(a != timex);
+	} while (a != timex);
 
 	timex = (timex+1)%MAX_TIMINGS;
 }
@@ -310,19 +310,19 @@ R_NetGraph
 void R_NetGraph (void)
 {
 	int		a, x, y, y2, w, i;
+	frame_t		*frame;
+	int		lost;
+	char		st[80];
 	static	int	packet_latency[256];
-	frame_t	*frame;
-	int lost;
-	char st[80];
 
 	if (vid.width - 16 <= NET_TIMINGS)
 		w = vid.width - 16;
 	else
 		w = NET_TIMINGS;
 
-	for (i=cls.netchan.outgoing_sequence-UPDATE_BACKUP+1
-		; i <= cls.netchan.outgoing_sequence
-		; i++)
+	for (i = cls.netchan.outgoing_sequence-UPDATE_BACKUP+1 ;
+				i <= cls.netchan.outgoing_sequence ;
+				i++)
 	{
 		frame = &cl.frames[i&UPDATE_MASK];
 		if (frame->receivedtime == -1)
@@ -335,7 +335,7 @@ void R_NetGraph (void)
 			packet_latency[i&255] = (frame->receivedtime - frame->senttime)*20;
 	}
 
-	x =	-((vid.width - 320)>>1);
+	x = -((vid.width - 320)>>1);
 	y = vid.height - sb_lines - 24 - (int)r_graphheight.value*2 - 2;
 
 	M_DrawTextBox (x, y, (w+7)/8, ((int)r_graphheight.value*2+7)/8 + 1);
@@ -344,7 +344,7 @@ void R_NetGraph (void)
 
 	x = 8;
 	lost = 0;
-	for (a=0 ; a<w ; a++)
+	for (a = 0 ; a < w ; a++)
 	{
 		i = (cls.netchan.outgoing_sequence-a) & 255;
 		if (packet_latency[i] == 9999)
@@ -373,7 +373,7 @@ void R_ZGraph (void)
 	height[r_framecount&255] = ((int)r_origin[2]) & 31;
 
 	x = 0;
-	for (a=0 ; a<w ; a++)
+	for (a = 0 ; a < w ; a++)
 	{
 		i = (r_framecount-a) & 255;
 		R_LineGraph (x+w-1-a, r_refdef.vrect.height-2, height[i]);
@@ -387,8 +387,8 @@ R_PrintTimes
 */
 void R_PrintTimes(void)
 {
-	float r_time2;
-	float ms, fps;
+	float	r_time2;
+	float	ms, fps;
 
 	r_lasttime1 = r_time2 = Sys_DoubleTime();
 
@@ -398,10 +398,8 @@ void R_PrintTimes(void)
 	Con_Printf("%3.1f fps %5.0f ms\n%3i/%3i/%3i poly %3i surf\n",
 		fps, ms, c_faceclip, r_polycount, r_drawnpolycount, c_surf);
 
-
 	c_surf = 0;
 }
-
 
 /*
 =============
@@ -448,8 +446,8 @@ void R_TransformFrustum (void)
 {
 	int		i;
 	vec3_t	v, v2;
-	
-	for (i=0 ; i<4 ; i++)
+
+	for (i = 0 ; i < 4 ; i++)
 	{
 		v[0] = screenedge[i].normal[2];
 		v[1] = -screenedge[i].normal[0];
@@ -466,7 +464,7 @@ void R_TransformFrustum (void)
 }
 
 
-#if !id386
+#if	!id386
 
 /*
 ================
@@ -477,7 +475,7 @@ void TransformVector (vec3_t in, vec3_t out)
 {
 	out[0] = DotProduct(in,vright);
 	out[1] = DotProduct(in,vup);
-	out[2] = DotProduct(in,vpn);		
+	out[2] = DotProduct(in,vpn);
 }
 
 #endif
@@ -491,7 +489,7 @@ R_TransformPlane
 void R_TransformPlane (mplane_t *p, float *normal, float *dist)
 {
 	float	d;
-	
+
 	d = DotProduct (r_origin, p->normal);
 	*dist = p->dist - d;
 // TODO: when we have rotating entities, this will need to use the view matrix
@@ -504,15 +502,15 @@ void R_TransformPlane (mplane_t *p, float *normal, float *dist)
 R_SetUpFrustumIndexes
 ===============
 */
-void R_SetUpFrustumIndexes (void)
+static void R_SetUpFrustumIndexes (void)
 {
 	int		i, j, *pindex;
 
 	pindex = r_frustum_indexes;
 
-	for (i=0 ; i<4 ; i++)
+	for (i = 0 ; i < 4 ; i++)
 	{
-		for (j=0 ; j<3 ; j++)
+		for (j = 0 ; j < 3 ; j++)
 		{
 			if (view_clipplanes[i].normal[j] < 0)
 			{
@@ -540,15 +538,15 @@ R_SetupFrame
 */
 void R_SetupFrame (void)
 {
-	int				edgecount;
-	vrect_t			vrect;
-	float			w, h;
+	int		edgecount;
+	vrect_t		vrect;
+	float		w, h;
 
 // don't allow cheats in multiplayer
-r_draworder.value = 0;
-r_fullbright.value = 0;
-r_ambient.value = 0;
-r_drawflat.value = 0;
+	r_draworder.value = 0;
+	r_fullbright.value = 0;
+	r_ambient.value = 0;
+	r_drawflat.value = 0;
 
 	if (r_numsurfs.value)
 	{
@@ -577,23 +575,23 @@ r_drawflat.value = 0;
 
 //	if (!sv.active)
 		r_draworder.value = 0;	// don't let cheaters look behind walls
-		
+
 	R_CheckVariables ();
-	
+
 	R_AnimateLight ();
 
 	r_framecount++;
 
 	numbtofpolys = 0;
 
-// debugging
 #if 0
-r_refdef.vieworg[0]=  80;
-r_refdef.vieworg[1]=      64;
-r_refdef.vieworg[2]=      40;
-r_refdef.viewangles[0]=    0;
-r_refdef.viewangles[1]=    46.763641357;
-r_refdef.viewangles[2]=    0;
+// debugging
+	r_refdef.vieworg[0]	= 80;
+	r_refdef.vieworg[1]	= 64;
+	r_refdef.vieworg[2]	= 40;
+	r_refdef.viewangles[0]	= 0;
+	r_refdef.viewangles[1]	= 46.763641357;
+	r_refdef.viewangles[2]	= 0;
 #endif
 
 // build the transformation matrix for the given view angles
@@ -646,9 +644,8 @@ r_refdef.viewangles[2]=    0;
 				vrect.height = (int)h;
 
 				R_ViewChanged (&vrect,
-							   (int)((float)sb_lines * (h/(float)vid.height)),
-							   vid.aspect * (h / w) *
-								 ((float)vid.width / (float)vid.height));
+						(int)((float)sb_lines * (h/(float)vid.height)),
+						vid.aspect * (h / w) * ((float)vid.width / (float)vid.height));
 			}
 		}
 		else
