@@ -1,43 +1,54 @@
-// r_main.c
+/*
+	r_main.c
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.8 2006-04-05 06:06:16 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "r_local.h"
 #include "d_local.h"
 
-//define	PASSAGES
+//#define	PASSAGES
 
+static vec3_t	viewlightvec;
+static alight_t	r_viewlighting = {128, 192, viewlightvec};
+
+#if id386
 void		*colormap;
-vec3_t		viewlightvec;
-alight_t	r_viewlighting = {128, 192, viewlightvec};
+#endif
+
 float		r_time1;
 float		r_lasttime1 = 0;
-int			r_numallocatededges;
+
+int		r_numallocatededges;
+
 qboolean	r_drawpolys;
 qboolean	r_drawculledpolys;
 qboolean	r_worldpolysbacktofront;
 qboolean	r_recursiveaffinetriangles = true;
-int			r_pixbytes = 1;
+
+int		r_pixbytes = 1;
 float		r_aliasuvscale = 1.0;
-int			r_outofsurfaces;
-int			r_outofedges;
+int		r_outofsurfaces;
+int		r_outofedges;
 
 byte		*mainTransTable;
 byte		*playerTranslation;
 
 qboolean	r_dowarp, r_dowarpold, r_viewchanged;
 
-int			numbtofpolys;
+int		numbtofpolys;
 btofpoly_t	*pbtofpolys;
 mvertex_t	*r_pcurrentvertbase;
 
-int			c_surf;
-int			r_maxsurfsseen, r_maxedgesseen, r_cnumsurfs;
+int		c_surf;
+int		r_maxsurfsseen, r_maxedgesseen, r_cnumsurfs;
 qboolean	r_surfsonstack;
-int			r_clipflags;
+int		r_clipflags;
 
 byte		*r_warpbuffer;
 
-byte		*r_stack_start;
+static byte	*r_stack_start;
 
 qboolean	r_fov_greater_than_90;
 
@@ -46,10 +57,10 @@ entity_t	r_worldentity;
 //
 // view origin
 //
-vec3_t	vup, base_vup;
-vec3_t	vpn, base_vpn;
-vec3_t	vright, base_vright;
-vec3_t	r_origin;
+vec3_t		vup, base_vup;
+vec3_t		vpn, base_vpn;
+vec3_t		vright, base_vright;
+vec3_t		r_origin;
 
 //
 // screen size info
@@ -63,10 +74,10 @@ float		aliasxscale, aliasyscale, aliasxcenter, aliasycenter;
 
 int		screenwidth;
 
-float	pixelAspect;
-float	screenAspect;
-float	verticalFieldOfView;
-float	xOrigin, yOrigin;
+float		pixelAspect;
+float		screenAspect;
+float		verticalFieldOfView;
+float		xOrigin, yOrigin;
 
 mplane_t	screenedge[4];
 
@@ -80,11 +91,15 @@ int		r_polycount;
 int		r_drawnpolycount;
 int		r_wholepolycount;
 
-int			*pfrustum_indexes[4];
-int			r_frustum_indexes[4*6];
+//#define		VIEWMODNAME_LENGTH	256
+//char		viewmodname[VIEWMODNAME_LENGTH+1];
+//int		modcount;
+
+int		*pfrustum_indexes[4];
+int		r_frustum_indexes[4*6];
 
 int		reinit_surfcache = 1;	// if 1, surface cache is currently empty and
-								// must be reinitialized for current cache size
+					// must be reinitialized for current cache size
 
 mleaf_t		*r_viewleaf, *r_oldviewleaf;
 
@@ -94,15 +109,15 @@ float		r_aliastransition, r_resfudge;
 
 int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 
-float	dp_time1, dp_time2, db_time1, db_time2, rw_time1, rw_time2;
-float	se_time1, se_time2, de_time1, de_time2, dv_time1, dv_time2;
+float		dp_time1, dp_time2, db_time1, db_time2, rw_time1, rw_time2;
+float		se_time1, se_time2, de_time1, de_time2, dv_time1, dv_time2;
 
-surf_t		*SaveSurfaces;
-edge_t		*SaveEdges;
-int			SaveEdgesCount,SaveSurfacesCount,SaveEdgesSize,SaveSurfacesSize;
-qboolean	AllowTranslucency;
+static surf_t	*SaveSurfaces;
+static edge_t	*SaveEdges;
+static int	SaveEdgesCount,SaveSurfacesCount,SaveEdgesSize,SaveSurfacesSize;
+static qboolean	AllowTranslucency;
 
-void R_MarkLeaves (void);
+extern	cvar_t		scr_fov;
 
 cvar_t	r_draworder = {"r_draworder", "0", CVAR_NONE};
 cvar_t	r_speeds = {"r_speeds", "0", CVAR_NONE};
@@ -132,13 +147,14 @@ cvar_t	r_wholeframe = {"r_wholeframe", "1", CVAR_ARCHIVE};
 cvar_t	r_transwater = {"r_transwater", "1", CVAR_ARCHIVE};
 cvar_t	r_teamcolor = {"r_teamcolor", "187", CVAR_ARCHIVE};
 
-extern cvar_t	scr_fov;
+extern void R_NetGraph (void);
+extern void R_ZGraph (void);
 
-void CreatePassages (void);
-void SetVisibilityByPassages (void);
+//void CreatePassages (void);
+//void SetVisibilityByPassages (void);
 
-void R_NetGraph (void);
-void R_ZGraph (void);
+//=============================================================================
+
 
 /*
 ==================
@@ -147,18 +163,18 @@ R_InitTextures
 */
 void	R_InitTextures (void)
 {
-	int		x,y, m;
+	int		x, y, m;
 	byte	*dest;
-	
+
 // create a simple checkerboard texture for the default
 	r_notexture_mip = Hunk_AllocName (sizeof(texture_t) + 16*16+8*8+4*4+2*2, "notexture");
-	
+
 	r_notexture_mip->width = r_notexture_mip->height = 16;
 	r_notexture_mip->offsets[0] = sizeof(texture_t);
 	r_notexture_mip->offsets[1] = r_notexture_mip->offsets[0] + 16*16;
 	r_notexture_mip->offsets[2] = r_notexture_mip->offsets[1] + 8*8;
 	r_notexture_mip->offsets[3] = r_notexture_mip->offsets[2] + 4*4;
-	
+
 	for (m=0 ; m<4 ; m++)
 	{
 		dest = (byte *)r_notexture_mip + r_notexture_mip->offsets[m];
@@ -170,7 +186,25 @@ void	R_InitTextures (void)
 				else
 					*dest++ = 0xff;
 			}
-	}	
+	}
+}
+
+
+/*
+================
+R_InitTurb
+================
+*/
+static void R_InitTurb (void)
+{
+	int		i;
+
+	for (i = 0 ; i < 1280 ; i++)
+	{
+		sintable[i]	= AMP  + sin(i * 3.14159 * 2 / CYCLE) * AMP;
+		intsintable[i]	= AMP2 + sin(i * 3.14159 * 2 / CYCLE) * AMP2;
+							// AMP2, not 20
+	}
 }
 
 /*
@@ -182,14 +216,14 @@ void R_Init (void)
 {
 	int		dummy;
 	FILE	*f;
-	
+
 // get stack position so we can guess if we are going to overflow
 	r_stack_start = (byte *)&dummy;
-	
+
 	R_InitTurb ();
-	
-	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);	
-	Cmd_AddCommand ("pointfile", R_ReadPointFile_f);	
+
+	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);
+	Cmd_AddCommand ("pointfile", R_ReadPointFile_f);
 
 	Cvar_RegisterVariable (&r_draworder);
 	Cvar_RegisterVariable (&r_speeds);
@@ -224,10 +258,8 @@ void R_Init (void)
 
 	view_clipplanes[0].leftedge = true;
 	view_clipplanes[1].rightedge = true;
-	view_clipplanes[1].leftedge = view_clipplanes[2].leftedge =
-			view_clipplanes[3].leftedge = false;
-	view_clipplanes[0].rightedge = view_clipplanes[2].rightedge =
-			view_clipplanes[3].rightedge = false;
+	view_clipplanes[1].leftedge = view_clipplanes[2].leftedge = view_clipplanes[3].leftedge = false;
+	view_clipplanes[0].rightedge = view_clipplanes[2].rightedge = view_clipplanes[3].rightedge = false;
 
 	r_refdef.xOrigin = XCENTERING;
 	r_refdef.yOrigin = YCENTERING;
@@ -236,17 +268,15 @@ void R_Init (void)
 
 // TODO: collect 386-specific code in one place
 #if	id386
-	Sys_MakeCodeWriteable ((long)R_EdgeCodeStart,
-					     (long)R_EdgeCodeEnd - (long)R_EdgeCodeStart);
-	Sys_MakeCodeWriteable ((long)R_EdgeCodeStartT,
-					     (long)R_EdgeCodeEndT - (long)R_EdgeCodeStartT);
+	Sys_MakeCodeWriteable ((long)R_EdgeCodeStart, (long)R_EdgeCodeEnd - (long)R_EdgeCodeStart);
+	Sys_MakeCodeWriteable ((long)R_EdgeCodeStartT, (long)R_EdgeCodeEndT - (long)R_EdgeCodeStartT);
 #endif	// id386
 
 	D_Init ();
 
 	mainTransTable = Hunk_AllocName(65536, "transtable2");
 
-	COM_FOpenFile ("gfx/tinttab2.lmp", &f, false);	
+	COM_FOpenFile ("gfx/tinttab2.lmp", &f, false);
 	if (!f)
 		Sys_Error ("Couldn't load gfx/tinttab2.lmp");
 
@@ -259,20 +289,16 @@ void R_Init (void)
 	R_TranPatch2();
 	R_TranPatch6();
 
-	Sys_MakeCodeWriteable ((int)D_Draw16StartT,
-					       (int)D_Draw16EndT - (int)D_Draw16StartT);
+	Sys_MakeCodeWriteable ((int)D_Draw16StartT, (int)D_Draw16EndT - (int)D_Draw16StartT);
 	R_TranPatch3();
 
-	Sys_MakeCodeWriteable ((int)D_SpriteSpansStartT,
-					       (int)D_SpriteSpansEndT - (int)D_SpriteSpansStartT);
+	Sys_MakeCodeWriteable ((int)D_SpriteSpansStartT, (int)D_SpriteSpansEndT - (int)D_SpriteSpansStartT);
 	R_TranPatch4();
 
-	Sys_MakeCodeWriteable ((int)D_SpriteSpansStartT2,
-					       (int)D_SpriteSpansEndT2 - (int)D_SpriteSpansStartT2);
+	Sys_MakeCodeWriteable ((int)D_SpriteSpansStartT2, (int)D_SpriteSpansEndT2 - (int)D_SpriteSpansStartT2);
 	R_TranPatch5();
 
-	Sys_MakeCodeWriteable ((int)D_DrawTurbulent8TSpan,
-					       (int)D_DrawTurbulent8TSpanEnd - (int)D_DrawTurbulent8TSpan);
+	Sys_MakeCodeWriteable ((int)D_DrawTurbulent8TSpan, (int)D_DrawTurbulent8TSpanEnd - (int)D_DrawTurbulent8TSpan);
 	R_TranPatch7();
 
 #endif
@@ -282,6 +308,7 @@ void R_Init (void)
 		Sys_Error ("Couldn't load gfx/player.lmp");
 }
 
+
 /*
 ===============
 R_NewMap
@@ -290,7 +317,7 @@ R_NewMap
 void R_NewMap (void)
 {
 	int		i;
-	
+
 	memset (&r_worldentity, 0, sizeof(r_worldentity));
 	r_worldentity.model = cl.worldmodel;
 
@@ -298,7 +325,7 @@ void R_NewMap (void)
 // FIXME: is this one short?
 	for (i=0 ; i<cl.worldmodel->numleafs ; i++)
 		cl.worldmodel->leafs[i].efrags = NULL;
-		 	
+
 	r_viewleaf = NULL;
 	R_ClearParticles ();
 
@@ -340,14 +367,18 @@ void R_NewMap (void)
 	}
 	else
 	{
-		auxedges = Hunk_AllocName (r_numallocatededges * sizeof(edge_t),
-								   "edges");
+		auxedges = Hunk_AllocName (r_numallocatededges * sizeof(edge_t), "edges");
 	}
+
 	SaveEdgesSize = r_numallocatededges * sizeof(edge_t);
 	SaveEdges = Hunk_AllocName (SaveEdgesSize, "edgeback");
 
 	r_dowarpold = false;
 	r_viewchanged = false;
+
+#ifdef PASSAGES
+	CreatePassages ();
+#endif
 }
 
 
@@ -366,7 +397,7 @@ void R_SetVrect (vrect_t *pvrectin, vrect_t *pvrect, int lineadj)
 	{
 		size = 100.0;
 		full = true;
-	} 
+	}
 	else
 	{
 		size = scr_viewsize.value;
@@ -386,13 +417,9 @@ void R_SetVrect (vrect_t *pvrectin, vrect_t *pvrect, int lineadj)
 		h = pvrectin->height - lineadj;
 
 	if (full)
-	{
 		pvrect->width = pvrectin->width;
-	}
 	else
-	{
 		pvrect->width = pvrectin->width * size;
-	}
 
 	if (pvrect->width < 96)
 	{
@@ -404,16 +431,12 @@ void R_SetVrect (vrect_t *pvrectin, vrect_t *pvrect, int lineadj)
 	if (!full)
 	{
 		if (pvrect->height > pvrectin->height - lineadj)
-		{
 			pvrect->height = pvrectin->height - lineadj;
-		}
-	} 
+	}
 	else
 	{
 		if (pvrect->height > pvrectin->height)
-		{
 			pvrect->height = pvrectin->height;
-		}
 	}
 
 	pvrect->height &= ~1;
@@ -462,20 +485,18 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 	r_refdef.aliasvrect.y = (int)(r_refdef.vrect.y * r_aliasuvscale);
 	r_refdef.aliasvrect.width = (int)(r_refdef.vrect.width * r_aliasuvscale);
 	r_refdef.aliasvrect.height = (int)(r_refdef.vrect.height * r_aliasuvscale);
-	r_refdef.aliasvrectright = r_refdef.aliasvrect.x +
-			r_refdef.aliasvrect.width;
-	r_refdef.aliasvrectbottom = r_refdef.aliasvrect.y +
-			r_refdef.aliasvrect.height;
+	r_refdef.aliasvrectright = r_refdef.aliasvrect.x + r_refdef.aliasvrect.width;
+	r_refdef.aliasvrectbottom = r_refdef.aliasvrect.y + r_refdef.aliasvrect.height;
 
 	pixelAspect = aspect;
 	xOrigin = r_refdef.xOrigin;
 	yOrigin = r_refdef.yOrigin;
-	
-	screenAspect = r_refdef.vrect.width*pixelAspect /
-			r_refdef.vrect.height;
-// 320*200 1.0 pixelAspect = 1.6 screenAspect
-// 320*240 1.0 pixelAspect = 1.3333 screenAspect
-// proper 320*200 pixelAspect = 0.8333333
+
+	screenAspect = r_refdef.vrect.width*pixelAspect / r_refdef.vrect.height;
+
+	// 320*200 1.0 pixelAspect = 1.6 screenAspect
+	// 320*240 1.0 pixelAspect = 1.3333 screenAspect
+	// proper 320*200 pixelAspect = 0.8333333
 
 	verticalFieldOfView = r_refdef.horizontalFieldOfView / screenAspect;
 
@@ -485,11 +506,9 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 // the polygon rasterization will never render in the first row or column
 // but will definately render in the [range] row and column, so adjust the
 // buffer origin to get an exact edge to edge fill
-	xcenter = ((float)r_refdef.vrect.width * XCENTERING) +
-			r_refdef.vrect.x - 0.5;
+	xcenter = ((float)r_refdef.vrect.width * XCENTERING) + r_refdef.vrect.x - 0.5;
 	aliasxcenter = xcenter * r_aliasuvscale;
-	ycenter = ((float)r_refdef.vrect.height * YCENTERING) +
-			r_refdef.vrect.y - 0.5;
+	ycenter = ((float)r_refdef.vrect.height * YCENTERING) + r_refdef.vrect.y - 0.5;
 	aliasycenter = ycenter * r_aliasuvscale;
 
 	xscale = r_refdef.vrect.width / r_refdef.horizontalFieldOfView;
@@ -506,32 +525,31 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 	screenedge[0].normal[1] = 0;
 	screenedge[0].normal[2] = 1;
 	screenedge[0].type = PLANE_ANYZ;
-	
+
 // right side clip
-	screenedge[1].normal[0] =
-			1.0 / ((1.0-xOrigin)*r_refdef.horizontalFieldOfView);
+	screenedge[1].normal[0] = 1.0 / ((1.0-xOrigin)*r_refdef.horizontalFieldOfView);
 	screenedge[1].normal[1] = 0;
 	screenedge[1].normal[2] = 1;
 	screenedge[1].type = PLANE_ANYZ;
-	
+
 // top side clip
 	screenedge[2].normal[0] = 0;
 	screenedge[2].normal[1] = -1.0 / (yOrigin*verticalFieldOfView);
 	screenedge[2].normal[2] = 1;
 	screenedge[2].type = PLANE_ANYZ;
-	
+
 // bottom side clip
 	screenedge[3].normal[0] = 0;
 	screenedge[3].normal[1] = 1.0 / ((1.0-yOrigin)*verticalFieldOfView);
-	screenedge[3].normal[2] = 1;	
+	screenedge[3].normal[2] = 1;
 	screenedge[3].type = PLANE_ANYZ;
-	
+
 	for (i=0 ; i<4 ; i++)
 		VectorNormalize (screenedge[i].normal);
 
-	res_scale = sqrt ((double)(r_refdef.vrect.width * r_refdef.vrect.height) /
-			          (320.0 * 152.0)) *
-			(2.0 / r_refdef.horizontalFieldOfView);
+	res_scale = sqrt((double)(r_refdef.vrect.width * r_refdef.vrect.height) / (320.0 * 152.0))
+				* (2.0 / r_refdef.horizontalFieldOfView);
+
 	r_aliastransition = r_aliastransbase.value * res_scale;
 	r_resfudge = r_aliastransadj.value * res_scale;
 
@@ -541,18 +559,16 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 		r_fov_greater_than_90 = true;
 
 // TODO: collect 386-specific code in one place
-#if id386
+#if	id386
 	if (r_pixbytes == 1)
 	{
-		Sys_MakeCodeWriteable ((long)R_Surf8Start,
-						     (long)R_Surf8End - (long)R_Surf8Start);
+		Sys_MakeCodeWriteable ((long)R_Surf8Start, (long)R_Surf8End - (long)R_Surf8Start);
 		colormap = vid.colormap;
 		R_Surf8Patch ();
 	}
 	else
 	{
-		Sys_MakeCodeWriteable ((long)R_Surf16Start,
-						     (long)R_Surf16End - (long)R_Surf16Start);
+		Sys_MakeCodeWriteable ((long)R_Surf16Start, (long)R_Surf16End - (long)R_Surf16Start);
 		colormap = vid.colormap16;
 		R_Surf16Patch ();
 	}
@@ -567,7 +583,7 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 R_MarkLeaves
 ===============
 */
-void R_MarkLeaves (void)
+static void R_MarkLeaves (void)
 {
 	byte	*vis;
 	mnode_t	*node;
@@ -575,12 +591,12 @@ void R_MarkLeaves (void)
 
 	if (r_oldviewleaf == r_viewleaf)
 		return;
-	
+
 	r_visframecount++;
 	r_oldviewleaf = r_viewleaf;
 
 	vis = Mod_LeafPVS (r_viewleaf, cl.worldmodel);
-		
+
 	for (i=0 ; i<cl.worldmodel->numleafs ; i++)
 	{
 		if (vis[i>>3] & (1<<(i&7)))
@@ -598,7 +614,7 @@ void R_MarkLeaves (void)
 }
 
 
-void R_PrepareAlias(void)
+static void R_PrepareAlias (void)
 {
 	int			j;
 	int			lnum;
@@ -629,9 +645,7 @@ void R_PrepareAlias(void)
 		{
 			if (cl_dlights[lnum].die >= cl.time)
 			{
-				VectorSubtract (currententity->origin,
-								cl_dlights[lnum].origin,
-								dist);
+				VectorSubtract (currententity->origin, cl_dlights[lnum].origin, dist);
 
 				if (cl_dlights[lnum].radius> 0)
 				{
@@ -662,12 +676,13 @@ void R_PrepareAlias(void)
 	}
 }
 
+
 /*
 =============
 R_DrawEntitiesOnList
 =============
 */
-void R_DrawEntitiesOnList (void)
+static void R_DrawEntitiesOnList (void)
 {
 	int			i;
 
@@ -677,25 +692,28 @@ void R_DrawEntitiesOnList (void)
 	for (i=0 ; i<cl_numvisedicts ; i++)
 	{
 		currententity = &cl_visedicts[i];
-	
+
 		switch (currententity->model->type)
 		{
 		case mod_sprite:
-				if ((currententity->model->flags & EF_TRANSPARENT) || 
-					(currententity->drawflags & DRF_TRANSLUCENT))
-					break;
-				VectorCopy (currententity->origin, r_entorigin);
-				VectorSubtract (r_origin, r_entorigin, modelorg);
-				R_DrawSprite ();
+			if ((currententity->model->flags & EF_TRANSPARENT) ||
+				(currententity->drawflags & DRF_TRANSLUCENT))
+			{
 				break;
+			}
+			VectorCopy (currententity->origin, r_entorigin);
+			VectorSubtract (r_origin, r_entorigin, modelorg);
+			R_DrawSprite ();
+			break;
 
 		case mod_alias:
-				if ((currententity->model->flags & (EF_TRANSPARENT|EF_HOLEY|EF_SPECIAL_TRANS)) ||
-				    (currententity->drawflags & DRF_TRANSLUCENT)) 
-					break;
-
-				R_PrepareAlias();
+			if ((currententity->model->flags & (EF_TRANSPARENT|EF_HOLEY|EF_SPECIAL_TRANS)) ||
+				(currententity->drawflags & DRF_TRANSLUCENT))
+			{
 				break;
+			}
+			R_PrepareAlias ();
+			break;
 
 		default:
 			break;
@@ -709,36 +727,37 @@ void R_DrawEntitiesOnList (void)
 
 		switch (currententity->model->type)
 		{
-			case mod_sprite:
-				if ((currententity->model->flags & EF_TRANSPARENT) || 
-					(currententity->drawflags & DRF_TRANSLUCENT))
-				{
-					VectorCopy (currententity->origin, r_entorigin);
-					VectorSubtract (r_origin, r_entorigin, modelorg);
-					R_DrawSprite ();
-				}
-				break;
+		case mod_sprite:
+			if ((currententity->model->flags & EF_TRANSPARENT) ||
+				(currententity->drawflags & DRF_TRANSLUCENT))
+			{
+				VectorCopy (currententity->origin, r_entorigin);
+				VectorSubtract (r_origin, r_entorigin, modelorg);
+				R_DrawSprite ();
+			}
+			break;
 
-			case mod_alias:
-				if ((currententity->model->flags & (EF_TRANSPARENT|EF_HOLEY|EF_SPECIAL_TRANS)) ||
-				    (currententity->drawflags & DRF_TRANSLUCENT)) 
-				{
-					R_PrepareAlias();
-				}
-				break;
+		case mod_alias:
+			if ((currententity->model->flags & (EF_TRANSPARENT|EF_HOLEY|EF_SPECIAL_TRANS)) ||
+				(currententity->drawflags & DRF_TRANSLUCENT))
+			{
+				R_PrepareAlias ();
+			}
+			break;
 
-			default:
-				break;
+		default:
+			break;
 		}
 	}
 }
+
 
 /*
 =============
 R_DrawViewModel
 =============
 */
-void R_DrawViewModel (void)
+static void R_DrawViewModel (void)
 {
 // FIXME: remove and do real lighting
 	float		lightvec[3] = {-1, 0, 0};
@@ -747,7 +766,7 @@ void R_DrawViewModel (void)
 	vec3_t		dist;
 	float		add;
 	dlight_t	*dl;
-	
+
 	if (cl.spectator)
 		return;
 
@@ -770,7 +789,7 @@ void R_DrawViewModel (void)
 	r_viewlighting.ambientlight = j;
 	r_viewlighting.shadelight = j;
 
-// add dynamic lights		
+// add dynamic lights
 	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
 	{
 		dl = &cl_dlights[lnum];
@@ -809,15 +828,13 @@ void R_DrawViewModel (void)
 
 	cl.light_level = r_viewlighting.ambientlight;
 
-	if ((!r_drawviewmodel.value) ||
-	    (r_fov_greater_than_90) ||
-	    (cl.v.health <= 0))
+	if ((cl.v.health <= 0)		 ||
+//rjr	    (cl.items & IT_INVISIBILITY) ||
+	    (!r_drawviewmodel.value)	 ||
+	    (r_fov_greater_than_90))
 	{
 		return;
 	}
-
-//rjr	if (cl.items & IT_INVISIBILITY)
-//rjr		return;
 
 	R_AliasDrawModel (&r_viewlighting);
 }
@@ -828,9 +845,9 @@ void R_DrawViewModel (void)
 R_BmodelCheckBBox
 =============
 */
-int R_BmodelCheckBBox (model_t *clmodel, float *minmaxs)
+static int R_BmodelCheckBBox (model_t *clmodel, float *minmaxs)
 {
-	int			i, *pindex, clipflags;
+	int		i, *pindex, clipflags;
 	vec3_t		acceptpt, rejectpt;
 	double		d;
 
@@ -864,7 +881,7 @@ int R_BmodelCheckBBox (model_t *clmodel, float *minmaxs)
 			rejectpt[0] = minmaxs[pindex[0]];
 			rejectpt[1] = minmaxs[pindex[1]];
 			rejectpt[2] = minmaxs[pindex[2]];
-			
+
 			d = DotProduct (rejectpt, view_clipplanes[i].normal);
 			d -= view_clipplanes[i].dist;
 
@@ -891,11 +908,11 @@ int R_BmodelCheckBBox (model_t *clmodel, float *minmaxs)
 =============
 RotatedBBox
 
-Returns an axially aligned box that contains the input box at the given rotation
+Returns an axially aligned box that contains
+the input box at the given rotation
 =============
 */
-
-void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins, vec3_t tmaxs)
+static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins, vec3_t tmaxs)
 {
 	vec3_t	tmp, v;
 	int		i, j;
@@ -947,14 +964,15 @@ void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins, vec3_t 
 	}
 }
 
+
 /*
 =============
 R_DrawBEntitiesOnList
 =============
 */
-void R_DrawBEntitiesOnList (void)
+static void R_DrawBEntitiesOnList (void)
 {
-	int			i, j, k, clipflags;
+	int		i, j, k, clipflags;
 	vec3_t		oldorigin;
 	model_t		*clmodel;
 	float		minmaxs[6];
@@ -973,98 +991,98 @@ void R_DrawBEntitiesOnList (void)
 
 		switch (currententity->model->type)
 		{
-			case mod_brush:
-				clmodel = currententity->model;
+		case mod_brush:
+			clmodel = currententity->model;
 
-				// see if the bounding box lets us trivially reject, also sets
-				// trivial accept status
-				RotatedBBox (clmodel->mins, clmodel->maxs,
-				currententity->angles, mins, maxs);
-				VectorAdd (mins, currententity->origin, minmaxs);
-				VectorAdd (maxs, currententity->origin, (minmaxs+3));
+			// see if the bounding box lets us trivially reject,
+			// also sets trivial accept status
+			RotatedBBox (clmodel->mins, clmodel->maxs,
+					currententity->angles, mins, maxs);
+			VectorAdd (mins, currententity->origin, minmaxs);
+			VectorAdd (maxs, currententity->origin, (minmaxs+3));
 
-				clipflags = R_BmodelCheckBBox (clmodel, minmaxs);
-				if (clipflags != BMODEL_FULLY_CLIPPED)
+			clipflags = R_BmodelCheckBBox (clmodel, minmaxs);
+			if (clipflags != BMODEL_FULLY_CLIPPED)
+			{
+				VectorCopy (currententity->origin, r_entorigin);
+				VectorSubtract (r_origin, r_entorigin, modelorg);
+
+				// FIXME: is this needed?
+				VectorCopy (modelorg, r_worldmodelorg);
+
+				r_pcurrentvertbase = clmodel->vertexes;
+
+				// FIXME: stop transforming twice
+				R_RotateBmodel ();
+
+				// calculate dynamic lighting for bmodel
+				// if it's not an instanced model
+				if (clmodel->firstmodelsurface != 0)
 				{
-					VectorCopy (currententity->origin, r_entorigin);
-					VectorSubtract (r_origin, r_entorigin, modelorg);
-
-					// FIXME: is this needed?
-					VectorCopy (modelorg, r_worldmodelorg);
-
-					r_pcurrentvertbase = clmodel->vertexes;
-
-					// FIXME: stop transforming twice
-					R_RotateBmodel ();
-
-					// calculate dynamic lighting for bmodel if it's not an
-					// instanced model
-					if (clmodel->firstmodelsurface != 0)
+					for (k=0 ; k<MAX_DLIGHTS ; k++)
 					{
-						for (k=0 ; k<MAX_DLIGHTS ; k++)
+						if ((cl_dlights[k].die < cl.time) || (!cl_dlights[k].radius))
 						{
-							if ((cl_dlights[k].die < cl.time) || (!cl_dlights[k].radius))
-							{
-								continue;
-							}
-
-							R_MarkLights (&cl_dlights[k], 1<<k, clmodel->nodes + clmodel->hulls[0].firstclipnode);
-						}
-					}
-
-					// if the driver wants polygons, deliver those. Z-buffering is on
-					// at this point, so no clipping to the world tree is needed, just
-					// frustum clipping
-					if (r_drawpolys | r_drawculledpolys)
-					{
-						R_ZDrawSubmodelPolys (clmodel);
-					}
-					else
-					{
-						r_pefragtopnode = NULL;
-
-						for (j=0 ; j<3 ; j++)
-						{
-							r_emins[j] = minmaxs[j];
-							r_emaxs[j] = minmaxs[3+j];
+							continue;
 						}
 
-						R_SplitEntityOnNode2 (cl.worldmodel->nodes);
-						if (r_pefragtopnode)
-						{
-							currententity->topnode = r_pefragtopnode;
-
-							if (r_pefragtopnode->contents >= 0)
-							{
-								// not a leaf; has to be clipped to the world BSP
-								r_clipflags = clipflags;
-								R_DrawSolidClippedSubmodelPolygons (clmodel);
-							}
-							else
-							{
-								// falls entirely in one leaf, so we just put all the
-								// edges in the edge list and let 1/z sorting handle
-								// drawing order
-
-								R_DrawSubmodelPolygons (clmodel, clipflags);
-							}
-							currententity->topnode = NULL;
-						}
+						R_MarkLights (&cl_dlights[k], 1<<k, clmodel->nodes + clmodel->hulls[0].firstclipnode);
 					}
-
-					// put back world rotation and frustum clipping 
-					// FIXME: R_RotateBmodel should just work off base_vxx
-					VectorCopy (base_vpn, vpn);
-					VectorCopy (base_vup, vup);
-					VectorCopy (base_vright, vright);
-					VectorCopy (base_modelorg, modelorg);
-					VectorCopy (oldorigin, modelorg);
-					R_TransformFrustum ();
 				}
-				break;
 
-			default:
-				break;
+				// if the driver wants polygons, deliver those. Z-buffering is on
+				// at this point, so no clipping to the world tree is needed, just
+				// frustum clipping
+				if (r_drawpolys | r_drawculledpolys)
+				{
+					R_ZDrawSubmodelPolys (clmodel);
+				}
+				else
+				{
+					r_pefragtopnode = NULL;
+
+					for (j=0 ; j<3 ; j++)
+					{
+						r_emins[j] = minmaxs[j];
+						r_emaxs[j] = minmaxs[3+j];
+					}
+
+					R_SplitEntityOnNode2 (cl.worldmodel->nodes);
+					if (r_pefragtopnode)
+					{
+						currententity->topnode = r_pefragtopnode;
+
+						if (r_pefragtopnode->contents >= 0)
+						{
+							// not a leaf; has to be clipped to the world BSP
+							r_clipflags = clipflags;
+							R_DrawSolidClippedSubmodelPolygons (clmodel);
+						}
+						else
+						{
+							// falls entirely in one leaf, so we just put all the
+							// edges in the edge list and let 1/z sorting handle
+							// drawing order
+
+							R_DrawSubmodelPolygons (clmodel, clipflags);
+						}
+						currententity->topnode = NULL;
+					}
+				}
+
+				// put back world rotation and frustum clipping
+				// FIXME: R_RotateBmodel should just work off base_vxx
+				VectorCopy (base_vpn, vpn);
+				VectorCopy (base_vup, vup);
+				VectorCopy (base_vright, vright);
+				VectorCopy (base_modelorg, modelorg);
+				VectorCopy (oldorigin, modelorg);
+				R_TransformFrustum ();
+			}
+			break;
+
+		default:
+			break;
 		}
 	}
 
@@ -1077,15 +1095,13 @@ void R_DrawBEntitiesOnList (void)
 R_EdgeDrawing
 ================
 */
-void R_EdgeDrawing (qboolean Translucent)
+static void R_EdgeDrawing (qboolean Translucent)
 {
-	edge_t	ledges[NUMSTACKEDGES +
-				((CACHE_SIZE - 1) / sizeof(edge_t)) + 1];
-	surf_t	lsurfs[NUMSTACKSURFACES +
-				((CACHE_SIZE - 1) / sizeof(surf_t)) + 1];
-	int EdgesSize,SurfacesSize;
+	edge_t	ledges[NUMSTACKEDGES + ((CACHE_SIZE - 1) / sizeof(edge_t)) + 1];
+	surf_t	lsurfs[NUMSTACKSURFACES + ((CACHE_SIZE - 1) / sizeof(surf_t)) + 1];
+	int	EdgesSize, SurfacesSize;
 
-	if (!Translucent) 
+	if (!Translucent)
 	{
 		if (auxedges)
 		{
@@ -1102,8 +1118,8 @@ void R_EdgeDrawing (qboolean Translucent)
 			surfaces =  (surf_t *)
 					(((long)&lsurfs[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
 			surf_max = &surfaces[r_cnumsurfs];
-		// surface 0 doesn't really exist; it's just a dummy because index 0
-		// is used to indicate no edge attached to surface
+		// surface 0 doesn't really exist; it's just a dummy because
+		// index 0 is used to indicate no edge attached to surface
 			surfaces--;
 			R_SurfacePatch ();
 		}
@@ -1128,7 +1144,7 @@ void R_EdgeDrawing (qboolean Translucent)
 
 // only the world can be drawn back to front with no z reads or compares, just
 // z writes, so have the driver turn z compares on now
-	if (!Translucent) 
+	if (!Translucent)
 	{
 		D_TurnZOn ();
 
@@ -1144,13 +1160,11 @@ void R_EdgeDrawing (qboolean Translucent)
 		SurfacesSize = SaveSurfacesCount* sizeof(surf_t);
 		SaveEdgesCount = edge_p - r_edges;
 		EdgesSize = SaveEdgesCount * sizeof(edge_t);
-		
+
 		if (SurfacesSize > SaveSurfacesSize || EdgesSize > SaveEdgesSize)
 		{
 			if (!cl.spectator)
-			{
 				Con_Printf("WARNING: Translucency disabled:  %d/%d %d/%d\n",SurfacesSize,SaveSurfacesSize,EdgesSize,SaveEdgesSize);
-			}
 			AllowTranslucency = false;
 		}
 		else
@@ -1173,13 +1187,13 @@ void R_EdgeDrawing (qboolean Translucent)
 			VID_LockBuffer ();
 		}
 	}
-	
+
 	if (!(r_drawpolys | r_drawculledpolys))
 		R_ScanEdges (Translucent);
 }
 
 
-void R_DrawName(vec3_t origin, char *Name, int Red)
+void R_DrawName (vec3_t origin, char *Name, int Red)
 {
 	vec3_t	local, transformed;
 	float	zi;
@@ -1188,9 +1202,7 @@ void R_DrawName(vec3_t origin, char *Name, int Red)
 	int	izi, u, v;
 
 	if (!Name)
-	{
 		return;
-	}
 
 	// transform point
 	VectorSubtract (origin, r_origin, local);
@@ -1199,7 +1211,7 @@ void R_DrawName(vec3_t origin, char *Name, int Red)
 
 	transformed[0] = DotProduct(local, r_pright);
 	transformed[1] = DotProduct(local, r_pup);
-	transformed[2] = DotProduct(local, r_ppn);		
+	transformed[2] = DotProduct(local, r_ppn);
 
 	if (transformed[2] < PARTICLE_Z_CLIP)
 		return;
@@ -1224,39 +1236,38 @@ void R_DrawName(vec3_t origin, char *Name, int Red)
 	izi += 14;
 
 //	if (pz[0] > izi)
-//	{
 //		return;
-//	}
 
 	u -= strlen(Name) * 4;
 
-	if(cl_siege)
+	if (cl_siege)
 	{
-		if(Red>10)
+		if (Red > 10)
 		{
-			Red-=10;
-			Draw_Character (u, v, 145);//key
+			Red -= 10;
+			Draw_Character (u, v, 145);	//key
 			u+=8;
 		}
-		if(Red>0&&Red<3)//def
+		if (Red > 0 && Red < 3)		//def
 		{
-			if(Red==true)
-				Draw_Character (u, v, 143);//shield
+			if (Red == true)
+				Draw_Character (u, v, 143);	//shield
 			else
-				Draw_Character (u, v, 130);//crown
+				Draw_Character (u, v, 130);	//crown
 			Draw_RedString(u+8, v, Name);
 		}
-		else if(!Red)
+		else if (!Red)
 		{
-			Draw_Character (u, v, 144);//sword
+			Draw_Character (u, v, 144);	//sword
 			Draw_String (u+8, v, Name);
 		}
-		else//neither att or def
+		else	//neither att or def
 			Draw_String (u+8, v, Name);
 	}
 	else
 		Draw_String (u, v, Name);
 }
+
 
 /*
 ================
@@ -1265,7 +1276,7 @@ R_RenderView
 r_refdef must be set before the first call
 ================
 */
-void R_RenderView_ (void)
+static void R_RenderView_ (void)
 {
 	byte	warpbuffer[WARP_WIDTH * WARP_HEIGHT];
 
@@ -1274,15 +1285,15 @@ void R_RenderView_ (void)
 	if (r_timegraph.value || r_speeds.value || r_dspeeds.value)
 	{
 		if (r_wholeframe.value)
-		   r_time1 = r_lasttime1;
-	   else
-		   r_time1 = Sys_DoubleTime ();
+			r_time1 = r_lasttime1;
+		else
+			r_time1 = Sys_DoubleTime ();
 	}
 
 	R_SetupFrame ();
 
 #ifdef PASSAGES
-SetVisibilityByPassages ();
+	SetVisibilityByPassages ();
 #else
 	R_MarkLeaves ();	// done here so we know if we're in water
 #endif
@@ -1295,14 +1306,14 @@ SetVisibilityByPassages ();
 
 	if (!r_worldentity.model || !cl.worldmodel)
 		Sys_Error ("R_RenderView: NULL worldmodel");
-		
+
 	if (!r_dspeeds.value)
 	{
 		VID_UnlockBuffer ();
 		S_ExtraUpdate ();	// don't let sound get messed up if going slow
 		VID_LockBuffer ();
 	}
-	
+
 	R_EdgeDrawing (false);
 
 	if (!r_dspeeds.value)
@@ -1311,7 +1322,7 @@ SetVisibilityByPassages ();
 		S_ExtraUpdate ();	// don't let sound get messed up if going slow
 		VID_LockBuffer ();
 	}
-	
+
 	if (r_dspeeds.value)
 	{
 		se_time2 = Sys_DoubleTime ();
@@ -1357,7 +1368,7 @@ SetVisibilityByPassages ();
 
 	if (r_aliasstats.value)
 		R_PrintAliasStats ();
-		
+
 	if (r_speeds.value)
 		R_PrintTimes ();
 
@@ -1378,7 +1389,7 @@ void R_RenderView (void)
 {
 /*	int		dummy;
 	int		delta;
-	
+
 	delta = (byte *)&dummy - r_stack_start;
 	if (delta < -10000 || delta > 10000)
 		Sys_Error ("R_RenderView: called without enough stack");
@@ -1393,21 +1404,5 @@ void R_RenderView (void)
 		Sys_Error ("Globals are missaligned");
 
 	R_RenderView_ ();
-}
-
-/*
-================
-R_InitTurb
-================
-*/
-void R_InitTurb (void)
-{
-	int		i;
-	
-	for (i=0 ; i<1280 ; i++)
-	{
-		sintable[i] = AMP + sin(i*3.14159*2/CYCLE)*AMP;
-		intsintable[i] = AMP2 + sin(i*3.14159*2/CYCLE)*AMP2;	// AMP2, not 20
-	}
 }
 
