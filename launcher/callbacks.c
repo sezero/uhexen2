@@ -3,30 +3,22 @@
 #include "widget_defs.h"
 #include "callbacks.h"
 #include "launcher_defs.h"
+#include "config_file.h"
 #include "support.h"
 #include "compat_gtk1.h"
 
+// from launch_bin.c
 extern int missingexe;
-extern int opengl_support;
-extern int fullscreen;
-extern int resolution;
-extern int conwidth;
-extern char gllibrary[256];
-extern int sound;
-extern int sndrate;
-extern int destiny;
 #ifndef DEMOBUILD
-extern int mp_support;
-extern int h2game;
-extern int hwgame;
 extern const char *h2game_names[MAX_H2GAMES][2];
 extern const char *hwgame_names[MAX_HWGAMES][2];
 #endif
 extern const char *snddrv_names[MAX_SOUND][2];
 extern const char *snd_rates[MAX_RATES];
-int	bmore = 0, lock = 0;
 
-const char *res_names[] = {
+static int	bmore = 0, lock = 0;
+
+static const char *res_names[] = {
 
 	"320 x 240",
 	"400 x 300",
@@ -38,7 +30,7 @@ const char *res_names[] = {
 	"1600 x 1200"
 };
 
-const char *stats[] = {
+static const char *stats[] = {
 
 	"  Ready to run the game",
 	"  Binary missing or not executable"
@@ -93,7 +85,7 @@ void Make_ResMenu (struct Video_s *wgt)
 	int	i, up;
 	GList *ResList = NULL;
 
-	up = (opengl_support) ? RES_MAX : RES_640;
+	up = (opengl_support) ? RES_MAX-1 : RES_640;
 	for (i = 2*opengl_support; i <= up; i++)
 		ResList = g_list_append (ResList, (char *)res_names[i]);
 	gtk_combo_set_popdown_strings (GTK_COMBO (wgt->RES_COMBO), ResList);
@@ -156,7 +148,7 @@ void res_Change (GtkEditable *editable, struct Video_s *wgt)
 	{
 		lock = 1;
 		tmp = gtk_editable_get_chars (editable, 0, -1);
-		for (i = 0; i <= RES_MAX; i++)
+		for (i = 0; i < RES_MAX; i++)
 		{
 			if (strcmp(tmp, res_names[i]) == 0)
 				resolution = i;
@@ -180,7 +172,7 @@ void con_Change (GtkEditable *editable, gpointer user_data)
 	if (!lock)
 	{
 		tmp = gtk_editable_get_chars (editable, 0, -1);
-		for (i = 0; i <= RES_MAX; i++)
+		for (i = 0; i < RES_MAX; i++)
 		{
 			if (strcmp(tmp, res_names[i]) == 0)
 			{
@@ -300,3 +292,4 @@ void on_MORE (GtkButton *button, HoTWindow_t *window)
 	else
 		gtk_widget_hide (window->notebook1);
 }
+

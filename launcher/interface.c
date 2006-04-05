@@ -8,33 +8,6 @@
 #include "compat_gtk1.h"
 #include "config_file.h"
 
-// from config_file.c
-extern int destiny;
-extern int mp_support;
-extern int opengl_support;
-extern int fullscreen;
-extern int resolution;
-extern int use_con;
-extern int fxgamma;
-extern int is8bit;
-extern int use_lm1;
-extern int vsync;
-extern int use_fsaa;
-extern int aasamples;
-extern int gl_nonstd;
-extern char gllibrary[256];
-extern int midi;
-extern int cdaudio;
-extern int sound;
-extern int sndrate;
-extern int sndbits;
-extern int lan;
-extern int mouse;
-extern int debug;
-extern int use_heap;
-extern int use_zone;
-extern int heapsize;
-extern int zonesize;
 // from launch_bin.c
 extern int missingexe;
 extern const char *snddrv_names[MAX_SOUND][2];

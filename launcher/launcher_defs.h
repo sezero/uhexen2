@@ -1,3 +1,6 @@
+#ifndef	LAUNCHER_COMMONDEFS_H
+#define	LAUNCHER_COMMONDEFS_H
+
 // definitions common to all of the launcher source files.
 
 #define	__STRINGIFY(x) #x
@@ -11,8 +14,8 @@
 
 // Launcher version num.
 #define LAUNCHER_VERSION_MAJ	0
-#define LAUNCHER_VERSION_MID	6
-#define LAUNCHER_VERSION_MIN	3
+#define LAUNCHER_VERSION_MID	7
+#define LAUNCHER_VERSION_MIN	0
 #define LAUNCHER_VERSION_STR	STRINGIFY(LAUNCHER_VERSION_MAJ) "." STRINGIFY(LAUNCHER_VERSION_MID) "." STRINGIFY(LAUNCHER_VERSION_MIN)
 
 #ifndef DEMOBUILD
@@ -24,6 +27,9 @@
 #define	DEST_H2		0
 #define	DEST_HW		1
 
+#define	H2_BINARY_NAME	"hexen2"
+#define	HW_BINARY_NAME	"hwcl"
+
 #define	RES_320		0
 #define	RES_400		1
 #define	RES_512		2
@@ -32,7 +38,7 @@
 #define	RES_1024	5
 #define	RES_1280	6
 #define	RES_1600	7
-#define	RES_MAX		7
+#define	RES_MAX		8
 
 #define	MAX_H2GAMES	3	// max entries in the h2game_names table
 #define	MAX_HWGAMES	6	// max entries in the hwgame_names table
@@ -49,4 +55,6 @@
 #define ZONE_MINSIZE	256	// minimum zone memory size in KB
 #define ZONE_DEFAULT	256	// default zone memory size in KB
 #define ZONE_MAXSIZE	1024	// maximum zone memory size in KB
+
+#endif	// LAUNCHER_COMMONDEFS_H
 

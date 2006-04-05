@@ -1,3 +1,6 @@
+#ifndef	LAUNCHER_WIDGETDEFS_H
+#define	LAUNCHER_WIDGETDEFS_H
+
 /* Widgets to be played with remotely are put into
    these structs properly for easier handling.
 */
@@ -156,4 +159,6 @@ typedef struct {
 #define LIBGL_BUTTON	Video.bLIBGL
 #define LAN_BUTTON	Others.bLAN
 #define LAUNCH_BUTTON	bLAUNCH
+
+#endif	// LAUNCHER_WIDGETDEFS_H
 

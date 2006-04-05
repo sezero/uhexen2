@@ -1,45 +1,14 @@
 #include "common.h"
-#include "launch_bin.h"
+#include "launcher_defs.h"
+#include "config_file.h"
 
-extern int destiny;
-extern int mp_support;
-extern int opengl_support;
-extern int fullscreen;
-extern int resolution;
-extern int conwidth;
-extern int use_con;
-extern int fxgamma;
-extern int is8bit;
-extern int use_fsaa;
-extern int aasamples;
-extern int vsync;
-extern int use_lm1;
-extern int gl_nonstd;
-extern char gllibrary[256];
-extern int midi;
-extern int cdaudio;
-extern int sound;
-extern int sndrate;
-extern int sndbits;
-extern int lan;
-extern int mouse;
-extern int debug;
-extern int use_heap;
-extern int use_zone;
-extern int heapsize;
-extern int zonesize;
-#ifndef DEMOBUILD
-extern int h2game;
-extern int hwgame;
-#endif
-
-static char *binary_name = NULL;
+static char binary_name[16];
 int	missingexe = 0;
 
 const char *snddrv_names[MAX_SOUND][2] = {
 
 	{ "-nosound", "No Sound"},
-	{ "-sndoss" , "OSS"	},	// just a placeholder, it is default actually
+	{ "-sndoss" , "OSS"	},
 	{ "-sndsdl" , "SDL"	},
 #if defined(__linux__)
 	{ "-sndalsa", "ALSA"	},
@@ -75,16 +44,35 @@ const char *hwgame_names[MAX_HWGAMES][2] = {
 };
 #endif
 
+/* [resolution]
+   -width values only. corresponding -height is in the game binary */
+static char *resolution_args[] = {
+
+	"320",
+	"400",
+	"512",
+	"640",
+	"800",
+	"1024",
+	"1280",
+	"1600"
+};
+
 void CheckExe (void)
 {
+	binary_name[0] = '\0';
+
+	if (opengl_support)
+		sprintf (binary_name, "gl");
+
 	if (destiny == DEST_H2)
-		binary_name=h2_binary_names[table[opengl_support][mp_support]];
+		strcat (binary_name, H2_BINARY_NAME);
 	else if (destiny == DEST_HW)
-		binary_name=hw_binary_names[opengl_support];
+		strcat (binary_name, HW_BINARY_NAME);
 	else
 	{
 		printf("Warning: unknown destiny choice. Choosing Hexen II\n");
-		binary_name=h2_binary_names[table[opengl_support][mp_support]];
+		strcat (binary_name, H2_BINARY_NAME);
 	}
 
 	if (access(binary_name, X_OK) != 0)
@@ -109,6 +97,9 @@ void launch_hexen2_bin (void)
 
 	i = 0;
 	args[i] = binary_name;
+
+	if (destiny == DEST_H2 && mp_support)
+		args[++i] = "-portals";
 
 	if (fullscreen)
 		args[++i] = "-fullscreen";

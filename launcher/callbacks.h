@@ -1,3 +1,6 @@
+#ifndef	LAUNCHER_CALLBACKS_H
+#define	LAUNCHER_CALLBACKS_H
+
 void Make_ResMenu (struct Video_s *wgt);
 void Make_ConwMenu (struct Video_s *wgt);
 void res_Change (GtkEditable *editable, struct Video_s *wgt);
@@ -18,4 +21,6 @@ void on_SBITS (GtkButton *button, int *opt);
 void on_OGL (GtkToggleButton *button, gamewidget_t *wgt);
 void ReverseOpt (GtkObject *Unused, int *opt);
 void on_MORE (GtkButton *button, HoTWindow_t *window);
+
+#endif	// LAUNCHER_CALLBACKS_H
 

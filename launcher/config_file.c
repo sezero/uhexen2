@@ -36,7 +36,9 @@ int h2game		= 0;
 int hwgame		= 0;
 #endif
 
+// from main.c
 extern char userdir[1024];
+
 
 static FILE * open_config_file (char *flags)
 {
@@ -165,13 +167,13 @@ int read_config_file (void)
 				else if (strstr(buff, "resolution=") == buff)
 				{
 					resolution = atoi(buff + 11);
-					if (resolution < 0 || resolution > RES_MAX)
+					if (resolution < 0 || resolution >= RES_MAX)
 							resolution = RES_640;
 				}
 				else if (strstr(buff, "conwidth=") == buff)
 				{
 					conwidth = atoi(buff + 9);
-					if (conwidth < 0 || conwidth > RES_MAX)
+					if (conwidth < 0 || conwidth >= RES_MAX)
 							conwidth = RES_640;
 					if (opengl_support && conwidth > resolution)
 							conwidth = resolution;
