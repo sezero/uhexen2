@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.20 2006-03-24 15:05:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.21 2006-04-05 06:08:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -780,6 +780,22 @@ static void PF_break (void)
 //	PR_RunError ("break statement");
 }
 
+static void PR_SetTrace (trace_t trace)
+{
+	pr_global_struct->trace_allsolid = trace.allsolid;
+	pr_global_struct->trace_startsolid = trace.startsolid;
+	pr_global_struct->trace_fraction = trace.fraction;
+	pr_global_struct->trace_inwater = trace.inwater;
+	pr_global_struct->trace_inopen = trace.inopen;
+	VectorCopy (trace.endpos, pr_global_struct->trace_endpos);
+	VectorCopy (trace.plane.normal, pr_global_struct->trace_plane_normal);
+	pr_global_struct->trace_plane_dist =  trace.plane.dist;
+	if (trace.ent)
+		pr_global_struct->trace_ent = EDICT_TO_PROG(trace.ent);
+	else
+		pr_global_struct->trace_ent = EDICT_TO_PROG(sv.edicts);
+}
+
 /*
 =================
 PF_traceline
@@ -809,18 +825,7 @@ static void PF_traceline (void)
 	trace = SV_Move (v1, vec3_origin, vec3_origin, v2, nomonsters, ent);
 	ent->v.hull = save_hull;
 
-	pr_global_struct->trace_allsolid = trace.allsolid;
-	pr_global_struct->trace_startsolid = trace.startsolid;
-	pr_global_struct->trace_fraction = trace.fraction;
-	pr_global_struct->trace_inwater = trace.inwater;
-	pr_global_struct->trace_inopen = trace.inopen;
-	VectorCopy (trace.endpos, pr_global_struct->trace_endpos);
-	VectorCopy (trace.plane.normal, pr_global_struct->trace_plane_normal);
-	pr_global_struct->trace_plane_dist =  trace.plane.dist;
-	if (trace.ent)
-		pr_global_struct->trace_ent = EDICT_TO_PROG(trace.ent);
-	else
-		pr_global_struct->trace_ent = EDICT_TO_PROG(sv.edicts);
+	PR_SetTrace (trace);
 }
 
 #ifdef QUAKE2
@@ -837,18 +842,7 @@ static void PF_TraceToss (void)
 
 	trace = SV_Trace_Toss (ent, ignore);
 
-	pr_global_struct->trace_allsolid = trace.allsolid;
-	pr_global_struct->trace_startsolid = trace.startsolid;
-	pr_global_struct->trace_fraction = trace.fraction;
-	pr_global_struct->trace_inwater = trace.inwater;
-	pr_global_struct->trace_inopen = trace.inopen;
-	VectorCopy (trace.endpos, pr_global_struct->trace_endpos);
-	VectorCopy (trace.plane.normal, pr_global_struct->trace_plane_normal);
-	pr_global_struct->trace_plane_dist =  trace.plane.dist;
-	if (trace.ent)
-		pr_global_struct->trace_ent = EDICT_TO_PROG(trace.ent);
-	else
-		pr_global_struct->trace_ent = EDICT_TO_PROG(sv.edicts);
+	PR_SetTrace (trace);
 }
 #endif
 
@@ -883,18 +877,7 @@ static void PF_tracearea (void)
 	trace = SV_Move (v1, mins, maxs, v2, nomonsters, ent);
 	ent->v.hull = save_hull;
 
-	pr_global_struct->trace_allsolid = trace.allsolid;
-	pr_global_struct->trace_startsolid = trace.startsolid;
-	pr_global_struct->trace_fraction = trace.fraction;
-	pr_global_struct->trace_inwater = trace.inwater;
-	pr_global_struct->trace_inopen = trace.inopen;
-	VectorCopy (trace.endpos, pr_global_struct->trace_endpos);
-	VectorCopy (trace.plane.normal, pr_global_struct->trace_plane_normal);
-	pr_global_struct->trace_plane_dist =  trace.plane.dist;
-	if (trace.ent)
-		pr_global_struct->trace_ent = EDICT_TO_PROG(trace.ent);
-	else
-		pr_global_struct->trace_ent = EDICT_TO_PROG(sv.edicts);
+	PR_SetTrace (trace);
 }
 
 
@@ -3289,6 +3272,11 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2006/03/24 15:05:39  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.19  2006/03/17 14:12:48  sezero
  * put back mission-pack only objectives stuff back into pure h2 builds.
  * it was a total screw-up...
