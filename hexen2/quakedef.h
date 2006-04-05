@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.58 2006-04-05 06:09:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.59 2006-04-05 06:19:07 sezero Exp $
 */
 
 
@@ -24,8 +24,8 @@
 #define	HOT_VERSION_MIN		0
 #define	HOT_VERSION_BETA	1
 #if HOT_VERSION_BETA
-#define	HOT_VERSION_BETA_STR	"RC1"
-#define	HOT_VERSION_BETA_DATE	"2006-03-26"
+#define	HOT_VERSION_BETA_STR	"RC2"
+#define	HOT_VERSION_BETA_DATE	"2006-04-04"
 #endif
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
@@ -403,6 +403,17 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.58  2006/04/05 06:09:23  sezero
+ * killed (almost) all H2MP ifdefs: this is the first step in making a single
+ * binary which handles both h2 and h2mp properly. the only H2MP ifdefs left
+ * are actually the ones for determining the icon and window manager text, so
+ * nothing serious. the binary normally will only run the original h2 game.
+ * if given a -portals or -missionpack or -h2mp argument, it will look for the
+ * mission pack and run it (this is the same logic that quake used.) The only
+ * serious side effect is that h2 and h2mp progs being different: This will be
+ * solved by the next patch by adding support for the two progs versions into
+ * a single binary.
+ *
  * Revision 1.57  2006/03/26 16:53:58  sezero
  * Marked the snapshot of 2006-03-26 as 1.4.0-RC1 (-RC state, finally.)
  *
