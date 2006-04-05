@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.50 2006-04-05 06:09:23 sezero Exp $
+	$Id: common.c,v 1.51 2006-04-05 06:17:25 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1744,6 +1744,14 @@ add_pakfile:
 COM_Gamedir
 
 Sets the gamedir and path to a different directory.
+
+Hexen2 uses this for setting the gamedir upon seeing
+a -game commandline argument. In addition to this,
+hexenworld uses this procedure to set the gamedir on
+both server and client sides during game execution:
+Client calls this upon every map change from within
+CL_ParseServerData() and the Server calls this upon
+a gamedir command from within SV_Gamedir_f().
 ================
 */
 void COM_Gamedir (char *dir)
@@ -1765,8 +1773,13 @@ void COM_Gamedir (char *dir)
 		return;		// still the same
 	strcpy (gamedirfile, dir);
 
+	// FIXME: Should I check for directory's existence ??
+
 //
-// free up any current game dir info
+// free up any current game dir info: our top searchpath dir will be hw
+// and any gamedirs set before by this very procedure will be removed.
+// since hexen2 doesn't use this during game execution there will be no
+// changes for it: it has portals or data1 at the top.
 //
 	while (com_searchpaths != com_base_searchpaths)
 	{
@@ -1786,10 +1799,52 @@ void COM_Gamedir (char *dir)
 //
 	Cache_Flush ();
 
-	sprintf (com_gamedir, "%s/%s", com_basedir, dir);
-
-	if (!strcmp(dir,"data1") || ((gameflags & GAME_HEXENWORLD) && !strcmp(dir, "hw")))
+// check for reserved gamedirs
+	if (!strcmp(dir,"hw"))
+	{
+#if !defined(H2W)
+	// hw is reserved for hexenworld only. hexen2 shouldn't use it
+		Con_Printf ("WARNING: Gamedir not set to hw :\n"
+			    "It is reserved for HexenWorld.\n");
+#else
+	// that we reached here means the hw server decided to abandon
+	// whatever the previous mod it was running and went back to
+	// pure hw. weird.. do as he wishes anyway and adjust our variables.
+		sprintf (com_gamedir, "%s/hw", com_basedir);
+#    ifdef PLATFORM_UNIX
+		sprintf (com_userdir, "%s/hw", host_parms.userdir);
+#    else
+		sprintf (com_userdir, com_gamedir);
+#    endif
+#    if defined(SERVERONLY)
+	// change the *gamedir serverinfo properly
+		Info_SetValueForStarKey (svs.info, "*gamedir", "hw", MAX_SERVERINFO_STRING);
+#    endif
+		sprintf (com_savedir, com_userdir);
+#endif
 		return;
+	}
+	else if (!strcmp(dir, "portals"))
+	{
+	// no hw server is supposed to set gamedir to portals
+	// and hw must be above portals in hierarchy. this is
+	// actually a hypothetical case.
+	// as for hexen2, it cannot reach here.
+		return;
+	}
+	else if (!strcmp(dir,"data1"))
+	{
+	// another hypothetical case: no hw mod is supposed to
+	// do this and hw must stay above data1 in hierarchy.
+	// as for hexen2, it can only reach here by a silly
+	// command line argument like -game data1, ignore it.
+		return;
+	}
+	else
+	{
+	// a new gamedir: let's set it here.
+		sprintf (com_gamedir, "%s/%s", com_basedir, dir);
+	}
 
 //
 // add any pak files in the format pak0.pak pak1.pak, ...
