@@ -5,7 +5,7 @@ UHEXEN2_TOP=..
 
 if [ "$1" = "strip" ]
 then
-$STRIPPER h2.exe glh2.exe h2mp.exe glh2mp.exe
+$STRIPPER h2.exe glh2.exe
 exit 0
 fi
 
