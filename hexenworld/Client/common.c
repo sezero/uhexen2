@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.52 2006-04-05 06:18:32 sezero Exp $
+	$Id: common.c,v 1.53 2006-04-05 06:20:20 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -46,8 +46,12 @@ static const int pakdata[MAX_PAKDATA][2] = {
 	{ 183,	4807  },	/* pak2.pak, oem, data needs verification */
 	{ 245,	1478  },	/* pak3.pak, portals	*/
 	{ 102,	41062 },	/* pak4.pak, hexenworld	*/
-	{ 797,	22780 }		/* pak0.pak, demo	*/
+	{ 797,	22780 }		/* pak0.pak, demo v1.11	*/
+//	{ 701,	20870 }		/* pak0.pak, old 1.07 version of the demo */
+//	The old v1.07 demo on the ID Software ftp isn't supported
+//	(pak0.pak::progs.dat : 19267 crc, progheader crc : 14046)
 };
+
 // loacations of pak filenames as shipped by raven
 static const char *dirdata[MAX_PAKDATA] = {
 	"data1",	/* pak0.pak, registered	*/
