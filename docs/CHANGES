@@ -3,6 +3,57 @@ Hexen II: Hammer of Thyrion
 ChangeLog:
 ---------------------------
 
+2006-04-04 (1.4.0-RC2):
+    * killed (almost) all H2MP ifdefs: this is the first step in making a
+      single binary which handles both h2 and h2mp properly. the only H2MP
+      ifdefs left are actually the ones for determining the icon and window
+      manager text, so nothing serious. the binary normally will only run the
+      original h2 game. if given a -portals or -missionpack or -h2mp argument,
+      it will look for the mission pack and run it (this is the same logic
+      that quake used.) The only serious side effect is that h2 and h2mp
+      progs being different: This will be solved by the next patch by adding
+      support for the two progs versions into a single binary.
+    * added support for both hexen2-v1.11 and h2mp-v1.12 progs into a single
+      hexen2 binary. this essentially completes the h2/h2mp binary merge
+      started with the previous patch. many conditionals had to be added
+      especially on the server side, but I couldn't notice any serious
+      performance loss on a PIII-733 computer. Supportfor multiple progs.dat
+      is now advised to be left enabled in order to support mods which uses
+      that feature.
+    * removed all h2mp targets from the hexen2 makefile. now that we use a
+      single binary for both h2 and h2mp, different builds are not necessary.
+    * added a maplist.txt with only a 0 in it to the portals directory
+      so that the mission pack running a hexen2 boss map wouldn't need
+      a progs2.dat
+    * launcher v0.7.0: changed binary name handling with respect to recent
+      engine changes. other small tidy-ups.
+    * updated documentation about running the mission pack. small tidy-ups.
+    * duplicated trace setting code in pr_cmds.c made into a new PR_SetTrace
+      procedure
+    * added detailed comments to COM_Gamedir. added sanity checking for
+      reserved game directory names in COM_Gamedir.
+    * added support for activating the mission pack by a "-game portals"
+      command-line argument.
+    * re-diff'ed the hexen2_single_prog and demoness_in_oldmission extra
+      patches after these changes
+    * marked the snapshot of 2006-04-04 as 1.4.0-RC2
+
+2006-03-31:
+    * filename reorganization in the cvs: removed the irritating "_dl_"
+      from the hexen2 gl files. renamed the weird xdelta files.
+    * continued making static functions and vars static. whitespace and
+      coding style cleanup. Also fixed a nasty bug in the hexenworld
+      version of r_sprite.c that would show up or platforms where
+      sizeof(float) != sizof(float *) (from quakeforge). also removed the
+      #warning directives for the non-x86 non-compilability.  added a few
+      comments about the non-Intel issue.
+    * only add com_userdir to the searchpath if it is different from
+      com_gamedir (just in case.)
+    * Added a log on compilation for non-x86.
+    * minor fixups, minor syncing, whitespace clean-ups
+    * fixed -Wshadow warnings
+    * fixed compiler warnings (win32)
+
 2006-03-26 (CVS, 1.4.0-RC1):
     * Incremented engine version to 1.15 for hexen2 and 0.17 for hexenworld
     * Updated documentation for compiler support

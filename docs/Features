@@ -16,6 +16,11 @@ Features:
   working brightness control, translucent console background,
   colored lights and support for external lit files.
 
+* The same binary handles both original hexen2 and the mission pack.
+
+* The same hexen2 binary transparently handles both hexen2-1.11 and
+  h2mp-v1.12 progs.dat files.
+
 * Fullscreen intermissions and help dialogs.
 
 * MouseWheel support.

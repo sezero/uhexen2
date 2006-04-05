@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion, version 1.4.0
-[current state : 1.4.0-RC1 (pre-release)]
+[current state : 1.4.0-RC2 (pre-release)]
 
 Changes since HoT-1.3.0 :
 
@@ -10,6 +10,11 @@ Changes since HoT-1.3.0 :
 - Suffort for colored lights and external lit files
 - Added a new opengl features menu to control most opengl options.
 - Improved insert/overwrite mode console editing and command completion
+- The same binary now handles both original hexen2 and the mission pack.
+  No need for two different files. Mission pack is simply activated by
+  the -portals or -missionpack commandline switch.
+- The same hexen2 binary now transparently handles both hexen2-1.11 and
+  h2mp-v1.12 progs.dat files.
 - Better error checking when saving games on unix
 - Added list commands for cvars and aliases (cvarlist and aliaslist),
   changed the old command lister name from list to cmdlist.
@@ -91,3 +96,4 @@ Changes since HoT-1.3.0 :
 - Major build system update. Added cross compilation support on unix for
   the win32 version
 - Several other fixes and lots of code clean-up and improvements
+
