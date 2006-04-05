@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.51 2006-04-05 06:17:25 sezero Exp $
+	$Id: common.c,v 1.52 2006-04-05 06:18:32 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1947,7 +1947,14 @@ static void COM_InitFilesystem (void)
 #if defined(H2W)
 	check_portals = true;
 #else
+// see if the user wants mission pack support
 	check_portals = (COM_CheckParm ("-portals")) || (COM_CheckParm ("-missionpack")) || (COM_CheckParm ("-h2mp"));
+	i = COM_CheckParm ("-game");
+	if (i && i < com_argc-1)
+	{
+		if (!strcmp(com_argv[i+1], "portals"))
+			check_portals = true;
+	}
 //	if (check_portals && !(gameflags & GAME_REGISTERED))
 //		Sys_Error ("Portal of Praevus requires registered version of Hexen II");
 #endif
