@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.23 2006-03-24 15:05:39 sezero Exp $
+	$Id: sbar.c,v 1.24 2006-04-05 06:09:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -116,9 +116,7 @@ static int AmuletAC[MAX_PLAYER_CLASS] =
 	4,		// Crusader
 	2,		// Necromancer
 	6,		// Assassin
-#ifdef H2MP
 	6		// Demoness
-#endif
 };
 
 static int BracerAC[MAX_PLAYER_CLASS] =
@@ -127,9 +125,7 @@ static int BracerAC[MAX_PLAYER_CLASS] =
 	8,		// Crusader
 	4,		// Necromancer
 	2,		// Assassin
-#ifdef H2MP
 	2		// Demoness
-#endif
 };
 
 static int BreastplateAC[MAX_PLAYER_CLASS] =
@@ -138,9 +134,7 @@ static int BreastplateAC[MAX_PLAYER_CLASS] =
 	6,		// Crusader
 	8,		// Necromancer
 	4,		// Assassin
-#ifdef H2MP
 	4		// Demoness
-#endif
 };
 
 static int HelmetAC[MAX_PLAYER_CLASS] =
@@ -149,9 +143,7 @@ static int HelmetAC[MAX_PLAYER_CLASS] =
 	2,		// Crusader
 	6,		// Necromancer
 	8,		// Assassin
-#ifdef H2MP
 	8		// Demoness
-#endif
 };
 
 // CODE --------------------------------------------------------------------
@@ -488,9 +480,9 @@ static void DrawLowerBar(void)
 	//playerClass = cl.v.playerclass;
 	playerClass = cl_playerclass.value;
 	if (playerClass < 1 || playerClass > MAX_PLAYER_CLASS)
-	{ // Default to paladin
-		playerClass = 1;
-	}
+		playerClass = 1;	// Default to paladin
+	if (!(gameflags & GAME_PORTALS) && playerClass > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES)
+		playerClass = 1;	// Default to paladin
 
 	// Backdrop
 	//Sbar_DrawPic(0, 46, Draw_CachePic("gfx/btmbar.lmp"));
@@ -649,9 +641,10 @@ static int CalcAC(void)
 	//playerClass = cl.v.playerclass;
 	playerClass = cl_playerclass.value -1;
 	if (playerClass < 0 || playerClass >= MAX_PLAYER_CLASS)
-	{
-		playerClass = 1;
-	}
+		playerClass = 1;	// Default to paladin
+	if (!(gameflags & GAME_PORTALS) && playerClass > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES)
+		playerClass = 1;	// Default to paladin
+
 	a = 0;
 	if (cl.v.armor_amulet > 0)
 	{

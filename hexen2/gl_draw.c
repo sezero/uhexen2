@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.76 2006-03-24 15:05:39 sezero Exp $
+	$Id: gl_draw.c,v 1.77 2006-04-05 06:09:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -329,10 +329,8 @@ qpic_t	*Draw_CachePic (char *path)
 		memcpy (menuplyr_pixels[2], dat->data, dat->width*dat->height);
 	else if (!strcmp (path, "gfx/menu/netp4.lmp"))
 		memcpy (menuplyr_pixels[3], dat->data, dat->width*dat->height);
-#if defined(H2MP) || defined (H2W)
 	else if (!strcmp (path, "gfx/menu/netp5.lmp"))
 		memcpy (menuplyr_pixels[4], dat->data, dat->width*dat->height);
-#endif
 #if defined (H2W)
 	else if (!strcmp (path, "gfx/menu/netp6.lmp"))
 		memcpy (menuplyr_pixels[5], dat->data, dat->width*dat->height);
@@ -2130,6 +2128,11 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.76  2006/03/24 15:05:39  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.75  2006/03/22 20:03:38  sezero
  * killed -Wshadow warnings
  *

@@ -236,10 +236,9 @@ void Con_Init (void)
 	con_initialized = true;
 
 	PR_LoadStrings();
-#ifdef H2MP
 // mission pack, objectives strings
-	PR_LoadInfoStrings();
-#endif
+	if (gameflags & GAME_PORTALS)
+		PR_LoadInfoStrings();
 }
 
 

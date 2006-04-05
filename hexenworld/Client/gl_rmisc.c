@@ -269,11 +269,9 @@ const int color_offsets[MAX_PLAYER_CLASS] =
 	0,
 	1*14*256,
 	2*14*256,
-#if defined(H2MP) || defined(H2W)
 	2*14*256,
 #if defined(H2W)
 	2*14*256
-#endif
 #endif
 };
 

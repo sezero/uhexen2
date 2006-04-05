@@ -279,11 +279,9 @@ const int color_offsets[MAX_PLAYER_CLASS] =
 	0,
 	1*14*256,
 	2*14*256,
-#if defined(H2MP) || defined(H2W)
 	2*14*256,
 #if defined(H2W)
 	2*14*256
-#endif
 #endif
 };
 
@@ -350,7 +348,9 @@ void R_TranslatePlayerSkin (int playernum)
 	paliashdr = (aliashdr_t *)Mod_Extradata (model);
 	s = paliashdr->skinwidth * paliashdr->skinheight;
 
-	if (playerclass >= 1 && playerclass <= MAX_PLAYER_CLASS)
+	// class limit is mission pack dependant
+	i = (gameflags & GAME_PORTALS) ? MAX_PLAYER_CLASS : MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
+	if (playerclass >= 1 && playerclass <= i)
 		original = player_8bit_texels[playerclass-1];
 	else
 		original = player_8bit_texels[0];

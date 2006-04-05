@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.41 2006-03-21 22:24:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.42 2006-04-05 06:09:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -730,10 +730,9 @@ retry:
 
 	Cvar_SetValue ("_cl_playerclass", ent->v.playerclass);//this better be the same as above...
 
-#ifdef H2MP
 	// this may be rudundant with the setting in PR_LoadProgs, but not sure so its here too
-	pr_global_struct->cl_playerclass = ent->v.playerclass;
-#endif
+	if (progs->crc == PROGS_V112_CRC)
+		pr_global_struct->cl_playerclass = ent->v.playerclass;
 
 	svs.clients->playerclass = ent->v.playerclass;
 
@@ -1200,16 +1199,20 @@ static void Host_Class_f (void)
 //		return;
 //	}
 
+	if ((newClass == CLASS_DEMON) && !(gameflags & GAME_PORTALS))
+	{
+		Con_Printf("That class is only available in the mission pack.\n");
+		return;
+	}
+
 	if (cmd_source == src_command)
 	{
 		Cvar_SetValue ("_cl_playerclass", newClass);
 
-#ifdef H2MP
 		// when classes changes after map load, update cl_playerclass, cl_playerclass should 
 		// probably only be used in worldspawn, though
-		if (pr_global_struct)
+		if (pr_global_struct && (progs->crc == PROGS_V112_CRC))
 			pr_global_struct->cl_playerclass = newClass;
-#endif
 
 		if (cls.state == ca_connected)
 			Cmd_ForwardToServer ();
@@ -2239,6 +2242,11 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.41  2006/03/21 22:24:08  sezero
+ * continue making static functions and vars static. whitespace and coding
+ * style cleanup. part 44: model.c, gl_model.c. also moved the mcache cmd
+ * addition to Mod_Init and added save-to-file functionality.
+ *
  * Revision 1.40  2006/03/17 14:12:48  sezero
  * put back mission-pack only objectives stuff back into pure h2 builds.
  * it was a total screw-up...

@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.18 2006-03-24 15:05:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.19 2006-04-05 06:09:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1285,10 +1285,9 @@ void PR_LoadProgs (void)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 #endif	// BIG_ENDIAN
 
-#ifdef H2MP
 	// set the cl_playerclass value after pr_global_struct has been created
-	pr_global_struct->cl_playerclass = cl_playerclass.value;
-#endif
+	if (progs->crc == PROGS_V112_CRC)
+		pr_global_struct->cl_playerclass = cl_playerclass.value;
 }
 
 
@@ -1453,6 +1452,11 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2006/03/24 15:05:39  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.17  2006/03/17 14:12:48  sezero
  * put back mission-pack only objectives stuff back into pure h2 builds.
  * it was a total screw-up...

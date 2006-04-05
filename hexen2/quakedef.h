@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.57 2006-03-26 16:53:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.58 2006-04-05 06:09:23 sezero Exp $
 */
 
 
@@ -178,11 +178,8 @@
 #define	GAME_PORTALS		64
 #define	GAME_HEXENWORLD		128
 
-#ifdef H2MP
 #define MAX_PLAYER_CLASS	5
-#else
-#define	MAX_PLAYER_CLASS	4
-#endif
+#define	PORTALS_EXTRA_CLASSES	1
 #define ABILITIES_STR_INDEX	400
 
 #ifdef DEMOBUILD
@@ -406,6 +403,9 @@ void MIDI_UpdateVolume(void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.57  2006/03/26 16:53:58  sezero
+ * Marked the snapshot of 2006-03-26 as 1.4.0-RC1 (-RC state, finally.)
+ *
  * Revision 1.56  2006/03/26 14:10:39  sezero
  * 1.4.0 development has put in enough changes: Engine version is incremented
  * to 1.15 for hexen2 and 0.17 for hexenworld.

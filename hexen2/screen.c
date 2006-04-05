@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.25 2006-03-24 15:05:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.26 2006-04-05 06:09:23 sezero Exp $
 */
 
 /*=============================================================================
@@ -1106,12 +1106,11 @@ static void I_Print (int cx, int cy, char *str)
 #	define	Draw_IntermissonPic_FN(X,Y,Z)	Draw_Pic((X),(Y),(Z))
 #endif
 
-#if defined(H2W)
 #define	DEMO_MSG_INDEX	408
-#else
-#define	DEMO_MSG_INDEX	(ABILITIES_STR_INDEX+MAX_PLAYER_CLASS*2)
-			// 408 for H2, 410 for H2MP strings.txt
-#endif
+// in Hammer of Thyrion, the demo version isn't allowed in combination
+// with the mission pack. therefore, the formula below isn't necessary
+//#define	DEMO_MSG_INDEX	(ABILITIES_STR_INDEX+MAX_PLAYER_CLASS*2)
+//			408 for H2, 410 for H2MP strings.txt
 
 /*
 ===============
@@ -1120,7 +1119,7 @@ SB_IntermissionOverlay
 */
 static void SB_IntermissionOverlay (void)
 {
-	qpic_t	*pic;
+	qpic_t	*pic = NULL;
 	int		elapsed, size, bx, by, i;
 	char	*message,temp[80];
 
@@ -1162,7 +1161,7 @@ static void SB_IntermissionOverlay (void)
 		case 9:
 			pic = Load_IntermissonPic_FN ("gfx/castle.lmp", vid.width, vid.height);
 			break;
-#if defined(H2MP)
+		// mission pack
 		case 10:
 			pic = Load_IntermissonPic_FN ("gfx/mpend.lmp", vid.width, vid.height);
 			break;
@@ -1171,10 +1170,6 @@ static void SB_IntermissionOverlay (void)
 			break;
 		case 12:
 			pic = Load_IntermissonPic_FN ("gfx/end-3.lmp", vid.width, vid.height);
-			break;
-#endif
-		default:
-			pic = NULL;
 			break;
 	}
 	if (pic == NULL)
@@ -1192,14 +1187,12 @@ static void SB_IntermissionOverlay (void)
 		if (elapsed < 0)
 			elapsed = 0;
 	}
-#if defined(H2MP)
 	else if (cl.intermission == 12)	// mission pack entry screen
 	{
 		elapsed = (introTime);
 		if (introTime < 500)
 			introTime += 0.25;
 	}
-#endif
 	else
 	{
 		elapsed = (cl.time - cl.completed_time) * 20;
@@ -1213,14 +1206,13 @@ static void SB_IntermissionOverlay (void)
 		message = &pr_global_strings[pr_string_index[cl.intermission + 386]];
 	else if (cl.intermission == 9)	// finale for the bundle (oem) version
 		message = &pr_global_strings[pr_string_index[391]];
-#if defined(H2MP)
+	// mission pack
 	else if (cl.intermission == 10)
 		message = &pr_global_strings[pr_string_index[538]];
 	else if (cl.intermission == 11)
 		message = &pr_global_strings[pr_string_index[545]];
 	else if (cl.intermission == 12)
 		message = &pr_global_strings[pr_string_index[561]];
-#endif
 	else
 		message = "";
 
@@ -1233,11 +1225,9 @@ static void SB_IntermissionOverlay (void)
 	if (cl.intermission >= 6 && cl.intermission <= 8)
 		// eidolon, endings. num == 6,7,8
 		by = (vid.height/2 - lines*4);
-#if defined(H2MP)
 	else if (cl.intermission == 10)
 		// mission pack: tibet10. num == 10
 		by = 33;
-#endif
 	else
 		by = ((25-lines) * 8) / 2;
 
@@ -1506,6 +1496,11 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2006/03/24 15:05:39  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.24  2006/03/17 14:12:48  sezero
  * put back mission-pack only objectives stuff back into pure h2 builds.
  * it was a total screw-up...

@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.44 2006-03-24 15:05:39 sezero Exp $
+	$Id: gl_rmain.c,v 1.45 2006-04-05 06:09:23 sezero Exp $
 */
 
 
@@ -924,9 +924,7 @@ static void R_DrawAliasModel (entity_t *e)
 			if (currententity->model == player_models[0] ||
 			    currententity->model == player_models[1] ||
 			    currententity->model == player_models[2] ||
-#	ifdef H2MP
-	/* demoness */	    currententity->model == player_models[4] ||
-#	endif
+			    currententity->model == player_models[4] ||	/* demoness */
 			    currententity->model == player_models[3])
 			{
 				i = currententity - cl_entities - 1;
@@ -1970,6 +1968,11 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.44  2006/03/24 15:05:39  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.43  2006/03/23 20:01:33  sezero
  * made the lightmap format configurable via the menu system using a new
  * cvar gl_lightmapfmt. -lm_1 and -lm_4 are still functional as commandline

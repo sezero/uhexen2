@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.26 2006-03-24 15:05:44 sezero Exp $
+	$Id: gl_screen.c,v 1.27 2006-04-05 06:09:23 sezero Exp $
 */
 
 /*=============================================================================
@@ -781,12 +781,11 @@ static void I_Print (int cx, int cy, char *str)
 #	define	Draw_IntermissonPic_FN(X,Y,Z)	Draw_Pic((X),(Y),(Z))
 #endif
 
-#if defined(H2W)
 #define	DEMO_MSG_INDEX	408
-#else
-#define	DEMO_MSG_INDEX	(ABILITIES_STR_INDEX+MAX_PLAYER_CLASS*2)
-			// 408 for H2, 410 for H2MP strings.txt
-#endif
+// in Hammer of Thyrion, the demo version isn't allowed in combination
+// with the mission pack. therefore, the formula below isn't necessary
+//#define	DEMO_MSG_INDEX	(ABILITIES_STR_INDEX+MAX_PLAYER_CLASS*2)
+//			408 for H2, 410 for H2MP strings.txt
 
 /*
 ===============
@@ -795,7 +794,7 @@ SB_IntermissionOverlay
 */
 static void SB_IntermissionOverlay (void)
 {
-	qpic_t	*pic;
+	qpic_t	*pic = NULL;
 	int		elapsed, size, bx, by, i;
 	char	*message,temp[80];
 
@@ -849,9 +848,6 @@ static void SB_IntermissionOverlay (void)
 		case 12:
 			//Attacker win 2 - wiped out
 			pic = Load_IntermissonPic_FN ("gfx/attwin2.lmp", vid.width, vid.height);
-			break;
-		default:
-			pic = NULL;
 			break;
 	}
 	if (pic == NULL)

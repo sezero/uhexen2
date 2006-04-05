@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.26 2006-03-23 20:01:33 sezero Exp $
+	$Id: gl_model.c,v 1.27 2006-04-05 06:09:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1797,14 +1797,12 @@ static void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int md
 				goto skin_too_large;
 			memcpy (player_8bit_texels[3], (byte *)(pskintype + 1), s);
 		}
-#ifdef H2MP
 		else if (!strcmp(loadmodel->name,"models/succubus.mdl"))
 		{
 			if (s > sizeof(player_8bit_texels[4]))
 				goto skin_too_large;
 			memcpy (player_8bit_texels[4], (byte *)(pskintype + 1), s);
 		}
-#endif
 
 		sprintf (name, "%s_%i", loadmodel->name, i);
 		if (mdl_flags & EF_HOLEY)
@@ -2634,6 +2632,14 @@ static void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2006/03/23 20:01:33  sezero
+ * made the lightmap format configurable via the menu system using a new
+ * cvar gl_lightmapfmt. -lm_1 and -lm_4 are still functional as commandline
+ * overrides even with commandline options dictating a direct load of a map,
+ * such as +playdemo xxx or +load xxx. updated the opengl features menu with
+ * new proper notifications about the colored lighting option's level reload
+ * necessity and with new entries for the ligthmap format.
+ *
  * Revision 1.25  2006/03/21 22:24:08  sezero
  * continue making static functions and vars static. whitespace and coding
  * style cleanup. part 44: model.c, gl_model.c. also moved the mcache cmd

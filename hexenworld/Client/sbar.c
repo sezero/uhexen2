@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.19 2006-03-24 15:05:44 sezero Exp $
+	$Id: sbar.c,v 1.20 2006-04-05 06:09:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -580,9 +580,7 @@ static void DrawLowerBar(void)
 
 	playerClass = cl.players[cl.playernum].playerclass;
 	if (playerClass < 1 || playerClass > MAX_PLAYER_CLASS)
-	{ // Default to paladin
-		playerClass = 1;
-	}
+		playerClass = 1;	// Default to paladin
 
 	// Backdrop
 	//Sbar_DrawPic(0, 46, Draw_CachePic("gfx/btmbar.lmp"));
@@ -741,9 +739,8 @@ static int CalcAC(void)
 	//playerClass = cl.v.playerclass;
 	playerClass = cl.players[cl.playernum].playerclass - 1;
 	if (playerClass < 0 || playerClass >= MAX_PLAYER_CLASS)
-	{
-		playerClass = 1;
-	}
+		playerClass = 1;	// Default to paladin
+
 	a = 0;
 	if (cl.v.armor_amulet > 0)
 	{

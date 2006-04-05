@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.53 2006-04-05 06:07:31 sezero Exp $
+	$Id: common.c,v 1.54 2006-04-05 06:09:23 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1856,6 +1856,7 @@ static void COM_InitFilesystem (void)
 {
 	int		i;
 	char		temp[12];
+	qboolean	check_portals;
 
 //
 // -basedir <path>
@@ -1888,24 +1889,24 @@ static void COM_InitFilesystem (void)
 		Sys_Error ("You must have the full version of Hexen II to play modified games");
 #endif
 
-#if defined(H2MP)
-	// mission pack requires the registered version
-	if (!(gameflags & GAME_REGISTERED) || (gameflags & GAME_DEMO) || (gameflags & GAME_OEM))
-		Sys_Error ("Portal of Praevus requires registered version of Hexen II");
+#if defined(H2W)
+	check_portals = true;
+#else
+	check_portals = (COM_CheckParm ("-portals")) || (COM_CheckParm ("-missionpack")) || (COM_CheckParm ("-h2mp"));
+//	if (check_portals && !(gameflags & GAME_REGISTERED))
+//		Sys_Error ("Portal of Praevus requires registered version of Hexen II");
 #endif
-
-#if defined(H2MP) || defined(H2W)
-	if (gameflags & GAME_REGISTERED)
+	if (check_portals && (gameflags & GAME_REGISTERED))
 	{
 		sprintf (com_userdir, "%s/portals", host_parms.userdir);
 		Sys_mkdir (com_userdir);
 		COM_AddGameDirectory (va("%s/portals", com_basedir), true);
 	}
-#   if defined(H2MP)
-	// error out for H2MP builds if GAME_PORTALS isn't set
-	if (!(gameflags & GAME_PORTALS))
-		Sys_Error ("Portal of Praevus game data not found");
-#   endif
+
+#if !defined(H2W)
+	// error out if mission pack is requested but GAME_PORTALS isn't set
+//	if (check_portals && !(gameflags & GAME_PORTALS))
+//		Sys_Error ("Portal of Praevus installation not found");
 #endif
 
 #if defined(H2W)
@@ -2263,6 +2264,10 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.53  2006/04/05 06:07:31  sezero
+ * only add com_userdir to the searchpath if it is different from com_gamedir
+ * (just in case.)
+ *
  * Revision 1.52  2006/03/27 20:12:35  sezero
  * fixed compiler warnings (win32)
  *

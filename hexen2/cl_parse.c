@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.24 2006-03-17 14:12:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.25 2006-04-05 06:09:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -339,9 +339,8 @@ static void CL_ParseServerInfo (void)
 	player_models[1] = (model_t *)Mod_FindName ("models/crusader.mdl");
 	player_models[2] = (model_t *)Mod_FindName ("models/necro.mdl");
 	player_models[3] = (model_t *)Mod_FindName ("models/assassin.mdl");
-#ifdef H2MP
-	player_models[4] = (model_t *)Mod_FindName ("models/succubus.mdl");
-#endif
+	if (gameflags & GAME_PORTALS)
+		player_models[4] = (model_t *)Mod_FindName ("models/succubus.mdl");
 
 	S_BeginPrecaching ();
 	for (i=1 ; i<numsounds ; i++)
@@ -980,9 +979,7 @@ const int color_offsets[MAX_PLAYER_CLASS] =
 	0,
 	1*14*256,
 	2*14*256,
-#ifdef H2MP
 	2*14*256
-#endif
 };
 #endif	// GLQUAKE
 
@@ -1798,6 +1795,10 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2006/03/17 14:12:48  sezero
+ * put back mission-pack only objectives stuff back into pure h2 builds.
+ * it was a total screw-up...
+ *
  * Revision 1.23  2006/03/16 21:19:00  sezero
  * Restored net compatibility with SC2_OBJ and SC2_OBJ2:
  * SC2_OBJ and SC2_OBJ2 are actually only legible for the

@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.64 2006-03-24 17:34:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.65 2006-04-05 06:09:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -127,9 +127,7 @@ char *ClassNames[MAX_PLAYER_CLASS] =
 	"Crusader",
 	"Necromancer",
 	"Assassin",
-#ifdef H2MP
 	"Demoness"
-#endif
 };
 
 static char *ClassNamesU[MAX_PLAYER_CLASS] = 
@@ -138,9 +136,7 @@ static char *ClassNamesU[MAX_PLAYER_CLASS] =
 	"CRUSADER",
 	"NECROMANCER",
 	"ASSASSIN",
-#ifdef H2MP
 	"DEMONESS"
-#endif
 };
 
 static char *DiffNames[MAX_PLAYER_CLASS][4] =
@@ -172,14 +168,12 @@ static char *DiffNames[MAX_PLAYER_CLASS][4] =
 		"EXECUTIONER",
 		"WIDOW MAKER"
 	},
-#ifdef H2MP
 	{	// Demoness
 		"LARVA",
 		"SPAWN",
 		"FIEND",
 		"SHE BITCH"
 	}
-#endif
 };
 
 
@@ -850,6 +844,8 @@ static void M_Difficulty_Draw (void)
 
 	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
 		setup_class = MAX_PLAYER_CLASS;
+	if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES && !(gameflags & GAME_PORTALS))
+		setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
 	setup_class--;
 
 	for(i = 0; i < NUM_DIFFLEVELS; ++i)
@@ -924,42 +920,32 @@ static void M_Menu_Class2_f (void)
 	class_flag=1;
 }
 
+static int	m_class_cursor;
+#define	CLASS_ITEMS	MAX_PLAYER_CLASS
+
 // change the define below to 0 if you want to allow the
 // demoness class  in old mission through the menu system
 #define DISALLOW_DEMONESS_IN_OLD_GAME	1
-
-#ifndef H2MP
-// do not touch these
-#undef DISALLOW_DEMONESS_IN_OLD_GAME
-#define DISALLOW_DEMONESS_IN_OLD_GAME	0
-#endif
-
-static int	m_class_cursor;
-#define	CLASS_ITEMS	MAX_PLAYER_CLASS
 
 static void M_Class_Draw (void)
 {
 	int	f, i;
 
-	ScrollTitle("gfx/menu/title2.lmp");
+	if (! (gameflags & GAME_PORTALS))
+		f = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
 #if DISALLOW_DEMONESS_IN_OLD_GAME
-	if (!m_enter_portals)
-	{
-		for(i = 0; i < MAX_PLAYER_CLASS -1; ++i)
-			M_DrawBigString (72,60+(i*20),ClassNamesU[i]);
-	}
+	else if (!m_enter_portals && (gameflags & GAME_PORTALS))
+		f = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
+#endif
 	else
-#endif
-		for(i = 0; i < MAX_PLAYER_CLASS; ++i)
-			M_DrawBigString (72,60+(i*20),ClassNamesU[i]);
+		f = MAX_PLAYER_CLASS;
 
-#if DISALLOW_DEMONESS_IN_OLD_GAME
-	if (!m_enter_portals)
-	{
-		if (m_class_cursor >= CLASS_ITEMS -1)
-			m_class_cursor = 0;
-	}
-#endif
+	if (m_class_cursor >= f)
+		m_class_cursor = 0;
+
+	ScrollTitle("gfx/menu/title2.lmp");
+	for (i = 0; i < f; ++i)
+		M_DrawBigString (72,60+(i*20),ClassNamesU[i]);
 
 	f = (int)(host_time * 10)%8;
 	M_DrawTransPic (43, 54 + m_class_cursor * 20,Draw_CachePic( va("gfx/menu/menudot%i.lmp", f+1 ) ) );
@@ -970,6 +956,17 @@ static void M_Class_Draw (void)
 
 static void M_Class_Key (int key)
 {
+	int		f;
+
+	if (! (gameflags & GAME_PORTALS))
+		f = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
+#if DISALLOW_DEMONESS_IN_OLD_GAME
+	else if (!m_enter_portals && (gameflags & GAME_PORTALS))
+		f = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
+#endif
+	else
+		f = MAX_PLAYER_CLASS;
+
 	switch (key)
 	{
 	case K_LEFTARROW:
@@ -980,16 +977,8 @@ static void M_Class_Key (int key)
 		break;
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
-#if DISALLOW_DEMONESS_IN_OLD_GAME
-		if (!m_enter_portals)
-		{
-			if (++m_class_cursor >= CLASS_ITEMS -1)
-				m_class_cursor = 0;
-		}
-		else
-#endif
-			if (++m_class_cursor >= CLASS_ITEMS)
-				m_class_cursor = 0;
+		if (++m_class_cursor >= f)
+			m_class_cursor = 0;
 
 //		if ((!registered.value && !oem.value) && m_class_cursor >= 1 && m_class_cursor <= 2)
 //			m_class_cursor = CLASS_ITEMS - 1;
@@ -998,16 +987,8 @@ static void M_Class_Key (int key)
 
 	case K_UPARROW:
 		S_LocalSound ("raven/menu1.wav");
-#if DISALLOW_DEMONESS_IN_OLD_GAME
-		if (!m_enter_portals)
-		{
-			if (--m_class_cursor < 0)
-				m_class_cursor = CLASS_ITEMS - 2;
-		}
-		else
-#endif
-			if (--m_class_cursor < 0)
-				m_class_cursor = CLASS_ITEMS - 1;
+		if (--m_class_cursor < 0)
+			m_class_cursor = f - 1;
 
 //		if ((!registered.value && !oem.value) && m_class_cursor >= 1 && m_class_cursor <= 2)
 //			m_class_cursor = 0;
@@ -1039,13 +1020,10 @@ static void M_Class_Key (int key)
 //=============================================================================
 /* SINGLE PLAYER MENU */
 
-static int	m_singleplayer_cursor;
-#ifdef H2MP
-#define	SINGLEPLAYER_ITEMS	5
-#else
 #define SINGLEPLAYER_ITEMS	3
-#endif
+#define	SP_PORTALS_ITEMS	2
 
+static int	m_singleplayer_cursor;
 
 static void M_Menu_SinglePlayer_f (void)
 {
@@ -1061,13 +1039,19 @@ static void M_SinglePlayer_Draw (void)
 
 	ScrollTitle("gfx/menu/title1.lmp");
 
-	M_DrawBigString (72,60+(0*20),"NEW MISSION");
+	if (gameflags & GAME_PORTALS)
+		M_DrawBigString (72,60+(0*20),"NEW MISSION");
+	else
+		M_DrawBigString (72,60+(0*20),"NEW GAME");
+
 	M_DrawBigString (72,60+(1*20),"LOAD");
 	M_DrawBigString (72,60+(2*20),"SAVE");
-#ifdef H2MP
-	M_DrawBigString (72,60+(3*20),"OLD MISSION");
-	M_DrawBigString (72,60+(4*20),"VIEW INTRO");
-#endif
+
+	if (gameflags & GAME_PORTALS)
+	{
+		M_DrawBigString (72,60+(3*20),"OLD MISSION");
+		M_DrawBigString (72,60+(4*20),"VIEW INTRO");
+	}
 
 	f = (int)(host_time * 10)%8;
 	M_DrawTransPic (43, 54 + m_singleplayer_cursor * 20,Draw_CachePic( va("gfx/menu/menudot%i.lmp", f+1 ) ) );
@@ -1083,13 +1067,27 @@ static void M_SinglePlayer_Key (int key)
 		break;
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
-		if (++m_singleplayer_cursor >= SINGLEPLAYER_ITEMS)
-			m_singleplayer_cursor = 0;
+		m_singleplayer_cursor++;
+		if (gameflags & GAME_PORTALS)
+		{
+			if (m_singleplayer_cursor >= SINGLEPLAYER_ITEMS + SP_PORTALS_ITEMS)
+				m_singleplayer_cursor = 0;
+		}
+		else
+		{
+			if (m_singleplayer_cursor >= SINGLEPLAYER_ITEMS)
+				m_singleplayer_cursor = 0;
+		}
 		break;
 	case K_UPARROW:
 		S_LocalSound ("raven/menu1.wav");
 		if (--m_singleplayer_cursor < 0)
-			m_singleplayer_cursor = SINGLEPLAYER_ITEMS - 1;
+		{
+			if (gameflags & GAME_PORTALS)
+				m_singleplayer_cursor = SINGLEPLAYER_ITEMS + SP_PORTALS_ITEMS - 1;
+			else
+				m_singleplayer_cursor = SINGLEPLAYER_ITEMS - 1;
+		}
 		break;
 	case K_ENTER:
 		m_entersound = true;
@@ -1097,9 +1095,8 @@ static void M_SinglePlayer_Key (int key)
 		switch (m_singleplayer_cursor)
 		{
 		case 0:
-#ifdef H2MP
-			m_enter_portals = 1;
-#endif
+			if (gameflags & GAME_PORTALS)
+				m_enter_portals = 1;
 		case 3:
 			if (sv.active)
 				if (!SCR_ModalMessage("Are you sure you want to\nstart a new game?\n"))
@@ -1119,12 +1116,13 @@ static void M_SinglePlayer_Key (int key)
 		case 2:
 			M_Menu_Save_f ();
 			break;
-#ifdef H2MP
 		case 4:
-			key_dest = key_game;
-			Cbuf_AddText("playdemo t9\n");
+			if (gameflags & GAME_PORTALS)
+			{
+				key_dest = key_game;
+				Cbuf_AddText("playdemo t9\n");
+			}
 			break;
-#endif
 		}
 	}
 }
@@ -1549,6 +1547,8 @@ static void M_Menu_Setup_f (void)
 	setup_class = cl_playerclass.value;
 	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
 		setup_class = MAX_PLAYER_CLASS;
+	if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES && !(gameflags & GAME_PORTALS))
+		setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
 }
 
 
@@ -1637,7 +1637,8 @@ static void M_Setup_Key (int k)
 			setup_class--;
 			if (setup_class < 1)
 				setup_class = MAX_PLAYER_CLASS;
-
+			if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES && !(gameflags & GAME_PORTALS))
+				setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
 //			if ((!registered.value && !oem.value) && setup_class >= 2 && setup_class < MAX_PLAYER_CLASS)
 //				setup_class = 5;
 		}
@@ -1656,7 +1657,8 @@ forward:
 			setup_class++;
 			if (setup_class > MAX_PLAYER_CLASS)
 				setup_class = 1;
-
+			if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES && !(gameflags & GAME_PORTALS))
+				setup_class = 1;
 //			if ((!registered.value && !oem.value) && setup_class >= 2 && setup_class < MAX_PLAYER_CLASS)
 //				setup_class = MAX_PLAYER_CLASS;
 		}
@@ -3335,6 +3337,8 @@ static void M_Menu_LanConfig_f (void)
 	setup_class = cl_playerclass.value;
 	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
 		setup_class = MAX_PLAYER_CLASS;
+	if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES && !(gameflags & GAME_PORTALS))
+		setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
 	setup_class--;
 }
 
@@ -3488,6 +3492,8 @@ static void M_LanConfig_Key (int key)
 		setup_class--;
 		if (setup_class < 0)
 			setup_class = MAX_PLAYER_CLASS -1;
+		if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES - 1 && !(gameflags & GAME_PORTALS))
+			setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES -1;
 		break;
 
 	case K_RIGHTARROW:
@@ -3497,6 +3503,8 @@ static void M_LanConfig_Key (int key)
 		S_LocalSound ("raven/menu3.wav");
 		setup_class++;
 		if (setup_class > MAX_PLAYER_CLASS - 1)
+			setup_class = 0;
+		if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES - 1 && !(gameflags & GAME_PORTALS))
 			setup_class = 0;
 		break;
 
@@ -3619,7 +3627,6 @@ static level_t	levels[] =
 	{"village5","The Forgotten Chapel"},		// 53
 	{"rider1a","Famine's Domain"},			// 54
 
-#ifdef H2MP
 //Mission Pack
 	{"keep1",	"Eidolon's Lair"},		// 55
 	{"keep2",	"Village of Turnabel"},		// 56
@@ -3637,7 +3644,6 @@ static level_t	levels[] =
 	{"tibet8",	"Palace of Emperor Egg Chen"},	// 67
 	{"tibet9",	"Palace Inner Chambers"},	// 68
 	{"tibet10",	"The Inner Sanctum of Praevus"},// 69
-#endif
 };
 
 typedef struct
@@ -3659,9 +3665,9 @@ static episode_t	episodes[] =
 	{"Egypt", 20, 8},
 	{"Romeric", 28, 7},
 	{"Cathedral", 35, 5},
-#ifdef H2MP
+
 	{"MISSION PACK", 55, 15},
-#endif
+
 	{"Deathmatch", 40, 5},
 
 	// OEM
@@ -3669,15 +3675,10 @@ static episode_t	episodes[] =
 	{"Deathmatch", 45, 1},
 };
 
-#ifndef H2MP
-#define WITH_H2MP 0
-#else
-#define WITH_H2MP 1
-#endif
+#define OEM_START 9
 #define REG_START 2
 #define MP_START 7
-#define DM_START  (MP_START+WITH_H2MP)
-#define OEM_START (DM_START+1)
+#define DM_START 8
 
 static int	startepisode;
 static int	startlevel;
@@ -3702,6 +3703,8 @@ static void M_Menu_GameOptions_f (void)
 	setup_class = cl_playerclass.value;
 	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
 		setup_class = MAX_PLAYER_CLASS;
+	if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES && !(gameflags & GAME_PORTALS))
+		setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
 	setup_class--;
 
 	if (oem.value && startepisode < OEM_START)
@@ -3861,6 +3864,8 @@ static void M_NetStart_Change (int dir)
 //			setup_class = 0;
 		if (setup_class < 0) 
 			setup_class = MAX_PLAYER_CLASS - 1;
+		if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES - 1 && !(gameflags & GAME_PORTALS))
+			setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES - 1;
 		if (setup_class > MAX_PLAYER_CLASS - 1)
 			setup_class = 0;
 		break;
@@ -3911,6 +3916,9 @@ static void M_NetStart_Change (int dir)
 			if (startepisode >= count)
 				startepisode = REG_START;
 
+			if (startepisode == MP_START && !(gameflags & GAME_PORTALS))
+				startepisode += dir;
+
 			startlevel = 0;
 		}
 		else if (oem.value)
@@ -3925,7 +3933,7 @@ static void M_NetStart_Change (int dir)
 
 			startlevel = 0;
 		}
-		else
+		else	// demo version
 		{
 			count = 2;
 
@@ -4470,6 +4478,9 @@ static void ReInitMusic (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.64  2006/03/24 17:34:20  sezero
+ * includes cleanup
+ *
  * Revision 1.63  2006/03/23 20:01:33  sezero
  * made the lightmap format configurable via the menu system using a new
  * cvar gl_lightmapfmt. -lm_1 and -lm_4 are still functional as commandline
