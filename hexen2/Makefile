@@ -81,18 +81,12 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 # Names of the binaries
 ifeq "$(TARGET_OS)" "WIN32"
 H2_BINARY=h2.exe
-MP_BINARY=h2mp.exe
 GLH2_BINARY=glh2.exe
-GLMP_BINARY=glh2mp.exe
 else
 H2_BINARY=hexen2
-MP_BINARY=h2mp
 GLH2_BINARY=glhexen2
-GLMP_BINARY=glh2mp
 H2_STATIC=hexen2.static
-MP_STATIC=h2mp.static
 GLH2_STATIC=glhexen2.static
-GLMP_STATIC=glh2mp.static
 endif
 
 # Compiler flags
@@ -386,22 +380,16 @@ help:
 	@echo "* $(MAKE) clean       : delete all files produced by the build"
 	@echo "* $(MAKE) h2          : hexen2 binary, software renderer"
 	@echo "* $(MAKE) glh2        : hexen2 binary, opengl renderer"
-	@echo "* $(MAKE) mp          : mission pack binary, software renderer"
-	@echo "* $(MAKE) glmp        : mission pack binary, opengl renderer"
 	@echo
 ifneq "$(TARGET_OS)" "WIN32"
 	@echo "===== Static binaries: ====="
 	@echo "* $(MAKE) h2_static   : hexen2 binary, software renderer"
 	@echo "* $(MAKE) glh2_static : hexen2 binary, opengl renderer"
-	@echo "* $(MAKE) mp_static   : mission pack binary, software renderer"
-	@echo "* $(MAKE) glmp_static : mission pack binary, opengl renderer"
 	@echo
 endif
 
 hexen2: h2
 glhexen2: glh2
-h2mp: mp
-glh2mp: glmp
 
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc
@@ -415,15 +403,6 @@ glh2: EXT_FLAGS+= $(GL_DEFS)
 glh2: sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
-mp: EXT_FLAGS+=-DH2MP $(MGL_FLAG)
-mp: INCLUDES+=$(MGL_INCL)
-mp: sanity $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
-	$(LINKER) -o $(MP_BINARY) $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK) $(MGL_LINK)
-
-glmp: EXT_FLAGS+= -DH2MP $(GL_DEFS)
-glmp: sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
-	$(LINKER) -o $(GLMP_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
-
 # static builds are not tested on win32
 ifneq "$(TARGET_OS)" "WIN32"
 
@@ -434,14 +413,6 @@ glh2_static : EXT_FLAGS+= $(GL_DEFS)
 glh2_static : sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(GLH2_STATIC) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDSTATIC) $(GLFLAGS)
 
-mp_static : EXT_FLAGS+=-DH2MP
-mp_static : sanity $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
-	$(LINKER) -o $(MP_STATIC) $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS) $(LDSTATIC)
-
-glmp_static : EXT_FLAGS+= -DH2MP $(GL_DEFS)
-glmp_static : sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
-	$(LINKER) -o $(GLMP_STATIC) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDSTATIC) $(GLFLAGS)
-
 # End of static binary targets
 endif
 
@@ -450,6 +421,5 @@ clean:
 
 cleaner:
 	rm -f *.o win_stuff/*.o core .tmp *.tmp \
-		$(GLMP_BINARY) $(GLH2_BINARY) $(MP_BINARY) $(H2_BINARY) \
-		$(H2_STATIC) $(GLMP_STATIC) $(GLH2_STATIC) $(MP_STATIC)
+		$(H2_BINARY) $(GLH2_BINARY) $(H2_STATIC) $(GLH2_STATIC)
 
