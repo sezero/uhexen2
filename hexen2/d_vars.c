@@ -1,8 +1,13 @@
-// r_vars.c: global refresh variables
+/*
+	d_vars.c
+	rasterization driver global variables
 
-#if	!id386
+	$Id: d_vars.c,v 1.2 2006-04-05 18:21:48 sezero Exp $
+*/
 
 #include	"quakedef.h"
+
+#if	!id386
 
 // all global and static refresh variables are collected in a contiguous block
 // to avoid cache conflicts.
@@ -20,10 +25,10 @@ float	d_sdivzorigin, d_tdivzorigin, d_ziorigin;
 
 fixed16_t	sadjust, tadjust, bbextents, bbextentt;
 
-pixel_t			*cacheblock;
-int				cachewidth;
-pixel_t			*d_viewbuffer;
-short			*d_pzbuffer;
+pixel_t		*cacheblock;
+int		cachewidth;
+pixel_t		*d_viewbuffer;
+short		*d_pzbuffer;
 unsigned int	d_zrowbytes;
 unsigned int	d_zwidth;
 
