@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_surf.c,v 1.5 2005-07-16 23:23:52 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_surf.c,v 1.6 2006-04-05 06:05:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,53 +10,64 @@
 
 drawsurf_t	r_drawsurf;
 
-int				lightleft, sourcesstep, blocksize, sourcetstep;
-int				lightdelta, lightdeltastep;
-int				lightright, lightleftstep, lightrightstep, blockdivshift;
-unsigned		blockdivmask;
-void			*prowdestbase;
+int		lightleft, sourcesstep, blocksize, sourcetstep;
+int		lightdelta, lightdeltastep;
+int		lightright, lightleftstep, lightrightstep, blockdivshift;
+unsigned	blockdivmask;
+void		*prowdestbase;
 unsigned char	*pbasesource;
-int				surfrowbytes;	// used by ASM files
-unsigned		*r_lightptr;
-int				r_stepback;
-int				r_lightwidth;
-int				r_numhblocks, r_numvblocks;
+int		surfrowbytes;	// used by ASM files
+unsigned	*r_lightptr;
+int		r_stepback;
+int		r_lightwidth;
+int		r_numhblocks, r_numvblocks;
 unsigned char	*r_source, *r_sourcemax;
 
-void R_DrawSurfaceBlock8_mip0 (void);
-void R_DrawSurfaceBlock8_mip1 (void);
-void R_DrawSurfaceBlock8_mip2 (void);
-void R_DrawSurfaceBlock8_mip3 (void);
+static unsigned	blocklights[18*18];
 
-static void	(*surfmiptable[4])(void) = {
+#if id386
+extern void R_DrawSurfaceBlock16 (void);
+extern void R_DrawSurfaceBlock8_mip0 (void);
+extern void R_DrawSurfaceBlock8_mip1 (void);
+extern void R_DrawSurfaceBlock8_mip2 (void);
+extern void R_DrawSurfaceBlock8_mip3 (void);
+#else
+static void R_DrawSurfaceBlock16 (void);
+static void R_DrawSurfaceBlock8_mip0 (void);
+static void R_DrawSurfaceBlock8_mip1 (void);
+static void R_DrawSurfaceBlock8_mip2 (void);
+static void R_DrawSurfaceBlock8_mip3 (void);
+#endif
+
+static void	(*surfmiptable[4])(void) =
+{
 	R_DrawSurfaceBlock8_mip0,
 	R_DrawSurfaceBlock8_mip1,
 	R_DrawSurfaceBlock8_mip2,
 	R_DrawSurfaceBlock8_mip3
 };
 
+//=============================================================================
 
-
-unsigned		blocklights[18*18];
 
 /*
 ===============
 R_AddDynamicLights
 ===============
 */
-void R_AddDynamicLights (void)
+static void R_AddDynamicLights (void)
 {
-	msurface_t *surf;
 	int			lnum;
 	int			sd, td;
 	float		dist, rad, minlight, lightval;
 	vec3_t		impact;
 	vec_t			local0, local1;
 	int			s, t;
-	unsigned    *pos;
 	int			i;
 	int			smax, tmax;
+	unsigned	*pos;
 	mtexinfo_t	*tex;
+	msurface_t	*surf;
 
 	surf = r_drawsurf.surf;
 	smax = (surf->extents[0]>>4)+1;
@@ -69,20 +80,19 @@ void R_AddDynamicLights (void)
 			continue;		// not lit by this light
 
 		rad = fabs(cl_dlights[lnum].radius);
-		dist = DotProduct (cl_dlights[lnum].origin, surf->plane->normal) -
-				surf->plane->dist;
+		dist = DotProduct (cl_dlights[lnum].origin, surf->plane->normal) - surf->plane->dist;
 		rad -= fabs(dist);
 		minlight = cl_dlights[lnum].minlight;
 		if (rad < minlight)
 			continue;
 		minlight = rad - minlight;
 
-		if (cl_dlights[lnum].radius < 0) rad = -rad;
+		if (cl_dlights[lnum].radius < 0)
+			rad = -rad;
 
 		for (i=0 ; i<3 ; i++)
 		{
-			impact[i] = cl_dlights[lnum].origin[i] -
-					surf->plane->normal[i]*dist;
+			impact[i] = cl_dlights[lnum].origin[i] - surf->plane->normal[i]*dist;
 		}
 
 		local0 = DotProduct (impact, tex->vecs[0]) + tex->vecs[0][3] - surf->texturemins[0];
@@ -105,7 +115,7 @@ void R_AddDynamicLights (void)
 					dist = td + (sd>>1);
 				if (dist < minlight)
 				{
-					unsigned temp;
+					unsigned	temp;
 					temp = (rad - dist)*256;
 					i = t*smax + s;
 					if (!cl_dlights[lnum].dark)
@@ -141,16 +151,16 @@ R_BuildLightMap
 Combine and scale multiple lightmaps into the 8.8 format in blocklights
 ===============
 */
-void R_BuildLightMap (void)
+static void R_BuildLightMap (void)
 {
-	int			smax, tmax;
-	int			t;
-	int			i, size;
+	int		smax, tmax;
+	int		t;
+	int		i, size;
 	byte		*lightmap;
 	unsigned	scale;
-	int			maps;
+	int		maps;
 	msurface_t	*surf;
-	int			light;
+	int		light;
 
 	surf = r_drawsurf.surf;
 
@@ -170,21 +180,19 @@ void R_BuildLightMap (void)
 	{
 		light = (255-currententity->abslight)<<VID_CBITS;
 		for (i=0 ; i<size ; i++)
-			blocklights[i] = light;   // 0 - 16383, 0 = full bright
+			blocklights[i] = light;	// 0 - 16383, 0 = full bright
 		return;
 	}
-	
+
 // clear to ambient
 	for (i=0 ; i<size ; i++)
 		blocklights[i] = r_refdef.ambientlight<<8;
 
-
 // add all the lightmaps
 	if (lightmap)
-		for (maps = 0 ; maps < MAXLIGHTMAPS && surf->styles[maps] != 255 ;
-			 maps++)
+		for (maps = 0 ; maps < MAXLIGHTMAPS && surf->styles[maps] != 255 ; maps++)
 		{
-			scale = r_drawsurf.lightadj[maps];	// 8.8 fraction		
+			scale = r_drawsurf.lightadj[maps];	// 8.8 fraction
 			for (i=0 ; i<size ; i++)
 				blocklights[i] += lightmap[i] * scale;
 			lightmap += size;	// skip to next lightmap
@@ -224,13 +232,13 @@ texture_t *R_TextureAnimation (texture_t *base)
 		if (base->alternate_anims)
 			base = base->alternate_anims;
 	}
-	
+
 	if (!base->anim_total)
 		return base;
 
 	reletive = (int)(cl.time*10) % base->anim_total;
 
-	count = 0;	
+	count = 0;
 	while (base->anim_min > reletive || base->anim_max <= reletive)
 	{
 		base = base->anim_next;
@@ -252,38 +260,36 @@ R_DrawSurface
 void R_DrawSurface (void)
 {
 	unsigned char	*basetptr;
-	int				smax, tmax, twidth;
-	int				u;
-	int				soffset, basetoffset, texwidth;
-	int				horzblockstep;
+	int		smax, tmax, twidth;
+	int		u;
+	int		soffset, basetoffset, texwidth;
+	int		horzblockstep;
 	unsigned char	*pcolumndest;
-	void			(*pblockdrawer)(void);
-	texture_t		*mt;
+	void		(*pblockdrawer)(void);
+	texture_t	*mt;
 
 // calculate the lightings
 	R_BuildLightMap ();
-	
+
 	surfrowbytes = r_drawsurf.rowbytes;
 
 	mt = r_drawsurf.texture;
-	
+
 	r_source = (byte *)mt + mt->offsets[r_drawsurf.surfmip];
-	
+
 // the fractional light values should range from 0 to (VID_GRADES - 1) << 16
 // from a source range of 0 - 255
-	
+
 	texwidth = mt->width >> r_drawsurf.surfmip;
 
 	blocksize = 16 >> r_drawsurf.surfmip;
 	blockdivshift = 4 - r_drawsurf.surfmip;
 	blockdivmask = (1 << blockdivshift) - 1;
-	
+
 	r_lightwidth = (r_drawsurf.surf->extents[0]>>4)+1;
 
 	r_numhblocks = r_drawsurf.surfwidth >> blockdivshift;
 	r_numvblocks = r_drawsurf.surfheight >> blockdivshift;
-
-//==============================
 
 	if (r_pixbytes == 1)
 	{
@@ -311,8 +317,8 @@ void R_DrawSurface (void)
 
 // << 16 components are to guarantee positive values for %
 	soffset = ((soffset >> r_drawsurf.surfmip) + (smax << 16)) % smax;
-	basetptr = &r_source[((((basetoffset >> r_drawsurf.surfmip) 
-		+ (tmax << 16)) % tmax) * twidth)];
+	basetptr = &r_source[((((basetoffset >> r_drawsurf.surfmip)
+					+ (tmax << 16)) % tmax) * twidth)];
 
 	pcolumndest = r_drawsurf.surfdat;
 
@@ -344,9 +350,9 @@ void R_DrawSurface (void)
 R_DrawSurfaceBlock8_mip0
 ================
 */
-void R_DrawSurfaceBlock8_mip0 (void)
+static void R_DrawSurfaceBlock8_mip0 (void)
 {
-	int				v, i, b, lightstep, lighttemp, light;
+	int		v, i, b, lightstep, lighttemp, light;
 	unsigned char	pix, *psource, *prowdest;
 
 	psource = pbasesource;
@@ -372,11 +378,10 @@ void R_DrawSurfaceBlock8_mip0 (void)
 			for (b=15; b>=0; b--)
 			{
 				pix = psource[b];
-				prowdest[b] = ((unsigned char *)vid.colormap)
-						[(light & 0xFF00) + pix];
+				prowdest[b] = ((unsigned char *)vid.colormap)[(light & 0xFF00) + pix];
 				light += lightstep;
 			}
-	
+
 			psource += sourcetstep;
 			lightright += lightrightstep;
 			lightleft += lightleftstep;
@@ -394,9 +399,9 @@ void R_DrawSurfaceBlock8_mip0 (void)
 R_DrawSurfaceBlock8_mip1
 ================
 */
-void R_DrawSurfaceBlock8_mip1 (void)
+static void R_DrawSurfaceBlock8_mip1 (void)
 {
-	int				v, i, b, lightstep, lighttemp, light;
+	int		v, i, b, lightstep, lighttemp, light;
 	unsigned char	pix, *psource, *prowdest;
 
 	psource = pbasesource;
@@ -422,11 +427,10 @@ void R_DrawSurfaceBlock8_mip1 (void)
 			for (b=7; b>=0; b--)
 			{
 				pix = psource[b];
-				prowdest[b] = ((unsigned char *)vid.colormap)
-						[(light & 0xFF00) + pix];
+				prowdest[b] = ((unsigned char *)vid.colormap)[(light & 0xFF00) + pix];
 				light += lightstep;
 			}
-	
+
 			psource += sourcetstep;
 			lightright += lightrightstep;
 			lightleft += lightleftstep;
@@ -444,9 +448,9 @@ void R_DrawSurfaceBlock8_mip1 (void)
 R_DrawSurfaceBlock8_mip2
 ================
 */
-void R_DrawSurfaceBlock8_mip2 (void)
+static void R_DrawSurfaceBlock8_mip2 (void)
 {
-	int				v, i, b, lightstep, lighttemp, light;
+	int		v, i, b, lightstep, lighttemp, light;
 	unsigned char	pix, *psource, *prowdest;
 
 	psource = pbasesource;
@@ -472,11 +476,10 @@ void R_DrawSurfaceBlock8_mip2 (void)
 			for (b=3; b>=0; b--)
 			{
 				pix = psource[b];
-				prowdest[b] = ((unsigned char *)vid.colormap)
-						[(light & 0xFF00) + pix];
+				prowdest[b] = ((unsigned char *)vid.colormap)[(light & 0xFF00) + pix];
 				light += lightstep;
 			}
-	
+
 			psource += sourcetstep;
 			lightright += lightrightstep;
 			lightleft += lightleftstep;
@@ -494,9 +497,9 @@ void R_DrawSurfaceBlock8_mip2 (void)
 R_DrawSurfaceBlock8_mip3
 ================
 */
-void R_DrawSurfaceBlock8_mip3 (void)
+static void R_DrawSurfaceBlock8_mip3 (void)
 {
-	int				v, i, b, lightstep, lighttemp, light;
+	int		v, i, b, lightstep, lighttemp, light;
 	unsigned char	pix, *psource, *prowdest;
 
 	psource = pbasesource;
@@ -522,11 +525,10 @@ void R_DrawSurfaceBlock8_mip3 (void)
 			for (b=1; b>=0; b--)
 			{
 				pix = psource[b];
-				prowdest[b] = ((unsigned char *)vid.colormap)
-						[(light & 0xFF00) + pix];
+				prowdest[b] = ((unsigned char *)vid.colormap)[(light & 0xFF00) + pix];
 				light += lightstep;
 			}
-	
+
 			psource += sourcetstep;
 			lightright += lightrightstep;
 			lightleft += lightleftstep;
@@ -546,11 +548,11 @@ R_DrawSurfaceBlock16
 FIXME: make this work
 ================
 */
-void R_DrawSurfaceBlock16 (void)
+static void R_DrawSurfaceBlock16 (void)
 {
-	int				k;
+	int		k;
+	int		lighttemp, lightstep, light;
 	unsigned char	*psource;
-	int				lighttemp, lightstep, light;
 	unsigned short	*prowdest;
 
 	prowdest = (unsigned short *)prowdestbase;
@@ -559,7 +561,7 @@ void R_DrawSurfaceBlock16 (void)
 	{
 		unsigned short	*pdest;
 		unsigned char	pix;
-		int				b;
+		int			b;
 
 		psource = pbasesource;
 		lighttemp = lightright - lightleft;
@@ -596,19 +598,19 @@ void R_DrawSurfaceBlock16 (void)
 R_GenTurbTile
 ================
 */
-void R_GenTurbTile (pixel_t *pbasetex, void *pdest)
+static void R_GenTurbTile (pixel_t *pbasetex, void *pdest)
 {
 	int		*turb;
 	int		i, j, s, t;
 	byte	*pd;
-	
+
 	turb = sintable + ((int)(cl.time*SPEED)&(CYCLE-1));
 	pd = (byte *)pdest;
 
 	for (i=0 ; i<TILE_SIZE ; i++)
 	{
 		for (j=0 ; j<TILE_SIZE ; j++)
-		{	
+		{
 			s = (((j << 16) + turb[i & (CYCLE-1)]) >> 16) & 63;
 			t = (((i << 16) + turb[j & (CYCLE-1)]) >> 16) & 63;
 			*pd++ = *(pbasetex + (t<<6) + s);
@@ -622,10 +624,10 @@ void R_GenTurbTile (pixel_t *pbasetex, void *pdest)
 R_GenTurbTile16
 ================
 */
-void R_GenTurbTile16 (pixel_t *pbasetex, void *pdest)
+static void R_GenTurbTile16 (pixel_t *pbasetex, void *pdest)
 {
-	int				*turb;
-	int				i, j, s, t;
+	int			*turb;
+	int			i, j, s, t;
 	unsigned short	*pd;
 
 	turb = sintable + ((int)(cl.time*SPEED)&(CYCLE-1));
@@ -634,7 +636,7 @@ void R_GenTurbTile16 (pixel_t *pbasetex, void *pdest)
 	for (i=0 ; i<TILE_SIZE ; i++)
 	{
 		for (j=0 ; j<TILE_SIZE ; j++)
-		{	
+		{
 			s = (((j << 16) + turb[i & (CYCLE-1)]) >> 16) & 63;
 			t = (((i << 16) + turb[j & (CYCLE-1)]) >> 16) & 63;
 			*pd++ = d_8to16table[*(pbasetex + (t<<6) + s)];
@@ -682,6 +684,9 @@ void R_GenTile (msurface_t *psurf, void *pdest)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/07/16 23:23:52  sezero
+ * killed fastfabs, not worthy of keeping anymore
+ *
  * Revision 1.4  2005/05/19 16:41:50  sezero
  * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
  *
