@@ -73,13 +73,13 @@ static keyname_t keynames[] =
 	{"END", K_END},
 
 	{"MOUSE1", K_MOUSE1},
-#ifndef WITH_SDL
-	{"MOUSE2", K_MOUSE2},
-	{"MOUSE3", K_MOUSE3},
-#else
-/* ugly hack to avoid mouse2/3 fighting in in_sdl.c. O.S. */
+#ifdef	SWAP_MOUSE23
+// hack to avoid mouse2/3 fight in in_sdl.c
 	{"MOUSE2", K_MOUSE3},
 	{"MOUSE3", K_MOUSE2},
+#else
+	{"MOUSE2", K_MOUSE2},
+	{"MOUSE3", K_MOUSE3},
 #endif
 
 	{"JOY1", K_JOY1},

@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.9 2006-03-16 21:19:01 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.10 2006-04-05 18:24:42 sezero Exp $
 */
 
 typedef struct
@@ -178,29 +178,6 @@ typedef struct client_s
 #define	FL2_CROUCHED		4096
 
 
-// edict->drawflags
-#define MLS_MASKIN		7	// MLS: Model Light Style
-#define MLS_MASKOUT		248
-#define MLS_NONE		0
-#define MLS_FULLBRIGHT		1
-#define MLS_POWERMODE		2
-#define MLS_TORCH		3
-#define MLS_TOTALDARK		4
-#define MLS_ABSLIGHT		7
-#define SCALE_TYPE_MASKIN	24
-#define SCALE_TYPE_MASKOUT	231
-#define SCALE_TYPE_UNIFORM	0	// Scale X, Y, and Z
-#define SCALE_TYPE_XYONLY	8	// Scale X and Y
-#define SCALE_TYPE_ZONLY	16	// Scale Z
-#define SCALE_ORIGIN_MASKIN	96
-#define SCALE_ORIGIN_MASKOUT	159
-#define SCALE_ORIGIN_CENTER	0	// Scaling origin at object center
-#define SCALE_ORIGIN_BOTTOM	32	// Scaling origin at object bottom
-#define SCALE_ORIGIN_TOP	64	// Scaling origin at object top
-#define DRF_TRANSLUCENT		128
-#define DRF_ANIMATEONCE		256
-
-
 // entity effects
 
 #define	EF_BRIGHTFIELD			1
@@ -211,13 +188,6 @@ typedef struct client_s
 #define EF_DARKFIELD			32
 #define EF_LIGHT			64
 #define EF_NODRAW			128
-
-// Player Classes
-#define CLASS_PALADIN			1
-#define CLASS_CLERIC 			2
-#define CLASS_NECROMANCER		3
-#define CLASS_THEIF   			4
-#define CLASS_DEMON			5
 
 // Built-in Spawn Flags
 #define SPAWNFLAG_NOT_PALADIN		0x00000100
@@ -311,6 +281,19 @@ void SV_SpawnServer (char *server, char *startspot);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2006/03/16 21:19:01  sezero
+ * Restored net compatibility with SC2_OBJ and SC2_OBJ2:
+ * SC2_OBJ and SC2_OBJ2 are actually only legible for the
+ * mission pack (the objectives).  still keeping them as
+ * H2-legible here, so that we remain net-compatible with
+ * Hammer of Thyrion versions prior to 1.4.0 and with other
+ * hexen2 source ports and demos recorded can still be
+ * played back. The info_mask and infomask2 members of the
+ * client structure will not be processed by the rest of
+ * the code for pure hexen2 builds, though.
+ * It would be much better if we'd made the engine handle
+ * both H2 and H2MP cases *correctly*. Hmm...
+ *
  * Revision 1.8  2006/03/13 22:28:51  sezero
  * removed the expansion pack only feature of objective strings from
  * hexen2-only builds (many new ifdef H2MP stuff). removed the expansion

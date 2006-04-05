@@ -1,8 +1,9 @@
-// quakedef.h -- primary header for server
+/*
+	quakedef.h
+	primary header for server
 
-#define	QUAKE_GAME			// as opposed to utilities
-
-//define	PARANOID			// speed sapping error checking
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/qwsvdef.h,v 1.7 2006-04-05 18:24:42 sezero Exp $
+*/
 
 #include <sys/types.h>
 #include <math.h>
@@ -33,12 +34,6 @@
 #include "world.h"
 #include "pmove.h"
 
-#ifndef DEMOBUILD
-#define AOT_USERDIR ".hexen2"
-#else
-#define AOT_USERDIR ".hexen2demo"
-#endif
-
 //=============================================================================
 
 // the host system specifies the base of the directory tree, the
@@ -48,31 +43,29 @@
 typedef struct
 {
 	char	*basedir;
-	char  *userdir;
+	char	*userdir;		// userspace directory on UNIX platforms
 	char	*cachedir;		// for development over ISDN lines
-	int		argc;
+	int	argc;
 	char	**argv;
 	void	*membase;
-	int		memsize;
+	int	memsize;
 } quakeparms_t;
 
 
 //=============================================================================
 
-#define MAX_NUM_ARGVS	50
-
 //
 // host
 //
-extern	quakeparms_t host_parms;
+extern	quakeparms_t	host_parms;
 
 extern	cvar_t		sys_nostdout;
 extern	cvar_t		developer;
 
-extern	qboolean	host_initialized;		// true if into command execution
+extern	qboolean	host_initialized;	// true if into command execution
 extern	double		host_frametime;
-extern	double		realtime;			// not bounded in any way, changed at
-										// start of every frame, never reset
+extern	double		realtime;		// not bounded in any way, changed at
+						// start of every frame, never reset
 
 void SV_Error (char *error, ...);
 void SV_Init (quakeparms_t *parms);
@@ -80,5 +73,6 @@ void SV_Init (quakeparms_t *parms);
 void Con_Printf (char *fmt, ...);
 void Con_DPrintf (char *fmt, ...);
 
-extern	unsigned int defLosses;	// Defenders losses in Siege
-extern	unsigned int attLosses;	// Attackers Losses in Siege
+extern	unsigned int	defLosses;	// Defenders losses in Siege
+extern	unsigned int	attLosses;	// Attackers Losses in Siege
+

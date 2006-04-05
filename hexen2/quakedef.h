@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.60 2006-04-05 18:22:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.61 2006-04-05 18:24:42 sezero Exp $
 */
 
 
@@ -12,12 +12,6 @@
 
 #define __STRINGIFY(x) #x
 #define STRINGIFY(x) __STRINGIFY(x)
-
-#ifdef PLATFORM_UNIX
-#include "linux_inc.h"
-#define WITH_SDL	/* for the mouse2/3 hack in keys.c */
-			/* also enables some SDL-only things */
-#endif
 
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		4
@@ -32,14 +26,17 @@
 #define	ENGINE_VERSION		1.15
 #define	ENGINE_NAME		"Hexen2"
 
+#ifndef	DEMOBUILD
+#define	AOT_USERDIR		".hexen2"
+#else
+#define	AOT_USERDIR		".hexen2demo"
+#endif
+
+#define	MAX_QPATH	64	// max length of a quake game pathname
+#define	MAX_OSPATH	256	// max length of a filesystem pathname
+
 #define	QUAKE_GAME		// as opposed to utilities
 //define	PARANOID	// speed sapping error checking
-
-#ifndef DEMOBUILD
-#define AOT_USERDIR ".hexen2"
-#else
-#define AOT_USERDIR ".hexen2demo"
-#endif
 
 #include <sys/types.h>
 #include <math.h>
@@ -69,32 +66,38 @@
 #define	ROLL		2
 
 
+//
 // Timing macros
+//
 #define HX_FRAME_TIME	0.05
 #define HX_FPS		20
 
 
-#define	MAX_QPATH	64		// max length of a quake game pathname
+//#ifdef DEMOBUILD
+//#define	MAX_SCOREBOARD	8
+//#endif
+#define	MAX_SCOREBOARD	16
+#define	MAX_SCOREBOARDNAME	32
 
-#define	MAX_OSPATH	256		// max length of a filesystem pathname
+#define	SOUND_CHANNELS	8
+
 
 #define	ON_EPSILON	0.1		// point on plane side epsilon
 
-//#define	MAX_MSGLEN		8000		// max length of a reliable message
-//#define	MAX_MSGLEN		16000		// max length of a reliable message
+//#define	MAX_MSGLEN	8000		// max length of a reliable message
+//#define	MAX_MSGLEN	16000		// max length of a reliable message
 #define	MAX_MSGLEN	20000		// for mission pack tibet2
 
-#define	MAX_DATAGRAM	1024		// max length of unreliable message
 //#define	MAX_DATAGRAM	2048		// max length of unreliable message  TEMP: This only for E3
+#define	MAX_DATAGRAM	1024		// max length of unreliable message
+
 
 //
 // per-level limits
 //
 #define	MAX_EDICTS	600		// FIXME: ouch! ouch! ouch!
 #define	MAX_LIGHTSTYLES	64
-
 #define	MAX_MODELS	512		// Sent over the net as a word
-
 #define	MAX_SOUNDS	512		// Sent over the net as a byte
 
 
@@ -125,11 +128,12 @@
 //#define	STAT_GREENMANA		16
 //#define	STAT_EXPERIENCE		17
 
-
 #define	MAX_INVENTORY		15	// Max inventory array size
 
-// stock defines
 
+//
+// stock defines
+//
 #define	IT_SHOTGUN		1
 #define	IT_SUPER_SHOTGUN	2
 #define	IT_NAILGUN		4
@@ -137,38 +141,65 @@
 #define	IT_GRENADE_LAUNCHER	16
 #define	IT_ROCKET_LAUNCHER	32
 #define	IT_LIGHTNING		64
-#define IT_SUPER_LIGHTNING      128
-#define IT_SHELLS               256
-#define IT_NAILS                512
-#define IT_ROCKETS              1024
-#define IT_CELLS                2048
-#define IT_AXE                  4096
-#define IT_ARMOR1               8192
-#define IT_ARMOR2               16384
-#define IT_ARMOR3               32768
-#define IT_SUPERHEALTH          65536
-#define IT_KEY1                 131072
-#define IT_KEY2                 262144
+#define	IT_SUPER_LIGHTNING	128
+#define	IT_SHELLS		256
+#define	IT_NAILS		512
+#define	IT_ROCKETS		1024
+#define	IT_CELLS		2048
+#define	IT_AXE			4096
+#define	IT_ARMOR1		8192
+#define	IT_ARMOR2		16384
+#define	IT_ARMOR3		32768
+#define	IT_SUPERHEALTH		65536
+#define	IT_KEY1			131072
+#define	IT_KEY2			262144
 #define	IT_INVISIBILITY		524288
 #define	IT_INVULNERABILITY	1048576
 #define	IT_SUIT			2097152
 #define	IT_QUAD			4194304
-#define IT_SIGIL1               (1<<28)
-#define IT_SIGIL2               (1<<29)
-#define IT_SIGIL3               (1<<30)
-#define IT_SIGIL4               (1<<31)
+#define	IT_SIGIL1		(1 << 28)
+#define	IT_SIGIL2		(1 << 29)
+#define	IT_SIGIL3		(1 << 30)
+#define	IT_SIGIL4		(1 << 31)
 
-#define ART_HASTE			1
-#define ART_INVINCIBILITY		2
-#define ART_TOMEOFPOWER			4
-#define ART_INVISIBILITY		8
-#define ARTFLAG_FROZEN			128
-#define ARTFLAG_STONED			256
-#define ARTFLAG_DIVINE_INTERVENTION	512
+#define	ART_HASTE			1
+#define	ART_INVINCIBILITY		2
+#define	ART_TOMEOFPOWER			4
+#define	ART_INVISIBILITY		8
+#define	ARTFLAG_FROZEN			128
+#define	ARTFLAG_STONED			256
+#define	ARTFLAG_DIVINE_INTERVENTION	512
+
+//
+// edict->drawflags
+//
+#define MLS_MASKIN			7	// MLS: Model Light Style
+#define MLS_MASKOUT			248
+#define MLS_NONE			0
+#define MLS_FULLBRIGHT			1
+#define MLS_POWERMODE			2
+#define MLS_TORCH			3
+#define MLS_TOTALDARK			4
+#define MLS_ABSLIGHT			7
+#define SCALE_TYPE_MASKIN		24
+#define SCALE_TYPE_MASKOUT		231
+#define SCALE_TYPE_UNIFORM		0	// Scale X, Y, and Z
+#define SCALE_TYPE_XYONLY		8	// Scale X and Y
+#define SCALE_TYPE_ZONLY		16	// Scale Z
+#define SCALE_ORIGIN_MASKIN		96
+#define SCALE_ORIGIN_MASKOUT		159
+#define SCALE_ORIGIN_CENTER		0	// Scaling origin at object center
+#define SCALE_ORIGIN_BOTTOM		32	// Scaling origin at object bottom
+#define SCALE_ORIGIN_TOP		64	// Scaling origin at object top
+#define DRF_TRANSLUCENT			128
+#define DRF_ANIMATEONCE			256
+
 
 //===========================================
 
+//
 // game data flags
+//
 #define	GAME_DEMO		1
 #define	GAME_OEM		2
 #define	GAME_MODIFIED		4
@@ -178,19 +209,18 @@
 #define	GAME_PORTALS		64
 #define	GAME_HEXENWORLD		128
 
+//
+// Player Classes
+//
 #define MAX_PLAYER_CLASS	5
 #define	PORTALS_EXTRA_CLASSES	1
 #define ABILITIES_STR_INDEX	400
 
-#ifdef DEMOBUILD
-#	define	MAX_SCOREBOARD	8
-#else
-#	define	MAX_SCOREBOARD	16
-#endif
-
-#define	MAX_SCOREBOARDNAME	32
-
-#define	SOUND_CHANNELS		8
+#define CLASS_PALADIN		1
+#define CLASS_CLERIC 		2
+#define CLASS_NECROMANCER	3
+#define CLASS_THEIF   		4
+#define CLASS_DEMON		5
 
 #include "common.h"
 #include "bspfile.h"
@@ -260,21 +290,21 @@ typedef struct
 
 typedef struct
 {
-	entity_state2_t states[MAX_CLIENT_STATES];
-//	unsigned long frame;
-//	unsigned long flags;
-	int count;
+	entity_state2_t	states[MAX_CLIENT_STATES];
+//	unsigned long	frame;
+//	unsigned long	flags;
+	int		count;
 } client_frames_t;
 
 typedef struct
 {
-	entity_state2_t states[MAX_CLIENT_STATES*2];
-	int count;
+	entity_state2_t	states[MAX_CLIENT_STATES*2];
+	int		count;
 } client_frames2_t;
 
 typedef struct
 {
-	client_frames_t frames[MAX_FRAMES+2]; // 0 = base, 1-max = proposed, max+1 = too late
+	client_frames_t	frames[MAX_FRAMES+2]; // 0 = base, 1-max = proposed, max+1 = too late
 } client_state2_t;
 
 
@@ -323,7 +353,7 @@ typedef struct
 typedef struct
 {
 	char	*basedir;
-        char    *userdir;               // userspace directory on UNIX platforms
+	char	*userdir;		// userspace directory on UNIX platforms
 	char	*cachedir;		// for development over ISDN lines
 	int	argc;
 	char	**argv;
@@ -334,15 +364,10 @@ typedef struct
 
 //=============================================================================
 
-
-
-extern qboolean noclip_anglehack;
-
-
 //
 // host
 //
-extern	quakeparms_t host_parms;
+extern	quakeparms_t	host_parms;
 
 extern	cvar_t		sys_ticrate;
 extern	cvar_t		sys_nostdout;
@@ -354,7 +379,7 @@ extern	byte		*host_basepal;
 extern	byte		*host_colormap;
 extern	int		host_framecount;	// incremented every frame, never reset
 extern	double		realtime;		// not bounded in any way, changed at
-										// start of every frame, never reset
+						// start of every frame, never reset
 
 void Host_ClearMemory (void);
 void Host_InitCommands (void);
@@ -368,22 +393,24 @@ void Host_ClientCommands (char *fmt, ...);
 void Host_ShutdownServer (qboolean crash);
 qboolean SaveGamestate (qboolean ClientsOnly);
 
-extern qboolean		msg_suppress_1;		// suppresses resolution and cache size console output
-										//  an fullscreen DIB focus gain/loss
-extern int		current_skill;		// skill level for currently loaded level (in case
-										//  the user changes the cvar while the level is
-										//  running, this reflects the level actually in use)
+extern	qboolean	isDedicated;
 
-extern qboolean		isDedicated;
+extern	qboolean	msg_suppress_1;	// suppresses resolution and cache size console output
+					//  a fullscreen DIB focus gain/loss
+extern	int		current_skill;	// skill level for currently loaded level (in case
+					//  the user changes the cvar while the level is
+					//  running, this reflects the level actually in use)
 
-extern int		sv_kingofhill;
-extern qboolean		intro_playing;	// whether the mission pack intro is playing
-extern qboolean		skip_start;	// for the mission pack intro
-extern int		num_intro_msg;	// for the mission pack intro
+extern	qboolean	noclip_anglehack;
+extern	int		sv_kingofhill;
+extern	qboolean	intro_playing;	// whether the mission pack intro is playing
+extern	qboolean	skip_start;	// for the mission pack intro
+extern	int		num_intro_msg;	// for the mission pack intro
+
 //
 // chase
 //
-extern	cvar_t	chase_active;
+extern	cvar_t		chase_active;
 
 void Chase_Init (void);
 void Chase_Reset (void);
@@ -392,6 +419,9 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.60  2006/04/05 18:22:59  sezero
+ * cdaudio and midi music headers tidy-up
+ *
  * Revision 1.59  2006/04/05 06:19:07  sezero
  * Marked the sanpshot of 2006-04-04 as 1.4.0-RC2.
  *

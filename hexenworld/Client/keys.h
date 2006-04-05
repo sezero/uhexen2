@@ -46,6 +46,12 @@
 #define	K_MOUSE2		201
 #define	K_MOUSE3		202
 
+// hack to avoid mouse2/3 fight in in_sdl.c
+#ifdef PLATFORM_UNIX
+#define SWAP_MOUSE23
+#endif
+
+
 //
 // joystick buttons
 //

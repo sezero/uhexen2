@@ -1,5 +1,9 @@
+/*
+	bothdefs.h
+	defs common to both client and server
 
-// defs common to client and server
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.23 2006-04-05 18:24:42 sezero Exp $
+*/
 
 #define __STRINGIFY(x) #x
 #define STRINGIFY(x) __STRINGIFY(x)
@@ -9,13 +13,25 @@
 #define	HOT_VERSION_MIN		0
 #define	HOT_VERSION_BETA	1
 #if HOT_VERSION_BETA
-#define HOT_VERSION_BETA_STR	"RC2"
-#define HOT_VERSION_BETA_DATE	"2006-04-04"
+#define	HOT_VERSION_BETA_STR	"RC2"
+#define	HOT_VERSION_BETA_DATE	"2006-04-04"
 #endif
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
 #define	ENGINE_VERSION		0.17
 #define	ENGINE_NAME		"HexenWorld"
+
+#ifndef	DEMOBUILD
+#define	AOT_USERDIR		".hexen2"
+#else
+#define	AOT_USERDIR		".hexen2demo"
+#endif
+
+#define	MAX_QPATH	64	// max length of a quake game pathname
+#define	MAX_OSPATH	256	// max length of a filesystem pathname
+
+#define	QUAKE_GAME		// as opposed to utilities
+//define	PARANOID	// speed sapping error checking
 
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
 #define CACHE_SIZE	32	// used to align key data structures
@@ -23,6 +39,8 @@
 #define UNUSED(x)	(x = x)	// for pesky compiler / lint warnings
 
 #define	MINIMUM_MEMORY	0x550000
+
+#define MAX_NUM_ARGVS	50
 
 // up / down
 #define	PITCH		0
@@ -34,7 +52,9 @@
 #define	ROLL		2
 
 
+//
 // Timing macros
+//
 #define HX_FRAME_TIME	0.05
 #define HX_FPS		20
 
@@ -43,9 +63,6 @@
 
 #define	SOUND_CHANNELS	8
 
-
-#define	MAX_QPATH	64		// max length of a quake game pathname
-#define	MAX_OSPATH	256		// max length of a filesystem pathname
 
 #define	ON_EPSILON	0.1		// point on plane side epsilon
 
@@ -96,60 +113,42 @@
 #define	IT_SUPER_SHOTGUN	2
 #define	IT_NAILGUN		4
 #define	IT_SUPER_NAILGUN	8
-
 #define	IT_GRENADE_LAUNCHER	16
 #define	IT_ROCKET_LAUNCHER	32
 #define	IT_LIGHTNING		64
 #define	IT_SUPER_LIGHTNING	128
-
 #define	IT_SHELLS		256
 #define	IT_NAILS		512
 #define	IT_ROCKETS		1024
 #define	IT_CELLS		2048
-
 #define	IT_AXE			4096
-
 #define	IT_ARMOR1		8192
 #define	IT_ARMOR2		16384
 #define	IT_ARMOR3		32768
-
 #define	IT_SUPERHEALTH		65536
-
 #define	IT_KEY1			131072
 #define	IT_KEY2			262144
-
 #define	IT_INVISIBILITY		524288
-
 #define	IT_INVULNERABILITY	1048576
 #define	IT_SUIT			2097152
 #define	IT_QUAD			4194304
+#define	IT_SIGIL1		(1 << 28)
+#define	IT_SIGIL2		(1 << 29)
+#define	IT_SIGIL3		(1 << 30)
+#define	IT_SIGIL4		(1 << 31)
 
-#define	IT_SIGIL1		(1<<28)
-
-#define	IT_SIGIL2		(1<<29)
-#define	IT_SIGIL3		(1<<30)
-#define	IT_SIGIL4		(1<<31)
-
-#define ART_HASTE			1
-#define ART_INVINCIBILITY		2
-#define ART_TOMEOFPOWER			4
-#define ART_INVISIBILITY		8
-#define ARTFLAG_FROZEN			16
-#define ARTFLAG_STONED			32
-#define ARTFLAG_DIVINE_INTERVENTION	64
-#define ARTFLAG_BOOTS			128
+#define	ART_HASTE			1
+#define	ART_INVINCIBILITY		2
+#define	ART_TOMEOFPOWER			4
+#define	ART_INVISIBILITY		8
+#define	ARTFLAG_FROZEN			16
+#define	ARTFLAG_STONED			32
+#define	ARTFLAG_DIVINE_INTERVENTION	64
+#define	ARTFLAG_BOOTS			128
 
 //
-// print flags
-//
-#define	PRINT_LOW			0	// pickup messages
-#define	PRINT_MEDIUM			1	// death messages
-#define	PRINT_HIGH			2	// critical messages
-#define	PRINT_CHAT			3	// chat messages
-#define PRINT_SOUND			4	// says a sound
-
-
 // edict->drawflags
+//
 #define MLS_MASKIN			7	// MLS: Model Light Style
 #define MLS_MASKOUT			248
 #define MLS_NONE			0
@@ -170,7 +169,9 @@
 #define SCALE_ORIGIN_TOP		64	// Scaling origin at object top
 #define DRF_TRANSLUCENT			128
 
+//
 // game data flags
+//
 #define	GAME_DEMO		1
 #define	GAME_OEM		2
 #define	GAME_MODIFIED		4
@@ -180,7 +181,9 @@
 #define	GAME_PORTALS		64
 #define	GAME_HEXENWORLD		128
 
+//
 // Player Classes
+//
 #define MAX_PLAYER_CLASS	6
 #define ABILITIES_STR_INDEX	400
 
@@ -191,11 +194,25 @@
 #define CLASS_DEMON		5
 #define CLASS_DWARF		6
 
+//
 //Siege teams
+//
 #define ST_DEFENDER		1
 #define ST_ATTACKER   		2
 
+//
 //Dm Modes
+//
 #define DM_CAPTURE_THE_TOKEN	1
 #define DM_HUNTER		2
 #define DM_SIEGE		3
+
+//
+// print flags
+//
+#define	PRINT_LOW		0	// pickup messages
+#define	PRINT_MEDIUM		1	// death messages
+#define	PRINT_HIGH		2	// critical messages
+#define	PRINT_CHAT		3	// chat messages
+#define	PRINT_SOUND		4	// says a sound
+
