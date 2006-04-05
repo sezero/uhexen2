@@ -16,10 +16,6 @@ make $SENDARGS $2 $3 $4 h2
 make clean
 make $SENDARGS $2 $3 $4 glh2
 make clean
-make $SENDARGS $2 $3 $4 mp
-make clean
-make $SENDARGS $2 $3 $4 glmp
-make clean
 exit 0
 fi
 
