@@ -1,19 +1,15 @@
 allows the fifth demoness (succubus) class
 in old mission games for the expansion pack
 
-diff -U5 -rN uhexen2-20060217/hexen2/menu.c uhexen2-20060218/hexen2/menu.c
---- uhexen2-20060217/hexen2/menu.c	2006-02-18 10:51:10.000000000 +0200
-+++ uhexen2-20060218/hexen2/menu.c	2006-02-18 10:53:38.000000000 +0200
-@@ -924,11 +924,11 @@
- 	class_flag=1;
- }
+diff -urNp uhexen2-src-20060330/hexen2/menu.c uhexen2-src-20060402/hexen2/menu.c
+--- uhexen2-src-20060330/hexen2/menu.c	2006-04-03 11:27:26.000000000 +0300
++++ uhexen2-src-20060402/hexen2/menu.c	2006-04-03 11:28:24.000000000 +0300
+@@ -925,7 +925,7 @@ static int	m_class_cursor;
  
  // change the define below to 0 if you want to allow the
  // demoness class  in old mission through the menu system
 -#define DISALLOW_DEMONESS_IN_OLD_GAME	1
 +#define DISALLOW_DEMONESS_IN_OLD_GAME	0
  
- #ifndef H2MP
- // do not touch these
- #undef DISALLOW_DEMONESS_IN_OLD_GAME
- #define DISALLOW_DEMONESS_IN_OLD_GAME	0
+ static void M_Class_Draw (void)
+ {
