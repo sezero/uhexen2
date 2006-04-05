@@ -71,11 +71,6 @@ make -C hexen2 h2
 make -C hexen2 clean
 make -C hexen2 glh2
 make -C hexen2 clean
-# Mission Pack binaries
-make -C hexen2 mp
-make -C hexen2 clean
-make -C hexen2 glmp
-make -C hexen2 clean
 # HexenWorld binaries
 make -C hexenworld/Server
 make -C hexenworld/Master
@@ -123,9 +118,7 @@ cd ../..
 %{__rm} -rf %{buildroot}
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/docs
 %{__install} -D -m755 hexen2/hexen2 %{buildroot}/%{_prefix}/games/%{name}/hexen2
-%{__install} -D -m755 hexen2/h2mp %{buildroot}/%{_prefix}/games/%{name}/h2mp
 %{__install} -D -m755 hexen2/glhexen2 %{buildroot}/%{_prefix}/games/%{name}/glhexen2
-%{__install} -D -m755 hexen2/glh2mp %{buildroot}/%{_prefix}/games/%{name}/glh2mp
 %{__install} -D -m755 hexenworld/Server/hwsv %{buildroot}/%{_prefix}/games/%{name}/hwsv
 %{__install} -D -m755 hexenworld/Master/hwmaster %{buildroot}/%{_prefix}/games/%{name}/hwmaster
 %{__install} -D -m755 hexenworld/Client/hwcl %{buildroot}/%{_prefix}/games/%{name}/hwcl
@@ -165,6 +158,7 @@ ln -s %{_prefix}/games/hexen2/h2launcher %{buildroot}/%{_bindir}/hexen2
 %{__install} -D -m644 gamecode/txt/portals/hexen.rc %{buildroot}/%{_prefix}/games/%{name}/portals/hexen.rc
 %{__install} -D -m644 gamecode/txt/portals/strings.txt %{buildroot}/%{_prefix}/games/%{name}/portals/strings.txt
 %{__install} -D -m644 gamecode/txt/portals/infolist.txt %{buildroot}/%{_prefix}/games/%{name}/portals/infolist.txt
+%{__install} -D -m644 gamecode/txt/portals/maplist.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maplist.txt
 %{__install} -D -m644 gamecode/txt/portals/puzzles.txt %{buildroot}/%{_prefix}/games/%{name}/portals/puzzles.txt
 %{__install} -D -m644 gamecode/txt/portals/default.cfg %{buildroot}/%{_prefix}/games/%{name}/portals/default.cfg
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/hw/
@@ -173,7 +167,7 @@ ln -s %{_prefix}/games/hexen2/h2launcher %{buildroot}/%{_bindir}/hexen2
 %{__install} -D -m644 gamecode/txt/hw/default.cfg %{buildroot}/%{_prefix}/games/%{name}/hw/default.cfg
 %{__install} -D -m644 hw/pak4.pak %{buildroot}/%{_prefix}/games/%{name}/hw/pak4.pak
 
-# Install the Hexen2 and H2MP xdelta updates
+# Install the xdelta updates
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdata/
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1
 %{__install} -D -m755 gamecode/pak_v111/update_h2 %{buildroot}/%{_prefix}/games/%{name}/update_h2
@@ -250,13 +244,12 @@ rm -rf %{buildroot}
 
 %files -n hexen2-missionpack
 %defattr(-,root,root)
-%{_prefix}/games/%{name}/h2mp
-%{_prefix}/games/%{name}/glh2mp
 %{_prefix}/games/%{name}/portals/progs.dat
 %{_prefix}/games/%{name}/portals/hexen.rc
 %{_prefix}/games/%{name}/portals/strings.txt
 %{_prefix}/games/%{name}/portals/puzzles.txt
 %{_prefix}/games/%{name}/portals/infolist.txt
+%{_prefix}/games/%{name}/portals/maplist.txt
 %{_prefix}/games/%{name}/portals/default.cfg
 
 %files -n hexenworld
@@ -274,6 +267,9 @@ rm -rf %{buildroot}
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Mon Apr 04 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-5
+- Since 1.4.0-rc2 no mission pack specific binaries are needed.
+
 * Mon Mar 26 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-4
 - Moved hexenworld related documentation to the hexenworld package
   lib3dfxgamma is no longer needed. not packaging it.
