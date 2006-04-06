@@ -1,5 +1,13 @@
+/*
+	nonintel.c
+	code for non-Intel processors only
+
+	$Id: nonintel.c,v 1.2 2006-04-06 06:14:42 sezero Exp $
+*/
+
+
 //
-// nonintel.c: code for non-Intel processors only
+//	TODO: Move other non-Intel code scattered around into here
 //
 
 #include "quakedef.h"
