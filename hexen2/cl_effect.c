@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.9 2005-11-05 20:22:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.10 2006-04-06 08:36:23 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -13,85 +13,25 @@
 
 // TYPES -------------------------------------------------------------------
 
-#define CE_NONE			0
-#define CE_RAIN			1
-#define CE_FOUNTAIN		2
-#define CE_QUAKE		3
-#define CE_WHITE_SMOKE		4	// whtsmk1.spr
-#define CE_BLUESPARK		5	// bspark.spr
-#define CE_YELLOWSPARK		6	// spark.spr
-#define CE_SM_CIRCLE_EXP	7	// fcircle.spr
-#define CE_BG_CIRCLE_EXP	8	// fcircle.spr
-#define CE_SM_WHITE_FLASH	9	// sm_white.spr
-#define CE_WHITE_FLASH		10	// gryspt.spr
-#define CE_YELLOWRED_FLASH	11	// yr_flash.spr
-#define CE_BLUE_FLASH		12	// bluflash.spr
-#define CE_SM_BLUE_FLASH	13	// bluflash.spr
-#define CE_RED_FLASH		14	// redspt.spr
-#define CE_SM_EXPLOSION		15	// sm_expld.spr
-#define CE_LG_EXPLOSION		16	// bg_expld.spr
-#define CE_FLOOR_EXPLOSION	17	// fl_expld.spr
-#define CE_RIDER_DEATH		18
-#define CE_BLUE_EXPLOSION	19	// xpspblue.spr
-#define CE_GREEN_SMOKE		20	// grnsmk1.spr
-#define CE_GREY_SMOKE		21	// grysmk1.spr
-#define CE_RED_SMOKE		22	// redsmk1.spr
-#define CE_SLOW_WHITE_SMOKE	23	// whtsmk1.spr
-#define CE_REDSPARK		24	// rspark.spr
-#define CE_GREENSPARK		25	// gspark.spr
-#define CE_TELESMK1		26	// telesmk1.spr
-#define CE_TELESMK2		27	// telesmk2.spr
-#define CE_ICEHIT		28	// icehit.spr
-#define CE_MEDUSA_HIT		29	// medhit.spr
-#define CE_MEZZO_REFLECT	30	// mezzoref.spr
-#define CE_FLOOR_EXPLOSION2	31	// flrexpl2.spr
-#define CE_XBOW_EXPLOSION	32	// xbowexpl.spr
-#define CE_NEW_EXPLOSION	33	// gen_expl.spr
-#define CE_MAGIC_MISSILE_EXPLOSION 34	// mm_expld.spr
-#define CE_GHOST		35	// ghost.spr
-#define CE_BONE_EXPLOSION	36
-#define CE_REDCLOUD		37
-#define CE_TELEPORTERPUFFS	38
-#define CE_TELEPORTERBODY	39
-#define CE_BONESHARD		40
-#define CE_BONESHRAPNEL		41
-#define CE_FLAMESTREAM		42	//Flamethrower
-#define CE_SNOW			43
-#define CE_GRAVITYWELL		44
-#define CE_BLDRN_EXPL		45
-#define CE_ACID_MUZZFL		46
-#define CE_ACID_HIT		47
-#define CE_FIREWALL_SMALL	48
-#define CE_FIREWALL_MEDIUM	49
-#define CE_FIREWALL_LARGE	50
-#define CE_LBALL_EXPL		51
-#define CE_ACID_SPLAT		52
-#define CE_ACID_EXPL		53
-#define CE_FBOOM		54
-#define CE_CHUNK		55
-#define CE_BOMB			56
-#define CE_BRN_BOUNCE		57
-#define CE_LSHOCK		58
-#define CE_FLAMEWALL		59
-#define CE_FLAMEWALL2		60
-#define CE_FLOOR_EXPLOSION3	61
-#define CE_ONFIRE		62
-
-#define MAX_EFFECT_ENTITIES	256
+#define MAX_EFFECT_ENTITIES		256
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
+
+extern void R_RunQuakeEffect (vec3_t org, float distance);
+extern void RiderParticle (int count, vec3_t origin);
+extern void GravityWellParticle (int count, vec3_t origin, int color);
 
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
 
 // PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
 
-static int NewEffectEntity(void);
-static void FreeEffectEntity(int idx);
+static int NewEffectEntity (void);
+static void FreeEffectEntity (int idx);
 
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
+
 extern cvar_t sv_ce_scale;
 extern cvar_t sv_ce_max_size;
-
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
@@ -103,36 +43,37 @@ static int EffectEntityCount;
 
 // CODE --------------------------------------------------------------------
 
+
 //==========================================================================
 //
 // CL_InitTEnts
 //
 //==========================================================================
 
-void CL_InitEffects(void)
+void CL_InitEffects (void)
 {
 }
 
-void CL_ClearEffects(void)
+void CL_ClearEffects (void)
 {
 	memset(cl.Effects,0,sizeof(cl.Effects));
 	memset(EntityUsed,0,sizeof(EntityUsed));
 	EffectEntityCount = 0;
 }
 
-static void SV_ClearEffects(void)
+static void SV_ClearEffects (void)
 {
 	memset(sv.Effects,0,sizeof(sv.Effects));
 }
 
 // All changes need to be in SV_SendEffect(), SV_ParseEffect(),
 // SV_SaveEffects(), SV_LoadEffects(), CL_ParseEffect()
-static void SV_SendEffect(sizebuf_t *sb, int idx)
+static void SV_SendEffect (sizebuf_t *sb, int idx)
 {
 	qboolean	DoTest;
-	vec3_t		TestO1,Diff;
-	float		Size,TestDistance;
-	int			i,count;
+	vec3_t		TestO1, Diff;
+	float		Size, TestDistance;
+	int		i, count;
 
 	if (sb == &sv.reliable_datagram && sv_ce_scale.value > 0)
 		DoTest = true;
@@ -142,7 +83,7 @@ static void SV_SendEffect(sizebuf_t *sb, int idx)
 	VectorCopy(vec3_origin, TestO1);
 	TestDistance = 0;
 
-	switch(sv.Effects[idx].type)
+	switch (sv.Effects[idx].type)
 	{
 		case CE_RAIN:
 		case CE_SNOW:
@@ -244,30 +185,31 @@ static void SV_SendEffect(sizebuf_t *sb, int idx)
 			VectorCopy(sv.Effects[idx].ef.Missile.origin, TestO1);
 			TestDistance = 600;
 			break;
+
 		case CE_CHUNK:
 			VectorCopy(sv.Effects[idx].ef.Chunk.origin, TestO1);
 			TestDistance = 600;
 			break;
 
 		default:
-//			Sys_Error ("SV_SendEffect: bad type");
+		//	Sys_Error ("SV_SendEffect: bad type");
 			PR_RunError ("SV_SendEffect: bad type");
 			break;
 	}
 
-	if (!DoTest) 
+	if (!DoTest)
 		count = 1;
-	else 
+	else
 	{
 		count = svs.maxclients;
 		TestDistance = (float)TestDistance * sv_ce_scale.value;
 		TestDistance *= TestDistance;
 	}
 
-	for(i=0;i<count;i++)
+	for (i = 0 ; i < count ; i++)
 	{
 		if (DoTest)
-		{	
+		{
 			if (svs.clients[i].active)
 			{
 				sb = &svs.clients[i].datagram;
@@ -288,220 +230,220 @@ static void SV_SendEffect(sizebuf_t *sb, int idx)
 		MSG_WriteByte (sb, idx);
 		MSG_WriteByte (sb, sv.Effects[idx].type);
 
-		switch(sv.Effects[idx].type)
+		switch (sv.Effects[idx].type)
 		{
-			case CE_RAIN:
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.min_org[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.min_org[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.min_org[2]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.max_org[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.max_org[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.max_org[2]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.e_size[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.e_size[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.e_size[2]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.dir[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.dir[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.dir[2]);
-				MSG_WriteShort(sb, sv.Effects[idx].ef.Rain.color);
-				MSG_WriteShort(sb, sv.Effects[idx].ef.Rain.count);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Rain.wait);
-				break;
+		case CE_RAIN:
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.min_org[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.min_org[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.min_org[2]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.max_org[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.max_org[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.max_org[2]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.e_size[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.e_size[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.e_size[2]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.dir[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.dir[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.dir[2]);
+			MSG_WriteShort(sb, sv.Effects[idx].ef.Rain.color);
+			MSG_WriteShort(sb, sv.Effects[idx].ef.Rain.count);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Rain.wait);
+			break;
 
-			case CE_SNOW:
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.min_org[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.min_org[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.min_org[2]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.max_org[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.max_org[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.max_org[2]);
-				MSG_WriteByte(sb, sv.Effects[idx].ef.Rain.flags);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.dir[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.dir[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.dir[2]);
-				MSG_WriteByte(sb, sv.Effects[idx].ef.Rain.count);
-				//MSG_WriteShort(sb, sv.Effects[idx].ef.Rain.veer);
-				break;
+		case CE_SNOW:
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.min_org[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.min_org[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.min_org[2]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.max_org[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.max_org[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.max_org[2]);
+			MSG_WriteByte(sb, sv.Effects[idx].ef.Rain.flags);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.dir[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.dir[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Rain.dir[2]);
+			MSG_WriteByte(sb, sv.Effects[idx].ef.Rain.count);
+			//MSG_WriteShort(sb, sv.Effects[idx].ef.Rain.veer);
+			break;
 
-			case CE_FOUNTAIN:
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Fountain.pos[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Fountain.pos[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Fountain.pos[2]);
-				MSG_WriteAngle(sb, sv.Effects[idx].ef.Fountain.angle[0]);
-				MSG_WriteAngle(sb, sv.Effects[idx].ef.Fountain.angle[1]);
-				MSG_WriteAngle(sb, sv.Effects[idx].ef.Fountain.angle[2]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Fountain.movedir[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Fountain.movedir[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Fountain.movedir[2]);
-				MSG_WriteShort(sb, sv.Effects[idx].ef.Fountain.color);
-				MSG_WriteByte(sb, sv.Effects[idx].ef.Fountain.cnt);
-				break;
+		case CE_FOUNTAIN:
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Fountain.pos[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Fountain.pos[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Fountain.pos[2]);
+			MSG_WriteAngle(sb, sv.Effects[idx].ef.Fountain.angle[0]);
+			MSG_WriteAngle(sb, sv.Effects[idx].ef.Fountain.angle[1]);
+			MSG_WriteAngle(sb, sv.Effects[idx].ef.Fountain.angle[2]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Fountain.movedir[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Fountain.movedir[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Fountain.movedir[2]);
+			MSG_WriteShort(sb, sv.Effects[idx].ef.Fountain.color);
+			MSG_WriteByte(sb, sv.Effects[idx].ef.Fountain.cnt);
+			break;
 
-			case CE_QUAKE:
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Quake.origin[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Quake.origin[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Quake.origin[2]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Quake.radius);
-				break;
+		case CE_QUAKE:
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Quake.origin[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Quake.origin[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Quake.origin[2]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Quake.radius);
+			break;
 
-			case CE_WHITE_SMOKE:
-			case CE_GREEN_SMOKE:
-			case CE_GREY_SMOKE:
-			case CE_RED_SMOKE:
-			case CE_SLOW_WHITE_SMOKE:
-			case CE_TELESMK1:
-			case CE_TELESMK2:
-			case CE_GHOST:
-			case CE_REDCLOUD:
-			case CE_FLAMESTREAM:
-			case CE_ACID_MUZZFL:
-			case CE_FLAMEWALL:
-			case CE_FLAMEWALL2:
-			case CE_ONFIRE:
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[2]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Smoke.velocity[0]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Smoke.velocity[1]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Smoke.velocity[2]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Smoke.framelength);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Smoke.frame);
-				break;
+		case CE_WHITE_SMOKE:
+		case CE_GREEN_SMOKE:
+		case CE_GREY_SMOKE:
+		case CE_RED_SMOKE:
+		case CE_SLOW_WHITE_SMOKE:
+		case CE_TELESMK1:
+		case CE_TELESMK2:
+		case CE_GHOST:
+		case CE_REDCLOUD:
+		case CE_FLAMESTREAM:
+		case CE_ACID_MUZZFL:
+		case CE_FLAMEWALL:
+		case CE_FLAMEWALL2:
+		case CE_ONFIRE:
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[2]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Smoke.velocity[0]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Smoke.velocity[1]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Smoke.velocity[2]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Smoke.framelength);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Smoke.frame);
+			break;
 
-			case CE_SM_WHITE_FLASH:
-			case CE_YELLOWRED_FLASH:
-			case CE_BLUESPARK:
-			case CE_YELLOWSPARK:
-			case CE_SM_CIRCLE_EXP:
-			case CE_BG_CIRCLE_EXP:
-			case CE_SM_EXPLOSION:
-			case CE_LG_EXPLOSION:
-			case CE_FLOOR_EXPLOSION:
-			case CE_FLOOR_EXPLOSION3:
-			case CE_BLUE_EXPLOSION:
-			case CE_REDSPARK:
-			case CE_GREENSPARK:
-			case CE_ICEHIT:
-			case CE_MEDUSA_HIT:
-			case CE_MEZZO_REFLECT:
-			case CE_FLOOR_EXPLOSION2:
-			case CE_XBOW_EXPLOSION:
-			case CE_NEW_EXPLOSION:
-			case CE_MAGIC_MISSILE_EXPLOSION:
-			case CE_BONE_EXPLOSION:
-			case CE_BLDRN_EXPL:
-			case CE_ACID_HIT:
-			case CE_ACID_SPLAT:
-			case CE_ACID_EXPL:
-			case CE_LBALL_EXPL:	
-			case CE_FIREWALL_SMALL:
-			case CE_FIREWALL_MEDIUM:
-			case CE_FIREWALL_LARGE:
-			case CE_FBOOM:
-			case CE_BOMB:
-			case CE_BRN_BOUNCE:
-			case CE_LSHOCK:
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[2]);
-				break;
+		case CE_SM_WHITE_FLASH:
+		case CE_YELLOWRED_FLASH:
+		case CE_BLUESPARK:
+		case CE_YELLOWSPARK:
+		case CE_SM_CIRCLE_EXP:
+		case CE_BG_CIRCLE_EXP:
+		case CE_SM_EXPLOSION:
+		case CE_LG_EXPLOSION:
+		case CE_FLOOR_EXPLOSION:
+		case CE_FLOOR_EXPLOSION3:
+		case CE_BLUE_EXPLOSION:
+		case CE_REDSPARK:
+		case CE_GREENSPARK:
+		case CE_ICEHIT:
+		case CE_MEDUSA_HIT:
+		case CE_MEZZO_REFLECT:
+		case CE_FLOOR_EXPLOSION2:
+		case CE_XBOW_EXPLOSION:
+		case CE_NEW_EXPLOSION:
+		case CE_MAGIC_MISSILE_EXPLOSION:
+		case CE_BONE_EXPLOSION:
+		case CE_BLDRN_EXPL:
+		case CE_ACID_HIT:
+		case CE_ACID_SPLAT:
+		case CE_ACID_EXPL:
+		case CE_LBALL_EXPL:
+		case CE_FIREWALL_SMALL:
+		case CE_FIREWALL_MEDIUM:
+		case CE_FIREWALL_LARGE:
+		case CE_FBOOM:
+		case CE_BOMB:
+		case CE_BRN_BOUNCE:
+		case CE_LSHOCK:
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[2]);
+			break;
 
-			case CE_WHITE_FLASH:
-			case CE_BLUE_FLASH:
-			case CE_SM_BLUE_FLASH:
-			case CE_RED_FLASH:
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[2]);
-				break;
+		case CE_WHITE_FLASH:
+		case CE_BLUE_FLASH:
+		case CE_SM_BLUE_FLASH:
+		case CE_RED_FLASH:
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Smoke.origin[2]);
+			break;
 
-			case CE_RIDER_DEATH:
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.RD.origin[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.RD.origin[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.RD.origin[2]);
-				break;
+		case CE_RIDER_DEATH:
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.RD.origin[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.RD.origin[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.RD.origin[2]);
+			break;
 
-			case CE_TELEPORTERPUFFS:
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Teleporter.origin[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Teleporter.origin[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Teleporter.origin[2]);
-				break;
+		case CE_TELEPORTERPUFFS:
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Teleporter.origin[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Teleporter.origin[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Teleporter.origin[2]);
+			break;
 
-			case CE_TELEPORTERBODY:
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Teleporter.origin[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Teleporter.origin[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Teleporter.origin[2]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Teleporter.velocity[0][0]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Teleporter.velocity[0][1]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Teleporter.velocity[0][2]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Teleporter.skinnum);
-				break;
+		case CE_TELEPORTERBODY:
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Teleporter.origin[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Teleporter.origin[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Teleporter.origin[2]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Teleporter.velocity[0][0]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Teleporter.velocity[0][1]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Teleporter.velocity[0][2]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Teleporter.skinnum);
+			break;
 
-			case CE_BONESHARD:
-			case CE_BONESHRAPNEL:
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Missile.origin[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Missile.origin[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Missile.origin[2]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.velocity[0]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.velocity[1]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.velocity[2]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.angle[0]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.angle[1]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.angle[2]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.avelocity[0]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.avelocity[1]);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.avelocity[2]);
-				break;
+		case CE_BONESHARD:
+		case CE_BONESHRAPNEL:
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Missile.origin[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Missile.origin[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Missile.origin[2]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.velocity[0]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.velocity[1]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.velocity[2]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.angle[0]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.angle[1]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.angle[2]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.avelocity[0]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.avelocity[1]);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.Missile.avelocity[2]);
+			break;
 
-			case CE_GRAVITYWELL:
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.RD.origin[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.RD.origin[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.RD.origin[2]);
-				MSG_WriteShort(sb, sv.Effects[idx].ef.RD.color);
-				MSG_WriteFloat(sb, sv.Effects[idx].ef.RD.lifetime);
-				break;
+		case CE_GRAVITYWELL:
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.RD.origin[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.RD.origin[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.RD.origin[2]);
+			MSG_WriteShort(sb, sv.Effects[idx].ef.RD.color);
+			MSG_WriteFloat(sb, sv.Effects[idx].ef.RD.lifetime);
+			break;
 
-			case CE_CHUNK:
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Chunk.origin[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Chunk.origin[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Chunk.origin[2]);
-				MSG_WriteByte (sb, sv.Effects[idx].ef.Chunk.type);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Chunk.srcVel[0]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Chunk.srcVel[1]);
-				MSG_WriteCoord(sb, sv.Effects[idx].ef.Chunk.srcVel[2]);
-				MSG_WriteByte (sb, sv.Effects[idx].ef.Chunk.numChunks);
-				//Con_Printf("Adding %d chunks on server...\n",sv.Effects[idx].Chunk.numChunks);
-				break;
+		case CE_CHUNK:
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Chunk.origin[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Chunk.origin[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Chunk.origin[2]);
+			MSG_WriteByte (sb, sv.Effects[idx].ef.Chunk.type);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Chunk.srcVel[0]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Chunk.srcVel[1]);
+			MSG_WriteCoord(sb, sv.Effects[idx].ef.Chunk.srcVel[2]);
+			MSG_WriteByte (sb, sv.Effects[idx].ef.Chunk.numChunks);
+			//Con_Printf("Adding %d chunks on server...\n",sv.Effects[idx].Chunk.numChunks);
+			break;
 
-			default:
-			//	Sys_Error ("SV_SendEffect: bad type");
-				PR_RunError ("SV_SendEffect: bad type");
-				break;
+		default:
+		//	Sys_Error ("SV_SendEffect: bad type");
+			PR_RunError ("SV_SendEffect: bad type");
+			break;
 		}
 	}
 }
 
-void SV_UpdateEffects(sizebuf_t *sb)
+void SV_UpdateEffects (sizebuf_t *sb)
 {
-	int idx;
+	int		idx;
 
-	for(idx=0;idx<MAX_EFFECTS;idx++)
+	for (idx = 0 ; idx < MAX_EFFECTS ; idx++)
 		if (sv.Effects[idx].type)
 			SV_SendEffect(sb,idx);
 }
 
 // All changes need to be in SV_SendEffect(), SV_ParseEffect(),
 // SV_SaveEffects(), SV_LoadEffects(), CL_ParseEffect()
-void SV_ParseEffect(sizebuf_t *sb)
+void SV_ParseEffect (sizebuf_t *sb)
 {
-	int idx;
-	byte effect;
+	int		idx;
+	byte		effect;
 
 	effect = G_FLOAT(OFS_PARM0);
 
-	for(idx=0;idx<MAX_EFFECTS;idx++)
+	for (idx = 0 ; idx < MAX_EFFECTS ; idx++)
 		if (!sv.Effects[idx].type || 
-			(sv.Effects[idx].expire_time && sv.Effects[idx].expire_time <= sv.time)) 
+			(sv.Effects[idx].expire_time && sv.Effects[idx].expire_time <= sv.time))
 			break;
 
 	if (idx >= MAX_EFFECTS)
@@ -517,7 +459,7 @@ void SV_ParseEffect(sizebuf_t *sb)
 	sv.Effects[idx].type = effect;
 	G_FLOAT(OFS_RETURN) = idx;
 
-	switch(effect)
+	switch (effect)
 	{
 		case CE_RAIN:
 			VectorCopy(G_VECTOR(OFS_PARM1),sv.Effects[idx].ef.Rain.min_org);
@@ -680,22 +622,22 @@ void SV_ParseEffect(sizebuf_t *sb)
 
 // All changes need to be in SV_SendEffect(), SV_ParseEffect(),
 // SV_SaveEffects(), SV_LoadEffects(), CL_ParseEffect()
-void SV_SaveEffects(FILE *FH)
+void SV_SaveEffects (FILE *FH)
 {
-	int idx,count;
+	int	idx, count;
 
-	for(idx=count=0;idx<MAX_EFFECTS;idx++)
+	for (idx = count = 0 ; idx < MAX_EFFECTS ; idx++)
 		if (sv.Effects[idx].type)
 			count++;
 
 	fprintf(FH,"Effects: %d\n",count);
 
-	for(idx=count=0;idx<MAX_EFFECTS;idx++)
+	for (idx = count = 0 ; idx < MAX_EFFECTS ; idx++)
 		if (sv.Effects[idx].type)
 		{
 			fprintf(FH,"Effect: %d %d %f: ",idx,sv.Effects[idx].type,sv.Effects[idx].expire_time);
 
-			switch(sv.Effects[idx].type)
+			switch (sv.Effects[idx].type)
 			{
 				case CE_RAIN:
 					fprintf(FH, "%f ", sv.Effects[idx].ef.Rain.min_org[0]);
@@ -728,6 +670,10 @@ void SV_SaveEffects(FILE *FH)
 					fprintf(FH, "%f ", sv.Effects[idx].ef.Rain.dir[2]);
 					fprintf(FH, "%d ", sv.Effects[idx].ef.Rain.count);
 					//fprintf(FH, "%d ", sv.Effects[idx].ef.Rain.veer);
+
+					// O.S:	a linefeed is missing here. not adding
+					//	it so as not to break existing saves.
+					//	also see in: SV_LoadEffects().
 					break;
 
 				case CE_FOUNTAIN:
@@ -862,6 +808,10 @@ void SV_SaveEffects(FILE *FH)
 					fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.avelocity[0]);
 					fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.avelocity[1]);
 					fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.avelocity[2]);
+
+					// O.S:	a linefeed is missing here. not adding
+					//	it so as not to break existing saves.
+					//	also see in: SV_LoadEffects().
 					break;
 
 				case CE_CHUNK:
@@ -873,6 +823,10 @@ void SV_SaveEffects(FILE *FH)
 					fprintf(FH, "%f ", sv.Effects[idx].ef.Chunk.srcVel[1]);
 					fprintf(FH, "%f ", sv.Effects[idx].ef.Chunk.srcVel[2]);
 					fprintf(FH, "%d ", sv.Effects[idx].ef.Chunk.numChunks);
+
+					// O.S:	a linefeed is missing here. not adding
+					//	it so as not to break existing saves.
+					//	also see in: SV_LoadEffects().
 					break;
 
 				default:
@@ -885,9 +839,9 @@ void SV_SaveEffects(FILE *FH)
 
 // All changes need to be in SV_SendEffect(), SV_ParseEffect(),
 // SV_SaveEffects(), SV_LoadEffects(), CL_ParseEffect()
-void SV_LoadEffects(FILE *FH)
+void SV_LoadEffects (FILE *FH)
 {
-	int idx, Total, count;
+	int		idx, Total, count;
 
 	// Since the map is freshly loaded, clear out any effects as a result of
 	// the loading
@@ -895,12 +849,12 @@ void SV_LoadEffects(FILE *FH)
 
 	fscanf(FH,"Effects: %d\n",&Total);
 
-	for(count=0;count<Total;count++)
+	for (count = 0 ; count < Total ; count++)
 	{
 		fscanf(FH,"Effect: %d ",&idx);
 		fscanf(FH,"%d %f: ",&sv.Effects[idx].type,&sv.Effects[idx].expire_time);
 
-		switch(sv.Effects[idx].type)
+		switch (sv.Effects[idx].type)
 		{
 			case CE_RAIN:
 				fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.min_org[0]);
@@ -933,6 +887,10 @@ void SV_LoadEffects(FILE *FH)
 				fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.dir[2]);
 				fscanf(FH, "%d ", &sv.Effects[idx].ef.Rain.count);
 				//fscanf(FH, "%d ", &sv.Effects[idx].ef.Rain.veer);
+
+				// O.S:	a linefeed is missing here. not adding
+				//	it so as not to break existing saves.
+				//	also see in: SV_SaveEffects().
 				break;
 
 			case CE_FOUNTAIN:
@@ -1067,6 +1025,10 @@ void SV_LoadEffects(FILE *FH)
 				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.avelocity[0]);
 				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.avelocity[1]);
 				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.avelocity[2]);
+
+				// O.S:	a linefeed is missing here. not adding
+				//	it so as not to break existing saves.
+				//	also see in: SV_SaveEffects().
 				break;
 
 			case CE_CHUNK:
@@ -1078,6 +1040,10 @@ void SV_LoadEffects(FILE *FH)
 				fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.srcVel[1]);
 				fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.srcVel[2]);
 				fscanf(FH, "%u ", (unsigned int *)&sv.Effects[idx].ef.Chunk.numChunks);
+
+				// O.S:	a linefeed is missing here. not adding
+				//	it so as not to break existing saves.
+				//	also see in: SV_SaveEffects().
 				break;
 
 			default:
@@ -1087,11 +1053,11 @@ void SV_LoadEffects(FILE *FH)
 	}
 }
 
-static void CL_FreeEffect(int idx)
+static void CL_FreeEffect (int idx)
 {
-	int i;
+	int		i;
 
-	switch(cl.Effects[idx].type)
+	switch (cl.Effects[idx].type)
 	{
 		case CE_RAIN:
 			break;
@@ -1156,7 +1122,6 @@ static void CL_FreeEffect(int idx)
 		case CE_FIREWALL_SMALL:
 		case CE_FIREWALL_MEDIUM:
 		case CE_FIREWALL_LARGE:
-
 			FreeEffectEntity(cl.Effects[idx].ef.Smoke.entity_index);
 			break;
 
@@ -1175,7 +1140,7 @@ static void CL_FreeEffect(int idx)
 			break;
 
 		case CE_TELEPORTERPUFFS:
-			for (i=0;i<8;++i)
+			for (i = 0 ; i < 8 ; ++i)
 				FreeEffectEntity(cl.Effects[idx].ef.Teleporter.entity_index[i]);
 			break;
 
@@ -1190,15 +1155,12 @@ static void CL_FreeEffect(int idx)
 
 		case CE_CHUNK:
 			//Con_Printf("Freeing a chunk here\n");
-			for (i=0;i < cl.Effects[idx].ef.Chunk.numChunks;i++)
+			for (i = 0 ; i < cl.Effects[idx].ef.Chunk.numChunks ; i++)
 			{
-				if(cl.Effects[idx].ef.Chunk.entity_index[i] != -1)
-				{
+				if (cl.Effects[idx].ef.Chunk.entity_index[i] != -1)
 					FreeEffectEntity(cl.Effects[idx].ef.Chunk.entity_index[i]);
-				}
 			}
 			break;
-
 	}
 
 	memset(&cl.Effects[idx],0,sizeof(struct EffectT));
@@ -1212,15 +1174,15 @@ static void CL_FreeEffect(int idx)
 
 // All changes need to be in SV_SendEffect(), SV_ParseEffect(),
 // SV_SaveEffects(), SV_LoadEffects(), CL_ParseEffect()
-void CL_ParseEffect(void)
+void CL_ParseEffect (void)
 {
-	int idx,i;
-	qboolean ImmediateFree;
-	entity_t *ent;
-	int dir;
-	float	angleval, sinval, cosval;
-	float skinnum;
-	float final;
+	int		i, idx;
+	qboolean	ImmediateFree;
+	entity_t	*ent;
+	int		dir;
+	float		angleval, sinval, cosval;
+	float		skinnum;
+	float		final;
 
 	ImmediateFree = false;
 
@@ -1232,7 +1194,7 @@ void CL_ParseEffect(void)
 
 	cl.Effects[idx].type = MSG_ReadByte();
 
-	switch(cl.Effects[idx].type)
+	switch (cl.Effects[idx].type)
 	{
 		case CE_RAIN:
 			cl.Effects[idx].ef.Rain.min_org[0] = MSG_ReadCoord();
@@ -1279,10 +1241,10 @@ void CL_ParseEffect(void)
 			cl.Effects[idx].ef.Fountain.movedir[2] = MSG_ReadCoord ();
 			cl.Effects[idx].ef.Fountain.color = MSG_ReadShort ();
 			cl.Effects[idx].ef.Fountain.cnt = MSG_ReadByte ();
-			AngleVectors (cl.Effects[idx].ef.Fountain.angle, 
-						  cl.Effects[idx].ef.Fountain.vforward,
-						  cl.Effects[idx].ef.Fountain.vright,
-						  cl.Effects[idx].ef.Fountain.vup);
+			AngleVectors (cl.Effects[idx].ef.Fountain.angle,
+					cl.Effects[idx].ef.Fountain.vforward,
+					cl.Effects[idx].ef.Fountain.vright,
+					cl.Effects[idx].ef.Fountain.vup);
 			break;
 
 		case CE_QUAKE:
@@ -1322,8 +1284,8 @@ void CL_ParseEffect(void)
 				ent = &EffectEntities[cl.Effects[idx].ef.Smoke.entity_index];
 				VectorCopy(cl.Effects[idx].ef.Smoke.origin, ent->origin);
 
-				if ((cl.Effects[idx].type == CE_WHITE_SMOKE) || 
-					(cl.Effects[idx].type == CE_SLOW_WHITE_SMOKE))
+				if ((cl.Effects[idx].type == CE_WHITE_SMOKE) ||
+						(cl.Effects[idx].type == CE_SLOW_WHITE_SMOKE))
 					ent->model = Mod_ForName("models/whtsmk1.spr", true);
 				else if (cl.Effects[idx].type == CE_GREEN_SMOKE)
 					ent->model = Mod_ForName("models/grnsmk1.spr", true);
@@ -1342,8 +1304,8 @@ void CL_ParseEffect(void)
 				else if (cl.Effects[idx].type == CE_ACID_MUZZFL)
 				{
 					ent->model = Mod_ForName("models/muzzle1.spr", true);
-					ent->drawflags=DRF_TRANSLUCENT|MLS_ABSLIGHT;
-					ent->abslight=0.2;
+					ent->drawflags = DRF_TRANSLUCENT | MLS_ABSLIGHT;
+					ent->abslight = 0.2;
 				}
 				else if (cl.Effects[idx].type == CE_FLAMEWALL)
 					ent->model = Mod_ForName("models/firewal1.spr", true);
@@ -1365,7 +1327,9 @@ void CL_ParseEffect(void)
 					ent->frame = cl.Effects[idx].ef.Smoke.frame;
 				}
 
-				if (cl.Effects[idx].type != CE_REDCLOUD&&cl.Effects[idx].type != CE_ACID_MUZZFL&&cl.Effects[idx].type != CE_FLAMEWALL)
+				if (cl.Effects[idx].type != CE_REDCLOUD &&
+						cl.Effects[idx].type != CE_ACID_MUZZFL &&
+						cl.Effects[idx].type != CE_FLAMEWALL)
 					ent->drawflags = DRF_TRANSLUCENT;
 
 				if (cl.Effects[idx].type == CE_FLAMESTREAM)
@@ -1501,9 +1465,9 @@ void CL_ParseEffect(void)
 				else if (cl.Effects[idx].type == CE_LSHOCK)
 				{
 					ent->model = Mod_ForName("models/vorpshok.mdl", true);
-					ent->drawflags=MLS_TORCH;
-					ent->angles[2]=90;
-					ent->scale=255;
+					ent->drawflags = MLS_TORCH;
+					ent->angles[2] = 90;
+					ent->scale = 255;
 				}
 			}
 			else
@@ -1563,7 +1527,7 @@ void CL_ParseEffect(void)
 
 			cl.Effects[idx].ef.Teleporter.framelength = .05;
 			dir = 0;
-			for (i=0;i<8;++i)
+			for (i = 0 ; i < 8 ; ++i)
 			{
 				if ((cl.Effects[idx].ef.Teleporter.entity_index[i] = NewEffectEntity()) != -1)
 				{
@@ -1659,11 +1623,11 @@ void CL_ParseEffect(void)
 
 			cl.Effects[idx].ef.Chunk.aveScale = 30 + 100 * (cl.Effects[idx].ef.Chunk.numChunks / 40.0);
 
-			if(cl.Effects[idx].ef.Chunk.numChunks > 16)
+			if (cl.Effects[idx].ef.Chunk.numChunks > 16)
 				cl.Effects[idx].ef.Chunk.numChunks = 16;
 
-			for (i=0;i < cl.Effects[idx].ef.Chunk.numChunks;i++)
-			{		
+			for (i = 0 ; i < cl.Effects[idx].ef.Chunk.numChunks ; i++)
+			{
 				if ((cl.Effects[idx].ef.Chunk.entity_index[i] = NewEffectEntity()) != -1)
 				{
 					ent = &EffectEntities[cl.Effects[idx].ef.Chunk.entity_index[i]];
@@ -1685,36 +1649,38 @@ void CL_ParseEffect(void)
 
 					// make this overcomplicated
 					final = (rand()%100)*.01;
-					if ((cl.Effects[idx].ef.Chunk.type==THINGTYPE_GLASS) || (cl.Effects[idx].ef.Chunk.type==THINGTYPE_REDGLASS) || 
-							(cl.Effects[idx].ef.Chunk.type==THINGTYPE_CLEARGLASS) || (cl.Effects[idx].ef.Chunk.type==THINGTYPE_WEBS))
+					if ((cl.Effects[idx].ef.Chunk.type == THINGTYPE_GLASS) ||
+						(cl.Effects[idx].ef.Chunk.type == THINGTYPE_REDGLASS) ||
+						(cl.Effects[idx].ef.Chunk.type == THINGTYPE_CLEARGLASS) ||
+						(cl.Effects[idx].ef.Chunk.type == THINGTYPE_WEBS))
 					{
-						if (final<0.20)
+						if (final < 0.20)
 							ent->model = Mod_ForName ("models/shard1.mdl", true);
-						else if (final<0.40)
+						else if (final < 0.40)
 							ent->model = Mod_ForName ("models/shard2.mdl", true);
-						else if (final<0.60)
+						else if (final < 0.60)
 							ent->model = Mod_ForName ("models/shard3.mdl", true);
-						else if (final<0.80)
+						else if (final < 0.80)
 							ent->model = Mod_ForName ("models/shard4.mdl", true);
-						else 
+						else
 							ent->model = Mod_ForName ("models/shard5.mdl", true);
 
-						if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_CLEARGLASS)
+						if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_CLEARGLASS)
 						{
-							ent->skinnum=1;
+							ent->skinnum = 1;
 							ent->drawflags |= DRF_TRANSLUCENT;
 						}
-						else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_REDGLASS)
+						else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_REDGLASS)
 						{
-							ent->skinnum=2;
+							ent->skinnum = 2;
 						}
-						else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_WEBS)
+						else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_WEBS)
 						{
-							ent->skinnum=3;
+							ent->skinnum = 3;
 							ent->drawflags |= DRF_TRANSLUCENT;
 						}
 					}
-					else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_WOOD)
+					else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_WOOD)
 					{
 						if (final < 0.25)
 							ent->model = Mod_ForName ("models/splnter1.mdl", true);
@@ -1722,10 +1688,10 @@ void CL_ParseEffect(void)
 							ent->model = Mod_ForName ("models/splnter2.mdl", true);
 						else if (final < 0.75)
 							ent->model = Mod_ForName ("models/splnter3.mdl", true);
-						else 
+						else
 							ent->model = Mod_ForName ("models/splnter4.mdl", true);
 					}
-					else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_METAL)
+					else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_METAL)
 					{
 						if (final < 0.25)
 							ent->model = Mod_ForName ("models/metlchk1.mdl", true);
@@ -1733,10 +1699,10 @@ void CL_ParseEffect(void)
 							ent->model = Mod_ForName ("models/metlchk2.mdl", true);
 						else if (final < 0.75)
 							ent->model = Mod_ForName ("models/metlchk3.mdl", true);
-						else 
+						else
 							ent->model = Mod_ForName ("models/metlchk4.mdl", true);
 					}
-					else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_FLESH)
+					else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_FLESH)
 					{
 						if (final < 0.33)
 							ent->model = Mod_ForName ("models/flesh1.mdl", true);
@@ -1745,7 +1711,7 @@ void CL_ParseEffect(void)
 						else
 							ent->model = Mod_ForName ("models/flesh3.mdl", true);
 					}
-					else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_BROWNSTONE)
+					else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_BROWNSTONE)
 					{
 						if (final < 0.25)
 							ent->model = Mod_ForName ("models/schunk1.mdl", true);
@@ -1753,11 +1719,12 @@ void CL_ParseEffect(void)
 							ent->model = Mod_ForName ("models/schunk2.mdl", true);
 						else if (final < 0.75)
 							ent->model = Mod_ForName ("models/schunk3.mdl", true);
-						else 
+						else
 							ent->model = Mod_ForName ("models/schunk4.mdl", true);
 						ent->skinnum = 1;
 					}
-					else if ((cl.Effects[idx].ef.Chunk.type==THINGTYPE_CLAY) || (cl.Effects[idx].ef.Chunk.type==THINGTYPE_BONE))
+					else if ((cl.Effects[idx].ef.Chunk.type == THINGTYPE_CLAY) ||
+							(cl.Effects[idx].ef.Chunk.type == THINGTYPE_BONE))
 					{
 						if (final < 0.25)
 							ent->model = Mod_ForName ("models/clshard1.mdl", true);
@@ -1765,41 +1732,41 @@ void CL_ParseEffect(void)
 							ent->model = Mod_ForName ("models/clshard2.mdl", true);
 						else if (final < 0.75)
 							ent->model = Mod_ForName ("models/clshard3.mdl", true);
-						else 
+						else
 							ent->model = Mod_ForName ("models/clshard4.mdl", true);
-						if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_BONE)
+						if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_BONE)
 						{
-							ent->skinnum=1;//bone skin is second
+							ent->skinnum = 1;	// bone skin is second
 						}
 					}
-					else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_LEAVES)
+					else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_LEAVES)
 					{
 						if (final < 0.33)
 							ent->model = Mod_ForName ("models/leafchk1.mdl", true);
 						else if (final < 0.66)
 							ent->model = Mod_ForName ("models/leafchk2.mdl", true);
-						else 
+						else
 							ent->model = Mod_ForName ("models/leafchk3.mdl", true);
 					}
-					else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_HAY)
+					else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_HAY)
 					{
 						if (final < 0.33)
 							ent->model = Mod_ForName ("models/hay1.mdl", true);
 						else if (final < 0.66)
 							ent->model = Mod_ForName ("models/hay2.mdl", true);
-						else 
+						else
 							ent->model = Mod_ForName ("models/hay3.mdl", true);
 					}
-					else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_CLOTH)
+					else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_CLOTH)
 					{
 						if (final < 0.33)
 							ent->model = Mod_ForName ("models/clthchk1.mdl", true);
 						else if (final < 0.66)
 							ent->model = Mod_ForName ("models/clthchk2.mdl", true);
-						else 
+						else
 							ent->model = Mod_ForName ("models/clthchk3.mdl", true);
 					}
-					else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_WOOD_LEAF)
+					else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_WOOD_LEAF)
 					{
 						if (final < 0.14)
 							ent->model = Mod_ForName ("models/splnter1.mdl", true);
@@ -1813,10 +1780,10 @@ void CL_ParseEffect(void)
 							ent->model = Mod_ForName ("models/splnter3.mdl", true);
 						else if (final < 0.84)
 							ent->model = Mod_ForName ("models/leafchk3.mdl", true);
-						else 
+						else
 							ent->model = Mod_ForName ("models/splnter4.mdl", true);
 					}
-					else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_WOOD_METAL)
+					else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_WOOD_METAL)
 					{
 						if (final < 0.125)
 							ent->model = Mod_ForName ("models/splnter1.mdl", true);
@@ -1832,10 +1799,10 @@ void CL_ParseEffect(void)
 							ent->model = Mod_ForName ("models/metlchk3.mdl", true);
 						else if (final < 0.875)
 							ent->model = Mod_ForName ("models/splnter4.mdl", true);
-						else 
+						else
 							ent->model = Mod_ForName ("models/metlchk4.mdl", true);
 					}
-					else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_WOOD_STONE)
+					else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_WOOD_STONE)
 					{
 						if (final < 0.125)
 							ent->model = Mod_ForName ("models/splnter1.mdl", true);
@@ -1851,10 +1818,10 @@ void CL_ParseEffect(void)
 							ent->model = Mod_ForName ("models/schunk3.mdl", true);
 						else if (final < 0.875)
 							ent->model = Mod_ForName ("models/splnter4.mdl", true);
-						else 
+						else
 							ent->model = Mod_ForName ("models/schunk4.mdl", true);
 					}
-					else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_METAL_STONE)
+					else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_METAL_STONE)
 					{
 						if (final < 0.125)
 							ent->model = Mod_ForName ("models/metlchk1.mdl", true);
@@ -1870,10 +1837,10 @@ void CL_ParseEffect(void)
 							ent->model = Mod_ForName ("models/schunk3.mdl", true);
 						else if (final < 0.875)
 							ent->model = Mod_ForName ("models/metlchk4.mdl", true);
-						else 
+						else
 							ent->model = Mod_ForName ("models/schunk4.mdl", true);
 					}
-					else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_METAL_CLOTH)
+					else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_METAL_CLOTH)
 					{
 						if (final < 0.14)
 							ent->model = Mod_ForName ("models/metlchk1.mdl", true);
@@ -1887,28 +1854,28 @@ void CL_ParseEffect(void)
 							ent->model = Mod_ForName ("models/metlchk3.mdl", true);
 						else if (final < 0.84)
 							ent->model = Mod_ForName ("models/clthchk3.mdl", true);
-						else 
+						else
 							ent->model = Mod_ForName ("models/metlchk4.mdl", true);
 					}
-					else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_ICE)
+					else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_ICE)
 					{
 						ent->model = Mod_ForName("models/shard.mdl", true);
-						ent->skinnum=0;
+						ent->skinnum = 0;
 						ent->frame = rand()%2;
 						ent->drawflags |= DRF_TRANSLUCENT|MLS_ABSLIGHT;
 						ent->abslight = 0.5;
 					}
-					else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_METEOR)
+					else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_METEOR)
 					{
 						ent->model = Mod_ForName("models/tempmetr.mdl", true);
 						ent->skinnum = 0;
 					}
-					else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_ACID)
+					else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_ACID)
 					{	// no spinning if possible...
 						ent->model = Mod_ForName("models/sucwp2p.mdl", true);
 						ent->skinnum = 0;
 					}
-					else if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_GREENFLESH)
+					else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_GREENFLESH)
 					{	// spider guts
 						if (final < 0.33)
 							ent->model = Mod_ForName ("models/sflesh1.mdl", true);
@@ -1919,7 +1886,7 @@ void CL_ParseEffect(void)
 
 						ent->skinnum = 0;
 					}
-					else// if (cl.Effects[idx].ef.Chunk.type==THINGTYPE_GREYSTONE)
+					else// if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_GREYSTONE)
 					{
 						if (final < 0.25)
 							ent->model = Mod_ForName ("models/schunk1.mdl", true);
@@ -1927,13 +1894,14 @@ void CL_ParseEffect(void)
 							ent->model = Mod_ForName ("models/schunk2.mdl", true);
 						else if (final < 0.75)
 							ent->model = Mod_ForName ("models/schunk3.mdl", true);
-						else 
+						else
 							ent->model = Mod_ForName ("models/schunk4.mdl", true);
 						ent->skinnum = 0;
 					}
 				}
 			}
-			for(i=0; i < 3; i++)
+
+			for (i = 0 ; i < 3 ; i++)
 			{
 				cl.Effects[idx].ef.Chunk.avel[i][0] = rand()%850 - 425;
 				cl.Effects[idx].ef.Chunk.avel[i][1] = rand()%850 - 425;
@@ -1952,16 +1920,16 @@ void CL_ParseEffect(void)
 	}
 }
 
-void CL_EndEffect(void)
+void CL_EndEffect (void)
 {
-	int idx;
+	int		idx;
 
 	idx = MSG_ReadByte();
 
 	CL_FreeEffect(idx);
 }
 
-static void CL_LinkEntity(entity_t *ent)
+static void CL_LinkEntity (entity_t *ent)
 {
 	if (cl_numvisedicts < MAX_VISEDICTS)
 	{
@@ -1969,23 +1937,18 @@ static void CL_LinkEntity(entity_t *ent)
 	}
 }
 
-void R_RunQuakeEffect (vec3_t org, float distance);
-void RiderParticle(int count, vec3_t origin);
-void GravityWellParticle(int count, vec3_t origin, int color);
-
-void CL_UpdateEffects(void)
+void CL_UpdateEffects (void)
 {
-	int idx,cur_frame;
-	vec3_t mymin,mymax;
-	float frametime;
-//	edict_t test;
-//	trace_t	trace;
-	vec3_t	org,org2,alldir;
-	int x_dir,y_dir;
-	entity_t *ent;
-	float distance,smoketime;
-	int i;
-	vec3_t snow_org;
+	int		i;
+	int		idx, cur_frame;
+	vec3_t		mymin, mymax;
+	float		frametime;
+//	edict_t		test;
+//	trace_t		trace;
+	vec3_t		org, org2, alldir, snow_org;
+	int		x_dir, y_dir;
+	entity_t	*ent;
+	float		distance, smoketime;
 
 	if (cls.state == ca_disconnected)
 		return;
@@ -1995,12 +1958,12 @@ void CL_UpdateEffects(void)
 		return;
 //	Con_Printf("Here at %f\n",cl.time);
 
-	for(idx=0;idx<MAX_EFFECTS;idx++)
+	for (idx = 0 ; idx < MAX_EFFECTS ; idx++)
 	{
-		if (!cl.Effects[idx].type) 
+		if (!cl.Effects[idx].type)
 			continue;
 
-		switch(cl.Effects[idx].type)
+		switch (cl.Effects[idx].type)
 		{
 			case CE_RAIN:
 				org[0] = cl.Effects[idx].ef.Rain.min_org[0];
@@ -2016,9 +1979,9 @@ void CL_UpdateEffects(void)
 
 				cl.Effects[idx].ef.Rain.next_time += frametime;
 				if (cl.Effects[idx].ef.Rain.next_time >= cl.Effects[idx].ef.Rain.wait)
-				{		
-					R_RainEffect(org,org2,x_dir,y_dir,cl.Effects[idx].ef.Rain.color,
-						cl.Effects[idx].ef.Rain.count);
+				{
+					R_RainEffect(org, org2, x_dir, y_dir, cl.Effects[idx].ef.Rain.color,
+								cl.Effects[idx].ef.Rain.count);
 					cl.Effects[idx].ef.Rain.next_time = 0;
 				}
 				break;
@@ -2044,8 +2007,8 @@ void CL_UpdateEffects(void)
 				//jfm:  fixme, check distance to player first
 				if (cl.Effects[idx].ef.Rain.next_time >= 0.10 && distance < 1024)
 				{
-					R_SnowEffect(org,org2,cl.Effects[idx].ef.Rain.flags,alldir,
-								 cl.Effects[idx].ef.Rain.count);
+					R_SnowEffect(org, org2, cl.Effects[idx].ef.Rain.flags, alldir,
+								cl.Effects[idx].ef.Rain.count);
 
 					cl.Effects[idx].ef.Rain.next_time = 0;
 				}
@@ -2053,33 +2016,33 @@ void CL_UpdateEffects(void)
 
 			case CE_FOUNTAIN:
 				mymin[0] = (-3 * cl.Effects[idx].ef.Fountain.vright[0] * cl.Effects[idx].ef.Fountain.movedir[0]) +
-						   (-3 * cl.Effects[idx].ef.Fountain.vforward[0] * cl.Effects[idx].ef.Fountain.movedir[1]) +
-						   (2 * cl.Effects[idx].ef.Fountain.vup[0] * cl.Effects[idx].ef.Fountain.movedir[2]);
+						(-3 * cl.Effects[idx].ef.Fountain.vforward[0] * cl.Effects[idx].ef.Fountain.movedir[1]) +
+						(2 * cl.Effects[idx].ef.Fountain.vup[0] * cl.Effects[idx].ef.Fountain.movedir[2]);
 				mymin[1] = (-3 * cl.Effects[idx].ef.Fountain.vright[1] * cl.Effects[idx].ef.Fountain.movedir[0]) +
-						   (-3 * cl.Effects[idx].ef.Fountain.vforward[1] * cl.Effects[idx].ef.Fountain.movedir[1]) +
-						   (2 * cl.Effects[idx].ef.Fountain.vup[1] * cl.Effects[idx].ef.Fountain.movedir[2]);
+						(-3 * cl.Effects[idx].ef.Fountain.vforward[1] * cl.Effects[idx].ef.Fountain.movedir[1]) +
+						(2 * cl.Effects[idx].ef.Fountain.vup[1] * cl.Effects[idx].ef.Fountain.movedir[2]);
 				mymin[2] = (-3 * cl.Effects[idx].ef.Fountain.vright[2] * cl.Effects[idx].ef.Fountain.movedir[0]) +
-						   (-3 * cl.Effects[idx].ef.Fountain.vforward[2] * cl.Effects[idx].ef.Fountain.movedir[1]) +
-						   (2 * cl.Effects[idx].ef.Fountain.vup[2] * cl.Effects[idx].ef.Fountain.movedir[2]);
+						(-3 * cl.Effects[idx].ef.Fountain.vforward[2] * cl.Effects[idx].ef.Fountain.movedir[1]) +
+						(2 * cl.Effects[idx].ef.Fountain.vup[2] * cl.Effects[idx].ef.Fountain.movedir[2]);
 				mymin[0] *= 15;
 				mymin[1] *= 15;
 				mymin[2] *= 15;
 
 				mymax[0] = (3 * cl.Effects[idx].ef.Fountain.vright[0] * cl.Effects[idx].ef.Fountain.movedir[0]) +
-						   (3 * cl.Effects[idx].ef.Fountain.vforward[0] * cl.Effects[idx].ef.Fountain.movedir[1]) +
-						   (10 * cl.Effects[idx].ef.Fountain.vup[0] * cl.Effects[idx].ef.Fountain.movedir[2]);
+						(3 * cl.Effects[idx].ef.Fountain.vforward[0] * cl.Effects[idx].ef.Fountain.movedir[1]) +
+						(10 * cl.Effects[idx].ef.Fountain.vup[0] * cl.Effects[idx].ef.Fountain.movedir[2]);
 				mymax[1] = (3 * cl.Effects[idx].ef.Fountain.vright[1] * cl.Effects[idx].ef.Fountain.movedir[0]) +
-						   (3 * cl.Effects[idx].ef.Fountain.vforward[1] * cl.Effects[idx].ef.Fountain.movedir[1]) +
-						   (10 * cl.Effects[idx].ef.Fountain.vup[1] * cl.Effects[idx].ef.Fountain.movedir[2]);
+						(3 * cl.Effects[idx].ef.Fountain.vforward[1] * cl.Effects[idx].ef.Fountain.movedir[1]) +
+						(10 * cl.Effects[idx].ef.Fountain.vup[1] * cl.Effects[idx].ef.Fountain.movedir[2]);
 				mymax[2] = (3 * cl.Effects[idx].ef.Fountain.vright[2] * cl.Effects[idx].ef.Fountain.movedir[0]) +
-						   (3 * cl.Effects[idx].ef.Fountain.vforward[2] * cl.Effects[idx].ef.Fountain.movedir[1]) +
-						   (10 * cl.Effects[idx].ef.Fountain.vup[2] * cl.Effects[idx].ef.Fountain.movedir[2]);
+						(3 * cl.Effects[idx].ef.Fountain.vforward[2] * cl.Effects[idx].ef.Fountain.movedir[1]) +
+						(10 * cl.Effects[idx].ef.Fountain.vup[2] * cl.Effects[idx].ef.Fountain.movedir[2]);
 				mymax[0] *= 15;
 				mymax[1] *= 15;
 				mymax[2] *= 15;
 
-				R_RunParticleEffect2 (cl.Effects[idx].ef.Fountain.pos,mymin,mymax,
-					                  cl.Effects[idx].ef.Fountain.color,2,cl.Effects[idx].ef.Fountain.cnt);
+				R_RunParticleEffect2 (cl.Effects[idx].ef.Fountain.pos, mymin, mymax,
+							cl.Effects[idx].ef.Fountain.color, 2, cl.Effects[idx].ef.Fountain.cnt);
 
 			/*	memset(&test,0,sizeof(test));
 				trace = SV_Move (cl.Effects[idx].ef.Fountain.pos, mymin, mymax, mymin, false, &test);
@@ -2088,7 +2051,7 @@ void CL_UpdateEffects(void)
 				break;
 
 			case CE_QUAKE:
-				R_RunQuakeEffect (cl.Effects[idx].ef.Quake.origin,cl.Effects[idx].ef.Quake.radius);
+				R_RunQuakeEffect (cl.Effects[idx].ef.Quake.origin, cl.Effects[idx].ef.Quake.radius);
 				break;
 
 			case CE_WHITE_SMOKE:
@@ -2116,7 +2079,7 @@ void CL_UpdateEffects(void)
 				ent->origin[1] += (frametime/smoketime) * cl.Effects[idx].ef.Smoke.velocity[1];
 				ent->origin[2] += (frametime/smoketime) * cl.Effects[idx].ef.Smoke.velocity[2];
 
-				while(cl.Effects[idx].ef.Smoke.time_amount >= smoketime)
+				while (cl.Effects[idx].ef.Smoke.time_amount >= smoketime)
 				{
 					ent->frame++;
 					cl.Effects[idx].ef.Smoke.time_amount -= smoketime;
@@ -2164,13 +2127,12 @@ void CL_UpdateEffects(void)
 			case CE_FIREWALL_SMALL:
 			case CE_FIREWALL_MEDIUM:
 			case CE_FIREWALL_LARGE:
-
 				cl.Effects[idx].ef.Smoke.time_amount += frametime;
 				ent = &EffectEntities[cl.Effects[idx].ef.Smoke.entity_index];
 
 				if (cl.Effects[idx].type != CE_BG_CIRCLE_EXP)
 				{
-					while(cl.Effects[idx].ef.Smoke.time_amount >= HX_FRAME_TIME)
+					while (cl.Effects[idx].ef.Smoke.time_amount >= HX_FRAME_TIME)
 					{
 						ent->frame++;
 						cl.Effects[idx].ef.Smoke.time_amount -= HX_FRAME_TIME;
@@ -2178,7 +2140,7 @@ void CL_UpdateEffects(void)
 				}
 				else
 				{
-					while(cl.Effects[idx].ef.Smoke.time_amount >= HX_FRAME_TIME * 2)
+					while (cl.Effects[idx].ef.Smoke.time_amount >= HX_FRAME_TIME * 2)
 					{
 						ent->frame++;
 						cl.Effects[idx].ef.Smoke.time_amount -= HX_FRAME_TIME * 2;
@@ -2194,12 +2156,12 @@ void CL_UpdateEffects(void)
 
 			case CE_LSHOCK:
 				ent = &EffectEntities[cl.Effects[idx].ef.Smoke.entity_index];
-				if(ent->skinnum==0)
-					ent->skinnum=1;
-				else if(ent->skinnum==1)
-					ent->skinnum=0;
-				ent->scale-=10;
-				if (ent->scale<=10)
+				if (ent->skinnum == 0)
+					ent->skinnum = 1;
+				else if (ent->skinnum == 1)
+					ent->skinnum = 0;
+				ent->scale -= 10;
+				if (ent->scale <= 10)
 				{
 					CL_FreeEffect(idx);
 				}
@@ -2215,12 +2177,13 @@ void CL_UpdateEffects(void)
 				cl.Effects[idx].ef.Flash.time_amount += frametime;
 				ent = &EffectEntities[cl.Effects[idx].ef.Flash.entity_index];
 
-				while(cl.Effects[idx].ef.Flash.time_amount >= HX_FRAME_TIME)
+				while (cl.Effects[idx].ef.Flash.time_amount >= HX_FRAME_TIME)
 				{
 					if (!cl.Effects[idx].ef.Flash.reverse)
 					{
-						if (ent->frame >= ent->model->numframes-1)  // Ran through forward animation
+						if (ent->frame >= ent->model->numframes-1)
 						{
+						// Ran through forward animation
 							cl.Effects[idx].ef.Flash.reverse = 1;
 							ent->frame--;
 						}
@@ -2254,20 +2217,20 @@ void CL_UpdateEffects(void)
 				org[1] += cos(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
 
 				if (cl.Effects[idx].ef.RD.stage <= 6)
-				//	RiderParticle(cl.Effects[idx].ef.RD.stage+1,cl.Effects[idx].ef.RD.origin);
-					RiderParticle(cl.Effects[idx].ef.RD.stage+1,org);
+				//	RiderParticle(cl.Effects[idx].ef.RD.stage+1, cl.Effects[idx].ef.RD.origin);
+					RiderParticle(cl.Effects[idx].ef.RD.stage+1, org);
 				else
 				{
 					// To set the rider's origin point for the particles
-					RiderParticle(0,org);
-					if (cl.Effects[idx].ef.RD.stage == 7) 
+					RiderParticle(0, org);
+					if (cl.Effects[idx].ef.RD.stage == 7)
 					{
 						cl.cshifts[CSHIFT_BONUS].destcolor[0] = 255;
 						cl.cshifts[CSHIFT_BONUS].destcolor[1] = 255;
 						cl.cshifts[CSHIFT_BONUS].destcolor[2] = 255;
 						cl.cshifts[CSHIFT_BONUS].percent = 256;
 					}
-					else if (cl.Effects[idx].ef.RD.stage > 13) 
+					else if (cl.Effects[idx].ef.RD.stage > 13)
 					{
 					//	cl.Effects[idx].ef.RD.stage = 0;
 						CL_FreeEffect(idx);
@@ -2298,7 +2261,7 @@ void CL_UpdateEffects(void)
 				smoketime = cl.Effects[idx].ef.Teleporter.framelength;
 
 				ent = &EffectEntities[cl.Effects[idx].ef.Teleporter.entity_index[0]];
-				while(cl.Effects[idx].ef.Teleporter.time_amount >= HX_FRAME_TIME)
+				while (cl.Effects[idx].ef.Teleporter.time_amount >= HX_FRAME_TIME)
 				{
 					ent->frame++;
 					cl.Effects[idx].ef.Teleporter.time_amount -= HX_FRAME_TIME;
@@ -2311,7 +2274,7 @@ void CL_UpdateEffects(void)
 					break;
 				}
 
-				for (i=0;i<8;++i)
+				for (i = 0 ; i < 8 ; ++i)
 				{
 					ent = &EffectEntities[cl.Effects[idx].ef.Teleporter.entity_index[i]];
 
@@ -2329,7 +2292,7 @@ void CL_UpdateEffects(void)
 				smoketime = cl.Effects[idx].ef.Teleporter.framelength;
 
 				ent = &EffectEntities[cl.Effects[idx].ef.Teleporter.entity_index[0]];
-				while(cl.Effects[idx].ef.Teleporter.time_amount >= HX_FRAME_TIME)
+				while (cl.Effects[idx].ef.Teleporter.time_amount >= HX_FRAME_TIME)
 				{
 					ent->scale -= 15;
 					cl.Effects[idx].ef.Teleporter.time_amount -= HX_FRAME_TIME;
@@ -2370,17 +2333,17 @@ void CL_UpdateEffects(void)
 
 			case CE_CHUNK:
 				cl.Effects[idx].ef.Chunk.time_amount -= frametime;
-				if(cl.Effects[idx].ef.Chunk.time_amount < 0)
+				if (cl.Effects[idx].ef.Chunk.time_amount < 0)
 				{
-					CL_FreeEffect(idx);	
+					CL_FreeEffect(idx);
 				}
 				else
 				{
-					for (i=0;i < cl.Effects[idx].ef.Chunk.numChunks;i++)
+					for (i = 0 ; i < cl.Effects[idx].ef.Chunk.numChunks ; i++)
 					{
-						vec3_t oldorg;
+						vec3_t		oldorg;
 						mleaf_t		*l;
-						int	moving = 1;
+						int		moving = 1;
 
 						ent = &EffectEntities[cl.Effects[idx].ef.Chunk.entity_index[i]];
 
@@ -2391,7 +2354,7 @@ void CL_UpdateEffects(void)
 						ent->origin[2] += frametime * cl.Effects[idx].ef.Chunk.velocity[i][2];
 
 						l = Mod_PointInLeaf (ent->origin, cl.worldmodel);
-						if(l->contents!=CONTENTS_EMPTY) //||in_solid==true
+						if (l->contents != CONTENTS_EMPTY) //|| in_solid == true
 						{	// bouncing prolly won't work...
 							VectorCopy(oldorg, ent->origin);
 
@@ -2408,7 +2371,7 @@ void CL_UpdateEffects(void)
 							ent->angles[2] += frametime * cl.Effects[idx].ef.Chunk.avel[i%3][2];
 						}
 
-						if(cl.Effects[idx].ef.Chunk.time_amount < frametime * 3)
+						if (cl.Effects[idx].ef.Chunk.time_amount < frametime * 3)
 						{	// chunk leaves in 3 frames
 							ent->scale *= .7;
 						}
@@ -2417,7 +2380,7 @@ void CL_UpdateEffects(void)
 
 						cl.Effects[idx].ef.Chunk.velocity[i][2] -= frametime * 500; // apply gravity
 
-						switch(cl.Effects[idx].ef.Chunk.type)
+						switch (cl.Effects[idx].ef.Chunk.type)
 						{
 						case THINGTYPE_GREYSTONE:
 							break;
@@ -2426,7 +2389,7 @@ void CL_UpdateEffects(void)
 						case THINGTYPE_METAL:
 							break;
 						case THINGTYPE_FLESH:
-							if(moving)
+							if (moving)
 								R_RocketTrail (oldorg, ent->origin, 17);
 							break;
 						case THINGTYPE_FIRE:
@@ -2457,7 +2420,7 @@ void CL_UpdateEffects(void)
 						case THINGTYPE_GLASS:
 							break;
 						case THINGTYPE_ICE:
-							if(moving)
+							if (moving)
 								R_RocketTrail (oldorg, ent->origin, rt_ice);
 							break;
 						case THINGTYPE_CLEARGLASS:
@@ -2465,14 +2428,14 @@ void CL_UpdateEffects(void)
 						case THINGTYPE_REDGLASS:
 							break;
 						case THINGTYPE_ACID:
-							if(moving)
+							if (moving)
 								R_RocketTrail (oldorg, ent->origin, rt_acidball);
 							break;
 						case THINGTYPE_METEOR:
 							R_RocketTrail (oldorg, ent->origin, 1);
 							break;
 						case THINGTYPE_GREENFLESH:
-							if(moving)
+							if (moving)
 								R_RocketTrail (oldorg, ent->origin, rt_acidball);
 							break;
 						}
@@ -2489,22 +2452,19 @@ void CL_UpdateEffects(void)
 //
 //==========================================================================
 
-static int NewEffectEntity(void)
+static int NewEffectEntity (void)
 {
 	entity_t	*ent;
-	int counter;
+	int		counter;
 
-	if(cl_numvisedicts == MAX_VISEDICTS)
-	{
+	if (cl_numvisedicts == MAX_VISEDICTS)
 		return -1;
-	}
-	if(EffectEntityCount == MAX_EFFECT_ENTITIES)
-	{
-		return -1;
-	}
 
-	for(counter=0;counter<MAX_EFFECT_ENTITIES;counter++)
-		if (!EntityUsed[counter]) 
+	if (EffectEntityCount == MAX_EFFECT_ENTITIES)
+		return -1;
+
+	for (counter = 0 ; counter < MAX_EFFECT_ENTITIES ; counter++)
+		if (!EntityUsed[counter])
 			break;
 
 	EntityUsed[counter] = true;
@@ -2516,7 +2476,7 @@ static int NewEffectEntity(void)
 	return counter;
 }
 
-static void FreeEffectEntity(int idx)
+static void FreeEffectEntity (int idx)
 {
 	EntityUsed[idx] = false;
 	EffectEntityCount--;
@@ -2525,6 +2485,9 @@ static void FreeEffectEntity(int idx)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/11/05 20:22:10  sezero
+ * fixed some gcc4 warnings
+ *
  * Revision 1.8  2005/10/27 06:47:12  sezero
  * coding style and whitespace cleanup.
  *

@@ -1,13 +1,9 @@
+/*
+	sv_effect.c
+	Client side effects.
 
-//**************************************************************************
-//**
-//** sv_effect.c
-//**
-//** Client side effects.
-//**
-//** $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.5 2005-10-02 15:43:09 sezero Exp $
-//**
-//**************************************************************************
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.6 2006-04-06 08:36:25 sezero Exp $
+*/
 
 // HEADER FILES ------------------------------------------------------------
 
@@ -35,45 +31,41 @@ extern cvar_t sv_ce_max_size;
 // CODE --------------------------------------------------------------------
 
 
-void SV_ClearEffects(void)
-{
-	memset(sv.Effects,0,sizeof(sv.Effects));
-}
-
 // All changes need to be in SV_SendEffect(), SV_ParseEffect(),
 // SV_SaveEffects(), SV_LoadEffects(), CL_ParseEffect()
-void SV_SendEffect(sizebuf_t *sb, int idx)
+void SV_SendEffect (sizebuf_t *sb, int idx)
 {
 	qboolean	DoTest;
-	vec3_t		TestO;
-	int			TestDistance;
-	int			i;
+	vec3_t		TestO1;
+	int		TestDistance;
+	int		i;
 
 	if (sv_ce_scale.value > 0)
 		DoTest = true;
 	else
 		DoTest = false;
 
-	VectorCopy(vec3_origin, TestO);
+	VectorCopy(vec3_origin, TestO1);
 
-	switch(sv.Effects[idx].type)
+	switch (sv.Effects[idx].type)
 	{
 		case CE_HWSHEEPINATOR:
 		case CE_HWXBOWSHOOT:
-			VectorCopy(sv.Effects[idx].ef.Xbow.origin[5], TestO);
+			VectorCopy(sv.Effects[idx].ef.Xbow.origin[5], TestO1);
 			TestDistance = 900;
 			break;
 		case CE_SCARABCHAIN:
-			VectorCopy(sv.Effects[idx].ef.Chain.origin, TestO);
+			VectorCopy(sv.Effects[idx].ef.Chain.origin, TestO1);
 			TestDistance = 900;
 			break;
 
 		case CE_TRIPMINE:
-			VectorCopy(sv.Effects[idx].ef.Chain.origin, TestO);
-//			DoTest = false;
+			VectorCopy(sv.Effects[idx].ef.Chain.origin, TestO1);
+		//	DoTest = false;
 			break;
 
-			//ACHTUNG!!!!!!! setting DoTest to false here does not insure that effect will be sent to everyone!
+		//ACHTUNG!!!!!!! setting DoTest to false here does not insure
+		//		 that effect will be sent to everyone!
 		case CE_TRIPMINESTILL:
 			TestDistance = 10000;
 			DoTest = false;
@@ -90,7 +82,7 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 			break;
 
 		case CE_QUAKE:
-			VectorCopy(sv.Effects[idx].ef.Quake.origin, TestO);
+			VectorCopy(sv.Effects[idx].ef.Quake.origin, TestO1);
 			TestDistance = 700;
 			break;
 
@@ -109,7 +101,7 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 		case CE_FLAMEWALL2:
 		case CE_ONFIRE:
 		case CE_RIPPLE:
-			VectorCopy(sv.Effects[idx].ef.Smoke.origin, TestO);
+			VectorCopy(sv.Effects[idx].ef.Smoke.origin, TestO1);
 			TestDistance = 250;
 			break;
 
@@ -147,7 +139,7 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 		case CE_LSHOCK:
 		case CE_BOMB:
 		case CE_FLOOR_EXPLOSION3:
-			VectorCopy(sv.Effects[idx].ef.Smoke.origin, TestO);
+			VectorCopy(sv.Effects[idx].ef.Smoke.origin, TestO1);
 			TestDistance = 250;
 			break;
 
@@ -156,22 +148,21 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 		case CE_SM_BLUE_FLASH:
 		case CE_HWSPLITFLASH:
 		case CE_RED_FLASH:
-			VectorCopy(sv.Effects[idx].ef.Smoke.origin, TestO);
+			VectorCopy(sv.Effects[idx].ef.Smoke.origin, TestO1);
 			TestDistance = 250;
 			break;
-
 
 		case CE_RIDER_DEATH:
 			DoTest = false;
 			break;
 
 		case CE_TELEPORTERPUFFS:
-			VectorCopy(sv.Effects[idx].ef.Teleporter.origin, TestO);
+			VectorCopy(sv.Effects[idx].ef.Teleporter.origin, TestO1);
 			TestDistance = 350;
 			break;
 
 		case CE_TELEPORTERBODY:
-			VectorCopy(sv.Effects[idx].ef.Teleporter.origin, TestO);
+			VectorCopy(sv.Effects[idx].ef.Teleporter.origin, TestO1);
 			TestDistance = 350;
 			break;
 
@@ -180,7 +171,7 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 			{
 				return;
 			}
-			VectorCopy(PROG_TO_EDICT(sv.Effects[idx].ef.Bubble.owner)->v.origin, TestO);
+			VectorCopy(PROG_TO_EDICT(sv.Effects[idx].ef.Bubble.owner)->v.origin, TestO1);
 			TestDistance = 400;
 			break;
 
@@ -190,18 +181,17 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 		case CE_HWBONEBALL:
 		case CE_HWRAVENSTAFF:
 		case CE_HWRAVENPOWER:
-
-			VectorCopy(sv.Effects[idx].ef.Missile.origin, TestO);
+			VectorCopy(sv.Effects[idx].ef.Missile.origin, TestO1);
 			TestDistance = 900;
 			break;
 
 		case CE_HWMISSILESTAR:
 		case CE_HWEIDOLONSTAR:
-			VectorCopy(sv.Effects[idx].ef.Missile.origin, TestO);
+			VectorCopy(sv.Effects[idx].ef.Missile.origin, TestO1);
 			TestDistance = 600;
 			break;
 		default:
-//			Sys_Error ("SV_SendEffect: bad type");
+		//	Sys_Error ("SV_SendEffect: bad type");
 			PR_RunError ("SV_SendEffect: bad type");
 			break;
 	}
@@ -300,7 +290,7 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 		case CE_ACID_HIT:
 		case CE_ACID_SPLAT:
 		case CE_ACID_EXPL:
-		case CE_LBALL_EXPL:	
+		case CE_LBALL_EXPL:
 		case CE_FIREWALL_SMALL:
 		case CE_FIREWALL_MEDIUM:
 		case CE_FIREWALL_LARGE:
@@ -308,7 +298,6 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 		case CE_BOMB:
 		case CE_BRN_BOUNCE:
 		case CE_LSHOCK:
-
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Smoke.origin[0]);
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Smoke.origin[1]);
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Smoke.origin[2]);
@@ -316,14 +305,13 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 
 		case CE_WHITE_FLASH:
 		case CE_BLUE_FLASH:
-		case CE_SM_BLUE_FLASH:			
+		case CE_SM_BLUE_FLASH:
 		case CE_HWSPLITFLASH:
 		case CE_RED_FLASH:
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Smoke.origin[0]);
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Smoke.origin[1]);
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Smoke.origin[2]);
 			break;
-
 
 		case CE_RIDER_DEATH:
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.RD.origin[0]);
@@ -346,6 +334,7 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 			MSG_WriteFloat(&sv.multicast, sv.Effects[idx].ef.Teleporter.velocity[0][2]);
 			MSG_WriteFloat(&sv.multicast, sv.Effects[idx].ef.Teleporter.skinnum);
 			break;
+
 		case CE_BONESHRAPNEL:
 		case CE_HWBONEBALL:
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Missile.origin[0]);
@@ -360,8 +349,8 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 			MSG_WriteFloat(&sv.multicast, sv.Effects[idx].ef.Missile.avelocity[0]);
 			MSG_WriteFloat(&sv.multicast, sv.Effects[idx].ef.Missile.avelocity[1]);
 			MSG_WriteFloat(&sv.multicast, sv.Effects[idx].ef.Missile.avelocity[2]);
-
 			break;
+
 		case CE_BONESHARD:
 		case CE_HWRAVENSTAFF:
 		case CE_HWMISSILESTAR:
@@ -374,6 +363,7 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 			MSG_WriteFloat(&sv.multicast, sv.Effects[idx].ef.Missile.velocity[1]);
 			MSG_WriteFloat(&sv.multicast, sv.Effects[idx].ef.Missile.velocity[2]);
 			break;
+
 		case CE_HWDRILLA:
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Missile.origin[0]);
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Missile.origin[1]);
@@ -382,6 +372,7 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 			MSG_WriteAngle(&sv.multicast, sv.Effects[idx].ef.Missile.angle[1]);
 			MSG_WriteShort(&sv.multicast, sv.Effects[idx].ef.Missile.speed);
 			break;
+
 		case CE_DEATHBUBBLES:
 			MSG_WriteShort(&sv.multicast, sv.Effects[idx].ef.Bubble.owner);
 			MSG_WriteByte(&sv.multicast, sv.Effects[idx].ef.Bubble.offset[0]);
@@ -389,6 +380,7 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 			MSG_WriteByte(&sv.multicast, sv.Effects[idx].ef.Bubble.offset[2]);
 			MSG_WriteByte(&sv.multicast, sv.Effects[idx].ef.Bubble.count);
 			break;
+
 		case CE_SCARABCHAIN:
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Chain.origin[0]);
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Chain.origin[1]);
@@ -396,6 +388,7 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 			MSG_WriteShort(&sv.multicast, sv.Effects[idx].ef.Chain.owner+sv.Effects[idx].ef.Chain.material);
 			MSG_WriteByte(&sv.multicast, sv.Effects[idx].ef.Chain.tag);
 			break;
+
 		case CE_TRIPMINESTILL:
 		case CE_TRIPMINE:
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Chain.origin[0]);
@@ -405,17 +398,17 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 			MSG_WriteFloat(&sv.multicast, sv.Effects[idx].ef.Chain.velocity[1]);
 			MSG_WriteFloat(&sv.multicast, sv.Effects[idx].ef.Chain.velocity[2]);
 			break;
+
 		case CE_HWSHEEPINATOR:
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Xbow.origin[5][0]);
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Xbow.origin[5][1]);
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Xbow.origin[5][2]);
 			MSG_WriteAngle(&sv.multicast, sv.Effects[idx].ef.Xbow.angle[0]);
 			MSG_WriteAngle(&sv.multicast, sv.Effects[idx].ef.Xbow.angle[1]);
-
 			//now send the guys that have turned
 			MSG_WriteByte(&sv.multicast, sv.Effects[idx].ef.Xbow.turnedbolts);
 			MSG_WriteByte(&sv.multicast, sv.Effects[idx].ef.Xbow.activebolts);
-			for (i=0;i<5;i++)
+			for (i = 0 ; i < 5 ; i++)
 			{
 				if ((1<<i)&sv.Effects[idx].ef.Xbow.turnedbolts)
 				{
@@ -427,20 +420,20 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 				}
 			}
 			break;
+
 		case CE_HWXBOWSHOOT:
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Xbow.origin[5][0]);
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Xbow.origin[5][1]);
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Xbow.origin[5][2]);
 			MSG_WriteAngle(&sv.multicast, sv.Effects[idx].ef.Xbow.angle[0]);
 			MSG_WriteAngle(&sv.multicast, sv.Effects[idx].ef.Xbow.angle[1]);
-//				MSG_WriteFloat(&sv.multicast, sv.Effects[idx].Xbow.angle[2]);
+		//	MSG_WriteFloat(&sv.multicast, sv.Effects[idx].Xbow.angle[2]);
 			MSG_WriteByte(&sv.multicast, sv.Effects[idx].ef.Xbow.bolts);
 			MSG_WriteByte(&sv.multicast, sv.Effects[idx].ef.Xbow.randseed);
-
 			//now send the guys that have turned
 			MSG_WriteByte(&sv.multicast, sv.Effects[idx].ef.Xbow.turnedbolts);
 			MSG_WriteByte(&sv.multicast, sv.Effects[idx].ef.Xbow.activebolts);
-			for (i=0;i<5;i++)
+			for (i = 0 ; i < 5 ; i++)
 			{
 				if ((1<<i)&sv.Effects[idx].ef.Xbow.turnedbolts)
 				{
@@ -452,8 +445,9 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 				}
 			}
 			break;
+
 		default:
-//			Sys_Error ("SV_SendEffect: bad type");
+		//	Sys_Error ("SV_SendEffect: bad type");
 			PR_RunError ("SV_SendEffect: bad type");
 			break;
 	}
@@ -467,39 +461,31 @@ void SV_SendEffect(sizebuf_t *sb, int idx)
 	{
 		if (DoTest)
 		{
-			SV_Multicast (TestO, MULTICAST_PVS_R);
+			SV_Multicast (TestO1, MULTICAST_PVS_R);
 		}
 		else
 		{
-			SV_Multicast (TestO, MULTICAST_ALL_R);
+			SV_Multicast (TestO1, MULTICAST_ALL_R);
 		}
 		sv.Effects[idx].client_list = clients_multicast;
 	}
 }
 
-void SV_UpdateEffects(sizebuf_t *sb)
-{
-	int idx;
-
-	for(idx=0;idx<MAX_EFFECTS;idx++)
-		if (sv.Effects[idx].type)
-			SV_SendEffect(sb,idx);
-}
 
 // All changes need to be in SV_SendEffect(), SV_ParseEffect(),
 // SV_SaveEffects(), SV_LoadEffects(), CL_ParseEffect()
-void SV_ParseEffect(sizebuf_t *sb)
+void SV_ParseEffect (sizebuf_t *sb)
 {
-	int idx;
-	byte effect;
+	int		idx;
+	byte		effect;
 
 	effect = G_FLOAT(OFS_PARM0);
 
-	for(idx=0;idx<MAX_EFFECTS;idx++)
+	for (idx = 0 ; idx < MAX_EFFECTS ; idx++)
 		if (!sv.Effects[idx].type || 
-			(sv.Effects[idx].expire_time && sv.Effects[idx].expire_time <= sv.time)) 
+			(sv.Effects[idx].expire_time && sv.Effects[idx].expire_time <= sv.time))
 			break;
-		
+
 	if (idx >= MAX_EFFECTS)
 	{
 		PR_RunError ("MAX_EFFECTS reached");
@@ -513,7 +499,7 @@ void SV_ParseEffect(sizebuf_t *sb)
 	sv.Effects[idx].type = effect;
 	G_FLOAT(OFS_RETURN) = idx;
 
-	switch(effect)
+	switch (effect)
 	{
 		case CE_RAIN:
 			VectorCopy(G_VECTOR(OFS_PARM1),sv.Effects[idx].ef.Rain.min_org);
@@ -640,6 +626,7 @@ void SV_ParseEffect(sizebuf_t *sb)
 
 			sv.Effects[idx].expire_time = sv.time + 10;
 			break;
+
 		case CE_BONESHARD:
 		case CE_HWRAVENSTAFF:
 		case CE_HWMISSILESTAR:
@@ -649,28 +636,33 @@ void SV_ParseEffect(sizebuf_t *sb)
 			VectorCopy(G_VECTOR(OFS_PARM2),sv.Effects[idx].ef.Missile.velocity);
 			sv.Effects[idx].expire_time = sv.time + 10;
 			break;
+
 		case CE_DEATHBUBBLES:
 			VectorCopy(G_VECTOR(OFS_PARM2), sv.Effects[idx].ef.Bubble.offset);
 			sv.Effects[idx].ef.Bubble.owner = G_EDICTNUM(OFS_PARM1);
 			sv.Effects[idx].ef.Bubble.count = G_FLOAT(OFS_PARM3);
 			sv.Effects[idx].expire_time = sv.time + 30;
 			break;
+
 		case CE_HWDRILLA:
 			VectorCopy(G_VECTOR(OFS_PARM1), sv.Effects[idx].ef.Missile.origin);
 			VectorCopy(G_VECTOR(OFS_PARM2),sv.Effects[idx].ef.Missile.angle);
 			sv.Effects[idx].ef.Missile.speed = G_FLOAT(OFS_PARM3);
 			sv.Effects[idx].expire_time = sv.time + 10;
 			break;
+
 		case CE_TRIPMINESTILL:
 			VectorCopy(G_VECTOR(OFS_PARM1), sv.Effects[idx].ef.Chain.origin);
 			VectorCopy(G_VECTOR(OFS_PARM2),sv.Effects[idx].ef.Chain.velocity);
 			sv.Effects[idx].expire_time = sv.time + 70;
 			break;
+
 		case CE_TRIPMINE:
 			VectorCopy(G_VECTOR(OFS_PARM1), sv.Effects[idx].ef.Chain.origin);
 			VectorCopy(G_VECTOR(OFS_PARM2),sv.Effects[idx].ef.Chain.velocity);
 			sv.Effects[idx].expire_time = sv.time + 10;
 			break;
+
 		case CE_SCARABCHAIN:
 			VectorCopy(G_VECTOR(OFS_PARM1), sv.Effects[idx].ef.Chain.origin);
 			sv.Effects[idx].ef.Chain.owner = G_EDICTNUM(OFS_PARM2);
@@ -679,6 +671,7 @@ void SV_ParseEffect(sizebuf_t *sb)
 			sv.Effects[idx].ef.Chain.state = 0;
 			sv.Effects[idx].expire_time = sv.time + 15;
 			break;
+
 		case CE_HWSHEEPINATOR:
 			VectorCopy(G_VECTOR(OFS_PARM1), sv.Effects[idx].ef.Xbow.origin[0]);
 			VectorCopy(G_VECTOR(OFS_PARM1), sv.Effects[idx].ef.Xbow.origin[1]);
@@ -693,6 +686,7 @@ void SV_ParseEffect(sizebuf_t *sb)
 			sv.Effects[idx].ef.Xbow.turnedbolts = 0;
 			sv.Effects[idx].expire_time = sv.time + 7;
 			break;
+
 		case CE_HWXBOWSHOOT:
 			VectorCopy(G_VECTOR(OFS_PARM1), sv.Effects[idx].ef.Xbow.origin[0]);
 			VectorCopy(G_VECTOR(OFS_PARM1), sv.Effects[idx].ef.Xbow.origin[1]);
@@ -714,24 +708,27 @@ void SV_ParseEffect(sizebuf_t *sb)
 			}
 			sv.Effects[idx].expire_time = sv.time + 15;
 			break;
+
 		default:
-//			Sys_Error ("SV_ParseEffect: bad type");
+		//	Sys_Error ("SV_ParseEffect: bad type");
 			PR_RunError ("SV_SendEffect: bad type");
 	}
 
 	SV_SendEffect(sb,idx);
 }
 
+
 // this random generator can have its effects duplicated on the client
 // side by passing the randomseed over the network, as opposed to sending
 // all the generated values
 static unsigned int randomseed;
-void SV_setseed(int seed)
+
+void SV_setseed (int seed)
 {
 	randomseed = seed;
 }
 
-float SV_seedrand(void)
+float SV_seedrand (void)
 {
 	randomseed = (randomseed * 877 + 573) % 9968;
 	return (float)randomseed / 9968;
@@ -742,19 +739,18 @@ float SV_seedrand(void)
 static float MultiEffectIds[10];
 static int MultiEffectIdCount;
 
-void SV_ParseMultiEffect(sizebuf_t *sb)
+void SV_ParseMultiEffect (sizebuf_t *sb)
 {
-	int idx, count;
-	byte effect;
+	int	idx, count;
+	byte	effect;
 	vec3_t	orig, vel;
 
 	MultiEffectIdCount = 0;
 	effect = G_FLOAT(OFS_PARM0);
-	switch(effect)
+	switch (effect)
 	{
 	case CE_HWRAVENPOWER:
 		// need to set aside 3 effect ids
-		
 		MSG_WriteByte (sb, svc_multieffect);
 		MSG_WriteByte (sb, effect);
 
@@ -766,13 +762,13 @@ void SV_ParseMultiEffect(sizebuf_t *sb)
 		MSG_WriteCoord(sb, vel[0]);
 		MSG_WriteCoord(sb, vel[1]);
 		MSG_WriteCoord(sb, vel[2]);
-		for(count=0;count<3;count++)
+		for (count = 0 ; count < 3 ; count++)
 		{
-			for(idx=0;idx<MAX_EFFECTS;idx++)
+			for (idx = 0 ; idx < MAX_EFFECTS ; idx++)
 				if (!sv.Effects[idx].type || 
-					(sv.Effects[idx].expire_time && sv.Effects[idx].expire_time <= sv.time)) 
+					(sv.Effects[idx].expire_time && sv.Effects[idx].expire_time <= sv.time))
 					break;
-					if (idx >= MAX_EFFECTS)
+			if (idx >= MAX_EFFECTS)
 			{
 				PR_RunError ("MAX_EFFECTS reached");
 				return;
@@ -790,7 +786,7 @@ void SV_ParseMultiEffect(sizebuf_t *sb)
 	}
 }
 
-float SV_GetMultiEffectId(void)
+float SV_GetMultiEffectId (void)
 {
 	MultiEffectIdCount++;
 	return MultiEffectIds[MultiEffectIdCount-1];
@@ -798,6 +794,9 @@ float SV_GetMultiEffectId(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/10/02 15:43:09  sezero
+ * killed -Wshadow warnings
+ *
  * Revision 1.4  2005/09/10 13:15:58  sezero
  * used the same name for the EffectsT union as in hexen2
  *

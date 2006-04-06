@@ -1,40 +1,42 @@
-#define MAX_EFFECTS 256
+
+
+#define MAX_EFFECTS		256
 
 // Types for various chunks
-#define THINGTYPE_GREYSTONE		 1
-#define THINGTYPE_WOOD			 2
-#define THINGTYPE_METAL			 3
-#define THINGTYPE_FLESH			 4
-#define THINGTYPE_FIRE			 5
-#define THINGTYPE_CLAY			 6
-#define THINGTYPE_LEAVES		 7
-#define THINGTYPE_HAY			 8
-#define THINGTYPE_BROWNSTONE		 9
-#define THINGTYPE_CLOTH			10
-#define THINGTYPE_WOOD_LEAF		11
-#define THINGTYPE_WOOD_METAL		12
-#define THINGTYPE_WOOD_STONE		13
-#define THINGTYPE_METAL_STONE		14
-#define THINGTYPE_METAL_CLOTH		15
-#define THINGTYPE_WEBS			16
-#define THINGTYPE_GLASS			17
-#define THINGTYPE_ICE			18
-#define THINGTYPE_CLEARGLASS		19
-#define THINGTYPE_REDGLASS		20
-#define THINGTYPE_ACID			21
-#define THINGTYPE_METEOR		22
-#define THINGTYPE_GREENFLESH		23
-#define THINGTYPE_BONE			24
-#define THINGTYPE_DIRT			25
+#define THINGTYPE_GREYSTONE	1
+#define THINGTYPE_WOOD		2
+#define THINGTYPE_METAL		3
+#define THINGTYPE_FLESH		4
+#define THINGTYPE_FIRE		5
+#define THINGTYPE_CLAY		6
+#define THINGTYPE_LEAVES	7
+#define THINGTYPE_HAY		8
+#define THINGTYPE_BROWNSTONE	9
+#define THINGTYPE_CLOTH		10
+#define THINGTYPE_WOOD_LEAF	11
+#define THINGTYPE_WOOD_METAL	12
+#define THINGTYPE_WOOD_STONE	13
+#define THINGTYPE_METAL_STONE	14
+#define THINGTYPE_METAL_CLOTH	15
+#define THINGTYPE_WEBS		16
+#define THINGTYPE_GLASS		17
+#define THINGTYPE_ICE		18
+#define THINGTYPE_CLEARGLASS	19
+#define THINGTYPE_REDGLASS	20
+#define THINGTYPE_ACID		21
+#define THINGTYPE_METEOR	22
+#define THINGTYPE_GREENFLESH	23
+#define THINGTYPE_BONE		24
+#define THINGTYPE_DIRT		25
 
-#define XBOW_IMPACT_DEFAULT		0
-#define XBOW_IMPACT_GREENFLESH		2
-#define XBOW_IMPACT_REDFLESH		4
-#define XBOW_IMPACT_WOOD		6
-#define XBOW_IMPACT_STONE		8
-#define XBOW_IMPACT_METAL		10
-#define XBOW_IMPACT_ICE			12
-#define XBOW_IMPACT_MUMMY		14
+#define XBOW_IMPACT_DEFAULT	0
+#define XBOW_IMPACT_GREENFLESH	2
+#define XBOW_IMPACT_REDFLESH	4
+#define XBOW_IMPACT_WOOD	6
+#define XBOW_IMPACT_STONE	8
+#define XBOW_IMPACT_METAL	10
+#define XBOW_IMPACT_ICE		12
+#define XBOW_IMPACT_MUMMY	14
 
 #define CE_NONE			0
 #define CE_RAIN			1
@@ -92,7 +94,7 @@
 #define CE_HWRAVENPOWER		53
 #define CE_HWDRILLA		54
 #define CE_DEATHBUBBLES		55
-//New for Mission Pack...
+// New for Mission Pack...
 #define CE_RIPPLE		56
 #define CE_BLDRN_EXPL		57
 #define CE_ACID_MUZZFL		58
@@ -123,7 +125,7 @@ struct EffectT
 	{
 		struct
 		{
-			vec3_t min_org, max_org, e_size, dir;
+			vec3_t e_size, dir, min_org, max_org;
 			float next_time, wait;
 			int color, count;
 		} Rain;
