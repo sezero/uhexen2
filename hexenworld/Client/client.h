@@ -1,6 +1,6 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.10 2006-04-06 16:44:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.11 2006-04-06 16:51:43 sezero Exp $
 */
 
 typedef struct
@@ -282,7 +282,7 @@ typedef struct
 	int		num_statics;		// stored top down in cl_entitiers
 
 	int		cdtrack;		// cd audio
-	char		midi_name[MAX_QPATH];	// midi file name
+	char		midi_name[128];		// midi file name
 
 	entity_t	viewent;		// weapon model
 

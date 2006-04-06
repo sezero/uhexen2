@@ -1,6 +1,6 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.14 2006-04-06 16:44:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.15 2006-04-06 16:51:43 sezero Exp $
 */
 
 typedef struct
@@ -210,7 +210,7 @@ typedef struct
 	struct EffectT	Effects[MAX_EFFECTS];
 
 	int		cdtrack, looptrack;	// cd audio
-	char		midi_name[MAX_QPATH];	// midi file name
+	char		midi_name[128];		// midi file name
 	byte		current_frame, last_frame, reference_frame;
 	byte		current_sequence, last_sequence;
 	byte		need_build;
@@ -376,6 +376,9 @@ void CL_UpdateTEnts (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2006/04/06 16:44:28  sezero
+ * more tidy-ups (client.h). changed the midi_name length from 128 to MAX_QPATH
+ *
  * Revision 1.13  2006/03/24 15:05:39  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also
