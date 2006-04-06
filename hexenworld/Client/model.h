@@ -2,7 +2,7 @@
 	model.h
 	header for model loading and caching
 
-	$Id: model.h,v 1.3 2005-09-19 20:10:17 sezero Exp $
+	$Id: model.h,v 1.4 2006-04-06 22:08:25 sezero Exp $
 */
 
 #ifndef __MODEL__
@@ -17,32 +17,6 @@ d*_t structures are on-disk representations
 m*_t structures are in-memory
 
 */
-
-// entity effects
-#define	EF_ONFIRE			0x00000001
-#define	EF_MUZZLEFLASH 			0x00000002
-#define	EF_BRIGHTLIGHT 			0x00000004
-#define	EF_DIMLIGHT 			0x00000008
-#define	EF_DARKLIGHT			0x00000010
-#define	EF_DARKFIELD			0x00000020
-#define	EF_LIGHT			0x00000040
-#define	EF_NODRAW			0x00000080
-
-#define	EF_BRIGHTFIELD			0x00000400
-#define	EF_POWERFLAMEBURN		0x00000800
-#define	EF_UPDATESOUND			0x00002000
-
-#define	EF_POISON_GAS			0x00200000
-#define	EF_ACIDBLOB			0x00400000
-//#define	EF_PURIFY2_EFFECT		0x00200000
-//#define	EF_AXE_EFFECT			0x00400000
-//#define	EF_SWORD_EFFECT			0x00800000
-//#define	EF_TORNADO_EFFECT		0x01000000
-#define	EF_ICESTORM_EFFECT		0x02000000
-//#define	EF_ICEBALL_EFFECT		0x04000000
-//#define	EF_METEOR_EFFECT		0x08000000
-#define	EF_HAMMER_EFFECTS		0x10000000
-#define	EF_BEETLE_EFFECTS		0x20000000
 
 /*
 ==============================================================================
@@ -97,7 +71,6 @@ typedef struct texture_s
 #define SURF_DRAWTILED		0x20
 #define SURF_DRAWBACKGROUND	0x40
 #define SURF_TRANSLUCENT	0x80
-
 #define SURF_DRAWBLACK		0x400
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
@@ -117,7 +90,7 @@ typedef struct
 
 typedef struct msurface_s
 {
-	int		visframe;		// should be drawn when node is crossed
+	int		visframe;	// should be drawn when node is crossed
 
 	int		dlightframe;
 	int		dlightbits;
@@ -308,6 +281,36 @@ typedef struct {
 //===================================================================
 
 //
+// entity effects
+//
+#define	EF_ONFIRE			0x00000001
+#define	EF_MUZZLEFLASH			0x00000002
+#define	EF_BRIGHTLIGHT			0x00000004
+#define	EF_DIMLIGHT			0x00000008
+#define	EF_DARKLIGHT			0x00000010
+#define	EF_DARKFIELD			0x00000020
+#define	EF_LIGHT			0x00000040
+#define	EF_NODRAW			0x00000080
+
+#define	EF_BRIGHTFIELD			0x00000400
+#define	EF_POWERFLAMEBURN		0x00000800
+#define	EF_UPDATESOUND			0x00002000
+
+#define	EF_POISON_GAS			0x00200000
+#define	EF_ACIDBLOB			0x00400000
+//#define	EF_PURIFY2_EFFECT		0x00200000
+//#define	EF_AXE_EFFECT			0x00400000
+//#define	EF_SWORD_EFFECT			0x00800000
+//#define	EF_TORNADO_EFFECT		0x01000000
+#define	EF_ICESTORM_EFFECT		0x02000000
+//#define	EF_ICEBALL_EFFECT		0x04000000
+//#define	EF_METEOR_EFFECT		0x08000000
+#define	EF_HAMMER_EFFECTS		0x10000000
+#define	EF_BEETLE_EFFECTS		0x20000000
+
+//===================================================================
+
+//
 // Whole model
 //
 
@@ -432,3 +435,4 @@ mleaf_t *Mod_PointInLeaf (float *p, model_t *model);
 byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
 
 #endif	// __MODEL__
+

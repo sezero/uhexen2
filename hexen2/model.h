@@ -2,7 +2,7 @@
 	model.h
 	header for model loading and caching
 
-	$Id: model.h,v 1.5 2005-09-19 20:10:17 sezero Exp $
+	$Id: model.h,v 1.6 2006-04-06 22:08:22 sezero Exp $
 */
 
 #ifndef __MODEL__
@@ -71,7 +71,6 @@ typedef struct texture_s
 #define SURF_DRAWTILED		0x20
 #define SURF_DRAWBACKGROUND	0x40
 #define SURF_TRANSLUCENT	0x80
-
 #define SURF_DRAWBLACK		0x200
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
@@ -91,7 +90,7 @@ typedef struct
 
 typedef struct msurface_s
 {
-	int		visframe;		// should be drawn when node is crossed
+	int		visframe;	// should be drawn when node is crossed
 
 	int		dlightframe;
 	int		dlightbits;
@@ -274,6 +273,20 @@ typedef struct {
 //===================================================================
 
 //
+// entity effects
+//
+#define	EF_BRIGHTFIELD			0x00000001
+#define	EF_MUZZLEFLASH			0x00000002
+#define	EF_BRIGHTLIGHT			0x00000004
+#define	EF_DIMLIGHT			0x00000008
+#define	EF_DARKLIGHT			0x00000010
+#define	EF_DARKFIELD			0x00000020
+#define	EF_LIGHT			0x00000040
+#define	EF_NODRAW			0x00000080
+
+//===================================================================
+
+//
 // Whole model
 //
 
@@ -395,6 +408,10 @@ byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/09/19 20:10:17  sezero
+ * startings of model code unification. mostly
+ * cosmetic for now, more will follow.
+ *
  * Revision 1.4  2004/12/18 14:20:40  sezero
  * Clean-up and kill warnings: 11
  * A lot of whitespace cleanups.

@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.11 2006-04-06 10:12:05 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.12 2006-04-06 22:08:22 sezero Exp $
 */
 
 typedef struct
@@ -191,18 +191,6 @@ typedef struct client_s
 
 
 //
-// entity effects
-//
-#define	EF_BRIGHTFIELD			1
-#define	EF_MUZZLEFLASH			2
-#define	EF_BRIGHTLIGHT			4
-#define	EF_DIMLIGHT			8
-#define	EF_DARKLIGHT			16
-#define	EF_DARKFIELD			32
-#define	EF_LIGHT			64
-#define	EF_NODRAW			128
-
-//
 // Built-in Spawn Flags
 //
 #define	SPAWNFLAG_NOT_PALADIN		0x00000100
@@ -297,6 +285,9 @@ void SV_SpawnServer (char *server, char *startspot);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2006/04/06 10:12:05  sezero
+ * more tidy-ups (server.h)
+ *
  * Revision 1.10  2006/04/05 18:24:42  sezero
  * more tidy-ups (quakedef.h, qwswdef.h, bothdefs.h)
  *

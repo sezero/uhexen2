@@ -2,7 +2,7 @@
 	model.h
 	header for model loading and caching
 
-	$Id: gl_model.h,v 1.5 2005-09-19 20:10:17 sezero Exp $
+	$Id: gl_model.h,v 1.6 2006-04-06 22:08:25 sezero Exp $
 */
 
 #ifndef __MODEL__
@@ -17,33 +17,6 @@ d*_t structures are on-disk representations
 m*_t structures are in-memory
 
 */
-
-// entity effects
-
-#define	EF_ONFIRE			0x00000001
-#define	EF_MUZZLEFLASH			0x00000002
-#define	EF_BRIGHTLIGHT			0x00000004
-#define	EF_DIMLIGHT			0x00000008
-#define	EF_DARKLIGHT			0x00000010
-#define	EF_DARKFIELD			0x00000020
-#define	EF_LIGHT			0x00000040
-#define	EF_NODRAW			0x00000080
-
-#define	EF_BRIGHTFIELD			0x00000400
-#define	EF_POWERFLAMEBURN		0x00000800
-#define	EF_UPDATESOUND			0x00002000
-
-#define	EF_POISON_GAS			0x00200000
-#define	EF_ACIDBLOB			0x00400000
-//#define	EF_PURIFY2_EFFECT		0x00200000
-//#define	EF_AXE_EFFECT			0x00400000
-//#define	EF_SWORD_EFFECT		0x00800000
-//#define	EF_TORNADO_EFFECT		0x01000000
-#define	EF_ICESTORM_EFFECT		0x02000000
-//#define	EF_ICEBALL_EFFECT		0x04000000
-//#define	EF_METEOR_EFFECT		0x08000000
-#define EF_HAMMER_EFFECTS		0x10000000
-#define EF_BEETLE_EFFECTS		0x20000000
 
 /*
 ==============================================================================
@@ -85,8 +58,8 @@ typedef struct texture_s
 	unsigned	width, height;
 	int			gl_texturenum;
 	struct msurface_s	*texturechain;	// for gl_texsort drawing
-	int			anim_total;	// total tenths in sequence ( 0 = no)
-	int			anim_min, anim_max;	// time for this frame min <=time< max
+	int		anim_total;		// total tenths in sequence ( 0 = no)
+	int		anim_min, anim_max;	// time for this frame min <=time< max
 	struct texture_s *anim_next;		// in the animation sequence
 	struct texture_s *alternate_anims;	// bmodels in frmae 1 use these
 	unsigned	offsets[MIPLEVELS];	// four mip maps stored
@@ -232,8 +205,8 @@ typedef struct mspriteframe_s
 
 typedef struct
 {
-	short			numframes;
-	float			*intervals;
+	short		numframes;
+	float		*intervals;
 	mspriteframe_t	*frames[1];
 } mspritegroup_t;
 
@@ -291,9 +264,9 @@ typedef struct
 
 //this is only the GL version
 typedef struct mtriangle_s {
-	int		facesfront;
-	unsigned short	vertindex[3];
-	unsigned short	stindex[3];
+	int			facesfront;
+	unsigned short		vertindex[3];
+	unsigned short		stindex[3];
 } mtriangle_t;
 
 
@@ -334,6 +307,36 @@ extern	trivertx_t	*poseverts[MAXALIASFRAMES];
 //===================================================================
 
 //
+// entity effects
+//
+#define	EF_ONFIRE			0x00000001
+#define	EF_MUZZLEFLASH			0x00000002
+#define	EF_BRIGHTLIGHT			0x00000004
+#define	EF_DIMLIGHT			0x00000008
+#define	EF_DARKLIGHT			0x00000010
+#define	EF_DARKFIELD			0x00000020
+#define	EF_LIGHT			0x00000040
+#define	EF_NODRAW			0x00000080
+
+#define	EF_BRIGHTFIELD			0x00000400
+#define	EF_POWERFLAMEBURN		0x00000800
+#define	EF_UPDATESOUND			0x00002000
+
+#define	EF_POISON_GAS			0x00200000
+#define	EF_ACIDBLOB			0x00400000
+//#define	EF_PURIFY2_EFFECT		0x00200000
+//#define	EF_AXE_EFFECT			0x00400000
+//#define	EF_SWORD_EFFECT			0x00800000
+//#define	EF_TORNADO_EFFECT		0x01000000
+#define	EF_ICESTORM_EFFECT		0x02000000
+//#define	EF_ICEBALL_EFFECT		0x04000000
+//#define	EF_METEOR_EFFECT		0x08000000
+#define	EF_HAMMER_EFFECTS		0x10000000
+#define	EF_BEETLE_EFFECTS		0x20000000
+
+//===================================================================
+
+//
 // Whole model
 //
 
@@ -368,7 +371,8 @@ typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 
 #define	EF_MIP_MAP_FAR	0x1000000	// Set per frame, this model will use the far mip map
 
-// XF_ Extra model efects set by engine (efects are model name dependent) 
+// XF_ Extra model effects set by engine: model_t->ex_flags
+// effects are model name dependent
 #define XF_TORCH_GLOW		1	// glowing torches
 #define XF_GLOW			2	// other glows
 #define XF_MISSILE_GLOW		4	// missile glows
@@ -466,3 +470,4 @@ mleaf_t *Mod_PointInLeaf (float *p, model_t *model);
 byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
 
 #endif	// __MODEL__
+
