@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.10 2006-04-05 18:24:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.11 2006-04-06 10:12:05 sezero Exp $
 */
 
 typedef struct
@@ -15,26 +15,30 @@ typedef struct
 
 //=============================================================================
 
-typedef enum {ss_loading, ss_active} server_state_t;
+typedef enum
+{
+	ss_loading,
+	ss_active
+} server_state_t;
 
 typedef struct
 {
-	qboolean		active;		// false if only a net client
+	qboolean	active;		// false if only a net client
 
 	qboolean	paused;
-	qboolean	loadgame;		// handle connections specially
+	qboolean	loadgame;	// handle connections specially
 
 	double		time;
 
-	int			lastcheck;	// used by PF_checkclient
+	int		lastcheck;	// used by PF_checkclient
 	double		lastchecktime;
 
-	char		name[64];		// map name
-	char		midi_name[128];		// midi file name
-	byte		cd_track;		// cd track number
+	char		name[64];	// map name
+	char		midi_name[128];	// midi file name
+	byte		cd_track;	// cd track number
 
 	char		startspot[64];
-	char		modelname[64];		// maps/<name>.bsp, for model_precache[0]
+	char		modelname[MAX_QPATH];	// maps/<name>.bsp, for model_precache[0]
 	struct model_s	*worldmodel;
 	char		*model_precache[MAX_MODELS];	// NULL terminated
 	struct model_s	*models[MAX_MODELS];
@@ -43,8 +47,8 @@ typedef struct
 	struct EffectT	Effects[MAX_EFFECTS];
 
 	client_state2_t	*states;
-	int			num_edicts;
-	int			max_edicts;
+	int		num_edicts;
+	int		max_edicts;
 	edict_t		*edicts;	// can NOT be array indexed, because
 					// edict_t is variable sized, but can
 					// be used to reference the world ent
@@ -67,53 +71,55 @@ typedef struct
 
 typedef struct client_s
 {
-	qboolean		active;			// false = client is free
-	qboolean		spawned;		// false = don't send datagrams
-	qboolean		dropasap;		// has been told to go to another level
-	qboolean		sendsignon;		// only valid before spawned
+	qboolean	active;		// false = client is free
+	qboolean	spawned;	// false = don't send datagrams
+	qboolean	dropasap;	// has been told to go to another level
+	qboolean	sendsignon;	// only valid before spawned
 
-	double			last_message;		// reliable messages must be sent
-							// periodically
+	double		last_message;	// reliable messages must be sent
+					// periodically
 
-	struct qsocket_s	*netconnection;		// communications handle
+	struct qsocket_s *netconnection; // communications handle
 
-	usercmd_t		cmd;			// movement
-	vec3_t			wishdir;		// intended motion calced from cmd
+	usercmd_t	cmd;		// movement
+	vec3_t		wishdir;	// intended motion calced from cmd
 
-	sizebuf_t		message;		// can be added to at any time,
-							// copied and clear once per frame
-	byte			msgbuf[MAX_MSGLEN];
+	sizebuf_t	message;	// can be added to at any time,
+					// copied and clear once per frame
+	byte		msgbuf[MAX_MSGLEN];
 
-	sizebuf_t		datagram;
-	byte			datagram_buf[NET_MAXMESSAGE];
+	sizebuf_t	datagram;
+	byte		datagram_buf[NET_MAXMESSAGE];
 
-	edict_t			*edict;			// EDICT_NUM(clientnum+1)
-	char			name[32];		// for printing to other people
-	int				colors;
-	float			playerclass;
+	edict_t		*edict;		// EDICT_NUM(clientnum+1)
+	char		name[32];	// for printing to other people
+	int		colors;
+	float		playerclass;
 
-	float			ping_times[NUM_PING_TIMES];
-	int				num_pings;	// ping_times[num_pings%NUM_PING_TIMES]
+	float		ping_times[NUM_PING_TIMES];
+	int		num_pings;	// ping_times[num_pings%NUM_PING_TIMES]
 
 	// spawn parms are carried from level to level
-	float			spawn_parms[NUM_SPAWN_PARMS];
+	float		spawn_parms[NUM_SPAWN_PARMS];
 
 	// client known data for deltas
-	int				old_frags;
-	entvars_t		old_v;
+	int		old_frags;
+	entvars_t	old_v;
 	qboolean	send_all_v;
 
-	byte			current_frame, last_frame;
-	byte			current_sequence, last_sequence;
+	byte		current_frame, last_frame;
+	byte		current_sequence, last_sequence;
 
 // mission pack, objectives strings
-	long			info_mask, info_mask2;
+	long		info_mask, info_mask2;
 } client_t;
 
 
 //=============================================================================
 
+//
 // edict->movetype values
+//
 #define	MOVETYPE_NONE		0		// never moves
 #define	MOVETYPE_ANGLENOCLIP	1
 #define	MOVETYPE_ANGLECLIP	2
@@ -126,13 +132,15 @@ typedef struct client_s
 #define	MOVETYPE_FLYMISSILE	9		// extra size to monsters
 #define	MOVETYPE_BOUNCE		10
 //#ifdef QUAKE2
-#define MOVETYPE_BOUNCEMISSILE	11		// bounce w/o gravity
-#define MOVETYPE_FOLLOW		12		// track movement of aiment
+#define	MOVETYPE_BOUNCEMISSILE	11		// bounce w/o gravity
+#define	MOVETYPE_FOLLOW		12		// track movement of aiment
 //#endif
-#define MOVETYPE_PUSHPULL	13		// pushable/pullable object
-#define MOVETYPE_SWIM		14		// should keep the object in water
+#define	MOVETYPE_PUSHPULL	13		// pushable/pullable object
+#define	MOVETYPE_SWIM		14		// should keep the object in water
 
+//
 // edict->solid values
+//
 #define	SOLID_NOT		0		// no interaction with other objects
 #define	SOLID_TRIGGER		1		// touch on edge, but not blocking
 #define	SOLID_BBOX		2		// touch on edge, block
@@ -140,7 +148,9 @@ typedef struct client_s
 #define	SOLID_BSP		4		// bsp clip, touch on edge, block
 #define	SOLID_PHASE		5		// won't slow down when hitting entities flagged as FL_MONSTER
 
+//
 // edict->deadflag values
+//
 #define	DEAD_NO			0
 #define	DEAD_DYING		1
 #define	DEAD_DEAD		2
@@ -149,7 +159,9 @@ typedef struct client_s
 #define	DAMAGE_YES		1		// Can be damaged
 #define	DAMAGE_NO_GRENADE	2		// Will not set off grenades
 
+//
 // edict->flags
+//
 #define	FL_FLY			1
 #define	FL_SWIM			2
 //#define	FL_GLIMPSE		4
@@ -164,46 +176,50 @@ typedef struct client_s
 #define	FL_PARTIALGROUND	1024	// not all corners are valid
 #define	FL_WATERJUMP		2048	// player jumping out of water
 #define	FL_JUMPRELEASED		4096	// for jump debouncing
-#define FL_FLASHLIGHT		8192
-#define FL_ARCHIVE_OVERRIDE	1048576
+#define	FL_FLASHLIGHT		8192
+#define	FL_ARCHIVE_OVERRIDE	1048576
 #define	FL_ARTIFACTUSED		16384
-#define FL_MOVECHAIN_ANGLE	32768	// when in a move chain, will update the angle
+#define	FL_MOVECHAIN_ANGLE	32768	// when in a move chain, will update the angle
 #define	FL_HUNTFACE		65536	// Makes monster go for enemy view_ofs thwn moving
 #define	FL_NOZ			131072	// Monster will not automove on Z if flying or swimming
 #define	FL_SET_TRACE		262144	// Trace will always be set for this monster (pentacles)
-#define FL_CLASS_DEPENDENT	2097152	// model will appear different to each player
-#define FL_SPECIAL_ABILITY1	4194304	// has 1st special ability
-#define FL_SPECIAL_ABILITY2	8388608	// has 2nd special ability
+#define	FL_CLASS_DEPENDENT	2097152	// model will appear different to each player
+#define	FL_SPECIAL_ABILITY1	4194304	// has 1st special ability
+#define	FL_SPECIAL_ABILITY2	8388608	// has 2nd special ability
 
 #define	FL2_CROUCHED		4096
 
 
+//
 // entity effects
-
+//
 #define	EF_BRIGHTFIELD			1
-#define	EF_MUZZLEFLASH 			2
-#define	EF_BRIGHTLIGHT 			4
-#define	EF_DIMLIGHT 			8
-#define EF_DARKLIGHT			16
-#define EF_DARKFIELD			32
-#define EF_LIGHT			64
-#define EF_NODRAW			128
+#define	EF_MUZZLEFLASH			2
+#define	EF_BRIGHTLIGHT			4
+#define	EF_DIMLIGHT			8
+#define	EF_DARKLIGHT			16
+#define	EF_DARKFIELD			32
+#define	EF_LIGHT			64
+#define	EF_NODRAW			128
 
+//
 // Built-in Spawn Flags
-#define SPAWNFLAG_NOT_PALADIN		0x00000100
-#define SPAWNFLAG_NOT_CLERIC		0x00000200
-#define SPAWNFLAG_NOT_NECROMANCER	0x00000400
-#define SPAWNFLAG_NOT_THEIF		0x00000800
+//
+#define	SPAWNFLAG_NOT_PALADIN		0x00000100
+#define	SPAWNFLAG_NOT_CLERIC		0x00000200
+#define	SPAWNFLAG_NOT_NECROMANCER	0x00000400
+#define	SPAWNFLAG_NOT_THEIF		0x00000800
 #define	SPAWNFLAG_NOT_EASY		0x00001000
 #define	SPAWNFLAG_NOT_MEDIUM		0x00002000
 #define	SPAWNFLAG_NOT_HARD		0x00004000
 #define	SPAWNFLAG_NOT_DEATHMATCH	0x00008000
-#define SPAWNFLAG_NOT_COOP		0x00010000
-#define SPAWNFLAG_NOT_SINGLE		0x00020000
-#define SPAWNFLAG_NOT_DEMON		0x00040000
+#define	SPAWNFLAG_NOT_COOP		0x00010000
+#define	SPAWNFLAG_NOT_SINGLE		0x00020000
+#define	SPAWNFLAG_NOT_DEMON		0x00040000
 
-
+//
 // server flags
+//
 #define	SFL_EPISODE_1		1
 #define	SFL_EPISODE_2		2
 #define	SFL_EPISODE_3		4
@@ -217,17 +233,17 @@ typedef struct client_s
 extern	cvar_t	teamplay;
 extern	cvar_t	skill;
 extern	cvar_t	deathmatch;
-extern	cvar_t	randomclass;
 extern	cvar_t	coop;
+extern	cvar_t	randomclass;
 extern	cvar_t	fraglimit;
 extern	cvar_t	timelimit;
 
-extern	server_static_t	svs;			// persistant server info
-extern	server_t		sv;		// local server
+extern	server_static_t	svs;		// persistant server info
+extern	server_t	sv;		// local server
 
 extern	client_t	*host_client;
 
-extern	jmp_buf 	host_abortserver;
+extern	jmp_buf		host_abortserver;
 
 extern	double		host_time;
 
@@ -281,6 +297,9 @@ void SV_SpawnServer (char *server, char *startspot);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2006/04/05 18:24:42  sezero
+ * more tidy-ups (quakedef.h, qwswdef.h, bothdefs.h)
+ *
  * Revision 1.9  2006/03/16 21:19:01  sezero
  * Restored net compatibility with SC2_OBJ and SC2_OBJ2:
  * SC2_OBJ and SC2_OBJ2 are actually only legible for the
