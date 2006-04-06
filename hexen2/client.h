@@ -1,33 +1,27 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.13 2006-03-24 15:05:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.14 2006-04-06 16:44:28 sezero Exp $
 */
 
 typedef struct
 {
-	vec3_t	viewangles;
+	vec3_t		viewangles;
 
 // intended velocities
-	float	forwardmove;
-	float	sidemove;
-	float	upmove;
-	byte	lightlevel;
+	float		forwardmove;
+	float		sidemove;
+	float		upmove;
+	byte		lightlevel;
 } usercmd_t;
 
 typedef struct
 {
-	int		length;
-	char	map[MAX_STYLESTRING];
-} lightstyle_t;
-
-typedef struct
-{
-	char	name[MAX_SCOREBOARDNAME];
-	float	entertime;
+	char		name[MAX_SCOREBOARDNAME];
+	float		entertime;
 	int		frags;
 	int		colors;			// two 4 bit fields
-	byte	translations[VID_GRADES*256];
-	float	playerclass;
+	byte		translations[VID_GRADES*256];
+	float		playerclass;
 } scoreboard_t;
 
 typedef struct
@@ -43,38 +37,44 @@ typedef struct
 #define	CSHIFT_INTERVENTION	4
 #define	NUM_CSHIFTS		5
 
-#define	NAME_LENGTH	64
-
+#define	NAME_LENGTH		64
 
 //
 // client_state_t should hold all pieces of the client state
 //
 
-#define	SIGNONS		4			// signon messages to receive before connected
+#define	SIGNONS			4	// signon messages to receive before connected
 
 #define	MAX_DLIGHTS		32
 typedef struct
 {
-	vec3_t	origin;
-	float	radius;
-	float	die;				// stop lighting after this time
-	float	decay;				// drop this each second
-	float	minlight;			// don't add when contributing less
+	vec3_t		origin;
+	float		radius;
+	float		die;		// stop lighting after this time
+	float		decay;		// drop this each second
+	float		minlight;	// don't add when contributing less
 	int		key;
-	qboolean	dark;			// subtracts light instead of adding
-	float	color[4];			// LordHavoc: colored lights support
+	qboolean	dark;		// subtracts light instead of adding
+	float		color[4];	// LordHavoc: colored lights support
 } dlight_t;
+
+typedef struct
+{
+	int		length;
+	char		map[MAX_STYLESTRING];
+} lightstyle_t;
 
 #define	MAX_EFRAGS		640
 
-#define	MAX_MAPSTRING	2048
+#define	MAX_MAPSTRING		2048
 #define	MAX_DEMOS		8
-#define	MAX_DEMONAME	16
+#define	MAX_DEMONAME		16
 
-typedef enum {
-ca_dedicated, 		// a dedicated server with no ability to start a client
-ca_disconnected, 	// full screen console with no connection
-ca_connected		// valid netcon, talking to a server
+typedef enum
+{
+	ca_dedicated,		// a dedicated server with no ability to start a client
+	ca_disconnected,	// full screen console with no connection
+	ca_connected		// valid netcon, talking to a server
 } cactive_t;
 
 //
@@ -85,12 +85,12 @@ typedef struct
 {
 	cactive_t	state;
 
-// personalization data sent to server	
+// personalization data sent to server
 	char		mapstring[MAX_QPATH];
 	char		spawnparms[MAX_MAPSTRING];	// to restart a level
 
 // demo loop control
-	int			demonum;		// -1 = don't play demos
+	int		demonum;		// -1 = don't play demos
 	char		demos[MAX_DEMOS][MAX_DEMONAME];	// when not playing
 
 // demo recording info must be here, because record is started before
@@ -98,16 +98,15 @@ typedef struct
 	qboolean	demorecording;
 	qboolean	demoplayback;
 	qboolean	timedemo;
-	int			forcetrack;	// -1 = use normal cd track
+	int		forcetrack;		// -1 = use normal cd track
 	FILE		*demofile;
 	FILE		*introdemofile;
-	int			td_lastframe;	// to meter out one message a frame
-	int			td_startframe;	// host_framecount at start
+	int		td_lastframe;		// to meter out one message a frame
+	int		td_startframe;		// host_framecount at start
 	float		td_starttime;		// realtime at second frame of timedemo
 
-
 // connection information
-	int			signon;		// 0 to SIGNONS
+	int		signon;			// 0 to SIGNONS
 	struct qsocket_s	*netcon;
 	sizebuf_t	message;		// writing buffer to send to server
 
@@ -115,82 +114,81 @@ typedef struct
 
 extern client_static_t	cls;
 
-
 //
 // the client_state_t structure is wiped completely at every
 // server signon
 //
 typedef struct
 {
-	int		movemessages;	// since connecting to this server
-					// throw out the first couple, so the player
-					// doesn't accidentally do something the 
-					// first frame
+	int		movemessages;		// since connecting to this server
+						// throw out the first couple, so the player
+						// doesn't accidentally do something the 
+						// first frame
 
-	usercmd_t	cmd;		// last command sent to the server
+	usercmd_t	cmd;			// last command sent to the server
 
 // information for local display
 	int		stats[MAX_CL_STATS];	// health, etc
 	int		inv_order[MAX_INVENTORY];
 	int		inv_count, inv_startpos, inv_selected;
 	int		items;		// inventory bit flags
-	float	item_gettime[32];	// cl.time of aquiring item, for blinking
-	float	faceanimtime;		// use anim frame if cl.time < this
+	float		item_gettime[32];	// cl.time of aquiring item, for blinking
+	float		faceanimtime;		// use anim frame if cl.time < this
 
-	entvars_t	v;	// NOTE: not every field will be update
-				// you must specifically add them in
-				// functions SV_WriteClientdatatToMessage()
-				// and CL_ParseClientdata()
+	entvars_t	v;		// NOTE: not every field will be update
+					// you must specifically add them in
+					// functions SV_WriteClientdatatToMessage()
+					// and CL_ParseClientdata()
 
 	cshift_t	cshifts[NUM_CSHIFTS];	// color shifts for damage, powerups
 	cshift_t	prev_cshifts[NUM_CSHIFTS];	// and content types
 
-	char puzzle_pieces[8][10]; // puzzle piece names
+	char		puzzle_pieces[8][10];	// puzzle piece names
 
 // the client maintains its own idea of view angles, which are
 // sent to the server each frame.  The server sets punchangle when
 // the view is temporarliy offset, and an angle reset commands at the start
 // of each level and after teleporting.
 
-	vec3_t	mviewangles[2];	// during demo playback viewangles is lerped
-				// between these
-	vec3_t	viewangles;
+	vec3_t		mviewangles[2];		// during demo playback viewangles is lerped
+						// between these
+	vec3_t		viewangles;
 
-	vec3_t	mvelocity[2];	// update by server, used for lean+bob
-				// (0 is newest)
-	vec3_t	velocity;	// lerped between mvelocity[0] and [1]
+	vec3_t		mvelocity[2];		// update by server, used for lean+bob
+						// (0 is newest)
+	vec3_t		velocity;		// lerped between mvelocity[0] and [1]
 
-	vec3_t	punchangle;	// temporary offset
+	vec3_t		punchangle;		// temporary offset
 
-	float	idealroll;
-	float	rollvel;
+	float		idealroll;
+	float		rollvel;
 
 // pitch drifting vars
-	float	idealpitch;
-	float	pitchvel;
+	float		idealpitch;
+	float		pitchvel;
 	qboolean	nodrift;
-	float	driftmove;
-	double	laststop;
+	float		driftmove;
+	double		laststop;
 
-	float	viewheight;
-	float	crouch;		// local amount for smoothing stepups
+	float		viewheight;
+	float		crouch;			// local amount for smoothing stepups
 
-	qboolean	paused;	// send over by server
+	qboolean	paused;			// send over by server
 	qboolean	onground;
 	qboolean	inwater;
 
-	int		intermission;	// don't change view angle, full screen, etc
-	int		completed_time;	// latched at intermission start
-	
-	double	mtime[2];	// the timestamp of last two messages	
-	double	time;		// clients view of time, should be between
-				// servertime and oldservertime to generate
-				// a lerp point for other data
+	int		intermission;		// don't change view angle, full screen, etc
+	int		completed_time;		// latched at intermission start
 
-	double	oldtime;	// previous cl.time, time-oldtime is used
-				// to decay light values and smooth step ups
+	double		mtime[2];		// the timestamp of last two messages
+	double		time;			// clients view of time, should be between
+						// servertime and oldservertime to generate
+						// a lerp point for other data
 
-	float	last_received_message;	// (realtime) for net trouble icon
+	double		oldtime;		// previous cl.time, time-oldtime is used
+						// to decay light values and smooth step ups
+
+	float		last_received_message;	// (realtime) for net trouble icon
 
 //
 // information that is static for the entire time connected to a server
@@ -198,21 +196,21 @@ typedef struct
 	struct model_s	*model_precache[MAX_MODELS];
 	struct sfx_s	*sound_precache[MAX_SOUNDS];
 
-	char		levelname[40];	// for display on solo scoreboard
-	int		viewentity;	// cl_entitites[cl.viewentity] = player
+	char		levelname[40];		// for display on solo scoreboard
+	int		viewentity;		// cl_entitites[cl.viewentity] = player
 	int		maxclients;
 	int		gametype;
 
 // refresh related state
-	struct model_s	*worldmodel;	// cl_entitites[0].model
+	struct model_s	*worldmodel;		// cl_entitites[0].model
 	struct efrag_s	*free_efrags;
-	int		num_entities;	// held in cl_entities array
-	int		num_statics;	// held in cl_staticentities array
-	entity_t	viewent;	// the gun model
-	struct EffectT Effects[MAX_EFFECTS];
+	int		num_entities;		// held in cl_entities array
+	int		num_statics;		// held in cl_staticentities array
+	entity_t	viewent;		// the gun model
+	struct EffectT	Effects[MAX_EFFECTS];
 
 	int		cdtrack, looptrack;	// cd audio
-	char		midi_name[128];		// midi file name
+	char		midi_name[MAX_QPATH];	// midi file name
 	byte		current_frame, last_frame, reference_frame;
 	byte		current_sequence, last_sequence;
 	byte		need_build;
@@ -225,11 +223,11 @@ typedef struct
 // architectually ugly but it works
 	int		light_level;
 
-	client_frames2_t frames[3]; // 0 = base, 1 = building, 2 = 0 & 1 merged
-	short	RemoveList[MAX_CLIENT_STATES], NumToRemove;
+	client_frames2_t frames[3];	// 0 = base, 1 = building, 2 = 0 & 1 merged
+	short		RemoveList[MAX_CLIENT_STATES], NumToRemove;
 
 // mission pack, objectives strings
-	long	info_mask, info_mask2;
+	long		info_mask, info_mask2;
 } client_state_t;
 
 
@@ -269,7 +267,7 @@ extern	cvar_t	m_forward;
 extern	cvar_t	m_side;
 
 
-#define	MAX_STATIC_ENTITIES	256	// torches, etc
+#define	MAX_STATIC_ENTITIES	256		// torches, etc
 
 extern	client_state_t	cl;
 
@@ -304,9 +302,9 @@ void CL_NextDemo (void);
 qboolean CL_CopyFiles(char *source, char *pat, char *dest);
 void CL_RemoveGIPFiles (char *path);
 
-#define			MAX_VISEDICTS	256
-extern	int				cl_numvisedicts;
-extern	entity_t		*cl_visedicts[MAX_VISEDICTS];
+#define	MAX_VISEDICTS		256
+extern	int		cl_numvisedicts;
+extern	entity_t	*cl_visedicts[MAX_VISEDICTS];
 
 //
 // cl_cmd
@@ -324,8 +322,10 @@ typedef struct
 } kbutton_t;
 
 extern	kbutton_t	in_mlook, in_klook;
-extern 	kbutton_t 	in_strafe;
-extern 	kbutton_t 	in_speed;
+extern	kbutton_t	in_strafe;
+extern	kbutton_t	in_speed;
+
+char *Key_KeynumToString (int keynum);
 
 void CL_InitInput (void);
 void CL_SendCmd (void);
@@ -336,9 +336,6 @@ void CL_ClearState (void);
 int  CL_ReadFromServer (void);
 void CL_WriteToServer (usercmd_t *cmd);
 void CL_BaseMove (usercmd_t *cmd);
-
-
-char *Key_KeynumToString (int keynum);
 
 //
 // cl_demo.c
@@ -371,14 +368,19 @@ void V_SetContentsColor (int contents);
 //
 // cl_tent
 //
-void CL_InitTEnts(void);
-void CL_ClearTEnts(void);
-void CL_ParseTEnt(void);
-void CL_UpdateTEnts(void);
+void CL_InitTEnts (void);
+void CL_ClearTEnts (void);
+void CL_ParseTEnt (void);
+void CL_UpdateTEnts (void);
 
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2006/03/24 15:05:39  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.12  2006/03/16 21:19:00  sezero
  * Restored net compatibility with SC2_OBJ and SC2_OBJ2:
  * SC2_OBJ and SC2_OBJ2 are actually only legible for the
