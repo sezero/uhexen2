@@ -146,7 +146,7 @@ typedef struct {
 #define CONW_LIST	eCONW
 #define CONW_BUTTON	bCONW
 #define STATUSBAR	LStat
-#define PORTALS_BUTTON	bH2MP
+#define PORTALS		bH2MP
 #define H2GAME		SelH2
 #define HWGAME		SelHW
 #define CONW_COMBO_S	Video.cCONW

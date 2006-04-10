@@ -147,7 +147,7 @@ void launch_hexen2_bin (void)
 		args[++i] = "-game";
 		args[++i] = (char *)hwgame_names[hwgame][0];
 	}
-	else if ((destiny != DEST_HW) && (h2game > 0) && !mp_support)
+	else if ((destiny == DEST_H2) && (h2game > 0))
 	{
 	// we only provide botmatch thingies, so -listen is necessary
 		args[++i] = "-listen";

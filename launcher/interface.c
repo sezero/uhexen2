@@ -234,8 +234,7 @@ GtkWidget* create_window1 (void)
 
 // Destiny: H2MP
 #ifndef DEMOBUILD
-  WGT_PORTALS = gtk_radio_button_new_with_label (Destinies, "Praevus");
-  Destinies = gtk_radio_button_group (GTK_RADIO_BUTTON (WGT_PORTALS));
+  WGT_PORTALS = gtk_check_button_new_with_label ("Praevus");
   gtk_widget_ref (WGT_PORTALS);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "bH2MP", WGT_PORTALS,
 				(GtkDestroyNotify) gtk_widget_unref);
@@ -244,8 +243,9 @@ GtkWidget* create_window1 (void)
   gtk_tooltips_set_tip (tooltips, WGT_PORTALS, _("play Hexen II with Mission Pack"), NULL);
   GTK_WIDGET_UNSET_FLAGS (WGT_PORTALS, GTK_CAN_FOCUS);
   gtk_widget_set_size_request (WGT_PORTALS, 80, 24);
-  if ((destiny == DEST_H2) && mp_support)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_PORTALS), TRUE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_PORTALS), mp_support);
+  if (destiny != DEST_H2)
+	gtk_widget_set_sensitive (WGT_PORTALS, FALSE);
 #endif
 
 // Destiny: HexenWorld
@@ -668,7 +668,7 @@ GtkWidget* create_window1 (void)
   gtk_widget_show (H2G_Entry);
 #ifndef DEMOBUILD
   gtk_entry_set_text (GTK_ENTRY (H2G_Entry), (char *)h2game_names[h2game][1]);
-  if ((destiny != DEST_H2) || mp_support)
+  if (destiny != DEST_H2)
 	gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
 #else
   gtk_entry_set_text (GTK_ENTRY (H2G_Entry), "(  None  )");
@@ -870,7 +870,7 @@ GtkWidget* create_window1 (void)
   gtk_signal_connect (GTK_OBJECT (HWG_Entry), "changed",
 			GTK_SIGNAL_FUNC (HWGameChange), NULL);
   gtk_signal_connect (GTK_OBJECT (WGT_PORTALS), "released",
-			GTK_SIGNAL_FUNC (on_H2MP), &Games);
+			GTK_SIGNAL_FUNC (ReverseOpt), &mp_support);
 #endif
   gtk_signal_connect (GTK_OBJECT (WGT_HEXEN2), "released",
 			GTK_SIGNAL_FUNC (on_HEXEN2), &Games);

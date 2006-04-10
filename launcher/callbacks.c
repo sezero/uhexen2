@@ -203,7 +203,7 @@ void on_HEXEN2 (GtkButton *button, gamewidget_t *wgt)
 {
 	destiny = DEST_H2;
 #ifndef DEMOBUILD
-	mp_support = 0;
+	gtk_widget_set_sensitive (wgt->PORTALS, TRUE);
 	gtk_widget_set_sensitive (wgt->H2GAME, TRUE);
 	gtk_widget_set_sensitive (wgt->HWGAME, FALSE);
 	gtk_widget_set_sensitive (wgt->LAN_BUTTON, !h2game);
@@ -213,22 +213,11 @@ void on_HEXEN2 (GtkButton *button, gamewidget_t *wgt)
 	UpdateStats(&(wgt->Launch));
 }
 
-#ifndef DEMOBUILD
-void on_H2MP (GtkButton *button, gamewidget_t *wgt)
-{
-	destiny = DEST_H2;
-	mp_support = 1;
-	gtk_widget_set_sensitive (wgt->H2GAME, FALSE);
-	gtk_widget_set_sensitive (wgt->HWGAME, FALSE);
-	gtk_widget_set_sensitive (wgt->LAN_BUTTON, TRUE);
-	UpdateStats(&(wgt->Launch));
-}
-#endif
-
 void on_H2W (GtkButton *button, gamewidget_t *wgt)
 {
 	destiny = DEST_HW;
 #ifndef DEMOBUILD
+	gtk_widget_set_sensitive (wgt->PORTALS, FALSE);
 	gtk_widget_set_sensitive (wgt->H2GAME, FALSE);
 	gtk_widget_set_sensitive (wgt->HWGAME, TRUE);
 #endif
