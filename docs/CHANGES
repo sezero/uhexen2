@@ -3,6 +3,32 @@ Hexen II: Hammer of Thyrion
 ChangeLog:
 ---------------------------
 
+2006-04-10 (CVS):
+    * launcher version 0.7.3: changed the portals destiny option into an option
+      check button. moved mod combolist preparation to callbacks.c, added an
+      extra filename check to hw mod detection. made h2game option to be saved
+      in launcher_options, added is_botmatch to decide on -listen and -nolan
+      arguments, misc tidy-ups.
+    * Made the model data caching (the ms2 files) a compile time opengl option
+      defaulting to off (DO_MESH_CACHE): it causes more problems than it solves,
+      and there is no easy way to prevent the mesh cache mismatches. You change
+      the mdl file with an override file, but you have a cached ms2 file in the
+      glhexen directory from the old mdl --> crazy models on the screen. Or, you
+      run a mod without the mission pack first and then with mission pack, or
+      vice versa, and the ms2 cache from the previous instance would mismatch
+      the mdl from the latter --> crazy models on the screen again (in fact,
+      this second one can be overcome somehow, but it's not worth the effort.)
+      With this option set to 0, no problems...
+    * gathered all compile-time opengl options into a gl_opt.h header file.
+      changed USE_HEXEN2_PALTEX_CODE and USE_HEXEN2_RESAMPLER_CODE to 0 / 1
+      instead of the previous define/undef.
+    * changed hwcl client struture to have a 128 length mide_name to be consistent
+      with the rest of the tree (h2 and hwsv already had it as 128.)
+    * usual whitespace / coding style tidy-ups : d_vars.c, nonintel.c, sv_effect.c,
+      cl_effect.c, cl_effect.h, cdaudio.h, mididef.h, hw/progdefs.h, quakedef.h,
+      qwswdef.h, bothdefs.h, spritegn.h, client.h, server.h, model.h, gl_model.h,
+      vid.h
+
 2006-04-04 (1.4.0-RC2):
     * killed (almost) all H2MP ifdefs: this is the first step in making a
       single binary which handles both h2 and h2mp properly. the only H2MP
