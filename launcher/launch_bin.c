@@ -4,6 +4,8 @@
 
 static char binary_name[16];
 int	missingexe = 0;
+int	is_botmatch= 0;	// bot matches require -listen,
+			// therefore lan shouldn't be disabled
 
 const char *snddrv_names[MAX_SOUND][2] = {
 
@@ -26,11 +28,11 @@ const char *snd_rates[MAX_RATES] = {
 };
 
 #ifndef DEMOBUILD
-const char *h2game_names[MAX_H2GAMES][2] = {
-
-	{  NULL     , "(  None  )"	},
-	{ "hcbots"  , "BotMatch: Hcbot"	},
-	{ "apocbot" , "BotMatch: Apoc"	},
+const char *h2game_names[MAX_H2GAMES][3] = {
+	// dirname,   user-friendly name, whether it's a botmatch
+	{  NULL     , "(  None  )"	, "0"	},
+	{ "hcbots"  , "BotMatch: Hcbot"	, "1"	},
+	{ "apocbot" , "BotMatch: Apoc"	, "1"	},
 };
 
 const char *hwgame_names[MAX_HWGAMES][3] = {
@@ -93,7 +95,7 @@ void launch_hexen2_bin (void)
 {
 	int		i;
 	char	*args[32];
-	char	tmparg1[8], tmparg2[8], tmparg3[8];
+	char	aasamples_str[8], heapsize_str[8], zonesize_str[8];
 
 	i = 0;
 	args[i] = binary_name;
@@ -149,57 +151,61 @@ void launch_hexen2_bin (void)
 	}
 	else if ((destiny == DEST_H2) && (h2game > 0))
 	{
-	// we only provide botmatch thingies, so -listen is necessary
-		args[++i] = "-listen";
-		lan = 1;	// -listen cannot work with -nolan
 		args[++i] = "-game";
 		args[++i] = (char *)h2game_names[h2game][0];
 	}
 #endif
 
-	if ((lan == 0) && (destiny != DEST_HW))
+	// bot matches require -listen
+	if (is_botmatch && (destiny == DEST_H2))
+	{
+		args[++i] = "-listen";
+		lan = 1;	// -listen cannot work with -nolan
+	}
+
+	if ((lan == 0) && (destiny == DEST_H2))
 		args[++i] = "-nolan";
 
 	if (!mouse)
 		args[++i] = "-nomouse";
 
-	if ((opengl_support) && (fxgamma))
+	if (opengl_support && fxgamma)
 		args[++i] = "-3dfxgamma";
 
-	if ((opengl_support) && (is8bit))
+	if (opengl_support && is8bit)
 		args[++i] = "-paltex";
 
-	if ((opengl_support) && (use_fsaa) && (aasamples))
+	if (opengl_support && use_fsaa && aasamples)
 	{
 		args[++i] = "-fsaa";
-		snprintf (tmparg3, 8, "%i", aasamples);
-		args[++i] = tmparg3;
+		snprintf (aasamples_str, 8, "%i", aasamples);
+		args[++i] = aasamples_str;
 	}
 
-	if ((opengl_support) && (vsync))
+	if (opengl_support && vsync)
 		args[++i] = "-vsync";
 
-	if ((opengl_support) && (use_lm1 == 1)) // -lm_4 is default already
+	if (opengl_support && use_lm1 == 1)	// -lm_4 is default already
 		args[++i] = "-lm_1";
 
-	if ((opengl_support) && (gl_nonstd) && (strlen(gllibrary) != 0))
+	if (gl_nonstd && opengl_support && strlen(gllibrary))
 	{
 		args[++i] = "--gllibrary";
 		args[++i] = gllibrary;
 	}
 
-	if ((use_heap) && (heapsize >= HEAP_MINSIZE))
+	if (use_heap && (heapsize >= HEAP_MINSIZE))
 	{
 		args[++i] = "-heapsize";
-		snprintf (tmparg1, 8, "%i", heapsize);
-		args[++i] = tmparg1;
+		snprintf (heapsize_str, 8, "%i", heapsize);
+		args[++i] = heapsize_str;
 	}
 
-	if ((use_zone) && (zonesize >= ZONE_MINSIZE))
+	if (use_zone && (zonesize >= ZONE_MINSIZE))
 	{
 		args[++i] = "-zone";
-		snprintf (tmparg2, 8, "%i", zonesize);
-		args[++i] = tmparg2;
+		snprintf (zonesize_str, 8, "%i", zonesize);
+		args[++i] = zonesize_str;
 	}
 
 	if (debug)

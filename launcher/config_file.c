@@ -78,6 +78,7 @@ int write_config_file (void)
 
 		fprintf(cfg_file, "destiny=%d\n",destiny);
 #ifndef DEMOBUILD
+		fprintf(cfg_file, "h2game=%d\n",h2game);
 		fprintf(cfg_file, "hwgame=%d\n",hwgame);
 		fprintf(cfg_file, "mp_support=%d\n",mp_support);
 #endif
@@ -139,6 +140,12 @@ int read_config_file (void)
 							destiny = DEST_H2;
 				}
 #ifndef DEMOBUILD
+				else if (strstr(buff, "h2game=") == buff)
+				{
+					h2game = atoi(buff + 7);
+					if (h2game < 0 || h2game >= MAX_H2GAMES)
+							h2game = 0;
+				}
 				else if (strstr(buff, "hwgame=") == buff)
 				{
 					hwgame = atoi(buff + 7);

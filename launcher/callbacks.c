@@ -9,8 +9,9 @@
 
 // from launch_bin.c
 extern int missingexe;
+extern int is_botmatch;
 #ifndef DEMOBUILD
-extern const char *h2game_names[MAX_H2GAMES][2];
+extern const char *h2game_names[MAX_H2GAMES][3];
 extern const char *hwgame_names[MAX_HWGAMES][3];
 #endif
 extern const char *snddrv_names[MAX_SOUND][2];
@@ -107,22 +108,22 @@ void Make_ConwMenu (struct Video_s *wgt)
 
 void on_OGL (GtkToggleButton *button, gamewidget_t *wgt)
 {
-/*	Make_ResMenu() triggers "changed" signal for RES_LIST
-	Prevent the fight: res_Change() wont do a thing if(lock)
-*/	lock = 1;
+//	Make_ResMenu() triggers "changed" signal
+//	for RES_LIST, therefore prevent the fight
+	lock = 1;
+
 	opengl_support = !opengl_support;
-	switch (opengl_support)
+	if (opengl_support)
 	{
-	case 0:
-		if (resolution > RES_640)
-			resolution = RES_640;
-		break;
-	case 1:
 		if (resolution < RES_640)
 			resolution = RES_640;
 		if (conwidth > resolution)
 			conwidth = resolution;
-		break;
+	}
+	else
+	{
+		if (resolution > RES_640)
+			resolution = RES_640;
 	}
 	gtk_widget_set_sensitive (wgt->TDFX_BUTTON, opengl_support);
 	gtk_widget_set_sensitive (wgt->GL8BIT_BUTTON, opengl_support);
@@ -144,24 +145,24 @@ void res_Change (GtkEditable *editable, struct Video_s *wgt)
 	int	i;
 	gchar	*tmp;
 
-	if (!lock)
+	if (lock)
+		return;
+
+	lock = 1;
+	tmp = gtk_editable_get_chars (editable, 0, -1);
+	for (i = 0; i < RES_MAX; i++)
 	{
-		lock = 1;
-		tmp = gtk_editable_get_chars (editable, 0, -1);
-		for (i = 0; i < RES_MAX; i++)
-		{
-			if (strcmp(tmp, res_names[i]) == 0)
-				resolution = i;
-		}
-		g_free(tmp);
-		if (opengl_support)
-		{
-			if (conwidth > resolution)
-				conwidth = resolution;
-			Make_ConwMenu(wgt);
-		}
-		lock = 0;
+		if (strcmp(tmp, res_names[i]) == 0)
+			resolution = i;
 	}
+	g_free(tmp);
+	if (opengl_support)
+	{
+		if (conwidth > resolution)
+			conwidth = resolution;
+		Make_ConwMenu(wgt);
+	}
+	lock = 0;
 }
 
 void con_Change (GtkEditable *editable, gpointer user_data)
@@ -169,19 +170,19 @@ void con_Change (GtkEditable *editable, gpointer user_data)
 	int	i;
 	gchar	*tmp;
 
-	if (!lock)
+	if (lock)
+		return;
+
+	tmp = gtk_editable_get_chars (editable, 0, -1);
+	for (i = 0; i < RES_MAX; i++)
 	{
-		tmp = gtk_editable_get_chars (editable, 0, -1);
-		for (i = 0; i < RES_MAX; i++)
+		if (strcmp(tmp, res_names[i]) == 0)
 		{
-			if (strcmp(tmp, res_names[i]) == 0)
-			{
-				g_free(tmp);
-				conwidth = i;
-				return;
-			}
-		// Normally, we should be all set within this loop
+			g_free(tmp);
+			conwidth = i;
+			return;
 		}
+// Normally, we should be all set within this loop, thus no "else"
 	}
 }
 
@@ -206,7 +207,7 @@ void on_HEXEN2 (GtkButton *button, gamewidget_t *wgt)
 	gtk_widget_set_sensitive (wgt->PORTALS, TRUE);
 	gtk_widget_set_sensitive (wgt->H2GAME, TRUE);
 	gtk_widget_set_sensitive (wgt->HWGAME, FALSE);
-	gtk_widget_set_sensitive (wgt->LAN_BUTTON, !h2game);
+	gtk_widget_set_sensitive (wgt->LAN_BUTTON, !is_botmatch);
 #else
 	gtk_widget_set_sensitive (wgt->LAN_BUTTON, TRUE);
 #endif
@@ -250,6 +251,7 @@ void H2GameScan (GList *GameList)
 		}
 	}
 	free (Title);
+	is_botmatch = atoi (h2game_names[h2game][2]);
 }
 
 void HWGameScan (GList *GameList)
@@ -296,7 +298,8 @@ void H2GameChange (GtkEditable *editable, gamewidget_t *wgt)
 		{
 			g_free(tmp);
 			h2game = i;
-			gtk_widget_set_sensitive (wgt->LAN_BUTTON, !h2game);
+			is_botmatch = atoi (h2game_names[i][2]);
+			gtk_widget_set_sensitive (wgt->LAN_BUTTON, !is_botmatch);
 			return;
 		}
 // Normally, we should be all set within this loop, thus no "else"

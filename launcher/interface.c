@@ -10,10 +10,11 @@
 
 // from launch_bin.c
 extern int missingexe;
+extern int is_botmatch;
 extern const char *snddrv_names[MAX_SOUND][2];
 extern const char *snd_rates[MAX_RATES];
 #ifndef DEMOBUILD
-extern const char *h2game_names[MAX_H2GAMES][2];
+extern const char *h2game_names[MAX_H2GAMES][3];
 extern const char *hwgame_names[MAX_HWGAMES][3];
 #endif
 
@@ -745,7 +746,7 @@ GtkWidget* create_window1 (void)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_LANBUTTON), !lan);
   GTK_WIDGET_UNSET_FLAGS (WGT_LANBUTTON, GTK_CAN_FOCUS);
   gtk_tooltips_set_tip (tooltips, WGT_LANBUTTON, _("Mark to Disable Net"), NULL);
-  if (destiny==DEST_HW)
+  if (destiny==DEST_HW || is_botmatch)
 	gtk_widget_set_sensitive (WGT_LANBUTTON, FALSE);
 
 /*********************************************************************/
