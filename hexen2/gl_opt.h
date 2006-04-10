@@ -2,9 +2,19 @@
 	gl_opt.h
 	opengl compile-time options
 
-	$Id: gl_opt.h,v 1.1 2006-04-10 12:02:08 sezero Exp $
+	$Id: gl_opt.h,v 1.2 2006-04-10 12:48:44 sezero Exp $
 */
 
+
+// COMPILE TIME OPTION: DO_MESH_CACHE
+// if you want to cache the alias model meshes to disk, the define below must
+// be 1, otherwise 0. caching gives bad results upon the following conditions:
+// - you change the mdl file with an override file, but you have a cached ms2
+//   file in the glhexen directory from the old mdl,
+// - you run a mod without the mission pack first and then with mission pack,
+//   or vice versa, and the ms2 cache from the previous instance would mismatch
+//   the mdl from the latter (in fact, this situation can be overcome.)
+#define	DO_MESH_CACHE		0
 
 // COMPILE TIME OPTION: USE_HEXEN2_PALTEX_CODE
 // to use hexenworld (quake)'s palettized texture code instead of the original
