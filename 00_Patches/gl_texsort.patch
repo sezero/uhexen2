@@ -1,0 +1,479 @@
+trying to put back gl_texsort and R_DrawSequentialPoly stuff: extracted
+these from jshexen2. broken for now:  water surfaces are non-transparent
+when gl_texsort is 0..
+
+diff -urNp uhexen2-20060406/hexen2/glquake.h uhexen2-20060408/hexen2/glquake.h
+--- uhexen2-20060406/hexen2/glquake.h	2006-03-29 23:46:02.000000000 +0300
++++ uhexen2-20060408/hexen2/glquake.h	2006-04-09 01:57:01.000000000 +0300
+@@ -121,7 +121,7 @@ void R_LoadSkys (void);
+ void R_DrawSkyBox (void);
+ void R_ClearSkyBox (void);
+ #endif
+-//void EmitSkyPolys (msurface_t *fa);
++void EmitSkyPolys (msurface_t *fa);
+ void EmitWaterPolys (msurface_t *fa);
+ void EmitBothSkyLayers (msurface_t *fa);
+ qboolean R_CullBox (vec3_t mins, vec3_t maxs);
+@@ -320,6 +320,7 @@ extern	cvar_t	r_dynamic;
+ extern	cvar_t	r_novis;
+ extern	cvar_t	r_wholeframe;
+ 
++extern	cvar_t	gl_texsort;
+ extern	cvar_t	gl_clear;
+ extern	cvar_t	gl_cull;
+ extern	cvar_t	gl_poly;
+diff -urNp uhexen2-20060406/hexen2/gl_rmain.c uhexen2-20060408/hexen2/gl_rmain.c
+--- uhexen2-20060406/hexen2/gl_rmain.c	2006-04-05 09:09:23.000000000 +0300
++++ uhexen2-20060408/hexen2/gl_rmain.c	2006-04-09 01:25:18.000000000 +0300
+@@ -80,6 +80,7 @@ cvar_t	r_dynamic = {"r_dynamic", "1", CV
+ cvar_t	r_novis = {"r_novis", "0", CVAR_NONE};
+ cvar_t	r_wholeframe = {"r_wholeframe", "1", CVAR_ARCHIVE};
+ 
++cvar_t	gl_texsort = {"gl_texsort", "1", CVAR_ARCHIVE};
+ cvar_t	gl_clear = {"gl_clear", "0", CVAR_NONE};
+ cvar_t	gl_cull = {"gl_cull", "1", CVAR_NONE};
+ cvar_t	gl_ztrick = {"gl_ztrick", "0", CVAR_ARCHIVE};
+diff -urNp uhexen2-20060406/hexen2/gl_rmisc.c uhexen2-20060408/hexen2/gl_rmisc.c
+--- uhexen2-20060406/hexen2/gl_rmisc.c	2006-04-05 09:09:23.000000000 +0300
++++ uhexen2-20060408/hexen2/gl_rmisc.c	2006-04-09 01:25:44.000000000 +0300
+@@ -231,6 +231,7 @@ void R_Init (void)
+ 	Cvar_RegisterVariable (&r_speeds);
+ 	Cvar_RegisterVariable (&r_wholeframe);
+ 
++	Cvar_RegisterVariable (&gl_texsort);
+ 	Cvar_RegisterVariable (&gl_clear);
+ 	Cvar_RegisterVariable (&gl_cull);
+ 	Cvar_RegisterVariable (&gl_smoothmodels);
+diff -urNp uhexen2-20060406/hexen2/gl_rsurf.c uhexen2-20060408/hexen2/gl_rsurf.c
+--- uhexen2-20060406/hexen2/gl_rsurf.c	2006-03-24 17:05:39.000000000 +0200
++++ uhexen2-20060408/hexen2/gl_rsurf.c	2006-04-09 01:57:09.000000000 +0300
+@@ -530,6 +530,8 @@ static void R_BlendLightmaps (qboolean T
+ 
+ 	if (r_fullbright.value)
+ 		return;
++	if (!gl_texsort.value)
++		return;
+ 
+ 	if (!Translucent)
+ 		glDepthMask_fp (0);	// don't bother writing Z
+@@ -635,6 +637,8 @@ static void R_UpdateLightmaps (qboolean 
+ 
+ 	if (r_fullbright.value)
+ 		return;
++	if (!gl_texsort.value)
++		return;
+ 
+ 	glActiveTextureARB_fp (GL_TEXTURE1_ARB);
+ 
+@@ -674,6 +678,334 @@ static void R_UpdateLightmaps (qboolean 
+ }
+ 
+ 
++extern	int		solidskytexture;
++extern	int		alphaskytexture;
++extern	float		speedscale;
++
++/*
++================
++R_DrawSequentialPoly
++
++Systems that have fast state and texture changes can
++just do everything as it passes with no need to sort
++================
++*/
++static void R_DrawSequentialPoly (msurface_t *s)
++{
++	glpoly_t	*p;
++	float		*v;
++	int			i;
++	texture_t	*t;
++	float		alpha_val = 1.0f;
++	float		intensity = 1.0f;
++
++	//
++	// normal lightmaped poly
++	//
++	if (! (s->flags & (SURF_DRAWSKY|SURF_DRAWTURB|SURF_UNDERWATER) ) )
++	{
++		if (currententity->drawflags & DRF_TRANSLUCENT)
++		{
++			glEnable_fp (GL_BLEND);
++		//	glColor4f_fp (1,1,1,r_wateralpha.value);
++			alpha_val = r_wateralpha.value;
++
++			glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
++			intensity = 1;
++		}
++		if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
++		{
++			// currententity->abslight   0 - 255
++			// rjr
++			glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
++			intensity = ( float )currententity->abslight / 255.0f;
++		}
++
++		glColor4f_fp (intensity, intensity, intensity, alpha_val);
++
++		p = s->polys;
++
++		t = R_TextureAnimation (s->texinfo->texture);
++		GL_Bind (t->gl_texturenum);
++		glBegin_fp (GL_POLYGON);
++		v = p->verts[0];
++		for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
++		{
++			glTexCoord2f_fp (v[3], v[4]);
++			glVertex3fv_fp (v);
++		}
++		glEnd_fp ();
++
++		/*
++		if (!((currententity->drawflags & DRF_TRANSLUCENT) ||
++			((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)))
++		*/
++		if (!(currententity->drawflags & DRF_TRANSLUCENT) &&
++			((currententity->drawflags & MLS_ABSLIGHT) != MLS_ABSLIGHT))
++		{
++			GL_Bind (lightmap_textures + s->lightmaptexturenum);
++
++			glEnable_fp (GL_BLEND);
++
++			if (gl_lightmap_format == GL_LUMINANCE)
++			{
++				glBlendFunc_fp (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
++			}
++			else if (gl_lightmap_format == GL_INTENSITY)
++			{
++				glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
++				glColor4f_fp (0.0f,0.0f,0.0f,1.0f);
++				glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
++			}
++			else if (gl_lightmap_format == GL_RGBA)
++			{
++				glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
++				glColor4f_fp (1.0f,1.0f,1.0f, 1.0f);
++				glBlendFunc_fp(GL_ZERO, GL_SRC_COLOR);
++			}
++
++			glBegin_fp (GL_POLYGON);
++			v = p->verts[0];
++			for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
++			{
++				glTexCoord2f_fp (v[5], v[6]);
++				glVertex3fv_fp (v);
++			}
++			glEnd_fp ();
++
++			glDisable_fp (GL_BLEND);
++		}
++
++		if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT ||
++			(currententity->drawflags & DRF_TRANSLUCENT))
++		{
++			glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
++		}
++		return;
++	}
++
++	//
++	// subdivided water surface warp
++	//
++	if (s->flags & SURF_DRAWTURB)
++	{
++		GL_Bind (s->texinfo->texture->gl_texturenum);
++		EmitWaterPolys (s);
++		return;
++	}
++
++	//
++	// subdivided sky warp
++	//
++	if (s->flags & SURF_DRAWSKY)
++	{
++		GL_Bind (solidskytexture);
++		speedscale = realtime*8;
++		//speedscale -= (int)speedscale;
++		speedscale -= (int)speedscale & ~127;
++
++		EmitSkyPolys (s);
++
++		glEnable_fp (GL_BLEND);
++		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
++		GL_Bind (alphaskytexture);
++		speedscale = realtime*16;
++		//speedscale -= (int)speedscale;
++		speedscale -= (int)speedscale & ~127;
++
++		EmitSkyPolys (s);
++		if (gl_lightmap_format == GL_LUMINANCE)
++		{
++			glBlendFunc_fp (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
++		}
++		glDisable_fp (GL_BLEND);
++		return;
++	}
++
++	//
++	// underwater warped with lightmap
++	//
++	p = s->polys;
++
++	t = R_TextureAnimation (s->texinfo->texture);
++	GL_Bind (t->gl_texturenum);
++	DrawGLWaterPoly (p);
++
++	GL_Bind (lightmap_textures + s->lightmaptexturenum);
++	glEnable_fp (GL_BLEND);
++
++	if (gl_lightmap_format == GL_LUMINANCE)
++	{
++		glBlendFunc_fp (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
++	}
++	else if (gl_lightmap_format == GL_INTENSITY)
++	{
++		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
++		glColor4f_fp (0.0f,0.0f,0.0f,1.0f);
++		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
++	}
++	else if (gl_lightmap_format == GL_RGBA)
++	{
++		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
++		glColor4f_fp (1.0f,1.0f,1.0f, 1.0f);
++		glBlendFunc_fp(GL_ZERO, GL_SRC_COLOR);
++	}
++
++	DrawGLWaterPolyLightmap (p);
++	glDisable_fp (GL_BLEND);
++	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
++}
++
++static void R_DrawSequentialPolyMTex (msurface_t *s)
++{
++	glpoly_t	*p;
++	float		*v;
++	int			i;
++	texture_t	*t;
++	float		alpha_val = 1.0f;
++	float		intensity = 1.0f;
++
++	//
++	// normal lightmaped poly
++	//
++	glActiveTextureARB_fp (GL_TEXTURE0_ARB);
++
++	if (! (s->flags & (SURF_DRAWSKY|SURF_DRAWTURB|SURF_UNDERWATER) ) )
++	{
++		if (currententity->drawflags & DRF_TRANSLUCENT)
++		{
++			glEnable_fp (GL_BLEND);
++		//	glColor4f_fp (1,1,1,r_wateralpha.value);
++			alpha_val = r_wateralpha.value;
++
++			glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
++			intensity = 1;
++		}
++		if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
++		{
++			// currententity->abslight   0 - 255
++			// rjr
++			glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
++			intensity = ( float )currententity->abslight / 255.0f;
++		}
++
++		glColor4f_fp (intensity, intensity, intensity, alpha_val);
++
++		p = s->polys;
++
++		t = R_TextureAnimation (s->texinfo->texture);
++
++		GL_Bind (t->gl_texturenum);
++
++		if ((currententity->drawflags & DRF_TRANSLUCENT) ||
++			(currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
++		{
++			glBegin_fp(GL_POLYGON);
++			v = p->verts[0];
++			for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
++			{
++				glMultiTexCoord2fARB_fp (GL_TEXTURE0_ARB, v[3], v[4]);
++				glVertex3fv_fp (v);
++			}
++			glEnd_fp ();
++		}
++		else
++		{
++			glActiveTextureARB_fp (GL_TEXTURE1_ARB);
++			glEnable_fp(GL_TEXTURE_2D);
++
++			if (gl_lightmap_format == GL_LUMINANCE)
++			{
++				glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
++			}
++			else
++			{
++				glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
++			}
++
++			GL_Bind (lightmap_textures + s->lightmaptexturenum);
++
++			glBegin_fp(GL_POLYGON);
++			v = p->verts[0];
++			for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
++			{
++				glMultiTexCoord2fARB_fp (GL_TEXTURE0_ARB, v[3], v[4]);
++				glMultiTexCoord2fARB_fp (GL_TEXTURE1_ARB, v[5], v[6]);
++				glVertex3fv_fp (v);
++			}
++			glEnd_fp ();
++
++			glDisable_fp(GL_TEXTURE_2D);
++			glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
++			glActiveTextureARB_fp (GL_TEXTURE0_ARB);
++		}
++
++		if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT ||
++			(currententity->drawflags & DRF_TRANSLUCENT))
++		{
++			glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
++		}
++		return;
++	}
++
++	//
++	// subdivided water surface warp
++	//
++	if (s->flags & SURF_DRAWTURB)
++	{
++		glActiveTextureARB_fp (GL_TEXTURE0_ARB);
++
++		GL_Bind (s->texinfo->texture->gl_texturenum);
++		EmitWaterPolys (s);
++
++		return;
++	}
++
++	//
++	// subdivided sky warp
++	//
++	if (s->flags & SURF_DRAWSKY)
++	{
++		GL_Bind (solidskytexture);
++		speedscale = realtime*8;
++		speedscale -= (int)speedscale & ~127;
++
++		EmitSkyPolys (s);
++
++		glEnable_fp (GL_BLEND);
++		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
++		GL_Bind (alphaskytexture);
++		speedscale = realtime*16;
++		speedscale -= (int)speedscale & ~127;
++		EmitSkyPolys (s);
++		if (gl_lightmap_format == GL_LUMINANCE)
++		{
++			glBlendFunc_fp (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
++		}
++		glDisable_fp (GL_BLEND);
++		return;
++	}
++
++	//
++	// underwater warped with lightmap
++	//
++	p = s->polys;
++
++	t = R_TextureAnimation (s->texinfo->texture);
++	GL_Bind (t->gl_texturenum);
++	glActiveTextureARB_fp (GL_TEXTURE1_ARB);
++
++	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
++	glEnable_fp(GL_TEXTURE_2D);
++	GL_Bind (lightmap_textures + s->lightmaptexturenum);
++
++	DrawGLWaterPolyMTexLM(p);
++
++	glDisable_fp(GL_TEXTURE_2D);
++	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
++	glActiveTextureARB_fp (GL_TEXTURE0_ARB);
++}
++
+ /*
+ ================
+ R_RenderBrushPoly
+@@ -1180,7 +1512,15 @@ void R_DrawBrushModel (entity_t *e, qboo
+ 		if (((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||
+ 			(!(psurf->flags & SURF_PLANEBACK) && (dot > BACKFACE_EPSILON)))
+ 		{
+-			R_RenderBrushPoly (psurf, false);
++			if (gl_texsort.value)
++				R_RenderBrushPoly (psurf, false);
++			else
++			{
++				if (gl_multitexture.value == 1 && gl_mtexable == true)
++					R_DrawSequentialPolyMTex (psurf);
++				else
++					R_DrawSequentialPoly (psurf);
++			}
+ 		}
+ 	}
+ 
+@@ -1298,11 +1638,21 @@ static void R_RecursiveWorldNode (mnode_
+ 				continue;	// wrong side
+ 
+ 			// sorting by texture, just store it out
+-			if (!mirror
+-				|| surf->texinfo->texture != cl.worldmodel->textures[mirrortexturenum])
++			if (gl_texsort.value)
+ 			{
+-				surf->texturechain = surf->texinfo->texture->texturechain;
+-				surf->texinfo->texture->texturechain = surf;
++				if (!mirror
++					|| surf->texinfo->texture != cl.worldmodel->textures[mirrortexturenum])
++				{
++					surf->texturechain = surf->texinfo->texture->texturechain;
++					surf->texinfo->texture->texturechain = surf;
++				}
++			}
++			else
++			{
++				if (gl_multitexture.value == 1 && gl_mtexable == true)
++					R_DrawSequentialPolyMTex (surf);
++				else
++					R_DrawSequentialPoly (surf);
+ 			}
+ 		}
+ 	}
+@@ -1336,7 +1686,8 @@ void R_DrawWorld (void)
+ 
+ 	R_RecursiveWorldNode (cl.worldmodel->nodes);
+ 
+-	DrawTextureChains ();
++	if (gl_texsort.value)
++		DrawTextureChains ();
+ 
+ 	// disable multitexturing - just in case ...
+ 	if (gl_multitexture.value == 1 && gl_mtexable == true)
+diff -urNp uhexen2-20060406/hexen2/gl_warp.c uhexen2-20060408/hexen2/gl_warp.c
+--- uhexen2-20060406/hexen2/gl_warp.c	2006-03-12 00:51:16.000000000 +0200
++++ uhexen2-20060408/hexen2/gl_warp.c	2006-04-09 01:46:05.000000000 +0300
+@@ -6,8 +6,8 @@ extern	model_t	*loadmodel;
+ 
+ int		skytexturenum;
+ 
+-static int	solidskytexture, alphaskytexture;
+-static float	speedscale;	// for top sky and bottom sky
++int		solidskytexture, alphaskytexture;
++float		speedscale;	// for top sky and bottom sky
+ 
+ static msurface_t	*warpface;
+ 
+@@ -265,7 +265,7 @@ static void EmitSkyPolysMulti (msurface_
+ 	glActiveTextureARB_fp (GL_TEXTURE0_ARB);
+ }
+ 
+-static void EmitSkyPolys (msurface_t *fa)
++void EmitSkyPolys (msurface_t *fa)
+ {
+ 	glpoly_t	*p;
+ 	float		*v;
+
