@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.61 2006-04-05 06:09:23 sezero Exp $
+	$Id: gl_draw.c,v 1.62 2006-04-10 12:02:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -14,7 +14,7 @@ extern unsigned ColorPercent[16];
 
 extern qboolean	is_3dfx;
 extern qboolean	is8bit;
-#ifdef	USE_HEXEN2_PALTEX_CODE
+#if USE_HEXEN2_PALTEX_CODE
 extern unsigned char inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
 #else
 extern unsigned char d_15to8table[65536];
@@ -1389,7 +1389,7 @@ int GL_FindTexture (char *identifier)
 GL_ResampleTexture
 ================
 */
-#ifdef USE_HEXEN2_RESAMPLER_CODE
+#if USE_HEXEN2_RESAMPLER_CODE
 static void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigned *out,  int outwidth, int outheight)
 {
 	int		i, j;
@@ -1486,7 +1486,7 @@ static void GL_MipMap (byte *in, int width, int height)
 	}
 }
 
-#ifdef USE_HEXEN2_PALTEX_CODE
+#if USE_HEXEN2_PALTEX_CODE
 /*
 ================
 fxPalTexImage2D
@@ -1721,7 +1721,7 @@ static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap
 	unsigned	*scaled;
 	int		mark = 0;
 	int		scaled_width, scaled_height;
-#ifdef USE_HEXEN2_PALTEX_CODE
+#if USE_HEXEN2_PALTEX_CODE
 	unsigned char	*fxpal_buf = NULL;
 #endif
 
@@ -1775,7 +1775,7 @@ static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap
 	{
 		if (!mipmap)
 		{
-#ifdef USE_HEXEN2_PALTEX_CODE
+#if USE_HEXEN2_PALTEX_CODE
 			if (is8bit && !alpha)
 			{
 				mark = Hunk_LowMark();
@@ -1798,7 +1798,7 @@ static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap
 		GL_ResampleTexture (data, width, height, scaled, scaled_width, scaled_height);
 	}
 
-#ifdef USE_HEXEN2_PALTEX_CODE
+#if USE_HEXEN2_PALTEX_CODE
 	if (is8bit && !alpha)
 	{
 		if (!mark)
@@ -1825,7 +1825,7 @@ static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap
 			if (scaled_height < 1)
 				scaled_height = 1;
 			miplevel++;
-#ifdef USE_HEXEN2_PALTEX_CODE
+#if USE_HEXEN2_PALTEX_CODE
 			if (is8bit && !alpha)
 				fxPalTexImage2D (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled, fxpal_buf);
 			else
@@ -1978,7 +1978,7 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 		}
 	}
 
-#ifndef USE_HEXEN2_PALTEX_CODE
+#if !USE_HEXEN2_PALTEX_CODE
 	if (is8bit && 
 #   if ENABLE_SCRAP
 		(data!=scrap_texels[0]) && 

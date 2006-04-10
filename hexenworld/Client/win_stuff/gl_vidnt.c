@@ -148,7 +148,7 @@ unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
 //unsigned	d_8to24table3dfx[256];
 unsigned	d_8to24TranslucentTable[256];
-#ifdef	USE_HEXEN2_PALTEX_CODE
+#if USE_HEXEN2_PALTEX_CODE
 unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1]; // +1: COM_LoadStackFile puts a 0 at the end of the data
 #else
 unsigned char	d_15to8table[65536];
@@ -996,7 +996,7 @@ void VID_SetPalette (unsigned char *palette)
 	unsigned short	i, p, c;
 	unsigned	*table;
 //	unsigned	*table3dfx;
-#ifndef USE_HEXEN2_PALTEX_CODE
+#if !USE_HEXEN2_PALTEX_CODE
 	int		r1,g1,b1;
 	int		j,k,l,m;
 	FILE	*f;
@@ -1055,7 +1055,7 @@ void VID_SetPalette (unsigned char *palette)
 	if (been_here)
 		return;
 
-#ifdef USE_HEXEN2_PALTEX_CODE
+#if USE_HEXEN2_PALTEX_CODE
 	// This is original hexen2 code for palettized textures
 	// Hexenworld replaced it with quake's newer code below
 #   ifdef DO_BUILD

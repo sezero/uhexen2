@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.77 2006-04-05 06:09:23 sezero Exp $
+	$Id: gl_draw.c,v 1.78 2006-04-10 12:02:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -14,7 +14,7 @@ extern unsigned ColorPercent[16];
 
 extern qboolean	is_3dfx;
 extern qboolean	is8bit;
-#ifdef	USE_HEXEN2_PALTEX_CODE
+#if USE_HEXEN2_PALTEX_CODE
 extern unsigned char inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
 #else
 extern unsigned char d_15to8table[65536];
@@ -1389,7 +1389,7 @@ int GL_FindTexture (char *identifier)
 GL_ResampleTexture
 ================
 */
-#ifdef USE_HEXEN2_RESAMPLER_CODE
+#if USE_HEXEN2_RESAMPLER_CODE
 static void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigned *out,  int outwidth, int outheight)
 {
 	int		i, j;
@@ -1486,7 +1486,7 @@ static void GL_MipMap (byte *in, int width, int height)
 	}
 }
 
-#ifdef USE_HEXEN2_PALTEX_CODE
+#if USE_HEXEN2_PALTEX_CODE
 /*
 ================
 fxPalTexImage2D
@@ -1721,7 +1721,7 @@ static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap
 	unsigned	*scaled;
 	int		mark = 0;
 	int		scaled_width, scaled_height;
-#ifdef USE_HEXEN2_PALTEX_CODE
+#if USE_HEXEN2_PALTEX_CODE
 	unsigned char	*fxpal_buf = NULL;
 #endif
 
@@ -1775,7 +1775,7 @@ static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap
 	{
 		if (!mipmap)
 		{
-#ifdef USE_HEXEN2_PALTEX_CODE
+#if USE_HEXEN2_PALTEX_CODE
 			if (is8bit && !alpha)
 			{
 				mark = Hunk_LowMark();
@@ -1798,7 +1798,7 @@ static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap
 		GL_ResampleTexture (data, width, height, scaled, scaled_width, scaled_height);
 	}
 
-#ifdef USE_HEXEN2_PALTEX_CODE
+#if USE_HEXEN2_PALTEX_CODE
 	if (is8bit && !alpha)
 	{
 		if (!mark)
@@ -1825,7 +1825,7 @@ static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap
 			if (scaled_height < 1)
 				scaled_height = 1;
 			miplevel++;
-#ifdef USE_HEXEN2_PALTEX_CODE
+#if USE_HEXEN2_PALTEX_CODE
 			if (is8bit && !alpha)
 				fxPalTexImage2D (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled, fxpal_buf);
 			else
@@ -1978,7 +1978,7 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 		}
 	}
 
-#ifndef USE_HEXEN2_PALTEX_CODE
+#if !USE_HEXEN2_PALTEX_CODE
 	if (is8bit && 
 #   if ENABLE_SCRAP
 		(data!=scrap_texels[0]) && 
@@ -2128,6 +2128,17 @@ int GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.77  2006/04/05 06:09:23  sezero
+ * killed (almost) all H2MP ifdefs: this is the first step in making a single
+ * binary which handles both h2 and h2mp properly. the only H2MP ifdefs left
+ * are actually the ones for determining the icon and window manager text, so
+ * nothing serious. the binary normally will only run the original h2 game.
+ * if given a -portals or -missionpack or -h2mp argument, it will look for the
+ * mission pack and run it (this is the same logic that quake used.) The only
+ * serious side effect is that h2 and h2mp progs being different: This will be
+ * solved by the next patch by adding support for the two progs versions into
+ * a single binary.
+ *
  * Revision 1.76  2006/03/24 15:05:39  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also

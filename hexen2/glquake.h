@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.47 2006-03-29 20:46:02 sezero Exp $
+	$Id: glquake.h,v 1.48 2006-04-10 12:02:08 sezero Exp $
 */
 
 
@@ -13,6 +13,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+#include "gl_opt.h"
 #include "gl_func.h"
 
 #ifndef	GLX_3DFX_WINDOW_MODE_MESA
@@ -48,6 +49,7 @@
 #define GL_COLOR_INDEX8_EXT			0x80E5
 #endif
 
+// the GL_Bind macro
 #define GL_Bind(texnum) {\
 	if (currenttexture != (texnum)) {\
 		currenttexture = (texnum);\
@@ -55,35 +57,11 @@
 	}\
 }
 
+// defs for palettized textures
 #define INVERSE_PAL_R_BITS 6
 #define INVERSE_PAL_G_BITS 6
 #define INVERSE_PAL_B_BITS 6
 #define INVERSE_PAL_TOTAL_BITS	( INVERSE_PAL_R_BITS + INVERSE_PAL_G_BITS + INVERSE_PAL_B_BITS )
-
-// COMPILE TIME OPTION:
-// to use hexenworld (quake)'s palettized texture code instead of the original
-// hexen2 code, replace the #define below with an #undef. that will result in
-// lower quality. see gl_draw.c (and gl_vidXXX.c) for more details
-#define	USE_HEXEN2_PALTEX_CODE
-
-// COMPILE TIME OPTION:
-// to use hexenworld (quake)'s texture resampler code instead of the original
-// hexen2 code, replace the #define below with an undef. that will result in
-// slightly sharper but "jaggier" textures here and there. see in gl_draw.c.
-// bad results especially detectable on help screens when using old cards with
-// small (256k) texture size support (read: old voodoo boards.)
-#define	USE_HEXEN2_RESAMPLER_CODE
-
-// COMPILE TIME OPTION:
-// scrap allocation is disabled by default. it doesn't work good with vid_mode
-// changes. if you want to enable it, change the define below to 1.
-#define ENABLE_SCRAP		0
-
-// COMPILE TIME OPTION:
-// the macro GLTEST enables some experimentation stuff for developers. If you
-// want to enable it, un-comment the line below.
-//#define	GLTEST			// experimental stuff
-
 
 // misc. common glquake defines
 #define MAX_GLTEXTURES		2048
@@ -391,6 +369,9 @@ extern	const char *gl_extensions;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.47  2006/03/29 20:46:02  sezero
+ * minor fixups
+ *
  * Revision 1.46  2006/03/24 15:05:39  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also
