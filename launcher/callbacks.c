@@ -11,7 +11,7 @@
 extern int missingexe;
 #ifndef DEMOBUILD
 extern const char *h2game_names[MAX_H2GAMES][2];
-extern const char *hwgame_names[MAX_HWGAMES][2];
+extern const char *hwgame_names[MAX_HWGAMES][3];
 #endif
 extern const char *snddrv_names[MAX_SOUND][2];
 extern const char *snd_rates[MAX_RATES];
@@ -237,6 +237,66 @@ void on_H2W (GtkButton *button, gamewidget_t *wgt)
 }
 
 #ifndef DEMOBUILD
+void H2GameScan (GList *GameList)
+{
+	int	i;
+	char	*Title;
+
+	Title = (char *)malloc(32);
+	for (i = 1; i < MAX_H2GAMES; i++)
+	{
+		printf("Looking for %s ... ", (char *)h2game_names[i][1]);
+		strcpy (Title, h2game_names[i][0]);
+		strcat (Title, "/progs.dat");
+		if (access(Title, R_OK) == 0)
+		{
+			GameList = g_list_append (GameList, (char *)h2game_names[i][1]);
+			printf("Found OK.\n");
+		}
+		else
+		{
+			printf("NOT found.\n");
+			if (h2game == i)
+				h2game = 0;
+		}
+	}
+	free (Title);
+}
+
+void HWGameScan (GList *GameList)
+{
+	int	i, j;
+	char	*Title;
+
+	Title = (char *)malloc(32);
+	for (i = 1; i < MAX_HWGAMES; i++)
+	{
+		printf("Looking for %s ... ", (char *)hwgame_names[i][1]);
+		strcpy (Title, hwgame_names[i][0]);
+		strcat (Title, "/hwprogs.dat");
+		j = access(Title, R_OK);
+		if (j == 0)
+		{
+			strcpy (Title, hwgame_names[i][0]);
+			strcat (Title, "/");
+			strcat (Title, hwgame_names[i][2]);
+			j = access(Title, R_OK);
+		}
+		if (j == 0)
+		{
+			GameList = g_list_append (GameList, (char *)hwgame_names[i][1]);
+			printf("Found OK.\n");
+		}
+		else
+		{
+			printf("NOT found.\n");
+			if (hwgame == i)
+				hwgame = 0;
+		}
+	}
+	free (Title);
+}
+
 void H2GameChange (GtkEditable *editable, gamewidget_t *wgt)
 {
 	int	i;

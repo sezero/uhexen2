@@ -13,9 +13,8 @@ extern int missingexe;
 extern const char *snddrv_names[MAX_SOUND][2];
 extern const char *snd_rates[MAX_RATES];
 #ifndef DEMOBUILD
-extern int hwgame;
 extern const char *h2game_names[MAX_H2GAMES][2];
-extern const char *hwgame_names[MAX_HWGAMES][2];
+extern const char *hwgame_names[MAX_HWGAMES][3];
 #endif
 
 /*********************************************************************/
@@ -61,7 +60,6 @@ GtkWidget* create_window1 (void)
   GtkWidget *hseparator2;
 
 // Other stuff
-  char *Title;
   GList *TmpList = NULL;
   GSList *Destinies = NULL;
 
@@ -656,21 +654,7 @@ GtkWidget* create_window1 (void)
   TmpList = g_list_append (TmpList, (gpointer) "(  None  )");
 #ifndef DEMOBUILD
   gtk_combo_set_use_arrows (GTK_COMBO (WGT_H2GAME), FALSE);
-  Title = (char *)malloc(32);
-  for (i=1; i<MAX_H2GAMES; i++)
-  {
-	strcpy (Title, h2game_names[i][0]);
-	strcat (Title, "/progs.dat");
-	printf("Looking for %s (%s) ... ", Title, (char *)h2game_names[i][1]);
-	if (access(Title, R_OK) == 0)
-	{
-		TmpList = g_list_append (TmpList, (char *)h2game_names[i][1]);
-		printf("Found OK.\n");
-	}
-	else
-		printf("NOT found.\n");
-  }
-  free (Title);
+  H2GameScan (TmpList);
 #endif
   gtk_combo_set_popdown_strings (GTK_COMBO (WGT_H2GAME), TmpList);
   g_list_free (TmpList);
@@ -680,13 +664,16 @@ GtkWidget* create_window1 (void)
   gtk_widget_ref (H2G_Entry);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "H2G_Entry", H2G_Entry,
 				(GtkDestroyNotify) gtk_widget_unref);
-  gtk_entry_set_text (GTK_ENTRY (H2G_Entry), "(  None  )");
   gtk_entry_set_editable (GTK_ENTRY (H2G_Entry), FALSE);
   gtk_widget_show (H2G_Entry);
 #ifndef DEMOBUILD
+  gtk_entry_set_text (GTK_ENTRY (H2G_Entry), (char *)h2game_names[h2game][1]);
   if ((destiny != DEST_H2) || mp_support)
-#endif
 	gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
+#else
+  gtk_entry_set_text (GTK_ENTRY (H2G_Entry), "(  None  )");
+  gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
+#endif
 
 // game types menu for hexenworld
   TxtGameHW = gtk_label_new ("HWorld:");
@@ -704,22 +691,9 @@ GtkWidget* create_window1 (void)
   gtk_widget_set_size_request (WGT_HWGAME, 132, 24);
   TmpList = NULL;
   TmpList = g_list_append (TmpList, (gpointer) "DeathMatch");
-  Title = (char *)malloc(32);
 #ifndef DEMOBUILD
   gtk_combo_set_use_arrows (GTK_COMBO (WGT_HWGAME), FALSE);
-  for (i=1; i<MAX_HWGAMES; i++)
-  {
-	strcpy (Title, hwgame_names[i][0]);
-	strcat (Title, "/hwprogs.dat");
-	printf("Looking for %s (%s) ... ", Title, (char *)hwgame_names[i][1]);
-	if (access(Title, R_OK) == 0)
-	{
-		TmpList = g_list_append (TmpList, (char *)hwgame_names[i][1]);
-		printf("Found OK.\n");
-	}
-	else
-		printf("NOT found.\n");
-  }
+  HWGameScan (TmpList);
 #endif
   gtk_combo_set_popdown_strings (GTK_COMBO (WGT_HWGAME), TmpList);
   g_list_free (TmpList);
@@ -729,29 +703,16 @@ GtkWidget* create_window1 (void)
   gtk_widget_ref (HWG_Entry);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "HWG_Entry", HWG_Entry,
 				(GtkDestroyNotify) gtk_widget_unref);
-#ifndef DEMOBUILD
-  if (hwgame > 0)
-  {
-	strcpy (Title, hwgame_names[hwgame][0]);
-	strcat (Title, "/hwprogs.dat");
-	if (access(Title, R_OK) == 0)
-	    gtk_entry_set_text (GTK_ENTRY (HWG_Entry), (char *)hwgame_names[hwgame][1]);
-	else
-	{
-	    gtk_entry_set_text (GTK_ENTRY (HWG_Entry), "DeathMatch");
-	    hwgame = 0;
-	}
-  }
-  else
-#endif
-	gtk_entry_set_text (GTK_ENTRY (HWG_Entry), "DeathMatch");
-  free (Title);
   gtk_entry_set_editable (GTK_ENTRY (HWG_Entry), FALSE);
   gtk_widget_show (HWG_Entry);
 #ifndef DEMOBUILD
+  gtk_entry_set_text (GTK_ENTRY (HWG_Entry), (char *)hwgame_names[hwgame][1]);
   if (destiny != DEST_HW)
-#endif
 	gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
+#else
+  gtk_entry_set_text (GTK_ENTRY (HWG_Entry), "DeathMatch");
+  gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
+#endif
 
 /*********************************************************************/
 
