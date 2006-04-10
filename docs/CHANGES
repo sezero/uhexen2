@@ -28,6 +28,7 @@ ChangeLog:
       cl_effect.c, cl_effect.h, cdaudio.h, mididef.h, hw/progdefs.h, quakedef.h,
       qwswdef.h, bothdefs.h, spritegn.h, client.h, server.h, model.h, gl_model.h,
       vid.h
+    * added to extra patches: gl_texsort and R_DrawSequentialPoly()
 
 2006-04-04 (1.4.0-RC2):
     * killed (almost) all H2MP ifdefs: this is the first step in making a
