@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.57 2006-04-05 06:20:20 sezero Exp $
+	$Id: common.c,v 1.58 2006-04-11 05:07:56 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1915,7 +1915,7 @@ static void COM_InitFilesystem (void)
 {
 	int		i;
 	char		temp[12];
-	qboolean	check_portals;
+	qboolean	check_portals = false;
 
 //
 // -basedir <path>
@@ -1949,7 +1949,8 @@ static void COM_InitFilesystem (void)
 #endif
 
 #if defined(H2W)
-	check_portals = true;
+	if (! COM_CheckParm ("-noportals"))
+		check_portals = true;
 #else
 // see if the user wants mission pack support
 	check_portals = (COM_CheckParm ("-portals")) || (COM_CheckParm ("-missionpack")) || (COM_CheckParm ("-h2mp"));
@@ -2330,6 +2331,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.57  2006/04/05 06:20:20  sezero
+ * added info about an old (v1.07) hexen2 demo version
+ *
  * Revision 1.56  2006/04/05 06:18:32  sezero
  * added support for activating the mission pack by a -game portals
  * commandline argument
