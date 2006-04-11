@@ -2,6 +2,7 @@
 
 #include "quakedef.h"
 
+extern qboolean	is_3dfx;
 extern	model_t	*loadmodel;
 
 int		skytexturenum;
@@ -310,7 +311,8 @@ will have them chained together.
 */
 void EmitBothSkyLayers (msurface_t *fa)
 {
-	if (gl_multitexture.value == 1 && gl_mtexable == true)
+	// note: 3dfx doesn't like GL_DECAL
+	if (!is_3dfx && gl_multitexture.value == 1 && gl_mtexable == true)
 	{
 		EmitSkyPolysMulti (fa);
 		return;
@@ -345,7 +347,8 @@ void R_DrawSkyChain (msurface_t *s)
 {
 	msurface_t	*fa;
 
-	if (gl_multitexture.value == 1 && gl_mtexable == true)
+	// note: 3dfx doesn't like GL_DECAL
+	if (!is_3dfx && gl_multitexture.value == 1 && gl_mtexable == true)
 	{
 		for (fa=s ; fa ; fa=fa->texturechain)
 			EmitSkyPolysMulti (fa);
