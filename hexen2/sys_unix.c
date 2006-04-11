@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.50 2006-02-19 16:14:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.51 2006-04-11 05:08:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -328,10 +328,14 @@ static void PrintVersion (void)
 	printf ("Hammer of Thyrion, release %s\n", HOT_VERSION_STR);
 #endif
 	printf ("running on %s engine %4.2f (%s)\n", ENGINE_NAME, ENGINE_VERSION, VERSION_PLATFORM);
+	printf ("More info / sending bug reports:  http://uhexen2.sourceforge.net\n");
 }
 
 static char *help_strings[] = {
-	"     [-v | --version]        Display the game version",
+	"     [-v | --version]        Display version information",
+#ifndef DEMOBUILD
+	"     [-portals | -h2mp ]     Run the Portal of Praevus mission pack",
+#endif
 	"     [-w | --window ]        Run the game windowed",
 	"     [-f | --fullscreen]     Run the game fullscreen",
 	"     [-width X [-height Y]]  Select screen size",
@@ -351,8 +355,6 @@ static char *help_strings[] = {
 	"     [-nomouse]              Disable mouse usage",
 	"     [-listen N]             Enable multiplayer with max N players",
 	"     [-heapsize Bytes]       Heapsize (memory to allocate)",
-	"\n"
-	"More info / sending bug reports:  http://uhexen2.sourceforge.net\n",
 	NULL
 };
 
@@ -360,13 +362,14 @@ static void PrintHelp(char *name)
 {
 	int i = 0;
 
-	printf ("\nUsage: %s [options]\n", name);
+	printf ("Usage: %s [options]\n", name);
 	while (help_strings[i])
 	{
 		printf (help_strings[i]);
 		printf ("\n");
 		i++;
 	}
+	printf ("\n");
 }
 
 int main(int argc, char *argv[])
@@ -518,6 +521,10 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.50  2006/02/19 16:14:15  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 13: more sys_XXX.c, along with more variable name clean-up.)
+ *
  * Revision 1.49  2006/01/23 20:22:53  sezero
  * tidied up the version and help display stuff. bumped the HoT version to
  * 1.4.0-pre1. added conditionals to properly display beta version strings.
