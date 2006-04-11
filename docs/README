@@ -16,9 +16,8 @@ Hexen II: Hammer of Thyrion 1.4.0
 2. Known Problems
 
   2.1 Sound Problems
-  2.2 Mods and Crazy Polygons
-  2.3 Lines on Screen
-  2.4 Fluxbox
+  2.2 Lines on Screen
+  2.3 Fluxbox
 
 3. General Info
 
@@ -390,21 +389,7 @@ On new linux distributions, alsa-0.9.8 or better is already included.
 Users of old distributions can visit ALSA site for alsa-sound support.
 
 
-2.2 Mods and Crazy Polygons
----------------------------
-
-Some mission-packs/mods for Quake based games can cause existing
-player and monster models to be drawn with lines all over the
-place.  To fix this, delete the directory  ~/.hexen2/glhexen
-and/or  ~/.hexen2/portals/glhexen.  When you next run the game,
-it will remake this directory and everything should be fine.
-HoT-1.3.0 and later have fixed this bug, but pre-existing mesh
-files in those mentioned directories shall still cause this bad
-view, so delete them.  Mods installed after HoT-1.3.0 shall be
-fine.
-
-
-2.3 Lines on Screen
+2.2 Lines on Screen
 -------------------
 
 A common problem, especially with 3dfx cards, is flickering lines
@@ -414,7 +399,7 @@ With fresh installations of HoT-1.2.3 and later, this option is
 disabled by default.
 
 
-2.4 Fluxbox
+2.3 Fluxbox
 -----------
 
 Though it's a great window manager, fluxbox has issues with some

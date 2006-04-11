@@ -33,6 +33,15 @@ r_teamcolor	This command controls what color of tint that you see
 		your teammates. Value is 1-900.
 
 
+Mission Pack support:
+---------------------
+
+HexenWorld looks for the Portal of Praevus mission pack and automatically
+activates it if it finds it. If, for some reason, you want to disable the
+mission pack support, run the client with -noportals commandline switch.
+(Note: This switch is valid for Hammer of Thyrion.)
+
+
 Key Bindings:
 -------------
 

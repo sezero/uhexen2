@@ -3,23 +3,20 @@ Hexen II: Hammer of Thyrion
 Known Bugs
 ---------------------------
 
-  Midi music doesn't work with SDL sound driver due to conflicting
-  SDL and SDL_mixer calls. There are a few other problems related
-  to SDL_mixer/midi. Re-writing midi code for libWildmidi is on the
-  TODO list. We may also add alsa (and/or oss) sequencer support.
+  Linux (Unix): Midi music doesn't work with SDL sound driver due to
+  conflicting SDL and SDL_mixer calls. Will be looked into.
 
-  OSS sound code does not work for a few people, either partially or
-  completely. This includes some sampling rate problems in the first
-  place, and probably more things that we are not aware of, yet.
-  Although this shouldn't be a problem (we already have ALSA and SDL
-  sound drivers), fixing that is on the TODO list.
+  Linux (Unix): OSS sound code does not work for a few people, either
+  partially or completely. If you suffer from that problem, use Alsa
+  or SDL sound.
 
-  3dfx Voodoo1/2:  Palettized textures are broken with Mesa 3.x.
-  Mesa-6.x seems to work fine. Banshee and Voodoo3/4/5 aren't affected
-  because the DRI driver doesn't have those extensions. Nvidia seems to
-  work fine with it. Don't know if this is a Mesa bug or a Hexen2 bug.
+  3dfx Voodoo Graphics / Voodoo2:  Palettized textures are broken with
+  Mesa 3.x. Use Mesa-6.x, which works fine. Windows people should use
+  the latest "MesaFX" driver for 3dfx.
 
-  3dfx Voodoo: Doesn't work correctly with multitexturing, yet.
+  3dfx Voodoo: May not work correctly with multitexturing.  In fact,
+  this is a 3dfx problem.  For best results, use Mesa-6.2 on linux and
+  the latest "MesaFX" driver on windows.
 
   Matrox G200: GL games may not display menus correctly (Matrox bug?)
 

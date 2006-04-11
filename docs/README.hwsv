@@ -7,6 +7,15 @@ such as the Ghost mod, may modify the meaning and behavior of these
 options. This is not a complete listing, more may be found on the net.
 
 
+Mission Pack support:
+---------------------
+
+HexenWorld looks for the Portal of Praevus mission pack and automatically
+activates it if it finds it. If, for some reason, you want to disable the
+mission pack support, run the server with -noportals commandline switch.
+(Note: This switch is valid for Hammer of Thyrion.)
+
+
 Tome Mode:
 ----------
 

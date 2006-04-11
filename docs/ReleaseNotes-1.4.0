@@ -20,6 +20,8 @@ Changes since HoT-1.3.0 :
   changed the old command lister name from list to cmdlist.
 - Added a maplist command to list maps in pakfiles and in game searchpath
 - Added support for the pak files in users' directories.
+- Disabled the model mesh caching (the glhexen/*.ms2 mess) which caused
+  more problems than it used to solve.
 - Fixes in palettized texture uploading code
 - Switched back to original hexen2 code for palettized textures and
   texture resampling for better quality, leaving the hexenworld code as
@@ -85,6 +87,7 @@ Changes since HoT-1.3.0 :
 - Added sanity checking to and fixed the off by one error in -ip option
   of the standalone hexenworld master server
 - Hexenworld server shall now flush its logfiles upon every print
+- Allowed hexenworld to skip mission pack support with -noportals switch
 - Changed hexenworld server log filename from qconsole.log to hwsv.log
 - Added support for systems without OSS sound
 - Several small sound driver updates
