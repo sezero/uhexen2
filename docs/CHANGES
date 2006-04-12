@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 ChangeLog:
 ---------------------------
 
+2006-04-12 (CVS, 1.4.0-RC3):
+    * disabled multitextured sky for 3dfx: it doesn't like GL_DECAL
+    * allowed hexenworld to skip the mission pack support if -noportals
+      commandline switch is used.
+    * added the -portals and -noportals switches to the help output.
+    * several documentation updates.
+    * marked the snapshot of 12 Apr. 2006 as 1.4.0-RC3
+
 2006-04-10 (CVS):
     * launcher version 0.7.3: changed the portals destiny option into an option
       check button. moved mod combolist preparation to callbacks.c, added an

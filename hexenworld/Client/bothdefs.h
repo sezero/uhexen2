@@ -2,7 +2,7 @@
 	bothdefs.h
 	defs common to both client and server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.23 2006-04-05 18:24:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.24 2006-04-12 07:53:10 sezero Exp $
 */
 
 #define __STRINGIFY(x) #x
@@ -13,8 +13,8 @@
 #define	HOT_VERSION_MIN		0
 #define	HOT_VERSION_BETA	1
 #if HOT_VERSION_BETA
-#define	HOT_VERSION_BETA_STR	"RC2"
-#define	HOT_VERSION_BETA_DATE	"2006-04-04"
+#define	HOT_VERSION_BETA_STR	"RC3"
+#define	HOT_VERSION_BETA_DATE	"2006-04-12"
 #endif
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
