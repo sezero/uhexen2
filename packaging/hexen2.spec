@@ -12,10 +12,10 @@ License:	GPL
 Group:		Amusements/Games
 URL:		http://uhexen2.sourceforge.net/
 Version:	1.4.0
-Release:	1
+Release:	6
 Summary:	Hexen II
 Source:		hexen2source-%{version}.tgz
-Source1:	loki_patch-src.tgz
+Source1:	xdelta-1.1.3a.tgz
 Source2:	hexenworld-pakfiles-0.15.tgz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	nasm >= 0.98
@@ -63,7 +63,6 @@ mode.
 
 %prep
 %setup -q -n hexen2source-%{version} -a1 -a2
-patch -p1 < 00_Patches/update_script_no_os_check.patch
 
 %build
 # Build the main game binaries
@@ -84,7 +83,6 @@ make -C launcher
 %else
 # Build for GTK1.2
 make -C launcher GTK1=yes
-cp launcher/h2launcher.gtk1 launcher/h2launcher
 %endif
 # Build the hcode compilers
 make -C utils/hcc_old
@@ -96,20 +94,12 @@ utils/bin/hcc -src gamecode/hc/portals -oi -on
 utils/bin/hcc -src gamecode/hc/hw -oi -on
 #utils/bin/hcc -src gamecode/hc/siege -oi -on
 
-# Build game-update patcher loki_patch
-cd loki_patch-src
-cd loki_setupdb
-sh autogen.sh
-sh configure
-make
-cd ../loki_patch
-tar xvfz libs/xdelta-1.1.3-patched.tar.gz
-cd xdelta-1.1.3
-sh configure
-make
-cd ..
-sh autogen.sh
-sh configure
+# Build xdelta (binary patcher for pak files)
+cd xdelta-1.1.3a/src
+%if %{?_without_gtk2:1}0
+%{__patch} -p1 -R < ../ref/025-glib2.diff
+%endif
+./configure --disable-shared
 make
 cd ../..
 # Done building
@@ -123,7 +113,11 @@ cd ../..
 %{__install} -D -m755 hexenworld/Master/hwmaster %{buildroot}/%{_prefix}/games/%{name}/hwmaster
 %{__install} -D -m755 hexenworld/Client/hwcl %{buildroot}/%{_prefix}/games/%{name}/hwcl
 %{__install} -D -m755 hexenworld/Client/glhwcl %{buildroot}/%{_prefix}/games/%{name}/glhwcl
+%if %{!?_without_gtk2:1}0
 %{__install} -D -m755 launcher/h2launcher %{buildroot}/%{_prefix}/games/%{name}/h2launcher
+%else
+%{__install} -D -m755 launcher/h2launcher.gtk1 %{buildroot}/%{_prefix}/games/%{name}/h2launcher
+%endif
 # Make a symlink of the game-launcher
 %{__mkdir_p} %{buildroot}/%{_bindir}
 ln -s %{_prefix}/games/hexen2/h2launcher %{buildroot}/%{_bindir}/hexen2
@@ -170,13 +164,12 @@ ln -s %{_prefix}/games/hexen2/h2launcher %{buildroot}/%{_bindir}/hexen2
 # Install the xdelta updates
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdata/
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1
-%{__install} -D -m755 gamecode/pak_v111/update_h2 %{buildroot}/%{_prefix}/games/%{name}/update_h2
+%{__install} -D -m755 gamecode/pak_v111/update_xdelta.sh %{buildroot}/%{_prefix}/games/%{name}/update_xdelta.sh
 %{__install} -D -m644 gamecode/pak_v111/patchdata/data1/data1pak0.xd %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/data1pak0.xd
 %{__install} -D -m644 gamecode/pak_v111/patchdata/data1/data1pak1.xd %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/data1pak1.xd
-%{__install} -D -m644 gamecode/pak_v111/h2_103_111.dat %{buildroot}/%{_prefix}/games/%{name}/h2_103_111.dat
 
 # Install the update-patcher binaries
-%{__install} -D -m755 loki_patch-src/loki_patch/loki_patch %{buildroot}/%{_prefix}/games/%{name}/loki_patch
+%{__install} -D -m755 xdelta-1.1.3a/src/xdelta %{buildroot}/%{_prefix}/games/%{name}/xdelta113
 
 # Install the menu icon
 %{__mkdir_p} %{buildroot}/%{_datadir}/pixmaps
@@ -213,11 +206,10 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{_prefix}/games/%{name}/hexen2
 %{_prefix}/games/%{name}/glhexen2
-%{_prefix}/games/%{name}/loki_patch
-%{_prefix}/games/%{name}/update_h2
+%{_prefix}/games/%{name}/xdelta113
+%{_prefix}/games/%{name}/update_xdelta.sh
 %{_prefix}/games/%{name}/patchdata/data1/data1pak0.xd
 %{_prefix}/games/%{name}/patchdata/data1/data1pak1.xd
-%{_prefix}/games/%{name}/h2_103_111.dat
 %{_prefix}/games/%{name}/data1/progs.dat
 %{_prefix}/games/%{name}/data1/progs2.dat
 %{_prefix}/games/%{name}/data1/hexen.rc
@@ -267,6 +259,10 @@ rm -rf %{buildroot}
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Mon Apr 16 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-6
+- Back to xdelta: removed loki_patch. All of its fancy bloat can
+  be done in a shell script, which is more customizable.
+
 * Mon Apr 04 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-5
 - Since 1.4.0-rc2 no mission pack specific binaries are needed.
 

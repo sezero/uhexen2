@@ -1,3 +1,7 @@
+# Hexen II: Raven's v1.11 update patch for data1/pak*.pak files.
+# This dat file is for use with loki_patch.
+# Do not remove empty lines or add extra empty lines!
+# These fields are for compatibility with original loki_patch.
 Product: product
 Version: 1.1
 Description: Product 1.0 Update

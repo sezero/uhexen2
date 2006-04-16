@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 ChangeLog:
 ---------------------------
 
+2006-04-16 (CVS):
+    * back to xdelta for pak binary patching, removed loki_patch: all of its
+      fancy bloat can be done in a shell script, which is more customizable.
+
 2006-04-12 (CVS, 1.4.0-RC3):
     * disabled multitextured sky for 3dfx: it doesn't like GL_DECAL
     * allowed hexenworld to skip the mission pack support if -noportals
