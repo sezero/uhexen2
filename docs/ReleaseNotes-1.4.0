@@ -19,6 +19,7 @@ Changes since HoT-1.3.0 :
 - Increased minimum heapsize to 16 mb to prevent hunk allocation errors
 - host_hunklevel and gl_texlevel are now set before execing hexen.rc to
   prevent "bad things" (TM) from happening
+- Added flags support to the cvar system.
 - Added support for the pak files in users' directories.
 - Several fixes and updates to the filesystem handling.
 
