@@ -14,7 +14,9 @@ Features:
 
 * OpenGL enhancements including multitexturing, glow effects,
   working brightness control, translucent console background,
-  colored lights and support for external lit files.
+  colored lights and support for external lit files, texture
+  delete/reload support, fixes for texture cache and model mesh
+  cache mismatches.
 
 * The same binary handles both original hexen2 and the mission pack.
 
@@ -37,14 +39,6 @@ Features:
   configuration files and game saves.
 
 * Improved console functionality and a maplist command.
-
-* ChaseCam clipping and pitch fixes.
-
-* Texture delete/reload support in opengl
-
-* No texture cache mismatches in opengl
-
-* No model mesh cache mismatches in opengl
 
 * Several hexen2 utilities are maintained and are being kept up to date.
 
