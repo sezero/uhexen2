@@ -522,6 +522,17 @@ static void SleepUntilInput (int time)
 }
 
 
+static void PrintVersion (void)
+{
+#if HOT_VERSION_BETA
+	Sys_Printf ("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_REL_DATE);
+#else
+	Sys_Printf ("Hammer of Thyrion, release %s (%s)\n", HOT_VERSION_STR, HOT_VERSION_REL_DATE);
+#endif
+	Sys_Printf ("running on %s engine %4.2f (%s)\n", ENGINE_NAME, ENGINE_VERSION, VERSION_PLATFORM);
+	Sys_Printf ("More info / sending bug reports:  http://uhexen2.sourceforge.net\n");
+}
+
 /*
 ==================
 WinMain
@@ -696,6 +707,8 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		}
 
 		InitConProc (hFile, heventParent, heventChild);
+
+		PrintVersion();
 	}
 
 	Sys_Init ();
@@ -751,6 +764,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2006/03/24 17:34:24  sezero
+ * includes cleanup
+ *
  * Revision 1.31  2006/02/19 16:14:16  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 13: more sys_XXX.c, along with more variable name clean-up.)

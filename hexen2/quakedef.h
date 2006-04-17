@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.62 2006-04-12 07:53:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.63 2006-04-17 14:00:50 sezero Exp $
 */
 
 
@@ -16,11 +16,9 @@
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		4
 #define	HOT_VERSION_MIN		0
+#define	HOT_VERSION_REL_DATE	"2006-04-12"
 #define	HOT_VERSION_BETA	1
-#if HOT_VERSION_BETA
 #define	HOT_VERSION_BETA_STR	"RC3"
-#define	HOT_VERSION_BETA_DATE	"2006-04-12"
-#endif
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
 #define	ENGINE_VERSION		1.15
@@ -419,6 +417,9 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.62  2006/04/12 07:53:10  sezero
+ * marked the snapshot of 12 Apr. 2006 as 1.4.0-RC3
+ *
  * Revision 1.61  2006/04/05 18:24:42  sezero
  * more tidy-ups (quakedef.h, qwswdef.h, bothdefs.h)
  *

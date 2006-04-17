@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.16 2006-03-24 15:06:29 sezero Exp $
+	$Id: sys_unix.c,v 1.17 2006-04-17 14:00:51 sezero Exp $
 
 	Unix system interface code
 */
@@ -182,6 +182,16 @@ void Sys_Quit (void)
 }
 
 
+static void PrintVersion (void)
+{
+	printf ("HexenWorld server %4.2f (%s)\n", ENGINE_VERSION, VERSION_PLATFORM);
+#if HOT_VERSION_BETA
+	printf ("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_REL_DATE);
+#else
+	printf ("Hammer of Thyrion, release %s (%s)\n", HOT_VERSION_STR, HOT_VERSION_REL_DATE);
+#endif
+}
+
 /*
 ==================
 main
@@ -197,27 +207,22 @@ int main (int argc, char **argv)
 	int		t;
 	static char	userdir[MAX_OSPATH];
 
+	PrintVersion();
+
 	if (argc > 1)
 	{
 		for (t = 1; t < argc; t++)
 		{
-			if ( !(strcmp(argv[t], "-h")) || !(strcmp(argv[t], "-help")) ||
-			     !(strcmp(argv[t], "--help")) || !(strcmp(argv[t], "-?")) )
-			{
-				printf ("HexenWorld server %4.2f (%s)\n", ENGINE_VERSION, VERSION_PLATFORM);
-#if HOT_VERSION_BETA
-				printf ("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_BETA_DATE);
-#else
-				printf ("Hammer of Thyrion, release %s\n", HOT_VERSION_STR);
-#endif
-				printf ("See the documentation for details\n");
-				exit (0);
-			}
-			else if ( !(strcmp(argv[t], "-v")) || !(strcmp(argv[t], "-version")) ||
+			if ( !(strcmp(argv[t], "-v")) || !(strcmp(argv[t], "-version")) ||
 				  !(strcmp(argv[t], "--version")) )
 			{
-				printf ("hwsv %4.2f (%s)\n", ENGINE_VERSION, VERSION_PLATFORM);
 				exit(0);
+			}
+			else if ( !(strcmp(argv[t], "-h")) || !(strcmp(argv[t], "-help")) ||
+			     !(strcmp(argv[t], "--help")) || !(strcmp(argv[t], "-?")) )
+			{
+				printf ("See the documentation for details\n");
+				exit (0);
 			}
 		}
 	}

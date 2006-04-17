@@ -151,6 +151,16 @@ void Sys_Quit (void)
 }
 
 
+static void PrintVersion (void)
+{
+	printf ("HexenWorld server %4.2f (%s)\n", ENGINE_VERSION, VERSION_PLATFORM);
+#if HOT_VERSION_BETA
+	printf ("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_REL_DATE);
+#else
+	printf ("Hammer of Thyrion, release %s (%s)\n", HOT_VERSION_STR, HOT_VERSION_REL_DATE);
+#endif
+}
+
 /*
 ==================
 main
@@ -165,6 +175,26 @@ int main (int argc, char **argv)
 	struct timeval	timeout;
 	fd_set		fdset;
 	int		t;
+
+	PrintVersion();
+
+	if (argc > 1)
+	{
+		for (t = 1; t < argc; t++)
+		{
+			if ( !(strcmp(argv[t], "-v")) || !(strcmp(argv[t], "-version")) ||
+				  !(strcmp(argv[t], "--version")) )
+			{
+				exit(0);
+			}
+			else if ( !(strcmp(argv[t], "-h")) || !(strcmp(argv[t], "-help")) ||
+			     !(strcmp(argv[t], "--help")) || !(strcmp(argv[t], "-?")) )
+			{
+				printf ("See the documentation for details\n");
+				exit (0);
+			}
+		}
+	}
 
 	COM_InitArgv (argc, argv);
 

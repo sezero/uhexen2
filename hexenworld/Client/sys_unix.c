@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.45 2006-04-11 05:08:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.46 2006-04-17 14:00:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -290,9 +290,9 @@ static int Sys_GetUserdir (char *buff, unsigned int path_len)
 static void PrintVersion (void)
 {
 #if HOT_VERSION_BETA
-	printf ("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_BETA_DATE);
+	printf ("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_REL_DATE);
 #else
-	printf ("Hammer of Thyrion, release %s\n", HOT_VERSION_STR);
+	printf ("Hammer of Thyrion, release %s (%s)\n", HOT_VERSION_STR, HOT_VERSION_REL_DATE);
 #endif
 	printf ("running on %s engine %4.2f (%s)\n", ENGINE_NAME, ENGINE_VERSION, VERSION_PLATFORM);
 	printf ("More info / sending bug reports:  http://uhexen2.sourceforge.net\n");
@@ -464,6 +464,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.45  2006/04/11 05:08:38  sezero
+ * added the -portals and -noportals switches to the help output
+ *
  * Revision 1.44  2006/02/19 16:14:16  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 13: more sys_XXX.c, along with more variable name clean-up.)
