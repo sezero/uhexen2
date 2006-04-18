@@ -3,9 +3,9 @@ screens will be drawn with their original size (320x200) no matter
 what the resolution is.
 If you really want this, that is...
 
-diff -urNp uhexen2-20060313/hexen2/screen.h uhexen2-20060313a/hexen2/screen.h
---- uhexen2-20060313/hexen2/screen.h	2006-03-13 21:38:40.000000000 +0200
-+++ uhexen2-20060313a/hexen2/screen.h	2006-03-14 00:40:10.000000000 +0200
+diff -urNp hexen2source-1.4.0/hexen2/screen.h hexen2source-1.4.0x/hexen2/screen.h
+--- hexen2source-1.4.0/hexen2/screen.h	2006-03-13 21:38:40.000000000 +0200
++++ hexen2source-1.4.0x/hexen2/screen.h	2006-03-14 00:40:10.000000000 +0200
 @@ -4,7 +4,7 @@
  // If you want the intermissions and help screens to be drawn fullscreen
  // keep the define below as 1. Otherwise, if you want them to be drawn
@@ -15,9 +15,9 @@ diff -urNp uhexen2-20060313/hexen2/screen.h uhexen2-20060313a/hexen2/screen.h
  
  // width for the info plaques
  #define PLAQUE_WIDTH	26
-diff -urNp uhexen2-20060313/hexenworld/Client/screen.h uhexen2-20060313a/hexenworld/Client/screen.h
---- uhexen2-20060313/hexenworld/Client/screen.h	2006-03-13 21:38:40.000000000 +0200
-+++ uhexen2-20060313a/hexenworld/Client/screen.h	2006-03-14 00:40:21.000000000 +0200
+diff -urNp hexen2source-1.4.0/hexenworld/Client/screen.h hexen2source-1.4.0x/hexenworld/Client/screen.h
+--- hexen2source-1.4.0/hexenworld/Client/screen.h	2006-03-13 21:38:40.000000000 +0200
++++ hexen2source-1.4.0x/hexenworld/Client/screen.h	2006-03-14 00:40:21.000000000 +0200
 @@ -4,7 +4,7 @@
  // If you want the intermissions and help screens to be drawn fullscreen
  // keep the define below as 1. Otherwise, if you want them to be drawn

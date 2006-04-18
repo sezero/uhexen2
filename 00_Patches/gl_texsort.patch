@@ -2,9 +2,9 @@ trying to put back gl_texsort and R_DrawSequentialPoly stuff: extracted
 these from jshexen2. broken for now:  water surfaces are non-transparent
 when gl_texsort is 0..
 
-diff -urNp uhexen2-20060406/hexen2/glquake.h uhexen2-20060408/hexen2/glquake.h
---- uhexen2-20060406/hexen2/glquake.h	2006-03-29 23:46:02.000000000 +0300
-+++ uhexen2-20060408/hexen2/glquake.h	2006-04-09 01:57:01.000000000 +0300
+diff -urNp hexen2source-1.4.0/hexen2/glquake.h hexen2source-1.4.0x/hexen2/glquake.h
+--- hexen2source-1.4.0/hexen2/glquake.h	2006-04-10 15:02:08.000000000 +0300
++++ hexen2source-1.4.0x/hexen2/glquake.h	2006-04-18 12:10:21.000000000 +0300
 @@ -121,7 +121,7 @@ void R_LoadSkys (void);
  void R_DrawSkyBox (void);
  void R_ClearSkyBox (void);
@@ -22,9 +22,9 @@ diff -urNp uhexen2-20060406/hexen2/glquake.h uhexen2-20060408/hexen2/glquake.h
  extern	cvar_t	gl_clear;
  extern	cvar_t	gl_cull;
  extern	cvar_t	gl_poly;
-diff -urNp uhexen2-20060406/hexen2/gl_rmain.c uhexen2-20060408/hexen2/gl_rmain.c
---- uhexen2-20060406/hexen2/gl_rmain.c	2006-04-05 09:09:23.000000000 +0300
-+++ uhexen2-20060408/hexen2/gl_rmain.c	2006-04-09 01:25:18.000000000 +0300
+diff -urNp hexen2source-1.4.0/hexen2/gl_rmain.c hexen2source-1.4.0x/hexen2/gl_rmain.c
+--- hexen2source-1.4.0/hexen2/gl_rmain.c	2006-04-05 09:09:23.000000000 +0300
++++ hexen2source-1.4.0x/hexen2/gl_rmain.c	2006-04-18 12:10:21.000000000 +0300
 @@ -80,6 +80,7 @@ cvar_t	r_dynamic = {"r_dynamic", "1", CV
  cvar_t	r_novis = {"r_novis", "0", CVAR_NONE};
  cvar_t	r_wholeframe = {"r_wholeframe", "1", CVAR_ARCHIVE};
@@ -33,9 +33,9 @@ diff -urNp uhexen2-20060406/hexen2/gl_rmain.c uhexen2-20060408/hexen2/gl_rmain.c
  cvar_t	gl_clear = {"gl_clear", "0", CVAR_NONE};
  cvar_t	gl_cull = {"gl_cull", "1", CVAR_NONE};
  cvar_t	gl_ztrick = {"gl_ztrick", "0", CVAR_ARCHIVE};
-diff -urNp uhexen2-20060406/hexen2/gl_rmisc.c uhexen2-20060408/hexen2/gl_rmisc.c
---- uhexen2-20060406/hexen2/gl_rmisc.c	2006-04-05 09:09:23.000000000 +0300
-+++ uhexen2-20060408/hexen2/gl_rmisc.c	2006-04-09 01:25:44.000000000 +0300
+diff -urNp hexen2source-1.4.0/hexen2/gl_rmisc.c hexen2source-1.4.0x/hexen2/gl_rmisc.c
+--- hexen2source-1.4.0/hexen2/gl_rmisc.c	2006-04-05 09:09:23.000000000 +0300
++++ hexen2source-1.4.0x/hexen2/gl_rmisc.c	2006-04-18 12:10:21.000000000 +0300
 @@ -231,6 +231,7 @@ void R_Init (void)
  	Cvar_RegisterVariable (&r_speeds);
  	Cvar_RegisterVariable (&r_wholeframe);
@@ -44,9 +44,9 @@ diff -urNp uhexen2-20060406/hexen2/gl_rmisc.c uhexen2-20060408/hexen2/gl_rmisc.c
  	Cvar_RegisterVariable (&gl_clear);
  	Cvar_RegisterVariable (&gl_cull);
  	Cvar_RegisterVariable (&gl_smoothmodels);
-diff -urNp uhexen2-20060406/hexen2/gl_rsurf.c uhexen2-20060408/hexen2/gl_rsurf.c
---- uhexen2-20060406/hexen2/gl_rsurf.c	2006-03-24 17:05:39.000000000 +0200
-+++ uhexen2-20060408/hexen2/gl_rsurf.c	2006-04-09 01:57:09.000000000 +0300
+diff -urNp hexen2source-1.4.0/hexen2/gl_rsurf.c hexen2source-1.4.0x/hexen2/gl_rsurf.c
+--- hexen2source-1.4.0/hexen2/gl_rsurf.c	2006-03-24 17:05:39.000000000 +0200
++++ hexen2source-1.4.0x/hexen2/gl_rsurf.c	2006-04-18 12:10:21.000000000 +0300
 @@ -530,6 +530,8 @@ static void R_BlendLightmaps (qboolean T
  
  	if (r_fullbright.value)
@@ -453,10 +453,10 @@ diff -urNp uhexen2-20060406/hexen2/gl_rsurf.c uhexen2-20060408/hexen2/gl_rsurf.c
  
  	// disable multitexturing - just in case ...
  	if (gl_multitexture.value == 1 && gl_mtexable == true)
-diff -urNp uhexen2-20060406/hexen2/gl_warp.c uhexen2-20060408/hexen2/gl_warp.c
---- uhexen2-20060406/hexen2/gl_warp.c	2006-03-12 00:51:16.000000000 +0200
-+++ uhexen2-20060408/hexen2/gl_warp.c	2006-04-09 01:46:05.000000000 +0300
-@@ -6,8 +6,8 @@ extern	model_t	*loadmodel;
+diff -urNp hexen2source-1.4.0/hexen2/gl_warp.c hexen2source-1.4.0x/hexen2/gl_warp.c
+--- hexen2source-1.4.0/hexen2/gl_warp.c	2006-04-11 08:07:07.000000000 +0300
++++ hexen2source-1.4.0x/hexen2/gl_warp.c	2006-04-18 12:10:21.000000000 +0300
+@@ -7,8 +7,8 @@ extern	model_t	*loadmodel;
  
  int		skytexturenum;
  
@@ -467,7 +467,7 @@ diff -urNp uhexen2-20060406/hexen2/gl_warp.c uhexen2-20060408/hexen2/gl_warp.c
  
  static msurface_t	*warpface;
  
-@@ -265,7 +265,7 @@ static void EmitSkyPolysMulti (msurface_
+@@ -266,7 +266,7 @@ static void EmitSkyPolysMulti (msurface_
  	glActiveTextureARB_fp (GL_TEXTURE0_ARB);
  }
  
@@ -476,4 +476,3 @@ diff -urNp uhexen2-20060406/hexen2/gl_warp.c uhexen2-20060408/hexen2/gl_warp.c
  {
  	glpoly_t	*p;
  	float		*v;
-
