@@ -1,11 +1,15 @@
 Hexen II: Hammer of Thyrion
 
-ChangeLog:
+Development Progress	:
 ---------------------------
 
-2006-04-16 (CVS):
+2006-04-18 (1.4.0-final):
     * back to xdelta for pak binary patching, removed loki_patch: all of its
       fancy bloat can be done in a shell script, which is more customizable.
+    * minor documentation updates
+    * several packaging tidy-ups
+    * minor update to version display stuff
+    * 2006-04-18: HoT-1.4.0-final.
 
 2006-04-12 (CVS, 1.4.0-RC3):
     * disabled multitextured sky for 3dfx: it doesn't like GL_DECAL
@@ -2035,3 +2039,4 @@ ChangeLog:
     * "No Boss" bug in Dan's original linux port fixed: Hexen2 loads
       progs2.dat along with progs.dat, as it should, now.
     * Probably some other minor things that we forgot.
+
