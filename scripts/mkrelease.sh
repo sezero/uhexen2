@@ -11,6 +11,9 @@ echo "change into the cvs snapshot directory before running this script"
 exit 1
 fi
 
+# the current gamecode version
+GAMECODE_VER=1.15
+
 # kill the unwanted CVS* directories
 rm -rf CVSROOT
 find -name CVS | xargs rm -rf 
@@ -29,4 +32,7 @@ find -name *.sh | xargs chmod 755
 
 # move the unused/reference asm files directory into 00_unused
 mv asm 00_unused/asm_ref
+
+# rename the gamecode directory to include its version number
+mv gamecode gamecode-$GAMECODE_VER
 

@@ -7,23 +7,25 @@
 
 %define desktop_vendor	uhexen2
 
+%define gamecode_ver	1.15
+
 Name:		hexen2
 License:	GPL
 Group:		Amusements/Games
 URL:		http://uhexen2.sourceforge.net/
 Version:	1.4.0
-Release:	6
+Release:	7
 Summary:	Hexen II
 Source:		hexen2source-%{version}.tgz
-Source1:	xdelta-1.1.3a.tgz
+Source1:	hexen2source-gamecode-%{version}.tgz
 Source2:	hexenworld-pakfiles-0.15.tgz
+Source3:	xdelta-1.1.3a.tgz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	nasm >= 0.98
 BuildRequires:	SDL-devel >= 1.2.4
 BuildRequires:	SDL_mixer-devel >= 1.2.4
-BuildRequires:	XFree86-devel XFree86-libs
-BuildRequires:	gtk+-devel libstdc++-devel
 %{!?_without_freedesktop:BuildRequires: desktop-file-utils}
+%{?_without_gtk2:BuildRequires:  gtk+-devel}
 %{!?_without_gtk2:BuildRequires: gtk2-devel}
 Requires:	SDL >= 1.2.4
 Requires:	SDL_mixer >= 1.2.4
@@ -62,37 +64,37 @@ HexenWorld server or run HexenWorld Client in software or OpenGL
 mode.
 
 %prep
-%setup -q -n hexen2source-%{version} -a1 -a2
+%setup -q -n hexen2source-%{version} -a1 -a2 -a3
 
 %build
 # Build the main game binaries
-make -C hexen2 h2
-make -C hexen2 clean
-make -C hexen2 glh2
-make -C hexen2 clean
+%{__make} -C hexen2 h2
+%{__make} -C hexen2 clean
+%{__make} -C hexen2 glh2
+%{__make} -C hexen2 clean
 # HexenWorld binaries
-make -C hexenworld/Server
-make -C hexenworld/Master
-make -C hexenworld/Client hw
-make -C hexenworld/Client clean
-make -C hexenworld/Client glhw
+%{__make} -C hexenworld/Server
+%{__make} -C hexenworld/Master
+%{__make} -C hexenworld/Client hw
+%{__make} -C hexenworld/Client clean
+%{__make} -C hexenworld/Client glhw
 # Launcher binaries
 %if %{!?_without_gtk2:1}0
 # Build for GTK2
-make -C launcher
+%{__make} -C launcher
 %else
 # Build for GTK1.2
-make -C launcher GTK1=yes
+%{__make} -C launcher GTK1=yes
 %endif
 # Build the hcode compilers
-make -C utils/hcc_old
-make -C utils/hcc
+%{__make} -C utils/hcc_old
+%{__make} -C utils/hcc
 # Build the game-code
-utils/hcc_old/hcc -src gamecode/hc/h2
-utils/hcc_old/hcc -src gamecode/hc/h2 -name progs2.src
-utils/bin/hcc -src gamecode/hc/portals -oi -on
-utils/bin/hcc -src gamecode/hc/hw -oi -on
-#utils/bin/hcc -src gamecode/hc/siege -oi -on
+utils/hcc_old/hcc -src gamecode-%{gamecode_ver}/hc/h2
+utils/hcc_old/hcc -src gamecode-%{gamecode_ver}/hc/h2 -name progs2.src
+utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/portals -oi -on
+utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
+#utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/siege -oi -on
 
 # Build xdelta (binary patcher for pak files)
 cd xdelta-1.1.3a/src
@@ -100,7 +102,7 @@ cd xdelta-1.1.3a/src
 %{__patch} -p1 -R < ../ref/025-glib2.diff
 %endif
 ./configure --disable-shared
-make
+%{__make}
 cd ../..
 # Done building
 
@@ -120,7 +122,7 @@ cd ../..
 %endif
 # Make a symlink of the game-launcher
 %{__mkdir_p} %{buildroot}/%{_bindir}
-ln -s %{_prefix}/games/hexen2/h2launcher %{buildroot}/%{_bindir}/hexen2
+%{__ln_s} %{_prefix}/games/hexen2/h2launcher %{buildroot}/%{_bindir}/hexen2
 
 # Install the docs
 %{__install} -D -m644 docs/README %{buildroot}/%{_prefix}/games/%{name}/docs/README
@@ -142,31 +144,31 @@ ln -s %{_prefix}/games/hexen2/h2launcher %{buildroot}/%{_bindir}/hexen2
 
 # Install the gamedata
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/
-%{__install} -D -m644 gamecode/hc/h2/progs.dat %{buildroot}/%{_prefix}/games/%{name}/data1/progs.dat
-%{__install} -D -m644 gamecode/hc/h2/progs2.dat %{buildroot}/%{_prefix}/games/%{name}/data1/progs2.dat
-%{__install} -D -m644 gamecode/txt/h2/hexen.rc %{buildroot}/%{_prefix}/games/%{name}/data1/hexen.rc
-%{__install} -D -m644 gamecode/txt/h2/strings.txt %{buildroot}/%{_prefix}/games/%{name}/data1/strings.txt
-%{__install} -D -m644 gamecode/txt/h2/default.cfg %{buildroot}/%{_prefix}/games/%{name}/data1/default.cfg
+%{__install} -D -m644 gamecode-%{gamecode_ver}/hc/h2/progs.dat %{buildroot}/%{_prefix}/games/%{name}/data1/progs.dat
+%{__install} -D -m644 gamecode-%{gamecode_ver}/hc/h2/progs2.dat %{buildroot}/%{_prefix}/games/%{name}/data1/progs2.dat
+%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/h2/hexen.rc %{buildroot}/%{_prefix}/games/%{name}/data1/hexen.rc
+%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/h2/strings.txt %{buildroot}/%{_prefix}/games/%{name}/data1/strings.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/h2/default.cfg %{buildroot}/%{_prefix}/games/%{name}/data1/default.cfg
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/portals/
-%{__install} -D -m644 gamecode/hc/portals/progs.dat %{buildroot}/%{_prefix}/games/%{name}/portals/progs.dat
-%{__install} -D -m644 gamecode/txt/portals/hexen.rc %{buildroot}/%{_prefix}/games/%{name}/portals/hexen.rc
-%{__install} -D -m644 gamecode/txt/portals/strings.txt %{buildroot}/%{_prefix}/games/%{name}/portals/strings.txt
-%{__install} -D -m644 gamecode/txt/portals/infolist.txt %{buildroot}/%{_prefix}/games/%{name}/portals/infolist.txt
-%{__install} -D -m644 gamecode/txt/portals/maplist.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maplist.txt
-%{__install} -D -m644 gamecode/txt/portals/puzzles.txt %{buildroot}/%{_prefix}/games/%{name}/portals/puzzles.txt
-%{__install} -D -m644 gamecode/txt/portals/default.cfg %{buildroot}/%{_prefix}/games/%{name}/portals/default.cfg
+%{__install} -D -m644 gamecode-%{gamecode_ver}/hc/portals/progs.dat %{buildroot}/%{_prefix}/games/%{name}/portals/progs.dat
+%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/portals/hexen.rc %{buildroot}/%{_prefix}/games/%{name}/portals/hexen.rc
+%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/portals/strings.txt %{buildroot}/%{_prefix}/games/%{name}/portals/strings.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/portals/infolist.txt %{buildroot}/%{_prefix}/games/%{name}/portals/infolist.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/portals/maplist.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maplist.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/portals/puzzles.txt %{buildroot}/%{_prefix}/games/%{name}/portals/puzzles.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/portals/default.cfg %{buildroot}/%{_prefix}/games/%{name}/portals/default.cfg
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/hw/
-%{__install} -D -m644 gamecode/hc/hw/hwprogs.dat %{buildroot}/%{_prefix}/games/%{name}/hw/hwprogs.dat
-%{__install} -D -m644 gamecode/txt/hw/strings.txt %{buildroot}/%{_prefix}/games/%{name}/hw/strings.txt
-%{__install} -D -m644 gamecode/txt/hw/default.cfg %{buildroot}/%{_prefix}/games/%{name}/hw/default.cfg
+%{__install} -D -m644 gamecode-%{gamecode_ver}/hc/hw/hwprogs.dat %{buildroot}/%{_prefix}/games/%{name}/hw/hwprogs.dat
+%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/hw/strings.txt %{buildroot}/%{_prefix}/games/%{name}/hw/strings.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/hw/default.cfg %{buildroot}/%{_prefix}/games/%{name}/hw/default.cfg
 %{__install} -D -m644 hw/pak4.pak %{buildroot}/%{_prefix}/games/%{name}/hw/pak4.pak
 
 # Install the xdelta updates
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdata/
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1
-%{__install} -D -m755 gamecode/pak_v111/update_xdelta.sh %{buildroot}/%{_prefix}/games/%{name}/update_xdelta.sh
-%{__install} -D -m644 gamecode/pak_v111/patchdata/data1/data1pak0.xd %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/data1pak0.xd
-%{__install} -D -m644 gamecode/pak_v111/patchdata/data1/data1pak1.xd %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/data1pak1.xd
+%{__install} -D -m755 gamecode-%{gamecode_ver}/pak_v111/update_xdelta.sh %{buildroot}/%{_prefix}/games/%{name}/update_xdelta.sh
+%{__install} -D -m644 gamecode-%{gamecode_ver}/pak_v111/patchdata/data1/data1pak0.xd %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/data1pak0.xd
+%{__install} -D -m644 gamecode-%{gamecode_ver}/pak_v111/patchdata/data1/data1pak1.xd %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/data1pak1.xd
 
 # Install the update-patcher binaries
 %{__install} -D -m755 xdelta-1.1.3a/src/xdelta %{buildroot}/%{_prefix}/games/%{name}/xdelta113
@@ -200,7 +202,7 @@ desktop-file-install \
 %endif
 
 %clean
-rm -rf %{buildroot}
+%{__rm} -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
@@ -259,7 +261,10 @@ rm -rf %{buildroot}
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Mon Apr 16 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-6
+* Tue Apr 18 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-7
+- More packaging tidy-ups for 1.4.0-final
+
+* Sun Apr 16 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-6
 - Back to xdelta: removed loki_patch. All of its fancy bloat can
   be done in a shell script, which is more customizable.
 
