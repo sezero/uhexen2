@@ -3051,30 +3051,33 @@ void PF_updateInfoPlaque (void)
 {
 	unsigned int check;
 	unsigned int index, mode;
-	long *use;
-	long tmp_mask;
 	int  ofs = 0;
+	union
+	{
+		UINT	*tmp;
+		long	*use;
+	} u;
 
 	index = G_FLOAT(OFS_PARM0);
 	mode = G_FLOAT(OFS_PARM1);
 
 	if (index > 31) 
 	{
-		tmp_mask = info_mask2;
+		u.tmp = &info_mask2;
 		ofs = 32;
 	}
 	else
 	{
-		tmp_mask = info_mask;
+		u.tmp = &info_mask;
 	}
-	use = (long *)&tmp_mask;
 		
 	check = (long) (1 << (index - ofs));
 		
-	if (((mode & 1) && ((*use) & check)) || ((mode & 2) && !((*use) & check)));
+	if (((mode & 1) && ((*u.use) & check)) || ((mode & 2) && !((*u.use) & check)))
+		;
 	else
 	{
-		(*use) ^= check;
+		(*u.use) ^= check;
 	}
 }
 
