@@ -74,7 +74,7 @@ b. Manual install/update of datafiles:
    your cdrom into the "data1" directory in your own installation.
    Run the command " chmod 644 data1/pak* "  to fix their permis-
    sions.  The pak files should be lower-cased, if not already.
-   To patch the data files, type " sh update_h2 " (this update
+   To patch the data files, type ./update_xdelta.sh (this update
    script and its requirements are included in the binary package).
    Confirm the result by checking with the following md5sums:
 
@@ -413,6 +413,17 @@ mode.
 
 3.1 Mods
 --------
+
+Running a Hexen II mod is the same as running a Quake mod: You need
+to specify its directory name after a -game argument on the command
+line. For example, in order to run Fortress of Four Doors:
+
+    ./glhexen2 -game fo4d
+
+If you want to run your mod with mission pack support enabled, use
+a command line with -portals argument included. For example:
+
+    ./glhexen2 -portals -game fo4d
 
 One of the few large mods for Hexen II is The Fortress of Four
 Doors. It has a confusing level near the middle, but is otherwise
