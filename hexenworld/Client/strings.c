@@ -12,10 +12,10 @@ char		*pr_global_strings = NULL;
 char		*puzzle_strings;
 
 
-void PR_LoadStrings(void)
+void PR_LoadStrings (void)
 {
 	int		i, count, start;
-	char	NewLineChar;
+	signed char	NewLineChar;
 
 	pr_global_strings = (char *)COM_LoadHunkFile ("strings.txt");
 	if (!pr_global_strings)
@@ -23,7 +23,7 @@ void PR_LoadStrings(void)
 
 	NewLineChar = -1;
 
-	for (i=count=0; pr_global_strings[i] != 0; i++)
+	for (i = count = 0; pr_global_strings[i] != 0; i++)
 	{
 		if (pr_global_strings[i] == 13 || pr_global_strings[i] == 10)
 		{
@@ -62,10 +62,8 @@ void PR_LoadStrings(void)
 		else
 		{
 			//for indexed prints, translate '^' to a newline
-			if (pr_global_strings[i]=='^')
-			{
+			if (pr_global_strings[i] == '^')
 				sprintf(pr_global_strings+i,"\n%s",pr_global_strings+i+1);
-			}
 		}
 	}
 

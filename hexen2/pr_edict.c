@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.20 2006-04-05 06:10:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.21 2006-04-24 08:38:55 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1318,7 +1318,7 @@ void PR_LoadProgs (void)
 void PR_LoadInfoStrings (void)
 {
 	int		i, count, start;
-	char	NewLineChar;
+	signed char	NewLineChar;
 
 	pr_global_info_strings = (char *)COM_LoadHunkFile ("infolist.txt");
 	if (!pr_global_info_strings)
@@ -1356,7 +1356,9 @@ void PR_LoadInfoStrings (void)
 				count++;
 			}
 			else
+			{
 				start++;
+			}
 
 			pr_global_info_strings[i] = 0;
 		}
@@ -1369,7 +1371,7 @@ void PR_LoadInfoStrings (void)
 void PR_LoadStrings (void)
 {
 	int		i, count, start;
-	char	NewLineChar;
+	signed char	NewLineChar;
 
 	pr_global_strings = (char *)COM_LoadHunkFile ("strings.txt");
 	if (!pr_global_strings)
@@ -1407,7 +1409,9 @@ void PR_LoadStrings (void)
 				count++;
 			}
 			else
+			{
 				start++;
+			}
 
 			pr_global_strings[i] = 0;
 		}
@@ -1475,6 +1479,12 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2006/04/05 06:10:44  sezero
+ * added support for both hexen2-v1.11 and h2mp-v1.12 progs into a single hexen2
+ * binary. this essentially completes the h2/h2mp binary merge started with the
+ * previous patch. many conditionals had to be added especially on the server side,but couldn't notice any serious performance loss on a PIII-733 computer. Supportfor multiple progs.dat is now advised to be left enabled in order to support
+ * mods which uses that feature.
+ *
  * Revision 1.19  2006/04/05 06:09:23  sezero
  * killed (almost) all H2MP ifdefs: this is the first step in making a single
  * binary which handles both h2 and h2mp properly. the only H2MP ifdefs left
