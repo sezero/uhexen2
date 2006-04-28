@@ -1,0 +1,25 @@
+Allows using the old and less slippery Anvil of Thyrion friction for
+original hexen2 games
+
+diff -urNp hexen2source-1.4.0/hexen2/sv_user.c hexen2source-1.4.0x/hexen2/sv_user.c
+--- hexen2source-1.4.0/hexen2/sv_user.c	2006-03-24 17:05:39.000000000 +0200
++++ hexen2source-1.4.0x/hexen2/sv_user.c	2006-04-28 09:36:42.000000000 +0300
+@@ -149,12 +149,15 @@ static void SV_UserFriction (void)
+ // more slippery.
+ 	//fprintf (stdout, "F0 :  %f\n", sv_player->v.friction);
+ 	if (progs->crc == PROGS_V111_CRC)
+-		sv_player->v.friction = 1.0f;
+-
++		//sv_player->v.friction = 1.0f;
++		friction = 6;
++    else
++    {
+ 	if (trace.fraction == 1.0)
+ 		friction = sv_friction.value*sv_edgefriction.value*sv_player->v.friction;
+ 	else
+ 		friction = sv_friction.value*sv_player->v.friction;
++    }
+ 
+ 	//fprintf (stdout, "F1 :  %f\n", friction);
+ 
+
