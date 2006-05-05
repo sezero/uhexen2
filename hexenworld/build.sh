@@ -8,11 +8,25 @@ EXE_EXT=".exe";
 fi
 rm -f __tmp.tmp
 
-if test "`uname`" = "FreeBSD" ; then
+HOST_OS=`uname`
+
+case "$HOST_OS" in
+FreeBSD)
 	MAKE=gmake
-else
+	;;
+OpenBSD)
+	MAKE=gmake
+	;;
+NetBSD)
+	MAKE=gmake
+	;;
+Linux)
 	MAKE=make
-fi
+	;;
+*)
+	MAKE=make
+	;;
+esac
 
 if [ "$1" = "strip" ]
 then
@@ -25,9 +39,9 @@ fi
 
 if [ "$1" = "clean" ]
 then
-make -s -C Client clean
-make -s -C Master clean
-make -s -C Server clean
+$MAKE -s -C Client clean
+$MAKE -s -C Master clean
+$MAKE -s -C Server clean
 exit 0
 fi
 

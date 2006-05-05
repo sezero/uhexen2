@@ -11,11 +11,25 @@ EXE_EXT=".exe";
 fi
 rm -f __tmp.tmp
 
-if test "`uname`" = "FreeBSD" ; then
+HOST_OS=`uname`
+
+case "$HOST_OS" in
+FreeBSD)
 	MAKE=gmake
-else
+	;;
+OpenBSD)
+	MAKE=gmake
+	;;
+NetBSD)
+	MAKE=gmake
+	;;
+Linux)
 	MAKE=make
-fi
+	;;
+*)
+	MAKE=make
+	;;
+esac
 
 if [ "$1" = "strip" ]
 then
@@ -28,13 +42,13 @@ fi
 
 if [ "$1" = "clean" ]
 then
-make -s -C hcc clean
-make -s -C maputils clean
-make -s -C genmodel clean
-make -s -C qfiles clean
-make -s -C dcc clean
-make -s -C jsh2color clean
-make -s -C hcc_old clean
+$MAKE -s -C hcc clean
+$MAKE -s -C maputils clean
+$MAKE -s -C genmodel clean
+$MAKE -s -C qfiles clean
+$MAKE -s -C dcc clean
+$MAKE -s -C jsh2color clean
+$MAKE -s -C hcc_old clean
 exit 0
 fi
 

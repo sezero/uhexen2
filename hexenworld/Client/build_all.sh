@@ -1,10 +1,24 @@
 #!/bin/sh
 
-if test "`uname`" = "FreeBSD" ; then
+HOST_OS=`uname`
+
+case "$HOST_OS" in
+FreeBSD)
 	MAKE=gmake
-else
+	;;
+OpenBSD)
+	MAKE=gmake
+	;;
+NetBSD)
+	MAKE=gmake
+	;;
+Linux)
 	MAKE=make
-fi
+	;;
+*)
+	MAKE=make
+	;;
+esac
 
 $MAKE clean
 $MAKE hw
