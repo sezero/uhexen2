@@ -2,10 +2,32 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.62 2006-04-10 12:02:09 sezero Exp $
+	$Id: gl_draw.c,v 1.63 2006-05-12 16:48:05 sezero Exp $
 */
 
 #include "quakedef.h"
+
+#if BYTE_ORDER == BIG_ENDIAN
+#define	MASK_rgb	0xffffff00
+#define	MASK_a		0x000000ff
+#define	MASK_b		0x0000ff00
+#define	MASK_g		0x00ff0000
+#define	MASK_r		0xff000000
+#define	SHIFT_a		0
+#define	SHIFT_b		8
+#define	SHIFT_g		16
+#define	SHIFT_r		24
+#else
+#define	MASK_rgb	0x00ffffff
+#define	MASK_a		0xff000000
+#define	MASK_b		0x00ff0000
+#define	MASK_g		0x0000ff00
+#define	MASK_r		0x000000ff
+#define	SHIFT_b		0
+#define	SHIFT_g		8
+#define	SHIFT_r		16
+#define	SHIFT_a		24
+#endif
 
 qboolean draw_reinit = false;
 
@@ -1932,15 +1954,15 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 			{
 				p = data[i];
 				if (p == 0)
-					trans[i] &= 0x00ffffff;
+					trans[i] &= MASK_rgb;
 				else if( p & 1 )
 				{
-					trans[i] &= 0x00ffffff;
-					trans[i] |= ( ( int )( 255 * r_wateralpha.value ) ) << 24;
+					trans[i] &= MASK_rgb;
+					trans[i] |= ( ( int )( 255 * r_wateralpha.value ) & 0xff) << SHIFT_a;
 				}
 				else
 				{
-					trans[i] |= 0xff000000;
+					trans[i] |= MASK_a;
 				}
 			}
 			break;
@@ -1950,7 +1972,7 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 			{
 				p = data[i];
 				if (p == 0)
-					trans[i] &= 0x00ffffff;
+					trans[i] &= MASK_rgb;
 			}
 			break;
 		case 3:
@@ -1958,9 +1980,8 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 			for (i=0 ; i<s ; i++)
 			{
 				p = data[i];
-				trans[i] = d_8to24table[ColorIndex[p>>4]] & 0x00ffffff;
-				trans[i] |= ( int )ColorPercent[p&15] << 24;
-				//trans[i] = 0x7fff0000;
+				trans[i] = d_8to24table[ColorIndex[p>>4]] & MASK_rgb;
+				trans[i] |= (( int )ColorPercent[p&15] & 0xff) << SHIFT_a;
 			}
 			break;
 		}

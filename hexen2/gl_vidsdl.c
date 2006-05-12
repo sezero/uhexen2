@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.114 2006-04-10 12:02:08 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.115 2006-05-12 16:48:04 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -124,7 +124,6 @@ byte		globalcolormap[VID_GRADES*256];
 float		RTint[256], GTint[256], BTint[256];
 unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
-//unsigned	d_8to24table3dfx[256];
 unsigned	d_8to24TranslucentTable[256];
 #if USE_HEXEN2_PALTEX_CODE
 unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1]; // +1: COM_LoadStackFile puts a 0 at the end of the data
@@ -435,7 +434,7 @@ static void VID_Init8bitPalette (void)
 		if (!(int)vid_config_gl8bit.value)
 			return;
 
-		oldPalette = (char *) d_8to24table; //d_8to24table3dfx;
+		oldPalette = (char *) d_8to24table;
 		newPalette = thePalette;
 		for (i=0;i<256;i++)
 		{
@@ -921,7 +920,6 @@ void VID_SetPalette (unsigned char *palette)
 	int		v;
 	unsigned short	i, p, c;
 	unsigned	*table;
-//	unsigned	*table3dfx;
 #if !USE_HEXEN2_PALTEX_CODE
 	int		r1,g1,b1;
 	int		j,k,l,m;
@@ -935,7 +933,6 @@ void VID_SetPalette (unsigned char *palette)
 //
 	pal = palette;
 	table = d_8to24table;
-//	table3dfx = d_8to24table3dfx;
 	for (i=0 ; i<256 ; i++)
 	{
 		r = pal[0];
@@ -943,13 +940,19 @@ void VID_SetPalette (unsigned char *palette)
 		b = pal[2];
 		pal += 3;
 
+#if BYTE_ORDER == BIG_ENDIAN
+		v = (255<<0) + (r<<24) + (g<<16) + (b<<8);
+#else
 		v = (255<<24) + (r<<0) + (g<<8) + (b<<16);
+#endif
 		*table++ = v;
-//		v = (255<<24) + (r<<16) + (g<<8) + (b<<0);
-//		*table3dfx++ = v;
 	}
 
-	d_8to24table[255] &= 0xffffff;	// 255 is transparent
+#if BYTE_ORDER == BIG_ENDIAN
+	d_8to24table[255] &= 0xffffff00;	// 255 is transparent
+#else
+	d_8to24table[255] &= 0x00ffffff;	// 255 is transparent
+#endif
 
 	pal = palette;
 	table = d_8to24TranslucentTable;
@@ -964,8 +967,11 @@ void VID_SetPalette (unsigned char *palette)
 
 		for(p=0;p<16;p++)
 		{
+#if BYTE_ORDER == BIG_ENDIAN
+			v = (ColorPercent[15-p]) + (r<<24) + (g<<16) + (b<<8);
+#else
 			v = (ColorPercent[15-p]<<24) + (r<<0) + (g<<8) + (b<<16);
-			//v = (255<<24) + (r<<0) + (g<<8) + (b<<16);
+#endif
 			*table++ = v;
 
 			RTint[i*16+p] = ((float)r) / ((float)ColorPercent[15-p]);
@@ -981,6 +987,8 @@ void VID_SetPalette (unsigned char *palette)
 #if USE_HEXEN2_PALTEX_CODE
 	// This is original hexen2 code for palettized textures
 	// Hexenworld replaced it with quake's newer code below
+
+	// FIXME: Endianness ???
 #   ifdef DO_BUILD
 	VID_CreateInversePalette (palette);
 #   else
@@ -998,6 +1006,8 @@ void VID_SetPalette (unsigned char *palette)
 	{	// JACK: 3D distance calcs:
 		// k is last closest, l is the distance
 		Con_Printf ("Creating 15to8.pal ..");
+
+		// FIXME: Endianness ???
 		for (i=0,m=0; i < (1<<15); i++,m++)
 		{
 			/* Maps
