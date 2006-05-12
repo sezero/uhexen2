@@ -23,7 +23,7 @@ There are two ways of installing glide2x under linux:
 - Or, better: Check-out the latest cvs version of glide from
   sourceforge:
 
-# cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/glide co glide2x swlibs
+# cvs -d:pserver:anonymous@glide.cvs.sourceforge.net:/cvsroot/glide co glide2x swlibs
 
 Alternatively you can download the package "glide2x.tgz"
 from our page. To compile for voodoo2:
@@ -54,7 +54,7 @@ installation.
 Check-out the latest cvs-development version of glide3 from
 sourceforge:
 
-# cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/glide co -r glide-devel-branch glide3x swlibs
+# cvs -d:pserver:anonymous@glide.cvs.sourceforge.net:/cvsroot/glide co -r glide-devel-branch glide3x swlibs
 
 Alternatively you can download the package "glide3x.tgz" from
 our page.
@@ -81,7 +81,7 @@ You need this kernel module in order to use glide and access
 /dev/3dfx as a normal user. Check-out the latest sources from
 sourceforge cvs:
 
-# cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/glide co -r glide-devel-branch Device3Dfx
+# cvs -d:pserver:anonymous@glide.cvs.sourceforge.net:/cvsroot/glide co -r glide-devel-branch Device3Dfx
 
 (The glide2x.tgz and glide3x.tgz packages on our page already
 include this module's sources.)

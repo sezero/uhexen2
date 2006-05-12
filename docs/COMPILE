@@ -114,11 +114,11 @@ do a make clean between each different build.
 
 Links:
 
-SOL homepage		:	http://www.libsdl.org/
-SOL_mixer homepage	:	http://www.libsdl.org/projects/SDL_mixer
+SDL homepage		:	http://www.libsdl.org/
+SDL_mixer homepage	:	http://www.libsdl.org/projects/SDL_mixer
 ALSA homepage		:	http://www.alsa-project.org/
 GCC homepage		:	http://gcc.gnu.org/
 NASM homepage		:	http://nasm.sourceforge.net/
 MinGW/MSYS homepage	:	http://mingw.sourceforge.net/
-MinGW cros compiling tips:	http://www.libsdl.org/extras/win32/cross/
+MinGW cross compiling tips:	http://www.libsdl.org/extras/win32/cross/
 

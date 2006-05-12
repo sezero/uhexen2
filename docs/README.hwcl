@@ -1,4 +1,9 @@
-HexenWorld Client modes:
+Hammer of Thyrion,
+HexenWorld Client
+
+
+Client modes:
+--------------
 
 This is not a complete listing, more may be found on the net.
 
@@ -39,7 +44,6 @@ Mission Pack support:
 HexenWorld looks for the Portal of Praevus mission pack and automatically
 activates it if it finds it. If, for some reason, you want to disable the
 mission pack support, run the client with -noportals commandline switch.
-(Note: This switch is valid for Hammer of Thyrion.)
 
 
 Key Bindings:
@@ -76,9 +80,9 @@ Taunts :
 
 Press your "talk" (chat) key, the default is T. You'll get the "say: "
 prompt on your screen. Now hit the toggleconsole key (the tilde, which
-is located just above the tab key on US keyboards) and ype a number from
+is located just above the tab key on US keyboards) and type a number from
 1 to 39. I won't list the wordings here, try them yourself. Note: Raven
-seems to have forgotton to put in the sound files for taunt numbers 8,
+seems to have forgotten to put in the sound files for taunt numbers 8,
 12, 21, 22, 23, 29 and 37, so you'll hear nothing with them.  Binding the
 taunts to keys is also possible but you must edit your config.cfg file.
 A simple bind such as:

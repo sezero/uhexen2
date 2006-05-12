@@ -1,5 +1,8 @@
-HexenWorld Server Modes
------------------------
+Hammer of Thyrion,
+HexenWorld Server
+
+Server Modes:
+--------------
 
 There are different modes that you can run your HexenWorld server in.
 These are only for unmodified hexenworld. Some community created mods,
@@ -13,7 +16,6 @@ Mission Pack support:
 HexenWorld looks for the Portal of Praevus mission pack and automatically
 activates it if it finds it. If, for some reason, you want to disable the
 mission pack support, run the server with -noportals commandline switch.
-(Note: This switch is valid for Hammer of Thyrion.)
 
 
 Tome Mode:
