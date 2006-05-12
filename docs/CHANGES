@@ -3,6 +3,25 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-05-12 (CVS):
+    * gl_draw.c, gl_vidsdl.c, gl_vidnt.c: hopefully fixed all endianness
+      issues with opengl. placed two FIXMEs around the palettized textures
+      code in VID_SetPalette which I am not sure about.
+    * doc update: fixed a few typos, etc.
+
+2006-05-05 (CVS):
+    * hexen2/net_udp.c: fixed compilation on OpenBSD
+    * hw_utils/hwrcon/hwterm.c: fixed compilation on NetBSD
+    * made some build scripts more BSD-friendly
+
+2006-04-28 (1.4.0-final):
+    * hexen2/pr_edict.c: char seems to be of different signedness on MorphOS,
+      so changed the type of NewLineChar to signed char. Thanks go to Michal
+      Wozniak for catching this.
+    * added an extra patch that restores the old and less slippery Anvil of
+      Thyrion friction for original hexen2 games
+    * A few minor documentation updates
+
 2006-04-18 (1.4.0-final):
     * back to xdelta for pak binary patching, removed loki_patch: all of its
       fancy bloat can be done in a shell script, which is more customizable.
