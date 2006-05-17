@@ -1,6 +1,8 @@
 
 #include "quakedef.h"
 
+int		stufftext_frame;
+
 static void CL_FinishTimeDemo (void);
 
 /*
@@ -88,6 +90,14 @@ int CL_GetMessage (void)
 		// decide if it is time to grab the next message
 		if (cls.signon == SIGNONS)	// always grab until fully connected
 		{
+
+			// Always wait for full frame update on stuff messages.
+			// If the server stuffs a reconnect, we must wait for
+			// the client to re-initialize before accepting further
+			// messages. Otherwise demo playback may freeze. Pa3PyX
+			if (stufftext_frame == host_framecount)
+				return 0;
+
 			if (cls.timedemo)
 			{
 				if (host_framecount == cls.td_lastframe)
@@ -365,6 +375,10 @@ void CL_PlayDemo_f (void)
 	cls.demoplayback = true;
 	cls.state = ca_connected;
 	fscanf (cls.demofile, "%i\n", &cls.forcetrack);
+
+// Get a new message on playback start.
+// Moved from CL_TimeDemo_f to here, Pa3PyX.
+	cls.td_lastframe = -1;
 }
 
 /*
@@ -423,6 +437,7 @@ void CL_TimeDemo_f (void)
 
 	cls.timedemo = true;
 	cls.td_startframe = host_framecount;
-	cls.td_lastframe = -1;	// get a new message this frame
+//	cls.td_lastframe = -1;	// get a new message this frame
+				// Moved to CL_PlayDemo_f(), Pa3PyX.
 }
 

@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.25 2006-04-05 06:09:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.26 2006-05-17 07:04:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -14,6 +14,7 @@
 extern	cvar_t	sv_flypitch;
 extern	cvar_t	sv_walkpitch;
 extern 	cvar_t	bgmtype;
+extern	int	stufftext_frame;
 
 model_t *player_models[MAX_PLAYER_CLASS];
 
@@ -1264,6 +1265,8 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_stufftext:
+			stufftext_frame = host_framecount;	// allow full frame update
+								// on stuff messages. Pa3PyX
 			Cbuf_AddText (MSG_ReadString ());
 			break;
 
@@ -1795,6 +1798,17 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2006/04/05 06:09:23  sezero
+ * killed (almost) all H2MP ifdefs: this is the first step in making a single
+ * binary which handles both h2 and h2mp properly. the only H2MP ifdefs left
+ * are actually the ones for determining the icon and window manager text, so
+ * nothing serious. the binary normally will only run the original h2 game.
+ * if given a -portals or -missionpack or -h2mp argument, it will look for the
+ * mission pack and run it (this is the same logic that quake used.) The only
+ * serious side effect is that h2 and h2mp progs being different: This will be
+ * solved by the next patch by adding support for the two progs versions into
+ * a single binary.
+ *
  * Revision 1.24  2006/03/17 14:12:48  sezero
  * put back mission-pack only objectives stuff back into pure h2 builds.
  * it was a total screw-up...
