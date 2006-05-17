@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-05-17 (CVS):
+    * fixed demos freezing upon changing maps in hexen2. fix found
+      in Pa3PyX' sources. hexenworld doesn't suffer from this issue.
+
 2006-05-12 (CVS):
     * gl_draw.c, gl_vidsdl.c, gl_vidnt.c: hopefully fixed all endianness
       issues with opengl. placed two FIXMEs around the palettized textures
