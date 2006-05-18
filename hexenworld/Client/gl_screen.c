@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.27 2006-04-05 06:09:23 sezero Exp $
+	$Id: gl_screen.c,v 1.28 2006-05-18 17:46:10 sezero Exp $
 */
 
 /*=============================================================================
@@ -648,10 +648,11 @@ static void SCR_ScreenShot_f (void)
 		buffer[i] = buffer[i+2];
 		buffer[i+2] = temp;
 	}
-	COM_WriteFile (pcxname, buffer, glwidth*glheight*3 + 18);
+	temp = COM_WriteFile (pcxname, buffer, glwidth*glheight*3 + 18);
 
 	Hunk_FreeToLowMark(mark);
-	Con_Printf ("Wrote %s\n", pcxname);
+	if (!temp)
+		Con_Printf ("Wrote %s\n", pcxname);
 }
 
 //=============================================================================

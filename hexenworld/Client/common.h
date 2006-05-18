@@ -215,7 +215,7 @@ extern	char	com_gamedir[MAX_OSPATH];
 extern	char	com_savedir[MAX_OSPATH];	// temporary path for saving gip files
 extern	char	com_userdir[MAX_OSPATH];
 
-void COM_WriteFile (char *filename, void *data, int len);
+int COM_WriteFile (char *filename, void *data, int len);
 int COM_FOpenFile (char *filename, FILE **file, qboolean override_pack);
 int COM_CopyFile (char *netpath, char *cachepath);
 void COM_CloseFile (FILE *h);

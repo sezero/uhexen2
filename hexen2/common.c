@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.58 2006-04-11 05:07:56 sezero Exp $
+	$Id: common.c,v 1.59 2006-05-18 17:46:10 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1143,12 +1143,14 @@ static void COM_Path_f (void)
 COM_WriteFile
 
 The filename will be prefixed by the current game directory
+Returns 0 on success, 1 on error.
 ============
 */
-void COM_WriteFile (char *filename, void *data, int len)
+int COM_WriteFile (char *filename, void *data, int len)
 {
 	FILE	*f;
 	char	name[MAX_OSPATH];
+	int	size;
 
 	sprintf (name, "%s/%s", com_userdir, filename);
 
@@ -1157,8 +1159,14 @@ void COM_WriteFile (char *filename, void *data, int len)
 		Sys_Error ("Error opening %s", filename);
 
 	Sys_Printf ("COM_WriteFile: %s\n", name);
-	fwrite (data, 1, len, f);
+	size = fwrite (data, 1, len, f);
 	fclose (f);
+	if (size != len)
+	{
+		Con_Printf ("Error in writing %s\n", filename);
+		return 1;
+	}
+	return 0;
 }
 
 
@@ -2331,6 +2339,10 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.58  2006/04/11 05:07:56  sezero
+ * allowed hexenworld to skip the mission pack support if -noportals command-
+ * line switch is used.
+ *
  * Revision 1.57  2006/04/05 06:20:20  sezero
  * added info about an old (v1.07) hexen2 demo version
  *

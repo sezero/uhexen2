@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.19 2006-02-18 13:44:14 sezero Exp $
+	$Id: midi_sdl.c,v 1.20 2006-05-18 17:46:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -233,7 +233,8 @@ void MIDI_Play(char *Name)
 			Con_Printf("musicfile midi/%s.mid not found\n", Name);
 			return;
 		}
-		COM_WriteFile (va(".midi/%s.mid", Name), (void *)Data, com_filesize);
+		if (COM_WriteFile (va(".midi/%s.mid", Name), (void *)Data, com_filesize))
+			return;
 	}
 	music = Mix_LoadMUS(va("%s/.midi/%s.mid", com_userdir, Name));
 	if ( music == NULL )
@@ -313,6 +314,10 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2006/02/18 13:44:14  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 6: midi files).
+ *
  * Revision 1.18  2006/01/12 12:43:49  sezero
  * Created an sdl_inc.h with all sdl version requirements and replaced all
  * SDL.h and SDL_mixer.h includes with it. Made the source to compile against
