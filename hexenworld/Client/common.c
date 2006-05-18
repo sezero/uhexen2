@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.56 2006-05-18 17:49:59 sezero Exp $
+	$Id: common.c,v 1.57 2006-05-18 23:33:14 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1932,6 +1932,25 @@ to host_parms.userdir/data1
 ============
 */
 #ifdef PLATFORM_UNIX
+static void do_movedata (char *path1, char *path2, FILE *logfile)
+{
+	Sys_Printf ("%s -> %s : ", path1, path2);
+	if (logfile)
+		fprintf (logfile, "%s -> %s : ", path1, path2);
+	if (rename (path1, path2) == 0)
+	{
+		Sys_Printf("OK\n");
+		if (logfile)
+			fprintf(logfile, "OK\n");
+	}
+	else
+	{
+		Sys_Printf("Failed (%s)\n", strerror(errno));
+		if (logfile)
+			fprintf(logfile, "Failed (%s)\n", strerror(errno));
+	}
+}
+
 static void MoveUserData (void)
 {
 	int		i;
@@ -1979,11 +1998,7 @@ static void MoveUserData (void)
 		{
 			snprintf (tmp1, sizeof(tmp1), "%s/%s", host_parms.userdir, tmp);
 			snprintf (tmp2, sizeof(tmp2), "%s/%s", com_userdir, tmp);
-			Sys_Printf ("%s -> %s : ", tmp1, tmp2);
-			if (rename (tmp1, tmp2) == 0)
-				Sys_Printf("OK\n");
-			else
-				Sys_Printf("Failed (%s)\n", strerror(errno));
+			do_movedata (tmp1, tmp2, fh);
 			tmp = Sys_FindNextFile ();
 		}
 		Sys_FindClose ();
@@ -1998,11 +2013,7 @@ static void MoveUserData (void)
 			if ((test.st_mode & S_IFDIR) == S_IFDIR)
 			{
 				snprintf (tmp2, sizeof(tmp2), "%s/s%d", com_userdir, i);
-				Sys_Printf ("%s -> %s : ", tmp1, tmp2);
-				if (rename (tmp1, tmp2) == 0)
-					Sys_Printf("OK\n");
-				else
-					Sys_Printf("Failed (%s)\n", strerror(errno));
+				do_movedata (tmp1, tmp2, fh);
 			}
 		}
 	}
@@ -2016,20 +2027,13 @@ static void MoveUserData (void)
 			if ((test.st_mode & S_IFDIR) == S_IFDIR)
 			{
 				snprintf (tmp2, sizeof(tmp2), "%s/%s", com_userdir, movedirs[i]);
-				Sys_Printf ("%s -> %s : ", tmp1, tmp2);
-				if (rename (tmp1, tmp2) == 0)
-					Sys_Printf("OK\n");
-				else
-					Sys_Printf("Failed (%s)\n", strerror(errno));
+				do_movedata (tmp1, tmp2, fh);
 			}
 		}
 	}
 
 	if (fh)
-	{
-		fprintf (fh, "%ld", random());
 		fclose (fh);
-	}
 }
 #endif
 
