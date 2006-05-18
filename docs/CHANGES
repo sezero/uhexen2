@@ -3,6 +3,19 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-05-18 (CVS, 1.4.1-pre1):
+    * AoT and earlier versions of HoT didn't create <userdir>/data1
+      and kept all user the data in <userdir> instead. Starting with
+      HoT 1.4.1, we are creating and using <userdir>/data1 . Added a
+      procedure in order to update the user direcory accordingly.
+    * Made cdaudio and midi to stop upon CL_Disconnect
+    * Made COM_WriteFile() to return 0 on success, 1 on write errors
+    * Added MacOS and MacOSX to platform names. on macosx, set the userdir
+      to ~/Library/Application Support/Hexen2 instead of ~/.hexen2
+    * Set bMidiInited to 0 in MIDI_Cleanup()
+    * Renamed MIDI_UpdateVolume to MIDI_Update
+    * Incremented the version to 1.4.1-pre1
+
 2006-05-17 (CVS):
     * fixed demos freezing upon changing maps in hexen2. fix found
       in Pa3PyX' sources. hexenworld doesn't suffer from this issue.
