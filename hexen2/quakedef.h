@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.66 2006-05-18 17:49:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.67 2006-05-18 17:51:36 sezero Exp $
 */
 
 
@@ -15,10 +15,10 @@
 
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		4
-#define	HOT_VERSION_MIN		0
-#define	HOT_VERSION_REL_DATE	"2006-04-18"
-#define	HOT_VERSION_BETA	0
-#define	HOT_VERSION_BETA_STR	"Final"
+#define	HOT_VERSION_MIN		1
+#define	HOT_VERSION_REL_DATE	"2006-05-18"
+#define	HOT_VERSION_BETA	1
+#define	HOT_VERSION_BETA_STR	"pre1"
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
 #define	ENGINE_VERSION		1.15
@@ -426,6 +426,12 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.66  2006/05/18 17:49:58  sezero
+ * AoT and earlier versions of HoT didn't create <userdir>/data1
+ * and kept all user the data in <userdir> instead. Starting with
+ * HoT 1.4.1, we are creating and using <userdir>/data1 . Added a
+ * procedure in order to update the user direcory accordingly.
+ *
  * Revision 1.65  2006/05/18 17:44:13  sezero
  * added MacOS and MacOSX to platform names. on macosx, set the userdir
  * to ~/Library/Application Support/Hexen2 instead of ~/.hexen2
