@@ -2,7 +2,7 @@
 	bothdefs.h
 	defs common to both client and server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.27 2006-05-18 17:44:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.28 2006-05-18 17:49:58 sezero Exp $
 */
 
 #define __STRINGIFY(x) #x
@@ -110,6 +110,8 @@
 //define	STAT_VIEWHEIGHT		16
 
 #define	MAX_INVENTORY		15	// Max inventory array size
+
+#define	MAX_SAVEGAMES		12	// max number of savegames
 
 
 //

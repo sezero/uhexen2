@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.55 2006-05-18 17:46:10 sezero Exp $
+	$Id: common.c,v 1.56 2006-05-18 17:49:59 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -11,6 +11,10 @@
 #include "quakedef.h"
 #endif
 #include <unistd.h>
+#ifdef PLATFORM_UNIX
+#include <sys/stat.h>
+#include <errno.h>
+#endif
 #ifdef _WIN32
 #include <windows.h>
 #include <ctype.h>
@@ -1915,6 +1919,121 @@ add_pakfiles:
 }
 
 /*
+============
+MoveUserData
+moves all <userdir>/userdata to <userdir>/data1/userdata
+
+AoT and earlier versions of HoT didn't create <userdir>/data1
+and kept all user the data in <userdir> instead. Starting with
+HoT 1.4.1, we are creating and using <userdir>/data1 . This
+procedure is intended to update the user direcory accordingly.
+Call from COM_InitFilesystem ~just after~ setting com_userdir
+to host_parms.userdir/data1
+============
+*/
+#ifdef PLATFORM_UNIX
+static void MoveUserData (void)
+{
+	int		i;
+	FILE		*fh;
+	struct stat	test;
+	char	*tmp, tmp1[MAX_OSPATH], tmp2[MAX_OSPATH];
+	char	*movefiles[] = 
+	{
+		"*.cfg",	// config files
+		"*.rc",		// config files
+		"*.dem",	// pre-recorded demos
+		"pak?.pak"	// pak files
+	};
+	char	*movedirs[] = 
+	{
+		"quick",	// quick saves
+		"shots",	// screenshots
+		".midi",	// midi cache
+		"glhexen",	// model mesh cache
+		/* these are highly unlikely, but just in case.. */
+		"maps",
+		"midi",
+		"sound",
+		"models",
+		"gfx"
+	};
+#	define NUM_MOVEFILES	(sizeof(movefiles)/sizeof(movefiles[0]))
+#	define NUM_MOVEDIRS	(sizeof(movedirs)/sizeof(movedirs[0]))
+
+	sprintf (tmp1, "%s/userdata.moved", com_userdir);
+	if (stat(tmp1, &test) == 0)
+	{
+		// the data should have already been moved in earlier runs.
+		if ((test.st_mode & S_IFREG) == S_IFREG)
+			return;
+	}
+	fh = fopen(tmp1, "wb");
+
+	Sys_Printf ("Moving user data from root of userdir to userdir/data1\n");
+
+	for (i = 0; i < NUM_MOVEFILES; i++)
+	{
+		tmp = Sys_FindFirstFile (host_parms.userdir, movefiles[i]);
+		while (tmp)
+		{
+			snprintf (tmp1, sizeof(tmp1), "%s/%s", host_parms.userdir, tmp);
+			snprintf (tmp2, sizeof(tmp2), "%s/%s", com_userdir, tmp);
+			Sys_Printf ("%s -> %s : ", tmp1, tmp2);
+			if (rename (tmp1, tmp2) == 0)
+				Sys_Printf("OK\n");
+			else
+				Sys_Printf("Failed (%s)\n", strerror(errno));
+			tmp = Sys_FindNextFile ();
+		}
+		Sys_FindClose ();
+	}
+
+	// move the savegames
+	for (i = 0; i < MAX_SAVEGAMES; i++)
+	{
+		snprintf (tmp1, sizeof(tmp1), "%s/s%d", host_parms.userdir, i);
+		if (stat(tmp1, &test) == 0)
+		{
+			if ((test.st_mode & S_IFDIR) == S_IFDIR)
+			{
+				snprintf (tmp2, sizeof(tmp2), "%s/s%d", com_userdir, i);
+				Sys_Printf ("%s -> %s : ", tmp1, tmp2);
+				if (rename (tmp1, tmp2) == 0)
+					Sys_Printf("OK\n");
+				else
+					Sys_Printf("Failed (%s)\n", strerror(errno));
+			}
+		}
+	}
+
+	// other dirs
+	for (i = 0; i < NUM_MOVEDIRS; i++)
+	{
+		snprintf (tmp1, sizeof(tmp1), "%s/%s", host_parms.userdir, movedirs[i]);
+		if (stat(tmp1, &test) == 0)
+		{
+			if ((test.st_mode & S_IFDIR) == S_IFDIR)
+			{
+				snprintf (tmp2, sizeof(tmp2), "%s/%s", com_userdir, movedirs[i]);
+				Sys_Printf ("%s -> %s : ", tmp1, tmp2);
+				if (rename (tmp1, tmp2) == 0)
+					Sys_Printf("OK\n");
+				else
+					Sys_Printf("Failed (%s)\n", strerror(errno));
+			}
+		}
+	}
+
+	if (fh)
+	{
+		fprintf (fh, "%ld", random());
+		fclose (fh);
+	}
+}
+#endif
+
+/*
 ================
 COM_InitFilesystem
 ================
@@ -1940,9 +2059,11 @@ static void COM_InitFilesystem (void)
 //
 // start up with data1 by default
 //
-#ifdef _WIN32
-	// Let's keep the game's old win32 behavior
 	sprintf (com_userdir, "%s/data1", host_parms.userdir);
+#ifdef PLATFORM_UNIX
+// properly move the user data from older versions in the user's directory
+	Sys_mkdir (com_userdir);
+	MoveUserData ();
 #endif
 	COM_AddGameDirectory (va("%s/data1", com_basedir), true);
 

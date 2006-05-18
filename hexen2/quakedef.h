@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.65 2006-05-18 17:44:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.66 2006-05-18 17:49:58 sezero Exp $
 */
 
 
@@ -136,6 +136,7 @@
 
 #define	MAX_INVENTORY		15	// Max inventory array size
 
+#define	MAX_SAVEGAMES		12	// max number of savegames
 
 //
 // stock defines
@@ -425,6 +426,10 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.65  2006/05/18 17:44:13  sezero
+ * added MacOS and MacOSX to platform names. on macosx, set the userdir
+ * to ~/Library/Application Support/Hexen2 instead of ~/.hexen2
+ *
  * Revision 1.64  2006/04/18 08:49:18  sezero
  * 2006-04-18: HoT-1.4.0-final
  *
