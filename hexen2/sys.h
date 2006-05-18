@@ -68,6 +68,10 @@ void Sys_SendKeyEvents (void);
 #		define VERSION_PLATFORM "OpenBSD"
 #	elif defined (__MORPHOS__)
 #		define VERSION_PLATFORM "MorphOS"
+#	elif defined (__MACOSX__)
+#		define VERSION_PLATFORM "MacOSX"
+#	elif defined (__MACOS__)
+#		define VERSION_PLATFORM "MacOS"
 #	else
 #		define VERSION_PLATFORM "Unix"
 #	endif

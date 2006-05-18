@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.64 2006-04-18 08:49:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.65 2006-05-18 17:44:13 sezero Exp $
 */
 
 
@@ -25,9 +25,17 @@
 #define	ENGINE_NAME		"Hexen2"
 
 #ifndef	DEMOBUILD
+#ifdef __MACOSX__
+#define	AOT_USERDIR		"Library/Application Support/Hexen2"
+#else
 #define	AOT_USERDIR		".hexen2"
+#endif
+#else
+#ifdef __MACOSX__
+#define	AOT_USERDIR		"Library/Application Support/Hexen2 Demo"
 #else
 #define	AOT_USERDIR		".hexen2demo"
+#endif
 #endif
 
 #define	MAX_QPATH	64	// max length of a quake game pathname
@@ -417,6 +425,9 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.64  2006/04/18 08:49:18  sezero
+ * 2006-04-18: HoT-1.4.0-final
+ *
  * Revision 1.63  2006/04/17 14:00:50  sezero
  * minor update to version display stuff
  *

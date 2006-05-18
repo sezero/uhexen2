@@ -2,7 +2,7 @@
 	bothdefs.h
 	defs common to both client and server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.26 2006-04-18 08:49:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.27 2006-05-18 17:44:15 sezero Exp $
 */
 
 #define __STRINGIFY(x) #x
@@ -20,9 +20,17 @@
 #define	ENGINE_NAME		"HexenWorld"
 
 #ifndef	DEMOBUILD
+#ifdef __MACOSX__
+#define	AOT_USERDIR		"Library/Application Support/Hexen2"
+#else
 #define	AOT_USERDIR		".hexen2"
+#endif
+#else
+#ifdef __MACOSX__
+#define	AOT_USERDIR		"Library/Application Support/Hexen2 Demo"
 #else
 #define	AOT_USERDIR		".hexen2demo"
+#endif
 #endif
 
 #define	MAX_QPATH	64	// max length of a quake game pathname
