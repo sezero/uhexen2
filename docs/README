@@ -324,8 +324,8 @@ Your savegames and configuration files are stored in a folder
 named  .hexen2 in your home folder:  ~/.hexen2   For the demo
 version, it's ~/.hexen2demo instead.
 
-Saves/configs for Hexen2 are stored directly under ~/.hexen2/
-For the Mission Pack, they are stored under ~/.hexen2/portals/
+Saves/configs for Hexen2 are stored under ~/.hexen2/data1
+For the Mission Pack, they are stored under ~/.hexen2/portals
 
 
 1.7 Fullscreen/Windowed modes and mouse
