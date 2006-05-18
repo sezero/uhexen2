@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.21 2006-05-18 17:47:01 sezero Exp $
+	$Id: midi_sdl.c,v 1.22 2006-05-18 17:48:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -27,7 +27,7 @@ void MIDI_Pause(int mode) {}
 void MIDI_Loop(int NewValue) {}
 void MIDI_Stop(void) {}
 void MIDI_Cleanup(void) {}
-void MIDI_UpdateVolume(void) {}
+void MIDI_Update(void) {}
 
 #else
 // use midi music: the actual thing...
@@ -87,7 +87,7 @@ static void MIDI_SetVolume(float volume_frac)
 	Mix_VolumeMusic(volume_frac*128); /* needs to be between 0 and 128 */
 }
 
-void MIDI_UpdateVolume(void)
+void MIDI_Update(void)
 {
 	if (bgmvolume.value != bgm_volume_old)
 	{
@@ -315,6 +315,9 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2006/05/18 17:47:01  sezero
+ * set bMidiInited to 0 in MIDI_Cleanup()
+ *
  * Revision 1.20  2006/05/18 17:46:10  sezero
  * made COM_WriteFile() to return 0 on success, 1 on write errors
  *

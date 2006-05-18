@@ -1256,7 +1256,7 @@ void Host_Frame (float time)
 	}
 
 	CDAudio_Update();
-	MIDI_UpdateVolume();
+	MIDI_Update();
 
 	if (host_speeds.value)
 	{

@@ -1,5 +1,5 @@
 /*
- * $Id: midi.c,v 1.8 2006-02-18 13:44:17 sezero Exp $
+ * $Id: midi.c,v 1.9 2006-05-18 17:48:10 sezero Exp $
  */
 
 #include <windows.h>
@@ -105,7 +105,7 @@ static void MIDI_SetVolume(float volume_frac)
 	}
 }
 
-void MIDI_UpdateVolume(void)
+void MIDI_Update(void)
 {
 	if (bgmvolume.value != bgm_volume_old)
 	{
@@ -652,6 +652,10 @@ static void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2006/02/18 13:44:17  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 6: midi files).
+ *
  * Revision 1.7  2005/09/24 23:50:36  sezero
  * fixed a bunch of compiler warnings
  *
