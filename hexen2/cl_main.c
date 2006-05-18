@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.26 2006-03-24 15:05:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.27 2006-05-18 17:45:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -161,6 +161,8 @@ void CL_Disconnect (void)
 {
 	R_ClearParticles ();	//jfm: need to clear parts because some now check world
 	S_StopAllSounds (true);	// stop sounds (especially looping!)
+	MIDI_Stop();
+	CDAudio_Stop();
 	loading_stage = 0;
 
 // bring the console down and fade the colors back to normal
@@ -1060,6 +1062,11 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2006/03/24 15:05:39  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.25  2006/03/10 08:08:45  sezero
  * Added support for colored lights and .lit files;. initially extracted
  * from jshexen2 (thanks Michal Wozniak). Colored lights and lit file

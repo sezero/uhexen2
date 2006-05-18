@@ -344,6 +344,8 @@ void CL_Disconnect (void)
 	cl_siege = false;
 // stop sounds (especially looping!)
 	S_StopAllSounds (true);
+	MIDI_Stop();
+	CDAudio_Stop();
 
 // if running a local server, shut it down
 	if (cls.demoplayback)
