@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.20 2006-05-18 17:46:10 sezero Exp $
+	$Id: midi_sdl.c,v 1.21 2006-05-18 17:47:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -301,6 +301,7 @@ void MIDI_Cleanup(void)
 		MIDI_Stop();
 		Con_Printf("Closing SDL_mixer for midi music.\n");
 		Mix_CloseAudio();
+		bMidiInited = 0;
 		// I'd better do this here...
 		if (audio_wasinit == 0)
 		{
@@ -314,6 +315,9 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2006/05/18 17:46:10  sezero
+ * made COM_WriteFile() to return 0 on success, 1 on write errors
+ *
  * Revision 1.19  2006/02/18 13:44:14  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 6: midi files).
