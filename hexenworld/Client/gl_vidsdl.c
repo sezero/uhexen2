@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.107 2006-05-12 16:48:05 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.108 2006-05-19 11:32:54 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -77,8 +77,8 @@ static int	bpp = 16;
 #	define WM_TITLEBAR_TEXT	"HexenWorld"
 #	define WM_ICON_TEXT	"HexenWorld"
 #elif defined(H2MP)
-#	define WM_TITLEBAR_TEXT	"Portal of Praevus"
-#	define WM_ICON_TEXT	"PRAEVUS"
+#	define WM_TITLEBAR_TEXT	"Hexen II+"
+#	define WM_ICON_TEXT	"HEXEN2MP"
 #else
 #	define WM_TITLEBAR_TEXT	"Hexen II"
 #	define WM_ICON_TEXT	"HEXEN2"

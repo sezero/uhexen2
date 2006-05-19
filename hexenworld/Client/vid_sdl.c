@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.45 2006-03-24 18:43:37 sezero Exp $
+	$Id: vid_sdl.c,v 1.46 2006-05-19 11:32:54 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -114,8 +114,8 @@ void VID_MenuKey (int key);
 #	define WM_TITLEBAR_TEXT	"HexenWorld"
 #	define WM_ICON_TEXT	"HexenWorld"
 #elif defined(H2MP)
-#	define WM_TITLEBAR_TEXT	"Portal of Praevus"
-#	define WM_ICON_TEXT	"PRAEVUS"
+#	define WM_TITLEBAR_TEXT	"Hexen II+"
+#	define WM_ICON_TEXT	"HEXEN2MP"
 #else
 #	define WM_TITLEBAR_TEXT	"Hexen II"
 #	define WM_ICON_TEXT	"HEXEN2"
@@ -1258,6 +1258,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.45  2006/03/24 18:43:37  sezero
+ * moved include macros for different xbm icons to a new xbm_icon.h header
+ *
  * Revision 1.44  2006/03/24 17:34:25  sezero
  * includes cleanup
  *

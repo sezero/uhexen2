@@ -3,7 +3,7 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.10 2005-12-11 11:53:12 sezero Exp $
+	$Id: draw.h,v 1.11 2006-05-19 11:32:54 sezero Exp $
 */
 
 
@@ -44,10 +44,6 @@ qpic_t *Draw_CachePicNoTrans (char *path);
 qpic_t *Draw_CachePicResize (char *path, int targetWidth, int targetHeight);
 
 // game/engine name to draw on the console
-#if defined(H2MP)
-#define GAME_MOD_NAME		"H2mp"
-#else
 #define GAME_MOD_NAME		ENGINE_NAME
-#endif
 #define ENGINE_WATERMARK	GAME_MOD_NAME " " STRINGIFY(ENGINE_VERSION) " (" VERSION_PLATFORM ")"
 

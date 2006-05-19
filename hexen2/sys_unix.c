@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.52 2006-04-17 14:00:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.53 2006-05-19 11:32:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -308,11 +308,6 @@ static int Sys_GetUserdir (char *buff, unsigned int path_len)
 	if (getenv("HOME") == NULL)
 		return 1;
 
-/* O.S:	We keep the userdir (and host_parms.userdir) as ~/.hexen2
-	here.  We'll change com_userdir in COM_InitFilesystem()
-	depending on H2MP, H2W and/or -game cmdline arg, instead.
-   S.A:	Now using $HOME istead of the passwd struct */
-
 	if (strlen(getenv("HOME")) + strlen(AOT_USERDIR) + 2 > path_len)
 		return 1;
 
@@ -521,6 +516,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.52  2006/04/17 14:00:50  sezero
+ * minor update to version display stuff
+ *
  * Revision 1.51  2006/04/11 05:08:38  sezero
  * added the -portals and -noportals switches to the help output
  *

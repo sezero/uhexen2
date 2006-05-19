@@ -70,7 +70,6 @@ extern	int				pr_string_count;
 #define	USE_MULTIPLE_PROGS	1
 
 // USE_MULTIPLE_PROGS is only for original hexen2...
-//#if defined(H2MP) || defined(H2W)
 #if defined(H2W)
 #undef	USE_MULTIPLE_PROGS
 #define	USE_MULTIPLE_PROGS	0

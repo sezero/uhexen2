@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.9 2006-03-24 15:05:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.10 2006-05-19 11:32:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -142,12 +142,29 @@ static void SV_UserFriction (void)
 	trace = SV_Move (start, vec3_origin, vec3_origin, stop, true, sv_player);
 	sv_player->v.hull = save_hull;
 
+//
 // Hexen II v1.11 progs doesn't initialize the friction properly (always 0).
 // In fact, applying a patch to the progs can easily solve this issue, but
 // in that case several unpatched mods would be left broken. Note: Compared
-// to the AoT solution down below, this makes pure-hexen2 to feel slightly
-// more slippery.
-	//fprintf (stdout, "F0 :  %f\n", sv_player->v.friction);
+// to the AoT solution, this makes pure-hexen2 to feel slightly more slippery.
+//
+// COMPILE TIME OPTION: USE_AOT_FRICTION
+// If you want to use the Anvil of Thyrion solution for the original hexen2
+// friction emulation, define USE_AOT_FRICTION as 1, otherwise 0.
+//
+#define	USE_AOT_FRICTION	0
+
+#if USE_AOT_FRICTION
+	if (progs->crc == PROGS_V111_CRC)
+		friction = 6;
+	else
+	{
+		if (trace.fraction == 1.0)
+			friction = sv_friction.value*sv_edgefriction.value*sv_player->v.friction;
+		else
+			friction = sv_friction.value*sv_player->v.friction;
+	}
+#else	// not using AoT friction
 	if (progs->crc == PROGS_V111_CRC)
 		sv_player->v.friction = 1.0f;
 
@@ -155,17 +172,11 @@ static void SV_UserFriction (void)
 		friction = sv_friction.value*sv_edgefriction.value*sv_player->v.friction;
 	else
 		friction = sv_friction.value*sv_player->v.friction;
+#endif
 
-	//fprintf (stdout, "F1 :  %f\n", friction);
-
-//#ifndef H2MP
-// This was the solution by the Anvil of Thyrion source port for the original
-// hexen2 friction emulation. See above.
-//	friction = 6;
-//#endif
-
-// These lines were found as commented out in Raven's H2MP source. It probably
-// was their pre-mission pack solution.
+// These lines were found as commented out in Raven's H2MP source. Probably
+// it was their pre-mission pack solution.  See above for the current stuff
+// and for the explanation.
 //	if (sv_player->v.friction != 1)	//reset their friction to 1, only a trigger touching can change it again
 //		sv_player->v.friction = 1;
 
@@ -765,6 +776,11 @@ void SV_RunClients (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2006/03/24 15:05:39  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.8  2006/03/21 22:20:59  sezero
  * Commented out Anvil of Thyrion solution for the original hexen2 friction
  * emulation which was hard-set at 6. Merged the solution found in pa3pyx's
