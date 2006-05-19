@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.17 2006-04-17 14:00:51 sezero Exp $
+	$Id: sys_unix.c,v 1.18 2006-05-19 00:30:43 sezero Exp $
 
 	Unix system interface code
 */
@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <dirent.h>
+#include <fnmatch.h>
 #include <unistd.h>
 
 #include "qwsvdef.h"
@@ -58,6 +59,78 @@ int Sys_mkdir (char *path)
 		rc = 0;
 
 	return rc;
+}
+
+/*
+=================================================
+simplified findfirst/findnext implementation:
+Sys_FindFirstFile and Sys_FindNextFile return
+filenames only, not a dirent struct. this is
+what we presently need in this engine.
+=================================================
+*/
+static DIR		*finddir;
+static struct dirent	*finddata;
+static char		*findpattern;
+
+char *Sys_FindFirstFile (char *path, char *pattern)
+{
+	int	pattern_len;
+
+	if (finddir)
+		Sys_Error ("Sys_FindFirst without FindClose");
+
+	finddir = opendir (path);
+	if (!finddir)
+		return NULL;
+
+	pattern_len = strlen (pattern);
+	findpattern = malloc (pattern_len + 1);
+	if (!findpattern)
+		return NULL;
+	strcpy (findpattern, pattern);
+
+	do {
+		finddata = readdir(finddir);
+		if (finddata != NULL)
+		{
+			if (!fnmatch (findpattern, finddata->d_name, FNM_PATHNAME))
+			{
+				return finddata->d_name;
+			}
+		}
+	} while (finddata != NULL);
+
+	return NULL;
+}
+
+char *Sys_FindNextFile (void)
+{
+	if (!finddir)
+		return NULL;
+
+	do {
+		finddata = readdir(finddir);
+		if (finddata != NULL)
+		{
+			if (!fnmatch (findpattern, finddata->d_name, FNM_PATHNAME))
+			{
+				return finddata->d_name;
+			}
+		}
+	} while (finddata != NULL);
+
+	return NULL;
+}
+
+void Sys_FindClose (void)
+{
+	if (finddir != NULL)
+		closedir(finddir);
+	finddir = NULL;
+	if (findpattern != NULL)
+		free (findpattern);
+	findpattern = NULL;
 }
 
 

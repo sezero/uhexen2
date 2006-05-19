@@ -32,6 +32,54 @@ int Sys_mkdir (char *path)
 	return rc;
 }
 
+/*
+=================================================
+simplified findfirst/findnext implementation:
+Sys_FindFirstFile and Sys_FindNextFile return
+filenames only, not a dirent struct. this is
+what we presently need in this engine.
+=================================================
+*/
+static HANDLE  findhandle;
+static WIN32_FIND_DATA finddata;
+
+char *Sys_FindFirstFile (char *path, char *pattern)
+{
+	BOOL	retval;
+
+	if (findhandle)
+		Sys_Error ("Sys_FindFirst without FindClose");
+
+	findhandle = FindFirstFile(va("%s/%s", path, pattern), &finddata);
+	retval = TRUE;
+
+	if (findhandle != INVALID_HANDLE_VALUE && retval)
+		return finddata.cFileName;
+
+	return NULL;
+}
+
+char *Sys_FindNextFile (void)
+{
+	BOOL	retval;
+
+	if (!findhandle || findhandle == INVALID_HANDLE_VALUE)
+		return NULL;
+
+	retval = FindNextFile(findhandle,&finddata);
+	if (retval)
+		return finddata.cFileName;
+
+	return NULL;
+}
+
+void Sys_FindClose (void)
+{
+	if (findhandle != INVALID_HANDLE_VALUE)
+		FindClose(findhandle);
+	findhandle = NULL;
+}
+
 
 /*
 ================
