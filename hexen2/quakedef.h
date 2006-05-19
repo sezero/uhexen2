@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.67 2006-05-18 17:51:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.68 2006-05-19 13:38:38 sezero Exp $
 */
 
 
@@ -43,6 +43,14 @@
 
 #define	QUAKE_GAME		// as opposed to utilities
 //define	PARANOID	// speed sapping error checking
+
+// COMPILE TIME OPTION: Whether we want the mission pack support to
+// be activated directly.
+// Default is no: player must use the -portals command line argument
+// to activate it.  If you want direct activation, change the below
+// undef to a define : in that case, player must use the -noportals
+// command line argument to disable mission pack support.
+#undef	H2MP
 
 #include <sys/types.h>
 #include <math.h>
@@ -426,6 +434,9 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.67  2006/05/18 17:51:36  sezero
+ * incremented the version to 1.4.1-pre1
+ *
  * Revision 1.66  2006/05/18 17:49:58  sezero
  * AoT and earlier versions of HoT didn't create <userdir>/data1
  * and kept all user the data in <userdir> instead. Starting with

@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.61 2006-05-18 23:33:13 sezero Exp $
+	$Id: common.c,v 1.62 2006-05-19 13:38:38 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -2081,7 +2081,7 @@ static void COM_InitFilesystem (void)
 		Sys_Error ("You must have the full version of Hexen II to play modified games");
 #endif
 
-#if defined(H2W)
+#if defined(H2MP) || defined(H2W)
 	if (! COM_CheckParm ("-noportals"))
 		check_portals = true;
 #else
@@ -2464,6 +2464,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.61  2006/05/18 23:33:13  sezero
+ * tidied up MoveUserData()
+ *
  * Revision 1.60  2006/05/18 17:49:58  sezero
  * AoT and earlier versions of HoT didn't create <userdir>/data1
  * and kept all user the data in <userdir> instead. Starting with

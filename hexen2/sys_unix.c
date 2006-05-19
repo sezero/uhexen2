@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.53 2006-05-19 11:32:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.54 2006-05-19 13:38:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -329,7 +329,11 @@ static void PrintVersion (void)
 static char *help_strings[] = {
 	"     [-v | --version]        Display version information",
 #ifndef DEMOBUILD
+#   if defined(H2MP)
+	"     [-noportals]            Disable the mission pack support",
+#   else
 	"     [-portals | -h2mp ]     Run the Portal of Praevus mission pack",
+#   endif
 #endif
 	"     [-w | --window ]        Run the game windowed",
 	"     [-f | --fullscreen]     Run the game fullscreen",
@@ -516,6 +520,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.53  2006/05/19 11:32:54  sezero
+ * misc clean-up
+ *
  * Revision 1.52  2006/04/17 14:00:50  sezero
  * minor update to version display stuff
  *
