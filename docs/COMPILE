@@ -8,7 +8,17 @@ To compile the your own binaries, you need a unix build environment. The
 makefiles also present several build options, please read them. Makefiles
 rely on some scripts residing in the scripts directory. You may be able
 to modify them to meet your needs, if necessary, but the defaults should
-work just fine. Here is the recommended software for building:
+work just fine.
+
+By editing the makefiles, you can change some compile time options. Other
+than the makefiles, you can grep the source for "COMPILE TIME OPTION" in
+order to reach even more options before the build process: gl_opt.h is one
+of such places. In order to toggle some of such options, we have provided
+small patch files for your convenience: they are located in the 00_Patches
+directory along with other patch files.
+
+Here is the recommended software for building:
+
 
 Tools needed:
 
