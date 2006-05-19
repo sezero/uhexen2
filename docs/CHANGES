@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-05-19 (CVS, 1.4.1-pre1):
+    * added a compile time option to dicetly activate the mission pack
+      support without the need for a commandline option like -portals
+      or -h2mp
+    * misc clean-up
+
 2006-05-18 (CVS, 1.4.1-pre1):
     * AoT and earlier versions of HoT didn't create <userdir>/data1
       and kept all user the data in <userdir> instead. Starting with
