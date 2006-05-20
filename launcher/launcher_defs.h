@@ -15,7 +15,7 @@
 // Launcher version num.
 #define LAUNCHER_VERSION_MAJ	0
 #define LAUNCHER_VERSION_MID	7
-#define LAUNCHER_VERSION_MIN	3
+#define LAUNCHER_VERSION_MIN	4
 #define LAUNCHER_VERSION_STR	STRINGIFY(LAUNCHER_VERSION_MAJ) "." STRINGIFY(LAUNCHER_VERSION_MID) "." STRINGIFY(LAUNCHER_VERSION_MIN)
 
 #ifndef DEMOBUILD
@@ -47,7 +47,7 @@
 #else
 #define	MAX_SOUND	3	// ... this time excluding alsa
 #endif
-#define	MAX_RATES	6	// max entries in the snd_rates table
+#define	MAX_RATES	8	// max entries in the snd_rates table
 
 #define HEAP_MINSIZE	16384	// minimum heap memory size in KB
 #define HEAP_DEFAULT	32768	// default heap memory size in KB
