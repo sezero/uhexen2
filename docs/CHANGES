@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-05-20 (CVS, 1.4.1-pre1):
+    * snd_oss endianness fixes.
+    * cleaned up sound tryrates, etc. changed tryrates array to include
+      48000, 24000, and 16000 speeds (this should help 48khz AC97 chips,
+      from darkplaces).
+    * added 24000 and 16000 sound sampling rates to the launcher. bumped
+      its version to 0.7.4.
+
 2006-05-19 (CVS, 1.4.1-pre1):
     * added a compile time option to dicetly activate the mission pack
       support without the need for a commandline option like -portals
