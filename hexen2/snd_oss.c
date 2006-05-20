@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.18 2006-02-19 12:33:24 sezero Exp $
+	$Id: snd_oss.c,v 1.19 2006-05-20 10:14:52 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -41,6 +41,12 @@
 // <soundcard.h>, <linux/soundcard.h> and <machine/soundcard.h> someday.
 #include <sys/soundcard.h>
 #include <errno.h>
+
+#if BYTE_ORDER == BIG_ENDIAN
+#define	FORMAT_S16	AFMT_S16_BE
+#else
+#define	FORMAT_S16	AFMT_S16_LE
+#endif
 
 static int audio_fd = -1;
 static int snd_inited;
@@ -118,17 +124,17 @@ qboolean S_OSS_Init(void)
 
 // set sample bits & speed
 	i = desired_bits;
-	tmp = (desired_bits == 16) ? AFMT_S16_LE : AFMT_U8;
+	tmp = (desired_bits == 16) ? FORMAT_S16 : AFMT_U8;
 	rc = ioctl(audio_fd, SNDCTL_DSP_SETFMT, &tmp);
 	if (rc < 0)
 	{
 		Con_Printf("Could not support %d-bit data, retrying..\n", desired_bits);
 		// try what the device gives us
 		ioctl(audio_fd, SNDCTL_DSP_GETFMTS, &tmp);
-		if (tmp & AFMT_S16_LE)
+		if (tmp & FORMAT_S16)
 		{
 			i = 16;
-			tmp = AFMT_S16_LE;
+			tmp = FORMAT_S16;
 		}
 		else if (tmp & AFMT_U8)
 		{
