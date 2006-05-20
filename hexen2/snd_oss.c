@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.19 2006-05-20 10:14:52 sezero Exp $
+	$Id: snd_oss.c,v 1.20 2006-05-20 12:38:01 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -51,8 +51,6 @@
 static int audio_fd = -1;
 static int snd_inited;
 static char *ossdev = "/dev/dsp";
-extern int desired_bits, desired_speed, desired_channels;
-extern int tryrates[MAX_TRYRATES];
 static unsigned long mmaplen;
 
 qboolean S_OSS_Init(void)

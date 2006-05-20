@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.15 2006-02-19 12:33:24 sezero Exp $
+	$Id: snd_alsa.c,v 1.16 2006-05-20 12:38:01 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -39,8 +39,6 @@ static int snd_inited;
 static snd_pcm_uframes_t buffer_size;
 static snd_pcm_hw_params_t *hw;
 static snd_pcm_sw_params_t *sw;
-extern int desired_bits, desired_speed, desired_channels;
-extern int tryrates[MAX_TRYRATES];
 extern int soundtime;
 
 int S_ALSA_GetDMAPos (void);
@@ -332,6 +330,10 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2006/02/19 12:33:24  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 10: sound).
+ *
  * Revision 1.14  2006/01/12 13:11:16  sezero
  * do not change the desined_XXX sound variables in case of failures.
  * sound wnitespace cleanup #2 in snd_oss.

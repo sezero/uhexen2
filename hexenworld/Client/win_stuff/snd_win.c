@@ -29,7 +29,6 @@ static int	sample16;
 static int	snd_sent, snd_completed;
 static int	allocMark = 0;
 static int	ds_sbuf_size, wv_buf_size;
-extern int	desired_bits, desired_speed, desired_channels;
 
 static HPSTR	lpData;
 static LPWAVEHDR	lpWaveHdr;

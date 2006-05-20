@@ -7,8 +7,6 @@
 #ifndef __SOUND__
 #define __SOUND__
 
-#define MAX_TRYRATES	4
-
 // !!! if this is changed, it must be changed in asm_i386.h too !!!
 typedef struct
 {
@@ -111,11 +109,16 @@ extern	channel_t	channels[MAX_CHANNELS];
 // MAX_DYNAMIC_CHANNELS to MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS -1 = water, etc
 // MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS to total_channels = static sounds
 
-extern	int		total_channels;
-
-extern	int		paintedtime;
 extern	volatile dma_t	*shm;
 extern	volatile dma_t	sn;
+
+extern	const int	MAX_TRYRATES;
+extern	const int	tryrates[];
+extern	int		desired_bits, desired_speed, desired_channels;
+
+extern	int		total_channels;
+extern	int		paintedtime;
+
 extern	vec3_t	listener_origin;
 extern	vec3_t	listener_forward;
 extern	vec3_t	listener_right;

@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.32 2006-03-24 17:34:25 sezero Exp $
+	$Id: snd_dma.c,v 1.33 2006-05-20 12:38:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -59,12 +59,13 @@ static int	num_sfx;
 
 static sfx_t	*ambient_sfx[NUM_AMBIENTS];
 
+static qboolean	sound_started = false;
+
 int 		desired_speed = 11025;
 int 		desired_bits = 16;
 int 		desired_channels = 2;
-
-static int	sound_started = 0;
-int		tryrates[MAX_TRYRATES] = { 11025, 22051, 44100, 8000 };
+const int	tryrates[] = { 44100, 48000, 22050, 22051, 24000, 11025, 16000, 8000 };
+const int	MAX_TRYRATES = sizeof(tryrates)/sizeof(tryrates[0]);
 
 cvar_t		bgmvolume = {"bgmvolume", "1", CVAR_ARCHIVE};
 cvar_t		bgmtype = {"bgmtype", "cd", CVAR_ARCHIVE};	// cd or midi
@@ -119,7 +120,7 @@ S_Startup
 */
 void S_Startup (void)
 {
-	int		rc, tmp;
+	int		i, tmp;
 
 	// point to correct platform versions of driver functions
 	S_InitPointers();
@@ -132,18 +133,13 @@ void S_Startup (void)
 		tmp = atoi(com_argv[tmp+1]);
 		/* I won't rely on users' precision in typing or their needs
 		   here. If you know what you're doing, then change this. */
-		switch (tmp)
+		for (i = 0; i < MAX_TRYRATES; i++)
 		{
-			case  8000:
-			case 11025:
-			case 22050:
-			case 22051:
-			case 44100:
-			case 48000:
+			if (tmp == tryrates[i])
+			{
 				desired_speed = tmp;
 				break;
-			default:
-				break;
+			}
 		}
 	}
 
@@ -157,15 +153,10 @@ void S_Startup (void)
 	if ((tmp = COM_CheckParm("-sndmono")) != 0)
 		desired_channels = 1;
 
-	rc = SNDDMA_Init();
+	sound_started = SNDDMA_Init();
 
-	if (!rc)
-	{
+	if (!sound_started)
 		Con_Printf("Failed initializing sound\n");
-		sound_started = 0;
-		return;
-	}
-	sound_started = 1;
 }
 
 
@@ -1052,6 +1043,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2006/03/24 17:34:25  sezero
+ * includes cleanup
+ *
  * Revision 1.31  2006/03/24 15:05:44  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also
