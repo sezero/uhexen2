@@ -8,20 +8,18 @@ New 2005-07-07: Allocate the buffer on the hunk
 New 2006-01-12: Merged quake3 bits to cure most of the
 latency issues, re-diffed after the latest sound changes
 
-diff -urNp hexen2source-1.4.0/hexen2/snd_sdl.c hexen2source-1.4.0x/hexen2/snd_sdl.c
---- hexen2source-1.4.0/hexen2/snd_sdl.c	2006-02-18 11:15:03.000000000 +0200
-+++ hexen2source-1.4.0x/hexen2/snd_sdl.c	2006-02-18 11:17:35.000000000 +0200
-@@ -10,25 +10,58 @@
+diff -urNp hexen2source-1.4.1/hexen2/snd_sdl.c hexen2source-1.4.1x/hexen2/snd_sdl.c
+--- hexen2source-1.4.1/hexen2/snd_sdl.c	2006-05-20 15:49:36.000000000 +0300
++++ hexen2source-1.4.1x/hexen2/snd_sdl.c	2006-05-20 15:51:47.000000000 +0300
+@@ -10,22 +10,56 @@
  #include "sdl_inc.h"
  #include "quakedef.h"
  
 -static int snd_inited;
 +static int buffersize, snd_inited;
 +static int allocMark = 0;
- 
- extern int desired_speed, desired_bits, desired_channels;
++
 +extern int soundtime;
- extern int tryrates[MAX_TRYRATES];
  
  static void paint_audio(void *unused, Uint8 *stream, int len)
  {
@@ -48,13 +46,13 @@ diff -urNp hexen2source-1.4.0/hexen2/snd_sdl.c hexen2source-1.4.0x/hexen2/snd_sd
 +		len1 = tobufend;
 +		len2 = len - len1;
 +	}
++
++	memcpy(stream, shm->buffer + pos, len1);
  
 -	shm->buffer = stream;
 -	shm->samplepos += len/(shm->samplebits/8)/2;
 -	// Check for samplepos overflow?
 -	S_PaintChannels (shm->samplepos);
-+	memcpy(stream, shm->buffer + pos, len1);
-+
 +	if (len2 <= 0)
 +	{
 +		shm->samplepos += (len1 / (shm->samplebits/8));
@@ -76,7 +74,7 @@ diff -urNp hexen2source-1.4.0/hexen2/snd_sdl.c hexen2source-1.4.0x/hexen2/snd_sd
  	char	drivername[128];
  
  	snd_inited = 0;
-@@ -55,7 +88,14 @@ qboolean S_SDL_Init(void)
+@@ -52,7 +86,14 @@ qboolean S_SDL_Init(void)
  	}
  
  	desired.channels = desired_channels;
@@ -92,7 +90,7 @@ diff -urNp hexen2source-1.4.0/hexen2/snd_sdl.c hexen2source-1.4.0x/hexen2/snd_sd
  	desired.callback = paint_audio;
  	desired.userdata = NULL;
  
-@@ -93,6 +133,8 @@ qboolean S_SDL_Init(void)
+@@ -90,6 +131,8 @@ qboolean S_SDL_Init(void)
  			break;
  	}
  
@@ -101,7 +99,7 @@ diff -urNp hexen2source-1.4.0/hexen2/snd_sdl.c hexen2source-1.4.0x/hexen2/snd_sd
  	/* Fill the audio DMA information block */
  	shm = &sn;
  	shm->splitbuffer = 0;
-@@ -101,16 +143,28 @@ qboolean S_SDL_Init(void)
+@@ -98,16 +141,28 @@ qboolean S_SDL_Init(void)
  		Con_Printf ("Warning: Rate set (%i) didn't match requested rate (%i)!\n", obtained.freq, desired_speed);
  	shm->speed = obtained.freq;
  	shm->channels = obtained.channels;
@@ -132,7 +130,7 @@ diff -urNp hexen2source-1.4.0/hexen2/snd_sdl.c hexen2source-1.4.0x/hexen2/snd_sd
  	SDL_PauseAudio(0);
  
  	Con_Printf("Audio Subsystem initialized in SDL mode.\n");
-@@ -122,7 +176,9 @@ qboolean S_SDL_Init(void)
+@@ -119,7 +174,9 @@ qboolean S_SDL_Init(void)
  	Con_Printf ("%5d submission_chunk\n", shm->submission_chunk);
  	Con_Printf ("%5d speed\n", shm->speed);
  	Con_Printf ("0x%x dma buffer address\n", (int) shm->buffer);
@@ -142,7 +140,7 @@ diff -urNp hexen2source-1.4.0/hexen2/snd_sdl.c hexen2source-1.4.0x/hexen2/snd_sd
  	return 1;
  }
  
-@@ -137,8 +193,15 @@ void S_SDL_Shutdown(void)
+@@ -134,8 +191,15 @@ void S_SDL_Shutdown(void)
  	{
  		Con_Printf ("Shutting down SDL sound\n");
  		snd_inited = 0;
@@ -159,9 +157,9 @@ diff -urNp hexen2source-1.4.0/hexen2/snd_sdl.c hexen2source-1.4.0x/hexen2/snd_sd
  		SDL_QuitSubSystem(SDL_INIT_AUDIO);
  	}
  }
-diff -urN uhexen2-20060324/hexen2/snd_sys.h uhexen2-20060324a/hexen2/snd_sys.h
---- uhexen2-20060324/hexen2/snd_sys.h	2006-03-24 19:34:20.000000000 +0200
-+++ uhexen2-20060324a/hexen2/snd_sys.h	2006-03-24 21:21:24.000000000 +0200
+diff -urNp hexen2source-1.4.1/hexen2/snd_sys.h hexen2source-1.4.1x/hexen2/snd_sys.h
+--- hexen2source-1.4.1/hexen2/snd_sys.h	2006-05-20 15:49:36.000000000 +0300
++++ hexen2source-1.4.1x/hexen2/snd_sys.h	2006-05-20 15:51:47.000000000 +0300
 @@ -20,7 +20,7 @@
  
  // this prevents running S_Update_() with the sdl sound driver
@@ -171,20 +169,18 @@ diff -urN uhexen2-20060324/hexen2/snd_sys.h uhexen2-20060324a/hexen2/snd_sys.h
  
  #if defined(_WIN32)
  // for the windows crap used in snd_dma.c
-diff -urNp hexen2source-1.4.0/hexenworld/Client/snd_sdl.c hexen2source-1.4.0x/hexenworld/Client/snd_sdl.c
---- hexen2source-1.4.0/hexenworld/Client/snd_sdl.c	2006-02-18 11:15:03.000000000 +0200
-+++ hexen2source-1.4.0x/hexenworld/Client/snd_sdl.c	2006-02-18 11:17:35.000000000 +0200
-@@ -10,25 +10,58 @@
+diff -urNp hexen2source-1.4.1/hexenworld/Client/snd_sdl.c hexen2source-1.4.1x/hexenworld/Client/snd_sdl.c
+--- hexen2source-1.4.1/hexenworld/Client/snd_sdl.c	2006-05-20 15:49:36.000000000 +0300
++++ hexen2source-1.4.1x/hexenworld/Client/snd_sdl.c	2006-05-20 15:51:47.000000000 +0300
+@@ -10,22 +10,56 @@
  #include "sdl_inc.h"
  #include "quakedef.h"
  
 -static int snd_inited;
 +static int buffersize, snd_inited;
 +static int allocMark = 0;
- 
- extern int desired_speed, desired_bits, desired_channels;
++
 +extern int soundtime;
- extern int tryrates[MAX_TRYRATES];
  
  static void paint_audio(void *unused, Uint8 *stream, int len)
  {
@@ -211,13 +207,13 @@ diff -urNp hexen2source-1.4.0/hexenworld/Client/snd_sdl.c hexen2source-1.4.0x/he
 +		len1 = tobufend;
 +		len2 = len - len1;
 +	}
++
++	memcpy(stream, shm->buffer + pos, len1);
  
 -	shm->buffer = stream;
 -	shm->samplepos += len/(shm->samplebits/8)/2;
 -	// Check for samplepos overflow?
 -	S_PaintChannels (shm->samplepos);
-+	memcpy(stream, shm->buffer + pos, len1);
-+
 +	if (len2 <= 0)
 +	{
 +		shm->samplepos += (len1 / (shm->samplebits/8));
@@ -239,7 +235,7 @@ diff -urNp hexen2source-1.4.0/hexenworld/Client/snd_sdl.c hexen2source-1.4.0x/he
  	char	drivername[128];
  
  	snd_inited = 0;
-@@ -55,7 +88,14 @@ qboolean S_SDL_Init(void)
+@@ -52,7 +86,14 @@ qboolean S_SDL_Init(void)
  	}
  
  	desired.channels = desired_channels;
@@ -255,7 +251,7 @@ diff -urNp hexen2source-1.4.0/hexenworld/Client/snd_sdl.c hexen2source-1.4.0x/he
  	desired.callback = paint_audio;
  	desired.userdata = NULL;
  
-@@ -93,6 +133,8 @@ qboolean S_SDL_Init(void)
+@@ -90,6 +131,8 @@ qboolean S_SDL_Init(void)
  			break;
  	}
  
@@ -264,7 +260,7 @@ diff -urNp hexen2source-1.4.0/hexenworld/Client/snd_sdl.c hexen2source-1.4.0x/he
  	/* Fill the audio DMA information block */
  	shm = &sn;
  	shm->splitbuffer = 0;
-@@ -101,16 +143,28 @@ qboolean S_SDL_Init(void)
+@@ -98,16 +141,28 @@ qboolean S_SDL_Init(void)
  		Con_Printf ("Warning: Rate set (%i) didn't match requested rate (%i)!\n", obtained.freq, desired_speed);
  	shm->speed = obtained.freq;
  	shm->channels = obtained.channels;
@@ -295,7 +291,7 @@ diff -urNp hexen2source-1.4.0/hexenworld/Client/snd_sdl.c hexen2source-1.4.0x/he
  	SDL_PauseAudio(0);
  
  	Con_Printf("Audio Subsystem initialized in SDL mode.\n");
-@@ -122,7 +176,9 @@ qboolean S_SDL_Init(void)
+@@ -119,7 +174,9 @@ qboolean S_SDL_Init(void)
  	Con_Printf ("%5d submission_chunk\n", shm->submission_chunk);
  	Con_Printf ("%5d speed\n", shm->speed);
  	Con_Printf ("0x%x dma buffer address\n", (int) shm->buffer);
@@ -305,7 +301,7 @@ diff -urNp hexen2source-1.4.0/hexenworld/Client/snd_sdl.c hexen2source-1.4.0x/he
  	return 1;
  }
  
-@@ -137,8 +193,15 @@ void S_SDL_Shutdown(void)
+@@ -134,8 +191,15 @@ void S_SDL_Shutdown(void)
  	{
  		Con_Printf ("Shutting down SDL sound\n");
  		snd_inited = 0;
@@ -322,9 +318,9 @@ diff -urNp hexen2source-1.4.0/hexenworld/Client/snd_sdl.c hexen2source-1.4.0x/he
  		SDL_QuitSubSystem(SDL_INIT_AUDIO);
  	}
  }
-diff -urN uhexen2-20060324/hexenworld/Client/snd_sys.h uhexen2-20060324a/hexenworld/Client/snd_sys.h
---- uhexen2-20060324/hexenworld/Client/snd_sys.h	2006-03-24 19:34:20.000000000 +0200
-+++ uhexen2-20060324a/hexenworld/Client/snd_sys.h	2006-03-24 21:21:24.000000000 +0200
+diff -urNp hexen2source-1.4.1/hexenworld/Client/snd_sys.h hexen2source-1.4.1x/hexenworld/Client/snd_sys.h
+--- hexen2source-1.4.1/hexenworld/Client/snd_sys.h	2006-05-20 15:49:36.000000000 +0300
++++ hexen2source-1.4.1x/hexenworld/Client/snd_sys.h	2006-05-20 15:51:47.000000000 +0300
 @@ -20,7 +20,7 @@
  
  // this prevents running S_Update_() with the sdl sound driver
