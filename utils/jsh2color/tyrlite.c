@@ -327,8 +327,6 @@ void DecisionTime (char *msg)
 		c = 0;
 		printf ("Continue? [Y/N] ");
 		fflush(stdout);
-	//	while (!Sys_kbhit())
-	//		;
 		c = getchar();
 		if (c == 'y' || c == 'Y' || c == 'n' || c == 'N')
 			break;

@@ -2,7 +2,7 @@
 	cmdlib.c
 	functions common to all of the utilities
 
-	$Id: cmdlib.c,v 1.1 2006-03-01 09:00:53 sezero Exp $
+	$Id: cmdlib.c,v 1.2 2006-05-26 08:29:11 sezero Exp $
 */
 
 
@@ -76,6 +76,7 @@ Sys_kbhit
 a simple _kbhit() equivalent for unix
 ==============
 */
+/*
 #ifndef _WIN32
 int Sys_kbhit (void)
 {
@@ -85,6 +86,7 @@ int Sys_kbhit (void)
 	return n;
 }
 #endif
+*/
 
 /*
 ==============
