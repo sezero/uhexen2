@@ -57,9 +57,19 @@ void Sys_SendKeyEvents (void);
 
 // platform specific definitions
 
+#if defined (__APPLE__)
+#	undef __MACOSX__
+#	define __MACOSX__	1
+#elif defined (macintosh)
+#	undef __MACOS__
+#	define __MACOS__	1
+#endif
+
 #if defined (PLATFORM_UNIX)
 #	if defined (__linux__)
 #		define VERSION_PLATFORM "Linux"
+#	elif defined (__DragonFly__)
+#		define VERSION_PLATFORM "DragonFly"
 #	elif defined (__FreeBSD__)
 #		define VERSION_PLATFORM "FreeBSD"
 #	elif defined (__NetBSD__)
