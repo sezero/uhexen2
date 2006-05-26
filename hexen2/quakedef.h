@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.69 2006-05-20 13:41:01 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.70 2006-05-26 08:32:00 sezero Exp $
 */
 
 
@@ -16,9 +16,9 @@
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		4
 #define	HOT_VERSION_MIN		1
-#define	HOT_VERSION_REL_DATE	"2006-05-20"
+#define	HOT_VERSION_REL_DATE	"2006-05-26"
 #define	HOT_VERSION_BETA	1
-#define	HOT_VERSION_BETA_STR	"pre1"
+#define	HOT_VERSION_BETA_STR	"pre2"
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
 #define	ENGINE_VERSION		1.15
@@ -434,6 +434,9 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.69  2006/05/20 13:41:01  sezero
+ * 1.4.1-pre1 / 2006-05-20
+ *
  * Revision 1.68  2006/05/19 13:38:38  sezero
  * added a compile time option to dicetly activate the mission pack
  * support without the need for a commandline option like -portals
