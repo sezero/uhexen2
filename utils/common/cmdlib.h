@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.2 2006-03-04 10:54:04 sezero Exp $
+	$Id: cmdlib.h,v 1.3 2006-05-26 08:40:44 sezero Exp $
 */
 
 #ifndef __CMDLIB__
@@ -69,9 +69,11 @@ char	*Q_stpcpy (char *qdest, const char *qsrc);
 char	*Q_strupr (char *in);
 char	*Q_strlwr (char *in);
 
+/*
 #ifndef _WIN32
 int	Sys_kbhit(void);
 #endif
+*/
 
 void	*SafeMalloc(size_t n, char *desc);
 

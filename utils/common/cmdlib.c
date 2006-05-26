@@ -2,7 +2,7 @@
 	cmdlib.c
 	functions common to all of the utilities
 
-	$Id: cmdlib.c,v 1.2 2006-05-26 08:29:11 sezero Exp $
+	$Id: cmdlib.c,v 1.3 2006-05-26 08:40:44 sezero Exp $
 */
 
 
@@ -17,9 +17,11 @@
 #include <conio.h>
 #include <direct.h>
 #endif
+/*
 #ifndef _WIN32
 #include <sys/ioctl.h>
 #endif
+*/
 
 // MACROS ------------------------------------------------------------------
 
