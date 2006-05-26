@@ -2,11 +2,13 @@
 	bothdefs.h
 	defs common to both client and server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.31 2006-05-26 08:32:01 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.32 2006-05-26 10:20:55 sezero Exp $
 */
 
 #define __STRINGIFY(x) #x
 #define STRINGIFY(x) __STRINGIFY(x)
+
+#include "arch_def.h"
 
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		4

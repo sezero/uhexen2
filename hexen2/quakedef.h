@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.70 2006-05-26 08:32:00 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.71 2006-05-26 10:20:54 sezero Exp $
 */
 
 
@@ -12,6 +12,8 @@
 
 #define __STRINGIFY(x) #x
 #define STRINGIFY(x) __STRINGIFY(x)
+
+#include "arch_def.h"
 
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		4
@@ -434,6 +436,9 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.70  2006/05/26 08:32:00  sezero
+ * bumped the version to 1.4.1-pre2 / 2006-05-26
+ *
  * Revision 1.69  2006/05/20 13:41:01  sezero
  * 1.4.1-pre1 / 2006-05-20
  *
