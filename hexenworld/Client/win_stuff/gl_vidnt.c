@@ -1,5 +1,7 @@
 // gl_vidnt.c -- NT GL vid component
 
+#define	__GL_FUNC_EXTERN
+
 #include "quakedef.h"
 #include "winquake.h"
 

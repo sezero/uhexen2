@@ -2,7 +2,7 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.2 2006-03-24 17:34:25 sezero Exp $
+	$Id: snd_sys.h,v 1.3 2006-05-26 08:21:25 sezero Exp $
 */
 
 // add more systems with OSS here
@@ -33,19 +33,19 @@
 extern unsigned int	snd_system;
 
 // chooses functions to call depending on audio subsystem
-void S_InitPointers(void);
+extern void S_InitPointers(void);
 
 // initializes driver and cycling through a DMA buffer
-qboolean (*SNDDMA_Init)(void);
+extern qboolean (*SNDDMA_Init)(void);
 
 // gets the current DMA position
-int (*SNDDMA_GetDMAPos)(void);
+extern int (*SNDDMA_GetDMAPos)(void);
 
 // shutdown the DMA xfer and driver
-void (*SNDDMA_Shutdown)(void);
+extern void (*SNDDMA_Shutdown)(void);
 
 // sends sound to the device
-void (*SNDDMA_Submit)(void);
+extern void (*SNDDMA_Submit)(void);
 
 
 #ifdef _SND_LIST_DRIVERS

@@ -2,7 +2,7 @@
 	snd_sys.c
 	pre-Init platform specific sound stuff
 
-	$Id: snd_sys.c,v 1.1 2006-01-12 12:57:45 sezero Exp $
+	$Id: snd_sys.c,v 1.2 2006-05-26 08:21:25 sezero Exp $
 */
 
 
@@ -13,6 +13,12 @@
 
 unsigned int	snd_system = S_SYS_NULL;
 static qboolean	snd_sys_inited = false;
+
+// pointers for SNDDMA_ functions
+qboolean (*SNDDMA_Init)(void);
+int (*SNDDMA_GetDMAPos)(void);
+void (*SNDDMA_Shutdown)(void);
+void (*SNDDMA_Submit)(void);
 
 
 static void S_InitSys (void)

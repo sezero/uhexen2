@@ -2,13 +2,17 @@
 // whether to dlsym gl function calls
 // the define GL_DLSYM is decided in the Makefile
 
+#ifndef __GL_FUNC_EXTERN
+#define __GL_FUNC_EXTERN extern
+#endif
+
 #if defined(GL_DLSYM)
 
 #ifndef GL_FUNCTION
 #define UNDEF_GL_FUNCTION
 #define GL_FUNCTION(ret, func, params) \
 typedef ret (APIENTRY *func##_f) params; \
-func##_f func##_fp;
+__GL_FUNC_EXTERN func##_f func##_fp;
 #endif
 
 GL_FUNCTION(void, glBindTexture, (GLenum,GLuint))
@@ -161,7 +165,7 @@ GL_FUNCTION(void, glClearStencil, (GLint))
 #define UNDEF_GL_FUNCTION_OPT
 #define GL_FUNCTION_OPT(ret, func, params) \
 typedef ret (APIENTRY *func##_f) params; \
-func##_f func##_fp;
+__GL_FUNC_EXTERN func##_f func##_fp;
 #endif
 
 GL_FUNCTION_OPT(void, glActiveTextureARB, (GLenum))

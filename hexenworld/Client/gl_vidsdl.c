@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.108 2006-05-19 11:32:54 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.109 2006-05-26 08:21:25 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -13,6 +13,8 @@
 	- Added video modes enumeration via SDL
 	- Added video mode changing on the fly.
 */
+
+#define	__GL_FUNC_EXTERN
 
 #include "quakedef.h"
 
