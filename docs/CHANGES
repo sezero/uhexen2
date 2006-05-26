@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-05-26 (CVS, 1.4.1-pre2):
+    * fixed Mac platform defines. Added DragonFly into the platform names.
+    * hopefully fixed all linkage errors on MacOSX
+    * commented out the unused Sys_kbhit thing in the utilities
+    * bumped the version to 1.4.1-pre2 / 2006-05-26
+
 2006-05-20 (CVS, 1.4.1-pre1):
     * snd_oss endianness fixes.
     * cleaned up sound tryrates, etc. changed tryrates array to include
