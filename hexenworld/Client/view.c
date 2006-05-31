@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.c,v 1.12 2006-03-24 15:05:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.c,v 1.13 2006-05-31 16:49:02 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -241,7 +241,7 @@ static void V_DriftRoll (void)
 
 	if (view_message->onground == -1 || cls.demoplayback)
 	{
-		if(cl.v.movetype != MOVETYPE_FLY)
+		if (cl.v.movetype != MOVETYPE_FLY)
 		{
 			cl.rollvel = 0;
 			return;

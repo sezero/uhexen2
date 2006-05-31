@@ -414,10 +414,13 @@ static void IN_MouseMove (usercmd_t *cmd)
 
 	if (cl.idealroll == 0) // Did keyboard set it already??
 	{
-		if ((mouse_x <0) && (cl.v.movetype==MOVETYPE_FLY))
-			cl.idealroll=-10;
-		else if ((mouse_x >0) && (cl.v.movetype==MOVETYPE_FLY))
-			cl.idealroll=10;
+		if (cl.v.movetype == MOVETYPE_FLY)
+		{
+			if (mouse_x < 0)
+				cl.idealroll = -10;
+			else if (mouse_x > 0)
+				cl.idealroll = 10;
+		}
 	}
 
 // if the mouse has moved, force it to the center, so there's room to move
@@ -933,6 +936,9 @@ static void IN_JoyMove (usercmd_t *cmd)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2006/03/24 17:34:24  sezero
+ * includes cleanup
+ *
  * Revision 1.14  2006/03/24 15:05:42  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also

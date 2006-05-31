@@ -696,10 +696,13 @@ static void IN_MouseMove (usercmd_t *cmd)
 
 	if (cl.idealroll == 0) // Did keyboard set it already??
 	{
-		if ((mouse_x <0) && (cl.v.movetype==MOVETYPE_FLY))
-			cl.idealroll=-10;
-		else if ((mouse_x >0) && (cl.v.movetype==MOVETYPE_FLY))
-			cl.idealroll=10;
+		if (cl.v.movetype == MOVETYPE_FLY)
+		{
+			if (mouse_x < 0)
+				cl.idealroll = -10;
+			else if (mouse_x > 0)
+				cl.idealroll = 10;
+		}
 	}
 
 // if the mouse has moved, force it to the center, so there's room to move

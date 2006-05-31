@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.32 2006-03-24 15:05:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.33 2006-05-31 16:49:02 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -368,10 +368,13 @@ static void IN_MouseMove (usercmd_t *cmd)
 
 	if (cl.idealroll == 0) // Did keyboard set it already??
 	{
-		if ((mouse_x <0) && (cl.v.movetype==MOVETYPE_FLY))
-			cl.idealroll=-10;
-		else if ((mouse_x >0) && (cl.v.movetype==MOVETYPE_FLY))
-			cl.idealroll=10;
+		if (cl.v.movetype == MOVETYPE_FLY)
+		{
+			if (mouse_x < 0)
+				cl.idealroll = -10;
+			else if (mouse_x > 0)
+				cl.idealroll = 10;
+		}
 	}
 }
 
@@ -1188,6 +1191,11 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2006/03/24 15:05:39  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.31  2006/02/18 08:51:10  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. also renamed the variables name and dest to savename and savedest in

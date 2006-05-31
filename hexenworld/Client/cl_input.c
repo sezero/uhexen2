@@ -397,13 +397,14 @@ static void CL_AdjustAngles (void)
 
 	// FIXME: This is a cheap way of doing this, it belongs in V_CalcViewRoll
 	// but I don't see where I can get the yaw velocity, I have to get on to other things so here it is
-
-	if ((CL_KeyState (&in_left)!=0) && (cl.v.movetype==MOVETYPE_FLY))
-		cl.idealroll=-10;
-	else if ((CL_KeyState (&in_right)!=0) && (cl.v.movetype==MOVETYPE_FLY))
-		cl.idealroll=10;
-	else
-		cl.idealroll=0;
+	cl.idealroll = 0;
+	if (cl.v.movetype == MOVETYPE_FLY)
+	{
+		if (CL_KeyState (&in_left) != 0)
+			cl.idealroll = -10;
+		else if (CL_KeyState (&in_right) != 0)
+			cl.idealroll = 10;
+	}
 
 	up = CL_KeyState (&in_lookup);
 	down = CL_KeyState(&in_lookdown);
