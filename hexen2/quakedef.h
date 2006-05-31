@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.71 2006-05-26 10:20:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.72 2006-05-31 16:52:49 sezero Exp $
 */
 
 
@@ -18,7 +18,7 @@
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		4
 #define	HOT_VERSION_MIN		1
-#define	HOT_VERSION_REL_DATE	"2006-05-26"
+#define	HOT_VERSION_REL_DATE	"2006-05-31"
 #define	HOT_VERSION_BETA	1
 #define	HOT_VERSION_BETA_STR	"pre2"
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
@@ -436,6 +436,9 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.71  2006/05/26 10:20:54  sezero
+ * moved platform definitions to a new arch_def.h header
+ *
  * Revision 1.70  2006/05/26 08:32:00  sezero
  * bumped the version to 1.4.1-pre2 / 2006-05-26
  *
