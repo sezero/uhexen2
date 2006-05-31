@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.14 2006-03-24 15:05:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.15 2006-05-31 16:50:15 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -161,7 +161,7 @@ static void V_DriftPitch (void)
 {
 	float		delta, move;
 
-	if (noclip_anglehack || !cl.onground || cls.demoplayback)
+	if (noclip_anglehack || !cl.onground || cl.v.movetype == MOVETYPE_FLY || cls.demoplayback)
 	{
 		cl.driftmove = 0;
 		cl.pitchvel = 0;
@@ -1137,6 +1137,11 @@ void V_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2006/03/24 15:05:39  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.13  2006/02/22 20:19:07  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 23: wiev.c, wiev.h).
