@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-05-31 (CVS, 1.4.1-pre2):
+    * hexen2/view.c: disabled the irritating forced centerview (pitch
+      drifting) while flying in hexen2. the behavior now matches that
+      of hexenworld.
+    * cl_input.c, in_sdl.c, in_win.c, hexenworld/Client/view.c: made
+      things a little bit more readable.
+    * quakedef.h, bothdefs.h: version 1.4.1-pre2 / 2006-05-31
+
 2006-05-26 (CVS, 1.4.1-pre2):
     * fixed Mac platform defines. Added DragonFly into the platform names.
     * hopefully fixed all linkage errors on MacOSX
