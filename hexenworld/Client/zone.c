@@ -2,10 +2,11 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.9 2006-06-03 16:30:21 sezero Exp $
+	$Id: zone.c,v 1.10 2006-06-03 19:43:12 sezero Exp $
 */
 
 #include "quakedef.h"
+#include <ctype.h>	// for tolower()
 
 #define	DYNAMIC_SIZE	0x40000
 #define DYNAMIC_SIZEMAX	0x100000

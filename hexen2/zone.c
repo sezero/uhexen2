@@ -2,10 +2,11 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.19 2006-06-03 16:30:20 sezero Exp $
+	$Id: zone.c,v 1.20 2006-06-03 19:43:11 sezero Exp $
 */
 
 #include "quakedef.h"
+#include <ctype.h>	// for tolower()
 
 #define	DYNAMIC_SIZE	0x40000
 #define DYNAMIC_SIZEMAX	0x100000
@@ -1128,6 +1129,11 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2006/06/03 16:30:20  sezero
+ * a few MorphOS fixes, hopefully all correct.. those ifdef __MORPHOS__ stuff
+ * are probably correct for AmigaOS, as well.. some header clean-ups here and
+ * there...
+ *
  * Revision 1.18  2006/02/23 11:01:42  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 25: zone.c, zone.h).
