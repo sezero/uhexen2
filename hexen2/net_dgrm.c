@@ -16,7 +16,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/param.h>
-#else	// Eh ??
+#else	// shouldn't be needed
 #define AF_INET 		2	/* internet */
 // these actually seem to be winsock defines
 struct in_addr
@@ -40,6 +40,10 @@ char *inet_ntoa(struct in_addr in);
 unsigned long inet_addr(const char *cp);
 #endif
 #endif	// BAN_TEST
+
+#if defined(__MORPHOS__)
+#undef CloseSocket
+#endif
 
 #include "quakedef.h"
 #include "net_dgrm.h"

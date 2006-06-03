@@ -1,15 +1,55 @@
 // net.c
 
 #include "defs.h"
+#include <errno.h>
 
-extern char	filters_file[256];
+// unix includes and compatibility macros
+#if defined(PLATFORM_UNIX)
+#include <sys/ioctl.h>
+#include <sys/ioctl.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <unistd.h>
+#ifdef __MORPHOS__
+#include <proto/socket.h>
+#endif
+
+#define SOCKETERRNO errno
+
+#if defined(__MORPHOS__)
+//#undef SOCKETERRNO
+//#define SOCKETERRNO Errno()
+#define socklen_t int
+#define ioctlsocket IoctlSocket
+#define closesocket CloseSocket
+#else
+#define ioctlsocket ioctl
+#define closesocket close
+#endif
+
+#endif	// end of unix stuff
+
+// windows includes and compatibility macros
+#ifdef _WIN32
+#if !( defined(_WS2TCPIP_H) || defined(_WS2TCPIP_H_) )
+// on win32, socklen_t seems to be a winsock2 thing
+typedef int socklen_t;
+#endif
+#define SOCKETERRNO WSAGetLastError()
+#define EWOULDBLOCK	WSAEWOULDBLOCK
+#define ECONNREFUSED	WSAECONNREFUSED
+#endif	// end of windows stuff
+
+
+#ifdef _WIN32
+static WSADATA	winsockdata;
+#endif
 
 static byte	net_message_buffer[MAX_UDP_PACKET];
 static sizebuf_t	net_message;
 int		net_socket;
-#ifdef _WIN32
-static WSADATA	winsockdata;
-#endif
 static netadr_t	net_local_adr;
 static netadr_t	net_from;
 
@@ -23,6 +63,8 @@ static void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s);
 static void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a);
 static void NET_SendPacket (int length, void *data, netadr_t to);
 static qboolean NET_GetPacket (void);
+
+extern char	filters_file[256];
 
 //=============================================================================
 typedef struct filter_s
@@ -467,10 +509,7 @@ static void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
 
 static void NET_SendPacket (int length, void *data, netadr_t to)
 {
-	int	ret;
-#ifdef _WIN32
-	int	err;
-#endif
+	int	ret, err;
 	struct sockaddr_in	addr;
 
 	NetadrToSockadr (&to, &addr);
@@ -478,14 +517,10 @@ static void NET_SendPacket (int length, void *data, netadr_t to)
 	ret = sendto (net_socket, (char *)data, length, 0, (struct sockaddr *)&addr, sizeof(addr) );
 	if (ret == -1)
 	{
-#ifdef _WIN32
-		err = WSAGetLastError();
-		if (err == WSAEWOULDBLOCK)
-#else
-		if (errno == EWOULDBLOCK)
-#endif
+		err = SOCKETERRNO;
+		if (err == EWOULDBLOCK)
 			return;
-		printf ("NET_SendPacket ERROR: %i\n", errno);
+		printf ("NET_SendPacket ERROR: %i\n", err);
 	}
 }
 
@@ -663,20 +698,16 @@ static qboolean NET_GetPacket (void)
 
 	if (ret == -1)
 	{
-#ifdef _WIN32
-		err = WSAGetLastError();
-		if (err == WSAEWOULDBLOCK)
+		err = SOCKETERRNO;
+		if (err == EWOULDBLOCK)
 			return false;
+#ifdef _WIN32
 		if (err == WSAEMSGSIZE)
 		{
 			printf ("Warning:  Oversize packet from %s\n",
 				NET_AdrToString (net_from));
 			return false;
 		}
-#else
-		err = errno;
-		if (err == EWOULDBLOCK)
-			return false;
 #endif
 		//Sys_Error ("NET_GetPacket: %s", strerror(err));
 		printf ("Warning:  Unrecognized recvfrom error, error code = %i\n",err);

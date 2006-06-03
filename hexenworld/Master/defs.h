@@ -1,16 +1,6 @@
 
 #include <sys/types.h>
 
-#ifdef _WIN32
-#include <sys/timeb.h>
-#include <time.h>
-#include <io.h>
-#include <conio.h>
-#else
-#include <time.h>
-#include <sys/time.h>
-#endif
-
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
@@ -18,22 +8,6 @@
 
 #ifdef _WIN32
 #include <windows.h>
-#  if !( defined(_WS2TCPIP_H) || defined(_WS2TCPIP_H_) )
-// on win32, socklen_t seems to be a winsock2 thing
-typedef int socklen_t;
-#  endif
-#else
-#include <errno.h>
-#include <sys/stat.h>
-#include <sys/ioctl.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <unistd.h>
-#define ioctlsocket(A,B,C) ioctl(A,B,C)
-#define closesocket(A) close(A)
-#define DWORD unsigned int
 #endif
 
 
@@ -98,8 +72,6 @@ typedef enum {false, true}	qboolean;
 //Typedefs
 
 typedef unsigned char byte;
-
-struct sockaddr_in;
 
 typedef struct
 {

@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.18 2006-02-23 11:01:42 sezero Exp $
+	$Id: zone.c,v 1.19 2006-06-03 16:30:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -34,8 +34,8 @@ struct memzone_s
 static void Cache_FreeLow (int new_low_hunk);
 static void Cache_FreeHigh (int new_high_hunk);
 
-#ifndef _WIN32
-static void strlwr (char * str)
+
+static void Q_strlwr (char * str)
 {
 	while (*str)
 	{
@@ -43,7 +43,6 @@ static void strlwr (char * str)
 		str++;
 	}
 }
-#endif
 
 
 /*
@@ -803,7 +802,7 @@ static void Cache_Print (qboolean write_file)
 		sum += cd->size;
 
 		strcpy(temp,cd->name);
-		strlwr(temp);
+		Q_strlwr(temp);
 		if (strstr(temp,".mdl"))
 		{
 			num_mod++;
@@ -1129,6 +1128,10 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2006/02/23 11:01:42  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 25: zone.c, zone.h).
+ *
  * Revision 1.17  2006/01/06 12:41:41  sezero
  * increased minimum heapsize to 16 mb, otherwise hunk allocation errors occur
  * with old 8 mb minimum. added a -forcemem commandline switch which enables

@@ -4,7 +4,7 @@
 #include "huffman.h"
 
 // unix includes and compatibility macros
-#ifdef PLATFORM_UNIX
+#if defined(PLATFORM_UNIX)
 #include <errno.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
@@ -14,31 +14,37 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <unistd.h>
+#if defined(__MORPHOS__)
+#include <proto/socket.h>
+#endif
 
-#define ioctlsocket(A,B,C) ioctl(A,B,C)
-#define closesocket(A) close(A)
-#define CopyMemory(A,B,C) memcpy(A,B,C)
-#define STUB_FUNCTION fprintf(stderr,"STUB: %s at " __FILE__ ", line %d, thread %d\n",__FUNCTION__,__LINE__,getpid())
-#define UINT unsigned int
-#define WORD unsigned short
-#define SOCKET int
-#define SOCKADDR_IN struct sockaddr_in
-#define LPSOCKADDR struct sockaddr*
-#define LPHOSTENT struct hostent*
-#define HOSTENT struct hostent
-#define LPINADDR struct in_addr*
-#define LPIN_ADDR struct in_addr*
-#define SOCKET_ERROR -1
-#define INVALID_SOCKET -1
+#define SOCKETERRNO errno
+#define OutputDebugString(X) fprintf(stderr,"%s",(X))
+
+#if defined(__MORPHOS__)
+//#undef SOCKETERRNO
+//#define SOCKETERRNO Errno()
+#define socklen_t int
+#define ioctlsocket IoctlSocket
+#define closesocket CloseSocket
+#else
+#define ioctlsocket ioctl
+#define closesocket close
+#endif
+
 #endif	// end of unix stuff
 
+// windows includes and compatibility macros
 #if defined(_WIN32)
 #include "winquake.h"
 // socklen_t: on win32, it seems to be a winsock2 thing
 #if !( defined(_WS2TCPIP_H) || defined(_WS2TCPIP_H_) )
 typedef int	socklen_t;
 #endif
-#endif
+#define SOCKETERRNO WSAGetLastError()
+#define EWOULDBLOCK	WSAEWOULDBLOCK
+#define ECONNREFUSED	WSAECONNREFUSED
+#endif	// end of windows stuff
 
 
 //=============================================================================
@@ -173,21 +179,22 @@ qboolean NET_GetPacket (void)
 	ret = recvfrom (net_socket,(char *) huffbuff, sizeof(net_message_buffer), 0, (struct sockaddr *)&from, &fromlen);
 	if (ret == -1)
 	{
-#	ifdef _WIN32
-		int err = WSAGetLastError();
-		if (err == WSAEWOULDBLOCK)
+		int err = SOCKETERRNO;
+		if (err == EWOULDBLOCK)
 			return false;
+		if (err == ECONNREFUSED)
+		{
+			Con_Printf ("NET_GetPacket: Connection refused\n");
+			return false;
+		}
+#	ifdef _WIN32
 		if (err == WSAEMSGSIZE)
 		{
 			Con_Printf ("Oversize packet from %s\n", NET_AdrToString (net_from));
 			return false;
 		}
-		Sys_Error ("NET_GetPacket: %s", strerror(err));
-#	else
-		if (errno == EWOULDBLOCK || errno == ECONNREFUSED)
-			return false;
-		Sys_Error ("NET_GetPacket: %s", strerror(errno));
 #	endif
+		Sys_Error ("NET_GetPacket: %s", strerror(err));
 	}
 
 	SockadrToNetadr (&from, &net_from);
@@ -222,27 +229,22 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 
 #ifdef DEBUG_BUILD
 	sprintf(string,"in: %d  out: %d  ratio: %f\n",HuffIn, HuffOut, 1-(float)HuffOut/(float)HuffIn);
-#	ifdef _WIN32
 	OutputDebugString(string);
-#	else
-	fprintf(stderr, "%s", string);
-#	endif
 	CalcFreq((unsigned char *)data, length);
 #endif	// DEBUG_BUILD
 
 	ret = sendto (net_socket, (char *) huffbuff, outlen, 0, (struct sockaddr *)&addr, sizeof(addr) );
 	if (ret == -1)
 	{
-#	ifdef _WIN32
-		int err = WSAGetLastError();
-		if (err == WSAEWOULDBLOCK)
+		int err = SOCKETERRNO;
+		if (err == EWOULDBLOCK)
 			return;
-		Con_Printf ("NET_SendPacket ERROR: %i\n", err);
-#	else
-		if (errno == EWOULDBLOCK || errno == ECONNREFUSED)
+		if (err == ECONNREFUSED)
+		{
+			Con_Printf ("NET_SendPacket: Connection refused\n");
 			return;
+		}
 		Con_Printf ("NET_SendPacket ERROR: %i\n", errno);
-#	endif
 	}
 }
 
@@ -361,7 +363,6 @@ void	NET_Shutdown (void)
 #ifdef _WIN32
 	WSACleanup ();
 #endif
-
 #ifdef DEBUG_BUILD
 	PrintFreqs();
 #endif

@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.48 2006-04-10 12:02:08 sezero Exp $
+	$Id: glquake.h,v 1.49 2006-06-03 16:30:20 sezero Exp $
 */
 
 
@@ -11,7 +11,11 @@
 #endif
 
 #include <GL/gl.h>
-#include <GL/glu.h>
+//#include <GL/glu.h>
+
+#ifdef __MORPHOS__
+#include <proto/tinygl.h>
+#endif
 
 #include "gl_opt.h"
 #include "gl_func.h"
@@ -369,6 +373,11 @@ extern	const char *gl_extensions;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.48  2006/04/10 12:02:08  sezero
+ * gathered all compile-time opengl options into a gl_opt.h header file.
+ * changed USE_HEXEN2_PALTEX_CODE and USE_HEXEN2_RESAMPLER_CODE to 0 / 1
+ * instead of the previous define/undef.
+ *
  * Revision 1.47  2006/03/29 20:46:02  sezero
  * minor fixups
  *

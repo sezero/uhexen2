@@ -6,10 +6,23 @@
 
 #include "defs.h"
 #include <limits.h>
+
 #if defined(PLATFORM_UNIX)
+#include <errno.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <time.h>
+#include <sys/time.h>
 #if USE_PASSWORD_FILE
 #include <pwd.h>
 #endif
+#endif
+
+#if defined(_WIN32)
+#include <sys/timeb.h>
+#include <time.h>
+#include <io.h>
+#include <conio.h>
 #endif
 
 #if defined(PLATFORM_UNIX)

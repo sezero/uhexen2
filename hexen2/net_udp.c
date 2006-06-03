@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.14 2006-05-05 09:37:47 sezero Exp $
+	$Id: net_udp.c,v 1.15 2006-06-03 16:30:20 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -34,16 +34,20 @@
 #include <sys/ioctl.h>
 #include <errno.h>
 #include <unistd.h>
-
-#ifdef __sun__
-#include <sys/filio.h>
-#endif
-
-#ifdef NeXT
-#include <libc.h>
+#if defined(__MORPHOS__)
+#include <proto/socket.h>
 #endif
 
 #include "quakedef.h"
+
+#if defined(__MORPHOS__)
+#define socklen_t int
+#define ioctlsocket IoctlSocket
+#define closesocket CloseSocket
+#else
+#define ioctlsocket ioctl
+#define closesocket close
+#endif
 
 static int net_acceptsocket = -1;	// socket for fielding new connections
 static int net_controlsocket;
@@ -151,7 +155,7 @@ int UDP_OpenSocket (int port)
 	if ((newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
 		return -1;
 
-	if (ioctl (newsocket, FIONBIO, (char *)&_true) == -1)
+	if (ioctlsocket (newsocket, FIONBIO, (char *)&_true) == -1)
 		goto ErrorReturn;
 
 	address.sin_family = AF_INET;
@@ -173,7 +177,7 @@ int UDP_CloseSocket (int mysocket)
 {
 	if (mysocket == net_broadcastsocket)
 		net_broadcastsocket = 0;
-	return close (mysocket);
+	return closesocket (mysocket);
 }
 
 //=============================================================================
@@ -242,6 +246,17 @@ int UDP_Connect (int mysocket, struct qsockaddr *addr)
 
 int UDP_CheckNewConnections (void)
 {
+#if defined(__MORPHOS__)
+	char buf[4096];
+
+	if (net_acceptsocket == -1)
+		return -1;
+
+	if (recvfrom (net_acceptsocket, buf, sizeof(buf), MSG_PEEK, NULL, NULL) > 0)
+	{
+		return net_acceptsocket;
+	}
+#else
 	unsigned long	available;
 	char		buff[1];
 
@@ -254,6 +269,7 @@ int UDP_CheckNewConnections (void)
 		return net_acceptsocket;
 	// quietly absorb empty packets
 	recvfrom (net_acceptsocket, buff, 0, 0, NULL, NULL);
+#endif
 	return -1;
 }
 

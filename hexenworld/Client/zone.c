@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.8 2006-02-23 11:01:43 sezero Exp $
+	$Id: zone.c,v 1.9 2006-06-03 16:30:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -34,8 +34,8 @@ struct memzone_s
 static void Cache_FreeLow (int new_low_hunk);
 static void Cache_FreeHigh (int new_high_hunk);
 
-#ifndef _WIN32
-static void strlwr (char * str)
+
+static void Q_strlwr (char * str)
 {
 	while (*str)
 	{
@@ -43,7 +43,6 @@ static void strlwr (char * str)
 		str++;
 	}
 }
-#endif
 
 
 /*
@@ -803,7 +802,7 @@ static void Cache_Print (qboolean write_file)
 		sum += cd->size;
 
 		strcpy(temp,cd->name);
-		strlwr(temp);
+		Q_strlwr(temp);
 		if (strstr(temp,".mdl"))
 		{
 			num_mod++;
