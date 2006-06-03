@@ -232,7 +232,7 @@ void H2GameScan (GList *GameList)
 	int	i;
 	char	*Title;
 
-	Title = (char *)malloc(32);
+	Title = (char *)malloc(sizeof(char)*32);
 	for (i = 1; i < MAX_H2GAMES; i++)
 	{
 		printf("Looking for %s ... ", (char *)h2game_names[i][1]);
@@ -259,7 +259,7 @@ void HWGameScan (GList *GameList)
 	int	i, j;
 	char	*Title;
 
-	Title = (char *)malloc(32);
+	Title = (char *)malloc(sizeof(char)*32);
 	for (i = 1; i < MAX_HWGAMES; i++)
 	{
 		printf("Looking for %s ... ", (char *)hwgame_names[i][1]);

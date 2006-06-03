@@ -1,11 +1,21 @@
 // sys_main.c
 
+// whether to use the password file to determine
+// the path to the home directory
+#define USE_PASSWORD_FILE	0
+
 #include "defs.h"
 #include <limits.h>
+#if defined(PLATFORM_UNIX)
+#if USE_PASSWORD_FILE
+#include <pwd.h>
+#endif
+#endif
 
-#ifndef _WIN32
+#if defined(PLATFORM_UNIX)
 static int	do_stdin = 1;
 static qboolean	stdin_ready;
+static char	userdir[256];
 #endif
 
 char		com_token[1024];
@@ -15,9 +25,6 @@ char	**com_argv;
 static char	*largv[MAX_NUM_ARGVS + 1];
 static char	*argvdummy = " ";
 
-#ifdef PLATFORM_UNIX
-static char	userdir[240];
-#endif
 char		filters_file[256];
 
 
@@ -227,10 +234,6 @@ void SV_Shutdown (void)
    and there's no other activity. *MIGHT* cause problems with some mods. */
 static qboolean sys_dead_sleep	= 0;
 
-#ifndef max
-# define max(a,b) ((a) > (b) ? (a) : (b))
-#endif
-
 static int Sys_CheckInput (int ns)
 {
 	fd_set		fdset;
@@ -384,6 +387,45 @@ double Sys_DoubleTime (void)
 #endif
 }
 
+#ifdef PLATFORM_UNIX
+
+int Sys_mkdir (char *path)
+{
+	int rc;
+
+	rc = mkdir (path, 0777);
+	if (rc != 0 && errno == EEXIST)
+		rc = 0;
+
+	return rc;
+}
+
+static int Sys_GetUserdir (char *buff, size_t path_len)
+{
+	char		*home_dir = NULL;
+#if USE_PASSWORD_FILE
+	struct passwd	*pwent;
+
+	pwent = getpwuid( getuid() );
+	if (pwent == NULL)
+		perror("getpwuid");
+	else
+		home_dir = pwent->pw_dir;
+#endif
+	if (home_dir == NULL)
+		home_dir = getenv("HOME");
+	if (home_dir == NULL)
+		return 1;
+
+	if (strlen(home_dir) + strlen(HWM_USERDIR) + 12 > path_len)
+		return 1;
+
+	sprintf (buff, "%s/%s", home_dir, HWM_USERDIR);
+	return Sys_mkdir(buff);
+}
+#endif
+
+
 #define SV_TIMEOUT 450
 
 static void SV_TimeOut(void)
@@ -459,12 +501,9 @@ int main (int argc, char **argv)
 
 #ifdef PLATFORM_UNIX
 // userdir stuff
-	if (getenv("HOME") == NULL)
+	if (Sys_GetUserdir(userdir,sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
-	sprintf(userdir, "%s/%s", getenv("HOME"), ".hwmaster");
-	t = mkdir (userdir, 0755);
-	if (t != 0 && errno != EEXIST)
-		Sys_Error ("Couldn't create user directory");
+	printf ("Userdir: %s\n", userdir);
 	sprintf(filters_file, "%s/%s", userdir, "filters.ini");
 #else
 	sprintf(filters_file, "%s", "filters.ini");

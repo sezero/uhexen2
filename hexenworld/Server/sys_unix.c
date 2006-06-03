@@ -1,9 +1,15 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.18 2006-05-19 00:30:43 sezero Exp $
+	$Id: sys_unix.c,v 1.19 2006-06-03 14:06:05 sezero Exp $
 
 	Unix system interface code
 */
+
+#include "qwsvdef.h"
+
+// whether to use the password file to determine
+// the path to the home directory
+#define USE_PASSWORD_FILE	0
 
 #include <errno.h>
 #include <sys/stat.h>
@@ -11,9 +17,9 @@
 #include <dirent.h>
 #include <fnmatch.h>
 #include <unistd.h>
-
-#include "qwsvdef.h"
-
+#if USE_PASSWORD_FILE
+#include <pwd.h>
+#endif
 
 #ifdef ASSUMED_LITTLE_ENDIAN
 #warning "Unable to determine CPU endianess. Defaulting to little endian"
@@ -33,15 +39,30 @@ cvar_t	sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 Sys_GetUserdir
 ================
 */
-static int Sys_GetUserdir (char *buff, unsigned int path_len)
+static int Sys_GetUserdir (char *buff, size_t path_len)
 {
-	if (getenv("HOME") == NULL)
+	char		*home_dir = NULL;
+#if USE_PASSWORD_FILE
+	struct passwd	*pwent;
+
+	pwent = getpwuid( getuid() );
+	if (pwent == NULL)
+		perror("getpwuid");
+	else
+		home_dir = pwent->pw_dir;
+#endif
+	if (home_dir == NULL)
+		home_dir = getenv("HOME");
+	if (home_dir == NULL)
 		return 1;
 
-	if (strlen(getenv("HOME")) + strlen(AOT_USERDIR) + 5 > path_len)
+//	what would be a maximum path for a file in the user's directory...
+//	$HOME/AOT_USERDIR/game_dir/dirname1/dirname2/dirname3/filename.ext
+//	still fits in the MAX_OSPATH == 256 definition, but just in case :
+	if (strlen(home_dir) + strlen(AOT_USERDIR) + 50 > path_len)
 		return 1;
 
-	sprintf (buff, "%s/%s", getenv("HOME"), AOT_USERDIR);
+	sprintf (buff, "%s/%s", home_dir, AOT_USERDIR);
 	return Sys_mkdir(buff);
 }
 

@@ -40,11 +40,17 @@ typedef int socklen_t;
 //=============================================================================
 
 //Defines
-#define VER_HWMASTER	"1.2.2"		// our version string
+#define VER_HWMASTER	"1.2.3"		/* our version string		*/
+
+#define HWM_USERDIR	".hwmaster"	/* user directory for unix	*/
 
 #undef true
 #undef false
 typedef enum {false, true}	qboolean;
+
+#ifndef max
+# define max(a,b) ((a) > (b) ? (a) : (b))
+#endif
 
 #define	MAX_ARGS	80
 #define MAX_NUM_ARGVS	50

@@ -1,7 +1,6 @@
 #include "common.h"
 #include "launcher_defs.h"
-
-#define LAUNCHER_CONFIG_FILE "launcher_options"
+#include "config_file.h"
 
 // Default values for the options
 int destiny		= DEST_H2;
@@ -37,18 +36,15 @@ int hwgame		= 0;
 #endif
 
 // from main.c
-extern char userdir[1024];
+extern char userdir[MAX_OSPATH];
 
 
 static FILE * open_config_file (char *flags)
 {
-
-#	define MAX_PATH 1024
-
 	FILE	*thefile;
 	char	*config_file_name =0;
 
-	config_file_name = (char *)calloc(MAX_PATH, sizeof(char));
+	config_file_name = (char *)calloc(MAX_OSPATH, sizeof(char));
 
 	strcat (config_file_name,userdir);
 	strcat (config_file_name,"/");

@@ -1,16 +1,26 @@
+
 #include "common.h"
+
+// whether to use the password file to determine
+// the path to the home directory
+#define USE_PASSWORD_FILE	0
+
+#if USE_PASSWORD_FILE
+#include <pwd.h>
+#endif
+
 #include "launcher_defs.h"
 #include "config_file.h"
 #include "interface.h"
 //#include "support.h"
 
-static char	bin_dir[1024];
-char		userdir[1024];
+static char	bin_dir[MAX_OSPATH];
+char		userdir[MAX_OSPATH];
 
 static char *Sys_SearchCommand (char *filename)
 {
-	static char pathname[1024];
-	char	buff[1024];
+	static char	pathname[MAX_OSPATH];
+	char	buff[MAX_OSPATH];
 	char	*path;
 	int		m, n;
 
@@ -23,12 +33,12 @@ static char *Sys_SearchCommand (char *filename)
 	{
 		char	*cwd;
 
-		cwd = malloc(sizeof(char)*1024);
-		if (getcwd (cwd, 1024) == NULL)
+		cwd = malloc(sizeof(char)*MAX_OSPATH);
+		if (getcwd (cwd, MAX_OSPATH) == NULL)
 		{
 			perror("getcwd failed");
 		}
-		snprintf(pathname, 1024,"%s%s", cwd, filename+1);
+		snprintf(pathname, MAX_OSPATH,"%s%s", cwd, filename+1);
 		free(cwd);
 		return pathname;
 	}
@@ -56,16 +66,13 @@ static char *Sys_SearchCommand (char *filename)
 
 		if (!access(pathname, F_OK))
 		{
-			strncpy(buff, pathname, 1024);
+			// is this  a symbolic link ??
+			strncpy(buff, pathname, MAX_OSPATH);
 			memset (pathname, 0, sizeof(pathname));
 
-			if (readlink(buff, pathname, 1024) < 0)
+			if (readlink(buff, pathname, MAX_OSPATH) < 0)
 			{
-				if (errno == EINVAL)
-				{
-				  /* not a symbolic link */
-				}
-				else
+				if (errno != EINVAL)
 					perror(NULL);
 			}
 
@@ -106,18 +113,27 @@ static int Sys_mkdir (char *path)
 	return rc;
 }
 
-static int Sys_GetUserdir (char *buff, unsigned int len)
+static int Sys_GetUserdir (char *buff, size_t path_len)
 {
-	if (getenv("HOME") == NULL)
+	char		*home_dir = NULL;
+#if USE_PASSWORD_FILE
+	struct passwd	*pwent;
+
+	pwent = getpwuid( getuid() );
+	if (pwent == NULL)
+		perror("getpwuid");
+	else
+		home_dir = pwent->pw_dir;
+#endif
+	if (home_dir == NULL)
+		home_dir = getenv("HOME");
+	if (home_dir == NULL)
 		return 1;
 
-	if ( strlen(getenv("HOME")) + strlen(AOT_USERDIR) + 2 > len )
-	{
+	if (strlen(home_dir) + strlen(AOT_USERDIR) + strlen(LAUNCHER_CONFIG_FILE) + 2 > path_len)
 		return 1;
-	}
 
-	sprintf (buff, "%s/%s", getenv("HOME"), AOT_USERDIR);
-
+	sprintf (buff, "%s/%s", home_dir, AOT_USERDIR);
 	return Sys_mkdir(buff);
 }
 
@@ -148,7 +164,7 @@ int main (int argc, char *argv[])
 		exit(1);
 	}
 
-	memset(bin_dir,0,1024);
+	memset(bin_dir, 0, sizeof(bin_dir));
 	Sys_FindBinDir(argv[0], bin_dir);
 	printf("Basedir  : %s\n",bin_dir);
 	printf("Userdir  : %s\n",userdir);

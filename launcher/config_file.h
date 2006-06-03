@@ -1,6 +1,8 @@
 #ifndef CONFIG_FILE_H
 #define CONFIG_FILE_H
 
+#define LAUNCHER_CONFIG_FILE "launcher_options"
+
 extern int destiny;
 extern int mp_support;
 extern int opengl_support;

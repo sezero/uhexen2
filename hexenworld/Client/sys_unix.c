@@ -2,13 +2,20 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.47 2006-05-19 11:32:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.48 2006-06-03 14:06:05 sezero Exp $
 */
 
 #include "quakedef.h"
 
+// whether to use the password file to determine
+// the path to the home directory
+#define USE_PASSWORD_FILE	0
+
 #include <errno.h>
 #include <unistd.h>
+#if USE_PASSWORD_FILE
+#include <pwd.h>
+#endif
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <fcntl.h>
@@ -270,15 +277,30 @@ void Sys_SendKeyEvents (void)
 	IN_SendKeyEvents();
 }
 
-static int Sys_GetUserdir (char *buff, unsigned int path_len)
+static int Sys_GetUserdir (char *buff, size_t path_len)
 {
-	if (getenv("HOME") == NULL)
+	char		*home_dir = NULL;
+#if USE_PASSWORD_FILE
+	struct passwd	*pwent;
+
+	pwent = getpwuid( getuid() );
+	if (pwent == NULL)
+		perror("getpwuid");
+	else
+		home_dir = pwent->pw_dir;
+#endif
+	if (home_dir == NULL)
+		home_dir = getenv("HOME");
+	if (home_dir == NULL)
 		return 1;
 
-	if (strlen(getenv("HOME")) + strlen(AOT_USERDIR) + 5 > path_len)
+//	what would be a maximum path for a file in the user's directory...
+//	$HOME/AOT_USERDIR/game_dir/dirname1/dirname2/dirname3/filename.ext
+//	still fits in the MAX_OSPATH == 256 definition, but just in case :
+	if (strlen(home_dir) + strlen(AOT_USERDIR) + 50 > path_len)
 		return 1;
 
-	sprintf (buff, "%s/%s", getenv("HOME"), AOT_USERDIR);
+	sprintf (buff, "%s/%s", home_dir, AOT_USERDIR);
 	return Sys_mkdir(buff);
 }
 
@@ -459,6 +481,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.47  2006/05/19 11:32:54  sezero
+ * misc clean-up
+ *
  * Revision 1.46  2006/04/17 14:00:51  sezero
  * minor update to version display stuff
  *
