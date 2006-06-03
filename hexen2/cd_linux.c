@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.18 2006-03-24 15:45:22 sezero Exp $
+	$Id: cd_linux.c,v 1.19 2006-06-03 14:04:25 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -53,25 +53,25 @@ static byte	maxTrack;
 
 static int cdfile = -1;
 static char cd_dev[64] = _PATH_DEV "cdrom"; // user can always do -cddev
-static struct cdrom_volctrl drv_vol0;	// orig. setting to be restored upon exit
+static struct cdrom_volctrl orig_vol;	// orig. setting to be restored upon exit
 static struct cdrom_volctrl drv_vol;	// the volume setting we'll be using
+
 
 static void CDAudio_Eject(void)
 {
 	if (cdfile == -1 || !enabled)
 		return; // no cd init'd
 
-	if ( ioctl(cdfile, CDROMEJECT) == -1 ) 
+	if ( ioctl(cdfile, CDROMEJECT) == -1 )
 		Con_DPrintf("ioctl CDROMEJECT failed\n");
 }
-
 
 static void CDAudio_CloseDoor(void)
 {
 	if (cdfile == -1 || !enabled)
 		return; // no cd init'd
 
-	if ( ioctl(cdfile, CDROMCLOSETRAY) == -1 ) 
+	if ( ioctl(cdfile, CDROMCLOSETRAY) == -1 )
 		Con_DPrintf("ioctl CDROMCLOSETRAY failed\n");
 }
 
@@ -84,7 +84,7 @@ static int CDAudio_GetAudioDiskInfo(void)
 
 	cdValid = false;
 
-	if ( ioctl(cdfile, CDROMREADTOCHDR, &tochdr) == -1 ) 
+	if ( ioctl(cdfile, CDROMREADTOCHDR, &tochdr) == -1 )
 	{
 		Con_DPrintf("ioctl CDROMREADTOCHDR failed\n");
 		return -1;
@@ -102,7 +102,6 @@ static int CDAudio_GetAudioDiskInfo(void)
 	return 0;
 }
 
-
 void CDAudio_Play(byte track, qboolean looping)
 {
 	struct cdrom_tocentry entry;
@@ -110,7 +109,7 @@ void CDAudio_Play(byte track, qboolean looping)
 
 	if (cdfile == -1 || !enabled)
 		return;
-	
+
 	if (!cdValid)
 	{
 		CDAudio_GetAudioDiskInfo();
@@ -152,13 +151,13 @@ void CDAudio_Play(byte track, qboolean looping)
 	ti.cdti_ind0 = 1;
 	ti.cdti_ind1 = 99;
 
-	if ( ioctl(cdfile, CDROMPLAYTRKIND, &ti) == -1 ) 
+	if ( ioctl(cdfile, CDROMPLAYTRKIND, &ti) == -1 )
 	{
 		Con_DPrintf("ioctl CDROMPLAYTRKIND failed\n");
 		return;
 	}
 
-	if ( ioctl(cdfile, CDROMRESUME) == -1 ) 
+	if ( ioctl(cdfile, CDROMRESUME) == -1 )
 		Con_DPrintf("ioctl CDROMRESUME failed\n");
 
 	playLooping = looping;
@@ -166,12 +165,11 @@ void CDAudio_Play(byte track, qboolean looping)
 	playing = true;
 }
 
-
 void CDAudio_Stop(void)
 {
 	if (cdfile == -1 || !enabled)
 		return;
-	
+
 	if (!playing)
 		return;
 
@@ -190,26 +188,25 @@ void CDAudio_Pause(void)
 	if (!playing)
 		return;
 
-	if ( ioctl(cdfile, CDROMPAUSE) == -1 ) 
+	if ( ioctl(cdfile, CDROMPAUSE) == -1 )
 		Con_DPrintf("ioctl CDROMPAUSE failed\n");
 
 	wasPlaying = playing;
 	playing = false;
 }
 
-
 void CDAudio_Resume(void)
 {
 	if (cdfile == -1 || !enabled)
 		return;
-	
+
 	if (!cdValid)
 		return;
 
 	if (!wasPlaying)
 		return;
-	
-	if ( ioctl(cdfile, CDROMRESUME) == -1 ) 
+
+	if ( ioctl(cdfile, CDROMRESUME) == -1 )
 		Con_DPrintf("ioctl CDROMRESUME failed\n");
 	playing = true;
 }
@@ -376,6 +373,10 @@ void CDAudio_Update(void)
 			if (playLooping)
 				CDAudio_Play(playTrack, true);
 		}
+		else
+		{
+			playTrack = subchnl.cdsc_trk;
+		}
 	}
 }
 
@@ -415,11 +416,11 @@ int CDAudio_Init(void)
 	Cmd_AddCommand ("cd", CD_f);
 
 	// get drives volume
-	if (ioctl(cdfile, CDROMVOLREAD, &drv_vol0) == -1)
+	if (ioctl(cdfile, CDROMVOLREAD, &orig_vol) == -1)
 	{
 		Con_Printf("ioctl CDROMVOLREAD failed\n");
-		drv_vol0.channel0 = drv_vol0.channel2 =
-		drv_vol0.channel1 = drv_vol0.channel3 = 255.0;
+		orig_vol.channel0 = orig_vol.channel2 =
+		orig_vol.channel1 = orig_vol.channel3 = 255.0;
 	}
 	// set our own volume
 	drv_vol.channel0 = drv_vol.channel2 =
@@ -430,14 +431,13 @@ int CDAudio_Init(void)
 	return 0;
 }
 
-
 void CDAudio_Shutdown(void)
 {
 	if (!initialized)
 		return;
 	CDAudio_Stop();
 	// put the drives old volume back
-	if (ioctl(cdfile, CDROMVOLCTRL, &drv_vol0) == -1)
+	if (ioctl(cdfile, CDROMVOLCTRL, &orig_vol) == -1)
 		Con_Printf("ioctl CDROMVOLCTRL failed\n");
 	close(cdfile);
 	cdfile = -1;

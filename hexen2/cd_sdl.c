@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.7 2006-03-24 15:45:22 sezero Exp $
+	$Id: cd_sdl.c,v 1.8 2006-06-03 14:04:25 sezero Exp $
 
 	Copyright (C) 2001  Mark Baker <homer1@together.net>
 	Taken from SDLquake with modifications to make it work
@@ -41,6 +41,7 @@ static qboolean playLooping = false;
 static SDL_CD *cd_id;
 static float cdvolume = 1.0;
 
+
 static void CDAudio_Eject(void)
 {
 	if (!cd_id || !enabled)
@@ -56,7 +57,7 @@ void CDAudio_Play(byte track, qboolean looping)
 
 	if (!cd_id || !enabled)
 		return;
-	
+
 	cd_stat=SDL_CDStatus(cd_id);
 
 	if (!cdValid)
@@ -90,7 +91,6 @@ void CDAudio_Play(byte track, qboolean looping)
 	playLooping = looping;
 }
 
-
 void CDAudio_Stop(void)
 {
 	int cdstate;
@@ -118,7 +118,6 @@ void CDAudio_Pause(void)
 	if (SDL_CDPause(cd_id))
 		Con_DPrintf("CDAudio_Pause: Failed to pause track.\n");
 }
-
 
 void CDAudio_Resume(void)
 {
@@ -301,7 +300,6 @@ int CDAudio_Init(void)
 
 	return 0;
 }
-
 
 void CDAudio_Shutdown(void)
 {

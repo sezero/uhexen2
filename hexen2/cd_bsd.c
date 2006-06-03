@@ -1,6 +1,6 @@
 /*
 	cd_bsd.c
-	$Id: cd_bsd.c,v 1.12 2006-03-24 15:45:22 sezero Exp $
+	$Id: cd_bsd.c,v 1.13 2006-06-03 14:04:25 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	A few BSD bits taken from the Dark Places project for Hammer
@@ -60,8 +60,9 @@ static char cd_dev[64] = _PATH_DEV "cd0";
 #else
 static char cd_dev[64] = _PATH_DEV "acd0";
 #endif
-static struct ioc_vol drv_vol0;	// orig. setting to be restored upon exit
+static struct ioc_vol orig_vol;	// orig. setting to be restored upon exit
 static struct ioc_vol drv_vol;	// the volume setting we'll be using
+
 
 static void CDAudio_Eject(void)
 {
@@ -69,10 +70,9 @@ static void CDAudio_Eject(void)
 		return; // no cd init'd
 
 	ioctl(cdfile, CDIOCALLOW);
-	if ( ioctl(cdfile, CDIOCEJECT) == -1 ) 
+	if ( ioctl(cdfile, CDIOCEJECT) == -1 )
 		Con_DPrintf("ioctl CDIOCEJECT failed\n");
 }
-
 
 static void CDAudio_CloseDoor(void)
 {
@@ -80,7 +80,7 @@ static void CDAudio_CloseDoor(void)
 		return; // no cd init'd
 
 	ioctl(cdfile, CDIOCALLOW);
-	if ( ioctl(cdfile, CDIOCCLOSE) == -1 ) 
+	if ( ioctl(cdfile, CDIOCCLOSE) == -1 )
 		Con_DPrintf("ioctl CDIOCCLOSE failed\n");
 }
 
@@ -93,7 +93,7 @@ static int CDAudio_GetAudioDiskInfo(void)
 
 	cdValid = false;
 
-	if ( ioctl(cdfile, CDIOREADTOCHEADER, &tochdr) == -1 ) 
+	if ( ioctl(cdfile, CDIOREADTOCHEADER, &tochdr) == -1 )
 	{
 		Con_DPrintf("ioctl CDIOREADTOCHEADER failed\n");
 		return -1;
@@ -111,7 +111,6 @@ static int CDAudio_GetAudioDiskInfo(void)
 	return 0;
 }
 
-
 void CDAudio_Play(byte track, qboolean looping)
 {
 	struct ioc_read_toc_entry entry;
@@ -120,7 +119,7 @@ void CDAudio_Play(byte track, qboolean looping)
 
 	if (cdfile == -1 || !enabled)
 		return;
-	
+
 	if (!cdValid)
 	{
 		CDAudio_GetAudioDiskInfo();
@@ -180,12 +179,11 @@ void CDAudio_Play(byte track, qboolean looping)
 	playing = true;
 }
 
-
 void CDAudio_Stop(void)
 {
 	if (cdfile == -1 || !enabled)
 		return;
-	
+
 	if (!playing)
 		return;
 
@@ -208,26 +206,25 @@ void CDAudio_Pause(void)
 	if (!playing)
 		return;
 
-	if ( ioctl(cdfile, CDIOCPAUSE) == -1 ) 
+	if ( ioctl(cdfile, CDIOCPAUSE) == -1 )
 		Con_DPrintf("ioctl CDIOCPAUSE failed\n");
 
 	wasPlaying = playing;
 	playing = false;
 }
 
-
 void CDAudio_Resume(void)
 {
 	if (cdfile == -1 || !enabled)
 		return;
-	
+
 	if (!cdValid)
 		return;
 
 	if (!wasPlaying)
 		return;
-	
-	if ( ioctl(cdfile, CDIOCRESUME) == -1 ) 
+
+	if ( ioctl(cdfile, CDIOCRESUME) == -1 )
 		Con_DPrintf("ioctl CDIOCRESUME failed\n");
 	playing = true;
 }
@@ -401,10 +398,10 @@ void CDAudio_Update(void)
 			if (playLooping)
 				CDAudio_Play(playTrack, true);
 		}
-		/*else
+		else
 		{
 			playTrack = data.what.position.track_number;
-		}*/
+		}
 	}
 }
 
@@ -444,11 +441,11 @@ int CDAudio_Init(void)
 	Cmd_AddCommand ("cd", CD_f);
 
 	// get drives volume
-	if (ioctl(cdfile, CDIOCGETVOL, &drv_vol0) == -1)
+	if (ioctl(cdfile, CDIOCGETVOL, &orig_vol) == -1)
 	{
 		Con_Printf("ioctl CDIOCGETVOL failed\n");
-		drv_vol0.vol[0] = drv_vol0.vol[2] =
-		drv_vol0.vol[1] = drv_vol0.vol[3] = 255.0;
+		orig_vol.vol[0] = orig_vol.vol[2] =
+		orig_vol.vol[1] = orig_vol.vol[3] = 255.0;
 	}
 	// set our own volume
 	drv_vol.vol[0] = drv_vol.vol[2] =
@@ -459,14 +456,13 @@ int CDAudio_Init(void)
 	return 0;
 }
 
-
 void CDAudio_Shutdown(void)
 {
 	if (!initialized)
 		return;
 	CDAudio_Stop();
 	// put the drives old volume back
-	if (ioctl(cdfile, CDIOCSETVOL, &drv_vol0) == -1)
+	if (ioctl(cdfile, CDIOCSETVOL, &orig_vol) == -1)
 		Con_Printf("ioctl CDIOCSETVOL failed\n");
 	close(cdfile);
 	cdfile = -1;
