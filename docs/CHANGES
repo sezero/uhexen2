@@ -3,6 +3,22 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-06-03 (CVS, 1.4.1-pre3):
+    * fixed broken display of launcher binary name when run using a symlink.
+    * cdrom: the case when the user changes track without using the "cd"
+      command should now be handled correctly (was accidentally left commented
+      out in cd_bsd. also added to cd_linux now). renamed drv_vol0 to orig_vol.
+      misc whitespace cleanup.
+    * added back the password file method of determining the user's home
+      as a compile time option. modified the length check for the homedir
+      path length using the length of a would-be-large-enough template.
+      small clean-ups here and there.
+    * a few MorphOS fixes, hopefully all correct.. those ifdef __MORPHOS__
+      stuff are probably correct for AmigaOS, as well.. some header clean-ups
+      here and there.
+    * bumped engine version to 1.4.1-pre3 / 2006-06-03, hwmaster version to
+      1.2.3, and launcher version to 0.7.5.
+
 2006-05-31 (CVS, 1.4.1-pre2):
     * hexen2/view.c: disabled the irritating forced centerview (pitch
       drifting) while flying in hexen2. the behavior now matches that
