@@ -57,6 +57,7 @@ static char *Sys_SearchCommand (char *filename)
 		if (!access(pathname, F_OK))
 		{
 			strncpy(buff, pathname, 1024);
+			memset (pathname, 0, sizeof(pathname));
 
 			if (readlink(buff, pathname, 1024) < 0)
 			{
