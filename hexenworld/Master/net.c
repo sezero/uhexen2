@@ -6,7 +6,6 @@
 // unix includes and compatibility macros
 #if defined(PLATFORM_UNIX)
 #include <sys/ioctl.h>
-#include <sys/ioctl.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
