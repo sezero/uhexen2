@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.56 2006-06-08 19:11:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.57 2006-06-08 20:17:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -156,15 +156,19 @@ Sys_MakeCodeWriteable
 void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 {
 	int		r;
-	unsigned long	addr;
+	unsigned long	endaddr = startaddr + length;
+#if !defined(__QNX__)
+# if	1
+	long		psize = sysconf (_SC_PAGESIZE);
+# else
 	int		psize = getpagesize();
-
-	addr = (startaddr & ~(psize-1)) - psize;
-
-//	fprintf(stderr, "writable code %lx(%lx)-%lx, length=%lx\n", startaddr,
-//		addr, startaddr+length, length);
-
-	r = mprotect ((char *) addr, length + startaddr - addr + psize, PROT_WRITE | PROT_READ | PROT_EXEC);
+# endif
+	startaddr &= ~(psize - 1);
+	endaddr = (endaddr + psize - 1) & ~(psize - 1);
+#endif
+	// systems with mprotect but not getpagesize (or similar) probably don't
+	// need to page align the arguments to mprotect (eg, QNX)
+	r = mprotect ((char *) startaddr, endaddr - startaddr, PROT_WRITE | PROT_READ | PROT_EXEC);
 
 	if (r < 0)
 		Sys_Error("Protection change failed\n");
@@ -542,6 +546,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.56  2006/06/08 19:11:41  sezero
+ * provide the flags to mprotect() in a more standart way. from Steven.
+ *
  * Revision 1.55  2006/06/03 14:06:05  sezero
  * added back the password file method of determining the user's home
  * as a compile time option. modified the length check for the homedir
