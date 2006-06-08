@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-06-08 (CVS, 1.4.1-pre3):
+    * split strings out of pr_edict.c and sync'ed it with the hexenworld version
+    * provide the flags to mprotect() in a more standart way. from Steven.
+    * handled mprotect() for qnx systems (no getpagesize()). taken from quakeforge.
+      we need to do a better job of of ifdef'ing here, though: do we need autotools
+      support ???
+    * 1.4.1-pre3 / 2006-06-08
+
 2006-06-03 (CVS, 1.4.1-pre3):
     * fixed broken display of launcher binary name when run using a symlink.
     * cdrom: the case when the user changes track without using the "cd"
