@@ -300,6 +300,7 @@ COMMONOBJS = chase.o \
 	cvar.o \
 	host.o \
 	host_cmd.o \
+	strings.o \
 	$(SYSOBJ_INPUT) \
 	keys.o \
 	mathlib.o \

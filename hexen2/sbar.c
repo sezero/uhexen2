@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.24 2006-04-05 06:09:23 sezero Exp $
+	$Id: sbar.c,v 1.25 2006-06-08 18:49:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -989,8 +989,6 @@ void Sbar_DeathmatchOverlay(void)
 		y += 10;
 	}
 }
-
-extern char *puzzle_strings;
 
 static void FindName(char *which, char *name)
 {

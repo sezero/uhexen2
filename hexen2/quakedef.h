@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.73 2006-06-03 18:04:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.74 2006-06-08 18:49:33 sezero Exp $
 */
 
 
@@ -337,6 +337,7 @@ typedef struct
 #include "render.h"
 #include "cl_effect.h"
 #include "progs.h"
+#include "strings.h"
 #include "client.h"
 #include "server.h"
 
@@ -436,6 +437,9 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.73  2006/06/03 18:04:28  sezero
+ * 1.4.1-pre3 / 2006-06-03
+ *
  * Revision 1.72  2006/05/31 16:52:49  sezero
  * version 1.4.1-pre2 / 2006-05-31
  *

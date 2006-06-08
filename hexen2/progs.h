@@ -48,10 +48,6 @@ extern	float			*pr_globals;		// same as pr_global_struct
 
 extern	int				pr_edict_size;	// in bytes
 
-extern	int				*pr_string_index;
-extern	char			*pr_global_strings;
-extern	int				pr_string_count;
-
 //============================================================================
 
 
@@ -83,8 +79,6 @@ void PR_Init (void);
 
 void PR_ExecuteProgram (func_t fnum);
 void PR_LoadProgs (void);
-void PR_LoadStrings (void);
-void PR_LoadInfoStrings(void);
 
 void PR_Profile_f (void);
 

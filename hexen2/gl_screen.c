@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.32 2006-05-18 17:46:10 sezero Exp $
+	$Id: gl_screen.c,v 1.33 2006-06-08 18:49:33 sezero Exp $
 */
 
 /*=============================================================================
@@ -135,10 +135,6 @@ static int	StartC[MAXLINES], EndC[MAXLINES];
 #define	MAX_INFO	1024
 static char	infomessage[MAX_INFO];
 extern qboolean	info_up;
-
-extern int	*pr_info_string_index;
-extern char	*pr_global_info_strings;
-extern int	 pr_info_string_count;
 
 static void UpdateInfoMessage (void)
 {
@@ -1311,6 +1307,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2006/05/18 17:46:10  sezero
+ * made COM_WriteFile() to return 0 on success, 1 on write errors
+ *
  * Revision 1.31  2006/04/05 06:09:23  sezero
  * killed (almost) all H2MP ifdefs: this is the first step in making a single
  * binary which handles both h2 and h2mp properly. the only H2MP ifdefs left

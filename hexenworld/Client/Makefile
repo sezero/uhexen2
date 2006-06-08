@@ -294,6 +294,7 @@ COMMONOBJS = cl_cam.o \
 	console.o \
 	crc.o \
 	cvar.o \
+	strings.o \
 	$(SYSOBJ_INPUT) \
 	keys.o \
 	mathlib.o \
@@ -311,7 +312,6 @@ COMMONOBJS = cl_cam.o \
 	snd_mix.o \
 	snd_mem.o \
 	$(SYSOBJ_SND) \
-	strings.o \
 	view.o \
 	wad.o \
 	zone.o \

@@ -85,13 +85,13 @@ COMMONOBJS = model.o \
 	cl_objs/common.o \
 	cl_objs/crc.o \
 	cl_objs/cvar.o \
+	cl_objs/strings.o \
 	cl_objs/mathlib.o \
 	cl_objs/huffman.o \
 	cl_objs/net_wins.o \
 	cl_objs/net_chan.o \
 	cl_objs/pmove.o \
 	cl_objs/pmovetst.o \
-	cl_objs/strings.o \
 	cl_objs/zone.o \
 	pr_cmds.o \
 	pr_edict.o \
