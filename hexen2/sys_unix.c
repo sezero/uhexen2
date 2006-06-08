@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.55 2006-06-03 14:06:05 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.56 2006-06-08 19:11:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -164,7 +164,7 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 //	fprintf(stderr, "writable code %lx(%lx)-%lx, length=%lx\n", startaddr,
 //		addr, startaddr+length, length);
 
-	r = mprotect ((char *) addr, length + startaddr - addr + psize, 7);
+	r = mprotect ((char *) addr, length + startaddr - addr + psize, PROT_WRITE | PROT_READ | PROT_EXEC);
 
 	if (r < 0)
 		Sys_Error("Protection change failed\n");
@@ -542,6 +542,12 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.55  2006/06/03 14:06:05  sezero
+ * added back the password file method of determining the user's home
+ * as a compile time option. modified the length check for the homedir
+ * path length using the length of a would-be-large-enough template.
+ * small clean-ups here and there.
+ *
  * Revision 1.54  2006/05/19 13:38:38  sezero
  * added a compile time option to dicetly activate the mission pack
  * support without the need for a commandline option like -portals
