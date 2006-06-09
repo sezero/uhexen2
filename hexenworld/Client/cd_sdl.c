@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.8 2006-06-03 14:04:26 sezero Exp $
+	$Id: cd_sdl.c,v 1.9 2006-06-09 19:17:05 sezero Exp $
 
 	Copyright (C) 2001  Mark Baker <homer1@together.net>
 	Taken from SDLquake with modifications to make it work
@@ -39,6 +39,7 @@ static qboolean	initialized = false;
 static qboolean	enabled = true;
 static qboolean playLooping = false;
 static SDL_CD *cd_id;
+static char cd_dev[64]; // user can always do -cddev
 static float cdvolume = 1.0;
 
 
@@ -261,6 +262,8 @@ void CDAudio_Update(void)
 
 int CDAudio_Init(void)
 {
+	int i, cd_dev_sdl, num_cd_sdl;
+
 	if (COM_CheckParm("-nocdaudio"))
 		return -1;
 
@@ -270,11 +273,36 @@ int CDAudio_Init(void)
 		return -1;
 	}
 
-	cd_id = SDL_CDOpen(0);
+	cd_dev_sdl = 0;	// default drive
+	num_cd_sdl = SDL_CDNumDrives();
+	if (num_cd_sdl <= 0)
+		return -1;
+
+	if ((i = COM_CheckParm("-cddev")) != 0 && i < com_argc - 1)
+	{
+		strncpy(cd_dev, com_argv[i + 1], sizeof(cd_dev));
+		cd_dev[sizeof(cd_dev) - 1] = 0;
+
+		cd_dev_sdl = -1;
+		while (num_cd_sdl > 0)
+		{
+			++cd_dev_sdl;
+			if (strncmp(SDL_CDName(cd_dev_sdl),cd_dev,sizeof(cd_dev)) == 0)
+				break;
+			--num_cd_sdl;
+		}
+		if (cd_dev_sdl < 0 || num_cd_sdl == 0)
+		{
+			Con_Printf("SDL couldn't find cdrom device %s\n",cd_dev);
+			return -1;
+		}
+	}
+
+	cd_id = SDL_CDOpen(cd_dev_sdl);
 	if (!cd_id)
 	{
-		Con_Printf("CDAudio_Init: Unable to open default CD-ROM drive: %s\n",
-			SDL_GetError());
+		Con_Printf("CDAudio_Init: Unable to open CD-ROM %s : %s\n",
+				SDL_CDName(cd_dev_sdl), SDL_GetError());
 		return -1;
 	}
 
@@ -282,7 +310,7 @@ int CDAudio_Init(void)
 	enabled = true;
 	cdValid = true;
 
-	Con_Printf("CDAudio initialized (using SDL)\n");
+	Con_Printf("CDAudio initialized (SDL, using %s)\n", SDL_CDName(cd_dev_sdl));
 
 	if (!CD_INDRIVE(SDL_CDStatus(cd_id)))
 	{
