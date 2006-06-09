@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.48 2006-03-24 17:34:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.49 2006-06-09 19:50:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -633,9 +633,9 @@ static void M_Main_Key (int key)
 		mousestate_sa = false;
 		IN_ActivateMouse ();
 		// and check we haven't changed the music type
-		if (strlen(old_bgmtype)!=0 && strcmp(old_bgmtype,bgmtype.string)!=0)
+		if (old_bgmtype[0] != 0 && strcmp(old_bgmtype,bgmtype.string) != 0)
 			ReInitMusic ();
-		strcpy (old_bgmtype, "");
+		old_bgmtype[0] = 0;
 
 		key_dest = key_game;
 		m_state = m_none;
@@ -731,8 +731,8 @@ void M_Menu_Options_f (void)
 	m_entersound = true;
 
 	// get the current music type
-	if (!strlen(old_bgmtype))
-		strncpy(old_bgmtype,bgmtype.string,20);
+	if (old_bgmtype[0] == 0)
+		strncpy(old_bgmtype,bgmtype.string,sizeof(old_bgmtype));
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 		options_cursor = 0;
@@ -2854,6 +2854,8 @@ void M_Init (void)
 	Cvar_RegisterVariable (&hostname10);
 
 	M_BuildBigCharWidth();
+
+	memset (old_bgmtype, 0, sizeof(old_bgmtype));
 }
 
 

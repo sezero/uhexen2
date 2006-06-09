@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.66 2006-05-18 17:49:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.67 2006-06-09 19:50:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -763,9 +763,9 @@ static void M_Main_Key (int key)
 		mousestate_sa = false;
 		IN_ActivateMouse ();
 		// and check we haven't changed the music type
-		if (strlen(old_bgmtype)!=0 && strcmp(old_bgmtype,bgmtype.string)!=0)
+		if (old_bgmtype[0] != 0 && strcmp(old_bgmtype,bgmtype.string) != 0)
 			ReInitMusic ();
-		strcpy (old_bgmtype, "");
+		old_bgmtype[0] = 0;
 
 		key_dest = key_game;
 		m_state = m_none;
@@ -1875,8 +1875,8 @@ void M_Menu_Options_f (void)
 	m_entersound = true;
 
 	// get the current music type
-	if (!strlen(old_bgmtype))
-		strncpy(old_bgmtype,bgmtype.string,20);
+	if (old_bgmtype[0] == 0)
+		strncpy(old_bgmtype,bgmtype.string,sizeof(old_bgmtype));
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 		options_cursor = 0;
@@ -4218,6 +4218,8 @@ void M_Init (void)
 	Cmd_AddCommand ("menu_class", M_Menu_Class2_f);
 
 	M_BuildBigCharWidth();
+
+	memset (old_bgmtype, 0, sizeof(old_bgmtype));
 }
 
 
@@ -4477,6 +4479,12 @@ static void ReInitMusic (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.66  2006/05/18 17:49:58  sezero
+ * AoT and earlier versions of HoT didn't create <userdir>/data1
+ * and kept all user the data in <userdir> instead. Starting with
+ * HoT 1.4.1, we are creating and using <userdir>/data1 . Added a
+ * procedure in order to update the user direcory accordingly.
+ *
  * Revision 1.65  2006/04/05 06:09:23  sezero
  * killed (almost) all H2MP ifdefs: this is the first step in making a single
  * binary which handles both h2 and h2mp properly. the only H2MP ifdefs left
