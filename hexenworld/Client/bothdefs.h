@@ -2,7 +2,7 @@
 	bothdefs.h
 	defs common to both client and server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.35 2006-06-08 20:28:55 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.36 2006-06-10 13:56:38 sezero Exp $
 */
 
 #define __STRINGIFY(x) #x
@@ -13,7 +13,7 @@
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		4
 #define	HOT_VERSION_MIN		1
-#define	HOT_VERSION_REL_DATE	"2006-06-08"
+#define	HOT_VERSION_REL_DATE	"2006-06-10"
 #define	HOT_VERSION_BETA	1
 #define	HOT_VERSION_BETA_STR	"pre3"
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)

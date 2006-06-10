@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-06-10 (CVS, 1.4.1-pre3):
+    * added -cddev commandline argument support to cd_sdl. from Steven.
+    * added QNX among the platform names
+    * simplified handling of old_bgmtype in menu.c
+    * 1.4.1-pre3 / 2006-06-10
+
 2006-06-08 (CVS, 1.4.1-pre3):
     * split strings out of pr_edict.c and sync'ed it with the hexenworld version
     * provide the flags to mprotect() in a more standart way. from Steven.

@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.75 2006-06-08 20:28:55 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.76 2006-06-10 13:56:38 sezero Exp $
 */
 
 
@@ -18,7 +18,7 @@
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		4
 #define	HOT_VERSION_MIN		1
-#define	HOT_VERSION_REL_DATE	"2006-06-08"
+#define	HOT_VERSION_REL_DATE	"2006-06-10"
 #define	HOT_VERSION_BETA	1
 #define	HOT_VERSION_BETA_STR	"pre3"
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
@@ -437,6 +437,9 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.75  2006/06/08 20:28:55  sezero
+ * 1.4.1-pre3 / 2006-06-08
+ *
  * Revision 1.74  2006/06/08 18:49:33  sezero
  * split strings out of pr_edict.c and sync'ed it with the hexenworld version
  *
