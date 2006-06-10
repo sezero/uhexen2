@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Known Bugs
 ---------------------------
 
+  HexenWorld (OpenGL Client): Dynamic lights have a problem with RGBA
+  lightmaps (such as torches doesn't illuminate). Luminance mode is fine.
+
   Linux (Unix): Midi music doesn't work with SDL sound driver due to
   conflicting SDL and SDL_mixer calls. Will be looked into.
 
