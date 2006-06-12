@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.33 2006-05-31 16:49:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.34 2006-06-12 08:48:49 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -920,6 +920,8 @@ void IN_SendKeyEvents (void)
 					case key_console:
 						if ((event.key.keysym.unicode != 0) || (modstate & KMOD_SHIFT))
 						{
+							if ((sym == SDLK_BACKSPACE) || (sym == SDLK_RETURN))
+								break;	// S.A: fixes QNX weirdness
 							if ((event.key.keysym.unicode & 0xFF80) == 0)
 								sym=event.key.keysym.unicode & 0x7F;
 							/* else: it's an international character */
@@ -1191,6 +1193,10 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.33  2006/05/31 16:49:02  sezero
+ * cl_input.c, in_sdl.c, in_win.c, hexenworld/Client/view.c: made
+ * things a little bit more readable.
+ *
  * Revision 1.32  2006/03/24 15:05:39  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also
