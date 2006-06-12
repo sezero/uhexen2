@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.27 2006-06-08 18:49:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.28 2006-06-12 08:49:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -329,7 +329,7 @@ static void CL_ParseServerInfo (void)
 
 		if (cl.model_precache[i] == NULL)
 		{
-			Con_Printf("Model %s not found\n", model_precache[i]);
+			Host_Error("Model %s not found\n", model_precache[i]);
 			return;
 		}
 		CL_KeepaliveMessage ();
@@ -1797,6 +1797,9 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2006/06/08 18:49:33  sezero
+ * split strings out of pr_edict.c and sync'ed it with the hexenworld version
+ *
  * Revision 1.26  2006/05/17 07:04:11  sezero
  * fixed demos freezing upon changing maps in hexen2. fix found
  * in Pa3PyX' sources. hexenworld doesn't suffer from this issue.
