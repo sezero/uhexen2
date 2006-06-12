@@ -191,7 +191,10 @@ int WIPX_OpenSocket (int port)
 		return handle;
 	}
 
-	Sys_Error ("Winsock IPX bind failed\n");
+	if (ipxAvailable)
+		Sys_Error ("Winsock IPX bind failed");
+	else // we are still in init phase, no need to error
+		Con_Printf ("Winsock IPX bind failed\n");
 ErrorReturn:
 	pclosesocket (newsocket);
 	return -1;

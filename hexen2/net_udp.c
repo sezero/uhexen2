@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.15 2006-06-03 16:30:20 sezero Exp $
+	$Id: net_udp.c,v 1.16 2006-06-12 08:50:54 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -97,7 +97,11 @@ int UDP_Init (void)
 	myAddr = *(int *)local->h_addr_list[0];
 
 	if ((net_controlsocket = UDP_OpenSocket (0)) == -1)
-		Sys_Error("UDP_Init: Unable to open control socket");
+	{
+	//	Sys_Error("UDP_Init: Unable to open control socket");
+		Con_Printf ("UDP_Init: Unable to open control socket, disabling udp\n");
+		return -1;
+	}
 
 	((struct sockaddr_in *)&broadcastaddr)->sin_family = AF_INET;
 	((struct sockaddr_in *)&broadcastaddr)->sin_addr.s_addr = INADDR_BROADCAST;

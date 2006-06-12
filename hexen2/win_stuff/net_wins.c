@@ -247,7 +247,10 @@ int WINS_OpenSocket (int port)
 	if( bind (newsocket, (void *)&address, sizeof(address)) == 0)
 		return newsocket;
 
-	Sys_Error ("Unable to bind to %s", WINS_AddrToString ((struct qsockaddr *) &address));
+	if (tcpipAvailable)
+		Sys_Error ("Unable to bind to %s", WINS_AddrToString ((struct qsockaddr *) &address));
+	else // we are still in init phase, no need to error
+		Con_Printf ("Unable to bind to %s\n", WINS_AddrToString ((struct qsockaddr *) &address));
 ErrorReturn:
 	pclosesocket (newsocket);
 	return -1;
