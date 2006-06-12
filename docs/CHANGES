@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-06-12 (CVS):
+    * fixed the backspace and return keys not working in the in-game console
+      in QNX. magically they did work in the disconnected full screen console.
+      from Steven.
+    * fixed client segmentation faults in heterogenous client/server situations,
+      such as pure hexen2 client vs. mission pack server: we now Host_Error upon
+      missing models when connecting to a server.
+    * do not sys_error if we can't bind to a network interface at init phase
+
 2006-06-10 (CVS, 1.4.1-pre3):
     * added -cddev commandline argument support to cd_sdl. from Steven.
     * added QNX among the platform names
