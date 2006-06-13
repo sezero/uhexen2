@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-06-13 (CVS):
+    * removed runtime linkage to winsock: we already link to winsock
+      at compile time, and not doing so fails our linkage anyway.
+
 2006-06-12 (CVS):
     * fixed the backspace and return keys not working in the in-game console
       in QNX. magically they did work in the disconnected full screen console.
