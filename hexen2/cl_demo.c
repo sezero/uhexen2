@@ -318,6 +318,9 @@ CL_PlayDemo_f
 play [demoname]
 ====================
 */
+#define	m_none	0	// enumerated menu state from menu.c
+extern	int	m_state;
+
 void CL_PlayDemo_f (void)
 {
 	char	name[256];
@@ -416,9 +419,6 @@ CL_TimeDemo_f
 timedemo [demoname]
 ====================
 */
-#define	m_none	0	// enumerated menu state from menu.c
-extern	int	m_state;
-
 void CL_TimeDemo_f (void)
 {
 	if (cmd_source != src_command)
