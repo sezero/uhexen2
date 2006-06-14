@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-06-14 (CVS, 1.4.1-pre4):
+    * eliminated some ifdefs by defining flush_textures as 1 in glquake.h for h2w
+    * removed bogus retval check from win32 version of Sys_FindFirstFile
+    * made console and menu to disappear for playdemo like it does in timedemo.
+      thanks go to Korax for notifying me about this.
+    * disabled the VCR facility by default. made it a compile time option. after
+      all, it is not an ordinary demo recording but a server only feature for
+      debugging server bugs.
+    * Version 1.4.1-pre4 / 2006-06-14.
+
 2006-06-13 (CVS):
     * removed runtime linkage to winsock: we already link to winsock
       at compile time, and not doing so fails our linkage anyway.
