@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.46 2006-05-18 17:48:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.47 2006-06-14 12:46:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -889,6 +889,7 @@ void Host_Frame (float time)
 //============================================================================
 
 
+#if NET_USE_VCR
 extern FILE *vcrFile;
 #define	VCR_SIGNATURE	0x56435231
 // "VCR1"
@@ -951,6 +952,7 @@ static void Host_InitVCR (quakeparms_t *parms)
 		}
 	}
 }
+#endif	// NET_USE_VCR
 
 /*
 ====================
@@ -971,7 +973,9 @@ void Host_Init (quakeparms_t *parms)
 	CL_Cmd_Init ();
 	V_Init ();
 	Chase_Init ();
+#if NET_USE_VCR
 	Host_InitVCR (parms);
+#endif
 	COM_Init ();
 	CL_RemoveGIPFiles(NULL);
 	Host_InitLocal ();
@@ -1077,6 +1081,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.46  2006/05/18 17:48:10  sezero
+ * renamed MIDI_UpdateVolume to MIDI_Update
+ *
  * Revision 1.45  2006/04/05 06:10:43  sezero
  * added support for both hexen2-v1.11 and h2mp-v1.12 progs into a single hexen2
  * binary. this essentially completes the h2/h2mp binary merge started with the

@@ -3,6 +3,9 @@
 #include "quakedef.h"
 #include "net_vcr.h"
 
+
+#if NET_USE_VCR
+
 extern FILE *vcrFile;
 
 // This is the playback portion of the VCR.  It reads the file produced
@@ -146,3 +149,6 @@ qsocket_t *VCR_CheckNewConnections (void)
 
 	return sock;
 }
+
+#endif	// NET_USE_VCR
+
