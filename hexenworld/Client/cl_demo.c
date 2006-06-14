@@ -399,6 +399,13 @@ void CL_PlayDemo_f (void)
 		return;
 	}
 
+// get rid of the menu and/or console
+	if (key_dest == key_console || key_dest == key_menu)
+	{
+		key_dest = key_game;
+		m_state = m_none;
+	}
+
 //
 // disconnect from server
 //
@@ -462,13 +469,6 @@ void CL_TimeDemo_f (void)
 	{
 		Con_Printf ("timedemo <demoname> : gets demo speeds\n");
 		return;
-	}
-
-	// get rid of the menu and/or console
-	if (key_dest == key_console || key_dest == key_menu)
-	{
-		key_dest = key_game;
-		m_state = m_none;
 	}
 
 	CL_PlayDemo_f ();
