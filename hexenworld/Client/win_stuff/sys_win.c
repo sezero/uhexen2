@@ -80,15 +80,12 @@ static WIN32_FIND_DATA finddata;
 
 char *Sys_FindFirstFile (char *path, char *pattern)
 {
-	BOOL	retval;
-
 	if (findhandle)
 		Sys_Error ("Sys_FindFirst without FindClose");
 
 	findhandle = FindFirstFile(va("%s/%s", path, pattern), &finddata);
-	retval = TRUE;
 
-	if (findhandle != INVALID_HANDLE_VALUE && retval)
+	if (findhandle != INVALID_HANDLE_VALUE)
 		return finddata.cFileName;
 
 	return NULL;
