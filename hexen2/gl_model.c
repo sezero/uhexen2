@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.27 2006-04-05 06:09:23 sezero Exp $
+	$Id: gl_model.c,v 1.28 2006-06-14 10:12:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -174,13 +174,7 @@ void Mod_ClearAll (void)
 	{	// clear alias models only if textures were flushed (Pa3PyX)
 		if (mod->type == mod_alias)
 		{
-#ifndef H2W
-			// we can't detect mapname change early enough in hw,
-			// so flush_textures is only for hexen2
 			if (flush_textures && gl_purge_maptex.value)
-#else
-			if (gl_purge_maptex.value)
-#endif
 			{
 				if (Cache_Check(&(mod->cache)))
 					Cache_Free(&(mod->cache));
@@ -2632,6 +2626,17 @@ static void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2006/04/05 06:09:23  sezero
+ * killed (almost) all H2MP ifdefs: this is the first step in making a single
+ * binary which handles both h2 and h2mp properly. the only H2MP ifdefs left
+ * are actually the ones for determining the icon and window manager text, so
+ * nothing serious. the binary normally will only run the original h2 game.
+ * if given a -portals or -missionpack or -h2mp argument, it will look for the
+ * mission pack and run it (this is the same logic that quake used.) The only
+ * serious side effect is that h2 and h2mp progs being different: This will be
+ * solved by the next patch by adding support for the two progs versions into
+ * a single binary.
+ *
  * Revision 1.26  2006/03/23 20:01:33  sezero
  * made the lightmap format configurable via the menu system using a new
  * cvar gl_lightmapfmt. -lm_1 and -lm_4 are still functional as commandline

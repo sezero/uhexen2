@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.49 2006-06-03 16:30:20 sezero Exp $
+	$Id: glquake.h,v 1.50 2006-06-14 10:12:59 sezero Exp $
 */
 
 
@@ -306,7 +306,13 @@ extern	int	playertextures[16];
 extern	byte	*playerTranslation;
 extern	int	gl_texlevel;
 extern	int	numgltextures;
+#ifdef H2W
+// we can't detect mapname change early enough in hw,
+// so flush_textures is only for hexen2
+#define	flush_textures	1
+#else
 extern	qboolean	flush_textures;
+#endif
 
 extern	cvar_t	r_norefresh;
 extern	cvar_t	r_drawentities;
@@ -373,6 +379,11 @@ extern	const char *gl_extensions;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.49  2006/06/03 16:30:20  sezero
+ * a few MorphOS fixes, hopefully all correct.. those ifdef __MORPHOS__ stuff
+ * are probably correct for AmigaOS, as well.. some header clean-ups here and
+ * there...
+ *
  * Revision 1.48  2006/04/10 12:02:08  sezero
  * gathered all compile-time opengl options into a gl_opt.h header file.
  * changed USE_HEXEN2_PALTEX_CODE and USE_HEXEN2_RESAMPLER_CODE to 0 / 1

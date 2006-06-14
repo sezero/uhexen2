@@ -484,13 +484,7 @@ void D_ClearOpenGLTextures (int last_tex)
 
 void D_FlushCaches (void)
 {
-#ifndef H2W
-// we can't detect mapname change early enough in hw,
-// so flush_textures is only for hexen2
 	if (numgltextures - gl_texlevel > 0 && flush_textures && gl_purge_maptex.value)
-#else
-	if (numgltextures - gl_texlevel > 0 && gl_purge_maptex.value)
-#endif
 		D_ClearOpenGLTextures (gl_texlevel);
 }
 

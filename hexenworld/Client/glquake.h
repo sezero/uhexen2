@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.39 2006-06-03 16:30:21 sezero Exp $
+	$Id: glquake.h,v 1.40 2006-06-14 10:12:59 sezero Exp $
 */
 
 
@@ -307,7 +307,13 @@ extern	int	playertextures[16];
 extern	byte	*playerTranslation;
 extern	int	gl_texlevel;
 extern	int	numgltextures;
+#ifdef H2W
+// we can't detect mapname change early enough in hw,
+// so flush_textures is only for hexen2
+#define	flush_textures	1
+#else
 extern	qboolean	flush_textures;
+#endif
 
 extern	cvar_t	r_norefresh;
 extern	cvar_t	r_drawentities;

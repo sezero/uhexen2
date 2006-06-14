@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.22 2006-03-23 20:01:39 sezero Exp $
+	$Id: gl_model.c,v 1.23 2006-06-14 10:12:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -172,13 +172,7 @@ void Mod_ClearAll (void)
 	{	// clear alias models only if textures were flushed (Pa3PyX)
 		if (mod->type == mod_alias)
 		{
-#ifndef H2W
-			// we can't detect mapname change early enough in hw,
-			// so flush_textures is only for hexen2
 			if (flush_textures && gl_purge_maptex.value)
-#else
-			if (gl_purge_maptex.value)
-#endif
 			{
 				if (Cache_Check(&(mod->cache)))
 					Cache_Free(&(mod->cache));
