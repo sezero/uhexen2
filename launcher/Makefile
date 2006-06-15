@@ -15,6 +15,8 @@ else
 TMPNAME = h2launcher
 endif
 
+HOST_OS :=$(shell uname)
+
 ifdef GTK1
 H2LAUNCH = $(TMPNAME).gtk1
 GTK_CFLAGS := $(shell gtk-config --cflags)
@@ -46,6 +48,9 @@ CFLAGS := $(CFLAGS) -DDEMOBUILD
 endif
 ifdef GTK1
 CFLAGS := $(CFLAGS) -DWITH_GTK1
+endif
+ifeq "$(HOST_OS)" "SunOS"
+CFLAGS := $(CFLAGS) -DSUNOS
 endif
 LDFLAGS =
 

@@ -10,9 +10,14 @@ int	is_botmatch= 0;	// bot matches require -listen,
 const char *snddrv_names[MAX_SOUND][2] = {
 
 	{ "-nosound", "No Sound"},
+#if HAVE_OSS_SOUND
 	{ "-sndoss" , "OSS"	},
+#endif
+#if HAVE_SUN_SOUND
+	{ "-sndoss" , "SUN"	},
+#endif
 	{ "-sndsdl" , "SDL"	},
-#if defined(__linux__)
+#if HAVE_ALSA_SOUND
 	{ "-sndalsa", "ALSA"	},
 #endif
 };

@@ -42,11 +42,26 @@
 
 #define	MAX_H2GAMES	3	// max entries in the h2game_names table
 #define	MAX_HWGAMES	6	// max entries in the hwgame_names table
+
 #if defined(__linux__)
-#define	MAX_SOUND	4	// max entries in the snddrv_names table
+#define	HAVE_ALSA_SOUND	1
 #else
-#define	MAX_SOUND	3	// ... this time excluding alsa
+#define	HAVE_ALSA_SOUND	0
 #endif
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__DragonFly__)
+#define	HAVE_OSS_SOUND	1
+#else
+#define	HAVE_OSS_SOUND	0
+#endif
+#if defined(__OpenBSD__) || defined(__NetBSD__) || defined(SUNOS)
+#define	HAVE_SUN_SOUND	1
+#else
+#define	HAVE_SUN_SOUND	0
+#endif
+
+#define	MAX_SOUND	(2 + HAVE_ALSA_SOUND + HAVE_OSS_SOUND + HAVE_SUN_SOUND)
+			// max entries in the snddrv_names table
+
 #define	MAX_RATES	8	// max entries in the snd_rates table
 
 #define HEAP_MINSIZE	16384	// minimum heap memory size in KB
