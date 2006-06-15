@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.35 2006-05-20 12:38:01 sezero Exp $
+	$Id: snd_dma.c,v 1.36 2006-06-15 09:20:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -31,11 +31,13 @@ int		snd_blocked = 0;
 static qboolean	snd_ambient = 1;
 qboolean	snd_initialized = false;
 
-static const char *snd_drivers[S_SYS_MAX]={
+static const char *snd_drivers[S_SYS_MAX] =
+{
 	"NULL",
 	"OSS",
 	"SDL",
 	"ALSA",
+	"SUN",
 	"WIN32"
 };
 
@@ -1043,6 +1045,11 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.35  2006/05/20 12:38:01  sezero
+ * cleaned up sound tryrates, etc. changed tryrates array to include
+ * 48000, 24000, and 16000 speeds (this should help 48khz AC97 chips,
+ * from darkplaces).
+ *
  * Revision 1.34  2006/03/24 17:34:20  sezero
  * includes cleanup
  *

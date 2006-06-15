@@ -2,12 +2,20 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.3 2006-05-26 08:21:25 sezero Exp $
+	$Id: snd_sys.h,v 1.4 2006-06-15 09:20:41 sezero Exp $
 */
 
+#undef HAVE_OSS_SOUND
+#undef HAVE_SUN_SOUND
+
 // add more systems with OSS here
-#if defined(__linux__) || defined(__FreeBSD__)
+#if defined(__linux__) || defined(__DragonFly__) || defined(__FreeBSD__)
 #define HAVE_OSS_SOUND
+#endif
+
+// add more systems with SUN audio here
+#if defined(__OpenBSD__) || defined(__NetBSD__) || defined(SUNOS)
+#define HAVE_SUN_SOUND
 #endif
 
 // Sound system definitions
@@ -15,8 +23,9 @@
 #define	S_SYS_OSS	1
 #define	S_SYS_SDL	2
 #define	S_SYS_ALSA	3
-#define	S_SYS_WIN32	4
-#define S_SYS_MAX	5
+#define	S_SYS_SUN	4
+#define	S_SYS_WIN32	5
+#define	S_SYS_MAX	6
 
 // this prevents running S_Update_() with the sdl sound driver
 // if the snd_sdl implementation already calls S_PaintChannels.
@@ -65,6 +74,14 @@ extern int S_OSS_GetDMAPos(void);
 extern void S_OSS_Shutdown(void);
 extern void S_OSS_Submit(void);
 #endif	// HAVE_OSS_SOUND
+
+#if defined(HAVE_SUN_SOUND)
+// SUN Audio versions of the above
+extern qboolean S_SUN_Init(void);
+extern int S_SUN_GetDMAPos(void);
+extern void S_SUN_Shutdown(void);
+extern void S_SUN_Submit(void);
+#endif	// HAVE_SUN_SOUND
 
 #if defined(__linux__) && !defined(NO_ALSA)
 // ALSA versions of the above

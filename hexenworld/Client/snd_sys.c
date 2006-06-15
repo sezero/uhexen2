@@ -2,7 +2,7 @@
 	snd_sys.c
 	pre-Init platform specific sound stuff
 
-	$Id: snd_sys.c,v 1.2 2006-05-26 08:21:25 sezero Exp $
+	$Id: snd_sys.c,v 1.3 2006-06-15 09:20:41 sezero Exp $
 */
 
 
@@ -39,6 +39,11 @@ static void S_InitSys (void)
 #if defined(HAVE_OSS_SOUND)
 	else if (COM_CheckParm ("-sndoss"))
 		snd_system = S_SYS_OSS;
+#endif
+
+#if defined(HAVE_SUN_SOUND)
+	else if (COM_CheckParm ("-sndsun") || COM_CheckParm ("-sndbsd"))
+		snd_system = S_SYS_SUN;
 #endif
 
 	else
@@ -94,6 +99,14 @@ void S_InitPointers (void)
 		SNDDMA_GetDMAPos = S_OSS_GetDMAPos;
 		SNDDMA_Shutdown	 = S_OSS_Shutdown;
 		SNDDMA_Submit	 = S_OSS_Submit;
+		break;
+#endif
+#if defined(HAVE_SUN_SOUND)
+	case S_SYS_SUN:
+		SNDDMA_Init	 = S_SUN_Init;
+		SNDDMA_GetDMAPos = S_SUN_GetDMAPos;
+		SNDDMA_Shutdown	 = S_SUN_Shutdown;
+		SNDDMA_Submit	 = S_SUN_Submit;
 		break;
 #endif
 	case S_SYS_NULL:
