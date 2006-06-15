@@ -2,11 +2,12 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.4 2006-06-15 09:20:37 sezero Exp $
+	$Id: snd_sys.h,v 1.5 2006-06-15 09:31:53 sezero Exp $
 */
 
 #undef HAVE_OSS_SOUND
 #undef HAVE_SUN_SOUND
+#undef HAVE_ALSA_SOUND
 
 // add more systems with OSS here
 #if defined(__linux__) || defined(__DragonFly__) || defined(__FreeBSD__)
@@ -17,6 +18,13 @@
 #if defined(__OpenBSD__) || defined(__NetBSD__) || defined(SUNOS)
 #define HAVE_SUN_SOUND
 #endif
+
+#if !defined(NO_ALSA)
+#if defined(__linux__)
+// add more systems with ALSA here
+#define HAVE_ALSA_SOUND
+#endif
+#endif	// NO_ALSA
 
 // Sound system definitions
 #define	S_SYS_NULL	0
@@ -83,13 +91,13 @@ extern void S_SUN_Shutdown(void);
 extern void S_SUN_Submit(void);
 #endif	// HAVE_SUN_SOUND
 
-#if defined(__linux__) && !defined(NO_ALSA)
+#if defined(HAVE_ALSA_SOUND)
 // ALSA versions of the above
 extern qboolean S_ALSA_Init(void);
 extern int S_ALSA_GetDMAPos(void);
 extern void S_ALSA_Submit(void);
 extern void S_ALSA_Shutdown(void);
-#endif	// NO_ALSA
+#endif	// HAVE_ALSA_SOUND
 
 #ifdef PLATFORM_UNIX
 // SDL versions of the above

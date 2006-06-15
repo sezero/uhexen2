@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.16 2006-05-20 12:38:01 sezero Exp $
+	$Id: snd_alsa.c,v 1.17 2006-06-15 09:31:53 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -25,9 +25,14 @@
 		Boston, MA  02111-1307, USA
 */
 
-#if defined(__linux__) && !defined(NO_ALSA)
+
+#define _SND_SYS_MACROS_ONLY
 
 #include "quakedef.h"
+#include "snd_sys.h"
+
+#if defined(HAVE_ALSA_SOUND)
+
 #include <dlfcn.h>
 #include <alsa/asoundlib.h>
 
@@ -326,10 +331,15 @@ void S_ALSA_Submit (void)
 	}
 }
 
-#endif	// NO_ALSA
+#endif	// HAVE_ALSA_SOUND
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2006/05/20 12:38:01  sezero
+ * cleaned up sound tryrates, etc. changed tryrates array to include
+ * 48000, 24000, and 16000 speeds (this should help 48khz AC97 chips,
+ * from darkplaces).
+ *
  * Revision 1.15  2006/02/19 12:33:24  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 10: sound).
