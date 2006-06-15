@@ -3,6 +3,35 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-06-14 (CVS, 1.4.1-pre5):
+    * fixed gcc-4.1 compiler warning in dcc:  In function 'WriteData':
+      hcc.c:319: warning: dereferencing type-punned pointer will break
+      strict-aliasing rules
+    * added big-endian support (byte swapping) to hcc while writing down the
+      compiled progs. tested on sparc-solaris and ppc64-linux.
+    * added big-endian support (byte swapping) to jsh2color while writing down the
+      litfile. tested on sparc-solaris and ppc64-linux.
+    * added a script to detect arch and os. taken from loki setup tools.
+    * updated build system: stored target machine type to MACH_TYPE, the
+      i586 march flag is only used on MACH_TYPE==x86 and is overridable in
+      the makefile, added an extra ARCHFLAGS, added -DSUNOS to ARCHFLAGS
+      for SunOS.
+    * added an experimental SUN Audio driver, adapted from the darkplaces
+      project. for native audio in openbsd and netbsd.
+    * kept the same standart for alsa sound availablity in snd_sys
+    * sunaudio, launcher integration
+    * bumped launcher version to 0.7.6
+    * Updated help strings with regard to the available sound drivers
+    * added (back) the sys/filio.h include of SunOS
+    * on some arches -lsocket is needed. added for SunOS, waiting Steve for QNX.
+    * net compile fixes on sun/solaris. model_t hack found in the darkplaces
+      project.
+    * added network compatibility support for Korax's UQE-Hexen2-1.13 (protocol
+      version 20, uses two new svc messages which are harmless on client without
+      actual support for them).
+    * added a comment about win32 needn't be x86 only )how about alpha?..)
+    * bumped version to 1.4.1-pre5 / 2006-06-15
+
 2006-06-14 (CVS, 1.4.1-pre4):
     * eliminated some ifdefs by defining flush_textures as 1 in glquake.h for h2w
     * removed bogus retval check from win32 version of Sys_FindFirstFile
