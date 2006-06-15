@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.57 2006-06-08 20:17:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.58 2006-06-15 09:50:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -352,6 +352,8 @@ static void PrintVersion (void)
 	printf ("More info / sending bug reports:  http://uhexen2.sourceforge.net\n");
 }
 
+#define _SND_SYS_MACROS_ONLY
+#include "snd_sys.h"
 static char *help_strings[] = {
 	"     [-v | --version]        Display version information",
 #ifndef DEMOBUILD
@@ -373,8 +375,14 @@ static char *help_strings[] = {
 	"     [-nomtex]               Disable multitexture detection/usage",
 #endif
 	"     [-s | --nosound]        Run the game without sound",
-#if defined(__linux__) && !defined(NO_ALSA)
+#if defined(HAVE_OSS_SOUND)
+	"     [-sndoss]               Use OSS sound",
+#endif
+#if defined(HAVE_ALSA_SOUND)
 	"     [-sndalsa]              Use ALSA sound (alsa > 1.0.1)",
+#endif
+#if defined(HAVE_SUN_SOUND)
+	"     [-sndsun | -sndbsd]     Use SUN / BSD sound",
 #endif
 	"     [-sndsdl]               Use SDL sound",
 	"     [-nomouse]              Disable mouse usage",
@@ -546,6 +554,11 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.57  2006/06/08 20:17:14  sezero
+ * handled mprotect() for qnx systems (no getpagesize()). taken from
+ * quakeforge. we need to do a better job of of ifdef'ing here, though:
+ * do we need autotools support ???
+ *
  * Revision 1.56  2006/06/08 19:11:41  sezero
  * provide the flags to mprotect() in a more standart way. from Steven.
  *
