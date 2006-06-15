@@ -56,6 +56,8 @@
 #define BSP_OLD_VERSION		29
 #define BSP_COLORED_VERSION	30
 
+#define LIT_VERSION		1
+
 typedef struct
 {
 	int		fileofs, filelen;

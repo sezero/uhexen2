@@ -571,7 +571,7 @@ static void MakeLITFile (char *bspname)
 	litheader.ident[1] = 'L';
 	litheader.ident[2] = 'I';
 	litheader.ident[3] = 'T';
-	litheader.version = 1;
+	litheader.version = LittleLong(LIT_VERSION);
 
 	fwrite (&litheader, sizeof (litheader), 1, litfile);
 	fwrite (&newdlightdata, newlightdatasize, 1, litfile);
