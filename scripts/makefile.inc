@@ -38,6 +38,7 @@ ifdef WIN_NATIVE
 # and set proper nasm binary name
 HOST_OS :=Windows
 TARGET_OS:=WIN32
+# actually win32 does not have to be x86, but...
 MACH_TYPE:=x86
 NASM_BIN :=nasmw
 else
