@@ -11,6 +11,10 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <unistd.h>
+//#ifdef __sun__
+#ifdef SUNOS
+#include <sys/filio.h>
+#endif
 #ifdef __MORPHOS__
 #include <proto/socket.h>
 #endif

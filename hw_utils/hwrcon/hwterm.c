@@ -38,6 +38,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <arpa/inet.h>
 #include <time.h>
 #include <sys/time.h>
+//#ifdef __sun__
+#ifdef SUNOS
+#include <sys/filio.h>
+#endif
 #endif
 
 #include <errno.h>

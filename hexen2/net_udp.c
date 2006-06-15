@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.16 2006-06-12 08:50:54 sezero Exp $
+	$Id: net_udp.c,v 1.17 2006-06-15 11:32:10 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -34,6 +34,10 @@
 #include <sys/ioctl.h>
 #include <errno.h>
 #include <unistd.h>
+//#ifdef __sun__
+#ifdef SUNOS
+#include <sys/filio.h>
+#endif
 #if defined(__MORPHOS__)
 #include <proto/socket.h>
 #endif
