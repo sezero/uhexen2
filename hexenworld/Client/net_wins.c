@@ -1,11 +1,10 @@
 // net_wins.c
 
-#include "quakedef.h"
-#include "huffman.h"
+#include <sys/types.h>
+#include <errno.h>
 
 // unix includes and compatibility macros
 #if defined(PLATFORM_UNIX)
-#include <errno.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <arpa/inet.h>
@@ -36,7 +35,14 @@
 #define closesocket close
 #endif
 
+#ifndef INADDR_NONE
+#define INADDR_NONE	((in_addr_t) 0xffffffff)
+#endif
+
 #endif	// end of unix stuff
+
+#include "quakedef.h"
+#include "huffman.h"
 
 // windows includes and compatibility macros
 #if defined(_WIN32)

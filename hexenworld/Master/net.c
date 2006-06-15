@@ -32,6 +32,10 @@
 #define closesocket close
 #endif
 
+#ifndef INADDR_NONE
+#define INADDR_NONE	((in_addr_t) 0xffffffff)
+#endif
+
 #endif	// end of unix stuff
 
 // windows includes and compatibility macros

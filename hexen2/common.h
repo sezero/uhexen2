@@ -17,6 +17,10 @@ typedef enum {false, true}	qboolean;
 #define	MAX_SERVERINFO_STRING	512
 #define	MAX_LOCALINFO_STRING	32768
 
+#ifdef SUNOS
+#define model_t hx2_model_t // Workaround conflict with /usr/include/sys/model.h
+#endif
+
 //============================================================================
 
 typedef struct sizebuf_s

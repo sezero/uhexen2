@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.17 2006-06-15 11:32:10 sezero Exp $
+	$Id: net_udp.c,v 1.18 2006-06-15 12:29:02 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -40,6 +40,10 @@
 #endif
 #if defined(__MORPHOS__)
 #include <proto/socket.h>
+#endif
+
+#ifndef INADDR_NONE
+#define INADDR_NONE	((in_addr_t) 0xffffffff)
 #endif
 
 #include "quakedef.h"
