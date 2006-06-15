@@ -24,8 +24,14 @@ BINARY_STATIC=hwsv.static
 endif
 
 # Compiler flags
+
+# Overrides for the default CPUFLAGS
+#CPUFLAGS:=
+# Overrides for the default ARCHFLAGS
+#ARCHFLAGS:=
+
 ifndef DEBUG
-CFLAGS := -O2 -march=i586 -Wall -ffast-math -fexpensive-optimizations
+CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
 
 DISABLE_UNIT_AT_A_TIME ?=$(HAVE_GCC_4_0)
 # this prevents some bad compilations with unit-at-a-time mode active.
@@ -40,7 +46,7 @@ endif
 endif
 
 # Other build flags
-EXT_FLAGS:= -DH2W -DSERVERONLY
+EXT_FLAGS:= -DH2W -DSERVERONLY $(ARCHFLAGS)
 INCLUDES := -I../Client -I.
 
 ifeq "$(TARGET_OS)" "WIN32"

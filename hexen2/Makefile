@@ -90,8 +90,14 @@ GLH2_STATIC=glhexen2.static
 endif
 
 # Compiler flags
+
+# Overrides for the default CPUFLAGS
+#CPUFLAGS:=
+# Overrides for the default ARCHFLAGS
+#ARCHFLAGS:=
+
 ifndef DEBUG
-CFLAGS := -O2 -march=i586 -Wall -ffast-math -fexpensive-optimizations
+CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
 
 DISABLE_UNIT_AT_A_TIME ?=$(HAVE_GCC_4_0)
 # this prevents some bad compilations with unit-at-a-time mode active.
@@ -119,7 +125,7 @@ CFLAGS := $(CFLAGS) -DUSE_INTEL_ASM
 endif
 
 # Other build flags
-EXT_FLAGS:=
+EXT_FLAGS:=$(ARCHFLAGS)
 
 ifeq "$(TARGET_OS)" "WIN32"
 # Main win32 specific includes and flags

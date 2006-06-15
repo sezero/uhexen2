@@ -4,8 +4,9 @@
 # detection, setting the "sdl-config" command.
 
 # We also define some common flags in here:
-# A common debug CFLAGS, flags for NASM, SDL and MGL, flags for opengl
-# linkage. See them near the bottom of this file.
+# A common debug CFLAGS, possible ARCH flags, a default CPUFLAGS, flags
+# for NASM, SDL and MGL, flags for opengl linkage. See them near the bottom
+# of this file.
 
 # Unless overriden, these settings will be used in any includer makefile
 # in the uhexen2 tree. The intention is to make the actual Makefiles some
@@ -37,11 +38,13 @@ ifdef WIN_NATIVE
 # and set proper nasm binary name
 HOST_OS :=Windows
 TARGET_OS:=WIN32
+MACH_TYPE:=x86
 NASM_BIN :=nasmw
 else
 # we are running on a Unixish OS
 HOST_OS :=$(shell uname)
 TARGET_OS:=UNIX
+MACH_TYPE:=$(shell sh $(UHEXEN2_TOP)/scripts/detect.sh arch)
 NASM_BIN :=nasm
 endif
 
@@ -117,6 +120,20 @@ HAVE_GCC_4_0:=yes
 endif
 
 # Determine common build flags:
+
+# Possible ARCH flags
+ARCHFLAGS:=
+ifneq "$(TARGET_OS)" "WIN32"
+ifeq "$(HOST_OS)" "SunOS"
+ARCHFLAGS:=-DSUNOS
+endif
+endif
+
+# default CPU flags
+CPUFLAGS:=
+ifeq "$(MACH_TYPE)" "x86"
+CPUFLAGS:=-march=i586
+endif
 
 # NASM flags:
 # These are required for IA32 assembly for hexen2/hexenworld clients

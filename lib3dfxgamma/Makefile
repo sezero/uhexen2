@@ -4,7 +4,7 @@
 CC ?= gcc
 LINKER = $(CC)
 FXLIB=lib3dfxgamma.so
-CFLAGS = -O2 -Wall -shared -march=i586
+CFLAGS = -O2 -Wall -shared
 LDFLAGS = 
 LDLIBS=
 

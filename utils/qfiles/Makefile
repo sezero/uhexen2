@@ -26,8 +26,14 @@ BINARY=qfiles
 endif
 
 # Compiler flags
+
+# Overrides for the default CPUFLAGS
+#CPUFLAGS:=
+# Overrides for the default ARCHFLAGS
+#ARCHFLAGS:=
+
 ifndef DEBUG
-CFLAGS = -march=i586 -O2 -Wall
+CFLAGS = $(CPUFLAGS) -O2 -Wall
 endif
 
 # Other build flags
@@ -44,7 +50,7 @@ endif
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
 QFILESOBJS= $(COMMONDIR)/cmdlib.o \

@@ -37,7 +37,7 @@ OBJECTS = main.o config_file.o launch_bin.o \
 ifdef DEBUG
 CFLAGS := -Wall -g -DDEBUG_BUILD
 else
-CFLAGS := -Wall -O2 -march=i586
+CFLAGS := -Wall -O2
 endif
 CFLAGS := $(CFLAGS) -I. $(GTK_CFLAGS)
 

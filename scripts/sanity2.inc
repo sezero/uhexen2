@@ -4,6 +4,7 @@
 sanity:
 	@echo "Host OS  :" $(HOST_OS)
 	@echo "Target OS:" $(TARGET_OS)
+	@echo "Machine  :" $(MACH_TYPE)
 ifdef __NOCMD
 	@echo "Sanity   : Error," command\(s\) $(__NOCMD) not found
 	@exit 2

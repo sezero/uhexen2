@@ -23,12 +23,20 @@ BINARY_STATIC=hwmaster.static
 endif
 
 # Compiler flags
+
+# Overrides for the default CPUFLAGS
+ifeq "$(MACH_TYPE)" "x86"
+CPUFLAGS:=-march=i386
+endif
+# Overrides for the default ARCHFLAGS
+#ARCHFLAGS:=
+
 ifndef DEBUG
-CFLAGS := -O -march=i386 -Wall
+CFLAGS := $(CPUFLAGS) -O2 -Wall
 endif
 
 # Other build flags
-EXT_FLAGS:=
+EXT_FLAGS:=$(ARCHFLAGS)
 
 ifeq "$(TARGET_OS)" "WIN32"
 INCLUDES := -I$(MINGWDIR)/include
