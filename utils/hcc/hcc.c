@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.c,v 1.2 2006-03-02 17:52:06 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.c,v 1.3 2006-06-15 06:18:34 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).
@@ -217,6 +217,7 @@ static void WriteData (int crc)
 	ddef_t	*dd;
 	dprograms_t	progs;
 	FILE	*h;
+	int	i;
 	int	localName = 0;	// init to 0, silence compiler warning
 
 	if (hcc_OptimizeNameTable)
@@ -283,30 +284,65 @@ static void WriteData (int crc)
 
 	progs.ofs_statements = ftell (h);
 	progs.numstatements = numstatements;
+	for (i = 0 ; i < numstatements ; i++)
+	{
+		statements[i].op = LittleShort(statements[i].op);
+		statements[i].a = LittleShort(statements[i].a);
+		statements[i].b = LittleShort(statements[i].b);
+		statements[i].c = LittleShort(statements[i].c);
+	}
 	SafeWrite (h, statements, numstatements*sizeof(dstatement_t));
 
 	progs.ofs_functions = ftell (h);
 	progs.numfunctions = numfunctions;
+	for (i = 0 ; i < numfunctions ; i++)
+	{
+		functions[i].first_statement = LittleLong (functions[i].first_statement);
+		functions[i].parm_start = LittleLong (functions[i].parm_start);
+		functions[i].s_name = LittleLong (functions[i].s_name);
+		functions[i].s_file = LittleLong (functions[i].s_file);
+		functions[i].numparms = LittleLong (functions[i].numparms);
+		functions[i].locals = LittleLong (functions[i].locals);
+	}
 	SafeWrite (h, functions, numfunctions*sizeof(dfunction_t));
 
 	progs.ofs_globaldefs = ftell (h);
 	progs.numglobaldefs = numglobaldefs;
+	for (i = 0 ; i < numglobaldefs ; i++)
+	{
+		globals[i].type = LittleShort (globals[i].type);
+		globals[i].ofs = LittleShort (globals[i].ofs);
+		globals[i].s_name = LittleLong (globals[i].s_name);
+	}
 	SafeWrite (h, globals, numglobaldefs*sizeof(ddef_t));
 
 	progs.ofs_fielddefs = ftell (h);
 	progs.numfielddefs = numfielddefs;
+	for (i = 0 ; i < numfielddefs ; i++)
+	{
+		fields[i].type = LittleShort (fields[i].type);
+		fields[i].ofs = LittleShort (fields[i].ofs);
+		fields[i].s_name = LittleLong (fields[i].s_name);
+	}
 	SafeWrite (h, fields, numfielddefs*sizeof(ddef_t));
 
 	progs.ofs_globals = ftell (h);
 	progs.numglobals = numpr_globals;
+	for (i = 0 ; i < numpr_globals ; i++)
+	//	((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
+		*(int *)&pr_globals[i] = LittleLong (*(int *)&pr_globals[i]);
 	SafeWrite (h, pr_globals, numpr_globals*4);
 
 	printf("     total size: %d\n", (int)ftell(h));
 
 	progs.entityfields = pr.size_fields;
+
 	progs.version = PROG_VERSION;
 	progs.crc = crc;
 
+// byte swap the header and write it out
+	for (i = 0 ; i < sizeof(progs)/4 ; i++)
+		((int *)&progs)[i] = LittleLong ( ((int *)&progs)[i] );
 	fseek(h, 0, SEEK_SET);
 	SafeWrite(h, &progs, sizeof(progs));
 	fclose(h);
