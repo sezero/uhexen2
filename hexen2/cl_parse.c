@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.28 2006-06-12 08:49:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.29 2006-06-15 19:59:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -79,7 +79,10 @@ static const char *svc_strings[] =
 	"svc_update_inv",
 	"svc_setangle_interpolate",
 	"svc_update_kingofhill",
-	"svc_toggle_statbar"
+	"svc_toggle_statbar",
+	"svc_sound_update_pos",
+	"svc_mod_name",	// UQE v1.13 by Korax, music file name
+	"svc_skybox"	// UQE v1.13 by Korax, skybox name
 };
 
 int LastServerMessageSize;
@@ -236,10 +239,14 @@ static void CL_ParseServerInfo (void)
 
 // parse protocol version number
 	i = MSG_ReadLong ();
-	if (i != PROTOCOL_VERSION)
+	if (i != PROTOCOL_VERSION_RAVEN_112 && i !=PROTOCOL_VERSION_UQE_113)
 	{
-		Con_Printf ("Server returned version %i, not %i\n", i, PROTOCOL_VERSION);
+		Con_Printf ("\nServer returned version %i, not %i or %i\n", i, PROTOCOL_VERSION_RAVEN_112, PROTOCOL_VERSION_UQE_113);
 		return;
+	}
+	else
+	{
+		Con_Printf ("\nServer using protocol %i\n", i);
 	}
 
 // parse maxclients
@@ -1244,8 +1251,10 @@ void CL_ParseServerMessage (void)
 
 		case svc_version:
 			i = MSG_ReadLong ();
-			if (i != PROTOCOL_VERSION)
-				Host_Error ("CL_ParseServerMessage: Server is protocol %i instead of %i\n", i, PROTOCOL_VERSION);
+			if (i != PROTOCOL_VERSION_RAVEN_112 && i != PROTOCOL_VERSION_UQE_113)
+				Host_Error ("CL_ParseServerMessage: Server is protocol %i instead of %i or %i\n", i, PROTOCOL_VERSION_RAVEN_112, PROTOCOL_VERSION_UQE_113);
+			else
+				Con_Printf ("Server using protocol %i\n", i);
 			break;
 
 		case svc_disconnect:
@@ -1791,12 +1800,23 @@ void CL_ParseServerMessage (void)
 				if ((sc1 & SC1_INV) || (sc2 & SC2_INV))
 					SB_InvChanged();
 				break;
+
+			case svc_mod_name:
+			case svc_skybox:
+				MSG_ReadString();
+				Con_Printf ("Unsupported server msg %d (%s)\n", cmd, svc_strings[cmd]);
+				break;
 		}
 	}
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2006/06/12 08:49:38  sezero
+ * fixed client segmentation faults in heterogenous client/server situations,
+ * such as pure hexen2 client vs. mission pack server: we now Host_Error upon
+ * missing models when connecting to a server.
+ *
  * Revision 1.27  2006/06/08 18:49:33  sezero
  * split strings out of pr_edict.c and sync'ed it with the hexenworld version
  *

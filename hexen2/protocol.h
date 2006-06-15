@@ -2,10 +2,12 @@
 	protocol.h
 	communications protocols
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/protocol.h,v 1.5 2006-02-24 23:27:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/protocol.h,v 1.6 2006-06-15 19:59:29 sezero Exp $
 */
 
-#define	PROTOCOL_VERSION	19
+#define	PROTOCOL_VERSION_RAVEN_112	19
+#define	PROTOCOL_VERSION_UQE_113	20
+#define	PROTOCOL_VERSION		PROTOCOL_VERSION_RAVEN_112
 
 // if the high bit of the servercmd is set, the low bits are fast update flags:
 #define	U_MOREBITS	(1<<0)
@@ -208,6 +210,8 @@
 #define svc_update_kingofhill	51
 #define svc_toggle_statbar	52
 #define svc_sound_update_pos	53	// [short] ent+channel [coord3] pos
+#define svc_mod_name		54	// [string] name (UQE v1.13 by Korax, music file name)
+#define	svc_skybox		55	// [string] name (UQE v1.13 by Korax, skybox name)
 
 //
 // client to server
@@ -228,6 +232,11 @@
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2006/02/24 23:27:31  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 28: protocol.h, quakedef.h, server.h, pmove.c, pmovetst.c,
+ * pmove.h).
+ *
  * Revision 1.4  2005/05/19 16:41:50  sezero
  * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
  *
