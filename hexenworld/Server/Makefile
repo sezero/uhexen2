@@ -54,8 +54,8 @@ INCLUDES += -I$(MINGWDIR)/include
 LDFLAGS  := -L$(MINGWDIR)/lib -lm -lwsock32 -mconsole
 else
 EXT_FLAGS+= -DPLATFORM_UNIX
-LDFLAGS  := -lm -lpthread
-LDSTATIC := -lm -lpthread -static
+LDFLAGS  := -lm -lpthread $(LIBSOCKET)
+LDSTATIC := -lm -lpthread $(LIBSOCKET) -static
 endif
 
 ifdef DEMO

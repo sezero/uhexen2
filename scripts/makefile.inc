@@ -166,6 +166,12 @@ SDLLINK :=
 endif
 endif
 
+# -lsocket is needed on some arches
+LIBSOCKET:=
+ifeq "$(HOST_OS)" "SunOS"
+LIBSOCKET:=-lsocket -lnsl
+endif
+
 # MGL flags:
 # These are required for hexen2/hexenworld win32-software
 # renderer.

@@ -134,7 +134,7 @@ LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mwindows
 else
 # Main unix specific includes and flags
 INCLUDES:= -I$(X11_PATH)/include
-LDFLAGS :=
+LDFLAGS := $(LIBSOCKET)
 EXT_FLAGS+= -DPLATFORM_UNIX
 endif
 

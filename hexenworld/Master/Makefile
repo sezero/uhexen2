@@ -43,7 +43,7 @@ INCLUDES := -I$(MINGWDIR)/include
 LDFLAGS  := -L$(MINGWDIR)/lib -lwsock32 -lwinmm -mconsole
 else
 INCLUDES :=
-LDFLAGS  :=
+LDFLAGS  := $(LIBSOCKET)
 EXT_FLAGS+= -DPLATFORM_UNIX
 LDSTATIC := -static
 endif

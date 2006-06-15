@@ -49,7 +49,7 @@ INCLUDES := -I$(MINGWDIR)/include
 LDFLAGS  := -L$(MINGWDIR)/lib -lwsock32 -mconsole
 else
 INCLUDES := -I.
-LDFLAGS  :=
+LDFLAGS  := $(LIBSOCKET)
 EXT_FLAGS+= -DPLATFORM_UNIX
 endif
 
