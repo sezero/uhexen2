@@ -169,8 +169,13 @@ endif
 
 # -lsocket is needed on some arches
 LIBSOCKET:=
+ifneq "$(TARGET_OS)" "WIN32"
+ifeq "$(HOST_OS)" "QNX"
+LIBSOCKET:=-lsocket
+endif
 ifeq "$(HOST_OS)" "SunOS"
 LIBSOCKET:=-lsocket -lnsl
+endif
 endif
 
 # MGL flags:
