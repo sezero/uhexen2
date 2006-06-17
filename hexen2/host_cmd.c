@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.44 2006-05-26 08:21:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.45 2006-06-17 06:04:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -386,6 +386,7 @@ static void Host_Reconnect_f (void)
 	//updatePlaqueMessage();
 
 	SCR_BeginLoadingPlaque ();
+	Cbuf_AddText("-attack\n");	// HACK !..
 	cls.signon = 0;		// need new connection messages
 }
 
@@ -2295,6 +2296,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.44  2006/05/26 08:21:24  sezero
+ * hopefully fixed all linkage errors on MacOSX
+ *
  * Revision 1.43  2006/04/05 06:10:43  sezero
  * added support for both hexen2-v1.11 and h2mp-v1.12 progs into a single hexen2
  * binary. this essentially completes the h2/h2mp binary merge started with the

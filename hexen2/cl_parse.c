@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.29 2006-06-15 19:59:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.30 2006-06-17 06:04:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1516,12 +1516,38 @@ void CL_ParseServerMessage (void)
 
 		case svc_intermission:
 			cl.intermission = MSG_ReadByte();
+			if (oem.value && cl.intermission == 1)
+				cl.intermission = 9;
+			if (cls.demorecording)
+			{
+			// skip intermissions while recording demos
+			// but stop recording at ending scenes:
+			// 5: finale for the demo version
+			// 6: eidolon, end-1
+			// 7: eidolon, end-2
+			// 8: eidolon, end-3
+			// 9: finale for the bundle version
+			// 10: praevus ending
+			// 12: mission pack opening
+				if (cl.intermission < 5 || cl.intermission > 10)
+				{
+					cl.intermission = 0;
+					Cbuf_AddText("+attack\n");	// HACK !..
+					break;
+				}
+				else
+				{
+					CL_Stop_f ();
+				}
+			}
+			if (cls.demoplayback)
+			{
+				cl.intermission = 0;
+				break;
+			}
+
 			cl.completed_time = cl.time;
 			vid.recalc_refdef = true;	// go to full screen
-			if (oem.value && cl.intermission == 1)
-			{
-				cl.intermission = 9;
-			}
 			break;
 
 /*		case svc_finale:
@@ -1812,6 +1838,9 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2006/06/15 19:59:29  sezero
+ * added network compatibility support for Korax's UQE-Hexen2-1.13
+ *
  * Revision 1.28  2006/06/12 08:49:38  sezero
  * fixed client segmentation faults in heterogenous client/server situations,
  * such as pure hexen2 client vs. mission pack server: we now Host_Error upon
