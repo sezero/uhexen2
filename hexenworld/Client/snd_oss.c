@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.20 2006-05-20 12:38:01 sezero Exp $
+	$Id: snd_oss.c,v 1.21 2006-06-17 06:05:25 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -108,6 +108,7 @@ qboolean S_OSS_Init(void)
 		return 0;
 	}
 
+#if 0	// moved to below
 	if (ioctl(audio_fd, SNDCTL_DSP_GETOSPACE, &info)==-1)
 	{
 		perror("GETOSPACE");
@@ -115,6 +116,7 @@ qboolean S_OSS_Init(void)
 		close(audio_fd);
 		return 0;
 	}
+#endif
 
 	shm = &sn;
 
@@ -217,6 +219,14 @@ qboolean S_OSS_Init(void)
 		}
 	}
 	shm->channels = tmp +1;
+
+	if (ioctl(audio_fd, SNDCTL_DSP_GETOSPACE, &info)==-1)
+	{
+		perror("GETOSPACE");
+		Con_Printf("Couldn't retrieve buffer status\n");
+		close(audio_fd);
+		return 0;
+	}
 
 	shm->samples = info.fragstotal * info.fragsize / (shm->samplebits/8);
 	shm->submission_chunk = 1;
