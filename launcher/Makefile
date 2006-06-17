@@ -9,38 +9,46 @@
 #  if you want debug symbols compiled in ( -g ), run with
 #  make DEBUG=1
 
-ifdef DEMO
-TMPNAME = h2demo
-else
-TMPNAME = h2launcher
+HOST_OS:=$(shell uname)
+
+CC_DEFAULT:=gcc
+ifeq ($(origin CC),environment)
+CC_OVERRIDE:=1
+ifeq ($(CC),)
+CC_OVERRIDE:=
+endif
+endif
+ifeq ($(origin CC),command line)
+CC_OVERRIDE:=1
+endif
+ifndef CC_OVERRIDE
+CC := $(CC_DEFAULT)
 endif
 
-HOST_OS :=$(shell uname)
+LINKER:= $(CC)
+
+ifdef DEMO
+TMPNAME:= h2demo
+else
+TMPNAME:= h2launcher
+endif
 
 ifdef GTK1
-H2LAUNCH = $(TMPNAME).gtk1
-GTK_CFLAGS := $(shell gtk-config --cflags)
-GTK_LIBS := $(shell gtk-config --libs)
+H2LAUNCH:= $(TMPNAME).gtk1
+GTK_CFLAGS:= $(shell gtk-config --cflags)
+GTK_LIBS:= $(shell gtk-config --libs)
 else
-
-#H2LAUNCH = $(TMPNAME).gtk2
-H2LAUNCH = $(TMPNAME)
-GTK_CFLAGS := $(shell pkg-config --cflags gtk+-2.0)
-GTK_LIBS := $(shell pkg-config --libs gtk+-2.0)
+H2LAUNCH:= $(TMPNAME)
+GTK_CFLAGS:= $(shell pkg-config --cflags gtk+-2.0)
+GTK_LIBS:= $(shell pkg-config --libs gtk+-2.0)
 endif
-
-PROGRAMS = $(H2LAUNCH)
-
-# activate the line below if you activate NLS support
-#SUPPORT_OBJ= support.o
-OBJECTS = main.o config_file.o launch_bin.o \
-	interface.o callbacks.o $(SUPPORT_OBJ)
 
 ifdef DEBUG
 CFLAGS := -Wall -g -DDEBUG_BUILD
 else
 CFLAGS := -Wall -O2
 endif
+
 CFLAGS := $(CFLAGS) -I. $(GTK_CFLAGS)
 
 ifdef DEMO
@@ -52,28 +60,27 @@ endif
 ifeq "$(HOST_OS)" "SunOS"
 CFLAGS := $(CFLAGS) -DSUNOS
 endif
-LDFLAGS =
 
-CC ?= gcc
+LDFLAGS:=$(GTK_LIBS)
 
-COMPILE = $(CC) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(CCLD) -o $@ $(LDFLAGS) $(GTK_LIBS)
+# activate the line below if you activate NLS support
+#SUPPORT_OBJ= support.o
+OBJECTS = main.o config_file.o launch_bin.o \
+	interface.o callbacks.o $(SUPPORT_OBJ)
 
-.SUFFIXES: .c .o
-
-.o:
-	$(COMPILE) -c $<
+# Rules for turning source files into .o files
+%.o: %.c
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 $(H2LAUNCH): $(OBJECTS)
 	@rm -f $(H2LAUNCH)
-	$(LINK) $(OBJECTS) $(LDFLAGS)
+	$(LINKER) -o $(H2LAUNCH) $(OBJECTS) $(LDFLAGS)
 
-all: $(PROGRAMS)
+all: $(H2LAUNCH)
 
 clean:
 	-rm -f *.o core
 
 cleaner:
-	-rm -f *.o core $(PROGRAMS)
+	-rm -f *.o core $(H2LAUNCH)
 
