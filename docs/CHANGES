@@ -3,7 +3,7 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2006-06-17 (CVS):
+2006-06-17 (CVS, 1.4.1-pre6):
     * merged a newer version of sdl cdaudio driver: lifted from the twilight
       project and applied additional bug fixes. the older driver we took from
       sdlquake was noticably slowing down the game.
@@ -14,6 +14,9 @@ Development Progress	:
       forum poster.
     * ifdef'ed the qnx quirk in in_sdl.c, just in case..
     * QNX needs -lsocket as an LDFLAG. added to scripts/makefile.inc
+    * lib3dfxgamma must actually be compiled with -fPIC ..
+    * updated the makefile of the launcher
+    * marked the snapshot of 2006-06-17 as 1.4.1-pre6
 
 2006-06-15 (CVS, 1.4.1-pre5):
     * fixed gcc-4.1 compiler warning in dcc:  In function 'WriteData':
