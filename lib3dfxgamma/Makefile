@@ -1,19 +1,31 @@
-# quick'n'dirty (and silly) makefile for lib3dfxgamma.so
-# sigh, do we even need one for this!?
 
-CC ?= gcc
-LINKER = $(CC)
-FXLIB=lib3dfxgamma.so
-CFLAGS = -O2 -Wall -shared
-LDFLAGS = 
-LDLIBS=
+CC_DEFAULT:=gcc
+ifeq ($(origin CC),environment)
+CC_OVERRIDE:=1
+ifeq ($(CC),)
+CC_OVERRIDE:=
+endif
+endif
+ifeq ($(origin CC),command line)
+CC_OVERRIDE:=1
+endif
+ifndef CC_OVERRIDE
+CC := $(CC_DEFAULT)
+endif
 
-all : $(FXLIB)
+LINKER:= $(CC)
+CFLAGS:= -O2 -fPIC -Wall
+LDFLAGS:= -shared
+LDLIBS:=
+
+all : lib3dfxgamma.so
 
 clean : 
 	rm -f *.o *.so core
 
-FXSRC=lib3dfxgamma.c
+%.o: %.c
+	$(CC) -c $(CFLAGS) -o $@ $<
 
-$(FXLIB) : $(FXSRC)
-	$(LINKER) -o $(FXLIB) $(CFLAGS) $(LDFLAGS) $(LDLIBS) $(FXSRC)
+lib3dfxgamma.so : lib3dfxgamma.o
+	$(LINKER) lib3dfxgamma.o $(LDFLAGS) $(LDLIBS) -o lib3dfxgamma.so
+

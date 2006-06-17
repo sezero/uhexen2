@@ -4,7 +4,7 @@
  * Author: O. Sezer <sezero@users.sourceforge.net>	License: GPL
  *
  * Compile using:
- * gcc -o lib3dfxgamma.so -Wall -O2 -march=i586 -shared lib3dfxgamma.c
+ * gcc lib3dfxgamma.c -O2 -fPIC -Wall  -o lib3dfxgamma.so -shared
  *
  * How to use:
  * If you are linking to the opengl library at compile time (-lGL),
