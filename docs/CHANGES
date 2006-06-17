@@ -3,7 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2006-06-14 (CVS, 1.4.1-pre5):
+2006-06-17 (CVS):
+    * skip intermissions while recording demos across multiple levels,
+      but stop recording at ending scenes.
+    * do the GETOSPACE ioctl after setting the parameters and just before
+      mmaping /dev/dsp. found in QuDos quake2 port, reported by an anonymous
+      forum poster.
+    * ifdef'ed the qnx quirk in in_sdl.c, just in case..
+    * QNX needs -lsocket as an LDFLAG. added to scripts/makefile.inc
+
+2006-06-15 (CVS, 1.4.1-pre5):
     * fixed gcc-4.1 compiler warning in dcc:  In function 'WriteData':
       hcc.c:319: warning: dereferencing type-punned pointer will break
       strict-aliasing rules
@@ -29,7 +38,7 @@ Development Progress	:
     * added network compatibility support for Korax's UQE-Hexen2-1.13 (protocol
       version 20, uses two new svc messages which are harmless on client without
       actual support for them).
-    * added a comment about win32 needn't be x86 only )how about alpha?..)
+    * added a comment about win32 needn't be x86 only (how about alpha?..)
     * bumped version to 1.4.1-pre5 / 2006-06-15
 
 2006-06-14 (CVS, 1.4.1-pre4):
