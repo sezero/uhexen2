@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2006-06-17 (CVS):
+    * merged a newer version of sdl cdaudio driver: lifted from the twilight
+      project and applied additional bug fixes. the older driver we took from
+      sdlquake was noticably slowing down the game.
     * skip intermissions while recording demos across multiple levels,
       but stop recording at ending scenes.
     * do the GETOSPACE ioctl after setting the parameters and just before
