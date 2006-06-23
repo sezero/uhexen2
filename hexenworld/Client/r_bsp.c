@@ -18,8 +18,6 @@ vec3_t			r_entorigin;
 
 float			entity_rotation[3][3];
 
-vec3_t			r_worldmodelorg;
-
 int			r_currentbkey;
 
 typedef enum

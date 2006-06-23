@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.58 2006-05-19 13:38:38 sezero Exp $
+	$Id: common.c,v 1.59 2006-06-23 14:43:37 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -2076,7 +2076,7 @@ static void COM_InitFilesystem (void)
 	// check for mix'n'match screw-ups
 	if ((gameflags & GAME_REGISTERED) && ((gameflags & GAME_DEMO) || (gameflags & GAME_OEM)))
 		Sys_Error ("Bad Hexen II installation");
-#ifndef SERVERONLY
+#if !( defined(H2W) && defined(SERVERONLY) )
 	if ((gameflags & GAME_MODIFIED) && !(gameflags & GAME_REGISTERED))
 		Sys_Error ("You must have the full version of Hexen II to play modified games");
 #endif

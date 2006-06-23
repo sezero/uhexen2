@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.11 2006-04-05 06:06:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.12 2006-06-23 14:43:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -973,9 +973,6 @@ static void R_DrawBEntitiesOnList (void)
 				VectorCopy (currententity->origin, r_entorigin);
 				VectorSubtract (r_origin, r_entorigin, modelorg);
 
-				// FIXME: is this needed?
-				VectorCopy (modelorg, r_worldmodelorg);
-
 				r_pcurrentvertbase = clmodel->vertexes;
 
 				// FIXME: stop transforming twice
@@ -1292,6 +1289,10 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2006/04/05 06:06:15  sezero
+ * continue making static functions and vars static. whitespace and coding
+ * style cleanup. part 51: software renderer: r_main.c
+ *
  * Revision 1.10  2006/03/24 15:05:39  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also

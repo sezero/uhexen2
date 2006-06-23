@@ -2,7 +2,7 @@
 	r_local.h
 	private refresh defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_local.h,v 1.8 2006-04-05 06:02:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_local.h,v 1.9 2006-06-23 14:43:36 sezero Exp $
 */
 
 #ifndef GLQUAKE
@@ -117,7 +117,6 @@ void R_DrawPolyList (void);
 // current entity info
 //
 extern	qboolean	insubmodel;
-extern	vec3_t	r_worldmodelorg;
 
 
 void R_DrawSprite (void);
@@ -157,8 +156,6 @@ extern void R_RotateBmodel (void);
 extern	int	c_faceclip;
 extern	int	r_polycount;
 extern	int	r_wholepolycount;
-
-extern	model_t	*cl_worldmodel;
 
 extern	int	*pfrustum_indexes[4];
 
@@ -299,6 +296,9 @@ void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2006/04/05 06:02:32  sezero
+ * whitespace clean-ups (r_local.h)
+ *
  * Revision 1.7  2006/03/28 19:53:23  sezero
  * continue making static functions and vars static. whitespace and coding
  * style cleanup. part 47: software renderer: r_aclip.c, r_alias.c, r_bsp.c,

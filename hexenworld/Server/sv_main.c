@@ -137,7 +137,7 @@ void SV_Error (char *error, ...)
 	static	qboolean inerror = false;
 
 	if (inerror)
-		Sys_Error ("SV_Error: recursively entered (%s)", string);
+		Sys_Error ("SV_Error: recursive error! (%s)", string);
 
 	inerror = true;
 

@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.13 2006-03-21 22:24:08 sezero Exp $
+	$Id: model.c,v 1.14 2006-06-23 14:43:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1063,7 +1063,7 @@ static void Mod_LoadClipnodes (lump_t *l)
 =================
 Mod_MakeHull0
 
-Deplicate the drawing hull structure as a clipping hull
+Duplicate the drawing hull structure as a clipping hull
 =================
 */
 static void Mod_MakeHull0 (void)
@@ -2255,6 +2255,11 @@ static void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2006/03/21 22:24:08  sezero
+ * continue making static functions and vars static. whitespace and coding
+ * style cleanup. part 44: model.c, gl_model.c. also moved the mcache cmd
+ * addition to Mod_Init and added save-to-file functionality.
+ *
  * Revision 1.12  2005/10/02 15:43:08  sezero
  * killed -Wshadow warnings
  *

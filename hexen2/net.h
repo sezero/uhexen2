@@ -161,8 +161,8 @@ typedef struct
 } net_landriver_t;
 
 #define	MAX_NET_DRIVERS		8
-extern int				net_numlandrivers;
-extern net_landriver_t	net_landrivers[MAX_NET_DRIVERS];
+extern net_landriver_t	net_landrivers[];
+extern const int		net_numlandrivers;
 
 typedef struct
 {
@@ -183,8 +183,8 @@ typedef struct
 	int			controlSock;
 } net_driver_t;
 
-extern int			net_numdrivers;
-extern net_driver_t	net_drivers[MAX_NET_DRIVERS];
+extern net_driver_t	net_drivers[];
+extern const int		net_numdrivers;
 
 extern int			DEFAULTnet_hostport;
 extern int			net_hostport;

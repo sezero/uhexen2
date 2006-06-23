@@ -1,6 +1,6 @@
 /*
 	net_bsd.c
-	$Id: net_bsd.c,v 1.4 2006-02-18 21:59:23 sezero Exp $
+	$Id: net_bsd.c,v 1.5 2006-06-23 14:43:34 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -27,10 +27,10 @@
 
 #include "quakedef.h"
 
-#include "net_loop.h"
 #include "net_dgrm.h"
+#include "net_loop.h"
 
-net_driver_t net_drivers[MAX_NET_DRIVERS] =
+net_driver_t net_drivers[] =
 {
 	{
 		"Loopback",
@@ -67,11 +67,11 @@ net_driver_t net_drivers[MAX_NET_DRIVERS] =
 	}
 };
 
-int net_numdrivers = 2;
+const int net_numdrivers = (sizeof(net_drivers) / sizeof(net_drivers[0]));
 
 #include "net_udp.h"
 
-net_landriver_t	net_landrivers[MAX_NET_DRIVERS] =
+net_landriver_t	net_landrivers[] =
 {
 	{
 		"UDP",
@@ -98,4 +98,5 @@ net_landriver_t	net_landrivers[MAX_NET_DRIVERS] =
 	}
 };
 
-int net_numlandrivers = 1;
+const int net_numlandrivers = (sizeof(net_landrivers) / sizeof(net_landrivers[0]));
+

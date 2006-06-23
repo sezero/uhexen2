@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.13 2006-03-21 22:25:56 sezero Exp $
+	$Id: model.c,v 1.14 2006-06-23 14:43:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1056,7 +1056,7 @@ static void Mod_LoadClipnodes (lump_t *l)
 =================
 Mod_MakeHull0
 
-Deplicate the drawing hull structure as a clipping hull
+Duplicate the drawing hull structure as a clipping hull
 =================
 */
 static void Mod_MakeHull0 (void)

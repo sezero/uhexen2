@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.47 2006-06-14 12:46:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.48 2006-06-23 14:43:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -109,7 +109,7 @@ void Host_Error (char *error, ...)
 	static	qboolean inerror = false;
 
 	if (inerror)
-		Sys_Error ("Host_Error: recursively entered");
+		Sys_Error ("Host_Error: recursive error!");
 	inerror = true;
 
 	SCR_EndLoadingPlaque ();		// reenable screen updates
@@ -1081,6 +1081,11 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.47  2006/06/14 12:46:43  sezero
+ * disabled the VCR facility by default. made it a compile time option.
+ * After all, it is NOT an ordinary demo recording but a server only
+ * feature for debugging server bugs.
+ *
  * Revision 1.46  2006/05/18 17:48:10  sezero
  * renamed MIDI_UpdateVolume to MIDI_Update
  *

@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.8 2006-04-05 06:06:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.9 2006-06-23 14:43:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1006,9 +1006,6 @@ static void R_DrawBEntitiesOnList (void)
 			{
 				VectorCopy (currententity->origin, r_entorigin);
 				VectorSubtract (r_origin, r_entorigin, modelorg);
-
-				// FIXME: is this needed?
-				VectorCopy (modelorg, r_worldmodelorg);
 
 				r_pcurrentvertbase = clmodel->vertexes;
 

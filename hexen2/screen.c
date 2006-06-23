@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.27 2006-06-08 18:49:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.28 2006-06-23 14:43:36 sezero Exp $
 */
 
 /*=============================================================================
@@ -1366,9 +1366,7 @@ void SCR_UpdateScreen (void)
 
 #if FULLSCREEN_INTERMISSIONS
 	// no need to draw view in fullscreen intermission screens
-	if (cl.intermission < 1 || cl.intermission > 12)
-#else
-	if (cl.intermission > 1 || cl.intermission <= 12)
+	if (cl.intermission < 1)
 #endif
 	{
 		VID_LockBuffer ();
@@ -1492,6 +1490,9 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2006/06/08 18:49:33  sezero
+ * split strings out of pr_edict.c and sync'ed it with the hexenworld version
+ *
  * Revision 1.26  2006/04/05 06:09:23  sezero
  * killed (almost) all H2MP ifdefs: this is the first step in making a single
  * binary which handles both h2 and h2mp properly. the only H2MP ifdefs left

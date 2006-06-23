@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.33 2006-06-08 18:49:33 sezero Exp $
+	$Id: gl_screen.c,v 1.34 2006-06-23 14:43:32 sezero Exp $
 */
 
 /*=============================================================================
@@ -1227,9 +1227,7 @@ void SCR_UpdateScreen (void)
 
 #if FULLSCREEN_INTERMISSIONS
 	// no need to draw view in fullscreen intermission screens
-	if (cl.intermission < 1 || cl.intermission > 12)
-#else
-	if (cl.intermission > 1 || cl.intermission <= 12)
+	if (cl.intermission < 1)
 #endif
 		V_RenderView ();
 
@@ -1307,6 +1305,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.33  2006/06/08 18:49:33  sezero
+ * split strings out of pr_edict.c and sync'ed it with the hexenworld version
+ *
  * Revision 1.32  2006/05/18 17:46:10  sezero
  * made COM_WriteFile() to return 0 on success, 1 on write errors
  *

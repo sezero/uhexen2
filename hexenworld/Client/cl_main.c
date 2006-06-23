@@ -1101,7 +1101,7 @@ void Host_Error (char *error, ...)
 	static	qboolean inerror = false;
 
 	if (inerror)
-		Sys_Error ("Host_Error: recursively entered");
+		Sys_Error ("Host_Error: recursive error!");
 	inerror = true;
 
 	va_start (argptr,error);

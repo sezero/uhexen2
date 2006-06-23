@@ -2,7 +2,7 @@
 	r_local.h
 	private refresh defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.7 2006-04-05 06:02:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.8 2006-06-23 14:43:41 sezero Exp $
 */
 
 #ifndef GLQUAKE
@@ -118,7 +118,6 @@ void R_DrawPolyList (void);
 // current entity info
 //
 extern	qboolean	insubmodel;
-extern	vec3_t	r_worldmodelorg;
 
 
 void R_DrawSprite (void);
@@ -158,8 +157,6 @@ extern void R_RotateBmodel (void);
 extern	int	c_faceclip;
 extern	int	r_polycount;
 extern	int	r_wholepolycount;
-
-extern	model_t	*cl_worldmodel;
 
 extern	int	*pfrustum_indexes[4];
 

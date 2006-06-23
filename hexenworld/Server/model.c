@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.6 2006-03-21 23:18:24 sezero Exp $
+	$Id: model.c,v 1.7 2006-06-23 14:43:42 sezero Exp $
 */
 
 #include "qwsvdef.h"
@@ -924,7 +924,7 @@ static void Mod_LoadClipnodes (lump_t *l)
 =================
 Mod_MakeHull0
 
-Deplicate the drawing hull structure as a clipping hull
+Duplicate the drawing hull structure as a clipping hull
 =================
 */
 static void Mod_MakeHull0 (void)

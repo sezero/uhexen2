@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.28 2006-06-14 10:12:59 sezero Exp $
+	$Id: gl_model.c,v 1.29 2006-06-23 14:43:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1274,7 +1274,7 @@ static void Mod_LoadClipnodes (lump_t *l)
 =================
 Mod_MakeHull0
 
-Deplicate the drawing hull structure as a clipping hull
+Duplicate the drawing hull structure as a clipping hull
 =================
 */
 static void Mod_MakeHull0 (void)
@@ -2626,6 +2626,9 @@ static void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2006/06/14 10:12:59  sezero
+ * eliminated some ifdefs by defining flush_textures as 1 in glquake.h for h2w
+ *
  * Revision 1.27  2006/04/05 06:09:23  sezero
  * killed (almost) all H2MP ifdefs: this is the first step in making a single
  * binary which handles both h2 and h2mp properly. the only H2MP ifdefs left

@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.28 2006-05-18 17:46:10 sezero Exp $
+	$Id: gl_screen.c,v 1.29 2006-06-23 14:43:39 sezero Exp $
 */
 
 /*=============================================================================
@@ -1049,9 +1049,7 @@ void SCR_UpdateScreen (void)
 
 #if FULLSCREEN_INTERMISSIONS
 	// no need to draw view in fullscreen intermission screens
-	if (cl.intermission < 1 || cl.intermission > 12)
-#else
-	if (cl.intermission > 1 || cl.intermission <= 12)
+	if (cl.intermission < 1)
 #endif
 		V_RenderView ();
 

@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.22 2006-06-08 18:49:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.23 2006-06-23 14:43:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -53,6 +53,8 @@ static gefv_cache	gefvCache[GEFV_CACHESIZE] =
 		{ NULL,	"" },
 		{ NULL,	"" }
 };
+
+static int	start_amount;
 
 cvar_t	max_temp_edicts = {"max_temp_edicts", "30", CVAR_ARCHIVE};
 
@@ -1000,10 +1002,9 @@ to call ED_CallSpawnFunctions () to let the objects initialize themselves.
 void ED_LoadFromFile (char *data)
 {
 	edict_t		*ent;
-	int		inhibit, skip;
+	int		inhibit;
 	dfunction_t	*func;
 	char		*orig;
-	int		start_amount;
 
 	ent = NULL;
 	inhibit = 0;
@@ -1068,6 +1069,8 @@ void ED_LoadFromFile (char *data)
 		}
 		else
 		{ // Gotta be single player
+			int		skip;
+
 			if (((int)ent->v.spawnflags & SPAWNFLAG_NOT_SINGLE))
 			{
 				ED_Free (ent);
@@ -1362,6 +1365,9 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2006/06/08 18:49:33  sezero
+ * split strings out of pr_edict.c and sync'ed it with the hexenworld version
+ *
  * Revision 1.21  2006/04/24 08:38:55  sezero
  * char seems to be of different signedness on MorphOS, so changed the type of
  * NewLineChar to signed char. Thanks go to Michal Wozniak for catching this.

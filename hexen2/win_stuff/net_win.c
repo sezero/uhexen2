@@ -1,9 +1,9 @@
 #include "quakedef.h"
 
-#include "net_loop.h"
 #include "net_dgrm.h"
+#include "net_loop.h"
 
-net_driver_t net_drivers[MAX_NET_DRIVERS] =
+net_driver_t net_drivers[] =
 {
 	{
 		"Loopback",
@@ -40,13 +40,13 @@ net_driver_t net_drivers[MAX_NET_DRIVERS] =
 	}
 };
 
-int net_numdrivers = 2;
+const int net_numdrivers = (sizeof(net_drivers) / sizeof(net_drivers[0]));
 
 
 #include "net_wins.h"
 #include "net_wipx.h"
 
-net_landriver_t	net_landrivers[MAX_NET_DRIVERS] =
+net_landriver_t	net_landrivers[] =
 {
 	{
 		"TCPIP",
@@ -97,4 +97,5 @@ net_landriver_t	net_landrivers[MAX_NET_DRIVERS] =
 	}
 };
 
-int net_numlandrivers = 2;
+const int net_numlandrivers = (sizeof(net_landrivers) / sizeof(net_landrivers[0]));
+

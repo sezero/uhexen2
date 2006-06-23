@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.19 2006-04-05 06:09:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.20 2006-06-23 14:43:41 sezero Exp $
 */
 
 
@@ -1143,9 +1143,7 @@ void SCR_UpdateScreen (void)
 
 #if FULLSCREEN_INTERMISSIONS
 	// no need to draw view in fullscreen intermission screens
-	if (cl.intermission < 1 || cl.intermission > 12)
-#else
-	if (cl.intermission > 1 || cl.intermission <= 12)
+	if (cl.intermission < 1)
 #endif
 	{
 		VID_LockBuffer ();
