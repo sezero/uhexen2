@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-06-23 (CVS):
+    * better handling of the +attack/-attack demo recording hack
+    * misc clean-ups / updates
+
 2006-06-17 (CVS, 1.4.1-pre6):
     * merged a newer version of sdl cdaudio driver: lifted from the twilight
       project and applied additional bug fixes. the older driver we took from
