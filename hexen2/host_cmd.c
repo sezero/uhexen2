@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.45 2006-06-17 06:04:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.46 2006-06-23 14:45:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -373,10 +373,16 @@ This is sent just before a server changes levels
 ==================
 */
 extern void R_ClearParticles (void);
+extern qboolean		demohack;
 
 static void Host_Reconnect_f (void)
 {
 	R_ClearParticles ();	//jfm: for restarts which didn't use to clear parts.
+	if (demohack)
+	{
+		demohack = false;
+		Cbuf_AddText("-attack\n");
+	}
 	if (oem.value && cl.intermission == 9)
 	{
 		CL_Disconnect();
@@ -386,7 +392,6 @@ static void Host_Reconnect_f (void)
 	//updatePlaqueMessage();
 
 	SCR_BeginLoadingPlaque ();
-	Cbuf_AddText("-attack\n");	// HACK !..
 	cls.signon = 0;		// need new connection messages
 }
 
@@ -2296,6 +2301,10 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.45  2006/06/17 06:04:22  sezero
+ * skip intermissions while recording demos across multiple levels,
+ * but stop recording at ending scenes.
+ *
  * Revision 1.44  2006/05/26 08:21:24  sezero
  * hopefully fixed all linkage errors on MacOSX
  *

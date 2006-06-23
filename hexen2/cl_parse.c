@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.30 2006-06-17 06:04:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.31 2006-06-23 14:45:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -17,6 +17,11 @@ extern 	cvar_t	bgmtype;
 extern	int	stufftext_frame;
 
 model_t *player_models[MAX_PLAYER_CLASS];
+
+// when recording demos across multiple levels and we hit an intermission,
+// we issue an +attack to skip the intermission. when reconnecting to the
+// server, we must reverse it by an -attack in Host_Reconnect_f()   - O.S.
+qboolean	demohack = false;
 
 static const char *svc_strings[] =
 {
@@ -1533,6 +1538,7 @@ void CL_ParseServerMessage (void)
 				{
 					cl.intermission = 0;
 					Cbuf_AddText("+attack\n");	// HACK !..
+					demohack = true;
 					break;
 				}
 				else
@@ -1838,6 +1844,10 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2006/06/17 06:04:22  sezero
+ * skip intermissions while recording demos across multiple levels,
+ * but stop recording at ending scenes.
+ *
  * Revision 1.29  2006/06/15 19:59:29  sezero
  * added network compatibility support for Korax's UQE-Hexen2-1.13
  *
