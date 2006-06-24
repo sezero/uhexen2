@@ -330,6 +330,7 @@ COMMONOBJS = chase.o \
 	sv_main.o \
 	sv_move.o \
 	sv_phys.o \
+	sv_effect.o \
 	sv_user.o \
 	view.o \
 	wad.o \
