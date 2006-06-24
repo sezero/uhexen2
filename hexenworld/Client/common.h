@@ -76,6 +76,12 @@ void InsertLinkAfter (link_t *l, link_t *after);
 
 //============================================================================
 
+extern void *Q_malloc(unsigned int size);
+extern void Q_free(void *mem);
+
+
+//============================================================================
+
 // endianness stuff: <sys/types.h> is supposed
 // to succeed in locating the correct endian.h
 // this BSD style may not work everywhere, eg. on WIN32
@@ -228,6 +234,7 @@ byte *COM_LoadStackFile (char *path, void *buffer, int bufsize);
 byte *COM_LoadBufFile (char *path, void *buffer, int *bufsize);
 byte *COM_LoadTempFile (char *path);
 byte *COM_LoadHunkFile (char *path);
+byte *COM_LoadMallocFile (char *path);
 void COM_LoadCacheFile (char *path, struct cache_user_s *cu);
 void COM_CreatePath (char *path);
 void COM_Gamedir (char *dir);

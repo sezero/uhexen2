@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.63 2006-06-23 14:43:32 sezero Exp $
+	$Id: common.c,v 1.64 2006-06-24 15:16:58 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -193,6 +193,42 @@ float FloatSwap (float f)
 	dat2.b[2] = dat1.b[1];
 	dat2.b[3] = dat1.b[0];
 	return dat2.f;
+}
+
+
+/*
+==============================================================================
+
+Q_MALLOC / Q_FREE
+
+malloc and free system memory. LordHavoc.
+==============================================================================
+*/
+
+static unsigned int qmalloctotal_alloc, qmalloctotal_alloccount, qmalloctotal_free, qmalloctotal_freecount;
+
+void *Q_malloc(unsigned int size)
+{
+	unsigned int *mem;
+	qmalloctotal_alloc += size;
+	qmalloctotal_alloccount++;
+	mem = malloc(size+sizeof(unsigned int));
+	if (!mem)
+		return mem;
+	*mem = size;
+	return (void *)(mem + 1);
+}
+
+void Q_free(void *mem)
+{
+	unsigned int *m;
+	if (!mem)
+		return;
+	m = mem;
+	m--;	// back up to size
+	qmalloctotal_free += *m;	// size
+	qmalloctotal_freecount++;
+	free(m);
 }
 
 
@@ -1444,9 +1480,17 @@ Filename are reletive to the quake directory.
 Allways appends a 0 byte to the loaded data.
 ============
 */
+#define	LOADFILE_ZONE		0
+#define	LOADFILE_HUNK		1
+#define	LOADFILE_TEMPHUNK	2
+#define	LOADFILE_CACHE		3
+#define	LOADFILE_STACK		4
+#define	LOADFILE_BUF		5
+#define	LOADFILE_MALLOC		6
 static cache_user_t *loadcache;
 static byte	*loadbuf;
 static int		loadsize;
+
 static byte *COM_LoadFile (char *path, int usehunk)
 {
 	FILE	*h;
@@ -1464,30 +1508,39 @@ static byte *COM_LoadFile (char *path, int usehunk)
 // extract the filename base name for hunk tag
 	COM_FileBase (path, base);
 
-	if (usehunk == 1)
-		buf = Hunk_AllocName (len+1, base);
-	else if (usehunk == 2)
-		buf = Hunk_TempAlloc (len+1);
-	else if (usehunk == 0)
-		buf = Z_Malloc (len+1);
-	else if (usehunk == 3)
-		buf = Cache_Alloc (loadcache, len+1, base);
-	else if (usehunk == 4)
+	switch (usehunk)
 	{
+	case LOADFILE_HUNK:
+		buf = Hunk_AllocName (len+1, base);
+		break;
+	case LOADFILE_TEMPHUNK:
+		buf = Hunk_TempAlloc (len+1);
+		break;
+	case LOADFILE_ZONE:
+		buf = Z_Malloc (len+1);
+		break;
+	case LOADFILE_CACHE:
+		buf = Cache_Alloc (loadcache, len+1, base);
+		break;
+	case LOADFILE_STACK:
 		if (len+1 > loadsize)
 			buf = Hunk_TempAlloc (len+1);
 		else
 			buf = loadbuf;
-	}
-	else if (usehunk == 5)
-	{	// Pa3PyX: like 4, except uses hunk (not temp) if no space
+		break;
+	case LOADFILE_BUF:
+		// Pa3PyX: like 4, except uses hunk (not temp) if no space
 		if (len + 1 > loadsize)
 			buf = Hunk_AllocName(len + 1, path);
 		else
 			buf = loadbuf;
-	}
-	else
+		break;
+	case LOADFILE_MALLOC:
+		buf = Q_malloc (len+1);
+		break;
+	default:
 		Sys_Error ("COM_LoadFile: bad usehunk");
+	}
 
 	if (!buf)
 		Sys_Error ("COM_LoadFile: not enough space for %s", path);
@@ -1507,18 +1560,18 @@ static byte *COM_LoadFile (char *path, int usehunk)
 
 byte *COM_LoadHunkFile (char *path)
 {
-	return COM_LoadFile (path, 1);
+	return COM_LoadFile (path, LOADFILE_HUNK);
 }
 
 byte *COM_LoadTempFile (char *path)
 {
-	return COM_LoadFile (path, 2);
+	return COM_LoadFile (path, LOADFILE_TEMPHUNK);
 }
 
 void COM_LoadCacheFile (char *path, struct cache_user_s *cu)
 {
 	loadcache = cu;
-	COM_LoadFile (path, 3);
+	COM_LoadFile (path, LOADFILE_CACHE);
 }
 
 // uses temp hunk if larger than bufsize
@@ -1528,7 +1581,7 @@ byte *COM_LoadStackFile (char *path, void *buffer, int bufsize)
 
 	loadbuf = (byte *)buffer;
 	loadsize = bufsize;
-	buf = COM_LoadFile (path, 4);
+	buf = COM_LoadFile (path, LOADFILE_STACK);
 
 	return buf;
 }
@@ -1541,11 +1594,17 @@ byte *COM_LoadBufFile (char *path, void *buffer, int *bufsize)
 
 	loadbuf = (byte *)buffer;
 	loadsize = (*bufsize) + 1;
-	buf = COM_LoadFile (path, 5);
+	buf = COM_LoadFile (path, LOADFILE_BUF);
 	if (buf && !(*bufsize))
 		*bufsize = com_filesize;
 
 	return buf;
+}
+
+// LordHavoc: returns malloc'd memory
+byte *COM_LoadMallocFile (char *path)
+{
+	return COM_LoadFile (path, LOADFILE_BUF);
 }
 
 /*
@@ -2464,6 +2523,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.63  2006/06/23 14:43:32  sezero
+ * some minor clean-ups
+ *
  * Revision 1.62  2006/05/19 13:38:38  sezero
  * added a compile time option to dicetly activate the mission pack
  * support without the need for a commandline option like -portals
