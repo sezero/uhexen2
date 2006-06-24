@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.64 2006-06-24 15:16:58 sezero Exp $
+	$Id: common.c,v 1.65 2006-06-24 16:04:35 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -2077,6 +2077,20 @@ static void MoveUserData (void)
 		}
 	}
 
+	// move the savegames (multiplayer)
+	for (i = 0; i < MAX_SAVEGAMES; i++)
+	{
+		snprintf (tmp1, sizeof(tmp1), "%s/ms%d", host_parms.userdir, i);
+		if (stat(tmp1, &test) == 0)
+		{
+			if ((test.st_mode & S_IFDIR) == S_IFDIR)
+			{
+				snprintf (tmp2, sizeof(tmp2), "%s/ms%d", com_userdir, i);
+				do_movedata (tmp1, tmp2, fh);
+			}
+		}
+	}
+
 	// other dirs
 	for (i = 0; i < NUM_MOVEDIRS; i++)
 	{
@@ -2523,6 +2537,10 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.64  2006/06/24 15:16:58  sezero
+ * added Q_malloc, Q_free and COM_LoadMallocFile, which may become useful.
+ * found among some old sources by LordHavoc.
+ *
  * Revision 1.63  2006/06/23 14:43:32  sezero
  * some minor clean-ups
  *
