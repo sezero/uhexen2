@@ -3,7 +3,7 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2006-06-25 (CVS):
+2006-06-25 (CVS, 1.4.1-pre7):
     * added a hexen2 dedicated server which seems to work much better than
       the client/server application running in dedicated mode. model loading
       implementation taken from LordHavoc's old lhnqserver, as it seems better
@@ -23,6 +23,7 @@ Development Progress	:
     * better handling of the +attack/-attack demo recording hack
     * added timeBeginPeriod to win32 timeGetTime usage
     * misc clean-ups and prepare for merging a dedicated server
+    * marked the snapshot of 2006-06-25 as 1.4.1-pre7
 
 2006-06-17 (CVS, 1.4.1-pre6):
     * merged a newer version of sdl cdaudio driver: lifted from the twilight

@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.82 2006-06-25 13:14:01 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.83 2006-06-25 16:03:21 sezero Exp $
 */
 
 
@@ -18,9 +18,9 @@
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		4
 #define	HOT_VERSION_MIN		1
-#define	HOT_VERSION_REL_DATE	"2006-06-17"
+#define	HOT_VERSION_REL_DATE	"2006-06-25"
 #define	HOT_VERSION_BETA	1
-#define	HOT_VERSION_BETA_STR	"pre6"
+#define	HOT_VERSION_BETA_STR	"pre7"
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
 #define	ENGINE_VERSION		1.15
@@ -454,6 +454,9 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.82  2006/06/25 13:14:01  sezero
+ * fixed compilation of h2ded
+ *
  * Revision 1.81  2006/06/25 12:01:48  sezero
  * renamed CL_CopyFiles to Host_CopyFiles and CL_RemoveGIPFiles to
  * Host_RemoveGIPFiles, moved them to host.c
