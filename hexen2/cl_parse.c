@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.31 2006-06-23 14:45:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.32 2006-06-25 00:02:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -11,10 +11,12 @@
 #include <windows.h>
 #endif
 
-extern	cvar_t	sv_flypitch;
-extern	cvar_t	sv_walkpitch;
+//extern	cvar_t	sv_flypitch;
+//extern	cvar_t	sv_walkpitch;
 extern 	cvar_t	bgmtype;
 extern	int	stufftext_frame;
+extern	qboolean mousestate_sa;
+extern	void IN_ActivateMouse (void);
 
 model_t *player_models[MAX_PLAYER_CLASS];
 
@@ -421,6 +423,10 @@ static void CL_ParseServerInfo (void)
 	Hunk_Check ();		// make sure nothing is hurt
 
 	noclip_anglehack = false;	// noclip is turned off at start
+
+// we connected to the server, make sure the mouse is going - S.A.
+	mousestate_sa = false;
+	IN_ActivateMouse();
 }
 
 
@@ -1844,6 +1850,9 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2006/06/23 14:45:09  sezero
+ * better handling of the +attack/-attack demo recording hack
+ *
  * Revision 1.30  2006/06/17 06:04:22  sezero
  * skip intermissions while recording demos across multiple levels,
  * but stop recording at ending scenes.

@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.46 2006-06-23 14:45:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.47 2006-06-25 00:02:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -415,10 +415,6 @@ static void Host_Connect_f (void)
 	strcpy (name, Cmd_Argv(1));
 	CL_EstablishConnection (name);
 	Host_Reconnect_f ();
-
-	// When we connect to a server, check the mouse is going - S.A.
-	mousestate_sa = false;
-	IN_ActivateMouse();
 }
 
 
@@ -2301,6 +2297,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.46  2006/06/23 14:45:09  sezero
+ * better handling of the +attack/-attack demo recording hack
+ *
  * Revision 1.45  2006/06/17 06:04:22  sezero
  * skip intermissions while recording demos across multiple levels,
  * but stop recording at ending scenes.

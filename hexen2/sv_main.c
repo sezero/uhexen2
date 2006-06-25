@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.29 2006-04-05 06:10:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.30 2006-06-25 00:02:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -389,8 +389,6 @@ Sends the first message from the server to a connected client.
 This will be sent on the initial connection and upon each server load.
 ================
 */
-extern qboolean mousestate_sa;
-extern void IN_ActivateMouse (void);
 void SV_SendServerinfo (client_t *client)
 {
 	char			**s;
@@ -449,13 +447,6 @@ void SV_SendServerinfo (client_t *client)
 
 	client->sendsignon = true;
 	client->spawned = false;	// need prespawn, spawn, etc
-
-// make sure the mouse is going - S.A.
-	if (!isDedicated)
-	{
-		mousestate_sa = false;
-		IN_ActivateMouse();
-	}
 }
 
 /*
@@ -2110,6 +2101,12 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2006/04/05 06:10:44  sezero
+ * added support for both hexen2-v1.11 and h2mp-v1.12 progs into a single hexen2
+ * binary. this essentially completes the h2/h2mp binary merge started with the
+ * previous patch. many conditionals had to be added especially on the server side,but couldn't notice any serious performance loss on a PIII-733 computer. Supportfor multiple progs.dat is now advised to be left enabled in order to support
+ * mods which uses that feature.
+ *
  * Revision 1.28  2006/03/24 15:05:39  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also
