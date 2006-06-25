@@ -410,12 +410,20 @@ int NET_SendToAll(sizebuf_t *data, int blocktime)
 			continue;
 		if (host_client->active)
 		{
-			if (host_client->netconnection->driver == 0)
+		//	without the canSend check, a changelevel issued by the
+		//	progs doesn't work. but a changelevel from the console
+		//	seems fine...
+		//	if (host_client->netconnection->driver == 0)
+			if (host_client->netconnection->driver == 0 && NET_CanSendMessage(host_client->netconnection))
 			{
 				NET_SendMessage(host_client->netconnection, data);
 				state1[i] = true;
 				state2[i] = true;
 				continue;
+			}
+			else	// see above.
+			{
+				NET_GetMessage (host_client->netconnection);
 			}
 			count++;
 			state1[i] = false;
