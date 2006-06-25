@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.81 2006-06-25 12:01:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.82 2006-06-25 13:14:01 sezero Exp $
 */
 
 
@@ -361,7 +361,7 @@ typedef struct
 #include "server.h"
 
 #if defined(SERVERONLY)
-#include "model.h"
+#include "server/model.h"
 #elif defined(GLQUAKE)
 #include "gl_model.h"
 #include "glquake.h"
@@ -454,6 +454,10 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.81  2006/06/25 12:01:48  sezero
+ * renamed CL_CopyFiles to Host_CopyFiles and CL_RemoveGIPFiles to
+ * Host_RemoveGIPFiles, moved them to host.c
+ *
  * Revision 1.80  2006/06/25 10:21:03  sezero
  * misc clean-ups and prepare for merging a dedicated server
  *
