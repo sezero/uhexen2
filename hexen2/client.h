@@ -1,6 +1,6 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.15 2006-04-06 16:51:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.16 2006-06-25 12:01:48 sezero Exp $
 */
 
 typedef struct
@@ -299,9 +299,6 @@ void CL_Disconnect (void);
 void CL_Disconnect_f (void);
 void CL_NextDemo (void);
 
-qboolean CL_CopyFiles(char *source, char *pat, char *dest);
-void CL_RemoveGIPFiles (char *path);
-
 #define	MAX_VISEDICTS		256
 extern	int		cl_numvisedicts;
 extern	entity_t	*cl_visedicts[MAX_VISEDICTS];
@@ -376,6 +373,10 @@ void CL_UpdateTEnts (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2006/04/06 16:51:43  sezero
+ * deverted the midi_name length change, changed the hwcl struture to have
+ * a 128 length accordingly
+ *
  * Revision 1.14  2006/04/06 16:44:28  sezero
  * more tidy-ups (client.h). changed the midi_name length from 128 to MAX_QPATH
  *

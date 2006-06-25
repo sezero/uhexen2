@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.80 2006-06-25 10:21:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.81 2006-06-25 12:01:48 sezero Exp $
 */
 
 
@@ -423,7 +423,10 @@ void Host_Frame (float time);
 void Host_Quit_f (void);
 void Host_ClientCommands (char *fmt, ...);
 void Host_ShutdownServer (qboolean crash);
+void Host_RemoveGIPFiles (char *path);
+qboolean Host_CopyFiles(char *source, char *pat, char *dest);
 qboolean SaveGamestate (qboolean ClientsOnly);
+
 
 extern	qboolean	isDedicated;
 
@@ -451,6 +454,9 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.80  2006/06/25 10:21:03  sezero
+ * misc clean-ups and prepare for merging a dedicated server
+ *
  * Revision 1.79  2006/06/17 19:54:54  sezero
  * marked the snapshot of 2006-06-17 as 1.4.1-pre6
  *

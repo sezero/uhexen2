@@ -2,11 +2,16 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.48 2006-06-23 14:43:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.49 2006-06-25 12:01:48 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "r_local.h"
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
+#include <unistd.h>
 
 /*
 
@@ -65,6 +70,68 @@ cvar_t	pausable = {"pausable", "1", CVAR_NONE};
 
 cvar_t	temp1 = {"temp1", "0", CVAR_NONE};
 
+
+/*
+===============================================================================
+
+SAVEGAME FILES HANDLING
+
+===============================================================================
+*/
+
+void Host_RemoveGIPFiles (char *path)
+{
+	char	*name, tempdir[MAX_OSPATH];
+
+	if (path)
+		snprintf(tempdir, MAX_OSPATH, "%s", path);
+	else
+		snprintf(tempdir, MAX_OSPATH, "%s", com_savedir);
+
+	name = Sys_FindFirstFile (tempdir, "*.gip");
+
+	while (name)
+	{
+		unlink (va("%s/%s", tempdir, name));
+
+		name = Sys_FindNextFile();
+	}
+
+	Sys_FindClose();
+}
+
+qboolean Host_CopyFiles(char *source, char *pat, char *dest)
+{
+	char	*name, tempdir[MAX_OSPATH], tempdir2[MAX_OSPATH];
+	qboolean error;
+
+	name = Sys_FindFirstFile(source, pat);
+	error = false;
+
+	while (name)
+	{
+		sprintf(tempdir,"%s/%s", source, name);
+		sprintf(tempdir2,"%s/%s", dest, name);
+#ifdef _WIN32
+		if (!CopyFile(tempdir,tempdir2,FALSE))
+#else
+		if (COM_CopyFile(tempdir,tempdir2))
+#endif
+		{
+			Con_Printf ("Error copying %s to %s\n",tempdir,tempdir2);
+			error = true;
+		}
+
+		name = Sys_FindNextFile();
+	}
+
+	Sys_FindClose();
+
+	return error;
+}
+
+
+//============================================================================
 
 /*
 ================
@@ -977,7 +1044,7 @@ void Host_Init (quakeparms_t *parms)
 	Host_InitVCR (parms);
 #endif
 	COM_Init ();
-	CL_RemoveGIPFiles(NULL);
+	Host_RemoveGIPFiles(NULL);
 	Host_InitLocal ();
 	W_LoadWadFile ("gfx.wad");
 	Key_Init ();
@@ -1081,6 +1148,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.48  2006/06/23 14:43:33  sezero
+ * some minor clean-ups
+ *
  * Revision 1.47  2006/06/14 12:46:43  sezero
  * disabled the VCR facility by default. made it a compile time option.
  * After all, it is NOT an ordinary demo recording but a server only

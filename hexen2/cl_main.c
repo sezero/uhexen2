@@ -2,15 +2,10 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.27 2006-05-18 17:45:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.28 2006-06-25 12:01:48 sezero Exp $
 */
 
 #include "quakedef.h"
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
-#include <unistd.h>
 
 // we need to declare some mouse variables here, because the menu system
 // references them even when on a unix system.
@@ -96,57 +91,6 @@ void CL_ClearState (void)
 	SB_InvReset();
 }
 
-void CL_RemoveGIPFiles (char *path)
-{
-	char	*name, tempdir[MAX_OSPATH];
-
-	if (path)
-		snprintf(tempdir, MAX_OSPATH, "%s", path);
-	else
-		snprintf(tempdir, MAX_OSPATH, "%s", com_savedir);
-
-	name = Sys_FindFirstFile (tempdir, "*.gip");
-
-	while (name)
-	{
-		unlink (va("%s/%s", tempdir, name));
-
-		name = Sys_FindNextFile();
-	}
-
-	Sys_FindClose();
-}
-
-qboolean CL_CopyFiles(char *source, char *pat, char *dest)
-{
-	char	*name, tempdir[MAX_OSPATH], tempdir2[MAX_OSPATH];
-	qboolean error;
-
-	name = Sys_FindFirstFile(source, pat);
-	error = false;
-
-	while (name)
-	{
-		sprintf(tempdir,"%s/%s", source, name);
-		sprintf(tempdir2,"%s/%s", dest, name);
-#ifdef _WIN32
-		if (!CopyFile(tempdir,tempdir2,FALSE))
-#else
-		if (COM_CopyFile(tempdir,tempdir2))
-#endif
-		{
-			Con_DPrintf ("Error copying %s to %s\n",tempdir,tempdir2);
-			error = true;
-		}
-
-		name = Sys_FindNextFile();
-	}
-
-	Sys_FindClose();
-
-	return error;
-}
-
 /*
 =====================
 CL_Disconnect
@@ -189,7 +133,7 @@ void CL_Disconnect (void)
 		if (sv.active)
 			Host_ShutdownServer(false);
 
-		CL_RemoveGIPFiles(NULL);
+		Host_RemoveGIPFiles(NULL);
 	}
 
 	cls.demoplayback = cls.timedemo = false;
@@ -1062,6 +1006,9 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2006/05/18 17:45:02  sezero
+ * stop cdaudio and midi upon CL_Disconnect
+ *
  * Revision 1.26  2006/03/24 15:05:39  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also

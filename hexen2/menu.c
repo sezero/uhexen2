@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.67 2006-06-09 19:50:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.68 2006-06-25 12:01:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1104,7 +1104,7 @@ static void M_SinglePlayer_Key (int key)
 			key_dest = key_game;
 			if (sv.active)
 				Cbuf_AddText ("disconnect\n");
-			CL_RemoveGIPFiles(NULL);
+			Host_RemoveGIPFiles(NULL);
 			Cbuf_AddText ("maxplayers 1\n");
 			M_Menu_Class_f ();
 			break;
@@ -4479,6 +4479,9 @@ static void ReInitMusic (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.67  2006/06/09 19:50:47  sezero
+ * simplified handling of old_bgmtype in menu.c
+ *
  * Revision 1.66  2006/05/18 17:49:58  sezero
  * AoT and earlier versions of HoT didn't create <userdir>/data1
  * and kept all user the data in <userdir> instead. Starting with

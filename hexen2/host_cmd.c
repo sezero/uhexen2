@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.47 2006-06-25 00:02:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.48 2006-06-25 12:01:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -533,7 +533,7 @@ retry:
 	sprintf (savename, "%s/%s", com_savedir, Cmd_Argv(1));
 	Sys_mkdir (savename);
 
-	CL_RemoveGIPFiles(savename);
+	Host_RemoveGIPFiles(savename);
 
 	sprintf (savename, "%s/clients.gip", com_savedir);
 	unlink(savename);
@@ -541,7 +541,7 @@ retry:
 	sprintf (savedest, "%s/%s",com_savedir, Cmd_Argv(1));
 	Con_Printf ("Saving game to %s...\n", savedest);
 
-	error_state = CL_CopyFiles(com_savedir, "*.gip", savedest);
+	error_state = Host_CopyFiles(com_savedir, "*.gip", savedest);
 	if (error_state)
 		goto retrymsg;
 
@@ -624,7 +624,7 @@ static void Host_Loadgame_f (void)
 
 	cls.demonum = -1;		// stop demo loop in case this fails
 	CL_Disconnect();
-	CL_RemoveGIPFiles(NULL);
+	Host_RemoveGIPFiles(NULL);
 
 	sprintf (savename, "%s/%s", com_savedir, Cmd_Argv(1));
 
@@ -699,14 +699,14 @@ static void Host_Loadgame_f (void)
 
 	fclose (f);
 
-	CL_RemoveGIPFiles(com_savedir);
+	Host_RemoveGIPFiles(com_savedir);
 
 retry:
 	attempts++;
 
 	sprintf (savedest, "%s/%s",com_savedir, Cmd_Argv(1));
 
-	error_state = CL_CopyFiles(savedest, "*.gip", com_savedir);
+	error_state = Host_CopyFiles(savedest, "*.gip", com_savedir);
 
 	if (error_state)
 	{
@@ -2297,6 +2297,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.47  2006/06/25 00:02:54  sezero
+ * moved mousestate activation stuff to CL_ParseServerInfo
+ *
  * Revision 1.46  2006/06/23 14:45:09  sezero
  * better handling of the +attack/-attack demo recording hack
  *
