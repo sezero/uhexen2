@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.23 2006-06-25 10:21:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.24 2006-06-25 11:06:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1763,9 +1763,7 @@ static void PF_precache_model (void)
 		if (!sv.model_precache[i])
 		{
 			sv.model_precache[i] = s;
-#if !defined(SERVERONLY)
 			sv.models[i] = Mod_ForName (s, true);
-#endif
 			return;
 		}
 		if (!strcmp(sv.model_precache[i], s))
@@ -1821,9 +1819,7 @@ static void PF_precache_puzzle_model (void)
 		if (!sv.model_precache[i])
 		{
 			sv.model_precache[i] = s;
-#if !defined(SERVERONLY)
 			sv.models[i] = Mod_ForName (s, true);
-#endif
 			return;
 		}
 		if (!strcmp(sv.model_precache[i], s))
@@ -3311,6 +3307,9 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2006/06/25 10:21:03  sezero
+ * misc clean-ups and prepare for merging a dedicated server
+ *
  * Revision 1.22  2006/04/05 06:10:44  sezero
  * added support for both hexen2-v1.11 and h2mp-v1.12 progs into a single hexen2
  * binary. this essentially completes the h2/h2mp binary merge started with the
