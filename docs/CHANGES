@@ -3,9 +3,26 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2006-06-23 (CVS):
+2006-06-25 (CVS):
+    * added a hexen2 dedicated server which seems to work much better than
+      the client/server application running in dedicated mode. model loading
+      implementation taken from LordHavoc's old lhnqserver, as it seems better
+      than the one in hexenworld server.
+    * in NET_SendToAll, a check for canSend had to be added. otherwise, a
+      changelevel issued by the progs doesn't work. if compiled in debug
+      mode, it is revealed thatthe message was being attempted to be sent
+      while canSend was false. on the otherhand, a changelevel from the
+      console seemed fine..
+    * separated cl_effect.c and sv_effect.c for easier maintainance
+    * renamed CL_CopyFiles to Host_CopyFiles and CL_RemoveGIPFiles to
+      Host_RemoveGIPFiles, moved them to host.c
+    * added Q_malloc, Q_free and COM_LoadMallocFile, which may become useful.
+      found among some old sources by LordHavoc.
+    * move the multiplayer game saves while moving the user data, as well.
+    * moved mousestate activation stuff to CL_ParseServerInfo
     * better handling of the +attack/-attack demo recording hack
-    * misc clean-ups / updates
+    * added timeBeginPeriod to win32 timeGetTime usage
+    * misc clean-ups and prepare for merging a dedicated server
 
 2006-06-17 (CVS, 1.4.1-pre6):
     * merged a newer version of sdl cdaudio driver: lifted from the twilight
