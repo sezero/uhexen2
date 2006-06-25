@@ -522,6 +522,10 @@ int main (int argc, char **argv)
 	sprintf(filters_file, "%s", "filters.ini");
 #endif
 
+#ifdef _WIN32
+	timeBeginPeriod (1);
+#endif
+
 	Cbuf_Init();
 	Cmd_Init ();
 
