@@ -426,9 +426,9 @@ glh2_static : sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
 endif
 
 clean:
-	rm -f *.o win_stuff/*.o core .tmp *.tmp
+	rm -f *.o win_stuff/*.o sv_objs/*.o core .tmp *.tmp
 
 cleaner:
-	rm -f *.o win_stuff/*.o core .tmp *.tmp \
+	rm -f *.o win_stuff/*.o sv_objs/*.o core .tmp *.tmp \
 		$(H2_BINARY) $(GLH2_BINARY) $(H2_STATIC) $(GLH2_STATIC)
 

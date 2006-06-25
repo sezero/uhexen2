@@ -25,4 +25,6 @@ $MAKE h2
 $MAKE clean
 $MAKE glh2
 $MAKE clean
+$MAKE -f Makefile.sv
+$MAKE clean
 
