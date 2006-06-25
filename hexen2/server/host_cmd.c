@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.1 2006-06-25 12:57:06 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.2 2006-06-25 15:59:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1036,6 +1036,9 @@ static void Host_Class_f (void)
 {
 	float	newClass;
 
+	if (cmd_source == src_command)
+		return;
+
 	if (Cmd_Argc () == 2)
 		newClass = atof(Cmd_Argv(1));
 	else
@@ -1052,9 +1055,6 @@ static void Host_Class_f (void)
 		Con_Printf("That class is only available in the mission pack.\n");
 		return;
 	}
-
-	if (cmd_source == src_command)
-		return;
 
 	if (sv.loadgame || host_client->playerclass)
 	{
@@ -1269,6 +1269,9 @@ static void Host_Color_f(void)
 	int		top, bottom;
 	int		plyrcolor;
 
+	if (cmd_source == src_command)
+		return;
+
 	if (Cmd_Argc() == 2)
 		top = bottom = atoi(Cmd_Argv(1));
 	else
@@ -1285,9 +1288,6 @@ static void Host_Color_f(void)
 		bottom = 13;
 
 	plyrcolor = top*16 + bottom;
-
-	if (cmd_source == src_command)
-		return;
 
 	host_client->colors = plyrcolor;
 	host_client->edict->v.team = bottom + 1;
@@ -1728,5 +1728,11 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2006/06/25 12:57:06  sezero
+ * added a hexen2 dedicated server which seems to work much better than
+ * the client/server application running in dedicated mode. model loading
+ * implementation taken from LordHavoc's old lhnqserver, as it seems better
+ * than the one in hexenworld server.
+ *
  */
 
