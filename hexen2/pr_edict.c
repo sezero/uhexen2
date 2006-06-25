@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.23 2006-06-23 14:43:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.24 2006-06-25 10:21:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -54,8 +54,9 @@ static gefv_cache	gefvCache[GEFV_CACHESIZE] =
 		{ NULL,	"" }
 };
 
+#if !defined(SERVERONLY)
 static int	start_amount;
-
+#endif
 cvar_t	max_temp_edicts = {"max_temp_edicts", "30", CVAR_ARCHIVE};
 
 cvar_t	nomonsters = {"nomonsters", "0", CVAR_NONE};
@@ -1014,7 +1015,9 @@ void ED_LoadFromFile (char *data)
 		pr_global_struct->time = sv.time;
 	orig = data;
 
+#if !defined(SERVERONLY)
 	start_amount = current_loading_size;
+#endif
 
 	// parse ents
 	while (1)
@@ -1024,11 +1027,13 @@ void ED_LoadFromFile (char *data)
 		if (!data)
 			break;
 
+#if !defined(SERVERONLY)
 		if (entity_file_size)
 		{
 			current_loading_size = start_amount + ((data-orig)*80/entity_file_size);
 			D_ShowLoadingSize();
 		}
+#endif
 
 		if (com_token[0] != '{')
 			Sys_Error ("ED_LoadFromFile: found %s when expecting {",com_token);
@@ -1069,6 +1074,9 @@ void ED_LoadFromFile (char *data)
 		}
 		else
 		{ // Gotta be single player
+#if defined(SERVERONLY)
+			Host_Error ("%s: Neither deathmatch nor coop is set!", __FUNCTION__);
+#else
 			int		skip;
 
 			if (((int)ent->v.spawnflags & SPAWNFLAG_NOT_SINGLE))
@@ -1118,6 +1126,7 @@ void ED_LoadFromFile (char *data)
 				inhibit++;
 				continue;
 			}
+#endif	// SERVERONLY
 		}
 
 		if ((current_skill == 0 && ((int)ent->v.spawnflags & SPAWNFLAG_NOT_EASY))
@@ -1301,9 +1310,11 @@ void PR_LoadProgs (void)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 #endif	// BIG_ENDIAN
 
+#if !defined(SERVERONLY)
 	// set the cl_playerclass value after pr_global_struct has been created
 	if (progs->crc == PROGS_V112_CRC)
 		pr_global_struct->cl_playerclass = cl_playerclass.value;
+#endif
 }
 
 
@@ -1365,6 +1376,9 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2006/06/23 14:43:34  sezero
+ * some minor clean-ups
+ *
  * Revision 1.22  2006/06/08 18:49:33  sezero
  * split strings out of pr_edict.c and sync'ed it with the hexenworld version
  *

@@ -1,6 +1,6 @@
 /*
 	net_bsd.c
-	$Id: net_bsd.c,v 1.5 2006-06-23 14:43:34 sezero Exp $
+	$Id: net_bsd.c,v 1.6 2006-06-25 10:21:03 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -28,10 +28,14 @@
 #include "quakedef.h"
 
 #include "net_dgrm.h"
+#ifndef SERVERONLY
 #include "net_loop.h"
+#endif
 
 net_driver_t net_drivers[] =
 {
+
+#ifndef SERVERONLY
 	{
 		"Loopback",
 		false,
@@ -48,6 +52,7 @@ net_driver_t net_drivers[] =
 		Loop_Close,
 		Loop_Shutdown
 	},
+#endif
 
 	{
 		"Datagram",

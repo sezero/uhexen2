@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.19 2006-06-03 14:06:05 sezero Exp $
+	$Id: sys_unix.c,v 1.20 2006-06-25 10:21:05 sezero Exp $
 
 	Unix system interface code
 */
@@ -352,7 +352,6 @@ int main (int argc, char **argv)
 		Sys_Error("Insufficient memory.\n");
 
 	parms.basedir = ".";
-	parms.cachedir = NULL;
 
 	if (Sys_GetUserdir(userdir,sizeof(userdir)))
 		Sys_Error ("Couldn't determine userspace directory");

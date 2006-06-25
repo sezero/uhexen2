@@ -426,7 +426,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		cwd[strlen(cwd)-1] = 0;
 
 	parms.basedir = cwd;
-	parms.cachedir = NULL;
 	parms.userdir = cwd;	/* no userdir on win32 */
 
 	parms.argc = 1;

@@ -2,13 +2,14 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.30 2006-06-25 00:02:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.31 2006-06-25 10:21:03 sezero Exp $
 */
 
 #include "quakedef.h"
 
 server_t	sv;
 server_static_t	svs;
+qboolean	isworldmodel;
 static char	localmodels[MAX_MODELS][5];	// inline model names for precache
 
 static	cvar_t	sv_sound_distance	= {"sv_sound_distance", "800", CVAR_ARCHIVE};
@@ -45,7 +46,10 @@ qboolean	intro_playing = false;	// whether the mission pack intro is playing
 qboolean	skip_start = false;	// for the mission pack intro
 int		num_intro_msg = 0;	// for the mission pack intro
 
+extern float	scr_centertime_off;
+
 //============================================================================
+
 
 static void Sv_Edicts_f(void);
 
@@ -1824,12 +1828,14 @@ static void SV_SendReconnect (void)
 	MSG_WriteString (&msg, "reconnect\n");
 	NET_SendToAll (&msg, 5);
 
+#if !defined(SERVERONLY)
 	if (cls.state != ca_dedicated)
 #ifdef QUAKE2
 		Cbuf_InsertText ("reconnect\n");
 #else
 		Cmd_ExecuteString ("reconnect\n", src_command);
 #endif
+#endif	// ! SERVERONLY
 }
 
 
@@ -1879,8 +1885,6 @@ SV_SpawnServer
 This is called at the start of each level
 ================
 */
-extern float		scr_centertime_off;
-
 void SV_SpawnServer (char *server, char *startspot)
 {
 	edict_t		*ent;
@@ -1890,7 +1894,9 @@ void SV_SpawnServer (char *server, char *startspot)
 	// let's not have any servers with no name
 	if (hostname.string[0] == 0)
 		Cvar_Set ("hostname", "UNNAMED");
+#if !defined(SERVERONLY)
 	scr_centertime_off = 0;
+#endif
 
 	Con_DPrintf ("SpawnServer: %s\n",server);
 	if (svs.changelevel_issued)
@@ -1941,19 +1947,25 @@ void SV_SpawnServer (char *server, char *startspot)
 		strcpy(sv.startspot, startspot);
 
 // load progs to get entity field count
-
+#if !defined(SERVERONLY)
 	total_loading_size = 100;
 	current_loading_size = 0;
 	loading_stage = 1;
 	// display loading bar before we start loading progs
 	D_ShowLoadingSize();
+#endif
+
 	PR_LoadProgs ();
+#if !defined(SERVERONLY)
 	current_loading_size += 10;
 	D_ShowLoadingSize();
+#endif
 //	PR_LoadStrings();
 //	PR_LoadInfoStrings();
+#if !defined(SERVERONLY)
 	current_loading_size += 5;
 	D_ShowLoadingSize();
+#endif
 
 // allocate server memory
 	memset(sv.Effects,0,sizeof(sv.Effects));
@@ -2003,15 +2015,19 @@ void SV_SpawnServer (char *server, char *startspot)
 	strcpy (sv.name, server);
 	sprintf (sv.modelname,"maps/%s.bsp", server);
 
+	isworldmodel = true;	// LordHavoc: only load submodels on the world model
 	sv.worldmodel = Mod_ForName (sv.modelname, false);
+	isworldmodel = false;
 	if (!sv.worldmodel)
 	{
 		Con_Printf ("Couldn't spawn server %s\n", sv.modelname);
 		sv.active = false;
+#if !defined(SERVERONLY)
 		total_loading_size = 0;
 		loading_stage = 0;
 		// loading plaque redraw needed
 		ls_invalid = true;
+#endif
 		return;
 	}
 	sv.models[1] = sv.worldmodel;
@@ -2069,8 +2085,10 @@ void SV_SpawnServer (char *server, char *startspot)
 		pr_global_struct->serverflags = svs.serverflags;
 	}
 
+#if !defined(SERVERONLY)
 	current_loading_size += 5;
 	D_ShowLoadingSize();
+#endif
 	ED_LoadFromFile (sv.worldmodel->entities);
 
 	sv.active = true;
@@ -2095,12 +2113,17 @@ void SV_SpawnServer (char *server, char *startspot)
 
 	Con_DPrintf ("Server spawned.\n");
 
+#if !defined(SERVERONLY)
 	total_loading_size = 0;
 	loading_stage = 0;
+#endif
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2006/06/25 00:02:54  sezero
+ * moved mousestate activation stuff to CL_ParseServerInfo
+ *
  * Revision 1.29  2006/04/05 06:10:44  sezero
  * added support for both hexen2-v1.11 and h2mp-v1.12 progs into a single hexen2
  * binary. this essentially completes the h2/h2mp binary merge started with the

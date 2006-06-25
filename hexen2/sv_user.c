@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.10 2006-05-19 11:32:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.11 2006-06-25 10:21:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -29,6 +29,11 @@ static	usercmd_t	cmd;
 
 cvar_t	sv_idealpitchscale = {"sv_idealpitchscale", "0.8", CVAR_NONE};
 cvar_t	sv_idealrollscale = {"sv_idealrollscale", "0.8", CVAR_NONE};
+
+#if defined(SERVERONLY)
+static	cvar_t	cl_rollspeed = {"cl_rollspeed", "200", CVAR_NONE};
+static	cvar_t	cl_rollangle = {"cl_rollangle", "2.0", CVAR_NONE};
+#endif
 
 
 /*
@@ -298,8 +303,10 @@ static void SV_FlightMove (void)
 	float	speed, newspeed, addspeed, accelspeed;
 	//float	wishspeed;
 
+#if !defined(SERVERONLY)
 	cl.nodrift = false;
 	cl.driftmove = 0;
+#endif
 
 //
 // user intentions
@@ -499,6 +506,35 @@ static void SV_AirMove (void)
 	}
 }
 
+
+/*
+===============
+V_CalcRoll
+===============
+*/
+#if defined(SERVERONLY)
+static float V_CalcRoll (vec3_t angles, vec3_t velocity)
+{
+	vec3_t	forward, right, up;
+	float	sign;
+	float	side;
+	float	value;
+
+	AngleVectors (angles, forward, right, up);
+	side = DotProduct (velocity, right);
+	sign = side < 0 ? -1 : 1;
+	side = fabs(side);
+
+	value = cl_rollangle.value;
+
+	if (side < cl_rollspeed.value)
+		side = side * value / cl_rollspeed.value;
+	else
+		side = value;
+
+	return side*sign;
+}
+#endif
 
 /*
 ===================
@@ -769,13 +805,20 @@ void SV_RunClients (void)
 		}
 
 		// always pause in single player if in console or menus
+#if defined(SERVERONLY)
+		if (!sv.paused)
+#else
 		if (!sv.paused && (svs.maxclients > 1 || key_dest == key_game) )
+#endif
 			SV_ClientThink ();
 	}
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2006/05/19 11:32:54  sezero
+ * misc clean-up
+ *
  * Revision 1.9  2006/03/24 15:05:39  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also

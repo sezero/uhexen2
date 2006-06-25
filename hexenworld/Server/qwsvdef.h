@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/qwsvdef.h,v 1.7 2006-04-05 18:24:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/qwsvdef.h,v 1.8 2006-06-25 10:21:05 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -20,15 +20,17 @@
 #include "sys.h"
 #include "zone.h"
 #include "mathlib.h"
-
 #include "cvar.h"
-#include "net.h"
+
 #include "protocol.h"
+#include "net.h"
+
 #include "cmd.h"
-#include "model.h"
 #include "crc.h"
-#include "cl_effect.h"
+
 #include "progs.h"
+#include "cl_effect.h"
+#include "model.h"
 
 #include "server.h"
 #include "world.h"
@@ -44,7 +46,6 @@ typedef struct
 {
 	char	*basedir;
 	char	*userdir;		// userspace directory on UNIX platforms
-	char	*cachedir;		// for development over ISDN lines
 	int	argc;
 	char	**argv;
 	void	*membase;

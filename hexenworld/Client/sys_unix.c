@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.51 2006-06-15 09:50:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.52 2006-06-25 10:21:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -404,7 +404,6 @@ int main(int argc, char *argv[])
 		Sys_Error ("Couldn't determine userspace directory");
 
 	parms.basedir = cwd;
-	parms.cachedir = NULL;
 	parms.userdir = userdir;
 
 	parms.argc = 1;
@@ -493,6 +492,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.51  2006/06/15 09:50:30  sezero
+ * Updated help strings with regard to the available sound drivers
+ *
  * Revision 1.50  2006/06/08 20:17:15  sezero
  * handled mprotect() for qnx systems (no getpagesize()). taken from
  * quakeforge. we need to do a better job of of ifdef'ing here, though:

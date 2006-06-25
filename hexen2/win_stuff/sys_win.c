@@ -571,7 +571,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		cwd[strlen(cwd)-1] = 0;
 
 	parms.basedir = cwd;
-	parms.cachedir = NULL;
 	parms.userdir = cwd;	/* no userdir on win32 */
 
 	parms.argc = 1;
@@ -761,6 +760,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.34  2006/06/14 10:13:32  sezero
+ * removed bogus retval check from win32 version of Sys_FindFirstFile
+ *
  * Revision 1.33  2006/04/17 14:00:51  sezero
  * minor update to version display stuff
  *

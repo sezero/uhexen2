@@ -272,7 +272,6 @@ int main (int argc, char **argv)
 		Sys_Error("Insufficient memory.\n");
 
 	parms.basedir = ".";
-	parms.cachedir = NULL;
 	parms.userdir = parms.basedir;	// no userdir on win32
 
 	SV_Init (&parms);

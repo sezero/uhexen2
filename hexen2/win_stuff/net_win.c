@@ -1,10 +1,14 @@
 #include "quakedef.h"
 
 #include "net_dgrm.h"
+#ifndef SERVERONLY
 #include "net_loop.h"
+#endif
 
 net_driver_t net_drivers[] =
 {
+
+#ifndef SERVERONLY
 	{
 		"Loopback",
 		false,
@@ -21,6 +25,7 @@ net_driver_t net_drivers[] =
 		Loop_Close,
 		Loop_Shutdown
 	},
+#endif
 
 	{
 		"Datagram",

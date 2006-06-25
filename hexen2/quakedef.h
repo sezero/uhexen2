@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.79 2006-06-17 19:54:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.80 2006-06-25 10:21:03 sezero Exp $
 */
 
 
@@ -239,15 +239,25 @@
 #define CLASS_THEIF   		4
 #define CLASS_DEMON		5
 
+//#define BASE_ENT_ON		1
+//#define BASE_ENT_SENT	2
+
+//=============================================================================
+
 #include "common.h"
 #include "bspfile.h"
-#include "vid.h"
 #include "sys.h"
 #include "zone.h"
 #include "mathlib.h"
+#include "cvar.h"
 
-//#define BASE_ENT_ON		1
-//#define BASE_ENT_SENT	2
+#include "protocol.h"
+#include "net.h"
+
+#include "cmd.h"
+#include "crc.h"
+
+//=============================================================================
 
 typedef struct
 {
@@ -324,42 +334,47 @@ typedef struct
 	client_frames_t	frames[MAX_FRAMES+2]; // 0 = base, 1-max = proposed, max+1 = too late
 } client_state2_t;
 
+//=============================================================================
 
+#ifndef SERVERONLY
+#include "console.h"
+#include "vid.h"
 #include "wad.h"
 #include "draw.h"
-#include "cvar.h"
+#include "render.h"
+#include "view.h"
 #include "screen.h"
-#include "net.h"
-#include "protocol.h"
-#include "cmd.h"
 #include "sbar.h"
 #include "sound.h"
-#include "render.h"
-#include "cl_effect.h"
+#include "cdaudio.h"
+#include "mididef.h"
+#endif
+
 #include "progs.h"
 #include "strings.h"
+#include "cl_effect.h"
+#ifdef SERVERONLY
+#include "h2ded.h"
+#else
 #include "client.h"
+#endif
 #include "server.h"
 
-#ifdef GLQUAKE
+#if defined(SERVERONLY)
+#include "model.h"
+#elif defined(GLQUAKE)
 #include "gl_model.h"
+#include "glquake.h"
 #else
 #include "model.h"
 #include "d_iface.h"
 #endif
-
-#include "input.h"
 #include "world.h"
-#include "keys.h"
-#include "console.h"
-#include "view.h"
-#include "menu.h"
-#include "crc.h"
-#include "cdaudio.h"
-#include "mididef.h"
 
-#ifdef GLQUAKE
-#include "glquake.h"
+#ifndef SERVERONLY
+#include "input.h"
+#include "keys.h"
+#include "menu.h"
 #endif
 
 //=============================================================================
@@ -372,7 +387,6 @@ typedef struct
 {
 	char	*basedir;
 	char	*userdir;		// userspace directory on UNIX platforms
-	char	*cachedir;		// for development over ISDN lines
 	int	argc;
 	char	**argv;
 	void	*membase;
@@ -437,6 +451,9 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.79  2006/06/17 19:54:54  sezero
+ * marked the snapshot of 2006-06-17 as 1.4.1-pre6
+ *
  * Revision 1.78  2006/06/15 20:05:51  sezero
  * bumped version to 1.4.1-pre5 / 2006-06-15
  *

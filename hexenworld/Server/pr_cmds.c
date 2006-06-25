@@ -16,6 +16,11 @@
 #define	MSG_INIT	3		// write to the init string
 #define	MSG_MULTICAST	4		// for multicast()
 
+#if defined(SERVERONLY)
+static int	d_lightstylevalue[256];
+#else
+extern int	d_lightstylevalue[256];
+#endif
 static sizebuf_t *WriteDest (void);
 
 
@@ -1786,8 +1791,6 @@ static void PF_lightstyle (void)
 // void lightstylevalue(float style);
 //
 //==========================================================================
-
-static int d_lightstylevalue[256];
 
 static void PF_lightstylevalue(void)
 {

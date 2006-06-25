@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.22 2006-04-05 06:10:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.23 2006-06-25 10:21:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -20,6 +20,13 @@
 #define	MSG_ALL		2		// reliable to all
 #define	MSG_INIT	3		// write to the init string
 
+
+#if defined(SERVERONLY)
+static int	d_lightstylevalue[256];
+#else
+extern int	d_lightstylevalue[256];
+extern void	V_WhiteFlash_f(void);
+#endif
 extern unsigned int	info_mask, info_mask2;	// mission pack objectives
 
 
@@ -1756,7 +1763,9 @@ static void PF_precache_model (void)
 		if (!sv.model_precache[i])
 		{
 			sv.model_precache[i] = s;
+#if !defined(SERVERONLY)
 			sv.models[i] = Mod_ForName (s, true);
+#endif
 			return;
 		}
 		if (!strcmp(sv.model_precache[i], s))
@@ -1812,7 +1821,9 @@ static void PF_precache_puzzle_model (void)
 		if (!sv.model_precache[i])
 		{
 			sv.model_precache[i] = s;
+#if !defined(SERVERONLY)
 			sv.models[i] = Mod_ForName (s, true);
+#endif
 			return;
 		}
 		if (!strcmp(sv.model_precache[i], s))
@@ -1963,8 +1974,6 @@ static void PF_lightstyle (void)
 // void lightstylevalue(float style);
 //
 //==========================================================================
-
-extern int d_lightstylevalue[256];
 
 static void PF_lightstylevalue(void)
 {
@@ -3141,11 +3150,11 @@ static void PF_updateInfoPlaque (void)
 	}
 }
 
-extern void V_WhiteFlash_f(void);
-
 static void PF_doWhiteFlash(void)
 {
+#if !defined(SERVERONLY)
 	V_WhiteFlash_f();
+#endif
 }
 
 builtin_t pr_builtin[] =
@@ -3302,6 +3311,12 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2006/04/05 06:10:44  sezero
+ * added support for both hexen2-v1.11 and h2mp-v1.12 progs into a single hexen2
+ * binary. this essentially completes the h2/h2mp binary merge started with the
+ * previous patch. many conditionals had to be added especially on the server side,but couldn't notice any serious performance loss on a PIII-733 computer. Supportfor multiple progs.dat is now advised to be left enabled in order to support
+ * mods which uses that feature.
+ *
  * Revision 1.21  2006/04/05 06:08:23  sezero
  * duplicated trace setting code in pr_cmds.c made into a new PR_SetTrace procedure
  *
