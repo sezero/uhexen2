@@ -3,13 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-06-26 (CVS):
+    * updated opengl header includes
+
 2006-06-25 (CVS, 1.4.1-pre7):
     * added a hexen2 dedicated server which seems to work much better than
       the client/server application running in dedicated mode. model loading
       implementation taken from LordHavoc's old lhnqserver, as it seems better
       than the one in hexenworld server.
-    * in NET_SendToAll, a check for canSend had to be added. otherwise, a
-      changelevel issued by the progs doesn't work. if compiled in debug
+    * h2ded: in NET_SendToAll, a check for canSend had to be added. otherwise
+      a changelevel issued by the progs doesn't work. if compiled in debug
       mode, it is revealed thatthe message was being attempted to be sent
       while canSend was false. on the otherhand, a changelevel from the
       console seemed fine..
