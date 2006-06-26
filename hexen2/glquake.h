@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.50 2006-06-14 10:12:59 sezero Exp $
+	$Id: glquake.h,v 1.51 2006-06-26 13:44:39 sezero Exp $
 */
 
 
@@ -10,11 +10,15 @@
 #include <windows.h>
 #endif
 
-#include <GL/gl.h>
-//#include <GL/glu.h>
-
-#ifdef __MORPHOS__
+#if defined(__MACOSX__)
+#include <OpenGL/gl.h>
+#elif defined(__MACOS__)
+#include <gl.h>
+#elif defined(__MORPHOS__)
 #include <proto/tinygl.h>
+#include <tgl/gl.h>
+#else
+#include <GL/gl.h>
 #endif
 
 #include "gl_opt.h"
@@ -379,6 +383,9 @@ extern	const char *gl_extensions;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.50  2006/06/14 10:12:59  sezero
+ * eliminated some ifdefs by defining flush_textures as 1 in glquake.h for h2w
+ *
  * Revision 1.49  2006/06/03 16:30:20  sezero
  * a few MorphOS fixes, hopefully all correct.. those ifdef __MORPHOS__ stuff
  * are probably correct for AmigaOS, as well.. some header clean-ups here and
