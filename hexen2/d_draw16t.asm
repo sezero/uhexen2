@@ -336,7 +336,7 @@ LSpanLoop:
  push edx
  push ebx
 
- call near D_DrawSingleZSpans
+ call D_DrawSingleZSpans
 
  pop ebx
  pop edx

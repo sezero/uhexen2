@@ -497,7 +497,7 @@ Lgs_edgeloop:
  add esi,eax
  test edi,edi
  jz Lgs_trailing
- call near TrailingEdge
+ call TrailingEdge
  mov eax, dword [surfaces]
 Lgs_leading:
  shr edi,16-6
@@ -734,7 +734,7 @@ R_SurfacePatch:
  mov  dword [LPatch0-4],eax
  mov  dword [LPatch2-4],eax
  mov  dword [LPatch3-4],eax
- call near R_SurfacePatchT
+ call R_SurfacePatchT
  ret
 
  END

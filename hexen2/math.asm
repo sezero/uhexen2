@@ -269,6 +269,6 @@ LSetSides:
  mov eax,ecx
  ret
 Lerror:
- call near BOPS_Error
+ call BOPS_Error
 
  END
