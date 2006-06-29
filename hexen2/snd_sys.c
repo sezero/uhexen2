@@ -2,7 +2,7 @@
 	snd_sys.c
 	pre-Init platform specific sound stuff
 
-	$Id: snd_sys.c,v 1.3 2006-06-15 09:20:36 sezero Exp $
+	$Id: snd_sys.c,v 1.4 2006-06-29 23:02:02 sezero Exp $
 */
 
 
@@ -20,6 +20,25 @@ int (*SNDDMA_GetDMAPos)(void);
 void (*SNDDMA_Shutdown)(void);
 void (*SNDDMA_Submit)(void);
 
+// dummy SNDDMA functions, just in case
+static qboolean S_NULL_Init(void)
+{
+	Con_Printf ("No sound\n");
+	return 0;
+}
+
+static int S_NULL_GetDMAPos(void)
+{
+	return 0;
+}
+
+static void S_NULL_Shutdown(void)
+{
+}
+
+static void S_NULL_Submit(void)
+{
+}
 
 static void S_InitSys (void)
 {
@@ -52,7 +71,12 @@ static void S_InitSys (void)
 #else	/* unix	*/
 #  if defined(HAVE_OSS_SOUND)
 		snd_system = S_SYS_OSS;
+#  elif defined(HAVE_SUN_SOUND)
+		snd_system = S_SYS_SUN;
+#  elif defined(HAVE_ALSA_SOUND)
+		snd_system = S_SYS_ALSA;
 #  else
+	/* default to sdl sound	*/
 		snd_system = S_SYS_SDL;
 #  endif
 #endif
@@ -112,7 +136,10 @@ void S_InitPointers (void)
 	case S_SYS_NULL:
 	default:
 	// Paranoia: We should never have come this far!..
-	// No function to point at, set snd_initialized to false.
+		SNDDMA_Init	 = S_NULL_Init;
+		SNDDMA_GetDMAPos = S_NULL_GetDMAPos;
+		SNDDMA_Shutdown	 = S_NULL_Shutdown;
+		SNDDMA_Submit	 = S_NULL_Submit;
 		snd_initialized = false;
 		break;
 	}

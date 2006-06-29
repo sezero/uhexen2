@@ -10,6 +10,9 @@
 #
 # Build Options:
 #
+# USE_SOUND :	yes  =	Include sound support (default).
+#		no   =	Don't include sound support.
+#
 # USE_ALSA :	yes  =	Include ALSA sound support (default).
 # (for Unix)	no   =	Don't include alsa support.
 #		Requires alsa-lib and alsa-kernel modules >= 1.0.1
@@ -17,15 +20,18 @@
 #		On any platform other than Linux, ALSA support will be
 #		automatically be disabled.
 #
+# USE_CDA :	yes  =	Include CDAudio support (default).
+#		no   =	Don't include CDAudio support.
+#
 # USE_SDLCD:	no   =	Don't use SDL cdaudio (default); platform specific
 # (for Unix)		cdrom code will be used.  The only problem with
 #			SDL_cdrom is that it lacks proper volume controls.
 #		yes  =	Use SDL for cdaudio instead of platform specific code
 #
 # USE_MIDI :	yes  =	Include MIDI music support (default).
-# (for Unix)	no   =	Don't include MIDI music support.
+#		no   =	Don't include MIDI music support.
 #		MIDI needs SDL_mixer (built with Timidity support)
-#		and Timidity patches.
+#		and Timidity patches on Unix.
 #
 # WITH_SPLASHES	yes  =	(default) enable startup splash screens
 # (for Win32)	no   =	disable startup splash screens
@@ -41,12 +47,11 @@
 #			Disable this manually for any other cpu.
 #		no   =	Do not use intel assembly even on ix86.
 #
-# To build static binaries: You need to compile SDL_mixer with minimum features
-# required ONLY for MIDI. Besides, you may need to change some hard-coded paths
-# and X linkage flags (see the LDSTATIC setting)
-#
 # The default compiler is gcc
 # To build with a different compiler:	make CC=compiler_name [other stuff]
+#
+# The default x86 assembler is nasm. To use a different nasm-compatible
+# assembler, such as yasm	:	make NASM=yasm [other stuff]
 #
 # To build for the demo version:	make DEMO=1 [other stuff]
 #
@@ -58,9 +63,12 @@
 UHEXEN2_TOP=..
 
 # General options (see explanations at the top)
-USE_MIDI=yes
+USE_SOUND=yes
 USE_ALSA=yes
+USE_MIDI=yes
+USE_CDA=yes
 USE_SDLCD=no
+WITH_SPLASHES=yes
 OPT_EXTRA=yes
 LINK_GL_LIBS=no
 USE_X86_ASM=yes
@@ -85,8 +93,6 @@ GLH2_BINARY=glh2.exe
 else
 H2_BINARY=hexen2
 GLH2_BINARY=glhexen2
-H2_STATIC=hexen2.static
-GLH2_STATIC=glhexen2.static
 endif
 
 # Compiler flags
@@ -167,13 +173,6 @@ ifeq "$(USE_SDLCD)" "yes"
 EXT_FLAGS+= -DWITH_SDLCD
 endif
 
-ifeq "$(USE_MIDI)" "yes"
-SDLLINK+= -lSDL_mixer
-LDSTATIC= -Wl,-Bstatic -L/usr/lib -lSDL_mixer -lSDL -L$(X11_PATH)/lib -lX11 -lXext -ldl -L$(X11_PATH)/lib -lXxf86dga -lXxf86vm -lXv -L/usr/lib -lm -Wl,-Bdynamic -lpthread
-else
-EXT_FLAGS+= -DNO_MIDIMUSIC
-LDSTATIC= -Wl,-Bstatic -L/usr/lib -lSDL -L$(X11_PATH)/lib -lX11 -lXext -ldl -L$(X11_PATH)/lib -lXxf86dga -lXxf86vm -lXv -L/usr/lib -lm -Wl,-Bdynamic -lpthread
-endif
 # End of Unix specific extras
 endif
 
@@ -200,51 +199,60 @@ endif
 	$(WINDRES) $(EXT_FLAGS) --include=$(MINGWDIR)/include --output=coff -o $@ $<
 
 # Objects
-# Platform specific object settings
-SOFT_SDL_VID = vid_sdl.o
-SOFT_WIN32VID = win_stuff/vid_win.o
-GL_SDL_VID = gl_vidsdl.o \
-	fx_gamma.o
-GL_WIN32VID = win_stuff/gl_vidnt.o
-INPUT_SDL = in_sdl.o
-INPUT_WIN32 = win_stuff/in_win.o
-NET_UNIX = net_bsd.o \
-	net_udp.o
-NET_WIN32 = win_stuff/net_win.o \
-	win_stuff/net_wins.o \
-	win_stuff/net_wipx.o
-SND_UNIX = snd_oss.o \
-	snd_sdl.o \
-	snd_alsa.o \
-	snd_sun.o \
-	cd_null.o \
-	cd_sdl.o \
-	cd_bsd.o \
-	cd_linux.o \
-	midi_sdl.o
-SND_WIN32 = win_stuff/snd_win.o \
-	win_stuff/cd_win.o \
-	win_stuff/midi.o \
-	win_stuff/mstrconv.o
-SYS_UNIX = sys_unix.o
-SYS_WIN32 = win_stuff/conproc.o \
-	win_stuff/sys_win.o \
-	win_stuff/win32res.o
 
-ifeq "$(TARGET_OS)" "WIN32"
-SYSOBJ_NET = $(NET_WIN32)
-SYSOBJ_SND = $(SND_WIN32)
-SYSOBJ_SYS = $(SYS_WIN32)
-SYSOBJ_INPUT = $(INPUT_WIN32)
-SYSOBJ_GL_VID = $(GL_WIN32VID)
-SYSOBJ_SOFT_VID = $(SOFT_WIN32VID)
+# Sound objects
+ifneq "$(USE_SOUND)" "yes"
+EXT_FLAGS += -D_NO_SOUND
+SYSOBJ_SND :=
+COMOBJ_SND := snd_null.o
 else
-SYSOBJ_NET = $(NET_UNIX)
-SYSOBJ_SND = $(SND_UNIX)
-SYSOBJ_SYS = $(SYS_UNIX)
-SYSOBJ_INPUT = $(INPUT_SDL)
-SYSOBJ_GL_VID = $(GL_SDL_VID)
-SYSOBJ_SOFT_VID = $(SOFT_SDL_VID)
+COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o snd_mem.o
+ifeq "$(TARGET_OS)" "WIN32"
+SYSOBJ_SND := win_stuff/snd_win.o
+else
+SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o snd_sdl.o
+endif
+# end of Sound objects
+endif
+
+# MIDI objects
+ifneq "$(USE_MIDI)" "yes"
+SYSOBJ_MIDI:= midi_nul.o
+else
+ifeq "$(TARGET_OS)" "WIN32"
+SYSOBJ_MIDI:= win_stuff/midi.o win_stuff/mstrconv.o
+else
+SYSOBJ_MIDI:= midi_sdl.o
+SDLLINK+= -lSDL_mixer
+endif
+# end of MIDI objects
+endif
+
+# CDAudio objects
+ifneq "$(USE_CDA)" "yes"
+SYSOBJ_CDA:= cd_null.o
+else
+ifeq "$(TARGET_OS)" "WIN32"
+SYSOBJ_CDA := win_stuff/cd_win.o
+else
+SYSOBJ_CDA := cd_sdl.o cd_bsd.o cd_linux.o
+endif
+# end of CDAudio objects
+endif
+
+# Other platform specific object settings
+ifeq "$(TARGET_OS)" "WIN32"
+SYSOBJ_INPUT := win_stuff/in_win.o
+SYSOBJ_GL_VID:= win_stuff/gl_vidnt.o
+SYSOBJ_SOFT_VID:= win_stuff/vid_win.o
+SYSOBJ_NET := win_stuff/net_win.o win_stuff/net_wins.o win_stuff/net_wipx.o
+SYSOBJ_SYS := win_stuff/conproc.o win_stuff/sys_win.o win_stuff/win32res.o
+else
+SYSOBJ_INPUT := in_sdl.o
+SYSOBJ_GL_VID:= gl_vidsdl.o fx_gamma.o
+SYSOBJ_SOFT_VID:= vid_sdl.o
+SYSOBJ_NET := net_bsd.o net_udp.o
+SYSOBJ_SYS := sys_unix.o
 endif
 
 # Final list of objects
@@ -322,11 +330,10 @@ COMMONOBJS = chase.o \
 	pr_exec.o \
 	r_part.o \
 	sbar.o \
-	snd_sys.o \
-	snd_dma.o \
-	snd_mix.o \
-	snd_mem.o \
+	$(COMOBJ_SND) \
 	$(SYSOBJ_SND) \
+	$(SYSOBJ_CDA) \
+	$(SYSOBJ_MIDI) \
 	sv_main.o \
 	sv_move.o \
 	sv_phys.o \
@@ -340,9 +347,14 @@ COMMONOBJS = chase.o \
 
 # Intel asm objects
 ifeq "$(USE_X86_ASM)" "yes"
+ifeq "$(USE_SOUND)" "yes"
+SOUND_ASM := snd_mixa.o
+else
+SOUND_ASM :=
+endif
 COMMON_ASM = math.o \
-	snd_mixa.o \
 	worlda.o \
+	$(SOUND_ASM) \
 	sys_wina.o
 
 SOFT_ASM = d_draw.o \
@@ -390,12 +402,6 @@ help:
 	@echo "* $(MAKE) h2          : hexen2 binary, software renderer"
 	@echo "* $(MAKE) glh2        : hexen2 binary, opengl renderer"
 	@echo
-ifneq "$(TARGET_OS)" "WIN32"
-	@echo "===== Static binaries: ====="
-	@echo "* $(MAKE) h2_static   : hexen2 binary, software renderer"
-	@echo "* $(MAKE) glh2_static : hexen2 binary, opengl renderer"
-	@echo
-endif
 
 hexen2: h2
 glhexen2: glh2
@@ -412,23 +418,9 @@ glh2: EXT_FLAGS+= $(GL_DEFS)
 glh2: sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
-# static builds are not tested on win32
-ifneq "$(TARGET_OS)" "WIN32"
-
-h2_static : sanity $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
-	$(LINKER) -o $(H2_STATIC) $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS) $(LDSTATIC)
-
-glh2_static : EXT_FLAGS+= $(GL_DEFS)
-glh2_static : sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
-	$(LINKER) -o $(GLH2_STATIC) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDSTATIC) $(GLFLAGS)
-
-# End of static binary targets
-endif
-
 clean:
 	rm -f *.o win_stuff/*.o sv_objs/*.o core .tmp *.tmp
 
 cleaner:
-	rm -f *.o win_stuff/*.o sv_objs/*.o core .tmp *.tmp \
-		$(H2_BINARY) $(GLH2_BINARY) $(H2_STATIC) $(GLH2_STATIC)
+	rm -f *.o win_stuff/*.o sv_objs/*.o core .tmp *.tmp $(H2_BINARY) $(GLH2_BINARY)
 

@@ -80,7 +80,7 @@ void S_StopSound (int entnum, int entchannel);
 void S_UpdateSoundPos (int entnum, int entchannel, vec3_t origin);
 void S_StopAllSounds(qboolean clear);
 void S_ClearBuffer (void);
-void S_Update (vec3_t origin, vec3_t v_forward, vec3_t v_right, vec3_t v_up);
+void S_Update (vec3_t origin, vec3_t forward, vec3_t right, vec3_t up);
 void S_ExtraUpdate (void);
 
 sfx_t *S_PrecacheSound (char *sample);
@@ -134,7 +134,7 @@ extern qboolean	snd_initialized;
 
 extern int		snd_blocked;
 
-void S_LocalSound (char *s);
+void S_LocalSound (char *sound);
 sfxcache_t *S_LoadSound (sfx_t *s);
 
 wavinfo_t GetWavinfo (char *name, byte *wav, int wavlength);

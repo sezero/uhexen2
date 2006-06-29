@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.59 2006-06-25 10:21:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.60 2006-06-29 23:02:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -374,6 +374,7 @@ static char *help_strings[] = {
 	"     [-paltex]               Enable 8-bit textures",
 	"     [-nomtex]               Disable multitexture detection/usage",
 #endif
+#if !defined(_NO_SOUND)
 	"     [-s | --nosound]        Run the game without sound",
 #if defined(HAVE_OSS_SOUND)
 	"     [-sndoss]               Use OSS sound",
@@ -385,6 +386,7 @@ static char *help_strings[] = {
 	"     [-sndsun | -sndbsd]     Use SUN / BSD sound",
 #endif
 	"     [-sndsdl]               Use SDL sound",
+#endif	// _NO_SOUND
 	"     [-nomouse]              Disable mouse usage",
 	"     [-listen N]             Enable multiplayer with max N players",
 	"     [-heapsize Bytes]       Heapsize (memory to allocate)",
@@ -553,6 +555,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.59  2006/06/25 10:21:04  sezero
+ * misc clean-ups and prepare for merging a dedicated server
+ *
  * Revision 1.58  2006/06/15 09:50:30  sezero
  * Updated help strings with regard to the available sound drivers
  *

@@ -2,35 +2,15 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.22 2006-05-18 17:48:10 sezero Exp $
+	$Id: midi_sdl.c,v 1.23 2006-06-29 23:02:02 sezero Exp $
 */
 
 #include "quakedef.h"
 #include <unistd.h>
 #include <dlfcn.h>
-
-#ifndef NO_MIDIMUSIC
 #define _NEED_SDL_MIXER
 #include "sdl_inc.h"
-#endif	// !NO_MIDIMUSIC
 
-
-#ifdef NO_MIDIMUSIC
-// placeholders
-qboolean MIDI_Init (void)
-{
-	Con_Printf("MIDI: disabled at compile time\n");
-	return false;
-}
-void MIDI_Play(char *Name) {}
-void MIDI_Pause(int mode) {}
-void MIDI_Loop(int NewValue) {}
-void MIDI_Stop(void) {}
-void MIDI_Cleanup(void) {}
-void MIDI_Update(void) {}
-
-#else
-// use midi music: the actual thing...
 
 static Mix_Music *music = NULL;
 static int audio_wasinit = 0;
@@ -310,11 +290,12 @@ void MIDI_Cleanup(void)
 		}
 	}
 }
-#endif
-
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2006/05/18 17:48:10  sezero
+ * renamed MIDI_UpdateVolume to MIDI_Update
+ *
  * Revision 1.21  2006/05/18 17:47:01  sezero
  * set bMidiInited to 0 in MIDI_Cleanup()
  *
