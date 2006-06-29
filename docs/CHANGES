@@ -3,9 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2006-06-26 (CVS):
+2006-06-29 (CVS):
     * updated opengl header includes
     * improted Xcode build files for MacOSX. from Levent Yavas.
+    * made the asm files to compile with yasm. tested with yasm-0.5.0rc2
+    * fixed alsa minimum required version detection (again). only a
+      theoretical thing, but just for correctness' sake.
+    * qbsp: do the name search in a case insensitive way. some wadfiles
+      doesn't have the texture name in expected case.
+    * cleaned up some things in the build system. added no sound and
+      no cdaudio options. removed static build targets from hexen2
+      and hexenworld makefiles. misc small things.
 
 2006-06-25 (CVS, 1.4.1-pre7):
     * added a hexen2 dedicated server which seems to work much better than
