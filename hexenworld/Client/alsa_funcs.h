@@ -1,6 +1,6 @@
 /*
 	alsa_funcs.h
-	$Id: alsa_funcs.h,v 1.5 2005-07-06 08:46:40 sezero Exp $
+	$Id: alsa_funcs.h,v 1.6 2006-06-29 22:53:30 sezero Exp $
 
 	ALSA function list
 
@@ -29,7 +29,7 @@
 */
 
 // We require alsa-lib 0.9.8 or newer to function. Refuse otherwise.
-#if SND_LIB_MAJOR < 1 && (SND_LIB_MINOR < 9 || SND_LIB_SUBMINOR < 8)
+#if SND_LIB_MAJOR < 1 && (SND_LIB_MINOR < 9 || (SND_LIB_MINOR == 9 && SND_LIB_SUBMINOR < 8))
 #error Alsa libraries v0.9.8 or newer are required
 #endif
 
@@ -76,6 +76,9 @@ HX2_ALSA (void, snd_pcm_sw_params_free, (snd_pcm_sw_params_t *obj))
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/07/06 08:46:40  sezero
+ * removed traces of alsa ancient versions support
+ *
  * Revision 1.4  2005/07/05 17:12:01  sezero
  * Updated alsa driver (various insignificant things)
  *
