@@ -382,7 +382,10 @@ static int LoadLump (char *name, byte *dest)
 
 	for (i = 0 ; i < wadinfo.numlumps ; i++)
 	{
-		if (!strcmp(cname, lumpinfo[i].name))
+	//	if (!strcmp(cname, lumpinfo[i].name))
+	//	do a case insensitive search. some wadfiles
+	//	doesn't have the texture name in expected case
+		if (!Q_strcasecmp(cname, lumpinfo[i].name))
 		{
 			fseek (texfile, lumpinfo[i].filepos, SEEK_SET);
 			SafeRead (texfile, dest, lumpinfo[i].disksize);
@@ -423,11 +426,16 @@ static void AddAnimatingTextures (void)
 
 		// see if this name exists in the wadfile
 			for (k = 0 ; k < wadinfo.numlumps ; k++)
-				if (!strcmp(name, lumpinfo[k].name))
+			{
+			//	if (!strcmp(name, lumpinfo[k].name))
+			//	do a case insensitive search. some wadfiles
+			//	doesn't have the texture name in expected case
+				if (!Q_strcasecmp(name, lumpinfo[k].name))
 				{
 					FindMiptex (name);	// add to the miptex list
 					break;
 				}
+			}
 		}
 	}
 
