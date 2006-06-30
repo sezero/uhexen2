@@ -7,7 +7,7 @@
 
 #include "resource.h"
 #include "wgl_func.h"
-#if !defined(NO_SPLASHES)
+#if !USE_HEXEN2_PALTEX_CODE && !defined(NO_SPLASHES)
 #include <commctrl.h>
 #endif
 
@@ -2186,7 +2186,7 @@ void	VID_Init (unsigned char *palette)
 
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
 
-#if !defined(NO_SPLASHES)
+#if !USE_HEXEN2_PALTEX_CODE && !defined(NO_SPLASHES)
 	InitCommonControls();
 	VID_SetPalette (palette);
 #endif

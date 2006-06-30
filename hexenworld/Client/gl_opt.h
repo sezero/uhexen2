@@ -2,7 +2,7 @@
 	gl_opt.h
 	opengl compile-time options
 
-	$Id: gl_opt.h,v 1.2 2006-04-10 12:48:44 sezero Exp $
+	$Id: gl_opt.h,v 1.3 2006-06-30 13:55:58 sezero Exp $
 */
 
 
@@ -20,6 +20,8 @@
 // to use hexenworld (quake)'s palettized texture code instead of the original
 // hexen2 code, change the definition below to 0.  that will result in lower
 // quality. see gl_draw.c (and gl_vidXXX.c) for more details
+// NOTE: If you set this to 0 and you are compiling for windows with the splash
+// screens enabled, make sure to enable the comctl32 link flag in the Makefile.
 #define	USE_HEXEN2_PALTEX_CODE		1
 
 // COMPILE TIME OPTION: USE_HEXEN2_RESAMPLER_CODE

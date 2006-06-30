@@ -182,9 +182,10 @@ ifeq "$(TARGET_OS)" "WIN32"
 ifeq "$(WITH_SPLASHES)" "no"
 EXT_FLAGS+= -DNO_SPLASHES
 else
-# gl version needs linking to comctl32.dll
-# because of that progress bar thingy
-GLFLAGS+=-lcomctl32
+# gl version needs linking to comctl32.dll because of that progress
+# bar thingy. it is necessary for the InitCommonControls call, only
+# when USE_HEXEN2_PALTEX_CODE is defined as 0 in gl_opt.h.
+#GLFLAGS+=-lcomctl32
 endif
 # End of Win32 specific extras
 endif
@@ -246,7 +247,7 @@ SYSOBJ_INPUT := win_stuff/in_win.o
 SYSOBJ_GL_VID:= win_stuff/gl_vidnt.o
 SYSOBJ_SOFT_VID:= win_stuff/vid_win.o
 SYSOBJ_NET := win_stuff/net_win.o win_stuff/net_wins.o win_stuff/net_wipx.o
-SYSOBJ_SYS := win_stuff/conproc.o win_stuff/sys_win.o win_stuff/win32res.o
+SYSOBJ_SYS := win_stuff/conproc.o win_stuff/sys_win.o win32res.o
 else
 SYSOBJ_INPUT := in_sdl.o
 SYSOBJ_GL_VID:= gl_vidsdl.o fx_gamma.o
