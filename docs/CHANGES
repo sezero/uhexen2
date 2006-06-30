@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-06-30 (CVS):
+    * cleaned up win32 version's resource stuff and comctl32 linkage
+
 2006-06-29 (CVS):
     * updated opengl header includes
     * improted Xcode build files for MacOSX. from Levent Yavas.
