@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.24 2006-06-25 11:06:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.25 2006-07-02 11:36:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -70,7 +70,7 @@ static void PF_error (void)
 	s = PF_VarString(0);
 	Con_Printf ("======SERVER ERROR in %s:\n%s\n",
 			pr_strings + pr_xfunction->s_name, s);
-	ed = PROG_TO_EDICT(pr_global_struct(self));
+	ed = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 	ED_Print (ed);
 
 	Host_Error ("Program error");
@@ -94,7 +94,7 @@ static void PF_objerror (void)
 	s = PF_VarString(0);
 	Con_Printf ("======OBJECT ERROR in %s:\n%s\n",
 			pr_strings + pr_xfunction->s_name, s);
-	ed = PROG_TO_EDICT(pr_global_struct(self));
+	ed = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 	ED_Print (ed);
 	ED_Free (ed);
 
@@ -112,7 +112,7 @@ makevectors(vector)
 */
 static void PF_makevectors (void)
 {
-	AngleVectors (G_VECTOR(OFS_PARM0), pr_global_struct(v_forward), pr_global_struct(v_right), pr_global_struct(v_up));
+	AngleVectors (G_VECTOR(OFS_PARM0), PR_GLOBAL_STRUCT(v_forward), PR_GLOBAL_STRUCT(v_right), PR_GLOBAL_STRUCT(v_up));
 }
 
 /*
@@ -1325,7 +1325,7 @@ static void PF_checkclient (void)
 	}
 
 // if current entity can't possibly see the check entity, return 0
-	self = PROG_TO_EDICT(pr_global_struct(self));
+	self = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 	VectorAdd (self->v.origin, self->v.view_ofs, view);
 	leaf = Mod_PointInLeaf (view, sv.worldmodel);
 	l = (leaf - sv.worldmodel->leafs) - 1;
@@ -1865,7 +1865,7 @@ static void PF_walkmove (void)
 	int	oldself;
 	qboolean set_trace;
 
-	ent = PROG_TO_EDICT(pr_global_struct(self));
+	ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 	yaw = G_FLOAT(OFS_PARM0);
 	dist = G_FLOAT(OFS_PARM1);
 	set_trace = G_FLOAT(OFS_PARM2);
@@ -1884,7 +1884,7 @@ static void PF_walkmove (void)
 
 // save program state, because SV_movestep may call other progs
 	oldf = pr_xfunction;
-	oldself = pr_global_struct(self);
+	oldself = PR_GLOBAL_STRUCT(self);
 
 	G_FLOAT(OFS_RETURN) = SV_movestep(ent, move, true, true, set_trace);
 
@@ -1909,7 +1909,7 @@ static void PF_droptofloor (void)
 	vec3_t		end;
 	trace_t		trace;
 
-	ent = PROG_TO_EDICT(pr_global_struct(self));
+	ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 
 	VectorCopy (ent->v.origin, end);
 	end[2] -= 256;
@@ -2149,7 +2149,7 @@ static void PF_aim (void)
 	start[2] += 20;
 
 // try sending a trace straight
-	VectorCopy (pr_global_struct(v_forward), dir);
+	VectorCopy (PR_GLOBAL_STRUCT(v_forward), dir);
 	VectorMA (start, 2048, dir, end);
 
 	save_hull = ent->v.hull;
@@ -2160,7 +2160,7 @@ static void PF_aim (void)
 	if (tr.ent && tr.ent->v.takedamage == DAMAGE_YES
 		&& (!teamplay.value || ent->v.team <=0 || ent->v.team != tr.ent->v.team) )
 	{
-		VectorCopy (pr_global_struct(v_forward), G_VECTOR(OFS_RETURN));
+		VectorCopy (PR_GLOBAL_STRUCT(v_forward), G_VECTOR(OFS_RETURN));
 		return;
 	}
 
@@ -2183,7 +2183,7 @@ static void PF_aim (void)
 				 + 0.5*(check->v.mins[j] + check->v.maxs[j]);
 		VectorSubtract (end, start, dir);
 		VectorNormalize (dir);
-		dist = DotProduct (dir, pr_global_struct(v_forward));
+		dist = DotProduct (dir, PR_GLOBAL_STRUCT(v_forward));
 		if (dist < bestdist)
 			continue;	// to far to turn
 		save_hull = ent->v.hull;
@@ -2204,8 +2204,8 @@ static void PF_aim (void)
 		hold_org[2] =bestent->v.origin[2] + (0.5 * bestent->v.maxs[2]);
 
 		VectorSubtract (hold_org,shot_org,dir);
-		dist = DotProduct (dir, pr_global_struct(v_forward));
-		VectorScale (pr_global_struct(v_forward), dist, end);
+		dist = DotProduct (dir, PR_GLOBAL_STRUCT(v_forward));
+		VectorScale (PR_GLOBAL_STRUCT(v_forward), dist, end);
 		end[2] = dir[2];
 		VectorNormalize (end);
 		VectorCopy (end, G_VECTOR(OFS_RETURN));
@@ -2228,7 +2228,7 @@ void PF_changeyaw (void)
 	edict_t		*ent;
 	float		ideal, current, move, speed;
 
-	ent = PROG_TO_EDICT(pr_global_struct(self));
+	ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 	current = anglemod( ent->v.angles[1] );
 	ideal = ent->v.ideal_yaw;
 	speed = ent->v.yaw_speed;
@@ -2332,7 +2332,7 @@ static sizebuf_t *WriteDest (void)
 		return &sv.datagram;
 
 	case MSG_ONE:
-		ent = PROG_TO_EDICT(pr_global_struct(msg_entity));
+		ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(msg_entity));
 		entnum = NUM_FOR_EDICT(ent);
 		if (entnum < 1 || entnum > svs.maxclients)
 			PR_RunError ("WriteDest: not a client");
@@ -2470,7 +2470,7 @@ static void PF_changelevel (void)
 	s1 = G_STRING(OFS_PARM0);
 	s2 = G_STRING(OFS_PARM1);
 
-	if ((int)pr_global_struct(serverflags) & (SFL_NEW_UNIT | SFL_NEW_EPISODE))
+	if ((int)PR_GLOBAL_STRUCT(serverflags) & (SFL_NEW_UNIT | SFL_NEW_EPISODE))
 		Cbuf_AddText (va("changelevel %s %s\n",s1, s2));
 	else
 		Cbuf_AddText (va("changelevel2 %s %s\n",s1, s2));
@@ -2500,7 +2500,7 @@ static void PF_WaterMove (void)
 	float		drownlevel;
 	float		damage = 0.0;
 
-	self = PROG_TO_EDICT(pr_global_struct(self));
+	self = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 
 	if (self->v.movetype == MOVETYPE_NOCLIP)
 	{
@@ -2716,7 +2716,7 @@ static void PF_movestep (void)
 	int	oldself;
 	qboolean set_trace;
 
-	ent = PROG_TO_EDICT(pr_global_struct(self));
+	ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 
 	v[0] = G_FLOAT(OFS_PARM0);
 	v[1] = G_FLOAT(OFS_PARM1);
@@ -2725,7 +2725,7 @@ static void PF_movestep (void)
 
 // save program state, because SV_movestep may call other progs
 	oldf = pr_xfunction;
-	oldself = pr_global_struct(self);
+	oldself = PR_GLOBAL_STRUCT(self);
 
 	G_INT(OFS_RETURN) = SV_movestep (ent, v, false, true, set_trace);
 
@@ -2764,7 +2764,7 @@ static void PF_AdvanceFrame(void)
 	edict_t *Ent;
 	float Start,End,Result;
 
-	Ent = PROG_TO_EDICT(pr_global_struct(self));
+	Ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 	Start = G_FLOAT(OFS_PARM0);
 	End = G_FLOAT(OFS_PARM1);
 
@@ -2795,7 +2795,7 @@ static void PF_RewindFrame(void)
 	edict_t *Ent;
 	float Start,End,Result;
 
-	Ent = PROG_TO_EDICT(pr_global_struct(self));
+	Ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 	Start = G_FLOAT(OFS_PARM0);
 	End = G_FLOAT(OFS_PARM1);
 
@@ -2832,7 +2832,7 @@ static void PF_advanceweaponframe (void)
 	float startframe, endframe;
 	float state;
 
-	ent = PROG_TO_EDICT(pr_global_struct(self));
+	ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 	startframe = G_FLOAT(OFS_PARM0);
 	endframe = G_FLOAT(OFS_PARM1);
 
@@ -3030,17 +3030,17 @@ static void PF_v_factor(void)
 
 	range = G_VECTOR(OFS_PARM0);
 
-	result[0] = (pr_global_struct(v_right[0]) * range[0]) +
-				(pr_global_struct(v_forward[0]) * range[1]) +
-				(pr_global_struct(v_up[0]) * range[2]);
+	result[0] = (PR_GLOBAL_STRUCT(v_right[0]) * range[0]) +
+				(PR_GLOBAL_STRUCT(v_forward[0]) * range[1]) +
+				(PR_GLOBAL_STRUCT(v_up[0]) * range[2]);
 
-	result[1] = (pr_global_struct(v_right[1]) * range[0]) +
-				(pr_global_struct(v_forward[1]) * range[1]) +
-				(pr_global_struct(v_up[1]) * range[2]);
+	result[1] = (PR_GLOBAL_STRUCT(v_right[1]) * range[0]) +
+				(PR_GLOBAL_STRUCT(v_forward[1]) * range[1]) +
+				(PR_GLOBAL_STRUCT(v_up[1]) * range[2]);
 
-	result[2] = (pr_global_struct(v_right[2]) * range[0]) +
-				(pr_global_struct(v_forward[2]) * range[1]) +
-				(pr_global_struct(v_up[2]) * range[2]);
+	result[2] = (PR_GLOBAL_STRUCT(v_right[2]) * range[0]) +
+				(PR_GLOBAL_STRUCT(v_forward[2]) * range[1]) +
+				(PR_GLOBAL_STRUCT(v_up[2]) * range[2]);
 
 	VectorCopy (result, G_VECTOR(OFS_RETURN));
 }
@@ -3064,17 +3064,17 @@ static void PF_v_factorrange(void)
 	num = rand()*(1.0/RAND_MAX);
 	result[2] = ((maxv[2]-minv[2]) * num) + minv[2];
 
-	r2[0] = (pr_global_struct(v_right[0]) * result[0]) +
-			(pr_global_struct(v_forward[0]) * result[1]) +
-			(pr_global_struct(v_up[0]) * result[2]);
+	r2[0] = (PR_GLOBAL_STRUCT(v_right[0]) * result[0]) +
+			(PR_GLOBAL_STRUCT(v_forward[0]) * result[1]) +
+			(PR_GLOBAL_STRUCT(v_up[0]) * result[2]);
 
-	r2[1] = (pr_global_struct(v_right[1]) * result[0]) +
-			(pr_global_struct(v_forward[1]) * result[1]) +
-			(pr_global_struct(v_up[1]) * result[2]);
+	r2[1] = (PR_GLOBAL_STRUCT(v_right[1]) * result[0]) +
+			(PR_GLOBAL_STRUCT(v_forward[1]) * result[1]) +
+			(PR_GLOBAL_STRUCT(v_up[1]) * result[2]);
 
-	r2[2] = (pr_global_struct(v_right[2]) * result[0]) +
-			(pr_global_struct(v_forward[2]) * result[1]) +
-			(pr_global_struct(v_up[2]) * result[2]);
+	r2[2] = (PR_GLOBAL_STRUCT(v_right[2]) * result[0]) +
+			(PR_GLOBAL_STRUCT(v_forward[2]) * result[1]) +
+			(PR_GLOBAL_STRUCT(v_up[2]) * result[2]);
 
 	VectorCopy (r2, G_VECTOR(OFS_RETURN));
 }
@@ -3088,7 +3088,7 @@ static void PF_matchAngleToSlope(void)
 	// OFS_PARM0 is used by PF_vectoangles below
 	actor = G_EDICT(OFS_PARM1);
 
-	AngleVectors(actor->v.angles, old_forward, old_right, pr_global_struct(v_up));
+	AngleVectors(actor->v.angles, old_forward, old_right, PR_GLOBAL_STRUCT(v_up));
 
 	PF_vectoangles();
 
@@ -3096,7 +3096,7 @@ static void PF_matchAngleToSlope(void)
 
 	new_angles2[1] = G_FLOAT(OFS_RETURN+1);
 
-	AngleVectors(new_angles2, v_forward, pr_global_struct(v_right), pr_global_struct(v_up));
+	AngleVectors(new_angles2, v_forward, PR_GLOBAL_STRUCT(v_right), PR_GLOBAL_STRUCT(v_up));
 
 	mod = DotProduct(v_forward, old_right);
 
@@ -3307,6 +3307,9 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2006/06/25 11:06:59  sezero
+ * reverted accidental check-in. just to be on the safe side..
+ *
  * Revision 1.23  2006/06/25 10:21:03  sezero
  * misc clean-ups and prepare for merging a dedicated server
  *

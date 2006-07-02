@@ -2,7 +2,7 @@
 	sv_move.c
 	monster movement
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.6 2006-04-05 06:10:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.7 2006-07-02 11:36:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -569,12 +569,12 @@ void SV_MoveToGoal (void)
 	edict_t		*enemy;
 #endif
 
-	ent = PROG_TO_EDICT(pr_global_struct(self));	// Entity moving
+	ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));	// Entity moving
 	goal = PROG_TO_EDICT(ent->v.goalentity);	// its goalentity
 	dist = G_FLOAT(OFS_PARM0);			// how far to move
 
 	// Reset trace_plane_normal
-	VectorCopy(vec3_origin,pr_global_struct(trace_plane_normal));
+	VectorCopy(vec3_origin,PR_GLOBAL_STRUCT(trace_plane_normal));
 
 	// If not onground, flying, or swimming, return 0
 	if ( !( (int)ent->v.flags & (FL_ONGROUND|FL_FLY|FL_SWIM) ) )
@@ -620,6 +620,12 @@ void SV_MoveToGoal (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2006/04/05 06:10:44  sezero
+ * added support for both hexen2-v1.11 and h2mp-v1.12 progs into a single hexen2
+ * binary. this essentially completes the h2/h2mp binary merge started with the
+ * previous patch. many conditionals had to be added especially on the server side,but couldn't notice any serious performance loss on a PIII-733 computer. Supportfor multiple progs.dat is now advised to be left enabled in order to support
+ * mods which uses that feature.
+ *
  * Revision 1.5  2006/02/25 19:40:52  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 29:  hexen2/sv_move.c, hwsv/server.h, sv_ccmds.c, sv_ents.c,

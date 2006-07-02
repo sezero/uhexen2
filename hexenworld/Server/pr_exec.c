@@ -143,9 +143,9 @@ void PR_ExecuteProgram(func_t fnum)
 
 	if (!fnum || fnum >= progs->numfunctions)
 	{
-		if (pr_global_struct->self)
+		if (PR_GLOBAL_STRUCT(self))
 		{
-			ED_Print(PROG_TO_EDICT(pr_global_struct->self));
+			ED_Print(PROG_TO_EDICT(PR_GLOBAL_STRUCT(self)));
 		}
 		SV_Error("PR_ExecuteProgram: NULL function");
 	}
@@ -530,15 +530,15 @@ void PR_ExecuteProgram(func_t fnum)
 		break;
 
 	case OP_STATE:
-		ed = PROG_TO_EDICT(pr_global_struct->self);
+		ed = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 /* Id 1.07 changes
 #ifdef FPS_20
-		ed->v.nextthink = pr_global_struct->time + 0.05;
+		ed->v.nextthink = PR_GLOBAL_STRUCT(time) + 0.05;
 #else
-		ed->v.nextthink = pr_global_struct->time + 0.1;
+		ed->v.nextthink = PR_GLOBAL_STRUCT(time) + 0.1;
 #endif
 */
-		ed->v.nextthink = pr_global_struct->time+HX_FRAME_TIME;
+		ed->v.nextthink = PR_GLOBAL_STRUCT(time)+HX_FRAME_TIME;
 		if (a->_float != ed->v.frame)
 		{
 			ed->v.frame = a->_float;
@@ -547,10 +547,10 @@ void PR_ExecuteProgram(func_t fnum)
 		break;
 
 	case OP_CSTATE:	// Cycle state
-		ed = PROG_TO_EDICT(pr_global_struct->self);
-		ed->v.nextthink = pr_global_struct->time+HX_FRAME_TIME;
+		ed = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
+		ed->v.nextthink = PR_GLOBAL_STRUCT(time)+HX_FRAME_TIME;
 		ed->v.think = pr_xfunction-pr_functions;
-		pr_global_struct->cycle_wrapped = false;
+			pr_global_struct->cycle_wrapped = false;
 		startFrame = (int)a->_float;
 		endFrame = (int)b->_float;
 		if (startFrame <= endFrame)
@@ -563,7 +563,7 @@ void PR_ExecuteProgram(func_t fnum)
 			ed->v.frame++;
 			if (ed->v.frame > endFrame)
 			{
-				pr_global_struct->cycle_wrapped = true;
+					pr_global_struct->cycle_wrapped = true;
 				ed->v.frame = startFrame;
 			}
 			break;
@@ -577,16 +577,16 @@ void PR_ExecuteProgram(func_t fnum)
 		ed->v.frame--;
 		if (ed->v.frame < endFrame)
 		{
-			pr_global_struct->cycle_wrapped = true;
+				pr_global_struct->cycle_wrapped = true;
 			ed->v.frame = startFrame;
 		}
 		break;
 
 	case OP_CWSTATE:	// Cycle weapon state
-		ed = PROG_TO_EDICT(pr_global_struct->self);
-		ed->v.nextthink = pr_global_struct->time+HX_FRAME_TIME;
+		ed = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
+		ed->v.nextthink = PR_GLOBAL_STRUCT(time)+HX_FRAME_TIME;
 		ed->v.think = pr_xfunction-pr_functions;
-		pr_global_struct->cycle_wrapped = false;
+			pr_global_struct->cycle_wrapped = false;
 		startFrame = (int)a->_float;
 		endFrame = (int)b->_float;
 		if (startFrame <= endFrame)
@@ -600,7 +600,7 @@ void PR_ExecuteProgram(func_t fnum)
 			ed->v.weaponframe++;
 			if (ed->v.weaponframe > endFrame)
 			{
-				pr_global_struct->cycle_wrapped = true;
+					pr_global_struct->cycle_wrapped = true;
 				ed->v.weaponframe = startFrame;
 			}
 			break;
@@ -615,7 +615,7 @@ void PR_ExecuteProgram(func_t fnum)
 		ed->v.weaponframe--;
 		if (ed->v.weaponframe < endFrame)
 		{
-			pr_global_struct->cycle_wrapped = true;
+				pr_global_struct->cycle_wrapped = true;
 			ed->v.weaponframe = startFrame;
 		}
 		break;
@@ -629,7 +629,7 @@ void PR_ExecuteProgram(func_t fnum)
 		{
 			PR_RunError("assignment to world entity");
 		}
-		ed->v.nextthink = pr_global_struct->time+b->_float;
+		ed->v.nextthink = PR_GLOBAL_STRUCT(time)+b->_float;
 		break;
 
 	case OP_BITSET:		// f (+) f

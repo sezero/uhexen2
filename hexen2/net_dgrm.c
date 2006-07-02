@@ -118,7 +118,7 @@ static void NET_Ban_f (void)
 	}
 	else
 	{
-		if (pr_global_struct(deathmatch))
+		if (PR_GLOBAL_STRUCT(deathmatch))
 			return;
 		print = SV_ClientPrintf;
 	}

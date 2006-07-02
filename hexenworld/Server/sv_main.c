@@ -318,8 +318,8 @@ void SV_FullClientUpdate (client_t *client, sizebuf_t *buf)
 		MSG_WriteByte (buf, client->siege_team);
 
 		MSG_WriteByte (buf, svc_updatesiegelosses);
-		MSG_WriteByte (buf, pr_global_struct->defLosses);
-		MSG_WriteByte (buf, pr_global_struct->attLosses);
+		MSG_WriteByte (buf, PR_GLOBAL_STRUCT(defLosses));
+		MSG_WriteByte (buf, PR_GLOBAL_STRUCT(attLosses));
 
 		MSG_WriteByte (buf, svc_time);//send server time upon connection
 		MSG_WriteFloat (buf, sv.time);

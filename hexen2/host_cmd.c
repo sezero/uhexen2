@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.48 2006-06-25 12:01:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.49 2006-07-02 11:36:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -121,7 +121,7 @@ static void Host_God_f (void)
 		return;
 	}
 
-	if (pr_global_struct(deathmatch) || pr_global_struct(coop) || skill.value > 2)
+	if (PR_GLOBAL_STRUCT(deathmatch) || PR_GLOBAL_STRUCT(coop) || skill.value > 2)
 		return;
 
 	sv_player->v.flags = (int)sv_player->v.flags ^ FL_GODMODE;
@@ -139,7 +139,7 @@ static void Host_Notarget_f (void)
 		return;
 	}
 
-	if (pr_global_struct(deathmatch) || skill.value > 2)
+	if (PR_GLOBAL_STRUCT(deathmatch) || skill.value > 2)
 		return;
 
 	sv_player->v.flags = (int)sv_player->v.flags ^ FL_NOTARGET;
@@ -159,7 +159,7 @@ static void Host_Noclip_f (void)
 		return;
 	}
 
-	if (pr_global_struct(deathmatch) || pr_global_struct(coop) || skill.value > 2)
+	if (PR_GLOBAL_STRUCT(deathmatch) || PR_GLOBAL_STRUCT(coop) || skill.value > 2)
 		return;
 
 	if (sv_player->v.movetype != MOVETYPE_NOCLIP)
@@ -1678,7 +1678,7 @@ static void Host_Spawn_f (void)
 			if ((Sys_DoubleTime() - host_client->netconnection->connecttime) <= sv.time)
 				Sys_Printf ("%s entered the game\n", host_client->name);
 
-			PR_ExecuteProgram (pr_global_struct(PutClientInServer));
+			PR_ExecuteProgram (PR_GLOBAL_STRUCT(PutClientInServer));
 		}
 	}
 
@@ -1718,19 +1718,19 @@ static void Host_Spawn_f (void)
 //
 	MSG_WriteByte (&host_client->message, svc_updatestat);
 	MSG_WriteByte (&host_client->message, STAT_TOTALSECRETS);
-	MSG_WriteLong (&host_client->message, pr_global_struct(total_secrets));
+	MSG_WriteLong (&host_client->message, PR_GLOBAL_STRUCT(total_secrets));
 
 	MSG_WriteByte (&host_client->message, svc_updatestat);
 	MSG_WriteByte (&host_client->message, STAT_TOTALMONSTERS);
-	MSG_WriteLong (&host_client->message, pr_global_struct(total_monsters));
+	MSG_WriteLong (&host_client->message, PR_GLOBAL_STRUCT(total_monsters));
 
 	MSG_WriteByte (&host_client->message, svc_updatestat);
 	MSG_WriteByte (&host_client->message, STAT_SECRETS);
-	MSG_WriteLong (&host_client->message, pr_global_struct(found_secrets));
+	MSG_WriteLong (&host_client->message, PR_GLOBAL_STRUCT(found_secrets));
 
 	MSG_WriteByte (&host_client->message, svc_updatestat);
 	MSG_WriteByte (&host_client->message, STAT_MONSTERS);
-	MSG_WriteLong (&host_client->message, pr_global_struct(killed_monsters));
+	MSG_WriteLong (&host_client->message, PR_GLOBAL_STRUCT(killed_monsters));
 
 	SV_UpdateEffects(&host_client->message);
 
@@ -1918,7 +1918,7 @@ static void Host_Kick_f (void)
 			return;
 		}
 	}
-	else if (pr_global_struct(deathmatch))
+	else if (PR_GLOBAL_STRUCT(deathmatch))
 		return;
 
 	save = host_client;
@@ -2007,7 +2007,7 @@ static void Host_Give_f (void)
 		return;
 	}
 
-	if (pr_global_struct(deathmatch) || skill.value > 2)
+	if (PR_GLOBAL_STRUCT(deathmatch) || skill.value > 2)
 		return;
 
 	t = Cmd_Argv(1);
@@ -2297,6 +2297,10 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.48  2006/06/25 12:01:48  sezero
+ * renamed CL_CopyFiles to Host_CopyFiles and CL_RemoveGIPFiles to
+ * Host_RemoveGIPFiles, moved them to host.c
+ *
  * Revision 1.47  2006/06/25 00:02:54  sezero
  * moved mousestate activation stuff to CL_ParseServerInfo
  *

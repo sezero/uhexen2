@@ -1,7 +1,7 @@
 /*
 	sv_phys.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.13 2006-04-05 06:10:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.14 2006-07-02 11:36:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2235,7 +2235,7 @@ void SV_Physics (void)
 			VectorCopy(ent->v.angles,oldAngle);
 		}
 
-		if (pr_global_struct(force_retouch))
+		if (PR_GLOBAL_STRUCT(force_retouch))
 		{
 			SV_LinkEdict (ent, true);	// force retouch even for stationary
 		}
@@ -2377,6 +2377,12 @@ trace_t SV_Trace_Toss (edict_t *ent, edict_t *ignore)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2006/04/05 06:10:44  sezero
+ * added support for both hexen2-v1.11 and h2mp-v1.12 progs into a single hexen2
+ * binary. this essentially completes the h2/h2mp binary merge started with the
+ * previous patch. many conditionals had to be added especially on the server side,but couldn't notice any serious performance loss on a PIII-733 computer. Supportfor multiple progs.dat is now advised to be left enabled in order to support
+ * mods which uses that feature.
+ *
  * Revision 1.12  2006/03/24 15:05:39  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also

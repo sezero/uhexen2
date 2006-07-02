@@ -2157,7 +2157,7 @@ void SV_Physics (void)
 		if (ent->free)
 			continue;
 
-		if (pr_global_struct->force_retouch)
+		if (PR_GLOBAL_STRUCT(force_retouch))
 			SV_LinkEdict (ent, true);	// force retouch even for stationary
 
 		if (i > 0 && i <= MAX_CLIENTS)

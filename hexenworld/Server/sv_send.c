@@ -951,8 +951,8 @@ static void SV_UpdateToReliableMessages (void)
 				if (dmMode.value == DM_SIEGE)
 				{
 					MSG_WriteByte (&client->netchan.message, svc_updatesiegelosses);
-					MSG_WriteByte (&client->netchan.message, pr_global_struct->defLosses);
-					MSG_WriteByte (&client->netchan.message, pr_global_struct->attLosses);
+					MSG_WriteByte (&client->netchan.message, PR_GLOBAL_STRUCT(defLosses));
+					MSG_WriteByte (&client->netchan.message, PR_GLOBAL_STRUCT(attLosses));
 				}
 			}
 

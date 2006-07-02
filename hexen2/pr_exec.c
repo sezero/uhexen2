@@ -1,7 +1,7 @@
 /*
 	pr_exec.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.9 2006-04-05 06:10:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.10 2006-07-02 11:36:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -147,9 +147,9 @@ void PR_ExecuteProgram(func_t fnum)
 
 	if (!fnum || fnum >= progs->numfunctions)
 	{
-		if (pr_global_struct(self))
+		if (PR_GLOBAL_STRUCT(self))
 		{
-			ED_Print(PROG_TO_EDICT(pr_global_struct(self)));
+			ED_Print(PROG_TO_EDICT(PR_GLOBAL_STRUCT(self)));
 		}
 		Host_Error("PR_ExecuteProgram: NULL function");
 	}
@@ -534,15 +534,15 @@ void PR_ExecuteProgram(func_t fnum)
 		break;
 
 	case OP_STATE:
-		ed = PROG_TO_EDICT(pr_global_struct(self));
+		ed = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 /* Id 1.07 changes
 #ifdef FPS_20
-		ed->v.nextthink = pr_global_struct(time) + 0.05;
+		ed->v.nextthink = PR_GLOBAL_STRUCT(time) + 0.05;
 #else
-		ed->v.nextthink = pr_global_struct(time) + 0.1;
+		ed->v.nextthink = PR_GLOBAL_STRUCT(time) + 0.1;
 #endif
 */
-		ed->v.nextthink = pr_global_struct(time)+HX_FRAME_TIME;
+		ed->v.nextthink = PR_GLOBAL_STRUCT(time)+HX_FRAME_TIME;
 		if (a->_float != ed->v.frame)
 		{
 			ed->v.frame = a->_float;
@@ -551,8 +551,8 @@ void PR_ExecuteProgram(func_t fnum)
 		break;
 
 	case OP_CSTATE:	// Cycle state
-		ed = PROG_TO_EDICT(pr_global_struct(self));
-		ed->v.nextthink = pr_global_struct(time)+HX_FRAME_TIME;
+		ed = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
+		ed->v.nextthink = PR_GLOBAL_STRUCT(time)+HX_FRAME_TIME;
 		ed->v.think = pr_xfunction-pr_functions;
 		if (old_progdefs)
 			pr_global_struct_v111->cycle_wrapped = false;
@@ -596,8 +596,8 @@ void PR_ExecuteProgram(func_t fnum)
 		break;
 
 	case OP_CWSTATE:	// Cycle weapon state
-		ed = PROG_TO_EDICT(pr_global_struct(self));
-		ed->v.nextthink = pr_global_struct(time)+HX_FRAME_TIME;
+		ed = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
+		ed->v.nextthink = PR_GLOBAL_STRUCT(time)+HX_FRAME_TIME;
 		ed->v.think = pr_xfunction-pr_functions;
 		if (old_progdefs)
 			pr_global_struct_v111->cycle_wrapped = false;
@@ -651,7 +651,7 @@ void PR_ExecuteProgram(func_t fnum)
 		{
 			PR_RunError("assignment to world entity");
 		}
-		ed->v.nextthink = pr_global_struct(time)+b->_float;
+		ed->v.nextthink = PR_GLOBAL_STRUCT(time)+b->_float;
 		break;
 
 	case OP_BITSET:		// f (+) f
@@ -1200,6 +1200,12 @@ static unsigned int ProgsTimer(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2006/04/05 06:10:44  sezero
+ * added support for both hexen2-v1.11 and h2mp-v1.12 progs into a single hexen2
+ * binary. this essentially completes the h2/h2mp binary merge started with the
+ * previous patch. many conditionals had to be added especially on the server side,but couldn't notice any serious performance loss on a PIII-733 computer. Supportfor multiple progs.dat is now advised to be left enabled in order to support
+ * mods which uses that feature.
+ *
  * Revision 1.8  2006/02/21 13:46:01  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 17: pr_exec.c). also killed a warning about switch_float may be

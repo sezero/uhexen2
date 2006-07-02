@@ -143,7 +143,7 @@ void SV_SaveSpawnparms (void)
 		return;		// no progs loaded yet
 
 	// serverflags is the only game related thing maintained
-	svs.serverflags = pr_global_struct->serverflags;
+	svs.serverflags = PR_GLOBAL_STRUCT(serverflags);
 
 	for (i=0, host_client = svs.clients ; i<MAX_CLIENTS ; i++, host_client++)
 	{

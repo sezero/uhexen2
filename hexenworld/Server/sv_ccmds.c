@@ -451,8 +451,8 @@ static void SV_Status_f (void)
 		num_min = floor((num_min - num_sec)/60);
 		Con_Printf ("timeleft         : %i:", num_min);
 		Con_Printf ("%2i\n", num_sec);
-		Con_Printf ("deflosses        : %3i/%3i\n", floor(pr_global_struct->defLosses),floor(f_limit));
-		Con_Printf ("attlosses        : %3i/%3i\n", floor(pr_global_struct->attLosses),floor(f_limit*2));
+		Con_Printf ("deflosses        : %3i/%3i\n", floor(PR_GLOBAL_STRUCT(defLosses)),floor(f_limit));
+		Con_Printf ("attlosses        : %3i/%3i\n", floor(PR_GLOBAL_STRUCT(attLosses)),floor(f_limit*2));
 	}
 	else
 	{

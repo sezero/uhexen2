@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.31 2006-06-25 10:21:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.32 2006-07-02 11:36:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -513,7 +513,7 @@ static void SV_ConnectClient (int clientnum)
 //	else
 //	{
 	// call the progs to get default spawn parms for the new client
-	//	PR_ExecuteProgram (pr_global_struct(SetNewParms));
+	//	PR_ExecuteProgram (PR_GLOBAL_STRUCT(SetNewParms));
 	//	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
 	//	{
 	//	    if (old_progdefs)
@@ -1852,7 +1852,7 @@ void SV_SaveSpawnparms (void)
 	int		i;
 //	int		j;
 
-	svs.serverflags = pr_global_struct(serverflags);
+	svs.serverflags = PR_GLOBAL_STRUCT(serverflags);
 
 	for (i=0, host_client = svs.clients ; i<svs.maxclients ; i++, host_client++)
 	{
@@ -2121,6 +2121,9 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2006/06/25 10:21:03  sezero
+ * misc clean-ups and prepare for merging a dedicated server
+ *
  * Revision 1.30  2006/06/25 00:02:54  sezero
  * moved mousestate activation stuff to CL_ParseServerInfo
  *

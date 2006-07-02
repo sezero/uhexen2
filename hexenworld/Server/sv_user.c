@@ -284,19 +284,19 @@ static void SV_Spawn_f (void)
 
 	MSG_WriteByte (&host_client->netchan.message, svc_updatestatlong);
 	MSG_WriteByte (&host_client->netchan.message, STAT_TOTALSECRETS);
-	MSG_WriteLong (&host_client->netchan.message, pr_global_struct->total_secrets);
+	MSG_WriteLong (&host_client->netchan.message, PR_GLOBAL_STRUCT(total_secrets));
 
 	MSG_WriteByte (&host_client->netchan.message, svc_updatestatlong);
 	MSG_WriteByte (&host_client->netchan.message, STAT_TOTALMONSTERS);
-	MSG_WriteLong (&host_client->netchan.message, pr_global_struct->total_monsters);
+	MSG_WriteLong (&host_client->netchan.message, PR_GLOBAL_STRUCT(total_monsters));
 
 	MSG_WriteByte (&host_client->netchan.message, svc_updatestatlong);
 	MSG_WriteByte (&host_client->netchan.message, STAT_SECRETS);
-	MSG_WriteLong (&host_client->netchan.message, pr_global_struct->found_secrets);
+	MSG_WriteLong (&host_client->netchan.message, PR_GLOBAL_STRUCT(found_secrets));
 
 	MSG_WriteByte (&host_client->netchan.message, svc_updatestatlong);
 	MSG_WriteByte (&host_client->netchan.message, STAT_MONSTERS);
-	MSG_WriteLong (&host_client->netchan.message, pr_global_struct->killed_monsters);
+	MSG_WriteLong (&host_client->netchan.message, PR_GLOBAL_STRUCT(killed_monsters));
 
 	// get the client to check and download skins
 	// when that is completed, a begin command will be issued

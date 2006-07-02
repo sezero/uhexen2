@@ -41,7 +41,7 @@ extern	ddef_t			*pr_globaldefs;
 extern	ddef_t			*pr_fielddefs;
 extern	dstatement_t	*pr_statements;
 extern	globalvars_t	*pr_global_struct;
-#define	pr_global_struct(parm)	(pr_global_struct->parm)
+#define	PR_GLOBAL_STRUCT(parm)	(pr_global_struct->parm)
 extern	float			*pr_globals;		// same as pr_global_struct
 
 extern	int				pr_edict_size;	// in bytes

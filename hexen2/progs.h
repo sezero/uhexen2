@@ -43,7 +43,7 @@ extern	dstatement_t	*pr_statements;
 extern	globalvars_t	*pr_global_struct;
 extern	globalvars_v111_t	*pr_global_struct_v111;
 extern	qboolean		old_progdefs;	// whether we have a Hexen2-v1.11 globals struct
-#define	pr_global_struct(parm)	(old_progdefs ? (pr_global_struct_v111->parm) : (pr_global_struct->parm))
+#define	PR_GLOBAL_STRUCT(parm)	(old_progdefs ? (pr_global_struct_v111->parm) : (pr_global_struct->parm))
 extern	float			*pr_globals;		// same as pr_global_struct
 
 extern	int				pr_edict_size;	// in bytes
