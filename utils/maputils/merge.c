@@ -105,7 +105,7 @@ static face_t *TryMerge (face_t *f1, face_t *f2)
 	plane = &planes[f1->planenum];
 	VectorCopy (plane->normal, planenormal);
 	if (f1->planeside)
-		VectorSubtract (vec3_origin, planenormal, planenormal);
+		VectorNegate (planenormal, planenormal);
 
 	back = f1->pts[(i+f1->numpoints-1)%f1->numpoints];
 	VectorSubtract (p1, back, delta);

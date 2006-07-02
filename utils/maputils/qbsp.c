@@ -80,7 +80,7 @@ winding_t *BaseWindingForPlane (plane_t *p)
 	if (x == -1)
 		Error ("BaseWindingForPlane: no axis found");
 
-	VectorCopy (vec3_origin, vup);
+	VectorClear (vup);
 	switch (x)
 	{
 	case 0:

@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.9 2006-04-05 06:06:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.10 2006-07-02 11:45:37 sezero Exp $
 */
 
 
@@ -208,7 +208,7 @@ void R_ReadPointFile_f (void)
 		p->die = 99999;
 		p->color = color; // (-c)&15;
 		p->type = pt_static;
-		VectorCopy (vec3_origin, p->vel);
+		VectorClear (p->vel);
 		VectorCopy (org, p->org);
 	}
 
@@ -1147,7 +1147,7 @@ void R_RocketTrail (vec3_t start, vec3_t end, int type)
 		if (!p)
 			return;
 
-		VectorCopy (vec3_origin, p->vel);
+		VectorClear (p->vel);
 		p->die = cl.time + lifetime;
 
 		switch (type)

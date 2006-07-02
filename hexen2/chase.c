@@ -75,7 +75,7 @@ void Chase_Update (void)
 #endif
 	// check for walls between player and camera. from quakeforge
 	TraceLine(r_refdef.vieworg, chase_dest, stop);
-	if (Length(stop) != 0)
+	if (VectorLength(stop) != 0)
 		for (i = 0; i < 3; i++)
 			chase_dest[i] = stop[i] + forward[i] * 8;
 

@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.14 2006-06-23 14:43:33 sezero Exp $
+	$Id: model.c,v 1.15 2006-07-02 11:45:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -662,8 +662,8 @@ static void Mod_LoadTexinfo (lump_t *l)
 	{
 		for (j = 0 ; j < 8 ; j++)
 			out->vecs[0][j] = LittleFloat (in->vecs[0][j]);
-		len1 = Length (out->vecs[0]);
-		len2 = Length (out->vecs[1]);
+		len1 = VectorLength (out->vecs[0]);
+		len2 = VectorLength (out->vecs[1]);
 		len1 = (len1 + len2)/2;
 		if (len1 < 0.32)
 			out->mipadjust = 4;
@@ -1204,7 +1204,7 @@ static float RadiusFromBounds (vec3_t arg_mins, vec3_t arg_maxs)
 		corner[i] = fabs(arg_mins[i]) > fabs(arg_maxs[i]) ? fabs(arg_mins[i]) : fabs(arg_maxs[i]);
 	}
 
-	return Length (corner);
+	return VectorLength (corner);
 }
 
 /*
@@ -2255,6 +2255,9 @@ static void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2006/06/23 14:43:33  sezero
+ * some minor clean-ups
+ *
  * Revision 1.13  2006/03/21 22:24:08  sezero
  * continue making static functions and vars static. whitespace and coding
  * style cleanup. part 44: model.c, gl_model.c. also moved the mcache cmd

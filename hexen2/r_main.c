@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.12 2006-06-23 14:43:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.13 2006-07-02 11:45:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -605,14 +605,14 @@ static void R_PrepareAlias (void)
 
 				if (cl_dlights[lnum].radius> 0)
 				{
-					add = cl_dlights[lnum].radius - Length(dist);
+					add = cl_dlights[lnum].radius - VectorLength(dist);
 
 					if (add > 0)
 						lighting.ambientlight += add;
 				}
 				else
 				{
-					add = Length(dist) + cl_dlights[lnum].radius;
+					add = VectorLength(dist) + cl_dlights[lnum].radius;
 
 					if (add < 0)
 						lighting.ambientlight += add;
@@ -767,14 +767,14 @@ static void R_DrawViewModel (void)
 
 		if (dl->radius > 0)
 		{
-			add = dl->radius - Length(dist);
+			add = dl->radius - VectorLength(dist);
 
 			if (add > 0)
 				r_viewlighting.ambientlight += add;
 		}
 		else
 		{
-			add = Length(dist) + dl->radius;
+			add = VectorLength(dist) + dl->radius;
 
 			if (add < 0)
 				r_viewlighting.ambientlight += add;
@@ -1289,6 +1289,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2006/06/23 14:43:36  sezero
+ * some minor clean-ups
+ *
  * Revision 1.11  2006/04/05 06:06:15  sezero
  * continue making static functions and vars static. whitespace and coding
  * style cleanup. part 51: software renderer: r_main.c

@@ -486,7 +486,7 @@ void CreateStream(int type, int ent, int flags, int tag, float duration, int ski
 	VectorCopy(dest, stream->dest);
 	if(flags&STREAM_ATTACHED)
 	{
-		VectorCopy(vec3_origin, stream->offset);
+		VectorClear(stream->offset);
 
 		state = FindState(ent);
 		if (state)
@@ -730,7 +730,7 @@ static void ParseStream(int type)
 
 	if(flags&STREAM_ATTACHED)
 	{
-		VectorCopy(vec3_origin, stream->offset);
+		VectorClear(stream->offset);
 
 		state = FindState(ent);
 		if (state)
@@ -1753,7 +1753,7 @@ void CL_ParseTEnt (void)
 						VectorCopy(stream->source, stream->dest);
 						stream->dest[2] += 128;
 
-						VectorCopy(vec3_origin, stream->offset);
+						VectorClear(stream->offset);
 
 						VectorSubtract(stream->source, state->origin, stream->offset);
 					}
@@ -1852,7 +1852,7 @@ void CL_ParseTEnt (void)
 
 						if(!i)
 						{
-							VectorCopy(vec3_origin, stream->offset);
+							VectorClear(stream->offset);
 							VectorSubtract(stream->source, state->origin, stream->offset);
 						}
 					}
@@ -2241,7 +2241,7 @@ void CL_ParseTEnt (void)
 					VectorCopy(vel, stream->source);
 					VectorCopy(pos, stream->dest);
 
-					//VectorCopy(vec3_origin, stream->offset);
+					//VectorClear(stream->offset);
 					//VectorSubtract(stream->source, vel, stream->offset);
 
 					// make some spiffy particles to glue it all together

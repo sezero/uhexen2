@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.25 2006-07-02 11:36:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.26 2006-07-02 11:45:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -947,7 +947,7 @@ static void AddParticle(float *Org, float color)
 	p->die = 99999;
 	p->color = color;
 	p->type = pt_static;
-	VectorCopy (vec3_origin, p->vel);
+	VectorClear (p->vel);
 	VectorCopy (Org, p->org);
 }
 
@@ -1451,7 +1451,7 @@ static void PF_findradius (void)
 			continue;
 		for (j=0 ; j<3 ; j++)
 			eorg[j] = org[j] - (ent->v.origin[j] + (ent->v.mins[j] + ent->v.maxs[j])*0.5);
-		if (Length(eorg) > rad)
+		if (VectorLength(eorg) > rad)
 			continue;
 
 		ent->v.chain = EDICT_TO_PROG(chain);
@@ -3307,6 +3307,12 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2006/07/02 11:36:35  sezero
+ * uppercased the pr_global_struct() macro for easier detection
+ * and searching. put that macro in use in hexenworld server for
+ * smaller diffs between the two versions. there are no actual
+ * code changes here, only style and cosmetics.
+ *
  * Revision 1.24  2006/06/25 11:06:59  sezero
  * reverted accidental check-in. just to be on the safe side..
  *

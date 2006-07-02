@@ -1,7 +1,7 @@
 /*
 	sv_phys.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.14 2006-07-02 11:36:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.15 2006-07-02 11:45:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -101,7 +101,7 @@ void SV_CheckVelocity (edict_t *ent)
 		}
 	}
 
-	w = Length(ent->v.velocity);
+	w = VectorLength(ent->v.velocity);
 	if (w > sv_maxvelocity.value)
 	{	// sv_maxvelocity fix by Maddes
 		VectorScale (ent->v.velocity, sv_maxvelocity.value/w, ent->v.velocity);
@@ -295,7 +295,7 @@ static int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace)
 
 		if (trace.allsolid)
 		{	// entity is trapped in another solid
-			VectorCopy (vec3_origin, ent->v.velocity);
+			VectorClear (ent->v.velocity);
 			return 3;
 		}
 
@@ -348,7 +348,7 @@ static int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace)
 	// cliped to another plane
 		if (numplanes >= MAX_CLIP_PLANES)
 		{	// this shouldn't really happen
-			VectorCopy (vec3_origin, ent->v.velocity);
+			VectorClear (ent->v.velocity);
 			return 3;
 		}
 
@@ -380,7 +380,7 @@ static int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace)
 			if (numplanes != 2)
 			{
 			//	Con_Printf ("clip velocity, numplanes == %i\n",numplanes);
-				VectorCopy (vec3_origin, ent->v.velocity);
+				VectorClear (ent->v.velocity);
 				return 7;
 			}
 			CrossProduct (planes[0], planes[1], dir);
@@ -394,7 +394,7 @@ static int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace)
 //
 		if (DotProduct (ent->v.velocity, primal_velocity) <= 0)
 		{
-			VectorCopy (vec3_origin, ent->v.velocity);
+			VectorClear (ent->v.velocity);
 			return blocked;
 		}
 	}
@@ -716,7 +716,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 	for (i=0 ; i<3 ; i++)
 		amove[i] = pusher->v.avelocity[i] * movetime;
 
-	VectorSubtract (vec3_origin, amove, a);
+	VectorNegate (amove, a);
 	AngleVectors (a, forward, right, up);
 
 	VectorCopy (pusher->v.angles, pushorig);
@@ -963,7 +963,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 		maxs[i] = pusher->v.absmax[i] + move[i];
 	}
 
-	VectorSubtract (vec3_origin, amove, a);
+	VectorNegate (amove, a);
 	AngleVectors (a, forward, right, up);
 
 	VectorCopy (pusher->v.origin, pushorig);
@@ -1528,7 +1528,7 @@ static int SV_TryUnstick (edict_t *ent, vec3_t oldvel)
 	trace_t	steptrace;
 
 	VectorCopy (ent->v.origin, oldorg);
-	VectorCopy (vec3_origin, dir);
+	VectorClear (dir);
 
 	for (i=0 ; i<8 ; i++)
 	{
@@ -1588,7 +1588,7 @@ static int SV_TryUnstick (edict_t *ent, vec3_t oldvel)
 		VectorCopy (oldorg, ent->v.origin);
 	}
 
-	VectorCopy (vec3_origin, ent->v.velocity);
+	VectorClear (ent->v.velocity);
 	return 7;		// still not moving
 }
 
@@ -1644,8 +1644,8 @@ static void SV_WalkMove (edict_t *ent)
 //
 	VectorCopy (oldorg, ent->v.origin);	// back to start pos
 
-	VectorCopy (vec3_origin, upmove);
-	VectorCopy (vec3_origin, downmove);
+	VectorClear (upmove);
+	VectorClear (downmove);
 	upmove[2] = STEPSIZE;
 	downmove[2] = -STEPSIZE + oldvel[2]*host_frametime;
 
@@ -2012,8 +2012,8 @@ void SV_Physics_Toss (edict_t *ent)
 		{
 			ent->v.flags = (int)ent->v.flags | FL_ONGROUND;
 			ent->v.groundentity = EDICT_TO_PROG(trace.ent);
-			VectorCopy (vec3_origin, ent->v.velocity);
-			VectorCopy (vec3_origin, ent->v.avelocity);
+			VectorClear (ent->v.velocity);
+			VectorClear (ent->v.avelocity);
 		}
 	}
 
@@ -2361,7 +2361,7 @@ trace_t SV_Trace_Toss (edict_t *ent, edict_t *ignore)
 //			p->die = 256;
 //			p->color = 15;
 //			p->type = pt_static;
-//			VectorCopy (vec3_origin, p->vel);
+//			VectorClear (p->vel);
 //			VectorCopy (tent->v.origin, p->org);
 //		}
 
@@ -2377,6 +2377,12 @@ trace_t SV_Trace_Toss (edict_t *ent, edict_t *ignore)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2006/07/02 11:36:35  sezero
+ * uppercased the pr_global_struct() macro for easier detection
+ * and searching. put that macro in use in hexenworld server for
+ * smaller diffs between the two versions. there are no actual
+ * code changes here, only style and cosmetics.
+ *
  * Revision 1.13  2006/04/05 06:10:44  sezero
  * added support for both hexen2-v1.11 and h2mp-v1.12 progs into a single hexen2
  * binary. this essentially completes the h2/h2mp binary merge started with the

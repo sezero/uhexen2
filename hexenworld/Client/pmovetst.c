@@ -261,7 +261,7 @@ static qboolean PM_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p
 	}
 	else
 	{
-		VectorSubtract (vec3_origin, plane->normal, trace->plane.normal);
+		VectorNegate (plane->normal, trace->plane.normal);
 		trace->plane.dist = -plane->dist;
 	}
 
@@ -467,7 +467,7 @@ pmtrace_t PM_PlayerMove (vec3_t start, vec3_t end)
 
 			if (trace.fraction != 1)
 			{
-				VectorSubtract (vec3_origin, pe->angles, a);
+				VectorNegate (pe->angles, a);
 				AngleVectors (a, forward, right, up);
 
 				VectorCopy (trace.endpos, temp);

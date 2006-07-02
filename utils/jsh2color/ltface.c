@@ -154,7 +154,7 @@ static void CalcFaceVectors (lightinfo_t *l)
 	if (distscale < 0)
 	{
 		distscale = -distscale;
-		VectorSubtract (vec3_origin, texnormal, texnormal);
+		VectorNegate (texnormal, texnormal);
 	}
 
 // distscale is the ratio of the distance along the texture normal to
@@ -758,7 +758,7 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 
 	if (f->side)
 	{
-		VectorSubtract (vec3_origin, l.facenormal, l.facenormal);
+		VectorNegate (l.facenormal, l.facenormal);
 		l.facedist = -l.facedist;
 	}
 
@@ -953,7 +953,7 @@ void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset)
 
 	if (f->side)
 	{
-		VectorSubtract (vec3_origin, l.facenormal, l.facenormal);
+		VectorNegate (l.facenormal, l.facenormal);
 		l.facedist = -l.facedist;
 	}
 
@@ -1166,7 +1166,7 @@ void TestLightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 
 	if (f->side)
 	{
-		VectorSubtract (vec3_origin, l.facenormal, l.facenormal);
+		VectorNegate (l.facenormal, l.facenormal);
 		l.facedist = -l.facedist;
 	}
 

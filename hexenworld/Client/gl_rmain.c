@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.33 2006-03-24 15:05:44 sezero Exp $
+	$Id: gl_rmain.c,v 1.34 2006-07-02 11:45:37 sezero Exp $
 */
 
 
@@ -692,7 +692,7 @@ static void R_DrawAliasModel (entity_t *e)
 			VectorSubtract (currententity->origin,
 							cl_dlights[lnum].origin,
 							dist);
-			add = cl_dlights[lnum].radius - Length(dist);
+			add = cl_dlights[lnum].radius - VectorLength(dist);
 
 			if (add > 0)
 			{
@@ -1088,7 +1088,7 @@ static void R_DrawTransEntitiesOnList (qboolean inwater)
 	for (i = 0 ; i < numents ; i++)
 	{
 		VectorSubtract(theents[i].ent->origin, r_origin, result);
-	//	theents[i].len = Length(result);
+	//	theents[i].len = VectorLength(result);
 		theents[i].len = (result[0] * result[0]) + (result[1] * result[1]) + (result[2] * result[2]);
 	}
 
@@ -1174,9 +1174,9 @@ static void R_DrawGlow (entity_t *e)
 		VectorSubtract(lightorigin, r_origin, vp2);
 
 		// See if view is outside the light.
-		distance = Length(glow_vect);
+		distance = VectorLength(glow_vect);
 		// See if view is outside the light.
-		distance = Length(vp2);
+		distance = VectorLength(vp2);
 
 		if (distance > radius)
 		{
@@ -1381,7 +1381,7 @@ static void R_DrawViewModel (void)
 			continue;
 
 		VectorSubtract (currententity->origin, dl->origin, dist);
-		add = dl->radius - Length(dist);
+		add = dl->radius - VectorLength(dist);
 		if (add > 0)
 		{
 			if (gl_lightmap_format == GL_RGBA)

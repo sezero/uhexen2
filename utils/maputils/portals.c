@@ -298,7 +298,7 @@ static void CutNodePortals_r (node_t *node)
 		else if (p->nodes[1] == node)
 		{
 			clipplane.dist = -clipplane.dist;
-			VectorSubtract (vec3_origin, clipplane.normal, clipplane.normal);
+			VectorNegate (clipplane.normal, clipplane.normal);
 			side = 1;
 		}
 		else

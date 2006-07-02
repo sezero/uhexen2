@@ -97,7 +97,7 @@ static pmtrace_t Cam_DoTrace(vec3_t vec1, vec3_t vec2)
 	memset(&pmove, 0, sizeof(pmove));
 
 	pmove.numphysent = 1;
-	VectorCopy (vec3_origin, pmove.physents[0].origin);
+	VectorClear (pmove.physents[0].origin);
 	pmove.physents[0].model = cl.worldmodel;
 #endif
 
@@ -124,13 +124,13 @@ static float Cam_TryFlyby(player_state_t *self, player_state_t *player, vec3_t v
 		return 9999;
 	VectorCopy(trace.endpos, vec);
 	VectorSubtract(trace.endpos, player->origin, v);
-	len = Length(v);
+	len = VectorLength(v);
 	if (len < 32 || len > 800)
 		return 9999;
 	if (checkvis)
 	{
 		VectorSubtract(trace.endpos, self->origin, v);
-		len = Length(v);
+		len = VectorLength(v);
 
 		trace = Cam_DoTrace(self->origin, vec);
 		if (trace.fraction != 1 || trace.inwater)
@@ -151,7 +151,7 @@ static qboolean Cam_IsVisible(player_state_t *player, vec3_t vec)
 		return false;
 	// check distance, don't let the player get too far away or too close
 	VectorSubtract(player->origin, vec, v);
-	d = Length(v);
+	d = VectorLength(v);
 	if (d < 16)
 		return false;
 	return true;
@@ -239,7 +239,7 @@ static qboolean InitFlyby(player_state_t *self, player_state_t *player, int chec
 	}
 
 	// invert
-	VectorSubtract(vec3_origin, forward, vec2);
+	VectorNegate(forward, vec2);
 
 	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max)
 	{
@@ -256,7 +256,7 @@ static qboolean InitFlyby(player_state_t *self, player_state_t *player, int chec
 	}
 
 	// invert
-	VectorSubtract(vec3_origin, right, vec2);
+	VectorNegate(right, vec2);
 
 	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max)
 	{
@@ -366,7 +366,7 @@ void Cam_Track(usercmd_t *cmd)
 	// Ok, move to our desired position and set our angles to view
 	// the player
 	VectorSubtract(desired_position, self->origin, vec);
-	len = Length(vec);
+	len = VectorLength(vec);
 	cmd->forwardmove = cmd->sidemove = cmd->upmove = 0;
 	if (len > 16)
 	{ // close enough?

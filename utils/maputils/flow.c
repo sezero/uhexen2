@@ -221,7 +221,7 @@ static winding_t *ClipToSeperators (winding_t *source, winding_t *pass, winding_
 		//
 			if (fliptest)
 			{
-				VectorSubtract (vec3_origin, plane.normal, plane.normal);
+				VectorNegate (plane.normal, plane.normal);
 				plane.dist = -plane.dist;
 			}
 
@@ -255,7 +255,7 @@ static winding_t *ClipToSeperators (winding_t *source, winding_t *pass, winding_
 		//
 			if (flipclip)
 			{
-				VectorSubtract (vec3_origin, plane.normal, plane.normal);
+				VectorNegate (plane.normal, plane.normal);
 				plane.dist = -plane.dist;
 			}
 
@@ -350,7 +350,7 @@ static void RecursiveLeafFlow (int leafnum, threaddata_t *thread, pstack_t *prev
 
 	// get plane of portal, point normal into the neighbor leaf
 		stack.portalplane = p->plane;
-		VectorSubtract (vec3_origin, p->plane.normal, backplane.normal);
+		VectorNegate (p->plane.normal, backplane.normal);
 		backplane.dist = -p->plane.dist;
 
 		if (VectorCompare (prevstack->portalplane.normal, backplane.normal) )

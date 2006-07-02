@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.c,v 1.8 2006-04-06 08:36:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.c,v 1.9 2006-07-02 11:45:35 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -1316,7 +1316,7 @@ void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everythi
 					}
 
 					AngleVectors(ent->angles,forward,right,up);
-					speed = Length(cl.Effects[idx].ef.Xbow.vel[curEnt]);
+					speed = VectorLength(cl.Effects[idx].ef.Xbow.vel[curEnt]);
 					VectorScale(forward,speed,cl.Effects[idx].ef.Xbow.vel[curEnt]);
 					VectorCopy(cl.Effects[idx].ef.Xbow.origin[curEnt],ent->origin);
 				}
@@ -1339,7 +1339,7 @@ void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everythi
 					}
 
 					AngleVectors(pos,forward,right,up);
-					speed = Length(cl.Effects[idx].ef.Xbow.vel[curEnt]);
+					speed = VectorLength(cl.Effects[idx].ef.Xbow.vel[curEnt]);
 					VectorScale(forward,speed,cl.Effects[idx].ef.Xbow.vel[curEnt]);
 				}
 			}
@@ -1387,7 +1387,7 @@ void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everythi
 					}
 
 					AngleVectors(ent->angles,forward,right,up);
-					speed = Length(cl.Effects[idx].ef.Xbow.vel[curEnt]);
+					speed = VectorLength(cl.Effects[idx].ef.Xbow.vel[curEnt]);
 					VectorScale(forward,speed,cl.Effects[idx].ef.Xbow.vel[curEnt]);
 					VectorCopy(cl.Effects[idx].ef.Xbow.origin[curEnt],ent->origin);
 				}
@@ -1410,7 +1410,7 @@ void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everythi
 					}
 
 					AngleVectors(pos,forward,right,up);
-					speed = Length(cl.Effects[idx].ef.Xbow.vel[curEnt]);
+					speed = VectorLength(cl.Effects[idx].ef.Xbow.vel[curEnt]);
 					VectorScale(forward,speed,cl.Effects[idx].ef.Xbow.vel[curEnt]);
 				}
 			}
@@ -1464,7 +1464,7 @@ void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everythi
 					cl.Effects[idx].ef.Missile.origin[2] = MSG_ReadCoord();
 
 					AngleVectors(ent->angles,forward,right,up);
-					speed = Length(cl.Effects[idx].ef.Missile.velocity);
+					speed = VectorLength(cl.Effects[idx].ef.Missile.velocity);
 					VectorScale(forward,speed,cl.Effects[idx].ef.Missile.velocity);
 					VectorCopy(cl.Effects[idx].ef.Missile.origin,ent->origin);
 				}
@@ -1484,7 +1484,7 @@ void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everythi
 					cl.Effects[idx].ef.Missile.origin[2] = MSG_ReadCoord();
 
 					AngleVectors(pos,forward,right,up);
-					speed = Length(cl.Effects[idx].ef.Missile.velocity);
+					speed = VectorLength(cl.Effects[idx].ef.Missile.velocity);
 					VectorScale(forward,speed,cl.Effects[idx].ef.Missile.velocity);
 				}
 			}
@@ -2486,6 +2486,9 @@ static void FreeEffectEntity (int idx)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2006/04/06 08:36:23  sezero
+ * more tidy-ups (cl_effect.h, cl_effect.c, sv_effect.c)
+ *
  * Revision 1.7  2005/10/28 21:13:05  sezero
  * static functions part-2: making local functions static,
  * killing nested externs, const vars clean-up.

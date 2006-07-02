@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.24 2006-06-25 10:21:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.25 2006-07-02 11:45:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -186,8 +186,8 @@ void ED_Free (edict_t *ed)
 	ed->v.colormap = 0;
 	ed->v.skin = 0;
 	ed->v.frame = 0;
-	VectorCopy (vec3_origin, ed->v.origin);
-	VectorCopy (vec3_origin, ed->v.angles);
+	VectorClear (ed->v.origin);
+	VectorClear (ed->v.angles);
 	ed->v.nextthink = -1;
 	ed->v.solid = 0;
 
@@ -1376,6 +1376,9 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2006/06/25 10:21:03  sezero
+ * misc clean-ups and prepare for merging a dedicated server
+ *
  * Revision 1.23  2006/06/23 14:43:34  sezero
  * some minor clean-ups
  *

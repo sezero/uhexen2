@@ -29,7 +29,7 @@ static void CheckFace (face_t *f)
 	VectorCopy (planes[f->planenum].normal, facenormal);
 	if (f->planeside)
 	{
-		VectorSubtract (vec3_origin, facenormal, facenormal);
+		VectorNegate (facenormal, facenormal);
 	}
 
 	for (i = 0 ; i < f->numpoints ; i++)
@@ -189,7 +189,7 @@ static void NormalizePlane (plane_t *dp)
 		dp->type = PLANE_ANYZ;
 	if (dp->normal[dp->type-PLANE_ANYX] < 0)
 	{
-		VectorSubtract (vec3_origin, dp->normal, dp->normal);
+		VectorNegate (dp->normal, dp->normal);
 		dp->dist = -dp->dist;
 	}
 }
@@ -326,7 +326,7 @@ int FindPlane_old (plane_t *dplane, int *side)
 			dp->type = PLANE_ANYZ;
 		if (dplane->normal[dp->type-PLANE_ANYX] < 0)
 		{
-			VectorSubtract (vec3_origin, dp->normal, dp->normal);
+			VectorNegate (dp->normal, dp->normal);
 			dp->dist = -dp->dist;
 			*side = 1;
 		}
@@ -379,7 +379,7 @@ static void CreateBrushFaces (void)
 			if (j == i)
 				continue;
 		// flip the plane, because we want to keep the back side
-			VectorSubtract (vec3_origin,faces[j].plane.normal, plane.normal);
+			VectorNegate (faces[j].plane.normal, plane.normal);
 			plane.dist = -faces[j].plane.dist;
 
 			w = ClipWinding (w, &plane, false);
@@ -504,7 +504,7 @@ static void TestAddPlane (plane_t *plane)
 		pl = &faces[i].plane;
 		if (VectorCompare (plane->normal, pl->normal) && fabs(plane->dist - pl->dist) < ON_EPSILON)
 			return;
-		VectorSubtract (vec3_origin, plane->normal, inv);
+		VectorNegate (plane->normal, inv);
 		if (VectorCompare (inv, pl->normal) && fabs(plane->dist + pl->dist) < ON_EPSILON)
 			return;
 	}
@@ -537,7 +537,7 @@ static void TestAddPlane (plane_t *plane)
 
 	if (counts[0])
 	{
-		VectorSubtract (vec3_origin, plane->normal, flip.normal);
+		VectorNegate (plane->normal, flip.normal);
 		flip.dist = -plane->dist;
 		plane = &flip;
 	}
@@ -630,7 +630,7 @@ static void AddHullEdge (vec3_t p1, vec3_t p2, int hullnumber)
 				planeorg[b] += hull_size[hullnumber][d][b];
 				planeorg[c] += hull_size[hullnumber][e][c];
 
-				VectorCopy (vec3_origin, planevec);
+				VectorClear (planevec);
 				planevec[a] = 1;
 
 				CrossProduct (planevec, edgevec, plane.normal);
@@ -668,7 +668,7 @@ static void ExpandBrush (int hullnumber)
 	for (i = 0 ; i < numbrushfaces ; i++)
 	{
 		p = &faces[i].plane;
-		VectorCopy (vec3_origin, corner);
+		VectorClear (corner);
 		for (x = 0 ; x < 3 ; x++)
 		{
 			if (p->normal[x] > 0)
@@ -684,7 +684,7 @@ static void ExpandBrush (int hullnumber)
 		for (s = -1 ; s <= 1 ; s+=2)
 		{
 		// add the plane
-			VectorCopy (vec3_origin, plane.normal);
+			VectorClear (plane.normal);
 			plane.normal[x] = s;
 			if (s == -1)
 				plane.dist = -brush_mins[x] + -hull_size[hullnumber][0][x];

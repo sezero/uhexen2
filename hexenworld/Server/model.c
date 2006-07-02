@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.7 2006-06-23 14:43:42 sezero Exp $
+	$Id: model.c,v 1.8 2006-07-02 11:45:37 sezero Exp $
 */
 
 #include "qwsvdef.h"
@@ -568,8 +568,8 @@ static void Mod_LoadTexinfo (lump_t *l)
 	{
 		for (j = 0 ; j < 8 ; j++)
 			out->vecs[0][j] = LittleFloat (in->vecs[0][j]);
-		len1 = Length (in->vecs[0]);
-		len2 = Length (in->vecs[1]);
+		len1 = VectorLength (in->vecs[0]);
+		len2 = VectorLength (in->vecs[1]);
 		if (len1 + len2 < 0.001)
 			out->mipadjust = 1;
 		else

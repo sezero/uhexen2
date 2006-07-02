@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.9 2006-06-23 14:43:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.10 2006-07-02 11:45:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -649,14 +649,14 @@ static void R_PrepareAlias (void)
 
 				if (cl_dlights[lnum].radius> 0)
 				{
-					add = cl_dlights[lnum].radius - Length(dist);
+					add = cl_dlights[lnum].radius - VectorLength(dist);
 
 					if (add > 0)
 						lighting.ambientlight += add;
 				}
 				else
 				{
-					add = Length(dist) + cl_dlights[lnum].radius;
+					add = VectorLength(dist) + cl_dlights[lnum].radius;
 
 					if (add < 0)
 						lighting.ambientlight += add;
@@ -802,14 +802,14 @@ static void R_DrawViewModel (void)
 
 		if (dl->radius > 0)
 		{
-			add = dl->radius - Length(dist);
+			add = dl->radius - VectorLength(dist);
 
 			if (add > 0)
 				r_viewlighting.ambientlight += add;
 		}
 		else
 		{
-			add = Length(dist) + dl->radius;
+			add = VectorLength(dist) + dl->radius;
 
 			if (add < 0)
 				r_viewlighting.ambientlight += add;

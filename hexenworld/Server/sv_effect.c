@@ -2,7 +2,7 @@
 	sv_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.6 2006-04-06 08:36:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.7 2006-07-02 11:45:38 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -45,7 +45,7 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 	else
 		DoTest = false;
 
-	VectorCopy(vec3_origin, TestO1);
+	VectorClear(TestO1);
 
 	switch (sv.Effects[idx].type)
 	{
@@ -794,6 +794,9 @@ float SV_GetMultiEffectId (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2006/04/06 08:36:25  sezero
+ * more tidy-ups (cl_effect.h, cl_effect.c, sv_effect.c)
+ *
  * Revision 1.5  2005/10/02 15:43:09  sezero
  * killed -Wshadow warnings
  *

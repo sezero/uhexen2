@@ -314,8 +314,8 @@ static void SV_SpawnSpectator (void)
 	int		i;
 	edict_t	*e;
 
-	VectorCopy (vec3_origin, sv_player->v.origin);
-	VectorCopy (vec3_origin, sv_player->v.view_ofs);
+	VectorClear (sv_player->v.origin);
+	VectorClear (sv_player->v.view_ofs);
 	sv_player->v.view_ofs[2] = 22;
 
 	// search for an info_playerstart to spawn the spectator at

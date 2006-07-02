@@ -8,7 +8,7 @@
 	This version of model.c and model.h are based on a quake dedicated
 	server application, lhnqserver, by LordHavoc.
 
-	$Id: model.c,v 1.1 2006-06-25 12:57:06 sezero Exp $
+	$Id: model.c,v 1.2 2006-07-02 11:45:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -859,7 +859,7 @@ static float RadiusFromBounds (vec3_t arg_mins, vec3_t arg_maxs)
 		corner[i] = fabs(arg_mins[i]) > fabs(arg_maxs[i]) ? fabs(arg_mins[i]) : fabs(arg_maxs[i]);
 	}
 
-	return Length (corner);
+	return VectorLength (corner);
 }
 
 /*
@@ -1032,5 +1032,11 @@ static void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2006/06/25 12:57:06  sezero
+ * added a hexen2 dedicated server which seems to work much better than
+ * the client/server application running in dedicated mode. model loading
+ * implementation taken from LordHavoc's old lhnqserver, as it seems better
+ * than the one in hexenworld server.
+ *
  */
 

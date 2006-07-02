@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.45 2006-04-05 06:09:23 sezero Exp $
+	$Id: gl_rmain.c,v 1.46 2006-07-02 11:45:30 sezero Exp $
 */
 
 
@@ -717,7 +717,7 @@ static void R_DrawAliasModel (entity_t *e)
 			VectorSubtract (currententity->origin,
 							cl_dlights[lnum].origin,
 							dist);
-			add = cl_dlights[lnum].radius - Length(dist);
+			add = cl_dlights[lnum].radius - VectorLength(dist);
 
 			if (add > 0)
 			{
@@ -1083,7 +1083,7 @@ static void R_DrawTransEntitiesOnList (qboolean inwater)
 	for (i = 0 ; i < numents ; i++)
 	{
 		VectorSubtract(theents[i].ent->origin, r_origin, result);
-	//	theents[i].len = Length(result);
+	//	theents[i].len = VectorLength(result);
 		theents[i].len = (result[0] * result[0]) + (result[1] * result[1]) + (result[2] * result[2]);
 	}
 
@@ -1169,9 +1169,9 @@ static void R_DrawGlow (entity_t *e)
 		VectorSubtract(lightorigin, r_origin, vp2);
 
 		// See if view is outside the light.
-		distance = Length(glow_vect);
+		distance = VectorLength(glow_vect);
 		// See if view is outside the light.
-		distance = Length(vp2);
+		distance = VectorLength(vp2);
 
 		if (distance > radius)
 		{
@@ -1373,7 +1373,7 @@ static void R_DrawViewModel (void)
 			continue;
 
 		VectorSubtract (currententity->origin, dl->origin, dist);
-		add = dl->radius - Length(dist);
+		add = dl->radius - VectorLength(dist);
 		if (add > 0)
 		{
 			if (gl_lightmap_format == GL_RGBA)
@@ -1968,6 +1968,17 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.45  2006/04/05 06:09:23  sezero
+ * killed (almost) all H2MP ifdefs: this is the first step in making a single
+ * binary which handles both h2 and h2mp properly. the only H2MP ifdefs left
+ * are actually the ones for determining the icon and window manager text, so
+ * nothing serious. the binary normally will only run the original h2 game.
+ * if given a -portals or -missionpack or -h2mp argument, it will look for the
+ * mission pack and run it (this is the same logic that quake used.) The only
+ * serious side effect is that h2 and h2mp progs being different: This will be
+ * solved by the next patch by adding support for the two progs versions into
+ * a single binary.
+ *
  * Revision 1.44  2006/03/24 15:05:39  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also

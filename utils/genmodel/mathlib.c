@@ -6,19 +6,6 @@
 vec3_t vec3_origin = {0,0,0};
 
 
-double VectorLength(vec3_t v)
-{
-	int		i;
-	double	length;
-
-	length = 0;
-	for (i=0 ; i< 3 ; i++)
-		length += v[i]*v[i];
-	length = sqrt (length);		// FIXME
-
-	return length;
-}
-
 qboolean VectorCompare (vec3_t v1, vec3_t v2)
 {
 	int		i;
@@ -32,21 +19,14 @@ qboolean VectorCompare (vec3_t v1, vec3_t v2)
 
 vec_t Q_rint (vec_t in)
 {
-	return (float)floor(in + 0.49);
+	return (vec_t)floor(in + 0.49);
 }
 
 void VectorMA (vec3_t va, double scale, vec3_t vb, vec3_t vc)
 {
-	vc[0] = (float)(va[0] + scale*vb[0]);
-	vc[1] = (float)(va[1] + scale*vb[1]);
-	vc[2] = (float)(va[2] + scale*vb[2]);
-}
-
-void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross)
-{
-	cross[0] = v1[1]*v2[2] - v1[2]*v2[1];
-	cross[1] = v1[2]*v2[0] - v1[0]*v2[2];
-	cross[2] = v1[0]*v2[1] - v1[1]*v2[0];
+	vc[0] = (vec_t)(va[0] + scale*vb[0]);
+	vc[1] = (vec_t)(va[1] + scale*vb[1]);
+	vc[2] = (vec_t)(va[2] + scale*vb[2]);
 }
 
 vec_t VectorNormalize (vec3_t v)
@@ -54,24 +34,14 @@ vec_t VectorNormalize (vec3_t v)
 	int		i;
 	double	length;
 
-	length = 0;
-	for (i=0 ; i< 3 ; i++)
-		length += v[i]*v[i];
-	length = sqrt (length);
+	length = VectorLength(v);
 	if (length == 0)
 		return 0;
 
 	for (i=0 ; i< 3 ; i++)
 		v[i] /= length;
 
-	return (float)length;
-}
-
-void VectorInverse (vec3_t v)
-{
-	v[0] = -v[0];
-	v[1] = -v[1];
-	v[2] = -v[2];
+	return (vec_t)length;
 }
 
 void VectorScale (vec3_t v, vec_t scale, vec3_t out)

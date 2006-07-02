@@ -87,7 +87,7 @@ static void CanonicalVector (vec3_t vec)
 		return;
 	else if (vec[0] < -EQUAL_EPSILON)
 	{
-		VectorSubtract (vec3_origin, vec, vec);
+		VectorNegate (vec, vec);
 		return;
 	}
 	else
@@ -97,7 +97,7 @@ static void CanonicalVector (vec3_t vec)
 		return;
 	else if (vec[1] < -EQUAL_EPSILON)
 	{
-		VectorSubtract (vec3_origin, vec, vec);
+		VectorNegate (vec, vec);
 		return;
 	}
 	else
@@ -107,7 +107,7 @@ static void CanonicalVector (vec3_t vec)
 		return;
 	else if (vec[2] < -EQUAL_EPSILON)
 	{
-		VectorSubtract (vec3_origin, vec, vec);
+		VectorNegate (vec, vec);
 		return;
 	}
 	else
@@ -476,7 +476,7 @@ void tjunc (node_t *headnode)
 		else
 			maxs[i] = fabs(brushset->mins[i]);
 	}
-	VectorSubtract (vec3_origin, maxs, mins);
+	VectorNegate (maxs, mins);
 
 	InitHash (mins, maxs);
 

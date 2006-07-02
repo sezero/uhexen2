@@ -268,7 +268,7 @@ static void BrushOrigin (mbrush_t *b, vec3_t origin)
 	mface_t		*f;
 	int			i;
 
-	VectorCopy (vec3_origin, origin);
+	VectorClear (origin);
 	for (f = b->faces ; f ; f = f->next)
 	{
 		for (i = 0 ; i < 3 ; i++)
@@ -289,7 +289,7 @@ static void BrushOrigin (mbrush_t *b, vec3_t origin)
 	loadside_t	*s;
 	int			i, j;
 
-	VectorCopy (vec3_origin, origin);
+	VectorClear (vec3_origin, origin);
 	for (i = 0 ; i < b->numsides ; i++)
 	{
 		s = loadsides + (b->original_sides-brushsides) + i;
@@ -303,7 +303,7 @@ static void BrushOrigin (mbrush_t *b, vec3_t origin)
 		}
 		if (j == 3)
 		{
-			VectorCopy (vec3_origin, origin);
+			VectorClear (origin);
 			printf ("WARNING: entity %i, brush %i: origin brush isn't axial\n",
 							b->entitynum, b->brushnum);
 			return;

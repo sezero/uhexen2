@@ -76,7 +76,7 @@ void NormalizePlane (plane_t *dp)
 	{
 		if (dp->normal[0] < 0)
 		{
-			VectorSubtract (vec3_origin, dp->normal, dp->normal);
+			VectorNegate (dp->normal, dp->normal);
 			dp->dist = -dp->dist;
 		}
 		return;
@@ -86,7 +86,7 @@ void NormalizePlane (plane_t *dp)
 	{
 		if (dp->normal[1] < 0)
 		{
-			VectorSubtract (vec3_origin, dp->normal, dp->normal);
+			VectorNegate (dp->normal, dp->normal);
 			dp->dist = -dp->dist;
 		}
 		return;
@@ -94,7 +94,7 @@ void NormalizePlane (plane_t *dp)
 
 	if (dp->normal[2] < 0)
 	{
-		VectorSubtract (vec3_origin, dp->normal, dp->normal);
+		VectorNegate (dp->normal, dp->normal);
 		dp->dist = -dp->dist;
 	}
 }
@@ -822,7 +822,7 @@ sep_t *Findpassages (winding_t *source, winding_t *pass)
 		//
 			if (fliptest)
 			{
-				VectorSubtract (vec3_origin, plane.normal, plane.normal);
+				VectorNegate (plane.normal, plane.normal);
 				plane.dist = -plane.dist;
 			}
 
@@ -952,7 +952,7 @@ static void LoadPortals (char *name)
 		l->numportals++;
 
 		p->winding = w;
-		VectorSubtract (vec3_origin, plane.normal, p->plane.normal);
+		VectorNegate (plane.normal, p->plane.normal);
 		p->plane.dist = -plane.dist;
 		p->leaf = leafnums[1];
 		p++;

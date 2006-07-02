@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.11 2006-04-05 06:06:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.12 2006-07-02 11:45:34 sezero Exp $
 */
 
 
@@ -224,7 +224,7 @@ void R_ReadPointFile_f (void)
 		p->die = 99999;
 		p->color = color; // (-c)&15;
 		p->type = pt_static;
-		VectorCopy (vec3_origin, p->vel);
+		VectorClear (p->vel);
 		VectorCopy (org, p->org);
 	}
 
@@ -827,7 +827,7 @@ void R_RocketTrail (vec3_t start, vec3_t end, int type)
 		if (!p)
 			return;
 
-		VectorCopy (vec3_origin, p->vel);
+		VectorClear (p->vel);
 		p->die = cl.time + lifetime;
 
 		switch (type)
@@ -1917,6 +1917,10 @@ void R_UpdateParticles (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2006/04/05 06:06:56  sezero
+ * continue making static functions and vars static. whitespace and coding
+ * style cleanup. part 52: software renderer: r_part.c
+ *
  * Revision 1.10  2006/03/29 14:59:01  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also

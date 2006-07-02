@@ -2,7 +2,7 @@
 	sv_move.c
 	monster movement
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.7 2006-07-02 11:36:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.8 2006-07-02 11:45:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -574,7 +574,7 @@ void SV_MoveToGoal (void)
 	dist = G_FLOAT(OFS_PARM0);			// how far to move
 
 	// Reset trace_plane_normal
-	VectorCopy(vec3_origin,PR_GLOBAL_STRUCT(trace_plane_normal));
+	VectorClear(PR_GLOBAL_STRUCT(trace_plane_normal));
 
 	// If not onground, flying, or swimming, return 0
 	if ( !( (int)ent->v.flags & (FL_ONGROUND|FL_FLY|FL_SWIM) ) )
@@ -620,6 +620,12 @@ void SV_MoveToGoal (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2006/07/02 11:36:35  sezero
+ * uppercased the pr_global_struct() macro for easier detection
+ * and searching. put that macro in use in hexenworld server for
+ * smaller diffs between the two versions. there are no actual
+ * code changes here, only style and cosmetics.
+ *
  * Revision 1.6  2006/04/05 06:10:44  sezero
  * added support for both hexen2-v1.11 and h2mp-v1.12 progs into a single hexen2
  * binary. this essentially completes the h2/h2mp binary merge started with the

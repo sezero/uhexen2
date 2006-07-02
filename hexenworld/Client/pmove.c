@@ -120,7 +120,7 @@ static int PM_FlyMove (void)
 
 		if (trace.startsolid || trace.allsolid)
 		{	// entity is trapped in another solid
-			VectorCopy (vec3_origin, pmove.velocity);
+			VectorClear (pmove.velocity);
 			return 3;
 		}
 
@@ -151,7 +151,7 @@ static int PM_FlyMove (void)
 		// cliped to another plane
 		if (numplanes >= MAX_CLIP_PLANES)
 		{	// this shouldn't really happen
-			VectorCopy (vec3_origin, pmove.velocity);
+			VectorClear (pmove.velocity);
 			break;
 		}
 
@@ -182,7 +182,7 @@ static int PM_FlyMove (void)
 			if (numplanes != 2)
 			{
 //				Con_Printf ("clip velocity, numplanes == %i\n",numplanes);
-				VectorCopy (vec3_origin, pmove.velocity);
+				VectorClear (pmove.velocity);
 				break;
 			}
 			CrossProduct (planes[0], planes[1], dir);
@@ -196,7 +196,7 @@ static int PM_FlyMove (void)
 //
 		if (DotProduct (pmove.velocity, primal_velocity) <= 0)
 		{
-			VectorCopy (vec3_origin, pmove.velocity);
+			VectorClear (pmove.velocity);
 			break;
 		}
 	}
@@ -915,10 +915,10 @@ static void SpectatorMove (void)
 	float		wishspeed;
 
 	// friction
-	speed = Length (pmove.velocity);
+	speed = VectorLength (pmove.velocity);
 	if (speed < 1)
 	{
-		VectorCopy (vec3_origin, pmove.velocity)
+		VectorClear (pmove.velocity)
 	}
 	else
 	{

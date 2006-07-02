@@ -68,7 +68,7 @@ void Test_Spawn (vec3_t origin)
 
 	VectorNormalize (incoming);
 	d = DotProduct (incoming, plane->normal);
-	VectorSubtract (vec3_origin, incoming, p->reflect);
+	VectorNegate (incoming, p->reflect);
 	VectorMA (p->reflect, d*2, plane->normal, p->reflect);
 
 	VectorCopy (origin, p->origin);

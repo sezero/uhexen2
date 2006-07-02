@@ -2,7 +2,7 @@
 	sv_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_effect.c,v 1.1 2006-06-24 14:12:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_effect.c,v 1.2 2006-07-02 11:45:34 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -58,7 +58,7 @@ static void SV_SendEffect (sizebuf_t *sb, int idx)
 	else
 		DoTest = false;
 
-	VectorCopy(vec3_origin, TestO1);
+	VectorClear(TestO1);
 	TestDistance = 0;
 
 	switch (sv.Effects[idx].type)
@@ -1034,4 +1034,7 @@ void SV_LoadEffects (FILE *FH)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2006/06/24 14:12:59  sezero
+ * separated cl_effect.c and sv_effect.c for easier maintainance
+ *
  */

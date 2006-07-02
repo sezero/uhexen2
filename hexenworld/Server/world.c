@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/world.c,v 1.6 2006-02-22 22:56:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/world.c,v 1.7 2006-07-02 11:45:38 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -671,7 +671,7 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 	}
 	else
 	{
-		VectorSubtract (vec3_origin, plane->normal, trace->plane.normal);
+		VectorNegate (plane->normal, trace->plane.normal);
 		trace->plane.dist = -plane->dist;
 	}
 
@@ -768,7 +768,7 @@ static trace_t SV_ClipMoveToEntity (edict_t *ent, vec3_t start, vec3_t mins, vec
 
 		if (trace.fraction != 1)
 		{
-			VectorSubtract (vec3_origin, ent->v.angles, a);
+			VectorNegate (ent->v.angles, a);
 			AngleVectors (a, forward, right, up);
 
 			VectorCopy (trace.endpos, temp);
@@ -1016,4 +1016,8 @@ edict_t	*SV_TestPlayerPosition (edict_t *ent, vec3_t origin)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2006/02/22 22:56:24  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 24: world.c, world.h).
+ *
  */
