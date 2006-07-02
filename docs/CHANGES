@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-07-02 (CVS):
+    * uppercased the pr_global_struct() macro for easier detection and searching.
+      put that macro in use in hexenworld server for smaller diffs between
+      the two versions. (there are no actual code changes here, only style and
+      cosmetics.)
+    * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
+      which stops vec3_origin usage in relevant calculations. renamed the Length
+      macro to VectorLength for consistancy. updated the utilities' mathlib for
+      similar macro usage as in the engine.
+
 2006-06-30 (CVS):
     * cleaned up win32 version's resource stuff and comctl32 linkage
 
