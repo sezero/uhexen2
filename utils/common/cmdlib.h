@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.4 2006-07-03 07:55:07 sezero Exp $
+	$Id: cmdlib.h,v 1.5 2006-07-03 08:23:56 sezero Exp $
 */
 
 #ifndef __CMDLIB__
@@ -61,11 +61,6 @@ extern qboolean com_eof;
 
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
 
-#if defined (__GLIBC__) && defined (_STRING_H) && defined (_GNU_SOURCE)
-#define Q_stpcpy	stpcpy
-#else
-char	*Q_stpcpy (char *qdest, const char *qsrc);
-#endif
 char	*Q_strlwr (char *str);
 char	*Q_strupr (char *str);
 
