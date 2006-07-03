@@ -2,11 +2,10 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.20 2006-06-03 19:43:11 sezero Exp $
+	$Id: zone.c,v 1.21 2006-07-03 07:55:06 sezero Exp $
 */
 
 #include "quakedef.h"
-#include <ctype.h>	// for tolower()
 
 #define	DYNAMIC_SIZE	0x40000
 #define DYNAMIC_SIZEMAX	0x100000
@@ -34,16 +33,6 @@ struct memzone_s
 
 static void Cache_FreeLow (int new_low_hunk);
 static void Cache_FreeHigh (int new_high_hunk);
-
-
-static void Q_strlwr (char * str)
-{
-	while (*str)
-	{
-		*str = tolower (*str);
-		str++;
-	}
-}
 
 
 /*
@@ -1129,6 +1118,9 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2006/06/03 19:43:11  sezero
+ * fixed no prototype warning for tolower() when compiling for win32
+ *
  * Revision 1.19  2006/06/03 16:30:20  sezero
  * a few MorphOS fixes, hopefully all correct.. those ifdef __MORPHOS__ stuff
  * are probably correct for AmigaOS, as well.. some header clean-ups here and

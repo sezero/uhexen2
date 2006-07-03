@@ -2,7 +2,7 @@
 	cmdlib.c
 	functions common to all of the utilities
 
-	$Id: cmdlib.c,v 1.4 2006-07-03 07:53:40 sezero Exp $
+	$Id: cmdlib.c,v 1.5 2006-07-03 07:55:07 sezero Exp $
 */
 
 
@@ -95,28 +95,28 @@ Q_strlwr and Q_strupr
 
 ==============
 */
-char *Q_strupr (char *start)
+char *Q_strlwr (char *str)
 {
-	char	*in;
-	in = start;
-	while (*in)
+	char	*c;
+	c = str;
+	while (*c)
 	{
-		*in = toupper(*in);
-		in++;
+		*c = tolower(*c);
+		c++;
 	}
-	return start;
+	return str;
 }
 
-char *Q_strlwr (char *start)
+char *Q_strupr (char *str)
 {
-	char	*in;
-	in = start;
-	while (*in)
+	char	*c;
+	c = str;
+	while (*c)
 	{
-		*in = tolower(*in);
-		in++;
+		*c = toupper(*c);
+		c++;
 	}
-	return start;
+	return str;
 }
 
 // CODE --------------------------------------------------------------------

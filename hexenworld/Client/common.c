@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.61 2006-06-24 16:04:35 sezero Exp $
+	$Id: common.c,v 1.62 2006-07-03 07:55:07 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -17,8 +17,9 @@
 #endif
 #ifdef _WIN32
 #include <windows.h>
-#include <ctype.h>
 #endif
+#include <ctype.h>
+
 
 #define NUM_SAFE_ARGVS	6
 
@@ -193,6 +194,39 @@ float FloatSwap (float f)
 	dat2.b[2] = dat1.b[1];
 	dat2.b[3] = dat1.b[0];
 	return dat2.f;
+}
+
+
+/*
+============================================================================
+
+MISC REPLACEMENT FUNCTIONS
+
+============================================================================
+*/
+
+char *Q_strlwr (char *str)
+{
+	char	*c;
+	c = str;
+	while (*c)
+	{
+		*c = tolower(*c);
+		c++;
+	}
+	return str;
+}
+
+char *Q_strupr (char *str)
+{
+	char	*c;
+	c = str;
+	while (*c)
+	{
+		*c = toupper(*c);
+		c++;
+	}
+	return str;
 }
 
 

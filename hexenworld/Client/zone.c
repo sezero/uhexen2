@@ -2,11 +2,10 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.10 2006-06-03 19:43:12 sezero Exp $
+	$Id: zone.c,v 1.11 2006-07-03 07:55:07 sezero Exp $
 */
 
 #include "quakedef.h"
-#include <ctype.h>	// for tolower()
 
 #define	DYNAMIC_SIZE	0x40000
 #define DYNAMIC_SIZEMAX	0x100000
@@ -34,16 +33,6 @@ struct memzone_s
 
 static void Cache_FreeLow (int new_low_hunk);
 static void Cache_FreeHigh (int new_high_hunk);
-
-
-static void Q_strlwr (char * str)
-{
-	while (*str)
-	{
-		*str = tolower (*str);
-		str++;
-	}
-}
 
 
 /*

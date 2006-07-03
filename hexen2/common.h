@@ -76,6 +76,9 @@ void InsertLinkAfter (link_t *l, link_t *after);
 
 //============================================================================
 
+extern char *Q_strlwr (char *str);
+extern char *Q_strupr (char *str);
+
 extern void *Q_malloc(unsigned int size);
 extern void Q_free(void *mem);
 
