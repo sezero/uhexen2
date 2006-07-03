@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.21 2006-07-03 07:55:06 sezero Exp $
+	$Id: zone.c,v 1.22 2006-07-03 07:56:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -200,36 +200,6 @@ void *Z_TagMalloc (int size, int tag)
 
 /*
 ========================
-Z_Print
-========================
-*/
-#if 0	// not used for now
-static void Z_Print (memzone_t *zone)
-{
-	memblock_t	*block;
-
-	Con_Printf ("zone size: %i  location: %p\n",mainzone->size,mainzone);
-
-	for (block = zone->blocklist.next ; ; block = block->next)
-	{
-		Con_Printf ("block:%p    size:%7i    tag:%3i\n",
-				block, block->size, block->tag);
-
-		if (block->next == &zone->blocklist)
-			break;			// all blocks have been hit
-		if ( (byte *)block + block->size != (byte *)block->next)
-			Con_Printf ("ERROR: block size does not touch the next block\n");
-		if ( block->next->prev != block)
-			Con_Printf ("ERROR: next block doesn't have proper back link\n");
-		if (!block->tag && !block->next->tag)
-			Con_Printf ("ERROR: two consecutive free blocks\n");
-	}
-}
-#endif
-
-
-/*
-========================
 Z_CheckHeap
 ========================
 */
@@ -287,105 +257,6 @@ void Hunk_Check (void)
 		if (h->size < 16 || h->size + (byte *)h - hunk_base > hunk_size)
 			Sys_Error ("Hunk_Check: bad size");
 		h = (hunk_t *)((byte *)h+h->size);
-	}
-}
-
-/*
-==============
-Hunk_Print
-
-If "all" is specified, every single allocation is printed.
-Otherwise, allocations with the same name will be totaled up before printing.
-==============
-*/
-#define MEM_Printf(FH, fmt, args...) {\
-	Con_Printf(fmt, ##args);\
-	if ((FH))\
-		fprintf((FH), fmt, ##args);\
-}
-
-static void Hunk_Print (qboolean all, qboolean write_file)
-{
-	hunk_t	*h, *next, *endlow, *starthigh, *endhigh;
-	int		count, sum;
-	int		totalblocks;
-	FILE	*FH;
-
-	count = 0;
-	sum = 0;
-	totalblocks = 0;
-
-	FH = NULL;
-	if (write_file)
-		FH = fopen(va("%s/memory.txt", com_userdir),"w");
-
-	h = (hunk_t *)hunk_base;
-	endlow = (hunk_t *)(hunk_base + hunk_low_used);
-	starthigh = (hunk_t *)(hunk_base + hunk_size - hunk_high_used);
-	endhigh = (hunk_t *)(hunk_base + hunk_size);
-
-	MEM_Printf(FH,"          :%8i total hunk size\n", hunk_size);
-	MEM_Printf(FH,"-------------------------\n");
-
-	while (1)
-	{
-	//
-	// skip to the high hunk if done with low hunk
-	//
-		if (h == endlow)
-		{
-			MEM_Printf(FH,"-------------------------\n");
-			MEM_Printf(FH,"          :%8i REMAINING\n", hunk_size - hunk_low_used - hunk_high_used);
-			MEM_Printf(FH,"-------------------------\n");
-			h = starthigh;
-		}
-
-	//
-	// if totally done, break
-	//
-		if (h == endhigh)
-			break;
-
-	//
-	// run consistancy checks
-	//
-		if (h->sentinal != HUNK_SENTINAL)
-			Sys_Error ("Hunk_Check: trashed sentinal");
-		if (h->size < 16 || h->size + (byte *)h - hunk_base > hunk_size)
-			Sys_Error ("Hunk_Check: bad size");
-
-		next = (hunk_t *)((byte *)h+h->size);
-		count++;
-		totalblocks++;
-		sum += h->size;
-
-	//
-	// print the single block
-	//
-		if (all)
-			MEM_Printf(FH,"%8p :%8i %8s\n",h, h->size, h->name);
-
-	//
-	// print the total
-	//
-		if (next == endlow || next == endhigh || 
-			strncmp (h->name, next->name, HUNKNAME_LEN))
-		{
-			if (!all)
-				MEM_Printf(FH,"          :%8i %8s (TOTAL)\n",sum, h->name);
-			count = 0;
-			sum = 0;
-		}
-
-		h = next;
-	}
-
-	MEM_Printf(FH,"-------------------------\n");
-	MEM_Printf(FH,"%8i total blocks\n", totalblocks);
-	if (FH)
-	{
-		fclose(FH);
-		FH = NULL;
 	}
 }
 
@@ -763,61 +634,6 @@ void Cache_Flush (void)
 
 /*
 ============
-Cache_Print
-
-============
-*/
-static void Cache_Print (qboolean write_file)
-{
-	cache_system_t	*cd;
-	FILE		*FH;
-	int		count, sum;
-	int num_mod, sum_mod;
-	int num_wav, sum_wav;
-	char temp[128];
-
-	FH = NULL;
-	if (write_file)
-		FH = fopen(va("%s/cache.txt", com_userdir),"w");
-
-	count = sum = 0;
-	num_mod = sum_mod = 0;
-	num_wav = sum_wav = 0;
-
-	for (cd = cache_head.next ; cd != &cache_head ; cd = cd->next)
-	{
-		MEM_Printf(FH,"%8i : %s\n", cd->size, cd->name);
-
-		count++;
-		sum += cd->size;
-
-		strcpy(temp,cd->name);
-		Q_strlwr(temp);
-		if (strstr(temp,".mdl"))
-		{
-			num_mod++;
-			sum_mod += cd->size;
-		}
-		else if (strstr(temp,".wav"))
-		{
-			num_wav++;
-			sum_wav += cd->size;
-		}
-	}
-
-	MEM_Printf(FH,"--------   ------------------\n");
-	MEM_Printf(FH,"%8i : Total of %i items\n",sum,count);
-	MEM_Printf(FH,"%8i : Total .MDL of %i items\n",sum_mod,num_mod);
-	MEM_Printf(FH,"%8i : Total .WAV of %i items\n",sum_wav,num_wav);
-	if (FH)
-	{
-		fclose(FH);
-		FH = NULL;
-	}
-}
-
-/*
-============
 Cache_Report
 
 ============
@@ -929,7 +745,198 @@ void *Cache_Alloc (cache_user_t *c, int size, char *name)
 }
 
 
-//============================================================================
+/*
+==============================================================================
+
+CONSOLE COMMANDS
+
+==============================================================================
+*/
+
+#if !defined(SERVERONLY) || defined(DEBUG_BUILD)
+
+#define MEM_Printf(FH, fmt, args...) {		\
+	Con_Printf(fmt, ##args);		\
+	if ((FH))				\
+		fprintf((FH), fmt, ##args);	\
+}
+
+/*
+==============
+Hunk_Print
+
+If "all" is specified, every single allocation is printed.
+Otherwise, allocations with the same name will be totaled up before printing.
+==============
+*/
+static void Hunk_Print (qboolean all, qboolean write_file)
+{
+	hunk_t	*h, *next, *endlow, *starthigh, *endhigh;
+	int		count, sum;
+	int		totalblocks;
+	FILE	*FH;
+
+	count = 0;
+	sum = 0;
+	totalblocks = 0;
+
+	FH = NULL;
+	if (write_file)
+		FH = fopen(va("%s/memory.txt", com_userdir),"w");
+
+	h = (hunk_t *)hunk_base;
+	endlow = (hunk_t *)(hunk_base + hunk_low_used);
+	starthigh = (hunk_t *)(hunk_base + hunk_size - hunk_high_used);
+	endhigh = (hunk_t *)(hunk_base + hunk_size);
+
+	MEM_Printf(FH,"          :%8i total hunk size\n", hunk_size);
+	MEM_Printf(FH,"-------------------------\n");
+
+	while (1)
+	{
+	//
+	// skip to the high hunk if done with low hunk
+	//
+		if (h == endlow)
+		{
+			MEM_Printf(FH,"-------------------------\n");
+			MEM_Printf(FH,"          :%8i REMAINING\n", hunk_size - hunk_low_used - hunk_high_used);
+			MEM_Printf(FH,"-------------------------\n");
+			h = starthigh;
+		}
+
+	//
+	// if totally done, break
+	//
+		if (h == endhigh)
+			break;
+
+	//
+	// run consistancy checks
+	//
+		if (h->sentinal != HUNK_SENTINAL)
+			Sys_Error ("Hunk_Check: trashed sentinal");
+		if (h->size < 16 || h->size + (byte *)h - hunk_base > hunk_size)
+			Sys_Error ("Hunk_Check: bad size");
+
+		next = (hunk_t *)((byte *)h+h->size);
+		count++;
+		totalblocks++;
+		sum += h->size;
+
+	//
+	// print the single block
+	//
+		if (all)
+			MEM_Printf(FH,"%8p :%8i %8s\n",h, h->size, h->name);
+
+	//
+	// print the total
+	//
+		if (next == endlow || next == endhigh || 
+			strncmp (h->name, next->name, HUNKNAME_LEN))
+		{
+			if (!all)
+				MEM_Printf(FH,"          :%8i %8s (TOTAL)\n",sum, h->name);
+			count = 0;
+			sum = 0;
+		}
+
+		h = next;
+	}
+
+	MEM_Printf(FH,"-------------------------\n");
+	MEM_Printf(FH,"%8i total blocks\n", totalblocks);
+	if (FH)
+	{
+		fclose(FH);
+		FH = NULL;
+	}
+}
+
+/*
+============
+Cache_Print
+
+============
+*/
+static void Cache_Print (qboolean write_file)
+{
+	cache_system_t	*cd;
+	FILE		*FH;
+	int		count, sum;
+	int num_mod, sum_mod;
+	int num_wav, sum_wav;
+	char temp[128];
+
+	FH = NULL;
+	if (write_file)
+		FH = fopen(va("%s/cache.txt", com_userdir),"w");
+
+	count = sum = 0;
+	num_mod = sum_mod = 0;
+	num_wav = sum_wav = 0;
+
+	for (cd = cache_head.next ; cd != &cache_head ; cd = cd->next)
+	{
+		MEM_Printf(FH,"%8i : %s\n", cd->size, cd->name);
+
+		count++;
+		sum += cd->size;
+
+		strcpy(temp,cd->name);
+		Q_strlwr(temp);
+		if (strstr(temp,".mdl"))
+		{
+			num_mod++;
+			sum_mod += cd->size;
+		}
+		else if (strstr(temp,".wav"))
+		{
+			num_wav++;
+			sum_wav += cd->size;
+		}
+	}
+
+	MEM_Printf(FH,"--------   ------------------\n");
+	MEM_Printf(FH,"%8i : Total of %i items\n",sum,count);
+	MEM_Printf(FH,"%8i : Total .MDL of %i items\n",sum_mod,num_mod);
+	MEM_Printf(FH,"%8i : Total .WAV of %i items\n",sum_wav,num_wav);
+	if (FH)
+	{
+		fclose(FH);
+		FH = NULL;
+	}
+}
+
+/*
+========================
+Z_Print
+========================
+*/
+#if 0	// not used for now
+static void Z_Print (memzone_t *zone)
+{
+	memblock_t	*block;
+
+	Con_Printf ("zone size: %i  location: %p\n",mainzone->size,mainzone);
+
+	for (block = zone->blocklist.next ; ; block = block->next)
+	{
+		Con_Printf ("block:%p    size:%7i    tag:%3i\n",
+				block, block->size, block->tag);
+
+		if (block->next == &zone->blocklist)
+			break;			// all blocks have been hit
+		if ( (byte *)block + block->size != (byte *)block->next)
+			Con_Printf ("ERROR: block size does not touch the next block\n");
+		if ( block->next->prev != block)
+			Con_Printf ("ERROR: next block doesn't have proper back link\n");
+		if (!block->tag && !block->next->tag)
+			Con_Printf ("ERROR: two consecutive free blocks\n");
+	}
+}
+#endif
 
 static void Memory_Display_f(void)
 {
@@ -1073,6 +1080,9 @@ static void Memory_Stats_f(void)
 		FH = NULL;
 	}
 }
+#endif	// !SERVERONLY || DEBUG_BUILD
+
+//============================================================================
 
 
 /*
@@ -1111,13 +1121,18 @@ void Memory_Init (void *buf, int size)
 	mainzone = Hunk_AllocName ( zonesize, "zone" );
 	Z_ClearZone (mainzone, zonesize);
 
+#if !defined(SERVERONLY) || defined(DEBUG_BUILD)
 	Cmd_AddCommand ("sys_memory", Memory_Display_f);
 	Cmd_AddCommand ("sys_cache", Cache_Display_f);
 	Cmd_AddCommand ("sys_stats", Memory_Stats_f);
+#endif
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2006/07/03 07:55:06  sezero
+ * made Q_strlwr and Q_strupr global
+ *
  * Revision 1.20  2006/06/03 19:43:11  sezero
  * fixed no prototype warning for tolower() when compiling for win32
  *
