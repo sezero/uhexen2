@@ -2,7 +2,7 @@
 	cmdlib.c
 	functions common to all of the utilities
 
-	$Id: cmdlib.c,v 1.3 2006-05-26 08:40:44 sezero Exp $
+	$Id: cmdlib.c,v 1.4 2006-07-03 07:53:40 sezero Exp $
 */
 
 
@@ -48,28 +48,6 @@ qboolean	com_eof;
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
 // REPLACEMENTS FOR LIBRARY FUNCTIONS --------------------------------------
-
-/*
-==============
-Q_stpcpy
-
-a stpcpy replacement.
-==============
-*/
-#if !(defined (__GLIBC__) && defined (_STRING_H) && defined (_GNU_SOURCE))
-char *Q_stpcpy (char *qdest, const char *qsrc)
-{
-/* Copy QSRC to QDEST, returning the address
-   of the terminating '\0' in QDEST.	*/
-	register char *qd = qdest;
-	register const char *qs = qsrc;
-
-	while ((*qd++ = *qs++) != '\0')
-		continue;
-
-	return qd - 1;
-}
-#endif
 
 /*
 ==============

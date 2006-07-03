@@ -46,8 +46,6 @@ else
 INCLUDES:= -I$(COMMONDIR)
 LDFLAGS :=
 LDLIBS  :=
-# _GNU_SOURCE is required for stpcpy()
-#CFLAGS  += -D_GNU_SOURCE
 endif
 
 
