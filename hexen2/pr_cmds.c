@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.26 2006-07-02 11:45:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.27 2006-07-03 15:09:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -3120,7 +3120,8 @@ static void PF_updateInfoPlaque (void)
 	union
 	{
 		unsigned int	*tmp;
-		long	*use;
+	//	long	*use;
+		int	*use;
 	} u;
 
 	idx = G_FLOAT(OFS_PARM0);
@@ -3136,7 +3137,8 @@ static void PF_updateInfoPlaque (void)
 		u.tmp = &info_mask;
 	}
 
-	check = (long) (1 << (idx - ofs));
+//	check = (long) (1 << (idx - ofs));
+	check = (int) (1 << (idx - ofs));
 
 	if (((mode & 1) && ((*u.use) & check)) || ((mode & 2) && !((*u.use) & check)))
 		;
@@ -3307,6 +3309,12 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2006/07/02 11:45:31  sezero
+ * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
+ * which stops vec3_origin usage in relevant calculations. renamed the Length
+ * macro to VectorLength for consistancy. updated the utilities' mathlib for
+ * similar macro usage as in the engine.
+ *
  * Revision 1.25  2006/07/02 11:36:35  sezero
  * uppercased the pr_global_struct() macro for easier detection
  * and searching. put that macro in use in hexenworld server for
