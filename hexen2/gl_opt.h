@@ -2,7 +2,7 @@
 	gl_opt.h
 	opengl compile-time options
 
-	$Id: gl_opt.h,v 1.3 2006-06-30 13:55:57 sezero Exp $
+	$Id: gl_opt.h,v 1.4 2006-07-03 14:05:36 sezero Exp $
 */
 
 
@@ -35,11 +35,6 @@
 // COMPILE TIME OPTION: GL_DLSYM
 // This optioh has to be edited in the Makefile (see the LINK_GL_LIBS option in
 // there), not here. It affects the final linkage of the binary.
-
-// COMPILE TIME OPTION: ENABLE_SCRAP
-// scrap allocation is disabled by default. it doesn't work good with vid_mode
-// changes. if you want to enable it, change the define below to 1.
-#define ENABLE_SCRAP		0
 
 // COMPILE TIME OPTION: GLTEST
 // the macro GLTEST enables some experimentation stuff for developers. If you

@@ -69,8 +69,8 @@ diff -urNp hexen2source-1.4.0/hexen2/gl_rsurf.c hexen2source-1.4.0x/hexen2/gl_rs
  }
  
  
-+extern	int		solidskytexture;
-+extern	int		alphaskytexture;
++extern	GLuint		solidskytexture;
++extern	GLuint		alphaskytexture;
 +extern	float		speedscale;
 +
 +/*
@@ -460,9 +460,9 @@ diff -urNp hexen2source-1.4.0/hexen2/gl_warp.c hexen2source-1.4.0x/hexen2/gl_war
  
  int		skytexturenum;
  
--static int	solidskytexture, alphaskytexture;
+-static GLuint	solidskytexture, alphaskytexture;
 -static float	speedscale;	// for top sky and bottom sky
-+int		solidskytexture, alphaskytexture;
++GLuint		solidskytexture, alphaskytexture;
 +float		speedscale;	// for top sky and bottom sky
  
  static msurface_t	*warpface;

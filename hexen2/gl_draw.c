@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.79 2006-05-12 16:48:04 sezero Exp $
+	$Id: gl_draw.c,v 1.80 2006-07-03 14:05:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -45,7 +45,7 @@ extern unsigned char d_15to8table[65536];
 extern vrect_t	scr_vrect;
 extern cvar_t	crosshair, cl_crossx, cl_crossy, crosshaircolor;
 
-extern int	gl_max_size;
+extern GLint	gl_max_size;
 static cvar_t	gl_picmip = {"gl_picmip", "0", CVAR_NONE};
 static cvar_t	gl_spritemip = {"gl_spritemip", "0", CVAR_NONE};
 
@@ -53,13 +53,13 @@ static byte	*draw_chars;				// 8*8 graphic characters
 static byte	*draw_smallchars;			// Small characters for status bar
 //static byte	*draw_menufont; 			// Big Menu Font
 static qpic_t	*draw_backtile;
-qboolean	plyrtex[MAX_PLAYER_CLASS][16][16];	// whether or not the corresponding player textures
+GLuint		plyrtex[MAX_PLAYER_CLASS][16][16];	// whether or not the corresponding player textures
 							// (in multiplayer config screens) have been loaded
 
-static int		char_texture;
-static int		cs_texture;	// crosshair texture
-static int		char_smalltexture;
-static int		char_menufonttexture;
+static GLuint		char_texture;
+static GLuint		cs_texture;	// crosshair texture
+static GLuint		char_smalltexture;
+static GLuint		char_menufonttexture;
 
 int			trans_level = 0;
 
@@ -113,90 +113,10 @@ int		gl_filter_max = GL_LINEAR;
 gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
 
-static int GL_LoadPixmap(char *name, char *data);
+static GLuint GL_LoadPixmap(char *name, char *data);
 static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite);
 static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode);
 
-
-/*
-=============================================================================
-
-  scrap allocation
-
-  Allocate all the little status bar obejcts into a single texture
-  to crutch up stupid hardware / drivers
-
-=============================================================================
-*/
-
-#if ENABLE_SCRAP
-// scrap allocation doesn't work good with vid_mode changes
-// you must edit glquake.h to enable or disable scraps.
-
-#define	MAX_SCRAPS		1
-#define	BLOCK_WIDTH		256
-#define	BLOCK_HEIGHT		256
-
-static int	scrap_allocated[MAX_SCRAPS][BLOCK_WIDTH];
-static byte	scrap_texels[MAX_SCRAPS][BLOCK_WIDTH*BLOCK_HEIGHT*4];
-static qboolean	scrap_dirty;
-static int	scrap_texnum;
-
-//static int	pic_texels;
-//static int	pic_count;
-
-// returns a texture number and the position inside it
-static int Scrap_AllocBlock (int w, int h, int *x, int *y)
-{
-	int		i, j;
-	int		best, best2;
-	int		texnum;
-
-	for (texnum=0 ; texnum<MAX_SCRAPS ; texnum++)
-	{
-		best = BLOCK_HEIGHT;
-
-		for (i=0 ; i<BLOCK_WIDTH-w ; i++)
-		{
-			best2 = 0;
-
-			for (j=0 ; j<w ; j++)
-			{
-				if (scrap_allocated[texnum][i+j] >= best)
-					break;
-				if (scrap_allocated[texnum][i+j] > best2)
-					best2 = scrap_allocated[texnum][i+j];
-			}
-			if (j == w)
-			{	// this is a valid spot
-				*x = i;
-				*y = best = best2;
-			}
-		}
-
-		if (best + h > BLOCK_HEIGHT)
-			continue;
-
-		for (i=0 ; i<w ; i++)
-			scrap_allocated[texnum][*x + i] = best + h;
-
-		return texnum;
-	}
-
-	return -1;
-//	Sys_Error ("Scrap_AllocBlock: full");
-}
-
-//static int	scrap_uploads;
-
-static void Scrap_Upload (void)
-{
-//	scrap_uploads++;
-	GL_Bind(scrap_texnum);
-	GL_Upload8 (scrap_texels[0], BLOCK_WIDTH, BLOCK_HEIGHT, false, true, 0);
-	scrap_dirty = false;
-}
-#endif	// ENABLE_SCRAP
 
 //=============================================================================
 /* Support Routines */
@@ -271,36 +191,6 @@ qpic_t *Draw_PicFromWad (char *name)
 	p = W_GetLumpName (name);
 	gl = (glpic_t *)p->data;
 
-#if ENABLE_SCRAP
-	// load little ones into the scrap
-	if (p->width < 64 && p->height < 64)
-	{
-		int		x, y;
-		int		i, j, k;
-		int		texnum;
-
-		texnum = Scrap_AllocBlock (p->width, p->height, &x, &y);
-		if (texnum == -1)
-			goto nonscrap;
-		scrap_dirty = true;
-		k = 0;
-		for (i=0 ; i<p->height ; i++)
-			for (j=0 ; j<p->width ; j++, k++)
-				scrap_texels[texnum][(y+i)*BLOCK_WIDTH + x + j] = p->data[k];
-		texnum += scrap_texnum;
-		gl->texnum = texnum;
-		gl->sl = (x+0.01)/(float)BLOCK_WIDTH;
-		gl->sh = (x+p->width-0.01)/(float)BLOCK_WIDTH;
-		gl->tl = (y+0.01)/(float)BLOCK_WIDTH;
-		gl->th = (y+p->height-0.01)/(float)BLOCK_WIDTH;
-
-//		pic_count++;
-//		pic_texels += p->width*p->height;
-
-		return p;
-	}
-nonscrap:
-#endif	// ENABLE_SCRAP
 	gl->texnum = GL_LoadPicTexture (p);
 	gl->sl = 0;
 	gl->sh = 1;
@@ -475,7 +365,7 @@ Draw_TextureMode_f
 */
 static void Draw_TextureMode_f (void)
 {
-	int		i;
+	unsigned int		i;
 	gltexture_t	*glt;
 
 	if (Cmd_Argc() == 1)
@@ -616,11 +506,6 @@ void Draw_Init (void)
 	// free loaded console
 	Hunk_FreeToLowMark (start);
 
-#if ENABLE_SCRAP
-	// save slots for scraps
-	scrap_texnum = texture_extension_number;
-	texture_extension_number += MAX_SCRAPS;
-#endif
 //	draw_backtile = Draw_PicFromWad ("backtile");
 //	draw_backtile = Draw_PicFromFile ("gfx/menu/backtile.lmp");
 	draw_backtile = Draw_PicFileBuf("gfx/menu/backtile.lmp", draw_backtile, &bt_len);
@@ -818,10 +703,6 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 {
 	glpic_t			*gl;
 
-#if ENABLE_SCRAP
-	if (scrap_dirty)
-		Scrap_Upload ();
-#endif
 	gl = (glpic_t *)pic->data;
 	glColor4f_fp (1,1,1,1);
 	GL_Bind (gl->texnum);
@@ -853,10 +734,6 @@ void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha)
 {
 	glpic_t			*gl;
 
-#if ENABLE_SCRAP
-	if (scrap_dirty)
-		Scrap_Upload ();
-#endif
 	gl = (glpic_t *)pic->data;
 	glDisable_fp(GL_ALPHA_TEST);
 	glEnable_fp (GL_BLEND);
@@ -890,10 +767,6 @@ void Draw_IntermissionPic (qpic_t *pic)
 {
 	glpic_t			*gl;
 
-#if ENABLE_SCRAP
-	if (scrap_dirty)
-		Scrap_Upload ();
-#endif
 	gl = (glpic_t *)pic->data;
 	glColor4f_fp (1,1,1,1);
 	GL_Bind (gl->texnum);
@@ -922,10 +795,6 @@ void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int h
 	float	newsl, newtl, newsh, newth;
 	float	oldglwidth, oldglheight;
 
-#if ENABLE_SCRAP
-	if (scrap_dirty)
-		Scrap_Upload ();
-#endif
 	gl = (glpic_t *)pic->data;
 
 	oldglwidth = gl->sh - gl->sl;
@@ -965,10 +834,6 @@ void Draw_PicCropped(int x, int y, qpic_t *pic)
 	if (y >= (int)vid.height || y+pic->height < 0)
 		return;		// totally off screen
 
-#if ENABLE_SCRAP
-	if (scrap_dirty)
-		Scrap_Upload ();
-#endif
 	gl = (glpic_t *)pic->data;
 
 	// rjr	tl/th need to be computed based upon pic->tl and pic->th
@@ -1022,10 +887,6 @@ void Draw_SubPicCropped(int x, int y, int h, qpic_t *pic)
 	if (y >= (int)vid.height || y+h < 0)
 		return;		// totally off screen
 
-#if ENABLE_SCRAP
-	if (scrap_dirty)
-		Scrap_Upload ();
-#endif
 	gl = (glpic_t *)pic->data;
 
 	// rjr	tl/th need to be computed based upon pic->tl and pic->th
@@ -1111,7 +972,7 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p
 	// Initialize array of texnums
 	if (first_time)
 	{
-		memset(plyrtex, 0, MAX_PLAYER_CLASS * 16 * 16 * sizeof(qboolean));
+		memset(plyrtex, 0, MAX_PLAYER_CLASS * 16 * 16 * sizeof(GLuint));
 		first_time = false;
 	}
 
@@ -1253,7 +1114,7 @@ refresh window.
 void Draw_TileClear (int x, int y, int w, int h)
 {
 	glColor3f_fp (1,1,1);
-	GL_Bind (*(int *)draw_backtile->data);
+	GL_Bind (*(GLuint *)draw_backtile->data);
 	glBegin_fp (GL_QUADS);
 	glTexCoord2f_fp (x/64.0, y/64.0);
 	glVertex2f_fp (x, y);
@@ -2000,11 +1861,7 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 	}
 
 #if !USE_HEXEN2_PALTEX_CODE
-	if (is8bit && 
-#   if ENABLE_SCRAP
-		(data!=scrap_texels[0]) && 
-#   endif
-		!alpha)
+	if (is8bit && !alpha)
 	{
 		GL_Upload8_EXT (data, width, height, mipmap, alpha, sprite);
 		Hunk_FreeToLowMark(mark);
@@ -2022,7 +1879,7 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 GL_LoadTexture
 ================
 */
-int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba)
+GLuint GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba)
 {
 	int		i, size;
 	unsigned long	hash = 0;
@@ -2111,7 +1968,7 @@ crosshairs or pointers. The data string is in a format similar to an X11
 pixmap.  '0'-'7' are brightness levels, any other character is considered
 transparent. Remember, NO error checking is performed on the input string.
 */
-static int GL_LoadPixmap (char *name, char *data)
+static GLuint GL_LoadPixmap (char *name, char *data)
 {
 	int		i;
 	unsigned char	pixels[32*32][4];
@@ -2142,13 +1999,18 @@ static int GL_LoadPixmap (char *name, char *data)
 GL_LoadPicTexture
 ================
 */
-int GL_LoadPicTexture (qpic_t *pic)
+GLuint GL_LoadPicTexture (qpic_t *pic)
 {
 	return GL_LoadTexture ("", pic->width, pic->height, pic->data, false, true, 0, false);
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.79  2006/05/12 16:48:04  sezero
+ * hopefully fixed all endianness issues with opengl. placed two FIXMEs
+ * around the palettized textures code in VID_SetPalette which I am not
+ * sure about.
+ *
  * Revision 1.78  2006/04/10 12:02:08  sezero
  * gathered all compile-time opengl options into a gl_opt.h header file.
  * changed USE_HEXEN2_PALTEX_CODE and USE_HEXEN2_RESAMPLER_CODE to 0 / 1

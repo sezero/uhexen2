@@ -169,9 +169,9 @@ const char	*gl_version;
 const char	*gl_extensions;
 qboolean	is_3dfx = false;
 
-int		gl_max_size = 256;
+GLint		gl_max_size = 256;
 float		gldepthmin, gldepthmax;
-int		texture_extension_number = 1;
+GLuint		texture_extension_number = 1U;
 
 // palettized textures
 typedef void	(APIENTRY *FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
@@ -191,7 +191,7 @@ qboolean	gl_dogamma = false;
 
 // multitexturing
 qboolean	gl_mtexable = false;
-static int	num_tmus = 1;
+static GLint	num_tmus = 1;
 
 // stencil buffer
 qboolean	have_stencil = false;
@@ -203,7 +203,7 @@ static qboolean	fullsbardraw = false;
 extern void	D_ClearOpenGLTextures(int);
 extern void	R_InitParticleTexture(void);
 extern void	Mod_ReloadTextures (void);
-extern int	lightmap_textures;
+extern GLuint	lightmap_textures;
 
 // menu drawing
 void VID_MenuDraw (void);
@@ -1872,7 +1872,8 @@ intended only as a callback for VID_Restart_f
 */
 static void VID_ChangeVideoMode(int newmode)
 {
-	int j, temp, temp2;
+	unsigned int	j;
+	int	temp, temp2;
 
 	// Avoid window updates and alt+tab handling (which sets modes back)
 	temp = scr_disabled_for_loading;
@@ -1889,8 +1890,8 @@ static void VID_ChangeVideoMode(int newmode)
 
 	// Unload all textures and reset texture counts
 	D_ClearOpenGLTextures(0);
-	texture_extension_number = 1;
-	lightmap_textures = 0;
+	texture_extension_number = 1U;
+	lightmap_textures = 0U;
 	for (j = 0; j < MAX_LIGHTMAPS; j++)
 		lightmap_modified[j] = true;
 	// reset all function pointers

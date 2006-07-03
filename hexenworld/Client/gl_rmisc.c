@@ -9,7 +9,7 @@ cvar_t			gl_purge_maptex = {"gl_purge_maptex", "1", CVAR_ARCHIVE};
 				// are purged on map change. default == yes
 
 int			gl_texlevel;
-extern qboolean		plyrtex[MAX_PLAYER_CLASS][16][16];
+extern GLuint		plyrtex[MAX_PLAYER_CLASS][16][16];
 extern gltexture_t	gltextures[MAX_GLTEXTURES];
 extern int		menu_numcachepics;
 extern cachepic_t	menu_cachepics[MAX_CACHED_PICS];
@@ -471,15 +471,15 @@ void D_ClearOpenGLTextures (int last_tex)
 	memset(&(gltextures[last_tex]), 0, (numgltextures - last_tex) * sizeof(gltexture_t));
 	numgltextures = last_tex;
 
-	if (currenttexture >= last_tex)
-		currenttexture = -1;
+	if (currenttexture >= (GLuint)last_tex)
+		currenttexture = GL_UNUSED_TEXTURE;
 
 	// Clear menu pic cache
 	memset(menu_cachepics, 0, menu_numcachepics * sizeof(cachepic_t));
 	menu_numcachepics = 0;
 
 	// Clear player pic cache
-	memset(plyrtex, 0, MAX_PLAYER_CLASS * 16 * 16 * sizeof(qboolean));
+	memset(plyrtex, 0, MAX_PLAYER_CLASS * 16 * 16 * sizeof(GLuint));
 	Con_Printf ("Purged OpenGL textures\n");
 }
 

@@ -2,7 +2,7 @@
 
 #include "quakedef.h"
 
-int	netgraphtexture;	// netgraph texture
+GLuint	netgraphtexture;	// netgraph texture
 
 #define	NET_GRAPHHEIGHT	32
 #define	NET_TIMINGS	256

@@ -5,7 +5,7 @@
 int		gl_lightmap_format = GL_RGBA;
 cvar_t		gl_lightmapfmt = {"gl_lightmapfmt", "GL_RGBA", CVAR_ARCHIVE};
 int		lightmap_bytes = 4;		// 1, 2, or 4. default is 4 for GL_RGBA
-int		lightmap_textures;
+GLuint		lightmap_textures;
 
 static unsigned	blocklights[18*18];
 static unsigned	blocklightscolor[18*18*3];	// colored light support. *3 for RGB to the definitions at the top
@@ -529,7 +529,8 @@ R_BlendLightmaps
 */
 static void R_BlendLightmaps (qboolean Translucent)
 {
-	int			i, j;
+	unsigned int		i;
+	int			j;
 	glpoly_t	*p;
 	float		*v;
 	glRect_t	*theRect;
@@ -644,7 +645,7 @@ static void R_BlendLightmaps (qboolean Translucent)
 
 static void R_UpdateLightmaps (qboolean Translucent)
 {
-	int			i;
+	unsigned int		i;
 	glpoly_t	*p;
 	glRect_t	*theRect;
 
@@ -1162,7 +1163,7 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 	qboolean	rotated;
 
 	currententity = e;
-	currenttexture = -1;
+	currenttexture = GL_UNUSED_TEXTURE;
 
 	clmodel = e->model;
 
@@ -1385,7 +1386,7 @@ void R_DrawWorld (void)
 	VectorCopy (r_refdef.vieworg, modelorg);
 
 	currententity = &ent;
-	currenttexture = -1;
+	currenttexture = GL_UNUSED_TEXTURE;
 
 	glColor4f_fp (1.0f,1.0f,1.0f,1.0f);
 	memset (lightmap_polys, 0, sizeof(lightmap_polys));
@@ -1426,11 +1427,11 @@ LIGHTMAP ALLOCATION
 */
 
 // returns a texture number and the position inside it
-static int AllocBlock (int w, int h, int *x, int *y)
+static unsigned int AllocBlock (int w, int h, int *x, int *y)
 {
 	int		i, j;
 	int		best, best2;
-	int		texnum;
+	unsigned int	texnum;
 
 	for (texnum=0 ; texnum<MAX_LIGHTMAPS ; texnum++)
 	{
@@ -1669,7 +1670,7 @@ void GL_BuildLightmaps (void)
 		lightmap_rectchange[i].t = BLOCK_HEIGHT;
 		lightmap_rectchange[i].w = 0;
 		lightmap_rectchange[i].h = 0;
-		GL_Bind(lightmap_textures + i);
+		GL_Bind(lightmap_textures + (GLuint)i);
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 		glTexImage2D_fp (GL_TEXTURE_2D, 0, lightmap_bytes, BLOCK_WIDTH,

@@ -2,7 +2,7 @@
 	model.h
 	header for model loading and caching
 
-	$Id: gl_model.h,v 1.7 2006-04-06 22:08:19 sezero Exp $
+	$Id: gl_model.h,v 1.8 2006-07-03 14:05:36 sezero Exp $
 */
 
 #ifndef __MODEL__
@@ -56,7 +56,7 @@ typedef struct texture_s
 {
 	char		name[16];
 	unsigned	width, height;
-	int			gl_texturenum;
+	GLuint			gl_texturenum;
 	struct msurface_s	*texturechain;	// for gl_texsort drawing
 	int		anim_total;		// total tenths in sequence ( 0 = no)
 	int		anim_min, anim_max;	// time for this frame min <=time< max
@@ -126,7 +126,7 @@ typedef struct msurface_s
 	int		dlightframe;
 	int		dlightbits;
 
-	int		lightmaptexturenum;
+	unsigned	lightmaptexturenum;
 	byte		styles[MAXLIGHTMAPS];
 	int		cached_light[MAXLIGHTMAPS];	// values currently used in lightmap
 	qboolean	cached_dlight;			// true if dynamic light in cache
@@ -199,7 +199,7 @@ typedef struct mspriteframe_s
 	short		width;
 	short		height;
 	float		up, down, left, right;
-	int		gl_texturenum;
+	GLuint		gl_texturenum;
 } mspriteframe_t;
 
 typedef struct
@@ -291,7 +291,7 @@ typedef struct {
 	int		poseverts;
 	int		posedata;	// numposes*poseverts trivert_t
 	int		commands;	// gl command list with embedded s/t
-	int		gl_texturenum[MAX_SKINS];
+	GLuint		gl_texturenum[MAX_SKINS];
 	maliasframedesc_t	frames[1];	// variable sized
 } aliashdr_t;
 
@@ -456,6 +456,9 @@ byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2006/04/06 22:08:19  sezero
+ * more tidy-ups (model.h, gl_model.h)
+ *
  * Revision 1.6  2005/09/19 20:10:17  sezero
  * startings of model code unification. mostly
  * cosmetic for now, more will follow.

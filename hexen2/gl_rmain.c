@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.46 2006-07-02 11:45:30 sezero Exp $
+	$Id: gl_rmain.c,v 1.47 2006-07-03 14:05:36 sezero Exp $
 */
 
 
@@ -21,11 +21,11 @@ int			c_brush_polys, c_alias_polys;
 qboolean	r_cache_thrash;			// compatability
 qboolean	envmap;				// true during envmap command capture 
 
-int			currenttexture = -1;	// to avoid unnecessary texture sets
+GLuint			currenttexture = GL_UNUSED_TEXTURE;	// to avoid unnecessary texture sets
 
-int			particletexture;	// little dot for particles
-int			playertextures[16];	// up to 16 color translated skins
-int			gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for models
+GLuint			particletexture;	// little dot for particles
+GLuint			playertextures[16];	// up to 16 color translated skins
+GLuint			gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for models
 
 int			mirrortexturenum;	// quake texturenum, not gltexturenum
 qboolean	mirror;
@@ -1968,6 +1968,12 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.46  2006/07/02 11:45:30  sezero
+ * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
+ * which stops vec3_origin usage in relevant calculations. renamed the Length
+ * macro to VectorLength for consistancy. updated the utilities' mathlib for
+ * similar macro usage as in the engine.
+ *
  * Revision 1.45  2006/04/05 06:09:23  sezero
  * killed (almost) all H2MP ifdefs: this is the first step in making a single
  * binary which handles both h2 and h2mp properly. the only H2MP ifdefs left

@@ -7,7 +7,7 @@ extern	model_t	*loadmodel;
 
 int		skytexturenum;
 
-static int	solidskytexture, alphaskytexture;
+static GLuint	solidskytexture, alphaskytexture;
 static float	speedscale;	// for top sky and bottom sky
 
 static msurface_t	*warpface;
@@ -388,7 +388,7 @@ Quake 2 environment sky
 */
 
 #ifdef QUAKE2
-static int	sky_tex[6];
+static GLuint	sky_tex[6];
 /*
 =================================================================
 

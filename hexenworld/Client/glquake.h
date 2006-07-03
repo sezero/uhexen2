@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.41 2006-06-26 13:44:39 sezero Exp $
+	$Id: glquake.h,v 1.42 2006-07-03 14:05:37 sezero Exp $
 */
 
 
@@ -23,6 +23,7 @@
 
 #include "gl_opt.h"
 #include "gl_func.h"
+#include "gl_model.h"
 
 #ifndef	GLX_3DFX_WINDOW_MODE_MESA
 #define	GLX_3DFX_WINDOW_MODE_MESA		0x1
@@ -75,7 +76,9 @@
 #define MAX_GLTEXTURES		2048
 #define MAX_EXTRA_TEXTURES	156   // 255-100+1
 #define	MAX_CACHED_PICS		256
-#define	MAX_LIGHTMAPS		64
+#define	MAX_LIGHTMAPS		64U
+
+#define	GL_UNUSED_TEXTURE	0xFFFFFFFFU
 
 #define	gl_solid_format		3
 #define	gl_alpha_format		4
@@ -84,7 +87,7 @@
 
 typedef struct
 {
-	int		texnum;
+	GLuint		texnum;
 	float	sl, tl, sh, th;
 } glpic_t;
 
@@ -97,7 +100,7 @@ typedef struct cachepic_s
 
 typedef struct
 {
-	unsigned int	texnum;
+	GLuint		texnum;
 	char	identifier[64];
 	int		width, height;
 	qboolean	mipmap;
@@ -106,18 +109,18 @@ typedef struct
 } gltexture_t;
 
 
-extern	int	texture_extension_number;
+extern	GLuint	texture_extension_number;
 extern	int	gl_filter_min;
 extern	int	gl_filter_max;
 extern	float	gldepthmin, gldepthmax;
 extern	int	glx, gly, glwidth, glheight;
-extern	int	gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for models
+extern	GLuint	gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for models
 
 void GL_BeginRendering (int *x, int *y, int *width, int *height);
 void GL_EndRendering (void);
 
-int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba);
-int GL_LoadPicTexture (qpic_t *pic);
+GLuint GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba);
+GLuint GL_LoadPicTexture (qpic_t *pic);
 int M_DrawBigCharacter (int x, int y, int num, int numNext);
 void GL_BuildLightmaps (void);
 void GL_SetupLightmapFmt (qboolean check_cmdline);
@@ -303,11 +306,11 @@ extern	texture_t	*r_notexture_mip;
 extern	int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 
 extern	qboolean	envmap;
-extern	int	currenttexture;
-extern	int	particletexture;
+extern	GLuint	currenttexture;
+extern	GLuint	particletexture;
 extern	int	skytexturenum;		// index in cl.loadmodel, not gl texture object
-extern	int	netgraphtexture;	// netgraph texture
-extern	int	playertextures[16];
+extern	GLuint	netgraphtexture;	// netgraph texture
+extern	GLuint	playertextures[16];
 extern	byte	*playerTranslation;
 extern	int	gl_texlevel;
 extern	int	numgltextures;
@@ -371,7 +374,7 @@ extern	qboolean lightmap_modified[MAX_LIGHTMAPS];
 extern	qboolean gl_mtexable;
 extern	qboolean have_stencil;
 
-extern	int	gl_max_size;
+extern	GLint	gl_max_size;
 extern	cvar_t	gl_playermip;
 
 extern	int		mirrortexturenum;	// quake texturenum, not gltexturenum

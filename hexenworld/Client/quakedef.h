@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/quakedef.h,v 1.23 2006-06-25 10:21:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/quakedef.h,v 1.24 2006-07-03 14:05:37 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -47,7 +47,7 @@
 #include "client.h"
 
 #ifdef GLQUAKE
-#include "gl_model.h"
+// gl_model.h is included from within glquake.h
 #include "glquake.h"
 #else
 #include "model.h"

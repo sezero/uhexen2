@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.84 2006-06-29 23:13:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.85 2006-07-03 14:05:36 sezero Exp $
 */
 
 
@@ -363,7 +363,7 @@ typedef struct
 #if defined(SERVERONLY)
 #include "server/model.h"
 #elif defined(GLQUAKE)
-#include "gl_model.h"
+// gl_model.h is included from within glquake.h
 #include "glquake.h"
 #else
 #include "model.h"
@@ -454,6 +454,9 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.84  2006/06/29 23:13:14  sezero
+ * updated CHANGES (2006-06-29)
+ *
  * Revision 1.83  2006/06/25 16:03:21  sezero
  * marked the snapshot of 2006-06-25 as 1.4.1-pre7
  *

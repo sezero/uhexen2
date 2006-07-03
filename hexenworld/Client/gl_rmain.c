@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.34 2006-07-02 11:45:37 sezero Exp $
+	$Id: gl_rmain.c,v 1.35 2006-07-03 14:05:36 sezero Exp $
 */
 
 
@@ -21,11 +21,11 @@ int			c_brush_polys, c_alias_polys;
 qboolean	r_cache_thrash;			// compatability
 qboolean	envmap;				// true during envmap command capture 
 
-int			currenttexture = -1;	// to avoid unnecessary texture sets
+GLuint			currenttexture = GL_UNUSED_TEXTURE;	// to avoid unnecessary texture sets
 
-int			particletexture;	// little dot for particles
-int			playertextures[16];	// up to 16 color translated skins
-int			gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for models
+GLuint			particletexture;	// little dot for particles
+GLuint			playertextures[16];	// up to 16 color translated skins
+GLuint			gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for models
 
 int			mirrortexturenum;	// quake texturenum, not gltexturenum
 qboolean	mirror;
