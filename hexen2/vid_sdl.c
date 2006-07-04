@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.51 2006-07-04 16:23:30 sezero Exp $
+	$Id: vid_sdl.c,v 1.52 2006-07-04 21:03:17 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -1167,6 +1167,11 @@ void VID_MenuDraw (void)
 	{	// settings for entering the menu first time
 		vid_cursor = (num_fmodes) ? 0 : 1;
 		vid_menu_fs = (modestate != MS_WINDOWED);
+		modes_cursor = vid_modenum;
+		if (modes_cursor < modes_top)
+			modes_top = modes_cursor;
+		else if (modes_cursor >= modes_top+MAX_ROWS)
+			modes_top = modes_cursor - MAX_ROWS + 1;
 		vid_menu_firsttime = false;
 	}
 
@@ -1198,7 +1203,13 @@ void VID_MenuDraw (void)
 	if (vid_cursor)
 		M_DrawCharacter (172, 92 + (modes_cursor-modes_top)*8, 12+((int)(realtime*4)&1));
 	else
+	{
 		M_DrawCharacter (172, 84, 12+((int)(realtime*4)&1));
+		// indicate an unset resolution selection
+		// when we aren't in the scrolling list
+		if (modes_cursor != vid_modenum)
+			M_DrawCharacter (172, 92 + (modes_cursor-modes_top)*8, 13);
+	}
 }
 
 /*
@@ -1267,6 +1278,10 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.51  2006/07/04 16:23:30  sezero
+ * enabled fullscreen/windowed switching through the menu system
+ * in cases where instant SDL toggling doesn't work
+ *
  * Revision 1.50  2006/05/19 11:32:54  sezero
  * misc clean-up
  *
