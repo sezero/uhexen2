@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.110 2006-07-03 14:05:36 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.111 2006-07-04 16:23:31 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -98,6 +98,8 @@ typedef struct {
 static attributes_t	vid_attribs;
 static const SDL_VideoInfo	*vid_info;
 static SDL_Surface	*screen;
+static qboolean	vid_menu_fs;
+static qboolean	fs_toggle_works = true;
 
 // vars for vid state
 viddef_t	vid;			// global video state
@@ -1721,6 +1723,8 @@ void VID_ToggleFullscreen (void)
 {
 	int	is_fullscreen;
 
+	if (!fs_toggle_works)
+		return;
 	if (!num_fmodes)
 		return;
 	if (!screen)
@@ -1752,9 +1756,12 @@ void VID_ToggleFullscreen (void)
 			if (mousestate_sa)
 				IN_DeactivateMouse();
 		}
+		// update the video menu option
+		vid_menu_fs = (modestate != MS_WINDOWED);
 	}
 	else
 	{
+		fs_toggle_works = false;
 		Con_Printf ("SDL_WM_ToggleFullScreen failed\n");
 	}
 }
@@ -1784,6 +1791,7 @@ void D_ShowLoadingSize(void)
 
 static int	vid_menunum;
 static int	vid_cursor;
+static qboolean	want_fstoggle;
 static qboolean	vid_menu_firsttime = true;
 
 enum {
@@ -1824,12 +1832,15 @@ void VID_MenuDraw (void)
 	if (vid_menu_firsttime)
 	{	// settings for entering the menu first time
 		vid_menunum = vid_modenum;
+		vid_menu_fs = (modestate != MS_WINDOWED);
 		vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
 		vid_menu_firsttime = false;
 	}
 
+	want_fstoggle = ( ((modestate == MS_WINDOWED) && vid_menu_fs) || ((modestate != MS_WINDOWED) && !vid_menu_fs) );
+
 	M_Print (76, 92 + 8*VID_FULLSCREEN, "Fullscreen: ");
-	M_DrawYesNo (76+12*8, 92 + 8*VID_FULLSCREEN, modestate, 1);
+	M_DrawYesNo (76+12*8, 92 + 8*VID_FULLSCREEN, vid_menu_fs, !want_fstoggle);
 
 	M_Print (76, 92 + 8*VID_RESOLUTION, "Resolution: ");
 	if (vid_menunum == vid_modenum)
@@ -1888,16 +1899,15 @@ void VID_MenuKey (int key)
 		switch (vid_cursor)
 		{
 		case VID_FULLSCREEN:
-			VID_ToggleFullscreen();
-			break;
 		case VID_RESOLUTION:
 		case VID_MULTISAMPLE:
 		case VID_PALTEX:
-			if ( (vid_menunum != vid_modenum) ||
+			if ( (vid_menunum != vid_modenum) || want_fstoggle ||
 			     (have8bit && (is8bit != (true && (int)vid_config_gl8bit.value))) ||
 			     (multisample != (int)vid_config_fsaa.value) )
 			{
 				Cvar_SetValue("vid_mode", vid_menunum);
+				Cvar_SetValue("vid_config_fscr", vid_menu_fs);
 				VID_Restart_f();
 			}
 			break;
@@ -1908,7 +1918,9 @@ void VID_MenuKey (int key)
 		switch (vid_cursor)
 		{
 		case VID_FULLSCREEN:
-			VID_ToggleFullscreen();
+			vid_menu_fs = !vid_menu_fs;
+			if (fs_toggle_works)
+				VID_ToggleFullscreen();
 			break;
 		case VID_RESOLUTION:
 			S_LocalSound ("raven/menu1.wav");
@@ -1937,7 +1949,9 @@ void VID_MenuKey (int key)
 		switch (vid_cursor)
 		{
 		case VID_FULLSCREEN:
-			VID_ToggleFullscreen();
+			vid_menu_fs = !vid_menu_fs;
+			if (fs_toggle_works)
+				VID_ToggleFullscreen();
 			break;
 		case VID_RESOLUTION:
 			S_LocalSound ("raven/menu1.wav");

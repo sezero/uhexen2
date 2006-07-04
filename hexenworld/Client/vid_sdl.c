@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.46 2006-05-19 11:32:54 sezero Exp $
+	$Id: vid_sdl.c,v 1.47 2006-07-04 16:23:31 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -44,6 +44,8 @@ static int	*nummodes;
 //static int	bpp = 8;
 static const SDL_VideoInfo	*vid_info;
 static SDL_Surface	*screen;
+static qboolean	vid_menu_fs;
+static qboolean	fs_toggle_works = true;
 
 viddef_t	vid;		// global video state
 // cvar vid_mode must be set before calling VID_SetMode, VID_ChangeVideoMode or VID_Restart_f
@@ -1085,6 +1087,8 @@ void VID_ToggleFullscreen (void)
 {
 	int	is_fullscreen;
 
+	if (!fs_toggle_works)
+		return;
 	if (!num_fmodes)
 		return;
 	if (!screen)
@@ -1110,10 +1114,13 @@ void VID_ToggleFullscreen (void)
 			if (mousestate_sa)
 				IN_DeactivateMouse();
 		}
+		// update the video menu option
+		vid_menu_fs = (modestate != MS_WINDOWED);
 	}
 	else
 	{
-	    Con_Printf ("SDL_WM_ToggleFullScreen failed\n");
+		fs_toggle_works = false;
+		Con_Printf ("SDL_WM_ToggleFullScreen failed\n");
 	}
 }
 
@@ -1126,6 +1133,7 @@ void VID_ToggleFullscreen (void)
 static int	modes_cursor = 0, modes_top = 0;
 static qboolean	vid_cursor;	// 0 : resolution option
 				// 1 : fullscreen option. switched by TAB key
+static qboolean	want_fstoggle;
 static qboolean	vid_menu_firsttime = true;
 
 static void M_DrawYesNo (int x, int y, int on, int white)
@@ -1158,15 +1166,18 @@ void VID_MenuDraw (void)
 	if (vid_menu_firsttime)
 	{	// settings for entering the menu first time
 		vid_cursor = (num_fmodes) ? 0 : 1;
+		vid_menu_fs = (modestate != MS_WINDOWED);
 		vid_menu_firsttime = false;
 	}
 
 	ScrollTitle("gfx/menu/title7.lmp");
 
+	want_fstoggle = ( ((modestate == MS_WINDOWED) && vid_menu_fs) || ((modestate != MS_WINDOWED) && !vid_menu_fs) );
+
 	M_Print (64, 72, "Press TAB to switch options");
 
 	M_Print (64, 84, "Fullscreen: ");
-	M_DrawYesNo (184, 84, modestate, 1);
+	M_DrawYesNo (184, 84, vid_menu_fs, !want_fstoggle);
 
 	if (modes_top)
 		M_DrawCharacter (160, 92, 128);
@@ -1208,23 +1219,21 @@ void VID_MenuKey (int key)
 		return;
 
 	case K_ENTER:
-		if (vid_cursor)	// set the resolution
+		if (modes_cursor != vid_modenum || want_fstoggle)
 		{
-			if (modes_cursor != vid_modenum)
-			{
-				Cvar_SetValue("vid_mode", modes_cursor);
-				VID_Restart_f();
-			}
-		}
-		else	// toggle windowed/fullscreen
-		{
-			VID_ToggleFullscreen();
+			Cvar_SetValue("vid_mode", modes_cursor);
+			Cvar_SetValue("vid_config_fscr", vid_menu_fs);
+			VID_Restart_f();
 		}
 		return;
 
 	case K_LEFTARROW:
 	case K_RIGHTARROW:
-		if (!vid_cursor)
+	// fullscreen / windowed toggling
+		if (vid_cursor == 1)
+			return;	// resolution is on the scrolling list
+		vid_menu_fs = !vid_menu_fs;
+		if (fs_toggle_works)
 			VID_ToggleFullscreen();
 		return;
 
@@ -1258,6 +1267,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.46  2006/05/19 11:32:54  sezero
+ * misc clean-up
+ *
  * Revision 1.45  2006/03/24 18:43:37  sezero
  * moved include macros for different xbm icons to a new xbm_icon.h header
  *
