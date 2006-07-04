@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.85 2006-07-03 14:05:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.86 2006-07-04 16:25:23 sezero Exp $
 */
 
 
@@ -18,9 +18,9 @@
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		4
 #define	HOT_VERSION_MIN		1
-#define	HOT_VERSION_REL_DATE	"2006-06-29"
+#define	HOT_VERSION_REL_DATE	"2006-07-04"
 #define	HOT_VERSION_BETA	1
-#define	HOT_VERSION_BETA_STR	"pre7"
+#define	HOT_VERSION_BETA_STR	"pre8"
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
 #define	ENGINE_VERSION		1.15
@@ -454,6 +454,11 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.85  2006/07/03 14:05:36  sezero
+ * re-visited the GL data types, made them to be of GL types and solved
+ * the signedness issues. completely removed the scrap allocation option.
+ * thanks to Levent Yavas for his help.
+ *
  * Revision 1.84  2006/06/29 23:13:14  sezero
  * updated CHANGES (2006-06-29)
  *
