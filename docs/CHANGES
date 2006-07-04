@@ -3,6 +3,22 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-07-04 (CVS, 1.4.1-pre8):
+    * enabled fullscreen/windowed switching through the menu system
+      in cases where instant SDL toggling doesn't work
+    * removed unnecessary pthread linkage from hexenworld server
+    * marked the snapshot of 2006-07-04 as 1.4.1-pre8
+
+2006-07-03 (CVS):
+    * killed stpcpy() usage in utils/dcc
+    * made Q_strlwr and Q_strupr global
+    * disabled the sys_memory, sys_cache and sys_stats console commands
+      for server-only binaries except for debug builds.
+    * re-visited the GL data types, made them to be of GL types and solved
+      the signedness issues. completely removed the scrap allocation option.
+      thanks to Levent Yavas for his help.
+    * PF_updateInfoPlaque: changed long type to int to prevent future confusion
+
 2006-07-02 (CVS):
     * uppercased the pr_global_struct() macro for easier detection and searching.
       put that macro in use in hexenworld server for smaller diffs between
