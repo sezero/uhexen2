@@ -63,6 +63,7 @@ a. Using the installer (easy way):
 
 	hexen2	-  Hexen II (software rendering)
 	glhexen2 - Hexen II (opengl rendering)
+	h2ded	-  Hexen II Dedicated server
 	hwcl	-  HexenWorld Client (software rendering)
 	glhwcl	-  HexenWorld Client (opengl rendering)
 	hwsv	-  HexenWorld Server
@@ -178,6 +179,7 @@ Here are some of the important command-line switches:
 			set from the menu)
  -nomtex		Disable multitexture detection/usage
  -3dfxgamma		Special gamma support for old Voodoo1/2/Rush
+ -sndoss		Use OSS for audio
  -ossdev		OSS Audio device to use (default: /dev/dsp)
  -sndalsa		Use ALSA for audio
  -alsadev		ALSA Audio device to use (default: hw:0,0 )
@@ -255,9 +257,9 @@ it. Send a bug report on the project page.
 1.4.1 Midi support
 ------------------
 
-Currently the midi background music works with the OSS and ALSA sound
-drivers. It requires 1.2.4 or a newer version of SDL_mixer, preferably
-version 1.2.5 or later.
+On linux / unix, the midi background music requires 1.2.4 or a newer
+version of SDL_mixer, preferably version 1.2.5 or later.  Currently,
+it will not work in combination with the SDL sound option.
 
 If compiling SDL_mixer yourself, the default location for the timidity
 data files (complete set of GUS patches) is "/usr/local/lib/timidity".
@@ -427,7 +429,7 @@ a command line with -portals argument included. For example:
 
 One of the few large mods for Hexen II is The Fortress of Four
 Doors. It has a confusing level near the middle, but is otherwise
-great - look around the web for the file "fo4d.zip".
+great - look around the web for the file fo4d.zip or fo4d.tgz .
 
 Also, make sure to check out the botmatch mod "hcbots" available
 at our project page.
@@ -601,14 +603,35 @@ been suggested that I'll need a whole different physics engine."
 3.6 Links
 ---------
 
-Hammer of Thyrion  :  http://sourceforge.net/projects/uhexen2
-Anvil of Thyrion   :  http://aot.linuxgames.com/
-Pa3Pyx source-port :  http://pa3pyx.dnsalias.org/
-JSHexen2 port      :  http://jurajstyk.host.sk/
-Hexen II FAQ       :  http://www.raven-games.com/hex2faq/
-Linux Quake How-To :  http://tldp.org/HOWTO/Quake-HOWTO.html
-ALSA sound         :  http://www.alsa-project.org
-Lowercase Utility  :  http://filerenameutils.sourceforge.net
+    Hammer of Thyrion
+	Home page		: http://uhexen2.sourceforge.net/
+	Project page		: http://sourceforge.net/projects/uhexen2/
+	Work-in-progress	: http://uhexen2.sourceforge.net/devel/
+	CVS Repository		: http://uhexen2.cvs.sourceforge.net/uhexen2/
+	MorphOS port		: http://www.binaryriot.org/users/kiero/
+	ebuilds for Gentoo	: http://bugs.gentoo.org/show_bug.cgi?id=105780
+
+    Other Hexen II ports
+	Korax's UQE Hexen II	: http://www.quake-engine.com/
+
+    Older, currently inactive Hexen II ports
+	Anvil of Thyrion	: http://aot.linuxgames.com/
+	Hexen II Mac port	: http://macglquake.sourceforge.net/
+	Hexen II Dreamcast	: http://dcquake.sourceforge.net/
+	JSHexen II		: http://jurajstyk.host.sk/
+	Pa3PyX's Hexen II	: http://pa3pyx.dnsalias.org/
+	NewHexen		: http://newhexen.raven-games.com/
+
+    Other web links
+	Official Hexen II FAQ	: http://www.raven-games.com/hex2faq/
+	Hexen2-Linux Game Tome	: http://happypenguin.org/show?Hammer%20of%20Thyrion
+	Hexen2-Linux Gamer Guide: http://linux.strangegamer.com/index.php?title=HeXen_II
+	Linux Quake How-To	: http://tldp.org/HOWTO/Quake-HOWTO.html
+	id Software		: http://www.idsoftware.com/
+	Raven Software		: http://www.ravensoft.com/
+	SDL homepage		: http://www.libsdl.org/
+	ALSA homepage		: http://www.alsa-project.org/
+	Lowercase Utility	: http://filerenameutils.sourceforge.net/
 
 
 3.7 Thanks
