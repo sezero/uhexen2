@@ -72,6 +72,8 @@ mode.
 %{__make} -C hexen2 clean
 %{__make} -C hexen2 glh2
 %{__make} -C hexen2 clean
+# Build the dedicated server
+%{__make} -C hexen2 -f Makefile.sv
 # HexenWorld binaries
 %{__make} -C hexenworld/Server
 %{__make} -C hexenworld/Master
@@ -110,6 +112,7 @@ cd ../..
 %{__rm} -rf %{buildroot}
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/docs
 %{__install} -D -m755 hexen2/hexen2 %{buildroot}/%{_prefix}/games/%{name}/hexen2
+%{__install} -D -m755 hexen2/hexen2 %{buildroot}/%{_prefix}/games/%{name}/h2ded
 %{__install} -D -m755 hexen2/glhexen2 %{buildroot}/%{_prefix}/games/%{name}/glhexen2
 %{__install} -D -m755 hexenworld/Server/hwsv %{buildroot}/%{_prefix}/games/%{name}/hwsv
 %{__install} -D -m755 hexenworld/Master/hwmaster %{buildroot}/%{_prefix}/games/%{name}/hwmaster
@@ -208,6 +211,7 @@ desktop-file-install \
 %defattr(-,root,root)
 %{_prefix}/games/%{name}/hexen2
 %{_prefix}/games/%{name}/glhexen2
+%{_prefix}/games/%{name}/h2ded
 %{_prefix}/games/%{name}/xdelta113
 %{_prefix}/games/%{name}/update_xdelta.sh
 %{_prefix}/games/%{name}/patchdata/data1/data1pak0.xd
@@ -261,6 +265,10 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Wed Jul 05 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.1-0
+- Added the dedicated server to the packaged binaries.
+  1.4.1-pre8. Preparing for a future 1.4.1 release.
+
 * Tue Apr 18 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-7
 - More packaging tidy-ups for 1.4.0-final
 
