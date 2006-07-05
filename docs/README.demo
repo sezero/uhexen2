@@ -47,7 +47,7 @@ the names of the binaries to be installed:
 
 	hexen2	-  Hexen II (software rendering)
 	glhexen2 - Hexen II (opengl rendering)
-	hexen2	-  Hexen II Dedicated server
+	h2ded	-  Hexen II Dedicated server
 
 If you don't want to use the installer, grab the demo tarball from
 the HoT website, extract it in any place and you'll be ready to run
