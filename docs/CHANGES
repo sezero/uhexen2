@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-07-05 (CVS):
+    * updated the MacOSX Xcode files for 1.4.1-pre8. from Levent Yavas.
+    * updated the documentation.
+    * RPM spec file update: added the dedicated server to the packaged
+      binaries, preparing it for a future 1.4.1 release.
+
 2006-07-04 (CVS, 1.4.1-pre8):
     * enabled fullscreen/windowed switching through the menu system
       in cases where instant SDL toggling doesn't work
