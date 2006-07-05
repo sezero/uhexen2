@@ -220,6 +220,7 @@ endif
 # MIDI objects
 ifneq "$(USE_MIDI)" "yes"
 SYSOBJ_MIDI:= midi_nul.o
+EXT_FLAGS += -DNO_MIDIMUSIC
 else
 ifeq "$(TARGET_OS)" "WIN32"
 SYSOBJ_MIDI:= win_stuff/midi.o win_stuff/mstrconv.o
@@ -233,6 +234,7 @@ endif
 # CDAudio objects
 ifneq "$(USE_CDA)" "yes"
 SYSOBJ_CDA:= cd_null.o
+EXT_FLAGS += -D_NO_CDAUDIO
 else
 ifeq "$(TARGET_OS)" "WIN32"
 SYSOBJ_CDA := win_stuff/cd_win.o

@@ -1,8 +1,8 @@
 /*
-	midi_sdl.c
+	midi_nul.c
 	NULL midi driver
 
-	$Id: midi_nul.c,v 1.1 2006-06-29 23:02:01 sezero Exp $
+	$Id: midi_nul.c,v 1.2 2006-07-05 20:39:25 sezero Exp $
 */
 
 #include "quakedef.h"

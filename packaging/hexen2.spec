@@ -112,7 +112,7 @@ cd ../..
 %{__rm} -rf %{buildroot}
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/docs
 %{__install} -D -m755 hexen2/hexen2 %{buildroot}/%{_prefix}/games/%{name}/hexen2
-%{__install} -D -m755 hexen2/hexen2 %{buildroot}/%{_prefix}/games/%{name}/h2ded
+%{__install} -D -m755 hexen2/h2ded %{buildroot}/%{_prefix}/games/%{name}/h2ded
 %{__install} -D -m755 hexen2/glhexen2 %{buildroot}/%{_prefix}/games/%{name}/glhexen2
 %{__install} -D -m755 hexenworld/Server/hwsv %{buildroot}/%{_prefix}/games/%{name}/hwsv
 %{__install} -D -m755 hexenworld/Master/hwmaster %{buildroot}/%{_prefix}/games/%{name}/hwmaster
