@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-07-15 (CVS):
+    * updated the mkrelease script to run on non-linux platforms
+    * updates to the build scripts.
+    * removed unintended viewmodel movement upon setting viewsize to maximum.
+      fix from Jacques Krige.
+    * more compile fixes about global vars being declared in multiple
+      sources: screenwidth. from the PalmOS port.
+    * removed declaration of non-existant prealspandrawer function pointer
+
 2006-07-05 (CVS):
     * updated the MacOSX Xcode files for 1.4.1-pre8. from Levent Yavas.
     * updated the documentation.
