@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.c,v 1.13 2006-05-31 16:49:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.c,v 1.14 2006-07-15 22:13:50 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -999,7 +999,7 @@ static void V_CalcRefdef (void)
 
 	// fudge position around to keep amount of weapon visible
 	// roughly equal with different FOV
-	if (scr_viewsize.value == 110)
+	if (scr_viewsize.value >= 110)
 		view->origin[2] += 1;
 	else if (scr_viewsize.value == 100)
 		view->origin[2] += 2;

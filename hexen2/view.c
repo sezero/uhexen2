@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.15 2006-05-31 16:50:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.16 2006-07-15 22:13:50 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -984,7 +984,7 @@ static void V_CalcRefdef (void)
 #if 0
 	if (cl.model_precache[cl.stats[STAT_WEAPON]] && strcmp (cl.model_precache[cl.stats[STAT_WEAPON]]->name,  "progs/v_shot2.mdl"))
 #endif
-	if (scr_viewsize.value == 110)
+	if (scr_viewsize.value >= 110)
 		view->origin[2] += 1;
 	else if (scr_viewsize.value == 100)
 		view->origin[2] += 2;
@@ -1137,6 +1137,10 @@ void V_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2006/05/31 16:50:15  sezero
+ * hexen2/view.c: disabled the irritating forced centerview (pitch drifting)
+ * while flying in hexen2. the behavior now matches that of hexenworld.
+ *
  * Revision 1.14  2006/03/24 15:05:39  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also
