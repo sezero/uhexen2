@@ -2,7 +2,7 @@
 	d_local.h
 	private rasterization driver defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.7 2006-03-28 19:53:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.8 2006-07-15 22:15:17 sezero Exp $
 */
 
 #include "r_shared.h"
@@ -67,7 +67,6 @@ void D_DrawSkyScans16 (espan_t *pspan);
 void D_Patch (void);
 
 void R_ShowSubDiv (void);
-void (*prealspandrawer)(void);
 surfcache_t	*D_CacheSurface (msurface_t *surface, int miplevel);
 
 #if id386
@@ -137,6 +136,12 @@ extern byte			scanList[SCAN_SIZE];
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2006/03/28 19:53:23  sezero
+ * continue making static functions and vars static. whitespace and coding
+ * style cleanup. part 47: software renderer: r_aclip.c, r_alias.c, r_bsp.c,
+ * r_draw.c, r_edge.c.  also removed the #warning directives for the non-x86
+ * non-compilability.  added a few comments about the non-Intel issue.
+ *
  * Revision 1.6  2006/03/24 15:05:39  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also

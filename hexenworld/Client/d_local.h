@@ -2,7 +2,7 @@
 	d_local.h
 	private rasterization driver defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_local.h,v 1.6 2006-03-28 19:53:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_local.h,v 1.7 2006-07-15 22:15:17 sezero Exp $
 */
 
 #include "r_shared.h"
@@ -67,7 +67,6 @@ void D_DrawSkyScans16 (espan_t *pspan);
 void D_Patch (void);
 
 void R_ShowSubDiv (void);
-void (*prealspandrawer)(void);
 surfcache_t	*D_CacheSurface (msurface_t *surface, int miplevel);
 
 #if id386
