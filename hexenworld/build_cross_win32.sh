@@ -15,24 +15,38 @@ echo "Stripping all HexenWorld binaries"
 exit 0
 fi
 
+HOST_OS=`uname`
+
+case "$HOST_OS" in
+FreeBSD|OpenBSD|NetBSD)
+	MAKE_CMD=gmake
+	;;
+Linux)
+	MAKE_CMD=make
+	;;
+*)
+	MAKE_CMD=make
+	;;
+esac
+
 if [ "$1" = "clean" ]
 then
-make -s -C Client clean
-make -s -C Master clean
-make -s -C Server clean
+$MAKE_CMD -s -C Client clean
+$MAKE_CMD -s -C Master clean
+$MAKE_CMD -s -C Server clean
 exit 0
 fi
 
 echo "Building HexenWorld Server"
-make -C Server $SENDARGS $*
+$MAKE_CMD -C Server $SENDARGS $*
 
 echo "" && echo "Building HexenWorld Master Server"
-make -C Master $SENDARGS $*
+$MAKE_CMD -C Master $SENDARGS $*
 
 echo "" && echo "Building HexenWorld Client (Software renderer)"
-make -C Client $SENDARGS $* hw
+$MAKE_CMD -C Client $SENDARGS $* hw
 
 echo "" && echo "Building HexenWorld Client (OpenGL renderer)"
-make -C Client clean
-make -C Client $SENDARGS $* glhw
+$MAKE_CMD -C Client clean
+$MAKE_CMD -C Client $SENDARGS $* glhw
 

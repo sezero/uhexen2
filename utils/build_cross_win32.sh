@@ -18,36 +18,50 @@ echo "Stripping all hexen2-util binaries"
 exit 0
 fi
 
+HOST_OS=`uname`
+
+case "$HOST_OS" in
+FreeBSD|OpenBSD|NetBSD)
+	MAKE_CMD=gmake
+	;;
+Linux)
+	MAKE_CMD=make
+	;;
+*)
+	MAKE_CMD=make
+	;;
+esac
+
 if [ "$1" = "clean" ]
 then
-make -s -C hcc clean
-make -s -C maputils clean
-make -s -C genmodel clean
-make -s -C qfiles clean
-make -s -C dcc clean
-make -s -C jsh2color clean
-make -s -C hcc_old clean
+$MAKE_CMD -s -C hcc clean
+$MAKE_CMD -s -C maputils clean
+$MAKE_CMD -s -C genmodel clean
+$MAKE_CMD -s -C qfiles clean
+$MAKE_CMD -s -C dcc clean
+$MAKE_CMD -s -C jsh2color clean
+$MAKE_CMD -s -C hcc_old clean
 exit 0
 fi
 
 echo "Building hcc, the HexenC compiler.."
-make -C hcc $SENDARGS
+$MAKE_CMD -C hcc $SENDARGS
 
 echo "" && echo "Now building hcc, old version"
-make -C hcc_old $SENDARGS
+$MAKE_CMD -C hcc_old $SENDARGS
 
 echo "" && echo "Now building qfiles.."
-make -C qfiles $SENDARGS
+$MAKE_CMD -C qfiles $SENDARGS
 
 echo "" && echo "Now building genmodel.."
-make -C genmodel $SENDARGS
+$MAKE_CMD -C genmodel $SENDARGS
 
 echo "" && echo "Now building light, vis and qbsp.."
-make -C maputils $SENDARGS
+$MAKE_CMD -C maputils $SENDARGS
 
 echo "" && echo "Now building dhcc, a progs.dat decompiler.."
-make -C dcc $SENDARGS
+$MAKE_CMD -C dcc $SENDARGS
 
 echo "" && echo "Now building jsh2colour, a lit file generator.."
-make -C jsh2color $SENDARGS
+$MAKE_CMD -C jsh2color $SENDARGS
 

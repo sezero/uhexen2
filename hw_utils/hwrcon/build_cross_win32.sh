@@ -9,5 +9,19 @@ $STRIPPER hwrcon.exe hwterm.exe
 exit 0
 fi
 
-exec make $SENDARGS $*
+HOST_OS=`uname`
+
+case "$HOST_OS" in
+FreeBSD|OpenBSD|NetBSD)
+	MAKE_CMD=gmake
+	;;
+Linux)
+	MAKE_CMD=make
+	;;
+*)
+	MAKE_CMD=make
+	;;
+esac
+
+exec $MAKE_CMD $SENDARGS $*
 

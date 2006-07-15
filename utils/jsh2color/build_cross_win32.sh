@@ -10,11 +10,25 @@ then
 	exit 0
 fi
 
+HOST_OS=`uname`
+
+case "$HOST_OS" in
+FreeBSD|OpenBSD|NetBSD)
+	MAKE_CMD=gmake
+	;;
+Linux)
+	MAKE_CMD=make
+	;;
+*)
+	MAKE_CMD=make
+	;;
+esac
+
 if [ "$1" = "clean" ]
 then
-	make -s clean
+	$MAKE_CMD -s clean
 	exit 0
 fi
 
-exec make $SENDARGS $*
+exec $MAKE_CMD $SENDARGS $*
 

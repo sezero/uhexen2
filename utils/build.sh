@@ -14,20 +14,14 @@ rm -f __tmp.tmp
 HOST_OS=`uname`
 
 case "$HOST_OS" in
-FreeBSD)
-	MAKE=gmake
-	;;
-OpenBSD)
-	MAKE=gmake
-	;;
-NetBSD)
-	MAKE=gmake
+FreeBSD|OpenBSD|NetBSD)
+	MAKE_CMD=gmake
 	;;
 Linux)
-	MAKE=make
+	MAKE_CMD=make
 	;;
 *)
-	MAKE=make
+	MAKE_CMD=make
 	;;
 esac
 
@@ -42,28 +36,28 @@ fi
 
 if [ "$1" = "clean" ]
 then
-$MAKE -s -C hcc clean
-$MAKE -s -C maputils clean
-$MAKE -s -C genmodel clean
-$MAKE -s -C qfiles clean
-$MAKE -s -C dcc clean
-$MAKE -s -C jsh2color clean
-$MAKE -s -C hcc_old clean
+$MAKE_CMD -s -C hcc clean
+$MAKE_CMD -s -C maputils clean
+$MAKE_CMD -s -C genmodel clean
+$MAKE_CMD -s -C qfiles clean
+$MAKE_CMD -s -C dcc clean
+$MAKE_CMD -s -C jsh2color clean
+$MAKE_CMD -s -C hcc_old clean
 exit 0
 fi
 
 echo "Building hcc, the HexenC compiler.."
-$MAKE -C hcc
+$MAKE_CMD -C hcc
 echo "" && echo "Now building hcc, old version"
-$MAKE -C hcc_old
+$MAKE_CMD -C hcc_old
 echo "" && echo "Now building qfiles.."
-$MAKE -C qfiles
+$MAKE_CMD -C qfiles
 echo "" && echo "Now building genmodel.."
-$MAKE -C genmodel
+$MAKE_CMD -C genmodel
 echo "" && echo "Now building light, vis and qbsp.."
-$MAKE -C maputils
+$MAKE_CMD -C maputils
 echo "" && echo "Now building dhcc, a progs.dat decompiler.."
-$MAKE -C dcc
+$MAKE_CMD -C dcc
 echo "" && echo "Now building jsh2colour, a lit file generator.."
-$MAKE -C jsh2color
+$MAKE_CMD -C jsh2color
 

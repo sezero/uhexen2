@@ -11,20 +11,14 @@ rm -f __tmp.tmp
 HOST_OS=`uname`
 
 case "$HOST_OS" in
-FreeBSD)
-	MAKE=gmake
-	;;
-OpenBSD)
-	MAKE=gmake
-	;;
-NetBSD)
-	MAKE=gmake
+FreeBSD|OpenBSD|NetBSD)
+	MAKE_CMD=gmake
 	;;
 Linux)
-	MAKE=make
+	MAKE_CMD=make
 	;;
 *)
-	MAKE=make
+	MAKE_CMD=make
 	;;
 esac
 
@@ -39,22 +33,22 @@ fi
 
 if [ "$1" = "clean" ]
 then
-$MAKE -s -C Client clean
-$MAKE -s -C Master clean
-$MAKE -s -C Server clean
+$MAKE_CMD -s -C Client clean
+$MAKE_CMD -s -C Master clean
+$MAKE_CMD -s -C Server clean
 exit 0
 fi
 
 echo "Building hexenworld server..."
-$MAKE -C Server
+$MAKE_CMD -C Server
 
 echo "" && echo "Building hexenworld master server.."
-$MAKE -C Master
+$MAKE_CMD -C Master
 
 echo "" && echo "Building hexenworld client (software renderer)"
-$MAKE -C Client hw
+$MAKE_CMD -C Client hw
 
 echo "" && echo "Building hexenworld client (opengl renderer)"
-$MAKE -C Client clean
-$MAKE -C Client glhw
+$MAKE_CMD -s -C Client clean
+$MAKE_CMD -C Client glhw
 

@@ -3,26 +3,20 @@
 HOST_OS=`uname`
 
 case "$HOST_OS" in
-FreeBSD)
-	MAKE=gmake
-	;;
-OpenBSD)
-	MAKE=gmake
-	;;
-NetBSD)
-	MAKE=gmake
+FreeBSD|OpenBSD|NetBSD)
+	MAKE_CMD=gmake
 	;;
 Linux)
-	MAKE=make
+	MAKE_CMD=make
 	;;
 *)
-	MAKE=make
+	MAKE_CMD=make
 	;;
 esac
 
-$MAKE clean
-$MAKE hw
-$MAKE clean
-$MAKE glhw
-$MAKE clean
+$MAKE_CMD clean
+$MAKE_CMD hw
+$MAKE_CMD clean
+$MAKE_CMD glhw
+$MAKE_CMD clean
 
