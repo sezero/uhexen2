@@ -6,7 +6,7 @@ if echo `pwd` | grep "\/scripts" &>/dev/null ; then
 cd ..
 fi
 # this relies on the name of this script file being "mkrelease.sh"
-if [[ ! -f scripts/mkrelease.sh ]] ; then
+if [ ! -f scripts/mkrelease.sh ] ; then
 echo "change into the cvs snapshot directory before running this script"
 exit 1
 fi
@@ -16,7 +16,7 @@ GAMECODE_VER=1.15
 
 # kill the unwanted CVS* directories
 rm -rf CVSROOT
-find -name CVS | xargs rm -rf 
+find . -name CVS | xargs rm -rf 
 
 # kill the obsoleted empty directories
 rm -rf utils/h2_utils utils/h2mp_utils utils/dcc/bin
@@ -28,7 +28,7 @@ mv packaging/hexen2.spec ./
 rm -rf packaging
 
 # change all shell scripts' permissions
-find -name *.sh | xargs chmod 755 
+find . -name *.sh | xargs chmod 755 
 
 # move the unused/reference asm files directory into 00_unused
 mv asm 00_unused/asm_ref
