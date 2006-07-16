@@ -3,6 +3,18 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-07-16 (CVS):
+    * clean-up in hexenworld master server: removed dead code (the info,
+      heartbeat and players members of the server_t structure were never
+      used in any way), added M2C_MASTER_REPLY defined as 'd' and used it
+      in Mst_SendList, fixed an error in the packet parser which always
+      reported that it received a pingtool server list request even for
+      invalid packets, added a "clear" console command to clear the list
+      of registered servers, moved the "fil|er" console command addition
+      to net.c.
+    * whitespace cleanup in hexenworld master server
+    * updated the documentation for hexenworld master server
+
 2006-07-15 (CVS):
     * updated the mkrelease script to run on non-linux platforms
     * updates to the build scripts.
