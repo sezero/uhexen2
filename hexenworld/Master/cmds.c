@@ -29,7 +29,7 @@ void Cmd_TokenizeString (char *text)
 	int		i;
 
 	// clear the args from the last string
-	for (i=0 ; i<cmd_argc ; i++)
+	for (i = 0; i < cmd_argc; i++)
 		free (cmd_argv[i]);
 
 	cmd_argc = 0;
@@ -176,7 +176,7 @@ void Cbuf_Execute (void)
 		text = (char *)cmd_text.data;
 
 		quotes = 0;
-		for (i=0 ; i< cmd_text.cursize ; i++)
+		for (i = 0; i < cmd_text.cursize; i++)
 		{
 			if (text[i] == '"')
 				quotes++;
@@ -225,7 +225,7 @@ qboolean Cmd_Exists (char *cmd_name)
 
 //Commands
 
-static void Cmd_Quit_f()
+static void Cmd_Quit_f (void)
 {
 	printf ("Shutting down.\n");
 	SV_Shutdown ();
@@ -233,15 +233,15 @@ static void Cmd_Quit_f()
 	Sys_Quit();
 }
 
-static void Cmd_ServerList_f()
+static void Cmd_ServerList_f (void)
 {
 	server_t *sv;
 
-	for(sv = sv_list;sv;sv = sv->next)
+	for (sv=sv_list ; sv ; sv=sv->next)
 		printf("%s  %i players\n",NET_AdrToString(sv->ip),sv->players);
 }
 
-void Cmd_Init()
+void Cmd_Init (void)
 {
 	Cmd_AddCommand("quit",Cmd_Quit_f);
 	Cmd_AddCommand("list",Cmd_ServerList_f);

@@ -449,12 +449,12 @@ static void SV_TimeOut(void)
 	server_t *sv;
 	server_t *next;
 
-	if(sv_list==NULL)
+	if (sv_list == NULL)
 		return;
 
-	for(sv = sv_list;sv;)
+	for (sv=sv_list ; sv ; )
 	{
-		if(sv->timeout + SV_TIMEOUT < t)
+		if (sv->timeout + SV_TIMEOUT < t)
 		{
 			next = sv->next;
 			printf("%s timed out\n",NET_AdrToString(sv->ip));
@@ -535,7 +535,7 @@ int main (int argc, char **argv)
 
 	printf("======== HW master %s initialized ========\n\n", VER_HWMASTER);
 
-	while(1)
+	while (1)
 	{
 		SV_Frame();
 	}
