@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.34 2006-06-15 09:20:41 sezero Exp $
+	$Id: snd_dma.c,v 1.35 2006-07-16 22:30:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,6 +10,9 @@
 
 static void S_Play (void);
 static void S_PlayVol (void);
+static void S_ToggleMute(void);
+static void S_VolumeDown(void);
+static void S_VolumeUp(void);
 static void S_SoundList (void);
 static void S_Update_ (void);
 void S_StopAllSounds (qboolean clear);
@@ -72,8 +75,12 @@ const int	MAX_TRYRATES = sizeof(tryrates)/sizeof(tryrates[0]);
 cvar_t		bgmvolume = {"bgmvolume", "1", CVAR_ARCHIVE};
 cvar_t		bgmtype = {"bgmtype", "cd", CVAR_ARCHIVE};	// cd or midi
 cvar_t		sfxvolume = {"volume", "0.7", CVAR_ARCHIVE};
+
 cvar_t		precache = {"precache", "1", CVAR_NONE};
 cvar_t		loadas8bit = {"loadas8bit", "0", CVAR_NONE};
+
+static	float	sfx_savedvol = 0.0f;
+static	float	bgm_savedvol = 0.0f;
 
 static	cvar_t	nosound = {"nosound", "0", CVAR_NONE};
 static	cvar_t	ambient_level = {"ambient_level", "0.3", CVAR_NONE};
@@ -184,6 +191,9 @@ void S_Init (void)
 	Cmd_AddCommand("stopsound", S_StopAllSoundsC);
 	Cmd_AddCommand("soundlist", S_SoundList);
 	Cmd_AddCommand("soundinfo", S_SoundInfo_f);
+	Cmd_AddCommand("mute", S_ToggleMute);
+	Cmd_AddCommand("volumeup", S_VolumeUp);
+	Cmd_AddCommand("volumedown", S_VolumeDown);
 
 	Cvar_RegisterVariable(&nosound);
 	Cvar_RegisterVariable(&sfxvolume);
@@ -935,6 +945,47 @@ console functions
 ===============================================================================
 */
 
+// S.A. volume procs
+static void S_ToggleMute(void)
+{
+	if (sfx_savedvol || bgm_savedvol)
+	{
+		Cvar_SetValue("volume", sfx_savedvol);
+		Cvar_SetValue("bgmvolume", bgm_savedvol);
+		sfx_savedvol = 0.0f;
+		bgm_savedvol = 0.0f;
+		if (sfxvolume.value || bgmvolume.value)
+			Con_Printf ("Unmuted\n");
+	}
+	else
+	{
+		sfx_savedvol = sfxvolume.value;
+		bgm_savedvol = bgmvolume.value;
+		Cvar_SetValue("volume", 0);
+		Cvar_SetValue("bgmvolume", 0);
+		if (sfx_savedvol || bgm_savedvol)
+			Con_Printf ("Muted\n");
+	}
+}
+
+static void S_VolumeDown(void)
+{
+	if (sfxvolume.value >= 0.1)
+		Cvar_SetValue("volume",sfxvolume.value - 0.1);
+	if (bgmvolume.value >= 0.1)
+		Cvar_SetValue("bgmvolume",bgmvolume.value - 0.1);
+	Con_Printf ("Volume is %3.1f\n", sfxvolume.value);
+}
+
+static void S_VolumeUp(void)
+{
+	if (sfxvolume.value <= 0.9)
+		Cvar_SetValue("volume",sfxvolume.value + 0.1);
+	if (bgmvolume.value <= 0.9)
+		Cvar_SetValue("bgmvolume",bgmvolume.value + 0.1);
+	Con_Printf ("Volume is %3.1f\n", sfxvolume.value);
+}
+
 static void S_Play(void)
 {
 	static int hash=345;
@@ -1045,6 +1096,10 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.34  2006/06/15 09:20:41  sezero
+ * added an experimental SUN Audio driver, adapted from the darkplaces
+ * project. for native audio in openbsd and netbsd.
+ *
  * Revision 1.33  2006/05/20 12:38:01  sezero
  * cleaned up sound tryrates, etc. changed tryrates array to include
  * 48000, 24000, and 16000 speeds (this should help 48khz AC97 chips,
