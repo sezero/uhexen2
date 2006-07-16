@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2006-07-16 (CVS):
+    * added mute, volumeup and volumedown console commands. patch from
+      Steven.
     * clean-up in hexenworld master server: removed dead code (the info,
       heartbeat and players members of the server_t structure were never
       used in any way), added M2C_MASTER_REPLY defined as 'd' and used it
