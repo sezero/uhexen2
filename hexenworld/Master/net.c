@@ -73,7 +73,9 @@ static qboolean NET_GetPacket (void);
 
 extern char	filters_file[256];
 
+
 //=============================================================================
+
 typedef struct filter_s
 {
 	netadr_t from;
@@ -152,10 +154,151 @@ static filter_t* FL_Find(netadr_t adr)
 
 //=============================================================================
 
+static int argv_index_add;
+
+static void Cmd_FilterAdd(void)
+{
+	filter_t	*filter;
+	netadr_t	to, from;
+
+	if (Cmd_Argc() < 4 + argv_index_add)
+	{
+		printf("Invalid command parameters. Usage:\nfilter add x.x.x.x:port x.x.x.x:port\n\n");
+		return;
+	}
+
+	NET_StringToAdr(Cmd_Argv(2+argv_index_add),&from);
+	NET_StringToAdr(Cmd_Argv(3+argv_index_add),&to);
+
+	if (to.port == 0)
+		from.port = BigShort(PORT_SERVER);
+
+	if (from.port == 0)
+		from.port = BigShort(PORT_SERVER);
+
+	if ( !(filter = FL_Find(from)) )
+	{
+		printf("Added filter %s\t\t%s\n", Cmd_Argv(2+argv_index_add), Cmd_Argv(3+argv_index_add));
+
+		filter = FL_New(from,to);
+		FL_Add(filter);
+	}
+	else
+	{
+		printf("%s already defined\n\n", Cmd_Argv(2+argv_index_add));
+	}
+}
+
+static void Cmd_FilterRemove(void)
+{
+	filter_t	*filter;
+	netadr_t	from;
+
+	if (Cmd_Argc() < 3 + argv_index_add)
+	{
+		printf("Invalid command parameters. Usage:\nfilter remove x.x.x.x:port\n\n");
+		return;
+	}
+
+	NET_StringToAdr(Cmd_Argv(2+argv_index_add),&from);
+
+	if ((filter = FL_Find(from)))
+	{
+		printf("Removed %s\n\n", Cmd_Argv(2+argv_index_add));
+
+		FL_Remove(filter);
+		free(filter);
+	}
+	else
+	{
+		printf("Cannot find %s\n\n", Cmd_Argv(2+argv_index_add));
+	}
+}
+
+static void Cmd_FilterList(void)
+{
+	filter_t	*filter;
+
+	for (filter=filter_list ; filter ; filter=filter->next)
+	{
+		printf("%s", NET_AdrToString(filter->from));
+		printf("\t\t%s\n", NET_AdrToString(filter->to));
+	}
+
+	if (filter_list == NULL)
+		printf("No filter\n");
+
+	printf("\n");
+}
+
+static void Cmd_FilterClear(void)
+{
+	printf("Removed all filters\n\n");
+	FL_Clear();
+}
+
+static void Cmd_Filter_f(void)
+{
+	argv_index_add = 0;
+
+	if ( !strcmp(Cmd_Argv(1),"add") )
+	{
+		Cmd_FilterAdd();
+	}
+	else if ( !strcmp(Cmd_Argv(1),"remove") )
+	{
+		Cmd_FilterRemove();
+	}
+	else if ( !strcmp(Cmd_Argv(1),"clear") )
+	{
+		Cmd_FilterClear();
+	}
+	else if (Cmd_Argc() == 3)
+	{
+		argv_index_add = -1;
+		Cmd_FilterAdd();
+	}
+	else if (Cmd_Argc() == 2)
+	{
+		argv_index_add = -1;
+		Cmd_FilterRemove();
+	}
+	else
+	{
+		Cmd_FilterList();
+	}
+}
+
+//=============================================================================
+
+void SV_WriteFilterList(void)
+{
+	FILE	*filters;
+	filter_t	*filter;
+
+	if ((filters = fopen(filters_file,"wt")))
+	{
+		if (filter_list == NULL)
+		{
+			fclose(filters);
+			return;
+		}
+
+		for (filter=filter_list ; filter ; filter=filter->next)
+		{
+			fprintf(filters, "%s", NET_AdrToString(filter->from));
+			fprintf(filters, " %s\n", NET_AdrToString(filter->to));
+		}
+		fclose(filters);
+	}
+}
+
+
+//=============================================================================
+
 server_t *sv_list = NULL;
 
-#if 0	// not used
-void SVL_Clear(void)
+static void SVL_Clear(void)
 {
 	server_t *sv;
 
@@ -172,16 +315,14 @@ void SVL_Clear(void)
 	}
 
 	sv_list = NULL;
+	printf("Cleared the server list\n\n");
 }
-#endif
 
 static server_t* SVL_New(netadr_t adr)
 {
 	server_t *sv;
 
 	sv = (server_t *)malloc(sizeof(server_t));
-	sv->heartbeat = 0;
-	sv->info[0] = 0;
 	sv->ip.ip[0] = 
 		sv->ip.ip[1] = 
 		sv->ip.ip[2] = 
@@ -190,7 +331,6 @@ static server_t* SVL_New(netadr_t adr)
 	sv->ip.port = 0;
 	sv->next = NULL;
 	sv->previous = NULL;
-	sv->players = 0;
 
 	NET_CopyAdr(&sv->ip,&adr);
 
@@ -356,6 +496,9 @@ void SV_InitNet (void)
 
 		fclose(filters);
 	}
+
+	Cmd_AddCommand("clear", SVL_Clear);
+	Cmd_AddCommand("filter", Cmd_Filter_f);
 }
 
 static int UDP_OpenSocket (int port)
@@ -537,7 +680,7 @@ static void AnalysePacket(void)
 	byte	*p;
 	int		i;
 
-	printf("%s sending packet:\n",NET_AdrToString(net_from));
+	printf("Unknown packet from %s:\n", NET_AdrToString(net_from));
 
 	p = net_message.data;
 
@@ -598,7 +741,7 @@ static void Mst_SendList(void)
 	MSG_WriteByte(&msg,255);
 	MSG_WriteByte(&msg,255);
 	MSG_WriteByte(&msg,255);
-	MSG_WriteByte(&msg,'d');
+	MSG_WriteByte(&msg,M2C_MASTER_REPLY);
 	MSG_WriteByte(&msg,'\n');
 
 	if (sv_num > 0)
@@ -621,14 +764,12 @@ static void Mst_Packet(void)
 	char		msg;
 	server_t	*sv;
 
-	//NET_Filter();
-
 	msg = net_message.data[1];
 
-	if (msg == A2A_PING)
+	switch (msg)
 	{
+	case A2A_PING:
 		NET_Filter();
-
 		printf("%s >> A2A_PING\n", NET_AdrToString(net_from));
 		if ( !(sv = SVL_Find(net_from)) )
 		{
@@ -636,9 +777,9 @@ static void Mst_Packet(void)
 			SVL_Add(sv);
 		}
 		sv->timeout = Sys_DoubleTime();
-	}
-	else if (msg == S2M_HEARTBEAT)
-	{
+		break;
+
+	case S2M_HEARTBEAT:
 		NET_Filter();
 		printf("%s >> S2M_HEARTBEAT\n", NET_AdrToString(net_from));
 		if ( !(sv = SVL_Find(net_from)) )
@@ -647,9 +788,9 @@ static void Mst_Packet(void)
 			SVL_Add(sv);
 		}
 		sv->timeout = Sys_DoubleTime();
-	}
-	else if (msg == S2M_SHUTDOWN)
-	{
+		break;
+
+	case S2M_SHUTDOWN:
 		NET_Filter();
 		printf("%s >> S2M_SHUTDOWN\n", NET_AdrToString(net_from));
 		if ((sv = SVL_Find(net_from)))
@@ -657,30 +798,29 @@ static void Mst_Packet(void)
 			SVL_Remove(sv);
 			free(sv);
 		}
-	}
-	else if (msg == 'c')
-	{
+		break;
+
+	case S2C_CHALLENGE:
 		printf("%s >> ", NET_AdrToString(net_from));
 		printf("Gamespy server list request\n");
 		Mst_SendList();
-	}
-	else
-	{
-		byte	*p;
-		p = net_message.data;
+		break;
 
-		printf("%s >> ",NET_AdrToString(net_from));
-		printf("Pingtool server list request\n");
+	default:
+		{
+			byte		*p;
+			p = net_message.data;
 
-		if (p[0] == 0 && p[1] == 'y')
-		{
-			Mst_SendList();
-		}
-		else
-		{
-			printf("%s >> ", NET_AdrToString(net_from));
-			printf("%c\n", net_message.data[1]);
-			AnalysePacket();
+			if (p[0] == 0 && p[1] == 'y')
+			{
+				printf("%s >> ", NET_AdrToString(net_from));
+				printf("Pingtool server list request\n");
+				Mst_SendList();
+			}
+			else
+			{
+				AnalysePacket();
+			}
 		}
 	}
 }
@@ -731,146 +871,4 @@ static qboolean NET_GetPacket (void)
 	return ret;
 }
 
-#if 0	// not used
-void SV_ConnectionlessPacket (void)
-{
-	printf("%s>>%s\n",NET_AdrToString(net_from),net_message.data);
-}
-#endif
 
-static int argv_index_add;
-
-static void Cmd_FilterAdd(void)
-{
-	filter_t	*filter;
-	netadr_t	to, from;
-
-	if (Cmd_Argc() < 4 + argv_index_add)
-	{
-		printf("Invalid command parameters. Usage:\nfilter add x.x.x.x:port x.x.x.x:port\n\n");
-		return;
-	}
-
-	NET_StringToAdr(Cmd_Argv(2+argv_index_add),&from);
-	NET_StringToAdr(Cmd_Argv(3+argv_index_add),&to);
-
-	if (to.port == 0)
-		from.port = BigShort(PORT_SERVER);
-
-	if (from.port == 0)
-		from.port = BigShort(PORT_SERVER);
-
-	if ( !(filter = FL_Find(from)) )
-	{
-		printf("Added filter %s\t\t%s\n", Cmd_Argv(2+argv_index_add), Cmd_Argv(3+argv_index_add));
-
-		filter = FL_New(from,to);
-		FL_Add(filter);
-	}
-	else
-	{
-		printf("%s already defined\n\n", Cmd_Argv(2+argv_index_add));
-	}
-}
-
-static void Cmd_FilterRemove(void)
-{
-	filter_t	*filter;
-	netadr_t	from;
-
-	if (Cmd_Argc() < 3 + argv_index_add)
-	{
-		printf("Invalid command parameters. Usage:\nfilter remove x.x.x.x:port\n\n");
-		return;
-	}
-
-	NET_StringToAdr(Cmd_Argv(2+argv_index_add),&from);
-
-	if ((filter = FL_Find(from)))
-	{
-		printf("Removed %s\n\n", Cmd_Argv(2+argv_index_add));
-
-		FL_Remove(filter);
-		free(filter);
-	}
-	else
-	{
-		printf("Cannot find %s\n\n", Cmd_Argv(2+argv_index_add));
-	}
-}
-
-static void Cmd_FilterList(void)
-{
-	filter_t	*filter;
-
-	for (filter=filter_list ; filter ; filter=filter->next)
-	{
-		printf("%s", NET_AdrToString(filter->from));
-		printf("\t\t%s\n", NET_AdrToString(filter->to));
-	}
-
-	if (filter_list == NULL)
-		printf("No filter\n");
-
-	printf("\n");
-}
-
-static void Cmd_FilterClear(void)
-{
-	printf("Removed all filters\n\n");
-	FL_Clear();
-}
-
-void Cmd_Filter_f(void)
-{
-	argv_index_add = 0;
-
-	if ( !strcmp(Cmd_Argv(1),"add") )
-	{
-		Cmd_FilterAdd();
-	}
-	else if ( !strcmp(Cmd_Argv(1),"remove") )
-	{
-		Cmd_FilterRemove();
-	}
-	else if ( !strcmp(Cmd_Argv(1),"clear") )
-	{
-		Cmd_FilterClear();
-	}
-	else if (Cmd_Argc() == 3)
-	{
-		argv_index_add = -1;
-		Cmd_FilterAdd();
-	}
-	else if (Cmd_Argc() == 2)
-	{
-		argv_index_add = -1;
-		Cmd_FilterRemove();
-	}
-	else
-	{
-		Cmd_FilterList();
-	}
-}
-
-void SV_WriteFilterList(void)
-{
-	FILE	*filters;
-	filter_t	*filter;
-
-	if ((filters = fopen(filters_file,"wt")))
-	{
-		if (filter_list == NULL)
-		{
-			fclose(filters);
-			return;
-		}
-
-		for (filter=filter_list ; filter ; filter=filter->next)
-		{
-			fprintf(filters, "%s", NET_AdrToString(filter->from));
-			fprintf(filters, " %s\n", NET_AdrToString(filter->to));
-		}
-		fclose(filters);
-	}
-}

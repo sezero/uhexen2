@@ -238,13 +238,12 @@ static void Cmd_ServerList_f (void)
 	server_t *sv;
 
 	for (sv=sv_list ; sv ; sv=sv->next)
-		printf("%s  %i players\n",NET_AdrToString(sv->ip),sv->players);
+		printf("\t%s\n", NET_AdrToString(sv->ip));
 }
 
 void Cmd_Init (void)
 {
 	Cmd_AddCommand("quit",Cmd_Quit_f);
 	Cmd_AddCommand("list",Cmd_ServerList_f);
-	Cmd_AddCommand("filter",Cmd_Filter_f);
 }
 

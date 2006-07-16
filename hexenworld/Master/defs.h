@@ -55,7 +55,7 @@ typedef enum {false, true}	qboolean;
 #define	S2M_HEARTBEAT		'a'	// + serverinfo + userlist + fraglist
 #define	A2C_CLIENT_COMMAND	'B'	// + command line
 #define	S2M_SHUTDOWN		'C'
-
+#define	M2C_MASTER_REPLY	'd'	// + \n + hw server port list
 //KS:
 #define A2M_LIST		'o'
 #define M2A_SENDLIST		'p'
@@ -63,9 +63,6 @@ typedef enum {false, true}	qboolean;
 #define	MAX_MSGLEN		1450	// max length of a reliable message
 #define	MAX_DATAGRAM		1450	// max length of unreliable message
 #define	MAX_UDP_PACKET	(MAX_MSGLEN*2)	// one more than msg + header
-
-#define	MAX_SERVERINFO_STRING	512
-#define	MAX_CLIENTS		32
 
 
 //=============================================================================
@@ -83,9 +80,6 @@ typedef struct
 typedef struct server_s
 {
 	netadr_t	ip;
-	int		heartbeat;
-	int		players;
-	char	info[MAX_SERVERINFO_STRING];
 	struct	server_s *next;
 	struct	server_s *previous;
 	double	timeout;
@@ -139,12 +133,11 @@ void Cbuf_Execute (void);
 qboolean Cmd_Exists (char *cmd_name);
 
 //net.c
-void SV_InitNet (void);
 void NET_Shutdown (void);
 char *NET_AdrToString (netadr_t a);
+void SV_InitNet (void);
 void SV_ReadPackets (void);
 void SVL_Remove(server_t *sv);
-void Cmd_Filter_f (void);
 
 
 //=============================================================================
