@@ -1,18 +1,21 @@
 Hammer of Thyrion,
 HexenWorld Master Server
-Version 1.2.2
+Version 1.2.3
 ------------------------
 
-This is a small, stand-alone command line only program even with no need
-of any hexen2 game installed. It uses 26900 as the default port.
+This is a small, commandline-only program. It doesn't need any Hexen II
+or HexenWorld installation. It uses 26900 as the default port.
 
 Command line parameters:
 -port xxxxx	select a port other than default (26900)
 
 Console commands:
 
+quit		shuts down the master server
+
 list		lists all registered servers
-quit		just guess whats that for! :)
+clear		clears the list of registered servers
+
 filter		lists all current IP filters. When the program receives
 		packets from an IP matching a filter, the incomming IP
 		is changed to the value set in the filter
@@ -21,10 +24,7 @@ filter add xxx.xxx.xxx.xxx:port xxx.xxx.xxx.xxx:port	adds a filter
 filter remove xxx.xxx.xxx.xxx:port			removes a filter
 filter clear						removes all filters
 
-The program source code, initially put together by Marc Allaire (aka. Kor
-Skarn), is based on the quakeworld source, and is subject to the General
-Public Liscence v2.
 
-The original email address of the author was korskarn@hexenworld.com, but
-that address seems non-operational today.
+The source is based on previous works by Marc Allaire (aka. Kor Skarn) and
+QuakeForge authors, and is subject to the General Public Liscence v2.
 
