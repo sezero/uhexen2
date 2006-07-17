@@ -9,6 +9,11 @@ Development Progress	:
       macros for better readability. made it to acknowledge the
       -sndspeed, -sndbits and -sndmono commandline arguments. Still
       problems with it though (audio can't keep up messages...)
+    * renamed our own strings.h to pr_strng.h to avoid clashes
+      with <strings.h>: we need <strings.h> for the strcasecmp
+      and strncasecmp functions. used -dirafter for the local
+      includes where possible. renamed strings.c to pr_strng.c
+      for consistancy.
 
 2006-07-16 (CVS):
     * added mute, volumeup and volumedown console commands. patch from
