@@ -3,6 +3,10 @@
 
 #include <stdio.h>
 #include <string.h>
+#if !defined(_WIN32)
+// for strcasecmp and strncasecmp
+#include <strings.h>
+#endif
 #include <stdarg.h>
 #include <stdlib.h>
 

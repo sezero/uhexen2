@@ -74,11 +74,11 @@ EXT_FLAGS:=-DSERVERONLY $(ARCHFLAGS)
 
 ifeq "$(TARGET_OS)" "WIN32"
 # Main win32 specific includes and flags
-INCLUDES:= -I./server -I. -I$(MINGWDIR)/include
+INCLUDES:= -I$(MINGWDIR)/include -idirafter ./server -idirafter .
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mconsole
 else
 # Main unix specific includes and flags
-INCLUDES:=  -I./server -I.
+INCLUDES:=  -idirafter ./server -idirafter .
 LDFLAGS := $(LIBSOCKET) -lm
 EXT_FLAGS+= -DPLATFORM_UNIX
 endif
@@ -133,7 +133,7 @@ H2DED_OBJS = cmd.o \
 	pr_cmds.o \
 	pr_edict.o \
 	pr_exec.o \
-	strings.o \
+	pr_strng.o \
 	sv_main.o \
 	sv_move.o \
 	sv_phys.o \

@@ -47,10 +47,10 @@ endif
 
 # Other build flags
 EXT_FLAGS:= -DH2W -DSERVERONLY $(ARCHFLAGS)
-INCLUDES := -I../Client -I.
+INCLUDES := -idirafter ../Client -idirafter .
 
 ifeq "$(TARGET_OS)" "WIN32"
-INCLUDES += -I$(MINGWDIR)/include
+INCLUDES := -I$(MINGWDIR)/include $(INCLUDES)
 LDFLAGS  := -L$(MINGWDIR)/lib -lm -lwsock32 -mconsole
 else
 EXT_FLAGS+= -DPLATFORM_UNIX
@@ -91,7 +91,7 @@ COMMONOBJS = model.o \
 	cl_objs/common.o \
 	cl_objs/crc.o \
 	cl_objs/cvar.o \
-	cl_objs/strings.o \
+	cl_objs/pr_strng.o \
 	cl_objs/mathlib.o \
 	cl_objs/huffman.o \
 	cl_objs/net_wins.o \

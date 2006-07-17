@@ -1,5 +1,5 @@
 //
-// pr_strings.c
+// pr_strng.c
 // For international stuff
 //
 

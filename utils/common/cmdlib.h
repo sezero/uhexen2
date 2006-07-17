@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.5 2006-07-03 08:23:56 sezero Exp $
+	$Id: cmdlib.h,v 1.6 2006-07-17 14:48:41 sezero Exp $
 */
 
 #ifndef __CMDLIB__
@@ -13,6 +13,10 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+#if !defined(_WIN32)
+// for strcasecmp and strncasecmp
+#include <strings.h>
+#endif
 #include <stdlib.h>
 #include <stdarg.h>
 #include <ctype.h>

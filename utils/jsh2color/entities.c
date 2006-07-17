@@ -20,7 +20,6 @@
 // entities.c
 
 
-#include <string.h>
 #include "cmdlib.h"
 
 #include "tyrlite.h"

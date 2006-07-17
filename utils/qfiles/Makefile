@@ -39,11 +39,11 @@ endif
 # Other build flags
 
 ifeq "$(TARGET_OS)" "WIN32"
-INCLUDES:= -I$(COMMONDIR) -I$(MINGWDIR)/include
+INCLUDES:= -I$(MINGWDIR)/include -idirafter $(COMMONDIR)
 LDFLAGS := -mconsole
 LDLIBS  :=
 else
-INCLUDES:= -I$(COMMONDIR)
+INCLUDES:= -idirafter $(COMMONDIR)
 LDFLAGS :=
 LDLIBS  :=
 endif

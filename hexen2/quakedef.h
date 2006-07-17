@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.86 2006-07-04 16:25:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.87 2006-07-17 14:48:41 sezero Exp $
 */
 
 
@@ -57,6 +57,10 @@
 #include <sys/types.h>
 #include <math.h>
 #include <string.h>
+#if !defined(_WIN32)
+// for strcasecmp and strncasecmp
+#include <strings.h>
+#endif
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -351,7 +355,7 @@ typedef struct
 #endif
 
 #include "progs.h"
-#include "strings.h"
+#include "pr_strng.h"
 #include "cl_effect.h"
 #ifdef SERVERONLY
 #include "h2ded.h"
@@ -454,6 +458,9 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.86  2006/07/04 16:25:23  sezero
+ * marked the snapshot of 2006-07-04 as 1.4.1-pre8
+ *
  * Revision 1.85  2006/07/03 14:05:36  sezero
  * re-visited the GL data types, made them to be of GL types and solved
  * the signedness issues. completely removed the scrap allocation option.

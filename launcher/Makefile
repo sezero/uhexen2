@@ -49,7 +49,7 @@ else
 CFLAGS := -Wall -O2
 endif
 
-CFLAGS := $(CFLAGS) -I. $(GTK_CFLAGS)
+CFLAGS := $(CFLAGS) $(GTK_CFLAGS) -idirafter .
 
 ifdef DEMO
 CFLAGS := $(CFLAGS) -DDEMOBUILD

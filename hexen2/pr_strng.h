@@ -1,5 +1,5 @@
 //
-// pr_strings.h
+// pr_strng.h
 //
 
 extern	int	*pr_string_index;
@@ -17,5 +17,5 @@ extern	char	*pr_global_info_strings;
 extern	int	pr_info_string_count;
 
 void PR_LoadInfoStrings (void);
-#endif
+#endif	// !H2W
 

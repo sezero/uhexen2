@@ -135,11 +135,11 @@ EXT_FLAGS:=$(ARCHFLAGS)
 
 ifeq "$(TARGET_OS)" "WIN32"
 # Main win32 specific includes and flags
-INCLUDES:= -I. -I$(UHEXEN2_TOP)/w32stuff/dxsdk/inc -I$(MINGWDIR)/include
+INCLUDES:= -I$(UHEXEN2_TOP)/w32stuff/dxsdk/inc -I$(MINGWDIR)/include -idirafter .
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mwindows
 else
 # Main unix specific includes and flags
-INCLUDES:= -I$(X11_PATH)/include
+INCLUDES:= -I$(X11_PATH)/include -idirafter .
 LDFLAGS := $(LIBSOCKET)
 EXT_FLAGS+= -DPLATFORM_UNIX
 endif
@@ -193,7 +193,7 @@ endif
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) $(SDLFLAGS) -o $@ $<
+	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
 %.o: %.asm
 	$(NASM) $(NASMFLAGS) -o $@ $<
 %.o: %.rc
@@ -318,7 +318,7 @@ COMMONOBJS = chase.o \
 	cvar.o \
 	host.o \
 	host_cmd.o \
-	strings.o \
+	pr_strng.o \
 	$(SYSOBJ_INPUT) \
 	keys.o \
 	mathlib.o \

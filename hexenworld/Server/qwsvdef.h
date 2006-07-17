@@ -2,12 +2,16 @@
 	quakedef.h
 	primary header for server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/qwsvdef.h,v 1.8 2006-06-25 10:21:05 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/qwsvdef.h,v 1.9 2006-07-17 14:48:41 sezero Exp $
 */
 
 #include <sys/types.h>
 #include <math.h>
 #include <string.h>
+#if !defined(_WIN32)
+// for strcasecmp and strncasecmp
+#include <strings.h>
+#endif
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,6 +33,7 @@
 #include "crc.h"
 
 #include "progs.h"
+#include "pr_strng.h"
 #include "cl_effect.h"
 #include "model.h"
 
