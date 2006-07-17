@@ -1,6 +1,6 @@
 /*
 	snd_sun.c
-	$Id: snd_sun.c,v 1.1 2006-06-15 09:20:41 sezero Exp $
+	$Id: snd_sun.c,v 1.2 2006-07-17 14:07:59 sezero Exp $
 
 	SUN Audio driver for BSD and SunOS
 
@@ -47,21 +47,36 @@
 #endif
 #include <unistd.h>
 
+#if defined(SUNOS)
 
-static int audio_fd = -1;
+#define	FORMAT_U8	AUDIO_ENCODING_LINEAR8
+#define	FORMAT_S16	AUDIO_ENCODING_LINEAR
 
-// TODO: allocate them in SNDDMA_Init, with a size depending on
-// the sound format (enough for 0.5 sec of sound for instance)
-#define SND_BUFF_SIZE 65536
-static unsigned char dma_buffer [SND_BUFF_SIZE];
-static unsigned char writebuf [SND_BUFF_SIZE];
+#else	// BSD
+
+#define	FORMAT_U8	AUDIO_ENCODING_LINEAR8
+#if BYTE_ORDER == BIG_ENDIAN
+#define	FORMAT_S16	AUDIO_ENCODING_SLINEAR_BE
+#else
+#define	FORMAT_S16	AUDIO_ENCODING_SLINEAR_LE
+#endif
+
+#endif
+
+static int	audio_fd = -1;
+
+//#define	SND_BUFF_SIZE	65536
+#define	SND_BUFF_SIZE	8192
+static unsigned char	dma_buffer [SND_BUFF_SIZE];
+//static unsigned char	writebuf [SND_BUFF_SIZE];
+static unsigned char	writebuf [1024];
+static int	wbufp;
 
 void S_SUN_Shutdown (void);
 
 
 qboolean S_SUN_Init (void)
 {
-	unsigned int	i;
 	const char	*snddev;
 	audio_info_t	info;
 
@@ -85,47 +100,37 @@ qboolean S_SUN_Init (void)
 	memset ((void *)&sn, 0, sizeof (sn));
 	shm = &sn;
 
-	// Look for an appropriate sound format
-	// TODO: we should also test mono/stereo and bits
-	// TODO: support "-sndspeed", "-sndbits", "-sndmono" and "-sndstereo"
-	shm->channels = 2;
-	shm->samplebits = 16;
-	for (i = 0; i < MAX_TRYRATES; i++)
-	{
-		shm->speed = tryrates[i];
+	AUDIO_INITINFO (&info);
 
-		AUDIO_INITINFO (&info);
-		info.play.sample_rate = shm->speed;
-		info.play.channels = shm->channels;
-		info.play.precision = shm->samplebits;
-// We only handle sound cards of the same endianess than the CPU
-#if BYTE_ORDER == BIG_ENDIAN
-		info.play.encoding = AUDIO_ENCODING_SLINEAR_BE;
-#else
-#ifndef SUNOS
-		info.play.encoding = AUDIO_ENCODING_SLINEAR_LE;
-#else
-		info.play.encoding = AUDIO_ENCODING_LINEAR;
-#endif
-#endif
-		if (ioctl (audio_fd, AUDIO_SETINFO, &info) == 0)
-			break;
-	}
-	if (i == MAX_TRYRATES)
+	// these desired values are decided in snd_dma.c according
+	// to the defaults and the user's command line parameters.
+	info.play.sample_rate = desired_speed;
+	info.play.channels = desired_channels;
+	info.play.precision = desired_bits;
+	info.play.encoding = (desired_bits == 8) ? FORMAT_U8 : FORMAT_S16;
+	if (ioctl (audio_fd, AUDIO_SETINFO, &info) != 0)
 	{
-		Con_Printf("Can't select an appropriate sound output format\n");
+	// TODO: also try other options of sampling
+	//	 rate and format upon failure???
+		Con_Printf("Couldn't set desired sound output format (%d bit, %s, %d Hz)\n",
+				desired_bits, (desired_channels == 2) ? "stereo" : "mono", desired_speed);
 		close (audio_fd);
 		shm = NULL;
 		return false;
 	}
 
+	shm->channels = info.play.channels;
+	shm->samplebits = info.play.precision;
+	shm->speed = info.play.sample_rate;
+
 	// Print some information
 	Con_Printf("SUN Audio initialized (%d bit, %s, %d Hz)\n",
-				info.play.precision,
-				(info.play.channels == 2) ? "stereo" : "mono",
-				info.play.sample_rate);
+				shm->samplebits, (shm->channels == 2) ? "stereo" : "mono", shm->speed);
 
-	shm->samples = shm->channels * sizeof (dma_buffer) / (shm->samplebits/8) / shm->channels;
+	if (shm->speed != desired_speed)
+		Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", shm->speed, desired_speed);
+
+	shm->samples = sizeof (dma_buffer) / (shm->samplebits / 8);
 	shm->submission_chunk = 1;
 	shm->samplepos = 0;
 	shm->buffer = dma_buffer;
@@ -168,7 +173,6 @@ void S_SUN_Submit (void)
 {
 	int		bsize;
 	int		bytes, b;
-	static int	wbufp = 0;
 	unsigned char	*p;
 	int		idx;
 	int		stop = paintedtime;
