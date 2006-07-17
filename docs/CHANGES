@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-07-17 (CVS):
+    * updates to the sunaudio driver: reduced the dma buffer size
+      to the original values of ID software. added some endianness
+      macros for better readability. made it to acknowledge the
+      -sndspeed, -sndbits and -sndmono commandline arguments. Still
+      problems with it though (audio can't keep up messages...)
+
 2006-07-16 (CVS):
     * added mute, volumeup and volumedown console commands. patch from
       Steven.
