@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.9 2006-03-28 19:53:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.10 2006-07-18 08:34:55 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -558,13 +558,10 @@ static void D_PolysetCalcGradients (int skin_width)
 	r_zistepx = (int)((t1 * p01_minus_p21 - t0 * p11_minus_p21) * xstepdenominv);
 	r_zistepy = (int)((t1 * p00_minus_p20 - t0 * p10_minus_p20) * ystepdenominv);
 
-#if	id386
-	a_sstepxfrac = r_sstepx << 16;
-	a_tstepxfrac = r_tstepx << 16;
-#else
+//	a_sstepxfrac = r_sstepx << 16;	// was #if id386 code
+//	a_tstepxfrac = r_tstepx << 16;	// was #if id386 code
 	a_sstepxfrac = r_sstepx & 0xFFFF;
 	a_tstepxfrac = r_tstepx & 0xFFFF;
-#endif
 
 	a_ststepxwhole = skin_width * (r_tstepx >> 16) + (r_sstepx >> 16);
 }
@@ -1134,6 +1131,12 @@ split:
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2006/03/28 19:53:23  sezero
+ * continue making static functions and vars static. whitespace and coding
+ * style cleanup. part 47: software renderer: r_aclip.c, r_alias.c, r_bsp.c,
+ * r_draw.c, r_edge.c.  also removed the #warning directives for the non-x86
+ * non-compilability.  added a few comments about the non-Intel issue.
+ *
  * Revision 1.8  2006/03/27 19:58:33  sezero
  * continue making static functions and vars static. whitespace and coding
  * style cleanup. part 46: software renderer drawing functions.
