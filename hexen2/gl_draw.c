@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.80 2006-07-03 14:05:36 sezero Exp $
+	$Id: gl_draw.c,v 1.81 2006-07-18 08:30:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -164,7 +164,7 @@ static qpic_t *Draw_PicFromFile (char *name)
 
 // Pa3PyX: Like Draw_PicFromFile, except loads pic into
 // a specified buffer if there is room
-static qpic_t *Draw_PicFileBuf(char *name, void *p, int *size)
+static qpic_t *Draw_PicFileBuf(char *name, void *p, size_t *size)
 {
 	glpic_t	*gl;
 
@@ -422,7 +422,7 @@ Draw_Init
 */
 void Draw_Init (void)
 {
-	static int	bt_len;
+	static size_t	bt_len;
 	int		i;
 	qpic_t	*cb, *mf;
 /*	byte	*dest;
@@ -2006,6 +2006,11 @@ GLuint GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.80  2006/07/03 14:05:36  sezero
+ * re-visited the GL data types, made them to be of GL types and solved
+ * the signedness issues. completely removed the scrap allocation option.
+ * thanks to Levent Yavas for his help.
+ *
  * Revision 1.79  2006/05/12 16:48:04  sezero
  * hopefully fixed all endianness issues with opengl. placed two FIXMEs
  * around the palettized textures code in VID_SetPalette which I am not

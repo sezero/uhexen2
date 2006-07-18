@@ -1102,7 +1102,7 @@ PR_LoadProgs
 */
 void PR_LoadProgs (void)
 {
-	int			i;
+	unsigned int		i;
 	char	finalprogname[MAX_OSPATH];
 	char	num[32];
 	dfunction_t	*f;
@@ -1156,7 +1156,7 @@ void PR_LoadProgs (void)
 		progs = (dprograms_t *)COM_LoadHunkFile ("progs.dat");
 	if (!progs)
 		SV_Error ("PR_LoadProgs: couldn't load progs.dat");
-	Con_DPrintf ("Programs occupy %iK.\n", com_filesize/1024);
+	Con_DPrintf ("Programs occupy %uK.\n", com_filesize/1024);
 
 	// add prog crc to the serverinfo
 	sprintf (num, "%u", CRC_Block ((byte *)progs, com_filesize));

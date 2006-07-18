@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.25 2006-07-02 11:45:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.26 2006-07-18 08:30:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1178,7 +1178,7 @@ PR_LoadProgs
 */
 void PR_LoadProgs (void)
 {
-	int			i;
+	unsigned int		i;
 	char	finalprogname[MAX_OSPATH];
 #if USE_MULTIPLE_PROGS
 	FILE	*FH;
@@ -1230,7 +1230,7 @@ void PR_LoadProgs (void)
 	progs = (dprograms_t *)COM_LoadHunkFile (finalprogname);
 	if (!progs)
 		Sys_Error ("PR_LoadProgs: couldn't load %s",finalprogname);
-	Con_DPrintf ("Programs occupy %iK.\n", com_filesize/1024);
+	Con_DPrintf ("Programs occupy %uK.\n", com_filesize/1024);
 
 	for (i=0 ; i<com_filesize ; i++)
 		CRC_ProcessByte (&pr_crc, ((byte *)progs)[i]);
@@ -1376,6 +1376,12 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2006/07/02 11:45:31  sezero
+ * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
+ * which stops vec3_origin usage in relevant calculations. renamed the Length
+ * macro to VectorLength for consistancy. updated the utilities' mathlib for
+ * similar macro usage as in the engine.
+ *
  * Revision 1.24  2006/06/25 10:21:03  sezero
  * misc clean-ups and prepare for merging a dedicated server
  *

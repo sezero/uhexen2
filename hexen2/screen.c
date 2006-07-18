@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.28 2006-06-23 14:43:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.29 2006-07-18 08:30:18 sezero Exp $
 */
 
 /*=============================================================================
@@ -754,7 +754,8 @@ WritePCXfile
 */
 static void WritePCXfile (char *filename, byte *data, int width, int height, int rowbytes, byte *palette)
 {
-	int		i, j, length;
+	int		i, j;
+	size_t		length;
 	pcx_t	*pcx;
 	byte		*pack;
 
@@ -1490,6 +1491,9 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2006/06/23 14:43:36  sezero
+ * some minor clean-ups
+ *
  * Revision 1.27  2006/06/08 18:49:33  sezero
  * split strings out of pr_edict.c and sync'ed it with the hexenworld version
  *

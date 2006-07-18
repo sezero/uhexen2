@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.20 2006-06-23 14:43:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.21 2006-07-18 08:30:20 sezero Exp $
 */
 
 
@@ -616,7 +616,8 @@ WritePCXfile
 */
 static void WritePCXfile (char *filename, byte *data, int width, int height, int rowbytes, byte *palette)
 {
-	int		i, j, length;
+	int		i, j;
+	size_t		length;
 	pcx_t	*pcx;
 	byte		*pack;
 

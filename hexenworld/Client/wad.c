@@ -5,7 +5,7 @@
 int			wad_numlumps;
 lumpinfo_t	*wad_lumps;
 byte		*wad_base = NULL;
-static int		wad_len;
+static size_t		wad_len;
 
 void SwapPic (qpic_t *pic);
 

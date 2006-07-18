@@ -220,7 +220,7 @@ int COM_StrCompare (const void *arg1, const void *arg2);
 
 //============================================================================
 
-extern int com_filesize;
+extern	size_t	com_filesize;
 struct cache_user_s;
 
 extern	char	com_basedir[MAX_OSPATH];
@@ -228,13 +228,13 @@ extern	char	com_gamedir[MAX_OSPATH];
 extern	char	com_savedir[MAX_OSPATH];	// temporary path for saving gip files
 extern	char	com_userdir[MAX_OSPATH];
 
-int COM_WriteFile (char *filename, void *data, int len);
-int COM_FOpenFile (char *filename, FILE **file, qboolean override_pack);
+int COM_WriteFile (char *filename, void *data, size_t len);
+size_t COM_FOpenFile (char *filename, FILE **file, qboolean override_pack);
 int COM_CopyFile (char *netpath, char *cachepath);
 void COM_CloseFile (FILE *h);
 
-byte *COM_LoadStackFile (char *path, void *buffer, int bufsize);
-byte *COM_LoadBufFile (char *path, void *buffer, int *bufsize);
+byte *COM_LoadStackFile (char *path, void *buffer, size_t bufsize);
+byte *COM_LoadBufFile (char *path, void *buffer, size_t *bufsize);
 byte *COM_LoadTempFile (char *path);
 byte *COM_LoadHunkFile (char *path);
 byte *COM_LoadMallocFile (char *path);

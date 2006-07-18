@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.62 2006-07-03 07:55:07 sezero Exp $
+	$Id: common.c,v 1.63 2006-07-18 08:30:19 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1103,7 +1103,7 @@ QUAKE FILESYSTEM
 =============================================================================
 */
 
-int	com_filesize;
+size_t		com_filesize;
 
 
 //
@@ -1220,11 +1220,11 @@ The filename will be prefixed by the current game directory
 Returns 0 on success, 1 on error.
 ============
 */
-int COM_WriteFile (char *filename, void *data, int len)
+int COM_WriteFile (char *filename, void *data, size_t len)
 {
 	FILE	*f;
 	char	name[MAX_OSPATH];
-	int	size;
+	size_t	size;
 
 	sprintf (name, "%s/%s", com_userdir, filename);
 
@@ -1447,7 +1447,7 @@ Sets com_filesize and one of handle or file
 ===========
 */
 int file_from_pak;	// global indicating file came from pack file ZOID
-int COM_FOpenFile (char *filename, FILE **file, qboolean override_pack)
+size_t COM_FOpenFile (char *filename, FILE **file, qboolean override_pack)
 {
 	searchpath_t	*search;
 	char		netpath[MAX_OSPATH];
@@ -1474,7 +1474,7 @@ int COM_FOpenFile (char *filename, FILE **file, qboolean override_pack)
 					if (!*file)
 						Sys_Error ("Couldn't reopen %s", pak->filename);	
 					fseek (*file, pak->files[i].filepos, SEEK_SET);
-					com_filesize = pak->files[i].filelen;
+					com_filesize = (size_t) pak->files[i].filelen;
 					file_from_pak = 1;
 					return com_filesize;
 				}
@@ -1495,15 +1495,15 @@ int COM_FOpenFile (char *filename, FILE **file, qboolean override_pack)
 				continue;
 
 			*file = fopen (netpath, "rb");
-			return COM_filelength (*file);
+			return (size_t) COM_filelength (*file);
 		}
 	}
 
 	Sys_Printf ("FindFile: can't find %s\n", filename);
 
 	*file = NULL;
-	com_filesize = -1;
-	return -1;
+	com_filesize = (size_t)-1;
+	return com_filesize;
 }
 
 /*
@@ -1523,14 +1523,14 @@ Allways appends a 0 byte to the loaded data.
 #define	LOADFILE_MALLOC		6
 static cache_user_t *loadcache;
 static byte	*loadbuf;
-static int		loadsize;
+static size_t		loadsize;
 
 static byte *COM_LoadFile (char *path, int usehunk)
 {
 	FILE	*h;
 	byte	*buf;
 	char	base[32];
-	int		len;
+	size_t		len;
 
 	buf = NULL;	// quiet compiler warning
 
@@ -1609,7 +1609,7 @@ void COM_LoadCacheFile (char *path, struct cache_user_s *cu)
 }
 
 // uses temp hunk if larger than bufsize
-byte *COM_LoadStackFile (char *path, void *buffer, int bufsize)
+byte *COM_LoadStackFile (char *path, void *buffer, size_t bufsize)
 {
 	byte	*buf;
 
@@ -1622,7 +1622,7 @@ byte *COM_LoadStackFile (char *path, void *buffer, int bufsize)
 
 // Pa3PyX: Like COM_LoadStackFile, excepts loads onto
 // the hunk (instead of temp) if there is no space
-byte *COM_LoadBufFile (char *path, void *buffer, int *bufsize)
+byte *COM_LoadBufFile (char *path, void *buffer, size_t *bufsize)
 {
 	byte	*buf;
 

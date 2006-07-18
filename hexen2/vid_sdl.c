@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.52 2006-07-04 21:03:17 sezero Exp $
+	$Id: vid_sdl.c,v 1.53 2006-07-18 08:30:19 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -659,7 +659,8 @@ void	VID_EarlyReadConfig (void)
 {
 	FILE	*cfg_file;
 	char	buff[1024], tmp[256];
-	int		i, j, len;
+	int		i;
+	size_t		j, len;
 	char *read_vars[] = {
 		"vid_config_fscr",
 		"vid_config_swx",
@@ -1278,6 +1279,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.52  2006/07/04 21:03:17  sezero
+ * fixed the vid_sdl video menu
+ *
  * Revision 1.51  2006/07/04 16:23:30  sezero
  * enabled fullscreen/windowed switching through the menu system
  * in cases where instant SDL toggling doesn't work

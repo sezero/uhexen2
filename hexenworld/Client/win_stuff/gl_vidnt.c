@@ -2060,7 +2060,8 @@ static void VID_EarlyReadConfig (void)
 {
 	FILE	*cfg_file;
 	char	buff[1024], tmp[256];
-	int		i, j, len;
+	int		i;
+	size_t		j, len;
 	char *read_vars[] = {
 		"vid_config_fscr",
 		"vid_config_gl8bit",
