@@ -3,13 +3,11 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.12 2006-05-19 11:32:54 sezero Exp $
+	$Id: draw.h,v 1.13 2006-07-18 08:38:20 sezero Exp $
 */
 
 
 #define MAX_DISC 18
-
-extern	qpic_t		*draw_disc[MAX_DISC]; // also used on sbar
 
 void Draw_Init (void);
 void Draw_Character (int x, int y, unsigned int num);
@@ -49,6 +47,9 @@ qpic_t *Draw_CachePicResize (char *path, int targetWidth, int targetHeight);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2006/05/19 11:32:54  sezero
+ * misc clean-up
+ *
  * Revision 1.11  2005/12/11 11:53:12  sezero
  * added menu.c arguments to gl version of Draw_TransPicTranslate, and
  * macroized M_DrawTransPicTranslate accordingly. this synchronizes h2

@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.17 2006-03-13 22:25:22 sezero Exp $
+	$Id: draw.c,v 1.18 2006-07-18 08:38:20 sezero Exp $
 */
 
 
@@ -22,7 +22,7 @@ static rectdesc_t	r_rectdesc;
 static byte	*draw_smallchars;	// Small characters for status bar
 static byte	*draw_chars;		// 8*8 graphic characters
 static qpic_t	*draw_backtile;
-qpic_t		*draw_disc[MAX_DISC] = 
+static qpic_t	*draw_disc[MAX_DISC] = 
 {
 	NULL  // make the first one null for sure
 };
@@ -1689,6 +1689,10 @@ void Draw_EndDisc (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2006/03/13 22:25:22  sezero
+ * properly macroized the fullscreen intermissions as a compile time
+ * option. editing only one line in screen.h is now enough.
+ *
  * Revision 1.16  2006/01/12 12:34:37  sezero
  * added video modes enumeration via SDL. added on-the-fly video mode changing
  * partially based on the Pa3PyX hexen2 tree. TODO: make the game remember its
