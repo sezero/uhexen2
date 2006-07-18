@@ -38,7 +38,6 @@ GL_FUNCTION(void, glVertex3f, (GLfloat,GLfloat,GLfloat))
 GL_FUNCTION(void, glVertex3fv, (const GLfloat *))
 GL_FUNCTION(void, glTexCoord2f, (GLfloat,GLfloat))
 GL_FUNCTION(void, glTexCoord2fv, (const GLfloat *))
-GL_FUNCTION(void, glTexCoord3f, (GLfloat,GLfloat,GLfloat))
 GL_FUNCTION(void, glColor4f, (GLfloat,GLfloat,GLfloat,GLfloat))
 GL_FUNCTION(void, glColor4fv, (const GLfloat *))
 GL_FUNCTION(void, glColor4ub, (GLubyte,GLubyte,GLubyte,GLubyte))
@@ -110,7 +109,6 @@ GL_FUNCTION(void, glClearStencil, (GLint))
 #define glVertex3fv_fp		glVertex3fv
 #define glTexCoord2f_fp		glTexCoord2f
 #define glTexCoord2fv_fp	glTexCoord2fv
-#define glTexCoord3f_fp		glTexCoord3f
 #define glColor4f_fp		glColor4f
 #define glColor4fv_fp		glColor4fv
 #define glColor4ub_fp		glColor4ub
