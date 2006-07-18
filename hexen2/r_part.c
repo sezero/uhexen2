@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.12 2006-07-02 11:45:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.13 2006-07-18 22:30:13 sezero Exp $
 */
 
 
@@ -1215,16 +1215,21 @@ R_DrawParticles
 */
 extern	cvar_t	sv_gravity;
 
+#if defined(GLQUAKE)
+static const float ptex_coord[4][3][2] =
+{
+	{  {1.000, 0.000}, {1.000, 0.500}, {0.500, 0.000}  },	// any, or snow count < 30
+	{  {0.000, 1.000}, {0.500, 1.000}, {0.000, 0.500}  },	// snow count >= 30
+	{  {0.000, 0.000}, {0.815, 0.000}, {0.000, 0.815}  },	// snow count >= 40
+	{  {1.000, 1.000}, {1.000, 0.180}, {0.180, 1.000}  }	// snow count >= 69 : happy snow!
+};
+
 void R_DrawParticles (void)
 {
-	particle_t	*p, *kill;
-#ifndef GLQUAKE
 	int		i;
-	float		vel0, vel1, vel2;
-	vec3_t		save_org;
-#endif
-#ifdef GLQUAKE
+	particle_t	*p;
 	float		scale;
+#define	SCALE_BASE	((p->type == pt_snow) ? p->count/10 : 1)
 
 	GL_Bind(particletexture);
 	glEnable_fp (GL_BLEND);
@@ -1234,137 +1239,69 @@ void R_DrawParticles (void)
 
 	VectorScale (vup, 1.5, r_pup);
 	VectorScale (vright, 1.5, r_pright);
-#else
+
+	for (p=active_particles ; p ; p=p->next)
+	{
+		// hack a scale up to keep particles from disapearing
+		scale = (p->org[0] - r_origin[0])*vpn[0] +
+				(p->org[1] - r_origin[1])*vpn[1] +
+				(p->org[2] - r_origin[2])*vpn[2];
+
+		if (scale < 20)
+			scale = SCALE_BASE;
+		else
+			scale = SCALE_BASE + scale * 0.004;
+
+		if (p->color <= 255)
+			glColor3ubv_fp ((byte *)&d_8to24table[(int)p->color]);
+		else
+			glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[(int)p->color-256]);
+
+		// setup texture coordinates
+		i = 0;
+		if (p->type == pt_snow)
+		{
+			if (p->count >= 69)
+				i = 3;	// happy snow!
+			else if (p->count >= 40)
+				i = 2;
+			else if (p->count >= 30)
+				i = 1;
+		}
+
+		glTexCoord2fv_fp (ptex_coord[i][0]);
+		glVertex3fv_fp (p->org);
+		glTexCoord2fv_fp (ptex_coord[i][1]);
+		glVertex3f_fp (p->org[0] + r_pup[0]*scale, p->org[1] + r_pup[1]*scale, p->org[2] + r_pup[2]*scale);
+		glTexCoord2fv_fp (ptex_coord[i][2]);
+		glVertex3f_fp (p->org[0] + r_pright[0]*scale, p->org[1] + r_pright[1]*scale, p->org[2] + r_pright[2]*scale);
+	}
+
+	glEnd_fp ();
+	glDisable_fp (GL_BLEND);
+	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+}
+#else	// !GLQUAKE
+void R_DrawParticles (void)
+{
+	particle_t	*p;
+	int		i;
+	float		vel0, vel1, vel2;
+	vec3_t		save_org;
 
 	VectorScale (vright, xscaleshrink, r_pright);
 	VectorScale (vup, yscaleshrink, r_pup);
 	VectorCopy (vpn, r_ppn);
-#endif
-
-	for ( ;; )
-	{
-		kill = active_particles;
-		if (kill && kill->die < cl.time)
-		{
-			active_particles = kill->next;
-			kill->next = free_particles;
-			free_particles = kill;
-			continue;
-		}
-		break;
-	}
 
 	for (p=active_particles ; p ; p=p->next)
 	{
-		for ( ;; )
+		switch (p->type)
 		{
-			kill = p->next;
-			if (kill && kill->die < cl.time)
-			{
-				p->next = kill->next;
-				kill->next = free_particles;
-				free_particles = kill;
-				continue;
-			}
-			break;
-		}
-
-		if (p->type == pt_rain)
-		{
-#ifdef GLQUAKE
-			// hack a scale up to keep particles from disapearing
-			scale = (p->org[0] - r_origin[0])*vpn[0] +
-					(p->org[1] - r_origin[1])*vpn[1] +
-					(p->org[2] - r_origin[2])*vpn[2];
-			if (scale < 20)
-				scale = 1;
-			else
-				scale = 1 + scale * 0.004;
-			if (p->color <= 255)
-				glColor3ubv_fp ((byte *)&d_8to24table[(int)p->color]);
-			else
-				glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[(int)p->color-256]);
-
-			//fixme: need rain texture
-			glTexCoord2f_fp (1,0);
-			glVertex3fv_fp (p->org);
-			glTexCoord2f_fp (1,0.5);
-			glVertex3f_fp (p->org[0] + r_pup[0]*scale, p->org[1] + r_pup[1]*scale, p->org[2] + r_pup[2]*scale);
-			glTexCoord2f_fp (0.5,0);
-			glVertex3f_fp (p->org[0] + r_pright[0]*scale, p->org[1] + r_pright[1]*scale, p->org[2] + r_pright[2]*scale);
-#else
-			VectorCopy(p->org,save_org);
-
-			vel0 = p->vel[0]*.001;
-			vel1 = p->vel[1]*.001;
-			vel2 = p->vel[2]*.001;
-
-			for(i=0;i<4;i++)
-			{
-				D_DrawParticle(p);
-				p->org[0] += vel0;
-				p->org[1] += vel1;
-				p->org[2] += vel2;
- 			}
-			D_DrawParticle(p);
-
-			VectorCopy(save_org,p->org);//Restore origin
-#endif
-		}
-		else if (p->type == pt_snow)
-		{
-#ifdef GLQUAKE
-		//IDEA: Put a snowflake texture on two-sided poly
-		//texture comes from glrmisc.c: R_InitParticleTexture
-			scale = (p->org[0] - r_origin[0])*vpn[0] +
-					(p->org[1] - r_origin[1])*vpn[1] +
-					(p->org[2] - r_origin[2])*vpn[2];
-			if (scale < 20)
-				scale = p->count/10;
-			else
-				scale = p->count/10 + scale * 0.004;
-
-			if (p->color <= 255)
-				glColor3ubv_fp ((byte *)&d_8to24table[(int)p->color]);
-			else
-				glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[(int)p->color-256]);
-
-			if (p->count >= 69)
-				glTexCoord2f_fp (1,1);	//happy snow!- bottom right
-			else if (p->count >= 40)
-				glTexCoord2f_fp (0,0);	//normal snow - top left
-			else if (p->count >= 30)
-				glTexCoord2f_fp (0,1);	//bottom left
-			else
-				glTexCoord2f_fp (1,0);	//top right
-
-			glVertex3fv_fp (p->org);
-			if (p->count>=69)
-				glTexCoord2f_fp (1,.18);//top right
-			else if (p->count >= 40)
-				glTexCoord2f_fp (.815,0);//top right
-			else if (p->count >= 30)
-				glTexCoord2f_fp (0.5,1);//bottom middle
-			else
-				glTexCoord2f_fp (1,0.5);//middle right
-
-			glVertex3f_fp (p->org[0] + r_pup[0]*scale, p->org[1] + r_pup[1]*scale, p->org[2] + r_pup[2]*scale);
-
-			if(p->count>=69)
-				glTexCoord2f_fp (.18,1);//bottom left
-			else if(p->count>=40)
-				glTexCoord2f_fp (0,.815);//bottom left
-			else if(p->count>=30)
-				glTexCoord2f_fp (0,0.5);//left middle
-			else
-				glTexCoord2f_fp (0.5,0);//middle top
-
-			glVertex3f_fp (p->org[0] + r_pright[0]*scale, p->org[1] + r_pright[1]*scale, p->org[2] + r_pright[2]*scale);
-#else
+		case pt_snow:
 			VectorCopy(p->org,save_org);
 			D_DrawParticle (p);
 
-			for(i=1;i<p->count;i++)
+			for(i = 1; i < p->count; i++)
 			{
 				switch (i)
 				{
@@ -1405,41 +1342,34 @@ void R_DrawParticles (void)
 				D_DrawParticle (p);
 			}
 			VectorCopy(save_org,p->org);//Restore origin
-#endif
-		}
-		else
-		{
-#ifdef GLQUAKE
-			// hack a scale up to keep particles from disapearing
-			scale = (p->org[0] - r_origin[0])*vpn[0] +
-					(p->org[1] - r_origin[1])*vpn[1] +
-					(p->org[2] - r_origin[2])*vpn[2];
-			if (scale < 20)
-				scale = 1;
-			else
-				scale = 1 + scale * 0.004;
-			if (p->color <= 255)
-				glColor3ubv_fp ((byte *)&d_8to24table[(int)p->color]);
-			else
-				glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[(int)p->color-256]);
-			glTexCoord2f_fp (1,0);
-			glVertex3fv_fp (p->org);
-			glTexCoord2f_fp (1,0.5);
-			glVertex3f_fp (p->org[0] + r_pup[0]*scale, p->org[1] + r_pup[1]*scale, p->org[2] + r_pup[2]*scale);
-			glTexCoord2f_fp (0.5,0);
-			glVertex3f_fp (p->org[0] + r_pright[0]*scale, p->org[1] + r_pright[1]*scale, p->org[2] + r_pright[2]*scale);
-#else
+			break;
+
+		case pt_rain:
+			VectorCopy(p->org,save_org);
+
+			vel0 = p->vel[0]*.001;
+			vel1 = p->vel[1]*.001;
+			vel2 = p->vel[2]*.001;
+
+			for(i = 0; i < 4; i++)
+			{
+				D_DrawParticle(p);
+				p->org[0] += vel0;
+				p->org[1] += vel1;
+				p->org[2] += vel2;
+ 			}
+			D_DrawParticle(p);
+
+			VectorCopy(save_org,p->org);//Restore origin
+			break;
+
+		default:
 			D_DrawParticle (p);
-#endif
+			break;
 		}
 	}
-
-#ifdef GLQUAKE
-	glEnd_fp ();
-	glDisable_fp (GL_BLEND);
-	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-#endif
 }
+#endif	// R_DrawParticles
 
 
 void R_UpdateParticles (void)
@@ -1917,6 +1847,12 @@ void R_UpdateParticles (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2006/07/02 11:45:34  sezero
+ * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
+ * which stops vec3_origin usage in relevant calculations. renamed the Length
+ * macro to VectorLength for consistancy. updated the utilities' mathlib for
+ * similar macro usage as in the engine.
+ *
  * Revision 1.11  2006/04/05 06:06:56  sezero
  * continue making static functions and vars static. whitespace and coding
  * style cleanup. part 52: software renderer: r_part.c
