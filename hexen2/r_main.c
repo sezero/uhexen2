@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.13 2006-07-02 11:45:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.14 2006-07-18 08:36:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -51,6 +51,8 @@ byte		*r_warpbuffer;
 static byte	*r_stack_start;
 
 qboolean	r_fov_greater_than_90;
+
+entity_t	r_worldentity;
 
 //
 // view origin
@@ -306,6 +308,9 @@ R_NewMap
 void R_NewMap (void)
 {
 	int		i;
+
+	memset (&r_worldentity, 0, sizeof(r_worldentity));
+	r_worldentity.model = cl.worldmodel;
 
 // clear out efrags in case the level hasn't been reloaded
 // FIXME: is this one short?
@@ -1190,7 +1195,7 @@ static void R_RenderView_ (void)
 // done in screen.c
 	Sys_LowFPPrecision ();
 
-	if (!cl_entities[0].model || !cl.worldmodel)
+	if (!r_worldentity.model || !cl.worldmodel)
 		Sys_Error ("R_RenderView: NULL worldmodel");
 
 	if (!r_dspeeds.value)
@@ -1289,6 +1294,12 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2006/07/02 11:45:31  sezero
+ * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
+ * which stops vec3_origin usage in relevant calculations. renamed the Length
+ * macro to VectorLength for consistancy. updated the utilities' mathlib for
+ * similar macro usage as in the engine.
+ *
  * Revision 1.12  2006/06/23 14:43:36  sezero
  * some minor clean-ups
  *

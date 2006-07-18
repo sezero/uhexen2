@@ -78,11 +78,7 @@ static void R_DrawCulledPolys (void)
 	surf_t			*s;
 	msurface_t		*pface;
 
-#if defined (H2W)
 	currententity = &r_worldentity;
-#else
-	currententity = &cl_entities[0];
-#endif
 
 	if (r_worldpolysbacktofront)
 	{

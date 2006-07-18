@@ -193,11 +193,7 @@ void D_DrawSurfaces2 (qboolean Translucent)
 	vec3_t			world_transformed_modelorg;
 	vec3_t			local_modelorg;
 
-#if defined (H2W)
 	currententity = &r_worldentity;
-#else
-	currententity = &cl_entities[0];
-#endif
 	TransformVector (modelorg, transformed_modelorg);
 	VectorCopy (transformed_modelorg, world_transformed_modelorg);
 
@@ -286,11 +282,7 @@ void D_DrawSurfaces2 (qboolean Translucent)
 				// FIXME: we don't want to do this every time!
 				// TODO: speed up
 				//
-#		if defined (H2W)
 					currententity = &r_worldentity;
-#		else
-					currententity = &cl_entities[0];
-#		endif
 					VectorCopy (world_transformed_modelorg,
 								transformed_modelorg);
 					VectorCopy (base_vpn, vpn);
@@ -345,11 +337,7 @@ void D_DrawSurfaces2 (qboolean Translucent)
 					VectorCopy (base_vright, vright);
 					VectorCopy (base_modelorg, modelorg);
 					R_TransformFrustum ();
-#		if defined (H2W)
 					currententity = &r_worldentity;
-#		else
-					currententity = &cl_entities[0];
-#		endif
 				}
 			}
 		}
@@ -369,11 +357,7 @@ void D_DrawSurfaces (qboolean Translucent)
 	int count;
 
 	// Restore the settings
-#if defined (H2W)
 	currententity = &r_worldentity;
-#else
-	currententity = &cl_entities[0];
-#endif
 //	VectorCopy (world_transformed_modelorg,
 //				transformed_modelorg);
 	VectorCopy (base_vpn, vpn);
@@ -492,11 +476,7 @@ void D_DrawSurfaces (qboolean Translucent)
 					// FIXME: we don't want to do this every time!
 					// TODO: speed up
 					//
-#		if defined (H2W)
 						currententity = &r_worldentity;
-#		else
-						currententity = &cl_entities[0];
-#		endif
 						VectorCopy (world_transformed_modelorg,
 									transformed_modelorg);
 						VectorCopy (base_vpn, vpn);
@@ -544,11 +524,7 @@ void D_DrawSurfaces (qboolean Translucent)
 					// FIXME: we don't want to do this every time!
 					// TODO: speed up
 					//
-#		if defined (H2W)
 						currententity = &r_worldentity;
-#		else
-						currententity = &cl_entities[0];
-#		endif
 						VectorCopy (world_transformed_modelorg,
 									transformed_modelorg);
 						VectorCopy (base_vpn, vpn);
@@ -622,11 +598,7 @@ void D_DrawSurfaces (qboolean Translucent)
 					// FIXME: we don't want to do this every time!
 					// TODO: speed up
 					//
-#		if defined (H2W)
 						currententity = &r_worldentity;
-#		else
-						currententity = &cl_entities[0];
-#		endif
 						VectorCopy (world_transformed_modelorg,
 									transformed_modelorg);
 						VectorCopy (base_vpn, vpn);
@@ -675,11 +647,7 @@ void D_DrawSurfaces (qboolean Translucent)
 					// FIXME: we don't want to do this every time!
 					// TODO: speed up
 					//
-#		if defined (H2W)
 						currententity = &r_worldentity;
-#		else
-						currententity = &cl_entities[0];
-#		endif
 						VectorCopy (world_transformed_modelorg,
 									transformed_modelorg);
 						VectorCopy (base_vpn, vpn);

@@ -2,7 +2,7 @@
 	refresh.h
 	public interface to refresh functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.8 2006-03-29 21:46:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.9 2006-07-18 08:36:40 sezero Exp $
 */
 
 #define	MAXCLIPPLANES	11
@@ -116,6 +116,7 @@ extern	vec3_t		r_origin, vpn, vright, vup;
 
 extern	struct texture_s	*r_notexture_mip;
 
+extern	entity_t	r_worldentity;
 
 void R_Init (void);
 void R_InitTextures (void);
@@ -175,6 +176,9 @@ void R_SetVrect (vrect_t *pvrect, vrect_t *pvrectin, int lineadj);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2006/03/29 21:46:39  sezero
+ * whitespace clean-ups (render.h)
+ *
  * Revision 1.7  2005/09/19 19:50:10  sezero
  * fixed those famous spelling errors
  *
