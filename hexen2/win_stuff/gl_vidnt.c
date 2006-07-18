@@ -1866,8 +1866,8 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 
 /*
 =================
-VID_ChangeVideoMode 
-intended only as a callback for VID_Restart_f 
+VID_ChangeVideoMode
+intended only as a callback for VID_Restart_f
 =================
 */
 static void VID_ChangeVideoMode(int newmode)
