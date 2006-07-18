@@ -2,7 +2,7 @@
 	d_local.h
 	private rasterization driver defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_local.h,v 1.7 2006-07-15 22:15:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_local.h,v 1.8 2006-07-18 08:35:39 sezero Exp $
 */
 
 #include "r_shared.h"
@@ -124,6 +124,7 @@ extern pixel_t	*d_viewbuffer;
 
 extern short	*zspantable[MAXHEIGHT];
 
+extern int		d_aflatcolor;
 extern int		d_minmip;
 extern float	d_scalemip[3];
 
