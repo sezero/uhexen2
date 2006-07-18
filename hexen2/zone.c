@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.22 2006-07-03 07:56:13 sezero Exp $
+	$Id: zone.c,v 1.23 2006-07-18 08:44:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -243,7 +243,7 @@ static int	hunk_tempmark;
 ==============
 Hunk_Check
 
-Run consistancy and sentinal trahing checks
+Run consistancy and sentinal trashing checks
 ==============
 */
 void Hunk_Check (void)
@@ -1130,6 +1130,10 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2006/07/03 07:56:13  sezero
+ * disabled the sys_memory, sys_cache and sys_stats console commands
+ * for server-only binaries except for debug builds.
+ *
  * Revision 1.21  2006/07/03 07:55:06  sezero
  * made Q_strlwr and Q_strupr global
  *

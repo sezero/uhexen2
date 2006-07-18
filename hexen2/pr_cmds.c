@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.27 2006-07-03 15:09:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.28 2006-07-18 08:44:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -54,7 +54,7 @@ static char *PF_VarString (int	first)
 
 /*
 =================
-PF_errror
+PF_error
 
 This is a TERMINAL error, which will kill off the entire server.
 Dumps self.
@@ -3309,6 +3309,9 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2006/07/03 15:09:33  sezero
+ * PF_updateInfoPlaque: changed long type to int to prevent future confusion
+ *
  * Revision 1.26  2006/07/02 11:45:31  sezero
  * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
  * which stops vec3_origin usage in relevant calculations. renamed the Length

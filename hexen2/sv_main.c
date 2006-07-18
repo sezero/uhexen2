@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.32 2006-07-02 11:36:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.33 2006-07-18 08:44:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -753,7 +753,7 @@ static void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_
 
 	pvs = SV_FatPVS (org);
 
-	// send over all entities (excpet the client) that touch the pvs
+	// send over all entities (except the client) that touch the pvs
 	ent = NEXT_EDICT(sv.edicts);
 	for (e=1 ; e<sv.num_edicts ; e++, ent = NEXT_EDICT(ent))
 	{
@@ -2121,6 +2121,12 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2006/07/02 11:36:35  sezero
+ * uppercased the pr_global_struct() macro for easier detection
+ * and searching. put that macro in use in hexenworld server for
+ * smaller diffs between the two versions. there are no actual
+ * code changes here, only style and cosmetics.
+ *
  * Revision 1.31  2006/06/25 10:21:03  sezero
  * misc clean-ups and prepare for merging a dedicated server
  *

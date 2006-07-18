@@ -48,7 +48,7 @@ static char *PF_VarString (int	first)
 
 /*
 =================
-PF_errror
+PF_error
 
 This is a TERMINAL error, which will kill off the entire server.
 Dumps self.

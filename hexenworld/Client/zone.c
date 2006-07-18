@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.12 2006-07-03 07:56:13 sezero Exp $
+	$Id: zone.c,v 1.13 2006-07-18 08:44:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -243,7 +243,7 @@ static int	hunk_tempmark;
 ==============
 Hunk_Check
 
-Run consistancy and sentinal trahing checks
+Run consistancy and sentinal trashing checks
 ==============
 */
 void Hunk_Check (void)
