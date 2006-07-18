@@ -21,17 +21,14 @@ GL_FUNCTION(void, glTexParameterf, (GLenum,GLenum,GLfloat))
 GL_FUNCTION(void, glTexEnvf, (GLenum,GLenum,GLfloat))
 GL_FUNCTION(void, glScalef, (GLfloat,GLfloat,GLfloat))
 GL_FUNCTION(void, glTexImage2D, (GLenum,GLint,GLint,GLsizei,GLsizei,GLint,GLenum,GLenum,const GLvoid*))
-#ifdef H2W
 GL_FUNCTION(void, glTexSubImage2D, (GLenum,GLint,GLint,GLint,GLsizei,GLsizei,GLenum,GLenum,const GLvoid *))
-#endif
 
 GL_FUNCTION(void, glBegin, (GLenum))
 GL_FUNCTION(void, glEnd, (void))
 GL_FUNCTION(void, glEnable, (GLenum))
 GL_FUNCTION(void, glDisable, (GLenum))
-#ifdef H2W
 GL_FUNCTION(GLboolean, glIsEnabled, (GLenum))
-#endif
+
 GL_FUNCTION(void, glFinish, (void))
 GL_FUNCTION(void, glFlush, (void))
 GL_FUNCTION(void, glClear, (GLbitfield))
@@ -44,9 +41,7 @@ GL_FUNCTION(void, glTexCoord2fv, (const GLfloat *))
 GL_FUNCTION(void, glTexCoord3f, (GLfloat,GLfloat,GLfloat))
 GL_FUNCTION(void, glColor4f, (GLfloat,GLfloat,GLfloat,GLfloat))
 GL_FUNCTION(void, glColor4fv, (const GLfloat *))
-#ifdef H2W
 GL_FUNCTION(void, glColor4ub, (GLubyte,GLubyte,GLubyte,GLubyte))
-#endif
 GL_FUNCTION(void, glColor4ubv, (const GLubyte *))
 GL_FUNCTION(void, glColor3ubv, (const GLubyte *))
 GL_FUNCTION(void, glColor3f, (GLfloat,GLfloat,GLfloat))
