@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.17 2006-07-18 08:38:20 sezero Exp $
+	$Id: draw.c,v 1.18 2006-07-18 08:39:14 sezero Exp $
 */
 
 
@@ -1652,14 +1652,12 @@ void Draw_BeginDisc (void)
 {
 	static int disc_idx = 0;
 
-	if (!draw_disc[disc_idx]
 #ifndef H2W
-		|| loading_stage
-#endif
-	   )
-	{
+	if (loading_stage)
 		return;
-	}
+#endif
+	if (!draw_disc[disc_idx])
+		return;
 
 	disc_idx++;
 	if (disc_idx >= MAX_DISC)

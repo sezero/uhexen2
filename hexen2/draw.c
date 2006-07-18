@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.18 2006-07-18 08:38:20 sezero Exp $
+	$Id: draw.c,v 1.19 2006-07-18 08:39:13 sezero Exp $
 */
 
 
@@ -1652,14 +1652,12 @@ void Draw_BeginDisc (void)
 {
 	static int disc_idx = 0;
 
-	if (!draw_disc[disc_idx]
 #ifndef H2W
-		|| loading_stage
-#endif
-	   )
-	{
+	if (loading_stage)
 		return;
-	}
+#endif
+	if (!draw_disc[disc_idx])
+		return;
 
 	disc_idx++;
 	if (disc_idx >= MAX_DISC)
@@ -1689,6 +1687,9 @@ void Draw_EndDisc (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2006/07/18 08:38:20  sezero
+ * made draw_disc static. unlike quake, it isn't shared with sbar.
+ *
  * Revision 1.17  2006/03/13 22:25:22  sezero
  * properly macroized the fullscreen intermissions as a compile time
  * option. editing only one line in screen.h is now enough.
