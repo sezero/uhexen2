@@ -3,6 +3,29 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-07-18 (CVS):
+    * a few int -> size_t changes for filesize vars
+    * fixed a gcc4 warning about signedness mismatch
+    * some tidy-up in the hexen2 version of R_DrawParticles: kill checks
+      are removed from the renderer function, R_UpdateParticles already
+      does that for us. the gl version now picks its texture corrdinates
+      from an array. repetitive lines were tidied for better readability.
+    * removed H2W ifdefs from the list of required opengl functions
+    * removed glTexCoord3f fnom the required opengl functions list.
+      it is not employed at present.
+    * made draw_disc static. unlike quake, it isn't shared with sbar.
+    * made hexen2 software renderer to use r_worldentity like in opengl
+      version and hexenworld version. this saved us of many ifdef H2W
+      ugliness.
+    * D_PolysetCalcGradients in d_polyse.c is for !i386 but contained
+      i386 code. still keeping for future reference, though.
+    * tiny readability cleanup in Draw_BeginDisc
+    * if the error message provided by the server is too long, m_return_reason
+      string may not be null terminated. found in tyr-quake.
+    * made d_aflatcolor global through d_local.h
+    * some random whitespace cleanup
+    * random typo corrections
+
 2006-07-17 (CVS):
     * updates to the sunaudio driver: reduced the dma buffer size
       to the original values of ID software. added some endianness
