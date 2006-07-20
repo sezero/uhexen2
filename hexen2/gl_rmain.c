@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.47 2006-07-03 14:05:36 sezero Exp $
+	$Id: gl_rmain.c,v 1.48 2006-07-20 19:47:23 sezero Exp $
 */
 
 
@@ -703,12 +703,14 @@ static void R_DrawAliasModel (entity_t *e)
 		shadelightcolor[1] = (float) lpc[1];
 		shadelightcolor[2] = (float) lpc[2];
 		shadelightcolor[3] = (float) lpc[3];
-		ambientlight = shadelightcolor[3];
+// not using lpc for ambientlight
+//		ambientlight = shadelightcolor[3];
 	}
 
 	// always give the gun some light
-	if (e == &cl.viewent && ambientlight < 24)
-		ambientlight = shadelight = 24;
+// R_DrawViewModel() already does this for us.
+//	if (e == &cl.viewent && ambientlight < 24)
+//		ambientlight = shadelight = 24;
 
 	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
 	{
@@ -1346,22 +1348,28 @@ static void R_DrawViewModel (void)
 	if (!currententity->model)
 		return;
 
+// not using lpc for ambientlight
+	ambientlight = R_LightPoint (currententity->origin);
+	if (ambientlight < 24)
+		ambientlight = 24;	// always give some light on gun
+
 	if (gl_lightmap_format == GL_RGBA)
 	{
 		lpc = R_LightPointColour (currententity->origin);
 		// always give some light on gun
-		ambientlight = (float) lpc[3] > 24 ? lpc[3] : 24;
+// not using lpc for ambientlight
+//		ambientlight = (float) lpc[3] > 24 ? lpc[3] : 24;
 		shadelightcolor[0] = (float) lpc[0] > 24 ? lpc[0] : 24;
 		shadelightcolor[1] = (float) lpc[1] > 24 ? lpc[1] : 24;
 		shadelightcolor[2] = (float) lpc[2] > 24 ? lpc[2] : 24;
 		shadelightcolor[3] = (float) lpc[3] > 24 ? lpc[3] : 24;
 	}
-	else
-	{
-		ambientlight = R_LightPoint (currententity->origin);
-		if (ambientlight < 24)
-			ambientlight = 24;	// always give some light on gun
-	}
+//	else
+//	{
+//		ambientlight = R_LightPoint (currententity->origin);
+//		if (ambientlight < 24)
+//			ambientlight = 24;	// always give some light on gun
+//	}
 
 // add dynamic lights
 	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
@@ -1968,6 +1976,11 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.47  2006/07/03 14:05:36  sezero
+ * re-visited the GL data types, made them to be of GL types and solved
+ * the signedness issues. completely removed the scrap allocation option.
+ * thanks to Levent Yavas for his help.
+ *
  * Revision 1.46  2006/07/02 11:45:30  sezero
  * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
  * which stops vec3_origin usage in relevant calculations. renamed the Length
