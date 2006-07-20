@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-07-20 (CVS):
+    * fixed (actually worked-around) the light_level being
+      incorrectly set when we run with rgba lightmaps: one
+      major bug it resulted in was that it prevented the
+      cloaking ability of the assasin. rgba mode is still
+      not perfect and need fixing polishing, I guess...
+
 2006-07-18 (CVS):
     * a few int -> size_t changes for filesize vars
     * fixed a gcc4 warning about signedness mismatch
