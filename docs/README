@@ -160,7 +160,7 @@ Here are some of the important command-line switches:
 			at high resolutions. Valid conwidth values are
 			values equal or less than the screen width above:
 			Smaller the number, bigger the text. 640 is the
-			sanest.
+			sanest. Can also be adjusted from the menu.
  -nomouse		Disables mouse usage in game
  -heapsize  N		Heapsize (memory to allocate, in KB)
  -fsaa N		Enable N sample antialiasing (N: 0,2,4) (can also be
