@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.87 2006-07-17 14:48:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.88 2006-07-27 14:04:18 sezero Exp $
 */
 
 
@@ -18,9 +18,9 @@
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		4
 #define	HOT_VERSION_MIN		1
-#define	HOT_VERSION_REL_DATE	"2006-07-04"
+#define	HOT_VERSION_REL_DATE	"2006-07-27"
 #define	HOT_VERSION_BETA	1
-#define	HOT_VERSION_BETA_STR	"pre8"
+#define	HOT_VERSION_BETA_STR	"pre9"
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
 #define	ENGINE_VERSION		1.15
@@ -458,6 +458,13 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.87  2006/07/17 14:48:41  sezero
+ * renamed our own strings.h to pr_strng.h to avoid clashes
+ * with <strings.h>: we need <strings.h> for the strcasecmp
+ * and strncasecmp functions. used -dirafter for the local
+ * includes where possible. renamed strings.c to pr_strng.c
+ * for consistancy.
+ *
  * Revision 1.86  2006/07/04 16:25:23  sezero
  * marked the snapshot of 2006-07-04 as 1.4.1-pre8
  *
