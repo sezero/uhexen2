@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.20 2006-04-05 06:09:23 sezero Exp $
+	$Id: sbar.c,v 1.21 2006-07-27 13:48:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1788,7 +1788,10 @@ static void ShowNamesUp_f(void)
 
 static void ShowInfoDown_f(void)
 {
-	if (sb_ShowInfo || cl.intermission)
+	if (sb_ShowInfo ||
+		cl.intermission ||
+	//	cls.demoplayback ||	// not necessary
+		cls.state < ca_connected)
 	{
 		return;
 	}
