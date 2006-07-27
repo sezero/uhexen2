@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-07-27 (CVS, 1.4.1-pre9):
+    * made scaling of the effective console size (the -conwidth commandline
+      argument) adjustable from the menu system, using the std_modes array
+      for the size to be emulated. made the user's choice to be remembered
+      via the config. deprecated the -conheight argument and used the same
+      width/height ratio as in the actual resolution.
+    * infodown command is only meant to be used wher the game is actually
+      running. made it so.
+    * updated the documentation for the -conwidth argument
+    * marked the snapshot of 2006-07-27 as 1.4.1-pre9
+
 2006-07-20 (CVS):
     * fixed (actually worked-around) the light_level being
       incorrectly set when we run with rgba lightmaps: one
