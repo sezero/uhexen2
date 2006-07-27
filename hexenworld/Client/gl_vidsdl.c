@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.113 2006-07-18 08:33:41 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.114 2006-07-27 13:46:53 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -107,6 +107,7 @@ modestate_t	modestate = MS_UNINIT;
 static int	vid_default = -1;	// modenum of 640x480 as a safe default
 static int	vid_modenum = -1;	// current video mode, set after mode setting succeeds
 static int	vid_maxwidth = 640, vid_maxheight = 480;
+static qboolean	vid_conscale = false;
 static int	WRHeight, WRWidth;
 
 extern qboolean	scr_skipupdate;
@@ -117,6 +118,7 @@ qboolean	in_mode_set = false;
 // cvar vid_mode must be set before calling
 // VID_SetMode, VID_ChangeVideoMode or VID_Restart_f
 static cvar_t	vid_mode = {"vid_mode", "0", CVAR_NONE};
+static cvar_t	vid_config_consize = {"vid_config_consize", "640", CVAR_ARCHIVE};
 static cvar_t	vid_config_glx = {"vid_config_glx", "640", CVAR_ARCHIVE};
 static cvar_t	vid_config_gly = {"vid_config_gly", "480", CVAR_ARCHIVE};
 static cvar_t	vid_config_swx = {"vid_config_swx", "320", CVAR_ARCHIVE};
@@ -277,34 +279,96 @@ static void VID_SetIcon (void)
 
 static void VID_ConWidth (int modenum)
 {
-	int i;
+	int	w, h;
 
-	// This will display a bigger hud and readable fonts at high
-	// resolutions. The fonts will be somewhat distorted, though
-	i = COM_CheckParm("-conwidth");
-	if (i != 0 && i < com_argc-1)
+	if (!vid_conscale)
 	{
-		vid.conwidth = atoi(com_argv[i+1]);
-		vid.conwidth &= 0xfff8; // make it a multiple of eight
-		if (vid.conwidth < MIN_WIDTH)
-			vid.conwidth = MIN_WIDTH;
-		// pick a conheight that matches with correct aspect
-		vid.conheight = vid.conwidth*3 / 4;
-		i = COM_CheckParm("-conheight");
-		if (i != 0 && i < com_argc-1)
-			vid.conheight = atoi(com_argv[i+1]);
-		//if (vid.conheight < MIN_HEIGHT)
-		if (vid.conheight < 200)
-			vid.conheight = 200;
-		if (vid.conwidth > modelist[modenum].width)
-			vid.conwidth = modelist[modenum].width;
-		if (vid.conheight > modelist[modenum].height)
-			vid.conheight = modelist[modenum].height;
-
-		vid.width = vid.conwidth;
-		vid.height = vid.conheight;
+		Cvar_SetValue ("vid_config_consize", modelist[modenum].width);
+		return;
 	}
+
+	w = (int)vid_config_consize.value;
+// disabling this: we may have non-multiple-of-eight resolutions
+//	w &= 0xfff8; // make it a multiple of eight
+
+	if (w < MIN_WIDTH)
+		w = MIN_WIDTH;
+
+// pick a conheight that matches with correct aspect
+//	h = w * 3 / 4;
+	h = w * modelist[modenum].height / modelist[modenum].width;
+//	if (h < MIN_HEIGHT
+	if (h < 200 || h > modelist[modenum].height || w > modelist[modenum].width)
+	{
+		Cvar_SetValue ("vid_config_consize", modelist[modenum].width);
+		vid_conscale = false;
+		return;
+	}
+	vid.width = vid.conwidth = w;
+	vid.height = vid.conheight = h;
+	if (w != modelist[modenum].width)
+		vid_conscale = true;
+	else
+		vid_conscale = false;
 }
+
+void VID_ChangeConsize(int key)
+{
+	int	i, w, h;
+
+	switch (key)
+	{
+	case K_LEFTARROW:	// smaller text, bigger res nums
+		for (i = 0; i <= RES_640X480+1; i++)
+		{
+			w = std_modes[i].width;
+			if (w > vid.conwidth && w <= modelist[vid_modenum].width)
+				goto set_size;
+		}
+		w = modelist[vid_modenum].width;
+		goto set_size;
+
+	case K_RIGHTARROW:	// bigger text, smaller res nums
+		for (i = RES_640X480+1; i >= 0; i--)
+		{
+			w = std_modes[i].width;
+			if (w < vid.conwidth && w <= modelist[vid_modenum].width)
+				goto set_size;
+		}
+		w = std_modes[0].width;
+		goto set_size;
+
+	default:	// bad key
+		return;
+	}
+
+set_size:
+	// preserve the same aspect ratio as the resolution
+	h = w * modelist[vid_modenum].height / modelist[vid_modenum].width;
+//	if (h < MIN_HEIGHT)
+	if (h < 200)
+		return;
+	vid.width = vid.conwidth = w;
+	vid.height = vid.conheight = h;
+	Cvar_SetValue ("vid_config_consize", vid.conwidth);
+	Draw_ChangeConsize();
+	vid.recalc_refdef = 1;
+	if (vid.conwidth != modelist[vid_modenum].width)
+		vid_conscale = true;
+	else
+		vid_conscale = false;
+}
+
+char *VID_ReportConsize(void)
+{
+	static char	con_report[32];
+
+	snprintf (con_report, sizeof(con_report), "x%.2f (at %dx%d)",
+			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
+	con_report[sizeof(con_report)-1] = 0;
+	return con_report;
+}
+
 
 static int VID_SetMode (int modenum)
 {
@@ -1379,6 +1443,7 @@ static void VID_EarlyReadConfig (void)
 		"vid_config_fsaa",
 		"vid_config_glx",
 		"vid_config_gly",
+		"vid_config_consize",
 		"gl_lightmapfmt",
 		NULL
 	};
@@ -1432,6 +1497,7 @@ static void VID_LockCvars (void)
 	vid_config_fsaa.flags |= CVAR_ROM;
 	vid_config_glx.flags |= CVAR_ROM;
 	vid_config_gly.flags |= CVAR_ROM;
+	vid_config_consize.flags |= CVAR_ROM;
 	gl_lightmapfmt.flags |= CVAR_ROM;
 }
 
@@ -1445,6 +1511,7 @@ static void VID_UnlockCvars (void)
 	vid_config_fsaa.flags &= ~CVAR_ROM;
 	vid_config_glx.flags &= ~CVAR_ROM;
 	vid_config_gly.flags &= ~CVAR_ROM;
+	vid_config_consize.flags &= ~CVAR_ROM;
 	gl_lightmapfmt.flags &= ~CVAR_ROM;
 }
 
@@ -1513,6 +1580,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&vid_config_swx);
 	Cvar_RegisterVariable (&vid_config_gly);
 	Cvar_RegisterVariable (&vid_config_glx);
+	Cvar_RegisterVariable (&vid_config_consize);
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&gl_lightmapfmt);
@@ -1606,6 +1674,9 @@ void	VID_Init (unsigned char *palette)
 	width = (int)vid_config_glx.value;
 	height = (int)vid_config_gly.value;
 
+	if ((int)vid_config_consize.value != width)
+		vid_conscale = true;
+
 	// user is always right ...
 	i = COM_CheckParm("-width");
 	if (i && i < com_argc-1)
@@ -1652,6 +1723,19 @@ void	VID_Init (unsigned char *palette)
 	else
 	{
 		Con_Printf ("ignoring invalid -width and/or -height arguments\n");
+	}
+
+	if (!vid_conscale)
+		Cvar_SetValue ("vid_config_consize", width);
+
+	// This will display a bigger hud and readable fonts at high
+	// resolutions. The fonts will be somewhat distorted, though
+	i = COM_CheckParm("-conwidth");
+	if (i != 0 && i < com_argc-1)
+	{
+		Cvar_SetValue("vid_config_consize", atoi(com_argv[i+1]));
+		if ((int)vid_config_consize.value != width)
+			vid_conscale = true;
 	}
 
 	multisample = (int)vid_config_fsaa.value;

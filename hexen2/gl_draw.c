@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.81 2006-07-18 08:30:18 sezero Exp $
+	$Id: gl_draw.c,v 1.82 2006-07-27 13:46:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -417,6 +417,17 @@ static void Draw_TextureMode_f (void)
 
 /*
 ===============
+Draw_ChangeConsize
+===============
+*/
+void Draw_ChangeConsize (void)
+{
+	conback->width = vid.conwidth;
+	conback->height = vid.conheight;
+}
+
+/*
+===============
 Draw_Init
 ===============
 */
@@ -500,8 +511,7 @@ void Draw_Init (void)
 	gl->sh = 1;
 	gl->tl = 0;
 	gl->th = 1;
-	conback->width = vid.conwidth;
-	conback->height = vid.conheight;
+	Draw_ChangeConsize();
 
 	// free loaded console
 	Hunk_FreeToLowMark (start);
@@ -2006,6 +2016,9 @@ GLuint GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.81  2006/07/18 08:30:18  sezero
+ * a few int -> size_t changes for filesize vars
+ *
  * Revision 1.80  2006/07/03 14:05:36  sezero
  * re-visited the GL data types, made them to be of GL types and solved
  * the signedness issues. completely removed the scrap allocation option.

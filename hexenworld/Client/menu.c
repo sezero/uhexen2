@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.49 2006-06-09 19:50:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.50 2006-07-27 13:46:53 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1025,6 +1025,7 @@ static void M_Options_Key (int k)
 
 enum
 {
+	OGL_CONSIZE,
 	OGL_MULTITEX,
 	OGL_PURGETEX,
 	OGL_GLOW1,
@@ -1089,6 +1090,9 @@ static void M_OpenGL_Draw (void)
 
 	ScrollTitle("gfx/menu/title3.lmp");
 	M_PrintWhite (96, 72, "OpenGL Features:");
+
+	M_Print (32, 90 + 8*OGL_CONSIZE,	"     Text and HUD size");
+	M_Print (232, 90 + 8*OGL_CONSIZE, VID_ReportConsize());
 
 	M_Print (32, 90 + 8*OGL_MULTITEX,	"        Multitexturing");
 	if (gl_mtexable)
@@ -1228,6 +1232,10 @@ static void M_OpenGL_Key (int k)
 		m_entersound = true;
 		switch (opengl_cursor)
 		{
+		case OGL_CONSIZE:	// effective console size
+			VID_ChangeConsize(k);
+			break;
+
 		case OGL_MULTITEX:	// multitexturing
 			Cvar_SetValue ("gl_multitexture", !gl_multitexture.value);
 			break;

@@ -16,6 +16,9 @@
 #define WARP_HEIGHT		200
 #define MAXWIDTH		10000
 #define MAXHEIGHT		10000
+#define MIN_WIDTH		320
+//#define MIN_HEIGHT		200
+#define MIN_HEIGHT		240
 #define MAX_NUMBPP		8
 
 typedef struct {
@@ -118,6 +121,7 @@ static int	vid_default = MODE_WINDOWED;
 static int	vid_modenum = NO_MODE;	// current video mode, set after mode setting succeeds
 static int	vid_deskwidth, vid_deskheight, vid_deskbpp, vid_deskmode;
 static int	windowed_default;
+static qboolean	vid_conscale = false;
 
 extern qboolean	scr_skipupdate;
 extern qboolean	draw_reinit;
@@ -128,6 +132,7 @@ static qboolean	vid_wassuspended = false;
 // cvar vid_mode must be set before calling
 // VID_SetMode, VID_ChangeVideoMode or VID_Restart_f
 static cvar_t	vid_mode = {"vid_mode", "0", CVAR_NONE};
+static cvar_t	vid_config_consize = {"vid_config_consize", "640", CVAR_ARCHIVE};
 static cvar_t	vid_config_glx = {"vid_config_glx", "640", CVAR_ARCHIVE};
 static cvar_t	vid_config_gly = {"vid_config_gly", "480", CVAR_ARCHIVE};
 static cvar_t	vid_config_bpp = {"vid_config_bpp", "16", CVAR_ARCHIVE};
@@ -258,33 +263,96 @@ static void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjus
 
 static void VID_ConWidth (int modenum)
 {
-	int i;
+	int	w, h;
 
-	// This will display a bigger hud and readable fonts at high
-	// resolutions. The fonts will be somewhat distorted, though
-	i = COM_CheckParm("-conwidth");
-	if (i != 0 && i < com_argc-1)
+	if (!vid_conscale)
 	{
-		vid.conwidth = atoi(com_argv[i+1]);
-		vid.conwidth &= 0xfff8; // make it a multiple of eight
-		if (vid.conwidth < 320)
-			vid.conwidth = 320;
-		// pick a conheight that matches with correct aspect
-		vid.conheight = vid.conwidth*3 / 4;
-		i = COM_CheckParm("-conheight");
-		if (i != 0 && i < com_argc-1)
-			vid.conheight = atoi(com_argv[i+1]);
-		if (vid.conheight < 200)
-			vid.conheight = 200;
-		if (vid.conwidth > modelist[modenum].width)
-			vid.conwidth = modelist[modenum].width;
-		if (vid.conheight > modelist[modenum].height)
-			vid.conheight = modelist[modenum].height;
-
-		vid.width = vid.conwidth;
-		vid.height = vid.conheight;
+		Cvar_SetValue ("vid_config_consize", modelist[modenum].width);
+		return;
 	}
+
+	w = (int)vid_config_consize.value;
+// disabling this: we may have non-multiple-of-eight resolutions
+//	w &= 0xfff8; // make it a multiple of eight
+
+	if (w < MIN_WIDTH)
+		w = MIN_WIDTH;
+
+// pick a conheight that matches with correct aspect
+//	h = w * 3 / 4;
+	h = w * modelist[modenum].height / modelist[modenum].width;
+//	if (h < MIN_HEIGHT
+	if (h < 200 || h > modelist[modenum].height || w > modelist[modenum].width)
+	{
+		Cvar_SetValue ("vid_config_consize", modelist[modenum].width);
+		vid_conscale = false;
+		return;
+	}
+	vid.width = vid.conwidth = w;
+	vid.height = vid.conheight = h;
+	if (w != modelist[modenum].width)
+		vid_conscale = true;
+	else
+		vid_conscale = false;
 }
+
+void VID_ChangeConsize(int key)
+{
+	int	i, w, h;
+
+	switch (key)
+	{
+	case K_LEFTARROW:	// smaller text, bigger res nums
+		for (i = 0; i <= RES_640X480+1; i++)
+		{
+			w = std_modes[i].width;
+			if (w > vid.conwidth && w <= modelist[vid_modenum].width)
+				goto set_size;
+		}
+		w = modelist[vid_modenum].width;
+		goto set_size;
+
+	case K_RIGHTARROW:	// bigger text, smaller res nums
+		for (i = RES_640X480+1; i >= 0; i--)
+		{
+			w = std_modes[i].width;
+			if (w < vid.conwidth && w <= modelist[vid_modenum].width)
+				goto set_size;
+		}
+		w = std_modes[0].width;
+		goto set_size;
+
+	default:	// bad key
+		return;
+	}
+
+set_size:
+	// preserve the same aspect ratio as the resolution
+	h = w * modelist[vid_modenum].height / modelist[vid_modenum].width;
+//	if (h < MIN_HEIGHT)
+	if (h < 200)
+		return;
+	vid.width = vid.conwidth = w;
+	vid.height = vid.conheight = h;
+	Cvar_SetValue ("vid_config_consize", vid.conwidth);
+	Draw_ChangeConsize();
+	vid.recalc_refdef = 1;
+	if (vid.conwidth != modelist[vid_modenum].width)
+		vid_conscale = true;
+	else
+		vid_conscale = false;
+}
+
+char *VID_ReportConsize(void)
+{
+	static char	con_report[32];
+
+	snprintf (con_report, sizeof(con_report), "x%.2f (at %dx%d)",
+			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
+	con_report[sizeof(con_report)-1] = 0;
+	return con_report;
+}
+
 
 static qboolean VID_SetWindowedMode (int modenum)
 {
@@ -2068,6 +2136,7 @@ static void VID_EarlyReadConfig (void)
 		"vid_config_bpp",
 		"vid_config_glx",
 		"vid_config_gly",
+		"vid_config_consize",
 		"gl_lightmapfmt",
 		NULL
 	};
@@ -2121,6 +2190,7 @@ static void VID_LockCvars (void)
 	vid_config_bpp.flags |= CVAR_ROM;
 	vid_config_glx.flags |= CVAR_ROM;
 	vid_config_gly.flags |= CVAR_ROM;
+	vid_config_consize.flags |= CVAR_ROM;
 	gl_lightmapfmt.flags |= CVAR_ROM;
 }
 
@@ -2134,6 +2204,7 @@ static void VID_UnlockCvars (void)
 	vid_config_bpp.flags &= ~CVAR_ROM;
 	vid_config_glx.flags &= ~CVAR_ROM;
 	vid_config_gly.flags &= ~CVAR_ROM;
+	vid_config_consize.flags &= ~CVAR_ROM;
 	gl_lightmapfmt.flags &= ~CVAR_ROM;
 }
 
@@ -2159,6 +2230,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&vid_config_bpp);
 	Cvar_RegisterVariable (&vid_config_gly);
 	Cvar_RegisterVariable (&vid_config_glx);
+	Cvar_RegisterVariable (&vid_config_consize);
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&gl_lightmapfmt);
@@ -2226,6 +2298,9 @@ void	VID_Init (unsigned char *palette)
 	{
 		Cvar_SetValue("vid_config_fscr", 1);
 	}
+
+	if ((int)vid_config_consize.value != width)
+		vid_conscale = true;
 
 	if (!(int)vid_config_fscr.value)
 	{
@@ -2447,6 +2522,19 @@ void	VID_Init (unsigned char *palette)
 			}
 		}
 	}	// end of fullscreen parsing
+
+	if (!vid_conscale)
+		Cvar_SetValue ("vid_config_consize", width);
+
+	// This will display a bigger hud and readable fonts at high
+	// resolutions. The fonts will be somewhat distorted, though
+	i = COM_CheckParm("-conwidth");
+	if (i != 0 && i < com_argc-1)
+	{
+		Cvar_SetValue("vid_config_consize", atoi(com_argv[i+1]));
+		if ((int)vid_config_consize.value != width)
+			vid_conscale = true;
+	}
 
 	vid_initialized = true;
 

@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.65 2006-07-18 08:30:19 sezero Exp $
+	$Id: gl_draw.c,v 1.66 2006-07-27 13:46:53 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -417,6 +417,17 @@ static void Draw_TextureMode_f (void)
 
 /*
 ===============
+Draw_ChangeConsize
+===============
+*/
+void Draw_ChangeConsize (void)
+{
+	conback->width = vid.conwidth;
+	conback->height = vid.conheight;
+}
+
+/*
+===============
 Draw_Init
 ===============
 */
@@ -500,8 +511,7 @@ void Draw_Init (void)
 	gl->sh = 1;
 	gl->tl = 0;
 	gl->th = 1;
-	conback->width = vid.conwidth;
-	conback->height = vid.conheight;
+	Draw_ChangeConsize();
 
 	// free loaded console
 	Hunk_FreeToLowMark (start);

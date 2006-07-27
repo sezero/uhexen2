@@ -86,6 +86,12 @@ void VID_HandlePause (qboolean paused);
 void VID_ToggleFullscreen (void);	// from Steven
 // toggles between windowed/fullscreen modes. for unix/sdl
 
+void VID_ChangeConsize (int key);
+// changes effective console size. callback for the opengl features menu
+
+char *VID_ReportConsize(void);
+// reports effective console size as a string the opengl features menu
+
 #ifndef H2W
 void D_ShowLoadingSize (void);
 // displays progress bars while loading a map. (not used in hexenworld.)
