@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.67 2006-07-18 08:30:18 sezero Exp $
+	$Id: common.c,v 1.68 2006-07-29 21:07:12 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -2154,6 +2154,7 @@ static void COM_InitFilesystem (void)
 	int		i;
 	char		temp[12];
 	qboolean	check_portals = false;
+	searchpath_t	*search_tmp, *next_tmp;
 
 //
 // -basedir <path>
@@ -2200,21 +2201,44 @@ static void COM_InitFilesystem (void)
 		if (!strcmp(com_argv[i+1], "portals"))
 			check_portals = true;
 	}
+#endif
+
 //	if (check_portals && !(gameflags & GAME_REGISTERED))
 //		Sys_Error ("Portal of Praevus requires registered version of Hexen II");
-#endif
 	if (check_portals && (gameflags & GAME_REGISTERED))
 	{
+		i = Hunk_LowMark ();
+		search_tmp = com_searchpaths;
+
 		sprintf (com_userdir, "%s/portals", host_parms.userdir);
 		Sys_mkdir (com_userdir);
 		COM_AddGameDirectory (va("%s/portals", com_basedir), true);
-	}
 
-#if !defined(H2W)
-	// error out if mission pack is requested but GAME_PORTALS isn't set
-//	if (check_portals && !(gameflags & GAME_PORTALS))
-//		Sys_Error ("Portal of Praevus installation not found");
-#endif
+		// back out searchpaths from invalid mission pack installations
+		if (check_portals && !(gameflags & GAME_PORTALS))
+		{
+			Con_Printf ("Missing or invalid mission pack installation\n");
+			while (com_searchpaths != search_tmp)
+			{
+				if (com_searchpaths->pack)
+				{
+					fclose (com_searchpaths->pack->handle);
+					Con_Printf ("Removed packfile %s\n", com_searchpaths->pack->filename);
+				}
+				else
+				{
+					Con_Printf ("Removed path %s\n", com_searchpaths->filename);
+				}
+				next_tmp = com_searchpaths->next;
+				com_searchpaths = next_tmp;
+			}
+			com_searchpaths = search_tmp;
+			Hunk_FreeToLowMark (i);
+			// back to data1
+			sprintf (com_gamedir, "%s/data1", com_basedir);
+			sprintf (com_userdir, "%s/data1", host_parms.userdir);
+		}
+	}
 
 #if defined(H2W)
 	sprintf (com_userdir, "%s/hw", host_parms.userdir);
@@ -2571,6 +2595,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.67  2006/07/18 08:30:18  sezero
+ * a few int -> size_t changes for filesize vars
+ *
  * Revision 1.66  2006/07/03 07:55:06  sezero
  * made Q_strlwr and Q_strupr global
  *
