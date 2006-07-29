@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-07-29 (CVS):
+    * back out searchpaths from missing/invalid mission pack installations
+
+2006-07-28 (CVS):
+    * fixed typoes in utils/README
+
 2006-07-27 (CVS, 1.4.1-pre9):
     * made scaling of the effective console size (the -conwidth commandline
       argument) adjustable from the menu system, using the std_modes array
