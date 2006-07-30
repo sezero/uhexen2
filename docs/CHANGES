@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-07-30 (CVS):
+    * removed a left-over if condition
+
 2006-07-29 (CVS):
     * back out searchpaths from missing/invalid mission pack installations
 
