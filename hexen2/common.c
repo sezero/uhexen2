@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.68 2006-07-29 21:07:12 sezero Exp $
+	$Id: common.c,v 1.69 2006-07-30 07:23:32 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -2215,7 +2215,7 @@ static void COM_InitFilesystem (void)
 		COM_AddGameDirectory (va("%s/portals", com_basedir), true);
 
 		// back out searchpaths from invalid mission pack installations
-		if (check_portals && !(gameflags & GAME_PORTALS))
+		if ( !(gameflags & GAME_PORTALS))
 		{
 			Con_Printf ("Missing or invalid mission pack installation\n");
 			while (com_searchpaths != search_tmp)
@@ -2595,6 +2595,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.68  2006/07/29 21:07:12  sezero
+ * back out searchpaths from missing/invalid mission pack installations
+ *
  * Revision 1.67  2006/07/18 08:30:18  sezero
  * a few int -> size_t changes for filesize vars
  *
