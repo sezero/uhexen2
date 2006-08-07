@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.35 2006-07-16 22:30:43 sezero Exp $
+	$Id: snd_dma.c,v 1.36 2006-08-07 08:06:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -79,8 +79,8 @@ cvar_t		sfxvolume = {"volume", "0.7", CVAR_ARCHIVE};
 cvar_t		precache = {"precache", "1", CVAR_NONE};
 cvar_t		loadas8bit = {"loadas8bit", "0", CVAR_NONE};
 
-static	float	sfx_savedvol = 0.0f;
-static	float	bgm_savedvol = 0.0f;
+static	cvar_t	sfx_mutedvol = {"sfx_mutedvol", "0", CVAR_ARCHIVE};
+static	cvar_t	bgm_mutedvol = {"bgm_mutedvol", "0", CVAR_ARCHIVE};
 
 static	cvar_t	nosound = {"nosound", "0", CVAR_NONE};
 static	cvar_t	ambient_level = {"ambient_level", "0.3", CVAR_NONE};
@@ -197,8 +197,10 @@ void S_Init (void)
 
 	Cvar_RegisterVariable(&nosound);
 	Cvar_RegisterVariable(&sfxvolume);
+	Cvar_RegisterVariable(&sfx_mutedvol);
 	Cvar_RegisterVariable(&loadas8bit);
 	Cvar_RegisterVariable(&bgmvolume);
+	Cvar_RegisterVariable(&bgm_mutedvol);
 	Cvar_RegisterVariable(&bgmtype);
 	Cvar_RegisterVariable(&ambient_level);
 	Cvar_RegisterVariable(&ambient_fade);
@@ -948,22 +950,22 @@ console functions
 // S.A. volume procs
 static void S_ToggleMute(void)
 {
-	if (sfx_savedvol || bgm_savedvol)
+	if (sfx_mutedvol.value || bgm_mutedvol.value)
 	{
-		Cvar_SetValue("volume", sfx_savedvol);
-		Cvar_SetValue("bgmvolume", bgm_savedvol);
-		sfx_savedvol = 0.0f;
-		bgm_savedvol = 0.0f;
+		Cvar_SetValue("volume", sfx_mutedvol.value);
+		Cvar_SetValue("bgmvolume", bgm_mutedvol.value);
+		Cvar_SetValue("sfx_mutedvol", 0.0f);
+		Cvar_SetValue("bgm_mutedvol", 0.0f);
 		if (sfxvolume.value || bgmvolume.value)
 			Con_Printf ("Unmuted\n");
 	}
 	else
 	{
-		sfx_savedvol = sfxvolume.value;
-		bgm_savedvol = bgmvolume.value;
+		Cvar_SetValue("sfx_mutedvol", sfxvolume.value);
+		Cvar_SetValue("bgm_mutedvol", bgmvolume.value);
 		Cvar_SetValue("volume", 0);
 		Cvar_SetValue("bgmvolume", 0);
-		if (sfx_savedvol || bgm_savedvol)
+		if (sfx_mutedvol.value || bgm_mutedvol.value)
 			Con_Printf ("Muted\n");
 	}
 }
@@ -1096,6 +1098,10 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.35  2006/07/16 22:30:43  sezero
+ * added mute, volumeup and volumedown console commands.
+ * patch from Steven.
+ *
  * Revision 1.34  2006/06/15 09:20:41  sezero
  * added an experimental SUN Audio driver, adapted from the darkplaces
  * project. for native audio in openbsd and netbsd.
