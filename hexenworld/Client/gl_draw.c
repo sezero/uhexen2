@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.66 2006-07-27 13:46:53 sezero Exp $
+	$Id: gl_draw.c,v 1.67 2006-08-07 07:39:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -48,6 +48,8 @@ extern cvar_t	crosshair, cl_crossx, cl_crossy, crosshaircolor;
 extern GLint	gl_max_size;
 static cvar_t	gl_picmip = {"gl_picmip", "0", CVAR_NONE};
 static cvar_t	gl_spritemip = {"gl_spritemip", "0", CVAR_NONE};
+
+static cvar_t	gl_constretch = {"gl_constretch", "0", CVAR_ARCHIVE};
 
 static byte	*draw_chars;				// 8*8 graphic characters
 static byte	*draw_smallchars;			// Small characters for status bar
@@ -447,6 +449,7 @@ void Draw_Init (void)
 	{
 		Cvar_RegisterVariable (&gl_picmip);
 		Cvar_RegisterVariable (&gl_spritemip);
+		Cvar_RegisterVariable (&gl_constretch);
 
 		Cmd_AddCommand ("gl_texturemode", &Draw_TextureMode_f);
 
@@ -1089,16 +1092,53 @@ Draw_ConsoleBackground
 
 ================
 */
+static void Draw_ConsolePic (int lines, float ofs, qpic_t *pic, float alpha)
+{
+	glpic_t			*gl;
+
+	gl = (glpic_t *)pic->data;
+	glDisable_fp(GL_ALPHA_TEST);
+	glEnable_fp (GL_BLEND);
+//	glBlendFunc_fp(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glCullFace_fp(GL_FRONT);
+	glColor4f_fp (1,1,1,alpha);
+	GL_Bind (gl->texnum);
+
+	glBegin_fp (GL_QUADS);
+	glTexCoord2f_fp (0, 0 + ofs);
+	glVertex2f_fp (0, 0);
+	glTexCoord2f_fp (1, 0 + ofs);
+	glVertex2f_fp (vid.conwidth, 0);
+	glTexCoord2f_fp (1, 1);
+	glVertex2f_fp (vid.conwidth, lines);
+	glTexCoord2f_fp (0, 1);
+	glVertex2f_fp (0, lines);
+	glEnd_fp ();
+
+	glColor4f_fp (1,1,1,1);
+	glEnable_fp(GL_ALPHA_TEST);
+	glDisable_fp (GL_BLEND);
+}
+
 void Draw_ConsoleBackground (int lines)
 {
 	char	ver[80];
 	int	i, x, y;
+	float	ofs, alpha;
 
 	y = (vid.height * 3) >> 2;
-	if (lines > y)
-		Draw_Pic (0, lines-vid.height, conback);
+
+	if (gl_constretch.value)
+		ofs = 0.0f;
 	else
-		Draw_AlphaPic (0, lines - vid.height, conback, (float)(1.1 * lines)/y);
+		ofs = (vid.conheight - lines) / (float) vid.conheight;
+
+	if (lines > y)
+		alpha = 1.0f;
+	else
+		alpha = (float) 1.1 * lines / y;
+
+	Draw_ConsolePic (lines, ofs, conback, alpha);
 
 	// print the version number and platform
 //	y = lines-186;
