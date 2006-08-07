@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-08-07 (CVS):
+    * added console background stretching (cvar: gl_constretch). from Steven.
+    * initially I didn't want to use cvars for storing the saved volumes when
+      muting/unmuting, but, naturally, that prevented writing the saved volumes
+      to the config. Steven was right using cvars.
+    * merged Levent's latest Xcode files for 1.4.1-pre9
+
 2006-07-30 (CVS):
     * removed a left-over if condition
 
