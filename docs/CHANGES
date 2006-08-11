@@ -3,6 +3,19 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-08-11 (CVS):
+    * Fixed the dreaded mezzoman bug causing the following error:
+	SV_StartSound: fangel/deflect.wav not precached
+	ADDRESS -14227(?) 537(last_attack).last_attack -14226(?)
+	mezzoman.hc : mezzo_reflect_trig_touch
+	<NO FUNCTION>
+	assignment to world entity
+	Host_Error: Program error
+    * Disabled impulse 11 (ServerflagsCommand): it is a dev command, can
+      be issued from any client and may screw up the server pretty bad..
+    * Updated the gamecode README/history: v1.16
+    * updated other places for gamecode version 1.16
+
 2006-08-07 (CVS):
     * added console background stretching (cvar: gl_constretch). from Steven.
     * initially I didn't want to use cvars for storing the saved volumes when
