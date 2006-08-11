@@ -7,7 +7,7 @@
 
 %define desktop_vendor	uhexen2
 
-%define gamecode_ver	1.15
+%define gamecode_ver	1.16
 
 Name:		hexen2
 License:	GPL
