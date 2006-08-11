@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/weapons.hc,v 1.2 2005-08-09 09:51:27 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/weapons.hc,v 1.3 2006-08-11 09:21:27 sezero Exp $
  */
 /*
 */
@@ -1030,10 +1030,12 @@ ServerflagsCommand
 Just for development
 ============
 */
+/*
 void() ServerflagsCommand =
 {
 	serverflags = serverflags * 2 + 1;
 };
+*/
 
 
 /*
@@ -1247,6 +1249,9 @@ void W_SetCurrentWeapon (void)
 }
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/08/09 09:51:27  sezero
+ * disallowed cycling to a weapon without proper mana (hexenworld version of Steven's patch)
+ *
  * Revision 1.1.1.1  2004/11/29 11:24:30  sezero
  * Initial import
  *

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/impulse.hc,v 1.2 2005-08-09 09:11:54 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/impulse.hc,v 1.3 2006-08-11 09:21:24 sezero Exp $
  */
 
 void PlayerAdvanceLevel(float NewLevel);
@@ -547,8 +547,8 @@ void() ImpulseCommands =
 		W_ChangeWeapon ();
 	else if ((self.impulse == 10) && (wp_deselect == 0))
 		CycleWeaponCommand ();
-	else if (self.impulse == 11)
-		ServerflagsCommand ();
+//	else if (self.impulse == 11)
+//		ServerflagsCommand ();
 	else if (self.impulse == 12)
 		CycleWeaponReverseCommand ();
 	else if(self.impulse == 13)
@@ -566,6 +566,9 @@ void() ImpulseCommands =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/08/09 09:11:54  sezero
+ * enabled impulse 34, (list piece inventory) (from Steven)
+ *
  * Revision 1.1.1.1  2004/11/29 11:38:52  sezero
  * Initial import
  *

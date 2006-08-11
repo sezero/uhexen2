@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/weapons.hc,v 1.3 2005-08-09 09:02:27 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/weapons.hc,v 1.4 2006-08-11 09:21:27 sezero Exp $
  */
 /*
 */
@@ -1056,10 +1056,12 @@ ServerflagsCommand
 Just for development
 ============
 */
+/*
 void() ServerflagsCommand =
 {
 	serverflags = serverflags * 2 + 1;
 };
+*/
 
 
 /*
@@ -1238,6 +1240,9 @@ void W_SetCurrentWeapon (void)
 }
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/08/09 09:02:27  sezero
+ * disallowed cycling to a weapon without proper mana (from Steven)
+ *
  * Revision 1.2  2005/03/17 18:09:38  sezero
  * This is the actual H2MP 1.12-1.12a patch and it has been missing here
  * in the CVS for ages. That no one told me about it is a bit embarassing..

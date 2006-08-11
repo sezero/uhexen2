@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/impulse.hc,v 1.1 2005-01-26 17:26:11 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/impulse.hc,v 1.2 2006-08-11 09:21:27 sezero Exp $
  */
 
 void PlayerAdvanceLevel(float NewLevel);
@@ -501,8 +501,8 @@ void() ImpulseCommands =
 		W_ChangeWeapon ();
 //	else if ((self.impulse == 10) && (wp_deselect == 0))
 //		CycleWeaponCommand ();
-	else if (self.impulse == 11)
-		ServerflagsCommand ();
+//	else if (self.impulse == 11)
+//		ServerflagsCommand ();
 //	else if (self.impulse == 12)
 //		CycleWeaponReverseCommand ();
 	else if(self.impulse == 13)
@@ -638,6 +638,9 @@ void() ImpulseCommands =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/01/26 17:26:11  sezero
+ * Raven's original Siege hcode.
+ *
  * 
  * 29    6/01/98 2:49a Mgummelt
  * 

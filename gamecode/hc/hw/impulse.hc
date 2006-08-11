@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/impulse.hc,v 1.2 2005-02-15 10:57:27 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/impulse.hc,v 1.3 2006-08-11 09:21:27 sezero Exp $
  */
 
 void PlayerAdvanceLevel(float NewLevel);
@@ -477,8 +477,8 @@ void() ImpulseCommands =
 		W_ChangeWeapon ();
 	else if ((self.impulse == 10) && (wp_deselect == 0))
 		CycleWeaponCommand ();
-	else if (self.impulse == 11)
-		ServerflagsCommand ();
+//	else if (self.impulse == 11)
+//		ServerflagsCommand ();
 	else if (self.impulse == 12)
 		CycleWeaponReverseCommand ();
 	else if(self.impulse == 13)
@@ -504,6 +504,10 @@ void() ImpulseCommands =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/02/15 10:57:27  sezero
+ * updated the boss files according to H2MP. although coop is
+ * broken as of now, maybe someone messes with these one day...
+ *
  * Revision 1.1.1.1  2004/11/29 11:27:37  sezero
  * Initial import
  *
