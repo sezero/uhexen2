@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/mezzoman.hc,v 1.1 2005-01-26 17:26:11 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/mezzoman.hc,v 1.2 2006-08-11 09:19:23 sezero Exp $
  */
 
 /*
@@ -642,6 +642,8 @@ float magnitude;//remainder, reflect_count,
 		if(self.owner.movechain==self)
 			self.owner.movechain=world;
 		remove(self);
+		//dprint("MEZZOMAN BUG\n");
+		return;	// O.S: fix the "Assignment to world entity" bug
 	}
 
 	if(other.classname=="funnal"||other.classname=="tornato")
@@ -1623,6 +1625,9 @@ void monster_werepanther (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/01/26 17:26:11  sezero
+ * Raven's original Siege hcode.
+ *
  * 
  * 8     6/01/98 2:49a Mgummelt
  * 

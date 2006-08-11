@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/mezzoman.hc,v 1.1.1.1 2004-11-29 11:39:17 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/mezzoman.hc,v 1.2 2006-08-11 09:19:22 sezero Exp $
  */
 
 /*
@@ -615,6 +615,8 @@ float magnitude;//remainder, reflect_count,
 		if(self.owner.movechain==self)
 			self.owner.movechain=world;
 		remove(self);
+		//dprint("MEZZOMAN BUG\n");
+		return;	// O.S: fix the "Assignment to world entity" bug
 	}
 
 	if(other.classname=="funnal"||other.classname=="tornato")
@@ -1559,6 +1561,9 @@ void monster_werepanther (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:39:17  sezero
+ * Initial import
+ *
  * 
  * 74    9/25/97 12:16p Mgummelt
  * 
