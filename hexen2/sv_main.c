@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.33 2006-07-18 08:44:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.34 2006-08-14 06:59:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -35,10 +35,6 @@ extern	cvar_t	sv_idealrollscale;
 extern	cvar_t	sv_aim;
 extern	cvar_t	sv_walkpitch;
 extern	cvar_t	sv_flypitch;
-
-#ifdef GLQUAKE
-qboolean	flush_textures;
-#endif
 
 int		sv_kingofhill;
 unsigned int	info_mask, info_mask2;	// mission pack, objectives
@@ -2121,6 +2117,9 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.33  2006/07/18 08:44:20  sezero
+ * random typo corrections
+ *
  * Revision 1.32  2006/07/02 11:36:35  sezero
  * uppercased the pr_global_struct() macro for easier detection
  * and searching. put that macro in use in hexenworld server for

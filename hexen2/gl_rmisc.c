@@ -8,6 +8,9 @@ cvar_t			gl_purge_maptex = {"gl_purge_maptex", "1", CVAR_ARCHIVE};
 				// whether or not map-specific OGL textures
 				// are purged on map change. default == yes
 
+#if !defined(H2W)
+qboolean		flush_textures;
+#endif
 int			gl_texlevel;
 extern GLuint		plyrtex[MAX_PLAYER_CLASS][16][16];
 extern gltexture_t	gltextures[MAX_GLTEXTURES];
