@@ -1,0 +1,97 @@
+Hexen II: Hammer of Thyrion
+Release Notes for version 1.4.1
+===============================
+
+Changes since HoT-1.4.0 :
+
+General:
+--------
+- Added support for QNX.
+- Added support for MacOSX.
+- A few MorphOS fixes (some of which are probably correct for Amiga, as well.)
+- Added a hexen2 dedicated server application (h2ded).
+- The data1 subdirectory is now used in the user directories. Users' data
+  from older versions are automatically updated.
+- Made console and menu to disappear for playdemo like it does in timedemo.
+- Fixed demos freezing upon changing maps.
+- Fixed demo recording ard playback covering multiple episodes: Intermissions
+  are now skipped while recording demos across multiple levels, and recording
+  is stopped at ending scenes.
+- Made background music to stop upon disconnect.
+- Disabled the forced centerview (pitch drifting) while flying in hexen2. The
+  behavior now matches that of hexenworld.
+- Removed unintended viewmodel movement upon setting viewsize to maximum.
+- Fixed client segmentation faults in heterogenous client/server situations,
+  such as pure hexen2 client vs. mission pack server: we now Host_Error upon
+  missing models when connecting to a server.
+- Added network compatibility support for Korax's UQE-Hexen2 v1.13
+- No erroring out if we can't bind to a network interface at init phase.
+- Disabled the sys_memory, sys_cache and sys_stats console commands for
+  server-only binaries except for debug builds.
+- Disabled the VCR facility by default. After all, it is not an ordinary demo
+  recording but a server only feature for debugging server bugs.
+
+Gameplay:
+---------
+- Gamecode is now at version 1.16.
+- Fixed a long-standing hexenc bug in mezzo_reflect_trig_touch which used to
+  crash the game with an additional message about fangel/deflect.wav when
+  changing levels.
+- Disabled impulse 11 which was a developer-only command but could be issued
+  from any client and might clobber the server.
+
+Video:
+------
+- Enabled fullscreen/windowed switching through the menu system in cases where
+  instant SDL toggling doesn't work.
+
+OpenGL Renderer:
+----------------
+- Made scaling of the text and hud size adjustable from the menu system.
+- Fixed the light level being incorrectly set when the game is run with rgba
+  lightmaps: it used to prevent the cloaking ability of the assasin.
+- Fixed endianness issues.
+- Added console background stretching (cvar: gl_constretch, 0 or 1).
+
+Sound:
+------
+- Added mute, volumeup and volumedown console commands.
+- Endianness fixes in the OSS sound  driver.
+- OSS: do the GETOSPACE ioctl after setting the parameters and just before
+  mmaping the sound device.
+- Added 48000, 24000, and 16000 Hz to the array of sampling rates. Should
+  help 48khz AC97 chips.
+- Added an experimental SUN audio driver for native audio in openbsd, netbsd
+  and sun.
+
+CDAudio:
+--------
+- The case when the user changes track without using the "cd" command should
+  now be handled correctly on linux and bsd.
+- Added -cddev commandline argument support to sdl cd driver.
+- Merged a better sdl cdaudio driver which doesn't cause slowdowns.
+
+HexenWorld:
+-----------
+- Fixed wrong charset and conback display problem upon gamedir changes
+- Cleaned-up hexenworld master server. Added the "clear" console command to
+  clear the list of registered servers.
+
+Utilities:
+----------
+- Added big-endian support (byte swapping) to the hcc (the hexenc compiler)
+  and jsh2color (the litfile generator).
+- Do the name search in a case insensitive way in the bsp compiler: some wad
+  files doesn't have the texture name in expected case.
+
+Launcher:
+----------
+- Fixed broken display of launcher binary name when run using a symlink.
+- Updated for engine-side changes, version 0.7.6.
+
+Other:
+----------------------
+- Fixes and improvements in the build system
+- Many compile and linkage fixes.
+- Many other non-user-visable clean-ups and small improvements.
+
