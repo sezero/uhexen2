@@ -6,17 +6,18 @@ Features:
 * Support for Hexen II, Hexen II demo, Portal of Praevus Mission
   Pack and HexenWorld.
 
-* Tested with Linux, FreeBSD and Windows. Other unices should also
-  work. There is a seperate port to MorphOS.
+* Tested with Linux, FreeBSD, MacOSX and Windows. Software renderer
+  version is tested on QNX. Other unices should also work. There are
+  seperate ports to MorphOS and PalmOS.
 
 * Resolution changing on the fly, for both opengl and software
   renderers. Instant fullscreen/windowed toggling on unix.
 
 * OpenGL enhancements including multitexturing, glow effects,
   working brightness control, translucent console background,
-  colored lights and support for external lit files, texture
-  delete/reload support, fixes for texture cache and model mesh
-  cache mismatches.
+  console background stretching, colored lights and support for
+  external lit files, texture delete/reload support, fixes for
+  texture cache and model mesh cache mismatches.
 
 * The same binary handles both original hexen2 and the mission pack.
 
@@ -38,7 +39,8 @@ Features:
 * Full user directories support under unix: all users have their own
   configuration files and game saves.
 
-* Improved console functionality and a maplist command.
+* Improved console functionality (inline editing and tab completion),
+  and a maplist command.
 
 * Several hexen2 utilities are maintained and are being kept up to date.
 
