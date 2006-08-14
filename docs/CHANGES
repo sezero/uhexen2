@@ -3,6 +3,26 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-08-14 (CVS):
+    * exported Draw_AlphaPic() for possible future users
+    * exported D_ClearOpenGLTextures() and R_InitParticleTexture()
+    * moved flush_textures to gl_rmisc.c
+    * introduced COM_LoadZoneFile()
+    * changed draw_backtile from qpic_t type into a GLint type and freed its
+      data after uploading to the opengl pipeline. Draw_PicFileBuf() is not
+      needed anymore. similarly, freed draw_chars (charset: conchars) after
+      uploading.
+    * made software renderer draw.c to load the charset (draw_chars: conchars)
+      into zone instead of hunk. needed for further changes.
+    * introduced Draw_ReInit(), to be called when a gamedir change occurs.
+      reloads the textures which are loaded back at the init phase. fixes
+      hexenworld's wrong charset and conback display problem upon gamedir
+      changes.
+    * Draw_ReInit(): make sure all of alias models are cleared (opengl vers.)
+    * updated gamecode compile instructions
+    * updated version number in documentation for upcoming 1.4.1 release
+    * updated version number in rpm spec file for upcoming 1.4.1 release
+
 2006-08-11 (CVS):
     * Fixed the dreaded mezzoman bug causing the following error:
 	SV_StartSound: fangel/deflect.wav not precached
