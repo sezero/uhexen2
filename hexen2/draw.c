@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.19 2006-07-18 08:39:13 sezero Exp $
+	$Id: draw.c,v 1.20 2006-08-14 06:38:03 sezero Exp $
 */
 
 
@@ -161,8 +161,14 @@ void Draw_Init (void)
 	int		i;
 	char	temp[MAX_QPATH];
 
+	if (draw_chars)
+		Z_Free (draw_chars);
+	draw_chars = COM_LoadZoneFile ("gfx/menu/conchars.lmp");
+
+	if (draw_reinit)
+		return;
+
 	draw_smallchars = W_GetLumpName("tinyfont");
-	draw_chars = COM_LoadHunkFile ("gfx/menu/conchars.lmp");
 
 	// Do this backwards so we don't try and draw the 
 	// skull as we are loading
@@ -1687,6 +1693,9 @@ void Draw_EndDisc (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2006/07/18 08:39:13  sezero
+ * tiny readability cleanup in Draw_BeginDisc
+ *
  * Revision 1.18  2006/07/18 08:38:20  sezero
  * made draw_disc static. unlike quake, it isn't shared with sbar.
  *
