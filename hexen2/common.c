@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.69 2006-07-30 07:23:32 sezero Exp $
+	$Id: common.c,v 1.70 2006-08-14 06:10:25 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1597,6 +1597,11 @@ byte *COM_LoadHunkFile (char *path)
 	return COM_LoadFile (path, LOADFILE_HUNK);
 }
 
+byte *COM_LoadZoneFile (char *path)
+{
+	return COM_LoadFile (path, LOADFILE_ZONE);
+}
+
 byte *COM_LoadTempFile (char *path)
 {
 	return COM_LoadFile (path, LOADFILE_TEMPHUNK);
@@ -2595,6 +2600,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.69  2006/07/30 07:23:32  sezero
+ * removed a left-over if condition
+ *
  * Revision 1.68  2006/07/29 21:07:12  sezero
  * back out searchpaths from missing/invalid mission pack installations
  *

@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.65 2006-07-30 07:23:32 sezero Exp $
+	$Id: common.c,v 1.66 2006-08-14 06:10:25 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1595,6 +1595,11 @@ static byte *COM_LoadFile (char *path, int usehunk)
 byte *COM_LoadHunkFile (char *path)
 {
 	return COM_LoadFile (path, LOADFILE_HUNK);
+}
+
+byte *COM_LoadZoneFile (char *path)
+{
+	return COM_LoadFile (path, LOADFILE_ZONE);
 }
 
 byte *COM_LoadTempFile (char *path)
