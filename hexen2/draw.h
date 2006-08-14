@@ -3,7 +3,7 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.14 2006-07-27 13:46:52 sezero Exp $
+	$Id: draw.h,v 1.15 2006-08-14 06:07:35 sezero Exp $
 */
 
 
@@ -12,6 +12,7 @@
 void Draw_Init (void);
 void Draw_Character (int x, int y, unsigned int num);
 void Draw_Pic (int x, int y, qpic_t *pic);
+void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha);
 void Draw_IntermissionPic (qpic_t *pic);
 void Draw_PicCropped(int x, int y, qpic_t *pic);
 void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height);
@@ -48,6 +49,13 @@ qpic_t *Draw_CachePicResize (char *path, int targetWidth, int targetHeight);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2006/07/27 13:46:52  sezero
+ * made scaling of the effective console size (the -conwidth commandline
+ * argument) adjustable from the menu system, using the std_modes array
+ * for the size to be emulated. made the user's choice to be remembered
+ * via the config. deprecated the -conheight argument and used the same
+ * width/height ratio as in the actual resolution.
+ *
  * Revision 1.13  2006/07/18 08:38:20  sezero
  * made draw_disc static. unlike quake, it isn't shared with sbar.
  *

@@ -3,7 +3,7 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.13 2006-07-27 13:46:53 sezero Exp $
+	$Id: draw.h,v 1.14 2006-08-14 06:07:35 sezero Exp $
 */
 
 
@@ -12,6 +12,7 @@
 void Draw_Init (void);
 void Draw_Character (int x, int y, unsigned int num);
 void Draw_Pic (int x, int y, qpic_t *pic);
+void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha);
 void Draw_IntermissionPic (qpic_t *pic);
 void Draw_PicCropped(int x, int y, qpic_t *pic);
 void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height);
