@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.67 2006-08-07 07:39:28 sezero Exp $
+	$Id: gl_draw.c,v 1.68 2006-08-14 06:31:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -54,10 +54,10 @@ static cvar_t	gl_constretch = {"gl_constretch", "0", CVAR_ARCHIVE};
 static byte	*draw_chars;				// 8*8 graphic characters
 static byte	*draw_smallchars;			// Small characters for status bar
 //static byte	*draw_menufont; 			// Big Menu Font
-static qpic_t	*draw_backtile;
+
 GLuint		plyrtex[MAX_PLAYER_CLASS][16][16];	// whether or not the corresponding player textures
 							// (in multiplayer config screens) have been loaded
-
+static GLuint		draw_backtile;
 static GLuint		char_texture;
 static GLuint		cs_texture;	// crosshair texture
 static GLuint		char_smalltexture;
@@ -137,9 +137,7 @@ int			menu_numcachepics;
 static byte	menuplyr_pixels[MAX_PLAYER_CLASS][PLAYER_PIC_WIDTH*PLAYER_PIC_HEIGHT];
 
 
-#if 0	// all uses are commented out
-	// used to be employed for loading the backtile,
-	// but now Draw_PicFileBuf is used for that.
+#if 0
 static qpic_t *Draw_PicFromFile (char *name)
 {
 	qpic_t	*p;
@@ -162,7 +160,6 @@ static qpic_t *Draw_PicFromFile (char *name)
 
 	return p;
 }
-#endif
 
 // Pa3PyX: Like Draw_PicFromFile, except loads pic into
 // a specified buffer if there is room
@@ -184,6 +181,7 @@ static qpic_t *Draw_PicFileBuf(char *name, void *p, size_t *size)
 
 	return p;
 }
+#endif
 
 qpic_t *Draw_PicFromWad (char *name)
 {
@@ -319,32 +317,6 @@ qpic_t *Draw_CachePicNoTrans(char *path)
 	return &pic->pic;
 }
 
-#if 0
-static void Draw_CharToConback (int num, byte *dest)
-{
-	int		row, col;
-	byte	*source;
-	int		drawline;
-	int		x;
-
-	row = num>>5;
-	col = num&31;
-	source = draw_chars + (row<<11) + (col<<3);
-
-	drawline = 8;
-
-	while (drawline--)
-	{
-		for (x=0 ; x<8 ; x++)
-			if (source[x] != 255)
-				dest[x] = 0x60 + source[x];
-
-		source += 256;
-		dest += 320;
-	}
-}
-#endif
-
 typedef struct
 {
 	char	*name;
@@ -435,9 +407,8 @@ Draw_Init
 */
 void Draw_Init (void)
 {
-	static size_t	bt_len;
 	int		i;
-	qpic_t	*cb, *mf;
+	qpic_t	*bt, *cb, *mf;
 /*	byte	*dest;
 	int		x;
 	char	ver[40];*/
@@ -453,19 +424,22 @@ void Draw_Init (void)
 
 		Cmd_AddCommand ("gl_texturemode", &Draw_TextureMode_f);
 
-		// load the console background and the charset
-		// by hand, because we need to write the version
-		// string into the background before turning
-		// it into a texture
-		draw_chars = COM_LoadHunkFile ("gfx/menu/conchars.lmp");
-		for (i=0 ; i<256*128 ; i++)
-			if (draw_chars[i] == 0)
-				draw_chars[i] = 255;	// proper transparent color
+	}
+
+	// load the charset
+	start = Hunk_LowMark ();
+	draw_chars = COM_LoadHunkFile ("gfx/menu/conchars.lmp");
+	for (i = 0; i < 256*128; i++)
+	{
+		if (draw_chars[i] == 0)
+			draw_chars[i] = 255;	// proper transparent color
 	}
 
 	char_texture = GL_LoadTexture ("charset", 256, 128, draw_chars, false, true, 0, false);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+	// free the loaded charset
+	Hunk_FreeToLowMark (start);
 
 	cs_texture = GL_LoadPixmap ("crosshair", cs_data);
 
@@ -489,18 +463,11 @@ void Draw_Init (void)
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
 	start = Hunk_LowMark ();
-
 	cb = (qpic_t *)COM_LoadHunkFile ("gfx/menu/conback.lmp");
 	if (!cb)
 		Sys_Error ("Couldn't load gfx/menu/conback.lmp");
 	SwapPic (cb);
 
-/*	// hack the version number directly into the pic
-	sprintf (ver, ENGINE_WATERMARK);
-	dest = cb->data + 320 + 320*186 - 11 - 8*strlen(ver);
-	for (x=0 ; x<strlen(ver) ; x++)
-		Draw_CharToConback (ver[x], dest+(x<<3));
-*/
 	conback->width = cb->width;
 	conback->height = cb->height;
 	ncdata = cb->data;
@@ -519,9 +486,15 @@ void Draw_Init (void)
 	// free loaded console
 	Hunk_FreeToLowMark (start);
 
-//	draw_backtile = Draw_PicFromWad ("backtile");
-//	draw_backtile = Draw_PicFromFile ("gfx/menu/backtile.lmp");
-	draw_backtile = Draw_PicFileBuf("gfx/menu/backtile.lmp", draw_backtile, &bt_len);
+	// load the backtile
+	start = Hunk_LowMark ();
+	bt = (qpic_t *)COM_LoadHunkFile ("gfx/menu/backtile.lmp");
+	if (!bt)
+		Sys_Error ("Couldn't load gfx/menu/backtile.lmp");
+
+	draw_backtile = GL_LoadPicTexture (bt);
+	// free the loaded backtile
+	Hunk_FreeToLowMark (start);
 }
 
 
@@ -1164,7 +1137,7 @@ refresh window.
 void Draw_TileClear (int x, int y, int w, int h)
 {
 	glColor3f_fp (1,1,1);
-	GL_Bind (*(GLuint *)draw_backtile->data);
+	GL_Bind (draw_backtile);
 	glBegin_fp (GL_QUADS);
 	glTexCoord2f_fp (x/64.0, y/64.0);
 	glVertex2f_fp (x, y);
