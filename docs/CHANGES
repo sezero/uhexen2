@@ -22,6 +22,8 @@ Development Progress	:
     * updated gamecode compile instructions
     * updated version number in documentation for upcoming 1.4.1 release
     * updated version number in rpm spec file for upcoming 1.4.1 release
+    * updated Features list
+    * updated web links in the documentation
 
 2006-08-11 (CVS):
     * Fixed the dreaded mezzoman bug causing the following error:
