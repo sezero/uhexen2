@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.86 2006-08-14 07:19:52 sezero Exp $
+	$Id: gl_draw.c,v 1.87 2006-08-14 07:26:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -533,7 +533,9 @@ void Draw_ReInit (void)
 	// Reload the particle texture
 	R_InitParticleTexture();
 	// make sure all of alias models are cleared
+#if !defined(H2W)
 	flush_textures = 1;
+#endif
 	temp2 = gl_purge_maptex.value;
 	gl_purge_maptex.value = 1;
 	Mod_ClearAll ();
@@ -2075,6 +2077,9 @@ GLuint GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.86  2006/08/14 07:19:52  sezero
+ * Draw_ReInit(): make sure all of alias models are cleared
+ *
  * Revision 1.85  2006/08/14 06:42:30  sezero
  * introduced Draw_ReInit() to be called when a gamedir change occurs.
  * reloads the textures which are loaded back at the init phase. fixes
