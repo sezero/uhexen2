@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.69 2006-08-14 06:42:30 sezero Exp $
+	$Id: gl_draw.c,v 1.70 2006-08-14 07:19:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -510,6 +510,7 @@ just after changing the game directory.
 void Draw_ReInit (void)
 {
 	int	temp;
+	float	temp2;
 
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
@@ -531,6 +532,12 @@ void Draw_ReInit (void)
 	Sbar_Init();
 	// Reload the particle texture
 	R_InitParticleTexture();
+	// make sure all of alias models are cleared
+	flush_textures = 1;
+	temp2 = gl_purge_maptex.value;
+	gl_purge_maptex.value = 1;
+	Mod_ClearAll ();
+	gl_purge_maptex.value = temp2;
 
 	draw_reinit = false;
 	scr_disabled_for_loading = temp;

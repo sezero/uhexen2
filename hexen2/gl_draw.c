@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.85 2006-08-14 06:42:30 sezero Exp $
+	$Id: gl_draw.c,v 1.86 2006-08-14 07:19:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -510,6 +510,7 @@ just after changing the game directory.
 void Draw_ReInit (void)
 {
 	int	temp;
+	float	temp2;
 
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
@@ -531,6 +532,12 @@ void Draw_ReInit (void)
 	Sbar_Init();
 	// Reload the particle texture
 	R_InitParticleTexture();
+	// make sure all of alias models are cleared
+	flush_textures = 1;
+	temp2 = gl_purge_maptex.value;
+	gl_purge_maptex.value = 1;
+	Mod_ClearAll ();
+	gl_purge_maptex.value = temp2;
 
 	draw_reinit = false;
 	scr_disabled_for_loading = temp;
@@ -2068,6 +2075,12 @@ GLuint GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.85  2006/08/14 06:42:30  sezero
+ * introduced Draw_ReInit() to be called when a gamedir change occurs.
+ * reloads the textures which are loaded back at the init phase. fixes
+ * hexenworld's wrong charset and conback display problem upon gamedir
+ * changes.
+ *
  * Revision 1.84  2006/08/14 06:31:55  sezero
  * changed draw_backtile from qpic_t type into a GLint type
  * and freed its data after uploading to the opengl pipeline.
