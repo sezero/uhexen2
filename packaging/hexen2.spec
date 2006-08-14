@@ -13,8 +13,8 @@ Name:		hexen2
 License:	GPL
 Group:		Amusements/Games
 URL:		http://uhexen2.sourceforge.net/
-Version:	1.4.0
-Release:	7
+Version:	1.4.1
+Release:	0
 Summary:	Hexen II
 Source:		hexen2source-%{version}.tgz
 Source1:	hexen2source-gamecode-%{version}.tgz
@@ -265,7 +265,7 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Wed Jul 05 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.1-0
+* Wed Aug 14 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.1-0
 - Added the dedicated server to the packaged binaries.
   1.4.1-pre8. Preparing for a future 1.4.1 release.
 
