@@ -16,8 +16,9 @@ Features:
 * OpenGL enhancements including multitexturing, glow effects,
   working brightness control, translucent console background,
   console background stretching, colored lights and support for
-  external lit files, texture delete/reload support, fixes for
-  texture cache and model mesh cache mismatches.
+  external lit files, texture delete/reload support, on-the-fly
+  text and hud size changing, fixes for texture cache and model
+  mesh cache mismatches.
 
 * The same binary handles both original hexen2 and the mission pack.
 
