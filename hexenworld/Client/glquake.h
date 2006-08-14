@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.42 2006-07-03 14:05:37 sezero Exp $
+	$Id: glquake.h,v 1.43 2006-08-14 06:09:42 sezero Exp $
 */
 
 
@@ -121,6 +121,8 @@ void GL_EndRendering (void);
 
 GLuint GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba);
 GLuint GL_LoadPicTexture (qpic_t *pic);
+void D_ClearOpenGLTextures (int last_tex);
+
 int M_DrawBigCharacter (int x, int y, int num, int numNext);
 void GL_BuildLightmaps (void);
 void GL_SetupLightmapFmt (qboolean check_cmdline);
@@ -149,6 +151,7 @@ int R_LightPoint (vec3_t p);
 int *R_LightPointColour (vec3_t p);
 void R_StoreEfrags (efrag_t **ppefrag);
 void R_InitParticles (void);
+void R_InitParticleTexture (void);
 void R_ClearParticles (void);
 void R_DrawParticles (void);
 void R_NetGraph (void);

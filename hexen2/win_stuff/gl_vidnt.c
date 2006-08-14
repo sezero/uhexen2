@@ -205,8 +205,6 @@ qboolean	have_stencil = false;
 static qboolean	fullsbardraw = false;
 
 // misc external data and functions
-extern void	D_ClearOpenGLTextures(int);
-extern void	R_InitParticleTexture(void);
 extern void	Mod_ReloadTextures (void);
 extern GLuint	lightmap_textures;
 
