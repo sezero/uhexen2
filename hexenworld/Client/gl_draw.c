@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.68 2006-08-14 06:31:56 sezero Exp $
+	$Id: gl_draw.c,v 1.69 2006-08-14 06:42:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -495,6 +495,45 @@ void Draw_Init (void)
 	draw_backtile = GL_LoadPicTexture (bt);
 	// free the loaded backtile
 	Hunk_FreeToLowMark (start);
+}
+
+/*
+===============
+Draw_ReInit
+This procedure re-inits some textures, those that
+are read during engine's init phase, which may be
+changed by mods. This should NEVER be called when
+a level is active. This is intended to be called
+just after changing the game directory.
+===============
+*/
+void Draw_ReInit (void)
+{
+	int	temp;
+
+	temp = scr_disabled_for_loading;
+	scr_disabled_for_loading = true;
+
+	D_ClearOpenGLTextures(0);
+	texture_extension_number = 1U;
+
+	draw_reinit = true;
+
+	// Reload graphics wad file (Draw_PicFromWad writes glpic_t data (sizes,
+	// texnums) right on top of the original pic data, so the pic data will
+	// be dirty after gl textures are loaded the first time; we need to load
+	// a clean version)
+	W_LoadWadFile ("gfx.wad");
+
+	// Reload pre-map pics, fonts, console, etc
+	Draw_Init();
+	SCR_Init();
+	Sbar_Init();
+	// Reload the particle texture
+	R_InitParticleTexture();
+
+	draw_reinit = false;
+	scr_disabled_for_loading = temp;
 }
 
 

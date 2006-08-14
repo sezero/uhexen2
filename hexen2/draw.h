@@ -3,13 +3,14 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.15 2006-08-14 06:07:35 sezero Exp $
+	$Id: draw.h,v 1.16 2006-08-14 06:42:29 sezero Exp $
 */
 
 
 #define MAX_DISC 18
 
 void Draw_Init (void);
+void Draw_ReInit (void);
 void Draw_Character (int x, int y, unsigned int num);
 void Draw_Pic (int x, int y, qpic_t *pic);
 void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha);
@@ -49,6 +50,9 @@ qpic_t *Draw_CachePicResize (char *path, int targetWidth, int targetHeight);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2006/08/14 06:07:35  sezero
+ * exported Draw_AlphaPic() for possible future users
+ *
  * Revision 1.14  2006/07/27 13:46:52  sezero
  * made scaling of the effective console size (the -conwidth commandline
  * argument) adjustable from the menu system, using the std_modes array

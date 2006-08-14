@@ -489,6 +489,9 @@ static void CL_ParseServerData (void)
 			Cbuf_AddText("exec frontend.cfg\n");
 
 		Cbuf_AddText ("cl_warncmd 1\n");
+
+	// re-init draw
+		Draw_ReInit ();
 	}
 
 	// parse player slot, high bit means spectator

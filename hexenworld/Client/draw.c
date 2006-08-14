@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.19 2006-08-14 06:38:04 sezero Exp $
+	$Id: draw.c,v 1.20 2006-08-14 06:42:30 sezero Exp $
 */
 
 
@@ -186,6 +186,32 @@ void Draw_Init (void)
 	r_rectdesc.rowbytes = draw_backtile->width;
 }
 
+/*
+===============
+Draw_ReInit
+This procedure re-inits some textures, those that
+are read during engine's init phase, which may be
+changed by mods. This should NEVER be called when
+a level is active. This is intended to be called
+just after changing the game directory.
+===============
+*/
+void Draw_ReInit (void)
+{
+	int	temp;
+
+	temp = scr_disabled_for_loading;
+	scr_disabled_for_loading = true;
+
+	draw_reinit = true;
+//	W_LoadWadFile ("gfx.wad");
+	Draw_Init();
+//	SCR_Init();
+//	Sbar_Init();
+	draw_reinit = false;
+
+	scr_disabled_for_loading = temp;
+}
 
 
 /*
