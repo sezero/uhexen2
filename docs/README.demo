@@ -10,7 +10,7 @@ Hexen II: Hammer of Thyrion 1.4.1 (demo version)
   1.3 Running the Game
   1.4 Sound and Midi
   1.5 Networking/Multiplayer
-  1.6 SaveGames and Configuration files
+  1.6 Game Saves and Configuration files
   1.7 Fullscreen/Windowed modes and mouse
 
 2. Known Problems
@@ -20,7 +20,7 @@ Hexen II: Hammer of Thyrion 1.4.1 (demo version)
   2.3 Fluxbox
 
 3. General Info
-  3.1 Tweaks
+  3.1 Game Console
   3.2 Hardware Acceleration
   3.3 System Stability
   3.4 Other
@@ -60,7 +60,7 @@ the game.
    SDL (min.: 1.2.4)	  : Simple DirectMedia Layer libraries.
 			    1.2.7 and newer highly recommended.
 			    If run on systems with SDL < 1.2.6,
-			    antialiasing support will be auto-
+			    anti-aliasing support will be auto-
 			    matically disabled.
 
    SDL_mixer (min.: 1.2.4): Required for midi support (should
@@ -79,23 +79,26 @@ the game.
 			    As for FreeBSD, version >= 5.3 is
 			    required.
 
-   To compile your own binaries, you'll need a standart unix build
+   To compile your own binaries, you'll need a standard unix build
    environment. See the file COMPILE for details.
 
 
 1.3 Running the Game:
 ----------------------
 
-Simplest way of running the game is running the game launcher.
-Either choose it from your start menu, or type "hexen2demo" on the
-command line. Choose your options and press "Launch Hexen2".
+There are two ways to start Hammer of Thyrion. The simplest is
+the game launcher, which can be accessed from your start
+menu or by typing "hexen2" on the command line. Choose your
+options and press "Launch Hexen2".
 
-Running the game from a console and command line switches:
-Go into the installation directory and run the binary. The default
-mode is windowed. Use the "-f" switch to start the game in full-
-screen mode.
+If you don't have the launcher installed, or are more
+comfortable with a command line, you can run the game from an X
+terminal window.  "cd" into the installation directory and run
+any of the game binaries mentioned above. The game starts in
+windowed mode by default. Use the "-f" switch to start in
+fullscreen.
 
-Here are some of the important command-line switches:
+Important command-line switches:
 
  -f | --fullscreen	Run the game fullscreen (can also be set from the menu)
  -w | --window		Run the game windowed (can also be set from the menu)
@@ -111,7 +114,7 @@ Here are some of the important command-line switches:
 			sanest. Can also be adjusted from the menu.
  -nomouse		Disables mouse usage in game
  -heapsize  N		Heapsize (memory to allocate, in KB)
- -fsaa N		Enable N sample antialiasing (N: 0,2,4) (can also be
+ -fsaa N		Enable N sample anti-aliasing (N: 0,2,4) (can also be
 			set from the menu)
  -sync | -vsync		Enable syncing with monitor refresh (GL, Nvidia)
  -lm_4			Set lightmap format to GL_RGBA, which is actually
@@ -122,16 +125,17 @@ Here are some of the important command-line switches:
 			a little faster than RGBA lightmaps). Can also be
 			set from the menu.
  -paltex		Enable 8 bit (palettized) textures: saves video
-			memory on old low-merory 3D accelerators if the
+			memory on old low-memory 3D accelerators if the
 			proper opengl extension is supported. (can also be
 			set from the menu)
  -nomtex		Disable multitexture detection/usage
  -3dfxgamma		Special gamma support for old Voodoo1/2/Rush
- -sndoss		Use OSS for audio
- -ossdev		OSS Audio device to use (default: /dev/dsp)
+ -sndoss		Use OSS for audio (default)
  -sndalsa		Use ALSA for audio
- -alsadev		ALSA Audio device to use (default: hw:0,0 )
  -sndsdl		Use SDL for audio
+ -sndbsd		Use sunaudio (default for for openbsd and netbsd)
+ -ossdev		OSS Audio device to use (default: /dev/dsp)
+ -alsadev		ALSA Audio device to use (default: hw:0,0 )
  -sndspeed N		Sampling rate of sound playback (eg 22050,44100)
  -cddev			CD Audio device to use (default:
 				/dev/cdrom for linux, /dev/acd0 for BSD)
@@ -153,7 +157,7 @@ use the "xgamma" utility: Here is the script I use for xgamma:
 	    			# default heapsize is 32768
     xgamma -q -gamma 1;         # restore old brightness
 
-3dfx Voodoo1 and Voodoo2 users can employ the -3dfxgamma commandline
+3dfx Voodoo1 and Voodoo2 users can employ the -3dfxgamma command line
 switch to activate native 3dfx gamma controls.
 
 
@@ -231,10 +235,10 @@ use win32 versions of Hammer of Thyrion, and there will be no
 compatibility problems.
 
 
-1.6 SaveGames and Configuration files
--------------------------------------
+1.6 Game Saves and Configuration files
+--------------------------------------
 
-Your savegames and configuration files are stored in a folder
+Your game saves and configuration files are stored in a folder
 named  .hexen2demo  in your home folder:  ~/.hexen2demo
 
 
@@ -243,17 +247,17 @@ named  .hexen2demo  in your home folder:  ~/.hexen2demo
 
 While playing the game, you can switch between fullscreen and
 windowed modes by pressing ALT + Enter combination. Alternatively,
-you can use the relevant menu option. The last setting will ba
+you can use the relevant menu option. The last setting will be
 saved to the config and will be remembered by the game.
 
 You can also change the resolution from the menu system. Again,
-the last setting will ba saved to the config and will be remembered
+the last setting will be saved to the config and will be remembered
 by the game.
 
 The menu option "Use Mouse" enables/disables mouse usage on the
 fly. While in windowed mode, disabling the mouse ungrabs the mouse
 pointer, so that you can easily use your desktop. You can also
-un-grab/re-grab the mouse pointer by pressing the  CTRL + G  key
+ungrab/regrab the mouse pointer by pressing the  CTRL + G  key
 combination whenever you want.
 
 ----------------------------------------------------------------
@@ -268,8 +272,9 @@ combination whenever you want.
 ------------------
 
 First, we recommend using high sampling rates. This can be done either
-by a commandline argument like "-sndspeed 44100" or "-sndspeed 48000",
-or by using the game launcher. SDL and ALSA are the drivers of choice.
+by a command line argument like "-sndspeed 44100" or "-sndspeed 48000",
+or by using the game launcher. ALSA is the driver of choice - the OSS
+driver doesn't work with all cards, and with SDL you have no midi.
 
 If you have problems making sound to work correctly, using the arts
 sound server may help you:    artsd & ; artsdsp -m glhexen2 -sndoss
@@ -321,14 +326,13 @@ mode.
 ---------------
 
 
-3.1 Tweaks
-----------
+3.1 Game Console
+----------------
 
-Quake games are very friendly to tweakers. The best performance
-gain I have found is by increasing the value  "_snd_mixahead".
-For users with slow video cards, changing the gl_ variables may
-speed up your system. Here are just a few of those that can be
-changed. For more info see various Quake tweaking sites.
+Games based on the Quake engine have an in game console - toggled by
+the '~' key - from which variables can be changed.  Some of these
+affect performance, others enable features. A brief list follows but
+for more info see http://www.planetquake.com/console/
 
 variable	valid values
 --------	------------
@@ -338,7 +342,7 @@ _snd_mixahead	0.1 - 0.9 : 0.1 = less latency,
 
 gl_multitexture	0|1	  : Disable/enable multitexturing on the fly.
 			    0 is default. Faster performance if the
-			    hardware supports it. Also adjubtable from
+			    hardware supports it. Also adjustable from
 			    the menu.
 
 gl_texturemode	gl_nearest		(least quality, best speed)
@@ -346,7 +350,9 @@ gl_texturemode	gl_nearest		(least quality, best speed)
 		gl_linear_mipmap_nearest  :
 		gl_linear_mipmap_linear   :	    v
 					(best quality, least speed)
-			    Also adjubtable from the menu.
+			    Also adjustable from the menu.
+
+gl_constretch	0|1	  : Disable/enable console background eye candy.
 
 gl_ztrick	0|1	  : 3% performance tweak (some cards unsupported)
 
@@ -379,7 +385,7 @@ gl_coloredlight  0|1|2	  : Static colored lights. 0 is the white light that
 			    white and colored lighting (if available), and
 			    sometimes can give better results then just
 			    colored lighting, and is also slightly brighter.
-			    0 is the default. Can also be adjubted from the
+			    0 is the default. Can also be adjusted from the
 			    menu system. Changing this option requires the
 			    level to be reloaded. Colored lighting requires
 			    RGBA lightmaps which is also adjustable from the
@@ -387,25 +393,25 @@ gl_coloredlight  0|1|2	  : Static colored lights. 0 is the white light that
 
 gl_colored_dynamic_lights  0|1 :
 			    Disable/enable colored dynamic lights. 0 is the
-			    default. Also adjubtable from the menu.
+			    default. Also adjustable from the menu.
 
 gl_extra_dynamic_lights    0|1 :
 			    Disable/enable extra dynamic lights. 0 is the
-			    default. Also adjubtable from the menu.
+			    default. Also adjustable from the menu.
 
 gl_stencilshadow  0|1	  : Disable/enable stencil buffered shadows on the
-			    fly. Default is 0.  Adjubtable from the menu.
+			    fly. Default is 0.  Adjustable from the menu.
 
 gl_purge_maptex	0|1	  : Purge opengl textures upon map change. Textures
 			    won't keep accumulating from map to map. Default
-			    is 1.  Adjubtable from the menu.
+			    is 1.  Adjustable from the menu.
 
 
 3.1.3 Nvidia tweaks
 -------------------------------
 
 These are only valid for supported hardware (Geforce and better)
-with Nvidia's proprietry video drivers installed.
+with Nvidia's proprietary video drivers installed.
 
 The -sync or -vsync command line switch forces GL redraws to sync
 with the monitor refresh for a more stable image. This is equivalent
@@ -432,14 +438,14 @@ include them. If your Nvidia card is running slowly, this is
 probably the cause, you should visit Nvidia.com to download the
 linux installer. In my experience these drivers are great, but
 not all versions work 100% with all cards. If you have a
-misbehaving Nvidia video card, try a different (older) driver.
+misbehaving Nvidia video card, try a different driver version.
 
 Linux kernel 2.6.8 / Nvidia driver version 6111 /TnT card and
 possibly other cards and kernels have issues with the GL game.
 Upgrade to NVIDIA-Linux-x86-1.0-7167 to fix these problems.
 If you don't want to change your nvidia driver and the game seems
 to halt, try using the alt-enter key combination to switch to
-windowed mode and redraw the screen. This behaviour is the same
+windowed mode and redraw the screen. This behavior is the same
 for glquake.
 
 3dfx Voodoo1, Voodoo2 and Voodoo Rush are no longer hardware
@@ -452,7 +458,7 @@ consult the document README.3dfx.
 --------------------
 
 3D games are probably the most intensive workout you can give
-your PC. Problems with them are not always easy to track down.
+your PC, and associated problems are not always easy to track down.
 I recently had some trouble with glquake which I eventually 
 racked down to Mandrake's XFree86-4.3 packages - probably due
 to compiler pentium optimizations. I switched to XFree86-4.3
@@ -539,14 +545,14 @@ APPENDIX  A.  Some Legacy Options
 ---------------------------------
 
 If, while running around, the screen occasionally twitches up
-and down, then you must disable lookspring by using the game
-console or by editing your config.cfg file.
+and down, then you must disable lookspring by typing
+"lookspring 0" in the game console, or by editing your
+config.cfg file in $HOME/.hexen2/data1/config.cfg.
 
-lookspring, lookstrafe and keyboard look (+klook) are legacy
+Lookspring, lookstrafe and keyboard look (+klook) are legacy
 options for systems without a mouse which we actually didn't
 kill for historical reasons. They are pretty much of no use
-today. If you somehow accidentally enabled them, you most
-probably will need to disable them.
+today, and we recommend disabling them if they are not already.
 
 These options and key bindings are removed from the menu system
 as of Hammer of Thyrion 1.3.0.  For reference, here are what
