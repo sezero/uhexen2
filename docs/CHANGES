@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-08-19 (CVS):
+    * Merged a probably better fix for the mezzoman "assignment to world entity"
+      bug (from Steven).
+    * documentation update.
+
 2006-08-14 (CVS):
     * exported Draw_AlphaPic() for possible future users
     * exported D_ClearOpenGLTextures() and R_InitParticleTexture()
