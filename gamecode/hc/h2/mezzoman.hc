@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/mezzoman.hc,v 1.2 2006-08-11 09:19:22 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/mezzoman.hc,v 1.3 2006-08-19 08:23:15 sezero Exp $
  */
 
 /*
@@ -610,13 +610,18 @@ float magnitude;//remainder, reflect_count,
 
 	if (other.safe_time>time) return;
 
+	if(!self.owner)	// fix the "assignment to world entity" bug
+	{
+		remove(self);
+		return;
+	}
+
 	if(!self.owner.flags2&FL_ALIVE||self.owner.frozen>0)
 	{
 		if(self.owner.movechain==self)
 			self.owner.movechain=world;
 		remove(self);
-		//dprint("MEZZOMAN BUG\n");
-		return;	// O.S: fix the "Assignment to world entity" bug
+	//	return;	// fix the "assignment to world entity" bug
 	}
 
 	if(other.classname=="funnal"||other.classname=="tornato")
@@ -1561,6 +1566,15 @@ void monster_werepanther (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2006/08/11 09:19:22  sezero
+ * Fixed the dreaded mezzoman bug causing the following error:
+ *    SV_StartSound: fangel/deflect.wav not precached
+ *    ADDRESS -14227(?) 537(last_attack).last_attack -14226(?)
+ *    mezzoman.hc : mezzo_reflect_trig_touch
+ *    <NO FUNCTION>
+ *    assignment to world entity
+ *    Host_Error: Program error
+ *
  * Revision 1.1.1.1  2004/11/29 11:39:17  sezero
  * Initial import
  *

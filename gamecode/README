@@ -13,6 +13,7 @@ Changes
 	<NO FUNCTION>
 	assignment to world entity
 	Host_Error: Program error
+- Merged a probably better fix for the bug above. (from Steven).
 - Disabled impulse 11 (ServerflagsCommand): it is a dev command, can
   be issued from any client and may screw up the server pretty bad..
 2006-03-20 (1.15) :
