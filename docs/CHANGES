@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-08-22 (CVS, 1.4.1-pre10):
+    * fixed a typo in the playdemo info message.
+    * updated the documentation about the software renderer clients and
+      non-x86 cpus.
+    * updated the documentation about the sound drivers.
+    * marked the snapshot of 2006-08-22 as 1.4.1-pre10
+
 2006-08-19 (CVS):
     * Merged a probably better fix for the mezzoman "assignment to world entity"
       bug (from Steven).
