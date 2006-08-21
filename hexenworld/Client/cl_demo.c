@@ -398,7 +398,7 @@ void CL_PlayDemo_f (void)
 
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("play <demoname> : plays a demo\n");
+		Con_Printf ("playdemo <demoname> : plays a demo\n");
 		return;
 	}
 
