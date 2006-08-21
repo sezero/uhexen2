@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Known Bugs
 ---------------------------
 
+  Software renderer clients cannot be compiled for non-x86 cpus because
+  of some x86 assembly code about translucency which do not have their C
+  counterparts yet. For details, see COMPILE and NonIntel.log in docs.
+
   HexenWorld (OpenGL Client): Dynamic lights have a problem with RGBA
   lightmaps (such as torches doesn't illuminate). Luminance mode is fine.
 
@@ -25,5 +29,4 @@ Known Bugs
 
   Coop mode of HexenWorld is broken (known problem since Raven's latest
   beta-0.15)
-
 
