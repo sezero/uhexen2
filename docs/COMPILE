@@ -33,8 +33,8 @@ binutils:	A GNU collection of binary utilities.
 NASM	:	Netwide Assembler. An x86 assembler.
 		Minimum version required is 0.98.  Versions 0.98.38 and
 		0.98.39 recommended.
-		YASM, a re-write of NASM, is also supported: Version
-		0.5.0rc2 is tested.
+		YASM, a re-write of NASM, is also supported: Versions
+		0.5.0rc2 and 0.5.0 are tested.
 		Nasm is required for compiling hexen2 and hexenworld on
 		ia32 machines. The makefile presents an option to not use
 		x86 assembly even on ia32 machines, but this only works

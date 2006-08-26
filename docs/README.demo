@@ -204,7 +204,7 @@ command line, then start the game with "-sndsdl" argument.
 
 d. BSD/SUN sound code
 ---------------------
-The sunaudio driver is the default sourd driver for our experimental
+The sunaudio driver is the default sound driver for our experimental
 OpenBSD and NetBSD support. If you use the game launcher, select the
 BSD option from the sound menu. If you use command line, "-sndbsd"
 tells the game engine to use sunaudio, but it isn't necessary (it is
