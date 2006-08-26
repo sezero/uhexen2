@@ -51,9 +51,9 @@ int Q_isnan (float x);
 	memcpy((b), (a), sizeof(vec3_t)); \
 }
 #define VectorSet(vec,a,b,c) {	\
-	(vec)[0] = a;		\
-	(vec)[1] = b;		\
-	(vec)[2] = c;		\
+	(vec)[0] = (a);		\
+	(vec)[1] = (b);		\
+	(vec)[2] = (c);		\
 }
 #define VectorClear(a) {	\
 	(a)[0] = (a)[1] = (a)[2] = 0;	\
