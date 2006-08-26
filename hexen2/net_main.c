@@ -852,6 +852,9 @@ void NET_Init (void)
 			net_drivers[net_driverlevel].Listen (true);
 	}
 
+	if (isDedicated && !tcpipAvailable && !ipxAvailable)
+		Sys_Error("Network not available!");
+
 	if (*my_ipx_address)
 		Con_DPrintf("IPX address %s\n", my_ipx_address);
 	if (*my_tcpip_address)
