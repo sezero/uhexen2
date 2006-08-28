@@ -6,7 +6,7 @@ argument to disable mission pack support.
 diff -urNp hexen2source-1.4.1/hexen2/quakedef.h hexen2source-1.4.1x/hexen2/quakedef.h
 --- hexen2source-1.4.1/hexen2/quakedef.h	2006-05-19 16:19:47.000000000 +0300
 +++ hexen2source-1.4.1x/hexen2/quakedef.h	2006-05-19 16:25:24.000000000 +0300
-@@ -50,7 +50,7 @@
+@@ -52,7 +52,7 @@
  // to activate it.  If you want direct activation, change the below
  // undef to a define : in that case, player must use the -noportals
  // command line argument to disable mission pack support.

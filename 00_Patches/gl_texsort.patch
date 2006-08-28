@@ -1,11 +1,12 @@
 trying to put back gl_texsort and R_DrawSequentialPoly stuff: extracted
 these from jshexen2. broken for now:  water surfaces are non-transparent
 when gl_texsort is 0..
+totally unsupported...
 
-diff -urNp hexen2source-1.4.0/hexen2/glquake.h hexen2source-1.4.0x/hexen2/glquake.h
---- hexen2source-1.4.0/hexen2/glquake.h	2006-04-10 15:02:08.000000000 +0300
-+++ hexen2source-1.4.0x/hexen2/glquake.h	2006-04-18 12:10:21.000000000 +0300
-@@ -121,7 +121,7 @@ void R_LoadSkys (void);
+diff -urNp hexen2source-1.4.1/hexen2/glquake.h hexen2source-1.4.1x/hexen2/glquake.h
+--- hexen2source-1.4.1/hexen2/glquake.h	2006-08-14 09:09:41.000000000 +0300
++++ hexen2source-1.4.1x/hexen2/glquake.h	2006-08-28 10:30:17.000000000 +0300
+@@ -134,7 +134,7 @@ void R_LoadSkys (void);
  void R_DrawSkyBox (void);
  void R_ClearSkyBox (void);
  #endif
@@ -14,7 +15,7 @@ diff -urNp hexen2source-1.4.0/hexen2/glquake.h hexen2source-1.4.0x/hexen2/glquak
  void EmitWaterPolys (msurface_t *fa);
  void EmitBothSkyLayers (msurface_t *fa);
  qboolean R_CullBox (vec3_t mins, vec3_t maxs);
-@@ -320,6 +320,7 @@ extern	cvar_t	r_dynamic;
+@@ -340,6 +340,7 @@ extern	cvar_t	r_dynamic;
  extern	cvar_t	r_novis;
  extern	cvar_t	r_wholeframe;
  
@@ -22,9 +23,9 @@ diff -urNp hexen2source-1.4.0/hexen2/glquake.h hexen2source-1.4.0x/hexen2/glquak
  extern	cvar_t	gl_clear;
  extern	cvar_t	gl_cull;
  extern	cvar_t	gl_poly;
-diff -urNp hexen2source-1.4.0/hexen2/gl_rmain.c hexen2source-1.4.0x/hexen2/gl_rmain.c
---- hexen2source-1.4.0/hexen2/gl_rmain.c	2006-04-05 09:09:23.000000000 +0300
-+++ hexen2source-1.4.0x/hexen2/gl_rmain.c	2006-04-18 12:10:21.000000000 +0300
+diff -urNp hexen2source-1.4.1/hexen2/gl_rmain.c hexen2source-1.4.1x/hexen2/gl_rmain.c
+--- hexen2source-1.4.1/hexen2/gl_rmain.c	2006-07-20 22:47:23.000000000 +0300
++++ hexen2source-1.4.1x/hexen2/gl_rmain.c	2006-08-28 10:30:17.000000000 +0300
 @@ -80,6 +80,7 @@ cvar_t	r_dynamic = {"r_dynamic", "1", CV
  cvar_t	r_novis = {"r_novis", "0", CVAR_NONE};
  cvar_t	r_wholeframe = {"r_wholeframe", "1", CVAR_ARCHIVE};
@@ -33,10 +34,10 @@ diff -urNp hexen2source-1.4.0/hexen2/gl_rmain.c hexen2source-1.4.0x/hexen2/gl_rm
  cvar_t	gl_clear = {"gl_clear", "0", CVAR_NONE};
  cvar_t	gl_cull = {"gl_cull", "1", CVAR_NONE};
  cvar_t	gl_ztrick = {"gl_ztrick", "0", CVAR_ARCHIVE};
-diff -urNp hexen2source-1.4.0/hexen2/gl_rmisc.c hexen2source-1.4.0x/hexen2/gl_rmisc.c
---- hexen2source-1.4.0/hexen2/gl_rmisc.c	2006-04-05 09:09:23.000000000 +0300
-+++ hexen2source-1.4.0x/hexen2/gl_rmisc.c	2006-04-18 12:10:21.000000000 +0300
-@@ -231,6 +231,7 @@ void R_Init (void)
+diff -urNp hexen2source-1.4.1/hexen2/gl_rmisc.c hexen2source-1.4.1x/hexen2/gl_rmisc.c
+--- hexen2source-1.4.1/hexen2/gl_rmisc.c	2006-08-14 09:59:47.000000000 +0300
++++ hexen2source-1.4.1x/hexen2/gl_rmisc.c	2006-08-28 10:30:17.000000000 +0300
+@@ -234,6 +234,7 @@ void R_Init (void)
  	Cvar_RegisterVariable (&r_speeds);
  	Cvar_RegisterVariable (&r_wholeframe);
  
@@ -44,10 +45,10 @@ diff -urNp hexen2source-1.4.0/hexen2/gl_rmisc.c hexen2source-1.4.0x/hexen2/gl_rm
  	Cvar_RegisterVariable (&gl_clear);
  	Cvar_RegisterVariable (&gl_cull);
  	Cvar_RegisterVariable (&gl_smoothmodels);
-diff -urNp hexen2source-1.4.0/hexen2/gl_rsurf.c hexen2source-1.4.0x/hexen2/gl_rsurf.c
---- hexen2source-1.4.0/hexen2/gl_rsurf.c	2006-03-24 17:05:39.000000000 +0200
-+++ hexen2source-1.4.0x/hexen2/gl_rsurf.c	2006-04-18 12:10:21.000000000 +0300
-@@ -530,6 +530,8 @@ static void R_BlendLightmaps (qboolean T
+diff -urNp hexen2source-1.4.1/hexen2/gl_rsurf.c hexen2source-1.4.1x/hexen2/gl_rsurf.c
+--- hexen2source-1.4.1/hexen2/gl_rsurf.c	2006-07-03 17:05:36.000000000 +0300
++++ hexen2source-1.4.1x/hexen2/gl_rsurf.c	2006-08-28 10:30:17.000000000 +0300
+@@ -531,6 +531,8 @@ static void R_BlendLightmaps (qboolean T
  
  	if (r_fullbright.value)
  		return;
@@ -56,7 +57,7 @@ diff -urNp hexen2source-1.4.0/hexen2/gl_rsurf.c hexen2source-1.4.0x/hexen2/gl_rs
  
  	if (!Translucent)
  		glDepthMask_fp (0);	// don't bother writing Z
-@@ -635,6 +637,8 @@ static void R_UpdateLightmaps (qboolean 
+@@ -636,6 +638,8 @@ static void R_UpdateLightmaps (qboolean 
  
  	if (r_fullbright.value)
  		return;
@@ -65,7 +66,7 @@ diff -urNp hexen2source-1.4.0/hexen2/gl_rsurf.c hexen2source-1.4.0x/hexen2/gl_rs
  
  	glActiveTextureARB_fp (GL_TEXTURE1_ARB);
  
-@@ -674,6 +678,334 @@ static void R_UpdateLightmaps (qboolean 
+@@ -675,6 +679,334 @@ static void R_UpdateLightmaps (qboolean 
  }
  
  
@@ -400,7 +401,7 @@ diff -urNp hexen2source-1.4.0/hexen2/gl_rsurf.c hexen2source-1.4.0x/hexen2/gl_rs
  /*
  ================
  R_RenderBrushPoly
-@@ -1180,7 +1512,15 @@ void R_DrawBrushModel (entity_t *e, qboo
+@@ -1181,7 +1513,15 @@ void R_DrawBrushModel (entity_t *e, qboo
  		if (((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||
  			(!(psurf->flags & SURF_PLANEBACK) && (dot > BACKFACE_EPSILON)))
  		{
@@ -417,7 +418,7 @@ diff -urNp hexen2source-1.4.0/hexen2/gl_rsurf.c hexen2source-1.4.0x/hexen2/gl_rs
  		}
  	}
  
-@@ -1298,11 +1638,21 @@ static void R_RecursiveWorldNode (mnode_
+@@ -1299,11 +1639,21 @@ static void R_RecursiveWorldNode (mnode_
  				continue;	// wrong side
  
  			// sorting by texture, just store it out
@@ -443,7 +444,7 @@ diff -urNp hexen2source-1.4.0/hexen2/gl_rsurf.c hexen2source-1.4.0x/hexen2/gl_rs
  			}
  		}
  	}
-@@ -1336,7 +1686,8 @@ void R_DrawWorld (void)
+@@ -1337,7 +1687,8 @@ void R_DrawWorld (void)
  
  	R_RecursiveWorldNode (cl.worldmodel->nodes);
  
@@ -453,9 +454,9 @@ diff -urNp hexen2source-1.4.0/hexen2/gl_rsurf.c hexen2source-1.4.0x/hexen2/gl_rs
  
  	// disable multitexturing - just in case ...
  	if (gl_multitexture.value == 1 && gl_mtexable == true)
-diff -urNp hexen2source-1.4.0/hexen2/gl_warp.c hexen2source-1.4.0x/hexen2/gl_warp.c
---- hexen2source-1.4.0/hexen2/gl_warp.c	2006-04-11 08:07:07.000000000 +0300
-+++ hexen2source-1.4.0x/hexen2/gl_warp.c	2006-04-18 12:10:21.000000000 +0300
+diff -urNp hexen2source-1.4.1/hexen2/gl_warp.c hexen2source-1.4.1x/hexen2/gl_warp.c
+--- hexen2source-1.4.1/hexen2/gl_warp.c	2006-07-03 17:05:36.000000000 +0300
++++ hexen2source-1.4.1x/hexen2/gl_warp.c	2006-08-28 10:30:17.000000000 +0300
 @@ -7,8 +7,8 @@ extern	model_t	*loadmodel;
  
  int		skytexturenum;

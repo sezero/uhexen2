@@ -10,8 +10,8 @@ In addition, place a file named maplist.txt with only a 0 in
 it in your data1 directory (a sample file is provided here),
 so that the game wouldn't look for a progs2.dat
 
-diff -urN gamecode-1.15/hc/h2/ai.hc gamecode/hc/h2/ai.hc
---- gamecode-1.15/hc/h2/ai.hc	2005-01-05 01:48:12.000000000 +0200
+diff -urN gamecode-1.16/hc/h2/ai.hc gamecode/hc/h2/ai.hc
+--- gamecode-1.16/hc/h2/ai.hc	2005-01-05 01:48:12.000000000 +0200
 +++ gamecode/hc/h2/ai.hc	2005-08-31 01:28:10.000000000 +0300
 @@ -35,7 +35,13 @@
  void()spider_onwall_wait;
@@ -130,8 +130,8 @@ diff -urN gamecode-1.15/hc/h2/ai.hc gamecode/hc/h2/ai.hc
  
  
  /*
-diff -urN gamecode-1.15/hc/h2/progs.src gamecode/hc/h2/progs.src
---- gamecode-1.15/hc/h2/progs.src	2004-11-29 13:39:59.000000000 +0200
+diff -urN gamecode-1.16/hc/h2/progs.src gamecode/hc/h2/progs.src
+--- gamecode-1.16/hc/h2/progs.src	2004-11-29 13:39:59.000000000 +0200
 +++ gamecode/hc/h2/progs.src	2005-08-31 01:28:10.000000000 +0300
 @@ -125,11 +125,11 @@
  
