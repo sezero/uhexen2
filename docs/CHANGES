@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-08-28 (CVS):
+    * re-diff'ed some of the the extra patches
+
 2006-08-26 (CVS):
     * minor documentation updates / corrections
     * updated VectorSet for macro correctness
