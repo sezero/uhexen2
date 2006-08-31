@@ -24,22 +24,15 @@ static char *Sys_SearchCommand (char *filename)
 	char	*path;
 	int		m, n;
 
-	if (strchr (filename, '/') && filename[0] != '.')
-	{
-		return filename;
-	}
+	memset (pathname, 0, sizeof(pathname));
 
-	if (filename[0] == '.')
+	if (filename[0] == '/' || filename[0] == '.' || strchr(filename, '/') != NULL)
 	{
-		char	*cwd;
-
-		cwd = malloc(sizeof(char)*MAX_OSPATH);
-		if (getcwd (cwd, MAX_OSPATH) == NULL)
+		if ( realpath(filename, pathname) == NULL )
 		{
-			perror("getcwd failed");
+			printf ("Unable to resolve pathname %s\n", filename);
+			return NULL;
 		}
-		snprintf(pathname, MAX_OSPATH,"%s%s", cwd, filename+1);
-		free(cwd);
 		return pathname;
 	}
 
@@ -55,32 +48,27 @@ static char *Sys_SearchCommand (char *filename)
 			m = n = strlen(path);
 		}
 
-		strncpy(pathname, path, n);     
+		strncpy(buff, path, n);
 
-		if (n && pathname[n - 1] != '/')
+		if (n && buff[n - 1] != '/')
 		{
-			pathname[n++] = '/';
+			buff[n++] = '/';
 		}
 
-		strcpy(pathname + n, filename);
+		strcpy(buff + n, filename);
 
-		if (!access(pathname, F_OK))
+		if (!access(buff, F_OK))
 		{
-			// is this  a symbolic link ??
-			strncpy(buff, pathname, MAX_OSPATH);
-			memset (pathname, 0, sizeof(pathname));
-
-			if (readlink(buff, pathname, MAX_OSPATH) < 0)
+			if ( realpath(buff, pathname) == NULL )
 			{
-				if (errno != EINVAL)
-					perror(NULL);
+				printf ("Unable to resolve pathname %s\n", buff);
+				return NULL;
 			}
-
 			return pathname;
 		}
 	}
 
-	return filename;
+	return NULL;
 }
 
 static void Sys_FindBinDir (char *filename, char *out)
@@ -88,12 +76,17 @@ static void Sys_FindBinDir (char *filename, char *out)
 	char	*cmd, *last, *tmp;
 
 	cmd = Sys_SearchCommand (filename);
+	if (cmd == NULL)
+	{
+		printf ("Unable to determine realpath for %s\n", filename);
+		exit (1);
+	}
 	last = cmd;
 	tmp = cmd;
 
 	while (*tmp)
 	{
-		if (*tmp=='/')
+		if (*tmp == '/')
 			last = tmp+1;
 		tmp++;
 	}
