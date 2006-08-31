@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-08-31 (CVS):
+    * fixed finding of actual command path in the launcher
+    * incremented launcher version to 0.7.7
+    * updated release notes for 1.4.1
+
 2006-08-28 (CVS):
     * re-diff'ed some of the the extra patches
 
