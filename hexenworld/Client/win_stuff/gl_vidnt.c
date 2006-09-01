@@ -19,6 +19,7 @@
 #define MIN_WIDTH		320
 //#define MIN_HEIGHT		200
 #define MIN_HEIGHT		240
+#define MAX_DESC		33
 #define MAX_NUMBPP		8
 
 typedef struct {
@@ -30,7 +31,7 @@ typedef struct {
 	int			fullscreen;
 	int			bpp;
 	int			halfscreen;
-	char		modedesc[33];
+	char		modedesc[MAX_DESC];
 } vmode_t;
 
 typedef struct {
@@ -1198,7 +1199,7 @@ void VID_SetPalette (unsigned char *palette)
 			{
 #if !defined(NO_SPLASHES)
 #ifdef DEBUG_BUILD
-				sprintf(s, "Done - %d\n", i);
+				snprintf(s, sizeof(s), "Done - %d\n", i);
 				OutputDebugString(s);
 #endif
 				SendMessage(hProgress, PBM_STEPIT, 0, 0);
@@ -1206,9 +1207,9 @@ void VID_SetPalette (unsigned char *palette)
 				m=0;
 			}
 		}
-		sprintf(s, "%s/glhexen", com_userdir);
+		snprintf(s, sizeof(s), "%s/glhexen", com_userdir);
 		Sys_mkdir (s);
-		sprintf(s, "%s/glhexen/15to8.pal", com_userdir);
+		snprintf(s, sizeof(s), "%s/glhexen/15to8.pal", com_userdir);
 		f = fopen(s, "wb");
 		if (f)
 		{
@@ -1642,14 +1643,14 @@ static char *VID_GetExtModeDescription (int mode)
 	pv = VID_GetModePtr (mode);
 	if (modelist[mode].type == MS_FULLDIB)
 	{
-		sprintf(pinfo,"%s fullscreen", pv->modedesc);
+		snprintf(pinfo, sizeof(pinfo), "%s fullscreen", pv->modedesc);
 	}
 	else
 	{
 		if (modestate == MS_WINDOWED)
-			sprintf(pinfo, "%s windowed", pv->modedesc);
+			snprintf(pinfo, sizeof(pinfo), "%s windowed", pv->modedesc);
 		else
-			sprintf(pinfo, "windowed");
+			snprintf(pinfo, sizeof(pinfo), "windowed");
 	}
 
 	return pinfo;
@@ -1769,7 +1770,7 @@ static void VID_InitDIB (HINSTANCE hInstance)
 			wmodelist[num_wmodes].type = MS_WINDOWED;
 			wmodelist[num_wmodes].width = std_modes[i].width;
 			wmodelist[num_wmodes].height = std_modes[i].height;
-			sprintf (wmodelist[num_wmodes].modedesc, "%dx%d",
+			snprintf (wmodelist[num_wmodes].modedesc, MAX_DESC, "%dx%d",
 				 wmodelist[num_wmodes].width, wmodelist[num_wmodes].height);
 			wmodelist[num_wmodes].modenum = MODE_WINDOWED;
 			wmodelist[num_wmodes].dib = 1;
@@ -1823,7 +1824,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 				fmodelist[num_fmodes].dib = 1;
 				fmodelist[num_fmodes].fullscreen = 1;
 				fmodelist[num_fmodes].bpp = devmode.dmBitsPerPel;
-				sprintf (fmodelist[num_fmodes].modedesc, "%dx%dx%d",
+				snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%dx%dx%d",
 						(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight,
 						(int)devmode.dmBitsPerPel);
 
@@ -1835,7 +1836,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 					{
 						fmodelist[num_fmodes].width >>= 1;
 						fmodelist[num_fmodes].halfscreen = 1;
-						sprintf (fmodelist[num_fmodes].modedesc, "%dx%dx%d",
+						snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%dx%dx%d",
 								 fmodelist[num_fmodes].width,
 								 fmodelist[num_fmodes].height,
 								 fmodelist[num_fmodes].bpp);
@@ -1887,7 +1888,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 				fmodelist[num_fmodes].dib = 1;
 				fmodelist[num_fmodes].fullscreen = 1;
 				fmodelist[num_fmodes].bpp = devmode.dmBitsPerPel;
-				sprintf (fmodelist[num_fmodes].modedesc, "%dx%dx%d",
+				snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%dx%dx%d",
 						(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight,
 						(int)devmode.dmBitsPerPel);
 
@@ -2249,11 +2250,11 @@ void	VID_Init (unsigned char *palette)
 	Cmd_AddCommand ("vid_restart", VID_Restart_f);
 
 	// prepare directories for caching mesh files
-	sprintf (gldir, "%s/glhexen", com_userdir);
+	snprintf (gldir, sizeof(gldir), "%s/glhexen", com_userdir);
 	Sys_mkdir (gldir);
-	sprintf (gldir, "%s/glhexen/boss", com_userdir);
+	snprintf (gldir, sizeof(gldir), "%s/glhexen/boss", com_userdir);
 	Sys_mkdir (gldir);
-	sprintf (gldir, "%s/glhexen/puzzle", com_userdir);
+	snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", com_userdir);
 	Sys_mkdir (gldir);
 
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
@@ -2339,7 +2340,7 @@ void	VID_Init (unsigned char *palette)
 		wmodelist[num_wmodes].width = width;
 		wmodelist[num_wmodes].height = height;
 		wmodelist[num_wmodes].type = MS_WINDOWED;
-		sprintf (wmodelist[num_wmodes].modedesc, "%dx%d",
+		snprintf (wmodelist[num_wmodes].modedesc, MAX_DESC, "%dx%d",
 			 wmodelist[num_wmodes].width, wmodelist[num_wmodes].height);
 		wmodelist[num_wmodes].modenum = MODE_WINDOWED;
 		wmodelist[num_wmodes].dib = 1;
@@ -2360,7 +2361,7 @@ void	VID_Init (unsigned char *palette)
 
 		if (!existingmode)
 		{
-			strcat (wmodelist[num_wmodes].modedesc, " (user mode)");
+			Q_strlcat (wmodelist[num_wmodes].modedesc, " (user mode)", MAX_DESC);
 			vid_default = num_wmodes;
 			num_wmodes++;
 		}
@@ -2393,7 +2394,7 @@ void	VID_Init (unsigned char *palette)
 			// with desktop dimensions
 			if (vid_deskmode >= 0)
 			{
-				strcat (modelist[vid_deskmode].modedesc, " (desktop)");
+				Q_strlcat (modelist[vid_deskmode].modedesc, " (desktop)", MAX_DESC);
 				vid_default = vid_deskmode;
 			}
 			else
@@ -2438,7 +2439,7 @@ void	VID_Init (unsigned char *palette)
 				fmodelist[num_fmodes].dib = 1;
 				fmodelist[num_fmodes].fullscreen = 1;
 				fmodelist[num_fmodes].bpp = bpp;
-				sprintf (fmodelist[num_fmodes].modedesc, "%dx%dx%d",
+				snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%dx%dx%d",
 						fmodelist[num_fmodes].width, fmodelist[num_fmodes].height,
 						fmodelist[num_fmodes].bpp);
 
@@ -2455,7 +2456,7 @@ void	VID_Init (unsigned char *palette)
 
 				if (!existingmode)
 				{
-					strcat (fmodelist[num_fmodes].modedesc, " (user mode)");
+					Q_strlcat (fmodelist[num_fmodes].modedesc, " (user mode)", MAX_DESC);
 					num_fmodes++;
 					// re-sort the modes
 					VID_SortModes();
@@ -2465,7 +2466,7 @@ void	VID_Init (unsigned char *palette)
 			}
 
 			if (vid_deskmode >= 0)
-				strcat (fmodelist[vid_deskmode].modedesc, " (desktop)");
+				Q_strlcat (fmodelist[vid_deskmode].modedesc, " (desktop)", MAX_DESC);
 
 			j = done = 0;
 
@@ -2583,7 +2584,7 @@ void	VID_Init (unsigned char *palette)
 	vid_menudrawfn = VID_MenuDraw;
 	vid_menukeyfn = VID_MenuKey;
 
-	strcpy (badmode.modedesc, "Bad mode");
+	Q_strlcpy (badmode.modedesc,"Bad mode", MAX_DESC);
 	vid_canalttab = true;
 
 	if (COM_CheckParm("-fullsbar"))

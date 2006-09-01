@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.49 2006-07-18 08:30:20 sezero Exp $
+	$Id: vid_sdl.c,v 1.50 2006-09-01 08:09:46 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -21,6 +21,7 @@
 #define MIN_WIDTH		320
 //#define MIN_HEIGHT		200
 #define MIN_HEIGHT		240
+#define MAX_DESC		13
 
 unsigned char	vid_curpal[256*3];
 unsigned short	d_8to16table[256];
@@ -77,7 +78,7 @@ typedef struct {
 	int			fullscreen;
 	int			bpp;
 	int			halfscreen;
-	char		modedesc[13];
+	char		modedesc[MAX_DESC];
 } vmode_t;
 
 typedef struct {
@@ -291,7 +292,7 @@ static void VID_PrepareModes (SDL_Rect **sdl_modes)
 		wmodelist[num_wmodes].halfscreen = 0;
 		wmodelist[num_wmodes].fullscreen = 0;
 		wmodelist[num_wmodes].bpp = 8;
-		sprintf (wmodelist[num_wmodes].modedesc,"%d x %d",std_modes[i].width,std_modes[i].height);
+		snprintf (wmodelist[num_wmodes].modedesc, MAX_DESC, "%d x %d", std_modes[i].width, std_modes[i].height);
 		num_wmodes++;
 	}
 
@@ -375,7 +376,7 @@ no_fmodes:
 			fmodelist[num_fmodes].halfscreen = 0;
 			fmodelist[num_fmodes].fullscreen = 1;
 			fmodelist[num_fmodes].bpp = 8;
-			sprintf (fmodelist[num_fmodes].modedesc,"%d x %d",sdl_modes[i]->w,sdl_modes[i]->h);
+			snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%d x %d", sdl_modes[i]->w, sdl_modes[i]->h);
 			num_fmodes++;
 		}
 	}
@@ -834,7 +835,7 @@ void	VID_Init (unsigned char *palette)
 		modelist[*nummodes].halfscreen = 0;
 		modelist[*nummodes].fullscreen = 1;
 		modelist[*nummodes].bpp = 8;
-		sprintf (modelist[*nummodes].modedesc,"%d x %d (user mode)",width,height);
+		snprintf (modelist[*nummodes].modedesc, MAX_DESC, "%d x %d (user mode)", width, height);
 		Cvar_SetValue ("vid_mode", *nummodes);
 		(*nummodes)++;	// ugly, I know. but works
 	}
@@ -1279,6 +1280,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.49  2006/07/18 08:30:20  sezero
+ * a few int -> size_t changes for filesize vars
+ *
  * Revision 1.48  2006/07/04 21:03:18  sezero
  * fixed the vid_sdl video menu
  *

@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.115 2006-08-14 06:09:42 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.116 2006-09-01 08:09:45 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -29,6 +29,7 @@
 #define MIN_WIDTH		320
 //#define MIN_HEIGHT		200
 #define MIN_HEIGHT		240
+#define MAX_DESC		33
 
 typedef struct {
 	modestate_t	type;
@@ -39,7 +40,7 @@ typedef struct {
 	int			fullscreen;
 	int			bpp;
 	int			halfscreen;
-	char		modedesc[33];
+	char		modedesc[MAX_DESC];
 } vmode_t;
 
 typedef struct {
@@ -1110,9 +1111,9 @@ void VID_SetPalette (unsigned char *palette)
 			if (m >= 1000)
 				m=0;
 		}
-		sprintf(s, "%s/glhexen", com_userdir);
+		snprintf(s, sizeof(s), "%s/glhexen", com_userdir);
 		Sys_mkdir (s);
-		sprintf(s, "%s/glhexen/15to8.pal", com_userdir);
+		snprintf(s, sizeof(s), "%s/glhexen/15to8.pal", com_userdir);
 		f = fopen(s, "wb");
 		if (f)
 		{
@@ -1291,7 +1292,7 @@ static void VID_PrepareModes (SDL_Rect **sdl_modes)
 		wmodelist[num_wmodes].halfscreen = 0;
 		wmodelist[num_wmodes].fullscreen = 0;
 		wmodelist[num_wmodes].bpp = 16;
-		sprintf (wmodelist[num_wmodes].modedesc,"%d x %d",std_modes[i].width,std_modes[i].height);
+		snprintf (wmodelist[num_wmodes].modedesc, MAX_DESC, "%d x %d", std_modes[i].width, std_modes[i].height);
 		num_wmodes++;
 	}
 
@@ -1361,7 +1362,7 @@ no_fmodes:
 			fmodelist[num_fmodes].halfscreen = 0;
 			fmodelist[num_fmodes].fullscreen = 1;
 			fmodelist[num_fmodes].bpp = 16;
-			sprintf (fmodelist[num_fmodes].modedesc,"%d x %d",sdl_modes[i]->w,sdl_modes[i]->h);
+			snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%d x %d", sdl_modes[i]->w, sdl_modes[i]->h);
 			num_fmodes++;
 		}
 	}
@@ -1591,11 +1592,11 @@ void	VID_Init (unsigned char *palette)
 	vid.numpages = 2;
 
 	// prepare directories for caching mesh files
-	sprintf (gldir, "%s/glhexen", com_userdir);
+	snprintf (gldir, sizeof(gldir), "%s/glhexen", com_userdir);
 	Sys_mkdir (gldir);
-	sprintf (gldir, "%s/glhexen/boss", com_userdir);
+	snprintf (gldir, sizeof(gldir), "%s/glhexen/boss", com_userdir);
 	Sys_mkdir (gldir);
-	sprintf (gldir, "%s/glhexen/puzzle", com_userdir);
+	snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", com_userdir);
 	Sys_mkdir (gldir);
 
 	// see if the SDL version we linked to is multisampling-capable
@@ -1714,7 +1715,7 @@ void	VID_Init (unsigned char *palette)
 		modelist[*nummodes].halfscreen = 0;
 		modelist[*nummodes].fullscreen = 1;
 		modelist[*nummodes].bpp = 16;
-		sprintf (modelist[*nummodes].modedesc,"%d x %d (user mode)",width,height);
+		snprintf (modelist[*nummodes].modedesc, MAX_DESC, "%d x %d (user mode)", width, height);
 		Cvar_SetValue ("vid_mode", *nummodes);
 		(*nummodes)++;	// ugly, I know. but works
 	}
