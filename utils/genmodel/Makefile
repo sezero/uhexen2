@@ -54,6 +54,8 @@ endif
 
 # Objects
 GENMODELOBJS= $(COMMONDIR)/cmdlib.o \
+	$(COMMONDIR)/strlcat.o \
+	$(COMMONDIR)/strlcpy.o \
 	$(COMMONDIR)/qdir.o \
 	mathlib.o \
 	loadtri.o \

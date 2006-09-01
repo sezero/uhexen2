@@ -188,6 +188,23 @@ void MSG_ReadUsercmd (struct usercmd_s *cmd, qboolean long_msg);
 #define Q_strcasecmp	strcasecmp
 #endif
 
+// strlcpy and strlcat :
+#include "strl_fn.h"
+
+#if HAVE_STRLCAT && HAVE_STRLCPY
+
+// use native library functions
+#define Q_strlcpy strlcpy
+#define Q_strlcat strlcat
+
+#else
+
+// use our own copies of strlcpy and strlcat taken from OpenBSD :
+extern size_t Q_strlcpy (char *dst, const char *src, size_t size);
+extern size_t Q_strlcat (char *dst, const char *src, size_t size);
+
+#endif
+
 //============================================================================
 
 extern	char		com_token[1024];

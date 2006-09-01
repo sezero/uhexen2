@@ -315,6 +315,8 @@ COMMONOBJS = cl_cam.o \
 	cl_cmd.o \
 	cmd.o \
 	common.o \
+	strlcat.o \
+	strlcpy.o \
 	console.o \
 	crc.o \
 	cvar.o \

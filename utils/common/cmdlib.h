@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.6 2006-07-17 14:48:41 sezero Exp $
+	$Id: cmdlib.h,v 1.7 2006-09-01 07:10:07 sezero Exp $
 */
 
 #ifndef __CMDLIB__
@@ -51,6 +51,24 @@ typedef unsigned char byte;
 
 // the dec offsetof macro doesn't work very well...
 #define myoffsetof(type,identifier) ((size_t)&((type *)0)->identifier)
+
+
+// strlcpy and strlcat :
+#include "strl_fn.h"
+
+#if HAVE_STRLCAT && HAVE_STRLCPY
+
+// use native library functions
+#define Q_strlcpy strlcpy
+#define Q_strlcat strlcat
+
+#else
+
+// use our own copies of strlcpy and strlcat taken from OpenBSD :
+extern size_t Q_strlcpy (char *dst, const char *src, size_t size);
+extern size_t Q_strlcat (char *dst, const char *src, size_t size);
+
+#endif
 
 
 // PUBLIC DATA DECLARATIONS ------------------------------------------------

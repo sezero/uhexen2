@@ -56,6 +56,8 @@ endif
 
 # Objects
 HCCOBJS= $(COMMONDIR)/cmdlib.o \
+	$(COMMONDIR)/strlcat.o \
+	$(COMMONDIR)/strlcpy.o \
 	expr.o \
 	hcc.o \
 	pr_comp.o \

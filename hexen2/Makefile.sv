@@ -120,6 +120,8 @@ endif
 # Final list of objects
 H2DED_OBJS = cmd.o \
 	common.o \
+	strlcat.o \
+	strlcpy.o \
 	crc.o \
 	cvar.o \
 	mathlib.o \

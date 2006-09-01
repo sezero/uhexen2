@@ -60,6 +60,8 @@ endif
 
 # Objects
 COMMONOBJS= $(COMMONDIR)/cmdlib.o \
+	$(COMMONDIR)/strlcat.o \
+	$(COMMONDIR)/strlcpy.o \
 	mathlib.o \
 	bspfile.o
 

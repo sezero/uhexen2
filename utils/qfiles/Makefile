@@ -55,6 +55,8 @@ endif
 # Objects
 QFILESOBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/qdir.o \
+	$(COMMONDIR)/strlcat.o \
+	$(COMMONDIR)/strlcpy.o \
 	qfiles.o
 
 # Targets

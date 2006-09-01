@@ -54,6 +54,8 @@ endif
 
 # Objects
 JS_OBJS= $(COMMONDIR)/cmdlib.o \
+	$(COMMONDIR)/strlcat.o \
+	$(COMMONDIR)/strlcpy.o \
 	mathlib.o \
 	bspfile.o \
 	entities.o \
