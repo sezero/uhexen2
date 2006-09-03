@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-09-03 (CVS):
+    * added midi support for Mac OS X through QuickTime
+    * added the bsd functions strlcat and strlcpy. taken from OpenBSD.
+    * started using the strl* functions and snprintf, #1: vid* files.
+
 2006-08-31 (CVS):
     * fixed finding of actual command path in the launcher
     * incremented launcher version to 0.7.7
