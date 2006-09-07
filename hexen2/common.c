@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.71 2006-09-07 07:51:33 sezero Exp $
+	$Id: common.c,v 1.72 2006-09-07 08:24:54 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -780,7 +780,7 @@ void COM_FileBase (char *in, char *out)
 	/* Pa3PyX: no range checking -- used to trash the stack and crash the
 	   game randomly upon loading progs, for instance (or in any other
 	   instance where one would supply a filename witout a path */
-//	for (s2 = s ; *s2 && *s2 != '/' ; s2--);
+//	for (s2 = s; *s2 && *s2 != '/'; s2--);
 	for (s2 = s; *s2 && *s2 != '/' && s2 >= in; s2--)
 		;
 
@@ -789,7 +789,7 @@ void COM_FileBase (char *in, char *out)
 	else
 	{
 		s--;
-		strncpy (out,s2+1, s-s2);
+		strncpy (out, s2+1, s-s2);
 		out[s-s2] = 0;
 	}
 }
@@ -1803,9 +1803,13 @@ static void COM_AddGameDirectory (char *dir, qboolean base_fs)
 	qboolean		been_here = false;
 
 	if ((p = strrchr(dir, '/')) != NULL)
+	{
 		strcpy(gamedirfile, ++p);
+	}
 	else
+	{
 		strcpy(gamedirfile, p);
+	}
 	strcpy (com_gamedir, dir);
 
 //
@@ -1817,9 +1821,13 @@ add_pakfile:
 	for (i=0 ; i < 10; i++)
 	{
 		if (been_here)
+		{
 			sprintf (pakfile, "%s/pak%i.pak", com_userdir, i);
+		}
 		else
+		{
 			sprintf (pakfile, "%s/pak%i.pak", dir, i);
+		}
 		pak = COM_LoadPackFile (pakfile, i, base_fs);
 		if (!pak)
 			continue;
@@ -1838,9 +1846,13 @@ add_pakfile:
 // data1/pak0.pak:/default.cfg
 	search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
 	if (been_here)
+	{
 		strcpy (search->filename, com_userdir);
+	}
 	else
+	{
 		strcpy (search->filename, dir);
+	}
 	search->next = com_searchpaths;
 	com_searchpaths = search;
 
@@ -1972,9 +1984,13 @@ add_pakfiles:
 	for (i=0 ; i < 10 ; i++)
 	{
 		if (been_here)
+		{
 			sprintf (pakfile, "%s/pak%i.pak", com_userdir, i);
+		}
 		else
+		{
 			sprintf (pakfile, "%s/pak%i.pak", com_gamedir, i);
+		}
 		pak = COM_LoadPackFile (pakfile, i, false);
 		if (!pak)
 			continue;
@@ -1990,9 +2006,13 @@ add_pakfiles:
 // pakfiles in the search order
 	search = Z_Malloc (sizeof(searchpath_t));
 	if (been_here)
+	{
 		strcpy (search->filename, com_userdir);
+	}
 	else
+	{
 		strcpy (search->filename, com_gamedir);
+	}
 	search->next = com_searchpaths;
 	com_searchpaths = search;
 
@@ -2170,9 +2190,13 @@ static void COM_InitFilesystem (void)
 //
 	i = COM_CheckParm ("-basedir");
 	if (i && i < com_argc-1)
+	{
 		strcpy (com_basedir, com_argv[i+1]);
+	}
 	else
+	{
 		strcpy (com_basedir, host_parms.basedir);
+	}
 
 	strcpy (com_userdir, host_parms.userdir);
 
@@ -2603,6 +2627,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.71  2006/09/07 07:51:33  sezero
+ * COM_WriteFile() shouldn't Sys_Error if it can't open the file
+ *
  * Revision 1.70  2006/08/14 06:10:25  sezero
  * introduced COM_LoadZoneFile()
  *
