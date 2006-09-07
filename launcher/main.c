@@ -48,6 +48,11 @@ static char *Sys_SearchCommand (char *filename)
 			m = n = strlen(path);
 		}
 
+		if (n >= sizeof(buff))
+		{
+			printf ("Insufficient buffer size for pathnames\n");
+			return NULL;
+		}
 		strncpy(buff, path, n);
 
 		if (n && buff[n - 1] != '/')
@@ -55,6 +60,11 @@ static char *Sys_SearchCommand (char *filename)
 			buff[n++] = '/';
 		}
 
+		if (strlen(filename) >= sizeof(buff)-n)
+		{
+			printf ("Insufficient buffer size for pathnames\n");
+			return NULL;
+		}
 		strcpy(buff + n, filename);
 
 		if (!access(buff, F_OK))
@@ -123,10 +133,13 @@ static int Sys_GetUserdir (char *buff, size_t path_len)
 	if (home_dir == NULL)
 		return 1;
 
-	if (strlen(home_dir) + strlen(AOT_USERDIR) + strlen(LAUNCHER_CONFIG_FILE) + 2 > path_len)
+	if (strlen(home_dir) + strlen(AOT_USERDIR) + strlen(LAUNCHER_CONFIG_FILE) + 2 >= path_len)
+	{
+		printf ("Insufficient buffer size for user directory name\n");
 		return 1;
+	}
 
-	sprintf (buff, "%s/%s", home_dir, AOT_USERDIR);
+	snprintf (buff, path_len, "%s/%s", home_dir, AOT_USERDIR);
 	return Sys_mkdir(buff);
 }
 

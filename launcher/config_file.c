@@ -46,9 +46,7 @@ static FILE * open_config_file (char *flags)
 
 	config_file_name = (char *)calloc(MAX_OSPATH, sizeof(char));
 
-	strcat (config_file_name,userdir);
-	strcat (config_file_name,"/");
-	strcat (config_file_name,LAUNCHER_CONFIG_FILE);
+	snprintf (config_file_name, MAX_OSPATH, "%s/%s", userdir, LAUNCHER_CONFIG_FILE);
 	thefile = fopen(config_file_name, flags);
 	free (config_file_name);
 	// NULL check has to be done later

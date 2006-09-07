@@ -94,7 +94,6 @@ void CheckExe (void)
 		missingexe = 0;
 		printf ("game binary %s found OK\n", binary_name);
 	}
-	return;
 }
 
 

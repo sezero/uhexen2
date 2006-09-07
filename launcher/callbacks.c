@@ -11,6 +11,7 @@
 extern int missingexe;
 extern int is_botmatch;
 #ifndef DEMOBUILD
+static size_t	string_size = 0;
 extern const char *h2game_names[MAX_H2GAMES][3];
 extern const char *hwgame_names[MAX_HWGAMES][3];
 #endif
@@ -227,12 +228,39 @@ void on_H2W (GtkButton *button, gamewidget_t *wgt)
 }
 
 #ifndef DEMOBUILD
+static void FindMaxStringSize (void)
+{
+	size_t	i, len;
+
+	for (i = 1; i < MAX_H2GAMES; i++)
+	{
+		len = strlen(h2game_names[i][0]) + 9;	// strlen("progs.dat") == 9
+		if (string_size < len)
+			string_size = len;
+	}
+
+	for (i = 1; i < MAX_HWGAMES; i++)
+	{
+		len = strlen(hwgame_names[i][0]) + 11;	// strlen("hwprogs.dat") == 11
+		if (string_size < len)
+			string_size = len;
+		len = len + strlen(hwgame_names[i][2]) - 11;
+		if (string_size < len)
+			string_size = len;
+	}
+
+	string_size += 2;			// 1 for "/" + 1 for null termination
+}
+
 void H2GameScan (GList *GameList)
 {
 	int	i;
 	char	*Title;
 
-	Title = (char *)malloc(sizeof(char)*32);
+	if (!string_size)
+		FindMaxStringSize ();
+
+	Title = (char *)malloc(string_size);
 	for (i = 1; i < MAX_H2GAMES; i++)
 	{
 		printf("Looking for %s ... ", (char *)h2game_names[i][1]);
@@ -259,7 +287,10 @@ void HWGameScan (GList *GameList)
 	int	i, j;
 	char	*Title;
 
-	Title = (char *)malloc(sizeof(char)*32);
+	if (!string_size)
+		FindMaxStringSize ();
+
+	Title = (char *)malloc(string_size);
 	for (i = 1; i < MAX_HWGAMES; i++)
 	{
 		printf("Looking for %s ... ", (char *)hwgame_names[i][1]);
