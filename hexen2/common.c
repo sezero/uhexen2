@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.70 2006-08-14 06:10:25 sezero Exp $
+	$Id: common.c,v 1.71 2006-09-07 07:51:33 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1226,13 +1226,16 @@ int COM_WriteFile (char *filename, void *data, size_t len)
 	char	name[MAX_OSPATH];
 	size_t	size;
 
-	sprintf (name, "%s/%s", com_userdir, filename);
+	snprintf (name, sizeof(name), "%s/%s", com_userdir, filename);
 
 	f = fopen (name, "wb");
 	if (!f)
-		Sys_Error ("Error opening %s", filename);
+	{
+		Con_Printf ("Error opening %s\n", filename);
+		return 1;
+	}
 
-	Sys_Printf ("COM_WriteFile: %s\n", name);
+	Sys_Printf ("%s: %s\n", __FUNCTION__, name);
 	size = fwrite (data, 1, len, f);
 	fclose (f);
 	if (size != len)
@@ -2600,6 +2603,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.70  2006/08/14 06:10:25  sezero
+ * introduced COM_LoadZoneFile()
+ *
  * Revision 1.69  2006/07/30 07:23:32  sezero
  * removed a left-over if condition
  *
