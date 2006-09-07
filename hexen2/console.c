@@ -32,6 +32,7 @@ static	cvar_t	con_notifytime = {"con_notifytime", "3", CVAR_NONE};	//seconds
 static float	con_times[NUM_CON_TIMES];	// realtime time the line was generated
 						// for transparent notify lines
 
+#define	DEBUGLOG_FILENAME	"qconsole.log"
 static qboolean	con_debuglog;
 
 #define		MAXCMDLINE	256
@@ -201,20 +202,12 @@ Con_Init
 */
 void Con_Init (void)
 {
-#define MAXGAMEDIRLEN	1000
-	char	temp[MAXGAMEDIRLEN+1];
-	char	*t2 = "/qconsole.log";
+	char	temp[MAX_OSPATH];
 
+	snprintf (temp, sizeof(temp), "%s/%s", com_userdir, DEBUGLOG_FILENAME);
 	con_debuglog = COM_CheckParm("-condebug");
-
 	if (con_debuglog)
-	{
-		if (strlen (com_userdir) < (MAXGAMEDIRLEN - strlen (t2)))
-		{
-			sprintf (temp, "%s%s", com_userdir, t2);
-			unlink (temp);
-		}
-	}
+		unlink (temp);
 
 	con_text = Hunk_AllocName (CON_TEXTSIZE<<1, "context");
 	Con_Clear_f();
@@ -384,7 +377,7 @@ void Con_Printf (char *fmt, ...)
 
 // log all messages to file
 	if (con_debuglog)
-		Con_DebugLog(va("%s/qconsole.log",com_userdir), "%s", msg);
+		Con_DebugLog(va("%s/%s",com_userdir,DEBUGLOG_FILENAME), "%s", msg);
 
 	if (!con_initialized)
 		return;

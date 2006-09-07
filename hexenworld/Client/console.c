@@ -22,6 +22,7 @@ static	cvar_t	con_notifytime = {"con_notifytime", "3", CVAR_NONE};	//seconds
 static float	con_times[NUM_CON_TIMES];	// realtime time the line was generated
 						// for transparent notify lines
 
+#define	DEBUGLOG_FILENAME	"qconsole.log"
 static qboolean	con_debuglog;
 
 #define		MAXCMDLINE	256
@@ -357,7 +358,7 @@ void Con_Printf (char *fmt, ...)
 
 // log all messages to file
 	if (con_debuglog)
-		Sys_DebugLog(va("%s/qconsole.log",com_userdir), "%s", msg);
+		Sys_DebugLog(va("%s/%s",com_userdir,DEBUGLOG_FILENAME), "%s", msg);
 
 	if (!con_initialized)
 		return;
