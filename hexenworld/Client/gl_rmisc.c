@@ -259,7 +259,7 @@ void R_Init (void)
 	texture_extension_number++;
 
 	for (counter = 0 ; counter < MAX_EXTRA_TEXTURES ; counter++)
-		gl_extra_textures[counter] = -1;
+		gl_extra_textures[counter] = GL_UNUSED_TEXTURE;
 
 	playerTranslation = (byte *)COM_LoadHunkFile ("gfx/player.lmp");
 	if (!playerTranslation)

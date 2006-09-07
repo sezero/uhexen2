@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.36 2006-07-20 19:47:23 sezero Exp $
+	$Id: gl_rmain.c,v 1.37 2006-09-07 08:03:21 sezero Exp $
 */
 
 
@@ -884,7 +884,7 @@ static void R_DrawAliasModel (entity_t *e)
 			Sys_Error ("skinnum > 255");
 		}
 
-		if (gl_extra_textures[currententity->skinnum-100] == -1) // Need to load it in
+		if (gl_extra_textures[currententity->skinnum-100] == GL_UNUSED_TEXTURE) // Need to load it in
 		{
 			sprintf(temp,"gfx/skin%d.lmp",currententity->skinnum);
 			stonepic = Draw_CachePic(temp);

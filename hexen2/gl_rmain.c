@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.48 2006-07-20 19:47:23 sezero Exp $
+	$Id: gl_rmain.c,v 1.49 2006-09-07 08:03:20 sezero Exp $
 */
 
 
@@ -904,7 +904,7 @@ static void R_DrawAliasModel (entity_t *e)
 			Sys_Error ("skinnum > 255");
 		}
 
-		if (gl_extra_textures[currententity->skinnum-100] == -1) // Need to load it in
+		if (gl_extra_textures[currententity->skinnum-100] == GL_UNUSED_TEXTURE) // Need to load it in
 		{
 			sprintf(temp,"gfx/skin%d.lmp",currententity->skinnum);
 			stonepic = Draw_CachePic(temp);
@@ -1976,6 +1976,13 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.48  2006/07/20 19:47:23  sezero
+ * fixed (actually worked-around) the light_level being
+ * incorrectly set when we run with rgba lightmaps: one
+ * major bug it resulted in was that it prevented the
+ * cloaking ability of the assasin. rgba mode is still
+ * not perfect and need fixing and polishing, I guess..
+ *
  * Revision 1.47  2006/07/03 14:05:36  sezero
  * re-visited the GL data types, made them to be of GL types and solved
  * the signedness issues. completely removed the scrap allocation option.
