@@ -3,6 +3,22 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-09-10 (CVS):
+    * small clean-ups in hexenworld utils
+    * added hwmquery, a tiny utility for querying hexenworld master
+      servers. as of this writing, qstat (therefore xqf, too) can't
+      query a hexenworld master server.
+    * updated the win32 splash bitmap of hexen2 (no blueish pixels,
+      pure black background now.)
+
+2006-09-07 (CVS):
+    * fixes and clean-ups for string sizes in launcher
+    * COM_WriteFile() shouldn't Sys_Error if it can't open the file.
+      its callers should check the return value, instead.
+    * more GL_UNUSED_TEXTURE changes (gl_extra_textures is GLuint)
+    * debuglog cleanup
+    * misc small stuff
+
 2006-09-03 (CVS):
     * added midi support for Mac OS X through QuickTime
     * added the bsd functions strlcat and strlcpy. taken from OpenBSD.
