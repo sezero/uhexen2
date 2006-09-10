@@ -73,6 +73,24 @@ typedef struct
 
 static int		socketfd = -1;
 
+//=============================================================================
+
+void Sys_Error (char *error, ...)
+{
+	va_list		argptr;
+	char		text[1024];
+
+	va_start (argptr,error);
+	vsnprintf (text, sizeof (text), error,argptr);
+	va_end (argptr);
+
+	printf ("\nERROR: %s\n\n", text);
+
+	exit (1);
+}
+
+//=============================================================================
+
 static void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
 {
 	*(int *)&a->ip = *(int *)&s->sin_addr;
@@ -151,6 +169,20 @@ static int NET_WaitReadTimeout (int fd, long sec, long usec)
 	return select(fd+1, &rfds, NULL, NULL, &tv);
 }
 
+static void NET_Init (void)
+{
+#ifdef _WIN32
+	WORD	wVersionRequested;
+	int		err;
+
+// Init winsock
+	wVersionRequested = MAKEWORD(1, 1);
+	err = WSAStartup (MAKEWORD(1, 1), &winsockdata);
+	if (err)
+		Sys_Error ("Winsock initialization failed.");
+#endif
+}
+
 static void NET_Shutdown (void)
 {
 	if (socketfd != -1)
@@ -158,22 +190,6 @@ static void NET_Shutdown (void)
 #ifdef _WIN32
 	WSACleanup ();
 #endif
-}
-
-//=============================================================================
-
-void Sys_Error (char *error, ...)
-{
-	va_list		argptr;
-	char		text[1024];
-
-	va_start (argptr,error);
-	vsnprintf (text, sizeof (text), error,argptr);
-	va_end (argptr);
-
-	printf ("\nERROR: %s\n\n", text);
-
-	exit (1);
 }
 
 //=============================================================================
@@ -189,6 +205,7 @@ static unsigned char huffbuff[65536];
 
 int main (int argc, char *argv[])
 {
+	int		error_state = 0;
 	int		len, hufflen, size;
 	int		i, k;
 	socklen_t	fromlen;
@@ -198,10 +215,6 @@ int main (int argc, char *argv[])
 	netadr_t		ipaddress;
 	struct sockaddr_in	hostaddress;
 	unsigned long	_true = 1;
-#ifdef _WIN32
-	WORD	wVersionRequested;
-	int		err;
-#endif
 
 	printf ("HWTERM %s\n", VERSION_STR);
 
@@ -212,13 +225,8 @@ int main (int argc, char *argv[])
 		exit (1);
 	}
 
-#ifdef _WIN32
-// Init winsock
-	wVersionRequested = MAKEWORD(1, 1);
-	err = WSAStartup (MAKEWORD(1, 1), &winsockdata);
-	if (err)
-		Sys_Error ("Winsock initialization failed.");
-#endif
+// Init OS-specific network stuff
+	NET_Init ();
 
 // Decode the address and port
 	if (!NET_StringToAdr(argv[1], &ipaddress))
@@ -290,6 +298,7 @@ int main (int argc, char *argv[])
 		{
 			perror ("Sendto failed");
 			printf ("Tried to send %i, sent %i\n", hufflen, size);
+			error_state = 1;
 			goto error_out;
 		}
 
@@ -307,16 +316,18 @@ int main (int argc, char *argv[])
 			if (size < 0)
 			{
 #	ifdef _WIN32
-				err = WSAGetLastError();
+				int err = WSAGetLastError();
 				if (err != WSAEWOULDBLOCK)
 				{
 					printf ("Recv failed: %s\n", strerror(err));
+					error_state = 1;
 					goto error_out;
 				}
 #	else
 				if (errno != EWOULDBLOCK)
 				{
 					perror("Recv failed");
+					error_state = 1;
 					goto error_out;
 				}
 #	endif
@@ -331,6 +342,6 @@ int main (int argc, char *argv[])
 
 error_out:
 	NET_Shutdown ();
-	exit (1);
+	exit (error_state);
 }
 

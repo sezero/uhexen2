@@ -68,6 +68,24 @@ typedef struct
 
 static int		socketfd = -1;
 
+//=============================================================================
+
+void Sys_Error (char *error, ...)
+{
+	va_list		argptr;
+	char		text[1024];
+
+	va_start (argptr,error);
+	vsnprintf (text, sizeof (text), error,argptr);
+	va_end (argptr);
+
+	printf ("\nERROR: %s\n\n", text);
+
+	exit (1);
+}
+
+//=============================================================================
+
 static void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
 {
 	*(int *)&a->ip = *(int *)&s->sin_addr;
@@ -132,6 +150,20 @@ static int NET_StringToAdr (char *s, netadr_t *a)
 	return 1;
 }
 
+static void NET_Init (void)
+{
+#ifdef _WIN32
+	WORD	wVersionRequested;
+	int		err;
+
+// Init winsock
+	wVersionRequested = MAKEWORD(1, 1);
+	err = WSAStartup (MAKEWORD(1, 1), &winsockdata);
+	if (err)
+		Sys_Error ("Winsock initialization failed.");
+#endif
+}
+
 static void NET_Shutdown (void)
 {
 	if (socketfd != -1)
@@ -139,22 +171,6 @@ static void NET_Shutdown (void)
 #ifdef _WIN32
 	WSACleanup ();
 #endif
-}
-
-//=============================================================================
-
-void Sys_Error (char *error, ...)
-{
-	va_list		argptr;
-	char		text[1024];
-
-	va_start (argptr,error);
-	vsnprintf (text, sizeof (text), error,argptr);
-	va_end (argptr);
-
-	printf ("\nERROR: %s\n\n", text);
-
-	exit (1);
 }
 
 //=============================================================================
@@ -185,10 +201,6 @@ int main (int argc, char *argv[])
 	char		packet[MAX_RCON_PACKET];
 	netadr_t		ipaddress;
 	struct sockaddr_in	hostaddress;
-#ifdef _WIN32
-	WORD	wVersionRequested;
-	int		err;
-#endif
 
 	printf ("HWRCON %s\n", VERSION_STR);
 
@@ -199,13 +211,8 @@ int main (int argc, char *argv[])
 		exit (1);
 	}
 
-#ifdef _WIN32
-// Init winsock
-	wVersionRequested = MAKEWORD(1, 1);
-	err = WSAStartup (MAKEWORD(1, 1), &winsockdata);
-	if (err)
-		Sys_Error ("Winsock initialization failed.");
-#endif
+// Init OS-specific network stuff
+	NET_Init ();
 
 // Decode the address and port
 	if (!NET_StringToAdr(argv[1], &ipaddress))
