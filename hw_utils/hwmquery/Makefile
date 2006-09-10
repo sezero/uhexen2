@@ -1,0 +1,69 @@
+# if building a debug version :		make DEBUG=1 [other stuff]
+
+# To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
+# argument to make. It would be best if you examine the script named
+# build_cross_win32.sh for cross compilation.
+
+# Path settings:
+# main uhexen2 relative path
+UHEXEN2_TOP=../..
+
+# include the common dirty stuff
+include $(UHEXEN2_TOP)/scripts/makefile.inc
+
+# include file for sanity checks
+include $(UHEXEN2_TOP)/scripts/sanity1.inc
+
+# Names of the binaries
+ifeq "$(TARGET_OS)" "WIN32"
+HWMQUERY=hwmquery.exe
+else
+HWMQUERY=hwmquery
+endif
+
+# Compiler flags
+
+# Overrides for the default CPUFLAGS
+ifeq "$(MACH_TYPE)" "x86"
+CPUFLAGS:=-march=i386
+endif
+# Overrides for the default ARCHFLAGS
+#ARCHFLAGS:=
+
+ifndef DEBUG
+CFLAGS := $(CPUFLAGS) -O2 -Wall
+endif
+
+# Other build flags
+EXT_FLAGS:=$(ARCHFLAGS)
+
+ifeq "$(TARGET_OS)" "WIN32"
+INCLUDES := -I$(MINGWDIR)/include -idirafter .
+LDFLAGS  := -L$(MINGWDIR)/lib -lwsock32 -mconsole
+else
+INCLUDES := -idirafter .
+LDFLAGS  := $(LIBSOCKET)
+EXT_FLAGS+= -DPLATFORM_UNIX
+endif
+
+
+# Rules for turning source files into .o files
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
+
+# Objects
+HWMQUERY_OBJS = hwmquery.o
+
+# Targets
+all: $(HWMQUERY)
+default: all
+
+# include file for sanity check target
+include $(UHEXEN2_TOP)/scripts/sanity2.inc
+
+$(HWMQUERY) : $(HWMQUERY_OBJS)
+	$(LINKER) -o $(HWMQUERY) $(HWMQUERY_OBJS) $(LDFLAGS)
+
+clean:
+	rm -f *.o core .tmp *.tmp
+
