@@ -194,6 +194,14 @@ void Sys_Quit (void)
 
 //=============================================================================
 
+void SZ_Init (sizebuf_t *buf, byte *data, int length)
+{
+	memset (buf, 0, sizeof(*buf));
+	buf->data = data;
+	buf->maxsize = length;
+	//buf->cursize = 0;
+}
+
 void SZ_Clear (sizebuf_t *buf)
 {
 	buf->cursize = 0;
