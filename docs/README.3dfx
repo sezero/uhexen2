@@ -222,3 +222,19 @@ run the game with a command line like:
 Notice the dot immediately after the equal sign. With some luck, you
 may be able to use your Voodoo Graphics or Voodoo^2 board with that
 game.
+
+
+7. SAGE OpenGL driver:
+----------------------
+
+This is an experimental 3dfx OpenGL driver by Daniel Borca (website:
+http://www.geocities.com/dborca/ )
+SAGE is an OpenGL work-alike. The code is not based on Mesa code nor is
+it based on OpenGL Sample Implementation code, but written from scratch.
+It requires 3dfx glide3 libraries (libglide3.so.3) to be installed. The
+binary provided by the author (v0.9.2) seems to work well enough with
+Hexen II: Hammer of Thyrion, but it is noticably slower than Mesa. Since
+it does not have any software fallbacks, multitextured rendering with 8
+bit (GL_LUMINANCE) lightmaps doesn't work: You must run in GL_RGBA mode.
+As of this writing, SAGE source code isn't available.
+

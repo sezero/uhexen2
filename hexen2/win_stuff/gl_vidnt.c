@@ -886,7 +886,7 @@ static void GL_Init (void)
 
 	is_3dfx = false;
 	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",  4)  ||
-	    !Q_strncasecmp ((char *)gl_renderer, "Glide", 5)  ||
+	    !Q_strncasecmp ((char *)gl_renderer, "SAGE Glide", 10) ||
 	    !Q_strncasecmp ((char *)gl_renderer, "Mesa Glide", 10))
 	{
 		Con_Printf("3dfx Voodoo found\n");
