@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.125 2006-09-11 06:31:36 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.126 2006-09-11 06:52:56 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -811,9 +811,9 @@ static void GL_Init (void)
 	Con_Printf("OpenGL max.texture size: %i\n", gl_max_size);
 
 	is_3dfx = false;
-	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",  4)  ||
-	    !Q_strncasecmp ((char *)gl_renderer, "SAGE Glide", 10) ||
-	    !Q_strncasecmp ((char *)gl_renderer, "Mesa Glide", 10))
+	if (!Q_strncasecmp(gl_renderer, "3dfx", 4)	  ||
+	    !Q_strncasecmp(gl_renderer, "SAGE Glide", 10) ||
+	    !Q_strncasecmp(gl_renderer, "Mesa Glide", 10))
 	{
 	// This should hopefully detect Voodoo1 and Voodoo2
 	// hardware and possibly Voodoo Rush.

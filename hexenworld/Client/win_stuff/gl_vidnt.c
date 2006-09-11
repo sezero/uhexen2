@@ -885,9 +885,9 @@ static void GL_Init (void)
 	Con_Printf("OpenGL max.texture size: %i\n", gl_max_size);
 
 	is_3dfx = false;
-	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",  4)  ||
-	    !Q_strncasecmp ((char *)gl_renderer, "SAGE Glide", 10) ||
-	    !Q_strncasecmp ((char *)gl_renderer, "Mesa Glide", 10))
+	if (!Q_strncasecmp(gl_renderer, "3dfx", 4)	  ||
+	    !Q_strncasecmp(gl_renderer, "SAGE Glide", 10) ||
+	    !Q_strncasecmp(gl_renderer, "Mesa Glide", 10))
 	{
 		Con_Printf("3dfx Voodoo found\n");
 		is_3dfx = true;
