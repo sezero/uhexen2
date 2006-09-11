@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.35 2006-09-11 09:06:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.36 2006-09-11 09:16:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -485,13 +485,9 @@ static void SV_ConnectClient (int clientnum)
 	client->spawned = false;
 	client->edict = ent;
 
-	client->message.data = client->msgbuf;
-	client->message.maxsize = sizeof(client->msgbuf);
+	SZ_Init (&client->message, client->msgbuf, sizeof(client->msgbuf));
 	client->message.allowoverflow = true;	// we can catch it
-
-	client->datagram.data = client->datagram_buf;
-	client->datagram.maxsize = sizeof(client->datagram_buf);
-	client->datagram.allowoverflow = false;
+	SZ_Init (&client->datagram, client->datagram_buf, sizeof(client->datagram_buf));
 
 	for (entnum = 0; entnum < sv.num_edicts ; entnum++)
 	{
@@ -1516,9 +1512,7 @@ static qboolean SV_SendClientDatagram (client_t *client)
 	byte		buf[NET_MAXMESSAGE];
 	sizebuf_t	msg;
 
-	msg.data = buf;
-	msg.maxsize = sizeof(buf);
-	msg.cursize = 0;
+	SZ_Init (&msg, buf, sizeof(buf));
 
 	MSG_WriteByte (&msg, svc_time);
 	MSG_WriteFloat (&msg, sv.time);
@@ -1614,9 +1608,7 @@ static void SV_SendNop (client_t *client)
 	sizebuf_t	msg;
 	byte		buf[4];
 
-	msg.data = buf;
-	msg.maxsize = sizeof(buf);
-	msg.cursize = 0;
+	SZ_Init (&msg, buf, sizeof(buf));
 
 	MSG_WriteChar (&msg, svc_nop);
 
@@ -1811,9 +1803,7 @@ static void SV_SendReconnect (void)
 	byte	data[128];
 	sizebuf_t	msg;
 
-	msg.data = data;
-	msg.cursize = 0;
-	msg.maxsize = sizeof(data);
+	SZ_Init (&msg, data, sizeof(data));
 
 	MSG_WriteChar (&msg, svc_stufftext);
 	MSG_WriteString (&msg, "reconnect\n");
@@ -1968,17 +1958,9 @@ void SV_SpawnServer (char *server, char *startspot)
 
 	sv.edicts = Hunk_AllocName (sv.max_edicts*pr_edict_size, "edicts");
 
-	sv.datagram.maxsize = sizeof(sv.datagram_buf);
-	sv.datagram.cursize = 0;
-	sv.datagram.data = sv.datagram_buf;
-
-	sv.reliable_datagram.maxsize = sizeof(sv.reliable_datagram_buf);
-	sv.reliable_datagram.cursize = 0;
-	sv.reliable_datagram.data = sv.reliable_datagram_buf;
-
-	sv.signon.maxsize = sizeof(sv.signon_buf);
-	sv.signon.cursize = 0;
-	sv.signon.data = sv.signon_buf;
+	SZ_Init (&sv.datagram, sv.datagram_buf, sizeof(sv.datagram_buf));
+	SZ_Init (&sv.reliable_datagram, sv.reliable_datagram_buf, sizeof(sv.reliable_datagram_buf));
+	SZ_Init (&sv.signon, sv.signon_buf, sizeof(sv.signon_buf));
 
 // leave slots at start for clients only
 	sv.num_edicts = svs.maxclients+1+max_temp_edicts.value;
@@ -2112,6 +2094,11 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.35  2006/09/11 09:06:41  sezero
+ * SV_StartSound: the sized buffer in hexen2 version and
+ * the field_mask flag in the hexenworld version weren't
+ * used, removed them. fixed whitespace and spelling.
+ *
  * Revision 1.34  2006/08/14 06:59:47  sezero
  * moved flush_textures to gl_rmisc.c
  *

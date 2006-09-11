@@ -802,11 +802,8 @@ static qboolean SV_SendClientDatagram (client_t *client)
 	byte		buf[MAX_DATAGRAM];
 	sizebuf_t	msg;
 
-	msg.data = buf;
-	msg.maxsize = sizeof(buf);
-	msg.cursize = 0;
+	SZ_Init (&msg, buf, sizeof(buf));
 	msg.allowoverflow = true;
-	msg.overflowed = false;
 
 	// add the client specific data to the datagram
 	SV_WriteClientdataToMessage (client, &msg);

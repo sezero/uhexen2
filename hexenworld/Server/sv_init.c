@@ -270,21 +270,13 @@ void SV_SpawnServer (char *server, char *startspot)
 	// wipe the entire per-level structure
 	memset (&sv, 0, sizeof(sv));
 
-	sv.datagram.maxsize = sizeof(sv.datagram_buf);
-	sv.datagram.data = sv.datagram_buf;
+	SZ_Init (&sv.datagram, sv.datagram_buf, sizeof(sv.datagram_buf));
 	sv.datagram.allowoverflow = true;
 
-	sv.reliable_datagram.maxsize = sizeof(sv.reliable_datagram_buf);
-	sv.reliable_datagram.data = sv.reliable_datagram_buf;
-
-	sv.multicast.maxsize = sizeof(sv.multicast_buf);
-	sv.multicast.data = sv.multicast_buf;
-
-	sv.master.maxsize = sizeof(sv.master_buf);
-	sv.master.data = sv.master_buf;
-
-	sv.signon.maxsize = sizeof(sv.signon_buffers[0]);
-	sv.signon.data = sv.signon_buffers[0];
+	SZ_Init (&sv.reliable_datagram, sv.reliable_datagram_buf, sizeof(sv.reliable_datagram_buf));
+	SZ_Init (&sv.multicast, sv.multicast_buf, sizeof(sv.multicast_buf));
+	SZ_Init (&sv.master, sv.master_buf, sizeof(sv.master_buf));
+	SZ_Init (&sv.signon, sv.signon_buffers[0], sizeof(sv.signon_buffers[0]));
 	sv.num_signon_buffers = 1;
 
 	strcpy (sv.name, server);

@@ -725,11 +725,8 @@ static void Mst_SendList(void)
 	server_t	*sv;
 	short int	sv_num = 0;
 
-	msg.data = buf;
-	msg.maxsize = sizeof(buf);
-	msg.cursize = 0;
+	SZ_Init (&msg, buf, sizeof(buf));
 	msg.allowoverflow = true;
-	msg.overflowed = false;
 
 	//number of servers:
 	for (sv=sv_list ; sv ; sv=sv->next)

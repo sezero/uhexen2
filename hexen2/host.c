@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.49 2006-06-25 12:01:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.50 2006-09-11 09:16:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -555,9 +555,7 @@ void Host_ShutdownServer(qboolean crash)
 	while (count);
 
 // make sure all the clients know we're disconnecting
-	buf.data = message;
-	buf.maxsize = 4;
-	buf.cursize = 0;
+	SZ_Init (&buf, message, sizeof(message));
 	MSG_WriteByte(&buf, svc_disconnect);
 	count = NET_SendToAll(&buf, 5);
 	if (count)
@@ -1148,6 +1146,10 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.49  2006/06/25 12:01:48  sezero
+ * renamed CL_CopyFiles to Host_CopyFiles and CL_RemoveGIPFiles to
+ * Host_RemoveGIPFiles, moved them to host.c
+ *
  * Revision 1.48  2006/06/23 14:43:33  sezero
  * some minor clean-ups
  *

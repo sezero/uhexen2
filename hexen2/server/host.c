@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.1 2006-06-25 12:57:06 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.2 2006-09-11 09:16:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -424,9 +424,7 @@ void Host_ShutdownServer(qboolean crash)
 	while (count);
 
 // make sure all the clients know we're disconnecting
-	buf.data = message;
-	buf.maxsize = 4;
-	buf.cursize = 0;
+	SZ_Init (&buf, message, sizeof(message));
 	MSG_WriteByte(&buf, svc_disconnect);
 	count = NET_SendToAll(&buf, 5);
 	if (count)
@@ -659,5 +657,11 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2006/06/25 12:57:06  sezero
+ * added a hexen2 dedicated server which seems to work much better than
+ * the client/server application running in dedicated mode. model loading
+ * implementation taken from LordHavoc's old lhnqserver, as it seems better
+ * than the one in hexenworld server.
+ *
  */
 

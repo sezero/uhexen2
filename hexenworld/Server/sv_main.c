@@ -619,9 +619,8 @@ static void SVC_DirectConnect (void)
 
 	newcl->state = cs_connected;
 
+	SZ_Init (&newcl->datagram, newcl->datagram_buf, sizeof(newcl->datagram_buf));
 	newcl->datagram.allowoverflow = true;
-	newcl->datagram.data = newcl->datagram_buf;
-	newcl->datagram.maxsize = sizeof(newcl->datagram_buf);
 
 	// spectator mode can ONLY be set at join time
 	newcl->spectator = spectator;
@@ -1317,13 +1316,9 @@ static void SV_InitLocal (void)
 	// init fraglog stuff
 	svs.logsequence = 1;
 	svs.logtime = realtime;
-	svs.log[0].data = svs.log_buf[0];
-	svs.log[0].maxsize = sizeof(svs.log_buf[0]);
-	svs.log[0].cursize = 0;
+	SZ_Init (&svs.log[0], svs.log_buf[0], sizeof(svs.log_buf[0]));
+	SZ_Init (&svs.log[1], svs.log_buf[1], sizeof(svs.log_buf[1]));
 	svs.log[0].allowoverflow = true;
-	svs.log[1].data = svs.log_buf[1];
-	svs.log[1].maxsize = sizeof(svs.log_buf[1]);
-	svs.log[1].cursize = 0;
 	svs.log[1].allowoverflow = true;
 }
 

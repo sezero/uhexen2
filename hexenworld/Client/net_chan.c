@@ -73,9 +73,7 @@ void Netchan_OutOfBand (netadr_t adr, int length, byte *data)
 	byte		send_buf[MAX_MSGLEN + PACKET_HEADER];
 
 // write the packet header
-	senddata.data = send_buf;
-	senddata.maxsize = sizeof(send_buf);
-	senddata.cursize = 0;
+	SZ_Init (&senddata, send_buf, sizeof(send_buf));
 
 	MSG_WriteLong (&senddata, -1);	// -1 sequence means out of band
 	SZ_Write (&senddata, data, length);
@@ -122,9 +120,8 @@ void Netchan_Setup (netchan_t *chan, netadr_t adr)
 	chan->remote_address = adr;
 	chan->last_received = realtime;
 
-	chan->message.data = chan->message_buf;
+	SZ_Init (&chan->message, chan->message_buf, sizeof(chan->message_buf));
 	chan->message.allowoverflow = true;
-	chan->message.maxsize = sizeof(chan->message_buf);
 
 	chan->rate = 1.0/2500;
 }
@@ -205,9 +202,7 @@ void Netchan_Transmit (netchan_t *chan, int length, byte *data)
 	}
 
 // write the packet header
-	senddata.data = send_buf;
-	senddata.maxsize = sizeof(send_buf);
-	senddata.cursize = 0;
+	SZ_Init (&senddata, send_buf, sizeof(send_buf));
 
 	w1 = chan->outgoing_sequence | (send_reliable<<31);
 	w2 = chan->incoming_sequence | (chan->incoming_reliable_sequence<<31);

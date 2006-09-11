@@ -600,9 +600,7 @@ void CL_SendCmd (void)
 
 // send this and the previous cmds in the message, so
 // if the last packet was dropped, it can be recovered
-	buf.maxsize = 128;
-	buf.cursize = 0;
-	buf.data = data;
+	SZ_Init (&buf, data, sizeof(data));
 
 	MSG_WriteByte (&buf, clc_move);
 	i = (cls.netchan.outgoing_sequence-2) & UPDATE_MASK;
