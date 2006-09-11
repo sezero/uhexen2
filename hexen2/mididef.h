@@ -13,3 +13,8 @@ void		MIDI_Pause (int mode);
 void		MIDI_Loop (int NewValue);
 void		MIDI_Update (void);
 
+// modes for MIDI_Pause()
+#define	MIDI_TOGGLE_PAUSE	0
+#define	MIDI_ALWAYS_RESUME	1
+#define	MIDI_ALWAYS_PAUSE	2
+

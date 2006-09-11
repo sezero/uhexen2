@@ -376,7 +376,7 @@ static int VID_Suspend (MGLDC *dc, int flags)
 	{
 		IN_RestoreOriginalMouseState ();
 		CDAudio_Pause ();
-		MIDI_Pause(2);
+		MIDI_Pause (MIDI_ALWAYS_PAUSE);
 
 		// keep WM_PAINT from trying to redraw
 		in_mode_set = true;
@@ -388,7 +388,7 @@ static int VID_Suspend (MGLDC *dc, int flags)
 		// fix the leftover Alt from any Alt-Tab or the like that switched us away
 		ClearAllStates ();
 		CDAudio_Resume ();
-		MIDI_Pause(1);
+		MIDI_Pause (MIDI_ALWAYS_RESUME);
 		in_mode_set = false;
 
 		block_drawing = false;

@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.126 2006-09-11 06:52:56 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.127 2006-09-11 11:21:16 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1174,7 +1174,7 @@ static void VID_ChangeVideoMode(int newmode)
 	// restore gamma (just in case), reset gamma function pointers
 	VID_ShutdownGamma();
 	CDAudio_Pause ();
-	MIDI_Pause(2);
+	MIDI_Pause (MIDI_ALWAYS_PAUSE);
 	S_ClearBuffer ();
 
 	// Unload all textures and reset texture counts
@@ -1217,7 +1217,7 @@ static void VID_ChangeVideoMode(int newmode)
 	IN_Init ();
 	ClearAllStates ();
 	CDAudio_Resume ();
-	MIDI_Pause(1);
+	MIDI_Pause (MIDI_ALWAYS_RESUME);
 
 	// Reload graphics wad file (Draw_PicFromWad writes glpic_t data (sizes,
 	// texnums) right on top of the original pic data, so the pic data will

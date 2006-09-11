@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.50 2006-09-01 08:09:46 sezero Exp $
+	$Id: vid_sdl.c,v 1.51 2006-09-11 11:21:18 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -546,7 +546,7 @@ static void VID_ChangeVideoMode(int newmode)
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 	CDAudio_Pause ();
-	MIDI_Pause(2);
+	MIDI_Pause (MIDI_ALWAYS_PAUSE);
 	S_ClearBuffer ();
 
 	stat = VID_SetMode (newmode, vid_curpal);
@@ -564,7 +564,7 @@ static void VID_ChangeVideoMode(int newmode)
 	}
 
 	CDAudio_Resume (); 
-	MIDI_Pause(1);
+	MIDI_Pause (MIDI_ALWAYS_RESUME);
 	scr_disabled_for_loading = temp;
 }
 
@@ -1280,6 +1280,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.50  2006/09/01 08:09:46  sezero
+ * started using the strl* functions and snprintf, #1: vid* files.
+ *
  * Revision 1.49  2006/07/18 08:30:20  sezero
  * a few int -> size_t changes for filesize vars
  *

@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.21 2006-06-29 23:02:02 sezero Exp $
+	$Id: midi_sdl.c,v 1.22 2006-09-11 11:21:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -36,7 +36,7 @@ static void MIDI_Stop_f (void)
 
 static void MIDI_Pause_f (void)
 {
-	MIDI_Pause(0);
+	MIDI_Pause (MIDI_TOGGLE_PAUSE);
 }
 
 static void MIDI_Loop_f (void)
@@ -235,7 +235,7 @@ void MIDI_Pause(int mode)
 	if (!bPlaying)
 		return;
 
-	if ((mode == 0 && bPaused) || mode == 1)
+	if ((mode == MIDI_TOGGLE_PAUSE && bPaused) || mode == MIDI_ALWAYS_RESUME)
 	{
 		Mix_ResumeMusic();
 		bPaused = false;
@@ -293,6 +293,11 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2006/06/29 23:02:02  sezero
+ * cleaned up some things in the build system. added no sound and
+ * no cdaudio options. removed static build targets from hexen2
+ * and hexenworld makefiles. misc small things.
+ *
  * Revision 1.20  2006/05/18 17:48:10  sezero
  * renamed MIDI_UpdateVolume to MIDI_Update
  *

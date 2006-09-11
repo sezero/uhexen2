@@ -376,7 +376,7 @@ static int VID_Suspend (MGLDC *dc, int flags)
 	{
 		IN_RestoreOriginalMouseState ();
 		CDAudio_Pause ();
-		MIDI_Pause(2);
+		MIDI_Pause (MIDI_ALWAYS_PAUSE);
 
 		// keep WM_PAINT from trying to redraw
 		in_mode_set = true;
@@ -388,7 +388,7 @@ static int VID_Suspend (MGLDC *dc, int flags)
 		// fix the leftover Alt from any Alt-Tab or the like that switched us away
 		ClearAllStates ();
 		CDAudio_Resume ();
-		MIDI_Pause(1);
+		MIDI_Pause (MIDI_ALWAYS_RESUME);
 		in_mode_set = false;
 
 		block_drawing = false;
@@ -3566,6 +3566,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.34  2006/09/01 08:09:45  sezero
+ * started using the strl* functions and snprintf, #1: vid* files.
+ *
  * Revision 1.33  2006/03/24 17:34:24  sezero
  * includes cleanup
  *

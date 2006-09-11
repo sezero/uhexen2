@@ -1,5 +1,5 @@
 /*
- * $Id: midi.c,v 1.9 2006-05-18 17:48:10 sezero Exp $
+ * $Id: midi.c,v 1.10 2006-09-11 11:21:18 sezero Exp $
  */
 
 #include <windows.h>
@@ -63,7 +63,7 @@ static void MIDI_Stop_f (void)
 
 static void MIDI_Pause_f (void)
 {
-	MIDI_Pause(0);
+	MIDI_Pause (MIDI_TOGGLE_PAUSE);
 }
 
 static void MIDI_Loop_f (void)
@@ -201,11 +201,9 @@ void MIDI_Play(char *Name)
 void MIDI_Pause(int mode)
 {
 	if (!bPlaying)
-	{
 		return;
-	}
 
-	if((mode == 0 && bPaused) || mode == 1)
+	if ((mode == MIDI_TOGGLE_PAUSE && bPaused) || mode == MIDI_ALWAYS_RESUME)
 	{
 		midiStreamRestart(hStream);
 		bPaused = false;
@@ -652,6 +650,9 @@ static void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2006/05/18 17:48:10  sezero
+ * renamed MIDI_UpdateVolume to MIDI_Update
+ *
  * Revision 1.8  2006/02/18 13:45:21  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 6: midi ffiles).

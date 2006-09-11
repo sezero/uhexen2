@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.1 2006-09-03 17:46:32 sezero Exp $
+	$Id: midi_mac.c,v 1.2 2006-09-11 11:21:18 sezero Exp $
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -92,7 +92,7 @@ static void MIDI_Stop_f (void)
 
 static void MIDI_Pause_f (void)
 {
-	MIDI_Pause(0);
+	MIDI_Pause (MIDI_TOGGLE_PAUSE);
 }
 
 static void MIDI_Loop_f (void)
@@ -258,7 +258,7 @@ void MIDI_Pause (int mode)
 	if (!midiTrack)
 		return;
 
-	if ((mode == 0 && bPaused) || mode == 1)
+	if ((mode == MIDI_TOGGLE_PAUSE && bPaused) || mode == MIDI_ALWAYS_RESUME)
 	{
 		StartMovie (midiTrack);
 		bPaused = false;
