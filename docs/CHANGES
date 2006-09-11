@@ -3,6 +3,19 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-09-11 (CVS):
+    * added detection for Daniel Borca's SAGE Glide opengl driver.
+      updated the 3dfx documentation.
+    * removed the stupid char* cast from gl_renderer in strncasecmp
+    * SZ_Init was missing in hwmaster. added.
+    * SV_StartSound: the sized buffer in hexen2 version and the
+      field_mask flag in the hexenworld version weren't used, removed
+      them. fixed whitespace and spelling.
+    * put SZ_Init() to use everywhere in the source.
+    * added human readable defines for the MIDI_Pause modes.
+    * removed the semicolon at the end of TRACKERR debug macro in
+      midstuff.h (must be an accident). changed whitespace to tabs.
+
 2006-09-10 (CVS):
     * small clean-ups in hexenworld utils
     * added hwmquery, a tiny utility for querying hexenworld master
