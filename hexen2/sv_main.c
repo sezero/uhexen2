@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.34 2006-08-14 06:59:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.35 2006-09-11 09:06:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -308,13 +308,8 @@ Larger attenuations will drop off.  (max 4 attenuation)
 */
 void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, float attenuation)
 {
-	int			sound_num, field_mask, i, ent;
-	sizebuf_t	cm;
-	byte		datagram_buf[MAX_DATAGRAM];
-
-	cm.data = datagram_buf;
-	cm.maxsize = sizeof(datagram_buf);
-	cm.cursize = 0;
+	int			sound_num, ent;
+	int			i, field_mask;
 
 	if (Q_strcasecmp(sample,"misc/null.wav") == 0)
 	{
@@ -335,7 +330,7 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 		return;
 
 // find precache number for sound
-	for (sound_num=1 ; sound_num<MAX_SOUNDS && sv.sound_precache[sound_num] ; sound_num++)
+	for (sound_num = 1; sound_num < MAX_SOUNDS && sv.sound_precache[sound_num]; sound_num++)
 		if (!strcmp(sample, sv.sound_precache[sound_num]))
 			break;
 
@@ -354,7 +349,7 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 		field_mask |= SND_VOLUME;
 	if (attenuation != DEFAULT_SOUND_PACKET_ATTENUATION)
 		field_mask |= SND_ATTENUATION;
-	if (sound_num>255)
+	if (sound_num > 255)
 	{
 		field_mask |= SND_OVERFLOW;
 		sound_num -= 256;
@@ -369,7 +364,7 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 		MSG_WriteByte (&sv.datagram, attenuation*64);
 	MSG_WriteShort (&sv.datagram, channel);
 	MSG_WriteByte (&sv.datagram, sound_num);
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		MSG_WriteCoord (&sv.datagram, entity->v.origin[i]+0.5*(entity->v.mins[i]+entity->v.maxs[i]));
 }
 
@@ -2117,6 +2112,9 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.34  2006/08/14 06:59:47  sezero
+ * moved flush_textures to gl_rmisc.c
+ *
  * Revision 1.33  2006/07/18 08:44:20  sezero
  * random typo corrections
  *

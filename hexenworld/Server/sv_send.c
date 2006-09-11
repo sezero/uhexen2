@@ -425,7 +425,8 @@ Larger attenuations will drop off.  (max 4 attenuation)
 */
 void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, float attenuation)
 {
-	int			sound_num, field_mask, i, ent;
+	int			sound_num, ent;
+	int			i;
 	vec3_t		origin;
 	qboolean	use_phs;
 	qboolean	reliable = false;
@@ -440,13 +441,13 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 		SV_Error ("SV_StartSound: channel = %i", channel);
 
 // find precache number for sound
-	for (sound_num=1 ; sound_num<MAX_SOUNDS && sv.sound_precache[sound_num] ; sound_num++)
+	for (sound_num = 1; sound_num < MAX_SOUNDS && sv.sound_precache[sound_num]; sound_num++)
 		if (!strcmp(sample, sv.sound_precache[sound_num]))
 			break;
 
-	if ( sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num] )
+	if (sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num])
 	{
-		Con_Printf ("SV_StartSound: %s not precacheed\n", sample);
+		Con_Printf ("SV_StartSound: %s not precached\n", sample);
 		return;
 	}
 
@@ -467,7 +468,6 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 
 	channel = (ent<<3) | channel;
 
-	field_mask = 0;
 	if (volume != DEFAULT_SOUND_PACKET_VOLUME)
 		channel |= SND_VOLUME;
 	if (attenuation != DEFAULT_SOUND_PACKET_ATTENUATION)
@@ -476,7 +476,7 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 	// use the entity origin unless it is a bmodel
 	if (entity->v.solid == SOLID_BSP)
 	{
-		for (i=0 ; i<3 ; i++) //FIXME: This may not work- should be using (absmin + absmax)*0.5?
+		for (i = 0; i < 3; i++)	//FIXME: This may not work- should be using (absmin + absmax)*0.5?
 			origin[i] = entity->v.origin[i]+0.5*(entity->v.mins[i]+entity->v.maxs[i]);
 	}
 	else
@@ -491,7 +491,7 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 	if (channel & SND_ATTENUATION)
 		MSG_WriteByte (&sv.multicast, attenuation*32);
 	MSG_WriteByte (&sv.multicast, sound_num);
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		MSG_WriteCoord (&sv.multicast, origin[i]);
 
 	if (use_phs)
