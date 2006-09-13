@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-09-13 (CVS):
+    * re-visited the includes, gathered all net includes into
+      the new net_sys.h, did a platform defines clean-up.
+    * made dcc to report elapsed time after decompilations.
+    * several fixes for dcc.
+    * gcc-4.0 builds of dcc with -O2 are broken. gcc-4.1 builds
+      even with -O1 are also broken. removing optimizations for
+      now.
+
 2006-09-11 (CVS):
     * added detection for Daniel Borca's SAGE Glide opengl driver.
       updated the 3dfx documentation.
