@@ -70,5 +70,5 @@ $(BINARY) : $(DHCCOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BINARY) $(DHCCOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
-	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core
+	rm -f *.o .tmp *.tmp core
 
