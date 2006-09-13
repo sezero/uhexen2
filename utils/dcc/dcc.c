@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.17 2006-09-13 07:01:37 sezero Exp $
+	$Id: dcc.c,v 1.18 2006-09-13 07:22:46 sezero Exp $
 */
 
 
@@ -1728,6 +1728,7 @@ void FindBuiltinParameters (int func)
 	}
 
 //find name
+	memset (sname, 0, sizeof(sname));
 	arg1 = PR_PrintStringAtOfs(dsf->a,0);
 	sprintf(sname,"%s",arg1);
 
@@ -1801,14 +1802,11 @@ void FindBuiltinParameters (int func)
 	}
 
 //print results to string
+	memset (plist, 0, sizeof(plist));
 	if (type[8] & (1<<15))
 	{
 		sprintf(plist,".");
 		type[8] -= (type[8] & (1<<15));
-	}
-	else
-	{
-		plist[0] = '\0';
 	}
 
 	switch (type[8])
