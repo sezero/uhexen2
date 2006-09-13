@@ -2,7 +2,7 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.10 2006-06-15 06:17:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.11 2006-09-13 13:32:32 sezero Exp $
 */
 
 #include "qcc.h"
@@ -921,6 +921,8 @@ int main (int argc, char **argv)
 		else
 		{
 			Dcc_Functions();
+			stop = GetTime ();
+			printf ("%i seconds elapsed.\n", (int)(stop-start));
 		}
 
 		exit(0);
