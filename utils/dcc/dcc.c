@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.18 2006-09-13 07:22:46 sezero Exp $
+	$Id: dcc.c,v 1.19 2006-09-13 09:10:03 sezero Exp $
 */
 
 
@@ -731,7 +731,7 @@ static char *Make_Immediate (gofs_t ofs,char *line,int mode)
 			temp_val[i] = malloc(len + 1);
 			if (temp_val[i] == NULL)
 				Error("MakeImmediate failed to create new string for %s\n",line);
-			memcpy(temp_val[i], line, len+1);
+			memcpy(temp_val[i], line, len);
 			temp_val[i][len] = '\0';
 
 			return temp_val[i];
