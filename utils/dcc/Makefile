@@ -7,8 +7,6 @@
 # Path settings:
 # main uhexen2 relative path
 UHEXEN2_TOP=../..
-# where the common sources/objects are
-COMMONDIR=../common
 # where to put the binaries
 DESTDIR =../bin
 
@@ -33,17 +31,19 @@ endif
 #ARCHFLAGS:=
 
 ifndef DEBUG
-CFLAGS := $(CPUFLAGS) -O2 -Wall
+# gcc-4 builds with -O2 are broken. gcc-4.1 builds
+# even with -O1 are also broken: no optimizations.
+CFLAGS := $(CPUFLAGS) -Wall
 endif
 
 # Other build flags
 
 ifeq "$(TARGET_OS)" "WIN32"
-INCLUDES:= -I$(MINGWDIR)/include -idirafter $(COMMONDIR)
+INCLUDES:= -I$(MINGWDIR)/include -idirafter .
 LDFLAGS := -mconsole
 LDLIBS  :=
 else
-INCLUDES:= -idirafter $(COMMONDIR)
+INCLUDES:= -idirafter .
 LDFLAGS :=
 LDLIBS  :=
 endif
@@ -54,7 +54,7 @@ endif
 	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-DHCCOBJS= $(COMMONDIR)/cmdlib.o \
+DHCCOBJS= cmdlib.o \
 	dcc.o \
 	hcc.o \
 	pr_comp.o \
