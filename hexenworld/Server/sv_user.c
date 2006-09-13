@@ -1,9 +1,7 @@
 // sv_user.c -- server code for moving users
 
 #include "qwsvdef.h"
-#ifdef _WIN32
 #include <ctype.h>
-#endif
 
 edict_t	*sv_player;
 

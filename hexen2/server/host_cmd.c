@@ -1,19 +1,21 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.3 2006-07-02 11:36:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.4 2006-09-13 05:53:24 sezero Exp $
 */
 
 #include "quakedef.h"
 
 #ifdef _WIN32
-#include <windows.h>
-#include <ctype.h>
+#include <io.h>
 #endif
+#ifdef PLATFORM_UNIX
 #include <unistd.h>
+#endif
+#include <ctype.h>
 #include <time.h>
 
-extern cvar_t	pausable;
+extern	cvar_t	pausable;
 extern	cvar_t	sv_flypitch;
 extern	cvar_t	sv_walkpitch;
 
@@ -1728,6 +1730,12 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2006/07/02 11:36:36  sezero
+ * uppercased the pr_global_struct() macro for easier detection
+ * and searching. put that macro in use in hexenworld server for
+ * smaller diffs between the two versions. there are no actual
+ * code changes here, only style and cosmetics.
+ *
  * Revision 1.2  2006/06/25 15:59:00  sezero
  * minor things
  *

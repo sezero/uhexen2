@@ -17,41 +17,18 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 
+#include "net_sys.h"
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
-#include <sys/types.h>
-#ifdef _WIN32
-#include <windows.h>
-#endif
-#ifdef PLATFORM_UNIX
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <time.h>
-#include <sys/time.h>
-//#ifdef __sun__
-#ifdef SUNOS
-#include <sys/filio.h>
-#endif
-#endif
-
-#include <errno.h>
 #include <string.h>
 #include <stdarg.h>
-
-#ifdef PLATFORM_UNIX
-#define ioctlsocket(A,B,C) ioctl(A,B,C)
-#define closesocket(A) close(A)
+#if defined(_WIN32)
+#include <sys/timeb.h>
+#include <time.h>
 #endif
-#ifdef _WIN32
-static WSADATA	winsockdata;
-// socklen_t: on win32, it seems to be a winsock2 thing
-#if !( defined(_WS2TCPIP_H) || defined(_WS2TCPIP_H_) )
-typedef int	socklen_t;
-#endif
+#if defined(PLATFORM_UNIX)
+#include <time.h>
+#include <sys/time.h>
 #endif
 
 
@@ -63,6 +40,12 @@ typedef struct
 	unsigned short	port;
 	unsigned short	pad;
 } netadr_t;
+
+//=============================================================================
+
+#ifdef _WIN32
+static WSADATA		winsockdata;
+#endif
 
 static int		socketfd = -1;
 

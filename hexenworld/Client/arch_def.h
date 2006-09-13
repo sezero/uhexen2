@@ -8,6 +8,10 @@
 #	define __MACOS__	1
 #endif
 
+#if defined (__sun) && !defined(SUNOS)
+#	define SUNOS		1
+#endif
+
 #if defined (PLATFORM_UNIX)
 #	if defined (__linux__)
 #		define VERSION_PLATFORM "Linux"

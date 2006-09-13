@@ -2,15 +2,18 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.2 2006-09-11 09:16:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.3 2006-09-13 05:53:24 sezero Exp $
 */
 
 #include "quakedef.h"
 
 #ifdef _WIN32
 #include <windows.h>
+#include <io.h>
 #endif
+#ifdef PLATFORM_UNIX
 #include <unistd.h>
+#endif
 
 /*
 
@@ -657,6 +660,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2006/09/11 09:16:24  sezero
+ * put SZ_Init() to use everywhere in the source.
+ *
  * Revision 1.1  2006/06/25 12:57:06  sezero
  * added a hexen2 dedicated server which seems to work much better than
  * the client/server application running in dedicated mode. model loading

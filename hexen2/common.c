@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.72 2006-09-07 08:24:54 sezero Exp $
+	$Id: common.c,v 1.73 2006-09-13 05:53:22 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -10,13 +10,13 @@
 #else
 #include "quakedef.h"
 #endif
-#include <unistd.h>
+#ifdef _WIN32
+#include <io.h>
+#endif
 #ifdef PLATFORM_UNIX
+#include <unistd.h>
 #include <sys/stat.h>
 #include <errno.h>
-#endif
-#ifdef _WIN32
-#include <windows.h>
 #endif
 #include <ctype.h>
 
@@ -2627,6 +2627,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.72  2006/09/07 08:24:54  sezero
+ * misc stuff
+ *
  * Revision 1.71  2006/09/07 07:51:33  sezero
  * COM_WriteFile() shouldn't Sys_Error if it can't open the file
  *

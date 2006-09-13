@@ -1,9 +1,5 @@
 // mathlib.h
 
-//#ifdef PLATFORM_UNIX
-//#include "linux_inc.h"
-//#endif
-
 typedef float vec_t;
 typedef vec_t vec3_t[3];
 typedef vec_t vec5_t[5];

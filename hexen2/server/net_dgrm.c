@@ -7,18 +7,9 @@
 #define BAN_TEST
 
 #ifdef BAN_TEST
-#if defined(_WIN32)
-#include <windows.h>
-#include <winsock.h>	// for LCC
-#elif defined(PLATFORM_UNIX)
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <sys/param.h>
-#else	// shouldn't be needed
+
+#if 0	/* using net_sys.h */
 #define AF_INET 		2	/* internet */
-// these actually seem to be winsock defines
 struct in_addr
 {
 	union
@@ -39,11 +30,11 @@ struct sockaddr_in
 char *inet_ntoa(struct in_addr in);
 unsigned long inet_addr(const char *cp);
 #endif
+
+#include "net_sys.h"
+
 #endif	// BAN_TEST
 
-#if defined(__MORPHOS__)
-#undef CloseSocket
-#endif
 
 #include "quakedef.h"
 #include "net_dgrm.h"
@@ -549,7 +540,7 @@ void Datagram_Shutdown (void)
 
 void Datagram_Close (qsocket_t *sock)
 {
-	sfunc.CloseSocket(sock->socket);
+	sfunc.Close_Socket(sock->socket);
 }
 
 
@@ -788,7 +779,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 	}
 
 	// allocate a network socket
-	newsock = dfunc.OpenSocket(0);
+	newsock = dfunc.Open_Socket(0);
 	if (newsock == -1)
 	{
 		NET_FreeQSocket(sock);
@@ -798,7 +789,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 	// connect to the client
 	if (dfunc.Connect (newsock, &clientaddr) == -1)
 	{
-		dfunc.CloseSocket(newsock);
+		dfunc.Close_Socket(newsock);
 		NET_FreeQSocket(sock);
 		return NULL;
 	}
@@ -857,7 +848,7 @@ static qsocket_t *_Datagram_Connect (char *host)
 	if (dfunc.GetAddrFromName(host, &sendaddr) == -1)
 		return NULL;
 
-	newsock = dfunc.OpenSocket (0);
+	newsock = dfunc.Open_Socket (0);
 	if (newsock == -1)
 		return NULL;
 
@@ -990,7 +981,7 @@ static qsocket_t *_Datagram_Connect (char *host)
 ErrorReturn:
 	NET_FreeQSocket(sock);
 ErrorReturn2:
-	dfunc.CloseSocket(newsock);
+	dfunc.Close_Socket(newsock);
 	return NULL;
 }
 

@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.18 2006-06-15 12:29:02 sezero Exp $
+	$Id: net_udp.c,v 1.19 2006-09-13 05:53:22 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -25,37 +25,8 @@
 */
 
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <sys/param.h>
-#include <sys/ioctl.h>
-#include <errno.h>
-#include <unistd.h>
-//#ifdef __sun__
-#ifdef SUNOS
-#include <sys/filio.h>
-#endif
-#if defined(__MORPHOS__)
-#include <proto/socket.h>
-#endif
-
-#ifndef INADDR_NONE
-#define INADDR_NONE	((in_addr_t) 0xffffffff)
-#endif
-
+#include "net_sys.h"
 #include "quakedef.h"
-
-#if defined(__MORPHOS__)
-#define socklen_t int
-#define ioctlsocket IoctlSocket
-#define closesocket CloseSocket
-#else
-#define ioctlsocket ioctl
-#define closesocket close
-#endif
 
 static int net_acceptsocket = -1;	// socket for fielding new connections
 static int net_controlsocket;

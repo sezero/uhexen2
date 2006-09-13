@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.90 2006-08-26 07:06:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.91 2006-09-13 05:53:22 sezero Exp $
 */
 
 
@@ -340,7 +340,7 @@ typedef struct
 
 //=============================================================================
 
-#ifndef SERVERONLY
+#if !defined(SERVERONLY)
 #include "console.h"
 #include "vid.h"
 #include "wad.h"
@@ -357,7 +357,7 @@ typedef struct
 #include "progs.h"
 #include "pr_strng.h"
 #include "cl_effect.h"
-#ifdef SERVERONLY
+#if defined(SERVERONLY)
 #include "h2ded.h"
 #else
 #include "client.h"
@@ -375,7 +375,7 @@ typedef struct
 #endif
 #include "world.h"
 
-#ifndef SERVERONLY
+#if !defined(SERVERONLY)
 #include "input.h"
 #include "keys.h"
 #include "menu.h"
@@ -458,6 +458,9 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.90  2006/08/26 07:06:43  sezero
+ * incremented engine version of hexen2 to 1.16 and hexenworld to 0.18
+ *
  * Revision 1.89  2006/08/21 21:24:10  sezero
  * marked the snapshot of 2006-08-22 as 1.4.1-pre10
  *

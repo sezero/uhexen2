@@ -5,8 +5,6 @@
 #error linux_inc.h is not meant to be used for Windows
 #endif
 
-#include <ctype.h>
-
 //#define _inline inline
 //#define __inline static inline
 #define HANDLE int
@@ -34,12 +32,13 @@ typedef struct RECT_s {
 	int bottom;
 } RECT;
 
-typedef union _LARGE_INTEGER { 
+typedef union _LARGE_INTEGER {
 	struct {
-		DWORD LowPart; 
-		LONG  HighPart; 
+		DWORD LowPart;
+		LONG  HighPart;
 	} part;
 	LONGLONG QuadPart;
-} LARGE_INTEGER, *PLARGE_INTEGER; 
+} LARGE_INTEGER, *PLARGE_INTEGER;
 
 #endif
+

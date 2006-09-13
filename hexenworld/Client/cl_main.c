@@ -1,14 +1,18 @@
 // cl_main.c  -- client main loop
 
-#include "quakedef.h"
+#include <sys/types.h>
 
-#ifdef _WIN32
-#include "winquake.h"
-#else
+#if defined(PLATFORM_UNIX)
 #include <netinet/in.h>
 #ifndef INADDR_LOOPBACK
-#define	INADDR_LOOPBACK	0x7F000001
+#define INADDR_LOOPBACK	((in_addr_t) 0x7f000001)	/* 127.0.0.1	*/
 #endif
+#endif
+
+#include "quakedef.h"
+
+#if defined(_WIN32)
+#include "winquake.h"
 #endif
 
 qboolean	noclip_anglehack;		// remnant from old quake
@@ -898,7 +902,6 @@ static void CL_Download_f (void)
 }
 
 #ifdef _WINDOWS
-#include <windows.h>
 /*
 =================
 CL_Minimize_f

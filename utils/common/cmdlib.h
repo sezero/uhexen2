@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.7 2006-09-01 07:10:07 sezero Exp $
+	$Id: cmdlib.h,v 1.8 2006-09-13 05:53:25 sezero Exp $
 */
 
 #ifndef __CMDLIB__
@@ -10,13 +10,19 @@
 // HEADER FILES ------------------------------------------------------------
 
 #include <sys/types.h>
-#include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 #if !defined(_WIN32)
 // for strcasecmp and strncasecmp
 #include <strings.h>
 #endif
+
+#if defined(_WIN32)
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
+
 #include <stdlib.h>
 #include <stdarg.h>
 #include <ctype.h>

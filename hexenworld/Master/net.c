@@ -1,53 +1,7 @@
 // net.c
 
+#include "net_sys.h"
 #include "defs.h"
-#include <errno.h>
-
-// unix includes and compatibility macros
-#if defined(PLATFORM_UNIX)
-#include <sys/ioctl.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <unistd.h>
-//#ifdef __sun__
-#ifdef SUNOS
-#include <sys/filio.h>
-#endif
-#ifdef __MORPHOS__
-#include <proto/socket.h>
-#endif
-
-#define SOCKETERRNO errno
-
-#if defined(__MORPHOS__)
-//#undef SOCKETERRNO
-//#define SOCKETERRNO Errno()
-#define socklen_t int
-#define ioctlsocket IoctlSocket
-#define closesocket CloseSocket
-#else
-#define ioctlsocket ioctl
-#define closesocket close
-#endif
-
-#ifndef INADDR_NONE
-#define INADDR_NONE	((in_addr_t) 0xffffffff)
-#endif
-
-#endif	// end of unix stuff
-
-// windows includes and compatibility macros
-#ifdef _WIN32
-#if !( defined(_WS2TCPIP_H) || defined(_WS2TCPIP_H_) )
-// on win32, socklen_t seems to be a winsock2 thing
-typedef int socklen_t;
-#endif
-#define SOCKETERRNO WSAGetLastError()
-#define EWOULDBLOCK	WSAEWOULDBLOCK
-#define ECONNREFUSED	WSAECONNREFUSED
-#endif	// end of windows stuff
 
 
 #ifdef _WIN32

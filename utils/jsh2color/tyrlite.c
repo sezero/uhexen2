@@ -25,6 +25,9 @@
 #include "tyrlite.h"
 #ifdef _WIN32
 #include <conio.h>
+#include <io.h>
+#else
+#include <unistd.h>
 #endif
 
 float		scaledist	= 1.0F;

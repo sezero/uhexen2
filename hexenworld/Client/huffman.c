@@ -6,6 +6,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#if defined(DEBUG_BUILD) && !defined(_WIN32)
+#define OutputDebugString(X) fprintf(stderr,"%s",(X))
+#endif
 
 
 extern void Sys_Error (char *error, ...);
@@ -78,11 +81,7 @@ void PrintFreqs (void)
 		for (ix=0; ix<256; ix++)
 		{
 			sprintf(string, "\t%.8f,\n", ((float)freqs[ix])/total);
-#	ifdef _WIN32
 			OutputDebugString(string);
-#	else
-			fprintf(stderr, "%s", string);
-#	endif
 		}
 	}
 

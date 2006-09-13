@@ -2,14 +2,11 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.32 2006-06-25 00:02:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.33 2006-09-13 05:53:22 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "r_shared.h"
-#ifdef _WIN32
-#include <windows.h>
-#endif
 
 //extern	cvar_t	sv_flypitch;
 //extern	cvar_t	sv_walkpitch;
@@ -1850,6 +1847,9 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2006/06/25 00:02:54  sezero
+ * moved mousestate activation stuff to CL_ParseServerInfo
+ *
  * Revision 1.31  2006/06/23 14:45:09  sezero
  * better handling of the +attack/-attack demo recording hack
  *

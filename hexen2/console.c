@@ -1,13 +1,13 @@
 // console.c
 
-#ifdef NeXT
-#include <libc.h>
+#include "quakedef.h"
+#ifdef _WIN32
+#include <io.h>
 #endif
-#ifndef _MSC_VER
+#ifdef PLATFORM_UNIX
 #include <unistd.h>
 #endif
 #include <fcntl.h>
-#include "quakedef.h"
 
 
 #define		CON_TEXTSIZE	16384

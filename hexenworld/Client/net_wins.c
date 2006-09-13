@@ -1,61 +1,11 @@
 // net_wins.c
 
-#include <sys/types.h>
-#include <errno.h>
-
-// unix includes and compatibility macros
-#if defined(PLATFORM_UNIX)
-#include <sys/stat.h>
-#include <sys/ioctl.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <unistd.h>
-//#ifdef __sun__
-#ifdef SUNOS
-#include <sys/filio.h>
-#endif
-#if defined(__MORPHOS__)
-#include <proto/socket.h>
-#endif
-
-#define SOCKETERRNO errno
-#define OutputDebugString(X) fprintf(stderr,"%s",(X))
-
-#if defined(__MORPHOS__)
-//#undef SOCKETERRNO
-//#define SOCKETERRNO Errno()
-#define socklen_t int
-#define ioctlsocket IoctlSocket
-#define closesocket CloseSocket
-#else
-#define ioctlsocket ioctl
-#define closesocket close
-#endif
-
-#ifndef INADDR_NONE
-#define INADDR_NONE	((in_addr_t) 0xffffffff)
-#endif
-
-#endif	// end of unix stuff
-
+#include "net_sys.h"
 #include "quakedef.h"
 #include "huffman.h"
-
-// windows includes and compatibility macros
-#if defined(_WIN32)
-#include "winquake.h"
-// socklen_t: on win32, it seems to be a winsock2 thing
-#if !( defined(_WS2TCPIP_H) || defined(_WS2TCPIP_H_) )
-typedef int	socklen_t;
+#if defined(DEBUG_BUILD) && !defined(_WIN32)
+#define OutputDebugString(X) fprintf(stderr,"%s",(X))
 #endif
-#define SOCKETERRNO WSAGetLastError()
-#define EWOULDBLOCK	WSAEWOULDBLOCK
-#define ECONNREFUSED	WSAECONNREFUSED
-#endif	// end of windows stuff
-
 
 //=============================================================================
 

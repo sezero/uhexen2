@@ -7,18 +7,9 @@
 #define BAN_TEST
 
 #ifdef BAN_TEST
-#if defined(_WIN32)
-#include <windows.h>
-#include <winsock.h>	// for LCC
-#elif defined(PLATFORM_UNIX)
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <sys/param.h>
-#else	// shouldn't be needed
+
+#if 0	/* using net_sys.h */
 #define AF_INET 		2	/* internet */
-// these actually seem to be winsock defines
 struct in_addr
 {
 	union
@@ -39,11 +30,11 @@ struct sockaddr_in
 char *inet_ntoa(struct in_addr in);
 unsigned long inet_addr(const char *cp);
 #endif
+
+#include "net_sys.h"
+
 #endif	// BAN_TEST
 
-#if defined(__MORPHOS__)
-#undef CloseSocket
-#endif
 
 #include "quakedef.h"
 #include "net_dgrm.h"
@@ -570,7 +561,7 @@ static void Test_Poll(void)
 	}
 	else
 	{
-		dfunc.CloseSocket(testSocket);
+		dfunc.Close_Socket(testSocket);
 		testInProgress = false;
 	}
 }
@@ -616,7 +607,7 @@ static void Test_f (void)
 		return;
 
 JustDoIt:
-	testSocket = dfunc.OpenSocket(0);
+	testSocket = dfunc.Open_Socket(0);
 	if (testSocket == -1)
 		return;
 
@@ -699,7 +690,7 @@ Reschedule:
 Error:
 	Con_Printf("Unexpected repsonse to Rule Info request\n");
 Done:
-	dfunc.CloseSocket(test2Socket);
+	dfunc.Close_Socket(test2Socket);
 	test2InProgress = false;
 	return;
 }
@@ -743,7 +734,7 @@ static void Test2_f (void)
 		return;
 
 JustDoIt:
-	test2Socket = dfunc.OpenSocket(0);
+	test2Socket = dfunc.Open_Socket(0);
 	if (test2Socket == -1)
 		return;
 
@@ -812,7 +803,7 @@ void Datagram_Shutdown (void)
 
 void Datagram_Close (qsocket_t *sock)
 {
-	sfunc.CloseSocket(sock->socket);
+	sfunc.Close_Socket(sock->socket);
 }
 
 
@@ -1051,7 +1042,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 	}
 
 	// allocate a network socket
-	newsock = dfunc.OpenSocket(0);
+	newsock = dfunc.Open_Socket(0);
 	if (newsock == -1)
 	{
 		NET_FreeQSocket(sock);
@@ -1061,7 +1052,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 	// connect to the client
 	if (dfunc.Connect (newsock, &clientaddr) == -1)
 	{
-		dfunc.CloseSocket(newsock);
+		dfunc.Close_Socket(newsock);
 		NET_FreeQSocket(sock);
 		return NULL;
 	}
@@ -1226,7 +1217,7 @@ static qsocket_t *_Datagram_Connect (char *host)
 	if (dfunc.GetAddrFromName(host, &sendaddr) == -1)
 		return NULL;
 
-	newsock = dfunc.OpenSocket (0);
+	newsock = dfunc.Open_Socket (0);
 	if (newsock == -1)
 		return NULL;
 
@@ -1371,7 +1362,7 @@ static qsocket_t *_Datagram_Connect (char *host)
 ErrorReturn:
 	NET_FreeQSocket(sock);
 ErrorReturn2:
-	dfunc.CloseSocket(newsock);
+	dfunc.Close_Socket(newsock);
 	if (m_return_onerror)
 	{
 		key_dest = key_menu;

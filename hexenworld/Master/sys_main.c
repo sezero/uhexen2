@@ -5,6 +5,9 @@
 #define USE_PASSWORD_FILE	0
 
 #include "defs.h"
+#if defined(_WIN32)
+#include <windows.h>
+#endif
 #include <limits.h>
 
 #if defined(PLATFORM_UNIX)

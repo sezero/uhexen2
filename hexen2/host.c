@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.50 2006-09-11 09:16:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.51 2006-09-13 05:53:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,8 +10,11 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#include <io.h>
 #endif
+#ifdef PLATFORM_UNIX
 #include <unistd.h>
+#endif
 
 /*
 
@@ -1146,6 +1149,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.50  2006/09/11 09:16:24  sezero
+ * put SZ_Init() to use everywhere in the source.
+ *
  * Revision 1.49  2006/06/25 12:01:48  sezero
  * renamed CL_CopyFiles to Host_CopyFiles and CL_RemoveGIPFiles to
  * Host_RemoveGIPFiles, moved them to host.c
