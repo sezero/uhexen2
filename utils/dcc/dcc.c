@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.16 2006-07-03 07:53:41 sezero Exp $
+	$Id: dcc.c,v 1.17 2006-09-13 07:01:37 sezero Exp $
 */
 
 
@@ -1806,10 +1806,10 @@ void FindBuiltinParameters (int func)
 		sprintf(plist,".");
 		type[8] -= (type[8] & (1<<15));
 	}
-//	else
-//	{
-//		sprintf(plist,"");
-//	}
+	else
+	{
+		plist[0] = '\0';
+	}
 
 	switch (type[8])
 	{
@@ -1884,7 +1884,8 @@ void FindBuiltinParameters (int func)
 					strcat(plist,"ev_pointer ");
 					break;
 				default:
-					sprintf(parm,"unknown%d",type[i]);strcat(plist,parm);
+					sprintf(parm,"unknown%d",type[i]);
+					strcat(plist,parm);
 					break;
 			}
 
