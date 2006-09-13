@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.19 2006-09-13 09:10:03 sezero Exp $
+	$Id: dcc.c,v 1.20 2006-09-13 13:31:47 sezero Exp $
 */
 
 
@@ -1335,6 +1335,9 @@ void Dcc_Functions (void)
 static int CalcArraySize (int j, int end)
 {
 	ddef_t	*par;
+
+	if (j == end)
+		return 0;
 
 	for (j++ ; j < end; j++)
 	{
