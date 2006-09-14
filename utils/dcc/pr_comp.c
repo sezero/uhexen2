@@ -15,7 +15,7 @@ int		locals_end;		// for tracking local variables vs temps
 
 jmp_buf		pr_parse_abort;		// longjump with this on parse error
 
-static void PR_ParseDefs (void);
+void	PR_ParseDefs (void);
 
 //========================================
 
@@ -149,9 +149,9 @@ opcode_t pr_opcodes[] =
 #define	TOP_PRIORITY	6
 #define	NOT_PRIORITY	4
 
-static def_t *PR_Expression (int priority);
+def_t	*PR_Expression (int priority);
 
-static def_t	junkdef;
+def_t	junkdef;
 
 //===========================================================================
 
@@ -163,7 +163,7 @@ PR_Statement
 Emits a primitive statement, returning the var it places it's value in
 ============
 */
-static def_t *PR_Statement ( opcode_t *op, def_t *var_a, def_t *var_b)
+def_t *PR_Statement ( opcode_t *op, def_t *var_a, def_t *var_b)
 {
 	dstatement_t	*statement;
 	def_t			*var_c;
@@ -204,7 +204,7 @@ PR_ParseImmediate
 Looks for a preexisting constant
 ============
 */
-static def_t *PR_ParseImmediate (void)
+def_t *PR_ParseImmediate (void)
 {
 	def_t	*cn;
 
@@ -274,7 +274,7 @@ static def_t *PR_ParseImmediate (void)
 	return cn;
 }
 
-static void PrecacheSound (def_t *e, int ch)
+void PrecacheSound (def_t *e, int ch)
 {
 	char	*n;
 	int		i;
@@ -295,7 +295,7 @@ static void PrecacheSound (def_t *e, int ch)
 	numsounds++;
 }
 
-static void PrecacheModel (def_t *e, int ch)
+void PrecacheModel (def_t *e, int ch)
 {
 	char	*n;
 	int		i;
@@ -316,7 +316,7 @@ static void PrecacheModel (def_t *e, int ch)
 	nummodels++;
 }
 
-static void PrecacheFile (def_t *e, int ch)
+void PrecacheFile (def_t *e, int ch)
 {
 	char	*n;
 	int		i;
@@ -342,7 +342,7 @@ static void PrecacheFile (def_t *e, int ch)
 PR_ParseFunctionCall
 ============
 */
-static def_t *PR_ParseFunctionCall (def_t *func)
+def_t *PR_ParseFunctionCall (def_t *func)
 {
 	def_t		*e, *a1 = 0, *a2 = 0;
 	int			arg;
@@ -424,7 +424,7 @@ static def_t *PR_ParseFunctionCall (def_t *func)
 PR_ParseRandom
 =============
 */
-static def_t *PR_ParseRandom (void)
+def_t *PR_ParseRandom (void)
 {
 	def_t		*e = 0, *e2 = 0;
 
@@ -477,7 +477,7 @@ PR_ParseValue
 Returns the global ofs for the current token
 ============
 */
-static def_t *PR_ParseValue (void)
+def_t *PR_ParseValue (void)
 {
 	def_t		*d;
 	char		*name;
@@ -500,7 +500,7 @@ static def_t *PR_ParseValue (void)
 PR_Term
 ============
 */
-static def_t *PR_Term (void)
+def_t *PR_Term (void)
 {
 	def_t	*e, *e2;
 	etype_t	t;
@@ -542,7 +542,7 @@ static def_t *PR_Term (void)
 PR_Expression
 ==============
 */
-static def_t *PR_Expression (int priority)
+def_t *PR_Expression (int priority)
 {
 	opcode_t	*op, *oldop;
 	def_t		*e, *e2;
@@ -658,7 +658,7 @@ PR_ParseStatement
 
 ============
 */
-static void PR_ParseStatement (void)
+void PR_ParseStatement (void)
 {
 	def_t			*e = 0, *e2 = 0;
 	dstatement_t	*patch1, *patch2;
@@ -839,7 +839,7 @@ set frame, nextthink (implicitly), and think (allowing forward definitions).
 // };
 ==============
 */
-static void PR_ParseState (void)
+void PR_ParseState (void)
 {
 	char	*name;
 	def_t	*s1, *def;
@@ -865,7 +865,7 @@ PR_ParseImmediateStatements
 Parse a function body
 ============
 */
-static function_t *PR_ParseImmediateStatements (type_t *type)
+function_t *PR_ParseImmediateStatements (type_t *type)
 {
 	int			i;
 	function_t	*f;
@@ -1019,7 +1019,7 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, qboolean allocate)
 	return def;
 }
 
-static void PR_InitArray (def_t *scope,int size)
+void PR_InitArray (def_t *scope,int size)
 {
 	int		i;
 
@@ -1050,7 +1050,7 @@ static void PR_InitArray (def_t *scope,int size)
 	printf("successfully read in %d array values\n",i+1);
 }
 
-static def_t *PR_AllocateArray (type_t *type, char *name, def_t *scope, qboolean allocate,int size)
+def_t *PR_AllocateArray (type_t *type, char *name, def_t *scope, qboolean allocate,int size)
 {
 	def_t		*def, **old;
 	char	element[MAX_NAME];
@@ -1150,7 +1150,7 @@ PR_ParseDefs
 Called at the outer layer and when a local statement is hit
 ================
 */
-static void PR_ParseDefs (void)
+void PR_ParseDefs (void)
 {
 	char		*name,*name2,a1[500];
 	type_t		*type;

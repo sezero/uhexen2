@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.23 2006-09-14 16:42:25 sezero Exp $
+	$Id: dcc.c,v 1.24 2006-09-14 16:43:29 sezero Exp $
 */
 
 
@@ -11,6 +11,8 @@
 #include "qcc.h"
 
 // MACROS ------------------------------------------------------------------
+
+#define	MAX_DEC_FILES	1024
 
 // TYPES -------------------------------------------------------------------
 
@@ -29,25 +31,26 @@ void		PR_PrintFunction (char *name);
 
 // PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
 
-static char	*Make_Immediate (gofs_t ofs, char *linestr, int mode);
-static void	PR_Indent (void);
-static void	PR_FunctionHeader (dfunction_t *df);
-static void	PR_Print (const char *s,...);
-static char	*PR_PrintGlobal (gofs_t ofs, def_t* typ);
-static ddef_t	*PR_GetField (char *name, ddef_t*);
-static int	DEC_GetFunctionIdxByName (char *name);
-static void	PR_LocalGlobals (void);
-static int	DEC_AlreadySeen (char *fname);
-static ddef_t	*DEC_GetParameter (gofs_t ofs);
-static char	*GetFieldFunctionHeader (char *s_name);
-static void	DccStatement (dfunction_t *df,dstatement_t *s, int *indent);
-static void	AddProgramFlowInfo (dfunction_t *df);
-static void	PR_Locals (dfunction_t *df);
-static char	*DCC_ValueString (etype_t type, void *val);
-static unsigned short	GetReturnType (int func);
-static unsigned short	BackBuildReturnType (dfunction_t *df, dstatement_t *dsf, gofs_t ofs);
-static unsigned short	GetType (gofs_t ofs);
-static unsigned short	GetLastFunctionReturn (dfunction_t *df, dstatement_t *ds);
+// NOTE: Marking these as static causes bad compilations with gcc-4.x!
+char		*Make_Immediate (gofs_t ofs, char *linestr, int mode);
+void		PR_Indent (void);
+void		PR_FunctionHeader (dfunction_t *df);
+void		PR_Print (const char *s,...);
+char		*PR_PrintGlobal (gofs_t ofs, def_t* typ);
+ddef_t		*PR_GetField (char *name, ddef_t*);
+int		DEC_GetFunctionIdxByName (char *name);
+void		PR_LocalGlobals (void);
+int		DEC_AlreadySeen (char *fname);
+ddef_t		*DEC_GetParameter (gofs_t ofs);
+char		*GetFieldFunctionHeader (char *s_name);
+void		DccStatement (dfunction_t *df,dstatement_t *s, int *indent);
+void		AddProgramFlowInfo (dfunction_t *df);
+void		PR_Locals (dfunction_t *df);
+char		*DCC_ValueString (etype_t type, void *val);
+unsigned short	GetReturnType (int func);
+unsigned short	BackBuildReturnType (dfunction_t *df, dstatement_t *dsf, gofs_t ofs);
+unsigned short	GetType (gofs_t ofs);
+unsigned short	GetLastFunctionReturn (dfunction_t *df, dstatement_t *ds);
 
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
@@ -78,7 +81,8 @@ char		*func_headers[MAX_FUNCTIONS] = {0,0,0};
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
-static char *type_names[8] = {
+// NOTE: Marking these as static causes bad compilations with gcc-4.x!
+char *type_names[8] = {
 	"void",
 	"string",
 	"float",
@@ -89,18 +93,17 @@ static char *type_names[8] = {
 	"ev_pointer"
 };
 
-static int	regs_used = 0;
-static int	lindent;
-#define	MAX_DEC_FILES	1024
-static char	*DEC_FilesSeen[MAX_DEC_FILES];
-static int	DEC_FileCtr = 0;
-static qboolean	printassign = 0;
-static dfunction_t	*cfunc = 0;
+int	regs_used = 0;
+int	lindent;
+char	*DEC_FilesSeen[MAX_DEC_FILES];
+int	DEC_FileCtr = 0;
+qboolean	printassign = 0;
+dfunction_t	*cfunc = 0;
 
 
 // CODE --------------------------------------------------------------------
 
-static char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
+char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
 {
 	int		i;
 	ddef_t	*def=0;
@@ -136,7 +139,7 @@ static char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
 	return (strings + def->s_name);
 }
 
-static char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
+char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
 {
 	unsigned short	t1 = 0;
 	int		i;
@@ -177,23 +180,19 @@ static char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
 }
 
 
-static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
+void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 {
 	static char	dsline[512];
 	static char	fnam[512];
 	char		*arg1, *arg2, *arg3, a1[1000], a2[1000], a3[1000];
 	int		nargs, i, j;
-	dstatement_t	*t;
+	dstatement_t	*t, *k;
 	unsigned short	dom, doc, ifc, tom;
 	def_t		*typ1 = 0, *typ2 = 0, *typ3 = 0;
 	ddef_t		*par;
-	dstatement_t	*k;
 	int		dum;
 
-	//fprintf(stderr,"\n%s(%d): (%d) (%d) (%d):\n","OP_UNKNOWN",s->op,s->a,s->b,s->c);
-
-	a1[0] = a2[0] = a3[0] = dsline[0] = '\0';
-	fnam[0] = '\0';
+	a1[0] = a2[0] = a3[0] = dsline[0] = fnam[0] = '\0';
 
 	dom = s->op;
 
@@ -231,8 +230,9 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 		arg2 = PR_PrintGlobal(s->b,typ2);
 		arg3 = PR_PrintGlobal(s->c,typ3);
 		PR_Print("\n%s(%d): %s(%d) %s(%d) %s(%d):\n",
-			  pr_opcodes[s->op].opname,s->op,arg1,
-			  (signed short)s->a, arg2,(signed short)s->b,
+			  pr_opcodes[s->op].opname,s->op,
+			  arg1, (signed short)s->a,
+			  arg2, (signed short)s->b,
 			  arg3, (signed short)s->c);
 	}
 
@@ -699,7 +699,7 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 
 }
 
-static char *Make_Immediate (gofs_t ofs, char *linestr, int mode)
+char *Make_Immediate (gofs_t ofs, char *linestr, int mode)
 {
 	unsigned short	i;
 	static char	*nline;
@@ -753,7 +753,7 @@ static char *Make_Immediate (gofs_t ofs, char *linestr, int mode)
 }
 
 
-static void AddProgramFlowInfo (dfunction_t *df)
+void AddProgramFlowInfo (dfunction_t *df)
 {
 	dstatement_t	*ds, *ts;
 	signed short	dom, tom;
@@ -831,7 +831,7 @@ static void AddProgramFlowInfo (dfunction_t *df)
 }
 
 
-static void PR_Indent (void)
+void PR_Indent (void)
 {
 	int	i;
 
@@ -844,7 +844,7 @@ static void PR_Indent (void)
 	}
 }
 
-static void PR_Locals (dfunction_t *df)
+void PR_Locals (dfunction_t *df)
 {
 	int	start, i, j, k;
 	ddef_t	*par;
@@ -915,7 +915,7 @@ static void PR_Locals (dfunction_t *df)
 }
 
 
-static void PR_FunctionHeader (dfunction_t *df)
+void PR_FunctionHeader (dfunction_t *df)
 {
 	int	j, start;
 	ddef_t	*par;
@@ -1027,7 +1027,7 @@ static void PR_FunctionHeader (dfunction_t *df)
 }
 
 
-static void PR_Print (const char *s,...)
+void PR_Print (const char *s,...)
 {
 	va_list argptr;
 
@@ -1036,7 +1036,7 @@ static void PR_Print (const char *s,...)
 	va_end (argptr);
 }
 
-static unsigned short GetReturnType (int func)
+unsigned short GetReturnType (int func)
 {
 	int		start, i, j, k, temp_start;
 	ddef_t		*par = 0;
@@ -1160,7 +1160,7 @@ static unsigned short GetReturnType (int func)
 }
 
 #if 0	// this is unused
-static unsigned short OP_StoreValue (dstatement_t *ds)
+unsigned short OP_StoreValue (dstatement_t *ds)
 {
 	switch (ds->op)
 	{
@@ -1251,7 +1251,7 @@ static unsigned short OP_StoreValue (dstatement_t *ds)
 }
 #endif	// end of unused function
 
-static ddef_t *PR_GetField (char *name,ddef_t *dd)
+ddef_t *PR_GetField (char *name,ddef_t *dd)
 {
 	int	i;
 	ddef_t	*d;
@@ -1270,7 +1270,7 @@ static ddef_t *PR_GetField (char *name,ddef_t *dd)
 }
 
 
-static ddef_t *PR_FieldIsUnique (ddef_t *dd)
+ddef_t *PR_FieldIsUnique (ddef_t *dd)
 {
 	int	i;
 	ddef_t	*d;
@@ -1336,7 +1336,7 @@ void Dcc_Functions (void)
 }
 
 
-static int CalcArraySize (int j, int end)
+int CalcArraySize (int j, int end)
 {
 	ddef_t	*par;
 
@@ -1358,7 +1358,7 @@ static int CalcArraySize (int j, int end)
 }
 
 
-static void PR_InitValues (ddef_t *par, int size)
+void PR_InitValues (ddef_t *par, int size)
 {
 	int	j;
 
@@ -1397,7 +1397,7 @@ static void PR_InitValues (ddef_t *par, int size)
 }
 
 
-static void PR_LocalGlobals (void)
+void PR_LocalGlobals (void)
 {
 	int		i, ps, cnt=0;
 	dfunction_t	*df;
@@ -1534,15 +1534,13 @@ static void PR_LocalGlobals (void)
 				}
 			}
 		}
-
 	}
 
 	printf("\n");
-
 }
 
 
-static char * GetFieldFunctionHeader (char *s_name)
+char * GetFieldFunctionHeader (char *s_name)
 {
 	ddef_t		*dd;
 	int		i, j = 0;
@@ -1912,7 +1910,7 @@ void FindBuiltinParameters (int func)
 }
 
 
-static unsigned short BackBuildReturnType (dfunction_t *df,dstatement_t *dsf, gofs_t ofs)
+unsigned short BackBuildReturnType (dfunction_t *df,dstatement_t *dsf, gofs_t ofs)
 {
 	dstatement_t	*ds;
 	unsigned short	rtype = ev_void;
@@ -1966,7 +1964,7 @@ static unsigned short BackBuildReturnType (dfunction_t *df,dstatement_t *dsf, go
 }
 
 
-static unsigned short GetType (gofs_t ofs)
+unsigned short GetType (gofs_t ofs)
 {
 	ddef_t		*par;
 	unsigned short	rtype;
@@ -2068,7 +2066,7 @@ void DEC_ReadData (char *srcfile)
 }
 
 
-static int DEC_GetFunctionIdxByName (char *name)
+int DEC_GetFunctionIdxByName (char *name)
 {
 	int	i;
 
@@ -2084,7 +2082,7 @@ static int DEC_GetFunctionIdxByName (char *name)
 }
 
 
-static ddef_t *DEC_GetParameter (gofs_t ofs)
+ddef_t *DEC_GetParameter (gofs_t ofs)
 {
 	int		i;
 	ddef_t		*def;
@@ -2105,7 +2103,7 @@ static ddef_t *DEC_GetParameter (gofs_t ofs)
 }
 
 
-static int DEC_AlreadySeen (char *fname)
+int DEC_AlreadySeen (char *fname)
 {
 	int		i;
 	char		*new1;
@@ -2134,7 +2132,7 @@ static int DEC_AlreadySeen (char *fname)
 
 
 #if 0	//not used
-static void FixFunctionNames (void)
+void FixFunctionNames (void)
 {
 	int		i, j;
 	dfunction_t	*d;
@@ -2155,7 +2153,7 @@ static void FixFunctionNames (void)
 #endif
 
 
-static char *DCC_ValueString (etype_t type, void *val)
+char *DCC_ValueString (etype_t type, void *val)
 {
 	static char	vsline[256];
 	def_t		*def;
@@ -2256,7 +2254,7 @@ void PR_PrintFunction (char *name)
 }
 
 
-static unsigned short GetLastFunctionReturn (dfunction_t *df,dstatement_t *ds)
+unsigned short GetLastFunctionReturn (dfunction_t *df,dstatement_t *ds)
 {
 	dstatement_t	*di;
 	int		i;

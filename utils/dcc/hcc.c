@@ -2,13 +2,13 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.11 2006-09-13 13:32:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.12 2006-09-14 16:43:29 sezero Exp $
 */
 
 #include "qcc.h"
 
-static char	sourcedir[1024];
-static char	destfile[1024];
+char		sourcedir[1024];
+char		destfile[1024];
 
 float		pr_globals[MAX_REGS];
 int			numpr_globals;
@@ -63,7 +63,7 @@ WriteFiles
   processed by qfiles.exe
 ============
 */
-static void WriteFiles (void)
+void WriteFiles (void)
 {
 	FILE	*f;
 	int		i;
@@ -114,7 +114,7 @@ int	CopyString (char *str)
 }
 
 
-static void PrintStrings (void)
+void PrintStrings (void)
 {
 	int		i, l, j;
 
@@ -136,7 +136,7 @@ static void PrintStrings (void)
 	}
 }
 
-static void PrintFunctions (void)
+void PrintFunctions (void)
 {
 	int		i, j;
 	dfunction_t	*d;
@@ -151,7 +151,7 @@ static void PrintFunctions (void)
 	}
 }
 
-static void PrintFields (void)
+void PrintFields (void)
 {
 	int		i;
 	ddef_t	*d;
@@ -163,7 +163,7 @@ static void PrintFields (void)
 	}
 }
 
-static void PrintPRGlobals (void)
+void PrintPRGlobals (void)
 {
 	int		i;
 
@@ -173,7 +173,7 @@ static void PrintPRGlobals (void)
 	}
 }
 
-static void Printstatements (void)
+void Printstatements (void)
 {
 	int		i;
 	dstatement_t	*ds;
@@ -185,7 +185,7 @@ static void Printstatements (void)
 	}
 }
 
-static void PrintGlobals (void)
+void PrintGlobals (void)
 {
 	int		i;
 	ddef_t	*d;
@@ -198,7 +198,7 @@ static void PrintGlobals (void)
 }
 
 
-static void InitData (void)
+void InitData (void)
 {
 	int		i;
 
@@ -214,7 +214,7 @@ static void InitData (void)
 }
 
 
-static void WriteData (int crc)
+void WriteData (int crc)
 {
 	def_t		*def;
 	ddef_t		*dd;
@@ -456,7 +456,7 @@ Returns a string with a description and the contents of a global,
 padded to 20 field width
 ============
 */
-static char *PR_GlobalStringNoContents (gofs_t ofs)
+char *PR_GlobalStringNoContents (gofs_t ofs)
 {
 	int		i;
 	def_t	*def;
@@ -479,7 +479,7 @@ static char *PR_GlobalStringNoContents (gofs_t ofs)
 	return line;
 }
 
-static char *PR_GlobalString (gofs_t ofs)
+char *PR_GlobalString (gofs_t ofs)
 {
 	char	*s;
 	int		i;
@@ -524,7 +524,7 @@ void PR_PrintOfs (gofs_t ofs)
 PR_PrintStatement
 =================
 */
-static void PR_PrintStatement (dstatement_t *s)
+void PR_PrintStatement (dstatement_t *s)
 {
 	int		i;
 
@@ -562,7 +562,7 @@ PR_PrintDefs
 ============
 */
 #if 0	// not used
-static void PR_PrintDefs (void)
+void PR_PrintDefs (void)
 {
 	def_t	*d;
 
@@ -578,7 +578,7 @@ PR_BeginCompilation
 called before compiling a batch of files, clears the pr struct
 ==============
 */
-static void PR_BeginCompilation (void *memory, int memsize)
+void PR_BeginCompilation (void *memory, int memsize)
 {
 	int		i;
 
@@ -606,7 +606,7 @@ called after all files are compiled to check for errors
 Returns false if errors were detected.
 ==============
 */
-static qboolean PR_FinishCompilation (void)
+qboolean PR_FinishCompilation (void)
 {
 	def_t		*d;
 	qboolean	errors;
@@ -642,7 +642,7 @@ Returns a crc of the header, to be stored in the progs file for comparison
 at load time.
 ============
 */
-static int PR_WriteProgdefs (char *filename)
+int PR_WriteProgdefs (char *filename)
 {
 	def_t	*d;
 	FILE	*f;
@@ -734,7 +734,7 @@ static int PR_WriteProgdefs (char *filename)
 	return crc;
 }
 
-static void PrintFunction (char *name)
+void PrintFunction (char *name)
 {
 	int		i;
 	dstatement_t	*ds;
