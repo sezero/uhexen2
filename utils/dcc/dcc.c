@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.22 2006-09-14 16:41:25 sezero Exp $
+	$Id: dcc.c,v 1.23 2006-09-14 16:42:25 sezero Exp $
 */
 
 
@@ -179,7 +179,7 @@ static char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
 
 static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 {
-	static char	line[512];
+	static char	dsline[512];
 	static char	fnam[512];
 	char		*arg1, *arg2, *arg3, a1[1000], a2[1000], a3[1000];
 	int		nargs, i, j;
@@ -192,7 +192,7 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 
 	//fprintf(stderr,"\n%s(%d): (%d) (%d) (%d):\n","OP_UNKNOWN",s->op,s->a,s->b,s->c);
 
-	a1[0] = a2[0] = a3[0] = line[0] = '\0';
+	a1[0] = a2[0] = a3[0] = dsline[0] = '\0';
 	fnam[0] = '\0';
 
 	dom = s->op;
@@ -281,8 +281,8 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 		}
 		else
 		{
-			sprintf(line,"(%s %s %s)",a1,pr_opcodes[s->op].name,a2);
-			Make_Immediate(s->c,line,1);
+			sprintf(dsline,"(%s %s %s)",a1,pr_opcodes[s->op].name,a2);
+			Make_Immediate(s->c,dsline,1);
 		}
 	}
 	else if ( (OP_LOAD_F <= s->op) && (s->op <= OP_ADDRESS) )
@@ -303,9 +303,9 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 		}
 		else
 		{
-			sprintf(line,"%s.%s",a1,a2);
+			sprintf(dsline,"%s.%s",a1,a2);
 			//printf("%s.%s making immediate at %d\n",a1,a2,s->c);
-			Make_Immediate(s->c,line,1);
+			Make_Immediate(s->c,dsline,1);
 		}
 	}
 	else if ((OP_STORE_F <= s->op) && (s->op <= OP_STORE_FNC))
@@ -331,8 +331,8 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 		}
 		else
 		{
-			sprintf(line,"%s",a1);
-			Make_Immediate(s->b,line,1);
+			sprintf(dsline,"%s",a1);
+			Make_Immediate(s->b,dsline,1);
 		}
 	}
 	else if ((OP_STOREP_F <= s->op) && (s->op <= OP_STOREP_FNC))
@@ -358,8 +358,8 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 	else if ((OP_NOT_F <= s->op) && (s->op <= OP_NOT_FNC))
 	{
 		arg1 = PR_PrintStringAtOfs(s->a,typ1);
-		sprintf(line,"!%s",arg1);
-		Make_Immediate(s->c,line,1);
+		sprintf(dsline,"!%s",arg1);
+		Make_Immediate(s->c,dsline,1);
 	}
 	else if ((OP_CALL0 <= s->op) && (s->op <= OP_CALL8))
 	{
@@ -377,39 +377,39 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 		//PR_Print(" type3 %d\n",typ3->type->type);
 
 		arg3 = PR_PrintStringAtOfs(s->c,typ3);
-		sprintf(line,"%s (",a1);
+		sprintf(dsline,"%s (",a1);
 		sprintf(fnam,"%s",a1);
 		if (arg2)
 		{
-			strcat(line," ");
-			strcat(line,a2);
+			strcat(dsline," ");
+			strcat(dsline,a2);
 			i++;
 		}
 
 		if (arg3 && nargs>1)
 		{
-			strcat(line,", ");
-			strcat(line,arg3);
+			strcat(dsline,", ");
+			strcat(dsline,arg3);
 			if (!strcmp(fnam,"WriteCoord") || !strcmp(fnam,"WriteAngle"))
 			{
 				if ( (strcmp(&arg3[strlen(arg3)-2],"_x")) &&
 					!(!strcmp(&arg3[strlen(arg3)-2],"_y") ||
 					  !strcmp(&arg3[strlen(arg3)-2],"_z") ||
 					  !strcmp(&arg3[strlen(arg3)-1],")")))
-				    strcat(line,"_x");
+				    strcat(dsline,"_x");
 			}
 		}
 
 		for (i = 2; i < nargs; i++)
 		{
-			strcat(line,", ");
+			strcat(dsline,", ");
 			arg1 = temp_val[OFS_PARM0+(i*3)];
 			arg2 = Make_Immediate(OFS_PARM0+(i*3), NULL, 2);
 			if (!arg2)
 			{
 				continue;
 			}
-			strcat(line,arg2);
+			strcat(dsline,arg2);
 			//temp_val[OFS_PARM0+(i*3)] = NULL;
 /*
 #ifndef DONT_USE_DIRTY_TRICKS
@@ -418,7 +418,7 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 				if ( (strcmp(&arg1[strlen(a1)-2],"_x")) &&
 					!(!strcmp(&a1[strlen(arg1)-2],"_y") ||
 					  !strcmp(&a1[strlen(arg1)-2],"_z")) )
-				    strcat(line,"_x");
+				    strcat(dsline,"_x");
 			}
 #endif
 */
@@ -426,8 +426,8 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 			//	free(arg1);
 		}
 
-		strcat(line,")");
-		Make_Immediate(OFS_RETURN,line,1);
+		strcat(dsline,")");
+		Make_Immediate(OFS_RETURN,dsline,1);
 		j = 1;	//print now
 
 		for (i = 1; (s+i)->op; i++)
@@ -586,14 +586,14 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 
 		arg2 = PR_PrintStringAtOfs(s->b,typ2);
 		if (arg2)
-			sprintf(line,"%s",arg2);
+			sprintf(dsline,"%s",arg2);
 
 		PR_Indent();
 		PR_Print("%s %s %s;\n",arg2,pr_opcodes[s->op].name,a1);
 
 		if (s->c)
 		{
-			Make_Immediate(s->c,line,1);
+			Make_Immediate(s->c,dsline,1);
 		}
 	}
 	else if ( s->op == 80 || s->op == 81)
@@ -614,8 +614,8 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 		}
 		else
 		{
-			sprintf(line,"(%s->%s)",a1,a2);
-			Make_Immediate(s->c,line,1);
+			sprintf(dsline,"(%s->%s)",a1,a2);
+			Make_Immediate(s->c,dsline,1);
 		}
 	}
 	else if ( s->op == 85)
@@ -640,8 +640,8 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 	}
 	else if ( s->op == 92)
 	{
-		sprintf(line,"random()");
-		Make_Immediate(OFS_RETURN,line,1);
+		sprintf(dsline,"random()");
+		Make_Immediate(OFS_RETURN,dsline,1);
 	}
 	else if ( s->op == 93)
 	{
@@ -649,8 +649,8 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 		if (arg1)
 			strcpy(a1,arg1);
 
-		sprintf(line,"random(%s)",a1);
-		Make_Immediate(OFS_RETURN,line,1);
+		sprintf(dsline,"random(%s)",a1);
+		Make_Immediate(OFS_RETURN,dsline,1);
 	}
 	else if ( s->op == 94)
 	{
@@ -659,13 +659,13 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 			strcpy(a1,arg1);
 
 		arg2 = PR_PrintStringAtOfs(s->b,typ2);
-		sprintf(line,"random(%s,%s)",a1,arg2);
-		Make_Immediate(OFS_RETURN,line,1);
+		sprintf(dsline,"random(%s,%s)",a1,arg2);
+		Make_Immediate(OFS_RETURN,dsline,1);
 	}
 	else if ( s->op == 95)
 	{
-		sprintf(line,"random( )");
-		Make_Immediate(OFS_RETURN,line,1);
+		sprintf(dsline,"random( )");
+		Make_Immediate(OFS_RETURN,dsline,1);
 	}
 	else if ( s->op == 96)
 	{
@@ -673,8 +673,8 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 		if (arg1)
 			strcpy(a1,arg1);
 
-		sprintf(line,"random(%s)",a1);
-		Make_Immediate(OFS_RETURN,line,1);
+		sprintf(dsline,"random(%s)",a1);
+		Make_Immediate(OFS_RETURN,dsline,1);
 	}
 	else if ( s->op == 97)
 	{
@@ -683,8 +683,8 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 			strcpy(a1,arg1);
 
 		arg2 = PR_PrintStringAtOfs(s->b,typ2);
-		sprintf(line,"random(%s,%s)",a1,arg2);
-		Make_Immediate(OFS_RETURN,line,1);
+		sprintf(dsline,"random(%s,%s)",a1,arg2);
+		Make_Immediate(OFS_RETURN,dsline,1);
 	}
 	else
 	{
