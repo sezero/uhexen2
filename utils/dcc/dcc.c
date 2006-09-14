@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.20 2006-09-13 13:31:47 sezero Exp $
+	$Id: dcc.c,v 1.21 2006-09-14 11:22:43 sezero Exp $
 */
 
 
@@ -29,7 +29,7 @@ void		PR_PrintFunction (char *name);
 
 // PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
 
-static char	*Make_Immediate (gofs_t ofs, char *line, int mode);
+static char	*Make_Immediate (gofs_t ofs, char *linestr, int mode);
 static void	PR_Indent (void);
 static void	PR_FunctionHeader (dfunction_t *df);
 static void	PR_Print (const char *s,...);
@@ -91,8 +91,9 @@ static char *type_names[8] = {
 
 static int	regs_used = 0;
 static int	lindent;
-static int	DEC_FileCtr=0;
-static char	*DEC_FilesSeen[1024];
+#define	MAX_DEC_FILES	1024
+static char	*DEC_FilesSeen[MAX_DEC_FILES];
+static int	DEC_FileCtr = 0;
 static qboolean	printassign = 0;
 static dfunction_t	*cfunc = 0;
 
@@ -101,7 +102,6 @@ static dfunction_t	*cfunc = 0;
 
 static char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
 {
-	static char	line[500];
 	int		i;
 	ddef_t	*def=0;
 	ddef_t	*d=0;
@@ -118,7 +118,7 @@ static char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
 
 	if (!def)
 	{
-		return 	Make_Immediate(ofs, line, 2);
+		return 	Make_Immediate(ofs, NULL, 2);
 	}
 
 	if ( !strcmp(strings + def->s_name, IMMEDIATE_VALUE) )
@@ -404,7 +404,7 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 		{
 			strcat(line,", ");
 			arg1 = temp_val[OFS_PARM0+(i*3)];
-			arg2 = Make_Immediate(OFS_PARM0+(i*3),line,2);
+			arg2 = Make_Immediate(OFS_PARM0+(i*3), NULL, 2);
 			if (!arg2)
 			{
 				continue;
@@ -515,7 +515,9 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 					else
 					{
 						dum = 1;
-						for ( k = t+(t->a) ; (signed short)k < (signed short)s ; k++)
+					// was a cast from pointer to integer of different size
+					//	for ( k = t+(t->a) ; (signed short)k < (signed short)s ; k++)
+						for ( k = t+(t->a) ; (int)k < (int)s ; k++)
 						{
 							tom = k->op % 100;
 							if (tom == OP_GOTO || tom == OP_IF || tom == OP_IFNOT)
@@ -697,10 +699,10 @@ static void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 
 }
 
-static char *Make_Immediate (gofs_t ofs,char *line,int mode)
+static char *Make_Immediate (gofs_t ofs, char *linestr, int mode)
 {
 	unsigned short	i;
-	char		*nline;
+	static char	*nline;
 
 	if (mode == 0)
 	{
@@ -721,7 +723,7 @@ static char *Make_Immediate (gofs_t ofs,char *line,int mode)
 				 i,MAX_REGS,regs_used,i,cfunc->parm_start,cfunc->locals,ofs);
 		if (mode == 1)
 		{ //write
-			size_t	len = strlen(line);
+			size_t	len = strlen(linestr);
 			regs_used++;
 			if (temp_val[i])
 			{
@@ -730,8 +732,8 @@ static char *Make_Immediate (gofs_t ofs,char *line,int mode)
 			temp_val[i] = NULL;
 			temp_val[i] = malloc(len + 1);
 			if (temp_val[i] == NULL)
-				Error("MakeImmediate failed to create new string for %s\n",line);
-			memcpy(temp_val[i], line, len);
+				Error("MakeImmediate failed to create new string for %s\n",linestr);
+			memcpy(temp_val[i], linestr, len);
 			temp_val[i][len] = '\0';
 
 			return temp_val[i];
@@ -917,7 +919,7 @@ static void PR_FunctionHeader (dfunction_t *df)
 {
 	int	j, start;
 	ddef_t	*par;
-	char	line[500];
+	char	linetxt[500];
 	unsigned short t1 = ev_void;
 
 	if (func_headers[df-functions])	//already done
@@ -930,42 +932,42 @@ static void PR_FunctionHeader (dfunction_t *df)
 	}
 
 //get return type
-	line[0] = '\0';
+	linetxt[0] = '\0';
 	t1 = GetReturnType(df-functions);
 
 	switch (t1)
 	{
 		case ev_string:
-			sprintf(line,"string ");
+			sprintf(linetxt,"string ");
 			break;
 		case ev_void:
-			sprintf(line,"void ");
+			sprintf(linetxt,"void ");
 			break;
 		case ev_float:
-			sprintf(line,"float ");
+			sprintf(linetxt,"float ");
 			break;
 		case ev_vector:
-			sprintf(line,"vector ");
+			sprintf(linetxt,"vector ");
 			break;
 		case ev_entity:
-			sprintf(line,"entity ");
+			sprintf(linetxt,"entity ");
 			break;
 		case ev_field:
-			sprintf(line,"ev_field ");
+			sprintf(linetxt,"ev_field ");
 			break;
 		case ev_function:
-			sprintf(line,"void() ");
+			sprintf(linetxt,"void() ");
 			break;
 		case ev_pointer:
-			sprintf(line,"ev_pointer ");
+			sprintf(linetxt,"ev_pointer ");
 			break;
 		default:
-			sprintf(line,"void ");
+			sprintf(linetxt,"void ");
 			break;
 	}
 
 //print parameters
-	strcat(line," (");
+	strcat(linetxt," (");
 
 	start = df->parm_start;
 	//i = df->numparms;
@@ -979,47 +981,49 @@ static void PR_FunctionHeader (dfunction_t *df)
 			switch (par->type)
 			{
 				case ev_string:
-					strcat(line,"string ");
+					strcat(linetxt,"string ");
 					break;
 				case ev_void:
-					strcat(line,"void ");
+					strcat(linetxt,"void ");
 					break;
 				case ev_float:
-					strcat(line,"float ");
+					strcat(linetxt,"float ");
 					break;
 				case ev_vector:
-					strcat(line,"vector ");
+					strcat(linetxt,"vector ");
 					break;
 				case ev_entity:
-					strcat(line,"entity ");
+					strcat(linetxt,"entity ");
 					break;
 				case ev_field:
-					strcat(line,"ev_field ");
+					strcat(linetxt,"ev_field ");
 					break;
 				case ev_function:
-					strcat(line,"void() ");
+					strcat(linetxt,"void() ");
 					break;
 				case ev_pointer:
-					strcat(line,"ev_pointer ");
+					strcat(linetxt,"ev_pointer ");
 					break;
 			}
 
-			strcat(line,strings + par->s_name);
+			strcat(linetxt,strings + par->s_name);
 		}
 		else
 		{
-			sprintf(line,"void unknown ");
+			sprintf(linetxt,"void unknown ");
 		}
 
 		if (j < (df->numparms - 1))
-			strcat(line,",");
+			strcat(linetxt,",");
 
 		start += df->parm_size[j];
 	}
 
-	strcat(line,")");
-	func_headers[df-functions] = malloc(strlen(line) + 1);
-	strcpy(func_headers[df-functions],line);
+	strcat(linetxt,")");
+	func_headers[df-functions] = malloc(strlen(linetxt) + 1);
+	if (func_headers[df-functions] == NULL)
+		Error ("%s: malloc failed.", __FUNCTION__);
+	strcpy(func_headers[df-functions],linetxt);
 }
 
 
@@ -1374,7 +1378,6 @@ static void PR_InitValues (ddef_t *par, int size)
 
 	for (j = 1; j < size; j++)
 	{
-		//sprintf (line,"%s",DCC_ValueString (par->type, &pr_globals[par->ofs]));
 		PR_Indent();
 		if (j < size-1)
 		{
@@ -1480,13 +1483,13 @@ static void PR_LocalGlobals (void)
 							}
 							else
 							{
-								//printf("variable %d .%s %s;\n",i,type_names[i] , strings + ef->s_name);
+								//printf("variable %d .%s %s;\n", i, type_names[i], strings + ef->s_name);
 								par = PR_FieldIsUnique(ef);
 								if (par == ef)
-									PR_Print(".%s %s;\n",type_names[i] , strings + ef->s_name);
+									PR_Print(".%s %s;\n", type_names[i], strings + ef->s_name);
 								else
-									//PR_Print(".%s %s;\n",type_names[i] , strings + ef->s_name);
-									PR_Print(".%s %s alias %s;\n",type_names[i] , strings + ef->s_name,strings + par->s_name);
+									//PR_Print(".%s %s;\n", type_names[i], strings + ef->s_name);
+									PR_Print(".%s %s alias %s;\n", type_names[i], strings + ef->s_name,strings + par->s_name);
 							}
 						}
 						else
@@ -1507,7 +1510,7 @@ static void PR_LocalGlobals (void)
 							{
 								if (!strcmp(strings + par->s_name,"end_sys_fields"))
 									printassign = 1;
-								PR_Print("%s %s;\n",type_names[par->type], strings + par->s_name);
+								PR_Print("%s %s;\n", type_names[par->type], strings + par->s_name);
 							}
 							else
 							{
@@ -1670,6 +1673,8 @@ void FindBuiltinParameters (int func)
 	{
 		printf("NOT found!!\nsetting parameters to void\n");
 		func_headers[func] = malloc(strlen("void ()") + 1);
+		if (func_headers[func] == NULL)
+			Error ("%s: malloc failed.", __FUNCTION__);
 		sprintf(func_headers[func],"%s","void ()");
 		return;
 	}
@@ -1900,6 +1905,8 @@ void FindBuiltinParameters (int func)
 
 	strcat(plist,")");
 	func_headers[func] = malloc(strlen(plist) + 1);
+	if (func_headers[func] == NULL)
+		Error ("%s: malloc failed.", __FUNCTION__);
 	sprintf(func_headers[func],"%s",plist);
 	printf("%s%s\nin %s in file %s\n",plist,sname,strings + dft->s_name,strings + dft->s_file);
 }
@@ -2103,8 +2110,6 @@ static int DEC_AlreadySeen (char *fname)
 	int		i;
 	char		*new1;
 
-	if (DEC_FileCtr>1000)
-		Error("DEC_AlreadySeen - too many source files.");
 
 	for (i = 0 ; i < DEC_FileCtr ; i++)
 	{
@@ -2112,7 +2117,12 @@ static int DEC_AlreadySeen (char *fname)
 			return 1;
 	}
 
+	if (DEC_FileCtr >= MAX_DEC_FILES-1)
+		Error("DEC_AlreadySeen - too many source files.");
+
 	new1 = (char *) malloc(strlen(fname)+1);
+	if (new1 == NULL)
+		Error ("%s: malloc failed.", __FUNCTION__);
 	strcpy (new1,fname);
 	DEC_FilesSeen[DEC_FileCtr]=new1;
 	DEC_FileCtr++;
@@ -2147,47 +2157,47 @@ static void FixFunctionNames (void)
 
 static char *DCC_ValueString (etype_t type, void *val)
 {
-	static char	line[256];
+	static char	vsline[256];
 	def_t		*def;
 	dfunction_t	*f;
 
 	switch (type)
 	{
 		case ev_string:
-			sprintf (line, "%s", PR_String(strings + *(int *)val));
+			sprintf (vsline, "%s", PR_String(strings + *(int *)val));
 			break;
 		case ev_entity:
-			sprintf (line, "entity %i", *(int *)val);
+			sprintf (vsline, "entity %i", *(int *)val);
 			break;
 		case ev_function:
 			f = functions + *(int *)val;
 			if (!f)
-				sprintf (line, "undefined function");
+				sprintf (vsline, "undefined function");
 			else
-				sprintf (line, "%s()", strings + f->s_name);
+				sprintf (vsline, "%s()", strings + f->s_name);
 			break;
 		case ev_field:
 			def = PR_DefForFieldOfs ( *(int *)val );
-			sprintf (line, ".%s", def->name);
+			sprintf (vsline, ".%s", def->name);
 			break;
 		case ev_void:
-			sprintf (line, "void");
+			sprintf (vsline, "void");
 			break;
 		case ev_float:
-			sprintf (line, "%.5f", *(float *)val);
+			sprintf (vsline, "%.5f", *(float *)val);
 			break;
 		case ev_vector:
-			sprintf (line, "'%.5f %.5f %.5f'", ((float *)val)[0], ((float *)val)[1], ((float *)val)[2]);
+			sprintf (vsline, "'%.5f %.5f %.5f'", ((float *)val)[0], ((float *)val)[1], ((float *)val)[2]);
 			break;
 		case ev_pointer:
-			sprintf (line, "pointer");
+			sprintf (vsline, "pointer");
 			break;
 		default:
-			sprintf (line, "bad type %i", type);
+			sprintf (vsline, "bad type %i", type);
 			break;
 	}
 
-	return line;
+	return vsline;
 }
 
 

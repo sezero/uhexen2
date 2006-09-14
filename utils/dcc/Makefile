@@ -31,9 +31,13 @@ endif
 #ARCHFLAGS:=
 
 ifndef DEBUG
+OPTFLAGS:= -O2
+#CFLAGS := $(CPUFLAGS) $(OPTFLAGS) -Wall
 # gcc-4 builds with -O2 are broken. gcc-4.1 builds
 # even with -O1 are also broken: no optimizations.
-CFLAGS := $(CPUFLAGS) -Wall
+# besides, the i586 cpuflag is causing a ~two-fold~
+# slowdown! not using it either...
+CFLAGS := -Wall
 endif
 
 # Other build flags
