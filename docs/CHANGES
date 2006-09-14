@@ -3,6 +3,27 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-09-14 (CVS):
+    * multiple dcc fixes:
+    * Make_Immediate() doesn't need a non-null line argument for mode-2,
+      made all such calls to send NULL.
+    * the nline variable of Make_Immediate needs to be static.
+    * renamed multiple occurances of static char line[].
+    * added success checks after several malloc() calls.
+    * in DccStatement(), silenced a compiler warning about "cast from
+      pointer to integer of different size". the offending line was:
+      for ( k = t+(t->a) ; (signed short)k < (signed short)s ; k++)
+      signed short casts were changed into int casts.
+    * the i586 cpuflag was causing a ~two-fold~ slowdown! removed it..
+    * fixed a thinko in DEC_AlreadySeen() regarding DEC_FileCtr (wasn't
+      a real-life problem, though.)
+    * decompilation of the mission pack progs seems to be fixed (dhcc
+      used to emit if instead of while in a few cases before).
+    * fixed broken size display.
+    * backed out my old static patch: making functions and variables
+      local to dcc.c static was the reason for bad compilations with
+      gcc-4.x series.
+
 2006-09-13 (CVS):
     * re-visited the includes, gathered all net includes into
       the new net_sys.h, did a platform defines clean-up.
