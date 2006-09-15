@@ -444,7 +444,7 @@ static int Sys_GetUserdir (char *buff, size_t path_len)
 	if (strlen(home_dir) + strlen(HWM_USERDIR) + 12 > path_len)
 		return 1;
 
-	sprintf (buff, "%s/%s", home_dir, HWM_USERDIR);
+	snprintf (buff, path_len, "%s/%s", home_dir, HWM_USERDIR);
 	return Sys_mkdir(buff);
 }
 #endif

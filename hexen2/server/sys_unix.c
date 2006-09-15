@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.2 2006-09-15 09:19:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.3 2006-09-15 09:20:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -284,7 +284,7 @@ static int Sys_GetUserdir (char *buff, size_t path_len)
 	if (strlen(home_dir) + strlen(AOT_USERDIR) + 50 > path_len)
 		return 1;
 
-	sprintf (buff, "%s/%s", home_dir, AOT_USERDIR);
+	snprintf (buff, path_len, "%s/%s", home_dir, AOT_USERDIR);
 	return Sys_mkdir(buff);
 }
 
