@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.29 2006-09-15 11:10:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.30 2006-09-15 19:51:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -208,7 +208,7 @@ void CL_SignonReply (void)
 		MSG_WriteString (&cls.message, va("color %i %i\n", ((int)cl_color.value)>>4, ((int)cl_color.value)&15));
 
 		MSG_WriteByte (&cls.message, clc_stringcmd);
-		snprintf (str, "spawn %s", cls.spawnparms);
+		snprintf (str, sizeof(str), "spawn %s", cls.spawnparms);
 		MSG_WriteString (&cls.message, str);
 		break;
 
@@ -1006,6 +1006,9 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2006/09/15 11:10:23  sezero
+ * use snprintf and the strl* functions, #4: cl_main.c.
+ *
  * Revision 1.28  2006/06/25 12:01:48  sezero
  * renamed CL_CopyFiles to Host_CopyFiles and CL_RemoveGIPFiles to
  * Host_RemoveGIPFiles, moved them to host.c
