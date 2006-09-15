@@ -246,15 +246,15 @@ static void CL_Rcon_f (void)
 	message[3] = 255;
 	message[4] = 0;
 
-	strcat (message, "rcon ");
+	Q_strlcat (message, "rcon ", sizeof(message));
 
-	strcat (message, rcon_password.string);
-	strcat (message, " ");
+	Q_strlcat (message, rcon_password.string, sizeof(message));
+	Q_strlcat (message, " ", sizeof(message));
 
 	for (i=1 ; i<Cmd_Argc() ; i++)
 	{
-		strcat (message, Cmd_Argv(i));
-		strcat (message, " ");
+		Q_strlcat (message, Cmd_Argv(i), sizeof(message));
+		Q_strlcat (message, " ", sizeof(message));
 	}
 
 	if (cls.state >= ca_connected)
@@ -474,9 +474,9 @@ static void CL_Color_f (void)
 	if (bottom > 13)
 		bottom = 13;
 
-	sprintf (num, "%i", top);
+	snprintf (num, sizeof(num), "%i", top);
 	Cvar_Set ("topcolor", num);
-	sprintf (num, "%i", bottom);
+	snprintf (num, sizeof(num), "%i", bottom);
 	Cvar_Set ("bottomcolor", num);
 }
 
@@ -498,7 +498,7 @@ static void CL_FullServerinfo_f (void)
 		return;
 	}
 
-	strcpy (cl.serverinfo, Cmd_Argv(1));
+	Q_strlcpy (cl.serverinfo, Cmd_Argv(1), MAX_SERVERINFO_STRING);
 
 	if ((p = Info_ValueForKey(cl.serverinfo, "*version")) && *p)
 	{
@@ -679,7 +679,7 @@ void CL_NextDemo (void)
 		}
 	}
 
-	sprintf (str,"playdemo %s\n", cls.demos[cls.demonum]);
+	snprintf (str, sizeof(str),"playdemo %s\n", cls.demos[cls.demonum]);
 	Cbuf_InsertText (str);
 	cls.demonum++;
 }
@@ -892,7 +892,16 @@ static void CL_Download_f (void)
 		return;
 	}
 
-	sprintf (cls.downloadname, "%s/%s", com_userdir, Cmd_Argv(1));
+	if (strstr(Cmd_Argv(1), ".."))
+	{
+		Con_Printf ("Relative pathnames are not allowed.\n");
+		return;
+	}
+	if (snprintf (cls.downloadname, MAX_OSPATH, "%s/%s", com_userdir, Cmd_Argv(1)) >= MAX_OSPATH)
+	{
+		Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+		return;
+	}
 	COM_CreatePath (cls.downloadname);
 	cls.download = fopen (cls.downloadname, "wb");
 	cls.downloadtype = dl_single;

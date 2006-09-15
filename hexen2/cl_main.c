@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.28 2006-06-25 12:01:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.29 2006-09-15 11:10:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -208,7 +208,7 @@ void CL_SignonReply (void)
 		MSG_WriteString (&cls.message, va("color %i %i\n", ((int)cl_color.value)>>4, ((int)cl_color.value)&15));
 
 		MSG_WriteByte (&cls.message, clc_stringcmd);
-		sprintf (str, "spawn %s", cls.spawnparms);
+		snprintf (str, "spawn %s", cls.spawnparms);
 		MSG_WriteString (&cls.message, str);
 		break;
 
@@ -252,7 +252,7 @@ void CL_NextDemo (void)
 
 	SCR_BeginLoadingPlaque ();
 
-	sprintf (str,"playdemo %s\n", cls.demos[cls.demonum]);
+	snprintf (str, sizeof(str),"playdemo %s\n", cls.demos[cls.demonum]);
 	Cbuf_InsertText (str);
 	cls.demonum++;
 }
@@ -1006,6 +1006,10 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2006/06/25 12:01:48  sezero
+ * renamed CL_CopyFiles to Host_CopyFiles and CL_RemoveGIPFiles to
+ * Host_RemoveGIPFiles, moved them to host.c
+ *
  * Revision 1.27  2006/05/18 17:45:02  sezero
  * stop cdaudio and midi upon CL_Disconnect
  *
