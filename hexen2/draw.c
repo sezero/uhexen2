@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.21 2006-08-14 06:42:29 sezero Exp $
+	$Id: draw.c,v 1.22 2006-09-15 20:12:48 sezero Exp $
 */
 
 
@@ -69,7 +69,7 @@ qpic_t	*Draw_CachePic (char *path)
 		if (menu_numcachepics == MAX_CACHED_PICS)
 			Sys_Error ("menu_numcachepics == MAX_CACHED_PICS");
 		menu_numcachepics++;
-		strcpy (pic->name, path);
+		Q_strlcpy (pic->name, path, MAX_QPATH);
 	}
 
 	dat = Cache_Check (&pic->cache);
@@ -116,7 +116,7 @@ qpic_t  *Draw_CachePicResize(char *path, int targetWidth, int targetHeight)
 		if (menu_numcachepics == MAX_CACHED_PICS)
 			Sys_Error("menu_numcachepics == MAX_CACHED_PICS");
 		menu_numcachepics++;
-		strcpy(pic->name, path);
+		Q_strlcpy(pic->name, path, MAX_QPATH);
 	}
 	dat = Cache_Check(&pic->cache);
 	if (dat)
@@ -172,9 +172,9 @@ void Draw_Init (void)
 
 	// Do this backwards so we don't try and draw the 
 	// skull as we are loading
-	for(i=MAX_DISC-1;i>=0;i--)
+	for (i = MAX_DISC-1; i >= 0; i--)
 	{
-		sprintf(temp,"gfx/menu/skull%d.lmp",i);
+		snprintf(temp, sizeof(temp), "gfx/menu/skull%d.lmp", i);
 		draw_disc[i] = (qpic_t *)COM_LoadHunkFile (temp);
 	}
 
@@ -1293,10 +1293,10 @@ void Draw_ConsoleBackground (int lines)
 	//static		char saveback[320*8];
 
 	if (cls.download)
-		sprintf (ver, STRINGIFY(ENGINE_VERSION));
+		Q_strlcpy (ver, STRINGIFY(ENGINE_VERSION), sizeof(ver));
 	else
 #endif
-		sprintf (ver, ENGINE_WATERMARK);
+		Q_strlcpy (ver, ENGINE_WATERMARK, sizeof(ver));
 
 	conback = Draw_CachePic ("gfx/menu/conback.lmp");
 
@@ -1719,6 +1719,12 @@ void Draw_EndDisc (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2006/08/14 06:42:29  sezero
+ * introduced Draw_ReInit() to be called when a gamedir change occurs.
+ * reloads the textures which are loaded back at the init phase. fixes
+ * hexenworld's wrong charset and conback display problem upon gamedir
+ * changes.
+ *
  * Revision 1.20  2006/08/14 06:38:03  sezero
  * made software renderer draw.c to load the charset (draw_chars: conchars)
  * into zone instead of hunk. needed for further changes.

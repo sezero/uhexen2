@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.71 2006-08-14 07:26:01 sezero Exp $
+	$Id: gl_draw.c,v 1.72 2006-09-15 20:12:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -219,7 +219,7 @@ qpic_t	*Draw_CachePic (char *path)
 	if (menu_numcachepics == MAX_CACHED_PICS)
 		Sys_Error ("menu_numcachepics == MAX_CACHED_PICS");
 	menu_numcachepics++;
-	strcpy (pic->name, path);
+	Q_strlcpy (pic->name, path, MAX_QPATH);
 
 //
 // load the pic from disk
@@ -286,7 +286,7 @@ qpic_t *Draw_CachePicNoTrans(char *path)
 	if (menu_numcachepics == MAX_CACHED_PICS)
 		Sys_Error ("menu_numcachepics == MAX_CACHED_PICS");
 	menu_numcachepics++;
-	strcpy (pic->name, path);
+	Q_strlcpy (pic->name, path, MAX_QPATH);
 
 //
 // load the pic from disk
@@ -1164,7 +1164,7 @@ void Draw_ConsoleBackground (int lines)
 	// print the version number and platform
 //	y = lines-186;
 	y = lines-14;
-	sprintf (ver, ENGINE_WATERMARK);
+	Q_strlcpy (ver, ENGINE_WATERMARK, sizeof(ver));
 	x = vid.conwidth - (strlen(ver)*8 + 11);
 #if defined(H2W)
 	if (!cls.download)
@@ -2001,7 +2001,7 @@ GLuint GL_LoadTexture (char *identifier, int width, int height, byte *data, qboo
 
 	glt = &gltextures[numgltextures];
 	numgltextures++;
-	strcpy (glt->identifier, identifier);
+	Q_strlcpy (glt->identifier, identifier, MAX_IDENTIFIER);
 	glt->texnum = texture_extension_number;
 	texture_extension_number++;
 
