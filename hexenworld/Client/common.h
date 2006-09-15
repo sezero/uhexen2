@@ -205,6 +205,20 @@ extern size_t Q_strlcat (char *dst, const char *src, size_t size);
 
 #endif
 
+#define Q_strlcat_err(DST,SRC,SIZE) {								\
+	if (Q_strlcat((DST),(SRC),(SIZE)) >= (SIZE))						\
+		Sys_Error("%s:%d, strlcat: string buffer overflow!",__FUNCTION__,__LINE__);	\
+}
+#define Q_strlcpy_err(DST,SRC,SIZE) {								\
+	if (Q_strlcpy((DST),(SRC),(SIZE)) >= (SIZE))						\
+		Sys_Error("%s:%d, strlcpy: string buffer overflow!",__FUNCTION__,__LINE__);	\
+}
+#define Q_snprintf_err(DST,SIZE,fmt,args...) {							\
+	if (snprintf((DST),(SIZE),fmt,##args) >= (SIZE))					\
+		Sys_Error("%s:%d, snprintf: string buffer overflow!",__FUNCTION__,__LINE__);	\
+}
+
+
 //============================================================================
 
 extern	char		com_token[1024];

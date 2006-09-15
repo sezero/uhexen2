@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.8 2006-09-13 05:53:25 sezero Exp $
+	$Id: cmdlib.h,v 1.9 2006-09-15 09:23:54 sezero Exp $
 */
 
 #ifndef __CMDLIB__
@@ -75,6 +75,19 @@ extern size_t Q_strlcpy (char *dst, const char *src, size_t size);
 extern size_t Q_strlcat (char *dst, const char *src, size_t size);
 
 #endif
+
+#define Q_strlcat_err(DST,SRC,SIZE) {								\
+	if (Q_strlcat((DST),(SRC),(SIZE)) >= (SIZE))						\
+		Error("%s:%d, strlcat: string buffer overflow!",__FUNCTION__,__LINE__);		\
+}
+#define Q_strlcpy_err(DST,SRC,SIZE) {								\
+	if (Q_strlcpy((DST),(SRC),(SIZE)) >= (SIZE))						\
+		Error("%s:%d, strlcpy: string buffer overflow!",__FUNCTION__,__LINE__);		\
+}
+#define Q_snprintf_err(DST,SIZE,fmt,args...) {							\
+	if (snprintf((DST),(SIZE),fmt,##args) >= (SIZE))					\
+		Error("%s:%d, snprintf: string buffer overflow!",__FUNCTION__,__LINE__);	\
+}
 
 
 // PUBLIC DATA DECLARATIONS ------------------------------------------------
