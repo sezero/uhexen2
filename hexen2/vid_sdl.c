@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.55 2006-09-11 11:21:17 sezero Exp $
+	$Id: vid_sdl.c,v 1.56 2006-09-15 20:03:36 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -656,12 +656,11 @@ performs an early read of config.cfg. a temporary
 solution until we merge a better cvar system.
 ===================
 */
-void	VID_EarlyReadConfig (void)
+static void VID_EarlyReadConfig (void)
 {
 	FILE	*cfg_file;
-	char	buff[1024], tmp[256];
+	char	buff[1024], *tmp;
 	int		i;
-	size_t		j, len;
 	char *read_vars[] = {
 		"vid_config_fscr",
 		"vid_config_swx",
@@ -669,33 +668,62 @@ void	VID_EarlyReadConfig (void)
 		NULL
 	};
 
-	len = COM_FOpenFile ("config.cfg", &cfg_file, true);
+	COM_FOpenFile ("config.cfg", &cfg_file, true);
 	if (!cfg_file)
 		return;
 
 	do {
+		i = 0;
+		memset (buff, 0, sizeof(buff));
 		fgets(buff, sizeof(buff), cfg_file);
 		if (!feof(cfg_file))
 		{
-			len = strlen(buff);
-			buff[len-1] = '\0';
+			// we expect a line in the format that Cvar_WriteVariables
+			// writes to the config file. although I'm trying to be as
+			// much cautious as possible, if the user screws it up by
+			// editing it, it's his fault.
+
+			// remove end-of-line characters
+			while (buff[i])
+			{
+				if (buff[i] == '\r' || buff[i] == '\n')
+					buff[i] = '\0';
+				// while we're here, replace tabs with spaces
+				if (buff[i] == '\t')
+					buff[i] = ' ';
+				i++;
+			}
+			// go to the last character
+			while (buff[i] == 0 && i > 0)
+				i--;
+			// remove trailing spaces
+			while (i > 0)
+			{
+				if (buff[i] == ' ')
+				{
+					buff[i] = '\0';
+					i--;
+				}
+				else
+					break;
+			}
+
+			// the line must end with a quotation mark
+			if (buff[i] != '\"')
+				continue;
+			buff[i] = '\0';
 
 			for (i = 0; read_vars[i]; i++)
 			{
-				if (strstr(buff, va("%s \"",read_vars[i])) == buff)
+				// look for the cvar name + one space
+				tmp = strstr(buff, va("%s ",read_vars[i]));
+				if (tmp != buff)
+					continue;
+				// locate the first quotation mark
+				tmp = strchr(buff, '\"');
+				if (tmp)
 				{
-					j = strlen(read_vars[i]);
-					memset (tmp, 0, sizeof(tmp));
-
-				// we expect a line in the format that Cvar_WriteVariables
-				// writes to the config file. if the user screws it up
-				// by editing it, it is his fault.
-				// the first +2 is for the separating space and the initial
-				// quotation mark. the -3 is the first 2 plus the finishing
-				// quotation mark.
-					memcpy (tmp, buff+j+2, len-j-3);
-					tmp[len-j-4] = '\0';
-					Cvar_Set (read_vars[i], tmp);
+					Cvar_Set (read_vars[i], tmp+1);
 					break;
 				}
 			}
@@ -1280,6 +1308,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.55  2006/09/11 11:21:17  sezero
+ * added human readable defines for the MIDI_Pause modes
+ *
  * Revision 1.54  2006/09/01 08:09:44  sezero
  * started using the strl* functions and snprintf, #1: vid* files.
  *
