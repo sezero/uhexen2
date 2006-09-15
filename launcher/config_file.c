@@ -110,7 +110,7 @@ int write_config_file (void)
 int read_config_file (void)
 {
 	FILE	*cfg_file;
-	char	buff[1024];
+	char	buff[1024], *tmp;
 
 	cfg_file = open_config_file("r");
 	if (cfg_file == NULL)
@@ -123,10 +123,19 @@ int read_config_file (void)
 	{
 		printf("Reading configuration file.... ");
 		do {
+			memset(buff, 0, sizeof(buff));
 			fgets(buff, sizeof(buff), cfg_file);
 			if (!feof(cfg_file))
 			{
-				buff[strlen(buff)-1] = '\0';
+				// remove end-of-line characters
+				tmp = buff;
+				while (*tmp)
+				{
+					if (*tmp == '\r' || *tmp == '\n')
+						*tmp = '\0';
+					tmp++;
+				}
+				// parse: whitespace isn't tolerated.
 				if (strstr(buff, "destiny=") == buff)
 				{
 					destiny = atoi(buff + 8);
@@ -229,9 +238,14 @@ int read_config_file (void)
 				}
 				else if (strstr(buff, "gllibrary=") == buff)
 				{
+					size_t		len;
+					tmp = buff+10;
+					len = strlen(tmp);
+					// first and last chars must be quotes
+					if (tmp[0] != '\"' || tmp[len-1] != '\"' || len-2 >= sizeof(gllibrary))
+						continue;
 					memset (gllibrary, 0, sizeof(gllibrary));
-					// first and last chars are quotes, strip them
-					memcpy (gllibrary, buff+10+1, strlen(buff+10+2));
+					memcpy (gllibrary, tmp+1, len-2);
 				}
 				else if (strstr(buff, "sound=") == buff)
 				{
