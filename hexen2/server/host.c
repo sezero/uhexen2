@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.3 2006-09-13 05:53:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.4 2006-09-15 09:22:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -105,8 +105,13 @@ qboolean Host_CopyFiles(char *source, char *pat, char *dest)
 
 	while (name)
 	{
-		sprintf(tempdir,"%s/%s", source, name);
-		sprintf(tempdir2,"%s/%s", dest, name);
+		if ( snprintf(tempdir, sizeof(tempdir),"%s/%s", source, name) >= sizeof(tempdir) ||
+		     snprintf(tempdir2, sizeof(tempdir2),"%s/%s", dest, name) >= sizeof(tempdir2) )
+		{
+			Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+			error = true;
+			goto error_out;
+		}
 #ifdef _WIN32
 		if (!CopyFile(tempdir,tempdir2,FALSE))
 #else
@@ -115,11 +120,13 @@ qboolean Host_CopyFiles(char *source, char *pat, char *dest)
 		{
 			Con_Printf ("Error copying %s to %s\n",tempdir,tempdir2);
 			error = true;
+			goto error_out;
 		}
 
 		name = Sys_FindNextFile();
 	}
 
+error_out:
 	Sys_FindClose();
 
 	return error;
@@ -660,6 +667,10 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2006/09/13 05:53:24  sezero
+ * re-visited the includes, gathered all net includes into
+ * the new net_sys.h, did a platform defines clean-up.
+ *
  * Revision 1.2  2006/09/11 09:16:24  sezero
  * put SZ_Init() to use everywhere in the source.
  *
