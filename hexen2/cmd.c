@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.16 2006-03-24 15:05:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.17 2006-09-15 11:21:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -367,13 +367,18 @@ static void Cmd_Alias_f (void)
 // copy the rest of the command line
 	cmd[0] = 0;		// start out with a null string
 	c = Cmd_Argc();
-	for (i=2 ; i< c ; i++)
+	for (i = 2; i < c; i++)
 	{
-		strcat (cmd, Cmd_Argv(i));
-		if (i != c)
+		Q_strlcat (cmd, Cmd_Argv(i), sizeof(cmd));
+		if (i != c-1)
 			strcat (cmd, " ");
 	}
-	strcat (cmd, "\n");
+	if (Q_strlcat(cmd, "\n", sizeof(cmd)) >= sizeof(cmd))
+	{
+		Con_Printf("alias value too long!\n");
+		cmd[0] = '\n';	// nullify the string
+		cmd[1] = 0;
+	}
 
 	a->value = Z_Malloc (strlen (cmd) + 1);
 	strcpy (a->value, cmd);
@@ -799,6 +804,11 @@ void Cmd_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2006/03/24 15:05:39  sezero
+ * killed the archive, server and info members of the cvar structure.
+ * the new flags member is now employed for all those purposes. also
+ * made all non-globally used cvars static.
+ *
  * Revision 1.15  2005/12/28 08:37:42  sezero
  * cleaned up the console tab completion:
  * * removed duplicate and unnecessary code, hopefully more readable now.

@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.12 2006-03-24 15:05:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.13 2006-09-15 11:21:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -367,13 +367,18 @@ static void Cmd_Alias_f (void)
 // copy the rest of the command line
 	cmd[0] = 0;		// start out with a null string
 	c = Cmd_Argc();
-	for (i=2 ; i< c ; i++)
+	for (i = 2; i < c; i++)
 	{
-		strcat (cmd, Cmd_Argv(i));
-		if (i != c)
+		Q_strlcat (cmd, Cmd_Argv(i), sizeof(cmd));
+		if (i != c-1)
 			strcat (cmd, " ");
 	}
-	strcat (cmd, "\n");
+	if (Q_strlcat(cmd, "\n", sizeof(cmd)) >= sizeof(cmd))
+	{
+		Con_Printf("alias value too long!\n");
+		cmd[0] = '\n';	// nullify the string
+		cmd[1] = 0;
+	}
 
 	a->value = Z_Malloc (strlen (cmd) + 1);
 	strcpy (a->value, cmd);
