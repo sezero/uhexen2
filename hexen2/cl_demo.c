@@ -253,6 +253,9 @@ void CL_Record_f (void)
 	if (cmd_source != src_command)
 		return;
 
+	if (cls.demorecording)
+		CL_Stop_f();
+
 	c = Cmd_Argc();
 	if (c != 2 && c != 3 && c != 4)
 	{
@@ -283,7 +286,7 @@ void CL_Record_f (void)
 		track = -1;
 	}
 
-	sprintf (name, "%s/%s", com_userdir, Cmd_Argv(1));
+	snprintf (name, sizeof(name), "%s/%s", com_userdir, Cmd_Argv(1));
 
 //
 // start the map up
@@ -300,7 +303,7 @@ void CL_Record_f (void)
 	cls.demofile = fopen (name, "wb");
 	if (!cls.demofile)
 	{
-		Con_Printf ("ERROR: couldn't open.\n");
+		Con_Printf ("ERROR: couldn't create %s\n", name);
 		return;
 	}
 
@@ -349,7 +352,7 @@ void CL_PlayDemo_f (void)
 //
 // open the demo file
 //
-	strcpy (name, Cmd_Argv(1));
+	Q_strlcpy (name, Cmd_Argv(1), sizeof(name));
 
 	if (!Q_strcasecmp(name,"t9"))
 	{
@@ -377,7 +380,7 @@ void CL_PlayDemo_f (void)
 	COM_FOpenFile (name, &cls.demofile, false);
 	if (!cls.demofile)
 	{
-		Con_Printf ("ERROR: couldn't open.\n");
+		Con_Printf ("ERROR: couldn't open %s\n", name);
 		cls.demonum = -1;	// stop demo loop
 		return;
 	}

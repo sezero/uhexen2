@@ -293,8 +293,11 @@ record <demoname> <server>
 */
 void CL_Record_f (void)
 {
-	int	c;
+	int		c;
 	char	name[MAX_OSPATH];
+
+	if (cls.demorecording)
+		CL_Stop_f();
 
 	c = Cmd_Argc();
 	if (c != 3)
@@ -303,10 +306,13 @@ void CL_Record_f (void)
 		return;
 	}
 
-	if (cls.demorecording)
-		CL_Stop_f();
+	if (strstr(Cmd_Argv(1), ".."))
+	{
+		Con_Printf ("Relative pathnames are not allowed.\n");
+		return;
+	}
 
-	sprintf (name, "%s/%s", com_userdir, Cmd_Argv(1));
+	snprintf (name, sizeof(name), "%s/%s", com_userdir, Cmd_Argv(1));
 
 //
 // open the demo file
@@ -316,7 +322,7 @@ void CL_Record_f (void)
 	cls.demofile = fopen (name, "wb");
 	if (!cls.demofile)
 	{
-		Con_Printf ("ERROR: couldn't open.\n");
+		Con_Printf ("ERROR: couldn't create %s\n", name);
 		return;
 	}
 
@@ -341,13 +347,22 @@ record <demoname>
 */
 void CL_ReRecord_f (void)
 {
-	int	c;
+	int		c;
 	char	name[MAX_OSPATH];
+
+	if (cls.demorecording)
+		CL_Stop_f();
 
 	c = Cmd_Argc();
 	if (c != 2)
 	{
 		Con_Printf ("rerecord <demoname>\n");
+		return;
+	}
+
+	if (strstr(Cmd_Argv(1), ".."))
+	{
+		Con_Printf ("Relative pathnames are not allowed.\n");
 		return;
 	}
 
@@ -357,10 +372,7 @@ void CL_ReRecord_f (void)
 		return;
 	}
 
-	if (cls.demorecording)
-		CL_Stop_f();
-
-	sprintf (name, "%s/%s", com_userdir, Cmd_Argv(1));
+	snprintf (name, sizeof(name), "%s/%s", com_userdir, Cmd_Argv(1));
 
 //
 // open the demo file
@@ -370,7 +382,7 @@ void CL_ReRecord_f (void)
 	cls.demofile = fopen (name, "wb");
 	if (!cls.demofile)
 	{
-		Con_Printf ("ERROR: couldn't open.\n");
+		Con_Printf ("ERROR: couldn't create %s\n", name);
 		return;
 	}
 
@@ -417,14 +429,14 @@ void CL_PlayDemo_f (void)
 //
 // open the demo file
 //
-	strcpy (name, Cmd_Argv(1));
+	Q_strlcpy (name, Cmd_Argv(1), sizeof(name));
 	COM_DefaultExtension (name, ".qwd", sizeof(name));
 
 	Con_Printf ("Playing demo from %s.\n", name);
 	COM_FOpenFile (name, &cls.demofile, false);
 	if (!cls.demofile)
 	{
-		Con_Printf ("ERROR: couldn't open.\n");
+		Con_Printf ("ERROR: couldn't open %s\n", name);
 		cls.demonum = -1;	// stop demo loop
 		return;
 	}
