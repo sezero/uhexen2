@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.73 2006-09-13 05:53:22 sezero Exp $
+	$Id: common.c,v 1.74 2006-09-15 09:48:35 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -800,7 +800,7 @@ void COM_FileBase (char *in, char *out)
 COM_DefaultExtension
 ==================
 */
-void COM_DefaultExtension (char *path, char *extension)
+void COM_DefaultExtension (char *path, char *extension, size_t len)
 {
 	char	*src;
 //
@@ -816,7 +816,7 @@ void COM_DefaultExtension (char *path, char *extension)
 		src--;
 	}
 
-	strcat (path, extension);
+	Q_strlcat_err(path, extension, len);
 }
 
 
@@ -2627,6 +2627,10 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.73  2006/09/13 05:53:22  sezero
+ * re-visited the includes, gathered all net includes into
+ * the new net_sys.h, did a platform defines clean-up.
+ *
  * Revision 1.72  2006/09/07 08:24:54  sezero
  * misc stuff
  *
