@@ -9,7 +9,6 @@
 #include <windows.h>
 #endif
 
-#define	MAXCMDLINE	256
 char	key_lines[32][MAXCMDLINE];
 int		key_linepos;
 static int	shift_down=false;

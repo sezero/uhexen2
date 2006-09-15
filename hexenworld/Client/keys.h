@@ -103,6 +103,8 @@
 #define K_MOUSE5		242
 
 
+#define	MAXCMDLINE	256
+
 typedef enum {key_game, key_console, key_message, key_menu} keydest_t;
 
 extern keydest_t	key_dest;

@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.50 2006-09-13 05:53:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.51 2006-09-15 09:21:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1757,7 +1757,6 @@ static void Host_Spawn_f (void)
 
 dfunction_t *ED_FindFunctioni (char *fn_name);
 
-#define		MAXCMDLINE	256
 extern char	key_lines[32][MAXCMDLINE];
 extern int		key_linepos;
 extern int		edit_line;
@@ -2299,6 +2298,10 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.50  2006/09/13 05:53:22  sezero
+ * re-visited the includes, gathered all net includes into
+ * the new net_sys.h, did a platform defines clean-up.
+ *
  * Revision 1.49  2006/07/02 11:36:35  sezero
  * uppercased the pr_global_struct() macro for easier detection
  * and searching. put that macro in use in hexenworld server for
