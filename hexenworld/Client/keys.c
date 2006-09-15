@@ -163,7 +163,7 @@ static qboolean CheckForCommand (void)
 static void CompleteCommand (void)
 {
 	char	*matches[MAX_MATCHES];
-	char	*s, stmp[256];
+	char	*s, stmp[MAXCMDLINE];
 	qboolean	editing, partial;
 	int	count = 0, i, j;
 
@@ -178,7 +178,7 @@ static void CompleteCommand (void)
 		editing = true;
 		// make a copy of the text starting from the
 		// cursor position (see below)
-		strcpy(stmp, key_lines[edit_line]+key_linepos);
+		Q_strlcpy(stmp, key_lines[edit_line]+key_linepos, sizeof(stmp));
 	}
 
 	s = key_lines[edit_line]+1;
@@ -217,9 +217,9 @@ static void CompleteCommand (void)
 		if (count == 1)
 		{
 			key_lines[edit_line][1] = '/';
-			strcpy (key_lines[edit_line]+2, matches[0]);
+			Q_strlcpy (key_lines[edit_line]+2, matches[0], MAXCMDLINE-2);
 			key_linepos = strlen(matches[0])+2;
-		//	strcpy (key_lines[edit_line]+1, matches[0]);
+		//	Q_strlcpy (key_lines[edit_line]+1, matches[0], MAXCMDLINE-1);
 		//	key_linepos = strlen(matches[0])+1;
 			key_lines[edit_line][key_linepos] = ' ';
 			key_linepos++;
@@ -273,7 +273,7 @@ finish:
 	{
 		// put back the remainder of the original text
 		// which was lost after the trimming
-		strcpy (key_lines[edit_line]+key_linepos, stmp);
+		Q_strlcpy (key_lines[edit_line]+key_linepos, stmp, MAXCMDLINE-key_linepos);
 	}
 }
 
@@ -712,11 +712,11 @@ static void Key_Bind_f (void)
 
 // copy the rest of the command line
 	cmd[0] = 0;		// start out with a null string
-	for (i=2 ; i< c ; i++)
+	for (i = 2; i < c; i++)
 	{
-		strcat (cmd, Cmd_Argv(i));
+		Q_strlcat (cmd, Cmd_Argv(i), sizeof(cmd));
 		if (i != (c-1))
-			strcat (cmd, " ");
+			Q_strlcat (cmd, " ", sizeof(cmd));
 	}
 
 	Key_SetBinding (b, cmd);
