@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.51 2006-09-15 09:21:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.52 2006-09-15 09:24:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -260,13 +260,13 @@ static void Host_Map_f (void)
 	cls.mapstring[0] = 0;
 	for (i=0 ; i<Cmd_Argc() ; i++)
 	{
-		strcat (cls.mapstring, Cmd_Argv(i));
-		strcat (cls.mapstring, " ");
+		Q_strlcat (cls.mapstring, Cmd_Argv(i), MAX_QPATH);
+		Q_strlcat (cls.mapstring, " ", MAX_QPATH);
 	}
-	strcat (cls.mapstring, "\n");
+	Q_strlcat (cls.mapstring, "\n", MAX_QPATH);
 
 	svs.serverflags = 0;		// haven't completed an episode yet
-	strcpy (name, Cmd_Argv(1));
+	Q_strlcpy (name, Cmd_Argv(1), sizeof(name));
 
 	SV_SpawnServer (name, NULL);
 
@@ -277,12 +277,11 @@ static void Host_Map_f (void)
 	{
 		loading_stage = 2;
 
-		strcpy (cls.spawnparms, "");
-
+		memset (cls.spawnparms, 0, MAX_MAPSTRING);
 		for (i=2 ; i<Cmd_Argc() ; i++)
 		{
-			strcat (cls.spawnparms, Cmd_Argv(i));
-			strcat (cls.spawnparms, " ");
+			Q_strlcat (cls.spawnparms, Cmd_Argv(i), MAX_MAPSTRING);
+			Q_strlcat (cls.spawnparms, " ", MAX_MAPSTRING);
 		}
 
 		Cmd_ExecuteString ("connect local", src_command);
@@ -313,12 +312,12 @@ static void Host_Changelevel_f (void)
 		return;
 	}
 
-	strcpy (level, Cmd_Argv(1));
+	Q_strlcpy (level, Cmd_Argv(1), sizeof(level));
 	if (Cmd_Argc() == 2)
 		startspot = NULL;
 	else
 	{
-		strcpy (_startspot, Cmd_Argv(2));
+		Q_strlcpy (_startspot, Cmd_Argv(2), sizeof(_startspot));
 		startspot = _startspot;
 	}
 
@@ -346,8 +345,8 @@ static void Host_Restart_f (void)
 	if (cmd_source != src_command)
 		return;
 
-	strcpy (mapname, sv.name);	// must copy out, because it gets cleared
-	strcpy(startspot, sv.startspot);
+	Q_strlcpy (mapname, sv.name, sizeof(mapname));	// must copy out, because it gets cleared
+	Q_strlcpy (startspot, sv.startspot, sizeof(startspot));
 
 	if (Cmd_Argc() == 2 && Q_strcasecmp(Cmd_Argv(1),"restore") == 0)
 	{
@@ -414,7 +413,7 @@ static void Host_Connect_f (void)
 		CL_StopPlayback ();
 		CL_Disconnect ();
 	}
-	strcpy (name, Cmd_Argv(1));
+	Q_strlcpy (name, Cmd_Argv(1), sizeof(name));
 	CL_EstablishConnection (name);
 	Host_Reconnect_f ();
 }
@@ -532,22 +531,34 @@ static void Host_Savegame_f (void)
 retry:
 	attempts++;
 
-	sprintf (savename, "%s/%s", com_savedir, Cmd_Argv(1));
-	Sys_mkdir (savename);
+	if (snprintf(savename, sizeof(savename), "%s/%s", com_savedir, Cmd_Argv(1)) >= sizeof(savename))
+	{
+		Con_Printf ("%s: save directory name too long\n", __FUNCTION__);
+		return;
+	}
+	if (Sys_mkdir(savename))
+	{
+		Con_Printf ("Unable to create save directory\n");
+		return;
+	}
 
 	Host_RemoveGIPFiles(savename);
 
-	sprintf (savename, "%s/clients.gip", com_savedir);
+	snprintf (savename, sizeof(savename), "%s/clients.gip", com_savedir);
 	unlink(savename);
 
-	sprintf (savedest, "%s/%s",com_savedir, Cmd_Argv(1));
+	snprintf (savedest, sizeof(savedest), "%s/%s", com_savedir, Cmd_Argv(1));
 	Con_Printf ("Saving game to %s...\n", savedest);
 
 	error_state = Host_CopyFiles(com_savedir, "*.gip", savedest);
 	if (error_state)
 		goto retrymsg;
 
-	sprintf(savedest,"%s/%s/info.dat",com_savedir, Cmd_Argv(1));
+	if (snprintf(savedest, sizeof(savedest), "%s/%s/info.dat", com_savedir, Cmd_Argv(1)) >= sizeof(savedest))
+	{
+		Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+		return;
+	}
 	f = fopen (savedest, "w");
 	if (!f)
 	{
@@ -628,16 +639,23 @@ static void Host_Loadgame_f (void)
 	CL_Disconnect();
 	Host_RemoveGIPFiles(NULL);
 
-	sprintf (savename, "%s/%s", com_savedir, Cmd_Argv(1));
-
+	if (snprintf(savename, sizeof(savename), "%s/%s", com_savedir, Cmd_Argv(1)) >= sizeof(savename))
+	{
+		Con_Printf ("%s: save directory name too long\n", __FUNCTION__);
+		return;
+	}
 	Con_Printf ("Loading game from %s...\n", savename);
 
-	sprintf(savedest,"%s/info.dat",savename);
+	if (snprintf(savedest, sizeof(savedest), "%s/info.dat", savename) >= sizeof(savedest))
+	{
+		Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+		return;
+	}
 
 	f = fopen (savedest, "r");
 	if (!f)
 	{
-		Con_Printf ("ERROR: couldn't open.\n");
+		Con_Printf ("%s: ERROR: couldn't open savefile\n", __FUNCTION__);
 		return;
 	}
 
@@ -706,8 +724,7 @@ static void Host_Loadgame_f (void)
 retry:
 	attempts++;
 
-	sprintf (savedest, "%s/%s",com_savedir, Cmd_Argv(1));
-
+	snprintf (savedest, sizeof(savedest), "%s/%s", com_savedir, Cmd_Argv(1));
 	error_state = Host_CopyFiles(savedest, "*.gip", com_savedir);
 
 	if (error_state)
@@ -769,15 +786,22 @@ retry:
 		start = 1;
 		end = svs.maxclients+1;
 
-		sprintf (savename, "%s/clients.gip", com_savedir);
+		if (snprintf(savename, sizeof(savename), "%s/clients.gip", com_savedir) >= sizeof(savename))
+		{
+			Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+			return true;
+		}
 	}
 	else
 	{
 		start = 1;
 		end = sv.num_edicts;
 
-		sprintf (savename, "%s/%s.gip", com_savedir, sv.name);
-//		Con_Printf ("Saving game to %s...\n", savename);
+		if (snprintf(savename, sizeof(savename), "%s/%s.gip", com_savedir, sv.name) >= sizeof(savename))
+		{
+			Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+			return true;
+		}
 	}
 
 	f = fopen (savename, "w");
@@ -940,11 +964,19 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode)
 
 	if (ClientsMode == 1)
 	{
-		sprintf (savename, "%s/clients.gip", com_savedir);
+		if (snprintf(savename, sizeof(savename), "%s/clients.gip", com_savedir) >= sizeof(savename))
+		{
+			Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+			return -1;
+		}
 	}
 	else
 	{
-		sprintf (savename, "%s/%s.gip", com_savedir, level);
+		if (snprintf(savename, sizeof(savename), "%s/%s.gip", com_savedir, level) >= sizeof(savename))
+		{
+			Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+			return -1;
+		}
 
 		if (ClientsMode != 2 && ClientsMode != 3)
 			Con_Printf ("Loading game from %s...\n", savename);
@@ -954,7 +986,7 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode)
 	if (!f)
 	{
 		if (ClientsMode == 2)
-			Con_Printf ("ERROR: couldn't open.\n");
+			Con_Printf ("%s: ERROR: couldn't open savefile\n", __FUNCTION__);
 
 		return -1;
 	}
@@ -1125,12 +1157,12 @@ static void Host_Changelevel2_f (void)
 		return;
 	}
 
-	strcpy (level, Cmd_Argv(1));
+	Q_strlcpy (level, Cmd_Argv(1), sizeof(level));
 	if (Cmd_Argc() == 2)
 		startspot = NULL;
 	else
 	{
-		strcpy (_startspot, Cmd_Argv(2));
+		Q_strlcpy (_startspot, Cmd_Argv(2), sizeof(_startspot));
 		startspot = _startspot;
 	}
 
@@ -1170,7 +1202,7 @@ static void Host_Name_f (void)
 		newName = Cmd_Argv(1);
 	else
 		newName = Cmd_Args();
-	newName[15] = 0;
+	newName[15] = 0;	// client_t structure actually says name[32].
 
 	//this is for the fuckers who put braces in the name causing loadgame to crash.
 	pdest = strchr(newName,'{');
@@ -1369,16 +1401,13 @@ static void Host_Say(qboolean teamonly)
 
 // turn on color set 1
 	if (!fromServer)
-		sprintf (text, "%c%s: ", 1, save->name);
+		snprintf (text, sizeof(text), "%c%s: ", 1, save->name);
 	else
-		sprintf (text, "%c<%s> ", 1, hostname.string);
+		snprintf (text, sizeof(text), "%c<%s> ", 1, hostname.string);
 
-	j = sizeof(text) - 2 - strlen(text);  // -2 for /n and null terminator
-	if (strlen(p) > j)
-		p[j] = 0;
-
-	strcat (text, p);
-	strcat (text, "\n");
+	Q_strlcat (text, p, sizeof(text));
+	if (Q_strlcat (text, "\n", sizeof(text)) >= sizeof(text))
+		text[sizeof(text)-2] = '\n';
 
 	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
 	{
@@ -1424,8 +1453,8 @@ static void Host_Tell_f(void)
 	if (Cmd_Argc () < 3)
 		return;
 
-	strcpy(text, host_client->name);
-	strcat(text, ": ");
+	Q_strlcpy(text, host_client->name, sizeof(text));
+	Q_strlcat(text, ": ", sizeof(text));
 
 	p = Cmd_Args();
 
@@ -1437,12 +1466,9 @@ static void Host_Tell_f(void)
 	}
 
 // check length & truncate if necessary
-	j = sizeof(text) - 2 - strlen(text);  // -2 for /n and null terminator
-	if (strlen(p) > j)
-		p[j] = 0;
-
-	strcat (text, p);
-	strcat (text, "\n");
+	Q_strlcat (text, p, sizeof(text));
+	if (Q_strlcat (text, "\n", sizeof(text)) >= sizeof(text))
+		text[sizeof(text)-2] = '\n';
 
 	save = host_client;
 	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
@@ -1843,7 +1869,7 @@ static void Host_Create_f(void)
 
 		if (NumFound != 1)
 		{
-			sprintf(key_lines[edit_line],">create %s",func->s_name+pr_strings);
+			snprintf(key_lines[edit_line], MAXCMDLINE, ">create %s", func->s_name+pr_strings);
 			key_lines[edit_line][Diff+8] = 0;
 			key_linepos = strlen(key_lines[edit_line]);
 			return;
@@ -2298,6 +2324,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.51  2006/09/15 09:21:40  sezero
+ * made the MAXCMDLINE definition public through keys.h
+ *
  * Revision 1.50  2006/09/13 05:53:22  sezero
  * re-visited the includes, gathered all net includes into
  * the new net_sys.h, did a platform defines clean-up.
