@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.17 2006-06-15 09:31:53 sezero Exp $
+	$Id: snd_alsa.c,v 1.18 2006-09-15 09:18:41 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -223,7 +223,7 @@ qboolean S_ALSA_Init (void)
 
 	// don't mix less than this in mono samples:
 /*	err = hx2snd_pcm_hw_params_get_period_size (hw, 
-			(snd_pcm_uframes_t *) (&shm->submission_chunk), 0);
+			(snd_pcm_uframes_t *) (char *) (&shm->submission_chunk), 0);
 	ALSA_CHECK_ERR(err, "unable to get period size. %s\n", hx2snd_strerror (err));
 */
 	shm->submission_chunk = 1;
@@ -335,6 +335,9 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2006/06/15 09:31:53  sezero
+ * kept the same standart for alsa sound availablity in snd_sys
+ *
  * Revision 1.16  2006/05/20 12:38:01  sezero
  * cleaned up sound tryrates, etc. changed tryrates array to include
  * 48000, 24000, and 16000 speeds (this should help 48khz AC97 chips,
