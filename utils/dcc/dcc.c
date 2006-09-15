@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.25 2006-09-15 19:52:03 sezero Exp $
+	$Id: dcc.c,v 1.26 2006-09-15 19:52:58 sezero Exp $
 */
 
 
@@ -2024,9 +2024,14 @@ void DEC_ReadData (char *srcfile)
 {
 	dprograms_t	progs;
 	FILE*		h;
+	int			i;
 
 	h = SafeOpenRead (srcfile);
 	SafeRead (h, &progs, sizeof(progs));
+
+        // byte swap the header
+	for (i = 0; i < sizeof(progs)/4; i++)
+		((int *)&progs)[i] = LittleLong ( ((int *)&progs)[i] );
 
 	fseek (h, progs.ofs_strings, SEEK_SET);
 	strofs = progs.numstrings;
@@ -2051,6 +2056,46 @@ void DEC_ReadData (char *srcfile)
 	fseek (h, progs.ofs_globals, SEEK_SET);
 	numpr_globals = progs.numglobals;
 	SafeRead (h, pr_globals, numpr_globals*4);
+
+#if BYTE_ORDER == BIG_ENDIAN
+	// byte swap the lumps
+	for (i = 0; i < numstatements; i++)
+	{
+		statements[i].op = LittleShort(statements[i].op);
+		statements[i].a = LittleShort(statements[i].a);
+		statements[i].b = LittleShort(statements[i].b);
+		statements[i].c = LittleShort(statements[i].c);
+	}
+
+	for (i = 0; i < numfunctions; i++)
+	{
+		functions[i].first_statement = LittleLong (functions[i].first_statement);
+		functions[i].parm_start = LittleLong (functions[i].parm_start);
+		functions[i].s_name = LittleLong (functions[i].s_name);
+		functions[i].s_file = LittleLong (functions[i].s_file);
+		functions[i].numparms = LittleLong (functions[i].numparms);
+		functions[i].locals = LittleLong (functions[i].locals);
+	}
+
+	for (i = 0; i < numglobaldefs; i++)
+	{
+		globals[i].type = LittleShort (globals[i].type);
+		globals[i].ofs = LittleShort (globals[i].ofs);
+		globals[i].s_name = LittleLong (globals[i].s_name);
+	}
+
+	for (i = 0; i < numfielddefs; i++)
+	{
+		fields[i].type = LittleShort (fields[i].type);
+	//	if (fields[i].type & DEF_SAVEGLOBAL)
+	//		Error ("DEC_ReadData: pr_fielddefs[i].type & DEF_SAVEGLOBAL");
+		fields[i].ofs = LittleShort (fields[i].ofs);
+		fields[i].s_name = LittleLong (fields[i].s_name);
+	}
+
+	for (i = 0; i < numpr_globals; i++)
+		*(int *)&pr_globals[i] = LittleLong (*(int *)&pr_globals[i]);
+#endif	// BIG_ENDIAN
 
 	printf ("read data from %s:\n", srcfile);
 	printf ("total size is: %7i\n", Q_filelength(h));
