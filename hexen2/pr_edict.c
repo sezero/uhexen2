@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.26 2006-07-18 08:30:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.27 2006-09-15 20:02:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1199,22 +1199,54 @@ void PR_LoadProgs (void)
 	{
 		char	build[2048], *test;
 		char	mapname[MAX_QPATH], progname[MAX_OSPATH];
-		int			j;
+		int			j, k;
 
+		// Format of maplist.txt :
+		// Line #1 : <number of lines excluding this one>
+		// Line #2+: <map name><one space><prog filename>
 		fgets(build, sizeof(build), FH);
 		j = atol(build);
 		for (i = 0; i < j; i++)
 		{
+			k = 0;
+			memset (build, 0, sizeof(build));
 			test = fgets (build, sizeof(build), FH);
 			if (test)
 			{
-				build[strlen(build)-2] = 0;
+				// remove end-of-line characters
+				while (build[k])
+				{
+					if (build[k] == '\r' || build[k] == '\n')
+						build[k] = '\0';
+					// while we're here, replace tabs with spaces
+					if (build[k] == '\t')
+						build[k] = ' ';
+					k++;
+				}
+				// go to the last character
+				while (build[k] == 0 && k > 0)
+					k--;
+				// remove trailing spaces
+				while (k > 0)
+				{
+					if (build[k] == ' ')
+					{
+						build[k] = '\0';
+						k--;
+					}
+					else
+						break;
+				}
 				test = strchr(build, ' ');
 				if (test)
 				{
 					*test = 0;
 					strcpy(mapname, build);
-					strcpy(progname, test+1);
+					// in case someone uses more than one space
+					*test = ' ';
+					while (*test == ' ')
+						test++;
+					strcpy(progname, test);
 					if (Q_strcasecmp(mapname, sv.name) == 0)
 					{
 						strcpy(finalprogname, progname);
@@ -1376,6 +1408,9 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2006/07/18 08:30:18  sezero
+ * a few int -> size_t changes for filesize vars
+ *
  * Revision 1.25  2006/07/02 11:45:31  sezero
  * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
  * which stops vec3_origin usage in relevant calculations. renamed the Length

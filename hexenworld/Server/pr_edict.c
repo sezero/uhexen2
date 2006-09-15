@@ -1123,22 +1123,54 @@ void PR_LoadProgs (void)
 	{
 		char	build[2048], *test;
 		char	mapname[MAX_QPATH], progname[MAX_OSPATH];
-		int			j;
+		int			j, k;
 
+		// Format of maplist.txt :
+		// Line #1 : <number of lines excluding this one>
+		// Line #2+: <map name><one space><prog filename>
 		fgets(build, sizeof(build), FH);
 		j = atol(build);
 		for (i = 0; i < j; i++)
 		{
+			k = 0;
+			memset (build, 0, sizeof(build));
 			test = fgets (build, sizeof(build), FH);
 			if (test)
 			{
-				build[strlen(build)-2] = 0;
+				// remove end-of-line characters
+				while (build[k])
+				{
+					if (build[k] == '\r' || build[k] == '\n')
+						build[k] = '\0';
+					// while we're here, replace tabs with spaces
+					if (build[k] == '\t')
+						build[k] = ' ';
+					k++;
+				}
+				// go to the last character
+				while (build[k] == 0 && k > 0)
+					k--;
+				// remove trailing spaces
+				while (k > 0)
+				{
+					if (build[k] == ' ')
+					{
+						build[k] = '\0';
+						k--;
+					}
+					else
+						break;
+				}
 				test = strchr(build, ' ');
 				if (test)
 				{
 					*test = 0;
 					strcpy(mapname, build);
-					strcpy(progname, test+1);
+					// in case someone uses more than one space
+					*test = ' ';
+					while (*test == ' ')
+						test++;
+					strcpy(progname, test);
 					if (Q_strcasecmp(mapname, sv.name) == 0)
 					{
 						strcpy(finalprogname, progname);
