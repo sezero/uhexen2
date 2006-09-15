@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.53 2006-08-14 06:09:41 sezero Exp $
+	$Id: glquake.h,v 1.54 2006-09-15 12:03:18 sezero Exp $
 */
 
 
@@ -98,10 +98,11 @@ typedef struct cachepic_s
 	byte		padding[32];	// for appended glpic
 } cachepic_t;
 
+#define MAX_IDENTIFIER	64	// MAX_QPATH
 typedef struct
 {
 	GLuint		texnum;
-	char	identifier[64];
+	char	identifier[MAX_IDENTIFIER];
 	int		width, height;
 	qboolean	mipmap;
 //	unsigned short	crc;
@@ -389,6 +390,9 @@ extern	const char *gl_extensions;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.53  2006/08/14 06:09:41  sezero
+ * exported D_ClearOpenGLTextures() and R_InitParticleTexture()
+ *
  * Revision 1.52  2006/07/03 14:05:36  sezero
  * re-visited the GL data types, made them to be of GL types and solved
  * the signedness issues. completely removed the scrap allocation option.
