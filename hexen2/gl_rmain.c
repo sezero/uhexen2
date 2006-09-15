@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.49 2006-09-07 08:03:20 sezero Exp $
+	$Id: gl_rmain.c,v 1.50 2006-09-15 20:20:18 sezero Exp $
 */
 
 
@@ -906,7 +906,7 @@ static void R_DrawAliasModel (entity_t *e)
 
 		if (gl_extra_textures[currententity->skinnum-100] == GL_UNUSED_TEXTURE) // Need to load it in
 		{
-			sprintf(temp,"gfx/skin%d.lmp",currententity->skinnum);
+			snprintf (temp, sizeof(temp), "gfx/skin%d.lmp", currententity->skinnum);
 			stonepic = Draw_CachePic(temp);
 			gl = (glpic_t *)stonepic->data;
 			gl_extra_textures[currententity->skinnum-100] = gl->texnum;
@@ -1976,6 +1976,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.49  2006/09/07 08:03:20  sezero
+ * more GL_UNUSED_TEXTURE changes (gl_extra_textures is GLuint)
+ *
  * Revision 1.48  2006/07/20 19:47:23  sezero
  * fixed (actually worked-around) the light_level being
  * incorrectly set when we run with rgba lightmaps: one

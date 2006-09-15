@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.37 2006-09-07 08:03:21 sezero Exp $
+	$Id: gl_rmain.c,v 1.38 2006-09-15 20:20:18 sezero Exp $
 */
 
 
@@ -886,7 +886,7 @@ static void R_DrawAliasModel (entity_t *e)
 
 		if (gl_extra_textures[currententity->skinnum-100] == GL_UNUSED_TEXTURE) // Need to load it in
 		{
-			sprintf(temp,"gfx/skin%d.lmp",currententity->skinnum);
+			snprintf (temp, sizeof(temp), "gfx/skin%d.lmp", currententity->skinnum);
 			stonepic = Draw_CachePic(temp);
 			gl = (glpic_t *)stonepic->data;
 			gl_extra_textures[currententity->skinnum-100] = gl->texnum;
