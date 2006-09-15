@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.1 2006-06-25 12:57:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.2 2006-09-15 09:19:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -76,7 +76,7 @@ static char		*findpattern;
 
 char *Sys_FindFirstFile (char *path, char *pattern)
 {
-	int	pattern_len;
+	size_t	pattern_len;
 
 	if (finddir)
 		Sys_Error ("Sys_FindFirst without FindClose");

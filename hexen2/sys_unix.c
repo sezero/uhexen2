@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.60 2006-06-29 23:02:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.61 2006-09-15 09:19:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -81,7 +81,7 @@ static char		*findpattern;
 
 char *Sys_FindFirstFile (char *path, char *pattern)
 {
-	int	pattern_len;
+	size_t	pattern_len;
 
 	if (finddir)
 		Sys_Error ("Sys_FindFirst without FindClose");
@@ -555,6 +555,11 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.60  2006/06/29 23:02:02  sezero
+ * cleaned up some things in the build system. added no sound and
+ * no cdaudio options. removed static build targets from hexen2
+ * and hexenworld makefiles. misc small things.
+ *
  * Revision 1.59  2006/06/25 10:21:04  sezero
  * misc clean-ups and prepare for merging a dedicated server
  *

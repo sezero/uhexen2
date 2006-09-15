@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.20 2006-06-25 10:21:05 sezero Exp $
+	$Id: sys_unix.c,v 1.21 2006-09-15 09:19:24 sezero Exp $
 
 	Unix system interface code
 */
@@ -96,7 +96,7 @@ static char		*findpattern;
 
 char *Sys_FindFirstFile (char *path, char *pattern)
 {
-	int	pattern_len;
+	size_t	pattern_len;
 
 	if (finddir)
 		Sys_Error ("Sys_FindFirst without FindClose");
