@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.2 2006-09-11 11:21:16 sezero Exp $
+	$Id: midi_mac.c,v 1.3 2006-09-15 21:43:31 sezero Exp $
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -116,6 +116,7 @@ static void MIDI_Loop_f (void)
 qboolean MIDI_Init (void)
 {
 	OSErr		theErr;
+	char	mididir[MAX_OSPATH];
 
 	Con_Printf("MIDI_Init: ");
 
@@ -134,7 +135,10 @@ qboolean MIDI_Init (void)
 		return 0;
 	}
 
-	Sys_mkdir (va("%s/.midi", com_userdir));
+	Con_Printf("Started QuickTime midi\n");
+
+	Q_snprintf_err(mididir, sizeof(mididir), "%s/.midi", com_userdir);
+	Sys_mkdir (mididir);
 
 	bPaused = false;
 	bLooped = true;
@@ -145,7 +149,6 @@ qboolean MIDI_Init (void)
 	Cmd_AddCommand ("midi_pause", MIDI_Pause_f);
 	Cmd_AddCommand ("midi_loop", MIDI_Loop_f);
 
-	Con_Printf("Started QuickTime midi\n");
 	return true;
 }
 
@@ -163,7 +166,6 @@ void MIDI_Play (char *Name)
 {
 	void	*midiData;
 	char	midiName[MAX_OSPATH];
-	int	size;
 	OSErr	err;
 	FSSpec	midiSpec;
 	FSRef	midiRef;
@@ -178,33 +180,22 @@ void MIDI_Play (char *Name)
 		return;
 	}
 
-	// if a movie is already playing, kill it
-	MIDI_Stop ();
+	MIDI_Stop();
 
-	sprintf (midiName, "midi/%s.mid", Name);
-	midiData = COM_LoadHunkFile (midiName);
-	size = com_filesize;
-	if (!midiData)
-	{
-		Con_Printf("musicfile midi/%s.mid not found\n", Name);
-		return;
-	}
-
-	sprintf (midiName, "%s/.midi/%s.mid", com_userdir, Name);
+	// Note that midi/ is the standart quake search path, but
+	// .midi/ with the leading dot is the path in the userdir
+	snprintf (midiName, sizeof(midiName), "%s/.midi/%s.mid", com_userdir, Name);
 	if (access(midiName, R_OK) != 0)
 	{
-		Sys_Printf("Extracting file midi/%s.mid ... ",Name);
-		if (COM_WriteFile (va(".midi/%s.mid", Name), midiData, size))
+		Sys_Printf("Extracting file midi/%s.mid\n", Name);
+		midiData = COM_LoadHunkFile (va("midi/%s.mid", Name));
+		if (!midiData)
 		{
-			Sys_Printf("Failed\n");
+			Con_Printf("musicfile midi/%s.mid not found\n", Name);
 			return;
 		}
-		if (access(midiName, R_OK) != 0)
-		{
-			Sys_Printf("Failed\n");
+		if (COM_WriteFile (va(".midi/%s.mid", Name), midiData, com_filesize))
 			return;
-		}
-		Sys_Printf("OK\n");
 	}
 
 	// converting path to FSSpec. found in CarbonCocoaIntegration.pdf:

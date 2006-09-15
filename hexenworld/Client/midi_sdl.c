@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.22 2006-09-11 11:21:18 sezero Exp $
+	$Id: midi_sdl.c,v 1.23 2006-09-15 21:43:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -141,7 +141,7 @@ bad_version:
 	}
 	Con_Printf("found.\n");
 
-	sprintf (mididir, "%s/.midi", com_userdir);
+	Q_snprintf_err(mididir, sizeof(mididir), "%s/.midi", com_userdir);
 	Sys_mkdir (mididir);
 
 	// Try initing the audio subsys if it hasn't been already
@@ -189,7 +189,8 @@ bad_version:
 
 void MIDI_Play(char *Name)
 {
-	char *Data;
+	void	*midiData;
+	char	midiName[MAX_OSPATH];
 
 	if (!bMidiInited)	//don't try to play if there is no midi
 		return;
@@ -204,27 +205,29 @@ void MIDI_Play(char *Name)
 
 	// Note that midi/ is the standart quake search path, but
 	// .midi/ with the leading dot is the path in the userdir
-	if (access(va("%s/.midi/%s.mid", com_userdir, Name), R_OK) != 0)
+	snprintf (midiName, sizeof(midiName), "%s/.midi/%s.mid", com_userdir, Name);
+	if (access(midiName, R_OK) != 0)
 	{
-		Sys_Printf("File midi/%s.mid needs to be extracted\n",Name);
-		Data = (char *)COM_LoadHunkFile(va("midi/%s.mid", Name));
-		if (!Data)
+		Sys_Printf("Extracting file midi/%s.mid\n", Name);
+		midiData = COM_LoadHunkFile (va("midi/%s.mid", Name));
+		if (!midiData)
 		{
 			Con_Printf("musicfile midi/%s.mid not found\n", Name);
 			return;
 		}
-		if (COM_WriteFile (va(".midi/%s.mid", Name), (void *)Data, com_filesize))
+		if (COM_WriteFile (va(".midi/%s.mid", Name), midiData, com_filesize))
 			return;
 	}
-	music = Mix_LoadMUS(va("%s/.midi/%s.mid", com_userdir, Name));
+
+	music = Mix_LoadMUS(midiName);
 	if ( music == NULL )
 	{
-		Sys_Printf("Couldn't load %s/.midi/%s.mid: %s\n", com_userdir, Name, SDL_GetError());
+		Sys_Printf("Couldn't load %s: %s\n", midiName, SDL_GetError());
 	}
 	else
 	{
 		bFileOpen = 1;
-		Con_Printf("Playing midi file midi/%s.mid\n",Name);
+		Con_Printf ("Started midi music %s\n", Name);
 		Mix_FadeInMusic(music,0,2000);
 		bPlaying = 1;
 	}
@@ -293,6 +296,9 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2006/09/11 11:21:18  sezero
+ * added human readable defines for the MIDI_Pause modes
+ *
  * Revision 1.21  2006/06/29 23:02:02  sezero
  * cleaned up some things in the build system. added no sound and
  * no cdaudio options. removed static build targets from hexen2
