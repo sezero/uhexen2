@@ -203,7 +203,7 @@ void Con_Init (void)
 {
 	char	temp[MAX_OSPATH];
 
-	snprintf (temp, sizeof(temp), "%s/%s", com_userdir, DEBUGLOG_FILENAME);
+	Q_snprintf_err(temp, sizeof(temp), "%s/%s", com_userdir, DEBUGLOG_FILENAME);
 	con_debuglog = COM_CheckParm("-condebug");
 	if (con_debuglog)
 		unlink (temp);
@@ -493,15 +493,15 @@ void Con_ShowList (int cnt, const char **list)
 			s = list[j * rows + i];
 			len = strlen(s);
 
-			strcat(line, s);
+			Q_strlcat(line, s, con_linewidth+1);
 			if (j < cols - 1)
 			{
 				while (len < max_len)
 				{
-					strcat(line, " ");
+					Q_strlcat(line, " ", con_linewidth+1);
 					len++;
 				}
-				strcat(line, "  ");
+				Q_strlcat(line, "  ", con_linewidth+1);
 			}
 		}
 
@@ -538,7 +538,8 @@ static void Con_DrawInput (void)
 	if (key_dest != key_console && !con_forcedup)
 		return;		// don't draw anything
 
-	text = strcpy(editlinecopy, key_lines[edit_line]);
+	Q_strlcpy(editlinecopy, key_lines[edit_line], sizeof(editlinecopy));
+	text = editlinecopy;
 
 	y = strlen(text);
 

@@ -471,15 +471,15 @@ void Con_ShowList (int cnt, const char **list)
 			s = list[j * rows + i];
 			len = strlen(s);
 
-			strcat(line, s);
+			Q_strlcat(line, s, con_linewidth+1);
 			if (j < cols - 1)
 			{
 				while (len < max_len)
 				{
-					strcat(line, " ");
+					Q_strlcat(line, " ", con_linewidth+1);
 					len++;
 				}
-				strcat(line, "  ");
+				Q_strlcat(line, "  ", con_linewidth+1);
 			}
 		}
 
@@ -516,7 +516,8 @@ static void Con_DrawInput (void)
 	if (key_dest != key_console && cls.state == ca_active)
 		return;		// don't draw anything (always draw if not active)
 
-	text = strcpy(editlinecopy, key_lines[edit_line]);
+	Q_strlcpy(editlinecopy, key_lines[edit_line], sizeof(editlinecopy));
+	text = editlinecopy;
 
 	y = strlen(text);
 
