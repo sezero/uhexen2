@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.70 2006-09-15 09:48:35 sezero Exp $
+	$Id: common.c,v 1.71 2006-09-16 13:18:12 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -723,7 +723,7 @@ char *COM_SkipPath (char *pathname)
 	last = pathname;
 	while (*pathname)
 	{
-		if (*pathname=='/')
+		if (*pathname == '/')
 			last = pathname+1;
 		pathname++;
 	}
@@ -757,7 +757,7 @@ char *COM_FileExtension (char *in)
 	if (!*in)
 		return "";
 	in++;
-	for (i=0 ; i<7 && *in ; i++,in++)
+	for (i = 0; i < 7 && *in; i++, in++)
 		exten[i] = *in;
 	exten[i] = 0;
 	return exten;
@@ -861,7 +861,7 @@ skipwhite:
 	}
 
 // skip // comments
-	if (c=='/' && data[1] == '/')
+	if (c == '/' && data[1] == '/')
 	{
 		while (*data && *data != '\n')
 			data++;
@@ -875,7 +875,7 @@ skipwhite:
 		while (1)
 		{
 			c = *data++;
-			if (c=='\"' || !c)
+			if (c == '\"' || !c)
 			{
 				com_token[len] = 0;
 				return data;
@@ -886,7 +886,7 @@ skipwhite:
 	}
 
 // parse single characters
-/*	if (c=='{' || c=='}'|| c==')'|| c=='(' || c=='\'' || c==':')
+/*	if (c == '{' || c == '}' || c == ')' || c == '(' || c == '\'' || c == ':')
 	{
 		com_token[len] = c;
 		len++;
@@ -902,9 +902,9 @@ skipwhite:
 		len++;
 		c = *data;
 
-//		if (c=='{' || c=='}'|| c==')'|| c=='(' || c=='\'' || c==':')
+//		if (c == '{' || c == '}' || c == ')' || c == '(' || c == '\'' || c == ':')
 //			break;
-	} while (c>32);
+	} while (c > 32);
 
 	com_token[len] = 0;
 	return data;
@@ -923,7 +923,7 @@ int COM_CheckParm (char *parm)
 {
 	int		i;
 
-	for (i=1 ; i<com_argc ; i++)
+	for (i = 1; i < com_argc; i++)
 	{
 		if (!com_argv[i])
 			continue;		// NEXTSTEP sometimes clears appkit vars.
@@ -956,7 +956,7 @@ void COM_CheckRegistered (void)
 	fread (check, 1, sizeof(check), h);
 	fclose (h);
 
-	for (i=0 ; i<128 ; i++)
+	for (i = 0; i < 128; i++)
 		if (pop[i] != (unsigned short)BigShort (check[i]))
 			Sys_Error ("Corrupted data file.");
 
@@ -981,7 +981,7 @@ void COM_InitArgv (int argc, char **argv)
 // reconstitute the command line for the cmdline console command
 	n = 0;
 
-	for (j=0 ; (j<MAX_NUM_ARGVS) && (j< argc) ; j++)
+	for (j = 0; (j < MAX_NUM_ARGVS) && (j < argc); j++)
 	{
 		i = 0;
 
@@ -1000,8 +1000,7 @@ void COM_InitArgv (int argc, char **argv)
 
 	safe = false;
 
-	for (com_argc=0 ; (com_argc<MAX_NUM_ARGVS) && (com_argc < argc) ;
-		 com_argc++)
+	for (com_argc = 0; (com_argc < MAX_NUM_ARGVS) && (com_argc < argc); com_argc++)
 	{
 		largv[com_argc] = argv[com_argc];
 		if (!strcmp ("-safe", argv[com_argc]))
@@ -1012,7 +1011,7 @@ void COM_InitArgv (int argc, char **argv)
 	{
 	// force all the safe-mode switches. Note that we reserved extra space in
 	// case we need to add these, so we don't need an overflow check
-		for (i=0 ; i<NUM_SAFE_ARGVS ; i++)
+		for (i = 0; i < NUM_SAFE_ARGVS; i++)
 		{
 			largv[com_argc] = safeargvs[i];
 			com_argc++;
@@ -1088,7 +1087,7 @@ int memsearch (byte *start, int count, int search)
 {
 	int		i;
 
-	for (i=0 ; i<count ; i++)
+	for (i = 0; i < count; i++)
 		if (start[i] == search)
 			return i;
 	return -1;
@@ -1469,13 +1468,13 @@ size_t COM_FOpenFile (char *filename, FILE **file, qboolean override_pack)
 		{
 		// look through all the pak file elements
 			pak = search->pack;
-			for (i=0 ; i<pak->numfiles ; i++)
+			for (i = 0; i < pak->numfiles; i++)
 				if (!strcmp (pak->files[i].name, filename))
 				{	// found it!
 					// open a new file on the pakfile
 					*file = fopen (pak->filename, "rb");
 					if (!*file)
-						Sys_Error ("Couldn't reopen %s", pak->filename);	
+						Sys_Error ("Couldn't reopen %s", pak->filename);
 					fseek (*file, pak->files[i].filepos, SEEK_SET);
 					com_filesize = (size_t) pak->files[i].filelen;
 					file_from_pak = 1;
@@ -1693,7 +1692,7 @@ static pack_t *COM_LoadPackFile (char *packfile, int paknum, qboolean base_fs)
 
 // crc the directory
 	CRC_Init (&crc);
-	for (i=0 ; i<header.dirlen ; i++)
+	for (i = 0; i < header.dirlen; i++)
 		CRC_ProcessByte (&crc, ((byte *)info)[i]);
 
 // check for modifications
@@ -1767,7 +1766,7 @@ static pack_t *COM_LoadPackFile (char *packfile, int paknum, qboolean base_fs)
 	}
 
 // parse the directory
-	for (i=0 ; i<numpackfiles ; i++)
+	for (i = 0; i < numpackfiles; i++)
 	{
 		strcpy (newfiles[i].name, info[i].name);
 		newfiles[i].filepos = LittleLong(info[i].filepos);
@@ -1818,7 +1817,7 @@ static void COM_AddGameDirectory (char *dir, qboolean base_fs)
 #ifdef PLATFORM_UNIX
 add_pakfile:
 #endif
-	for (i=0 ; i < 10; i++)
+	for (i = 0; i < 10; i++)
 	{
 		if (been_here)
 		{
@@ -1981,7 +1980,7 @@ void COM_Gamedir (char *dir)
 #ifdef PLATFORM_UNIX
 add_pakfiles:
 #endif
-	for (i=0 ; i < 10 ; i++)
+	for (i = 0; i < 10; i++)
 	{
 		if (been_here)
 		{
@@ -2548,7 +2547,8 @@ void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
 		c = (unsigned char)*v++;
 #ifndef SERVERONLY
 		// client only allows highbits on name
-		if (Q_strcasecmp(key, "name") != 0) {
+		if (Q_strcasecmp(key, "name") != 0)
+		{
 			c &= 127;
 			if (c < 32 || c > 127)
 				continue;
@@ -2557,7 +2557,8 @@ void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
 				c = tolower(c);
 		}
 #else
-		if (!sv_highchars.value) {
+		if (!sv_highchars.value)
+		{
 			c &= 127;
 			if (c < 32 || c > 127)
 				continue;
