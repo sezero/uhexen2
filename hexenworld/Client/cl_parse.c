@@ -155,7 +155,7 @@ qboolean CL_CheckOrDownloadFile (char *filename)
 	if (cls.demoplayback)
 		return true;
 
-	strcpy (cls.downloadname, filename);
+	Q_strlcpy (cls.downloadname, filename, MAX_OSPATH);
 	Con_Printf ("Downloading %s...\n", cls.downloadname);
 
 	// download to a temp name, and only rename
@@ -333,18 +333,21 @@ static void CL_ParseDownload (void)
 	// open the file if not opened yet
 	if (!cls.download)
 	{
-#ifdef _WIN32
+#if 0
 		if (strncmp(cls.downloadtempname,"skins/",6))
 			sprintf (name, "%s/%s", com_gamedir, cls.downloadtempname);
 		else
 			sprintf (name, "hw/%s", cls.downloadtempname);
-#else
-	// UNIX: download files to com_userdir
-	// Do I really need to care more about skins like above?..
-		sprintf (name, "%s/%s", com_userdir, cls.downloadtempname);
 #endif
-
-		COM_CreatePath (name);
+	// Do I really need to care more about skins like above?..
+		snprintf (name, sizeof(name), "%s/%s", com_userdir, cls.downloadtempname);
+		if ( COM_CreatePath(name) )
+		{
+			msg_readcount += size;
+			Con_Printf ("Unable to create directory for downloading %s\n", cls.downloadtempname);
+			CL_RequestNextDownload ();
+			return;
+		}
 
 		cls.download = fopen (name, "wb");
 		if (!cls.download)
@@ -378,17 +381,15 @@ static void CL_ParseDownload (void)
 	}
 	else
 	{
+		// rename the temp file to it's final name
 		char	oldn[MAX_OSPATH];
 		char	newn[MAX_OSPATH];
 
-#if 0
-		Con_Printf ("100%%\n");
-#endif
-
 		fclose (cls.download);
+		cls.download = NULL;
+		cls.downloadpercent = 0;
 
-		// rename the temp file to it's final name
-#ifdef _WIN32
+#if 0
 		if (strncmp(cls.downloadtempname,"skins/",6))
 		{
 			sprintf (oldn, "%s/%s", com_gamedir, cls.downloadtempname);
@@ -399,21 +400,15 @@ static void CL_ParseDownload (void)
 			sprintf (oldn, "hw/%s", cls.downloadtempname);
 			sprintf (newn, "hw/%s", cls.downloadname);
 		}
-#else
-	// UNIX: download files to com_userdir
-	// Do I really need to care more about skins like above?..
-		sprintf (oldn, "%s/%s", com_userdir, cls.downloadtempname);
-		sprintf (newn, "%s/%s", com_userdir, cls.downloadname);
 #endif
+	// Do I really need to care more about skins like above?..
+		snprintf (oldn, sizeof(oldn), "%s/%s", com_userdir, cls.downloadtempname);
+		snprintf (newn, sizeof(newn), "%s/%s", com_userdir, cls.downloadname);
 		r = rename (oldn, newn);
 		if (r)
 			Con_Printf ("failed to rename.\n");
 
-		cls.download = NULL;
-		cls.downloadpercent = 0;
-
 		// get another file if needed
-
 		CL_RequestNextDownload ();
 	}
 }

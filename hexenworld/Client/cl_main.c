@@ -880,6 +880,8 @@ CL_Download_f
 */
 static void CL_Download_f (void)
 {
+	char		tmp[MAX_OSPATH];
+
 	if (cls.state == ca_disconnected)
 	{
 		Con_Printf ("Must be connected.\n");
@@ -897,13 +899,29 @@ static void CL_Download_f (void)
 		Con_Printf ("Relative pathnames are not allowed.\n");
 		return;
 	}
-	if (snprintf (cls.downloadname, MAX_OSPATH, "%s/%s", com_userdir, Cmd_Argv(1)) >= MAX_OSPATH)
+
+	if (snprintf (tmp, sizeof(tmp), "%s/%s", com_userdir, Cmd_Argv(1)) >= MAX_OSPATH)
 	{
 		Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
 		return;
 	}
-	COM_CreatePath (cls.downloadname);
-	cls.download = fopen (cls.downloadname, "wb");
+
+	if ( COM_CreatePath(tmp) )
+	{
+		Con_Printf ("Unable to create directory for downloading %s\n", Cmd_Argv(1));
+		return;
+	}
+
+	cls.download = fopen (tmp, "wb");
+	if (!cls.download)
+	{
+		Con_Printf ("Unable to create file for downloading %s\n", Cmd_Argv(1));
+		return;
+	}
+
+	// don't use the full user path in order to avoid rename failed messages
+	Q_strlcpy (cls.downloadname, Cmd_Argv(1), MAX_OSPATH);
+	Q_strlcpy (cls.downloadtempname, Cmd_Argv(1), MAX_OSPATH);
 	cls.downloadtype = dl_single;
 
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);

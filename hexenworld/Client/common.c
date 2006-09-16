@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.71 2006-09-16 13:18:12 sezero Exp $
+	$Id: common.c,v 1.72 2006-09-16 15:29:09 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1161,32 +1161,16 @@ static searchpath_t	*com_base_searchpaths;	// without gamedirs
 COM_filelength
 ================
 */
-static int COM_filelength (FILE *f)
+static size_t COM_filelength (FILE *f)
 {
-	int		pos;
-	int		end;
+	long		pos, end;
 
 	pos = ftell (f);
 	fseek (f, 0, SEEK_END);
 	end = ftell (f);
 	fseek (f, pos, SEEK_SET);
 
-	return end;
-}
-
-static int COM_FileOpenRead (char *path, FILE **hndl)
-{
-	FILE	*f;
-
-	f = fopen(path, "rb");
-	if (!f)
-	{
-		*hndl = NULL;
-		return -1;
-	}
-	*hndl = f;
-
-	return COM_filelength(f);
+	return (size_t)end;
 }
 
 /*
@@ -1225,7 +1209,11 @@ int COM_WriteFile (char *filename, void *data, size_t len)
 	char	name[MAX_OSPATH];
 	size_t	size;
 
-	snprintf (name, sizeof(name), "%s/%s", com_userdir, filename);
+	if (snprintf(name, sizeof(name), "%s/%s", com_userdir, filename) >= sizeof(name))
+	{
+		Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+		return 1;
+	}
 
 	f = fopen (name, "wb");
 	if (!f)
@@ -1249,23 +1237,51 @@ int COM_WriteFile (char *filename, void *data, size_t len)
 /*
 ============
 COM_CreatePath
-
+Creates directory under user's path,
+making parent directories as needed.
+Returns 0 on success, non-zero on error.
 Only used for CopyFile and download
 ============
 */
-void COM_CreatePath (char *path)
+int COM_CreatePath (char *path)
 {
 	char	*ofs;
+	int		error_state = 0;
+	size_t		offset;
 
-	for (ofs = path+1 ; *ofs ; ofs++)
+	if (!path)
+	{
+		Con_Printf ("%s: no path!\n", __FUNCTION__);
+		return 1;
+	}
+
+	if (strstr(path, ".."))
+	{
+		Con_Printf ("Relative pathnames are not allowed.\n");
+		return 1;
+	}
+
+	ofs = host_parms.userdir;
+	if (strstr(path, ofs) != path)
+	{
+		Sys_Error ("Attempted to create a directory out of user's path");
+		return 1;
+	}
+
+	offset = strlen(ofs);
+	for (ofs = path+offset ; *ofs ; ofs++)
 	{
 		if (*ofs == '/')
 		{	// create the directory
 			*ofs = 0;
-			Sys_mkdir (path);
+			error_state = Sys_mkdir (path);
 			*ofs = '/';
+			if (error_state)
+				break;
 		}
 	}
+
+	return error_state;
 }
 
 
@@ -1280,16 +1296,33 @@ needed. Used for saving the game. Returns 0 on success, non-zero on error.
 int COM_CopyFile (char *netpath, char *cachepath)
 {
 	FILE	*in, *out;
-	int		err = 0, remaining, count;
+	int		err = 0;
+	size_t		remaining, count;
 	char	buf[4096];
 
-	remaining = COM_FileOpenRead (netpath, &in);
-	if (remaining == -1)
+	in = fopen (netpath, "rb");
+	if (!in)
+	{
+		Con_Printf ("%s: unable to open %s\n", netpath, __FUNCTION__);
 		return 1;
-	COM_CreatePath (cachepath);	// create directories up to the cache file
+	}
+	remaining = COM_filelength(in);
+
+	// create directories up to the cache file
+	if (COM_CreatePath (cachepath))
+	{
+		Con_Printf ("%s: unable to create directory\n", __FUNCTION__);
+		fclose (in);
+		return 1;
+	}
+
 	out = fopen(cachepath, "wb");
 	if (!out)
+	{
+		Con_Printf ("%s: unable to create %s\n", cachepath, __FUNCTION__);
+		fclose (in);
 		return 1;
+	}
 
 	while (remaining)
 	{
@@ -1365,9 +1398,7 @@ scanmaps:
 						if (!dupl)
 						{
 							maplist[cnt] = malloc (len);
-							strncpy ((char *)maplist[cnt] , pak->files[i].name + 5, len);
-							// null terminate new string
-							maplist[cnt][len - 1] = 0;
+							Q_strlcpy ((char *)maplist[cnt] , pak->files[i].name + 5, len);
 							cnt++;
 						}
 					}
@@ -1378,8 +1409,8 @@ scanmaps:
 		}
 		else
 		{	// element is a filename
-			snprintf (mappath, MAX_OSPATH, search->filename);
-			strcat (mappath, "/maps");
+			snprintf (mappath, sizeof(mappath), search->filename);
+			Q_strlcat (mappath, "/maps", sizeof(mappath));
 			findname = Sys_FindFirstFile (mappath, "*.bsp");
 			while (findname)
 			{
@@ -1401,8 +1432,7 @@ scanmaps:
 					if (!dupl)
 					{
 						maplist[cnt] = malloc (len);
-						strncpy (maplist[cnt], findname, len);
-						maplist[cnt][len - 1] = 0;
+						Q_strlcpy (maplist[cnt], findname, len);
 						cnt++;
 					}
 				}
@@ -1492,12 +1522,14 @@ size_t COM_FOpenFile (char *filename, FILE **file, qboolean override_pack)
 			}
 #endif	// !H2W
 
-			sprintf (netpath, "%s/%s",search->filename, filename);
+			snprintf (netpath, sizeof(netpath), "%s/%s",search->filename, filename);
 			if (access(netpath, R_OK) == -1)
 				continue;
 
 			*file = fopen (netpath, "rb");
-			return (size_t) COM_filelength (*file);
+			if (!*file)
+				Sys_Error ("Couldn't reopen %s", netpath);
+			return COM_filelength (*file);
 		}
 	}
 
@@ -1669,7 +1701,8 @@ static pack_t *COM_LoadPackFile (char *packfile, int paknum, qboolean base_fs)
 	dpackfile_t		info[MAX_FILES_IN_PACK];
 	unsigned short		crc;
 
-	if (COM_FileOpenRead (packfile, &packhandle) == -1)
+	packhandle = fopen (packfile, "rb");
+	if (!packhandle)
 		return NULL;
 
 	fread (&header, 1, sizeof(header), packhandle);
@@ -1768,13 +1801,13 @@ static pack_t *COM_LoadPackFile (char *packfile, int paknum, qboolean base_fs)
 // parse the directory
 	for (i = 0; i < numpackfiles; i++)
 	{
-		strcpy (newfiles[i].name, info[i].name);
+		Q_strlcpy_err(newfiles[i].name, info[i].name, MAX_QPATH);
 		newfiles[i].filepos = LittleLong(info[i].filepos);
 		newfiles[i].filelen = LittleLong(info[i].filelen);
 	}
 
 	pack = Z_Malloc (sizeof (pack_t));
-	strcpy (pack->filename, packfile);
+	Q_strlcpy_err(pack->filename, packfile, MAX_OSPATH);
 	pack->handle = packhandle;
 	pack->numfiles = numpackfiles;
 	pack->files = newfiles;
@@ -1803,13 +1836,13 @@ static void COM_AddGameDirectory (char *dir, qboolean base_fs)
 
 	if ((p = strrchr(dir, '/')) != NULL)
 	{
-		strcpy(gamedirfile, ++p);
+		Q_strlcpy_err(gamedirfile, ++p, sizeof(gamedirfile));
 	}
 	else
 	{
-		strcpy(gamedirfile, p);
+		Q_strlcpy_err(gamedirfile, p, sizeof(gamedirfile));
 	}
-	strcpy (com_gamedir, dir);
+	Q_strlcpy_err(com_gamedir, dir, sizeof(com_gamedir));
 
 //
 // add any pak files in the format pak0.pak pak1.pak, ...
@@ -1821,11 +1854,11 @@ add_pakfile:
 	{
 		if (been_here)
 		{
-			sprintf (pakfile, "%s/pak%i.pak", com_userdir, i);
+			Q_snprintf_err(pakfile, sizeof(pakfile), "%s/pak%i.pak", com_userdir, i);
 		}
 		else
 		{
-			sprintf (pakfile, "%s/pak%i.pak", dir, i);
+			Q_snprintf_err(pakfile, sizeof(pakfile), "%s/pak%i.pak", dir, i);
 		}
 		pak = COM_LoadPackFile (pakfile, i, base_fs);
 		if (!pak)
@@ -1846,11 +1879,11 @@ add_pakfile:
 	search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
 	if (been_here)
 	{
-		strcpy (search->filename, com_userdir);
+		Q_strlcpy_err(search->filename, com_userdir, MAX_OSPATH);
 	}
 	else
 	{
-		strcpy (search->filename, dir);
+		Q_strlcpy_err(search->filename, dir, MAX_OSPATH);
 	}
 	search->next = com_searchpaths;
 	com_searchpaths = search;
@@ -1897,9 +1930,9 @@ void COM_Gamedir (char *dir)
 		return;
 	}
 
-	if (!strcmp(gamedirfile, dir))
+	if (!Q_strcasecmp(gamedirfile, dir))
 		return;		// still the same
-	strcpy (gamedirfile, dir);
+	Q_strlcpy_err(gamedirfile, dir, sizeof(gamedirfile));
 
 	// FIXME: Should I check for directory's existence ??
 
@@ -1928,7 +1961,7 @@ void COM_Gamedir (char *dir)
 	Cache_Flush ();
 
 // check for reserved gamedirs
-	if (!strcmp(dir,"hw"))
+	if (!Q_strcasecmp(dir, "hw"))
 	{
 #if !defined(H2W)
 	// hw is reserved for hexenworld only. hexen2 shouldn't use it
@@ -1938,21 +1971,21 @@ void COM_Gamedir (char *dir)
 	// that we reached here means the hw server decided to abandon
 	// whatever the previous mod it was running and went back to
 	// pure hw. weird.. do as he wishes anyway and adjust our variables.
-		sprintf (com_gamedir, "%s/hw", com_basedir);
+		Q_snprintf_err(com_gamedir, sizeof(com_gamedir), "%s/hw", com_basedir);
 #    ifdef PLATFORM_UNIX
-		sprintf (com_userdir, "%s/hw", host_parms.userdir);
+		Q_snprintf_err(com_userdir, sizeof(com_userdir), "%s/hw", host_parms.userdir);
 #    else
-		sprintf (com_userdir, com_gamedir);
+		Q_strlcpy_err (com_userdir, com_gamedir, sizeof(com_userdir));
 #    endif
 #    if defined(SERVERONLY)
 	// change the *gamedir serverinfo properly
 		Info_SetValueForStarKey (svs.info, "*gamedir", "hw", MAX_SERVERINFO_STRING);
 #    endif
-		sprintf (com_savedir, com_userdir);
+		Q_strlcpy_err (com_savedir, com_userdir, sizeof(com_savedir));
 #endif
 		return;
 	}
-	else if (!strcmp(dir, "portals"))
+	else if (!Q_strcasecmp(dir, "portals"))
 	{
 	// no hw server is supposed to set gamedir to portals
 	// and hw must be above portals in hierarchy. this is
@@ -1960,7 +1993,7 @@ void COM_Gamedir (char *dir)
 	// as for hexen2, it cannot reach here.
 		return;
 	}
-	else if (!strcmp(dir,"data1"))
+	else if (!Q_strcasecmp(dir, "data1"))
 	{
 	// another hypothetical case: no hw mod is supposed to
 	// do this and hw must stay above data1 in hierarchy.
@@ -1971,7 +2004,7 @@ void COM_Gamedir (char *dir)
 	else
 	{
 	// a new gamedir: let's set it here.
-		sprintf (com_gamedir, "%s/%s", com_basedir, dir);
+		Q_snprintf_err(com_gamedir, sizeof(com_gamedir), "%s/%s", com_basedir, dir);
 	}
 
 //
@@ -1984,11 +2017,11 @@ add_pakfiles:
 	{
 		if (been_here)
 		{
-			sprintf (pakfile, "%s/pak%i.pak", com_userdir, i);
+			Q_snprintf_err(pakfile, sizeof(pakfile), "%s/pak%i.pak", com_userdir, i);
 		}
 		else
 		{
-			sprintf (pakfile, "%s/pak%i.pak", com_gamedir, i);
+			Q_snprintf_err(pakfile, sizeof(pakfile), "%s/pak%i.pak", com_gamedir, i);
 		}
 		pak = COM_LoadPackFile (pakfile, i, false);
 		if (!pak)
@@ -2006,11 +2039,11 @@ add_pakfiles:
 	search = Z_Malloc (sizeof(searchpath_t));
 	if (been_here)
 	{
-		strcpy (search->filename, com_userdir);
+		Q_strlcpy_err(search->filename, com_userdir, MAX_OSPATH);
 	}
 	else
 	{
-		strcpy (search->filename, com_gamedir);
+		Q_strlcpy_err(search->filename, com_gamedir, MAX_OSPATH);
 	}
 	search->next = com_searchpaths;
 	com_searchpaths = search;
@@ -2026,15 +2059,15 @@ add_pakfiles:
 
 // add user's directory to the search path
 #ifdef PLATFORM_UNIX
-	sprintf (com_userdir, "%s/%s", host_parms.userdir, dir);
+	Q_snprintf_err(com_userdir, sizeof(com_userdir), "%s/%s", host_parms.userdir, dir);
 	Sys_mkdir (com_userdir);
-	sprintf (com_savedir, com_userdir);
+	Q_strlcpy_err (com_savedir, com_userdir, sizeof(com_savedir));
 // add any pak files in the user's directory
 	if (strcmp(com_gamedir, com_userdir))
 		goto add_pakfiles;
 #else
-	sprintf (com_userdir, com_gamedir);
-	sprintf (com_savedir, com_userdir);
+	Q_strlcpy_err (com_userdir, com_gamedir, sizeof(com_userdir));
+	Q_strlcpy_err (com_savedir, com_userdir, sizeof(com_savedir));
 #endif
 }
 
@@ -2100,7 +2133,7 @@ static void MoveUserData (void)
 #	define NUM_MOVEFILES	(sizeof(movefiles)/sizeof(movefiles[0]))
 #	define NUM_MOVEDIRS	(sizeof(movedirs)/sizeof(movedirs[0]))
 
-	sprintf (tmp1, "%s/userdata.moved", com_userdir);
+	Q_snprintf_err(tmp1, sizeof(tmp1), "%s/userdata.moved", com_userdir);
 	if (stat(tmp1, &test) == 0)
 	{
 		// the data should have already been moved in earlier runs.
@@ -2116,8 +2149,8 @@ static void MoveUserData (void)
 		tmp = Sys_FindFirstFile (host_parms.userdir, movefiles[i]);
 		while (tmp)
 		{
-			snprintf (tmp1, sizeof(tmp1), "%s/%s", host_parms.userdir, tmp);
-			snprintf (tmp2, sizeof(tmp2), "%s/%s", com_userdir, tmp);
+			Q_snprintf_err(tmp1, sizeof(tmp1), "%s/%s", host_parms.userdir, tmp);
+			Q_snprintf_err(tmp2, sizeof(tmp2), "%s/%s", com_userdir, tmp);
 			do_movedata (tmp1, tmp2, fh);
 			tmp = Sys_FindNextFile ();
 		}
@@ -2127,12 +2160,12 @@ static void MoveUserData (void)
 	// move the savegames
 	for (i = 0; i < MAX_SAVEGAMES; i++)
 	{
-		snprintf (tmp1, sizeof(tmp1), "%s/s%d", host_parms.userdir, i);
+		Q_snprintf_err(tmp1, sizeof(tmp1), "%s/s%d", host_parms.userdir, i);
 		if (stat(tmp1, &test) == 0)
 		{
 			if ((test.st_mode & S_IFDIR) == S_IFDIR)
 			{
-				snprintf (tmp2, sizeof(tmp2), "%s/s%d", com_userdir, i);
+				Q_snprintf_err(tmp2, sizeof(tmp2), "%s/s%d", com_userdir, i);
 				do_movedata (tmp1, tmp2, fh);
 			}
 		}
@@ -2141,12 +2174,12 @@ static void MoveUserData (void)
 	// move the savegames (multiplayer)
 	for (i = 0; i < MAX_SAVEGAMES; i++)
 	{
-		snprintf (tmp1, sizeof(tmp1), "%s/ms%d", host_parms.userdir, i);
+		Q_snprintf_err(tmp1, sizeof(tmp1), "%s/ms%d", host_parms.userdir, i);
 		if (stat(tmp1, &test) == 0)
 		{
 			if ((test.st_mode & S_IFDIR) == S_IFDIR)
 			{
-				snprintf (tmp2, sizeof(tmp2), "%s/ms%d", com_userdir, i);
+				Q_snprintf_err(tmp2, sizeof(tmp2), "%s/ms%d", com_userdir, i);
 				do_movedata (tmp1, tmp2, fh);
 			}
 		}
@@ -2155,12 +2188,12 @@ static void MoveUserData (void)
 	// other dirs
 	for (i = 0; i < NUM_MOVEDIRS; i++)
 	{
-		snprintf (tmp1, sizeof(tmp1), "%s/%s", host_parms.userdir, movedirs[i]);
+		Q_snprintf_err(tmp1, sizeof(tmp1), "%s/%s", host_parms.userdir, movedirs[i]);
 		if (stat(tmp1, &test) == 0)
 		{
 			if ((test.st_mode & S_IFDIR) == S_IFDIR)
 			{
-				snprintf (tmp2, sizeof(tmp2), "%s/%s", com_userdir, movedirs[i]);
+				Q_snprintf_err(tmp2, sizeof(tmp2), "%s/%s", com_userdir, movedirs[i]);
 				do_movedata (tmp1, tmp2, fh);
 			}
 		}
@@ -2190,19 +2223,19 @@ static void COM_InitFilesystem (void)
 	i = COM_CheckParm ("-basedir");
 	if (i && i < com_argc-1)
 	{
-		strcpy (com_basedir, com_argv[i+1]);
+		Q_strlcpy_err(com_basedir, com_argv[i+1], sizeof(com_basedir));
 	}
 	else
 	{
-		strcpy (com_basedir, host_parms.basedir);
+		Q_strlcpy_err(com_basedir, host_parms.basedir, sizeof(com_basedir));
 	}
 
-	strcpy (com_userdir, host_parms.userdir);
+	Q_strlcpy_err(com_userdir, host_parms.userdir, sizeof(com_userdir));
 
 //
 // start up with data1 by default
 //
-	sprintf (com_userdir, "%s/data1", host_parms.userdir);
+	Q_snprintf_err(com_userdir, sizeof(com_userdir), "%s/data1", host_parms.userdir);
 #ifdef PLATFORM_UNIX
 // properly move the user data from older versions in the user's directory
 	Sys_mkdir (com_userdir);
@@ -2229,7 +2262,7 @@ static void COM_InitFilesystem (void)
 	i = COM_CheckParm ("-game");
 	if (i && i < com_argc-1)
 	{
-		if (!strcmp(com_argv[i+1], "portals"))
+		if (!Q_strcasecmp(com_argv[i+1], "portals"))
 			check_portals = true;
 	}
 #endif
@@ -2241,7 +2274,7 @@ static void COM_InitFilesystem (void)
 		i = Hunk_LowMark ();
 		search_tmp = com_searchpaths;
 
-		sprintf (com_userdir, "%s/portals", host_parms.userdir);
+		Q_snprintf_err(com_userdir, sizeof(com_userdir), "%s/portals", host_parms.userdir);
 		Sys_mkdir (com_userdir);
 		COM_AddGameDirectory (va("%s/portals", com_basedir), true);
 
@@ -2266,13 +2299,13 @@ static void COM_InitFilesystem (void)
 			com_searchpaths = search_tmp;
 			Hunk_FreeToLowMark (i);
 			// back to data1
-			sprintf (com_gamedir, "%s/data1", com_basedir);
-			sprintf (com_userdir, "%s/data1", host_parms.userdir);
+			snprintf (com_gamedir, sizeof(com_gamedir), "%s/data1", com_basedir);
+			snprintf (com_userdir, sizeof(com_userdir), "%s/data1", host_parms.userdir);
 		}
 	}
 
 #if defined(H2W)
-	sprintf (com_userdir, "%s/hw", host_parms.userdir);
+	Q_snprintf_err(com_userdir, sizeof(com_userdir), "%s/hw", host_parms.userdir);
 	Sys_mkdir (com_userdir);
 	COM_AddGameDirectory (va("%s/hw", com_basedir), true);
 	// error out for H2W builds if GAME_HEXENWORLD isn't set
@@ -2287,7 +2320,7 @@ static void COM_InitFilesystem (void)
 // command
 	com_base_searchpaths = com_searchpaths;
 
-	sprintf (com_savedir, com_userdir);
+	Q_strlcpy_err(com_savedir, com_userdir, sizeof(com_savedir));
 
 	i = COM_CheckParm ("-game");
 	if (i && !(gameflags & GAME_REGISTERED))
@@ -2307,21 +2340,23 @@ static void COM_InitFilesystem (void)
 	registered.flags &= ~CVAR_ROM;
 	if (gameflags & GAME_REGISTERED)
 	{
-		sprintf (temp, "registered");
+		snprintf (temp, sizeof(temp), "registered");
 		Cvar_Set ("registered", "1");
 	}
 	else if (gameflags & GAME_OEM)
 	{
-		sprintf (temp, "oem");
+		snprintf (temp, sizeof(temp), "oem");
 		Cvar_Set ("oem", "1");
 	}
 	else if (gameflags & GAME_DEMO)
 	{
-		sprintf (temp, "demo");
+		snprintf (temp, sizeof(temp), "demo");
 	}
 	else
-	{	// Umm??
-		sprintf (temp, "unknown");
+	{
+	//	snprintf (temp, sizeof(temp), "unknown");
+	// no proper Raven data: it's best to error out here
+		Sys_Error ("Unable to find a proper Hexen II installation");
 	}
 	oem.flags |= CVAR_ROM;
 	registered.flags |= CVAR_ROM;
