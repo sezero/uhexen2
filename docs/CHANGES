@@ -3,6 +3,60 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-09-16 (CVS):
+    * multiple changes to common library and downloading procedures:
+    * use snprintf and the strl* functions (#10): especially during
+      filesystem initialization, errors are not tolerated.
+    * killed COM_FileOpenRead
+    * made COM_filelength to return size_t.
+    * made COM_CreatePath to return error or success.
+    * made COM_CreatePath to check if the path it's creating is in
+      the com_userdir.
+    * a few fixes and tweaking in COM_CopyFile.
+    * case insensitive game directory name comparisons where it
+      would be necessary.
+    * error out immediately if no proper game installation is found.
+    * reject relative paths in a few more places.
+    * fixes to download console command of hw (which always reported
+      rename failures).
+
+2006-09-15 (CVS):
+    * fixed another gcc4 warning about type-punning (snd_alsa, although
+      in disabled code)
+    * pattern_len must be of size_t type in Sys_FindFirstFile
+    * use the given path_len and snprintf in Sys_GetUserdir, although
+      sprintf is perfectly safe at that point.
+    * made the MAXCMDLINE definition public through keys.h
+    * made a MAX_IDENTIFIER definition and used it for gltexture_t->identifier
+    * made Host_CopyFiles to properly check its string sizes, and made it
+      to return at the first time it hits an error.
+    * added macros Q_strlcat_err, Q_strlcpy_err and Q_snprintf_err, which
+      error out if truncation occurs.
+    * use snprintf and the strl* functions, #2: host_cmd.c.
+    * made COM_DefaultExtension to check the size of its path argument
+      and error out if truncation occurs.
+    * use snprintf and the strl* functions, #3: cl_demo.c. while we were
+      there, did some additional clean-ups and fixes in CL_Record_f,
+      CL_ReRecord_f and CL_PlayDemo_f.
+    * use snprintf and the strl* functions, #4: cl_main.c.
+    * use snprintf and the strl* functions, #5: cmd.c.
+    * use snprintf and the strl* functions, #6: console.c.
+    * use snprintf and the strl* functions, #7: draw.c and gl_draw.c.
+    * use snprintf and the strl* functions, #8: gl_mesh.c.
+    * use snprintf and the strl* functions, #9: gl_rmain.c.
+    * use snprintf and the strl* functions, #10: keys.c.
+    * use snprintf and the strl* functions, #10: midi_mac.c and midi_sdl.c.
+      also did some clean-ups while we were there.
+    * dcc doesn't need to keep progs.dat open after reading it.
+    * added big endian (byte swapping) support to dcc decompilation.
+    * fixes for parsing input from fgets, part-1: fixed and improved parsing
+      of maplist.txt. fixes a bug reported for the PalmOS port ZHexen2.
+    * fixes for parsing input from fgets, part-2: improved parsing of
+      config.cfg during the early read.
+    * fixes for parsing input from fgets, part-3: improved parsing of
+      launcher_options. also ensured string buffer size safety for the
+      gllibrary option.
+
 2006-09-14 (CVS):
     * multiple dcc fixes:
     * Make_Immediate() doesn't need a non-null line argument for mode-2,
