@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-09-18 (CVS):
+    * use snprintf and the strl* functions, #13: menu.c. while we were
+      there, exported SAVEGAME_VERSION definition through quakedef.h,
+      prevented saved games with invalid version number to be listed.
+    * use snprintf and the strl* functions, #14: snd_dma.c and snd_mem.c.
+    * updated release notes for the upcoming 1.4.1 version.
+
 2006-09-16 (CVS):
     * multiple changes to common library and downloading procedures:
     * use snprintf and the strl* functions (#10): especially during
