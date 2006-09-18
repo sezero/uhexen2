@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.36 2006-08-07 08:06:01 sezero Exp $
+	$Id: snd_dma.c,v 1.37 2006-09-18 09:57:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -304,7 +304,7 @@ static sfx_t *S_FindName (char *name)
 		Sys_Error ("S_FindName: out of sfx_t");
 
 	sfx = &known_sfx[i];
-	strcpy (sfx->name, name);
+	Q_strlcpy (sfx->name, name, MAX_QPATH);
 
 	num_sfx++;
 
@@ -998,13 +998,11 @@ static void S_Play(void)
 	i = 1;
 	while (i<Cmd_Argc())
 	{
+		Q_strlcpy(name, Cmd_Argv(i), sizeof(name));
 		if (!strrchr(Cmd_Argv(i), '.'))
 		{
-			strcpy(name, Cmd_Argv(i));
-			strcat(name, ".wav");
+			Q_strlcat(name, ".wav", sizeof(name));
 		}
-		else
-			strcpy(name, Cmd_Argv(i));
 
 		sfx = S_PrecacheSound(name);
 		S_StartSound(hash++, 0, sfx, listener_origin, 1.0, 1.0);
@@ -1023,13 +1021,11 @@ static void S_PlayVol(void)
 	i = 1;
 	while (i<Cmd_Argc())
 	{
+		Q_strlcpy(name, Cmd_Argv(i), sizeof(name));
 		if (!strrchr(Cmd_Argv(i), '.'))
 		{
-			strcpy(name, Cmd_Argv(i));
-			strcat(name, ".wav");
+			Q_strlcat(name, ".wav", sizeof(name));
 		}
-		else
-			strcpy(name, Cmd_Argv(i));
 
 		sfx = S_PrecacheSound(name);
 		vol = atof(Cmd_Argv(i+1));
@@ -1098,6 +1094,12 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.36  2006/08/07 08:06:01  sezero
+ * initially I didn't want to use cvars for storing the saved
+ * volumes when muting/unmuting, but, naturally, that prevented
+ * writing the saved volumes to the config. Steven was right
+ * using cvars.
+ *
  * Revision 1.35  2006/07/16 22:30:43  sezero
  * added mute, volumeup and volumedown console commands.
  * patch from Steven.
