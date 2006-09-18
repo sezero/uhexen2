@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.5 2006-09-15 09:24:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.6 2006-09-18 09:57:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -320,8 +320,6 @@ LOAD / SAVE GAME
 
 ===============================================================================
 */
-
-#define	SAVEGAME_VERSION	5
 
 #define ShortTime "%m/%d/%Y %H:%M"
 
@@ -1757,6 +1755,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2006/09/15 09:24:33  sezero
+ * use snprintf and the strl* functions, #2: host_cmd.c.
+ *
  * Revision 1.4  2006/09/13 05:53:24  sezero
  * re-visited the includes, gathered all net includes into
  * the new net_sys.h, did a platform defines clean-up.

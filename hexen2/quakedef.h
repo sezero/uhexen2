@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.91 2006-09-13 05:53:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.92 2006-09-18 09:56:59 sezero Exp $
 */
 
 
@@ -121,9 +121,8 @@
 #define	MAX_SOUNDS	512		// Sent over the net as a byte
 
 
-#define	SAVEGAME_COMMENT_LENGTH	39
-
 #define	MAX_STYLESTRING		64
+
 
 //
 // stats are integers communicated to the client by the server
@@ -148,9 +147,14 @@
 //#define	STAT_GREENMANA		16
 //#define	STAT_EXPERIENCE		17
 
+
 #define	MAX_INVENTORY		15	// Max inventory array size
 
-#define	MAX_SAVEGAMES		12	// max number of savegames
+
+#define	SAVEGAME_VERSION	5
+#define	SAVEGAME_COMMENT_LENGTH	39
+#define	MAX_SAVEGAMES		12	// Max number of savegames for the menu listing
+
 
 //
 // stock defines
@@ -458,6 +462,10 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.91  2006/09/13 05:53:22  sezero
+ * re-visited the includes, gathered all net includes into
+ * the new net_sys.h, did a platform defines clean-up.
+ *
  * Revision 1.90  2006/08/26 07:06:43  sezero
  * incremented engine version of hexen2 to 1.16 and hexenworld to 0.18
  *

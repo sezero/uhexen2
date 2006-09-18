@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.69 2006-07-27 13:46:53 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.70 2006-09-18 09:56:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1144,15 +1144,20 @@ static void M_ScanSaves (void)
 
 	for (i=0 ; i<MAX_SAVEGAMES ; i++)
 	{
-		strcpy (m_filenames[i], "--- UNUSED SLOT ---");
+		strncpy (m_filenames[i], "--- UNUSED SLOT ---", sizeof(m_filenames[0])-1);
 		loadable[i] = false;
-		sprintf (name, "%s/s%i/info.dat", com_savedir, i);
+		snprintf (name, sizeof(name), "%s/s%i/info.dat", com_savedir, i);
 		f = fopen (name, "r");
 		if (!f)
 			continue;
 		fscanf (f, "%i\n", &version);
+		if (version != SAVEGAME_VERSION)
+		{
+			fclose (f);
+			continue;
+		}
 		fscanf (f, "%79s\n", name);
-		strncpy (m_filenames[i], name, sizeof(m_filenames[i])-1);
+		strncpy (m_filenames[i], name, sizeof(m_filenames[0])-1);
 
 	// change _ back to space
 		for (j=0 ; j<SAVEGAME_COMMENT_LENGTH ; j++)
@@ -1302,15 +1307,20 @@ static void M_ScanMSaves (void)
 
 	for (i=0 ; i<MAX_SAVEGAMES ; i++)
 	{
-		strcpy (m_filenames[i], "--- UNUSED SLOT ---");
+		strncpy (m_filenames[i], "--- UNUSED SLOT ---", sizeof(m_filenames[0])-1);
 		loadable[i] = false;
-		sprintf (name, "%s/ms%i/info.dat", com_savedir, i);
+		snprintf (name, sizeof(name), "%s/ms%i/info.dat", com_savedir, i);
 		f = fopen (name, "r");
 		if (!f)
 			continue;
 		fscanf (f, "%i\n", &version);
+		if (version != SAVEGAME_VERSION)
+		{
+			fclose (f);
+			continue;
+		}
 		fscanf (f, "%79s\n", name);
-		strncpy (m_filenames[i], name, sizeof(m_filenames[i])-1);
+		strncpy (m_filenames[i], name, sizeof(m_filenames[0])-1);
 
 	// change _ back to space
 		for (j=0 ; j<SAVEGAME_COMMENT_LENGTH ; j++)
@@ -1539,8 +1549,8 @@ static void M_Menu_Setup_f (void)
 	key_dest = key_menu;
 	m_state = m_setup;
 	m_entersound = true;
-	strcpy(setup_myname, cl_name.string);
-	strcpy(setup_hostname, hostname.string);
+	Q_strlcpy(setup_myname, cl_name.string, sizeof(setup_myname));
+	Q_strlcpy(setup_hostname, hostname.string, sizeof(setup_hostname));
 	setup_top = setup_oldtop = (((int)cl_color.value) >> 4) & 15;
 	setup_bottom = setup_oldbottom = ((int)cl_color.value) & 15;
 	setup_class = cl_playerclass.value;
@@ -1876,7 +1886,7 @@ void M_Menu_Options_f (void)
 
 	// get the current music type
 	if (old_bgmtype[0] == 0)
-		strncpy(old_bgmtype,bgmtype.string,sizeof(old_bgmtype));
+		Q_strlcpy(old_bgmtype, bgmtype.string, sizeof(old_bgmtype));
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 		options_cursor = 0;
@@ -2688,7 +2698,7 @@ static void M_Keys_Key (int k)
 		}
 		else if (k != '`')
 		{
-			sprintf (cmd, "bind \"%s\" \"%s\"\n", Key_KeynumToString (k), bindnames[keys_cursor][0]);
+			snprintf (cmd, sizeof(cmd), "bind \"%s\" \"%s\"\n", Key_KeynumToString (k), bindnames[keys_cursor][0]);
 			Cbuf_InsertText (cmd);
 		}
 
@@ -3336,7 +3346,7 @@ static void M_Menu_LanConfig_f (void)
 	if (StartingGame && lanConfig_cursor >= 2)
 		lanConfig_cursor = 1;
 	lanConfig_port = DEFAULTnet_hostport;
-	sprintf(lanConfig_portname, "%u", lanConfig_port);
+	snprintf(lanConfig_portname, sizeof(lanConfig_portname), "%u", lanConfig_port);
 
 	m_return_onerror = false;
 	m_return_reason[0] = 0;
@@ -3554,7 +3564,7 @@ static void M_LanConfig_Key (int key)
 		l = lanConfig_port;
 	else
 		lanConfig_port = l;
-	sprintf(lanConfig_portname, "%u", lanConfig_port);
+	snprintf(lanConfig_portname, sizeof(lanConfig_portname), "%u", lanConfig_port);
 }
 
 //=============================================================================
@@ -4149,9 +4159,9 @@ static void M_ServerList_Draw (void)
 			name = net_landrivers[hostcache[n].ldriver].name;
 
 		if (hostcache[n].maxusers)
-			sprintf(string, "%-11.11s %-8.8s %-10.10s %2u/%2u\n", hostcache[n].name, name, hostcache[n].map, hostcache[n].users, hostcache[n].maxusers);
+			snprintf(string, sizeof(string), "%-11.11s %-8.8s %-10.10s %2u/%2u\n", hostcache[n].name, name, hostcache[n].map, hostcache[n].users, hostcache[n].maxusers);
 		else
-			sprintf(string, "%-11.11s %-8.8s %-10.10s\n", hostcache[n].name, name, hostcache[n].map);
+			snprintf(string, sizeof(string), "%-11.11s %-8.8s %-10.10s\n", hostcache[n].name, name, hostcache[n].map);
 		M_Print (16, 60 + 8*n, string);
 	}
 	M_DrawCharacter (0, 60 + slist_cursor*8, 12+((int)(realtime*4)&1));
@@ -4487,6 +4497,13 @@ static void ReInitMusic (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.69  2006/07/27 13:46:53  sezero
+ * made scaling of the effective console size (the -conwidth commandline
+ * argument) adjustable from the menu system, using the std_modes array
+ * for the size to be emulated. made the user's choice to be remembered
+ * via the config. deprecated the -conheight argument and used the same
+ * width/height ratio as in the actual resolution.
+ *
  * Revision 1.68  2006/06/25 12:01:48  sezero
  * renamed CL_CopyFiles to Host_CopyFiles and CL_RemoveGIPFiles to
  * Host_RemoveGIPFiles, moved them to host.c

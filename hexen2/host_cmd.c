@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.52 2006-09-15 09:24:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.53 2006-09-18 09:56:58 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -426,8 +426,6 @@ LOAD / SAVE GAME
 
 ===============================================================================
 */
-
-#define	SAVEGAME_VERSION	5
 
 #define ShortTime "%m/%d/%Y %H:%M"
 
@@ -2324,6 +2322,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.52  2006/09/15 09:24:33  sezero
+ * use snprintf and the strl* functions, #2: host_cmd.c.
+ *
  * Revision 1.51  2006/09/15 09:21:40  sezero
  * made the MAXCMDLINE definition public through keys.h
  *

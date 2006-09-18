@@ -2,7 +2,7 @@
 	bothdefs.h
 	defs common to both client and server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.45 2006-08-26 07:06:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.46 2006-09-18 09:57:05 sezero Exp $
 */
 
 #define __STRINGIFY(x) #x
@@ -85,9 +85,9 @@
 #define	MAX_MODELS	512		// Sent over the net as a word
 #define	MAX_SOUNDS	256		// so they cannot be blindly increased
 
-#define	SAVEGAME_COMMENT_LENGTH	39
 
 #define	MAX_STYLESTRING		64
+
 
 //
 // stats are integers communicated to the client by the server
@@ -111,9 +111,13 @@
 #define	STAT_ITEMS		15
 //define	STAT_VIEWHEIGHT		16
 
+
 #define	MAX_INVENTORY		15	// Max inventory array size
 
-#define	MAX_SAVEGAMES		12	// max number of savegames
+
+#define	SAVEGAME_VERSION	5
+#define	SAVEGAME_COMMENT_LENGTH	39
+#define	MAX_SAVEGAMES		12	// Max number of savegames for the menu listing
 
 
 //

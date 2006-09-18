@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.50 2006-07-27 13:46:53 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.51 2006-09-18 09:57:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -732,7 +732,7 @@ void M_Menu_Options_f (void)
 
 	// get the current music type
 	if (old_bgmtype[0] == 0)
-		strncpy(old_bgmtype,bgmtype.string,sizeof(old_bgmtype));
+		Q_strlcpy(old_bgmtype, bgmtype.string, sizeof(old_bgmtype));
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 		options_cursor = 0;
@@ -1536,7 +1536,7 @@ static void M_Keys_Key (int k)
 		}
 		else if (k != '`')
 		{
-			sprintf (cmd, "bind \"%s\" \"%s\"\n", Key_KeynumToString (k), bindnames[keys_cursor][0]);
+			snprintf (cmd, sizeof(cmd), "bind \"%s\" \"%s\"\n", Key_KeynumToString (k), bindnames[keys_cursor][0]);
 			Cbuf_InsertText (cmd);
 		}
 
@@ -2387,16 +2387,16 @@ static void M_Menu_Connect_f (void)
 
 	message = NULL;
 
-	strcpy(save_names[0],hostname1.string);
-	strcpy(save_names[1],hostname2.string);
-	strcpy(save_names[2],hostname3.string);
-	strcpy(save_names[3],hostname4.string);
-	strcpy(save_names[4],hostname5.string);
-	strcpy(save_names[5],hostname6.string);
-	strcpy(save_names[6],hostname7.string);
-	strcpy(save_names[7],hostname8.string);
-	strcpy(save_names[8],hostname9.string);
-	strcpy(save_names[9],hostname10.string);
+	Q_strlcpy(save_names[0], hostname1.string, sizeof(save_names[0]));
+	Q_strlcpy(save_names[1], hostname2.string, sizeof(save_names[0]));
+	Q_strlcpy(save_names[2], hostname3.string, sizeof(save_names[0]));
+	Q_strlcpy(save_names[3], hostname4.string, sizeof(save_names[0]));
+	Q_strlcpy(save_names[4], hostname5.string, sizeof(save_names[0]));
+	Q_strlcpy(save_names[5], hostname6.string, sizeof(save_names[0]));
+	Q_strlcpy(save_names[6], hostname7.string, sizeof(save_names[0]));
+	Q_strlcpy(save_names[7], hostname8.string, sizeof(save_names[0]));
+	Q_strlcpy(save_names[8], hostname9.string, sizeof(save_names[0]));
+	Q_strlcpy(save_names[9], hostname10.string, sizeof(save_names[0]));
 }
 
 static void M_Connect_Draw (void)
@@ -2411,7 +2411,7 @@ static void M_Connect_Draw (void)
 	{
 		M_DrawTextBox (16, 48, 34, 1);
 
-		strcpy(temp,save_names[connect_cursor]);
+		Q_strlcpy(temp, save_names[connect_cursor], sizeof(save_names[0]));
 		length = strlen(temp);
 		if (length > 33)
 		{
@@ -2426,9 +2426,9 @@ static void M_Connect_Draw (void)
 	}
 
 	y = 72;
-	for(i=0;i<MAX_HOST_NAMES;i++,y+=8)
+	for(i = 0; i < MAX_HOST_NAMES; i++, y += 8)
 	{
-		sprintf(temp,"%d.",i+1);
+		snprintf(temp, sizeof(temp), "%d.", i+1);
 		if (i == connect_cursor)
 		{
 			M_Print(24,y,temp);
@@ -2438,7 +2438,7 @@ static void M_Connect_Draw (void)
 			M_PrintWhite(24,y,temp);
 		}
 
-		strcpy(temp,save_names[i]);
+		Q_strlcpy(temp, save_names[i], sizeof(save_names[0]));
 		temp[30] = 0;
 		if (i == connect_cursor)
 		{
@@ -2555,7 +2555,7 @@ static void M_Menu_Setup_f (void)
 	key_dest = key_menu;
 	m_state = m_setup;
 	m_entersound = true;
-	strcpy(setup_myname, name.string);
+	Q_strlcpy(setup_myname, name.string, sizeof(setup_myname));
 	setup_top = setup_oldtop = (int)topcolor.value;
 	setup_bottom = setup_oldbottom = (int)bottomcolor.value;
 
