@@ -30,6 +30,7 @@ General:
   server-only binaries except for debug builds.
 - Disabled the VCR facility by default. After all, it is not an ordinary demo
   recording but a server only feature for debugging server bugs.
+- Fixed and improved parsing of maplist.txt and config.cfg.
 - Engine version is now 1.16 for Hexen II, and 0.18 for HexenWorld.
 
 Gameplay:
@@ -81,9 +82,11 @@ HexenWorld:
 Utilities:
 ----------
 - Added big-endian support (byte swapping) to the hcc (the hexenc compiler)
-  and jsh2color (the litfile generator).
+  dcc (dhcc: progs decompiler) and jsh2color (the litfile generator).
 - Do the name search in a case insensitive way in the bsp compiler: some wad
   files doesn't have the texture name in expected case.
+- Several fixes to dhcc including a workaround for bad gcc-4.x compilations
+  and a fix for bad decompilation of the mission pack progs.
 
 Launcher:
 ----------
@@ -93,6 +96,8 @@ Launcher:
 
 Other:
 ----------------------
+- Ensured that string operations are safe regarding their buffer size, in
+  many places.
 - Added support for yasm (v0.5.0) as an alternative assembler
 - Fixes and improvements in the build system
 - Many compile and linkage fixes.
