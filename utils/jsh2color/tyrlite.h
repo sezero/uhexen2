@@ -32,7 +32,7 @@
 #include "entities.h"
 #include "threads.h"
 
-#define JSH2COLOR_VER	"1.2.2"	// version string
+#define JSH2COLOR_VER	"1.2.3"	// version string
 #ifdef _WIN32
 #define PLATFORM_VER	"win32"
 #else
@@ -99,3 +99,4 @@ void	CloseDefFile (void);
 void	DecisionTime (char *msg);
 
 #endif /* __TYRLITE_TYRLITE_H__ */
+
