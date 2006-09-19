@@ -84,7 +84,8 @@ static void SV_Logfile_f (void)
 		return;
 	}
 
-	sprintf (name, "%s/hwsv.log", com_userdir);
+	Q_snprintf_err(name, sizeof(name), "%s/hwsv.log", com_userdir);
+
 	Con_Printf ("Logging text to %s.\n", name);
 	sv_logfile = fopen (name, "w");
 	if (!sv_logfile)
@@ -115,7 +116,8 @@ static void SV_Fraglogfile_f (void)
 	// find an unused name
 	for (i=0 ; i<1000 ; i++)
 	{
-		sprintf (name, "%s/frag_%i.log", com_userdir, i);
+		Q_snprintf_err(name, sizeof(name), "%s/frag_%i.log", com_userdir, i);
+
 		sv_fraglogfile = fopen (name, "r");
 		if (!sv_fraglogfile)
 		{	// can't read it, so create this one
@@ -297,14 +299,14 @@ static void SV_Map_f (void)
 			Con_Printf ("Currently on: %s\n",sv.name);
 		return;
 	}
-	strcpy (level, Cmd_Argv(1));
+	Q_strlcpy (level, Cmd_Argv(1), sizeof(level));
 	if (Cmd_Argc() == 2)
 	{
 		startspot = NULL;
 	}
 	else
 	{
-		strcpy (_startspot, Cmd_Argv(2));
+		Q_strlcpy (_startspot, Cmd_Argv(2), sizeof(_startspot));
 		startspot = _startspot;
 	}
 
@@ -317,7 +319,7 @@ static void SV_Map_f (void)
 #endif
 
 	// check to make sure the level exists
-	sprintf (expanded, "maps/%s.bsp", level);
+	snprintf (expanded, sizeof(expanded), "maps/%s.bsp", level);
 	COM_FOpenFile (expanded, &f, false);
 	if (!f)
 	{
@@ -607,10 +609,10 @@ static void SV_ConSay_f(void)
 	if (Cmd_Argc () < 2)
 		return;
 
-	if (dmMode.value==DM_SIEGE)
-		strcpy (text, "GOD SAYS: ");
+	if (dmMode.value == DM_SIEGE)
+		Q_strlcpy (text, "GOD SAYS: ", sizeof(text));
 	else
-		strcpy (text, "ServerAdmin: ");
+		Q_strlcpy (text, "ServerAdmin: ", sizeof(text));
 
 	p = Cmd_Args();
 
@@ -620,7 +622,7 @@ static void SV_ConSay_f(void)
 		p[strlen(p)-1] = 0;
 	}
 
-	strcat(text, p);
+	Q_strlcat (text, p, sizeof(text));
 
 	for (j = 0, client = svs.clients; j < MAX_CLIENTS; j++, client++)
 	{
@@ -841,7 +843,7 @@ static void SV_Floodprotmsg_f (void)
 		Con_Printf("Usage: floodprotmsg \"<message>\"\n");
 		return;
 	}
-	sprintf(fp_msg, "%s", Cmd_Argv(1));
+	snprintf(fp_msg, sizeof(fp_msg), "%s", Cmd_Argv(1));
 }
 
 
