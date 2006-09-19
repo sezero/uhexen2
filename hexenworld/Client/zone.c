@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.13 2006-07-18 08:44:20 sezero Exp $
+	$Id: zone.c,v 1.14 2006-09-19 06:25:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -884,7 +884,7 @@ static void Cache_Print (qboolean write_file)
 		count++;
 		sum += cd->size;
 
-		strcpy(temp,cd->name);
+		strncpy (temp, cd->name, sizeof(temp)-1);
 		Q_strlwr(temp);
 		if (strstr(temp,".mdl"))
 		{

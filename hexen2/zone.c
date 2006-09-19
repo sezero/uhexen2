@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.23 2006-07-18 08:44:20 sezero Exp $
+	$Id: zone.c,v 1.24 2006-09-19 06:25:06 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -884,7 +884,7 @@ static void Cache_Print (qboolean write_file)
 		count++;
 		sum += cd->size;
 
-		strcpy(temp,cd->name);
+		strncpy (temp, cd->name, sizeof(temp)-1);
 		Q_strlwr(temp);
 		if (strstr(temp,".mdl"))
 		{
@@ -1130,6 +1130,9 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2006/07/18 08:44:20  sezero
+ * random typo corrections
+ *
  * Revision 1.22  2006/07/03 07:56:13  sezero
  * disabled the sys_memory, sys_cache and sys_stats console commands
  * for server-only binaries except for debug builds.
