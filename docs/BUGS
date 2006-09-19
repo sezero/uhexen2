@@ -3,30 +3,30 @@ Hexen II: Hammer of Thyrion
 Known Bugs
 ---------------------------
 
-  Software renderer clients cannot be compiled for non-x86 cpus because
+- Software renderer clients cannot be compiled for non-x86 cpus because
   of some x86 assembly code about translucency which do not have their C
   counterparts yet. For details, see COMPILE and NonIntel.log in docs.
 
-  HexenWorld (OpenGL Client): Dynamic lights have a problem with RGBA
+- HexenWorld (OpenGL Client): Dynamic lights have a problem with RGBA
   lightmaps (such as torches doesn't illuminate). Luminance mode is fine.
 
-  Linux (Unix): Midi music doesn't work with SDL sound driver due to
+- Linux (Unix): Midi music doesn't work with SDL sound driver due to
   conflicting SDL and SDL_mixer calls. Will be looked into.
 
-  Linux (Unix): OSS sound code does not work for a few people, either
+- Linux (Unix): OSS sound code does not work for a few people, either
   partially or completely. If you suffer from that problem, use Alsa
   or SDL sound.
 
-  3dfx Voodoo Graphics / Voodoo2:  Palettized textures are broken with
+- 3dfx Voodoo Graphics / Voodoo2:  Palettized textures are broken with
   Mesa 3.x. Use Mesa-6.x, which works fine. Windows people should use
   the latest "MesaFX" driver for 3dfx.
 
-  3dfx Voodoo: May not work correctly with multitexturing.  In fact,
+- 3dfx Voodoo: May not work correctly with multitexturing.  In fact,
   this is a 3dfx problem.  For best results, use Mesa-6.2 on linux and
   the latest "MesaFX" driver on windows.
 
-  Matrox G200: GL games may not display menus correctly (Matrox bug?)
+- Matrox G200: GL games may not display menus correctly (Matrox bug?)
 
-  Coop mode of HexenWorld is broken (known problem since Raven's latest
+- Coop mode of HexenWorld is broken (known problem since Raven's latest
   beta-0.15)
 

@@ -12,16 +12,13 @@ the file NonIntel.log for some details. The opengl renderer does
 not have such issues.
 
 
-Endianness:
-------------------
+Endianness and 64-bit cleanness:
+--------------------------------
 
-There still may be some code with endianness issues.
-
-
-64-bit cleanness:
-------------------
-
-The whole tree needs to be checked / fixed for 64-bit platforms.
+Hammer of Thyrion version 1.4.1 fixed many endianness issues.
+There still may be some code left which are incompatible with big-
+endian machines and 64 bit operating systems. Please send patches
+and/or report problems.
 
 
 Platform defines:

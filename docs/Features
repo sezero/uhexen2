@@ -6,7 +6,7 @@ Features:
 * Support for Hexen II, Hexen II demo, Portal of Praevus Mission
   Pack and HexenWorld.
 
-* Tested with Linux, FreeBSD, MacOSX and Windows. Software renderer
+* Tested with Linux, FreeBSD, Mac OS X and Windows. Software renderer
   version is tested on QNX. Other unices should also work. There are
   seperate ports to MorphOS and PalmOS.
 
