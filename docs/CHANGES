@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-09-19 (CVS, 1.4.1-rc1):
+    * updated documentation.
+    * string sizes stuff, #15: zone.c.
+    * string sizes stuff, #16: hwmaster.
+    * string sizes stuff, #17: sv_ccmds.c.
+    * re-diff'ed some of the extra patches.
+    * incremented jsh2color version to 1.2.3 and updated its changelog.
+    * marked the snapshot of 2006-09-19 as 1.4.1-rc1.
+
 2006-09-18 (CVS):
     * use snprintf and the strl* functions, #13: menu.c. while we were
       there, exported SAVEGAME_VERSION definition through quakedef.h,
