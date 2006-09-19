@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.92 2006-09-18 09:56:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.93 2006-09-19 07:31:31 sezero Exp $
 */
 
 
@@ -18,9 +18,9 @@
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		4
 #define	HOT_VERSION_MIN		1
-#define	HOT_VERSION_REL_DATE	"2006-08-22"
+#define	HOT_VERSION_REL_DATE	"2006-09-19"
 #define	HOT_VERSION_BETA	1
-#define	HOT_VERSION_BETA_STR	"pre10"
+#define	HOT_VERSION_BETA_STR	"rc1"
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
 #define	ENGINE_VERSION		1.16
@@ -462,6 +462,11 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.92  2006/09/18 09:56:59  sezero
+ * use snprintf and the strl* functions, #13: menu.c. while we were
+ * there, exported SAVEGAME_VERSION definition through quakedef.h,
+ * prevented saved games with invalid version number to be listed.
+ *
  * Revision 1.91  2006/09/13 05:53:22  sezero
  * re-visited the includes, gathered all net includes into
  * the new net_sys.h, did a platform defines clean-up.
