@@ -25,7 +25,11 @@ static void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a);
 static void NET_SendPacket (int length, void *data, netadr_t to);
 static qboolean NET_GetPacket (void);
 
-extern char	filters_file[256];
+#if defined(_WIN32)
+#define	filters_file	"filters.ini"
+#else
+extern char	filters_file[MAX_OSPATH];
+#endif
 
 
 //=============================================================================

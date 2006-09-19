@@ -18,6 +18,8 @@
 
 #define HWM_USERDIR	".hwmaster"	/* user directory for unix	*/
 
+#define	MAX_OSPATH	256		/* max length of a filesystem pathname	*/
+
 #undef true
 #undef false
 typedef enum {false, true}	qboolean;

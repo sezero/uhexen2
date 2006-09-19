@@ -31,7 +31,7 @@
 #if defined(PLATFORM_UNIX)
 static int	do_stdin = 1;
 static qboolean	stdin_ready;
-static char	userdir[256];
+static char	userdir[MAX_OSPATH];
 #endif
 
 char		com_token[1024];
@@ -41,7 +41,9 @@ char	**com_argv;
 static char	*largv[MAX_NUM_ARGVS + 1];
 static char	*argvdummy = " ";
 
-char		filters_file[256];
+#if !defined(_WIN32)
+char		filters_file[MAX_OSPATH];
+#endif
 
 
 //=============================================================================
@@ -528,9 +530,8 @@ int main (int argc, char **argv)
 	if (Sys_GetUserdir(userdir,sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
 	printf ("Userdir: %s\n", userdir);
-	sprintf(filters_file, "%s/%s", userdir, "filters.ini");
-#else
-	sprintf(filters_file, "%s", "filters.ini");
+	if (snprintf(filters_file, sizeof(filters_file), "%s/filters.ini", userdir) >= sizeof(filters_file))
+		Sys_Error ("Insufficient string buffer size");
 #endif
 
 #ifdef _WIN32
