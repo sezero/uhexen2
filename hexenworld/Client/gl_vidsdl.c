@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.120 2006-09-15 20:03:36 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.121 2006-09-20 06:56:50 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1187,7 +1187,6 @@ static void VID_ChangeVideoMode(int newmode)
 	// reset all opengl function pointers (just in case)
 	GL_ResetFunctions();
 
-	// Avoid the SDL_QUIT event
 	// Avoid re-registering commands and re-allocating memory
 	draw_reinit = true;
 

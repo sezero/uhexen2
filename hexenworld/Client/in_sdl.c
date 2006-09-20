@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.33 2006-06-17 06:06:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.34 2006-09-20 06:56:50 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -1182,8 +1182,6 @@ void IN_SendKeyEvents (void)
 				break;
 
 			case SDL_QUIT:
-				if (draw_reinit)
-					break;
 				CL_Disconnect ();
 				Sys_Quit ();
 				break;
@@ -1195,6 +1193,9 @@ void IN_SendKeyEvents (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.33  2006/06/17 06:06:20  sezero
+ * ifdef'ed the qnx quirk in in_sdl.c, just in case..
+ *
  * Revision 1.32  2006/06/12 08:48:50  sezero
  * fixed the backspace and return keys not working in the in-game console
  * in QNX. magically they did work in the disconnected full screen console.

@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.62 2006-09-15 09:20:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.63 2006-09-20 06:56:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -42,7 +42,6 @@
 
 qboolean		isDedicated;
 static Uint8		appState;
-extern qboolean		draw_reinit;
 
 
 //=============================================================================
@@ -193,9 +192,6 @@ void Sys_Error (char *error, ...)
 	char		text[MAXPRINTMSG];
 //	double		starttime;
 
-	// re-enable SDL_QUIT event which maybe disabled
-	// during a video mode change
-	draw_reinit = false;
 	Host_Shutdown ();
 
 	va_start (argptr, error);
@@ -555,6 +551,10 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.62  2006/09/15 09:20:12  sezero
+ * use the given path_len and snprintf in Sys_GetUserdir, although
+ * sprintf is perfectly safe at that point.
+ *
  * Revision 1.61  2006/09/15 09:19:24  sezero
  * pattern_len must be of size_t type in Sys_FindFirstFile
  *
