@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.54 2006-09-15 12:03:18 sezero Exp $
+	$Id: glquake.h,v 1.55 2006-09-21 06:05:35 sezero Exp $
 */
 
 
@@ -21,7 +21,7 @@
 #include <GL/gl.h>
 #endif
 
-#include "gl_opt.h"
+#include "h2_opt.h"
 #include "gl_func.h"
 #include "gl_model.h"
 
@@ -390,6 +390,9 @@ extern	const char *gl_extensions;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.54  2006/09/15 12:03:18  sezero
+ * made a MAX_IDENTIFIER definition and used it for gltexture_t->identifier
+ *
  * Revision 1.53  2006/08/14 06:09:41  sezero
  * exported D_ClearOpenGLTextures() and R_InitParticleTexture()
  *

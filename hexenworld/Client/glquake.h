@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.44 2006-09-15 12:03:18 sezero Exp $
+	$Id: glquake.h,v 1.45 2006-09-21 06:05:36 sezero Exp $
 */
 
 
@@ -21,7 +21,7 @@
 #include <GL/gl.h>
 #endif
 
-#include "gl_opt.h"
+#include "h2_opt.h"
 #include "gl_func.h"
 #include "gl_model.h"
 

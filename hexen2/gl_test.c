@@ -2,9 +2,11 @@
 	gl_test.c
 */
 
-#include "quakedef.h"
+#include "h2_opt.h"
 
 #ifdef GLTEST
+
+#include "quakedef.h"
 
 typedef struct
 {

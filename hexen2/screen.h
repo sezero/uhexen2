@@ -1,11 +1,5 @@
 // screen.h
 
-// COMPILE TIME OPTION:
-// If you want the intermissions and help screens to be drawn fullscreen
-// keep the define below as 1. Otherwise, if you want them to be drawn
-// unscaled with regard to the resolution, change the define below to 0
-#define FULLSCREEN_INTERMISSIONS	1
-
 // width for the info plaques
 #define PLAQUE_WIDTH	26
 

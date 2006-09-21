@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.70 2006-09-18 09:56:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.71 2006-09-21 06:05:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -922,10 +922,6 @@ static void M_Menu_Class2_f (void)
 
 static int	m_class_cursor;
 #define	CLASS_ITEMS	MAX_PLAYER_CLASS
-
-// change the define below to 0 if you want to allow the
-// demoness class  in old mission through the menu system
-#define DISALLOW_DEMONESS_IN_OLD_GAME	1
 
 static void M_Class_Draw (void)
 {
@@ -4497,6 +4493,11 @@ static void ReInitMusic (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.70  2006/09/18 09:56:59  sezero
+ * use snprintf and the strl* functions, #13: menu.c. while we were
+ * there, exported SAVEGAME_VERSION definition through quakedef.h,
+ * prevented saved games with invalid version number to be listed.
+ *
  * Revision 1.69  2006/07/27 13:46:53  sezero
  * made scaling of the effective console size (the -conwidth commandline
  * argument) adjustable from the menu system, using the std_modes array

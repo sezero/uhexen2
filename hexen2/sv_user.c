@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.12 2006-07-02 11:45:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.13 2006-09-21 06:05:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -147,17 +147,11 @@ static void SV_UserFriction (void)
 	trace = SV_Move (start, vec3_origin, vec3_origin, stop, true, sv_player);
 	sv_player->v.hull = save_hull;
 
-//
 // Hexen II v1.11 progs doesn't initialize the friction properly (always 0).
 // In fact, applying a patch to the progs can easily solve this issue, but
 // in that case several unpatched mods would be left broken. Note: Compared
-// to the AoT solution, this makes pure-hexen2 to feel slightly more slippery.
-//
-// COMPILE TIME OPTION: USE_AOT_FRICTION
-// If you want to use the Anvil of Thyrion solution for the original hexen2
-// friction emulation, define USE_AOT_FRICTION as 1, otherwise 0.
-//
-#define	USE_AOT_FRICTION	0
+// to the AoT solution, the USE_AOT_FRICTION 0  option makes pure hexen2 to
+// feel slightly more slippery.
 
 #if USE_AOT_FRICTION
 	if (progs->crc == PROGS_V111_CRC)
@@ -816,6 +810,12 @@ void SV_RunClients (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2006/07/02 11:45:35  sezero
+ * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
+ * which stops vec3_origin usage in relevant calculations. renamed the Length
+ * macro to VectorLength for consistancy. updated the utilities' mathlib for
+ * similar macro usage as in the engine.
+ *
  * Revision 1.11  2006/06/25 10:21:03  sezero
  * misc clean-ups and prepare for merging a dedicated server
  *

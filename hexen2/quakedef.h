@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.93 2006-09-19 07:31:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.94 2006-09-21 06:05:35 sezero Exp $
 */
 
 
@@ -14,6 +14,7 @@
 #define STRINGIFY(x) __STRINGIFY(x)
 
 #include "arch_def.h"
+#include "h2_opt.h"
 
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		4
@@ -44,15 +45,6 @@
 #define	MAX_OSPATH	256	// max length of a filesystem pathname
 
 #define	QUAKE_GAME		// as opposed to utilities
-//define	PARANOID	// speed sapping error checking
-
-// COMPILE TIME OPTION: Whether we want the mission pack support to
-// be activated directly.
-// Default is no: player must use the -portals command line argument
-// to activate it.  If you want direct activation, change the below
-// undef to a define : in that case, player must use the -noportals
-// command line argument to disable mission pack support.
-#undef	H2MP
 
 #include <sys/types.h>
 #include <math.h>
@@ -462,6 +454,9 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.93  2006/09/19 07:31:31  sezero
+ * marked the snapshot of 2006-09-19 as 1.4.1-rc1
+ *
  * Revision 1.92  2006/09/18 09:56:59  sezero
  * use snprintf and the strl* functions, #13: menu.c. while we were
  * there, exported SAVEGAME_VERSION definition through quakedef.h,

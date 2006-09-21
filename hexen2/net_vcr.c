@@ -1,10 +1,12 @@
 // net_vcr.c
 
-#include "quakedef.h"
-#include "net_vcr.h"
+#include "h2_opt.h"
 
 
 #if NET_USE_VCR
+
+#include "quakedef.h"
+#include "net_vcr.h"
 
 extern FILE *vcrFile;
 

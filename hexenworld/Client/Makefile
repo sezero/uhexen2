@@ -185,7 +185,7 @@ EXT_FLAGS+= -DNO_SPLASHES
 else
 # gl version needs linking to comctl32.dll because of that progress
 # bar thingy. it is necessary for the InitCommonControls call, only
-# when USE_HEXEN2_PALTEX_CODE is defined as 0 in gl_opt.h.
+# when USE_HEXEN2_PALTEX_CODE is defined as 0 in h2_opt.h
 #GLFLAGS+=-lcomctl32
 endif
 # End of Win32 specific extras
