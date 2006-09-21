@@ -9,8 +9,8 @@
 //
 #if defined(H2W)
 #define ICO_FILE	"../icons/hexenworld.ico"
-#elif defined(H2MP)
-#define ICO_FILE	"icons/h2mp.ico"
+//#elif defined(H2MP)
+//#define ICO_FILE	"icons/h2mp.ico"
 #else
 #define ICO_FILE	"icons/hexen2.ico"
 #endif
@@ -19,8 +19,8 @@
 //
 #if defined(H2W)
 #define H2_STRING	"HexenWorld"
-#elif defined(H2MP)
-#define H2_STRING	"Hexen II+"
+//#elif defined(H2MP)
+//#define H2_STRING	"Hexen II+"
 #else
 #define H2_STRING	"Hexen II"
 #endif

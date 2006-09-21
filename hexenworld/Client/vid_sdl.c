@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.52 2006-09-15 20:03:37 sezero Exp $
+	$Id: vid_sdl.c,v 1.53 2006-09-21 06:00:20 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -116,9 +116,9 @@ void VID_MenuKey (int key);
 #if defined(H2W)
 #	define WM_TITLEBAR_TEXT	"HexenWorld"
 #	define WM_ICON_TEXT	"HexenWorld"
-#elif defined(H2MP)
-#	define WM_TITLEBAR_TEXT	"Hexen II+"
-#	define WM_ICON_TEXT	"HEXEN2MP"
+//#elif defined(H2MP)
+//#	define WM_TITLEBAR_TEXT	"Hexen II+"
+//#	define WM_ICON_TEXT	"HEXEN2MP"
 #else
 #	define WM_TITLEBAR_TEXT	"Hexen II"
 #	define WM_ICON_TEXT	"HEXEN2"
@@ -1308,6 +1308,10 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.52  2006/09/15 20:03:37  sezero
+ * fixes for parsing input from fgets, part-2: improved
+ * parsing of config.cfg during the early read.
+ *
  * Revision 1.51  2006/09/11 11:21:18  sezero
  * added human readable defines for the MIDI_Pause modes
  *
