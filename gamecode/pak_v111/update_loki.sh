@@ -27,7 +27,7 @@ fi
 PATCH_DAT="update_loki.dat"
 
 if [ ! -f ${PATCH_DAT} ]; then
-	echo -e "Patch binary loki_patch not found. Quitting.\n"
+	echo -e "Patch data file ${PATCH_DAT} not found. Quitting.\n"
 	exit 1
 fi
 
