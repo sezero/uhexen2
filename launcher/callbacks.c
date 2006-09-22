@@ -189,9 +189,14 @@ void con_Change (GtkEditable *editable, gpointer user_data)
 
 void libgl_Change (GtkEditable *editable, gpointer user_data)
 {
+	size_t len;
 	gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
+	len = strlen(tmp);
+	if (len > sizeof(gllibrary)-1)
+		len = sizeof(gllibrary)-1;
 	memset (gllibrary, 0, sizeof(gllibrary));
-	memcpy (gllibrary, tmp, strlen(tmp));
+	memcpy (gllibrary, tmp, len);
+	g_free (tmp);
 }
 
 void UpdateStats (struct Launch_s *wgt)
