@@ -17,7 +17,7 @@ extern int aasamples;
 extern int vsync;
 extern int use_lm1;
 extern int gl_nonstd;
-extern char gllibrary[256];
+extern char gllibrary[MAX_OSPATH];
 extern int midi;
 extern int cdaudio;
 extern int sound;
