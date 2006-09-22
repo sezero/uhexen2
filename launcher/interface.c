@@ -612,6 +612,7 @@ GtkWidget* create_window1 (void)
   gtk_widget_show (WGT_GLPATH);
   gtk_fixed_put (GTK_FIXED (ADDON_TAB2), WGT_GLPATH, 36, 280);
   gtk_widget_set_size_request (WGT_GLPATH, 164, 24);
+  gtk_entry_set_max_length (GTK_ENTRY (WGT_GLPATH), sizeof(gllibrary)-1);
   gtk_entry_set_text (GTK_ENTRY (WGT_GLPATH), gllibrary);
 //if (!opengl_support || !gl_nonstd)
 //	gtk_widget_set_sensitive (WGT_GLPATH, FALSE);
