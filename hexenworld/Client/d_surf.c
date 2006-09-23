@@ -2,7 +2,7 @@
 	d_surf.c
 	rasterization driver surface heap manager
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_surf.c,v 1.4 2005-10-25 20:08:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_surf.c,v 1.5 2006-09-23 07:46:46 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -20,11 +20,12 @@ surfcache_t			*sc_rover, *sc_base;
 
 int D_SurfaceCacheForRes (int width, int height)
 {
-	int		size, pix;
+	int		i, size, pix;
 
-	if (COM_CheckParm ("-surfcachesize"))
+	i = COM_CheckParm ("-surfcachesize");
+	if (i && i < com_argc-1)
 	{
-		size = atoi(com_argv[COM_CheckParm("-surfcachesize")+1]) * 1024;
+		size = atoi(com_argv[i+1]) * 1024;
 		return size;
 	}
 

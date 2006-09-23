@@ -2,7 +2,7 @@
 	d_surf.c
 	rasterization driver surface heap manager
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_surf.c,v 1.5 2005-10-25 20:08:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_surf.c,v 1.6 2006-09-23 07:46:46 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -20,11 +20,12 @@ surfcache_t			*sc_rover, *sc_base;
 
 int D_SurfaceCacheForRes (int width, int height)
 {
-	int		size, pix;
+	int		i, size, pix;
 
-	if (COM_CheckParm ("-surfcachesize"))
+	i = COM_CheckParm ("-surfcachesize");
+	if (i && i < com_argc-1)
 	{
-		size = atoi(com_argv[COM_CheckParm("-surfcachesize")+1]) * 1024;
+		size = atoi(com_argv[i+1]) * 1024;
 		return size;
 	}
 
@@ -341,6 +342,9 @@ surfcache_t *D_CacheSurface (msurface_t *surface, int miplevel)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/10/25 20:08:41  sezero
+ * coding style and whitespace cleanup.
+ *
  * Revision 1.4  2005/10/25 20:04:17  sezero
  * static functions part-1: started making local functions static,
  * killing nested externs, const vars clean-up.
