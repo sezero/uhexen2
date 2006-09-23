@@ -2,9 +2,8 @@
 Hexen II Launcher for linux / unix:
 
 Place the launcher binary into the directory that you installed
-Hammer of Thyrion (v1.4.1).  Execute it and enjoy. You can also
-create a symlink for it in a directory on your path.  You can
-then run it from any place.  Examples:
+Hammer of Thyrion v1.4.1.  Execute it and enjoy. You can also
+create a symlink for it in a directory on your path.  Examples:
 
 # ln -s /usr/local/games/hexen2/h2launcher  /home/my_name/bin/hexen2
 
@@ -15,4 +14,7 @@ then run it from any place.  Examples:
   or:
 
 # ln -s /usr/games/hexen2/h2launcher  /usr/bin/hexen2
+
+This way, you can run the game launcher simply by typing "hexen2"
+from any place.
 

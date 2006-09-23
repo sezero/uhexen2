@@ -18,15 +18,15 @@ Known Bugs
   or SDL sound.
 
 - 3dfx Voodoo Graphics / Voodoo2:  Palettized textures are broken with
-  Mesa 3.x. Use Mesa-6.x, which works fine. Windows people should use
-  the latest "MesaFX" driver for 3dfx.
+  the old Mesa 3.x drivers. The new Mesa-6.x drivers work fine. Windows
+  people should use the latest "MesaFX" driver.
 
-- 3dfx Voodoo: May not work correctly with multitexturing.  In fact,
-  this is a 3dfx problem.  For best results, use Mesa-6.2 on linux and
-  the latest "MesaFX" driver on windows.
+- 3dfx Voodoo: May not work correctly with multitexturing when running
+  with gl_luminance lightmaps. This is a 3dfx problem. For best results,
+  use Mesa-6.2 on Linux and the latest "MesaFX" driver on Windows.
 
 - Matrox G200: GL games may not display menus correctly (Matrox bug?)
 
-- Coop mode of HexenWorld is broken (known problem since Raven's latest
-  beta-0.15)
+- HexenWorld: Coop mode is broken. Known problem since Raven's latest
+  beta versions.
 

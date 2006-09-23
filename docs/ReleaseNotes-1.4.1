@@ -58,9 +58,8 @@ OpenGL Renderer:
 Sound:
 ------
 - Added mute, volumeup and volumedown console commands.
-- Endianness fixes in the OSS sound  driver.
-- OSS: do the GETOSPACE ioctl after setting the parameters and just before
-  mmaping the sound device.
+- OSS driver: Endianness fixes.
+- OSS driver: GETOSPACE ioctl must be issued after setting the parameters.
 - Added 48000, 24000, and 16000 Hz to the array of sampling rates. Should
   help 48khz AC97 chips.
 - Added an experimental SUN audio driver for native audio in openbsd, netbsd
@@ -75,9 +74,10 @@ CDAudio:
 
 HexenWorld:
 -----------
-- Fixed wrong charset and conback display problem upon gamedir changes
+- Fixed wrong charset and conback display problem upon gamedir changes.
 - Cleaned-up hexenworld master server. Added the "clear" console command to
   clear the list of registered servers.
+- Added a tiny utility for querying hexenworld master servers (hwmquery).
 
 Utilities:
 ----------
@@ -101,5 +101,5 @@ Other:
 - Added support for yasm (v0.5.0) as an alternative assembler
 - Fixes and improvements in the build system
 - Many compile and linkage fixes.
-- Many other non-user-visable clean-ups and small improvements.
+- Many other bug fixes, non-user-visable clean-ups and small improvements.
 

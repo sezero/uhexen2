@@ -3,27 +3,26 @@ Hexen II: Hammer of Thyrion
 Features:
 ---------------------------
 
-* Support for Hexen II, Hexen II demo, Portal of Praevus Mission
-  Pack and HexenWorld.
+* Support for Hexen II, Hexen II demo, Portal of Praevus mission pack
+  and HexenWorld.
 
-* Tested with Linux, FreeBSD, Mac OS X and Windows. Software renderer
+* Tested on Linux, FreeBSD, Mac OS X and Windows. The software renderer
   version is tested on QNX. Other unices should also work. There are
   seperate ports to MorphOS and PalmOS.
 
-* Resolution changing on the fly, for both opengl and software
-  renderers. Instant fullscreen/windowed toggling on unix.
+* Resolution changing on the fly for both opengl and software renderers.
+  Instant fullscreen/windowed toggling on unix.
 
-* OpenGL enhancements including multitexturing, glow effects,
-  working brightness control, translucent console background,
-  console background stretching, colored lights and support for
-  external lit files, texture delete/reload support, on-the-fly
-  text and hud size changing, fixes for texture cache and model
-  mesh cache mismatches.
+* OpenGL enhancements including multitexturing, glow effects, working
+  brightness control, text and hud size changing on the fly, translucent
+  console background, console background stretching, colored lights and
+  support for external lit files, texture delete/reload support, fixes
+  for texture cache and model mesh cache mismatches.
 
 * The same binary handles both original hexen2 and the mission pack.
 
-* The same hexen2 binary transparently handles both hexen2-1.11 and
-  h2mp-v1.12 progs.dat files.
+* The same hexen2 binary transparently handles both hexen2 v1.11 and
+  h2mp v1.12 style progs.dat files.
 
 * Fullscreen intermissions and help dialogs.
 
@@ -31,11 +30,12 @@ Features:
 
 * Improvements and fixes to the HexenC game code.
 
-* Improved sound support. A selection of three different sound drivers
-  (ALSA, OSS and SDL) for linux, and FreeBSD supported with SDL.
+* Improved sound support: A selection of three different sound drivers
+  (ALSA, OSS and SDL) for Linux. FreeBSD is supported with OSS and SDL,
+  OpenBSD and NetBSD are experimentally supported with sunaudio and SDL.
 
-* Working music volume controls and on the fly selection of CD or
-  MIDI music.
+* Working music volume controls and on the fly selection of CD or MIDI
+  music.
 
 * Full user directories support under unix: all users have their own
   configuration files and game saves.
@@ -45,5 +45,5 @@ Features:
 
 * Several hexen2 utilities are maintained and are being kept up to date.
 
-* Many other bug fixes and improvements
+* Many bug fixes and other improvements.
 

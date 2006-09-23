@@ -9,8 +9,8 @@ on Hammer of Thyrion downloads page.
 In order to compile the original hexen2 hcode,
 use the old version of the hcc program (found
 in "hcc_old" in the utils.) The newer version
-would still work, but try not to use its -oi
-and -on command line switches. Do:
+works, too, but try not to use its -oi and -on
+command line switches. Do:
 
 # hcc -name progs.src
 # hcc -name progs2.src

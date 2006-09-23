@@ -127,8 +127,8 @@ Compiling the software renderer for non-x86:
 For the time being, software renderer clients cannot be compiled for non-
 x86 cpus because of some x86 assembly code about translucency which do not
 have their C counterparts yet. For details, see NonIntel.log in docs. On
-the other hand, if you want to compile it for x86_64, adding -m32 to the
-cpuflags and ldflags should help.
+the other hand, if you want to compile it on x86_64, adding -m32 to the
+cpu and linker flags should help.
 
 
 Links:
