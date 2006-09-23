@@ -2346,19 +2346,19 @@ void	VID_Init (unsigned char *palette)
 		i = COM_CheckParm("-width");
 		if (i && i < com_argc-1)
 		{
-			i = atoi(com_argv[COM_CheckParm("-width")+1]);
+			j = atoi(com_argv[i+1]);
 			// don't allow requests larger than desktop
-			if (i <= vid_deskwidth && i >= 320)
+			if (j <= vid_deskwidth && j >= 320)
 			{
-				width = i;
+				width = j;
 				height = width * 3 / 4;
 				i = COM_CheckParm("-height");
 				if (i && i < com_argc-1)
 				{
-					i = atoi(com_argv[COM_CheckParm("-height")+1]);
-					if (i <= vid_deskheight && i >= 240)
+					j = atoi(com_argv[i+1]);
+					if (j <= vid_deskheight && j >= 240)
 					{
-						height= i;
+						height= j;
 					}
 				}
 			}
