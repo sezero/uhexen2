@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.21 2006-06-17 06:05:25 sezero Exp $
+	$Id: snd_oss.c,v 1.22 2006-09-23 07:22:03 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -271,7 +271,8 @@ qboolean S_OSS_Init(void)
 	shm->samplepos = 0;
 
 	snd_inited = 1;
-	Con_Printf("Audio Subsystem initialized in OSS mode.\n");
+	Con_Printf("OSS Audio initialized (%d bit, %s, %d Hz)\n",
+				shm->samplebits, (shm->channels == 2) ? "stereo" : "mono", shm->speed);
 	return 1;
 }
 
