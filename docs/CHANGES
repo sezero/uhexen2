@@ -3,6 +3,39 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-09-23 (CVS):
+    * fixed shameful typoes in vid_sdl.c and gl_vidsdl.c
+    * added a short summary to the OSS init success message
+    * cosmetics and readability stuff (snd_oss.c)
+    * cosmetics and readability stuff (gl_vidnt.c)
+    * added missing com_argc checks (and fixed the incorrect ones)
+      after several COM_CheckParm calls.
+    * documentation updates.
+
+2006-09-22 (CVS):
+    * launcher: bound the gllibrary size to MAX_OSPATH instead of 256.
+    * launcher: limited the length of text taken from the widget to the
+      size of gllibrary. freed the temporary string.
+    * launcher: limited the maximum length for the gllibrary entry to
+      the size of gllibrary.
+
+2006-09-21 (CVS):
+    * commented out mission pack specific window manager icons and
+      titles.
+    * gathered most, if not all, of our compile time options into a
+      header file named "h2_opt.h" with documentation. removed gl_opt.h.
+      removed all of the one liner extra patches which played with these
+      options. updated the COMPILE document accordingly.
+    * removed old and outdated Xcode files.
+    * added new MacOSX Xcode files for hexen2.
+    * fixed a copy+paste error in the loki_patch script.
+
+2006-09-20 (CVS):
+    * removed my old code that disabled the SDL_QUIT event during
+      resolution changes.
+    * added an 64x64 png icon for hexen2.
+    * added the xbm format version of 64x64 hexen2 icon.
+
 2006-09-19 (CVS, 1.4.1-rc1):
     * updated documentation.
     * string sizes stuff, #15: zone.c.
