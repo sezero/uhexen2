@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.57 2006-09-21 06:00:18 sezero Exp $
+	$Id: vid_sdl.c,v 1.58 2006-09-23 07:20:18 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -790,9 +790,11 @@ void	VID_Init (unsigned char *palette)
 
 	// init sdl
 	// the first check is actually unnecessary
-	if ( (SDL_WasInit(SDL_INIT_AUDIO)) == 0 )
+	if ( (SDL_WasInit(SDL_INIT_VIDEO)) == 0 )
+	{
 		if (SDL_Init(SDL_INIT_VIDEO) < 0)
 			Sys_Error("VID: Couldn't load SDL: %s", SDL_GetError());
+	}
 
 	// this will contain the "best bpp" for the current display
 	// make sure to re-retrieve it if you ever re-init sdl_video
@@ -1308,6 +1310,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.57  2006/09/21 06:00:18  sezero
+ * commented out mission pack specific window manager icons and titles
+ *
  * Revision 1.56  2006/09/15 20:03:36  sezero
  * fixes for parsing input from fgets, part-2: improved
  * parsing of config.cfg during the early read.

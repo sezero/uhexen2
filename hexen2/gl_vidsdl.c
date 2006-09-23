@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.130 2006-09-21 06:00:18 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.131 2006-09-23 07:20:18 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1644,9 +1644,11 @@ void	VID_Init (unsigned char *palette)
 
 	// init sdl
 	// the first check is actually unnecessary
-	if ( (SDL_WasInit(SDL_INIT_AUDIO)) == 0 )
+	if ( (SDL_WasInit(SDL_INIT_VIDEO)) == 0 )
+	{
 		if (SDL_Init(SDL_INIT_VIDEO) < 0)
 			Sys_Error ("Couldn't init video: %s", SDL_GetError());
+	}
 
 #ifdef GL_DLSYM
 	if ((i = COM_CheckParm("--gllibrary")))
