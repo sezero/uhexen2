@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.22 2006-09-23 07:22:03 sezero Exp $
+	$Id: snd_oss.c,v 1.23 2006-09-23 07:22:38 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -93,7 +93,8 @@ qboolean S_OSS_Init(void)
 		return 0;
 	}
 
-	if (ioctl(audio_fd, SNDCTL_DSP_GETCAPS, &caps)==-1)
+	rc = ioctl(audio_fd, SNDCTL_DSP_GETCAPS, &caps);
+	if (rc < 0)
 	{
 		perror(ossdev);
 		Con_Printf("Couldn't retrieve soundcard capabilities\n");
@@ -107,16 +108,6 @@ qboolean S_OSS_Init(void)
 		close(audio_fd);
 		return 0;
 	}
-
-#if 0	// moved to below
-	if (ioctl(audio_fd, SNDCTL_DSP_GETOSPACE, &info)==-1)
-	{
-		perror("GETOSPACE");
-		Con_Printf("Couldn't retrieve buffer status\n");
-		close(audio_fd);
-		return 0;
-	}
-#endif
 
 	shm = &sn;
 
@@ -165,7 +156,7 @@ qboolean S_OSS_Init(void)
 	{
 		Con_Printf("Problems setting dsp speed, trying alternatives..\n");
 		shm->speed = 0;
-		for (i=0 ; i<MAX_TRYRATES ; i++)
+		for (i = 0; i < MAX_TRYRATES; i++)
 		{
 			tmp = tryrates[i];
 			rc= ioctl(audio_fd, SNDCTL_DSP_SPEED, &tmp);
@@ -220,7 +211,8 @@ qboolean S_OSS_Init(void)
 	}
 	shm->channels = tmp +1;
 
-	if (ioctl(audio_fd, SNDCTL_DSP_GETOSPACE, &info)==-1)
+	rc = ioctl(audio_fd, SNDCTL_DSP_GETOSPACE, &info);
+	if (rc < 0)
 	{
 		perror("GETOSPACE");
 		Con_Printf("Couldn't retrieve buffer status\n");
@@ -283,7 +275,7 @@ int S_OSS_GetDMAPos(void)
 	if (!snd_inited)
 		return 0;
 
-	if (ioctl(audio_fd, SNDCTL_DSP_GETOPTR, &count)==-1)
+	if ( ioctl(audio_fd, SNDCTL_DSP_GETOPTR, &count) == -1 )
 	{
 		perror(ossdev);
 		Con_Printf("Uh, sound dead.\n");
