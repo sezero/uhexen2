@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.37 2006-09-18 09:57:57 sezero Exp $
+	$Id: snd_dma.c,v 1.38 2006-09-23 07:25:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -137,7 +137,8 @@ void S_Startup (void)
 	if (!snd_initialized)
 		return;
 
-	if ((tmp = COM_CheckParm("-sndspeed")) != 0)
+	tmp = COM_CheckParm("-sndspeed");
+	if (tmp != 0 && tmp < com_argc-1)
 	{
 		tmp = atoi(com_argv[tmp+1]);
 		/* I won't rely on users' precision in typing or their needs
@@ -152,14 +153,16 @@ void S_Startup (void)
 		}
 	}
 
-	if ((tmp = COM_CheckParm("-sndbits")) != 0)
+	tmp = COM_CheckParm("-sndbits");
+	if (tmp != 0 && tmp < com_argc-1)
 	{
 		tmp = atoi(com_argv[tmp+1]);
 		if ((tmp == 16) || (tmp == 8))
 			desired_bits = tmp;
 	}
 
-	if ((tmp = COM_CheckParm("-sndmono")) != 0)
+	tmp = COM_CheckParm("-sndmono");
+	if (tmp != 0)
 		desired_channels = 1;
 
 	sound_started = SNDDMA_Init();
@@ -1094,6 +1097,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.37  2006/09/18 09:57:57  sezero
+ * use snprintf and the strl* functions, #14: snd_dma.c and snd_mem.c.
+ *
  * Revision 1.36  2006/08/07 08:06:01  sezero
  * initially I didn't want to use cvars for storing the saved
  * volumes when muting/unmuting, but, naturally, that prevented

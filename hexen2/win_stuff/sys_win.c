@@ -385,7 +385,7 @@ static void Sys_InitFloatTime (void)
 
 	j = COM_CheckParm("-starttime");
 
-	if (j)
+	if (j && j < com_argc-1)
 	{
 		curtime = (double) (atof(com_argv[j+1]));
 	}
@@ -684,22 +684,22 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		houtput = GetStdHandle (STD_OUTPUT_HANDLE);
 
 	// give QHOST a chance to hook into the console
-		if ((t = COM_CheckParm ("-HFILE")) > 0)
+		t = COM_CheckParm ("-HFILE");
+		if (t && t < com_argc-1)
 		{
-			if (t < com_argc)
-				hFile = (HANDLE)atoi (com_argv[t+1]);
+			hFile = (HANDLE)atoi (com_argv[t+1]);
 		}
 
-		if ((t = COM_CheckParm ("-HPARENT")) > 0)
+		t = COM_CheckParm ("-HPARENT");
+		if (t && t < com_argc-1)
 		{
-			if (t < com_argc)
-				heventParent = (HANDLE)atoi (com_argv[t+1]);
+			heventParent = (HANDLE)atoi (com_argv[t+1]);
 		}
 
-		if ((t = COM_CheckParm ("-HCHILD")) > 0)
+		t = COM_CheckParm ("-HCHILD");
+		if (t && t < com_argc-1)
 		{
-			if (t < com_argc)
-				heventChild = (HANDLE)atoi (com_argv[t+1]);
+			heventChild = (HANDLE)atoi (com_argv[t+1]);
 		}
 
 		InitConProc (hFile, heventParent, heventChild);
@@ -760,6 +760,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.35  2006/06/25 10:21:04  sezero
+ * misc clean-ups and prepare for merging a dedicated server
+ *
  * Revision 1.34  2006/06/14 10:13:32  sezero
  * removed bogus retval check from win32 version of Sys_FindFirstFile
  *

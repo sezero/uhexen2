@@ -2293,7 +2293,11 @@ void	VID_Init (unsigned char *palette)
 #endif
 
 #ifdef GL_DLSYM
-	i = COM_CheckParm("-gllibrary");
+	i = COM_CheckParm("--gllibrary");
+	if (i == 0)
+		i = COM_CheckParm ("-gllibrary");
+	if (i == 0)
+		i = COM_CheckParm ("-g");
 	if (i && i < com_argc - 1)
 		gl_library = com_argv[i+1];
 	else

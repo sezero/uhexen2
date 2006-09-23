@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.18 2006-09-15 09:18:41 sezero Exp $
+	$Id: snd_alsa.c,v 1.19 2006-09-23 07:25:36 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -107,7 +107,8 @@ qboolean S_ALSA_Init (void)
 	if (!load_libasound ())
 		return false;
 
-	if ((err = COM_CheckParm("-alsadev")) != 0)
+	err = COM_CheckParm("-alsadev");
+	if (err != 0 && err < com_argc-1)
 		pcmname = com_argv[err+1];
 
 	err = hx2snd_pcm_open (&pcm, pcmname, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
@@ -335,6 +336,9 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2006/09/15 09:18:41  sezero
+ * fixed another gcc4 warning about type-punning (although in disabled code)
+ *
  * Revision 1.17  2006/06/15 09:31:53  sezero
  * kept the same standart for alsa sound availablity in snd_sys
  *

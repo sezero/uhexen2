@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.13 2006-07-18 22:30:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.14 2006-09-23 07:25:35 sezero Exp $
 */
 
 
@@ -77,7 +77,7 @@ void R_InitParticles (void)
 
 	i = COM_CheckParm ("-particles");
 
-	if (i)
+	if (i && i < com_argc-1)
 	{
 		r_numparticles = (int)(atoi(com_argv[i+1]));
 		if (r_numparticles < ABSOLUTE_MIN_PARTICLES)
@@ -1847,6 +1847,12 @@ void R_UpdateParticles (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2006/07/18 22:30:13  sezero
+ * some tidy-up in the hexen2 version of R_DrawParticles: kill checks
+ * are removed from the renderer function, R_UpdateParticles already
+ * does that for us. the gl version now picks its texture corrdinates
+ * from an array. repetitive lines were tidied for better readability.
+ *
  * Revision 1.12  2006/07/02 11:45:34  sezero
  * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
  * which stops vec3_origin usage in relevant calculations. renamed the Length

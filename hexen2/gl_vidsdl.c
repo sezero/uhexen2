@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.131 2006-09-23 07:20:18 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.132 2006-09-23 07:25:35 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1651,9 +1651,12 @@ void	VID_Init (unsigned char *palette)
 	}
 
 #ifdef GL_DLSYM
-	if ((i = COM_CheckParm("--gllibrary")))
-		gl_library = com_argv[i+1];
-	else if ((i = COM_CheckParm("-g")))
+	i = COM_CheckParm("--gllibrary");
+	if (i == 0)
+		i = COM_CheckParm ("-gllibrary");
+	if (i == 0)
+		i = COM_CheckParm ("-g");
+	if (i != 0 && i < com_argc-1)
 		gl_library = com_argv[i+1];
 	else
 		gl_library = NULL;	// trust SDL's wisdom here

@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.23 2006-09-23 07:22:38 sezero Exp $
+	$Id: snd_oss.c,v 1.24 2006-09-23 07:25:35 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -63,7 +63,8 @@ qboolean S_OSS_Init(void)
 	snd_inited = 0;
 
 // open /dev/dsp, confirm capability to mmap, and get size of dma buffer
-	if ((tmp = COM_CheckParm("-ossdev")) != 0)
+	tmp = COM_CheckParm("-ossdev");
+	if (tmp != 0 && tmp < com_argc-1)
 		ossdev = com_argv[tmp+1];
 	Con_Printf ("Using OSS device %s\n", ossdev);
 

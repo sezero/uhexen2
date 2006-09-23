@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.10 2006-07-02 11:45:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.11 2006-09-23 07:25:36 sezero Exp $
 */
 
 
@@ -66,7 +66,7 @@ void R_InitParticles (void)
 
 	i = COM_CheckParm ("-particles");
 
-	if (i)
+	if (i && i < com_argc-1)
 	{
 		r_numparticles = (int)(atoi(com_argv[i+1]));
 		if (r_numparticles < ABSOLUTE_MIN_PARTICLES)

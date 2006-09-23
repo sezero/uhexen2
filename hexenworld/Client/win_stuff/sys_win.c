@@ -340,7 +340,7 @@ static void Sys_InitFloatTime (void)
 
 	j = COM_CheckParm("-starttime");
 
-	if (j)
+	if (j && j < com_argc-1)
 	{
 		curtime = (double) (atof(com_argv[j+1]));
 	}

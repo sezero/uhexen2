@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.58 2006-09-23 07:20:18 sezero Exp $
+	$Id: vid_sdl.c,v 1.59 2006-09-23 07:25:35 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -829,13 +829,15 @@ void	VID_Init (unsigned char *palette)
 	height = (int)vid_config_swy.value;
 
 	// user is always right ...
-	if (COM_CheckParm("-width"))
+	i = COM_CheckParm("-width");
+	if (i && i < com_argc-1)
 	{	// FIXME: this part doesn't know about a disaster case
 		// like we aren't reported any fullscreen modes.
-		width = atoi(com_argv[COM_CheckParm("-width")+1]);
+		width = atoi(com_argv[i+1]);
 
-		if (COM_CheckParm("-height"))
-			height = atoi(com_argv[COM_CheckParm("-height")+1]);
+		i = COM_CheckParm("-height");
+		if (i && i < com_argc-1)
+			height = atoi(com_argv[i+1]);
 		else	// proceed with 4/3 ratio
 			height = 3 * width / 4;
 	}
@@ -1310,6 +1312,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.58  2006/09/23 07:20:18  sezero
+ * fixed shameful typoes in vid_sdl.c and gl_vidsdl.c
+ *
  * Revision 1.57  2006/09/21 06:00:18  sezero
  * commented out mission pack specific window manager icons and titles
  *
