@@ -3,6 +3,19 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-09-24 (CVS):
+    * few more cosmetics and readability stuff (hwclient/net_wins.c,
+      hwmaster/net.c, hwmaster/sys_main.c).
+    * added missing com_argc checks (and fixed the incorrect ones)
+      after several COM_CheckParm calls: SV_InitNet().
+    * updated the license document from the gnu ftp.
+    * made the make clean commands silent when building the rpms.
+    * made the build scripts to exit at the first error encountered.
+    * made the gcc version scripts to check its arguments and detect
+      whether the given compiler command can be run. made them to work
+      under solaris.
+    * protected all headers against multiple inclusion.
+
 2006-09-23 (CVS):
     * fixed shameful typoes in vid_sdl.c and gl_vidsdl.c
     * added a short summary to the OSS init success message
