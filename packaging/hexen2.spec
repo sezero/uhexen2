@@ -69,16 +69,16 @@ mode.
 %build
 # Build the main game binaries
 %{__make} -C hexen2 h2
-%{__make} -C hexen2 clean
+%{__make} -s -C hexen2 clean
 %{__make} -C hexen2 glh2
-%{__make} -C hexen2 clean
+%{__make} -s -C hexen2 clean
 # Build the dedicated server
 %{__make} -C hexen2 -f Makefile.sv
 # HexenWorld binaries
 %{__make} -C hexenworld/Server
 %{__make} -C hexenworld/Master
 %{__make} -C hexenworld/Client hw
-%{__make} -C hexenworld/Client clean
+%{__make} -s -C hexenworld/Client clean
 %{__make} -C hexenworld/Client glhw
 # Launcher binaries
 %if %{!?_without_gtk2:1}0
