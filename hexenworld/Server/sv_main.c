@@ -1538,7 +1538,7 @@ static void SV_InitNet (void)
 
 	port = PORT_SERVER;
 	p = COM_CheckParm ("-port");
-	if (p && p < com_argc)
+	if (p && p < com_argc-1)
 	{
 		port = atoi(com_argv[p+1]);
 		Con_Printf ("Port: %i\n", port);
