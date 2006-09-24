@@ -47,17 +47,17 @@ exit 0
 fi
 
 echo "Building hcc, the HexenC compiler.."
-$MAKE_CMD -C hcc
+$MAKE_CMD -C hcc || exit 1
 echo "" && echo "Now building hcc, old version"
-$MAKE_CMD -C hcc_old
+$MAKE_CMD -C hcc_old || exit 1
 echo "" && echo "Now building qfiles.."
-$MAKE_CMD -C qfiles
+$MAKE_CMD -C qfiles || exit 1
 echo "" && echo "Now building genmodel.."
-$MAKE_CMD -C genmodel
+$MAKE_CMD -C genmodel || exit 1
 echo "" && echo "Now building light, vis and qbsp.."
-$MAKE_CMD -C maputils
+$MAKE_CMD -C maputils || exit 1
 echo "" && echo "Now building dhcc, a progs.dat decompiler.."
-$MAKE_CMD -C dcc
+$MAKE_CMD -C dcc || exit 1
 echo "" && echo "Now building jsh2colour, a lit file generator.."
-$MAKE_CMD -C jsh2color
+$MAKE_CMD -C jsh2color || exit 1
 

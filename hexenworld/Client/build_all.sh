@@ -15,8 +15,8 @@ Linux)
 esac
 
 $MAKE_CMD clean
-$MAKE_CMD hw
+$MAKE_CMD hw || exit 1
 $MAKE_CMD clean
-$MAKE_CMD glhw
+$MAKE_CMD glhw || exit 1
 $MAKE_CMD clean
 

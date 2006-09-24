@@ -45,23 +45,23 @@ exit 0
 fi
 
 echo "Building hcc, the HexenC compiler.."
-$MAKE_CMD -C hcc $SENDARGS
+$MAKE_CMD -C hcc $SENDARGS || exit 1
 
 echo "" && echo "Now building hcc, old version"
-$MAKE_CMD -C hcc_old $SENDARGS
+$MAKE_CMD -C hcc_old $SENDARGS || exit 1
 
 echo "" && echo "Now building qfiles.."
-$MAKE_CMD -C qfiles $SENDARGS
+$MAKE_CMD -C qfiles $SENDARGS || exit 1
 
 echo "" && echo "Now building genmodel.."
-$MAKE_CMD -C genmodel $SENDARGS
+$MAKE_CMD -C genmodel $SENDARGS || exit 1
 
 echo "" && echo "Now building light, vis and qbsp.."
-$MAKE_CMD -C maputils $SENDARGS
+$MAKE_CMD -C maputils $SENDARGS || exit 1
 
 echo "" && echo "Now building dhcc, a progs.dat decompiler.."
-$MAKE_CMD -C dcc $SENDARGS
+$MAKE_CMD -C dcc $SENDARGS || exit 1
 
 echo "" && echo "Now building jsh2colour, a lit file generator.."
-$MAKE_CMD -C jsh2color $SENDARGS
+$MAKE_CMD -C jsh2color $SENDARGS || exit 1
 

@@ -26,9 +26,9 @@ esac
 if [ "$1" = "all" ]
 then
 $MAKE_CMD clean
-$MAKE_CMD $SENDARGS $2 $3 $4 glhw
+$MAKE_CMD $SENDARGS $2 $3 $4 glhw || exit 1
 $MAKE_CMD clean
-$MAKE_CMD $SENDARGS $2 $3 $4 hw
+$MAKE_CMD $SENDARGS $2 $3 $4 hw || exit 1
 $MAKE_CMD clean
 exit 0
 fi

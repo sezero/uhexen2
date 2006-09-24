@@ -40,15 +40,15 @@ exit 0
 fi
 
 echo "Building hexenworld server..."
-$MAKE_CMD -C Server
+$MAKE_CMD -C Server || exit 1
 
 echo "" && echo "Building hexenworld master server.."
-$MAKE_CMD -C Master
+$MAKE_CMD -C Master || exit 1
 
 echo "" && echo "Building hexenworld client (software renderer)"
-$MAKE_CMD -C Client hw
+$MAKE_CMD -C Client hw || exit 1
 
 echo "" && echo "Building hexenworld client (opengl renderer)"
 $MAKE_CMD -s -C Client clean
-$MAKE_CMD -C Client glhw
+$MAKE_CMD -C Client glhw || exit 1
 

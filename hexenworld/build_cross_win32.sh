@@ -38,15 +38,15 @@ exit 0
 fi
 
 echo "Building HexenWorld Server"
-$MAKE_CMD -C Server $SENDARGS $*
+$MAKE_CMD -C Server $SENDARGS $* || exit 1
 
 echo "" && echo "Building HexenWorld Master Server"
-$MAKE_CMD -C Master $SENDARGS $*
+$MAKE_CMD -C Master $SENDARGS $* || exit 1
 
 echo "" && echo "Building HexenWorld Client (Software renderer)"
-$MAKE_CMD -C Client $SENDARGS $* hw
+$MAKE_CMD -C Client $SENDARGS $* hw || exit 1
 
 echo "" && echo "Building HexenWorld Client (OpenGL renderer)"
 $MAKE_CMD -C Client clean
-$MAKE_CMD -C Client $SENDARGS $* glhw
+$MAKE_CMD -C Client $SENDARGS $* glhw || exit 1
 

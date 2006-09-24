@@ -25,18 +25,18 @@ esac
 
 if [ "$1" = "h2ded" ]
 then
-$MAKE_CMD $SENDARGS -f Makefile.sv $2 $3 $4
+$MAKE_CMD $SENDARGS -f Makefile.sv $2 $3 $4 || exit 1
 exit 0
 fi
 
 if [ "$1" = "all" ]
 then
 $MAKE_CMD clean
-$MAKE_CMD $SENDARGS $2 $3 $4 h2
+$MAKE_CMD $SENDARGS $2 $3 $4 h2  || exit 1
 $MAKE_CMD clean
-$MAKE_CMD $SENDARGS $2 $3 $4 glh2
+$MAKE_CMD $SENDARGS $2 $3 $4 glh2 || exit 1
 $MAKE_CMD clean
-$MAKE_CMD $SENDARGS -f Makefile.sv $2 $3 $4
+$MAKE_CMD $SENDARGS -f Makefile.sv $2 $3 $4 || exit 1
 $MAKE_CMD clean
 exit 0
 fi
