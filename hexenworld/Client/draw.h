@@ -3,9 +3,11 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.15 2006-08-14 06:42:30 sezero Exp $
+	$Id: draw.h,v 1.16 2006-09-24 17:28:43 sezero Exp $
 */
 
+#ifndef __HX2_DRAW_H
+#define __HX2_DRAW_H
 
 #define MAX_DISC 18
 
@@ -47,4 +49,6 @@ qpic_t *Draw_CachePicResize (char *path, int targetWidth, int targetHeight);
 // game/engine name to draw on the console
 #define GAME_MOD_NAME		ENGINE_NAME
 #define ENGINE_WATERMARK	GAME_MOD_NAME " " STRINGIFY(ENGINE_VERSION) " (" VERSION_PLATFORM ")"
+
+#endif	/* __HX2_DRAW_H */
 

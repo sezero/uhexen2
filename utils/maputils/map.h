@@ -1,4 +1,6 @@
 
+#ifndef __H2UTILS_MAP_H
+#define __H2UTILS_MAP_H
 
 #define	MAX_FACES	64	// 16
 
@@ -50,4 +52,6 @@ float	FloatForKey (entity_t *ent, char *key);
 void	GetVectorForKey (entity_t *ent, char *key, vec3_t vec);
 
 void	WriteEntitiesToString (void);
+
+#endif	/* __H2UTILS_MAP_H */
 

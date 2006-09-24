@@ -1,5 +1,8 @@
 // net_wins.h
 
+#ifndef __NET_WINSOCK_H
+#define __NET_WINSOCK_H
+
 int  WINS_Init (void);
 void WINS_Shutdown (void);
 void WINS_Listen (qboolean state);
@@ -18,3 +21,6 @@ int  WINS_GetAddrFromName (char *name, struct qsockaddr *addr);
 int  WINS_AddrCompare (struct qsockaddr *addr1, struct qsockaddr *addr2);
 int  WINS_GetSocketPort (struct qsockaddr *addr);
 int  WINS_SetSocketPort (struct qsockaddr *addr, int port);
+
+#endif	/* __NET_WINSOCK_H */
+

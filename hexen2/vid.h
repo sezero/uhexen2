@@ -1,5 +1,8 @@
 // vid.h -- video driver defs
 
+#ifndef __VID_DEFS_H
+#define __VID_DEFS_H
+
 #define VID_CBITS	6
 #define VID_GRADES	(1 << VID_CBITS)
 
@@ -102,4 +105,6 @@ void D_ShowLoadingSize (void);
 extern void (*vid_menudrawfn)(void);
 extern void (*vid_menukeyfn)(int key);
 // video menu function pointers
+
+#endif	/* __VID_DEFS_H */
 

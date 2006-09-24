@@ -17,6 +17,9 @@
     See file, 'COPYING', for details.
 */
 
+#ifndef __H2UTILS_THREADS_H
+#define __H2UTILS_THREADS_H
+
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -50,4 +53,6 @@ typedef void (threadfunc_t) (void *);
 
 void	InitThreads (void);
 void	RunThreadsOn ( threadfunc_t func );
+
+#endif	/* __H2UTILS_THREADS_H */
 

@@ -2,6 +2,9 @@
 // pr_strng.h
 //
 
+#ifndef __PR_STRINGS_H
+#define __PR_STRINGS_H
+
 extern	int	*pr_string_index;
 extern	char	*pr_global_strings;
 extern	int	pr_string_count;
@@ -18,4 +21,6 @@ extern	int	pr_info_string_count;
 
 void PR_LoadInfoStrings (void);
 #endif	// !H2W
+
+#endif	/* __PR_STRINGS_H */
 

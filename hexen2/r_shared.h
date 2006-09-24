@@ -3,15 +3,15 @@
 	general refresh-related stuff shared between the refresh
 	and the driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.4 2006-04-05 06:03:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.5 2006-09-24 17:28:42 sezero Exp $
 */
 
+#ifndef __R_SHARED_H
+#define __R_SHARED_H
+
 #ifndef GLQUAKE
+
 // FIXME: clean up and move into d_iface.h
-
-#ifndef _R_SHARED_H_
-#define _R_SHARED_H_
-
 
 #define	MAXVERTS	16		// max points in a surface polygon
 
@@ -154,12 +154,15 @@ typedef struct edge_s
 extern	byte	*mainTransTable;
 extern	byte	*playerTranslation;
 
-#endif	// _R_SHARED_H_
+#endif	/*  !GLQUAKE	*/
 
-#endif	// !GLQUAKE
+#endif	/* __R_SHARED_H	*/
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2006/04/05 06:03:07  sezero
+ * whitespace clean-ups (r_shared.h)
+ *
  * Revision 1.3  2005/06/07 08:58:54  sezero
  * changed all references to obsoleted modelgen.h into genmodel.h
  *

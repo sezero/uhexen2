@@ -1,5 +1,8 @@
 // net.h -- quake's interface to the networking layer
 
+#ifndef __H2W_NET_H
+#define __H2W_NET_H
+
 #define	PORT_ANY	-1
 
 typedef struct
@@ -88,4 +91,6 @@ void Netchan_Setup (netchan_t *chan, netadr_t adr);
 
 qboolean Netchan_CanPacket (netchan_t *chan);
 qboolean Netchan_CanReliable (netchan_t *chan);
+
+#endif	/* __H2W_NET_H */
 

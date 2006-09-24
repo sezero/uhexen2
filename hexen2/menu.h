@@ -1,8 +1,11 @@
 /*
 	menu.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.h,v 1.5 2006-01-07 09:36:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.h,v 1.6 2006-09-24 17:28:42 sezero Exp $
 */
+
+#ifndef __HX2_MENU_H
+#define __HX2_MENU_H
 
 //
 // the net drivers should just set the apropriate bits in m_activenet,
@@ -44,9 +47,13 @@ void M_DrawCheckbox (int x, int y, int on);
 
 void ScrollTitle (char *name);
 
+#endif	/* __HX2_MENU_H */
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2006/01/07 09:36:09  sezero
+ * made M_DrawCheckbox global
+ *
  * Revision 1.4  2005/01/01 21:43:47  sezero
  * prototypes clean-up
  *

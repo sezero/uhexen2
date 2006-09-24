@@ -1,6 +1,9 @@
 
 // bsp5.h
 
+#ifndef __BSP5_H__
+#define __BSP5_H__
+
 #include "cmdlib.h"
 #include "mathlib.h"
 #include "bspfile.h"
@@ -300,4 +303,6 @@ node_t		*AllocNode (void);
 struct brush_s	*AllocBrush (void);
 
 //=============================================================================
+
+#endif	/* __BSP5_H__	*/
 

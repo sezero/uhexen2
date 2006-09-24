@@ -2,9 +2,12 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.55 2006-09-21 06:05:35 sezero Exp $
+	$Id: glquake.h,v 1.56 2006-09-24 17:28:42 sezero Exp $
 */
 
+
+#ifndef __GLQUAKE_H
+#define __GLQUAKE_H
 
 #ifdef _WIN32
 #include <windows.h>
@@ -387,9 +390,16 @@ extern	const char *gl_renderer;
 extern	const char *gl_version;
 extern	const char *gl_extensions;
 
+#endif	/* __GLQUAKE_H */
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.55  2006/09/21 06:05:35  sezero
+ * gathered most, if not all, of our compile time options into a header
+ * file named "h2_opt.h" with documentation. removed gl_opt.h. removed
+ * all of the one liner extra patches which played with these options.
+ * updated the COMPILE document accordingly.
+ *
  * Revision 1.54  2006/09/15 12:03:18  sezero
  * made a MAX_IDENTIFIER definition and used it for gltexture_t->identifier
  *

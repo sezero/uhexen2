@@ -1,3 +1,5 @@
+#ifndef __STRLFUNCS_H
+#define __STRLFUNCS_H
 
 // do we have strlcpy and strlcat as native library functions?
 
@@ -12,4 +14,6 @@
 #define HAVE_STRLCAT	0
 
 #endif
+
+#endif	/* __STRLFUNCS_H */
 

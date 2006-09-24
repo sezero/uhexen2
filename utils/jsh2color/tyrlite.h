@@ -22,8 +22,8 @@
  * Modifications by Kevin Shanahan, 1999-2000
  */
 
-#ifndef __TYRLITE_TYRLITE_H__
-#define __TYRLITE_TYRLITE_H__
+#ifndef __TYRLITE_H__
+#define __TYRLITE_H__
 
 #include "cmdlib.h"
 #include "mathlib.h"
@@ -98,5 +98,5 @@ void	InitDefFile (char* fname);
 void	CloseDefFile (void);
 void	DecisionTime (char *msg);
 
-#endif /* __TYRLITE_TYRLITE_H__ */
+#endif	/* __TYRLITE_H__ */
 

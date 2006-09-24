@@ -1,8 +1,11 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/server.h,v 1.9 2006-04-06 10:12:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/server.h,v 1.10 2006-09-24 17:28:43 sezero Exp $
 */
+
+#ifndef __H2W_SERVER_H
+#define __H2W_SERVER_H
 
 #define	QW_SERVER
 
@@ -476,4 +479,6 @@ void SV_WriteInventory (client_t *host_cl, edict_t *ent, sizebuf_t *msg);
 //
 void SV_ParseEffect (sizebuf_t *sb);
 void SV_SendEffect (sizebuf_t *sb, int idx);
+
+#endif	/* __H2W_SERVER_H */
 

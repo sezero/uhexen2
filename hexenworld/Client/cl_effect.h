@@ -1,4 +1,6 @@
 
+#ifndef __CL_EFFECT_H
+#define __CL_EFFECT_H
 
 #define MAX_EFFECTS		256
 
@@ -234,4 +236,6 @@ void CL_ParseMultiEffect (void);
 void CL_UpdateEffects (void);
 void CL_TurnEffect (void);
 void CL_ReviseEffect (void);
+
+#endif	/* __CL_EFFECT_H */
 

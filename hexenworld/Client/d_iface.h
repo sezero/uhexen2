@@ -2,8 +2,11 @@
 	d_iface.h
 	interface header file for rasterization driver modules
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_iface.h,v 1.6 2006-03-28 19:53:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_iface.h,v 1.7 2006-09-24 17:28:43 sezero Exp $
 */
+
+#ifndef __D_IFACE_H
+#define __D_IFACE_H
 
 #define WARP_WIDTH		320
 #define WARP_HEIGHT		200
@@ -291,4 +294,6 @@ extern int	c_surf;
 extern vrect_t	scr_vrect;
 
 extern byte	*r_warpbuffer;
+
+#endif	/* __D_IFACE_H */
 

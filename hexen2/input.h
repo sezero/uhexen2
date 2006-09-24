@@ -1,5 +1,8 @@
 // input.h -- external (non-keyboard) input devices
 
+#ifndef __HX2_INPUT_H
+#define __HX2_INPUT_H
+
 void IN_Init (void);
 
 void IN_Shutdown (void);
@@ -26,4 +29,6 @@ void IN_ActivateMouse (void);
 extern	cvar_t		_enable_mouse;
 
 void IN_SendKeyEvents (void);
+
+#endif	/* __HX2_INPUT_H */
 

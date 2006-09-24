@@ -1,9 +1,11 @@
 /*
 	zone.h
 
-	$Id: zone.h,v 1.3 2006-02-23 11:01:43 sezero Exp $
+	$Id: zone.h,v 1.4 2006-09-24 17:28:43 sezero Exp $
 */
 
+#ifndef __ZZONE_H
+#define __ZZONE_H
 
 /*	Memory allocation
 
@@ -115,5 +117,5 @@ void *Cache_Alloc (cache_user_t *c, int size, char *name);
 
 void Cache_Report (void);
 
-
+#endif	/* __ZZONE_H */
 

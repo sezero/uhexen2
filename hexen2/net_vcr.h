@@ -1,5 +1,8 @@
 // net_vcr.h
 
+#ifndef __NET_VCR_H
+#define __NET_VCR_H
+
 // VCR facility as a lan driver:
 // The "-record" commandline argument creates a file named
 // quake.vcr and records the game. This is NOT an ordinary
@@ -26,4 +29,6 @@ void		VCR_Close (qsocket_t *sock);
 void		VCR_Shutdown (void);
 
 #endif	// NET_USE_VCR
+
+#endif	/* __NET_VCR_H */
 

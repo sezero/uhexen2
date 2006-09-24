@@ -4,8 +4,8 @@
 
 */
 
-#ifndef __SOUND__
-#define __SOUND__
+#ifndef __HX2_SOUND_H
+#define __HX2_SOUND_H
 
 // !!! if this is changed, it must be changed in asm_i386.h too !!!
 typedef struct
@@ -144,4 +144,5 @@ void SND_InitScaletable (void);
 void S_AmbientOff (void);
 void S_AmbientOn (void);
 
-#endif
+#endif	/* __HX2_SOUND_H */
+

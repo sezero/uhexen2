@@ -1,5 +1,8 @@
 // conproc.h
 
+#ifndef __CONPROC_H
+#define __CONPROC_H
+
 #define CCOM_WRITE_TEXT		0x2
 // Param1 : Text
 
@@ -15,4 +18,6 @@
 
 void InitConProc (HANDLE hFile, HANDLE heventParent, HANDLE heventChild);
 void DeinitConProc (void);
+
+#endif	/* __CONPROC_H */
 

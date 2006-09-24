@@ -1,4 +1,7 @@
 
+#ifndef __HWMASTER_DEFS
+#define __HWMASTER_DEFS
+
 #include <sys/types.h>
 
 #include <stdio.h>
@@ -211,4 +214,6 @@ float	FloatSwap (float);
 #endif
 
 // end of endiannes stuff
+
+#endif	/* __HWMASTER_DEFS */
 

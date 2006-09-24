@@ -2,8 +2,11 @@
 	d_local.h
 	private rasterization driver defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_local.h,v 1.8 2006-07-18 08:35:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_local.h,v 1.9 2006-09-24 17:28:43 sezero Exp $
 */
+
+#ifndef __D_LOCAL_H
+#define __D_LOCAL_H
 
 #include "r_shared.h"
 
@@ -133,4 +136,6 @@ extern void (*d_drawspans) (espan_t *pspan);
 #define SCAN_SIZE 2048
 
 extern byte			scanList[SCAN_SIZE];
+
+#endif	/* __D_LOCAL_H */
 

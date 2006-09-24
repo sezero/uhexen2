@@ -1,5 +1,8 @@
 // mathlib.h
 
+#ifndef __MATHLIB_H
+#define __MATHLIB_H
+
 typedef float vec_t;
 typedef vec_t vec3_t[3];
 typedef vec_t vec5_t[5];
@@ -118,4 +121,6 @@ static inline void VectorScale (vec3_t in, vec_t scale, vec3_t out)
 	out[1] = in[1]*scale;
 	out[2] = in[2]*scale;
 }
+
+#endif	/* __MATHLIB_H */
 

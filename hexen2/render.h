@@ -2,8 +2,11 @@
 	refresh.h
 	public interface to refresh functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.9 2006-07-18 08:36:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.10 2006-09-24 17:28:42 sezero Exp $
 */
+
+#ifndef __HX2_RENDER_H
+#define __HX2_RENDER_H
 
 #define	MAXCLIPPLANES	11
 
@@ -174,8 +177,15 @@ void D_DeleteSurfaceCache (void);
 void D_InitCaches (void *buffer, int size);
 void R_SetVrect (vrect_t *pvrect, vrect_t *pvrectin, int lineadj);
 
+#endif	/* __HX2_RENDER_H */
+
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2006/07/18 08:36:40  sezero
+ * made hexen2 software renderer to use r_worldentity like in
+ * opengl version and hexenworld version. this saved us of
+ * many ifdef H2W ugliness.
+ *
  * Revision 1.8  2006/03/29 21:46:39  sezero
  * whitespace clean-ups (render.h)
  *

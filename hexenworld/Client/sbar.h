@@ -1,8 +1,11 @@
 /*
 	sbar.h
 
-	$Id: sbar.h,v 1.6 2006-03-13 22:34:42 sezero Exp $
+	$Id: sbar.h,v 1.7 2006-09-24 17:28:43 sezero Exp $
 */
+
+#ifndef __HX2_SBAR_H
+#define __HX2_SBAR_H
 
 // HEADER FILES ------------------------------------------------------------
 
@@ -23,3 +26,6 @@ void Sbar_DeathmatchOverlay(void);
 // PUBLIC DATA DECLARATIONS ------------------------------------------------
 
 extern int sb_lines; // scan lines to draw
+
+#endif	/* __HX2_SBAR_H */
+

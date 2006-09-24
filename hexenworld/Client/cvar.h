@@ -1,5 +1,8 @@
 // cvar.h
 
+#ifndef __CVAR_H__
+#define __CVAR_H__
+
 /*
 
 cvar_t variables are used to hold scalar or string variables that can
@@ -87,4 +90,6 @@ void	Cvar_WriteVariables (FILE *f);
 cvar_t	*Cvar_FindVar (char *var_name);
 
 extern	cvar_t		*cvar_vars;
+
+#endif	/* __CVAR_H__ */
 

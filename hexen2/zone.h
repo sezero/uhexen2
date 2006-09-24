@@ -1,9 +1,11 @@
 /*
 	zone.h
 
-	$Id: zone.h,v 1.5 2006-02-23 11:01:42 sezero Exp $
+	$Id: zone.h,v 1.6 2006-09-24 17:28:42 sezero Exp $
 */
 
+#ifndef __ZZONE_H
+#define __ZZONE_H
 
 /*	Memory allocation
 
@@ -115,9 +117,14 @@ void *Cache_Alloc (cache_user_t *c, int size, char *name);
 
 void Cache_Report (void);
 
+#endif	/* __ZZONE_H */
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2006/02/23 11:01:42  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 25: zone.c, zone.h).
+ *
  * Revision 1.4  2005/07/06 08:35:23  sezero
  * style/whitespace changes and removal of weird alien stuff
  *

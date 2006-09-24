@@ -1,5 +1,8 @@
 // net_loop.h
 
+#ifndef __NET_LOOP_H
+#define __NET_LOOP_H
+
 int			Loop_Init (void);
 void		Loop_Listen (qboolean state);
 void		Loop_SearchForHosts (qboolean xmit);
@@ -12,3 +15,6 @@ qboolean	Loop_CanSendMessage (qsocket_t *sock);
 qboolean	Loop_CanSendUnreliableMessage (qsocket_t *sock);
 void		Loop_Close (qsocket_t *sock);
 void		Loop_Shutdown (void);
+
+#endif	/* __NET_LOOP_H */
+

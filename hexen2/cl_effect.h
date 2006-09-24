@@ -1,4 +1,6 @@
 
+#ifndef __CL_EFFECT_H
+#define __CL_EFFECT_H
 
 #define MAX_EFFECTS		256
 
@@ -181,4 +183,6 @@ void SV_ParseEffect (sizebuf_t *sb);
 void SV_UpdateEffects (sizebuf_t *sb);
 void SV_SaveEffects (FILE *FH);
 void SV_LoadEffects (FILE *FH);
+
+#endif	/* __CL_EFFECT_H */
 

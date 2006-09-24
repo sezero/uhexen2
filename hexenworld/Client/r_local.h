@@ -2,8 +2,11 @@
 	r_local.h
 	private refresh defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.8 2006-06-23 14:43:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.9 2006-09-24 17:28:43 sezero Exp $
 */
+
+#ifndef __R_LOCAL_H
+#define __R_LOCAL_H
 
 #ifndef GLQUAKE
 
@@ -293,5 +296,7 @@ void R_cshift_f (void);
 void R_SplitEntityOnNode2 (mnode_t *node);
 void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
 
-#endif	// !GLQUAKE
+#endif	/*  !GLQUAKE	*/
+
+#endif	/* __R_LOCAL_H	*/
 

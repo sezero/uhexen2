@@ -1,3 +1,5 @@
+#ifndef __HX2_SDL_INC
+#define __HX2_SDL_INC
 
 #include "SDL.h"
 
@@ -55,3 +57,6 @@ of SDL_Mixer, but 1.2.4 have several fixes in it.
 #define SDL_GL_MULTISAMPLEBUFFERS	(SDL_GL_ACCUM_ALPHA_SIZE+2)
 #define SDL_GL_MULTISAMPLESAMPLES	(SDL_GL_ACCUM_ALPHA_SIZE+3)
 #endif
+
+#endif	/* __HX2_SDL_INC */
+

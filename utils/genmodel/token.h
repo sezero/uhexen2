@@ -94,4 +94,5 @@ extern float tk_FloatNumber;
 extern char *tk_String;
 extern char tk_SourceName[MAX_FILE_NAME_LENGTH];
 
-#endif
+#endif	/* __TOKEN_H__ */
+

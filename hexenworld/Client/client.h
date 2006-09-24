@@ -1,7 +1,10 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.11 2006-04-06 16:51:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.12 2006-09-24 17:28:42 sezero Exp $
 */
+
+#ifndef __H2W_CLIENT_H
+#define __H2W_CLIENT_H
 
 typedef struct
 {
@@ -552,4 +555,6 @@ byte *Skin_Cache (skin_t *skin);
 void Skin_Skins_f (void);
 void Skin_AllSkins_f (void);
 void Skin_NextDownload (void);
+
+#endif	/* __H2W_CLIENT_H */
 

@@ -2,8 +2,11 @@
 	quakedef.h
 	primary header for server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/qwsvdef.h,v 1.9 2006-07-17 14:48:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/qwsvdef.h,v 1.10 2006-09-24 17:28:43 sezero Exp $
 */
+
+#ifndef __HWSV_DEFS__
+#define __HWSV_DEFS__
 
 #include <sys/types.h>
 #include <math.h>
@@ -81,4 +84,6 @@ void Con_DPrintf (char *fmt, ...);
 
 extern	unsigned int	defLosses;	// Defenders losses in Siege
 extern	unsigned int	attLosses;	// Attackers Losses in Siege
+
+#endif	/* __HWSV_DEFS__	*/
 

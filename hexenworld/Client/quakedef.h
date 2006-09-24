@@ -2,8 +2,11 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/quakedef.h,v 1.26 2006-09-13 05:53:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/quakedef.h,v 1.27 2006-09-24 17:28:43 sezero Exp $
 */
+
+#ifndef __QUAKEDEFS_H
+#define __QUAKEDEFS_H
 
 #include <sys/types.h>
 #include <math.h>
@@ -123,4 +126,6 @@ extern	unsigned int	attLosses;	// Attackers Losses in Siege
 
 extern	int		cl_keyholder;
 extern	int		cl_doc;
+
+#endif	/* __QUAKEDEFS_H */
 

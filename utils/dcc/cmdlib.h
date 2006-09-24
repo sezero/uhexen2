@@ -1,8 +1,7 @@
 // cmdlib.h
 
-
-#ifndef __CMDLIB__
-#define __CMDLIB__
+#ifndef __CMDLIB_H__
+#define __CMDLIB_H__
 
 // HEADER FILES ------------------------------------------------------------
 
@@ -129,5 +128,5 @@ float	FloatSwap (float);
 
 // end of endianness stuff
 
-#endif	// __CMDLIB__
+#endif	/* __CMDLIB_H__	*/
 

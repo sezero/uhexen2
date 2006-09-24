@@ -1,5 +1,8 @@
 // sys.h -- non-portable functions
 
+#ifndef __HX2_SYS_H
+#define __HX2_SYS_H
+
 // maximum allowed print message length
 #define MAXPRINTMSG	4096
 
@@ -89,4 +92,6 @@ void	Sys_PushFPCW_SetHigh (void);
 #	define	Sys_PushFPCW_SetHigh()
 #   endif
 #endif
+
+#endif	/* __HX2_SYS_H */
 

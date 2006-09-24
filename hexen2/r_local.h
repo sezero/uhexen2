@@ -2,8 +2,11 @@
 	r_local.h
 	private refresh defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_local.h,v 1.9 2006-06-23 14:43:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_local.h,v 1.10 2006-09-24 17:28:42 sezero Exp $
 */
+
+#ifndef __R_LOCAL_H
+#define __R_LOCAL_H
 
 #ifndef GLQUAKE
 
@@ -292,10 +295,15 @@ void R_cshift_f (void);
 void R_SplitEntityOnNode2 (mnode_t *node);
 void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
 
-#endif	// !GLQUAKE
+#endif	/*  !GLQUAKE	*/
+
+#endif	/* __R_LOCAL_H	*/
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2006/06/23 14:43:36  sezero
+ * some minor clean-ups
+ *
  * Revision 1.8  2006/04/05 06:02:32  sezero
  * whitespace clean-ups (r_local.h)
  *

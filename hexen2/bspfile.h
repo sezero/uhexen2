@@ -1,7 +1,10 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/bspfile.h,v 1.2 2005-10-25 20:08:40 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/bspfile.h,v 1.3 2006-09-24 17:28:41 sezero Exp $
  */
 
+
+#ifndef __BSPFILE_H
+#define __BSPFILE_H
 
 // upper design bounds
 
@@ -309,10 +312,15 @@ void 	GetVectorForKey (entity_t *ent, char *key, vec3_t vec);
 
 epair_t *ParseEpair (void);
 
-#endif
+#endif	/*  QUAKE_GAME */
+
+#endif	/* __BSPFILE_H */
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/10/25 20:08:40  sezero
+ * coding style and whitespace cleanup.
+ *
  * Revision 1.1.1.1  2004/11/28 00:00:35  sezero
  * Initial import of AoT 1.2.0 code
  *

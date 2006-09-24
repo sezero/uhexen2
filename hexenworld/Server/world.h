@@ -1,5 +1,8 @@
 // world.h
 
+#ifndef __HX2_WORLD_H
+#define __HX2_WORLD_H
+
 typedef struct
 {
 	vec3_t	normal;
@@ -75,4 +78,5 @@ trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, e
 
 edict_t	*SV_TestPlayerPosition (edict_t *ent, vec3_t origin);
 
+#endif	/* __HX2_WORLD_H */
 

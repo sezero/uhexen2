@@ -1,5 +1,8 @@
 // vis.h
 
+#ifndef __H2UTILS_VIS_H
+#define __H2UTILS_VIS_H
+
 #include "cmdlib.h"
 #include "mathlib.h"
 #include "bspfile.h"
@@ -149,4 +152,6 @@ winding_t	*NewWinding (int points);
 void		FreeWinding (winding_t *w);
 winding_t	*ClipWinding (winding_t *in, plane_t *split, qboolean keepon);
 winding_t	*CopyWinding (winding_t *w);
+
+#endif	/* __H2UTILS_VIS_H */
 

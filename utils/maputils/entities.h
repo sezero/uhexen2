@@ -1,4 +1,7 @@
 
+#ifndef __ENTITIES_H__
+#define __ENTITIES_H__
+
 #define DEFAULTLIGHTLEVEL	300
 
 typedef struct epair_s
@@ -31,4 +34,6 @@ void	GetVectorForKey (entity_t *ent, char *key, vec3_t vec);
 
 void	LoadEntities (void);
 void	WriteEntitiesToString (void);
+
+#endif	/* __ENTITIES_H__ */
 

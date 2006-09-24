@@ -1,6 +1,9 @@
 // scriplib.h
 
-#ifndef __CMDLIB__
+#ifndef __SCRIPLIB_H
+#define __SCRIPLIB_H
+
+#ifndef __CMDLIB_H__
 #include "cmdlib.h"
 #endif
 
@@ -16,4 +19,6 @@ void LoadScriptFile (char *filename);
 qboolean GetToken (qboolean crossline);
 void UnGetToken (void);
 qboolean TokenAvailable (void);
+
+#endif	/* __SCRIPLIB_H */
 

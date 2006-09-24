@@ -3,6 +3,9 @@
 	quake's interface to the networking layer
 */
 
+#ifndef __HX2_NET_H
+#define __HX2_NET_H
+
 struct qsockaddr
 {
 	short sa_family;
@@ -296,3 +299,6 @@ extern	qboolean	slistSilent;
 extern	qboolean	slistLocal;
 
 void NET_Slist_f (void);
+
+#endif	/* __HX2_NET_H */
+

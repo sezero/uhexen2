@@ -1,7 +1,10 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.16 2006-06-25 12:01:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.17 2006-09-24 17:28:41 sezero Exp $
 */
+
+#ifndef __HX2_CLIENT_H
+#define __HX2_CLIENT_H
 
 typedef struct
 {
@@ -370,9 +373,14 @@ void CL_ClearTEnts (void);
 void CL_ParseTEnt (void);
 void CL_UpdateTEnts (void);
 
+#endif	/* __HX2_CLIENT_H */
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2006/06/25 12:01:48  sezero
+ * renamed CL_CopyFiles to Host_CopyFiles and CL_RemoveGIPFiles to
+ * Host_RemoveGIPFiles, moved them to host.c
+ *
  * Revision 1.15  2006/04/06 16:51:43  sezero
  * deverted the midi_name length change, changed the hwcl struture to have
  * a 128 length accordingly

@@ -2,12 +2,15 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.20 2006-06-13 12:19:23 sezero Exp $
+	$Id: winquake.h,v 1.21 2006-09-24 17:28:42 sezero Exp $
 */
 
 #if !defined(_WIN32)
 #error winquake.h is only meant to be used on Windows
 #endif
+
+#ifndef __WINQUAKE_H
+#define __WINQUAKE_H
 
 #ifdef _MSC_VER
 #pragma warning( disable : 4229 )  // mgraph gets this
@@ -62,4 +65,6 @@ void IN_UpdateClipCursor (void);
 
 void S_BlockSound (void);
 void S_UnblockSound (void);
+
+#endif	/* __WINQUAKE_H */
 

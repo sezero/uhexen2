@@ -2,8 +2,11 @@
 	protocol.h
 	communications protocols
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/protocol.h,v 1.6 2006-06-15 19:59:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/protocol.h,v 1.7 2006-09-24 17:28:42 sezero Exp $
 */
+
+#ifndef __HX2_PROTOCOL_H
+#define __HX2_PROTOCOL_H
 
 #define	PROTOCOL_VERSION_RAVEN_112	19
 #define	PROTOCOL_VERSION_UQE_113	20
@@ -229,9 +232,13 @@
 // temp entity events
 //
 
+#endif	/* __HX2_PROTOCOL_H */
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2006/06/15 19:59:29  sezero
+ * added network compatibility support for Korax's UQE-Hexen2-1.13
+ *
  * Revision 1.5  2006/02/24 23:27:31  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 28: protocol.h, quakedef.h, server.h, pmove.c, pmovetst.c,

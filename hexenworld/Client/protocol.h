@@ -1,5 +1,8 @@
 // protocol.h -- communications protocols
 
+#ifndef __H2W_PROTOCOL_H
+#define __H2W_PROTOCOL_H
+
 #define	OLD_PROTOCOL_VERSION	24
 #define	PROTOCOL_VERSION	25
 
@@ -431,4 +434,6 @@ typedef struct usercmd_s
 	byte	impulse;
 	byte	light_level;
 } usercmd_t;
+
+#endif	/* __H2W_PROTOCOL_H */
 

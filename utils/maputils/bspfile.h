@@ -1,5 +1,8 @@
 
 
+#ifndef __BSPFILE_H
+#define __BSPFILE_H
+
 // upper design bounds
 
 #define	MAX_MAP_HULLS		8
@@ -255,5 +258,7 @@ void	LoadBSPFile (char *filename);
 void	WriteBSPFile (char *filename);
 void	PrintBSPFileSizes (void);
 
-#endif
+#endif	/*  QUAKE_GAME */
+
+#endif	/* __BSPFILE_H */
 

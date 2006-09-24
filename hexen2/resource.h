@@ -1,3 +1,6 @@
+#ifndef __HX2_RESOURCE_H
+#define __HX2_RESOURCE_H
+
 #define IDS_STRING1	1
 #define IDI_ICON2	1
 #define IDD_DIALOG1	108
@@ -32,3 +35,6 @@
 #else
 #define HWBITMAP	"win_stuff/hexen2.bmp"
 #endif
+
+#endif	/* __HX2_RESOURCE_H */
+

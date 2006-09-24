@@ -1,5 +1,8 @@
 // arch_def.h - platform specific definitions
 
+#ifndef __HX2_ARCHDEFS__
+#define __HX2_ARCHDEFS__
+
 #if defined (__APPLE__)
 #	undef __MACOSX__
 #	define __MACOSX__	1
@@ -40,4 +43,6 @@
 #	define VERSION_PLATFORM "Unknown"
 #	warning "Platform is UNKNOWN"
 #endif
+
+#endif	/* __HX2_ARCHDEFS__ */
 

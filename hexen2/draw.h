@@ -3,9 +3,11 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.16 2006-08-14 06:42:29 sezero Exp $
+	$Id: draw.h,v 1.17 2006-09-24 17:28:42 sezero Exp $
 */
 
+#ifndef __HX2_DRAW_H
+#define __HX2_DRAW_H
 
 #define MAX_DISC 18
 
@@ -48,8 +50,16 @@ qpic_t *Draw_CachePicResize (char *path, int targetWidth, int targetHeight);
 #define GAME_MOD_NAME		ENGINE_NAME
 #define ENGINE_WATERMARK	GAME_MOD_NAME " " STRINGIFY(ENGINE_VERSION) " (" VERSION_PLATFORM ")"
 
+#endif	/* __HX2_DRAW_H */
+
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2006/08/14 06:42:29  sezero
+ * introduced Draw_ReInit() to be called when a gamedir change occurs.
+ * reloads the textures which are loaded back at the init phase. fixes
+ * hexenworld's wrong charset and conback display problem upon gamedir
+ * changes.
+ *
  * Revision 1.15  2006/08/14 06:07:35  sezero
  * exported Draw_AlphaPic() for possible future users
  *

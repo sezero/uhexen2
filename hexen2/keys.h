@@ -1,4 +1,7 @@
 
+#ifndef __HX2_KEYS_H
+#define __HX2_KEYS_H
+
 //
 // these are the key numbers that should be passed to Key_Event
 //
@@ -117,4 +120,6 @@ void Key_Init (void);
 void Key_WriteBindings (FILE *f);
 void Key_SetBinding (int keynum, char *binding);
 void Key_ClearStates (void);
+
+#endif	/* __HX2_KEYS_H */
 

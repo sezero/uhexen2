@@ -8,6 +8,9 @@
 //**
 //**************************************************************************
 
+#ifndef __GENMODEL_H
+#define __GENMODEL_H
+
 #define ALIAS_VERSION		6
 #define ALIAS_NEWVERSION	50
 
@@ -145,4 +148,6 @@ typedef struct
 {
 	aliasskintype_t		type;
 } daliasskintype_t;
+
+#endif	/* __GENMODEL_H */
 

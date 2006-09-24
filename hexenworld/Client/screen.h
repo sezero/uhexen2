@@ -1,5 +1,8 @@
 // screen.h
 
+#ifndef __HX2_SCREEN_H
+#define __HX2_SCREEN_H
+
 // width for the info plaques
 #define PLAQUE_WIDTH	26
 
@@ -39,4 +42,6 @@ extern	cvar_t		scr_viewsize;
 // only the refresh window will be updated unless these variables are flagged 
 extern	int			scr_copytop;
 extern	int			scr_copyeverything;
+
+#endif	/* __HX2_SCREEN_H */
 

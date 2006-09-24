@@ -2,8 +2,11 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.5 2006-06-15 09:31:53 sezero Exp $
+	$Id: snd_sys.h,v 1.6 2006-09-24 17:28:42 sezero Exp $
 */
+
+#ifndef __HX2_SND_SYS__
+#define __HX2_SND_SYS__
 
 #undef HAVE_OSS_SOUND
 #undef HAVE_SUN_SOUND
@@ -110,4 +113,6 @@ extern void S_SDL_Submit(void);
 #endif	// _SND_LIST_DRIVERS
 
 #endif	// !(_SND_SYS_MACROS_ONLY)
+
+#endif	// __HX2_SND_SYS__
 

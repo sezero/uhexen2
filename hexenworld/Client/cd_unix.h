@@ -1,6 +1,6 @@
 /*
 	cd_unix.h
-	$Id: cd_unix.h,v 1.2 2006-06-29 23:02:02 sezero Exp $
+	$Id: cd_unix.h,v 1.3 2006-09-24 17:28:42 sezero Exp $
 
 	Unix include file to compile the correct cdaudio code
 
@@ -24,6 +24,9 @@
 
 */
 
+
+#ifndef __CD_UNIX_H
+#define __CD_UNIX_H
 
 #undef	__USE_BSD_CDROM__
 #undef	__USE_LINUX_CDROM__
@@ -50,4 +53,6 @@
 #	define	__USE_SDL_CDROM__
 
 #endif
+
+#endif	/* __CD_UNIX_H */
 

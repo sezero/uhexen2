@@ -2,9 +2,12 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.45 2006-09-21 06:05:36 sezero Exp $
+	$Id: glquake.h,v 1.46 2006-09-24 17:28:43 sezero Exp $
 */
 
+
+#ifndef __GLQUAKE_H
+#define __GLQUAKE_H
 
 #ifdef _WIN32
 #include <windows.h>
@@ -392,4 +395,5 @@ extern	const char *gl_renderer;
 extern	const char *gl_version;
 extern	const char *gl_extensions;
 
+#endif	/* __GLQUAKE_H */
 

@@ -24,8 +24,8 @@
  * as well as the stdout.
  */
 
-#ifndef __COMMON_TYRLOG_H__
-#define __COMMON_TYRLOG_H__
+#ifndef __TYRLOG_H__
+#define __TYRLOG_H__
 
 #include <stdio.h>
 #include "cmdlib.h"
@@ -35,4 +35,5 @@ void close_log();
 void logprint(const char *fmt, ...);
 void logvprint(const char *fmt, va_list args);
 
-#endif /* __COMMON_TYRLOG_H__ */
+#endif	/* __TYRLOG_H__ */
+

@@ -1,5 +1,8 @@
 // view.h
 
+#ifndef __HX2_VIEW_H
+#define __HX2_VIEW_H
+
 extern	cvar_t		v_gamma;
 
 #ifdef GLQUAKE
@@ -16,4 +19,6 @@ void V_RenderView (void);
 void V_CalcBlend (void);
 float V_CalcRoll (vec3_t angles, vec3_t velocity);
 void V_UpdatePalette (void);
+
+#endif	/* __HX2_VIEW_H */
 

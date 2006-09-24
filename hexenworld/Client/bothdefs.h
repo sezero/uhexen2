@@ -2,8 +2,11 @@
 	bothdefs.h
 	defs common to both client and server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.48 2006-09-21 06:05:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.49 2006-09-24 17:28:42 sezero Exp $
 */
+
+#ifndef __H2W_BOTHDEFS_H
+#define __H2W_BOTHDEFS_H
 
 #define __STRINGIFY(x) #x
 #define STRINGIFY(x) __STRINGIFY(x)
@@ -230,4 +233,6 @@
 #define	PRINT_HIGH		2	// critical messages
 #define	PRINT_CHAT		3	// chat messages
 #define	PRINT_SOUND		4	// says a sound
+
+#endif	/* __H2W_BOTHDEFS_H	*/
 

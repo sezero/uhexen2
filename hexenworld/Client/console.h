@@ -3,6 +3,9 @@
 // console
 //
 
+#ifndef __CONSOLE_H
+#define __CONSOLE_H
+
 #define		CON_TEXTSIZE	16384
 typedef struct
 {
@@ -39,4 +42,6 @@ void Con_ClearNotify (void);
 void Con_ToggleConsole_f (void);
 
 void Con_NotifyBox (char *text);	// during startup for sound / cd warnings
+
+#endif	/* __CONSOLE_H */
 

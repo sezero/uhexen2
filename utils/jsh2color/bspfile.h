@@ -18,8 +18,8 @@
 */
 
 
-#ifndef __COMMON_BSPFILE_H__
-#define __COMMON_BSPFILE_H__
+#ifndef __BSPFILE_H
+#define __BSPFILE_H
 
 // upper design bounds
 
@@ -284,5 +284,7 @@ void	LoadBSPFile (char *filename);
 void	WriteBSPFile (char *filename, int version);
 void	PrintBSPFileSizes (void);
 
-#endif
-#endif  /*__COMMON_BSPFILE_H__ */
+#endif	/*  QUAKE_GAME */
+
+#endif  /* __BSPFILE_H */
+

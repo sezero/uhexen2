@@ -2,11 +2,11 @@
 	model.h
 	header for model loading and caching
 
-	$Id: gl_model.h,v 1.8 2006-07-03 14:05:36 sezero Exp $
+	$Id: gl_model.h,v 1.9 2006-09-24 17:28:42 sezero Exp $
 */
 
-#ifndef __MODEL__
-#define __MODEL__
+#ifndef __HX2_MODEL_H
+#define __HX2_MODEL_H
 
 #include "genmodel.h"
 #include "spritegn.h"
@@ -452,10 +452,15 @@ void	Mod_TouchModel (char *name);
 mleaf_t *Mod_PointInLeaf (float *p, model_t *model);
 byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
 
-#endif	// __MODEL__
+#endif	/* __HX2_MODEL_H */
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2006/07/03 14:05:36  sezero
+ * re-visited the GL data types, made them to be of GL types and solved
+ * the signedness issues. completely removed the scrap allocation option.
+ * thanks to Levent Yavas for his help.
+ *
  * Revision 1.7  2006/04/06 22:08:19  sezero
  * more tidy-ups (model.h, gl_model.h)
  *

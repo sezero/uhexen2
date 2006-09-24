@@ -1,6 +1,9 @@
 
 // This file is shared by Hexen II and HCC
 
+#ifndef __PR_COMP_H
+#define __PR_COMP_H
+
 typedef int	func_t;
 typedef int	string_t;
 
@@ -217,4 +220,6 @@ typedef struct
 
 	int		entityfields;
 } dprograms_t;
+
+#endif	/* __PR_COMP_H */
 

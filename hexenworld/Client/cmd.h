@@ -1,6 +1,9 @@
 
 // cmd.h -- Command buffer and command execution
 
+#ifndef __HX2_CMD_H
+#define __HX2_CMD_H
+
 //===========================================================================
 
 /*
@@ -111,4 +114,6 @@ int ListAlias (char *prefix, char **buf, int pos);
 // return the number of matches.
 #define MAX_MATCHES	128
 // maximum number of matches for console tab completion
+
+#endif	/* __HX2_CMD_H */
 

@@ -4,6 +4,8 @@
 
 */
 
+#ifndef __MIDIDEFS_H
+#define __MIDIDEFS_H
 
 qboolean	MIDI_Init (void);
 void		MIDI_Cleanup (void);
@@ -17,4 +19,6 @@ void		MIDI_Update (void);
 #define	MIDI_TOGGLE_PAUSE	0
 #define	MIDI_ALWAYS_RESUME	1
 #define	MIDI_ALWAYS_PAUSE	2
+
+#endif	/* __MIDIDEFS_H */
 

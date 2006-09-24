@@ -1,5 +1,8 @@
 // wad.h
 
+#ifndef __HX2_WAD_H
+#define __HX2_WAD_H
+
 //===============
 //   TYPES
 //===============
@@ -50,4 +53,6 @@ void	*W_GetLumpName (char *name);
 void	*W_GetLumpNum (int num);
 
 void	SwapPic (qpic_t *pic);
+
+#endif	/* __HX2_WAD_H */
 

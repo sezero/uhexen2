@@ -1,11 +1,11 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.9 2006-09-15 09:23:54 sezero Exp $
+	$Id: cmdlib.h,v 1.10 2006-09-24 17:28:44 sezero Exp $
 */
 
-#ifndef __CMDLIB__
-#define __CMDLIB__
+#ifndef __CMDLIB_H__
+#define __CMDLIB_H__
 
 // HEADER FILES ------------------------------------------------------------
 
@@ -208,5 +208,5 @@ float	FloatSwap (float);
 
 // end of endianness stuff
 
-#endif	// __CMDLIB__
+#endif	/* __CMDLIB_H__	*/
 

@@ -1,5 +1,7 @@
 // net_dgrm.h
 
+#ifndef __NET_DATAGRAM_H
+#define __NET_DATAGRAM_H
 
 int			Datagram_Init (void);
 void		Datagram_Listen (qboolean state);
@@ -13,3 +15,6 @@ qboolean	Datagram_CanSendMessage (qsocket_t *sock);
 qboolean	Datagram_CanSendUnreliableMessage (qsocket_t *sock);
 void		Datagram_Close (qsocket_t *sock);
 void		Datagram_Shutdown (void);
+
+#endif	/* __NET_DATAGRAM_H */
+

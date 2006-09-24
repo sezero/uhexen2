@@ -2,8 +2,11 @@
 	d_iface.h
 	interface header file for rasterization driver modules
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_iface.h,v 1.7 2006-03-28 19:53:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_iface.h,v 1.8 2006-09-24 17:28:42 sezero Exp $
 */
+
+#ifndef __D_IFACE_H
+#define __D_IFACE_H
 
 #define WARP_WIDTH		320
 #define WARP_HEIGHT		200
@@ -293,8 +296,16 @@ extern vrect_t	scr_vrect;
 
 extern byte	*r_warpbuffer;
 
+#endif	/* __D_IFACE_H */
+
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2006/03/28 19:53:23  sezero
+ * continue making static functions and vars static. whitespace and coding
+ * style cleanup. part 47: software renderer: r_aclip.c, r_alias.c, r_bsp.c,
+ * r_draw.c, r_edge.c.  also removed the #warning directives for the non-x86
+ * non-compilability.  added a few comments about the non-Intel issue.
+ *
  * Revision 1.6  2006/03/27 19:58:33  sezero
  * continue making static functions and vars static. whitespace and coding
  * style cleanup. part 46: software renderer drawing functions.

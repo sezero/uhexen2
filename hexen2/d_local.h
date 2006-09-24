@@ -2,8 +2,11 @@
 	d_local.h
 	private rasterization driver defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.9 2006-07-18 08:35:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.10 2006-09-24 17:28:42 sezero Exp $
 */
+
+#ifndef __D_LOCAL_H
+#define __D_LOCAL_H
 
 #include "r_shared.h"
 
@@ -134,9 +137,13 @@ extern void (*d_drawspans) (espan_t *pspan);
 
 extern byte			scanList[SCAN_SIZE];
 
+#endif	/* __D_LOCAL_H */
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2006/07/18 08:35:39  sezero
+ * made d_aflatcolor global through d_local.h
+ *
  * Revision 1.8  2006/07/15 22:15:17  sezero
  * removed declaration of non-existant prealspandrawer function pointer
  *

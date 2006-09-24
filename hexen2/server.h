@@ -1,8 +1,11 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.12 2006-04-06 22:08:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.13 2006-09-24 17:28:42 sezero Exp $
 */
+
+#ifndef __HX2_SERVER_H
+#define __HX2_SERVER_H
 
 typedef struct
 {
@@ -283,8 +286,13 @@ void SV_RunClients (void);
 void SV_SaveSpawnparms (void);
 void SV_SpawnServer (char *server, char *startspot);
 
+#endif	/* __HX2_SERVER_H */
+
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2006/04/06 22:08:22  sezero
+ * more tidy-ups (model.h, gl_model.h)
+ *
  * Revision 1.11  2006/04/06 10:12:05  sezero
  * more tidy-ups (server.h)
  *

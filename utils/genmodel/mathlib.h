@@ -1,7 +1,7 @@
 // mathlib.h
 
-#ifndef __MATHLIB__
-#define __MATHLIB__
+#ifndef __MATHLIB_H
+#define __MATHLIB_H
 
 #include <math.h>
 
@@ -68,5 +68,5 @@ void VectorMA (vec3_t va, double scale, vec3_t vb, vec3_t vc);
 vec_t VectorNormalize (vec3_t v);
 void VectorScale (vec3_t v, vec_t scale, vec3_t out);
 
-#endif
+#endif	/* __MATHLIB_H */
 

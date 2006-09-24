@@ -2,6 +2,9 @@
 // spritegn.h: header file for sprite generation program
 //
 
+#ifndef __SPRITEGEN_H
+#define __SPRITEGEN_H
+
 // **********************************************************
 // * This file must be identical in the spritegen directory *
 // * and in the Quake directory, because it's used to       *
@@ -101,4 +104,6 @@ typedef struct
 {
 	spriteframetype_t	type;
 } dspriteframetype_t;
+
+#endif	/* __SPRITEGEN_H */
 

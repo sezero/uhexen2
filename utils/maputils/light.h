@@ -1,3 +1,7 @@
+
+#ifndef __H2UTILS_LIGHT_H
+#define __H2UTILS_LIGHT_H
+
 // structure of the light lump
 
 #include "cmdlib.h"
@@ -31,4 +35,6 @@ qboolean TestLine (vec3_t start, vec3_t stop);
 void	LightFace (int surfnum);
 void	LightLeaf (dleaf_t *leaf);
 void	MakeTnodes (dmodel_t *bm);
+
+#endif	/* __H2UTILS_LIGHT_H */
 

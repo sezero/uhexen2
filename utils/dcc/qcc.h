@@ -1,6 +1,8 @@
 
 // qcc.h
 
+#ifndef __QCC_H__
+#define __QCC_H__
 
 /*
 	TODO:
@@ -443,4 +445,6 @@ extern	int	nummodels;
 extern	char	precache_files[MAX_FILES][MAX_DATA_PATH];
 extern	int	precache_files_block[MAX_SOUNDS];
 extern	int	numfiles;
+
+#endif	/* __QCC_H__ */
 

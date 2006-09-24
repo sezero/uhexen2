@@ -2,8 +2,11 @@
 	refresh.h
 	public interface to refresh functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/render.h,v 1.4 2006-03-29 21:46:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/render.h,v 1.5 2006-09-24 17:28:43 sezero Exp $
 */
+
+#ifndef __HX2_RENDER_H
+#define __HX2_RENDER_H
 
 #define	TOP_RANGE	16			// soldier uniform colors
 #define	BOTTOM_RANGE	96
@@ -183,4 +186,6 @@ void D_FlushCaches (void);
 void D_DeleteSurfaceCache (void);
 void D_InitCaches (void *buffer, int size);
 void R_SetVrect (vrect_t *pvrect, vrect_t *pvrectin, int lineadj);
+
+#endif	/* __HX2_RENDER_H */
 

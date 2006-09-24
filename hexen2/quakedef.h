@@ -2,9 +2,11 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.94 2006-09-21 06:05:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.95 2006-09-24 17:28:42 sezero Exp $
 */
 
+#ifndef __QUAKEDEFS_H
+#define __QUAKEDEFS_H
 
 #ifdef _MSC_VER
 #pragma warning(disable:4244)
@@ -451,9 +453,16 @@ void Chase_Init (void);
 void Chase_Reset (void);
 void Chase_Update (void);
 
+#endif	/* __QUAKEDEFS_H */
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.94  2006/09/21 06:05:35  sezero
+ * gathered most, if not all, of our compile time options into a header
+ * file named "h2_opt.h" with documentation. removed gl_opt.h. removed
+ * all of the one liner extra patches which played with these options.
+ * updated the COMPILE document accordingly.
+ *
  * Revision 1.93  2006/09/19 07:31:31  sezero
  * marked the snapshot of 2006-09-19 as 1.4.1-rc1
  *

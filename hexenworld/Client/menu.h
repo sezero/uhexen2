@@ -1,8 +1,11 @@
 /*
 	menu.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.h,v 1.4 2006-01-07 09:36:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.h,v 1.5 2006-09-24 17:28:43 sezero Exp $
 */
+
+#ifndef __HX2_MENU_H
+#define __HX2_MENU_H
 
 //
 // the net drivers should just set the apropriate bits in m_activenet,
@@ -45,3 +48,6 @@ void M_DrawTextBox2 (int x, int y, int width, int lines);
 void M_DrawCheckbox (int x, int y, int on);
 
 void ScrollTitle (char *name);
+
+#endif	/* __HX2_MENU_H */
+

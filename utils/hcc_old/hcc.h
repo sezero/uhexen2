@@ -1,9 +1,11 @@
 /*
 	hcc.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.h,v 1.1 2006-03-01 09:42:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.h,v 1.2 2006-09-24 17:28:44 sezero Exp $
 */
 
+#ifndef __HCC_H__
+#define __HCC_H__
 
 // HEADER FILES ------------------------------------------------------------
 
@@ -273,4 +275,6 @@ extern	int	ex_FunctionCallCount;
 
 extern	type_t	*st_ReturnType;
 extern	qboolean st_ReturnParsed;
+
+#endif	/* __HCC_H__ */
 

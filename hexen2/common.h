@@ -1,5 +1,8 @@
 // comndef.h  -- general definitions
 
+#ifndef __HX2_COMMON_H
+#define __HX2_COMMON_H
+
 #ifdef PLATFORM_UNIX
 #include "linux_inc.h"
 #endif
@@ -293,3 +296,6 @@ extern byte cl_fraglimit;
 extern float cl_timelimit;
 extern float cl_server_time_offset;
 #endif
+
+#endif	/* __HX2_COMMON_H */
+

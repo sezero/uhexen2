@@ -5,6 +5,9 @@
 //**
 //**************************************************************************
 
+#ifndef __LOADTRI_H
+#define __LOADTRI_H
+
 #define MAXTRIANGLES	2048
 
 typedef struct
@@ -23,3 +26,6 @@ extern float	FixHTRRotateZ;
 extern float	FixHTRTranslateX;
 extern float	FixHTRTranslateY;
 extern float	FixHTRTranslateZ;
+
+#endif	/* __LOADTRI_H */
+
