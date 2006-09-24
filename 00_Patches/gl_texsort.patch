@@ -6,7 +6,7 @@ totally unsupported...
 diff -urNp hexen2source-1.4.1/hexen2/glquake.h hexen2source-1.4.1x/hexen2/glquake.h
 --- hexen2source-1.4.1/hexen2/glquake.h	2006-08-14 09:09:41.000000000 +0300
 +++ hexen2source-1.4.1x/hexen2/glquake.h	2006-08-28 10:30:17.000000000 +0300
-@@ -135,7 +135,7 @@ void R_LoadSkys (void);
+@@ -138,7 +138,7 @@ void R_LoadSkys (void);
  void R_DrawSkyBox (void);
  void R_ClearSkyBox (void);
  #endif
@@ -15,7 +15,7 @@ diff -urNp hexen2source-1.4.1/hexen2/glquake.h hexen2source-1.4.1x/hexen2/glquak
  void EmitWaterPolys (msurface_t *fa);
  void EmitBothSkyLayers (msurface_t *fa);
  qboolean R_CullBox (vec3_t mins, vec3_t maxs);
-@@ -341,6 +341,7 @@ extern	cvar_t	r_dynamic;
+@@ -344,6 +344,7 @@ extern	cvar_t	r_dynamic;
  extern	cvar_t	r_novis;
  extern	cvar_t	r_wholeframe;
  

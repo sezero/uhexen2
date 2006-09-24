@@ -28,7 +28,7 @@ diff -urNp hexen2source-1.4.1/hexen2/gl_func.h hexen2source-1.4.1x/hexen2/gl_fun
 diff -urNp hexen2source-1.4.1/hexen2/glquake.h hexen2source-1.4.1x/hexen2/glquake.h
 --- hexen2source-1.4.1/hexen2/glquake.h	2006-08-14 09:09:41.000000000 +0300
 +++ hexen2source-1.4.1x/hexen2/glquake.h	2006-08-28 10:34:29.000000000 +0300
-@@ -361,6 +361,16 @@ extern	cvar_t	gl_glows;
+@@ -364,6 +364,16 @@ extern	cvar_t	gl_glows;
  extern	cvar_t	gl_other_glows;
  extern	cvar_t	gl_missile_glows;
  
@@ -245,7 +245,7 @@ diff -urNp hexen2source-1.4.1/hexenworld/Client/gl_func.h hexen2source-1.4.1x/he
 diff -urNp hexen2source-1.4.1/hexenworld/Client/glquake.h hexen2source-1.4.1x/hexenworld/Client/glquake.h
 --- hexen2source-1.4.1/hexenworld/Client/glquake.h	2006-08-14 09:09:42.000000000 +0300
 +++ hexen2source-1.4.1x/hexenworld/Client/glquake.h	2006-08-28 10:34:29.000000000 +0300
-@@ -366,6 +366,16 @@ extern	cvar_t	gl_glows;
+@@ -369,6 +369,16 @@ extern	cvar_t	gl_glows;
  extern	cvar_t	gl_other_glows;
  extern	cvar_t	gl_missile_glows;
  
