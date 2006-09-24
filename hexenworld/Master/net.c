@@ -473,7 +473,8 @@ static int UDP_OpenSocket (int port)
 
 	address.sin_family = AF_INET;
 	//ZOID -- check for interface binding option
-	if ((i = COM_CheckParm("-ip")) != 0 && i < com_argc - 1)
+	i = COM_CheckParm("-ip");
+	if (i && i < com_argc-1)
 	{
 		address.sin_addr.s_addr = inet_addr(com_argv[i+1]);
 		if (address.sin_addr.s_addr == INADDR_NONE)

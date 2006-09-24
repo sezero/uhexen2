@@ -92,7 +92,7 @@ float FloatSwap (float f)
 
 static void COM_InitArgv (int argc, char **argv)
 {
-	for (com_argc=0 ; (com_argc<MAX_NUM_ARGVS) && (com_argc < argc) ; com_argc++)
+	for (com_argc = 0; (com_argc < MAX_NUM_ARGVS) && (com_argc < argc); com_argc++)
 	{
 		largv[com_argc] = argv[com_argc];
 	}
@@ -105,7 +105,7 @@ int COM_CheckParm (char *parm)
 {
 	int		i;
 
-	for (i=1 ; i<com_argc ; i++)
+	for (i = 1; i < com_argc; i++)
 	{
 		if (!com_argv[i])
 			continue;		// NEXTSTEP sometimes clears appkit vars.
