@@ -5,11 +5,23 @@
 # Prints the gcc version of `gcc-command' in a canonical 4-digit form
 # such as `0295' for gcc-2.95, `0303' for gcc-3.3, etc.
 #
-# stolen from the linux kernel tree
+# adapted from the linux kernel tree
+
+if [ $# -lt 1 ]; then
+	echo "No parameters given!"
+	exit 1
+fi
+
+$1 --version 2> /dev/null 1> /dev/null
+if [ $? -ne 0 ]; then
+	echo "command $1 not found"
+	exit 1
+fi
 
 compiler="$*"
 
-MAJOR=$(echo __GNUC__ | $compiler -E -xc - | tail -n 1)
-MINOR=$(echo __GNUC_MINOR__ | $compiler -E -xc - | tail -n 1)
+MAJOR=`echo __GNUC__ | $compiler -E -xc - | tail -n 1`
+MINOR=`echo __GNUC_MINOR__ | $compiler -E -xc - | tail -n 1`
+
 printf "%02d%02d\\n" $MAJOR $MINOR
 
