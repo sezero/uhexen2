@@ -2,7 +2,7 @@
 	bothdefs.h
 	defs common to both client and server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.49 2006-09-24 17:28:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.50 2006-09-25 08:28:16 sezero Exp $
 */
 
 #ifndef __H2W_BOTHDEFS_H
@@ -43,7 +43,6 @@
 #define	MAX_OSPATH	256	// max length of a filesystem pathname
 
 #define	QUAKE_GAME		// as opposed to utilities
-//define	PARANOID	// speed sapping error checking
 
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
 #define CACHE_SIZE	32	// used to align key data structures
