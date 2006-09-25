@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.76 2006-09-16 15:29:09 sezero Exp $
+	$Id: common.c,v 1.77 2006-09-25 08:31:12 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1066,19 +1066,29 @@ va
 
 does a varargs printf into a temp buffer, so I don't need to have
 varargs versions of all text functions.
-FIXME: make this buffer size safe someday
 ============
 */
+#define VA_BUFFERLEN 1024
+
+static char *get_va_buffer(void)
+{
+	static char va_buffers[4][VA_BUFFERLEN];
+	static unsigned char	buf_idx;
+	return va_buffers[3 & ++buf_idx];
+}
+
 char *va(char *format, ...)
 {
 	va_list		argptr;
-	static char		string[1024];
+	char		*va_buf;
 
+	va_buf = get_va_buffer ();
 	va_start (argptr, format);
-	vsnprintf (string, sizeof (string), format, argptr);
+	if ( vsnprintf(va_buf, VA_BUFFERLEN, format, argptr) >= VA_BUFFERLEN )
+		Con_DPrintf("%s: overflow (string truncated)\n", __FUNCTION__);
 	va_end (argptr);
 
-	return string;
+	return va_buf;
 }
 
 #if 0
@@ -2663,6 +2673,23 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.76  2006/09/16 15:29:09  sezero
+ * multiple changes to common library and downloading procedures:
+ * * use snprintf and the strl* functions (#10): especially during
+ *   filesystem initialization, errors are not tolerated.
+ * * killed COM_FileOpenRead
+ * * made COM_filelength to return size_t.
+ * * made COM_CreatePath to return error or success.
+ * * made COM_CreatePath to check if the path it's creating is in
+ *   the com_userdir.
+ * * a few fixes and tweaking in COM_CopyFile.
+ * * case insensitive game directory name comparisons where it
+ *   would be necessary.
+ * * error out immediately if no proper game installation is found.
+ * * reject relative paths in a few more places.
+ * * fixes to download console command of hw (which always reported
+ *   rename failures).
+ *
  * Revision 1.75  2006/09/16 13:18:11  sezero
  * whitespace clean-up before I do the actual changes
  *
