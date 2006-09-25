@@ -3,6 +3,20 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-09-25 (CVS):
+    * removed a left-over definition from bothdefs.h.
+    * shortened the Q_str*_err macro messages.
+    * prevented string buffer overflows in PF_VarString().
+    * made va() to cycle between 4 different static buffers. one
+      function that uses va() can now be called from another without
+      consequences. found in tyr-quake sources.
+    * launcher cleanup: removed const qualifiers from string constants,
+      removed char casts from formerly const string constants, added
+      the -height to the launch arguments (not all resolutions have to
+      be of 4:3 ratio), used short versions of some of the arguments,
+      increased the version number to 0.8.0.
+    * updated release notes for v1.4.1
+
 2006-09-24 (CVS):
     * few more cosmetics and readability stuff (hwclient/net_wins.c,
       hwmaster/net.c, hwmaster/sys_main.c).
