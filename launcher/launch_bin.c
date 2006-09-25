@@ -7,7 +7,7 @@ int	missingexe = 0;
 int	is_botmatch= 0;	// bot matches require -listen,
 			// therefore lan shouldn't be disabled
 
-const char *snddrv_names[MAX_SOUND][2] = {
+char *snddrv_names[MAX_SOUND][2] = {
 
 	{ "-nosound", "No Sound"},
 #if HAVE_OSS_SOUND
@@ -22,7 +22,7 @@ const char *snddrv_names[MAX_SOUND][2] = {
 #endif
 };
 
-const char *snd_rates[MAX_RATES] = {
+char *snd_rates[MAX_RATES] = {
 
 	"Default",
 	"11025",
@@ -35,14 +35,14 @@ const char *snd_rates[MAX_RATES] = {
 };
 
 #ifndef DEMOBUILD
-const char *h2game_names[MAX_H2GAMES][3] = {
+char *h2game_names[MAX_H2GAMES][3] = {
 	// dirname,   user-friendly name, whether it's a botmatch
 	{  NULL     , "(  None  )"	, "0"	},
 	{ "hcbots"  , "BotMatch: Hcbot"	, "1"	},
 	{ "apocbot" , "BotMatch: Apoc"	, "1"	},
 };
 
-const char *hwgame_names[MAX_HWGAMES][3] = {
+char *hwgame_names[MAX_HWGAMES][3] = {
 	// dirname,   user-friendly name, filename for extra check
 	{  NULL     , "DeathMatch"	, NULL			},
 	{ "hexarena", "HexArena"	, "sound/ha/fight.wav"	},
@@ -53,18 +53,16 @@ const char *hwgame_names[MAX_HWGAMES][3] = {
 };
 #endif
 
-/* [resolution]
-   -width values only. corresponding -height is in the game binary */
-static char *resolution_args[] = {
+static char *resolution_args[RES_MAX][2] = {
 
-	"320",
-	"400",
-	"512",
-	"640",
-	"800",
-	"1024",
-	"1280",
-	"1600"
+	{ "320",  "240" },
+	{ "400",  "300" },
+	{ "512",  "384" },
+	{ "640",  "480" },
+	{ "800",  "600" },
+	{ "1024", "768" },
+	{ "1280", "1024"},
+	{ "1600", "1200"}
 };
 
 void CheckExe (void)
@@ -100,7 +98,7 @@ void CheckExe (void)
 void launch_hexen2_bin (void)
 {
 	int		i;
-	char	*args[32];
+	char	*args[40];
 	char	aasamples_str[8], heapsize_str[8], zonesize_str[8];
 
 	i = 0;
@@ -109,28 +107,27 @@ void launch_hexen2_bin (void)
 	if (destiny == DEST_H2 && mp_support)
 		args[++i] = "-portals";
 
-	if (fullscreen)
-		args[++i] = "-fullscreen";
-	else
-		args[++i] = "-window";
+	args[++i] = (fullscreen) ? "-f" : "-w";
 
 	args[++i] = "-width";
-	args[++i] = resolution_args[resolution];
+	args[++i] = resolution_args[resolution][0];
+	args[++i] = "-height";
+	args[++i] = resolution_args[resolution][1];
 
 	if (opengl_support && use_con && conwidth < resolution)
 	{
 		args[++i] = "-conwidth";
-		args[++i] = resolution_args[conwidth];
+		args[++i] = resolution_args[conwidth][0];
 	}
 
-	args[++i] = (char *)snddrv_names[sound][0];
+	args[++i] = snddrv_names[sound][0];
 
 	if (sound != 0)
 	{
 		if (sndrate != 0)
 		{
 			args[++i] = "-sndspeed";
-			args[++i] = (char *)snd_rates[sndrate];
+			args[++i] = snd_rates[sndrate];
 		}
 		if (sndbits == 0)	// 16-bit is default already
 		{
@@ -153,12 +150,12 @@ void launch_hexen2_bin (void)
 	if ((destiny == DEST_HW) && (hwgame > 0))
 	{
 		args[++i] = "-game";
-		args[++i] = (char *)hwgame_names[hwgame][0];
+		args[++i] = hwgame_names[hwgame][0];
 	}
 	else if ((destiny == DEST_H2) && (h2game > 0))
 	{
 		args[++i] = "-game";
-		args[++i] = (char *)h2game_names[h2game][0];
+		args[++i] = h2game_names[h2game][0];
 	}
 #endif
 
@@ -196,7 +193,7 @@ void launch_hexen2_bin (void)
 
 	if (gl_nonstd && opengl_support && strlen(gllibrary))
 	{
-		args[++i] = "--gllibrary";
+		args[++i] = "-g";
 		args[++i] = gllibrary;
 	}
 

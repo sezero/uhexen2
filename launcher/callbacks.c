@@ -12,15 +12,15 @@ extern int missingexe;
 extern int is_botmatch;
 #ifndef DEMOBUILD
 static size_t	string_size = 0;
-extern const char *h2game_names[MAX_H2GAMES][3];
-extern const char *hwgame_names[MAX_HWGAMES][3];
+extern char *h2game_names[MAX_H2GAMES][3];
+extern char *hwgame_names[MAX_HWGAMES][3];
 #endif
-extern const char *snddrv_names[MAX_SOUND][2];
-extern const char *snd_rates[MAX_RATES];
+extern char *snddrv_names[MAX_SOUND][2];
+extern char *snd_rates[MAX_RATES];
 
 static int	bmore = 0, lock = 0;
 
-static const char *res_names[] = {
+static char *res_names[RES_MAX] = {
 
 	"320 x 240",
 	"400 x 300",
@@ -32,7 +32,7 @@ static const char *res_names[] = {
 	"1600 x 1200"
 };
 
-static const char *stats[] = {
+static char *stats[] = {
 
 	"  Ready to run the game",
 	"  Binary missing or not executable"
@@ -89,10 +89,10 @@ void Make_ResMenu (struct Video_s *wgt)
 
 	up = (opengl_support) ? RES_MAX-1 : RES_640;
 	for (i = 2*opengl_support; i <= up; i++)
-		ResList = g_list_append (ResList, (char *)res_names[i]);
+		ResList = g_list_append (ResList, res_names[i]);
 	gtk_combo_set_popdown_strings (GTK_COMBO (wgt->RES_COMBO), ResList);
 	g_list_free (ResList);
-	gtk_entry_set_text (GTK_ENTRY (wgt->RES_LIST), (char *)res_names[resolution]);
+	gtk_entry_set_text (GTK_ENTRY (wgt->RES_LIST), res_names[resolution]);
 }
 
 void Make_ConwMenu (struct Video_s *wgt)
@@ -101,10 +101,10 @@ void Make_ConwMenu (struct Video_s *wgt)
 	GList *ResList = NULL;
 
 	for (i = 0; i <= resolution; i++)
-		ResList = g_list_append (ResList, (char *)res_names[i]);
+		ResList = g_list_append (ResList, res_names[i]);
 	gtk_combo_set_popdown_strings (GTK_COMBO (wgt->CONW_COMBO), ResList);
 	g_list_free (ResList);
-	gtk_entry_set_text (GTK_ENTRY (wgt->CONW_LIST), (char *)res_names[conwidth]);
+	gtk_entry_set_text (GTK_ENTRY (wgt->CONW_LIST), res_names[conwidth]);
 }
 
 void on_OGL (GtkToggleButton *button, gamewidget_t *wgt)
@@ -268,12 +268,12 @@ void H2GameScan (GList *GameList)
 	Title = (char *)malloc(string_size);
 	for (i = 1; i < MAX_H2GAMES; i++)
 	{
-		printf("Looking for %s ... ", (char *)h2game_names[i][1]);
+		printf("Looking for %s ... ", h2game_names[i][1]);
 		strcpy (Title, h2game_names[i][0]);
 		strcat (Title, "/progs.dat");
 		if (access(Title, R_OK) == 0)
 		{
-			GameList = g_list_append (GameList, (char *)h2game_names[i][1]);
+			GameList = g_list_append (GameList, h2game_names[i][1]);
 			printf("Found OK.\n");
 		}
 		else
@@ -298,7 +298,7 @@ void HWGameScan (GList *GameList)
 	Title = (char *)malloc(string_size);
 	for (i = 1; i < MAX_HWGAMES; i++)
 	{
-		printf("Looking for %s ... ", (char *)hwgame_names[i][1]);
+		printf("Looking for %s ... ", hwgame_names[i][1]);
 		strcpy (Title, hwgame_names[i][0]);
 		strcat (Title, "/hwprogs.dat");
 		j = access(Title, R_OK);
@@ -311,7 +311,7 @@ void HWGameScan (GList *GameList)
 		}
 		if (j == 0)
 		{
-			GameList = g_list_append (GameList, (char *)hwgame_names[i][1]);
+			GameList = g_list_append (GameList, hwgame_names[i][1]);
 			printf("Found OK.\n");
 		}
 		else

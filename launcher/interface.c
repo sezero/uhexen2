@@ -11,11 +11,11 @@
 // from launch_bin.c
 extern int missingexe;
 extern int is_botmatch;
-extern const char *snddrv_names[MAX_SOUND][2];
-extern const char *snd_rates[MAX_RATES];
+extern char *snddrv_names[MAX_SOUND][2];
+extern char *snd_rates[MAX_RATES];
 #ifndef DEMOBUILD
-extern const char *h2game_names[MAX_H2GAMES][3];
-extern const char *hwgame_names[MAX_HWGAMES][3];
+extern char *h2game_names[MAX_H2GAMES][3];
+extern char *hwgame_names[MAX_HWGAMES][3];
 #endif
 
 /*********************************************************************/
@@ -377,7 +377,7 @@ GtkWidget* create_window1 (void)
   gtk_widget_set_size_request (WGT_SOUND, 108, 24);
   TmpList = NULL;
   for (i=0; i<MAX_SOUND; i++)
-	TmpList = g_list_append (TmpList, (char *)snddrv_names[i][1]);
+	TmpList = g_list_append (TmpList, snddrv_names[i][1]);
   gtk_combo_set_popdown_strings (GTK_COMBO (WGT_SOUND), TmpList);
   g_list_free (TmpList);
   gtk_fixed_put (GTK_FIXED (BASIC_TAB), WGT_SOUND, 100, 132);
@@ -386,7 +386,7 @@ GtkWidget* create_window1 (void)
   gtk_widget_ref (SND_Entry);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "SND_Entry", SND_Entry,
 				(GtkDestroyNotify) gtk_widget_unref);
-  gtk_entry_set_text (GTK_ENTRY (SND_Entry), (char *)snddrv_names[sound][1]);
+  gtk_entry_set_text (GTK_ENTRY (SND_Entry), snddrv_names[sound][1]);
   gtk_entry_set_editable (GTK_ENTRY (SND_Entry), FALSE);
 //gtk_entry_set_alignment (GTK_ENTRY (SND_Entry), 1);
   gtk_widget_show (SND_Entry);
@@ -435,7 +435,7 @@ GtkWidget* create_window1 (void)
   gtk_widget_set_size_request (WGT_SRATE, 86, 24);
   TmpList = NULL;
   for (i=0; i<MAX_RATES; i++)
-	TmpList = g_list_append (TmpList, (char *)snd_rates[i]);
+	TmpList = g_list_append (TmpList, snd_rates[i]);
   gtk_combo_set_popdown_strings (GTK_COMBO (WGT_SRATE), TmpList);
   g_list_free (TmpList);
   gtk_fixed_put (GTK_FIXED (ADDON_TAB1), WGT_SRATE, 112, 40);
@@ -444,7 +444,7 @@ GtkWidget* create_window1 (void)
   gtk_widget_ref (SRATE_Entry);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "SRATE_Entry", SRATE_Entry,
 				(GtkDestroyNotify) gtk_widget_unref);
-  gtk_entry_set_text (GTK_ENTRY (SRATE_Entry), (char *)snd_rates[sndrate]);
+  gtk_entry_set_text (GTK_ENTRY (SRATE_Entry), snd_rates[sndrate]);
   gtk_entry_set_editable (GTK_ENTRY (SRATE_Entry), FALSE);
   gtk_widget_show (SRATE_Entry);
 
@@ -669,7 +669,7 @@ GtkWidget* create_window1 (void)
   gtk_entry_set_editable (GTK_ENTRY (H2G_Entry), FALSE);
   gtk_widget_show (H2G_Entry);
 #ifndef DEMOBUILD
-  gtk_entry_set_text (GTK_ENTRY (H2G_Entry), (char *)h2game_names[h2game][1]);
+  gtk_entry_set_text (GTK_ENTRY (H2G_Entry), h2game_names[h2game][1]);
   if (destiny != DEST_H2)
 	gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
 #else
@@ -708,7 +708,7 @@ GtkWidget* create_window1 (void)
   gtk_entry_set_editable (GTK_ENTRY (HWG_Entry), FALSE);
   gtk_widget_show (HWG_Entry);
 #ifndef DEMOBUILD
-  gtk_entry_set_text (GTK_ENTRY (HWG_Entry), (char *)hwgame_names[hwgame][1]);
+  gtk_entry_set_text (GTK_ENTRY (HWG_Entry), hwgame_names[hwgame][1]);
   if (destiny != DEST_HW)
 	gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
 #else

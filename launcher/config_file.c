@@ -67,7 +67,7 @@ int write_config_file (void)
 	}
 	else
 	{
-		fprintf(cfg_file, "# Linux Hexen2 Launcher Options file\n\n");
+		fprintf(cfg_file, "# Hexen II Launcher Options file\n\n");
 		fprintf(cfg_file, "# This file has been automatically generated\n\n");
 
 		fprintf(cfg_file, "destiny=%d\n",destiny);
@@ -127,6 +127,8 @@ int read_config_file (void)
 			fgets(buff, sizeof(buff), cfg_file);
 			if (!feof(cfg_file))
 			{
+				if (buff[0] == '#')
+					continue;
 				// remove end-of-line characters
 				tmp = buff;
 				while (*tmp)

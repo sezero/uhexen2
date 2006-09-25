@@ -162,7 +162,7 @@ int main (int argc, char *argv[])
 	add_pixmap_directory (PACKAGE_SOURCE_DIR "/pixmaps");
 */
 
-	printf("\nLinux Hexen II Launcher, version %s\n", LAUNCHER_VERSION_STR);
+	printf("Hexen II: Hammer of Thyrion Launcher, version %s\n", LAUNCHER_VERSION_STR);
 
 	if ((Sys_GetUserdir(userdir, sizeof(userdir))) != 0)
 	{
