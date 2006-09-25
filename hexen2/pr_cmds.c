@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.28 2006-07-18 08:44:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.29 2006-09-25 08:30:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -44,9 +44,13 @@ static char *PF_VarString (int	first)
 	static char out[256];
 
 	out[0] = 0;
-	for (i=first ; i<pr_argc ; i++)
+	for (i = first; i < pr_argc; i++)
 	{
-		strcat (out, G_STRING((OFS_PARM0+i*3)));
+		if ( Q_strlcat(out, G_STRING((OFS_PARM0+i*3)), sizeof(out)) >= sizeof(out) )
+		{
+			Con_Printf("%s: overflow (string truncated)\n", __FUNCTION__);
+			break;
+		}
 	}
 	return out;
 }
@@ -3309,6 +3313,9 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2006/07/18 08:44:20  sezero
+ * random typo corrections
+ *
  * Revision 1.27  2006/07/03 15:09:33  sezero
  * PF_updateInfoPlaque: changed long type to int to prevent future confusion
  *

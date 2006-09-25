@@ -38,9 +38,13 @@ static char *PF_VarString (int	first)
 	static char out[256];
 
 	out[0] = 0;
-	for (i=first ; i<pr_argc ; i++)
+	for (i = first; i < pr_argc; i++)
 	{
-		strcat (out, G_STRING((OFS_PARM0+i*3)));
+		if ( Q_strlcat(out, G_STRING((OFS_PARM0+i*3)), sizeof(out)) >= sizeof(out) )
+		{
+			Con_Printf("%s: overflow (string truncated)\n", __FUNCTION__);
+			break;
+		}
 	}
 	return out;
 }
