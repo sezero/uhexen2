@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-09-26 (CVS, 1.4.1-rc2):
+    * updated the Xcode files for the recent header change.
+    * added string array boundary checks in Host_SavegameComment().
+    * marked the snapshot 2006-09-26 as 1.4.1-rc2 .
+
 2006-09-25 (CVS):
     * removed a left-over definition from bothdefs.h.
     * shortened the Q_str*_err macro messages.
