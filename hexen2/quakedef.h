@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.95 2006-09-24 17:28:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.96 2006-09-26 09:53:47 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -146,7 +146,7 @@
 
 
 #define	SAVEGAME_VERSION	5
-#define	SAVEGAME_COMMENT_LENGTH	39
+#define	SAVEGAME_COMMENT_LENGTH	39	// 0-19: level name, 21-rest: save time
 #define	MAX_SAVEGAMES		12	// Max number of savegames for the menu listing
 
 
@@ -457,6 +457,9 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.95  2006/09/24 17:28:42  sezero
+ * protected all headers against multiple inclusion
+ *
  * Revision 1.94  2006/09/21 06:05:35  sezero
  * gathered most, if not all, of our compile time options into a header
  * file named "h2_opt.h" with documentation. removed gl_opt.h. removed

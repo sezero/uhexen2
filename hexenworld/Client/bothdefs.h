@@ -2,7 +2,7 @@
 	bothdefs.h
 	defs common to both client and server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.50 2006-09-25 08:28:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.51 2006-09-26 09:53:48 sezero Exp $
 */
 
 #ifndef __H2W_BOTHDEFS_H
@@ -119,7 +119,7 @@
 
 
 #define	SAVEGAME_VERSION	5
-#define	SAVEGAME_COMMENT_LENGTH	39
+#define	SAVEGAME_COMMENT_LENGTH	39	// 0-19: level name, 21-rest: save time
 #define	MAX_SAVEGAMES		12	// Max number of savegames for the menu listing
 
 

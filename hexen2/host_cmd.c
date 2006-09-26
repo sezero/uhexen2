@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.53 2006-09-18 09:56:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.54 2006-09-26 09:53:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -440,23 +440,30 @@ Writes a SAVEGAME_COMMENT_LENGTH character comment describing the game saved
 */
 static void Host_SavegameComment (char *text)
 {
-	int		i;
+	size_t		i;
 	char	kills[20];
 	struct tm *tblock;
 	time_t TempTime;
 
-	for (i=0 ; i<SAVEGAME_COMMENT_LENGTH ; i++)
+	for (i = 0; i < SAVEGAME_COMMENT_LENGTH; i++)
 		text[i] = ' ';
-	memcpy (text, cl.levelname, strlen(cl.levelname));
-//	sprintf (kills,"kills:%3i/%3i", cl.stats[STAT_MONSTERS], cl.stats[STAT_TOTALMONSTERS]);
+
+// see SAVEGAME_COMMENT_LENGTH definition in quakedef.h !
+	i = strlen(cl.levelname);
+	if (i > 20)
+		i = 20;
+	memcpy (text, cl.levelname, i);
 
 	TempTime = time(NULL);
 	tblock = localtime(&TempTime);
 	strftime(kills,sizeof(kills),ShortTime,tblock);
+	i = strlen(kills);
+	if (i >= SAVEGAME_COMMENT_LENGTH-21)
+		i = SAVEGAME_COMMENT_LENGTH-22;
+	memcpy (text+21, kills, i);
 
-	memcpy (text+21, kills, strlen(kills));
 // convert space to _ to make stdio happy
-	for (i=0 ; i<SAVEGAME_COMMENT_LENGTH ; i++)
+	for (i = 0; i < SAVEGAME_COMMENT_LENGTH; i++)
 		if (text[i] == ' ')
 			text[i] = '_';
 
@@ -2322,6 +2329,11 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.53  2006/09/18 09:56:58  sezero
+ * use snprintf and the strl* functions, #13: menu.c. while we were
+ * there, exported SAVEGAME_VERSION definition through quakedef.h,
+ * prevented saved games with invalid version number to be listed.
+ *
  * Revision 1.52  2006/09/15 09:24:33  sezero
  * use snprintf and the strl* functions, #2: host_cmd.c.
  *
