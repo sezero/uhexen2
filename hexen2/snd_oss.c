@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.25 2006-09-27 17:17:30 sezero Exp $
+	$Id: snd_oss.c,v 1.26 2006-09-27 18:06:05 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -82,6 +82,9 @@ qboolean S_OSS_Init(void)
 		}
 	}
 
+	memset ((dma_t *) &sn, 0, sizeof(sn));
+	shm = &sn;
+
 	if ( ioctl(audio_fd, SNDCTL_DSP_RESET, 0) == -1 )
 	{
 		Con_Printf("Could not reset %s. %s\n", ossdev, strerror(errno));
@@ -99,9 +102,6 @@ qboolean S_OSS_Init(void)
 		Con_Printf("Audio driver doesn't support mmap or trigger\n");
 		goto error;
 	}
-
-	memset ((dma_t *) &sn, 0, sizeof(sn));
-	shm = &sn;
 
 	shm->splitbuffer = 0;
 
@@ -221,7 +221,6 @@ qboolean S_OSS_Init(void)
 	{
 		Con_Printf("Could not toggle %s. %s\n", ossdev, strerror(errno));
 		munmap (shm->buffer, mmaplen);
-		shm->buffer = NULL;
 		goto error;
 	}
 	tmp = PCM_ENABLE_OUTPUT;
@@ -229,7 +228,6 @@ qboolean S_OSS_Init(void)
 	{
 		Con_Printf("Could not toggle %s. %s\n", ossdev, strerror(errno));
 		munmap (shm->buffer, mmaplen);
-		shm->buffer = NULL;
 		goto error;
 	}
 
