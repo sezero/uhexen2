@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-09-27 (CVS):
+    * a lot of clean-ups in sound and midi files.
+    * re-diff'ed the alternative sdl audio patch after the latest changes.
+    * commented out some dead code in sv_move.c (SV_NewChaseDir).
+
 2006-09-26 (CVS, 1.4.1-rc2):
     * updated the Xcode files for the recent header change.
     * added string array boundary checks in Host_SavegameComment().
