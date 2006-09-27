@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.24 2006-09-23 07:25:36 sezero Exp $
+	$Id: snd_oss.c,v 1.25 2006-09-27 17:17:32 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -42,6 +42,7 @@
 #include <sys/soundcard.h>
 #include <errno.h>
 
+//#define FORMAT_S16	AFMT_S16_NE
 #if BYTE_ORDER == BIG_ENDIAN
 #define	FORMAT_S16	AFMT_S16_BE
 #else
@@ -49,67 +50,57 @@
 #endif
 
 static int audio_fd = -1;
-static int snd_inited;
 static char *ossdev = "/dev/dsp";
 static unsigned long mmaplen;
 
 qboolean S_OSS_Init(void)
 {
-	int i, caps, rc, tmp;
-	int retries = 3;
+	int i, caps, tmp;
 	unsigned long sz;
 	struct audio_buf_info info;
 
-	snd_inited = 0;
-
-// open /dev/dsp, confirm capability to mmap, and get size of dma buffer
 	tmp = COM_CheckParm("-ossdev");
 	if (tmp != 0 && tmp < com_argc-1)
 		ossdev = com_argv[tmp+1];
 	Con_Printf ("Using OSS device %s\n", ossdev);
 
+// open /dev/dsp, confirm capability to mmap, and get size of dma buffer
 	audio_fd = open(ossdev, O_RDWR|O_NONBLOCK);
 	if (audio_fd < 0)
 	{	// Failed open, retry up to 3 times if it's busy
-		while ((audio_fd < 0) && retries-- &&
-			((errno == EAGAIN) || (errno == EBUSY)))
+		tmp = 3;
+		while ( (audio_fd < 0) && tmp-- &&
+			((errno == EAGAIN) || (errno == EBUSY)) )
 		{
 			sleep (1);
 			audio_fd = open(ossdev, O_RDWR|O_NONBLOCK);
 		}
 		if (audio_fd < 0)
 		{
-			perror(ossdev);
-			Con_Printf("Could not open %s\n", ossdev);
+			Con_Printf("Could not open %s. %s\n", ossdev, strerror(errno));
 			return 0;
 		}
 	}
 
-	rc = ioctl(audio_fd, SNDCTL_DSP_RESET, 0);
-	if (rc < 0)
+	if ( ioctl(audio_fd, SNDCTL_DSP_RESET, 0) == -1 )
 	{
-		perror(ossdev);
-		Con_Printf("Could not reset %s\n", ossdev);
-		close(audio_fd);
-		return 0;
+		Con_Printf("Could not reset %s. %s\n", ossdev, strerror(errno));
+		goto error;
 	}
 
-	rc = ioctl(audio_fd, SNDCTL_DSP_GETCAPS, &caps);
-	if (rc < 0)
+	if ( ioctl(audio_fd, SNDCTL_DSP_GETCAPS, &caps) == -1 )
 	{
-		perror(ossdev);
-		Con_Printf("Couldn't retrieve soundcard capabilities\n");
-		close(audio_fd);
-		return 0;
+		Con_Printf("Couldn't retrieve soundcard capabilities. %s\n", strerror(errno));
+		goto error;
 	}
 
 	if (!(caps & DSP_CAP_TRIGGER) || !(caps & DSP_CAP_MMAP))
 	{
 		Con_Printf("Audio driver doesn't support mmap or trigger\n");
-		close(audio_fd);
-		return 0;
+		goto error;
 	}
 
+	memset ((dma_t *) &sn, 0, sizeof(sn));
 	shm = &sn;
 
 	shm->splitbuffer = 0;
@@ -117,12 +108,15 @@ qboolean S_OSS_Init(void)
 // set sample bits & speed
 	i = desired_bits;
 	tmp = (desired_bits == 16) ? FORMAT_S16 : AFMT_U8;
-	rc = ioctl(audio_fd, SNDCTL_DSP_SETFMT, &tmp);
-	if (rc < 0)
+	if ( ioctl(audio_fd, SNDCTL_DSP_SETFMT, &tmp) == -1 )
 	{
-		Con_Printf("Could not support %d-bit data, retrying..\n", desired_bits);
+		Con_Printf("Problems setting %d bit format, trying alternatives..\n", i);
 		// try what the device gives us
-		ioctl(audio_fd, SNDCTL_DSP_GETFMTS, &tmp);
+		if ( ioctl(audio_fd, SNDCTL_DSP_GETFMTS, &tmp) == -1)
+		{
+			Con_Printf("Unable to retrieve supported formats. %s\n", strerror(errno));
+			goto error;
+		}
 		if (tmp & FORMAT_S16)
 		{
 			i = 16;
@@ -135,43 +129,35 @@ qboolean S_OSS_Init(void)
 		}
 		else
 		{
-			perror(ossdev);
-			Con_Printf("Could not retrieve supported sound formats!..\n");
-			close(audio_fd);
-			return 0;
+			Con_Printf("Neither 8 nor 16 bit format supported.\n");
+			goto error;
 		}
-		rc = ioctl(audio_fd, SNDCTL_DSP_SETFMT, &tmp);
-		if (rc < 0)
+		if ( ioctl(audio_fd, SNDCTL_DSP_SETFMT, &tmp) == -1 )
 		{
-			perror(ossdev);
-			Con_Printf("No supported sound formats!..\n");
-			close(audio_fd);
-			return 0;
+			Con_Printf("Unable to set sound format. %s\n", strerror(errno));
+			goto error;
 		}
 	}
 	shm->samplebits = i;
 
 	tmp = desired_speed;
-	rc = ioctl(audio_fd, SNDCTL_DSP_SPEED, &tmp);
-	if (rc < 0)
+	if ( ioctl(audio_fd, SNDCTL_DSP_SPEED, &tmp) == -1 )
 	{
-		Con_Printf("Problems setting dsp speed, trying alternatives..\n");
+		Con_Printf("Problems setting sample rate, trying alternatives..\n");
 		shm->speed = 0;
 		for (i = 0; i < MAX_TRYRATES; i++)
 		{
 			tmp = tryrates[i];
-			rc= ioctl(audio_fd, SNDCTL_DSP_SPEED, &tmp);
-			if (rc < 0)
+			if ( ioctl(audio_fd, SNDCTL_DSP_SPEED, &tmp) == -1 )
 			{
-				Con_DPrintf ("Could not set dsp to speed %d\n", tryrates[i]);
+				Con_DPrintf ("Unable to set sample rate %d\n", tryrates[i]);
 			}
 			else
 			{
 				if (tmp != tryrates[i])
 				{
 					Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", tmp, tryrates[i]);
-				//	close(audio_fd);
-				//	return 0;
+				//	goto error;
 				}
 				shm->speed = tmp;
 				break;
@@ -179,9 +165,8 @@ qboolean S_OSS_Init(void)
 		}
 		if (shm->speed == 0)
 		{
-			Con_Printf("Could not set %s speed!\n", ossdev);
-			close(audio_fd);
-			return 0;
+			Con_Printf("Unable to set any sample rates.\n");
+			goto error;
 		}
 	}
 	else
@@ -189,36 +174,30 @@ qboolean S_OSS_Init(void)
 		if (tmp != desired_speed)
 		{
 			Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", tmp, desired_speed);
-		//	close(audio_fd);
-		//	return 0;
+		//	goto error;
 		}
 		shm->speed = tmp;
 	}
 
 	tmp = (desired_channels == 2) ? 1 : 0;
-	rc = ioctl(audio_fd, SNDCTL_DSP_STEREO, &tmp);
-	if (rc < 0)
+	if ( ioctl(audio_fd, SNDCTL_DSP_STEREO, &tmp) == -1 )
 	{
-		Con_Printf("Problems setting mono/stereo, retrying..\n");
+		Con_Printf ("Problems setting channels to %s, retrying for %s\n",
+				(desired_channels == 2) ? "stereo" : "mono",
+				(desired_channels == 2) ? "mono" : "stereo");
 		tmp = (desired_channels == 2) ? 0 : 1;
-		rc = ioctl(audio_fd, SNDCTL_DSP_STEREO, &tmp);
-		if (rc < 0)
+		if ( ioctl(audio_fd, SNDCTL_DSP_STEREO, &tmp) == -1 )
 		{
-			perror(ossdev);
-			Con_Printf("Could not set dsp to mono or stereo\n");
-			close(audio_fd);
-			return 0;
+			Con_Printf("unable to set desired channels. %s\n", strerror(errno));
+			goto error;
 		}
 	}
 	shm->channels = tmp +1;
 
-	rc = ioctl(audio_fd, SNDCTL_DSP_GETOSPACE, &info);
-	if (rc < 0)
+	if ( ioctl(audio_fd, SNDCTL_DSP_GETOSPACE, &info) == -1 )
 	{
-		perror("GETOSPACE");
-		Con_Printf("Couldn't retrieve buffer status\n");
-		close(audio_fd);
-		return 0;
+		Con_Printf("Couldn't retrieve buffer status. %s\n", strerror(errno));
+		goto error;
 	}
 
 	shm->samples = info.fragstotal * info.fragsize / (shm->samplebits/8);
@@ -232,58 +211,57 @@ qboolean S_OSS_Init(void)
 					     MAP_FILE|MAP_SHARED, audio_fd, 0);
 	if (!shm->buffer || shm->buffer == MAP_FAILED)
 	{
-		perror(ossdev);
-		Con_Printf("Could not mmap %s\n", ossdev);
-		close(audio_fd);
-		return 0;
+		Con_Printf("Could not mmap %s. %s\n", ossdev, strerror(errno));
+		goto error;
 	}
 
 // toggle the trigger & start her up
-
 	tmp = 0;
-	rc  = ioctl(audio_fd, SNDCTL_DSP_SETTRIGGER, &tmp);
-	if (rc < 0)
+	if ( ioctl(audio_fd, SNDCTL_DSP_SETTRIGGER, &tmp) == -1 )
 	{
-		perror(ossdev);
-		Con_Printf("Could not toggle %s\n", ossdev);
+		Con_Printf("Could not toggle %s. %s\n", ossdev, strerror(errno));
 		munmap (shm->buffer, mmaplen);
-		close(audio_fd);
-		return 0;
+		shm->buffer = NULL;
+		goto error;
 	}
 	tmp = PCM_ENABLE_OUTPUT;
-	rc = ioctl(audio_fd, SNDCTL_DSP_SETTRIGGER, &tmp);
-	if (rc < 0)
+	if ( ioctl(audio_fd, SNDCTL_DSP_SETTRIGGER, &tmp) == -1 )
 	{
-		perror(ossdev);
-		Con_Printf("Could not toggle %s\n", ossdev);
+		Con_Printf("Could not toggle %s. %s\n", ossdev, strerror(errno));
 		munmap (shm->buffer, mmaplen);
-		close(audio_fd);
-		return 0;
+		shm->buffer = NULL;
+		goto error;
 	}
 
 	shm->samplepos = 0;
 
-	snd_inited = 1;
 	Con_Printf("OSS Audio initialized (%d bit, %s, %d Hz)\n",
 				shm->samplebits, (shm->channels == 2) ? "stereo" : "mono", shm->speed);
 	return 1;
+
+error:
+	close(audio_fd);
+	audio_fd = -1;
+	shm->buffer = NULL;
+	shm = NULL;
+	return 0;
 }
 
 int S_OSS_GetDMAPos(void)
 {
 	struct count_info count;
 
-	if (!snd_inited)
+	if (!shm)
 		return 0;
 
 	if ( ioctl(audio_fd, SNDCTL_DSP_GETOPTR, &count) == -1 )
 	{
-		perror(ossdev);
-		Con_Printf("Uh, sound dead.\n");
+		Con_Printf("Uh, sound dead. %s\n", strerror(errno));
 		munmap (shm->buffer, mmaplen);
+		shm->buffer = NULL;
+		shm = NULL;
 		close(audio_fd);
 		audio_fd = -1;
-		snd_inited = 0;
 		return 0;
 	}
 //	shm->samplepos = (count.bytes / (shm->samplebits / 8)) & (shm->samples-1);
@@ -296,11 +274,12 @@ int S_OSS_GetDMAPos(void)
 void S_OSS_Shutdown(void)
 {
 	int tmp = 0;
-	if (snd_inited)
+	if (shm)
 	{
 		Con_Printf ("Shutting down OSS sound\n");
-		snd_inited = 0;
 		munmap (shm->buffer, mmaplen);
+		shm->buffer = NULL;
+		shm = NULL;
 		ioctl(audio_fd, SNDCTL_DSP_SETTRIGGER, &tmp);
 		ioctl(audio_fd, SNDCTL_DSP_RESET, 0);
 		close(audio_fd);

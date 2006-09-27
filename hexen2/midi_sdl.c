@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.25 2006-09-15 21:43:31 sezero Exp $
+	$Id: midi_sdl.c,v 1.26 2006-09-27 17:17:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,7 +10,8 @@
 #include <dlfcn.h>
 #define _NEED_SDL_MIXER
 #include "sdl_inc.h"
-
+#define _SND_SYS_MACROS_ONLY
+#include "snd_sys.h"
 
 static Mix_Music *music = NULL;
 static int audio_wasinit = 0;
@@ -104,16 +105,23 @@ qboolean MIDI_Init(void)
 	const SDL_version *smixer_version;
 	SDL_version *(*Mix_Linked_Version_fp)(void) = NULL;
 
+	bMidiInited = 0;
 	Con_Printf("MIDI_Init: ");
 
 	if (COM_CheckParm("-nomidi") || COM_CheckParm("--nomidi")
 	   || COM_CheckParm("-nosound") || COM_CheckParm("--nosound"))
 	{
 		Con_Printf("disabled by commandline\n");
-		bMidiInited = 0;
 		return 0;
 	}
 
+	if (snd_system == S_SYS_SDL)
+	{
+		Con_Printf("SDL_mixer conflicts SDL audio.\n");
+		return 0;
+	}
+
+	Con_Printf("SDL_Mixer ");
 	// this is to avoid relocation errors with very old SDL_Mixer versions
 	selfsyms = dlopen(NULL, RTLD_LAZY);
 	if (selfsyms != NULL)
@@ -121,13 +129,12 @@ qboolean MIDI_Init(void)
 		Mix_Linked_Version_fp = dlsym(selfsyms, "Mix_Linked_Version");
 		dlclose(selfsyms);
 	}
-	Con_Printf("SDL_Mixer ");
 	if (Mix_Linked_Version_fp == NULL)
 	{
 		Con_Printf("version can't be determined, disabled.\n");
 		goto bad_version;
 	}
-	Mix_Linked_Version_fp = NULL;
+
 	smixer_version = Mix_Linked_Version();
 	Con_Printf("v%d.%d.%d is ",smixer_version->major,smixer_version->minor,smixer_version->patch);
 	// reject running with SDL_Mixer versions older than what is stated in sdl_inc.h
@@ -150,28 +157,26 @@ bad_version:
 	{
 		if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0)
 		{
-			Con_Printf("Cannot initialize SDL_AUDIO subsystem: %s\n",SDL_GetError());
+			Con_Printf("MIDI_Init: Cannot initialize SDL_AUDIO: %s\n",SDL_GetError());
 			bMidiInited = 0;
 			return 0;
 		}
-		else
-		{
-			Con_Printf("Audio subsystem opened for SDL_mixer.\n");
-		}
 	}
-	// Someone else (-> snd_sdl.c) opened it already. Don' try.
-	// But in this case, the following Mix_OpenAudio will fail anyway...
 
 	if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0)
 	{
 		bMidiInited = 0;
 		Con_Printf("SDL_mixer: open audio failed: %s\n", SDL_GetError());
+		if (audio_wasinit == 0)
+			SDL_QuitSubSystem(SDL_INIT_AUDIO);
 		return 0;
 	}
 
 	midi_endmusicfnc = &MIDI_EndMusicFinished;
 	if (midi_endmusicfnc)
 		Mix_HookMusicFinished(midi_endmusicfnc);
+
+	Con_Printf("MIDI music initialized.\n");
 
 	Cmd_AddCommand ("midi_play", MIDI_Play_f);
 	Cmd_AddCommand ("midi_stop", MIDI_Stop_f);
@@ -195,13 +200,13 @@ void MIDI_Play(char *Name)
 	if (!bMidiInited)	//don't try to play if there is no midi
 		return;
 
-	if (strlen(Name)==0)
+	MIDI_Stop();
+
+	if (!Name || !*Name)
 	{
 		Sys_Printf("no midi music to play\n");
 		return;
 	}
-
-	MIDI_Stop();
 
 	// Note that midi/ is the standart quake search path, but
 	// .midi/ with the leading dot is the path in the userdir
@@ -278,24 +283,23 @@ void MIDI_Stop(void)
 
 void MIDI_Cleanup(void)
 {
-	if ( bMidiInited == 1 )
+	if (bMidiInited)
 	{
-		Con_Printf("MIDI_Cleanup\n");
 		MIDI_Stop();
-		Con_Printf("Closing SDL_mixer for midi music.\n");
-		Mix_CloseAudio();
 		bMidiInited = 0;
-		// I'd better do this here...
-		if (audio_wasinit == 0)
-		{
-			Con_Printf("Closing Audio subsystem for SDL_mixer.\n");
-			SDL_CloseAudio();
-		}
+		Con_Printf("MIDI_Cleanup: closing SDL_mixer\n");
+		Mix_CloseAudio();
+	//	if (audio_wasinit == 0)
+	//		SDL_QuitSubSystem(SDL_INIT_AUDIO);
 	}
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2006/09/15 21:43:31  sezero
+ * use snprintf and the strl* functions, #10: midi_mac.c and midi_sdl.c.
+ * also did some clean-ups while we were there.
+ *
  * Revision 1.24  2006/09/11 11:21:17  sezero
  * added human readable defines for the MIDI_Pause modes
  *

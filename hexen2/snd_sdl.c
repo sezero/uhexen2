@@ -4,13 +4,12 @@
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 	Additional bits taken from QuakeForge and Quake3 projects.
 
-	$Id: snd_sdl.c,v 1.20 2006-05-20 12:38:01 sezero Exp $
+	$Id: snd_sdl.c,v 1.21 2006-09-27 17:17:30 sezero Exp $
 */
 
 #include "sdl_inc.h"
 #include "quakedef.h"
 
-static int snd_inited;
 
 static void paint_audio(void *unused, Uint8 *stream, int len)
 {
@@ -28,8 +27,6 @@ qboolean S_SDL_Init(void)
 	SDL_AudioSpec desired, obtained;
 	char	drivername[128];
 
-	snd_inited = 0;
-
 	if (SDL_InitSubSystem (SDL_INIT_AUDIO) < 0)
 	{
 		Con_Printf("Couldn't init SDL audio: %s\n", SDL_GetError());
@@ -38,19 +35,7 @@ qboolean S_SDL_Init(void)
 
 	/* Set up the desired format */
 	desired.freq = desired_speed;
-	switch (desired_bits)
-	{
-		case 8:
-			desired.format = AUDIO_U8;
-			break;
-		case 16:
-			if ( SDL_BYTEORDER == SDL_BIG_ENDIAN )
-				desired.format = AUDIO_S16MSB;
-			else
-				desired.format = AUDIO_S16LSB;
-			break;
-	}
-
+	desired.format = (desired_bits == 16) ? AUDIO_S16SYS : AUDIO_U8;
 	desired.channels = desired_channels;
 	desired.samples  = 1024; // previously 512 S.A.
 	desired.callback = paint_audio;
@@ -60,42 +45,32 @@ qboolean S_SDL_Init(void)
 	if ( SDL_OpenAudio(&desired, &obtained) < 0 )
 	{
 		Con_Printf("Couldn't open SDL audio: %s\n", SDL_GetError());
+		SDL_QuitSubSystem(SDL_INIT_AUDIO);
 		return 0;
 	}
 
 	/* Make sure we can support the audio format */
 	switch (obtained.format)
 	{
-		case AUDIO_U8:
-			/* Supported */
-			break;
-		case AUDIO_S16LSB:
-		case AUDIO_S16MSB:
-			if ( ((obtained.format == AUDIO_S16LSB) && (SDL_BYTEORDER == SDL_LIL_ENDIAN)) ||
-				((obtained.format == AUDIO_S16MSB) && (SDL_BYTEORDER == SDL_BIG_ENDIAN)) )
-				break;	/* Supported */
-			else
-				Con_Printf ("Warning: sound format / endianness mismatch\n");
-		default:
-			/* Not supported -- force SDL to do our bidding */
-			Con_Printf ("Warning: unsupported audio format received\n");
-			Con_Printf ("Warning: will try forcing sdl audio\n");
-			SDL_CloseAudio();
-			if ( SDL_OpenAudio(&desired, NULL) < 0 )
-			{
-				Con_Printf("Couldn't open SDL audio: %s\n", SDL_GetError());
-				return 0;
-			}
-			memcpy(&obtained, &desired, sizeof(desired));
-			break;
+	case AUDIO_U8:
+	case AUDIO_S16SYS:
+		/* Supported */
+		break;
+	default:
+		Con_Printf ("Unsupported audio format received (%u)\n", obtained.format);
+		SDL_CloseAudio();
+		SDL_QuitSubSystem(SDL_INIT_AUDIO);
+		return 0;
 	}
 
-	/* Fill the audio DMA information block */
+	memset ((dma_t *) &sn, 0, sizeof(sn));
 	shm = &sn;
+
+	/* Fill the audio DMA information block */
 	shm->splitbuffer = 0;
 	shm->samplebits = (obtained.format & 0xFF); // first byte of format is bits
 	if (obtained.freq != desired_speed)
-		Con_Printf ("Warning: Rate set (%i) didn't match requested rate (%i)!\n", obtained.freq, desired_speed);
+		Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", obtained.freq, desired_speed);
 	shm->speed = obtained.freq;
 	shm->channels = obtained.channels;
 	shm->samples = obtained.samples*shm->channels;
@@ -107,7 +82,6 @@ qboolean S_SDL_Init(void)
 	if (SDL_AudioDriverName(drivername, sizeof (drivername)) == NULL)
 		strcpy(drivername, "(UNKNOWN)");
 
-	snd_inited = 1;
 	SDL_PauseAudio(0);
 
 	Con_Printf("Audio Subsystem initialized in SDL mode.\n");
@@ -130,13 +104,13 @@ int S_SDL_GetDMAPos(void)
 
 void S_SDL_Shutdown(void)
 {
-	if (snd_inited)
+	if (shm)
 	{
 		Con_Printf ("Shutting down SDL sound\n");
-		snd_inited = 0;
 //		SDL_PauseAudio (1);
 		SDL_CloseAudio();
 		SDL_QuitSubSystem(SDL_INIT_AUDIO);
+		shm = NULL;
 	}
 }
 
@@ -146,6 +120,11 @@ void S_SDL_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2006/05/20 12:38:01  sezero
+ * cleaned up sound tryrates, etc. changed tryrates array to include
+ * 48000, 24000, and 16000 speeds (this should help 48khz AC97 chips,
+ * from darkplaces).
+ *
  * Revision 1.19  2006/02/18 09:15:03  sezero
  * updated some snd_sdl comments
  *

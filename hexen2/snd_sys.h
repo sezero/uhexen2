@@ -2,7 +2,7 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.6 2006-09-24 17:28:42 sezero Exp $
+	$Id: snd_sys.h,v 1.7 2006-09-27 17:17:30 sezero Exp $
 */
 
 #ifndef __HX2_SND_SYS__
@@ -48,9 +48,9 @@
 #endif	//  _WIN32
 
 
-#ifndef _SND_SYS_MACROS_ONLY
-
 extern unsigned int	snd_system;
+
+#ifndef _SND_SYS_MACROS_ONLY
 
 // chooses functions to call depending on audio subsystem
 extern void S_InitPointers(void);

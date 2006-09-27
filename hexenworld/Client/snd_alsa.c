@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.19 2006-09-23 07:25:36 sezero Exp $
+	$Id: snd_alsa.c,v 1.20 2006-09-27 17:17:32 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -40,7 +40,6 @@ static void *alsa_handle;
 //static char *pcmname = "hw:0,0";
 static char *pcmname = "default";
 static snd_pcm_t *pcm;
-static int snd_inited;
 static snd_pcm_uframes_t buffer_size;
 static snd_pcm_hw_params_t *hw;
 static snd_pcm_sw_params_t *sw;
@@ -132,8 +131,7 @@ qboolean S_ALSA_Init (void)
 	err = hx2snd_pcm_hw_params_set_format (pcm, hw, tmp_bits);
 	if (err < 0)
 	{
-		tmp_bits = (desired_bits == 8) ? 16 : 8;
-		Con_Printf ("Problems setting %d bit format, retrying for %d bit\n", desired_bits, tmp_bits);
+		Con_Printf ("Problems setting %d bit format, trying alternatives..\n", desired_bits);
 		tmp_bits = (desired_bits == 8) ? SND_PCM_FORMAT_S16 : SND_PCM_FORMAT_U8;
 		err = hx2snd_pcm_hw_params_set_format (pcm, hw, tmp_bits);
 		ALSA_CHECK_ERR(err, "Neither 8 nor 16 bit format supported. %s\n", hx2snd_strerror (err));
@@ -144,11 +142,9 @@ qboolean S_ALSA_Init (void)
 	err = hx2snd_pcm_hw_params_set_channels (pcm, hw, tmp_chan);
 	if (err < 0)
 	{
-		Con_Printf ("Problems setting channels to ");
-		if (desired_channels == 2)
-			Con_Printf ("stereo, retrying for mono\n");
-		else
-			Con_Printf ("mono, retrying for stereo\n");
+		Con_Printf ("Problems setting channels to %s, retrying for %s\n",
+				(desired_channels == 2) ? "stereo" : "mono",
+				(desired_channels == 2) ? "mono" : "stereo");
 		tmp_chan = (desired_channels == 2) ? 1 : 2;
 		err = hx2snd_pcm_hw_params_set_channels (pcm, hw, tmp_chan);
 		ALSA_CHECK_ERR(err, "unable to set desired channels. %s\n", hx2snd_strerror (err));
@@ -180,7 +176,7 @@ qboolean S_ALSA_Init (void)
 		}
 		if (rate == 0)
 		{
-			Con_Printf ("ALSA: Unable to set any sample rate !\n");
+			Con_Printf ("Unable to set any sample rates.\n");
 			goto error;
 		}
 	}
@@ -217,8 +213,9 @@ qboolean S_ALSA_Init (void)
 	err = hx2snd_pcm_sw_params (pcm, sw);
 	ALSA_CHECK_ERR(err, "unable to install software params. %s\n", hx2snd_strerror (err));
 
+	memset ((dma_t *) &sn, 0, sizeof(sn));
 	shm = &sn;
-	memset ((dma_t *) shm, 0, sizeof (*shm));
+
 	shm->splitbuffer = 0;
 	shm->channels = tmp_chan;
 
@@ -243,7 +240,6 @@ qboolean S_ALSA_Init (void)
 	shm->samples = buffer_size * shm->channels; // mono samples in buffer
 	shm->speed = rate;
 
-	snd_inited = 1;
 	S_ALSA_GetDMAPos ();	// sets shm->buffer
 	Con_Printf("Audio Subsystem initialized in ALSA mode.\n");
 
@@ -257,12 +253,14 @@ qboolean S_ALSA_Init (void)
 	Con_Printf ("%5d total_channels\n", total_channels);
 
 	return 1;
+
 error:
 	hx2snd_pcm_close (pcm);
 	if (hw)
 		hx2snd_pcm_hw_params_free(hw);
 	if (sw)
 		hx2snd_pcm_sw_params_free(sw);
+	shm = NULL;
 	return 0;
 }
 
@@ -272,7 +270,7 @@ int S_ALSA_GetDMAPos (void)
 	snd_pcm_uframes_t nframes = shm->samples/shm->channels;
 	const snd_pcm_channel_area_t *areas;
 
-	if (!snd_inited)
+	if (!shm)
 		return 0;
 
 	hx2snd_pcm_avail_update (pcm);
@@ -289,15 +287,15 @@ int S_ALSA_GetDMAPos (void)
 
 void S_ALSA_Shutdown (void)
 {
-	if (snd_inited)
+	if (shm)
 	{
 		Con_Printf ("Shutting down ALSA sound\n");
-		snd_inited = 0;
 		hx2snd_pcm_drop (pcm);
 		hx2snd_pcm_close (pcm);
 		hx2snd_pcm_hw_params_free(hw);
 		hx2snd_pcm_sw_params_free(sw);
 		shm->buffer = NULL;
+		shm = NULL;
 	}
 }
 
@@ -336,6 +334,10 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2006/09/23 07:25:36  sezero
+ * added missing com_argc checks (and fixed the incorrect ones)
+ * after several COM_CheckParm calls.
+ *
  * Revision 1.18  2006/09/15 09:18:41  sezero
  * fixed another gcc4 warning about type-punning (although in disabled code)
  *

@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.3 2006-09-15 21:43:31 sezero Exp $
+	$Id: midi_mac.c,v 1.4 2006-09-27 17:17:32 sezero Exp $
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -131,11 +131,11 @@ qboolean MIDI_Init (void)
 	theErr = EnterMovies ();
 	if (theErr != noErr)
 	{
-		Con_Printf ("Couldn't find or init QuickTime 4\n");
+		Con_Printf ("Unable to initialize QuickTime.\n");
 		return 0;
 	}
 
-	Con_Printf("Started QuickTime midi\n");
+	Con_Printf("Started QuickTime midi.\n");
 
 	Q_snprintf_err(mididir, sizeof(mididir), "%s/.midi", com_userdir);
 	Sys_mkdir (mididir);
@@ -154,9 +154,10 @@ qboolean MIDI_Init (void)
 
 void MIDI_Cleanup (void)
 {
-	if ( bMidiInited == 1 )
+	if (bMidiInited)
 	{
 		MIDI_Stop();
+		Con_Printf("MIDI_Cleanup: closing QuickTime.\n");
 		ExitMovies ();
 		bMidiInited = 0;
 	}
@@ -174,13 +175,13 @@ void MIDI_Play (char *Name)
 	if (!bMidiInited)	//don't try to play if there is no midi
 		return;
 
-	if (strlen(Name)==0)
+	MIDI_Stop();
+
+	if (!Name || !*Name)
 	{
 		Sys_Printf("no midi music to play\n");
 		return;
 	}
-
-	MIDI_Stop();
 
 	// Note that midi/ is the standart quake search path, but
 	// .midi/ with the leading dot is the path in the userdir
@@ -222,14 +223,9 @@ void MIDI_Play (char *Name)
 	}
 
 	err = NewMovieFromFile (&midiTrack, midiRefNum, NULL, NULL, newMovieActive, NULL);
-	if (err != noErr)
+	if (err != noErr || !midiTrack)
 	{
-		Con_Printf ("MIDI: NewMovieFromFile: error in creating midi stream\n");
-		return;
-	}
-	if (!midiTrack)
-	{
-		Con_Printf ("MIDI: QuickTime error in allocating midi stream\n");
+		Con_Printf ("MIDI: QuickTime error in creating stream.\n");
 		return;
 	}
 

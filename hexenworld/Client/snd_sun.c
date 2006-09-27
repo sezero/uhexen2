@@ -1,6 +1,6 @@
 /*
 	snd_sun.c
-	$Id: snd_sun.c,v 1.2 2006-07-17 14:07:59 sezero Exp $
+	$Id: snd_sun.c,v 1.3 2006-09-27 17:17:32 sezero Exp $
 
 	SUN Audio driver for BSD and SunOS
 
@@ -97,7 +97,7 @@ qboolean S_SUN_Init (void)
 		return false;
 	}
 
-	memset ((void *)&sn, 0, sizeof (sn));
+	memset ((dma_t *) &sn, 0, sizeof(sn));
 	shm = &sn;
 
 	AUDIO_INITINFO (&info);

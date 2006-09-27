@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.40 2006-09-23 07:25:35 sezero Exp $
+	$Id: snd_dma.c,v 1.41 2006-09-27 17:17:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -44,9 +44,8 @@ static const char *snd_drivers[S_SYS_MAX] =
 	"WIN32"
 };
 
-// pointer should go away
-volatile dma_t	*shm = 0;
 volatile dma_t	sn;
+volatile dma_t	*shm = NULL;
 
 vec3_t		listener_origin;
 vec3_t		listener_forward;
@@ -179,9 +178,8 @@ S_Init
 */
 void S_Init (void)
 {
-	// We need this thing even if the snd won't be initalized
-	// at all. Fixes the demos without models with -nosound
 	Cvar_RegisterVariable(&precache);
+	Cvar_RegisterVariable(&bgmtype);
 
 	if (COM_CheckParm("-nosound") || COM_CheckParm("--nosound")
 			|| COM_CheckParm("-s"))
@@ -204,7 +202,6 @@ void S_Init (void)
 	Cvar_RegisterVariable(&loadas8bit);
 	Cvar_RegisterVariable(&bgmvolume);
 	Cvar_RegisterVariable(&bgm_mutedvol);
-	Cvar_RegisterVariable(&bgmtype);
 	Cvar_RegisterVariable(&ambient_level);
 	Cvar_RegisterVariable(&ambient_fade);
 	Cvar_RegisterVariable(&snd_noextraupdate);
@@ -1097,6 +1094,10 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.40  2006/09/23 07:25:35  sezero
+ * added missing com_argc checks (and fixed the incorrect ones)
+ * after several COM_CheckParm calls.
+ *
  * Revision 1.39  2006/09/18 09:57:57  sezero
  * use snprintf and the strl* functions, #14: snd_dma.c and snd_mem.c.
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: midi.c,v 1.10 2006-09-11 11:21:18 sezero Exp $
+ * $Id: midi.c,v 1.11 2006-09-27 17:17:32 sezero Exp $
  */
 
 #include <windows.h>
@@ -170,8 +170,15 @@ void MIDI_Play(char *Name)
 	if (!bMidiInited)	//don't try to play if there is no midi
 		return;
 
-	sprintf(Temp, "midi/%s.mid", Name);
 	MIDI_Stop();
+
+	if (!Name || !*Name)
+	{
+		Sys_Printf("no midi music to play\n");
+		return;
+	}
+
+	snprintf (Temp, sizeof(Temp), "midi/%s.mid", Name);
 
 	if (StreamBufferSetup(Temp))
 	{
@@ -650,6 +657,9 @@ static void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2006/09/11 11:21:18  sezero
+ * added human readable defines for the MIDI_Pause modes
+ *
  * Revision 1.9  2006/05/18 17:48:10  sezero
  * renamed MIDI_UpdateVolume to MIDI_Update
  *
