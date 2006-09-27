@@ -2,7 +2,7 @@
 	sv_move.c
 	monster movement
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.8 2006-07-02 11:45:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.9 2006-09-27 17:24:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -441,7 +441,8 @@ SV_NewChaseDir
 #define	DI_NODIR	-1
 static void SV_NewChaseDir (edict_t *actor, edict_t *enemy, float dist)
 {
-	float		deltax,deltay,deltaz;
+	float		deltax, deltay;
+//	float		deltaz;
 	float			d[3];
 	float		tdir, olddir, turnaround;
 
@@ -451,11 +452,11 @@ static void SV_NewChaseDir (edict_t *actor, edict_t *enemy, float dist)
 	deltax = enemy->v.origin[0] - actor->v.origin[0];
 	deltay = enemy->v.origin[1] - actor->v.origin[1];
 
-	if ((int)actor->v.flags&FL_FLY)	//Pentacles
+/*	if ((int)actor->v.flags&FL_FLY)	//Pentacles
 		deltaz = enemy->v.origin[2] + enemy->v.view_ofs[2] - actor->v.origin[2];
 	else
 		deltaz = enemy->v.origin[2] - actor->v.origin[2];
-
+*/
 	if (deltax>10)
 		d[1]= 0;
 	else if (deltax<-10)
@@ -615,11 +616,16 @@ void SV_MoveToGoal (void)
 		}
 		G_FLOAT(OFS_RETURN) = 1;
 	}
-	return;
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2006/07/02 11:45:34  sezero
+ * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
+ * which stops vec3_origin usage in relevant calculations. renamed the Length
+ * macro to VectorLength for consistancy. updated the utilities' mathlib for
+ * similar macro usage as in the engine.
+ *
  * Revision 1.7  2006/07/02 11:36:35  sezero
  * uppercased the pr_global_struct() macro for easier detection
  * and searching. put that macro in use in hexenworld server for
