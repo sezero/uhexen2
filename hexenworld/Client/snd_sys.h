@@ -2,7 +2,7 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.8 2006-09-29 18:00:36 sezero Exp $
+	$Id: snd_sys.h,v 1.9 2006-09-29 23:08:06 sezero Exp $
 */
 
 #ifndef __HX2_SND_SYS__
@@ -90,7 +90,7 @@ extern void (*SNDDMA_Submit)(void);
 
 #ifdef _SND_LIST_DRIVERS
 
-#ifdef _WIN32
+#if HAVE_WIN32_SOUND
 // WIN32 versions of the above
 extern qboolean S_WIN32_Init(void);
 extern int S_WIN32_GetDMAPos(void);
@@ -98,7 +98,7 @@ extern void S_WIN32_Shutdown(void);
 extern void S_WIN32_Submit(void);
 #endif
 
-#if defined(HAVE_OSS_SOUND)
+#if HAVE_OSS_SOUND
 // OSS versions of the above
 extern qboolean S_OSS_Init(void);
 extern int S_OSS_GetDMAPos(void);
@@ -106,7 +106,7 @@ extern void S_OSS_Shutdown(void);
 extern void S_OSS_Submit(void);
 #endif	// HAVE_OSS_SOUND
 
-#if defined(HAVE_SUN_SOUND)
+#if HAVE_SUN_SOUND
 // SUN Audio versions of the above
 extern qboolean S_SUN_Init(void);
 extern int S_SUN_GetDMAPos(void);
@@ -114,7 +114,7 @@ extern void S_SUN_Shutdown(void);
 extern void S_SUN_Submit(void);
 #endif	// HAVE_SUN_SOUND
 
-#if defined(HAVE_ALSA_SOUND)
+#if HAVE_ALSA_SOUND
 // ALSA versions of the above
 extern qboolean S_ALSA_Init(void);
 extern int S_ALSA_GetDMAPos(void);
@@ -122,13 +122,13 @@ extern void S_ALSA_Submit(void);
 extern void S_ALSA_Shutdown(void);
 #endif	// HAVE_ALSA_SOUND
 
-#ifdef PLATFORM_UNIX
+#if HAVE_SDL_SOUND
 // SDL versions of the above
 extern qboolean S_SDL_Init(void);
 extern int S_SDL_GetDMAPos(void);
 extern void S_SDL_Shutdown(void);
 extern void S_SDL_Submit(void);
-#endif
+#endif	// HAVE_SDL_SOUND
 
 #endif	// _SND_LIST_DRIVERS
 
