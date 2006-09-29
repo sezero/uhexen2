@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.17 2006-09-15 11:21:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.18 2006-09-29 11:17:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -26,8 +26,8 @@ typedef struct cmd_function_s
 	xcommand_t				function;
 } cmd_function_t;
 
-static cmdalias_t	*cmd_alias;
-static cmd_function_t	*cmd_functions;
+static cmdalias_t	*cmd_alias = NULL;
+static cmd_function_t	*cmd_functions = NULL;
 
 static	int			cmd_argc;
 static	char		*cmd_argv[MAX_ARGS];
@@ -340,6 +340,21 @@ static void Cmd_Alias_f (void)
 	}
 
 	s = Cmd_Argv(1);
+
+	if (Cmd_Argc() == 2)
+	{
+		for (a = cmd_alias ; a ; a=a->next)
+		{
+			if (!strcmp(s, a->name))
+			{
+				Con_Printf ("\"%s\" is \"%s\"\n", s, a->value);
+				return;
+			}
+		}
+		Con_Printf ("No alias named %s\n", s);
+		return;
+	}
+
 	if (strlen(s) >= MAX_ALIAS_NAME)
 	{
 		Con_Printf ("Alias name is too long\n");
@@ -382,6 +397,63 @@ static void Cmd_Alias_f (void)
 
 	a->value = Z_Malloc (strlen (cmd) + 1);
 	strcpy (a->value, cmd);
+}
+
+/*
+===============
+Cmd_Unalias_f
+
+Delete an alias
+===============
+*/
+void Cmd_Unalias_f (void)
+{
+	cmdalias_t	*prev = NULL, *a;
+
+	if (Cmd_Argc() != 2)
+	{
+		Con_Printf("unalias <name> : delete alias\n"
+			   "unaliasall : delete all aliases\n");
+		return;
+	}
+
+	for (a = cmd_alias ; a ; a=a->next)
+	{
+		if (!strcmp(Cmd_Argv(1), a->name))
+		{
+			if (prev)
+				prev->next = a->next;
+			else
+				cmd_alias  = a->next;
+
+			Z_Free (a->value);
+			Z_Free (a);
+			return;
+		}
+		prev = a;
+	}
+
+	Con_Printf ("No alias named %s\n", Cmd_Argv(1));
+}
+
+/*
+===============
+Cmd_Unaliasall_f
+
+Delete all aliases
+===============
+*/
+void Cmd_Unaliasall_f (void)
+{
+	cmdalias_t	*a;
+
+	while (cmd_alias)
+	{
+		a = cmd_alias->next;
+		Z_Free(cmd_alias->value);
+		Z_Free(cmd_alias);
+		cmd_alias = a;
+	}
 }
 
 /*
@@ -793,6 +865,8 @@ void Cmd_Init (void)
 	Cmd_AddCommand ("exec",Cmd_Exec_f);
 	Cmd_AddCommand ("echo",Cmd_Echo_f);
 	Cmd_AddCommand ("alias",Cmd_Alias_f);
+	Cmd_AddCommand ("unalias",Cmd_Unalias_f);
+	Cmd_AddCommand ("unaliasall",Cmd_Unaliasall_f);
 	Cmd_AddCommand ("wait", Cmd_Wait_f);
 #ifndef SERVERONLY
 	Cmd_AddCommand ("commands", Cmd_WriteCommands_f);
@@ -804,6 +878,9 @@ void Cmd_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2006/09/15 11:21:10  sezero
+ * use snprintf and the strl* functions, #5: cmd.c.
+ *
  * Revision 1.16  2006/03/24 15:05:39  sezero
  * killed the archive, server and info members of the cvar structure.
  * the new flags member is now employed for all those purposes. also
