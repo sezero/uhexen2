@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.63 2006-09-20 06:56:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.64 2006-09-29 22:34:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -372,13 +372,13 @@ static char *help_strings[] = {
 #endif
 #if !defined(_NO_SOUND)
 	"     [-s | --nosound]        Run the game without sound",
-#if defined(HAVE_OSS_SOUND)
+#if HAVE_OSS_SOUND
 	"     [-sndoss]               Use OSS sound",
 #endif
-#if defined(HAVE_ALSA_SOUND)
+#if HAVE_ALSA_SOUND
 	"     [-sndalsa]              Use ALSA sound (alsa > 1.0.1)",
 #endif
-#if defined(HAVE_SUN_SOUND)
+#if HAVE_SUN_SOUND
 	"     [-sndsun | -sndbsd]     Use SUN / BSD sound",
 #endif
 	"     [-sndsdl]               Use SDL sound",
@@ -551,6 +551,10 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.63  2006/09/20 06:56:48  sezero
+ * removed my old code that disabled the SDL_QUIT event during
+ * resolution changes.
+ *
  * Revision 1.62  2006/09/15 09:20:12  sezero
  * use the given path_len and snprintf in Sys_GetUserdir, although
  * sprintf is perfectly safe at that point.
