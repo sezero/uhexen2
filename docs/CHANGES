@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-09-29 (CVS, 1.4.1-rc3):
+    * made the alias command to display the value of the given alias
+      instead of clearing it. added new commands unalias and unaliasall.
+    * numerous sound clean-ups.
+    * marked the snapshot of 2006-09-29 as 1.4.1-rc3.
+
 2006-09-27 (CVS):
     * a lot of clean-ups in sound and midi files.
     * re-diff'ed the alternative sdl audio patch after the latest changes.
