@@ -2,7 +2,7 @@
 	snd_sys.c
 	pre-Init platform specific sound stuff
 
-	$Id: snd_sys.c,v 1.5 2006-09-29 11:17:51 sezero Exp $
+	$Id: snd_sys.c,v 1.6 2006-09-29 18:00:35 sezero Exp $
 */
 
 
@@ -50,17 +50,17 @@ static void S_InitSys (void)
 		snd_system = S_SYS_SDL;
 #endif
 
-#if defined(__linux__) && !defined(NO_ALSA)
+#if HAVE_ALSA_SOUND
 	else if (COM_CheckParm ("-sndalsa"))
 		snd_system = S_SYS_ALSA;
 #endif
 
-#if defined(HAVE_OSS_SOUND)
+#if HAVE_OSS_SOUND
 	else if (COM_CheckParm ("-sndoss"))
 		snd_system = S_SYS_OSS;
 #endif
 
-#if defined(HAVE_SUN_SOUND)
+#if HAVE_SUN_SOUND
 	else if (COM_CheckParm ("-sndsun") || COM_CheckParm ("-sndbsd"))
 		snd_system = S_SYS_SUN;
 #endif
@@ -69,11 +69,11 @@ static void S_InitSys (void)
 #if defined(_WIN32)
 		snd_system = S_SYS_WIN32;
 #else	/* unix	*/
-#  if defined(HAVE_OSS_SOUND)
+#  if HAVE_OSS_SOUND
 		snd_system = S_SYS_OSS;
-#  elif defined(HAVE_SUN_SOUND)
+#  elif HAVE_SUN_SOUND
 		snd_system = S_SYS_SUN;
-#  elif defined(HAVE_ALSA_SOUND)
+#  elif HAVE_ALSA_SOUND
 		snd_system = S_SYS_ALSA;
 #  else
 	/* default to sdl sound	*/
@@ -83,12 +83,12 @@ static void S_InitSys (void)
 }
 
 
-void S_InitPointers (void)
+void S_InitDrivers (void)
 {
 	if (!snd_sys_inited)
 	{
-		 S_InitSys();
-		 snd_sys_inited = true;
+		S_InitSys();
+		snd_sys_inited = true;
 	}
 
 	switch (snd_system)
@@ -109,7 +109,7 @@ void S_InitPointers (void)
 		SNDDMA_Submit	 = S_SDL_Submit;
 		break;
 #endif
-#if defined(__linux__) && !defined(NO_ALSA)
+#if HAVE_ALSA_SOUND
 	case S_SYS_ALSA:
 		SNDDMA_Init	 = S_ALSA_Init;
 		SNDDMA_GetDMAPos = S_ALSA_GetDMAPos;
@@ -117,7 +117,7 @@ void S_InitPointers (void)
 		SNDDMA_Submit	 = S_ALSA_Submit;
 		break;
 #endif
-#if defined(HAVE_OSS_SOUND)
+#if HAVE_OSS_SOUND
 	case S_SYS_OSS:
 		SNDDMA_Init	 = S_OSS_Init;
 		SNDDMA_GetDMAPos = S_OSS_GetDMAPos;
@@ -125,7 +125,7 @@ void S_InitPointers (void)
 		SNDDMA_Submit	 = S_OSS_Submit;
 		break;
 #endif
-#if defined(HAVE_SUN_SOUND)
+#if HAVE_SUN_SOUND
 	case S_SYS_SUN:
 		SNDDMA_Init	 = S_SUN_Init;
 		SNDDMA_GetDMAPos = S_SUN_GetDMAPos;
@@ -135,7 +135,6 @@ void S_InitPointers (void)
 #endif
 	case S_SYS_NULL:
 	default:
-	// Paranoia: We should never have come this far!..
 		SNDDMA_Init	 = S_NULL_Init;
 		SNDDMA_GetDMAPos = S_NULL_GetDMAPos;
 		SNDDMA_Shutdown	 = S_NULL_Shutdown;

@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.27 2006-09-29 11:17:51 sezero Exp $
+	$Id: snd_oss.c,v 1.28 2006-09-29 18:00:35 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -29,7 +29,7 @@
 #include "quakedef.h"
 #include "snd_sys.h"
 
-#if defined(HAVE_OSS_SOUND)
+#if HAVE_OSS_SOUND
 
 #include <unistd.h>
 #include <fcntl.h>

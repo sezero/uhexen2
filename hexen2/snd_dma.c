@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.42 2006-09-29 11:17:51 sezero Exp $
+	$Id: snd_dma.c,v 1.43 2006-09-29 18:00:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -34,14 +34,18 @@ int		snd_blocked = 0;
 static qboolean	snd_ambient = 1;
 static qboolean	snd_initialized = false;
 
-static const char *snd_drivers[S_SYS_MAX] =
+static const struct
 {
-	"NULL",
-	"OSS",
-	"SDL",
-	"ALSA",
-	"SUN",
-	"WIN32"
+	char	*name;
+	qboolean	available;
+} snd_drivers[S_SYS_MAX] =
+{
+	{  "NULL" ,	1		},
+	{  "OSS"  ,	HAVE_OSS_SOUND	},
+	{  "SDL"  ,	HAVE_SDL_SOUND	},
+	{  "ALSA" ,	HAVE_ALSA_SOUND	},
+	{  "SUN"  ,	HAVE_SUN_SOUND	},
+	{  "WIN32",	HAVE_WIN32_SOUND}
 };
 
 volatile dma_t	sn;
@@ -110,15 +114,14 @@ static void S_SoundInfo_f(void)
 		return;
 	}
 
-	Con_Printf("Driver: %s\n", snd_drivers[snd_system]);
-	Con_Printf("%5d stereo\n", shm->channels - 1);
+	Con_Printf("Driver: %s\n", snd_drivers[snd_system].name);
+	Con_Printf("%d bit, %s, %d Hz\n", shm->samplebits,
+			(shm->channels == 2) ? "stereo" : "mono", shm->speed);
 	Con_Printf("%5d samples\n", shm->samples);
 	Con_Printf("%5d samplepos\n", shm->samplepos);
-	Con_Printf("%5d samplebits\n", shm->samplebits);
 	Con_Printf("%5d submission_chunk\n", shm->submission_chunk);
-	Con_Printf("%5d speed\n", shm->speed);
-	Con_Printf("0x%x dma buffer\n", shm->buffer);
 	Con_Printf("%5d total_channels\n", total_channels);
+	Con_Printf("0x%x dma buffer\n", shm->buffer);
 }
 
 
@@ -133,9 +136,6 @@ void S_Startup (void)
 
 	if (!snd_initialized)
 		return;
-
-	// point to correct platform versions of driver functions
-	S_InitPointers();
 
 	tmp = COM_CheckParm("-sndspeed");
 	if (tmp != 0 && tmp < com_argc-1)
@@ -175,7 +175,7 @@ void S_Startup (void)
 	else
 	{
 		Con_Printf("%s Audio initialized (%d bit, %s, %d Hz)\n",
-				snd_drivers[snd_system],
+				snd_drivers[snd_system].name,
 				shm->samplebits,
 				(shm->channels == 2) ? "stereo" : "mono",
 				shm->speed);
@@ -195,6 +195,9 @@ void S_Init (void)
 		Con_Printf("Sound is already initialized\n");
 		return;
 	}
+
+	// point to correct platform versions of driver functions
+	S_InitDrivers();
 
 	Cvar_RegisterVariable(&precache);
 	Cvar_RegisterVariable(&bgmtype);
@@ -1107,6 +1110,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.42  2006/09/29 11:17:51  sezero
+ * more sound clean up
+ *
  * Revision 1.41  2006/09/27 17:17:30  sezero
  * a lot of clean-ups in sound and midi files.
  *

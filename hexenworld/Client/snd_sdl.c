@@ -4,7 +4,7 @@
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 	Additional bits taken from QuakeForge and Quake3 projects.
 
-	$Id: snd_sdl.c,v 1.18 2006-09-29 11:17:51 sezero Exp $
+	$Id: snd_sdl.c,v 1.19 2006-09-29 18:00:35 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -99,9 +99,10 @@ void S_SDL_Shutdown(void)
 	if (shm)
 	{
 		Con_Printf ("Shutting down SDL sound\n");
-//		SDL_PauseAudio (1);
+//		SDL_PauseAudio(1);
 		SDL_CloseAudio();
 		SDL_QuitSubSystem(SDL_INIT_AUDIO);
+		shm->buffer = NULL;
 		shm = NULL;
 	}
 }
@@ -112,6 +113,9 @@ void S_SDL_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2006/09/29 11:17:51  sezero
+ * more sound clean up
+ *
  * Revision 1.17  2006/09/27 17:17:32  sezero
  * a lot of clean-ups in sound and midi files.
  *

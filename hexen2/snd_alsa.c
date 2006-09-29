@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.21 2006-09-29 11:17:51 sezero Exp $
+	$Id: snd_alsa.c,v 1.22 2006-09-29 18:00:35 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -31,7 +31,7 @@
 #include "quakedef.h"
 #include "snd_sys.h"
 
-#if defined(HAVE_ALSA_SOUND)
+#if HAVE_ALSA_SOUND
 
 #include <dlfcn.h>
 #include <alsa/asoundlib.h>
@@ -326,6 +326,9 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2006/09/29 11:17:51  sezero
+ * more sound clean up
+ *
  * Revision 1.20  2006/09/27 17:17:30  sezero
  * a lot of clean-ups in sound and midi files.
  *

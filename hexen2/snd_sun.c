@@ -1,6 +1,6 @@
 /*
 	snd_sun.c
-	$Id: snd_sun.c,v 1.4 2006-09-29 11:17:51 sezero Exp $
+	$Id: snd_sun.c,v 1.5 2006-09-29 18:00:35 sezero Exp $
 
 	SUN Audio driver for BSD and SunOS
 
@@ -32,7 +32,7 @@
 #include "quakedef.h"
 #include "snd_sys.h"
 
-#if defined(HAVE_SUN_SOUND)
+#if HAVE_SUN_SOUND
 
 #include <sys/param.h>
 #include <sys/audioio.h>
