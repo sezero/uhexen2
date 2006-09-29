@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.22 2006-09-29 18:00:35 sezero Exp $
+	$Id: snd_alsa.c,v 1.23 2006-09-29 20:38:44 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -36,13 +36,11 @@
 #include <dlfcn.h>
 #include <alsa/asoundlib.h>
 
-static void *alsa_handle;
+static void *alsa_handle = NULL;
 //static char *pcmname = "hw:0,0";
 static char *pcmname = "default";
-static snd_pcm_t *pcm;
+static snd_pcm_t *pcm = NULL;
 static snd_pcm_uframes_t buffer_size;
-static snd_pcm_hw_params_t *hw;
-static snd_pcm_sw_params_t *sw;
 extern int soundtime;
 
 int S_ALSA_GetDMAPos (void);
@@ -101,6 +99,8 @@ qboolean S_ALSA_Init (void)
 	int			i, err;
 	unsigned int		rate;
 	int			tmp_bits, tmp_chan;
+	snd_pcm_hw_params_t	*hw = NULL;
+	snd_pcm_sw_params_t	*sw = NULL;
 	snd_pcm_uframes_t	frag_size;
 
 	if (!load_libasound ())
@@ -244,15 +244,22 @@ qboolean S_ALSA_Init (void)
 
 	S_ALSA_GetDMAPos ();	// sets shm->buffer
 
+	hx2snd_pcm_hw_params_free(hw);
+	hx2snd_pcm_sw_params_free(sw);
+
 	return 1;
 
 error:
-	hx2snd_pcm_close (pcm);
+// full clean-up
 	if (hw)
 		hx2snd_pcm_hw_params_free(hw);
 	if (sw)
 		hx2snd_pcm_sw_params_free(sw);
 	shm = NULL;
+	hx2snd_pcm_close (pcm);
+	pcm = NULL;
+	dlclose (alsa_handle);
+	alsa_handle = NULL;
 	return 0;
 }
 
@@ -281,13 +288,15 @@ void S_ALSA_Shutdown (void)
 {
 	if (shm)
 	{
+	// full clean-up
 		Con_Printf ("Shutting down ALSA sound\n");
-		hx2snd_pcm_drop (pcm);
+		hx2snd_pcm_drop (pcm);	// do I need this?
 		hx2snd_pcm_close (pcm);
-		hx2snd_pcm_hw_params_free(hw);
-		hx2snd_pcm_sw_params_free(sw);
+		pcm = NULL;
 		shm->buffer = NULL;
 		shm = NULL;
+		dlclose (alsa_handle);
+		alsa_handle = NULL;
 	}
 }
 
@@ -326,6 +335,9 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2006/09/29 18:00:35  sezero
+ * even more sound stuff
+ *
  * Revision 1.21  2006/09/29 11:17:51  sezero
  * more sound clean up
  *
