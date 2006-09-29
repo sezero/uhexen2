@@ -136,7 +136,7 @@ diff -urNp hexen2source-1.4.1/hexen2/snd_sdl.c hexen2source-1.4.1x/hexen2/snd_sd
  	if (shm)
  	{
  		Con_Printf ("Shutting down SDL sound\n");
--//		SDL_PauseAudio (1);
+-//		SDL_PauseAudio(1);
 +		SDL_PauseAudio(1);
 +		SDL_LockAudio();
  		SDL_CloseAudio();
@@ -146,12 +146,12 @@ diff -urNp hexen2source-1.4.1/hexen2/snd_sdl.c hexen2source-1.4.1x/hexen2/snd_sd
 +			allocMark = 0;
 +		}
  		SDL_QuitSubSystem(SDL_INIT_AUDIO);
+ 		shm->buffer = NULL;
  		shm = NULL;
- 	}
 diff -urNp hexen2source-1.4.1/hexen2/snd_sys.h hexen2source-1.4.1x/hexen2/snd_sys.h
 --- hexen2source-1.4.1/hexen2/snd_sys.h	2006-09-27 20:17:30.000000000 +0300
 +++ hexen2source-1.4.1x/hexen2/snd_sys.h	2006-09-29 14:31:47.000000000 +0300
-@@ -40,7 +40,7 @@
+@@ -60,7 +60,7 @@
  
  // this prevents running S_Update_() with the sdl sound driver
  // if the snd_sdl implementation already calls S_PaintChannels.
@@ -287,7 +287,7 @@ diff -urNp hexen2source-1.4.1/hexenworld/Client/snd_sdl.c hexen2source-1.4.1x/he
  	if (shm)
  	{
  		Con_Printf ("Shutting down SDL sound\n");
--//		SDL_PauseAudio (1);
+-//		SDL_PauseAudio(1);
 +		SDL_PauseAudio(1);
 +		SDL_LockAudio();
  		SDL_CloseAudio();
@@ -297,12 +297,12 @@ diff -urNp hexen2source-1.4.1/hexenworld/Client/snd_sdl.c hexen2source-1.4.1x/he
 +			allocMark = 0;
 +		}
  		SDL_QuitSubSystem(SDL_INIT_AUDIO);
+ 		shm->buffer = NULL;
  		shm = NULL;
- 	}
 diff -urNp hexen2source-1.4.1/hexenworld/Client/snd_sys.h hexen2source-1.4.1x/hexenworld/Client/snd_sys.h
 --- hexen2source-1.4.1/hexenworld/Client/snd_sys.h	2006-09-27 20:17:32.000000000 +0300
 +++ hexen2source-1.4.1x/hexenworld/Client/snd_sys.h	2006-09-29 14:31:47.000000000 +0300
-@@ -40,7 +40,7 @@
+@@ -60,7 +60,7 @@
  
  // this prevents running S_Update_() with the sdl sound driver
  // if the snd_sdl implementation already calls S_PaintChannels.
