@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.20 2006-09-27 17:17:30 sezero Exp $
+	$Id: snd_alsa.c,v 1.21 2006-09-29 11:17:51 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -116,7 +116,7 @@ qboolean S_ALSA_Init (void)
 		Con_Printf ("ALSA: audio open error: %s\n", hx2snd_strerror (err));
 		return 0;
 	}
-	Con_Printf ("Using PCM %s.\n", pcmname);
+	Con_Printf ("ALSA: Using device: %s\n", pcmname);
 
 	err = hx2snd_pcm_hw_params_malloc (&hw);
 	ALSA_CHECK_ERR(err, "unable to allocate hardware params. %s\n", hx2snd_strerror (err));
@@ -230,6 +230,8 @@ qboolean S_ALSA_Init (void)
 	err = hx2snd_pcm_hw_params_get_buffer_size (hw, &buffer_size);
 	ALSA_CHECK_ERR(err, "unable to get buffer size. %s\n", hx2snd_strerror(err));
 
+	Con_Printf ("ALSA: %u bytes buffer with mmap interleaved access\n", buffer_size);
+
 	if (buffer_size != round_buffer_size (buffer_size))
 	{
 		Sys_Printf ("ALSA: WARNING: non-power of 2 buffer size. sound may be\n");
@@ -241,16 +243,6 @@ qboolean S_ALSA_Init (void)
 	shm->speed = rate;
 
 	S_ALSA_GetDMAPos ();	// sets shm->buffer
-	Con_Printf("Audio Subsystem initialized in ALSA mode.\n");
-
-	Con_Printf ("%5d stereo\n", shm->channels - 1);
-	Con_Printf ("%5d samples\n", shm->samples);
-	Con_Printf ("%5d samplepos\n", shm->samplepos);
-	Con_Printf ("%5d samplebits\n", shm->samplebits);
-	Con_Printf ("%5d submission_chunk\n", shm->submission_chunk);
-	Con_Printf ("%5d speed\n", shm->speed);
-	Con_Printf ("0x%x dma buffer\n", (int) shm->buffer);
-	Con_Printf ("%5d total_channels\n", total_channels);
 
 	return 1;
 
@@ -334,6 +326,9 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2006/09/27 17:17:30  sezero
+ * a lot of clean-ups in sound and midi files.
+ *
  * Revision 1.19  2006/09/23 07:25:35  sezero
  * added missing com_argc checks (and fixed the incorrect ones)
  * after several COM_CheckParm calls.

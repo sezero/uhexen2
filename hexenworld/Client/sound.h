@@ -123,14 +123,11 @@ extern	vec3_t	listener_origin;
 extern	vec3_t	listener_forward;
 extern	vec3_t	listener_right;
 extern	vec3_t	listener_up;
-extern	vec_t	sound_nominal_clip_dist;
 
 extern	cvar_t loadas8bit;
 extern	cvar_t bgmvolume;
 extern	cvar_t bgmtype;
 extern	cvar_t sfxvolume;
-
-extern qboolean	snd_initialized;
 
 extern int		snd_blocked;
 

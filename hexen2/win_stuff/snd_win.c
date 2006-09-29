@@ -335,12 +335,7 @@ static sndinitstat SNDDMA_InitDirect (void)
 	pDSBuf->lpVtbl->Play(pDSBuf, 0, 0, DSBPLAY_LOOPING);
 
 	if (snd_firsttime)
-		Con_SafePrintf ("   %d channel(s)\n"
-				"   %d bits/sample\n"
-				"   %d bytes/sec\n"
-				"   %d bytes in sound buffer\n",
-				shm->channels, shm->samplebits,
-				shm->speed, dsbcaps.dwBufferBytes);
+		Con_SafePrintf ("%d bytes in sound buffer\n", dsbcaps.dwBufferBytes);
 
 	gSndBufSize = dsbcaps.dwBufferBytes;
 
@@ -480,13 +475,7 @@ static qboolean SNDDMA_InitWav (void)
 
 	wav_init = true;
 
-	Con_SafePrintf ("   %d channel(s)\n"
-			"   %d bits/sample\n"
-			"   %d bytes/sec\n"
-			"   %d sound buffers\n"
-			"   %d bytes/sound buffer\n",
-			shm->channels, shm->samplebits,
-			shm->speed, WAV_BUFFERS, wv_buf_size);
+	Con_SafePrintf ("%d sound buffers, %d bytes/sound buffer\n", WAV_BUFFERS, wv_buf_size);
 
 	/* Wave init succeeded, so DO NOT attempt to deallocate sound buffers
 	   from the hunk later on, otherwise we risk trashing everything that

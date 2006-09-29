@@ -2,7 +2,7 @@
 	snd_sys.c
 	pre-Init platform specific sound stuff
 
-	$Id: snd_sys.c,v 1.4 2006-06-29 23:02:02 sezero Exp $
+	$Id: snd_sys.c,v 1.5 2006-09-29 11:17:51 sezero Exp $
 */
 
 
@@ -140,7 +140,6 @@ void S_InitPointers (void)
 		SNDDMA_GetDMAPos = S_NULL_GetDMAPos;
 		SNDDMA_Shutdown	 = S_NULL_Shutdown;
 		SNDDMA_Submit	 = S_NULL_Submit;
-		snd_initialized = false;
 		break;
 	}
 }

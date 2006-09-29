@@ -1,6 +1,6 @@
 /*
 	snd_sun.c
-	$Id: snd_sun.c,v 1.3 2006-09-27 17:17:30 sezero Exp $
+	$Id: snd_sun.c,v 1.4 2006-09-29 11:17:51 sezero Exp $
 
 	SUN Audio driver for BSD and SunOS
 
@@ -122,10 +122,6 @@ qboolean S_SUN_Init (void)
 	shm->channels = info.play.channels;
 	shm->samplebits = info.play.precision;
 	shm->speed = info.play.sample_rate;
-
-	// Print some information
-	Con_Printf("SUN Audio initialized (%d bit, %s, %d Hz)\n",
-				shm->samplebits, (shm->channels == 2) ? "stereo" : "mono", shm->speed);
 
 	if (shm->speed != desired_speed)
 		Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", shm->speed, desired_speed);

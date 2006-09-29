@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.26 2006-09-27 18:06:05 sezero Exp $
+	$Id: snd_oss.c,v 1.27 2006-09-29 11:17:51 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -62,7 +62,7 @@ qboolean S_OSS_Init(void)
 	tmp = COM_CheckParm("-ossdev");
 	if (tmp != 0 && tmp < com_argc-1)
 		ossdev = com_argv[tmp+1];
-	Con_Printf ("Using OSS device %s\n", ossdev);
+	Con_Printf ("OSS: Using device: %s\n", ossdev);
 
 // open /dev/dsp, confirm capability to mmap, and get size of dma buffer
 	audio_fd = open(ossdev, O_RDWR|O_NONBLOCK);
@@ -214,6 +214,7 @@ qboolean S_OSS_Init(void)
 		Con_Printf("Could not mmap %s. %s\n", ossdev, strerror(errno));
 		goto error;
 	}
+	Con_Printf ("OSS: mmaped %u bytes buffer\n", mmaplen);
 
 // toggle the trigger & start her up
 	tmp = 0;
@@ -233,8 +234,6 @@ qboolean S_OSS_Init(void)
 
 	shm->samplepos = 0;
 
-	Con_Printf("OSS Audio initialized (%d bit, %s, %d Hz)\n",
-				shm->samplebits, (shm->channels == 2) ? "stereo" : "mono", shm->speed);
 	return 1;
 
 error:

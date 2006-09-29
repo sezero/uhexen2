@@ -4,7 +4,7 @@
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 	Additional bits taken from QuakeForge and Quake3 projects.
 
-	$Id: snd_sdl.c,v 1.21 2006-09-27 17:17:30 sezero Exp $
+	$Id: snd_sdl.c,v 1.22 2006-09-29 11:17:51 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -84,16 +84,8 @@ qboolean S_SDL_Init(void)
 
 	SDL_PauseAudio(0);
 
-	Con_Printf("Audio Subsystem initialized in SDL mode.\n");
 	Con_Printf ("SDL audio driver: %s\n", drivername);
-	Con_Printf ("%5d stereo\n", shm->channels - 1);
-	Con_Printf ("%5d samples\n", shm->samples);
-	Con_Printf ("%5d samplepos\n", shm->samplepos);
-	Con_Printf ("%5d samplebits\n", shm->samplebits);
-	Con_Printf ("%5d submission_chunk\n", shm->submission_chunk);
-	Con_Printf ("%5d speed\n", shm->speed);
-	Con_Printf ("0x%x dma buffer address\n", (int) shm->buffer);
-	Con_Printf ("%5d total_channels\n", total_channels);
+
 	return 1;
 }
 
@@ -120,6 +112,9 @@ void S_SDL_Submit(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2006/09/27 17:17:30  sezero
+ * a lot of clean-ups in sound and midi files.
+ *
  * Revision 1.20  2006/05/20 12:38:01  sezero
  * cleaned up sound tryrates, etc. changed tryrates array to include
  * 48000, 24000, and 16000 speeds (this should help 48khz AC97 chips,

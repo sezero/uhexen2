@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.41 2006-09-27 17:17:30 sezero Exp $
+	$Id: snd_dma.c,v 1.42 2006-09-29 11:17:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -32,7 +32,7 @@ int		total_channels;
 
 int		snd_blocked = 0;
 static qboolean	snd_ambient = 1;
-qboolean	snd_initialized = false;
+static qboolean	snd_initialized = false;
 
 static const char *snd_drivers[S_SYS_MAX] =
 {
@@ -51,14 +51,15 @@ vec3_t		listener_origin;
 vec3_t		listener_forward;
 vec3_t		listener_right;
 vec3_t		listener_up;
-vec_t		sound_nominal_clip_dist=1000.0;
+
+#define	sound_nominal_clip_dist	1000.0
 
 int		soundtime;	// sample PAIRS
 int		paintedtime;	// sample PAIRS
 
 
 #define	MAX_SFX		512
-static sfx_t	*known_sfx;	// hunk allocated [MAX_SFX]
+static sfx_t	*known_sfx = NULL;	// hunk allocated [MAX_SFX]
 static int	num_sfx;
 
 static sfx_t	*ambient_sfx[NUM_AMBIENTS];
@@ -130,11 +131,11 @@ void S_Startup (void)
 {
 	int		i, tmp;
 
-	// point to correct platform versions of driver functions
-	S_InitPointers();
-
 	if (!snd_initialized)
 		return;
+
+	// point to correct platform versions of driver functions
+	S_InitPointers();
 
 	tmp = COM_CheckParm("-sndspeed");
 	if (tmp != 0 && tmp < com_argc-1)
@@ -167,7 +168,18 @@ void S_Startup (void)
 	sound_started = SNDDMA_Init();
 
 	if (!sound_started)
-		Con_Printf("Failed initializing sound\n");
+	{
+		if (snd_system != S_SYS_NULL)
+			Con_Printf("Failed initializing sound\n");
+	}
+	else
+	{
+		Con_Printf("%s Audio initialized (%d bit, %s, %d Hz)\n",
+				snd_drivers[snd_system],
+				shm->samplebits,
+				(shm->channels == 2) ? "stereo" : "mono",
+				shm->speed);
+	}
 }
 
 
@@ -178,6 +190,12 @@ S_Init
 */
 void S_Init (void)
 {
+	if (snd_initialized)
+	{
+		Con_Printf("Sound is already initialized\n");
+		return;
+	}
+
 	Cvar_RegisterVariable(&precache);
 	Cvar_RegisterVariable(&bgmtype);
 
@@ -223,7 +241,7 @@ void S_Init (void)
 
 	SND_InitScaletable ();
 
-	known_sfx = Hunk_AllocName (MAX_SFX*sizeof(sfx_t), "sfx_t");
+	known_sfx = (sfx_t *) Hunk_AllocName (MAX_SFX*sizeof(sfx_t), "sfx_t");
 	num_sfx = 0;
 
 	// provides a tick sound until washed clean
@@ -464,7 +482,6 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 {
 	channel_t *target_chan, *check;
 	sfxcache_t	*sc;
-	int		vol;
 	int		ch_idx;
 	int		skip;
 	qboolean skip_dist_check = false;
@@ -477,8 +494,6 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 
 	if (nosound.value)
 		return;
-
-	vol = fvol*255;
 
 // pick a channel to play on
 	target_chan = SND_PickChannel(entnum, entchannel);
@@ -495,7 +510,7 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 	memset (target_chan, 0, sizeof(*target_chan));
 	VectorCopy(origin, target_chan->origin);
 	target_chan->dist_mult = attenuation / sound_nominal_clip_dist;
-	target_chan->master_vol = vol;
+	target_chan->master_vol = (int) (fvol * 255);
 	target_chan->entnum = entnum;
 	target_chan->entchannel = entchannel;
 	SND_Spatialize(target_chan);
@@ -685,7 +700,7 @@ void S_StaticSound (sfx_t *sfx, vec3_t origin, float vol, float attenuation)
 
 	ss->sfx = sfx;
 	VectorCopy (origin, ss->origin);
-	ss->master_vol = vol;
+	ss->master_vol = (int)vol;
 	ss->dist_mult = (attenuation/64) / sound_nominal_clip_dist;
 	ss->end = paintedtime + sc->length;
 
@@ -703,8 +718,7 @@ S_UpdateAmbientSounds
 static void S_UpdateAmbientSounds (void)
 {
 	mleaf_t		*l;
-	float		vol;
-	int			ambient_channel;
+	int			vol, ambient_channel;
 	channel_t	*chan;
 
 	if (!snd_ambient)
@@ -727,20 +741,20 @@ static void S_UpdateAmbientSounds (void)
 		chan = &channels[ambient_channel];
 		chan->sfx = ambient_sfx[ambient_channel];
 
-		vol = ambient_level.value * l->ambient_sound_level[ambient_channel];
+		vol = (int) (ambient_level.value * l->ambient_sound_level[ambient_channel]);
 		if (vol < 8)
 			vol = 0;
 
 	// don't adjust volume too fast
 		if (chan->master_vol < vol)
 		{
-			chan->master_vol += host_frametime * ambient_fade.value;
+			chan->master_vol += (int) (host_frametime * ambient_fade.value);
 			if (chan->master_vol > vol)
 				chan->master_vol = vol;
 		}
 		else if (chan->master_vol > vol)
 		{
-			chan->master_vol -= host_frametime * ambient_fade.value;
+			chan->master_vol -= (int) (host_frametime * ambient_fade.value);
 			if (chan->master_vol < vol)
 				chan->master_vol = vol;
 		}
@@ -911,10 +925,9 @@ static void S_Update_ (void)
 	}
 
 // mix ahead of current position
-	endtime = soundtime + _snd_mixahead.value * shm->speed;
+	endtime = soundtime + (unsigned int)(_snd_mixahead.value * shm->speed);
 	samps = shm->samples >> (shm->channels-1);
-	if (endtime - soundtime > samps)
-		endtime = soundtime + samps;
+	endtime = min(endtime, (unsigned int)(soundtime + samps));
 
 #ifdef _WIN32
 // if the buffer was lost or stopped, restore it and/or restart it
@@ -1044,7 +1057,7 @@ static void S_SoundList(void)
 	total = 0;
 	for (sfx=known_sfx, i=0 ; i<num_sfx ; i++, sfx++)
 	{
-		sc = Cache_Check (&sfx->cache);
+		sc = (sfxcache_t *) Cache_Check (&sfx->cache);
 		if (!sc)
 			continue;
 		size = sc->length*sc->width*(sc->stereo+1);
@@ -1094,6 +1107,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.41  2006/09/27 17:17:30  sezero
+ * a lot of clean-ups in sound and midi files.
+ *
  * Revision 1.40  2006/09/23 07:25:35  sezero
  * added missing com_argc checks (and fixed the incorrect ones)
  * after several COM_CheckParm calls.
