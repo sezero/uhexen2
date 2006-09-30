@@ -2,7 +2,7 @@
 	snd_sys.c
 	pre-Init platform specific sound stuff
 
-	$Id: snd_sys.c,v 1.6 2006-09-29 18:00:36 sezero Exp $
+	$Id: snd_sys.c,v 1.7 2006-09-30 10:49:09 sezero Exp $
 */
 
 
@@ -40,12 +40,13 @@ static void S_NULL_Submit(void)
 {
 }
 
+
 static void S_InitSys (void)
 {
 	if (COM_CheckParm("-nosound") || COM_CheckParm("--nosound") || COM_CheckParm("-s"))
 		snd_system = S_SYS_NULL;
 
-#if defined(PLATFORM_UNIX)
+#if HAVE_SDL_SOUND
 	else if (COM_CheckParm ("-sndsdl"))
 		snd_system = S_SYS_SDL;
 #endif
@@ -66,19 +67,18 @@ static void S_InitSys (void)
 #endif
 
 	else
-#if defined(_WIN32)
+#if HAVE_WIN32_SOUND
 		snd_system = S_SYS_WIN32;
-#else	/* unix	*/
-#  if HAVE_OSS_SOUND
+#elif HAVE_OSS_SOUND
 		snd_system = S_SYS_OSS;
-#  elif HAVE_SUN_SOUND
+#elif HAVE_SUN_SOUND
 		snd_system = S_SYS_SUN;
-#  elif HAVE_ALSA_SOUND
+#elif HAVE_ALSA_SOUND
 		snd_system = S_SYS_ALSA;
-#  else
-	/* default to sdl sound	*/
+#elif HAVE_SDL_SOUND
 		snd_system = S_SYS_SDL;
-#  endif
+#else
+		snd_system = S_SYS_NULL;
 #endif
 }
 
@@ -93,7 +93,7 @@ void S_InitDrivers (void)
 
 	switch (snd_system)
 	{
-#if defined(_WIN32)
+#if HAVE_WIN32_SOUND
 	case S_SYS_WIN32:
 		SNDDMA_Init	 = S_WIN32_Init;
 		SNDDMA_GetDMAPos = S_WIN32_GetDMAPos;
@@ -101,7 +101,7 @@ void S_InitDrivers (void)
 		SNDDMA_Submit	 = S_WIN32_Submit;
 		break;
 #endif
-#if defined(PLATFORM_UNIX)
+#if HAVE_SDL_SOUND
 	case S_SYS_SDL:
 		SNDDMA_Init	 = S_SDL_Init;
 		SNDDMA_GetDMAPos = S_SDL_GetDMAPos;
