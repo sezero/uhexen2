@@ -4,12 +4,17 @@
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 	Additional bits taken from QuakeForge and Quake3 projects.
 
-	$Id: snd_sdl.c,v 1.19 2006-09-29 18:00:35 sezero Exp $
+	$Id: snd_sdl.c,v 1.20 2006-09-30 10:48:33 sezero Exp $
 */
 
-#include "sdl_inc.h"
-#include "quakedef.h"
+#define _SND_SYS_MACROS_ONLY
 
+#include "quakedef.h"
+#include "snd_sys.h"
+
+#if HAVE_SDL_SOUND
+
+#include "sdl_inc.h"
 
 static void paint_audio(void *unused, Uint8 *stream, int len)
 {
@@ -111,8 +116,13 @@ void S_SDL_Submit(void)
 {
 }
 
+#endif	// HAVE_SDL_SOUND
+
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2006/09/29 18:00:35  sezero
+ * even more sound stuff
+ *
  * Revision 1.18  2006/09/29 11:17:51  sezero
  * more sound clean up
  *
