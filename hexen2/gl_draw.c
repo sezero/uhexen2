@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.88 2006-09-15 20:12:48 sezero Exp $
+	$Id: gl_draw.c,v 1.89 2006-10-04 15:20:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -517,6 +517,13 @@ void Draw_ReInit (void)
 
 	D_ClearOpenGLTextures(0);
 	texture_extension_number = 1U;
+	// make sure all of alias models are cleared
+#if !defined(H2W)
+	flush_textures = 1;
+#endif
+	temp2 = gl_purge_maptex.value;
+	Cvar_SetValue ("gl_purge_maptex", 1);
+	Mod_ClearAll ();
 
 	draw_reinit = true;
 
@@ -532,15 +539,8 @@ void Draw_ReInit (void)
 	Sbar_Init();
 	// Reload the particle texture
 	R_InitParticleTexture();
-	// make sure all of alias models are cleared
-#if !defined(H2W)
-	flush_textures = 1;
-#endif
-	temp2 = gl_purge_maptex.value;
-	gl_purge_maptex.value = 1;
-	Mod_ClearAll ();
-	gl_purge_maptex.value = temp2;
 
+	Cvar_SetValue ("gl_purge_maptex", temp2);
 	draw_reinit = false;
 	scr_disabled_for_loading = temp;
 }
@@ -2077,6 +2077,9 @@ GLuint GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.88  2006/09/15 20:12:48  sezero
+ * use snprintf and the strl* functions, #7: draw.c and gl_draw.c.
+ *
  * Revision 1.87  2006/08/14 07:26:00  sezero
  * compile fix for Draw_ReInit
  *
