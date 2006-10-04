@@ -469,8 +469,8 @@ static void CL_ParseServerData (void)
 		Cbuf_AddText ("cl_warncmd 0\n");
 		if (COM_FileInGamedir("config.cfg") != -1)
 		{
-		// remove any weird mod specific key bindings
-			Cbuf_AddText("unbindall\n");
+		// remove any weird mod specific key bindings / aliases
+			Cbuf_AddText("unbindall ; wait ; unaliasall\n");
 			Cbuf_AddText("exec autoexec.cfg\n");
 			Cbuf_AddText("exec config.cfg\n");
 		}
