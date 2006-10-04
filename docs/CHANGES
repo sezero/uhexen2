@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-10-04 (CVS):
+    * hexenworld: removed an old comment in CL_ParseServerData.
+    * hexenworld: remove old aliases upon gamedir changes.
+    * updated Draw_ReInit() procedure.
+    * win32 sound: used proper directx macroes and got rid of lpVtbl
+      stuff for better readability.
+
 2006-09-29 (CVS, 1.4.1-rc3):
     * made the alias command to display the value of the given alias
       instead of clearing it. added new commands unalias and unaliasall.
