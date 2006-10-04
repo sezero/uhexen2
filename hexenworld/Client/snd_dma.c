@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.41 2006-09-29 18:00:35 sezero Exp $
+	$Id: snd_dma.c,v 1.42 2006-10-04 15:36:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -639,7 +639,7 @@ void S_ClearBuffer (void)
 
 		reps = 0;
 
-		while ((hresult = pDSBuf->lpVtbl->Lock(pDSBuf, 0, gSndBufSize, &pData, &dwSize, NULL, NULL, 0)) != DS_OK)
+		while ((hresult = IDirectSoundBuffer_Lock(pDSBuf, 0, gSndBufSize, &pData, &dwSize, NULL, NULL, 0)) != DS_OK)
 		{
 			if (hresult != DSERR_BUFFERLOST)
 			{
@@ -658,7 +658,7 @@ void S_ClearBuffer (void)
 
 		memset(pData, clear, shm->samples * shm->samplebits/8);
 
-		pDSBuf->lpVtbl->Unlock(pDSBuf, pData, dwSize, NULL, 0);
+		IDirectSoundBuffer_Unlock(pDSBuf, pData, dwSize, NULL, 0);
 	}
 	else
 #endif
@@ -939,14 +939,14 @@ static void S_Update_ (void)
 	{
 		DWORD	dwStatus;
 
-		if (pDSBuf->lpVtbl->GetStatus (pDSBuf, &dwStatus) != DD_OK)
+		if (IDirectSoundBuffer_GetStatus(pDSBuf, &dwStatus) != DD_OK)
 			Con_Printf ("Couldn't get sound buffer status\n");
 
 		if (dwStatus & DSBSTATUS_BUFFERLOST)
-			pDSBuf->lpVtbl->Restore (pDSBuf);
+			IDirectSoundBuffer_Restore(pDSBuf);
 
 		if (!(dwStatus & DSBSTATUS_PLAYING))
-			pDSBuf->lpVtbl->Play(pDSBuf, 0, 0, DSBPLAY_LOOPING);
+			IDirectSoundBuffer_Play(pDSBuf, 0, 0, DSBPLAY_LOOPING);
 	}
 #endif
 
@@ -1110,6 +1110,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.41  2006/09/29 18:00:35  sezero
+ * even more sound stuff
+ *
  * Revision 1.40  2006/09/29 11:17:51  sezero
  * more sound clean up
  *

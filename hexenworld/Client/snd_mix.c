@@ -69,7 +69,7 @@ static void S_TransferStereo16 (int endtime)
 	{
 		reps = 0;
 
-		while ((hresult = pDSBuf->lpVtbl->Lock(pDSBuf, 0, gSndBufSize, &pbuf, &dwSize, 
+		while ((hresult = IDirectSoundBuffer_Lock(pDSBuf, 0, gSndBufSize, &pbuf, &dwSize, 
 									   &pbuf2, &dwSize2, 0)) != DS_OK)
 		{
 			if (hresult != DSERR_BUFFERLOST)
@@ -118,7 +118,7 @@ static void S_TransferStereo16 (int endtime)
 #ifdef _WIN32
 // FIXME: move this to its platform driver!
 	if (pDSBuf)
-		pDSBuf->lpVtbl->Unlock(pDSBuf, pbuf, dwSize, NULL, 0);
+		IDirectSoundBuffer_Unlock(pDSBuf, pbuf, dwSize, NULL, 0);
 #endif
 }
 
@@ -155,7 +155,7 @@ static void S_TransferPaintBuffer(int endtime)
 	{
 		reps = 0;
 
-		while ((hresult = pDSBuf->lpVtbl->Lock(pDSBuf, 0, gSndBufSize, &pbuf, &dwSize, 
+		while ((hresult = IDirectSoundBuffer_Lock(pDSBuf, 0, gSndBufSize, &pbuf, &dwSize, 
 									   &pbuf2,&dwSize2, 0)) != DS_OK)
 		{
 			if (hresult != DSERR_BUFFERLOST)
@@ -222,8 +222,8 @@ static void S_TransferPaintBuffer(int endtime)
 
 		ir += il;
 
-		pDSBuf->lpVtbl->Unlock(pDSBuf, pbuf, dwSize, NULL, 0);
-		pDSBuf->lpVtbl->GetCurrentPosition(pDSBuf, &dwNewpos, &dwWrite);
+		IDirectSoundBuffer_Unlock(pDSBuf, pbuf, dwSize, NULL, 0);
+		IDirectSoundBuffer_GetCurrentPosition(pDSBuf, &dwNewpos, &dwWrite);
 
 //		if ((dwNewpos >= il) && (dwNewpos <= ir))
 //			Con_Printf("%d-%d p %d c\n", il, ir, dwNewpos);
