@@ -9,6 +9,8 @@ Development Progress	:
       was a serious bug and used to cause texturing errors in hexenworld
       upon gamedir changes.
     * clean-ups about gamedir changing in CL_ParseServerData.
+    * updated the sound driver availability macros. updated the
+      makefiles with more options.
 
 2006-10-04 (CVS):
     * hexenworld: removed an old comment in CL_ParseServerData.
