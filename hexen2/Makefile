@@ -13,6 +13,10 @@
 # USE_SOUND :	yes  =	Include sound support (default).
 #		no   =	Don't include sound support.
 #
+# USE_SDLAUDIO:	yes  =	Include SDL audio support (default).
+# (for Unix)	no   =	Don't include SDL audio support.
+#		SDL audio is enabled on all unix-like platforms.
+#
 # USE_ALSA :	yes  =	Include ALSA sound support (default).
 # (for Unix)	no   =	Don't include alsa support.
 #		Requires alsa-lib and alsa-kernel modules >= 1.0.1
@@ -20,24 +24,39 @@
 #		On any platform other than Linux, ALSA support will be
 #		automatically be disabled.
 #
-# USE_CDA :	yes  =	Include CDAudio support (default).
+# USE_OSS :	yes  =	Include OSS audio support (default).
+# (for Unix)	no   =	Don't include OSS support.
+#		OSS is enabled on Linux and FreeBSD.
+#		It is automatically disabled on other platforms.
+#		See snd_sys.h for a more complete list.
+#
+# USE_SUNAUDIO:	yes  =	Include SUN audio support (default).
+# (for Unix)	no   =	Don't include SUN audio support.
+#		SUN audio is enabled on OpenBSD, NetBSD and SUN.
+#		It is automatically disabled on other platforms.
+#		See snd_sys.h for a more complete list.
+#
+# USE_CDAUDIO :	yes  =	Include CDAudio support (default).
 #		no   =	Don't include CDAudio support.
 #
 # USE_SDLCD:	no   =	Don't use SDL cdaudio (default); platform specific
 # (for Unix)		cdrom code will be used.  The only problem with
 #			SDL_cdrom is that it lacks proper volume controls.
+#			See cd_unix.h for the availability of platform
+#			specific cdaudio drivers.
 #		yes  =	Use SDL for cdaudio instead of platform specific code
 #
 # USE_MIDI :	yes  =	Include MIDI music support (default).
 #		no   =	Don't include MIDI music support.
-#		MIDI needs SDL_mixer (built with Timidity support)
-#		and Timidity patches on Unix.
+#		On Unix, MIDI needs SDL_mixer (built with Timidity support)
+#		and Timidity patches.
 #
 # WITH_SPLASHES	yes  =	(default) enable startup splash screens
 # (for Win32)	no   =	disable startup splash screens
 #
 # LINK_GL_LIBS	no  =	(default) Don't link to the opengl libraries at compile
-#			time. The binaries will dlopen() the necessary libs
+#			time. The binaries will dynamically load the necessary
+#			libraries and functions at runtime.
 #		yes =	link to the opengl libraries at compile time
 #
 # OPT_EXTRA	yes  =  Some extra optimization flags will be added (default)
@@ -65,8 +84,11 @@ UHEXEN2_TOP=..
 # General options (see explanations at the top)
 USE_SOUND=yes
 USE_ALSA=yes
+USE_OSS=yes
+USE_SUNAUDIO=yes
+USE_SDLAUDIO=yes
 USE_MIDI=yes
-USE_CDA=yes
+USE_CDAUDIO=yes
 USE_SDLCD=no
 WITH_SPLASHES=yes
 OPT_EXTRA=yes
@@ -165,16 +187,30 @@ endif
 ifeq "$(TARGET_OS)" "UNIX"
 # Start Unix-specific extra flags/settings
 
+ifeq "$(USE_SOUND)" "yes"
 ifeq "$(USE_ALSA)" "no"
-EXT_FLAGS+= -DNO_ALSA
+EXT_FLAGS+= -DNO_ALSA_AUDIO
+endif
+ifeq "$(USE_OSS)" "no"
+EXT_FLAGS+= -DNO_OSS_AUDIO
+endif
+ifeq "$(USE_SUNAUDIO)" "no"
+EXT_FLAGS+= -DNO_SUN_AUDIO
+endif
+ifeq "$(USE_SDLAUDIO)" "no"
+EXT_FLAGS+= -DNO_SDL_AUDIO
+endif
 endif
 
+ifeq "$(USE_CDAUDIO)" "yes"
 ifeq "$(USE_SDLCD)" "yes"
 EXT_FLAGS+= -DWITH_SDLCD
+endif
 endif
 
 # End of Unix specific extras
 endif
+
 
 ifeq "$(TARGET_OS)" "WIN32"
 # Start Win32-specific extra flags/settings
@@ -231,7 +267,7 @@ endif
 endif
 
 # CDAudio objects
-ifneq "$(USE_CDA)" "yes"
+ifneq "$(USE_CDAUDIO)" "yes"
 SYSOBJ_CDA:= cd_null.o
 EXT_FLAGS += -D_NO_CDAUDIO
 else

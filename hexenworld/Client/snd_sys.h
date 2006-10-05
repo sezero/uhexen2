@@ -2,7 +2,7 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.9 2006-09-29 23:08:06 sezero Exp $
+	$Id: snd_sys.h,v 1.10 2006-10-05 19:46:08 sezero Exp $
 */
 
 #ifndef __HX2_SND_SYS__
@@ -14,21 +14,27 @@
 #undef HAVE_ALSA_SOUND
 #undef HAVE_WIN32_SOUND
 
+#undef SOUND_NUMDRIVERS
+
+#if defined(NO_OSS_AUDIO)
+#define HAVE_OSS_SOUND	0
 // add more systems with OSS here
-#if defined(__linux__) || defined(__DragonFly__) || defined(__FreeBSD__)
+#elif defined(__linux__) || defined(__FreeBSD__) || defined(__DragonFly__)
 #define HAVE_OSS_SOUND	1
 #else
 #define HAVE_OSS_SOUND	0
 #endif
 
+#if defined(NO_SUN_AUDIO)
+#define HAVE_SUN_SOUND	0
 // add more systems with SUN audio here
-#if defined(__OpenBSD__) || defined(__NetBSD__) || defined(SUNOS)
+#elif defined(__OpenBSD__) || defined(__NetBSD__) || defined(SUNOS)
 #define HAVE_SUN_SOUND	1
 #else
 #define HAVE_SUN_SOUND	0
 #endif
 
-#if defined(NO_ALSA)
+#if defined(NO_ALSA_AUDIO)
 #define HAVE_ALSA_SOUND	0
 #elif defined(__linux__)
 // add more systems with ALSA here
@@ -37,7 +43,9 @@
 #define HAVE_ALSA_SOUND	0
 #endif
 
-#if defined(PLATFORM_UNIX)
+#if defined(NO_SDL_AUDIO)
+#define HAVE_SDL_SOUND	0
+#elif defined(PLATFORM_UNIX)
 #define HAVE_SDL_SOUND	1
 #else
 #define HAVE_SDL_SOUND	0
@@ -48,6 +56,8 @@
 #else
 #define HAVE_WIN32_SOUND	0
 #endif
+
+#define SOUND_NUMDRIVERS	(HAVE_SDL_SOUND + HAVE_OSS_SOUND + HAVE_SUN_SOUND + HAVE_ALSA_SOUND + HAVE_WIN32_SOUND)
 
 // Sound system definitions
 #define	S_SYS_NULL	0

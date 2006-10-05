@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.64 2006-09-29 22:34:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.65 2006-10-05 19:46:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -371,7 +371,10 @@ static char *help_strings[] = {
 	"     [-nomtex]               Disable multitexture detection/usage",
 #endif
 #if !defined(_NO_SOUND)
+#if SOUND_NUMDRIVERS
 	"     [-s | --nosound]        Run the game without sound",
+#endif
+#if (SOUND_NUMDRIVERS > 1)
 #if HAVE_OSS_SOUND
 	"     [-sndoss]               Use OSS sound",
 #endif
@@ -381,7 +384,10 @@ static char *help_strings[] = {
 #if HAVE_SUN_SOUND
 	"     [-sndsun | -sndbsd]     Use SUN / BSD sound",
 #endif
+#if HAVE_SDL_SOUND
 	"     [-sndsdl]               Use SDL sound",
+#endif
+#endif	//  SOUND_NUMDRIVERS
 #endif	// _NO_SOUND
 	"     [-nomouse]              Disable mouse usage",
 	"     [-listen N]             Enable multiplayer with max N players",
@@ -551,6 +557,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.64  2006/09/29 22:34:31  sezero
+ * fixed help strings
+ *
  * Revision 1.63  2006/09/20 06:56:48  sezero
  * removed my old code that disabled the SDL_QUIT event during
  * resolution changes.

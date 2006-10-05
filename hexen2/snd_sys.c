@@ -2,7 +2,7 @@
 	snd_sys.c
 	pre-Init platform specific sound stuff
 
-	$Id: snd_sys.c,v 1.7 2006-09-30 10:49:09 sezero Exp $
+	$Id: snd_sys.c,v 1.8 2006-10-05 19:46:07 sezero Exp $
 */
 
 
@@ -23,7 +23,11 @@ void (*SNDDMA_Submit)(void);
 // dummy SNDDMA functions, just in case
 static qboolean S_NULL_Init(void)
 {
+#if SOUND_NUMDRIVERS
 	Con_Printf ("No sound\n");
+#else
+	Con_Printf ("SOUND: no drivers available\n");
+#endif
 	return 0;
 }
 
