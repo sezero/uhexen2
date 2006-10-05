@@ -432,7 +432,6 @@ int	cl_doc = -1;
 static void CL_ParseServerData (void)
 {
 	char	*str;
-	qboolean	cflag = false;
 	int		protover;
 
 	Con_DPrintf ("Serverdata packet received.\n");
@@ -454,23 +453,21 @@ static void CL_ParseServerData (void)
 
 	if (Q_strcasecmp(gamedirfile, str))
 	{
+		Con_Printf("Server set the gamedir to %s\n", str);
+
 		// save current config
 		Host_WriteConfiguration ("config.cfg");
-		cflag = true;
-	}
 
-	Con_Printf("Server set the gamedir to %s\n", str);
-	COM_Gamedir(str);
+		// set the new gamedir and userdir
+		COM_Gamedir(str);
 
-	//ZOID--run the autoexec.cfg in the gamedir
-	//if it exists
-	if (cflag)
-	{
+		// ZOID - run autoexec.cfg in the gamedir if it exists
 		Cbuf_AddText ("cl_warncmd 0\n");
 		if (COM_FileInGamedir("config.cfg") != -1)
 		{
 		// remove any weird mod specific key bindings / aliases
-			Cbuf_AddText("unbindall ; wait ; unaliasall\n");
+			Cbuf_AddText("unbindall\n");
+			Cbuf_AddText("unaliasall\n");
 			Cbuf_AddText("exec autoexec.cfg\n");
 			Cbuf_AddText("exec config.cfg\n");
 		}
@@ -478,9 +475,10 @@ static void CL_ParseServerData (void)
 		if (COM_FileInGamedir("frontend.cfg") != -1)
 			Cbuf_AddText("exec frontend.cfg\n");
 
+		Cbuf_Execute ();
 		Cbuf_AddText ("cl_warncmd 1\n");
 
-	// re-init draw
+		// re-init draw
 		Draw_ReInit ();
 	}
 
