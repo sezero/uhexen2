@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.46 2006-09-24 17:28:43 sezero Exp $
+	$Id: glquake.h,v 1.47 2006-10-05 16:40:34 sezero Exp $
 */
 
 
@@ -377,6 +377,7 @@ extern	int	gl_coloredstatic;
 extern	cvar_t	gl_lightmapfmt;
 extern	int	gl_lightmap_format;
 extern	qboolean lightmap_modified[MAX_LIGHTMAPS];
+extern	GLuint	lightmap_textures;
 
 extern	qboolean gl_mtexable;
 extern	qboolean have_stencil;

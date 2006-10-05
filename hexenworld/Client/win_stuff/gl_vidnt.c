@@ -207,7 +207,6 @@ static qboolean	fullsbardraw = false;
 
 // misc external data and functions
 extern void	Mod_ReloadTextures (void);
-extern GLuint	lightmap_textures;
 
 // menu drawing
 void VID_MenuDraw (void);

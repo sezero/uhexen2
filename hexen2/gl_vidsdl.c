@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.132 2006-09-23 07:25:35 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.133 2006-10-05 16:40:26 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -201,7 +201,6 @@ static qboolean	fullsbardraw = false;
 
 // misc external data and functions
 extern void	Mod_ReloadTextures (void);
-extern GLuint	lightmap_textures;
 
 // menu drawing
 void VID_MenuDraw (void);

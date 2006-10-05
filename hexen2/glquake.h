@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.56 2006-09-24 17:28:42 sezero Exp $
+	$Id: glquake.h,v 1.57 2006-10-05 16:40:27 sezero Exp $
 */
 
 
@@ -372,6 +372,7 @@ extern	int	gl_coloredstatic;
 extern	cvar_t	gl_lightmapfmt;
 extern	int	gl_lightmap_format;
 extern	qboolean lightmap_modified[MAX_LIGHTMAPS];
+extern	GLuint	lightmap_textures;
 
 extern	qboolean gl_mtexable;
 extern	qboolean have_stencil;
@@ -394,6 +395,9 @@ extern	const char *gl_extensions;
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.56  2006/09/24 17:28:42  sezero
+ * protected all headers against multiple inclusion
+ *
  * Revision 1.55  2006/09/21 06:05:35  sezero
  * gathered most, if not all, of our compile time options into a header
  * file named "h2_opt.h" with documentation. removed gl_opt.h. removed
