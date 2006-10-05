@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.89 2006-10-04 15:20:52 sezero Exp $
+	$Id: gl_draw.c,v 1.90 2006-10-05 16:42:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -509,14 +509,19 @@ just after changing the game directory.
 */
 void Draw_ReInit (void)
 {
-	int	temp;
+	int	j, temp;
 	float	temp2;
 
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 
+	draw_reinit = true;
+
 	D_ClearOpenGLTextures(0);
 	texture_extension_number = 1U;
+	lightmap_textures = 0U;
+	for (j = 0; j < MAX_LIGHTMAPS; j++)
+		lightmap_modified[j] = true;
 	// make sure all of alias models are cleared
 #if !defined(H2W)
 	flush_textures = 1;
@@ -524,8 +529,6 @@ void Draw_ReInit (void)
 	temp2 = gl_purge_maptex.value;
 	Cvar_SetValue ("gl_purge_maptex", 1);
 	Mod_ClearAll ();
-
-	draw_reinit = true;
 
 	// Reload graphics wad file (Draw_PicFromWad writes glpic_t data (sizes,
 	// texnums) right on top of the original pic data, so the pic data will
@@ -2077,6 +2080,9 @@ GLuint GL_LoadPicTexture (qpic_t *pic)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.89  2006/10/04 15:20:52  sezero
+ * updated Draw_ReInit()
+ *
  * Revision 1.88  2006/09/15 20:12:48  sezero
  * use snprintf and the strl* functions, #7: draw.c and gl_draw.c.
  *
