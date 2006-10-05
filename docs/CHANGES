@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-10-05 (CVS):
+    * exported lightmap_textures through glquake.h.
+    * added resetting of lightmap_textures to Draw_ReInit(). its absence
+      was a serious bug and used to cause texturing errors in hexenworld
+      upon gamedir changes.
+    * clean-ups about gamedir changing in CL_ParseServerData.
+
 2006-10-04 (CVS):
     * hexenworld: removed an old comment in CL_ParseServerData.
     * hexenworld: remove old aliases upon gamedir changes.
