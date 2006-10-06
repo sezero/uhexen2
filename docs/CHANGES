@@ -3,6 +3,18 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-10-06 (CVS):
+    * updated the makefiles and preprocessor definitions:
+    * moved the HAVE_GCC_4_0 definition/detection from the include makefiles
+      to the actual makefiles,
+    * building on windows now requires msys. removed the half-baked support
+      for absences a unixish shell,
+    * used a unified ifeq syntax in all of the Makefiles,
+    * obsoleted _NEED_SDL_MIXER in favor of a new _MIDI_SDLMIXER definition,
+    * updated sdl_inc.h and made it always include SDL_mixer.h according to
+      the _MIDI_SDLMIXER definition. updated sdl version requirements,
+    * removed the pointless NO_MIDIMUSIC definitions from Xcode files.
+
 2006-10-05 (CVS):
     * exported lightmap_textures through glquake.h.
     * added resetting of lightmap_textures to Draw_ReInit(). its absence
