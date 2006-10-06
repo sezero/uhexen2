@@ -21,7 +21,7 @@ endif
 ifeq ($(origin CC),command line)
 CC_OVERRIDE:=1
 endif
-ifndef CC_OVERRIDE
+ifeq ($(CC_OVERRIDE),)
 CC := $(CC_DEFAULT)
 endif
 
@@ -57,7 +57,7 @@ endif
 ifdef GTK1
 CFLAGS := $(CFLAGS) -DWITH_GTK1
 endif
-ifeq "$(HOST_OS)" "SunOS"
+ifeq ($(HOST_OS),SunOS)
 CFLAGS := $(CFLAGS) -DSUNOS
 endif
 

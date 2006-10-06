@@ -33,7 +33,7 @@ include $(UHEXEN2_TOP)/scripts/makefile.inc
 include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 BINARY=h2ded.exe
 else
 BINARY=h2ded
@@ -49,18 +49,19 @@ endif
 ifndef DEBUG
 CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
 
+HAVE_GCC_4_0:=$(shell sh $(UHEXEN2_TOP)/scripts/gcc40check.sh $(CC))
 DISABLE_UNIT_AT_A_TIME ?=$(HAVE_GCC_4_0)
 # this prevents some bad compilations with unit-at-a-time mode active.
 # the bug seems to appear only with gcc-4.0.x, gcc-3.x/4.1 seems fine.
-ifeq "$(DISABLE_UNIT_AT_A_TIME)" "yes"
+ifeq ($(DISABLE_UNIT_AT_A_TIME),yes)
 CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
 else
-ifeq "$(DISABLE_UNIT_AT_A_TIME)" "1"
+ifeq ($(DISABLE_UNIT_AT_A_TIME),1)
 CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
 endif
 endif
 
-ifeq "$(OPT_EXTRA)" "yes"
+ifeq ($(OPT_EXTRA),yes)
 # Note: re-check these flags for non-ia32 machines
 CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
 CFLAGS := $(CFLAGS) -fomit-frame-pointer
@@ -72,7 +73,7 @@ endif
 # Other build flags
 EXT_FLAGS:=-DSERVERONLY $(ARCHFLAGS)
 
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 # Main win32 specific includes and flags
 INCLUDES:= -I$(MINGWDIR)/include -idirafter ./server -idirafter .
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mconsole
@@ -109,7 +110,7 @@ NET_WIN32 = win_stuff/net_win.o \
 SYS_UNIX = sv_objs/sys_unix.o
 SYS_WIN32 = sv_objs/sys_win.o
 
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 SYSOBJ_NET = $(NET_WIN32)
 SYSOBJ_SYS = $(SYS_WIN32)
 else

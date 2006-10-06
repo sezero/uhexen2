@@ -15,7 +15,7 @@
 
 # Common paths:
 # X directory
-X11_PATH=/usr/X11R6
+X11_PATH ?=/usr/X11R6
 
 # MinGW32 directory:
 MINGWDIR ?=/mingw
@@ -55,28 +55,10 @@ TARGET_OS:=WIN32
 endif
 
 ifdef WIN_NATIVE
-# Major Windows pain, Shell detection:
-# If we are on MICROS~1, see if msys is available, or at least
-# if we have access to sh.exe. Otherwise, emit big fat warnings
-# through the sanity target. The thing will most likely fail,
-# anyway..
-
-ifneq "$(OSTYPE)" "msys"
-# we have a unix shell, but we are not running on msys
-__NO_MSYS=1
-endif
-
-ifdef __NO_MSYS
-SHELL=/bin/sh
-# If sh is not on the PATH, SHELL should be plainly set to sh.exe
-# without any path information. Lame method, but enough for me.
-ifeq "$(SHELL)" "sh.exe"
-__BAD_SHELL:=1
+ifneq ($(OSTYPE),msys)
+$(error MSys is required for this build system on Windows)
 endif
 endif
-
-endif
-
 
 # Compiler selection:
 # refuse cc for CC which is the default for make
@@ -92,7 +74,7 @@ endif
 ifeq ($(origin CC),command line)
 CC_OVERRIDE:=1
 endif
-ifndef CC_OVERRIDE
+ifeq ($(CC_OVERRIDE),)
 CC := $(CC_DEFAULT)
 endif
 
@@ -101,44 +83,34 @@ WINDRES ?= windres
 
 LINKER := $(CC)
 
-ifndef __BAD_SHELL
-# Helper function to check if gcc supports a given
-# flag.  This requires a Unix style shell to work.
+# Helper function to check if gcc supports a given flag.
 ifdef WIN_NATIVE
 # /dev/null stuff will not work on windows ;)
 check_gcc = $(shell echo > .tmp; if $(CC) $(1) -S -o _tmp.tmp -xc .tmp > __tmp.tmp 2>&1; then echo "$(1)"; else echo "$(2)"; fi)
 else
 check_gcc = $(shell if $(CC) $(1) -S -o /dev/null -xc /dev/null > /dev/null 2>&1; then echo "$(1)"; else echo "$(2)"; fi)
 endif
-HAVE_GCC_4_0:=$(shell sh $(UHEXEN2_TOP)/scripts/gcc40check.sh $(CC))
-else
-# sigh... resort to the fallback arg that we are sent.
-# if we reached here and using this cheat, chances are
-# that we are missing important things and the resulting
-# binaries may not be that reliable.
-check_gcc = $(2)
-HAVE_GCC_4_0:=yes
-endif
+
 
 # Determine common build flags:
 
 # Possible ARCH flags
 ARCHFLAGS:=
-ifneq "$(TARGET_OS)" "WIN32"
-ifeq "$(HOST_OS)" "SunOS"
+ifneq ($(TARGET_OS),WIN32)
+ifeq ($(HOST_OS),SunOS)
 ARCHFLAGS:=-DSUNOS
 endif
 endif
 
 # default CPU flags
 CPUFLAGS:=
-ifeq "$(MACH_TYPE)" "x86"
+ifeq ($(MACH_TYPE),x86)
 CPUFLAGS:=-march=i586
 endif
 
 # NASM flags:
 # These are required for IA32 assembly for hexen2/hexenworld clients
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 NASMFLAGS:= -fwin32 -D__WIN32__ --prefix _
 else
 NASMFLAGS:= -f elf
@@ -153,12 +125,12 @@ CFLAGS := $(DFLAGS)
 endif
 
 # the "sdl-config" command
-CMD_SDLCFG:=sdl-config
+CMD_SDLCFG ?=sdl-config
 
 # SDL flags:
 # If a makefile needs SDL, it should set CHECK_SDL to 1
-ifeq "$(CHECK_SDL)" "1"
-ifeq "$(TARGET_OS)" "UNIX"
+ifeq ($(CHECK_SDL),1)
+ifeq ($(TARGET_OS),UNIX)
 SDLFLAGS:= $(shell $(CMD_SDLCFG) --cflags)
 SDLLINK := $(shell $(CMD_SDLCFG) --libs)
 else
@@ -169,11 +141,11 @@ endif
 
 # -lsocket is needed on some arches
 LIBSOCKET:=
-ifneq "$(TARGET_OS)" "WIN32"
-ifeq "$(HOST_OS)" "QNX"
+ifneq ($(TARGET_OS),WIN32)
+ifeq ($(HOST_OS),QNX)
 LIBSOCKET:=-lsocket
 endif
-ifeq "$(HOST_OS)" "SunOS"
+ifeq ($(HOST_OS),SunOS)
 LIBSOCKET:=-lsocket -lnsl
 endif
 endif
@@ -181,7 +153,7 @@ endif
 # MGL flags:
 # These are required for hexen2/hexenworld win32-software
 # renderer.
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 MGL_FLAG:= -DMGL_DLL
 MGL_INCL:= -I$(UHEXEN2_TOP)/w32stuff/scitech
 MGL_LINK:= -L$(UHEXEN2_TOP)/w32stuff/scitech -lmglfx
@@ -193,7 +165,7 @@ endif
 
 # GL Linkage flags:
 # These flags will be used for linking to opengl library
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 GL_LINK := -lopengl32
 else
 GL_LINK := -L$(X11_PATH)/lib -lGL

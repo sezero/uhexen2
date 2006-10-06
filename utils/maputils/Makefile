@@ -19,7 +19,7 @@ include $(UHEXEN2_TOP)/scripts/makefile.inc
 include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 QBSP=qbsp.exe
 LIGHT=light.exe
 VIS=vis.exe
@@ -44,7 +44,7 @@ endif
 
 # Other build flags
 
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 INCLUDES:= -I$(MINGWDIR)/include -idirafter $(COMMONDIR)
 LDFLAGS := -mconsole
 LDLIBS  :=

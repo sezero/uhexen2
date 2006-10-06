@@ -16,11 +16,10 @@ include $(UHEXEN2_TOP)/scripts/makefile.inc
 include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 BINARY=hwsv.exe
 else
 BINARY=hwsv
-BINARY_STATIC=hwsv.static
 endif
 
 # Compiler flags
@@ -33,13 +32,14 @@ endif
 ifndef DEBUG
 CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
 
+HAVE_GCC_4_0:=$(shell sh $(UHEXEN2_TOP)/scripts/gcc40check.sh $(CC))
 DISABLE_UNIT_AT_A_TIME ?=$(HAVE_GCC_4_0)
 # this prevents some bad compilations with unit-at-a-time mode active.
 # the bug seems to appear only with gcc-4.0.x, gcc-3.x/4.1 seems fine.
-ifeq "$(DISABLE_UNIT_AT_A_TIME)" "yes"
+ifeq ($(DISABLE_UNIT_AT_A_TIME),yes)
 CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
 else
-ifeq "$(DISABLE_UNIT_AT_A_TIME)" "1"
+ifeq ($(DISABLE_UNIT_AT_A_TIME),1)
 CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
 endif
 endif
@@ -49,13 +49,12 @@ endif
 EXT_FLAGS:= -DH2W -DSERVERONLY $(ARCHFLAGS)
 INCLUDES := -idirafter ../Client -idirafter .
 
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 INCLUDES := -I$(MINGWDIR)/include $(INCLUDES)
 LDFLAGS  := -L$(MINGWDIR)/lib -lm -lwsock32 -mconsole
 else
 EXT_FLAGS+= -DPLATFORM_UNIX
 LDFLAGS  := -lm $(LIBSOCKET)
-LDSTATIC := -lm $(LIBSOCKET) -static
 endif
 
 ifdef DEMO
@@ -79,7 +78,7 @@ cl_objs/%.o: ../Client/%.c
 SYS_UNIX = sys_unix.o
 SYS_WIN32 = win_stuff/sys_win.o
 
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 SYSOBJ_SYS = $(SYS_WIN32)
 else
 SYSOBJ_SYS = $(SYS_UNIX)
@@ -126,17 +125,6 @@ include $(UHEXEN2_TOP)/scripts/sanity2.inc
 
 $(BINARY) : $(COMMONOBJS)
 	$(LINKER) -o $(BINARY) $(COMMONOBJS) $(LDFLAGS)
-
-# static builds are not tested on win32
-ifneq "$(TARGET_OS)" "WIN32"
-
-static: $(BINARY_STATIC)
-
-$(BINARY_STATIC) : $(COMMONOBJS)
-	$(LINKER) -o $(BINARY_STATIC) $(COMMONOBJS) $(LDSTATIC)
-
-# End of static binary targets
-endif
 
 clean:
 	rm -f *.o cl_objs/*.o win_stuff/*.o core .tmp *.tmp

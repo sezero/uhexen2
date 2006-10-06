@@ -2,13 +2,12 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.24 2006-09-27 17:17:32 sezero Exp $
+	$Id: midi_sdl.c,v 1.25 2006-10-06 16:43:35 sezero Exp $
 */
 
 #include "quakedef.h"
 #include <unistd.h>
 #include <dlfcn.h>
-#define _NEED_SDL_MIXER
 #include "sdl_inc.h"
 #define _SND_SYS_MACROS_ONLY
 #include "snd_sys.h"
@@ -296,6 +295,9 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2006/09/27 17:17:32  sezero
+ * a lot of clean-ups in sound and midi files.
+ *
  * Revision 1.23  2006/09/15 21:43:31  sezero
  * use snprintf and the strl* functions, #10: midi_mac.c and midi_sdl.c.
  * also did some clean-ups while we were there.

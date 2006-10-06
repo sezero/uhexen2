@@ -15,17 +15,16 @@ include $(UHEXEN2_TOP)/scripts/makefile.inc
 include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 BINARY=hwmaster.exe
 else
 BINARY=hwmaster
-BINARY_STATIC=hwmaster.static
 endif
 
 # Compiler flags
 
 # Overrides for the default CPUFLAGS
-ifeq "$(MACH_TYPE)" "x86"
+ifeq ($(MACH_TYPE),x86)
 CPUFLAGS:=-march=i386
 endif
 # Overrides for the default ARCHFLAGS
@@ -38,14 +37,13 @@ endif
 # Other build flags
 EXT_FLAGS:=$(ARCHFLAGS)
 
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 INCLUDES := -I$(MINGWDIR)/include -idirafter .
 LDFLAGS  := -L$(MINGWDIR)/lib -lwsock32 -lwinmm -mconsole
 else
 INCLUDES := -idirafter .
 LDFLAGS  := $(LIBSOCKET)
 EXT_FLAGS+= -DPLATFORM_UNIX
-LDSTATIC := -static
 endif
 
 
@@ -65,17 +63,6 @@ include $(UHEXEN2_TOP)/scripts/sanity2.inc
 
 $(BINARY) : $(MASTEROBJS)
 	$(LINKER) -o $(BINARY) $(MASTEROBJS) $(LDFLAGS)
-
-# static builds are not tested on win32
-ifneq "$(TARGET_OS)" "WIN32"
-
-static: $(BINARY_STATIC)
-
-$(BINARY_STATIC) : $(MASTEROBJS)
-	$(LINKER) -o $(BINARY_STATIC) $(MASTEROBJS) $(LDSTATIC)
-
-# End of static binary targets
-endif
 
 clean:
 	rm -f *.o core .tmp *.tmp

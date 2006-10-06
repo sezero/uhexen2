@@ -954,7 +954,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					PLATFORM_UNIX,
 					__MACOSX__,
-					NO_MIDIMUSIC,
 					"_GNU_SOURCE=1",
 					_THREAD_SAFE,
 				);
@@ -984,7 +983,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					PLATFORM_UNIX,
 					__MACOSX__,
-					NO_MIDIMUSIC,
 					"_GNU_SOURCE=1",
 					_THREAD_SAFE,
 				);
@@ -1015,7 +1013,6 @@
 					PLATFORM_UNIX,
 					__MACOSX__,
 					GLQUAKE,
-					NO_MIDIMUSIC,
 					GL_DLSYM,
 					"_GNU_SOURCE=1",
 					_THREAD_SAFE,
@@ -1040,7 +1037,6 @@
 					PLATFORM_UNIX,
 					__MACOSX__,
 					GLQUAKE,
-					NO_MIDIMUSIC,
 					GL_DLSYM,
 					"_GNU_SOURCE=1",
 					_THREAD_SAFE,
@@ -1071,7 +1067,6 @@
 					PLATFORM_UNIX,
 					__MACOSX__,
 					GLQUAKE,
-					NO_MIDIMUSIC,
 					GL_DLSYM,
 					"_GNU_SOURCE=1",
 					_THREAD_SAFE,
@@ -1111,7 +1106,6 @@
 					PLATFORM_UNIX,
 					__MACOSX__,
 					GLQUAKE,
-					NO_MIDIMUSIC,
 					GL_DLSYM,
 					"_GNU_SOURCE=1",
 					_THREAD_SAFE,

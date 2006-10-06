@@ -15,7 +15,7 @@ include $(UHEXEN2_TOP)/scripts/makefile.inc
 include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 HWRCON=hwrcon.exe
 HWTERM=hwterm.exe
 else
@@ -31,7 +31,7 @@ USE_HUFFMAN ?=0
 # Compiler flags
 
 # Overrides for the default CPUFLAGS
-ifeq "$(MACH_TYPE)" "x86"
+ifeq ($(MACH_TYPE),x86)
 CPUFLAGS:=-march=i386
 endif
 # Overrides for the default ARCHFLAGS
@@ -44,7 +44,7 @@ endif
 # Other build flags
 EXT_FLAGS:=$(ARCHFLAGS)
 
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 INCLUDES := -I$(MINGWDIR)/include -idirafter .
 LDFLAGS  := -L$(MINGWDIR)/lib -lwsock32 -mconsole
 else

@@ -9,7 +9,7 @@ endif
 ifeq ($(origin CC),command line)
 CC_OVERRIDE:=1
 endif
-ifndef CC_OVERRIDE
+ifeq ($(CC_OVERRIDE),)
 CC := $(CC_DEFAULT)
 endif
 

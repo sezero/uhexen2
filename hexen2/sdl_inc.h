@@ -18,22 +18,27 @@ of SDL_Mixer, but 1.2.4 have several fixes in it.
 
 #define SDL_MIN_X	1
 #define SDL_MIN_Y	2
-#if defined(NO_MIDIMUSIC)
-#define SDL_MIN_Z	0
+#if defined(__MACOSX__) || defined(__APPLE__)
+#   define SDL_MIN_Z	8
+#elif defined(_MIDI_SDLMIXER)
+#   if MIX_REQUIREDVERSION > (SDL_VERSIONNUM(1,2,6))
+#   define SDL_MIN_Z	10
+#   elif MIX_REQUIREDVERSION > (SDL_VERSIONNUM(1,2,1))
+#   define SDL_MIN_Z	4
+#   else
+#   define SDL_MIN_Z	0
+#   endif
 #else
-#if MIX_REQUIREDVERSION > (SDL_VERSIONNUM(1,2,1))
-#define SDL_MIN_Z	4
-#else
-#define SDL_MIN_Z	0
+#   define SDL_MIN_Z	0
 #endif
-#endif
+
 #define SDL_REQUIREDVERSION	(SDL_VERSIONNUM(SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z))
 
 #if !(SDL_VERSION_ATLEAST(SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z))
 #error SDL version found is too old
 #endif
 
-#if defined(_NEED_SDL_MIXER)
+#if defined(_MIDI_SDLMIXER)
 #include "SDL_mixer.h"
 /* starting with 1.2.1, SDL_mixer provides MIX_xxx version
    macros. the new SDL_MIXER_xxx version macros start with

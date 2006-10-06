@@ -96,7 +96,7 @@ LINK_GL_LIBS=no
 USE_X86_ASM=yes
 
 # build environment sanity checks
-ifeq "$(USE_X86_ASM)" "yes"
+ifeq ($(USE_X86_ASM),yes)
 CHECK_NASM=1
 endif
 CHECK_SDL=1
@@ -109,7 +109,7 @@ include $(UHEXEN2_TOP)/scripts/makefile.inc
 include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 HW_BINARY=hwcl.exe
 GLHW_BINARY=glhwcl.exe
 else
@@ -127,18 +127,19 @@ endif
 ifndef DEBUG
 CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
 
+HAVE_GCC_4_0:=$(shell sh $(UHEXEN2_TOP)/scripts/gcc40check.sh $(CC))
 DISABLE_UNIT_AT_A_TIME ?=$(HAVE_GCC_4_0)
 # this prevents some bad compilations with unit-at-a-time mode active.
 # the bug seems to appear only with gcc-4.0.x, gcc-3.x/4.1 seems fine.
-ifeq "$(DISABLE_UNIT_AT_A_TIME)" "yes"
+ifeq ($(DISABLE_UNIT_AT_A_TIME),yes)
 CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
 else
-ifeq "$(DISABLE_UNIT_AT_A_TIME)" "1"
+ifeq ($(DISABLE_UNIT_AT_A_TIME),1)
 CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
 endif
 endif
 
-ifeq "$(OPT_EXTRA)" "yes"
+ifeq ($(OPT_EXTRA),yes)
 # Note: re-check these flags for non-ia32 machines
 CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
 CFLAGS := $(CFLAGS) -fomit-frame-pointer
@@ -148,14 +149,14 @@ endif
 
 
 # whether to use x86 assembly
-ifeq "$(USE_X86_ASM)" "yes"
+ifeq ($(USE_X86_ASM),yes)
 CFLAGS := $(CFLAGS) -DUSE_INTEL_ASM
 endif
 
 # Other build flags
 EXT_FLAGS:=$(ARCHFLAGS) -DH2W
 
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 # Main win32 specific includes and flags
 INCLUDES:= -I$(UHEXEN2_TOP)/w32stuff/dxsdk/inc -I$(MINGWDIR)/include -idirafter .
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mwindows
@@ -170,7 +171,7 @@ endif
 GL_DEFS := -DGLQUAKE
 GLFLAGS :=
 
-ifeq "$(LINK_GL_LIBS)" "no"
+ifeq ($(LINK_GL_LIBS),no)
 GL_DEFS+= -DGL_DLSYM
 else
 GLFLAGS+= $(GL_LINK)
@@ -185,26 +186,26 @@ ifdef DEBUG
 EXT_FLAGS+= -DDEBUG_BUILD
 endif
 
-ifeq "$(TARGET_OS)" "UNIX"
+ifeq ($(TARGET_OS),UNIX)
 # Start Unix-specific extra flags/settings
 
-ifeq "$(USE_SOUND)" "yes"
-ifeq "$(USE_ALSA)" "no"
+ifeq ($(USE_SOUND),yes)
+ifeq ($(USE_ALSA),no)
 EXT_FLAGS+= -DNO_ALSA_AUDIO
 endif
-ifeq "$(USE_OSS)" "no"
+ifeq ($(USE_OSS),no)
 EXT_FLAGS+= -DNO_OSS_AUDIO
 endif
-ifeq "$(USE_SUNAUDIO)" "no"
+ifeq ($(USE_SUNAUDIO),no)
 EXT_FLAGS+= -DNO_SUN_AUDIO
 endif
-ifeq "$(USE_SDLAUDIO)" "no"
+ifeq ($(USE_SDLAUDIO),no)
 EXT_FLAGS+= -DNO_SDL_AUDIO
 endif
 endif
 
-ifeq "$(USE_CDAUDIO)" "yes"
-ifeq "$(USE_SDLCD)" "yes"
+ifeq ($(USE_CDAUDIO),yes)
+ifeq ($(USE_SDLCD),yes)
 EXT_FLAGS+= -DWITH_SDLCD
 endif
 endif
@@ -213,10 +214,10 @@ endif
 endif
 
 
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 # Start Win32-specific extra flags/settings
 
-ifeq "$(WITH_SPLASHES)" "no"
+ifeq ($(WITH_SPLASHES),no)
 EXT_FLAGS+= -DNO_SPLASHES
 else
 # gl version needs linking to comctl32.dll because of that progress
@@ -239,13 +240,13 @@ endif
 # Objects
 
 # Sound objects
-ifneq "$(USE_SOUND)" "yes"
+ifneq ($(USE_SOUND),yes)
 EXT_FLAGS += -D_NO_SOUND
 SYSOBJ_SND :=
 COMOBJ_SND := snd_null.o
 else
 COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o snd_mem.o
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 SYSOBJ_SND := win_stuff/snd_win.o
 else
 SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o snd_sdl.o
@@ -254,25 +255,26 @@ endif
 endif
 
 # MIDI objects
-ifneq "$(USE_MIDI)" "yes"
+ifneq ($(USE_MIDI),yes)
 SYSOBJ_MIDI:= midi_nul.o
 EXT_FLAGS += -DNO_MIDIMUSIC
 else
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 SYSOBJ_MIDI:= win_stuff/midi.o win_stuff/mstrconv.o
 else
 SYSOBJ_MIDI:= midi_sdl.o
 SDLLINK+= -lSDL_mixer
+EXT_FLAGS += -D_MIDI_SDLMIXER
 endif
 # end of MIDI objects
 endif
 
 # CDAudio objects
-ifneq "$(USE_CDAUDIO)" "yes"
+ifneq ($(USE_CDAUDIO),yes)
 SYSOBJ_CDA:= cd_null.o
 EXT_FLAGS += -D_NO_CDAUDIO
 else
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 SYSOBJ_CDA := win_stuff/cd_win.o
 else
 SYSOBJ_CDA := cd_sdl.o cd_bsd.o cd_linux.o
@@ -281,7 +283,7 @@ endif
 endif
 
 # Other platform specific object settings
-ifeq "$(TARGET_OS)" "WIN32"
+ifeq ($(TARGET_OS),WIN32)
 SYSOBJ_INPUT := win_stuff/in_win.o
 SYSOBJ_GL_VID:= win_stuff/gl_vidnt.o
 SYSOBJ_SOFT_VID:= win_stuff/vid_win.o
@@ -379,8 +381,8 @@ COMMONOBJS = cl_cam.o \
 	$(SYSOBJ_SYS)
 
 # Intel asm objects
-ifeq "$(USE_X86_ASM)" "yes"
-ifeq "$(USE_SOUND)" "yes"
+ifeq ($(USE_X86_ASM),yes)
+ifeq ($(USE_SOUND),yes)
 SOUND_ASM := snd_mixa.o
 else
 SOUND_ASM :=
