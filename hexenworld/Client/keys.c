@@ -621,9 +621,6 @@ Key_SetBinding
 */
 void Key_SetBinding (int keynum, char *binding)
 {
-	char	*new;
-	int		l;
-
 	if (keynum == -1)
 		return;
 
@@ -635,11 +632,11 @@ void Key_SetBinding (int keynum, char *binding)
 	}
 
 // allocate memory for new binding
-	l = strlen (binding);
-	new = Z_Malloc (l+1);
-	strcpy (new, binding);
-	new[l] = 0;
-	keybindings[keynum] = new;
+	if (binding)
+	{
+		keybindings[keynum] = Z_Malloc(strlen(binding) + 1);
+		strcpy(keybindings[keynum], binding);
+	}
 }
 
 /*
@@ -658,22 +655,21 @@ static void Key_Unbind_f (void)
 	}
 
 	b = Key_StringToKeynum (Cmd_Argv(1));
-	if (b==-1)
+	if (b == -1)
 	{
 		Con_Printf ("\"%s\" isn't a valid key\n", Cmd_Argv(1));
 		return;
 	}
 
-	Key_SetBinding (b, "");
+	Key_SetBinding (b, NULL);
 }
 
 static void Key_Unbindall_f (void)
 {
 	int		i;
 
-	for (i=0 ; i<256 ; i++)
-		if (keybindings[i])
-			Key_SetBinding (i, "");
+	for (i = 0; i < 256; i++)
+		Key_SetBinding(i, NULL);
 }
 
 

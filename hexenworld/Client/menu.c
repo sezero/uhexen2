@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.51 2006-09-18 09:57:05 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.52 2006-10-07 16:38:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1457,7 +1457,7 @@ static void M_UnbindCommand (char *command)
 		if (!b)
 			continue;
 		if (!strncmp (b, command, l) )
-			Key_SetBinding (j, "");
+			Key_SetBinding (j, NULL);
 	}
 }
 

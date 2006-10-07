@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.71 2006-09-21 06:05:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.72 2006-10-07 16:38:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2615,7 +2615,7 @@ static void M_UnbindCommand (char *command)
 		if (!b)
 			continue;
 		if (!strncmp (b, command, l) )
-			Key_SetBinding (j, "");
+			Key_SetBinding (j, NULL);
 	}
 }
 
@@ -4493,6 +4493,12 @@ static void ReInitMusic (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.71  2006/09/21 06:05:35  sezero
+ * gathered most, if not all, of our compile time options into a header
+ * file named "h2_opt.h" with documentation. removed gl_opt.h. removed
+ * all of the one liner extra patches which played with these options.
+ * updated the COMPILE document accordingly.
+ *
  * Revision 1.70  2006/09/18 09:56:59  sezero
  * use snprintf and the strl* functions, #13: menu.c. while we were
  * there, exported SAVEGAME_VERSION definition through quakedef.h,
