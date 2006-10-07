@@ -1,0 +1,92 @@
+Experimental sound restart code:
+* snd_restart without changing the driver works. some static sounds
+  (such as the fire sound of a nearby torch) get lost.
+* Driver switching is not stable enough: ALSA <-> OSS switching
+  seems to work at first. But if you switch between them a lot of
+  times, then the sound is muted for a very long time and further
+  switchings are not stable. If you do a lot of snd_restart in OSS
+  mode, and then try changing into ALSA, it crashes. With SDL as
+  the previous driver, switching to another driver always crashes.
+  These issues aren't properly traced, yet.
+* Format switching (such as sample rate) isn't implemented.
+
+diff -urNp uhexen2-20061006/hexen2/snd_dma.c snd_dma.c
+--- uhexen2-20061006/hexen2/snd_dma.c	2006-10-04 18:36:35.000000000 +0300
++++ snd_dma.c	2006-10-07 15:15:20.000000000 +0300
+@@ -125,6 +125,67 @@ static void S_SoundInfo_f(void)
+ }
+ 
+ 
++static void S_ListDrivers_f(void)
++{
++	unsigned int	i = 0;
++
++	while (i < S_SYS_MAX)
++	{
++		if (snd_drivers[i].available)
++			Con_Printf ("%u : %s\n", i, snd_drivers[i].name);
++		++i;
++	}
++}
++
++
++static void S_Restart_f (void)
++{
++	int		c;
++
++	c = Cmd_Argc();
++
++	if ( (c > 2) || (c > 1 && !strcmp(Cmd_Argv(1),"help")) )
++	{
++		Con_Printf ("snd_restart : restart sound system\n"
++			    "snd_restart <enum> : restart sound system with new driver\n");
++invalid:
++		Con_Printf ("(type \"sounddrivers\" to have a list of available drivers)\n");
++		return;
++	}
++
++	if (c == 2)
++	{
++		c = atoi (Cmd_Argv(1));
++		if (c < 0 || c >= S_SYS_MAX || !snd_drivers[c].available)
++		{
++			Con_Printf ("invalid driver number %d\n", c);
++			goto invalid;
++		}
++		snd_system = c;
++		S_InitDrivers();
++	}
++
++	Con_Printf("Restarting sound system in %s mode\n", snd_drivers[snd_system].name);
++	Cache_Flush();
++	S_StopAllSounds (true);
++
++	S_Shutdown();
++	Con_Printf("sound: Shutdown OK\n");
++
++	S_Startup();
++	if (sound_started == 0)
++		return;
++
++	ambient_sfx[AMBIENT_WATER] = S_PrecacheSound ("ambience/water1.wav");
++	ambient_sfx[AMBIENT_SKY] = S_PrecacheSound ("ambience/wind2.wav");
++
++	S_StopAllSounds (true);
++
++	if (developer.value)
++		S_SoundInfo_f();
++}
++
++
+ /*
+ ================
+ S_Startup
+@@ -216,6 +277,8 @@ void S_Init (void)
+ 	Cmd_AddCommand("mute", S_ToggleMute);
+ 	Cmd_AddCommand("volumeup", S_VolumeUp);
+ 	Cmd_AddCommand("volumedown", S_VolumeDown);
++	Cmd_AddCommand("sounddrivers", S_ListDrivers_f);
++	Cmd_AddCommand("snd_restart", S_Restart_f);
+ 
+ 	Cvar_RegisterVariable(&nosound);
+ 	Cvar_RegisterVariable(&sfxvolume);
