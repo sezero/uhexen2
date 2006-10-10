@@ -243,11 +243,9 @@ void Sys_Error (char *error, ...)
 
 	if (isDedicated)
 	{
-		va_start (argptr, error);
-		vsnprintf (text, sizeof (text), error, argptr);
-		va_end (argptr);
-
 		snprintf (text2, sizeof (text2), "ERROR: %s\n", text);
+		if (text2[sizeof(text2)-2] != '\0')
+			text2[sizeof(text2)-2] != '\n';
 		WriteFile (houtput, text5, strlen (text5), &dummy, NULL);
 		WriteFile (houtput, text4, strlen (text4), &dummy, NULL);
 		WriteFile (houtput, text2, strlen (text2), &dummy, NULL);
@@ -760,6 +758,10 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.36  2006/09/23 07:25:36  sezero
+ * added missing com_argc checks (and fixed the incorrect ones)
+ * after several COM_CheckParm calls.
+ *
  * Revision 1.35  2006/06/25 10:21:04  sezero
  * misc clean-ups and prepare for merging a dedicated server
  *
