@@ -18,6 +18,11 @@
 #endif
 int Sys_mkdir (char *path);
 
+#define Sys_mkdir_err(Dir_Path) {					\
+        if (Sys_mkdir((Dir_Path)))					\
+		Sys_Error("Unable to create directory %s",(Dir_Path));	\
+}
+
 // simplified findfirst/findnext implementation
 char *Sys_FindFirstFile (char *path, char *pattern);
 char *Sys_FindNextFile (void);
