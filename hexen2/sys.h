@@ -50,13 +50,13 @@ double Sys_DoubleTime (void);
 
 char *Sys_ConsoleInput (void);
 
-#if !defined(SERVERONLY)
-
 void Sys_DebugLog(char *file, char *fmt, ...);
 
 void Sys_Sleep (void);
 // called to yield for a little bit so as
 // not to hog cpu when paused or debugging
+
+#if !defined(SERVERONLY)
 
 void Sys_SendKeyEvents (void);
 // Perform Key_Event () callbacks until the input que is empty
@@ -72,7 +72,7 @@ void Sys_SendKeyEvents (void);
    be to get rid of all x86 specific stuff.
 */
 
-#if ( defined(_M_IX86) || defined(__i386__) ) && defined(USE_INTEL_ASM) && !defined(SERVERONLY) && !defined(WINDED)
+#if ( defined(_M_IX86) || defined(__i386__) ) && defined(USE_INTEL_ASM) && !defined(SERVERONLY)
 
 #	define	id386		1
 #	define	UNALIGNED_OK	1	// set to 0 if unaligned accesses are not supported
