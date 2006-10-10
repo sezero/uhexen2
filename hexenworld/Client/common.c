@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.74 2006-10-10 07:24:25 sezero Exp $
+	$Id: common.c,v 1.75 2006-10-10 08:06:12 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1822,7 +1822,7 @@ static pack_t *COM_LoadPackFile (char *packfile, int paknum, qboolean base_fs)
 	pack->numfiles = numpackfiles;
 	pack->files = newfiles;
 
-	Con_Printf ("Added packfile %s (%i files)\n", packfile, numpackfiles);
+	Sys_Printf ("Added packfile %s (%i files)\n", packfile, numpackfiles);
 	return pack;
 }
 
@@ -1936,7 +1936,7 @@ void COM_Gamedir (char *dir)
 	if (strstr(dir, "..") || strstr(dir, "/")
 		|| strstr(dir, "\\") || strstr(dir, ":") )
 	{
-		Con_Printf ("Gamedir should be a single directory name, not a path\n");
+		Sys_Printf ("Gamedir should be a single directory name, not a path\n");
 		return;
 	}
 
@@ -1975,7 +1975,7 @@ void COM_Gamedir (char *dir)
 	{
 #if !defined(H2W)
 	// hw is reserved for hexenworld only. hexen2 shouldn't use it
-		Con_Printf ("WARNING: Gamedir not set to hw :\n"
+		Sys_Printf ("WARNING: Gamedir not set to hw :\n"
 			    "It is reserved for HexenWorld.\n");
 #else
 	// that we reached here means the hw server decided to abandon
@@ -2291,17 +2291,17 @@ static void COM_InitFilesystem (void)
 		// back out searchpaths from invalid mission pack installations
 		if ( !(gameflags & GAME_PORTALS))
 		{
-			Con_Printf ("Missing or invalid mission pack installation\n");
+			Sys_Printf ("Missing or invalid mission pack installation\n");
 			while (com_searchpaths != search_tmp)
 			{
 				if (com_searchpaths->pack)
 				{
 					fclose (com_searchpaths->pack->handle);
-					Con_Printf ("Removed packfile %s\n", com_searchpaths->pack->filename);
+					Sys_Printf ("Removed packfile %s\n", com_searchpaths->pack->filename);
 				}
 				else
 				{
-					Con_Printf ("Removed path %s\n", com_searchpaths->filename);
+					Sys_Printf ("Removed path %s\n", com_searchpaths->filename);
 				}
 				next_tmp = com_searchpaths->next;
 				com_searchpaths = next_tmp;
@@ -2371,7 +2371,7 @@ static void COM_InitFilesystem (void)
 	oem.flags |= CVAR_ROM;
 	registered.flags |= CVAR_ROM;
 
-	Con_Printf ("Playing %s version.\n", temp);
+	Sys_Printf ("Playing %s version.\n", temp);
 }
 
 /*
