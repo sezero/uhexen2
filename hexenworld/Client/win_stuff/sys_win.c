@@ -46,7 +46,7 @@ void Sys_DebugLog(char *file, char *fmt, ...)
 	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
 	write(fd, data, strlen(data));
 	close(fd);
-};
+}
 
 /*
 ===============================================================================

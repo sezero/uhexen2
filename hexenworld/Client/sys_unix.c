@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.59 2006-10-10 06:45:55 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.60 2006-10-10 08:45:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -55,7 +55,7 @@ void Sys_DebugLog(char *file, char *fmt, ...)
 	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
 	write(fd, data, strlen(data));
 	close(fd);
-};
+}
 
 /*
 ===============================================================================
@@ -486,6 +486,10 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.59  2006/10/10 06:45:55  sezero
+ * removed the error timeout stuff from sys_unix.c. it was a left-over from
+ * the sys_win.c.
+ *
  * Revision 1.58  2006/10/05 19:46:08  sezero
  * updated the sound driver availability macros. updated the
  * makefiles with more options.
