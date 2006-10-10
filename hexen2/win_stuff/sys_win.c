@@ -245,7 +245,7 @@ void Sys_Error (char *error, ...)
 	{
 		snprintf (text2, sizeof (text2), "ERROR: %s\n", text);
 		if (text2[sizeof(text2)-2] != '\0')
-			text2[sizeof(text2)-2] != '\n';
+			text2[sizeof(text2)-2] = '\n';
 		WriteFile (houtput, text5, strlen (text5), &dummy, NULL);
 		WriteFile (houtput, text4, strlen (text4), &dummy, NULL);
 		WriteFile (houtput, text2, strlen (text2), &dummy, NULL);
@@ -758,6 +758,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.37  2006/10/10 06:43:22  sezero
+ * ensure the newline if trunctaion occurs in win32 version of Sys_Error
+ *
  * Revision 1.36  2006/09/23 07:25:36  sezero
  * added missing com_argc checks (and fixed the incorrect ones)
  * after several COM_CheckParm calls.
