@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.4 2006-09-27 17:17:30 sezero Exp $
+	$Id: midi_mac.c,v 1.5 2006-10-10 07:24:24 sezero Exp $
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -138,7 +138,7 @@ qboolean MIDI_Init (void)
 	Con_Printf("Started QuickTime midi.\n");
 
 	Q_snprintf_err(mididir, sizeof(mididir), "%s/.midi", com_userdir);
-	Sys_mkdir (mididir);
+	Sys_mkdir_err (mididir);
 
 	bPaused = false;
 	bLooped = true;

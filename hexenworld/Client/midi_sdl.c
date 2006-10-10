@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.25 2006-10-06 16:43:35 sezero Exp $
+	$Id: midi_sdl.c,v 1.26 2006-10-10 07:24:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -148,7 +148,7 @@ bad_version:
 	Con_Printf("found.\n");
 
 	Q_snprintf_err(mididir, sizeof(mididir), "%s/.midi", com_userdir);
-	Sys_mkdir (mididir);
+	Sys_mkdir_err (mididir);
 
 	// Try initing the audio subsys if it hasn't been already
 	audio_wasinit = SDL_WasInit(SDL_INIT_AUDIO);
@@ -295,6 +295,18 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2006/10/06 16:43:35  sezero
+ * updated the makefiles and preprocessor definitions:
+ * * moved the HAVE_GCC_4_0 definition/detection from the include makefiles
+ *   to the actual makefiles
+ * * building on windows now requires msys. removed the half-baked support
+ *   for absences a unixish shell.
+ * * used a unified ifeq syntax in all of the Makefiles.
+ * * obsoleted _NEED_SDL_MIXER in favor of a new _MIDI_SDLMIXER definition
+ * * updated sdl_inc.h and made it always include SDL_mixer.h according to
+ *   the _MIDI_SDLMIXER definition. updated sdl version requirements.
+ * * removed the pointless NO_MIDIMUSIC definitions from Xcode files.
+ *
  * Revision 1.24  2006/09/27 17:17:32  sezero
  * a lot of clean-ups in sound and midi files.
  *

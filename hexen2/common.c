@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.77 2006-09-25 08:31:12 sezero Exp $
+	$Id: common.c,v 1.78 2006-10-10 07:24:24 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -2070,7 +2070,7 @@ add_pakfiles:
 // add user's directory to the search path
 #ifdef PLATFORM_UNIX
 	Q_snprintf_err(com_userdir, sizeof(com_userdir), "%s/%s", host_parms.userdir, dir);
-	Sys_mkdir (com_userdir);
+	Sys_mkdir_err (com_userdir);
 	Q_strlcpy_err (com_savedir, com_userdir, sizeof(com_savedir));
 // add any pak files in the user's directory
 	if (strcmp(com_gamedir, com_userdir))
@@ -2248,7 +2248,7 @@ static void COM_InitFilesystem (void)
 	Q_snprintf_err(com_userdir, sizeof(com_userdir), "%s/data1", host_parms.userdir);
 #ifdef PLATFORM_UNIX
 // properly move the user data from older versions in the user's directory
-	Sys_mkdir (com_userdir);
+	Sys_mkdir_err (com_userdir);
 	MoveUserData ();
 #endif
 	COM_AddGameDirectory (va("%s/data1", com_basedir), true);
@@ -2285,7 +2285,7 @@ static void COM_InitFilesystem (void)
 		search_tmp = com_searchpaths;
 
 		Q_snprintf_err(com_userdir, sizeof(com_userdir), "%s/portals", host_parms.userdir);
-		Sys_mkdir (com_userdir);
+		Sys_mkdir_err (com_userdir);
 		COM_AddGameDirectory (va("%s/portals", com_basedir), true);
 
 		// back out searchpaths from invalid mission pack installations
@@ -2316,7 +2316,7 @@ static void COM_InitFilesystem (void)
 
 #if defined(H2W)
 	Q_snprintf_err(com_userdir, sizeof(com_userdir), "%s/hw", host_parms.userdir);
-	Sys_mkdir (com_userdir);
+	Sys_mkdir_err (com_userdir);
 	COM_AddGameDirectory (va("%s/hw", com_basedir), true);
 	// error out for H2W builds if GAME_HEXENWORLD isn't set
 	if (!(gameflags & GAME_HEXENWORLD))
@@ -2673,6 +2673,11 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.77  2006/09/25 08:31:12  sezero
+ * made va() to cycle between 4 different static buffers.
+ * one function that uses va() can now be called from another
+ * without consequences. found in tyr-quake sources.
+ *
  * Revision 1.76  2006/09/16 15:29:09  sezero
  * multiple changes to common library and downloading procedures:
  * * use snprintf and the strl* functions (#10): especially during
