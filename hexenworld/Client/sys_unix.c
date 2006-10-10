@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.58 2006-10-05 19:46:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.59 2006-10-10 06:45:55 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -36,9 +36,6 @@
 #define MIN_MEM_ALLOC	0x1000000
 #define STD_MEM_ALLOC	0x2000000
 #define MAX_MEM_ALLOC	0x6000000
-
-#define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error
-					// before exiting
 
 static Uint8		appState;
 
@@ -203,7 +200,6 @@ void Sys_Error (char *error, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
-//	double		starttime;
 
 	Host_Shutdown ();
 
@@ -213,12 +209,6 @@ void Sys_Error (char *error, ...)
 
 	fprintf(stderr, "\nFATAL ERROR: %s\n\n", text);
 
-/*	starttime = Sys_DoubleTime ();
-	while (!Sys_ConsoleInput () &&
-		((Sys_DoubleTime () - starttime) < CONSOLE_ERROR_TIMEOUT))
-	{
-	}
-*/
 	exit (1);
 }
 
@@ -496,6 +486,10 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.58  2006/10/05 19:46:08  sezero
+ * updated the sound driver availability macros. updated the
+ * makefiles with more options.
+ *
  * Revision 1.57  2006/09/29 22:34:38  sezero
  * fixed help strings
  *

@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.3 2006-09-15 09:20:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.4 2006-10-10 06:45:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -35,9 +35,6 @@
 #define MIN_MEM_ALLOC	0x1000000
 #define STD_MEM_ALLOC	0x2000000
 #define MAX_MEM_ALLOC	0x6000000
-
-#define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error
-					// before exiting
 
 
 //=============================================================================
@@ -146,7 +143,6 @@ void Sys_Error (char *error, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
-//	double		starttime;
 
 	Host_Shutdown ();
 
@@ -156,12 +152,6 @@ void Sys_Error (char *error, ...)
 
 	fprintf(stderr, "\nFATAL ERROR: %s\n\n", text);
 
-/*	starttime = Sys_DoubleTime ();
-	while (!Sys_ConsoleInput () &&
-		((Sys_DoubleTime () - starttime) < CONSOLE_ERROR_TIMEOUT))
-	{
-	}
-*/
 	exit (1);
 }
 
