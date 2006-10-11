@@ -30,6 +30,7 @@ General:
   clearing its value.
 - Added new console commands: unalias, which deletes the given alias command,
   and unaliasall, which deletes all aliases.
+- Unbinding a key now frees its memory.
 - Disabled the sys_memory, sys_cache and sys_stats console commands for
   server-only binaries except for debug builds.
 - Disabled the VCR facility by default. After all, it is not an ordinary demo
@@ -50,6 +51,8 @@ Video:
 ------
 - Enabled fullscreen/windowed switching through the menu system in cases where
   instant SDL toggling doesn't work.
+- Added procedures to re-initialize the draw subsystem upon game directory
+  changes. Hexenworld already uses it. Hexen II can use it in future versions.
 
 OpenGL Renderer:
 ----------------
