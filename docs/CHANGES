@@ -3,6 +3,24 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-10-11 (CVS):
+    * updated release notes for v1.4.1
+
+2006-10-10 (CVS):
+    * ensured the newline if truncation occurs in win32 version of Sys_Error.
+    * removed the error timeout stuff from sys_unix.c. it was a left-over from
+      sys_win.c.
+    * added a Sys_mkdir_err() macro.
+    * during init phase, we must error out if certain mkdir calls fail.
+    * the in-game console is not ready during filesystem initialization,
+      therefore changed the Con_Printf calls there to Sys_Printf.
+    * removed an accidental extra semicolon at the end of Sys_DebugLog.
+    * tiny sys.h clean-up.
+
+2006-10-07 (CVS):
+    * added an experimental patch for restarting sound among the exta patches.
+    * free memory from unbound keys.
+
 2006-10-06 (CVS):
     * updated the makefiles and preprocessor definitions:
     * moved the HAVE_GCC_4_0 definition/detection from the include makefiles
