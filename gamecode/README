@@ -4,7 +4,7 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
-2006-08-11 (1.16) :
+2006-10-12 (1.16) :
 ===================
 - Fixed the dreaded mezzoman bug causing the following error:
 	SV_StartSound: fangel/deflect.wav not precached
@@ -16,6 +16,22 @@ Changes
 - Merged a probably better fix for the bug above. (from Steven).
 - Disabled impulse 11 (ServerflagsCommand): it is a dev command, can
   be issued from any client and may screw up the server pretty bad..
+- Made the hexen2 progs to work with demo version 1.11: the original
+  demo version excluded the necromancer and crusader classes, but the
+  later one didn't care and included them. changing some precache_model3
+  and precache_sound3 to precache_model and precache_sound solves it.
+  the pak file of 1.11 demo version already contains the necessary stuff.
+- Made the hexenworld progs to work with demo version 1.11: Raven
+  actually did all of the changes, but they seem to have missed
+  changing the precache_model2 calls to precache_model in wp_art.hc
+  which prevented crusader and necromancer classes to be played with.
+- Ported the demo-1.11 precache compatibility changes from hexen2 to
+  the mission pack. the mission pack actually has nothing to do with
+  the demo version, but this is for the sake of the two trees being
+  in sync as much as possible.
+- Ported the demo-1.11 precache compatibility changes from hexenworld to
+  siege. siege actually doesn't have much to do with the demo, but this
+  is for the sake of the two trees being in sync as much as possible.
 2006-03-20 (1.15) :
 ===================
 - hw: fixed the server crash when the server is spawned with dmmode 1.
