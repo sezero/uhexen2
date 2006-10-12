@@ -415,8 +415,8 @@ void light_thunderstorm()
 			return;
 		}
 		precache_sound3("ambience/thunder1.wav");
-		precache_sound3("crusader/lghtn1.wav");
-		precache_sound3("crusader/lghtn2.wav");
+		precache_sound ("crusader/lghtn1.wav");
+		precache_sound ("crusader/lghtn2.wav");
 		
 		if(!self.frags)
 			self.frags=1000;

@@ -1137,10 +1137,10 @@ void() monster_yakman =
 		precache_sound4 ("yakman/snort2.wav");
 		precache_sound4 ("yakman/roar.wav");
 		precache_sound4 ("yakman/die.wav");
-		precache_sound3 ("crusader/icewall.wav");	
+		precache_sound ("crusader/icewall.wav");	
 		precache_sound4 ("yakman/icespell.wav");	
-		precache_sound3 ("crusader/icefire.wav");	
-		precache_sound3 ("misc/tink.wav");				//Ice shots bounce
+		precache_sound ("crusader/icefire.wav");	
+		precache_sound ("misc/tink.wav");				//Ice shots bounce
 		precache_sound3 ("mezzo/skid.wav");
 /*
 		precache_model4 ("models/yakref.spr");

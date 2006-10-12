@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/precache.hc,v 1.1.1.1 2004-11-29 11:34:58 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/precache.hc,v 1.2 2006-10-12 13:03:42 sezero Exp $
  */
 
 // called by worldspawn
@@ -101,15 +101,15 @@ void Precache_lmp (void)
 
 	//player faces
 	precache_file ("gfx/cport1.lmp");
-	precache_file3 ("gfx/cport2.lmp");
-	precache_file3 ("gfx/cport3.lmp");
+	precache_file ("gfx/cport2.lmp");
+	precache_file ("gfx/cport3.lmp");
 	precache_file ("gfx/cport4.lmp");
 	precache_file4 ("gfx/cport5.lmp");
 
 	//player colors
 	precache_file ("gfx/menu/netp1.lmp");
-	precache_file3 ("gfx/menu/netp2.lmp");
-	precache_file3 ("gfx/menu/netp3.lmp");
+	precache_file ("gfx/menu/netp2.lmp");
+	precache_file ("gfx/menu/netp3.lmp");
 	precache_file ("gfx/menu/netp4.lmp");
 	precache_file ("gfx/menu/frame.lmp");
 	precache_file4 ("gfx/menu/netp5.lmp");
@@ -551,14 +551,14 @@ void Precache_wav (void)
 	precache_sound4 ("misc/cubehum.wav");	//force cube
 	precache_sound4 ("misc/Beep1.wav");	//force cube
 	//Summoning Stone
-	precache_sound3 ("imp/upbig.wav");
-	precache_sound3 ("imp/diebig.wav");
-	precache_sound3 ("imp/swoophit.wav");
-	precache_sound3 ("imp/swoopbig.wav");
-	precache_sound3 ("imp/flybig.wav");
-	precache_sound3 ("imp/fireball.wav");
-	precache_sound3 ("imp/shard.wav");
-	precache_sound  ("hydra/turn-s.wav");
+	precache_sound ("imp/upbig.wav");
+	precache_sound ("imp/diebig.wav");
+	precache_sound ("imp/swoophit.wav");
+	precache_sound ("imp/swoopbig.wav");
+	precache_sound ("imp/flybig.wav");
+	precache_sound ("imp/fireball.wav");
+	precache_sound ("imp/shard.wav");
+	precache_sound ("hydra/turn-s.wav");
 
 //SHARED PLAYER SOUNDS
 	//General body/physics sounds
@@ -617,29 +617,29 @@ void Precache_wav (void)
 //REGISTERED======================================================
 
 //Shared sounds
-	precache_sound3 ("raven/soul.wav");			// noise the soul sphere makes
+	precache_sound ("raven/soul.wav");			// noise the soul sphere makes
 
 //FX
 	precache_sound ("fx/quake.wav");	
 
 //CRUSADER
 	//Warhammer
-	precache_sound3 ("crusader/lghtn1.wav");	//SHARED! (weather)
-	precache_sound3 ("crusader/lghtn2.wav");	//SHARED! (weather)	
-	precache_sound3 ("raven/lightng1.wav");		//SHARED! (weather)
+	precache_sound ("crusader/lghtn1.wav");		//SHARED! (weather)
+	precache_sound ("crusader/lghtn2.wav");		//SHARED! (weather)	
+	precache_sound ("raven/lightng1.wav");		//SHARED! (weather)
 	//Ice Staff
-	precache_sound3 ("crusader/icehit.wav");	//SHARED? (ice shatter)
-	precache_sound3 ("crusader/frozen.wav");	//SHARED! (Monster unfreezing)	
-	precache_sound3 ("misc/icestatx.wav");		//SHARED! Ice statue breaking
+	precache_sound ("crusader/icehit.wav");		//SHARED? (ice shatter)
+	precache_sound ("crusader/frozen.wav");		//SHARED! (Monster unfreezing)	
+	precache_sound ("misc/icestatx.wav");		//SHARED! Ice statue breaking
 	//Meteor Staff
-	precache_sound3 ("misc/rubble.wav");		//SHARED chunks, Meteor bits fall, stoned player bits fall (from Medusa)
+	precache_sound ("misc/rubble.wav");		//SHARED chunks, Meteor bits fall, stoned player bits fall (from Medusa)
 	//Sunstaff
-	precache_sound3 ("crusader/sunhum.wav");	//SHARED! (weather)
-	precache_sound3 ("crusader/sunhit.wav");	//SHARED! (weather)
+	precache_sound ("crusader/sunhum.wav");		//SHARED! (weather)
+	precache_sound ("crusader/sunhit.wav");		//SHARED! (weather)
 
 //NECROMANCER
 	//Magic Missiles
-	precache_sound3 ("necro/mmfire.wav");		//SHARED! (Eidolon)
+	precache_sound ("necro/mmfire.wav");		//SHARED! (Eidolon)
 }
 
 
@@ -722,8 +722,8 @@ void Precache_misc (void)
 	precache_model("models/snout.mdl");
 	//Summoning Stone
 	precache_model4 ("models/imp.mdl");//converted for MP
-	precache_model3 ("models/h_imp.mdl");//empty for now
-	precache_model3 ("models/shardice.mdl");
+	precache_model ("models/h_imp.mdl");//empty for now
+	precache_model ("models/shardice.mdl");
 	precache_model ("models/fireball.mdl");//imp, dthhorse,ai,fireball.hc
 
 //ITEMS
@@ -740,23 +740,23 @@ void Precache_misc (void)
 
 //TE_STREAM models
 	// TE_STREAM_SUNSTAFF1 / TE_STREAM_SUNSTAFF2
-	precache_model3("models/stsunsf1.mdl");	//Sunbeam and ball models
-	precache_model3("models/stsunsf2.mdl");	//(weather_sunbeam,sunstaff)
-	precache_model3("models/stsunsf3.mdl");
-	precache_model3("models/stsunsf4.mdl");
-	precache_model3("models/stsunsf5.mdl");
+	precache_model ("models/stsunsf1.mdl");	//Sunbeam and ball models
+	precache_model ("models/stsunsf2.mdl");	//(weather_sunbeam,sunstaff)
+	precache_model ("models/stsunsf3.mdl");
+	precache_model ("models/stsunsf4.mdl");
+	precache_model ("models/stsunsf5.mdl");
 
 	// TE_STREAM_LIGHNING
-	precache_model3	("models/stlghtng.mdl");	//Lightning- (warhammer, eidolon, lightwp)
+	precache_model ("models/stlghtng.mdl");	//Lightning- (warhammer, eidolon, lightwp)
 	precache_model4	("models/stltng2.mdl");	//Lightning- (warhammer, eidolon, lightwp)
 
 	// TE_STREAM_COLORBEAM
-	precache_model3("models/stclrbm.mdl");	//Colored beams of light (weather,golem,fangel,buddha)
+	precache_model ("models/stclrbm.mdl");	//Colored beams of light (weather,golem,fangel,buddha)
 
 	precache_model("models/glyph.mdl");		//Non-artifact flagged glyph
 
 //Miscellaneous Shared
-	precache_model3 ("models/test.mdl");	//For testing
+	precache_model ("models/test.mdl");	//For testing
 
 	// CE_LSHOCK
 	precache_model("models/vorpshok.mdl");	//Vorpal sword & lightning hit 
@@ -827,40 +827,40 @@ void Precache_Crusader (void)
 {
 //CRUSADER
 	precache_model4("models/crusader.mdl");//converted for MP
-	precache_model3 ("models/h_cru.mdl");
+	precache_model ("models/h_cru.mdl");
 	//Warhammer
 	precache_model4("models/warhamer.mdl");//converted for MP
-	precache_model3("models/hamthrow.mdl");
+	precache_model ("models/hamthrow.mdl");
 	//Ice Staff
 	precache_model4("models/icestaff.mdl");//converted for MP
-	precache_model3("models/iceshot1.mdl");
-	precache_model3("models/iceshot2.mdl");
-	precache_model("models/stice.mdl");		//For blizzard  (used by crusader only)
+	precache_model ("models/iceshot1.mdl");
+	precache_model ("models/iceshot2.mdl");
+	precache_model ("models/stice.mdl");		//For blizzard  (used by crusader only)
 	//Meteor Staff
-	precache_model3("models/meteor.mdl");
-	precache_model3("models/tempmetr.mdl");//temp- meteor projectile
+	precache_model ("models/meteor.mdl");
+	precache_model ("models/tempmetr.mdl");//temp- meteor projectile
 	precache_model4("models/tornato.mdl");//converted for MP
 	precache_model4("models/funnal.mdl");//converted for MP
 	//Sunstaff
-	precache_model3("models/sunstaff.mdl");
+	precache_model ("models/sunstaff.mdl");
 	//Crusader
-	precache_model3 ("models/goodsphr.mdl");//Smiting Sphere
-	precache_model3 ("models/cross.mdl");
+	precache_model ("models/goodsphr.mdl");//Smiting Sphere
+	precache_model ("models/cross.mdl");
 //SOUNDS
 //Body Sounds
 	Precache_Male ();
 	//Ice Staff
-	precache_sound3 ("crusader/icewall.wav");	
-	precache_sound3 ("crusader/icefire.wav");	
-	precache_sound3 ("misc/tink.wav");				//Ice shots bounce
-	precache_sound3 ("crusader/blizfire.wav");	
-	precache_sound3 ("crusader/blizzard.wav");	
+	precache_sound ("crusader/icewall.wav");	
+	precache_sound ("crusader/icefire.wav");	
+	precache_sound ("misc/tink.wav");				//Ice shots bounce
+	precache_sound ("crusader/blizfire.wav");	
+	precache_sound ("crusader/blizzard.wav");	
 	//Meteor Staff
-	precache_sound3 ("crusader/metfire.wav");	
-	precache_sound3 ("crusader/torngo.wav");	
-	precache_sound3 ("crusader/tornado.wav");	
+	precache_sound ("crusader/metfire.wav");	
+	precache_sound ("crusader/torngo.wav");	
+	precache_sound ("crusader/tornado.wav");	
 	//Sunstaff
-	precache_sound3 ("crusader/sunstart.wav");	
+	precache_sound ("crusader/sunstart.wav");	
 }
 
 //REGISTERED=======================================================
@@ -869,44 +869,44 @@ void Precache_Necromancer (void)
 {
 //NECROMANCER
 	precache_model4("models/necro.mdl");//converted for MP
-	precache_model3 ("models/h_nec.mdl");
+	precache_model ("models/h_nec.mdl");
 	//Sickle
 	precache_model4("models/sickle.mdl");//converted for MP		// Necromancer Weapons
 	//Magic Missiles
-	precache_model3("models/spllbook.mdl");
-	precache_model3("models/handfx.mdl");
+	precache_model ("models/spllbook.mdl");
+	precache_model ("models/handfx.mdl");
 	//Bone Shards
-//	precache_model3("models/bonefx.mdl");
-	precache_model3("models/boneshot.mdl");
-	precache_model3("models/boneshrd.mdl");
-	precache_model3("models/bonelump.mdl");
+//	precache_model ("models/bonefx.mdl");
+	precache_model ("models/boneshot.mdl");
+	precache_model ("models/boneshrd.mdl");
+	precache_model ("models/bonelump.mdl");
 	//Raven Staff
 	precache_model4("models/ravenstf.mdl");//converted for MP
-	precache_model3("models/vindsht1.mdl");
-	precache_model3("models/ravproj.mdl");
-	precache_model3("models/birdmsl2.mdl");
+	precache_model ("models/vindsht1.mdl");
+	precache_model ("models/ravproj.mdl");
+	precache_model ("models/birdmsl2.mdl");
 	//Necromancer
-	precache_model3 ("models/soulball.mdl");//Soul sphere
-	precache_model3 ("models/soulskul.mdl");
-	precache_model3 ("models/birdmisl.mdl");
+	precache_model ("models/soulball.mdl");//Soul sphere
+	precache_model ("models/soulskul.mdl");
+	precache_model ("models/birdmisl.mdl");
 //SOUNDS
 //Body Sounds
 	Precache_Male ();
 	//Sickle
-	precache_sound3 ("weapons/drain.wav");
+	precache_sound ("weapons/drain.wav");
 	//Bone Shards
-	precache_sound3 ("necro/bonefpow.wav");	
-	precache_sound3 ("necro/bonefnrm.wav");	
-	precache_sound3 ("necro/bonephit.wav");	
-	precache_sound3 ("necro/bonenhit.wav");	
-	precache_sound3 ("necro/bonenwal.wav");	
+	precache_sound ("necro/bonefpow.wav");	
+	precache_sound ("necro/bonefnrm.wav");	
+	precache_sound ("necro/bonephit.wav");	
+	precache_sound ("necro/bonenhit.wav");	
+	precache_sound ("necro/bonenwal.wav");	
 	//Raven Staff
-	precache_sound3 ("raven/ravengo.wav");		
-	precache_sound3 ("raven/squawk2.wav");		
-	precache_sound3 ("raven/death.wav");
-	precache_sound3 ("raven/rfire1.wav");
-	precache_sound3 ("raven/rfire2.wav");
-	precache_sound3 ("raven/split.wav");
+	precache_sound ("raven/ravengo.wav");		
+	precache_sound ("raven/squawk2.wav");		
+	precache_sound ("raven/death.wav");
+	precache_sound ("raven/rfire1.wav");
+	precache_sound ("raven/rfire2.wav");
+	precache_sound ("raven/split.wav");
 }
 
 void Precache_Female (void)
@@ -1163,6 +1163,9 @@ void precache_spider ()
 }
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:34:58  sezero
+ * Initial import
+ *
  * 
  * 70    3/19/98 12:17a Mgummelt
  * last bug fixes

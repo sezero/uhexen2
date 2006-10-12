@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/ai.hc,v 1.1.1.1 2004-11-29 11:36:54 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/ai.hc,v 1.2 2006-10-12 13:03:42 sezero Exp $
  */
 void(entity etemp, entity stemp, entity stemp, float dmg) T_Damage;
 /*
@@ -971,15 +971,15 @@ float have_monsters;
 	if (self.spawnflags & ICE_IMP)
 	{
 		precache_model4 ("models/imp.mdl");//converted for MP
-		precache_model3 ("models/h_imp.mdl");//empty for now
-		precache_sound3("imp/up.wav");
-		precache_sound3("imp/die.wav");
-		precache_sound3("imp/swoop.wav");
-		precache_sound3("imp/fly.wav");
-		precache_model3 ("models/shardice.mdl");
-		precache_sound3("imp/swoophit.wav");
-		precache_sound3("imp/fireball.wav");
-		precache_sound3("imp/shard.wav");
+		precache_model ("models/h_imp.mdl");//empty for now
+		precache_sound ("imp/up.wav");
+		precache_sound ("imp/die.wav");
+		precache_sound ("imp/swoop.wav");
+		precache_sound ("imp/fly.wav");
+		precache_model ("models/shardice.mdl");
+		precache_sound ("imp/swoophit.wav");
+		precache_sound ("imp/fireball.wav");
+		precache_sound ("imp/shard.wav");
 		precache_sound("hydra/turn-s.wav");
 		have_monsters=TRUE;
 	}
@@ -1030,10 +1030,10 @@ float have_monsters;
 		precache_sound4 ("yakman/snort2.wav");
 		precache_sound4 ("yakman/roar.wav");
 		precache_sound4 ("yakman/die.wav");
-		precache_sound3 ("crusader/icewall.wav");	
+		precache_sound ("crusader/icewall.wav");	
 		precache_sound4 ("yakman/icespell.wav");	
-		precache_sound3 ("crusader/icefire.wav");	
-		precache_sound3 ("misc/tink.wav");				//Ice shots bounce
+		precache_sound ("crusader/icefire.wav");	
+		precache_sound ("misc/tink.wav");				//Ice shots bounce
 		precache_sound3 ("mezzo/skid.wav");
 		have_monsters=TRUE;
 	}
@@ -1046,16 +1046,16 @@ float have_monsters;
 	if (self.spawnflags & IMP)
 	{
 		precache_model4 ("models/imp.mdl");//converted for MP
-		precache_model3 ("models/h_imp.mdl");//empty for now
-		precache_sound3("imp/up.wav");
-		precache_sound3("imp/die.wav");
-		precache_sound3("imp/swoop.wav");
-		precache_sound3("imp/fly.wav");
-		precache_model3 ("models/shardice.mdl");
+		precache_model ("models/h_imp.mdl");//empty for now
+		precache_sound ("imp/up.wav");
+		precache_sound ("imp/die.wav");
+		precache_sound ("imp/swoop.wav");
+		precache_sound ("imp/fly.wav");
+		precache_model ("models/shardice.mdl");
 		precache_model ("models/fireball.mdl");
-		precache_sound3("imp/swoophit.wav");
-		precache_sound3("imp/fireball.wav");
-		precache_sound3("imp/shard.wav");
+		precache_sound ("imp/swoophit.wav");
+		precache_sound ("imp/fireball.wav");
+		precache_sound ("imp/shard.wav");
 		precache_sound("hydra/turn-s.wav");
 		have_monsters=TRUE;
 	}
@@ -1514,6 +1514,9 @@ float eidolon_check_attack(){return FALSE;}
 */
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:36:54  sezero
+ * Initial import
+ *
  * 
  * 35    3/19/98 2:26p Mgummelt
  * 

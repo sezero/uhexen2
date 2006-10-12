@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/torch.hc,v 1.1.1.1 2004-11-29 11:36:11 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/torch.hc,v 1.2 2006-10-12 13:03:43 sezero Exp $
  */
 /*
 ==========================================================
@@ -147,7 +147,7 @@ NOTE: IF YOU DON'T PLAN ON USING THE DEFAULTS, ALL LIGHTS IN THE BANK OF LIGHTS 
 */
 void light_torch_castle()
 {
-	precache_model3("models/castrch.mdl");
+	precache_model("models/castrch.mdl");
 	precache_model("models/cflmtrch.mdl");
 	precache_sound("raven/flame1.wav");
 
@@ -386,6 +386,9 @@ void light_palace_torch (void)
 }
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:36:11  sezero
+ * Initial import
+ *
  * 
  * 18    3/03/98 4:36p Jmonroe
  * changed over to precache 4 to build my pak
