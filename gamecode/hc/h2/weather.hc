@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/weather.hc,v 1.1.1.1 2004-11-29 11:41:12 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/weather.hc,v 1.2 2006-10-12 13:01:15 sezero Exp $
  */
 /*
 void () dust_touch =
@@ -311,11 +311,11 @@ void () weather_lightning_start =
 
 	if(self.classname=="weather_lightning_start")
 	{
-		precache_model3("models/stlghtng.mdl");
+		precache_model("models/stlghtng.mdl");
 		if (!self.noise)
 		{
 			self.noise = "raven/lightng1.wav"; 
-			precache_sound3("raven/lightng1.wav");
+			precache_sound("raven/lightng1.wav");
 		}
 		if(self.spawnflags&2)
 		{
@@ -327,7 +327,7 @@ void () weather_lightning_start =
 	{
 		dprint("Shazzaam!\n");
 		self.noise = "crusader/lghtn1.wav";
-		precache_sound3("crusader/lghtn1.wav");
+		precache_sound("crusader/lghtn1.wav");
 	}
 	
 	self.use = lightning_init;		// For triggered lightning
@@ -380,10 +380,10 @@ lifespan - amount of time sunbeam will exist.
 */
 void () weather_sunbeam_start =
 {
-	precache_model3("models/stsunsf1.mdl");
-	precache_model3("models/stsunsf2.mdl");
-	precache_model3("models/stsunsf3.mdl");
-	precache_model3("models/stsunsf4.mdl");
+	precache_model ("models/stsunsf1.mdl");
+	precache_model ("models/stsunsf2.mdl");
+	precache_model ("models/stsunsf3.mdl");
+	precache_model ("models/stsunsf4.mdl");
 
 	self.noise = "crusader/lghtn1.wav";
 
@@ -430,7 +430,7 @@ lifespan - amount of time beam will exist.
 /*
 void () fx_colorbeam_start =
 {
-	precache_model2("models/stclrbm.mdl");
+	precache_model("models/stclrbm.mdl");
 	weather_lightning_start();
 };
 */
@@ -449,6 +449,9 @@ void () fx_colorbeam_end =
 */
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:41:12  sezero
+ * Initial import
+ *
  * 
  * 47    9/16/97 4:17p Rjohnson
  * Updates

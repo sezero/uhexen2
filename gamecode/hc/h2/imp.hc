@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/imp.hc,v 1.1.1.1 2004-11-29 11:38:46 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/imp.hc,v 1.2 2006-10-12 13:01:15 sezero Exp $
  */
 /*
 ==============================================================================
@@ -1460,31 +1460,31 @@ void init_imp (float which_skin)
 
 	if(!self.flags2&FL_SUMMONED)
 	{
-		precache_model3 ("models/imp.mdl");
-		precache_model3 ("models/h_imp.mdl");//empty for now
+		precache_model ("models/imp.mdl");
+		precache_model ("models/h_imp.mdl");//empty for now
 		if (self.classname == "monster_imp_lord")
 		{
-			precache_model3 ("models/shardice.mdl");
+			precache_model ("models/shardice.mdl");
 			precache_model ("models/fireball.mdl");
-			precache_sound3("imp/upbig.wav");
-			precache_sound3("imp/diebig.wav");
-			precache_sound3("imp/swoopbig.wav");
-			precache_sound3("imp/flybig.wav");
+			precache_sound ("imp/upbig.wav");
+			precache_sound ("imp/diebig.wav");
+			precache_sound ("imp/swoopbig.wav");
+			precache_sound ("imp/flybig.wav");
 		}
 		else
 		{
-			precache_sound3("imp/up.wav");
-			precache_sound3("imp/die.wav");
-			precache_sound3("imp/swoop.wav");
-			precache_sound3("imp/fly.wav");
+			precache_sound ("imp/up.wav");
+			precache_sound ("imp/die.wav");
+			precache_sound ("imp/swoop.wav");
+			precache_sound ("imp/fly.wav");
 			if (self.classname == "monster_imp_ice")
-				precache_model3 ("models/shardice.mdl");
+				precache_model ("models/shardice.mdl");
 			else
 				precache_model ("models/fireball.mdl");
 		}
-		precache_sound3("imp/swoophit.wav");
-		precache_sound3("imp/fireball.wav");
-		precache_sound3("imp/shard.wav");
+		precache_sound ("imp/swoophit.wav");
+		precache_sound ("imp/fireball.wav");
+		precache_sound ("imp/shard.wav");
 		precache_sound("hydra/turn-s.wav");
 	}
 

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/ai.hc,v 1.4 2005-01-04 23:48:12 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/ai.hc,v 1.5 2006-10-12 13:01:15 sezero Exp $
  */
 void(entity etemp, entity stemp, entity stemp, float dmg) T_Damage;
 /*
@@ -790,17 +790,17 @@ float monster_spawn_precache (void)
 float have_monsters;
 	if (self.spawnflags & IMP)
 	{
-		precache_model3 ("models/imp.mdl");
-		precache_model3 ("models/h_imp.mdl");//empty for now
-		precache_sound3("imp/up.wav");
-		precache_sound3("imp/die.wav");
-		precache_sound3("imp/swoop.wav");
-		precache_sound3("imp/fly.wav");
-		precache_model3 ("models/shardice.mdl");
+		precache_model ("models/imp.mdl");
+		precache_model ("models/h_imp.mdl");//empty for now
+		precache_sound ("imp/up.wav");
+		precache_sound ("imp/die.wav");
+		precache_sound ("imp/swoop.wav");
+		precache_sound ("imp/fly.wav");
+		precache_model ("models/shardice.mdl");
 		precache_model ("models/fireball.mdl");
-		precache_sound3("imp/swoophit.wav");
-		precache_sound3("imp/fireball.wav");
-		precache_sound3("imp/shard.wav");
+		precache_sound ("imp/swoophit.wav");
+		precache_sound ("imp/fireball.wav");
+		precache_sound ("imp/shard.wav");
 		precache_sound("hydra/turn-s.wav");
 		have_monsters=TRUE;
 	}
@@ -1135,6 +1135,9 @@ void spawn_ghost (entity attacker){}
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/01/04 23:48:12  sezero
+ * Re-upload the file
+ *
  * Revision 1.1.1.1  2004/11/29 12:00:00  sezero
  * Initial import
  *

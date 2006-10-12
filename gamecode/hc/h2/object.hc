@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/object.hc,v 1.1.1.1 2004-11-29 11:39:49 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/object.hc,v 1.2 2006-10-12 13:01:15 sezero Exp $
  */
 
 
@@ -1503,7 +1503,7 @@ skin = determines the skin of the model
 */
 void obj_corpse1 (void)
 {
-	precache_model3("models/corps1.mdl");
+	precache_model ("models/corps1.mdl");
 	CreateEntityNew(self,ENT_CORPSE1,"models/corps1.mdl",chunk_death);
 	self.use = chunk_death;
 }
@@ -1863,7 +1863,7 @@ health = 20
 */
 void obj_playerhead_necromancer (void)
 {
-	precache_model3("models/h_nec.mdl");
+	precache_model ("models/h_nec.mdl");
 	CreateEntityNew(self,ENT_PLAYERHEAD,"models/h_nec.mdl",chunk_death);
 	self.use=chunk_death;
 }
@@ -1876,7 +1876,7 @@ health = 20
 */
 void obj_playerhead_crusader (void)
 {
-	precache_model3("models/h_cru.mdl");
+	precache_model ("models/h_cru.mdl");
 	CreateEntityNew(self,ENT_PLAYERHEAD,"models/h_cru.mdl",chunk_death);
 	self.use=chunk_death;
 }
@@ -1904,7 +1904,7 @@ health = 20
 */
 void obj_plant_generic (void)
 {
-	precache_model3("models/plantgen.mdl");
+	precache_model ("models/plantgen.mdl");
 	CreateEntityNew(self,ENT_PLANT_GENERIC,"models/plantgen.mdl",chunk_death);
 }
 
@@ -1934,6 +1934,9 @@ void obj_plant_rome (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2004/11/29 11:39:49  sezero
+ * Initial import
+ *
  * 
  * 202   10/07/97 2:24p Mgummelt
  * 
