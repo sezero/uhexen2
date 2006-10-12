@@ -53,8 +53,8 @@ none
 void wp_weapon2 (void)
 {
 	precache_model("models/w_l2_c1.mdl");
-	precache_model2("models/w_l2_c2.mdl");
-	precache_model2("models/w_l2_c3.mdl");
+	precache_model("models/w_l2_c2.mdl");
+	precache_model("models/w_l2_c3.mdl");
 	precache_model5("models/w_l2_c5.mdl");
 	precache_model("models/w_l2_c4.mdl");
 
@@ -79,8 +79,8 @@ none
 void wp_weapon3 (void)
 {
 	precache_model("models/w_l3_c1.mdl");
-	precache_model2("models/w_l3_c2.mdl");
-	precache_model2("models/w_l3_c3.mdl");
+	precache_model("models/w_l3_c2.mdl");
+	precache_model("models/w_l3_c3.mdl");
 	precache_model5("models/w_l3_c5.mdl");
 	precache_model("models/w_l3_c4.mdl");
 
@@ -104,8 +104,8 @@ none
 void wp_weapon4_head (void)
 {
 	precache_model("models/w_l41_c1.mdl");
-	precache_model2("models/w_l41_c2.mdl");
-	precache_model2("models/w_l41_c3.mdl");
+	precache_model("models/w_l41_c2.mdl");
+	precache_model("models/w_l41_c3.mdl");
 	precache_model5("models/w_l41_c5.mdl");
 	precache_model("models/w_l41_c4.mdl");
 
@@ -129,8 +129,8 @@ none
 void wp_weapon4_staff (void)
 {
 	precache_model("models/w_l42_c1.mdl");
-	precache_model2("models/w_l42_c2.mdl");
-	precache_model2("models/w_l42_c3.mdl");
+	precache_model("models/w_l42_c2.mdl");
+	precache_model("models/w_l42_c3.mdl");
 	precache_model5("models/w_l42_c5.mdl");
 	precache_model("models/w_l42_c4.mdl");
 
