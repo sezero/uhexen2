@@ -45,7 +45,7 @@ net_driver_t net_drivers[] =
 	}
 };
 
-const int net_numdrivers = (sizeof(net_drivers) / sizeof(net_drivers[0]));
+int net_numdrivers = (sizeof(net_drivers) / sizeof(net_drivers[0]));
 
 
 #include "net_wins.h"
@@ -102,5 +102,5 @@ net_landriver_t	net_landrivers[] =
 	}
 };
 
-const int net_numlandrivers = (sizeof(net_landrivers) / sizeof(net_landrivers[0]));
+int net_numlandrivers = (sizeof(net_landrivers) / sizeof(net_landrivers[0]));
 

@@ -165,7 +165,7 @@ typedef struct
 
 #define	MAX_NET_DRIVERS		8
 extern net_landriver_t	net_landrivers[];
-extern const int		net_numlandrivers;
+extern int		net_numlandrivers;
 
 typedef struct
 {
@@ -187,7 +187,7 @@ typedef struct
 } net_driver_t;
 
 extern net_driver_t	net_drivers[];
-extern const int		net_numdrivers;
+extern int		net_numdrivers;
 
 extern int			DEFAULTnet_hostport;
 extern int			net_hostport;
