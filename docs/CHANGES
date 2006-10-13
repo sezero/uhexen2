@@ -3,6 +3,29 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-10-13 (CVS):
+    * removed the const qualifiers from net_numdrivers and net_numlandrivers
+      because vcr enabled builds manually set net_numdrivers to 1.
+
+2006-10-12 (CVS):
+    * made the hexen2 progs to work with demo version 1.11: the original
+      demo version excluded the necromancer and crusader classes, but the
+      later one didn't care and included them. changing some precache_model3
+      and precache_sound3 to precache_model and precache_sound solves it.
+      the pak file of 1.11 demo version already contains the necessary stuff.
+    * made the hexenworld progs to work with demo version 1.11: Raven
+      actually did all of the changes, but they seem to have missed
+      changing the precache_model2 calls to precache_model in wp_art.hc
+      which prevented crusader and necromancer classes to be played with.
+    * ported the demo-1.11 precache compatibility changes from hexen2 to
+      the mission pack. the mission pack actually has nothing to do with
+      the demo version, but this is for the sake of the two trees being
+      in sync as much as possible.
+    * ported the demo-1.11 precache compatibility changes from hexenworld to
+      siege. siege actually doesn't have much to do with the demo, but this
+      is for the sake of the two trees being in sync as much as possible.
+    * updated release notes for v1.4.1
+
 2006-10-11 (CVS):
     * updated release notes for v1.4.1
 
