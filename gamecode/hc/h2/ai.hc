@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/ai.hc,v 1.5 2006-10-12 13:01:15 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/ai.hc,v 1.6 2006-10-14 05:38:16 sezero Exp $
  */
 void(entity etemp, entity stemp, entity stemp, float dmg) T_Damage;
 /*
@@ -1107,7 +1107,7 @@ void func_monsterspawn_spot (void)
 
 	if(!self.aflag)
 	{
-		dprint("Ooo!  You didn't include me in the spawn cycle!  FIX ME!\n");
+		dprint("Ooo!  You didn't include me in the spawn cycle!  FIXME!\n");
 		remove(self);
 	}
 	if(!self.cnt)
@@ -1135,6 +1135,13 @@ void spawn_ghost (entity attacker){}
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2006/10/12 13:01:15  sezero
+ * made the hexen2 progs to work with demo version 1.11: the original
+ * demo version excluded the necromancer and crusader classes, but the
+ * later one didn't care and included them. changing some precache_model3
+ * and precache_sound3 to precache_model and precache_sound solves it.
+ * the pak file of 1.11 demo version already contains the necessary stuff.
+ *
  * Revision 1.4  2005/01/04 23:48:12  sezero
  * Re-upload the file
  *

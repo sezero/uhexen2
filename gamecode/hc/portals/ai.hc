@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/ai.hc,v 1.2 2006-10-12 13:03:42 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/ai.hc,v 1.3 2006-10-14 05:38:16 sezero Exp $
  */
 void(entity etemp, entity stemp, entity stemp, float dmg) T_Damage;
 /*
@@ -1425,7 +1425,7 @@ void func_monsterspawn_spot (void)
 
 	if(!self.aflag)
 	{
-//		dprint("Ooo!  You didn't include me in the spawn cycle!  FIX ME!\n");
+//		dprint("Ooo!  You didn't include me in the spawn cycle!  FIXME!\n");
 		remove(self);
 	}
 	if(!self.cnt)
@@ -1514,6 +1514,12 @@ float eidolon_check_attack(){return FALSE;}
 */
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2006/10/12 13:03:42  sezero
+ * ported the demo-1.11 precache compatibility changes from hexen2 to
+ * the mission pack. the mission pack actually has nothing to do with
+ * the demo version, but this is for the sake of the two trees being
+ * in sync as much as possible.
+ *
  * Revision 1.1.1.1  2004/11/29 11:36:54  sezero
  * Initial import
  *

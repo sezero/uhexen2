@@ -185,7 +185,7 @@ entity latch;
 //	}
 };
 
-void pent_pain_anim () [++ $ready000 .. $ready015]//FIME: Pain frames or some other effect?
+void pent_pain_anim () [++ $ready000 .. $ready015]//FIXME: Pain frames or some other effect?
 {
 	self.movechain.frame=self.frame;
 	if(cycle_wrapped)

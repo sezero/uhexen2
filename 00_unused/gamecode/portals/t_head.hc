@@ -539,7 +539,7 @@ void talkhead_speaking () [++ $speak1 .. $speak20]
 }
 
 void talkhead_speak_init ()
-{//FIX ME: WHAT IF TALKING AND USED AGAIN- INTERRUPT?
+{//FIXME: WHAT IF TALKING AND USED AGAIN- INTERRUPT?
 	dprint("Being used!\n");
 	self.cnt+=1;
 	if(voice_slot(self.cnt)<0)//A loop value

@@ -338,7 +338,7 @@ void func_monsterspawn_spot (void)
 
 	if(!self.aflag)
 	{
-		dprint("Ooo!  You didn't include me in the spawn cycle!  FIX ME!\n");
+		dprint("Ooo!  You didn't include me in the spawn cycle!  FIXME!\n");
 		remove(self);
 	}
 	if(!self.cnt)
