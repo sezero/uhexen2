@@ -3,6 +3,19 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-10-15 (CVS):
+    * updated the windows wave sound driver: made buffer allocation method a
+      compile-time option: either allocate on the hunk, or use system memory.
+      hunk allocation is still the default.
+    * updated the alternative sdl sound driver patch: made buffer allocation
+      method a compile-time option: either allocate on the hunk, or use system
+      memory. system memory is default. changed the samples multiplier from 10
+      to 8 .
+    * added comments about the dma buffer allocation in the sound restart patch.
+
+2006-10-14 (CVS):
+    * misc typo fixes here and there.
+
 2006-10-13 (CVS):
     * removed the const qualifiers from net_numdrivers and net_numlandrivers
       because vcr enabled builds manually set net_numdrivers to 1.
