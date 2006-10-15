@@ -10,6 +10,16 @@ Experimental sound restart code:
   These issues aren't properly traced, yet.
 * Format switching (such as sample rate) isn't implemented.
 
+If a sound driver is allocating dma memory for itself, make sure that
+it does not allocate on the hunk. At present, only the windows wave-
+sound driver and the alternative sdl audio driver (which is available
+as an extra patch) does that. Therefore, if you try this patch:
+* If you compile for windows, edit your snd_win.c and make sure that
+  the USE_HUNK_ALLOC definition is 0
+* If you applied the snd_sdl-alternative patch, edit your snd_sdl.c
+  and make sure that the USE_HUNK_ALLOC definition is 0
+
+
 diff -urNp uhexen2-20061006/hexen2/snd_dma.c snd_dma.c
 --- uhexen2-20061006/hexen2/snd_dma.c	2006-10-04 18:36:35.000000000 +0300
 +++ snd_dma.c	2006-10-07 15:15:20.000000000 +0300
