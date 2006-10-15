@@ -6,6 +6,8 @@ static HRESULT (WINAPI *pDirectSoundCreate)(GUID FAR *lpGUID, LPDIRECTSOUND FAR 
 #define iDirectSoundCreate(a,b,c)	pDirectSoundCreate(a,b,c)
 
 // 64K is > 1 second at 16-bit, 22050 Hz
+//#define	WAV_BUFFERS		64 
+//#define	WAV_MASK		0x3F
 #define	WAV_BUFFERS		128
 #define	WAV_MASK		0x7F
 #ifndef DSBSIZE_MIN
@@ -27,8 +29,18 @@ static qboolean	primary_format_set;
 static int	snd_buffer_count = 0;
 static int	sample16;
 static int	snd_sent, snd_completed;
-static int	allocMark = 0;
 static int	ds_sbuf_size, wv_buf_size;
+
+// whether to use hunk for allocating wave
+// sound memory. either 1, or 0.
+#define USE_HUNK_ALLOC		1
+
+#if USE_HUNK_ALLOC
+static int	allocMark = 0;
+#else
+static HANDLE	hData;
+static HGLOBAL	hWaveHdr;
+#endif
 
 static HPSTR	lpData;
 static LPWAVEHDR	lpWaveHdr;
@@ -120,6 +132,7 @@ static void FreeSound (void)
 
 		waveOutClose (hWaveOut);
 
+#if USE_HUNK_ALLOC
 /* These are now on the hunk and we have to be wary about deallocating them:
    Other stuff might have been allocated above.  A nonzero allocMark is the
    case only if wave init failed, and we are here immediately after that,
@@ -130,12 +143,28 @@ static void FreeSound (void)
 			Hunk_FreeToLowMark(allocMark);
 			allocMark = 0;
 		}
+#else
+		if (hWaveHdr)
+		{
+			GlobalUnlock(hWaveHdr);
+			GlobalFree(hWaveHdr);
+		}
+		if (hData)
+		{
+			GlobalUnlock(hData);
+			GlobalFree(hData);
+		}
+#endif
 	}
 
 	pDS = NULL;
 	pDSBuf = NULL;
 	pDSPBuf = NULL;
 	hWaveOut = 0;
+#if !USE_HUNK_ALLOC
+	hData = 0;
+	hWaveHdr = 0;
+#endif
 	lpData = NULL;
 	lpWaveHdr = NULL;
 	dsound_init = false;
@@ -440,16 +469,56 @@ static qboolean SNDDMA_InitWav (void)
 	}
 
 	/*
-	 * Allocate memory for the waveform data.
-	*/
+	 * Allocate and lock memory for the waveform data. The memory
+	 * for waveform data must be globally allocated with
+	 * GMEM_MOVEABLE and GMEM_SHARE flags.
+	 */
 	gSndBufSize = WAV_BUFFERS * wv_buf_size;
+#if USE_HUNK_ALLOC
 	allocMark = Hunk_LowMark();
 	lpData = Hunk_AllocName(gSndBufSize, "sndbuff");
+#else
+	hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, gSndBufSize);
+	if (!hData)
+	{
+		Con_SafePrintf ("Sound: Out of memory.\n");
+		FreeSound ();
+		return false;
+	}
+	lpData = GlobalLock(hData);
+	if (!lpData)
+	{
+		Con_SafePrintf ("Sound: Failed to lock.\n");
+		FreeSound ();
+		return false;
+	}
+	memset (lpData, 0, gSndBufSize);
+#endif
 
 	/*
-	 * Allocate memory for the header.
+	 * Allocate and lock memory for the header. This memory must
+	 * also be globally allocated with GMEM_MOVEABLE and
+	 * GMEM_SHARE flags.
 	 */
+#if USE_HUNK_ALLOC
 	lpWaveHdr = Hunk_AllocName((DWORD)sizeof(WAVEHDR) * WAV_BUFFERS, "wavehdr");
+#else
+	hWaveHdr = GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, (DWORD) sizeof(WAVEHDR) * WAV_BUFFERS);
+	if (hWaveHdr == NULL)
+	{
+		Con_SafePrintf ("Sound: Failed to Alloc header.\n");
+		FreeSound ();
+		return false;
+	}
+	lpWaveHdr = (LPWAVEHDR) GlobalLock(hWaveHdr);
+	if (lpWaveHdr == NULL)
+	{
+		Con_SafePrintf ("Sound: Failed to lock header.\n");
+		FreeSound ();
+		return false;
+	}
+	memset (lpWaveHdr, 0, sizeof(WAVEHDR) * WAV_BUFFERS);
+#endif
 
 	/* After allocation, set up and prepare headers. */
 	for (i=0 ; i<WAV_BUFFERS ; i++)
@@ -475,12 +544,14 @@ static qboolean SNDDMA_InitWav (void)
 
 	wav_init = true;
 
-	Con_SafePrintf ("%d sound buffers, %d bytes/sound buffer\n", WAV_BUFFERS, wv_buf_size);
-
+#if USE_HUNK_ALLOC
 	/* Wave init succeeded, so DO NOT attempt to deallocate sound buffers
 	   from the hunk later on, otherwise we risk trashing everything that
 	   was allocated after them.	Pa3PyX	*/
 	allocMark = 0;
+#endif
+
+	Con_SafePrintf ("%d sound buffers, %d bytes/sound buffer\n", WAV_BUFFERS, wv_buf_size);
 
 	return true;
 }
