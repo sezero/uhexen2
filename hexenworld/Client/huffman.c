@@ -154,7 +154,7 @@ static void BuildTree (float *freq)
 
 	for (i = 0; i < 256; i++)
 	{
-		work[i] = malloc(sizeof(huffnode_t));
+		work[i] = (huffnode_t *) malloc(sizeof(huffnode_t));
 		work[i]->val = (unsigned char)i;
 		work[i]->freq = freq[i];
 		work[i]->zero = 0;
@@ -190,7 +190,7 @@ static void BuildTree (float *freq)
 			Sys_Error("minatl: %d", minat1);
 		if (minat2 < 0)
 			Sys_Error("minat2: %d", minat2);
-		tmp = malloc(sizeof(huffnode_t));
+		tmp = (huffnode_t *) malloc(sizeof(huffnode_t));
 		tmp->zero = work[minat2];
 		tmp->one = work[minat1];
 		tmp->freq = work[minat2]->freq + work[minat1]->freq;
