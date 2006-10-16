@@ -178,8 +178,7 @@ int main (int argc, char *argv[])
 	int		hufflen;
 #endif
 	int		i, j, k;
-//	unsigned char	packet[MAX_RCON_PACKET];
-	char		packet[MAX_RCON_PACKET];
+	unsigned char	packet[MAX_RCON_PACKET];
 	netadr_t		ipaddress;
 	struct sockaddr_in	hostaddress;
 
@@ -211,27 +210,31 @@ int main (int argc, char *argv[])
 	{
 		packet[k] = 255;
 	}
-	packet[k] = 0;
-	strcat (packet, "rcon ");
-	k = strlen(packet);
+	packet[k]	= 'r';
+	packet[++k]	= 'c';
+	packet[++k]	= 'o';
+	packet[++k]	= 'n';
+	packet[++k]	= ' ';
+	packet[++k]	= 0;
 // Concat all the excess command line stuff into a single string
 	for (i = 2 ; i < argc ; i++) 
 	{
 		for (j = 0 ; j < strlen(argv[i]) ; j++)
 		{
 			packet[k] = argv[i][j];
-			k++;
-			if (k > 240)
+			if (++k > sizeof(packet)-1)
 				Sys_Error ("Command too long");
 		}
-		packet[k] = 0x20;	// add a space
-		k++;
+		if (i != argc-1)
+		{
+			packet[k] = 0x20;	// add a space
+			if (++k > sizeof(packet)-1)
+				Sys_Error ("Command too long");
+		}
 	}
 
-	k--;
-	packet[k]='\0';
-	len = strlen(packet);
-	len++;
+	packet[k] = '\0';
+	len = k + 1;
 
 // Open the Socket
 	if ((socketfd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
@@ -244,10 +247,10 @@ int main (int argc, char *argv[])
 #ifdef USE_HUFFMAN
 // Init Huffman
 	HuffInit ();
-	HuffEncode ((unsigned char *)packet, huffbuff, len, &hufflen);
-	size = sendto(socketfd, huffbuff, hufflen, 0, 
+	HuffEncode (packet, huffbuff, len, &hufflen);
+	size = sendto(socketfd, (char *)huffbuff, hufflen, 0,
 #else
-	size = sendto(socketfd, packet, len, 0, 
+	size = sendto(socketfd, (char *)packet, len, 0,
 #endif
 			(struct sockaddr *)&hostaddress, sizeof(hostaddress));
 

@@ -176,6 +176,7 @@ static void NET_Shutdown (void)
 #define	PORT_SERVER		26950
 #define	MAX_PACKET		2048
 // number of 255s to put on the header
+// qwmaster uses 4, but hwmaster uses 5
 #define	HEADER_SIZE	5
 
 #define	S2C_CHALLENGE		'c'
@@ -187,9 +188,8 @@ int main (int argc, char *argv[])
 	int		size;
 	unsigned int	pos;
 	socklen_t	fromlen;
-//	unsigned char	packet[3];
-	char		packet[3];
-	char		response[MAX_PACKET];
+	unsigned char	packet[3];
+	unsigned char	response[MAX_PACKET];
 	netadr_t		ipaddress;
 	struct sockaddr_in	hostaddress;
 	unsigned long	_true = 1;
@@ -235,7 +235,7 @@ int main (int argc, char *argv[])
 
 	// Send the packet
 	printf ("Querying master server at %s\n", NET_AdrToString(ipaddress));
-	size = sendto(socketfd, packet, 2, 0, 
+	size = sendto(socketfd, (char *)packet, 2, 0,
 			(struct sockaddr *)&hostaddress, sizeof(hostaddress));
 
 	// See if it worked
@@ -258,7 +258,7 @@ int main (int argc, char *argv[])
 	else
 	while (NET_WaitReadTimeout(socketfd, 0, 50000) > 0)
 	{
-		size = recvfrom(socketfd, response, sizeof(response), 0, 
+		size = recvfrom(socketfd, (char *)response, sizeof(response), 0,
 				(struct sockaddr *)&hostaddress, &fromlen);
 		if (size < 0)
 		{
@@ -279,15 +279,27 @@ int main (int argc, char *argv[])
 			}
 #endif
 		}
-		else if (response[HEADER_SIZE] != M2C_MASTER_REPLY)
+		else if (size == sizeof(response))
 		{
-			printf ("Invalid response \'%c\' (%u) received\n", response[HEADER_SIZE], response[HEADER_SIZE]);
+			printf ("Received oversized packet!\n");
+			error_state = 1;
+			goto error_out;
+		}
+		else if (response[0] != 255 || response[1] != 255 ||
+			 response[2] != 255 || response[3] != 255 ||
+#if (HEADER_SIZE == 5)
+			 response[4] != 255 ||
+#endif
+			 response[HEADER_SIZE] != M2C_MASTER_REPLY ||
+			 response[HEADER_SIZE+1] != '\n')
+		{
+			printf ("Invalid response received\n");
 			error_state = 1;
 			goto error_out;
 		}
 		else
 		{
-			char	*tmp = &response[HEADER_SIZE+2];
+			char	*tmp = (char *)(response+HEADER_SIZE+2);
 			struct in_addr	*addr;
 
 			printf ("H2W Servers registered at %s:", NET_AdrToString(ipaddress));

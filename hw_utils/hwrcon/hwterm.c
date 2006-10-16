@@ -197,9 +197,8 @@ int main (int argc, char *argv[])
 	int		len, hufflen, size;
 	int		i, k;
 	socklen_t	fromlen;
-//	unsigned char	packet[MAX_RCON_PACKET];
-	char		packet[MAX_RCON_PACKET];
-	char		response[MAX_RCON_PACKET*10];
+	unsigned char	packet[MAX_RCON_PACKET];
+	unsigned char	response[MAX_RCON_PACKET*10];
 	netadr_t		ipaddress;
 	struct sockaddr_in	hostaddress;
 	unsigned long	_true = 1;
@@ -252,9 +251,12 @@ int main (int argc, char *argv[])
 	{
 		packet[k] = 255;
 	}
-	packet[k] = 0;
-	strcat (packet, "rcon ");
-	k = strlen(packet);
+	packet[k]	= 'r';
+	packet[++k]	= 'c';
+	packet[++k]	= 'o';
+	packet[++k]	= 'n';
+	packet[++k]	= ' ';
+	packet[++k]	= 0;
 // Put the password on the packet
 	for (i = 0 ; i < strlen(argv[2]) ; i++)
 	{
@@ -263,7 +265,7 @@ int main (int argc, char *argv[])
 	}
 // Add a space
 	packet[k] = 0x20;
-	k++;
+	packet[++k] = 0;
 
 // Init Huffman
 	HuffInit ();
@@ -272,13 +274,12 @@ int main (int argc, char *argv[])
 	while (1)
 	{
 		printf ("RCON> ");
-		fgets (&packet[k], 224, stdin);
-		len = strlen(packet);
-		len++;
+		fgets ((char *)(packet+k), sizeof(packet)-k, stdin);
+		len = strlen((char *)packet) + 1;
 
 	// Send the packet
-		HuffEncode ((unsigned char *)packet,huffbuff,len,&hufflen);
-		size = sendto(socketfd, huffbuff, hufflen, 0, 
+		HuffEncode (packet, huffbuff, len, &hufflen);
+		size = sendto(socketfd, (char *)huffbuff, hufflen, 0,
 			(struct sockaddr *)&hostaddress, sizeof(hostaddress));
 
 	// See if it worked
@@ -291,6 +292,7 @@ int main (int argc, char *argv[])
 		}
 
 	// Read the response
+		memset (response, 0, sizeof(response));
 		fromlen = sizeof(hostaddress);
 		if (NET_WaitReadTimeout (socketfd, 5, 0) <= 0)
 		{
@@ -299,7 +301,7 @@ int main (int argc, char *argv[])
 		else
 		while (NET_WaitReadTimeout(socketfd, 0, 50000) > 0)
 		{
-			size = recvfrom(socketfd, huffbuff, MAX_RCON_PACKET*10, 0, 
+			size = recvfrom(socketfd, (char *)huffbuff, sizeof(response), 0,
 				(struct sockaddr *)&hostaddress, &fromlen);
 			if (size < 0)
 			{
@@ -320,10 +322,26 @@ int main (int argc, char *argv[])
 				}
 #	endif
 			}
+			else if (size == sizeof(response))
+			{
+				printf ("Received oversized packet!\n");
+				error_state = 1;
+				goto error_out;
+			}
 			else
 			{
-				HuffDecode(huffbuff, (unsigned char *)response, size, &size);
-				printf (&response[5]);
+				HuffDecode(huffbuff, response, size, &size);
+				for (i = 0 ; i < HEADER_SIZE ; i++)
+				{
+					if (response[i] != 255)
+					{
+						printf ("Invalid response received\n");
+						error_state = 1;
+						goto error_out;
+					}
+				}
+
+				printf ("%s\n", (char *)(response+HEADER_SIZE+1));
 			}
 		}
 	}
