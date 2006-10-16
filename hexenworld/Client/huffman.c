@@ -206,8 +206,10 @@ static void BuildTree (float *freq)
 	for (i = 0; i < 256; i++)
 	{
 		if (!HuffLookup[i].len && HuffLookup[i].len <= 32)
-			Sys_Error("bad frequency table");
+		{
 		//	Con_Printf("%d %d %2X\n", HuffLookup[i].len, HuffLookup[i].bits, i);
+			Sys_Error("bad frequency table");
+		}
 	}
 #endif
 }
