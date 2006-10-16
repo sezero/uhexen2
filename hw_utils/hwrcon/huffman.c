@@ -134,9 +134,9 @@ static void BuildTree (float *freq)
 			}
 		}
 		if (minat1 < 0)
-			Sys_Error("minatl: %f", minat1);
+			Sys_Error("minatl: %d", minat1);
 		if (minat2 < 0)
-			Sys_Error("minat2: %f", minat2);
+			Sys_Error("minat2: %d", minat2);
 		tmp = malloc(sizeof(huffnode_t));
 		tmp->zero = work[minat2];
 		tmp->one = work[minat1];
