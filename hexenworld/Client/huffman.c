@@ -285,7 +285,7 @@ void HuffEncode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
 
 	buf = malloc(inlen);
 	HuffDecode (out, buf, *outlen, &tlen);
-	if (!tlen == inlen)
+	if (tlen != inlen)
 		Sys_Error("bogus compression");
 	for (i = 0; i < inlen; i++)
 	{
