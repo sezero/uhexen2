@@ -3,6 +3,19 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-10-16 (CVS, 1.4.1-rc4):
+    * several fixes and tweaks to the standalone hexenworld utilities hwrcon,
+      hwterm and hwmquery.
+    * error_out clean-up in the hexenworld utilities.
+    * added missing parentheses in BuildTree of huffman.c.
+    * fixed wrong string format in huffman.c.
+    * added (huffnode_t *) casts to malloc calls in huffman.c.
+    * fixed wrong comparison in huffman debug code (was either a typo or
+      missing parentheses).
+    * fixed a buffer overflow vulnerability in hexenworld Huffman decompression.
+    * whitespace cleanup in huffman.c.
+    * marked the snapshot of 2006-10-16 as 1.4.1-rc4.
+
 2006-10-15 (CVS):
     * updated the windows wave sound driver: made buffer allocation method a
       compile-time option: either allocate on the hunk, or use system memory.
