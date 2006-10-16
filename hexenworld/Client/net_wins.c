@@ -167,7 +167,12 @@ qboolean NET_GetPacket (void)
 
 	LastCompMessageSize += ret;//keep track of bytes actually received for debugging
 
-	HuffDecode(huffbuff, (unsigned char *)net_message_buffer,ret,&ret);
+	HuffDecode(huffbuff, net_message_buffer, ret, &ret, sizeof(net_message_buffer));
+	if (ret > sizeof(net_message_buffer))
+	{
+		Con_Printf ("Oversize compressed data from %s\n", NET_AdrToString (net_from));
+		return false;
+	}
 	net_message.cursize = ret;
 
 	return ret;

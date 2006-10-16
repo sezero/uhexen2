@@ -331,7 +331,12 @@ int main (int argc, char *argv[])
 			}
 			else
 			{
-				HuffDecode(huffbuff, response, size, &size);
+				HuffDecode(huffbuff, response, size, &size, sizeof(response));
+				if (size > sizeof(response))
+				{
+					printf ("Received oversized compressed data!\n");
+					Sys_Quit (1);
+				}
 				for (i = 0 ; i < HEADER_SIZE ; i++)
 				{
 					if (response[i] != 255)

@@ -214,7 +214,7 @@ static void BuildTree (float *freq)
 #endif
 }
 
-void HuffDecode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
+void HuffDecode (unsigned char *in, unsigned char *out, int inlen, int *outlen, const int maxlen)
 {
 	int	bits,tbits;
 	huffnode_t	*tmp;
@@ -242,8 +242,9 @@ void HuffDecode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
 			bits++;
 		} while (tmp->zero);
 
+		if ( ++(*outlen) > maxlen )
+			return;
 		*out++ = tmp->val;
-		(*outlen)++;
 	}
 }
 
@@ -284,7 +285,7 @@ void HuffEncode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
 	HuffOut += *outlen;
 
 	buf = malloc(inlen);
-	HuffDecode (out, buf, *outlen, &tlen);
+	HuffDecode (out, buf, *outlen, &tlen, inlen);
 	if (tlen != inlen)
 		Sys_Error("bogus compression");
 	for (i = 0; i < inlen; i++)

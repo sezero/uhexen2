@@ -6,7 +6,7 @@
 
 extern void HuffInit (void);
 extern void HuffEncode (unsigned char *in, unsigned char *out, int inlen, int *outlen);
-extern void HuffDecode (unsigned char *in, unsigned char *out, int inlen, int *outlen);
+extern void HuffDecode (unsigned char *in, unsigned char *out, int inlen, int *outlen, const int maxlen);
 
 #endif	/* __H2W_HUFFMAN_H */
 

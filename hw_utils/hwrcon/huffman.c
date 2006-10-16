@@ -150,7 +150,7 @@ static void BuildTree (float *freq)
 	FindTab (HuffTree, 0, 0);
 }
 
-void HuffDecode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
+void HuffDecode (unsigned char *in, unsigned char *out, int inlen, int *outlen, const int maxlen)
 {
 	int	bits,tbits;
 	huffnode_t	*tmp;
@@ -178,8 +178,9 @@ void HuffDecode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
 			bits++;
 		} while (tmp->zero);
 
+		if ( ++(*outlen) > maxlen )
+			return;
 		*out++ = tmp->val;
-		(*outlen)++;
 	}
 }
 
