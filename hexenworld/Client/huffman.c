@@ -21,17 +21,17 @@ typedef struct huffnode_s
 {
 	struct huffnode_s *zero;
 	struct huffnode_s *one;
-	unsigned char val;
-	float freq;
+	unsigned char	val;
+	float		freq;
 } huffnode_t;
 
 typedef struct
 {
-	unsigned int bits;
-	int len;
+	unsigned int	bits;
+	int		len;
 } hufftab_t;
 
-static huffnode_t *HuffTree=0;
+static huffnode_t *HuffTree = 0;
 static hufftab_t HuffLookup[256];
 
 static float HuffFreq[256] =
@@ -59,7 +59,7 @@ void CalcFreq (unsigned char *packet, int packetlen)
 {
 	int		ix;
 
-	for (ix=0; ix<packetlen; ix++)
+	for (ix = 0; ix < packetlen; ix++)
 	{
 		freqs[packet[ix]]++;
 	}
@@ -71,14 +71,14 @@ void PrintFreqs (void)
 	float	total = 0;
 	char	string[100];
 
-	for (ix=0; ix<256; ix++)
+	for (ix = 0; ix < 256; ix++)
 	{
 		total += freqs[ix];
 	}
 
-	if (total>.01)
+	if (total > .01)
 	{
-		for (ix=0; ix<256; ix++)
+		for (ix = 0; ix < 256; ix++)
 		{
 			sprintf(string, "\t%.8f,\n", ((float)freqs[ix])/total);
 			OutputDebugString(string);
@@ -105,15 +105,15 @@ static void FindTab (huffnode_t *tmp, int len, unsigned int bits)
 	{
 		if (!tmp->one)
 			Sys_Error("no one in node");
-		if(len>=32)
+		if (len >= 32)
 			Sys_Error("compression screwd");
-		FindTab(tmp->zero,len+1,bits<<1);
-		FindTab(tmp->one,len+1,(bits<<1)|1);
+		FindTab (tmp->zero, len+1, bits<<1);
+		FindTab (tmp->one, len+1, (bits<<1)|1);
 		return;
 	}
 
-	HuffLookup[tmp->val].len=len;
-	HuffLookup[tmp->val].bits=bits;
+	HuffLookup[tmp->val].len = len;
+	HuffLookup[tmp->val].bits = bits;
 	return;
 }
 
@@ -132,14 +132,14 @@ static unsigned char Masks[8] =
 static void PutBit (unsigned char *buf, int pos, int bit)
 {
 	if (bit)
-		buf[pos/8]|=Masks[pos%8];
+		buf[pos/8] |= Masks[pos%8];
 	else
-		buf[pos/8]&=~Masks[pos%8];
+		buf[pos/8] &=~Masks[pos%8];
 }
 
 static int GetBit (unsigned char *buf, int pos)
 {
-	if (buf[pos/8]&Masks[pos%8])
+	if (buf[pos/8] & Masks[pos%8])
 		return 1;
 	else
 		return 0;
@@ -152,60 +152,60 @@ static void BuildTree (float *freq)
 	huffnode_t	*work[256];
 	huffnode_t	*tmp;
 
-	for (i=0;i<256;i++)
+	for (i = 0; i < 256; i++)
 	{
-		work[i]=malloc(sizeof(huffnode_t));
-		work[i]->val=(unsigned char)i;
-		work[i]->freq=freq[i];
-		work[i]->zero=0;
-		work[i]->one=0;
-		HuffLookup[i].len=0;
+		work[i] = malloc(sizeof(huffnode_t));
+		work[i]->val = (unsigned char)i;
+		work[i]->freq = freq[i];
+		work[i]->zero = 0;
+		work[i]->one = 0;
+		HuffLookup[i].len = 0;
 	}
 
-	for (i=0;i<255;i++)
+	for (i = 0; i < 255; i++)
 	{
-		minat1=-1;
-		minat2=-1;
-		min1=1E30;
-		min2=1E30;
+		minat1 = -1;
+		minat2 = -1;
+		min1 = 1E30;
+		min2 = 1E30;
 
-		for (j=0;j<256;j++)
+		for (j = 0; j < 256; j++)
 		{
 			if (!work[j])
 				continue;
-			if (work[j]->freq<min1)
+			if (work[j]->freq < min1)
 			{
-				minat2=minat1;
-				min2=min1;
-				minat1=j;
-				min1=work[j]->freq;
+				minat2 = minat1;
+				min2 = min1;
+				minat1 = j;
+				min1 = work[j]->freq;
 			}
-			else if (work[j]->freq<min2)
+			else if (work[j]->freq < min2)
 			{
-				minat2=j;
-				min2=work[j]->freq;
+				minat2 = j;
+				min2 = work[j]->freq;
 			}
 		}
-		if (minat1<0)
-			Sys_Error("minatl: %f",minat1);
-		if (minat2<0)
-			Sys_Error("minat2: %f",minat2);
-		tmp=malloc(sizeof(huffnode_t));
-		tmp->zero=work[minat2];
-		tmp->one=work[minat1];
-		tmp->freq=work[minat2]->freq+work[minat1]->freq;
-		tmp->val=0xff;
-		work[minat1]=tmp;
-		work[minat2]=0;
+		if (minat1 < 0)
+			Sys_Error("minatl: %f", minat1);
+		if (minat2 < 0)
+			Sys_Error("minat2: %f", minat2);
+		tmp = malloc(sizeof(huffnode_t));
+		tmp->zero = work[minat2];
+		tmp->one = work[minat1];
+		tmp->freq = work[minat2]->freq + work[minat1]->freq;
+		tmp->val = 0xff;
+		work[minat1] = tmp;
+		work[minat2] = 0;
 	}
 
-	HuffTree=tmp;
-	FindTab(HuffTree,0,0);
+	HuffTree = tmp;
+	FindTab (HuffTree, 0, 0);
 
 #if DEBUG_BUILD
-	for (i=0;i<256;i++)
+	for (i = 0; i < 256; i++)
 	{
-		if(!HuffLookup[i].len&&HuffLookup[i].len<=32)
+		if (!HuffLookup[i].len && HuffLookup[i].len <= 32)
 			Sys_Error("bad frequency table");
 		//	Con_Printf("%d %d %2X\n", HuffLookup[i].len, HuffLookup[i].bits, i);
 	}
@@ -217,30 +217,30 @@ void HuffDecode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
 	int	bits,tbits;
 	huffnode_t	*tmp;
 
-	if (*in==0xff)
+	if (*in == 0xff)
 	{
-		memcpy(out,in+1,inlen-1);
-		*outlen=inlen-1;
+		memcpy (out, in+1, inlen-1);
+		*outlen = inlen-1;
 		return;
 	}
 
-	tbits=(inlen-1)*8-*in;
-	bits=0;
-	*outlen=0;
+	tbits = (inlen-1)*8 - *in;
+	bits = 0;
+	*outlen = 0;
 
-	while (bits<tbits)
+	while (bits < tbits)
 	{
-		tmp=HuffTree;
+		tmp = HuffTree;
 		do
 		{
-			if (GetBit(in+1,bits))
-				tmp=tmp->one;
+			if ( GetBit(in+1, bits) )
+				tmp = tmp->one;
 			else
-				tmp=tmp->zero;
+				tmp = tmp->zero;
 			bits++;
 		} while (tmp->zero);
 
-		*out++=tmp->val;
+		*out++ = tmp->val;
 		(*outlen)++;
 	}
 }
@@ -254,43 +254,43 @@ void HuffEncode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
 	int	tlen;
 #endif	// DEBUG_BUILD
 
-	bitat=0;
+	bitat = 0;
 
-	for (i=0;i<inlen;i++)
+	for (i = 0; i < inlen; i++)
 	{
-		t=HuffLookup[in[i]].bits;
-		for (j=0;j<HuffLookup[in[i]].len;j++)
+		t = HuffLookup[in[i]].bits;
+		for (j = 0; j < HuffLookup[in[i]].len; j++)
 		{
-			PutBit(out+1,bitat+HuffLookup[in[i]].len-j-1,t&1);
-			t>>=1;
+			PutBit (out+1, bitat + HuffLookup[in[i]].len-j-1, t&1);
+			t >>= 1;
 		}
-		bitat+=HuffLookup[in[i]].len;
+		bitat += HuffLookup[in[i]].len;
 	}
 
-	*outlen=1+(bitat+7)/8;
-	*out=8*((*outlen)-1)-bitat;
+	*outlen = 1 + (bitat + 7)/8;
+	*out = 8 * ((*outlen)-1) - bitat;
 
-	if(*outlen >= inlen+1)
+	if (*outlen >= inlen+1)
 	{
-		*out=0xff;
-		memcpy(out+1,in,inlen);
-		*outlen=inlen+1;
+		*out = 0xff;
+		memcpy (out+1, in, inlen);
+		*outlen = inlen+1;
 	}
 
 #ifdef DEBUG_BUILD
-	HuffIn+=inlen;
-	HuffOut+=*outlen;
+	HuffIn += inlen;
+	HuffOut += *outlen;
 
-	buf=malloc(inlen);
-	HuffDecode(out,buf,*outlen,&tlen);
-	if(!tlen==inlen)
+	buf = malloc(inlen);
+	HuffDecode (out, buf, *outlen, &tlen);
+	if (!tlen == inlen)
 		Sys_Error("bogus compression");
-	for (i=0;i<inlen;i++)
+	for (i = 0; i < inlen; i++)
 	{
-		if(in[i]!=buf[i])
+		if (in[i] != buf[i])
 			Sys_Error("bogus compression");
 	}
-	free(buf);
+	free (buf);
 #endif	// DEBUG_BUILD
 }
 
