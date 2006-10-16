@@ -168,6 +168,12 @@ static void NET_Shutdown (void)
 #endif
 }
 
+static void Sys_Quit (int error_state)
+{
+	NET_Shutdown ();
+	exit (error_state);
+}
+
 //=============================================================================
 
 #define	VERSION_STR		"0.1"
@@ -184,7 +190,6 @@ static void NET_Shutdown (void)
 
 int main (int argc, char *argv[])
 {
-	int		error_state = 0;
 	int		size;
 	unsigned int	pos;
 	socklen_t	fromlen;
@@ -243,8 +248,7 @@ int main (int argc, char *argv[])
 	{
 		perror ("Sendto failed");
 		printf ("Tried to send %i, sent %i\n", 2, size);
-		error_state = 1;
-		goto error_out;
+		Sys_Quit (1);
 	}
 
 	// Read the response
@@ -253,7 +257,7 @@ int main (int argc, char *argv[])
 	if (NET_WaitReadTimeout (socketfd, 5, 0) <= 0)
 	{
 		printf ("*** timeout waiting for reply\n");
-		error_state = 2;
+		Sys_Quit (2);
 	}
 	else
 	while (NET_WaitReadTimeout(socketfd, 0, 50000) > 0)
@@ -267,23 +271,20 @@ int main (int argc, char *argv[])
 			if (err != WSAEWOULDBLOCK)
 			{
 				printf ("Recv failed: %s\n", strerror(err));
-				error_state = 1;
-				goto error_out;
+				Sys_Quit (1);
 			}
 #else
 			if (errno != EWOULDBLOCK)
 			{
 				perror("Recv failed");
-				error_state = 1;
-				goto error_out;
+				Sys_Quit (1);
 			}
 #endif
 		}
 		else if (size == sizeof(response))
 		{
 			printf ("Received oversized packet!\n");
-			error_state = 1;
-			goto error_out;
+			Sys_Quit (1);
 		}
 		else if (response[0] != 255 || response[1] != 255 ||
 			 response[2] != 255 || response[3] != 255 ||
@@ -294,8 +295,7 @@ int main (int argc, char *argv[])
 			 response[HEADER_SIZE+1] != '\n')
 		{
 			printf ("Invalid response received\n");
-			error_state = 1;
-			goto error_out;
+			Sys_Quit (1);
 		}
 		else
 		{
@@ -320,8 +320,7 @@ int main (int argc, char *argv[])
 		}
 	}
 
-error_out:
 	NET_Shutdown ();
-	exit (error_state);
+	exit (0);
 }
 

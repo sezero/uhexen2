@@ -180,6 +180,12 @@ static void NET_Shutdown (void)
 #endif
 }
 
+static void Sys_Quit (int error_state)
+{
+	NET_Shutdown ();
+	exit (error_state);
+}
+
 //=============================================================================
 
 #define	VERSION_STR		"1.2.2"
@@ -193,7 +199,6 @@ static unsigned char huffbuff[65536];
 
 int main (int argc, char *argv[])
 {
-	int		error_state = 0;
 	int		len, hufflen, size;
 	int		i, k;
 	socklen_t	fromlen;
@@ -287,8 +292,7 @@ int main (int argc, char *argv[])
 		{
 			perror ("Sendto failed");
 			printf ("Tried to send %i, sent %i\n", hufflen, size);
-			error_state = 1;
-			goto error_out;
+			Sys_Quit (1);
 		}
 
 	// Read the response
@@ -310,23 +314,20 @@ int main (int argc, char *argv[])
 				if (err != WSAEWOULDBLOCK)
 				{
 					printf ("Recv failed: %s\n", strerror(err));
-					error_state = 1;
-					goto error_out;
+					Sys_Quit (1);
 				}
 #	else
 				if (errno != EWOULDBLOCK)
 				{
 					perror("Recv failed");
-					error_state = 1;
-					goto error_out;
+					Sys_Quit (1);
 				}
 #	endif
 			}
 			else if (size == sizeof(response))
 			{
 				printf ("Received oversized packet!\n");
-				error_state = 1;
-				goto error_out;
+				Sys_Quit (1);
 			}
 			else
 			{
@@ -336,8 +337,7 @@ int main (int argc, char *argv[])
 					if (response[i] != 255)
 					{
 						printf ("Invalid response received\n");
-						error_state = 1;
-						goto error_out;
+						Sys_Quit (1);
 					}
 				}
 
@@ -346,8 +346,7 @@ int main (int argc, char *argv[])
 		}
 	}
 
-error_out:
 	NET_Shutdown ();
-	exit (error_state);
+	exit (0);
 }
 
