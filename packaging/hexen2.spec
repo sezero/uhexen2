@@ -1,3 +1,14 @@
+# build options :
+# --without alsa: build without alsa audio support
+# --without midi: build without midi support
+# --without asm : do not use x86 assembly even on an intel cpu
+# --without gtk2: do not use glib-2.x / gtk-2.x, and build the launcher against
+#		  gtk-1.2
+# --without freedesktop: do not use desktop-file-utils for the desktop shortcut
+
+%ifnarch %{ix86}
+%define _without_asm 1
+%endif
 
 %{?el2:%define _without_freedesktop 1}
 %{?rh7:%define _without_freedesktop 1}
@@ -14,62 +25,63 @@ License:	GPL
 Group:		Amusements/Games
 URL:		http://uhexen2.sourceforge.net/
 Version:	1.4.1
-Release:	0
-Summary:	Hexen II
+Release:	1
+Summary:	Hexen II: Hammer of Thyrion
 Source:		hexen2source-%{version}.tgz
 Source1:	hexen2source-gamecode-%{version}.tgz
 Source2:	hexenworld-pakfiles-0.15.tgz
 Source3:	xdelta-1.1.3a.tgz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
-BuildRequires:	nasm >= 0.98
 BuildRequires:	SDL-devel >= 1.2.4
-BuildRequires:	SDL_mixer-devel >= 1.2.4
+%{!?_without_midi:BuildRequires:  SDL_mixer-devel >= 1.2.4}
+%{!?_without_asm:BuildRequires:  nasm >= 0.98}
 %{!?_without_freedesktop:BuildRequires: desktop-file-utils}
 %{?_without_gtk2:BuildRequires:  gtk+-devel}
 %{!?_without_gtk2:BuildRequires: gtk2-devel}
+Obsoletes:	hexen2-missionpack
 Requires:	SDL >= 1.2.4
-Requires:	SDL_mixer >= 1.2.4
+%{!?_without_midi:Requires: SDL_mixer >= 1.2.4}
 
 %description
 Hexen II is a class based shooter game by Raven Software from 1997.
-This is the Linux port of the GPL'ed source code released by Raven.
-This package contains the binaries that will run the original Hexen2
-game in software or OpenGL mode.
-Also included here is the Hexen 2 Game Launcher that provides a gui
-for launching different versions of the game.
-
-%package -n hexen2-missionpack
-Group:		Amusements/Games
-Summary:	Hexen II Mission Pack: Portal of Praevus
-Requires:	hexen2
-
-%description -n hexen2-missionpack
-Hexen II is a class based shooter game by Raven Software from 1997.
-This is the Linux port of the GPL'ed source code released by Raven.
-This package contains the binaries that will run the official Mission
-Pack: Portal of Praevus in software or OpenGL mode.
+Hammer of Thyrion is a port of the GPL'ed source code released by
+Raven. This package contains binaries that will run both the original
+game and the Portal of Praevus mission pack, a dedicated server and a
+launcher application which provides a GTK gui for launching different
+versions of the game.
 
 %package -n hexenworld
 Group:		Amusements/Games
 Summary:	HexenWorld Client and Server
 Requires:	SDL >= 1.2.4
-Requires:	SDL_mixer >= 1.2.4
-Requires:	hexen2
+%{!?_without_midi:Requires: SDL_mixer >= 1.2.4}
+Requires:	hexen2 >= 1.4.1
 
 %description -n hexenworld
 Hexen II is a class based shooter game by Raven Software from 1997.
-This is the Linux port of the GPL'ed source code released by Raven.
-This package contains the binaries that are required to run a
-HexenWorld server or run HexenWorld Client in software or OpenGL
-mode.
+Hammer of Thyrion is a port of the GPL'ed source code released by
+Raven. HexenWorld is an extension of Hexen II with enhancements for
+internet play. This package contains the files which are required to
+run a HexenWorld server or client, and a master server application.
 
 %prep
 %setup -q -n hexen2source-%{version} -a1 -a2 -a3
+%if %{?_without_asm:1}0
+%__sed -i 's/USE_X86_ASM=yes/USE_X86_ASM=no/' hexen2/Makefile hexenworld/Client/Makefile
+%endif
+%if %{?_without_alsa:1}0
+%__sed -i 's/USE_ALSA=yes/USE_ALSA=no/' hexen2/Makefile hexenworld/Client/Makefile
+%endif
+%if %{?_without_midi:1}0
+%__sed -i 's/USE_MIDI=yes/USE_MIDI=no/' hexen2/Makefile hexenworld/Client/Makefile
+%endif
 
 %build
 # Build the main game binaries
+%if %{!?_without_asm:1}0
 %{__make} -C hexen2 h2
 %{__make} -s -C hexen2 clean
+%endif
 %{__make} -C hexen2 glh2
 %{__make} -s -C hexen2 clean
 # Build the dedicated server
@@ -77,8 +89,10 @@ mode.
 # HexenWorld binaries
 %{__make} -C hexenworld/Server
 %{__make} -C hexenworld/Master
+%if %{!?_without_asm:1}0
 %{__make} -C hexenworld/Client hw
 %{__make} -s -C hexenworld/Client clean
+%endif
 %{__make} -C hexenworld/Client glhw
 # Launcher binaries
 %if %{!?_without_gtk2:1}0
@@ -111,13 +125,15 @@ cd ../..
 %install
 %{__rm} -rf %{buildroot}
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/docs
-%{__install} -D -m755 hexen2/hexen2 %{buildroot}/%{_prefix}/games/%{name}/hexen2
 %{__install} -D -m755 hexen2/h2ded %{buildroot}/%{_prefix}/games/%{name}/h2ded
 %{__install} -D -m755 hexen2/glhexen2 %{buildroot}/%{_prefix}/games/%{name}/glhexen2
+%if %{!?_without_asm:1}0
+%{__install} -D -m755 hexen2/hexen2 %{buildroot}/%{_prefix}/games/%{name}/hexen2
+%{__install} -D -m755 hexenworld/Client/hwcl %{buildroot}/%{_prefix}/games/%{name}/hwcl
+%endif
+%{__install} -D -m755 hexenworld/Client/glhwcl %{buildroot}/%{_prefix}/games/%{name}/glhwcl
 %{__install} -D -m755 hexenworld/Server/hwsv %{buildroot}/%{_prefix}/games/%{name}/hwsv
 %{__install} -D -m755 hexenworld/Master/hwmaster %{buildroot}/%{_prefix}/games/%{name}/hwmaster
-%{__install} -D -m755 hexenworld/Client/hwcl %{buildroot}/%{_prefix}/games/%{name}/hwcl
-%{__install} -D -m755 hexenworld/Client/glhwcl %{buildroot}/%{_prefix}/games/%{name}/glhwcl
 %if %{!?_without_gtk2:1}0
 %{__install} -D -m755 launcher/h2launcher %{buildroot}/%{_prefix}/games/%{name}/h2launcher
 %else
@@ -211,9 +227,11 @@ desktop-file-install \
 
 %files
 %defattr(-,root,root)
-%{_prefix}/games/%{name}/hexen2
-%{_prefix}/games/%{name}/glhexen2
 %{_prefix}/games/%{name}/h2ded
+%if %{!?_without_asm:1}0
+%{_prefix}/games/%{name}/hexen2
+%endif
+%{_prefix}/games/%{name}/glhexen2
 %{_prefix}/games/%{name}/xdelta113
 %{_prefix}/games/%{name}/update_xdelta.sh
 %{_prefix}/games/%{name}/patchdata/data1/data1pak0.xd
@@ -223,6 +241,13 @@ desktop-file-install \
 %{_prefix}/games/%{name}/data1/hexen.rc
 %{_prefix}/games/%{name}/data1/strings.txt
 %{_prefix}/games/%{name}/data1/default.cfg
+%{_prefix}/games/%{name}/portals/progs.dat
+%{_prefix}/games/%{name}/portals/hexen.rc
+%{_prefix}/games/%{name}/portals/strings.txt
+%{_prefix}/games/%{name}/portals/puzzles.txt
+%{_prefix}/games/%{name}/portals/infolist.txt
+%{_prefix}/games/%{name}/portals/maplist.txt
+%{_prefix}/games/%{name}/portals/default.cfg
 %{_bindir}/hexen2
 %{_datadir}/pixmaps/%{name}.png
 %{_prefix}/games/%{name}/h2launcher
@@ -235,28 +260,21 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.launcher
 %{_prefix}/games/%{name}/docs/README.3dfx
 %{_prefix}/games/%{name}/docs/TODO
+%{_prefix}/games/%{name}/docs/ReleaseNotes-%{version}
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.3
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.4a
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.3.0
-%{_prefix}/games/%{name}/docs/ReleaseNotes-%{version}
+%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.0
 %{!?_without_freedesktop:%{_datadir}/applications/%{desktop_vendor}-%{name}.desktop}
 %{?_without_freedesktop:%{_sysconfdir}/X11/applnk/Games/%{name}.desktop}
-
-%files -n hexen2-missionpack
-%defattr(-,root,root)
-%{_prefix}/games/%{name}/portals/progs.dat
-%{_prefix}/games/%{name}/portals/hexen.rc
-%{_prefix}/games/%{name}/portals/strings.txt
-%{_prefix}/games/%{name}/portals/puzzles.txt
-%{_prefix}/games/%{name}/portals/infolist.txt
-%{_prefix}/games/%{name}/portals/maplist.txt
-%{_prefix}/games/%{name}/portals/default.cfg
 
 %files -n hexenworld
 %defattr(-,root,root)
 %{_prefix}/games/%{name}/hwsv
 %{_prefix}/games/%{name}/hwmaster
+%if %{!?_without_asm:1}0
 %{_prefix}/games/%{name}/hwcl
+%endif
 %{_prefix}/games/%{name}/glhwcl
 %{_prefix}/games/%{name}/hw/hwprogs.dat
 %{_prefix}/games/%{name}/hw/pak4.pak
@@ -267,6 +285,16 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Wed Oct 18 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.1-1
+- Merged the hexen2 and mission pack packages.
+- Added build option --without midi.
+- Added build option --without alsa.
+- Added build option --without asm.
+- Disabled x86 assembly on non-intel cpus.
+- Do not build or package the software renderer versions when not
+  using x86 assembly until we fix them properly.
+- Version 1.4.1-final.
+
 * Wed Aug 14 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.1-0
 - Added the dedicated server to the packaged binaries.
   1.4.1-pre8. Preparing for a future 1.4.1 release.
