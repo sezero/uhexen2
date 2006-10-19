@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.66 2006-10-10 06:45:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.67 2006-10-19 06:32:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -203,6 +203,21 @@ void Sys_Printf (char *fmt, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
+
+	va_start (argptr,fmt);
+	vsnprintf (text, sizeof (text), fmt, argptr);
+	va_end (argptr);
+
+	fprintf(stderr, "%s", text);
+}
+
+void Sys_DPrintf (char *fmt, ...)
+{
+	va_list		argptr;
+	char		text[MAXPRINTMSG];
+
+	if (!developer.value)
+		return;
 
 	va_start (argptr,fmt);
 	vsnprintf (text, sizeof (text), fmt, argptr);
@@ -547,6 +562,10 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.66  2006/10/10 06:45:54  sezero
+ * removed the error timeout stuff from sys_unix.c. it was a left-over from
+ * the sys_win.c.
+ *
  * Revision 1.65  2006/10/05 19:46:07  sezero
  * updated the sound driver availability macros. updated the
  * makefiles with more options.

@@ -286,6 +286,22 @@ void Sys_Printf (char *fmt, ...)
 	}
 }
 
+void Sys_DPrintf (char *fmt, ...)
+{
+	va_list		argptr;
+	char		text[MAXPRINTMSG];
+	DWORD		dummy;
+
+	if (!isDedicated || !developer.value)
+		return;
+
+	va_start (argptr,fmt);
+	vsnprintf (text, sizeof (text), fmt, argptr);
+	va_end (argptr);
+
+	WriteFile(houtput, text, strlen (text), &dummy, NULL);
+}
+
 void Sys_Quit (void)
 {
 	Host_Shutdown();
@@ -758,6 +774,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.38  2006/10/10 07:22:57  sezero
+ * oops...
+ *
  * Revision 1.37  2006/10/10 06:43:22  sezero
  * ensure the newline if trunctaion occurs in win32 version of Sys_Error
  *

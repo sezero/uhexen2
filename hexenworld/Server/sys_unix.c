@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.22 2006-09-15 09:20:12 sezero Exp $
+	$Id: sys_unix.c,v 1.23 2006-10-19 06:32:30 sezero Exp $
 
 	Unix system interface code
 */
@@ -256,6 +256,21 @@ void Sys_Printf (char *fmt, ...)
 	char		text[MAXPRINTMSG];
 
 	if (sys_nostdout.value)
+		return;
+
+	va_start (argptr,fmt);
+	vsnprintf (text, sizeof (text), fmt, argptr);
+	va_end (argptr);
+
+	fprintf(stderr, "%s", text);
+}
+
+void Sys_DPrintf (char *fmt, ...)
+{
+	va_list		argptr;
+	char		text[MAXPRINTMSG];
+
+	if (!developer.value || sys_nostdout.value)
 		return;
 
 	va_start (argptr,fmt);

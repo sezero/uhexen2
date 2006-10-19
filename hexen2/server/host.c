@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.4 2006-09-15 09:22:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.5 2006-10-19 06:32:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -222,28 +222,6 @@ static void Host_InitLocal (void)
 	Host_FindMaxClients ();
 }
 
-
-/*
-================
-Con_DPrintf
-
-A Con_Printf that only shows up if the "developer" cvar is set
-================
-*/
-void Con_DPrintf (char *fmt, ...)
-{
-	va_list		argptr;
-	char		msg[MAXPRINTMSG];
-
-	if (!developer.value)
-		return;			// don't confuse non-developers with techie stuff...
-
-	va_start (argptr,fmt);
-	vsnprintf(msg, sizeof (msg), fmt, argptr);
-	va_end (argptr);
-
-	Sys_Printf ("%s", msg);
-}
 
 /*
 =================
@@ -667,6 +645,10 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2006/09/15 09:22:39  sezero
+ * made Host_CopyFiles to properly check its string sizes, and made it to
+ * return at the first time it hits an error.
+ *
  * Revision 1.3  2006/09/13 05:53:24  sezero
  * re-visited the includes, gathered all net includes into
  * the new net_sys.h, did a platform defines clean-up.

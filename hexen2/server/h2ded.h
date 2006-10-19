@@ -1,16 +1,11 @@
 /*
 	h2ded.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/h2ded.h,v 1.2 2006-09-24 17:28:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/h2ded.h,v 1.3 2006-10-19 06:32:29 sezero Exp $
 */
 
 #ifndef __HX2_DED_H
 #define __HX2_DED_H
 
-#if defined(GLQUAKE)
-#error SERVERONLY and GLQUAKE must not be defined at the same time
-#endif
-
-//=============================================================================
 
 typedef struct
 {
@@ -27,7 +22,7 @@ typedef struct
 
 #define	Con_Printf	Sys_Printf
 #define	Con_SafePrintf	Sys_Printf
-extern void Con_DPrintf (char *fmt, ...);
+#define	Con_DPrintf	Sys_DPrintf
 
 #endif	/* __HX2_DED_H */
 

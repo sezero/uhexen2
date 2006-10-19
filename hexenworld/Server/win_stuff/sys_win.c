@@ -185,6 +185,18 @@ void Sys_Printf (char *fmt, ...)
 	va_end (argptr);
 }
 
+void Sys_DPrintf (char *fmt, ...)
+{
+	va_list		argptr;
+
+	if (!developer.value || sys_nostdout.value)
+		return;
+
+	va_start (argptr,fmt);
+	vprintf (fmt,argptr);
+	va_end (argptr);
+}
+
 /*
 ================
 Sys_Quit
