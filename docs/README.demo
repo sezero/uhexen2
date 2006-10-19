@@ -41,17 +41,13 @@ Hexen II: Hammer of Thyrion 1.4.1 (demo version)
 1.1 Getting Started
 -------------------
 
-All necessary binaries and the data files for Hexen II Demo can be
-installed by the installer, no extra effort is necessary. Here are
-the names of the binaries to be installed:
+All the binaries and the data files necessary for Hexen II Demo are
+included in the binary package that you downloaded. No extra effort
+is necessary. Here are the names of the binaries:
 
 	hexen2	-  Hexen II (software rendering)
 	glhexen2 - Hexen II (opengl rendering)
 	h2ded	-  Hexen II Dedicated server
-
-If you don't want to use the installer, grab the demo tarball from
-the HoT website, extract it in any place and you'll be ready to run
-the game.
 
 
 1.2 Software Requirements

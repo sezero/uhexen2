@@ -43,13 +43,21 @@ Hexen II: Hammer of Thyrion 1.4.1
 1.1 Getting Started
 -------------------
 
-Hexen II requires game-data files updated to version 1.11 or
-higher. There are two ways to do this:
+Hexen II source, and the Hammer of Thyrion source port, are free
+but the game itself is not: You must have an original copy of the
+game released by Raven Software and Activision. If you don't, then
+download the demo version. The rest of this document assumes that
+you own the retail version of the game.
 
-a. Using the installer (easy way):
-   The installer will get the files from your original cdroms,
-   apply the latest patches (gamedata 1.14) and install the
-   binaries for you.
+Hexen II requires its game data to be updated to version 1.11 .
+There are two ways to do this:
+
+a. Using the installer:
+   The installer will get the files from your original cdroms
+   (the windows discs released by Raven and Activision back in
+   1997), apply the latest patches, and install the binaries
+   for you. The first option on the installer is mandatory and
+   installs the original hexen2 game.
 
    The second option on the installer will allow you to install
    the Mission Pack "Portal of Praevus", should you have it.
@@ -74,7 +82,7 @@ b. Manual install/update of data files:
    and extract it. Copy the two files pak0.pak and pak1.pak from
    your cdrom into the "data1" directory in your own installation.
    Run the command " chmod 644 data1/pak* "  to fix their permis-
-   sions.  The pak files should be lower-cased, if not already.
+   sions. The pak filenames should be lower-cased, if not already.
    To patch the data files, type ./update_xdelta.sh (this update
    script and its requirements are included in the binary package).
    Confirm the result by checking with the following md5sums:
@@ -94,9 +102,7 @@ b. Manual install/update of data files:
    If you want to install HexenWorld, download the HexenWorld
    binary package (e.g., hexenworld-1.4.1.i586.tgz) and extract
    it in the same directory you extracted the base HoT tarball.
-
-   The base tarball includes a file named MD5SUMS.data, so that
-   you can check with your final installation.
+   No additional patching is necessary for hexenworld.
 
 
 1.2 Software Requirements
