@@ -3,6 +3,22 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-10-19 (CVS):
+    * documentation updates.
+    * added Sys_DPrintf: at present, its only user is the hexen2 dedicated
+      server. further use of it may come with future versions.
+
+2006-10-18 (CVS):
+    * updated compile instructions for windows.
+    * updated the rpm spec file for 1.4.1-final:
+    - Merged the hexen2 and mission pack packages.
+    - Added build option --without midi.
+    - Added build option --without asm.
+    - Disabled x86 assembly on non-intel cpus.
+    - Do not build or package the software renderer versions when not
+      using x86 assembly until we fix them properly.
+    - Added build option --without alsa.
+
 2006-10-16 (CVS, 1.4.1-rc4):
     * several fixes and tweaks to the standalone hexenworld utilities hwrcon,
       hwterm and hwmquery.
