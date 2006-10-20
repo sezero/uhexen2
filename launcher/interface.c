@@ -376,7 +376,7 @@ GtkWidget* create_window1 (void)
   gtk_combo_set_use_arrows (GTK_COMBO (WGT_SOUND), FALSE);
   gtk_widget_set_size_request (WGT_SOUND, 108, 24);
   TmpList = NULL;
-  for (i=0; i<MAX_SOUND; i++)
+  for (i = 0; i < MAX_SOUND; i++)
 	TmpList = g_list_append (TmpList, snddrv_names[i][1]);
   gtk_combo_set_popdown_strings (GTK_COMBO (WGT_SOUND), TmpList);
   g_list_free (TmpList);
@@ -434,7 +434,7 @@ GtkWidget* create_window1 (void)
   gtk_combo_set_use_arrows (GTK_COMBO (WGT_SRATE), FALSE);
   gtk_widget_set_size_request (WGT_SRATE, 86, 24);
   TmpList = NULL;
-  for (i=0; i<MAX_RATES; i++)
+  for (i = 0; i < MAX_RATES; i++)
 	TmpList = g_list_append (TmpList, snd_rates[i]);
   gtk_combo_set_popdown_strings (GTK_COMBO (WGT_SRATE), TmpList);
   g_list_free (TmpList);
@@ -747,7 +747,7 @@ GtkWidget* create_window1 (void)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_LANBUTTON), !lan);
   GTK_WIDGET_UNSET_FLAGS (WGT_LANBUTTON, GTK_CAN_FOCUS);
   gtk_tooltips_set_tip (tooltips, WGT_LANBUTTON, _("Mark to Disable Net"), NULL);
-  if (destiny==DEST_HW || is_botmatch)
+  if (destiny == DEST_HW || is_botmatch)
 	gtk_widget_set_sensitive (WGT_LANBUTTON, FALSE);
 
 /*********************************************************************/

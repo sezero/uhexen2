@@ -361,13 +361,13 @@ void HWGameChange (GtkEditable *editable, gpointer user_data)
 
 void ReverseOpt (GtkObject *Unused, int *opt)
 {
-	(*(opt)) = !(*(opt));
+	*opt = !(*opt);
 }
 
 void adj_Change (GtkAdjustment *adj, int *opt)
 {
-	(*(opt)) = (int)(adj->value);
-//	printf ("Value is: %d\n", *(opt));
+	*opt = (int)(adj->value);
+//	printf ("Value is: %d\n", *opt);
 }
 
 void on_MORE (GtkButton *button, HoTWindow_t *window)
