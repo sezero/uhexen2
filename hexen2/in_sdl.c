@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.36 2006-09-20 06:56:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.37 2006-10-20 20:32:30 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -287,7 +287,7 @@ static void IN_MouseEvent (int mstate)
 	if (mouseactive)
 	{
 	// perform button actions
-		for (i=0 ; i<=mouse_buttons ; i++)
+		for (i = 0; i <= mouse_buttons; i++)
 		{
 			if ( (mstate & SDL_BUTTON(i+1)) &&
 				!(mouse_oldbuttonstate & SDL_BUTTON(i+1)) )
@@ -448,7 +448,7 @@ static void IN_StartupJoystick (void)
 	}
 
 	// cycle through the joystick ids for the first valid one
-	for (joy_id=0 ; joy_id<numdevs ; joy_id++)
+	for (joy_id = 0; joy_id < numdevs; joy_id++)
 	{
 		memset (&ji, 0, sizeof(ji));
 		ji.dwSize = sizeof(ji);
@@ -539,7 +539,7 @@ static void Joy_AdvancedUpdate_f (void)
 		pdwRawValue[i] = RawValuePointer(i);
 	}
 
-	if( joy_advanced.value == 0.0)
+	if (joy_advanced.value == 0.0)
 	{
 		// default joystick initialization
 		// 2 axes only with joystick control
@@ -657,7 +657,7 @@ void IN_Commands (void)
 	// loop through the joystick buttons
 	// key a joystick event or auxillary event for higher number buttons for each state change
 	buttonstate = ji.dwButtons;
-	for (i=0 ; i < joy_numbuttons ; i++)
+	for (i = 0; i < joy_numbuttons; i++)
 	{
 		if ( (buttonstate & (1<<i)) && !(joy_oldbuttonstate & (1<<i)) )
 		{
@@ -691,7 +691,7 @@ void IN_Commands (void)
 				povstate |= 0x08;
 		}
 		// determine which bits have changed and key an auxillary event for each change
-		for (i=0 ; i < 4 ; i++)
+		for (i = 0; i < 4; i++)
 		{
 			if ( (povstate & (1<<i)) && !(joy_oldpovstate & (1<<i)) )
 			{
@@ -883,316 +883,320 @@ void IN_SendKeyEvents (void)
 	{
 		switch (event.type)
 		{
-			case SDL_KEYDOWN:
-				if ((event.key.keysym.sym == SDLK_RETURN) &&
-				    (event.key.keysym.mod & KMOD_ALT))
-				{
-				//	SDL_WM_ToggleFullScreen (SDL_GetVideoSurface());
-					VID_ToggleFullscreen();
-					break;
-				}
-				else if ((event.key.keysym.sym == SDLK_g) &&
-					 (event.key.keysym.mod & KMOD_CTRL))
-				{
-					SDL_WM_GrabInput( (SDL_WM_GrabInput (SDL_GRAB_QUERY) == SDL_GRAB_ON) ? SDL_GRAB_OFF : SDL_GRAB_ON );
-					break;
-				}
+		case SDL_KEYDOWN:
+			if ((event.key.keysym.sym == SDLK_RETURN) &&
+			    (event.key.keysym.mod & KMOD_ALT))
+			{
+			//	SDL_WM_ToggleFullScreen (SDL_GetVideoSurface());
+				VID_ToggleFullscreen();
+				break;
+			}
+			else if ((event.key.keysym.sym == SDLK_g) &&
+				 (event.key.keysym.mod & KMOD_CTRL))
+			{
+				SDL_WM_GrabInput( (SDL_WM_GrabInput (SDL_GRAB_QUERY) == SDL_GRAB_ON) ? SDL_GRAB_OFF : SDL_GRAB_ON );
+				break;
+			}
 
-			case SDL_KEYUP:
-				sym = event.key.keysym.sym;
-				state = event.key.state;
-				modstate = SDL_GetModState();
+		case SDL_KEYUP:
+			sym = event.key.keysym.sym;
+			state = event.key.state;
+			modstate = SDL_GetModState();
 
-				switch (key_dest)
+			switch (key_dest)
+			{
+			case key_game:
+				if ((event.key.keysym.unicode != 0) || (modstate & KMOD_SHIFT))
+				{	/* only use unicode for ~ and ` in game mode */
+					if ((event.key.keysym.unicode & 0xFF80) == 0)
+					{
+						if (((event.key.keysym.unicode & 0x7F) == '`') ||
+						    ((event.key.keysym.unicode & 0x7F) == '~') )
+							sym=event.key.keysym.unicode & 0x7F;
+					}
+				}
+				break;
+			case key_message:
+			case key_console:
+				if ((event.key.keysym.unicode != 0) || (modstate & KMOD_SHIFT))
 				{
-					case key_game:
-						if ((event.key.keysym.unicode != 0) || (modstate & KMOD_SHIFT))
-						{	/* only use unicode for ~ and ` in game mode */
-							if ((event.key.keysym.unicode & 0xFF80) == 0)
-							{
-								if (((event.key.keysym.unicode & 0x7F) == '`') ||
-								    ((event.key.keysym.unicode & 0x7F) == '~') )
-									sym=event.key.keysym.unicode & 0x7F;
-							}
-						}
-						break;
-					case key_message:
-					case key_console:
-						if ((event.key.keysym.unicode != 0) || (modstate & KMOD_SHIFT))
-						{
 #if defined(__QNX__)
-							if ((sym == SDLK_BACKSPACE) || (sym == SDLK_RETURN))
-								break;	// S.A: fixes QNX weirdness
+					if ((sym == SDLK_BACKSPACE) || (sym == SDLK_RETURN))
+						break;	// S.A: fixes QNX weirdness
 #endif
-							if ((event.key.keysym.unicode & 0xFF80) == 0)
-								sym=event.key.keysym.unicode & 0x7F;
-							/* else: it's an international character */
-						}
-						//printf("You pressed %s (%d) (%c)\n",SDL_GetKeyName(sym),sym,sym);
-						break;
-					default:
-						break;
+					if ((event.key.keysym.unicode & 0xFF80) == 0)
+						sym=event.key.keysym.unicode & 0x7F;
+					/* else: it's an international character */
 				}
-
-				switch (sym)
-				{
-					case SDLK_DELETE:
-						sym = K_DEL;
-						break;
-					case SDLK_BACKSPACE:
-						sym = K_BACKSPACE;
-						break;
-					case SDLK_F1:
-						sym = K_F1;
-						break;
-					case SDLK_F2:
-						sym = K_F2;
-						break;
-					case SDLK_F3:
-						sym = K_F3;
-						break;
-					case SDLK_F4:
-						sym = K_F4;
-						break;
-					case SDLK_F5:
-						sym = K_F5;
-						break;
-					case SDLK_F6:
-						sym = K_F6;
-						break;
-					case SDLK_F7:
-						sym = K_F7;
-						break;
-					case SDLK_F8:
-						sym = K_F8;
-						break;
-					case SDLK_F9:
-						sym = K_F9;
-						break;
-					case SDLK_F10:
-						sym = K_F10;
-						break;
-					case SDLK_F11:
-						sym = K_F11;
-						break;
-					case SDLK_F12:
-						sym = K_F12;
-						break;
-					case SDLK_BREAK:
-					case SDLK_PAUSE:
-						sym = K_PAUSE;
-						break;
-					case SDLK_UP:
-						sym = K_UPARROW;
-						break;
-					case SDLK_DOWN:
-						sym = K_DOWNARROW;
-						break;
-					case SDLK_RIGHT:
-						sym = K_RIGHTARROW;
-						break;
-					case SDLK_LEFT:
-						sym = K_LEFTARROW;
-						break;
-					case SDLK_INSERT:
-						sym = K_INS;
-						break;
-					case SDLK_HOME:
-						sym = K_HOME;
-						break;
-					case SDLK_END:
-						sym = K_END;
-						break;
-					case SDLK_PAGEUP:
-						sym = K_PGUP;
-						break;
-					case SDLK_PAGEDOWN:
-						sym = K_PGDN;
-						break;
-					case SDLK_RSHIFT:
-					case SDLK_LSHIFT:
-						sym = K_SHIFT;
-						break;
-					case SDLK_RCTRL:
-					case SDLK_LCTRL:
-						sym = K_CTRL;
-						break;
-					case SDLK_RALT:
-					case SDLK_LALT:
-						sym = K_ALT;
-						break;
-					case SDLK_KP0:
-						if (modstate & KMOD_NUM)
-							sym = K_INS;
-						else
-							sym = SDLK_0;
-						break;
-					case SDLK_KP1:
-						if (modstate & KMOD_NUM)
-							sym = K_END;
-						else
-							sym = SDLK_1;
-						break;
-					case SDLK_KP2:
-						if (modstate & KMOD_NUM)
-							sym = K_DOWNARROW;
-						else
-							sym = SDLK_2;
-						break;
-					case SDLK_KP3:
-						if (modstate & KMOD_NUM)
-							sym = K_PGDN;
-						else
-							sym = SDLK_3;
-						break;
-					case SDLK_KP4:
-						if (modstate & KMOD_NUM)
-							sym = K_LEFTARROW;
-						else
-							sym = SDLK_4;
-						break;
-					case SDLK_KP5:
-						sym = SDLK_5;
-						break;
-					case SDLK_KP6:
-						if (modstate & KMOD_NUM)
-							sym = K_RIGHTARROW;
-						else
-							sym = SDLK_6;
-						break;
-					case SDLK_KP7:
-						if (modstate & KMOD_NUM)
-							sym = K_HOME;
-						else
-							sym = SDLK_7;
-						break;
-					case SDLK_KP8:
-						if (modstate & KMOD_NUM)
-							sym = K_UPARROW;
-						else
-							sym = SDLK_8;
-						break;
-					case SDLK_KP9:
-						if (modstate & KMOD_NUM)
-							sym = K_PGUP;
-						else
-							sym = SDLK_9;
-						break;
-					case SDLK_KP_PERIOD:
-						if (modstate & KMOD_NUM)
-							sym = K_DEL;
-						else
-							sym = SDLK_PERIOD;
-						break;
-					case SDLK_KP_DIVIDE:
-						sym = SDLK_SLASH;
-						break;
-					case SDLK_KP_MULTIPLY:
-						sym = SDLK_ASTERISK;
-						break;
-					case SDLK_KP_MINUS:
-						sym = SDLK_MINUS;
-						break;
-					case SDLK_KP_PLUS:
-						sym = SDLK_PLUS;
-						break;
-					case SDLK_KP_ENTER:
-						sym = SDLK_RETURN;
-						break;
-					case SDLK_KP_EQUALS:
-						sym = SDLK_EQUALS;
-						break;
-					case 178: /* the '²' key */
-						//sym = 178;
-						sym = '~';
-				}
-				// If we're not directly handled and still above
-				// 255 just force it to 0
-				if (sym > 255)
-					sym = 0;
-				Key_Event (sym, state);
-				break;
-
-			case SDL_MOUSEBUTTONDOWN:
-				if (!mouseactive || in_mode_set)
-					break;
-				switch(event.button.button)
-				{
-				case 1:
-					Key_Event(K_MOUSE1, true);
-					break;
-				case 2:
-					Key_Event(K_MOUSE2, true);
-					break;
-				case 3:
-					Key_Event(K_MOUSE3, true);
-					break;
-				case 4:
-					Key_Event(K_MWHEELUP, true);
-					break;
-				case 5:
-					Key_Event(K_MWHEELDOWN, true);
-					break;
-				case 6:
-					Key_Event(K_MOUSE4, true);
-					break;
-				case 7:
-					Key_Event(K_MOUSE5, true);
-					break;
-				default:
-					Con_Printf("Mouse event for button %d received, 1-7 expected\n", event.button.button);
-					break;
-				}
-				break;
-			case SDL_MOUSEBUTTONUP:
-				if (!mouseactive || in_mode_set)
-					break;
-				switch(event.button.button)
-				{
-				case 1:
-					Key_Event(K_MOUSE1, false);
-					break;
-				case 2:
-					Key_Event(K_MOUSE2, false);
-					break;
-				case 3:
-					Key_Event(K_MOUSE3, false);
-					break;
-				case 4:
-					Key_Event(K_MWHEELUP, false);
-					break;
-				case 5:
-					Key_Event(K_MWHEELDOWN, false);
-					break;
-				case 6:
-					Key_Event(K_MOUSE4, false);
-					break;
-				case 7:
-					Key_Event(K_MOUSE5, false);
-					break;
-				default:
-					Con_Printf("Mouse event for button %d received, 1-7 expected\n", event.button.button);
-					break;
-				}
-				break;
-			case SDL_MOUSEMOTION:
-				if (!mouseactive || in_mode_set)
-					break;
-				IN_MouseEvent (SDL_GetMouseState(NULL,NULL));
-				break;
-
-			case SDL_QUIT:
-				CL_Disconnect ();
-				Sys_Quit ();
+				//printf("You pressed %s (%d) (%c)\n",SDL_GetKeyName(sym),sym,sym);
 				break;
 			default:
 				break;
+			}
+
+			switch (sym)
+			{
+			case SDLK_DELETE:
+				sym = K_DEL;
+				break;
+			case SDLK_BACKSPACE:
+				sym = K_BACKSPACE;
+				break;
+			case SDLK_F1:
+				sym = K_F1;
+				break;
+			case SDLK_F2:
+				sym = K_F2;
+				break;
+			case SDLK_F3:
+				sym = K_F3;
+				break;
+			case SDLK_F4:
+				sym = K_F4;
+				break;
+			case SDLK_F5:
+				sym = K_F5;
+				break;
+			case SDLK_F6:
+				sym = K_F6;
+				break;
+			case SDLK_F7:
+				sym = K_F7;
+				break;
+			case SDLK_F8:
+				sym = K_F8;
+				break;
+			case SDLK_F9:
+				sym = K_F9;
+				break;
+			case SDLK_F10:
+				sym = K_F10;
+				break;
+			case SDLK_F11:
+				sym = K_F11;
+				break;
+			case SDLK_F12:
+				sym = K_F12;
+				break;
+			case SDLK_BREAK:
+			case SDLK_PAUSE:
+				sym = K_PAUSE;
+				break;
+			case SDLK_UP:
+				sym = K_UPARROW;
+				break;
+			case SDLK_DOWN:
+				sym = K_DOWNARROW;
+				break;
+			case SDLK_RIGHT:
+				sym = K_RIGHTARROW;
+				break;
+			case SDLK_LEFT:
+				sym = K_LEFTARROW;
+				break;
+			case SDLK_INSERT:
+				sym = K_INS;
+				break;
+			case SDLK_HOME:
+				sym = K_HOME;
+				break;
+			case SDLK_END:
+				sym = K_END;
+				break;
+			case SDLK_PAGEUP:
+				sym = K_PGUP;
+				break;
+			case SDLK_PAGEDOWN:
+				sym = K_PGDN;
+				break;
+			case SDLK_RSHIFT:
+			case SDLK_LSHIFT:
+				sym = K_SHIFT;
+				break;
+			case SDLK_RCTRL:
+			case SDLK_LCTRL:
+				sym = K_CTRL;
+				break;
+			case SDLK_RALT:
+			case SDLK_LALT:
+				sym = K_ALT;
+				break;
+			case SDLK_KP0:
+				if (modstate & KMOD_NUM)
+					sym = K_INS;
+				else
+					sym = SDLK_0;
+				break;
+			case SDLK_KP1:
+				if (modstate & KMOD_NUM)
+					sym = K_END;
+				else
+					sym = SDLK_1;
+				break;
+			case SDLK_KP2:
+				if (modstate & KMOD_NUM)
+					sym = K_DOWNARROW;
+				else
+					sym = SDLK_2;
+				break;
+			case SDLK_KP3:
+				if (modstate & KMOD_NUM)
+					sym = K_PGDN;
+				else
+					sym = SDLK_3;
+				break;
+			case SDLK_KP4:
+				if (modstate & KMOD_NUM)
+					sym = K_LEFTARROW;
+				else
+					sym = SDLK_4;
+				break;
+			case SDLK_KP5:
+				sym = SDLK_5;
+				break;
+			case SDLK_KP6:
+				if (modstate & KMOD_NUM)
+					sym = K_RIGHTARROW;
+				else
+					sym = SDLK_6;
+				break;
+			case SDLK_KP7:
+				if (modstate & KMOD_NUM)
+					sym = K_HOME;
+				else
+					sym = SDLK_7;
+				break;
+			case SDLK_KP8:
+				if (modstate & KMOD_NUM)
+					sym = K_UPARROW;
+				else
+					sym = SDLK_8;
+				break;
+			case SDLK_KP9:
+				if (modstate & KMOD_NUM)
+					sym = K_PGUP;
+				else
+					sym = SDLK_9;
+				break;
+			case SDLK_KP_PERIOD:
+				if (modstate & KMOD_NUM)
+					sym = K_DEL;
+				else
+					sym = SDLK_PERIOD;
+				break;
+			case SDLK_KP_DIVIDE:
+				sym = SDLK_SLASH;
+				break;
+			case SDLK_KP_MULTIPLY:
+				sym = SDLK_ASTERISK;
+				break;
+			case SDLK_KP_MINUS:
+				sym = SDLK_MINUS;
+				break;
+			case SDLK_KP_PLUS:
+				sym = SDLK_PLUS;
+				break;
+			case SDLK_KP_ENTER:
+				sym = SDLK_RETURN;
+				break;
+			case SDLK_KP_EQUALS:
+				sym = SDLK_EQUALS;
+				break;
+			case 178: /* the '²' key */
+				//sym = 178;
+				sym = '~';
+			}
+			// If we're not directly handled and still above
+			// 255 just force it to 0
+			if (sym > 255)
+				sym = 0;
+			Key_Event (sym, state);
+			break;
+
+		case SDL_MOUSEBUTTONDOWN:
+			if (!mouseactive || in_mode_set)
+				break;
+			switch (event.button.button)
+			{
+			case 1:
+				Key_Event(K_MOUSE1, true);
+				break;
+			case 2:
+				Key_Event(K_MOUSE2, true);
+				break;
+			case 3:
+				Key_Event(K_MOUSE3, true);
+				break;
+			case 4:
+				Key_Event(K_MWHEELUP, true);
+				break;
+			case 5:
+				Key_Event(K_MWHEELDOWN, true);
+				break;
+			case 6:
+				Key_Event(K_MOUSE4, true);
+				break;
+			case 7:
+				Key_Event(K_MOUSE5, true);
+				break;
+			default:
+				Con_Printf("Mouse event for button %d received, 1-7 expected\n", event.button.button);
+				break;
+			}
+			break;
+		case SDL_MOUSEBUTTONUP:
+			if (!mouseactive || in_mode_set)
+				break;
+			switch (event.button.button)
+			{
+			case 1:
+				Key_Event(K_MOUSE1, false);
+				break;
+			case 2:
+				Key_Event(K_MOUSE2, false);
+				break;
+			case 3:
+				Key_Event(K_MOUSE3, false);
+				break;
+			case 4:
+				Key_Event(K_MWHEELUP, false);
+				break;
+			case 5:
+				Key_Event(K_MWHEELDOWN, false);
+				break;
+			case 6:
+				Key_Event(K_MOUSE4, false);
+				break;
+			case 7:
+				Key_Event(K_MOUSE5, false);
+				break;
+			default:
+				Con_Printf("Mouse event for button %d received, 1-7 expected\n", event.button.button);
+				break;
+			}
+			break;
+		case SDL_MOUSEMOTION:
+			if (!mouseactive || in_mode_set)
+				break;
+			IN_MouseEvent (SDL_GetMouseState(NULL,NULL));
+			break;
+
+		case SDL_QUIT:
+			CL_Disconnect ();
+			Sys_Quit ();
+			break;
+		default:
+			break;
 		}
 	}
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.36  2006/09/20 06:56:48  sezero
+ * removed my old code that disabled the SDL_QUIT event during
+ * resolution changes.
+ *
  * Revision 1.35  2006/06/17 06:06:19  sezero
  * ifdef'ed the qnx quirk in in_sdl.c, just in case..
  *

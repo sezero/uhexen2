@@ -84,18 +84,18 @@ float	anglemod(float a);
 
 #define BOX_ON_PLANE_SIDE(emins, emaxs, p)	\
 	(((p)->type < 3)?						\
-	(										\
+	(								\
 		((p)->dist <= (emins)[(p)->type])?	\
-			1								\
-		:									\
-		(									\
+			1						\
+		:							\
+		(							\
 			((p)->dist >= (emaxs)[(p)->type])?\
-				2							\
-			:								\
-				3							\
-		)									\
-	)										\
-	:										\
+				2					\
+			:						\
+				3					\
+		)							\
+	)								\
+	:								\
 		BoxOnPlaneSide( (emins), (emaxs), (p)))
 
 static inline float VectorNormalize (vec3_t v)

@@ -19,27 +19,27 @@ void R_AnimateLight (void)
 	defaultLocus = locusHz[0] = (int)(cl.time*10);
 	locusHz[1] = (int)(cl.time*20);
 	locusHz[2] = (int)(cl.time*30);
-	for(i = 0; i < MAX_LIGHTSTYLES; i++)
+	for (i = 0; i < MAX_LIGHTSTYLES; i++)
 	{
-		if(!cl_lightstyle[i].length)
+		if (!cl_lightstyle[i].length)
 		{ // No style def
 			d_lightstylevalue[i] = 256;
 			continue;
 		}
 		c = cl_lightstyle[i].map[0];
-		if(c == '1' || c == '2' || c == '3')
+		if (c == '1' || c == '2' || c == '3')
 		{ // Explicit anim rate
-			if(cl_lightstyle[i].length == 1)
+			if (cl_lightstyle[i].length == 1)
 			{ // Bad style def
 				d_lightstylevalue[i] = 256;
 				continue;
 			}
-			v = locusHz[c-'1']%(cl_lightstyle[i].length-1);
+			v = locusHz[c-'1'] % (cl_lightstyle[i].length-1);
 			d_lightstylevalue[i] = (cl_lightstyle[i].map[v+1]-'a')*22;
 			continue;
 		}
 		// Default anim rate (10 Hz)
-		v = defaultLocus%cl_lightstyle[i].length;
+		v = defaultLocus % cl_lightstyle[i].length;
 		d_lightstylevalue[i] = (cl_lightstyle[i].map[v]-'a')*22;
 	}
 }
@@ -88,15 +88,19 @@ static void R_RenderDlight (dlight_t *light)
 	else
 		glColor3f_fp (0.2,0.1,0.0);
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		v[i] = light->origin[i] - vpn[i]*rad;
+
 	glVertex3fv_fp (v);
 	glColor3f_fp (0,0,0);
-	for (i=16 ; i>=0 ; i--)
+
+	for (i = 16; i >= 0; i--)
 	{
 		a = i/16.0 * M_PI*2;
-		for (j=0 ; j<3 ; j++)
-			v[j] = light->origin[j] + vright[j]*cos(a)*rad + vup[j]*sin(a)*rad;
+
+		for (j = 0; j < 3; j++)
+			v[j] = light->origin[j] + vright[j] * cos(a)*rad + vup[j] * sin(a)*rad;
+
 		glVertex3fv_fp (v);
 	}
 	glEnd_fp ();
@@ -124,7 +128,7 @@ void R_RenderDlights (void)
 	glBlendFunc_fp (GL_ONE, GL_ONE);
 
 	l = cl_dlights;
-	for (i=0 ; i<MAX_DLIGHTS ; i++, l++)
+	for (i = 0; i < MAX_DLIGHTS; i++, l++)
 	{
 		if (l->die < cl.time || !l->radius)
 			continue;
@@ -179,7 +183,7 @@ void R_MarkLights (dlight_t *light, int bit, mnode_t *node)
 
 // mark the polygons
 	surf = cl.worldmodel->surfaces + node->firstsurface;
-	for (i=0 ; i<node->numsurfaces ; i++, surf++)
+	for (i = 0; i < node->numsurfaces; i++, surf++)
 	{
 		if (surf->dlightframe != r_dlightframecount)
 		{
@@ -222,26 +226,34 @@ loc0:
 		goto loc0;
 	}
 
-	maxdist = light->radius*light->radius;
+	maxdist = light->radius * light->radius;
 
 // mark the polygons
 	surf = cl.worldmodel->surfaces + node->firstsurface;
-	for (i=0 ; i<node->numsurfaces ; i++, surf++)
+	for (i = 0; i < node->numsurfaces; i++, surf++)
 	{	// eliminates marking of surfaces too far away from light,
 		// thus preventing unnecessary renders and uploads
-		for (j=0 ; j<3 ; j++)
+		for (j = 0; j < 3; j++)
 			impact[j] = light->origin[j] - surf->plane->normal[j]*dist;
 
 		// clamp center of light to corner and check brightness
 		l = DotProduct (impact, surf->texinfo->vecs[0]) + surf->texinfo->vecs[0][3] - surf->texturemins[0];
-		s = l+0.5;if (s < 0) s = 0;else if (s > surf->extents[0]) s = surf->extents[0];
+		s = l + 0.5;
+		if (s < 0)
+			s = 0;
+		else if (s > surf->extents[0])
+			s = surf->extents[0];
 		s = l - s;
 		l = DotProduct (impact, surf->texinfo->vecs[1]) + surf->texinfo->vecs[1][3] - surf->texturemins[1];
-		t = l+0.5;if (t < 0) t = 0;else if (t > surf->extents[1]) t = surf->extents[1];
+		t = l + 0.5;
+		if (t < 0)
+			t = 0;
+		else if (t > surf->extents[1])
+			t = surf->extents[1];
 		t = l - t;
 
 		// compare to minimum light
-		if ((s*s+t*t+dist*dist) < maxdist)
+		if ((s*s + t*t + dist*dist) < maxdist)
 		{
 			if (surf->dlightframe != r_dlightframecount)
 			{	// not dynamic until now
@@ -278,7 +290,7 @@ void R_PushDlights (void)
 						//  advanced yet for this frame
 	l = cl_dlights;
 
-	for (i=0 ; i<MAX_DLIGHTS ; i++, l++)
+	for (i = 0; i < MAX_DLIGHTS; i++, l++)
 	{
 		if (l->die < cl.time || !l->radius)
 			continue;
@@ -345,7 +357,7 @@ static int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 	lightplane = plane;
 
 	surf = cl.worldmodel->surfaces + node->firstsurface;
-	for (i=0 ; i<node->numsurfaces ; i++, surf++)
+	for (i = 0; i < node->numsurfaces; i++, surf++)
 	{
 		if (surf->flags & SURF_DRAWTILED)
 			continue;	// no lightmaps
@@ -361,7 +373,7 @@ static int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 		ds = s - surf->texturemins[0];
 		dt = t - surf->texturemins[1];
 
-		if ( ds > surf->extents[0] || dt > surf->extents[1] )
+		if (ds > surf->extents[0] || dt > surf->extents[1])
 			continue;
 
 		if (!surf->samples)
@@ -374,13 +386,13 @@ static int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 		r = 0;
 		if (lightmap)
 		{
-			lightmap += dt * ((surf->extents[0]>>4)+1) + ds;
+			lightmap += dt * ((surf->extents[0] >> 4) + 1) + ds;
 
-			for (maps = 0 ; maps < MAXLIGHTMAPS && surf->styles[maps] != 255 ; maps++)
+			for (maps = 0; maps < MAXLIGHTMAPS && surf->styles[maps] != 255; maps++)
 			{
 				scale = d_lightstylevalue[surf->styles[maps]];
 				r += *lightmap * scale;
-				lightmap += ((surf->extents[0]>>4)+1) * ((surf->extents[1]>>4)+1);
+				lightmap += ((surf->extents[0] >> 4) + 1) * ((surf->extents[1] >> 4) + 1);
 			}
 
 			r >>= 8;
@@ -429,7 +441,6 @@ static int *RecursiveLightPointColour (mnode_t *node, vec3_t start, vec3_t end)
 	int		i;
 	mtexinfo_t	*tex;
 	byte		*lightmap;
-	//unsigned	scale;
 	int		maps;
 	int		smax, tmax;
 
@@ -476,10 +487,10 @@ static int *RecursiveLightPointColour (mnode_t *node, vec3_t start, vec3_t end)
 
 	surf = cl.worldmodel->surfaces + node->firstsurface;
 
-	smax = (surf->extents[0]>>4)+1;
-	tmax = (surf->extents[1]>>4)+1;
+	smax = (surf->extents[0] >> 4) + 1;
+	tmax = (surf->extents[1] >> 4) + 1;
 
-	for (i=0 ; i<node->numsurfaces ; i++, surf++)
+	for (i = 0; i < node->numsurfaces; i++, surf++)
 	{
 		if (surf->flags & SURF_DRAWTILED)
 			continue;	// no lightmaps
@@ -495,7 +506,7 @@ static int *RecursiveLightPointColour (mnode_t *node, vec3_t start, vec3_t end)
 		ds = s - surf->texturemins[0];
 		dt = t - surf->texturemins[1];
 
-		if ( ds > surf->extents[0] || dt > surf->extents[1] )
+		if (ds > surf->extents[0] || dt > surf->extents[1])
 			continue;
 
 		if (!surf->samples)
@@ -521,7 +532,7 @@ static int *RecursiveLightPointColour (mnode_t *node, vec3_t start, vec3_t end)
 
 			lightmap += (dt * smax + ds)*3;	// LordHavoc: *3 for color
 
-			for (maps = 0;maps < MAXLIGHTMAPS && surf->styles[maps] != 255;maps++)
+			for (maps = 0; maps < MAXLIGHTMAPS && surf->styles[maps] != 255; maps++)
 			{
 				scale = (float) d_lightstylevalue[surf->styles[maps]] * 1.0 / 256.0;
 				r00 += (float) lightmap[0] * scale;
@@ -549,38 +560,7 @@ static int *RecursiveLightPointColour (mnode_t *node, vec3_t start, vec3_t end)
 			r[3] = 255;
 		}
 
-		return r; // success
-
-/*
-		ds >>= 4;
-		dt >>= 4;
-
-		lightmap = surf->samples;
-
-		if (lightmap)
-		{
-			lightmap += (dt * smax + ds) * 3; // 4;
-
-			for (maps = 0 ; maps < MAXLIGHTMAPS && surf->styles[maps] != 255 ; maps++)
-			{
-				scale = d_lightstylevalue[surf->styles[maps]];
-				r[0] += lightmap[0] * scale;
-				r[1] += lightmap[1] * scale;
-				r[2] += lightmap[2] * scale;
-				r[3] += lightmap[3] * scale;
-				lightmap += smax * tmax *3; // * 4;
-			}
-
-			//r[3] = r[0]+r[1]+r[3]/3;
-			// Faster to assign each, than with a loop
-			r[0] >>= 8;
-			r[1] >>= 8;
-			r[2] >>= 8;
-			r[3] >>= 8;
-		}
-
-		return r;
-*/
+		return r;	// success
 	}
 
 	// go down back side

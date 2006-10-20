@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.11 2006-06-24 14:12:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.12 2006-10-20 20:32:29 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -639,21 +639,21 @@ void CL_ParseEffect (void)
 					VectorCopy(cl.Effects[idx].ef.Chunk.origin, ent->origin);
 
 					VectorCopy(cl.Effects[idx].ef.Chunk.srcVel, cl.Effects[idx].ef.Chunk.velocity[i]);
-					VectorScale(cl.Effects[idx].ef.Chunk.velocity[i], .80 + ((rand()%4)/10.0), cl.Effects[idx].ef.Chunk.velocity[i]);
+					VectorScale(cl.Effects[idx].ef.Chunk.velocity[i], .80 + ((rand() % 4) / 10.0), cl.Effects[idx].ef.Chunk.velocity[i]);
 					// temp modify them...
-					cl.Effects[idx].ef.Chunk.velocity[i][0] += (rand()%140)-70;
-					cl.Effects[idx].ef.Chunk.velocity[i][1] += (rand()%140)-70;
-					cl.Effects[idx].ef.Chunk.velocity[i][2] += (rand()%140)-70;
+					cl.Effects[idx].ef.Chunk.velocity[i][0] += (rand() % 140) - 70;
+					cl.Effects[idx].ef.Chunk.velocity[i][1] += (rand() % 140) - 70;
+					cl.Effects[idx].ef.Chunk.velocity[i][2] += (rand() % 140) - 70;
 
 					// are these in degrees or radians?
-					ent->angles[0] = rand()%360;
-					ent->angles[1] = rand()%360;
-					ent->angles[2] = rand()%360;
+					ent->angles[0] = rand() % 360;
+					ent->angles[1] = rand() % 360;
+					ent->angles[2] = rand() % 360;
 
-					ent->scale = cl.Effects[idx].ef.Chunk.aveScale + rand()%40;
+					ent->scale = cl.Effects[idx].ef.Chunk.aveScale + (rand() % 40);
 
 					// make this overcomplicated
-					final = (rand()%100)*.01;
+					final = (rand() % 100) * .01;
 					if ((cl.Effects[idx].ef.Chunk.type == THINGTYPE_GLASS) ||
 						(cl.Effects[idx].ef.Chunk.type == THINGTYPE_REDGLASS) ||
 						(cl.Effects[idx].ef.Chunk.type == THINGTYPE_CLEARGLASS) ||
@@ -866,7 +866,7 @@ void CL_ParseEffect (void)
 					{
 						ent->model = Mod_ForName("models/shard.mdl", true);
 						ent->skinnum = 0;
-						ent->frame = rand()%2;
+						ent->frame = rand() % 2;
 						ent->drawflags |= DRF_TRANSLUCENT|MLS_ABSLIGHT;
 						ent->abslight = 0.5;
 					}
@@ -908,9 +908,9 @@ void CL_ParseEffect (void)
 
 			for (i = 0 ; i < 3 ; i++)
 			{
-				cl.Effects[idx].ef.Chunk.avel[i][0] = rand()%850 - 425;
-				cl.Effects[idx].ef.Chunk.avel[i][1] = rand()%850 - 425;
-				cl.Effects[idx].ef.Chunk.avel[i][2] = rand()%850 - 425;
+				cl.Effects[idx].ef.Chunk.avel[i][0] = (rand() % 850) - 425;
+				cl.Effects[idx].ef.Chunk.avel[i][1] = (rand() % 850) - 425;
+				cl.Effects[idx].ef.Chunk.avel[i][2] = (rand() % 850) - 425;
 			}
 
 			break;
@@ -1257,7 +1257,7 @@ void CL_UpdateEffects (void)
 					CL_FreeEffect(idx);
 				}
 				else
-					GravityWellParticle(rand()%8,org, cl.Effects[idx].ef.RD.color);
+					GravityWellParticle(rand() % 8, org, cl.Effects[idx].ef.RD.color);
 
 				break;
 
@@ -1490,6 +1490,9 @@ static void FreeEffectEntity (int idx)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2006/06/24 14:12:59  sezero
+ * separated cl_effect.c and sv_effect.c for easier maintainance
+ *
  * Revision 1.10  2006/04/06 08:36:23  sezero
  * more tidy-ups (cl_effect.h, cl_effect.c, sv_effect.c)
  *

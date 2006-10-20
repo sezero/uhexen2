@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.c,v 1.9 2006-07-02 11:45:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.c,v 1.10 2006-10-20 20:32:31 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -441,11 +441,11 @@ void CL_ParseEffect (void)
 				{
 					if (cl.Effects[idx].ef.Smoke.framelength == 2)
 					{
-						R_SplashParticleEffect (cl.Effects[idx].ef.Smoke.origin, 200, 406+rand()%8, pt_slowgrav, 40);//splash
+						R_SplashParticleEffect (cl.Effects[idx].ef.Smoke.origin, 200, 406 + (rand() % 8), pt_slowgrav, 40);//splash
 						S_StartSound (TempSoundChannel(), 1, cl_fxsfx_splash, cl.Effects[idx].ef.Smoke.origin, 1, 1);
 					}
 					else if (cl.Effects[idx].ef.Smoke.framelength == 1)
-						R_SplashParticleEffect (cl.Effects[idx].ef.Smoke.origin, 100, 406+rand()%8, pt_slowgrav, 20);//splash
+						R_SplashParticleEffect (cl.Effects[idx].ef.Smoke.origin, 100, 406 + (rand() % 8), pt_slowgrav, 20);//splash
 					else
 						S_StartSound (TempSoundChannel(), 1, cl_fxsfx_ripple, cl.Effects[idx].ef.Smoke.origin, 1, 1);
 
@@ -1066,7 +1066,7 @@ void CL_ParseEffect (void)
 			cl.Effects[idx].ef.Star.velocity[1] = MSG_ReadFloat ();
 			cl.Effects[idx].ef.Star.velocity[2] = MSG_ReadFloat ();
 			vectoangles(cl.Effects[idx].ef.Star.velocity, cl.Effects[idx].ef.Star.angle);
-			cl.Effects[idx].ef.Missile.avelocity[2] = 300 + rand()%300;
+			cl.Effects[idx].ef.Missile.avelocity[2] = 300 + (rand() % 300);
 
 			if ((cl.Effects[idx].ef.Star.entity_index = NewEffectEntity()) != -1)
 			{
@@ -1162,22 +1162,22 @@ static void XbowImpactPuff (vec3_t origin, int material)
 	switch (material)
 	{
 	case XBOW_IMPACT_REDFLESH:
-		part_color = 256 + 8 * 16 + rand()%9;	// Blood red
+		part_color = 256 + 8 * 16 + (rand() % 9);	// Blood red
 		break;
 	case XBOW_IMPACT_STONE:
-		part_color = 256 + 20 + rand()%8;	// Gray
+		part_color = 256 + 20 + (rand() % 8);	// Gray
 		break;
 	case XBOW_IMPACT_METAL:
 		part_color = 256 + (8 * 15);		// Sparks
 		break;
 	case XBOW_IMPACT_WOOD:
-		part_color = 256 + (5 * 16) + rand()%8;	// Wood chunks
+		part_color = 256 + (5 * 16) + (rand() % 8);	// Wood chunks
 		break;
 	case XBOW_IMPACT_ICE:
-		part_color = 406 + rand()%8;		// Ice particles
+		part_color = 406 + (rand() % 8);		// Ice particles
 		break;
 	case XBOW_IMPACT_GREENFLESH:
-		part_color = 256 + 183 + rand()%8;	// Spider's have green blood
+		part_color = 256 + 183 + (rand() % 8);	// Spider's have green blood
 		break;
 	default:
 		part_color = 256 + (3 * 16) + 4;	// Dust Brown
@@ -1246,7 +1246,7 @@ void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everythi
 			{
 				cl.Effects[idx].ef.Xbow.activebolts &= ~(1<<curEnt);
 				dist = MSG_ReadCoord();
-				if (cl.Effects[idx].ef.Xbow.ent[curEnt]!= -1)
+				if (cl.Effects[idx].ef.Xbow.ent[curEnt] != -1)
 				{
 					ent = &EffectEntities[cl.Effects[idx].ef.Xbow.ent[curEnt]];
 
@@ -1362,7 +1362,7 @@ void CL_ReviseEffect(void)	// be sure to read, in the switch statement, everythi
 					VectorNormalize(forward);
 					VectorScale(forward,dist,forward);
 					VectorAdd(cl.Effects[idx].ef.Xbow.origin[curEnt],forward,ent->origin);
-					R_ColoredParticleExplosion(ent->origin,(rand()%16)+144/*(144,159)*/,20,30);
+					R_ColoredParticleExplosion(ent->origin, (rand() % 16) + 144 /*(144,159)*/, 20, 30);
 				}
 			}
 			else	// direction change
@@ -1621,7 +1621,7 @@ void CL_TurnEffect (void)
 
 	case CE_HWMISSILESTAR:
 	case CE_HWEIDOLONSTAR:
-		if(cl.Effects[idx].ef.Star.entity_index > -1)
+		if (cl.Effects[idx].ef.Star.entity_index > -1)
 		{
 			ent = &EffectEntities[cl.Effects[idx].ef.Star.entity_index];
 			UpdateMissilePath(ent->origin, pos, vel, time);
@@ -2143,7 +2143,7 @@ void CL_UpdateEffects (void)
 							ent->origin[1] += frametime * cl.Effects[idx].ef.Xbow.vel[i][1];
 							ent->origin[2] += frametime * cl.Effects[idx].ef.Xbow.vel[i][2];
 
-							R_RunParticleEffect4(ent->origin, 7, (rand()%15)+144, pt_explode2, (rand()%5)+1);
+							R_RunParticleEffect4(ent->origin, 7, (rand() % 15) + 144, pt_explode2, (rand() % 5) + 1);
 
 							CL_LinkEntity(ent);
 						}
@@ -2324,7 +2324,7 @@ void CL_UpdateEffects (void)
 				CL_LinkEntity(ent);
 				if (cl.Effects[idx].type == CE_HWBONEBALL)
 				{
-					R_RunParticleEffect4 (ent->origin, 10, 368 + rand() % 16, pt_slowgrav, 3);
+					R_RunParticleEffect4 (ent->origin, 10, 368 + (rand() % 16), pt_slowgrav, 3);
 				}
 				break;
 
@@ -2384,7 +2384,7 @@ void CL_UpdateEffects (void)
 				}
 				if (rand() % 10 < 3)
 				{
-					R_RunParticleEffect4 (ent->origin, 7, 148 + rand() % 11, pt_grav, 10 + rand() % 10);
+					R_RunParticleEffect4 (ent->origin, 7, 148 + (rand() % 11), pt_grav, 10 + (rand() % 10));
 				}
 				break;
 		}
@@ -2486,6 +2486,12 @@ static void FreeEffectEntity (int idx)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2006/07/02 11:45:35  sezero
+ * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
+ * which stops vec3_origin usage in relevant calculations. renamed the Length
+ * macro to VectorLength for consistancy. updated the utilities' mathlib for
+ * similar macro usage as in the engine.
+ *
  * Revision 1.8  2006/04/06 08:36:23  sezero
  * more tidy-ups (cl_effect.h, cl_effect.c, sv_effect.c)
  *

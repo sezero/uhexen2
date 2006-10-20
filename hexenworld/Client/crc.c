@@ -77,3 +77,4 @@ unsigned short CRC_Block (byte *start, int count)
 	CRC_ProcessBlock (start, &crc, count);
 	return crc;
 }
+

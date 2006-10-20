@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.8 2006-07-02 11:45:37 sezero Exp $
+	$Id: model.c,v 1.9 2006-10-20 20:33:16 sezero Exp $
 */
 
 #include "qwsvdef.h"
@@ -132,9 +132,11 @@ void Mod_ClearAll (void)
 	int		i;
 	model_t	*mod;
 
-	for (i=0 , mod=mod_known ; i<mod_numknown ; i++, mod++)
+	for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
+	{
 		if (mod->type != mod_alias)
 			mod->needload = true;
+	}
 }
 
 /*
@@ -154,9 +156,11 @@ model_t *Mod_FindName (char *name)
 //
 // search the currently loaded models
 //
-	for (i = 0, mod = mod_known ; i < mod_numknown ; i++, mod++)
+	for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
+	{
 		if (!strcmp (mod->name, name) )
 			break;
+	}
 
 	if (i == mod_numknown)
 	{
@@ -280,7 +284,7 @@ static void Mod_LoadTextures (lump_t *l)
 	loadmodel->numtextures = m->nummiptex;
 	loadmodel->textures = Hunk_AllocName (m->nummiptex * sizeof(*loadmodel->textures) , loadname);
 
-	for (i=0 ; i<m->nummiptex ; i++)
+	for (i = 0; i < m->nummiptex; i++)
 	{
 		m->dataofs[i] = LittleLong(m->dataofs[i]);
 		if (m->dataofs[i] == -1)
@@ -288,7 +292,7 @@ static void Mod_LoadTextures (lump_t *l)
 		mt = (miptex_t *)((byte *)m + m->dataofs[i]);
 		mt->width = LittleLong (mt->width);
 		mt->height = LittleLong (mt->height);
-		for (j=0 ; j<MIPLEVELS ; j++)
+		for (j = 0; j < MIPLEVELS; j++)
 			mt->offsets[j] = LittleLong (mt->offsets[j]);
 
 		if ( (mt->width & 15) || (mt->height & 15) )
@@ -300,7 +304,7 @@ static void Mod_LoadTextures (lump_t *l)
 		memcpy (tx->name, mt->name, sizeof(tx->name));
 		tx->width = mt->width;
 		tx->height = mt->height;
-		for (j=0 ; j<MIPLEVELS ; j++)
+		for (j = 0; j < MIPLEVELS; j++)
 			tx->offsets[j] = mt->offsets[j] + sizeof(texture_t) - sizeof(miptex_t);
 		// the pixels immediately follow the structures
 		memcpy ( tx+1, mt+1, pixels);
@@ -309,7 +313,7 @@ static void Mod_LoadTextures (lump_t *l)
 //
 // sequence the animations
 //
-	for (i=0 ; i<m->nummiptex ; i++)
+	for (i = 0; i < m->nummiptex; i++)
 	{
 		tx = loadmodel->textures[i];
 		if (!tx || tx->name[0] != '+')
@@ -342,7 +346,7 @@ static void Mod_LoadTextures (lump_t *l)
 		else
 			SV_Error ("Bad animating texture %s", tx->name);
 
-		for (j=i+1 ; j<m->nummiptex ; j++)
+		for (j = i+1; j < m->nummiptex; j++)
 		{
 			tx2 = loadmodel->textures[j];
 			if (!tx2 || tx2->name[0] != '+')
@@ -373,7 +377,7 @@ static void Mod_LoadTextures (lump_t *l)
 
 #define	ANIM_CYCLE	2
 	// link them all together
-		for (j=0 ; j<max ; j++)
+		for (j = 0; j < max; j++)
 		{
 			tx2 = anims[j];
 			if (!tx2)
@@ -385,7 +389,7 @@ static void Mod_LoadTextures (lump_t *l)
 			if (altmax)
 				tx2->alternate_anims = altanims[0];
 		}
-		for (j=0 ; j<altmax ; j++)
+		for (j = 0; j < altmax; j++)
 		{
 			tx2 = altanims[j];
 			if (!tx2)
@@ -471,7 +475,7 @@ static void Mod_LoadVertexes (lump_t *l)
 	loadmodel->vertexes = out;
 	loadmodel->numvertexes = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
 		out->position[0] = LittleFloat (in->point[0]);
 		out->position[1] = LittleFloat (in->point[1]);
@@ -499,15 +503,15 @@ static void Mod_LoadSubmodels (lump_t *l)
 	loadmodel->submodels = out;
 	loadmodel->numsubmodels = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
-		for (j = 0 ; j < 3 ; j++)
+		for (j = 0; j < 3; j++)
 		{	// spread the mins / maxs by a pixel
 			out->mins[j] = LittleFloat (in->mins[j]) - 1;
 			out->maxs[j] = LittleFloat (in->maxs[j]) + 1;
 			out->origin[j] = LittleFloat (in->origin[j]);
 		}
-		for (j = 0 ; j < MAX_MAP_HULLS ; j++)
+		for (j = 0; j < MAX_MAP_HULLS; j++)
 			out->headnode[j] = LittleLong (in->headnode[j]);
 		out->visleafs = LittleLong (in->visleafs);
 		out->firstface = LittleLong (in->firstface);
@@ -535,7 +539,7 @@ static void Mod_LoadEdges (lump_t *l)
 	loadmodel->edges = out;
 	loadmodel->numedges = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
 		out->v[0] = (unsigned short)LittleShort(in->v[0]);
 		out->v[1] = (unsigned short)LittleShort(in->v[1]);
@@ -564,9 +568,9 @@ static void Mod_LoadTexinfo (lump_t *l)
 	loadmodel->texinfo = out;
 	loadmodel->numtexinfo = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
-		for (j = 0 ; j < 8 ; j++)
+		for (j = 0; j < 8; j++)
 			out->vecs[0][j] = LittleFloat (in->vecs[0][j]);
 		len1 = VectorLength (in->vecs[0]);
 		len2 = VectorLength (in->vecs[1]);
@@ -617,7 +621,7 @@ static void CalcSurfaceExtents (msurface_t *s)
 
 	tex = s->texinfo;
 
-	for (i=0 ; i<s->numedges ; i++)
+	for (i = 0; i < s->numedges; i++)
 	{
 		e = loadmodel->surfedges[s->firstedge+i];
 		if (e >= 0)
@@ -625,7 +629,7 @@ static void CalcSurfaceExtents (msurface_t *s)
 		else
 			v = &loadmodel->vertexes[loadmodel->edges[-e].v[1]];
 
-		for (j=0 ; j<2 ; j++)
+		for (j = 0; j < 2; j++)
 		{
 			val = v->position[0] * tex->vecs[j][0] + 
 				v->position[1] * tex->vecs[j][1] +
@@ -638,7 +642,7 @@ static void CalcSurfaceExtents (msurface_t *s)
 		}
 	}
 
-	for (i=0 ; i<2 ; i++)
+	for (i = 0; i < 2; i++)
 	{
 		bmins[i] = floor(mins_local[i]/16);
 		bmaxs[i] = ceil(maxs_local[i]/16);
@@ -672,7 +676,7 @@ static void Mod_LoadFaces (lump_t *l)
 	loadmodel->surfaces = out;
 	loadmodel->numsurfaces = count;
 
-	for (surfnum = 0 ; surfnum < count ; surfnum++, in++, out++)
+	for (surfnum = 0; surfnum < count; surfnum++, in++, out++)
 	{
 		out->firstedge = LittleLong(in->firstedge);
 		out->numedges = LittleShort(in->numedges);
@@ -691,7 +695,7 @@ static void Mod_LoadFaces (lump_t *l)
 
 	// lighting info
 
-		for (i=0 ; i<MAXLIGHTMAPS ; i++)
+		for (i = 0; i < MAXLIGHTMAPS; i++)
 			out->styles[i] = in->styles[i];
 		i = LittleLong(in->lightofs);
 		if (i == -1)
@@ -711,10 +715,10 @@ static void Mod_LoadFaces (lump_t *l)
 			continue;
 		}
 
-		if (!strncmp(out->texinfo->texture->name,"*",1))	// turbulent
+		if (!strncmp(out->texinfo->texture->name, "*", 1))	// turbulent
 		{
 			out->flags |= (SURF_DRAWTURB | SURF_DRAWTILED);
-			for (i=0 ; i<2 ; i++)
+			for (i = 0; i < 2; i++)
 			{
 				out->extents[i] = 16384;
 				out->texturemins[i] = -8192;
@@ -759,9 +763,9 @@ static void Mod_LoadNodes (lump_t *l)
 	loadmodel->nodes = out;
 	loadmodel->numnodes = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
-		for (j = 0 ; j < 3 ; j++)
+		for (j = 0; j < 3; j++)
 		{
 			out->minmaxs[j] = LittleShort (in->mins[j]);
 			out->minmaxs[3+j] = LittleShort (in->maxs[j]);
@@ -773,7 +777,7 @@ static void Mod_LoadNodes (lump_t *l)
 		out->firstsurface = LittleShort (in->firstface);
 		out->numsurfaces = LittleShort (in->numfaces);
 
-		for (j = 0 ; j < 2 ; j++)
+		for (j = 0; j < 2; j++)
 		{
 			p = LittleShort (in->children[j]);
 			if (p >= 0)
@@ -806,9 +810,9 @@ static void Mod_LoadLeafs (lump_t *l)
 	loadmodel->leafs = out;
 	loadmodel->numleafs = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
-		for (j = 0 ; j < 3 ; j++)
+		for (j = 0; j < 3; j++)
 		{
 			out->minmaxs[j] = LittleShort (in->mins[j]);
 			out->minmaxs[3+j] = LittleShort (in->maxs[j]);
@@ -827,7 +831,7 @@ static void Mod_LoadLeafs (lump_t *l)
 			out->compressed_vis = loadmodel->visdata + p;
 		out->efrags = NULL;
 
-		for (j = 0 ; j < 4 ; j++)
+		for (j = 0; j < 4; j++)
 			out->ambient_sound_level[j] = in->ambient_level[j];
 	}
 }
@@ -912,7 +916,7 @@ static void Mod_LoadClipnodes (lump_t *l)
 	hull->clip_maxs[1] = 48;
 	hull->clip_maxs[2] = 50;
 
-	for (i = 0 ; i < count ; i++, out++, in++)
+	for (i = 0; i < count; i++, out++, in++)
 	{
 		out->planenum = LittleLong(in->planenum);
 		out->children[0] = LittleShort(in->children[0]);
@@ -945,10 +949,10 @@ static void Mod_MakeHull0 (void)
 	hull->lastclipnode = count-1;
 	hull->planes = loadmodel->planes;
 
-	for (i = 0 ; i < count ; i++, out++, in++)
+	for (i = 0; i < count; i++, out++, in++)
 	{
 		out->planenum = in->plane - loadmodel->planes;
-		for (j = 0 ; j < 2 ; j++)
+		for (j = 0; j < 2; j++)
 		{
 			child = in->children[j];
 			if (child->contents < 0)
@@ -979,7 +983,7 @@ static void Mod_LoadMarksurfaces (lump_t *l)
 	loadmodel->marksurfaces = out;
 	loadmodel->nummarksurfaces = count;
 
-	for (i = 0 ; i < count ; i++)
+	for (i = 0; i < count; i++)
 	{
 		j = LittleShort(in[i]);
 		if (j >= loadmodel->numsurfaces)
@@ -1007,7 +1011,7 @@ static void Mod_LoadSurfedges (lump_t *l)
 	loadmodel->surfedges = out;
 	loadmodel->numsurfedges = count;
 
-	for (i = 0 ; i < count ; i++)
+	for (i = 0; i < count; i++)
 		out[i] = LittleLong (in[i]);
 }
 
@@ -1034,10 +1038,10 @@ static void Mod_LoadPlanes (lump_t *l)
 	loadmodel->planes = out;
 	loadmodel->numplanes = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
 		bits = 0;
-		for (j = 0 ; j < 3 ; j++)
+		for (j = 0; j < 3; j++)
 		{
 			out->normal[j] = LittleFloat (in->normal[j]);
 			if (out->normal[j] < 0)
@@ -1072,7 +1076,7 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 // swap all the lumps
 	mod_base = (byte *)header;
 
-	for (i=0 ; i<sizeof(dheader_t)/4 ; i++)
+	for (i = 0; i < sizeof(dheader_t)/4; i++)
 		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
 
 // load into heap
@@ -1100,12 +1104,12 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 //
 // set up the submodels (FIXME: this is confusing)
 //
-	for (i=0 ; i<mod->numsubmodels ; i++)
+	for (i = 0; i < mod->numsubmodels; i++)
 	{
 		bm = &mod->submodels[i];
 
 		mod->hulls[0].firstclipnode = bm->headnode[0];
-		for (j=1 ; j<MAX_MAP_HULLS ; j++)
+		for (j = 1; j < MAX_MAP_HULLS; j++)
 		{
 			mod->hulls[j].firstclipnode = bm->headnode[j];
 			mod->hulls[j].lastclipnode = mod->numclipnodes-1;

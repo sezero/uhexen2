@@ -51,9 +51,9 @@ void D_FillRect (vrect_t *rect, int color)
 		rwidth >>= 2;
 		color += color << 8;
 
-		for (ry=0 ; ry<rheight ; ry++)
+		for (ry = 0; ry < rheight; ry++)
 		{
-			for (rx=0 ; rx<rwidth ; rx++)
+			for (rx = 0; rx < rwidth; rx++)
 				ldest[rx] = color;
 			ldest = (unsigned *)((byte*)ldest + vid.rowbytes);
 		}
@@ -61,9 +61,9 @@ void D_FillRect (vrect_t *rect, int color)
 	else
 	{
 	// slower byte-by-byte clear for unaligned cases
-		for (ry=0 ; ry<rheight ; ry++)
+		for (ry = 0; ry < rheight; ry++)
 		{
-			for (rx=0 ; rx<rwidth ; rx++)
+			for (rx = 0; rx < rwidth; rx++)
 				dest[rx] = color;
 			dest += vid.rowbytes;
 		}

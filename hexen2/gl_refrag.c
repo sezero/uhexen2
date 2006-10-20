@@ -79,7 +79,7 @@ static void R_SplitEntityOnNode (mnode_t *node)
 
 // add an efrag if the node is a leaf
 
-	if ( node->contents < 0)
+	if (node->contents < 0)
 	{
 		if (!r_pefragtopnode)
 			r_pefragtopnode = node;
@@ -152,7 +152,7 @@ void R_AddEfrags (entity_t *ent)
 
 	entmodel = ent->model;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		r_emins[i] = ent->origin[i] + entmodel->mins[i];
 		r_emaxs[i] = ent->origin[i] + entmodel->maxs[i];

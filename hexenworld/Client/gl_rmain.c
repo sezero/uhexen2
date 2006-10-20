@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.38 2006-09-15 20:20:18 sezero Exp $
+	$Id: gl_rmain.c,v 1.39 2006-10-20 20:32:32 sezero Exp $
 */
 
 
@@ -123,7 +123,7 @@ qboolean R_CullBox (vec3_t mins, vec3_t maxs)
 {
 	int		i;
 
-	for (i=0 ; i<4 ; i++)
+	for (i = 0; i < 4; i++)
 		if (BoxOnPlaneSide (mins, maxs, &frustum[i]) == 2)
 			return true;
 	return false;
@@ -262,7 +262,7 @@ static mspriteframe_t *R_GetSpriteFrame (entity_t *curr_ent)
 	// are positive, so we don't have to worry about division by 0
 		targettime = time - ((int)(time / fullinterval)) * fullinterval;
 
-		for (i=0 ; i<(numframes-1) ; i++)
+		for (i = 0; i < (numframes-1); i++)
 		{
 			if (pintervals[i] > targettime)
 				break;
@@ -427,7 +427,7 @@ static void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 	{
 		my_team = cl.players[cl.playernum].siege_team;
 		ve_team = cl.players[i].siege_team;
-		if ((ambientlight+shadelight) > 50 || (cl_siege&&my_team==ve_team))
+		if ((ambientlight+shadelight) > 50 || (cl_siege && my_team == ve_team))
 			cl.players[i].shownames_off = false;
 		else
 			cl.players[i].shownames_off = true;
@@ -447,7 +447,7 @@ static void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 				shadelight += (51 - ambientlight);
 				cl.players[i].shownames_off = false;
 			}
-			else if(ve_team == ST_DEFENDER)
+			else if (ve_team == ST_DEFENDER)
 			{
 				// tint gold since we can't have seperate skins
 				OnTeam = true;
@@ -687,7 +687,7 @@ static void R_DrawAliasModel (entity_t *e)
 //	if (e == &cl.viewent && ambientlight < 24)
 //		ambientlight = shadelight = 24;
 
-	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
+	for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 	{
 		if (cl_dlights[lnum].die >= cl.time)
 		{
@@ -715,8 +715,8 @@ static void R_DrawAliasModel (entity_t *e)
 	if (ambientlight + shadelight > 192)
 		shadelight = 192 - ambientlight;
 
-	mls = currententity->drawflags&MLS_MASKIN;
-	if (currententity->model->flags&EF_ROTATE)
+	mls = currententity->drawflags & MLS_MASKIN;
+	if (currententity->model->flags & EF_ROTATE)
 	{
 		ambientlight = shadelight =
 					60+34+sin(currententity->origin[0]
@@ -748,7 +748,7 @@ static void R_DrawAliasModel (entity_t *e)
 
 	VectorScale(shadelightcolor, 1.0f / 200.0f, shadelightcolor);
 
-	an = e->angles[1]/180*M_PI;
+	an = e->angles[1] / 180 * M_PI;
 	shadevector[0] = cos(-an);
 	shadevector[1] = sin(-an);
 	shadevector[2] = 1;
@@ -770,8 +770,8 @@ static void R_DrawAliasModel (entity_t *e)
 
 	if (currententity->scale != 0 && currententity->scale != 100)
 	{
-		entScale = (float)currententity->scale/100.0;
-		switch(currententity->drawflags&SCALE_TYPE_MASKIN)
+		entScale = (float)currententity->scale / 100.0;
+		switch (currententity->drawflags & SCALE_TYPE_MASKIN)
 		{
 		case SCALE_TYPE_UNIFORM:
 			tmatrix[0][0] = paliashdr->scale[0]*entScale;
@@ -795,7 +795,7 @@ static void R_DrawAliasModel (entity_t *e)
 			break;
 		}
 
-		switch (currententity->drawflags&SCALE_ORIGIN_MASKIN)
+		switch (currententity->drawflags & SCALE_ORIGIN_MASKIN)
 		{
 		case SCALE_ORIGIN_CENTER:
 			tmatrix[0][3] = paliashdr->scale_origin[0]-paliashdr->scale[0]*xyfact;
@@ -1006,7 +1006,7 @@ static void R_DrawEntitiesOnList (void)
 	}
 
 	// draw sprites seperately, because of alpha blending
-	for (i=0 ; i<cl_numvisedicts ; i++)
+	for (i = 0; i < cl_numvisedicts; i++)
 	{
 		currententity = &cl_visedicts[i];
 
@@ -1087,7 +1087,7 @@ static void R_DrawTransEntitiesOnList (qboolean inwater)
 	theents = (inwater) ? cl_transwateredicts : cl_transvisedicts;
 	numents = (inwater) ? cl_numtranswateredicts : cl_numtransvisedicts;
 
-	for (i = 0 ; i < numents ; i++)
+	for (i = 0; i < numents; i++)
 	{
 		VectorSubtract(theents[i].ent->origin, r_origin, result);
 	//	theents[i].len = VectorLength(result);
@@ -1098,7 +1098,7 @@ static void R_DrawTransEntitiesOnList (qboolean inwater)
 	// Add in BETTER sorting here
 
 	glDepthMask_fp(0);
-	for (i = 0 ; i < numents ; i++)
+	for (i = 0; i < numents; i++)
 	{
 		currententity = theents[i].ent;
 
@@ -1198,7 +1198,7 @@ static void R_DrawGlow (entity_t *e)
 			}
 
 			// 'floating' movement
-			if(clmodel->flags & EF_ROTATE)
+			if (clmodel->flags & EF_ROTATE)
 				glTranslatef_fp (0, 0, sin(currententity->origin[0]+currententity->origin[1]+(cl.time*3))*5.5);
 
 			glBegin_fp(GL_TRIANGLE_FAN);
@@ -1227,7 +1227,7 @@ static void R_DrawGlow (entity_t *e)
 				{
 					j = i % cl_lightstyle[TORCH_STYLE].length;
 					j = cl_lightstyle[TORCH_STYLE].map[j] - 'a';
-					j = j*22;
+					j = j * 22;
 				}
 			}
 			else if (clmodel->ex_flags & XF_MISSILE_GLOW)
@@ -1241,7 +1241,7 @@ static void R_DrawGlow (entity_t *e)
 				{
 					j = i % cl_lightstyle[MISSILE_STYLE].length;
 					j = cl_lightstyle[MISSILE_STYLE].map[j] - 'a';
-					j = j*22;
+					j = j * 22;
 				}
 			}
 			else if (clmodel->ex_flags & XF_GLOW)
@@ -1255,7 +1255,7 @@ static void R_DrawGlow (entity_t *e)
 				{
 					j = i % cl_lightstyle[PULSE_STYLE].length;
 					j = cl_lightstyle[PULSE_STYLE].map[j] - 'a';
-					j = j*22;
+					j = j * 22;
 				}
 			}
 
@@ -1270,18 +1270,18 @@ static void R_DrawGlow (entity_t *e)
 						clmodel->glow_color[2]*intensity,
 						0.5f);
 
-			for (i=0 ; i<3 ; i++)
+			for (i = 0; i < 3; i++)
 				glow_vect[i] = lightorigin[i] - vp2[i]*radius;
 
 			glVertex3fv_fp(glow_vect);
 
 			glColor4f_fp(0.0f, 0.0f, 0.0f, 1.0f);
 
-			for (i=16; i>=0; i--)
+			for (i = 16; i >= 0; i--)
 			{
-				float a = i/16.0f * M_PI*2;
+				float a = i / 16.0f * M_PI * 2;
 
-				for (j=0; j<3; j++)
+				for (j = 0; j < 3; j++)
 					glow_vect[j] = lightorigin[j] + 
 							vright[j]*cos(a)*radius +
 							vup[j]*sin(a)*radius;
@@ -1310,7 +1310,7 @@ static void R_DrawAllGlows (void)
 	glEnable_fp (GL_BLEND);
 	glBlendFunc_fp (GL_ONE, GL_ONE);
 
-	for (i=0 ; i < cl_numvisedicts ; i++)
+	for (i = 0; i < cl_numvisedicts; i++)
 	{
 		currententity = &cl_visedicts[i];
 
@@ -1380,7 +1380,7 @@ static void R_DrawViewModel (void)
 //	}
 
 // add dynamic lights
-	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
+	for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 	{
 		dl = &cl_dlights[lnum];
 		if (!dl->radius)
@@ -1459,9 +1459,9 @@ static void R_MarkLeaves (void)
 	else
 		vis = Mod_LeafPVS (r_viewleaf, cl.worldmodel);
 
-	for (i=0 ; i<cl.worldmodel->numleafs ; i++)
+	for (i = 0; i < cl.worldmodel->numleafs; i++)
 	{
-		if (vis[i>>3] & (1<<(i&7)))
+		if ( vis[i>>3] & (1<<(i&7)) )
 		{
 			node = (mnode_t *)&cl.worldmodel->leafs[i+1];
 			do
@@ -1577,7 +1577,7 @@ static int SignbitsForPlane (mplane_t *out)
 	// for fast box on planeside test
 
 	bits = 0;
-	for (j=0 ; j<3 ; j++)
+	for (j = 0; j < 3; j++)
 	{
 		if (out->normal[j] < 0)
 			bits |= 1<<j;
@@ -1597,7 +1597,7 @@ static void R_SetFrustum (void)
 	VectorAdd (vpn, vup, frustum[2].normal);
 	VectorSubtract (vpn, vup, frustum[3].normal);
 
-	for (i=0 ; i<4 ; i++)
+	for (i = 0; i < 4; i++)
 	{
 		frustum[i].type = PLANE_ANYZ;
 		frustum[i].dist = DotProduct (r_origin, frustum[i].normal);
@@ -1667,9 +1667,9 @@ static void MultiplyMatrix (MATRIX *m1, MATRIX *m2, MATRIX *m3)
 {
 	int		i, j;
 
-	for (j = 0 ; j < 4 ; j ++)
+	for (j = 0; j < 4; j ++)
 	{
-		for (i = 0 ; i < 4 ; i ++)
+		for (i = 0; i < 4; i ++)
 		{
 			m1->M[j][i] = m2->M[j][0] * m3->M[0][i] +
 					m2->M[j][1] * m3->M[1][i] +
@@ -1951,7 +1951,7 @@ static void R_Mirror (void)
 
 	glColor4f_fp (1,1,1,r_mirroralpha.value);
 	s = cl.worldmodel->textures[mirrortexturenum]->texturechain;
-	for ( ; s ; s=s->texturechain)
+	for ( ; s ; s = s->texturechain)
 		R_RenderBrushPoly (s, true);
 	cl.worldmodel->textures[mirrortexturenum]->texturechain = NULL;
 	glDisable_fp (GL_BLEND);
@@ -1972,11 +1972,11 @@ static void R_PrintTimes (void)
 
 	r_lasttime1 = r_time2 = Sys_DoubleTime();
 
-	ms = 1000*(r_time2-r_time1);
-	fps = 1000/ms;
+	ms = 1000 * (r_time2 - r_time1);
+	fps = 1000 / ms;
 
 	Con_Printf("%3.1f fps %5.0f ms\n%4i wpoly  %4i epoly  %4i(%i) edicts\n",
-		fps, ms, c_brush_polys, c_alias_polys, cl_numvisedicts, cl_numtransvisedicts+cl_numtranswateredicts);
+			fps, ms, c_brush_polys, c_alias_polys, cl_numvisedicts, cl_numtransvisedicts+cl_numtranswateredicts);
 }
 
 
@@ -2014,7 +2014,7 @@ void R_DrawName (vec3_t origin, char *Name, int Red)
 		{
 			Red -= 10;
 			Draw_Character (u, v, 145);	//key
-			u+=8;
+			u += 8;
 		}
 		if (Red > 0 && Red < 3)		//def
 		{

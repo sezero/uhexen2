@@ -88,7 +88,7 @@ static void Con_Clear_f (void)
 {
 	short i;
 
-	for(i=0;i<CON_TEXTSIZE;i++)
+	for (i = 0; i < CON_TEXTSIZE; i++)
 		con_text[i] = ' ';
 }
 
@@ -102,7 +102,7 @@ void Con_ClearNotify (void)
 {
 	int		i;
 
-	for (i=0 ; i<NUM_CON_TIMES ; i++)
+	for (i = 0; i < NUM_CON_TIMES; i++)
 		con_times[i] = 0;
 }
 
@@ -176,13 +176,12 @@ void Con_CheckResize (void)
 		memcpy (tbuf, con_text, CON_TEXTSIZE<<1);
 		Con_Clear_f();
 
-		for (i=0 ; i<numlines ; i++)
+		for (i = 0; i < numlines; i++)
 		{
-			for (j=0 ; j<numchars ; j++)
+			for (j = 0; j < numchars; j++)
 			{
 				con_text[(con_totallines - 1 - i) * con_linewidth + j] =
-						tbuf[((con_current - i + oldtotallines) %
-							  oldtotallines) * oldwidth + j];
+						tbuf[((con_current - i + oldtotallines) % oldtotallines) * oldwidth + j];
 			}
 		}
 
@@ -246,8 +245,8 @@ static void Con_Linefeed (void)
 	con_x = 0;
 	con_current++;
 
-	j = (con_current%con_totallines)*con_linewidth;
-	for(i=0;i<con_linewidth;i++)
+	j = (con_current%con_totallines) * con_linewidth;
+	for (i = 0; i < con_linewidth; i++)
 		con_text[i+j] = ' ';
 }
 
@@ -287,7 +286,7 @@ static void Con_Print (char *txt)
 	while ( (c = *txt) )
 	{
 	// count word length
-		for (l=0 ; l< con_linewidth ; l++)
+		for (l = 0; l < con_linewidth; l++)
 			if ( txt[l] <= ' ')
 				break;
 
@@ -558,7 +557,7 @@ static void Con_DrawInput (void)
 // draw it
 	y = con_vislines-16;
 
-	for (i=0 ; i<con_linewidth ; i++)
+	for (i = 0; i < con_linewidth; i++)
 		Draw_Character ( (i+1)<<3, con_vislines - 16, text[i]);
 
 // remove cursor
@@ -582,7 +581,7 @@ void Con_DrawNotify (void)
 	float	time;
 
 	v = 0;
-	for (i= con_current-NUM_CON_TIMES+1 ; i<=con_current ; i++)
+	for (i = con_current-NUM_CON_TIMES+1; i <= con_current; i++)
 	{
 		if (i < 0)
 			continue;
@@ -597,7 +596,7 @@ void Con_DrawNotify (void)
 		clearnotify = 0;
 		scr_copytop = 1;
 
-		for (x = 0 ; x < con_linewidth ; x++)
+		for (x = 0; x < con_linewidth; x++)
 			Draw_Character ( (x+1)<<3, v, text[x]);
 
 		v += 8;
@@ -611,7 +610,7 @@ void Con_DrawNotify (void)
 		x = 0;
 
 		Draw_String (8, v, "say:");
-		while(chat_buffer[x])
+		while (chat_buffer[x])
 		{
 			Draw_Character ( (x+5)<<3, v, chat_buffer[x]);
 			x++;
@@ -650,14 +649,14 @@ void Con_DrawConsole (int lines, qboolean drawinput)
 	rows = (lines-16)>>3;		// rows of text to draw
 	y = lines - 16 - (rows<<3);	// may start slightly negative
 
-	for (i= con_current - rows + 1 ; i<=con_current ; i++, y+=8 )
+	for (i = con_current - rows + 1; i <= con_current; i++, y += 8)
 	{
 		j = i - con_backscroll;
-		if (j<0)
+		if (j < 0)
 			j = 0;
 		text = con_text + (j % con_totallines)*con_linewidth;
 
-		for (x=0 ; x<con_linewidth ; x++)
+		for (x = 0; x < con_linewidth; x++)
 			Draw_Character ( (x+1)<<3, y, text[x]);
 	}
 

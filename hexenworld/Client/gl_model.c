@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.25 2006-07-02 11:45:37 sezero Exp $
+	$Id: gl_model.c,v 1.26 2006-10-20 20:32:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -34,7 +34,7 @@ static byte	mod_novis[MAX_MAP_LEAFS/8];
 static model_t	mod_known[MAX_MOD_KNOWN];
 static int	mod_numknown;
 
-static vec3_t	mins,maxs;
+static vec3_t	mins, maxs;
 
 static qboolean	spr_reload_only = false;
 
@@ -168,7 +168,7 @@ void Mod_ClearAll (void)
 	int		i;
 	model_t	*mod;
 
-	for (i=0 , mod=mod_known ; i<mod_numknown ; i++, mod++)
+	for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
 	{	// clear alias models only if textures were flushed (Pa3PyX)
 		if (mod->type == mod_alias)
 		{
@@ -377,7 +377,7 @@ static void Mod_LoadTextures (lump_t *l)
 	loadmodel->numtextures = m->nummiptex;
 	loadmodel->textures = Hunk_AllocName (m->nummiptex * sizeof(*loadmodel->textures) , "texture");
 
-	for (i=0 ; i<m->nummiptex ; i++)
+	for (i = 0; i < m->nummiptex; i++)
 	{
 		m->dataofs[i] = LittleLong(m->dataofs[i]);
 		if (m->dataofs[i] == -1)
@@ -385,7 +385,7 @@ static void Mod_LoadTextures (lump_t *l)
 		mt = (miptex_t *)((byte *)m + m->dataofs[i]);
 		mt->width = LittleLong (mt->width);
 		mt->height = LittleLong (mt->height);
-		for (j=0 ; j<MIPLEVELS ; j++)
+		for (j = 0; j < MIPLEVELS; j++)
 			mt->offsets[j] = LittleLong (mt->offsets[j]);
 
 		if ( (mt->width & 15) || (mt->height & 15) )
@@ -397,7 +397,7 @@ static void Mod_LoadTextures (lump_t *l)
 		memcpy (tx->name, mt->name, sizeof(tx->name));
 		tx->width = mt->width;
 		tx->height = mt->height;
-		for (j=0 ; j<MIPLEVELS ; j++)
+		for (j = 0; j < MIPLEVELS; j++)
 			tx->offsets[j] = mt->offsets[j] + sizeof(texture_t) - sizeof(miptex_t);
 		// the pixels immediately follow the structures
 		memcpy ( tx+1, mt+1, pixels);
@@ -411,7 +411,7 @@ static void Mod_LoadTextures (lump_t *l)
 //
 // sequence the animations
 //
-	for (i=0 ; i<m->nummiptex ; i++)
+	for (i = 0; i < m->nummiptex; i++)
 	{
 		tx = loadmodel->textures[i];
 		if (!tx || tx->name[0] != '+')
@@ -444,7 +444,7 @@ static void Mod_LoadTextures (lump_t *l)
 		else
 			Sys_Error ("Bad animating texture %s", tx->name);
 
-		for (j=i+1 ; j<m->nummiptex ; j++)
+		for (j = i+1; j < m->nummiptex; j++)
 		{
 			tx2 = loadmodel->textures[j];
 			if (!tx2 || tx2->name[0] != '+')
@@ -475,7 +475,7 @@ static void Mod_LoadTextures (lump_t *l)
 
 #define	ANIM_CYCLE	2
 	// link them all together
-		for (j=0 ; j<max ; j++)
+		for (j = 0; j < max; j++)
 		{
 			tx2 = anims[j];
 			if (!tx2)
@@ -487,7 +487,7 @@ static void Mod_LoadTextures (lump_t *l)
 			if (altmax)
 				tx2->alternate_anims = altanims[0];
 		}
-		for (j=0 ; j<altmax ; j++)
+		for (j = 0; j < altmax; j++)
 		{
 			tx2 = altanims[j];
 			if (!tx2)
@@ -599,7 +599,7 @@ static void Mod_LoadLighting (lump_t *l)
 	{
 		loadmodel->lightdata = NULL;
 
-		if ( gl_coloredlight.value > 0)
+		if (gl_coloredlight.value > 0)
 		{	// LordHavoc: check for a .lit file
 			strcpy(litfilename, loadmodel->name);
 			COM_StripExtension(litfilename, litfilename);
@@ -768,7 +768,7 @@ static void Mod_LoadVertexes (lump_t *l)
 	loadmodel->vertexes = out;
 	loadmodel->numvertexes = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
 		out->position[0] = LittleFloat (in->point[0]);
 		out->position[1] = LittleFloat (in->point[1]);
@@ -796,15 +796,15 @@ static void Mod_LoadSubmodels (lump_t *l)
 	loadmodel->submodels = out;
 	loadmodel->numsubmodels = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
-		for (j = 0 ; j < 3 ; j++)
+		for (j = 0; j < 3; j++)
 		{	// spread the mins / maxs by a pixel
 			out->mins[j] = LittleFloat (in->mins[j]) - 1;
 			out->maxs[j] = LittleFloat (in->maxs[j]) + 1;
 			out->origin[j] = LittleFloat (in->origin[j]);
 		}
-		for (j = 0 ; j < MAX_MAP_HULLS ; j++)
+		for (j = 0; j < MAX_MAP_HULLS; j++)
 			out->headnode[j] = LittleLong (in->headnode[j]);
 		out->visleafs = LittleLong (in->visleafs);
 		out->firstface = LittleLong (in->firstface);
@@ -832,7 +832,7 @@ static void Mod_LoadEdges (lump_t *l)
 	loadmodel->edges = out;
 	loadmodel->numedges = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
 		out->v[0] = (unsigned short)LittleShort(in->v[0]);
 		out->v[1] = (unsigned short)LittleShort(in->v[1]);
@@ -861,9 +861,9 @@ static void Mod_LoadTexinfo (lump_t *l)
 	loadmodel->texinfo = out;
 	loadmodel->numtexinfo = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
-		for (j = 0 ; j < 8 ; j++)
+		for (j = 0; j < 8; j++)
 			out->vecs[0][j] = LittleFloat (in->vecs[0][j]);
 		len1 = VectorLength (out->vecs[0]);
 		len2 = VectorLength (out->vecs[1]);
@@ -925,7 +925,7 @@ static void CalcSurfaceExtents (msurface_t *s)
 
 	tex = s->texinfo;
 
-	for (i=0 ; i<s->numedges ; i++)
+	for (i = 0; i < s->numedges; i++)
 	{
 		e = loadmodel->surfedges[s->firstedge+i];
 		if (e >= 0)
@@ -933,7 +933,7 @@ static void CalcSurfaceExtents (msurface_t *s)
 		else
 			v = &loadmodel->vertexes[loadmodel->edges[-e].v[1]];
 
-		for (j=0 ; j<2 ; j++)
+		for (j = 0; j < 2; j++)
 		{
 			val = v->position[0] * tex->vecs[j][0] + 
 				v->position[1] * tex->vecs[j][1] +
@@ -946,7 +946,7 @@ static void CalcSurfaceExtents (msurface_t *s)
 		}
 	}
 
-	for (i=0 ; i<2 ; i++)
+	for (i = 0; i < 2; i++)
 	{
 		bmins[i] = floor(mins_local[i]/16);
 		bmaxs[i] = ceil(maxs_local[i]/16);
@@ -980,7 +980,7 @@ static void Mod_LoadFaces (lump_t *l)
 	loadmodel->surfaces = out;
 	loadmodel->numsurfaces = count;
 
-	for (surfnum = 0 ; surfnum < count ; surfnum++, in++, out++)
+	for (surfnum = 0; surfnum < count; surfnum++, in++, out++)
 	{
 		out->firstedge = LittleLong(in->firstedge);
 		out->numedges = LittleShort(in->numedges);
@@ -999,7 +999,7 @@ static void Mod_LoadFaces (lump_t *l)
 
 	// lighting info
 
-		for (i=0 ; i<MAXLIGHTMAPS ; i++)
+		for (i = 0; i < MAXLIGHTMAPS; i++)
 			out->styles[i] = in->styles[i];
 		i = LittleLong(in->lightofs);
 		if (i == -1)
@@ -1026,10 +1026,10 @@ static void Mod_LoadFaces (lump_t *l)
 			continue;
 		}
 
-		if (out->texinfo->texture->name[0]=='*')		// turbulent
+		if (out->texinfo->texture->name[0] == '*')		// turbulent
 		{
 			out->flags |= (SURF_DRAWTURB | SURF_DRAWTILED);
-			for (i=0 ; i<2 ; i++)
+			for (i = 0; i < 2; i++)
 			{
 				out->extents[i] = 16384;
 				out->texturemins[i] = -8192;
@@ -1081,9 +1081,9 @@ static void Mod_LoadNodes (lump_t *l)
 	loadmodel->nodes = out;
 	loadmodel->numnodes = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
-		for (j = 0 ; j < 3 ; j++)
+		for (j = 0; j < 3; j++)
 		{
 			out->minmaxs[j] = LittleShort (in->mins[j]);
 			out->minmaxs[3+j] = LittleShort (in->maxs[j]);
@@ -1095,7 +1095,7 @@ static void Mod_LoadNodes (lump_t *l)
 		out->firstsurface = LittleShort (in->firstface);
 		out->numsurfaces = LittleShort (in->numfaces);
 
-		for (j = 0 ; j < 2 ; j++)
+		for (j = 0; j < 2; j++)
 		{
 			p = LittleShort (in->children[j]);
 			if (p >= 0)
@@ -1134,9 +1134,9 @@ static void Mod_LoadLeafs (lump_t *l)
 	if (!strcmp(s, loadmodel->name))
 		isnotmap = false;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
-		for (j = 0 ; j < 3 ; j++)
+		for (j = 0; j < 3; j++)
 		{
 			out->minmaxs[j] = LittleShort (in->mins[j]);
 			out->minmaxs[3+j] = LittleShort (in->maxs[j]);
@@ -1155,18 +1155,18 @@ static void Mod_LoadLeafs (lump_t *l)
 			out->compressed_vis = loadmodel->visdata + p;
 		out->efrags = NULL;
 
-		for (j = 0 ; j < 4 ; j++)
+		for (j = 0; j < 4; j++)
 			out->ambient_sound_level[j] = in->ambient_level[j];
 
 		// gl underwater warp
 		if (out->contents != CONTENTS_EMPTY)
 		{
-			for (j=0 ; j<out->nummarksurfaces ; j++)
+			for (j = 0; j < out->nummarksurfaces; j++)
 				out->firstmarksurface[j]->flags |= SURF_UNDERWATER;
 		}
 		if (isnotmap)
 		{
-			for (j=0 ; j<out->nummarksurfaces ; j++)
+			for (j = 0; j < out->nummarksurfaces; j++)
 				out->firstmarksurface[j]->flags |= SURF_DONTWARP;
 		}
 	}
@@ -1275,7 +1275,7 @@ static void Mod_LoadClipnodes (lump_t *l)
 	hull->clip_maxs[2] = 50;
 #endif
 
-	for (i = 0 ; i < count ; i++, out++, in++)
+	for (i = 0; i < count; i++, out++, in++)
 	{
 		out->planenum = LittleLong(in->planenum);
 		out->children[0] = LittleShort(in->children[0]);
@@ -1308,10 +1308,10 @@ static void Mod_MakeHull0 (void)
 	hull->lastclipnode = count-1;
 	hull->planes = loadmodel->planes;
 
-	for (i = 0 ; i < count ; i++, out++, in++)
+	for (i = 0; i < count; i++, out++, in++)
 	{
 		out->planenum = in->plane - loadmodel->planes;
-		for (j = 0 ; j < 2 ; j++)
+		for (j = 0; j < 2; j++)
 		{
 			child = in->children[j];
 			if (child->contents < 0)
@@ -1342,7 +1342,7 @@ static void Mod_LoadMarksurfaces (lump_t *l)
 	loadmodel->marksurfaces = out;
 	loadmodel->nummarksurfaces = count;
 
-	for (i = 0 ; i < count ; i++)
+	for (i = 0; i < count; i++)
 	{
 		j = LittleShort(in[i]);
 		if (j >= loadmodel->numsurfaces)
@@ -1370,7 +1370,7 @@ static void Mod_LoadSurfedges (lump_t *l)
 	loadmodel->surfedges = out;
 	loadmodel->numsurfedges = count;
 
-	for (i = 0 ; i < count ; i++)
+	for (i = 0; i < count; i++)
 		out[i] = LittleLong (in[i]);
 }
 
@@ -1397,10 +1397,10 @@ static void Mod_LoadPlanes (lump_t *l)
 	loadmodel->planes = out;
 	loadmodel->numplanes = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
 		bits = 0;
-		for (j = 0 ; j < 3 ; j++)
+		for (j = 0; j < 3; j++)
 		{
 			out->normal[j] = LittleFloat (in->normal[j]);
 			if (out->normal[j] < 0)
@@ -1423,7 +1423,7 @@ static float RadiusFromBounds (vec3_t arg_mins, vec3_t arg_maxs)
 	int		i;
 	vec3_t	corner;
 
-	for (i = 0 ; i < 3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		corner[i] = fabs(arg_mins[i]) > fabs(arg_maxs[i]) ? fabs(arg_mins[i]) : fabs(arg_maxs[i]);
 	}
@@ -1453,7 +1453,7 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 // swap all the lumps
 	mod_base = (byte *)header;
 
-	for (i=0 ; i<sizeof(dheader_t)/4 ; i++)
+	for (i = 0; i < sizeof(dheader_t)/4; i++)
 		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
 
 // load into heap
@@ -1481,12 +1481,12 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 //
 // set up the submodels (FIXME: this is confusing)
 //
-	for (i=0 ; i<mod->numsubmodels ; i++)
+	for (i = 0; i < mod->numsubmodels; i++)
 	{
 		bm = &mod->submodels[i];
 
 		mod->hulls[0].firstclipnode = bm->headnode[0];
-		for (j=1 ; j<MAX_MAP_HULLS ; j++)
+		for (j = 1; j < MAX_MAP_HULLS; j++)
 		{
 			mod->hulls[j].firstclipnode = bm->headnode[j];
 			mod->hulls[j].lastclipnode = mod->numclipnodes-1;
@@ -1562,7 +1562,7 @@ static void *Mod_LoadAliasFrame (void *pin, maliasframedesc_t *frame)
 	frame->firstpose = posenum;
 	frame->numposes = 1;
 
-	for (i = 0 ; i < 3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 	// these are byte values, so we don't have to worry about
 	// endianness
@@ -1581,13 +1581,13 @@ static void *Mod_LoadAliasFrame (void *pin, maliasframedesc_t *frame)
 		aliastransform[1][3] = pheader->scale_origin[1];
 		aliastransform[2][3] = pheader->scale_origin[2];
 
-		for (j = 0 ; j < pheader->numverts ; j++)
+		for (j = 0; j < pheader->numverts; j++)
 		{
 			in[0] = pinframe[j].v[0];
 			in[1] = pinframe[j].v[1];
 			in[2] = pinframe[j].v[2];
 			R_AliasTransformVector(in, out);
-			for (i = 0 ; i < 3 ; i++)
+			for (i = 0; i < 3; i++)
 			{
 				if (mins[i] > out[i])
 					mins[i] = out[i];
@@ -1625,7 +1625,7 @@ static void *Mod_LoadAliasGroup (void *pin,  maliasframedesc_t *frame)
 	frame->firstpose = posenum;
 	frame->numposes = numframes;
 
-	for (i = 0 ; i < 3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 	// these are byte values, so we don't have to worry about endianness
 		frame->bboxmin.v[i] = pingroup->bboxmin.v[i];
@@ -1647,19 +1647,19 @@ static void *Mod_LoadAliasGroup (void *pin,  maliasframedesc_t *frame)
 	aliastransform[1][3] = pheader->scale_origin[1];
 	aliastransform[2][3] = pheader->scale_origin[2];
 
-	for (i = 0 ; i < numframes ; i++)
+	for (i = 0; i < numframes; i++)
 	{
 		poseverts[posenum] = (trivertx_t *)((daliasframe_t *)ptemp + 1);
 
 		if (mins[0] == 32768)
 		{
-			for (j = 0 ; j < pheader->numverts ; j++)
+			for (j = 0; j < pheader->numverts; j++)
 			{
 				in[0] = poseverts[posenum][j].v[0];
 				in[1] = poseverts[posenum][j].v[1];
 				in[2] = poseverts[posenum][j].v[2];
 				R_AliasTransformVector(in, out);
-				for (k=0 ; k<3 ; k++)
+				for (k = 0; k < 3; k++)
 				{
 					if (mins[k] > out[k])
 						mins[k] = out[k];
@@ -1794,7 +1794,7 @@ static void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int md
 	else
 		tex_mode = 0;
 
-	for (i = 0 ; i < numskins ; i++)
+	for (i = 0; i < numskins; i++)
 	{
 		if (pskintype->type == ALIAS_SKIN_SINGLE)
 		{
@@ -1858,7 +1858,7 @@ static void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int md
 
 			pskintype = (void *)(pinskinintervals + groupskins);
 
-			for (j = 0 ; j < groupskins ; j++)
+			for (j = 0; j < groupskins; j++)
 			{
 				Mod_FloodFillSkin (skin, pheader->skinwidth, pheader->skinheight);
 				sprintf (name, "%s_%i_%i", loadmodel->name, i,j);
@@ -2159,7 +2159,7 @@ static void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
 	mod->synctype = LittleLong (pinmodel->synctype);
 	mod->numframes = pheader->numframes;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		pheader->scale[i] = LittleFloat (pinmodel->scale[i]);
 		pheader->scale_origin[i] = LittleFloat (pinmodel->scale_origin[i]);
@@ -2177,7 +2177,7 @@ static void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
 //
 	pinstverts = (stvert_t *)pskintype;
 
-	for (i=0 ; i<pheader->version ; i++)	//version holds num_st_verts
+	for (i = 0; i < pheader->version; i++)	//version holds num_st_verts
 	{
 		stverts[i].onseam = LittleLong (pinstverts[i].onseam);
 		stverts[i].s = LittleLong (pinstverts[i].s);
@@ -2189,11 +2189,11 @@ static void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
 //
 	pintriangles = (dnewtriangle_t *)&pinstverts[pheader->version];
 
-	for (i=0 ; i<pheader->numtris ; i++)
+	for (i = 0; i < pheader->numtris; i++)
 	{
 		triangles[i].facesfront = LittleLong (pintriangles[i].facesfront);
 
-		for (j=0 ; j<3 ; j++)
+		for (j = 0; j < 3; j++)
 		{
 			triangles[i].vertindex[j] = LittleShort (pintriangles[i].vertindex[j]);
 			triangles[i].stindex[j]	  = LittleShort (pintriangles[i].stindex[j]);
@@ -2209,7 +2209,7 @@ static void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
 	mins[0] = mins[1] = mins[2] = 32768;
 	maxs[0] = maxs[1] = maxs[2] = -32768;
 
-	for (i=0 ; i<numframes ; i++)
+	for (i = 0; i < numframes; i++)
 	{
 		aliasframetype_t	frametype;
 
@@ -2337,7 +2337,7 @@ static void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	mod->synctype = LittleLong (pinmodel->synctype);
 	mod->numframes = pheader->numframes;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		pheader->scale[i] = LittleFloat (pinmodel->scale[i]);
 		pheader->scale_origin[i] = LittleFloat (pinmodel->scale_origin[i]);
@@ -2355,7 +2355,7 @@ static void Mod_LoadAliasModel (model_t *mod, void *buffer)
 //
 	pinstverts = (stvert_t *)pskintype;
 
-	for (i=0 ; i<pheader->numverts ; i++)
+	for (i = 0; i < pheader->numverts; i++)
 	{
 		stverts[i].onseam = LittleLong (pinstverts[i].onseam);
 		stverts[i].s = LittleLong (pinstverts[i].s);
@@ -2367,11 +2367,11 @@ static void Mod_LoadAliasModel (model_t *mod, void *buffer)
 //
 	pintriangles = (dtriangle_t *)&pinstverts[pheader->numverts];
 
-	for (i=0 ; i<pheader->numtris ; i++)
+	for (i = 0; i < pheader->numtris; i++)
 	{
 		triangles[i].facesfront = LittleLong (pintriangles[i].facesfront);
 
-		for (j=0 ; j<3 ; j++)
+		for (j = 0; j < 3; j++)
 		{
 			triangles[i].vertindex[j] =	LittleLong (pintriangles[i].vertindex[j]);
 			triangles[i].stindex[j]	  = triangles[i].vertindex[j];
@@ -2387,7 +2387,7 @@ static void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	mins[0] = mins[1] = mins[2] = 32768;
 	maxs[0] = maxs[1] = maxs[2] = -32768;
 
-	for (i=0 ; i<numframes ; i++)
+	for (i = 0; i < numframes; i++)
 	{
 		aliasframetype_t	frametype;
 
@@ -2530,7 +2530,7 @@ static void *Mod_LoadSpriteGroup (void *pin, mspriteframe_t **ppframe, int frame
 		pspritegroup->intervals = poutintervals;
 	}
 
-	for (i=0 ; i<numframes ; i++)
+	for (i = 0; i < numframes; i++)
 	{
 		*poutintervals = LittleFloat (pin_intervals->interval);
 		if (*poutintervals <= 0.0)
@@ -2542,7 +2542,7 @@ static void *Mod_LoadSpriteGroup (void *pin, mspriteframe_t **ppframe, int frame
 
 	ptemp = (void *)pin_intervals;
 
-	for (i=0 ; i<numframes ; i++)
+	for (i = 0; i < numframes; i++)
 	{
 		ptemp = Mod_LoadSpriteFrame (ptemp, &pspritegroup->frames[i], framenum * 100 + i);
 	}
@@ -2611,7 +2611,7 @@ static void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 
 	pframetype = (dspriteframetype_t *)(pin + 1);
 
-	for (i=0 ; i<numframes ; i++)
+	for (i = 0; i < numframes; i++)
 	{
 		spriteframetype_t	frametype;
 
@@ -2652,7 +2652,7 @@ static void Mod_Print (void)
 	model_t	*mod;
 
 	i = Cmd_Argc();
-	for (counter = 1 ; counter < i ; counter++)
+	for (counter = 1; counter < i; counter++)
 	{
 		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
 		{
@@ -2662,7 +2662,7 @@ static void Mod_Print (void)
 	}
 
 	MOD_Printf (FH, "Cached models:\n");
-	for (i=0, mod=mod_known ; i < mod_numknown ; i++, mod++)
+	for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
 	{
 		MOD_Printf (FH, "%4i (%8p): %s", i, mod->cache.data, mod->name);
 		if (mod->needload & NL_UNREFERENCED)

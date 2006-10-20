@@ -251,7 +251,7 @@ static void CL_Rcon_f (void)
 	Q_strlcat (message, rcon_password.string, sizeof(message));
 	Q_strlcat (message, " ", sizeof(message));
 
-	for (i=1 ; i<Cmd_Argc() ; i++)
+	for (i = 1; i < Cmd_Argc(); i++)
 	{
 		Q_strlcat (message, Cmd_Argv(i), sizeof(message));
 		Q_strlcat (message, " ", sizeof(message));
@@ -317,7 +317,7 @@ void CL_ClearState (void)
 // allocate the efrags and chain together into a free list
 //
 	cl.free_efrags = cl_efrags;
-	for (i=0 ; i<MAX_EFRAGS-1 ; i++)
+	for (i = 0; i < MAX_EFRAGS-1; i++)
 		cl.free_efrags[i].entnext = &cl.free_efrags[i+1];
 	cl.free_efrags[i].entnext = NULL;
 
@@ -401,7 +401,7 @@ static void CL_User_f (void)
 
 	uid = atoi(Cmd_Argv(1));
 
-	for (i=0 ; i<MAX_CLIENTS ; i++)
+	for (i = 0; i < MAX_CLIENTS; i++)
 	{
 		if (!cl.players[i].name[0])
 			continue;
@@ -430,7 +430,7 @@ static void CL_Users_f (void)
 	c = 0;
 	Con_Printf ("userid frags name\n");
 	Con_Printf ("------ ----- ----\n");
-	for (i=0 ; i<MAX_CLIENTS ; i++)
+	for (i = 0; i < MAX_CLIENTS; i++)
 	{
 		if (cl.players[i].name[0])
 		{
@@ -512,12 +512,12 @@ static void CL_FullServerinfo_f (void)
 	// this is a bit overkill today
 	// if someone did a newer version, they should
 	// have bumped the PROTOCOL_VERSION
-			if((int)(server_version*100)>(int)(ENGINE_VERSION*100))
+			if ((int)(server_version*100) > (int)(ENGINE_VERSION*100))
 			{
 				Con_Printf("The server is running v%4.2f, you have v%4.2f, please go to www.hexenworld.com and update your client to join\n",server_version,ENGINE_VERSION);
 				CL_Disconnect_f ();
 			}
-			if((int)(server_version*100)<(int)(ENGINE_VERSION*100))
+			if ((int)(server_version*100) < (int)(ENGINE_VERSION*100))
 			{
 				Con_Printf("The server is running an old version (v%4.2f), you have v%4.2f, please ask server admin to update to latest version\n",server_version,ENGINE_VERSION);
 				CL_Disconnect_f ();
@@ -636,7 +636,7 @@ static void CL_Packet_f (void)
 	senddata[0] = senddata[1] = senddata[2] = senddata[3] = 0xff;
 
 	l = strlen (in);
-	for (i=0 ; i<l ; i++)
+	for (i = 0; i < l; i++)
 	{
 		if (in[i] == '\\' && in[i+1] == 'n')
 		{
@@ -768,8 +768,8 @@ static void CL_ConnectionlessPacket (void)
 	// remote command from gui front end
 	if (c == A2C_CLIENT_COMMAND)
 	{
-		if ((*(unsigned *)net_from.ip != *(unsigned *)net_local_adr.ip
-			&& *(unsigned *)net_from.ip != htonl(INADDR_LOOPBACK)) )
+		if ( *(unsigned *)net_from.ip != *(unsigned *)net_local_adr.ip
+			&& *(unsigned *)net_from.ip != htonl(INADDR_LOOPBACK) )
 		{
 			Con_Printf ("Command packet from remote host. Ignored.\n");
 			return;
@@ -823,7 +823,7 @@ CL_ReadPackets
 */
 static void CL_ReadPackets (void)
 {
-//	while (NET_GetPacket ())
+//	while (NET_GetPacket())
 	while (CL_GetMessage())
 	{
 		//

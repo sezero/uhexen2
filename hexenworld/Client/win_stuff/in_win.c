@@ -526,7 +526,7 @@ void IN_MouseEvent (int mstate)
 	if (mouseactive && !dinput)
 	{
 	// perform button actions
-		for (i=0 ; i<mouse_buttons ; i++)
+		for (i = 0; i < mouse_buttons; i++)
 		{
 			if ( (mstate & (1<<i)) &&
 				!(mouse_oldbuttonstate & (1<<i)) )
@@ -591,39 +591,39 @@ static void IN_MouseMove (usercmd_t *cmd)
 
 			switch (od.dwOfs)
 			{
-				case DIMOFS_X:
-					mx += od.dwData;
-					break;
+			case DIMOFS_X:
+				mx += od.dwData;
+				break;
 
-				case DIMOFS_Y:
-					my += od.dwData;
-					break;
+			case DIMOFS_Y:
+				my += od.dwData;
+				break;
 
-				case DIMOFS_BUTTON0:
-					if (od.dwData & 0x80)
-						mstate_di |= 1;
-					else
-						mstate_di &= ~1;
-					break;
+			case DIMOFS_BUTTON0:
+				if (od.dwData & 0x80)
+					mstate_di |= 1;
+				else
+					mstate_di &= ~1;
+				break;
 
-				case DIMOFS_BUTTON1:
-					if (od.dwData & 0x80)
-						mstate_di |= (1<<1);
-					else
-						mstate_di &= ~(1<<1);
-					break;
+			case DIMOFS_BUTTON1:
+				if (od.dwData & 0x80)
+					mstate_di |= (1<<1);
+				else
+					mstate_di &= ~(1<<1);
+				break;
 
-				case DIMOFS_BUTTON2:
-					if (od.dwData & 0x80)
-						mstate_di |= (1<<2);
-					else
-						mstate_di &= ~(1<<2);
-					break;
+			case DIMOFS_BUTTON2:
+				if (od.dwData & 0x80)
+					mstate_di |= (1<<2);
+				else
+					mstate_di &= ~(1<<2);
+				break;
 			}
 		}
 
 	// perform button actions
-		for (i=0 ; i<mouse_buttons ; i++)
+		for (i = 0; i < mouse_buttons; i++)
 		{
 			if ( (mstate_di & (1<<i)) &&
 				!(mouse_oldbuttonstate & (1<<i)) )
@@ -798,7 +798,7 @@ static void IN_StartupJoystick (void)
 	}
 
 	// cycle through the joystick ids for the first valid one
-	for (joy_id=0 ; joy_id<numdevs ; joy_id++)
+	for (joy_id = 0; joy_id < numdevs; joy_id++)
 	{
 		memset (&ji, 0, sizeof(ji));
 		ji.dwSize = sizeof(ji);
@@ -887,7 +887,7 @@ static void Joy_AdvancedUpdate_f (void)
 		pdwRawValue[i] = RawValuePointer(i);
 	}
 
-	if( joy_advanced.value == 0.0)
+	if (joy_advanced.value == 0.0)
 	{
 		// default joystick initialization
 		// 2 axes only with joystick control
@@ -990,7 +990,7 @@ void IN_Commands (void)
 	// loop through the joystick buttons
 	// key a joystick event or auxillary event for higher number buttons for each state change
 	buttonstate = ji.dwButtons;
-	for (i=0 ; i < joy_numbuttons ; i++)
+	for (i = 0; i < joy_numbuttons; i++)
 	{
 		if ( (buttonstate & (1<<i)) && !(joy_oldbuttonstate & (1<<i)) )
 		{
@@ -1012,7 +1012,7 @@ void IN_Commands (void)
 		// this avoids any potential problems related to moving from one
 		// direction to another without going through the center position
 		povstate = 0;
-		if(ji.dwPOV != JOY_POVCENTERED)
+		if (ji.dwPOV != JOY_POVCENTERED)
 		{
 			if (ji.dwPOV == JOY_POVFORWARD)
 				povstate |= 0x01;
@@ -1024,7 +1024,7 @@ void IN_Commands (void)
 				povstate |= 0x08;
 		}
 		// determine which bits have changed and key an auxillary event for each change
-		for (i=0 ; i < 4 ; i++)
+		for (i = 0; i < 4; i++)
 		{
 			if ( (povstate & (1<<i)) && !(joy_oldpovstate & (1<<i)) )
 			{
@@ -1131,7 +1131,7 @@ static void IN_JoyMove (usercmd_t *cmd)
 				// user wants forward control to be forward control
 				if (fabs(fAxisValue) > joy_forwardthreshold.value)
 				{
-//					cmd->forwardmove += (fAxisValue * joy_forwardsensitivity.value) * speed * cl_forwardspeed.value;
+				//	cmd->forwardmove += (fAxisValue * joy_forwardsensitivity.value) * speed * cl_forwardspeed.value;
 					cmd->forwardmove += (fAxisValue * joy_forwardsensitivity.value) * speed * 200;
 				}
 			}
@@ -1140,7 +1140,7 @@ static void IN_JoyMove (usercmd_t *cmd)
 		case AxisSide:
 			if (fabs(fAxisValue) > joy_sidethreshold.value)
 			{
-//				cmd->sidemove += (fAxisValue * joy_sidesensitivity.value) * speed * cl_sidespeed.value;
+			//	cmd->sidemove += (fAxisValue * joy_sidesensitivity.value) * speed * cl_sidespeed.value;
 				cmd->sidemove += (fAxisValue * joy_sidesensitivity.value) * speed * 225;
 			}
 			break;
@@ -1151,7 +1151,7 @@ static void IN_JoyMove (usercmd_t *cmd)
 				// user wants turn control to become side control
 				if (fabs(fAxisValue) > joy_sidethreshold.value)
 				{
-//					cmd->sidemove -= (fAxisValue * joy_sidesensitivity.value) * speed * cl_sidespeed.value;
+				//	cmd->sidemove -= (fAxisValue * joy_sidesensitivity.value) * speed * cl_sidespeed.value;
 					cmd->sidemove -= (fAxisValue * joy_sidesensitivity.value) * speed * 225;
 				}
 			}
@@ -1160,7 +1160,7 @@ static void IN_JoyMove (usercmd_t *cmd)
 				// user wants turn control to be turn control
 				if (fabs(fAxisValue) > joy_yawthreshold.value)
 				{
-					if(dwControlMap[i] == JOY_ABSOLUTE_AXIS)
+					if (dwControlMap[i] == JOY_ABSOLUTE_AXIS)
 					{
 						cl.viewangles[YAW] += (fAxisValue * joy_yawsensitivity.value) * aspeed * cl_yawspeed.value;
 					}
@@ -1202,3 +1202,4 @@ static void IN_JoyMove (usercmd_t *cmd)
 	if (cl.viewangles[PITCH] < -70.0)
 		cl.viewangles[PITCH] = -70.0;
 }
+

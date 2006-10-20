@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.34 2006-06-23 14:43:32 sezero Exp $
+	$Id: gl_screen.c,v 1.35 2006-10-20 20:32:30 sezero Exp $
 */
 
 /*=============================================================================
@@ -249,10 +249,10 @@ static void SCR_DrawCenterString (void)
 
 	by = ((25-lines) * 8) / 2;
 
-	for (i = 0 ; i < lines ; i++, by += 8)
+	for (i = 0; i < lines; i++, by += 8)
 	{
-		strncpy(temp,&scr_centerstring[StartC[i]],EndC[i]-StartC[i]);
-		temp[EndC[i]-StartC[i]] = 0;
+		strncpy (temp, &scr_centerstring[StartC[i]], EndC[i] - StartC[i]);
+		temp[EndC[i] - StartC[i]] = 0;
 		bx = ((40-strlen(temp)) * 8) / 2;
 	  	M_Print2 (bx, by, temp);
 	}
@@ -494,7 +494,7 @@ static void SCR_DrawPause (void)
 	float delta;
 	static qboolean newdraw = false;
 	int finaly;
-	static float LogoPercent,LogoTargetPercent;
+	static float LogoPercent, LogoTargetPercent;
 
 	if (!scr_showpause.value)		// turn off for screenshots
 		return;
@@ -508,7 +508,7 @@ static void SCR_DrawPause (void)
 	if (!newdraw)
 	{
 		newdraw = true;
-		LogoTargetPercent= 1;
+		LogoTargetPercent = 1;
 		LogoPercent = 0;
 	}
 
@@ -518,7 +518,7 @@ static void SCR_DrawPause (void)
 
 	if (LogoPercent < LogoTargetPercent)
 	{
-		delta = ((LogoTargetPercent-LogoPercent)/.5)*host_frametime;
+		delta = ((LogoTargetPercent - LogoPercent) / .5) * host_frametime;
 		if (delta < 0.004)
 		{
 			delta = 0.004;
@@ -651,20 +651,20 @@ static void SCR_SetUpToDrawConsole (void)
 		scr_con_current = scr_conlines;
 	}
 	else if (key_dest == key_console)
-		scr_conlines = vid.height/2;	// half screen
+		scr_conlines = vid.height / 2;	// half screen
 	else
 		scr_conlines = 0;		// none visible
 
 	if (scr_conlines < scr_con_current)
 	{
-		scr_con_current -= scr_conspeed.value*host_frametime;
+		scr_con_current -= scr_conspeed.value * host_frametime;
 		if (scr_conlines > scr_con_current)
 			scr_con_current = scr_conlines;
 
 	}
 	else if (scr_conlines > scr_con_current)
 	{
-		scr_con_current += scr_conspeed.value*host_frametime;
+		scr_con_current += scr_conspeed.value * host_frametime;
 		if (scr_conlines < scr_con_current)
 			scr_con_current = scr_conlines;
 	}
@@ -738,7 +738,7 @@ static void SCR_ScreenShot_f (void)
 //
 	strcpy(pcxname,"shots/hexen00.tga");
 
-	for (i=0 ; i<=99 ; i++)
+	for (i = 0; i <= 99; i++)
 	{
 		pcxname[11] = i/10 + '0';
 		pcxname[12] = i%10 + '0';
@@ -746,7 +746,7 @@ static void SCR_ScreenShot_f (void)
 		if (access(checkname, F_OK) == -1)
 			break;	// file doesn't exist
 	}
-	if (i==100)
+	if (i == 100)
 	{
 		Con_Printf ("SCR_ScreenShot_f: Couldn't create a TGA file\n");
 		return;
@@ -756,17 +756,17 @@ static void SCR_ScreenShot_f (void)
 	buffer = Hunk_AllocName(glwidth * glheight * 3 + 18, "buffer_sshot");
 	memset (buffer, 0, 18);
 	buffer[2] = 2;		// uncompressed type
-	buffer[12] = glwidth&255;
-	buffer[13] = glwidth>>8;
-	buffer[14] = glheight&255;
-	buffer[15] = glheight>>8;
+	buffer[12] = glwidth & 255;
+	buffer[13] = glwidth >> 8;
+	buffer[14] = glheight & 255;
+	buffer[15] = glheight >> 8;
 	buffer[16] = 24;	// pixel size
 
 	glReadPixels_fp (glx, gly, glwidth, glheight, GL_RGB, GL_UNSIGNED_BYTE, buffer+18);
 
 	// swap rgb to bgr
-	c = 18+glwidth*glheight*3;
-	for (i=18 ; i<c ; i+=3)
+	c = 18 + glwidth*glheight*3;
+	for (i = 18; i < c; i += 3)
 	{
 		temp = buffer[i];
 		buffer[i] = buffer[i+2];
@@ -787,7 +787,7 @@ static qboolean	scr_drawdialog;
 
 static void SCR_DrawNotifyString (void)
 {
-	Plaque_Draw(scr_notifystring,1);
+	Plaque_Draw(scr_notifystring, 1);
 }
 
 /*
@@ -804,7 +804,7 @@ int SCR_ModalMessage (char *text)
 		return true;
 
 	scr_notifystring = text;
- 
+
 // draw a fresh screen
 	scr_fullupdate = 0;
 	scr_drawdialog = true;
@@ -842,7 +842,7 @@ void SCR_BringDownConsole (void)
 
 	scr_centertime_off = 0;
 
-	for (i=0 ; i<20 && scr_conlines != scr_con_current ; i++)
+	for (i = 0; i < 20 && scr_conlines != scr_con_current; i++)
 		SCR_UpdateScreen ();
 
 	cl.cshifts[0].percent = 0;		// no area contents palette on next frame
@@ -870,12 +870,12 @@ static void Plaque_Draw (char *message, qboolean AlwaysDraw)
 	FindTextBreaks(message, PLAQUE_WIDTH);
 
 	by = ((25-lines) * 8) / 2;
-	M_DrawTextBox2 (32, by-16, PLAQUE_WIDTH+4, lines+2,false);
+	M_DrawTextBox2 (32, by-16, PLAQUE_WIDTH+4, lines+2, false);
 
-	for (i = 0 ; i < lines ; i++, by += 8)
+	for (i = 0; i < lines; i++, by += 8)
 	{
-		strncpy (temp, &message[StartC[i]], EndC[i]-StartC[i]);
-		temp[EndC[i]-StartC[i]] = 0;
+		strncpy (temp, &message[StartC[i]], EndC[i] - StartC[i]);
+		temp[EndC[i] - StartC[i]] = 0;
 		bx = ((40-strlen(temp)) * 8) / 2;
 		M_Print2 (bx, by, temp);
 	}
@@ -904,12 +904,12 @@ static void Info_Plaque_Draw (char *message)
 	}
 
 	by = ((25-lines) * 8) / 2;
-	M_DrawTextBox2 (15, by-16, PLAQUE_WIDTH+4+4, lines+2,false);
+	M_DrawTextBox2 (15, by-16, PLAQUE_WIDTH+4+4, lines+2, false);
 
-	for(i=0;i<lines;i++,by+=8)
+	for (i = 0; i < lines; i++, by += 8)
 	{
-		strncpy(temp,&message[StartC[i]],EndC[i]-StartC[i]);
-		temp[EndC[i]-StartC[i]] = 0;
+		strncpy (temp, &message[StartC[i]], EndC[i] - StartC[i]);
+		temp[EndC[i] - StartC[i]] = 0;
 		bx = ((40-strlen(temp)) * 8) / 2;
 	  	M_Print2 (bx, by, temp);
 	}
@@ -928,14 +928,14 @@ static void Bottom_Plaque_Draw (char *message)
 
 	FindTextBreaks(message, PLAQUE_WIDTH);
 
-	by = (((vid.height)/8)-lines-2) * 8;
+	by = (((vid.height) / 8) - lines - 2) * 8;
 
-	M_DrawTextBox2 (32, by-16, PLAQUE_WIDTH+4, lines+2,true);
+	M_DrawTextBox2 (32, by-16, PLAQUE_WIDTH+4, lines+2, true);
 
-	for(i=0;i<lines;i++,by+=8)
+	for (i = 0; i < lines; i++, by += 8)
 	{
-		strncpy(temp,&message[StartC[i]],EndC[i]-StartC[i]);
-		temp[EndC[i]-StartC[i]] = 0;
+		strncpy (temp, &message[StartC[i]], EndC[i] - StartC[i]);
+		temp[EndC[i] - StartC[i]] = 0;
 		bx = ((40-strlen(temp)) * 8) / 2;
 	  	M_Print(bx, by, temp);
 	}
@@ -1092,10 +1092,10 @@ static void SB_IntermissionOverlay (void)
 	else
 		by = ((25-lines) * 8) / 2;
 
-	for (i = 0 ; i < lines ; i++, by += 8)
+	for (i = 0; i < lines; i++, by += 8)
 	{
-		size = EndC[i]-StartC[i];
-		strncpy(temp,&message[StartC[i]],size);
+		size = EndC[i] - StartC[i];
+		strncpy (temp, &message[StartC[i]], size);
 
 		if (size > elapsed)
 			size = elapsed;
@@ -1204,7 +1204,6 @@ void SCR_UpdateScreen (void)
 	if (!scr_initialized || !con_initialized)
 		return;		// not initialized yet
 
-
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	
 //
@@ -1305,6 +1304,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.34  2006/06/23 14:43:32  sezero
+ * some minor clean-ups
+ *
  * Revision 1.33  2006/06/08 18:49:33  sezero
  * split strings out of pr_edict.c and sync'ed it with the hexenworld version
  *

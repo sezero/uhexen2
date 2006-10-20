@@ -36,17 +36,20 @@ void	R_InitTextures (void)
 	r_notexture_mip->offsets[2] = r_notexture_mip->offsets[1] + 8*8;
 	r_notexture_mip->offsets[3] = r_notexture_mip->offsets[2] + 4*4;
 
-	for (m=0 ; m<4 ; m++)
+	for (m = 0; m < 4; m++)
 	{
 		dest = (byte *)r_notexture_mip + r_notexture_mip->offsets[m];
-		for (y=0 ; y< (16>>m) ; y++)
-			for (x=0 ; x< (16>>m) ; x++)
+
+		for (y = 0; y < (16 >> m); y++)
+		{
+			for (x = 0; x < (16 >> m); x++)
 			{
-				if (  (y< (8>>m) ) ^ (x< (8>>m) ) )
+				if ( (y < (8 >> m)) ^ (x < (8 >> m)) )
 					*dest++ = 0;
 				else
 					*dest++ = 0xff;
 			}
+		}
 	}
 }
 
@@ -93,9 +96,9 @@ void R_InitParticleTexture (void)
 	//
 	// particle texture
 	//
-	for (x = 0 ; x < TEXSIZE ; x++)
+	for (x = 0; x < TEXSIZE; x++)
 	{
-		for (y = 0 ; y < TEXSIZE ; y++)
+		for (y = 0; y < TEXSIZE; y++)
 		{
 			data[y][x][0] = 255;
 			data[y][x][1] = 255;
@@ -193,7 +196,7 @@ static void R_TimeRefresh_f (void)
 	}
 
 	start = Sys_DoubleTime ();
-	for (i=0 ; i<128 ; i++)
+	for (i = 0; i < 128; i++)
 	{
 		GL_BeginRendering(&glx, &gly, &glwidth, &glheight);
 		r_refdef.viewangles[1] = i/128.0*360.0;
@@ -315,7 +318,7 @@ void R_TranslatePlayerSkin (int playernum)
 	int		playerclass = (int)cl.scores[playernum].playerclass;
 	char		texname[20];
 
-	for (i=0 ; i<256 ; i++)
+	for (i = 0; i < 256; i++)
 		translate[i] = i;
 
 	top = (cl.scores[playernum].colors & 0xf0) >> 4;
@@ -333,7 +336,7 @@ void R_TranslatePlayerSkin (int playernum)
 	colorB = colorA + 256;
 	sourceA = colorB + 256 + (top * 256);
 	sourceB = colorB + 256 + (bottom * 256);
-	for (i = 0 ; i < 256 ; i++, colorA++, colorB++, sourceA++, sourceB++)
+	for (i = 0; i < 256; i++, colorA++, colorB++, sourceA++, sourceB++)
 	{
 		if (top >= 0 && (*colorA != 255))
 			translate[i] = *sourceA;
@@ -364,7 +367,7 @@ void R_TranslatePlayerSkin (int playernum)
 #if 0
 	byte	translated[320*200];
 
-	for (i=0 ; i<s ; i+=4)
+	for (i = 0; i < s; i += 4)
 	{
 		translated[i] = translate[original[i]];
 		translated[i+1] = translate[original[i+1]];
@@ -375,7 +378,7 @@ void R_TranslatePlayerSkin (int playernum)
 	// don't mipmap these, because it takes too long
 	GL_Upload8 (translated, paliashdr->skinwidth, paliashdr->skinheight, false, false, true);
 #else
-	for (i=0 ; i<256 ; i++)
+	for (i = 0; i < 256; i++)
 		translate32[i] = d_8to24table[translate[i]];
 	scaled_width  = gl_max_size < 512 ? gl_max_size : 512;
 	scaled_height = gl_max_size < 256 ? gl_max_size : 256;
@@ -388,11 +391,11 @@ void R_TranslatePlayerSkin (int playernum)
 	inheight = paliashdr->skinheight;
 	out = pixels;
 	fracstep = inwidth*0x10000/scaled_width;
-	for (i=0 ; i<scaled_height ; i++, out += scaled_width)
+	for (i = 0; i < scaled_height; i++, out += scaled_width)
 	{
 		inrow = original + inwidth*(i*inheight/scaled_height);
 		frac = fracstep >> 1;
-		for (j=0 ; j<scaled_width ; j+=4)
+		for (j = 0; j < scaled_width; j += 4)
 		{
 			out[j] = translate32[inrow[frac>>16]];
 			frac += fracstep;
@@ -418,7 +421,7 @@ void R_NewMap (void)
 {
 	int		i;
 
-	for (i=0 ; i<256 ; i++)
+	for (i = 0; i < 256; i++)
 		d_lightstylevalue[i] = 264;		// normal light value
 
 	memset (&r_worldentity, 0, sizeof(r_worldentity));
@@ -426,7 +429,7 @@ void R_NewMap (void)
 
 // clear out efrags in case the level hasn't been reloaded
 // FIXME: is this one short?
-	for (i=0 ; i<cl.worldmodel->numleafs ; i++)
+	for (i = 0; i < cl.worldmodel->numleafs; i++)
 		cl.worldmodel->leafs[i].efrags = NULL;
 
 	r_viewleaf = NULL;
@@ -437,7 +440,7 @@ void R_NewMap (void)
 	// identify sky texture
 	skytexturenum = -1;
 	mirrortexturenum = -1;
-	for (i=0 ; i<cl.worldmodel->numtextures ; i++)
+	for (i = 0; i < cl.worldmodel->numtextures; i++)
 	{
 		if (!cl.worldmodel->textures[i])
 			continue;

@@ -189,9 +189,7 @@ static void Model_NextDownload (void)
 	}
 
 	cls.downloadtype = dl_model;
-	for ( 
-		; cl.model_name[cls.downloadnumber][0]
-		; cls.downloadnumber++)
+	for ( ; cl.model_name[cls.downloadnumber][0] ; cls.downloadnumber++)
 	{
 		s = cl.model_name[cls.downloadnumber];
 		if (s[0] == '*')
@@ -200,7 +198,7 @@ static void Model_NextDownload (void)
 			return;		// started a download
 	}
 
-	for (i=1 ; i<MAX_MODELS ; i++)
+	for (i = 1; i < MAX_MODELS; i++)
 	{
 		if (!cl.model_name[i][0])
 			break;
@@ -245,16 +243,14 @@ static void Sound_NextDownload (void)
 	}
 
 	cls.downloadtype = dl_sound;
-	for ( 
-		; cl.sound_name[cls.downloadnumber][0]
-		; cls.downloadnumber++)
+	for ( ; cl.sound_name[cls.downloadnumber][0] ; cls.downloadnumber++)
 	{
 		s = cl.sound_name[cls.downloadnumber];
 		if (!CL_CheckOrDownloadFile(va("sound/%s",s)))
 			return;		// started a download
 	}
 
-	for (i=1 ; i<MAX_SOUNDS ; i++)
+	for (i = 1; i < MAX_SOUNDS; i++)
 	{
 		if (!cl.sound_name[i][0])
 			break;
@@ -548,12 +544,12 @@ static void CL_ParseSoundlist (void)
 
 // precache sounds
 	memset (cl.sound_precache, 0, sizeof(cl.sound_precache));
-	for (numsounds=1 ; ; numsounds++)
+	for (numsounds = 1 ; ; numsounds++)
 	{
 		str = MSG_ReadString ();
 		if (!str[0])
 			break;
-		if (numsounds==MAX_SOUNDS)
+		if (numsounds == MAX_SOUNDS)
 			Host_EndGame ("Server sent too many sound_precache");
 		strcpy (cl.sound_name[numsounds], str);
 	}
@@ -588,12 +584,12 @@ static void CL_ParseModellist (void)
 	cl_ravenindex = -1;
 	cl_raven2index = -1;
 
-	for (nummodels=1 ; ; nummodels++)
+	for (nummodels = 1 ; ; nummodels++)
 	{
 		str = MSG_ReadString ();
 		if (!str[0])
 			break;
-		if (nummodels==MAX_MODELS)
+		if (nummodels == MAX_MODELS)
 			Host_EndGame ("Server sent too many model_precache");
 		strcpy (cl.model_name[nummodels], str);
 
@@ -653,7 +649,7 @@ static void CL_ParseBaseline (entity_state_t *es)
 	es->drawflags = MSG_ReadByte();
 	es->abslight = MSG_ReadByte();
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		es->origin[i] = MSG_ReadCoord ();
 		es->angles[i] = MSG_ReadAngle ();
@@ -709,7 +705,7 @@ static void CL_ParseStaticSound (void)
 	int			sound_num, vol, atten;
 	int			i;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		org[i] = MSG_ReadCoord ();
 	sound_num = MSG_ReadByte ();
 	vol = MSG_ReadByte ();
@@ -754,7 +750,7 @@ static void CL_ParseStartSoundPacket(void)
 
 	sound_num = MSG_ReadByte ();
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		pos[i] = MSG_ReadCoord ();
 
 	ent = (channel>>3)&1023;
@@ -862,13 +858,13 @@ static void CL_NewTranslation (int slot)
 	top -= 1;
 	bottom -= 1;
 
-	for (i=0 ; i<VID_GRADES ; i++, dest += 256, source+=256)
+	for (i = 0; i < VID_GRADES; i++, dest += 256, source += 256)
 	{
 		colorA = playerTranslation + 256 + color_offsets[(int)player->playerclass-1];
 		colorB = colorA + 256;
 		sourceA = colorB + 256 + (top * 256);
 		sourceB = colorB + 256 + (bottom * 256);
-		for(j=0;j<256;j++,colorA++,colorB++,sourceA++,sourceB++)
+		for (j = 0; j < 256; j++, colorA++, colorB++, sourceA++, sourceB++)
 		{
 			if (top >= 0 && (*colorA != 255))
 				dest[j] = source[*sourceA];
@@ -937,8 +933,8 @@ static void CL_SetStat (int stat, int value)
 	if (stat == STAT_ITEMS)
 	{	// set flash times
 		Sbar_Changed ();
-		for (j=0 ; j<32 ; j++)
-			if ( (value & (1<<j)) && !(cl.stats[stat] & (1<<j)))
+		for (j = 0; j < 32; j++)
+			if ( (value & (1<<j)) && !(cl.stats[stat] & (1<<j)) )
 				cl.item_gettime[j] = cl.time;
 	}
 
@@ -975,7 +971,7 @@ static void CL_MuzzleFlash (void)
 	AngleVectors (pl->viewangles, fv, rv, uv);
 
 	VectorMA (dl->origin, 18, fv, dl->origin);
-	dl->radius = 200 + (rand()&31);
+	dl->radius = 200 + (rand() & 31);
 	dl->minlight = 32;
 	dl->die = cl.time + 0.1;
 	dl->color[0] = 0.2;
@@ -1059,7 +1055,9 @@ static void CL_ParticleExplosion(void)
 	R_ColoredParticleExplosion(org,color,radius,counter);
 }
 
-#define SHOWNET(x) if(cl_shownet.value==2)Con_Printf ("%3i:%s\n", msg_readcount-1, x);
+#define SHOWNET(x) \
+	if (cl_shownet.value == 2) \
+		Con_Printf ("%3i:%s\n", msg_readcount-1, (x));
 
 /*
 =====================
@@ -1189,7 +1187,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_setangle:
-			for (i=0 ; i<3 ; i++)
+			for (i = 0; i < 3; i++)
 				cl.viewangles[i] = MSG_ReadAngle ();
 //			cl.viewangles[PITCH] = cl.viewangles[ROLL] = 0;
 			break;
@@ -1222,7 +1220,7 @@ void CL_ParseServerMessage (void)
 			if (ent_num > MAX_EDICTS)
 				Host_Error ("svc_sound_update_pos: ent = %i", ent_num);
 
-			for (i=0 ; i<3 ; i++)
+			for (i = 0; i < 3; i++)
 				pos[i] = MSG_ReadCoord ();
 
 			S_UpdateSoundPos (ent_num, channel, pos);
@@ -1359,7 +1357,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_intermission:
-//			if(cl_siege)
+//			if (cl_siege)
 //			{//MG
 				cl.intermission = MSG_ReadByte();
 				cl.completed_time = realtime;
@@ -1371,9 +1369,9 @@ void CL_ParseServerMessage (void)
 				cl.intermission = 1;
 				cl.completed_time = realtime;
 				vid.recalc_refdef = true;	// go to full screen
-				for (i=0 ; i<3 ; i++)
+				for (i = 0; i < 3; i++)
 					cl.simorg[i] = MSG_ReadCoord ();
-				for (i=0 ; i<3 ; i++)
+				for (i = 0; i < 3; i++)
 					cl.simangles[i] = MSG_ReadAngle ();
 				VectorClear (cl.simvel);
 				break;
@@ -1427,7 +1425,7 @@ void CL_ParseServerMessage (void)
 
 		case svc_chokecount:		// some preceding packets were choked
 			i = MSG_ReadByte ();
-			for (j=0 ; j<i ; j++)
+			for (j = 0; j < i; j++)
 				cl.frames[ (cls.netchan.incoming_acknowledged-1-j)&UPDATE_MASK ].receivedtime = -2;
 			break;
 
@@ -1525,8 +1523,8 @@ void CL_ParseServerMessage (void)
 				cl.v.strength = MSG_ReadByte();
 			if (sc1 & SC1_DEXTERITY)
 				cl.v.dexterity = MSG_ReadByte();
-//				if (sc1 & SC1_WEAPON)
-//					cl.v.weapon = MSG_ReadByte();
+//			if (sc1 & SC1_WEAPON)
+//				cl.v.weapon = MSG_ReadByte();
 			if (sc1 & SC1_TELEPORT_TIME)
 			{
 //				Con_Printf("Teleport_time>time, got bit\n");
@@ -1602,10 +1600,10 @@ void CL_ParseServerMessage (void)
 				cl.v.ring_turning = MSG_ReadByte();
 			if (sc2 & SC2_REGEN_T)
 				cl.v.ring_regeneration = MSG_ReadByte();
-//				if (sc2 & SC2_HASTE_T)
-//					cl.v.haste_time = MSG_ReadFloat();
-//				if (sc2 & SC2_TOME_T)
-//					cl.v.tome_time = MSG_ReadFloat();
+//			if (sc2 & SC2_HASTE_T)
+//				cl.v.haste_time = MSG_ReadFloat();
+//			if (sc2 & SC2_TOME_T)
+//				cl.v.tome_time = MSG_ReadFloat();
 			if (sc2 & SC2_PUZZLE1)
 				sprintf(cl.puzzle_pieces[0], "%.9s", MSG_ReadString());
 			if (sc2 & SC2_PUZZLE2)

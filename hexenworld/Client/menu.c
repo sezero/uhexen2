@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.52 2006-10-07 16:38:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.53 2006-10-20 20:32:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -181,7 +181,7 @@ static void M_BuildTranslationTable(int top, int bottom)
 	colorB = colorA + 256;
 	sourceA = colorB + 256 + (top * 256);
 	sourceB = colorB + 256 + (bottom * 256);
-	for(j=0;j<256;j++,colorA++,colorB++,sourceA++,sourceB++)
+	for (j = 0; j < 256; j++, colorA++, colorB++, sourceA++, sourceB++)
 	{
 		if (top >= 0 && (*colorA != 255))
 			dest[j] = source[*sourceA];
@@ -358,15 +358,15 @@ static void M_BuildBigCharWidth (void)
 
 	p = Draw_CachePic ("gfx/menu/bigfont.lmp");
 
-	for(numA = 0; numA < 27; numA++)
+	for (numA = 0; numA < 27; numA++)
 	{
 		memset(After,20,sizeof(After));
 		source = p->data + ((numA % 8) * 20) + (numA / 8 * p->width * 20);
 		biggestX = 0;
 
-		for(ypos=0;ypos < 19;ypos++)
+		for (ypos = 0; ypos < 19; ypos++)
 		{
-			for(xpos=0;xpos<19;xpos++,source++)
+			for (xpos = 0; xpos < 19; xpos++, source++)
 			{
 				if (*source)
 				{
@@ -379,15 +379,15 @@ static void M_BuildBigCharWidth (void)
 		}
 		biggestX++;
 
-		for(numB = 0; numB < 27; numB++)
+		for (numB = 0; numB < 27; numB++)
 		{
 			memset(Before,0,sizeof(Before));
 			source = p->data + ((numB % 8) * 20) + (numB / 8 * p->width * 20);
 			adjustment = 0;
 
-			for(ypos=0;ypos < 19;ypos++)
+			for (ypos = 0; ypos < 19; ypos++)
 			{
-				for(xpos=0;xpos<19;xpos++,source++)
+				for (xpos = 0; xpos < 19; xpos++, source++)
 				{
 					if (!(*source))
 					{
@@ -401,7 +401,7 @@ static void M_BuildBigCharWidth (void)
 
 			while (1)
 			{
-				for(ypos=0;ypos<19;ypos++)
+				for (ypos = 0; ypos < 19; ypos++)
 				{
 					if (After[ypos] - Before[ypos] >= 15)
 						break;
@@ -415,12 +415,12 @@ static void M_BuildBigCharWidth (void)
 		}
 	}
 
-	sprintf(temp,"%s\\gfx\\menu\\fontsize.lmp",com_gamedir);
-	FH = fopen(temp,"wb");
-	fwrite(BigCharWidth,1,sizeof(BigCharWidth),FH);
-	fclose(FH);
+	sprintf (temp, "%s/gfx/menu/fontsize.lmp", com_gamedir);
+	FH = fopen (temp, "wb");
+	fwrite (BigCharWidth, 1, sizeof(BigCharWidth), FH);
+	fclose (FH);
 #else
-	COM_LoadStackFile ("gfx/menu/fontsize.lmp",BigCharWidth,sizeof(BigCharWidth)+1);
+	COM_LoadStackFile ("gfx/menu/fontsize.lmp", BigCharWidth, sizeof(BigCharWidth)+1);
 #endif
 }
 
@@ -463,10 +463,10 @@ static int M_DrawBigCharacter (int x, int y, int num, int numNext)
 	p = Draw_CachePic ("gfx/menu/bigfont.lmp");
 	source = p->data + ((num % 8) * 20) + (num / 8 * p->width * 20);
 
-	for(ypos=0;ypos < 19;ypos++)
+	for (ypos = 0; ypos < 19; ypos++)
 	{
 		dest = vid.buffer + (y+ypos) * vid.rowbytes + x;
-		for(xpos=0;xpos<19;xpos++,dest++,source++)
+		for (xpos = 0; xpos < 19; xpos++, dest++, source++)
 		{
 			if (*source)
 			{
@@ -495,7 +495,7 @@ static void M_DrawBigString(int x, int y, char *string)
 	x += ((vid.width - 320)>>1);
 
 	length = strlen(string);
-	for(c=0;c<length;c++)
+	for (c = 0; c < length; c++)
 	{
 		x += M_DrawBigCharacter(x,y,string[c],string[c+1]);
 	}
@@ -614,10 +614,10 @@ static void M_Main_Draw (void)
 	int		f;
 
 	ScrollTitle("gfx/menu/title0.lmp");
-	M_DrawBigString (72,60+(0*20),"MULTIPLAYER");
-	M_DrawBigString (72,60+(1*20),"OPTIONS");
-	M_DrawBigString (72,60+(2*20),"HELP");
-	M_DrawBigString (72,60+(3*20),"QUIT");
+	M_DrawBigString (72, 60 + (0 * 20), "MULTIPLAYER");
+	M_DrawBigString (72, 60 + (1 * 20), "OPTIONS");
+	M_DrawBigString (72, 60 + (2 * 20), "HELP");
+	M_DrawBigString (72, 60 + (3 * 20), "QUIT");
 
 	f = (int)(realtime * 10)%8;
 	M_DrawTransPic (43, 54 + m_main_cursor * 20,Draw_CachePic( va("gfx/menu/menudot%i.lmp", f+1 ) ) );
@@ -750,7 +750,7 @@ static void M_AdjustSliders (int dir)
 		scr_viewsize.value += dir * 10;
 		Cvar_SetValue ("viewsize", scr_viewsize.value);
 		break;
-	case OPT_GAMMA:	// gamma
+	case OPT_GAMMA:		// gamma
 		v_gamma.value -= dir * 0.05;
 		if (v_gamma.value < 0.5)
 			v_gamma.value = 0.5;
@@ -766,7 +766,7 @@ static void M_AdjustSliders (int dir)
 			sensitivity.value = 11;
 		Cvar_SetValue ("sensitivity", sensitivity.value);
 		break;
-	case OPT_MUSICTYPE: // bgm type
+	case OPT_MUSICTYPE:	// bgm type
 		if (Q_strcasecmp(bgmtype.string,"midi") == 0)
 		{
 			if (dir < 0)
@@ -806,6 +806,7 @@ static void M_AdjustSliders (int dir)
 			sfxvolume.value = 1;
 		Cvar_SetValue ("volume", sfxvolume.value);
 		break;
+
 	case OPT_ALWAYRUN:	// always run
 		if (cl_forwardspeed.value > 200)
 		{
@@ -853,9 +854,9 @@ static void M_DrawSlider (int x, int y, float range)
 	if (range > 1)
 		range = 1;
 	M_DrawCharacter (x-8, y, 256);
-	for (i=0 ; i<SLIDER_RANGE ; i++)
+	for (i = 0; i < SLIDER_RANGE; i++)
 		M_DrawCharacter (x + i*8, y, 257);
-	M_DrawCharacter (x+i*8, y, 258);
+	M_DrawCharacter (x + i*8, y, 258);
 	M_DrawCharacter (x + (SLIDER_RANGE-1)*8 * range, y, 259);
 }
 
@@ -876,59 +877,61 @@ static void M_Options_Draw (void)
 
 	ScrollTitle("gfx/menu/title3.lmp");
 
-	M_Print (16, 60+(0*8),	"    Customize controls");
-	M_Print (16, 60+(1*8),	"         Go to console");
-	M_Print (16, 60+(2*8),	"     Reset to defaults");
+//	we use 22 character option titles. the increment to
+//	the x offset is: (22 - strlen(option_title)) * 8
+	M_Print (16 + (4 * 8), 60 + (0 * 8),	"Customize controls");
+	M_Print (16 + (9 * 8), 60 + (1 * 8),	"Go to console");
+	M_Print (16 + (5 * 8), 60 + (2 * 8),	"Reset to defaults");
 
-	M_Print (16, 60+(3*8),	"           Screen size");
+	M_Print (16 + (11 * 8), 60 + (3 * 8),	"Screen size");
 	r = (scr_viewsize.value - 30) / (120 - 30);
-	M_DrawSlider (220, 60+(3*8), r);
+	M_DrawSlider (220, 60 + (3 * 8), r);
 
-	M_Print (16, 60+(4*8),	"            Brightness");
+	M_Print (16 + (12 * 8), 60 + (4 * 8),	"Brightness");
 	r = (1.0 - v_gamma.value) / 0.5;
-	M_DrawSlider (220, 60+(4*8), r);
+	M_DrawSlider (220, 60 + (4 * 8), r);
 
-	M_Print (16, 60+(5*8),	"           Mouse Speed");
+	M_Print (16 + (11 * 8), 60 + (5 * 8),	"Mouse Speed");
 	r = (sensitivity.value - 1)/10;
-	M_DrawSlider (220, 60+(5*8), r);
+	M_DrawSlider (220, 60 + (5 * 8), r);
 
-	M_Print (16, 60+(6*8),	"            Music Type");
-	if (Q_strcasecmp(bgmtype.string,"midi") == 0)
-		M_Print (220, 60+(6*8), "MIDI");
-	else if (Q_strcasecmp(bgmtype.string,"cd") == 0)
-		M_Print (220, 60+(6*8), "CD");
+	M_Print (16 + (12 * 8), 60 + (6 * 8),	"Music Type");
+	if (Q_strcasecmp(bgmtype.string, "midi") == 0)
+		M_Print (220, 60 + (6 * 8), "MIDI");
+	else if (Q_strcasecmp(bgmtype.string, "cd") == 0)
+		M_Print (220, 60 + (6 * 8), "CD");
 	else
-		M_Print (220, 60+(6*8), "None");
+		M_Print (220, 60 + (6 * 8), "None");
 
-	M_Print (16, 60+(7*8),	"          Music Volume");
+	M_Print (16 + (10 * 8), 60 + (7 * 8),	"Music Volume");
 	r = bgmvolume.value;
-	M_DrawSlider (220, 60+(7*8), r);
+	M_DrawSlider (220, 60 + (7 * 8), r);
 
-	M_Print (16, 60+(8*8),	"          Sound Volume");
+	M_Print (16 + (10 * 8), 60 + (8 * 8),	"Sound Volume");
 	r = sfxvolume.value;
-	M_DrawSlider (220, 60+(8*8), r);
+	M_DrawSlider (220, 60 + (8 * 8), r);
 
-	M_Print (16, 60+(9*8),			"            Always Run");
-	M_DrawCheckbox (220, 60+(9*8), cl_forwardspeed.value > 200);
+	M_Print (16 + (12 * 8), 60 + (9 * 8),	"Always Run");
+	M_DrawCheckbox (220, 60 + (9 * 8), (cl_forwardspeed.value > 200));
 
-	M_Print (16, 60+(OPT_INVMOUSE*8),	"          Invert Mouse");
-	M_DrawCheckbox (220, 60+(OPT_INVMOUSE*8), m_pitch.value < 0);
+	M_Print (16 + (10 * 8), 60 + 8*OPT_INVMOUSE,	"Invert Mouse");
+	M_DrawCheckbox (220, 60 + 8*OPT_INVMOUSE, m_pitch.value < 0);
 
-	M_Print (16,60+(OPT_ALWAYSMLOOK*8),	"            Mouse Look");
-	M_DrawCheckbox (220, 60+(OPT_ALWAYSMLOOK*8), in_mlook.state & 1);
+	M_Print (16 + (12 * 8), 60 + 8*OPT_ALWAYSMLOOK,	"Mouse Look");
+	M_DrawCheckbox (220, 60 + 8*OPT_ALWAYSMLOOK, in_mlook.state & 1);
 
-	M_Print (16, 60+(OPT_USEMOUSE*8),	"             Use Mouse");
-	M_DrawCheckbox (220, 60+(OPT_USEMOUSE*8), _enable_mouse.value);
+	M_Print (16 + (13 * 8), 60 + 8*OPT_USEMOUSE,	"Use Mouse");
+	M_DrawCheckbox (220, 60 + 8*OPT_USEMOUSE, _enable_mouse.value);
 
-	M_Print (16, 60+(OPT_CROSSHAIR*8),	"        Show Crosshair");
-	M_DrawCheckbox (220, 60+(OPT_CROSSHAIR*8), crosshair.value);
+	M_Print (16 + (8 * 8), 60 + 8*OPT_CROSSHAIR,	"Show Crosshair");
+	M_DrawCheckbox (220, 60 + 8*OPT_CROSSHAIR, crosshair.value);
 
 #ifdef GLQUAKE
-	M_Print (16, 60+(OPT_OPENGL*8),		"       OpenGL Features");
+	M_Print (16 + (7 * 8), 60 + 8*OPT_OPENGL,	"OpenGL Features");
 #endif
 
 	if (vid_menudrawfn)
-		M_Print (16, 60+(OPT_VIDEO*8),	"           Video Modes");
+		M_Print (16 + (11 * 8), 60 + 8*OPT_VIDEO,	"Video Modes");
 
 	// cursor
 	M_DrawCharacter (200, 60 + options_cursor*8, 12+((int)(realtime*4)&1));
@@ -1091,26 +1094,30 @@ static void M_OpenGL_Draw (void)
 	ScrollTitle("gfx/menu/title3.lmp");
 	M_PrintWhite (96, 72, "OpenGL Features:");
 
-	M_Print (32, 90 + 8*OGL_CONSIZE,	"     Text and HUD size");
+//	we use 22 character option titles. the increment to
+//	the x offset is: (22 - strlen(option_title)) * 8
+	M_Print (32 + (5 * 8), 90 + 8*OGL_CONSIZE,	"Text and HUD size");
 	M_Print (232, 90 + 8*OGL_CONSIZE, VID_ReportConsize());
 
-	M_Print (32, 90 + 8*OGL_MULTITEX,	"        Multitexturing");
+	M_Print (32 + (8 * 8), 90 + 8*OGL_MULTITEX,	"Multitexturing");
 	if (gl_mtexable)
 		M_DrawCheckbox (232, 90 + 8*OGL_MULTITEX, gl_multitexture.value);
 	else
 		M_Print (232, 90 + 8*OGL_MULTITEX, "Not found");
 
-	M_Print (32, 90 + 8*OGL_PURGETEX,	"    Purge map textures");
+	M_Print (32 + (4 * 8), 90 + 8*OGL_PURGETEX,	"Purge map textures");
 	M_DrawCheckbox (232, 90 + 8*OGL_PURGETEX, gl_purge_maptex.value);
 
-	M_Print (32, 90 + 8*OGL_GLOW1,		"          Glow effects");
+	M_Print (32 + (10 * 8), 90 + 8*OGL_GLOW1,	"Glow effects");
 	M_DrawCheckbox (232, 90 + 8*OGL_GLOW1, gl_glows.value);
-	M_Print (32, 90 + 8*OGL_GLOW2,		"         missile glows");
+
+	M_Print (32 + (9 * 8), 90 + 8*OGL_GLOW2,	"missile glows");
 	M_DrawCheckbox (232, 90 + 8*OGL_GLOW2, gl_missile_glows.value);
-	M_Print (32, 90 + 8*OGL_GLOW3,		"           other glows");
+
+	M_Print (32 + (11 * 8), 90 + 8*OGL_GLOW3,	"other glows");
 	M_DrawCheckbox (232, 90 + 8*OGL_GLOW3, gl_other_glows.value);
 
-	M_Print (32, 90 + 8*OGL_LIGHTMAPFMT,	"      Lightmap Format:");
+	M_Print (32 + (6 * 8), 90 + 8*OGL_LIGHTMAPFMT,	"Lightmap Format:");
 	for (i = 0; i < MAX_LMFORMATS; i++)
 	{
 		if (!Q_strcasecmp(gl_lightmapfmt.string, lm_formats[i].name))
@@ -1119,10 +1126,10 @@ static void M_OpenGL_Draw (void)
 	lm_format = i;
 	M_Print (232, 90 + 8*OGL_LIGHTMAPFMT, lm_formats[lm_format].desc);
 
-	M_Print (32, 90 + 8*OGL_COLOREDLIGHT,	"      Colored lights :");
-	M_Print (32, 90 + 8*OGL_COLOREDSTATIC,	"         static lights");
-	M_Print (32, 90 + 8*OGL_COLOREDDYNAMIC,	"        dynamic lights");
-	M_Print (32, 90 + 8*OGL_COLOREDEXTRA,	"          extra lights");
+	M_Print (32 + (6 * 8), 90 + 8*OGL_COLOREDLIGHT,	"Colored lights :");
+	M_Print (32 + (9 * 8), 90 + 8*OGL_COLOREDSTATIC, "static lights");
+	M_Print (32 + (8 * 8), 90 + 8*OGL_COLOREDDYNAMIC, "dynamic lights");
+	M_Print (32 + (10 * 8), 90 + 8*OGL_COLOREDEXTRA, "extra lights");
 	// bound the gl_coloredlight value
 	if (gl_coloredlight.value < 0)
 		Cvar_SetValue ("gl_coloredlight", 0);
@@ -1143,7 +1150,7 @@ static void M_OpenGL_Draw (void)
 	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDDYNAMIC, (int)gl_colored_dynamic_lights.value);
 	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDEXTRA, (int)gl_extra_dynamic_lights.value);
 
-	M_Print (32, 90 + 8*OGL_TEXFILTER,	"     Texture filtering");
+	M_Print (32 + (5 * 8), 90 + 8*OGL_TEXFILTER,	"Texture filtering");
 	for (i = 0; i < MAX_GL_FILTERS; i++)
 	{
 		if (modes[i].minimize == gl_filter_min)
@@ -1154,9 +1161,9 @@ static void M_OpenGL_Draw (void)
 		}
 	}
 
-	M_Print (32, 90 + 8*OGL_SHADOWS,	"               Shadows");
+	M_Print (32 + (15 * 8), 90 + 8*OGL_SHADOWS,	"Shadows");
 	M_DrawCheckbox (232, 90 + 8*OGL_SHADOWS, r_shadows.value);
-	M_Print (32, 90 + 8*OGL_STENCIL,	"        Stencil buffer");
+	M_Print (32 + (8 * 8), 90 + 8*OGL_STENCIL,	"Stencil buffer");
 	if (have_stencil)
 		M_DrawCheckbox (232, 90 + 8*OGL_STENCIL, gl_stencilshadow.value);
 	else
@@ -1169,8 +1176,10 @@ static void M_OpenGL_Draw (void)
 	{
 		int	x = (320-25*8)/2;
 		for (i = 0; i < MAX_LMFORMATS-1; i++)
+		{
 			if (gl_lightmap_format == lm_formats[i].glenum)
 				break;
+		}
 		M_DrawTextBox (x, 94 + 8*(OGL_LIGHTMAPFMT), 25, 5);
 		M_Print (x+16, 98 + 8*(OGL_LIGHTMAPFMT+1), "currently running with:");
 		M_Print (x+16, 98 + 8*(OGL_LIGHTMAPFMT+2), lm_formats[i].desc);
@@ -1424,14 +1433,14 @@ static void M_FindKeysForCommand (char *command, int *twokeys)
 	l = strlen(command);
 	count = 0;
 
-	for (j=0 ; j<256 ; j++)
+	for (j = 0; j < 256; j++)
 	{
 		b = keybindings[j];
 		if (!b)
 			continue;
 		if (!strncmp (b, command, l))
 		{
-			l2= strlen(b);
+			l2 = strlen(b);
 			if (l == l2)
 			{
 				twokeys[count] = j;
@@ -1451,7 +1460,7 @@ static void M_UnbindCommand (char *command)
 
 	l = strlen(command);
 
-	for (j=0 ; j<256 ; j++)
+	for (j = 0; j < 256; j++)
 	{
 		b = keybindings[j];
 		if (!b)
@@ -1488,7 +1497,7 @@ static void M_Keys_Draw (void)
 		M_DrawCharacter (6, 80 + ((KEYS_SIZE-1)*8), 129);
 
 // search for known bindings
-	for (i=0 ; i<KEYS_SIZE ; i++)
+	for (i = 0; i < KEYS_SIZE; i++)
 	{
 		y = 80 + 8*i;
 
@@ -1614,8 +1623,8 @@ static void M_Video_Key (int key)
 
 static int		help_page;
 
-#define	NUM_HELP_PAGES	5
-#define	NUM_SG_HELP_PAGES	10//Siege has more help
+#define	NUM_HELP_PAGES		5
+#define	NUM_SG_HELP_PAGES	10	// Siege has more help
 
 static void M_Menu_Help_f (void)
 {
@@ -2172,7 +2181,7 @@ static void M_Quit_Key (int key)
 
 static void M_Quit_Draw (void)
 {
-	int i,x,y,place,topy;
+	int i, x, y, place, topy;
 	qpic_t	*p;
 
 	if (wasInMenus)
@@ -2198,14 +2207,17 @@ static void M_Quit_Draw (void)
 
 	y = 12;
 	M_DrawTextBox (0, 0, 38, 23);
-	M_Print      (16, y,    "      Hexen2World version " STRINGIFY(ENGINE_VERSION));
-	M_Print      (16, y+8,  "         by Raven Software");
+
+//	the increment to the x offset is
+//	for properly centering the line.
+	M_Print      (16 + (6 * 8), y,		"Hexen2World version " STRINGIFY(ENGINE_VERSION));
+	M_Print      (16 + (9 * 8), y + 8,	"by Raven Software");
 #if HOT_VERSION_BETA
-	M_PrintWhite (16, y+16, "     Hammer of Thyrion " HOT_VERSION_STR "-" HOT_VERSION_BETA_STR);
+	M_PrintWhite (16 + (5 * 8), y + 16,	"Hammer of Thyrion " HOT_VERSION_STR "-" HOT_VERSION_BETA_STR);
 #else
-	M_PrintWhite (16, y+16, "       Hammer of Thyrion " HOT_VERSION_STR);
+	M_PrintWhite (16 + (7 * 8), y + 16,	"Hammer of Thyrion " HOT_VERSION_STR);
 #endif
-	M_PrintWhite (16, y+24, "             Source Port");
+	M_PrintWhite (16 +(13 * 8), y + 24,	"Source Port");
 	y += 40;
 
 	if (LinePos > 55 && !SoundPlayed && LineText == Credit2Text)
@@ -2216,7 +2228,7 @@ static void M_Quit_Draw (void)
 	topy = y;
 	place = LinePos;
 	y -= (LinePos - (int)LinePos) * 8;
-	for(i=0;i<QUIT_SIZE;i++,y+=8)
+	for (i = 0; i < QUIT_SIZE; i++, y += 8)
 	{
 		if (i+place-QUIT_SIZE >= MaxLines)
 			break;
@@ -2231,22 +2243,22 @@ static void M_Quit_Draw (void)
 
 	p = Draw_CachePic ("gfx/box_mm2.lmp");
 	x = 24;
-	y = topy-8;
-	for(i=4;i<36;i++,x+=8)
+	y = topy - 8;
+	for (i = 4; i < 36; i++, x += 8)
 	{
 		M_DrawTransPic (x, y, p);
 	}
 
 	p = Draw_CachePic ("gfx/box_mm2.lmp");
 	x = 24;
-	y = topy+(QUIT_SIZE*8)-8;
-	for(i=4;i<36;i++,x+=8)
+	y = topy + (QUIT_SIZE * 8) - 8;
+	for (i = 4; i < 36; i++, x += 8)
 	{
 		M_DrawTransPic (x, y, p);
 	}
 
 	y += 8;
-	M_PrintWhite (16, y,  "          Press y to exit           ");
+	M_PrintWhite (16 + (10 * 8), y,  "Press y to exit");
 
 /*	y = 12;
 	M_DrawTextBox (0, 0, 38, 23);
@@ -2364,18 +2376,18 @@ static int connect_cursor = 0;
 
 static int	connect_cursor_table[MAX_CONNECT_CMDS] =
 {
-	72+0*8,
-	72+1*8,
-	72+2*8,
-	72+3*8,
-	72+4*8,
-	72+5*8,
-	72+6*8,
-	72+7*8,
-	72+8*8,
-	72+9*8,
+	72 + 0 * 8,
+	72 + 1 * 8,
+	72 + 2 * 8,
+	72 + 3 * 8,
+	72 + 4 * 8,
+	72 + 5 * 8,
+	72 + 6 * 8,
+	72 + 7 * 8,
+	72 + 8 * 8,
+	72 + 9 * 8,
 
-	72+11*8,
+	72 +11 * 8,
 };
 
 
@@ -2426,7 +2438,7 @@ static void M_Connect_Draw (void)
 	}
 
 	y = 72;
-	for(i = 0; i < MAX_HOST_NAMES; i++, y += 8)
+	for (i = 0; i < MAX_HOST_NAMES; i++, y += 8)
 	{
 		snprintf(temp, sizeof(temp), "%d.", i+1);
 		if (i == connect_cursor)
@@ -2563,7 +2575,7 @@ static void M_Menu_Setup_f (void)
 		if (playerclass.value == CLASS_DEMON)
 			playerclass.value = 0;
 	if (Q_strcasecmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
-		if (playerclass.value==CLASS_DWARF)
+		if (playerclass.value == CLASS_DWARF)
 			playerclass.value = 0;
 
 	setup_class = playerclass.value;
@@ -2622,10 +2634,10 @@ static void M_Setup_Draw (void)
 	M_Print (64, 88, "Current Class: ");
 
 	if (!(gameflags & GAME_PORTALS))
-		if (setup_class==CLASS_DEMON)
+		if (setup_class == CLASS_DEMON)
 			setup_class = 0;
 	if (Q_strcasecmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
-		if (setup_class==CLASS_DWARF)
+		if (setup_class == CLASS_DWARF)
 			setup_class = 0;
 	switch (setup_class)
 	{
@@ -2657,13 +2669,13 @@ static void M_Setup_Draw (void)
 		{
 			if (!(gameflags & GAME_PORTALS))
 			{//not succubus
-				if(Q_strcasecmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
+				if (Q_strcasecmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
 					which_class = (rand() % CLASS_THEIF) + 1;
 				else
 				{
 					which_class = (rand() % CLASS_DEMON) + 1;
-					if (which_class==CLASS_DEMON)
-						which_class=CLASS_DWARF;
+					if (which_class == CLASS_DEMON)
+						which_class = CLASS_DWARF;
 				}
 			}
 			else

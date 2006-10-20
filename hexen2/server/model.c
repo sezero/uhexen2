@@ -8,7 +8,7 @@
 	This version of model.c and model.h are based on a quake dedicated
 	server application, lhnqserver, by LordHavoc.
 
-	$Id: model.c,v 1.2 2006-07-02 11:45:35 sezero Exp $
+	$Id: model.c,v 1.3 2006-10-20 20:32:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -134,9 +134,11 @@ void Mod_ClearAll (void)
 	int		i;
 	model_t	*mod;
 
-	for (i=0 , mod=mod_known ; i<mod_numknown ; i++, mod++)
+	for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
+	{
 		if (mod->type != mod_alias)
 			mod->needload = true;
+	}
 }
 
 /*
@@ -156,9 +158,11 @@ model_t *Mod_FindName (char *name)
 //
 // search the currently loaded models
 //
-	for (i = 0, mod = mod_known ; i < mod_numknown ; i++, mod++)
+	for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
+	{
 		if (!strcmp (mod->name, name) )
 			break;
+	}
 
 	if (i == mod_numknown)
 	{
@@ -330,7 +334,7 @@ static void Mod_LoadVertexes (lump_t *l)
 	loadmodel->vertexes = out;
 	loadmodel->numvertexes = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
 		out->position[0] = LittleFloat (in->point[0]);
 		out->position[1] = LittleFloat (in->point[1]);
@@ -358,15 +362,15 @@ static void Mod_LoadSubmodels (lump_t *l)
 	loadmodel->submodels = out;
 	loadmodel->numsubmodels = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
-		for (j = 0 ; j < 3 ; j++)
+		for (j = 0; j < 3; j++)
 		{	// spread the mins / maxs by a pixel
 			out->mins[j] = LittleFloat (in->mins[j]) - 1;
 			out->maxs[j] = LittleFloat (in->maxs[j]) + 1;
 			out->origin[j] = LittleFloat (in->origin[j]);
 		}
-		for (j = 0 ; j < MAX_MAP_HULLS ; j++)
+		for (j = 0; j < MAX_MAP_HULLS; j++)
 			out->headnode[j] = LittleLong (in->headnode[j]);
 		out->visleafs = LittleLong (in->visleafs);
 		out->firstface = LittleLong (in->firstface);
@@ -395,7 +399,7 @@ static void Mod_LoadEdges (lump_t *l)
 //	loadmodel->edges = out;
 //	loadmodel->numedges = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
 		out->v[0] = (unsigned short)LittleShort(in->v[0]);
 		out->v[1] = (unsigned short)LittleShort(in->v[1]);
@@ -422,11 +426,13 @@ static void Mod_LoadTexinfo (lump_t *l)
 	loadmodel->texinfo = out;
 	loadmodel->numtexinfo = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
-		for (k = 0 ; k < 2 ; k++)
-			for (j = 0 ; j < 4 ; j++)
+		for (k = 0; k < 2; k++)
+		{
+			for (j = 0; j < 4; j++)
 				out->vecs[k][j] = LittleFloat (in->vecs[k][j]);
+		}
 		out->flags = LittleLong (in->flags);
 	}
 }
@@ -451,7 +457,7 @@ static void CalcSurfaceExtents (msurface_t *s, int firstedge, int numedges)
 
 	tex = s->texinfo;
 
-	for (i=0 ; i<numedges ; i++)
+	for (i = 0; i < numedges; i++)
 	{
 		e = surfedges[firstedge+i];
 		if (e >= 0)
@@ -459,7 +465,7 @@ static void CalcSurfaceExtents (msurface_t *s, int firstedge, int numedges)
 		else
 			v = &loadmodel->vertexes[edges[-e].v[1]];
 
-		for (j=0 ; j<2 ; j++)
+		for (j = 0; j < 2; j++)
 		{
 			val = v->position[0] * tex->vecs[j][0] + 
 				v->position[1] * tex->vecs[j][1] +
@@ -472,7 +478,7 @@ static void CalcSurfaceExtents (msurface_t *s, int firstedge, int numedges)
 		}
 	}
 
-	for (i=0 ; i<2 ; i++)
+	for (i = 0; i < 2; i++)
 	{
 		bmins[i] = floor(mins_local[i]/16);
 		bmaxs[i] = ceil(maxs_local[i]/16);
@@ -507,7 +513,7 @@ static void Mod_LoadFaces (lump_t *l)
 	loadmodel->surfaces = out;
 	loadmodel->numsurfaces = count;
 
-	for (surfnum = 0 ; surfnum < count ; surfnum++, in++, out++)
+	for (surfnum = 0; surfnum < count; surfnum++, in++, out++)
 	{
 		firstedge = LittleLong(in->firstedge);
 		numedges = LittleShort(in->numedges);
@@ -526,7 +532,7 @@ static void Mod_LoadFaces (lump_t *l)
 
 	// lighting info
 
-		for (i=0 ; i<MAXLIGHTMAPS ; i++)
+		for (i = 0; i < MAXLIGHTMAPS; i++)
 			out->styles[i] = in->styles[i];
 		i = LittleLong(in->lightofs);
 		if (i == -1)
@@ -575,7 +581,7 @@ static void Mod_LoadNodes (lump_t *l)
 	loadmodel->nodes = out;
 	loadmodel->numnodes = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
 		p = LittleLong(in->planenum);
 		out->plane = loadmodel->planes + p;
@@ -583,7 +589,7 @@ static void Mod_LoadNodes (lump_t *l)
 		out->firstsurface = LittleShort (in->firstface);
 		out->numsurfaces = LittleShort (in->numfaces);
 
-		for (j = 0 ; j < 2 ; j++)
+		for (j = 0; j < 2; j++)
 		{
 			p = LittleShort (in->children[j]);
 			if (p >= 0)
@@ -616,7 +622,7 @@ static void Mod_LoadLeafs (lump_t *l)
 	loadmodel->leafs = out;
 	loadmodel->numleafs = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
 		p = LittleLong(in->contents);
 		out->contents = p;
@@ -732,7 +738,7 @@ static void Mod_LoadClipnodes (lump_t *l)
 	hull->clip_maxs[2] = 50;
 #endif
 
-	for (i = 0 ; i < count ; i++, out++, in++)
+	for (i = 0; i < count; i++, out++, in++)
 	{
 		out->planenum = LittleLong(in->planenum);
 		out->children[0] = LittleShort(in->children[0]);
@@ -767,10 +773,10 @@ static void Mod_MakeHull0 (void)
 	hull->lastclipnode = count-1;
 	hull->planes = loadmodel->planes;
 
-	for (i = 0 ; i < count ; i++, out++, in++)
+	for (i = 0; i < count; i++, out++, in++)
 	{
 		out->planenum = in->plane - loadmodel->planes;
-		for (j = 0 ; j < 2 ; j++)
+		for (j = 0; j < 2; j++)
 		{
 			child = in->children[j];
 			if (child->contents < 0)
@@ -801,7 +807,7 @@ static void Mod_LoadSurfedges (lump_t *l)
 //	loadmodel->surfedges = out;
 //	loadmodel->numsurfedges = count;
 
-	for (i = 0 ; i < count ; i++)
+	for (i = 0; i < count; i++)
 		out[i] = LittleLong (in[i]);
 }
 
@@ -828,10 +834,10 @@ static void Mod_LoadPlanes (lump_t *l)
 	loadmodel->planes = out;
 	loadmodel->numplanes = count;
 
-	for (i = 0 ; i < count ; i++, in++, out++)
+	for (i = 0; i < count; i++, in++, out++)
 	{
 		bits = 0;
-		for (j = 0 ; j < 3 ; j++)
+		for (j = 0; j < 3; j++)
 		{
 			out->normal[j] = LittleFloat (in->normal[j]);
 			if (out->normal[j] < 0)
@@ -854,7 +860,7 @@ static float RadiusFromBounds (vec3_t arg_mins, vec3_t arg_maxs)
 	int		i;
 	vec3_t	corner;
 
-	for (i = 0 ; i < 3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		corner[i] = fabs(arg_mins[i]) > fabs(arg_maxs[i]) ? fabs(arg_mins[i]) : fabs(arg_maxs[i]);
 	}
@@ -884,7 +890,7 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 // swap all the lumps
 	mod_base = (byte *)header;
 
-	for (i=0 ; i<sizeof(dheader_t)/4 ; i++)
+	for (i = 0; i < sizeof(dheader_t)/4; i++)
 		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
 
 // load into heap
@@ -916,12 +922,12 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 //
 // set up the submodels (FIXME: this is confusing)
 //
-	for (i=0 ; i<mod->numsubmodels ; i++)
+	for (i = 0; i < mod->numsubmodels; i++)
 	{
 		bm = &mod->submodels[i];
 
 		mod->hulls[0].firstclipnode = bm->headnode[0];
-		for (j=1 ; j<MAX_MAP_HULLS ; j++)
+		for (j = 1; j < MAX_MAP_HULLS; j++)
 		{
 			mod->hulls[j].firstclipnode = bm->headnode[j];
 			mod->hulls[j].lastclipnode = mod->numclipnodes-1;
@@ -1032,6 +1038,12 @@ static void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2006/07/02 11:45:35  sezero
+ * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
+ * which stops vec3_origin usage in relevant calculations. renamed the Length
+ * macro to VectorLength for consistancy. updated the utilities' mathlib for
+ * similar macro usage as in the engine.
+ *
  * Revision 1.1  2006/06/25 12:57:06  sezero
  * added a hexen2 dedicated server which seems to work much better than
  * the client/server application running in dedicated mode. model loading

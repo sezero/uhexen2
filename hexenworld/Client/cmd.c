@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.14 2006-09-29 11:17:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.15 2006-10-20 20:32:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -154,7 +154,7 @@ void Cbuf_Execute (void)
 		text = (char *)cmd_text.data;
 
 		quotes = 0;
-		for (i=0 ; i< cmd_text.cursize ; i++)
+		for (i = 0; i < cmd_text.cursize; i++)
 		{
 			if (text[i] == '"')
 				quotes++;
@@ -218,7 +218,7 @@ void Cmd_StuffCmds_f (void)
 
 // build the combined string to parse from
 	s = 0;
-	for (i=1 ; i<com_argc ; i++)
+	for (i = 1; i < com_argc; i++)
 	{
 		if (!com_argv[i])
 			continue;		// NEXTSTEP nulls out -NXHost
@@ -229,7 +229,7 @@ void Cmd_StuffCmds_f (void)
 
 	text = Z_Malloc (s+1);
 	text[0] = 0;
-	for (i=1 ; i<com_argc ; i++)
+	for (i = 1; i < com_argc; i++)
 	{
 		if (!com_argv[i])
 			continue;		// NEXTSTEP nulls out -NXHost
@@ -242,13 +242,13 @@ void Cmd_StuffCmds_f (void)
 	build = Z_Malloc (s+1);
 	build[0] = 0;
 
-	for (i=0 ; i<s-1 ; i++)
+	for (i = 0; i < s-1; i++)
 	{
 		if (text[i] == '+')
 		{
 			i++;
 
-			for (j=i ; (text[j] != '+') && (text[j] != '-') && (text[j] != 0) ; j++)
+			for (j = i; (text[j] != '+') && (text[j] != '-') && (text[j] != 0); j++)
 				;
 
 			c = text[j];
@@ -312,8 +312,8 @@ static void Cmd_Echo_f (void)
 {
 	int		i;
 
-	for (i=1 ; i<Cmd_Argc() ; i++)
-		Con_Printf ("%s ",Cmd_Argv(i));
+	for (i = 1; i < Cmd_Argc(); i++)
+		Con_Printf ("%s ", Cmd_Argv(i));
 	Con_Printf ("\n");
 }
 
@@ -334,7 +334,7 @@ static void Cmd_Alias_f (void)
 	if (Cmd_Argc() == 1)
 	{
 		Con_Printf ("Current alias commands:\n");
-		for (a = cmd_alias ; a ; a=a->next)
+		for (a = cmd_alias ; a ; a = a->next)
 			Con_Printf ("%s : %s\n", a->name, a->value);
 		return;
 	}
@@ -343,9 +343,9 @@ static void Cmd_Alias_f (void)
 
 	if (Cmd_Argc() == 2)
 	{
-		for (a = cmd_alias ; a ; a=a->next)
+		for (a = cmd_alias ; a ; a = a->next)
 		{
-			if (!strcmp(s, a->name))
+			if ( !strcmp(s, a->name) )
 			{
 				Con_Printf ("\"%s\" is \"%s\"\n", s, a->value);
 				return;
@@ -362,9 +362,9 @@ static void Cmd_Alias_f (void)
 	}
 
 	// if the alias already exists, reuse it
-	for (a = cmd_alias ; a ; a=a->next)
+	for (a = cmd_alias ; a ; a = a->next)
 	{
-		if (!strcmp(s, a->name))
+		if ( !strcmp(s, a->name) )
 		{
 			Z_Free (a->value);
 			break;
@@ -419,7 +419,7 @@ void Cmd_Unalias_f (void)
 
 	for (a = cmd_alias ; a ; a=a->next)
 	{
-		if (!strcmp(Cmd_Argv(1), a->name))
+		if ( !strcmp(Cmd_Argv(1), a->name) )
 		{
 			if (prev)
 				prev->next = a->next;
@@ -513,7 +513,7 @@ void Cmd_TokenizeString (char *text)
 	int		i;
 
 // clear the args from the last string
-	for (i=0 ; i<cmd_argc ; i++)
+	for (i = 0; i < cmd_argc; i++)
 		Z_Free (cmd_argv[i]);
 
 	cmd_argc = 0;
@@ -573,9 +573,9 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 	}
 
 // fail if the command already exists
-	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
+	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
 	{
-		if (!strcmp (cmd_name, cmd->name))
+		if ( !strcmp(cmd_name, cmd->name) )
 		{
 			Con_Printf ("Cmd_AddCommand: %s already defined\n", cmd_name);
 			return;
@@ -598,9 +598,9 @@ qboolean Cmd_Exists (char *cmd_name)
 {
 	cmd_function_t	*cmd;
 
-	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
+	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
 	{
-		if (!strcmp (cmd_name,cmd->name))
+		if ( !strcmp(cmd_name, cmd->name) )
 			return true;
 	}
 
@@ -621,14 +621,14 @@ qboolean Cmd_CheckCommand (char *partial)
 
 	if (!strlen(partial))
 		return false;
-	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
-		if (!strcmp (partial,cmd->name))
+	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
+		if ( !strcmp(partial, cmd->name) )
 			return true;
-	for (var=cvar_vars ; var ; var=var->next)
-		if (!strcmp (partial, var->name))
+	for (var = cvar_vars ; var ; var = var->next)
+		if ( !strcmp(partial, var->name) )
 			return true;
-	for (a=cmd_alias ; a ; a=a->next)
-		if (!strcmp (partial, a->name))
+	for (a = cmd_alias ; a ; a = a->next)
+		if ( !strcmp(partial, a->name) )
 			return true;
 
 	return false;
@@ -655,9 +655,9 @@ void Cmd_ExecuteString (char *text, cmd_source_t src)
 		return;		// no tokens
 
 // check functions
-	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
+	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
 	{
-		if (!Q_strcasecmp (cmd_argv[0],cmd->name))
+		if ( !Q_strcasecmp(cmd_argv[0], cmd->name) )
 		{
 #if defined(H2W)
 			if (!cmd->function)
@@ -675,9 +675,9 @@ void Cmd_ExecuteString (char *text, cmd_source_t src)
 	}
 
 // check alias
-	for (a=cmd_alias ; a ; a=a->next)
+	for (a = cmd_alias ; a ; a = a->next)
 	{
-		if (!Q_strcasecmp (cmd_argv[0], a->name))
+		if ( !Q_strcasecmp(cmd_argv[0], a->name) )
 		{
 			Cbuf_InsertText (a->value);
 			return;
@@ -706,7 +706,7 @@ int Cmd_CheckParm (char *parm)
 		Sys_Error ("Cmd_CheckParm: NULL");
 
 	for (i = 1; i < Cmd_Argc (); i++)
-		if (! Q_strcasecmp (parm, Cmd_Argv (i)))
+		if ( !Q_strcasecmp(parm, Cmd_Argv (i)) )
 			return i;
 
 	return 0;
@@ -724,17 +724,17 @@ Lists the commands to the console
 int ListCommands (char *prefix, char **buf, int pos)
 {
 	cmd_function_t	*cmd;
-	int preLen = strlen(prefix);
-	int i = 0;
+	int	preLen = strlen(prefix);
+	int	i = 0;
 
-	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
+	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
 	{
-		if(!Q_strncasecmp(prefix,cmd->name,preLen))
+		if ( !Q_strncasecmp(prefix, cmd->name, preLen) )
 		{
 			if (buf)
 			{
 				if (pos+i < MAX_MATCHES)
-					buf[pos+i]=cmd->name;
+					buf[pos+i] = cmd->name;
 			}
 			else
 				Con_Printf (" %s\n", cmd->name);
@@ -763,14 +763,14 @@ int ListCvars (char *prefix, char **buf, int pos)
 	int preLen = strlen(prefix);
 	int i = 0;
 
-	for (var=cvar_vars ; var ; var=var->next)
+	for (var = cvar_vars ; var ; var = var->next)
 	{
-		if(!Q_strncasecmp(prefix,var->name,preLen))
+		if ( !Q_strncasecmp(prefix, var->name, preLen) )
 		{
 			if (buf)
 			{
 				if (pos+i < MAX_MATCHES)
-					buf[pos+i]=var->name;
+					buf[pos+i] = var->name;
 			}
 			else
 				Con_Printf (" %s\n", var->name);
@@ -796,17 +796,17 @@ Lists the cvars to the console
 int ListAlias (char *prefix, char **buf, int pos)
 {
 	cmdalias_t	*a;
-	int preLen = strlen(prefix);
-	int i = 0;
+	int	preLen = strlen(prefix);
+	int	i = 0;
 
-	for (a=cmd_alias ; a ; a=a->next)
+	for (a = cmd_alias ; a ; a = a->next)
 	{
-		if(!Q_strncasecmp(prefix,a->name,preLen))
+		if ( !Q_strncasecmp(prefix, a->name, preLen) )
 		{
 			if (buf)
 			{
 				if (pos+i < MAX_MATCHES)
-					buf[pos+i]=a->name;
+					buf[pos+i] = a->name;
 			}
 			else
 				Con_Printf (" %s\n", a->name);
@@ -836,16 +836,16 @@ static void Cmd_WriteCommands_f (void)
 	}
 
 	fprintf(FH,"\n\nConsole Commands:\n");
-	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
-		fprintf(FH,"   %s\n", cmd->name);
+	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
+		fprintf(FH, "   %s\n", cmd->name);
 
 	fprintf(FH,"\n\nAlias Commands:\n");
-	for (a=cmd_alias ; a ; a=a->next)
-		fprintf(FH,"   %s :\n\t%s\n", a->name, a->value);
+	for (a = cmd_alias ; a ; a = a->next)
+		fprintf(FH, "   %s :\n\t%s\n", a->name, a->value);
 
 	fprintf(FH,"\n\nConsole Variables:\n");
 	for (var = cvar_vars ; var ; var = var->next)
-		fprintf(FH,"   %s\n", var->name);
+		fprintf(FH, "   %s\n", var->name);
 
 	fclose(FH);
 }

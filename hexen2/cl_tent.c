@@ -2,7 +2,7 @@
 	cl_tent.c
 	Client side temporary entity effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.11 2006-03-10 08:08:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.12 2006-10-20 20:32:29 sezero Exp $
 */
 
 
@@ -165,7 +165,7 @@ void CL_ParseTEnt(void)
 #else
 		R_RunParticleEffect (pos, vec3_origin, 0, 10);
 #endif
-		if ( rand() % 5 )
+		if (rand() % 5)
 			S_StartSound (-1, 0, cl_sfx_tink1, pos, 1, 1);
 		else
 		{
@@ -185,7 +185,7 @@ void CL_ParseTEnt(void)
 		pos[2] = MSG_ReadCoord ();
 		R_RunParticleEffect (pos, vec3_origin, 0, 20);
 
-		if ( rand() % 5 )
+		if (rand() % 5)
 			S_StartSound (-1, 0, cl_sfx_tink1, pos, 1, 1);
 		else
 		{
@@ -289,7 +289,7 @@ static void ParseStream(int type)
 	tag = flags&15;
 	duration = (float)MSG_ReadByte()*0.05;
 	skin = 0;
-	if(type == TE_STREAM_COLORBEAM)
+	if (type == TE_STREAM_COLORBEAM)
 	{
 		skin = MSG_ReadByte();
 	}
@@ -344,7 +344,7 @@ static void ParseStream(int type)
 	if (models[0] == NULL)
 		Sys_Error("ParseStream: bad type");
 
-	if((stream = NewStream(ent, tag)) == NULL)
+	if ((stream = NewStream(ent, tag)) == NULL)
 	{
 		Con_Printf("stream list overflow\n");
 		return;
@@ -362,7 +362,7 @@ static void ParseStream(int type)
 	stream->lastTrailTime = 0;
 	VectorCopy(source, stream->source);
 	VectorCopy(dest, stream->dest);
-	if(flags&STREAM_ATTACHED)
+	if (flags & STREAM_ATTACHED)
 	{
 		VectorSubtract(source, cl_entities[ent].origin, stream->offset);
 	}
@@ -380,17 +380,17 @@ static stream_t *NewStream(int ent, int tag)
 	stream_t	*stream;
 
 	// Search for a stream with matching entity and tag
-	for(i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
+	for (i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
 	{
-		if(stream->entity == ent && stream->tag == tag)
+		if (stream->entity == ent && stream->tag == tag)
 		{
 			return stream;
 		}
 	}
 	// Search for a free stream
-	for(i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
+	for (i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
 	{
-		if(!stream->models[0] || stream->endTime < cl.time)
+		if (!stream->models[0] || stream->endTime < cl.time)
 		{
 			return stream;
 		}
@@ -416,31 +416,30 @@ void CL_UpdateTEnts(void)
 
 	// Update streams
 	StreamEntityCount = 0;
-	for(i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
+	for (i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
 	{
-		if(!stream->models[0])// || stream->endTime < cl.time)
+		if (!stream->models[0])// || stream->endTime < cl.time)
 		{ // Inactive
 			continue;
 		}
-		if(stream->endTime < cl.time)
+		if (stream->endTime < cl.time)
 		{ // Inactive
-			if(stream->type!=TE_STREAM_LIGHTNING&&stream->type!=TE_STREAM_LIGHTNING_SMALL)
+			if (stream->type != TE_STREAM_LIGHTNING && stream->type != TE_STREAM_LIGHTNING_SMALL)
 				continue;
-			else if(stream->endTime + 0.25 < cl.time)
+			else if (stream->endTime + 0.25 < cl.time)
 				continue;
 		}
 
-		if(stream->flags&STREAM_ATTACHED&&stream->endTime >= cl.time)
+		if (stream->flags & STREAM_ATTACHED && stream->endTime >= cl.time)
 		{ // Attach the start position to owner
-			VectorAdd(cl_entities[stream->entity].origin, stream->offset,
-					stream->source);
+			VectorAdd(cl_entities[stream->entity].origin, stream->offset, stream->source);
 		}
 
 		VectorSubtract(stream->dest, stream->source, dist);
-		if(dist[1] == 0 && dist[0] == 0)
+		if (dist[1] == 0 && dist[0] == 0)
 		{
 			yaw = 0;
-			if(dist[2] > 0)
+			if (dist[2] > 0)
 			{
 				pitch = 90;
 			}
@@ -452,13 +451,13 @@ void CL_UpdateTEnts(void)
 		else
 		{
 			yaw = (int)(atan2(dist[1], dist[0])*180/M_PI);
-			if(yaw < 0)
+			if (yaw < 0)
 			{
 				yaw += 360;
 			}
 			forward = sqrt(dist[0]*dist[0]+dist[1]*dist[1]);
 			pitch = (int)(atan2(dist[2], forward)*180/M_PI);
-			if(pitch < 0)
+			if (pitch < 0)
 			{
 				pitch += 360;
 			}
@@ -467,20 +466,20 @@ void CL_UpdateTEnts(void)
 		VectorCopy(stream->source, org);
 		d = VectorNormalize(dist);
 
-		if(stream->type == TE_STREAM_ICECHUNKS)
+		if (stream->type == TE_STREAM_ICECHUNKS)
 		{
 			offset = (int)(cl.time*40)%30;
-			for(i = 0; i < 3; i++)
+			for (i = 0; i < 3; i++)
 			{
 				org[i] += dist[i]*offset;
 			}
 		}
 
-		while(d > 0)
+		while (d > 0)
 		{
 			ent = NewStreamEntity();
 
-			if(!ent)
+			if (!ent)
 			{
 				return;
 			}
@@ -504,7 +503,7 @@ void CL_UpdateTEnts(void)
 				//ent->frame = (int)(cl.time*20)%20;
 
 				ent = NewStreamEntity();
-				if(!ent)
+				if (!ent)
 				{
 					return;
 				}
@@ -523,35 +522,35 @@ void CL_UpdateTEnts(void)
 				ent->frame = (int)(cl.time*10)%8;
 				break;
 			case TE_STREAM_LIGHTNING:
-				if(stream->endTime < cl.time)
+				if (stream->endTime < cl.time)
 				{//fixme: keep last non-translucent frame and angle
 					ent->drawflags = MLS_ABSLIGHT|DRF_TRANSLUCENT;
 					ent->abslight = 128 + (stream->endTime - cl.time)*192;
 				}
 				else
 				{
-					ent->angles[2] = rand()%360;
+					ent->angles[2] = rand() % 360;
 					ent->drawflags = MLS_ABSLIGHT;
 					ent->abslight = 128;
-					ent->frame = rand()%6;
+					ent->frame = rand() % 6;
 				}
 				break;
 			case TE_STREAM_LIGHTNING_SMALL:
-				if(stream->endTime < cl.time)
+				if (stream->endTime < cl.time)
 				{
 					ent->drawflags = MLS_ABSLIGHT|DRF_TRANSLUCENT;
 					ent->abslight = 128 + (stream->endTime - cl.time)*192;
 				}
 				else
 				{
-					ent->angles[2] = rand()%360;
-					ent->frame = rand()%6;
+					ent->angles[2] = rand() % 360;
+					ent->frame = rand() % 6;
 					ent->drawflags = MLS_ABSLIGHT;
 					ent->abslight = 128;
 				}
 				break;
 			case TE_STREAM_FAMINE:
-				ent->angles[2] = rand()%360;
+				ent->angles[2] = rand() % 360;
 				ent->drawflags = MLS_ABSLIGHT;
 				ent->abslight = 128;
 				ent->frame = 0;
@@ -569,17 +568,17 @@ void CL_UpdateTEnts(void)
 				ent->frame = (int)(cl.time*40)%36;
 				break;
 			case TE_STREAM_ICECHUNKS:
-				ent->angles[2] = rand()%360;
+				ent->angles[2] = rand() % 360;
 				ent->drawflags = MLS_ABSLIGHT;
 				ent->abslight = 128;
-				ent->frame = rand()%5;
+				ent->frame = rand() % 5;
 				break;
 
 			default:
 				ent->angles[2] = 0;
 			}
 
-			for(i = 0; i < 3; i++)
+			for (i = 0; i < 3; i++)
 			{
 				org[i] += dist[i]*30;
 			}
@@ -587,17 +586,16 @@ void CL_UpdateTEnts(void)
 			d -= 30;
 		}
 
-		if(stream->type == TE_STREAM_SUNSTAFF1
-			|| stream->type == TE_STREAM_SUNSTAFF2)
+		if (stream->type == TE_STREAM_SUNSTAFF1 || stream->type == TE_STREAM_SUNSTAFF2)
 		{
-			if(stream->lastTrailTime+0.2 < cl.time)
+			if (stream->lastTrailTime+0.2 < cl.time)
 			{
 				stream->lastTrailTime = cl.time;
 				R_SunStaffTrail(stream->source, stream->dest);
 			}
 
 			ent = NewStreamEntity();
-			if(ent == NULL)
+			if (ent == NULL)
 			{
 				return;
 			}
@@ -606,11 +604,11 @@ void CL_UpdateTEnts(void)
 			ent->model = stream->models[2];
 			ent->drawflags = MLS_ABSLIGHT;
 			ent->abslight = 128;
-			ent->scale = 80+(rand()&15);
+			ent->scale = 80 + (rand() & 15);
 			//ent->frame = (int)(cl.time*20)%20;
 
 			ent = NewStreamEntity();
-			if(ent == NULL)
+			if (ent == NULL)
 			{
 				return;
 			}
@@ -619,7 +617,7 @@ void CL_UpdateTEnts(void)
 			ent->model = stream->models[3];
 			ent->drawflags = MLS_ABSLIGHT|DRF_TRANSLUCENT;
 			ent->abslight = 128;
-			ent->scale = 150+(rand()&15);
+			ent->scale = 150 + (rand() & 15);
 		}
 	}
 }
@@ -634,12 +632,12 @@ static entity_t *NewStreamEntity(void)
 {
 	entity_t	*ent;
 
-	if(cl_numvisedicts == MAX_VISEDICTS)
+	if (cl_numvisedicts == MAX_VISEDICTS)
 	{
 		return NULL;
 	}
 
-	if(StreamEntityCount == MAX_STREAM_ENTITIES)
+	if (StreamEntityCount == MAX_STREAM_ENTITIES)
 	{
 		return NULL;
 	}

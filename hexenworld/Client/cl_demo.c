@@ -73,7 +73,7 @@ void CL_WriteDemoCmd (usercmd_t *pcmd)
 
 	fwrite(&cmd, sizeof(cmd), 1, cls.demofile);
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		fl = LittleFloat (cl.viewangles[i]);
 		fwrite (&fl, 4, 1, cls.demofile);
@@ -203,7 +203,7 @@ static qboolean CL_GetDemoMessage (void)
 		cl.frames[i].senttime = demotime;
 		cl.frames[i].receivedtime = -1;	// we haven't gotten a reply yet
 		cls.netchan.outgoing_sequence++;
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 		{
 			r = fread (&f, 4, 1, cls.demofile);
 			cl.viewangles[i] = LittleFloat (f);

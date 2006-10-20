@@ -2,7 +2,7 @@
 	d_sprite.c:
 	software top-level rasterization driver module for drawing sprites
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_sprite.c,v 1.3 2005-10-25 20:04:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_sprite.c,v 1.4 2006-10-20 20:32:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -456,7 +456,7 @@ static void D_SpriteScanRightEdge (void)
 			itop = (int)vtop;
 			ibottom = (int)vbottom;
 
-			for (v=itop ; v<ibottom ; v++)
+			for (v = itop; v < ibottom; v++)
 			{
 				pspan->count = (u >> 16) - pspan->u;
 				u += u_step;
@@ -504,11 +504,11 @@ static void D_SpriteCalculateGradients (void)
 	d_zistepv = -p_normal[1] * yscaleinv * distinv;
 
 	d_sdivzorigin = p_saxis[2] - xcenter * d_sdivzstepu -
-			ycenter * d_sdivzstepv;
+					ycenter * d_sdivzstepv;
 	d_tdivzorigin = p_taxis[2] - xcenter * d_tdivzstepu -
-			ycenter * d_tdivzstepv;
+					ycenter * d_tdivzstepv;
 	d_ziorigin = p_normal[2] * distinv - xcenter * d_zistepu -
-			ycenter * d_zistepv;
+					ycenter * d_zistepv;
 
 	TransformVector (modelorg, p_temp1);
 
@@ -543,7 +543,7 @@ void D_DrawSprite (void)
 	ymax = -999999.9;
 	pverts = r_spritedesc.pverts;
 
-	for (i=0 ; i<r_spritedesc.nump ; i++)
+	for (i = 0; i < r_spritedesc.nump; i++)
 	{
 		if (pverts->v < ymin)
 		{
@@ -590,6 +590,10 @@ void D_DrawSprite (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/10/25 20:04:17  sezero
+ * static functions part-1: started making local functions static,
+ * killing nested externs, const vars clean-up.
+ *
  * Revision 1.2  2004/12/12 14:14:42  sezero
  * style changes to our liking
  *

@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.79 2006-10-10 08:06:10 sezero Exp $
+	$Id: common.c,v 1.80 2006-10-20 20:32:29 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -239,23 +239,29 @@ malloc and free system memory. LordHavoc.
 ==============================================================================
 */
 
-static unsigned int qmalloctotal_alloc, qmalloctotal_alloccount, qmalloctotal_free, qmalloctotal_freecount;
+static unsigned int	qmalloctotal_alloc,
+			qmalloctotal_alloccount,
+			qmalloctotal_free,
+			qmalloctotal_freecount;
 
 void *Q_malloc(unsigned int size)
 {
-	unsigned int *mem;
+	unsigned int	*mem;
+
 	qmalloctotal_alloc += size;
 	qmalloctotal_alloccount++;
 	mem = malloc(size+sizeof(unsigned int));
 	if (!mem)
 		return mem;
 	*mem = size;
+
 	return (void *)(mem + 1);
 }
 
 void Q_free(void *mem)
 {
-	unsigned int *m;
+	unsigned int	*m;
+
 	if (!mem)
 		return;
 	m = mem;
@@ -541,7 +547,7 @@ float MSG_ReadFloat (void)
 char *MSG_ReadString (void)
 {
 	static char	string[2048];
-	int		l,c;
+	int		l, c;
 
 	l = 0;
 	do
@@ -957,7 +963,7 @@ void COM_CheckRegistered (void)
 	fclose (h);
 
 	for (i = 0; i < 128; i++)
-		if (pop[i] != (unsigned short)BigShort (check[i]))
+		if ( pop[i] != (unsigned short)BigShort(check[i]) )
 			Sys_Error ("Corrupted data file.");
 
 	// check if we have 1.11 versions of pak0.pak and pak1.pak
@@ -1077,7 +1083,7 @@ static char *get_va_buffer(void)
 	return va_buffers[3 & ++buf_idx];
 }
 
-char *va(char *format, ...)
+char *va (char *format, ...)
 {
 	va_list		argptr;
 	char		*va_buf;
@@ -1194,7 +1200,7 @@ static void COM_Path_f (void)
 	searchpath_t	*s;
 
 	Con_Printf ("Current search path:\n");
-	for (s=com_searchpaths ; s ; s=s->next)
+	for (s = com_searchpaths ; s ; s = s->next)
 	{
 		if (s == com_base_searchpaths)
 			Con_Printf ("----------\n");
@@ -1601,7 +1607,7 @@ static byte *COM_LoadFile (char *path, int usehunk)
 		buf = Cache_Alloc (loadcache, len+1, base);
 		break;
 	case LOADFILE_STACK:
-		if (len+1 > loadsize)
+		if (len + 1 > loadsize)
 			buf = Hunk_TempAlloc (len+1);
 		else
 			buf = loadbuf;
@@ -2673,6 +2679,10 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.79  2006/10/10 08:06:10  sezero
+ * the in-game console is not ready during filisystem initialization,
+ * therefore changed the Con_Printf calls there to Sys_Printf.
+ *
  * Revision 1.78  2006/10/10 07:24:24  sezero
  * during init phase, we must error out if certain mkdir calls fail
  *

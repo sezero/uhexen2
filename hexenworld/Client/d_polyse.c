@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_polyse.c,v 1.8 2006-07-18 08:34:55 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_polyse.c,v 1.9 2006-10-20 20:32:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -146,7 +146,7 @@ void D_PolysetDrawFinalVerts (finalvert_t *fvert, int num_verts)
 	int		i, z;
 	short	*zbuf;
 
-	for (i=0 ; i<num_verts ; i++, fvert++)
+	for (i = 0; i < num_verts; i++, fvert++)
 	{
 	// valid triangle coordinates for filling can include the bottom and
 	// right clip edges, due to the fill rule; these shouldn't be drawn
@@ -185,7 +185,7 @@ static void D_DrawSubdiv (void)
 	ptri = r_affinetridesc.ptriangles;
 	lnumtriangles = r_affinetridesc.numtriangles;
 
-	for (i=0 ; i<lnumtriangles ; i++)
+	for (i = 0; i < lnumtriangles; i++)
 	{
 		index0 = pfv + ptri[i].vertindex[0];
 		index1 = pfv + ptri[i].vertindex[1];
@@ -246,7 +246,7 @@ static void D_DrawNonSubdiv (void)
 	ptri = r_affinetridesc.ptriangles;
 	lnumtriangles = r_affinetridesc.numtriangles;
 
-	for (i=0 ; i<lnumtriangles ; i++, ptri++)
+	for (i = 0; i < lnumtriangles; i++, ptri++)
 	{
 		index0 = pfv + ptri->vertindex[0];
 		index1 = pfv + ptri->vertindex[1];
@@ -398,7 +398,7 @@ void D_PolysetUpdateTables (void)
 		skinwidth = r_affinetridesc.skinwidth;
 		skinstart = r_affinetridesc.pskin;
 		s = skinstart;
-		for (i=0 ; i<MAX_SKIN_HEIGHT ; i++, s+=skinwidth)
+		for (i = 0; i < MAX_SKIN_HEIGHT; i++, s += skinwidth)
 			skintable[i] = s;
 	}
 }
@@ -576,7 +576,7 @@ void InitGel (byte *palette)
 	int		i;
 	int		r;
 
-	for (i=0 ; i<256 ; i++)
+	for (i = 0; i < 256; i++)
 	{
 //		r = (palette[i*3]>>4);
 		r = (palette[i*3] + palette[i*3+1] + palette[i*3+2])/(16*3);

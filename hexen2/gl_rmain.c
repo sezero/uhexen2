@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.50 2006-09-15 20:20:18 sezero Exp $
+	$Id: gl_rmain.c,v 1.51 2006-10-20 20:32:30 sezero Exp $
 */
 
 
@@ -83,7 +83,7 @@ cvar_t	r_wholeframe = {"r_wholeframe", "1", CVAR_ARCHIVE};
 cvar_t	gl_clear = {"gl_clear", "0", CVAR_NONE};
 cvar_t	gl_cull = {"gl_cull", "1", CVAR_NONE};
 cvar_t	gl_ztrick = {"gl_ztrick", "0", CVAR_ARCHIVE};
-cvar_t	gl_multitexture = {"gl_multitexture", "0",CVAR_ARCHIVE};
+cvar_t	gl_multitexture = {"gl_multitexture", "0", CVAR_ARCHIVE};
 cvar_t	gl_smoothmodels = {"gl_smoothmodels", "1", CVAR_NONE};
 cvar_t	gl_affinemodels = {"gl_affinemodels", "0", CVAR_NONE};
 cvar_t	gl_polyblend = {"gl_polyblend", "1", CVAR_NONE};
@@ -117,7 +117,7 @@ qboolean R_CullBox (vec3_t mins, vec3_t maxs)
 {
 	int		i;
 
-	for (i=0 ; i<4 ; i++)
+	for (i = 0; i < 4; i++)
 		if (BoxOnPlaneSide (mins, maxs, &frustum[i]) == 2)
 			return true;
 	return false;
@@ -249,7 +249,7 @@ static mspriteframe_t *R_GetSpriteFrame (msprite_t *psprite)
 	// are positive, so we don't have to worry about division by 0
 		targettime = time - ((int)(time / fullinterval)) * fullinterval;
 
-		for (i=0 ; i<(numframes-1) ; i++)
+		for (i = 0; i < (numframes-1); i++)
 		{
 			if (pintervals[i] > targettime)
 				break;
@@ -343,7 +343,7 @@ static void R_DrawSpriteModel (entity_t *e)
 	// generate the sprite's axes, completely parallel to the viewplane. There
 	// are no problem situations, because the sprite is always in the same
 	// position relative to the viewer
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 		{
 			r_spritedesc.vup[i] = vup[i];
 			r_spritedesc.vright[i] = vright[i];
@@ -392,7 +392,7 @@ static void R_DrawSpriteModel (entity_t *e)
 		sr = sin(angle);
 		cr = cos(angle);
 
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 		{
 			r_spritedesc.vpn[i] = vpn[i];
 			r_spritedesc.vright[i] = vright[i] * cr + vup[i] * sr;
@@ -712,7 +712,7 @@ static void R_DrawAliasModel (entity_t *e)
 //	if (e == &cl.viewent && ambientlight < 24)
 //		ambientlight = shadelight = 24;
 
-	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
+	for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 	{
 		if (cl_dlights[lnum].die >= cl.time)
 		{
@@ -738,8 +738,8 @@ static void R_DrawAliasModel (entity_t *e)
 	if (ambientlight + shadelight > 192)
 		shadelight = 192 - ambientlight;
 
-	mls = currententity->drawflags&MLS_MASKIN;
-	if (currententity->model->flags&EF_ROTATE)
+	mls = currententity->drawflags & MLS_MASKIN;
+	if (currententity->model->flags & EF_ROTATE)
 	{
 		ambientlight = shadelight =
 					60+34+sin(currententity->origin[0]
@@ -771,7 +771,7 @@ static void R_DrawAliasModel (entity_t *e)
 
 	VectorScale(shadelightcolor, 1.0f / 200.0f, shadelightcolor);
 
-	an = e->angles[1]/180*M_PI;
+	an = e->angles[1] / 180 * M_PI;
 	shadevector[0] = cos(-an);
 	shadevector[1] = sin(-an);
 	shadevector[2] = 1;
@@ -793,8 +793,8 @@ static void R_DrawAliasModel (entity_t *e)
 
 	if (currententity->scale != 0 && currententity->scale != 100)
 	{
-		entScale = (float)currententity->scale/100.0;
-		switch(currententity->drawflags&SCALE_TYPE_MASKIN)
+		entScale = (float)currententity->scale / 100.0;
+		switch (currententity->drawflags & SCALE_TYPE_MASKIN)
 		{
 		case SCALE_TYPE_UNIFORM:
 			tmatrix[0][0] = paliashdr->scale[0]*entScale;
@@ -818,7 +818,7 @@ static void R_DrawAliasModel (entity_t *e)
 			break;
 		}
 
-		switch (currententity->drawflags&SCALE_ORIGIN_MASKIN)
+		switch (currententity->drawflags & SCALE_ORIGIN_MASKIN)
 		{
 		case SCALE_ORIGIN_CENTER:
 			tmatrix[0][3] = paliashdr->scale_origin[0]-paliashdr->scale[0]*xyfact;
@@ -1011,7 +1011,7 @@ static void R_DrawEntitiesOnList (void)
 		return;
 
 	// draw sprites seperately, because of alpha blending
-	for (i=0 ; i<cl_numvisedicts ; i++)
+	for (i = 0; i < cl_numvisedicts; i++)
 	{
 		currententity = cl_visedicts[i];
 
@@ -1082,7 +1082,7 @@ static void R_DrawTransEntitiesOnList (qboolean inwater)
 	theents = (inwater) ? cl_transwateredicts : cl_transvisedicts;
 	numents = (inwater) ? cl_numtranswateredicts : cl_numtransvisedicts;
 
-	for (i = 0 ; i < numents ; i++)
+	for (i = 0; i < numents; i++)
 	{
 		VectorSubtract(theents[i].ent->origin, r_origin, result);
 	//	theents[i].len = VectorLength(result);
@@ -1093,7 +1093,7 @@ static void R_DrawTransEntitiesOnList (qboolean inwater)
 	// Add in BETTER sorting here
 
 	glDepthMask_fp(0);
-	for (i = 0 ; i < numents ; i++)
+	for (i = 0; i < numents; i++)
 	{
 		currententity = theents[i].ent;
 
@@ -1193,7 +1193,7 @@ static void R_DrawGlow (entity_t *e)
 			}
 
 			// 'floating' movement
-			if(clmodel->flags & EF_ROTATE)
+			if (clmodel->flags & EF_ROTATE)
 				glTranslatef_fp (0, 0, sin(currententity->origin[0]+currententity->origin[1]+(cl.time*3))*5.5);
 
 			glBegin_fp(GL_TRIANGLE_FAN);
@@ -1222,7 +1222,7 @@ static void R_DrawGlow (entity_t *e)
 				{
 					j = i % cl_lightstyle[TORCH_STYLE].length;
 					j = cl_lightstyle[TORCH_STYLE].map[j] - 'a';
-					j = j*22;
+					j = j * 22;
 				}
 			}
 			else if (clmodel->ex_flags & XF_MISSILE_GLOW)
@@ -1236,7 +1236,7 @@ static void R_DrawGlow (entity_t *e)
 				{
 					j = i % cl_lightstyle[MISSILE_STYLE].length;
 					j = cl_lightstyle[MISSILE_STYLE].map[j] - 'a';
-					j = j*22;
+					j = j * 22;
 				}
 			}
 			else if (clmodel->ex_flags & XF_GLOW)
@@ -1250,7 +1250,7 @@ static void R_DrawGlow (entity_t *e)
 				{
 					j = i % cl_lightstyle[PULSE_STYLE].length;
 					j = cl_lightstyle[PULSE_STYLE].map[j] - 'a';
-					j = j*22;
+					j = j * 22;
 				}
 			}
 
@@ -1265,18 +1265,18 @@ static void R_DrawGlow (entity_t *e)
 						clmodel->glow_color[2]*intensity,
 						0.5f);
 
-			for (i=0 ; i<3 ; i++)
+			for (i = 0; i < 3; i++)
 				glow_vect[i] = lightorigin[i] - vp2[i]*radius;
 
 			glVertex3fv_fp(glow_vect);
 
 			glColor4f_fp(0.0f, 0.0f, 0.0f, 1.0f);
 
-			for (i=16; i>=0; i--)
+			for (i = 16; i >= 0; i--)
 			{
-				float a = i/16.0f * M_PI*2;
+				float a = i / 16.0f * M_PI * 2;
 
-				for (j=0; j<3; j++)
+				for (j = 0; j < 3; j++)
 					glow_vect[j] = lightorigin[j] + 
 							vright[j]*cos(a)*radius +
 							vup[j]*sin(a)*radius;
@@ -1305,7 +1305,7 @@ static void R_DrawAllGlows (void)
 	glEnable_fp (GL_BLEND);
 	glBlendFunc_fp (GL_ONE, GL_ONE);
 
-	for (i=0 ; i < cl_numvisedicts ; i++)
+	for (i = 0; i < cl_numvisedicts; i++)
 	{
 		currententity = cl_visedicts[i];
 
@@ -1372,7 +1372,7 @@ static void R_DrawViewModel (void)
 //	}
 
 // add dynamic lights
-	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
+	for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 	{
 		dl = &cl_dlights[lnum];
 		if (!dl->radius)
@@ -1452,9 +1452,9 @@ static void R_MarkLeaves (void)
 	else
 		vis = Mod_LeafPVS (r_viewleaf, cl.worldmodel);
 
-	for (i=0 ; i<cl.worldmodel->numleafs ; i++)
+	for (i = 0; i < cl.worldmodel->numleafs; i++)
 	{
-		if (vis[i>>3] & (1<<(i&7)))
+		if ( vis[i>>3] & (1<<(i&7)) )
 		{
 			node = (mnode_t *)&cl.worldmodel->leafs[i+1];
 			do
@@ -1570,7 +1570,7 @@ static int SignbitsForPlane (mplane_t *out)
 	// for fast box on planeside test
 
 	bits = 0;
-	for (j=0 ; j<3 ; j++)
+	for (j = 0; j < 3; j++)
 	{
 		if (out->normal[j] < 0)
 			bits |= 1<<j;
@@ -1590,7 +1590,7 @@ static void R_SetFrustum (void)
 	VectorAdd (vpn, vup, frustum[2].normal);
 	VectorSubtract (vpn, vup, frustum[3].normal);
 
-	for (i=0 ; i<4 ; i++)
+	for (i = 0; i < 4; i++)
 	{
 		frustum[i].type = PLANE_ANYZ;
 		frustum[i].dist = DotProduct (r_origin, frustum[i].normal);
@@ -1889,7 +1889,7 @@ static void R_Mirror (void)
 
 	glColor4f_fp (1,1,1,r_mirroralpha.value);
 	s = cl.worldmodel->textures[mirrortexturenum]->texturechain;
-	for ( ; s ; s=s->texturechain)
+	for ( ; s ; s = s->texturechain)
 		R_RenderBrushPoly (s, true);
 	cl.worldmodel->textures[mirrortexturenum]->texturechain = NULL;
 	glDisable_fp (GL_BLEND);
@@ -1909,11 +1909,11 @@ static void R_PrintTimes (void)
 
 	r_lasttime1 = r_time2 = Sys_DoubleTime();
 
-	ms = 1000*(r_time2-r_time1);
-	fps = 1000/ms;
+	ms = 1000 * (r_time2 - r_time1);
+	fps = 1000 / ms;
 
 	Con_Printf("%3.1f fps %5.0f ms\n%4i wpoly  %4i epoly\n",
-		fps, ms, c_brush_polys, c_alias_polys);
+			fps, ms, c_brush_polys, c_alias_polys);
 }
 
 
@@ -1976,6 +1976,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.50  2006/09/15 20:20:18  sezero
+ * use snprintf and the strl* functions, #9: gl_rmain.c.
+ *
  * Revision 1.49  2006/09/07 08:03:20  sezero
  * more GL_UNUSED_TEXTURE changes (gl_extra_textures is GLuint)
  *

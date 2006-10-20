@@ -56,7 +56,7 @@ void Test_Spawn (vec3_t origin)
 	plane_t	*plane;
 	float	d;
 
-	for (i=0, p=puffs ; i < MAX_PUFFS ; i++, p++)
+	for (i = 0, p = puffs; i < MAX_PUFFS; i++, p++)
 	{
 		if (p->length <= 0)
 			break;
@@ -89,7 +89,7 @@ static void DrawPuff (puff_t *p)
 	int		i, j;
 	float	s, d;
 
-	for (i=0 ; i<2 ; i++)
+	for (i = 0; i < 2; i++)
 	{
 		if (i == 1)
 		{
@@ -102,7 +102,7 @@ static void DrawPuff (puff_t *p)
 			d = 0;
 		}
 
-		for (j=0 ; j<3 ; j++)
+		for (j = 0; j < 3; j++)
 		{
 			pts[i][0][j] = p->origin[j] + p->up[j]*s + p->reflect[j]*d;
 			pts[i][1][j] = p->origin[j] + p->right[j]*s + p->reflect[j]*d;
@@ -132,9 +132,9 @@ static void DrawPuff (puff_t *p)
 #endif
 
 	glBegin_fp (GL_QUADS);
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
-		j = (i+1)%3;
+		j = (i + 1) % 3;
 		glVertex3fv_fp (pts[0][j]);
 		glVertex3fv_fp (pts[1][j]);
 		glVertex3fv_fp (pts[1][i]);
@@ -157,7 +157,7 @@ void Test_Draw (void)
 	int		i;
 	puff_t	*p;
 
-	for (i=0, p=puffs ; i<MAX_PUFFS ; i++,p++)
+	for (i = 0, p = puffs; i < MAX_PUFFS; i++, p++)
 	{
 		if (p->length > 0)
 			DrawPuff (p);

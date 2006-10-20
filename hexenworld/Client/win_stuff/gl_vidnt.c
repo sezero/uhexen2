@@ -624,9 +624,9 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 static void VID_Init8bitPalette (void)
 {
 	// Check for 8bit Extensions and initialize them.
-	int i;
-	char thePalette[256*3];
-	char *oldPalette, *newPalette;
+	int			i;
+	char	thePalette[256*3];
+	char	*oldPalette, *newPalette;
 
 	have8bit = false;
 	is8bit = false;
@@ -646,7 +646,7 @@ static void VID_Init8bitPalette (void)
 
 		oldPalette = (char *) d_8to24table;
 		newPalette = thePalette;
-		for (i=0;i<256;i++)
+		for (i = 0; i < 256; i++)
 		{
 			*newPalette++ = *oldPalette++;
 			*newPalette++ = *oldPalette++;
@@ -892,7 +892,7 @@ static void GL_Init (void)
 		is_3dfx = true;
 	}
 
-	if (Q_strncasecmp(gl_renderer,"PowerVR",7)==0)
+	if (Q_strncasecmp(gl_renderer,"PowerVR",7) == 0)
 		fullsbardraw = true;
 
 	VID_InitGamma ();
@@ -1058,13 +1058,13 @@ static void VID_CreateInversePalette (unsigned char *palette)
 void VID_SetPalette (unsigned char *palette)
 {
 	byte	*pal;
-	unsigned short	r,g,b;
+	unsigned short	r, g, b;
 	int		v;
 	unsigned short	i, p, c;
 	unsigned	*table;
 #if !USE_HEXEN2_PALTEX_CODE
-	int		r1,g1,b1;
-	int		j,k,l,m;
+	int		r1, g1, b1;
+	int		j, k, l, m;
 	FILE	*f;
 	char	s[MAX_OSPATH];
 #if !defined(NO_SPLASHES)
@@ -1078,7 +1078,7 @@ void VID_SetPalette (unsigned char *palette)
 //
 	pal = palette;
 	table = d_8to24table;
-	for (i=0 ; i<256 ; i++)
+	for (i = 0; i < 256; i++)
 	{
 		r = pal[0];
 		g = pal[1];
@@ -1102,15 +1102,15 @@ void VID_SetPalette (unsigned char *palette)
 	pal = palette;
 	table = d_8to24TranslucentTable;
 
-	for (i=0; i<16;i++)
+	for (i = 0; i < 16; i++)
 	{
-		c = ColorIndex[i]*3;
+		c = ColorIndex[i] * 3;
 
 		r = pal[c];
 		g = pal[c+1];
 		b = pal[c+2];
 
-		for(p=0;p<16;p++)
+		for (p = 0; p < 16; p++)
 		{
 #if BYTE_ORDER == BIG_ENDIAN
 			v = (ColorPercent[15-p]) + (r<<24) + (g<<16) + (b<<8);
@@ -1151,17 +1151,15 @@ void VID_SetPalette (unsigned char *palette)
 	{	// JACK: 3D distance calcs:
 		// k is last closest, l is the distance
 
-		// FIXME: Endianness ???
-
 #if !defined(NO_SPLASHES)
-		hDlg = CreateDialog(global_hInstance, MAKEINTRESOURCE(IDD_PROGRESS), 
-			NULL, NULL);
+		hDlg = CreateDialog(global_hInstance, MAKEINTRESOURCE(IDD_PROGRESS), NULL, NULL);
 		hProgress = GetDlgItem(hDlg, IDC_PROGRESS);
 		SendMessage(hProgress, PBM_SETSTEP, 1, 0);
 		SendMessage(hProgress, PBM_SETRANGE, 0, MAKELPARAM(0, 33));
 #endif
 
-		for (i=0,m=0; i < (1<<15); i++,m++)
+		// FIXME: Endianness ???
+		for (i = 0, m = 0; i < (1<<15); i++, m++)
 		{
 			/* Maps
 			000000000000000
@@ -1169,9 +1167,9 @@ void VID_SetPalette (unsigned char *palette)
 			000001111100000 = Blue = 0x03E0
 			111110000000000 = Grn  = 0x7C00
 			*/
-			r = ((i & 0x1F) << 3)+4;
-			g = ((i & 0x03E0) >> 2)+4;
-			b = ((i & 0x7C00) >> 7)+4;
+			r = ((i & 0x1F) << 3) + 4;
+			g = ((i & 0x03E0) >> 2) + 4;
+			b = ((i & 0x7C00) >> 7) + 4;
 #   if 0
 			r = (i << 11);
 			g = (i << 6);
@@ -1181,19 +1179,19 @@ void VID_SetPalette (unsigned char *palette)
 			b >>= 11;
 #   endif
 			pal = (unsigned char *)d_8to24table;
-			for (v=0,k=0,l=10000; v<256; v++,pal+=4)
+			for (v = 0, k = 0, l = 10000; v < 256; v++, pal += 4)
 			{
-				r1 = r-pal[0];
-				g1 = g-pal[1];
-				b1 = b-pal[2];
-				j = sqrt(((r1*r1)+(g1*g1)+(b1*b1)));
-				if (j<l)
+				r1 = r - pal[0];
+				g1 = g - pal[1];
+				b1 = b - pal[2];
+				j = sqrt( (r1*r1) + (g1*g1) + (b1*b1) );
+				if (j < l)
 				{
-					k=v;
-					l=j;
+					k = v;
+					l = j;
 				}
 			}
-			d_15to8table[i]=k;
+			d_15to8table[i] = k;
 			if (m >= 1000)
 			{
 #if !defined(NO_SPLASHES)
@@ -1203,7 +1201,7 @@ void VID_SetPalette (unsigned char *palette)
 #endif
 				SendMessage(hProgress, PBM_STEPIT, 0, 0);
 #endif
-				m=0;
+				m = 0;
 			}
 		}
 		snprintf(s, sizeof(s), "%s/glhexen", com_userdir);
@@ -1248,45 +1246,45 @@ static BOOL bSetupPixelFormat(HDC hDC)
 
 
 byte	scantokey[128] = { 
-//  0           1       2       3       4       5       6       7 
-//  8           9       A       B       C       D       E       F 
-	0  ,    27,     '1',    '2',    '3',    '4',    '5',    '6', 
-	'7',    '8',    '9',    '0',    '-',    '=',    K_BACKSPACE, 9, // 0 
-	'q',    'w',    'e',    'r',    't',    'y',    'u',    'i', 
-	'o',    'p',    '[',    ']',    13 ,    K_CTRL,'a',  's',      // 1 
-	'd',    'f',    'g',    'h',    'j',    'k',    'l',    ';', 
-	'\'' ,    '`',    K_SHIFT,'\\',  'z',    'x',    'c',    'v',      // 2 
-	'b',    'n',    'm',    ',',    '.',    '/',    K_SHIFT,'*', 
-	K_ALT,' ',   0  ,    K_F1, K_F2, K_F3, K_F4, K_F5,   // 3 
-	K_F6, K_F7, K_F8, K_F9, K_F10, K_PAUSE,    0  , K_HOME, 
-	K_UPARROW,K_PGUP,'-',K_LEFTARROW,'5',K_RIGHTARROW,'+',K_END, //4 
-	K_DOWNARROW,K_PGDN,K_INS,K_DEL,0,0,             0,              K_F11, 
-	K_F12,0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,        // 5 
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0, 
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,        // 6 
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0, 
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0         // 7 
+//	0        1       2       3       4       5       6       7
+//	8        9       A       B       C       D       E       F
+	0  ,    27,     '1',    '2',    '3',    '4',    '5',    '6',
+	'7',    '8',    '9',    '0',    '-',    '=', K_BACKSPACE, 9,	// 0
+	'q',    'w',    'e',    'r',    't',    'y',    'u',    'i',
+	'o',    'p',    '[',    ']',     13,   K_CTRL,  'a',    's',	// 1
+	'd',    'f',    'g',    'h',    'j',    'k',    'l',    ';',
+	'\'',   '`',  K_SHIFT,  '\\',   'z',    'x',    'c',    'v',	// 2
+	'b',    'n',    'm',    ',',    '.',    '/',  K_SHIFT,  '*',
+	K_ALT,  ' ',     0 ,    K_F1,   K_F2,   K_F3,   K_F4,  K_F5,	// 3
+	K_F6,  K_F7,   K_F8,    K_F9,  K_F10, K_PAUSE,   0 , K_HOME,
+	K_UPARROW,K_PGUP,'-',K_LEFTARROW,'5',K_RIGHTARROW,'+',K_END,	// 4
+	K_DOWNARROW,K_PGDN,K_INS,K_DEL,   0 ,    0 ,     0 ,  K_F11,
+	K_F12,   0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,	// 5
+	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,
+	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,	// 6
+	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,
+	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0	// 7
 };
 
 byte	shiftscantokey[128] = { 
-//  0           1       2       3       4       5       6       7 
-//  8           9       A       B       C       D       E       F 
-	0  ,    27,     '!',    '@',    '#',    '$',    '%',    '^', 
-	'&',    '*',    '(',    ')',    '_',    '+',    K_BACKSPACE, 9, // 0 
-	'Q',    'W',    'E',    'R',    'T',    'Y',    'U',    'I', 
-	'O',    'P',    '{',    '}',    13 ,    K_CTRL,'A',  'S',      // 1 
-	'D',    'F',    'G',    'H',    'J',    'K',    'L',    ':', 
-	'"' ,    '~',    K_SHIFT,'|',  'Z',    'X',    'C',    'V',      // 2 
-	'B',    'N',    'M',    '<',    '>',    '?',    K_SHIFT,'*', 
-	K_ALT,' ',   0  ,    K_F1, K_F2, K_F3, K_F4, K_F5,   // 3 
-	K_F6, K_F7, K_F8, K_F9, K_F10, K_PAUSE,    0  , K_HOME, 
-	K_UPARROW,K_PGUP,'_',K_LEFTARROW,'%',K_RIGHTARROW,'+',K_END, //4 
-	K_DOWNARROW,K_PGDN,K_INS,K_DEL,0,0,             0,              K_F11, 
-	K_F12,0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,        // 5 
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0, 
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,        // 6 
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0, 
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0         // 7 
+//	0       1       2       3       4       5       6       7
+//	8       9       A       B       C       D       E       F
+	0  ,    27,     '!',    '@',    '#',    '$',    '%',    '^',
+	'&',    '*',    '(',    ')',    '_',    '+', K_BACKSPACE, 9,	// 0
+	'Q',    'W',    'E',    'R',    'T',    'Y',    'U',    'I',
+	'O',    'P',    '{',    '}',    13 ,   K_CTRL,  'A',    'S',	// 1
+	'D',    'F',    'G',    'H',    'J',    'K',    'L',    ':',
+	'"' ,    '~', K_SHIFT,  '|',    'Z',    'X',    'C',    'V',	// 2
+	'B',    'N',    'M',    '<',    '>',    '?',  K_SHIFT,  '*',
+	K_ALT,  ' ',     0 ,    K_F1,   K_F2,   K_F3,   K_F4,  K_F5,	// 3
+	K_F6,  K_F7,   K_F8,    K_F9,  K_F10, K_PAUSE,   0 , K_HOME,
+	K_UPARROW,K_PGUP,'_',K_LEFTARROW,'%',K_RIGHTARROW,'+',K_END,	// 4
+	K_DOWNARROW,K_PGDN,K_INS,K_DEL,   0 ,    0 ,     0 ,  K_F11,
+	K_F12,   0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,	// 5
+	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,
+	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,	// 6
+	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,
+	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0	// 7
 };
 
 
@@ -1299,7 +1297,7 @@ Map from windows to quake keynums
 */
 static int MapKey (int key)
 {
-	key = (key>>16)&255;
+	key = (key >> 16) & 255;
 	if (key > 127)
 		return 0;
 	if (scantokey[key] == 0)
@@ -1325,7 +1323,7 @@ static void ClearAllStates (void)
 	int		i;
 	
 // send an up event for each key, to make sure the server clears them all
-	for (i=0 ; i<256 ; i++)
+	for (i = 0; i < 256; i++)
 	{
 		Key_Event (i, false);
 	}
@@ -1560,12 +1558,10 @@ LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 #if 0	// default handling for destroy, because we manually DestroyWindow() on mode changes
 		case WM_DESTROY:
-			{
-				if (dibwindow)
-					DestroyWindow (dibwindow);
+			if (dibwindow)
+				DestroyWindow (dibwindow);
 
-				PostQuitMessage (0);
-			}
+			PostQuitMessage (0);
 			break;
 #endif
 
@@ -1708,7 +1704,7 @@ static void VID_DescribeModes_f (void)
 
 	lnummodes = VID_NumModes ();
 
-	for (i=0 ; i<lnummodes ; i++)
+	for (i = 0; i < lnummodes; i++)
 	{
 		pv = VID_GetModePtr (i);
 		pinfo = VID_GetExtModeDescription (i);
@@ -1842,7 +1838,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 					}
 				}
 
-				for (i=0, existingmode = 0 ; i<num_fmodes ; i++)
+				for (i = 0, existingmode = 0; i < num_fmodes; i++)
 				{
 					if ((fmodelist[num_fmodes].width == fmodelist[i].width)   &&
 						(fmodelist[num_fmodes].height == fmodelist[i].height) &&
@@ -1891,7 +1887,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 						(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight,
 						(int)devmode.dmBitsPerPel);
 
-				for (i=0, existingmode = 0 ; i<num_fmodes ; i++)
+				for (i = 0, existingmode = 0; i < num_fmodes; i++)
 				{
 					if ((fmodelist[num_fmodes].width == fmodelist[i].width)   &&
 						(fmodelist[num_fmodes].height == fmodelist[i].height) &&
@@ -2081,14 +2077,14 @@ static void VID_SortModes (void)
 	// sort the fullscreen modes list
 	qsort(fmodelist, num_fmodes, sizeof fmodelist[0], sort_modes);
 	// find which bpp values are reported to us
-	for (i=0 ; i<MAX_NUMBPP ; i++)
+	for (i = 0; i < MAX_NUMBPP; i++)
 	{
 		bpplist[i][0] = 0;
 		bpplist[i][1] = 0;
 	}
 	bpplist[0][0] = fmodelist[0].bpp;
 	bpplist[0][1] = 0;
-	for (i=1, j=0; i < num_fmodes && j < MAX_NUMBPP; i++)
+	for (i = 1, j = 0; i < num_fmodes && j < MAX_NUMBPP; i++)
 	{
 		if (fmodelist[i-1].bpp != fmodelist[i].bpp)
 		{
@@ -2100,7 +2096,7 @@ static void VID_SortModes (void)
 	vid_deskmode = -1;
 
 	// find the desktop mode number. shouldn't fail!
-	for (i=1; i < num_fmodes ; i++)
+	for (i = 1; i < num_fmodes; i++)
 	{
 		if ((fmodelist[i].width == vid_deskwidth) &&
 			(fmodelist[i].height == vid_deskheight) &&
@@ -2379,7 +2375,7 @@ void	VID_Init (unsigned char *palette)
 		wmodelist[num_wmodes].halfscreen = 0;
 		wmodelist[num_wmodes].bpp = 0;
 
-		for (i=0, existingmode = 0; i < num_wmodes; i++)
+		for (i = 0, existingmode = 0; i < num_wmodes; i++)
 		{
 			if ((wmodelist[num_wmodes].width == wmodelist[i].width) &&
 				(wmodelist[num_wmodes].height == wmodelist[i].height))
@@ -2474,7 +2470,7 @@ void	VID_Init (unsigned char *palette)
 						fmodelist[num_fmodes].width, fmodelist[num_fmodes].height,
 						fmodelist[num_fmodes].bpp);
 
-				for (i=0, existingmode = 0 ; i<num_fmodes ; i++)
+				for (i = 0, existingmode = 0; i < num_fmodes; i++)
 				{
 					if ((fmodelist[num_fmodes].width == fmodelist[i].width)   &&
 						(fmodelist[num_fmodes].height == fmodelist[i].height) &&
@@ -2781,7 +2777,7 @@ static int find_bppnum (int incr)
 	if (!vid_menu_fs)	// then it doesn't matter
 		return 0;
 
-	for (j=0; j<MAX_NUMBPP; j++)
+	for (j = 0; j < MAX_NUMBPP; j++)
 	{	// find the pos in the bpplist
 		if (vid_menubpp == bpplist[j][0])
 		{
@@ -2797,13 +2793,13 @@ static int find_bppnum (int incr)
 	// find the next available bpp
 	while (1)
 	{
-		if (j>=MAX_NUMBPP)
+		if (j >= MAX_NUMBPP)
 			j = 0;
-		if (j<0)
+		if (j < 0)
 			j = MAX_NUMBPP-1;
 		if (bpplist[j][0])
 			break;
-		j = j+incr;
+		j = j + incr;
 	}
 	return j;
 }
@@ -2835,7 +2831,7 @@ static int match_windowed_fullscr_modes (void)
 	// choose the new mode
 	tmplist = (vid_menu_fs) ? (vmode_t *)fmodelist : (vmode_t *)wmodelist;
 	tmpcount = (vid_menu_fs) ? &num_fmodes : &num_wmodes;
-	for (l = 0 ; l < *tmpcount; l++)
+	for (l = 0; l < *tmpcount; l++)
 	{
 		if (tmplist[l].width == vid_menulist[vid_menunum].width &&
 		    tmplist[l].height == vid_menulist[vid_menunum].height)

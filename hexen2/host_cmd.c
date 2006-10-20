@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.54 2006-09-26 09:53:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.55 2006-10-20 20:32:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -87,7 +87,7 @@ static void Host_Status_f (void)
 		print ("ipx:     %s\n", my_ipx_address);
 	print ("map:     %s\n", sv.name);
 	print ("players: %i active (%i max)\n\n", net_activeconnections, svs.maxclients);
-	for (j=0, client = svs.clients ; j<svs.maxclients ; j++, client++)
+	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
 	{
 		if (!client->active)
 			continue;
@@ -198,13 +198,13 @@ static void Host_Ping_f (void)
 	}
 
 	SV_ClientPrintf ("Client ping times:\n");
-	for (i=0, client = svs.clients ; i<svs.maxclients ; i++, client++)
+	for (i = 0, client = svs.clients; i < svs.maxclients; i++, client++)
 	{
 		if (!client->active)
 			continue;
 		total = 0;
-		for (j=0 ; j<NUM_PING_TIMES ; j++)
-			total+=client->ping_times[j];
+		for (j = 0; j < NUM_PING_TIMES; j++)
+			total += client->ping_times[j];
 		total /= NUM_PING_TIMES;
 		SV_ClientPrintf ("%4i %s\n", (int)(total*1000), client->name);
 	}
@@ -258,7 +258,7 @@ static void Host_Map_f (void)
 		info_mask2 = 0;
 
 	cls.mapstring[0] = 0;
-	for (i=0 ; i<Cmd_Argc() ; i++)
+	for (i = 0; i < Cmd_Argc(); i++)
 	{
 		Q_strlcat (cls.mapstring, Cmd_Argv(i), MAX_QPATH);
 		Q_strlcat (cls.mapstring, " ", MAX_QPATH);
@@ -278,7 +278,7 @@ static void Host_Map_f (void)
 		loading_stage = 2;
 
 		memset (cls.spawnparms, 0, MAX_MAPSTRING);
-		for (i=2 ; i<Cmd_Argc() ; i++)
+		for (i = 2; i < Cmd_Argc(); i++)
 		{
 			Q_strlcat (cls.spawnparms, Cmd_Argv(i), MAX_MAPSTRING);
 			Q_strlcat (cls.spawnparms, " ", MAX_MAPSTRING);
@@ -446,7 +446,9 @@ static void Host_SavegameComment (char *text)
 	time_t TempTime;
 
 	for (i = 0; i < SAVEGAME_COMMENT_LENGTH; i++)
+	{
 		text[i] = ' ';
+	}
 
 // see SAVEGAME_COMMENT_LENGTH definition in quakedef.h !
 	i = strlen(cl.levelname);
@@ -464,8 +466,10 @@ static void Host_SavegameComment (char *text)
 
 // convert space to _ to make stdio happy
 	for (i = 0; i < SAVEGAME_COMMENT_LENGTH; i++)
+	{
 		if (text[i] == ' ')
 			text[i] = '_';
+	}
 
 	text[SAVEGAME_COMMENT_LENGTH] = '\0';
 }
@@ -519,7 +523,7 @@ static void Host_Savegame_f (void)
 		return;
 	}
 
-	for (i=0 ; i<svs.maxclients ; i++)
+	for (i = 0; i < svs.maxclients; i++)
 	{
 		if (svs.clients[i].active && (svs.clients[i].edict->v.health <= 0) )
 		{
@@ -574,7 +578,7 @@ retry:
 	fprintf (f, "%i\n", SAVEGAME_VERSION);
 	Host_SavegameComment (comment);
 	fprintf (f, "%s\n", comment);
-	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
+	for (i = 0; i < NUM_SPAWN_PARMS; i++)
 		fprintf (f, "%f\n", svs.clients->spawn_parms[i]);
 	fprintf (f, "%d\n", current_skill);
 	fprintf (f, "%s\n", sv.name);
@@ -673,7 +677,7 @@ static void Host_Loadgame_f (void)
 		return;
 	}
 	fscanf (f, "%s\n", str);
-	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
+	for (i = 0; i < NUM_SPAWN_PARMS; i++)
 		fscanf (f, "%f\n", &spawn_parms[i]);
 // this silliness is so we can load 1.06 save files, which have float skill values
 	fscanf (f, "%f\n", &tfloat);
@@ -822,7 +826,7 @@ retry:
 	{
 		Host_SavegameComment (comment);
 		fprintf (f, "%s\n", comment);
-	//	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
+	//	for (i = 0; i < NUM_SPAWN_PARMS; i++)
 	//		fprintf (f, "%f\n", svs.clients->spawn_parms[i]);
 		fprintf (f, "%f\n", skill.value);
 		fprintf (f, "%s\n", sv.name);
@@ -834,7 +838,7 @@ retry:
 
 	// write the light styles
 
-		for (i=0 ; i<MAX_LIGHTSTYLES ; i++)
+		for (i = 0; i < MAX_LIGHTSTYLES; i++)
 		{
 			if (sv.lightstyles[i])
 				fprintf (f, "%s\n", sv.lightstyles[i]);
@@ -854,9 +858,9 @@ retry:
 
 	host_client = svs.clients;
 
-//	for (i=svs.maxclients+1 ; i<sv.num_edicts ; i++)
+//	for (i = svs.maxclients+1; i < sv.num_edicts; i++)
 //  to save the client states
-	for (i=start ; i<end ; i++)
+	for (i = start; i < end; i++)
 	{
 		ent = EDICT_NUM(i);
 		if ((int)ent->v.flags & FL_ARCHIVE_OVERRIDE)
@@ -905,7 +909,7 @@ retrymsg:
 
 static void RestoreClients(void)
 {
-	int i,j;
+	int i, j;
 	edict_t	*ent;
 	double time_diff;
 
@@ -914,7 +918,7 @@ static void RestoreClients(void)
 
 	time_diff = sv.time - old_time;
 
-	for (i = 0, host_client = svs.clients ; i < svs.maxclients ; i++, host_client++)
+	for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
 	{
 		if (host_client->active)
 		{
@@ -929,7 +933,7 @@ static void RestoreClients(void)
 			if (old_progdefs)
 			{
 			// copy spawn parms out of the client_t
-				for (j = 0 ; j < NUM_SPAWN_PARMS ; j++)
+				for (j = 0; j < NUM_SPAWN_PARMS; j++)
 					(&pr_global_struct_v111->parm1)[j] = host_client->spawn_parms[j];
 			// call the spawn function
 				pr_global_struct_v111->time = sv.time;
@@ -940,7 +944,7 @@ static void RestoreClients(void)
 			else
 			{
 			// copy spawn parms out of the client_t
-				for (j = 0 ; j < NUM_SPAWN_PARMS ; j++)
+				for (j = 0; j < NUM_SPAWN_PARMS; j++)
 					(&pr_global_struct->parm1)[j] = host_client->spawn_parms[j];
 			// call the spawn function
 				pr_global_struct->time = sv.time;
@@ -1008,7 +1012,7 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode)
 	if (ClientsMode != 1)
 	{
 		fscanf (f, "%s\n", str);
-	//	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
+	//	for (i = 0; i < NUM_SPAWN_PARMS; i++)
 	//		fscanf (f, "%f\n", &spawn_parms[i]);
 		fscanf (f, "%f\n", &sk);
 		Cvar_SetValue ("skill", sk);
@@ -1029,7 +1033,7 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode)
 //		fscanf (f, "%d\n",&info_mask2);
 
 	// load the light styles
-		for (i=0 ; i<MAX_LIGHTSTYLES ; i++)
+		for (i = 0; i < MAX_LIGHTSTYLES; i++)
 		{
 			fscanf (f, "%s\n", str);
 			sv.lightstyles[i] = Hunk_AllocName (strlen(str)+1, "lightstyles");
@@ -1041,8 +1045,8 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode)
 // load the edicts out of the savegame file
 	while (!feof(f))
 	{
-		fscanf (f, "%i\n",&entnum);
-		for (i=0 ; i<sizeof(str)-1 ; i++)
+		fscanf (f, "%i\n", &entnum);
+		for (i = 0; i < sizeof(str)-1; i++)
 		{
 			r = fgetc (f);
 			if (r == EOF || !r)
@@ -1138,7 +1142,7 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode)
 		Con_DPrintf("*** Auto-corrected model indexes!\n");
 	}
 
-//	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
+//	for (i = 0; i < NUM_SPAWN_PARMS; i++)
 //		svs.clients->spawn_parms[i] = spawn_parms[i];
 
 	return 0;
@@ -1330,23 +1334,23 @@ static void Host_Version_f (void)
 	Con_Printf ("looping %d times.\n", repcount);
 
 	time1 = Sys_DoubleTime();
-	for (i=repcount;i;i--)
+	for (i = repcount; i; i--)
 	{
 		char buf[2048];
-		memset(buf,i,2048);
+		memset (buf, i, 2048);
 	}
 	time2 = Sys_DoubleTime();
-	r1 = time2-time1;
+	r1 = time2 - time1;
 	Con_Printf ("loop 1 = %f\n", r1);
 
 	time1 = Sys_DoubleTime();
-	for (i=repcount;i;i--)
+	for (i = repcount; i; i--)
 	{
 		char buf[2048];
-		memset(buf,i,2048);
+		memset (buf, i, 2048);
 	}
 	time2 = Sys_DoubleTime();
-	r2 = time2-time1;
+	r2 = time2 - time1;
 	Con_Printf ("loop 2 = %f\n", r2);
 
 	if (r2 < r1)
@@ -1690,7 +1694,7 @@ static void Host_Spawn_f (void)
 			if (old_progdefs)
 			{
 			// copy spawn parms out of the client_t
-				for (i=0 ; i < NUM_SPAWN_PARMS ; i++)
+				for (i = 0; i < NUM_SPAWN_PARMS; i++)
 					(&pr_global_struct_v111->parm1)[i] = host_client->spawn_parms[i];
 			// call the spawn function
 				pr_global_struct_v111->time = sv.time;
@@ -1700,7 +1704,7 @@ static void Host_Spawn_f (void)
 			else
 			{
 			// copy spawn parms out of the client_t
-				for (i=0 ; i < NUM_SPAWN_PARMS ; i++)
+				for (i = 0; i < NUM_SPAWN_PARMS; i++)
 					(&pr_global_struct->parm1)[i] = host_client->spawn_parms[i];
 			// call the spawn function
 				pr_global_struct->time = sv.time;
@@ -1719,7 +1723,7 @@ static void Host_Spawn_f (void)
 	MSG_WriteByte (&host_client->message, svc_time);
 	MSG_WriteFloat (&host_client->message, sv.time);
 
-	for (i=0, client = svs.clients ; i<svs.maxclients ; i++, client++)
+	for (i = 0, client = svs.clients; i < svs.maxclients; i++, client++)
 	{
 		MSG_WriteByte (&host_client->message, svc_updatename);
 		MSG_WriteByte (&host_client->message, i);
@@ -1739,7 +1743,7 @@ static void Host_Spawn_f (void)
 	}
 
 // send all current light styles
-	for (i=0 ; i<MAX_LIGHTSTYLES ; i++)
+	for (i = 0; i < MAX_LIGHTSTYLES; i++)
 	{
 		MSG_WriteByte (&host_client->message, svc_lightstyle);
 		MSG_WriteByte (&host_client->message, (char)i);
@@ -1775,7 +1779,7 @@ static void Host_Spawn_f (void)
 // with a permanent head tilt
 	ent = EDICT_NUM( 1 + (host_client - svs.clients) );
 	MSG_WriteByte (&host_client->message, svc_setangle);
-	for (i=0 ; i < 2 ; i++)
+	for (i = 0; i < 2; i++)
 		MSG_WriteAngle (&host_client->message, ent->v.angles[i] );
 	MSG_WriteAngle (&host_client->message, 0);
 
@@ -1799,7 +1803,7 @@ static int strdiff(char *s1, char *s2)
 	L1 = strlen(s1);
 	L2 = strlen(s2);
 
-	for(i=0;(i < L1 && i < L2);i++)
+	for (i = 0; (i < L1 && i < L2); i++)
 	{
 		if (tolower(s1[i]) != tolower(s2[i]))
 			break;
@@ -1844,10 +1848,10 @@ static void Host_Create_f(void)
 
 		Diff = 999;
 
-		for (i=0 ; i<progs->numfunctions ; i++)
+		for (i = 0; i < progs->numfunctions; i++)
 		{
 			Search = &pr_functions[i];
-			if (!Q_strncasecmp(pr_strings + Search->s_name,FindName,fLength) )
+			if ( !Q_strncasecmp(pr_strings + Search->s_name, FindName, fLength) )
 			{
 				if (NumFound == 1)
 				{
@@ -2080,7 +2084,7 @@ static edict_t *FindViewthing (void)
 	int		i;
 	edict_t	*e;
 
-	for (i=0 ; i<sv.num_edicts ; i++)
+	for (i = 0; i < sv.num_edicts; i++)
 	{
 		e = EDICT_NUM(i);
 		if ( !strcmp (pr_strings + e->v.classname, "viewthing") )
@@ -2230,7 +2234,7 @@ static void Host_Startdemos_f (void)
 	}
 	Con_Printf ("%i demo(s) in loop\n", c);
 
-	for (i=1 ; i<c+1 ; i++)
+	for (i = 1; i < c + 1; i++)
 		strncpy (cls.demos[i-1], Cmd_Argv(i), sizeof(cls.demos[0])-1);
 
 	if (!sv.active && cls.demonum != -1 && !cls.demoplayback)
@@ -2329,6 +2333,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.54  2006/09/26 09:53:47  sezero
+ * added string array boundary checks in Host_SavegameComment().
+ *
  * Revision 1.53  2006/09/18 09:56:58  sezero
  * use snprintf and the strl* functions, #13: menu.c. while we were
  * there, exported SAVEGAME_VERSION definition through quakedef.h,

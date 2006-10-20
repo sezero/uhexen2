@@ -88,8 +88,8 @@ int TempSoundChannel (void)
 {
 	static int last = -1;
 	last--;
-	if(last<-20)
-		last=-1;
+	if (last < -20)
+		last = -1;
 	return last;
 }
 
@@ -289,7 +289,7 @@ static explosion_t *CL_AllocExplosion (void)
 	idx = 0;
 	freeSlot = false;
 
-	for (i=0 ; i<MAX_EXPLOSIONS ; i++)
+	for (i = 0; i < MAX_EXPLOSIONS; i++)
 	{
 		if (!cl_explosions[i].model)
 		{
@@ -304,7 +304,7 @@ static explosion_t *CL_AllocExplosion (void)
 
 	if (!freeSlot)
 	{
-		for (i=0 ; i<MAX_EXPLOSIONS ; i++)
+		for (i = 0; i < MAX_EXPLOSIONS; i++)
 		{
 			if (cl_explosions[i].startTime < time)
 			{
@@ -347,7 +347,7 @@ static void CL_ParseBeam (model_t *m)
 	}
 
 // override any beam with the same entity
-	for (i=0, b=cl_beams ; i< MAX_BEAMS ; i++, b++)
+	for (i = 0, b = cl_beams; i < MAX_BEAMS; i++, b++)
 	{
 		if (b->entity == ent)
 		{
@@ -361,7 +361,7 @@ static void CL_ParseBeam (model_t *m)
 	}
 
 // find a free beam
-	for (i=0, b=cl_beams ; i< MAX_BEAMS ; i++, b++)
+	for (i = 0, b = cl_beams; i < MAX_BEAMS; i++, b++)
 	{
 		if (!b->model || b->endtime < cl.time)
 		{
@@ -399,7 +399,7 @@ entity_state_t *FindState(int EntNum)
 	}
 
 	pack = &cl.frames[cls.netchan.incoming_sequence&UPDATE_MASK].packet_entities;
-	for (pnum=0 ; pnum<pack->num_entities ; pnum++)
+	for (pnum = 0; pnum < pack->num_entities; pnum++)
 	{
 		if (pack->entities[pnum].number == EntNum)
 		{
@@ -425,7 +425,7 @@ void CreateStream(int type, int ent, int flags, int tag, float duration, int ski
 	entity_state_t	*state;
 
 	models[1] = models[2] = models[3] = NULL;
-	switch(type)
+	switch (type)
 	{
 	case TE_STREAM_CHAIN:
 		models[0] = Mod_ForName("models/stchain.mdl", true);
@@ -466,7 +466,7 @@ void CreateStream(int type, int ent, int flags, int tag, float duration, int ski
 	if (models[0] == NULL)
 		Sys_Error("CreateStream: bad type");
 
-	if((stream = NewStream(ent, tag)) == NULL)
+	if ((stream = NewStream(ent, tag)) == NULL)
 	{
 		Con_Printf("stream list overflow\n");
 		return;
@@ -480,11 +480,11 @@ void CreateStream(int type, int ent, int flags, int tag, float duration, int ski
 	stream->models[1] = models[1];
 	stream->models[2] = models[2];
 	stream->models[3] = models[3];
-	stream->endTime = cl.time+duration;
+	stream->endTime = cl.time + duration;
 	stream->lastTrailTime = 0;
 	VectorCopy(source, stream->source);
 	VectorCopy(dest, stream->dest);
-	if(flags&STREAM_ATTACHED)
+	if (flags & STREAM_ATTACHED)
 	{
 		VectorClear(stream->offset);
 
@@ -501,17 +501,17 @@ void CLTENT_SpawnDeathBubble(vec3_t pos)
 	explosion_t	*ex;
 
 	//generic spinny impact image
-	ex=CL_AllocExplosion();
+	ex = CL_AllocExplosion();
 	VectorCopy(pos,ex->origin);
 	VectorSet(ex->velocity,0,0,17);
-	ex->data=cl.time;
-	ex->scale=128;
+	ex->data = cl.time;
+	ex->scale = 128;
 	ex->frameFunc = BubbleThink;
-	ex->startTime=cl.time;
-	ex->endTime=cl.time+15;
-	ex->model=Mod_ForName ("models/s_bubble.spr", true);
+	ex->startTime = cl.time;
+	ex->endTime = cl.time + 15;
+	ex->model = Mod_ForName ("models/s_bubble.spr", true);
 	ex->flags = DRF_TRANSLUCENT | MLS_ABSLIGHT;
-	ex->abslight=175;
+	ex->abslight = 175;
 }
 
 void CLTENT_XbowImpact(vec3_t pos, vec3_t vel, int chType, int damage, int arrowType)//arrowType is total # of arrows in effect
@@ -521,44 +521,44 @@ void CLTENT_XbowImpact(vec3_t pos, vec3_t vel, int chType, int damage, int arrow
 	int	i;
 
 	//generic spinny impact image
-	ex=CL_AllocExplosion();
-	ex->origin[0]=pos[0]-vel[0];
-	ex->origin[1]=pos[1]-vel[1];
-	ex->origin[2]=pos[2]-vel[2];
+	ex = CL_AllocExplosion();
+	ex->origin[0] = pos[0] - vel[0];
+	ex->origin[1] = pos[1] - vel[1];
+	ex->origin[2] = pos[2] - vel[2];
 	vectoangles(vel,ex->angles);
-	ex->avel[2]=(rand()%500)+200;
-	ex->scale=10;
+	ex->avel[2] = (rand() % 500) + 200;
+	ex->scale = 10;
 	ex->frameFunc = MissileFlashThink;
-	ex->startTime=cl.time;
-	ex->endTime=cl.time+0.3;
-	ex->model=Mod_ForName ("models/arrowhit.mdl", true);
+	ex->startTime = cl.time;
+	ex->endTime = cl.time + 0.3;
+	ex->model = Mod_ForName ("models/arrowhit.mdl", true);
 	ex->exflags = EXFLAG_ROTATE;
 	ex->flags = DRF_TRANSLUCENT | MLS_ABSLIGHT;
-	ex->abslight=175;
+	ex->abslight = 175;
 
 	//white smoke if invulnerable impact
 	if (!damage)
 	{
-		ex=CL_AllocExplosion();
-		ex->origin[0]=pos[0]-vel[0]*2;
-		ex->origin[1]=pos[1]-vel[1]*2;
-		ex->origin[2]=pos[2]-vel[2]*2;
+		ex = CL_AllocExplosion();
+		ex->origin[0] = pos[0] - vel[0]*2;
+		ex->origin[1] = pos[1] - vel[1]*2;
+		ex->origin[2] = pos[2] - vel[2]*2;
 		ex->velocity[0] = 0.0;
 		ex->velocity[1] = 0.0;
 		ex->velocity[2] = 80.0;
 		vectoangles(vel,ex->angles);
-		ex->startTime=cl.time;
-		ex->endTime=cl.time+0.35;
-		ex->model=Mod_ForName ("models/whtsmk1.spr", true);
+		ex->startTime = cl.time;
+		ex->endTime = cl.time + 0.35;
+		ex->model = Mod_ForName ("models/whtsmk1.spr", true);
 		ex->flags = DRF_TRANSLUCENT;
 
-		if (arrowType == 3)//little arrows go away
+		if (arrowType == 3)	// little arrows go away
 		{
-			if (rand()&3)//chunky go
+			if (rand() & 3)	// chunky go
 			{
-				cnt	= rand()%2+1;
+				cnt	= (rand() % 2) + 1;
 
-				for(i = 0; i < cnt; i++)
+				for (i = 0; i < cnt; i++)
 				{
 					float final;
 
@@ -567,25 +567,25 @@ void CLTENT_XbowImpact(vec3_t pos, vec3_t vel, int chType, int damage, int arrow
 
 					VectorSubtract(pos,vel,ex->origin);
 					// temp modify them...
-					ex->velocity[0] = (rand()%140)-70;
-					ex->velocity[1] = (rand()%140)-70;
-					ex->velocity[2] = (rand()%140)-70;
+					ex->velocity[0] = (rand() % 140) - 70;
+					ex->velocity[1] = (rand() % 140) - 70;
+					ex->velocity[2] = (rand() % 140) - 70;
 
 					// are these in degrees or radians?
-					ex->angles[0] = rand()%360;
-					ex->angles[1] = rand()%360;
-					ex->angles[2] = rand()%360;
+					ex->angles[0] = rand() % 360;
+					ex->angles[1] = rand() % 360;
+					ex->angles[2] = rand() % 360;
 					ex->exflags = EXFLAG_ROTATE;
 
-					ex->avel[0] = rand()%850 - 425;
-					ex->avel[1] = rand()%850 - 425;
-					ex->avel[2] = rand()%850 - 425;
+					ex->avel[0] = (rand() % 850) - 425;
+					ex->avel[1] = (rand() % 850) - 425;
+					ex->avel[2] = (rand() % 850) - 425;
 
-					ex->scale = 30 + 100 * (cnt / 40.0) + rand()%40;
+					ex->scale = 30 + 100 * (cnt / 40.0) + (rand() % 40);
 
 					ex->data = THINGTYPE_WOOD;
 
-					final = (rand()%100)*.01;
+					final = (rand() % 100) * .01;
 
 					if (final < 0.25)
 						ex->model = Mod_ForName ("models/splnter1.mdl", true);
@@ -600,26 +600,26 @@ void CLTENT_XbowImpact(vec3_t pos, vec3_t vel, int chType, int damage, int arrow
 					ex->endTime = ex->startTime + 4.0;
 				}
 			}
-			else if (rand()&1)//whole go
+			else if (rand() & 1)	// whole go
 			{
 					ex = CL_AllocExplosion();
 					ex->frameFunc = ChunkThink;
 
 					VectorSubtract(pos,vel,ex->origin);
 					// temp modify them...
-					ex->velocity[0] = (rand()%140)-70;
-					ex->velocity[1] = (rand()%140)-70;
-					ex->velocity[2] = (rand()%140)-70;
+					ex->velocity[0] = (rand() % 140) - 70;
+					ex->velocity[1] = (rand() % 140) - 70;
+					ex->velocity[2] = (rand() % 140) - 70;
 
 					// are these in degrees or radians?
-					ex->angles[0] = rand()%360;
-					ex->angles[1] = rand()%360;
-					ex->angles[2] = rand()%360;
+					ex->angles[0] = rand() % 360;
+					ex->angles[1] = rand() % 360;
+					ex->angles[2] = rand() % 360;
 					ex->exflags = EXFLAG_ROTATE;
 
-					ex->avel[0] = rand()%850 - 425;
-					ex->avel[1] = rand()%850 - 425;
-					ex->avel[2] = rand()%850 - 425;
+					ex->avel[0] = (rand() % 850) - 425;
+					ex->avel[1] = (rand() % 850) - 425;
+					ex->avel[2] = (rand() % 850) - 425;
 
 					ex->scale = 128;
 
@@ -655,7 +655,7 @@ static void ParseStream(int type)
 	duration = (float)MSG_ReadByte()*0.05;
 	skin = 0;
 
-	if(type == TE_STREAM_COLORBEAM)
+	if (type == TE_STREAM_COLORBEAM)
 	{
 		skin = MSG_ReadByte();
 	}
@@ -668,7 +668,7 @@ static void ParseStream(int type)
 	dest[2] = MSG_ReadCoord();
 
 	models[1] = models[2] = models[3] = NULL;
-	switch(type)
+	switch (type)
 	{
 	case TE_STREAM_CHAIN:
 		models[0] = Mod_ForName("models/stchain.mdl", true);
@@ -709,7 +709,7 @@ static void ParseStream(int type)
 	if (models[0] == NULL)
 		Sys_Error("ParseStream: bad type");
 
-	if((stream = NewStream(ent, tag)) == NULL)
+	if ((stream = NewStream(ent, tag)) == NULL)
 	{
 		Con_Printf("stream list overflow\n");
 		return;
@@ -723,12 +723,12 @@ static void ParseStream(int type)
 	stream->models[1] = models[1];
 	stream->models[2] = models[2];
 	stream->models[3] = models[3];
-	stream->endTime = cl.time+duration;
+	stream->endTime = cl.time + duration;
 	stream->lastTrailTime = 0;
 	VectorCopy(source, stream->source);
 	VectorCopy(dest, stream->dest);
 
-	if(flags&STREAM_ATTACHED)
+	if (flags & STREAM_ATTACHED)
 	{
 		VectorClear(stream->offset);
 
@@ -752,17 +752,17 @@ static stream_t *NewStream(int ent, int tag)
 	stream_t	*stream;
 
 	// Search for a stream with matching entity and tag
-	for(i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
+	for (i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
 	{
-		if(stream->entity == ent && stream->tag == tag)
+		if (stream->entity == ent && stream->tag == tag)
 		{
 			return stream;
 		}
 	}
 	// Search for a free stream
-	for(i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
+	for (i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
 	{
-		if(!stream->models[0] || stream->endTime < cl.time)
+		if (!stream->models[0] || stream->endTime < cl.time)
 		{
 			return stream;
 		}
@@ -810,7 +810,7 @@ void CL_ParseTEnt (void)
 			pos[2] = MSG_ReadCoord ();
 			R_RunParticleEffect (pos, vec3_origin, 0, 10);
 
-			if ( rand() % 5 )
+			if (rand() % 5)
 			{
 				S_StartSound (TempSoundChannel(), 0, cl_sfx_tink1, pos, 1, 1);
 			}
@@ -832,7 +832,7 @@ void CL_ParseTEnt (void)
 			pos[2] = MSG_ReadCoord ();
 			R_RunParticleEffect (pos, vec3_origin, 0, 20);
 
-			if ( rand() % 5 )
+			if (rand() % 5)
 			{
 				S_StartSound (TempSoundChannel(), 0, cl_sfx_tink1, pos, 1, 1);
 			}
@@ -963,7 +963,7 @@ void CL_ParseTEnt (void)
 			VectorCopy(pos,ex->origin);
 			ex->frameFunc = MultiGrenadeThink;
 
-			ex->data=250;
+			ex->data = 250;
 
 			ex->model = Mod_ForName("models/sm_expld.spr", true);
 
@@ -981,7 +981,7 @@ void CL_ParseTEnt (void)
 			vel[2] = MSG_ReadCoord();
 			chType = MSG_ReadByte();
 
-			if(type == TE_CHUNK)
+			if (type == TE_CHUNK)
 			{
 				cnt	= MSG_ReadByte();
 			}
@@ -1011,40 +1011,40 @@ void CL_ParseTEnt (void)
 				{
 					scale = 1;
 				}
-				if(cnt > 30)
+				if (cnt > 30)
 				{
 					cnt = 30;
 				}
 			}
 
-			for(i = 0; i < cnt; i++)
+			for (i = 0; i < cnt; i++)
 			{
 				float final;
 
 				ex = CL_AllocExplosion();
 				ex->frameFunc = ChunkThink;
 
-				if(type == TE_CHUNK)
+				if (type == TE_CHUNK)
 				{
 					VectorCopy(pos,ex->origin);
 					VectorCopy(vel, ex->velocity);
-					VectorScale(ex->velocity, .80 + ((rand()%4)/10.0), ex->velocity);
+					VectorScale(ex->velocity, .80 + ((rand() % 4) / 10.0), ex->velocity);
 					// temp modify them...
-					ex->velocity[0] += (rand()%140)-70;
-					ex->velocity[1] += (rand()%140)-70;
-					ex->velocity[2] += (rand()%140)-70;
+					ex->velocity[0] += (rand() % 140) - 70;
+					ex->velocity[1] += (rand() % 140) - 70;
+					ex->velocity[2] += (rand() % 140) - 70;
 
 					// are these in degrees or radians?
-					ex->angles[0] = rand()%360;
-					ex->angles[1] = rand()%360;
-					ex->angles[2] = rand()%360;
+					ex->angles[0] = rand() % 360;
+					ex->angles[1] = rand() % 360;
+					ex->angles[2] = rand() % 360;
 					ex->exflags = EXFLAG_ROTATE;
 
-					ex->avel[0] = rand()%850 - 425;
-					ex->avel[1] = rand()%850 - 425;
-					ex->avel[2] = rand()%850 - 425;
+					ex->avel[0] = (rand() % 850) - 425;
+					ex->avel[1] = (rand() % 850) - 425;
+					ex->avel[2] = (rand() % 850) - 425;
 
-					ex->scale = 30 + 100 * (cnt / 40.0) + rand()%40;
+					ex->scale = 30 + 100 * (cnt / 40.0) + (rand() % 40);
 				}
 				else
 				{
@@ -1060,47 +1060,47 @@ void CL_ParseTEnt (void)
 					// set scale
 					ex->scale = scale*100;
 					// set angles, avel
-					ex->angles[0] = rand()%360;
-					ex->angles[1] = rand()%360;
-					ex->angles[2] = rand()%360;
+					ex->angles[0] = rand() % 360;
+					ex->angles[1] = rand() % 360;
+					ex->angles[2] = rand() % 360;
 
-					ex->avel[0] = rand()%1200;
-					ex->avel[1] = rand()%1200;
-					ex->avel[2] = rand()%1200;
+					ex->avel[0] = rand() % 1200;
+					ex->avel[1] = rand() % 1200;
+					ex->avel[2] = rand() % 1200;
 				}
 				ex->data = chType;
 
-				final = (rand()%100)*.01;
-				if ((chType==THINGTYPE_GLASS) || (chType==THINGTYPE_REDGLASS) || 
-						(chType==THINGTYPE_CLEARGLASS) || (chType==THINGTYPE_WEBS))
+				final = (rand() % 100) * .01;
+				if ((chType == THINGTYPE_GLASS) || (chType == THINGTYPE_REDGLASS) || 
+						(chType == THINGTYPE_CLEARGLASS) || (chType == THINGTYPE_WEBS))
 				{
-					if (final<0.20)
+					if (final < 0.20)
 						ex->model = Mod_ForName ("models/shard1.mdl", true);
-					else if (final<0.40)
+					else if (final < 0.40)
 						ex->model = Mod_ForName ("models/shard2.mdl", true);
-					else if (final<0.60)
+					else if (final < 0.60)
 						ex->model = Mod_ForName ("models/shard3.mdl", true);
-					else if (final<0.80)
+					else if (final < 0.80)
 						ex->model = Mod_ForName ("models/shard4.mdl", true);
 					else
 						ex->model = Mod_ForName ("models/shard5.mdl", true);
 
-					if (chType==THINGTYPE_CLEARGLASS)
+					if (chType == THINGTYPE_CLEARGLASS)
 					{
 						ex->skin = 1;
 						ex->flags |= DRF_TRANSLUCENT;
 					}
-					else if (chType==THINGTYPE_REDGLASS)
+					else if (chType == THINGTYPE_REDGLASS)
 					{
 						ex->skin = 2;
 					}
-					else if (chType==THINGTYPE_WEBS)
+					else if (chType == THINGTYPE_WEBS)
 					{
 						ex->skin = 3;
 						ex->flags |= DRF_TRANSLUCENT;
 					}
 				}
-				else if (chType==THINGTYPE_WOOD)
+				else if (chType == THINGTYPE_WOOD)
 				{
 					if (final < 0.25)
 						ex->model = Mod_ForName ("models/splnter1.mdl", true);
@@ -1111,7 +1111,7 @@ void CL_ParseTEnt (void)
 					else
 						ex->model = Mod_ForName ("models/splnter4.mdl", true);
 				}
-				else if (chType==THINGTYPE_METAL)
+				else if (chType == THINGTYPE_METAL)
 				{
 					if (final < 0.25)
 						ex->model = Mod_ForName ("models/metlchk1.mdl", true);
@@ -1122,7 +1122,7 @@ void CL_ParseTEnt (void)
 					else
 						ex->model = Mod_ForName ("models/metlchk4.mdl", true);
 				}
-				else if (chType==THINGTYPE_FLESH)
+				else if (chType == THINGTYPE_FLESH)
 				{
 					if (final < 0.33)
 						ex->model = Mod_ForName ("models/flesh1.mdl", true);
@@ -1131,7 +1131,7 @@ void CL_ParseTEnt (void)
 					else
 						ex->model = Mod_ForName ("models/flesh3.mdl", true);
 				}
-				else if (chType==THINGTYPE_BROWNSTONE||chType==THINGTYPE_DIRT)
+				else if (chType == THINGTYPE_BROWNSTONE || chType == THINGTYPE_DIRT)
 				{
 					if (final < 0.25)
 						ex->model = Mod_ForName ("models/schunk1.mdl", true);
@@ -1143,7 +1143,7 @@ void CL_ParseTEnt (void)
 						ex->model = Mod_ForName ("models/schunk4.mdl", true);
 					ex->skin = 1;
 				}
-				else if (chType==THINGTYPE_CLAY)
+				else if (chType == THINGTYPE_CLAY)
 				{
 					if (final < 0.25)
 						ex->model = Mod_ForName ("models/clshard1.mdl", true);
@@ -1154,7 +1154,7 @@ void CL_ParseTEnt (void)
 					else
 						ex->model = Mod_ForName ("models/clshard4.mdl", true);
 				}
-				else if (chType==THINGTYPE_LEAVES)
+				else if (chType == THINGTYPE_LEAVES)
 				{
 					if (final < 0.33)
 						ex->model = Mod_ForName ("models/leafchk1.mdl", true);
@@ -1163,7 +1163,7 @@ void CL_ParseTEnt (void)
 					else
 						ex->model = Mod_ForName ("models/leafchk3.mdl", true);
 				}
-				else if (chType==THINGTYPE_HAY)
+				else if (chType == THINGTYPE_HAY)
 				{
 					if (final < 0.33)
 						ex->model = Mod_ForName ("models/hay1.mdl", true);
@@ -1172,7 +1172,7 @@ void CL_ParseTEnt (void)
 					else
 						ex->model = Mod_ForName ("models/hay3.mdl", true);
 				}
-				else if (chType==THINGTYPE_CLOTH)
+				else if (chType == THINGTYPE_CLOTH)
 				{
 					if (final < 0.33)
 						ex->model = Mod_ForName ("models/clthchk1.mdl", true);
@@ -1181,7 +1181,7 @@ void CL_ParseTEnt (void)
 					else
 						ex->model = Mod_ForName ("models/clthchk3.mdl", true);
 				}
-				else if (chType==THINGTYPE_WOOD_LEAF)
+				else if (chType == THINGTYPE_WOOD_LEAF)
 				{
 					if (final < 0.14)
 						ex->model = Mod_ForName ("models/splnter1.mdl", true);
@@ -1198,7 +1198,7 @@ void CL_ParseTEnt (void)
 					else
 						ex->model = Mod_ForName ("models/splnter4.mdl", true);
 				}
-				else if (chType==THINGTYPE_WOOD_METAL)
+				else if (chType == THINGTYPE_WOOD_METAL)
 				{
 					if (final < 0.125)
 						ex->model = Mod_ForName ("models/splnter1.mdl", true);
@@ -1217,7 +1217,7 @@ void CL_ParseTEnt (void)
 					else
 						ex->model = Mod_ForName ("models/metlchk4.mdl", true);
 				}
-				else if (chType==THINGTYPE_WOOD_STONE)
+				else if (chType == THINGTYPE_WOOD_STONE)
 				{
 					if (final < 0.125)
 						ex->model = Mod_ForName ("models/splnter1.mdl", true);
@@ -1236,7 +1236,7 @@ void CL_ParseTEnt (void)
 					else
 						ex->model = Mod_ForName ("models/schunk4.mdl", true);
 				}
-				else if (chType==THINGTYPE_METAL_STONE)
+				else if (chType == THINGTYPE_METAL_STONE)
 				{
 					if (final < 0.125)
 						ex->model = Mod_ForName ("models/metlchk1.mdl", true);
@@ -1255,7 +1255,7 @@ void CL_ParseTEnt (void)
 					else
 						ex->model = Mod_ForName ("models/schunk4.mdl", true);
 				}
-				else if (chType==THINGTYPE_METAL_CLOTH)
+				else if (chType == THINGTYPE_METAL_CLOTH)
 				{
 					if (final < 0.14)
 						ex->model = Mod_ForName ("models/metlchk1.mdl", true);
@@ -1272,27 +1272,27 @@ void CL_ParseTEnt (void)
 					else
 						ex->model = Mod_ForName ("models/metlchk4.mdl", true);
 				}
-				else if (chType==THINGTYPE_ICE)
+				else if (chType == THINGTYPE_ICE)
 				{
 					ex->model = Mod_ForName("models/shard.mdl", true);
 					ex->skin = 0;
-					//ent->frame = rand()%2;
+					//ent->frame = rand() % 2;
 					ex->flags |= DRF_TRANSLUCENT|MLS_ABSLIGHT;
 					//ent->abslight = 0.5;
 				}
-				else if (chType==THINGTYPE_METEOR)
+				else if (chType == THINGTYPE_METEOR)
 				{
 					ex->model = Mod_ForName("models/tempmetr.mdl", true);
 					ex->skin = 0;
 					//ex->scale *= .6;
 					VectorScale(ex->avel, 4.0, ex->avel);
 				}
-				else if (chType==THINGTYPE_ACID)
+				else if (chType == THINGTYPE_ACID)
 				{	// no spinning if possible...
 					ex->model = Mod_ForName("models/sucwp2p.mdl", true);
 					ex->skin = 0;
 				}
-				else if (chType==THINGTYPE_GREENFLESH)
+				else if (chType == THINGTYPE_GREENFLESH)
 				{	// spider guts
 					if (final < 0.33)
 						ex->model = Mod_ForName ("models/sflesh1.mdl", true);
@@ -1303,7 +1303,7 @@ void CL_ParseTEnt (void)
 
 					ex->skin = 0;
 				}
-				else// if (chType==THINGTYPE_GREYSTONE)
+				else// if (chType == THINGTYPE_GREYSTONE)
 				{
 					if (final < 0.25)
 						ex->model = Mod_ForName ("models/schunk1.mdl", true);
@@ -1348,34 +1348,34 @@ void CL_ParseTEnt (void)
 			}
 
 			//generic spinny impact image
-			ex=CL_AllocExplosion();
-			ex->origin[0]=pos[0]-vel[0];
-			ex->origin[1]=pos[1]-vel[1];
-			ex->origin[2]=pos[2]-vel[2];
+			ex = CL_AllocExplosion();
+			ex->origin[0] = pos[0] - vel[0];
+			ex->origin[1] = pos[1] - vel[1];
+			ex->origin[2] = pos[2] - vel[2];
 			vectoangles(vel,ex->angles);
-			ex->avel[2]=(rand()%500)+200;
-			ex->scale=10;
-			ex->startTime=cl.time;
-			ex->endTime=cl.time+0.3;
-			ex->model=Mod_ForName ("models/arrowhit.mdl", true);
+			ex->avel[2] = (rand() % 500) + 200;
+			ex->scale = 10;
+			ex->startTime = cl.time;
+			ex->endTime = cl.time + 0.3;
+			ex->model = Mod_ForName ("models/arrowhit.mdl", true);
 			ex->exflags = EXFLAG_ROTATE;
 			ex->flags = DRF_TRANSLUCENT | MLS_ABSLIGHT;
-			ex->abslight=128;
+			ex->abslight = 128;
 
 			//white smoke if invulnerable impact
 			if (!damage)
 			{
-				ex=CL_AllocExplosion();
-				ex->origin[0]=pos[0]-vel[0]*2;
-				ex->origin[1]=pos[1]-vel[1]*2;
-				ex->origin[2]=pos[2]-vel[2]*2;
+				ex = CL_AllocExplosion();
+				ex->origin[0] = pos[0] - vel[0]*2;
+				ex->origin[1] = pos[1] - vel[1]*2;
+				ex->origin[2] = pos[2] - vel[2]*2;
 				ex->velocity[0] = 0.0;
 				ex->velocity[1] = 0.0;
 				ex->velocity[2] = 80.0;
 				vectoangles(vel,ex->angles);
-				ex->startTime=cl.time;
-				ex->endTime=cl.time+0.35;
-				ex->model=Mod_ForName ("models/whtsmk1.spr", true);
+				ex->startTime = cl.time;
+				ex->endTime = cl.time + 0.35;
+				ex->model = Mod_ForName ("models/whtsmk1.spr", true);
 				ex->flags = DRF_TRANSLUCENT;
 			}
 			break;
@@ -1387,28 +1387,28 @@ void CL_ParseTEnt (void)
 
 			// always make 8 meteors
 			i = (host_frametime < .07) ? 0 : 4;	// based on framerate
-			for( ; i < 8; i++)
+			for ( ; i < 8; i++)
 			{
 				ex = CL_AllocExplosion();
 				VectorCopy(pos,ex->origin);
 				ex->frameFunc = ChunkThink;
 
 				// temp modify them...
-				ex->velocity[0] += (rand()%400)-200;
-				ex->velocity[1] += (rand()%400)-200;
-				ex->velocity[2] += (rand()%200)+150;
+				ex->velocity[0] += (rand() % 400) - 200;
+				ex->velocity[1] += (rand() % 400) - 200;
+				ex->velocity[2] += (rand() % 200) + 150;
 
 				// are these in degrees or radians?
-				ex->angles[0] = rand()%360;
-				ex->angles[1] = rand()%360;
-				ex->angles[2] = rand()%360;
+				ex->angles[0] = rand() % 360;
+				ex->angles[1] = rand() % 360;
+				ex->angles[2] = rand() % 360;
 				ex->exflags = EXFLAG_ROTATE;
 
-				ex->avel[0] = rand()%850 - 425;
-				ex->avel[1] = rand()%850 - 425;
-				ex->avel[2] = rand()%850 - 425;
+				ex->avel[0] = (rand() % 850) - 425;
+				ex->avel[1] = (rand() % 850) - 425;
+				ex->avel[2] = (rand() % 850) - 425;
 
-				ex->scale = 45 + rand()%10;
+				ex->scale = 45 + (rand() % 10);
 				ex->data = THINGTYPE_METEOR;
 
 				ex->model = Mod_ForName("models/tempmetr.mdl", true);
@@ -1419,30 +1419,30 @@ void CL_ParseTEnt (void)
 				ex->endTime = ex->startTime + 4.0;
 			}
 			// make the actual explosion
-			//for(i = 0; i < 7; i++)
+			//for (i = 0; i < 7; i++)
 			i = (host_frametime < .07) ? 0 : 8;	// based on framerate
-			for( ; i < 11; i++)
+			for ( ; i < 11; i++)
 			{
 				ex = CL_AllocExplosion();
 				VectorCopy(pos, ex->origin);
-				ex->origin[0] += (rand()%10) - 5;
-				ex->origin[1] += (rand()%10) - 5;
-				ex->origin[2] += (rand()%10) - 5;
+				ex->origin[0] += (rand() % 10) - 5;
+				ex->origin[1] += (rand() % 10) - 5;
+				ex->origin[2] += (rand() % 10) - 5;
 
 				ex->velocity[0] = (ex->origin[0] - pos[0])*12;
 				ex->velocity[1] = (ex->origin[1] - pos[1])*12;
 				ex->velocity[2] = (ex->origin[2] - pos[2])*12;
 
-			/*	ex->origin[0] += rand()%10 - 5;
-				ex->origin[1] += rand()%10 - 5;
-				ex->origin[2] += rand()%10 - 5;
+			/*	ex->origin[0] += (rand() % 10) - 5;
+				ex->origin[1] += (rand() % 10) - 5;
+				ex->origin[2] += (rand() % 10) - 5;
 
 				ex->velocity[0] = (ex->origin[0] - pos[0])*10;
 				ex->velocity[1] = (ex->origin[1] - pos[1])*10;
 				ex->velocity[2] = (ex->origin[2] - pos[2])*10 + 200;
 			*/
 
-				switch(rand()%4)
+				switch (rand() % 4)
 				{
 				case 0:
 				case 1:
@@ -1455,14 +1455,14 @@ void CL_ParseTEnt (void)
 					ex->model = Mod_ForName("models/gen_expl.spr", true);
 					break;
 				}
-				if(host_frametime < .07)
+				if (host_frametime < .07)
 				{
 					ex->flags |= MLS_ABSLIGHT|DRF_TRANSLUCENT;
 				}
-				ex->abslight = 160 + rand()%64;
+				ex->abslight = 160 + (rand() % 64);
 				ex->skin = 0;
-				ex->scale = 80 + rand()%40;
-				ex->startTime = cl.time + (rand()%50 / 200.0);
+				ex->scale = 80 + (rand() % 40);
+				ex->startTime = cl.time + ((rand() % 50) / 200.0);
 				ex->endTime = ex->startTime + ex->model->numframes * 0.04;
 			}
 			S_StartSound (TempSoundChannel(), 0, cl_sfx_axeExplode, pos, 1, 1);
@@ -1476,53 +1476,53 @@ void CL_ParseTEnt (void)
 			movedir[0] = MSG_ReadCoord ();
 			movedir[1] = MSG_ReadCoord ();
 			movedir[2] = MSG_ReadCoord ();
-			R_RunParticleEffect4 (pos, 50, 368 + rand() % 16, pt_grav, 10);
+			R_RunParticleEffect4 (pos, 50, 368 + (rand() % 16), pt_grav, 10);
 
 			// particle4 (50, rand(368-384), grav, 10);
 			ex = CL_AllocExplosion ();
 			VectorCopy(pos, ex->origin);
 			VectorMA(ex->origin, -6, movedir, ex->origin);
-			ex->data=250;
+			ex->data = 250;
 			ex->model = Mod_ForName("models/sm_expld.spr", true);
 			ex->startTime = cl.time;
 			ex->endTime = ex->startTime + ex->model->numframes * 0.1;
-			for(cnt2=0; cnt2<cnt; cnt2++)
+			for (cnt2 = 0; cnt2 < cnt; cnt2++)
 			{
-				offset[0] = rand() % 40 - 20;
-				offset[1] = rand() % 40 - 20;
-				offset[2] = rand() % 40 - 20;
+				offset[0] = (rand() % 40) - 20;
+				offset[1] = (rand() % 40) - 20;
+				offset[2] = (rand() % 40) - 20;
 				ex = CL_AllocExplosion ();
 				VectorAdd(pos, offset, ex->origin); 
 				VectorMA(ex->origin, -8, movedir, ex->origin);
 				VectorCopy(offset, ex->velocity);
 				ex->velocity[2] += 30;
-				ex->data=250;
+				ex->data = 250;
 				ex->model = Mod_ForName("models/ghost.spr", true);
 				ex->abslight = 128;
 				ex->flags = DRF_TRANSLUCENT | MLS_ABSLIGHT;
 				ex->startTime = cl.time;
 				ex->endTime = ex->startTime + ex->model->numframes * 0.1;
 			}
-			for(cnt2=0; cnt2<20; cnt2++)
+			for (cnt2 = 0; cnt2 < 20; cnt2++)
 			{
 				// want faster velocity to hide the fact that these 
 				// aren't in the real location
-				offset[0] = rand() % 400 + 300;
-				if(rand() % 2)
+				offset[0] = (rand() % 400) + 300;
+				if (rand() % 2)
 					offset[0] = -offset[0];
-				offset[1] = rand() % 400 + 300;
-				if(rand() % 2)
+				offset[1] = (rand() % 400) + 300;
+				if (rand() % 2)
 					offset[1] = -offset[1];
-				offset[2] = rand() % 400 + 300;
-				if(rand() % 2)
+				offset[2] = (rand() % 400) + 300;
+				if (rand() % 2)
 					offset[2] = -offset[2];
 				ex = CL_AllocExplosion ();
 				VectorMA(pos, 1/700, offset, ex->origin); 
 				VectorCopy(offset, ex->velocity);
-				ex->data=250;
+				ex->data = 250;
 				ex->model = Mod_ForName("models/boneshrd.mdl", true);
 				ex->startTime = cl.time;
-				ex->endTime = ex->startTime + rand() * 50 / 100;
+				ex->endTime = ex->startTime + ((rand() * 50) / 100);
 				ex->flags |= EXFLAG_ROTATE|EXFLAG_COLLIDE;
 				ex->angles[0] = rand() % 700;
 				ex->angles[1] = rand() % 700;
@@ -1549,7 +1549,7 @@ void CL_ParseTEnt (void)
 			ex->endTime = ex->startTime + ex->model->numframes * 0.1;
 
 			//sound
-			if(cnt2)
+			if (cnt2)
 			{
 				S_StartSound(TempSoundChannel(), 1, cl_sfx_bonehit, pos, 1, 1);
 			}
@@ -1558,8 +1558,8 @@ void CL_ParseTEnt (void)
 				S_StartSound(TempSoundChannel(), 1, cl_sfx_bonewal, pos, 1, 1);
 			}
 
-			R_RunParticleEffect4 (pos, 3, 368 + rand() % 16, pt_grav, 7);
-		//	particle4(self.origin,3,random(368,384),PARTICLETYPE_GRAV,self.dmg/2);
+			R_RunParticleEffect4 (pos, 3, 368 + (rand() % 16), pt_grav, 7);
+		//	particle4(self.origin, 3, random(368,384), PARTICLETYPE_GRAV, self.dmg/2);
 			break;
 
 		case TE_HWRAVENDIE:
@@ -1631,48 +1631,48 @@ void CL_ParseTEnt (void)
 
 			cnt2 = MSG_ReadByte();	// 0 for person, 1 for wall
 
-			if(cnt2)
+			if (cnt2)
 			{
 				i = (host_frametime < .07) ? 0 : 5;	// based on framerate
-				for( ; i < 9; i++)
+				for ( ; i < 9; i++)
 				{
 					ex = CL_AllocExplosion();
 					VectorCopy(pos,ex->origin);
 					ex->frameFunc = ChunkThink;
 
-					ex->velocity[0] += (rand()%1000)-500;
-					ex->velocity[1] += (rand()%1000)-500;
-					ex->velocity[2] += (rand()%200)-50;
+					ex->velocity[0] += (rand() % 1000) - 500;
+					ex->velocity[1] += (rand() % 1000) - 500;
+					ex->velocity[2] += (rand() % 200 ) - 50;
 
 					// are these in degrees or radians?
-					ex->angles[0] = rand()%360;
-					ex->angles[1] = rand()%360;
-					ex->angles[2] = rand()%360;
+					ex->angles[0] = rand() % 360;
+					ex->angles[1] = rand() % 360;
+					ex->angles[2] = rand() % 360;
 					ex->exflags = EXFLAG_ROTATE;
 
-					ex->avel[0] = rand()%850 - 425;
-					ex->avel[1] = rand()%850 - 425;
-					ex->avel[2] = rand()%850 - 425;
+					ex->avel[0] = (rand() % 850) - 425;
+					ex->avel[1] = (rand() % 850) - 425;
+					ex->avel[2] = (rand() % 850) - 425;
 
-					if(cnt2 == 2)
+					if (cnt2 == 2)
 					{
-						ex->scale = 65 + rand()%10;
+						ex->scale = 65 + (rand() % 10);
 					}
 					else
 					{
-						ex->scale = 35 + rand()%10;
+						ex->scale = 35 + (rand() % 10);
 					}
 					ex->data = THINGTYPE_ICE;
 
 					ex->model = Mod_ForName("models/shard.mdl", true);
 					ex->skin = 0;
-					//ent->frame = rand()%2;
+					//ent->frame = rand() % 2;
 					ex->flags |= DRF_TRANSLUCENT|MLS_ABSLIGHT;
 					ex->abslight = 128;
 
 					ex->startTime = cl.time;
 					ex->endTime = ex->startTime + 2.0;
-					if(cnt2 == 2)
+					if (cnt2 == 2)
 					{
 						ex->endTime += 3.0;
 					}
@@ -1693,7 +1693,7 @@ void CL_ParseTEnt (void)
 			ex->endTime = ex->startTime + ex->model->numframes * 0.1;
 
 			// Add in the sound
-			if(cnt2 == 1)
+			if (cnt2 == 1)
 			{	// hit a wall
 				S_StartSound (TempSoundChannel(), 0, cl_sfx_icewall, pos, 1, 1);
 			}
@@ -1723,7 +1723,7 @@ void CL_ParseTEnt (void)
 					VectorCopy(state->origin, center);
 
 					playIceSound+=host_frametime;
-					if(playIceSound >= .6)
+					if (playIceSound >= .6)
 					{
 						S_StartSound (TempSoundChannel(), 0, cl_sfx_icestorm, center, 1, 1);
 						playIceSound -= .6;
@@ -1733,7 +1733,7 @@ void CL_ParseTEnt (void)
 					{	// make some ice beams...
 						models[0] = Mod_ForName("models/stice.mdl", true);
 
-						if((stream = NewStream(ent, i)) == NULL)
+						if ((stream = NewStream(ent, i)) == NULL)
 						{
 							Con_Printf("stream list overflow\n");
 							return;
@@ -1744,12 +1744,12 @@ void CL_ParseTEnt (void)
 						stream->entity = ent;
 						stream->skin = 0;
 						stream->models[0] = models[0];
-						stream->endTime = cl.time+0.3;
+						stream->endTime = cl.time + 0.3;
 						stream->lastTrailTime = 0;
 
 						VectorCopy(center, stream->source);
-						stream->source[0] += rand()%100 - 50;
-						stream->source[1] += rand()%100 - 50;
+						stream->source[0] += (rand() % 100) - 50;
+						stream->source[1] += (rand() % 100) - 50;
 						VectorCopy(stream->source, stream->dest);
 						stream->dest[2] += 128;
 
@@ -1777,11 +1777,11 @@ void CL_ParseTEnt (void)
 			ex->startTime = cl.time;
 			ex->endTime = ex->startTime + 2;
 			ex->exflags = EXFLAG_ROTATE;
-			ex->avel[2] = rand() * 360 + 360;
+			ex->avel[2] = (rand() * 360) + 360;
 			ex->flags = MLS_ABSLIGHT|DRF_TRANSLUCENT;
 			ex->abslight = 128;
-			//ex->scale = .8 + (rand()%100) * 0.004;  // .8 to 1.2
-			ex->scale = 80 + rand()%40;
+			//ex->scale = .8 + (rand() % 100) * 0.004;  // .8 to 1.2
+			ex->scale = 80 + (rand() % 40);
 			break;
 
 		case TE_SUNSTAFF_CHEAP:
@@ -1801,14 +1801,14 @@ void CL_ParseTEnt (void)
 				if (state)
 				{
 					// read in up to 4 points for up to 3 beams
-					for(i = 0; i < 3; i++)
+					for (i = 0; i < 3; i++)
 					{
 						tempVal = MSG_ReadCoord();
 						points[0][i] = tempVal;
 					}
-					for(i = 1; i < 2 + reflect_count; i++)
+					for (i = 1; i < 2 + reflect_count; i++)
 					{
-						for(j = 0; j < 3; j++)
+						for (j = 0; j < 3; j++)
 						{
 							tempVal = MSG_ReadCoord();
 							points[i][j] = tempVal;
@@ -1816,21 +1816,21 @@ void CL_ParseTEnt (void)
 					}
 
 					// actually create the sun model pieces
-					for ( i = 0; i < reflect_count + 1; i++)
+					for (i = 0; i < reflect_count + 1; i++)
 					{
 						models[0] = Mod_ForName("models/stsunsf1.mdl", true);
 						models[1] = Mod_ForName("models/stsunsf2.mdl", true);
 						models[2] = Mod_ForName("models/stsunsf3.mdl", true);
 						models[3] = Mod_ForName("models/stsunsf4.mdl", true);
 
-						if((stream = NewStream(ent, i)) == NULL)
+						if ((stream = NewStream(ent, i)) == NULL)
 						{
 							Con_Printf("stream list overflow\n");
 							return;
 						}
 						stream->type = TE_STREAM_SUNSTAFF1;
 						stream->tag = i;
-						if(!i)
+						if (!i)
 						{
 							stream->flags = (i+STREAM_ATTACHED);
 						}
@@ -1844,13 +1844,13 @@ void CL_ParseTEnt (void)
 						stream->models[1] = models[1];
 						stream->models[2] = models[2];
 						stream->models[3] = models[3];
-						stream->endTime = cl.time+0.5;	// FIXME
+						stream->endTime = cl.time + 0.5;	// FIXME
 						stream->lastTrailTime = 0;
 
 						VectorCopy(points[i], stream->source);
 						VectorCopy(points[i+1], stream->dest);
 
-						if(!i)
+						if (!i)
 						{
 							VectorClear(stream->offset);
 							VectorSubtract(stream->source, state->origin, stream->offset);
@@ -1859,7 +1859,7 @@ void CL_ParseTEnt (void)
 				}
 				else
 				{	// read in everything to keep everything in sync
-					for(i = 0; i < (2 + reflect_count)*3; i++)
+					for (i = 0; i < (2 + reflect_count)*3; i++)
 					{
 						tempVal = MSG_ReadShort();
 					}
@@ -1879,7 +1879,7 @@ void CL_ParseTEnt (void)
 
 				if (state)
 				{
-					if(rand()&1)
+					if (rand() & 1)
 					{
 						S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning1, state->origin, 1, 1);
 					}
@@ -1892,7 +1892,7 @@ void CL_ParseTEnt (void)
 					{	// make some lightning
 						models[0] = Mod_ForName("models/stlghtng.mdl", true);
 
-						if((stream = NewStream(ent, i)) == NULL)
+						if ((stream = NewStream(ent, i)) == NULL)
 						{
 							Con_Printf("stream list overflow\n");
 							return;
@@ -1904,16 +1904,16 @@ void CL_ParseTEnt (void)
 						stream->entity = ent;
 						stream->skin = 0;
 						stream->models[0] = models[0];
-						stream->endTime = cl.time+0.5;
+						stream->endTime = cl.time + 0.5;
 						stream->lastTrailTime = 0;
 
 						VectorCopy(state->origin, stream->source);
-						stream->source[0] += rand()%30 - 15;
-						stream->source[1] += rand()%30 - 15;
+						stream->source[0] += (rand() % 30) - 15;
+						stream->source[1] += (rand() % 30) - 15;
 						VectorCopy(stream->source, stream->dest);
-						stream->dest[0] += rand()%80 - 40;
-						stream->dest[1] += rand()%80 - 40;
-						stream->dest[2] += 64 + (rand()%48);
+						stream->dest[0] += (rand() % 80) - 40;
+						stream->dest[1] += (rand() % 80) - 40;
+						stream->dest[2] += 64 + (rand() % 48);
 					}
 				}
 			}
@@ -1932,12 +1932,12 @@ void CL_ParseTEnt (void)
 			ex->model = Mod_ForName("models/teleport.mdl", true);
 			ex->startTime = cl.time;
 			ex->endTime = ex->startTime + 2;
-			ex->avel[2] = rand() * 360 + 360;
+			ex->avel[2] = (rand() * 360) + 360;
 			ex->flags = SCALE_TYPE_XYONLY | DRF_TRANSLUCENT;
 			ex->skin = cnt;
 			ex->scale = 100;
 
-			for(dir=0; dir<360; dir+=45)
+			for (dir = 0; dir < 360; dir += 45)
 			{
 				cosval = 10 * cos(dir *M_PI*2 / 360);
 				sinval = 10 * sin(dir *M_PI*2 / 360);
@@ -1977,7 +1977,7 @@ void CL_ParseTEnt (void)
 
 				if (state)
 				{
-					if(rand()&1)
+					if (rand() & 1)
 					{
 						S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning1, pos, 1, 1);
 					}
@@ -1990,7 +1990,7 @@ void CL_ParseTEnt (void)
 					{	// make some lightning
 						models[0] = Mod_ForName("models/stlghtng.mdl", true);
 
-						if((stream = NewStream(ent, i)) == NULL)
+						if ((stream = NewStream(ent, i)) == NULL)
 						{
 							Con_Printf("stream list overflow\n");
 							return;
@@ -2002,16 +2002,16 @@ void CL_ParseTEnt (void)
 						stream->entity = ent;
 						stream->skin = 0;
 						stream->models[0] = models[0];
-						stream->endTime = cl.time+0.5;
+						stream->endTime = cl.time + 0.5;
 						stream->lastTrailTime = 0;
 
 						VectorCopy(pos, stream->source);
-						stream->source[0] += rand()%30 - 15;
-						stream->source[1] += rand()%30 - 15;
+						stream->source[0] += (rand() % 30) - 15;
+						stream->source[1] += (rand() % 30) - 15;
 						VectorCopy(stream->source, stream->dest);
-						stream->dest[0] += rand()%80 - 40;
-						stream->dest[1] += rand()%80 - 40;
-						stream->dest[2] += 64 + (rand()%48);
+						stream->dest[0] += (rand() % 80) - 40;
+						stream->dest[1] += (rand() % 80) - 40;
+						stream->dest[2] += 64 + (rand() % 48);
 					}
 				}
 				ex = CL_AllocExplosion();
@@ -2053,19 +2053,19 @@ void CL_ParseTEnt (void)
 			pos[2] = MSG_ReadCoord();
 
 			i = (host_frametime < .07) ? 0 : 3;	// based on framerate
-			for( ; i < 5; i++)
+			for ( ; i < 5; i++)
 			{
 				ex = CL_AllocExplosion();
 				VectorCopy(pos, ex->origin);
-				ex->origin[0] += rand()%6 - 3;
-				ex->origin[1] += rand()%6 - 3;
-				ex->origin[2] += rand()%6 - 3;
+				ex->origin[0] += (rand() % 6) - 3;
+				ex->origin[1] += (rand() % 6) - 3;
+				ex->origin[2] += (rand() % 6) - 3;
 
 				ex->velocity[0] = (ex->origin[0] - pos[0])*15;
 				ex->velocity[1] = (ex->origin[1] - pos[1])*15;
 				ex->velocity[2] = (ex->origin[2] - pos[2])*15;
 
-				switch(rand()%6)
+				switch (rand() % 6)
 				{
 				case 0:
 				case 1:
@@ -2083,10 +2083,10 @@ void CL_ParseTEnt (void)
 					break;
 				}
 				ex->flags |= MLS_ABSLIGHT;//|DRF_TRANSLUCENT;
-				ex->abslight = 160+rand()%24;
+				ex->abslight = 160 + (rand() % 24);
 				ex->skin = 0;
-				ex->scale = 80 + rand()%40;
-				ex->startTime = cl.time + (rand()%50 / 200.0);
+				ex->scale = 80 + (rand() % 40);
+				ex->startTime = cl.time + ((rand() % 50) / 200.0);
 				ex->endTime = ex->startTime + ex->model->numframes * 0.05;
 			}
 
@@ -2099,19 +2099,19 @@ void CL_ParseTEnt (void)
 			pos[2] = MSG_ReadCoord();
 
 			i = (host_frametime < .07) ? 0 : 14;	// based on framerate
-			for(; i < 20; i++)
+			for ( ; i < 20; i++)
 			{
 				ex = CL_AllocExplosion();
 				VectorCopy(pos, ex->origin);
-				ex->origin[0] += rand()%6 - 3;
-				ex->origin[1] += rand()%6 - 3;
-				ex->origin[2] += rand()%6 - 3;
+				ex->origin[0] += (rand() % 6) - 3;
+				ex->origin[1] += (rand() % 6) - 3;
+				ex->origin[2] += (rand() % 6) - 3;
 
 				ex->velocity[0] = (ex->origin[0] - pos[0])*40;
 				ex->velocity[1] = (ex->origin[1] - pos[1])*40;
 				ex->velocity[2] = (ex->origin[2] - pos[2])*40;
 
-				switch(rand()%4)
+				switch (rand() % 4)
 				{
 				case 0:
 					ex->model = Mod_ForName("models/sm_expld.spr", true);
@@ -2125,10 +2125,10 @@ void CL_ParseTEnt (void)
 					break;
 				}
 				ex->flags |= MLS_ABSLIGHT|DRF_TRANSLUCENT;
-				ex->abslight = 160+rand()%24;
+				ex->abslight = 160 + (rand() % 24);
 				ex->skin = 0;
-				ex->scale = 80 + rand()%40;
-				ex->startTime = cl.time + (rand()%50 / 200.0);
+				ex->scale = 80 + (rand() % 40);
+				ex->startTime = cl.time + ((rand() % 50) / 200.0);
 				ex->endTime = ex->startTime + ex->model->numframes * 0.05;
 			}
 
@@ -2176,11 +2176,11 @@ void CL_ParseTEnt (void)
 				pos[1] = MSG_ReadCoord();
 				pos[2] = MSG_ReadCoord();
 
-				for(i = 0; i < 2; i++)
+				for (i = 0; i < 2; i++)
 				{
 					ex = CL_AllocExplosion();
 					VectorCopy(pos, ex->origin);
-					if(i)
+					if (i)
 					{
 						ex->model = Mod_ForName("models/stsunsf3.mdl", true);
 						ex->scale = 200;
@@ -2220,7 +2220,7 @@ void CL_ParseTEnt (void)
 					models[2] = Mod_ForName("models/stsunsf3.mdl", true);
 					models[3] = Mod_ForName("models/stsunsf4.mdl", true);
 
-					if((stream = NewStream(ent, 0)) == NULL)
+					if ((stream = NewStream(ent, 0)) == NULL)
 					{
 						Con_Printf("stream list overflow\n");
 						return;
@@ -2235,7 +2235,7 @@ void CL_ParseTEnt (void)
 					stream->models[1] = models[1];
 					stream->models[2] = models[2];
 					stream->models[3] = models[3];
-					stream->endTime = cl.time+0.8;
+					stream->endTime = cl.time + 0.8;
 					stream->lastTrailTime = 0;
 
 					VectorCopy(vel, stream->source);
@@ -2265,19 +2265,19 @@ void CL_ParseTEnt (void)
 			ex->endTime = ex->startTime + ex->model->numframes * 0.05;
 
 			i = (host_frametime < .07) ? 0 : 8;	// based on framerate
-			for(i = 0; i < 12; i++)
+			for (i = 0; i < 12; i++)
 			{
 				ex = CL_AllocExplosion();
 				VectorCopy(pos, ex->origin);
-				ex->origin[0] += (rand()%20) - 10;
-				ex->origin[1] += (rand()%20) - 10;
-				ex->origin[2] += (rand()%20) - 10;
+				ex->origin[0] += (rand() % 20) - 10;
+				ex->origin[1] += (rand() % 20) - 10;
+				ex->origin[2] += (rand() % 20) - 10;
 
 				ex->velocity[0] = (ex->origin[0] - pos[0])*12;
 				ex->velocity[1] = (ex->origin[1] - pos[1])*12;
 				ex->velocity[2] = (ex->origin[2] - pos[2])*12;
 
-				switch(rand()%4)
+				switch (rand() % 4)
 				{
 				case 0:
 				case 1:
@@ -2290,14 +2290,14 @@ void CL_ParseTEnt (void)
 					ex->model = Mod_ForName("models/gen_expl.spr", true);
 					break;
 				}
-				if(host_frametime < 0.07)
+				if (host_frametime < 0.07)
 				{
 					ex->flags |= MLS_ABSLIGHT|DRF_TRANSLUCENT;
 				}
-				ex->abslight = 160 + rand()%64;
+				ex->abslight = 160 + (rand() % 64);
 				ex->skin = 0;
-				ex->scale = 80 + rand()%40;
-				ex->startTime = cl.time + (rand()%50 / 200.0);
+				ex->scale = 80 + (rand() % 40);
+				ex->startTime = cl.time + ((rand() % 50) / 200.0);
 				ex->endTime = ex->startTime + ex->model->numframes * 0.04;
 			}
 
@@ -2322,37 +2322,37 @@ void CL_ParseTEnt (void)
 				style = MSG_ReadByte();
 
 				i = (host_frametime < 0.07) ? 0 : 8;
-				for( ; i < 12; i++)
+				for ( ; i < 12; i++)
 				{
 					ex = CL_AllocExplosion();
 					VectorCopy(pos, ex->origin);
-					ex->origin[0] += (rand()%40)-20;
-					ex->origin[1] += (rand()%40)-20;
-					ex->origin[2] += rand()%40;
+					ex->origin[0] += (rand() % 40) - 20;
+					ex->origin[1] += (rand() % 40) - 20;
+					ex->origin[2] += (rand() % 40);
 					ex->frameFunc = ChunkThink;
 
-					throwPower = 3.5 + ((rand()%100)/100.0);
-					curAng = angle*6.28/256.0 + ((rand()%100)/50.0) - 1.0;
-					curPitch = pitch*6.28/256.0 + ((rand()%100)/100.0) - .5;
+					throwPower = 3.5 + ((rand() % 100) / 100.0);
+					curAng = angle*6.28/256.0 + ((rand() % 100) / 50.0) - 1.0;
+					curPitch = pitch*6.28/256.0 + ((rand() % 100) / 100.0) - .5;
 
 					ex->velocity[0] = force*throwPower * cos(curAng) * cos(curPitch);
 					ex->velocity[1] = force*throwPower * sin(curAng) * cos(curPitch);
 					ex->velocity[2] = force*throwPower * sin(curPitch);
 
 					// are these in degrees or radians?
-					ex->angles[0] = rand()%360;
-					ex->angles[1] = rand()%360;
-					ex->angles[2] = rand()%360;
+					ex->angles[0] = rand() % 360;
+					ex->angles[1] = rand() % 360;
+					ex->angles[2] = rand() % 360;
 					ex->exflags = EXFLAG_ROTATE;
 
-					ex->avel[0] = rand()%850 - 425;
-					ex->avel[1] = rand()%850 - 425;
-					ex->avel[2] = rand()%850 - 425;
+					ex->avel[0] = (rand() % 850) - 425;
+					ex->avel[1] = (rand() % 850) - 425;
+					ex->avel[2] = (rand() % 850) - 425;
 
-					ex->scale = 80 + rand()%40;
+					ex->scale = 80 + (rand() % 40);
 					ex->data = THINGTYPE_FLESH;
 
-					switch(rand()%3)
+					switch (rand() % 3)
 					{
 					case 0:
 						ex->model = Mod_ForName("models/flesh1.mdl", true);
@@ -2371,13 +2371,13 @@ void CL_ParseTEnt (void)
 					ex->endTime = ex->startTime + 4.0;
 				}
 
-				switch(style)
+				switch (style)
 				{
 				case 0:
 					S_StartSound (TempSoundChannel(), 0, cl_sfx_big_gib, pos, 1, 1);
 					break;
 				case 1:
-					if(rand()%2)
+					if (rand() % 2)
 					{
 						S_StartSound (TempSoundChannel(), 0, cl_sfx_gib1, pos, 1, 1);
 					}
@@ -2475,11 +2475,11 @@ void CL_ParseTEnt (void)
 
 					VectorCopy(midPos,curPos);
 
-					for (i=0;i<distance;i++)
+					for (i = 0; i < distance; i++)
 					{
 						ex = CL_AllocExplosion();
 						VectorCopy(curPos, ex->origin);
-						switch(rand()%3)
+						switch (rand() % 3)
 						{
 						case 0:
 							ex->model = Mod_ForName("models/gen_expl.spr", true);
@@ -2496,8 +2496,8 @@ void CL_ParseTEnt (void)
 						ex->skin = 0;
 						ratio = (float)i/(float)distance;
 						ex->scale = 200-(int)(150.0*ratio);
-						ex->startTime = cl.time+ratio*0.75;
-						ex->endTime = ex->startTime + ex->model->numframes * (0.025+FRANDOM()*0.01);
+						ex->startTime = cl.time + ratio*0.75;
+						ex->endTime = ex->startTime + ex->model->numframes * (0.025 + FRANDOM()*0.01);
 
 						VectorAdd(curPos,distVec,curPos);
 					}
@@ -2505,11 +2505,11 @@ void CL_ParseTEnt (void)
 					VectorScale(distVec,-1,distVec);
 					VectorCopy(midPos,curPos);
 
-					for (i=0;i<distance;i++)
+					for (i = 0; i < distance; i++)
 					{
 						ex = CL_AllocExplosion();
 						VectorCopy(curPos, ex->origin);
-						switch(rand()%3)
+						switch (rand() % 3)
 						{
 						case 0:
 							ex->model = Mod_ForName("models/gen_expl.spr", true);
@@ -2525,8 +2525,8 @@ void CL_ParseTEnt (void)
 						ex->abslight = 128;
 						ex->skin = 0;
 						ratio = (float)i/(float)distance;
-						ex->scale = 200-(int)(150.0*ratio);
-						ex->startTime = cl.time+ratio*0.75;
+						ex->scale = 200 - (int)(150.0*ratio);
+						ex->startTime = cl.time + ratio*0.75;
 						ex->endTime = ex->startTime + ex->model->numframes * (0.025+FRANDOM()*0.01);
 
 						VectorAdd(curPos,distVec,curPos);
@@ -2562,27 +2562,27 @@ void CL_ParseTEnt (void)
 			pos[2] = MSG_ReadCoord();
 
 			i = (host_frametime < 0.07) ? 0 : 2;
-			for( ; i < 5; i++)
+			for ( ; i < 5; i++)
 			{
 				ex = CL_AllocExplosion();
 				VectorCopy(pos, ex->origin);
-				ex->origin[0] += rand()%6 - 3;
-				ex->origin[1] += rand()%6 - 3;
-				ex->origin[2] += rand()%6 - 3;
+				ex->origin[0] += (rand() % 6) - 3;
+				ex->origin[1] += (rand() % 6) - 3;
+				ex->origin[2] += (rand() % 6) - 3;
 
 				ex->velocity[0] = (ex->origin[0] - pos[0])*6;
 				ex->velocity[1] = (ex->origin[1] - pos[1])*6;
 				ex->velocity[2] = (ex->origin[2] - pos[2])*6;
 
 				ex->model = Mod_ForName("models/axplsn_2.spr", true);
-				if(host_frametime < 0.07)
+				if (host_frametime < 0.07)
 				{
 					ex->flags |= MLS_ABSLIGHT|DRF_TRANSLUCENT;
 				}
-				ex->abslight = 160+rand()%24;
+				ex->abslight = 160 + (rand() % 24);
 				ex->skin = 0;
-				ex->scale = 80 + rand()%40;
-				ex->startTime = cl.time + (rand()%50 / 200.0);
+				ex->scale = 80 + (rand() % 40);
+				ex->startTime = cl.time + ((rand() % 50) / 200.0);
 				ex->endTime = ex->startTime + ex->model->numframes * 0.05;
 			}
 
@@ -2595,19 +2595,19 @@ void CL_ParseTEnt (void)
 			pos[2] = MSG_ReadCoord();
 
 			i = (host_frametime < 0.07) ? 0 : 7;
-			for( ; i < 12; i++)
+			for ( ; i < 12; i++)
 			{
 				ex = CL_AllocExplosion();
 				VectorCopy(pos, ex->origin);
-				ex->origin[0] += rand()%6 - 3;
-				ex->origin[1] += rand()%6 - 3;
-				ex->origin[2] += rand()%6 - 3;
+				ex->origin[0] += (rand() % 6) - 3;
+				ex->origin[1] += (rand() % 6) - 3;
+				ex->origin[2] += (rand() % 6) - 3;
 
 				ex->velocity[0] = (ex->origin[0] - pos[0])*25;
 				ex->velocity[1] = (ex->origin[1] - pos[1])*25;
 				ex->velocity[2] = (ex->origin[2] - pos[2])*25;
 
-				switch(rand()%4)
+				switch (rand() % 4)
 				{
 				case 0:
 					ex->model = Mod_ForName("models/axplsn_2.spr", true);
@@ -2620,41 +2620,41 @@ void CL_ParseTEnt (void)
 					ex->model = Mod_ForName("models/axplsn_5.spr", true);
 					break;
 				}
-				if(host_frametime < 0.07)
+				if (host_frametime < 0.07)
 				{
 					ex->flags |= MLS_ABSLIGHT|DRF_TRANSLUCENT;
 				}
 				ex->abslight = 1;
 				ex->skin = 0;
-				ex->scale = 80 + rand()%40;
-				ex->startTime = cl.time + (rand()%50 / 200.0);
+				ex->scale = 80 + (rand() % 40);
+				ex->startTime = cl.time + ((rand() % 50) / 200.0);
 				ex->endTime = ex->startTime + ex->model->numframes * 0.05;
 			}
 
 			// always make 8 meteors
 			i = (host_frametime < 0.07) ? 0 : 4;
-			for( ; i < 8; i++)
+			for ( ; i < 8; i++)
 			{
 				ex = CL_AllocExplosion();
 				VectorCopy(pos,ex->origin);
 				ex->frameFunc = ChunkThink;
 
 				// temp modify them...
-				ex->velocity[0] = (rand()%500)-250;
-				ex->velocity[1] = (rand()%500)-250;
-				ex->velocity[2] = (rand()%200)+200;
+				ex->velocity[0] = (rand() % 500) - 250;
+				ex->velocity[1] = (rand() % 500) - 250;
+				ex->velocity[2] = (rand() % 200) + 200;
 
 				// are these in degrees or radians?
-				ex->angles[0] = rand()%360;
-				ex->angles[1] = rand()%360;
-				ex->angles[2] = rand()%360;
+				ex->angles[0] = rand() % 360;
+				ex->angles[1] = rand() % 360;
+				ex->angles[2] = rand() % 360;
 				ex->exflags = EXFLAG_ROTATE;
 
-				ex->avel[0] = rand()%850 - 425;
-				ex->avel[1] = rand()%850 - 425;
-				ex->avel[2] = rand()%850 - 425;
+				ex->avel[0] = (rand() % 850) - 425;
+				ex->avel[1] = (rand() % 850) - 425;
+				ex->avel[2] = (rand() % 850) - 425;
 
-				ex->scale = 45 + rand()%10;
+				ex->scale = 45 + (rand() % 10);
 				ex->data = THINGTYPE_ACID;
 
 				ex->model = Mod_ForName("models/sucwp2p.mdl", true);
@@ -2684,7 +2684,7 @@ void CL_ParseTEnt (void)
 
 				dlx = CL_AllocDlight (0);
 				VectorCopy (pos,  dlx->origin);
-				dlx->radius = 200 + (rand()&31);
+				dlx->radius = 200 + (rand() & 31);
 				dlx->die = cl.time + 0.001;
 
 				VectorCopy(pos, endPos);
@@ -2696,11 +2696,11 @@ void CL_ParseTEnt (void)
 				VectorSubtract(endPos, pos, posAdd);
 				VectorScale(posAdd, .125, posAdd);
 
-				for(i = 0; i < fireCounts; i++)
+				for (i = 0; i < fireCounts; i++)
 				{
 					ex = CL_AllocExplosion();
 					VectorCopy(curPos, ex->origin);
-					switch(rand()%3)
+					switch (rand() % 3)
 					{
 					case 0:
 						ex->model = Mod_ForName("models/firewal1.spr", true);
@@ -2719,7 +2719,7 @@ void CL_ParseTEnt (void)
 					{	// I dunno how expensive this is, but it kind of sucks anyway around it...
 						l = Mod_PointInLeaf (ex->origin, cl.worldmodel);
 
-						if(l->contents == CONTENTS_EMPTY)
+						if (l->contents == CONTENTS_EMPTY)
 						{
 							ex->origin[2] -= 16;
 						}
@@ -2729,15 +2729,15 @@ void CL_ParseTEnt (void)
 						}
 					} while (l->contents == CONTENTS_EMPTY);
 
-					ex->origin[0] += (rand()%8)-4;
-					ex->origin[1] += (rand()%8)-4;
-					ex->origin[2] += (rand()%6)+21;
+					ex->origin[0] += (rand() % 8) - 4;
+					ex->origin[1] += (rand() % 8) - 4;
+					ex->origin[2] += (rand() % 6) + 21;
 
 					ex = CL_AllocExplosion();
 					VectorCopy(curPos, ex->origin);
-					ex->origin[0] += (rand()%8)-4;
-					ex->origin[1] += (rand()%8)-4;
-					ex->origin[2] += (rand()%6)-3;
+					ex->origin[0] += (rand() % 8) - 4;
+					ex->origin[1] += (rand() % 8) - 4;
+					ex->origin[2] += (rand() % 6) - 3;
 					ex->model = Mod_ForName("models/flamestr.spr", true);
 					ex->startTime = cl.time + .3/8.0 * i;
 					ex->endTime = ex->startTime + ex->model->numframes * 0.05;
@@ -2755,15 +2755,15 @@ void CL_ParseTEnt (void)
 			pos[2] = MSG_ReadCoord();
 
 			i = (host_frametime < 0.07) ? 0 : 8;
-			for( ; i < 12; i++)
+			for ( ; i < 12; i++)
 			{
 				ex = CL_AllocExplosion();
 				VectorCopy(pos, ex->origin);
-				ex->origin[0] += (rand()%32)-16;
-				ex->origin[1] += (rand()%32)-16;
-				ex->origin[2] += (rand()%32)-16;
+				ex->origin[0] += (rand() % 32) - 16;
+				ex->origin[1] += (rand() % 32) - 16;
+				ex->origin[2] += (rand() % 32) - 16;
 				ex->model = Mod_ForName("models/fboom.spr", true);
-				ex->startTime = cl.time + ((rand()%150)/200);
+				ex->startTime = cl.time + ((rand() % 150) / 200);
 				ex->endTime = ex->startTime + ex->model->numframes * 0.05;
 			}
 
@@ -2775,7 +2775,7 @@ void CL_ParseTEnt (void)
 			pos[1] = MSG_ReadCoord();
 			pos[2] = MSG_ReadCoord();
 			cnt = MSG_ReadByte ();
-			R_RunParticleEffect4 (pos, 3, 368 + rand() % 16, pt_grav, cnt);
+			R_RunParticleEffect4 (pos, 3, 368 + (rand() % 16), pt_grav, cnt);
 			rnd = rand() % 100;
 			if (rnd > 95)
 				S_StartSound (TempSoundChannel(), 0, cl_sfx_ric1, pos, 1, 1);
@@ -2811,7 +2811,7 @@ void CL_ParseTEnt (void)
 
 				dlx = CL_AllocDlight (0);
 				VectorCopy (pos,  dlx->origin);
-				dlx->radius = 200 + (rand()&31);
+				dlx->radius = 200 + (rand() & 31);
 				dlx->die = cl.time + 0.001;
 
 				VectorCopy(pos, endPos);
@@ -2823,7 +2823,7 @@ void CL_ParseTEnt (void)
 				VectorSubtract(endPos, pos, posAdd);
 				VectorScale(posAdd, .125, posAdd);
 
-				for(i = 0; i < fireCounts; i++)
+				for (i = 0; i < fireCounts; i++)
 				{
 					cVal = cos((svTime + (i*.3/8.0))*8)*10;
 					sVal = sin((svTime + (i*.3/8.0))*8)*10;
@@ -2834,9 +2834,9 @@ void CL_ParseTEnt (void)
 					VectorCopy(curPos, ex->origin);
 					VectorMA(ex->origin, cVal, right, ex->origin);
 					VectorMA(ex->origin, sVal, up, ex->origin);
-					ex->origin[0] += (rand()%8)-4;
-					ex->origin[1] += (rand()%8)-4;
-					ex->origin[2] += (rand()%6)-3;
+					ex->origin[0] += (rand() % 8) - 4;
+					ex->origin[1] += (rand() % 8) - 4;
+					ex->origin[2] += (rand() % 6) - 3;
 					ex->model = Mod_ForName("models/flamestr.spr", true);
 					ex->startTime = cl.time + .3/8.0 * i;
 					ex->endTime = ex->startTime + ex->model->numframes * 0.05;
@@ -2852,9 +2852,9 @@ void CL_ParseTEnt (void)
 					VectorCopy(curPos, ex->origin);
 					VectorMA(ex->origin, -cVal, right, ex->origin);
 					VectorMA(ex->origin, -sVal, up, ex->origin);
-					ex->origin[0] += (rand()%8)-4;
-					ex->origin[1] += (rand()%8)-4;
-					ex->origin[2] += (rand()%6)-3;
+					ex->origin[0] += (rand() % 8) - 4;
+					ex->origin[1] += (rand() % 8) - 4;
+					ex->origin[2] += (rand() % 6) - 3;
 					ex->model = Mod_ForName("models/flamestr.spr", true);
 					ex->startTime = cl.time + .3/8.0 * i;
 					ex->endTime = ex->startTime + ex->model->numframes * 0.05;
@@ -2902,7 +2902,7 @@ void CL_ParseTEnt (void)
 				ex->frameFunc = updateBloodRain;
 				ex->exflags |= EXFLAG_COLLIDE;
 
-				if(health > 90)
+				if (health > 90)
 				{
 					angles[0] = travelPitch*360/(2*M_PI);
 					angles[1] = travelAng*360/(2*M_PI);
@@ -3236,7 +3236,7 @@ void CL_ParseTEnt (void)
 				flags = 0;
 				tag = 0;
 				duration = 0.1;
-				skin = rand()%5;
+				skin = rand() % 5;
 			//	source[0] = MSG_ReadCoord();
 			//	source[1] = MSG_ReadCoord();
 			//	source[2] = MSG_ReadCoord();
@@ -3257,20 +3257,20 @@ void CL_ParseTEnt (void)
 					{	//won't see beam anyway then, so put it all
 						//at the target
 						VectorCopy(state2->origin, source);
-						source[2]+=10;
+						source[2] += 10;
 					}
 
 					if (state2)
 					{
 						//in case they're both valid, copy me again
 						VectorCopy(state2->origin, dest);
-						dest[2]+=30;
+						dest[2] += 30;
 					}
 					else	//don't know where the damn victim is--prolly
 					{	//won't see beam anyway then, so put it all
 						//at the cube
 						VectorCopy(source, dest);
-						dest[2]+=10;
+						dest[2] += 10;
 					}
 
 					VectorSet(smokeDir,0,0,100);
@@ -3297,7 +3297,7 @@ void CL_ParseTEnt (void)
 				pos[1] = MSG_ReadCoord();
 				pos[2] = MSG_ReadCoord();
 
-				if(rand()&1)
+				if (rand() & 1)
 				{
 					S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning1, pos, 1, 1);
 				}
@@ -3310,7 +3310,7 @@ void CL_ParseTEnt (void)
 				{	// make some lightning
 					models[0] = Mod_ForName("models/stlghtng.mdl", true);
 
-					if((stream = NewStream(ent, i)) == NULL)
+					if ((stream = NewStream(ent, i)) == NULL)
 					{
 						Con_Printf("stream list overflow\n");
 						return;
@@ -3321,11 +3321,11 @@ void CL_ParseTEnt (void)
 					stream->entity = ent;
 					stream->skin = 0;
 					stream->models[0] = models[0];
-					stream->endTime = cl.time+0.5;
+					stream->endTime = cl.time + 0.5;
 					stream->lastTrailTime = 0;
 
-					tempAng = (rand()%628)/100.0;
-					tempPitch = (rand()%628)/100.0;
+					tempAng = (rand() % 628) / 100.0;
+					tempPitch = (rand() % 628) / 100.0;
 
 					VectorCopy(pos, stream->source);
 					VectorCopy(stream->source, stream->dest);
@@ -3418,26 +3418,26 @@ void CL_ParseTEnt (void)
 
 					oldNum = numTargs;
 
-					if(points[numTargs][0]||points[numTargs][1]||points[numTargs][2])
+					if (points[numTargs][0] || points[numTargs][1] || points[numTargs][2])
 					{
-						if(numTargs < 9)
+						if (numTargs < 9)
 						{
 							numTargs++;
 						}
 					}
 				} while (points[oldNum][0] || points[oldNum][1] || points[oldNum][2]);
 
-				if(numTargs == 0)
+				if (numTargs == 0)
 				{
 					break;
 				}
 
-				for(temp = 0; temp < numTargs - 1; temp++)
+				for (temp = 0; temp < numTargs - 1; temp++)
 				{
 					// make the connecting lightning...
 					models[0] = Mod_ForName("models/stlghtng.mdl", true);
 
-					if((stream = NewStream(ent, temp)) == NULL)
+					if ((stream = NewStream(ent, temp)) == NULL)
 					{
 						Con_Printf("stream list overflow\n");
 						return;
@@ -3448,7 +3448,7 @@ void CL_ParseTEnt (void)
 					stream->entity = ent;
 					stream->skin = 0;
 					stream->models[0] = models[0];
-					stream->endTime = cl.time+0.3;
+					stream->endTime = cl.time + 0.3;
 					stream->lastTrailTime = 0;
 
 					VectorCopy(points[temp], stream->source);
@@ -3462,7 +3462,7 @@ void CL_ParseTEnt (void)
 					ex->flags |= MLS_ABSLIGHT;//|DRF_TRANSLUCENT;
 					//ex->abslight = 128;
 					ex->abslight = 224;
-					ex->skin = rand()&1;
+					ex->skin = rand() & 1;
 					ex->scale = 150;
 					ex->frameFunc = zapFrameFunc;
 					//ex->frameFunc = SwordFrameFunc;
@@ -3516,7 +3516,7 @@ static void CL_UpdateBeams (void)
 	entity_t	*ent;
 
 	// update lightning
-	for (i=0, b=cl_beams ; i< MAX_BEAMS ; i++, b++)
+	for (i = 0, b = cl_beams; i < MAX_BEAMS; i++, b++)
 	{
 		if (!b->model || b->endtime < cl.time)
 			continue;
@@ -3563,9 +3563,9 @@ static void CL_UpdateBeams (void)
 			ent->model = b->model;
 			ent->angles[0] = pitch;
 			ent->angles[1] = yaw;
-			ent->angles[2] = rand()%360;
+			ent->angles[2] = rand() % 360;
 
-			for (i=0 ; i<3 ; i++)
+			for (i = 0; i < 3; i++)
 				org[i] += dist[i]*30;
 			d -= 30;
 		}
@@ -3584,15 +3584,15 @@ static void CL_UpdateExplosions (void)
 	entity_t	*ent;
 	mleaf_t		*l;
 
-	for (i=0, ex=cl_explosions ; i< MAX_EXPLOSIONS ; i++, ex++)
+	for (i = 0, ex = cl_explosions; i < MAX_EXPLOSIONS; i++, ex++)
 	{
 		if (!ex->model)
 			continue;
 
-		if(ex->exflags & EXFLAG_COLLIDE)
+		if (ex->exflags & EXFLAG_COLLIDE)
 		{
 			l = Mod_PointInLeaf (ex->origin, cl.worldmodel);
-			if(l->contents != CONTENTS_EMPTY)
+			if (l->contents != CONTENTS_EMPTY)
 			{
 				if (ex->removeFunc)
 				{
@@ -3618,7 +3618,7 @@ static void CL_UpdateExplosions (void)
 		VectorCopy(ex->origin, ex->oldorg);
 
 		// set the current frame so i finish anim at endTime
-		if(ex->exflags & EXFLAG_STILL_FRAME)
+		if (ex->exflags & EXFLAG_STILL_FRAME)
 		{	// if it's a still frame, use the data field
 			f = (int)ex->data;
 		}
@@ -3638,7 +3638,7 @@ static void CL_UpdateExplosions (void)
 		ex->velocity[2] += host_frametime * ex->accel[2];
 
 		// add in angular velocity
-		if(ex->exflags & EXFLAG_ROTATE)
+		if (ex->exflags & EXFLAG_ROTATE)
 		{
 			VectorMA(ex->angles, host_frametime, ex->avel, ex->angles);
 		}
@@ -3671,11 +3671,11 @@ static void CL_UpdateExplosions (void)
 		ent->skinnum = ex->skin;
 		ent->drawflags = ex->flags;
 
-		if(ex->flags & MLS_ABSLIGHT)
+		if (ex->flags & MLS_ABSLIGHT)
 		{
 			ent->abslight = ex->abslight;
 		}
-		if(ex->scale)
+		if (ex->scale)
 		{
 			ent->scale = ex->scale;
 		}
@@ -3694,22 +3694,22 @@ static void CL_UpdateStreams(void)
 	entity_state_t	*state;
 
 	// Update streams
-	for(i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
+	for (i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
 	{
-		if(!stream->models[0])// || stream->endTime < cl.time)
+		if (!stream->models[0])// || stream->endTime < cl.time)
 		{ // Inactive
 			continue;
 		}
 
-		if(stream->endTime < cl.time)
+		if (stream->endTime < cl.time)
 		{ // Inactive
-			if(stream->type!=TE_STREAM_LIGHTNING && stream->type!=TE_STREAM_LIGHTNING_SMALL)
+			if (stream->type != TE_STREAM_LIGHTNING && stream->type != TE_STREAM_LIGHTNING_SMALL)
 				continue;
-			else if(stream->endTime + 0.25 < cl.time)
+			else if (stream->endTime + 0.25 < cl.time)
 				continue;
 		}
 
-		if(stream->flags&STREAM_ATTACHED&&stream->endTime >= cl.time)
+		if (stream->flags & STREAM_ATTACHED && stream->endTime >= cl.time)
 		{ // Attach the start position to owner
 			state = FindState(stream->entity);
 			if (state)
@@ -3719,10 +3719,10 @@ static void CL_UpdateStreams(void)
 		}
 
 		VectorSubtract(stream->dest, stream->source, dist);
-		if(dist[1] == 0 && dist[0] == 0)
+		if (dist[1] == 0 && dist[0] == 0)
 		{
 			yaw = 0;
-			if(dist[2] > 0)
+			if (dist[2] > 0)
 			{
 				pitch = 90;
 			}
@@ -3734,13 +3734,13 @@ static void CL_UpdateStreams(void)
 		else
 		{
 			yaw = (int)(atan2(dist[1], dist[0])*180/M_PI);
-			if(yaw < 0)
+			if (yaw < 0)
 			{
 				yaw += 360;
 			}
 			forward = sqrt(dist[0]*dist[0]+dist[1]*dist[1]);
 			pitch = (int)(atan2(dist[2], forward)*180/M_PI);
-			if(pitch < 0)
+			if (pitch < 0)
 			{
 				pitch += 360;
 			}
@@ -3749,7 +3749,7 @@ static void CL_UpdateStreams(void)
 		VectorCopy(stream->source, org);
 		d = VectorNormalize(dist);
 
-		if(stream->type == TE_STREAM_SUNSTAFF2)
+		if (stream->type == TE_STREAM_SUNSTAFF2)
 		{
 			discard[YAW] = yaw;
 			discard[PITCH] = pitch;
@@ -3763,18 +3763,19 @@ static void CL_UpdateStreams(void)
 			sin2Time = sin(cl.time*5 + 3.14);
 		}
 
-		if(stream->type == TE_STREAM_ICECHUNKS)
+		if (stream->type == TE_STREAM_ICECHUNKS)
 		{
 			offset = (int)(cl.time*40)%30;
-			for(j = 0; j < 3; j++)
+			for (j = 0; j < 3; j++)
 			{
 				org[j] += dist[j]*offset;
 			}
 		}
-		while(d > 0)
+
+		while (d > 0)
 		{
 			ent = CL_NewTempEntity();
-			if(!ent)
+			if (!ent)
 			{
 				return;
 			}
@@ -3782,7 +3783,7 @@ static void CL_UpdateStreams(void)
 			ent->model = stream->models[0];
 			ent->angles[0] = pitch;
 			ent->angles[1] = yaw;
-			switch(stream->type)
+			switch (stream->type)
 			{
 			case TE_STREAM_CHAIN:
 				ent->angles[2] = 0;
@@ -3797,7 +3798,7 @@ static void CL_UpdateStreams(void)
 				//ent->frame = (int)(cl.time*20)%20;
 
 				ent = CL_NewTempEntity();
-				if(!ent)
+				if (!ent)
 				{
 					return;
 				}
@@ -3809,7 +3810,7 @@ static void CL_UpdateStreams(void)
 				ent->drawflags = MLS_ABSLIGHT|DRF_TRANSLUCENT;
 				ent->abslight = 128;
 				ent->scale = 50 + 100 * ((stream->endTime - cl.time)/.5);
-				//stream->endTime = cl.time+0.3;	// FIXME
+				//stream->endTime = cl.time + 0.3;	// FIXME
 				break;
 			case TE_STREAM_SUNSTAFF2:
 				ent->angles[2] = (int)(cl.time*100)%360;
@@ -3820,7 +3821,7 @@ static void CL_UpdateStreams(void)
 				VectorMA(ent->origin, sinTime * (40 * lifeTime), up,  ent->origin);
 
 				ent = CL_NewTempEntity();
-				if(!ent)
+				if (!ent)
 				{
 					return;
 				}
@@ -3835,15 +3836,15 @@ static void CL_UpdateStreams(void)
 				VectorMA(ent->origin, cos2Time * (40 * lifeTime), right,  ent->origin);
 				VectorMA(ent->origin, sin2Time * (40 * lifeTime), up,  ent->origin);
 
-				for(j = 0; j < 2; j++)
+				for (j = 0; j < 2; j++)
 				{
 					ent = CL_NewTempEntity();
-					if(!ent)
+					if (!ent)
 					{
 						return;
 					}
 					VectorCopy(org, ent->origin);
-					if(j)
+					if (j)
 					{
 						VectorMA(ent->origin, cos2Time * (40 * lifeTime), right,  ent->origin);
 						VectorMA(ent->origin, sin2Time * (40 * lifeTime), up,  ent->origin);
@@ -3863,35 +3864,35 @@ static void CL_UpdateStreams(void)
 				}
 				break;
 			case TE_STREAM_LIGHTNING:
-				if(stream->endTime < cl.time)
+				if (stream->endTime < cl.time)
 				{//fixme: keep last non-translucent frame and angle
 					ent->drawflags = MLS_ABSLIGHT|DRF_TRANSLUCENT;
 					ent->abslight = 128 + (stream->endTime - cl.time)*192;
 				}
 				else
 				{
-					ent->angles[2] = rand()%360;
+					ent->angles[2] = rand() % 360;
 					ent->drawflags = MLS_ABSLIGHT;
 					ent->abslight = 128;
-					ent->frame = rand()%6;
+					ent->frame = rand() % 6;
 				}
 				break;
 			case TE_STREAM_LIGHTNING_SMALL:
-				if(stream->endTime < cl.time)
+				if (stream->endTime < cl.time)
 				{
 					ent->drawflags = MLS_ABSLIGHT|DRF_TRANSLUCENT;
 					ent->abslight = 128 + (stream->endTime - cl.time)*192;
 				}
 				else
 				{
-					ent->angles[2] = rand()%360;
-					ent->frame = rand()%6;
+					ent->angles[2] = rand() % 360;
+					ent->frame = rand() % 6;
 					ent->drawflags = MLS_ABSLIGHT;
 					ent->abslight = 128;
 				}
 				break;
 			case TE_STREAM_FAMINE:
-				ent->angles[2] = rand()%360;
+				ent->angles[2] = rand() % 360;
 				ent->drawflags = MLS_ABSLIGHT;
 				ent->abslight = 128;
 				ent->frame = 0;
@@ -3909,32 +3910,32 @@ static void CL_UpdateStreams(void)
 				ent->frame = (int)(cl.time*40)%36;
 				break;
 			case TE_STREAM_ICECHUNKS:
-				ent->angles[2] = rand()%360;
+				ent->angles[2] = rand() % 360;
 				ent->drawflags = MLS_ABSLIGHT;
 				ent->abslight = 128;
-				ent->frame = rand()%5;
+				ent->frame = rand() % 5;
 				break;
 			default:
 				ent->angles[2] = 0;
 			}
 
-			for(j = 0; j < 3; j++)
+			for (j = 0; j < 3; j++)
 			{
 				org[j] += dist[j]*30;
 			}
 			d -= 30;
 		}
 
-		if(stream->type == TE_STREAM_SUNSTAFF1)
+		if (stream->type == TE_STREAM_SUNSTAFF1)
 		{
-			if(stream->lastTrailTime+0.2 < cl.time)
+			if (stream->lastTrailTime+0.2 < cl.time)
 			{
 				stream->lastTrailTime = cl.time;
 				R_SunStaffTrail(stream->source, stream->dest);
 			}
 
 			ent = CL_NewTempEntity();
-			if(ent == NULL)
+			if (ent == NULL)
 			{
 				return;
 			}
@@ -3942,11 +3943,11 @@ static void CL_UpdateStreams(void)
 			ent->model = stream->models[2];
 			ent->drawflags = MLS_ABSLIGHT;
 			ent->abslight = 128;
-			ent->scale = 80+(rand()&15);
+			ent->scale = 80 + (rand() & 15);
 			//ent->frame = (int)(cl.time*20)%20;
 
 			ent = CL_NewTempEntity();
-			if(ent == NULL)
+			if (ent == NULL)
 			{
 				return;
 			}
@@ -3954,7 +3955,7 @@ static void CL_UpdateStreams(void)
 			ent->model = stream->models[3];
 			ent->drawflags = MLS_ABSLIGHT|DRF_TRANSLUCENT;
 			ent->abslight = 128;
-			ent->scale = 150+(rand()&15);
+			ent->scale = 150 + (rand() & 15);
 		}
 	}
 }
@@ -3976,11 +3977,11 @@ void CL_UpdateTEnts (void)
 static void MultiGrenadeExplodeSound (explosion_t *ex)
 {
 	//plug up all of -1's channels w/ grenade sounds
-	if (!(rand()&7))
+	if ( !(rand() & 7) )
 	{
-		if (MultiGrenadeCurrentChannel>=MAX_DYNAMIC_CHANNELS || MultiGrenadeCurrentChannel<0)
+		if (MultiGrenadeCurrentChannel >= MAX_DYNAMIC_CHANNELS || MultiGrenadeCurrentChannel < 0)
 		{
-			MultiGrenadeCurrentChannel=0;
+			MultiGrenadeCurrentChannel = 0;
 		}
 
 		S_StartSound (TempSoundChannel(), MultiGrenadeCurrentChannel++, cl_sfx_explode, ex->origin, 1, 1);
@@ -3993,27 +3994,27 @@ static void MultiGrenadeExplodeSound (explosion_t *ex)
 static void MultiGrenadeThink (explosion_t *ex)
 {//FIXME: too messy
 	explosion_t *missile;
-	int	attack_counter,number_explosions;
+	int	attack_counter, number_explosions;
 	float	ftemp;
 
 	VectorSet(ex->velocity,0,0,0);
 	VectorSet(ex->accel,0,0,0);
 
-	ex->frameFunc=MultiGrenadeExplodeSound;
+	ex->frameFunc = MultiGrenadeExplodeSound;
 
-	attack_counter=0;
-	number_explosions=(rand()&2)+6;
+	attack_counter = 0;
+	number_explosions = (rand() & 2) + 6;
 
-	while(attack_counter<number_explosions)
+	while (attack_counter < number_explosions)
 	{
-		attack_counter+=1;
-		missile=CL_AllocExplosion();
+		attack_counter += 1;
+		missile = CL_AllocExplosion();
 
 		missile->frameFunc = MultiGrenadePieceThink;
 
 		VectorCopy(ex->origin,missile->origin);
 
-		if (rand()&1)
+		if (rand() & 1)
 			missile->model = Mod_ForName("models/gen_expl.spr", true);
 		else
 			missile->model = Mod_ForName("models/bg_expld.spr", true);
@@ -4022,66 +4023,66 @@ static void MultiGrenadeThink (explosion_t *ex)
 		{
 		case 2:
 			missile->frameFunc = MultiGrenadePieceThink;
-			missile->velocity[0]=(rand()%600)-300;
-			missile->velocity[1]=(rand()%600)-300;
-			missile->velocity[2]=0;//(rand()%100)+50;
+			missile->velocity[0] = (rand() % 600) - 300;
+			missile->velocity[1] = (rand() % 600) - 300;
+			missile->velocity[2] = 0;	//(rand() % 100) + 50;
 
 			ftemp = ( rand() / RAND_MAX * (0.5) );
 			missile->startTime = cl.time;// + 0.1 + ftemp - (ex->startTime - cl.time);
-			ftemp = ( rand() / RAND_MAX * (0.3) )-0.15;
+			ftemp = ( rand() / RAND_MAX * (0.3) ) - 0.15;
 			missile->endTime = missile->startTime + missile->model->numframes * 0.1 + ftemp;
 			break;
 		case 1:
 			missile->frameFunc = MultiGrenadePiece2Think;
-			missile->velocity[0]=(rand()%80)-40;
-			missile->velocity[1]=(rand()%80)-40;
-			missile->velocity[2]=(rand()%150)+150;
+			missile->velocity[0] = (rand() % 80 ) - 40;
+			missile->velocity[1] = (rand() % 80 ) - 40;
+			missile->velocity[2] = (rand() % 150) + 150;
 
 			ftemp = ( rand() / RAND_MAX  * (0.5) );
-			missile->startTime = cl.time;// + 0.1 + ftemp - (ex->startTime - cl.time);
-			ftemp = ( rand() / RAND_MAX  * (0.3) )-0.15;
+			missile->startTime = cl.time;	// + 0.1 + ftemp - (ex->startTime - cl.time);
+			ftemp = ( rand() / RAND_MAX  * (0.3) ) - 0.15;
 			missile->endTime = missile->startTime + missile->model->numframes * 0.1 + ftemp;
 			break;
 		default://some extra explosions for at first
 			missile->frameFunc = NULL;
-			missile->origin[0]+=(rand()%50)-25;
-			missile->origin[1]+=(rand()%50)-25;
-			missile->origin[2]+=(rand()%50)-25;
+			missile->origin[0] += (rand() % 50) - 25;
+			missile->origin[1] += (rand() % 50) - 25;
+			missile->origin[2] += (rand() % 50) - 25;
 
 			ftemp = ( rand() / RAND_MAX * (0.2) );
 			missile->startTime = cl.time + ftemp;
-			ftemp = ( rand() / RAND_MAX * (0.2) )-0.1;
+			ftemp = ( rand() / RAND_MAX * (0.2) ) - 0.1;
 			missile->endTime = missile->startTime + missile->model->numframes * 0.1 + ftemp;
 			break;
 		}
 
 		ftemp = ( rand() / RAND_MAX * (0.2) );
 
-		missile->data=ex->data*(0.7  +  ftemp);
+		missile->data = ex->data * (0.7  +  ftemp);
 	}
 }
 
 static void MultiGrenadePieceThink (explosion_t *ex)
 {//FIXME: too messy
 	explosion_t *missile;
-	int	attack_counter,number_explosions;
+	int	attack_counter, number_explosions;
 	float	ftemp;
 
 	VectorSet(ex->velocity,0,0,0);
 	VectorSet(ex->accel,0,0,0);
 
-	ex->frameFunc=MultiGrenadeExplodeSound;
+	ex->frameFunc = MultiGrenadeExplodeSound;
 
 	if (ex->data < 70)
 		ex->data = 70;
 
-	ftemp = ( rand() / RAND_MAX * (0.2) )-0.1;
+	ftemp = ( rand() / RAND_MAX * (0.2) ) - 0.1;
 	ex->startTime = cl.time + ((1-(ex->data-69)/180.0)+ftemp-0.3) * 1.25;
 	if (ex->startTime < cl.time)
 	{
 		ex->startTime = cl.time;
 	}
-	ftemp = ( rand() / RAND_MAX * (0.4) )-0.4;
+	ftemp = ( rand() / RAND_MAX * (0.4) ) - 0.4;
 	ex->endTime = ex->startTime + ex->model->numframes * 0.1 + ftemp;
 
 	if (ex->model->numframes > 14)
@@ -4093,34 +4094,34 @@ static void MultiGrenadePieceThink (explosion_t *ex)
 	if (ex->data <= 71)
 		return;
 
-	attack_counter=0;
-	number_explosions=(rand()&3)+2;
+	attack_counter = 0;
+	number_explosions = (rand() & 3) + 2;
 
-	while(attack_counter<number_explosions)
+	while (attack_counter < number_explosions)
 	{
-		attack_counter+=1;
-		missile=CL_AllocExplosion();
+		attack_counter += 1;
+		missile = CL_AllocExplosion();
 
 		missile->frameFunc = MultiGrenadePieceThink;
 
 		VectorCopy(ex->origin,missile->origin);
 
-		missile->origin[0]+=(rand()%100)-50;
-		missile->origin[1]+=(rand()%100)-50;
-		missile->origin[2]+=(rand()%10)-4;
+		missile->origin[0] += (rand() % 100) - 50;
+		missile->origin[1] += (rand() % 100) - 50;
+		missile->origin[2] += (rand() % 10 ) - 4;
 
 		ftemp = ( rand() / RAND_MAX * (0.2) );
 
-		missile->data=ex->data*(0.7  +  ftemp);
+		missile->data = ex->data * (0.7 + ftemp);
 
-		if (rand()&7)
+		if (rand() & 7)
 			missile->model = Mod_ForName("models/bg_expld.spr", true);
 		else
 			missile->model = Mod_ForName("models/fl_expld.spr", true);
 
 		ftemp = ( rand() / RAND_MAX * (0.5) );
 
-		missile->startTime = cl.time+0.01;
+		missile->startTime = cl.time + 0.01;
 		missile->endTime = missile->startTime + missile->model->numframes * 0.1;
 	}
 }
@@ -4128,55 +4129,55 @@ static void MultiGrenadePieceThink (explosion_t *ex)
 static void MultiGrenadePiece2Think (explosion_t *ex)
 {//FIXME: too messy
 	explosion_t *missile;
-	int	attack_counter,number_explosions;
+	int	attack_counter, number_explosions;
 	float	ftemp;
 
 	VectorSet(ex->velocity,0,0,0);
 	VectorSet(ex->accel,0,0,0);
 
-	ex->frameFunc=MultiGrenadeExplodeSound;
+	ex->frameFunc = MultiGrenadeExplodeSound;
 
 	if (ex->data < 70)
 	{
 		ex->data = 70;
 	}
 
-	ftemp = 0;//( rand() / RAND_MAX * (0.2) )-0.1;
+	ftemp = 0;	//( rand() / RAND_MAX * (0.2) ) - 0.1;
 	ex->startTime = cl.time + (((1 - (ex->data-69)/200.0)+ftemp)*1.5) - 0.2;
-	ftemp = ( rand() / RAND_MAX * (0.4) )-0.2;
+	ftemp = ( rand() / RAND_MAX * (0.4) ) - 0.2;
 	ex->endTime = ex->startTime + ex->model->numframes * 0.1 + ftemp;
 
 	if (ex->data <= 71)
 		return;
 
-	attack_counter=0;
-	number_explosions=(rand()%3)+2;
+	attack_counter = 0;
+	number_explosions = (rand() % 3) + 2;
 
-	while(attack_counter<number_explosions)
+	while (attack_counter < number_explosions)
 	{
-		attack_counter+=1;
-		missile=CL_AllocExplosion();
+		attack_counter += 1;
+		missile = CL_AllocExplosion();
 
 		missile->frameFunc = MultiGrenadePiece2Think;
 
 		VectorCopy(ex->origin,missile->origin);
 
-		missile->origin[0]+=(rand()%30)-15;
-		missile->origin[1]+=(rand()%30)-15;
+		missile->origin[0] += (rand() % 30) - 15;
+		missile->origin[1] += (rand() % 30) - 15;
 
 		ftemp = rand() / RAND_MAX;
 
-		missile->origin[2]+=(ftemp*7)+30;
-		missile->data=ex->data - ftemp * 10 - 20;
+		missile->origin[2] += (ftemp*7) + 30;
+		missile->data = ex->data - ftemp * 10 - 20;
 
-		if (rand()&1)
+		if (rand() & 1)
 			missile->model = Mod_ForName("models/gen_expl.spr", true);
 		else
 			missile->model = Mod_ForName("models/bg_expld.spr", true);
 
 		ftemp = ( rand() / RAND_MAX * (0.5) );
 
-		missile->startTime = cl.time+0.01;
+		missile->startTime = cl.time + 0.01;
 		missile->endTime = missile->startTime + missile->model->numframes * 0.1;
 	}
 }
@@ -4188,30 +4189,30 @@ static void ChunkThink(explosion_t *ex)
 	int	moving = 1;
 
 	l = Mod_PointInLeaf (ex->origin, cl.worldmodel);
-	if(l->contents!=CONTENTS_EMPTY) //||in_solid==true
+	if (l->contents != CONTENTS_EMPTY) // || in_solid == true
 	{	//collided with world
 		VectorCopy(ex->oldorg, ex->origin);
 
-		if((int)ex->data == THINGTYPE_FLESH)
+		if ((int)ex->data == THINGTYPE_FLESH)
 		{
-			if(VectorNormalize(ex->velocity) > 100.0)
+			if (VectorNormalize(ex->velocity) > 100.0)
 			{	// hit, now make a splash of blood
 				vec3_t	dmin = {-40, -40, 10};
 				vec3_t	dmax = {40, 40, 40};
-				//R_RunParticleEffect4 (ex->origin, 300.0, 136 + (rand()%5), pt_darken, 25);
-				//R_RunParticleEffect2 (ex->origin, dmin, dmax, 136 + (rand()%5), pt_fastgrav, 12);
-				R_RunParticleEffect2 (ex->origin, dmin, dmax, 136 + (rand()%5), pt_darken, 20);
+				//R_RunParticleEffect4 (ex->origin, 300.0, 136 + (rand() % 5), pt_darken, 25);
+				//R_RunParticleEffect2 (ex->origin, dmin, dmax, 136 + (rand() % 5), pt_fastgrav, 12);
+				R_RunParticleEffect2 (ex->origin, dmin, dmax, 136 + (rand() % 5), pt_darken, 20);
 			}
 		}
-		else if((int)ex->data == THINGTYPE_ACID)
+		else if ((int)ex->data == THINGTYPE_ACID)
 		{
-			if(VectorNormalize(ex->velocity) > 100.0)
+			if (VectorNormalize(ex->velocity) > 100.0)
 			{	// hit, now make a splash of acid
 			//	vec3_t	dmin = {-40, -40, 10};
 			//	vec3_t	dmax = {40, 40, 40};
 
-				//R_RunParticleEffect2 (ex->origin, dmin, dmax, 136 + (rand()%5), pt_darken, 20);	// FIXME - These should be green
-				if(!(rand()%3))
+				//R_RunParticleEffect2 (ex->origin, dmin, dmax, 136 + (rand() % 5), pt_darken, 20);	// FIXME - These should be green
+				if ( !(rand() % 3) )
 				{
 					S_StartSound (TempSoundChannel(), 0, cl_sfx_dropfizzle, ex->origin, 1, 1);
 				}
@@ -4228,12 +4229,12 @@ static void ChunkThink(explosion_t *ex)
 		moving = 0;
 	}
 
-	if(cl.time + host_frametime * 5 > ex->endTime)
+	if (cl.time + host_frametime * 5 > ex->endTime)
 	{	// chunk leaves in 5 frames about
-		switch((int)ex->data)
+		switch ((int)ex->data)
 		{
 		case THINGTYPE_METEOR:
-			if(cl.time + host_frametime * 4 < ex->endTime)
+			if (cl.time + host_frametime * 4 < ex->endTime)
 			{	// just crossed the threshold
 				ex->abslight = 200;
 			}
@@ -4253,7 +4254,7 @@ static void ChunkThink(explosion_t *ex)
 
 	ex->velocity[2] -= host_frametime * movevars.gravity; // this is gravity
 
-	switch((int)ex->data)
+	switch ((int)ex->data)
 	{
 	case THINGTYPE_GREYSTONE:
 		break;
@@ -4262,7 +4263,7 @@ static void ChunkThink(explosion_t *ex)
 	case THINGTYPE_METAL:
 		break;
 	case THINGTYPE_FLESH:
-		if(moving)
+		if (moving)
 			R_RocketTrail (ex->oldorg, ex->origin, rt_blood);
 		break;
 	case THINGTYPE_FIRE:
@@ -4294,7 +4295,7 @@ static void ChunkThink(explosion_t *ex)
 		break;
 	case THINGTYPE_ICE:
 		ex->velocity[2] += host_frametime * movevars.gravity * 0.5; // lower gravity for ice chunks
-		if(moving)
+		if (moving)
 			R_RocketTrail (ex->oldorg, ex->origin, rt_ice);
 		break;
 	case THINGTYPE_CLEARGLASS:
@@ -4302,21 +4303,22 @@ static void ChunkThink(explosion_t *ex)
 	case THINGTYPE_REDGLASS:
 		break;
 	case THINGTYPE_ACID:
-		if(moving)
+		if (moving)
 			R_RocketTrail (ex->oldorg, ex->origin, 16);
 		break;
 	case THINGTYPE_METEOR:
 		VectorCopy(ex->oldorg, oldorg);
-		if(!moving)
+		if (!moving)
 		{	// resting meteors still give off smoke
-			oldorg[0] += rand()%7 - 3;
-			oldorg[1] += rand()%7 - 3;
+			oldorg[0] += (rand() % 7) - 3;
+			oldorg[1] += (rand() % 7) - 3;
 			oldorg[2] += 16;
 		}
 		R_RocketTrail (oldorg, ex->origin, 1);
 		break;
 	case THINGTYPE_GREENFLESH:
-		if(moving)R_RocketTrail (ex->oldorg, ex->origin, 16);
+		if (moving)
+			R_RocketTrail (ex->oldorg, ex->origin, 16);
 		break;
 	}
 }
@@ -4326,13 +4328,13 @@ static void BubbleThink(explosion_t *ex)
 	mleaf_t		*l;
 
 	l = Mod_PointInLeaf (ex->origin, cl.worldmodel);
-	if(l->contents==CONTENTS_WATER) 
+	if (l->contents == CONTENTS_WATER) 
 	{	//still in water
 		if (ex->data < cl.time)//change course
 		{
-			ex->velocity[0] += rand()%20 - 10;
-			ex->velocity[1] += rand()%20 - 10;
-			ex->velocity[2] += rand()%10 + 10;
+			ex->velocity[0] += (rand() % 20) - 10;
+			ex->velocity[1] += (rand() % 20) - 10;
+			ex->velocity[2] += (rand() % 10) + 10;
 
 			if (ex->velocity[0] > 10)
 				ex->velocity[0] = 5;
@@ -4362,7 +4364,7 @@ static void MissileFlashThink(explosion_t *ex)
 {
 	ex->abslight-=(0.05*256);
 	ex->scale+=5;
-	if(ex->abslight < (0.05*256))
+	if (ex->abslight < (0.05*256))
 		ex->endTime = ex->startTime;	//remove
 }
 
@@ -4370,7 +4372,7 @@ static void MissileFlashThink(explosion_t *ex)
 static void TeleportFlashThink(explosion_t *ex)
 {
 	ex->scale -= 15;
-	if(ex->scale < 10)
+	if (ex->scale < 10)
 		ex->endTime = ex->startTime;
 }
 
@@ -4380,7 +4382,7 @@ static void CheckSpaceThink(explosion_t *ex)
 	mleaf_t		*l;
 
 	l = Mod_PointInLeaf (ex->origin, cl.worldmodel);
-	if(l->contents!=CONTENTS_EMPTY) 
+	if (l->contents != CONTENTS_EMPTY) 
 	{
 		ex->endTime = ex->startTime;
 	}
@@ -4462,7 +4464,7 @@ void CreateExplosionWithSound(vec3_t pos)
 static void SwordFrameFunc(explosion_t *ex)
 {
 	ex->scale = (ex->endTime - cl.time)*150 + 1;
-	if(((int)(cl.time * 20.0))%2)
+	if ( ((int)(cl.time * 20.0)) % 2 )
 	{
 		ex->skin = 0;
 	}
@@ -4476,7 +4478,7 @@ static void zapFrameFunc(explosion_t *ex)
 {
 	ex->scale = (ex->endTime - cl.time)*(150/.3) + 1;
 	//ex->abslight = (224/.3) * (ex->endTime - cl.time) + 1;
-	if(((int)(cl.time * 20.0))%2)
+	if ( ((int)(cl.time * 20.0)) % 2 )
 	{
 		ex->skin = 0;
 	}
@@ -4488,7 +4490,7 @@ static void zapFrameFunc(explosion_t *ex)
 
 static void fireBallUpdate(explosion_t *ex)
 {
-	ex->scale = (int)(((cl.time - ex->startTime) / 1.0) * 250)+1;
+	ex->scale = (int)(((cl.time - ex->startTime) / 1.0) * 250) + 1;
 }
 
 static void sunBallUpdate(explosion_t *ex)
@@ -4520,7 +4522,7 @@ void MeteorBlastThink(explosion_t *ex)
 
 	ex->data -= 1600 * host_frametime; // decrease distance, roughly...
 
-	if(ex->data <= 0)
+	if (ex->data <= 0)
 	{	// ran out of juice
 		VectorCopy(ex->origin, oldPos);
 		hitWall = 1;
@@ -4529,37 +4531,37 @@ void MeteorBlastThink(explosion_t *ex)
 	{
 		VectorCopy(ex->oldorg, tempVect);
 
-		for(i = 0; (i < 10)&&(!hitWall); i++)
+		for (i = 0; (i < 10) && (!hitWall); i++)
 		{
 			VectorCopy(tempVect, oldPos);
 			VectorScale(ex->origin, .1 * (i+1), tempVect);
 			VectorMA(tempVect, 1.0 - (.1 * (i+1)), ex->oldorg, tempVect);
 			l = Mod_PointInLeaf (tempVect, cl.worldmodel);
-			if(l->contents != CONTENTS_EMPTY)
+			if (l->contents != CONTENTS_EMPTY)
 			{
 				hitWall = 1;
 			}
 		}
 	}
 
-	if(hitWall)
+	if (hitWall)
 	{	//collided with world
 		VectorCopy(oldPos, ex->origin);
 
 		maxI = (host_frametime <= 0.05) ? 12:5;
-		for(i = 0; i < maxI; i++)
+		for (i = 0; i < maxI; i++)
 		{
 			ex2 = CL_AllocExplosion();
 			VectorCopy(ex->origin, ex2->origin);
-			ex2->origin[0] += (rand()%10) - 5;
-			ex2->origin[1] += (rand()%10) - 5;
-			ex2->origin[2] += (rand()%10);
+			ex2->origin[0] += (rand() % 10) - 5;
+			ex2->origin[1] += (rand() % 10) - 5;
+			ex2->origin[2] += (rand() % 10);
 
 			ex2->velocity[0] = (ex2->origin[0] - ex->origin[0])*12;
 			ex2->velocity[1] = (ex2->origin[1] - ex->origin[1])*12;
 			ex2->velocity[2] = (ex2->origin[2] - ex->origin[2])*12;
 
-			switch(rand()%4)
+			switch (rand() % 4)
 			{
 			case 0:
 			case 1:
@@ -4573,13 +4575,13 @@ void MeteorBlastThink(explosion_t *ex)
 				break;
 			}
 			ex2->flags |= MLS_ABSLIGHT|DRF_TRANSLUCENT;
-			ex2->abslight = 160 + rand()%64;
+			ex2->abslight = 160 + (rand() % 64);
 			ex2->skin = 0;
-			ex2->scale = 80 + rand()%40;
-			ex2->startTime = cl.time + (rand()%30 / 200.0);
+			ex2->scale = 80 + (rand() % 40);
+			ex2->startTime = cl.time + ((rand() % 30) / 200.0);
 			ex2->endTime = ex2->startTime + ex2->model->numframes * 0.03;
 		}
-		if(rand()&1)
+		if (rand() & 1)
 		{
 			S_StartSound (TempSoundChannel(), 0, cl_sfx_axeExplode, ex->origin, 1, 1);
 		}
@@ -4594,7 +4596,7 @@ static void MeteorCrushSpawnThink(explosion_t *ex)
 	float chance;
 	explosion_t *ex2;
 
-	if(host_frametime <= 0.05)
+	if (host_frametime <= 0.05)
 	{
 		chance = (host_frametime / .4 * 16);
 	}
@@ -4603,11 +4605,11 @@ static void MeteorCrushSpawnThink(explosion_t *ex)
 		chance = (host_frametime / .4 * 8);
 	}
 
-	while(chance > 0)
+	while (chance > 0)
 	{
-		if(chance < 1.0)
+		if (chance < 1.0)
 		{	// take care of fractional numbers of meteors...
-			if((rand()%100) > chance * 100)
+			if (rand() % 100 > chance * 100)
 			{
 				return;
 			}
@@ -4615,8 +4617,8 @@ static void MeteorCrushSpawnThink(explosion_t *ex)
 
 		ex2 = CL_AllocExplosion();
 		VectorCopy(ex->origin, ex2->origin);
-		ex2->origin[0] += (rand()%160) - 80;
-		ex2->origin[1] += (rand()%160) - 80;
+		ex2->origin[0] += (rand() % 160) - 80;
+		ex2->origin[1] += (rand() % 160) - 80;
 		ex2->model = Mod_ForName("models/tempmetr.mdl", true);
 		ex2->startTime = cl.time;
 		ex2->endTime = ex2->startTime + 2.0;
@@ -4628,14 +4630,14 @@ static void MeteorCrushSpawnThink(explosion_t *ex)
 		ex2->avel[1] = 800;
 		ex2->avel[2] = 800;
 
-//		ex2->velocity[0] = rand()%1200 - 600;
-//		ex2->velocity[1] = rand()%1200 - 600;
-		ex2->velocity[0] = rand()%180 - 90;
-		ex2->velocity[1] = rand()%180 - 90;
-		ex2->velocity[2] = -1600 - (rand()%200);
+//		ex2->velocity[0] = (rand() % 1200) - 600;
+//		ex2->velocity[1] = (rand() % 1200) - 600;
+		ex2->velocity[0] = (rand() % 180) - 90;
+		ex2->velocity[1] = (rand() % 180) - 90;
+		ex2->velocity[2] = -1600 - (rand() % 200);
 		ex2->data = ex->data;	// stores how far the thingy can travel max
 
-		ex2->scale = 200 + (rand()%120);
+		ex2->scale = 200 + (rand() % 120);
 
 		chance -= 1.0;
 	}
@@ -4646,7 +4648,7 @@ static void updateBloodRain(explosion_t *ex)
 	R_RocketTrail (ex->oldorg, ex->origin, rt_blood);
 
 	ex->scale -= host_frametime / .3 * 60;
-	if(ex->scale <= 0)
+	if (ex->scale <= 0)
 	{
 		ex->endTime = cl.time - 1;
 	}
@@ -4659,7 +4661,7 @@ static void updatePurify2(explosion_t *ex)
 
 	R_RocketTrail (ex->oldorg, ex->origin, rt_purify);
 
-	if(host_frametime <= 0.05)
+	if (host_frametime <= 0.05)
 	{
 		numSprites = 20;
 	}
@@ -4668,7 +4670,7 @@ static void updatePurify2(explosion_t *ex)
 		numSprites = 8;
 	}
 
-	if((rand()%100)/100.0 < numSprites * host_frametime)
+	if ((rand() % 100) / 100.0 < numSprites * host_frametime)
 	{
 		ex2 = CL_AllocExplosion();
 		VectorCopy(ex->origin, ex2->origin);
@@ -4704,7 +4706,7 @@ static void updateSwordShot(explosion_t *ex)
 
 	testVal = (int)(cl.time * 20.0);
 
-	if(testVal % 2)
+	if (testVal % 2)
 	{
 		ex->skin = 0;
 	}
@@ -4734,9 +4736,9 @@ static void updateAcidBlob(explosion_t *ex)
 	testVal = (int)(cl.time * 10.0);
 	testVal2 = (int)((cl.time - host_frametime)*10.0);
 
-	if(testVal != testVal2)
+	if (testVal != testVal2)
 	{
-		if(!(testVal%2))
+		if ( !(testVal%2) )
 		{
 			ex2 = CL_AllocExplosion();
 			VectorCopy(ex->origin, ex2->origin);
@@ -4775,7 +4777,7 @@ void CL_UpdatePoisonGas(entity_t *ent, int edict_num)
 	explosion_t	*ex;
 	float		smokeCount;
 
-	if(host_frametime <= 0.05)
+	if (host_frametime <= 0.05)
 	{
 		smokeCount = 32 * host_frametime;
 	}
@@ -4784,11 +4786,11 @@ void CL_UpdatePoisonGas(entity_t *ent, int edict_num)
 		smokeCount = 16 * host_frametime;
 	}
 
-	while(smokeCount > 0)
+	while (smokeCount > 0)
 	{
-		if(smokeCount < 1.0)
+		if (smokeCount < 1.0)
 		{
-			if((rand()%100)/100 > smokeCount)
+			if ((rand() % 100) / 100 > smokeCount)
 			{	// account for fractional chance of more smoke...
 				smokeCount = 0;
 				continue;
@@ -4799,7 +4801,7 @@ void CL_UpdatePoisonGas(entity_t *ent, int edict_num)
 		VectorCopy(ent->origin, ex->origin);
 		ex->model = Mod_ForName("models/grnsmk1.spr", true);
 		ex->startTime = cl.time;
-		ex->endTime = ex->startTime + .7 + (rand()%200)*.001;
+		ex->endTime = ex->startTime + .7 + (rand() % 200)*.001;
 
 		ex->scale = 100;
 
@@ -4809,8 +4811,8 @@ void CL_UpdatePoisonGas(entity_t *ent, int edict_num)
 		//ex->data = 0;
 		ex->skin = 0;
 
-		ex->velocity[0] = (rand()%100) - 50;
-		ex->velocity[1] = (rand()%100) - 50;
+		ex->velocity[0] = (rand() % 100) - 50;
+		ex->velocity[1] = (rand() % 100) - 50;
 		ex->velocity[2] = 150.0;
 
 		ex->flags |= DRF_TRANSLUCENT | SCALE_ORIGIN_CENTER;
@@ -4827,9 +4829,9 @@ void CL_UpdateAcidBlob(entity_t *ent, int edict_num)
 	testVal = (int)(cl.time * 10.0);
 	testVal2 = (int)((cl.time - host_frametime)*10.0);
 
-	if(testVal != testVal2)
+	if (testVal != testVal2)
 	{
-		if(!(testVal%2))
+		if ( !(testVal%2) )
 		{
 			ex = CL_AllocExplosion();
 			VectorCopy(ent->origin, ex->origin);
@@ -4858,20 +4860,20 @@ void CL_UpdateOnFire(entity_t *ent, int edict_num)
 {
 	explosion_t *ex;
 
-	if((rand()%100)/100.0 < 5.0 * host_frametime)
+	if ((rand() % 100) / 100.0 < 5.0 * host_frametime)
 	{
 		ex = CL_AllocExplosion();
 		VectorCopy(ent->origin, ex->origin);
 
 		//raise and randomize origin some
-		//ex->origin[0]+=(rand()%ent->maxs[0])-ent->maxs[0]/2;
-		//ex->origin[1]+=(rand()%ent->maxs[1])-ent->maxs[1]/2;
-		//ex->origin[2]+=ent->maxs[2]/2;
-		ex->origin[0]+=(rand()%10) - 5;
-		ex->origin[1]+=(rand()%10) - 5;
-		ex->origin[2]+=rand()%20+10;//at least 10 up from origin, sprite's origin is in center!
+		//ex->origin[0] += (rand() % ent->maxs[0]) - ent->maxs[0]/2;
+		//ex->origin[1] += (rand() % ent->maxs[1]) - ent->maxs[1]/2;
+		//ex->origin[2] += ent->maxs[2]/2;
+		ex->origin[0] += (rand() % 10) - 5;
+		ex->origin[1] += (rand() % 10) - 5;
+		ex->origin[2] += (rand() % 20) + 10;//at least 10 up from origin, sprite's origin is in center!
 
-		switch(rand()%3)
+		switch (rand() % 3)
 		{
 		case 0:
 			ex->model = Mod_ForName("models/firewal1.spr", true);
@@ -4892,11 +4894,11 @@ void CL_UpdateOnFire(entity_t *ent, int edict_num)
 		VectorCopy(ent->angles, ex->angles);
 		ex->angles[2] += 90;
 
-		ex->velocity[0] = (rand()%40)-20;
-		ex->velocity[1] = (rand()%40)-20;
-		ex->velocity[2] = 50 + (rand()%100);
+		ex->velocity[0] = (rand() % 40) - 20;
+		ex->velocity[1] = (rand() % 40) - 20;
+		ex->velocity[2] = 50 + (rand() % 100);
 
-		if(rand()%5)//translucent 80% of the time
+		if (rand() % 5)	//translucent 80% of the time
 			ex->flags |= DRF_TRANSLUCENT;
 	}
 }
@@ -4907,7 +4909,7 @@ static void PowerFlameBurnRemove(explosion_t *ex)
 
 	ex2 = CL_AllocExplosion();
 	VectorCopy(ex->origin, ex2->origin);
-	switch(rand()%3)
+	switch (rand() % 3)
 	{
 	case 0:
 		ex2->model = Mod_ForName("models/sm_expld.spr", true);
@@ -4927,7 +4929,7 @@ static void PowerFlameBurnRemove(explosion_t *ex)
 	ex2->flags |= MLS_ABSLIGHT|DRF_TRANSLUCENT;
 	ex2->abslight = 128;
 
-	if (rand()&1)
+	if (rand() & 1)
 		S_StartSound(TempSoundChannel(), 1, cl_sfx_flameend, ex2->origin, 1, 1);
 }
 
@@ -4936,13 +4938,13 @@ void CL_UpdatePowerFlameBurn(entity_t *ent, int edict_num)
 	explosion_t *ex, *ex2;
 	vec3_t		srcVec;
 
-	if((rand()%100)/100.0 < host_frametime * 10)
+	if ((rand() % 100) / 100.0 < host_frametime * 10)
 	{
 		ex = CL_AllocExplosion();
 		VectorCopy(ent->origin, ex->origin);
-		ex->origin[0] += (rand()%120)-60;
-		ex->origin[1] += (rand()%120)-60;
-		ex->origin[2] += (rand()%120)-60+120;
+		ex->origin[0] += (rand() % 120) - 60;
+		ex->origin[1] += (rand() % 120) - 60;
+		ex->origin[2] += (rand() % 120) - 60 + 120;
 		ex->model = Mod_ForName("models/sucwp1p.mdl", true);
 		ex->startTime = cl.time;
 		ex->endTime = ex->startTime + .25;
@@ -4978,9 +4980,9 @@ void CL_UpdateHammer(entity_t *ent, int edict_num)
 	testVal = (int)(cl.time * 10.0);
 	testVal2 = (int)((cl.time - host_frametime)*10.0);
 
-	if(testVal != testVal2)
+	if (testVal != testVal2)
 	{
-		if(!(testVal%3))
+		if ( !(testVal%3) )
 		{
 			//S_StartSound(TempSoundChannel(), 1, cl_sfx_hammersound, ent->origin, 1, 1);
 			S_StartSound(edict_num, 2, cl_sfx_hammersound, ent->origin, 1, 1);
@@ -4995,10 +4997,10 @@ void CL_UpdateBug(entity_t *ent)
 	testVal = (int)(cl.time * 10.0);
 	testVal2 = (int)((cl.time - host_frametime)*10.0);
 
-	if(testVal != testVal2)
+	if (testVal != testVal2)
 	{
 	// do this every .1 seconds
-//		if(!(testVal%3))
+//		if ( !(testVal%3) )
 //		{
 			S_StartSound(TempSoundChannel(), 1, cl_sfx_buzzbee, ent->origin, 1, 1);
 //		}
@@ -5021,10 +5023,10 @@ void CL_UpdateIceStorm(entity_t *ent, int edict_num)
 		side1[0] -= 80;
 		side1[1] -= 80;
 		side1[2] += 104;
-		R_RainEffect2(side1, side2, rand()%400-200, rand()%400-200, rand()%15 + 9*16, (int)(30*20*host_frametime));
+		R_RainEffect2(side1, side2, (rand() % 400) - 200, (rand() % 400) - 200, (rand() % 15) + 9*16, (int)(30*20*host_frametime));
 
 		playIceSound+=host_frametime;
-		if(playIceSound >= .6)
+		if (playIceSound >= .6)
 		{
 			S_StartSound (TempSoundChannel(), 0, cl_sfx_icestorm, center, 1, 1);
 			playIceSound -= .6;
@@ -5032,38 +5034,38 @@ void CL_UpdateIceStorm(entity_t *ent, int edict_num)
 	}
 
 	// toss little ice chunks
-	if(rand()%100 < host_frametime * 100.0 * 3)
+	if (rand() % 100 < host_frametime * 100.0 * 3)
 	{
 		explosion_t *ex;
 
 		ex = CL_AllocExplosion();
 		VectorCopy(ent->origin,ex->origin);
-		ex->origin[0] += rand()%32 - 16;
-		ex->origin[1] += rand()%32 - 16;
-		ex->origin[2] += 48 + rand()%32;
+		ex->origin[0] += (rand() % 32) - 16;
+		ex->origin[1] += (rand() % 32) - 16;
+		ex->origin[2] += 48 + (rand() % 32);
 		ex->frameFunc = ChunkThink;
 
-		ex->velocity[0] += (rand()%300)-150;
-		ex->velocity[1] += (rand()%300)-150;
-		ex->velocity[2] += (rand()%200)-50;
+		ex->velocity[0] += (rand() % 300) - 150;
+		ex->velocity[1] += (rand() % 300) - 150;
+		ex->velocity[2] += (rand() % 200) - 50;
 
 		// are these in degrees or radians?
-		ex->angles[0] = rand()%360;
-		ex->angles[1] = rand()%360;
-		ex->angles[2] = rand()%360;
+		ex->angles[0] = (rand() % 360);
+		ex->angles[1] = (rand() % 360);
+		ex->angles[2] = (rand() % 360);
 		ex->exflags = EXFLAG_ROTATE;
 
-		ex->avel[0] = rand()%850 - 425;
-		ex->avel[1] = rand()%850 - 425;
-		ex->avel[2] = rand()%850 - 425;
+		ex->avel[0] = (rand() % 850) - 425;
+		ex->avel[1] = (rand() % 850) - 425;
+		ex->avel[2] = (rand() % 850) - 425;
 
-		ex->scale = 65 + rand()%10;
+		ex->scale = 65 + (rand() % 10);
 
 		ex->data = THINGTYPE_ICE;
 
 		ex->model = Mod_ForName("models/shard.mdl", true);
 		ex->skin = 0;
-		//ent->frame = rand()%2;
+		//ent->frame = rand() % 2;
 		ex->flags |= DRF_TRANSLUCENT|MLS_ABSLIGHT;
 		ex->abslight = 128;
 
@@ -5114,17 +5116,17 @@ static void telEffectUpdate (explosion_t *ex)
 	testVal = (int)(cl.time * 10.0);
 	testVal2 = (int)((cl.time - host_frametime)*10.0);
 
-	if(testVal != testVal2)
+	if (testVal != testVal2)
 	{
-		if(!(testVal%3))
+		if ( !(testVal%3) )
 		{
 			ex2 = CL_AllocExplosion();
 			angle = FRANDOM() * 3.14159;
 
 			VectorCopy(ex->origin,ex2->origin);
 			VectorCopy(ex->origin,ex2->angles);
-			ex2->origin[0]+=cos(angle)*10;
-			ex2->origin[1]+=sin(angle)*10;
+			ex2->origin[0] += cos(angle)*10;
+			ex2->origin[1] += sin(angle)*10;
 
 			VectorSubtract(ex->origin, ex2->origin, tvec);
 			VectorScale(tvec,20,tvec);
@@ -5149,7 +5151,7 @@ static void telEffectUpdate (explosion_t *ex)
 
 	if (ex->endTime > cl.time + 0.01)
 	{
-		ex->startTime = cl.time+0.01;
+		ex->startTime = cl.time + 0.01;
 	}
 }
 
@@ -5172,13 +5174,13 @@ static void CL_UpdateTargetBall(void)
 
 	iceMod = Mod_ForName("models/iceshot2.mdl", true);
 
-	for(i = 0; i < MAX_EXPLOSIONS; i++)
+	for (i = 0; i < MAX_EXPLOSIONS; i++)
 	{
-		if(cl_explosions[i].endTime > cl.time)
+		if (cl_explosions[i].endTime > cl.time)
 		{	// make certain it's an active one
-			if(cl_explosions[i].model == iceMod)
+			if (cl_explosions[i].model == iceMod)
 			{
-				if(cl_explosions[i].flags & DRF_TRANSLUCENT)
+				if (cl_explosions[i].flags & DRF_TRANSLUCENT)
 				{
 					ex1 = &cl_explosions[i];
 				}
@@ -5195,7 +5197,7 @@ static void CL_UpdateTargetBall(void)
 	newOrg[1] += sin(v_targAngle*M_PI*2/256.0) * 50 * cos(v_targPitch*M_PI*2/256.0);
 	newOrg[2] += 44 + sin(v_targPitch*M_PI*2/256.0) * 50 + cos(cl.time*2)*5;
 
-	if(v_targDist < 60)
+	if (v_targDist < 60)
 	{	// make it scale back down up close...
 		newScale = 172 - (172 * (1.0 - (v_targDist - 24.0)/36.0));
 	}
@@ -5204,7 +5206,7 @@ static void CL_UpdateTargetBall(void)
 		newScale = 80 + (120 * ((256.0 - v_targDist)/256.0));
 	}
 
-	if(ex1 == NULL)
+	if (ex1 == NULL)
 	{
 		ex1 = CL_AllocExplosion();
 		ex1->model = iceMod;
@@ -5227,7 +5229,7 @@ static void CL_UpdateTargetBall(void)
 	ex1->angles[2] = cl.time * 240;
 	ex1->abslight = 96 + (32 * cos(cl.time*6.5)) + (64 * ((256.0 - v_targDist)/256.0));
 
-	if(v_targDist < 60)
+	if (v_targDist < 60)
 	{	// make it scale back down up close...
 		newScale = 76 - (76 * (1.0 - (v_targDist - 24.0)/36.0));
 	}
@@ -5236,7 +5238,7 @@ static void CL_UpdateTargetBall(void)
 		newScale = 30 + (60 * ((256.0 - v_targDist)/256.0));
 	}
 
-	if(ex2 == NULL)
+	if (ex2 == NULL)
 	{
 		ex2 = CL_AllocExplosion();
 		ex2->model = iceMod;
@@ -5261,15 +5263,15 @@ static void CL_UpdateTargetBall(void)
 
 static void SmokeRingFrameFunc(explosion_t *ex)
 {
-	if(cl.time - ex->startTime < .3)
+	if (cl.time - ex->startTime < .3)
 	{
 		ex->skin = 0;
 	}
-	else if(cl.time - ex->startTime < .6)
+	else if (cl.time - ex->startTime < .6)
 	{
 		ex->skin = 1;
 	}
-	else if(cl.time - ex->startTime < .9)
+	else if (cl.time - ex->startTime < .9)
 	{
 		ex->skin = 2;
 	}
@@ -5278,3 +5280,4 @@ static void SmokeRingFrameFunc(explosion_t *ex)
 		ex->skin = 3;
 	}
 }
+

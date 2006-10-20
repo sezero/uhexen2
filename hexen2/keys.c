@@ -15,8 +15,8 @@ static int	shift_down=false;
 int		key_lastpress;
 int		key_insert;	// insert key toggle
 
-int		edit_line=0;
-static int	history_line=0;
+int		edit_line = 0;
+static int	history_line = 0;
 
 keydest_t	key_dest;
 
@@ -347,10 +347,11 @@ static void Key_Console (int key)
 		do
 		{
 			history_line = (history_line - 1) & 31;
-		} while (history_line != edit_line
-				&& !key_lines[history_line][1]);
+		} while (history_line != edit_line && !key_lines[history_line][1]);
+
 		if (history_line == edit_line)
 			history_line = history_line_last;
+
 		strcpy(key_lines[edit_line], key_lines[history_line]);
 		key_linepos = strlen(key_lines[edit_line]);
 		return;
@@ -418,7 +419,7 @@ static void Key_Console (int key)
 	}
 
 #ifdef _WIN32
-	if ((key=='V' || key=='v') && GetKeyState(VK_CONTROL) < 0)
+	if ((key == 'V' || key == 'v') && GetKeyState(VK_CONTROL) < 0)
 	{
 		if (OpenClipboard(NULL))
 		{
@@ -433,13 +434,13 @@ static void Key_Console (int key)
 					/* Substitute a NULL for every token */
 					strtok(textCopied, "\n\r\b");
 					i = strlen(textCopied);
-					if (i+key_linepos>=MAXCMDLINE)
-						i=MAXCMDLINE-key_linepos;
+					if (i + key_linepos >= MAXCMDLINE)
+						i = MAXCMDLINE-key_linepos;
 					if (i > 0)
 					{
-						textCopied[i]=0;
+						textCopied[i] = 0;
 						strcat(key_lines[edit_line], textCopied);
-						key_linepos+=i;
+						key_linepos += i;
 					}
 					Z_Free(textCopied);
 				}
@@ -462,7 +463,7 @@ static void Key_Console (int key)
 			i = strlen(key_lines[edit_line]) - 1;
 			if (i == 254)
 				i--;
-			for (; i >= key_linepos; i--)
+			for ( ; i >= key_linepos; i--)
 				key_lines[edit_line][i + 1] = key_lines[edit_line][i];
 		}
 		// only null terminate if at the end
@@ -547,7 +548,7 @@ static int Key_StringToKeynum (char *str)
 	if (!str[1])
 		return str[0];
 
-	for (kn=keynames ; kn->name ; kn++)
+	for (kn = keynames; kn->name; kn++)
 	{
 		if (!Q_strcasecmp(str,kn->name))
 			return kn->keynum;
@@ -578,9 +579,11 @@ char *Key_KeynumToString (int keynum)
 		return tinystr;
 	}
 
-	for (kn=keynames ; kn->name ; kn++)
+	for (kn = keynames; kn->name; kn++)
+	{
 		if (keynum == kn->keynum)
 			return kn->name;
+	}
 
 	return "<UNKNOWN KEYNUM>";
 }
@@ -663,7 +666,7 @@ static void Key_Bind_f (void)
 		return;
 	}
 	b = Key_StringToKeynum (Cmd_Argv(1));
-	if (b==-1)
+	if (b == -1)
 	{
 		Con_Printf ("\"%s\" isn't a valid key\n", Cmd_Argv(1));
 		return;
@@ -682,9 +685,9 @@ static void Key_Bind_f (void)
 	cmd[0] = 0;		// start out with a null string
 	for (i = 2; i < c; i++)
 	{
-		if (i > 2)
-			Q_strlcat (cmd, " ", sizeof(cmd));
 		Q_strlcat (cmd, Cmd_Argv(i), sizeof(cmd));
+		if (i != (c-1))
+			Q_strlcat (cmd, " ", sizeof(cmd));
 	}
 
 	Key_SetBinding (b, cmd);
@@ -701,10 +704,11 @@ void Key_WriteBindings (FILE *f)
 {
 	int		i;
 
-	for (i=0 ; i<256 ; i++)
-		if (keybindings[i])
-			if (*keybindings[i])
-				fprintf (f, "bind \"%s\" \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
+	for (i = 0; i < 256; i++)
+	{
+		if (keybindings[i] && *keybindings[i])
+			fprintf (f, "bind \"%s\" \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
+	}
 }
 
 
@@ -717,7 +721,7 @@ void Key_Init (void)
 {
 	int		i;
 
-	for (i=0 ; i<32 ; i++)
+	for (i = 0; i < 32; i++)
 	{
 		key_lines[i][0] = ']';
 		key_lines[i][1] = 0;
@@ -727,7 +731,7 @@ void Key_Init (void)
 //
 // init ascii characters in console mode
 //
-	for (i=32 ; i<128 ; i++)
+	for (i = 32; i < 128; i++)
 		consolekeys[i] = true;
 	consolekeys[K_ENTER] = true;
 	consolekeys[K_TAB] = true;
@@ -748,9 +752,9 @@ void Key_Init (void)
 	consolekeys['`'] = false;
 	consolekeys['~'] = false;
 
-	for (i=0 ; i<256 ; i++)
+	for (i = 0; i < 256; i++)
 		keyshift[i] = i;
-	for (i='a' ; i<='z' ; i++)
+	for (i = 'a'; i <= 'z'; i++)
 		keyshift[i] = i - 'a' + 'A';
 	keyshift['1'] = '!';
 	keyshift['2'] = '@';
@@ -775,7 +779,7 @@ void Key_Init (void)
 	keyshift['\\'] = '|';
 
 	menubound[K_ESCAPE] = true;
-	for (i=0 ; i<12 ; i++)
+	for (i = 0; i < 12; i++)
 		menubound[K_F1+i] = true;
 
 //
@@ -821,7 +825,9 @@ void Key_Event (int key, qboolean down)
 	{
 		key_repeats[key]++;
 
-/*		if (key != K_BACKSPACE && key != K_PAUSE && key_repeats[key] > 1)
+/*		if (key != K_BACKSPACE 
+			&& key != K_PAUSE 
+			&& key_repeats[key] > 1)
 		{
 			return;	// ignore most autorepeats
 		}
@@ -966,7 +972,7 @@ void Key_ClearStates (void)
 {
 	int		i;
 
-	for (i=0 ; i<256 ; i++)
+	for (i = 0; i < 256; i++)
 	{
 		keydown[i] = false;
 		key_repeats[i] = 0;

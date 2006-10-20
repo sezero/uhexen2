@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.133 2006-10-05 16:40:26 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.134 2006-10-20 20:32:30 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -480,9 +480,9 @@ static int VID_SetMode (int modenum)
 static void VID_Init8bitPalette (void)
 {
 	// Check for 8bit Extensions and initialize them.
-	int i;
-	char thePalette[256*3];
-	char *oldPalette, *newPalette;
+	int			i;
+	char	thePalette[256*3];
+	char	*oldPalette, *newPalette;
 
 	have8bit = false;
 	is8bit = false;
@@ -502,7 +502,7 @@ static void VID_Init8bitPalette (void)
 
 		oldPalette = (char *) d_8to24table;
 		newPalette = thePalette;
-		for (i=0;i<256;i++)
+		for (i = 0; i < 256; i++)
 		{
 			*newPalette++ = *oldPalette++;
 			*newPalette++ = *oldPalette++;
@@ -625,8 +625,8 @@ static void VID_SetGamma (void)
 {
 	float value;
 
-	if ((v_gamma.value != 0)&&(v_gamma.value > (1/GAMMA_MAX)))
-		value = 1.0/v_gamma.value;
+	if (v_gamma.value != 0 && v_gamma.value > (1/GAMMA_MAX))
+		value = 1.0 / v_gamma.value;
 	else
 		value = GAMMA_MAX;
 
@@ -822,7 +822,7 @@ static void GL_Init (void)
 		is_3dfx = true;
 	}
 
-	if (Q_strncasecmp(gl_renderer,"PowerVR",7)==0)
+	if (Q_strncasecmp(gl_renderer,"PowerVR",7) == 0)
 		fullsbardraw = true;
 
 	CheckMultiTextureExtensions();
@@ -982,13 +982,13 @@ static void VID_CreateInversePalette (unsigned char *palette)
 void VID_SetPalette (unsigned char *palette)
 {
 	byte	*pal;
-	unsigned short	r,g,b;
+	unsigned short	r, g, b;
 	int		v;
 	unsigned short	i, p, c;
 	unsigned	*table;
 #if !USE_HEXEN2_PALTEX_CODE
-	int		r1,g1,b1;
-	int		j,k,l,m;
+	int		r1, g1, b1;
+	int		j, k, l, m;
 	FILE	*f;
 	char	s[MAX_OSPATH];
 #endif
@@ -999,7 +999,7 @@ void VID_SetPalette (unsigned char *palette)
 //
 	pal = palette;
 	table = d_8to24table;
-	for (i=0 ; i<256 ; i++)
+	for (i = 0; i < 256; i++)
 	{
 		r = pal[0];
 		g = pal[1];
@@ -1023,15 +1023,15 @@ void VID_SetPalette (unsigned char *palette)
 	pal = palette;
 	table = d_8to24TranslucentTable;
 
-	for (i=0; i<16;i++)
+	for (i = 0; i < 16; i++)
 	{
-		c = ColorIndex[i]*3;
+		c = ColorIndex[i] * 3;
 
 		r = pal[c];
 		g = pal[c+1];
 		b = pal[c+2];
 
-		for(p=0;p<16;p++)
+		for (p = 0; p < 16; p++)
 		{
 #if BYTE_ORDER == BIG_ENDIAN
 			v = (ColorPercent[15-p]) + (r<<24) + (g<<16) + (b<<8);
@@ -1074,7 +1074,7 @@ void VID_SetPalette (unsigned char *palette)
 		Con_Printf ("Creating 15to8.pal ..");
 
 		// FIXME: Endianness ???
-		for (i=0,m=0; i < (1<<15); i++,m++)
+		for (i = 0, m = 0; i < (1<<15); i++, m++)
 		{
 			/* Maps
 			000000000000000
@@ -1082,9 +1082,9 @@ void VID_SetPalette (unsigned char *palette)
 			000001111100000 = Blue = 0x03E0
 			111110000000000 = Grn  = 0x7C00
 			*/
-			r = ((i & 0x1F) << 3)+4;
-			g = ((i & 0x03E0) >> 2)+4;
-			b = ((i & 0x7C00) >> 7)+4;
+			r = ((i & 0x1F) << 3) + 4;
+			g = ((i & 0x03E0) >> 2) + 4;
+			b = ((i & 0x7C00) >> 7) + 4;
 #   if 0
 			r = (i << 11);
 			g = (i << 6);
@@ -1094,21 +1094,21 @@ void VID_SetPalette (unsigned char *palette)
 			b >>= 11;
 #   endif
 			pal = (unsigned char *)d_8to24table;
-			for (v=0,k=0,l=10000; v<256; v++,pal+=4)
+			for (v = 0, k = 0, l = 10000; v < 256; v++, pal += 4)
 			{
-				r1 = r-pal[0];
-				g1 = g-pal[1];
-				b1 = b-pal[2];
-				j = sqrt(((r1*r1)+(g1*g1)+(b1*b1)));
-				if (j<l)
+				r1 = r - pal[0];
+				g1 = g - pal[1];
+				b1 = b - pal[2];
+				j = sqrt( (r1*r1) + (g1*g1) + (b1*b1) );
+				if (j < l)
 				{
-					k=v;
-					l=j;
+					k = v;
+					l = j;
 				}
 			}
-			d_15to8table[i]=k;
+			d_15to8table[i] = k;
 			if (m >= 1000)
-				m=0;
+				m = 0;
 		}
 		snprintf(s, sizeof(s), "%s/glhexen", com_userdir);
 		Sys_mkdir (s);
@@ -1144,7 +1144,7 @@ static void ClearAllStates (void)
 	int		i;
 	
 // send an up event for each key, to make sure the server clears them all
-	for (i=0 ; i<256 ; i++)
+	for (i = 0; i < 256; i++)
 	{
 		Key_Event (i, false);
 	}
@@ -1655,7 +1655,7 @@ void	VID_Init (unsigned char *palette)
 		i = COM_CheckParm ("-gllibrary");
 	if (i == 0)
 		i = COM_CheckParm ("-g");
-	if (i != 0 && i < com_argc-1)
+	if (i && i < com_argc - 1)
 		gl_library = com_argv[i+1];
 	else
 		gl_library = NULL;	// trust SDL's wisdom here

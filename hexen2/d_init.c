@@ -30,7 +30,6 @@ D_Init
 */
 void D_Init (void)
 {
-
 	r_skydirect = 1;
 
 	Cvar_RegisterVariable (&d_subdiv16);
@@ -125,16 +124,16 @@ void D_SetupFrame (void)
 	else if (d_minmip < 0)
 		d_minmip = 0;
 
-	for (i=0 ; i<(NUM_MIPS-1) ; i++)
+	for (i = 0; i < (NUM_MIPS-1); i++)
 		d_scalemip[i] = basemip[i] * d_mipscale.value;
 
 #if	id386
-				if (d_subdiv16.value)
-					d_drawspans = D_DrawSpans16;
-				else
-					d_drawspans = D_DrawSpans8;
+	if (d_subdiv16.value)
+		d_drawspans = D_DrawSpans16;
+	else
+		d_drawspans = D_DrawSpans8;
 #else
-				d_drawspans = D_DrawSpans8;
+	d_drawspans = D_DrawSpans8;
 #endif
 
 	d_aflatcolor = 0;

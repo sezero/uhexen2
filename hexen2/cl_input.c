@@ -555,7 +555,7 @@ void CL_SendMove (usercmd_t *cmd)
 
 	MSG_WriteFloat (&buf, cl.mtime[0]);	// so server can get ping times
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		MSG_WriteAngle (&buf, cl.viewangles[i]);
 
 	MSG_WriteShort (&buf, cmd->forwardmove);

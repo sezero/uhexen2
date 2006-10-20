@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.74 2006-10-05 16:42:19 sezero Exp $
+	$Id: gl_draw.c,v 1.75 2006-10-20 20:32:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -212,7 +212,7 @@ qpic_t	*Draw_CachePic (char *path)
 	qpic_t		*dat;
 	glpic_t		*gl;
 
-	for (pic=menu_cachepics, i=0 ; i<menu_numcachepics ; pic++, i++)
+	for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
 		if (!strcmp (path, pic->name))
 			return &pic->pic;
 
@@ -279,7 +279,7 @@ qpic_t *Draw_CachePicNoTrans(char *path)
 	qpic_t		*dat;
 	glpic_t		*gl;
 
-	for (pic=menu_cachepics, i=0 ; i<menu_numcachepics ; pic++, i++)
+	for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
 		if (!strcmp (path, pic->name))
 			return &pic->pic;
 
@@ -332,6 +332,8 @@ glmode_t modes[] = {
 	{"GL_LINEAR_MIPMAP_LINEAR", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR}
 };
 
+#define MAX_GL_FILTERS	(sizeof(modes)/sizeof(modes[0]))
+
 /*
 ===============
 Draw_TextureMode_f
@@ -344,22 +346,24 @@ static void Draw_TextureMode_f (void)
 
 	if (Cmd_Argc() == 1)
 	{
-		for (i=0 ; i< 6 ; i++)
+		for (i = 0; i < MAX_GL_FILTERS; i++)
+		{
 			if (gl_filter_min == modes[i].minimize)
 			{
 				Con_Printf ("%s\n", modes[i].name);
 				return;
 			}
+		}
 		Con_Printf ("current filter is unknown???\n");
 		return;
 	}
 
-	for (i=0 ; i< 6 ; i++)
+	for (i = 0; i < MAX_GL_FILTERS; i++)
 	{
 		if (!Q_strcasecmp (modes[i].name, Cmd_Argv(1) ) )
 			break;
 	}
-	if (i == 6)
+	if (i == MAX_GL_FILTERS)
 	{
 		Con_Printf ("bad filter name\n");
 		return;
@@ -369,7 +373,7 @@ static void Draw_TextureMode_f (void)
 	gl_filter_max = modes[i].maximize;
 
 	// change all the existing mipmap texture objects
-	for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
+	for (i = 0, glt = gltextures; i < numgltextures; i++, glt++)
 	{
 		GL_Bind (glt->texnum);
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
@@ -444,7 +448,7 @@ void Draw_Init (void)
 	cs_texture = GL_LoadPixmap ("crosshair", cs_data);
 
 	draw_smallchars = W_GetLumpName("tinyfont");
-	for (i=0 ; i<128*32 ; i++)
+	for (i = 0; i < 128*32; i++)
 		if (draw_smallchars[i] == 0)
 			draw_smallchars[i] = 255;	// proper transparent color
 
@@ -454,7 +458,7 @@ void Draw_Init (void)
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
 	mf = (qpic_t *)COM_LoadTempFile("gfx/menu/bigfont2.lmp");
-	for (i=0 ; i<160*80 ; i++)
+	for (i = 0; i < 160*80; i++)
 		if (mf->data[i] == 0)
 			mf->data[i] = 255;	// proper transparent color
 
@@ -1014,10 +1018,10 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p
 	}
 
 	dest = trans;
-	for (v=0 ; v<64 ; v++, dest += 64)
+	for (v = 0; v < 64; v++, dest += 64)
 	{
 		src = &menuplyr_pixels[p_class-1][ ((v*pic->height)>>6) *pic->width];
-		for (u=0 ; u<64 ; u++)
+		for (u = 0; u < 64; u++)
 		{
 			p = src[(u*pic->width)>>6];
 			if (p == 255)
@@ -1172,7 +1176,7 @@ void Draw_ConsoleBackground (int lines)
 #if defined(H2W)
 	if (!cls.download)
 #endif
-		for (i=0 ; i<strlen(ver) ; i++)
+		for (i = 0; i < strlen(ver); i++)
 			Draw_Character (x + i * 8, y, ver[i] | 0x100);
 }
 
@@ -1259,8 +1263,8 @@ void Draw_FadeScreen (void)
 
 	for (c = 0 ; c < 40 ; c++)
 	{
-		bx = rand() % vid.width-20;
-		by = rand() % vid.height-20;
+		bx = (rand() % vid.width) - 20;
+		by = (rand() % vid.height) - 20;
 		ex = bx + (rand() % 40) + 20;
 		ey = by + (rand() % 40) + 20;
 		if (bx < 0)
@@ -1331,7 +1335,7 @@ int GL_FindTexture (char *identifier)
 	int		i;
 	gltexture_t	*glt;
 
-	for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
+	for (i = 0, glt = gltextures; i < numgltextures; i++, glt++)
 	{
 		if (!strcmp (identifier, glt->identifier))
 			return gltextures[i].texnum;
@@ -1355,28 +1359,28 @@ static void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigne
 	unsigned	p1[1024], p2[1024];
 	byte		*pix1, *pix2, *pix3, *pix4;
 
-	fracstep = inwidth*0x10000/outwidth;
+	fracstep = inwidth * 0x10000 / outwidth;
 
-	frac = fracstep>>2;
-	for (i=0 ; i<outwidth ; i++)
+	frac = fracstep >> 2;
+	for (i = 0; i < outwidth; i++)
 	{
 		p1[i] = 4*(frac>>16);
 		frac += fracstep;
 	}
-	frac = 3*(fracstep>>2);
-	for (i=0 ; i<outwidth ; i++)
+	frac = 3 * (fracstep >> 2);
+	for (i = 0; i < outwidth; i++)
 	{
-		p2[i] = 4*(frac>>16);
+		p2[i] = 4 * (frac >> 16);
 		frac += fracstep;
 	}
 
-	for (i=0 ; i<outheight ; i++, out += outwidth)
+	for (i = 0; i < outheight; i++, out += outwidth)
 	{
 		inrow = in + inwidth*(int)((i+0.25)*inheight/outheight);
 		inrow2 = in + inwidth*(int)((i+0.75)*inheight/outheight);
 
 		frac = fracstep >> 1;
-		for (j=0 ; j<outwidth ; j++)
+		for (j = 0 ; j < outwidth; j++)
 		{
 			pix1 = (byte *)inrow + p1[j];
 			pix2 = (byte *)inrow + p2[j];
@@ -1396,12 +1400,12 @@ static void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigne
 	unsigned	*inrow;
 	unsigned	frac, fracstep;
 
-	fracstep = inwidth*0x10000/outwidth;
-	for (i=0 ; i<outheight ; i++, out += outwidth)
+	fracstep = inwidth * 0x10000 / outwidth;
+	for (i = 0; i < outheight; i++, out += outwidth)
 	{
 		inrow = in + inwidth*(i*inheight/outheight);
 		frac = fracstep >> 1;
-		for (j=0 ; j<outwidth ; j+=4)
+		for (j = 0; j < outwidth; j += 4)
 		{
 			out[j] = inrow[frac>>16];
 			frac += fracstep;
@@ -1431,9 +1435,9 @@ static void GL_MipMap (byte *in, int width, int height)
 	width <<= 2;
 	height >>= 1;
 	out = in;
-	for (i=0 ; i<height ; i++, in+=width)
+	for (i = 0; i < height; i++, in += width)
 	{
-		for (j=0 ; j<width ; j+=8, out+=4, in+=8)
+		for (j = 0; j < width; j += 8, out += 4, in += 8)
 		{
 			out[0] = (in[0] + in[4] + in[width+0] + in[width+4])>>2;
 			out[1] = (in[1] + in[5] + in[width+1] + in[width+5])>>2;
@@ -1500,12 +1504,12 @@ static void GL_Resample8BitTexture (unsigned char *in, int inwidth, int inheight
 	unsigned char	*inrow;
 	unsigned	frac, fracstep;
 
-	fracstep = inwidth*0x10000/outwidth;
-	for (i=0 ; i<outheight ; i++, out += outwidth)
+	fracstep = inwidth * 0x10000 / outwidth;
+	for (i = 0; i < outheight; i++, out += outwidth)
 	{
 		inrow = in + inwidth*(i*inheight/outheight);
 		frac = fracstep >> 1;
-		for (j=0 ; j<outwidth ; j+=4)
+		for (j = 0; j < outwidth; j += 4)
 		{
 			out[j] = inrow[frac>>16];
 			frac += fracstep;
@@ -1535,20 +1539,20 @@ static void GL_MipMap8Bit (byte *in, int width, int height)
 //	width <<= 2;
 	height >>= 1;
 	out = in;
-	for (i=0 ; i<height ; i++, in+=width)
+	for (i = 0; i < height; i++, in += width)
 	{
-		for (j=0 ; j<width ; j+=2, out+=1, in+=2)
+		for (j = 0; j < width; j += 2, out += 1, in += 2)
 		{
 			at1 = (byte *) &d_8to24table[in[0]];
 			at2 = (byte *) &d_8to24table[in[1]];
 			at3 = (byte *) &d_8to24table[in[width+0]];
 			at4 = (byte *) &d_8to24table[in[width+1]];
 
-			r = (at1[0]+at2[0]+at3[0]+at4[0]);
+			r = (at1[0] + at2[0] + at3[0] + at4[0]);
 			r >>= 5;
-			g = (at1[1]+at2[1]+at3[1]+at4[1]);
+			g = (at1[1] + at2[1] + at3[1] + at4[1]);
 			g >>= 5;
-			b = (at1[2]+at2[2]+at3[2]+at4[2]);
+			b = (at1[2] + at2[2] + at3[2] + at4[2]);
 			b >>= 5;
 
 			out[0] = d_15to8table[(r<<0) + (g<<5) + (b<<10)];
@@ -1856,7 +1860,7 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 		if (alpha && noalpha)
 			alpha = false;
 
-		for (i=0 ; i<s ; i++)
+		for (i = 0; i < s; i++)
 		{
 			p = data[i];
 			trans[i] = d_8to24table[p];
@@ -1885,12 +1889,12 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 		{
 		case 1:
 			alpha = true;
-			for (i=0 ; i<s ; i++)
+			for (i = 0; i < s; i++)
 			{
 				p = data[i];
 				if (p == 0)
 					trans[i] &= MASK_rgb;
-				else if( p & 1 )
+				else if ( p & 1 )
 				{
 					trans[i] &= MASK_rgb;
 					trans[i] |= ( ( int )( 255 * r_wateralpha.value ) & 0xff) << SHIFT_a;
@@ -1903,7 +1907,7 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 			break;
 		case 2:
 			alpha = true;
-			for (i=0 ; i<s ; i++)
+			for (i = 0; i < s; i++)
 			{
 				p = data[i];
 				if (p == 0)
@@ -1912,7 +1916,7 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 			break;
 		case 3:
 			alpha = true;
-			for (i=0 ; i<s ; i++)
+			for (i = 0; i < s; i++)
 			{
 				p = data[i];
 				trans[i] = d_8to24table[ColorIndex[p>>4]] & MASK_rgb;
@@ -1925,7 +1929,7 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 	{
 		if (s&3)
 			Sys_Error ("GL_Upload8: s&3");
-		for (i=0 ; i<s ; i+=4)
+		for (i = 0; i < s; i += 4)
 		{
 			trans[i] = d_8to24table[data[i]];
 			trans[i+1] = d_8to24table[data[i+1]];
@@ -1964,17 +1968,17 @@ GLuint GL_LoadTexture (char *identifier, int width, int height, byte *data, qboo
 	if (rgba)
 		size *= 4;
 
-	// generate texture checksum
+// generate texture checksum
 	for (i = 0; i < size; i++)
 		hash += data[i];
 
-/*	// alternative: use stock crc functions for checksumming
-	crc = CRC_Block (data, size);
-*/
+// alternative: use stock crc functions for checksumming
+//	crc = CRC_Block (data, size);
+
 	// see if the texture is already present
 	if (identifier[0])
 	{
-		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
+		for (i = 0, glt = gltextures; i < numgltextures; i++, glt++)
 		{
 			if (!strcmp (identifier, glt->identifier))
 			{

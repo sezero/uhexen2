@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.5 2006-10-19 06:32:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.6 2006-10-20 20:32:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -261,12 +261,14 @@ void SV_BroadcastPrintf (char *fmt, ...)
 	vsnprintf (string, sizeof (string), fmt, argptr);
 	va_end (argptr);
 
-	for (i=0 ; i<svs.maxclients ; i++)
+	for (i = 0; i < svs.maxclients; i++)
+	{
 		if (svs.clients[i].active && svs.clients[i].spawned)
 		{
 			MSG_WriteByte (&svs.clients[i].message, svc_print);
 			MSG_WriteString (&svs.clients[i].message, string);
 		}
+	}
 }
 
 /*
@@ -349,7 +351,7 @@ void SV_DropClient (qboolean crash)
 	net_activeconnections--;
 
 // send notification to all clients
-	for (i=0, client = svs.clients ; i<svs.maxclients ; i++, client++)
+	for (i = 0, client = svs.clients; i < svs.maxclients; i++, client++)
 	{
 		if (!client->active)
 			continue;
@@ -390,7 +392,7 @@ void Host_ShutdownServer(qboolean crash)
 	do
 	{
 		count = 0;
-		for (i=0, host_client = svs.clients ; i<svs.maxclients ; i++, host_client++)
+		for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
 		{
 			if (host_client->active && host_client->message.cursize)
 			{
@@ -418,9 +420,11 @@ void Host_ShutdownServer(qboolean crash)
 	if (count)
 		Con_Printf("Host_ShutdownServer: NET_SendToAll failed for %u clients\n", count);
 
-	for (i=0, host_client = svs.clients ; i<svs.maxclients ; i++, host_client++)
+	for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
+	{
 		if (host_client->active)
 			SV_DropClient(crash);
+	}
 
 //
 // clear structures
@@ -566,7 +570,7 @@ void Host_Frame (float time)
 	timecount = 0;
 	timetotal = 0;
 	c = 0;
-	for (i=0 ; i<svs.maxclients ; i++)
+	for (i = 0; i < svs.maxclients; i++)
 	{
 		if (svs.clients[i].active)
 			c++;
@@ -645,6 +649,10 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2006/10/19 06:32:29  sezero
+ * added Sys_DPrintf: at present, its only user is the hexen2 dedicated
+ * server. further use of it may come with future versions.
+ *
  * Revision 1.4  2006/09/15 09:22:39  sezero
  * made Host_CopyFiles to properly check its string sizes, and made it to
  * return at the first time it hits an error.

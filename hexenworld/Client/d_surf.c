@@ -2,7 +2,7 @@
 	d_surf.c
 	rasterization driver surface heap manager
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_surf.c,v 1.5 2006-09-23 07:46:46 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_surf.c,v 1.6 2006-10-20 20:32:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -44,9 +44,11 @@ static void D_CheckCacheGuard (void)
 	int		i;
 
 	s = (byte *)sc_base + sc_size;
-	for (i=0 ; i<GUARDSIZE ; i++)
+	for (i = 0; i < GUARDSIZE; i++)
+	{
 		if (s[i] != (byte)i)
 			Sys_Error ("D_CheckCacheGuard: failed");
+	}
 }
 
 static void D_ClearCacheGuard (void)
@@ -55,7 +57,7 @@ static void D_ClearCacheGuard (void)
 	int		i;
 
 	s = (byte *)sc_base + sc_size;
-	for (i=0 ; i<GUARDSIZE ; i++)
+	for (i = 0; i < GUARDSIZE; i++)
 		s[i] = (byte)i;
 }
 
@@ -219,13 +221,13 @@ static void D_SCDump (void)
 #if 0	// unused
 static int MaskForNum (int num)
 {
-	if (num==128)
+	if (num == 128)
 		return 127;
-	if (num==64)
+	if (num == 64)
 		return 63;
-	if (num==32)
+	if (num == 32)
 		return 31;
-	if (num==16)
+	if (num == 16)
 		return 15;
 	return 255;
 }
@@ -236,7 +238,7 @@ static int D_log2 (int num)
 
 	c = 0;
 
-	while (num>>=1)
+	while (num >>= 1)
 		c++;
 	return c;
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: mstrconv.c,v 1.9 2006-02-18 13:44:17 sezero Exp $
+ * $Id: mstrconv.c,v 1.10 2006-10-20 20:32:31 sezero Exp $
  */
 
 #include <windows.h>
@@ -95,7 +95,7 @@ static BOOL ReadFile2 (LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNu
 		return FALSE;
 	}
 
-	memcpy(lpBuffer,MidiData+MidiOffset,nNumberOfBytesToRead);
+	memcpy (lpBuffer, MidiData+MidiOffset, nNumberOfBytesToRead);
 	MidiOffset += nNumberOfBytesToRead;
 	*lpNumberOfBytesRead = nNumberOfBytesToRead;
 
@@ -172,7 +172,7 @@ BOOL ConverterInit (LPSTR szInFile)
 	    || (( cbHeader = DWORDSWAP( cbHeader )) < sizeof(MIDIFILEHDR))
 	    || GetInFileData(&Header, cbHeader) )
 	{
-		Con_Printf("MIDI: %s\n",szInitErrInFile);
+		Con_Printf("MIDI: %s\n", szInitErrInFile);
 		goto Init_Cleanup;
 	}
 
@@ -187,7 +187,7 @@ BOOL ConverterInit (LPSTR szInFile)
 // them. The parse merely looks at the MTrk signature and track chunk length
 // in order to skip to the next track header.
 //
-	ifs.pitsTracks = (PINTRACKSTATE)Z_Malloc(ifs.dwTrackCount * sizeof(INTRACKSTATE));
+	ifs.pitsTracks = (PINTRACKSTATE) Z_Malloc(ifs.dwTrackCount * sizeof(INTRACKSTATE));
 
 	for (idx = 0, ptsTrack = ifs.pitsTracks; idx < ifs.dwTrackCount; ++idx, ++ptsTrack)
 	{
@@ -318,7 +318,7 @@ void ConverterCleanup (void)
 {
 	DWORD	idx;
 
-/*	if( hInFile != INVALID_HANDLE_VALUE )
+/*	if ( hInFile != INVALID_HANDLE_VALUE )
 	{
 		CloseHandle(hInFile);
 		hInFile = INVALID_HANDLE_VALUE;
@@ -493,7 +493,7 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 		dwStatus ^= CONVERTF_STATUS_GOTEVENT;
 
 	/*
-	 *  The following code for this case is duplicated from below, and is
+	 * The following code for this case is duplicated from below, and is
 	 * designed to handle a "straggler" event, should we have one left over
 	 * from previous processing the last time this function was called.
 	 */
@@ -503,7 +503,7 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 		if ( teTemp.byShortData[0] == MIDI_META
 		    && teTemp.byShortData[1] == MIDI_META_EOT )
 		{
-			if( dwMallocBlocks )
+			if (dwMallocBlocks)
 			{
 				Z_Free(teTemp.pLongData);
 				dwMallocBlocks--;
@@ -541,7 +541,7 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 		tkNext = 0xFFFFFFFFL;
 		// Find nearest event due
 		//
-		for ( idx = 0, ptsTrack = ifs.pitsTracks; idx < ifs.dwTrackCount; ++idx, ++ptsTrack )
+		for (idx = 0, ptsTrack = ifs.pitsTracks; idx < ifs.dwTrackCount; ++idx, ++ptsTrack)
 		{
 			if ( ( !(ptsTrack->fdwTrack & ITS_F_ENDOFTRK)) &&
 				( ptsTrack->tkNextEventDue < tkNext ) )
@@ -798,11 +798,13 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 		pteTemp->pLongData = Z_Malloc(pteTemp->dwEventLength);
 		// Copy from the input buffer to the parameter data buffer
 		for (idx = 0; idx < pteTemp->dwEventLength; idx++)
+		{
 			if (GetTrackByte( ptsTrack, pteTemp->pLongData + idx))
 			{
 				TRACKERR(ptsTrack, gteSysExTrunc);
 				return (TRUE);
 			}
+		}
 		// Increment our counter, which tells the program to look around for
 		// a malloc block to free, should it need to exit or reset before the
 		// block would normally be freed
@@ -850,11 +852,13 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 			pteTemp->pLongData = Z_Malloc(pteTemp->dwEventLength);
 			// Copy from the input buffer to the parameter data buffer
 			for (idx = 0; idx < pteTemp->dwEventLength; idx++)
+			{
 				if (GetTrackByte(ptsTrack, pteTemp->pLongData + idx))
 				{
 					TRACKERR(ptsTrack, gteMetaTrunc);
 					return (TRUE);
 				}
+			}
 			// Increment our counter, which tells the program to look around for
 			// a malloc block to free, should it need to exit or reset before the
 			// block would normally be freed
@@ -943,8 +947,7 @@ static BOOL RefillTrackBuffer (PINTRACKSTATE ptsTrack)
 			return (TRUE);
 		}
 */
-		if ( (dwResult = SetFilePointer2 ((long)ptsTrack->foNextReadStart, 0L, FILE_BEGIN))
-		     == 0xFFFFFFFF )
+		if ( (dwResult = SetFilePointer2 ((long)ptsTrack->foNextReadStart, 0L, FILE_BEGIN)) == 0xFFFFFFFF )
 		{
 			Con_Printf("MIDI: Unable to seek to track buffer location in RefillTrackBuffer()!!\n");
 			return (TRUE);
@@ -993,9 +996,7 @@ static int AddEventToStreamBuffer (PTEMPEVENT pteTemp, CONVERTINFO *lpciInfo)
 	MIDIEVENT	*pmeEvent;
 	char		szTemp[256];
 
-	pmeEvent = (MIDIEVENT *)(lpciInfo->mhBuffer.lpData
-				 + lpciInfo->dwStartOffset
-				 + lpciInfo->dwBytesRecorded);
+	pmeEvent = (MIDIEVENT *)(lpciInfo->mhBuffer.lpData + lpciInfo->dwStartOffset + lpciInfo->dwBytesRecorded);
 
 	// When we see a new, empty buffer, set the start time on it...
 	if (!lpciInfo->dwBytesRecorded)
@@ -1027,7 +1028,7 @@ static int AddEventToStreamBuffer (PTEMPEVENT pteTemp, CONVERTINFO *lpciInfo)
 	{
 		bInsertTempo = FALSE;
 
-		if (lpciInfo->dwMaxLength-lpciInfo->dwBytesRecorded < 3*sizeof(DWORD))
+		if (lpciInfo->dwMaxLength - lpciInfo->dwBytesRecorded < 3 * sizeof(DWORD))
 		{
 			// Cleanup from our write operation
 			return (CONVERTERR_BUFFERFULL);
@@ -1168,6 +1169,10 @@ static void ShowTrackError (PINTRACKSTATE ptsTrack, LPSTR lpszErr)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2006/02/18 13:44:17  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 6: midi files).
+ *
  * Revision 1.8  2005/07/31 11:13:52  sezero
  * debug defines
  *

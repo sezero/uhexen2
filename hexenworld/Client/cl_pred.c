@@ -24,17 +24,17 @@ void CL_NudgePosition (void)
 	vec3_t	base;
 	int		x, y;
 
-	if (PM_HullPointContents (&cl.model_precache[1]->hulls[1], 0, pmove.origin) == CONTENTS_EMPTY)
+	if (PM_HullPointContents(&cl.model_precache[1]->hulls[1], 0, pmove.origin) == CONTENTS_EMPTY)
 		return;
 
 	VectorCopy (pmove.origin, base);
-	for (x=-1 ; x<=1 ; x++)
+	for (x = -1; x <= 1; x++)
 	{
-		for (y=-1 ; y<=1 ; y++)
+		for (y = -1; y <= 1; y++)
 		{
 			pmove.origin[0] = base[0] + x * 1.0/8;
 			pmove.origin[1] = base[1] + y * 1.0/8;
-			if (PM_HullPointContents (&cl.model_precache[1]->hulls[1], 0, pmove.origin) == CONTENTS_EMPTY)
+			if (PM_HullPointContents(&cl.model_precache[1]->hulls[1], 0, pmove.origin) == CONTENTS_EMPTY)
 				return;
 		}
 	}
@@ -82,7 +82,7 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 	pmove.crouched = player_crouching;
 
 	PlayerMove ();
-//	for (i=0 ; i<3 ; i++)
+//	for (i = 0; i < 3; i++)
 //		pmove.origin[i] = ((int)(pmove.origin[i]*8))*0.125;
 	to->waterjumptime = pmove.waterjumptime;
 	to->oldbuttons = pmove.cmd.buttons;
@@ -154,8 +154,7 @@ void CL_PredictMove (void)
 
 //	to = &cl.frames[cls.netchan.incoming_sequence & UPDATE_MASK];
 
-	for (i=1 ; i<UPDATE_BACKUP-1 && cls.netchan.incoming_sequence+i <
-					cls.netchan.outgoing_sequence; i++)
+	for (i = 1; i < UPDATE_BACKUP-1 && cls.netchan.incoming_sequence+i < cls.netchan.outgoing_sequence; i++)
 	{
 		to = &cl.frames[(cls.netchan.incoming_sequence+i) & UPDATE_MASK];
 		CL_PredictUsercmd (&from->playerstate[cl.playernum],
@@ -188,7 +187,7 @@ void CL_PredictMove (void)
 			f = 1;
 	}
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		if ( fabs(from->playerstate[cl.playernum].origin[i] - to->playerstate[cl.playernum].origin[i]) > 128)
 		{	// teleported, so don't lerp
@@ -198,13 +197,13 @@ void CL_PredictMove (void)
 		}
 	}
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
-		cl.simorg[i] = from->playerstate[cl.playernum].origin[i] 
-			+ f*(to->playerstate[cl.playernum].origin[i] - from->playerstate[cl.playernum].origin[i]);
-		cl.simvel[i] = from->playerstate[cl.playernum].velocity[i] 
-			+ f*(to->playerstate[cl.playernum].velocity[i] - from->playerstate[cl.playernum].velocity[i]);
-	}		
+		cl.simorg[i] = from->playerstate[cl.playernum].origin[i] +
+				f * (to->playerstate[cl.playernum].origin[i] - from->playerstate[cl.playernum].origin[i]);
+		cl.simvel[i] = from->playerstate[cl.playernum].velocity[i] +
+				f * (to->playerstate[cl.playernum].velocity[i] - from->playerstate[cl.playernum].velocity[i]);
+	}
 
 /*	Con_Printf("(%5.2f %5.2f %5.2f)  (%5.2f %5.2f %5.2f)\n",
 			cl.simorg[0] - to->playerstate[cl.playernum].origin[0],

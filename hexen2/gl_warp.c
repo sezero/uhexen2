@@ -22,9 +22,9 @@ static void BoundPoly (int numverts, float *verts, vec3_t mins, vec3_t maxs)
 	mins[0] = mins[1] = mins[2] = 9999;
 	maxs[0] = maxs[1] = maxs[2] = -9999;
 	v = verts;
-	for (i=0 ; i<numverts ; i++)
+	for (i = 0; i < numverts; i++)
 	{
-		for (j=0 ; j<3 ; j++, v++)
+		for (j = 0; j < 3; j++, v++)
 		{
 			if (*v < mins[j])
 				mins[j] = *v;
@@ -52,7 +52,7 @@ static void SubdividePolygon (int numverts, float *verts)
 
 	BoundPoly (numverts, verts, mins, maxs);
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		m = (mins[i] + maxs[i]) * 0.5;
 		m = SUBDIVIDE_SIZE * floor (m/SUBDIVIDE_SIZE + 0.5);
@@ -63,17 +63,17 @@ static void SubdividePolygon (int numverts, float *verts)
 
 		// cut it
 		v = verts + i;
-		for (j=0 ; j<numverts ; j++, v+= 3)
+		for (j = 0; j < numverts; j++, v += 3)
 			dist[j] = *v - m;
 
 		// wrap cases
 		dist[j] = dist[0];
-		v-=i;
+		v -= i;
 		VectorCopy (verts, v);
 
 		f = b = 0;
 		v = verts;
-		for (j=0 ; j<numverts ; j++, v+= 3)
+		for (j = 0; j < numverts; j++, v += 3)
 		{
 			if (dist[j] >= 0)
 			{
@@ -91,7 +91,7 @@ static void SubdividePolygon (int numverts, float *verts)
 			{
 				// clip point
 				frac = dist[j] / (dist[j] - dist[j+1]);
-				for (k=0 ; k<3 ; k++)
+				for (k = 0; k < 3; k++)
 					front[f][k] = back[b][k] = v[k] + frac*(v[3+k] - v[k]);
 				f++;
 				b++;
@@ -107,7 +107,7 @@ static void SubdividePolygon (int numverts, float *verts)
 	poly->next = warpface->polys;
 	warpface->polys = poly;
 	poly->numverts = numverts;
-	for (i=0 ; i<numverts ; i++, verts+= 3)
+	for (i = 0; i < numverts; i++, verts += 3)
 	{
 		VectorCopy (verts, poly->verts[i]);
 		s = DotProduct (verts, warpface->texinfo->vecs[0]);
@@ -140,7 +140,7 @@ void GL_SubdivideSurface (msurface_t *fa)
 	// convert edges back to a normal polygon
 	//
 	numverts = 0;
-	for (i=0 ; i<fa->numedges ; i++)
+	for (i = 0; i < fa->numedges; i++)
 	{
 		lindex = loadmodel->surfedges[fa->firstedge + i];
 
@@ -185,22 +185,22 @@ void EmitWaterPolys (msurface_t *fa)
 	if (gl_waterripple.value > 10)
 		gl_waterripple.value = 10;
 
-	for (p=fa->polys ; p ; p=p->next)
+	for (p = fa->polys ; p ; p = p->next)
 	{
 		glBegin_fp (GL_POLYGON);
-		for (i=0,v=p->verts[0] ; i<p->numverts ; i++, v+=VERTEXSIZE)
+		for (i = 0, v = p->verts[0]; i < p->numverts; i++, v += VERTEXSIZE)
 		{
 			os = v[3];
 			ot = v[4];
 
 			nv[0] = v[0];
 			nv[1] = v[1];
-			nv[2] = v[2] + gl_waterripple.value*sin(v[0]*0.05+realtime)*sin(v[2]*0.05+realtime);
+			nv[2] = v[2] + gl_waterripple.value*sin(v[0]*0.05 + realtime)*sin(v[2]*0.05 + realtime);
 
-			s = os + turbsin[(int)((ot*0.125+realtime) * TURBSCALE) & 255];
+			s = os + turbsin[(int)((ot*0.125 + realtime) * TURBSCALE) & 255];
 			s *= (1.0/64);
 
-			t = ot + turbsin[(int)((os*0.125+realtime) * TURBSCALE) & 255];
+			t = ot + turbsin[(int)((os*0.125 + realtime) * TURBSCALE) & 255];
 			t *= (1.0/64);
 
 			glTexCoord2f_fp (s, t);
@@ -234,10 +234,10 @@ static void EmitSkyPolysMulti (msurface_t *fa)
 	glEnable_fp(GL_TEXTURE_2D);
 	GL_Bind (alphaskytexture);
 
-	for (p=fa->polys ; p ; p=p->next)
+	for (p = fa->polys ; p ; p = p->next)
 	{
 		glBegin_fp (GL_POLYGON);
-		for (i=0,v=p->verts[0] ; i<p->numverts ; i++, v+=VERTEXSIZE)
+		for (i = 0, v = p->verts[0]; i < p->numverts; i++, v += VERTEXSIZE)
 		{
 			VectorSubtract (v, r_origin, dir);
 			dir[2] *= 3;	// flatten the sphere
@@ -275,10 +275,10 @@ static void EmitSkyPolys (msurface_t *fa)
 	vec3_t		dir;
 	float		length;
 
-	for (p=fa->polys ; p ; p=p->next)
+	for (p = fa->polys ; p ; p = p->next)
 	{
 		glBegin_fp (GL_POLYGON);
-		for (i=0, v=p->verts[0] ; i < p->numverts ; i++, v+=VERTEXSIZE)
+		for (i = 0, v = p->verts[0]; i < p->numverts; i++, v += VERTEXSIZE)
 		{
 			VectorSubtract (v, r_origin, dir);
 			dir[2] *= 3;	// flatten the sphere
@@ -350,7 +350,7 @@ void R_DrawSkyChain (msurface_t *s)
 	// note: 3dfx doesn't like GL_DECAL
 	if (!is_3dfx && gl_multitexture.value == 1 && gl_mtexable == true)
 	{
-		for (fa=s ; fa ; fa=fa->texturechain)
+		for (fa = s ; fa ; fa = fa->texturechain)
 			EmitSkyPolysMulti (fa);
 		return;
 	}
@@ -359,7 +359,7 @@ void R_DrawSkyChain (msurface_t *s)
 	speedscale = realtime*8;
 	speedscale -= (int)speedscale & ~127;
 
-	for (fa=s ; fa ; fa=fa->texturechain)
+	for (fa = s ; fa ; fa = fa->texturechain)
 		EmitSkyPolys (fa);
 
 	glEnable_fp (GL_BLEND);
@@ -369,7 +369,7 @@ void R_DrawSkyChain (msurface_t *s)
 	speedscale = realtime*16;
 	speedscale -= (int)speedscale & ~127;
 
-	for (fa=s ; fa ; fa=fa->texturechain)
+	for (fa = s ; fa ; fa = fa->texturechain)
 		EmitSkyPolys (fa);
 
 	glDisable_fp (GL_BLEND);
@@ -454,12 +454,12 @@ void LoadPCX (FILE *f)
 
 	fseek (f, sizeof(pcxbuf) - 4, SEEK_SET);
 
-	count = (pcx->xmax+1) * (pcx->ymax+1);
+	count = (pcx->xmax + 1) * (pcx->ymax + 1);
 	pcx_rgb = Hunk_AllocName(count * 4, "pcxfile_data");
 
 	for (y = 0 ; y <= pcx->ymax ; y++)
 	{
-		pix = pcx_rgb + 4*y*(pcx->xmax+1);
+		pix = pcx_rgb + 4*y*(pcx->xmax + 1);
 		for (x = 0 ; x <= pcx->ymax ; )
 		{
 			dataByte = fgetc(f);
@@ -572,10 +572,10 @@ void LoadTGA (FILE *fin)
 	if (targa_header.image_type == 2)
 	{
 	// Uncompressed, RGB images
-		for (row = rows-1 ; row >= 0; row--)
+		for (row = rows-1; row >= 0; row--)
 		{
 			pixbuf = targa_rgba + row*columns*4;
-			for (column = 0; column < columns ; column++)
+			for (column = 0; column < columns; column++)
 			{
 				unsigned char	red, green, blue, alphabyte;
 				switch (targa_header.pixel_size)
@@ -608,7 +608,7 @@ void LoadTGA (FILE *fin)
 	// Runlength encoded RGB images
 		unsigned char	red, green, blue, alphabyte;
 		unsigned char	packetHeader, packetSize, j;
-		for (row = rows-1 ; row >= 0 ; row--)
+		for (row = rows-1; row >= 0; row--)
 		{
 			pixbuf = targa_rgba + row*columns*4;
 			for (column = 0 ; column < columns ; )
@@ -633,7 +633,7 @@ void LoadTGA (FILE *fin)
 						break;
 					}
 
-					for (j = 0 ;j < packetSize ; j++)
+					for (j = 0; j < packetSize; j++)
 					{
 						*pixbuf++ = red;
 						*pixbuf++ = green;
@@ -653,7 +653,7 @@ void LoadTGA (FILE *fin)
 				}
 				else
 				{	// non run-length packet
-					for (j = 0 ; j < packetSize ; j++)
+					for (j = 0; j < packetSize; j++)
 					{
 						switch (targa_header.pixel_size)
 						{
@@ -712,7 +712,7 @@ void R_LoadSkys (void)
 	FILE	*f;
 	char	name[64], texname[20];
 
-	for (i=0 ; i<6 ; i++)
+	for (i = 0; i < 6; i++)
 	{
 		sprintf (name, "gfx/env/bkgtst%s.tga", suf[i]);
 		COM_FOpenFile (name, &f, false);
@@ -793,7 +793,7 @@ static void DrawSkyPolygon (int nump, vec3_t vecs)
 //	c_sky++;
 #if 0
 	glBegin_fp (GL_POLYGON);
-	for (i=0 ; i<nump ; i++, vecs+=3)
+	for (i = 0; i < nump; i++, vecs += 3)
 	{
 		VectorAdd(vecs, r_origin, v);
 		glVertex3fv_fp (v);
@@ -803,7 +803,7 @@ static void DrawSkyPolygon (int nump, vec3_t vecs)
 #endif
 	// decide which face it maps to
 	VectorClear (v);
-	for (i=0, vp=vecs ; i<nump ; i++, vp+=3)
+	for (i = 0, vp = vecs; i < nump; i++, vp += 3)
 	{
 		VectorAdd (vp, v, v);
 	}
@@ -833,7 +833,7 @@ static void DrawSkyPolygon (int nump, vec3_t vecs)
 	}
 
 	// project new texture coords
-	for (i=0 ; i<nump ; i++, vecs+=3)
+	for (i = 0; i < nump; i++, vecs += 3)
 	{
 		j = vec_to_st[axis][2];
 		if (j > 0)
@@ -846,6 +846,7 @@ static void DrawSkyPolygon (int nump, vec3_t vecs)
 			s = -vecs[-j -1] / dv;
 		else
 			s = vecs[j-1] / dv;
+
 		j = vec_to_st[axis][1];
 		if (j < 0)
 			t = -vecs[-j -1] / dv;
@@ -886,7 +887,7 @@ static void ClipSkyPolygon (int nump, vec3_t vecs, int stage)
 
 	front = back = false;
 	norm = skyclip[stage];
-	for (i = 0, v = vecs ; i < nump ; i++, v+=3)
+	for (i = 0, v = vecs; i < nump; i++, v += 3)
 	{
 		d = DotProduct (v, norm);
 		if (d > ON_EPSILON)
@@ -916,7 +917,7 @@ static void ClipSkyPolygon (int nump, vec3_t vecs, int stage)
 	VectorCopy (vecs, (vecs+(i*3)) );
 	newc[0] = newc[1] = 0;
 
-	for (i = 0, v = vecs ; i < nump ; i++, v+=3)
+	for (i = 0, v = vecs; i < nump; i++, v += 3)
 	{
 		switch (sides[i])
 		{
@@ -940,7 +941,7 @@ static void ClipSkyPolygon (int nump, vec3_t vecs, int stage)
 			continue;
 
 		d = dists[i] / (dists[i] - dists[i+1]);
-		for (j=0 ; j<3 ; j++)
+		for (j = 0; j < 3; j++)
 		{
 			e = v[j] + d*(v[j+3] - v[j]);
 			newv[0][newc[0]][j] = e;
@@ -971,11 +972,11 @@ void R_DrawSkyChain (msurface_t *s)
 	GL_Bind(solidskytexture);
 
 	// calculate vertex values for sky box
-	for (fa=s ; fa ; fa=fa->texturechain)
+	for (fa = s ; fa ; fa = fa->texturechain)
 	{
-		for (p=fa->polys ; p ; p=p->next)
+		for (p = fa->polys ; p ; p = p->next)
 		{
-			for (i=0 ; i<p->numverts ; i++)
+			for (i = 0; i < p->numverts; i++)
 			{
 				VectorSubtract (p->verts[i], r_origin, verts[i]);
 			}
@@ -994,7 +995,7 @@ void R_ClearSkyBox (void)
 {
 	int		i;
 
-	for (i=0 ; i<6 ; i++)
+	for (i = 0; i < 6; i++)
 	{
 		skymins[0][i] = skymins[1][i] = 9999;
 		skymaxs[0][i] = skymaxs[1][i] = -9999;
@@ -1011,7 +1012,7 @@ static void MakeSkyVec (float s, float t, int axis)
 	b[1] = t*2048;
 	b[2] = 2048;
 
-	for (j=0 ; j<3 ; j++)
+	for (j = 0; j < 3; j++)
 	{
 		k = st_to_vec[axis][j];
 		if (k < 0)
@@ -1022,8 +1023,8 @@ static void MakeSkyVec (float s, float t, int axis)
 	}
 
 	// avoid bilerp seam
-	s = (s+1)*0.5;
-	t = (t+1)*0.5;
+	s = (s + 1)*0.5;
+	t = (t + 1)*0.5;
 
 	if (s < 1.0/512)
 		s = 1.0/512;
@@ -1056,7 +1057,7 @@ void R_DrawSkyBox (void)
 	glColor4f_fp (1,1,1,0.5);
 	glDisable_fp (GL_DEPTH_TEST);
 #endif
-	for (i=0 ; i<6 ; i++)
+	for (i = 0; i < 6; i++)
 	{
 		if ( (skymins[0][i] >= skymaxs[0][i]) || (skymins[1][i] >= skymaxs[1][i]) )
 			continue;
@@ -1111,9 +1112,9 @@ void R_InitSky (texture_t *mt)
 	// a fringe on the top level
 
 	r = g = b = 0;
-	for (i=0 ; i<128 ; i++)
+	for (i = 0; i < 128; i++)
 	{
-		for (j=0 ; j<128 ; j++)
+		for (j = 0; j < 128; j++)
 		{
 			p = src[i*256 + j + 128];
 			rgba = &d_8to24table[p];
@@ -1124,16 +1125,16 @@ void R_InitSky (texture_t *mt)
 		}
 	}
 
-	((byte *)&transpix)[0] = r/(128*128);
-	((byte *)&transpix)[1] = g/(128*128);
-	((byte *)&transpix)[2] = b/(128*128);
+	((byte *)&transpix)[0] = r / (128*128);
+	((byte *)&transpix)[1] = g / (128*128);
+	((byte *)&transpix)[2] = b / (128*128);
 	((byte *)&transpix)[3] = 0;
 
 	solidskytexture = GL_LoadTexture("upsky", 128, 128, (byte *)trans, false, false, 0, true);
 
-	for (i=0 ; i<128 ; i++)
+	for (i = 0; i < 128; i++)
 	{
-		for (j=0 ; j<128 ; j++)
+		for (j = 0; j < 128; j++)
 		{
 			p = src[i*256 + j];
 			if (p == 0)

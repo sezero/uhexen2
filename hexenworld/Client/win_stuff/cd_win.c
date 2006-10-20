@@ -424,7 +424,7 @@ static void CD_FindCDAux(void)
 	if (!COM_CheckParm("-usecdvolume"))
 		return;
 	NumDevs = auxGetNumDevs();
-	for(counter=0;counter<NumDevs;counter++)
+	for (counter = 0; counter < NumDevs; counter++)
 	{
 		Result = auxGetDevCaps(counter,&Caps,sizeof(Caps));
 		if (!Result) // valid
@@ -504,3 +504,4 @@ void CDAudio_Shutdown(void)
 	if (mciSendCommand(wDeviceID, MCI_CLOSE, MCI_WAIT, (DWORD)NULL))
 		Con_DPrintf("CDAudio_Shutdown: MCI_CLOSE failed\n");
 }
+

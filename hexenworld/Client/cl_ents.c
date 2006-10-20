@@ -60,7 +60,7 @@ dlight_t *CL_AllocDlight (int key)
 	if (key)
 	{
 		dl = cl_dlights;
-		for (i=0 ; i<MAX_DLIGHTS ; i++, dl++)
+		for (i = 0; i < MAX_DLIGHTS; i++, dl++)
 		{
 			if (dl->key == key)
 			{
@@ -73,7 +73,7 @@ dlight_t *CL_AllocDlight (int key)
 
 // then look for anything else
 	dl = cl_dlights;
-	for (i=0 ; i<MAX_DLIGHTS ; i++, dl++)
+	for (i = 0; i < MAX_DLIGHTS; i++, dl++)
 	{
 		if (dl->die < cl.time)
 		{
@@ -148,7 +148,7 @@ void CL_DecayLights (void)
 	dlight_t	*dl;
 
 	dl = cl_dlights;
-	for (i=0 ; i<MAX_DLIGHTS ; i++, dl++)
+	for (i = 0; i < MAX_DLIGHTS; i++, dl++)
 	{
 		if (dl->die < cl.time || !dl->radius)
 			continue;
@@ -197,7 +197,7 @@ static void ShowNetParseDelta(int x)
 	orstring[1]=0;
 
 	Con_Printf("bits: ");
-	for (i=0;i<=19;i++)
+	for (i = 0; i <= 19; i++)
 	{
 		if (x != 8)
 		{
@@ -228,17 +228,17 @@ static void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int bits)
 		bits |= i;
 	}
 
-	if(bits & U_MOREBITS2)
+	if (bits & U_MOREBITS2)
 	{
-		i =MSG_ReadByte ();
+		i = MSG_ReadByte ();
 		bits |= (i << 16);
 	}
 
 	ShowNetParseDelta(bits);
 
 	// count the bits for net profiling
-	for (i=0 ; i<19 ; i++)
-		if (bits&(1<<i))
+	for (i = 0; i < 19; i++)
+		if (bits & (1<<i))
 			bitcounts[i]++;
 
 	to->flags = bits;
@@ -521,7 +521,7 @@ static void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 		AngleVectors (ent->angles, fv, rv, uv);
 
 		VectorMA (dl->origin, 18, fv, dl->origin);
-		dl->radius = 200 + (rand()&31);
+		dl->radius = 200 + (rand() & 31);
 		dl->minlight = 32;
 		dl->die = cl.time + 0.1;
 	}
@@ -531,21 +531,21 @@ static void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 		dl = CL_AllocDlight (number);
 		VectorCopy (ent->origin,  dl->origin);
 		dl->origin[2] += 16;
-		dl->radius = 400 + (rand()&31);
+		dl->radius = 400 + (rand() & 31);
 		dl->die = cl.time + 0.001;
 	}
 	if (effects & EF_DIMLIGHT)
 	{
 		dl = CL_AllocDlight (number);
 		VectorCopy (ent->origin,  dl->origin);
-		dl->radius = 200 + (rand()&31);
+		dl->radius = 200 + (rand() & 31);
 		dl->die = cl.time + 0.001;
 	}
 /*	if (effects & EF_DARKLIGHT)
 	{
 		dl = CL_AllocDlight (number);
 		VectorCopy (ent->origin,  dl->origin);
-		dl->radius = 200.0 + (rand()&31);
+		dl->radius = 200.0 + (rand() & 31);
 		dl->die = cl.time + 0.001;
 //rjr		dl->dark = true;
 	}
@@ -558,12 +558,12 @@ static void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 		dl->die = cl.time + 0.001;
 	}
 
-	if(effects & EF_POISON_GAS)
+	if (effects & EF_POISON_GAS)
 	{
 		CL_UpdatePoisonGas(ent, number);
 	}
 
-	if(effects & EF_ACIDBLOB)
+	if (effects & EF_ACIDBLOB)
 	{
 		ent->angleAdd[0] = 0;
 		ent->angleAdd[1] = 0;
@@ -574,17 +574,17 @@ static void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 		CL_UpdateAcidBlob(ent, number);
 	}
 
-	if(effects & EF_ONFIRE)
+	if (effects & EF_ONFIRE)
 	{
 		CL_UpdateOnFire(ent, number);
 	}
 
-	if(effects & EF_POWERFLAMEBURN)
+	if (effects & EF_POWERFLAMEBURN)
 	{
 		CL_UpdatePowerFlameBurn(ent, number);
 	}
 
-	if(effects & EF_ICESTORM_EFFECT)
+	if (effects & EF_ICESTORM_EFFECT)
 	{
 		CL_UpdateIceStorm(ent, number);
 	}
@@ -610,12 +610,12 @@ static void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 		R_SuccubusInvincibleParticles (ent);
 	}
 
-	if(effects & EF_UPDATESOUND)
+	if (effects & EF_UPDATESOUND)
 	{
 		S_UpdateSoundPos (number, 7, ent->origin);
 	}
 
-	if(!rotateSet)
+	if (!rotateSet)
 	{
 		ent->angleAdd[0] = 0;
 		ent->angleAdd[1] = 0;
@@ -648,22 +648,22 @@ static void CL_LinkPacketEntities (void)
 
 	f = 0;		// FIXME: no interpolation right now
 
-	for (pnum=0 ; pnum<pack->num_entities ; pnum++)
+	for (pnum = 0; pnum < pack->num_entities; pnum++)
 	{
 		s1 = &pack->entities[pnum];
 		s2 = s1;	// FIXME: no interpolation right now
 
 /*		// spawn light flashes, even ones coming from invisible objects
 		if (s1->effects & (EF_BLUE | EF_RED) == (EF_BLUE | EF_RED))
-			CL_NewDlight (s1->number, s1->origin[0], s1->origin[1], s1->origin[2], 200 + (rand()&31), 0.1, 3);
+			CL_NewDlight (s1->number, s1->origin[0], s1->origin[1], s1->origin[2], 200 + (rand() & 31), 0.1, 3);
 		else if (s1->effects & EF_BLUE)
-			CL_NewDlight (s1->number, s1->origin[0], s1->origin[1], s1->origin[2], 200 + (rand()&31), 0.1, 1);
+			CL_NewDlight (s1->number, s1->origin[0], s1->origin[1], s1->origin[2], 200 + (rand() & 31), 0.1, 1);
 		else if (s1->effects & EF_RED)
-			CL_NewDlight (s1->number, s1->origin[0], s1->origin[1], s1->origin[2], 200 + (rand()&31), 0.1, 2);
+			CL_NewDlight (s1->number, s1->origin[0], s1->origin[1], s1->origin[2], 200 + (rand() & 31), 0.1, 2);
 		else if (s1->effects & EF_BRIGHTLIGHT)
-			CL_NewDlight (s1->number, s1->origin[0], s1->origin[1], s1->origin[2] + 16, 400 + (rand()&31), 0.1, 0);
+			CL_NewDlight (s1->number, s1->origin[0], s1->origin[1], s1->origin[2] + 16, 400 + (rand() & 31), 0.1, 0);
 		else if (s1->effects & EF_DIMLIGHT)
-			CL_NewDlight (s1->number, s1->origin[0], s1->origin[1], s1->origin[2], 200 + (rand()&31), 0.1, 0);
+			CL_NewDlight (s1->number, s1->origin[0], s1->origin[1], s1->origin[2], 200 + (rand() & 31), 0.1, 0);
 */
 		// if set to invisible, skip
 		if (!s1->modelindex)
@@ -728,7 +728,7 @@ static void CL_LinkPacketEntities (void)
 		{
 			float	a1, a2;
 
-			for (i=0 ; i<3 ; i++)
+			for (i = 0; i < 3; i++)
 			{
 				a1 = s1->angles[i];
 				a2 = s2->angles[i];
@@ -741,11 +741,11 @@ static void CL_LinkPacketEntities (void)
 		}
 
 		// calculate origin
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 			ent->origin[i] = s2->origin[i] + f * (s1->origin[i] - s2->origin[i]);
 
 		// scan the old entity display list for a matching
-		for (i=0 ; i<cl_oldnumvisedicts ; i++)
+		for (i = 0; i < cl_oldnumvisedicts; i++)
 		{
 			if (cl_oldvisedicts[i].keynum == ent->keynum)
 			{
@@ -757,23 +757,25 @@ static void CL_LinkPacketEntities (void)
 		if (i == cl_oldnumvisedicts)
 			continue;		// not in last message
 
-		for (i=0 ; i<3 ; i++)
-			//if ( abs(old_origin[i] - ent->origin[i]) > 128)
+		for (i = 0; i < 3; i++)
+		{
+		//	if ( abs(old_origin[i] - ent->origin[i]) > 128)
 			if ( abs(old_origin[i] - ent->origin[i]) > 512)	// this is an issue for laggy situations...
 			{	// no trail if too far
 				VectorCopy (ent->origin, old_origin);
 				break;
 			}
+		}
 
 		// some of the effects need to know how far the thing has moved...
 
 	//	cl.players[s1->number].invis=false;
-		if(cl_siege)
+		if (cl_siege)
 		{
-			if((int)s1->effects & EF_NODRAW)
+			if ((int)s1->effects & EF_NODRAW)
 			{
-				ent->skinnum=101;//ice, but in siege will be invis skin for dwarf to see
-				ent->drawflags|=DRF_TRANSLUCENT;
+				ent->skinnum = 101;//ice, but in siege will be invis skin for dwarf to see
+				ent->drawflags |= DRF_TRANSLUCENT;
 				s1->effects &= ~EF_NODRAW;
 			//	cl.players[s1->number].invis=true;
 			}
@@ -829,7 +831,7 @@ static void CL_LinkPacketEntities (void)
 		}
 		else if (ent->model->flags & EF_GRENADE)
 		{
-		//	R_RunParticleEffect4(old_origin,3,284,pt_slowgrav,3);
+		//	R_RunParticleEffect4(old_origin, 3, 284, pt_slowgrav, 3);
 			R_RocketTrail (old_origin, ent->origin, rt_grensmoke);
 		}
 		else if (ent->model->flags & EF_TRACER3)
@@ -906,9 +908,9 @@ void CL_ParseProjectiles (void)
 	projectile_t	*pr;
 
 	c = MSG_ReadByte ();
-	for (i=0 ; i<c ; i++)
+	for (i = 0; i < c; i++)
 	{
-		for (j=0 ; j<6 ; j++)
+		for (j = 0; j < 6; j++)
 			bits[j] = MSG_ReadByte ();
 
 		if (cl_num_projectiles == MAX_PROJECTILES)
@@ -927,9 +929,9 @@ void CL_ParseProjectiles (void)
 	}
 
 	c = MSG_ReadByte ();
-	for (i=0 ; i<c ; i++)
+	for (i = 0; i < c; i++)
 	{
-		for (j=0 ; j<6 ; j++)
+		for (j = 0; j < 6; j++)
 			bits[j] = MSG_ReadByte ();
 
 		if (cl_num_projectiles == MAX_PROJECTILES)
@@ -960,7 +962,7 @@ static void CL_LinkProjectiles (void)
 	projectile_t	*pr;
 	entity_t		*ent;
 
-	for (i=0, pr=cl_projectiles ; i<cl_num_projectiles ; i++, pr++)
+	for (i = 0, pr = cl_projectiles; i < cl_num_projectiles; i++, pr++)
 	{
 		// grab an entity to fill in
 		if (cl_numvisedicts == MAX_VISEDICTS)
@@ -1022,9 +1024,9 @@ void CL_ParsePackMissiles (void)
 	missile_t	*pr;
 
 	c = MSG_ReadByte ();
-	for (i=0 ; i<c ; i++)
+	for (i = 0; i < c; i++)
 	{
-		for (j=0 ; j<5 ; j++)
+		for (j = 0; j < 5; j++)
 			bits[j] = MSG_ReadByte ();
 
 		if (cl_num_missiles == MAX_MISSILES)
@@ -1059,20 +1061,20 @@ static void CL_LinkMissiles (void)
 	missilestar_angle[1] += host_frametime * 300; 
 	missilestar_angle[2] += host_frametime * 400; 
 
-	for (i=0, pr=cl_missiles ; i<cl_num_missiles ; i++, pr++)
+	for (i = 0, pr = cl_missiles; i < cl_num_missiles; i++, pr++)
 	{
 		// grab an entity to fill in for missile itself
 		if (cl_numvisedicts == MAX_VISEDICTS)
 			break;		// object list is full
 		ent = &cl_visedicts[cl_numvisedicts];
-		if(rand() % 10 < 3)
+		if (rand() % 10 < 3)
 		{
-			R_RunParticleEffect4 (ent->origin, 7, 148 + rand() % 11, pt_grav, 10 + rand() % 10);
+			R_RunParticleEffect4 (ent->origin, 7, 148 + (rand() % 11), pt_grav, 10 + (rand() % 10));
 		}
 		cl_numvisedicts++;
 		ent->keynum = 0;
 
-		if(pr->type == 1)
+		if (pr->type == 1)
 		{	//ball
 			ent->model = cl.model_precache[cl_ballindex];
 			ent->scale = 10;
@@ -1166,7 +1168,7 @@ void CL_ParsePlayerinfo (void)
 	if (flags & PF_COMMAND)
 		MSG_ReadUsercmd (&state->command, false);
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		if (flags & (PF_VELOCITY1<<i) )
 			state->velocity[i] = MSG_ReadShort();
@@ -1196,7 +1198,7 @@ void CL_ParsePlayerinfo (void)
 		state->skinnum = MSG_ReadByte ();
 	else
 	{
-		if(info->siege_team==ST_ATTACKER&&playermodel)
+		if (info->siege_team == ST_ATTACKER && playermodel)
 			state->skinnum = 1;//using a playermodel and attacker - skin is set to 1
 		else
 			state->skinnum = 0;
@@ -1232,7 +1234,7 @@ void CL_ParsePlayerinfo (void)
 	else
 		state->abslight = 0;
 
-	if(flags & PF_SOUND)
+	if (flags & PF_SOUND)
 	{
 		i = MSG_ReadShort ();
 		S_StartSound(num, 1, cl.sound_precache[i], state->origin, 1.0, 1.0);
@@ -1311,7 +1313,7 @@ static void CL_AddFlagModels (entity_t *ent, int team)
 
 	AngleVectors (ent->angles, v_forward, v_right, v_up);
 	v_forward[2] = -v_forward[2]; // reverse z component
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		newent->origin[i] = ent->origin[i] - f*v_forward[i] + 22*v_right[i];
 	newent->origin[2] -= 16;
 
@@ -1346,8 +1348,8 @@ static void CL_LinkPlayers (void)
 
 	frame = &cl.frames[cl.parsecount&UPDATE_MASK];
 
-	for (j=0, info=cl.players, state=frame->playerstate ; j < MAX_CLIENTS 
-		; j++, info++, state++)
+	for (j = 0, info = cl.players, state=frame->playerstate;
+			j < MAX_CLIENTS; j++, info++, state++)
 	{
 		if (state->messagenum != cl.parsecount)
 			continue;	// not present this frame
@@ -1358,15 +1360,15 @@ static void CL_LinkPlayers (void)
 		{
 #endif
 /*			if (state->effects & (EF_BLUE | EF_RED) == (EF_BLUE | EF_RED))
-				CL_NewDlight (j, state->origin[0], state->origin[1], state->origin[2], 200 + (rand()&31), 0.1, 3);
+				CL_NewDlight (j, state->origin[0], state->origin[1], state->origin[2], 200 + (rand() & 31), 0.1, 3);
 			else if (state->effects & EF_BLUE)
-				CL_NewDlight (j, state->origin[0], state->origin[1], state->origin[2], 200 + (rand()&31), 0.1, 1);
+				CL_NewDlight (j, state->origin[0], state->origin[1], state->origin[2], 200 + (rand() & 31), 0.1, 1);
 			else if (state->effects & EF_RED)
-				CL_NewDlight (j, state->origin[0], state->origin[1], state->origin[2], 200 + (rand()&31), 0.1, 2);
+				CL_NewDlight (j, state->origin[0], state->origin[1], state->origin[2], 200 + (rand() & 31), 0.1, 2);
 			else if (state->effects & EF_BRIGHTLIGHT)
-				CL_NewDlight (j, state->origin[0], state->origin[1], state->origin[2] + 16, 400 + (rand()&31), 0.1, 0);
+				CL_NewDlight (j, state->origin[0], state->origin[1], state->origin[2] + 16, 400 + (rand() & 31), 0.1, 0);
 			else if (state->effects & EF_DIMLIGHT)
-				CL_NewDlight (j, state->origin[0], state->origin[1], state->origin[2], 200 + (rand()&31), 0.1, 0);
+				CL_NewDlight (j, state->origin[0], state->origin[1], state->origin[2], 200 + (rand() & 31), 0.1, 0);
 */
 #ifdef GLQUAKE
 		}
@@ -1438,12 +1440,12 @@ static void CL_LinkPlayers (void)
 			VectorCopy (exact.origin, ent->origin);
 		}
 
-		if(cl_siege)
+		if (cl_siege)
 		{
-			if((int)state->effects & EF_NODRAW)
+			if ((int)state->effects & EF_NODRAW)
 			{
-				ent->skinnum=101;//ice, but in siege will be invis skin for dwarf to see
-				ent->drawflags|=DRF_TRANSLUCENT;
+				ent->skinnum = 101;//ice, but in siege will be invis skin for dwarf to see
+				ent->drawflags |= DRF_TRANSLUCENT;
 				state->effects &= ~EF_NODRAW;
 			}
 		}
@@ -1490,7 +1492,7 @@ void CL_SetSolidEntities (void)
 	frame = &cl.frames[parsecountmod];
 	pak = &frame->packet_entities;
 
-	for (i=0 ; i<pak->num_entities ; i++)
+	for (i = 0; i < pak->num_entities; i++)
 	{
 		state = &pak->entities[i];
 
@@ -1536,11 +1538,9 @@ void CL_SetUpPlayerPrediction(qboolean dopred)
 
 	frame = &cl.frames[cl.parsecount&UPDATE_MASK];
 
-	for (j=0, pplayer = predicted_players, state=frame->playerstate; 
-		j < MAX_CLIENTS;
-		j++, pplayer++, state++)
+	for (j = 0, pplayer = predicted_players, state = frame->playerstate;
+		j < MAX_CLIENTS; j++, pplayer++, state++)
 	{
-
 		pplayer->active = false;
 
 		if (state->messagenum != cl.parsecount)
@@ -1607,7 +1607,7 @@ void CL_SetSolidPlayers (int playernum)
 
 	pent = pmove.physents + pmove.numphysent;
 
-	for (j=0, pplayer = predicted_players; j < MAX_CLIENTS;	j++, pplayer++) 
+	for (j = 0, pplayer = predicted_players; j < MAX_CLIENTS; j++, pplayer++)
 	{
 		if (!pplayer->active)
 			continue;	// not present this frame
@@ -1622,7 +1622,7 @@ void CL_SetSolidPlayers (int playernum)
 		pent->model = 0;
 		VectorCopy(pplayer->origin, pent->origin);
 /*shitbox
-		if(!Q_strcasecmp(cl.model_precache[cl.players[playernum].modelindex]->name,"models/yakman.mdl"))
+		if (!Q_strcasecmp(cl.model_precache[cl.players[playernum].modelindex]->name,"models/yakman.mdl"))
 		{//use golem hull
 			Sys_Error("Using beast model");
 			VectorCopy(beast_mins, pent->mins);
@@ -1631,7 +1631,7 @@ void CL_SetSolidPlayers (int playernum)
 		else
 		{*/
 			VectorCopy(player_mins, pent->mins);
-			if(pplayer->flags & PF_CROUCH)
+			if (pplayer->flags & PF_CROUCH)
 			{
 				VectorCopy(player_maxs_crouch, pent->maxs);
 			}

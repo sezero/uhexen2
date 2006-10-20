@@ -176,7 +176,7 @@ void D_DrawParticle (particle_t *pparticle)
 
 		for ( ; count ; count--, pz += d_zwidth, pdest += screenwidth)
 		{
-			for (i=0 ; i<pix ; i++)
+			for (i = 0 ; i < pix ; i++)
 			{
 				if (pz[i] <= izi)
 				{

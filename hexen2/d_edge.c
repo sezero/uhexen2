@@ -66,7 +66,7 @@ static void D_DrawSolidSurface (surf_t *surf, int color)
 	int		u, u2, pix;
 	
 	pix = (color<<24) | (color<<16) | (color<<8) | color;
-	for (span=surf->spans ; span ; span=span->pnext)
+	for (span = surf->spans ; span ; span = span->pnext)
 	{
 		pdest = (byte *)d_viewbuffer + screenwidth*span->v;
 		u = span->u;
@@ -84,7 +84,7 @@ static void D_DrawSolidSurface (surf_t *surf, int color)
 				((byte *)pdest)[u] = pix;
 
 			u2 -= 4;
-			for ( ; u <= u2 ; u+=4)
+			for ( ; u <= u2 ; u += 4)
 				*(int *)((byte *)pdest + u) = pix;
 			u2 += 4;
 			for ( ; u <= u2 ; u++)
@@ -149,31 +149,31 @@ static void D_CalcGradients (msurface_t *pface)
 //color for sky given a certain light level 0 - 25
 static const int SiegeFlatSkyFadeTable[25] =
 {
-	0,//1
-	0,//2
-	0,//3
-	1,//4
-	2,//5
-	2,//6
-	3,//7
-	3,//8
-	3,//9
-	4,//10
+	0,	// 1
+	0,	// 2
+	0,	// 3
+	1,	// 4
+	2,	// 5
+	2,	// 6
+	3,	// 7
+	3,	// 8
+	3,	// 9
+	4,	// 10
 	4,
 	4,
 	32,
 	32,
-	32,//15
+	32,	// 15
 	33,
 	33,
 	33,
 	34,
-	34,//20
+	34,	// 20
 	35,
 	35,
 	36,
 	36,
-	37//25
+	37	// 25
 };
 #endif	// H2W
 
@@ -200,7 +200,7 @@ void D_DrawSurfaces2 (qboolean Translucent)
 // TODO: could preset a lot of this at mode set time
 	if (r_drawflat.value)
 	{
-		for (s = &surfaces[1] ; s<surface_p ; s++)
+		for (s = &surfaces[1] ; s < surface_p ; s++)
 		{
 			if (!s->spans)
 				continue;
@@ -215,7 +215,7 @@ void D_DrawSurfaces2 (qboolean Translucent)
 	}
 	else
 	{
-		for (s = &surfaces[1] ; s<surface_p ; s++)
+		for (s = &surfaces[1] ; s < surface_p ; s++)
 		{
 			if (!s->spans)
 				continue;
@@ -375,7 +375,7 @@ void D_DrawSurfaces (qboolean Translucent)
 		if (Translucent)
 			return;
 
-		for (s = &surfaces[1] ; s<surface_p ; s++)
+		for (s = &surfaces[1] ; s < surface_p ; s++)
 		{
 			if (!s->spans)
 				continue;
@@ -392,7 +392,7 @@ void D_DrawSurfaces (qboolean Translucent)
 	{
 		if (!Translucent)
 		{
-			for (s = &surfaces[1] ; s<surface_p ; s++)
+			for (s = &surfaces[1] ; s < surface_p ; s++)
 			{
 				if (!s->spans)
 					continue;
@@ -409,15 +409,15 @@ void D_DrawSurfaces (qboolean Translucent)
 				d_zistepv = s->d_zistepv;
 				d_ziorigin = s->d_ziorigin;
 
-				//if(!strncmp(pface->texinfo->texture->name,"*BLACK",6))
-				if (s->flags & SURF_DRAWBLACK)
+			//	if (!strncmp(pface->texinfo->texture->name,"*BLACK",6))
+				if (s->flags & SURF_DRAWBLACK)	// black vis-breaker, no turb
 				{
 #		if defined (H2W)
-					if(cl_siege)
-						D_DrawSolidSurface (s,SiegeFlatSkyFadeTable[(int)floor(d_lightstylevalue[0]/22)]);//black vis-breaker, no turb
+					if (cl_siege)
+						D_DrawSolidSurface (s, SiegeFlatSkyFadeTable[(int)floor(d_lightstylevalue[0]/22)]);
 					else
 #		endif
-						D_DrawSolidSurface (s,0);//black vis-breaker, no turb
+						D_DrawSolidSurface (s, 0);
 					D_DrawZSpans (s->spans);
 					continue;
 				}
@@ -540,7 +540,7 @@ void D_DrawSurfaces (qboolean Translucent)
 		{
 			count = 0;
 
-			for (s = &surfaces[1] ; s<surface_p ; s++)
+			for (s = &surfaces[1] ; s < surface_p ; s++)
 			{
 				if (!s->spans || !(s->flags & SURF_TRANSLUCENT))
 					continue;
@@ -552,15 +552,15 @@ void D_DrawSurfaces (qboolean Translucent)
 				d_zistepv = s->d_zistepv;
 				d_ziorigin = s->d_ziorigin;
 
-				//if(!strncmp(pface->texinfo->texture->name,"*BLACK",6))
-				if (s->flags & SURF_DRAWBLACK)
+			//	if (!strncmp(pface->texinfo->texture->name, "*BLACK", 6))
+				if (s->flags & SURF_DRAWBLACK)	// black vis-breaker, no turb
 				{
 #		if defined (H2W)
-					if(cl_siege)
-						D_DrawSolidSurface (s,SiegeFlatSkyFadeTable[(int)floor(d_lightstylevalue[0]/22)]);//black vis-breaker, no turb
+					if (cl_siege)
+						D_DrawSolidSurface (s, SiegeFlatSkyFadeTable[(int)floor(d_lightstylevalue[0]/22)]);
 					else
 #		endif
-						D_DrawSolidSurface (s, 0);//black vis-breaker, no turb
+						D_DrawSolidSurface (s, 0);
 					D_DrawZSpans (s->spans);
 					continue;
 				}

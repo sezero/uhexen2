@@ -2,7 +2,7 @@
 	gl_mesh.c
 	triangle model functions
 
-	$Id: gl_mesh.c,v 1.9 2006-09-15 20:15:41 sezero Exp $
+	$Id: gl_mesh.c,v 1.10 2006-10-20 20:32:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -73,11 +73,11 @@ static int StripLength (int starttri, int startv)
 
 	// look for a matching triangle
 nexttri:
-	for (j=starttri+1, check=&triangles[starttri+1] ; j<pheader->numtris ; j++, check++)
+	for (j = starttri+1, check = &triangles[starttri+1]; j < pheader->numtris; j++, check++)
 	{
 		if (check->facesfront != last->facesfront)
 			continue;
-		for (k=0 ; k<3 ; k++)
+		for (k = 0; k < 3; k++)
 		{
 			if (check->vertindex[k] != m1)
 				continue;
@@ -118,9 +118,11 @@ nexttri:
 
 done:
 	// clear the temp used flags
-	for (j=starttri+1 ; j<pheader->numtris ; j++)
+	for (j = starttri+1; j < pheader->numtris; j++)
+	{
 		if (used[j] == 2)
 			used[j] = 0;
+	}
 
 	return stripcount;
 }
@@ -161,11 +163,11 @@ static int FanLength (int starttri, int startv)
 
 	// look for a matching triangle
 nexttri:
-	for (j=starttri+1, check=&triangles[starttri+1] ; j<pheader->numtris ; j++, check++)
+	for (j = starttri+1, check = &triangles[starttri+1]; j < pheader->numtris; j++, check++)
 	{
 		if (check->facesfront != last->facesfront)
 			continue;
-		for (k=0 ; k<3 ; k++)
+		for (k = 0; k < 3; k++)
 		{
 			if (check->vertindex[k] != m1)
 				continue;
@@ -198,9 +200,11 @@ nexttri:
 
 done:
 	// clear the temp used flags
-	for (j=starttri+1 ; j<pheader->numtris ; j++)
+	for (j = starttri+1; j < pheader->numtris; j++)
+	{
 		if (used[j] == 2)
 			used[j] = 0;
+	}
 
 	return stripcount;
 }
@@ -231,7 +235,7 @@ static void BuildTris (void)
 	numorder = 0;
 	numcommands = 0;
 	memset (used, 0, sizeof(used));
-	for (i=0 ; i<pheader->numtris ; i++)
+	for (i = 0; i < pheader->numtris; i++)
 	{
 		// pick an unused triangle and start the trifan
 		if (used[i])
@@ -242,7 +246,7 @@ static void BuildTris (void)
 		for (type = 0 ; type < 2 ; type++)
 //	type = 1;
 		{
-			for (startv =0 ; startv < 3 ; startv++)
+			for (startv = 0; startv < 3; startv++)
 			{
 				if (type == 1)
 					len = StripLength (i, startv);
@@ -252,19 +256,19 @@ static void BuildTris (void)
 				{
 					besttype = type;
 					bestlen = len;
-					for (j=0 ; j<bestlen+2 ; j++)
+					for (j = 0; j < bestlen+2; j++)
 					{
 						beststverts[j] = stripstverts[j];
 						bestverts[j] = stripverts[j];
 					}
-					for (j=0 ; j<bestlen ; j++)
+					for (j = 0; j < bestlen; j++)
 						besttris[j] = striptris[j];
 				}
 			}
 		}
 
 		// mark the tris on the best strip as used
-		for (j=0 ; j<bestlen ; j++)
+		for (j = 0; j < bestlen; j++)
 			used[besttris[j]] = 1;
 
 		if (besttype == 1)
@@ -272,7 +276,7 @@ static void BuildTris (void)
 		else
 			commands[numcommands++] = -(bestlen+2);
 
-		for (j=0 ; j<bestlen+2 ; j++)
+		for (j = 0; j < bestlen+2; j++)
 		{
 			// emit a vertex into the reorder buffer
 			k = bestverts[j];
@@ -387,8 +391,10 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 
 	verts = Hunk_AllocName (paliashdr->numposes * paliashdr->poseverts * sizeof(trivertx_t), "verts");
 	paliashdr->posedata = (byte *)verts - (byte *)paliashdr;
-	for (i=0 ; i<paliashdr->numposes ; i++)
-		for (j=0 ; j<numorder ; j++)
+	for (i = 0; i < paliashdr->numposes; i++)
+	{
+		for (j = 0; j < numorder; j++)
 			*verts++ = poseverts[i][vertexorder[j]];
+	}
 }
 

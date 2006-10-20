@@ -109,7 +109,7 @@ void Con_ClearNotify (void)
 {
 	int		i;
 
-	for (i=0 ; i<NUM_CON_TIMES ; i++)
+	for (i = 0; i < NUM_CON_TIMES; i++)
 		con_times[i] = 0;
 }
 
@@ -181,16 +181,14 @@ static void Con_Resize (console_t *cons)
 		memset (cons->text, ' ', CON_TEXTSIZE);
 		memset (cons->text_attr, 0, CON_TEXTSIZE);
 
-		for (i=0 ; i<numlines ; i++)
+		for (i = 0; i < numlines; i++)
 		{
-			for (j=0 ; j<numchars ; j++)
+			for (j = 0; j < numchars; j++)
 			{
 				cons->text[(con_totallines - 1 - i) * con_linewidth + j] =
-						tbuf[((cons->current - i + oldtotallines) %
-							  oldtotallines) * oldwidth + j];
+						tbuf[((cons->current - i + oldtotallines) % oldtotallines) * oldwidth + j];
 				cons->text_attr[(con_totallines - 1 - i) * con_linewidth + j] =
-						tbuf_attr[((cons->current - i + oldtotallines) %
-							  oldtotallines) * oldwidth + j];
+						tbuf_attr[((cons->current - i + oldtotallines) % oldtotallines) * oldwidth + j];
 			}
 		}
 
@@ -287,7 +285,7 @@ static void Con_Print (char *txt)
 	while ( (c = *txt) )
 	{
 	// count word length
-		for (l=0 ; l< con_linewidth ; l++)
+		for (l = 0; l < con_linewidth; l++)
 			if ( txt[l] <= ' ')
 				break;
 
@@ -536,7 +534,7 @@ static void Con_DrawInput (void)
 // draw it
 	y = con_vislines-22;
 
-	for (i=0 ; i<con_linewidth ; i++)
+	for (i = 0; i < con_linewidth; i++)
 		Draw_Character ( (i+1)<<3, con_vislines - 22, text[i]);
 
 // remove cursor
@@ -562,7 +560,7 @@ void Con_DrawNotify (void)
 	int		skip;
 
 	v = 0;
-	for (i= con->current-NUM_CON_TIMES+1 ; i<=con->current ; i++)
+	for (i = con->current-NUM_CON_TIMES+1; i <= con->current; i++)
 	{
 		if (i < 0)
 			continue;
@@ -578,7 +576,7 @@ void Con_DrawNotify (void)
 		clearnotify = 0;
 		scr_copytop = 1;
 
-		for (x = 0 ; x < con_linewidth ; x++)
+		for (x = 0; x < con_linewidth; x++)
 			Draw_Character ( (x+1)<<3, v, text[x] + 256*text_attr[x]);
 
 		v += 8;
@@ -651,7 +649,7 @@ void Con_DrawConsole (int lines)
 	if (con->display != con->current)
 	{
 	// draw arrows to show the buffer is backscrolled
-		for (x=0 ; x<con_linewidth ; x+=4)
+		for (x = 0; x < con_linewidth; x += 4)
 			Draw_Character ( (x+1)<<3, y, '^');
 
 		y -= 8;
@@ -659,7 +657,7 @@ void Con_DrawConsole (int lines)
 	}
 
 	row = con->display;
-	for (i=0 ; i<rows ; i++, y-=8, row--)
+	for (i = 0; i < rows; i++, y -= 8, row--)
 	{
 		if (row < 0)
 			break;
@@ -669,7 +667,7 @@ void Con_DrawConsole (int lines)
 		text = con->text + (row % con_totallines)*con_linewidth;
 		text_attr = con->text_attr + (row % con_totallines)*con_linewidth;
 
-		for (x=0 ; x<con_linewidth ; x++)
+		for (x = 0; x < con_linewidth; x++)
 			Draw_Character ( (x+1)<<3, y, text[x] + 256*text_attr[x]);
 	}
 

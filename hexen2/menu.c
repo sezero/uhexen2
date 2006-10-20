@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.72 2006-10-07 16:38:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.73 2006-10-20 20:32:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -282,7 +282,7 @@ static void M_BuildTranslationTable(int top, int bottom)
 	colorB = colorA + 256;
 	sourceA = colorB + 256 + (top * 256);
 	sourceB = colorB + 256 + (bottom * 256);
-	for(j=0;j<256;j++,colorA++,colorB++,sourceA++,sourceB++)
+	for (j = 0; j < 256; j++, colorA++, colorB++, sourceA++, sourceB++)
 	{
 		if (top >= 0 && (*colorA != 255))
 			dest[j] = source[*sourceA];
@@ -291,9 +291,10 @@ static void M_BuildTranslationTable(int top, int bottom)
 	}
 }
 
+
 void M_DrawTextBox (int x, int y, int width, int lines)
 {
-	qpic_t	*p,*tm,*bm;
+	qpic_t	*p, *tm, *bm;
 	int		cx, cy;
 	int		n;
 
@@ -346,10 +347,9 @@ void M_DrawTextBox (int x, int y, int width, int lines)
 	M_DrawTransPic (cx, cy+8, p);
 }
 
-
 void M_DrawTextBox2 (int x, int y, int width, int lines, qboolean bottom)
 {
-	qpic_t	*p,*tm,*bm;
+	qpic_t	*p, *tm, *bm;
 	int		cx, cy;
 	int		n;
 
@@ -357,7 +357,7 @@ void M_DrawTextBox2 (int x, int y, int width, int lines, qboolean bottom)
 	cx = x;
 	cy = y;
 	p = Draw_CachePic ("gfx/box_tl.lmp");
-	if(bottom)
+	if (bottom)
 		M_DrawTransPic (cx, cy, p);
 	else
 		M_DrawTransPic2 (cx, cy, p);
@@ -365,13 +365,13 @@ void M_DrawTextBox2 (int x, int y, int width, int lines, qboolean bottom)
 	for (n = 0; n < lines; n++)
 	{
 		cy += 8;
-		if(bottom)
+		if (bottom)
 			M_DrawTransPic (cx, cy, p);
 		else
 			M_DrawTransPic2 (cx, cy, p);
 	}
 	p = Draw_CachePic ("gfx/box_bl.lmp");
-	if(bottom)
+	if (bottom)
 		M_DrawTransPic (cx, cy+8, p);
 	else
 		M_DrawTransPic2 (cx, cy+8, p);
@@ -384,7 +384,7 @@ void M_DrawTextBox2 (int x, int y, int width, int lines, qboolean bottom)
 	{
 		cy = y;
 
-		if(bottom)
+		if (bottom)
 			M_DrawTransPic (cx, cy, tm);
 		else
 			M_DrawTransPic2 (cx, cy, tm);
@@ -394,12 +394,12 @@ void M_DrawTextBox2 (int x, int y, int width, int lines, qboolean bottom)
 			cy += 8;
 			if (n == 1)
 				p = Draw_CachePic ("gfx/box_mm2.lmp");
-			if(bottom)
+			if (bottom)
 				M_DrawTransPic (cx, cy, p);
 			else
 				M_DrawTransPic2 (cx, cy, p);
 		}
-		if(bottom)
+		if (bottom)
 			M_DrawTransPic (cx, cy+8, bm);
 		else
 			M_DrawTransPic2 (cx, cy+8, bm);
@@ -410,7 +410,7 @@ void M_DrawTextBox2 (int x, int y, int width, int lines, qboolean bottom)
 	// draw right side
 	cy = y;
 	p = Draw_CachePic ("gfx/box_tr.lmp");
-	if(bottom)
+	if (bottom)
 		M_DrawTransPic (cx, cy, p);
 	else
 		M_DrawTransPic2 (cx, cy, p);
@@ -418,13 +418,13 @@ void M_DrawTextBox2 (int x, int y, int width, int lines, qboolean bottom)
 	for (n = 0; n < lines; n++)
 	{
 		cy += 8;
-		if(bottom)
+		if (bottom)
 			M_DrawTransPic (cx, cy, p);
 		else
 			M_DrawTransPic2 (cx, cy, p);
 	}
 	p = Draw_CachePic ("gfx/box_br.lmp");
-	if(bottom)
+	if (bottom)
 		M_DrawTransPic (cx, cy+8, p);
 	else
 		M_DrawTransPic2 (cx, cy+8, p);
@@ -487,15 +487,15 @@ static void M_BuildBigCharWidth (void)
 
 	p = Draw_CachePic ("gfx/menu/bigfont.lmp");
 
-	for(numA = 0; numA < 27; numA++)
+	for (numA = 0; numA < 27; numA++)
 	{
 		memset(After,20,sizeof(After));
 		source = p->data + ((numA % 8) * 20) + (numA / 8 * p->width * 20);
 		biggestX = 0;
 
-		for(ypos=0;ypos < 19;ypos++)
+		for (ypos = 0; ypos < 19; ypos++)
 		{
-			for(xpos=0;xpos<19;xpos++,source++)
+			for (xpos = 0; xpos < 19; xpos++, source++)
 			{
 				if (*source)
 				{
@@ -508,15 +508,15 @@ static void M_BuildBigCharWidth (void)
 		}
 		biggestX++;
 
-		for(numB = 0; numB < 27; numB++)
+		for (numB = 0; numB < 27; numB++)
 		{
 			memset(Before,0,sizeof(Before));
 			source = p->data + ((numB % 8) * 20) + (numB / 8 * p->width * 20);
 			adjustment = 0;
 
-			for(ypos=0;ypos < 19;ypos++)
+			for (ypos = 0; ypos < 19; ypos++)
 			{
-				for(xpos=0;xpos<19;xpos++,source++)
+				for (xpos = 0; xpos < 19; xpos++, source++)
 				{
 					if (!(*source))
 					{
@@ -528,9 +528,9 @@ static void M_BuildBigCharWidth (void)
 				source += (p->width - xpos);
 			}
 
-			while(1)
+			while (1)
 			{
-				for(ypos=0;ypos<19;ypos++)
+				for (ypos = 0; ypos < 19; ypos++)
 				{
 					if (After[ypos] - Before[ypos] >= 15)
 						break;
@@ -544,12 +544,12 @@ static void M_BuildBigCharWidth (void)
 		}
 	}
 
-	sprintf(temp,"%s\\gfx\\menu\\fontsize.lmp",com_gamedir);
-	FH = fopen(temp,"wb");
-	fwrite(BigCharWidth,1,sizeof(BigCharWidth),FH);
-	fclose(FH);
+	sprintf (temp, "%s/gfx/menu/fontsize.lmp", com_gamedir);
+	FH = fopen (temp, "wb");
+	fwrite (BigCharWidth, 1, sizeof(BigCharWidth), FH);
+	fclose (FH);
 #else
-	COM_LoadStackFile ("gfx/menu/fontsize.lmp",BigCharWidth,sizeof(BigCharWidth)+1);
+	COM_LoadStackFile ("gfx/menu/fontsize.lmp", BigCharWidth, sizeof(BigCharWidth)+1);
 #endif
 }
 
@@ -592,10 +592,10 @@ static int M_DrawBigCharacter (int x, int y, int num, int numNext)
 	p = Draw_CachePic ("gfx/menu/bigfont.lmp");
 	source = p->data + ((num % 8) * 20) + (num / 8 * p->width * 20);
 
-	for(ypos=0;ypos < 19;ypos++)
+	for (ypos = 0; ypos < 19; ypos++)
 	{
 		dest = vid.buffer + (y+ypos) * vid.rowbytes + x;
-		for(xpos=0;xpos<19;xpos++,dest++,source++)
+		for (xpos = 0; xpos < 19; xpos++, dest++, source++)
 		{
 			if (*source)
 			{
@@ -624,7 +624,7 @@ static void M_DrawBigString(int x, int y, char *string)
 	x += ((vid.width - 320)>>1);
 
 	length = strlen(string);
-	for(c=0;c<length;c++)
+	for (c = 0; c < length; c++)
 	{
 		x += M_DrawBigCharacter(x,y,string[c],string[c+1]);
 	}
@@ -709,6 +709,7 @@ void ScrollTitle (char *name)
 	}
 }
 
+
 //=============================================================================
 /* MAIN MENU */
 
@@ -739,15 +740,15 @@ void M_Menu_Main_f (void)
 
 static void M_Main_Draw (void)
 {
-	int	f;
+	int		f;
 
 	ScrollTitle("gfx/menu/title0.lmp");
 //	M_DrawTransPic (72, 32, Draw_CachePic ("gfx/mainmenu.lmp") );
-	M_DrawBigString (72,60+(0*20),"SINGLE PLAYER");
-	M_DrawBigString (72,60+(1*20),"MULTIPLAYER");
-	M_DrawBigString (72,60+(2*20),"OPTIONS");
-	M_DrawBigString (72,60+(3*20),"HELP");
-	M_DrawBigString (72,60+(4*20),"QUIT");
+	M_DrawBigString (72, 60 + (0 * 20), "SINGLE PLAYER");
+	M_DrawBigString (72, 60 + (1 * 20), "MULTIPLAYER");
+	M_DrawBigString (72, 60 + (2 * 20), "OPTIONS");
+	M_DrawBigString (72, 60 + (3 * 20), "HELP");
+	M_DrawBigString (72, 60 + (4 * 20), "QUIT");
 
 	f = (int)(host_time * 10)%8;
 	M_DrawTransPic (43, 54 + m_main_cursor * 20,Draw_CachePic( va("gfx/menu/menudot%i.lmp", f+1 ) ) );
@@ -848,11 +849,11 @@ static void M_Difficulty_Draw (void)
 		setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
 	setup_class--;
 
-	for(i = 0; i < NUM_DIFFLEVELS; ++i)
-		M_DrawBigString (72,60+(i*20),DiffNames[setup_class][i]);
+	for (i = 0; i < NUM_DIFFLEVELS; ++i)
+		M_DrawBigString (72, 60 + (i * 20), DiffNames[setup_class][i]);
 
 	f = (int)(host_time * 10)%8;
-	M_DrawTransPic (43, 54 + m_diff_cursor * 20,Draw_CachePic( va("gfx/menu/menudot%i.lmp", f+1 ) ) );
+	M_DrawTransPic (43, 54 + m_diff_cursor * 20, Draw_CachePic(va("gfx/menu/menudot%i.lmp", f+1)) );
 }
 
 static void M_Difficulty_Key (int key)
@@ -941,13 +942,13 @@ static void M_Class_Draw (void)
 
 	ScrollTitle("gfx/menu/title2.lmp");
 	for (i = 0; i < f; ++i)
-		M_DrawBigString (72,60+(i*20),ClassNamesU[i]);
+		M_DrawBigString (72, 60 + (i * 20), ClassNamesU[i]);
 
 	f = (int)(host_time * 10)%8;
-	M_DrawTransPic (43, 54 + m_class_cursor * 20,Draw_CachePic( va("gfx/menu/menudot%i.lmp", f+1 ) ) );
+	M_DrawTransPic (43, 54 + m_class_cursor * 20, Draw_CachePic(va("gfx/menu/menudot%i.lmp", f+1)) );
 
-	M_DrawPic (251,54 + 21, Draw_CachePic (va("gfx/cport%d.lmp", m_class_cursor + 1)));
-	M_DrawTransPic (242,54, Draw_CachePic ("gfx/menu/frame.lmp"));
+	M_DrawPic (251, 54 + 21, Draw_CachePic (va("gfx/cport%d.lmp", m_class_cursor + 1)));
+	M_DrawTransPic (242, 54, Draw_CachePic ("gfx/menu/frame.lmp"));
 }
 
 static void M_Class_Key (int key)
@@ -1036,21 +1037,21 @@ static void M_SinglePlayer_Draw (void)
 	ScrollTitle("gfx/menu/title1.lmp");
 
 	if (gameflags & GAME_PORTALS)
-		M_DrawBigString (72,60+(0*20),"NEW MISSION");
+		M_DrawBigString (72, 60 + (0 * 20), "NEW MISSION");
 	else
-		M_DrawBigString (72,60+(0*20),"NEW GAME");
+		M_DrawBigString (72, 60 + (0 * 20), "NEW GAME");
 
-	M_DrawBigString (72,60+(1*20),"LOAD");
-	M_DrawBigString (72,60+(2*20),"SAVE");
+	M_DrawBigString (72, 60 + (1 * 20), "LOAD");
+	M_DrawBigString (72, 60 + (2 * 20), "SAVE");
 
 	if (gameflags & GAME_PORTALS)
 	{
-		M_DrawBigString (72,60+(3*20),"OLD MISSION");
-		M_DrawBigString (72,60+(4*20),"VIEW INTRO");
+		M_DrawBigString (72, 60 + (3 * 20), "OLD MISSION");
+		M_DrawBigString (72, 60 + (4 * 20), "VIEW INTRO");
 	}
 
 	f = (int)(host_time * 10)%8;
-	M_DrawTransPic (43, 54 + m_singleplayer_cursor * 20,Draw_CachePic( va("gfx/menu/menudot%i.lmp", f+1 ) ) );
+	M_DrawTransPic (43, 54 + m_singleplayer_cursor * 20, Draw_CachePic(va("gfx/menu/menudot%i.lmp", f+1)) );
 }
 
 
@@ -1138,7 +1139,7 @@ static void M_ScanSaves (void)
 	FILE	*f;
 	int		version;
 
-	for (i=0 ; i<MAX_SAVEGAMES ; i++)
+	for (i = 0; i < MAX_SAVEGAMES; i++)
 	{
 		strncpy (m_filenames[i], "--- UNUSED SLOT ---", sizeof(m_filenames[0])-1);
 		loadable[i] = false;
@@ -1156,9 +1157,11 @@ static void M_ScanSaves (void)
 		strncpy (m_filenames[i], name, sizeof(m_filenames[0])-1);
 
 	// change _ back to space
-		for (j=0 ; j<SAVEGAME_COMMENT_LENGTH ; j++)
+		for (j = 0; j < SAVEGAME_COMMENT_LENGTH; j++)
+		{
 			if (m_filenames[i][j] == '_')
 				m_filenames[i][j] = ' ';
+		}
 		loadable[i] = true;
 		fclose (f);
 	}
@@ -1194,7 +1197,7 @@ static void M_Load_Draw (void)
 
 	ScrollTitle("gfx/menu/load.lmp");
 
-	for (i=0 ; i< MAX_SAVEGAMES; i++)
+	for (i = 0; i < MAX_SAVEGAMES; i++)
 		M_Print (16, 60 + 8*i, m_filenames[i]);
 
 // line cursor
@@ -1208,7 +1211,7 @@ static void M_Save_Draw (void)
 
 	ScrollTitle("gfx/menu/save.lmp");
 
-	for (i=0 ; i<MAX_SAVEGAMES ; i++)
+	for (i = 0; i < MAX_SAVEGAMES; i++)
 		M_Print (16, 60 + 8*i, m_filenames[i]);
 
 // line cursor
@@ -1301,7 +1304,7 @@ static void M_ScanMSaves (void)
 	FILE	*f;
 	int		version;
 
-	for (i=0 ; i<MAX_SAVEGAMES ; i++)
+	for (i = 0; i < MAX_SAVEGAMES; i++)
 	{
 		strncpy (m_filenames[i], "--- UNUSED SLOT ---", sizeof(m_filenames[0])-1);
 		loadable[i] = false;
@@ -1319,9 +1322,11 @@ static void M_ScanMSaves (void)
 		strncpy (m_filenames[i], name, sizeof(m_filenames[0])-1);
 
 	// change _ back to space
-		for (j=0 ; j<SAVEGAME_COMMENT_LENGTH ; j++)
+		for (j = 0; j < SAVEGAME_COMMENT_LENGTH; j++)
+		{
 			if (m_filenames[i][j] == '_')
 				m_filenames[i][j] = ' ';
+		}
 		loadable[i] = true;
 		fclose (f);
 	}
@@ -1453,11 +1458,11 @@ static void M_MultiPlayer_Draw (void)
 	ScrollTitle("gfx/menu/title4.lmp");
 //	M_DrawTransPic (72, 32, Draw_CachePic ("gfx/mp_menu.lmp") );
 
-	M_DrawBigString (72,60+(0*20),"JOIN A GAME");
-	M_DrawBigString (72,60+(1*20),"NEW GAME");
-	M_DrawBigString (72,60+(2*20),"SETUP");
-	M_DrawBigString (72,60+(3*20),"LOAD");
-	M_DrawBigString (72,60+(4*20),"SAVE");
+	M_DrawBigString (72, 60 + (0 * 20), "JOIN A GAME");
+	M_DrawBigString (72, 60 + (1 * 20), "NEW GAME");
+	M_DrawBigString (72, 60 + (2 * 20), "SETUP");
+	M_DrawBigString (72, 60 + (3 * 20), "LOAD");
+	M_DrawBigString (72, 60 + (4 * 20), "SAVE");
 
 	f = (int)(host_time * 10)%8;
 	M_DrawTransPic (43, 54 + m_multiplayer_cursor * 20,Draw_CachePic( va("gfx/menu/menudot%i.lmp", f+1 ) ) );
@@ -1778,8 +1783,8 @@ static void M_Net_Draw (void)
 
 	ScrollTitle("gfx/menu/title4.lmp");
 
-	M_DrawBigString (72,70+(0*20),"IPX");
-	M_DrawBigString (72,70+(1*20),"TCP/IP");
+	M_DrawBigString (72, 70 + (0 * 20), "IPX");
+	M_DrawBigString (72, 70 + (1 * 20), "TCP/IP");
 
 	f = (320-26*8)/2;
 	M_DrawTextBox (f, 134, 24, 4);
@@ -1790,7 +1795,7 @@ static void M_Net_Draw (void)
 	M_Print (f, 166, net_helpMessage[m_net_cursor*4+3]);
 
 	f = (int)(host_time * 10)%8;
-	M_DrawTransPic (43, 64 + m_net_cursor * 20,Draw_CachePic( va("gfx/menu/menudot%i.lmp", f+1 ) ) );
+	M_DrawTransPic (43, 64 + m_net_cursor * 20, Draw_CachePic(va("gfx/menu/menudot%i.lmp", f+1)) );
 }
 
 static void M_Net_Key (int k)
@@ -1900,7 +1905,7 @@ static void M_AdjustSliders (int dir)
 		scr_viewsize.value += dir * 10;
 		Cvar_SetValue ("viewsize", scr_viewsize.value);
 		break;
-	case OPT_GAMMA:	// gamma
+	case OPT_GAMMA:		// gamma
 		v_gamma.value -= dir * 0.05;
 		if (v_gamma.value < 0.5)
 			v_gamma.value = 0.5;
@@ -1916,7 +1921,7 @@ static void M_AdjustSliders (int dir)
 			sensitivity.value = 11;
 		Cvar_SetValue ("sensitivity", sensitivity.value);
 		break;
-	case OPT_MUSICTYPE: // bgm type
+	case OPT_MUSICTYPE:	// bgm type
 		if (Q_strcasecmp(bgmtype.string,"midi") == 0)
 		{
 			if (dir < 0)
@@ -2008,9 +2013,9 @@ static void M_DrawSlider (int x, int y, float range)
 	if (range > 1)
 		range = 1;
 	M_DrawCharacter (x-8, y, 256);
-	for (i=0 ; i<SLIDER_RANGE ; i++)
+	for (i = 0; i < SLIDER_RANGE; i++)
 		M_DrawCharacter (x + i*8, y, 257);
-	M_DrawCharacter (x+i*8, y, 258);
+	M_DrawCharacter (x + i*8, y, 258);
 	M_DrawCharacter (x + (SLIDER_RANGE-1)*8 * range, y, 259);
 }
 
@@ -2024,69 +2029,71 @@ void M_DrawCheckbox (int x, int y, int on)
 
 static void M_Options_Draw (void)
 {
-	float	r;
+	float		r;
 
 	mousestate_sa = false;
 	IN_ActivateMouse ();	// we entered the customization menu
 
 	ScrollTitle("gfx/menu/title3.lmp");
 
-	M_Print (16, 60+(0*8),	"    Customize controls");
-	M_Print (16, 60+(1*8),	"         Go to console");
-	M_Print (16, 60+(2*8),	"     Reset to defaults");
+//	we use 22 character option titles. the increment to
+//	the x offset is: (22 - strlen(option_title)) * 8
+	M_Print (16 + (4 * 8), 60 + (0 * 8),	"Customize controls");
+	M_Print (16 + (9 * 8), 60 + (1 * 8),	"Go to console");
+	M_Print (16 + (5 * 8), 60 + (2 * 8),	"Reset to defaults");
 
-	M_Print (16, 60+(3*8),	"           Screen size");
+	M_Print (16 + (11 * 8), 60 + (3 * 8),	"Screen size");
 	r = (scr_viewsize.value - 30) / (120 - 30);
-	M_DrawSlider (220, 60+(3*8), r);
+	M_DrawSlider (220, 60 + (3 * 8), r);
 
-	M_Print (16, 60+(4*8),	"            Brightness");
+	M_Print (16 + (12 * 8), 60 + (4 * 8),	"Brightness");
 	r = (1.0 - v_gamma.value) / 0.5;
-	M_DrawSlider (220, 60+(4*8), r);
+	M_DrawSlider (220, 60 + (4 * 8), r);
 
-	M_Print (16, 60+(5*8),	"           Mouse Speed");
+	M_Print (16 + (11 * 8), 60 + (5 * 8),	"Mouse Speed");
 	r = (sensitivity.value - 1)/10;
-	M_DrawSlider (220, 60+(5*8), r);
+	M_DrawSlider (220, 60 + (5 * 8), r);
 
-	M_Print (16, 60+(6*8),	"            Music Type");
-	if (Q_strcasecmp(bgmtype.string,"midi") == 0)
-		M_Print (220, 60+(6*8), "MIDI");
-	else if (Q_strcasecmp(bgmtype.string,"cd") == 0)
-		M_Print (220, 60+(6*8), "CD");
+	M_Print (16 + (12 * 8), 60 + (6 * 8),	"Music Type");
+	if (Q_strcasecmp(bgmtype.string, "midi") == 0)
+		M_Print (220, 60 + (6 * 8), "MIDI");
+	else if (Q_strcasecmp(bgmtype.string, "cd") == 0)
+		M_Print (220, 60 + (6 * 8), "CD");
 	else
-		M_Print (220, 60+(6*8), "None");
+		M_Print (220, 60 + (6 * 8), "None");
 
-	M_Print (16, 60+(7*8),	"          Music Volume");
+	M_Print (16 + (10 * 8), 60 + (7 * 8),	"Music Volume");
 	r = bgmvolume.value;
-	M_DrawSlider (220, 60+(7*8), r);
+	M_DrawSlider (220, 60 + (7 * 8), r);
 
-	M_Print (16, 60+(8*8),	"          Sound Volume");
+	M_Print (16 + (10 * 8), 60 + (8 * 8),	"Sound Volume");
 	r = sfxvolume.value;
-	M_DrawSlider (220, 60+(8*8), r);
+	M_DrawSlider (220, 60 + (8 * 8), r);
 
-	M_Print (16, 60+(9*8),			"            Always Run");
-	M_DrawCheckbox (220, 60+(9*8), cl_forwardspeed.value > 200);
+	M_Print (16 + (12 * 8), 60 + (9 * 8),	"Always Run");
+	M_DrawCheckbox (220, 60 + (9 * 8), (cl_forwardspeed.value > 200));
 
-	M_Print (16, 60+(OPT_INVMOUSE*8),	"          Invert Mouse");
-	M_DrawCheckbox (220, 60+(OPT_INVMOUSE*8), m_pitch.value < 0);
+	M_Print (16 + (10 * 8), 60 + 8*OPT_INVMOUSE,	"Invert Mouse");
+	M_DrawCheckbox (220, 60 + 8*OPT_INVMOUSE, m_pitch.value < 0);
 
-	M_Print (16,60+(OPT_ALWAYSMLOOK*8),	"            Mouse Look");
-	M_DrawCheckbox (220, 60+(OPT_ALWAYSMLOOK*8), in_mlook.state & 1);
+	M_Print (16 + (12 * 8), 60 + 8*OPT_ALWAYSMLOOK,	"Mouse Look");
+	M_DrawCheckbox (220, 60 + 8*OPT_ALWAYSMLOOK, in_mlook.state & 1);
 
-	M_Print (16, 60+(OPT_USEMOUSE*8),	"             Use Mouse");
-	M_DrawCheckbox (220, 60+(OPT_USEMOUSE*8), _enable_mouse.value);
+	M_Print (16 + (13 * 8), 60 + 8*OPT_USEMOUSE,	"Use Mouse");
+	M_DrawCheckbox (220, 60 + 8*OPT_USEMOUSE, _enable_mouse.value);
 
-	M_Print (16, 60+(OPT_CROSSHAIR*8),	"        Show Crosshair");
-	M_DrawCheckbox (220, 60+(OPT_CROSSHAIR*8), crosshair.value);
+	M_Print (16 + (8 * 8), 60 + 8*OPT_CROSSHAIR,	"Show Crosshair");
+	M_DrawCheckbox (220, 60 + 8*OPT_CROSSHAIR, crosshair.value);
 
 #ifdef GLQUAKE
-	M_Print (16, 60+(OPT_OPENGL*8),		"       OpenGL Features");
+	M_Print (16 + (7 * 8), 60 + 8*OPT_OPENGL,	"OpenGL Features");
 #endif
 
-	M_Print (16, 60+(OPT_CHASE_ACTIVE*8),	"            Chase Mode");
-	M_DrawCheckbox (220, 60+(OPT_CHASE_ACTIVE*8), chase_active.value);
+	M_Print (16 + (12 * 8), 60 + 8*OPT_CHASE_ACTIVE,	"Chase Mode");
+	M_DrawCheckbox (220, 60 + 8*OPT_CHASE_ACTIVE, chase_active.value);
 
 	if (vid_menudrawfn)
-		M_Print (16, 60+(OPT_VIDEO*8),	"           Video Modes");
+		M_Print (16 + (11 * 8), 60 + 8*OPT_VIDEO,	"Video Modes");
 
 	// cursor
 	// doesn't get drawn properly with XFree4.3/MGA200 S.A.
@@ -2248,26 +2255,30 @@ static void M_OpenGL_Draw (void)
 	ScrollTitle("gfx/menu/title3.lmp");
 	M_PrintWhite (96, 72, "OpenGL Features:");
 
-	M_Print (32, 90 + 8*OGL_CONSIZE,	"     Text and HUD size");
+//	we use 22 character option titles. the increment to
+//	the x offset is: (22 - strlen(option_title)) * 8
+	M_Print (32 + (5 * 8), 90 + 8*OGL_CONSIZE,	"Text and HUD size");
 	M_Print (232, 90 + 8*OGL_CONSIZE, VID_ReportConsize());
 
-	M_Print (32, 90 + 8*OGL_MULTITEX,	"        Multitexturing");
+	M_Print (32 + (8 * 8), 90 + 8*OGL_MULTITEX,	"Multitexturing");
 	if (gl_mtexable)
 		M_DrawCheckbox (232, 90 + 8*OGL_MULTITEX, gl_multitexture.value);
 	else
 		M_Print (232, 90 + 8*OGL_MULTITEX, "Not found");
 
-	M_Print (32, 90 + 8*OGL_PURGETEX,	"    Purge map textures");
+	M_Print (32 + (4 * 8), 90 + 8*OGL_PURGETEX,	"Purge map textures");
 	M_DrawCheckbox (232, 90 + 8*OGL_PURGETEX, gl_purge_maptex.value);
 
-	M_Print (32, 90 + 8*OGL_GLOW1,		"          Glow effects");
+	M_Print (32 + (10 * 8), 90 + 8*OGL_GLOW1,	"Glow effects");
 	M_DrawCheckbox (232, 90 + 8*OGL_GLOW1, gl_glows.value);
-	M_Print (32, 90 + 8*OGL_GLOW2,		"         missile glows");
+
+	M_Print (32 + (9 * 8), 90 + 8*OGL_GLOW2,	"missile glows");
 	M_DrawCheckbox (232, 90 + 8*OGL_GLOW2, gl_missile_glows.value);
-	M_Print (32, 90 + 8*OGL_GLOW3,		"           other glows");
+
+	M_Print (32 + (11 * 8), 90 + 8*OGL_GLOW3,	"other glows");
 	M_DrawCheckbox (232, 90 + 8*OGL_GLOW3, gl_other_glows.value);
 
-	M_Print (32, 90 + 8*OGL_LIGHTMAPFMT,	"      Lightmap Format:");
+	M_Print (32 + (6 * 8), 90 + 8*OGL_LIGHTMAPFMT,	"Lightmap Format:");
 	for (i = 0; i < MAX_LMFORMATS; i++)
 	{
 		if (!Q_strcasecmp(gl_lightmapfmt.string, lm_formats[i].name))
@@ -2276,10 +2287,10 @@ static void M_OpenGL_Draw (void)
 	lm_format = i;
 	M_Print (232, 90 + 8*OGL_LIGHTMAPFMT, lm_formats[lm_format].desc);
 
-	M_Print (32, 90 + 8*OGL_COLOREDLIGHT,	"      Colored lights :");
-	M_Print (32, 90 + 8*OGL_COLOREDSTATIC,	"         static lights");
-	M_Print (32, 90 + 8*OGL_COLOREDDYNAMIC,	"        dynamic lights");
-	M_Print (32, 90 + 8*OGL_COLOREDEXTRA,	"          extra lights");
+	M_Print (32 + (6 * 8), 90 + 8*OGL_COLOREDLIGHT,	"Colored lights :");
+	M_Print (32 + (9 * 8), 90 + 8*OGL_COLOREDSTATIC, "static lights");
+	M_Print (32 + (8 * 8), 90 + 8*OGL_COLOREDDYNAMIC, "dynamic lights");
+	M_Print (32 + (10 * 8), 90 + 8*OGL_COLOREDEXTRA, "extra lights");
 	// bound the gl_coloredlight value
 	if (gl_coloredlight.value < 0)
 		Cvar_SetValue ("gl_coloredlight", 0);
@@ -2300,7 +2311,7 @@ static void M_OpenGL_Draw (void)
 	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDDYNAMIC, (int)gl_colored_dynamic_lights.value);
 	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDEXTRA, (int)gl_extra_dynamic_lights.value);
 
-	M_Print (32, 90 + 8*OGL_TEXFILTER,	"     Texture filtering");
+	M_Print (32 + (5 * 8), 90 + 8*OGL_TEXFILTER,	"Texture filtering");
 	for (i = 0; i < MAX_GL_FILTERS; i++)
 	{
 		if (modes[i].minimize == gl_filter_min)
@@ -2311,9 +2322,9 @@ static void M_OpenGL_Draw (void)
 		}
 	}
 
-	M_Print (32, 90 + 8*OGL_SHADOWS,	"               Shadows");
+	M_Print (32 + (15 * 8), 90 + 8*OGL_SHADOWS,	"Shadows");
 	M_DrawCheckbox (232, 90 + 8*OGL_SHADOWS, r_shadows.value);
-	M_Print (32, 90 + 8*OGL_STENCIL,	"        Stencil buffer");
+	M_Print (32 + (8 * 8), 90 + 8*OGL_STENCIL,	"Stencil buffer");
 	if (have_stencil)
 		M_DrawCheckbox (232, 90 + 8*OGL_STENCIL, gl_stencilshadow.value);
 	else
@@ -2326,8 +2337,10 @@ static void M_OpenGL_Draw (void)
 	{
 		int	x = (320-25*8)/2;
 		for (i = 0; i < MAX_LMFORMATS-1; i++)
+		{
 			if (gl_lightmap_format == lm_formats[i].glenum)
 				break;
+		}
 		M_DrawTextBox (x, 94 + 8*(OGL_LIGHTMAPFMT), 25, 5);
 		M_Print (x+16, 98 + 8*(OGL_LIGHTMAPFMT+1), "currently running with:");
 		M_Print (x+16, 98 + 8*(OGL_LIGHTMAPFMT+2), lm_formats[i].desc);
@@ -2582,14 +2595,14 @@ static void M_FindKeysForCommand (char *command, int *twokeys)
 	l = strlen(command);
 	count = 0;
 
-	for (j=0 ; j<256 ; j++)
+	for (j = 0; j < 256; j++)
 	{
 		b = keybindings[j];
 		if (!b)
 			continue;
 		if (!strncmp (b, command, l))
 		{
-			l2= strlen(b);
+			l2 = strlen(b);
 			if (l == l2)
 			{
 				twokeys[count] = j;
@@ -2609,7 +2622,7 @@ static void M_UnbindCommand (char *command)
 
 	l = strlen(command);
 
-	for (j=0 ; j<256 ; j++)
+	for (j = 0; j < 256; j++)
 	{
 		b = keybindings[j];
 		if (!b)
@@ -2646,7 +2659,7 @@ static void M_Keys_Draw (void)
 		M_DrawCharacter (6, 80 + ((KEYS_SIZE-1)*8), 129);
 
 // search for known bindings
-	for (i=0 ; i<KEYS_SIZE ; i++)
+	for (i = 0; i < KEYS_SIZE; i++)
 	{
 		y = 80 + 8*i;
 
@@ -2772,7 +2785,7 @@ static void M_Video_Key (int key)
 
 static int		help_page;
 
-#define	NUM_HELP_PAGES	5
+#define	NUM_HELP_PAGES		5
 
 static void M_Menu_Help_f (void)
 {
@@ -2803,7 +2816,7 @@ static void M_Menu_Help_f (void)
 
 static void M_Help_Draw (void)
 {
-	Draw_HelpPic_FN ((vid.width - 320)>>1, 0, Load_HelpPic_FN(va("gfx/menu/help%02i.lmp", help_page+1), vid.width, vid.height));
+		Draw_HelpPic_FN ((vid.width - 320)>>1, 0, Load_HelpPic_FN(va("gfx/menu/help%02i.lmp", help_page+1), vid.width, vid.height));
 }
 
 
@@ -3245,7 +3258,7 @@ static void M_Quit_Key (int key)
 
 static void M_Quit_Draw (void)
 {
-	int i,x,y,place,topy;
+	int i, x, y, place, topy;
 	qpic_t	*p;
 
 	if (wasInMenus)
@@ -3272,14 +3285,17 @@ static void M_Quit_Draw (void)
 
 	y = 12;
 	M_DrawTextBox (0, 0, 38, 23);
-	M_Print      (16, y,    "        Hexen II version " STRINGIFY(ENGINE_VERSION));
-	M_Print      (16, y+8,  "         by Raven Software");
+
+//	the increment to the x offset is
+//	for properly centering the line.
+	M_Print      (16 + (8 * 8), y,		"Hexen II version " STRINGIFY(ENGINE_VERSION));
+	M_Print      (16 + (9 * 8), y + 8,	"by Raven Software");
 #if HOT_VERSION_BETA
-	M_PrintWhite (16, y+16, "     Hammer of Thyrion " HOT_VERSION_STR "-" HOT_VERSION_BETA_STR);
+	M_PrintWhite (16 + (5 * 8), y + 16,	"Hammer of Thyrion " HOT_VERSION_STR "-" HOT_VERSION_BETA_STR);
 #else
-	M_PrintWhite (16, y+16, "       Hammer of Thyrion " HOT_VERSION_STR);
+	M_PrintWhite (16 + (7 * 8), y + 16,	"Hammer of Thyrion " HOT_VERSION_STR);
 #endif
-	M_PrintWhite (16, y+24, "             Source Port");
+	M_PrintWhite (16 +(13 * 8), y + 24,	"Source Port");
 	y += 40;
 
 	if (LinePos > 55 && !SoundPlayed && LineText == Credit2Text)
@@ -3290,7 +3306,7 @@ static void M_Quit_Draw (void)
 	topy = y;
 	place = floor(LinePos);
 	y -= floor((LinePos - place) * 8);
-	for(i=0;i<QUIT_SIZE;i++,y+=8)
+	for (i = 0; i < QUIT_SIZE; i++, y += 8)
 	{
 		if (i+place-QUIT_SIZE >= MaxLines)
 			break;
@@ -3305,15 +3321,15 @@ static void M_Quit_Draw (void)
 
 	p = Draw_CachePic ("gfx/box_mm2.lmp");
 	x = 24;
-	y = topy-8;
-	for(i=4;i<38;i++,x+=8)
+	y = topy - 8;
+	for (i = 4; i < 38; i++, x += 8)
 	{
 		M_DrawPic(x, y, p);	//background at top for smooth scroll out
 		M_DrawPic(x, y+(QUIT_SIZE*8), p);	//draw at bottom for smooth scroll in
 	}
 
-	y += (QUIT_SIZE*8)+8;
-	M_PrintWhite (16, y,  "          Press y to exit           ");
+	y += (QUIT_SIZE * 8) + 8;
+	M_PrintWhite (16 + (10 * 8), y,  "Press y to exit");
 }
 
 //=============================================================================
@@ -3450,7 +3466,7 @@ static void M_LanConfig_Key (int key)
 
 	case K_ENTER:
 		if ((JoiningGame && lanConfig_cursor <= 1) ||
-			(!JoiningGame && lanConfig_cursor == 0))
+				(!JoiningGame && lanConfig_cursor == 0))
 			break;
 
 		m_entersound = true;
@@ -3745,20 +3761,22 @@ static void M_GameOptions_Draw (void)
 	M_DrawTextBox (152+8, 60, 10, 1);
 	M_Print (160+8, 68, "begin game");
 
-	M_Print (0+8, 84, "      Max players");
+//	we use 17 character option titles. the second increment
+//	to the x offset is: (17 - strlen(option_title)) * 8
+	M_Print (0+8 + 6*8, 84, "Max players");
 	M_Print (160+8, 84, va("%i", maxplayers) );
 
-	M_Print (0+8, 92, "        Game Type");
+	M_Print (0+8 + 8*8, 92, "Game Type");
 	if (coop.value)
 		M_Print (160+8, 92, "Cooperative");
 	else
 		M_Print (160+8, 92, "Deathmatch");
 
-	M_Print (0+8, 100, "        Teamplay");
+	M_Print (0+8 + 9*8, 100, "Teamplay");
 	{
 		char *msg;
 
-		switch((int)teamplay.value)
+		switch ((int)teamplay.value)
 		{
 			case 1:
 				msg = "No Friendly Fire";
@@ -3773,35 +3791,35 @@ static void M_GameOptions_Draw (void)
 		M_Print (160+8, 100, msg);
 	}
 
-	M_Print (0+8, 108, "            Class");
+	M_Print (0+8 + 12*8, 108, "Class");
 	M_Print (160+8, 108, ClassNames[setup_class]);
 
-	M_Print (0+8, 116, "       Difficulty");
+	M_Print (0+8 + 7*8, 116, "Difficulty");
 
 	M_Print (160+8, 116, DiffNames[setup_class][(int)skill.value]);
 
-	M_Print (0+8, 124, "       Frag Limit");
+	M_Print (0+8 + 7*8, 124, "Frag Limit");
 	if (fraglimit.value == 0)
 		M_Print (160+8, 124, "none");
 	else
 		M_Print (160+8, 124, va("%i frags", (int)fraglimit.value));
 
-	M_Print (0+8, 132, "       Time Limit");
+	M_Print (0+8 + 7*8, 132, "Time Limit");
 	if (timelimit.value == 0)
 		M_Print (160+8, 132, "none");
 	else
 		M_Print (160+8, 132, va("%i minutes", (int)timelimit.value));
 
-	M_Print (0+8, 140, "     Random Class");
+	M_Print (0+8 + 5*8, 140, "Random Class");
 	if (randomclass.value)
 		M_Print (160+8, 140, "on");
 	else
 		M_Print (160+8, 140, "off");
 
-	M_Print (0+8, 156, "         Episode");
+	M_Print (0+8 + 10*8, 156, "Episode");
 	M_Print (160+8, 156, episodes[startepisode].description);
 
-	M_Print (0+8, 164, "           Level");
+	M_Print (0+8 + 12*8, 164, "Level");
 	M_Print (160+8, 164, levels[episodes[startepisode].firstLevel + startlevel].name);
 	M_Print (96, 180, levels[episodes[startepisode].firstLevel + startlevel].description);
 
@@ -4075,7 +4093,7 @@ static void M_Search_Draw (void)
 	M_DrawTextBox (x-8, 60, 12, 1);
 	M_Print (x, 68, "Searching...");
 
-	if(slistInProgress)
+	if (slistInProgress)
 	{
 		NET_Poll();
 		return;
@@ -4135,13 +4153,17 @@ static void M_ServerList_Draw (void)
 			int	i,j;
 			hostcache_t temp;
 			for (i = 0; i < hostCacheCount; i++)
+			{
 				for (j = i+1; j < hostCacheCount; j++)
+				{
 					if (strcmp(hostcache[j].name, hostcache[i].name) < 0)
 					{
 						memcpy(&temp, &hostcache[j], sizeof(hostcache_t));
 						memcpy(&hostcache[j], &hostcache[i], sizeof(hostcache_t));
 						memcpy(&hostcache[i], &temp, sizeof(hostcache_t));
 					}
+				}
+			}
 		}
 		slist_sorted = true;
 	}
@@ -4493,6 +4515,9 @@ static void ReInitMusic (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.72  2006/10/07 16:38:37  sezero
+ * Free memory from unbound keys
+ *
  * Revision 1.71  2006/09/21 06:05:35  sezero
  * gathered most, if not all, of our compile time options into a header
  * file named "h2_opt.h" with documentation. removed gl_opt.h. removed

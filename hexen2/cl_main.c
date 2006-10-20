@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.30 2006-09-15 19:51:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.31 2006-10-20 20:32:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -78,7 +78,7 @@ void CL_ClearState (void)
 // allocate the efrags and chain together into a free list
 //
 	cl.free_efrags = cl_efrags;
-	for (i=0 ; i<MAX_EFRAGS-1 ; i++)
+	for (i = 0; i < MAX_EFRAGS-1; i++)
 		cl.free_efrags[i].entnext = &cl.free_efrags[i+1];
 	cl.free_efrags[i].entnext = NULL;
 
@@ -267,7 +267,7 @@ static void CL_PrintEntities_f (void)
 	entity_t	*ent;
 	int			i;
 
-	for (i=0,ent=cl_entities ; i<cl.num_entities ; i++,ent++)
+	for (i = 0, ent = cl_entities; i < cl.num_entities; i++, ent++)
 	{
 		Con_Printf ("%3i:",i);
 		if (!ent->model)
@@ -306,11 +306,11 @@ static void SetPal (int i)
 		return;
 	old = i;
 
-	if (i==0)
+	if (i == 0)
 		VID_SetPalette (host_basepal);
-	else if (i==1)
+	else if (i == 1)
 	{
-		for (c=0 ; c<768 ; c+=3)
+		for (c = 0; c < 768; c += 3)
 		{
 			pal[c] = 0;
 			pal[c+1] = 255;
@@ -320,7 +320,7 @@ static void SetPal (int i)
 	}
 	else
 	{
-		for (c=0 ; c<768 ; c+=3)
+		for (c = 0; c < 768; c += 3)
 		{
 			pal[c] = 0;
 			pal[c+1] = 0;
@@ -346,7 +346,7 @@ dlight_t *CL_AllocDlight (int key)
 	if (key)
 	{
 		dl = cl_dlights;
-		for (i=0 ; i<MAX_DLIGHTS ; i++, dl++)
+		for (i = 0; i < MAX_DLIGHTS; i++, dl++)
 		{
 			if (dl->key == key)
 			{
@@ -360,7 +360,7 @@ dlight_t *CL_AllocDlight (int key)
 
 // then look for anything else
 	dl = cl_dlights;
-	for (i=0 ; i<MAX_DLIGHTS ; i++, dl++)
+	for (i = 0; i < MAX_DLIGHTS; i++, dl++)
 	{
 		if (dl->die < cl.time)
 		{
@@ -394,7 +394,7 @@ void CL_DecayLights (void)
 	time = cl.time - cl.oldtime;
 
 	dl = cl_dlights;
-	for (i=0 ; i<MAX_DLIGHTS ; i++, dl++)
+	for (i = 0; i < MAX_DLIGHTS; i++, dl++)
 	{
 		if (dl->die < cl.time || !dl->radius)
 			continue;
@@ -494,14 +494,13 @@ static void CL_RelinkEntities (void)
 //
 // interpolate player info
 //
-	for (i=0 ; i<3 ; i++)
-		cl.velocity[i] = cl.mvelocity[1][i] + 
-			frac * (cl.mvelocity[0][i] - cl.mvelocity[1][i]);
+	for (i = 0; i < 3; i++)
+		cl.velocity[i] = cl.mvelocity[1][i] + frac * (cl.mvelocity[0][i] - cl.mvelocity[1][i]);
 
 	if (cls.demoplayback && !intro_playing)
 	{
 	// interpolate the angles	
-		for (j=0 ; j<3 ; j++)
+		for (j = 0; j < 3; j++)
 		{
 			d = cl.mviewangles[0][j] - cl.mviewangles[1][j];
 			if (d > 180)
@@ -513,7 +512,7 @@ static void CL_RelinkEntities (void)
 	}
 
 // start on the entity after the world
-	for (i=1,ent=cl_entities+1 ; i<cl.num_entities ; i++,ent++)
+	for (i = 1, ent = cl_entities+1; i < cl.num_entities; i++, ent++)
 	{
 		if (!ent->model)
 		{	// empty slot
@@ -540,7 +539,7 @@ static void CL_RelinkEntities (void)
 		else
 		{	// if the delta is large, assume a teleport and don't lerp
 			f = frac;
-			for (j=0 ; j<3 ; j++)
+			for (j = 0; j < 3; j++)
 			{
 				delta[j] = ent->msg_origins[0][j] - ent->msg_origins[1][j];
 
@@ -549,7 +548,7 @@ static void CL_RelinkEntities (void)
 			}
 
 		// interpolate the origin and angles
-			for (j=0 ; j<3 ; j++)
+			for (j = 0; j < 3; j++)
 			{
 				ent->origin[j] = ent->msg_origins[1][j] + f*delta[j];
 
@@ -579,7 +578,7 @@ static void CL_RelinkEntities (void)
 				dl->origin[2] += 16;
 				AngleVectors (ent->angles, fv, rv, uv);
 				VectorMA (dl->origin, 18, fv, dl->origin);
-				dl->radius = 200 + (rand()&31);
+				dl->radius = 200 + (rand() & 31);
 				dl->minlight = 32;
 				dl->die = cl.time + 0.1;
 #		ifdef GLQUAKE
@@ -600,7 +599,7 @@ static void CL_RelinkEntities (void)
 				dl = CL_AllocDlight (i);
 				VectorCopy (ent->origin,  dl->origin);
 				dl->origin[2] += 16;
-				dl->radius = 400 + (rand()&31);
+				dl->radius = 400 + (rand() & 31);
 				dl->die = cl.time + 0.001;
 #		ifdef GLQUAKE
 				if (gl_colored_dynamic_lights.value)
@@ -619,7 +618,7 @@ static void CL_RelinkEntities (void)
 			{
 				dl = CL_AllocDlight (i);
 				VectorCopy (ent->origin,  dl->origin);
-				dl->radius = 200 + (rand()&31);
+				dl->radius = 200 + (rand() & 31);
 				dl->die = cl.time + 0.001;
 #		ifdef GLQUAKE
 				if (gl_colored_dynamic_lights.value)
@@ -639,7 +638,7 @@ static void CL_RelinkEntities (void)
 			{
 				dl = CL_AllocDlight (i);
 				VectorCopy (ent->origin,  dl->origin);
-				dl->radius = 200.0 + (rand()&31);
+				dl->radius = 200.0 + (rand() & 31);
 				dl->die = cl.time + 0.001;
 				dl->dark = true;
 			}
@@ -1006,6 +1005,9 @@ void CL_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2006/09/15 19:51:14  sezero
+ * missed adding the size arg to this snprintf
+ *
  * Revision 1.29  2006/09/15 11:10:23  sezero
  * use snprintf and the strl* functions, #4: cl_main.c.
  *

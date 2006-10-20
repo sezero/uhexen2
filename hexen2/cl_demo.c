@@ -61,7 +61,7 @@ static void CL_WriteDemoMessage (void)
 	len = LittleLong (net_message.cursize);
 	fwrite (&len, 4, 1, cls.demofile);
 //	fwrite (&len, 4, 1, cls.introdemofile);
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		f = LittleFloat (cl.viewangles[i]);
 		fwrite (&f, 4, 1, cls.demofile);
@@ -124,7 +124,7 @@ int CL_GetMessage (void)
 			{
 				fread (&net_message.cursize, 4, 1, cls.demofile);
 				VectorCopy (cl.mviewangles[0], cl.mviewangles[1]);
-				for (i=0 ; i<3 ; i++)
+				for (i = 0; i < 3; i++)
 				{
 					r = fread (&f, 4, 1, cls.demofile);
 					cl.mviewangles[0][i] = LittleFloat (f);
@@ -370,7 +370,7 @@ void CL_PlayDemo_f (void)
 
 	Con_Printf ("Playing demo from %s.\n", name);
 
-/*	if(intro_playing)
+/*	if (intro_playing)
 	{
 		cls.demorecording = true;
 		cls.introdemofile=fopen("t9.dem","wb");

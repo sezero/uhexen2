@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.33 2006-09-13 05:53:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.34 2006-10-20 20:32:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -107,7 +107,7 @@ static entity_t *CL_EntityNum (int num)
 	{
 		if (num >= MAX_EDICTS)
 			Host_Error ("CL_EntityNum: %i is an invalid number",num);
-		while (cl.num_entities<=num)
+		while (cl.num_entities <= num)
 		{
 			cl_entities[cl.num_entities].colormap = vid.colormap;
 			cl.num_entities++;
@@ -154,7 +154,7 @@ static void CL_ParseStartSoundPacket(void)
 	if (ent > MAX_EDICTS)
 		Host_Error ("CL_ParseStartSoundPacket: ent = %i", ent);
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		pos[i] = MSG_ReadCoord ();
 
 	S_StartSound (ent, channel, cl.sound_precache[sound_num], pos, volume/255.0, attenuation);
@@ -284,12 +284,12 @@ static void CL_ParseServerInfo (void)
 
 // precache models
 	memset (cl.model_precache, 0, sizeof(cl.model_precache));
-	for (nummodels=1 ; ; nummodels++)
+	for (nummodels = 1 ; ; nummodels++)
 	{
 		str = MSG_ReadString ();
 		if (!str[0])
 			break;
-		if (nummodels==MAX_MODELS)
+		if (nummodels == MAX_MODELS)
 		{
 			Con_Printf ("Server sent too many model precaches\n");
 			return;
@@ -300,12 +300,12 @@ static void CL_ParseServerInfo (void)
 
 // precache sounds
 	memset (cl.sound_precache, 0, sizeof(cl.sound_precache));
-	for (numsounds=1 ; ; numsounds++)
+	for (numsounds = 1 ; ; numsounds++)
 	{
 		str = MSG_ReadString ();
 		if (!str[0])
 			break;
-		if (numsounds==MAX_SOUNDS)
+		if (numsounds == MAX_SOUNDS)
 		{
 			Con_Printf ("Server sent too many sound precaches\n");
 			return;
@@ -327,7 +327,7 @@ static void CL_ParseServerInfo (void)
 
 	//always precache the world!!!
 	cl.model_precache[1] = Mod_ForName (model_precache[1], false);
-	for (i=2 ; i<nummodels ; i++)
+	for (i = 2; i < nummodels; i++)
 	{
 		if (precache.value)
 		{
@@ -354,7 +354,7 @@ static void CL_ParseServerInfo (void)
 		player_models[4] = (model_t *)Mod_FindName ("models/succubus.mdl");
 
 	S_BeginPrecaching ();
-	for (i=1 ; i<numsounds ; i++)
+	for (i = 1; i < numsounds; i++)
 	{
 		cl.sound_precache[i] = S_PrecacheSound (sound_precache[i]);
 		if (precache.value)
@@ -480,7 +480,7 @@ static void CL_ParseUpdate (int bits)
 */
 	ref_ent = NULL;
 
-	for(i=0;i<cl.frames[0].count;i++)
+	for (i = 0; i < cl.frames[0].count; i++)
 		if (cl.frames[0].states[i].index == num)
 		{
 			ref_ent = &cl.frames[0].states[i];
@@ -553,7 +553,7 @@ static void CL_ParseUpdate (int bits)
 		if (model)
 		{
 			if (model->synctype == ST_RAND)
-				ent->syncbase = rand()*(1.0/RAND_MAX);//(float)(rand()&0x7fff) / 0x7fff;
+				ent->syncbase = rand() * (1.0 / RAND_MAX);//(float)(rand() & 0x7fff) / 0x7fff;
 			else
 				ent->syncbase = 0.0;
 		}
@@ -600,7 +600,7 @@ static void CL_ParseUpdate (int bits)
 #endif
 	}
 
-	if(bits & U_SKIN)
+	if (bits & U_SKIN)
 	{
 		set_ent->skin = ent->skinnum = MSG_ReadByte();
 		set_ent->drawflags = ent->drawflags = MSG_ReadByte();
@@ -666,7 +666,7 @@ static void CL_ParseUpdate (int bits)
 	else
 		ent->msg_angles[0][2] = ref_ent->angles[2];
 
-	if(bits&U_SCALE)
+	if (bits & U_SCALE)
 	{
 		set_ent->scale = ent->scale = MSG_ReadByte();
 		set_ent->abslight = ent->abslight = MSG_ReadByte();
@@ -677,7 +677,7 @@ static void CL_ParseUpdate (int bits)
 		ent->abslight = ref_ent->abslight;
 	}
 
-	if ( bits & U_NOLERP )
+	if (bits & U_NOLERP)
 		ent->forcelink = true;
 
 	if ( forcelink )
@@ -725,7 +725,7 @@ static void CL_ParseUpdate2 (int bits)
 	if (bits & U_COLORMAP)
 		MSG_ReadByte();
 
-	if(bits & U_SKIN)
+	if (bits & U_SKIN)
 	{
 		MSG_ReadByte();
 		MSG_ReadByte();
@@ -752,7 +752,7 @@ static void CL_ParseUpdate2 (int bits)
 	if (bits & U_ANGLE3)
 		MSG_ReadAngle();
 
-	if(bits&U_SCALE)
+	if (bits&U_SCALE)
 	{
 		MSG_ReadByte();
 		MSG_ReadByte();
@@ -775,7 +775,7 @@ static void CL_ParseBaseline (entity_t *ent)
 	ent->baseline.scale = MSG_ReadByte();
 	ent->baseline.drawflags = MSG_ReadByte();
 	ent->baseline.abslight = MSG_ReadByte();
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		ent->baseline.origin[i] = MSG_ReadCoord ();
 		ent->baseline.angles[i] = MSG_ReadAngle ();
@@ -804,7 +804,7 @@ static void CL_ParseClientdata (int bits)
 	else
 	{
 		//rjr   is sv_flypitch   useable on the client's end?
-//rjr		if (cl.v.movetype==MOVETYPE_FLY)
+//rjr		if (cl.v.movetype == MOVETYPE_FLY)
 //rjr			cl.idealpitch = sv_flypitch.value;
 //rjr		else
 //rjr			cl.idealpitch = sv_walkpitch.value;
@@ -816,7 +816,7 @@ static void CL_ParseClientdata (int bits)
 //rjr		cl.idealroll = 0;
 
 	VectorCopy (cl.mvelocity[0], cl.mvelocity[1]);
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		if (bits & (SU_PUNCH1<<i) )
 			cl.punchangle[i] = MSG_ReadChar();
@@ -835,7 +835,7 @@ static void CL_ParseClientdata (int bits)
 	if (cl.items != i)
 	{	// set flash times
 		Sbar_Changed();
-		for (j=0 ; j<32 ; j++)
+		for (j = 0; j < 32; j++)
 			if ( (i & (1<<j)) && !(cl.items & (1<<j)))
 				cl.item_gettime[j] = cl.time;
 		cl.items = i;
@@ -1041,13 +1041,13 @@ static void CL_NewTranslation (int slot)
 	bottom -= 1;
 
 //	Con_Printf("Class is %d for slot %d\n",(int)cl.scores[slot].playerclass,slot);
-	for (i=0 ; i<VID_GRADES ; i++, dest += 256, source+=256)
+	for (i = 0; i < VID_GRADES; i++, dest += 256, source += 256)
 	{
 		colorA = playerTranslation + 256 + color_offsets[(int)cl.scores[slot].playerclass-1];
 		colorB = colorA + 256;
 		sourceA = colorB + 256 + (top * 256);
 		sourceB = colorB + 256 + (bottom * 256);
-		for(j=0;j<256;j++,colorA++,colorB++,sourceA++,sourceB++)
+		for (j = 0; j < 256; j++, colorA++, colorB++, sourceA++, sourceB++)
 		{
 			if (top >= 0 && (*colorA != 255))
 				dest[j] = source[*sourceA];
@@ -1101,7 +1101,7 @@ static void CL_ParseStaticSound (void)
 	int			sound_num, vol, atten;
 	int			i;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		org[i] = MSG_ReadCoord ();
 
 	sound_num = MSG_ReadShort ();
@@ -1159,7 +1159,9 @@ static void CL_ParseRainEffect(void)
 	R_RainEffect(org,e_size,x_dir,y_dir,color,count);
 }
 
-#define SHOWNET(x) if(cl_shownet.value==2)Con_Printf ("%3i:%s\n", msg_readcount-1, x);
+#define SHOWNET(x) \
+	if (cl_shownet.value == 2) \
+		Con_Printf ("%3i:%s\n", msg_readcount-1, (x));
 
 /*
 =====================
@@ -1185,7 +1187,7 @@ void CL_ParseServerMessage (void)
 //
 // if recording demos, copy the message out
 //
-	if(net_message.cursize > LastServerMessageSize)
+	if (net_message.cursize > LastServerMessageSize)
 	{
 		LastServerMessageSize = net_message.cursize;
 	}
@@ -1296,7 +1298,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_setangle:
-			for (i=0 ; i<3 ; i++)
+			for (i = 0; i < 3; i++)
 				cl.viewangles[i] = MSG_ReadAngle ();
 			break;
 
@@ -1304,38 +1306,38 @@ void CL_ParseServerMessage (void)
 			compangles[0][0] = MSG_ReadAngle();
 			compangles[0][1] = MSG_ReadAngle();
 			compangles[0][2] = MSG_ReadAngle();
-			for (i=0 ; i<3 ; i++)
+			for (i = 0; i < 3; i++)
 			{
 				compangles[1][i] = cl.viewangles[i];
-				for (j=0 ; j<2 ; j++)
+				for (j = 0; j < 2; j++)
 				{//standardize both old and new angles to +-180
-					if(compangles[j][i]>=360)
+					if (compangles[j][i] >= 360)
 						compangles[j][i] -= 360*((int)(compangles[j][i]/360));
-					else if(compangles[j][i]<=360)
+					else if (compangles[j][i] <= 360)
 						compangles[j][i] += 360*(1+(int)(-compangles[j][i]/360));
-					if(compangles[j][i]>180)
-						compangles[j][i]=-360 + compangles[j][i];
-					else if(compangles[j][i]<-180)
-						compangles[j][i]=360 + compangles[j][i];
+					if (compangles[j][i] > 180)
+						compangles[j][i] = -360 + compangles[j][i];
+					else if (compangles[j][i] < -180)
+						compangles[j][i] = 360 + compangles[j][i];
 				}
 				//get delta
 				deltaangles[i] = compangles[0][i] - compangles[1][i];
 				//cap delta to <=180,>=-180
-				if(deltaangles[i]>180)
-					deltaangles[i]+=-360;
-				else if(deltaangles[i]<-180)
-					deltaangles[i]+=360;
+				if (deltaangles[i] > 180)
+					deltaangles[i] += -360;
+				else if (deltaangles[i] < -180)
+					deltaangles[i] += 360;
 				//add the delta
 				cl.viewangles[i]+=(deltaangles[i]/8);//8 step interpolation
 				//cap newangles to +-180
-				if(cl.viewangles[i]>=360)
+				if (cl.viewangles[i] >= 360)
 					cl.viewangles[i] -= 360*((int)(cl.viewangles[i]/360));
-				else if(cl.viewangles[i]<=360)
+				else if (cl.viewangles[i] <= 360)
 					cl.viewangles[i] += 360*(1+(int)(-cl.viewangles[i]/360));
-				if(cl.viewangles[i]>180)
-					cl.viewangles[i]+=-360;
-				else if(cl.viewangles[i]<-180)
-					cl.viewangles[i]+=360;
+				if (cl.viewangles[i] > 180)
+					cl.viewangles[i] += -360;
+				else if (cl.viewangles[i] < -180)
+					cl.viewangles[i] += 360;
 			}
 			break;
 
@@ -1372,7 +1374,7 @@ void CL_ParseServerMessage (void)
 			if (ent_num > MAX_EDICTS)
 				Host_Error ("svc_sound_update_pos: ent = %i", ent_num);
 
-			for (i=0 ; i<3 ; i++)
+			for (i = 0; i < 3; i++)
 				pos[i] = MSG_ReadCoord ();
 
 			S_UpdateSoundPos (ent_num, channel, pos);
@@ -1624,7 +1626,7 @@ void CL_ParseServerMessage (void)
 					if (cl.reference_frame >= 1 && cl.reference_frame <= MAX_FRAMES)
 					{
 						RemovePlace = OrigPlace = NewPlace = AddedIndex = 0;
-						for(i=0;i<cl.num_entities;i++)
+						for (i = 0; i < cl.num_entities; i++)
 						{
 							if (RemovePlace >= cl.NumToRemove || cl.RemoveList[RemovePlace] != i)
 							{
@@ -1663,12 +1665,12 @@ void CL_ParseServerMessage (void)
 					cl.need_build = 0;
 				}
 
-				for (i=1,ent=cl_entities+1 ; i<cl.num_entities ; i++,ent++)
+				for (i = 1, ent = cl_entities+1; i < cl.num_entities; i++, ent++)
 				{
 					ent->baseline.flags &= ~BE_ON;
 				}
 
-				for(i=0;i<cl.frames[0].count;i++)
+				for (i = 0; i < cl.frames[0].count; i++)
 				{
 					ent = CL_EntityNum (cl.frames[0].states[i].index);
 					ent->model = cl.model_precache[cl.frames[0].states[i].modelindex];
@@ -1682,7 +1684,7 @@ void CL_ParseServerMessage (void)
 				{
 					cl.NumToRemove = j;
 				}
-				for(i=0;i<j;i++)
+				for (i = 0; i < j; i++)
 				{
 					k = MSG_ReadShort();
 					if (cl.need_build)
@@ -1847,6 +1849,10 @@ void CL_ParseServerMessage (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.33  2006/09/13 05:53:22  sezero
+ * re-visited the includes, gathered all net includes into
+ * the new net_sys.h, did a platform defines clean-up.
+ *
  * Revision 1.32  2006/06/25 00:02:54  sezero
  * moved mousestate activation stuff to CL_ParseServerInfo
  *
