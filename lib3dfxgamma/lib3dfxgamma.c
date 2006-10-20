@@ -98,7 +98,7 @@ int do3dfxGammaCtrl(float value)
 	if (FX_GammaControl2)
 		FX_GammaControl2 (value);
 	else if (FX_GammaControl3)
-		FX_GammaControl3 (value,value,value);
+		FX_GammaControl3 (value, value, value);
 
 	return 0;
 }
@@ -177,14 +177,14 @@ int glGetDeviceGammaRamp3DFX (void *arrays)
 			return 0;
 	}
 
-	for (i=0 ; i<256 ; i++)
+	for (i = 0; i < 256; i++)
 	{
 		 gammaTable[0][i] = i << 8;
 		 gammaTable[1][i] = i << 8;
 		 gammaTable[2][i] = i << 8;
 	}
 
-	memcpy(arrays, gammaTable, 3*256*sizeof(unsigned short));
+	memcpy (arrays, gammaTable, 3 * 256 * sizeof(unsigned short));
 
 	return 1;
 }

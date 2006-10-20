@@ -44,7 +44,7 @@ typedef struct filter_s
 
 static filter_t	*filter_list = NULL;
 
-static void FL_Remove(filter_t *filter)
+static void FL_Remove (filter_t *filter)
 {
 	if (filter->previous)
 		filter->previous->next = filter->next;
@@ -58,11 +58,11 @@ static void FL_Remove(filter_t *filter)
 		filter_list = NULL;
 }
 
-static void FL_Clear(void)
+static void FL_Clear (void)
 {
 	filter_t *filter;
 
-	for (filter=filter_list ; filter ; )
+	for (filter = filter_list ; filter ; )
 	{
 		if (filter)
 		{
@@ -77,18 +77,18 @@ static void FL_Clear(void)
 	filter_list = NULL;
 }
 
-static filter_t* FL_New(netadr_t adr1,netadr_t adr2)
+static filter_t *FL_New (netadr_t adr1, netadr_t adr2)
 {
 	filter_t *filter;
 
 	filter = (filter_t *)malloc(sizeof(filter_t));
-	NET_CopyAdr(&filter->from,&adr1);
-	NET_CopyAdr(&filter->to,&adr2);
+	NET_CopyAdr(&filter->from, &adr1);
+	NET_CopyAdr(&filter->to, &adr2);
 
 	return filter;
 }
 
-static void FL_Add(filter_t *filter)
+static void FL_Add (filter_t *filter)
 {
 	filter->next = filter_list;
 	filter->previous = NULL;
@@ -97,13 +97,13 @@ static void FL_Add(filter_t *filter)
 	filter_list = filter;
 }
 
-static filter_t* FL_Find(netadr_t adr)
+static filter_t *FL_Find (netadr_t adr)
 {
 	filter_t *filter;
 
-	for (filter=filter_list ; filter ; filter=filter->next)
+	for (filter = filter_list ; filter ; filter = filter->next)
 	{
-		if (NET_CompareAdrNoPort(filter->from,adr))
+		if (NET_CompareAdrNoPort(filter->from, adr))
 			return filter;
 	}
 
@@ -114,7 +114,7 @@ static filter_t* FL_Find(netadr_t adr)
 
 static int argv_index_add;
 
-static void Cmd_FilterAdd(void)
+static void Cmd_FilterAdd (void)
 {
 	filter_t	*filter;
 	netadr_t	to, from;
@@ -125,8 +125,8 @@ static void Cmd_FilterAdd(void)
 		return;
 	}
 
-	NET_StringToAdr(Cmd_Argv(2+argv_index_add),&from);
-	NET_StringToAdr(Cmd_Argv(3+argv_index_add),&to);
+	NET_StringToAdr(Cmd_Argv(2+argv_index_add), &from);
+	NET_StringToAdr(Cmd_Argv(3+argv_index_add), &to);
 
 	if (to.port == 0)
 		from.port = BigShort(PORT_SERVER);
@@ -138,7 +138,7 @@ static void Cmd_FilterAdd(void)
 	{
 		printf("Added filter %s\t\t%s\n", Cmd_Argv(2+argv_index_add), Cmd_Argv(3+argv_index_add));
 
-		filter = FL_New(from,to);
+		filter = FL_New(from, to);
 		FL_Add(filter);
 	}
 	else
@@ -147,7 +147,7 @@ static void Cmd_FilterAdd(void)
 	}
 }
 
-static void Cmd_FilterRemove(void)
+static void Cmd_FilterRemove (void)
 {
 	filter_t	*filter;
 	netadr_t	from;
@@ -158,9 +158,9 @@ static void Cmd_FilterRemove(void)
 		return;
 	}
 
-	NET_StringToAdr(Cmd_Argv(2+argv_index_add),&from);
+	NET_StringToAdr(Cmd_Argv(2+argv_index_add), &from);
 
-	if ((filter = FL_Find(from)))
+	if ( (filter = FL_Find(from)) )
 	{
 		printf("Removed %s\n\n", Cmd_Argv(2+argv_index_add));
 
@@ -173,11 +173,11 @@ static void Cmd_FilterRemove(void)
 	}
 }
 
-static void Cmd_FilterList(void)
+static void Cmd_FilterList (void)
 {
 	filter_t	*filter;
 
-	for (filter=filter_list ; filter ; filter=filter->next)
+	for (filter = filter_list ; filter ; filter = filter->next)
 	{
 		printf("%s", NET_AdrToString(filter->from));
 		printf("\t\t%s\n", NET_AdrToString(filter->to));
@@ -189,25 +189,25 @@ static void Cmd_FilterList(void)
 	printf("\n");
 }
 
-static void Cmd_FilterClear(void)
+static void Cmd_FilterClear (void)
 {
 	printf("Removed all filters\n\n");
 	FL_Clear();
 }
 
-static void Cmd_Filter_f(void)
+static void Cmd_Filter_f (void)
 {
 	argv_index_add = 0;
 
-	if ( !strcmp(Cmd_Argv(1),"add") )
+	if ( !strcmp(Cmd_Argv(1), "add") )
 	{
 		Cmd_FilterAdd();
 	}
-	else if ( !strcmp(Cmd_Argv(1),"remove") )
+	else if ( !strcmp(Cmd_Argv(1), "remove") )
 	{
 		Cmd_FilterRemove();
 	}
-	else if ( !strcmp(Cmd_Argv(1),"clear") )
+	else if ( !strcmp(Cmd_Argv(1), "clear") )
 	{
 		Cmd_FilterClear();
 	}
@@ -229,12 +229,12 @@ static void Cmd_Filter_f(void)
 
 //=============================================================================
 
-void SV_WriteFilterList(void)
+void SV_WriteFilterList (void)
 {
 	FILE	*filters;
 	filter_t	*filter;
 
-	if ((filters = fopen(filters_file,"wt")))
+	if ( (filters = fopen(filters_file,"wt")) )
 	{
 		if (filter_list == NULL)
 		{
@@ -242,7 +242,7 @@ void SV_WriteFilterList(void)
 			return;
 		}
 
-		for (filter=filter_list ; filter ; filter=filter->next)
+		for (filter = filter_list ; filter ; filter = filter->next)
 		{
 			fprintf(filters, "%s", NET_AdrToString(filter->from));
 			fprintf(filters, " %s\n", NET_AdrToString(filter->to));
@@ -256,11 +256,11 @@ void SV_WriteFilterList(void)
 
 server_t *sv_list = NULL;
 
-static void SVL_Clear(void)
+static void SVL_Clear (void)
 {
 	server_t *sv;
 
-	for (sv=sv_list ; sv ; )
+	for (sv = sv_list ; sv ; )
 	{
 		if (sv)
 		{
@@ -276,7 +276,7 @@ static void SVL_Clear(void)
 	printf("Cleared the server list\n\n");
 }
 
-static server_t* SVL_New(netadr_t adr)
+static server_t *SVL_New (netadr_t adr)
 {
 	server_t *sv;
 
@@ -295,7 +295,7 @@ static server_t* SVL_New(netadr_t adr)
 	return sv;
 }
 
-static void SVL_Add(server_t *sv)
+static void SVL_Add (server_t *sv)
 {
 	sv->next = sv_list;
 	sv->previous = NULL;
@@ -304,7 +304,7 @@ static void SVL_Add(server_t *sv)
 	sv_list = sv;
 }
 
-void SVL_Remove(server_t *sv)
+void SVL_Remove (server_t *sv)
 {
 	if (sv_list == sv)
 		sv_list = sv->next;
@@ -318,13 +318,13 @@ void SVL_Remove(server_t *sv)
 	sv->previous = NULL;
 }
 
-static server_t* SVL_Find(netadr_t adr)
+static server_t *SVL_Find (netadr_t adr)
 {
 	server_t *sv;
 
-	for (sv=sv_list ; sv ; sv=sv->next)
+	for (sv = sv_list ; sv ; sv = sv->next)
 	{
-		if (NET_CompareAdr(sv->ip,adr))
+		if (NET_CompareAdr(sv->ip, adr))
 			return sv;
 	}
 
@@ -363,7 +363,7 @@ static void MSG_WriteShort (sizebuf_t *sb, int c)
 
 //=============================================================================
 
-static void NET_Filter(void)
+static void NET_Filter (void)
 {
 	filter_t	*filter;
 	netadr_t	filter_adr;
@@ -371,23 +371,23 @@ static void NET_Filter(void)
 
 	hold_port = net_from.port;
 
-	NET_StringToAdr("127.0.0.1:26950",&filter_adr);
+	NET_StringToAdr("127.0.0.1:26950", &filter_adr);
 
-	if (NET_CompareAdrNoPort(net_from,filter_adr))
+	if (NET_CompareAdrNoPort(net_from, filter_adr))
 	{
-		NET_StringToAdr("0.0.0.0:26950",&filter_adr);
-		if ( !NET_CompareAdrNoPort(net_local_adr,filter_adr) )
+		NET_StringToAdr("0.0.0.0:26950", &filter_adr);
+		if ( !NET_CompareAdrNoPort(net_local_adr, filter_adr) )
 		{
-			NET_CopyAdr(&net_from,&net_local_adr);
+			NET_CopyAdr(&net_from, &net_local_adr);
 			net_from.port = hold_port;
 		}
 		return;
 	}
 
 	//if no compare with filter list
-	if ((filter = FL_Find(net_from)))
+	if ( (filter = FL_Find(net_from)) )
 	{
-		NET_CopyAdr(&net_from,&filter->to);
+		NET_CopyAdr(&net_from, &filter->to);
 		net_from.port = hold_port;
 	}
 }
@@ -442,9 +442,9 @@ void SV_InitNet (void)
 	NET_Init (port);
 
 	//Add filters
-	if ((filters = fopen(filters_file,"rt")))
+	if ( (filters = fopen(filters_file,"rt")) )
 	{
-		while (fgets(str,64,filters))
+		while (fgets(str, sizeof(str), filters))
 		{
 			Cbuf_AddText("filter add ");
 			Cbuf_AddText(str);
@@ -677,7 +677,7 @@ static void AnalysePacket(void)
 	printf("\n");
 }
 
-static void Mst_SendList(void)
+static void Mst_SendList (void)
 {
 	byte		buf[MAX_DATAGRAM];
 	sizebuf_t	msg;
@@ -688,7 +688,7 @@ static void Mst_SendList(void)
 	msg.allowoverflow = true;
 
 	//number of servers:
-	for (sv=sv_list ; sv ; sv=sv->next)
+	for (sv = sv_list ; sv ; sv = sv->next)
 		sv_num++;
 
 	MSG_WriteByte(&msg,255);
@@ -701,7 +701,7 @@ static void Mst_SendList(void)
 
 	if (sv_num > 0)
 	{
-		for (sv=sv_list ; sv ; sv=sv->next)
+		for (sv = sv_list ; sv ; sv = sv->next)
 		{
 			MSG_WriteByte(&msg,sv->ip.ip[0]);
 			MSG_WriteByte(&msg,sv->ip.ip[1]);
@@ -714,7 +714,7 @@ static void Mst_SendList(void)
 	NET_SendPacket(msg.cursize,msg.data,net_from);
 }
 
-static void Mst_Packet(void)
+static void Mst_Packet (void)
 {
 	char		msg;
 	server_t	*sv;
@@ -748,7 +748,7 @@ static void Mst_Packet(void)
 	case S2M_SHUTDOWN:
 		NET_Filter();
 		printf("%s >> S2M_SHUTDOWN\n", NET_AdrToString(net_from));
-		if ((sv = SVL_Find(net_from)))
+		if ( (sv = SVL_Find(net_from)) )
 		{
 			SVL_Remove(sv);
 			free(sv);
@@ -782,7 +782,7 @@ static void Mst_Packet(void)
 
 void SV_ReadPackets (void)
 {
-	while (NET_GetPacket ())
+	while ( NET_GetPacket() )
 	{
 		Mst_Packet();
 	}

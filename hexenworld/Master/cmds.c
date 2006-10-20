@@ -72,9 +72,9 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 	cmd_function_t	*cmd;
 
 	// fail if the command already exists
-	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
+	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
 	{
-		if (!strcmp (cmd_name, cmd->name))
+		if ( !strcmp (cmd_name, cmd->name) )
 		{
 			printf ("Cmd_AddCommand: %s already defined\n", cmd_name);
 			return;
@@ -99,9 +99,9 @@ void Cmd_ExecuteString (char *text)
 		return;		// no tokens
 
 	// check functions
-	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
+	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
 	{
-		if (!strcmp(cmd_argv[0],cmd->name))
+		if ( !strcmp(cmd_argv[0], cmd->name) )
 		{
 			if (cmd->function)
 				cmd->function ();
@@ -213,9 +213,9 @@ qboolean Cmd_Exists (char *cmd_name)
 {
 	cmd_function_t	*cmd;
 
-	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
+	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
 	{
-		if (!strcmp (cmd_name,cmd->name))
+		if ( !strcmp (cmd_name, cmd->name) )
 			return true;
 	}
 
@@ -237,7 +237,7 @@ static void Cmd_ServerList_f (void)
 {
 	server_t *sv;
 
-	for (sv=sv_list ; sv ; sv=sv->next)
+	for (sv = sv_list ; sv ; sv = sv->next)
 		printf("\t%s\n", NET_AdrToString(sv->ip));
 }
 

@@ -137,7 +137,7 @@ skipwhite:
 	}
 
 // skip // comments
-	if (c=='/' && data[1] == '/')
+	if (c == '/' && data[1] == '/')
 	{
 		while (*data && *data != '\n')
 			data++;
@@ -151,7 +151,7 @@ skipwhite:
 		while (1)
 		{
 			c = *data++;
-			if (c=='\"' || !c)
+			if (c == '\"' || !c)
 			{
 				com_token[len] = 0;
 				return data;
@@ -168,7 +168,7 @@ skipwhite:
 		data++;
 		len++;
 		c = *data;
-	} while (c>32);
+	} while (c > 32);
 
 	com_token[len] = 0;
 	return data;
@@ -465,7 +465,7 @@ static void SV_TimeOut(void)
 	if (sv_list == NULL)
 		return;
 
-	for (sv=sv_list ; sv ; )
+	for (sv = sv_list ; sv ; )
 	{
 		if (sv->timeout + SV_TIMEOUT < t)
 		{
