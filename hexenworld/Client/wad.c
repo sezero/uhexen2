@@ -25,7 +25,7 @@ static void W_CleanupName (char *in, char *out)
 	int		i;
 	int		c;
 
-	for (i=0 ; i<16 ; i++ )
+	for (i = 0; i < 16; i++ )
 	{
 		c = in[i];
 		if (!c)
@@ -36,7 +36,7 @@ static void W_CleanupName (char *in, char *out)
 		out[i] = c;
 	}
 
-	for ( ; i< 16 ; i++ )
+	for ( ; i < 16; i++ )
 		out[i] = 0;
 }
 
@@ -84,7 +84,7 @@ void W_LoadWadFile (char *filename)
 	infotableofs = LittleLong(header->infotableofs);
 	wad_lumps = (lumpinfo_t *)(wad_base + infotableofs);
 
-	for (i=0, lump_p = wad_lumps ; i<wad_numlumps ; i++,lump_p++)
+	for (i = 0, lump_p = wad_lumps; i < wad_numlumps; i++, lump_p++)
 	{
 		lump_p->filepos = LittleLong(lump_p->filepos);
 		lump_p->size = LittleLong(lump_p->size);
@@ -108,7 +108,7 @@ static lumpinfo_t *W_GetLumpinfo (char *name)
 
 	W_CleanupName (name, clean);
 
-	for (lump_p=wad_lumps, i=0 ; i<wad_numlumps ; i++,lump_p++)
+	for (lump_p = wad_lumps, i = 0; i < wad_numlumps; i++, lump_p++)
 	{
 		if (!strcmp(clean, lump_p->name))
 			return lump_p;
@@ -154,3 +154,4 @@ void SwapPic (qpic_t *pic)
 	pic->width = LittleLong(pic->width);
 	pic->height = LittleLong(pic->height);
 }
+

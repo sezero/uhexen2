@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.23 2006-10-19 06:32:30 sezero Exp $
+	$Id: sys_unix.c,v 1.24 2006-10-21 18:21:33 sezero Exp $
 
 	Unix system interface code
 */
@@ -165,7 +165,7 @@ void Sys_Error (char *error, ...)
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
 
-	va_start (argptr,error);
+	va_start (argptr, error);
 	vsnprintf (text, sizeof (text), error, argptr);
 	va_end (argptr);
 
@@ -258,7 +258,7 @@ void Sys_Printf (char *fmt, ...)
 	if (sys_nostdout.value)
 		return;
 
-	va_start (argptr,fmt);
+	va_start (argptr, fmt);
 	vsnprintf (text, sizeof (text), fmt, argptr);
 	va_end (argptr);
 
@@ -273,7 +273,7 @@ void Sys_DPrintf (char *fmt, ...)
 	if (!developer.value || sys_nostdout.value)
 		return;
 
-	va_start (argptr,fmt);
+	va_start (argptr, fmt);
 	vsnprintf (text, sizeof (text), fmt, argptr);
 	va_end (argptr);
 
@@ -378,9 +378,9 @@ int main (int argc, char **argv)
 	SV_Frame (HX_FRAME_TIME);
 
 // report the filesystem to the user
-	Sys_Printf("userdir is: %s\n",userdir);
-	Sys_Printf("com_gamedir is: %s\n",com_gamedir);
-	Sys_Printf("com_userdir is: %s\n",com_userdir);
+	Sys_Printf("userdir is: %s\n", userdir);
+	Sys_Printf("com_gamedir is: %s\n", com_gamedir);
+	Sys_Printf("com_userdir is: %s\n", com_userdir);
 
 //
 // main loop
@@ -409,3 +409,4 @@ int main (int argc, char **argv)
 
 	return 0;
 }
+

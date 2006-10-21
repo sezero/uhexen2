@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.11 2006-07-02 11:45:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.12 2006-10-21 18:21:28 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -60,11 +60,11 @@ static void SV_InitBoxHull (void)
 	box_hull.firstclipnode = 0;
 	box_hull.lastclipnode = 5;
 
-	for (i=0 ; i<6 ; i++)
+	for (i = 0; i < 6; i++)
 	{
 		box_clipnodes[i].planenum = i;
 
-		side = i&1;
+		side = i & 1;
 
 		box_clipnodes[i].children[side] = CONTENTS_EMPTY;
 		if (i != 5)
@@ -139,7 +139,7 @@ static hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t 
 
 		if (move_ent->v.hull)	// Entity is specifying which hull to use
 		{
-			idx=move_ent->v.hull-1;
+			idx = move_ent->v.hull-1;
 			hull = &model->hulls[idx];
 			if (!hull)  // Invalid hull
 			{
@@ -149,11 +149,11 @@ static hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t 
 		}
 		else	// Using the old way uses size to determine hull to use
 		{
-		//	if ((int)move_ent->v.flags&FL_MONSTER)
+		//	if ((int)move_ent->v.flags & FL_MONSTER)
 		//		Con_DPrintf("ERROR: auto-detecing hull for monster!\n");
 			if (size[0] < 3) // Point
 				hull = &model->hulls[0];
-			else if ((size[0] <= 8)&&((int)(sv.edicts->v.spawnflags)&1))  // Pentacles
+			else if ( (size[0] <= 8) && ((int)(sv.edicts->v.spawnflags) & 1) )  // Pentacles
 				hull = &model->hulls[4];
 			else if (size[0] <= 32 && size[2] <= 28) // Half Player
 				hull = &model->hulls[3];
@@ -165,14 +165,14 @@ static hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t 
 
 		// calculate an offset value to center the origin
 		VectorSubtract (hull->clip_mins, mins, offset);
-		if ((int)move_ent->v.flags&FL_MONSTER)
+		if ((int)move_ent->v.flags & FL_MONSTER)
 		{
-			if (offset[0]!=0||offset[1]!=0)
+			if (offset[0] !=0 || offset[1] != 0)
 			{
 			//	Con_DPrintf("ERROR: Non-zero offset (%f,%f,%f)!!!\n",offset[0],offset[1],offset[2]);
-			//	if((int)move_ent->v.flags2&524288)
-				offset[0]=0;
-				offset[1]=0;
+			//	if((int)move_ent->v.flags2 & 524288)
+				offset[0] = 0;
+				offset[1] = 0;
 			}
 		}
 		VectorAdd (offset, ent->v.origin, offset);
@@ -418,16 +418,16 @@ void SV_LinkEdict (edict_t *ent, qboolean touch_triggers)
 		int			i;
 
 		max = 0;
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 		{
-			v =fabs( ent->v.mins[i]);
+			v = fabs(ent->v.mins[i]);
 			if (v > max)
 				max = v;
-			v =fabs( ent->v.maxs[i]);
+			v = fabs(ent->v.maxs[i]);
 			if (v > max)
 				max = v;
 		}
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 		{
 			ent->v.absmin[i] = ent->v.origin[i] - max;
 			ent->v.absmax[i] = ent->v.origin[i] + max;
@@ -606,7 +606,7 @@ static void WackyBugFixer(float *p1f, float *p2f, float *p1, float *p2, float *f
 {
 	int i;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		mid[i] = p1[i] + (*frac)*(p2[i] - p1[i]);
 }
 
@@ -688,7 +688,7 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 		frac = 1;
 
 	midf = p1f + (p2f - p1f)*frac;
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		mid[i] = p1[i] + frac*(p2[i] - p1[i]);
 
 	side = (t1 < 0);
@@ -747,7 +747,7 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 		}
 		midf = p1f + (p2f - p1f)*frac;
 
-	//	for (i=0 ; i<3 ; i++)
+	//	for (i = 0; i < 3; i++)
 	//		mid[i] = p1[i] + frac * (p2[i] - p1[i]);
 
 		WackyBugFixer(&p1f, &p2f, p1, p2, &frac, &midf, mid);
@@ -952,7 +952,7 @@ static void SV_MoveBounds (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, v
 #else
 	int		i;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		if (end[i] > start[i])
 		{
@@ -995,7 +995,7 @@ trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, e
 	if (type == MOVE_MISSILE || type == MOVE_PHASE)
 	{
 	//Larger for projectiles against monsters
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 		{
 			clip.mins2[i] = -15;
 			clip.maxs2[i] = 15;
@@ -1019,6 +1019,12 @@ trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, e
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2006/07/02 11:45:35  sezero
+ * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
+ * which stops vec3_origin usage in relevant calculations. renamed the Length
+ * macro to VectorLength for consistancy. updated the utilities' mathlib for
+ * similar macro usage as in the engine.
+ *
  * Revision 1.10  2006/04/05 06:10:44  sezero
  * added support for both hexen2-v1.11 and h2mp-v1.12 progs into a single hexen2
  * binary. this essentially completes the h2/h2mp binary merge started with the

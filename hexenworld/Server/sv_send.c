@@ -91,14 +91,14 @@ void Con_Printf (char *fmt, ...)
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
 
-	va_start (argptr,fmt);
-	vsnprintf (msg,sizeof(msg),fmt,argptr);
+	va_start (argptr, fmt);
+	vsnprintf (msg, sizeof(msg), fmt, argptr);
 	va_end (argptr);
 
 	// add to redirected message
 	if (sv_redirected)
 	{
-		if (strlen (msg) + strlen(outputbuf) > sizeof(outputbuf) - 1)
+		if (strlen(msg) + strlen(outputbuf) > sizeof(outputbuf) - 1)
 			SV_FlushRedirect ();
 		strcat (outputbuf, msg);
 		return;
@@ -127,8 +127,8 @@ void Con_DPrintf (char *fmt, ...)
 	if (!developer.value)
 		return;
 
-	va_start (argptr,fmt);
-	vsnprintf (msg,sizeof(msg),fmt,argptr);
+	va_start (argptr, fmt);
+	vsnprintf (msg, sizeof(msg), fmt, argptr);
 	va_end (argptr);
 
 	Con_Printf ("%s", msg);
@@ -158,7 +158,7 @@ void SV_ClientPrintf (client_t *cl, int level, char *fmt, ...)
 	if (level < cl->messagelevel)
 		return;
 
-	va_start (argptr,fmt);
+	va_start (argptr, fmt);
 	vsnprintf (string, sizeof (string), fmt, argptr);
 	va_end (argptr);
 
@@ -181,13 +181,13 @@ void SV_BroadcastPrintf (int level, char *fmt, ...)
 	client_t	*cl;
 	int			i;
 
-	va_start (argptr,fmt);
+	va_start (argptr, fmt);
 	vsnprintf (string, sizeof(string), fmt, argptr);
 	va_end (argptr);
 
 	Sys_Printf ("%s", string);	// print to the console
 
-	for (i=0, cl = svs.clients ; i<MAX_CLIENTS ; i++, cl++)
+	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 	{
 		if (level < cl->messagelevel)
 			continue;
@@ -213,7 +213,7 @@ void SV_BroadcastCommand (char *fmt, ...)
 
 	if (!sv.state)
 		return;
-	va_start (argptr,fmt);
+	va_start (argptr, fmt);
 	vsnprintf (string, sizeof (string), fmt, argptr);
 	va_end (argptr);
 
@@ -264,13 +264,13 @@ void SV_Multicast (vec3_t origin, int to)
 	case MULTICAST_PHS_R:
 		reliable = true;	// intentional fallthrough
 	case MULTICAST_PHS:
-		mask = sv.phs + leafnum * 4*((sv.worldmodel->numleafs+31)>>5);
+		mask = sv.phs + leafnum * 4 * ((sv.worldmodel->numleafs + 31) >> 5);
 		break;
 
 	case MULTICAST_PVS_R:
 		reliable = true;	// intentional fallthrough
 	case MULTICAST_PVS:
-		mask = sv.pvs + leafnum * 4*((sv.worldmodel->numleafs+31)>>5);
+		mask = sv.pvs + leafnum * 4 * ((sv.worldmodel->numleafs + 31) >> 5);
 		break;
 
 	default:
@@ -291,7 +291,7 @@ void SV_Multicast (vec3_t origin, int to)
 		{
 			// -1 is because pvs rows are 1 based, not 0 based like leafs
 			leafnum = leaf - sv.worldmodel->leafs - 1;
-			if ( !(mask[leafnum>>3] & (1<<(leafnum&7)) ))
+			if ( !(mask[leafnum>>3] & (1 << (leafnum & 7)) ))
 			{
 			//	Con_Printf ("supressed multicast\n");
 				if (mask == sv.pvs)
@@ -363,8 +363,8 @@ void SV_StopSound (edict_t *entity, int channel)
 	// use the entity origin unless it is a bmodel
 	if (entity->v.solid == SOLID_BSP)
 	{
-		for (i=0 ; i<3 ; i++) //FIXME: This may not work- should be using (absmin + absmax)*0.5?
-			origin[i] = entity->v.origin[i]+0.5*(entity->v.mins[i]+entity->v.maxs[i]);
+		for (i = 0; i < 3; i++) //FIXME: This may not work- should be using (absmin + absmax)*0.5?
+			origin[i] = entity->v.origin[i] + 0.5 * (entity->v.mins[i] + entity->v.maxs[i]);
 	}
 	else
 	{
@@ -393,8 +393,8 @@ void SV_UpdateSoundPos (edict_t *entity, int channel)
 	// use the entity origin unless it is a bmodel
 	if (entity->v.solid == SOLID_BSP)
 	{
-		for (i=0 ; i<3 ; i++) //FIXME: This may not work- should be using (absmin + absmax)*0.5?
-			origin[i] = entity->v.origin[i]+0.5*(entity->v.mins[i]+entity->v.maxs[i]);
+		for (i = 0; i < 3; i++) //FIXME: This may not work- should be using (absmin + absmax)*0.5?
+			origin[i] = entity->v.origin[i] + 0.5 * (entity->v.mins[i] + entity->v.maxs[i]);
 	}
 	else
 	{
@@ -403,8 +403,8 @@ void SV_UpdateSoundPos (edict_t *entity, int channel)
 
 	MSG_WriteByte (&sv.multicast, svc_sound_update_pos);
 	MSG_WriteShort (&sv.multicast, channel);
-	for (i=0 ; i<3 ; i++)
-		MSG_WriteCoord (&sv.multicast, entity->v.origin[i]+0.5*(entity->v.mins[i]+entity->v.maxs[i]));
+	for (i = 0; i < 3; i++)
+		MSG_WriteCoord (&sv.multicast, entity->v.origin[i] + 0.5 * (entity->v.mins[i] + entity->v.maxs[i]));
 	SV_Multicast (origin, MULTICAST_PHS);
 }
 
@@ -442,8 +442,10 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 
 // find precache number for sound
 	for (sound_num = 1; sound_num < MAX_SOUNDS && sv.sound_precache[sound_num]; sound_num++)
+	{
 		if (!strcmp(sample, sv.sound_precache[sound_num]))
 			break;
+	}
 
 	if (sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num])
 	{
@@ -516,9 +518,9 @@ void SV_StartParticle (vec3_t org, vec3_t dir, int color, int count)
 	MSG_WriteCoord (&sv.multicast, org[0]);
 	MSG_WriteCoord (&sv.multicast, org[1]);
 	MSG_WriteCoord (&sv.multicast, org[2]);
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
-		v = dir[i]*16;
+		v = dir[i] * 16;
 		if (v > 127)
 			v = 127;
 		else if (v < -128)
@@ -653,7 +655,7 @@ void SV_FindModelNumbers (void)
 	sv_ravenmodel = -1;
 	sv_raven2model = -1;
 
-	for (i=0 ; i<MAX_MODELS ; i++)
+	for (i = 0; i < MAX_MODELS; i++)
 	{
 		if (!sv.model_precache[i])
 			break;
@@ -710,8 +712,8 @@ void SV_WriteClientdataToMessage (client_t *client, sizebuf_t *msg)
 		MSG_WriteByte (msg, svc_damage);
 		MSG_WriteByte (msg, ent->v.dmg_save);
 		MSG_WriteByte (msg, ent->v.dmg_take);
-		for (i=0 ; i<3 ; i++)
-			MSG_WriteCoord (msg, other->v.origin[i] + 0.5*(other->v.mins[i] + other->v.maxs[i]));
+		for (i = 0; i < 3; i++)
+			MSG_WriteCoord (msg, other->v.origin[i] + 0.5 * (other->v.mins[i] + other->v.maxs[i]));
 
 		ent->v.dmg_take = 0;
 		ent->v.dmg_save = 0;
@@ -721,8 +723,8 @@ void SV_WriteClientdataToMessage (client_t *client, sizebuf_t *msg)
 	if ( ent->v.fixangle )
 	{
 		MSG_WriteByte (msg, svc_setangle);
-		for (i=0 ; i < 3 ; i++)
-			MSG_WriteAngle (msg, ent->v.angles[i] );
+		for (i = 0; i < 3; i++)
+			MSG_WriteAngle (msg, ent->v.angles[i]);
 		ent->v.fixangle = 0;
 	}
 
@@ -772,7 +774,8 @@ static void SV_UpdateClientStats (client_t *client)
 	// stuff the sigil bits into the high bits of items for sbar
 	stats[STAT_ITEMS] = 0;	//(int)ent->v.items | ((int)pr_global_struct->serverflags << 28);
 
-	for (i=0 ; i<MAX_CL_STATS ; i++)
+	for (i = 0; i < MAX_CL_STATS; i++)
+	{
 		if (stats[i] != client->stats[i])
 		{
 			client->stats[i] = stats[i];
@@ -789,6 +792,7 @@ static void SV_UpdateClientStats (client_t *client)
 				MSG_WriteLong (&client->netchan.message, stats[i]);
 			}
 		}
+	}
 }
 
 
@@ -856,12 +860,12 @@ static void UpdatePIV(void)
 	vec3_t		adjust_org1, adjust_org2, distvec;
 	float		save_hull, dist;
 
-	for (i=0, host_client = svs.clients ; i<MAX_CLIENTS ; i++, host_client++)
+	for (i = 0, host_client = svs.clients; i < MAX_CLIENTS; i++, host_client++)
 	{
 		host_client->PIV = 0;
 	}
 
-	for (i=0, host_client = svs.clients ; i<MAX_CLIENTS ; i++, host_client++)
+	for (i = 0, host_client = svs.clients; i < MAX_CLIENTS; i++, host_client++)
 	{
 		if (host_client->state != cs_spawned || host_client->spectator)
 			continue;
@@ -872,7 +876,7 @@ static void UpdatePIV(void)
 		save_hull = host_client->edict->v.hull;
 		host_client->edict->v.hull = 0;
 
-		for (j=i+1, client = host_client+1 ; j<MAX_CLIENTS ; j++, client++)
+		for (j = i+1, client = host_client+1; j < MAX_CLIENTS; j++, client++)
 		{
 			if (client->state != cs_spawned || client->spectator)
 				continue;
@@ -924,7 +928,7 @@ static void SV_UpdateToReliableMessages (void)
 	}
 
 // check for changes to be sent over the reliable streams to all clients
-	for (i=0, host_client = svs.clients ; i<MAX_CLIENTS ; i++, host_client++)
+	for (i = 0, host_client = svs.clients; i < MAX_CLIENTS; i++, host_client++)
 	{
 		if (host_client->state != cs_spawned)
 			continue;
@@ -935,7 +939,7 @@ static void SV_UpdateToReliableMessages (void)
 		}
 		if (host_client->old_frags != host_client->edict->v.frags)
 		{
-			for (j=0, client = svs.clients ; j<MAX_CLIENTS ; j++, client++)
+			for (j = 0, client = svs.clients; j < MAX_CLIENTS; j++, client++)
 			{
 				if (client->state < cs_connected)
 					continue;
@@ -988,7 +992,7 @@ static void SV_UpdateToReliableMessages (void)
 		SZ_Clear (&sv.datagram);
 
 	// append the broadcast messages to each client messages
-	for (j=0, client = svs.clients ; j<MAX_CLIENTS ; j++, client++)
+	for (j = 0, client = svs.clients; j < MAX_CLIENTS; j++, client++)
 	{
 		if (client->state < cs_connected)
 			continue;	// reliables go to all connected or spawned
@@ -1016,7 +1020,7 @@ static void SV_CleanupEnts (void)
 	edict_t	*ent;
 
 	ent = NEXT_EDICT(sv.edicts);
-	for (e=1 ; e<sv.num_edicts ; e++, ent = NEXT_EDICT(ent))
+	for (e = 1; e < sv.num_edicts; e++, ent = NEXT_EDICT(ent))
 	{
 		ent->v.effects = (int)ent->v.effects & ~EF_MUZZLEFLASH;
 		ent->v.wpn_sound = 0;
@@ -1038,7 +1042,7 @@ void SV_SendClientMessages (void)
 	SV_UpdateToReliableMessages ();
 
 // build individual updates
-	for (i=0, c = svs.clients ; i<MAX_CLIENTS ; i++, c++)
+	for (i = 0, c = svs.clients; i < MAX_CLIENTS; i++, c++)
 	{
 		if (!c->state)
 			continue;
@@ -1089,9 +1093,11 @@ void SV_SendMessagesToAll (void)
 	int			i;
 	client_t	*c;
 
-	for (i=0, c = svs.clients ; i<MAX_CLIENTS ; i++, c++)
+	for (i = 0, c = svs.clients; i < MAX_CLIENTS; i++, c++)
+	{
 		if (c->state)	// FIXME: should this only send to active?
 			c->send_message = true;
+	}
 
 	SV_SendClientMessages ();
 }

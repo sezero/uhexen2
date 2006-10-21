@@ -63,9 +63,9 @@ static void Sys_PageIn (void *ptr, int size)
 // doing that, of course, but there's no reason we shouldn't)
 	x = (byte *)ptr;
 
-	for (n=0 ; n<4 ; n++)
+	for (n = 0; n < 4; n++)
 	{
-		for (m=0 ; m<(size - 16 * 0x1000) ; m += 4)
+		for (m = 0; m < (size - 16 * 0x1000); m += 4)
 		{
 			sys_checksum += *(int *)&x[m];
 			sys_checksum += *(int *)&x[m + 16 * 0x1000];
@@ -278,7 +278,7 @@ void Sys_Printf (char *fmt, ...)
 
 	if (isDedicated)
 	{
-		va_start (argptr,fmt);
+		va_start (argptr, fmt);
 		vsnprintf (text, sizeof (text), fmt, argptr);
 		va_end (argptr);
 
@@ -295,7 +295,7 @@ void Sys_DPrintf (char *fmt, ...)
 	if (!isDedicated || !developer.value)
 		return;
 
-	va_start (argptr,fmt);
+	va_start (argptr, fmt);
 	vsnprintf (text, sizeof (text), fmt, argptr);
 	va_end (argptr);
 
@@ -445,43 +445,42 @@ char *Sys_ConsoleInput (void)
 
 				switch (ch)
 				{
-					case '\r':
-						WriteFile(houtput, "\r\n", 2, &dummy, NULL);
+				case '\r':
+					WriteFile(houtput, "\r\n", 2, &dummy, NULL);
 
-						if (textlen)
-						{
-							con_text[textlen] = 0;
-							textlen = 0;
-							return con_text;
-						}
-						else if (sc_return_on_enter)
-						{
-						// special case to allow exiting from the error handler on Enter
-							con_text[0] = '\r';
-							textlen = 0;
-							return con_text;
-						}
+					if (textlen)
+					{
+						con_text[textlen] = 0;
+						textlen = 0;
+						return con_text;
+					}
+					else if (sc_return_on_enter)
+					{
+					// special case to allow exiting from the error handler on Enter
+						con_text[0] = '\r';
+						textlen = 0;
+						return con_text;
+					}
 
-						break;
+					break;
 
-					case '\b':
-						WriteFile(houtput, "\b \b", 3, &dummy, NULL);
-						if (textlen)
-						{
-							textlen--;
-						}
-						break;
+				case '\b':
+					WriteFile(houtput, "\b \b", 3, &dummy, NULL);
+					if (textlen)
+					{
+						textlen--;
+					}
+					break;
 
-					default:
-						if (ch >= ' ')
-						{
-							WriteFile(houtput, &ch, 1, &dummy, NULL);
-							con_text[textlen] = ch;
-							textlen = (textlen + 1) & 0xff;
-						}
+				default:
+					if (ch >= ' ')
+					{
+						WriteFile(houtput, &ch, 1, &dummy, NULL);
+						con_text[textlen] = ch;
+						textlen = (textlen + 1) & 0xff;
+					}
 
-						break;
-
+					break;
 				}
 			}
 		}
@@ -774,6 +773,10 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.39  2006/10/19 06:32:30  sezero
+ * added Sys_DPrintf: at present, its only user is the hexen2 dedicated
+ * server. further use of it may come with future versions.
+ *
  * Revision 1.38  2006/10/10 07:22:57  sezero
  * oops...
  *

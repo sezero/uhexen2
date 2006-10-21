@@ -40,7 +40,7 @@ void Skin_Find (player_info_t *sc)
 
 	COM_StripExtension (name, name);
 
-	for (i=0 ; i<numskins ; i++)
+	for (i = 0; i < numskins; i++)
 	{
 		if (!strcmp (name, skins[i].name))
 		{
@@ -137,9 +137,9 @@ byte	*Skin_Cache (skin_t *skin)
 	pix = out;
 	memset (out, 0, 320*200);
 
-	for (y=0 ; y<pcx->ymax ; y++, pix += 320)
+	for (y = 0; y < pcx->ymax; y++, pix += 320)
 	{
-		for (x=0 ; x<=pcx->xmax ; )
+		for (x = 0; x <= pcx->xmax ; )
 		{
 			if ((raw-(byte*)pcx) > com_filesize)
 			{
@@ -173,7 +173,7 @@ byte	*Skin_Cache (skin_t *skin)
 				Con_Printf ("Skin %s was malformed.  You should delete it.\n", name);
 				return NULL;
 			}
-			while(runLength-- > 0)
+			while (runLength-- > 0)
 				pix[x++] = dataByte;
 		}
 	}
@@ -221,7 +221,7 @@ void Skin_NextDownload (void)
 	cls.downloadtype = dl_none;
 
 	// now load them in for real
-	for (i=0 ; i<MAX_CLIENTS ; i++)
+	for (i = 0; i < MAX_CLIENTS; i++)
 	{
 		sc = &cl.players[i];
 		if (!sc->name[0])
@@ -252,7 +252,7 @@ void	Skin_Skins_f (void)
 {
 	int		i;
 
-	for (i=0 ; i<numskins ; i++)
+	for (i = 0; i < numskins; i++)
 	{
 		if (skins[i].cache.data)
 			Cache_Free (&skins[i].cache);

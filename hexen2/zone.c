@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.24 2006-09-19 06:25:06 sezero Exp $
+	$Id: zone.c,v 1.25 2006-10-21 18:21:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -276,7 +276,7 @@ void *Hunk_AllocName (int size, char *name)
 	if (size < 0)
 		Sys_Error ("Hunk_Alloc: bad size: %i", size);
 
-	size = sizeof(hunk_t) + ((size+15)&~15);
+	size = sizeof(hunk_t) + ((size + 15) & ~15);
 
 	if (hunk_size - hunk_low_used - hunk_high_used < size)
 		Sys_Error ("Hunk_Alloc: failed on %i bytes",size);
@@ -293,7 +293,7 @@ void *Hunk_AllocName (int size, char *name)
 	strncpy (h->name, name, HUNKNAME_LEN - 1);
 	h->name[HUNKNAME_LEN - 1] = 0;
 
-	return (void *)(h+1);
+	return (void *)(h + 1);
 }
 
 /*
@@ -366,7 +366,7 @@ void *Hunk_HighAllocName (int size, char *name)
 	Hunk_Check ();
 #endif
 
-	size = sizeof(hunk_t) + ((size+15)&~15);
+	size = sizeof(hunk_t) + ((size + 15) & ~15);
 
 	if (hunk_size - hunk_low_used - hunk_high_used < size)
 	{
@@ -385,7 +385,7 @@ void *Hunk_HighAllocName (int size, char *name)
 	strncpy (h->name, name, HUNKNAME_LEN - 1);
 	h->name[HUNKNAME_LEN - 1] = 0;
 
-	return (void *)(h+1);
+	return (void *)(h + 1);
 }
 
 
@@ -400,7 +400,7 @@ void *Hunk_TempAlloc (int size)
 {
 	void	*buf;
 
-	size = (size+15)&~15;
+	size = (size + 15) & ~15;
 
 	if (hunk_tempactive)
 	{
@@ -456,7 +456,7 @@ static void Cache_Move ( cache_system_t *c)
 		new->user = c->user;
 		memcpy (new->name, c->name, sizeof(new->name));
 		Cache_Free (c->user);
-		new->user->data = (void *)(new+1);
+		new->user->data = (void *)(new + 1);
 	}
 	else
 	{
@@ -730,7 +730,7 @@ void *Cache_Alloc (cache_user_t *c, int size, char *name)
 		{
 			strncpy (cs->name, name, CACHENAME_LEN - 1);
 			cs->name[CACHENAME_LEN - 1] = 0;
-			c->data = (void *)(cs+1);
+			c->data = (void *)(cs + 1);
 			cs->user = c;
 			break;
 		}
@@ -1011,7 +1011,7 @@ static void Memory_Stats_f(void)
 	write_file = false;
 
 	NumItems = Cmd_Argc();
-	for (counter=1; counter<NumItems; counter++)
+	for (counter = 1; counter < NumItems; counter++)
 	{
 		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
 			write_file = true;
@@ -1039,7 +1039,7 @@ static void Memory_Stats_f(void)
 
 		next = (hunk_t *)((byte *)h+h->size);
 
-		for (counter=0; counter<NUM_GROUPS; counter++)
+		for (counter = 0; counter < NUM_GROUPS; counter++)
 		{
 			if (Q_strcasecmp(h->name,MemoryGroups[counter]) == 0)
 			{
@@ -1066,7 +1066,7 @@ static void Memory_Stats_f(void)
 
 	MEM_Printf(FH,"Group           Count Size\n");
 	MEM_Printf(FH,"--------------- ----- --------\n");
-	for (counter=0; counter<NUM_GROUPS+1; counter++)
+	for (counter = 0; counter < NUM_GROUPS+1; counter++)
 	{
 		MEM_Printf(FH,"%-15s %-5i %i\n",MemoryGroups[counter],GroupCount[counter],GroupSum[counter]);
 		count += GroupCount[counter];
@@ -1130,6 +1130,9 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2006/09/19 06:25:06  sezero
+ * string sizes stuff, #15: zone.c
+ *
  * Revision 1.23  2006/07/18 08:44:20  sezero
  * random typo corrections
  *

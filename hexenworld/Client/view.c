@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.c,v 1.14 2006-07-15 22:13:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.c,v 1.15 2006-10-21 18:21:30 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -171,7 +171,7 @@ static void V_DriftPitch (void)
 		return;
 	}
 
-// don't count small mouse motion
+	// don't count small mouse motion
 	if (cl.nodrift)
 	{
 		if ( fabs(cl.frames[(cls.netchan.outgoing_sequence-1)&UPDATE_MASK].cmd.forwardmove) < (cl.v.hasted*cl_forwardspeed.value)-10 || lookspring.value == 0.0)
@@ -323,14 +323,14 @@ static void BuildGammaTable (float g)
 
 	if (g == 1.0)
 	{
-		for (i=0 ; i<256 ; i++)
+		for (i = 0; i < 256; i++)
 			gammatable[i] = i;
 		return;
 	}
 
-	for (i=0 ; i<256 ; i++)
+	for (i = 0; i < 256; i++)
 	{
-		inf = 255 * pow ( (i+0.5)/255.5 , g ) + 0.5;
+		inf = 255 * pow((i + 0.5) / 255.5, g) + 0.5;
 		if (inf < 0)
 			inf = 0;
 		if (inf > 255)
@@ -375,7 +375,7 @@ void V_ParseDamage (void)
 
 	armor = MSG_ReadByte ();
 	blood = MSG_ReadByte ();
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		from[i] = MSG_ReadCoord ();
 
 	count = blood*0.5 + armor*0.5;
@@ -384,7 +384,7 @@ void V_ParseDamage (void)
 
 	cl.faceanimtime = cl.time + 0.2;	// but sbar face into pain frame
 
-	cl.cshifts[CSHIFT_DAMAGE].percent += 3*count;
+	cl.cshifts[CSHIFT_DAMAGE].percent += 3 * count;
 	if (cl.cshifts[CSHIFT_DAMAGE].percent < 0)
 		cl.cshifts[CSHIFT_DAMAGE].percent = 0;
 	if (cl.cshifts[CSHIFT_DAMAGE].percent > 150)
@@ -574,27 +574,28 @@ void V_CalcBlend (void)
 	b = 0;
 	a = 0;
 
-	for (j=0 ; j<NUM_CSHIFTS ; j++)
+	for (j = 0; j < NUM_CSHIFTS; j++)
 	{
 		if (cl.cshifts[j].percent > 10000)
 		{ // Set percent for grayscale
 			cl.cshifts[j].percent = 80;
 		}
 
-		a2 = cl.cshifts[j].percent/255.0;
+		a2 = cl.cshifts[j].percent / 255.0;
 		if (!a2)
 			continue;
+
 		a = a + a2*(1-a);
-		//Con_Printf ("j:%i a:%f\n", j, a);
+	//	Con_Printf ("j:%i a:%f\n", j, a);
 		a2 = a2/a;
 		r = r*(1-a2) + cl.cshifts[j].destcolor[0]*a2;
 		g = g*(1-a2) + cl.cshifts[j].destcolor[1]*a2;
 		b = b*(1-a2) + cl.cshifts[j].destcolor[2]*a2;
 	}
 
-	v_blend[0] = r/255.0;
-	v_blend[1] = g/255.0;
-	v_blend[2] = b/255.0;
+	v_blend[0] = r / 255.0;
+	v_blend[1] = g / 255.0;
+	v_blend[2] = b / 255.0;
 	v_blend[3] = a;
 	if (v_blend[3] > 1)
 		v_blend[3] = 1;
@@ -620,11 +621,12 @@ void V_UpdatePalette (void)
 
 	V_CalcPowerupCshift ();
 
-	for (i=0 ; i<NUM_CSHIFTS ; i++)
+	for (i = 0; i < NUM_CSHIFTS; i++)
 	{
 		if (cl.cshifts[i].percent != cl.prev_cshifts[i].percent)
 			cl.prev_cshifts[i].percent = cl.cshifts[i].percent;
-		for (j=0 ; j<3 ; j++)
+
+		for (j = 0; j < 3; j++)
 		{
 			if (cl.cshifts[i].destcolor[j] != cl.prev_cshifts[i].destcolor[j])
 				cl.prev_cshifts[i].destcolor[j] = cl.cshifts[i].destcolor[j];
@@ -632,12 +634,12 @@ void V_UpdatePalette (void)
 	}
 
 	// drop the damage value
-	cl.cshifts[CSHIFT_DAMAGE].percent -= host_frametime*150;
+	cl.cshifts[CSHIFT_DAMAGE].percent -= host_frametime * 150;
 	if (cl.cshifts[CSHIFT_DAMAGE].percent <= 0)
 		cl.cshifts[CSHIFT_DAMAGE].percent = 0;
 
 	// drop the bonus value
-	cl.cshifts[CSHIFT_BONUS].percent -= host_frametime*100;
+	cl.cshifts[CSHIFT_BONUS].percent -= host_frametime * 100;
 	if (cl.cshifts[CSHIFT_BONUS].percent <= 0)
 		cl.cshifts[CSHIFT_BONUS].percent = 0;
 
@@ -672,14 +674,14 @@ void V_UpdatePalette (void)
 
 	new = false;
 
-	for (i=0 ; i<NUM_CSHIFTS ; i++)
+	for (i = 0; i < NUM_CSHIFTS; i++)
 	{
 		if (cl.cshifts[i].percent != cl.prev_cshifts[i].percent)
 		{
 			new = true;
 			cl.prev_cshifts[i].percent = cl.cshifts[i].percent;
 		}
-		for (j=0 ; j<3 ; j++)
+		for (j = 0; j < 3; j++)
 		{
 			if (cl.cshifts[i].destcolor[j] != cl.prev_cshifts[i].destcolor[j])
 			{
@@ -690,12 +692,12 @@ void V_UpdatePalette (void)
 	}
 
 	// drop the damage value
-	cl.cshifts[CSHIFT_DAMAGE].percent -= host_frametime*150;
+	cl.cshifts[CSHIFT_DAMAGE].percent -= host_frametime * 150;
 	if (cl.cshifts[CSHIFT_DAMAGE].percent <= 0)
 		cl.cshifts[CSHIFT_DAMAGE].percent = 0;
 
 	// drop the bonus value
-	cl.cshifts[CSHIFT_BONUS].percent -= host_frametime*100;
+	cl.cshifts[CSHIFT_BONUS].percent -= host_frametime * 100;
 	if (cl.cshifts[CSHIFT_BONUS].percent <= 0)
 		cl.cshifts[CSHIFT_BONUS].percent = 0;
 
@@ -706,24 +708,24 @@ void V_UpdatePalette (void)
 	basepal = host_basepal;
 	newpal = pal;
 
-	for (i=0 ; i<256 ; i++)
+	for (i = 0; i < 256; i++)
 	{
 		r = basepal[0];
 		g = basepal[1];
 		b = basepal[2];
 		basepal += 3;
 
-		for (j=0 ; j<NUM_CSHIFTS ; j++)
+		for (j = 0; j < NUM_CSHIFTS; j++)
 		{
 			if (cl.cshifts[j].percent > 10000)
 			{ // Create a grayscale
-				r = g = b = (r*76+g*141+b*38)/256;
+				r = g = b = (r*76 + g*141 + b*38) / 256;
 			}
 			else
 			{
-				r += (cl.cshifts[j].percent*(cl.cshifts[j].destcolor[0]-r))>>8;
-				g += (cl.cshifts[j].percent*(cl.cshifts[j].destcolor[1]-g))>>8;
-				b += (cl.cshifts[j].percent*(cl.cshifts[j].destcolor[2]-b))>>8;
+				r += (cl.cshifts[j].percent * (cl.cshifts[j].destcolor[0] - r)) >> 8;
+				g += (cl.cshifts[j].percent * (cl.cshifts[j].destcolor[1] - g)) >> 8;
+				b += (cl.cshifts[j].percent * (cl.cshifts[j].destcolor[2] - b)) >> 8;
 			}
 		}
 
@@ -778,7 +780,7 @@ static void CalcGunAngle (void)
 		pitch = 10;
 	if (pitch < -10)
 		pitch = -10;
-	move = host_frametime*20;
+	move = host_frametime * 20;
 	if (yaw > oldyaw)
 	{
 		if (oldyaw + move < yaw)
@@ -875,8 +877,8 @@ static void V_CalcViewRoll (void)
 
 	if (v_dmg_time > 0)
 	{
-		r_refdef.viewangles[ROLL] += v_dmg_time/v_kicktime.value*v_dmg_roll;
-		r_refdef.viewangles[PITCH] += v_dmg_time/v_kicktime.value*v_dmg_pitch;
+		r_refdef.viewangles[ROLL] += v_dmg_time / v_kicktime.value * v_dmg_roll;
+		r_refdef.viewangles[PITCH] += v_dmg_time / v_kicktime.value * v_dmg_pitch;
 		v_dmg_time -= host_frametime;
 	}
 
@@ -986,7 +988,7 @@ static void V_CalcRefdef (void)
 	VectorCopy (r_refdef.vieworg, view->origin);
 //	view->origin[2] += 56;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		view->origin[i] += forward[i]*bob*0.4;
 //		view->origin[i] += right[i]*bob*0.4;
@@ -1027,7 +1029,7 @@ static void V_CalcRefdef (void)
 	}
 
 	// Place weapon in powered up mode
-	if ((cl.frames[cls.netchan.incoming_sequence&UPDATE_MASK].playerstate[cl.playernum].drawflags & MLS_MASKIN) == MLS_POWERMODE)
+	if ((cl.frames[cls.netchan.incoming_sequence & UPDATE_MASK].playerstate[cl.playernum].drawflags & MLS_MASKIN) == MLS_POWERMODE)
 		view->drawflags = (view->drawflags & MLS_MASKOUT) | MLS_POWERMODE;
 	else
 		view->drawflags = (view->drawflags & MLS_MASKOUT) | 0;

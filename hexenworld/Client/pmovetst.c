@@ -29,11 +29,11 @@ void PM_InitBoxHull (void)
 	box_hull.firstclipnode = 0;
 	box_hull.lastclipnode = 5;
 
-	for (i=0 ; i<6 ; i++)
+	for (i = 0; i < 6; i++)
 	{
 		box_clipnodes[i].planenum = i;
 
-		side = i&1;
+		side = i & 1;
 
 		box_clipnodes[i].children[side] = CONTENTS_EMPTY;
 		if (i != 5)
@@ -227,7 +227,7 @@ static qboolean PM_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p
 		frac = 1;
 
 	midf = p1f + (p2f - p1f)*frac;
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		mid[i] = p1[i] + frac*(p2[i] - p1[i]);
 
 	side = (t1 < 0);
@@ -245,7 +245,7 @@ static qboolean PM_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p
 #endif
 
 	if (PM_HullPointContents (hull, node->children[side^1], mid) != CONTENTS_SOLID)
-// go past the node
+		// go past the node
 		return PM_RecursiveHullCheck (hull, node->children[side^1], midf, p2f, mid, p2, trace);
 
 	if (trace->allsolid)
@@ -276,7 +276,7 @@ static qboolean PM_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p
 			return false;
 		}
 		midf = p1f + (p2f - p1f)*frac;
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 			mid[i] = p1[i] + frac*(p2[i] - p1[i]);
 	}
 
@@ -310,12 +310,12 @@ qboolean PM_TestPlayerPosition (vec3_t pos)
 
 	return true;
 
-	for (i=0 ; i< pmove.numphysent ; i++)
+	for (i = 0; i < pmove.numphysent; i++)
 	{
 		pe = &pmove.physents[i];
 	// get the clipping hull
 		if(0){}/*shitbox
-			 pmove.hasted==1.666)//hacky- beast speed
+			 pmove.hasted == 1.666) //hacky- beast speed
 		{
 			VectorCopy (beast_maxs, maxs);
 			VectorCopy (beast_mins, mins);
@@ -380,12 +380,12 @@ pmtrace_t PM_PlayerMove (vec3_t start, vec3_t end)
 	total.ent = -1;
 	VectorCopy (end, total.endpos);
 
-	for (i=0 ; i< pmove.numphysent ; i++)
+	for (i = 0; i < pmove.numphysent; i++)
 	{
 		pe = &pmove.physents[i];
 	// get the clipping hull
 		if(0){}/*shitbox
-			 pmove.hasted==1.666)//hacky- beast speed
+			 pmove.hasted == 1.666) //hacky- beast speed
 		{
 			VectorCopy (beast_maxs, maxs);
 			VectorCopy (beast_mins, mins);

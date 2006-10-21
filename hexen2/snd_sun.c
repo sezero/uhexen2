@@ -1,6 +1,6 @@
 /*
 	snd_sun.c
-	$Id: snd_sun.c,v 1.5 2006-09-29 18:00:35 sezero Exp $
+	$Id: snd_sun.c,v 1.6 2006-10-21 18:21:28 sezero Exp $
 
 	SUN Audio driver for BSD and SunOS
 
@@ -126,7 +126,7 @@ qboolean S_SUN_Init (void)
 	if (shm->speed != desired_speed)
 		Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", shm->speed, desired_speed);
 
-	shm->samples = sizeof (dma_buffer) / (shm->samplebits / 8);
+	shm->samples = sizeof(dma_buffer) / (shm->samplebits / 8);
 	shm->submission_chunk = 1;
 	shm->samplepos = 0;
 	shm->buffer = dma_buffer;
@@ -185,20 +185,20 @@ void S_SUN_Submit (void)
 	if (!bytes)
 		return;
 
-	if (bytes > sizeof (writebuf))
+	if (bytes > sizeof(writebuf))
 	{
-		bytes = sizeof (writebuf);
+		bytes = sizeof(writebuf);
 		stop = wbufp + bytes / bsize;
 	}
 
 	// Transfert the sound data from the circular dma_buffer to writebuf
 	// TODO: using 2 memcpys instead of this loop should be faster
 	p = writebuf;
-	idx = (wbufp*bsize) & (sizeof (dma_buffer) - 1);
+	idx = (wbufp * bsize) & (sizeof(dma_buffer) - 1);
 	for (b = bytes; b; b--)
 	{
 		*p++ = dma_buffer[idx];
-		idx = (idx + 1) & (sizeof (dma_buffer) - 1);
+		idx = (idx + 1) & (sizeof(dma_buffer) - 1);
 	}
 
 	if (write (audio_fd, writebuf, bytes) < bytes)

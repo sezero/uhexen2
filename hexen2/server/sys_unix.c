@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.5 2006-10-19 06:32:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.6 2006-10-21 18:21:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -160,7 +160,7 @@ void Sys_Printf (char *fmt, ...)
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
 
-	va_start (argptr,fmt);
+	va_start (argptr, fmt);
 	vsnprintf (text, sizeof (text), fmt, argptr);
 	va_end (argptr);
 
@@ -175,7 +175,7 @@ void Sys_DPrintf (char *fmt, ...)
 	if (!developer.value)
 		return;
 
-	va_start (argptr,fmt);
+	va_start (argptr, fmt);
 	vsnprintf (text, sizeof (text), fmt, argptr);
 	va_end (argptr);
 
@@ -381,7 +381,7 @@ int main(int argc, char *argv[])
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
-	Sys_Printf("userdir is: %s\n",userdir);
+	Sys_Printf("userdir is: %s\n", userdir);
 
 	parms.memsize = MIN_MEM_ALLOC;
 

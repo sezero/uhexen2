@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.36 2006-09-11 09:16:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.37 2006-10-21 18:21:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -81,44 +81,44 @@ void SV_Init (void)
 
 	Cmd_AddCommand ("sv_edicts", Sv_Edicts_f);	
 
-	for (i=0 ; i<MAX_MODELS ; i++)
+	for (i = 0; i < MAX_MODELS; i++)
 		sprintf (localmodels[i], "*%i", i);
 
 	// initialize King of Hill to world
-	sv_kingofhill=0;
+	sv_kingofhill = 0;
 }
 
-void SV_Edicts(char *Name)
+void SV_Edicts (char *Name)
 {
 	FILE	*FH;
 	int		i;
 	edict_t	*e;
 
-	FH = fopen(va("%s/%s", com_userdir, Name),"w");
+	FH = fopen(va("%s/%s", com_userdir, Name), "w");
 	if (!FH)
 	{
-		Con_Printf("Could not open %s\n",Name);
+		Con_Printf("Could not open %s\n", Name);
 		return;
 	}
 
-	fprintf(FH,"Number of Edicts: %d\n",sv.num_edicts);
-	fprintf(FH,"Server Time: %f\n",sv.time);
-	fprintf(FH,"\n");
-	fprintf(FH,"Num.     Time Class Name                     Model                          Think                                    Touch                                    Use\n");
-	fprintf(FH,"---- -------- ------------------------------ ------------------------------ ---------------------------------------- ---------------------------------------- ----------------------------------------\n");
+	fprintf(FH, "Number of Edicts: %d\n", sv.num_edicts);
+	fprintf(FH, "Server Time: %f\n", sv.time);
+	fprintf(FH, "\n");
+	fprintf(FH, "Num.     Time Class Name                     Model                          Think                                    Touch                                    Use\n");
+	fprintf(FH, "---- -------- ------------------------------ ------------------------------ ---------------------------------------- ---------------------------------------- ----------------------------------------\n");
 
-	for ( i=1 ; i<sv.num_edicts ; i++)
+	for (i = 1; i < sv.num_edicts; i++)
 	{
 		e = EDICT_NUM(i);
-		fprintf(FH,"%3d. %8.2f %-30s %-30s %-40s %-40s %-40s\n",
-			i,e->v.nextthink,e->v.classname+pr_strings,e->v.model+pr_strings,
-			pr_functions[e->v.think].s_name+pr_strings,pr_functions[e->v.touch].s_name+pr_strings,
+		fprintf(FH, "%3d. %8.2f %-30s %-30s %-40s %-40s %-40s\n",
+			i, e->v.nextthink, e->v.classname+pr_strings, e->v.model+pr_strings,
+			pr_functions[e->v.think].s_name+pr_strings, pr_functions[e->v.touch].s_name+pr_strings,
 			pr_functions[e->v.use].s_name+pr_strings);
 	}
 	fclose(FH);
 }
 
-static void Sv_Edicts_f(void)
+static void Sv_Edicts_f (void)
 {
 	char	*Name;
 
@@ -165,9 +165,9 @@ void SV_StartParticle (vec3_t org, vec3_t dir, int color, int count)
 	MSG_WriteCoord (&sv.datagram, org[0]);
 	MSG_WriteCoord (&sv.datagram, org[1]);
 	MSG_WriteCoord (&sv.datagram, org[2]);
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
-		v = dir[i]*16;
+		v = dir[i] * 16;
 		if (v > 127)
 			v = 127;
 		else if (v < -128)
@@ -288,8 +288,8 @@ void SV_UpdateSoundPos (edict_t *entity, int channel)
 
 	MSG_WriteByte (&sv.datagram, svc_sound_update_pos);
 	MSG_WriteShort (&sv.datagram, channel);
-	for (i=0 ; i<3 ; i++)
-		MSG_WriteCoord (&sv.datagram, entity->v.origin[i]+0.5*(entity->v.mins[i]+entity->v.maxs[i]));
+	for (i = 0; i < 3; i++)
+		MSG_WriteCoord (&sv.datagram, entity->v.origin[i] + 0.5*(entity->v.mins[i]+entity->v.maxs[i]));
 }
 
 /*
@@ -331,8 +331,10 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 
 // find precache number for sound
 	for (sound_num = 1; sound_num < MAX_SOUNDS && sv.sound_precache[sound_num]; sound_num++)
+	{
 		if (!strcmp(sample, sv.sound_precache[sound_num]))
 			break;
+	}
 
 	if (sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num])
 	{
@@ -365,7 +367,7 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, floa
 	MSG_WriteShort (&sv.datagram, channel);
 	MSG_WriteByte (&sv.datagram, sound_num);
 	for (i = 0; i < 3; i++)
-		MSG_WriteCoord (&sv.datagram, entity->v.origin[i]+0.5*(entity->v.mins[i]+entity->v.maxs[i]));
+		MSG_WriteCoord (&sv.datagram, entity->v.origin[i] + 0.5*(entity->v.mins[i]+entity->v.maxs[i]));
 }
 
 /*
@@ -489,7 +491,7 @@ static void SV_ConnectClient (int clientnum)
 	client->message.allowoverflow = true;	// we can catch it
 	SZ_Init (&client->datagram, client->datagram_buf, sizeof(client->datagram_buf));
 
-	for (entnum = 0; entnum < sv.num_edicts ; entnum++)
+	for (entnum = 0; entnum < sv.num_edicts; entnum++)
 	{
 		svent = EDICT_NUM(entnum);
 	}
@@ -501,7 +503,7 @@ static void SV_ConnectClient (int clientnum)
 //	{
 	// call the progs to get default spawn parms for the new client
 	//	PR_ExecuteProgram (PR_GLOBAL_STRUCT(SetNewParms));
-	//	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
+	//	for (i = 0; i < NUM_SPAWN_PARMS; i++)
 	//	{
 	//	    if (old_progdefs)
 	//		client->spawn_parms[i] = (&pr_global_struct_v111->parm1)[i];
@@ -537,9 +539,12 @@ void SV_CheckForNewClients (void)
 	//
 	// init a new client structure
 	//
-		for (i=0 ; i<svs.maxclients ; i++)
+		for (i = 0; i < svs.maxclients; i++)
+		{
 			if (!svs.clients[i].active)
 				break;
+		}
+
 		if (i == svs.maxclients)
 			Sys_Error ("Host_CheckForNewClients: no free clients");
 
@@ -599,7 +604,7 @@ static void SV_AddToFatPVS (vec3_t org, mnode_t *node)
 			if (node->contents != CONTENTS_SOLID)
 			{
 				pvs = Mod_LeafPVS ( (mleaf_t *)node, sv.worldmodel);
-				for (i=0 ; i<fatbytes ; i++)
+				for (i = 0; i < fatbytes; i++)
 					fatpvs[i] |= pvs[i];
 			}
 			return;
@@ -683,7 +688,8 @@ static void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_
 	//	Con_Printf("SV: Valid SV(%d,%d) CL(%d,%d)\n",client->current_sequence, client->current_frame, client->last_sequence, client->last_frame);
 		*reference = state->frames[client->last_frame];
 
-		for(i=0;i<reference->count;i++)
+		for(i = 0; i < reference->count; i++)
+		{
 			if (reference->states[i].flags & ENT_CLEARED)
 			{
 				e = reference->states[i].index;
@@ -698,6 +704,7 @@ static void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_
 					reference->states[i].flags &= ~ENT_CLEARED;
 				}
 			}
+		}
 		client->current_frame = 1;
 		client->current_sequence++;
 	}
@@ -721,7 +728,7 @@ static void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_
 		DoMisc = (client->current_sequence % ((int)sv_update_misc.value)) == 0;
 
 	build = &state->frames[client->current_frame];
-	memset(build,0,sizeof(*build));
+	memset(build, 0, sizeof(*build));
 	client->last_frame = CLIENT_FRAME_RESET;
 
 	NumToRemove = 0;
@@ -742,7 +749,7 @@ static void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_
 
 	// send over all entities (except the client) that touch the pvs
 	ent = NEXT_EDICT(sv.edicts);
-	for (e=1 ; e<sv.num_edicts ; e++, ent = NEXT_EDICT(ent))
+	for (e = 1; e < sv.num_edicts; e++, ent = NEXT_EDICT(ent))
 	{
 		DoRemove = false;
 		// don't send if flagged for NODRAW and there are no lighting effects
@@ -761,9 +768,11 @@ static void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_
 				goto skipA;
 			}
 
-			for (i=0 ; i < ent->num_leafs ; i++)
-				if (pvs[ent->leafnums[i] >> 3] & (1 << (ent->leafnums[i]&7) ))
+			for (i = 0; i < ent->num_leafs; i++)
+			{
+				if (pvs[ent->leafnums[i] >> 3] & (1 << (ent->leafnums[i] & 7)) )
 					break;
+			}
 
 			if (i == ent->num_leafs)
 			{
@@ -852,7 +861,7 @@ skipA:
 		build->count++;
 		if (ent->baseline.ClearCount[client_num] < CLEAR_LIMIT)
 		{
-			memset(ref_ent,0,sizeof(*ref_ent));
+			memset(ref_ent, 0, sizeof(*ref_ent));
 			ref_ent->index = e;
 		}
 		*set_ent = *ref_ent;
@@ -861,7 +870,7 @@ skipA:
 			continue;
 
 		// send an update
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 		{
 			miss = ent->v.origin[i] - ref_ent->origin[i];
 			if ( miss < -0.1 || miss > 0.1 )
@@ -939,12 +948,12 @@ skipA:
 			set_ent->modelindex = temp_index;
 		}
 
-		if (ref_ent->scale != ((int)(ent->v.scale*100.0)&255)
-			|| ref_ent->abslight != ((int)(ent->v.abslight*255.0)&255))
+		if ( ref_ent->scale != ((int)(ent->v.scale * 100.0) & 255)
+			|| ref_ent->abslight != ((int)(ent->v.abslight * 255.0) & 255) )
 		{
 			bits |= U_SCALE;
-			set_ent->scale = ((int)(ent->v.scale*100.0)&255);
-			set_ent->abslight = (int)(ent->v.abslight*255.0)&255;
+			set_ent->scale = ((int)(ent->v.scale * 100.0) & 255);
+			set_ent->abslight = (int)(ent->v.abslight * 255.0) & 255;
 		}
 
 		if (ent->baseline.ClearCount[client_num] < CLEAR_LIMIT)
@@ -976,14 +985,14 @@ skipA:
 		MSG_WriteByte (msg,bits | U_SIGNAL);
 
 		if (bits & U_MOREBITS)
-			MSG_WriteByte (msg, bits>>8);
+			MSG_WriteByte (msg, bits >> 8);
 		if (bits & U_MOREBITS2)
-			MSG_WriteByte (msg, bits>>16);
+			MSG_WriteByte (msg, bits >> 16);
 
 		if (bits & U_LONGENTITY)
-			MSG_WriteShort (msg,e);
+			MSG_WriteShort (msg, e);
 		else
-			MSG_WriteByte (msg,e);
+			MSG_WriteByte (msg, e);
 
 		if (bits & U_MODEL)
 			MSG_WriteShort (msg, temp_index);
@@ -1001,29 +1010,29 @@ skipA:
 		if (bits & U_ORIGIN1)
 			MSG_WriteCoord (msg, ent->v.origin[0]);
 		if (bits & U_ANGLE1)
-			MSG_WriteAngle(msg, ent->v.angles[0]);
+			MSG_WriteAngle (msg, ent->v.angles[0]);
 		if (bits & U_ORIGIN2)
 			MSG_WriteCoord (msg, ent->v.origin[1]);
 		if (bits & U_ANGLE2)
-			MSG_WriteAngle(msg, ent->v.angles[1]);
+			MSG_WriteAngle (msg, ent->v.angles[1]);
 		if (bits & U_ORIGIN3)
 			MSG_WriteCoord (msg, ent->v.origin[2]);
 		if (bits & U_ANGLE3)
-			MSG_WriteAngle(msg, ent->v.angles[2]);
+			MSG_WriteAngle (msg, ent->v.angles[2]);
 		if (bits & U_SCALE)
 		{ // Used for scale and abslight
-			MSG_WriteByte(msg, (int)(ent->v.scale*100.0)&255);
-			MSG_WriteByte(msg, (int)(ent->v.abslight*255.0)&255);
+			MSG_WriteByte (msg, (int)(ent->v.scale * 100.0) & 255);
+			MSG_WriteByte (msg, (int)(ent->v.abslight * 255.0) & 255);
 		}
 
 		if (build->count >= MAX_CLIENT_STATES)
 			break;
 	}
 
-	MSG_WriteByte(msg, svc_clear_edicts);
-	MSG_WriteByte(msg, NumToRemove);
-	for(i=0;i<NumToRemove;i++)
-		MSG_WriteShort(msg,RemoveList[i]);
+	MSG_WriteByte (msg, svc_clear_edicts);
+	MSG_WriteByte (msg, NumToRemove);
+	for(i = 0; i < NumToRemove; i++)
+		MSG_WriteShort (msg, RemoveList[i]);
 }
 
 /*
@@ -1038,7 +1047,7 @@ static void SV_CleanupEnts (void)
 	edict_t	*ent;
 
 	ent = NEXT_EDICT(sv.edicts);
-	for (e=1 ; e<sv.num_edicts ; e++, ent = NEXT_EDICT(ent))
+	for (e = 1; e < sv.num_edicts; e++, ent = NEXT_EDICT(ent))
 	{
 		ent->v.effects = (int)ent->v.effects & ~EF_MUZZLEFLASH;
 	}
@@ -1068,7 +1077,7 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 		MSG_WriteByte (msg, svc_damage);
 		MSG_WriteByte (msg, ent->v.dmg_save);
 		MSG_WriteByte (msg, ent->v.dmg_take);
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 			MSG_WriteCoord (msg, other->v.origin[i] + 0.5*(other->v.mins[i] + other->v.maxs[i]));
 
 		ent->v.dmg_take = 0;
@@ -1084,7 +1093,7 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 	if (ent->v.fixangle)
 	{
 		MSG_WriteByte (msg, svc_setangle);
-		for (i=0 ; i < 3 ; i++)
+		for (i = 0; i < 3; i++)
 			MSG_WriteAngle (msg, ent->v.angles[i] );
 		ent->v.fixangle = 0;
 	}
@@ -1109,7 +1118,7 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 		if (ent->v.idealroll != client->old_v.idealroll)
 			bits |= SU_IDEALROLL;
 
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 		{
 			if (ent->v.punchangle[i] != client->old_v.punchangle[i])
 				bits |= (SU_PUNCH1<<i);
@@ -1194,7 +1203,7 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 	if (bits & SU_IDEALROLL)
 		MSG_WriteChar (msg, ent->v.idealroll);
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		if (bits & (SU_PUNCH1<<i))
 			MSG_WriteChar (msg, ent->v.punchangle[i]);
@@ -1379,15 +1388,15 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 	if (sc1 & SC1_HEALTH)
 		MSG_WriteShort (&host_client->message, ent->v.health);
 	if (sc1 & SC1_LEVEL)
-		MSG_WriteByte(&host_client->message, ent->v.level);
+		MSG_WriteByte (&host_client->message, ent->v.level);
 	if (sc1 & SC1_INTELLIGENCE)
-		MSG_WriteByte(&host_client->message, ent->v.intelligence);
+		MSG_WriteByte (&host_client->message, ent->v.intelligence);
 	if (sc1 & SC1_WISDOM)
-		MSG_WriteByte(&host_client->message, ent->v.wisdom);
+		MSG_WriteByte (&host_client->message, ent->v.wisdom);
 	if (sc1 & SC1_STRENGTH)
-		MSG_WriteByte(&host_client->message, ent->v.strength);
+		MSG_WriteByte (&host_client->message, ent->v.strength);
 	if (sc1 & SC1_DEXTERITY)
-		MSG_WriteByte(&host_client->message, ent->v.dexterity);
+		MSG_WriteByte (&host_client->message, ent->v.dexterity);
 	if (sc1 & SC1_WEAPON)
 		MSG_WriteByte (&host_client->message, ent->v.weapon);
 	if (sc1 & SC1_BLUEMANA)
@@ -1444,62 +1453,62 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 	if (sc2 & SC2_RINGS_LOW)
 		MSG_WriteFloat (&host_client->message, ent->v.rings_low);
 	if (sc2 & SC2_AMULET)
-		MSG_WriteByte(&host_client->message, ent->v.armor_amulet);
+		MSG_WriteByte (&host_client->message, ent->v.armor_amulet);
 	if (sc2 & SC2_BRACER)
-		MSG_WriteByte(&host_client->message, ent->v.armor_bracer);
+		MSG_WriteByte (&host_client->message, ent->v.armor_bracer);
 	if (sc2 & SC2_BREASTPLATE)
-		MSG_WriteByte(&host_client->message, ent->v.armor_breastplate);
+		MSG_WriteByte (&host_client->message, ent->v.armor_breastplate);
 	if (sc2 & SC2_HELMET)
-		MSG_WriteByte(&host_client->message, ent->v.armor_helmet);
+		MSG_WriteByte (&host_client->message, ent->v.armor_helmet);
 	if (sc2 & SC2_FLIGHT_T)
-		MSG_WriteByte(&host_client->message, ent->v.ring_flight);
+		MSG_WriteByte (&host_client->message, ent->v.ring_flight);
 	if (sc2 & SC2_WATER_T)
-		MSG_WriteByte(&host_client->message, ent->v.ring_water);
+		MSG_WriteByte (&host_client->message, ent->v.ring_water);
 	if (sc2 & SC2_TURNING_T)
-		MSG_WriteByte(&host_client->message, ent->v.ring_turning);
+		MSG_WriteByte (&host_client->message, ent->v.ring_turning);
 	if (sc2 & SC2_REGEN_T)
-		MSG_WriteByte(&host_client->message, ent->v.ring_regeneration);
+		MSG_WriteByte (&host_client->message, ent->v.ring_regeneration);
 	if (sc2 & SC2_HASTE_T)
-		MSG_WriteFloat(&host_client->message, ent->v.haste_time);
+		MSG_WriteFloat (&host_client->message, ent->v.haste_time);
 	if (sc2 & SC2_TOME_T)
-		MSG_WriteFloat(&host_client->message, ent->v.tome_time);
+		MSG_WriteFloat (&host_client->message, ent->v.tome_time);
 	if (sc2 & SC2_PUZZLE1)
-		MSG_WriteString(&host_client->message, pr_strings+ent->v.puzzle_inv1);
+		MSG_WriteString (&host_client->message, pr_strings+ent->v.puzzle_inv1);
 	if (sc2 & SC2_PUZZLE2)
-		MSG_WriteString(&host_client->message, pr_strings+ent->v.puzzle_inv2);
+		MSG_WriteString (&host_client->message, pr_strings+ent->v.puzzle_inv2);
 	if (sc2 & SC2_PUZZLE3)
-		MSG_WriteString(&host_client->message, pr_strings+ent->v.puzzle_inv3);
+		MSG_WriteString (&host_client->message, pr_strings+ent->v.puzzle_inv3);
 	if (sc2 & SC2_PUZZLE4)
-		MSG_WriteString(&host_client->message, pr_strings+ent->v.puzzle_inv4);
+		MSG_WriteString (&host_client->message, pr_strings+ent->v.puzzle_inv4);
 	if (sc2 & SC2_PUZZLE5)
-		MSG_WriteString(&host_client->message, pr_strings+ent->v.puzzle_inv5);
+		MSG_WriteString (&host_client->message, pr_strings+ent->v.puzzle_inv5);
 	if (sc2 & SC2_PUZZLE6)
-		MSG_WriteString(&host_client->message, pr_strings+ent->v.puzzle_inv6);
+		MSG_WriteString (&host_client->message, pr_strings+ent->v.puzzle_inv6);
 	if (sc2 & SC2_PUZZLE7)
-		MSG_WriteString(&host_client->message, pr_strings+ent->v.puzzle_inv7);
+		MSG_WriteString (&host_client->message, pr_strings+ent->v.puzzle_inv7);
 	if (sc2 & SC2_PUZZLE8)
-		MSG_WriteString(&host_client->message, pr_strings+ent->v.puzzle_inv8);
+		MSG_WriteString (&host_client->message, pr_strings+ent->v.puzzle_inv8);
 	if (sc2 & SC2_MAXHEALTH)
-		MSG_WriteShort(&host_client->message, ent->v.max_health);
+		MSG_WriteShort (&host_client->message, ent->v.max_health);
 	if (sc2 & SC2_MAXMANA)
-		MSG_WriteByte(&host_client->message, ent->v.max_mana);
+		MSG_WriteByte (&host_client->message, ent->v.max_mana);
 	if (sc2 & SC2_FLAGS)
-		MSG_WriteFloat(&host_client->message, ent->v.flags);
+		MSG_WriteFloat (&host_client->message, ent->v.flags);
 
 // mission pack, objectives
 	if (sc2 & SC2_OBJ)
 	{
-		MSG_WriteLong(&host_client->message, info_mask);
+		MSG_WriteLong (&host_client->message, info_mask);
 		client->info_mask = info_mask;
 	}
 	if (sc2 & SC2_OBJ2)
 	{
-		MSG_WriteLong(&host_client->message, info_mask2);
+		MSG_WriteLong (&host_client->message, info_mask2);
 		client->info_mask2 = info_mask2;
 	}
 
 end:
-	memcpy(&client->old_v,&ent->v,sizeof(client->old_v));
+	memcpy (&client->old_v, &ent->v, sizeof(client->old_v));
 }
 
 /*
@@ -1565,12 +1574,12 @@ static void SV_UpdateToReliableMessages (void)
 	edict_t		*ent;
 
 // check for changes to be sent over the reliable streams
-	for (i=0, host_client = svs.clients ; i<svs.maxclients ; i++, host_client++)
+	for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
 	{
 		ent = host_client->edict;
 		if (host_client->old_frags != ent->v.frags)
 		{
-			for (j=0, client = svs.clients ; j<svs.maxclients ; j++, client++)
+			for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
 			{
 				if (!client->active)
 					continue;
@@ -1584,7 +1593,7 @@ static void SV_UpdateToReliableMessages (void)
 		}
 	}
 
-	for (j=0, client = svs.clients ; j<svs.maxclients ; j++, client++)
+	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
 	{
 		if (!client->active)
 			continue;
@@ -1630,7 +1639,7 @@ void SV_SendClientMessages (void)
 	SV_UpdateToReliableMessages ();
 
 // build individual updates
-	for (i=0, host_client = svs.clients ; i<svs.maxclients ; i++, host_client++)
+	for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
 	{
 		if (!host_client->active)
 			continue;
@@ -1713,10 +1722,13 @@ int SV_ModelIndex (char *name)
 	if (!name || !name[0])
 		return 0;
 
-	for (i=0 ; i<MAX_MODELS && sv.model_precache[i] ; i++)
+	for (i = 0; i < MAX_MODELS && sv.model_precache[i]; i++)
+	{
 		if (!strcmp(sv.model_precache[i], name))
 			return i;
-	if (i==MAX_MODELS || !sv.model_precache[i])
+	}
+
+	if (i == MAX_MODELS || !sv.model_precache[i])
 	{
 		Con_Printf("SV_ModelIndex: model %s not precached\n", name);
 		return 0;
@@ -1767,7 +1779,7 @@ static void SV_CreateBaseline (void)
 			svent->baseline.modelindex =
 				SV_ModelIndex(pr_strings + svent->v.model);
 		}
-		memset(svent->baseline.ClearCount,99,sizeof(svent->baseline.ClearCount));
+		memset (svent->baseline.ClearCount, 99, sizeof(svent->baseline.ClearCount));
 
 	//
 	// add to the message
@@ -1782,10 +1794,10 @@ static void SV_CreateBaseline (void)
 		MSG_WriteByte (&sv.signon, svent->baseline.scale);
 		MSG_WriteByte (&sv.signon, svent->baseline.drawflags);
 		MSG_WriteByte (&sv.signon, svent->baseline.abslight);
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 		{
-			MSG_WriteCoord(&sv.signon, svent->baseline.origin[i]);
-			MSG_WriteAngle(&sv.signon, svent->baseline.angles[i]);
+			MSG_WriteCoord (&sv.signon, svent->baseline.origin[i]);
+			MSG_WriteAngle (&sv.signon, svent->baseline.angles[i]);
 		}
 	}
 }
@@ -1835,7 +1847,7 @@ void SV_SaveSpawnparms (void)
 
 	svs.serverflags = PR_GLOBAL_STRUCT(serverflags);
 
-	for (i=0, host_client = svs.clients ; i<svs.maxclients ; i++, host_client++)
+	for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
 	{
 		if (!host_client->active)
 			continue;
@@ -1845,14 +1857,14 @@ void SV_SaveSpawnparms (void)
 //		{
 //			pr_global_struct_v111->self = EDICT_TO_PROG(host_client->edict);
 //			PR_ExecuteProgram (pr_global_struct_v111->SetChangeParms);
-//			for (j=0 ; j<NUM_SPAWN_PARMS ; j++)
+//			for (j = 0; j < NUM_SPAWN_PARMS; j++)
 //				host_client->spawn_parms[j] = (&pr_global_struct_v111->parm1)[j];
 //		}
 //		else
 //		{
 //			pr_global_struct->self = EDICT_TO_PROG(host_client->edict);
 //			PR_ExecuteProgram (pr_global_struct->SetChangeParms);
-//			for (j=0 ; j<NUM_SPAWN_PARMS ; j++)
+//			for (j = 0; j < NUM_SPAWN_PARMS; j++)
 //				host_client->spawn_parms[j] = (&pr_global_struct->parm1)[j];
 //		}
 	}
@@ -1963,17 +1975,17 @@ void SV_SpawnServer (char *server, char *startspot)
 	SZ_Init (&sv.signon, sv.signon_buf, sizeof(sv.signon_buf));
 
 // leave slots at start for clients only
-	sv.num_edicts = svs.maxclients+1+max_temp_edicts.value;
-	for (i=0 ; i<svs.maxclients ; i++)
+	sv.num_edicts = svs.maxclients + 1 + max_temp_edicts.value;
+	for (i = 0; i < svs.maxclients; i++)
 	{
 		ent = EDICT_NUM(i+1);
 		svs.clients[i].edict = ent;
 		svs.clients[i].send_all_v = true;
 	}
 
-	for (i=0 ; i < max_temp_edicts.value ; i++)
+	for (i = 0; i < max_temp_edicts.value; i++)
 	{
-		ent = EDICT_NUM(i+svs.maxclients+1);
+		ent = EDICT_NUM(i + svs.maxclients + 1);
 		ED_ClearEdict(ent);
 
 		ent->free = true;
@@ -2014,7 +2026,7 @@ void SV_SpawnServer (char *server, char *startspot)
 
 	sv.model_precache[0] = pr_strings;
 	sv.model_precache[1] = sv.modelname;
-	for (i=1 ; i<sv.worldmodel->numsubmodels ; i++)
+	for (i = 1; i < sv.worldmodel->numsubmodels; i++)
 	{
 		sv.model_precache[1+i] = localmodels[i];
 		sv.models[i+1] = Mod_ForName (localmodels[i], false);
@@ -2078,9 +2090,11 @@ void SV_SpawnServer (char *server, char *startspot)
 	SV_CreateBaseline ();
 
 // send serverinfo to all connected clients
-	for (i=0,host_client = svs.clients ; i<svs.maxclients ; i++, host_client++)
+	for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
+	{
 		if (host_client->active)
 			SV_SendServerinfo (host_client);
+	}
 
 	svs.changelevel_issued = false;		// now safe to issue another
 
@@ -2094,6 +2108,9 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.36  2006/09/11 09:16:24  sezero
+ * put SZ_Init() to use everywhere in the source.
+ *
  * Revision 1.35  2006/09/11 09:06:41  sezero
  * SV_StartSound: the sized buffer in hexen2 version and
  * the field_mask flag in the hexenworld version weren't

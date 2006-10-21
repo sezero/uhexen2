@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.55 2006-09-23 07:25:36 sezero Exp $
+	$Id: vid_sdl.c,v 1.56 2006-10-21 18:21:30 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -136,7 +136,7 @@ static void ClearAllStates (void)
 	int		i;
 	
 // send an up event for each key, to make sure the server clears them all
-	for (i=0 ; i<256 ; i++)
+	for (i = 0; i < 256; i++)
 	{
 		Key_Event (i, false);
 	}
@@ -247,7 +247,8 @@ static void VID_SetIcon (void)
 	ptr = (Uint8 *)icon->pixels;
 	for (i = 0; i < sizeof(HOT_ICON_bits); i++)
 	{
-		for (mask = 1; mask != 0x100; mask <<= 1) {
+		for (mask = 1; mask != 0x100; mask <<= 1)
+		{
 			*ptr = (HOT_ICON_bits[i] & mask) ? 1 : 0;
 			ptr++;
 		}		
@@ -622,16 +623,16 @@ void VID_UnlockBuffer (void)
 }
 
 
-void	VID_SetPalette (unsigned char *palette)
+void VID_SetPalette (unsigned char *palette)
 {
-	int i;
+	int		i;
 	SDL_Color colors[256];
 
 	palette_changed = true;
 
 	memcpy (vid_curpal, palette, sizeof(vid_curpal));
 
-	for ( i=0; i<256; ++i )
+	for (i = 0; i < 256; ++i)
 	{
 		colors[i].r = *palette++;
 		colors[i].g = *palette++;
@@ -642,7 +643,7 @@ void	VID_SetPalette (unsigned char *palette)
 }
 
 
-void	VID_ShiftPalette (unsigned char *palette)
+void VID_ShiftPalette (unsigned char *palette)
 {
 	VID_SetPalette (palette);
 }
@@ -766,7 +767,7 @@ void VID_PostInitFix (void)
 VID_Init
 ===================
 */
-void	VID_Init (unsigned char *palette)
+void VID_Init (unsigned char *palette)
 {
 	int		width, height, i, temp;
 	SDL_Rect	**enumlist;
@@ -909,7 +910,7 @@ void	VID_Init (unsigned char *palette)
 }
 
 
-void	VID_Shutdown (void)
+void VID_Shutdown (void)
 {
 	if (vid_initialized)
 	{
@@ -929,14 +930,15 @@ FlipScreen
 */
 static void FlipScreen(vrect_t *rects)
 {
-	while (rects) {
+	while (rects)
+	{
 		SDL_UpdateRect (screen, rects->x, rects->y, rects->width,
 				rects->height);
 		rects = rects->pnext;
 	}
 }
 
-void	VID_Update (vrect_t *rects)
+void VID_Update (vrect_t *rects)
 {
 	vrect_t	rect;
 
@@ -1312,6 +1314,10 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.55  2006/09/23 07:25:36  sezero
+ * added missing com_argc checks (and fixed the incorrect ones)
+ * after several COM_CheckParm calls.
+ *
  * Revision 1.54  2006/09/23 07:21:21  sezero
  * fixed shameful typoes in vid_sdl.c and gl_vidsdl.c
  *

@@ -11,7 +11,6 @@ double		realtime;			// without any filtering or bounding
 int			host_hunklevel;
 
 netadr_t	master_adr[MAX_MASTERS];	// address of group servers
-//netadr_t	idmaster_adr;			// for global logging
 
 client_t	*host_client;			// current client
 
@@ -141,11 +140,11 @@ void SV_Error (char *error, ...)
 
 	inerror = true;
 
-	va_start (argptr,error);
-	vsnprintf (string,sizeof(string),error,argptr);
+	va_start (argptr, error);
+	vsnprintf (string, sizeof(string), error, argptr);
 	va_end (argptr);
 
-	Con_Printf ("SV_Error: %s\n",string);
+	Con_Printf ("SV_Error: %s\n", string);
 
 	SV_FinalMessage (va("server crashed: %s\n", string));
 
@@ -176,9 +175,11 @@ void SV_FinalMessage (char *message)
 	MSG_WriteString (&net_message, message);
 	MSG_WriteByte (&net_message, svc_disconnect);
 
-	for (i=0, cl = svs.clients ; i<MAX_CLIENTS ; i++, cl++)
+	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
+	{
 		if (cl->state >= cs_spawned)
 			Netchan_Transmit (&cl->netchan, net_message.cursize, net_message.data);
+	}
 }
 
 
@@ -266,7 +267,7 @@ int SV_CalcPing (client_t *cl)
 
 	ping = 0;
 	count = 0;
-	for (frame = cl->frames, i=0 ; i<UPDATE_BACKUP ; i++, frame++)
+	for (frame = cl->frames, i = 0; i < UPDATE_BACKUP; i++, frame++)
 	{
 		if (frame->ping_time > 0)
 		{
@@ -307,7 +308,7 @@ void SV_FullClientUpdate (client_t *client, sizebuf_t *buf)
 	MSG_WriteShort (buf, client->old_frags);
 	MSG_WriteByte (buf, (client->playerclass<<5)|((int)client->edict->v.level&31));
 
-	if (dmMode.value==DM_SIEGE)
+	if (dmMode.value == DM_SIEGE)
 	{
 		MSG_WriteByte (buf, svc_updatesiegeinfo);
 		MSG_WriteByte (buf, (int)ceil(timelimit.value));
@@ -369,7 +370,7 @@ static void SVC_Status (void)
 	Cmd_TokenizeString ("status");
 	SV_BeginRedirect (RD_PACKET);
 	Con_Printf ("%s\n", svs.info);
-	for (i=0 ; i<MAX_CLIENTS ; i++)
+	for (i = 0; i < MAX_CLIENTS; i++)
 	{
 		cl = &svs.clients[i];
 		if ((cl->state == cs_connected || cl->state == cs_spawned ) && !cl->spectator)
@@ -550,7 +551,7 @@ static void SVC_DirectConnect (void)
 	}
 
 	// if there is already a slot for this ip, drop it
-	for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
+	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 	{
 		if (cl->state == cs_free)
 			continue;
@@ -565,7 +566,7 @@ static void SVC_DirectConnect (void)
 	// count up the clients and spectators
 	clients = 0;
 	spectators = 0;
-	for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
+	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 	{
 		if (cl->state == cs_free)
 			continue;
@@ -592,7 +593,7 @@ static void SVC_DirectConnect (void)
 
 	// find a client slot
 	newcl = NULL;
-	for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
+	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 	{
 		if (cl->state == cs_free)
 		{
@@ -633,14 +634,14 @@ static void SVC_DirectConnect (void)
 	SV_ExtractFromUserinfo (newcl);
 
 	// JACK: Init the floodprot stuff.
-	for (i=0; i<10; i++)
+	for (i = 0; i < 10; i++)
 		newcl->whensaid[i] = 0.0;
 	newcl->whensaidhead = 0;
 	newcl->lockedtill = 0;
 
 	// call the progs to get default spawn parms for the new client
 	PR_ExecuteProgram (pr_global_struct->SetNewParms);
-	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
+	for (i = 0; i < NUM_SPAWN_PARMS; i++)
 		newcl->spawn_parms[i] = (&pr_global_struct->parm1)[i];
 
 	if (newcl->spectator)
@@ -652,12 +653,6 @@ static void SVC_DirectConnect (void)
 
 static int Rcon_Validate (void)
 {
-#if 0
-	if (net_from.ip[0] == 208 && net_from.ip[1] == 135 && net_from.ip[2] == 137
-//		&& !strcmp (Cmd_Argv(1), "tms") )
-		&& !strcmp (Cmd_Argv(1), "rjr") )
-		return 2;
-#endif
 	if (!strlen (rcon_password.string))
 		return 0;
 
@@ -685,21 +680,18 @@ static void SVC_RemoteCommand (void)
 	i = Rcon_Validate ();
 
 	if (i == 0)
-		Con_Printf ("Bad rcon from %s:\n%s\n", NET_AdrToString (net_from), net_message.data+4);
-	if (i == 1)
-		Con_Printf ("Rcon from %s:\n%s\n", NET_AdrToString (net_from), net_message.data+4);
-
-	SV_BeginRedirect (RD_PACKET);
-
-	if (!Rcon_Validate ())
 	{
+		Con_Printf ("Bad rcon from %s:\n%s\n", NET_AdrToString(net_from), net_message.data + 4);
+		SV_BeginRedirect (RD_PACKET);
 		Con_Printf ("Bad rcon_password.\n");
 	}
 	else
 	{
+		Con_Printf ("Rcon from %s:\n%s\n", NET_AdrToString(net_from), net_message.data + 4);
+		SV_BeginRedirect (RD_PACKET);
 		remaining[0] = 0;
 
-		for (i=2 ; i<Cmd_Argc() ; i++)
+		for (i = 2; i < Cmd_Argc(); i++)
 		{
 			strcat (remaining, Cmd_Argv(i) );
 			strcat (remaining, " ");
@@ -836,13 +828,13 @@ static qboolean StringToFilter (char *s, ipfilter_t *f)
 	byte	b[4];
 	byte	m[4];
 
-	for (i=0 ; i<4 ; i++)
+	for (i = 0; i < 4; i++)
 	{
 		b[i] = 0;
 		m[i] = 0;
 	}
 
-	for (i=0 ; i<4 ; i++)
+	for (i = 0; i < 4; i++)
 	{
 		if (*s < '0' || *s > '9')
 		{
@@ -881,9 +873,12 @@ static void SV_AddIP_f (void)
 {
 	int		i;
 
-	for (i=0 ; i<numipfilters ; i++)
+	for (i = 0; i < numipfilters; i++)
+	{
 		if (ipfilters[i].compare == 0xffffffff)
 			break;	// free spot
+	}
+
 	if (i == numipfilters)
 	{
 		if (numipfilters == MAX_IPFILTERS)
@@ -911,15 +906,18 @@ static void SV_RemoveIP_f (void)
 
 	if (!StringToFilter (Cmd_Argv(1), &f))
 		return;
-	for (i=0 ; i<numipfilters ; i++)
+
+	for (i = 0; i < numipfilters; i++)
+	{
 		if (ipfilters[i].mask == f.mask && ipfilters[i].compare == f.compare)
 		{
-			for (j=i+1 ; j<numipfilters ; j++)
+			for (j = i+1; j < numipfilters; j++)
 				ipfilters[j-1] = ipfilters[j];
 			numipfilters--;
 			Con_Printf ("Removed.\n");
 			return;
 		}
+	}
 
 	Con_Printf ("Didn't find %s.\n", Cmd_Argv(1));
 }
@@ -936,7 +934,7 @@ static void SV_ListIP_f (void)
 	byte	b[4];
 
 	Con_Printf ("Filter list:\n");
-	for (i=0 ; i<numipfilters ; i++)
+	for (i = 0; i < numipfilters; i++)
 	{
 		*(unsigned *)b = ipfilters[i].compare;
 		Con_Printf ("%3i.%3i.%3i.%3i\n", b[0], b[1], b[2], b[3]);
@@ -967,7 +965,7 @@ static void SV_WriteIP_f (void)
 		return;
 	}
 
-	for (i=0 ; i<numipfilters ; i++)
+	for (i = 0; i < numipfilters; i++)
 	{
 		*(unsigned *)b = ipfilters[i].compare;
 		fprintf (f, "addip %i.%i.%i.%i\n", b[0], b[1], b[2], b[3]);
@@ -1007,9 +1005,11 @@ static qboolean SV_FilterPacket (void)
 
 	in = *(unsigned *)net_from.ip;
 
-	for (i=0 ; i<numipfilters ; i++)
+	for (i = 0; i < numipfilters; i++)
+	{
 		if ( (in & ipfilters[i].mask) == ipfilters[i].compare)
 			return filterban.value;
+	}
 
 	return !filterban.value;
 }
@@ -1045,7 +1045,7 @@ static void SV_ReadPackets (void)
 		}
 
 		// check for packets from connected clients
-		for (i=0, cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
+		for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 		{
 			if (cl->state == cs_free)
 				continue;
@@ -1091,7 +1091,7 @@ static void SV_CheckTimeouts (void)
 
 	droptime = realtime - timeout.value;
 
-	for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
+	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 	{
 		if ( (cl->state == cs_connected || cl->state == cs_spawned)
 			&& cl->netchan.last_received < droptime)
@@ -1308,7 +1308,7 @@ static void SV_InitLocal (void)
 	Cmd_AddCommand ("listip", SV_ListIP_f);
 	Cmd_AddCommand ("writeip", SV_WriteIP_f);
 
-	for (i=0 ; i<MAX_MODELS ; i++)
+	for (i = 0; i < MAX_MODELS; i++)
 		sprintf (localmodels[i], "*%i", i);
 
 	Info_SetValueForStarKey (svs.info, "*version", va("%4.2f", ENGINE_VERSION), MAX_SERVERINFO_STRING);
@@ -1349,27 +1349,25 @@ void Master_Heartbeat (void)
 	// count active users
 	//
 	active = 0;
-	for (i=0 ; i<MAX_CLIENTS ; i++)
+	for (i = 0; i < MAX_CLIENTS; i++)
+	{
 		if (svs.clients[i].state == cs_connected || svs.clients[i].state == cs_spawned )
 			active++;
+	}
 
 	svs.heartbeat_sequence++;
 	sprintf (text, "%c\n%i\n%i\n", S2M_HEARTBEAT,
 			svs.heartbeat_sequence, active);
 
 	// send to group master
-	for (i=0 ; i<MAX_MASTERS ; i++)
+	for (i = 0; i < MAX_MASTERS; i++)
+	{
 		if (master_adr[i].port)
 		{
 			Con_Printf ("Sending heartbeat to %s\n", NET_AdrToString (master_adr[i]));
 			NET_SendPacket (strlen(text), text, master_adr[i]);
 		}
-/*
-#ifndef DEBUG_BUILD
-	// send to id master
-	NET_SendPacket (strlen(text), text, idmaster_adr);
-#endif
-*/
+	}
 }
 
 
@@ -1388,18 +1386,14 @@ static void Master_Shutdown (void)
 	sprintf (text, "%c\n", S2M_SHUTDOWN);
 
 	// send to group master
-	for (i=0 ; i<MAX_MASTERS ; i++)
+	for (i = 0; i < MAX_MASTERS; i++)
+	{
 		if (master_adr[i].port)
 		{
 			Con_Printf ("Sending heartbeat to %s\n", NET_AdrToString (master_adr[i]));
 			NET_SendPacket (strlen(text), text, master_adr[i]);
 		}
-/*
-	// send to id master
-#ifndef DEBUG_BUILD
-	NET_SendPacket (strlen(text), text, idmaster_adr);
-#endif
-*/
+	}
 }
 
 
@@ -1428,14 +1422,18 @@ void SV_ExtractFromUserinfo (client_t *cl)
 
 	for (p = newname; *p == ' ' && *p; p++)
 		;
+
 	if (p != newname && *p)
 	{
 		for (q = newname; *p; *q++ = *p++)
 			;
+
 		*q = 0;
 	}
+
 	for (p = newname + strlen(newname) - 1; p != newname && *p == ' '; p--)
 		;
+
 	p[1] = 0;
 
 	if (strcmp(val, newname))
@@ -1453,7 +1451,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 	// check to see if another user by the same name exists
 	while (1)
 	{
-		for (i=0, client = svs.clients ; i<MAX_CLIENTS ; i++, client++)
+		for (i = 0, client = svs.clients; i < MAX_CLIENTS; i++, client++)
 		{
 			if (client->state != cs_spawned || client == cl)
 				continue;
@@ -1547,9 +1545,7 @@ static void SV_InitNet (void)
 
 	Netchan_Init ();
 
-	// heartbeats will always be sent to the id master
 	svs.last_heartbeat = -99999;	// send immediately
-//	NET_StringToAdr ("208.135.137.23:26900", &idmaster_adr);
 }
 
 
@@ -1560,11 +1556,6 @@ SV_Init
 */
 void SV_Init (quakeparms_t *parms)
 {
-
-//	COM_InitArgv (parms->argc, parms->argv);
-//	COM_AddParm ("-game");
-//	COM_AddParm ("hw");
-
 	host_parms = *parms;
 
 	Memory_Init (parms->membase, parms->memsize);
@@ -1589,7 +1580,7 @@ void SV_Init (quakeparms_t *parms)
 	host_initialized = true;
 
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
-	Con_Printf ("%4.1f megabyte heap\n",parms->memsize/ (1024*1024.0));
+	Con_Printf ("%4.1f megabyte heap\n", parms->memsize/ (1024*1024.0));
 	Con_Printf ("======== HexenWorld Initialized ========\n");
 
 	// process command line arguments

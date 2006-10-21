@@ -22,11 +22,15 @@ int SV_ModelIndex (char *name)
 	if (!name || !name[0])
 		return 0;
 
-	for (i=0 ; i<MAX_MODELS && sv.model_precache[i] ; i++)
+	for (i = 0; i < MAX_MODELS && sv.model_precache[i]; i++)
+	{
 		if (!strcmp(sv.model_precache[i], name))
 			return i;
-	if (i==MAX_MODELS || !sv.model_precache[i])
+	}
+
+	if (i == MAX_MODELS || !sv.model_precache[i])
 		SV_Error ("SV_ModelIndex: model %s not precached", name);
+
 	return i;
 }
 
@@ -117,7 +121,7 @@ static void SV_CreateBaseline (void)
 		MSG_WriteByte (&sv.signon, svent->baseline.scale);
 		MSG_WriteByte (&sv.signon, svent->baseline.drawflags);
 		MSG_WriteByte (&sv.signon, svent->baseline.abslight);
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 		{
 			MSG_WriteCoord(&sv.signon, svent->baseline.origin[i]);
 			MSG_WriteAngle(&sv.signon, svent->baseline.angles[i]);
@@ -145,7 +149,7 @@ void SV_SaveSpawnparms (void)
 	// serverflags is the only game related thing maintained
 	svs.serverflags = PR_GLOBAL_STRUCT(serverflags);
 
-	for (i=0, host_client = svs.clients ; i<MAX_CLIENTS ; i++, host_client++)
+	for (i = 0, host_client = svs.clients; i < MAX_CLIENTS; i++, host_client++)
 	{
 		if (host_client->state != cs_spawned)
 			continue;
@@ -156,7 +160,7 @@ void SV_SaveSpawnparms (void)
 		// call the progs to get default spawn parms for the new client
 		pr_global_struct->self = EDICT_TO_PROG(host_client->edict);
 		PR_ExecuteProgram (pr_global_struct->SetChangeParms);
-		for (j=0 ; j<NUM_SPAWN_PARMS ; j++)
+		for (j = 0; j < NUM_SPAWN_PARMS; j++)
 			host_client->spawn_parms[j] = (&pr_global_struct->parm1)[j];
 	}
 }
@@ -187,13 +191,13 @@ static void SV_CalcPHS (void)
 	sv.pvs = Hunk_AllocName (rowbytes*num, "pvs");
 	scan = sv.pvs;
 	vcount = 0;
-	for (i=0 ; i<num ; i++, scan+=rowbytes)
+	for (i = 0; i < num; i++, scan += rowbytes)
 	{
 		memcpy (scan, Mod_LeafPVS(sv.worldmodel->leafs+i, sv.worldmodel),
 			rowbytes);
 		if (i == 0)
 			continue;
-		for (j=0 ; j<num ; j++)
+		for (j = 0; j < num; j++)
 		{
 			if ( scan[j>>3] & (1<<(j&7)) )
 			{
@@ -206,34 +210,36 @@ static void SV_CalcPHS (void)
 	count = 0;
 	scan = sv.pvs;
 	dest = (unsigned *)sv.phs;
-	for (i=0 ; i<num ; i++, dest += rowwords, scan += rowbytes)
+	for (i = 0; i < num; i++, dest += rowwords, scan += rowbytes)
 	{
 		memcpy (dest, scan, rowbytes);
-		for (j=0 ; j<rowbytes ; j++)
+		for (j = 0; j < rowbytes; j++)
 		{
 			bitbyte = scan[j];
 			if (!bitbyte)
 				continue;
-			for (k=0 ; k<8 ; k++)
+			for (k = 0; k < 8; k++)
 			{
 				if (! (bitbyte & (1<<k)) )
 					continue;
 				// or this pvs row into the phs
 				// +1 because pvs is 1 based
-				idx = ((j<<3)+k+1);
+				idx = ((j<<3) + k + 1);
 				if (idx >= num)
 					continue;
 				src = (unsigned *)sv.pvs + idx*rowwords;
-				for (l=0 ; l<rowwords ; l++)
+				for (l = 0; l < rowwords; l++)
 					dest[l] |= src[l];
 			}
 		}
 
 		if (i == 0)
 			continue;
-		for (j=0 ; j<num ; j++)
+		for (j = 0; j < num; j++)
+		{
 			if ( ((byte *)dest)[j>>3] & (1<<(j&7)) )
 				count++;
+		}
 	}
 
 	Con_Printf ("Average leafs visible / hearable / total: %i / %i / %i\n",
@@ -295,7 +301,7 @@ void SV_SpawnServer (char *server, char *startspot)
 
 	// leave slots at start for clients only
 	sv.num_edicts = MAX_CLIENTS+1+max_temp_edicts.value;
-	for (i=0 ; i<MAX_CLIENTS ; i++)
+	for (i = 0; i < MAX_CLIENTS; i++)
 	{
 		ent = EDICT_NUM(i+1);
 		svs.clients[i].edict = ent;
@@ -320,7 +326,7 @@ void SV_SpawnServer (char *server, char *startspot)
 	sv.model_precache[0] = pr_strings;
 	sv.model_precache[1] = sv.modelname;
 	sv.models[1] = sv.worldmodel;
-	for (i=1 ; i<sv.worldmodel->numsubmodels ; i++)
+	for (i = 1; i < sv.worldmodel->numsubmodels; i++)
 	{
 		sv.model_precache[1+i] = localmodels[i];
 		sv.models[i+1] = Mod_ForName (localmodels[i], false);

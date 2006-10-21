@@ -27,9 +27,9 @@ qboolean SV_CheckBottom (edict_t *ent)
 	// with the tougher checks
 	// the corners must be within 16 of the midpoint
 	start[2] = mins[2] - 1;
-	for (x=0 ; x<2 ; x++)
+	for (x = 0; x < 2; x++)
 	{
-		for (y=0 ; y<2 ; y++)
+		for (y = 0; y < 2; y++)
 		{
 			start[0] = x ? maxs[0] : mins[0];
 			start[1] = y ? maxs[1] : mins[1];
@@ -46,8 +46,8 @@ realcheck:	// check it for real...
 	start[2] = mins[2];
 
 	// the midpoint must be within 16 of the bottom
-	start[0] = stop[0] = (mins[0] + maxs[0])*0.5;
-	start[1] = stop[1] = (mins[1] + maxs[1])*0.5;
+	start[0] = stop[0] = (mins[0] + maxs[0]) * 0.5;
+	start[1] = stop[1] = (mins[1] + maxs[1]) * 0.5;
 	stop[2] = start[2] - 2*STEPSIZE;
 	save_hull = ent->v.hull;//temp hack so it HullForEntity doesn't calculate the wrong offset
 	ent->v.hull = 0;
@@ -59,8 +59,9 @@ realcheck:	// check it for real...
 	mid = bottom = trace.endpos[2];
 
 	// the corners must be within 16 of the midpoint
-	for (x=0 ; x<2 ; x++)
-		for (y=0 ; y<2 ; y++)
+	for (x = 0; x < 2; x++)
+	{
+		for (y = 0; y < 2; y++)
 		{
 			start[0] = stop[0] = x ? maxs[0] : mins[0];
 			start[1] = stop[1] = y ? maxs[1] : mins[1];
@@ -75,6 +76,7 @@ realcheck:	// check it for real...
 			if (trace.fraction == 1.0 || mid - trace.endpos[2] > STEPSIZE)
 				return false;
 		}
+	}
 
 	return true;
 }
@@ -120,10 +122,10 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink, qboolean noene
 	VectorAdd (ent->v.origin, move, neworg);
 
 	// flying monsters don't step up
-	if ( (int)ent->v.flags & (FL_SWIM | FL_FLY) )
+	if ( (int)ent->v.flags & (FL_SWIM|FL_FLY) )
 	{
 		// try one move with vertical motion, then one without
-		for (i=0 ; i<2 ; i++)
+		for (i = 0; i < 2; i++)
 		{
 			VectorAdd (ent->v.origin, move, neworg);
 			if (!noenemy)
@@ -261,9 +263,9 @@ static qboolean SV_StepDirection (edict_t *ent, float yaw, float dist)
 	ent->v.ideal_yaw = yaw;
 	PF_changeyaw();
 
-	yaw = yaw*M_PI*2 / 360;
-	move[0] = cos(yaw)*dist;
-	move[1] = sin(yaw)*dist;
+	yaw = yaw * M_PI * 2 / 360;
+	move[0] = cos(yaw) * dist;
+	move[1] = sin(yaw) * dist;
 	move[2] = 0;
 
 	VectorCopy (ent->v.origin, oldorigin);
@@ -306,29 +308,29 @@ SV_NewChaseDir
 #define	DI_NODIR	-1
 static void SV_NewChaseDir (edict_t *actor, edict_t *enemy, float dist)
 {
-	float		deltax,deltay;
+	float		deltax, deltay;
 	float			d[3];
 	float		tdir, olddir, turnaround;
 
-	olddir = anglemod( (int)(actor->v.ideal_yaw/45)*45 );
+	olddir = anglemod( (int)(actor->v.ideal_yaw / 45) * 45 );
 	turnaround = anglemod(olddir - 180);
 
 	deltax = enemy->v.origin[0] - actor->v.origin[0];
 	deltay = enemy->v.origin[1] - actor->v.origin[1];
 
-	if (deltax>10)
-		d[1]= 0;
-	else if (deltax<-10)
-		d[1]= 180;
+	if (deltax > 10)
+		d[1] = 0;
+	else if (deltax < -10)
+		d[1] = 180;
 	else
-		d[1]= DI_NODIR;
+		d[1] = DI_NODIR;
 
-	if (deltay<-10)
-		d[2]= 270;
-	else if (deltay>10)
-		d[2]= 90;
+	if (deltay < -10)
+		d[2] = 270;
+	else if (deltay > 10)
+		d[2] = 90;
 	else
-		d[2]= DI_NODIR;
+		d[2] = DI_NODIR;
 
 	// try direct route
 	if (d[1] != DI_NODIR && d[2] != DI_NODIR)
@@ -343,35 +345,39 @@ static void SV_NewChaseDir (edict_t *actor, edict_t *enemy, float dist)
 	}
 
 	// try other directions
-	if ( ((rand()&3) & 1) ||  abs(deltay)>abs(deltax))
+	if ( ((rand() & 3) & 1) || abs(deltay) > abs(deltax) )
 	{
-		tdir=d[1];
-		d[1]=d[2];
-		d[2]=tdir;
+		tdir = d[1];
+		d[1] = d[2];
+		d[2] = tdir;
 	}
 
-	if (d[1]!=DI_NODIR && d[1]!=turnaround && SV_StepDirection(actor, d[1], dist))
+	if (d[1] != DI_NODIR && d[1] != turnaround && SV_StepDirection(actor, d[1], dist))
 		return;
 
-	if (d[2]!=DI_NODIR && d[2]!=turnaround && SV_StepDirection(actor, d[2], dist))
+	if (d[2] != DI_NODIR && d[2] != turnaround && SV_StepDirection(actor, d[2], dist))
 		return;
 
 	/* there is no direct path to the player, so pick another direction */
 
-	if (olddir!=DI_NODIR && SV_StepDirection(actor, olddir, dist))
+	if (olddir != DI_NODIR && SV_StepDirection(actor, olddir, dist))
 		return;
 
-	if (rand()&1)	/* randomly determine direction of search */
+	if (rand() & 1)	/* randomly determine direction of search */
 	{
-		for (tdir=0 ; tdir<=315 ; tdir += 45)
-			if (tdir!=turnaround && SV_StepDirection(actor, tdir, dist) )
+		for (tdir = 0; tdir <= 315; tdir += 45)
+		{
+			if (tdir != turnaround && SV_StepDirection(actor, tdir, dist) )
 				return;
+		}
 	}
 	else
 	{
-		for (tdir=315 ; tdir >=0 ; tdir -= 45)
-			if (tdir!=turnaround && SV_StepDirection(actor, tdir, dist) )
+		for (tdir = 315; tdir >= 0; tdir -= 45)
+		{
+			if (tdir != turnaround && SV_StepDirection(actor, tdir, dist) )
 				return;
+		}
 	}
 
 	if (turnaround != DI_NODIR && SV_StepDirection(actor, turnaround, dist) )
@@ -397,7 +403,7 @@ static qboolean SV_CloseEnough (edict_t *ent, edict_t *goal, float dist)
 {
 	int		i;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		if (goal->v.absmin[i] > ent->v.absmax[i] + dist)
 			return false;
@@ -430,11 +436,11 @@ void SV_MoveToGoal (void)
 	}
 
 	// if the next step hits the enemy, return immediately
-	if ( PROG_TO_EDICT(ent->v.enemy) != sv.edicts &&  SV_CloseEnough (ent, goal, dist) )
+	if ( PROG_TO_EDICT(ent->v.enemy) != sv.edicts &&  SV_CloseEnough(ent, goal, dist) )
 		return;
 
 	// bump around...
-	if ( (rand()&3)==1 || !SV_StepDirection (ent, ent->v.ideal_yaw, dist))
+	if ( (rand() & 3) == 1 || !SV_StepDirection(ent, ent->v.ideal_yaw, dist) )
 	{
 		SV_NewChaseDir (ent, goal, dist);
 	}

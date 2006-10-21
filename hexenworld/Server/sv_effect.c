@@ -2,7 +2,7 @@
 	sv_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.7 2006-07-02 11:45:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.8 2006-10-21 18:21:32 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -54,6 +54,7 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 			VectorCopy(sv.Effects[idx].ef.Xbow.origin[5], TestO1);
 			TestDistance = 900;
 			break;
+
 		case CE_SCARABCHAIN:
 			VectorCopy(sv.Effects[idx].ef.Chain.origin, TestO1);
 			TestDistance = 900;
@@ -190,6 +191,7 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 			VectorCopy(sv.Effects[idx].ef.Missile.origin, TestO1);
 			TestDistance = 600;
 			break;
+
 		default:
 		//	Sys_Error ("SV_SendEffect: bad type");
 			PR_RunError ("SV_SendEffect: bad type");
@@ -435,7 +437,7 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 			MSG_WriteByte(&sv.multicast, sv.Effects[idx].ef.Xbow.activebolts);
 			for (i = 0 ; i < 5 ; i++)
 			{
-				if ((1<<i)&sv.Effects[idx].ef.Xbow.turnedbolts)
+				if ( (1<<i) & sv.Effects[idx].ef.Xbow.turnedbolts )
 				{
 					MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Xbow.origin[i][0]);
 					MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Xbow.origin[i][1]);
@@ -482,9 +484,11 @@ void SV_ParseEffect (sizebuf_t *sb)
 	effect = G_FLOAT(OFS_PARM0);
 
 	for (idx = 0 ; idx < MAX_EFFECTS ; idx++)
+	{
 		if (!sv.Effects[idx].type || 
-			(sv.Effects[idx].expire_time && sv.Effects[idx].expire_time <= sv.time))
+				(sv.Effects[idx].expire_time && sv.Effects[idx].expire_time <= sv.time))
 			break;
+	}
 
 	if (idx >= MAX_EFFECTS)
 	{
@@ -492,7 +496,7 @@ void SV_ParseEffect (sizebuf_t *sb)
 		return;
 	}
 
-//	Con_Printf("Effect #%d\n",idx);
+//	Con_Printf("Effect #%d\n", idx);
 
 	memset(&sv.Effects[idx],0,sizeof(struct EffectT));
 
@@ -765,9 +769,11 @@ void SV_ParseMultiEffect (sizebuf_t *sb)
 		for (count = 0 ; count < 3 ; count++)
 		{
 			for (idx = 0 ; idx < MAX_EFFECTS ; idx++)
+			{
 				if (!sv.Effects[idx].type || 
-					(sv.Effects[idx].expire_time && sv.Effects[idx].expire_time <= sv.time))
+						(sv.Effects[idx].expire_time && sv.Effects[idx].expire_time <= sv.time))
 					break;
+			}
 			if (idx >= MAX_EFFECTS)
 			{
 				PR_RunError ("MAX_EFFECTS reached");
@@ -781,6 +787,7 @@ void SV_ParseMultiEffect (sizebuf_t *sb)
 			MultiEffectIds[count] = idx;
 		}
 		break;
+
 	default:
 		PR_RunError ("SV_ParseMultiEffect: bad type");
 	}
@@ -792,8 +799,15 @@ float SV_GetMultiEffectId (void)
 	return MultiEffectIds[MultiEffectIdCount-1];
 }
 
+
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2006/07/02 11:45:38  sezero
+ * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
+ * which stops vec3_origin usage in relevant calculations. renamed the Length
+ * macro to VectorLength for consistancy. updated the utilities' mathlib for
+ * similar macro usage as in the engine.
+ *
  * Revision 1.6  2006/04/06 08:36:25  sezero
  * more tidy-ups (cl_effect.h, cl_effect.c, sv_effect.c)
  *

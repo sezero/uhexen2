@@ -40,9 +40,9 @@ void Sys_DebugLog(char *file, char *fmt, ...)
 	static char	data[MAXPRINTMSG];
 	int			fd;
 
-	va_start(argptr, fmt);
-	vsnprintf(data, sizeof (data), fmt, argptr);
-	va_end(argptr);
+	va_start (argptr, fmt);
+	vsnprintf (data, sizeof (data), fmt, argptr);
+	va_end (argptr);
 	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
 	write(fd, data, strlen(data));
 	close(fd);
@@ -243,7 +243,7 @@ void Sys_Printf (char *fmt, ...)
 {
 	va_list		argptr;
 
-	va_start (argptr,fmt);
+	va_start (argptr, fmt);
 	vprintf (fmt, argptr);
 	va_end (argptr);
 }
@@ -255,7 +255,7 @@ void Sys_DPrintf (char *fmt, ...)
 	if (!developer.value)
 		return;
 
-	va_start (argptr,fmt);
+	va_start (argptr, fmt);
 	vprintf (fmt, argptr);
 	va_end (argptr);
 }

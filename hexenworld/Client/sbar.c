@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.21 2006-07-27 13:48:59 sezero Exp $
+	$Id: sbar.c,v 1.22 2006-10-21 18:21:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -230,40 +230,40 @@ static void SB_PlacePlayerNames(void)
 		i = curr_ent->scoreboard - cl.players;
 /*		if (i >= 0 && i<MAX_CLIENTS && 
 			(	(cl.PIV & (1<<i)) &&	// in PIV and not invis or seen by dwarf MLS_INVIS = 5
-				(curr_ent->drawflags!=5 || cl.v.playerclass==CLASS_DWARF) )	)
+				(curr_ent->drawflags != 5 || cl.v.playerclass == CLASS_DWARF) )	)
 */
-		if (i >= 0 && i<MAX_CLIENTS && (cl.PIV & (1<<i)) )
+		if (i >= 0 && i < MAX_CLIENTS && (cl.PIV & (1<<i)) )
 		{
 			if (!cl.players[i].shownames_off)
 			{
 				if (cl_siege)
 				{	//why the fuck does GL fuck this up??!!!
-					if (cl.players[i].siege_team==ST_ATTACKER)
+					if (cl.players[i].siege_team == ST_ATTACKER)
 					{	//attacker
-						if(i==cl_keyholder)
-							R_DrawName(curr_ent->origin, cl.players[i].name,10);
+						if (i == cl_keyholder)
+							R_DrawName(curr_ent->origin, cl.players[i].name, 10);
 						else
-							R_DrawName(curr_ent->origin, cl.players[i].name,false);
+							R_DrawName(curr_ent->origin, cl.players[i].name, false);
 					}
-					else if (cl.players[i].siege_team==ST_DEFENDER)
+					else if (cl.players[i].siege_team == ST_DEFENDER)
 					{	//def
-						if(i==cl_keyholder&&i==cl_doc)
-							R_DrawName(curr_ent->origin, cl.players[i].name,12);
-						else if (i==cl_keyholder)
-							R_DrawName(curr_ent->origin, cl.players[i].name,11);
-						else if (i==cl_doc)
-							R_DrawName(curr_ent->origin, cl.players[i].name,2);
+						if (i == cl_keyholder && i == cl_doc)
+							R_DrawName(curr_ent->origin, cl.players[i].name, 12);
+						else if (i == cl_keyholder)
+							R_DrawName(curr_ent->origin, cl.players[i].name, 11);
+						else if (i == cl_doc)
+							R_DrawName(curr_ent->origin, cl.players[i].name, 2);
 						else
-							R_DrawName(curr_ent->origin, cl.players[i].name,1);
+							R_DrawName(curr_ent->origin, cl.players[i].name, 1);
 					}
 					else
 					{
-						R_DrawName(curr_ent->origin, cl.players[i].name,3);
+						R_DrawName(curr_ent->origin, cl.players[i].name, 3);
 					}
 				}
 				else
 				{
-					R_DrawName(curr_ent->origin, cl.players[i].name,false);
+					R_DrawName(curr_ent->origin, cl.players[i].name, false);
 				}
 			}
 		}
@@ -435,7 +435,7 @@ void Sbar_Draw(void)
 	}
 
 	// FIXME: Check for deathmatch and draw frags
-	// if(cl.maxclients != 1) Sbar_Draw
+	// if (cl.maxclients != 1) Sbar_Draw
 
 	DrawArtifactInventory();
 
@@ -628,13 +628,13 @@ static void DrawLowerBar(void)
 	// Abilities
 	Sbar_DrawSmallString(11, 79, "abilities");
 	i = AbilityLineIndex[(playerClass-1)];
-	if (i+1 < pr_string_count)
+	if (i + 1 < pr_string_count)
 	{
-		if (((int)cl.v.flags)&FL_SPECIAL_ABILITY1)
+		if (((int)cl.v.flags) & FL_SPECIAL_ABILITY1)
 		{
 			Sbar_DrawSmallString(8, 89, &pr_global_strings[pr_string_index[i]]);
 		}
-		if (((int)cl.v.flags)&FL_SPECIAL_ABILITY2)
+		if (((int)cl.v.flags) & FL_SPECIAL_ABILITY2)
 		{
 			Sbar_DrawSmallString(8, 96, &pr_global_strings[pr_string_index[i+1]]);
 		}
@@ -804,7 +804,7 @@ static int Sbar_itoa(int num, char *buf)
 		dig = num/pow10;
 		*str++ = '0'+dig;
 		num -= dig*pow10;
-	} while(pow10 != 1);
+	} while (pow10 != 1);
 
 	*str = 0;
 
@@ -864,7 +864,7 @@ static void Sbar_SortFrags (qboolean includespec)
 
 	// sort by frags
 	scoreboardlines = 0;
-	for (i=0 ; i<MAX_CLIENTS ; i++)
+	for (i = 0; i < MAX_CLIENTS; i++)
 	{
 		if (cl.players[i].name[0] && (!cl.players[i].spectator || includespec))
 		{
@@ -875,14 +875,18 @@ static void Sbar_SortFrags (qboolean includespec)
 		}
 	}
 
-	for (i=0 ; i<scoreboardlines ; i++)
-		for (j=0 ; j<scoreboardlines-1-i ; j++)
+	for (i = 0; i < scoreboardlines; i++)
+	{
+		for (j = 0; j < scoreboardlines-1-i; j++)
+		{
 			if (cl.players[fragsort[j]].frags < cl.players[fragsort[j+1]].frags)
 			{
 				k = fragsort[j];
 				fragsort[j] = fragsort[j+1];
 				fragsort[j+1] = k;
 			}
+		}
+	}
 }
 
 #if 0	// unused stuff
@@ -903,10 +907,10 @@ static void SoloScoreboard(void)
 	int		minutes, seconds, tens, units;
 	int		l;
 
-	sprintf (str,"Monsters:%3i /%3i", cl.stats[STAT_MONSTERS], cl.stats[STAT_TOTALMONSTERS]);
+	sprintf (str, "Monsters:%3i /%3i", cl.stats[STAT_MONSTERS], cl.stats[STAT_TOTALMONSTERS]);
 	Sbar_DrawString (8, 4, str);
 
-	sprintf (str,"Secrets :%3i /%3i", cl.stats[STAT_SECRETS], cl.stats[STAT_TOTALSECRETS]);
+	sprintf (str, "Secrets :%3i /%3i", cl.stats[STAT_SECRETS], cl.stats[STAT_TOTALSECRETS]);
 	Sbar_DrawString (8, 12, str);
 
 	// draw time
@@ -914,7 +918,7 @@ static void SoloScoreboard(void)
 	seconds = cl.time - 60*minutes;
 	tens = seconds / 10;
 	units = seconds - 10*tens;
-	sprintf (str,"Time :%3i:%i%i", minutes, tens, units);
+	sprintf (str, "Time :%3i:%i%i", minutes, tens, units);
 	Sbar_DrawString (184, 4, str);
 
 	// draw level name
@@ -931,7 +935,7 @@ static void SoloScoreboard(void)
 void Sbar_DrawScoreboard(void)
 {
 	SoloScoreboard();
-//rjr	if(cl.gametype == GAME_DEATHMATCH)
+//rjr	if (cl.gametype == GAME_DEATHMATCH)
 	{
 		Sbar_DeathmatchOverlay();
 	}
@@ -1004,7 +1008,7 @@ static void FindColor (int slot, int *color1, int *color2)
 	sourceA = colorB + 256 + (top * 256);
 	sourceB = colorB + 256 + (bottom * 256);
 	done = 0;
-	for (j=0; j<256; j++, colorA++, colorB++, sourceA++, sourceB++)
+	for (j = 0; j < 256; j++, colorA++, colorB++, sourceA++, sourceB++)
 	{
 		if ((*colorA != 255) && !(done & 1))
 		{
@@ -1070,7 +1074,7 @@ void Sbar_DeathmatchOverlay(void)
 	Sbar_DrawRedString (x+128, y-1, "NAME");
 	y += 12;
 
-	for (i=0 ; i<l ; i++)
+	for (i = 0; i < l; i++)
 	{
 		if (y+10 >= vid.height)
 			break;
@@ -1083,7 +1087,7 @@ void Sbar_DeathmatchOverlay(void)
 
 		if (s->frags != SPEC_FRAGS)
 		{
-			switch(s->playerclass)
+			switch (s->playerclass)
 			{//Print playerclass next to name
 			case 0:
 				Sbar_DrawRedString (x+128, y, "(r   )");
@@ -1114,19 +1118,19 @@ void Sbar_DeathmatchOverlay(void)
 			if (cl_siege)
 			{
 				Sbar_DrawRedString (x+160, y, "6");
-				if (s->siege_team==1)
+				if (s->siege_team == 1)
 					Draw_Character ( x+152 , y, 143);	//shield
-				else if(s->siege_team==2)
+				else if (s->siege_team == 2)
 					Draw_Character ( x+152 , y, 144);	//sword
 				else
 					Sbar_DrawRedString ( x+152 , y, "?");	//no team
 
-				if (k==cl_keyholder)
+				if (k == cl_keyholder)
 					Draw_Character ( x+144 , y, 145);	//key
 				else
 					Sbar_DrawRedString (x+144, y, "-");
 
-				if (k==cl_doc)
+				if (k == cl_doc)
 					Draw_Character ( x+160 , y, 130);	//crown
 				else
 					Sbar_DrawRedString (x+160, y, "6");
@@ -1137,15 +1141,15 @@ void Sbar_DeathmatchOverlay(void)
 				Sbar_DrawRedString (x+144, y, "-");
 				if (!s->level)
 					Sbar_DrawRedString (x+152, y, "01");
-				else if ((int)s->level<10)
+				else if ((int)s->level < 10)
 				{
 					Sbar_DrawRedString (x+152, y, "0");
-					sprintf(num, "%1d",s->level);
+					sprintf(num, "%1d", s->level);
 					Sbar_DrawRedString (x+160, y, num);
 				}
 				else
 				{
-					sprintf(num, "%2d",s->level);
+					sprintf(num, "%2d", s->level);
 					Sbar_DrawRedString (x+152, y, num);
 				}
 			}
@@ -1158,7 +1162,7 @@ void Sbar_DeathmatchOverlay(void)
 
 			// draw number
 			f = s->frags;
-			sprintf (num, "%3i",f);
+			sprintf (num, "%3i", f);
 
 			Draw_Character (x+10 , y-1, num[0]);	//was 8
 			Draw_Character (x+18 , y-1, num[1]);	//was 16
@@ -1167,9 +1171,9 @@ void Sbar_DeathmatchOverlay(void)
 			if (k == cl.playernum)
 				Draw_Character ( x, y-1, 13);
 
-//rjr			if (k==sv_kingofhill)
+//rjr			if (k == sv_kingofhill)
 //rjr				Draw_Character ( x+40 , y-1, 130);
-			sprintf(num, "%4d",s->ping);
+			sprintf(num, "%4d", s->ping);
 			Draw_String(x+48, y, num);
 
 			if (cl.intermission)
@@ -1181,14 +1185,14 @@ void Sbar_DeathmatchOverlay(void)
 			Draw_String (x+88 , y, num);
 
 			// draw name
-			if (cl_siege && s->siege_team==2)	//attacker
+			if (cl_siege && s->siege_team == 2)	//attacker
 				Draw_String (x+178, y, s->name);
 			else
 				Sbar_DrawRedString (x+178, y, s->name);
 		}
 		else
 		{
-			sprintf(num, "%4d",s->ping);
+			sprintf(num, "%4d", s->ping);
 			Sbar_DrawRedString (x+48, y, num);
 
 			if (cl.intermission)
@@ -1317,11 +1321,11 @@ static void DrawTime (int x, int y, int disp_time)
 	show_min = disp_time;
 	show_sec = show_min%60;
 	show_min = (show_min - show_sec)/60;
-	sprintf(num, "%3d",show_min);
+	sprintf(num, "%3d", show_min);
 	Sbar_DrawRedString ( x+8 , y, num);
 //	Draw_Character ( x+32 , y, 58);// ":"
-	sprintf(num, "%2d",show_sec);
-	if (show_sec>=10)
+	sprintf(num, "%2d", show_sec);
+	if (show_sec >= 10)
 	{
 		Sbar_DrawRedString (x+40 , y, num);
 	}
@@ -1337,9 +1341,8 @@ static void Sbar_SmallDeathmatchOverlay(void)
 	int		i, k, l;
 	int		top, bottom;
 	int		x, y, f;
-	int		def_frags,att_frags;
+	int		def_frags, att_frags;
 	char		num[40];
-//	unsigned char	num[12];
 	player_info_t	*s;
 
 	if (DMMode.value != (int)DMMode.value)
@@ -1391,11 +1394,11 @@ static void Sbar_SmallDeathmatchOverlay(void)
 		x-=4;
 		Draw_Character (x , y, 142);	//sundial
 		Draw_Character (x+32 , y, 58);	// ":"
-		if (cl_timelimit>cl.time+cl_server_time_offset)
+		if (cl_timelimit > cl.time + cl_server_time_offset)
 		{
 			DrawTime(x,y,(int)(cl_timelimit - (cl.time + cl_server_time_offset)));
 		}
-		else if ((int)cl.time%2)
+		else if ((int)cl.time % 2)
 		{//odd number, draw 00:00, this will make it flash every second
 			Sbar_DrawRedString (x+16 , y, "00");
 			Sbar_DrawRedString (x+40 , y, "00");
@@ -1403,7 +1406,7 @@ static void Sbar_SmallDeathmatchOverlay(void)
 	}
 
 	def_frags = att_frags = 0;
-	for (i=0 ; i<l ; i++)
+	for (i = 0; i < l; i++)
 	{
 		k = fragsort[i];
 		s = &cl.players[k];
@@ -1412,19 +1415,19 @@ static void Sbar_SmallDeathmatchOverlay(void)
 
 		if (cl_siege)
 		{
-			if (s->siege_team==1)
+			if (s->siege_team == 1)
 			{//defender
-				if (s->frags>0)
-					def_frags+=s->frags;
+				if (s->frags > 0)
+					def_frags += s->frags;
 				else
-					att_frags-=s->frags;
+					att_frags -= s->frags;
 			}
-			else if (s->siege_team==2)
+			else if (s->siege_team == 2)
 			{//attacker
-				if (s->frags>0)
-					att_frags+=s->frags;
+				if (s->frags > 0)
+					att_frags += s->frags;
 				else
-					def_frags-=s->frags;
+					def_frags -= s->frags;
 			}
 		}
 		else
@@ -1437,7 +1440,7 @@ static void Sbar_SmallDeathmatchOverlay(void)
 
 			// draw number
 			f = s->frags;
-			sprintf (num, "%3i",f);
+			sprintf (num, "%3i", f);
 
 	/*
 			if (k != cl.playernum)
@@ -1462,7 +1465,7 @@ static void Sbar_SmallDeathmatchOverlay(void)
 			Draw_Character (x+2 , y-1, num[0]);
 			Draw_Character (x+10 , y-1, num[1]);
 			Draw_Character (x+18 , y-1, num[2]);
-	//rjr		if(k==sv_kingofhill)
+	//rjr		if (k == sv_kingofhill)
 	//rjr			Draw_Character ( x+28 , y-1, 130);
 			y += 10;
 		}
@@ -1474,25 +1477,25 @@ static void Sbar_SmallDeathmatchOverlay(void)
 			Draw_Character (x , y-10, 145);//key
 		if (cl.playernum == cl_doc)
 			Draw_Character (x+8 , y-10, 130);//crown
-		if ((int)cl.v.artifact_active&ARTFLAG_BOOTS)
+		if ((int)cl.v.artifact_active & ARTFLAG_BOOTS)
 			Draw_Character (x+16 , y-10, 146);//boots
 
 		//Print defender losses
 		Draw_Character ( x , y+10, 143);//shield
-		sprintf (num, "%3i",defLosses);
-//		sprintf (num, "%3i",att_frags);
+		sprintf (num, "%3i", defLosses);
+//		sprintf (num, "%3i", att_frags);
 		Sbar_DrawRedString ( x+8 , y+10, num);
 		Draw_Character ( x+32 , y+10, 47);// "/"
-		sprintf (num, "%3i",cl_fraglimit);
+		sprintf (num, "%3i", cl_fraglimit);
 		Sbar_DrawRedString ( x+40 , y+10, num);
 
 		//Print attacker losses
 		Draw_Character ( x , y+20, 144);//sword
-		sprintf (num, "%3i",attLosses);
-//		sprintf (num, "%3i",def_frags);
+		sprintf (num, "%3i", attLosses);
+//		sprintf (num, "%3i", def_frags);
 		Sbar_DrawRedString ( x+8 , y+20, num);
 		Draw_Character ( x+32 , y+20, 47);// "/"
-		sprintf (num, "%3i",cl_fraglimit*2);
+		sprintf (num, "%3i", cl_fraglimit*2);
 		Sbar_DrawRedString ( x+40 , y+20, num);
 	}
 
@@ -1521,34 +1524,34 @@ static void DrawActiveRings(void)
 
 	flag = (int)cl.v.rings_active;
 
-	if (flag&RING_TURNING)
+	if (flag & RING_TURNING)
 	{
-		frame = 1+((int)(cl.time*16)%16);
+		frame = 1 + ((int)(cl.time * 16) % 16);
 		sprintf(tempStr, "gfx/rngtrn%d.lmp", frame);
 		Draw_TransPic(vid.width - 50, ring_row, Draw_CachePic(tempStr));
 		ring_row += 33;
 	}
 
-/*	if (flag&RING_REGENERATION)
+/*	if (flag & RING_REGENERATION)
 	{
-		frame = 1+((int)(cl.time*16)%16);
+		frame = 1 + ((int)(cl.time * 16) % 16);
 		sprintf(tempStr, "gfx/rngreg%d.lmp", frame);
 		Draw_TransPic(vid.width - 50, ring_row, Draw_CachePic(tempStr));
 		ring_row += 33;
 	}
 */
 
-	if (flag&RING_WATER)
+	if (flag & RING_WATER)
 	{
-		frame = 1+((int)(cl.time*16)%16);
+		frame = 1 + ((int)(cl.time * 16) % 16);
 		sprintf(tempStr, "gfx/rngwtr%d.lmp", frame);
 		Draw_TransPic(vid.width - 50, ring_row, Draw_CachePic(tempStr));
 		ring_row += 33;
 	}
 
-	if (flag&RING_FLIGHT)
+	if (flag & RING_FLIGHT)
 	{
-		frame = 1+((int)(cl.time*16)%16);
+		frame = 1 + ((int)(cl.time * 16) % 16);
 		sprintf(tempStr, "gfx/rngfly%d.lmp", frame);
 		Draw_TransPic(vid.width - 50, ring_row, Draw_CachePic(tempStr));
 		ring_row += 33;
@@ -1578,7 +1581,7 @@ static void DrawActiveArtifacts(void)
 	flag = (int)cl.v.artifact_active;
 	if (flag & ART_TOMEOFPOWER)
 	{
-		frame = 1+((int)(cl.time*16)%16);
+		frame = 1 + ((int)(cl.time * 16) % 16);
 		sprintf(tempStr, "gfx/pwrbook%d.lmp", frame);
 		Draw_TransPic(vid.width-art_col, 1, Draw_CachePic(tempStr));
 		art_col += 50;
@@ -1591,9 +1594,9 @@ static void DrawActiveArtifacts(void)
 
 	if (flag & ART_HASTE)
 	{
-		frame = 1+((int)(cl.time*16)%16);
+		frame = 1 + ((int)(cl.time * 16) % 16);
 		sprintf(tempStr, "gfx/durhst%d.lmp", frame);
-		Draw_TransPic(vid.width-art_col,1, Draw_CachePic(tempStr));
+		Draw_TransPic(vid.width-art_col, 1, Draw_CachePic(tempStr));
 		art_col += 50;
 		scr_topupdate = 0;
 	}
@@ -1604,7 +1607,7 @@ static void DrawActiveArtifacts(void)
 
 	if (flag & ART_INVINCIBILITY)
 	{
-		frame = 1+((int)(cl.time*16)%16);
+		frame = 1 + ((int)(cl.time * 16) % 16);
 		sprintf(tempStr, "gfx/durshd%d.lmp", frame);
 		Draw_TransPic(vid.width-art_col, 1, Draw_CachePic(tempStr));
 		art_col += 50;
@@ -1703,11 +1706,11 @@ static void DrawArtifactInventory(void)
 
 	for (i = 0, x = 64; i < INV_MAX_ICON; i++, x += 33)
 	{
-		if (cl.inv_startpos+i >= cl.inv_count)
+		if (cl.inv_startpos + i >= cl.inv_count)
 		{
 			break;
 		}
-		if (cl.inv_startpos+i == cl.inv_selected)
+		if (cl.inv_startpos + i == cl.inv_selected)
 		{ // Highlight icon
 			Sbar_DrawTransPic(x+9, y-12, Draw_CachePic("gfx/artisel.lmp"));
 		}
@@ -1973,7 +1976,7 @@ void SB_InvChanged(void)
 		ForceUpdate = true;
 
 	// removed items we no longer have from the order
-	for (counter=position=0;counter<cl.inv_count;counter++)
+	for (counter = position = 0; counter < cl.inv_count; counter++)
 	{
 		//if (Inv_GetCount(cl.inv_order[counter]) >= 0)
 		if ((&cl.v.cnt_torch)[cl.inv_order[counter]] > 0)
@@ -1986,7 +1989,8 @@ void SB_InvChanged(void)
 	}
 
 	// add in the new items
-	for (counter=0;counter<INV_MAX_CNT;counter++)
+	for (counter = 0; counter < INV_MAX_CNT; counter++)
+	{
 		if (!examined[counter])
 		{
 			//if (Inv_GetCount(counter) > 0)
@@ -1996,6 +2000,7 @@ void SB_InvChanged(void)
 				position++;
 			}
 		}
+	}
 
 	cl.inv_count = position;
 	if (cl.inv_selected >= cl.inv_count)

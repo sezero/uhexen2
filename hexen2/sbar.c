@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.26 2006-07-27 13:48:58 sezero Exp $
+	$Id: sbar.c,v 1.27 2006-10-21 18:21:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -334,7 +334,7 @@ void Sbar_Draw(void)
 	}
 
 	// FIXME: Check for deathmatch and draw frags
-	// if(cl.maxclients != 1) Sbar_Draw
+	// if (cl.maxclients != 1) Sbar_Draw
 
 	DrawArtifactInventory();
 
@@ -529,14 +529,14 @@ static void DrawLowerBar(void)
 
 	// Abilities
 	Sbar_DrawSmallString(11, 79, "abilities");
-	i = ABILITIES_STR_INDEX+(playerClass-1)*2;
-	if (i+1 < pr_string_count)
+	i = ABILITIES_STR_INDEX + (playerClass - 1)*2;
+	if (i + 1 < pr_string_count)
 	{
-		if (((int)cl.v.flags)&FL_SPECIAL_ABILITY1)
+		if (((int)cl.v.flags) & FL_SPECIAL_ABILITY1)
 		{
 			Sbar_DrawSmallString(8, 89, &pr_global_strings[pr_string_index[i]]);
 		}
-		if (((int)cl.v.flags)&FL_SPECIAL_ABILITY2)
+		if (((int)cl.v.flags) & FL_SPECIAL_ABILITY2)
 		{
 			Sbar_DrawSmallString(8, 96, &pr_global_strings[pr_string_index[i+1]]);
 		}
@@ -708,7 +708,7 @@ static int Sbar_itoa(int num, char *buf)
 		dig = num/pow10;
 		*str++ = '0'+dig;
 		num -= dig*pow10;
-	} while(pow10 != 1);
+	} while (pow10 != 1);
 
 	*str = 0;
 
@@ -766,7 +766,7 @@ static void Sbar_SortFrags(void)
 
 	// sort by frags
 	scoreboardlines = 0;
-	for (i=0 ; i<cl.maxclients ; i++)
+	for (i = 0; i < cl.maxclients; i++)
 	{
 		if (cl.scores[i].name[0])
 		{
@@ -775,14 +775,18 @@ static void Sbar_SortFrags(void)
 		}
 	}
 
-	for (i=0 ; i<scoreboardlines ; i++)
-		for (j=0 ; j<scoreboardlines-1-i ; j++)
+	for (i = 0; i < scoreboardlines; i++)
+	{
+		for (j = 0; j < scoreboardlines-1-i; j++)
+		{
 			if (cl.scores[fragsort[j]].frags < cl.scores[fragsort[j+1]].frags)
 			{
 				k = fragsort[j];
 				fragsort[j] = fragsort[j+1];
 				fragsort[j+1] = k;
 			}
+		}
+	}
 }
 
 #if 0	// unused stuff
@@ -803,10 +807,10 @@ static void SoloScoreboard(void)
 	int		minutes, seconds, tens, units;
 	int		l;
 
-	sprintf (str,"Monsters:%3i /%3i", cl.stats[STAT_MONSTERS], cl.stats[STAT_TOTALMONSTERS]);
+	sprintf (str, "Monsters:%3i /%3i", cl.stats[STAT_MONSTERS], cl.stats[STAT_TOTALMONSTERS]);
 	Sbar_DrawString (8, 4, str);
 
-	sprintf (str,"Secrets :%3i /%3i", cl.stats[STAT_SECRETS], cl.stats[STAT_TOTALSECRETS]);
+	sprintf (str, "Secrets :%3i /%3i", cl.stats[STAT_SECRETS], cl.stats[STAT_TOTALSECRETS]);
 	Sbar_DrawString (8, 12, str);
 
 	// draw time
@@ -814,7 +818,7 @@ static void SoloScoreboard(void)
 	seconds = cl.time - 60*minutes;
 	tens = seconds / 10;
 	units = seconds - 10*tens;
-	sprintf (str,"Time :%3i:%i%i", minutes, tens, units);
+	sprintf (str, "Time :%3i:%i%i", minutes, tens, units);
 	Sbar_DrawString (184, 4, str);
 
 	// draw level name
@@ -831,7 +835,7 @@ static void SoloScoreboard(void)
 void Sbar_DrawScoreboard(void)
 {
 	SoloScoreboard();
-	if(cl.gametype == GAME_DEATHMATCH)
+	if (cl.gametype == GAME_DEATHMATCH)
 	{
 		Sbar_DeathmatchOverlay();
 	}
@@ -904,7 +908,7 @@ static void FindColor (int slot, int *color1, int *color2)
 	sourceA = colorB + 256 + (top * 256);
 	sourceB = colorB + 256 + (bottom * 256);
 	done = 0;
-	for (j=0; j<256; j++, colorA++, colorB++, sourceA++, sourceB++)
+	for (j = 0; j < 256; j++, colorA++, colorB++, sourceA++, sourceB++)
 	{
 		if ((*colorA != 255) && !(done & 1))
 		{
@@ -954,7 +958,7 @@ void Sbar_DeathmatchOverlay(void)
 
 	x = 80 + ((vid.width - 320)>>1);
 	y = 62;
-	for (i=0 ; i<l ; i++)
+	for (i = 0; i < l; i++)
 	{
 		if (y+10 >= vid.height)
 			break;
@@ -972,9 +976,9 @@ void Sbar_DeathmatchOverlay(void)
 
 		// draw number
 		f = s->frags;
-		sprintf (num, "%3i",f);
+		sprintf (num, "%3i", f);
 
-		if (k==sv_kingofhill)
+		if (k == sv_kingofhill)
 			Draw_Character (x-12 , y-1, 130);
 		Draw_Character (x+8 , y-1, num[0]);
 		Draw_Character (x+16 , y-1, num[1]);
@@ -1136,7 +1140,7 @@ static void Sbar_SmallDeathmatchOverlay(void)
 	}
 
 	x = 10;
-	for (i=0 ; i<l ; i++)
+	for (i = 0; i < l; i++)
 	{
 		k = fragsort[i];
 		s = &cl.scores[k];
@@ -1151,14 +1155,14 @@ static void Sbar_SmallDeathmatchOverlay(void)
 
 		// draw number
 		f = s->frags;
-		sprintf (num, "%3i",f);
+		sprintf (num, "%3i", f);
 
 		if (k != cl.viewentity - 1)
 		{
 			Draw_Character (x+2 , y-1, num[0]);
 			Draw_Character (x+10 , y-1, num[1]);
 			Draw_Character (x+18 , y-1, num[2]);
-			if(k==sv_kingofhill)
+			if (k == sv_kingofhill)
 				Draw_Character (x+30 , y-1, 130);
 		}
 		else
@@ -1166,7 +1170,7 @@ static void Sbar_SmallDeathmatchOverlay(void)
 			Draw_Character (x+2 , y-1, num[0] + 256);
 			Draw_Character (x+10 , y-1, num[1] + 256);
 			Draw_Character (x+18 , y-1, num[2] + 256);
-			if (k==sv_kingofhill)
+			if (k == sv_kingofhill)
 				Draw_Character ( x+30 , y-1, 130);
 		}
 
@@ -1198,34 +1202,34 @@ static void DrawActiveRings(void)
 
 	flag = (int)cl.v.rings_active;
 
-	if (flag&RING_TURNING)
+	if (flag & RING_TURNING)
 	{
-		frame = 1+((int)(cl.time*16)&15);
+		frame = 1 + ((int)(cl.time * 16) & 15);
 		sprintf(tempStr, "gfx/rngtrn%d.lmp", frame);
 		Draw_TransPic(vid.width - 50, ring_row, Draw_CachePic(tempStr));
 		ring_row += 33;
 	}
 
-/*	if (flag&RING_REGENERATION)
+/*	if (flag & RING_REGENERATION)
 	{
-		frame = 1+((int)(cl.time*16)&15);
+		frame = 1 + ((int)(cl.time * 16) & 15);
 		sprintf(tempStr, "gfx/rngreg%d.lmp", frame);
 		Draw_TransPic(vid.width - 50, ring_row, Draw_CachePic(tempStr));
 		ring_row += 33;
 	}
 */
 
-	if (flag&RING_WATER)
+	if (flag & RING_WATER)
 	{
-		frame = 1+((int)(cl.time*16)&15);
+		frame = 1 + ((int)(cl.time * 16) & 15);
 		sprintf(tempStr, "gfx/rngwtr%d.lmp", frame);
 		Draw_TransPic(vid.width - 50, ring_row, Draw_CachePic(tempStr));
 		ring_row += 33;
 	}
 
-	if(flag&RING_FLIGHT)
+	if (flag & RING_FLIGHT)
 	{
-		frame = 1+((int)(cl.time*16)&15);
+		frame = 1 + ((int)(cl.time * 16) & 15);
 		sprintf(tempStr, "gfx/rngfly%d.lmp", frame);
 		Draw_TransPic(vid.width - 50, ring_row, Draw_CachePic(tempStr));
 		ring_row += 33;
@@ -1255,7 +1259,7 @@ static void DrawActiveArtifacts(void)
 	flag = (int)cl.v.artifact_active;
 	if (flag & ART_TOMEOFPOWER)
 	{
-		frame = 1+((int)(cl.time*16)&15);
+		frame = 1 + ((int)(cl.time * 16) & 15);
 		sprintf(tempStr, "gfx/pwrbook%d.lmp", frame);
 		Draw_TransPic(vid.width-art_col, 1, Draw_CachePic(tempStr));
 		art_col += 50;
@@ -1268,9 +1272,9 @@ static void DrawActiveArtifacts(void)
 
 	if (flag & ART_HASTE)
 	{
-		frame = 1+((int)(cl.time*16)&15);
+		frame = 1 + ((int)(cl.time * 16) & 15);
 		sprintf(tempStr, "gfx/durhst%d.lmp", frame);
-		Draw_TransPic(vid.width-art_col,1, Draw_CachePic(tempStr));
+		Draw_TransPic(vid.width-art_col, 1, Draw_CachePic(tempStr));
 		art_col += 50;
 		scr_topupdate = 0;
 	}
@@ -1281,7 +1285,7 @@ static void DrawActiveArtifacts(void)
 
 	if (flag & ART_INVINCIBILITY)
 	{
-		frame = 1+((int)(cl.time*16)&15);
+		frame = 1 + ((int)(cl.time * 16) & 15);
 		sprintf(tempStr, "gfx/durshd%d.lmp", frame);
 		Draw_TransPic(vid.width-art_col, 1, Draw_CachePic(tempStr));
 		art_col += 50;
@@ -1330,7 +1334,7 @@ static void DrawBarArtifactIcon(int x, int y, int artifact)
 {
 	int	count;
 
-	if ((artifact<0) || (artifact>14))
+	if ((artifact < 0) || (artifact > 14))
 		return;
 	Sbar_DrawTransPic(x, y, Draw_CachePic(va("gfx/arti%02d.lmp", artifact)));
 //	if ((count = (int)(&cl.v.cnt_torch)[artifact]) > 1)
@@ -1379,11 +1383,11 @@ static void DrawArtifactInventory(void)
 
 	for (i = 0, x = 64; i < INV_MAX_ICON; i++, x += 33)
 	{
-		if (cl.inv_startpos+i >= cl.inv_count)
+		if (cl.inv_startpos + i >= cl.inv_count)
 		{
 			break;
 		}
-		if (cl.inv_startpos+i == cl.inv_selected)
+		if (cl.inv_startpos + i == cl.inv_selected)
 		{ // Highlight icon
 			Sbar_DrawTransPic(x+9, y-12, Draw_CachePic("gfx/artisel.lmp"));
 		}
@@ -1602,7 +1606,7 @@ void SB_InvChanged(void)
 		ForceUpdate = true;
 
 	// removed items we no longer have from the order
-	for (counter=position=0;counter<cl.inv_count;counter++)
+	for (counter = position = 0; counter < cl.inv_count; counter++)
 	{
 		//if (Inv_GetCount(cl.inv_order[counter]) >= 0)
 		if ((&cl.v.cnt_torch)[cl.inv_order[counter]] > 0)
@@ -1615,7 +1619,8 @@ void SB_InvChanged(void)
 	}
 
 	// add in the new items
-	for (counter=0;counter<INV_MAX_CNT;counter++)
+	for (counter = 0; counter < INV_MAX_CNT; counter++)
+	{
 		if (!examined[counter])
 		{
 			//if (Inv_GetCount(counter) > 0)
@@ -1625,6 +1630,7 @@ void SB_InvChanged(void)
 				position++;
 			}
 		}
+	}
 
 	cl.inv_count = position;
 	if (cl.inv_selected >= cl.inv_count)

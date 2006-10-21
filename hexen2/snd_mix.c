@@ -24,9 +24,9 @@ static void Snd_WriteLinearBlastStereo16 (void)
 	int		i;
 	int		val;
 
-	for (i=0 ; i<snd_linear_count ; i+=2)
+	for (i = 0; i < snd_linear_count; i += 2)
 	{
-		val = (snd_p[i]*snd_vol)>>8;
+		val = (snd_p[i]*snd_vol) >> 8;
 		if (val > 0x7fff)
 			snd_out[i] = 0x7fff;
 		else if (val < (short)0x8000)
@@ -34,7 +34,7 @@ static void Snd_WriteLinearBlastStereo16 (void)
 		else
 			snd_out[i] = val;
 
-		val = (snd_p[i+1]*snd_vol)>>8;
+		val = (snd_p[i+1]*snd_vol) >> 8;
 		if (val > 0x7fff)
 			snd_out[i+1] = 0x7fff;
 		else if (val < (short)0x8000)
@@ -58,7 +58,7 @@ static void S_TransferStereo16 (int endtime)
 	HRESULT	hresult;
 #endif
 
-	snd_vol = sfxvolume.value*256;
+	snd_vol = sfxvolume.value * 256;
 
 	snd_p = (int *) paintbuffer;
 	lpaintedtime = paintedtime;
@@ -98,11 +98,11 @@ static void S_TransferStereo16 (int endtime)
 	while (lpaintedtime < endtime)
 	{
 	// handle recirculating buffer issues
-		lpos = lpaintedtime & ((shm->samples>>1)-1);
+		lpos = lpaintedtime & ((shm->samples >> 1) - 1);
 
-		snd_out = (short *) pbuf + (lpos<<1);
+		snd_out = (short *) pbuf + (lpos << 1);
 
-		snd_linear_count = (shm->samples>>1) - lpos;
+		snd_linear_count = (shm->samples >> 1) - lpos;
 		if (lpaintedtime + snd_linear_count > endtime)
 			snd_linear_count = endtime - lpaintedtime;
 
@@ -112,7 +112,7 @@ static void S_TransferStereo16 (int endtime)
 		Snd_WriteLinearBlastStereo16 ();
 
 		snd_p += snd_linear_count;
-		lpaintedtime += (snd_linear_count>>1);
+		lpaintedtime += (snd_linear_count >> 1);
 	}
 
 #ifdef _WIN32
@@ -122,7 +122,7 @@ static void S_TransferStereo16 (int endtime)
 #endif
 }
 
-static void S_TransferPaintBuffer(int endtime)
+static void S_TransferPaintBuffer (int endtime)
 {
 	int	out_idx, out_mask;
 	int	count, step, val;
@@ -147,7 +147,7 @@ static void S_TransferPaintBuffer(int endtime)
 	out_mask = shm->samples - 1;
 	out_idx = paintedtime * shm->channels & out_mask;
 	step = 3 - shm->channels;
-	snd_vol = sfxvolume.value*256;
+	snd_vol = sfxvolume.value * 256;
 
 #ifdef _WIN32
 // FIXME: move this to its platform driver!
@@ -207,7 +207,7 @@ static void S_TransferPaintBuffer(int endtime)
 				val = 0x7fff;
 			else if (val < (short)0x8000)
 				val = (short)0x8000;
-			out[out_idx] = (val>>8) + 128;
+			out[out_idx] = (val >> 8) + 128;
 			out_idx = (out_idx + 1) & out_mask;
 		}
 	}
@@ -247,7 +247,7 @@ static void SND_PaintChannelFrom8 (channel_t *ch, sfxcache_t *sc, int endtime);
 #endif
 static void SND_PaintChannelFrom16 (channel_t *ch, sfxcache_t *sc, int endtime);
 
-void S_PaintChannels(int endtime)
+void S_PaintChannels (int endtime)
 {
 	int		i;
 	int		end, ltime, count;
@@ -266,7 +266,7 @@ void S_PaintChannels(int endtime)
 
 	// paint in the channels.
 		ch = channels;
-		for (i=0; i<total_channels ; i++, ch++)
+		for (i = 0; i < total_channels; i++, ch++)
 		{
 			if (!ch->sfx)
 				continue;
@@ -322,8 +322,9 @@ void SND_InitScaletable (void)
 {
 	int		i, j;
 
-	for (i=0 ; i<32 ; i++)
-		for (j=0 ; j<256 ; j++)
+	for (i = 0; i < 32; i++)
+	{
+		for (j = 0; j < 256; j++)
 		/* When compiling with gcc-4.1.0 at optimisations O1 and
 		   higher, the tricky signed char type conversion is not
 		   guaranteed. Therefore we explicity calculate the signed
@@ -332,6 +333,7 @@ void SND_InitScaletable (void)
 		*/
 		//	snd_scaletable[i][j] = ((signed char)j) * i * 8;
 			snd_scaletable[i][j] = ((j < 128) ? j : j - 0xff) * i * 8;
+	}
 }
 
 
@@ -353,7 +355,7 @@ static void SND_PaintChannelFrom8 (channel_t *ch, sfxcache_t *sc, int count)
 	rscale = snd_scaletable[ch->rightvol >> 3];
 	sfx = (unsigned char *) ((signed char *)sc->data + ch->pos);
 
-	for (i=0 ; i<count ; i++)
+	for (i = 0; i < count; i++)
 	{
 		data = sfx[i];
 		paintbuffer[i].left += lscale[data];
@@ -378,7 +380,7 @@ static void SND_PaintChannelFrom16 (channel_t *ch, sfxcache_t *sc, int count)
 	rightvol = ch->rightvol;
 	sfx = (signed short *)sc->data + ch->pos;
 
-	for (i=0 ; i<count ; i++)
+	for (i = 0; i < count; i++)
 	{
 		data = sfx[i];
 		left = (data * leftvol) >> 8;

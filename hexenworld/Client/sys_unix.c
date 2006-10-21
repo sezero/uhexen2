@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.61 2006-10-19 06:32:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.62 2006-10-21 18:21:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -49,9 +49,9 @@ void Sys_DebugLog(char *file, char *fmt, ...)
 	static char	data[MAXPRINTMSG];
 	int			fd;
 
-	va_start(argptr, fmt);
-	vsnprintf(data, sizeof (data), fmt, argptr);
-	va_end(argptr);
+	va_start (argptr, fmt);
+	vsnprintf (data, sizeof (data), fmt, argptr);
+	va_end (argptr);
 	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
 	write(fd, data, strlen(data));
 	close(fd);
@@ -217,7 +217,7 @@ void Sys_Printf (char *fmt, ...)
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
 
-	va_start (argptr,fmt);
+	va_start (argptr, fmt);
 	vsnprintf (text, sizeof (text), fmt, argptr);
 	va_end (argptr);
 
@@ -232,7 +232,7 @@ void Sys_DPrintf (char *fmt, ...)
 	if (!developer.value)
 		return;
 
-	va_start (argptr,fmt);
+	va_start (argptr, fmt);
 	vsnprintf (text, sizeof (text), fmt, argptr);
 	va_end (argptr);
 
@@ -425,14 +425,14 @@ int main(int argc, char *argv[])
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
-	Sys_Printf("userdir is: %s\n",userdir);
+	Sys_Printf("userdir is: %s\n", userdir);
 
 	sdl_version = SDL_Linked_Version();
 	Sys_Printf("Found SDL version %i.%i.%i\n",sdl_version->major,sdl_version->minor,sdl_version->patch);
 	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
 	{	//reject running under SDL versions older than what is stated in sdl_inc.h
-		printf("You need at least v%d.%d.%d of SDL to run this game\n",SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
-		exit(0);
+		Sys_Printf("You need at least v%d.%d.%d of SDL to run this game\n",SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
+		exit (1);
 	}
 
 	parms.memsize = STD_MEM_ALLOC;
@@ -501,6 +501,10 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.61  2006/10/19 06:32:30  sezero
+ * added Sys_DPrintf: at present, its only user is the hexen2 dedicated
+ * server. further use of it may come with future versions.
+ *
  * Revision 1.60  2006/10/10 08:45:43  sezero
  * removed an accidental extra semicolon at the end of Sys_DebugLog
  *

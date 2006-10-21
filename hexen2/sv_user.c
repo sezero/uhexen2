@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.13 2006-09-21 06:05:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.14 2006-10-21 18:21:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -65,7 +65,7 @@ void SV_SetIdealPitch (void)
 	save_hull = sv_player->v.hull;
 	sv_player->v.hull = 0;
 
-	for (i=0 ; i<MAX_FORWARD ; i++)
+	for (i = 0; i < MAX_FORWARD; i++)
 	{
 		top[0] = sv_player->v.origin[0] + cosval*(i+3)*12;
 		top[1] = sv_player->v.origin[1] + sinval*(i+3)*12;
@@ -89,7 +89,7 @@ void SV_SetIdealPitch (void)
 
 	dir = 0;
 	steps = 0;
-	for (j=1 ; j<i ; j++)
+	for (j = 1; j < i; j++)
 	{
 		step = z[j] - z[j-1];
 		if (step > -ON_EPSILON && step < ON_EPSILON)
@@ -225,7 +225,7 @@ static void SV_Accelerate (vec3_t wishvel)
 	if (accelspeed > addspeed)
 		accelspeed = addspeed;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		velocity[i] += accelspeed*pushvec[i];
 }
 #endif
@@ -242,7 +242,7 @@ static void SV_Accelerate (void)
 	if (accelspeed > addspeed)
 		accelspeed = addspeed;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		velocity[i] += accelspeed*wishdir[i];
 }
 
@@ -264,7 +264,7 @@ static void SV_AirAccelerate (vec3_t wishveloc)
 	if (accelspeed > addspeed)
 		accelspeed = addspeed;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		velocity[i] += accelspeed*wishveloc[i];
 }
 
@@ -307,7 +307,7 @@ static void SV_FlightMove (void)
 //
 	AngleVectors (sv_player->v.v_angle, forward, right, up);
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		wishvel[i] = forward[i]*cmd.forwardmove + right[i]*cmd.sidemove + up[i]* cmd.upmove;
 
 	wishspeed = VectorLength(wishvel);
@@ -346,7 +346,7 @@ static void SV_FlightMove (void)
 	if (accelspeed > addspeed)
 		accelspeed = addspeed;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		velocity[i] += accelspeed * wishvel[i];
 }
 
@@ -369,7 +369,7 @@ static void SV_WaterMove (void)
 //
 	AngleVectors (sv_player->v.v_angle, forward, right, up);
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		wishvel[i] = forward[i]*cmd.forwardmove + right[i]*cmd.sidemove;
 
 	if (!cmd.forwardmove && !cmd.sidemove && !cmd.upmove)
@@ -384,9 +384,9 @@ static void SV_WaterMove (void)
 		wishspeed = sv_maxspeed.value;
 	}
 
-	if (sv_player->v.playerclass==CLASS_DEMON)	// Paladin Special Ability #1 - unrestricted movement in water
+	if (sv_player->v.playerclass == CLASS_DEMON)	// Paladin Special Ability #1 - unrestricted movement in water
 		wishspeed *= 0.5;
-	else if (sv_player->v.playerclass!=CLASS_PALADIN) // Paladin Special Ability #1 - unrestricted movement in water
+	else if (sv_player->v.playerclass != CLASS_PALADIN) // Paladin Special Ability #1 - unrestricted movement in water
 		wishspeed *= 0.7;
 	else if (sv_player->v.level == 1)
 		wishspeed *= 0.75;
@@ -430,7 +430,7 @@ static void SV_WaterMove (void)
 	if (accelspeed > addspeed)
 		accelspeed = addspeed;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		velocity[i] += accelspeed * wishvel[i];
 }
 
@@ -469,7 +469,7 @@ static void SV_AirMove (void)
 	if (sv.time < sv_player->v.teleport_time && fmove < 0)
 		fmove = 0;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		wishvel[i] = forward[i]*fmove + right[i]*smove;
 
 	if ( (int)sv_player->v.movetype != MOVETYPE_WALK)
@@ -565,7 +565,7 @@ void SV_ClientThink (void)
 	angles = sv_player->v.angles;
 
 	VectorAdd (sv_player->v.v_angle, sv_player->v.punchangle, v_angle);
-	angles[ROLL] = V_CalcRoll (sv_player->v.angles, sv_player->v.velocity)*4;
+	angles[ROLL] = V_CalcRoll(sv_player->v.angles, sv_player->v.velocity) * 4;
 	if (!sv_player->v.fixangle)
 	{
 		angles[PITCH] = -v_angle[PITCH]/3;
@@ -613,7 +613,7 @@ static void SV_ReadClientMove (usercmd_t *move)
 	host_client->num_pings++;
 
 	// read current angles
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		angle[i] = MSG_ReadAngle ();
 
 	VectorCopy (angle, host_client->edict->v.v_angle);
@@ -778,7 +778,7 @@ void SV_RunClients (void)
 {
 	int				i;
 
-	for (i=0, host_client = svs.clients ; i<svs.maxclients ; i++, host_client++)
+	for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
 	{
 		if (!host_client->active)
 			continue;
@@ -810,6 +810,12 @@ void SV_RunClients (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2006/09/21 06:05:35  sezero
+ * gathered most, if not all, of our compile time options into a header
+ * file named "h2_opt.h" with documentation. removed gl_opt.h. removed
+ * all of the one liner extra patches which played with these options.
+ * updated the COMPILE document accordingly.
+ *
  * Revision 1.12  2006/07/02 11:45:35  sezero
  * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
  * which stops vec3_origin usage in relevant calculations. renamed the Length

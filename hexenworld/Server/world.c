@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/world.c,v 1.7 2006-07-02 11:45:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/world.c,v 1.8 2006-10-21 18:21:33 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -57,11 +57,11 @@ static void SV_InitBoxHull (void)
 	box_hull.firstclipnode = 0;
 	box_hull.lastclipnode = 5;
 
-	for (i=0 ; i<6 ; i++)
+	for (i = 0; i < 6; i++)
 	{
 		box_clipnodes[i].planenum = i;
 
-		side = i&1;
+		side = i & 1;
 
 		box_clipnodes[i].children[side] = CONTENTS_EMPTY;
 		if (i != 5)
@@ -128,7 +128,7 @@ static hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t 
 		VectorSubtract (maxs, mins, size);
 		if (move_ent->v.hull)	// Entity is specifying which hull to use
 		{
-			idx=move_ent->v.hull-1;
+			idx = move_ent->v.hull-1;
 			hull = &model->hulls[idx];
 			if (!hull)  // Invalid hull
 			{
@@ -149,7 +149,7 @@ static hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t 
 		}
 
 		// calculate an offset value to center the origin
-	//	if (!move_ent->v.flags&262144)//FL_IGNORESIZEOFS
+	//	if (!move_ent->v.flags & 262144)//FL_IGNORESIZEOFS
 	//	{
 			VectorSubtract (hull->clip_mins, mins, offset);
 			VectorAdd (offset, ent->v.origin, offset);
@@ -377,16 +377,16 @@ void SV_LinkEdict (edict_t *ent, qboolean touch_triggers)
 		int			i;
 
 		max = 0;
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 		{
-			v =fabs( ent->v.mins[i]);
+			v = fabs(ent->v.mins[i]);
 			if (v > max)
 				max = v;
-			v =fabs( ent->v.maxs[i]);
+			v = fabs(ent->v.maxs[i]);
 			if (v > max)
 				max = v;
 		}
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 		{
 			ent->v.absmin[i] = ent->v.origin[i] - max;
 			ent->v.absmax[i] = ent->v.origin[i] + max;
@@ -637,7 +637,7 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 		frac = 1;
 
 	midf = p1f + (p2f - p1f)*frac;
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		mid[i] = p1[i] + frac*(p2[i] - p1[i]);
 
 	side = (t1 < 0);
@@ -688,7 +688,7 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 		}
 		midf = p1f + (p2f - p1f)*frac;
 
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 			mid[i] = p1[i] + frac * (p2[i] - p1[i]);
 	}
 
@@ -891,7 +891,7 @@ static void SV_MoveBounds (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, v
 #else
 	int		i;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		if (end[i] > start[i])
 		{
@@ -932,7 +932,7 @@ trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, e
 
 	if (type == MOVE_MISSILE || type == MOVE_PHASE)
 	{
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 		{
 			clip.mins2[i] = -15;
 			clip.maxs2[i] = 15;
@@ -980,7 +980,7 @@ edict_t	*SV_TestPlayerPosition (edict_t *ent, vec3_t origin)
 	VectorAdd (origin, ent->v.maxs, boxmaxs);
 
 	check = NEXT_EDICT(sv.edicts);
-	for (e=1 ; e<sv.num_edicts ; e++, check = NEXT_EDICT(check))
+	for (e = 1; e < sv.num_edicts; e++, check = NEXT_EDICT(check))
 	{
 		if (check->free)
 			continue;
@@ -1014,8 +1014,15 @@ edict_t	*SV_TestPlayerPosition (edict_t *ent, vec3_t origin)
 }
 #endif
 
+
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2006/07/02 11:45:38  sezero
+ * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
+ * which stops vec3_origin usage in relevant calculations. renamed the Length
+ * macro to VectorLength for consistancy. updated the utilities' mathlib for
+ * similar macro usage as in the engine.
+ *
  * Revision 1.6  2006/02/22 22:56:24  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 24: world.c, world.h).

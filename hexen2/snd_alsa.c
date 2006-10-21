@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.23 2006-09-29 20:38:44 sezero Exp $
+	$Id: snd_alsa.c,v 1.24 2006-10-21 18:21:28 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -155,7 +155,7 @@ qboolean S_ALSA_Init (void)
 	if (err < 0)
 	{
 		Con_Printf("Problems setting sample rate, trying alternatives..\n");
-		for (i=0 ; i<MAX_TRYRATES ; i++)
+		for (i = 0; i < MAX_TRYRATES; i++)
 		{
 			rate = tryrates[i];
 			err = hx2snd_pcm_hw_params_set_rate_near (pcm, hw, &rate, 0);
@@ -319,15 +319,15 @@ void S_ALSA_Submit (void)
 
 	switch (state)
 	{
-		case SND_PCM_STATE_PREPARED:
-			hx2snd_pcm_mmap_commit (pcm, offset, nframes);
-			hx2snd_pcm_start (pcm);
-			break;
-		case SND_PCM_STATE_RUNNING:
-			hx2snd_pcm_mmap_commit (pcm, offset, nframes);
-			break;
-		default:
-			break;
+	case SND_PCM_STATE_PREPARED:
+		hx2snd_pcm_mmap_commit (pcm, offset, nframes);
+		hx2snd_pcm_start (pcm);
+		break;
+	case SND_PCM_STATE_RUNNING:
+		hx2snd_pcm_mmap_commit (pcm, offset, nframes);
+		break;
+	default:
+		break;
 	}
 }
 
@@ -335,6 +335,9 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2006/09/29 20:38:44  sezero
+ * even more sound stuff (alsa clean-up)
+ *
  * Revision 1.22  2006/09/29 18:00:35  sezero
  * even more sound stuff
  *

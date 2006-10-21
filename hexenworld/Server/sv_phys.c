@@ -57,7 +57,7 @@ static void SV_CheckAllEnts (void)
 
 	// see if any solid entities are inside the final position
 	check = NEXT_EDICT(sv.edicts);
-	for (e=1 ; e<sv.num_edicts ; e++, check = NEXT_EDICT(check))
+	for (e = 1; e < sv.num_edicts; e++, check = NEXT_EDICT(check))
 	{
 		if (check->free)
 			continue;
@@ -87,7 +87,7 @@ void SV_CheckVelocity (edict_t *ent)
 //
 // bound velocity
 //
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		if (IS_NAN(ent->v.velocity[i]))
 		{
@@ -210,7 +210,7 @@ static int ClipVelocity (vec3_t in, vec3_t normal, vec3_t out, float overbounce)
 
 	backoff = DotProduct (in, normal) * overbounce;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		change = normal[i]*backoff;
 		out[i] = in[i] - change;
@@ -258,12 +258,12 @@ static int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace)
 
 	time_left = time;
 
-	for (bumpcount=0 ; bumpcount<numbumps ; bumpcount++)
+	for (bumpcount = 0; bumpcount < numbumps; bumpcount++)
 	{
 		if (!ent->v.velocity[0] && !ent->v.velocity[1] && !ent->v.velocity[2])
 			break;
 
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 			end[i] = ent->v.origin[i] + time_left * ent->v.velocity[i];
 
 		trace = SV_Move (ent->v.origin, ent->v.mins, ent->v.maxs, end, false, ent);
@@ -325,15 +325,18 @@ static int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace)
 //
 // modify original_velocity so it parallels all of the clip planes
 //
-		for (i=0 ; i<numplanes ; i++)
+		for (i = 0; i < numplanes; i++)
 		{
 			ClipVelocity (original_velocity, planes[i], new_velocity, 1);
-			for (j=0 ; j<numplanes ; j++)
+			for (j = 0; j < numplanes; j++)
+			{
 				if (j != i)
 				{
 					if (DotProduct (new_velocity, planes[j]) < 0)
 						break;	// not ok
 				}
+			}
+
 			if (j == numplanes)
 				break;
 		}
@@ -383,24 +386,24 @@ static void SV_FlyExtras (edict_t *ent, float time, trace_t *steptrace)
 	// Jumping makes you loose this flag so reset it
 	ent->v.flags = (int) ent->v.flags | FL_ONGROUND;
 
-	if ((ent->v.velocity[2]<=6) && (ent->v.velocity[2]>=-6))
+	if ((ent->v.velocity[2] <= 6) && (ent->v.velocity[2] >= -6))
 	{
-		ent->v.velocity[2]+=ent->v.hoverz;
+		ent->v.velocity[2] += ent->v.hoverz;
 
-		if (ent->v.velocity[2]>=6)
+		if (ent->v.velocity[2] >= 6)
 		{
-			ent->v.hoverz=-hoverinc;
-			ent->v.velocity[2]+=ent->v.hoverz;
+			ent->v.hoverz = -hoverinc;
+			ent->v.velocity[2] += ent->v.hoverz;
 		}
-		else if (ent->v.velocity[2]<=-6)
+		else if (ent->v.velocity[2] <= -6)
 		{
-			ent->v.hoverz=hoverinc;
-			ent->v.velocity[2]+=ent->v.hoverz;
+			ent->v.hoverz = hoverinc;
+			ent->v.velocity[2] += ent->v.hoverz;
 		}
 	}
 	else	// friction for upward or downward progress once key is released
 	{
-		ent->v.velocity[2]-=sv_player->v.velocity[2] * .1;
+		ent->v.velocity[2] -= sv_player->v.velocity[2] * .1;
 	}
 }
 #endif
@@ -440,7 +443,7 @@ trace_t SV_PushEntity (edict_t *ent, vec3_t push)
 
 	VectorCopy (ent->v.origin, start);
 	VectorAdd (ent->v.origin, push, end);
-//	if ((int)ent->v.flags&FL_CLIENT)
+//	if ((int)ent->v.flags & FL_CLIENT)
 //		Con_Printf("Player exec pushent\n");
 
 	if (ent->v.movetype == MOVETYPE_FLYMISSILE  || ent->v.movetype == MOVETYPE_BOUNCEMISSILE)
@@ -518,7 +521,7 @@ static qboolean SV_Push (edict_t *pusher, vec3_t move)
 	edict_t		*moved_edict[MAX_EDICTS];
 	vec3_t		moved_from[MAX_EDICTS];
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		mins[i] = pusher->v.absmin[i] + move[i];
 		maxs[i] = pusher->v.absmax[i] + move[i];
@@ -533,7 +536,7 @@ static qboolean SV_Push (edict_t *pusher, vec3_t move)
 	// see if any solid entities are inside the final position
 	num_moved = 0;
 	check = NEXT_EDICT(sv.edicts);
-	for (e=1 ; e<sv.num_edicts ; e++, check = NEXT_EDICT(check))
+	for (e = 1; e < sv.num_edicts; e++, check = NEXT_EDICT(check))
 	{
 		if (check->free)
 			continue;
@@ -614,7 +617,7 @@ static qboolean SV_Push (edict_t *pusher, vec3_t move)
 		}
 
 		// move back any entities we already moved
-		for (i=0 ; i<num_moved ; i++)
+		for (i = 0; i < num_moved; i++)
 		{
 			VectorCopy (moved_from[i], moved_edict[i]->v.origin);
 			SV_LinkEdict (moved_edict[i], false);
@@ -646,7 +649,7 @@ static void SV_PushMove (edict_t *pusher, float movetime, qboolean update_time)
 		return;
 	}
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		move[i] = pusher->v.velocity[i] * movetime;
 
 	if (SV_Push (pusher, move))
@@ -689,7 +692,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 	Con_DPrintf("%f %f %f\n", pusher->v.angles[0], pusher->v.angles[1], pusher->v.angles[2]);
 #   endif
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		amove[i] = pusher->v.avelocity[i] * movetime;
 
 	VectorNegate (amove, a);
@@ -740,7 +743,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 	// see if any solid entities are inside the final position
 	num_moved = 0;
 	check = NEXT_EDICT(sv.edicts);
-	for (e=1 ; e<sv.num_edicts ; e++, check = NEXT_EDICT(check))
+	for (e = 1; e < sv.num_edicts; e++, check = NEXT_EDICT(check))
 	{
 		if (check->free)
 			continue;
@@ -761,7 +764,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 			}
 			else
 			{
-				for (i=0; i<slaves_moved; i++)
+				for (i = 0; i < slaves_moved; i++)
 				{
 					if (ground == moved_edict[MAX_EDICTS - i - 1])
 					{
@@ -781,7 +784,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 					|| check->v.absmax[1] <= pusher->v.absmin[1]
 					|| check->v.absmax[2] <= pusher->v.absmin[2] )
 			{
-				for (i=0; i<slaves_moved; i++)
+				for (i = 0; i < slaves_moved; i++)
 				{
 					slave = moved_edict[MAX_EDICTS - i - 1];
 					if ( check->v.absmin[0] >= slave->v.absmax[0]
@@ -847,7 +850,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 			SV_LinkEdict (pusher, false);
 			pusher->v.ltime -= movetime;
 
-			for (i=0; i<slaves_moved; i++)
+			for (i = 0; i < slaves_moved; i++)
 			{
 				slave = moved_edict[MAX_EDICTS - i - 1];
 				VectorCopy (moved_from[MAX_EDICTS - i - 1], slave->v.angles);
@@ -865,7 +868,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 			}
 
 			// move back any entities we already moved
-			for (i=0 ; i<num_moved ; i++)
+			for (i = 0; i < num_moved; i++)
 			{
 				VectorCopy (moved_from[i], moved_edict[i]->v.origin);
 			//@@TODO:: see above
@@ -882,7 +885,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 #   if 0
 	Con_DPrintf("result:\n");
 	Con_DPrintf("%f %f %f\n", pusher->v.angles[0], pusher->v.angles[1], pusher->v.angles[2]);
-	for (i=0; i<slaves_moved; i++)
+	for (i = 0; i < slaves_moved; i++)
 	{
 		slave = moved_edict[MAX_EDICTS - i - 1];
 		Con_DPrintf("%f %f %f   slave entity %i\n", slave->v.angles[0], slave->v.angles[1], slave->v.angles[2], NUM_FOR_EDICT(slave));
@@ -923,7 +926,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 	Con_DPrintf("%f %f %f\n", pusher->v.angles[0], pusher->v.angles[1], pusher->v.angles[2]);
 #   endif
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		amove[i] = pusher->v.avelocity[i] * movetime;
 		move[i] = pusher->v.velocity[i] * movetime;
@@ -981,7 +984,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 	// see if any solid entities are inside the final position
 	num_moved = 0;
 	check = NEXT_EDICT(sv.edicts);
-	for (e=1 ; e<sv.num_edicts ; e++, check = NEXT_EDICT(check))
+	for (e = 1; e < sv.num_edicts; e++, check = NEXT_EDICT(check))
 	{
 		if (check->free)
 			continue;
@@ -1002,7 +1005,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 			}
 			else
 			{
-				for (i=0; i<slaves_moved; i++)
+				for (i = 0; i < slaves_moved; i++)
 				{
 					if (ground == moved_edict[MAX_EDICTS - i - 1])
 					{
@@ -1022,7 +1025,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 				|| check->v.absmax[1] <= mins[1]
 				|| check->v.absmax[2] <= mins[2] )
 			{
-				for (i=0; i<slaves_moved; i++)
+				for (i = 0; i < slaves_moved; i++)
 				{
 					slave = moved_edict[MAX_EDICTS - i - 1];
 					if ( check->v.absmin[0] >= slave->v.absmax[0]
@@ -1055,8 +1058,8 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 		VectorAdd (check->v.origin, move, check->v.origin);
 		// Use center of model, like in QUAKE!!!!
 		// Our origins are on the bottom!!!
-		for (i=0 ; i<3 ; i++)
-			check_center[i] = (check->v.absmin[i] + check->v.absmax[i])/2;
+		for (i = 0; i < 3; i++)
+			check_center[i] = (check->v.absmin[i] + check->v.absmax[i]) / 2;
 		// calculate destination position
 		VectorSubtract (check_center, pusher->v.origin, org);
 		// put check back
@@ -1082,97 +1085,97 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 		{
 			switch (t)
 			{
-				case 0:
-				//try x, y and z
-					VectorCopy(move3,testmove);
-					break;
-				case 1:
-				//Try xy only
-					VectorSubtract(check->v.origin,testmove,check->v.origin);
-					testmove[0]=move3[0];
-					testmove[1]=move3[1];
-					testmove[2]=0;
-					break;
-				case 2:
-				//Try z only
-					VectorSubtract(check->v.origin,testmove,check->v.origin);
-					testmove[0]=0;
-					testmove[1]=0;
-					testmove[2]=move3[2];
-					break;
-				case 3:
-				//Try none
-					VectorSubtract(check->v.origin,testmove,check->v.origin);
-					testmove[0]=0;
-					testmove[1]=0;
-					testmove[2]=0;
-					break;
-				case 4:
-				//Try xy in opposite dir
-					testmove[0]=move3[0]*-1;
-					testmove[1]=move3[1]*-1;
-					testmove[2]=move3[2];
-					break;
-				case 5:
-				//Try z in opposite dir
-					VectorSubtract(check->v.origin,testmove,check->v.origin);
-					testmove[0]=move3[0];
-					testmove[1]=move3[1];
-					testmove[2]=move3[2]*-1;
-					break;
-				case 6:
-				//Try xyz in opposite dir
-					VectorSubtract(check->v.origin,testmove,check->v.origin);
-					testmove[0]=move3[0]*-1;
-					testmove[1]=move3[1]*-1;
-					testmove[2]=move3[2]*-1;
-					break;
-				case 7:
-				//Try move3 times 2
-					VectorSubtract(check->v.origin,testmove,check->v.origin);
-					VectorScale(move3,2,testmove);
-					break;
-				case 8:
-				//Try normalized org
-					VectorSubtract(check->v.origin,testmove,check->v.origin);
+			case 0:
+			//try x, y and z
+				VectorCopy(move3,testmove);
+				break;
+			case 1:
+			//Try xy only
+				VectorSubtract(check->v.origin,testmove,check->v.origin);
+				testmove[0] = move3[0];
+				testmove[1] = move3[1];
+				testmove[2] = 0;
+				break;
+			case 2:
+			//Try z only
+				VectorSubtract(check->v.origin,testmove,check->v.origin);
+				testmove[0] = 0;
+				testmove[1] = 0;
+				testmove[2] = move3[2];
+				break;
+			case 3:
+			//Try none
+				VectorSubtract(check->v.origin,testmove,check->v.origin);
+				testmove[0] = 0;
+				testmove[1] = 0;
+				testmove[2] = 0;
+				break;
+			case 4:
+			//Try xy in opposite dir
+				testmove[0] = move3[0] * -1;
+				testmove[1] = move3[1] * -1;
+				testmove[2] = move3[2];
+				break;
+			case 5:
+			//Try z in opposite dir
+				VectorSubtract(check->v.origin,testmove,check->v.origin);
+				testmove[0] = move3[0];
+				testmove[1] = move3[1];
+				testmove[2] = move3[2] * -1;
+				break;
+			case 6:
+			//Try xyz in opposite dir
+				VectorSubtract(check->v.origin,testmove,check->v.origin);
+				testmove[0] = move3[0] * -1;
+				testmove[1] = move3[1] * -1;
+				testmove[2] = move3[2] * -1;
+				break;
+			case 7:
+			//Try move3 times 2
+				VectorSubtract(check->v.origin,testmove,check->v.origin);
+				VectorScale(move3,2,testmove);
+				break;
+			case 8:
+			//Try normalized org
+				VectorSubtract(check->v.origin,testmove,check->v.origin);
 
-				//	VectorCopy(amove,amove_norm);
-				//	amove_mag=VectorNormalize(amove_norm);
-				//	//VectorNormalize(org);
-				//	VectorScale(org,amove_mag,org);
+			//	VectorCopy(amove,amove_norm);
+			//	amove_mag = VectorNormalize(amove_norm);
+			//	//VectorNormalize(org);
+			//	VectorScale(org,amove_mag,org);
 
-				//	VectorNormalize(org);
-					VectorScale(org,movetime,org);//movetime*20?
-					VectorCopy(org,testmove);
-					break;
-				case 9:
-				//Try normalized org z * 3 only
-					VectorSubtract(check->v.origin,testmove,check->v.origin);
-					testmove[0]=0;
-					testmove[1]=0;
-					testmove[2]=org[2]*3;//was: +org[2]*(fabs(org[1])+fabs(org[2]));
-					break;
-				case 10:
-				//Try normalized org xy * 2 only
-					VectorSubtract(check->v.origin,testmove,check->v.origin);
-					testmove[0]=org[0]*2;//was: +org[0]*fabs(org[2]);
-					testmove[1]=org[1]*2;//was: +org[1]*fabs(org[2]);
-					testmove[2]=0;
-					break;
-				case 11:
-				//Try xy in opposite org dir
-					VectorSubtract(check->v.origin,testmove,check->v.origin);
-					testmove[0]=org[0]*-2;
-					testmove[1]=org[1]*-2;
-					testmove[2]=org[2];
-					break;
-				case 12:
-				//Try z in opposite dir
-					VectorSubtract(check->v.origin,testmove,check->v.origin);
-					testmove[0]=org[0];
-					testmove[1]=org[1];
-					testmove[2]=org[2]*-3;
-					break;
+			//	VectorNormalize(org);
+				VectorScale(org,movetime,org);//movetime*20?
+				VectorCopy(org,testmove);
+				break;
+			case 9:
+			//Try normalized org z * 3 only
+				VectorSubtract(check->v.origin,testmove,check->v.origin);
+				testmove[0] = 0;
+				testmove[1] = 0;
+				testmove[2] = org[2] * 3;//was: +org[2]*(fabs(org[1])+fabs(org[2]));
+				break;
+			case 10:
+			//Try normalized org xy * 2 only
+				VectorSubtract(check->v.origin,testmove,check->v.origin);
+				testmove[0] = org[0] * 2;//was: +org[0]*fabs(org[2]);
+				testmove[1] = org[1] * 2;//was: +org[1]*fabs(org[2]);
+				testmove[2] = 0;
+				break;
+			case 11:
+			//Try xy in opposite org dir
+				VectorSubtract(check->v.origin,testmove,check->v.origin);
+				testmove[0] = org[0] * -2;
+				testmove[1] = org[1] * -2;
+				testmove[2] = org[2];
+				break;
+			case 12:
+			//Try z in opposite dir
+				VectorSubtract(check->v.origin,testmove,check->v.origin);
+				testmove[0] = org[0];
+				testmove[1] = org[1];
+				testmove[2] = org[2] * -3;
+				break;
 			}
 
 			if (t != 3)
@@ -1216,7 +1219,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 				SV_LinkEdict (pusher, false);
 				pusher->v.ltime -= movetime;
 
-				for (i=0; i<slaves_moved; i++)
+				for (i = 0; i < slaves_moved; i++)
 				{
 					slave = moved_edict[MAX_EDICTS - i - 1];
 					VectorCopy (moved_from[MAX_EDICTS - i - 1], slave->v.angles);
@@ -1234,7 +1237,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 				}
 
 				// move back any entities we already moved
-				for (i=0 ; i<num_moved ; i++)
+				for (i = 0; i < num_moved; i++)
 				{
 					VectorCopy (moved_from[i], moved_edict[i]->v.origin);
 				//@@TODO:: see above
@@ -1254,7 +1257,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 #   if 0
 	Con_DPrintf("result:\n");
 	Con_DPrintf("%f %f %f\n", pusher->v.angles[0], pusher->v.angles[1], pusher->v.angles[2]);
-	for (i=0; i<slaves_moved; i++)
+	for (i = 0; i < slaves_moved; i++)
 	{
 		slave = moved_edict[MAX_EDICTS - i - 1];
 		Con_DPrintf("%f %f %f   slave entity %i\n", slave->v.angles[0], slave->v.angles[1], slave->v.angles[2], NUM_FOR_EDICT(slave));
@@ -1364,9 +1367,11 @@ static void SV_CheckStuck (edict_t *ent)
 		return;
 	}
 
-	for (z=0 ; z< 18 ; z++)
-		for (i=-1 ; i <= 1 ; i++)
-			for (j=-1 ; j <= 1 ; j++)
+	for (z = 0; z < 18; z++)
+	{
+		for (i = -1; i <= 1; i++)
+		{
+			for (j = -1; j <= 1; j++)
 			{
 				ent->v.origin[0] = org[0] + i;
 				ent->v.origin[1] = org[1] + j;
@@ -1378,6 +1383,8 @@ static void SV_CheckStuck (edict_t *ent)
 					return;
 				}
 			}
+		}
+	}
 
 	VectorCopy (org, ent->v.origin);
 	Con_DPrintf ("player is stuck.\n");
@@ -1501,43 +1508,43 @@ static int SV_TryUnstick (edict_t *ent, vec3_t oldvel)
 	VectorCopy (ent->v.origin, oldorg);
 	VectorClear (dir);
 
-	for (i=0 ; i<8 ; i++)
+	for (i = 0; i < 8; i++)
 	{
 	// try pushing a little in an axial direction
 		switch (i)
 		{
-			case 0:
-				dir[0] = 2;
-				dir[1] = 0;
-				break;
-			case 1:
-				dir[0] = 0;
-				dir[1] = 2;
-				break;
-			case 2:
-				dir[0] = -2;
-				dir[1] = 0;
-				break;
-			case 3:
-				dir[0] = 0;
-				dir[1] = -2;
-				break;
-			case 4:
-				dir[0] = 2;
-				dir[1] = 2;
-				break;
-			case 5:
-				dir[0] = -2;
-				dir[1] = 2;
-				break;
-			case 6:
-				dir[0] = 2;
-				dir[1] = -2;
-				break;
-			case 7:
-				dir[0] = -2;
-				dir[1] = -2;
-				break;
+		case 0:
+			dir[0] = 2;
+			dir[1] = 0;
+			break;
+		case 1:
+			dir[0] = 0;
+			dir[1] = 2;
+			break;
+		case 2:
+			dir[0] = -2;
+			dir[1] = 0;
+			break;
+		case 3:
+			dir[0] = 0;
+			dir[1] = -2;
+			break;
+		case 4:
+			dir[0] = 2;
+			dir[1] = 2;
+			break;
+		case 5:
+			dir[0] = -2;
+			dir[1] = 2;
+			break;
+		case 6:
+			dir[0] = 2;
+			dir[1] = -2;
+			break;
+		case 7:
+			dir[0] = -2;
+			dir[1] = -2;
+			break;
 		}
 
 		SV_PushEntity (ent, dir);
@@ -1920,7 +1927,7 @@ void SV_Physics_Toss (edict_t *ent)
 		backoff = 1.5;
 	else if (ent->v.movetype == MOVETYPE_BOUNCEMISSILE)
 	{	// Solid phased missiles don't bounce on monsters or players
-		if ((ent->v.solid==SOLID_PHASE) && (((int) trace.ent->v.flags & FL_MONSTER) || ((int) trace.ent->v.movetype == MOVETYPE_WALK)))
+		if ((ent->v.solid == SOLID_PHASE) && (((int)trace.ent->v.flags & FL_MONSTER) || ((int)trace.ent->v.movetype == MOVETYPE_WALK)))
 		{
 			return;
 		}
@@ -2036,36 +2043,34 @@ static void SV_RunEntity (edict_t *ent)
 
 	switch ( (int)ent->v.movetype)
 	{
-		case MOVETYPE_PUSH:
-			SV_Physics_Pusher (ent);
-			break;
-		case MOVETYPE_NONE:
-			SV_Physics_None (ent);
-			break;
-		case MOVETYPE_NOCLIP:
-			SV_Physics_Noclip (ent);
-			break;
-		case MOVETYPE_STEP:
-		case MOVETYPE_PUSHPULL:
-			SV_Physics_Step (ent);
-			break;
-		case MOVETYPE_TOSS:
-		case MOVETYPE_BOUNCE:
-		case MOVETYPE_BOUNCEMISSILE:
-		case MOVETYPE_FLY:
-		case MOVETYPE_FLYMISSILE:
-		case MOVETYPE_SWIM:
-			SV_Physics_Toss (ent);
-			break;
-		case MOVETYPE_FOLLOW:
-			break;
-
-		case MOVETYPE_WALK:
-			SV_RunThink (ent);
-			break;
-
-		default:
-			SV_Error ("SV_Physics: bad movetype %i", (int)ent->v.movetype);
+	case MOVETYPE_PUSH:
+		SV_Physics_Pusher (ent);
+		break;
+	case MOVETYPE_NONE:
+		SV_Physics_None (ent);
+		break;
+	case MOVETYPE_NOCLIP:
+		SV_Physics_Noclip (ent);
+		break;
+	case MOVETYPE_STEP:
+	case MOVETYPE_PUSHPULL:
+		SV_Physics_Step (ent);
+		break;
+	case MOVETYPE_TOSS:
+	case MOVETYPE_BOUNCE:
+	case MOVETYPE_BOUNCEMISSILE:
+	case MOVETYPE_FLY:
+	case MOVETYPE_FLYMISSILE:
+	case MOVETYPE_SWIM:
+		SV_Physics_Toss (ent);
+		break;
+	case MOVETYPE_FOLLOW:
+		break;
+	case MOVETYPE_WALK:
+		SV_RunThink (ent);
+		break;
+	default:
+		SV_Error ("SV_Physics: bad movetype %i", (int)ent->v.movetype);
 	}
 
 	if (ent2 != sv.edicts)
@@ -2076,7 +2081,7 @@ static void SV_RunEntity (edict_t *ent)
 			VectorSubtract(ent->v.origin,oldOrigin,oldOrigin);
 			VectorSubtract(ent->v.angles,oldAngle,oldAngle);
 
-			for (c = 0 ; c < 10 ; c++)
+			for (c = 0; c < 10; c++)
 			{	// chain a max of 10 objects
 				if (ent2->free)
 					break;
@@ -2152,7 +2157,7 @@ void SV_Physics (void)
 // even the world gets a chance to think
 //
 	ent = sv.edicts;
-	for (i=0 ; i<sv.num_edicts ; i++, ent = NEXT_EDICT(ent))
+	for (i = 0; i < sv.num_edicts; i++, ent = NEXT_EDICT(ent))
 	{
 		if (ent->free)
 			continue;

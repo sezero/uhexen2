@@ -3,10 +3,10 @@
 
 static qboolean	sv_allow_cheats;
 
-int fp_messages=4, fp_persecond=4, fp_secondsdead=10;
-char fp_msg[255] = { 0 };
-extern cvar_t cl_warncmd;
-extern char com_basedir[MAX_OSPATH];
+int	fp_messages = 4, fp_persecond = 4, fp_secondsdead = 10;
+char	fp_msg[255] = { 0 };
+extern cvar_t	cl_warncmd;
+extern char	com_basedir[MAX_OSPATH];
 
 /*
 ===============================================================================
@@ -31,7 +31,7 @@ static void SV_SetMaster_f (void)
 
 	memset (&master_adr, 0, sizeof(master_adr));
 
-	for (i=1 ; i<Cmd_Argc() ; i++)
+	for (i = 1; i < Cmd_Argc(); i++)
 	{
 		if (!strcmp(Cmd_Argv(i), "none") || !NET_StringToAdr (Cmd_Argv(i), &master_adr[i-1]))
 		{
@@ -114,7 +114,7 @@ static void SV_Fraglogfile_f (void)
 	}
 
 	// find an unused name
-	for (i=0 ; i<1000 ; i++)
+	for (i = 0; i < 1000; i++)
 	{
 		Q_snprintf_err(name, sizeof(name), "%s/frag_%i.log", com_userdir, i);
 
@@ -123,12 +123,12 @@ static void SV_Fraglogfile_f (void)
 		{	// can't read it, so create this one
 			sv_fraglogfile = fopen (name, "w");
 			if (!sv_fraglogfile)
-				i=1000;	// give error
+				i = 1000;	// give error
 			break;
 		}
 		fclose (sv_fraglogfile);
 	}
-	if (i==1000)
+	if (i == 1000)
 	{
 		Con_Printf ("Can't open any logfiles.\n");
 		sv_fraglogfile = NULL;
@@ -155,7 +155,7 @@ static qboolean SV_SetPlayer (void)
 
 	idnum = atoi(Cmd_Argv(1));
 
-	for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
+	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 	{
 		if (!cl->state)
 			continue;
@@ -190,7 +190,7 @@ static void SV_God_f (void)
 		return;
 
 	sv_player->v.flags = (int)sv_player->v.flags ^ FL_GODMODE;
-	if (!((int)sv_player->v.flags & FL_GODMODE) )
+	if ( !((int)sv_player->v.flags & FL_GODMODE) )
 		SV_ClientPrintf (host_client, PRINT_HIGH, "godmode OFF\n");
 	else
 		SV_ClientPrintf (host_client, PRINT_HIGH, "godmode ON\n");
@@ -435,8 +435,8 @@ static void SV_Status_f (void)
 
 	cpu = (svs.stats.latched_active+svs.stats.latched_idle);
 	if (cpu)
-		cpu = 100*svs.stats.latched_active/cpu;
-	avg = 1000*svs.stats.latched_active / STATFRAMES;
+		cpu = 100 * svs.stats.latched_active / cpu;
+	avg = 1000 * svs.stats.latched_active / STATFRAMES;
 	pak = (float)svs.stats.latched_packets/ STATFRAMES;
 
 	Con_Printf ("net address      : %s\n",NET_AdrToString (net_local_adr));
@@ -453,8 +453,8 @@ static void SV_Status_f (void)
 		num_min = floor((num_min - num_sec)/60);
 		Con_Printf ("timeleft         : %i:", num_min);
 		Con_Printf ("%2i\n", num_sec);
-		Con_Printf ("deflosses        : %3i/%3i\n", floor(PR_GLOBAL_STRUCT(defLosses)),floor(f_limit));
-		Con_Printf ("attlosses        : %3i/%3i\n", floor(PR_GLOBAL_STRUCT(attLosses)),floor(f_limit*2));
+		Con_Printf ("deflosses        : %3i/%3i\n", floor(PR_GLOBAL_STRUCT(defLosses)), floor(f_limit));
+		Con_Printf ("attlosses        : %3i/%3i\n", floor(PR_GLOBAL_STRUCT(attLosses)), floor(f_limit*2));
 	}
 	else
 	{
@@ -471,7 +471,7 @@ static void SV_Status_f (void)
 		Con_Printf ("name               userid frags\n");
 		Con_Printf ("  address          rate ping drop\n");
 		Con_Printf ("  ---------------- ---- ---- -----\n");
-		for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
+		for (i = 0, cl = svs.clients; i < MAX_CLIENTS ; i++, cl++)
 		{
 			if (!cl->state)
 				continue;
@@ -506,7 +506,7 @@ static void SV_Status_f (void)
 	{
 		Con_Printf ("frags userid address         name            rate ping drop  siege\n");
 		Con_Printf ("----- ------ --------------- --------------- ---- ---- ----- -----\n");
-		for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
+		for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 		{
 			if (!cl->state)
 				continue;
@@ -515,12 +515,12 @@ static void SV_Status_f (void)
 			s = NET_BaseAdrToString ( cl->netchan.remote_address);
 			Con_Printf ("%s", s);
 			l = 16 - strlen(s);
-			for (j=0 ; j<l ; j++)
+			for (j = 0; j < l; j++)
 				Con_Printf (" ");
 
 			Con_Printf ("%s", cl->name);
 			l = 16 - strlen(cl->name);
-			for (j=0 ; j<l ; j++)
+			for (j = 0; j < l; j++)
 				Con_Printf (" ");
 			if (cl->state == cs_connected)
 			{
@@ -578,11 +578,11 @@ static void SV_Status_f (void)
 					Con_Printf("?");
 					break;
 				}
-				if ((int)cl->old_v.flags2&65536)//defender of crown
+				if ((int)cl->old_v.flags2 & 65536)	//defender of crown
 					Con_Printf("D");
 				else
 					Con_Printf("-");
-				if ((int)cl->old_v.flags2&524288)//has siege key
+				if ((int)cl->old_v.flags2 & 524288)	//has siege key
 					Con_Printf("K");
 				else
 					Con_Printf("-");
@@ -813,7 +813,7 @@ static void SV_Floodprot_f (void)
 	arg2 = atoi(Cmd_Argv(2));
 	arg3 = atoi(Cmd_Argv(3));
 
-	if (arg1<=0 || arg2 <= 0 || arg3<=0)
+	if (arg1 <= 0 || arg2 <= 0 || arg3 <= 0)
 	{
 		Con_Printf ("All values must be positive numbers\n");
 		return;

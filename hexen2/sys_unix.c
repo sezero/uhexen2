@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.67 2006-10-19 06:32:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.68 2006-10-21 18:21:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -204,7 +204,7 @@ void Sys_Printf (char *fmt, ...)
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
 
-	va_start (argptr,fmt);
+	va_start (argptr, fmt);
 	vsnprintf (text, sizeof (text), fmt, argptr);
 	va_end (argptr);
 
@@ -219,7 +219,7 @@ void Sys_DPrintf (char *fmt, ...)
 	if (!developer.value)
 		return;
 
-	va_start (argptr,fmt);
+	va_start (argptr, fmt);
 	vsnprintf (text, sizeof (text), fmt, argptr);
 	va_end (argptr);
 
@@ -465,7 +465,7 @@ int main(int argc, char *argv[])
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
-	Sys_Printf("userdir is: %s\n",userdir);
+	Sys_Printf("userdir is: %s\n", userdir);
 
 	isDedicated = (COM_CheckParm ("-dedicated") != 0);
 
@@ -474,8 +474,8 @@ int main(int argc, char *argv[])
 	if (!isDedicated &&
 	    SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
 	{	//reject running under SDL versions older than what is stated in sdl_inc.h
-		printf("You need at least v%d.%d.%d of SDL to run this game\n",SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
-		exit(0);
+		Sys_Printf("You need at least v%d.%d.%d of SDL to run this game\n",SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
+		exit (1);
 	}
 
 	if (isDedicated)
@@ -562,6 +562,10 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.67  2006/10/19 06:32:28  sezero
+ * added Sys_DPrintf: at present, its only user is the hexen2 dedicated
+ * server. further use of it may come with future versions.
+ *
  * Revision 1.66  2006/10/10 06:45:54  sezero
  * removed the error timeout stuff from sys_unix.c. it was a left-over from
  * the sys_win.c.

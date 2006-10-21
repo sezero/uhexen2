@@ -67,7 +67,7 @@ static int PM_ClipVelocity (vec3_t in, vec3_t normal, vec3_t out, float overboun
 
 	backoff = DotProduct (in, normal) * overbounce;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		change = normal[i]*backoff;
 		out[i] = in[i] - change;
@@ -111,9 +111,9 @@ static int PM_FlyMove (void)
 
 	time_left = frametime;
 
-	for (bumpcount=0 ; bumpcount<numbumps ; bumpcount++)
+	for (bumpcount = 0; bumpcount < numbumps; bumpcount++)
 	{
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 			end[i] = pmove.origin[i] + time_left * pmove.velocity[i];
 
 		trace = PM_PlayerMove (pmove.origin, end);
@@ -161,15 +161,18 @@ static int PM_FlyMove (void)
 //
 // modify original_velocity so it parallels all of the clip planes
 //
-		for (i=0 ; i<numplanes ; i++)
+		for (i = 0; i < numplanes; i++)
 		{
 			PM_ClipVelocity (original_velocity, planes[i], pmove.velocity, 1);
-			for (j=0 ; j<numplanes ; j++)
+			for (j = 0; j < numplanes; j++)
+			{
 				if (j != i)
 				{
 					if (DotProduct (pmove.velocity, planes[j]) < 0)
 						break;	// not ok
 				}
+			}
+
 			if (j == numplanes)
 				break;
 		}
@@ -328,7 +331,7 @@ static void PM_Friction (void)
 	drop = 0;
 
 // apply ground friction
-	if ((onground != -1)||(pmove.movetype == MOVETYPE_FLY))
+	if ((onground != -1) || (pmove.movetype == MOVETYPE_FLY))
 	{
 		friction = movevars.friction;
 		control = speed < movevars.stopspeed ? movevars.stopspeed : speed;
@@ -374,7 +377,7 @@ static void PM_Accelerate (vec3_t wishdir, float wishspeed, float accel)
 	if (accelspeed > addspeed)
 		accelspeed = addspeed;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		pmove.velocity[i] += accelspeed*wishdir[i];
 }
 
@@ -398,7 +401,7 @@ static void PM_AirAccelerate (vec3_t wishdir, float wishspeed, float accel)
 	if (accelspeed > addspeed)
 		accelspeed = addspeed;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		pmove.velocity[i] += accelspeed*wishdir[i];
 }
 
@@ -455,7 +458,7 @@ static void PM_WaterMove (void)
 		smove = smove / 400 * movevars.maxspeed;
 	}
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		wishvel[i] = forward[i]*fmove + right[i]*smove;
 
 	if ((!pmove.cmd.forwardmove && !pmove.cmd.sidemove && !pmove.cmd.upmove)&&pmove.crouched)
@@ -555,7 +558,7 @@ static void PM_AirMove (void)
 	VectorNormalize (forward);
 	VectorNormalize (right);
 
-	for (i=0 ; i<2 ; i++)
+	for (i = 0; i < 2; i++)
 		wishvel[i] = forward[i]*fmove*pmove.hasted + right[i]*smove*pmove.hasted;
 	wishvel[2] = 0;
 
@@ -650,7 +653,7 @@ static void PM_FlyingMove (void)
 	VectorNormalize (right);
 	VectorNormalize (up);
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		wishvel[i] = forward[i]*fmove + right[i]*smove + up[i]*umove;
 
 	VectorCopy (wishvel, wishdir);
@@ -871,7 +874,7 @@ static void NudgePosition (void)
 
 	VectorCopy (pmove.origin, base);
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		pmove.origin[i] = ((int)(pmove.origin[i]*8)) * 0.125;
 	pmove.origin[2] += 0.124;
 //	pmove.origin[2] += 1.124;
@@ -881,11 +884,11 @@ static void NudgePosition (void)
 	if (PM_TestPlayerPosition (pmove.origin) )
 		return;
 
-	for (z=-1 ; z<=1 ; z++)
+	for (z = -1; z <= 1; z++)
 	{
-		for (x=-1 ; x<=1 ; x++)
+		for (x = -1; x <= 1; x++)
 		{
-			for (y=-1 ; y<=1 ; y++)
+			for (y = -1; y <= 1; y++)
 			{
 				pmove.origin[0] = base[0] + x * 1.0/8;
 				pmove.origin[1] = base[1] + y * 1.0/8;
@@ -944,7 +947,7 @@ static void SpectatorMove (void)
 	VectorNormalize (forward);
 	VectorNormalize (right);
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		wishvel[i] = forward[i]*fmove + right[i]*smove;
 	wishvel[2] += pmove.cmd.upmove;
 
@@ -968,7 +971,7 @@ static void SpectatorMove (void)
 	if (accelspeed > addspeed)
 		accelspeed = addspeed;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		pmove.velocity[i] += accelspeed*wishdir[i];
 
 	// move

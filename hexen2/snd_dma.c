@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.44 2006-10-04 15:36:35 sezero Exp $
+	$Id: snd_dma.c,v 1.45 2006-10-21 18:21:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -313,7 +313,7 @@ static sfx_t *S_FindName (char *name)
 		Sys_Error ("Sound name too long: %s", name);
 
 // see if already loaded
-	for (i=0 ; i < num_sfx ; i++)
+	for (i = 0; i < num_sfx; i++)
 	{
 		if (!strcmp(known_sfx[i].name, name))
 		{
@@ -391,7 +391,7 @@ channel_t *SND_PickChannel(int entnum, int entchannel)
 // Check for replacement sound, or find the best one to replace
 	first_to_die = -1;
 	life_left = 0x7fffffff;
-	for (ch_idx=NUM_AMBIENTS ; ch_idx < NUM_AMBIENTS + MAX_DYNAMIC_CHANNELS ; ch_idx++)
+	for (ch_idx = NUM_AMBIENTS; ch_idx < NUM_AMBIENTS + MAX_DYNAMIC_CHANNELS; ch_idx++)
 	{
 		if (entchannel != 0		// channel 0 never overrides
 			&& channels[ch_idx].entnum == entnum
@@ -503,10 +503,10 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 	if (!target_chan)
 		return;
 
-	if(attenuation==4)//Looping sound- always play
+	if (attenuation == 4)	//Looping sound- always play
 	{
-		skip_dist_check=true;
-		attenuation=1;//was 3 - static
+		skip_dist_check = true;
+		attenuation=1;	//was 3 - static
 	}
 
 // spatialize
@@ -537,7 +537,7 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 // if an identical sound has also been started this frame, offset the pos
 // a bit to keep it from just making the first one louder
 	check = &channels[NUM_AMBIENTS];
-	for (ch_idx=NUM_AMBIENTS ; ch_idx < NUM_AMBIENTS + MAX_DYNAMIC_CHANNELS ; ch_idx++, check++)
+	for (ch_idx = NUM_AMBIENTS; ch_idx < NUM_AMBIENTS + MAX_DYNAMIC_CHANNELS; ch_idx++, check++)
 	{
 		if (check == target_chan)
 			continue;
@@ -559,7 +559,7 @@ void S_StopSound(int entnum, int entchannel)
 {
 	int	i;
 
-	for (i=NUM_AMBIENTS  ; i<NUM_AMBIENTS + MAX_DYNAMIC_CHANNELS ; i++)
+	for (i = NUM_AMBIENTS; i < NUM_AMBIENTS + MAX_DYNAMIC_CHANNELS; i++)
 	{
 		if (channels[i].entnum == entnum
 			&& ((!entchannel)||channels[i].entchannel == entchannel))	// 0 matches any
@@ -576,7 +576,7 @@ void S_UpdateSoundPos (int entnum, int entchannel, vec3_t origin)
 {
 	int	i;
 
-	for (i=NUM_AMBIENTS  ; i<NUM_AMBIENTS + MAX_DYNAMIC_CHANNELS ; i++)
+	for (i = NUM_AMBIENTS; i < NUM_AMBIENTS + MAX_DYNAMIC_CHANNELS; i++)
 	{
 		if (channels[i].entnum == entnum
 			&& channels[i].entchannel == entchannel)
@@ -596,9 +596,11 @@ void S_StopAllSounds(qboolean clear)
 
 	total_channels = MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS;	// no statics
 
-	for (i=0 ; i<MAX_CHANNELS ; i++)
+	for (i = 0; i < MAX_CHANNELS; i++)
+	{
 		if (channels[i].sfx)
 			channels[i].sfx = NULL;
+	}
 
 	memset(channels, 0, MAX_CHANNELS * sizeof(channel_t));
 
@@ -704,7 +706,7 @@ void S_StaticSound (sfx_t *sfx, vec3_t origin, float vol, float attenuation)
 	ss->sfx = sfx;
 	VectorCopy (origin, ss->origin);
 	ss->master_vol = (int)vol;
-	ss->dist_mult = (attenuation/64) / sound_nominal_clip_dist;
+	ss->dist_mult = (attenuation / 64) / sound_nominal_clip_dist;
 	ss->end = paintedtime + sc->length;
 
 	SND_Spatialize (ss);
@@ -734,12 +736,12 @@ static void S_UpdateAmbientSounds (void)
 	l = Mod_PointInLeaf (listener_origin, cl.worldmodel);
 	if (!l || !ambient_level.value)
 	{
-		for (ambient_channel = 0 ; ambient_channel< NUM_AMBIENTS ; ambient_channel++)
+		for (ambient_channel = 0; ambient_channel < NUM_AMBIENTS; ambient_channel++)
 			channels[ambient_channel].sfx = NULL;
 		return;
 	}
 
-	for (ambient_channel = 0 ; ambient_channel< NUM_AMBIENTS ; ambient_channel++)
+	for (ambient_channel = 0; ambient_channel < NUM_AMBIENTS; ambient_channel++)
 	{
 		chan = &channels[ambient_channel];
 		chan->sfx = ambient_sfx[ambient_channel];
@@ -796,7 +798,7 @@ void S_Update(vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 
 // update spatialization for static and dynamic sounds
 	ch = channels+NUM_AMBIENTS;
-	for (i=NUM_AMBIENTS ; i<total_channels; i++, ch++)
+	for (i = NUM_AMBIENTS; i < total_channels; i++, ch++)
 	{
 		if (!ch->sfx)
 			continue;
@@ -819,9 +821,11 @@ void S_Update(vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 			}
 		// search for one
 			combine = channels+MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS;
-			for (j=MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS ; j<i; j++, combine++)
+			for (j = MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS; j < i; j++, combine++)
+			{
 				if (combine->sfx == ch->sfx)
 					break;
+			}
 
 			if (j == total_channels)
 			{
@@ -847,11 +851,11 @@ void S_Update(vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 	{
 		total = 0;
 		ch = channels;
-		for (i=0 ; i<total_channels; i++, ch++)
+		for (i = 0; i < total_channels; i++, ch++)
 		{
 			if (ch->sfx && (ch->leftvol || ch->rightvol) )
 			{
-				//Con_Printf ("%3i %3i %s\n", ch->leftvol, ch->rightvol, ch->sfx->name);
+			//	Con_Printf ("%3i %3i %s\n", ch->leftvol, ch->rightvol, ch->sfx->name);
 				total++;
 			}
 		}
@@ -1006,13 +1010,13 @@ static void S_VolumeUp(void)
 
 static void S_Play(void)
 {
-	static int hash=345;
+	static int hash = 345;
 	int		i;
 	char	name[256];
 	sfx_t	*sfx;
 
 	i = 1;
-	while (i<Cmd_Argc())
+	while (i < Cmd_Argc())
 	{
 		Q_strlcpy(name, Cmd_Argv(i), sizeof(name));
 		if (!strrchr(Cmd_Argv(i), '.'))
@@ -1028,14 +1032,14 @@ static void S_Play(void)
 
 static void S_PlayVol(void)
 {
-	static int hash=543;
+	static int hash = 543;
 	int		i;
 	float	vol;
 	char	name[256];
 	sfx_t	*sfx;
 
 	i = 1;
-	while (i<Cmd_Argc())
+	while (i < Cmd_Argc())
 	{
 		Q_strlcpy(name, Cmd_Argv(i), sizeof(name));
 		if (!strrchr(Cmd_Argv(i), '.'))
@@ -1046,7 +1050,7 @@ static void S_PlayVol(void)
 		sfx = S_PrecacheSound(name);
 		vol = atof(Cmd_Argv(i+1));
 		S_StartSound(hash++, 0, sfx, listener_origin, vol, 1.0);
-		i+=2;
+		i += 2;
 	}
 }
 
@@ -1058,7 +1062,7 @@ static void S_SoundList(void)
 	int		size, total;
 
 	total = 0;
-	for (sfx=known_sfx, i=0 ; i<num_sfx ; i++, sfx++)
+	for (sfx = known_sfx, i = 0; i < num_sfx; i++, sfx++)
 	{
 		sc = (sfxcache_t *) Cache_Check (&sfx->cache);
 		if (!sc)
@@ -1110,6 +1114,10 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.44  2006/10/04 15:36:35  sezero
+ * used proper directx macroes and got rid of lpVtbl stuff for
+ * better readability.
+ *
  * Revision 1.43  2006/09/29 18:00:35  sezero
  * even more sound stuff
  *

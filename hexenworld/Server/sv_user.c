@@ -264,11 +264,11 @@ static void SV_Spawn_f (void)
 	SZ_Clear (&host_client->netchan.message);
 
 	// send current status of all other players
-	for (i=0, client = svs.clients ; i<MAX_CLIENTS ; i++, client++)
+	for (i = 0, client = svs.clients; i < MAX_CLIENTS; i++, client++)
 		SV_FullClientUpdate (client, &host_client->netchan.message);
 
 	// send all current light styles
-	for (i=0 ; i<MAX_LIGHTSTYLES ; i++)
+	for (i = 0; i < MAX_LIGHTSTYLES; i++)
 	{
 		MSG_WriteByte (&host_client->netchan.message, svc_lightstyle);
 		MSG_WriteByte (&host_client->netchan.message, (char)i);
@@ -317,7 +317,7 @@ static void SV_SpawnSpectator (void)
 	sv_player->v.view_ofs[2] = 22;
 
 	// search for an info_playerstart to spawn the spectator at
-	for (i=MAX_CLIENTS-1 ; i<sv.num_edicts ; i++)
+	for (i = MAX_CLIENTS-1; i < sv.num_edicts; i++)
 	{
 		e = EDICT_NUM(i);
 		if (!strcmp(pr_strings + e->v.classname, "info_player_start"))
@@ -354,7 +354,7 @@ static void SV_Begin_f (void)
 		if (SpectatorConnect)
 		{
 			// copy spawn parms out of the client_t
-			for (i=0 ; i< NUM_SPAWN_PARMS ; i++)
+			for (i = 0; i < NUM_SPAWN_PARMS; i++)
 				(&pr_global_struct->parm1)[i] = host_client->spawn_parms[i];
 
 			// call the spawn function
@@ -366,7 +366,7 @@ static void SV_Begin_f (void)
 	else
 	{
 		// copy spawn parms out of the client_t
-		for (i=0 ; i< NUM_SPAWN_PARMS ; i++)
+		for (i = 0; i < NUM_SPAWN_PARMS; i++)
 			(&pr_global_struct->parm1)[i] = host_client->spawn_parms[i];
 
 		host_client->send_all_v = true;
@@ -396,7 +396,7 @@ static void SV_Begin_f (void)
 // with a permanent head tilt
 	ent = EDICT_NUM( 1 + (host_client - svs.clients) );
 	MSG_WriteByte (&host_client->netchan.message, svc_setangle);
-	for (i=0 ; i < 2 ; i++)
+	for (i = 0; i < 2; i++)
 		MSG_WriteAngle (&host_client->netchan.message, ent->v.angles[i] );
 	MSG_WriteAngle (&host_client->netchan.message, 0 );
 #endif
@@ -464,7 +464,7 @@ static void SV_BeginDownload_f(void)
 		// next up, skin check
 		|| (strncmp(name, "skins/", 6) == 0 && !allow_download_skins.value)
 		// now models
-		|| (strncmp(name, "progs/", 6) == 0 && !allow_download_models.value)
+		|| (strncmp(name, "models/", 6) == 0 && !allow_download_models.value)
 		// now sounds
 		|| (strncmp(name, "sound/", 6) == 0 && !allow_download_sounds.value)
 		// now maps (note special case for maps, must not be in pak)
@@ -529,7 +529,6 @@ static void SV_Say (qboolean team)
 	char		text[2048];
 	char		t1[32], *t2;
 	int			speaknum = -1;
-	//qboolean	IsRaven = false;
 
 	if (Cmd_Argc () < 2)
 		return;
@@ -563,11 +562,9 @@ static void SV_Say (qboolean team)
 		{
 			host_client->lockedtill = realtime + fp_secondsdead;
 			if (fp_msg[0])
-				SV_ClientPrintf(host_client, PRINT_CHAT,
-						"FloodProt: %s\n", fp_msg);
+				SV_ClientPrintf(host_client, PRINT_CHAT, "FloodProt: %s\n", fp_msg);
 			else
-				SV_ClientPrintf(host_client, PRINT_CHAT,
-						"FloodProt: You can't talk for %d seconds.\n", fp_secondsdead);
+				SV_ClientPrintf(host_client, PRINT_CHAT, "FloodProt: You can't talk for %d seconds.\n", fp_secondsdead);
 			return;
 		}
 		host_client->whensaidhead++;
@@ -584,15 +581,6 @@ static void SV_Say (qboolean team)
 		p[strlen(p)-1] = 0;
 	}
 
-/*	if (host_client->netchan.remote_address.ip[0] == 208 &&
-	    host_client->netchan.remote_address.ip[1] == 135 &&
-	    host_client->netchan.remote_address.ip[2] == 137)
-	{
-		IsRaven = true;
-	}
-
-	if (p[0] == '`' && ((!host_client->spectator && sv_allowtaunts.value) || IsRaven) )
-*/
 	if (p[0] == '`' && (!host_client->spectator && sv_allowtaunts.value) )
 	{
 		speaknum = atol(&p[1]);
@@ -929,12 +917,14 @@ void SV_ExecuteUserCommand (char *s)
 
 	SV_BeginRedirect (RD_CLIENT);
 
-	for (u=ucmds ; u->name ; u++)
+	for (u = ucmds; u->name; u++)
+	{
 		if (!strcmp (Cmd_Argv(0), u->name) )
 		{
 			u->func ();
 			break;
 		}
+	}
 
 	if (!u->name)
 		Con_Printf ("Bad user command: %s\n", Cmd_Argv(0));
@@ -1010,10 +1000,12 @@ static void AddLinksToPmove (areanode_t *node)
 			if (check == sv_player)
 				continue;
 
-			for (i=0 ; i<3 ; i++)
+			for (i = 0; i < 3; i++)
+			{
 				if (check->v.absmin[i] > pmove_maxs[i]
 						|| check->v.absmax[i] < pmove_mins[i])
 					break;
+			}
 
 			if (i != 3)
 				continue;
@@ -1067,7 +1059,7 @@ static void AddAllEntsToPmove (void)
 
 	pl = EDICT_TO_PROG(sv_player);
 	check = NEXT_EDICT(sv.edicts);
-	for (e=1 ; e<sv.num_edicts ; e++, check = NEXT_EDICT(check))
+	for (e = 1; e < sv.num_edicts; e++, check = NEXT_EDICT(check))
 	{
 		if (check->free)
 			continue;
@@ -1080,10 +1072,12 @@ static void AddAllEntsToPmove (void)
 			if (check == sv_player)
 				continue;
 
-			for (i=0 ; i<3 ; i++)
+			for (i = 0; i < 3; i++)
+			{
 				if (check->v.absmin[i] > pmove_maxs[i]
 						|| check->v.absmax[i] < pmove_mins[i])
 					break;
+			}
 
 			if (i != 3)
 				continue;
@@ -1154,7 +1148,7 @@ static void SV_RunCmd (usercmd_t *ucmd)
 	sv_player->v.button0 = ucmd->buttons & 1;
 	sv_player->v.button2 = (ucmd->buttons & 2)>>1;
 
-	if (ucmd->buttons & 4 || sv_player->v.playerclass==CLASS_DWARF) // crouched?
+	if (ucmd->buttons & 4 || sv_player->v.playerclass == CLASS_DWARF) // crouched?
 		sv_player->v.flags2 = ((int)sv_player->v.flags2) | FL2_CROUCHED;
 	else
 		sv_player->v.flags2 = ((int)sv_player->v.flags2) & (~FL2_CROUCHED);
@@ -1191,7 +1185,7 @@ static void SV_RunCmd (usercmd_t *ucmd)
 		SV_RunThink (sv_player);
 	}
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		pmove.origin[i] = sv_player->v.origin[i] + (sv_player->v.mins[i] - player_mins[i]);
 
 	VectorCopy (sv_player->v.velocity, pmove.velocity);
@@ -1213,7 +1207,7 @@ static void SV_RunCmd (usercmd_t *ucmd)
 	movevars.entgravity = sv_player->v.gravity;
 	movevars.maxspeed = host_client->maxspeed;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		pmove_mins[i] = pmove.origin[i] - 256;
 		pmove_maxs[i] = pmove.origin[i] + 256;
@@ -1251,12 +1245,12 @@ static void SV_RunCmd (usercmd_t *ucmd)
 	else
 		sv_player->v.flags = (int)sv_player->v.flags & ~FL_ONGROUND;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		sv_player->v.origin[i] = pmove.origin[i] - (sv_player->v.mins[i] - player_mins[i]);
 
 #if 0
 	// truncate velocity the same way the net protocol will
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		sv_player->v.velocity[i] = (int)pmove.velocity[i];
 #else
 	VectorCopy (pmove.velocity, sv_player->v.velocity);
@@ -1270,7 +1264,7 @@ static void SV_RunCmd (usercmd_t *ucmd)
 		SV_LinkEdict (sv_player, true);
 
 		// touch other objects
-		for (i=0 ; i<pmove.numtouch ; i++)
+		for (i = 0; i < pmove.numtouch; i++)
 		{
 			n = pmove.physents[pmove.touchindex[i]].info;
 			ent = EDICT_NUM(n);

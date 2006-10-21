@@ -114,8 +114,8 @@ void Sys_Printf (char *fmt, ...)
 {
 	va_list		argptr;
 
-	va_start (argptr,fmt);
-	vprintf (fmt,argptr);
+	va_start (argptr, fmt);
+	vprintf (fmt, argptr);
 	va_end (argptr);
 }
 
@@ -126,8 +126,8 @@ void Sys_DPrintf (char *fmt, ...)
 	if (!developer.value)
 		return;
 
-	va_start (argptr,fmt);
-	vprintf (fmt,argptr);
+	va_start (argptr, fmt);
+	vprintf (fmt, argptr);
 	va_end (argptr);
 }
 

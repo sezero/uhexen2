@@ -43,7 +43,7 @@ static void ResampleSfx (sfx_t *sfx, int inrate, int inwidth, byte *data)
 	if (stepscale == 1 && inwidth == 1 && sc->width == 1)
 	{
 // fast special case
-		for (i=0 ; i<outcount ; i++)
+		for (i = 0; i < outcount; i++)
 			((signed char *)sc->data)[i] = (int)( (unsigned char)(data[i]) - 128);
 	}
 	else
@@ -51,7 +51,7 @@ static void ResampleSfx (sfx_t *sfx, int inrate, int inwidth, byte *data)
 // general case
 		samplefrac = 0;
 		fracstep = stepscale*256;
-		for (i=0 ; i<outcount ; i++)
+		for (i = 0; i < outcount; i++)
 		{
 			srcsample = samplefrac >> 8;
 			samplefrac += fracstep;
