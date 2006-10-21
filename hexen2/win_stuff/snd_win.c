@@ -389,7 +389,7 @@ static sndinitstat SNDDMA_InitDirect (void)
 	}
 
 	memset(lpData, 0, dwSize);
-//		lpData[4] = lpData[5] = 0x7f;	// force a pop for debugging
+//	lpData[4] = lpData[5] = 0x7f;	// force a pop for debugging
 
 	IDirectSoundBuffer_Unlock(pDSBuf, lpData, dwSize, NULL, 0);
 
@@ -521,7 +521,7 @@ static qboolean SNDDMA_InitWav (void)
 #endif
 
 	/* After allocation, set up and prepare headers. */
-	for (i=0 ; i<WAV_BUFFERS ; i++)
+	for (i = 0; i < WAV_BUFFERS; i++)
 	{
 		lpWaveHdr[i].dwBufferLength = wv_buf_size;
 		lpWaveHdr[i].lpData = lpData + i * wv_buf_size;

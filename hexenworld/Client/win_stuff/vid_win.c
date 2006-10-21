@@ -252,7 +252,7 @@ static void ClearAllStates (void)
 	int		i;
 	
 // send an up event for each key, to make sure the server clears them all
-	for (i=0 ; i<256 ; i++)
+	for (i = 0; i < 256; i++)
 	{
 		Key_Event (i, false);
 	}
@@ -339,7 +339,7 @@ static qboolean VID_AllocBuffers (int width, int height)
 	return true;
 }
 
-static void initFatalError(void)
+static void initFatalError (void)
 {
 	MGL_exit();
 	MGL_fatalError(MGL_errorMsg(MGL_result()));
@@ -405,38 +405,38 @@ static int VID_Suspend (MGLDC *dc, int flags)
 }
 
 
-static void registerAllDispDrivers(void)
+static void registerAllDispDrivers (void)
 {
 	/* Event though these driver require WinDirect, we register
 	 * them so that they will still be available even if DirectDraw
 	 * is present and the user has disable the high performance
 	 * WinDirect modes.
 	 */
-	MGL_registerDriver(MGL_VGA8NAME,VGA8_driver);
-//	MGL_registerDriver(MGL_VGAXNAME,VGAX_driver);
+	MGL_registerDriver(MGL_VGA8NAME, VGA8_driver);
+//	MGL_registerDriver(MGL_VGAXNAME, VGAX_driver);
 
 	/* Register display drivers */
 	if (useWinDirect)
 	{
 		//we don't want VESA 1.X drivers
-		//MGL_registerDriver(MGL_SVGA8NAME,SVGA8_driver);
-		MGL_registerDriver(MGL_LINEAR8NAME,LINEAR8_driver);
+		//MGL_registerDriver(MGL_SVGA8NAME, SVGA8_driver);
+		MGL_registerDriver(MGL_LINEAR8NAME, LINEAR8_driver);
 
 		if (!COM_CheckParm ("-novbeaf"))
-			MGL_registerDriver(MGL_ACCEL8NAME,ACCEL8_driver);
+			MGL_registerDriver(MGL_ACCEL8NAME, ACCEL8_driver);
 	}
 
 	if (useDirectDraw)
 	{
-		MGL_registerDriver(MGL_DDRAW8NAME,DDRAW8_driver);
+		MGL_registerDriver(MGL_DDRAW8NAME, DDRAW8_driver);
 	}
 }
 
 
-static void registerAllMemDrivers(void)
+static void registerAllMemDrivers (void)
 {
 	/* Register memory context drivers */
-	MGL_registerDriver(MGL_PACKED8NAME,PACKED8_driver);
+	MGL_registerDriver(MGL_PACKED8NAME, PACKED8_driver);
 }
 
 
@@ -598,7 +598,6 @@ static void VID_InitMGLFull (HINSTANCE hInstance)
 }
 
 
-static MGLDC *createDisplayDC(int forcemem)
 /****************************************************************************
 *
 * Function:     createDisplayDC
@@ -611,6 +610,7 @@ static MGLDC *createDisplayDC(int forcemem)
 *               specific code is required.
 *
 ****************************************************************************/
+static MGLDC *createDisplayDC (int forcemem)
 {
 	MGLDC			*dc;
 	pixel_format_t	pf;
@@ -655,7 +655,7 @@ static MGLDC *createDisplayDC(int forcemem)
 	else
 	{
 		// No page flipping
-		memdc = MGL_createMemoryDC(MGL_sizex(dc)+1,MGL_sizey(dc)+1,8,&pf);
+		memdc = MGL_createMemoryDC(MGL_sizex(dc)+1, MGL_sizey(dc)+1, 8, &pf);
 		MGL_makeCurrentDC(memdc);
 		/* Pa3PyX: No page flipping on blitted modes anymore
 		   (no need to - we are drawing everything to system
@@ -845,7 +845,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 					}
 				}
 
-				for (i=originalnummodes, existingmode = 0 ; i<nummodes ; i++)
+				for (i = originalnummodes, existingmode = 0; i < nummodes; i++)
 				{
 					if ((modelist[nummodes].width == modelist[i].width) &&
 						(modelist[nummodes].height == modelist[i].height))
@@ -924,7 +924,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 						}
 					}
 
-					for (i=originalnummodes, existingmode = 0 ; i<nummodes ; i++)
+					for (i = originalnummodes, existingmode = 0; i < nummodes; i++)
 					{
 						if ((modelist[nummodes].width == modelist[i].width) &&
 							(modelist[nummodes].height == modelist[i].height))
@@ -971,7 +971,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 
 	while (!done)
 	{
-		for (j=0 ; (j<numlowresmodes) && (nummodes < MAX_MODE_LIST) ; j++)
+		for (j = 0; (j < numlowresmodes) && (nummodes < MAX_MODE_LIST); j++)
 		{
 			devmode.dmBitsPerPel = bpp;
 			devmode.dmPelsWidth = lowresmodes[j].width;
@@ -995,7 +995,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 							(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight);
 
 			// we only want the lowest-bpp version of each mode
-				for (i=originalnummodes, existingmode = 0 ; i<nummodes ; i++)
+				for (i = originalnummodes, existingmode = 0; i < nummodes; i++)
 				{
 					if ((modelist[nummodes].width == modelist[i].width)   &&
 						(modelist[nummodes].height == modelist[i].height) &&
@@ -1037,7 +1037,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 // don't bother if we have a real VGA mode 0x13 mode
 	if (!is_mode0x13)
 	{
-		for (i=originalnummodes, cstretch=0 ; i<nummodes ; i++)
+		for (i = originalnummodes, cstretch = 0; i < nummodes; i++)
 		{
 			if (((modelist[i].width >> 1) < lowestres) &&
 				((modelist[i].width >> 1) >= 320))
@@ -1053,7 +1053,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 
 		if (cstretch > 0)
 		{
-			for (i=(nummodes-1) ; i>=originalnummodes ; i--)
+			for (i = (nummodes-1); i >= originalnummodes; i--)
 				modelist[i+cstretch] = modelist[i];
 
 			nummodes += cstretch;
@@ -1387,9 +1387,9 @@ static qboolean VID_SetWindowedMode (int modenum)
 				WindowRect.right - WindowRect.left,
 				WindowRect.bottom - WindowRect.top,
 				SWP_NOCOPYBITS | SWP_NOZORDER | SWP_HIDEWINDOW))
-		{
-			Sys_Error ("Couldn't resize DIB window");
-		}
+	{
+		Sys_Error ("Couldn't resize DIB window");
+	}
 
 	if (hide_window)
 		return true;
@@ -1415,14 +1415,14 @@ static qboolean VID_SetWindowedMode (int modenum)
 // we clear the window to black when created, otherwise it will be
 // empty while Quake starts up.
 	hdc = GetDC(mainwindow);
-	PatBlt(hdc,0,0,WindowRect.right,WindowRect.bottom,BLACKNESS);
+	PatBlt(hdc, 0, 0, WindowRect.right, WindowRect.bottom, BLACKNESS);
 	ReleaseDC(mainwindow, hdc);
 
 	/* Create the MGL window DC and the MGL memory DC */
 	if ((windc = MGL_createWindowedDC(mainwindow)) == NULL)
 		MGL_fatalError("Unable to create Windowed DC!");
 
-	if ((dibdc = MGL_createMemoryDC(DIBWidth,DIBHeight,8,&pf)) == NULL)
+	if ((dibdc = MGL_createMemoryDC(DIBWidth, DIBHeight, 8, &pf)) == NULL)
 		MGL_fatalError("Unable to create Memory DC!");
 
 	MGL_makeCurrentDC(dibdc);
@@ -1434,8 +1434,7 @@ static qboolean VID_SetWindowedMode (int modenum)
 	vid.maxwarpheight = WARP_HEIGHT;
 	vid.height = vid.conheight = DIBHeight;
 	vid.width = vid.conwidth = DIBWidth;
-	vid.aspect = ((float)vid.height / (float)vid.width) *
-				(320.0 / 240.0);
+	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
 
 	vid_stretched = stretched;
 
@@ -1477,8 +1476,7 @@ static qboolean VID_SetFullscreenMode (int modenum)
 	vid.maxwarpheight = WARP_HEIGHT;
 	DIBHeight = vid.height = vid.conheight = modelist[modenum].height;
 	DIBWidth = vid.width = vid.conwidth = modelist[modenum].width;
-	vid.aspect = ((float)vid.height / (float)vid.width) *
-				(320.0 / 240.0);
+	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
 
 	vid_stretched = modelist[modenum].stretched;
 
@@ -1570,9 +1568,9 @@ static qboolean VID_SetFullDIBMode (int modenum)
 				WindowRect.right - WindowRect.left,
 				WindowRect.bottom - WindowRect.top,
 				SWP_NOCOPYBITS | SWP_NOZORDER))
-		{
-			Sys_Error ("Couldn't resize DIB window");
-		}
+	{
+		Sys_Error ("Couldn't resize DIB window");
+	}
 
 // position and show the DIB window
 	SetWindowPos (mainwindow, HWND_TOPMOST, 0, 0, 0, 0,
@@ -1592,7 +1590,7 @@ static qboolean VID_SetFullDIBMode (int modenum)
 	if ((windc = MGL_createWindowedDC(mainwindow)) == NULL)
 		MGL_fatalError("Unable to create Fullscreen DIB DC!");
 
-	if ((dibdc = MGL_createMemoryDC(DIBWidth,DIBHeight,8,&pf)) == NULL)
+	if ((dibdc = MGL_createMemoryDC(DIBWidth, DIBHeight, 8, &pf)) == NULL)
 		MGL_fatalError("Unable to create Memory DC!");
 
 	MGL_makeCurrentDC(dibdc);
@@ -1604,8 +1602,7 @@ static qboolean VID_SetFullDIBMode (int modenum)
 	vid.maxwarpheight = WARP_HEIGHT;
 	vid.height = vid.conheight = DIBHeight;
 	vid.width = vid.conwidth = DIBWidth;
-	vid.aspect = ((float)vid.height / (float)vid.width) *
-				(320.0 / 240.0);
+	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
 
 	vid_stretched = modelist[modenum].stretched;
 
@@ -1819,7 +1816,6 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 
 void VID_LockBuffer (void)
 {
-
 	if (dibdc)
 		return;
 
@@ -2009,7 +2005,7 @@ static void VID_DescribeModes_f (void)
 
 	lnummodes = VID_NumModes ();
 
-	for (i=0 ; i<lnummodes ; i++)
+	for (i = 0; i < lnummodes; i++)
 	{
 		pv = VID_GetModePtr (i);
 		pinfo = VID_GetExtModeDescription (i);
@@ -2164,7 +2160,7 @@ void	VID_Init (unsigned char *palette)
 	bestmatchmetric = 256*256*3;
 	bestmatch = 0;	// FIXME - uninitialized, guessing 0...
 
-	for (i=1 ; i<256 ; i++)
+	for (i = 1; i < 256; i++)
 	{
 		dr = palette[0] - palette[i*3];
 		dg = palette[1] - palette[i*3+1];
@@ -2182,7 +2178,7 @@ void	VID_Init (unsigned char *palette)
 		}
 	}
 
-	for (i=0, ptmp = vid.colormap ; i<(1<<(VID_CBITS+8)) ; i++, ptmp++)
+	for (i = 0, ptmp = vid.colormap; i < (1 << (VID_CBITS + 8)); i++, ptmp++)
 	{
 		if (*ptmp == 0)
 			*ptmp = bestmatch;
@@ -2297,7 +2293,7 @@ void	VID_Shutdown (void)
 FlipScreen
 ================
 */
-static void FlipScreen(vrect_t *rects)
+static void FlipScreen (vrect_t *rects)
 {
 	int		i;
 
@@ -2330,7 +2326,8 @@ static void FlipScreen(vrect_t *rects)
 					// to copy surface to surface directly
 						if (mgldcAccessMode && memdcAccessMode)
 						{
-							for (i = 0; i < rects->height; i++) {
+							for (i = 0; i < rects->height; i++)
+							{
 								memcpy(((byte *)mgldc->surface) + ((rects->y + i) * mgldcWidth + rects->x), ((byte *)memdc->surface) + ((rects->y + i) * memdcWidth + rects->x), rects->width);
 							}
 						}
@@ -2533,9 +2530,9 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 		if (!vid.direct)
 			Sys_Error ("NULL vid.direct pointer");
 
-		for (i=0 ; i<(height << repshift) ; i += reps)
+		for (i = 0; i < (height << repshift); i += reps)
 		{
-			for (j=0 ; j<reps ; j++)
+			for (j = 0; j < reps; j++)
 			{
 				memcpy (&backingbuf[(i + j) * width] /* &backingbuf[(i + j) * 24] */,
 						vid.direct + x + ((y << repshift) + i + j) * vid.rowbytes,
@@ -2569,9 +2566,9 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 		MGL_beginDirectAccess ();
 
 	// save from and draw to screen
-		for (i=0 ; i<(height << repshift) ; i += reps)
+		for (i = 0; i < (height << repshift); i += reps)
 		{
-			for (j=0 ; j<reps ; j++)
+			for (j = 0; j < reps; j++)
 			{
 				memcpy (&backingbuf[(i + j) * width] /* &backingbuf[(i + j) * 24] */,
 						(byte *)mgldc->surface + x +
@@ -2697,9 +2694,9 @@ void D_EndDirectRect (int x, int y, int width, int height)
 		if (!vid.direct)
 			Sys_Error ("NULL vid.direct pointer");
 
-		for (i=0 ; i<(height << repshift) ; i += reps)
+		for (i = 0; i < (height << repshift); i += reps)
 		{
-			for (j=0 ; j<reps ; j++)
+			for (j = 0; j < reps; j++)
 			{
 				memcpy (vid.direct + x + ((y << repshift) + i + j) * vid.rowbytes,
 						&backingbuf[(i + j) * width] /* &backingbuf[(i + j) * 24] */,
@@ -2730,9 +2727,9 @@ void D_EndDirectRect (int x, int y, int width, int height)
 		MGL_beginDirectAccess ();
 
 	// restore to the screen
-		for (i=0 ; i<(height << repshift) ; i += reps)
+		for (i = 0; i < (height << repshift); i += reps)
 		{
-			for (j=0 ; j<reps ; j++)
+			for (j = 0; j < reps; j++)
 			{
 				memcpy ((byte *)mgldc->surface + x +
 						 ((y << repshift) + i + j) * mgldc->mi.bytesPerLine,
@@ -2756,27 +2753,48 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 //==========================================================================
 
-byte        scantokey[128] = 
-					{ 
-//  0           1       2       3       4       5       6       7 
-//  8           9       A       B       C       D       E       F 
-	0  ,    27,     '1',    '2',    '3',    '4',    '5',    '6', 
-	'7',    '8',    '9',    '0',    '-',    '=',    K_BACKSPACE, 9, // 0 
-	'q',    'w',    'e',    'r',    't',    'y',    'u',    'i', 
-	'o',    'p',    '[',    ']',    13 ,    K_CTRL,'a',  's',      // 1 
-	'd',    'f',    'g',    'h',    'j',    'k',    'l',    ';', 
-	'\'' ,    '`',    K_SHIFT,'\\',  'z',    'x',    'c',    'v',      // 2 
-	'b',    'n',    'm',    ',',    '.',    '/',    K_SHIFT,'*', 
-	K_ALT,' ',   0  ,    K_F1, K_F2, K_F3, K_F4, K_F5,   // 3 
-	K_F6, K_F7, K_F8, K_F9, K_F10,  K_PAUSE,    0  , K_HOME, 
-	K_UPARROW,K_PGUP,'-',K_LEFTARROW,'5',K_RIGHTARROW,'+',K_END, //4 
-	K_DOWNARROW,K_PGDN,K_INS,K_DEL,0,0,             0,              K_F11, 
-	K_F12,0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,        // 5
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0, 
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,        // 6 
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0, 
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0         // 7 
-}; 
+byte	scantokey[128] = { 
+//	0        1       2       3       4       5       6       7
+//	8        9       A       B       C       D       E       F
+	0  ,    27,     '1',    '2',    '3',    '4',    '5',    '6',
+	'7',    '8',    '9',    '0',    '-',    '=', K_BACKSPACE, 9,	// 0
+	'q',    'w',    'e',    'r',    't',    'y',    'u',    'i',
+	'o',    'p',    '[',    ']',     13,   K_CTRL,  'a',    's',	// 1
+	'd',    'f',    'g',    'h',    'j',    'k',    'l',    ';',
+	'\'',   '`',  K_SHIFT,  '\\',   'z',    'x',    'c',    'v',	// 2
+	'b',    'n',    'm',    ',',    '.',    '/',  K_SHIFT,  '*',
+	K_ALT,  ' ',     0 ,    K_F1,   K_F2,   K_F3,   K_F4,  K_F5,	// 3
+	K_F6,  K_F7,   K_F8,    K_F9,  K_F10, K_PAUSE,   0 , K_HOME,
+	K_UPARROW,K_PGUP,'-',K_LEFTARROW,'5',K_RIGHTARROW,'+',K_END,	// 4
+	K_DOWNARROW,K_PGDN,K_INS,K_DEL,   0 ,    0 ,     0 ,  K_F11,
+	K_F12,   0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,	// 5
+	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,
+	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,	// 6
+	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,
+	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0	// 7
+};
+
+byte	shiftscantokey[128] = { 
+//	0       1       2       3       4       5       6       7
+//	8       9       A       B       C       D       E       F
+	0  ,    27,     '!',    '@',    '#',    '$',    '%',    '^',
+	'&',    '*',    '(',    ')',    '_',    '+', K_BACKSPACE, 9,	// 0
+	'Q',    'W',    'E',    'R',    'T',    'Y',    'U',    'I',
+	'O',    'P',    '{',    '}',    13 ,   K_CTRL,  'A',    'S',	// 1
+	'D',    'F',    'G',    'H',    'J',    'K',    'L',    ':',
+	'"' ,    '~', K_SHIFT,  '|',    'Z',    'X',    'C',    'V',	// 2
+	'B',    'N',    'M',    '<',    '>',    '?',  K_SHIFT,  '*',
+	K_ALT,  ' ',     0 ,    K_F1,   K_F2,   K_F3,   K_F4,  K_F5,	// 3
+	K_F6,  K_F7,   K_F8,    K_F9,  K_F10, K_PAUSE,   0 , K_HOME,
+	K_UPARROW,K_PGUP,'_',K_LEFTARROW,'%',K_RIGHTARROW,'+',K_END,	// 4
+	K_DOWNARROW,K_PGDN,K_INS,K_DEL,   0 ,    0 ,     0 ,  K_F11,
+	K_F12,   0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,	// 5
+	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,
+	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,	// 6
+	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,
+	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0	// 7
+};
+
 
 /*
 =======
@@ -2787,12 +2805,13 @@ Map from windows to quake keynums
 */
 static int MapKey (int key)
 {
-	key = (key>>16)&255;
+	key = (key >> 16) & 255;
 	if (key > 127)
 		return 0;
 
 	return scantokey[key];
 }
+
 
 static void AppActivate(BOOL fActive, BOOL minimize)
 /****************************************************************************
@@ -3302,7 +3321,7 @@ void VID_MenuDraw (void)
 
 	ScrollTitle("gfx/menu/title7.lmp");
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		ptr = VID_GetModeDescriptionMemCheck (i);
 		modedescs[i].modenum = modelist[i].modenum;
@@ -3317,8 +3336,8 @@ void VID_MenuDraw (void)
 
 	vid_wmodes = 3;
 	lnummodes = VID_NumModes ();
-	
-	for (i=3 ; i<lnummodes ; i++)
+
+	for (i = 3; i < lnummodes; i++)
 	{
 		ptr = VID_GetModeDescriptionMemCheck (i);
 		pv = VID_GetModePtr (i);
@@ -3330,7 +3349,7 @@ void VID_MenuDraw (void)
 		{
 			dup = 0;
 
-			for (j=3 ; j<vid_wmodes ; j++)
+			for (j = 3; j < vid_wmodes; j++)
 			{
 				if (!strcmp (modedescs[j].desc, ptr))
 				{
@@ -3371,9 +3390,9 @@ void VID_MenuDraw (void)
 
 // sort the modes on width (to handle picking up oddball dibonly modes
 // after all the others)
-	for (i=3 ; i<(vid_wmodes-1) ; i++)
+	for (i = 3; i< (vid_wmodes-1); i++)
 	{
-		for (j=(i+1) ; j<vid_wmodes ; j++)
+		for (j = (i+1); j < vid_wmodes; j++)
 		{
 			if (modedescs[i].width > modedescs[j].width)
 			{
@@ -3390,7 +3409,7 @@ void VID_MenuDraw (void)
 	column = 16;
 	row = 60+2*8;
 
-	for (i=0 ; i<3; i++)
+	for (i = 0; i < 3; i++)
 	{
 		if (modedescs[i].iscur)
 			M_PrintWhite (column, row, modedescs[i].desc);
@@ -3407,7 +3426,7 @@ void VID_MenuDraw (void)
 		column = 16;
 		row = 60+6*8;
 
-		for (i=3 ; i<vid_wmodes ; i++)
+		for (i = 3; i < vid_wmodes; i++)
 		{
 			if (modedescs[i].iscur)
 				M_PrintWhite (column, row, modedescs[i].desc);
