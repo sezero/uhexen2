@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.27 2006-09-15 20:02:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.28 2006-10-21 22:08:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -105,7 +105,7 @@ edict_t *ED_Alloc (void)
 	int			i;
 	edict_t		*e;
 
-	for ( i=svs.maxclients+1+max_temp_edicts.value ; i<sv.num_edicts ; i++)
+	for (i = svs.maxclients + 1 + max_temp_edicts.value; i < sv.num_edicts; i++)
 	{
 		e = EDICT_NUM(i);
 		// the first couple seconds of server time can involve a lot of
@@ -140,7 +140,7 @@ edict_t *ED_Alloc_Temp (void)
 	LeastTime = -1;
 	LeastSet = false;
 	Least = NULL;	// shut up compiler
-	for ( i=svs.maxclients+1,j=0 ; j < max_temp_edicts.value ; i++,j++)
+	for (i = svs.maxclients + 1, j = 0; j < max_temp_edicts.value; i++, j++)
 	{
 		e = EDICT_NUM(i);
 		// the first couple seconds of server time can involve a lot of
@@ -207,7 +207,7 @@ static ddef_t *ED_GlobalAtOfs (int ofs)
 	ddef_t		*def;
 	int			i;
 
-	for (i=0 ; i<progs->numglobaldefs ; i++)
+	for (i = 0; i < progs->numglobaldefs; i++)
 	{
 		def = &pr_globaldefs[i];
 		if (def->ofs == ofs)
@@ -226,7 +226,7 @@ static ddef_t *ED_FieldAtOfs (int ofs)
 	ddef_t		*def;
 	int			i;
 
-	for (i=0 ; i<progs->numfielddefs ; i++)
+	for (i = 0; i < progs->numfielddefs; i++)
 	{
 		def = &pr_fielddefs[i];
 		if (def->ofs == ofs)
@@ -245,7 +245,7 @@ static ddef_t *ED_FindField (char *name)
 	ddef_t		*def;
 	int			i;
 
-	for (i=0 ; i<progs->numfielddefs ; i++)
+	for (i = 0; i < progs->numfielddefs; i++)
 	{
 		def = &pr_fielddefs[i];
 		if (!strcmp(pr_strings + def->s_name,name) )
@@ -265,7 +265,7 @@ static ddef_t *ED_FindGlobal (char *name)
 	ddef_t		*def;
 	int			i;
 
-	for (i=0 ; i<progs->numglobaldefs ; i++)
+	for (i = 0; i < progs->numglobaldefs; i++)
 	{
 		def = &pr_globaldefs[i];
 		if (!strcmp(pr_strings + def->s_name,name) )
@@ -285,7 +285,7 @@ static dfunction_t *ED_FindFunction (char *fn_name)
 	dfunction_t		*func;
 	int				i;
 
-	for (i=0 ; i<progs->numfunctions ; i++)
+	for (i = 0; i < progs->numfunctions; i++)
 	{
 		func = &pr_functions[i];
 		if (!strcmp(pr_strings + func->s_name, fn_name))
@@ -299,7 +299,7 @@ dfunction_t *ED_FindFunctioni (char *fn_name)
 	dfunction_t		*func;
 	int				i;
 	
-	for (i=0 ; i<progs->numfunctions ; i++)
+	for (i = 0; i < progs->numfunctions; i++)
 	{
 		func = &pr_functions[i];
 		if (!Q_strcasecmp(pr_strings + func->s_name,fn_name) )
@@ -315,7 +315,7 @@ eval_t *GetEdictFieldValue(edict_t *ed, char *field)
 	int				i;
 	static int		rep = 0;
 
-	for (i=0 ; i<GEFV_CACHESIZE ; i++)
+	for (i = 0; i < GEFV_CACHESIZE; i++)
 	{
 		if (!strcmp(field, gefvCache[i].field))
 		{
@@ -468,9 +468,9 @@ char *PR_GlobalString (int ofs)
 	}
 
 	i = strlen(line);
-	for ( ; i<20 ; i++)
-		strcat (line," ");
-	strcat (line," ");
+	for ( ; i < 20; i++)
+		strcat (line, " ");
+	strcat (line, " ");
 
 	return line;
 }
@@ -488,9 +488,9 @@ char *PR_GlobalStringNoContents (int ofs)
 		sprintf (line,"%i(%s)", ofs, pr_strings + def->s_name);
 
 	i = strlen(line);
-	for ( ; i<20 ; i++)
-		strcat (line," ");
-	strcat (line," ");
+	for ( ; i < 20; i++)
+		strcat (line, " ");
+	strcat (line, " ");
 
 	return line;
 }
@@ -519,12 +519,12 @@ void ED_Print (edict_t *ed)
 	}
 
 	Con_Printf("\nEDICT %i:\n", NUM_FOR_EDICT(ed));
-	for (i=1 ; i<progs->numfielddefs ; i++)
+	for (i = 1; i < progs->numfielddefs; i++)
 	{
 		d = &pr_fielddefs[i];
 		name = pr_strings + d->s_name;
-		if ((name[strlen(name)-2] == '_') && 
-			((name[strlen(name)-1] == 'x') || (name[strlen(name)-1] == 'y') || (name[strlen(name)-1] == 'z')))
+		if ( (name[strlen(name)-2] == '_') && 
+			((name[strlen(name)-1] == 'x') || (name[strlen(name)-1] == 'y') || (name[strlen(name)-1] == 'z')) )
 			continue;	// skip _x, _y, _z vars
 
 		v = (int *)((char *)&ed->v + d->ofs*4);
@@ -532,13 +532,15 @@ void ED_Print (edict_t *ed)
 	// if the value is still all 0, skip the field
 		type = d->type & ~DEF_SAVEGLOBAL;
 
-		for (j=0 ; j<type_size[type] ; j++)
+		for (j = 0; j < type_size[type]; j++)
+		{
 			if (v[j])
 				break;
+		}
 		if (j == type_size[type])
 			continue;
 
-		Con_Printf ("%s",name);
+		Con_Printf ("%s", name);
 		l = strlen (name);
 		while (l++ < 15)
 			Con_Printf (" ");
@@ -578,7 +580,7 @@ void ED_Write (FILE *f, edict_t *ed)
 	else
 		class_name[0] = 0;
 
-	for (i=1 ; i<progs->numfielddefs ; i++)
+	for (i = 1; i < progs->numfielddefs; i++)
 	{
 		d = &pr_fielddefs[i];
 		name = pr_strings + d->s_name;
@@ -590,15 +592,17 @@ void ED_Write (FILE *f, edict_t *ed)
 
 	// if the value is still all 0, skip the field
 		type = d->type & ~DEF_SAVEGLOBAL;
-		for (j=0 ; j<type_size[type] ; j++)
+		for (j = 0; j < type_size[type]; j++)
+		{
 			if (v[j])
 				break;
+		}
 		if (j == type_size[type])
 			continue;
 
-		strcpy(field_name,name);
-		fprintf (f,"\"%s\" ",name);
-		fprintf (f,"\"%s\"\n", PR_UglyValueString(d->type, (eval_t *)v));
+		strcpy(field_name, name);
+		fprintf (f, "\"%s\" ", name);
+		fprintf (f, "\"%s\"\n", PR_UglyValueString(d->type, (eval_t *)v));
 	}
 
 	field_name[0] = 0;
@@ -626,7 +630,7 @@ void ED_PrintEdicts (void)
 	int		i;
 
 	Con_Printf ("%i entities\n", sv.num_edicts);
-	for (i=0 ; i<sv.num_edicts ; i++)
+	for (i = 0; i < sv.num_edicts; i++)
 		ED_PrintNum (i);
 }
 
@@ -664,7 +668,7 @@ static void ED_Count (void)
 	int		active, models, solid, step;
 
 	active = models = solid = step = 0;
-	for (i=0 ; i<sv.num_edicts ; i++)
+	for (i = 0; i < sv.num_edicts; i++)
 	{
 		ent = EDICT_NUM(i);
 		if (ent->free)
@@ -707,8 +711,8 @@ void ED_WriteGlobals (FILE *f)
 	char		*name;
 	int			type;
 
-	fprintf (f,"{\n");
-	for (i=0 ; i<progs->numglobaldefs ; i++)
+	fprintf (f, "{\n");
+	for (i = 0; i < progs->numglobaldefs; i++)
 	{
 		def = &pr_globaldefs[i];
 		type = def->type;
@@ -720,10 +724,10 @@ void ED_WriteGlobals (FILE *f)
 			continue;
 
 		name = pr_strings + def->s_name;
-		fprintf (f,"\"%s\" ", name);
-		fprintf (f,"\"%s\"\n", PR_UglyValueString(type, (eval_t *)&pr_globals[def->ofs]));
+		fprintf (f, "\"%s\" ", name);
+		fprintf (f, "\"%s\"\n", PR_UglyValueString(type, (eval_t *)&pr_globals[def->ofs]));
 	}
-	fprintf (f,"}\n");
+	fprintf (f, "}\n");
 }
 
 /*
@@ -784,7 +788,7 @@ char *ED_NewString (char *string)
 	new = Hunk_AllocName (l, "string");
 	new_p = new;
 
-	for (i=0 ; i< l ; i++)
+	for (i = 0; i < l; i++)
 	{
 		if (string[i] == '\\' && i < l-1)
 		{
@@ -835,7 +839,7 @@ static qboolean	ED_ParseEpair (void *base, ddef_t *key, char *s)
 		strcpy (string, s);
 		v = string;
 		w = string;
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 		{
 			while (*v && *v != ' ')
 				v++;
@@ -949,7 +953,7 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 
 		if (Q_strcasecmp(keyname,"MIDI") == 0)
 		{
-			strcpy(sv.midi_name,com_token);
+			strcpy(sv.midi_name, com_token);
 			continue;
 		}
 		else if (Q_strcasecmp(keyname,"CD") == 0)
@@ -1030,13 +1034,13 @@ void ED_LoadFromFile (char *data)
 #if !defined(SERVERONLY)
 		if (entity_file_size)
 		{
-			current_loading_size = start_amount + ((data-orig)*80/entity_file_size);
+			current_loading_size = start_amount + ((data - orig) * 80 / entity_file_size);
 			D_ShowLoadingSize();
 		}
 #endif
 
 		if (com_token[0] != '{')
-			Sys_Error ("ED_LoadFromFile: found %s when expecting {",com_token);
+			Sys_Error ("ED_LoadFromFile: found %s when expecting {", com_token);
 
 		if (!ent)
 			ent = EDICT_NUM(0);
@@ -1047,7 +1051,7 @@ void ED_LoadFromFile (char *data)
 #if 0
 		//jfm fuckup test
 		//remove for final release
-		if ((ent->v.spawnflags >1) && !strcmp("worldspawn",pr_strings + ent->v.classname) )
+		if ((ent->v.spawnflags >1) && !strcmp("worldspawn", pr_strings + ent->v.classname) )
 		{
 			Host_Error ("invalid SpawnFlags on World!!!\n");
 		}
@@ -1185,7 +1189,7 @@ void PR_LoadProgs (void)
 #endif
 
 	// flush the non-C variable lookup cache
-	for (i=0 ; i<GEFV_CACHESIZE ; i++)
+	for (i = 0; i < GEFV_CACHESIZE; i++)
 		gefvCache[i].field[0] = 0;
 
 	CRC_Init (&pr_crc);
@@ -1261,14 +1265,14 @@ void PR_LoadProgs (void)
 
 	progs = (dprograms_t *)COM_LoadHunkFile (finalprogname);
 	if (!progs)
-		Sys_Error ("PR_LoadProgs: couldn't load %s",finalprogname);
+		Sys_Error ("PR_LoadProgs: couldn't load %s", finalprogname);
 	Con_DPrintf ("Programs occupy %uK.\n", com_filesize/1024);
 
-	for (i=0 ; i<com_filesize ; i++)
+	for (i = 0; i < com_filesize; i++)
 		CRC_ProcessByte (&pr_crc, ((byte *)progs)[i]);
 
 	// byte swap the header
-	for (i=0 ; i<sizeof(*progs)/4 ; i++)
+	for (i = 0; i < sizeof(*progs)/4; i++)
 		((int *)progs)[i] = LittleLong ( ((int *)progs)[i] );
 
 	if (progs->version != PROG_VERSION)
@@ -1285,7 +1289,7 @@ void PR_LoadProgs (void)
 	Con_Printf ("Loaded %s ", finalprogname);
 	if (progs->crc == PROGS_V111_CRC)
 	{
-		Con_Printf ("(%d crc: 1.11)\n", PROGS_V111_CRC);
+		Con_Printf ("(%d crc: 1.11 style)\n", PROGS_V111_CRC);
 		old_progdefs = true;
 		pr_global_struct_v111 = (globalvars_v111_t *)((byte *)progs + progs->ofs_globals);
 		pr_globals = (float *)pr_global_struct_v111;
@@ -1293,7 +1297,7 @@ void PR_LoadProgs (void)
 	}
 	else
 	{
-		Con_Printf ("(%d crc: 1.12)\n", PROGS_V112_CRC);
+		Con_Printf ("(%d crc: 1.12 style)\n", PROGS_V112_CRC);
 		old_progdefs = false;
 		pr_global_struct = (globalvars_t *)((byte *)progs + progs->ofs_globals);
 		pr_globals = (float *)pr_global_struct;
@@ -1304,7 +1308,7 @@ void PR_LoadProgs (void)
 
 #if BYTE_ORDER == BIG_ENDIAN
 	// byte swap the lumps
-	for (i=0 ; i<progs->numstatements ; i++)
+	for (i = 0; i < progs->numstatements; i++)
 	{
 		pr_statements[i].op = LittleShort(pr_statements[i].op);
 		pr_statements[i].a = LittleShort(pr_statements[i].a);
@@ -1312,7 +1316,7 @@ void PR_LoadProgs (void)
 		pr_statements[i].c = LittleShort(pr_statements[i].c);
 	}
 
-	for (i=0 ; i<progs->numfunctions; i++)
+	for (i = 0; i < progs->numfunctions; i++)
 	{
 		pr_functions[i].first_statement = LittleLong (pr_functions[i].first_statement);
 		pr_functions[i].parm_start = LittleLong (pr_functions[i].parm_start);
@@ -1322,14 +1326,14 @@ void PR_LoadProgs (void)
 		pr_functions[i].locals = LittleLong (pr_functions[i].locals);
 	}
 
-	for (i=0 ; i<progs->numglobaldefs ; i++)
+	for (i = 0; i < progs->numglobaldefs; i++)
 	{
 		pr_globaldefs[i].type = LittleShort (pr_globaldefs[i].type);
 		pr_globaldefs[i].ofs = LittleShort (pr_globaldefs[i].ofs);
 		pr_globaldefs[i].s_name = LittleLong (pr_globaldefs[i].s_name);
 	}
 
-	for (i=0 ; i<progs->numfielddefs ; i++)
+	for (i = 0; i < progs->numfielddefs; i++)
 	{
 		pr_fielddefs[i].type = LittleShort (pr_fielddefs[i].type);
 		if (pr_fielddefs[i].type & DEF_SAVEGLOBAL)
@@ -1338,7 +1342,7 @@ void PR_LoadProgs (void)
 		pr_fielddefs[i].s_name = LittleLong (pr_fielddefs[i].s_name);
 	}
 
-	for (i=0 ; i<progs->numglobals ; i++)
+	for (i = 0; i < progs->numglobals; i++)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 #endif	// BIG_ENDIAN
 
@@ -1396,18 +1400,23 @@ int NUM_FOR_EDICT(edict_t *e)
 	{
 		if (!RemoveBadReferences)
 			Con_DPrintf ("NUM_FOR_EDICT: bad pointer, Class: %s Field: %s, Index %d, Total %d",class_name,field_name,b,sv.num_edicts);
-		return(0);
+		return (0);
 	}
 	if (e->free && RemoveBadReferences)
 	{
 //		Con_Printf ("NUM_FOR_EDICT: freed edict, Class: %s Field: %s, Index %d, Total %d",class_name,field_name,b,sv.num_edicts);
-		return(0);
+		return (0);
 	}
 	return b;
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2006/09/15 20:02:03  sezero
+ * fixes for parsing input from fgets, part-1: fixed and
+ * improved parsing of maplist.txt. fixes a bug reported
+ * for the PalmOS port ZHexen2.
+ *
  * Revision 1.26  2006/07/18 08:30:18  sezero
  * a few int -> size_t changes for filesize vars
  *

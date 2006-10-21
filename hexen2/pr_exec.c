@@ -1,7 +1,7 @@
 /*
 	pr_exec.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.11 2006-09-13 05:53:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.12 2006-10-21 22:08:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -126,7 +126,7 @@ static char *pr_opnames[] =
 //switch types
 enum {SWITCH_F,SWITCH_V,SWITCH_S,SWITCH_E,SWITCH_FNC};
 
-void PR_ExecuteProgram(func_t fnum)
+void PR_ExecuteProgram (func_t fnum)
 {
 	int i;
 	int s;
@@ -140,7 +140,7 @@ void PR_ExecuteProgram(func_t fnum)
 	int startFrame;
 	int endFrame;
 	float val;
-	int case_type=-1;
+	int case_type = -1;
 	float switch_float = 0;	// shut up compiler
 
 	if (!fnum || fnum >= progs->numfunctions)
@@ -214,8 +214,8 @@ void PR_ExecuteProgram(func_t fnum)
 		break;
 	case OP_MUL_V:
 		c->_float = a->vector[0]*b->vector[0]
-			+ a->vector[1]*b->vector[1]
-			+ a->vector[2]*b->vector[2];
+			  + a->vector[1]*b->vector[1]
+			  + a->vector[2]*b->vector[2];
 		break;
 	case OP_MUL_FV:
 		c->vector[0] = a->_float * b->vector[0];
@@ -284,7 +284,7 @@ void PR_ExecuteProgram(func_t fnum)
 			&& (a->vector[2] == b->vector[2]);
 		break;
 	case OP_EQ_S:
-		c->_float = !strcmp(pr_strings+a->string,pr_strings+b->string);
+		c->_float = !strcmp(pr_strings + a->string, pr_strings + b->string);
 		break;
 	case OP_EQ_E:
 		c->_float = a->_int == b->_int;
@@ -302,7 +302,7 @@ void PR_ExecuteProgram(func_t fnum)
 			|| (a->vector[2] != b->vector[2]);
 		break;
 	case OP_NE_S:
-		c->_float = strcmp(pr_strings+a->string,pr_strings+b->string);
+		c->_float = strcmp(pr_strings + a->string, pr_strings + b->string);
 		break;
 	case OP_NE_E:
 		c->_float = a->_int != b->_int;
@@ -467,19 +467,19 @@ void PR_ExecuteProgram(func_t fnum)
 	case OP_IFNOT:
 		if (!a->_int)
 		{
-			s += st->b-1;	// -1 to offset the s++
+			s += st->b - 1;	// -1 to offset the s++
 		}
 		break;
 
 	case OP_IF:
 		if (a->_int)
 		{
-			s += st->b-1;	// -1 to offset the s++
+			s += st->b - 1;	// -1 to offset the s++
 		}
 		break;
 
 	case OP_GOTO:
-		s += st->a-1;	// -1 to offset the s++
+		s += st->a - 1;		// -1 to offset the s++
 		break;
 
 	case OP_CALL8:
@@ -540,7 +540,7 @@ void PR_ExecuteProgram(func_t fnum)
 		ed->v.nextthink = PR_GLOBAL_STRUCT(time) + 0.1;
 #endif
 */
-		ed->v.nextthink = PR_GLOBAL_STRUCT(time)+HX_FRAME_TIME;
+		ed->v.nextthink = PR_GLOBAL_STRUCT(time) + HX_FRAME_TIME;
 		if (a->_float != ed->v.frame)
 		{
 			ed->v.frame = a->_float;
@@ -550,7 +550,7 @@ void PR_ExecuteProgram(func_t fnum)
 
 	case OP_CSTATE:	// Cycle state
 		ed = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
-		ed->v.nextthink = PR_GLOBAL_STRUCT(time)+HX_FRAME_TIME;
+		ed->v.nextthink = PR_GLOBAL_STRUCT(time) + HX_FRAME_TIME;
 		ed->v.think = pr_xfunction-pr_functions;
 		if (old_progdefs)
 			pr_global_struct_v111->cycle_wrapped = false;
@@ -595,7 +595,7 @@ void PR_ExecuteProgram(func_t fnum)
 
 	case OP_CWSTATE:	// Cycle weapon state
 		ed = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
-		ed->v.nextthink = PR_GLOBAL_STRUCT(time)+HX_FRAME_TIME;
+		ed->v.nextthink = PR_GLOBAL_STRUCT(time) + HX_FRAME_TIME;
 		ed->v.think = pr_xfunction-pr_functions;
 		if (old_progdefs)
 			pr_global_struct_v111->cycle_wrapped = false;
@@ -668,41 +668,39 @@ void PR_ExecuteProgram(func_t fnum)
 		break;
 
 	case OP_RAND0:
-	//	val = (rand()&0x7fff)/((float)0x7fff);
-		val = rand()*(1.0/RAND_MAX);
+	//	val = (rand() & 0x7fff) / ((float)0x7fff);
+		val = rand() * (1.0 / RAND_MAX);
 		G_FLOAT(OFS_RETURN) = val;
 		break;
 	case OP_RAND1:
-		val = rand()*(1.0/RAND_MAX)*a->_float;
+		val = rand() * (1.0 / RAND_MAX) * a->_float;
 		G_FLOAT(OFS_RETURN) = val;
 		break;
 	case OP_RAND2:
 		if (a->_float < b->_float)
 		{
-			val = a->_float+(rand()*(1.0/RAND_MAX)
-				*(b->_float-a->_float));
+			val = a->_float + (rand() * (1.0 / RAND_MAX) * (b->_float-a->_float));
 		}
 		else
 		{
-			val = b->_float+(rand()*(1.0/RAND_MAX)
-				*(a->_float-b->_float));
+			val = b->_float + (rand() * (1.0 / RAND_MAX) * (a->_float-b->_float));
 		}
 		G_FLOAT(OFS_RETURN) = val;
 		break;
 	case OP_RANDV0:
-		val = rand()*(1.0/RAND_MAX);
+		val = rand() * (1.0 / RAND_MAX);
 		G_FLOAT(OFS_RETURN+0) = val;
-		val = rand()*(1.0/RAND_MAX);
+		val = rand() * (1.0 / RAND_MAX);
 		G_FLOAT(OFS_RETURN+1) = val;
-		val = rand()*(1.0/RAND_MAX);
+		val = rand() * (1.0 / RAND_MAX);
 		G_FLOAT(OFS_RETURN+2) = val;
 		break;
 	case OP_RANDV1:
-		val = rand()*(1.0/RAND_MAX)*a->vector[0];
+		val = rand() * (1.0 / RAND_MAX) * a->vector[0];
 		G_FLOAT(OFS_RETURN+0) = val;
-		val = rand()*(1.0/RAND_MAX)*a->vector[1];
+		val = rand() * (1.0 / RAND_MAX) * a->vector[1];
 		G_FLOAT(OFS_RETURN+1) = val;
-		val = rand()*(1.0/RAND_MAX)*a->vector[2];
+		val = rand() * (1.0 / RAND_MAX) * a->vector[2];
 		G_FLOAT(OFS_RETURN+2) = val;
 		break;
 	case OP_RANDV2:
@@ -710,13 +708,11 @@ void PR_ExecuteProgram(func_t fnum)
 		{
 			if (a->vector[i] < b->vector[i])
 			{
-				val = a->vector[i]+(rand()*(1.0/RAND_MAX)
-					*(b->vector[i]-a->vector[i]));
+				val = a->vector[i] + (rand() * (1.0 / RAND_MAX) * (b->vector[i]-a->vector[i]));
 			}
 			else
 			{
-				val = b->vector[i]+(rand()*(1.0/RAND_MAX)
-					*(a->vector[i]-b->vector[i]));
+				val = b->vector[i] + (rand() * (1.0 / RAND_MAX) * (a->vector[i]-b->vector[i]));
 			}
 			G_FLOAT(OFS_RETURN+i) = val;
 		}
@@ -740,11 +736,11 @@ void PR_ExecuteProgram(func_t fnum)
 		break;
 
 	case OP_CASERANGE:
-		if (case_type!=SWITCH_F)
+		if (case_type != SWITCH_F)
 			PR_RunError("caserange fucked!");
 		if ((switch_float >= a->_float) && (switch_float <= b->_float))
 		{
-			s += st->c-1;	// -1 to offset the s++
+			s += st->c - 1;		// -1 to offset the s++
 		}
 		break;
 	case OP_CASE:
@@ -753,7 +749,7 @@ void PR_ExecuteProgram(func_t fnum)
 		case SWITCH_F:
 			if (switch_float == a->_float)
 			{
-				s += st->b-1;	// -1 to offset the s++
+				s += st->b - 1;	// -1 to offset the s++
 			}
 			break;
 		case SWITCH_V:
@@ -782,7 +778,7 @@ void PR_ExecuteProgram(func_t fnum)
 //
 //==========================================================================
 
-static int EnterFunction(dfunction_t *f)
+static int EnterFunction (dfunction_t *f)
 {
 	int i, j, c, o;
 
@@ -829,7 +825,7 @@ static int EnterFunction(dfunction_t *f)
 //
 //==========================================================================
 
-static int LeaveFunction(void)
+static int LeaveFunction (void)
 {
 	int i, c;
 
@@ -846,10 +842,10 @@ static int LeaveFunction(void)
 		PR_RunError("PR_ExecuteProgram: locals stack underflow\n");
 	}
 
-	for (i=0 ; i < c ; i++)
+	for (i = 0; i < c; i++)
 	{
 		((int *)pr_globals)[pr_xfunction->parm_start+i] =
-			localstack[localstack_used+i];
+				localstack[localstack_used+i];
 	}
 
 	// up stack
@@ -865,14 +861,14 @@ static int LeaveFunction(void)
 //
 //==========================================================================
 
-void PR_RunError(char *error, ...)
+void PR_RunError (char *error, ...)
 {
 	va_list argptr;
 	char string[1024];
 
-	va_start(argptr,error);
-	vsnprintf(string,sizeof(string),error,argptr);
-	va_end(argptr);
+	va_start (argptr, error);
+	vsnprintf (string, sizeof(string), error, argptr);
+	va_end (argptr);
 
 	PrintStatement(pr_statements + pr_xstatement);
 	PrintCallHistory();
@@ -891,7 +887,7 @@ void PR_RunError(char *error, ...)
 //
 //==========================================================================
 
-static void PrintCallHistory(void)
+static void PrintCallHistory (void)
 {
 	int		i;
 	dfunction_t	*f;
@@ -925,7 +921,7 @@ static void PrintCallHistory(void)
 //
 //==========================================================================
 
-static void PrintStatement(dstatement_t *s)
+static void PrintStatement (dstatement_t *s)
 {
 	int	i;
 
@@ -933,7 +929,7 @@ static void PrintStatement(dstatement_t *s)
 	{
 		Con_Printf("%s ", pr_opnames[s->op]);
 		i = strlen(pr_opnames[s->op]);
-		for (; i < 10; i++)
+		for ( ; i < 10; i++)
 		{
 			Con_Printf(" ");
 		}
@@ -977,7 +973,7 @@ static void PrintStatement(dstatement_t *s)
 //
 //==========================================================================
 
-void PR_Profile_f(void)
+void PR_Profile_f (void)
 {
 	int i, j;
 	int max;
@@ -1198,6 +1194,10 @@ static unsigned int ProgsTimer(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2006/09/13 05:53:22  sezero
+ * re-visited the includes, gathered all net includes into
+ * the new net_sys.h, did a platform defines clean-up.
+ *
  * Revision 1.10  2006/07/02 11:36:35  sezero
  * uppercased the pr_global_struct() macro for easier detection
  * and searching. put that macro in use in hexenworld server for

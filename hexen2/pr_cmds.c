@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.29 2006-09-25 08:30:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.30 2006-10-21 22:08:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -155,9 +155,11 @@ static void SetMinMaxSize (edict_t *e, float *min, float *max, qboolean rotate)
 	vec3_t	base, transformed;
 	int		i, j, k, l;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
+	{
 		if (min[i] > max[i])
 			PR_RunError ("backwards mins/maxs");
+	}
 
 	rotate = false;		// FIXME: implement rotation properly again
 
@@ -184,13 +186,13 @@ static void SetMinMaxSize (edict_t *e, float *min, float *max, qboolean rotate)
 		rmin[0] = rmin[1] = rmin[2] = 9999;
 		rmax[0] = rmax[1] = rmax[2] = -9999;
 
-		for (i=0 ; i<= 1 ; i++)
+		for (i = 0; i <= 1; i++)
 		{
 			base[0] = bounds[i][0];
-			for (j=0 ; j<= 1 ; j++)
+			for (j = 0; j <= 1; j++)
 			{
 				base[1] = bounds[j][1];
-				for (k=0 ; k<= 1 ; k++)
+				for (k = 0; k <= 1; k++)
 				{
 					base[2] = bounds[k][2];
 
@@ -199,7 +201,7 @@ static void SetMinMaxSize (edict_t *e, float *min, float *max, qboolean rotate)
 					transformed[1] = xvector[1]*base[0] + yvector[1]*base[1];
 					transformed[2] = base[2];
 
-					for (l=0 ; l<3 ; l++)
+					for (l = 0; l < 3; l++)
 					{
 						if (transformed[l] < rmin[l])
 							rmin[l] = transformed[l];
@@ -258,9 +260,11 @@ static void PF_setmodel (void)
 	m = G_STRING(OFS_PARM1);
 
 // check to see if model was properly precached
-	for (i=0, check = sv.model_precache ; *check ; i++, check++)
+	for (i = 0, check = sv.model_precache; *check; i++, check++)
+	{
 		if (!strcmp(*check, m))
 			break;
+	}
 
 	if (!*check)
 		PR_RunError ("no precache: %s\n", m);
@@ -289,9 +293,11 @@ static void PF_setpuzzlemodel (void)
 
 	sprintf(NewName,"models/puzzle/%s.mdl",m);
 // check to see if model was properly precached
-	for (i=0, check = sv.model_precache ; *check ; i++, check++)
+	for (i = 0, check = sv.model_precache; *check; i++, check++)
+	{
 		if (!strcmp(*check, NewName))
 			break;
+	}
 
 	e->v.model = ED_NewString (NewName) - pr_strings;
 
@@ -536,7 +542,7 @@ static void PF_vectoangles (void)
 =================
 PF_Random
 
-Returns a number from 0<= num < 1
+Returns a number from 0 <= num < 1
 
 random()
 =================
@@ -545,8 +551,8 @@ static void PF_random (void)
 {
 	float		num;
 
-//	num = (rand ()&0x7fff) / ((float)0x7fff);
-	num = rand()*(1.0/RAND_MAX);
+//	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 
 	G_FLOAT(OFS_RETURN) = num;
 }
@@ -662,9 +668,11 @@ static void PF_ambientsound (void)
 	attenuation = G_FLOAT(OFS_PARM3);
 
 // check to see if samp was properly precached
-	for (soundnum=0, check = sv.sound_precache ; *check ; check++, soundnum++)
+	for (soundnum = 0, check = sv.sound_precache; *check; check++, soundnum++)
+	{
 		if (!strcmp(*check,samp))
 			break;
+	}
 
 	if (!*check)
 	{
@@ -675,7 +683,7 @@ static void PF_ambientsound (void)
 // add an svc_spawnambient command to the level signon packet
 
 	MSG_WriteByte (&sv.signon,svc_spawnstaticsound);
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		MSG_WriteCoord(&sv.signon, pos[i]);
 
 	MSG_WriteShort (&sv.signon, soundnum);
@@ -939,7 +947,7 @@ static int ZOffset, YOffset;
 
 #define POINT_MAX_DEPTH	5
 
-static void AddParticle(float *Org, float color)
+static void AddParticle (float *Org, float color)
 {
 	particle_t	*p;
 
@@ -955,7 +963,7 @@ static void AddParticle(float *Org, float color)
 	VectorCopy (Org, p->org);
 }
 
-static void FindPath(float *StartV, float *EndV, float *Mins, float *Maxs, int NoMonsters, edict_t *Ent)
+static void FindPath (float *StartV, float *EndV, float *Mins, float *Maxs, int NoMonsters, edict_t *Ent)
 {
 	vec3_t	NewStartV, NewEndV;
 	int	XSize, YSize, ZSize;
@@ -976,10 +984,10 @@ static void FindPath(float *StartV, float *EndV, float *Mins, float *Maxs, int N
 	ZOffset = XSize*YSize;
 	YOffset = XSize;
 
-//	for(c=0;c<POINT_MAX_DEPTH;c++)
+//	for(c = 0; c < POINT_MAX_DEPTH; c++)
 //		ToDo[c] = NULL;
 
-	for(c=0,Pos = PI;c<MAX_POINT;c++,Pos++)
+	for (c = 0, Pos = PI; c < MAX_POINT; c++, Pos++)
 	{
 		Pos->Found = Pos->NumFound = Pos->MarkedWhen = 0;
 		Pos->FromPos = Pos->Next = NULL;
@@ -995,197 +1003,204 @@ static void FindPath(float *StartV, float *EndV, float *Mins, float *Maxs, int N
 	PI[POINT_POS(StartX,StartY,StartZ)].Found = 1;
 
 	test = 0;
-	for (c=1; c<=5; c++)
+	for (c = 1; c <= 5; c++)
 	{
 		NumMarks = NumTracesEach = 0;
-		for (z=0, Pos=PI; z<ZSize; z++)
-			for(y=0;y<YSize;y++)
-				for (x=0; x<XSize; x++, Pos++)
-					if (Pos->Found == c)
+
+		for (z = 0, Pos = PI; z < ZSize; z++)
+		{
+		    for (y = 0; y < YSize; y++)
+		    {
+			for (x = 0; x < XSize; x++, Pos++)
+			{
+			    if (Pos->Found == c)
+			    {
+				for (zs = -1; zs <= 1; zs++)
+				{
+				    switch (zs)
+				    {
+				    case -1:
+					ZPos = 0;
+					if (z == ZPos)
+						continue;
+					break;
+				    case 0:
+					ZPos = z;
+					break;
+				    case 1:
+					ZPos = ZSize-1;
+					if (z == ZPos)
+						continue;
+					break;
+				    }
+
+				    for (ys = -1; ys <= 1; ys++)
+				    {
+					switch (ys)
 					{
-						for (zs=-1; zs<=1; zs++)
-						{
-							switch (zs)
-							{
-							case -1:
-								ZPos = 0;
-								if (z == ZPos)
-									continue;
-								break;
-							case 0:
-								ZPos = z;
-								break;
-							case 1:
-								ZPos = ZSize-1;
-								if (z == ZPos)
-									continue;
-								break;
-							}
-
-							for (ys=-1; ys<=1; ys++)
-							{
-								switch (ys)
-								{
-								case -1:
-									YPos = 0;
-									if (y == YPos)
-										continue;
-									break;
-								case 0:
-									YPos = y;
-									break;
-								case 1:
-									YPos = YSize-1;
-									if (y == YPos)
-										continue;
-									break;
-								}
-
-								for (xs=-1; xs<=1; xs++)
-								{
-									if (zs || ys || xs)
-									{
-										switch (xs)
-										{
-										case -1:
-											XPos = 0;
-											if (x == XPos)
-												continue;
-											break;
-										case 0:
-											XPos = x;
-											break;
-										case 1:
-											XPos = XSize-1;
-											if (x == XPos)
-												continue;
-											break;
-										}
-
-										if (XPos == x && YPos == y && ZPos == z)
-											continue;
-
-										test++;
-										DiffX = abs(x - XPos);
-										DiffY = abs(y - YPos);
-										DiffZ = abs(z - ZPos);
-
-										Diff = 999;
-										if (DiffX && DiffX < Diff)
-											Diff = DiffX;
-										if (DiffY && DiffY < Diff)
-											Diff = DiffY;
-										if (DiffZ && DiffZ < Diff)
-											Diff = DiffZ;
-										if (Diff == 999)
-											continue;
-
-										OrigDiff = Diff;
-
-										nx = x;
-										ny = y;
-										nz = z;
-										Diff = 0;
-
-										do
-										{
-											Diff++;
-											nx += xs;
-											ny += ys;
-											nz += zs;
-
-											EndPos = &PI[POINT_POS(nx,ny,nz)];
-
-										//	if (EndPos < PI || EndPos >= &PI[MAX_POINT])
-										//	{
-										//		Diff = 0;
-										//		Con_Printf("ERROR2\n");
-										//		break;
-										//	}
-										} while (!EndPos->Found && Diff != OrigDiff);
-
-										if (Diff != OrigDiff || EndPos->Found)
-										{
-											nx -= xs;
-											ny -= ys;
-											nz -= zs;
-											Diff--;
-										}
-
-										if (!Diff)
-										{
-											continue;
-										}
-
-										DiffX = x - StartX;
-										DiffY = y - StartY;
-										DiffZ = z - StartZ;
-
-										NewStartV[0] = StartV[0] + (DiffX * POINT_X_SIZE);
-										NewStartV[1] = StartV[1] + (DiffY * POINT_Y_SIZE);
-										NewStartV[2] = StartV[2] + (DiffZ * POINT_Z_SIZE);
-
-										DiffX = nx - x;
-										DiffY = ny - y;
-										DiffZ = nz - z;
-
-										NewEndV[0] = NewStartV[0] + (DiffX * POINT_X_SIZE);
-										NewEndV[1] = NewStartV[1] + (DiffY * POINT_Y_SIZE);
-										NewEndV[2] = NewStartV[2] + (DiffZ * POINT_Z_SIZE);
-
-										NumTraces++;
-										NumTracesEach++;
-										trace = SV_Move (NewStartV,Mins,Maxs,NewEndV,NoMonsters,Ent);
-									//	trace = SV_Move (NewStartV,vec3_origin,vec3_origin,NewEndV,NoMonsters,Ent);
-
-										TracePercent = trace.fraction;
-										PercentEach = 1 / (float)Diff;
-
-									//	OrigStartV[0] = NewStartV[0];
-									//	OrigStartV[1] = NewStartV[1];
-									//	OrigStartV[2] = NewStartV[2];
-
-										nz = z;
-										ny = y;
-										nx = x;
-										c2 = Pos->Found;
-
-										while (TracePercent >= PercentEach)
-										{
-											nz += zs;
-											ny += ys;
-											nx += xs;
-
-										//	NewStartV[0] += xs*POINT_X_SIZE;
-										//	NewStartV[1] += ys*POINT_Y_SIZE;
-										//	NewStartV[2] += zs*POINT_Z_SIZE;
-										//	AddParticle(NewStartV,(test == 2062 ? 255 : 252));
-
-											c2++;
-
-											EndPos = &PI[POINT_POS(nx,ny,nz)];
-
-										//	if (EndPos < PI || EndPos >= &PI[MAX_POINT])
-										//	{
-										//		Con_Printf("ERROR %d %d\n",OrigDiff,test);
-										//		break;
-										//	}
-
-											if (EndPos->Found && EndPos->Found <= c2+1)
-												break;
-
-											EndPos->Found = c2;
-											EndPos->MarkedWhen = Pos->Found;
-											EndPos->FromPos = Pos;
-											NumMarks++;
-
-											TracePercent -= PercentEach;
-										}
-									}
-								}
-							}
-						}
+					case -1:
+						YPos = 0;
+						if (y == YPos)
+							continue;
+						break;
+					case 0:
+						YPos = y;
+						break;
+					case 1:
+						YPos = YSize-1;
+						if (y == YPos)
+							continue;
+						break;
 					}
+
+					for (xs = -1; xs <= 1; xs++)
+					{
+					    if (zs || ys || xs)
+					    {
+						switch (xs)
+						{
+						case -1:
+							XPos = 0;
+							if (x == XPos)
+								continue;
+							break;
+						case 0:
+							XPos = x;
+							break;
+						case 1:
+							XPos = XSize-1;
+							if (x == XPos)
+								continue;
+							break;
+						}
+
+						if (XPos == x && YPos == y && ZPos == z)
+							continue;
+
+						test++;
+						DiffX = abs(x - XPos);
+						DiffY = abs(y - YPos);
+						DiffZ = abs(z - ZPos);
+
+						Diff = 999;
+						if (DiffX && DiffX < Diff)
+							Diff = DiffX;
+						if (DiffY && DiffY < Diff)
+							Diff = DiffY;
+						if (DiffZ && DiffZ < Diff)
+							Diff = DiffZ;
+						if (Diff == 999)
+							continue;
+
+						OrigDiff = Diff;
+
+						nx = x;
+						ny = y;
+						nz = z;
+						Diff = 0;
+
+						do
+						{
+							Diff++;
+							nx += xs;
+							ny += ys;
+							nz += zs;
+
+							EndPos = &PI[POINT_POS(nx,ny,nz)];
+
+						//	if (EndPos < PI || EndPos >= &PI[MAX_POINT])
+						//	{
+						//		Diff = 0;
+						//		Con_Printf("ERROR2\n");
+						//		break;
+						//	}
+						} while (!EndPos->Found && Diff != OrigDiff);
+
+						if (Diff != OrigDiff || EndPos->Found)
+						{
+							nx -= xs;
+							ny -= ys;
+							nz -= zs;
+							Diff--;
+						}
+
+						if (!Diff)
+						{
+							continue;
+						}
+
+						DiffX = x - StartX;
+						DiffY = y - StartY;
+						DiffZ = z - StartZ;
+
+						NewStartV[0] = StartV[0] + (DiffX * POINT_X_SIZE);
+						NewStartV[1] = StartV[1] + (DiffY * POINT_Y_SIZE);
+						NewStartV[2] = StartV[2] + (DiffZ * POINT_Z_SIZE);
+
+						DiffX = nx - x;
+						DiffY = ny - y;
+						DiffZ = nz - z;
+
+						NewEndV[0] = NewStartV[0] + (DiffX * POINT_X_SIZE);
+						NewEndV[1] = NewStartV[1] + (DiffY * POINT_Y_SIZE);
+						NewEndV[2] = NewStartV[2] + (DiffZ * POINT_Z_SIZE);
+
+						NumTraces++;
+						NumTracesEach++;
+						trace = SV_Move (NewStartV, Mins, Maxs, NewEndV, NoMonsters, Ent);
+					//	trace = SV_Move (NewStartV,vec3_origin, vec3_origin, NewEndV, NoMonsters, Ent);
+
+						TracePercent = trace.fraction;
+						PercentEach = 1 / (float)Diff;
+
+					//	OrigStartV[0] = NewStartV[0];
+					//	OrigStartV[1] = NewStartV[1];
+					//	OrigStartV[2] = NewStartV[2];
+
+						nz = z;
+						ny = y;
+						nx = x;
+						c2 = Pos->Found;
+
+						while (TracePercent >= PercentEach)
+						{
+							nz += zs;
+							ny += ys;
+							nx += xs;
+
+						//	NewStartV[0] += xs*POINT_X_SIZE;
+						//	NewStartV[1] += ys*POINT_Y_SIZE;
+						//	NewStartV[2] += zs*POINT_Z_SIZE;
+						//	AddParticle(NewStartV,(test == 2062 ? 255 : 252));
+
+							c2++;
+
+							EndPos = &PI[POINT_POS(nx,ny,nz)];
+
+						//	if (EndPos < PI || EndPos >= &PI[MAX_POINT])
+						//	{
+						//		Con_Printf("ERROR %d %d\n",OrigDiff,test);
+						//		break;
+						//	}
+
+							if (EndPos->Found && EndPos->Found <= c2+1)
+								break;
+
+							EndPos->Found = c2;
+							EndPos->MarkedWhen = Pos->Found;
+							EndPos->FromPos = Pos;
+							NumMarks++;
+
+							TracePercent -= PercentEach;
+						}
+					    }
+					}
+				    }
+				}
+			    }
+			}
+		    }
+		}
 
 //		Con_Printf("NumMarks: %d  NumTraces: %d\n",NumMarks,NumTracesEach);
 
@@ -1210,9 +1225,9 @@ static void PF_FindPath(void)
 	nomonsters = G_FLOAT(OFS_PARM4);
 	ent = G_EDICT(OFS_PARM5);
 
-	b= Sys_DoubleTime ();
-	FindPath(v1,v2,mins,maxs,nomonsters,ent);
-	Con_Printf("Time is %10.4f\n",Sys_DoubleTime ()-b);
+	b = Sys_DoubleTime ();
+	FindPath(v1, v2, mins, maxs, nomonsters,ent);
+	Con_Printf("Time is %10.4f\n", Sys_DoubleTime() - b);
 }
 
 #endif	// end of not used
@@ -1333,7 +1348,7 @@ static void PF_checkclient (void)
 	VectorAdd (self->v.origin, self->v.view_ofs, view);
 	leaf = Mod_PointInLeaf (view, sv.worldmodel);
 	l = (leaf - sv.worldmodel->leafs) - 1;
-	if ( (l<0) || !(checkpvs[l>>3] & (1<<(l&7)) ) )
+	if ( (l < 0) || !(checkpvs[l>>3] & (1 << (l & 7))) )
 	{
 		c_notvis++;
 		RETURN_EDICT(sv.edicts);
@@ -1447,14 +1462,14 @@ static void PF_findradius (void)
 	rad = G_FLOAT(OFS_PARM1);
 
 	ent = NEXT_EDICT(sv.edicts);
-	for (i=1 ; i<sv.num_edicts ; i++, ent = NEXT_EDICT(ent))
+	for (i = 1; i < sv.num_edicts; i++, ent = NEXT_EDICT(ent))
 	{
 		if (ent->free)
 			continue;
 		if (ent->v.solid == SOLID_NOT)
 			continue;
-		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (ent->v.origin[j] + (ent->v.mins[j] + ent->v.maxs[j])*0.5);
+		for (j = 0; j < 3; j++)
+			eorg[j] = org[j] - (ent->v.origin[j] + (ent->v.mins[j] + ent->v.maxs[j]) * 0.5);
 		if (VectorLength(eorg) > rad)
 			continue;
 
@@ -1713,7 +1728,7 @@ static void PF_precache_sound (void)
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
 	PR_CheckEmptyString (s);
 
-	for (i=0 ; i<MAX_SOUNDS ; i++)
+	for (i = 0; i < MAX_SOUNDS; i++)
 	{
 		if (!sv.sound_precache[i])
 		{
@@ -1762,7 +1777,7 @@ static void PF_precache_model (void)
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
 	PR_CheckEmptyString (s);
 
-	for (i=0 ; i<MAX_MODELS ; i++)
+	for (i = 0; i < MAX_MODELS; i++)
 	{
 		if (!sv.model_precache[i])
 		{
@@ -1805,7 +1820,7 @@ static void PF_precache_model4 (void)
 static void PF_precache_puzzle_model (void)
 {
 	int		i;
-	char	*s,temp[256],*m;
+	char	*s, temp[256], *m;
 
 	if (sv.state != ss_loading && !ignore_precache)
 		PR_RunError ("PF_Precache_*: Precache can only be done in spawn functions");
@@ -1818,7 +1833,7 @@ static void PF_precache_puzzle_model (void)
 
 	PR_CheckEmptyString (s);
 
-	for (i=0 ; i<MAX_MODELS ; i++)
+	for (i = 0; i < MAX_MODELS; i++)
 	{
 		if (!sv.model_precache[i])
 		{
@@ -1880,10 +1895,10 @@ static void PF_walkmove (void)
 		return;
 	}
 
-	yaw = yaw*M_PI*2 / 360;
+	yaw = yaw * M_PI * 2 / 360;
 
-	move[0] = cos(yaw)*dist;
-	move[1] = sin(yaw)*dist;
+	move[0] = cos(yaw) * dist;
+	move[1] = sin(yaw) * dist;
 	move[2] = 0;
 
 // save program state, because SV_movestep may call other progs
@@ -1956,7 +1971,7 @@ static void PF_lightstyle (void)
 	if (sv.state != ss_active)
 		return;
 
-	for (j=0, client = svs.clients ; j<svs.maxclients ; j++, client++)
+	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
 	{
 		if (client->active || client->spawned)
 		{
@@ -1980,7 +1995,7 @@ static void PF_lightstylevalue(void)
 	int style;
 
 	style = G_FLOAT(OFS_PARM0);
-	if(style < 0 || style >= MAX_LIGHTSTYLES)
+	if (style < 0 || style >= MAX_LIGHTSTYLES)
 	{
 		G_FLOAT(OFS_RETURN) = 0;
 		return;
@@ -2014,11 +2029,11 @@ static void PF_lightstylestatic(void)
 
 	styleNumber = G_FLOAT(OFS_PARM0);
 	value = G_FLOAT(OFS_PARM1);
-	if(value < 0)
+	if (value < 0)
 	{
 		value = 0;
 	}
-	else if(value > 'z'-'a')
+	else if (value > 'z'-'a')
 	{
 		value = 'z'-'a';
 	}
@@ -2027,13 +2042,13 @@ static void PF_lightstylestatic(void)
 	// Change the string in sv
 	sv.lightstyles[styleNumber] = styleString;
 
-	if(sv.state != ss_active)
+	if (sv.state != ss_active)
 	{
 		return;
 	}
 
 	// Send message to all clients on this server
-	for (i = 0, client = svs.clients ; i < svs.maxclients ; i++, client++)
+	for (i = 0, client = svs.clients; i < svs.maxclients; i++, client++)
 	{
 		if (client->active || client->spawned)
 		{
@@ -2162,7 +2177,7 @@ static void PF_aim (void)
 	ent->v.hull = save_hull;
 
 	if (tr.ent && tr.ent->v.takedamage == DAMAGE_YES
-		&& (!teamplay.value || ent->v.team <=0 || ent->v.team != tr.ent->v.team) )
+		&& (!teamplay.value || ent->v.team <= 0 || ent->v.team != tr.ent->v.team) )
 	{
 		VectorCopy (PR_GLOBAL_STRUCT(v_forward), G_VECTOR(OFS_RETURN));
 		return;
@@ -2174,7 +2189,7 @@ static void PF_aim (void)
 	bestent = NULL;
 
 	check = NEXT_EDICT(sv.edicts);
-	for (i=1 ; i<sv.num_edicts ; i++, check = NEXT_EDICT(check) )
+	for (i = 1; i < sv.num_edicts; i++, check = NEXT_EDICT(check) )
 	{
 		if (check->v.takedamage != DAMAGE_YES)
 			continue;
@@ -2182,9 +2197,8 @@ static void PF_aim (void)
 			continue;
 		if (teamplay.value && ent->v.team > 0 && ent->v.team == check->v.team)
 			continue;	// don't aim at teammate
-		for (j=0 ; j<3 ; j++)
-			end[j] = check->v.origin[j]
-				 + 0.5*(check->v.mins[j] + check->v.maxs[j]);
+		for (j = 0; j < 3; j++)
+			end[j] = check->v.origin[j] + 0.5 * (check->v.mins[j] + check->v.maxs[j]);
 		VectorSubtract (end, start, dir);
 		VectorNormalize (dir);
 		dist = DotProduct (dir, PR_GLOBAL_STRUCT(v_forward));
@@ -2418,7 +2432,7 @@ static void PF_makestatic (void)
 	MSG_WriteByte (&sv.signon, ent->v.drawflags);
 	MSG_WriteByte (&sv.signon, (int)(ent->v.abslight*255.0)&255);
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		MSG_WriteCoord(&sv.signon, ent->v.origin[i]);
 		MSG_WriteAngle(&sv.signon, ent->v.angles[i]);
@@ -2449,7 +2463,7 @@ static void PF_setspawnparms (void)
 	// copy spawn parms out of the client_t
 	client = svs.clients + (i-1);
 
-	for (i = 0 ; i < NUM_SPAWN_PARMS ; i++)
+	for (i = 0; i < NUM_SPAWN_PARMS; i++)
 	{
 	    if (old_progdefs)
 		(&pr_global_struct_v111->parm1)[i] = client->spawn_parms[i];
@@ -2529,9 +2543,11 @@ static void PF_WaterMove (void)
 	watertype = (int)self->v.watertype;
 
 	if (!(flags & (FL_IMMUNE_WATER + FL_GODMODE)))
+	{
 		if (((flags & FL_SWIM) && (waterlevel < drownlevel)) || (waterlevel >= drownlevel))
 		{
 			if (self->v.air_finished < sv.time)
+			{
 				if (self->v.pain_finished < sv.time)
 				{
 					self->v.dmg = self->v.dmg + 2;
@@ -2541,6 +2557,7 @@ static void PF_WaterMove (void)
 					damage = self->v.dmg;
 					self->v.pain_finished = sv.time + 1.0;
 				}
+			}
 		}
 		else
 		{
@@ -2551,6 +2568,7 @@ static void PF_WaterMove (void)
 			self->v.air_finished = sv.time + 12.0;
 			self->v.dmg = 2;
 		}
+	}
 
 	if (!waterlevel)
 	{
@@ -2568,6 +2586,7 @@ static void PF_WaterMove (void)
 	if (watertype == CONTENT_LAVA)
 	{	// do damage
 		if (!(flags & (FL_IMMUNE_LAVA + FL_GODMODE)))
+		{
 			if (self->v.dmgtime < sv.time)
 			{
 				if (self->v.radsuit_finished < sv.time)
@@ -2577,16 +2596,19 @@ static void PF_WaterMove (void)
 //				T_Damage (self, world, world, 10*self.waterlevel, 0, TRUE);
 				damage = (float)(10*waterlevel);
 			}
+		}
 	}
 	else if (watertype == CONTENT_SLIME)
 	{	// do damage
 		if (!(flags & (FL_IMMUNE_SLIME + FL_GODMODE)))
+		{
 			if (self->v.dmgtime < sv.time && self->v.radsuit_finished < sv.time)
 			{
 				self->v.dmgtime = sv.time + 1.0;
 //				T_Damage (self, world, world, 4*self.waterlevel, 0, TRUE);
 				damage = (float)(4*waterlevel);
 			}
+		}
 	}
 
 	if ( !(flags & FL_INWATER) )
@@ -2655,10 +2677,10 @@ static void PF_plaque_draw (void)
 
 static void PF_rain_go (void)
 {
-	float	*min_org,*max_org,*e_size;
+	float	*min_org, *max_org, *e_size;
 	float	*dir;
-	vec3_t	org,org2;
-	int	color,count,x_dir,y_dir;
+	vec3_t	org, org2;
+	int	color, count, x_dir, y_dir;
 
 	min_org = G_VECTOR (OFS_PARM0);
 	max_org = G_VECTOR (OFS_PARM1);
@@ -2696,7 +2718,7 @@ static void PF_rain_go (void)
 static void PF_particleexplosion (void)
 {
 	float *org;
-	int color,radius,counter;
+	int color, radius, counter;
 
 	org = G_VECTOR(OFS_PARM0);
 	color = G_FLOAT(OFS_PARM1);
@@ -2741,32 +2763,32 @@ static void PF_movestep (void)
 		pr_global_struct->self = oldself;
 }
 
-static void PF_Cos(void)
+static void PF_Cos (void)
 {
 	float angle;
 
 	angle = G_FLOAT(OFS_PARM0);
 
-	angle = angle*M_PI*2 / 360;
+	angle = angle * M_PI * 2 / 360;
 
 	G_FLOAT(OFS_RETURN) = cos(angle);
 }
 
-static void PF_Sin(void)
+static void PF_Sin (void)
 {
 	float angle;
 
 	angle = G_FLOAT(OFS_PARM0);
 
-	angle = angle*M_PI*2 / 360;
+	angle = angle * M_PI * 2 / 360;
 
 	G_FLOAT(OFS_RETURN) = sin(angle);
 }
 
-static void PF_AdvanceFrame(void)
+static void PF_AdvanceFrame (void)
 {
 	edict_t *Ent;
-	float Start,End,Result;
+	float Start, End, Result;
 
 	Ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 	Start = G_FLOAT(OFS_PARM0);
@@ -2777,7 +2799,7 @@ static void PF_AdvanceFrame(void)
 		Ent->v.frame = Start;
 		Result = 0;
 	}
-	else if(Ent->v.frame == End)
+	else if (Ent->v.frame == End)
 	{  // Wrapping
 		Ent->v.frame = Start;
 		Result = 1;
@@ -2794,10 +2816,10 @@ static void PF_AdvanceFrame(void)
 	G_FLOAT(OFS_RETURN) = Result;
 }
 
-static void PF_RewindFrame(void)
+static void PF_RewindFrame (void)
 {
 	edict_t *Ent;
-	float Start,End,Result;
+	float Start, End, Result;
 
 	Ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 	Start = G_FLOAT(OFS_PARM0);
@@ -2808,7 +2830,7 @@ static void PF_RewindFrame(void)
 		Ent->v.frame = Start;
 		Result = 0;
 	}
-	else if(Ent->v.frame == End)
+	else if (Ent->v.frame == End)
 	{  // Wrapping
 		Ent->v.frame = Start;
 		Result = 1;
@@ -2840,13 +2862,13 @@ static void PF_advanceweaponframe (void)
 	startframe = G_FLOAT(OFS_PARM0);
 	endframe = G_FLOAT(OFS_PARM1);
 
-	if ((endframe > startframe && (ent->v.weaponframe > endframe || ent->v.weaponframe < startframe)) ||
+	if ( (endframe > startframe && (ent->v.weaponframe > endframe || ent->v.weaponframe < startframe)) ||
 		(endframe < startframe && (ent->v.weaponframe < endframe || ent->v.weaponframe > startframe)) )
 	{
 		ent->v.weaponframe=startframe;
 		state = WF_CYCLE_STARTED;
 	}
-	else if(ent->v.weaponframe==endframe)
+	else if (ent->v.weaponframe==endframe)
 	{
 		ent->v.weaponframe=startframe;
 		state = WF_CYCLE_WRAPPED;
@@ -2872,7 +2894,7 @@ static void PF_setclass (void)
 	float		NewClass;
 	int			entnum;
 	edict_t	*e;
-	client_t	*client,*old;
+	client_t	*client, *old;
 
 	entnum = G_EDICTNUM(OFS_PARM0);
 	e = G_EDICT(OFS_PARM0);
@@ -2920,13 +2942,13 @@ static void PF_endeffect (void)
 #if 0	// not used
 static void PF_randomrange(void)
 {
-	float num,minv,maxv;
+	float num, minv, maxv;
 
 	minv = G_FLOAT(OFS_PARM0);
 	maxv = G_FLOAT(OFS_PARM1);
 
-//	num = (rand ()&0x7fff) / ((float)0x7fff);
-	num = rand()*(1.0/RAND_MAX);
+//	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 
 	G_FLOAT(OFS_RETURN) = ((maxv-minv) * num) + minv;
 }
@@ -2937,48 +2959,48 @@ static void PF_randomvalue(void)
 
 	range = G_FLOAT(OFS_PARM0);
 
-//	num = (rand ()&0x7fff) / ((float)0x7fff);
-	num = rand()*(1.0/RAND_MAX);
+//	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 
 	G_FLOAT(OFS_RETURN) = range * num;
 }
 
 static void PF_randomvrange(void)
 {
-	float num,*minv,*maxv;
+	float num, *minv, *maxv;
 	vec3_t result;
 
 	minv = G_VECTOR(OFS_PARM0);
 	maxv = G_VECTOR(OFS_PARM1);
 
-//	num = (rand ()&0x7fff) / ((float)0x7fff);
-	num = rand()*(1.0/RAND_MAX);
-	result[0] = ((maxv[0]-minv[0]) * num) + minv[0];
-//	num = (rand ()&0x7fff) / ((float)0x7fff);
-	num = rand()*(1.0/RAND_MAX);
-	result[1] = ((maxv[1]-minv[1]) * num) + minv[1];
-//	num = (rand ()&0x7fff) / ((float)0x7fff);
-	num = rand()*(1.0/RAND_MAX);
-	result[2] = ((maxv[2]-minv[2]) * num) + minv[2];
+//	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
+	result[0] = ((maxv[0] - minv[0]) * num) + minv[0];
+//	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
+	result[1] = ((maxv[1] - minv[1]) * num) + minv[1];
+//	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
+	result[2] = ((maxv[2] - minv[2]) * num) + minv[2];
 
 	VectorCopy (result, G_VECTOR(OFS_RETURN));
 }
 
 static void PF_randomvvalue(void)
 {
-	float num,*range;
+	float num, *range;
 	vec3_t result;
 
 	range = G_VECTOR(OFS_PARM0);
 
-//	num = (rand ()&0x7fff) / ((float)0x7fff);
-	num = rand()*(1.0/RAND_MAX);
+//	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 	result[0] = range[0] * num;
-//	num = (rand ()&0x7fff) / ((float)0x7fff);
-	num = rand()*(1.0/RAND_MAX);
+//	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 	result[1] = range[1] * num;
-//	num = (rand ()&0x7fff) / ((float)0x7fff);
-	num = rand()*(1.0/RAND_MAX);
+//	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 	result[2] = range[2] * num;
 
 	VectorCopy (result, G_VECTOR(OFS_RETURN));
@@ -3052,21 +3074,21 @@ static void PF_v_factor(void)
 static void PF_v_factorrange(void)
 // returns (v_right * factor_x) + (v_forward * factor_y) + (v_up * factor_z)
 {
-	float num,*minv,*maxv;
-	vec3_t result,r2;
+	float num, *minv, *maxv;
+	vec3_t result, r2;
 
 	minv = G_VECTOR(OFS_PARM0);
 	maxv = G_VECTOR(OFS_PARM1);
 
-//	num = (rand ()&0x7fff) / ((float)0x7fff);
-	num = rand()*(1.0/RAND_MAX);
-	result[0] = ((maxv[0]-minv[0]) * num) + minv[0];
-//	num = (rand ()&0x7fff) / ((float)0x7fff);
-	num = rand()*(1.0/RAND_MAX);
-	result[1] = ((maxv[1]-minv[1]) * num) + minv[1];
-//	num = (rand ()&0x7fff) / ((float)0x7fff);
-	num = rand()*(1.0/RAND_MAX);
-	result[2] = ((maxv[2]-minv[2]) * num) + minv[2];
+//	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
+	result[0] = ((maxv[0] - minv[0]) * num) + minv[0];
+//	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
+	result[1] = ((maxv[1] - minv[1]) * num) + minv[1];
+//	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
+	result[2] = ((maxv[2] - minv[2]) * num) + minv[2];
 
 	r2[0] = (PR_GLOBAL_STRUCT(v_right[0]) * result[0]) +
 			(PR_GLOBAL_STRUCT(v_forward[0]) * result[1]) +
@@ -3104,15 +3126,15 @@ static void PF_matchAngleToSlope(void)
 
 	mod = DotProduct(v_forward, old_right);
 
-	if(mod<0)
-		mod=1;
+	if(mod < 0)
+		mod = 1;
 	else
-		mod=-1;
+		mod = -1;
 
 	dot = DotProduct(v_forward, old_forward);
 
-	actor->v.angles[0] = dot*pitch;
-	actor->v.angles[2] = (1-fabs(dot))*pitch*mod;
+	actor->v.angles[0] = dot * pitch;
+	actor->v.angles[2] = (1-fabs(dot)) * pitch * mod;
 }
 
 static void PF_updateInfoPlaque (void)
@@ -3313,6 +3335,9 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2006/09/25 08:30:04  sezero
+ * prevented string buffer overflows in PF_VarString().
+ *
  * Revision 1.28  2006/07/18 08:44:20  sezero
  * random typo corrections
  *
