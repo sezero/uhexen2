@@ -29,7 +29,7 @@ struct sockaddr_in
 };
 char *inet_ntoa(struct in_addr in);
 unsigned long inet_addr(const char *cp);
-#endif
+#endif	// 0
 
 #include "net_sys.h"
 
@@ -116,36 +116,36 @@ static void NET_Ban_f (void)
 
 	switch (Cmd_Argc ())
 	{
-		case 1:
-			if (((struct in_addr *)&banAddr)->s_addr)
-			{
-				strcpy(addrStr, inet_ntoa(*(struct in_addr *)&banAddr));
-				strcpy(maskStr, inet_ntoa(*(struct in_addr *)&banMask));
-				print("Banning %s [%s]\n", addrStr, maskStr);
-			}
-			else
-				print("Banning not active\n");
-			break;
+	case 1:
+		if (((struct in_addr *)&banAddr)->s_addr)
+		{
+			strcpy(addrStr, inet_ntoa(*(struct in_addr *)&banAddr));
+			strcpy(maskStr, inet_ntoa(*(struct in_addr *)&banMask));
+			print("Banning %s [%s]\n", addrStr, maskStr);
+		}
+		else
+			print("Banning not active\n");
+		break;
 
-		case 2:
-			if (Q_strcasecmp(Cmd_Argv(1), "off") == 0)
-				banAddr = 0x00000000;
-			else
-				banAddr = inet_addr(Cmd_Argv(1));
-			banMask = 0xffffffff;
-			break;
-
-		case 3:
+	case 2:
+		if (Q_strcasecmp(Cmd_Argv(1), "off") == 0)
+			banAddr = 0x00000000;
+		else
 			banAddr = inet_addr(Cmd_Argv(1));
-			banMask = inet_addr(Cmd_Argv(2));
-			break;
+		banMask = 0xffffffff;
+		break;
 
-		default:
-			print("BAN ip_address [mask]\n");
-			break;
+	case 3:
+		banAddr = inet_addr(Cmd_Argv(1));
+		banMask = inet_addr(Cmd_Argv(2));
+		break;
+
+	default:
+		print("BAN ip_address [mask]\n");
+		break;
 	}
 }
-#endif
+#endif	// BAN_TEST
 
 
 int Datagram_SendMessage (qsocket_t *sock, sizebuf_t *data)
@@ -488,14 +488,23 @@ static void NET_Stats_f (void)
 	else
 	{
 		for (s = net_activeSockets; s; s = s->next)
+		{
 			if (Q_strcasecmp(Cmd_Argv(1), s->address) == 0)
 				break;
+		}
+
 		if (s == NULL)
+		{
 			for (s = net_freeSockets; s; s = s->next)
+			{
 				if (Q_strcasecmp(Cmd_Argv(1), s->address) == 0)
 					break;
+			}
+		}
+
 		if (s == NULL)
 			return;
+
 		PrintStats(s);
 	}
 }
@@ -581,6 +590,7 @@ static void Test_f (void)
 	if (host && hostCacheCount)
 	{
 		for (n = 0; n < hostCacheCount; n++)
+		{
 			if (Q_strcasecmp (host, hostcache[n].name) == 0)
 			{
 				if (hostcache[n].driver != myDriverLevel)
@@ -590,6 +600,8 @@ static void Test_f (void)
 				memcpy(&sendaddr, &hostcache[n].addr, sizeof(struct qsockaddr));
 				break;
 			}
+		}
+
 		if (n < hostCacheCount)
 			goto JustDoIt;
 	}
@@ -603,6 +615,7 @@ static void Test_f (void)
 		if (dfunc.GetAddrFromName(host, &sendaddr) != -1)
 			break;
 	}
+
 	if (net_landriverlevel == net_numlandrivers)
 		return;
 
@@ -709,6 +722,7 @@ static void Test2_f (void)
 	if (host && hostCacheCount)
 	{
 		for (n = 0; n < hostCacheCount; n++)
+		{
 			if (Q_strcasecmp (host, hostcache[n].name) == 0)
 			{
 				if (hostcache[n].driver != myDriverLevel)
@@ -717,6 +731,8 @@ static void Test2_f (void)
 				memcpy(&sendaddr, &hostcache[n].addr, sizeof(struct qsockaddr));
 				break;
 			}
+		}
+
 		if (n < hostCacheCount)
 			goto JustDoIt;
 	}
@@ -730,6 +746,7 @@ static void Test2_f (void)
 		if (dfunc.GetAddrFromName(host, &sendaddr) != -1)
 			break;
 	}
+
 	if (net_landriverlevel == net_numlandrivers)
 		return;
 
@@ -812,8 +829,10 @@ void Datagram_Listen (qboolean state)
 	int i;
 
 	for (i = 0; i < net_numlandrivers; i++)
+	{
 		if (net_landrivers[i].initialized)
 			net_landrivers[i].Listen (state);
+	}
 }
 
 
@@ -883,6 +902,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 
 		playerNumber = MSG_ReadByte();
 		activeNumber = -1;
+
 		for (clientNumber = 0, client = svs.clients; clientNumber < svs.maxclients; clientNumber++, client++)
 		{
 			if (client->active)
@@ -892,6 +912,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 					break;
 			}
 		}
+
 		if (clientNumber == svs.maxclients)
 			return NULL;
 
@@ -1083,9 +1104,13 @@ qsocket_t *Datagram_CheckNewConnections (void)
 	qsocket_t *ret = NULL;
 
 	for (net_landriverlevel = 0; net_landriverlevel < net_numlandrivers; net_landriverlevel++)
+	{
 		if (net_landrivers[net_landriverlevel].initialized)
+		{
 			if ((ret = _Datagram_CheckNewConnections ()) != NULL)
 				break;
+		}
+	}
 	return ret;
 }
 
@@ -1143,8 +1168,10 @@ static void _Datagram_SearchForHosts (qboolean xmit)
 		dfunc.GetAddrFromName(MSG_ReadString(), &readaddr);
 		// search the cache for this server
 		for (n = 0; n < hostCacheCount; n++)
+		{
 			if (dfunc.AddrCompare(&readaddr, &hostcache[n].addr) == 0)
 				break;
+		}
 
 		// is it already there?
 		if (n < hostCacheCount)
@@ -1183,6 +1210,7 @@ static void _Datagram_SearchForHosts (qboolean xmit)
 				}
 				else
 					hostcache[n].name[i-1]++;
+
 				i = -1;
 			}
 		}
@@ -1298,6 +1326,7 @@ static qsocket_t *_Datagram_Connect (char *host)
 
 		if (ret)
 			break;
+
 		Con_Printf("still trying...\n");
 		SCR_UpdateScreen ();
 		start_time = SetNetTime();
@@ -1377,9 +1406,13 @@ qsocket_t *Datagram_Connect (char *host)
 	qsocket_t *ret = NULL;
 
 	for (net_landriverlevel = 0; net_landriverlevel < net_numlandrivers; net_landriverlevel++)
+	{
 		if (net_landrivers[net_landriverlevel].initialized)
+		{
 			if ((ret = _Datagram_Connect (host)) != NULL)
 				break;
+		}
+	}
 	return ret;
 }
 

@@ -99,15 +99,19 @@ int WINS_Init (void)
 		{
 			// see if it's a text IP address (well, close enough)
 			for (p = buff; *p; p++)
+			{
 				if ((*p < '0' || *p > '9') && *p != '.')
 					break;
+			}
 
 			// if it is a real name, strip off the domain; we only want the host
 			if (*p)
 			{
 				for (i = 0; i < 15; i++)
+				{
 					if (buff[i] == '.')
 						break;
+				}
 				buff[i] = 0;
 			}
 			Cvar_Set ("hostname", buff);
@@ -186,7 +190,7 @@ int WINS_OpenSocket (int port)
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons((unsigned short)port);
-	if( bind (newsocket, (void *)&address, sizeof(address)) == 0)
+	if ( bind (newsocket, (void *)&address, sizeof(address)) == 0)
 		return newsocket;
 
 	if (tcpipAvailable)
@@ -219,9 +223,9 @@ the local network components to fill in the rest
 */
 static int PartialIPAddress (char *in, struct qsockaddr *hostaddr)
 {
-	char buff[256];
-	char *b;
-	int addr, mask, num, port, run;
+	char	buff[256];
+	char	*b;
+	int	addr, mask, num, port, run;
 
 	buff[0] = '.';
 	b = buff;
@@ -230,7 +234,7 @@ static int PartialIPAddress (char *in, struct qsockaddr *hostaddr)
 		b++;
 
 	addr = 0;
-	mask=-1;
+	mask = -1;
 	while (*b == '.')
 	{
 		b++;
@@ -246,7 +250,7 @@ static int PartialIPAddress (char *in, struct qsockaddr *hostaddr)
 			return -1;
 		if (num < 0 || num > 255)
 			return -1;
-		mask<<=8;
+		mask <<= 8;
 		addr = (addr<<8) + num;
 	}
 
@@ -273,7 +277,7 @@ int WINS_Connect (int mysocket, struct qsockaddr *addr)
 
 int WINS_CheckNewConnections (void)
 {
-	char buf[4096];
+	char		buf[4096];
 
 	if (net_acceptsocket == -1)
 		return -1;
@@ -321,7 +325,7 @@ static int WINS_MakeSocketBroadcastCapable (int mysocket)
 
 int WINS_Broadcast (int mysocket, byte *buf, int len)
 {
-	int ret;
+	int	ret;
 
 	if (mysocket != net_broadcastsocket)
 	{
@@ -342,12 +346,14 @@ int WINS_Broadcast (int mysocket, byte *buf, int len)
 
 int WINS_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 {
-	int ret;
+	int	ret;
 
 	ret = sendto (mysocket, buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
 	if (ret == -1)
+	{
 		if (WSAGetLastError() == WSAEWOULDBLOCK)
 			return 0;
+	}
 
 	return ret;
 }
@@ -357,7 +363,7 @@ int WINS_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 char *WINS_AddrToString (struct qsockaddr *addr)
 {
 	static char buffer[22];
-	int haddr;
+	int		haddr;
 
 	haddr = ntohl(((struct sockaddr_in *)addr)->sin_addr.s_addr);
 	snprintf (buffer, sizeof (buffer), "%d.%d.%d.%d:%d", (haddr >> 24) & 0xff,
@@ -370,7 +376,7 @@ char *WINS_AddrToString (struct qsockaddr *addr)
 
 int WINS_StringToAddr (char *string, struct qsockaddr *addr)
 {
-	int ha1, ha2, ha3, ha4, hp, ipaddr;
+	int	ha1, ha2, ha3, ha4, hp, ipaddr;
 
 	sscanf(string, "%d.%d.%d.%d:%d", &ha1, &ha2, &ha3, &ha4, &hp);
 	ipaddr = (ha1 << 24) | (ha2 << 16) | (ha3 << 8) | ha4;
@@ -386,7 +392,7 @@ int WINS_StringToAddr (char *string, struct qsockaddr *addr)
 int WINS_GetSocketAddr (int mysocket, struct qsockaddr *addr)
 {
 	int addrlen = sizeof(struct qsockaddr);
-	unsigned int a;
+	unsigned int	a;
 
 	memset(addr, 0, sizeof(struct qsockaddr));
 

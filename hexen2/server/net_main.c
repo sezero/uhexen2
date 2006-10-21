@@ -105,11 +105,14 @@ void NET_FreeQSocket(qsocket_t *sock)
 	else
 	{
 		for (s = net_activeSockets; s; s = s->next)
+		{
 			if (s->next == sock)
 			{
 				s->next = sock->next;
 				break;
 			}
+		}
+
 		if (!s)
 			Sys_Error ("NET_FreeQSocket: not active\n");
 	}
@@ -131,7 +134,7 @@ static void NET_Listen_f (void)
 
 	listening = atoi(Cmd_Argv(1)) ? true : false;
 
-	for (net_driverlevel=0 ; net_driverlevel<net_numdrivers; net_driverlevel++)
+	for (net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
 	{
 		if (net_drivers[net_driverlevel].initialized == false)
 			continue;
@@ -227,7 +230,7 @@ qsocket_t *NET_CheckNewConnections (void)
 
 	SetNetTime();
 
-	for (net_driverlevel=0 ; net_driverlevel<net_numdrivers; net_driverlevel++)
+	for (net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
 	{
 		if (net_drivers[net_driverlevel].initialized == false)
 			continue;
@@ -404,7 +407,7 @@ int NET_SendToAll(sizebuf_t *data, int blocktime)
 	qboolean	state1 [MAX_SCOREBOARD];
 	qboolean	state2 [MAX_SCOREBOARD];
 
-	for (i=0, host_client = svs.clients ; i<svs.maxclients ; i++, host_client++)
+	for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
 	{
 		if (!host_client->netconnection)
 			continue;
@@ -440,7 +443,7 @@ int NET_SendToAll(sizebuf_t *data, int blocktime)
 	while (count)
 	{
 		count = 0;
-		for (i=0, host_client = svs.clients ; i<svs.maxclients ; i++, host_client++)
+		for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
 		{
 			if (! state1[i])
 			{
@@ -532,7 +535,7 @@ void NET_Init (void)
 	Cmd_AddCommand ("port", NET_Port_f);
 
 	// initialize all the drivers
-	for (net_driverlevel=0 ; net_driverlevel<net_numdrivers ; net_driverlevel++)
+	for (net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
 	{
 		controlSocket = net_drivers[net_driverlevel].Init();
 		if (controlSocket == -1)

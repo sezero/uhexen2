@@ -537,14 +537,15 @@ static void NET_GetLocalAddress (void)
 	struct sockaddr_in	address;
 	socklen_t		namelen;
 
-	gethostname(buff, 512);
+	if (gethostname(buff, 512) == -1)
+		Sys_Error ("NET_Init: gethostname: %s", strerror(errno));
 	buff[512-1] = 0;
 
 	NET_StringToAdr (buff, &net_local_adr);
 
 	namelen = sizeof(address);
 	if (getsockname (net_socket, (struct sockaddr *)&address, &namelen) == -1)
-		Sys_Error ("NET_Init: getsockname:", strerror(errno));
+		Sys_Error ("NET_Init: getsockname: %s", strerror(errno));
 
 	net_local_adr.port = address.sin_port;
 

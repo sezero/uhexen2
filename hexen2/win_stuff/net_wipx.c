@@ -76,15 +76,19 @@ int WIPX_Init (void)
 		{
 			// see if it's a text IP address (well, close enough)
 			for (p = buff; *p; p++)
+			{
 				if ((*p < '0' || *p > '9') && *p != '.')
 					break;
+			}
 
 			// if it is a real name, strip off the domain; we only want the host
 			if (*p)
 			{
 				for (i = 0; i < 15; i++)
+				{
 					if (buff[i] == '.')
 						break;
+				}
 				buff[i] = 0;
 			}
 			Cvar_Set ("hostname", buff);
@@ -151,14 +155,16 @@ void WIPX_Listen (qboolean state)
 
 int WIPX_OpenSocket (int port)
 {
-	int handle;
-	int newsocket;
+	int		handle;
+	int		newsocket;
 	struct sockaddr_ipx address;
 	u_long _true = 1;
 
 	for (handle = 0; handle < IPXSOCKETS; handle++)
+	{
 		if (ipxsocket[handle] == 0)
 			break;
+	}
 	if (handle == IPXSOCKETS)
 		return -1;
 
@@ -175,7 +181,7 @@ int WIPX_OpenSocket (int port)
 	memset(address.sa_netnum, 0, 4);
 	memset(address.sa_nodenum, 0, 6);
 	address.sa_socket = htons((unsigned short)port);
-	if( bind (newsocket, (void *)&address, sizeof(address)) == 0)
+	if ( bind (newsocket, (void *)&address, sizeof(address)) == 0)
 	{
 		ipxsocket[handle] = newsocket;
 		sequence[handle] = 0;
@@ -279,8 +285,10 @@ int WIPX_Write (int handle, byte *buf, int len, struct qsockaddr *addr)
 
 	ret = sendto (mysocket, netpacketBuffer, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
 	if (ret == -1)
+	{
 		if (WSAGetLastError() == WSAEWOULDBLOCK)
 			return 0;
+	}
 
 	return ret;
 }
@@ -311,8 +319,8 @@ char *WIPX_AddrToString (struct qsockaddr *addr)
 
 int WIPX_StringToAddr (char *string, struct qsockaddr *addr)
 {
-	int  val;
-	char buf[3];
+	int		val;
+	char	buf[3];
 
 	buf[2] = 0;
 	memset(addr, 0, sizeof(struct qsockaddr));
@@ -351,7 +359,7 @@ int WIPX_GetSocketAddr (int handle, struct qsockaddr *addr)
 	int addrlen = sizeof(struct qsockaddr);
 
 	memset(addr, 0, sizeof(struct qsockaddr));
-	if(getsockname(mysocket, (struct sockaddr *)addr, &addrlen) != 0)
+	if (getsockname(mysocket, (struct sockaddr *)addr, &addrlen) != 0)
 	{
 		int err;
 
@@ -374,8 +382,8 @@ int WIPX_GetNameFromAddr (struct qsockaddr *addr, char *name)
 
 int WIPX_GetAddrFromName(char *name, struct qsockaddr *addr)
 {
-	int n;
-	char buf[32];
+	int		n;
+	char	buf[32];
 
 	n = strlen(name);
 

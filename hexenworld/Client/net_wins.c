@@ -190,10 +190,10 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 #endif
 
 	NetadrToSockadr (&to, &addr);
-	HuffEncode((unsigned char *)data,huffbuff,length,&outlen);
+	HuffEncode((unsigned char *)data, huffbuff, length, &outlen);
 
 #ifdef DEBUG_BUILD
-	sprintf(string,"in: %d  out: %d  ratio: %f\n",HuffIn, HuffOut, 1-(float)HuffOut/(float)HuffIn);
+	sprintf(string,"in: %d  out: %d  ratio: %f\n", HuffIn, HuffOut, 1-(float)HuffOut/(float)HuffIn);
 	OutputDebugString(string);
 	CalcFreq((unsigned char *)data, length);
 #endif	// DEBUG_BUILD
@@ -260,15 +260,15 @@ static void NET_GetLocalAddress (void)
 	struct sockaddr_in	address;
 	socklen_t		namelen;
 
-	if (gethostname(buff, 512) != 0)
-		Sys_Error("gethostname failed,  errno = %i,\nCannot continue, bailing out...", errno);
+	if (gethostname(buff, 512) == -1)
+		Sys_Error ("NET_Init: gethostname: %s", strerror(errno));
 	buff[512-1] = 0;
 
 	NET_StringToAdr (buff, &net_local_adr);
 
 	namelen = sizeof(address);
 	if (getsockname (net_socket, (struct sockaddr *)&address, &namelen) == -1)
-		Sys_Error ("NET_Init: getsockname:", strerror(errno));
+		Sys_Error ("NET_Init: getsockname: %s", strerror(errno));
 	net_local_adr.port = address.sin_port;
 
 	Con_Printf("IP address %s\n", NET_AdrToString (net_local_adr) );

@@ -1,6 +1,6 @@
 /*
 	net_udp.h
-	$Id: net_udp.h,v 1.4 2005-10-02 15:43:08 sezero Exp $
+	$Id: net_udp.h,v 1.5 2006-10-21 09:48:40 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -47,3 +47,4 @@ int  UDP_GetSocketPort (struct qsockaddr *addr);
 int  UDP_SetSocketPort (struct qsockaddr *addr, int port);
 
 #endif // __net_udp_h
+

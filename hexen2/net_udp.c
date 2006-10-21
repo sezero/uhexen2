@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.19 2006-09-13 05:53:22 sezero Exp $
+	$Id: net_udp.c,v 1.20 2006-10-21 09:48:40 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -60,7 +60,7 @@ int UDP_Init (void)
 
 	local = gethostbyname(buff);
 
-	if (local==NULL)
+	if (local == NULL)
 	{
 		Sys_Printf ("gethostbyname failed, errno = %i, disabling udp\n", h_errno);
 		return -1;
@@ -144,7 +144,7 @@ int UDP_OpenSocket (int port)
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons(port);
-	if( bind (newsocket, (void *)&address, sizeof(address)) == -1)
+	if ( bind (newsocket, (void *)&address, sizeof(address)) == -1)
 		goto ErrorReturn;
 
 	return newsocket;
@@ -175,9 +175,9 @@ the local network components to fill in the rest
 */
 static int PartialIPAddress (char *in, struct qsockaddr *hostaddr)
 {
-	char buff[256];
-	char *b;
-	int addr, mask, num, port, run;
+	char	buff[256];
+	char	*b;
+	int	addr, mask, num, port, run;
 
 	buff[0] = '.';
 	b = buff;
@@ -186,7 +186,7 @@ static int PartialIPAddress (char *in, struct qsockaddr *hostaddr)
 		b++;
 
 	addr = 0;
-	mask=-1;
+	mask = -1;
 	while (*b == '.')
 	{
 		b++;
@@ -202,7 +202,7 @@ static int PartialIPAddress (char *in, struct qsockaddr *hostaddr)
 			return -1;
 		if (num < 0 || num > 255)
 			return -1;
-		mask<<=8;
+		mask <<= 8;
 		addr = (addr<<8) + num;
 	}
 
@@ -230,7 +230,7 @@ int UDP_Connect (int mysocket, struct qsockaddr *addr)
 int UDP_CheckNewConnections (void)
 {
 #if defined(__MORPHOS__)
-	char buf[4096];
+	char		buf[4096];
 
 	if (net_acceptsocket == -1)
 		return -1;
@@ -287,7 +287,7 @@ static int UDP_MakeSocketBroadcastCapable (int mysocket)
 
 int UDP_Broadcast (int mysocket, byte *buf, int len)
 {
-	int ret;
+	int	ret;
 
 	if (mysocket != net_broadcastsocket)
 	{
@@ -308,7 +308,7 @@ int UDP_Broadcast (int mysocket, byte *buf, int len)
 
 int UDP_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 {
-	int ret;
+	int	ret;
 
 	ret = sendto (mysocket, buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
 	if (ret == -1 && errno == EWOULDBLOCK)
@@ -321,7 +321,7 @@ int UDP_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 char *UDP_AddrToString (struct qsockaddr *addr)
 {
 	static char buffer[22];
-	int haddr;
+	int		haddr;
 
 	haddr = ntohl(((struct sockaddr_in *)addr)->sin_addr.s_addr);
 	snprintf (buffer, sizeof(buffer), "%d.%d.%d.%d:%d", (haddr >> 24) & 0xff, (haddr >> 16) & 0xff, (haddr >> 8) & 0xff, haddr & 0xff, ntohs(((struct sockaddr_in *)addr)->sin_port));
@@ -332,7 +332,7 @@ char *UDP_AddrToString (struct qsockaddr *addr)
 
 int UDP_StringToAddr (char *string, struct qsockaddr *addr)
 {
-	int ha1, ha2, ha3, ha4, hp, ipaddr;
+	int	ha1, ha2, ha3, ha4, hp, ipaddr;
 
 	sscanf(string, "%d.%d.%d.%d:%d", &ha1, &ha2, &ha3, &ha4, &hp);
 	ipaddr = (ha1 << 24) | (ha2 << 16) | (ha3 << 8) | ha4;
@@ -348,7 +348,7 @@ int UDP_StringToAddr (char *string, struct qsockaddr *addr)
 int UDP_GetSocketAddr (int mysocket, struct qsockaddr *addr)
 {
 	socklen_t addrlen = sizeof(struct qsockaddr);
-	unsigned int a;
+	unsigned int	a;
 
 	memset(addr, 0, sizeof(struct qsockaddr));
 	getsockname(mysocket, (struct sockaddr *)addr, &addrlen);
@@ -427,3 +427,4 @@ int UDP_SetSocketPort (struct qsockaddr *addr, int port)
 }
 
 //=============================================================================
+
