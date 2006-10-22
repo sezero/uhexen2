@@ -23,21 +23,10 @@ diff -urNp hexen2source-1.4.1/hexen2/glquake.h hexen2source-1.4.1x/hexen2/glquak
  extern	cvar_t	gl_clear;
  extern	cvar_t	gl_cull;
  extern	cvar_t	gl_poly;
-diff -urNp hexen2source-1.4.1/hexen2/gl_rmain.c hexen2source-1.4.1x/hexen2/gl_rmain.c
---- hexen2source-1.4.1/hexen2/gl_rmain.c	2006-07-20 22:47:23.000000000 +0300
-+++ hexen2source-1.4.1x/hexen2/gl_rmain.c	2006-08-28 10:30:17.000000000 +0300
-@@ -80,6 +80,7 @@ cvar_t	r_dynamic = {"r_dynamic", "1", CV
- cvar_t	r_novis = {"r_novis", "0", CVAR_NONE};
- cvar_t	r_wholeframe = {"r_wholeframe", "1", CVAR_ARCHIVE};
- 
-+cvar_t	gl_texsort = {"gl_texsort", "1", CVAR_ARCHIVE};
- cvar_t	gl_clear = {"gl_clear", "0", CVAR_NONE};
- cvar_t	gl_cull = {"gl_cull", "1", CVAR_NONE};
- cvar_t	gl_ztrick = {"gl_ztrick", "0", CVAR_ARCHIVE};
 diff -urNp hexen2source-1.4.1/hexen2/gl_rmisc.c hexen2source-1.4.1x/hexen2/gl_rmisc.c
---- hexen2source-1.4.1/hexen2/gl_rmisc.c	2006-08-14 09:59:47.000000000 +0300
-+++ hexen2source-1.4.1x/hexen2/gl_rmisc.c	2006-08-28 10:30:17.000000000 +0300
-@@ -234,6 +234,7 @@ void R_Init (void)
+--- hexen2source-1.4.1/hexen2/gl_rmisc.c	2006-10-20 23:32:30.000000000 +0300
++++ hexen2source-1.4.1x/hexen2/gl_rmisc.c	2006-10-22 02:18:52.000000000 +0300
+@@ -237,6 +237,7 @@ void R_Init (void)
  	Cvar_RegisterVariable (&r_speeds);
  	Cvar_RegisterVariable (&r_wholeframe);
  
@@ -46,9 +35,17 @@ diff -urNp hexen2source-1.4.1/hexen2/gl_rmisc.c hexen2source-1.4.1x/hexen2/gl_rm
  	Cvar_RegisterVariable (&gl_cull);
  	Cvar_RegisterVariable (&gl_smoothmodels);
 diff -urNp hexen2source-1.4.1/hexen2/gl_rsurf.c hexen2source-1.4.1x/hexen2/gl_rsurf.c
---- hexen2source-1.4.1/hexen2/gl_rsurf.c	2006-07-03 17:05:36.000000000 +0300
-+++ hexen2source-1.4.1x/hexen2/gl_rsurf.c	2006-08-28 10:30:17.000000000 +0300
-@@ -531,6 +531,8 @@ static void R_BlendLightmaps (qboolean T
+--- hexen2source-1.4.1/hexen2/gl_rsurf.c	2006-10-20 23:32:30.000000000 +0300
++++ hexen2source-1.4.1x/hexen2/gl_rsurf.c	2006-10-22 02:19:40.000000000 +0300
+@@ -2,6 +2,7 @@
+ 
+ #include "quakedef.h"
+ 
++cvar_t		gl_texsort = {"gl_texsort", "1", CVAR_ARCHIVE};
+ int		gl_lightmap_format = GL_RGBA;
+ cvar_t		gl_lightmapfmt = {"gl_lightmapfmt", "GL_RGBA", CVAR_ARCHIVE};
+ int		lightmap_bytes = 4;		// 1, 2, or 4. default is 4 for GL_RGBA
+@@ -533,6 +534,8 @@ static void R_BlendLightmaps (qboolean T
  
  	if (r_fullbright.value)
  		return;
@@ -57,7 +54,7 @@ diff -urNp hexen2source-1.4.1/hexen2/gl_rsurf.c hexen2source-1.4.1x/hexen2/gl_rs
  
  	if (!Translucent)
  		glDepthMask_fp (0);	// don't bother writing Z
-@@ -636,6 +638,8 @@ static void R_UpdateLightmaps (qboolean 
+@@ -638,6 +641,8 @@ static void R_UpdateLightmaps (qboolean 
  
  	if (r_fullbright.value)
  		return;
@@ -66,7 +63,7 @@ diff -urNp hexen2source-1.4.1/hexen2/gl_rsurf.c hexen2source-1.4.1x/hexen2/gl_rs
  
  	glActiveTextureARB_fp (GL_TEXTURE1_ARB);
  
-@@ -675,6 +679,334 @@ static void R_UpdateLightmaps (qboolean 
+@@ -677,6 +682,334 @@ static void R_UpdateLightmaps (qboolean 
  }
  
  
@@ -401,7 +398,7 @@ diff -urNp hexen2source-1.4.1/hexen2/gl_rsurf.c hexen2source-1.4.1x/hexen2/gl_rs
  /*
  ================
  R_RenderBrushPoly
-@@ -1181,7 +1513,15 @@ void R_DrawBrushModel (entity_t *e, qboo
+@@ -1187,7 +1520,15 @@ void R_DrawBrushModel (entity_t *e, qboo
  		if (((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||
  			(!(psurf->flags & SURF_PLANEBACK) && (dot > BACKFACE_EPSILON)))
  		{
@@ -418,7 +415,7 @@ diff -urNp hexen2source-1.4.1/hexen2/gl_rsurf.c hexen2source-1.4.1x/hexen2/gl_rs
  		}
  	}
  
-@@ -1299,11 +1639,21 @@ static void R_RecursiveWorldNode (mnode_
+@@ -1305,11 +1646,21 @@ static void R_RecursiveWorldNode (mnode_
  				continue;	// wrong side
  
  			// sorting by texture, just store it out
@@ -444,7 +441,7 @@ diff -urNp hexen2source-1.4.1/hexen2/gl_rsurf.c hexen2source-1.4.1x/hexen2/gl_rs
  			}
  		}
  	}
-@@ -1337,7 +1687,8 @@ void R_DrawWorld (void)
+@@ -1343,7 +1694,8 @@ void R_DrawWorld (void)
  
  	R_RecursiveWorldNode (cl.worldmodel->nodes);
  

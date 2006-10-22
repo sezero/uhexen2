@@ -100,3 +100,14 @@ diff -urNp uhexen2-20061006/hexen2/snd_dma.c snd_dma.c
  
  	Cvar_RegisterVariable(&nosound);
  	Cvar_RegisterVariable(&sfxvolume);
+@@ -239,8 +302,8 @@ void S_Init (void)
+ 
+ 	S_Startup ();
+ 
+-	if (sound_started == 0)
+-		return;
++//	if (sound_started == 0)
++//		return;
+ 
+ 	SND_InitScaletable ();
+ 
