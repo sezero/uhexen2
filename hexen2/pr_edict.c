@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.28 2006-10-21 22:08:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.29 2006-10-22 15:08:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -24,14 +24,14 @@ qboolean	ignore_precache = false;
 unsigned short	pr_crc;
 
 int		type_size[8] = {
-				1,
-				sizeof(string_t)/4,
-				1,
-				3,
-				1,
-				1,
-				sizeof(func_t)/4,
-				sizeof(void *)/4
+	1,					// ev_void
+	1,	// sizeof(string_t) / 4		// ev_string
+	1,					// ev_float
+	3,					// ev_vector
+	1,					// ev_entity
+	1,					// ev_field
+	1,	// sizeof(func_t) / 4		// ev_function
+	1	// sizeof(void *) / 4		// ev_pointer
 };
 
 static ddef_t	*ED_FieldAtOfs (int ofs);
@@ -1412,6 +1412,9 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2006/10/21 22:08:33  sezero
+ * various coding style clean-ups, part 6.
+ *
  * Revision 1.27  2006/09/15 20:02:03  sezero
  * fixes for parsing input from fgets, part-1: fixed and
  * improved parsing of maplist.txt. fixes a bug reported

@@ -15,14 +15,14 @@ int		pr_edict_size;		// in bytes
 qboolean	ignore_precache = false;
 
 int		type_size[8] = {
-				1,
-				sizeof(void *)/4,
-				1,
-				3,
-				1,
-				1,
-				sizeof(void *)/4,
-				sizeof(void *)/4
+	1,					// ev_void
+	1,	// sizeof(string_t) / 4		// ev_string
+	1,					// ev_float
+	3,					// ev_vector
+	1,					// ev_entity
+	1,					// ev_field
+	1,	// sizeof(func_t) / 4		// ev_function
+	1	// sizeof(void *) / 4		// ev_pointer
 };
 
 static ddef_t	*ED_FieldAtOfs (int ofs);
