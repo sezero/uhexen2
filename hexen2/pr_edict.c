@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.29 2006-10-22 15:08:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.30 2006-10-22 15:13:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -133,7 +133,7 @@ edict_t *ED_Alloc (void)
 edict_t *ED_Alloc_Temp (void)
 {
 	int			i, j;
-	edict_t		*e,*Least;
+	edict_t		*e, *Least;
 	float		LeastTime;
 	qboolean	LeastSet;
 
@@ -1412,6 +1412,10 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2006/10/22 15:08:28  sezero
+ * sizeof(void *) is not the same everywhere. use hardcoded
+ * 32 bit machine values in pr_edict.c, as we do in pr_lex.c.
+ *
  * Revision 1.28  2006/10/21 22:08:33  sezero
  * various coding style clean-ups, part 6.
  *
