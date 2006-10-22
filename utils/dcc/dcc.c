@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.26 2006-09-15 19:52:58 sezero Exp $
+	$Id: dcc.c,v 1.27 2006-10-22 14:54:53 sezero Exp $
 */
 
 
@@ -478,7 +478,7 @@ void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 		if (arg1)
 			strcpy(a1,arg1);
 
-		if ( s->op==OP_IFNOT)
+		if ( s->op == OP_IFNOT)
 		{
 			if (s->b < 1)
 				Error("Found a negative IFNOT jump.");
@@ -836,7 +836,7 @@ void PR_Indent (void)
 	int	i;
 
 	if (lindent < 0)
-		lindent=0;
+		lindent = 0;
 
 	for (i = 0 ; i < lindent ; i++)
 	{
@@ -853,7 +853,7 @@ void PR_Locals (dfunction_t *df)
 	i = df->numparms;
 
 	for (j = k = 0; j < i; j++)
-		k+=df->parm_size[j];
+		k += df->parm_size[j];
 
 	start += k;
 
@@ -1031,8 +1031,8 @@ void PR_Print (const char *s,...)
 {
 	va_list argptr;
 
-	va_start (argptr,s);
-	vfprintf (PR_FILE,s,argptr);
+	va_start (argptr, s);
+	vfprintf (PR_FILE, s, argptr);
 	va_end (argptr);
 }
 
@@ -1055,7 +1055,7 @@ unsigned short GetReturnType (int func)
 
 	for (j = k = 0; j < df->numparms; j++)
 	{
-		k+=df->parm_size[j];
+		k += df->parm_size[j];
 	}
 
 	temp_start = k + df->parm_start;
@@ -1065,10 +1065,10 @@ unsigned short GetReturnType (int func)
 	{
 	}
 
-	k=0;
+	k = 0;
 	while (1)
 	{
-		if (k >2)
+		if (k > 2)
 			break;
 
 		if (ds->op == OP_DONE)
@@ -1474,7 +1474,7 @@ void PR_LocalGlobals (void)
 								Error("Could not locate a field named \"%s\"",strings + par->s_name);
 							i = (ef->type - (ef->type & (0x1<<15)));
 							if (i == ev_vector)
-								j+=3;
+								j += 3;
 							if (i == ev_function)
 							{
 								arg2 = GetFieldFunctionHeader(strings + ef->s_name);
@@ -1505,7 +1505,7 @@ void PR_LocalGlobals (void)
 								bsize = (*(int *)&pr_globals[par->ofs-1]) + 1;
 							}
 							if (par->type == ev_vector)
-								j+=2;
+								j += 2;
 							if (par->type == ev_entity || par->type == ev_void)
 							{
 								if (!strcmp(strings + par->s_name,"end_sys_fields"))
@@ -1629,7 +1629,7 @@ void FindBuiltinParameters (int func)
 
 	for (i = 1; i < numfunctions; i++)
 	{//let'em know its working, not hanging!!!
-		if (! (i&0xf) )
+		if (! (i & 0xf) )
 			printf(".");
 
 		j = (functions+i)->first_statement;
@@ -1682,7 +1682,7 @@ void FindBuiltinParameters (int func)
 
 	for (ds = dsf + 1 ; ds && ds->op ; ds++)
 	{
-		if ((ds->op >= OP_CALL0 && ds->op <= OP_CALL8) || ds->op >=92)
+		if ((ds->op >= OP_CALL0 && ds->op <= OP_CALL8) || ds->op >= 92)
 			break;
 
 		if (ds->a == OFS_RETURN)

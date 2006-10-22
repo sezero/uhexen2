@@ -286,5 +286,5 @@ void	PrintBSPFileSizes (void);
 
 #endif	/*  QUAKE_GAME */
 
-#endif  /* __BSPFILE_H */
+#endif	/* __BSPFILE_H */
 

@@ -207,7 +207,7 @@ int main(int argc, char **argv)
 
 			i++;
 		}
-		else if(!Q_strncasecmp(argv[i], "-opt",4))
+		else if (!Q_strncasecmp(argv[i], "-opt", 4))
 		{
 			DoOpts = true;
 		}
@@ -1254,7 +1254,7 @@ static void Cmd_Skin (void)
 	}
 
 	skins[skincount].pdata = malloc (model.skinwidth * model.skinheight);
-	if(!skins[skincount].pdata)
+	if (!skins[skincount].pdata)
 		Error ("couldn't get memory for skin texture");
 
 	// Copy skinwidth*skinheight, since PCXs are always
@@ -1769,11 +1769,11 @@ static void ParseScript (void)
 		{
 			Cmd_Flags ();
 		}
-		else if(!strcmp (token, "$rotatehtr"))
+		else if (!strcmp (token, "$rotatehtr"))
 		{
 			Cmd_RotateHTR();
 		}
-		else if(!strcmp (token, "$translatehtr"))
+		else if (!strcmp (token, "$translatehtr"))
 		{
 			Cmd_TranslateHTR();
 		}
@@ -1824,8 +1824,8 @@ static void LoadPCXSkin(char *filename, byte **buffer)
 	LoadFile(filename, (void **) (pcx_t *) &pcx);
 
 	// Check for a valid PCX header
-	w = pcx->xMax-pcx->xMin+1;
-	h = pcx->yMax-pcx->yMin+1;
+	w = pcx->xMax - pcx->xMin + 1;
+	h = pcx->yMax - pcx->yMin + 1;
 	if (pcx->tag != 10 || pcx->version != 5
 		|| pcx->encoding != 1 || pcx->pixelBits != 8
 		|| pcx->planes != 1 || pcx->lineBytes != w

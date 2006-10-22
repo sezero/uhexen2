@@ -175,7 +175,7 @@ def_t *PR_Statement ( opcode_t *op, def_t *var_a, def_t *var_b)
 	statement->op = op - pr_opcodes;
 	statement->a = var_a ? var_a->ofs : 0;
 	statement->b = var_b ? var_b->ofs : 0;
-	if (((op->type_c == &def_void) ^ op->right_associative) || statement->op==89)
+	if (((op->type_c == &def_void) ^ op->right_associative) || statement->op == 89)
 	{
 		var_c = NULL;
 		statement->c = 0;	// ifs, gotos, and assignments
@@ -283,8 +283,10 @@ void PrecacheSound (def_t *e, int ch)
 		return;
 	n = G_STRING(e->ofs);
 	for (i = 0 ; i < numsounds ; i++)
+	{
 		if (!strcmp(n, precache_sounds[i]))
 			return;
+	}
 	if (numsounds == MAX_SOUNDS)
 		Error ("PrecacheSound: numsounds == MAX_SOUNDS");
 	strcpy (precache_sounds[i], n);
@@ -325,8 +327,10 @@ void PrecacheFile (def_t *e, int ch)
 		return;
 	n = G_STRING(e->ofs);
 	for (i = 0 ; i < numfiles ; i++)
+	{
 		if (!strcmp(n, precache_files[i]))
 			return;
+	}
 	if (numfiles == MAX_FILES)
 		Error ("PrecacheFile: numfiles == MAX_FILES");
 	strcpy (precache_files[i], n);

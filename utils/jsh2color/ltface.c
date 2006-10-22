@@ -112,6 +112,7 @@ typedef struct
 	char texname[16];
 } lightinfo_t;
 
+
 /*
 ================
 CalcFaceVectors
@@ -132,8 +133,10 @@ static void CalcFaceVectors (lightinfo_t *l)
 
 // convert from float to vec_t
 	for (i = 0 ; i < 2 ; i++)
+	{
 		for (j = 0 ; j < 3 ; j++)
 			l->worldtotex[i][j] = tex->vecs[i][j];
+	}
 
 // calculate a normal to the texture axis.  points can be moved along this
 // without changing their S/T
@@ -316,11 +319,11 @@ static void CalcPoints (lightinfo_t *l)
 			{
 			// calculate texture point
 				for (j = 0 ; j < 3 ; j++)
-					surf[j] = l->texorg[j] + l->textoworld[0][j]*us
-							+ l->textoworld[1][j]*ut;
+					surf[j] = l->texorg[j] + l->textoworld[0][j]*us + l->textoworld[1][j]*ut;
 
 				if (CastRay (facemid, surf) != -1)
 					break;	// got it
+
 				if (i & 1)
 				{
 					if (us > mids)
@@ -486,8 +489,10 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset,
 
 	mapnum = 0;
 	for (mapnum = 0 ; mapnum < l->numlightstyles ; mapnum++)
+	{
 		if (l->lightstyles[mapnum] == light->style)
 			break;
+	}
 	lightsamp = l->lightmaps[mapnum];
 	lightcoloursamp = l->lightmapcolours[mapnum];
 
@@ -678,8 +683,10 @@ static void FixMinlight (lightinfo_t *l)
 	else
 	{
 		for (j = 0 ; j < l->numsurfpt ; j++)
+		{
 			if ( l->lightmaps[i][j] < minlight)
 				l->lightmaps[i][j] = minlight;
+		}
 	}
 	*/
 
@@ -811,8 +818,8 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 	f->lightofs = out - filebase;
 
 // extra filtering
-	h = (l.texsize[1]+1)*2;
-	w = (l.texsize[0]+1)*2;
+	h = (l.texsize[1] + 1) * 2;
+	w = (l.texsize[0] + 1) * 2;
 
 	for (i = 0 ; i < l.numlightstyles ; i++)
 	{
@@ -828,13 +835,11 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 			{
 				if (extrasamples)
 				{	// filtered sample
-					x1 = t*2*w+s*2;
-					x2 = x1+1;
-					x3 = (t*2+1)*w+s*2;
-					x4 = x3+1;
+					x1 = t*2*w + s*2;
+					x2 = x1 + 1;
+					x3 = (t*2 + 1)*w + s*2;
+					x4 = x3 + 1;
 
-					//total = light[t*2*w+s*2] + light[t*2*w+s*2+1]
-					//	+ light[(t*2+1)*w+s*2] + light[(t*2+1)*w+s*2+1];
 					total = light[x1] + light[x2] + light[x3] + light[x4];
 					total *= 0.25;
 
@@ -866,6 +871,7 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 					max = 0.0;
 
 					for (j = 0; j < 3; j++)
+					{
 						if (totalcolours[j] > max)
 						{
 							max = totalcolours[j];
@@ -874,6 +880,7 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 						{
 							totalcolours[j] = 0.0f;	// this used to be an error!!!!
 						}
+					}
 					if (max > 255.0f)
 						VectorScale (totalcolours, 255.0f / max, totalcolours);
 				}
@@ -975,8 +982,10 @@ void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset)
 	sprintf (l.texname, "%s", miptex[texinfo[f->texinfo].miptex].name);
 
 	for (i = 0 ; i < num_entities ; i++)
+	{
 		if (entities[i].light)
 			SingleLightFace (&entities[i], &l, faceoffset, 0);
+	}
 
 // minimum lighting
 	FixMinlight (&l);
@@ -1019,10 +1028,10 @@ void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset)
 			{
 				if (extrasamples)
 				{
-					x1 = t*2*w+s*2;
-					x2 = x1+1;
-					x3 = (t*2+1)*w+s*2;
-					x4 = x3+1;
+					x1 = t*2*w + s*2;
+					x2 = x1 + 1;
+					x3 = (t*2 + 1)*w + s*2;
+					x4 = x3 + 1;
 
 					// calculate the colour
 					totalcolours[0] = lightcolour[x1][0] + lightcolour[x2][0] + lightcolour[x3][0] + lightcolour[x4][0];
@@ -1043,6 +1052,7 @@ void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset)
 				max = 0.0;
 
 				for (j = 0; j < 3; j++)
+				{
 					if (totalcolours[j] > max)
 					{
 						max = totalcolours[j];
@@ -1051,6 +1061,7 @@ void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset)
 					{
 						totalcolours[j] = 0.0f;	// this used to be an error!!!!
 					}
+				}
 				if (max > 255.0f)
 					VectorScale (totalcolours, 255.0f / max, totalcolours);
 

@@ -2,7 +2,7 @@
 	cmdlib.c
 	functions common to all of the utilities
 
-	$Id: cmdlib.c,v 1.5 2006-07-03 07:55:07 sezero Exp $
+	$Id: cmdlib.c,v 1.6 2006-10-22 14:54:53 sezero Exp $
 */
 
 
@@ -231,7 +231,7 @@ skipwhite:
 		if (c == '/' && data[1] == '*')
 		{
 			data += 2;
-			while(!(*data == '*' && data[1] == '/'))
+			while (!(*data == '*' && data[1] == '/'))
 			{
 				if (*data == 0)	// end of file
 				{
@@ -265,7 +265,7 @@ skipwhite:
 		do
 		{
 			c = *data++;
-			if (c=='\"')
+			if (c == '\"')
 			{
 				com_token[len] = 0;
 				return data;
@@ -332,7 +332,7 @@ int CheckParm (char *check)
 {
 	int		i;
 
-	for (i = 1;i < myargc;i++)
+	for (i = 1; i < myargc; i++)
 	{
 	//	if ( !StringCompare(check, myargv[i]) )
 		if ( !Q_strcasecmp(check, myargv[i]) )
@@ -855,6 +855,6 @@ int COM_Hash(char *key)
 		hash = (hash<<8)^crctable[(hash>>8)^*keyBack--];
 	}
 
-	return hash%HASH_TABLE_SIZE;
+	return hash % HASH_TABLE_SIZE;
 }
 

@@ -149,7 +149,7 @@ static void OldFreeWinding (winding_t *w)
 		free (w);
 }
 
-__declspec( thread ) static int nFreeWindings=0;
+__declspec( thread ) static int nFreeWindings = 0;
 __declspec( thread ) static winding_t *FreeWindings[MAX_FREE_WINDINGS];
 
 winding_t *NewWinding (int points)
@@ -386,7 +386,7 @@ static portal_t *GetNextPortal (void)
 
 	LOCK;
 
-//	ndone=0;
+//	ndone = 0;
 	for (j = 0, tp = portals ; j < num2 ; j++, tp++)
 	{
 		if (tp->nummightsee < min && tp->status == stat_none)
@@ -394,9 +394,8 @@ static portal_t *GetNextPortal (void)
 			min = tp->nummightsee;
 			p = tp;
 		}
-/*		else if (tp->status == stat_done)
-			ndone++;
-*/
+//		else if (tp->status == stat_done)
+//			ndone++;
 	}
 
 	if (p)
@@ -508,10 +507,12 @@ static int CompressRow (byte *vis, byte *dest)
 
 		rep = 1;
 		for (j++; j < visrow ; j++)
+		{
 			if (vis[j] || rep == 255)
 				break;
 			else
 				rep++;
+		}
 
 		*dest_p++ = rep;
 		j--;
@@ -561,8 +562,10 @@ static void LeafFlow (int leafnum)
 
 	numvis = 0;
 	for (i = 0 ; i < portalleafs ; i++)
-		if (outbuffer[i>>3] & (1<<(i&3)))
+	{
+		if ( outbuffer[i>>3] & (1<<(i & 3)) )
 			numvis++;
+	}
 
 //
 // compress the bit string
@@ -572,7 +575,7 @@ static void LeafFlow (int leafnum)
 	totalvis += numvis;
 
 #if 0
-	i = (portalleafs+7)>>3;
+	i = (portalleafs + 7) >> 3;
 	memcpy (compressed, outbuffer, i);
 #else
 	i = CompressRow (outbuffer, compressed);
@@ -738,8 +741,10 @@ qboolean PlaneCompare (plane_t *p1, plane_t *p2)
 		return false;
 
 	for (i = 0 ; i < 3 ; i++)
+	{
 		if ( fabs(p1->normal[i] - p2->normal[i] ) > 0.001)
 			return false;
+	}
 
 	return true;
 }

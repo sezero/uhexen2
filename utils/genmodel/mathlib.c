@@ -3,16 +3,18 @@
 #include "cmdlib.h"
 #include "mathlib.h"
 
-vec3_t vec3_origin = {0,0,0};
+vec3_t vec3_origin = { 0, 0, 0 };
 
 
 qboolean VectorCompare (vec3_t v1, vec3_t v2)
 {
 	int		i;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
+	{
 		if (fabs(v1[i]-v2[i]) > EQUAL_EPSILON)
 			return false;
+	}
 
 	return true;
 }
@@ -38,7 +40,7 @@ vec_t VectorNormalize (vec3_t v)
 	if (length == 0)
 		return 0;
 
-	for (i=0 ; i< 3 ; i++)
+	for (i = 0; i < 3; i++)
 		v[i] /= length;
 
 	return (vec_t)length;

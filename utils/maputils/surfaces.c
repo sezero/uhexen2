@@ -41,6 +41,7 @@ void SubdivideFace (face_t *f, face_t **prevptr)
 		maxs[0] = maxs[1] = maxs[2] = -9999;
 
 		for (i = 0 ; i < f->numpoints ; i++)
+		{
 			for (j = 0 ; j < 3 ; j++)
 			{
 				v = f->pts[i][j];
@@ -49,6 +50,7 @@ void SubdivideFace (face_t *f, face_t **prevptr)
 				if (v > maxs[j])
 					maxs[j] = v;
 			}
+		}
 
 		for (i = 0 ; i < 3 ; i++)
 			size[i] = maxs[i] - mins[i];
@@ -341,16 +343,18 @@ static int GetVertex (vec3_t in, int planenum)
 
 	for (hv = hashverts[h] ; hv ; hv = hv->next)
 	{
-		if ( fabs(hv->point[0]-vert[0])<POINT_EPSILON
-			&& fabs(hv->point[1]-vert[1])<POINT_EPSILON
-			&& fabs(hv->point[2]-vert[2])<POINT_EPSILON )
+		if ( fabs(hv->point[0]-vert[0]) < POINT_EPSILON
+			&& fabs(hv->point[1]-vert[1]) < POINT_EPSILON
+			&& fabs(hv->point[2]-vert[2]) < POINT_EPSILON )
 		{
 			hv->numedges++;
 			if (hv->numplanes == 3)
 				return hv->num;		// already known to be a corner
 			for (i = 0 ; i < hv->numplanes ; i++)
+			{
 				if (hv->planenums[i] == planenum)
 					return hv->num;	// already know this plane
+			}
 			if (hv->numplanes == 2)
 				c_cornerverts++;
 			else
@@ -368,7 +372,7 @@ static int GetVertex (vec3_t in, int planenum)
 	hashverts[h] = hv;
 	VectorCopy (vert, hv->point);
 	hv->num = numvertexes;
-	if (hv->num==MAX_MAP_VERTS)
+	if (hv->num == MAX_MAP_VERTS)
 		Error ("GetVertex: MAX_MAP_VERTS");
 	hvert_p++;
 

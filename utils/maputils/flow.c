@@ -10,8 +10,10 @@ static void CheckStack (leaf_t *leaf, threaddata_t *thread)
 	pstack_t	*p;
 
 	for (p = thread->pstack_head.next ; p ; p  =p->next)
+	{
 		if (p->leaf == leaf)
 			Error ("CheckStack: leaf recursion");
+	}
 }
 
 
@@ -28,7 +30,7 @@ void PrintStats (void)
 static double ComputeBoundingSphere (winding_t *source,vec3_t c)
 {
 	int		i;
-	double	r,tr;
+	double	r, tr;
 	vec3_t	dif;
 
 	c[0] = 0;
@@ -159,7 +161,7 @@ static winding_t *ClipToSeperators (winding_t *source, winding_t *pass, winding_
 
 	for (i = 0 ; i < source->numpoints ; i++)
 	{
-		l = (i+1)%source->numpoints;
+		l = (i + 1) % source->numpoints;
 		VectorSubtract (source->points[l] , source->points[i], v1);
 
 	// fing a vertex of pass that makes a plane that puts all of the
@@ -298,9 +300,9 @@ static void RecursiveLeafFlow (int leafnum, threaddata_t *thread, pstack_t *prev
 	CheckStack (leaf, thread);
 
 // mark the leaf as visible
-	if (! (thread->leafvis[leafnum>>3] & (1<<(leafnum&7)) ) )
+	if (! (thread->leafvis[leafnum>>3] & (1<<(leafnum & 7)) ) )
 	{
-		thread->leafvis[leafnum>>3] |= 1<<(leafnum&7);
+		thread->leafvis[leafnum>>3] |= 1<<(leafnum & 7);
 		thread->base->numcansee++;
 	}
 
@@ -317,7 +319,7 @@ static void RecursiveLeafFlow (int leafnum, threaddata_t *thread, pstack_t *prev
 	{
 		p = leaf->portals[i];
 
-		if ( ! (prevstack->mightsee[p->leaf>>3] & (1<<(p->leaf&7)) ) )
+		if ( ! (prevstack->mightsee[p->leaf>>3] & (1<<(p->leaf & 7)) ) )
 		{
 			c_leafskip++;
 			continue;	// can't possibly see it
@@ -495,9 +497,9 @@ static void SimpleFlood (portal_t *srcportal, int leafnum)
 	leaf_t	*leaf;
 	portal_t	*p;
 
-	if (srcportal->mightsee[leafnum>>3] & (1<<(leafnum&7)) )
+	if (srcportal->mightsee[leafnum>>3] & (1<<(leafnum & 7)) )
 		return;
-	srcportal->mightsee[leafnum>>3] |= (1<<(leafnum&7));
+	srcportal->mightsee[leafnum>>3] |= (1<<(leafnum & 7));
 	c_leafsee++;
 
 	leaf = &leafs[leafnum];
@@ -523,7 +525,7 @@ void BasePortalVis (void)
 	portal_t	*tp, *p;
 	float		d;
 	winding_t	*w;
-	int num2 = numportals*2;
+	int	num2 = numportals*2;
 
 	for (i = 0, p = portals ; i < num2 ; i++, p++)
 	{

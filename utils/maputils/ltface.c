@@ -95,8 +95,10 @@ static void CalcFaceVectors (lightinfo_t *l)
 
 // convert from float to double
 	for (i = 0 ; i < 2 ; i++)
+	{
 		for (j = 0 ; j < 3 ; j++)
 			l->worldtotex[i][j] = tex->vecs[i][j];
+	}
 
 // calculate a normal to the texture axis.  points can be moved along this
 // without changing their S/T
@@ -258,11 +260,11 @@ static void CalcPoints (lightinfo_t *l)
 			{
 			// calculate texture point
 				for (j = 0 ; j < 3 ; j++)
-					surf[j] = l->texorg[j] + l->textoworld[0][j]*us
-							+ l->textoworld[1][j]*ut;
+					surf[j] = l->texorg[j] + l->textoworld[0][j]*us + l->textoworld[1][j]*ut;
 
 				if (CastRay (facemid, surf) != -1)
 					break;	// got it
+
 				if (i & 1)
 				{
 					if (us > mids)
@@ -364,8 +366,10 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l)
 
 	mapnum = 0;
 	for (mapnum = 0 ; mapnum < l->numlightstyles ; mapnum++)
+	{
 		if (l->lightstyles[mapnum] == light->style)
 			break;
+	}
 	lightsamp = l->lightmaps[mapnum];
 	if (mapnum == l->numlightstyles)
 	{	// init a new light map
@@ -451,8 +455,10 @@ static void FixMinlight (lightinfo_t *l)
 	else
 	{
 		for (j = 0 ; j < l->numsurfpt ; j++)
+		{
 			if ( l->lightmaps[i][j] < minlight)
 				l->lightmaps[i][j] = minlight;
+		}
 	}
 }
 
@@ -544,8 +550,8 @@ void LightFace (int surfnum)
 	f->lightofs = out - filebase;
 
 // extra filtering
-	h = (l.texsize[1]+1)*2;
-	w = (l.texsize[0]+1)*2;
+	h = (l.texsize[1] + 1) * 2;
+	w = (l.texsize[0] + 1) * 2;
 
 	for (i = 0 ; i < l.numlightstyles ; i++)
 	{

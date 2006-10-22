@@ -90,5 +90,5 @@ void	GetVectorForKey (entity_t *ent, char *key, vec3_t vec);
 void	LoadEntities (void);
 void	WriteEntitiesToString (void);
 
-#endif /* __ENTITIES_H__ */
+#endif	/* __ENTITIES_H__ */
 

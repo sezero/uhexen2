@@ -702,7 +702,7 @@ static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 				chunkSize = ReadLong();
 				vertexCount = ReadShort();
 				vList = SafeMalloc(vertexCount*sizeof vList[0], "Vertex list");
-				for(i = 0; i < vertexCount; i++)
+				for (i = 0; i < vertexCount; i++)
 				{
 					vList[i].v[0] = ReadFloat();
 					vList[i].v[1] = -ReadFloat();

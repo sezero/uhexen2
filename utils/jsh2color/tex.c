@@ -47,10 +47,10 @@ static tex_col_list		tc_list;
 static long getNumLines (FILE* f)
 {
 	long	numlines = 0;
-	char	line [1024];
+	char	line[1024];
 	char	*txt = NULL;
 
-	while (NULL != fgets(line, 1024, f))
+	while (NULL != fgets(line, sizeof(line), f))
 	{
 		txt = strchr(line,'\n');
 		if (txt != NULL)
@@ -69,8 +69,8 @@ static void ParseDefFile (char* filename)
 	long	num = 0;
 	int	i = 0;
 	int	r, g, b;
-	char	name[64];
-	char	line [1024];
+	char	name[MAX_TEX_NAME];
+	char	line[1024];
 
 	FILE*	FH = fopen(filename,"rt");
 
@@ -85,7 +85,7 @@ static void ParseDefFile (char* filename)
 	tc_list.num = num;
 	tc_list.entries = (tex_col*) malloc(sizeof(tex_col) * num);
 
-	while (fgets(line, 1024, FH) != NULL)
+	while (fgets(line, sizeof(line), FH) != NULL)
 	{
 		if (line[strlen(line)-1] == '\n')
 			line[strlen(line)-1] = '\0';
@@ -96,10 +96,10 @@ static void ParseDefFile (char* filename)
 
 			if (strlen(name) > 0 )
 			{
-				strcpy(tc_list.entries[i].name,name);
-				tc_list.entries[i].red = min(max(r,1),255);
-				tc_list.entries[i].green = min(max(g,1),255);
-				tc_list.entries[i].blue = min(max(b,1),255);
+				strcpy(tc_list.entries[i].name, name);
+				tc_list.entries[i].red	= min( max(r,1), 255 );
+				tc_list.entries[i].green= min( max(g,1), 255 );
+				tc_list.entries[i].blue	= min( max(b,1), 255 );
 
 				i++;
 			}
@@ -147,7 +147,7 @@ static void FindTexlightColourExt (int *surf_r, int *surf_g, int *surf_b, char *
 	{
 		entry = &(list.entries[i]);
 		len = strlen(entry->name);
-		if((len > 0) && (strncmp (texname, entry->name, len) == 0))
+		if ((len > 0) && (strncmp (texname, entry->name, len) == 0))
 		{
 			*surf_r = entry->red;
 			*surf_g = entry->green;

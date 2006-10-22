@@ -70,8 +70,11 @@ static int FindTexinfo (texinfo_t *t)
 			continue;
 
 		for (j = 0 ; j < 8 ; j++)
+		{
 			if (t->vecs[0][j] != tex->vecs[0][j])
 				break;
+		}
+
 		if (j != 8)
 			continue;
 
@@ -613,7 +616,7 @@ void PrintEntity (entity_t *ent)
 {
 	epair_t	*ep;
 
-	for (ep=ent->epairs ; ep ; ep=ep->next)
+	for (ep = ent->epairs ; ep ; ep = ep->next)
 		printf ("%20s : %s\n", ep->key, ep->value);
 }
 
@@ -623,8 +626,10 @@ char *ValueForKey (entity_t *ent, char *key)
 	epair_t	*ep;
 
 	for (ep = ent->epairs ; ep ; ep = ep->next)
+	{
 		if (!strcmp (ep->key, key) )
 			return ep->value;
+	}
 	return "";
 }
 
@@ -633,12 +638,14 @@ void SetKeyValue (entity_t *ent, char *key, char *value)
 	epair_t	*ep;
 
 	for (ep = ent->epairs ; ep ; ep = ep->next)
+	{
 		if (!strcmp (ep->key, key) )
 		{
 			free (ep->value);
 			ep->value = copystring(value);
 			return;
 		}
+	}
 
 	ep = malloc (sizeof(*ep));
 	ep->next = ent->epairs;

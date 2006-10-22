@@ -1,7 +1,7 @@
 /*
 	lexi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/pr_lex.c,v 1.1 2006-03-01 09:42:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/pr_lex.c,v 1.2 2006-10-22 14:54:55 sezero Exp $
 */
 
 
@@ -201,9 +201,9 @@ static void LexString (void)
 		c = *pr_file_p++;
 		if (!c)
 			PR_ParseError("EOF inside quote");
-		if (c=='\n')
+		if (c == '\n')
 			PR_ParseError("newline inside quote");
-		if (c=='\\')
+		if (c == '\\')
 		{ // Escape char
 			c = *pr_file_p++;
 			if (!c)
@@ -215,7 +215,7 @@ static void LexString (void)
 			else
 				PR_ParseError("unknown escape char");
 		}
-		else if (c=='\"')
+		else if (c == '\"')
 		{
 			pr_token[len] = 0;
 			pr_token_type = tt_immediate;
@@ -739,7 +739,7 @@ static qboolean SimpleGetToken (void)
 
 	while ((c = *pr_file_p) <= ' ')
 	{
-		if (c=='\n' || c == 0)
+		if (c == '\n' || c == 0)
 		{
 			return false;
 		}
@@ -1142,3 +1142,4 @@ void LX_ErrorRecovery (void)
 		LX_Fetch();
 	} while (pr_token_type != tt_eof);
 }
+

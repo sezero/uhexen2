@@ -49,7 +49,7 @@ static int FaceSide (face_t *in, plane_t *split)
 	else
 	{
 	// sloping planes take longer
-		for (i = 0, p = in->pts[0] ; i < in->numpoints ; i++, p+=3)
+		for (i = 0, p = in->pts[0] ; i < in->numpoints ; i++, p += 3)
 		{
 			dot = DotProduct (p, split->normal);
 			dot -= split->dist;
@@ -137,9 +137,11 @@ static surface_t *ChooseMidPlaneFromList (surface_t *surfaces, vec3_t mins, vec3
 
 	if (!bestsurface)
 	{
-		for (p=surfaces ; p ; p=p->next)
+		for (p = surfaces ; p ; p = p->next)
+		{
 			if (!p->onnode)
 				return p;		// first valid surface
+		}
 		Error ("ChooseMidPlaneFromList: no valid planes");
 	}
 
@@ -265,11 +267,13 @@ static surface_t *SelectPartition (surface_t *surfaces)
 	i = 0;
 	bestsurface = NULL;
 	for (p = surfaces ; p ; p = p->next)
+	{
 		if (!p->onnode)
 		{
 			i++;
 			bestsurface = p;
 		}
+	}
 
 	if (i == 0)
 		return NULL;
@@ -338,6 +342,7 @@ void CalcSurfaceInfo (surface_t *surf)
 		if (f->contents[0] >= 0 || f->contents[1] >= 0)
 			Error ("Bad contents");
 		for (i = 0 ; i < f->numpoints ; i++)
+		{
 			for (j = 0 ; j < 3 ; j++)
 			{
 				if (f->pts[i][j] < surf->mins[j])
@@ -345,6 +350,7 @@ void CalcSurfaceInfo (surface_t *surf)
 				if (f->pts[i][j] > surf->maxs[j])
 					surf->maxs[j] = f->pts[i][j];
 			}
+		}
 	}
 }
 

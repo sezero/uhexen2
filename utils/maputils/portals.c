@@ -173,12 +173,14 @@ static void CheckWindingInNode (winding_t *w, node_t *node)
 	for (i = 0 ; i < w->numpoints ; i++)
 	{
 		for (j = 0 ; j < 3 ; j++)
+		{
 			if (w->points[i][j] < node->mins[j] - 1
 				|| w->points[i][j] > node->maxs[j] + 1)
 			{
 				printf ("WARNING: CheckWindingInNode: outside\n");
 				return;
 			}
+		}
 	}
 }
 

@@ -1,7 +1,7 @@
 /*
 	qdir.c
 
-	$Id: qdir.c,v 1.1 2006-03-01 09:00:53 sezero Exp $
+	$Id: qdir.c,v 1.2 2006-10-22 14:54:53 sezero Exp $
 */
 
 
@@ -39,7 +39,7 @@ void SetQdirFromPath (char *path)
 
 	// search for "quake" in path
 
-	for (c=path ; *c ; c++)
+	for (c = path ; *c ; c++)
 	{
 		if (!Q_strncasecmp (c, BUILDDIR, sizeof(BUILDDIR)-1))
 		{

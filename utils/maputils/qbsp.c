@@ -49,7 +49,7 @@ void qprintf (char *fmt, ...)
 		return;
 
 	va_start (argptr, fmt);
-	vprintf (fmt,argptr);
+	vprintf (fmt, argptr);
 	va_end (argptr);
 }
 
@@ -1097,7 +1097,7 @@ static void ProcessFile (char *sourcebase, char *bspfilename1)
 	strcat (radfilename, ".rad");
 
 	FH = fopen(radfilename,"w");
-	for(i = 0 ; i < numfaces ; i++)
+	for (i = 0 ; i < numfaces ; i++)
 		fprintf(FH,"%d\n",LightValues[i]);
 	fclose(FH);
 */

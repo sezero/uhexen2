@@ -246,7 +246,7 @@ static void AddFaceEdges (face_t *f)
 
 	for (i = 0 ; i < f->numpoints ; i++)
 	{
-		j = (i+1)%f->numpoints;
+		j = (i + 1) % f->numpoints;
 		AddEdge (f->pts[i], f->pts[j]);
 	}
 }
@@ -375,11 +375,11 @@ static void FixFaceEdges (face_t *f)
 restart:
 	for (i = 0 ; i < superface->numpoints ; i++)
 	{
-		j = (i+1)%superface->numpoints;
+		j = (i + 1) % superface->numpoints;
 
 		w = FindEdge (superface->pts[i], superface->pts[j], &t1, &t2);
 
-		for (v=w->head.next ; v->t < t1 + T_EPSILON ; v = v->next)
+		for (v = w->head.next ; v->t < t1 + T_EPSILON ; v = v->next)
 		{
 		}
 

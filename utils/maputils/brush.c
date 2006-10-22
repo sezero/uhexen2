@@ -85,12 +85,14 @@ void ClearBounds (brushset_t *bs)
 {
 	int		i, j;
 
-	for (j = 0 ; j<NUM_HULLS ; j++)
+	for (j = 0 ; j < NUM_HULLS ; j++)
+	{
 		for (i = 0 ; i < 3 ; i++)
 		{
 			bs->mins[i] = 99999;
 			bs->maxs[i] = -99999;
 		}
+	}
 }
 
 /*
@@ -464,6 +466,7 @@ static void AddBrushPlane (plane_t *plane)
 	if (numbrushfaces == MAX_FACES)
 		printf ("AddBrushPlane: numbrushfaces == MAX_FACES\n");
 //		Error ("AddBrushPlane: numbrushfaces == MAX_FACES");
+
 	l = VectorLength (plane->normal);
 	if (l < 0.999 || l > 1.001)
 		Error ("AddBrushPlane: bad normal");
@@ -567,14 +570,18 @@ static int AddHullPoint (vec3_t p, int hullnumber)
 	c = hull_corners[i*8];
 
 	for (x = 0 ; x < 2 ; x++)
+	{
 		for (y = 0 ; y < 2 ; y++)
-			for (z=0; z<2 ; z++)
+		{
+			for (z = 0 ; z < 2 ; z++)
 			{
 				c[0] = p[0] + hull_size[hullnumber][x][0];
 				c[1] = p[1] + hull_size[hullnumber][y][1];
 				c[2] = p[2] + hull_size[hullnumber][z][2];
 				c += 3;
 			}
+		}
+	}
 
 	if (num_hull_points == MAX_HULL_POINTS)
 		Error ("MAX_HULL_POINTS");
@@ -605,9 +612,11 @@ static void AddHullEdge (vec3_t p1, vec3_t p2, int hullnumber)
 	pt2 = AddHullPoint (p2, hullnumber);
 
 	for (i = 0 ; i < num_hull_edges ; i++)
+	{
 		if ( (hull_edges[i][0] == pt1 && hull_edges[i][1] == pt2)
 				|| (hull_edges[i][0] == pt2 && hull_edges[i][1] == pt1) )
 			return;	// already added
+	}
 
 	if (num_hull_edges == MAX_HULL_EDGES)
 		Error ("MAX_HULL_EDGES");
@@ -621,9 +630,10 @@ static void AddHullEdge (vec3_t p1, vec3_t p2, int hullnumber)
 
 	for (a = 0 ; a < 3 ; a++)
 	{
-		b = (a+1)%3;
-		c = (a+2)%3;
+		b = (a + 1) % 3;
+		c = (a + 2) % 3;
 		for (d = 0 ; d <= 1 ; d++)
+		{
 			for (e = 0 ; e <= 1 ; e++)
 			{
 				VectorCopy (p1, planeorg);
@@ -640,6 +650,7 @@ static void AddHullEdge (vec3_t p1, vec3_t p2, int hullnumber)
 				plane.dist = DotProduct (planeorg, plane.normal);
 				TestAddPlane (&plane);
 			}
+		}
 	}
 }		
 
@@ -661,8 +672,10 @@ static void ExpandBrush (int hullnumber)
 
 // create all the hull points
 	for (f = brush_faces ; f ; f = f->next)
+	{
 		for (i = 0 ; i < f->numpoints ; i++)
 			AddHullPoint (f->pts[i], hullnumber);
+	}
 
 // expand all of the planes
 	for (i = 0 ; i < numbrushfaces ; i++)
@@ -695,8 +708,10 @@ static void ExpandBrush (int hullnumber)
 
 // add all of the edge bevels
 	for (f = brush_faces ; f ; f = f->next)
+	{
 		for (i = 0 ; i < f->numpoints ; i++)
 			AddHullEdge (f->pts[i], f->pts[(i+1)%f->numpoints], hullnumber);
+	}
 }
 
 //============================================================================
@@ -805,8 +820,10 @@ static void Brush_DrawAll (brushset_t *bs)
 	face_t	*f;
 
 	for (b = bs->brushes ; b ; b = b->next)
+	{
 		for (f = b->faces ; f ; f = f->next)
 			Draw_DrawFace (f);
+	}
 }
 
 

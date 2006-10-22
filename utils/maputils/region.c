@@ -272,7 +272,7 @@ static void HealEdges (int e1, int e2)
 	for (i = firstmodelface ; i < numfaces ; i++)
 	{
 		df = &dfaces[i];
-		for (j=0 ; j<df->numedges ; j++)
+		for (j = 0 ; j < df->numedges ; j++)
 		{
 			n = dsurfedges[df->firstedge+j];
 			if (n == e2 || n == -e2)
@@ -395,8 +395,10 @@ static void CountRealNumbers (void)
 
 	c = 0;
 	for (i = firstmodeledge ; i < numedges ; i++)
+	{
 		if (edgefaces[i][0])
 			c++;		// not removed
+	}
 
 	qprintf ("%5i real edges\n", c);
 }

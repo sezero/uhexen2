@@ -470,7 +470,7 @@ void LoadEntities (void)
 			// number entity->message to be read from strings.txt
 			if (strlen(entity->netname))
 				printf ("Map name : \"%s\"\n\n", entity->netname);
-			else if (strlen(entity->message) && atoi(entity->message)>0)
+			else if (strlen(entity->message) && atoi(entity->message) > 0)
 				printf ("Map name : at line %d in strings.txt\n\n", atoi(entity->message));
 			else
 				printf ("Map name : -- unknown --\n\n");

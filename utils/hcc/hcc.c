@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.c,v 1.3 2006-06-15 06:18:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.c,v 1.4 2006-10-22 14:54:55 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).
@@ -127,6 +127,7 @@ int	CopyString (char *str)
 	return old;
 }
 
+
 #if 0	// all uses are commented out
 static void PrintStrings (void)
 {
@@ -190,6 +191,7 @@ static void PrintGlobals (void)
 }
 #endif	// end of unused stuff
 
+
 static void InitData (void)
 {
 	int		i;
@@ -213,11 +215,11 @@ static void InitData (void)
 
 static void WriteData (int crc)
 {
-	def_t	*def;
-	ddef_t	*dd;
+	def_t		*def;
+	ddef_t		*dd;
 	dprograms_t	progs;
 	FILE	*h;
-	int	i;
+	int			i;
 	int	localName = 0;	// init to 0, silence compiler warning
 
 	if (hcc_OptimizeNameTable)
@@ -225,7 +227,7 @@ static void WriteData (int crc)
 		localName = CopyString("LCL+");
 	}
 
-	for (def = pr.def_head.next; def; def = def->next)
+	for (def = pr.def_head.next ; def ; def = def->next)
 	{
 		if (def->type->type == ev_field)
 		{
@@ -243,7 +245,7 @@ static void WriteData (int crc)
 			&& def->type->type != ev_field
 			&& def->scope == NULL)
 		{
-			if (strncmp (def->name,"STR_",4)!=0)	//str_ is a special case string constant
+			if (strncmp (def->name,"STR_", 4) != 0)	//str_ is a special case string constant
 				dd->type |= DEF_SAVEGLOBAL;
 		}
 
@@ -264,7 +266,7 @@ static void WriteData (int crc)
 //	PrintFields ();
 //	PrintGlobals ();
 
-	strofs = (strofs+3)&~3;
+	strofs = (strofs + 3) & ~3;
 
 	printf("object file %s\n", destfile);
 	printf("      registers: %-6d / %-6d (%6d)\n", numpr_globals, MAX_REGS, numpr_globals*sizeof(float));
@@ -343,10 +345,11 @@ static void WriteData (int crc)
 // byte swap the header and write it out
 	for (i = 0 ; i < sizeof(progs)/4 ; i++)
 		((int *)&progs)[i] = LittleLong ( ((int *)&progs)[i] );
-	fseek(h, 0, SEEK_SET);
-	SafeWrite(h, &progs, sizeof(progs));
-	fclose(h);
+	fseek (h, 0, SEEK_SET);
+	SafeWrite (h, &progs, sizeof(progs));
+	fclose (h);
 }
+
 
 /*
 ===============
@@ -391,6 +394,7 @@ static char *PR_String (char *string)
 	*s++ = 0;
 	return buf;
 }
+
 
 static def_t *PR_DefForFieldOfs (gofs_t ofs)
 {
@@ -484,8 +488,8 @@ static char *PR_GlobalStringNoContents (gofs_t ofs)
 
 	i = strlen(line);
 	for ( ; i < 16 ; i++)
-		strcat (line," ");
-	strcat (line," ");
+		strcat (line, " ");
+	strcat (line, " ");
 
 	return line;
 }
@@ -512,8 +516,8 @@ static char *PR_GlobalString (gofs_t ofs)
 
 	i = strlen(line);
 	for ( ; i < 16 ; i++)
-		strcat (line," ");
-	strcat (line," ");
+		strcat (line, " ");
+	strcat (line, " ");
 
 	return line;
 }
@@ -545,19 +549,19 @@ static void PR_PrintStatement (dstatement_t *s)
 		printf (" ");
 
 	if (s->op == OP_IF || s->op == OP_IFNOT)
-		printf ("%sbranch %i",PR_GlobalString(s->a),s->b);
+		printf ("%sbranch %i", PR_GlobalString(s->a),s->b);
 	else if (s->op == OP_GOTO)
 	{
-		printf ("branch %i",s->a);
+		printf ("branch %i", s->a);
 	}
 	else if ( (unsigned)(s->op - OP_STORE_F) < 6)
 	{
-		printf ("%s",PR_GlobalString(s->a));
+		printf ("%s", PR_GlobalString(s->a));
 		printf ("%s", PR_GlobalStringNoContents(s->b));
 	}
 	else if ( (unsigned)(s->op - OP_SWITCH_F) < 5)
 	{
-		printf ("%sbranch %i",PR_GlobalString(s->a),s->b);
+		printf ("%sbranch %i", PR_GlobalString(s->a),s->b);
 	}
 	else if (s->op == OP_CASE)
 	{
@@ -566,9 +570,9 @@ static void PR_PrintStatement (dstatement_t *s)
 	else
 	{
 		if (s->a)
-			printf ("%s",PR_GlobalString(s->a));
+			printf ("%s", PR_GlobalString(s->a));
 		if (s->b)
-			printf ("%s",PR_GlobalString(s->b));
+			printf ("%s", PR_GlobalString(s->b));
 		if (s->c)
 			printf ("%s", PR_GlobalStringNoContents(s->c));
 	}
@@ -589,7 +593,7 @@ static void BeginCompilation (void)
 
 	numpr_globals = RESERVED_OFS;
 	pr.def_tail = &pr.def_head;
-	for (i = 0; i < RESERVED_OFS; i++)
+	for (i = 0 ; i < RESERVED_OFS ; i++)
 	{
 		pr_global_defs[i] = &def_void;
 	}
@@ -612,12 +616,12 @@ static void BeginCompilation (void)
 
 static qboolean FinishCompilation (void)
 {
-	def_t	*d;
+	def_t		*d;
 	qboolean	errors;
 	qboolean	globals_done = false;
 
 	errors = false;
-	for (d = pr.def_head.next; d; d = d->next)
+	for (d = pr.def_head.next ; d ; d = d->next)
 	{
 		if (!strcmp (d->name, "end_sys_globals"))
 			globals_done = true;
@@ -727,7 +731,7 @@ static int PR_WriteProgdefs (char *filename)
 	fclose (f);
 
 	// do a crc of the file
-	CRC_Init(&crc);
+	CRC_Init (&crc);
 	f = fopen (filename, "r+");
 	while ((c = fgetc(f)) != EOF)
 		CRC_ProcessByte (&crc, (byte)c);
@@ -768,7 +772,7 @@ static void PrintFunction (char *name)
 //
 //==========================================================================
 
-int main(int argc, char **argv)
+int main (int argc, char **argv)
 {
 	char	*src, *src2;
 	char	filename[1024], infile[1024];
@@ -780,7 +784,7 @@ int main(int argc, char **argv)
 	int		fileInfo;
 	int		quiet;
 
-	start = GetTime();
+	start = GetTime ();
 
 	myargc = argc;
 	myargv = argv;
@@ -820,12 +824,12 @@ int main(int argc, char **argv)
 		strcpy(infile, "progs.src");
 	}
 
-	InitData();
-	LX_Init();
-	CO_Init();
-	EX_Init();
+	InitData ();
+	LX_Init ();
+	CO_Init ();
+	EX_Init ();
 
-	sprintf(filename, "%s%s", sourcedir,infile);
+	sprintf(filename, "%s%s", sourcedir, infile);
 	LoadFile(filename, (void *)&src);
 
 	src = COM_Parse(src);
@@ -863,7 +867,7 @@ int main(int argc, char **argv)
 		LoadFile(filename, (void *)&src2);
 		if (!CO_CompileFile(src2, filename))
 		{
-			exit(1);
+			exit (1);
 		}
 		if (!quiet && fileInfo)
 		{
@@ -911,7 +915,7 @@ int main(int argc, char **argv)
 	printf(" precache_model: %d\n", nummodels);
 	printf("  precache_file: %d\n", numfiles);
 
-	stop = GetTime();
+	stop = GetTime ();
 	printf("\n%d seconds elapsed.\n", (int)(stop-start));
 
 	exit (0);

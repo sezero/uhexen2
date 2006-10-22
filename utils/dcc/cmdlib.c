@@ -87,7 +87,7 @@ char *COM_Parse (char *data)
 		if (c == '/' && data[1] == '*')
 		{
 			data += 2;
-			while(!(*data == '*' && data[1] == '/'))
+			while (!(*data == '*' && data[1] == '/'))
 			{
 				if (*data == 0)
 				{ // EOF
@@ -98,9 +98,9 @@ char *COM_Parse (char *data)
 			}
 			data += 2;
 		}
-		else if(c == '/' && data[1] == '/')
+		else if (c == '/' && data[1] == '/')
 		{ // Skip CPP comment
-			while(*data && *data != '\n')
+			while (*data && *data != '\n')
 			{
 				data++;
 			}
@@ -118,7 +118,7 @@ char *COM_Parse (char *data)
 		do
 		{
 			c = *data++;
-			if (c=='\"')
+			if (c == '\"')
 			{
 				com_token[len] = 0;
 				return data;
@@ -144,7 +144,7 @@ char *COM_Parse (char *data)
 		data++;
 		len++;
 		c = *data;
-		if(c == '{' || c == '}' || c == '(' || c == ')' || c == '\'' || c == ':')
+		if (c == '{' || c == '}' || c == '(' || c == ')' || c == '\'' || c == ':')
 		{
 			break;
 		}
@@ -206,7 +206,7 @@ int CheckParm (char *check)
 {
 	int		i;
 
-	for (i = 1;i < myargc;i++)
+	for (i = 1; i < myargc; i++)
 	{
 	//	if ( !StringCompare(check, myargv[i]) )
 		if ( !Q_strcasecmp(check, myargv[i]) )
@@ -473,6 +473,6 @@ int COM_Hash(char *key)
 		hash = (hash<<8)^crctable[(hash>>8)^*keyBack--];
 	}
 
-	return hash%HASH_TABLE_SIZE;
+	return hash % HASH_TABLE_SIZE;
 }
 
