@@ -314,7 +314,7 @@ qboolean PM_TestPlayerPosition (vec3_t pos)
 	{
 		pe = &pmove.physents[i];
 	// get the clipping hull
-		if(0){}/*shitbox
+		if (0){}/*shitbox
 			 pmove.hasted == 1.666) //hacky- beast speed
 		{
 			VectorCopy (beast_maxs, maxs);
@@ -323,7 +323,7 @@ qboolean PM_TestPlayerPosition (vec3_t pos)
 		}*/
 		else if (pe->model)
 		{
-			if(pmove.crouched)
+			if (pmove.crouched)
 			{
 				hull = &pmove.physents[i].model->hulls[3];
 			}
@@ -384,7 +384,7 @@ pmtrace_t PM_PlayerMove (vec3_t start, vec3_t end)
 	{
 		pe = &pmove.physents[i];
 	// get the clipping hull
-		if(0){}/*shitbox
+		if (0){}/*shitbox
 			 pmove.hasted == 1.666) //hacky- beast speed
 		{
 			VectorCopy (beast_maxs, maxs);

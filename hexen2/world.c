@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.12 2006-10-21 18:21:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.13 2006-10-22 15:06:31 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -170,7 +170,7 @@ static hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t 
 			if (offset[0] !=0 || offset[1] != 0)
 			{
 			//	Con_DPrintf("ERROR: Non-zero offset (%f,%f,%f)!!!\n",offset[0],offset[1],offset[2]);
-			//	if((int)move_ent->v.flags2 & 524288)
+			//	if ((int)move_ent->v.flags2 & 524288)
 				offset[0] = 0;
 				offset[1] = 0;
 			}
@@ -1019,6 +1019,9 @@ trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, e
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2006/10/21 18:21:28  sezero
+ * various coding style clean-ups, part 5.
+ *
  * Revision 1.11  2006/07/02 11:45:35  sezero
  * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
  * which stops vec3_origin usage in relevant calculations. renamed the Length

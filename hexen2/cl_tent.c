@@ -2,7 +2,7 @@
 	cl_tent.c
 	Client side temporary entity effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.12 2006-10-20 20:32:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.13 2006-10-22 15:06:30 sezero Exp $
 */
 
 
@@ -138,7 +138,7 @@ void CL_ParseTEnt(void)
 //	int colorStart, colorLength;
 
 	type = MSG_ReadByte();
-	switch(type)
+	switch (type)
 	{
 	case TE_WIZSPIKE:	// spike hitting wall
 		pos[0] = MSG_ReadCoord ();
@@ -301,7 +301,7 @@ static void ParseStream(int type)
 	dest[2] = MSG_ReadCoord();
 
 	models[1] = models[2] = models[3] = NULL;
-	switch(type)
+	switch (type)
 	{
 	case TE_STREAM_CHAIN:
 		models[0] = Mod_ForName("models/stchain.mdl", true);
@@ -489,7 +489,7 @@ void CL_UpdateTEnts(void)
 			ent->angles[0] = pitch;
 			ent->angles[1] = yaw;
 
-			switch(stream->type)
+			switch (stream->type)
 			{
 			case TE_STREAM_CHAIN:
 				ent->angles[2] = 0;

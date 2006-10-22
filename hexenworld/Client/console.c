@@ -602,7 +602,7 @@ void Con_DrawNotify (void)
 		if (chat_bufferlen > (vid.width>>3)-(skip+1))
 			s += chat_bufferlen - ((vid.width>>3)-(skip+1));
 		x = 0;
-		while(s[x])
+		while (s[x])
 		{
 			Draw_Character ( (x+skip)<<3, v, s[x]);
 			x++;

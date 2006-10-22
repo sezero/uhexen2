@@ -405,7 +405,7 @@ void PR_ExecuteProgram (func_t fnum)
 #ifdef PARANOID
 		NUM_FOR_EDICT(ed);	// Make sure it's in range
 #endif
-		if(ed == (edict_t *)sv.edicts && sv.state == ss_active)
+		if (ed == (edict_t *)sv.edicts && sv.state == ss_active)
 		{
 			PR_RunError("assignment to world entity");
 		}
@@ -1058,7 +1058,7 @@ void PR_Profile_f (void)
 				j++;
 				bestFunc->profile = 0;
 			}
-		} while(bestFunc);
+		} while (bestFunc);
 
 		if (saveFile)
 		{
@@ -1132,9 +1132,9 @@ void PR_Profile_f (void)
 					j++;
 					bestFunc->profile = 0;
 				}
-			} while(bestFunc);
+			} while (bestFunc);
 		}
-	} while(currentFile != Q_MAXINT);
+	} while (currentFile != Q_MAXINT);
 
 	if (saveFile)
 	{

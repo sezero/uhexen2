@@ -2,7 +2,7 @@
 	sv_move.c
 	monster movement
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.10 2006-10-21 18:21:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.11 2006-10-22 15:06:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -158,7 +158,7 @@ realcheck:	// check it for real...
 
 		/*	if ((int)ent->v.flags & FL_MONSTER)
 			{
-				if(trace.allsolid)
+				if (trace.allsolid)
 					Con_DPrintf("Checkbottom (x=%d,y=%d) check was all solid!!!\n",x,y);
 				else if (trace.startsolid)
 					Con_DPrintf("Checkbottom (x=%d,y=%d) check started solid!!!\n",x,y);
@@ -626,6 +626,9 @@ void SV_MoveToGoal (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2006/10/21 18:21:28  sezero
+ * various coding style clean-ups, part 5.
+ *
  * Revision 1.9  2006/09/27 17:24:00  sezero
  * commented out some dead code in sv_move.c (SV_NewChaseDir)
  *

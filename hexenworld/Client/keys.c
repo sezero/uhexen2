@@ -247,7 +247,7 @@ static void CompleteCommand (void)
 			{
 				for (i = 1; i < count && i < MAX_MATCHES; i++)
 				{
-					//if(memcmp(matches[0], matches[i], j+1))
+				//	if (memcmp (matches[0], matches[i], j+1))
 					if (strncmp(matches[0], matches[i], j+1))
 						partial = false;
 				}

@@ -2,7 +2,7 @@
 	sv_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.8 2006-10-21 18:21:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.9 2006-10-22 15:06:32 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -202,7 +202,7 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 	MSG_WriteByte (&sv.multicast, idx);
 	MSG_WriteByte (&sv.multicast, sv.Effects[idx].type);
 
-	switch(sv.Effects[idx].type)
+	switch (sv.Effects[idx].type)
 	{
 		case CE_RAIN:
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Rain.min_org[0]);
@@ -802,6 +802,9 @@ float SV_GetMultiEffectId (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2006/10/21 18:21:32  sezero
+ * various coding style clean-ups, part 5.
+ *
  * Revision 1.7  2006/07/02 11:45:38  sezero
  * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
  * which stops vec3_origin usage in relevant calculations. renamed the Length

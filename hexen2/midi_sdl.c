@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.28 2006-10-10 07:24:24 sezero Exp $
+	$Id: midi_sdl.c,v 1.29 2006-10-22 15:06:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -270,7 +270,7 @@ void MIDI_Stop(void)
 	if (!bMidiInited)	//Just to be safe
 		return;
 
-	if(bFileOpen || bPlaying)
+	if (bFileOpen || bPlaying)
 	{
 		Mix_HaltMusic();
 		Mix_FreeMusic(music);
@@ -295,6 +295,9 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2006/10/10 07:24:24  sezero
+ * during init phase, we must error out if certain mkdir calls fail
+ *
  * Revision 1.27  2006/10/06 16:43:32  sezero
  * updated the makefiles and preprocessor definitions:
  * * moved the HAVE_GCC_4_0 definition/detection from the include makefiles

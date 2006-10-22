@@ -2949,7 +2949,7 @@ static void PF_turneffect (void)
 	pos = G_VECTOR(OFS_PARM1);
 	dir = G_VECTOR(OFS_PARM2);
 
-	if(!sv.Effects[idx].type)
+	if (!sv.Effects[idx].type)
 		return;
 	VectorCopy(pos, sv.Effects[idx].ef.Missile.origin);
 	VectorCopy(dir, sv.Effects[idx].ef.Missile.velocity);

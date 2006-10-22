@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.30 2006-10-21 22:08:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.31 2006-10-22 15:06:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -984,7 +984,7 @@ static void FindPath (float *StartV, float *EndV, float *Mins, float *Maxs, int 
 	ZOffset = XSize*YSize;
 	YOffset = XSize;
 
-//	for(c = 0; c < POINT_MAX_DEPTH; c++)
+//	for (c = 0; c < POINT_MAX_DEPTH; c++)
 //		ToDo[c] = NULL;
 
 	for (c = 0, Pos = PI; c < MAX_POINT; c++, Pos++)
@@ -3126,7 +3126,7 @@ static void PF_matchAngleToSlope(void)
 
 	mod = DotProduct(v_forward, old_right);
 
-	if(mod < 0)
+	if (mod < 0)
 		mod = 1;
 	else
 		mod = -1;
@@ -3335,6 +3335,9 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2006/10/21 22:08:33  sezero
+ * various coding style clean-ups, part 6.
+ *
  * Revision 1.29  2006/09/25 08:30:04  sezero
  * prevented string buffer overflows in PF_VarString().
  *

@@ -630,7 +630,7 @@ static void SV_Say (qboolean team)
 						// cannot recieve team chat of other players
 						continue;
 
-					if(client->siege_team!=host_client->siege_team)
+					if (client->siege_team != host_client->siege_team)
 						// on different teams
 						continue;
 				}

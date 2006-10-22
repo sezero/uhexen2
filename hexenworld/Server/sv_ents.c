@@ -993,7 +993,7 @@ static void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs
 
 	for (j = 0, l = 0, k = 0, cl = svs.clients; j < MAX_CLIENTS; j++, cl++)
 	{	//priority 1 - if behind, cull out
-		if(forcevisclient[l] == j && l <= forcevc)
+		if (forcevisclient[l] == j && l <= forcevc)
 			l++;
 		else if (visclient[k] == j && k <= numvc)
 			k++;	//clent is always forced

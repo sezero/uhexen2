@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.37 2006-10-21 18:21:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.38 2006-10-22 15:06:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -688,7 +688,7 @@ static void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_
 	//	Con_Printf("SV: Valid SV(%d,%d) CL(%d,%d)\n",client->current_sequence, client->current_frame, client->last_sequence, client->last_frame);
 		*reference = state->frames[client->last_frame];
 
-		for(i = 0; i < reference->count; i++)
+		for (i = 0; i < reference->count; i++)
 		{
 			if (reference->states[i].flags & ENT_CLEARED)
 			{
@@ -1000,7 +1000,7 @@ skipA:
 			MSG_WriteByte (msg, ent->v.frame);
 		if (bits & U_COLORMAP)
 			MSG_WriteByte (msg, ent->v.colormap);
-		if(bits & U_SKIN)
+		if (bits & U_SKIN)
 		{ // Used for skin and drawflags
 			MSG_WriteByte(msg, ent->v.skin);
 			MSG_WriteByte(msg, ent->v.drawflags);
@@ -1031,7 +1031,7 @@ skipA:
 
 	MSG_WriteByte (msg, svc_clear_edicts);
 	MSG_WriteByte (msg, NumToRemove);
-	for(i = 0; i < NumToRemove; i++)
+	for (i = 0; i < NumToRemove; i++)
 		MSG_WriteShort (msg, RemoveList[i]);
 }
 
@@ -2108,6 +2108,9 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.37  2006/10/21 18:21:28  sezero
+ * various coding style clean-ups, part 5.
+ *
  * Revision 1.36  2006/09/11 09:16:24  sezero
  * put SZ_Init() to use everywhere in the source.
  *

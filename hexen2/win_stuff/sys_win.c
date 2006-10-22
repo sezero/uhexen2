@@ -676,7 +676,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	if (!parms.membase)
 		Sys_Error ("Insufficient memory.\n");
 
-	if(COM_CheckParm("-nopagein") == 0)
+	if (COM_CheckParm("-nopagein") == 0)
 	{
 		Sys_PageIn (parms.membase, parms.memsize);
 	}
@@ -773,6 +773,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.40  2006/10/21 18:21:29  sezero
+ * various coding style clean-ups, part 5.
+ *
  * Revision 1.39  2006/10/19 06:32:30  sezero
  * added Sys_DPrintf: at present, its only user is the hexen2 dedicated
  * server. further use of it may come with future versions.

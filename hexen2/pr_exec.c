@@ -1,7 +1,7 @@
 /*
 	pr_exec.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.12 2006-10-21 22:08:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.13 2006-10-22 15:06:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -409,7 +409,7 @@ void PR_ExecuteProgram (func_t fnum)
 #ifdef PARANOID
 		NUM_FOR_EDICT(ed);	// Make sure it's in range
 #endif
-		if(ed == (edict_t *)sv.edicts && sv.state == ss_active)
+		if (ed == (edict_t *)sv.edicts && sv.state == ss_active)
 		{
 			PR_RunError("assignment to world entity");
 		}
@@ -1080,7 +1080,7 @@ void PR_Profile_f (void)
 				j++;
 				bestFunc->profile = 0;
 			}
-		} while(bestFunc);
+		} while (bestFunc);
 
 		if (saveFile)
 		{
@@ -1154,9 +1154,9 @@ void PR_Profile_f (void)
 					j++;
 					bestFunc->profile = 0;
 				}
-			} while(bestFunc);
+			} while (bestFunc);
 		}
-	} while(currentFile != Q_MAXINT);
+	} while (currentFile != Q_MAXINT);
 
 	if (saveFile)
 	{
@@ -1194,6 +1194,9 @@ static unsigned int ProgsTimer(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2006/10/21 22:08:33  sezero
+ * various coding style clean-ups, part 6.
+ *
  * Revision 1.11  2006/09/13 05:53:22  sezero
  * re-visited the includes, gathered all net includes into
  * the new net_sys.h, did a platform defines clean-up.

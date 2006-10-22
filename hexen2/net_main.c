@@ -400,7 +400,7 @@ qsocket_t *NET_Connect (char *host)
 	slistSilent = host ? true : false;
 	NET_Slist_f ();
 
-	while(slistInProgress)
+	while (slistInProgress)
 		NET_Poll();
 
 	if (host == NULL)
