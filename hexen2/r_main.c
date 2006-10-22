@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.14 2006-07-18 08:36:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.15 2006-10-22 09:46:49 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -169,17 +169,19 @@ void	R_InitTextures (void)
 	r_notexture_mip->offsets[2] = r_notexture_mip->offsets[1] + 8*8;
 	r_notexture_mip->offsets[3] = r_notexture_mip->offsets[2] + 4*4;
 
-	for (m=0 ; m<4 ; m++)
+	for (m = 0; m < 4; m++)
 	{
 		dest = (byte *)r_notexture_mip + r_notexture_mip->offsets[m];
-		for (y=0 ; y< (16>>m) ; y++)
-			for (x=0 ; x< (16>>m) ; x++)
+		for (y = 0; y < (16>>m); y++)
+		{
+			for (x = 0; x < (16>>m); x++)
 			{
-				if (  (y< (8>>m) ) ^ (x< (8>>m) ) )
+				if ( (y < (8>>m)) ^ (x < (8>>m)) )
 					*dest++ = 0;
 				else
 					*dest++ = 0xff;
 			}
+		}
 	}
 }
 
@@ -291,7 +293,6 @@ void R_Init (void)
 
 	Sys_MakeCodeWriteable ((int)D_DrawTurbulent8TSpan, (int)D_DrawTurbulent8TSpanEnd - (int)D_DrawTurbulent8TSpan);
 	R_TranPatch7();
-
 #endif
 
 	playerTranslation = (byte *)COM_LoadHunkFile ("gfx/player.lmp");
@@ -314,7 +315,7 @@ void R_NewMap (void)
 
 // clear out efrags in case the level hasn't been reloaded
 // FIXME: is this one short?
-	for (i=0 ; i<cl.worldmodel->numleafs ; i++)
+	for (i = 0; i < cl.worldmodel->numleafs; i++)
 		cl.worldmodel->leafs[i].efrags = NULL;
 
 	r_viewleaf = NULL;
@@ -505,7 +506,7 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 	screenedge[3].normal[2] = 1;
 	screenedge[3].type = PLANE_ANYZ;
 
-	for (i=0 ; i<4 ; i++)
+	for (i = 0; i < 4; i++)
 		VectorNormalize (screenedge[i].normal);
 
 	res_scale = sqrt((double)(r_refdef.vrect.width * r_refdef.vrect.height) / (320.0 * 152.0))
@@ -558,7 +559,7 @@ static void R_MarkLeaves (void)
 
 	vis = Mod_LeafPVS (r_viewleaf, cl.worldmodel);
 
-	for (i=0 ; i<cl.worldmodel->numleafs ; i++)
+	for (i = 0; i < cl.worldmodel->numleafs; i++)
 	{
 		if (vis[i>>3] & (1<<(i&7)))
 		{
@@ -602,7 +603,7 @@ static void R_PrepareAlias (void)
 
 		lighting.plightvec = lightvec;
 
-		for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
+		for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 		{
 			if (cl_dlights[lnum].die >= cl.time)
 			{
@@ -650,7 +651,7 @@ static void R_DrawEntitiesOnList (void)
 	if (!r_drawentities.value)
 		return;
 
-	for (i=0 ; i<cl_numvisedicts ; i++)
+	for (i = 0; i < cl_numvisedicts; i++)
 	{
 		currententity = cl_visedicts[i];
 
@@ -691,7 +692,7 @@ static void R_DrawEntitiesOnList (void)
 	}
 
 	// Draw the transparent stuff
-	for (i=0 ; i<cl_numvisedicts ; i++)
+	for (i = 0; i < cl_numvisedicts; i++)
 	{
 		currententity = cl_visedicts[i];
 
@@ -760,7 +761,7 @@ static void R_DrawViewModel (void)
 	r_viewlighting.shadelight = j;
 
 // add dynamic lights
-	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
+	for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 	{
 		dl = &cl_dlights[lnum];
 		if (!dl->radius)
@@ -827,7 +828,7 @@ static int R_BmodelCheckBBox (model_t *clmodel, float *minmaxs)
 	if (currententity->angles[0] || currententity->angles[1]
 		|| currententity->angles[2])
 	{
-		for (i=0 ; i<4 ; i++)
+		for (i = 0; i < 4; i++)
 		{
 			d = DotProduct (currententity->origin, view_clipplanes[i].normal);
 			d -= view_clipplanes[i].dist;
@@ -841,7 +842,7 @@ static int R_BmodelCheckBBox (model_t *clmodel, float *minmaxs)
 	}
 	else
 	{
-		for (i=0 ; i<4 ; i++)
+		for (i = 0; i < 4; i++)
 		{
 		// generate accept and reject points
 		// FIXME: do with fast look-ups or integer tests based on the sign bit
@@ -896,7 +897,7 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins, 
 		return;
 	}
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		tmins[i] = 99999;
 		tmaxs[i] = -99999;
@@ -904,7 +905,7 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins, 
 
 	AngleVectors (angles, forward, right, up);
 
-	for ( i = 0; i < 8; i++ )
+	for (i = 0; i < 8; i++)
 	{
 		if ( i & 1 )
 			tmp[0] = mins[0];
@@ -925,7 +926,7 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins, 
 		VectorMA (v, -tmp[1], right, v);
 		VectorMA (v, tmp[2], up, v);
 
-		for (j=0 ; j<3 ; j++)
+		for (j = 0; j < 3; j++)
 		{
 			if (v[j] < tmins[j])
 				tmins[j] = v[j];
@@ -956,7 +957,7 @@ static void R_DrawBEntitiesOnList (void)
 	insubmodel = true;
 	r_dlightframecount = r_framecount;
 
-	for (i=0 ; i<cl_numvisedicts ; i++)
+	for (i = 0; i < cl_numvisedicts; i++)
 	{
 		currententity = cl_visedicts[i];
 
@@ -987,7 +988,7 @@ static void R_DrawBEntitiesOnList (void)
 				// if it's not an instanced model
 				if (clmodel->firstmodelsurface != 0)
 				{
-					for (k=0 ; k<MAX_DLIGHTS ; k++)
+					for (k = 0; k < MAX_DLIGHTS; k++)
 					{
 						if ((cl_dlights[k].die < cl.time) || (!cl_dlights[k].radius))
 						{
@@ -1009,7 +1010,7 @@ static void R_DrawBEntitiesOnList (void)
 				{
 					r_pefragtopnode = NULL;
 
-					for (j=0 ; j<3 ; j++)
+					for (j = 0; j < 3; j++)
 					{
 						r_emins[j] = minmaxs[j];
 						r_emaxs[j] = minmaxs[3+j];
@@ -1125,7 +1126,7 @@ static void R_EdgeDrawing (qboolean Translucent)
 		R_DrawBEntitiesOnList ();
 
 		SaveSurfacesCount = surface_p - surfaces;
-		SurfacesSize = SaveSurfacesCount* sizeof(surf_t);
+		SurfacesSize = SaveSurfacesCount * sizeof(surf_t);
 		SaveEdgesCount = edge_p - r_edges;
 		EdgesSize = SaveEdgesCount * sizeof(edge_t);
 
@@ -1294,6 +1295,11 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2006/07/18 08:36:40  sezero
+ * made hexen2 software renderer to use r_worldentity like in
+ * opengl version and hexenworld version. this saved us of
+ * many ifdef H2W ugliness.
+ *
  * Revision 1.13  2006/07/02 11:45:31  sezero
  * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
  * which stops vec3_origin usage in relevant calculations. renamed the Length

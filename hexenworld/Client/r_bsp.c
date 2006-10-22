@@ -297,8 +297,7 @@ static void R_RecursiveClipBPoly (bedge_t *pedges, mnode_t *pnode, msurface_t *p
 				}
 				else
 				{
-					R_RecursiveClipBPoly (psideedges[i], pnode->children[i],
-									  psurf);
+					R_RecursiveClipBPoly (psideedges[i], pnode->children[i], psurf);
 				}
 			}
 		}
@@ -647,7 +646,7 @@ void R_RenderWorld (void)
 // play the visible ones back in that order
 	if (r_worldpolysbacktofront)
 	{
-		for (i=numbtofpolys-1 ; i>=0 ; i--)
+		for (i = numbtofpolys-1 ; i >= 0 ; i--)
 		{
 			R_RenderPoly (btofpolys[i].psurf, btofpolys[i].clipflags);
 		}

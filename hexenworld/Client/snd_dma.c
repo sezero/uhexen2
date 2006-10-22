@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.43 2006-10-21 18:21:30 sezero Exp $
+	$Id: snd_dma.c,v 1.44 2006-10-22 09:46:49 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -196,7 +196,7 @@ void S_Init (void)
 		return;
 	}
 
-	// point to correct platform versions of driver functions
+// point to correct platform versions of driver functions
 	S_InitDrivers();
 
 	Cvar_RegisterVariable(&precache);
@@ -239,6 +239,8 @@ void S_Init (void)
 
 	S_Startup ();
 
+// further operation is not necessary if the driver initialization failed
+// unless we intend to do a snd_restart with a different driver.
 	if (sound_started == 0)
 		return;
 
@@ -247,8 +249,7 @@ void S_Init (void)
 	known_sfx = (sfx_t *) Hunk_AllocName (MAX_SFX*sizeof(sfx_t), "sfx_t");
 	num_sfx = 0;
 
-	// provides a tick sound until washed clean
-
+// provides a tick sound until washed clean
 //	if (shm->buffer)
 //		shm->buffer[4] = shm->buffer[5] = 0x7f;	// force a pop for debugging
 
@@ -1114,6 +1115,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.43  2006/10/21 18:21:30  sezero
+ * various coding style clean-ups, part 5.
+ *
  * Revision 1.42  2006/10/04 15:36:35  sezero
  * used proper directx macroes and got rid of lpVtbl stuff for
  * better readability.

@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_surf.c,v 1.5 2006-04-05 06:05:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_surf.c,v 1.6 2006-10-22 09:46:49 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -74,7 +74,7 @@ static void R_AddDynamicLights (void)
 	tmax = (surf->extents[1]>>4)+1;
 	tex = surf->texinfo;
 
-	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
+	for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 	{
 		if ( !(surf->dlightbits & (1<<lnum) ) )
 			continue;		// not lit by this light
@@ -90,7 +90,7 @@ static void R_AddDynamicLights (void)
 		if (cl_dlights[lnum].radius < 0)
 			rad = -rad;
 
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 		{
 			impact[i] = cl_dlights[lnum].origin[i] - surf->plane->normal[i]*dist;
 		}
@@ -99,12 +99,12 @@ static void R_AddDynamicLights (void)
 		local1 = DotProduct (impact, tex->vecs[1]) + tex->vecs[1][3] - surf->texturemins[1];
 
 		pos = blocklights;
-		for (t = 0 ; t<tmax ; t++)
+		for (t = 0; t < tmax; t++)
 		{
 			td = local1 - t*16;
 			if (td < 0)
 				td = -td;
-			for (s=0 ; s<smax ; s++, pos++)
+			for (s = 0; s < smax; s++, pos++)
 			{
 				sd = local0 - s*16;
 				if (sd < 0)
@@ -164,14 +164,14 @@ static void R_BuildLightMap (void)
 
 	surf = r_drawsurf.surf;
 
-	smax = (surf->extents[0]>>4)+1;
-	tmax = (surf->extents[1]>>4)+1;
+	smax = (surf->extents[0] >> 4) + 1;
+	tmax = (surf->extents[1] >> 4) + 1;
 	size = smax*tmax;
 	lightmap = surf->samples;
 
 	if (r_fullbright.value || !cl.worldmodel->lightdata)
 	{
-		for (i=0 ; i<size ; i++)
+		for (i = 0; i < size; i++)
 			blocklights[i] = 0;
 		return;
 	}
@@ -179,31 +179,33 @@ static void R_BuildLightMap (void)
 	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
 	{
 		light = (255-currententity->abslight)<<VID_CBITS;
-		for (i=0 ; i<size ; i++)
+		for (i = 0; i < size; i++)
 			blocklights[i] = light;	// 0 - 16383, 0 = full bright
 		return;
 	}
 
 // clear to ambient
-	for (i=0 ; i<size ; i++)
+	for (i = 0; i < size; i++)
 		blocklights[i] = r_refdef.ambientlight<<8;
 
 // add all the lightmaps
 	if (lightmap)
+	{
 		for (maps = 0 ; maps < MAXLIGHTMAPS && surf->styles[maps] != 255 ; maps++)
 		{
 			scale = r_drawsurf.lightadj[maps];	// 8.8 fraction
-			for (i=0 ; i<size ; i++)
+			for (i = 0; i < size; i++)
 				blocklights[i] += lightmap[i] * scale;
 			lightmap += size;	// skip to next lightmap
 		}
+	}
 
 // add all the dynamic lights
 	if (surf->dlightframe == r_framecount)
 		R_AddDynamicLights ();
 
 // bound, invert, and shift
-	for (i=0 ; i<size ; i++)
+	for (i = 0; i < size; i++)
 	{
 		t = (255*256 - (int)blocklights[i]) >> (8 - VID_CBITS);
 
@@ -286,7 +288,7 @@ void R_DrawSurface (void)
 	blockdivshift = 4 - r_drawsurf.surfmip;
 	blockdivmask = (1 << blockdivshift) - 1;
 
-	r_lightwidth = (r_drawsurf.surf->extents[0]>>4)+1;
+	r_lightwidth = (r_drawsurf.surf->extents[0] >> 4) + 1;
 
 	r_numhblocks = r_drawsurf.surfwidth >> blockdivshift;
 	r_numvblocks = r_drawsurf.surfheight >> blockdivshift;
@@ -322,7 +324,7 @@ void R_DrawSurface (void)
 
 	pcolumndest = r_drawsurf.surfdat;
 
-	for (u=0 ; u<r_numhblocks; u++)
+	for (u = 0; u < r_numhblocks; u++)
 	{
 		r_lightptr = blocklights + u;
 
@@ -358,7 +360,7 @@ static void R_DrawSurfaceBlock8_mip0 (void)
 	psource = pbasesource;
 	prowdest = prowdestbase;
 
-	for (v=0 ; v<r_numvblocks ; v++)
+	for (v = 0; v < r_numvblocks; v++)
 	{
 	// FIXME: make these locals?
 	// FIXME: use delta rather than both right and left, like ASM?
@@ -368,14 +370,14 @@ static void R_DrawSurfaceBlock8_mip0 (void)
 		lightleftstep = (r_lightptr[0] - lightleft) >> 4;
 		lightrightstep = (r_lightptr[1] - lightright) >> 4;
 
-		for (i=0 ; i<16 ; i++)
+		for (i = 0; i < 16; i++)
 		{
 			lighttemp = lightleft - lightright;
 			lightstep = lighttemp >> 4;
 
 			light = lightright;
 
-			for (b=15; b>=0; b--)
+			for (b = 15; b >= 0; b--)
 			{
 				pix = psource[b];
 				prowdest[b] = ((unsigned char *)vid.colormap)[(light & 0xFF00) + pix];
@@ -407,7 +409,7 @@ static void R_DrawSurfaceBlock8_mip1 (void)
 	psource = pbasesource;
 	prowdest = prowdestbase;
 
-	for (v=0 ; v<r_numvblocks ; v++)
+	for (v = 0; v < r_numvblocks; v++)
 	{
 	// FIXME: make these locals?
 	// FIXME: use delta rather than both right and left, like ASM?
@@ -417,14 +419,14 @@ static void R_DrawSurfaceBlock8_mip1 (void)
 		lightleftstep = (r_lightptr[0] - lightleft) >> 3;
 		lightrightstep = (r_lightptr[1] - lightright) >> 3;
 
-		for (i=0 ; i<8 ; i++)
+		for (i = 0; i < 8; i++)
 		{
 			lighttemp = lightleft - lightright;
 			lightstep = lighttemp >> 3;
 
 			light = lightright;
 
-			for (b=7; b>=0; b--)
+			for (b = 7; b >= 0; b--)
 			{
 				pix = psource[b];
 				prowdest[b] = ((unsigned char *)vid.colormap)[(light & 0xFF00) + pix];
@@ -456,7 +458,7 @@ static void R_DrawSurfaceBlock8_mip2 (void)
 	psource = pbasesource;
 	prowdest = prowdestbase;
 
-	for (v=0 ; v<r_numvblocks ; v++)
+	for (v = 0; v < r_numvblocks; v++)
 	{
 	// FIXME: make these locals?
 	// FIXME: use delta rather than both right and left, like ASM?
@@ -466,14 +468,14 @@ static void R_DrawSurfaceBlock8_mip2 (void)
 		lightleftstep = (r_lightptr[0] - lightleft) >> 2;
 		lightrightstep = (r_lightptr[1] - lightright) >> 2;
 
-		for (i=0 ; i<4 ; i++)
+		for (i = 0; i < 4; i++)
 		{
 			lighttemp = lightleft - lightright;
 			lightstep = lighttemp >> 2;
 
 			light = lightright;
 
-			for (b=3; b>=0; b--)
+			for (b = 3; b >= 0; b--)
 			{
 				pix = psource[b];
 				prowdest[b] = ((unsigned char *)vid.colormap)[(light & 0xFF00) + pix];
@@ -505,7 +507,7 @@ static void R_DrawSurfaceBlock8_mip3 (void)
 	psource = pbasesource;
 	prowdest = prowdestbase;
 
-	for (v=0 ; v<r_numvblocks ; v++)
+	for (v = 0; v < r_numvblocks; v++)
 	{
 	// FIXME: make these locals?
 	// FIXME: use delta rather than both right and left, like ASM?
@@ -515,14 +517,14 @@ static void R_DrawSurfaceBlock8_mip3 (void)
 		lightleftstep = (r_lightptr[0] - lightleft) >> 1;
 		lightrightstep = (r_lightptr[1] - lightright) >> 1;
 
-		for (i=0 ; i<2 ; i++)
+		for (i = 0; i < 2; i++)
 		{
 			lighttemp = lightleft - lightright;
 			lightstep = lighttemp >> 1;
 
 			light = lightright;
 
-			for (b=1; b>=0; b--)
+			for (b = 1; b >= 0; b--)
 			{
 				pix = psource[b];
 				prowdest[b] = ((unsigned char *)vid.colormap)[(light & 0xFF00) + pix];
@@ -557,7 +559,7 @@ static void R_DrawSurfaceBlock16 (void)
 
 	prowdest = (unsigned short *)prowdestbase;
 
-	for (k=0 ; k<blocksize ; k++)
+	for (k = 0; k < blocksize; k++)
 	{
 		unsigned short	*pdest;
 		unsigned char	pix;
@@ -570,7 +572,7 @@ static void R_DrawSurfaceBlock16 (void)
 		light = lightleft;
 		pdest = prowdest;
 
-		for (b=0; b<blocksize; b++)
+		for (b = 0; b < blocksize; b++)
 		{
 			pix = *psource;
 			*pdest = vid.colormap16[(light & 0xFF00) + pix];
@@ -604,12 +606,12 @@ static void R_GenTurbTile (pixel_t *pbasetex, void *pdest)
 	int		i, j, s, t;
 	byte	*pd;
 
-	turb = sintable + ((int)(cl.time*SPEED)&(CYCLE-1));
+	turb = sintable + ((int)(cl.time * SPEED) & (CYCLE-1));
 	pd = (byte *)pdest;
 
-	for (i=0 ; i<TILE_SIZE ; i++)
+	for (i = 0; i < TILE_SIZE; i++)
 	{
-		for (j=0 ; j<TILE_SIZE ; j++)
+		for (j = 0; j < TILE_SIZE; j++)
 		{
 			s = (((j << 16) + turb[i & (CYCLE-1)]) >> 16) & 63;
 			t = (((i << 16) + turb[j & (CYCLE-1)]) >> 16) & 63;
@@ -630,12 +632,12 @@ static void R_GenTurbTile16 (pixel_t *pbasetex, void *pdest)
 	int			i, j, s, t;
 	unsigned short	*pd;
 
-	turb = sintable + ((int)(cl.time*SPEED)&(CYCLE-1));
+	turb = sintable + ((int)(cl.time * SPEED) & (CYCLE-1));
 	pd = (unsigned short *)pdest;
 
-	for (i=0 ; i<TILE_SIZE ; i++)
+	for (i = 0; i < TILE_SIZE; i++)
 	{
-		for (j=0 ; j<TILE_SIZE ; j++)
+		for (j = 0; j < TILE_SIZE; j++)
 		{
 			s = (((j << 16) + turb[i & (CYCLE-1)]) >> 16) & 63;
 			t = (((i << 16) + turb[j & (CYCLE-1)]) >> 16) & 63;

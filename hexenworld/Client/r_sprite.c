@@ -314,7 +314,7 @@ void R_DrawSprite (void)
 	// generate the sprite's axes, completely parallel to the viewplane. There
 	// are no problem situations, because the sprite is always in the same
 	// position relative to the viewer
-		for (i=0 ; i<3 ; i++)
+		for (i = 0 ; i < 3 ; i++)
 		{
 			r_spritedesc.vup[i] = vup[i];
 			r_spritedesc.vright[i] = vright[i];
@@ -362,7 +362,7 @@ void R_DrawSprite (void)
 		sr = sin(angle);
 		cr = cos(angle);
 
-		for (i=0 ; i<3 ; i++)
+		for (i = 0 ; i < 3 ; i++)
 		{
 			r_spritedesc.vpn[i] = vpn[i];
 			r_spritedesc.vright[i] = vright[i] * cr + vup[i] * sr;

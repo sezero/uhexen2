@@ -65,7 +65,7 @@ void R_TimeRefresh_f (void)
 	startangle = r_refdef.viewangles[1];
 
 	start = Sys_DoubleTime ();
-	for (i=0 ; i<128 ; i++)
+	for (i = 0; i < 128; i++)
 	{
 		r_refdef.viewangles[1] = i/128.0*360.0;
 
@@ -177,10 +177,10 @@ void R_LineGraph2 (int x, int y, int h, int h2, int drawType, int marker)
 	}
 	for (i = 0; i < h; i++, dest -= vid.rowbytes)
 	{
-		dest[0] = ((i+1)%marker == 0) ? 143 : 255;
-		if (!(drawType&1))
+		dest[0] = ((i+1) % marker == 0) ? 143 : 255;
+		if (!(drawType & 1))
 		{ // Expanded
-			if (!(drawType&2))
+			if (!(drawType & 2))
 			{ // Solid
 				*(dest-vid.rowbytes) = 53;
 			}
@@ -195,10 +195,10 @@ void R_LineGraph2 (int x, int y, int h, int h2, int drawType, int marker)
 	}
 	for (i = h; i < h2; i++, dest -= vid.rowbytes)
 	{
-		dest[0] = ((i+1)%marker == 0) ? 130 : 244;
-		if (!(drawType&1))
+		dest[0] = ((i+1) % marker == 0) ? 130 : 244;
+		if (!(drawType & 1))
 		{ // Expanded
-			if (!(drawType&2))
+			if (!(drawType & 2))
 			{ // Solid
 				*(dest-vid.rowbytes) = 53;
 			}
@@ -206,16 +206,16 @@ void R_LineGraph2 (int x, int y, int h, int h2, int drawType, int marker)
 		}
 	}
 
-	if (drawType&4)
+	if (drawType & 4)
 	{ // No background
 		return;
 	}
 	for ( ; i < s; i++, dest -= vid.rowbytes)
 	{
 		dest[0] = 53;
-		if (!(drawType&1))
+		if (!(drawType & 1))
 		{ // Expanded
-			if (!(drawType&2))
+			if (!(drawType & 2))
 			{ // Solid
 				*(dest-vid.rowbytes) = 53;
 			}
@@ -298,7 +298,7 @@ void R_TimeGraph (void)
 		}
 	} while (a != timex);
 
-	timex = (timex+1)%MAX_TIMINGS;
+	timex = (timex+1) % MAX_TIMINGS;
 }
 
 /*
@@ -392,8 +392,8 @@ void R_PrintTimes(void)
 
 	r_lasttime1 = r_time2 = Sys_DoubleTime();
 
-	ms = 1000*(r_time2-r_time1);
-	fps = 1000/ms;
+	ms = 1000 * (r_time2 - r_time1);
+	fps = 1000 / ms;
 
 	Con_Printf("%3.1f fps %5.0f ms\n%3i/%3i/%3i poly %3i surf\n",
 		fps, ms, c_faceclip, r_polycount, r_drawnpolycount, c_surf);

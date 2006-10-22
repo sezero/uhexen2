@@ -194,7 +194,7 @@ void R_AddEfrags (entity_t *ent)
 
 	entmodel = ent->model;
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		r_emins[i] = ent->origin[i] + entmodel->mins[i];
 		r_emaxs[i] = ent->origin[i] + entmodel->maxs[i];

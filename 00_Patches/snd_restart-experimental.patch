@@ -100,10 +100,10 @@ diff -urNp uhexen2-20061006/hexen2/snd_dma.c snd_dma.c
  
  	Cvar_RegisterVariable(&nosound);
  	Cvar_RegisterVariable(&sfxvolume);
-@@ -239,8 +302,8 @@ void S_Init (void)
+@@ -241,8 +304,8 @@ void S_Init (void)
  
- 	S_Startup ();
- 
+ // further operation is not necessary if the driver initialization failed
+ // unless we intend to do a snd_restart with a different driver.
 -	if (sound_started == 0)
 -		return;
 +//	if (sound_started == 0)
@@ -111,3 +111,4 @@ diff -urNp uhexen2-20061006/hexen2/snd_dma.c snd_dma.c
  
  	SND_InitScaletable ();
  
+
