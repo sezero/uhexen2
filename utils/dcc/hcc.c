@@ -2,7 +2,7 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.12 2006-09-14 16:43:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.13 2006-10-22 14:50:30 sezero Exp $
 */
 
 #include "qcc.h"
@@ -578,12 +578,9 @@ PR_BeginCompilation
 called before compiling a batch of files, clears the pr struct
 ==============
 */
-void PR_BeginCompilation (void *memory, int memsize)
+void PR_BeginCompilation (void)
 {
 	int		i;
-
-	pr.memory = memory;
-	pr.max_memory = memsize;
 
 	numpr_globals = RESERVED_OFS;
 	pr.def_tail = &pr.def_head;
@@ -940,7 +937,7 @@ int main (int argc, char **argv)
 
 	pr_dumpasm = false;
 
-	PR_BeginCompilation (malloc (0x100000), 0x100000);
+	PR_BeginCompilation();
 
 	// compile all the files
 	do
@@ -974,10 +971,7 @@ int main (int argc, char **argv)
 
 	// write progdefs.h
 	crc = PR_WriteProgdefs ("progdefs.h");
-	printf ("#define PROGHEADER_CRC %i %d\n", crc,(int)crc);
-// FIXME !!!!!!
-// cheap hack for now!!!!!!!!!!!!!!!!!!!!
-	crc = 14046;
+//	crc = 14046;	// FIXME: cheap hack for now!!!!!!!!!!!!!
 
 	// write data file
 	WriteData (crc);

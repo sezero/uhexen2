@@ -1269,9 +1269,6 @@ compiles the 0 terminated text, adding defintions to the pr structure
 */
 qboolean PR_CompileFile (char *string, char *filename)
 {
-	if (!pr.memory)
-		Error ("PR_CompileFile: Didn't clear");
-
 	PR_ClearGrabMacros ();	// clear the frame macros
 
 	pr_file_p = string;

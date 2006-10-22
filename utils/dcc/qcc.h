@@ -326,9 +326,6 @@ typedef union eval_s
 //
 typedef struct
 {
-	char		*memory;
-	int		max_memory;
-	int		current_memory;
 	type_t	*types;
 
 	def_t		def_head;	// unused head of linked list
