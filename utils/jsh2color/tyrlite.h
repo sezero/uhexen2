@@ -28,7 +28,6 @@
 #include "cmdlib.h"
 #include "mathlib.h"
 #include "bspfile.h"
-//#include "tyrlog.h"
 #include "entities.h"
 #include "threads.h"
 
