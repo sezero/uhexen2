@@ -48,7 +48,7 @@ diff -urNp hexen2source-1.4.1/hexen2/glquake.h hexen2source-1.4.1x/hexen2/glquak
 diff -urNp hexen2source-1.4.1/hexen2/gl_rlight.c hexen2source-1.4.1x/hexen2/gl_rlight.c
 --- hexen2source-1.4.1/hexen2/gl_rlight.c	2006-07-02 14:45:30.000000000 +0300
 +++ hexen2source-1.4.1x/hexen2/gl_rlight.c	2006-08-28 10:34:29.000000000 +0300
-@@ -117,6 +117,10 @@ void R_RenderDlights (void)
+@@ -147,6 +147,10 @@ void R_RenderDlights (void)
  
  	r_dlightframecount = r_framecount + 1;	// because the count hasn't
  						//  advanced yet for this frame
@@ -59,7 +59,7 @@ diff -urNp hexen2source-1.4.1/hexen2/gl_rlight.c hexen2source-1.4.1x/hexen2/gl_r
  	glDepthMask_fp (0);
  	glDisable_fp (GL_TEXTURE_2D);
  	glShadeModel_fp (GL_SMOOTH);
-@@ -136,6 +140,9 @@ void R_RenderDlights (void)
+@@ -166,6 +170,9 @@ void R_RenderDlights (void)
  	glEnable_fp (GL_TEXTURE_2D);
  	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
  	glDepthMask_fp (1);
@@ -211,7 +211,7 @@ diff -urNp hexen2source-1.4.1/hexen2/gl_rmain.c hexen2source-1.4.1x/hexen2/gl_rm
 diff -urNp hexen2source-1.4.1/hexen2/gl_rmisc.c hexen2source-1.4.1x/hexen2/gl_rmisc.c
 --- hexen2source-1.4.1/hexen2/gl_rmisc.c	2006-08-14 09:59:47.000000000 +0300
 +++ hexen2source-1.4.1x/hexen2/gl_rmisc.c	2006-08-28 10:34:29.000000000 +0300
-@@ -257,6 +257,15 @@ void R_Init (void)
+@@ -262,6 +262,15 @@ void R_Init (void)
  	Cvar_RegisterVariable (&gl_other_glows);
  	Cvar_RegisterVariable (&gl_stencilshadow);
  
@@ -265,7 +265,7 @@ diff -urNp hexen2source-1.4.1/hexenworld/Client/glquake.h hexen2source-1.4.1x/he
 diff -urNp hexen2source-1.4.1/hexenworld/Client/gl_rlight.c hexen2source-1.4.1x/hexenworld/Client/gl_rlight.c
 --- hexen2source-1.4.1/hexenworld/Client/gl_rlight.c	2006-07-02 14:45:37.000000000 +0300
 +++ hexen2source-1.4.1x/hexenworld/Client/gl_rlight.c	2006-08-28 10:34:29.000000000 +0300
-@@ -139,6 +139,10 @@ void R_RenderDlights (void)
+@@ -145,6 +145,10 @@ void R_RenderDlights (void)
  
  	r_dlightframecount = r_framecount + 1;	// because the count hasn't
  						//  advanced yet for this frame
@@ -276,7 +276,7 @@ diff -urNp hexen2source-1.4.1/hexenworld/Client/gl_rlight.c hexen2source-1.4.1x/
  	glDepthMask_fp (0);
  	glDisable_fp (GL_TEXTURE_2D);
  	glShadeModel_fp (GL_SMOOTH);
-@@ -158,6 +162,9 @@ void R_RenderDlights (void)
+@@ -164,6 +168,9 @@ void R_RenderDlights (void)
  	glEnable_fp (GL_TEXTURE_2D);
  	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
  	glDepthMask_fp (1);
@@ -427,7 +427,7 @@ diff -urNp hexen2source-1.4.1/hexenworld/Client/gl_rmain.c hexen2source-1.4.1x/h
 diff -urNp hexen2source-1.4.1/hexenworld/Client/gl_rmisc.c hexen2source-1.4.1x/hexenworld/Client/gl_rmisc.c
 --- hexen2source-1.4.1/hexenworld/Client/gl_rmisc.c	2006-08-14 09:59:48.000000000 +0300
 +++ hexen2source-1.4.1x/hexenworld/Client/gl_rmisc.c	2006-08-28 10:34:29.000000000 +0300
-@@ -242,6 +242,15 @@ void R_Init (void)
+@@ -245,6 +245,15 @@ void R_Init (void)
  	Cvar_RegisterVariable (&gl_other_glows);
  	Cvar_RegisterVariable (&gl_stencilshadow);
  

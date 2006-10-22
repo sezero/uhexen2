@@ -26,7 +26,7 @@ diff -urNp hexen2source-1.4.1/hexen2/glquake.h hexen2source-1.4.1x/hexen2/glquak
 diff -urNp hexen2source-1.4.1/hexen2/gl_rmisc.c hexen2source-1.4.1x/hexen2/gl_rmisc.c
 --- hexen2source-1.4.1/hexen2/gl_rmisc.c	2006-10-20 23:32:30.000000000 +0300
 +++ hexen2source-1.4.1x/hexen2/gl_rmisc.c	2006-10-22 02:18:52.000000000 +0300
-@@ -237,6 +237,7 @@ void R_Init (void)
+@@ -239,6 +239,7 @@ void R_Init (void)
  	Cvar_RegisterVariable (&r_speeds);
  	Cvar_RegisterVariable (&r_wholeframe);
  
