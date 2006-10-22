@@ -17,6 +17,8 @@ extern gltexture_t	gltextures[MAX_GLTEXTURES];
 extern int		menu_numcachepics;
 extern cachepic_t	menu_cachepics[MAX_CACHED_PICS];
 
+extern void R_InitBubble (void);
+
 /*
 ==================
 R_InitTextures
@@ -263,6 +265,8 @@ void R_Init (void)
 	Cvar_RegisterVariable (&gl_coloredlight);
 	Cvar_RegisterVariable (&gl_colored_dynamic_lights);
 	Cvar_RegisterVariable (&gl_extra_dynamic_lights);
+
+	R_InitBubble();
 
 	R_InitParticles ();
 	R_InitParticleTexture ();
