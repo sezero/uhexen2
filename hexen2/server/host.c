@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.6 2006-10-20 20:32:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.7 2006-10-22 15:55:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -38,9 +38,6 @@ int		host_hunklevel;
 client_t	*host_client;			// current client
 
 jmp_buf 	host_abortserver;
-
-byte		*host_basepal;
-byte		*host_colormap;
 
 cvar_t		sys_ticrate = {"sys_ticrate", "0.05", CVAR_NONE};
 static	cvar_t	host_framerate = {"host_framerate", "0", CVAR_NONE};	// set for slow motion
@@ -649,6 +646,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2006/10/20 20:32:31  sezero
+ * various coding style clean-ups, part 1.
+ *
  * Revision 1.5  2006/10/19 06:32:29  sezero
  * added Sys_DPrintf: at present, its only user is the hexen2 dedicated
  * server. further use of it may come with future versions.
