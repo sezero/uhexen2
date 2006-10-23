@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.134 2006-10-20 20:32:30 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.135 2006-10-23 08:05:09 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1748,7 +1748,7 @@ void	VID_Init (unsigned char *palette)
 		modelist[*nummodes].bpp = 16;
 		snprintf (modelist[*nummodes].modedesc, MAX_DESC, "%d x %d (user mode)", width, height);
 		Cvar_SetValue ("vid_mode", *nummodes);
-		(*nummodes)++;	// ugly, I know. but works
+		(*nummodes)++;
 	}
 	else
 	{
@@ -1849,7 +1849,7 @@ void VID_ToggleFullscreen (void)
 
 	// This doesn't seem to cause any trouble even
 	// with is_3dfx == true and FX_GLX_MESA == f
-	if (SDL_WM_ToggleFullScreen(screen)==1)
+	if ( SDL_WM_ToggleFullScreen(screen) > 0 )
 	{
 		is_fullscreen = (screen->flags & SDL_FULLSCREEN) ? 1 : 0;
 		Cvar_SetValue("vid_config_fscr", is_fullscreen);
