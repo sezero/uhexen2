@@ -67,7 +67,7 @@ byte *GetFileSpace (int size)
 	byte	*buf;
 
 	LOCK;
-	file_p = (byte *)(((long)file_p + 3)&~3);
+	file_p = (byte *)(((long)file_p + 3) & ~3);
 	buf = file_p;
 	file_p += size;
 	UNLOCK;

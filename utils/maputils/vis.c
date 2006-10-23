@@ -910,8 +910,8 @@ static void LoadPortals (char *name)
 	printf ("%4i portalleafs\n", portalleafs);
 	printf ("%4i numportals\n", numportals);
 
-	bitbytes = ((portalleafs+63)&~63)>>3;
-	bitlongs = bitbytes/sizeof(long);
+	bitbytes = ((portalleafs + 63) & ~63) >> 3;
+	bitlongs = bitbytes / sizeof(long);
 
 // each file portal is split into two memory portals
 	portals = malloc(2*numportals*sizeof(portal_t));
