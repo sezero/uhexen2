@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.76 2006-10-20 20:32:32 sezero Exp $
+	$Id: common.c,v 1.77 2006-10-23 12:00:21 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1693,7 +1693,7 @@ byte *COM_LoadBufFile (char *path, void *buffer, size_t *bufsize)
 // LordHavoc: returns malloc'd memory
 byte *COM_LoadMallocFile (char *path)
 {
-	return COM_LoadFile (path, LOADFILE_BUF);
+	return COM_LoadFile (path, LOADFILE_MALLOC);
 }
 
 /*

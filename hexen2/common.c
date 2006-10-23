@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.80 2006-10-20 20:32:29 sezero Exp $
+	$Id: common.c,v 1.81 2006-10-23 12:00:20 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1693,7 +1693,7 @@ byte *COM_LoadBufFile (char *path, void *buffer, size_t *bufsize)
 // LordHavoc: returns malloc'd memory
 byte *COM_LoadMallocFile (char *path)
 {
-	return COM_LoadFile (path, LOADFILE_BUF);
+	return COM_LoadFile (path, LOADFILE_MALLOC);
 }
 
 /*
@@ -2679,6 +2679,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.80  2006/10/20 20:32:29  sezero
+ * various coding style clean-ups, part 1.
+ *
  * Revision 1.79  2006/10/10 08:06:10  sezero
  * the in-game console is not ready during filisystem initialization,
  * therefore changed the Con_Printf calls there to Sys_Printf.
