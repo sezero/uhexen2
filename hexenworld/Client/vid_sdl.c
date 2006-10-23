@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.57 2006-10-23 08:05:13 sezero Exp $
+	$Id: vid_sdl.c,v 1.58 2006-10-23 09:02:09 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -870,7 +870,7 @@ void VID_Init (unsigned char *palette)
 		modelist[*nummodes].bpp = 8;
 		snprintf (modelist[*nummodes].modedesc, MAX_DESC, "%d x %d (user mode)", width, height);
 		Cvar_SetValue ("vid_mode", *nummodes);
-		(*nummodes)++;	// ugly, I know. but works
+		(*nummodes)++;
 	}
 	else
 	{
@@ -1314,6 +1314,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.57  2006/10/23 08:05:13  sezero
+ * even more coding style clean-ups (part 10).
+ *
  * Revision 1.56  2006/10/21 18:21:30  sezero
  * various coding style clean-ups, part 5.
  *
