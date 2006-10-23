@@ -44,9 +44,9 @@ typedef struct tex_col_list
 static tex_col_list		tc_list;
 
 
-static long getNumLines (FILE* f)
+static int getNumLines (FILE* f)
 {
-	long	numlines = 0;
+	int	numlines = 0;
 	char	line[1024];
 	char	*txt = NULL;
 
@@ -66,8 +66,7 @@ static long getNumLines (FILE* f)
 
 static void ParseDefFile (char* filename)
 {
-	long	num = 0;
-	int	i = 0;
+	int	i = 0, num = 0;
 	int	r, g, b;
 	char	name[MAX_TEX_NAME];
 	char	line[1024];
