@@ -8,7 +8,7 @@
 	This version of model.c and model.h are based on a quake dedicated
 	server application, lhnqserver, by LordHavoc.
 
-	$Id: model.c,v 1.3 2006-10-20 20:32:31 sezero Exp $
+	$Id: model.c,v 1.4 2006-10-23 16:27:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -393,11 +393,12 @@ static void Mod_LoadEdges (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-//	out = Hunk_AllocName ( (count + 1) * sizeof(*out), "edges");
-	out = edges = Q_malloc((count + 1) * sizeof(*out));
+//	out = Q_malloc((count + 1) * sizeof(*out));
+	out = Hunk_AllocName ( (count + 1) * sizeof(*out), "edges");
 
 //	loadmodel->edges = out;
 //	loadmodel->numedges = count;
+	edges = out;
 
 	for (i = 0; i < count; i++, in++, out++)
 	{
@@ -801,11 +802,12 @@ static void Mod_LoadSurfedges (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-//	out = Hunk_AllocName ( count*sizeof(*out), "surfedges");
-	out = surfedges = Q_malloc(count*sizeof(*out));
+//	out Q_malloc(count*sizeof(*out));
+	out = Hunk_AllocName ( count*sizeof(*out), "surfedges");
 
 //	loadmodel->surfedges = out;
 //	loadmodel->numsurfedges = count;
+	surfedges = out;
 
 	for (i = 0; i < count; i++)
 		out[i] = LittleLong (in[i]);
@@ -904,9 +906,9 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 	Mod_LoadPlanes (&header->lumps[LUMP_PLANES]);
 	Mod_LoadTexinfo (&header->lumps[LUMP_TEXINFO]);
 	Mod_LoadFaces (&header->lumps[LUMP_FACES]);
-	Q_free(surfedges);
+//	Q_free(surfedges);
 	surfedges = NULL;
-	Q_free(edges);
+//	Q_free(edges);
 	edges = NULL;
 	Mod_LoadVisibility (&header->lumps[LUMP_VISIBILITY]);
 	Mod_LoadLeafs (&header->lumps[LUMP_LEAFS]);
@@ -1038,6 +1040,9 @@ static void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2006/10/20 20:32:31  sezero
+ * various coding style clean-ups, part 1.
+ *
  * Revision 1.2  2006/07/02 11:45:35  sezero
  * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
  * which stops vec3_origin usage in relevant calculations. renamed the Length
