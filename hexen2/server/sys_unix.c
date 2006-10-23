@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.6 2006-10-21 18:21:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.7 2006-10-23 12:01:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -29,12 +29,12 @@
 #warning "Unable to determine CPU endianess. Defaulting to little endian"
 #endif
 
-// heapsize: minimum 16mb, standart 32 mb, max is 96 mb.
+// heapsize: minimum 8 mb, standart 16 mb, max is 32 mb.
 // -heapsize argument will abide by these min/max settings
 // unless the -forcemem argument is used
-#define MIN_MEM_ALLOC	0x1000000
-#define STD_MEM_ALLOC	0x2000000
-#define MAX_MEM_ALLOC	0x6000000
+#define MIN_MEM_ALLOC	0x0800000
+#define STD_MEM_ALLOC	0x1000000
+#define MAX_MEM_ALLOC	0x2000000
 
 
 //=============================================================================
@@ -383,7 +383,7 @@ int main(int argc, char *argv[])
 
 	Sys_Printf("userdir is: %s\n", userdir);
 
-	parms.memsize = MIN_MEM_ALLOC;
+	parms.memsize = STD_MEM_ALLOC;
 
 	t = COM_CheckParm ("-heapsize");
 	if (t && t < com_argc-1)
