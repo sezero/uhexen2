@@ -2,7 +2,7 @@
 	sv_move.c
 	monster movement
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.11 2006-10-22 15:06:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.12 2006-10-24 09:48:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -241,8 +241,11 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink, qboolean noene
 	VectorCopy (ent->v.origin, oldorg);
 	VectorAdd (ent->v.origin, move, neworg);
 
-	// flying monsters don't step up, unless no_z turned on
-	if ( ((int)ent->v.flags & (FL_SWIM|FL_FLY)) && !((int)ent->v.flags & FL_NOZ) && !((int)ent->v.flags & FL_HUNTFACE) )
+	// flying monsters don't step up
+	// unless no_z turned on
+	if ( ((int)ent->v.flags & (FL_SWIM|FL_FLY))
+		&& !((int)ent->v.flags & FL_HUNTFACE)
+		&& !((int)ent->v.flags & FL_NOZ) )
 	{
 		// try one move with vertical motion, then one without
 		for (i = 0; i < 2; i++)
@@ -253,10 +256,11 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink, qboolean noene
 				enemy = PROG_TO_EDICT(ent->v.enemy);
 				if (i == 0 && enemy != sv.edicts)
 				{
+					dz = ent->v.origin[2] - PROG_TO_EDICT(ent->v.enemy)->v.origin[2];
+					// This is utterly broken: we already made sure
+					// that FL_HUNTFACE is not set just above. -O.S
 					if ((int)ent->v.flags & FL_HUNTFACE)//Go for face
-						dz = ent->v.origin[2] - PROG_TO_EDICT(ent->v.enemy)->v.origin[2] + PROG_TO_EDICT(ent->v.enemy)->v.view_ofs[2];
-					else
-						dz = ent->v.origin[2] - PROG_TO_EDICT(ent->v.enemy)->v.origin[2];
+						dz += PROG_TO_EDICT(ent->v.enemy)->v.view_ofs[2];
 
 					if (dz > 40)
 						neworg[2] -= 8;
@@ -267,7 +271,7 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink, qboolean noene
 
 			if ( ((int)ent->v.flags & FL_SWIM) && SV_PointContents(neworg) == CONTENTS_EMPTY )
 			{	//Would end up out of water, don't do z move
-				neworg[2]=ent->v.origin[2];
+				neworg[2] = ent->v.origin[2];
 				trace = SV_Move (ent->v.origin, ent->v.mins, ent->v.maxs, neworg, false, ent);
 				if (set_trace)
 					set_move_trace(&trace);
@@ -626,6 +630,9 @@ void SV_MoveToGoal (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2006/10/22 15:06:31  sezero
+ * even more coding style clean-ups (part 10).
+ *
  * Revision 1.10  2006/10/21 18:21:28  sezero
  * various coding style clean-ups, part 5.
  *
