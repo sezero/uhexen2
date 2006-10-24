@@ -236,6 +236,8 @@ void CL_ParseMultiEffect (void);
 void CL_UpdateEffects (void);
 void CL_TurnEffect (void);
 void CL_ReviseEffect (void);
+void SV_SaveEffects (FILE *FH);
+void SV_LoadEffects (FILE *FH);
 
 #endif	/* __CL_EFFECT_H */
 

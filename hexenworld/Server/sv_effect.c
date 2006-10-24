@@ -2,7 +2,7 @@
 	sv_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.9 2006-10-22 15:06:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.10 2006-10-24 21:51:48 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -30,6 +30,13 @@ extern cvar_t sv_ce_max_size;
 
 // CODE --------------------------------------------------------------------
 
+
+#if 0	// only used by currently unused SV_LoadEffects
+static void SV_ClearEffects (void)
+{
+	memset(sv.Effects,0,sizeof(sv.Effects));
+}
+#endif	// 0
 
 // All changes need to be in SV_SendEffect(), SV_ParseEffect(),
 // SV_SaveEffects(), SV_LoadEffects(), CL_ParseEffect()
@@ -800,8 +807,486 @@ float SV_GetMultiEffectId (void)
 }
 
 
+#if 0	// currently, saving and loading games not supported in hexenworld
+// All changes need to be in SV_SendEffect(), SV_ParseEffect(),
+// SV_SaveEffects(), SV_LoadEffects(), CL_ParseEffect()
+void SV_SaveEffects (FILE *FH)
+{
+	int	idx, count;
+
+	for (idx = count = 0 ; idx < MAX_EFFECTS ; idx++)
+	{
+		if (sv.Effects[idx].type)
+			count++;
+	}
+
+	fprintf(FH, "Effects: %d\n", count);
+
+	for (idx = count = 0 ; idx < MAX_EFFECTS ; idx++)
+	{
+		if ( ! sv.Effects[idx].type )
+			continue;
+
+		fprintf(FH, "Effect: %d %d %f: ", idx, sv.Effects[idx].type, sv.Effects[idx].expire_time);
+
+		switch (sv.Effects[idx].type)
+		{
+			case CE_RAIN:
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Rain.min_org[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Rain.min_org[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Rain.min_org[2]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Rain.max_org[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Rain.max_org[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Rain.max_org[2]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Rain.e_size[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Rain.e_size[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Rain.e_size[2]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Rain.dir[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Rain.dir[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Rain.dir[2]);
+				fprintf(FH, "%d ", sv.Effects[idx].ef.Rain.color);
+				fprintf(FH, "%d ", sv.Effects[idx].ef.Rain.count);
+				fprintf(FH, "%f\n", sv.Effects[idx].ef.Rain.wait);
+				break;
+
+			case CE_FOUNTAIN:
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Fountain.pos[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Fountain.pos[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Fountain.pos[2]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Fountain.angle[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Fountain.angle[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Fountain.angle[2]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Fountain.movedir[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Fountain.movedir[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Fountain.movedir[2]);
+				fprintf(FH, "%d ", sv.Effects[idx].ef.Fountain.color);
+				fprintf(FH, "%d\n", sv.Effects[idx].ef.Fountain.cnt);
+				break;
+
+			case CE_QUAKE:
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Quake.origin[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Quake.origin[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Quake.origin[2]);
+				fprintf(FH, "%f\n", sv.Effects[idx].ef.Quake.radius);
+				break;
+
+			case CE_WHITE_SMOKE:
+			case CE_GREEN_SMOKE:
+			case CE_GREY_SMOKE:
+			case CE_RED_SMOKE:
+			case CE_SLOW_WHITE_SMOKE:
+			case CE_TELESMK1:
+			case CE_TELESMK2:
+			case CE_GHOST:
+			case CE_REDCLOUD:
+			case CE_ACID_MUZZFL:
+			case CE_FLAMESTREAM:
+			case CE_FLAMEWALL:
+			case CE_FLAMEWALL2:
+			case CE_ONFIRE:
+			case CE_RIPPLE:
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Smoke.origin[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Smoke.origin[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Smoke.origin[2]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Smoke.velocity[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Smoke.velocity[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Smoke.velocity[2]);
+				fprintf(FH, "%f\n", sv.Effects[idx].ef.Smoke.framelength);
+				break;
+
+			case CE_SM_WHITE_FLASH:
+			case CE_YELLOWRED_FLASH:
+			case CE_BLUESPARK:
+			case CE_YELLOWSPARK:
+			case CE_SM_CIRCLE_EXP:
+			case CE_BG_CIRCLE_EXP:
+			case CE_SM_EXPLOSION:
+			case CE_SM_EXPLOSION2:
+			case CE_BG_EXPLOSION:
+			case CE_FLOOR_EXPLOSION:
+			case CE_BLUE_EXPLOSION:
+			case CE_REDSPARK:
+			case CE_GREENSPARK:
+			case CE_ICEHIT:
+			case CE_MEDUSA_HIT:
+			case CE_MEZZO_REFLECT:
+			case CE_FLOOR_EXPLOSION2:
+			case CE_XBOW_EXPLOSION:
+			case CE_NEW_EXPLOSION:
+			case CE_MAGIC_MISSILE_EXPLOSION:
+			case CE_BONE_EXPLOSION:
+			case CE_BLDRN_EXPL:
+			case CE_BRN_BOUNCE:
+			case CE_LSHOCK:
+			case CE_ACID_HIT:
+			case CE_ACID_SPLAT:
+			case CE_ACID_EXPL:
+			case CE_LBALL_EXPL:
+			case CE_FIREWALL_SMALL:
+			case CE_FIREWALL_MEDIUM:
+			case CE_FIREWALL_LARGE:
+			case CE_FBOOM:
+			case CE_BOMB:
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Smoke.origin[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Smoke.origin[1]);
+				fprintf(FH, "%f\n", sv.Effects[idx].ef.Smoke.origin[2]);
+				break;
+
+			case CE_WHITE_FLASH:
+			case CE_BLUE_FLASH:
+			case CE_SM_BLUE_FLASH:
+			case CE_HWSPLITFLASH:
+			case CE_RED_FLASH:
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Flash.origin[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Flash.origin[1]);
+				fprintf(FH, "%f\n", sv.Effects[idx].ef.Flash.origin[2]);
+				break;
+
+			case CE_RIDER_DEATH:
+				fprintf(FH, "%f ", sv.Effects[idx].ef.RD.origin[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.RD.origin[1]);
+				fprintf(FH, "%f\n", sv.Effects[idx].ef.RD.origin[2]);
+				break;
+
+			case CE_TELEPORTERPUFFS:
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Teleporter.origin[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Teleporter.origin[1]);
+				fprintf(FH, "%f\n", sv.Effects[idx].ef.Teleporter.origin[2]);
+				break;
+
+			case CE_TELEPORTERBODY:
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Teleporter.origin[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Teleporter.origin[1]);
+				fprintf(FH, "%f\n", sv.Effects[idx].ef.Teleporter.origin[2]);
+				break;
+
+			case CE_BONESHRAPNEL:
+			case CE_HWBONEBALL:
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.origin[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.origin[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.origin[2]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.velocity[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.velocity[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.velocity[2]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.angle[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.angle[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.angle[2]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.avelocity[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.avelocity[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.avelocity[2]);
+				break;
+
+			case CE_BONESHARD:
+			case CE_HWRAVENSTAFF:
+			case CE_HWRAVENPOWER:
+			case CE_HWMISSILESTAR:
+			case CE_HWEIDOLONSTAR:
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.origin[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.origin[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.origin[2]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.velocity[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.velocity[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.velocity[2]);
+				break;
+
+			case CE_DEATHBUBBLES:
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Bubble.offset[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Bubble.offset[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Bubble.offset[2]);
+				fprintf(FH, "%d ", sv.Effects[idx].ef.Bubble.owner);
+				fprintf(FH, "%d ", sv.Effects[idx].ef.Bubble.count);
+				break;
+
+			case CE_HWDRILLA:
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.origin[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.origin[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.origin[2]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.angle[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.angle[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.angle[2]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.speed);
+				break;
+
+			case CE_SCARABCHAIN:
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Chain.origin[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Chain.origin[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Chain.origin[2]);
+				fprintf(FH, "%d ", sv.Effects[idx].ef.Chain.owner);
+				fprintf(FH, "%d ", sv.Effects[idx].ef.Chain.material);
+				fprintf(FH, "%d ", sv.Effects[idx].ef.Chain.tag);
+				break;
+
+			case CE_HWSHEEPINATOR:
+			case CE_HWXBOWSHOOT:
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Xbow.origin[5][0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Xbow.origin[5][1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Xbow.origin[5][2]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Xbow.angle[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Xbow.angle[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Xbow.angle[2]);
+				fprintf(FH, "%d ", sv.Effects[idx].ef.Xbow.bolts);
+				fprintf(FH, "%d ", sv.Effects[idx].ef.Xbow.activebolts);
+				fprintf(FH, "%d ", sv.Effects[idx].ef.Xbow.turnedbolts);
+				break;
+
+			case CE_TRIPMINESTILL:
+			case CE_TRIPMINE:
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Chain.origin[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Chain.origin[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Chain.origin[2]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Chain.velocity[0]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Chain.velocity[1]);
+				fprintf(FH, "%f ", sv.Effects[idx].ef.Chain.velocity[2]);
+				break;
+
+			default:
+				PR_RunError ("SV_SaveEffect: bad type");
+				break;
+		}
+	}
+}
+
+// All changes need to be in SV_SendEffect(), SV_ParseEffect(),
+// SV_SaveEffects(), SV_LoadEffects(), CL_ParseEffect()
+void SV_LoadEffects (FILE *FH)
+{
+	int		idx, Total, count;
+
+	// Since the map is freshly loaded, clear out any effects as a result of
+	// the loading
+	SV_ClearEffects();
+
+	fscanf(FH, "Effects: %d\n", &Total);
+
+	for (count = 0 ; count < Total ; count++)
+	{
+		fscanf(FH, "Effect: %d ", &idx);
+		fscanf(FH, "%d %f: ", &sv.Effects[idx].type, &sv.Effects[idx].expire_time);
+
+		switch (sv.Effects[idx].type)
+		{
+			case CE_RAIN:
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.min_org[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.min_org[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.min_org[2]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.max_org[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.max_org[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.max_org[2]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.e_size[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.e_size[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.e_size[2]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.dir[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.dir[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.dir[2]);
+				fscanf(FH, "%d ", &sv.Effects[idx].ef.Rain.color);
+				fscanf(FH, "%d ", &sv.Effects[idx].ef.Rain.count);
+				fscanf(FH, "%f\n", &sv.Effects[idx].ef.Rain.wait);
+				break;
+
+			case CE_FOUNTAIN:
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.pos[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.pos[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.pos[2]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.angle[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.angle[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.angle[2]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.movedir[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.movedir[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.movedir[2]);
+				fscanf(FH, "%d ", &sv.Effects[idx].ef.Fountain.color);
+				fscanf(FH, "%d\n", &sv.Effects[idx].ef.Fountain.cnt);
+				break;
+
+			case CE_QUAKE:
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Quake.origin[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Quake.origin[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Quake.origin[2]);
+				fscanf(FH, "%f\n", &sv.Effects[idx].ef.Quake.radius);
+				break;
+
+			case CE_WHITE_SMOKE:
+			case CE_GREEN_SMOKE:
+			case CE_GREY_SMOKE:
+			case CE_RED_SMOKE:
+			case CE_SLOW_WHITE_SMOKE:
+			case CE_TELESMK1:
+			case CE_TELESMK2:
+			case CE_GHOST:
+			case CE_REDCLOUD:
+			case CE_ACID_MUZZFL:
+			case CE_FLAMESTREAM:
+			case CE_FLAMEWALL:
+			case CE_FLAMEWALL2:
+			case CE_ONFIRE:
+			case CE_RIPPLE:
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.origin[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.origin[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.origin[2]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.velocity[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.velocity[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.velocity[2]);
+				fscanf(FH, "%f\n", &sv.Effects[idx].ef.Smoke.framelength);
+				break;
+
+			case CE_SM_WHITE_FLASH:
+			case CE_YELLOWRED_FLASH:
+			case CE_BLUESPARK:
+			case CE_YELLOWSPARK:
+			case CE_SM_CIRCLE_EXP:
+			case CE_BG_CIRCLE_EXP:
+			case CE_SM_EXPLOSION:
+			case CE_SM_EXPLOSION2:
+			case CE_BG_EXPLOSION:
+			case CE_FLOOR_EXPLOSION:
+			case CE_BLUE_EXPLOSION:
+			case CE_REDSPARK:
+			case CE_GREENSPARK:
+			case CE_ICEHIT:
+			case CE_MEDUSA_HIT:
+			case CE_MEZZO_REFLECT:
+			case CE_FLOOR_EXPLOSION2:
+			case CE_XBOW_EXPLOSION:
+			case CE_NEW_EXPLOSION:
+			case CE_MAGIC_MISSILE_EXPLOSION:
+			case CE_BONE_EXPLOSION:
+			case CE_BLDRN_EXPL:
+			case CE_BRN_BOUNCE:
+			case CE_LSHOCK:
+			case CE_ACID_HIT:
+			case CE_ACID_SPLAT:
+			case CE_ACID_EXPL:
+			case CE_LBALL_EXPL:
+			case CE_FBOOM:
+			case CE_FIREWALL_SMALL:
+			case CE_FIREWALL_MEDIUM:
+			case CE_FIREWALL_LARGE:
+			case CE_BOMB:
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.origin[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.origin[1]);
+				fscanf(FH, "%f\n", &sv.Effects[idx].ef.Smoke.origin[2]);
+				break;
+
+			case CE_WHITE_FLASH:
+			case CE_BLUE_FLASH:
+			case CE_SM_BLUE_FLASH:
+			case CE_HWSPLITFLASH:
+			case CE_RED_FLASH:
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Flash.origin[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Flash.origin[1]);
+				fscanf(FH, "%f\n", &sv.Effects[idx].ef.Flash.origin[2]);
+				break;
+
+			case CE_RIDER_DEATH:
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.RD.origin[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.RD.origin[1]);
+				fscanf(FH, "%f\n", &sv.Effects[idx].ef.RD.origin[2]);
+				break;
+
+			case CE_TELEPORTERPUFFS:
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Teleporter.origin[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Teleporter.origin[1]);
+				fscanf(FH, "%f\n", &sv.Effects[idx].ef.Teleporter.origin[2]);
+				break;
+
+			case CE_TELEPORTERBODY:
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Teleporter.origin[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Teleporter.origin[1]);
+				fscanf(FH, "%f\n", &sv.Effects[idx].ef.Teleporter.origin[2]);
+				break;
+
+			case CE_BONESHRAPNEL:
+			case CE_HWBONEBALL:
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.origin[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.origin[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.origin[2]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.velocity[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.velocity[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.velocity[2]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.angle[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.angle[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.angle[2]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.avelocity[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.avelocity[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.avelocity[2]);
+				break;
+
+			case CE_BONESHARD:
+			case CE_HWRAVENSTAFF:
+			case CE_HWRAVENPOWER:
+			case CE_HWMISSILESTAR:
+			case CE_HWEIDOLONSTAR:
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.origin[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.origin[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.origin[2]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.velocity[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.velocity[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.velocity[2]);
+				break;
+
+			case CE_DEATHBUBBLES:
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Bubble.offset[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Bubble.offset[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Bubble.offset[2]);
+				fscanf(FH, "%d ", &sv.Effects[idx].ef.Bubble.owner);
+				fscanf(FH, "%d ", &sv.Effects[idx].ef.Bubble.count);
+				break;
+
+			case CE_HWDRILLA:
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.origin[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.origin[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.origin[2]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.angle[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.angle[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.angle[2]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.speed);
+				break;
+
+			case CE_SCARABCHAIN:
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Chain.origin[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Chain.origin[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Chain.origin[2]);
+				fscanf(FH, "%d ", &sv.Effects[idx].ef.Chain.owner);
+				fscanf(FH, "%d ", &sv.Effects[idx].ef.Chain.material);
+				fscanf(FH, "%d ", &sv.Effects[idx].ef.Chain.tag);
+				break;
+
+			case CE_HWSHEEPINATOR:
+			case CE_HWXBOWSHOOT:
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Xbow.origin[5][0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Xbow.origin[5][1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Xbow.origin[5][2]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Xbow.angle[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Xbow.angle[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Xbow.angle[2]);
+				fscanf(FH, "%d ", &sv.Effects[idx].ef.Xbow.bolts);
+				fscanf(FH, "%d ", &sv.Effects[idx].ef.Xbow.activebolts);
+				fscanf(FH, "%d ", &sv.Effects[idx].ef.Xbow.turnedbolts);
+				break;
+
+			case CE_TRIPMINESTILL:
+			case CE_TRIPMINE:
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Chain.origin[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Chain.origin[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Chain.origin[2]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Chain.velocity[0]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Chain.velocity[1]);
+				fscanf(FH, "%f ", &sv.Effects[idx].ef.Chain.velocity[2]);
+				break;
+
+			default:
+				PR_RunError ("SV_SaveEffect: bad type");
+				break;
+		}
+	}
+}
+#endif	// 0
+
+
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2006/10/22 15:06:32  sezero
+ * even more coding style clean-ups (part 10).
+ *
  * Revision 1.8  2006/10/21 18:21:32  sezero
  * various coding style clean-ups, part 5.
  *
