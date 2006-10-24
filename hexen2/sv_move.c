@@ -2,7 +2,7 @@
 	sv_move.c
 	monster movement
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.12 2006-10-24 09:48:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.13 2006-10-24 10:30:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -235,7 +235,7 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink, qboolean noene
 	vec3_t		oldorg, neworg, end;
 	trace_t		trace;
 	int			i;
-	edict_t		*enemy;
+	edict_t		*enemy = 0;	// avoid compiler warning.
 
 	// try the move
 	VectorCopy (ent->v.origin, oldorg);
@@ -630,6 +630,12 @@ void SV_MoveToGoal (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2006/10/24 09:48:18  sezero
+ * readability tidy-up and comments on the FL_HUNTFACE flag checking:
+ * this is a mission-pack-only thing for the monster type pentacles.
+ * we must double check against the hexenc code to find the correct
+ * solution in the future.
+ *
  * Revision 1.11  2006/10/22 15:06:31  sezero
  * even more coding style clean-ups (part 10).
  *

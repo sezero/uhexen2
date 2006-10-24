@@ -115,7 +115,7 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink, qboolean noene
 	vec3_t		oldorg, neworg, end;
 	trace_t		trace;
 	int			i;
-	edict_t		*enemy;
+	edict_t		*enemy = 0;	// avoid compiler warning.
 
 	// try the move
 	VectorCopy (ent->v.origin, oldorg);
