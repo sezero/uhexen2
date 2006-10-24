@@ -111,7 +111,7 @@ static void ParseDefFile (char* filename)
 	fclose (FH);
 	num = i;
 	tc_list.num = num;
-	printf("Loaded %ld entries from file : %s\n", num, filename);
+	printf ("Loaded %d entries from file : %s\n", num, filename);
 }
 
 void InitDefFile (char* fname)
