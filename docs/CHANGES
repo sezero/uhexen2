@@ -3,6 +3,49 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-10-20/24 (CVS):
+    * pr_edict.c: sizeof(void *) is not the same everywhere. use fixed 32 bit
+      sizes, as we do in pr_lex.c.
+    * merged the bubble_sintable stuff of hexenworld gl_rlight to hexen2.
+      the DLIGHT_BUBBLE_WEDGES definition is from tyrquake.
+    * dcc: removed the memory members from the pr_info_t structure, disabled
+      the ultra-cheap crc hack.
+    * jsh2color: changed unnecessary long type usage to int in tex.c.
+    * jsh2color: removed the unused tyrlog sources.
+    * hexen2/keys.c: don't add a space after the last argument when binding
+      keys.
+    * menu.c: added proper offsets to the x arguments and removed the extra
+      prefixing spaces from the option titles.
+    * removed the unused host_basepal and host_colormap from h2ded.
+    * fixed the load buffer flag of COM_LoadMallocFile. oops..
+    * changed the heapsize limits of hexen2 dedicated server to match those
+      of hexenworld server.
+    * disabled Q_malloc usage in h2ded: by experimentation, surfedges and
+      edges size mostly around 300 kb (in keep5 of the mission pack) and
+      even with 8 mb of heap memory the server still runs fine. therefore
+      no need for temporary stealing system memory.
+    * tiny readability update to SV_SaveEffects.
+    * sys_unix.c: exit code must be 1, not 0, if an unsupported SDL version
+      is found.
+    * gl_draw.c: defined MAX_GL_FILTERS and used it in Draw_TextureMode_f()
+      instead of hardcoded values.
+    * hexenworld net.c: fixed Sys_Error string formats for gethostname and
+      getsockname failures.
+    * hexenworld/sv_user.c: model download requests must be checked against
+      "models/", not "progs/".
+    * hexenworld/sv_main.c: small clean-up in Rcon_Validate().
+    * sv_move.c, readability tidy-up and comments on the FL_HUNTFACE flag
+      checking: this is a mission-pack-only thing for the monster type
+      pentacles. we must double check against the hexenc code to find the
+      correct solution in the future.
+    * killed the warning about `enemy' might be used uninitialized in
+      SV_movestep: it is only set if the noenemy argument of the function
+      is false, therefore the warning seems bogus.
+    * tiny clean-ups in callbacks.c and config_file.c of the launcher.
+    * multiple coding style clean-ups.
+    * updated some of the extra patches.
+    * updated the list of known bugs.
+
 2006-10-19 (CVS):
     * documentation updates.
     * added Sys_DPrintf: at present, its only user is the hexen2 dedicated
