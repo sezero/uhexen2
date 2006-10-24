@@ -27,6 +27,9 @@ Known Bugs
 
 - Matrox G200: GL games may not display menus correctly (Matrox bug?)
 
+- Hexen II dedicated server: The decorative swords in the village1 and
+  demo2 levels are located out of place. To be looked into.
+
 - HexenWorld: Coop mode is broken. Known problem since Raven's latest
   beta versions.
 
