@@ -2,7 +2,7 @@
 	sv_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_effect.c,v 1.3 2006-10-21 18:21:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_effect.c,v 1.4 2006-10-24 21:49:43 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -32,12 +32,6 @@ extern cvar_t sv_ce_max_size;
 
 // CODE --------------------------------------------------------------------
 
-
-//==========================================================================
-//
-// CL_InitTEnts
-//
-//==========================================================================
 
 static void SV_ClearEffects (void)
 {
@@ -1041,6 +1035,9 @@ void SV_LoadEffects (FILE *FH)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2006/10/21 18:21:28  sezero
+ * various coding style clean-ups, part 5.
+ *
  * Revision 1.2  2006/07/02 11:45:34  sezero
  * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
  * which stops vec3_origin usage in relevant calculations. renamed the Length
