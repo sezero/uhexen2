@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.68 2006-10-21 18:21:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.69 2006-10-26 08:42:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -77,7 +77,7 @@ static char		*findpattern;
 
 char *Sys_FindFirstFile (char *path, char *pattern)
 {
-	size_t	pattern_len;
+	size_t	tmp_len;
 
 	if (finddir)
 		Sys_Error ("Sys_FindFirst without FindClose");
@@ -86,24 +86,14 @@ char *Sys_FindFirstFile (char *path, char *pattern)
 	if (!finddir)
 		return NULL;
 
-	pattern_len = strlen (pattern);
-	findpattern = malloc (pattern_len + 1);
+	tmp_len = strlen (pattern);
+	findpattern = malloc (tmp_len + 1);
 	if (!findpattern)
 		return NULL;
 	strcpy (findpattern, pattern);
+	findpattern[tmp_len] = '\0';
 
-	do {
-		finddata = readdir(finddir);
-		if (finddata != NULL)
-		{
-			if (!fnmatch (findpattern, finddata->d_name, FNM_PATHNAME))
-			{
-				return finddata->d_name;
-			}
-		}
-	} while (finddata != NULL);
-
-	return NULL;
+	return Sys_FindNextFile();
 }
 
 char *Sys_FindNextFile (void)
@@ -117,7 +107,7 @@ char *Sys_FindNextFile (void)
 		{
 			if (!fnmatch (findpattern, finddata->d_name, FNM_PATHNAME))
 			{
-				return finddata->d_name;
+					return finddata->d_name;
 			}
 		}
 	} while (finddata != NULL);
@@ -129,9 +119,9 @@ void Sys_FindClose (void)
 {
 	if (finddir != NULL)
 		closedir(finddir);
-	finddir = NULL;
 	if (findpattern != NULL)
 		free (findpattern);
+	finddir = NULL;
 	findpattern = NULL;
 }
 
@@ -562,6 +552,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.68  2006/10/21 18:21:28  sezero
+ * various coding style clean-ups, part 5.
+ *
  * Revision 1.67  2006/10/19 06:32:28  sezero
  * added Sys_DPrintf: at present, its only user is the hexen2 dedicated
  * server. further use of it may come with future versions.
