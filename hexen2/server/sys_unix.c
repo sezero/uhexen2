@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.8 2006-10-26 08:42:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.9 2006-10-26 08:43:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -69,7 +69,7 @@ what we presently need in this engine.
 */
 static DIR		*finddir;
 static struct dirent	*finddata;
-static char		*findpattern;
+static char		*findpath, *findpattern;
 
 char *Sys_FindFirstFile (char *path, char *pattern)
 {
@@ -88,12 +88,20 @@ char *Sys_FindFirstFile (char *path, char *pattern)
 		return NULL;
 	strcpy (findpattern, pattern);
 	findpattern[tmp_len] = '\0';
+	tmp_len = strlen (path);
+	findpath = malloc (tmp_len + 1);
+	if (!findpath)
+		return NULL;
+	strcpy (findpath, path);
+	findpath[tmp_len] = '\0';
 
 	return Sys_FindNextFile();
 }
 
 char *Sys_FindNextFile (void)
 {
+	struct stat	test;
+
 	if (!finddir)
 		return NULL;
 
@@ -103,6 +111,8 @@ char *Sys_FindNextFile (void)
 		{
 			if (!fnmatch (findpattern, finddata->d_name, FNM_PATHNAME))
 			{
+				if ( (stat(va("%s/%s", findpath, finddata->d_name), &test) == 0)
+							&& S_ISREG(test.st_mode) )
 					return finddata->d_name;
 			}
 		}
@@ -115,9 +125,12 @@ void Sys_FindClose (void)
 {
 	if (finddir != NULL)
 		closedir(finddir);
+	if (findpath != NULL)
+		free (findpath);
 	if (findpattern != NULL)
 		free (findpattern);
 	finddir = NULL;
+	findpath = NULL;
 	findpattern = NULL;
 }
 

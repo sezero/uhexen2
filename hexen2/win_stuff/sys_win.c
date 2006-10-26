@@ -112,7 +112,12 @@ char *Sys_FindFirstFile (char *path, char *pattern)
 	findhandle = FindFirstFile(va("%s/%s", path, pattern), &finddata);
 
 	if (findhandle != INVALID_HANDLE_VALUE)
-		return finddata.cFileName;
+	{
+		if (finddata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			return Sys_FindNextFile();
+		else
+			return finddata.cFileName;
+	}
 
 	return NULL;
 }
@@ -125,8 +130,16 @@ char *Sys_FindNextFile (void)
 		return NULL;
 
 	retval = FindNextFile(findhandle,&finddata);
-	if (retval)
+	while (retval)
+	{
+		if (finddata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		{
+			retval = FindNextFile(findhandle,&finddata);
+			continue;
+		}
+
 		return finddata.cFileName;
+	}
 
 	return NULL;
 }
@@ -773,6 +786,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.41  2006/10/22 15:06:31  sezero
+ * even more coding style clean-ups (part 10).
+ *
  * Revision 1.40  2006/10/21 18:21:29  sezero
  * various coding style clean-ups, part 5.
  *

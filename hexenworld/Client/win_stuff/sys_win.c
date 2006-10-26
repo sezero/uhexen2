@@ -86,7 +86,12 @@ char *Sys_FindFirstFile (char *path, char *pattern)
 	findhandle = FindFirstFile(va("%s/%s", path, pattern), &finddata);
 
 	if (findhandle != INVALID_HANDLE_VALUE)
-		return finddata.cFileName;
+	{
+		if (finddata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			return Sys_FindNextFile();
+		else
+			return finddata.cFileName;
+	}
 
 	return NULL;
 }
@@ -99,8 +104,16 @@ char *Sys_FindNextFile (void)
 		return NULL;
 
 	retval = FindNextFile(findhandle,&finddata);
-	if (retval)
+	while (retval)
+	{
+		if (finddata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		{
+			retval = FindNextFile(findhandle,&finddata);
+			continue;
+		}
+
 		return finddata.cFileName;
+	}
 
 	return NULL;
 }
