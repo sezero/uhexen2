@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-10-26 (1.4.1-final):
+    * removed irrelevant comment from hexen2/sv_effect.c.
+    * for future reference, put the effects saving and loading functions
+      back to hexenworld/sv_effect.c in commented out form. currently,
+      saving and loading games not are supported in hexenworld.
+    * small tweaks to Sys_FindFirstFile and Sys_FindNextFile.
+    * made sure that Sys_FindFirstFile and Sys_FindNextFile doesn't return
+      directory names.
+    * Marked the snapshot of 2006-10-26 as 1.4.1-Final.
+
 2006-10-20/24 (CVS):
     * pr_edict.c: sizeof(void *) is not the same everywhere. use fixed 32 bit
       sizes, as we do in pr_lex.c.
