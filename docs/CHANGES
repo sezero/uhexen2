@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-10-30 (1.4.1-final, last minute fixes):
+    * quick fixes for killing some warnings coming up during the
+      compilation of the utilities on x86_64
+
 2006-10-26 (1.4.1-final):
     * removed irrelevant comment from hexen2/sv_effect.c.
     * for future reference, put the effects saving and loading functions
