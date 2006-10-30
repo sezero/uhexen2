@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.27 2006-10-22 14:54:53 sezero Exp $
+	$Id: dcc.c,v 1.28 2006-10-30 08:08:34 sezero Exp $
 */
 
 
@@ -517,7 +517,7 @@ void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 						dum = 1;
 					// was a cast from pointer to integer of different size
 					//	for ( k = t+(t->a) ; (signed short)k < (signed short)s ; k++)
-						for ( k = t+(t->a) ; (int)k < (int)s ; k++)
+						for ( k = t+(t->a) ; k < s ; k++)
 						{
 							tom = k->op % 100;
 							if (tom == OP_GOTO || tom == OP_IF || tom == OP_IFNOT)

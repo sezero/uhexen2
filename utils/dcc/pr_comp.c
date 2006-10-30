@@ -629,7 +629,7 @@ def_t *PR_Expression (int priority)
 				if (!op->name || strcmp (op->name , oldop->name))
 				{
 					op--;
-					printf("op : %s(%d) a: %s b: %s\n",op->name,op-pr_opcodes,e->name,e2->name);
+					printf("op : %s(%ld) a: %s b: %s\n",op->name,(long)(op-pr_opcodes),e->name,e2->name);
 					printf("a: %d %d b: %d %d c: %d %d\n",type_a,op->type_a->type->type,
 							type_b,op->type_b->type->type,type_c,op->type_c->type->type);
 					PR_ParseError ("type mismatch for %s here", oldop->name);

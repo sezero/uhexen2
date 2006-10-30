@@ -37,7 +37,7 @@ void LightThread (void *junk)
 {
 	int			i;
 
-	printf("Thread %d started\n", (int)junk);
+	printf("Thread %ld started\n", (long)junk);
 	while (1)
 	{
 		LOCK;
