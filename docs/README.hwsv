@@ -18,6 +18,38 @@ activates it if it finds it. If, for some reason, you want to disable the
 mission pack support, run the server with -noportals commandline switch.
 
 
+Setting up Map Cycling:
+-----------------------
+
+Only the server needs to do this. Using your favorite text editor, open the
+file named strings.txt in your hw directory:
+- Go to the end of the file.
+- You will see four warning lines there, the first one says:
+  <1.you passed the end of the file, pal>
+  The second and the rest differ only by the starting number, ie 2, 3 and 4.
+  These lines MUST always stay at the end of the file! Never delete or edit
+  them in any way!
+- Just before the first warning line, insert two new lines: The first one
+  must be map_sequence_start, and the second one must be map_sequence_end .
+- Between these two new lines, add the list of the maps you want to cycle,
+  one map name on each line. Map names must stay between map_sequence_start
+  and map_sequence_end.  Do not edit any other part of the file!
+- No empty lines, or lines with spaces only, are allowed. Extra spaces are
+  not allowed.
+- Any number of maps can be put in it.
+- Only the first occurence of a map name is used to determine next map,
+  therefore use a mapname only once.
+- If the server is running a map that is not in the list the same map will
+  reload when game ends.
+- When server reaches the end of the list, it goes back to the start of
+  of the list: looping is enabled.
+- As an example, see the strings.txt file in the hw directory provided
+  by Hammer of Thyrion.
+- If you want to disable map cycling you just created, remove the all the
+  map entries and the map_sequence_start and map_sequence_end headers from
+  strings.txt .
+
+
 Tome Mode:
 ----------
 
