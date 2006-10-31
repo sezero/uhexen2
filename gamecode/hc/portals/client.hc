@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/client.hc,v 1.3 2005-11-02 18:48:44 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/client.hc,v 1.4 2006-10-31 19:31:48 sezero Exp $
  */
 
 // prototypes
@@ -1167,8 +1167,12 @@ void() NextLevel =
 		if (!o)
 		{
 			o = spawn();
-			mapname = "demo1";
-			o.map = mapname;
+			nextmap = "demo1";
+			o.map = nextmap;
+		}
+		else
+		{
+			nextmap = o.map;
 		}
 	}
 	else
@@ -3090,6 +3094,10 @@ string deathstring, deathstring2,iclass;
 };
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/11/02 18:48:44  sezero
+ * CheckRules (timelimit and fraglimit) is supposed to matter only for deathmatch,
+ * not for coop and singleplayer
+ *
  * Revision 1.2  2005/11/02 18:46:53  sezero
  * noexit is supposed to matter only for deathmatch, not for coop and singleplayer
  *

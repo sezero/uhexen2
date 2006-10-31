@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/world.hc,v 1.5 2006-02-23 09:16:00 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/world.hc,v 1.6 2006-10-31 19:31:48 sezero Exp $
  */
 
 //void() InitBodyQue;
@@ -109,66 +109,81 @@ void() main =
 
 
 entity	lastspawn;
+float	have_mapcycle;
 
 void GetNextMap()
 {
-float line_id;
+float line_id, num_maps;
 float map_sequence_start;
 string map_next;
 
+	have_mapcycle = 0;
 	line_id = 0;
-	while (map_next!="map_sequence_start"||map_next!="<1.you passed the end of the file, pal>")
+	while (1)
 	{
 		line_id +=1;
 		map_next = getstring(line_id);
-		if(map_next=="map_sequence_start")
+		if (map_next == "map_sequence_start")
 		{
-			break;
+			if (map_sequence_start)
+				return;	// invalid list
+
+			// found start marker of the cyling list
+			map_sequence_start = line_id;
+			continue;	// found the list start
 		}
-		if(map_next=="<1.you passed the end of the file, pal>")
+		if (map_next == "map_sequence_end")
 		{
-			break;
+			if (map_sequence_start)
+			{
+				num_maps = line_id - map_sequence_start - 1;
+				if (num_maps > 0)
+					break;	// we have a map cycling list
+			}
+
+			return;	// invalid list
+		}
+		if (map_next == "<1.you passed the end of the file, pal>")
+		{
+		// map map cycling list available and we
+		// are reaching the end of strings.txt
+			return;
 		}
 	}
-	if(map_next=="<1.you passed the end of the file, pal>")
+
+	have_mapcycle = 1;
+	line_id = 1;
+
+	while (line_id <= num_maps)
 	{
-		return;
+		map_next = getstring(map_sequence_start+line_id);
+
+		if (map_next == mapname)
+		{
+			break;	// found position for old map
+		}
+		line_id += 1;
 	}
 
-	map_sequence_start = line_id;
-
-	line_id = 0;
-
-	while(map_next!=mapname||map_next!="map_sequence_end"||map_next!="<1.you passed the end of the file, pal>")
+	if (line_id > num_maps)
 	{
-		map_next = getstring(map_sequence_start+line_id+1);
-		line_id +=1;
-
-		if(map_next==mapname)
-		{
-			break;
-		}
-		if(map_next=="map_sequence_end")
-		{
-			break;
-		}
-		if(map_next=="<1.you passed the end of the file, pal>")
-		{
-			break;
-		}
-
+		self.next_map = mapname;
+		return;	// running a map not in list
 	}
-	if(map_next=="<1.you passed the end of the file, pal>")
-		return;
-	if(map_next=="map_sequence_end")
-		return;
-	map_next = getstring(map_sequence_start+line_id+1);
-	if(map_next=="map_sequence_end")
-		map_next = getstring(map_sequence_start+1);
-	if(map_next=="*")
-		return;
+
+	line_id += 1;
+	if (line_id > num_maps)
+	{
+	// if we are end of the list, go back to the start
+		line_id = 1;
+	}
+
+	map_next = getstring(map_sequence_start+line_id);
+
+	if (map_next == "*")
+		map_next = "";
+
 	self.next_map = map_next;
-
 }
 
 

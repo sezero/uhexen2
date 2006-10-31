@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/client.hc,v 1.5 2005-11-02 18:48:44 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/client.hc,v 1.6 2006-10-31 19:31:47 sezero Exp $
  */
 
 // prototypes
@@ -1177,14 +1177,15 @@ void() NextLevel =
 
 	FindDMLevel();
 
-    if (world.next_map!="no_map_cycling_found") {
+    if (have_mapcycle)
+    {
+	// the original authors of map cycling specify that
+	// a map not in map cycling list will reload itself
 	if(world.next_map=="")
 		nextmap = mapname;
 	else
 		nextmap = world.next_map;
     }
-	o = spawn();
-	o.map = nextmap;
 
 	if (nextmap == "")
 	{
@@ -1194,9 +1195,19 @@ void() NextLevel =
 		// go back to start if no trigger_changelevel
 		if (!o)
 		{
-			mapname = "demo1";
-			o.map = mapname;
+			o = spawn();
+			nextmap = "demo1";
+			o.map = nextmap;
 		}
+		else
+		{
+			nextmap = o.map;
+		}
+	}
+	else
+	{
+		o = spawn();
+		o.map = nextmap;
 	}
 
 	gameover = TRUE;
@@ -3164,6 +3175,10 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 };
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/11/02 18:48:44  sezero
+ * CheckRules (timelimit and fraglimit) is supposed to matter only for deathmatch,
+ * not for coop and singleplayer
+ *
  * Revision 1.4  2005/11/02 18:46:53  sezero
  * noexit is supposed to matter only for deathmatch, not for coop and singleplayer
  *
