@@ -46,6 +46,11 @@ Gameplay:
   changing levels.
 - Disabled impulse 11 which was a developer-only command but could be issued
   from any client and might clobber the server.
+- Cleaned up and tweaked hexenworld and siege map cycling.
+- Fixed hexen2 and hexenworld server crashes upon deathmatch level change
+  in cases of a custom map being run and there is no map cycling. mission
+  pack actually didn't used to crash but it always failed changing into
+  a new level. it is now fixed, as well.
 
 Video:
 ------
