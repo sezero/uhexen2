@@ -3,9 +3,23 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2006-10-30 (1.4.1-final, last minute fixes):
+2006-10-30 / 31 (1.4.1-final, last minute fixes):
     * quick fixes for killing some warnings coming up during the
       compilation of the utilities on x86_64
+    * hexenc fixes: cleaned up and tweaked hexenworld and siege map cycling.
+      fixed hexen2 and hexenworld server crashes upon deathmatch level change
+      in cases of a custom map being run and there is no map cycling. mission
+      pack actually didn't used to crash but it always failed changing into
+      a new level. it is now fixed, as well.
+    * since version 1.11 of hexen2 demo already contains the demo3 level and
+      it also has necessary stuff for running the hexenworld dm maps, added
+      demo3 and the hw dm maps to FindDMLevel(). Similarly changed the hexen2
+      and the mission pack versions.
+    * added instructions for setting up map cycling to the hexenworld server
+      documentation.
+    * updated gamecode changelog / README.
+    * added a hexenworld strings.txt file for the demo version (which doesn't
+      contain a map cyling setup).
 
 2006-10-26 (1.4.1-final):
     * removed irrelevant comment from hexen2/sv_effect.c.
