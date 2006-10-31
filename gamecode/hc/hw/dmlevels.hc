@@ -120,11 +120,28 @@ void FindDMLevel(void)
 	}
 	else
 	{//demo
+	/* O.S - 2006-10-30: version 1.11 of the demo
+	   already has the demo3 level. it also has
+	   the necessary stuff for running the hw dm
+	   maps. Added them here.
+	 */
 		if (mapname == "demo1")
 			nextmap = "demo2";
 		else if (mapname == "demo2")
+			nextmap = "demo3";
+		else if (mapname == "demo3")
 			nextmap = "ravdm1";
 		else if (mapname == "ravdm1")
+			nextmap = "hwdm1";
+		else if (mapname == "hwdm1")
+			nextmap = "hwdm2";
+		else if (mapname == "hwdm2")
+			nextmap = "hwdm3";
+		else if (mapname == "hwdm3")
+			nextmap = "hwdm4";
+		else if (mapname == "hwdm4")
+			nextmap = "hwdm5";
+		else if (mapname == "hwdm5")
 			nextmap = "demo1";
 	}
 }

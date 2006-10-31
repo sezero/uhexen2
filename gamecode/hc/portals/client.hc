@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/client.hc,v 1.4 2006-10-31 19:31:48 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/client.hc,v 1.5 2006-10-31 19:42:59 sezero Exp $
  */
 
 // prototypes
@@ -324,9 +324,14 @@ void FindDMLevel(void)
 	}
 	else
 	{
+	/* O.S - 2006-10-30: version 1.11 of the demo
+	   already has the demo3 level. Added it here.
+	 */
 		if (mapname == "demo1")
 			nextmap = "demo2";
 		else if (mapname == "demo2")
+			nextmap = "demo3";
+		else if (mapname == "demo3")
 			nextmap = "ravdm1";
 		else if (mapname == "ravdm1")
 			nextmap = "demo1";
@@ -3094,6 +3099,13 @@ string deathstring, deathstring2,iclass;
 };
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2006/10/31 19:31:48  sezero
+ * hexenc fixes: cleaned up and tweaked hexenworld and siege map cycling.
+ * fixed hexen2 and hexenworld server crashes upon deathmatch level change
+ * in cases of a custom map being run and there is no map cycling. mission
+ * pack actually didn't used to crash but it always failed changing into
+ * a new level. it is now fixed, as well.
+ *
  * Revision 1.3  2005/11/02 18:48:44  sezero
  * CheckRules (timelimit and fraglimit) is supposed to matter only for deathmatch,
  * not for coop and singleplayer
