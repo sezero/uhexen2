@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.70 2006-10-26 08:43:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.71 2006-11-22 12:11:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -13,6 +13,9 @@
 
 #include <errno.h>
 #include <unistd.h>
+#ifdef __MACOSX__
+#include <libgen.h>	/* for dirname and basename */
+#endif
 #if USE_PASSWORD_FILE
 #include <pwd.h>
 #endif
@@ -417,12 +420,61 @@ static void PrintHelp(char *name)
 	printf ("\n");
 }
 
+#ifdef __MACOSX__
+/*
+=================
+Sys_StripAppBundle
+
+If passed dir is suffixed with the directory structure of a Mac OS X
+.app bundle, the .app directory structure is stripped off the end and
+the result is returned. If not, dir is returned untouched. Taken from
+the quake3 project at icculus.org.
+
+For Mac OS X, we package the game like this:
+
+	Hexen II	( --> the holder directory)
+	|
+	 - Hexen II gl.app (bundle dir for the opengl application)
+	|  |
+	|   - Contents
+	|  |  |
+	|  |   - MacOS	(the actual binary resides here)
+	|  |
+	|   - Resources (icons here)
+	|
+	 - data1	( --> game data directories)
+	|
+	 - portals	( ditto)
+
+=================
+*/
+static char *Sys_StripAppBundle (char *dir)
+{
+	static char	osx_path[MAX_OSPATH];
+
+	Q_strlcpy (osx_path, dir, sizeof(osx_path));
+	if (strcmp(basename(osx_path), "MacOS"))
+		return dir;
+	Q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
+	if (strcmp(basename(osx_path), "Contents"))
+		return dir;
+	Q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
+	if (!strstr(basename(osx_path), ".app"))
+		return dir;
+	Q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
+	return osx_path;
+}
+#endif	/* __MACOSX__ */
+
 int main(int argc, char *argv[])
 {
 	quakeparms_t	parms;
 	double	time, oldtime, newtime;
 	char	cwd[MAX_OSPATH];
 	char	userdir[MAX_OSPATH];
+#ifdef __MACOSX__
+	char	*tmp;
+#endif
 	int	t;
 	const SDL_version *sdl_version;
 
@@ -452,8 +504,21 @@ int main(int argc, char *argv[])
 	if (cwd[strlen(cwd)-1] == '/')
 		cwd[strlen(cwd)-1] = 0;
 
+#ifdef __MACOSX__
+	tmp = COM_SkipPath(argv[0]);
+	if (tmp != argv[0])
+		tmp = Sys_StripAppBundle(argv[0])
+	else
+		tmp = Sys_StripAppBundle(cwd)
+	Q_strlcpy (cwd, tmp, sizeof(cwd));
+#endif
+
+	Sys_Printf("basedir is: %s\n", cwd);
+
 	if (Sys_GetUserdir(userdir,sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
+
+	Sys_Printf("userdir is: %s\n", userdir);
 
 	parms.basedir = cwd;
 	parms.userdir = userdir;
@@ -467,8 +532,6 @@ int main(int argc, char *argv[])
 
 	parms.argc = com_argc;
 	parms.argv = com_argv;
-
-	Sys_Printf("userdir is: %s\n", userdir);
 
 	isDedicated = (COM_CheckParm ("-dedicated") != 0);
 
@@ -565,6 +628,10 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.70  2006/10/26 08:43:33  sezero
+ * made sure that Sys_FindFirstFile and Sys_FindNextFile doesn't
+ * return directory names.
+ *
  * Revision 1.69  2006/10/26 08:42:07  sezero
  * small tweaks to Sys_FindFirstFile and Sys_FindNextFile
  *
