@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.71 2006-11-22 12:11:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.72 2006-11-25 08:26:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -498,19 +498,26 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	if (!(getcwd (cwd, sizeof(cwd))))
+#ifdef __MACOSX__
+	if ( realpath(argv[0], cwd) == NULL )
+	{
+		if ( !(getcwd (cwd, sizeof(cwd))) )
+			Sys_Error ("Couldn't determine current directory");
+	}
+	else
+	{
+		// strip off the binary name
+		Q_strlcpy (cwd, dirname(cwd), sizeof(cwd));
+	}
+
+	tmp = Sys_StripAppBundle(cwd);
+	Q_strlcpy (cwd, tmp, sizeof(cwd));
+#else
+	if ( !(getcwd (cwd, sizeof(cwd))) )
 		Sys_Error ("Couldn't determine current directory");
 
 	if (cwd[strlen(cwd)-1] == '/')
 		cwd[strlen(cwd)-1] = 0;
-
-#ifdef __MACOSX__
-	tmp = COM_SkipPath(argv[0]);
-	if (tmp != argv[0])
-		tmp = Sys_StripAppBundle(argv[0])
-	else
-		tmp = Sys_StripAppBundle(cwd)
-	Q_strlcpy (cwd, tmp, sizeof(cwd));
 #endif
 
 	Sys_Printf("basedir is: %s\n", cwd);
@@ -628,6 +635,10 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.71  2006/11/22 12:11:09  sezero
+ * Ensured that the basedir always stays the same for Mac OS X. Documented
+ * the packaging method for Mac OS X. Updated release date to November.
+ *
  * Revision 1.70  2006/10/26 08:43:33  sezero
  * made sure that Sys_FindFirstFile and Sys_FindNextFile doesn't
  * return directory names.
