@@ -3,6 +3,8 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-11-25 (1.4.1 rev:1):
+    * Mac OS X: feed correct data to Sys_StripAppBundle
 2006-11-22 (1.4.1 rev:1):
     * Ensured that the basedir always stays the same for Mac OS X. Documented
       the packaging method for Mac OS X. Updated release date to November.
