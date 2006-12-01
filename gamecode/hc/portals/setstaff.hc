@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/setstaff.hc,v 1.3 2005-04-08 16:25:10 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/setstaff.hc,v 1.4 2006-12-01 08:59:34 sezero Exp $
  */
 
 /*
@@ -674,6 +674,7 @@ void setstaff_select (void)
 	if (self.wfs == WF_LAST_FRAME)
 	{
 		self.attack_finished = time - 1;
+		self.ltime = -1;
 		setstaff_idle();
 	}
 }
@@ -693,6 +694,9 @@ void setstaff_decide_attack (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/04/08 16:25:10  sezero
+ * added Pa3PyX' fire delay bits for paladin's setstaff (gamedata-1.14)
+ *
  * Revision 1.2  2005/02/23 08:05:36  sezero
  * setstaff tomed and untomed fire rates now fps independent (from Pa3PyX)
  *
