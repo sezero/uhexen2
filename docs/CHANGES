@@ -3,6 +3,18 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-12-19 (CVS):
+    * Fixed the following gcc-4.1 warnings in net_vcr.c (fix found in quakeforge
+      subversion repository):
+	net_vcr.c: In function 'VCR_GetMessage':
+	net_vcr.c:68: warning: dereferencing type-punned pointer will break strict-aliasing rules
+	net_vcr.c: In function 'VCR_SendMessage':
+	net_vcr.c:91: warning: dereferencing type-punned pointer will break strict-aliasing rules
+	net_vcr.c: In function 'VCR_CanSendMessage':
+	net_vcr.c:106: warning: dereferencing type-punned pointer will break strict-aliasing rules
+	net_vcr.c: In function 'VCR_CheckNewConnections':
+	net_vcr.c:147: warning: dereferencing type-punned pointer will break strict-aliasing rules
+
 2006-12-01 (1.4.1 rev:1, gamecode-1.16a):
     * Fixed an obscure bug where the assasin with her 4th weapon uses the tome
       of power and can't fire it. The bug was reported by Mathias Schlueter to
