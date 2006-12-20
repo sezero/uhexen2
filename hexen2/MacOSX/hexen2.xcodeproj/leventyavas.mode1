@@ -196,17 +196,11 @@
 		<dict>
 			<key>ChosenToolbarItems</key>
 			<array>
-				<string>active-target-popup</string>
-				<string>active-buildstyle-popup</string>
-				<string>action</string>
+				<string>com.apple.pbx.toolbar.searchfield</string>
 				<string>NSToolbarFlexibleSpaceItem</string>
+				<string>clean</string>
 				<string>buildOrClean</string>
 				<string>build-and-runOrDebug</string>
-				<string>com.apple.ide.PBXToolbarStopButton</string>
-				<string>get-info</string>
-				<string>toggle-editor</string>
-				<string>NSToolbarFlexibleSpaceItem</string>
-				<string>com.apple.pbx.toolbar.searchfield</string>
 			</array>
 			<key>ControllerClassBaseName</key>
 			<string></string>
@@ -219,8 +213,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -285,7 +277,7 @@
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>57 305 690 397 0 0 1024 746 </string>
+						<string>25 349 690 397 0 0 1024 746 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -322,7 +314,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {482, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>57 305 690 397 0 0 1024 746 </string>
+								<string>25 349 690 397 0 0 1024 746 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -330,6 +322,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -342,7 +336,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {482, 351}}</string>
 								<key>RubberWindowFrame</key>
-								<string>57 305 690 397 0 0 1024 746 </string>
+								<string>25 349 690 397 0 0 1024 746 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -366,9 +360,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>7086E4DC0AC0012400E9F894</string>
+				<string>704006170B26EC86007A683D</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>7086E4DD0AC0012400E9F894</string>
+				<string>704006180B26EC86007A683D</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -489,11 +483,11 @@
 	<key>TimeStamp</key>
 	<real>0.0</real>
 	<key>ToolbarDisplayMode</key>
-	<integer>1</integer>
+	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
 	<true/>
 	<key>ToolbarSizeMode</key>
-	<integer>1</integer>
+	<integer>2</integer>
 	<key>Type</key>
 	<string>Perspectives</string>
 	<key>UpdateMessage</key>
@@ -502,12 +496,11 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>707D58590AA9F79600313A9F</string>
-		<string>hexen2.xcodeproj</string>
+		<string>/Volumes/ibook/src/hexen2files/uhexen2-src-20061125/hexen2/MacOSX/hexen2.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>57 305 690 397 0 0 1024 746 </string>
+	<string>25 349 690 397 0 0 1024 746 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>
@@ -535,18 +528,20 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {500, 218}}</string>
+								<string>{{0, 0}, {760, 235}}</string>
 								<key>RubberWindowFrame</key>
-								<string>58 199 500 500 0 0 1024 746 </string>
+								<string>58 182 760 517 0 0 1024 746 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>218pt</string>
+							<string>235pt</string>
 						</dict>
 						<dict>
 							<key>ContentConfiguration</key>
 							<dict>
+								<key>PBXBuildLogShowsTranscriptDefaultKey</key>
+								<string>{{0, 30}, {760, 206}}</string>
 								<key>PBXProjectModuleGUID</key>
 								<string>XCMainBuildResultsModuleGUID</string>
 								<key>PBXProjectModuleLabel</key>
@@ -559,9 +554,9 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 223}, {500, 236}}</string>
+								<string>{{0, 240}, {760, 236}}</string>
 								<key>RubberWindowFrame</key>
-								<string>58 199 500 500 0 0 1024 746 </string>
+								<string>58 182 760 517 0 0 1024 746 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXBuildResultsModule</string>
@@ -570,7 +565,7 @@
 						</dict>
 					</array>
 					<key>Proportion</key>
-					<string>459pt</string>
+					<string>476pt</string>
 				</dict>
 			</array>
 			<key>Name</key>
@@ -584,14 +579,14 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>707D58590AA9F79600313A9F</string>
-				<string>7086E4DF0AC001C600E9F894</string>
+				<string>704006190B26EC86007A683D</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.build</string>
 			<key>WindowString</key>
-			<string>58 199 500 500 0 0 1024 746 </string>
+			<string>58 182 760 517 0 0 1024 746 </string>
 			<key>WindowToolGUID</key>
 			<string>707D58590AA9F79600313A9F</string>
 			<key>WindowToolIsVisible</key>
@@ -722,7 +717,7 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CDD528C0622207200134675</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>r_edge.c</string>
+										<string>quakedef.h</string>
 										<key>StatusBarVisibility</key>
 										<true/>
 									</dict>
@@ -778,8 +773,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>70158F630AAF4A4A00F6437C</string>
-				<string>70158F640AAF4A4A00F6437C</string>
+				<string>706938B70B1C3CEB00866A69</string>
+				<string>706938B80B1C3CEB00866A69</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>

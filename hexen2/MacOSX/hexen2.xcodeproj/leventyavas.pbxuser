@@ -133,8 +133,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 180355357;
-			PBXWorkspaceStateSaveDate = 180355357;
+			PBXPerProjectTemplateStateSaveDate = 187100256;
+			PBXWorkspaceStateSaveDate = 187100256;
 		};
 		sourceControlManager = 707D575E0AA9F4B100313A9F /* Source Control */;
 		userBuildSettings = {
@@ -152,11 +152,90 @@
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
 	};
+	707D57950AA9F6EE00313A9F /* gl_draw.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {884, 15816}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 0}, {743, 203}}";
+		};
+	};
+	707D579A0AA9F6EE00313A9F /* h2_opt.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {498, 2412}}";
+			sepNavSelRange = "{2838, 0}";
+			sepNavVisRect = "{{0, 0}, {498, 646}}";
+			sepNavWindowFrame = "{{18, 27}, {513, 719}}";
+		};
+	};
+	707D57A10AA9F6EE00313A9F /* gl_test.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {496, 2028}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 1382}, {496, 646}}";
+			sepNavWindowFrame = "{{15, 22}, {511, 719}}";
+		};
+	};
 	707D57A50AA9F6EE00313A9F /* glquake.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {824, 8796}}";
 			sepNavSelRange = "{4392, 0}";
 			sepNavVisRect = "{{0, 8}, {483, 186}}";
+		};
+	};
+	707D57A60AA9F6EE00313A9F /* host_cmd.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1538, 33420}}";
+			sepNavSelRange = "{53947, 4}";
+			sepNavVisRect = "{{0, 29100}, {764, 180}}";
+		};
+	};
+	707D57A70AA9F6EE00313A9F /* host.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1454, 17532}}";
+			sepNavSelRange = "{28336, 4}";
+			sepNavVisRect = "{{0, 14856}, {764, 180}}";
+		};
+	};
+	707D57A80AA9F6EE00313A9F /* in_sdl.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {764, 17340}}";
+			sepNavSelRange = "{19260, 4}";
+			sepNavVisRect = "{{0, 9780}, {764, 180}}";
+		};
+	};
+	707D57A90AA9F6EE00313A9F /* input.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {764, 420}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 0}, {764, 180}}";
+		};
+	};
+	707D57AA0AA9F6EE00313A9F /* keys.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {764, 11784}}";
+			sepNavSelRange = "{18140, 4}";
+			sepNavVisRect = "{{0, 10728}, {764, 180}}";
+		};
+	};
+	707D57AF0AA9F6EE00313A9F /* menu.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1034, 62616}}";
+			sepNavSelRange = "{117079, 4}";
+			sepNavVisRect = "{{0, 61656}, {764, 180}}";
+		};
+	};
+	707D57B40AA9F6EE00313A9F /* net_dgrm.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {842, 17064}}";
+			sepNavSelRange = "{1658, 0}";
+			sepNavVisRect = "{{0, 960}, {743, 203}}";
+		};
+	};
+	707D57BC0AA9F6EE00313A9F /* net_vcr.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {764, 420}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 0}, {764, 180}}";
 		};
 	};
 	707D57BD0AA9F6EE00313A9F /* nonintel.c */ = {
@@ -167,11 +246,39 @@
 			sepNavWindowFrame = "{{403, 14}, {520, 373}}";
 		};
 	};
+	707D57C00AA9F6EE00313A9F /* pr_edict.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1454, 19488}}";
+			sepNavSelRange = "{20654, 4}";
+			sepNavVisRect = "{{0, 13236}, {764, 180}}";
+		};
+	};
+	707D57C10AA9F6EE00313A9F /* pr_exec.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1454, 15408}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 0}, {764, 180}}";
+		};
+	};
+	707D57C70AA9F6EE00313A9F /* quakedef.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {764, 12216}}";
+			sepNavSelRange = "{317, 20}";
+			sepNavVisRect = "{{0, 292}, {764, 180}}";
+		};
+	};
 	707D57CF0AA9F6EE00313A9F /* snd_mix.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {542, 4716}}";
 			sepNavSelRange = "{7222, 42}";
 			sepNavVisRect = "{{0, 4149}, {483, 186}}";
+		};
+	};
+	707D57DA0AA9F6EE00313A9F /* sys_unix.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {764, 12660}}";
+			sepNavSelRange = "{7185, 4}";
+			sepNavVisRect = "{{0, 4296}, {764, 180}}";
 		};
 	};
 	707D58700AA9FBB100313A9F /* XCBreakpointsBucket */ = {
