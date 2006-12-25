@@ -111,7 +111,7 @@ do
 		rm -f newpak${i}.md5
 		echo "Patch binary xdelta113 not found. Quitting."
 		echo "You can compile it from its up-to-date source"
-		echo "tarball xdelta-1.1.3a.tgz, downloadable from"
+		echo "tarball xdelta-1.1.3b.tgz, downloadable from"
 		echo -e "the Hammer of Thyrion website.\n"
 		exit 1
 	fi

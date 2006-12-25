@@ -12,7 +12,7 @@ exit 1
 fi
 
 # the current gamecode version
-GAMECODE_VER=1.16
+GAMECODE_VER=1.16a
 
 # kill the unwanted CVS* directories
 rm -rf CVSROOT
