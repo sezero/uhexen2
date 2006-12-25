@@ -19,7 +19,7 @@ echo ""
 if [ ! -f "loki_patch" ]; then
 	echo "Patch binary loki_patch not found. Quitting."
 	echo "You can compile it from its up-to-date source"
-	echo "tarball loki_patch-src2.tgz, downloadable from"
+	echo "tarball loki_patch-src3.tgz, downloadable from"
 	echo -e "the Hammer of Thyrion website.\n"
 	exit 1
 fi
