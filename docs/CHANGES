@@ -6,6 +6,7 @@ Development Progress	:
 2006-12-25 (CVS):
     * misc clean-up in launcher
     * misc small things
+    * added external music file support via SDL_mixer as an extra patch
     * rpm spec file update.
 
 2006-12-20 (CVS):
