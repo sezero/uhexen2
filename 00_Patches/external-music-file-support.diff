@@ -1,0 +1,120 @@
+initial support for allowing ogg, mp3, and mod (mod, it, s3m) external
+music files to be played instead of the original midi files. the music
+files are searched first under <install_dir>/data1/music and then under
+~/.hexen2/data1/music. In the first pass, the original midi filename is
+searched with a proper extension, if nothing is found, then trackXX is
+searched similarly (XX : cd-track number for the running map). If it is
+not found either, then the original midi file is played. (Note: replace
+data1 with portals for the mission pack. if you are running a mod, then
+replace it with the mod's name.)
+
+remember that this depends on SDL_mixer and whatever option it was
+compiled with: It needs mikmod for mod files, ogg/vorbis libraries for
+ogg files and smpeg for mp3 files. If, say, it wasn't linked against
+smpeg, then mp3 files won't be played.
+
+in the game, choose midi as the background music format and you'll be
+ready to go.
+
+
+--- midi_sdl.c~	2006-10-22 18:06:30.000000000 +0300
++++ midi_sdl.c	2006-11-17 16:06:26.000000000 +0200
+@@ -147,6 +147,8 @@ bad_version:
+ 	}
+ 	Con_Printf("found.\n");
+ 
++	Q_snprintf_err(mididir, sizeof(mididir), "%s/music", com_userdir);
++	Sys_mkdir_err (mididir);
+ 	Q_snprintf_err(mididir, sizeof(mididir), "%s/.midi", com_userdir);
+ 	Sys_mkdir_err (mididir);
+ 
+@@ -191,10 +193,28 @@ bad_version:
+ 	return true;
+ }
+ 
++static struct
++{
++	char	*ext;
++	char	*lookup_dir;
++} MusicFile[] =
++{
++	{   "ogg", "music"	},
++	{   "mp3", "music"	},
++	{   "mod", "music"	},
++	{   "it", "music"	},
++	{   "s3m", "music"	},
++	{   "mid", "midi"	},	// must be the last entry before NULL
++	{   NULL,  NULL		}
++};
++
++
+ void MIDI_Play(char *Name)
+ {
+ 	void	*midiData;
+ 	char	midiName[MAX_OSPATH];
++	int			i;
++	char		*tmp;
+ 
+ 	if (!bMidiInited)	//don't try to play if there is no midi
+ 		return;
+@@ -207,6 +227,43 @@ void MIDI_Play(char *Name)
+ 		return;
+ 	}
+ 
++	tmp = Name;
++retry:
++	for (i = 0; ; i++)
++	{
++	    if (MusicFile[i].ext == NULL)
++	    {
++	    	midiName[0] = '\0';
++	    	break;
++	    }
++
++	    if (tmp == Name)	// search for ripped cd-tracks only under com_userdir
++	    {
++		snprintf (midiName, sizeof(midiName), "%s/%s/%s.%s", com_gamedir, MusicFile[i].lookup_dir, tmp, MusicFile[i].ext);
++		if (access(midiName, R_OK) == 0)
++			break;
++
++		Sys_Printf("music file %s not available\n", midiName);
++	    }
++
++		snprintf (midiName, sizeof(midiName), "%s/%s/%s.%s", com_userdir, MusicFile[i].lookup_dir, tmp, MusicFile[i].ext);
++		if (access(midiName, R_OK) == 0)
++			break;
++		Sys_Printf("music file %s not available\n", midiName);
++	}
++
++    if (midiName[0] == '\0')
++    {
++	if (tmp == Name)
++	{
++	// specific midi/music filename not found. let's try
++	// again to find a ripped cdrom track.
++		tmp = (char *) Z_Malloc(12);
++		snprintf (tmp, 12, "track%02d", cl.cdtrack);
++		Sys_Printf ("trying ripped cd-track name %s\n", tmp);
++		goto retry;
++	}
++
+ 	// Note that midi/ is the standart quake search path, but
+ 	// .midi/ with the leading dot is the path in the userdir
+ 	snprintf (midiName, sizeof(midiName), "%s/.midi/%s.mid", com_userdir, Name);
+@@ -222,6 +279,16 @@ void MIDI_Play(char *Name)
+ 		if (COM_WriteFile (va(".midi/%s.mid", Name), midiData, com_filesize))
+ 			return;
+ 	}
++    }
++    else
++    {
++	Sys_Printf("Using music file %s\n", midiName);
++    }
++
++    if (tmp != Name)
++    {
++	Z_Free (tmp);
++    }
+ 
+ 	music = Mix_LoadMUS(midiName);
+ 	if ( music == NULL )
