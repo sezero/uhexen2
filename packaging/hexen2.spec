@@ -18,19 +18,21 @@
 
 %define desktop_vendor	uhexen2
 
-%define gamecode_ver	1.16
+%define gamecode_ver	1.16a
+%define xdelta_ver	1.1.3b
 
 Name:		hexen2
 License:	GPL
 Group:		Amusements/Games
-URL:		http://uhexen2.sourceforge.net/
 Version:	1.4.1
-Release:	1
+Release:	2
 Summary:	Hexen II: Hammer of Thyrion
-Source:		hexen2source-%{version}.tgz
-Source1:	hexen2source-gamecode-%{version}.tgz
-Source2:	hexenworld-pakfiles-0.15.tgz
-Source3:	xdelta-1.1.3a.tgz
+URL:		http://uhexen2.sourceforge.net/
+Source:		http://download.sourceforge.net/uhexen2/hexen2source-%{version}.tgz
+#Source1:	http://download.sourceforge.net/uhexen2/hexen2source-gamecode-%{version}.tgz
+Source1:	http://download.sourceforge.net/uhexen2/gamedata-src-%{gamecode_ver}.tgz
+Source2:	http://download.sourceforge.net/uhexen2/hexenworld-pakfiles-0.15.tgz
+Source3:	http://download.sourceforge.net/uhexen2/xdelta-%{xdelta_ver}.tgz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	SDL-devel >= 1.2.4
 %{!?_without_midi:BuildRequires:  SDL_mixer-devel >= 1.2.4}
@@ -113,7 +115,7 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 #utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/siege -oi -on
 
 # Build xdelta (binary patcher for pak files)
-cd xdelta-1.1.3a/src
+cd xdelta-%{xdelta_ver}/src
 %if %{?_without_gtk2:1}0
 %{__patch} -p1 -R < ../ref/025-glib2.diff
 %endif
@@ -192,7 +194,7 @@ cd ../..
 %{__install} -D -m644 gamecode-%{gamecode_ver}/pak_v111/patchdata/data1/data1pak1.xd %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/data1pak1.xd
 
 # Install the update-patcher binaries
-%{__install} -D -m755 xdelta-1.1.3a/src/xdelta %{buildroot}/%{_prefix}/games/%{name}/xdelta113
+%{__install} -D -m755 xdelta-%{xdelta_ver}/src/xdelta %{buildroot}/%{_prefix}/games/%{name}/xdelta113
 
 # Install the menu icon
 %{__mkdir_p} %{buildroot}/%{_datadir}/pixmaps
@@ -285,6 +287,12 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Fri Dec 01 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.1-2
+- Version 1.4.1-rev1 :
+  - Updated to gamedata-1.16a
+  - Updated to xdelta-1.1.3b
+  - Updated the URLs
+
 * Wed Oct 18 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.1-1
 - Merged the hexen2 and mission pack packages.
 - Added build option --without midi.
