@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2006-12-25 (CVS):
+    * misc clean-up in launcher
+    * misc small things
+    * rpm spec file update.
+
 2006-12-20 (CVS):
     * merged the latest OSX Xcode files from Levent
 
