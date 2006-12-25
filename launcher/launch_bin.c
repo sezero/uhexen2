@@ -44,7 +44,7 @@ char *h2game_names[MAX_H2GAMES][3] = {
 
 char *hwgame_names[MAX_HWGAMES][3] = {
 	// dirname,   user-friendly name, filename for extra check
-	{  NULL     , "DeathMatch"	, NULL			},
+	{  NULL     , "Plain DeathMatch", NULL			},
 	{ "hexarena", "HexArena"	, "sound/ha/fight.wav"	},
 	{ "hwctf"   , "Capture the Flag", "models/ctf_flag.mdl"	},
 	{ "siege"   , "Siege"		, "models/h_hank.mdl"	},

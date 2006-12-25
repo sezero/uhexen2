@@ -15,7 +15,7 @@ void H2GameScan (GList *GameList);
 void HWGameScan (GList *GameList);
 void H2GameChange (GtkEditable *editable, gamewidget_t *wgt);
 void HWGameChange (GtkEditable *editable, gpointer user_data);
-#endif
+#endif	/* DEMOBUILD */
 void on_SND (GtkEditable *editable, sndwidget_t *wgt);
 void on_SRATE (GtkEditable *editable, gpointer user_data);
 void on_SBITS (GtkButton *button, int *opt);

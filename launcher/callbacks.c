@@ -78,8 +78,8 @@ void on_SRATE (GtkEditable *editable, gpointer user_data)
 
 void on_SBITS (GtkButton *button, int *opt)
 {
-	(*(opt)) = !(*(opt));
-	gtk_button_set_label(button, (*(opt)) ? "16 bit" : " 8 bit");
+	*opt = !(*opt);
+	gtk_button_set_label(button, (*opt) ? "16 bit" : " 8 bit");
 }
 
 void Make_ResMenu (struct Video_s *wgt)
@@ -357,7 +357,8 @@ void HWGameChange (GtkEditable *editable, gpointer user_data)
 // Normally, we should be all set within this loop, thus no "else"
 	}
 }
-#endif
+
+#endif	/* ! DEMOBUILD */
 
 void ReverseOpt (GtkObject *Unused, int *opt)
 {

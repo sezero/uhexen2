@@ -247,7 +247,7 @@ GtkWidget* create_window1 (void)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_PORTALS), mp_support);
   if (destiny != DEST_H2)
 	gtk_widget_set_sensitive (WGT_PORTALS, FALSE);
-#endif
+#endif	/* DEMOBUILD */
 
 // Destiny: HexenWorld
   WGT_H2WORLD = gtk_radio_button_new_with_label (Destinies, "HexenWorld Multiplayer");
@@ -645,30 +645,29 @@ GtkWidget* create_window1 (void)
   gtk_fixed_put (GTK_FIXED (ADDON_TAB2), TxtGameH2, 16, 44);
   gtk_label_set_justify (GTK_LABEL (TxtGameH2), GTK_JUSTIFY_LEFT);
 
-// game types menu for hexen2
 // there are two botmatch mods only...
   WGT_H2GAME = gtk_combo_new ();
   gtk_widget_ref (WGT_H2GAME);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "SelH2", WGT_H2GAME,
 				(GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_set_size_request (WGT_H2GAME, 132, 32);
+#ifndef DEMOBUILD
   TmpList = NULL;
   TmpList = g_list_append (TmpList, (gpointer) "(  None  )");
-#ifndef DEMOBUILD
   gtk_combo_set_use_arrows (GTK_COMBO (WGT_H2GAME), FALSE);
   H2GameScan (TmpList);
-#endif
   gtk_combo_set_popdown_strings (GTK_COMBO (WGT_H2GAME), TmpList);
   g_list_free (TmpList);
+#endif	/* DEMOBUILD */
   gtk_fixed_put (GTK_FIXED (ADDON_TAB2), WGT_H2GAME, 68, 36);
   gtk_widget_show (WGT_H2GAME);
   H2G_Entry = GTK_COMBO (WGT_H2GAME)->entry;
   gtk_widget_ref (H2G_Entry);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "H2G_Entry", H2G_Entry,
 				(GtkDestroyNotify) gtk_widget_unref);
-  gtk_entry_set_editable (GTK_ENTRY (H2G_Entry), FALSE);
   gtk_widget_show (H2G_Entry);
 #ifndef DEMOBUILD
+  gtk_entry_set_editable (GTK_ENTRY (H2G_Entry), FALSE);
   gtk_entry_set_text (GTK_ENTRY (H2G_Entry), h2game_names[h2game][1]);
   if (destiny != DEST_H2)
 	gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
@@ -690,29 +689,29 @@ GtkWidget* create_window1 (void)
   gtk_widget_ref (WGT_HWGAME);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "SelHW", WGT_HWGAME,
 				(GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_set_size_request (WGT_HWGAME, 132, 24);
-  TmpList = NULL;
-  TmpList = g_list_append (TmpList, (gpointer) "DeathMatch");
+  gtk_widget_set_size_request (WGT_HWGAME, 132, 32);
 #ifndef DEMOBUILD
+  TmpList = NULL;
+  TmpList = g_list_append (TmpList, (gpointer) "Plain DeathMatch");
   gtk_combo_set_use_arrows (GTK_COMBO (WGT_HWGAME), FALSE);
   HWGameScan (TmpList);
-#endif
   gtk_combo_set_popdown_strings (GTK_COMBO (WGT_HWGAME), TmpList);
   g_list_free (TmpList);
+#endif	/* DEMOBUILD */
   gtk_fixed_put (GTK_FIXED (ADDON_TAB2), WGT_HWGAME, 68, 66);
   gtk_widget_show (WGT_HWGAME);
   HWG_Entry = GTK_COMBO (WGT_HWGAME)->entry;
   gtk_widget_ref (HWG_Entry);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "HWG_Entry", HWG_Entry,
 				(GtkDestroyNotify) gtk_widget_unref);
-  gtk_entry_set_editable (GTK_ENTRY (HWG_Entry), FALSE);
   gtk_widget_show (HWG_Entry);
 #ifndef DEMOBUILD
+  gtk_entry_set_editable (GTK_ENTRY (HWG_Entry), FALSE);
   gtk_entry_set_text (GTK_ENTRY (HWG_Entry), hwgame_names[hwgame][1]);
   if (destiny != DEST_HW)
 	gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
 #else
-  gtk_entry_set_text (GTK_ENTRY (HWG_Entry), "DeathMatch");
+  gtk_entry_set_text (GTK_ENTRY (HWG_Entry), "Plain DeathMatch");
   gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
 #endif
 
@@ -873,7 +872,7 @@ GtkWidget* create_window1 (void)
 			GTK_SIGNAL_FUNC (HWGameChange), NULL);
   gtk_signal_connect (GTK_OBJECT (WGT_PORTALS), "released",
 			GTK_SIGNAL_FUNC (ReverseOpt), &mp_support);
-#endif
+#endif	/* DEMOBUILD */
   gtk_signal_connect (GTK_OBJECT (WGT_HEXEN2), "released",
 			GTK_SIGNAL_FUNC (on_HEXEN2), &Games);
   gtk_signal_connect (GTK_OBJECT (WGT_H2WORLD), "released",
