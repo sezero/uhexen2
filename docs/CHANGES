@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-01-15 (CVS):
+    * enabled printf format warnings in gcc. the patch, originally by div0,
+      is adapted from the darkplaces project.
+    * fixed several printf format warnings
+
 2006-12-25 (CVS):
     * misc clean-up in launcher
     * misc small things
