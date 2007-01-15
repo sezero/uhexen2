@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.10 2006-09-24 17:28:44 sezero Exp $
+	$Id: cmdlib.h,v 1.11 2007-01-15 11:59:49 sezero Exp $
 */
 
 #ifndef __CMDLIB_H__
@@ -38,6 +38,12 @@ typedef unsigned char byte;
 
 
 // MACROS ------------------------------------------------------------------
+
+#ifdef __GNUC__
+#define _FUNC_PRINTF(n) __attribute__ ((format (printf, n, n+1)))
+#else
+#define _FUNC_PRINTF(n)
+#endif
 
 #ifdef _WIN32
 #define Q_strncasecmp	strnicmp
@@ -120,7 +126,7 @@ int	Q_filetime (char *path);
 
 double	GetTime(void);
 
-void	Error (char *error, ...);
+void	Error (char *error, ...) _FUNC_PRINTF(1);
 int	CheckParm(char *check);
 
 FILE	*SafeOpenWrite(char *filename);

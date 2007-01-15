@@ -40,6 +40,12 @@ extern qboolean com_eof;
 
 // MACROS ------------------------------------------------------------------
 
+#ifdef __GNUC__
+#define _FUNC_PRINTF(n) __attribute__ ((format (printf, n, n+1)))
+#else
+#define _FUNC_PRINTF(n)
+#endif
+
 #ifdef _WIN32
 #define Q_strncasecmp	strnicmp
 #define Q_strcasecmp	stricmp
@@ -55,7 +61,7 @@ int	Q_filelength(FILE *f);
 
 double	GetTime(void);
 
-void	Error (char *error, ...);
+void	Error (char *error, ...) _FUNC_PRINTF(1);
 int		CheckParm(char *check);
 
 FILE	*SafeOpenWrite(char *filename);

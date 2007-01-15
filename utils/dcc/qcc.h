@@ -372,7 +372,7 @@ char	*PR_ParseName (void);
 void	PR_Lex (void);	// reads the next token into pr_token and classifies its type
 qboolean PR_Check (char *string);
 void	PR_Expect (char *string);
-void	PR_ParseError (char *error, ...);
+void	PR_ParseError (char *error, ...) _FUNC_PRINTF(1);
 void	PR_NewLine (void);
 def_t	*PR_GetDef (type_t *type, char *name, def_t *scope, qboolean allocate);
 void	PR_SkipToSemicolon (void);

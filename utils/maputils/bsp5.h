@@ -284,7 +284,7 @@ extern	qboolean	worldmodel;
 // verbose printf
 
 extern	qboolean	verbose;
-void	qprintf (char *fmt, ...);	// only prints if verbose
+void	qprintf (char *fmt, ...) _FUNC_PRINTF(1);	// only prints if verbose
 
 
 //=============================================================================

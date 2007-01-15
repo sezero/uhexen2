@@ -31,6 +31,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "huffman.h"
 #endif
 
+#ifdef __GNUC__
+#define _FUNC_PRINTF(n) __attribute__ ((format (printf, n, n+1)))
+#else
+#define _FUNC_PRINTF(n)
+#endif
+
 
 //=============================================================================
 
@@ -48,6 +54,8 @@ static WSADATA		winsockdata;
 #endif
 
 static int		socketfd = -1;
+
+void Sys_Error (char *error, ...) _FUNC_PRINTF(1);
 
 //=============================================================================
 

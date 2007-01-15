@@ -34,6 +34,7 @@ static float	con_times[NUM_CON_TIMES];	// realtime time the line was generated
 
 #define	DEBUGLOG_FILENAME	"qconsole.log"
 static qboolean	con_debuglog;
+static void Con_DebugLog(char *file, char *fmt, ...) _FUNC_PRINTF(2);
 
 extern	char	key_lines[32][MAXCMDLINE];
 extern	int		edit_line;

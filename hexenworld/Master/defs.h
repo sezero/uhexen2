@@ -31,6 +31,12 @@ typedef enum {false, true}	qboolean;
 # define max(a,b) ((a) > (b) ? (a) : (b))
 #endif
 
+#ifdef __GNUC__
+#define _FUNC_PRINTF(n) __attribute__ ((format (printf, n, n+1)))
+#else
+#define _FUNC_PRINTF(n)
+#endif
+
 #define	MAX_ARGS	80
 #define MAX_NUM_ARGVS	50
 
@@ -115,7 +121,7 @@ typedef struct cmd_function_s
 //sys_main.c
 int COM_CheckParm (char *parm);
 char *COM_Parse (char *data);
-void Sys_Error (char *error, ...);
+void Sys_Error (char *error, ...) _FUNC_PRINTF(1);
 void Sys_Quit (void);
 
 void SZ_Init (sizebuf_t *buf, byte *data, int length);

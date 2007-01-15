@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/quakedef.h,v 1.27 2006-09-24 17:28:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/quakedef.h,v 1.28 2007-01-15 11:59:48 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -108,11 +108,11 @@ extern	double		realtime;		// not bounded in any way, changed at
 void Host_InitCommands (void);
 void Host_Init (quakeparms_t *parms);
 void Host_Shutdown(void);
-void Host_Error (char *error, ...);
-void Host_EndGame (char *message, ...);
+void Host_Error (char *error, ...) _FUNC_PRINTF(1);
+void Host_EndGame (char *message, ...) _FUNC_PRINTF(1);
 void Host_Frame (float time);
 void Host_Quit_f (void);
-void Host_ClientCommands (char *fmt, ...);
+void Host_ClientCommands (char *fmt, ...) _FUNC_PRINTF(1);
 void Host_ShutdownServer (qboolean crash);
 void Host_WriteConfiguration (char *fname);
 

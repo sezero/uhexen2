@@ -38,11 +38,11 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length);
 //
 // system IO
 //
-void Sys_Error (char *error, ...);
+void Sys_Error (char *error, ...) _FUNC_PRINTF(1);
 // an error will cause the entire program to exit
 
-void Sys_Printf (char *fmt, ...);
-void Sys_DPrintf (char *fmt, ...);
+void Sys_Printf (char *fmt, ...) _FUNC_PRINTF(1);
+void Sys_DPrintf (char *fmt, ...) _FUNC_PRINTF(1);
 // send text to the console
 
 void Sys_Quit (void);
@@ -51,7 +51,7 @@ double Sys_DoubleTime (void);
 
 char *Sys_ConsoleInput (void);
 
-void Sys_DebugLog(char *file, char *fmt, ...);
+void Sys_DebugLog(char *file, char *fmt, ...) _FUNC_PRINTF(2);
 
 void Sys_Sleep (void);
 // called to yield for a little bit so as

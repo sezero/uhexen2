@@ -8,7 +8,13 @@
 #include <stdarg.h>
 
 
-extern void Sys_Error (char *error, ...);
+#ifdef __GNUC__
+#define _FUNC_PRINTF(n) __attribute__ ((format (printf, n, n+1)))
+#else
+#define _FUNC_PRINTF(n)
+#endif
+
+extern void Sys_Error (char *error, ...) _FUNC_PRINTF(1);
 
 //
 // huffman types and vars

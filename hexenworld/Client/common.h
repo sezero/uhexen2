@@ -245,7 +245,7 @@ void COM_StripExtension (char *in, char *out);
 void COM_FileBase (char *in, char *out);
 void COM_DefaultExtension (char *path, char *extension, size_t len);
 
-char	*va(char *format, ...);
+char	*va(char *format, ...) _FUNC_PRINTF(1);
 // does a varargs printf into a temp buffer
 
 int COM_StrCompare (const void *arg1, const void *arg2);

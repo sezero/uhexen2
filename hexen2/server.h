@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.13 2006-09-24 17:28:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.14 2007-01-15 11:59:45 sezero Exp $
 */
 
 #ifndef __HX2_SERVER_H
@@ -268,8 +268,8 @@ void SV_AddUpdates (void);
 void SV_ClientThink (void);
 void SV_AddClientToServer (struct qsocket_s	*ret);
 
-void SV_ClientPrintf (char *fmt, ...);
-void SV_BroadcastPrintf (char *fmt, ...);
+void SV_ClientPrintf (char *fmt, ...) _FUNC_PRINTF(1);
+void SV_BroadcastPrintf (char *fmt, ...) _FUNC_PRINTF(1);
 
 void SV_Physics (void);
 
@@ -290,6 +290,9 @@ void SV_SpawnServer (char *server, char *startspot);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2006/09/24 17:28:42  sezero
+ * protected all headers against multiple inclusion
+ *
  * Revision 1.12  2006/04/06 22:08:22  sezero
  * more tidy-ups (model.h, gl_model.h)
  *
