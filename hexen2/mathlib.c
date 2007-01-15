@@ -2,7 +2,7 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.11 2006-10-20 20:32:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.12 2007-01-15 12:01:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -271,7 +271,7 @@ void FloorDivMod (double numer, double denom, int *quotient, int *rem)
 
 #ifndef PARANOID
 	if (denom <= 0.0)
-		Sys_Error ("FloorDivMod: bad denominator %d\n", denom);
+		Sys_Error ("FloorDivMod: bad denominator %f\n", denom);
 
 //	if ((floor(numer) != numer) || (floor(denom) != denom))
 //		Sys_Error ("FloorDivMod: non-integer numer or denom %f %f\n",
@@ -351,6 +351,9 @@ fixed16_t Invert24To16(fixed16_t val)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2006/10/20 20:32:30  sezero
+ * various coding style clean-ups, part 1.
+ *
  * Revision 1.10  2006/02/18 08:51:10  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. also renamed the variables name and dest to savename and savedest in

@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.28 2006-09-29 18:00:35 sezero Exp $
+	$Id: snd_oss.c,v 1.29 2007-01-15 12:01:13 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -214,7 +214,7 @@ qboolean S_OSS_Init(void)
 		Con_Printf("Could not mmap %s. %s\n", ossdev, strerror(errno));
 		goto error;
 	}
-	Con_Printf ("OSS: mmaped %u bytes buffer\n", mmaplen);
+	Con_Printf ("OSS: mmaped %lu bytes buffer\n", mmaplen);
 
 // toggle the trigger & start her up
 	tmp = 0;

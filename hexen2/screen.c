@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.30 2006-10-20 20:32:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.31 2007-01-15 12:01:08 sezero Exp $
 */
 
 /*=============================================================================
@@ -1171,7 +1171,7 @@ static void SB_IntermissionOverlay (void)
 	}
 	if (pic == NULL)
 	{
-		Host_Error ("%s: Bad episode ending number %s", __FUNCTION__, cl.intermission);
+		Host_Error ("%s: Bad episode ending number %d", __FUNCTION__, cl.intermission);
 		return;
 	}
 
@@ -1491,6 +1491,9 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2006/10/20 20:32:30  sezero
+ * various coding style clean-ups, part 1.
+ *
  * Revision 1.29  2006/07/18 08:30:18  sezero
  * a few int -> size_t changes for filesize vars
  *

@@ -364,7 +364,7 @@ static sndinitstat SNDDMA_InitDirect (void)
 	IDirectSoundBuffer_Play(pDSBuf, 0, 0, DSBPLAY_LOOPING);
 
 	if (snd_firsttime)
-		Con_SafePrintf ("%d bytes in sound buffer\n", dsbcaps.dwBufferBytes);
+		Con_SafePrintf ("%lu bytes in sound buffer\n", (unsigned long)dsbcaps.dwBufferBytes);
 
 	gSndBufSize = dsbcaps.dwBufferBytes;
 

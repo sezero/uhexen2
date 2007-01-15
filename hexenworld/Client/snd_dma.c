@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.44 2006-10-22 09:46:49 sezero Exp $
+	$Id: snd_dma.c,v 1.45 2007-01-15 12:01:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -121,7 +121,7 @@ static void S_SoundInfo_f(void)
 	Con_Printf("%5d samplepos\n", shm->samplepos);
 	Con_Printf("%5d submission_chunk\n", shm->submission_chunk);
 	Con_Printf("%5d total_channels\n", total_channels);
-	Con_Printf("0x%x dma buffer\n", shm->buffer);
+	Con_Printf("0x%lx dma buffer\n", (unsigned long)shm->buffer);
 }
 
 
@@ -1115,6 +1115,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.44  2006/10/22 09:46:49  sezero
+ * various coding style clean-ups, part 8.
+ *
  * Revision 1.43  2006/10/21 18:21:30  sezero
  * various coding style clean-ups, part 5.
  *

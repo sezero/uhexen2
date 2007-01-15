@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.35 2006-10-20 20:32:30 sezero Exp $
+	$Id: gl_screen.c,v 1.36 2007-01-15 12:01:08 sezero Exp $
 */
 
 /*=============================================================================
@@ -1035,7 +1035,7 @@ static void SB_IntermissionOverlay (void)
 	}
 	if (pic == NULL)
 	{
-		Host_Error ("%s: Bad episode ending number %s", __FUNCTION__, cl.intermission);
+		Host_Error ("%s: Bad episode ending number %d", __FUNCTION__, cl.intermission);
 		return;
 	}
 
@@ -1304,6 +1304,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.35  2006/10/20 20:32:30  sezero
+ * various coding style clean-ups, part 1.
+ *
  * Revision 1.34  2006/06/23 14:43:32  sezero
  * some minor clean-ups
  *

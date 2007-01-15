@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.24 2006-10-21 18:21:30 sezero Exp $
+	$Id: snd_alsa.c,v 1.25 2007-01-15 12:01:13 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -230,7 +230,7 @@ qboolean S_ALSA_Init (void)
 	err = hx2snd_pcm_hw_params_get_buffer_size (hw, &buffer_size);
 	ALSA_CHECK_ERR(err, "unable to get buffer size. %s\n", hx2snd_strerror(err));
 
-	Con_Printf ("ALSA: %u bytes buffer with mmap interleaved access\n", buffer_size);
+	Con_Printf ("ALSA: %lu bytes buffer with mmap interleaved access\n", (unsigned long)buffer_size);
 
 	if (buffer_size != round_buffer_size (buffer_size))
 	{
@@ -335,6 +335,9 @@ void S_ALSA_Submit (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2006/10/21 18:21:30  sezero
+ * various coding style clean-ups, part 5.
+ *
  * Revision 1.23  2006/09/29 20:38:44  sezero
  * even more sound stuff (alsa clean-up)
  *

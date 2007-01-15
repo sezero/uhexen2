@@ -453,14 +453,14 @@ static void SV_Status_f (void)
 		num_min = floor((num_min - num_sec)/60);
 		Con_Printf ("timeleft         : %i:", num_min);
 		Con_Printf ("%2i\n", num_sec);
-		Con_Printf ("deflosses        : %3i/%3i\n", floor(PR_GLOBAL_STRUCT(defLosses)), floor(f_limit));
-		Con_Printf ("attlosses        : %3i/%3i\n", floor(PR_GLOBAL_STRUCT(attLosses)), floor(f_limit*2));
+		Con_Printf ("deflosses        : %3i/%3i\n", (int)floor(PR_GLOBAL_STRUCT(defLosses)), (int)floor(f_limit));
+		Con_Printf ("attlosses        : %3i/%3i\n", (int)floor(PR_GLOBAL_STRUCT(attLosses)), (int)floor(f_limit*2));
 	}
 	else
 	{
 		Con_Printf ("time             : %5.2f\n", sv.time);
-		Con_Printf ("timelimit        : %i\n", t_limit);
-		Con_Printf ("fraglimit        : %i\n", f_limit);
+		Con_Printf ("timelimit        : %i\n", (int)t_limit);
+		Con_Printf ("fraglimit        : %i\n", (int)f_limit);
 	}
 
 	// min fps lat drp

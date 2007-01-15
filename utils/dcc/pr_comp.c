@@ -768,7 +768,7 @@ void PR_ParseStatement (void)
 		PR_Expect ("(");
 		e = PR_Expression (TOP_PRIORITY);
 		if (e->type->type != ev_entity)
-			PR_ParseError ("type mismatch for %s %d",e->name,e->type);
+			PR_ParseError ("type mismatch for %s",e->name);
 		PR_Expect (",");
 		e2 = PR_Expression (TOP_PRIORITY);
 		if (e2->type->type != ev_float)

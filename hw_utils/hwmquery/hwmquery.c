@@ -239,7 +239,7 @@ int main (int argc, char *argv[])
 	if (ioctlsocket (socketfd, FIONBIO, &_true) == -1)
 	{
 		NET_Shutdown ();
-		Sys_Error ("ioctl FIONBIO:", strerror(errno));
+		Sys_Error ("ioctl FIONBIO: %s", strerror(errno));
 	}
 
 	packet[0] = 255;

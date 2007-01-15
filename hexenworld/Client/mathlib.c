@@ -2,7 +2,7 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.c,v 1.9 2006-10-20 20:32:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.c,v 1.10 2007-01-15 12:01:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -271,7 +271,7 @@ void FloorDivMod (double numer, double denom, int *quotient, int *rem)
 
 #ifndef PARANOID
 	if (denom <= 0.0)
-		Sys_Error ("FloorDivMod: bad denominator %d\n", denom);
+		Sys_Error ("FloorDivMod: bad denominator %f\n", denom);
 
 //	if ((floor(numer) != numer) || (floor(denom) != denom))
 //		Sys_Error ("FloorDivMod: non-integer numer or denom %f %f\n",

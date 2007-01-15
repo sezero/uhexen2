@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.22 2006-10-20 20:32:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.23 2007-01-15 12:01:13 sezero Exp $
 */
 
 
@@ -975,7 +975,7 @@ static void SB_IntermissionOverlay (void)
 	}
 	if (pic == NULL)
 	{
-		Host_Error ("%s: Bad episode ending number %s", __FUNCTION__, cl.intermission);
+		Host_Error ("%s: Bad episode ending number %d", __FUNCTION__, cl.intermission);
 		return;
 	}
 

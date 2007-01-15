@@ -408,7 +408,7 @@ static void PF_name_print (void)
 		client_t	*cl;
 		int			i;
 
-		Sys_Printf("%s", &svs.clients[Index-1].name);
+		Sys_Printf("%s", (char *)&svs.clients[Index-1].name);
 
 		for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 		{

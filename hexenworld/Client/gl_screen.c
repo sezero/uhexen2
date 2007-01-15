@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.30 2006-10-20 20:32:32 sezero Exp $
+	$Id: gl_screen.c,v 1.31 2007-01-15 12:01:12 sezero Exp $
 */
 
 /*=============================================================================
@@ -853,7 +853,7 @@ static void SB_IntermissionOverlay (void)
 	}
 	if (pic == NULL)
 	{
-		Host_Error ("%s: Bad episode ending number %s", __FUNCTION__, cl.intermission);
+		Host_Error ("%s: Bad episode ending number %d", __FUNCTION__, cl.intermission);
 		return;
 	}
 

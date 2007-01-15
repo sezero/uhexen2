@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.13 2006-10-22 15:06:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.14 2007-01-15 12:01:09 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -143,7 +143,7 @@ static hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t 
 			hull = &model->hulls[idx];
 			if (!hull)  // Invalid hull
 			{
-				Con_Printf ("ERROR: hull %d is null.\n",hull);
+				Con_Printf ("ERROR: hull %d is null.\n", idx);
 				hull = &model->hulls[0];
 			}
 		}
@@ -1019,6 +1019,9 @@ trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, e
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2006/10/22 15:06:31  sezero
+ * even more coding style clean-ups (part 10).
+ *
  * Revision 1.12  2006/10/21 18:21:28  sezero
  * various coding style clean-ups, part 5.
  *

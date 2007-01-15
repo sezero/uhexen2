@@ -1009,10 +1009,10 @@ static void CL_IndexedPrint(void)
 	{
 		Con_Printf ("%s",&pr_global_strings[pr_string_index[idx-1]]);
 	}
-	else
-	{
-		Con_Printf ("");
-	}
+//	else
+//	{
+//		Con_Printf ("");
+//	}
 	con_ormask = 0;
 }
 
@@ -1031,12 +1031,12 @@ static void CL_NamePrint(void)
 
 	if (idx >= 0 && idx < MAX_CLIENTS)
 	{
-		Con_Printf ("%s",&cl.players[idx].name);
+		Con_Printf ("%s", (char *)&cl.players[idx].name);
 	}
-	else
-	{
-		Con_Printf ("");
-	}
+//	else
+//	{
+//		Con_Printf ("");
+//	}
 	con_ormask = 0;
 }
 
