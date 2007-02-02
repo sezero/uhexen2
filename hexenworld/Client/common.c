@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.78 2007-02-02 14:16:33 sezero Exp $
+	$Id: common.c,v 1.79 2007-02-02 14:17:46 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -785,7 +785,7 @@ void COM_FileBase (char *in, char *out)
 
 	/* Pa3PyX: no range checking -- used to trash the stack and crash the
 	   game randomly upon loading progs, for instance (or in any other
-	   instance where one would supply a filename witout a path */
+	   instance where one would supply a filename without a path	*/
 //	for (s2 = s; *s2 && *s2 != '/'; s2--);
 	for (s2 = s; *s2 && *s2 != '/' && s2 >= in; s2--)
 		;
@@ -1259,6 +1259,10 @@ int COM_WriteFile (char *filename, void *data, size_t len)
 COM_CreatePath
 Creates directory under user's path,
 making parent directories as needed.
+The path must either be a path to a
+file, or, if the full path is meant to
+be created, it must have the trailing
+path seperator.
 Returns 0 on success, non-zero on error.
 Only used for CopyFile and download
 ============
@@ -2392,6 +2396,8 @@ Reports the existance of a file with read
 permissions in com_gamedir or com_userdir.
 -1 is returned on failure, ie. the return
 value of the access() function
+Files in pakfiles are NOT meant for this
+procedure!
 ============
 */
 int COM_FileInGamedir (char *fname)
