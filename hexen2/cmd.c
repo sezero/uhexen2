@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.20 2007-02-02 14:16:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.21 2007-02-02 14:21:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -724,30 +724,43 @@ Lists the commands to the console
 int ListCommands (char *prefix, char **buf, int pos)
 {
 	cmd_function_t	*cmd;
-	int	preLen = strlen(prefix);
 	int	i = 0;
+	int	preLen = (prefix == NULL) ? 0 : strlen(prefix);
 
 	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
 	{
+		if (!preLen)	// completion procedures always send a prefix
+		{
+			Con_Printf (" %s\n", cmd->name);
+			continue;
+		}
+
 		if ( !Q_strncasecmp(prefix, cmd->name, preLen) )
 		{
-			if (buf)
+			if (!buf)	// completion procedures always send a buf
 			{
-				if (pos+i < MAX_MATCHES)
-					buf[pos+i] = cmd->name;
-			}
-			else
 				Con_Printf (" %s\n", cmd->name);
+				continue;
+			}
+
+			if (pos+i < MAX_MATCHES)
+				buf[pos+i] = cmd->name;
+			else
+				break;
 
 			i++;
 		}
 	}
+
 	return i;
 }
 
 static void Cmd_List_f(void)
 {
-	ListCommands (Cmd_Argv(1), NULL, 0);
+	if ( Cmd_Argc() > 1 )
+		ListCommands (Cmd_Argv(1), NULL, 0);
+	else
+		ListCommands (NULL, NULL, 0);
 }
 
 /*
@@ -760,30 +773,43 @@ Lists the cvars to the console
 int ListCvars (char *prefix, char **buf, int pos)
 {
 	cvar_t		*var;
-	int preLen = strlen(prefix);
 	int i = 0;
+	int preLen = (prefix == NULL) ? 0 : strlen(prefix);
 
 	for (var = cvar_vars ; var ; var = var->next)
 	{
+		if (!preLen)	// completion procedures always send a prefix
+		{
+			Con_Printf (" %s\n", var->name);
+			continue;
+		}
+
 		if ( !Q_strncasecmp(prefix, var->name, preLen) )
 		{
-			if (buf)
+			if (!buf)	// completion procedures always send a buf
 			{
-				if (pos+i < MAX_MATCHES)
-					buf[pos+i] = var->name;
-			}
-			else
 				Con_Printf (" %s\n", var->name);
+				continue;
+			}
+
+			if (pos+i < MAX_MATCHES)
+				buf[pos+i] = var->name;
+			else
+				break;
 
 			i++;
 		}
 	}
+
 	return i;
 }
 
 static void Cmd_ListCvar_f(void)
 {
-	ListCvars (Cmd_Argv(1), NULL, 0);
+	if ( Cmd_Argc() > 1 )
+		ListCvars (Cmd_Argv(1), NULL, 0);
+	else
+		ListCvars (NULL, NULL, 0);
 }
 
 /*
@@ -796,30 +822,43 @@ Lists the cvars to the console
 int ListAlias (char *prefix, char **buf, int pos)
 {
 	cmdalias_t	*a;
-	int	preLen = strlen(prefix);
 	int	i = 0;
+	int preLen = (prefix == NULL) ? 0 : strlen(prefix);
 
 	for (a = cmd_alias ; a ; a = a->next)
 	{
+		if (!preLen)	// completion procedures always send a prefix
+		{
+			Con_Printf (" %s\n", a->name);
+			continue;
+		}
+
 		if ( !Q_strncasecmp(prefix, a->name, preLen) )
 		{
-			if (buf)
+			if (!buf)	// completion procedures always send a buf
 			{
-				if (pos+i < MAX_MATCHES)
-					buf[pos+i] = a->name;
-			}
-			else
 				Con_Printf (" %s\n", a->name);
+				continue;
+			}
+
+			if (pos+i < MAX_MATCHES)
+				buf[pos+i] = a->name;
+			else
+				break;
 
 			i++;
 		}
 	}
+
 	return i;
 }
 
 static void Cmd_ListAlias_f(void)
 {
-	ListAlias (Cmd_Argv(1), NULL, 0);
+	if ( Cmd_Argc() > 1 )
+		ListAlias (Cmd_Argv(1), NULL, 0);
+	else
+		ListAlias (NULL, NULL, 0);
 }
 
 static void Cmd_WriteCommands_f (void)
@@ -878,6 +917,9 @@ void Cmd_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2007/02/02 14:16:31  sezero
+ * cmd.c, common.c: small whitespace/readability cleanup
+ *
  * Revision 1.19  2006/10/20 20:32:29  sezero
  * various coding style clean-ups, part 1.
  *
