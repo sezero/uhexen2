@@ -12,6 +12,7 @@ Development Progress	:
     * cmd.c: small update in Cmd_CheckCommand(). also updated
       keys.c::CheckForCommand() which is its only user.
     * keys.c: small update in CompleteCommand()
+    * draw.h, draw.c, gl_draw.c: small whitespace/readability cleanup
 
 2007-01-29 (CVS):
     * lib3dfxgamma: added an example patch against tyrquake-0.55
