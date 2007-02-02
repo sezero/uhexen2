@@ -176,13 +176,13 @@ static void CompleteCommand (void)
 		s++;
 	}
 
-	// store the length of the relevant partial
-	j = strlen(s);
-
 	// if the remainder line has no length or has
 	// spaces in it, don't bother
-	if (!j || strstr(s," "))
+	if (!*s || strstr(s," "))
 		goto finish;
+
+	// store the length of the relevant partial
+	j = strlen(s);
 
 	// start checking for matches, finally...
 	count += ListCommands(s, matches, count);
