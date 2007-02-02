@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.75 2006-10-20 20:32:32 sezero Exp $
+	$Id: gl_draw.c,v 1.76 2007-02-02 18:33:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -115,7 +115,7 @@ int		gl_filter_max = GL_LINEAR;
 gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
 
-static GLuint GL_LoadPixmap(char *name, char *data);
+static GLuint GL_LoadPixmap (char *name, char *data);
 static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite);
 static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode);
 
@@ -163,7 +163,7 @@ static qpic_t *Draw_PicFromFile (char *name)
 
 // Pa3PyX: Like Draw_PicFromFile, except loads pic into
 // a specified buffer if there is room
-static qpic_t *Draw_PicFileBuf(char *name, void *p, size_t *size)
+static qpic_t *Draw_PicFileBuf (char *name, void *p, size_t *size)
 {
 	glpic_t	*gl;
 
@@ -272,7 +272,7 @@ Pa3PyX: Function added to cache pics ignoring transparent
 colors (e.g. in intermission screens)
 ================
 */
-qpic_t *Draw_CachePicNoTrans(char *path)
+qpic_t *Draw_CachePicNoTrans (char *path)
 {
 	cachepic_t	*pic;
 	int			i;
@@ -622,7 +622,7 @@ void Draw_RedString (int x, int y, char *str)
 	}
 }
 
-void Draw_Crosshair(void)
+void Draw_Crosshair (void)
 {
 	int		x, y;
 	unsigned char	*pColor;
@@ -725,7 +725,7 @@ void Draw_SmallCharacter (int x, int y, int num)
 // Draw_SmallString
 //
 //==========================================================================
-void Draw_SmallString(int x, int y, char *str)
+void Draw_SmallString (int x, int y, char *str)
 {
 	while (*str)
 	{
@@ -830,7 +830,7 @@ void Draw_IntermissionPic (qpic_t *pic)
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
-void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height)
+void Draw_SubPic (int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height)
 {
 	glpic_t			*gl;
 	float	newsl, newtl, newsh, newth;
@@ -861,7 +861,7 @@ void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int h
 	glEnd_fp ();
 }
 
-void Draw_PicCropped(int x, int y, qpic_t *pic)
+void Draw_PicCropped (int x, int y, qpic_t *pic)
 {
 	int		height;
 	glpic_t 	*gl;
@@ -914,7 +914,7 @@ void Draw_PicCropped(int x, int y, qpic_t *pic)
 	glEnd_fp ();
 }
 
-void Draw_SubPicCropped(int x, int y, int h, qpic_t *pic)
+void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
 {
 	int		height;
 	glpic_t 	*gl;

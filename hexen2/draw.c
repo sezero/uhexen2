@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.23 2006-10-20 20:32:29 sezero Exp $
+	$Id: draw.c,v 1.24 2007-02-02 18:33:37 sezero Exp $
 */
 
 
@@ -101,7 +101,7 @@ New function by Pa3PyX; will load a pic resizing it (needed for intermissions)
 ================
 */
 cache_user_t *intermissionScreen = NULL;
-qpic_t  *Draw_CachePicResize(char *path, int targetWidth, int targetHeight)
+qpic_t  *Draw_CachePicResize (char *path, int targetWidth, int targetHeight)
 {
 	cachepic_t *pic;
 	int i, j;
@@ -378,7 +378,7 @@ void Draw_RedString (int x, int y, char *str)
 	}
 }
 
-static void Draw_Pixel(int x, int y, byte color)
+static void Draw_Pixel (int x, int y, byte color)
 {
 	byte			*dest;
 	unsigned short	*pusdest;
@@ -401,7 +401,7 @@ static void Draw_Pixel(int x, int y, byte color)
 extern cvar_t	crosshair, cl_crossx, cl_crossy, crosshaircolor;
 extern vrect_t	scr_vrect;
 
-void Draw_Crosshair(void)
+void Draw_Crosshair (void)
 {
 	int x, y;
 	byte c = (byte)crosshaircolor.value;
@@ -584,7 +584,7 @@ void Draw_SmallCharacter(int x, int y, int num)
 //
 //==========================================================================
 
-void Draw_SmallString(int x, int y, char *str)
+void Draw_SmallString (int x, int y, char *str)
 {
 	while (*str)
 	{
@@ -653,7 +653,7 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 //
 //==========================================================================
 
-void Draw_PicCropped(int x, int y, qpic_t *pic)
+void Draw_PicCropped (int x, int y, qpic_t *pic)
 {
 	byte		*dest, *source;
 	unsigned short	*pusdest;
@@ -837,7 +837,7 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 //
 //==========================================================================
 
-void Draw_SubPicCropped(int x, int y, int h, qpic_t *pic)
+void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
 {
 	byte		*dest, *source;
 	unsigned short	*pusdest;
@@ -937,7 +937,7 @@ void Draw_SubPicCropped(int x, int y, int h, qpic_t *pic)
 //
 //==========================================================================
 
-void Draw_TransPicCropped(int x, int y, qpic_t *pic)
+void Draw_TransPicCropped (int x, int y, qpic_t *pic)
 {
 	byte		*dest, *source, tbyte;
 	unsigned short	*pusdest;
@@ -1118,7 +1118,7 @@ void Draw_TransPicCropped(int x, int y, qpic_t *pic)
 Draw_SubPic
 =============
 */
-void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height)
+void Draw_SubPic (int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height)
 {
 	byte		*dest, *source;
 	unsigned short	*pusdest;
@@ -1734,6 +1734,9 @@ void Draw_EndDisc (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2006/10/20 20:32:29  sezero
+ * various coding style clean-ups, part 1.
+ *
  * Revision 1.22  2006/09/15 20:12:48  sezero
  * use snprintf and the strl* functions, #7: draw.c and gl_draw.c.
  *
