@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.80 2007-02-02 14:18:49 sezero Exp $
+	$Id: common.c,v 1.81 2007-02-02 14:20:10 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1317,33 +1317,33 @@ Copies a file over from the net to the local cache, creating any directories
 needed. Used for saving the game. Returns 0 on success, non-zero on error.
 ===========
 */
-int COM_CopyFile (char *netpath, char *cachepath)
+int COM_CopyFile (char *frompath, char *topath)
 {
 	FILE	*in, *out;
 	int		err = 0;
 	size_t		remaining, count;
 	char	buf[4096];
 
-	in = fopen (netpath, "rb");
+	in = fopen (frompath, "rb");
 	if (!in)
 	{
-		Con_Printf ("%s: unable to open %s\n", netpath, __FUNCTION__);
+		Con_Printf ("%s: unable to open %s\n", frompath, __FUNCTION__);
 		return 1;
 	}
 	remaining = COM_filelength(in);
 
 	// create directories up to the cache file
-	if (COM_CreatePath (cachepath))
+	if (COM_CreatePath (topath))
 	{
 		Con_Printf ("%s: unable to create directory\n", __FUNCTION__);
 		fclose (in);
 		return 1;
 	}
 
-	out = fopen(cachepath, "wb");
+	out = fopen(topath, "wb");
 	if (!out)
 	{
-		Con_Printf ("%s: unable to create %s\n", cachepath, __FUNCTION__);
+		Con_Printf ("%s: unable to create %s\n", topath, __FUNCTION__);
 		fclose (in);
 		return 1;
 	}

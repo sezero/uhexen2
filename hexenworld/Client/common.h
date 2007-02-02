@@ -264,7 +264,7 @@ extern	char	com_userdir[MAX_OSPATH];
 
 int COM_WriteFile (char *filename, void *data, size_t len);
 size_t COM_FOpenFile (char *filename, FILE **file, qboolean override_pack);
-int COM_CopyFile (char *netpath, char *cachepath);
+int COM_CopyFile (char *frompath, char *topath);
 void COM_CloseFile (FILE *h);
 
 byte *COM_LoadStackFile (char *path, void *buffer, size_t bufsize);
