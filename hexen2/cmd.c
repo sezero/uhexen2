@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.21 2007-02-02 14:21:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.22 2007-02-02 14:23:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -619,7 +619,7 @@ qboolean Cmd_CheckCommand (char *partial)
 	cmdalias_t	*a;
 	cvar_t		*var;
 
-	if (!strlen(partial))
+	if (!partial || !partial[0])
 		return false;
 	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
 		if ( !strcmp(partial, cmd->name) )
@@ -917,6 +917,9 @@ void Cmd_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2007/02/02 14:21:30  sezero
+ * cmd.c: updated and sanitized the command lister procedures
+ *
  * Revision 1.20  2007/02/02 14:16:31  sezero
  * cmd.c, common.c: small whitespace/readability cleanup
  *

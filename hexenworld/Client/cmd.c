@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.17 2007-02-02 14:21:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.18 2007-02-02 14:23:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -619,7 +619,7 @@ qboolean Cmd_CheckCommand (char *partial)
 	cmdalias_t	*a;
 	cvar_t		*var;
 
-	if (!strlen(partial))
+	if (!partial || !partial[0])
 		return false;
 	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
 		if ( !strcmp(partial, cmd->name) )

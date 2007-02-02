@@ -147,6 +147,7 @@ static qboolean CheckForCommand (void)
 
 	s = key_lines[edit_line]+1;
 
+	memset (command, 0, sizeof(command));
 	for (i = 0; i < 127; i++)
 	{
 		if (s[i] <= ' ')
