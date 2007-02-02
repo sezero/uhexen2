@@ -3,6 +3,20 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-02-02 (CVS):
+    * cmd.c, common.c: small whitespace/readability cleanup
+    * common.c: updated commentaries
+    * common.c: made COM_CreatePath() to check for empty paths
+    * common.c: renamed the arguments of COM_CopyFile() for better clarity
+    * cmd.c: updated and sanitized the command lister procedures
+    * cmd.c: small update in Cmd_CheckCommand(). also updated
+      keys.c::CheckForCommand() which is its only user.
+    * keys.c: small update in CompleteCommand()
+
+2007-01-29 (CVS):
+    * lib3dfxgamma: added an example patch against tyrquake-0.55
+    * lib3dfxgamma: added an example patch against quake2 @@ icculus
+
 2007-01-15 (CVS):
     * enabled printf format warnings in gcc. the patch, originally by div0,
       is adapted from the darkplaces project.
