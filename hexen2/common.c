@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.83 2007-02-02 14:17:45 sezero Exp $
+	$Id: common.c,v 1.84 2007-02-02 14:18:48 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1273,7 +1273,7 @@ int COM_CreatePath (char *path)
 	int		error_state = 0;
 	size_t		offset;
 
-	if (!path)
+	if (!path || !path[0])
 	{
 		Con_Printf ("%s: no path!\n", __FUNCTION__);
 		return 1;
@@ -2689,6 +2689,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.83  2007/02/02 14:17:45  sezero
+ * common.c: updated commentaries
+ *
  * Revision 1.82  2007/02/02 14:16:32  sezero
  * cmd.c, common.c: small whitespace/readability cleanup
  *

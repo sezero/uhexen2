@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.79 2007-02-02 14:17:46 sezero Exp $
+	$Id: common.c,v 1.80 2007-02-02 14:18:49 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1273,7 +1273,7 @@ int COM_CreatePath (char *path)
 	int		error_state = 0;
 	size_t		offset;
 
-	if (!path)
+	if (!path || !path[0])
 	{
 		Con_Printf ("%s: no path!\n", __FUNCTION__);
 		return 1;
