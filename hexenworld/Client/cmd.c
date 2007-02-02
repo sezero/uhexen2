@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.15 2006-10-20 20:32:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.16 2007-02-02 14:16:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -661,11 +661,11 @@ void Cmd_ExecuteString (char *text, cmd_source_t src)
 		{
 #if defined(H2W)
 			if (!cmd->function)
-#ifndef SERVERONLY
+#  ifndef SERVERONLY
 				Cmd_ForwardToServer ();
-#else
+#  else
 				Sys_Printf ("FIXME: command %s has NULL handler function\n", cmd->name);
-#endif
+#  endif
 			else
 #endif
 				cmd->function ();

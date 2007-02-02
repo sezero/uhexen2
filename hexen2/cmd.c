@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.19 2006-10-20 20:32:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.20 2007-02-02 14:16:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -661,11 +661,11 @@ void Cmd_ExecuteString (char *text, cmd_source_t src)
 		{
 #if defined(H2W)
 			if (!cmd->function)
-#ifndef SERVERONLY
+#  ifndef SERVERONLY
 				Cmd_ForwardToServer ();
-#else
+#  else
 				Sys_Printf ("FIXME: command %s has NULL handler function\n", cmd->name);
-#endif
+#  endif
 			else
 #endif
 				cmd->function ();
@@ -878,6 +878,9 @@ void Cmd_Init (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2006/10/20 20:32:29  sezero
+ * various coding style clean-ups, part 1.
+ *
  * Revision 1.18  2006/09/29 11:17:01  sezero
  * made the alias command to display the value of the given alias
  * instead of clearing it. added new commands unalias and unaliasall.

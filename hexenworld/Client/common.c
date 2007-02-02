@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.77 2006-10-23 12:00:21 sezero Exp $
+	$Id: common.c,v 1.78 2007-02-02 14:16:33 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -963,8 +963,10 @@ void COM_CheckRegistered (void)
 	fclose (h);
 
 	for (i = 0; i < 128; i++)
+	{
 		if ( pop[i] != (unsigned short)BigShort(check[i]) )
 			Sys_Error ("Corrupted data file.");
+	}
 
 	// check if we have 1.11 versions of pak0.pak and pak1.pak
 	if (!(gameflags & GAME_REGISTERED0) || !(gameflags & GAME_REGISTERED1))
@@ -1104,8 +1106,10 @@ int memsearch (byte *start, int count, int search)
 	int		i;
 
 	for (i = 0; i < count; i++)
+	{
 		if (start[i] == search)
 			return i;
+	}
 	return -1;
 }
 #endif
