@@ -169,10 +169,10 @@ HINSTANCE	hInstGL;
 static const char	*gl_library;
 #endif
 
-const char	*gl_vendor;
-const char	*gl_renderer;
-const char	*gl_version;
-const char	*gl_extensions;
+static const char	*gl_vendor;
+static const char	*gl_renderer;
+static const char	*gl_version;
+static const char	*gl_extensions;
 qboolean	is_3dfx = false;
 
 GLint		gl_max_size = 256;
@@ -180,8 +180,8 @@ float		gldepthmin, gldepthmax;
 GLuint		texture_extension_number = 1U;
 
 // palettized textures
-typedef void	(APIENTRY *FX_SET_PALETTE_EXT)(int, int, int, int, int, const void*);
-static FX_SET_PALETTE_EXT	MyglColorTableEXT;
+typedef void	(APIENTRY *glColorTableEXT_f)(int, int, int, int, int, const void*);
+static	glColorTableEXT_f  glColorTableEXT_fp;
 static qboolean	have8bit = false;
 qboolean	is8bit = false;
 static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit", "0", CVAR_ARCHIVE};
@@ -630,12 +630,12 @@ static void VID_Init8bitPalette (void)
 
 	have8bit = false;
 	is8bit = false;
-	MyglColorTableEXT = NULL;
+	glColorTableEXT_fp = NULL;
 
 	if (strstr(gl_extensions, "GL_EXT_shared_texture_palette"))
 	{
-		MyglColorTableEXT = (FX_SET_PALETTE_EXT)wglGetProcAddress_fp("glColorTableEXT");
-		if (MyglColorTableEXT == NULL)
+		glColorTableEXT_fp = (glColorTableEXT_f)wglGetProcAddress_fp("glColorTableEXT");
+		if (glColorTableEXT_fp == NULL)
 		{
 			return;
 		}
@@ -655,8 +655,8 @@ static void VID_Init8bitPalette (void)
 		}
 
 		glEnable_fp (GL_SHARED_TEXTURE_PALETTE_EXT);
-		MyglColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256,
-				GL_RGB, GL_UNSIGNED_BYTE, (void *) thePalette);
+		glColorTableEXT_fp (GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256,
+					GL_RGB, GL_UNSIGNED_BYTE, (void *) thePalette);
 		is8bit = true;
 		Con_Printf("8-bit palettized textures enabled\n");
 	}
@@ -836,7 +836,7 @@ static void GL_ResetFunctions(void)
 
 	have8bit = false;
 	is8bit = false;
-	MyglColorTableEXT = NULL;
+	glColorTableEXT_fp = NULL;
 
 	GetDeviceGammaRamp_f = NULL;
 	SetDeviceGammaRamp_f = NULL;
@@ -892,8 +892,8 @@ static void GL_Init (void)
 		is_3dfx = true;
 	}
 
-	if (Q_strncasecmp(gl_renderer,"PowerVR",7) == 0)
-		fullsbardraw = true;
+	if (!Q_strncasecmp(gl_renderer, "PowerVR", 7))
+		fullsbardraw = true;	// this actually seems useless, things aren't like those in quake
 
 	VID_InitGamma ();
 
@@ -912,7 +912,13 @@ static void GL_Init (void)
 
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// previously GL_CLAMP was GL_REPEAT S.A
+
+//	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	/* S.A  -  Replacing the GL_REPEAT parameter to GL_CLAMP 'fixes'
+	   the extra lines drawn in rendering fires of Succubus and Praevus.
+	   Also see gl_rmain.c in func: R_DrawSpriteModel().  The fix was
+	   suggested by Pa3PyX.	 This is actually a workaround only..	*/
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 

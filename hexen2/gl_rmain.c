@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.51 2006-10-20 20:32:30 sezero Exp $
+	$Id: gl_rmain.c,v 1.52 2007-02-04 15:17:18 sezero Exp $
 */
 
 
@@ -433,9 +433,12 @@ static void R_DrawSpriteModel (entity_t *e)
 
 	glEnd_fp ();
 
-	//restore tex parms
-	// replaced GL_REPEAT with GL_CLAMP below (courtesy of Pa3PyX)
-	// fixing the demoness flame's "lines" bug S.A
+// restore tex parms
+//	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	/* replaced GL_REPEAT with GL_CLAMP below (courtesy of Pa3PyX)
+	   fixing the demoness and praevus flame's "lines" bug.  also
+	   see gl_vidsdl.c and gl_vidnt.c in func: GL_Init()	- S.A */
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
@@ -1976,6 +1979,9 @@ void R_RenderView (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.51  2006/10/20 20:32:30  sezero
+ * various coding style clean-ups, part 1.
+ *
  * Revision 1.50  2006/09/15 20:20:18  sezero
  * use snprintf and the strl* functions, #9: gl_rmain.c.
  *

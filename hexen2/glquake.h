@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.57 2006-10-05 16:40:27 sezero Exp $
+	$Id: glquake.h,v 1.58 2007-02-04 15:17:19 sezero Exp $
 */
 
 
@@ -386,15 +386,13 @@ extern	mplane_t	*mirror_plane;
 
 extern	float	r_world_matrix[16];
 
-extern	const char *gl_vendor;
-extern	const char *gl_renderer;
-extern	const char *gl_version;
-extern	const char *gl_extensions;
-
 #endif	/* __GLQUAKE_H */
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.57  2006/10/05 16:40:27  sezero
+ * exported lightmap_textures through glquake.h
+ *
  * Revision 1.56  2006/09/24 17:28:42  sezero
  * protected all headers against multiple inclusion
  *

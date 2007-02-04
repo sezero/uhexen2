@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.47 2006-10-05 16:40:34 sezero Exp $
+	$Id: glquake.h,v 1.48 2007-02-04 15:17:28 sezero Exp $
 */
 
 
@@ -390,11 +390,6 @@ extern	qboolean	mirror;
 extern	mplane_t	*mirror_plane;
 
 extern	float	r_world_matrix[16];
-
-extern	const char *gl_vendor;
-extern	const char *gl_renderer;
-extern	const char *gl_version;
-extern	const char *gl_extensions;
 
 #endif	/* __GLQUAKE_H */
 
