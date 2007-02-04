@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-02-04 (CVS):
+    * gl_rmain.c, gl_vidnt.c, gl_vidsdl.c: General cleanup: The vendor,
+      renderer, version and extensions vars are not global anymore, no
+      one uses them.  Added clarifications to the demoness fires fix.
+      Renamed MyglColorTableEXT to glColorTableEXT_fp for consistancy
+      with the other gl function pointers. Probably a few other small
+      things.
+
 2007-02-02 (CVS):
     * cmd.c, common.c: small whitespace/readability cleanup
     * common.c: updated commentaries
