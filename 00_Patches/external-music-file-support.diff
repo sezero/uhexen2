@@ -1,3 +1,6 @@
+this patch resulted after a feature request [ 1597004 ] at our tracker:
+http://sourceforge.net/tracker/index.php?func=detail&aid=1597004&group_id=124987&atid=701009
+
 initial support for allowing ogg, mp3, and mod (mod, it, s3m) external
 music files to be played instead of the original midi files. the music
 files are searched first under <install_dir>/data1/music and then under
