@@ -3,19 +3,38 @@ Hexen II: Hammer of Thyrion
 Known Bugs
 ---------------------------
 
+- 64 bit: If compiled as an 64 bit binary the game crashes. The bug is
+  actually at the server side code (an 64 bit client can connect to a
+  server and runs properly).  See the bug tracker entry [ 1595885 ]:
+  http://sourceforge.net/tracker/index.php?func=detail&aid=1595885&group_id=124987&atid=701006
+
 - Software renderer clients cannot be compiled for non-x86 cpus because
   of some x86 assembly code about translucency which do not have their C
   counterparts yet. For details, see COMPILE and NonIntel.log in docs.
 
-- HexenWorld (OpenGL Client): Dynamic lights have a problem with RGBA
-  lightmaps (such as torches doesn't illuminate). Luminance mode is fine.
-
-- Linux (Unix): Midi music doesn't work with SDL sound driver due to
-  conflicting SDL and SDL_mixer calls. Will be looked into.
+- Linux (Unix): Midi music doesn't work in combination with SDL sound
+  driver due to conflicting SDL and SDL_mixer calls. To be looked into.
 
 - Linux (Unix): OSS sound code does not work for a few people, either
   partially or completely. If you suffer from that problem, use Alsa
   or SDL sound.
+
+- OpenGL Client: The so-called fix we adopted during 1.2.2 development
+  for the extra lines drawn in rendering fires of Demoness and Praevus
+  is actually an incomplete workaround (and is adding extra mess). The
+  unwanted extra lines still appear but only for the first time.  This
+  should be fixed in a better way (R_DrawSpriteModel, probably?).  See
+  the workaround in gl_vidnt.c, gl_vidsdl.c, gl_rmain.c.
+
+- HexenWorld (OpenGL Client): Dynamic lights have a problem with RGBA
+  lightmaps (such as torches doesn't illuminate). Luminance mode is fine.
+  To be looked into.
+
+- Hexen II dedicated server: The decorative swords in the village1 and
+  demo2 levels are located out of place. To be looked into.
+
+- HexenWorld: Coop mode is broken. Known problem since Raven's latest
+  beta versions.
 
 - 3dfx Voodoo Graphics / Voodoo2:  Palettized textures are broken with
   the old Mesa 3.x drivers. The new Mesa-6.x drivers work fine. Windows
@@ -26,10 +45,4 @@ Known Bugs
   use Mesa-6.2 on Linux and the latest "MesaFX" driver on Windows.
 
 - Matrox G200: GL games may not display menus correctly (Matrox bug?)
-
-- Hexen II dedicated server: The decorative swords in the village1 and
-  demo2 levels are located out of place. To be looked into.
-
-- HexenWorld: Coop mode is broken. Known problem since Raven's latest
-  beta versions.
 
