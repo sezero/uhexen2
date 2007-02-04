@@ -10,6 +10,7 @@ Development Progress	:
       Renamed MyglColorTableEXT to glColorTableEXT_fp for consistancy
       with the other gl function pointers. Probably a few other small
       things.
+    * updated the list of known bugs.
 
 2007-02-02 (CVS):
     * cmd.c, common.c: small whitespace/readability cleanup
