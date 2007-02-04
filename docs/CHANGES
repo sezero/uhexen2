@@ -11,6 +11,8 @@ Development Progress	:
       with the other gl function pointers. Probably a few other small
       things.
     * updated the list of known bugs.
+    * added the tracker information to the external music file support
+      extra patch. closed the relevant tracker entry [1597004].
 
 2007-02-02 (CVS):
     * cmd.c, common.c: small whitespace/readability cleanup
