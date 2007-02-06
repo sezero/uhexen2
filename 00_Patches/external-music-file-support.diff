@@ -20,8 +20,8 @@ in the game, choose midi as the background music format and you'll be
 ready to go.
 
 
---- midi_sdl.c~	2006-10-22 18:06:30.000000000 +0300
-+++ midi_sdl.c	2006-11-17 16:06:26.000000000 +0200
+--- midi_sdl.c~	2007-02-06 10:00:33.000000000 +0200
++++ midi_sdl.c	2007-02-06 10:00:36.000000000 +0200
 @@ -147,6 +147,8 @@ bad_version:
  	}
  	Con_Printf("found.\n");
@@ -31,11 +31,11 @@ ready to go.
  	Q_snprintf_err(mididir, sizeof(mididir), "%s/.midi", com_userdir);
  	Sys_mkdir_err (mididir);
  
-@@ -191,10 +193,28 @@ bad_version:
+@@ -191,10 +193,29 @@ bad_version:
  	return true;
  }
  
-+static struct
++static const struct
 +{
 +	char	*ext;
 +	char	*lookup_dir;
@@ -51,30 +51,32 @@ ready to go.
 +};
 +
 +
- void MIDI_Play(char *Name)
+ void MIDI_Play(const char *Name)
  {
  	void	*midiData;
  	char	midiName[MAX_OSPATH];
 +	int			i;
-+	char		*tmp;
++	qboolean		search_ripped_tracks;
++	char		tmp[64];
  
  	if (!bMidiInited)	//don't try to play if there is no midi
  		return;
-@@ -207,6 +227,43 @@ void MIDI_Play(char *Name)
+@@ -207,6 +228,44 @@ void MIDI_Play(const char *Name)
  		return;
  	}
  
-+	tmp = Name;
++	search_ripped_tracks = false;
++	Q_strlcpy (tmp, Name, sizeof(tmp));
 +retry:
 +	for (i = 0; ; i++)
 +	{
 +	    if (MusicFile[i].ext == NULL)
 +	    {
-+	    	midiName[0] = '\0';
-+	    	break;
++		midiName[0] = '\0';
++		break;
 +	    }
 +
-+	    if (tmp == Name)	// search for ripped cd-tracks only under com_userdir
++	    if (!search_ripped_tracks)	// search for ripped cd-tracks only under com_userdir
 +	    {
 +		snprintf (midiName, sizeof(midiName), "%s/%s/%s.%s", com_gamedir, MusicFile[i].lookup_dir, tmp, MusicFile[i].ext);
 +		if (access(midiName, R_OK) == 0)
@@ -91,20 +93,20 @@ ready to go.
 +
 +    if (midiName[0] == '\0')
 +    {
-+	if (tmp == Name)
++	if (!search_ripped_tracks)
 +	{
 +	// specific midi/music filename not found. let's try
 +	// again to find a ripped cdrom track.
-+		tmp = (char *) Z_Malloc(12);
-+		snprintf (tmp, 12, "track%02d", cl.cdtrack);
++		snprintf (tmp, sizeof(tmp), "track%02d", cl.cdtrack);
 +		Sys_Printf ("trying ripped cd-track name %s\n", tmp);
++		search_ripped_tracks = true;
 +		goto retry;
 +	}
 +
  	// Note that midi/ is the standart quake search path, but
  	// .midi/ with the leading dot is the path in the userdir
  	snprintf (midiName, sizeof(midiName), "%s/.midi/%s.mid", com_userdir, Name);
-@@ -222,6 +279,16 @@ void MIDI_Play(char *Name)
+@@ -222,6 +281,11 @@ void MIDI_Play(const char *Name)
  		if (COM_WriteFile (va(".midi/%s.mid", Name), midiData, com_filesize))
  			return;
  	}
@@ -112,11 +114,6 @@ ready to go.
 +    else
 +    {
 +	Sys_Printf("Using music file %s\n", midiName);
-+    }
-+
-+    if (tmp != Name)
-+    {
-+	Z_Free (tmp);
 +    }
  
  	music = Mix_LoadMUS(midiName);
