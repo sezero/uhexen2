@@ -23,6 +23,7 @@ Development Progress	:
       anything, send it to us.
     * updated the external-music-file-support patch after the constify
       changes.
+    * updated commentaries for common.c functions
 
 2007-02-05 (CVS):
     * minor documentation updates
