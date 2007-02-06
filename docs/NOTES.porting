@@ -12,13 +12,22 @@ the file NonIntel.log for some details. The opengl renderer does
 not have such issues.
 
 
-Endianness and 64-bit cleanness:
---------------------------------
+Endianness :
+-----------------
 
 Hammer of Thyrion version 1.4.1 fixed many endianness issues.
-There still may be some code left which are incompatible with big-
-endian machines and 64 bit operating systems. Please send patches
-and/or report problems.
+There should be little, if any, code left which are incompatible
+with big-endian machines. Please send patches and/or report any
+problems.
+
+
+64-bit cleanness:
+-----------------
+
+The server side code is known to crash when compiled as a 64 bit
+binary. Here is the bug tracker entry:
+http://sourceforge.net/tracker/index.php?func=detail&aid=1595885&group_id=124987&atid=701006
+This is currently being worked on. Any help will be appreciated.
 
 
 Platform defines:
@@ -29,7 +38,7 @@ _WIN32		:  Code specific to Win32 only.
 PLATFORM_UNIX	:  Code specific to Unix only (should be
 		   explicitly defined in the makefiles.)
 
-Throughout the tree, there are instances of code like:
+Throughout the tree, there may be instances of code like:
 
 #ifdef _WIN32
  some Win32 code
