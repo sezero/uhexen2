@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.86 2007-02-06 12:23:35 sezero Exp $
+	$Id: common.c,v 1.87 2007-02-06 14:01:42 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1072,8 +1072,8 @@ void COM_Init (void)
 ============
 va
 
-does a varargs printf into a temp buffer, so I don't need to have
-varargs versions of all text functions.
+does a varargs printf into a temp buffer.
+cycles between 4 different static buffers.
 ============
 */
 #define VA_BUFFERLEN 1024
@@ -1313,8 +1313,8 @@ int COM_CreatePath (char *path)
 ===========
 COM_CopyFile
 
-Copies a file over from the net to the local cache, creating any directories
-needed. Used for saving the game. Returns 0 on success, non-zero on error.
+Copies the FROMPATH file as TOPATH file, creating any dirs needed.
+Used for saving the game. Returns 0 on success, non-zero on error.
 ===========
 */
 int COM_CopyFile (const char *frompath, const char *topath)
@@ -2691,6 +2691,24 @@ void Info_Print (const char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.86  2007/02/06 12:23:35  sezero
+ * started an attempt at improving const-correctness all over the
+ * uhexen2 tree. this was driven by a feature request by Markus
+ * Elfring a few days ago and this commit now closes that entry.
+ * here is the tracker address:
+ * http://sourceforge.net/tracker/?func=detail&atid=701009&aid=1649713&group_id=124notes:
+ * * there are places I purposefully skipped in the files I already
+ * touched, see for example wad.c::W_CleanupName(char *, char *),
+ * which would simply be W_CleanupName (const char *, char *), but
+ * it has one silly user that employs this function as a means for
+ * in-place changing of a string (see at the end of W_LoadWadFile()
+ * function), which makes me doubt about what would be the wise thing
+ * to do. such things will be looked into in the future.
+ * * the utilities and the launcher are not yet touched by this, but
+ * they will be in future.
+ * * there is always room for improvement in this area. if you have
+ * anything, send it to us.
+ *
  * Revision 1.85  2007/02/02 14:20:09  sezero
  * renamed the arguments of COM_CopyFile() for better clarity
  *

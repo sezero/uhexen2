@@ -247,6 +247,7 @@ void COM_DefaultExtension (char *path, const char *extension, size_t len);
 
 char	*va(const char *format, ...) _FUNC_PRINTF(1);
 // does a varargs printf into a temp buffer
+// cycles between 4 different static buffers
 
 int COM_StrCompare (const void *arg1, const void *arg2);
 // quick'n'dirty string comparison function for use with qsort
@@ -263,9 +264,20 @@ extern	char	com_savedir[MAX_OSPATH];	// temporary path for saving gip files
 extern	char	com_userdir[MAX_OSPATH];
 
 int COM_WriteFile (const char *filename, const void *data, size_t len);
-size_t COM_FOpenFile (const char *filename, FILE **file, qboolean override_pack);
+// Prefixes the filename by the current game directory and does an fwrite()
+// Returns 0 on success, 1 on error.
+
 int COM_CopyFile (const char *frompath, const char *topath);
-void COM_CloseFile (FILE *h);
+// Copies the FROMPATH file as TOPATH file, creating any dirs needed.
+// Used for saving the game. Returns 0 on success, non-zero on error.
+
+int COM_CreatePath (char *path);
+// Creates directory under user's path, making parent directories as needed.
+// The path must either be a path to a file, or, if the full path is meant to
+// be created, it must have the trailing path seperator. Returns 0 on success,
+// non-zero on error.
+
+size_t COM_FOpenFile (const char *filename, FILE **file, qboolean override_pack);
 
 byte *COM_LoadStackFile (const char *path, void *buffer, size_t bufsize);
 byte *COM_LoadBufFile (const char *path, void *buffer, size_t *bufsize);
@@ -274,9 +286,13 @@ byte *COM_LoadHunkFile (const char *path);
 byte *COM_LoadZoneFile (const char *path);
 byte *COM_LoadMallocFile (const char *path);
 void COM_LoadCacheFile (const char *path, struct cache_user_s *cu);
-int COM_CreatePath (char *path);
+
 void COM_Gamedir (const char *dir);
+// Sets the gamedir and path to a different directory.
+
 int COM_FileInGamedir (const char *fname);
+// Reports the existance of a file with read perms in com_gamedir or com_userdir.
+// Returns -1 on failure. Files in pakfiles are NOT meant for this procedure!
 
 extern	struct cvar_s	registered;
 extern	struct cvar_s	oem;

@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.82 2007-02-06 12:23:52 sezero Exp $
+	$Id: common.c,v 1.83 2007-02-06 14:01:55 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1072,8 +1072,8 @@ void COM_Init (void)
 ============
 va
 
-does a varargs printf into a temp buffer, so I don't need to have
-varargs versions of all text functions.
+does a varargs printf into a temp buffer.
+cycles between 4 different static buffers.
 ============
 */
 #define VA_BUFFERLEN 1024
@@ -1313,8 +1313,8 @@ int COM_CreatePath (char *path)
 ===========
 COM_CopyFile
 
-Copies a file over from the net to the local cache, creating any directories
-needed. Used for saving the game. Returns 0 on success, non-zero on error.
+Copies the FROMPATH file as TOPATH file, creating any dirs needed.
+Used for saving the game. Returns 0 on success, non-zero on error.
 ===========
 */
 int COM_CopyFile (const char *frompath, const char *topath)
