@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/quakedef.h,v 1.28 2007-01-15 11:59:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/quakedef.h,v 1.29 2007-02-06 12:24:23 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -108,13 +108,13 @@ extern	double		realtime;		// not bounded in any way, changed at
 void Host_InitCommands (void);
 void Host_Init (quakeparms_t *parms);
 void Host_Shutdown(void);
-void Host_Error (char *error, ...) _FUNC_PRINTF(1);
-void Host_EndGame (char *message, ...) _FUNC_PRINTF(1);
+void Host_Error (const char *error, ...) _FUNC_PRINTF(1);
+void Host_EndGame (const char *message, ...) _FUNC_PRINTF(1);
 void Host_Frame (float time);
 void Host_Quit_f (void);
-void Host_ClientCommands (char *fmt, ...) _FUNC_PRINTF(1);
+void Host_ClientCommands (const char *fmt, ...) _FUNC_PRINTF(1);
 void Host_ShutdownServer (qboolean crash);
-void Host_WriteConfiguration (char *fname);
+void Host_WriteConfiguration (const char *fname);
 
 extern	qboolean	msg_suppress_1;	// suppresses resolution and cache size console output
 					//  a fullscreen DIB focus gain/loss

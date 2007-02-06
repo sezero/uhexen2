@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.38 2006-10-22 15:06:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.39 2007-02-06 12:23:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -88,7 +88,7 @@ void SV_Init (void)
 	sv_kingofhill = 0;
 }
 
-void SV_Edicts (char *Name)
+void SV_Edicts (const char *Name)
 {
 	FILE	*FH;
 	int		i;
@@ -306,7 +306,7 @@ An attenuation of 0 will play full volume everywhere in the level.
 Larger attenuations will drop off.  (max 4 attenuation)
 ==================
 */
-void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, float attenuation)
+void SV_StartSound (edict_t *entity, int channel, const char *sample, int volume, float attenuation)
 {
 	int			sound_num, ent;
 	int			i, field_mask;
@@ -1715,7 +1715,7 @@ SV_ModelIndex
 
 ================
 */
-int SV_ModelIndex (char *name)
+int SV_ModelIndex (const char *name)
 {
 	int		i;
 
@@ -1878,7 +1878,7 @@ SV_SpawnServer
 This is called at the start of each level
 ================
 */
-void SV_SpawnServer (char *server, char *startspot)
+void SV_SpawnServer (const char *server, const char *startspot)
 {
 	edict_t		*ent;
 	int			i;
@@ -2108,6 +2108,9 @@ void SV_SpawnServer (char *server, char *startspot)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.38  2006/10/22 15:06:31  sezero
+ * even more coding style clean-ups (part 10).
+ *
  * Revision 1.37  2006/10/21 18:21:28  sezero
  * various coding style clean-ups, part 5.
  *

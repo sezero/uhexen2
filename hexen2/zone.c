@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.25 2006-10-21 18:21:29 sezero Exp $
+	$Id: zone.c,v 1.26 2007-02-06 12:23:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -265,7 +265,7 @@ void Hunk_Check (void)
 Hunk_AllocName
 ===================
 */
-void *Hunk_AllocName (int size, char *name)
+void *Hunk_AllocName (int size, const char *name)
 {
 	hunk_t	*h;
 
@@ -349,7 +349,7 @@ void Hunk_FreeToHighMark (int mark)
 Hunk_HighAllocName
 ===================
 */
-void *Hunk_HighAllocName (int size, char *name)
+void *Hunk_HighAllocName (int size, const char *name)
 {
 	hunk_t	*h;
 
@@ -710,7 +710,7 @@ void *Cache_Check (cache_user_t *c)
 Cache_Alloc
 ==============
 */
-void *Cache_Alloc (cache_user_t *c, int size, char *name)
+void *Cache_Alloc (cache_user_t *c, int size, const char *name)
 {
 	cache_system_t	*cs;
 
@@ -976,7 +976,7 @@ static void Cache_Display_f(void)
 }
 
 #define NUM_GROUPS 18
-static char *MemoryGroups[NUM_GROUPS+1] =
+static const char *MemoryGroups[NUM_GROUPS+1] =
 {
 	"texture",
 	"light",
@@ -1130,6 +1130,9 @@ void Memory_Init (void *buf, int size)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2006/10/21 18:21:29  sezero
+ * various coding style clean-ups, part 5.
+ *
  * Revision 1.24  2006/09/19 06:25:06  sezero
  * string sizes stuff, #15: zone.c
  *

@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.128 2007-02-04 15:17:28 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.129 2007-02-06 12:24:20 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1439,7 +1439,7 @@ static void VID_EarlyReadConfig (void)
 	FILE	*cfg_file;
 	char	buff[1024], *tmp;
 	int		i;
-	char *read_vars[] = {
+	const char *read_vars[] = {
 		"vid_config_fscr",
 		"vid_config_gl8bit",
 		"vid_config_fsaa",

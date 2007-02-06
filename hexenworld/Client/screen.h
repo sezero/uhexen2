@@ -10,7 +10,7 @@ void SCR_Init (void);
 void SCR_UpdateScreen (void);
 void SCR_UpdateWholeScreen (void);
 
-void SCR_CenterPrint (char *str);
+void SCR_CenterPrint (const char *str);
 //void SCR_BringDownConsole (void);
 
 void SCR_BeginLoadingPlaque (void);

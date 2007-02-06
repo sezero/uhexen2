@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.9 2006-10-26 08:43:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.10 2007-02-06 12:23:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -48,7 +48,7 @@ FILE IO
 ===============================================================================
 */
 
-int Sys_mkdir (char *path)
+int Sys_mkdir (const char *path)
 {
 	int rc;
 
@@ -71,7 +71,7 @@ static DIR		*finddir;
 static struct dirent	*finddata;
 static char		*findpath, *findpattern;
 
-char *Sys_FindFirstFile (char *path, char *pattern)
+char *Sys_FindFirstFile (const char *path, const char *pattern)
 {
 	size_t	tmp_len;
 
@@ -142,7 +142,7 @@ SYSTEM IO
 ===============================================================================
 */
 
-void Sys_Error (char *error, ...)
+void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
@@ -158,7 +158,7 @@ void Sys_Error (char *error, ...)
 	exit (1);
 }
 
-void Sys_Printf (char *fmt, ...)
+void Sys_Printf (const char *fmt, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
@@ -170,7 +170,7 @@ void Sys_Printf (char *fmt, ...)
 	fprintf(stderr, "%s", text);
 }
 
-void Sys_DPrintf (char *fmt, ...)
+void Sys_DPrintf (const char *fmt, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];

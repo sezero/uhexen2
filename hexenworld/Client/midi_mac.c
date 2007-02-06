@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.5 2006-10-10 07:24:25 sezero Exp $
+	$Id: midi_mac.c,v 1.6 2007-02-06 12:24:22 sezero Exp $
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -163,7 +163,7 @@ void MIDI_Cleanup (void)
 	}
 }
 
-void MIDI_Play (char *Name)
+void MIDI_Play (const char *Name)
 {
 	void	*midiData;
 	char	midiName[MAX_OSPATH];

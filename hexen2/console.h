@@ -18,16 +18,16 @@ void Con_DrawCharacter (int cx, int line, int num);
 void Con_CheckResize (void);
 void Con_Init (void);
 void Con_DrawConsole (int lines, qboolean drawinput);
-void Con_Printf (char *fmt, ...) _FUNC_PRINTF(1);
-void Con_DPrintf (char *fmt, ...) _FUNC_PRINTF(1);
-void Con_SafePrintf (char *fmt, ...) _FUNC_PRINTF(1);
+void Con_Printf (const char *fmt, ...) _FUNC_PRINTF(1);
+void Con_DPrintf (const char *fmt, ...) _FUNC_PRINTF(1);
+void Con_SafePrintf (const char *fmt, ...) _FUNC_PRINTF(1);
 void Con_ShowList (int , const char **);
 //void Con_Clear_f (void);
 void Con_DrawNotify (void);
 void Con_ClearNotify (void);
 void Con_ToggleConsole_f (void);
 
-void Con_NotifyBox (char *text);	// during startup for sound / cd warnings
+void Con_NotifyBox (const char *text);	// during startup for sound / cd warnings
 
 #endif	/* __CONSOLE_H */
 

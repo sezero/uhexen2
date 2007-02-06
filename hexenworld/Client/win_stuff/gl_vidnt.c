@@ -2129,7 +2129,7 @@ static void VID_EarlyReadConfig (void)
 	FILE	*cfg_file;
 	char	buff[1024], *tmp;
 	int		i;
-	char *read_vars[] = {
+	const char *read_vars[] = {
 		"vid_config_fscr",
 		"vid_config_gl8bit",
 		"vid_config_bpp",

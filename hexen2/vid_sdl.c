@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.61 2006-10-23 08:05:09 sezero Exp $
+	$Id: vid_sdl.c,v 1.62 2007-02-06 12:23:43 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -662,7 +662,7 @@ static void VID_EarlyReadConfig (void)
 	FILE	*cfg_file;
 	char	buff[1024], *tmp;
 	int		i;
-	char *read_vars[] = {
+	const char *read_vars[] = {
 		"vid_config_fscr",
 		"vid_config_swx",
 		"vid_config_swy",
@@ -1314,6 +1314,9 @@ void VID_MenuKey (int key)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.61  2006/10/23 08:05:09  sezero
+ * even more coding style clean-ups (part 10).
+ *
  * Revision 1.60  2006/10/21 18:21:28  sezero
  * various coding style clean-ups, part 5.
  *

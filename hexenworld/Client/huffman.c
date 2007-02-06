@@ -17,7 +17,7 @@
 #define _FUNC_PRINTF(n)
 #endif
 
-extern void Sys_Error (char *error, ...) _FUNC_PRINTF(1);
+extern void Sys_Error (const char *error, ...) _FUNC_PRINTF(1);
 
 //
 // huffman types and vars

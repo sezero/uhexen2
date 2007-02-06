@@ -568,7 +568,7 @@ the given string.  Single ascii characters return themselves, while
 the K_* names are matched up.
 ===================
 */
-static int Key_StringToKeynum (char *str)
+static int Key_StringToKeynum (const char *str)
 {
 	keyname_t	*kn;
 
@@ -623,7 +623,7 @@ char *Key_KeynumToString (int keynum)
 Key_SetBinding
 ===================
 */
-void Key_SetBinding (int keynum, char *binding)
+void Key_SetBinding (int keynum, const char *binding)
 {
 	if (keynum == -1)
 		return;

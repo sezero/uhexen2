@@ -1,7 +1,7 @@
 /*
 	zone.h
 
-	$Id: zone.h,v 1.6 2006-09-24 17:28:42 sezero Exp $
+	$Id: zone.h,v 1.7 2007-02-06 12:23:44 sezero Exp $
 */
 
 #ifndef __ZZONE_H
@@ -84,9 +84,9 @@ void Z_CheckHeap (void);
 int Z_FreeMemory (void);
 
 void *Hunk_Alloc (int size);		// returns 0 filled memory
-void *Hunk_AllocName (int size, char *name);
+void *Hunk_AllocName (int size, const char *name);
 
-void *Hunk_HighAllocName (int size, char *name);
+void *Hunk_HighAllocName (int size, const char *name);
 
 int	Hunk_LowMark (void);
 void Hunk_FreeToLowMark (int mark);
@@ -111,7 +111,7 @@ void *Cache_Check (cache_user_t *c);
 
 void Cache_Free (cache_user_t *c);
 
-void *Cache_Alloc (cache_user_t *c, int size, char *name);
+void *Cache_Alloc (cache_user_t *c, int size, const char *name);
 // Returns NULL if all purgable data was tossed and there still
 // wasn't enough room.
 
@@ -121,6 +121,9 @@ void Cache_Report (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2006/09/24 17:28:42  sezero
+ * protected all headers against multiple inclusion
+ *
  * Revision 1.5  2006/02/23 11:01:42  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 25: zone.c, zone.h).

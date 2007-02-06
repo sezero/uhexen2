@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/server.h,v 1.11 2007-01-15 11:59:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/server.h,v 1.12 2007-02-06 12:24:28 sezero Exp $
 */
 
 #ifndef __H2W_SERVER_H
@@ -373,13 +373,13 @@ extern	FILE		*sv_fraglogfile;
 //
 void SV_Shutdown (void);
 void SV_Frame (float time);
-void SV_FinalMessage (char *message);
+void SV_FinalMessage (const char *message);
 void SV_DropClient (client_t *drop);
 
 int SV_CalcPing (client_t *cl);
 void SV_FullClientUpdate (client_t *client, sizebuf_t *buf);
 
-int SV_ModelIndex (char *name);
+int SV_ModelIndex (const char *name);
 
 qboolean SV_CheckBottom (edict_t *ent);
 qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink, qboolean noenemy, qboolean set_trace);
@@ -405,7 +405,7 @@ void Master_Packet (void);
 //
 // sv_init.c
 //
-void SV_SpawnServer (char *server, char *startspot);
+void SV_SpawnServer (const char *server, const char *startspot);
 void SV_FlushSignon (void);
 
 //
@@ -430,7 +430,7 @@ void SV_SendClientMessages (void);
 
 void SV_Multicast (vec3_t origin, int to);
 void SV_MulticastSpecific (unsigned clients, qboolean reliable);
-void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, float attenuation);
+void SV_StartSound (edict_t *entity, int channel, const char *sample, int volume, float attenuation);
 void SV_StopSound (edict_t *entity, int channel);
 void SV_UpdateSoundPos (edict_t *entity, int channel);
 void SV_StartParticle (vec3_t org, vec3_t dir, int color, int count);
@@ -438,9 +438,9 @@ void SV_StartParticle2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int eff
 void SV_StartParticle3 (vec3_t org, vec3_t box, int color, int effect, int count);
 void SV_StartParticle4 (vec3_t org, float radius, int color, int effect, int count);
 void SV_StartRainEffect (vec3_t org, vec3_t e_size, int x_dir, int y_dir, int color, int count);
-void SV_ClientPrintf (client_t *cl, int level, char *fmt, ...) _FUNC_PRINTF(3);
-void SV_BroadcastPrintf (int level, char *fmt, ...) _FUNC_PRINTF(2);
-void SV_BroadcastCommand (char *fmt, ...) _FUNC_PRINTF(1);
+void SV_ClientPrintf (client_t *cl, int level, const char *fmt, ...) _FUNC_PRINTF(3);
+void SV_BroadcastPrintf (int level, const char *fmt, ...) _FUNC_PRINTF(2);
+void SV_BroadcastCommand (const char *fmt, ...) _FUNC_PRINTF(1);
 void SV_SendMessagesToAll (void);
 void SV_FindModelNumbers (void);
 

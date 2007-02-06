@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.31 2007-01-15 12:01:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.32 2007-02-06 12:23:42 sezero Exp $
 */
 
 /*=============================================================================
@@ -107,10 +107,10 @@ extern	cvar_t	crosshair;
 float	introTime = 0.0;	// time for mission pack entry screen
 
 static void SCR_ScreenShot_f (void);
-static void Plaque_Draw (char *message, qboolean AlwaysDraw);
+static void Plaque_Draw (const char *message, qboolean AlwaysDraw);
 // procedures for the mission pack intro messages
-static void Info_Plaque_Draw (char *message);
-static void Bottom_Plaque_Draw (char *message);
+static void Info_Plaque_Draw (const char *message);
+static void Bottom_Plaque_Draw (const char *message);
 
 
 /*
@@ -173,7 +173,7 @@ static void UpdateInfoMessage (void)
 	}
 }
 
-static void FindTextBreaks (char *message, int Width)
+static void FindTextBreaks (const char *message, int Width)
 {
 	int	length, pos, start, lastspace, oldlast;
 
@@ -221,7 +221,7 @@ Called for important messages that should stay in the center of the screen
 for a few moments
 ==============
 */
-void SCR_CenterPrint (char *str)
+void SCR_CenterPrint (const char *str)
 {
 	strncpy (scr_centerstring, str, sizeof(scr_centerstring)-1);
 	scr_centertime_off = scr_centertime.value;
@@ -752,7 +752,7 @@ typedef struct
 WritePCXfile
 ==============
 */
-static void WritePCXfile (char *filename, byte *data, int width, int height, int rowbytes, byte *palette)
+static void WritePCXfile (const char *filename, byte *data, int width, int height, int rowbytes, byte *palette)
 {
 	int		i, j;
 	size_t		length;
@@ -989,7 +989,7 @@ static void Plaque_Draw (void)
 }
 #endif
 
-static void Plaque_Draw (char *message, qboolean AlwaysDraw)
+static void Plaque_Draw (const char *message, qboolean AlwaysDraw)
 {
 	int	i;
 	char	temp[80];
@@ -1017,7 +1017,7 @@ static void Plaque_Draw (char *message, qboolean AlwaysDraw)
 	}
 }
 
-static void Info_Plaque_Draw (char *message)
+static void Info_Plaque_Draw (const char *message)
 {
 	int i;
 	char temp[80];
@@ -1051,7 +1051,7 @@ static void Info_Plaque_Draw (char *message)
 	}
 }
 
-static void Bottom_Plaque_Draw (char *message)
+static void Bottom_Plaque_Draw (const char *message)
 {
 	int i;
 	char temp[80];
@@ -1491,6 +1491,9 @@ void SCR_UpdateWholeScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2007/01/15 12:01:08  sezero
+ * fixed several printf format warnings
+ *
  * Revision 1.30  2006/10/20 20:32:30  sezero
  * various coding style clean-ups, part 1.
  *

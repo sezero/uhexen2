@@ -119,7 +119,7 @@ void Cbuf_Init (void)
 	SZ_Init (&cmd_text, cmd_text_buf, sizeof(cmd_text_buf));
 }
 
-void Cbuf_AddText (char *text)
+void Cbuf_AddText (const char *text)
 {
 	int		l;
 
@@ -134,7 +134,7 @@ void Cbuf_AddText (char *text)
 	SZ_Write (&cmd_text, text, strlen (text));
 }
 
-void Cbuf_InsertText (char *text)
+void Cbuf_InsertText (const char *text)
 {
 	char	*temp;
 	int	templen;
@@ -209,7 +209,7 @@ void Cbuf_Execute (void)
 	}
 }
 
-qboolean Cmd_Exists (char *cmd_name)
+qboolean Cmd_Exists (const char *cmd_name)
 {
 	cmd_function_t	*cmd;
 

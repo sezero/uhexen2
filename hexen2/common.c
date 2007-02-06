@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.85 2007-02-02 14:20:09 sezero Exp $
+	$Id: common.c,v 1.86 2007-02-06 12:23:35 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -350,7 +350,7 @@ void MSG_WriteFloat (sizebuf_t *sb, float f)
 	SZ_Write (sb, &dat.l, 4);
 }
 
-void MSG_WriteString (sizebuf_t *sb, char *s)
+void MSG_WriteString (sizebuf_t *sb, const char *s)
 {
 	if (!s)
 		SZ_Write (sb, "", 1);
@@ -696,12 +696,12 @@ void *SZ_GetSpace (sizebuf_t *buf, int length)
 	return data;
 }
 
-void SZ_Write (sizebuf_t *buf, void *data, int length)
+void SZ_Write (sizebuf_t *buf, const void *data, int length)
 {
 	memcpy (SZ_GetSpace(buf,length),data,length);
 }
 
-void SZ_Print (sizebuf_t *buf, char *data)
+void SZ_Print (sizebuf_t *buf, const char *data)
 {
 	int		len;
 
@@ -741,7 +741,7 @@ char *COM_SkipPath (char *pathname)
 COM_StripExtension
 ============
 */
-void COM_StripExtension (char *in, char *out)
+void COM_StripExtension (const char *in, char *out)
 {
 	while (*in && *in != '.')
 		*out++ = *in++;
@@ -753,7 +753,7 @@ void COM_StripExtension (char *in, char *out)
 COM_FileExtension
 ============
 */
-char *COM_FileExtension (char *in)
+char *COM_FileExtension (const char *in)
 {
 	static char exten[8];
 	int		i;
@@ -774,9 +774,9 @@ char *COM_FileExtension (char *in)
 COM_FileBase
 ============
 */
-void COM_FileBase (char *in, char *out)
+void COM_FileBase (const char *in, char *out)
 {
-	char	*s, *s2;
+	const char	*s, *s2;
 
 	s = in + strlen(in) - 1;
 
@@ -806,7 +806,7 @@ void COM_FileBase (char *in, char *out)
 COM_DefaultExtension
 ==================
 */
-void COM_DefaultExtension (char *path, char *extension, size_t len)
+void COM_DefaultExtension (char *path, const char *extension, size_t len)
 {
 	char	*src;
 //
@@ -925,7 +925,7 @@ Returns the position (1 to argc-1) in the program's argument list
 where the given parameter apears, or 0 if not present
 ================
 */
-int COM_CheckParm (char *parm)
+int COM_CheckParm (const char *parm)
 {
 	int		i;
 
@@ -1038,7 +1038,7 @@ COM_AddParm
 Adds the given string at the end of the current argument list
 ================
 */
-void COM_AddParm (char *parm)
+void COM_AddParm (const char *parm)
 {
 	largv[com_argc++] = parm;
 }
@@ -1085,7 +1085,7 @@ static char *get_va_buffer(void)
 	return va_buffers[3 & ++buf_idx];
 }
 
-char *va (char *format, ...)
+char *va (const char *format, ...)
 {
 	va_list		argptr;
 	char		*va_buf;
@@ -1223,7 +1223,7 @@ The filename will be prefixed by the current game directory
 Returns 0 on success, 1 on error.
 ============
 */
-int COM_WriteFile (char *filename, void *data, size_t len)
+int COM_WriteFile (const char *filename, const void *data, size_t len)
 {
 	FILE	*f;
 	char	name[MAX_OSPATH];
@@ -1317,7 +1317,7 @@ Copies a file over from the net to the local cache, creating any directories
 needed. Used for saving the game. Returns 0 on success, non-zero on error.
 ===========
 */
-int COM_CopyFile (char *frompath, char *topath)
+int COM_CopyFile (const char *frompath, const char *topath)
 {
 	FILE	*in, *out;
 	int		err = 0;
@@ -1333,7 +1333,8 @@ int COM_CopyFile (char *frompath, char *topath)
 	remaining = COM_filelength(in);
 
 	// create directories up to the cache file
-	if (COM_CreatePath (topath))
+	Q_strlcpy (buf, topath, sizeof(buf));
+	if (COM_CreatePath (buf))
 	{
 		Con_Printf ("%s: unable to create directory\n", __FUNCTION__);
 		fclose (in);
@@ -1348,6 +1349,7 @@ int COM_CopyFile (char *frompath, char *topath)
 		return 1;
 	}
 
+	memset (buf, 0, sizeof(buf));
 	while (remaining)
 	{
 		if (remaining < sizeof(buf))
@@ -1503,7 +1505,7 @@ Sets com_filesize and one of handle or file
 ===========
 */
 int file_from_pak;	// global indicating file came from pack file ZOID
-size_t COM_FOpenFile (char *filename, FILE **file, qboolean override_pack)
+size_t COM_FOpenFile (const char *filename, FILE **file, qboolean override_pack)
 {
 	searchpath_t	*search;
 	char		netpath[MAX_OSPATH];
@@ -1583,7 +1585,7 @@ static cache_user_t *loadcache;
 static byte	*loadbuf;
 static size_t		loadsize;
 
-static byte *COM_LoadFile (char *path, int usehunk)
+static byte *COM_LoadFile (const char *path, int usehunk)
 {
 	FILE	*h;
 	byte	*buf;
@@ -1650,29 +1652,29 @@ static byte *COM_LoadFile (char *path, int usehunk)
 	return buf;
 }
 
-byte *COM_LoadHunkFile (char *path)
+byte *COM_LoadHunkFile (const char *path)
 {
 	return COM_LoadFile (path, LOADFILE_HUNK);
 }
 
-byte *COM_LoadZoneFile (char *path)
+byte *COM_LoadZoneFile (const char *path)
 {
 	return COM_LoadFile (path, LOADFILE_ZONE);
 }
 
-byte *COM_LoadTempFile (char *path)
+byte *COM_LoadTempFile (const char *path)
 {
 	return COM_LoadFile (path, LOADFILE_TEMPHUNK);
 }
 
-void COM_LoadCacheFile (char *path, struct cache_user_s *cu)
+void COM_LoadCacheFile (const char *path, struct cache_user_s *cu)
 {
 	loadcache = cu;
 	COM_LoadFile (path, LOADFILE_CACHE);
 }
 
 // uses temp hunk if larger than bufsize
-byte *COM_LoadStackFile (char *path, void *buffer, size_t bufsize)
+byte *COM_LoadStackFile (const char *path, void *buffer, size_t bufsize)
 {
 	byte	*buf;
 
@@ -1685,7 +1687,7 @@ byte *COM_LoadStackFile (char *path, void *buffer, size_t bufsize)
 
 // Pa3PyX: Like COM_LoadStackFile, excepts loads onto
 // the hunk (instead of temp) if there is no space
-byte *COM_LoadBufFile (char *path, void *buffer, size_t *bufsize)
+byte *COM_LoadBufFile (const char *path, void *buffer, size_t *bufsize)
 {
 	byte	*buf;
 
@@ -1699,7 +1701,7 @@ byte *COM_LoadBufFile (char *path, void *buffer, size_t *bufsize)
 }
 
 // LordHavoc: returns malloc'd memory
-byte *COM_LoadMallocFile (char *path)
+byte *COM_LoadMallocFile (const char *path)
 {
 	return COM_LoadFile (path, LOADFILE_MALLOC);
 }
@@ -1714,7 +1716,7 @@ Loads the header and directory, adding the files at the beginning
 of the list so they override previous pack files.
 =================
 */
-static pack_t *COM_LoadPackFile (char *packfile, int paknum, qboolean base_fs)
+static pack_t *COM_LoadPackFile (const char *packfile, int paknum, qboolean base_fs)
 {
 	dpackheader_t	header;
 	int				i;
@@ -1849,7 +1851,7 @@ Sets com_gamedir, adds the directory to the head of the path,
 then loads and adds pak1.pak pak2.pak ... 
 ================
 */
-static void COM_AddGameDirectory (char *dir, qboolean base_fs)
+static void COM_AddGameDirectory (const char *dir, qboolean base_fs)
 {
 	int				i;
 	searchpath_t		*search;
@@ -1939,7 +1941,7 @@ CL_ParseServerData() and the Server calls this upon
 a gamedir command from within SV_Gamedir_f().
 ================
 */
-void COM_Gamedir (char *dir)
+void COM_Gamedir (const char *dir)
 {
 	searchpath_t	*search, *next;
 	int				i;
@@ -2109,7 +2111,7 @@ to host_parms.userdir/data1
 ============
 */
 #ifdef PLATFORM_UNIX
-static void do_movedata (char *path1, char *path2, FILE *logfile)
+static void do_movedata (const char *path1, const char *path2, FILE *logfile)
 {
 	Sys_Printf ("%s -> %s : ", path1, path2);
 	if (logfile)
@@ -2400,7 +2402,7 @@ Files in pakfiles are NOT meant for this
 procedure!
 ============
 */
-int COM_FileInGamedir (char *fname)
+int COM_FileInGamedir (const char *fname)
 {
 	int	ret;
 
@@ -2428,14 +2430,14 @@ Searches the string for the given
 key and returns the associated value, or an empty string.
 ===============
 */
-char *Info_ValueForKey (char *s, char *key)
+char *Info_ValueForKey (const char *s, const char *key)
 {
 	char	pkey[512];
 	static	char value[4][512];	// use two buffers so compares
 								// work without stomping on each other
 	static	int	valueindex;
 	char	*o;
-	
+
 	valueindex = (valueindex + 1) % 4;
 	if (*s == '\\')
 		s++;
@@ -2470,7 +2472,7 @@ char *Info_ValueForKey (char *s, char *key)
 	}
 }
 
-void Info_RemoveKey (char *s, char *key)
+void Info_RemoveKey (char *s, const char *key)
 {
 	char	*start;
 	char	pkey[512];
@@ -2563,7 +2565,7 @@ void Info_RemovePrefixedKeys (char *start, char prefix)
 
 }
 
-void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
+void Info_SetValueForStarKey (char *s, const char *key, const char *value, int maxsize)
 {
 	char	new[1024], *v;
 	int		c;
@@ -2632,7 +2634,7 @@ void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
 	*s = 0;
 }
 
-void Info_SetValueForKey (char *s, char *key, char *value, int maxsize)
+void Info_SetValueForKey (char *s, const char *key, const char *value, int maxsize)
 {
 	if (key[0] == '*')
 	{
@@ -2643,7 +2645,7 @@ void Info_SetValueForKey (char *s, char *key, char *value, int maxsize)
 	Info_SetValueForStarKey (s, key, value, maxsize);
 }
 
-void Info_Print (char *s)
+void Info_Print (const char *s)
 {
 	char	key[512];
 	char	value[512];
@@ -2689,6 +2691,9 @@ void Info_Print (char *s)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.85  2007/02/02 14:20:09  sezero
+ * renamed the arguments of COM_CopyFile() for better clarity
+ *
  * Revision 1.84  2007/02/02 14:18:48  sezero
  * made COM_CreatePath() to check for empty paths
  *

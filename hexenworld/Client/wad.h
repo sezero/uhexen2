@@ -48,7 +48,7 @@ extern	int			wad_numlumps;
 extern	lumpinfo_t	*wad_lumps;
 extern	byte		*wad_base;
 
-void	W_LoadWadFile (char *filename);
+void	W_LoadWadFile (const char *filename);
 void	*W_GetLumpName (char *name);
 void	*W_GetLumpNum (int num);
 

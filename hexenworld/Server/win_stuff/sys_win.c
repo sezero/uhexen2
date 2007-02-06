@@ -21,7 +21,7 @@ cvar_t	sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 Sys_mkdir
 ================
 */
-int Sys_mkdir (char *path)
+int Sys_mkdir (const char *path)
 {
 	int rc;
 
@@ -43,7 +43,7 @@ what we presently need in this engine.
 static HANDLE  findhandle;
 static WIN32_FIND_DATA finddata;
 
-char *Sys_FindFirstFile (char *path, char *pattern)
+char *Sys_FindFirstFile (const char *path, const char *pattern)
 {
 	if (findhandle)
 		Sys_Error ("Sys_FindFirst without FindClose");
@@ -96,7 +96,7 @@ void Sys_FindClose (void)
 Sys_Error
 ================
 */
-void Sys_Error (char *error, ...)
+void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
@@ -186,7 +186,7 @@ char *Sys_ConsoleInput (void)
 Sys_Printf
 ================
 */
-void Sys_Printf (char *fmt, ...)
+void Sys_Printf (const char *fmt, ...)
 {
 	va_list		argptr;
 
@@ -198,7 +198,7 @@ void Sys_Printf (char *fmt, ...)
 	va_end (argptr);
 }
 
-void Sys_DPrintf (char *fmt, ...)
+void Sys_DPrintf (const char *fmt, ...)
 {
 	va_list		argptr;
 

@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.15 2006-10-21 18:21:30 sezero Exp $
+	$Id: zone.c,v 1.16 2007-02-06 12:24:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -265,7 +265,7 @@ void Hunk_Check (void)
 Hunk_AllocName
 ===================
 */
-void *Hunk_AllocName (int size, char *name)
+void *Hunk_AllocName (int size, const char *name)
 {
 	hunk_t	*h;
 
@@ -349,7 +349,7 @@ void Hunk_FreeToHighMark (int mark)
 Hunk_HighAllocName
 ===================
 */
-void *Hunk_HighAllocName (int size, char *name)
+void *Hunk_HighAllocName (int size, const char *name)
 {
 	hunk_t	*h;
 
@@ -710,7 +710,7 @@ void *Cache_Check (cache_user_t *c)
 Cache_Alloc
 ==============
 */
-void *Cache_Alloc (cache_user_t *c, int size, char *name)
+void *Cache_Alloc (cache_user_t *c, int size, const char *name)
 {
 	cache_system_t	*cs;
 
@@ -976,7 +976,7 @@ static void Cache_Display_f(void)
 }
 
 #define NUM_GROUPS 18
-static char *MemoryGroups[NUM_GROUPS+1] =
+static const char *MemoryGroups[NUM_GROUPS+1] =
 {
 	"texture",
 	"light",

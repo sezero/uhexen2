@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.26 2006-10-26 08:43:35 sezero Exp $
+	$Id: sys_unix.c,v 1.27 2007-02-06 12:24:29 sezero Exp $
 
 	Unix system interface code
 */
@@ -71,7 +71,7 @@ static int Sys_GetUserdir (char *buff, size_t path_len)
 Sys_mkdir
 ================
 */
-int Sys_mkdir (char *path)
+int Sys_mkdir (const char *path)
 {
 	int rc;
 
@@ -94,7 +94,7 @@ static DIR		*finddir;
 static struct dirent	*finddata;
 static char		*findpath, *findpattern;
 
-char *Sys_FindFirstFile (char *path, char *pattern)
+char *Sys_FindFirstFile (const char *path, const char *pattern)
 {
 	size_t	tmp_len;
 
@@ -163,7 +163,7 @@ void Sys_FindClose (void)
 Sys_Error
 ================
 */
-void Sys_Error (char *error, ...)
+void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
@@ -253,7 +253,7 @@ char *Sys_ConsoleInput (void)
 Sys_Printf
 ================
 */
-void Sys_Printf (char *fmt, ...)
+void Sys_Printf (const char *fmt, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
@@ -268,7 +268,7 @@ void Sys_Printf (char *fmt, ...)
 	fprintf(stderr, "%s", text);
 }
 
-void Sys_DPrintf (char *fmt, ...)
+void Sys_DPrintf (const char *fmt, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];

@@ -67,11 +67,11 @@ static WSADATA		winsockdata;
 
 static int		socketfd = -1;
 
-void Sys_Error (char *error, ...) _FUNC_PRINTF(1);
+void Sys_Error (const char *error, ...) _FUNC_PRINTF(1);
 
 //=============================================================================
 
-void Sys_Error (char *error, ...)
+void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
 	char		text[1024];

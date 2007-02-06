@@ -1,5 +1,5 @@
 /*
- * $Id: mstrconv.c,v 1.9 2006-10-20 20:33:16 sezero Exp $
+ * $Id: mstrconv.c,v 1.10 2007-02-06 12:24:25 sezero Exp $
  */
 
 #include <windows.h>
@@ -113,7 +113,7 @@ static BOOL ReadFile2 (LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNu
 // Return TRUE on success
 // Prints its own error message if something goes wrong
 //
-BOOL ConverterInit (LPSTR szInFile)
+BOOL ConverterInit (const char *szInFile)
 {
 	BOOL	fRet = TRUE;
 	DWORD	cbRead, dwTag, cbHeader, dwToRead;
@@ -131,8 +131,7 @@ BOOL ConverterInit (LPSTR szInFile)
 
 	// Attempt to open the input and output files
 	//
-	MidiData = (byte *)COM_LoadHunkFile((char *)szInFile);
-//	MidiData = (byte *)COM_LoadHunkFile((char *)szInFile, (int *)&ifs.cbFileLength);
+	MidiData = (byte *)COM_LoadHunkFile(szInFile);
 	if (!MidiData)
 	{
 		goto Init_Cleanup;
@@ -1169,6 +1168,9 @@ static void ShowTrackError (PINTRACKSTATE ptsTrack, LPSTR lpszErr)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2006/10/20 20:33:16  sezero
+ * various coding style clean-ups, part 1.
+ *
  * Revision 1.8  2006/02/18 13:45:21  sezero
  * continue making static functions and vars static. whitespace and coding style
  * cleanup. (part 6: midi ffiles).

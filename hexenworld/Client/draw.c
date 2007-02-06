@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.23 2007-02-02 18:33:38 sezero Exp $
+	$Id: draw.c,v 1.24 2007-02-06 12:24:12 sezero Exp $
 */
 
 
@@ -54,7 +54,7 @@ qpic_t	*Draw_PicFromWad (char *name)
 Draw_CachePic
 ================
 */
-qpic_t	*Draw_CachePic (char *path)
+qpic_t	*Draw_CachePic (const char *path)
 {
 	cachepic_t	*pic;
 	int			i;
@@ -101,7 +101,7 @@ New function by Pa3PyX; will load a pic resizing it (needed for intermissions)
 ================
 */
 cache_user_t *intermissionScreen = NULL;
-qpic_t  *Draw_CachePicResize (char *path, int targetWidth, int targetHeight)
+qpic_t  *Draw_CachePicResize (const char *path, int targetWidth, int targetHeight)
 {
 	cachepic_t *pic;
 	int i, j;

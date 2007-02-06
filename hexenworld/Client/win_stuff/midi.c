@@ -1,5 +1,5 @@
 /*
- * $Id: midi.c,v 1.12 2006-10-20 20:33:16 sezero Exp $
+ * $Id: midi.c,v 1.13 2007-02-06 12:24:25 sezero Exp $
  */
 
 #include <windows.h>
@@ -35,7 +35,7 @@ static HANDLE   hBufferReturnEvent;
 
 
 static void FreeBuffers (void);
-static BOOL StreamBufferSetup (char *Name);
+static BOOL StreamBufferSetup (const char *Name);
 static void CALLBACK MidiProc (HMIDIIN, UINT, DWORD, DWORD, DWORD);
 static void SetAllChannelVolumes (DWORD dwVolumePercent);
 //static void SetChannelVolume (DWORD dwChannel, DWORD dwVolumePercent);
@@ -162,7 +162,7 @@ qboolean MIDI_Init(void)
 	return true;
 }
 
-void MIDI_Play(char *Name)
+void MIDI_Play(const char *Name)
 {
 	MMRESULT mmrRetVal;
 	char Temp[MAX_OSPATH];
@@ -358,7 +358,7 @@ static void FreeBuffers(void)
 /* open a MIDI file. Then it goes tabout converting at least the first part of*/
 /* that file into a midiStream buffer for playback.                          */
 /*****************************************************************************/
-static BOOL StreamBufferSetup(char *Name)
+static BOOL StreamBufferSetup(const char *Name)
 {
 	int nChkErr;
 	BOOL bFoundEnd = FALSE;
@@ -656,6 +656,9 @@ static void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2006/10/20 20:33:16  sezero
+ * various coding style clean-ups, part 1.
+ *
  * Revision 1.11  2006/09/27 17:17:32  sezero
  * a lot of clean-ups in sound and midi files.
  *

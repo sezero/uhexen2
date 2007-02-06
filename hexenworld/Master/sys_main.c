@@ -101,7 +101,7 @@ static void COM_InitArgv (int argc, char **argv)
 	com_argv = largv;
 }
 
-int COM_CheckParm (char *parm)
+int COM_CheckParm (const char *parm)
 {
 	int		i;
 
@@ -177,7 +177,7 @@ skipwhite:
 
 //=============================================================================
 
-void Sys_Error (char *error, ...)
+void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
 	char		text[1024];
@@ -236,7 +236,7 @@ void *SZ_GetSpace (sizebuf_t *buf, int length)
 	return data;
 }
 
-void SZ_Write (sizebuf_t *buf, void *data, int length)
+void SZ_Write (sizebuf_t *buf, const void *data, int length)
 {
 	memcpy (SZ_GetSpace(buf,length),data,length);
 }
@@ -415,7 +415,7 @@ double Sys_DoubleTime (void)
 
 #ifdef PLATFORM_UNIX
 
-int Sys_mkdir (char *path)
+int Sys_mkdir (const char *path)
 {
 	int rc;
 

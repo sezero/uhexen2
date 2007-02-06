@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.23 2007-01-15 12:01:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.24 2007-02-06 12:24:23 sezero Exp $
 */
 
 
@@ -103,7 +103,7 @@ extern	cvar_t	show_fps;
 extern	int	fps_count;
 
 static void SCR_ScreenShot_f (void);
-static void Plaque_Draw (char *message, qboolean AlwaysDraw);
+static void Plaque_Draw (const char *message, qboolean AlwaysDraw);
 
 
 /*
@@ -125,7 +125,7 @@ static int	scr_erase_center;
 static int	lines;
 static int	StartC[MAXLINES], EndC[MAXLINES];
 
-static void FindTextBreaks (char *message, int Width)
+static void FindTextBreaks (const char *message, int Width)
 {
 	int	length, pos, start, lastspace, oldlast;
 
@@ -173,7 +173,7 @@ Called for important messages that should stay in the center of the screen
 for a few moments
 ==============
 */
-void SCR_CenterPrint (char *str)
+void SCR_CenterPrint (const char *str)
 {
 	strncpy (scr_centerstring, str, sizeof(scr_centerstring)-1);
 	scr_centertime_off = scr_centertime.value;
@@ -614,7 +614,7 @@ SCREEN SHOTS
 WritePCXfile
 ==============
 */
-static void WritePCXfile (char *filename, byte *data, int width, int height, int rowbytes, byte *palette)
+static void WritePCXfile (const char *filename, byte *data, int width, int height, int rowbytes, byte *palette)
 {
 	int		i, j;
 	size_t		length;
@@ -848,7 +848,7 @@ static void Plaque_Draw (void)
 }
 #endif
 
-static void Plaque_Draw (char *message, qboolean AlwaysDraw)
+static void Plaque_Draw (const char *message, qboolean AlwaysDraw)
 {
 	int	i;
 	char	temp[80];

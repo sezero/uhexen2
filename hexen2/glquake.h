@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.58 2007-02-04 15:17:19 sezero Exp $
+	$Id: glquake.h,v 1.59 2007-02-06 12:23:38 sezero Exp $
 */
 
 
@@ -123,7 +123,7 @@ extern	GLuint	gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for m
 void GL_BeginRendering (int *x, int *y, int *width, int *height);
 void GL_EndRendering (void);
 
-GLuint GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba);
+GLuint GL_LoadTexture (const char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba);
 GLuint GL_LoadPicTexture (qpic_t *pic);
 void D_ClearOpenGLTextures (int last_tex);
 
@@ -390,6 +390,14 @@ extern	float	r_world_matrix[16];
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.58  2007/02/04 15:17:19  sezero
+ * gl_rmain.c, gl_vidnt.c, gl_vidsdl.c: General cleanup: The vendor,
+ * renderer, version and extensions vars are not global anymore, no
+ * one uses them.  Added clarifications to the demoness fires fix.
+ * Renamed MyglColorTableEXT to glColorTableEXT_fp for consistancy
+ * with the other gl function pointers. Probably a few other small
+ * things.
+ *
  * Revision 1.57  2006/10/05 16:40:27  sezero
  * exported lightmap_textures through glquake.h
  *

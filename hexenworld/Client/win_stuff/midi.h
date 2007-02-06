@@ -1,5 +1,5 @@
 /*
- * $Id: midi.h,v 1.4 2006-02-18 13:45:21 sezero Exp $
+ * $Id: midi.h,v 1.5 2007-02-06 12:24:25 sezero Exp $
  */
 
 #ifndef __MSTREAM_INCLUDED__
@@ -69,7 +69,7 @@ typedef struct _ConvertInfo
 } CONVERTINFO, *LPCONVERTINFO;
 
 
-BOOL ConverterInit (LPSTR szInFile);
+BOOL ConverterInit (const char *szInFile);
 void ConverterCleanup (void);
 int ConvertToBuffer (DWORD, LPCONVERTINFO);
 
@@ -77,6 +77,10 @@ int ConvertToBuffer (DWORD, LPCONVERTINFO);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2006/02/18 13:45:21  sezero
+ * continue making static functions and vars static. whitespace and coding style
+ * cleanup. (part 6: midi ffiles).
+ *
  * Revision 1.3  2005/07/31 11:13:53  sezero
  * debug defines
  *

@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.53 2006-10-20 20:32:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.54 2007-02-06 12:23:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -27,7 +27,7 @@ Memory is cleared / released when a server or client begins, not when they end.
 
 */
 
-static void Host_WriteConfiguration (char *fname);
+static void Host_WriteConfiguration (const char *fname);
 
 quakeparms_t host_parms;
 
@@ -82,7 +82,7 @@ SAVEGAME FILES HANDLING
 ===============================================================================
 */
 
-void Host_RemoveGIPFiles (char *path)
+void Host_RemoveGIPFiles (const char *path)
 {
 	char	*name, tempdir[MAX_OSPATH];
 
@@ -103,7 +103,7 @@ void Host_RemoveGIPFiles (char *path)
 	Sys_FindClose();
 }
 
-qboolean Host_CopyFiles(char *source, char *pat, char *dest)
+qboolean Host_CopyFiles(const char *source, const char *pat, const char *dest)
 {
 	char	*name, tempdir[MAX_OSPATH], tempdir2[MAX_OSPATH];
 	qboolean error;
@@ -148,7 +148,7 @@ error_out:
 Host_EndGame
 ================
 */
-void Host_EndGame (char *message, ...)
+void Host_EndGame (const char *message, ...)
 {
 	va_list		argptr;
 	char		string[1024];
@@ -179,7 +179,7 @@ Host_Error
 This shuts down both the client and server
 ================
 */
-void Host_Error (char *error, ...)
+void Host_Error (const char *error, ...)
 {
 	va_list		argptr;
 	char		string[1024];
@@ -346,7 +346,7 @@ Host_WriteConfiguration
 Writes key bindings and archived cvars to config.cfg
 ===============
 */
-static void Host_WriteConfiguration (char *fname)
+static void Host_WriteConfiguration (const char *fname)
 {
 	FILE	*f;
 
@@ -380,7 +380,7 @@ Sends text across to be displayed
 FIXME: make this just a stuffed echo?
 =================
 */
-void SV_ClientPrintf (char *fmt, ...)
+void SV_ClientPrintf (const char *fmt, ...)
 {
 	va_list		argptr;
 	char		string[1024];
@@ -400,7 +400,7 @@ SV_BroadcastPrintf
 Sends text to all active clients
 =================
 */
-void SV_BroadcastPrintf (char *fmt, ...)
+void SV_BroadcastPrintf (const char *fmt, ...)
 {
 	va_list		argptr;
 	char		string[1024];
@@ -427,7 +427,7 @@ Host_ClientCommands
 Send text over to the client to be executed
 =================
 */
-void Host_ClientCommands (char *fmt, ...)
+void Host_ClientCommands (const char *fmt, ...)
 {
 	va_list		argptr;
 	char		string[1024];
@@ -1160,6 +1160,9 @@ void Host_Shutdown(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.53  2006/10/20 20:32:30  sezero
+ * various coding style clean-ups, part 1.
+ *
  * Revision 1.52  2006/09/15 09:22:39  sezero
  * made Host_CopyFiles to properly check its string sizes, and made it to
  * return at the first time it hits an error.

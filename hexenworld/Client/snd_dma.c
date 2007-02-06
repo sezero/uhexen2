@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.45 2007-01-15 12:01:13 sezero Exp $
+	$Id: snd_dma.c,v 1.46 2007-02-06 12:24:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -302,7 +302,7 @@ S_FindName
 
 ==================
 */
-static sfx_t *S_FindName (char *name)
+static sfx_t *S_FindName (const char *name)
 {
 	int		i;
 	sfx_t	*sfx;
@@ -340,7 +340,7 @@ S_TouchSound
 
 ==================
 */
-void S_TouchSound (char *name)
+void S_TouchSound (const char *name)
 {
 	sfx_t	*sfx;
 
@@ -357,7 +357,7 @@ S_PrecacheSound
 
 ==================
 */
-sfx_t *S_PrecacheSound (char *name)
+sfx_t *S_PrecacheSound (const char *name)
 {
 	sfx_t	*sfx;
 
@@ -1080,7 +1080,7 @@ static void S_SoundList(void)
 }
 
 
-void S_LocalSound (char *sound)
+void S_LocalSound (const char *sound)
 {
 	sfx_t	*sfx;
 
@@ -1115,6 +1115,9 @@ void S_EndPrecaching (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.45  2007/01/15 12:01:13  sezero
+ * fixed several printf format warnings
+ *
  * Revision 1.44  2006/10/22 09:46:49  sezero
  * various coding style clean-ups, part 8.
  *

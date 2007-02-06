@@ -8,7 +8,7 @@
 	This version of model.c and model.h are based on a quake dedicated
 	server application, lhnqserver, by LordHavoc.
 
-	$Id: model.c,v 1.4 2006-10-23 16:27:16 sezero Exp $
+	$Id: model.c,v 1.5 2007-02-06 12:23:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -147,7 +147,7 @@ Mod_FindName
 
 ==================
 */
-model_t *Mod_FindName (char *name)
+model_t *Mod_FindName (const char *name)
 {
 	int		i;
 	model_t	*mod;
@@ -242,7 +242,7 @@ Mod_ForName
 Loads in a model for the given name
 ==================
 */
-model_t *Mod_ForName (char *name, qboolean crash)
+model_t *Mod_ForName (const char *name, qboolean crash)
 {
 	model_t	*mod;
 
@@ -1040,6 +1040,12 @@ static void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2006/10/23 16:27:16  sezero
+ * disabled Q_malloc usage in h2ded: by experimentation, surfedges and
+ * edges size mostly around 300 kb (in keep5 of the mission pack) and
+ * even with 8 mb of heap memory the server still runs fine. therefore
+ * no need for temporary stealing system memory.
+ *
  * Revision 1.3  2006/10/20 20:32:31  sezero
  * various coding style clean-ups, part 1.
  *

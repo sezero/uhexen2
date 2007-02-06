@@ -838,7 +838,7 @@ static int LeaveFunction (void)
 //
 //==========================================================================
 
-void PR_RunError (char *error, ...)
+void PR_RunError (const char *error, ...)
 {
 	va_list argptr;
 	char string[1024];

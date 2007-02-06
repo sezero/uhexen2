@@ -22,11 +22,11 @@ The game starts with a Cbuf_AddText ("exec quake.rc\n"); Cbuf_Execute ();
 void Cbuf_Init (void);
 // allocates an initial text buffer that will grow as needed
 
-void Cbuf_AddText (char *text);
+void Cbuf_AddText (const char *text);
 // as new commands are generated from the console or keybindings,
 // the text is added to the end of the command buffer.
 
-void Cbuf_InsertText (char *text);
+void Cbuf_InsertText (const char *text);
 // when a command wants to issue other commands immediately, the text is
 // inserted at the beginning of the buffer, before any remaining unexecuted
 // commands.
@@ -73,10 +73,10 @@ void	Cmd_AddCommand (char *cmd_name, xcommand_t function);
 // case the command will be forwarded to the server as a clc_stringcmd
 // instead of being executed locally
 
-qboolean Cmd_Exists (char *cmd_name);
+qboolean Cmd_Exists (const char *cmd_name);
 // used by the cvar code to check for cvar / command name overlap
 
-qboolean Cmd_CheckCommand (char *partial);
+qboolean Cmd_CheckCommand (const char *partial);
 // attempts to match a given text to known commands, cvars or aliases
 // returns true if there is an exact match, false otherwise
 
@@ -106,9 +106,9 @@ void Cmd_StuffCmds_f (void);
 // Executes the commandline parameters with a leading "+" as script
 // statements.
 
-int ListCommands (char *prefix, char **buf, int pos);
-int ListCvars (char *prefix, char **buf, int pos);
-int ListAlias (char *prefix, char **buf, int pos);
+int ListCommands (const char *prefix, char **buf, int pos);
+int ListCvars (const char *prefix, char **buf, int pos);
+int ListAlias (const char *prefix, char **buf, int pos);
 // These three listers are either used privately in the respective
 // list commands, or by keys.c in console tab-completion. They
 // return the number of matches.

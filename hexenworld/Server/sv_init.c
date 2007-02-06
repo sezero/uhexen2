@@ -15,7 +15,7 @@ SV_ModelIndex
 
 ================
 */
-int SV_ModelIndex (char *name)
+int SV_ModelIndex (const char *name)
 {
 	int		i;
 
@@ -256,7 +256,7 @@ clients along with it.
 This is only called from the SV_Map_f() function.
 ================
 */
-void SV_SpawnServer (char *server, char *startspot)
+void SV_SpawnServer (const char *server, const char *startspot)
 {
 	edict_t		*ent;
 	int			i;

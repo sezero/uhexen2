@@ -1,7 +1,7 @@
 /*
 	pr_exec.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.13 2006-10-22 15:06:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.14 2007-02-06 12:23:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -861,7 +861,7 @@ static int LeaveFunction (void)
 //
 //==========================================================================
 
-void PR_RunError (char *error, ...)
+void PR_RunError (const char *error, ...)
 {
 	va_list argptr;
 	char string[1024];
@@ -1194,6 +1194,9 @@ static unsigned int ProgsTimer(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2006/10/22 15:06:30  sezero
+ * even more coding style clean-ups (part 10).
+ *
  * Revision 1.12  2006/10/21 22:08:33  sezero
  * various coding style clean-ups, part 6.
  *

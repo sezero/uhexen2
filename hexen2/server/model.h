@@ -5,7 +5,7 @@
 	This version of model.c and model.h are based on a quake dedicated
 	server application, lhnqserver, by LordHavoc.
 
-	$Id: model.h,v 1.2 2006-09-24 17:28:42 sezero Exp $
+	$Id: model.h,v 1.3 2007-02-06 12:23:48 sezero Exp $
 */
 
 #ifndef __HX2_MODEL_H
@@ -210,8 +210,8 @@ typedef struct model_s
 
 void	Mod_Init (void);
 void	Mod_ClearAll (void);
-model_t *Mod_ForName (char *name, qboolean crash);
-model_t *Mod_FindName (char *name);
+model_t *Mod_ForName (const char *name, qboolean crash);
+model_t *Mod_FindName (const char *name);
 
 mleaf_t *Mod_PointInLeaf (float *p, model_t *model);
 byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
@@ -220,6 +220,9 @@ byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2006/09/24 17:28:42  sezero
+ * protected all headers against multiple inclusion
+ *
  * Revision 1.1  2006/06/25 12:57:06  sezero
  * added a hexen2 dedicated server which seems to work much better than
  * the client/server application running in dedicated mode. model loading

@@ -14,7 +14,7 @@ static	char	*cvar_null_string = "";
 Cvar_FindVar
 ============
 */
-cvar_t *Cvar_FindVar (char *var_name)
+cvar_t *Cvar_FindVar (const char *var_name)
 {
 	cvar_t	*var;
 
@@ -30,7 +30,7 @@ cvar_t *Cvar_FindVar (char *var_name)
 Cvar_VariableValue
 ============
 */
-float	Cvar_VariableValue (char *var_name)
+float	Cvar_VariableValue (const char *var_name)
 {
 	cvar_t	*var;
 
@@ -46,7 +46,7 @@ float	Cvar_VariableValue (char *var_name)
 Cvar_VariableString
 ============
 */
-char *Cvar_VariableString (char *var_name)
+char *Cvar_VariableString (const char *var_name)
 {
 	cvar_t *var;
 
@@ -62,7 +62,7 @@ char *Cvar_VariableString (char *var_name)
 Cvar_Set
 ============
 */
-void Cvar_Set (char *var_name, char *value)
+void Cvar_Set (const char *var_name, const char *value)
 {
 	cvar_t	*var;
 
@@ -114,7 +114,7 @@ void Cvar_Set (char *var_name, char *value)
 Cvar_SetValue
 ============
 */
-void Cvar_SetValue (char *var_name, float value)
+void Cvar_SetValue (const char *var_name, const float value)
 {
 	char	val[32];
 	int	i;

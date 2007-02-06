@@ -38,8 +38,8 @@ typedef struct sizebuf_s
 void SZ_Init (sizebuf_t *buf, byte *data, int length);
 void SZ_Clear (sizebuf_t *buf);
 void *SZ_GetSpace (sizebuf_t *buf, int length);
-void SZ_Write (sizebuf_t *buf, void *data, int length);
-void SZ_Print (sizebuf_t *buf, char *data);	// strcats onto the sizebuf
+void SZ_Write (sizebuf_t *buf, const void *data, int length);
+void SZ_Print (sizebuf_t *buf, const char *data);	// strcats onto the sizebuf
 
 //============================================================================
 
@@ -152,7 +152,7 @@ void MSG_WriteByte (sizebuf_t *sb, int c);
 void MSG_WriteShort (sizebuf_t *sb, int c);
 void MSG_WriteLong (sizebuf_t *sb, int c);
 void MSG_WriteFloat (sizebuf_t *sb, float f);
-void MSG_WriteString (sizebuf_t *sb, char *s);
+void MSG_WriteString (sizebuf_t *sb, const char *s);
 void MSG_WriteCoord (sizebuf_t *sb, float f);
 void MSG_WriteAngle (sizebuf_t *sb, float f);
 #ifdef H2W
@@ -233,19 +233,19 @@ char *COM_Parse (char *data);
 extern	int		com_argc;
 extern	char	**com_argv;
 
-int COM_CheckParm (char *parm);
+int COM_CheckParm (const char *parm);
 #if 0
-void COM_AddParm (char *parm);
+void COM_AddParm (const char *parm);
 #endif
 void COM_Init (void);
 void COM_InitArgv (int argc, char **argv);
 
 char *COM_SkipPath (char *pathname);
-void COM_StripExtension (char *in, char *out);
-void COM_FileBase (char *in, char *out);
-void COM_DefaultExtension (char *path, char *extension, size_t len);
+void COM_StripExtension (const char *in, char *out);
+void COM_FileBase (const char *in, char *out);
+void COM_DefaultExtension (char *path, const char *extension, size_t len);
 
-char	*va(char *format, ...) _FUNC_PRINTF(1);
+char	*va(const char *format, ...) _FUNC_PRINTF(1);
 // does a varargs printf into a temp buffer
 
 int COM_StrCompare (const void *arg1, const void *arg2);
@@ -262,33 +262,33 @@ extern	char	com_gamedir[MAX_OSPATH];
 extern	char	com_savedir[MAX_OSPATH];	// temporary path for saving gip files
 extern	char	com_userdir[MAX_OSPATH];
 
-int COM_WriteFile (char *filename, void *data, size_t len);
-size_t COM_FOpenFile (char *filename, FILE **file, qboolean override_pack);
-int COM_CopyFile (char *frompath, char *topath);
+int COM_WriteFile (const char *filename, const void *data, size_t len);
+size_t COM_FOpenFile (const char *filename, FILE **file, qboolean override_pack);
+int COM_CopyFile (const char *frompath, const char *topath);
 void COM_CloseFile (FILE *h);
 
-byte *COM_LoadStackFile (char *path, void *buffer, size_t bufsize);
-byte *COM_LoadBufFile (char *path, void *buffer, size_t *bufsize);
-byte *COM_LoadTempFile (char *path);
-byte *COM_LoadHunkFile (char *path);
-byte *COM_LoadZoneFile (char *path);
-byte *COM_LoadMallocFile (char *path);
-void COM_LoadCacheFile (char *path, struct cache_user_s *cu);
+byte *COM_LoadStackFile (const char *path, void *buffer, size_t bufsize);
+byte *COM_LoadBufFile (const char *path, void *buffer, size_t *bufsize);
+byte *COM_LoadTempFile (const char *path);
+byte *COM_LoadHunkFile (const char *path);
+byte *COM_LoadZoneFile (const char *path);
+byte *COM_LoadMallocFile (const char *path);
+void COM_LoadCacheFile (const char *path, struct cache_user_s *cu);
 int COM_CreatePath (char *path);
-void COM_Gamedir (char *dir);
-int COM_FileInGamedir (char *fname);
+void COM_Gamedir (const char *dir);
+int COM_FileInGamedir (const char *fname);
 
 extern	struct cvar_s	registered;
 extern	struct cvar_s	oem;
 extern unsigned int	gameflags;
 
 #ifdef H2W
-char *Info_ValueForKey (char *s, char *key);
-void Info_RemoveKey (char *s, char *key);
+char *Info_ValueForKey (const char *s, const char *key);
+void Info_RemoveKey (char *s, const char *key);
 void Info_RemovePrefixedKeys (char *start, char prefix);
-void Info_SetValueForKey (char *s, char *key, char *value, int maxsize);
-void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize);
-void Info_Print (char *s);
+void Info_SetValueForKey (char *s, const char *key, const char *value, int maxsize);
+void Info_SetValueForStarKey (char *s, const char *key, const char *value, int maxsize);
+void Info_Print (const char *s);
 
 // global vars for siege.
 extern qboolean cl_siege;

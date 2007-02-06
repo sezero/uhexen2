@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/qwsvdef.h,v 1.11 2007-01-15 11:59:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/qwsvdef.h,v 1.12 2007-02-06 12:24:28 sezero Exp $
 */
 
 #ifndef __HWSV_DEFS__
@@ -76,11 +76,11 @@ extern	double		host_frametime;
 extern	double		realtime;		// not bounded in any way, changed at
 						// start of every frame, never reset
 
-void SV_Error (char *error, ...) _FUNC_PRINTF(1);
+void SV_Error (const char *error, ...) _FUNC_PRINTF(1);
 void SV_Init (quakeparms_t *parms);
 
-void Con_Printf (char *fmt, ...) _FUNC_PRINTF(1);
-void Con_DPrintf (char *fmt, ...) _FUNC_PRINTF(1);
+void Con_Printf (const char *fmt, ...) _FUNC_PRINTF(1);
+void Con_DPrintf (const char *fmt, ...) _FUNC_PRINTF(1);
 
 extern	unsigned int	defLosses;	// Defenders losses in Siege
 extern	unsigned int	attLosses;	// Attackers Losses in Siege

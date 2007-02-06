@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.16 2006-10-20 20:32:32 sezero Exp $
+	$Id: model.c,v 1.17 2007-02-06 12:24:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -176,7 +176,7 @@ Mod_FindName
 
 ==================
 */
-model_t *Mod_FindName (char *name)
+model_t *Mod_FindName (const char *name)
 {
 	int		i;
 	model_t	*mod;
@@ -232,7 +232,7 @@ Mod_TouchModel
 
 ==================
 */
-void Mod_TouchModel (char *name)
+void Mod_TouchModel (const char *name)
 {
 	model_t	*mod;
 
@@ -321,7 +321,7 @@ Mod_ForName
 Loads in a model for the given name
 ==================
 */
-model_t *Mod_ForName (char *name, qboolean crash)
+model_t *Mod_ForName (const char *name, qboolean crash)
 {
 	model_t	*mod;
 

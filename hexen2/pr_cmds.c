@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.31 2006-10-22 15:06:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.32 2007-02-06 12:23:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1705,7 +1705,7 @@ static void PF_FindFloat (void)
 }
 #endif
 
-static void PR_CheckEmptyString (char *s)
+static void PR_CheckEmptyString (const char *s)
 {
 	if (s[0] <= ' ')
 		PR_RunError ("Bad string");
@@ -2412,7 +2412,7 @@ static void PF_WriteEntity (void)
 
 //=============================================================================
 
-extern int SV_ModelIndex (char *name);
+extern int SV_ModelIndex (const char *name);
 
 static void PF_makestatic (void)
 {
@@ -3335,6 +3335,9 @@ int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2006/10/22 15:06:30  sezero
+ * even more coding style clean-ups (part 10).
+ *
  * Revision 1.30  2006/10/21 22:08:33  sezero
  * various coding style clean-ups, part 6.
  *

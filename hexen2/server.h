@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.14 2007-01-15 11:59:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.15 2007-02-06 12:23:42 sezero Exp $
 */
 
 #ifndef __HX2_SERVER_H
@@ -248,18 +248,18 @@ void SV_StartParticle (vec3_t org, vec3_t dir, int color, int count);
 void SV_StartParticle2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int effect, int count);
 void SV_StartParticle3 (vec3_t org, vec3_t box, int color, int effect, int count);
 void SV_StartParticle4 (vec3_t org, float radius, int color, int effect, int count);
-void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, float attenuation);
+void SV_StartSound (edict_t *entity, int channel, const char *sample, int volume, float attenuation);
 void SV_StopSound (edict_t *entity, int channel);
 void SV_UpdateSoundPos (edict_t *entity, int channel);
 
 void SV_DropClient (qboolean crash);
 
-void SV_Edicts(char *Name);
+void SV_Edicts (const char *Name);
 
 void SV_SendClientMessages (void);
 void SV_ClearDatagram (void);
 
-int SV_ModelIndex (char *name);
+int SV_ModelIndex (const char *name);
 
 void SV_SetIdealPitch (void);
 
@@ -268,8 +268,8 @@ void SV_AddUpdates (void);
 void SV_ClientThink (void);
 void SV_AddClientToServer (struct qsocket_s	*ret);
 
-void SV_ClientPrintf (char *fmt, ...) _FUNC_PRINTF(1);
-void SV_BroadcastPrintf (char *fmt, ...) _FUNC_PRINTF(1);
+void SV_ClientPrintf (const char *fmt, ...) _FUNC_PRINTF(1);
+void SV_BroadcastPrintf (const char *fmt, ...) _FUNC_PRINTF(1);
 
 void SV_Physics (void);
 
@@ -284,12 +284,16 @@ void SV_MoveToGoal (void);
 void SV_CheckForNewClients (void);
 void SV_RunClients (void);
 void SV_SaveSpawnparms (void);
-void SV_SpawnServer (char *server, char *startspot);
+void SV_SpawnServer (const char *server, const char *startspot);
 
 #endif	/* __HX2_SERVER_H */
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2007/01/15 11:59:45  sezero
+ * enabled printf format warnings in gcc. the patch, originally by div0,
+ * is adapted from the darkplaces project.
+ *
  * Revision 1.13  2006/09/24 17:28:42  sezero
  * protected all headers against multiple inclusion
  *

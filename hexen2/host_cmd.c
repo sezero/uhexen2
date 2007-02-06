@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.55 2006-10-20 20:32:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.56 2007-02-06 12:23:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -65,7 +65,7 @@ static void Host_Status_f (void)
 	int			minutes;
 	int			hours = 0;
 	int			j;
-	void		(*print) (char *fmt, ...);
+	void		(*print) (const char *fmt, ...);
 
 	if (cmd_source == src_command)
 	{
@@ -1790,7 +1790,7 @@ static void Host_Spawn_f (void)
 	host_client->sendsignon = true;
 }
 
-dfunction_t *ED_FindFunctioni (char *fn_name);
+dfunction_t *ED_FindFunctioni (const char *fn_name);
 
 extern char	key_lines[32][MAXCMDLINE];
 extern int		key_linepos;
@@ -2333,6 +2333,9 @@ void Host_InitCommands (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.55  2006/10/20 20:32:30  sezero
+ * various coding style clean-ups, part 1.
+ *
  * Revision 1.54  2006/09/26 09:53:47  sezero
  * added string array boundary checks in Host_SavegameComment().
  *

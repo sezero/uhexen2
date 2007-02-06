@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.36 2007-01-15 12:01:08 sezero Exp $
+	$Id: gl_screen.c,v 1.37 2007-02-06 12:23:38 sezero Exp $
 */
 
 /*=============================================================================
@@ -106,10 +106,10 @@ extern	cvar_t	crosshair;
 float	introTime = 0.0;	// time for mission pack entry screen
 
 static void SCR_ScreenShot_f (void);
-static void Plaque_Draw (char *message, qboolean AlwaysDraw);
+static void Plaque_Draw (const char *message, qboolean AlwaysDraw);
 // procedures for the mission pack intro messages
-static void Info_Plaque_Draw (char *message);
-static void Bottom_Plaque_Draw (char *message);
+static void Info_Plaque_Draw (const char *message);
+static void Bottom_Plaque_Draw (const char *message);
 
 
 /*
@@ -172,7 +172,7 @@ static void UpdateInfoMessage (void)
 	}
 }
 
-static void FindTextBreaks (char *message, int Width)
+static void FindTextBreaks (const char *message, int Width)
 {
 	int	length, pos, start, lastspace, oldlast;
 
@@ -220,7 +220,7 @@ Called for important messages that should stay in the center of the screen
 for a few moments
 ==============
 */
-void SCR_CenterPrint (char *str)
+void SCR_CenterPrint (const char *str)
 {
 	strncpy (scr_centerstring, str, sizeof(scr_centerstring)-1);
 	scr_centertime_off = scr_centertime.value;
@@ -853,7 +853,7 @@ void SCR_BringDownConsole (void)
 //=============================================================================
 
 
-static void Plaque_Draw (char *message, qboolean AlwaysDraw)
+static void Plaque_Draw (const char *message, qboolean AlwaysDraw)
 {
 	int	i;
 	char	temp[80];
@@ -881,7 +881,7 @@ static void Plaque_Draw (char *message, qboolean AlwaysDraw)
 	}
 }
 
-static void Info_Plaque_Draw (char *message)
+static void Info_Plaque_Draw (const char *message)
 {
 	int i;
 	char temp[80];
@@ -915,7 +915,7 @@ static void Info_Plaque_Draw (char *message)
 	}
 }
 
-static void Bottom_Plaque_Draw (char *message)
+static void Bottom_Plaque_Draw (const char *message)
 {
 	int i;
 	char temp[80];
@@ -1304,6 +1304,9 @@ void SCR_UpdateScreen (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.36  2007/01/15 12:01:08  sezero
+ * fixed several printf format warnings
+ *
  * Revision 1.35  2006/10/20 20:32:30  sezero
  * various coding style clean-ups, part 1.
  *

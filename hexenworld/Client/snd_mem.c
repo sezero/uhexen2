@@ -168,7 +168,7 @@ static int GetLittleLong(void)
 	return val;
 }
 
-static void FindNextChunk(char *name)
+static void FindNextChunk(const char *name)
 {
 	while (1)
 	{
@@ -196,7 +196,7 @@ static void FindNextChunk(char *name)
 	}
 }
 
-static void FindChunk(char *name)
+static void FindChunk(const char *name)
 {
 	last_chunk = iff_data;
 	FindNextChunk (name);
@@ -225,7 +225,7 @@ static void DumpChunks(void)
 GetWavinfo
 ============
 */
-wavinfo_t GetWavinfo (char *name, byte *wav, size_t wavlength)
+wavinfo_t GetWavinfo (const char *name, byte *wav, size_t wavlength)
 {
 	wavinfo_t	info;
 	int	i;

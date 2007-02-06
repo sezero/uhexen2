@@ -46,7 +46,7 @@ static void W_CleanupName (char *in, char *out)
 W_LoadWadFile
 ====================
 */
-void W_LoadWadFile (char *filename)
+void W_LoadWadFile (const char *filename)
 {
 	lumpinfo_t		*lump_p;
 	wadinfo_t		*header;

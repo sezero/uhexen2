@@ -2,12 +2,12 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.12 2007-01-15 12:01:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.13 2007-02-06 12:23:39 sezero Exp $
 */
 
 #include "quakedef.h"
 
-void Sys_Error (char *error, ...);
+void Sys_Error (const char *error, ...);
 
 vec3_t vec3_origin = { 0, 0, 0 };
 int nanmask = 255 << 23;
@@ -351,6 +351,9 @@ fixed16_t Invert24To16(fixed16_t val)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2007/01/15 12:01:08  sezero
+ * fixed several printf format warnings
+ *
  * Revision 1.11  2006/10/20 20:32:30  sezero
  * various coding style clean-ups, part 1.
  *

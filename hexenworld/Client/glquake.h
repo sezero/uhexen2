@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.48 2007-02-04 15:17:28 sezero Exp $
+	$Id: glquake.h,v 1.49 2007-02-06 12:24:21 sezero Exp $
 */
 
 
@@ -123,7 +123,7 @@ extern	GLuint	gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for m
 void GL_BeginRendering (int *x, int *y, int *width, int *height);
 void GL_EndRendering (void);
 
-GLuint GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba);
+GLuint GL_LoadTexture (const char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba);
 GLuint GL_LoadPicTexture (qpic_t *pic);
 void D_ClearOpenGLTextures (int last_tex);
 

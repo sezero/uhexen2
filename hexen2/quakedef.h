@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.102 2007-01-15 11:59:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.103 2007-02-06 12:23:41 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -425,14 +425,14 @@ void Host_ClearMemory (void);
 void Host_InitCommands (void);
 void Host_Init (quakeparms_t *parms);
 void Host_Shutdown(void);
-void Host_Error (char *error, ...) _FUNC_PRINTF(1);
-void Host_EndGame (char *message, ...) _FUNC_PRINTF(1);
+void Host_Error (const char *error, ...) _FUNC_PRINTF(1);
+void Host_EndGame (const char *message, ...) _FUNC_PRINTF(1);
 void Host_Frame (float time);
 void Host_Quit_f (void);
-void Host_ClientCommands (char *fmt, ...) _FUNC_PRINTF(1);
+void Host_ClientCommands (const char *fmt, ...) _FUNC_PRINTF(1);
 void Host_ShutdownServer (qboolean crash);
-void Host_RemoveGIPFiles (char *path);
-qboolean Host_CopyFiles(char *source, char *pat, char *dest);
+void Host_RemoveGIPFiles (const char *path);
+qboolean Host_CopyFiles(const char *source, const char *pat, const char *dest);
 qboolean SaveGamestate (qboolean ClientsOnly);
 
 
@@ -463,6 +463,10 @@ void Chase_Update (void);
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.102  2007/01/15 11:59:45  sezero
+ * enabled printf format warnings in gcc. the patch, originally by div0,
+ * is adapted from the darkplaces project.
+ *
  * Revision 1.101  2006/11/22 12:11:09  sezero
  * Ensured that the basedir always stays the same for Mac OS X. Documented
  * the packaging method for Mac OS X. Updated release date to November.

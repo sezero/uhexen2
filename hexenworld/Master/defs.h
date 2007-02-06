@@ -119,15 +119,15 @@ typedef struct cmd_function_s
 //Function prototypes
 
 //sys_main.c
-int COM_CheckParm (char *parm);
+int COM_CheckParm (const char *parm);
 char *COM_Parse (char *data);
-void Sys_Error (char *error, ...) _FUNC_PRINTF(1);
+void Sys_Error (const char *error, ...) _FUNC_PRINTF(1);
 void Sys_Quit (void);
 
 void SZ_Init (sizebuf_t *buf, byte *data, int length);
 void SZ_Clear (sizebuf_t *buf);
 void *SZ_GetSpace (sizebuf_t *buf, int length);
-void SZ_Write (sizebuf_t *buf, void *data, int length);
+void SZ_Write (sizebuf_t *buf, const void *data, int length);
 
 void SV_Shutdown();
 double Sys_DoubleTime (void);
@@ -140,10 +140,10 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function);
 void Cmd_Init();
 void Cmd_ExecuteString (char *text);
 void Cbuf_Init (void);
-void Cbuf_AddText (char *text);
-void Cbuf_InsertText (char *text);
+void Cbuf_AddText (const char *text);
+void Cbuf_InsertText (const char *text);
 void Cbuf_Execute (void);
-qboolean Cmd_Exists (char *cmd_name);
+qboolean Cmd_Exists (const char *cmd_name);
 
 //net.c
 void NET_Shutdown (void);

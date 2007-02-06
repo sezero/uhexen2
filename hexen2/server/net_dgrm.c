@@ -89,7 +89,7 @@ static void NET_Ban_f (void)
 {
 	char	addrStr [32];
 	char	maskStr [32];
-	void	(*print) (char *fmt, ...);
+	void	(*print) (const char *fmt, ...);
 
 	if (cmd_source == src_command)
 	{

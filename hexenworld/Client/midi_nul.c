@@ -2,7 +2,7 @@
 	midi_nul.c
 	NULL midi driver
 
-	$Id: midi_nul.c,v 1.2 2006-07-05 20:39:26 sezero Exp $
+	$Id: midi_nul.c,v 1.3 2007-02-06 12:24:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -13,7 +13,7 @@ qboolean MIDI_Init (void)
 	return false;
 }
 
-void MIDI_Play(char *Name)
+void MIDI_Play(const char *Name)
 {
 }
 

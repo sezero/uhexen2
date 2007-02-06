@@ -16,7 +16,7 @@
 #define	X_OK	1		/* Test for execute permission.  */
 #define	F_OK	0		/* Test for existence.  */
 #endif
-int Sys_mkdir (char *path);
+int Sys_mkdir (const char *path);
 
 #define Sys_mkdir_err(Dir_Path) {					\
         if (Sys_mkdir((Dir_Path)))					\
@@ -24,7 +24,7 @@ int Sys_mkdir (char *path);
 }
 
 // simplified findfirst/findnext implementation
-char *Sys_FindFirstFile (char *path, char *pattern);
+char *Sys_FindFirstFile (const char *path, const char *pattern);
 char *Sys_FindNextFile (void);
 void Sys_FindClose (void);
 
@@ -38,11 +38,11 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length);
 //
 // system IO
 //
-void Sys_Error (char *error, ...) _FUNC_PRINTF(1);
+void Sys_Error (const char *error, ...) _FUNC_PRINTF(1);
 // an error will cause the entire program to exit
 
-void Sys_Printf (char *fmt, ...) _FUNC_PRINTF(1);
-void Sys_DPrintf (char *fmt, ...) _FUNC_PRINTF(1);
+void Sys_Printf (const char *fmt, ...) _FUNC_PRINTF(1);
+void Sys_DPrintf (const char *fmt, ...) _FUNC_PRINTF(1);
 // send text to the console
 
 void Sys_Quit (void);
@@ -51,7 +51,7 @@ double Sys_DoubleTime (void);
 
 char *Sys_ConsoleInput (void);
 
-void Sys_DebugLog(char *file, char *fmt, ...) _FUNC_PRINTF(2);
+void Sys_DebugLog (const char *file, const char *fmt, ...) _FUNC_PRINTF(2);
 
 void Sys_Sleep (void);
 // called to yield for a little bit so as

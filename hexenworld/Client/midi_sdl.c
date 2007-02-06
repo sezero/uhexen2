@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.27 2006-10-22 15:06:31 sezero Exp $
+	$Id: midi_sdl.c,v 1.28 2007-02-06 12:24:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -191,7 +191,7 @@ bad_version:
 	return true;
 }
 
-void MIDI_Play(char *Name)
+void MIDI_Play(const char *Name)
 {
 	void	*midiData;
 	char	midiName[MAX_OSPATH];
@@ -295,6 +295,9 @@ void MIDI_Cleanup(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2006/10/22 15:06:31  sezero
+ * even more coding style clean-ups (part 10).
+ *
  * Revision 1.26  2006/10/10 07:24:25  sezero
  * during init phase, we must error out if certain mkdir calls fail
  *

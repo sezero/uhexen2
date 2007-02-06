@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.30 2006-10-22 15:13:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.31 2007-02-06 12:23:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -35,7 +35,7 @@ int		type_size[8] = {
 };
 
 static ddef_t	*ED_FieldAtOfs (int ofs);
-static qboolean	ED_ParseEpair (void *base, ddef_t *key, char *s);
+static qboolean	ED_ParseEpair (void *base, ddef_t *key, const char *s);
 
 static char field_name[256], class_name[256];
 static qboolean RemoveBadReferences;
@@ -240,7 +240,7 @@ static ddef_t *ED_FieldAtOfs (int ofs)
 ED_FindField
 ============
 */
-static ddef_t *ED_FindField (char *name)
+static ddef_t *ED_FindField (const char *name)
 {
 	ddef_t		*def;
 	int			i;
@@ -260,7 +260,7 @@ static ddef_t *ED_FindField (char *name)
 ED_FindGlobal
 ============
 */
-static ddef_t *ED_FindGlobal (char *name)
+static ddef_t *ED_FindGlobal (const char *name)
 {
 	ddef_t		*def;
 	int			i;
@@ -280,7 +280,7 @@ static ddef_t *ED_FindGlobal (char *name)
 ED_FindFunction
 ============
 */
-static dfunction_t *ED_FindFunction (char *fn_name)
+static dfunction_t *ED_FindFunction (const char *fn_name)
 {
 	dfunction_t		*func;
 	int				i;
@@ -294,7 +294,7 @@ static dfunction_t *ED_FindFunction (char *fn_name)
 	return NULL;
 }
 
-dfunction_t *ED_FindFunctioni (char *fn_name)
+dfunction_t *ED_FindFunctioni (const char *fn_name)
 {
 	dfunction_t		*func;
 	int				i;
@@ -309,7 +309,7 @@ dfunction_t *ED_FindFunctioni (char *fn_name)
 }
 
 
-eval_t *GetEdictFieldValue(edict_t *ed, char *field)
+eval_t *GetEdictFieldValue(edict_t *ed, const char *field)
 {
 	ddef_t			*def = NULL;
 	int				i;
@@ -779,7 +779,7 @@ void ED_ParseGlobals (char *data)
 ED_NewString
 =============
 */
-char *ED_NewString (char *string)
+char *ED_NewString (const char *string)
 {
 	char	*new, *new_p;
 	int		i, l;
@@ -814,7 +814,7 @@ Can parse either fields or globals
 returns false if error
 =============
 */
-static qboolean	ED_ParseEpair (void *base, ddef_t *key, char *s)
+static qboolean	ED_ParseEpair (void *base, ddef_t *key, const char *s)
 {
 	int		i;
 	char	string[128];
@@ -1412,6 +1412,9 @@ int NUM_FOR_EDICT(edict_t *e)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2006/10/22 15:13:19  sezero
+ * even more coding style clean-ups (part 10).
+ *
  * Revision 1.29  2006/10/22 15:08:28  sezero
  * sizeof(void *) is not the same everywhere. use hardcoded
  * 32 bit machine values in pr_edict.c, as we do in pr_lex.c.

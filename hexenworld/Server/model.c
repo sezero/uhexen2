@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.9 2006-10-20 20:33:16 sezero Exp $
+	$Id: model.c,v 1.10 2007-02-06 12:24:27 sezero Exp $
 */
 
 #include "qwsvdef.h"
@@ -145,7 +145,7 @@ Mod_FindName
 
 ==================
 */
-model_t *Mod_FindName (char *name)
+model_t *Mod_FindName (const char *name)
 {
 	int		i;
 	model_t	*mod;
@@ -237,7 +237,7 @@ Mod_ForName
 Loads in a model for the given name
 ==================
 */
-model_t *Mod_ForName (char *name, qboolean crash)
+model_t *Mod_ForName (const char *name, qboolean crash)
 {
 	model_t	*mod;
 

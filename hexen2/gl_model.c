@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.31 2006-10-20 20:32:29 sezero Exp $
+	$Id: gl_model.c,v 1.32 2007-02-06 12:23:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -195,7 +195,7 @@ Mod_FindName
 
 ==================
 */
-model_t *Mod_FindName (char *name)
+model_t *Mod_FindName (const char *name)
 {
 	int		i;
 	model_t	*mod = NULL;
@@ -242,7 +242,7 @@ Mod_TouchModel
 
 ==================
 */
-void Mod_TouchModel (char *name)
+void Mod_TouchModel (const char *name)
 {
 	model_t	*mod;
 
@@ -332,7 +332,7 @@ Mod_ForName
 Loads in a model for the given name
 ==================
 */
-model_t *Mod_ForName (char *name, qboolean crash)
+model_t *Mod_ForName (const char *name, qboolean crash)
 {
 	model_t	*mod;
 
@@ -2626,6 +2626,9 @@ static void Mod_Print (void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2006/10/20 20:32:29  sezero
+ * various coding style clean-ups, part 1.
+ *
  * Revision 1.30  2006/07/02 11:45:30  sezero
  * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
  * which stops vec3_origin usage in relevant calculations. renamed the Length

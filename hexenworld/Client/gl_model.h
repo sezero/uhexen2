@@ -2,7 +2,7 @@
 	model.h
 	header for model loading and caching
 
-	$Id: gl_model.h,v 1.8 2006-09-24 17:28:43 sezero Exp $
+	$Id: gl_model.h,v 1.9 2007-02-06 12:24:13 sezero Exp $
 */
 
 #ifndef __HX2_MODEL_H
@@ -461,10 +461,10 @@ typedef struct model_s
 
 void	Mod_Init (void);
 void	Mod_ClearAll (void);
-model_t *Mod_ForName (char *name, qboolean crash);
-model_t *Mod_FindName (char *name);
+model_t *Mod_ForName (const char *name, qboolean crash);
+model_t *Mod_FindName (const char *name);
 void	*Mod_Extradata (model_t *mod);	// handles caching
-void	Mod_TouchModel (char *name);
+void	Mod_TouchModel (const char *name);
 
 mleaf_t *Mod_PointInLeaf (float *p, model_t *model);
 byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);

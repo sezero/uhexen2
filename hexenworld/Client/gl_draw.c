@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.76 2007-02-02 18:33:38 sezero Exp $
+	$Id: gl_draw.c,v 1.77 2007-02-06 12:24:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -115,7 +115,7 @@ int		gl_filter_max = GL_LINEAR;
 gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
 
-static GLuint GL_LoadPixmap (char *name, char *data);
+static GLuint GL_LoadPixmap (const char *name, const char *data);
 static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite);
 static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode);
 
@@ -138,7 +138,7 @@ static byte	menuplyr_pixels[MAX_PLAYER_CLASS][PLAYER_PIC_WIDTH*PLAYER_PIC_HEIGHT
 
 
 #if 0
-static qpic_t *Draw_PicFromFile (char *name)
+static qpic_t *Draw_PicFromFile (const char *name)
 {
 	qpic_t	*p;
 	glpic_t	*gl;
@@ -163,7 +163,7 @@ static qpic_t *Draw_PicFromFile (char *name)
 
 // Pa3PyX: Like Draw_PicFromFile, except loads pic into
 // a specified buffer if there is room
-static qpic_t *Draw_PicFileBuf (char *name, void *p, size_t *size)
+static qpic_t *Draw_PicFileBuf (const char *name, void *p, size_t *size)
 {
 	glpic_t	*gl;
 
@@ -205,7 +205,7 @@ qpic_t *Draw_PicFromWad (char *name)
 Draw_CachePic
 ================
 */
-qpic_t	*Draw_CachePic (char *path)
+qpic_t	*Draw_CachePic (const char *path)
 {
 	cachepic_t	*pic;
 	int			i;
@@ -272,7 +272,7 @@ Pa3PyX: Function added to cache pics ignoring transparent
 colors (e.g. in intermission screens)
 ================
 */
-qpic_t *Draw_CachePicNoTrans (char *path)
+qpic_t *Draw_CachePicNoTrans (const char *path)
 {
 	cachepic_t	*pic;
 	int			i;
@@ -1330,7 +1330,7 @@ GL_FindTexture
 ================
 */
 #if 0	// seems to have no users
-int GL_FindTexture (char *identifier)
+int GL_FindTexture (const char *identifier)
 {
 	int		i;
 	gltexture_t	*glt;
@@ -1957,7 +1957,7 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 GL_LoadTexture
 ================
 */
-GLuint GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba)
+GLuint GL_LoadTexture (const char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba)
 {
 	int		i, size;
 	unsigned long	hash = 0;
@@ -2046,7 +2046,7 @@ crosshairs or pointers. The data string is in a format similar to an X11
 pixmap.  '0'-'7' are brightness levels, any other character is considered
 transparent. Remember, NO error checking is performed on the input string.
 */
-static GLuint GL_LoadPixmap (char *name, char *data)
+static GLuint GL_LoadPixmap (const char *name, const char *data)
 {
 	int		i;
 	unsigned char	pixels[32*32][4];

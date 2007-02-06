@@ -3,7 +3,7 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.17 2007-02-02 18:33:38 sezero Exp $
+	$Id: draw.h,v 1.18 2007-02-06 12:24:12 sezero Exp $
 */
 
 #ifndef __HX2_DRAW_H
@@ -42,9 +42,9 @@ void Draw_SmallCharacter (int x, int y, int num);
 void Draw_SmallString (int x, int y, char *str);
 void Draw_RedString (int x, int y, char *str);
 qpic_t *Draw_PicFromWad (char *name);
-qpic_t *Draw_CachePic (char *path);
-qpic_t *Draw_CachePicNoTrans (char *path);
-qpic_t *Draw_CachePicResize (char *path, int targetWidth, int targetHeight);
+qpic_t *Draw_CachePic (const char *path);
+qpic_t *Draw_CachePicNoTrans (const char *path);
+qpic_t *Draw_CachePicResize (const char *path, int targetWidth, int targetHeight);
 
 // game/engine name to draw on the console
 #define GAME_MOD_NAME		ENGINE_NAME

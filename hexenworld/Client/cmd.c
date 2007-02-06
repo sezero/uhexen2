@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.18 2007-02-02 14:23:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.19 2007-02-06 12:23:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -85,7 +85,7 @@ Cbuf_AddText
 Adds command text at the end of the buffer
 ============
 */
-void Cbuf_AddText (char *text)
+void Cbuf_AddText (const char *text)
 {
 	int		l;
 
@@ -109,7 +109,7 @@ Adds a \n to the text
 FIXME: actually change the command buffer to do less copying
 ============
 */
-void Cbuf_InsertText (char *text)
+void Cbuf_InsertText (const char *text)
 {
 	char	*temp;
 	int		templen;
@@ -594,7 +594,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 Cmd_Exists
 ============
 */
-qboolean Cmd_Exists (char *cmd_name)
+qboolean Cmd_Exists (const char *cmd_name)
 {
 	cmd_function_t	*cmd;
 
@@ -613,7 +613,7 @@ qboolean Cmd_Exists (char *cmd_name)
 Cmd_CheckCommand
 ============
 */
-qboolean Cmd_CheckCommand (char *partial)
+qboolean Cmd_CheckCommand (const char *partial)
 {
 	cmd_function_t	*cmd;
 	cmdalias_t	*a;
@@ -698,7 +698,7 @@ Returns the position (1 to argc-1) in the command's argument list
 where the given parameter apears, or 0 if not present
 ================
 */
-int Cmd_CheckParm (char *parm)
+int Cmd_CheckParm (const char *parm)
 {
 	int	i;
 
@@ -721,7 +721,7 @@ Cmd_List_f
 Lists the commands to the console
 ===============
 */
-int ListCommands (char *prefix, char **buf, int pos)
+int ListCommands (const char *prefix, char **buf, int pos)
 {
 	cmd_function_t	*cmd;
 	int	i = 0;
@@ -770,7 +770,7 @@ Cmd_ListCvar_f
 Lists the cvars to the console
 ===============
 */
-int ListCvars (char *prefix, char **buf, int pos)
+int ListCvars (const char *prefix, char **buf, int pos)
 {
 	cvar_t		*var;
 	int i = 0;
@@ -819,7 +819,7 @@ Cmd_ListAlias_f
 Lists the cvars to the console
 ===============
 */
-int ListAlias (char *prefix, char **buf, int pos)
+int ListAlias (const char *prefix, char **buf, int pos)
 {
 	cmdalias_t	*a;
 	int	i = 0;

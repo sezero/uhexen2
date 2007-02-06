@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.66 2006-11-25 08:26:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.67 2007-02-06 12:24:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -46,7 +46,7 @@ static Uint8		appState;
 //=============================================================================
 
 
-void Sys_DebugLog(char *file, char *fmt, ...)
+void Sys_DebugLog (const char *file, const char *fmt, ...)
 {
 	va_list		argptr;
 	static char	data[MAXPRINTMSG];
@@ -68,7 +68,7 @@ FILE IO
 ===============================================================================
 */
 
-int Sys_mkdir (char *path)
+int Sys_mkdir (const char *path)
 {
 	int rc;
 
@@ -91,7 +91,7 @@ static DIR		*finddir;
 static struct dirent	*finddata;
 static char		*findpath, *findpattern;
 
-char *Sys_FindFirstFile (char *path, char *pattern)
+char *Sys_FindFirstFile (const char *path, const char *pattern)
 {
 	size_t	tmp_len;
 
@@ -202,7 +202,7 @@ static void Sys_Init (void)
 }
 
 
-void Sys_Error (char *error, ...)
+void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
@@ -218,7 +218,7 @@ void Sys_Error (char *error, ...)
 	exit (1);
 }
 
-void Sys_Printf (char *fmt, ...)
+void Sys_Printf (const char *fmt, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
@@ -230,7 +230,7 @@ void Sys_Printf (char *fmt, ...)
 	fprintf(stderr, "%s", text);
 }
 
-void Sys_DPrintf (char *fmt, ...)
+void Sys_DPrintf (const char *fmt, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
@@ -574,6 +574,9 @@ int main(int argc, char *argv[])
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.66  2006/11/25 08:26:26  sezero
+ * feed correct data to Sys_StripAppBundle
+ *
  * Revision 1.65  2006/11/22 12:11:11  sezero
  * Ensured that the basedir always stays the same for Mac OS X. Documented
  * the packaging method for Mac OS X. Updated release date to November.
