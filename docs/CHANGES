@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-02-05 (CVS):
+    * minor documentation updates
+
 2007-02-04 (CVS):
     * gl_rmain.c, gl_vidnt.c, gl_vidsdl.c: General cleanup: The vendor,
       renderer, version and extensions vars are not global anymore, no
