@@ -89,7 +89,7 @@ diff -urN gamecode-1.16/hc/hw/ai.hc gamecode/hc/hw/ai.hc
  		return;
  	}
  
-@@ -767,7 +804,20 @@
+@@ -767,6 +804,19 @@
  // head straight in
  //	if(self.netname=="spider")
  //		check_climb();
@@ -110,7 +110,6 @@ diff -urN gamecode-1.16/hc/hw/ai.hc gamecode/hc/hw/ai.hc
 +		movetogoal (dist);		// done in C code...
  };
  
- /*
 diff -urN gamecode-1.16/hc/hw/plats_mp.hc gamecode/hc/hw/plats_mp.hc
 --- gamecode-1.16/hc/hw/plats_mp.hc	2004-11-29 13:28:34.000000000 +0200
 +++ gamecode/hc/hw/plats_mp.hc	2005-08-31 01:52:33.000000000 +0300
