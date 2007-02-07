@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/light.hc,v 1.1.1.1 2004-11-29 11:39:03 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/light.hc,v 1.2 2007-02-07 16:57:07 sezero Exp $
  */
 /*
 ==========================================================
@@ -443,77 +443,4 @@ void() light_gem =
 		makestatic (self);
 	}
 };
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 35    9/02/97 3:04p Mgummelt
- * 
- * 34    9/02/97 2:55a Mgummelt
- * 
- * 33    8/23/97 7:15p Rlove
- * 
- * 32    8/21/97 5:10p Rjohnson
- * Change for ablight
- * 
- * 31    8/21/97 3:19p Rjohnson
- * Abslight change
- * 
- * 30    8/20/97 5:18p Rjohnson
- * Abslight for everything
- * 
- * 29    8/19/97 10:48p Rjohnson
- * Abslight for flames
- * 
- * 28    8/13/97 5:52p Mgummelt
- * 
- * 27    7/19/97 9:57p Mgummelt
- * 
- * 26    7/10/97 5:28p Rlove
- * 
- * 25    6/19/97 3:01p Rjohnson
- * Removed old id code
- * 
- * 24    6/15/97 5:10p Mgummelt
- * 
- * 23    6/15/97 3:15p Mgummelt
- * 
- * 22    6/13/97 3:29p Mgummelt
- * 
- * 21    6/09/97 10:04a Mgummelt
- * 
- * 20    6/06/97 4:08p Mgummelt
- * 
- * 19    6/06/97 11:38a Mgummelt
- * 
- * 18    6/06/97 10:58a Rjohnson
- * Fix for lights
- * 
- * 17    6/05/97 8:55p Mgummelt
- * 
- * 14    5/15/97 6:34p Rjohnson
- * Code cleanup
- * 
- * 13    4/04/97 4:53p Jweier
- * Removed more of Adam's code
- * 
- * 7     3/28/97 4:47p Aleggett
- * Updated light fading even further...
- * 
- * 6     3/20/97 2:15p Aleggett
- * Made fading lights use the new lightstyle method.
- * 
- * 5     3/05/97 4:48p Rlove
- * Small fix for flame1.mdl
- * 
- * 4     3/05/97 1:54p Rlove
- * Placed light entites in LIGHT.HC and placed breakable entities in
- * BREAKABL.HC
- * 
- * 3     3/05/97 12:22p Rlove
- * Added all four types of torches
- * 
- * 2     2/28/97 6:11p Rlove
- * New Egypt Light
- * 
- * 1     2/28/97 5:39p Rlove
- */
+

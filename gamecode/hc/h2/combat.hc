@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/combat.hc,v 1.2 2005-02-23 08:11:24 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/combat.hc,v 1.3 2007-02-07 16:56:59 sezero Exp $
  */
 void(vector org, vector vel, float damage, entity victim) SpawnPuff;
 
@@ -120,51 +120,4 @@ void FireMelee (float damage_base,float damage_mod,float attack_radius)
 	}
 
 }
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2004/11/29 11:37:37  sezero
- * Initial import
- *
- * 
- * 34    7/12/97 9:09a Rlove
- * Reworked Assassin Punch Dagger
- * 
- * 32    7/07/97 2:59p Mgummelt
- * 
- * 31    6/30/97 6:14p Rlove
- * 
- * 30    6/30/97 5:30p Rlove
- * 
- * 29    6/28/97 6:32p Mgummelt
- * 
- * 28    6/26/97 4:46p Rlove
- * 
- * 27    6/26/97 4:39p Rlove
- * Special ability #2 for Necromancer: Vampiric Drain
- * 
- * 26    6/18/97 6:08p Mgummelt
- * 
- * 25    5/28/97 8:13p Mgummelt
- * 
- * 24    5/27/97 9:40a Rlove
- * Took out super_damage and radsuit fields
- * 
- * 23    5/12/97 10:31a Rlove
- * 
- * 22    5/06/97 1:29p Mgummelt
- * 
- * 21    4/25/97 8:31p Mgummelt
- * 
- * 20    4/24/97 2:15p Mgummelt
- * 
- * 19    4/12/96 8:55p Mgummelt
- * 
- * 18    4/09/97 2:41p Rlove
- * New Raven weapon sounds
- * 
- * 17    4/04/97 5:40p Rlove
- * 
- * 16    3/31/97 6:45a Rlove
- * Moved most of COMBAT.HC over to DAMAGE.HC
- * 
- */
+

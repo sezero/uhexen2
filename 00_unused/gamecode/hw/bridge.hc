@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/hw/bridge.hc,v 1.1.1.1 2005-07-29 20:44:17 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/hw/bridge.hc,v 1.2 2007-02-07 16:56:28 sezero Exp $
  */
 /*
 ==============================================================================
@@ -213,31 +213,3 @@ void ropebridge_link()
 		self.touch		= ropebridge_touch;
 }
 
-
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2004/11/29 11:30:16  sezero
- * Initial import
- *
- * Revision 1.1.1.1  2001/11/09 17:05:00  theoddone33
- * Inital import
- *
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 7     8/23/97 7:15p Rlove
- * 
- * 6     6/18/97 10:46a Rjohnson
- * Code cleanu
- * 
- * 5     4/01/97 5:02p Aleggett
- * 
- * 4     3/26/97 1:21p Aleggett
- * Waiting for a bug in Quake to be fixed.
- * 
- * 3     3/25/97 12:27p Aleggett
- * 
- * 2     3/25/97 11:40a Aleggett
- * First edition
- */

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/sickle.hc,v 1.1 2005-01-26 17:26:12 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/sickle.hc,v 1.2 2007-02-07 17:01:23 sezero Exp $
  */
 
 /*
@@ -254,84 +254,4 @@ void sickle_decide_attack (void)
 	self.attack_cnt += 1;
   	self.attack_finished = time + 0.5;
 }
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 6     5/25/98 1:39p Mgummelt
- * 
- * 5     4/17/98 9:00p Mgummelt
- * 1st version of Siege- loads but totally fucked
- * 
- * 3     4/10/98 1:26p Ssengele
- * switched a few msg_broadcasts to multicasts
- * 
- * 2     2/09/98 3:24p Rjohnson
- * Update temp ents
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 34    10/07/97 12:45p Mgummelt
- * 
- * 33    9/01/97 3:53p Rlove
- * 
- * 32    8/26/97 7:38a Mgummelt
- * 
- * 31    8/22/97 2:44p Jweier
- * 
- * 30    8/20/97 1:20p Rlove
- * 
- * 29    8/18/97 6:45a Rlove
- * 
- * 28    8/12/97 6:10p Mgummelt
- * 
- * 27    8/11/97 9:50a Rlove
- * 
- * 26    8/05/97 3:15p Rlove
- * 
- * 23    7/21/97 3:03p Rlove
- * 
- * 22    7/12/97 9:09a Rlove
- * Reworked Assassin Punch Dagger
- * 
- * 18    6/30/97 9:41a Rlove
- * 
- * 17    6/26/97 4:39p Rlove
- * Special ability #2 for Necromancer: Vampiric Drain
- * 
- * 16    6/18/97 7:33p Mgummelt
- * 
- * 15    6/09/97 11:20a Rlove
- * 
- * 14    6/05/97 9:29a Rlove
- * Weapons now have deselect animations
- * 
- * 13    5/27/97 10:58a Rlove
- * Took out old Id sound files
- * 
- * 12    5/06/97 1:29p Mgummelt
- * 
- * 11    5/03/97 12:59p Rlove
- * 
- * 10    5/02/97 8:05a Rlove
- * 
- * 9     4/28/97 6:54p Mgummelt
- * 
- * 8     4/25/97 8:32p Mgummelt
- * 
- * 7     4/24/97 8:49p Mgummelt
- * 
- * 6     4/11/96 1:51p Mgummelt
- * 
- * 5     4/09/97 2:41p Rlove
- * New Raven weapon sounds
- * 
- * 4     4/04/97 5:40p Rlove
- * 
- * 3     4/01/97 2:44p Rlove
- * New weapons, vorpal sword and purifier
- * 
- * 2     2/28/97 3:33p Rlove
- * New crossbow and sickle weapon models
- * 
- * 1     2/28/97 2:58p Rlove
- */
+

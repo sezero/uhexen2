@@ -2,7 +2,7 @@
 	model.h
 	header for model loading and caching
 
-	$Id: model.h,v 1.8 2007-02-06 12:23:40 sezero Exp $
+	$Id: model.h,v 1.9 2007-02-07 17:01:35 sezero Exp $
 */
 
 #ifndef __HX2_MODEL_H
@@ -406,97 +406,3 @@ byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
 
 #endif	/* __HX2_MODEL_H */
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.7  2006/09/24 17:28:42  sezero
- * protected all headers against multiple inclusion
- *
- * Revision 1.6  2006/04/06 22:08:22  sezero
- * more tidy-ups (model.h, gl_model.h)
- *
- * Revision 1.5  2005/09/19 20:10:17  sezero
- * startings of model code unification. mostly
- * cosmetic for now, more will follow.
- *
- * Revision 1.4  2004/12/18 14:20:40  sezero
- * Clean-up and kill warnings: 11
- * A lot of whitespace cleanups.
- *
- * Revision 1.3  2004/12/18 13:59:25  sezero
- * Clean-up and kill warnings 8:
- * Missing prototypes.
- *
- * Revision 1.2  2004/12/12 14:14:42  sezero
- * style changes to our liking
- *
- * Revision 1.1.1.1  2004/11/28 00:05:23  sezero
- * Initial import of AoT 1.2.0 code
- *
- * 7     3/12/98 1:12p Jmonroe
- * removed strcmp from render code
- * 
- * 6     3/10/98 6:42p Jmonroe
- * first pass of new model fmt, fully in view render needs work
- * 
- * 5     2/26/98 9:19p Jmonroe
- * shortened memory struct for sprites, added sprite orientation code in
- * gl (need to test)
- * 
- * 4     2/20/98 12:18p Jmonroe
- * changed modelgen.h to genmodel.h
- * 
- * 20    9/18/97 2:34p Rlove
- * 
- * 19    9/17/97 1:27p Rlove
- * 
- * 18    9/17/97 11:11a Rlove
- * 
- * 17    7/15/97 4:09p Rjohnson
- * New particle effect
- * 
- * 16    6/12/97 6:42a Rlove
- * Smoke entities are being deleted (before they weren't)
- * 
- * 15    5/28/97 3:54p Rjohnson
- * Effect to make a model always face you
- * 
- * 14    5/22/97 5:56p Rjohnson
- * New translucency effect
- * 
- * 13    4/03/97 10:40a Rjohnson
- * Added a translucent flag for surfaces
- * 
- * 12    3/28/97 5:28p Rjohnson
- * Updates to the transparency for the models
- * 
- * 11    3/07/97 1:50p Rjohnson
- * Id Updates
- * 
- * 10    3/07/97 12:06p Rjohnson
- * Added new spell particle effect
- * 
- * 9     2/20/97 12:13p Rjohnson
- * Code fixes for id update
- * 
- * 8     2/11/97 1:15p Rjohnson
- * Added transparent sprites
- * 
- * 7     1/02/97 11:16a Rjohnson
- * Christmas work - added adaptive time, game delays, negative light,
- * particle effects, etc
- * 
- * 6     12/12/96 12:09p Rjohnson
- * Removed model distance define
- * 
- * 5     12/12/96 9:42a Ggribb
- * added mip mapped monsters
- * 
- * 4     12/11/96 3:54p Rjohnson
- * Negated mean of mip map flag
- * 
- * 3     12/11/96 10:44a Rjohnson
- * Added the ice and no mip-mapping defines
- * 
- * 2     12/06/96 2:00p Rjohnson
- * New particle type for the fireball
- */

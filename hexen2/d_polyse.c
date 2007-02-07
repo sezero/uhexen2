@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.11 2006-10-20 20:32:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.12 2007-02-07 17:01:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1129,62 +1129,3 @@ split:
 
 #endif
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.10  2006/07/18 08:34:55  sezero
- * D_PolysetCalcGradients in d_polyse.c is for !i386 but
- * contained i386 code. still keeping for future reference,
- * though
- *
- * Revision 1.9  2006/03/28 19:53:23  sezero
- * continue making static functions and vars static. whitespace and coding
- * style cleanup. part 47: software renderer: r_aclip.c, r_alias.c, r_bsp.c,
- * r_draw.c, r_edge.c.  also removed the #warning directives for the non-x86
- * non-compilability.  added a few comments about the non-Intel issue.
- *
- * Revision 1.8  2006/03/27 19:58:33  sezero
- * continue making static functions and vars static. whitespace and coding
- * style cleanup. part 46: software renderer drawing functions.
- *
- * Revision 1.7  2006/03/27 19:53:36  sezero
- * fixed -Wshadow warnings
- *
- * Revision 1.6  2005/10/25 20:08:41  sezero
- * coding style and whitespace cleanup.
- *
- * Revision 1.5  2004/12/19 14:38:10  sezero
- * fix the compile sillyness
- *
- * Revision 1.4  2004/12/19 10:35:30  sezero
- * - Add "implicitly declared" functions as externs: Software rendering files.
- * - Add comments on the asm/non-Intel status of the code
- *
- * Revision 1.3  2004/12/18 14:20:40  sezero
- * Clean-up and kill warnings: 11
- * A lot of whitespace cleanups.
- *
- * Revision 1.2  2004/12/12 14:14:42  sezero
- * style changes to our liking
- *
- * Revision 1.1.1.1  2004/11/28 00:02:19  sezero
- * Initial import of AoT 1.2.0 code
- *
- * Revision 1.1.1.1  2001/11/09 17:03:58  theoddone33
- * Inital import
- *
- * 
- * 7     5/22/97 5:56p Rjohnson
- * New translucency effect
- * 
- * 6     5/15/97 11:47a Rjohnson
- * Poly drawing updates / optimizations
- * 
- * 5     3/28/97 5:28p Rjohnson
- * Updates to the transparency for the models
- * 
- * 4     3/28/97 10:08a Rjohnson
- * Added transparent models
- * 
- * 3     2/17/97 3:36p Rjohnson
- * Id Updates
- */

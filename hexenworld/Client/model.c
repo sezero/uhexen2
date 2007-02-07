@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.17 2007-02-06 12:24:22 sezero Exp $
+	$Id: model.c,v 1.18 2007-02-07 17:03:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2227,5 +2227,4 @@ static void Mod_Print (void)
 		Con_Printf ("Wrote to mcache.txt\n");
 	}
 }
-
 

@@ -1,5 +1,5 @@
 /*
- * $Id: mstrconv.c,v 1.11 2007-02-06 12:23:50 sezero Exp $
+ * $Id: mstrconv.c,v 1.12 2007-02-07 17:03:28 sezero Exp $
  */
 
 #include <windows.h>
@@ -1165,39 +1165,3 @@ static void ShowTrackError (PINTRACKSTATE ptsTrack, LPSTR lpszErr)
 }
 #endif
 
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.10  2006/10/20 20:32:31  sezero
- * various coding style clean-ups, part 1.
- *
- * Revision 1.9  2006/02/18 13:44:17  sezero
- * continue making static functions and vars static. whitespace and coding style
- * cleanup. (part 6: midi files).
- *
- * Revision 1.8  2005/07/31 11:13:52  sezero
- * debug defines
- *
- * Revision 1.7  2005/07/09 07:22:56  sezero
- * indentation and whitespace fixes
- *
- * Revision 1.6  2005/07/09 07:21:13  sezero
- * use zone instead of malloc. other small stuff.
- *
- * Revision 1.5  2005/06/17 16:24:41  sezero
- * win32 fixes and clean-ups
- *
- * Revision 1.4  2005/05/19 12:47:10  sezero
- * synced h2 and hw versions of midi stuff
- *
- * Revision 1.2  2005/02/05 16:19:31  sezero
- * update the midi stuff (volume ctrl, etc) for win32, too
- * (taken directly from Pa3PyX and HexenWorld)
- *
- * Revision 1.1  2005/02/05 16:16:10  sezero
- * separate win32 and linux versions of midi files. too much mess otherwise.
- *
- * 
- * 1     2/27/97 4:04p Rjohnson
- * Initial Revision
- */

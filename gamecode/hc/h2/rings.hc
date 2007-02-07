@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/rings.hc,v 1.1.1.1 2004-11-29 11:40:18 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/rings.hc,v 1.2 2007-02-07 16:57:09 sezero Exp $
  */
 void player_fly(void);
 void Ring_Init(string modelname,string name);
@@ -164,63 +164,3 @@ void Ring_Init(string modelname,string name)
 	StartItem();
 }
 
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 24    9/11/97 12:02p Mgummelt
- * 
- * 23    9/02/97 2:01a Rlove
- * 
- * 22    9/01/97 9:32p Rlove
- * 
- * 21    8/31/97 8:52a Mgummelt
- * 
- * 20    8/26/97 7:45a Rlove
- * 
- * 19    8/25/97 6:01p Rlove
- * 
- * 18    8/21/97 12:00a Mgummelt
- * 
- * 17    8/20/97 11:56p Mgummelt
- * 
- * 16    8/15/97 11:40a Rlove
- * 
- * 15    8/14/97 8:00a Rlove
- * 
- * 14    8/14/97 6:42a Rlove
- * 
- * 13    7/21/97 3:03p Rlove
- * 
- * 12    7/08/97 7:07a Rlove
- * Changed bounding box on rings
- * 
- * 11    6/25/97 8:28a Rlove
- * Added ring of turning 
- * 
- * 10    6/24/97 5:44p Rlove
- * Rings of Flight and Regeneration are working
- * 
- * 9     6/24/97 3:54p Rlove
- * New ring system
- * 
- * 8     6/13/97 10:11a Rlove
- * Moved all message.hc to strings.hc
- * 
- * 7     6/04/97 8:49a Rlove
- * Added ring of absorption
- * 
- * 6     6/03/97 7:41a Rlove
- * Added ring of absorption model
- * 
- * 5     5/22/97 3:30p Mgummelt
- * 
- * 4     2/12/97 3:59p Rlove
- * Invincibility is done, changed a few things with ring of water
- * breathing and the lava death
- * 
- * 3     1/10/97 1:02p Rlove
- * 
- * 2     12/26/96 10:01a Rlove
- * Ring of Water Breathing is working, now on to the Bra of Miracles
- * 
- */

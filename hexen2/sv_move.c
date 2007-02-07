@@ -2,7 +2,7 @@
 	sv_move.c
 	monster movement
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.13 2006-10-24 10:30:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.14 2007-02-07 17:01:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -627,99 +627,4 @@ void SV_MoveToGoal (void)
 		G_FLOAT(OFS_RETURN) = 1;
 	}
 }
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.12  2006/10/24 09:48:18  sezero
- * readability tidy-up and comments on the FL_HUNTFACE flag checking:
- * this is a mission-pack-only thing for the monster type pentacles.
- * we must double check against the hexenc code to find the correct
- * solution in the future.
- *
- * Revision 1.11  2006/10/22 15:06:31  sezero
- * even more coding style clean-ups (part 10).
- *
- * Revision 1.10  2006/10/21 18:21:28  sezero
- * various coding style clean-ups, part 5.
- *
- * Revision 1.9  2006/09/27 17:24:00  sezero
- * commented out some dead code in sv_move.c (SV_NewChaseDir)
- *
- * Revision 1.8  2006/07/02 11:45:34  sezero
- * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
- * which stops vec3_origin usage in relevant calculations. renamed the Length
- * macro to VectorLength for consistancy. updated the utilities' mathlib for
- * similar macro usage as in the engine.
- *
- * Revision 1.7  2006/07/02 11:36:35  sezero
- * uppercased the pr_global_struct() macro for easier detection
- * and searching. put that macro in use in hexenworld server for
- * smaller diffs between the two versions. there are no actual
- * code changes here, only style and cosmetics.
- *
- * Revision 1.6  2006/04/05 06:10:44  sezero
- * added support for both hexen2-v1.11 and h2mp-v1.12 progs into a single hexen2
- * binary. this essentially completes the h2/h2mp binary merge started with the
- * previous patch. many conditionals had to be added especially on the server side,but couldn't notice any serious performance loss on a PIII-733 computer. Supportfor multiple progs.dat is now advised to be left enabled in order to support
- * mods which uses that feature.
- *
- * Revision 1.5  2006/02/25 19:40:52  sezero
- * continue making static functions and vars static. whitespace and coding style
- * cleanup. (part 29:  hexen2/sv_move.c, hwsv/server.h, sv_ccmds.c, sv_ents.c,
- * sv_init.c, sv_main.c, sv_move.c, world.h).
- *
- * Revision 1.4  2005/10/24 21:20:27  sezero
- * fixed those double semicolons
- *
- * Revision 1.3  2004/12/18 14:08:08  sezero
- * Clean-up and kill warnings 9:
- * Kill many unused vars.
- *
- * Revision 1.2  2004/12/12 14:14:43  sezero
- * style changes to our liking
- *
- * Revision 1.1.1.1  2004/11/28 00:07:43  sezero
- * Initial import of AoT 1.2.0 code
- *
- * 17    3/18/98 4:46p Mgummelt
- * 
- * 16    3/16/98 6:38a Mgummelt
- * 
- * 15    3/14/98 5:13p Mgummelt
- * 
- * 14    3/13/98 1:51p Mgummelt
- * Fixed friction_change entity to work,  made checkbottom use the hull
- * mins/maxs for it's checks, not the bounding box's.
- * 
- * 13    3/13/98 12:02p Jmonroe
- * more fixes for hullforent
- * 
- * 12    3/13/98 5:01a Mgummelt
- * May have finally fixed that damn monster stair-stepping problem...
- * 
- * 11    3/06/98 12:14p Jweier
- * 
- * 10    3/04/98 4:24p Jweier
- * 
- * 9     2/03/98 10:56a Mgummelt
- * 
- * 8     2/02/98 10:28a Mgummelt
- * 
- * 7     1/22/98 5:52p Mgummelt
- * 
- * 6     1/22/98 5:01p Mgummelt
- * 
- * 5     1/14/98 7:44p Mgummelt
- * 
- * 4     5/07/97 11:13a Rjohnson
- * Added a new field to the movement routines to allow setting of the
- * traceline info
- * 
- * 3     2/18/97 4:33p Rjohnson
- * Id Updates
- * 
- * 2     11/26/96 4:10p Rjohnson
- * Added sv_movestep to the quake c external functions.  Modified the
- * routine so that it can ignore enemy positions.
- */
 

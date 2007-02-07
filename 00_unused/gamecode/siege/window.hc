@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/window.hc,v 1.1.1.1 2005-07-29 20:44:04 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/window.hc,v 1.2 2007-02-07 16:56:54 sezero Exp $
  */
 /*
 ==============================================================================
@@ -186,36 +186,3 @@ void() breakable_brush =
 
 };
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1  2005/01/26 17:26:13  sezero
- * Raven's original Siege hcode.
- *
- * 
- * 3     5/25/98 1:39p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 8     3/13/97 9:57a Rlove
- * Changed constant DAMAGE_AIM  to DAMAGE_YES and the old DAMAGE_YES to
- * DAMAGE_NO_GRENADE
- * 
- * 7     3/04/97 3:06p Rlove
- * Breakable brushes can now be triggered
- * 
- * 6     2/28/97 3:33p Rlove
- * New crossbow and sickle weapon models
- * 
- * 5     2/28/97 12:05p Rlove
- * Now have default health for breakable brushes.
- * 
- * 4     2/24/97 10:41a Rlove
- * Added a wood breakable brush
- * 
- * 3     2/12/97 10:17a Rlove
- * 
- * 2     1/27/97 11:44a Rlove
- * Added new models to window and object explosions.  Added snake model.
- * 
- * 1     1/17/97 12:46p Rlove
- */

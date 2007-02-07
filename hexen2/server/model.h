@@ -5,7 +5,7 @@
 	This version of model.c and model.h are based on a quake dedicated
 	server application, lhnqserver, by LordHavoc.
 
-	$Id: model.h,v 1.3 2007-02-06 12:23:48 sezero Exp $
+	$Id: model.h,v 1.4 2007-02-07 17:03:27 sezero Exp $
 */
 
 #ifndef __HX2_MODEL_H
@@ -217,17 +217,4 @@ mleaf_t *Mod_PointInLeaf (float *p, model_t *model);
 byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
 
 #endif	/* __HX2_MODEL_H */
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.2  2006/09/24 17:28:42  sezero
- * protected all headers against multiple inclusion
- *
- * Revision 1.1  2006/06/25 12:57:06  sezero
- * added a hexen2 dedicated server which seems to work much better than
- * the client/server application running in dedicated mode. model loading
- * implementation taken from LordHavoc's old lhnqserver, as it seems better
- * than the one in hexenworld server.
- *
- */
 

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/math.hc,v 1.1 2005-01-26 17:26:11 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/math.hc,v 1.2 2007-02-07 17:01:19 sezero Exp $
  */
 
 
@@ -77,25 +77,3 @@ vector newvec;
 	return newvec;
 }
 
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 3     5/25/98 1:39p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 7     8/13/97 5:56p Mgummelt
- * 
- * 6     7/03/97 4:12p Mgummelt
- * 
- * 5     6/19/97 4:03p Rjohnson
- * Optimize crandom
- * 
- * 4     6/18/97 6:58p Mgummelt
- * 
- * 3     5/08/97 9:47p Mgummelt
- * 
- * 2     3/29/97 11:14a Aleggett
- * 
- * 1     3/21/97 9:23a Rlove
- */

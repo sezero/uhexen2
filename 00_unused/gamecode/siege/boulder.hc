@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/boulder.hc,v 1.1.1.1 2005-07-29 20:42:26 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/boulder.hc,v 1.2 2007-02-07 16:56:42 sezero Exp $
  */
 
 $cd \art\models\objects\boulder\final
@@ -182,35 +182,4 @@ void() trap_boulder =
 	self.think = boulder_find_path;
 	self.nextthink = self.ltime + 0.1;
 };
-
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1  2005/01/26 17:26:09  sezero
- * Raven's original Siege hcode.
- *
- * 
- * 3     5/25/98 1:38p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 8     8/23/97 7:15p Rlove
- * 
- * 7     8/16/97 5:46p Mgummelt
- * 
- * 6     7/21/97 3:03p Rlove
- * 
- * 5     6/19/97 4:01p Rjohnson
- * removed crandom()
- * 
- * 4     5/15/97 6:34p Rjohnson
- * Code cleanup
- * 
- * 3     3/25/97 9:47a Jweier
- * Added more to it
- * 
- * 2     3/05/97 5:27p Jweier
- * 
- * 1     3/05/97 5:05p Jweier
- */
 

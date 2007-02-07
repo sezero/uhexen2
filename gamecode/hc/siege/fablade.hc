@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/fablade.hc,v 1.1 2005-01-26 17:26:10 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/fablade.hc,v 1.2 2007-02-07 17:00:37 sezero Exp $
  */
 
 /*
@@ -84,39 +84,3 @@ vector vec;
 	missile.touch = faBladeTouch;
 };
 
-
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 3     5/25/98 1:38p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 13    9/04/97 3:19p Mgummelt
- * 
- * 12    9/04/97 3:00p Mgummelt
- * 
- * 11    8/29/97 12:59a Mgummelt
- * 
- * 10    8/27/97 7:07p Mgummelt
- * 
- * 9     8/05/97 12:04p Rlove
- * 
- * 8     8/04/97 12:19p Rlove
- * 
- * 6     6/19/97 3:08p Rjohnson
- * Code space optimizations
- * 
- * 5     5/15/97 6:34p Rjohnson
- * Code cleanup
- * 
- * 4     5/06/97 1:29p Mgummelt
- * 
- * 3     4/24/97 2:21p Mgummelt
- * 
- * 2     3/12/97 10:57p Rjohnson
- * Doesn't spawn the explosion or do radius damage
- * 
- * 1     3/12/97 4:55p Rjohnson
- * Initial Version
- */

@@ -2,7 +2,7 @@
 	model.h
 	header for model loading and caching
 
-	$Id: gl_model.h,v 1.10 2007-02-06 12:23:37 sezero Exp $
+	$Id: gl_model.h,v 1.11 2007-02-07 17:01:33 sezero Exp $
 */
 
 #ifndef __HX2_MODEL_H
@@ -454,90 +454,3 @@ byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
 
 #endif	/* __HX2_MODEL_H */
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.9  2006/09/24 17:28:42  sezero
- * protected all headers against multiple inclusion
- *
- * Revision 1.8  2006/07/03 14:05:36  sezero
- * re-visited the GL data types, made them to be of GL types and solved
- * the signedness issues. completely removed the scrap allocation option.
- * thanks to Levent Yavas for his help.
- *
- * Revision 1.7  2006/04/06 22:08:19  sezero
- * more tidy-ups (model.h, gl_model.h)
- *
- * Revision 1.6  2005/09/19 20:10:17  sezero
- * startings of model code unification. mostly
- * cosmetic for now, more will follow.
- *
- * Revision 1.5  2005/05/26 22:56:27  sezero
- * whitespace...
- *
- * Revision 1.4  2004/12/18 14:20:40  sezero
- * Clean-up and kill warnings: 11
- * A lot of whitespace cleanups.
- *
- * Revision 1.3  2004/12/18 13:59:25  sezero
- * Clean-up and kill warnings 8:
- * Missing prototypes.
- *
- * Revision 1.2  2004/11/28 00:37:43  sezero
- * add gl-glow. code borrowed from the js sources
- *
- * Revision 1.1.1.1  2004/11/28 00:03:44  sezero
- * Initial import of AoT 1.2.0 code
- *
- * Revision 1.1.1.1  2001/11/09 17:03:59  theoddone33
- * Inital import
- *
- * 
- * 7     3/12/98 1:12p Jmonroe
- * removed strcmp from render code
- * 
- * 6     3/11/98 12:10p Jmonroe
- * first pass at new model fmt in GL , s and t are not correct
- * 
- * 5     2/26/98 9:19p Jmonroe
- * shortened memory struct for sprites, added sprite orientation code in
- * gl (need to test)
- * 
- * 4     2/20/98 12:18p Jmonroe
- * changed modelgen.h to genmodel.h
- * 
- * 14    9/18/97 2:34p Rlove
- * 
- * 13    9/17/97 1:27p Rlove
- * 
- * 12    9/17/97 11:11a Rlove
- * 
- * 11    7/24/97 6:09p Rjohnson
- * Upped the number of model verts to the software one
- * 
- * 10    7/15/97 4:09p Rjohnson
- * New particle effect
- * 
- * 9     6/12/97 6:42a Rlove
- * Smoke entities are being deleted (before they weren't)
- * 
- * 8     5/31/97 11:12a Rjohnson
- * GL Updates
- * 
- * 7     5/28/97 3:54p Rjohnson
- * Effect to make a model always face you
- * 
- * 6     5/22/97 5:56p Rjohnson
- * New translucency effect
- * 
- * 5     3/28/97 5:28p Rjohnson
- * Updates to the transparency for the models
- * 
- * 4     3/07/97 1:06p Rjohnson
- * Id Updates
- * 
- * 3     3/07/97 12:06p Rjohnson
- * Added new spell particle effect
- * 
- * 2     2/20/97 12:13p Rjohnson
- * Code fixes for id update
- */

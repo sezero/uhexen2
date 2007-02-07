@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/combat.hc,v 1.1 2005-01-26 17:26:10 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/combat.hc,v 1.2 2007-02-07 17:00:36 sezero Exp $
  */
 void(vector org, vector vel, float damage, entity victim) SpawnPuff;
 
@@ -158,87 +158,4 @@ void FireMelee (float damage_base,float damage_mod,float attack_radius)
 	}
 
 }
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 16    5/25/98 10:56p Mgummelt
- * Last version before send-off, v0.15
- * 
- * 15    5/25/98 8:38p Mgummelt
- * 
- * 14    5/25/98 1:38p Mgummelt
- * 
- * 13    5/25/98 1:30p Mgummelt
- * 
- * 12    5/06/98 11:10p Mgummelt
- * Last version before 1st beta
- * 
- * 11    5/05/98 8:33p Mgummelt
- * Added 6th playerclass for Siege only- Dwarf
- * 
- * 10    4/30/98 6:01p Mgummelt
- * 
- * 9     4/27/98 6:54p Mgummelt
- * 
- * 8     4/27/98 4:34p Mgummelt
- * Siege beta version 0.13
- * 
- * 7     4/24/98 1:31a Mgummelt
- * Siege version 0.02 4/24/98 1:31 AM
- * 
- * 6     4/23/98 5:18p Mgummelt
- * Siege version 0.01 4/23/98
- * 
- * 5     4/17/98 9:00p Mgummelt
- * 1st version of Siege- loads but totally fucked
- * 
- * 3     4/09/98 1:57p Mgummelt
- * Some experience changes
- * 
- * 2     2/09/98 3:24p Rjohnson
- * Update temp ents
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 34    7/12/97 9:09a Rlove
- * Reworked Assassin Punch Dagger
- * 
- * 32    7/07/97 2:59p Mgummelt
- * 
- * 31    6/30/97 6:14p Rlove
- * 
- * 30    6/30/97 5:30p Rlove
- * 
- * 29    6/28/97 6:32p Mgummelt
- * 
- * 28    6/26/97 4:46p Rlove
- * 
- * 27    6/26/97 4:39p Rlove
- * Special ability #2 for Necromancer: Vampiric Drain
- * 
- * 26    6/18/97 6:08p Mgummelt
- * 
- * 25    5/28/97 8:13p Mgummelt
- * 
- * 24    5/27/97 9:40a Rlove
- * Took out super_damage and radsuit fields
- * 
- * 23    5/12/97 10:31a Rlove
- * 
- * 22    5/06/97 1:29p Mgummelt
- * 
- * 21    4/25/97 8:31p Mgummelt
- * 
- * 20    4/24/97 2:15p Mgummelt
- * 
- * 19    4/12/96 8:55p Mgummelt
- * 
- * 18    4/09/97 2:41p Rlove
- * New Raven weapon sounds
- * 
- * 17    4/04/97 5:40p Rlove
- * 
- * 16    3/31/97 6:45a Rlove
- * Moved most of COMBAT.HC over to DAMAGE.HC
- * 
- */
+

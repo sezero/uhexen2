@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/rat.hc,v 1.1.1.1 2004-11-29 11:35:10 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/rat.hc,v 1.2 2007-02-07 16:59:35 sezero Exp $
  */
 
 // Scuttle
@@ -282,60 +282,4 @@ void monster_ratnest(void)
 	precache_sound("misc/squeak.wav");
 	self.use=barrel_die;
 }
-
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 2     3/18/98 12:53p Mgummelt
- * 
- * 27    10/28/97 1:01p Mgummelt
- * Massive replacement, rewrote entire code... just kidding.  Added
- * support for 5th class.
- * 
- * 25    8/25/97 4:15p Mgummelt
- * 
- * 24    7/21/97 4:04p Mgummelt
- * 
- * 23    7/21/97 4:02p Mgummelt
- * 
- * 22    6/19/97 5:15p Mgummelt
- * 
- * 21    6/18/97 7:27p Mgummelt
- * 
- * 20    6/18/97 4:00p Mgummelt
- * 
- * 19    6/14/97 10:07p Mgummelt
- * 
- * 18    6/14/97 2:22p Mgummelt
- * 
- * 17    6/13/97 9:41p Mgummelt
- * 
- * 16    6/13/97 5:02p Mgummelt
- * 
- * 15    6/13/97 4:44p Mgummelt
- * 
- * 13    6/13/97 4:39p Mgummelt
- * 
- * 12    6/13/97 3:57p Mgummelt
- * 
- * 11    6/13/97 3:52p Mgummelt
- * 
- * 10    6/13/97 3:48p Mgummelt
- * 
- * 9     6/13/97 3:36p Mgummelt
- * 
- * 8     6/13/97 3:28p Mgummelt
- * 
- * 7     6/13/97 10:44a Mgummelt
- * 
- * 6     6/12/97 8:54p Mgummelt
- * 
- * 5     6/12/97 12:44p Mgummelt
- * 
- * 4     6/11/97 9:36p Mgummelt
- * 
- * 3     6/11/97 8:02p Rlove
- * New new new
- * 
- */
 

@@ -2,7 +2,7 @@
 	d_sprite.c:
 	software top-level rasterization driver module for drawing sprites
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_sprite.c,v 1.4 2006-10-20 20:32:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_sprite.c,v 1.5 2007-02-07 17:01:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -588,33 +588,3 @@ void D_DrawSprite (void)
 		D_SpriteDrawSpans (sprite_spans);
 }
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.3  2005/10/25 20:04:17  sezero
- * static functions part-1: started making local functions static,
- * killing nested externs, const vars clean-up.
- *
- * Revision 1.2  2004/12/12 14:14:42  sezero
- * style changes to our liking
- *
- * Revision 1.1.1.1  2004/11/28 00:02:32  sezero
- * Initial import of AoT 1.2.0 code
- *
- * 7     5/18/97 1:37p Rjohnson
- * Added new mixed mode sprite assembly
- * 
- * 6     5/18/97 12:50p Rjohnson
- * Sprite translucency is now in assembly
- * 
- * 5     4/21/97 11:35a Rjohnson
- * Translucency update (drawn in right order) and translucent bmodels
- * 
- * 4     4/17/97 4:20p Rjohnson
- * Made it so that translucent sprites can be used with the draw flags
- * 
- * 3     2/21/97 11:26a Rlove
- * The EF_TRANSPARENT flag works as it should now
- * 
- * 2     2/11/97 1:15p Rjohnson
- * Added transparent sprites
- */

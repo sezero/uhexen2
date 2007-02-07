@@ -1,6 +1,6 @@
 /*
 	alsa_funcs.h
-	$Id: alsa_funcs.h,v 1.6 2006-06-29 22:53:30 sezero Exp $
+	$Id: alsa_funcs.h,v 1.7 2007-02-07 17:01:27 sezero Exp $
 
 	ALSA function list
 
@@ -73,22 +73,3 @@ HX2_ALSA (void, snd_pcm_sw_params_free, (snd_pcm_sw_params_t *obj))
 #undef UNDEF_HX2_ALSA
 #endif
 
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.5  2005/07/06 08:46:35  sezero
- * removed traces of alsa ancient versions support
- *
- * Revision 1.4  2005/07/05 17:11:37  sezero
- * Updated alsa driver (various insignificant things)
- *
- * Revision 1.3  2005/06/06 10:17:53  sezero
- * fixed alsa minimum required version detection
- *
- * Revision 1.2  2005/04/30 12:20:27  sezero
- * silenced shadowed declerations warnings for alsa (cosmetics really...)
- *
- * Revision 1.1  2005/02/04 11:59:16  sezero
- * add ALSA sound driver (from the quakeforge project)
- *
- */

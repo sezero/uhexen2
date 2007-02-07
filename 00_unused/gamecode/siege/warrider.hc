@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/warrider.hc,v 1.1.1.1 2005-07-29 20:44:04 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/warrider.hc,v 1.2 2007-02-07 16:56:53 sezero Exp $
  */
 
 /*
@@ -252,20 +252,3 @@ void create_warrider(entity horse)
 	rider.flags = rider.flags | FL_MOVECHAIN_ANGLE;
 }
 
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1  2005/01/26 17:26:13  sezero
- * Raven's original Siege hcode.
- *
- * 
- * 3     5/25/98 1:39p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 2     5/06/97 4:07p Rjohnson
- * Updates
- * 
- * 1     4/29/97 10:58a Rjohnson
- * Initial Version
- */

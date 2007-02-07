@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.12 2006-10-20 20:32:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.13 2007-02-07 17:03:30 sezero Exp $
 */
 
 
@@ -1977,5 +1977,4 @@ void R_DrawParticles (void)
 	//D_EndParticles ();
 #endif
 }
-
 

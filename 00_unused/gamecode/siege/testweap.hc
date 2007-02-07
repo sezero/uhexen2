@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/testweap.hc,v 1.1.1.1 2005-07-29 20:43:57 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/testweap.hc,v 1.2 2007-02-07 16:56:53 sezero Exp $
  */
 
 /*
@@ -350,21 +350,3 @@ void () FireTestWeapon =
       self.cnt = 0;
 };
 
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1  2005/01/26 17:26:13  sezero
- * Raven's original Siege hcode.
- *
- * 
- * 3     5/25/98 1:39p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 3     4/11/97 2:32p Rlove
- * 
- * 2     4/11/96 1:51p Mgummelt
- * 
- * 1     2/12/97 3:58p Rjohnson
- * Just checking this in so that things will compile properly
- */

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/fish.hc,v 1.1.1.1 2004-11-29 11:23:52 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/fish.hc,v 1.2 2007-02-07 16:57:54 sezero Exp $
  */
 
 /*
@@ -240,23 +240,3 @@ void monster_fish(void)
 	thinktime self : HX_FRAME_TIME;
 }
 
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:05:03  theoddone33
- * Inital import
- *
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 4     8/16/97 5:46p Mgummelt
- * 
- * 3     7/22/97 10:52a Rjohnson
- * Fix a return type value
- * 
- * 2     7/08/97 5:10p Rjohnson
- * Update
- * 
- * 1     7/07/97 12:01p Rjohnson
- * Initial Version
- */

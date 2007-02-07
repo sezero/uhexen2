@@ -1,5 +1,5 @@
 /*
- * $Id: midi.h,v 1.5 2007-02-06 12:24:25 sezero Exp $
+ * $Id: midi.h,v 1.6 2007-02-07 17:03:31 sezero Exp $
  */
 
 #ifndef __MSTREAM_INCLUDED__
@@ -75,24 +75,3 @@ int ConvertToBuffer (DWORD, LPCONVERTINFO);
 
 #endif /* __MSTREAM_INCLUDED__ */
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.4  2006/02/18 13:45:21  sezero
- * continue making static functions and vars static. whitespace and coding style
- * cleanup. (part 6: midi ffiles).
- *
- * Revision 1.3  2005/07/31 11:13:53  sezero
- * debug defines
- *
- * Revision 1.2  2005/05/19 12:47:10  sezero
- * synced h2 and hw versions of midi stuff
- *
- * Revision 1.1  2005/02/05 16:16:10  sezero
- * separate win32 and linux versions of midi files. too much mess otherwise.
- *
- * 2     2/19/98 3:42p Rjohnson
- * Midi Music - Yeah!
- * 
- * 1     2/27/97 4:04p Rjohnson
- * Initial Revision
- */

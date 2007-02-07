@@ -2,7 +2,7 @@
 	d_surf.c
 	rasterization driver surface heap manager
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_surf.c,v 1.7 2006-10-20 20:32:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_surf.c,v 1.8 2007-02-07 17:01:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -341,36 +341,3 @@ surfcache_t *D_CacheSurface (msurface_t *surface, int miplevel)
 	return surface->cachespots[miplevel];
 }
 
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.6  2006/09/23 07:46:46  sezero
- * added missing com_argc checks (and fixed the incorrect ones)
- * after several COM_CheckParm calls.
- *
- * Revision 1.5  2005/10/25 20:08:41  sezero
- * coding style and whitespace cleanup.
- *
- * Revision 1.4  2005/10/25 20:04:17  sezero
- * static functions part-1: started making local functions static,
- * killing nested externs, const vars clean-up.
- *
- * Revision 1.3  2004/12/18 13:48:52  sezero
- * Clean-up and kill warnings 3:
- * Kill " suggest parentheses around XXX " warnings
- *
- * Revision 1.2  2004/12/12 14:14:42  sezero
- * style changes to our liking
- *
- * Revision 1.1.1.1  2004/11/28 00:02:32  sezero
- * Initial import of AoT 1.2.0 code
- *
- * 2     3/01/98 8:20p Jmonroe
- * removed the slow "quake" version of common functions
- * 
- * 3     4/24/97 11:21p Rjohnson
- * You can now set the overall light level of a bmodel
- * 
- * 2     2/17/97 3:38p Rjohnson
- * Id Updates
- */

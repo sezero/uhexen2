@@ -2,7 +2,7 @@
 	d_local.h
 	private rasterization driver defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.10 2006-09-24 17:28:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.11 2007-02-07 17:01:32 sezero Exp $
 */
 
 #ifndef __D_LOCAL_H
@@ -139,75 +139,3 @@ extern byte			scanList[SCAN_SIZE];
 
 #endif	/* __D_LOCAL_H */
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.9  2006/07/18 08:35:39  sezero
- * made d_aflatcolor global through d_local.h
- *
- * Revision 1.8  2006/07/15 22:15:17  sezero
- * removed declaration of non-existant prealspandrawer function pointer
- *
- * Revision 1.7  2006/03/28 19:53:23  sezero
- * continue making static functions and vars static. whitespace and coding
- * style cleanup. part 47: software renderer: r_aclip.c, r_alias.c, r_bsp.c,
- * r_draw.c, r_edge.c.  also removed the #warning directives for the non-x86
- * non-compilability.  added a few comments about the non-Intel issue.
- *
- * Revision 1.6  2006/03/24 15:05:39  sezero
- * killed the archive, server and info members of the cvar structure.
- * the new flags member is now employed for all those purposes. also
- * made all non-globally used cvars static.
- *
- * Revision 1.5  2005/10/25 20:08:41  sezero
- * coding style and whitespace cleanup.
- *
- * Revision 1.4  2005/10/25 20:04:17  sezero
- * static functions part-1: started making local functions static,
- * killing nested externs, const vars clean-up.
- *
- * Revision 1.3  2004/12/19 10:35:30  sezero
- * - Add "implicitly declared" functions as externs: Software rendering files.
- * - Add comments on the asm/non-Intel status of the code
- *
- * Revision 1.2  2004/12/12 14:14:42  sezero
- * style changes to our liking
- *
- * Revision 1.1.1.1  2004/11/28 00:01:47  sezero
- * Initial import of AoT 1.2.0 code
- *
- * 13    8/30/97 6:17p Rjohnson
- * Reduced texture cache
- * 
- * 12    6/12/97 11:08a Rjohnson
- * Only water is translucent now
- * 
- * 11    6/03/97 5:50p Rjohnson
- * Added translucent water
- * 
- * 10    5/22/97 5:56p Rjohnson
- * New translucency effect
- * 
- * 9     5/18/97 1:37p Rjohnson
- * Added new mixed mode sprite assembly
- * 
- * 8     5/18/97 12:50p Rjohnson
- * Sprite translucency is now in assembly
- * 
- * 7     5/15/97 4:42p Rjohnson
- * Minor assembly optimization
- * 
- * 6     4/24/97 11:21p Rjohnson
- * You can now set the overall light level of a bmodel
- * 
- * 5     4/21/97 11:35a Rjohnson
- * Translucency update (drawn in right order) and translucent bmodels
- * 
- * 4     3/28/97 5:28p Rjohnson
- * Updates to the transparency for the models
- * 
- * 3     3/28/97 10:08a Rjohnson
- * Added transparent models
- * 
- * 2     1/07/97 10:03a Rjohnson
- * Increased surface cache size
- */

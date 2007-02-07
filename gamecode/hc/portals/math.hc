@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/math.hc,v 1.1.1.1 2004-11-29 11:33:19 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/math.hc,v 1.2 2007-02-07 16:59:34 sezero Exp $
  */
 
 
@@ -79,28 +79,3 @@ vector newvec;
 	return newvec;
 }
 
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 2     2/12/98 3:32p Jmonroe
- * removed unused funcs
- * 
- * 9     10/28/97 1:01p Mgummelt
- * Massive replacement, rewrote entire code... just kidding.  Added
- * support for 5th class.
- * 
- * 7     8/13/97 5:56p Mgummelt
- * 
- * 6     7/03/97 4:12p Mgummelt
- * 
- * 5     6/19/97 4:03p Rjohnson
- * Optimize crandom
- * 
- * 4     6/18/97 6:58p Mgummelt
- * 
- * 3     5/08/97 9:47p Mgummelt
- * 
- * 2     3/29/97 11:14a Aleggett
- * 
- * 1     3/21/97 9:23a Rlove
- */

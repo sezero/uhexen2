@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/fish.hc,v 1.1 2005-01-26 17:26:10 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/fish.hc,v 1.2 2007-02-07 17:01:02 sezero Exp $
  */
 
 /*
@@ -550,37 +550,3 @@ void() monster_pirhana =
 	swimmonster_start ();
 };
 
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 9     5/25/98 1:38p Mgummelt
- * 
- * 8     5/25/98 1:30p Mgummelt
- * 
- * 7     5/07/98 11:19p Mgummelt
- * Almost ready for release- fix some dwarf-related compatibility problems
- * 
- * 6     4/30/98 6:01p Mgummelt
- * 
- * 5     4/24/98 1:31a Mgummelt
- * Siege version 0.02 4/24/98 1:31 AM
- * 
- * 4     4/23/98 5:18p Mgummelt
- * Siege version 0.01 4/23/98
- * 
- * 3     4/17/98 9:00p Mgummelt
- * 1st version of Siege- loads but totally fucked
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 4     8/16/97 5:46p Mgummelt
- * 
- * 3     7/22/97 10:52a Rjohnson
- * Fix a return type value
- * 
- * 2     7/08/97 5:10p Rjohnson
- * Update
- * 
- * 1     7/07/97 12:01p Rjohnson
- * Initial Version
- */

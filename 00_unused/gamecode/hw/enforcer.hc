@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/hw/enforcer.hc,v 1.1.1.1 2005-07-29 20:44:25 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/hw/enforcer.hc,v 1.2 2007-02-07 16:56:29 sezero Exp $
  */
 /*
 ==============================================================================
@@ -355,20 +355,4 @@ void() monster_enforcer =
 
 	walkmonster_start();
 };
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2004/11/29 11:23:52  sezero
- * Initial import
- *
- * Revision 1.1.1.1  2001/11/09 17:05:03  theoddone33
- * Inital import
- *
- * 
- * 2     2/09/98 3:24p Rjohnson
- * Update temp ents
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 2     11/11/96 1:12p Rlove
- * Added Source Safe stuff
- */
+

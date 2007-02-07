@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/portals/sprites.hc,v 1.2 2007-02-07 16:21:26 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/portals/sprites.hc,v 1.3 2007-02-07 16:56:40 sezero Exp $
  */
 
 // these are the only sprites still in the game...
@@ -190,46 +190,4 @@ void sprite_talking_door(void)
 	self.use= SUB_Null;
 	setsize (self, '-32 -32 -16','32 32 16');
 }
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2005/07/29 20:45:29  sezero
- * unused sources - initial import
- *
- * Revision 1.1.1.1  2004/11/29 11:34:59  sezero
- * Initial import
- *
- * 
- * 2     1/23/98 11:55a Jweier
- * 
- * 12    10/28/97 1:01p Mgummelt
- * Massive replacement, rewrote entire code... just kidding.  Added
- * support for 5th class.
- * 
- * 10    8/23/97 7:15p Rlove
- * 
- * 9     6/18/97 10:46a Rjohnson
- * Code cleanu
- * 
- * 8     3/25/97 4:58p Rjohnson
- * Cleaned up pre-cache stuff
- * 
- * 7     3/21/97 10:19a Rlove
- * Changed obj_die calls to chunk_death
- * 
- * 6     3/10/97 8:53a Rlove
- * Added sprite moss
- * 
- * 5     3/04/97 9:11a Rlove
- * Added sprite background 1 & 2
- * 
- * 4     3/03/97 1:59p Rlove
- * Added sprite treetop
- * 
- * 3     2/21/97 2:23p Rlove
- * Added sprite trees and models chests (please no jokes)
- * 
- * 2     11/11/96 1:19p Rlove
- * Added Source Safe stuff
- */
 

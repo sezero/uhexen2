@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/math.hc,v 1.1.1.1 2004-11-29 11:27:48 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/math.hc,v 1.2 2007-02-07 16:57:56 sezero Exp $
  */
 
 
@@ -77,26 +77,3 @@ vector newvec;
 	return newvec;
 }
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:05:07  theoddone33
- * Inital import
- *
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 7     8/13/97 5:56p Mgummelt
- * 
- * 6     7/03/97 4:12p Mgummelt
- * 
- * 5     6/19/97 4:03p Rjohnson
- * Optimize crandom
- * 
- * 4     6/18/97 6:58p Mgummelt
- * 
- * 3     5/08/97 9:47p Mgummelt
- * 
- * 2     3/29/97 11:14a Aleggett
- * 
- * 1     3/21/97 9:23a Rlove
- */

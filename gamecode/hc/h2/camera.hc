@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/camera.hc,v 1.1.1.1 2004-11-29 11:37:37 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/camera.hc,v 1.2 2007-02-07 16:56:59 sezero Exp $
  */
 void(entity voyeur, entity viewthing) CameraViewPort =
 {//FIXME: Doesn't seem to work if it's out of vis- only 
@@ -245,53 +245,3 @@ entity oself,nself;
 		self=oself;
 }
 
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 20    9/09/97 3:59p Mgummelt
- * 
- * 19    9/02/97 9:28p Mgummelt
- * 
- * 18    9/01/97 3:27p Mgummelt
- * 
- * 17    8/31/97 10:57p Mgummelt
- * 
- * 16    8/31/97 7:28p Rlove
- * 
- * 15    8/31/97 8:52a Mgummelt
- * 
- * 14    8/18/97 3:00p Rjohnson
- * Fix for camera mode
- * 
- * 13    7/21/97 3:03p Rlove
- * 
- * 12    6/18/97 3:59p Rjohnson
- * Time fix
- * 
- * 11    5/09/97 8:53a Rlove
- * Added comments
- * 
- * 10    5/09/97 7:43a Rlove
- * 
- * 9     5/09/97 7:16a Rlove
- * 
- * 8     5/01/97 5:06p Rlove
- * New camera
- * 
- * 7     4/17/97 1:28p Rlove
- * added new built advanceweaponframe
- * 
- * 6     4/03/97 7:29a Rlove
- * Made a few changes to camera - still needs some work but the code I
- * need is checked out
- * 
- * 5     3/27/97 10:41a Rlove
- * Camera_remote works, next it should move
- * 
- * 4     3/25/97 11:38a Rlove
- * Can't precache with a variable name
- * 
- * 3     3/25/97 11:28a Rlove
- * New camera entity
- * 
- */

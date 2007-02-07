@@ -1,7 +1,7 @@
 /*
 	zone.h
 
-	$Id: zone.h,v 1.7 2007-02-06 12:23:44 sezero Exp $
+	$Id: zone.h,v 1.8 2007-02-07 17:01:42 sezero Exp $
 */
 
 #ifndef __ZZONE_H
@@ -119,35 +119,3 @@ void Cache_Report (void);
 
 #endif	/* __ZZONE_H */
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.6  2006/09/24 17:28:42  sezero
- * protected all headers against multiple inclusion
- *
- * Revision 1.5  2006/02/23 11:01:42  sezero
- * continue making static functions and vars static. whitespace and coding style
- * cleanup. (part 25: zone.c, zone.h).
- *
- * Revision 1.4  2005/07/06 08:35:23  sezero
- * style/whitespace changes and removal of weird alien stuff
- *
- * Revision 1.3  2005/04/13 12:22:41  sezero
- * - Removed useless -minmemory cmdline argument
- * - Removed useless parms->memsize < minimum_memory check in Host_Init
- * - Added lower/upper boundaries (8mb/96mb) for -heapsize argument
- * - Added lower (48kb for hexen2, 256kb for hw)/upper (1mb) boundaries
- *   for -zone argument (DYNAMIC_SIZE definitions/zonesize requirements
- *   are different for hexen2 and hexenworld)
- * - We won't die if no size is specified after -zone, but will ignore
- * - Added null string terminations to hexen2 zone.c, so as to prevent
- *   garbage on sys_memory console command (found this in Pa3PyX)
- *
- * Revision 1.2  2004/12/12 14:14:43  sezero
- * style changes to our liking
- *
- * Revision 1.1.1.1  2004/11/28 00:08:32  sezero
- * Initial import of AoT 1.2.0 code
- *
- * 2     3/06/97 10:29a Rjohnson
- * Added memory statistics
- */

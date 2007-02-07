@@ -2,7 +2,7 @@
 	d_iface.h
 	interface header file for rasterization driver modules
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_iface.h,v 1.8 2006-09-24 17:28:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_iface.h,v 1.9 2007-02-07 17:01:28 sezero Exp $
 */
 
 #ifndef __D_IFACE_H
@@ -298,91 +298,3 @@ extern byte	*r_warpbuffer;
 
 #endif	/* __D_IFACE_H */
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.7  2006/03/28 19:53:23  sezero
- * continue making static functions and vars static. whitespace and coding
- * style cleanup. part 47: software renderer: r_aclip.c, r_alias.c, r_bsp.c,
- * r_draw.c, r_edge.c.  also removed the #warning directives for the non-x86
- * non-compilability.  added a few comments about the non-Intel issue.
- *
- * Revision 1.6  2006/03/27 19:58:33  sezero
- * continue making static functions and vars static. whitespace and coding
- * style cleanup. part 46: software renderer drawing functions.
- *
- * Revision 1.5  2005/10/25 20:08:41  sezero
- * coding style and whitespace cleanup.
- *
- * Revision 1.4  2004/12/19 10:35:30  sezero
- * - Add "implicitly declared" functions as externs: Software rendering files.
- * - Add comments on the asm/non-Intel status of the code
- *
- * Revision 1.3  2004/12/18 14:20:40  sezero
- * Clean-up and kill warnings: 11
- * A lot of whitespace cleanups.
- *
- * Revision 1.2  2004/12/12 14:14:42  sezero
- * style changes to our liking
- *
- * Revision 1.1.1.1  2004/11/28 00:01:47  sezero
- * Initial import of AoT 1.2.0 code
- *
- * 11    3/10/98 11:13p Jmonroe
- * render works, need to optimize the drawpolyset stuff, ignore count
- * 
- * 10    3/09/98 11:24p Mgummelt
- * 
- * 9     3/05/98 7:54p Jmonroe
- * fixed startRain, optimized particle struct
- * 
- * 8     1/26/98 4:40p Plipo
- * 
- * 21    9/18/97 2:34p Rlove
- * 
- * 20    9/17/97 1:27p Rlove
- * 
- * 19    9/17/97 11:11a Rlove
- * 
- * 18    7/15/97 4:09p Rjohnson
- * New particle effect
- * 
- * 17    6/12/97 9:02a Rlove
- * New vorpal particle effect
- * 
- * 16    6/03/97 5:50p Rjohnson
- * Added translucent water
- * 
- * 15    5/30/97 11:42a Rjohnson
- * Added new effect type for the rider's death
- * 
- * 14    5/23/97 3:05p Rjohnson
- * Update to effects / particle types
- * 
- * 13    4/17/97 5:39p Rjohnson
- * Added a test particle type
- * 
- * 12    3/28/97 5:28p Rjohnson
- * Updates to the transparency for the models
- * 
- * 11    3/28/97 10:08a Rjohnson
- * Added transparent models
- * 
- * 10    3/07/97 1:11p Rjohnson
- * Added the rocket trail types
- * 
- * 9     3/07/97 12:06p Rjohnson
- * Added new spell particle effect
- * 
- * 8     2/20/97 12:13p Rjohnson
- * Code fixes for id update
- * 
- * 7     1/02/97 11:16a Rjohnson
- * Christmas work - added adaptive time, game delays, negative light,
- * particle effects, etc
- * 
- * 6     12/11/96 10:45a Rjohnson
- * Added the new ice effect
- * 
- * 5     12/06/96 2:00p Rjohnson
- * New particle type for the fireball
- */

@@ -1,5 +1,5 @@
 /*
- * $Id: midi.c,v 1.13 2007-02-06 12:23:50 sezero Exp $
+ * $Id: midi.c,v 1.14 2007-02-07 17:03:28 sezero Exp $
  */
 
 #include <windows.h>
@@ -654,72 +654,3 @@ static void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 }
 #endif
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.12  2006/10/20 20:32:31  sezero
- * various coding style clean-ups, part 1.
- *
- * Revision 1.11  2006/09/27 17:17:32  sezero
- * a lot of clean-ups in sound and midi files.
- *
- * Revision 1.10  2006/09/11 11:21:18  sezero
- * added human readable defines for the MIDI_Pause modes
- *
- * Revision 1.9  2006/05/18 17:48:10  sezero
- * renamed MIDI_UpdateVolume to MIDI_Update
- *
- * Revision 1.8  2006/02/18 13:44:17  sezero
- * continue making static functions and vars static. whitespace and coding style
- * cleanup. (part 6: midi files).
- *
- * Revision 1.7  2005/09/24 23:50:36  sezero
- * fixed a bunch of compiler warnings
- *
- * Revision 1.6  2005/07/09 07:19:04  sezero
- * use zone instead of malloc. other small stuff.
- *
- * Revision 1.5  2005/06/17 16:24:40  sezero
- * win32 fixes and clean-ups
- *
- * Revision 1.4  2005/05/19 12:47:10  sezero
- * synced h2 and hw versions of midi stuff
- *
- * Revision 1.3  2005/05/17 22:56:26  sezero
- * cleanup the "stricmp, strcmpi, strnicmp, Q_strcasecmp, Q_strncasecmp" mess:
- * Q_strXcasecmp will now be used throughout the code which are implementation
- * dependant defines for __GNUC__ (strXcasecmp) and _WIN32 (strXicmp)
- *
- * Revision 1.2  2005/02/05 16:19:31  sezero
- * update the midi stuff (volume ctrl, etc) for win32, too
- * (taken directly from Pa3PyX and HexenWorld)
- *
- * Revision 1.1  2005/02/05 16:16:10  sezero
- * separate win32 and linux versions of midi files. too much mess otherwise.
- *
- * 7     3/27/98 6:22p Jmonroe
- * just made nomidi more clean
- * 
- * 6     3/07/98 6:20p Rjohnson
- * added a -nomidi command line parameter
- * 
- * 5     3/04/98 5:01p Rjohnson
- * Midi won't initialize if -nosound
- * 
- * 4     3/03/98 3:20p Rjohnson
- * Midi support for starting a map
- * 
- * 3     3/02/98 3:23p Rjohnson
- * Vid Updates
- * 
- * 2     2/19/98 3:42p Rjohnson
- * Midi Music - Yeah!
- * 
- * 1     2/19/98 3:23p Rjohnson
- * 
- * 3     4/24/97 3:32p Bgokey
- * 
- * 2     4/24/97 12:13p Bgokey
- * 
- * 1     2/27/97 4:04p Rjohnson
- * Initial Revision
- */

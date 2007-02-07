@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/punchdgr.hc,v 1.1.1.1 2004-11-29 11:40:07 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/punchdgr.hc,v 1.2 2007-02-07 16:57:09 sezero Exp $
  */
 
 /*
@@ -272,76 +272,4 @@ void punchdagger_deselect (void)
 		W_SetCurrentAmmo();
 
 }
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 31    9/18/97 5:10p Rlove
- * 
- * 30    8/31/97 12:02a Mgummelt
- * 
- * 29    8/26/97 7:38a Mgummelt
- * 
- * 28    8/22/97 2:54p Jweier
- * 
- * 27    8/12/97 6:09p Mgummelt
- * 
- * 26    8/08/97 6:21p Mgummelt
- * 
- * 25    7/22/97 7:32a Rlove
- * 
- * 24    7/21/97 3:03p Rlove
- * 
- * 23    7/17/97 6:53p Mgummelt
- * 
- * 22    7/12/97 9:09a Rlove
- * Reworked Assassin Punch Dagger
- * 
- * 20    7/09/97 11:16a Rlove
- * 
- * 19    7/07/97 2:59p Mgummelt
- * 
- * 18    6/30/97 5:38p Mgummelt
- * 
- * 17    6/18/97 7:23p Mgummelt
- * 
- * 16    6/17/97 8:16p Mgummelt
- * 
- * 15    6/17/97 2:55p Rlove
- * 
- * 14    6/05/97 9:29a Rlove
- * Weapons now have deselect animations
- * 
- * 13    5/05/97 11:41a Rlove
- * New root position 
- * 
- * 12    4/18/97 11:44a Rlove
- * changed advanceweaponframe to return frame state
- * 
- * 11    4/17/97 1:28p Rlove
- * added new built advanceweaponframe
- * 
- * 10    4/16/96 11:52p Mgummelt
- * 
- * 9     4/12/96 8:56p Mgummelt
- * 
- * 8     4/11/96 1:51p Mgummelt
- * 
- * 7     4/10/96 2:50p Mgummelt
- * 
- * 6     4/09/97 2:41p Rlove
- * New Raven weapon sounds
- * 
- * 5     4/04/97 5:40p Rlove
- * 
- * 4     3/31/97 4:10p Rlove
- * Removed old animations
- * 
- * 3     3/31/97 6:38a Rlove
- * New punchdagger animations are operational
- * 
- * 2     3/21/97 9:38a Rlove
- * Created CHUNK.HC and MATH.HC, moved brush_die to chunk_death so others
- * can use it.
- * 
- * 1     3/20/97 4:01p Rlove
- */
+

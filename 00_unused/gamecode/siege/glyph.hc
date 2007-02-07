@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/glyph.hc,v 1.1.1.1 2005-07-29 20:42:51 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/glyph.hc,v 1.2 2007-02-07 16:56:45 sezero Exp $
  */
 
 void (float explodetype) BecomeExplosion ;
@@ -66,40 +66,3 @@ void () Use_Glyph =
 
 };
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1  2005/01/26 17:26:11  sezero
- * Raven's original Siege hcode.
- *
- * 
- * 3     5/25/98 1:38p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 11    6/21/97 10:09a Rlove
- * 
- * 10    6/18/97 6:36p Mgummelt
- * 
- * 9     6/04/97 8:16p Mgummelt
- * 
- * 8     5/28/97 8:13p Mgummelt
- * 
- * 7     5/28/97 10:45a Rlove
- * Moved sprite effects to client side - smoke, explosions, and flashes.
- * 
- * 6     4/30/97 5:03p Mgummelt
- * 
- * 5     3/27/97 11:26a Rlove
- * More precache model clean up
- * 
- * 4     3/19/97 5:56p Jweier
- * added CreateEntity (was backed up!)
- * 
- * 3     1/06/97 3:28p Rlove
- * Now blows up when someone comes in contact with it.
- * 
- * 2     12/31/96 8:39a Rlove
- * Glyph of the Ancients is working
- * 
- * 1     12/30/96 10:27a Rlove
- */

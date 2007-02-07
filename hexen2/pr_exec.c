@@ -1,7 +1,7 @@
 /*
 	pr_exec.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.14 2007-02-06 12:23:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.15 2007-02-07 17:01:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1192,92 +1192,3 @@ static unsigned int ProgsTimer(void)
 }
 #endif
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.13  2006/10/22 15:06:30  sezero
- * even more coding style clean-ups (part 10).
- *
- * Revision 1.12  2006/10/21 22:08:33  sezero
- * various coding style clean-ups, part 6.
- *
- * Revision 1.11  2006/09/13 05:53:22  sezero
- * re-visited the includes, gathered all net includes into
- * the new net_sys.h, did a platform defines clean-up.
- *
- * Revision 1.10  2006/07/02 11:36:35  sezero
- * uppercased the pr_global_struct() macro for easier detection
- * and searching. put that macro in use in hexenworld server for
- * smaller diffs between the two versions. there are no actual
- * code changes here, only style and cosmetics.
- *
- * Revision 1.9  2006/04/05 06:10:44  sezero
- * added support for both hexen2-v1.11 and h2mp-v1.12 progs into a single hexen2
- * binary. this essentially completes the h2/h2mp binary merge started with the
- * previous patch. many conditionals had to be added especially on the server side,but couldn't notice any serious performance loss on a PIII-733 computer. Supportfor multiple progs.dat is now advised to be left enabled in order to support
- * mods which uses that feature.
- *
- * Revision 1.8  2006/02/21 13:46:01  sezero
- * continue making static functions and vars static. whitespace and coding style
- * cleanup. (part 17: pr_exec.c). also killed a warning about switch_float may be
- * used uninitialized.
- *
- * Revision 1.7  2005/12/04 11:14:38  sezero
- * the big vsnprintf patch
- *
- * Revision 1.6  2005/09/24 23:50:36  sezero
- * fixed a bunch of compiler warnings
- *
- * Revision 1.5  2005/07/31 11:13:52  sezero
- * debug defines
- *
- * Revision 1.4  2005/05/05 17:17:51  sezero
- * profile save cleanup (and another MAX_OSPATH fix)
- *
- * Revision 1.3  2005/04/05 19:41:28  sezero
- * Save recorded demos, progs profiles and console debug
- * logs to com_userdir, not com_gamedir. Otherwise these
- * operations shall fail on a system-wide installation
- * unless the user is super user.
- *
- * Revision 1.2  2004/12/12 14:14:42  sezero
- * style changes to our liking
- *
- * Revision 1.1.1.1  2004/11/28 00:06:06  sezero
- * Initial import of AoT 1.2.0 code
- *
- * 5     3/06/98 12:35a Jmonroe
- * made caserange work, switched some more things
- * 
- * 4     2/24/98 5:09p Jmonroe
- * 
- * 3     2/24/98 5:09p Jmonroe
- * switch off of floats done
- * 
- * 2     2/17/98 6:45p Jmonroe
- * started work on the switch statements
- * 
- * 20    7/15/97 1:58p Bgokey
- * 
- * 14    6/11/97 4:28p Bgokey
- * 
- * 13    5/15/97 6:18p Bgokey
- * 
- * 12    4/09/97 11:33a Bgokey
- * 
- * 11    3/31/97 6:47p Bgokey
- * 
- * 10    3/28/97 10:24a Bgokey
- * 
- * 9     3/26/97 12:56p Bgokey
- * 
- * 8     3/25/97 5:11p Bgokey
- * 
- * 7     3/11/97 11:44a Bgokey
- * 
- * 6     3/10/97 1:14p Bgokey
- * 
- * 5     2/24/97 12:23p Bgokey
- * 
- * 4     2/20/97 11:17a Rjohnson
- * Id Updates
- */

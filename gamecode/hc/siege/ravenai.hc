@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/ravenai.hc,v 1.1 2005-01-26 17:26:12 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/ravenai.hc,v 1.2 2007-02-07 17:01:22 sezero Exp $
  */
 
 float() LocateTarget =
@@ -296,50 +296,3 @@ float () FindDir =
 	return self.angles_y;
 };
 
-
-
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 3     5/25/98 1:39p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 16    9/03/97 9:14p Mgummelt
- * Fixing targetting AI
- * 
- * 15    8/26/97 2:26a Mgummelt
- * 
- * 14    8/14/97 10:28p Bgokey
- * 
- * 13    8/14/97 7:32p Bgokey
- * 
- * 12    8/14/97 7:05p Bgokey
- * 
- * 11    8/12/97 6:10p Mgummelt
- * 
- * 10    7/21/97 4:04p Mgummelt
- * 
- * 9     7/21/97 4:02p Mgummelt
- * 
- * 8     6/18/97 5:40p Mgummelt
- * 
- * 7     6/16/97 12:03p Rjohnson
- * Removed imp stuff
- * 
- * 6     5/31/97 4:00p Mgummelt
- * 
- * 5     5/30/97 10:04p Mgummelt
- * 
- * 4     2/26/97 3:14p Rlove
- * Changes to basic monster ai
- * 
- * 3     1/09/97 1:48p Rjohnson
- * Made FindDir() return a direction instead of just setting it
- * 
- * 2     1/02/97 11:20a Rjohnson
- * Christmas Changes
- * 
- * 1     12/17/96 10:38a Rjohnson
- * Initial Version
- */

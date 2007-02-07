@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/idmodels.hc,v 1.1.1.1 2005-07-29 20:43:13 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/idmodels.hc,v 1.2 2007-02-07 16:56:46 sezero Exp $
  */
 
 /* Old Id models */
@@ -589,21 +589,3 @@ $base base
 $skin skin
 $frame frame1
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1  2005/01/26 17:26:11  sezero
- * Raven's original Siege hcode.
- *
- * 
- * 3     5/25/98 1:38p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 2     11/22/96 4:25p Rlove
- * Old Id models
- * 
- * 1     11/22/96 4:24p Rlove
- * 
- * 2     11/11/96 1:19p Rlove
- * Added Source Safe stuff
- */

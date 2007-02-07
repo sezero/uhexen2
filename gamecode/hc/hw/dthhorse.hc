@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/dthhorse.hc,v 1.2 2005-02-15 10:57:26 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/dthhorse.hc,v 1.3 2007-02-07 16:57:53 sezero Exp $
  */
 
 /*
@@ -972,92 +972,3 @@ void rider_death(void)
 	thinktime self : 1;
 }
 
-
-
-
-
-
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2004/11/29 11:26:07  sezero
- * Initial import
- *
- * Revision 1.1.1.1  2001/11/09 17:05:02  theoddone33
- * Inital import
- *
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 31    9/11/97 6:12p Mgummelt
- * 
- * 30    9/03/97 4:09a Mgummelt
- * 
- * 29    9/03/97 4:02a Mgummelt
- * 
- * 28    9/02/97 6:19p Mgummelt
- * 
- * 27    9/02/97 6:16p Mgummelt
- * 
- * 26    9/02/97 6:06p Mgummelt
- * 
- * 25    9/02/97 4:17p Mgummelt
- * 
- * 24    9/02/97 2:56p Mgummelt
- * 
- * 23    9/01/97 12:19a Jweier
- * 
- * 22    8/31/97 5:18p Mgummelt
- * 
- * 21    8/31/97 4:21p Mgummelt
- * 
- * 20    8/31/97 3:34p Jweier
- * 
- * 19    8/31/97 12:54p Jweier
- * 
- * 18    8/31/97 12:49p Mgummelt
- * 
- * 17    8/31/97 11:38a Mgummelt
- * To which I say- shove where the sun don't shine- sideways!  Yeah!
- * How's THAT for paper cut!!!!
- * 
- * 16    8/31/97 8:52a Mgummelt
- * 
- * 15    8/31/97 1:51a Jweier
- * 
- * 14    8/30/97 7:32p Jweier
- * 
- * 13    8/29/97 11:44p Jweier
- * 
- * 12    8/29/97 4:17p Mgummelt
- * Long night
- * 
- * 11    8/29/97 3:04a Mgummelt
- * 
- * 10    8/29/97 1:00a Mgummelt
- * 
- * 9     8/29/97 12:59a Mgummelt
- * 
- * 8     8/28/97 9:59p Jweier
- * 
- * 7     8/08/97 4:33p Rjohnson
- * Fix for size
- * 
- * 6     8/06/97 4:31p Rjohnson
- * Update for initialization
- * 
- * 5     8/01/97 5:37p Rjohnson
- * Worked on the bone rain
- * 
- * 4     7/25/97 5:35p Rjohnson
- * Updates
- * 
- * 3     6/19/97 3:08p Rjohnson
- * Code space optimizations
- * 
- * 2     6/10/97 3:36p Rjohnson
- * Updates
- * 
- * 1     6/04/97 2:02p Rjohnson
- * Initial Version
- */

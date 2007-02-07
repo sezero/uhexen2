@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/portals/testweap.hc,v 1.2 2007-02-07 16:21:33 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/portals/testweap.hc,v 1.3 2007-02-07 16:56:40 sezero Exp $
  */
 
 /*
@@ -350,24 +350,3 @@ void () FireTestWeapon =
       self.cnt = 0;
 };
 
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2005/07/29 20:45:31  sezero
- * unused sources - initial import
- *
- * Revision 1.1.1.1  2004/11/29 11:36:11  sezero
- * Initial import
- *
- * 
- * 5     10/28/97 1:01p Mgummelt
- * Massive replacement, rewrote entire code... just kidding.  Added
- * support for 5th class.
- * 
- * 3     4/11/97 2:32p Rlove
- * 
- * 2     4/11/96 1:51p Mgummelt
- * 
- * 1     2/12/97 3:58p Rjohnson
- * Just checking this in so that things will compile properly
- */

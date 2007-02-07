@@ -2,7 +2,7 @@
 	r_local.h
 	private refresh defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_local.h,v 1.10 2006-09-24 17:28:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_local.h,v 1.11 2007-02-07 17:01:37 sezero Exp $
 */
 
 #ifndef __R_LOCAL_H
@@ -299,63 +299,3 @@ void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
 
 #endif	/* __R_LOCAL_H	*/
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.9  2006/06/23 14:43:36  sezero
- * some minor clean-ups
- *
- * Revision 1.8  2006/04/05 06:02:32  sezero
- * whitespace clean-ups (r_local.h)
- *
- * Revision 1.7  2006/03/28 19:53:23  sezero
- * continue making static functions and vars static. whitespace and coding
- * style cleanup. part 47: software renderer: r_aclip.c, r_alias.c, r_bsp.c,
- * r_draw.c, r_edge.c.  also removed the #warning directives for the non-x86
- * non-compilability.  added a few comments about the non-Intel issue.
- *
- * Revision 1.6  2006/03/10 08:08:45  sezero
- * Added support for colored lights and .lit files;. initially extracted
- * from jshexen2 (thanks Michal Wozniak). Colored lights and lit file
- * support is now added to hexenworld, as well, although the new cvars
- * gl_colored_dynamic_lights and gl_extra_dynamic_light aren't functional
- * for it: hexenworld had some sort of "colored" dynamic lights in it,
- * and they aren't changed by this patch. The cvars mentions are fully
- * functional for hexen2. Colored lights member of the dlight_t in h2
- * is changed to be an array of 4, instead of vec3_t as it used to appear
- * in jshexen2, so that things look more alike with the hw version. The
- * default lightmap format is changed to GL_RGBA, (previously it was
- * GL_LUMINANCE.) Command line arguments can be employed to change the
- * lightmap format:  -lm_1 : GL_LUMINANCE, -lm_4 : GL_RGBA (default).
- * (Note: Would it be a good (AND a feasible) idea to add a menu+cvar
- * control for the lightmap format?)
- *
- * Revision 1.5  2005/10/02 15:43:08  sezero
- * killed -Wshadow warnings
- *
- * Revision 1.4  2005/05/20 16:17:50  sezero
- * keep ID style in declerations (less diff between h2/h2w...)
- *
- * Revision 1.3  2005/01/01 21:43:47  sezero
- * prototypes clean-up
- *
- * Revision 1.2  2004/12/12 14:14:42  sezero
- * style changes to our liking
- *
- * Revision 1.1.1.1  2004/11/28 00:06:41  sezero
- * Initial import of AoT 1.2.0 code
- *
- * 2     3/10/98 6:42p Jmonroe
- * first pass of new model fmt, fully in view render needs work
- * 
- * 6     6/14/97 9:48p Rjohnson
- * Forgot to make the variable available to other modules
- * 
- * 5     6/03/97 5:50p Rjohnson
- * Added translucent water
- * 
- * 4     4/23/97 11:39a Rjohnson
- * Merged the translucent span drawing into assembly
- * 
- * 3     2/19/97 11:46a Rjohnson
- * Id Updates
- */

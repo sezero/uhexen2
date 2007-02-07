@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/snake.hc,v 1.1.1.1 2004-11-29 11:35:39 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/snake.hc,v 1.2 2007-02-07 16:59:36 sezero Exp $
  */
 /*
 ==============================================================================
@@ -505,59 +505,3 @@ void() monster_snake =
 	self.counter = 0;
 };
 
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 2     3/24/98 3:42p Jmonroe
- * 
- * 25    10/28/97 1:01p Mgummelt
- * Massive replacement, rewrote entire code... just kidding.  Added
- * support for 5th class.
- * 
- * 23    9/03/97 1:16a Mgummelt
- * 
- * 22    9/02/97 12:23a Rlove
- * 
- * 21    8/29/97 3:04a Mgummelt
- * 
- * 20    8/26/97 9:00a Mgummelt
- * 
- * 19    8/25/97 1:39p Mgummelt
- * 
- * 18    8/15/97 2:54p Bgokey
- * 
- * 17    8/12/97 6:10p Mgummelt
- * 
- * 16    8/06/97 2:15p Rlove
- * 
- * 15    8/05/97 3:38p Rlove
- * 
- * 14    8/05/97 3:15p Rlove
- * 
- * 13    8/05/97 11:48a Rlove
- * 
- * 12    7/30/97 4:18p Rlove
- * 
- * 10    7/26/97 1:11p Rlove
- * New snake stuff
- * 
- * 9     7/03/97 8:47a Rlove
- * 
- * 8     6/18/97 2:35p Mgummelt
- * 
- * 7     5/30/97 5:59p Rlove
- * 
- * 6     5/30/97 5:41p Rlove
- * 
- * 5     5/23/97 3:44p Mgummelt
- * 
- * 4     5/22/97 3:29p Mgummelt
- * 
- * 3     5/19/97 11:36p Mgummelt
- * 
- * 2     4/30/97 6:22a Rlove
- * Snakes.  Why did it have to be snakes?
- * 
- * 1     1/27/97 11:42a Rlove
- * 
- */

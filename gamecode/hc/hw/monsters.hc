@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/monsters.hc,v 1.1.1.1 2004-11-29 11:24:09 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/monsters.hc,v 1.2 2007-02-07 16:57:59 sezero Exp $
  */
 /* ALL MONSTERS SHOULD BE 1 0 0 IN COLOR */
 
@@ -325,83 +325,4 @@ void() swimmonster_start =
 	total_monsters = total_monsters + 1;
 };
 */
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:05:08  theoddone33
- * Inital import
- *
- * 
- * 2     3/27/98 11:48p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 32    8/29/97 11:14p Mgummelt
- * 
- * 31    8/26/97 9:00a Mgummelt
- * 
- * 30    8/20/97 1:21p Mgummelt
- * 
- * 29    8/19/97 12:57p Mgummelt
- * 
- * 28    8/14/97 7:12p Mgummelt
- * 
- * 27    8/13/97 11:54p Mgummelt
- * 
- * 26    7/21/97 3:03p Rlove
- * 
- * 25    7/14/97 4:09p Mgummelt
- * 
- * 24    6/28/97 6:32p Mgummelt
- * 
- * 23    6/18/97 8:00p Mgummelt
- * 
- * 22    6/18/97 7:10p Mgummelt
- * 
- * 21    6/18/97 5:30p Mgummelt
- * 
- * 20    6/18/97 4:00p Mgummelt
- * 
- * 19    6/16/97 11:23a Mgummelt
- * 
- * 18    6/14/97 10:07p Mgummelt
- * 
- * 17    6/13/97 3:57p Mgummelt
- * 
- * 16    6/12/97 8:54p Mgummelt
- * 
- * 15    6/09/97 3:08p Mgummelt
- * 
- * 14    6/05/97 8:16p Mgummelt
- * 
- * 13    5/23/97 3:43p Mgummelt
- * 
- * 12    5/22/97 7:28p Mgummelt
- * 
- * 11    5/22/97 6:30p Mgummelt
- * 
- * 10    5/22/97 5:20p Mgummelt
- * 
- * 9     5/10/97 12:07p Mgummelt
- * 
- * 8     5/07/97 3:40p Mgummelt
- * 
- * 7     5/07/97 11:12a Rjohnson
- * Added a new field to walkmove and movestep to allow for setting the
- * traceline info
- * 
- * 6     5/06/97 1:29p Mgummelt
- * 
- * 5     4/18/97 5:24p Mgummelt
- * 
- * 4     3/13/97 9:57a Rlove
- * Changed constant DAMAGE_AIM  to DAMAGE_YES and the old DAMAGE_YES to
- * DAMAGE_NO_GRENADE
- * 
- * 3     3/10/97 8:29a Rlove
- * Halfway through rewriting Monster AI
- * 
- * 2     11/11/96 1:19p Rlove
- * Added Source Safe stuff
- */
 

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/portals/boulder.hc,v 1.2 2007-02-07 16:21:21 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/portals/boulder.hc,v 1.3 2007-02-07 16:56:37 sezero Exp $
  */
 
 $cd \art\models\objects\boulder\final
@@ -182,41 +182,4 @@ void() trap_boulder =
 	self.think = boulder_find_path;
 	self.nextthink = self.ltime + 0.1;
 };
-
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2005/07/29 20:45:08  sezero
- * unused sources - initial import
- *
- * Revision 1.1.1.1  2004/11/29 11:30:46  sezero
- * Initial import
- *
- * 
- * 2     2/10/98 3:53p Jmonroe
- * smarter precache, removed unused sprites and funcs
- * 
- * 10    10/28/97 1:00p Mgummelt
- * Massive replacement, rewrote entire code... just kidding.  Added
- * support for 5th class.
- * 
- * 8     8/23/97 7:15p Rlove
- * 
- * 7     8/16/97 5:46p Mgummelt
- * 
- * 6     7/21/97 3:03p Rlove
- * 
- * 5     6/19/97 4:01p Rjohnson
- * removed crandom()
- * 
- * 4     5/15/97 6:34p Rjohnson
- * Code cleanup
- * 
- * 3     3/25/97 9:47a Jweier
- * Added more to it
- * 
- * 2     3/05/97 5:27p Jweier
- * 
- * 1     3/05/97 5:05p Jweier
- */
 

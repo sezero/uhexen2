@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/shardice.hc,v 1.1 2005-01-26 17:26:12 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/shardice.hc,v 1.2 2007-02-07 17:01:23 sezero Exp $
  */
 /*
 ==============================================================================
@@ -105,48 +105,3 @@ vector vec;
 	missile.nextthink = time + HX_FRAME_TIME;
 };
 
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 5     5/25/98 10:56p Mgummelt
- * Last version before send-off, v0.15
- * 
- * 4     5/25/98 8:38p Mgummelt
- * 
- * 3     5/25/98 1:39p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 14    9/04/97 3:20p Mgummelt
- * 
- * 13    9/04/97 3:00p Mgummelt
- * 
- * 12    9/02/97 2:55a Mgummelt
- * 
- * 11    8/26/97 7:38a Mgummelt
- * 
- * 10    8/22/97 4:07p Mgummelt
- * 
- * 9     8/13/97 1:28a Mgummelt
- * 
- * 8     8/09/97 1:50a Mgummelt
- * 
- * 7     6/19/97 3:08p Rjohnson
- * Code space optimizations
- * 
- * 6     5/15/97 6:34p Rjohnson
- * Code cleanup
- * 
- * 5     5/06/97 1:29p Mgummelt
- * 
- * 4     4/24/97 2:22p Mgummelt
- * 
- * 3     2/13/97 1:23p Rlove
- * Changes to Blast Radius so it will affect missiles.
- * 
- * 2     12/13/96 10:51a Rjohnson
- * Minor Revisions
- * 
- * 1     12/11/96 11:46a Rjohnson
- * Initial Revision
- */

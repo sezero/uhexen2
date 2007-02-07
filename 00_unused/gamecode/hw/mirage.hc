@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/hw/mirage.hc,v 1.1.1.1 2005-07-29 20:44:38 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/hw/mirage.hc,v 1.2 2007-02-07 16:56:30 sezero Exp $
  */
 
 /*
@@ -251,39 +251,3 @@ void item_mirage()
 	StartItem();
 }
 
-
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2004/11/29 11:24:04  sezero
- * Initial import
- *
- * Revision 1.1.1.1  2001/11/09 17:05:08  theoddone33
- * Inital import
- *
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 13    8/23/97 7:15p Rlove
- * 
- * 12    6/03/97 7:59a Rlove
- * Change take_art.wav to artpkup.wav
- * 
- * 11    5/22/97 3:30p Mgummelt
- * 
- * 10    5/15/97 6:34p Rjohnson
- * Code cleanup
- * 
- * 9     5/06/97 1:29p Mgummelt
- * 
- * 8     3/28/97 4:18p Aleggett
- * Improved the timing code, made an item_mirage, for 15 seconds of play.
- * 
- * 7     3/18/97 3:38p Aleggett
- * 
- * 6     3/11/97 4:30p Aleggett
- * Fixed the last line to satisfy a sad shortcoming of HCC
- * 
- * 5     3/11/97 4:22p Aleggett
- * Fixed AI, except for knowing when to fake an attack.
- */

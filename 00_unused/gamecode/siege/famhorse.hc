@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/famhorse.hc,v 1.1.1.1 2005-07-29 20:42:49 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/famhorse.hc,v 1.2 2007-02-07 16:56:44 sezero Exp $
  */
 
 /*
@@ -804,62 +804,3 @@ void rider_famine(void)
 	thinktime self : 1;
 }
 
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1  2005/01/26 17:26:10  sezero
- * Raven's original Siege hcode.
- *
- * 
- * 4     5/25/98 1:38p Mgummelt
- * 
- * 2     3/27/98 1:34p Mgummelt
- * Adding PHS_OVERRIDE_R channel flag and ATTN_LOOP to all door and plat
- * sounds, replacing all "null.wav" sounds with stopSound.
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 30    9/11/97 8:15p Mgummelt
- * 
- * 29    9/11/97 7:13p Rjohnson
- * Caching Updates
- * 
- * 28    9/11/97 12:04p Mgummelt
- * 
- * 27    9/11/97 12:02p Mgummelt
- * 
- * 26    9/01/97 12:11a Rlove
- * 
- * 25    8/31/97 6:51p Rlove
- * 
- * 24    8/31/97 6:44p Rlove
- * 
- * 23    8/31/97 6:11p Rlove
- * 
- * 22    8/31/97 4:21p Mgummelt
- * 
- * 21    8/31/97 12:54p Jweier
- * 
- * 20    8/29/97 11:44p Jweier
- * 
- * 19    8/26/97 3:01p Rlove
- * 
- * 18    8/23/97 7:15p Rlove
- * 
- * 13    8/19/97 10:46a Rlove
- * 
- * 5     8/08/97 3:01p Rjohnson
- * Fix for position
- * 
- * 4     8/06/97 4:31p Rjohnson
- * Update for initialization
- * 
- * 3     7/25/97 5:35p Rjohnson
- * Updates
- * 
- * 2     6/19/97 3:08p Rjohnson
- * Code space optimizations
- * 
- * 1     6/10/97 3:35p Rjohnson
- * Initial Version
- */

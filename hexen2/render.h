@@ -2,7 +2,7 @@
 	refresh.h
 	public interface to refresh functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.10 2006-09-24 17:28:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.11 2007-02-07 17:01:37 sezero Exp $
 */
 
 #ifndef __HX2_RENDER_H
@@ -179,68 +179,3 @@ void R_SetVrect (vrect_t *pvrect, vrect_t *pvrectin, int lineadj);
 
 #endif	/* __HX2_RENDER_H */
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.9  2006/07/18 08:36:40  sezero
- * made hexen2 software renderer to use r_worldentity like in
- * opengl version and hexenworld version. this saved us of
- * many ifdef H2W ugliness.
- *
- * Revision 1.8  2006/03/29 21:46:39  sezero
- * whitespace clean-ups (render.h)
- *
- * Revision 1.7  2005/09/19 19:50:10  sezero
- * fixed those famous spelling errors
- *
- * Revision 1.6  2005/05/20 16:17:50  sezero
- * keep ID style in declerations (less diff between h2/h2w...)
- *
- * Revision 1.5  2005/01/01 21:43:47  sezero
- * prototypes clean-up
- *
- * Revision 1.4  2004/12/18 14:15:35  sezero
- * Clean-up and kill warnings 10:
- * Remove some already commented-out functions and code fragments.
- * They seem to be of no-future use. Also remove some unused functions.
- *
- * Revision 1.3  2004/12/18 13:59:25  sezero
- * Clean-up and kill warnings 8:
- * Missing prototypes.
- *
- * Revision 1.2  2004/12/12 14:14:42  sezero
- * style changes to our liking
- *
- * Revision 1.1.1.1  2004/11/28 00:07:03  sezero
- * Initial import of AoT 1.2.0 code
- *
- * 4     3/05/98 7:54p Jmonroe
- * fixed startRain, optimized particle struct
- * 
- * 15    8/29/97 2:49p Rjohnson
- * Network updates
- * 
- * 14    8/17/97 3:28p Rjohnson
- * Fix for color selection
- * 
- * 13    7/28/97 2:44p Rjohnson
- * Fix for tinting
- * 
- * 12    7/24/97 4:37p Rjohnson
- * Color Tinting for models
- * 
- * 11    5/23/97 12:23p Bgokey
- * 
- * 10    5/14/97 2:40p Bgokey
- * 
- * 9     5/13/97 4:29p Bgokey
- * 
- * 8     4/28/97 11:58a Mgummelt
- * 
- * 7     4/22/97 3:50p Rjohnson
- * Added some more particle commands to cut back on the networking
- * 
- * 6     4/15/97 9:02p Bgokey
- * 
- * 5     2/19/97 11:51a Rjohnson
- * Id Updates
- */

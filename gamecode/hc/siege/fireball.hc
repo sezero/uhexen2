@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/fireball.hc,v 1.1 2005-01-26 17:26:10 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/fireball.hc,v 1.2 2007-02-07 17:00:43 sezero Exp $
  */
 /*
 ==============================================================================
@@ -142,78 +142,3 @@ vector vec;
 	missile.nextthink = time + HX_FRAME_TIME;
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 3     5/25/98 1:38p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 20    9/19/97 2:06p Rlove
- * 
- * 19    9/04/97 3:19p Mgummelt
- * 
- * 18    9/04/97 3:00p Mgummelt
- * 
- * 17    9/02/97 2:55a Mgummelt
- * 
- * 16    8/26/97 8:11p Jweier
- * 
- * 15    8/15/97 2:12a Mgummelt
- * 
- * 14    8/13/97 1:28a Mgummelt
- * 
- * 13    8/09/97 1:49a Mgummelt
- * 
- * 12    7/18/97 11:06a Mgummelt
- * 
- * 11    7/15/97 4:47p Rjohnson
- * Updates
- * 
- * 10    6/19/97 3:08p Rjohnson
- * Code space optimizations
- * 
- * 9     6/14/97 2:21p Mgummelt
- * 
- * 8     6/03/97 10:48p Mgummelt
- * 
- * 7     5/15/97 6:34p Rjohnson
- * Code cleanup
- * 
- * 6     5/08/97 9:47p Mgummelt
- * 
- * 5     4/25/97 8:32p Mgummelt
- * 
- * 4     4/24/97 2:21p Mgummelt
- * 
- * 3     2/13/97 1:23p Rlove
- * Changes to Blast Radius so it will affect missiles.
- * 
- * 2     12/11/96 11:44a Rjohnson
- * Used monster modifiers for the fireball damage
- * 
- * 1     12/09/96 11:51a Rjohnson
- * Initial Revision
- * 
- */

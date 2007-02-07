@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/hw/horse.hc,v 1.1.1.1 2005-07-29 20:44:36 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/hw/horse.hc,v 1.2 2007-02-07 16:56:29 sezero Exp $
  */
 
 /*
@@ -58,15 +58,3 @@ void() rick_test =
    self.avelocity = '100 100 100';
 };
 
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2004/11/29 11:27:06  sezero
- * Initial import
- *
- * Revision 1.1.1.1  2001/11/09 17:05:05  theoddone33
- * Inital import
- *
- * 
- * 1     2/04/98 1:59p Rjohnson
- */

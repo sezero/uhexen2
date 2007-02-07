@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.32 2007-02-06 12:24:20 sezero Exp $
+	$Id: gl_screen.c,v 1.33 2007-02-07 17:03:30 sezero Exp $
 */
 
 /*=============================================================================
@@ -1110,3 +1110,4 @@ void SCR_UpdateScreen (void)
 
 	GL_EndRendering ();
 }
+

@@ -2,7 +2,7 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.c,v 1.11 2007-02-06 12:24:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.c,v 1.12 2007-02-07 17:03:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -347,3 +347,4 @@ fixed16_t Invert24To16(fixed16_t val)
 }
 
 #endif
+

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/ravenstf.hc,v 1.2 2005-02-23 08:03:46 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/ravenstf.hc,v 1.3 2007-02-07 16:57:09 sezero Exp $
  */
 
 // For building the model
@@ -709,73 +709,3 @@ void ravenstaff_deselect (void)
 
 }
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2004/11/29 11:40:18  sezero
- * Initial import
- *
- * 
- * 52    10/21/97 2:24p Rlove
- * Fixed a bug with bone shards
- * 
- * 51    10/17/97 3:56p Rlove
- * 
- * 50    10/17/97 11:13a Rlove
- * 
- * 49    9/04/97 5:06p Mgummelt
- * Fixing Meat chunk colors and wrong autoaiming in coop
- * 
- * 48    9/04/97 3:50p Mgummelt
- * 
- * 47    9/02/97 8:00p Rlove
- * 
- * 46    9/01/97 9:49p Rlove
- * 
- * 45    9/01/97 6:01p Rlove
- * 
- * 44    9/01/97 1:19a Rlove
- * 
- * 43    8/31/97 9:46p Rlove
- * 
- * 42    8/31/97 3:45p Rlove
- * 
- * 41    8/30/97 7:32p Jweier
- * 
- * 40    8/26/97 10:49a Rlove
- * 
- * 39    8/26/97 10:16a Rlove
- * 
- * 38    8/26/97 7:41a Mgummelt
- * Removing one last old player frame code reference
- * 
- * 37    8/26/97 5:55a Rlove
- * 
- * 36    8/24/97 2:13p Rlove
- * 
- * 35    8/23/97 7:15p Rlove
- * 
- * 33    8/11/97 10:55a Rlove
- * 
- * 31    8/08/97 10:02a Rlove
- * 
- * 28    8/08/97 8:03a Rlove
- * 
- * 25    8/07/97 11:13a Rlove
- * 
- * 18    7/24/97 12:02p Mgummelt
- * 
- * 17    7/21/97 3:03p Rlove
- * 
- * 15    7/12/97 9:09a Rlove
- * Reworked Assassin Punch Dagger
- * 
- * 12    7/03/97 8:12a Rlove
- * 
- * 10    6/30/97 9:41a Rlove
- * 
- * 4     6/26/97 7:36a Rlove
- * Changed Vindictus to Ravenstaff
- * 
- * 3     6/24/97 7:48a Rlove
- * 
- */

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/portals/bridge.hc,v 1.2 2007-02-07 16:21:21 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/portals/bridge.hc,v 1.3 2007-02-07 16:56:38 sezero Exp $
  */
 /*
 ==============================================================================
@@ -213,33 +213,3 @@ void ropebridge_link()
 		self.touch		= ropebridge_touch;
 }
 
-
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2005/07/29 20:45:08  sezero
- * unused sources - initial import
- *
- * Revision 1.1.1.1  2004/11/29 11:36:54  sezero
- * Initial import
- *
- * 
- * 9     10/28/97 1:00p Mgummelt
- * Massive replacement, rewrote entire code... just kidding.  Added
- * support for 5th class.
- * 
- * 7     8/23/97 7:15p Rlove
- * 
- * 6     6/18/97 10:46a Rjohnson
- * Code cleanu
- * 
- * 5     4/01/97 5:02p Aleggett
- * 
- * 4     3/26/97 1:21p Aleggett
- * Waiting for a bug in Quake to be fixed.
- * 
- * 3     3/25/97 12:27p Aleggett
- * 
- * 2     3/25/97 11:40a Aleggett
- * First edition
- */

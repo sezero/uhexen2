@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.8 2007-02-06 12:23:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.9 2007-02-07 17:03:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -643,35 +643,4 @@ void Host_Shutdown(void)
 
 	NET_Shutdown ();
 }
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.7  2006/10/22 15:55:39  sezero
- * removed the unused host_basepal and host_colormap from h2ded
- *
- * Revision 1.6  2006/10/20 20:32:31  sezero
- * various coding style clean-ups, part 1.
- *
- * Revision 1.5  2006/10/19 06:32:29  sezero
- * added Sys_DPrintf: at present, its only user is the hexen2 dedicated
- * server. further use of it may come with future versions.
- *
- * Revision 1.4  2006/09/15 09:22:39  sezero
- * made Host_CopyFiles to properly check its string sizes, and made it to
- * return at the first time it hits an error.
- *
- * Revision 1.3  2006/09/13 05:53:24  sezero
- * re-visited the includes, gathered all net includes into
- * the new net_sys.h, did a platform defines clean-up.
- *
- * Revision 1.2  2006/09/11 09:16:24  sezero
- * put SZ_Init() to use everywhere in the source.
- *
- * Revision 1.1  2006/06/25 12:57:06  sezero
- * added a hexen2 dedicated server which seems to work much better than
- * the client/server application running in dedicated mode. model loading
- * implementation taken from LordHavoc's old lhnqserver, as it seems better
- * than the one in hexenworld server.
- *
- */
 

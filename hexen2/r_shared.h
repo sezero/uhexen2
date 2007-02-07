@@ -3,7 +3,7 @@
 	general refresh-related stuff shared between the refresh
 	and the driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.5 2006-09-24 17:28:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.6 2007-02-07 17:01:37 sezero Exp $
 */
 
 #ifndef __R_SHARED_H
@@ -158,26 +158,3 @@ extern	byte	*playerTranslation;
 
 #endif	/* __R_SHARED_H	*/
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.4  2006/04/05 06:03:07  sezero
- * whitespace clean-ups (r_shared.h)
- *
- * Revision 1.3  2005/06/07 08:58:54  sezero
- * changed all references to obsoleted modelgen.h into genmodel.h
- *
- * Revision 1.2  2004/12/12 14:14:42  sezero
- * style changes to our liking
- *
- * Revision 1.1.1.1  2004/11/28 00:07:00  sezero
- * Initial import of AoT 1.2.0 code
- *
- * 5     3/28/97 10:08a Rjohnson
- * Added transparent models
- * 
- * 4     2/19/97 11:48a Rjohnson
- * Id Updates
- * 
- * 3     2/11/97 1:15p Rjohnson
- * Added transparent sprites
- */

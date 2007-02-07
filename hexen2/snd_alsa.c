@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.25 2007-01-15 12:01:09 sezero Exp $
+	$Id: snd_alsa.c,v 1.26 2007-02-07 17:01:38 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -333,95 +333,3 @@ void S_ALSA_Submit (void)
 
 #endif	// HAVE_ALSA_SOUND
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.24  2006/10/21 18:21:28  sezero
- * various coding style clean-ups, part 5.
- *
- * Revision 1.23  2006/09/29 20:38:44  sezero
- * even more sound stuff (alsa clean-up)
- *
- * Revision 1.22  2006/09/29 18:00:35  sezero
- * even more sound stuff
- *
- * Revision 1.21  2006/09/29 11:17:51  sezero
- * more sound clean up
- *
- * Revision 1.20  2006/09/27 17:17:30  sezero
- * a lot of clean-ups in sound and midi files.
- *
- * Revision 1.19  2006/09/23 07:25:35  sezero
- * added missing com_argc checks (and fixed the incorrect ones)
- * after several COM_CheckParm calls.
- *
- * Revision 1.18  2006/09/15 09:18:40  sezero
- * fixed another gcc4 warning about type-punning (although in disabled code)
- *
- * Revision 1.17  2006/06/15 09:31:53  sezero
- * kept the same standart for alsa sound availablity in snd_sys
- *
- * Revision 1.16  2006/05/20 12:38:01  sezero
- * cleaned up sound tryrates, etc. changed tryrates array to include
- * 48000, 24000, and 16000 speeds (this should help 48khz AC97 chips,
- * from darkplaces).
- *
- * Revision 1.15  2006/02/19 12:33:24  sezero
- * continue making static functions and vars static. whitespace and coding style
- * cleanup. (part 10: sound).
- *
- * Revision 1.14  2006/01/12 13:10:49  sezero
- * do not change the desined_XXX sound variables in case of failures.
- * sound wnitespace cleanup #2 in snd_oss.
- *
- * Revision 1.13  2006/01/12 12:57:45  sezero
- * moved init of platform specific variables and function pointers to snd_sys
- *
- * Revision 1.12  2006/01/12 12:48:12  sezero
- * small alsa buffersize update taken from the quakeforge tree. also added
- * a ALSA_CHECK_ERR macro to make the init procedure more readable. coding
- * style cleanup.
- *
- * Revision 1.11  2005/07/05 17:11:38  sezero
- * Updated alsa driver (various insignificant things)
- *
- * Revision 1.10  2005/06/12 07:31:18  sezero
- * enabled alsa only on linux platforms
- *
- * Revision 1.9  2005/06/12 07:28:51  sezero
- * clean-up of includes and a fix (hopefully) for endianness detection
- *
- * Revision 1.8  2005/03/05 14:33:32  sezero
- * Try to use what frequency is actually set:
- * I first naively thought that requested-provided frequency
- * mismatches wouldn't happen, but I got one weird oss report
- * which includes this case. Let's see what this does now...
- *
- * Revision 1.7  2005/02/20 12:44:58  sezero
- * - Process all command line options in snd_dma.c, S_Startup() only.
- *   Targets will do to its bidding first. And don't die immediately,
- *   try setting alternative hw parameters. (FWIW, snd_oss.c now applies
- *   all hardware settings before mmaping the buffer)
- * - Check for requested and set rate mismatches and fail (Found in alsa
- *   examples, is it necessary at all? Commented out for now.)
- *
- * Revision 1.6  2005/02/14 15:12:32  sezero
- * added ability to disable ALSA support at compile time
- *
- * Revision 1.5  2005/02/14 10:08:00  sezero
- * alsa sound:
- * - replicate the order in quakeforge as much as possible
- *
- * Revision 1.4  2005/02/14 10:07:03  sezero
- * alsa sound improvements:
- * - more error checking and detailed error reporting
- *
- * Revision 1.3  2005/02/11 23:44:22  sezero
- * add 48000 to the alsa rate switch
- *
- * Revision 1.2  2005/02/05 16:38:34  sezero
- * fix silly copy+paste error in snd_alsa.c
- *
- * Revision 1.1  2005/02/04 11:59:16  sezero
- * add ALSA sound driver (from the quakeforge project)
- *
- */

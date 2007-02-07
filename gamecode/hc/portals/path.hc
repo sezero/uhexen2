@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/path.hc,v 1.1.1.1 2004-11-29 11:34:13 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/path.hc,v 1.2 2007-02-07 16:59:35 sezero Exp $
  */
 
 /*
@@ -82,24 +82,3 @@ void path_corner ()
 	setsize (self, '-8 -8 -8', '8 8 8');
 }
 
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 8     10/28/97 1:01p Mgummelt
- * Massive replacement, rewrote entire code... just kidding.  Added
- * support for 5th class.
- * 
- * 6     6/13/97 4:08p Mgummelt
- * 
- * 5     5/16/97 11:27p Mgummelt
- * 
- * 4     5/15/97 2:46p Mgummelt
- * 
- * 3     5/15/97 12:30a Mgummelt
- * 
- * 2     3/10/97 8:29a Rlove
- * Halfway through rewriting Monster AI
- * 
- * 1     3/07/97 10:31a Rlove
- * 
- */

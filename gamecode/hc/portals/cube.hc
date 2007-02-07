@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/cube.hc,v 1.1.1.1 2004-11-29 11:31:29 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/cube.hc,v 1.2 2007-02-07 16:59:31 sezero Exp $
  */
 
 
@@ -337,75 +337,3 @@ void UseCubeOfForce(float on_spawn)
 	self.cnt_cubeofforce -= 1;
 }
 
-
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 7     3/19/98 12:17a Mgummelt
- * last bug fixes
- * 
- * 6     3/17/98 4:06p Mgummelt
- * 
- * 5     3/16/98 6:38a Mgummelt
- * 
- * 4     3/16/98 2:19a Mgummelt
- * 
- * 3     3/14/98 11:09p Mgummelt
- * 
- * 2     3/14/98 9:24p Mgummelt
- * 
- * 23    10/28/97 1:00p Mgummelt
- * Massive replacement, rewrote entire code... just kidding.  Added
- * support for 5th class.
- * 
- * 21    9/11/97 12:02p Mgummelt
- * 
- * 20    9/02/97 10:11p Rlove
- * 
- * 19    8/26/97 8:30p Jweier
- * 
- * 18    8/26/97 8:11p Jweier
- * 
- * 17    8/20/97 7:08p Jweier
- * 
- * 16    8/14/97 11:22p Bgokey
- * 
- * 15    7/21/97 4:03p Mgummelt
- * 
- * 14    7/21/97 4:02p Mgummelt
- * 
- * 13    7/15/97 4:49p Rjohnson
- * Removed a debug statement
- * 
- * 12    7/15/97 4:47p Rjohnson
- * Updates
- * 
- * 11    6/26/97 9:08p Rjohnson
- * Update
- * 
- * 10    6/26/97 4:45p Rjohnson
- * Update
- * 
- * 9     6/18/97 6:21p Mgummelt
- * 
- * 8     6/18/97 4:00p Mgummelt
- * 
- * 7     5/15/97 6:34p Rjohnson
- * Code cleanup
- * 
- * 6     5/07/97 11:12a Rjohnson
- * Added a new field to walkmove and movestep to allow for setting the
- * traceline info
- * 
- * 5     2/12/97 4:38p Rjohnson
- * Looks good at this point
- * 
- * 4     2/10/97 4:28p Rjohnson
- * More movement updates
- * 
- * 3     2/04/97 3:26p Rjohnson
- * Will spawn it on the left or right, 2 at most
- * 
- * 2     2/04/97 10:46a Rjohnson
- * Added different type of movement
- */

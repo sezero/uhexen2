@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/gib.hc,v 1.1.1.1 2005-07-29 20:42:51 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/gib.hc,v 1.2 2007-02-07 16:56:45 sezero Exp $
  */
 
 vector() ChunkVelocity =
@@ -156,31 +156,4 @@ void () chunk_death =
 
 	remove(self);
 };
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1  2005/01/26 17:26:10  sezero
- * Raven's original Siege hcode.
- *
- * 
- * 5     5/25/98 1:38p Mgummelt
- * 
- * 4     4/24/98 1:31a Mgummelt
- * Siege version 0.02 4/24/98 1:31 AM
- * 
- * 3     4/23/98 5:19p Mgummelt
- * Siege version 0.01 4/23/98
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 4     6/19/97 4:02p Rjohnson
- * removed crandom()
- * 
- * 3     5/27/97 7:58a Rlove
- * New thingtypes of GreyStone,BrownStone, and Cloth.
- * 
- * 2     4/18/97 3:46p Rlove
- * 
- * 1     3/21/97 9:23a Rlove
- */
 

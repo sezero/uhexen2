@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/javelin.hc,v 1.1.1.1 2005-07-29 20:43:13 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/javelin.hc,v 1.2 2007-02-07 16:56:46 sezero Exp $
  */
 /*
 ==============================================================================
@@ -129,30 +129,3 @@ void() wp_javelin =
 
 };
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1  2005/01/26 17:26:11  sezero
- * Raven's original Siege hcode.
- *
- * 
- * 3     5/25/98 1:39p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 9     4/11/96 1:51p Mgummelt
- * 
- * 8     2/03/97 3:12p Rlove
- * Added soul spheres
- * 
- * 7     1/15/97 3:00p Rlove
- * Just a test
- * 
- * 6     1/09/97 9:41a Rlove
- * Javelin now spawns like it should - till they change the arm model.
- * 
- * 5     1/08/97 12:50p Rlove
- * This is because Rick is standing behind me making me check this in.
- * 
- * 4     12/26/96 11:35a Rlove
- * And now the javelin
- */

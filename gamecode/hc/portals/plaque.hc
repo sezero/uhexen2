@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/plaque.hc,v 1.1.1.1 2004-11-29 11:34:20 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/plaque.hc,v 1.2 2007-02-07 16:59:35 sezero Exp $
  */
 
 float PLAQUE_INVISIBLE = 1;
@@ -125,57 +125,4 @@ void() plaque =
 	else
 		self.inactive = 0;
 };
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 4     2/16/98 11:48a Jweier
- * 
- * 3     2/11/98 10:54a Jweier
- * 
- * 2     2/10/98 3:09p Mgummelt
- * 
- * 21    10/28/97 1:01p Mgummelt
- * Massive replacement, rewrote entire code... just kidding.  Added
- * support for 5th class.
- * 
- * 19    8/16/97 9:16a Rlove
- * 
- * 18    7/23/97 7:04p Mgummelt
- * 
- * 17    7/17/97 3:12p Rlove
- * 
- * 16    7/17/97 7:27a Rlove
- * 
- * 15    7/16/97 3:54p Rjohnson
- * Fix for plaques
- * 
- * 14    7/11/97 7:25a Rlove
- * 
- * 13    7/08/97 3:23p Rjohnson
- * Switched messages to using a string index
- * 
- * 12    7/07/97 6:13p Rlove
- * Now there are invisible plaques
- * 
- * 11    6/25/97 8:35p Rjohnson
- * Made the plaque network friendly
- * 
- * 10    6/25/97 12:49p Rjohnson
- * Added a global text file
- * 
- * 9     5/28/97 1:43p Rlove
- * Plaques now activate when you bump into them.
- * 
- * 8     3/24/97 8:56p Rjohnson
- * 
- * 7     3/14/97 9:21a Rlove
- * Plaques are done 
- * 
- * 6     2/19/97 10:06a Rlove
- * New Pull Object and Plaque Code
- * 
- * 5     2/13/97 4:22p Rlove
- * 
- * 4     11/11/96 1:19p Rlove
- * Added Source Safe stuff
- */
+

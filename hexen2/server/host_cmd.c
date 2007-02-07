@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.9 2007-02-06 12:23:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.10 2007-02-07 17:03:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1763,41 +1763,4 @@ void Host_InitCommands (void)
 	Cmd_AddCommand ("save", Host_Savegame_f);
 	Cmd_AddCommand ("give", Host_Give_f);
 }
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.8  2006/10/20 20:32:31  sezero
- * various coding style clean-ups, part 1.
- *
- * Revision 1.7  2006/09/26 09:53:48  sezero
- * added string array boundary checks in Host_SavegameComment().
- *
- * Revision 1.6  2006/09/18 09:57:05  sezero
- * use snprintf and the strl* functions, #13: menu.c. while we were
- * there, exported SAVEGAME_VERSION definition through quakedef.h,
- * prevented saved games with invalid version number to be listed.
- *
- * Revision 1.5  2006/09/15 09:24:33  sezero
- * use snprintf and the strl* functions, #2: host_cmd.c.
- *
- * Revision 1.4  2006/09/13 05:53:24  sezero
- * re-visited the includes, gathered all net includes into
- * the new net_sys.h, did a platform defines clean-up.
- *
- * Revision 1.3  2006/07/02 11:36:36  sezero
- * uppercased the pr_global_struct() macro for easier detection
- * and searching. put that macro in use in hexenworld server for
- * smaller diffs between the two versions. there are no actual
- * code changes here, only style and cosmetics.
- *
- * Revision 1.2  2006/06/25 15:59:00  sezero
- * minor things
- *
- * Revision 1.1  2006/06/25 12:57:06  sezero
- * added a hexen2 dedicated server which seems to work much better than
- * the client/server application running in dedicated mode. model loading
- * implementation taken from LordHavoc's old lhnqserver, as it seems better
- * than the one in hexenworld server.
- *
- */
 

@@ -4,7 +4,7 @@
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 	Additional bits taken from QuakeForge and Quake3 projects.
 
-	$Id: snd_sdl.c,v 1.20 2006-09-30 10:48:33 sezero Exp $
+	$Id: snd_sdl.c,v 1.21 2007-02-07 17:03:30 sezero Exp $
 */
 
 #define _SND_SYS_MACROS_ONLY
@@ -118,76 +118,3 @@ void S_SDL_Submit(void)
 
 #endif	// HAVE_SDL_SOUND
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.19  2006/09/29 18:00:35  sezero
- * even more sound stuff
- *
- * Revision 1.18  2006/09/29 11:17:51  sezero
- * more sound clean up
- *
- * Revision 1.17  2006/09/27 17:17:32  sezero
- * a lot of clean-ups in sound and midi files.
- *
- * Revision 1.16  2006/05/20 12:38:01  sezero
- * cleaned up sound tryrates, etc. changed tryrates array to include
- * 48000, 24000, and 16000 speeds (this should help 48khz AC97 chips,
- * from darkplaces).
- *
- * Revision 1.15  2006/02/18 09:15:03  sezero
- * updated some snd_sdl comments
- *
- * Revision 1.14  2006/01/12 13:08:47  sezero
- * small update to the sdl sound driver
- *
- * Revision 1.13  2006/01/12 13:07:13  sezero
- * sound whitespace cleanup #1
- *
- * Revision 1.12  2006/01/12 12:43:49  sezero
- * Created an sdl_inc.h with all sdl version requirements and replaced all
- * SDL.h and SDL_mixer.h includes with it. Made the source to compile against
- * SDL versions older than 1.2.6 without disabling multisampling. Multisampling
- * (fsaa) option is now decided at runtime. Minimum required SDL and SDL_mixer
- * versions are now 1.2.4. If compiled without midi, minimum SDL required is
- * 1.2.0. Added SDL_mixer version checking to sdl-midi with measures to prevent
- * relocation errors.
- *
- * Revision 1.11  2005/07/05 17:16:53  sezero
- * Updated sdl sound (added soundinfo to init, various insignificant things)
- *
- * Revision 1.10  2005/06/28 17:20:32  sezero
- * Tiny cosmetic clean-up
- *
- * Revision 1.9  2005/06/28 17:01:52  sezero
- * Added warning messages to snd_sdl for endianness-format mismatches
- *
- * Revision 1.8  2005/06/12 07:28:54  sezero
- * clean-up of includes and a fix (hopefully) for endianness detection
- *
- * Revision 1.7  2005/06/06 10:14:18  sezero
- * put my usual requested/obtained sndrate mismatch
- * warning in snd_sdl, as well.
- *
- * Revision 1.6  2005/02/20 12:46:43  sezero
- * - Process all command line options in snd_dma.c, S_Startup() only.
- *   Targets will do to its bidding first. And don't die immediately,
- *   try setting alternative hw parameters. (FWIW, snd_oss.c now applies
- *   all hardware settings before mmaping the buffer)
- * - Check for requested and set rate mismatches and fail (Found in alsa
- *   examples, is it necessary at all? Commented out for now.)
- *
- * Revision 1.5  2005/02/06 15:22:56  sezero
- * log entries cleanup
- *
- * Revision 1.4  2005/02/04 13:40:52  sezero
- * build all all the sound drivers in and choose from command line
- *
- * Revision 1.3  2005/02/04 11:29:38  sezero
- * make sdl_audio actually work (finally)
- *
- * Revision 1.2  2004.12.05.10.52.18  sezero
- * Change desired.samples to 1024 (from Steven)
- *
- * Revision 1.1  2004/11/28 00:50:00  sezero
- * Initial version.
- */

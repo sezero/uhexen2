@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.83 2007-02-06 14:01:55 sezero Exp $
+	$Id: common.c,v 1.84 2007-02-07 17:03:29 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -2688,3 +2688,4 @@ void Info_Print (const char *s)
 	}
 }
 #endif	// H2W
+

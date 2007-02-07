@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/ogre.hc,v 1.1.1.1 2005-07-29 20:43:34 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/ogre.hc,v 1.2 2007-02-07 16:56:50 sezero Exp $
  */
 /*
 ==============================================================================
@@ -459,28 +459,4 @@ void() monster_ogre_marksman =
 {
 	monster_ogre ();
 };
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1  2005/01/26 17:26:12  sezero
- * Raven's original Siege hcode.
- *
- * 
- * 3     5/25/98 1:39p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 5     6/19/97 3:24p Rjohnson
- * Removed crandom()
- * 
- * 4     5/15/97 6:34p Rjohnson
- * Code cleanup
- * 
- * 3     3/13/97 9:57a Rlove
- * Changed constant DAMAGE_AIM  to DAMAGE_YES and the old DAMAGE_YES to
- * DAMAGE_NO_GRENADE
- * 
- * 2     11/11/96 1:19p Rlove
- * Added Source Safe stuff
- */
-
 

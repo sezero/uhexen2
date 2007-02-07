@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/zombie.hc,v 1.2 2005-09-19 19:50:08 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/zombie.hc,v 1.3 2007-02-07 16:56:54 sezero Exp $
  */
 /*
 ==============================================================================
@@ -517,19 +517,3 @@ void() monster_zombie =
 		walkmonster_start();
 };
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2005/07/29 20:44:08  sezero
- * unused sources - initial import
- *
- * Revision 1.1  2005/01/26 17:26:13  sezero
- * Raven's original Siege hcode.
- *
- * 
- * 3     5/25/98 1:39p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 2     11/11/96 1:23p Rlove
- * Added Source Safe stuff
- */

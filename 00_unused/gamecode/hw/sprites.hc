@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/hw/sprites.hc,v 1.1.1.1 2005-07-29 20:44:57 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/hw/sprites.hc,v 1.2 2007-02-07 16:56:30 sezero Exp $
  */
 
 // these are the only sprites still in the game...
@@ -171,42 +171,4 @@ void() sprite_moss1 =
 
 };
 */
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2004/11/29 11:24:15  sezero
- * Initial import
- *
- * Revision 1.1.1.1  2001/11/09 17:05:12  theoddone33
- * Inital import
- *
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 10    8/23/97 7:15p Rlove
- * 
- * 9     6/18/97 10:46a Rjohnson
- * Code cleanu
- * 
- * 8     3/25/97 4:58p Rjohnson
- * Cleaned up pre-cache stuff
- * 
- * 7     3/21/97 10:19a Rlove
- * Changed obj_die calls to chunk_death
- * 
- * 6     3/10/97 8:53a Rlove
- * Added sprite moss
- * 
- * 5     3/04/97 9:11a Rlove
- * Added sprite background 1 & 2
- * 
- * 4     3/03/97 1:59p Rlove
- * Added sprite treetop
- * 
- * 3     2/21/97 2:23p Rlove
- * Added sprite trees and models chests (please no jokes)
- * 
- * 2     11/11/96 1:19p Rlove
- * Added Source Safe stuff
- */
 

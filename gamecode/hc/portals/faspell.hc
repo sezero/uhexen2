@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/faspell.hc,v 1.1.1.1 2004-11-29 11:31:53 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/faspell.hc,v 1.2 2007-02-07 16:59:32 sezero Exp $
  */
 
 /*
@@ -139,48 +139,3 @@ vector vec;
 	thinktime missile : HX_FRAME_TIME;
 };
 
-
-
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 16    10/28/97 1:00p Mgummelt
- * Massive replacement, rewrote entire code... just kidding.  Added
- * support for 5th class.
- * 
- * 14    9/04/97 3:19p Mgummelt
- * 
- * 13    9/04/97 3:00p Mgummelt
- * 
- * 12    8/29/97 4:17p Mgummelt
- * Long night
- * 
- * 11    8/29/97 12:59a Mgummelt
- * 
- * 10    8/27/97 7:07p Mgummelt
- * 
- * 9     6/19/97 3:08p Rjohnson
- * Code space optimizations
- * 
- * 8     6/18/97 3:59p Rjohnson
- * Fix
- * 
- * 7     6/18/97 3:57p Rjohnson
- * Changed time
- * 
- * 6     6/14/97 10:11a Mgummelt
- * 
- * 5     5/15/97 6:34p Rjohnson
- * Code cleanup
- * 
- * 4     5/07/97 11:12a Rjohnson
- * Added a new field to walkmove and movestep to allow for setting the
- * traceline info
- * 
- * 3     5/06/97 1:29p Mgummelt
- * 
- * 2     4/24/97 2:21p Mgummelt
- * 
- * 1     3/12/97 4:55p Rjohnson
- * Initial Version
- */

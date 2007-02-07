@@ -2,7 +2,7 @@
 	d_surf.c
 	rasterization driver surface heap manager
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_surf.c,v 1.6 2006-10-20 20:32:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_surf.c,v 1.7 2007-02-07 17:03:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -340,5 +340,4 @@ surfcache_t *D_CacheSurface (msurface_t *surface, int miplevel)
 
 	return surface->cachespots[miplevel];
 }
-
 

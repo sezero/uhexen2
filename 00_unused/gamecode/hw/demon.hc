@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/hw/demon.hc,v 1.1.1.1 2005-07-29 20:44:19 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/hw/demon.hc,v 1.2 2007-02-07 16:56:29 sezero Exp $
  */
 /*
 ==============================================================================
@@ -366,19 +366,3 @@ void()	Demon_JumpTouch =
 	self.nextthink = time + 0.1;
 };
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2004/11/29 11:23:42  sezero
- * Initial import
- *
- * Revision 1.1.1.1  2001/11/09 17:05:02  theoddone33
- * Inital import
- *
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 3     4/24/97 2:15p Mgummelt
- * 
- * 2     11/11/96 1:12p Rlove
- * Added Source Safe stuff
- */

@@ -2,7 +2,7 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.13 2007-02-06 12:23:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.14 2007-02-07 17:01:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -348,60 +348,3 @@ fixed16_t Invert24To16(fixed16_t val)
 
 #endif
 
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.12  2007/01/15 12:01:08  sezero
- * fixed several printf format warnings
- *
- * Revision 1.11  2006/10/20 20:32:30  sezero
- * various coding style clean-ups, part 1.
- *
- * Revision 1.10  2006/02/18 08:51:10  sezero
- * continue making static functions and vars static. whitespace and coding style
- * cleanup. also renamed the variables name and dest to savename and savedest in
- * host_cmd.c to prevent any confusion and pollution.
- *
- * Revision 1.9  2006/01/22 23:14:44  sezero
- * added a Q_isnan for NaN tests with -ffast-math, maybe of use someday. taken
- * from the icculus-quake3 project.
- *
- * Revision 1.8  2005/07/09 07:24:25  sezero
- * put back Q_log2() to mathlib, changes to snd_win requires that
- *
- * Revision 1.7  2005/06/12 07:28:51  sezero
- * clean-up of includes and a fix (hopefully) for endianness detection
- *
- * Revision 1.6  2005/05/17 06:51:57  sezero
- * synced h2 and hw versions of mathlib.*
- * (h2 now has some math functions inlined)
- * updated linux_inc.h
- *
- * Revision 1.5  2005/05/17 06:51:19  sezero
- * macroized some math functions (from Pa3PyX)
- * initial sync between h2/hw versions of mathlib.*
- *
- * Revision 1.4  2005/05/17 06:50:44  sezero
- * removed unused underscored versions of math funcs
- *
- * Revision 1.3  2005/04/30 07:57:44  sezero
- * fix warning "dereferencing type-punned pointer will break strict-aliasing rules"
- *
- * Revision 1.2  2004/12/12 14:14:42  sezero
- * style changes to our liking
- *
- * Revision 1.1.1.1  2004/11/28 00:04:51  sezero
- * Initial import of AoT 1.2.0 code
- *
- * 4     2/06/98 7:17p Jmonroe
- * removed fastsqrt (not fast)
- * 
- * 3     2/05/98 8:00p Jmonroe
- * fast sqrt is partially in, need to do tests to verify it
- * 
- * 2     1/26/98 7:26p Jmonroe
- * inline math funcs
- * 
- * 2     3/10/97 1:35p Rjohnson
- * Fixed a screwy VC5.0 compiler bug
- */

@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/world.c,v 1.9 2007-01-15 12:01:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/world.c,v 1.10 2007-02-07 17:04:25 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -1014,20 +1014,3 @@ edict_t	*SV_TestPlayerPosition (edict_t *ent, vec3_t origin)
 }
 #endif
 
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.8  2006/10/21 18:21:33  sezero
- * various coding style clean-ups, part 5.
- *
- * Revision 1.7  2006/07/02 11:45:38  sezero
- * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
- * which stops vec3_origin usage in relevant calculations. renamed the Length
- * macro to VectorLength for consistancy. updated the utilities' mathlib for
- * similar macro usage as in the engine.
- *
- * Revision 1.6  2006/02/22 22:56:24  sezero
- * continue making static functions and vars static. whitespace and coding style
- * cleanup. (part 24: world.c, world.h).
- *
- */

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/hw/paladin.hc,v 1.1.1.1 2005-07-29 20:44:51 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/hw/paladin.hc,v 1.2 2007-02-07 16:56:30 sezero Exp $
  */
 
 /*
@@ -431,75 +431,4 @@ void paladin_dead(void)
 	thinktime self : 0.1;
 }
 */
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2004/11/29 11:28:31  sezero
- * Initial import
- *
- * Revision 1.1.1.1  2001/11/09 17:05:09  theoddone33
- * Inital import
- *
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 28    8/23/97 7:15p Rlove
- * 
- * 27    8/19/97 12:57p Mgummelt
- * 
- * 26    8/19/97 12:22a Mgummelt
- * 
- * 25    8/17/97 5:34p Mgummelt
- * 
- * 24    8/08/97 6:21p Mgummelt
- * 
- * 23    7/18/97 11:05a Mgummelt
- * 
- * 22    7/17/97 6:53p Mgummelt
- * 
- * 21    7/15/97 2:20p Mgummelt
- * 
- * 20    7/07/97 11:46a Mgummelt
- * 
- * 19    6/18/97 4:00p Mgummelt
- * 
- * 18    6/14/97 10:56a Rlove
- * 
- * 17    5/23/97 11:51p Mgummelt
- * 
- * 16    5/14/97 3:36p Rjohnson
- * Inital stats implementation
- * 
- * 15    5/08/97 9:38p Bgokey
- * 
- * 14    4/26/97 6:23p Mgummelt
- * 
- * 13    4/17/97 1:45p Mgummelt
- * 
- * 12    4/16/96 11:52p Mgummelt
- * 
- * 11    4/16/97 1:49p Mgummelt
- * 
- * 10    4/16/97 1:38p Mgummelt
- * 
- * 9     4/13/96 3:30p Mgummelt
- * 
- * 8     4/12/97 3:20p Rlove
- * Fixed problem with assassin grenade model.
- * 
- * 7     4/12/96 9:01a Mgummelt
- * 
- * 6     4/11/96 1:04p Mgummelt
- * 
- * 5     4/11/97 12:32a Mgummelt
- * 
- * 4     3/29/97 12:17p Rlove
- * Stopped him for screen shots
- * 
- * 3     1/22/97 10:35a Rlove
- * Changed paladin blocking
- * 
- * 2     12/31/96 9:22a Rlove
- * Added the Paladin player character
- * 
- * 1     12/30/96 4:57p Rlove
- */
+

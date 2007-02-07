@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/stats.hc,v 1.2 2005-02-23 08:15:33 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/stats.hc,v 1.3 2007-02-07 16:57:10 sezero Exp $
  */
 
 // ExperienceValues for each level indicate the minimum at which
@@ -527,67 +527,3 @@ float pos;
 		loser.flags(-)FL_SPECIAL_ABILITY2;
 }
 
-
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2004/11/29 11:40:44  sezero
- * Initial import
- *
- * 
- * 24    9/10/97 11:40p Mgummelt
- * 
- * 23    9/10/97 7:51p Mgummelt
- * 
- * 22    9/10/97 7:08p Mgummelt
- * 
- * 21    9/03/97 7:49p Mgummelt
- * 
- * 20    8/15/97 3:59p Rlove
- * 
- * 19    8/11/97 4:35p Rlove
- * 
- * 18    8/09/97 10:51a Rlove
- * 
- * 17    7/26/97 8:39a Mgummelt
- * 
- * 16    7/25/97 11:45a Mgummelt
- * 
- * 15    7/25/97 11:12a Mgummelt
- * 
- * 14    7/25/97 11:10a Mgummelt
- * 
- * 13    7/14/97 2:29p Rlove
- * 
- * 12    7/08/97 5:17p Rlove
- * 
- * 11    7/03/97 10:07a Rlove
- * 
- * 10    6/30/97 3:33p Rlove
- * 
- * 9     6/30/97 9:41a Rlove
- * 
- * 8     6/20/97 9:25a Rlove
- * 
- * 7     6/20/97 9:12a Rlove
- * New mana system added
- * 
- * 6     6/06/97 2:52p Rlove
- * Artifact of Super Health now functions properly
- * 
- * 5     5/15/97 1:15p Rjohnson
- * Added the appriate experience tables and hitpoint advancement for level
- * gains
- * 
- * 4     5/15/97 11:43a Rjohnson
- * Stats updates
- * 
- * 3     5/14/97 4:12p Rjohnson
- * Minor fix from C-side conversion
- * 
- * 2     5/14/97 3:36p Rjohnson
- * Inital stats implementation
- * 
- * 1     5/13/97 2:23p Rjohnson
- * Initial Version
- */

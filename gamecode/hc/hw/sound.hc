@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/sound.hc,v 1.1.1.1 2004-11-29 11:29:34 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/sound.hc,v 1.2 2007-02-07 16:58:05 sezero Exp $
  */
 
 void sound_maker_run(void)
@@ -211,42 +211,3 @@ void sound_ambient (void)
 
 }
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:05:12  theoddone33
- * Inital import
- *
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 15    8/27/97 5:12p Jweier
- * 
- * 14    8/26/97 6:27a Rlove
- * 
- * 13    8/25/97 2:43p Rlove
- * 
- * 12    8/21/97 5:21a Rlove
- * 
- * 11    7/31/97 3:39p Rlove
- * 
- * 10    7/31/97 3:24p Rlove
- * 
- * 9     7/31/97 2:04p Rlove
- * 
- * 8     7/28/97 2:01p Rlove
- * 
- * 7     7/15/97 9:00a Rlove
- * 
- * 6     6/30/97 11:29a Rlove
- * 
- * 5     6/16/97 8:53a Rlove
- * 
- * 4     6/16/97 8:52a Rlove
- * Added windmill sound
- * 
- * 3     11/18/96 3:30p Rlove
- * changed variable sounds to soundtype
- * 
- * 2     11/11/96 1:19p Rlove
- * Added Source Safe stuff
- */

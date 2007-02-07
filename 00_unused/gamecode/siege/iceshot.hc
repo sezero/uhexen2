@@ -231,27 +231,4 @@ void FireBlizzard (void)
 	setsize(newmis,'0 0 0','0 0 0');
 	setorigin(newmis,self.origin+v_forward*16+'0 0 16');
 }
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1  2005/01/26 17:26:11  sezero
- * Raven's original Siege hcode.
- *
- * 
- * 4     5/25/98 1:38p Mgummelt
- * 
- * 3     4/30/98 6:01p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 6     4/18/97 8:22p Mgummelt
- * 
- * 5     4/18/97 12:44p Mgummelt
- * 
- * 4     4/17/97 9:12p Mgummelt
- * 
- * 3     4/17/97 2:50p Mgummelt
- * 
- * 2     4/14/96 3:54p Mgummelt
- * 
- * 1     4/14/96 3:53p Mgummelt
- */
+

@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_surf.c,v 1.7 2006-10-22 09:46:49 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_surf.c,v 1.8 2007-02-07 17:01:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -684,37 +684,3 @@ void R_GenTile (msurface_t *psurf, void *pdest)
 	}
 }
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.6  2006/04/05 06:05:42  sezero
- * continue making static functions and vars static. whitespace and coding
- * style cleanup. part 50: software renderer: r_surf.c
- *
- * Revision 1.5  2005/07/16 23:23:52  sezero
- * killed fastfabs, not worthy of keeping anymore
- *
- * Revision 1.4  2005/05/19 16:41:50  sezero
- * removed all unused (never used) non-RJNET and non-QUAKE2RJ code
- *
- * Revision 1.3  2004/12/18 13:48:52  sezero
- * Clean-up and kill warnings 3:
- * Kill " suggest parentheses around XXX " warnings
- *
- * Revision 1.2  2004/12/12 14:14:42  sezero
- * style changes to our liking
- *
- * Revision 1.1.1.1  2004/11/28 00:07:02  sezero
- * Initial import of AoT 1.2.0 code
- *
- * 2     2/04/98 12:53a Jmonroe
- * added fastfabs
- * 
- * 6     5/23/97 3:04p Rjohnson
- * Included some more quake2 things
- * 
- * 5     4/24/97 11:21p Rjohnson
- * You can now set the overall light level of a bmodel
- * 
- * 4     2/18/97 3:43p Rjohnson
- * Added Headers
- */

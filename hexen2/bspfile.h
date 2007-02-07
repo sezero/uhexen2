@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/bspfile.h,v 1.3 2006-09-24 17:28:41 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/bspfile.h,v 1.4 2007-02-07 17:01:27 sezero Exp $
  */
 
 
@@ -316,21 +316,3 @@ epair_t *ParseEpair (void);
 
 #endif	/* __BSPFILE_H */
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.2  2005/10/25 20:08:40  sezero
- * coding style and whitespace cleanup.
- *
- * Revision 1.1.1.1  2004/11/28 00:00:35  sezero
- * Initial import of AoT 1.2.0 code
- *
- * Revision 1.1.1.1  2001/11/09 17:03:55  theoddone33
- * Inital import
- *
- * 
- * 4     2/19/97 11:17a Rjohnson
- * Id Updates
- * 
- * 3     2/10/97 2:59p Rjohnson
- * Changed max_map_hulls to 8 and added a 5th hull
- */

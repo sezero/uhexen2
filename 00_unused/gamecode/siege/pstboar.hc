@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/pstboar.hc,v 1.1.1.1 2005-07-29 20:43:42 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/pstboar.hc,v 1.2 2007-02-07 16:56:51 sezero Exp $
  */
 
 /*
@@ -867,88 +867,3 @@ void rider_pestilence(void)
 	thinktime self : 1;
 }
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1  2005/01/26 17:26:12  sezero
- * Raven's original Siege hcode.
- *
- * 
- * 3     5/25/98 1:39p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 34    9/11/97 2:09p Mgummelt
- * 
- * 33    9/03/97 3:42a Mgummelt
- * 
- * 32    9/03/97 2:50a Mgummelt
- * 
- * 31    9/03/97 2:46a Mgummelt
- * 
- * 30    9/03/97 12:26a Mgummelt
- * 
- * 29    9/02/97 2:55a Mgummelt
- * 
- * 28    9/02/97 1:31a Mgummelt
- * 
- * 27    9/01/97 7:09a Mgummelt
- * 
- * 26    9/01/97 12:11a Rlove
- * 
- * 25    8/31/97 11:56p Rlove
- * 
- * 24    8/31/97 9:15p Mgummelt
- * 
- * 22    8/31/97 4:21p Mgummelt
- * 
- * 21    8/31/97 2:36p Mgummelt
- * 
- * 20    8/31/97 11:38a Mgummelt
- * To which I say- shove where the sun don't shine- sideways!  Yeah!
- * How's THAT for paper cut!!!!
- * 
- * 19    8/31/97 8:52a Mgummelt
- * 
- * 18    8/30/97 6:58p Mgummelt
- * 
- * 17    8/29/97 11:15p Mgummelt
- * 
- * 16    8/29/97 4:17p Mgummelt
- * Long night
- * 
- * 15    8/29/97 12:59a Mgummelt
- * 
- * 14    8/28/97 5:41p Mgummelt
- * 
- * 13    8/28/97 3:34p Rjohnson
- * Increased health
- * 
- * 12    8/28/97 2:02a Mgummelt
- * 
- * 11    8/26/97 1:37p Mgummelt
- * 
- * 10    8/25/97 4:29p Mgummelt
- * 
- * 9     8/24/97 12:21a Mgummelt
- * 
- * 8     8/23/97 8:24p Mgummelt
- * 
- * 7     8/23/97 10:05a Rlove
- * 
- * 6     8/23/97 9:41a Rlove
- * 
- * 5     8/08/97 4:28p Rjohnson
- * Update for size
- * 
- * 4     8/06/97 4:31p Rjohnson
- * Update for initialization
- * 
- * 3     8/06/97 4:28p Rlove
- * Not done with hive yet...
- * 
- * 2     7/25/97 5:35p Rjohnson
- * Updates
- * 
- * 1     6/23/97 3:15p Rjohnson
- * Initial Version
- */

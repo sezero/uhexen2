@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/corpse.hc,v 1.1 2005-01-26 17:26:10 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/corpse.hc,v 1.2 2007-02-07 17:00:36 sezero Exp $
  */
 
 
@@ -104,70 +104,3 @@ vector newmaxs;
 	}
 };
 
-/*
- * $Log: not supported by cvs2svn $
- * 
- * 5     6/01/98 2:49a Mgummelt
- * 
- * 4     5/29/98 4:37p Mgummelt
- * 
- * 3     5/25/98 1:38p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 35    9/11/97 6:56p Mgummelt
- * 
- * 34    9/11/97 3:41p Mgummelt
- * 
- * 33    9/11/97 12:02p Mgummelt
- * 
- * 32    8/29/97 11:14p Mgummelt
- * 
- * 31    8/26/97 2:40p Mgummelt
- * 
- * 30    8/14/97 10:27p Bgokey
- * 
- * 29    8/14/97 1:27p Mgummelt
- * 
- * 28    8/14/97 1:17p Mgummelt
- * 
- * 27    8/13/97 5:34p Mgummelt
- * 
- * 26    8/13/97 1:28a Mgummelt
- * 
- * 25    8/12/97 6:10p Mgummelt
- * 
- * 24    8/06/97 10:18p Mgummelt
- * 
- * 23    8/06/97 11:10a Rlove
- * 
- * 22    7/22/97 4:13p Rlove
- * Putting final touches on skull wizard.
- * 
- * 21    7/01/97 7:09a Rlove
- * Corpses give no experience points.
- * 
- * 20    6/30/97 5:38p Mgummelt
- * 
- * 19    6/25/97 9:23p Mgummelt
- * 
- * 18    6/19/97 5:15p Mgummelt
- * 
- * 17    6/18/97 6:09p Mgummelt
- * 
- * 16    6/18/97 4:00p Mgummelt
- * 
- * 15    5/30/97 10:04p Mgummelt
- * 
- * 14    5/28/97 10:45a Rlove
- * Moved sprite effects to client side - smoke, explosions, and flashes.
- * 
- * 13    5/27/97 10:57a Rlove
- * Took out old Id sound files
- * 
- * 12    5/15/97 6:34p Rjohnson
- * Code cleanup
- * 
- * 11    5/13/97 2:26p Rlove
- * 
- */

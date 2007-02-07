@@ -8,7 +8,7 @@
 	This version of model.c and model.h are based on a quake dedicated
 	server application, lhnqserver, by LordHavoc.
 
-	$Id: model.c,v 1.5 2007-02-06 12:23:48 sezero Exp $
+	$Id: model.c,v 1.6 2007-02-07 17:03:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1037,29 +1037,4 @@ static void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 	
 	mod->type = mod_sprite;
 }
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.4  2006/10/23 16:27:16  sezero
- * disabled Q_malloc usage in h2ded: by experimentation, surfedges and
- * edges size mostly around 300 kb (in keep5 of the mission pack) and
- * even with 8 mb of heap memory the server still runs fine. therefore
- * no need for temporary stealing system memory.
- *
- * Revision 1.3  2006/10/20 20:32:31  sezero
- * various coding style clean-ups, part 1.
- *
- * Revision 1.2  2006/07/02 11:45:35  sezero
- * minor optimiziations to mathlib: added VectorNegate and VectorClear macros
- * which stops vec3_origin usage in relevant calculations. renamed the Length
- * macro to VectorLength for consistancy. updated the utilities' mathlib for
- * similar macro usage as in the engine.
- *
- * Revision 1.1  2006/06/25 12:57:06  sezero
- * added a hexen2 dedicated server which seems to work much better than
- * the client/server application running in dedicated mode. model loading
- * implementation taken from LordHavoc's old lhnqserver, as it seems better
- * than the one in hexenworld server.
- *
- */
 

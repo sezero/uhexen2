@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/newai.hc,v 1.1.1.1 2005-07-29 20:43:25 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/newai.hc,v 1.2 2007-02-07 16:56:47 sezero Exp $
  */
 
 void AI_Decision_Dead()
@@ -846,50 +846,3 @@ void AI_Land_Init ()
 	total_monsters += 1;
 }
 
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1  2005/01/26 17:26:12  sezero
- * Raven's original Siege hcode.
- *
- * 
- * 3     5/25/98 1:39p Mgummelt
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 14    5/07/97 3:40p Mgummelt
- * 
- * 13    5/07/97 11:12a Rjohnson
- * Added a new field to walkmove and movestep to allow for setting the
- * traceline info
- * 
- * 12    4/18/97 5:24p Mgummelt
- * 
- * 11    4/14/97 3:28p Rlove
- * A few changes to the mummy, he still needs tweaking but ...
- * 
- * 10    3/31/97 4:11p Rlove
- * New mummy ai
- * 
- * 9     3/31/97 6:38a Rlove
- * New mummy ai
- * 
- * 8     3/21/97 10:24a Rlove
- * Left in a few dprints
- * 
- * 7     3/21/97 9:38a Rlove
- * Created CHUNK.HC and MATH.HC, moved brush_die to chunk_death so others
- * can use it.
- * 
- * 6     3/20/97 12:31p Rlove
- * More updates to monster AI
- * 
- * 5     3/19/97 3:09p Rlove
- * Added CreateEntity and ScaleBoundingBox
- * 
- * 4     3/15/97 3:08p Rlove
- * Added COMA console command
- * 
- * 3     3/13/97 9:57a Rlove
- * Changed constant DAMAGE_AIM  to DAMAGE_YES and the old DAMAGE_YES to
- * DAMAGE_NO_GRENADE
-*/

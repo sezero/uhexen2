@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/torch.hc,v 1.1.1.1 2004-11-29 11:29:55 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/torch.hc,v 1.2 2007-02-07 16:58:07 sezero Exp $
  */
 /*
 ==========================================================
@@ -388,96 +388,4 @@ void light_palace_torch (void)
 	Init_Torch();
 	makestatic (self.movechain);
 }
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  2001/11/09 17:05:13  theoddone33
- * Inital import
- *
- * 
- * 6     4/20/98 2:03p Rjohnson
- * Big update
- * 
- * 5     4/06/98 6:41p Rjohnson
- * Minor fixes
- * 
- * 4     3/29/98 10:39p Rmidthun
- * Added MP palace_light
- * 
- * 3     3/29/98 10:19p Rmidthun
- * Added burner and support for burning hurt triggers on flames
- * 
- * 2     3/29/98 10:09p Rmidthun
- * Adding in MP lantern
- * 
- * 1     2/04/98 1:59p Rjohnson
- * 
- * 29    9/22/97 5:36p Rjohnson
- * Precache update
- * 
- * 28    9/02/97 3:06p Mgummelt
- * Put back in abslight for non-switchable torches
- * 
- * 27    9/02/97 2:55a Mgummelt
- * 
- * 26    8/21/97 5:10p Rjohnson
- * Change for ablight
- * 
- * 25    8/21/97 3:19p Rjohnson
- * Abslight change
- * 
- * 24    8/20/97 5:18p Rjohnson
- * Abslight for everything
- * 
- * 23    8/16/97 5:46p Mgummelt
- * 
- * 22    8/15/97 2:50p Rjohnson
- * Fix for precache
- * 
- * 21    8/13/97 5:53p Mgummelt
- * 
- * 20    7/19/97 9:56p Mgummelt
- * 
- * 19    7/14/97 4:46p Mgummelt
- * 
- * 18    6/18/97 4:00p Mgummelt
- * 
- * 17    6/16/97 8:05a Rlove
- * 
- * 16    6/15/97 5:10p Mgummelt
- * 
- * 15    6/06/97 11:35a Mgummelt
- * 
- * 14    6/05/97 8:51p Mgummelt
- * 
- * 12    5/27/97 7:58a Rlove
- * New thingtypes of GreyStone,BrownStone, and Cloth.
- * 
- * 11    5/21/97 1:35p Rlove
- * Changed roman torch back to old blocking
- * 
- * 10    5/12/97 9:02a Rlove
- * Changed blocking on roman torch
- * 
- * 8     4/01/97 5:03p Aleggett
- * Added flickering ability
- * 
- * 7     3/31/97 3:57p Aleggett
- * Improved breaking and toggling code
- * 
- * 6     3/31/97 9:07a Aleggett
- * 
- * 5     3/29/97 10:58a Aleggett
- * Nice-looking switchable torches, and nifty comments!
- * 
- * 4     3/24/97 9:51a Rlove
- * Changing blocking of meso torch
- * 
- * 3     3/20/97 4:54p Aleggett
- * Made switchable torches
- * 
- * 2     3/13/97 9:57a Rlove
- * Changed constant DAMAGE_AIM  to DAMAGE_YES and the old DAMAGE_YES to
- * DAMAGE_YES
- * 
- * 1     3/06/97 1:01p Aleggett
- */
+
