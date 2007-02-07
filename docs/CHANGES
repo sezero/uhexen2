@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-02-07 (CVS):
+    * converted 20 or so remaining files to have unix line endings.
+    * stripped off the CVS log entries at the ends of hundreds of files.
+      my cvs tarball is around 500 kb smaller now...
+    * added new lines at the ends of 30 or so files which had none.
+    * re-diff'ed some of the extra patches.
+
 2007-02-06 (CVS):
     * started an attempt at improving const-correctness all over the
       uhexen2 tree. this was driven by a feature request by Markus
