@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/portals/paladin.hc,v 1.1.1.1 2005-07-29 20:45:23 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/portals/paladin.hc,v 1.2 2007-02-07 16:21:26 sezero Exp $
  */
 
 /*
@@ -433,6 +433,9 @@ void paladin_dead(void)
 */
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2005/07/29 20:45:23  sezero
+ * unused sources - initial import
+ *
  * Revision 1.1.1.1  2004/11/29 11:34:12  sezero
  * Initial import
  *

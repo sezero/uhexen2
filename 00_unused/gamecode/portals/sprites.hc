@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/portals/sprites.hc,v 1.1.1.1 2005-07-29 20:45:29 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/portals/sprites.hc,v 1.2 2007-02-07 16:21:26 sezero Exp $
  */
 
 // these are the only sprites still in the game...
@@ -193,6 +193,9 @@ void sprite_talking_door(void)
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2005/07/29 20:45:29  sezero
+ * unused sources - initial import
+ *
  * Revision 1.1.1.1  2004/11/29 11:34:59  sezero
  * Initial import
  *

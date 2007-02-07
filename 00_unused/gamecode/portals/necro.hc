@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/portals/necro.hc,v 1.1.1.1 2005-07-29 20:45:13 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/portals/necro.hc,v 1.2 2007-02-07 16:21:24 sezero Exp $
  */
 
 /*

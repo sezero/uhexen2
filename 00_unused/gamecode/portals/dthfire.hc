@@ -1,6 +1,6 @@
 void trap_death_fireball_use ();
 void trap_death_fireball_wait ();
-	
+
 void death_fireball_touch ()
 {
 	local float damg;
@@ -85,4 +85,4 @@ void () trap_death_fireball =
 	self.use = trap_death_fireball_wait;
 };
 
- 
+

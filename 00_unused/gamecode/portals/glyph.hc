@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/portals/glyph.hc,v 1.1.1.1 2005-07-29 20:45:10 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/portals/glyph.hc,v 1.2 2007-02-07 16:21:23 sezero Exp $
  */
 
 void (float explodetype) BecomeExplosion ;
@@ -68,6 +68,9 @@ void () Use_Glyph =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2005/07/29 20:45:10  sezero
+ * unused sources - initial import
+ *
  * Revision 1.1.1.1  2004/11/29 11:32:12  sezero
  * Initial import
  *
