@@ -47,3 +47,4 @@ void Supes (void)
 	thinktime newmis : 0;
 	setorigin(newmis,self.origin+self.proj_ofs);
 }
+

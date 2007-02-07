@@ -63,3 +63,4 @@ void() MakeForceField=
 	self.shield.think=ForceFieldThink;
 	self.shield.nextthink=time;
 };
+

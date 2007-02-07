@@ -124,3 +124,4 @@ void (float richter) MonsterQuake =
 	sound(newmis,CHAN_AUTO,"weapons/explode.wav",1,ATTN_NORM);
 	sound(newmis,CHAN_AUTO,"fx/quake.wav",1,ATTN_NORM);
 };
+

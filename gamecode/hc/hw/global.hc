@@ -3,7 +3,7 @@
 //**
 //** global.hc
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/global.hc,v 1.1.1.1 2004-11-29 11:26:31 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/global.hc,v 1.2 2007-02-07 16:24:57 sezero Exp $
 //**
 //**************************************************************************
 
@@ -172,3 +172,4 @@ string g_keyname;
 string g_keymdl;
 float gamestarted;
 float newsiege;
+

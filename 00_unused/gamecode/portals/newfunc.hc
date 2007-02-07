@@ -32,3 +32,4 @@ float (float startframe, float endframe) AWF =
 	else 
 		return WF_NORMAL_ADVANCE;
 };
+

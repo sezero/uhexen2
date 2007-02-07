@@ -3,7 +3,7 @@
 //**
 //** global.hc
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/global.hc,v 1.1 2005-01-26 17:26:11 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/global.hc,v 1.2 2007-02-07 16:25:01 sezero Exp $
 //**
 //**************************************************************************
 
@@ -172,3 +172,4 @@ string g_keyname;
 string g_keymdl;
 float gamestarted;
 float newsiege;
+

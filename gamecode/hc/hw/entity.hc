@@ -3,7 +3,7 @@
 //**
 //** entity.hc
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/entity.hc,v 1.2 2005-01-26 16:54:52 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/entity.hc,v 1.3 2007-02-07 16:24:57 sezero Exp $
 //**
 //**************************************************************************
 
@@ -762,3 +762,4 @@ entity	sight_entity;	//So monsters wake up other monsters
 .string close_target;
 //map cycling
 .string next_map;
+

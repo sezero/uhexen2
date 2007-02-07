@@ -340,3 +340,4 @@ float GetImpactType (entity impacted)
 
 	return (hittype);
 }
+

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/sheep.hc,v 1.1.1.1 2004-11-29 11:35:31 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/sheep.hc,v 1.2 2007-02-07 16:24:59 sezero Exp $
  */
 
 /*
@@ -795,3 +795,4 @@ self=thingy;
 
 self=oself;
 }
+

@@ -287,3 +287,4 @@ void bloodrain_deselect (void)
 	if(self.wfs==WF_CYCLE_WRAPPED)
 		W_SetCurrentAmmo();
 }
+

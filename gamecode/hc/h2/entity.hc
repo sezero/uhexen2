@@ -3,7 +3,7 @@
 //**
 //** entity.hc
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/entity.hc,v 1.1.1.1 2004-11-29 11:38:02 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/entity.hc,v 1.2 2007-02-07 16:24:55 sezero Exp $
 //**
 //**************************************************************************
 
@@ -718,3 +718,4 @@ entity	sight_entity;	//So monsters wake up other monsters
 .float torncount;
 .entity path_last;
 .float dflags;
+

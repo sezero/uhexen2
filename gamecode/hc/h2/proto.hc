@@ -3,7 +3,7 @@
 //**
 //** proto.hc
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/proto.hc,v 1.1.1.1 2004-11-29 11:39:59 sezero Exp $
+//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/proto.hc,v 1.2 2007-02-07 16:24:55 sezero Exp $
 //**
 //**************************************************************************
 
@@ -69,3 +69,4 @@ vector aim_adjust (entity targ);
 void()respawn;
 void()GibPlayer;
 void stats_NewClass(entity e);
+
