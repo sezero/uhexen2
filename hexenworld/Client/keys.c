@@ -72,14 +72,12 @@ static keyname_t keynames[] =
 	{"END", K_END},
 
 	{"MOUSE1", K_MOUSE1},
-#ifdef	SWAP_MOUSE23
-// hack to avoid mouse2/3 fight in in_sdl.c
-	{"MOUSE2", K_MOUSE3},
-	{"MOUSE3", K_MOUSE2},
-#else
 	{"MOUSE2", K_MOUSE2},
 	{"MOUSE3", K_MOUSE3},
-#endif
+	{"MWHEELUP", K_MWHEELUP},
+	{"MWHEELDOWN", K_MWHEELDOWN},
+	{"MOUSE4", K_MOUSE4},
+	{"MOUSE5", K_MOUSE5},
 
 	{"JOY1", K_JOY1},
 	{"JOY2", K_JOY2},
@@ -121,14 +119,9 @@ static keyname_t keynames[] =
 
 	{"PAUSE", K_PAUSE},
 
-	{"MWHEELUP", K_MWHEELUP},
-	{"MWHEELDOWN", K_MWHEELDOWN},
-	{"MOUSE4", K_MOUSE4},
-	{"MOUSE5", K_MOUSE5},
-
 	{"SEMICOLON", ';'},	// because a raw semicolon seperates commands
 
-	{NULL,0}
+	{NULL,		0}
 };
 
 /*

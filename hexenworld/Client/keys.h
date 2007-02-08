@@ -16,7 +16,7 @@
 #define	K_UPARROW		128
 #define	K_DOWNARROW		129
 #define	K_LEFTARROW		130
-#define	K_RIGHTARROW	131
+#define	K_RIGHTARROW		131
 
 #define	K_ALT			132
 #define	K_CTRL			133
@@ -46,64 +46,57 @@
 // mouse buttons generate virtual keys
 //
 #define	K_MOUSE1		200
-#define	K_MOUSE2		201
-#define	K_MOUSE3		202
-
-// hack to avoid mouse2/3 fight in in_sdl.c
-#ifdef PLATFORM_UNIX
-#define SWAP_MOUSE23
-#endif
-
+#define	K_MOUSE2		201	/* right mouse button			*/
+#define	K_MOUSE3		202	/* middle mouse button			*/
+#define	K_MWHEELUP		203	/* wheel-up as a virtual button		*/
+#define	K_MWHEELDOWN		204	/* wheel-down as a virtual button	*/
+#define	K_MOUSE4		205	/* thumb buttons			*/
+#define	K_MOUSE5		206	/* thumb buttons			*/
 
 //
 // joystick buttons
 //
-#define	K_JOY1			203
-#define	K_JOY2			204
-#define	K_JOY3			205
-#define	K_JOY4			206
+#define	K_JOY1			207
+#define	K_JOY2			208
+#define	K_JOY3			209
+#define	K_JOY4			210
 
 //
 // aux keys are for multi-buttoned joysticks to generate so they can use
 // the normal binding process
 //
-#define	K_AUX1			207
-#define	K_AUX2			208
-#define	K_AUX3			209
-#define	K_AUX4			210
-#define	K_AUX5			211
-#define	K_AUX6			212
-#define	K_AUX7			213
-#define	K_AUX8			214
-#define	K_AUX9			215
-#define	K_AUX10			216
-#define	K_AUX11			217
-#define	K_AUX12			218
-#define	K_AUX13			219
-#define	K_AUX14			220
-#define	K_AUX15			221
-#define	K_AUX16			222
-#define	K_AUX17			223
-#define	K_AUX18			224
-#define	K_AUX19			225
-#define	K_AUX20			226
-#define	K_AUX21			227
-#define	K_AUX22			228
-#define	K_AUX23			229
-#define	K_AUX24			230
-#define	K_AUX25			231
-#define	K_AUX26			232
-#define	K_AUX27			233
-#define	K_AUX28			234
-#define	K_AUX29			235
-#define	K_AUX30			236
-#define	K_AUX31			237
-#define	K_AUX32			238
-
-#define K_MWHEELUP		239
-#define K_MWHEELDOWN		240
-#define K_MOUSE4		241
-#define K_MOUSE5		242
+#define	K_AUX1			211
+#define	K_AUX2			212
+#define	K_AUX3			213
+#define	K_AUX4			214
+#define	K_AUX5			215
+#define	K_AUX6			216
+#define	K_AUX7			217
+#define	K_AUX8			218
+#define	K_AUX9			219
+#define	K_AUX10			220
+#define	K_AUX11			221
+#define	K_AUX12			222
+#define	K_AUX13			223
+#define	K_AUX14			224
+#define	K_AUX15			225
+#define	K_AUX16			226
+#define	K_AUX17			227
+#define	K_AUX18			228
+#define	K_AUX19			229
+#define	K_AUX20			230
+#define	K_AUX21			231
+#define	K_AUX22			232
+#define	K_AUX23			233
+#define	K_AUX24			234
+#define	K_AUX25			235
+#define	K_AUX26			236
+#define	K_AUX27			237
+#define	K_AUX28			238
+#define	K_AUX29			239
+#define	K_AUX30			240
+#define	K_AUX31			241
+#define	K_AUX32			242
 
 
 #define	MAXCMDLINE	256
