@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-02-08 (CVS):
+    * keys.c, keys.h, in_sdl.c: updates to SDL input driver: removed the
+      remnants of win32 joystick code which was in commented out form.
+      commented out the joystick cvars until we add SDL jostick support.
+      removed the mouse_buttons variable.  removed the SWAP_MOUSE23
+      definition and added a lookup table (buttonremap) for converting SDL
+      mouse button enums to quake enums and used it in both IN_SendKeyEvents
+      and IN_MouseEvent procedures which solves the mouse2/mouse3 problem
+      without hacks for good. tidied up the key definitions in keys.h.
+      other tiny clean-ups here and there.
+
 2007-02-07 (CVS):
     * converted 20 or so remaining files to have unix line endings.
     * stripped off the CVS log entries at the ends of hundreds of files.
