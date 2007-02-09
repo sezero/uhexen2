@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.36 2007-02-09 13:49:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.37 2007-02-09 14:08:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -408,14 +408,12 @@ static void CL_ParseServerInfo (void)
 
 	R_NewMap ();
 
-/*
 	if (!sv.active)
 	{
 		PR_LoadStrings();
 		if (gameflags & GAME_PORTALS)
 			PR_LoadInfoStrings();
 	}
-*/
 	PR_LoadPuzzleStrings();
 
 	Hunk_Check ();		// make sure nothing is hurt

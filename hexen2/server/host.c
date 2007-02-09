@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.9 2007-02-07 17:03:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.10 2007-02-09 14:08:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -598,10 +598,6 @@ void Host_Init (quakeparms_t *parms)
 	Host_RemoveGIPFiles(NULL);
 	Host_InitLocal ();
 	PR_Init ();
-	PR_LoadStrings();
-	// mission pack, objectives strings
-	if (gameflags & GAME_PORTALS)
-		PR_LoadInfoStrings();
 	Mod_Init ();
 	NET_Init ();
 	SV_Init ();

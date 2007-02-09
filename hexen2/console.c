@@ -225,12 +225,8 @@ void Con_Init (void)
 	Cmd_AddCommand ("messagemode", Con_MessageMode_f);
 	Cmd_AddCommand ("messagemode2", Con_MessageMode2_f);
 	Cmd_AddCommand ("clear", Con_Clear_f);
-	con_initialized = true;
 
-	PR_LoadStrings();
-// mission pack, objectives strings
-	if (gameflags & GAME_PORTALS)
-		PR_LoadInfoStrings();
+	con_initialized = true;
 }
 
 
