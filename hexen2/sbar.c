@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.27 2006-10-21 18:21:27 sezero Exp $
+	$Id: sbar.c,v 1.28 2007-02-09 13:19:46 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1001,13 +1001,15 @@ static void FindName(char *which, char *name)
 	char	test[40];
 
 	strcpy(name, "Unknown");
+
+	// Format of puzzles.txt :
+	// Line #1 : <number of lines excluding this one>
+	// Line #2+: <piece short name><one space><piece full name>
 	j = atol(puzzle_strings);
-	pos = strchr(puzzle_strings,13);
+	pos = strchr(puzzle_strings, 10);	// find first '\n'
 	if (!pos)
 		return;
-	if ((*pos) == 10 || (*pos) == 13)
-		pos++;
-	if ((*pos) == 10 || (*pos) == 13)
+	while ((*pos) == 10 || (*pos) == 13)	// skip all '\n' and '\r'
 		pos++;
 
 	for ( ; j; j--)
@@ -1023,7 +1025,10 @@ static void FindName(char *which, char *name)
 		{
 			pos = p2;
 			pos++;
-			p2 = strchr(pos,13);	//look for newline after text
+			// look for newline after text
+			p2 = strchr(pos, 13);
+			if (!p2)
+				p2 = strchr(pos, 10);
 			if (p2)
 			{
 				strncpy(name,pos,p2-pos);
@@ -1032,12 +1037,10 @@ static void FindName(char *which, char *name)
 			}
 			return;
 		}
-		pos = strchr(pos,13);
+		pos = strchr(pos, 10);	// find the next '\n'
 		if (!pos)
 			return;
-		if ((*pos) == 10 || (*pos) == 13)
-			pos++;
-		if ((*pos) == 10 || (*pos) == 13)
+		while ((*pos) == 10 || (*pos) == 13)
 			pos++;
 	}
 }
