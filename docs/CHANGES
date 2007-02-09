@@ -3,6 +3,39 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-02-09 (CVS):
+    * fixed parsing of puzzles.txt: Raven seems to have had an ability
+      towards doing all things in non-standart way and they did this
+      with only dos style line endings in mind (as they had done parsing
+      maplist.txt which I fixed in HoT-1.4.1). This used to result in
+      the names listed as Unknown in the puzzle pieces inventory display
+      (which you can access through a key bound to the +showdm command,
+      default: q). the original hexen2 is ok (because ith has puzzles.txt
+      in a pak file and it is of dos line endings), but the mission pack
+      was broken (because we distributed the mp-specific puzzles.txt with
+      unix line endings).it is now fixed.
+    * sbar.c: made FindName() to return immediately if puzzles.txt could
+      not be loaded.
+    * introduced PR_LoadPuzzleStrings() as a tiny client-only function:
+      puzzle_strings is a client-only thing, used in sbar.c only. made
+      small clean-ups/adjustments here and there.
+    * strings.txt and infolist.txt loading: hexen2 (with the 1.12 sources
+      that Raven released) is always loading strings.txt and infolist.txt
+      only once at init phase (from within Con_Init) and since it is below
+      host_hunklevel it stays resident. it seems to have loaded it during
+      every level load before, as can be seen from the commented out code
+      in cl_parse.c::CL_ParseServerInfo() and sv_main.c::SV_SpawnServer().
+      hexenworld actually does it this way, loading them at every level
+      start, and it is good thing because, in hexenworld, the gamedir can
+      change between level loads, so can those thext files.
+      I'm now switching to this earlier method: hexen2 will also load them
+      at every level start. test it as much as you can and in any way that
+      you can, and report any problems that you run into.
+    * defined GL_UNUSED_TEXTURE ((GLuint)-1) rather than 0xFFFFFFFFU
+    * introduced VA_NUM_BUFFS as a define for the number of static buffers
+      va() would cycle through.
+    * common.c: small whitespace / coding style clean-up
+
 2007-02-08 (CVS):
     * keys.c, keys.h, in_sdl.c: updates to SDL input driver: removed the
       remnants of win32 joystick code which was in commented out form.
