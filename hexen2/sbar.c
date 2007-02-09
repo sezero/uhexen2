@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.28 2007-02-09 13:19:46 sezero Exp $
+	$Id: sbar.c,v 1.29 2007-02-09 13:48:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1001,6 +1001,9 @@ static void FindName(char *which, char *name)
 	char	test[40];
 
 	strcpy(name, "Unknown");
+
+	if ( !puzzle_strings )
+		return;
 
 	// Format of puzzles.txt :
 	// Line #1 : <number of lines excluding this one>
