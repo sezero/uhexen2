@@ -2,7 +2,7 @@
 	common.c
 	misc functions used in client and server
 
-	$Id: common.c,v 1.89 2007-02-09 13:21:37 sezero Exp $
+	$Id: common.c,v 1.90 2007-02-09 13:24:02 sezero Exp $
 */
 
 #if defined(H2W) && defined(SERVERONLY)
@@ -1072,17 +1072,19 @@ void COM_Init (void)
 ============
 va
 
-does a varargs printf into a temp buffer.
-cycles between 4 different static buffers.
+does a varargs printf into a temp buffer. cycles between
+4 different static buffers. the number of buffers cycled
+is defined in VA_NUM_BUFFS.
 ============
 */
-#define VA_BUFFERLEN 1024
+#define	VA_NUM_BUFFS	4
+#define	VA_BUFFERLEN	1024
 
 static char *get_va_buffer(void)
 {
-	static char va_buffers[4][VA_BUFFERLEN];
+	static char va_buffers[VA_NUM_BUFFS][VA_BUFFERLEN];
 	static unsigned char	buf_idx;
-	return va_buffers[3 & ++buf_idx];
+	return va_buffers[(VA_NUM_BUFFS-1) & ++buf_idx];
 }
 
 char *va (const char *format, ...)

@@ -246,8 +246,9 @@ void COM_FileBase (const char *in, char *out);
 void COM_DefaultExtension (char *path, const char *extension, size_t len);
 
 char	*va(const char *format, ...) _FUNC_PRINTF(1);
-// does a varargs printf into a temp buffer
-// cycles between 4 different static buffers
+// does a varargs printf into a temp buffer. cycles between
+// 4 different static buffers. the number of buffers cycled
+// is defined in VA_NUM_BUFFS.
 
 int COM_StrCompare (const void *arg1, const void *arg2);
 // quick'n'dirty string comparison function for use with qsort
