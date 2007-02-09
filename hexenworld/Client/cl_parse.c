@@ -218,6 +218,7 @@ static void Model_NextDownload (void)
 	R_NewMap ();
 
 	PR_LoadStrings();
+	PR_LoadPuzzleStrings();
 
 	Hunk_Check ();		// make sure nothing is hurt
 

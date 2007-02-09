@@ -9,7 +9,9 @@ int		*pr_string_index = NULL;
 int		pr_string_count = 0;
 char		*pr_global_strings = NULL;
 
+#if !defined(SERVERONLY)
 char		*puzzle_strings;
+#endif	/* !SERVERONLY */
 
 #if !defined(H2W)
 // Objectives strings of the mission pack
@@ -17,7 +19,7 @@ char		*puzzle_strings;
 int		*pr_info_string_index = NULL;
 int		pr_info_string_count = 0;
 char		*pr_global_info_strings = NULL;
-#endif
+#endif	/* !H2W */
 
 
 void PR_LoadStrings (void)
@@ -75,17 +77,20 @@ void PR_LoadStrings (void)
 			if (pr_global_strings[i] == '^')
 				sprintf(pr_global_strings+i,"\n%s",pr_global_strings+i+1);
 		}
-#endif
+#endif	/* H2W */
 	}
 
 	pr_string_count = count;
 	Con_Printf("Read in %d string lines\n",count);
-
-#if defined(H2W)
-	// FIXME !!
-	puzzle_strings = (char *)COM_LoadHunkFile ("puzzles.txt");
-#endif
 }
+
+
+#if !defined(SERVERONLY)
+void PR_LoadPuzzleStrings (void)
+{
+	puzzle_strings = (char *)COM_LoadHunkFile ("puzzles.txt");
+}
+#endif	/* !SERVERONLY */
 
 
 #if !defined(H2W)
@@ -143,5 +148,5 @@ void PR_LoadInfoStrings (void)
 	pr_info_string_count = count;
 	Con_Printf("Read in %d objectives\n",count);
 }
-#endif
+#endif	/* !H2W */
 
