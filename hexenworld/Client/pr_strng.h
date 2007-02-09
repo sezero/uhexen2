@@ -17,14 +17,14 @@ extern	char	*puzzle_strings;
 void PR_LoadPuzzleStrings (void);
 #endif	/* !SERVERONLY */
 
-#if !defined(H2W)
+#if !defined(SERVERONLY) && !defined(H2W)
 // mission pack objectives strings
 extern	int	*pr_info_string_index;
 extern	char	*pr_global_info_strings;
 extern	int	pr_info_string_count;
 
 void PR_LoadInfoStrings (void);
-#endif	/* !H2W */
+#endif	/* !SERVERONLY && !H2W */
 
 #endif	/* __PR_STRINGS_H */
 

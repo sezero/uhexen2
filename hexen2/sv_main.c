@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.42 2007-02-09 14:08:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.43 2007-02-09 15:14:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1954,9 +1954,6 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	D_ShowLoadingSize();
 #endif
 	PR_LoadStrings();
-	// mission pack, objectives strings
-	if (gameflags & GAME_PORTALS)
-		PR_LoadInfoStrings();
 #if !defined(SERVERONLY)
 	current_loading_size += 5;
 	D_ShowLoadingSize();

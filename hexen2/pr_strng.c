@@ -13,13 +13,13 @@ char		*pr_global_strings = NULL;
 char		*puzzle_strings;
 #endif	/* !SERVERONLY */
 
-#if !defined(H2W)
+#if !defined(SERVERONLY) && !defined(H2W)
 // Objectives strings of the mission pack
 // Not used in HexenWorld
 int		*pr_info_string_index = NULL;
 int		pr_info_string_count = 0;
 char		*pr_global_info_strings = NULL;
-#endif	/* !H2W */
+#endif	/* !SERVERONLY && !H2W */
 
 
 void PR_LoadStrings (void)
@@ -93,7 +93,7 @@ void PR_LoadPuzzleStrings (void)
 #endif	/* !SERVERONLY */
 
 
-#if !defined(H2W)
+#if !defined(SERVERONLY) && !defined(H2W)
 // loads the mission pack objectives strings
 // not used in HexenWorld
 void PR_LoadInfoStrings (void)
@@ -148,5 +148,5 @@ void PR_LoadInfoStrings (void)
 	pr_info_string_count = count;
 	Con_Printf("Read in %d objectives\n",count);
 }
-#endif	/* !H2W */
+#endif	/* !SERVERONLY && !H2W */
 
