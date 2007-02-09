@@ -31,6 +31,8 @@ Development Progress	:
       I'm now switching to this earlier method: hexen2 will also load them
       at every level start. test it as much as you can and in any way that
       you can, and report any problems that you run into.
+    * info_string stuff (infolist.txt) is a client-only thing, too. it is
+      used in (gl_)screen.c only.
     * defined GL_UNUSED_TEXTURE ((GLuint)-1) rather than 0xFFFFFFFFU
     * introduced VA_NUM_BUFFS as a define for the number of static buffers
       va() would cycle through.
