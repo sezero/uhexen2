@@ -9,6 +9,8 @@ Development Progress	:
       puzzle_string_index and puzzle_string_count, similar to those
       of strings.txt and infolist.txt.  broken files (those who are
       not following the file format) are gracefully handled.
+    * limited puzzle names to 256.
+    * changed all unnecessary atol() calls to atoi().
 
 2007-02-09 (CVS):
     * fixed parsing of puzzles.txt: Raven seems to have had an ability
@@ -17,10 +19,10 @@ Development Progress	:
       maplist.txt which I fixed in HoT-1.4.1). This used to result in
       the names listed as Unknown in the puzzle pieces inventory display
       (which you can access through a key bound to the +showdm command,
-      default: q). the original hexen2 is ok (because ith has puzzles.txt
+      default: q). the original hexen2 is ok (because it has puzzles.txt
       in a pak file and it is of dos line endings), but the mission pack
       was broken (because we distributed the mp-specific puzzles.txt with
-      unix line endings).it is now fixed.
+      unix line endings).  it is now fixed.
     * sbar.c: made FindName() to return immediately if puzzles.txt could
       not be loaded.
     * introduced PR_LoadPuzzleStrings() as a tiny client-only function:
