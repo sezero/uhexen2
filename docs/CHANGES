@@ -11,6 +11,8 @@ Development Progress	:
       not following the file format) are gracefully handled.
     * limited puzzle names to 256.
     * changed all unnecessary atol() calls to atoi().
+    * started constifying the utilities sources. mostly the common
+      libraries this time. more to come.
 
 2007-02-09 (CVS):
     * fixed parsing of puzzles.txt: Raven seems to have had an ability
