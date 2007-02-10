@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.32 2007-02-07 17:01:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.33 2007-02-10 11:44:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -958,7 +958,7 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 		}
 		else if (Q_strcasecmp(keyname,"CD") == 0)
 		{
-			sv.cd_track = (byte)atol(com_token);
+			sv.cd_track = (byte)atoi(com_token);
 			continue;
 		}
 
@@ -1209,7 +1209,7 @@ void PR_LoadProgs (void)
 		// Line #1 : <number of lines excluding this one>
 		// Line #2+: <map name><one space><prog filename>
 		fgets(build, sizeof(build), FH);
-		j = atol(build);
+		j = atoi(build);
 		for (i = 0; i < j; i++)
 		{
 			k = 0;

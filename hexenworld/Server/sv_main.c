@@ -531,7 +531,7 @@ static void SVC_DirectConnect (void)
 	memset (newcl, 0, sizeof(client_t));
 
 	newcl->userid = userid;
-	newcl->portals = atol(Cmd_Argv(1));
+	newcl->portals = atoi(Cmd_Argv(1));
 
 	// works properly
 	if (!sv_highchars.value)

@@ -382,7 +382,7 @@ static void ParseBrush (void)
 		GetToken (false);
 		scale[1] = atof(token);
 		GetToken (false);
-		b->Light = atol(token);
+		b->Light = atoi(token);
 
 		// if the three points are all on a previous plane, it is a
 		// duplicate plane

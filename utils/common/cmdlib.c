@@ -2,7 +2,7 @@
 	cmdlib.c
 	functions common to all of the utilities
 
-	$Id: cmdlib.c,v 1.6 2006-10-22 14:54:53 sezero Exp $
+	$Id: cmdlib.c,v 1.7 2007-02-10 11:44:35 sezero Exp $
 */
 
 
@@ -695,7 +695,7 @@ int ParseNum (char *str)
 		return ParseHex (str+1);
 	if (str[0] == '0' && str[1] == 'x')
 		return ParseHex (str+2);
-	return atol (str);
+	return atoi (str);
 }
 
 

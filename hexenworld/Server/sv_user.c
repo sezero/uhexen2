@@ -583,7 +583,7 @@ static void SV_Say (qboolean team)
 
 	if (p[0] == '`' && (!host_client->spectator && sv_allowtaunts.value) )
 	{
-		speaknum = atol(&p[1]);
+		speaknum = atoi(&p[1]);
 		if (speaknum <= 0 || speaknum > 255-PRINT_SOUND)
 		{
 			speaknum = -1;
