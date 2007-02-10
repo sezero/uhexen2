@@ -108,8 +108,10 @@ void PR_LoadPuzzleStrings (void)
 	/* Doing an advanced parsing here in order to overcome any borked files	*/
 
 	j = atoi(puzzle_strings);	/* the intended number of lines		*/
-	if (j == 0)
+	if (j < 1)
 		return;
+	if (j > 256)
+		j = 256;
 
 	Start = puzzle_strings;
 	while (*Start && *Start != '\r' && *Start != '\n')
