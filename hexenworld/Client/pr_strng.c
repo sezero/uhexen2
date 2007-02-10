@@ -11,6 +11,8 @@ char		*pr_global_strings = NULL;
 
 #if !defined(SERVERONLY)
 char		*puzzle_strings;
+int		*puzzle_string_index;
+int		puzzle_string_count;
 #endif	/* !SERVERONLY */
 
 #if !defined(SERVERONLY) && !defined(H2W)
@@ -88,7 +90,132 @@ void PR_LoadStrings (void)
 #if !defined(SERVERONLY)
 void PR_LoadPuzzleStrings (void)
 {
+	int		i, j, count = 0;
+	char		*Start, *End, *Space;
+
+	puzzle_string_index = NULL;
+	puzzle_string_count = 0;
 	puzzle_strings = (char *)COM_LoadHunkFile ("puzzles.txt");
+	if ( !puzzle_strings )
+		return;
+
+	/*
+	 * Format of puzzles.txt:
+	 * Line #1 : <number of lines excluding this one>
+	 * Line #2+: <one-word short name><one space><full name in multiple words>
+	 */
+
+	/* Doing an advanced parsing here in order to overcome any borked files	*/
+
+	j = atoi(puzzle_strings);	/* the intended number of lines		*/
+	if (j == 0)
+		return;
+
+	Start = puzzle_strings;
+	while (*Start && *Start != '\r' && *Start != '\n')
+	{	/* find first newline, clear the start	*/
+		*Start = 0;
+		Start++;
+	}
+	if (!*Start)
+		return;
+
+	while ( *Start &&	/* skip and clear all leading space, '\n' and '\r' */
+		(*Start == '\n' || *Start == '\r' ||
+		 *Start == ' ' || *Start == '\t')  )
+	{
+		*Start = 0;
+		Start++;
+	}
+	if (!*Start)	/* EOF	*/
+		return;
+
+	while (count <= j)
+	{
+		i = 0;
+		End = Start;
+		while (*End && *End != '\r' && *End != '\n')
+			End++;
+		if (!*End)	/* EOF	*/
+			End = NULL;
+		else
+			*End = 0;
+
+		Space = Start;
+		while (*Space && *Space != ' ' && *Space != '\t')
+			Space++;
+		if (*Space)
+		{
+			/* is there a word after the whitespace? */
+			while (Space[i] == ' ' || Space[i] == '\t')
+			{
+				Space[i] = 0;
+				++i;
+			}
+			if (Space[i])	/* we have the full name */
+			{
+				count++;
+				/* clear the trailing space	*/
+				while (Space[i])
+					++i;
+				--i;
+				while (Space[i] == ' ' || Space[i] == '\t')
+				{
+					Space[i] = 0;
+					--i;
+				}
+				if (!End)
+					break;
+				goto forward;
+			}
+			else	/* .. no full name: we hit the *End = 0 mark we	*/
+			{	/* made or the EOF. clear until the next entry.	*/
+				if (!End)
+					break;
+				memset (Start, 0, End - Start);
+				goto forward;
+			}
+		}
+		else	/* no space in the line. clear until the next entry.	*/
+		{
+			if (!End)
+				break;
+			memset (Start, 0, End - Start);
+forward:
+			Start = ++End;
+			while ( *Start == '\r' || *Start == '\n' ||
+				*Start == ' ' || *Start == '\t' )
+			{
+				*Start = 0;
+				Start++;
+			}
+			if (*Start == 0)	/* EOF	*/
+				break;
+		}
+	}
+
+	if (!count)
+		return;
+
+	puzzle_string_count = count * 2;
+	puzzle_string_index = (int *)Hunk_AllocName (puzzle_string_count*4, "puzzle_string_index");
+
+	i = 0;
+	Start = puzzle_strings;
+	while (i < puzzle_string_count)
+	{
+		while (*Start == 0)
+			Start++;
+
+		puzzle_string_index[i] = Start - puzzle_strings;
+
+		while (*Start != 0)
+			Start++;
+
+		++i;
+	}
+
+	Con_Printf("Read in %d puzzle piece names\n",count);
 }
 #endif	/* !SERVERONLY */
 

@@ -13,6 +13,8 @@ void PR_LoadStrings (void);
 
 #if !defined(SERVERONLY)
 extern	char	*puzzle_strings;
+extern	int	*puzzle_string_index;
+extern	int	puzzle_string_count;
 
 void PR_LoadPuzzleStrings (void);
 #endif	/* !SERVERONLY */

@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.29 2007-02-09 13:48:18 sezero Exp $
+	$Id: sbar.c,v 1.30 2007-02-10 09:02:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -997,54 +997,20 @@ void Sbar_DeathmatchOverlay(void)
 static void FindName(char *which, char *name)
 {
 	int		j;
-	char	*pos, *p2;
-	char	test[40];
 
 	strcpy(name, "Unknown");
 
 	if ( !puzzle_strings )
 		return;
 
-	// Format of puzzles.txt :
-	// Line #1 : <number of lines excluding this one>
-	// Line #2+: <piece short name><one space><piece full name>
-	j = atol(puzzle_strings);
-	pos = strchr(puzzle_strings, 10);	// find first '\n'
-	if (!pos)
-		return;
-	while ((*pos) == 10 || (*pos) == 13)	// skip all '\n' and '\r'
-		pos++;
-
-	for ( ; j; j--)
+	for (j = 0; j < puzzle_string_count; j += 2)
 	{
-		p2 = strchr(pos,' ');
-		if (!p2)
-			return;
-
-		strncpy(test,pos,p2-pos);
-		test[p2-pos] = 0;
-
-		if (Q_strcasecmp(which,test) == 0)
+		if (Q_strcasecmp(which, puzzle_strings+puzzle_string_index[j]) == 0)
 		{
-			pos = p2;
-			pos++;
-			// look for newline after text
-			p2 = strchr(pos, 13);
-			if (!p2)
-				p2 = strchr(pos, 10);
-			if (p2)
-			{
-				strncpy(name,pos,p2-pos);
-				name[p2-pos] = 0;
-				return;
-			}
+			strncpy (name, puzzle_strings+puzzle_string_index[j+1], 39);
+			name[39] = 0;
 			return;
 		}
-		pos = strchr(pos, 10);	// find the next '\n'
-		if (!pos)
-			return;
-		while ((*pos) == 10 || (*pos) == 13)
-			pos++;
 	}
 }
 
