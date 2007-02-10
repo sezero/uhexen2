@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-02-10 (CVS):
+    * added an advanced parsing of puzzles.txt: it is now parsed at
+      its load time only, and is bound to two new global variables,
+      puzzle_string_index and puzzle_string_count, similar to those
+      of strings.txt and infolist.txt.  broken files (those who are
+      not following the file format) are gracefully handled.
+
 2007-02-09 (CVS):
     * fixed parsing of puzzles.txt: Raven seems to have had an ability
       towards doing all things in non-standart way and they did this
