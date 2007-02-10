@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.11 2007-01-15 11:59:49 sezero Exp $
+	$Id: cmdlib.h,v 1.12 2007-02-10 18:01:29 sezero Exp $
 */
 
 #ifndef __CMDLIB_H__
@@ -99,11 +99,11 @@ extern size_t Q_strlcat (char *dst, const char *src, size_t size);
 // PUBLIC DATA DECLARATIONS ------------------------------------------------
 
 // set these before calling CheckParm
-extern int myargc;
-extern char **myargv;
+extern int		myargc;
+extern char		**myargv;
 
-extern char com_token[1024];
-extern qboolean com_eof;
+extern char	com_token[1024];
+extern qboolean		com_eof;
 
 
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
@@ -117,48 +117,48 @@ int	Sys_kbhit(void);
 #endif
 */
 
-void	*SafeMalloc(size_t n, char *desc);
+void	*SafeMalloc (size_t n, const char *desc);
 
-void	Q_mkdir (char *path);
+void	Q_mkdir (const char *path);
 void	Q_getwd (char *out);
-int	Q_filelength(FILE *f);
-int	Q_filetime (char *path);
+int	Q_filelength (FILE *f);
+int	Q_filetime (const char *path);
 
-double	GetTime(void);
+double	GetTime (void);
 
-void	Error (char *error, ...) _FUNC_PRINTF(1);
-int	CheckParm(char *check);
+void	Error (const char *error, ...) _FUNC_PRINTF(1);
+int	CheckParm (const char *check);
 
-FILE	*SafeOpenWrite(char *filename);
-FILE	*SafeOpenRead(char *filename);
-void	SafeRead(FILE *f, void *buffer, int count);
-void	SafeWrite(FILE *f, void *buffer, int count);
+FILE	*SafeOpenWrite (const char *filename);
+FILE	*SafeOpenRead (const char *filename);
+void	SafeRead (FILE *f, void *buffer, int count);
+void	SafeWrite (FILE *f, const void *buffer, int count);
 
-int	LoadFile(char *filename, void **bufferptr);
-void	SaveFile (char *filename, void *buffer, int count);
+int	LoadFile (const char *filename, void **bufferptr);
+void	SaveFile (const char *filename, const void *buffer, int count);
 
-void	DefaultExtension (char *path, char *extension);
-void	DefaultPath (char *path, char *basepath);
+void	DefaultExtension (char *path, const char *extension);
+void	DefaultPath (char *path, const char *basepath);
 void	StripFilename (char *path);
 void	StripExtension (char *path);
 
-void	ExtractFilePath (char *path, char *dest);
-void	ExtractFileBase (char *path, char *dest);
-void	ExtractFileExtension (char *path, char *dest);
+void	ExtractFilePath (const char *path, char *dest);
+void	ExtractFileBase (const char *path, char *dest);
+void	ExtractFileExtension (const char *path, char *dest);
 
 void	CreatePath (char *path);
-void	Q_CopyFile (char *from, char *to);
+void	Q_CopyFile (const char *from, const char *to);
 
-int	ParseNum (char *str);
+int	ParseNum (const char *str);
 
-char	*COM_Parse(char *data);
+char	*COM_Parse (char *data);
 
-void	CRC_Init(unsigned short *crcvalue);
-void	CRC_ProcessByte(unsigned short *crcvalue, byte data);
-unsigned short	CRC_Value(unsigned short crcvalue);
+void	CRC_Init (unsigned short *crcvalue);
+void	CRC_ProcessByte (unsigned short *crcvalue, byte data);
+unsigned short	CRC_Value (unsigned short crcvalue);
 
 #define	HASH_TABLE_SIZE		9973
-int		COM_Hash(char *string);
+int	COM_Hash (const char *string);
 
 // endianness stuff: <sys/types.h> is supposed
 // to succeed in locating the correct endian.h

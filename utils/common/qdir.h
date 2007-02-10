@@ -8,9 +8,9 @@ extern	qboolean	archive;
 extern	char		archivedir[1024];
 
 void	SetQdirFromPath (char *path);
-char	*ExpandArg (char *path);	// from cmd line
-char	*ExpandPath (char *path);	// from scripts
-char	*ExpandPathAndArchive (char *path);
+char	*ExpandArg (const char *path);	// from cmd line
+char	*ExpandPath (const char *path);	// from scripts
+char	*ExpandPathAndArchive (const char *path);
 
 #endif	/* __QDIRS_H__ */
 

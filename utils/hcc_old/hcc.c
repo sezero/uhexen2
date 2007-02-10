@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.5 2006-10-30 08:08:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.6 2007-02-10 18:01:34 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).
@@ -112,7 +112,7 @@ static void WriteFiles (void)
 
 
 // CopyString returns an offset from the string heap
-int	CopyString (char *str)
+int	CopyString (const char *str)
 {
 	int		old;
 
@@ -350,7 +350,7 @@ PR_String
 Returns a string suitable for printing (no newlines, max 60 chars length)
 ===============
 */
-static char *PR_String (char *string)
+static char *PR_String (const char *string)
 {
 	static char	buf[80];
 	char	*s;
@@ -631,7 +631,7 @@ Returns a crc of the header, to be stored in the progs file for comparison
 at load time.
 ============
 */
-static int PR_WriteProgdefs (char *filename)
+static int PR_WriteProgdefs (const char *filename)
 {
 	def_t	*d;
 	FILE	*f;
@@ -722,7 +722,7 @@ static int PR_WriteProgdefs (char *filename)
 	return crc;
 }
 
-static void PrintFunction (char *name)
+static void PrintFunction (const char *name)
 {
 	int		i;
 	dstatement_t	*ds;

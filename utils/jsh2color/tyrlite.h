@@ -87,15 +87,15 @@ void	TestLightFace (int surfnum, qboolean nolight, vec3_t faceoffset);
 void	LightFace (int surfnum, qboolean nolight, vec3_t faceoffset);
 void	LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset);
 void	CheckTex (void);
-void	FindTexlightColour (int *surf_r, int *surf_g, int *surf_b, char *texname);
+void	FindTexlightColour (int *surf_r, int *surf_g, int *surf_b, const char *texname);
 
 void	LightLeaf (dleaf_t *leaf);
 void	MakeTnodes (dmodel_t *bm);
 
 // js features
-void	InitDefFile (char* fname);
+void	InitDefFile (const char *fname);
 void	CloseDefFile (void);
-void	DecisionTime (char *msg);
+void	DecisionTime (const char *msg);
 
 #endif	/* __TYRLITE_H__ */
 

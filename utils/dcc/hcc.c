@@ -2,7 +2,7 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.14 2006-10-22 14:54:55 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.15 2007-02-10 18:01:32 sezero Exp $
 */
 
 #include "qcc.h"
@@ -91,7 +91,7 @@ void WriteFiles (void)
 
 
 // CopyString returns an offset from the string heap
-int	CopyString (char *str)
+int	CopyString (const char *str)
 {
 	int		old;
 	int		i, l;
@@ -346,7 +346,7 @@ PR_String
 Returns a string suitable for printing (no newlines, max 60 chars length)
 ===============
 */
-char *PR_String (char *string)
+char *PR_String (const char *string)
 {
 	static char	buf[80];
 	char	*s;
@@ -627,7 +627,7 @@ Returns a crc of the header, to be stored in the progs file for comparison
 at load time.
 ============
 */
-int PR_WriteProgdefs (char *filename)
+int PR_WriteProgdefs (const char *filename)
 {
 	def_t	*d;
 	FILE	*f;
@@ -719,7 +719,7 @@ int PR_WriteProgdefs (char *filename)
 	return crc;
 }
 
-void PrintFunction (char *name)
+void PrintFunction (const char *name)
 {
 	int		i;
 	dstatement_t	*ds;

@@ -2,7 +2,7 @@
 	cmdlib.c
 	functions common to all of the utilities
 
-	$Id: cmdlib.c,v 1.7 2007-02-10 11:44:35 sezero Exp $
+	$Id: cmdlib.c,v 1.8 2007-02-10 18:01:28 sezero Exp $
 */
 
 
@@ -67,27 +67,6 @@ int Sys_kbhit (void)
 }
 #endif
 */
-
-/*
-==============
-StringCompare
-
-Compare two strings without regard to case.
-==============
-*/
-#if 0
-int StringCompare(char *s1, char *s2)
-{
-	for ( ; tolower(*s1) == tolower(*s2); s1++, s2++)
-	{
-		if (*s1 == '\0')
-		{
-			return 0;
-		}
-	}
-	return tolower(*s1)-tolower(*s2);
-}
-#endif
 
 /*
 ==============
@@ -158,7 +137,7 @@ SafeMalloc
 
 ==============
 */
-void *SafeMalloc (size_t n, char *desc)
+void *SafeMalloc (size_t n, const char *desc)
 {
 	void	*p;
 
@@ -308,7 +287,7 @@ Error
 For abnormal program terminations.
 ==============
 */
-void Error(char *error, ...)
+void Error (const char *error, ...)
 {
 	va_list argptr;
 
@@ -328,13 +307,12 @@ Checks for the given parameter in the program's command line arguments.
 Returns the argument number (1 to argc-1) or 0 if not present.
 ==============
 */
-int CheckParm (char *check)
+int CheckParm (const char *check)
 {
 	int		i;
 
 	for (i = 1; i < myargc; i++)
 	{
-	//	if ( !StringCompare(check, myargv[i]) )
 		if ( !Q_strcasecmp(check, myargv[i]) )
 		{
 			return i;
@@ -354,7 +332,7 @@ void Q_getwd (char *out)
 #endif
 }
 
-void Q_mkdir (char *path)
+void Q_mkdir (const char *path)
 {
 #ifdef _WIN32
 	if (_mkdir (path) != -1)
@@ -374,7 +352,7 @@ Q_filetime
 returns -1 if not present
 ============
 */
-int Q_filetime (char *path)
+int Q_filetime (const char *path)
 {
 	struct	stat	buf;
 
@@ -390,7 +368,7 @@ Q_filelength
 
 ==============
 */
-int Q_filelength(FILE *f)
+int Q_filelength (FILE *f)
 {
 	int		pos;
 	int		end;
@@ -408,7 +386,7 @@ SafeOpenWrite
 
 ==============
 */
-FILE *SafeOpenWrite (char *filename)
+FILE *SafeOpenWrite (const char *filename)
 {
 	FILE	*f;
 
@@ -426,7 +404,7 @@ SafeOpenRead
 
 ==============
 */
-FILE *SafeOpenRead (char *filename)
+FILE *SafeOpenRead (const char *filename)
 {
 	FILE	*f;
 
@@ -456,7 +434,7 @@ SafeWrite
 
 ==============
 */
-void SafeWrite (FILE *f, void *buffer, int count)
+void SafeWrite (FILE *f, const void *buffer, int count)
 {
 	if (fwrite(buffer, 1, count, f) != (size_t)count)
 		Error("File read failure");
@@ -468,7 +446,7 @@ LoadFile
 
 ==============
 */
-int LoadFile (char *filename, void **bufferptr)
+int LoadFile (const char *filename, void **bufferptr)
 {
 	FILE	*f;
 	int	length;
@@ -491,7 +469,7 @@ SaveFile
 
 ==============
 */
-void SaveFile (char *filename, void *buffer, int count)
+void SaveFile (const char *filename, const void *buffer, int count)
 {
 	FILE	*f;
 
@@ -528,18 +506,21 @@ Q_CopyFile
 Used to archive source files
 ============
 */
-void Q_CopyFile (char *from, char *to)
+void Q_CopyFile (const char *from, const char *to)
 {
+	char		temp[1024];
 	void	*buffer;
 	int		length;
 
 	length = LoadFile (from, &buffer);
-	CreatePath (to);
+	strncpy (temp, to, sizeof(temp)-1);
+	temp[sizeof(temp)-1] = 0;
+	CreatePath (temp);
 	SaveFile (to, buffer, length);
 	free (buffer);
 }
 
-void DefaultExtension (char *path, char *extension)
+void DefaultExtension (char *path, const char *extension)
 {
 	char	*src;
 //
@@ -558,7 +539,7 @@ void DefaultExtension (char *path, char *extension)
 	strcat (path, extension);
 }
 
-void DefaultPath (char *path, char *basepath)
+void DefaultPath (char *path, const char *basepath)
 {
 	char	temp[128];
 
@@ -602,9 +583,9 @@ Extract file parts
 // an empty path will be wrong when appending a slash
 ====================
 */
-void ExtractFilePath (char *path, char *dest)
+void ExtractFilePath (const char *path, char *dest)
 {
-	char	*src;
+	const char	*src;
 
 	src = path + strlen(path) - 1;
 
@@ -619,9 +600,9 @@ void ExtractFilePath (char *path, char *dest)
 	dest[src-path] = 0;
 }
 
-void ExtractFileBase (char *path, char *dest)
+void ExtractFileBase (const char *path, char *dest)
 {
-	char	*src;
+	const char	*src;
 
 	src = path + strlen(path) - 1;
 
@@ -638,9 +619,9 @@ void ExtractFileBase (char *path, char *dest)
 	*dest = 0;
 }
 
-void ExtractFileExtension (char *path, char *dest)
+void ExtractFileExtension (const char *path, char *dest)
 {
-	char	*src;
+	const char	*src;
 
 	src = path + strlen(path) - 1;
 
@@ -664,9 +645,9 @@ void ExtractFileExtension (char *path, char *dest)
 ParseNum / ParseHex
 ==============
 */
-int ParseHex (char *hex)
+int ParseHex (const char *hex)
 {
-	char	*str;
+	const char	*str;
 	int		num;
 
 	num = 0;
@@ -689,7 +670,7 @@ int ParseHex (char *hex)
 	return num;
 }
 
-int ParseNum (char *str)
+int ParseNum (const char *str)
 {
 	if (str[0] == '$')
 		return ParseHex (str+1);
@@ -829,11 +810,11 @@ COM_Hash
 
 ==============
 */
-int COM_Hash(char *key)
+int COM_Hash (const char *key)
 {
 	int		i;
 	int		length;
-	char	*keyBack;
+	const char	*keyBack;
 	unsigned short	hash;
 
 	length = strlen (key);

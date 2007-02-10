@@ -61,7 +61,7 @@ char *COM_Parse (char *data)
 {
 	int		c;
 	int		len;
-	qboolean	done;
+	qboolean	done = false;
 
 	len = 0;
 	com_token[0] = 0;
@@ -69,28 +69,27 @@ char *COM_Parse (char *data)
 	if (!data)
 		return NULL;
 
-	done = false;
 	do
 	{
-		// Skip whitespace
+	// skip whitespace
 		while ((c = *data) <= ' ')
 		{
-			if (c == 0)
-			{ // EOF
+			if (c == 0)	// end of file
+			{
 				com_eof = true;
 				return NULL;
 			}
 			data++;
 		}
 
-		// skip comments
+	// skip C style comments
 		if (c == '/' && data[1] == '*')
 		{
 			data += 2;
 			while (!(*data == '*' && data[1] == '/'))
 			{
-				if (*data == 0)
-				{ // EOF
+				if (*data == 0)	// end of file
+				{
 					com_eof = true;
 					return NULL;
 				}
@@ -98,8 +97,10 @@ char *COM_Parse (char *data)
 			}
 			data += 2;
 		}
-		else if (c == '/' && data[1] == '/')
-		{ // Skip CPP comment
+	// skip C++ style comments
+		else
+		if (c == '/' && data[1] == '/')
+		{
 			while (*data && *data != '\n')
 			{
 				data++;
@@ -111,7 +112,7 @@ char *COM_Parse (char *data)
 		}
 	} while (done == false);
 
-	// Parse quoted string
+	// handle quoted strings specially
 	if (c == '\"')
 	{
 		data++;
@@ -128,8 +129,8 @@ char *COM_Parse (char *data)
 		} while (1);
 	}
 
-	// Parse special character
-	if (c == '{' || c == '}'|| c == '('|| c == ')' || c == '\'' || c == ':')
+	// parse special characters
+	if (c == '{' || c == '}' || c == '(' || c == ')' || c == '\'' || c == ':')
 	{
 		com_token[len] = c;
 		len++;
@@ -137,7 +138,7 @@ char *COM_Parse (char *data)
 		return data+1;
 	}
 
-	// Parse regular word
+	// parse a regular word
 	do
 	{
 		com_token[len] = c;
@@ -161,7 +162,7 @@ Error
 For abnormal program terminations.
 ==============
 */
-void Error(char *error, ...)
+void Error (const char *error, ...)
 {
 	va_list argptr;
 
@@ -175,40 +176,18 @@ void Error(char *error, ...)
 
 /*
 ==============
-StringCompare
-
-Compare two strings without regard to case.
-==============
-*/
-#if 0
-int StringCompare(char *s1, char *s2)
-{
-	for ( ; tolower(*s1) == tolower(*s2); s1++, s2++)
-	{
-		if (*s1 == '\0')
-		{
-			return 0;
-		}
-	}
-	return tolower(*s1)-tolower(*s2);
-}
-#endif
-
-/*
-==============
 CheckParm
 
 Checks for the given parameter in the program's command line arguments.
 Returns the argument number (1 to argc-1) or 0 if not present.
 ==============
 */
-int CheckParm (char *check)
+int CheckParm (const char *check)
 {
 	int		i;
 
 	for (i = 1; i < myargc; i++)
 	{
-	//	if ( !StringCompare(check, myargv[i]) )
 		if ( !Q_strcasecmp(check, myargv[i]) )
 		{
 			return i;
@@ -223,7 +202,7 @@ Q_filelength
 
 ==============
 */
-int Q_filelength(FILE *f)
+int Q_filelength (FILE *f)
 {
 	int		pos;
 	int		end;
@@ -241,7 +220,7 @@ SafeOpenWrite
 
 ==============
 */
-FILE *SafeOpenWrite (char *filename)
+FILE *SafeOpenWrite (const char *filename)
 {
 	FILE	*f;
 
@@ -259,7 +238,7 @@ SafeOpenRead
 
 ==============
 */
-FILE *SafeOpenRead (char *filename)
+FILE *SafeOpenRead (const char *filename)
 {
 	FILE	*f;
 
@@ -289,7 +268,7 @@ SafeWrite
 
 ==============
 */
-void SafeWrite (FILE *f, void *buffer, int count)
+void SafeWrite (FILE *f, const void *buffer, int count)
 {
 	if (fwrite(buffer, 1, count, f) != (size_t)count)
 		Error("File read failure");
@@ -301,7 +280,7 @@ LoadFile
 
 ==============
 */
-int LoadFile (char *filename, void **bufferptr)
+int LoadFile (const char *filename, void **bufferptr)
 {
 	FILE	*f;
 	int	length;
@@ -387,8 +366,8 @@ float FloatSwap (float f)
 //
 //==========================================================================
 
-#define CRC_INIT_VALUE 0xffff
-#define CRC_XOR_VALUE 0x0000
+#define CRC_INIT_VALUE	0xffff
+#define CRC_XOR_VALUE	0x0000
 
 static unsigned short crctable[256] =
 {
@@ -447,11 +426,11 @@ COM_Hash
 
 ==============
 */
-int COM_Hash(char *key)
+int COM_Hash (const char *key)
 {
 	int		i;
 	int		length;
-	char	*keyBack;
+	const char	*keyBack;
 	unsigned short	hash;
 
 	length = strlen (key);

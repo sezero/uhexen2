@@ -59,7 +59,8 @@ DHCCOBJS= cmdlib.o \
 	dcc.o \
 	hcc.o \
 	pr_comp.o \
-	pr_lex.o
+	pr_lex.o \
+	pr_parse.o
 
 # Targets
 all : $(BINARY)

@@ -13,10 +13,10 @@
 #include <strings.h>
 #endif
 #include <stdlib.h>
-#include <errno.h>
-#include <ctype.h>
-#include <time.h>
 #include <stdarg.h>
+#include <ctype.h>
+#include <errno.h>
+#include <time.h>
 
 
 // TYPES -------------------------------------------------------------------
@@ -26,16 +26,6 @@
 typedef enum { false, true } qboolean;
 typedef unsigned char byte;
 #endif
-
-
-// PUBLIC DATA DECLARATIONS ------------------------------------------------
-
-// set these before calling CheckParm
-extern int myargc;
-extern char **myargv;
-
-extern char com_token[1024];
-extern qboolean com_eof;
 
 
 // MACROS ------------------------------------------------------------------
@@ -55,30 +45,40 @@ extern qboolean com_eof;
 #endif
 
 
+// PUBLIC DATA DECLARATIONS ------------------------------------------------
+
+// set these before calling CheckParm
+extern int		myargc;
+extern char		**myargv;
+
+extern char	com_token[1024];
+extern qboolean		com_eof;
+
+
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
 
-int	Q_filelength(FILE *f);
+int	Q_filelength (FILE *f);
 
-double	GetTime(void);
+double	GetTime (void);
 
-void	Error (char *error, ...) _FUNC_PRINTF(1);
-int		CheckParm(char *check);
+void	Error (const char *error, ...) _FUNC_PRINTF(1);
+int	CheckParm (const char *check);
 
-FILE	*SafeOpenWrite(char *filename);
-FILE	*SafeOpenRead(char *filename);
-void	SafeRead(FILE *f, void *buffer, int count);
-void	SafeWrite(FILE *f, void *buffer, int count);
+FILE	*SafeOpenWrite (const char *filename);
+FILE	*SafeOpenRead (const char *filename);
+void	SafeRead (FILE *f, void *buffer, int count);
+void	SafeWrite (FILE *f, const void *buffer, int count);
 
-int		LoadFile(char *filename, void **bufferptr);
+int	LoadFile (const char *filename, void **bufferptr);
 
-char	*COM_Parse(char *data);
+char	*COM_Parse (char *data);
 
-void	CRC_Init(unsigned short *crcvalue);
-void	CRC_ProcessByte(unsigned short *crcvalue, byte data);
-unsigned short	CRC_Value(unsigned short crcvalue);
+void	CRC_Init (unsigned short *crcvalue);
+void	CRC_ProcessByte (unsigned short *crcvalue, byte data);
+unsigned short	CRC_Value (unsigned short crcvalue);
 
 #define	HASH_TABLE_SIZE		9973
-int		COM_Hash(char *string);
+int	COM_Hash (const char *string);
 
 // endianness stuff: <sys/types.h> is supposed
 // to succeed in locating the correct endian.h

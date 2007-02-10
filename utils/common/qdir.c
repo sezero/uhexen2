@@ -1,7 +1,7 @@
 /*
 	qdir.c
 
-	$Id: qdir.c,v 1.2 2006-10-22 14:54:53 sezero Exp $
+	$Id: qdir.c,v 1.3 2007-02-10 18:01:29 sezero Exp $
 */
 
 
@@ -64,7 +64,7 @@ void SetQdirFromPath (char *path)
 	Error ("SetQdirFromPath: no %s in %s", BUILDDIR, path);
 }
 
-char *ExpandArg (char *path)
+char *ExpandArg (const char *path)
 {
 	static char full[1024];
 
@@ -79,7 +79,7 @@ char *ExpandArg (char *path)
 	return full;
 }
 
-char *ExpandPath (char *path)
+char *ExpandPath (const char *path)
 {
 	static char full[1024];
 
@@ -87,14 +87,18 @@ char *ExpandPath (char *path)
 		Error ("ExpandPath called without qdir set");
 
 	if (path[0] == '/' || path[0] == '\\' || path[1] == ':')
-		return path;
-
-	sprintf (full, "%s%s", qdir, path);
+	{
+		sprintf (full, "%s", path);
+	}
+	else
+	{
+		sprintf (full, "%s%s", qdir, path);
+	}
 
 	return full;
 }
 
-char *ExpandPathAndArchive (char *path)
+char *ExpandPathAndArchive (const char *path)
 {
 	char	*expanded;
 	char	archivename[1024];

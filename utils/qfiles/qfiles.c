@@ -47,7 +47,7 @@ PackFile
 Copy a file into the pak file
 ===========
 */
-void PackFile (char *src, char *name)
+void PackFile (const char *src, const char *name)
 {
 	FILE	*in;
 	int		remaining, count;

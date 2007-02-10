@@ -301,7 +301,7 @@ DecisionTime
 Takes user's decision to continue or abort
 ==================
 */
-void DecisionTime (char *msg)
+void DecisionTime (const char *msg)
 {
 	char	c;
 

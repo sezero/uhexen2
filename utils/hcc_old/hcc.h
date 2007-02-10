@@ -1,7 +1,7 @@
 /*
 	hcc.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.h,v 1.3 2007-01-15 11:59:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.h,v 1.4 2007-02-10 18:01:34 sezero Exp $
 */
 
 #ifndef __HCC_H__
@@ -158,7 +158,7 @@ enum
 
 // hcc.c
 
-int	CopyString (char *str);
+int	CopyString (const char *str);
 
 // lexi.c
 
@@ -187,8 +187,8 @@ def_t	*PR_GetDef (type_t *type, char *name, def_t *scope, qboolean allocate);
 
 // parseerr.c
 
-void	PR_ParseError(char *error, ...) _FUNC_PRINTF(1);
-void	PR_ParseWarning(char *error, ...) _FUNC_PRINTF(1);
+void	PR_ParseError(const char *error, ...) _FUNC_PRINTF(1);
+void	PR_ParseWarning(const char *error, ...) _FUNC_PRINTF(1);
 
 // expr.c
 

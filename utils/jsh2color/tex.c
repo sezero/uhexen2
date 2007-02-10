@@ -64,7 +64,7 @@ static int getNumLines (FILE* f)
 	return numlines;
 }
 
-static void ParseDefFile (char* filename)
+static void ParseDefFile (const char *filename)
 {
 	int	i = 0, num = 0;
 	int	r, g, b;
@@ -114,7 +114,7 @@ static void ParseDefFile (char* filename)
 	printf ("Loaded %d entries from file : %s\n", num, filename);
 }
 
-void InitDefFile (char* fname)
+void InitDefFile (const char *fname)
 {
 	tc_list.entries = NULL;
 	if (external == true)
@@ -128,7 +128,7 @@ void CloseDefFile (void)
 	tc_list.entries = NULL;
 }
 
-static void FindTexlightColourExt (int *surf_r, int *surf_g, int *surf_b, char *texname, tex_col_list list)
+static void FindTexlightColourExt (int *surf_r, int *surf_g, int *surf_b, const char *texname, tex_col_list list)
 {
 	int		i, len, num;
 	tex_col	*entry;
@@ -167,7 +167,7 @@ static void FindTexlightColourExt (int *surf_r, int *surf_g, int *surf_b, char *
 #endif
 }
 
-void FindTexlightColour (int *surf_r, int *surf_g, int *surf_b, char *texname)
+void FindTexlightColour (int *surf_r, int *surf_g, int *surf_b, const char *texname)
 {
 	if (nodefault == false)	// js feature
 	{
