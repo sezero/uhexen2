@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.12 2007-02-10 18:01:29 sezero Exp $
+	$Id: cmdlib.h,v 1.13 2007-02-11 08:06:39 sezero Exp $
 */
 
 #ifndef __CMDLIB_H__
@@ -27,6 +27,8 @@
 #include <stdarg.h>
 #include <ctype.h>
 
+#include "compiler.h"
+
 
 // TYPES -------------------------------------------------------------------
 
@@ -38,12 +40,6 @@ typedef unsigned char byte;
 
 
 // MACROS ------------------------------------------------------------------
-
-#ifdef __GNUC__
-#define _FUNC_PRINTF(n) __attribute__ ((format (printf, n, n+1)))
-#else
-#define _FUNC_PRINTF(n)
-#endif
 
 #ifdef _WIN32
 #define Q_strncasecmp	strnicmp

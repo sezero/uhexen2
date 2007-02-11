@@ -6,13 +6,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include "compiler.h"
 
-
-#ifdef __GNUC__
-#define _FUNC_PRINTF(n) __attribute__ ((format (printf, n, n+1)))
-#else
-#define _FUNC_PRINTF(n)
-#endif
 
 extern void Sys_Error (const char *error, ...) _FUNC_PRINTF(1);
 

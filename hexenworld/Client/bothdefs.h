@@ -2,21 +2,16 @@
 	bothdefs.h
 	defs common to both client and server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.57 2007-01-15 11:59:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/bothdefs.h,v 1.58 2007-02-11 08:06:36 sezero Exp $
 */
 
 #ifndef __H2W_BOTHDEFS_H
 #define __H2W_BOTHDEFS_H
 
-#ifdef __GNUC__
-#define _FUNC_PRINTF(n) __attribute__ ((format (printf, n, n+1)))
-#else
-#define _FUNC_PRINTF(n)
-#endif
-
 #define __STRINGIFY(x) #x
 #define STRINGIFY(x) __STRINGIFY(x)
 
+#include "compiler.h"
 #include "arch_def.h"
 #include "h2_opt.h"
 

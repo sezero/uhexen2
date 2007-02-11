@@ -3,7 +3,6 @@
 #define __HWMASTER_DEFS
 
 #include <sys/types.h>
-
 #include <stdio.h>
 #include <string.h>
 #if !defined(_WIN32)
@@ -12,6 +11,7 @@
 #endif
 #include <stdarg.h>
 #include <stdlib.h>
+#include "compiler.h"
 
 
 //=============================================================================
@@ -29,12 +29,6 @@ typedef enum {false, true}	qboolean;
 
 #ifndef max
 # define max(a,b) ((a) > (b) ? (a) : (b))
-#endif
-
-#ifdef __GNUC__
-#define _FUNC_PRINTF(n) __attribute__ ((format (printf, n, n+1)))
-#else
-#define _FUNC_PRINTF(n)
 #endif
 
 #define	MAX_ARGS	80

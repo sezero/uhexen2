@@ -30,12 +30,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <time.h>
 #include <sys/time.h>
 #endif
-
-#ifdef __GNUC__
-#define _FUNC_PRINTF(n) __attribute__ ((format (printf, n, n+1)))
-#else
-#define _FUNC_PRINTF(n)
-#endif
+#include "compiler.h"
 
 
 //=============================================================================

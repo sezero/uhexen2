@@ -2,25 +2,16 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.104 2007-02-07 17:01:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/quakedef.h,v 1.105 2007-02-11 08:06:32 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
 #define __QUAKEDEFS_H
 
-#ifdef _MSC_VER
-#pragma warning(disable:4244)
-#endif
-
-#ifdef __GNUC__
-#define _FUNC_PRINTF(n) __attribute__ ((format (printf, n, n+1)))
-#else
-#define _FUNC_PRINTF(n)
-#endif
-
 #define __STRINGIFY(x) #x
 #define STRINGIFY(x) __STRINGIFY(x)
 
+#include "compiler.h"
 #include "arch_def.h"
 #include "h2_opt.h"
 

@@ -2,12 +2,10 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.14 2007-02-07 17:01:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.15 2007-02-11 08:06:32 sezero Exp $
 */
 
 #include "quakedef.h"
-
-void Sys_Error (const char *error, ...);
 
 vec3_t vec3_origin = { 0, 0, 0 };
 int nanmask = 255 << 23;
@@ -55,6 +53,7 @@ BOPS_Error
 Split out like this for ASM to call.
 ==================
 */
+extern void Sys_Error (const char *error, ...) _FUNC_PRINTF(1);
 void BOPS_Error (void)
 {
 	Sys_Error ("BoxOnPlaneSide:  Bad signbits");

@@ -18,6 +18,8 @@
 #include <errno.h>
 #include <time.h>
 
+#include "compiler.h"
+
 
 // TYPES -------------------------------------------------------------------
 
@@ -29,12 +31,6 @@ typedef unsigned char byte;
 
 
 // MACROS ------------------------------------------------------------------
-
-#ifdef __GNUC__
-#define _FUNC_PRINTF(n) __attribute__ ((format (printf, n, n+1)))
-#else
-#define _FUNC_PRINTF(n)
-#endif
 
 #ifdef _WIN32
 #define Q_strncasecmp	strnicmp
