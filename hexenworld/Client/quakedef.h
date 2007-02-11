@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for client
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/quakedef.h,v 1.29 2007-02-06 12:24:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/quakedef.h,v 1.30 2007-02-11 13:08:30 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -23,6 +23,7 @@
 #include "bothdefs.h"
 
 #include "common.h"
+#include "info_str.h"
 #include "bspfile.h"
 #include "sys.h"
 #include "zone.h"

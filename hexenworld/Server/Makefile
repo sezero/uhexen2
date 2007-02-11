@@ -88,6 +88,7 @@ endif
 COMMONOBJS = model.o \
 	cl_objs/cmd.o \
 	cl_objs/common.o \
+	cl_objs/info_str.o \
 	cl_objs/strlcat.o \
 	cl_objs/strlcpy.o \
 	cl_objs/crc.o \

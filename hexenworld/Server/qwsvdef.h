@@ -2,7 +2,7 @@
 	quakedef.h
 	primary header for server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/qwsvdef.h,v 1.12 2007-02-06 12:24:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/qwsvdef.h,v 1.13 2007-02-11 13:08:32 sezero Exp $
 */
 
 #ifndef __HWSV_DEFS__
@@ -23,6 +23,7 @@
 #include "bothdefs.h"
 
 #include "common.h"
+#include "info_str.h"
 #include "bspfile.h"
 #include "sys.h"
 #include "zone.h"

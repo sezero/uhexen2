@@ -16,10 +16,6 @@ typedef unsigned char 		byte;
 
 typedef enum {false, true}	qboolean;
 
-#define	MAX_INFO_STRING	196
-#define	MAX_SERVERINFO_STRING	512
-#define	MAX_LOCALINFO_STRING	32768
-
 #ifdef SUNOS
 #define model_t hx2_model_t // Workaround conflict with /usr/include/sys/model.h
 #endif
@@ -298,21 +294,6 @@ int COM_FileInGamedir (const char *fname);
 extern	struct cvar_s	registered;
 extern	struct cvar_s	oem;
 extern unsigned int	gameflags;
-
-#ifdef H2W
-char *Info_ValueForKey (const char *s, const char *key);
-void Info_RemoveKey (char *s, const char *key);
-void Info_RemovePrefixedKeys (char *start, char prefix);
-void Info_SetValueForKey (char *s, const char *key, const char *value, int maxsize);
-void Info_SetValueForStarKey (char *s, const char *key, const char *value, int maxsize);
-void Info_Print (const char *s);
-
-// global vars for siege.
-extern qboolean cl_siege;
-extern byte cl_fraglimit;
-extern float cl_timelimit;
-extern float cl_server_time_offset;
-#endif
 
 #endif	/* __HX2_COMMON_H */
 

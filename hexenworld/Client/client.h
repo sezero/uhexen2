@@ -1,6 +1,6 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.12 2006-09-24 17:28:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.13 2007-02-11 13:08:28 sezero Exp $
 */
 
 #ifndef __H2W_CLIENT_H
@@ -555,6 +555,12 @@ byte *Skin_Cache (skin_t *skin);
 void Skin_Skins_f (void);
 void Skin_AllSkins_f (void);
 void Skin_NextDownload (void);
+
+// global vars for siege.
+extern	qboolean	cl_siege;
+extern	byte		cl_fraglimit;
+extern	float		cl_timelimit;
+extern	float		cl_server_time_offset;
 
 #endif	/* __H2W_CLIENT_H */
 
