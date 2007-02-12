@@ -2,6 +2,30 @@
 #ifndef __HWMASTER_DEFS
 #define __HWMASTER_DEFS
 
+//=============================================================================
+// Defines
+
+#define __STRINGIFY(x) #x
+#define STRINGIFY(x) __STRINGIFY(x)
+
+#define VER_HWMASTER_MAJ	1
+#define VER_HWMASTER_MID	2
+#define VER_HWMASTER_MIN	4
+#define VER_HWMASTER_STR	STRINGIFY(VER_HWMASTER_MAJ) "." STRINGIFY(VER_HWMASTER_MID) "." STRINGIFY(VER_HWMASTER_MIN)
+
+#define HWM_USERDIR	".hwmaster"	/* user directory for unix	*/
+
+#define	MAX_OSPATH	256		/* max length of a filesystem pathname	*/
+
+#define MAX_NUM_ARGVS	50
+
+#define	MAX_MSGLEN		1450	// max length of a reliable message
+#define	MAX_DATAGRAM		1450	// max length of unreliable message
+
+
+//=============================================================================
+// Includes
+
 #include "compiler.h"
 #include "q_types.h"
 #include <stdio.h>
@@ -24,28 +48,7 @@
 
 
 //=============================================================================
-
-//Defines
-#define __STRINGIFY(x) #x
-#define STRINGIFY(x) __STRINGIFY(x)
-
-#define VER_HWMASTER_MAJ	1
-#define VER_HWMASTER_MID	2
-#define VER_HWMASTER_MIN	4
-#define VER_HWMASTER_STR	STRINGIFY(VER_HWMASTER_MAJ) "." STRINGIFY(VER_HWMASTER_MID) "." STRINGIFY(VER_HWMASTER_MIN)
-
-#define HWM_USERDIR	".hwmaster"	/* user directory for unix	*/
-
-#define	MAX_OSPATH	256		/* max length of a filesystem pathname	*/
-
-#define MAX_NUM_ARGVS	50
-
-#define	MAX_MSGLEN		1450	// max length of a reliable message
-#define	MAX_DATAGRAM		1450	// max length of unreliable message
-
-
-//=============================================================================
-//Globals
+// Globals
 
 extern char		com_token[1024];
 extern int		com_argc;
