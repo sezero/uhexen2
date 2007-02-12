@@ -19,7 +19,6 @@
 %define desktop_vendor	uhexen2
 
 %define gamecode_ver	1.16a
-%define xdelta_ver	1.1.3b
 
 Name:		hexen2
 License:	GPL
@@ -32,7 +31,6 @@ Source:		http://download.sourceforge.net/uhexen2/hexen2source-%{version}.tgz
 #Source1:	http://download.sourceforge.net/uhexen2/hexen2source-gamecode-%{version}.tgz
 Source1:	http://download.sourceforge.net/uhexen2/gamedata-src-%{gamecode_ver}.tgz
 Source2:	http://download.sourceforge.net/uhexen2/hexenworld-pakfiles-0.15.tgz
-Source3:	http://download.sourceforge.net/uhexen2/xdelta-%{xdelta_ver}.tgz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	SDL-devel >= 1.2.4
 %{!?_without_midi:BuildRequires:  SDL_mixer-devel >= 1.2.4}
@@ -67,7 +65,7 @@ internet play. This package contains the files which are required to
 run a HexenWorld server or client, and a master server application.
 
 %prep
-%setup -q -n hexen2source-%{version} -a1 -a2 -a3
+%setup -q -n hexen2source-%{version} -a1 -a2
 %if %{?_without_asm:1}0
 %__sed -i 's/USE_X86_ASM=yes/USE_X86_ASM=no/' hexen2/Makefile hexenworld/Client/Makefile
 %endif
@@ -96,6 +94,19 @@ run a HexenWorld server or client, and a master server application.
 %{__make} -s -C hexenworld/Client clean
 %endif
 %{__make} -C hexenworld/Client glhw
+
+# Build xdelta binary and its libraries: do this before
+# building the launcher, it statically links to this.
+cd xdelta11
+./autogen.sh
+%if %{?_without_gtk2:1}0
+./configure --disable-shared --disable-glib2
+%else
+./configure --disable-shared
+%endif
+%{__make}
+cd ..
+
 # Launcher binaries
 %if %{!?_without_gtk2:1}0
 # Build for GTK2
@@ -114,14 +125,6 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/portals -oi -on
 utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 #utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/siege -oi -on
 
-# Build xdelta (binary patcher for pak files)
-cd xdelta-%{xdelta_ver}/src
-%if %{?_without_gtk2:1}0
-%{__patch} -p1 -R < ../ref/025-glib2.diff
-%endif
-./configure --disable-shared
-%{__make}
-cd ../..
 # Done building
 
 %install
@@ -194,7 +197,7 @@ cd ../..
 %{__install} -D -m644 gamecode-%{gamecode_ver}/pak_v111/patchdata/data1/data1pak1.xd %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/data1pak1.xd
 
 # Install the update-patcher binaries
-%{__install} -D -m755 xdelta-%{xdelta_ver}/src/xdelta %{buildroot}/%{_prefix}/games/%{name}/xdelta113
+%{__install} -D -m755 xdelta11/xdelta %{buildroot}/%{_prefix}/games/%{name}/xdelta113
 
 # Install the menu icon
 %{__mkdir_p} %{buildroot}/%{_datadir}/pixmaps
@@ -287,6 +290,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Mon Feb 05 2007 O.Sezer <sezero@users.sourceforge.net>
+- xdelta is now included in the source tarball.
+
 * Fri Dec 01 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.1-2
 - Version 1.4.1-rev1 :
   - Updated to gamedata-1.16a
