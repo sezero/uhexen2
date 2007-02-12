@@ -4,8 +4,9 @@ update is the same as Raven's 1.11 update, but it is for unix.
 You need either loki_patch or xdelta1.13 in order to use them.
 
 The update_xdelta.sh script uses an updated version of xdelta
-posted on the Hammer of Thyrion page (xdelta-1.1.3b.tgz).
-(The original version of xdelta-1.1.3 can be found at its home
+which is included in the latest Hammer of Thyrion sources with
+xdelta11 as its module name.
+(The original version of xdelta can be found at its project
 page at sourceforge: http://sourceforge.net/projects/xdelta )
 
 The update_loki.sh script and the associated .dat file are to be
