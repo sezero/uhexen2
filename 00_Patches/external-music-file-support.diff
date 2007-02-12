@@ -26,9 +26,9 @@ ready to go.
  	}
  	Con_Printf("found.\n");
  
-+	Q_snprintf_err(mididir, sizeof(mididir), "%s/music", com_userdir);
++	Q_snprintf_err(mididir, sizeof(mididir), "%s/music", fs_userdir);
 +	Sys_mkdir_err (mididir);
- 	Q_snprintf_err(mididir, sizeof(mididir), "%s/.midi", com_userdir);
+ 	Q_snprintf_err(mididir, sizeof(mididir), "%s/.midi", fs_userdir);
  	Sys_mkdir_err (mididir);
  
 @@ -191,10 +193,29 @@ bad_version:
@@ -76,16 +76,16 @@ ready to go.
 +		break;
 +	    }
 +
-+	    if (!search_ripped_tracks)	// search for ripped cd-tracks only under com_userdir
++	    if (!search_ripped_tracks)	// search for ripped cd-tracks only under fs_userdir
 +	    {
-+		snprintf (midiName, sizeof(midiName), "%s/%s/%s.%s", com_gamedir, MusicFile[i].lookup_dir, tmp, MusicFile[i].ext);
++		snprintf (midiName, sizeof(midiName), "%s/%s/%s.%s", fs_gamedir, MusicFile[i].lookup_dir, tmp, MusicFile[i].ext);
 +		if (access(midiName, R_OK) == 0)
 +			break;
 +
 +		Sys_Printf("music file %s not available\n", midiName);
 +	    }
 +
-+		snprintf (midiName, sizeof(midiName), "%s/%s/%s.%s", com_userdir, MusicFile[i].lookup_dir, tmp, MusicFile[i].ext);
++		snprintf (midiName, sizeof(midiName), "%s/%s/%s.%s", fs_userdir, MusicFile[i].lookup_dir, tmp, MusicFile[i].ext);
 +		if (access(midiName, R_OK) == 0)
 +			break;
 +		Sys_Printf("music file %s not available\n", midiName);
@@ -105,9 +105,9 @@ ready to go.
 +
  	// Note that midi/ is the standart quake search path, but
  	// .midi/ with the leading dot is the path in the userdir
- 	snprintf (midiName, sizeof(midiName), "%s/.midi/%s.mid", com_userdir, Name);
+ 	snprintf (midiName, sizeof(midiName), "%s/.midi/%s.mid", fs_userdir, Name);
 @@ -222,6 +281,11 @@ void MIDI_Play(const char *Name)
- 		if (COM_WriteFile (va(".midi/%s.mid", Name), midiData, com_filesize))
+ 		if (QIO_WriteFile (va(".midi/%s.mid", Name), midiData, qio_filesize))
  			return;
  	}
 +    }
