@@ -3,6 +3,54 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-02-12 (CVS):
+    * imported the xdelta-1.1 sources into our own cvs repository (module
+      name: xdelta11, the same as the one in the xdelta project)
+    * xdelta: added the auto-generated files back, including the empty
+      files stamp-ser and libedsio/stamp-ser1. this gets rid of the
+      emacs hassle.
+    * xdelta: cleaned up the multiple and recursive includes in the
+      generated files
+    * xdelta: do not automatically run configure from within autogen.sh
+    * xdelta: added --disable-glib2 option to configuration. made
+      xdelta-config to remember that option and to emit -D_XD_USE_GLIB1
+      upon --cflags
+    * xdelta: added glib-1.2 compatibility stuff back, wrapped in
+      _XD_USE_GLIB1 ifdefs.
+    * xdelta: avoid autotools warnings. (from RedHat/Fedora.)
+    * xdelta: gcc-4 fixes for xdelta-1.1.3. (#1, from RedHat/Fedora.)
+    * xdelta: gcc-4 patches for xdelta-1.1.3. (#2, from SuSE.)
+    * xdelta: not all systems have stdint.h, so switching to inttypes.h
+      for now. it would have been better if we had some autotools magic
+      for it.
+    * xdelta: commented out the SuSE solution for the memory allocation
+      bug and merged the RedHat solution. the original RedHat patch only
+      changed edsio/fh.c, I added the same thing to edsio/default.c, as
+      well. From the original logs: "fix memory allocation bug that
+      prevented to apply patches created on x86 platform to be applied on
+      x86_64 platform. For some reason, amount of memory to allocate is
+      specified in the delta file, but on 64bit platforms, you need more
+      space for pointers."
+    * xdelta: added a README file for our customized version.
+    * launcher: added integrated ability to patch the pak files using
+      xdelta11 libraries that I just imported. incremented the version
+      number to 0.9.0.
+    * updated the documentation about the launcher's patch ability.
+    * updated the documentation about the location of xdelta
+    * updated the rpm spec file after importing the xdelta libraries.
+      made it to build xdelta before the launcher for correct linkage.
+    * updated the mkrelease script
+
+2007-02-11 (CVS):
+    * gathered compiler specific definitions and settings into the
+      new compiler.h header. at present, it's only the _FUNC_PRINTF
+      stuff, more may come in the future.
+    * defs.hc contained 0 amount of code. killing it..
+    * took the hexenworld specific info strings stuff out of common.c
+      and common.h and put them into new info_str.c and info_str.h.
+      similarly, moved the decleration siege global variables to the
+      hexenworld client.h header where they belong.
+
 2007-02-10 (CVS):
     * added an advanced parsing of puzzles.txt: it is now parsed at
       its load time only, and is bound to two new global variables,
