@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.24 2007-02-06 12:24:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.25 2007-02-12 16:53:13 sezero Exp $
 */
 
 
@@ -670,7 +670,7 @@ static void WritePCXfile (const char *filename, byte *data, int width, int heigh
 
 // write output file 
 	length = pack - (byte *)pcx;
-	COM_WriteFile (filename, pcx, length);
+	QIO_WriteFile (filename, pcx, length);
 }
 
 /*
@@ -684,7 +684,7 @@ static void SCR_ScreenShot_f (void)
 	char		pcxname[80];
 	char		checkname[MAX_OSPATH];
 
-	sprintf (checkname, "%s/shots", com_userdir);
+	sprintf (checkname, "%s/shots", fs_userdir);
 	Sys_mkdir (checkname);
 //
 // find a file name to save it to
@@ -695,7 +695,7 @@ static void SCR_ScreenShot_f (void)
 	{
 		pcxname[8] = i/10 + '0';
 		pcxname[9] = i%10 + '0';
-		sprintf (checkname, "%s/%s", com_userdir, pcxname);
+		sprintf (checkname, "%s/%s", fs_userdir, pcxname);
 		if (access(checkname, F_OK) == -1)
 			break;	// file doesn't exist
 	}

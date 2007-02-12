@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.16 2007-02-06 12:24:24 sezero Exp $
+	$Id: zone.c,v 1.17 2007-02-12 16:53:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -782,7 +782,7 @@ static void Hunk_Print (qboolean all, qboolean write_file)
 
 	FH = NULL;
 	if (write_file)
-		FH = fopen(va("%s/memory.txt", com_userdir),"w");
+		FH = fopen(va("%s/memory.txt", fs_userdir),"w");
 
 	h = (hunk_t *)hunk_base;
 	endlow = (hunk_t *)(hunk_base + hunk_low_used);
@@ -871,7 +871,7 @@ static void Cache_Print (qboolean write_file)
 
 	FH = NULL;
 	if (write_file)
-		FH = fopen(va("%s/cache.txt", com_userdir),"w");
+		FH = fopen(va("%s/cache.txt", fs_userdir),"w");
 
 	count = sum = 0;
 	num_mod = sum_mod = 0;
@@ -1062,7 +1062,7 @@ static void Memory_Stats_f(void)
 
 	FH = NULL;
 	if (write_file)
-		FH = fopen(va("%s/stats.txt", com_userdir),"w");
+		FH = fopen(va("%s/stats.txt", fs_userdir),"w");
 
 	MEM_Printf(FH,"Group           Count Size\n");
 	MEM_Printf(FH,"--------------- ----- --------\n");

@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.77 2007-02-06 12:24:13 sezero Exp $
+	$Id: gl_draw.c,v 1.78 2007-02-12 16:53:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -143,7 +143,7 @@ static qpic_t *Draw_PicFromFile (const char *name)
 	qpic_t	*p;
 	glpic_t	*gl;
 
-	p = (qpic_t *)COM_LoadHunkFile (name);
+	p = (qpic_t *)QIO_LoadHunkFile (name);
 	if (!p)
 	{
 		return NULL;
@@ -167,7 +167,7 @@ static qpic_t *Draw_PicFileBuf (const char *name, void *p, size_t *size)
 {
 	glpic_t	*gl;
 
-	p = (void *)COM_LoadBufFile(name, p, size);
+	p = (void *)QIO_LoadBufFile(name, p, size);
 	if (!p)
 		return NULL;
 
@@ -224,7 +224,7 @@ qpic_t	*Draw_CachePic (const char *path)
 //
 // load the pic from disk
 //
-	dat = (qpic_t *)COM_LoadTempFile (path);
+	dat = (qpic_t *)QIO_LoadTempFile (path);
 	if (!dat)
 		Sys_Error ("Draw_CachePic: failed to load %s", path);
 	SwapPic (dat);
@@ -291,7 +291,7 @@ qpic_t *Draw_CachePicNoTrans (const char *path)
 //
 // load the pic from disk
 //
-	dat = (qpic_t *)COM_LoadTempFile (path);
+	dat = (qpic_t *)QIO_LoadTempFile (path);
 	if (!dat)
 		Sys_Error ("Draw_CachePicNoTrans: failed to load %s", path);
 	SwapPic (dat);
@@ -432,7 +432,7 @@ void Draw_Init (void)
 
 	// load the charset
 	start = Hunk_LowMark ();
-	draw_chars = COM_LoadHunkFile ("gfx/menu/conchars.lmp");
+	draw_chars = QIO_LoadHunkFile ("gfx/menu/conchars.lmp");
 	for (i = 0; i < 256*128; i++)
 	{
 		if (draw_chars[i] == 0)
@@ -457,7 +457,7 @@ void Draw_Init (void)
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
-	mf = (qpic_t *)COM_LoadTempFile("gfx/menu/bigfont2.lmp");
+	mf = (qpic_t *)QIO_LoadTempFile("gfx/menu/bigfont2.lmp");
 	for (i = 0; i < 160*80; i++)
 		if (mf->data[i] == 0)
 			mf->data[i] = 255;	// proper transparent color
@@ -467,7 +467,7 @@ void Draw_Init (void)
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
 	start = Hunk_LowMark ();
-	cb = (qpic_t *)COM_LoadHunkFile ("gfx/menu/conback.lmp");
+	cb = (qpic_t *)QIO_LoadHunkFile ("gfx/menu/conback.lmp");
 	if (!cb)
 		Sys_Error ("Couldn't load gfx/menu/conback.lmp");
 	SwapPic (cb);
@@ -492,7 +492,7 @@ void Draw_Init (void)
 
 	// load the backtile
 	start = Hunk_LowMark ();
-	bt = (qpic_t *)COM_LoadHunkFile ("gfx/menu/backtile.lmp");
+	bt = (qpic_t *)QIO_LoadHunkFile ("gfx/menu/backtile.lmp");
 	if (!bt)
 		Sys_Error ("Couldn't load gfx/menu/backtile.lmp");
 

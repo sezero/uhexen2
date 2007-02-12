@@ -85,12 +85,17 @@ SYSOBJ_SYS = $(SYS_UNIX)
 endif
 
 # Final list of objects
-COMMONOBJS = model.o \
-	cl_objs/cmd.o \
-	cl_objs/common.o \
-	cl_objs/info_str.o \
+COMMONOBJS = cl_objs/q_endian.o \
+	cl_objs/link_ops.o \
+	cl_objs/sizebuf.o \
 	cl_objs/strlcat.o \
 	cl_objs/strlcpy.o \
+	cl_objs/msg_io.o \
+	cl_objs/common.o \
+	cl_objs/quakeio.o \
+	cl_objs/quakefs.o \
+	cl_objs/info_str.o \
+	cl_objs/cmd.o \
 	cl_objs/crc.o \
 	cl_objs/cvar.o \
 	cl_objs/pr_strng.o \
@@ -101,6 +106,7 @@ COMMONOBJS = model.o \
 	cl_objs/pmove.o \
 	cl_objs/pmovetst.o \
 	cl_objs/zone.o \
+	model.o \
 	pr_cmds.o \
 	pr_edict.o \
 	pr_exec.o \

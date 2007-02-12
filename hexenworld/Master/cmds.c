@@ -1,6 +1,20 @@
-// cmds.c
+/*
+	cmd.c
+	Quake script command processing module
+
+	$Id: cmds.c,v 1.10 2007-02-12 16:54:48 sezero Exp $
+*/
 
 #include "defs.h"
+
+typedef struct cmd_function_s
+{
+	struct cmd_function_s	*next;
+	char		*name;
+	xcommand_t	function;
+} cmd_function_t;
+
+#define	MAX_ARGS	80
 
 static	int		cmd_argc;
 static	char	*cmd_argv[MAX_ARGS];
@@ -10,6 +24,8 @@ static	sizebuf_t	cmd_text;
 static	byte		cmd_text_buf[8192];
 
 static	cmd_function_t	*cmd_functions;		// possible commands to execute
+
+//=============================================================================
 
 int Cmd_Argc (void)
 {
@@ -223,27 +239,7 @@ qboolean Cmd_Exists (const char *cmd_name)
 }
 
 
-//Commands
-
-static void Cmd_Quit_f (void)
-{
-	printf ("Shutting down.\n");
-	SV_Shutdown ();
-
-	Sys_Quit();
-}
-
-static void Cmd_ServerList_f (void)
-{
-	server_t *sv;
-
-	for (sv = sv_list ; sv ; sv = sv->next)
-		printf("\t%s\n", NET_AdrToString(sv->ip));
-}
-
 void Cmd_Init (void)
 {
-	Cmd_AddCommand("quit",Cmd_Quit_f);
-	Cmd_AddCommand("list",Cmd_ServerList_f);
 }
 

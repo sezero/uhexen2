@@ -62,12 +62,12 @@ void W_LoadWadFile (const char *filename)
 	//	  load on top of the old one with no problems).
 	if (wad_base)
 	{
-		wad_base = COM_LoadBufFile(filename, wad_base, &wad_len);
+		wad_base = QIO_LoadBufFile(filename, wad_base, &wad_len);
 	}
 	else
 	{
-		wad_base = COM_LoadHunkFile(filename);
-		wad_len = com_filesize;
+		wad_base = QIO_LoadHunkFile(filename);
+		wad_len = qio_filesize;
 	}
 	if (!wad_base)
 		Sys_Error ("W_LoadWadFile: couldn't load %s", filename);

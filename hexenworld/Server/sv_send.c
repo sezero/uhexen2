@@ -1,6 +1,6 @@
 // sv_main.c -- server main program
 
-#include "qwsvdef.h"
+#include "quakedef.h"
 
 unsigned	clients_multicast;
 

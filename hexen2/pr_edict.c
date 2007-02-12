@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.33 2007-02-10 11:44:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.34 2007-02-12 16:52:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1198,7 +1198,7 @@ void PR_LoadProgs (void)
 
 #if USE_MULTIPLE_PROGS
 	// see the comments in progs.h about multiple progs
-	COM_FOpenFile ("maplist.txt", &FH, true);
+	QIO_FOpenFile ("maplist.txt", &FH, true);
 	if (FH)
 	{
 		char	build[2048], *test;
@@ -1263,12 +1263,12 @@ void PR_LoadProgs (void)
 	}
 #endif	// end of USE_MULTIPLE_PROGS
 
-	progs = (dprograms_t *)COM_LoadHunkFile (finalprogname);
+	progs = (dprograms_t *)QIO_LoadHunkFile (finalprogname);
 	if (!progs)
 		Sys_Error ("PR_LoadProgs: couldn't load %s", finalprogname);
-	Con_DPrintf ("Programs occupy %uK.\n", com_filesize/1024);
+	Con_DPrintf ("Programs occupy %uK.\n", qio_filesize/1024);
 
-	for (i = 0; i < com_filesize; i++)
+	for (i = 0; i < qio_filesize; i++)
 		CRC_ProcessByte (&pr_crc, ((byte *)progs)[i]);
 
 	// byte swap the header

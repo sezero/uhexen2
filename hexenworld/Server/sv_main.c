@@ -1,5 +1,5 @@
 
-#include "qwsvdef.h"
+#include "quakedef.h"
 
 quakeparms_t		host_parms;
 
@@ -954,7 +954,7 @@ static void SV_WriteIP_f (void)
 	byte	b[4];
 	int		i;
 
-	sprintf (name, "%s/listip.cfg", com_userdir);
+	sprintf (name, "%s/listip.cfg", fs_userdir);
 
 	Con_Printf ("Writing %s.\n", name);
 
@@ -1563,6 +1563,7 @@ void SV_Init (quakeparms_t *parms)
 	Cmd_Init ();
 
 	COM_Init ();
+	FS_Init ();
 
 	PR_Init ();
 	Mod_Init ();

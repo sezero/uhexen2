@@ -2,12 +2,12 @@
 	sv_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.11 2007-02-07 17:04:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.12 2007-02-12 16:54:51 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
 
-#include "qwsvdef.h"
+#include "quakedef.h"
 
 // MACROS ------------------------------------------------------------------
 

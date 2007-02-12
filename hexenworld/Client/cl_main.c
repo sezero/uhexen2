@@ -900,13 +900,13 @@ static void CL_Download_f (void)
 		return;
 	}
 
-	if (snprintf (tmp, sizeof(tmp), "%s/%s", com_userdir, Cmd_Argv(1)) >= MAX_OSPATH)
+	if (snprintf (tmp, sizeof(tmp), "%s/%s", fs_userdir, Cmd_Argv(1)) >= MAX_OSPATH)
 	{
 		Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
 		return;
 	}
 
-	if ( COM_CreatePath(tmp) )
+	if ( QIO_CreatePath(tmp) )
 	{
 		Con_Printf ("Unable to create directory for downloading %s\n", Cmd_Argv(1));
 		return;
@@ -1162,7 +1162,7 @@ void Host_WriteConfiguration (const char *fname)
 
 	if (host_initialized)
 	{
-		f = fopen (va("%s/%s",com_userdir,fname), "w");
+		f = fopen (va("%s/%s",fs_userdir,fname), "w");
 		if (!f)
 		{
 			Con_Printf ("Couldn't write %s.\n",fname);
@@ -1320,10 +1320,11 @@ void Host_Init (quakeparms_t *parms)
 	Memory_Init (parms->membase, parms->memsize);
 	Cbuf_Init ();
 	Cmd_Init ();
-	CL_Cmd_Init ();
 	V_Init ();
 
 	COM_Init ();
+	FS_Init ();
+	CL_Cmd_Init ();
 
 	NET_Init (PORT_CLIENT);
 	Netchan_Init ();
@@ -1339,11 +1340,11 @@ void Host_Init (quakeparms_t *parms)
 
 	R_InitTextures ();
 
-	host_basepal = (byte *)COM_LoadHunkFile ("gfx/palette.lmp");
+	host_basepal = (byte *)QIO_LoadHunkFile ("gfx/palette.lmp");
 	if (!host_basepal)
 		Sys_Error ("Couldn't load gfx/palette.lmp");
 
-	host_colormap = (byte *)COM_LoadHunkFile ("gfx/colormap.lmp");
+	host_colormap = (byte *)QIO_LoadHunkFile ("gfx/colormap.lmp");
 	if (!host_colormap)
 		Sys_Error ("Couldn't load gfx/colormap.lmp");
 

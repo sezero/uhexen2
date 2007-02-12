@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.10 2007-02-07 17:03:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.11 2007-02-12 16:53:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -432,7 +432,7 @@ static void Host_Savegame_f (void)
 	if (error_state)
 		return;
 
-	if (snprintf(savename, sizeof(savename), "%s/%s", com_savedir, Cmd_Argv(1)) >= sizeof(savename))
+	if (snprintf(savename, sizeof(savename), "%s/%s", fs_savedir, Cmd_Argv(1)) >= sizeof(savename))
 	{
 		Con_Printf ("%s: save directory name too long\n", __FUNCTION__);
 		return;
@@ -445,17 +445,17 @@ static void Host_Savegame_f (void)
 
 	Host_RemoveGIPFiles(savename);
 
-	snprintf (savename, sizeof(savename), "%s/clients.gip", com_savedir);
+	snprintf (savename, sizeof(savename), "%s/clients.gip", fs_savedir);
 	unlink(savename);
 
-	snprintf (savedest, sizeof(savedest), "%s/%s", com_savedir, Cmd_Argv(1));
+	snprintf (savedest, sizeof(savedest), "%s/%s", fs_savedir, Cmd_Argv(1));
 	Con_Printf ("Saving game to %s...\n", savedest);
 
-	error_state = Host_CopyFiles(com_savedir, "*.gip", savedest);
+	error_state = Host_CopyFiles(fs_savedir, "*.gip", savedest);
 	if (error_state)
 		goto retrymsg;
 
-	if (snprintf(savedest, sizeof(savedest), "%s/%s/info.dat", com_savedir, Cmd_Argv(1)) >= sizeof(savedest))
+	if (snprintf(savedest, sizeof(savedest), "%s/%s/info.dat", fs_savedir, Cmd_Argv(1)) >= sizeof(savedest))
 	{
 		Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
 		return;
@@ -526,7 +526,7 @@ static void Host_Loadgame_f (void)
 
 	Host_RemoveGIPFiles(NULL);
 
-	if (snprintf(savename, sizeof(savename), "%s/%s", com_savedir, Cmd_Argv(1)) >= sizeof(savename))
+	if (snprintf(savename, sizeof(savename), "%s/%s", fs_savedir, Cmd_Argv(1)) >= sizeof(savename))
 	{
 		Con_Printf ("%s: save directory name too long\n", __FUNCTION__);
 		return;
@@ -606,10 +606,10 @@ static void Host_Loadgame_f (void)
 
 	fclose (f);
 
-	Host_RemoveGIPFiles(com_savedir);
+	Host_RemoveGIPFiles(fs_savedir);
 
-	snprintf (savedest, sizeof(savedest), "%s/%s", com_savedir, Cmd_Argv(1));
-	error_state = Host_CopyFiles(savedest, "*.gip", com_savedir);
+	snprintf (savedest, sizeof(savedest), "%s/%s", fs_savedir, Cmd_Argv(1));
+	error_state = Host_CopyFiles(savedest, "*.gip", fs_savedir);
 
 	if (error_state)
 	{
@@ -649,7 +649,7 @@ qboolean SaveGamestate(qboolean ClientsOnly)
 		start = 1;
 		end = svs.maxclients+1;
 
-		if (snprintf(savename, sizeof(savename), "%s/clients.gip", com_savedir) >= sizeof(savename))
+		if (snprintf(savename, sizeof(savename), "%s/clients.gip", fs_savedir) >= sizeof(savename))
 		{
 			Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
 			return true;
@@ -660,7 +660,7 @@ qboolean SaveGamestate(qboolean ClientsOnly)
 		start = 1;
 		end = sv.num_edicts;
 
-		if (snprintf(savename, sizeof(savename), "%s/%s.gip", com_savedir, sv.name) >= sizeof(savename))
+		if (snprintf(savename, sizeof(savename), "%s/%s.gip", fs_savedir, sv.name) >= sizeof(savename))
 		{
 			Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
 			return true;
@@ -816,7 +816,7 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode)
 
 	if (ClientsMode == 1)
 	{
-		if (snprintf(savename, sizeof(savename), "%s/clients.gip", com_savedir) >= sizeof(savename))
+		if (snprintf(savename, sizeof(savename), "%s/clients.gip", fs_savedir) >= sizeof(savename))
 		{
 			Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
 			return -1;
@@ -824,7 +824,7 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode)
 	}
 	else
 	{
-		if (snprintf(savename, sizeof(savename), "%s/%s.gip", com_savedir, level) >= sizeof(savename))
+		if (snprintf(savename, sizeof(savename), "%s/%s.gip", fs_savedir, level) >= sizeof(savename))
 		{
 			Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
 			return -1;

@@ -1,5 +1,5 @@
 
-#include "qwsvdef.h"
+#include "quakedef.h"
 
 server_static_t	svs;			// persistant server info
 server_t		sv;		// local server

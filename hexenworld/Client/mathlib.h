@@ -3,29 +3,28 @@
 #ifndef __MATHLIB_H
 #define __MATHLIB_H
 
-typedef float vec_t;
-typedef vec_t vec3_t[3];
-typedef vec_t vec5_t[5];
-
-typedef	int	fixed4_t;
-typedef	int	fixed8_t;
-typedef	int	fixed16_t;
-
 #ifndef M_PI
 #define M_PI		3.14159265358979323846	// matches value in gcc v2 math.h
 #endif
 
-struct mplane_s;
+#if !defined(min) || !defined(max)
+#undef	min
+#undef	max
+#define	min(a, b)		(((a) < (b)) ? (a) : (b))
+#define	max(a, b)		(((a) > (b)) ? (a) : (b))
+#endif
+#define	bound(min, num, max)	((num) >= (min) ? ((num) < (max) ? (num) : (max)) : (min))
 
-extern vec3_t vec3_origin;
-extern	int nanmask;
+#define	nanmask			(255<<23)
+#define	IS_NAN(x)		(((*(int *)&x)&nanmask) == nanmask)
 
-#define	IS_NAN(x) (((*(int *)&x)&nanmask)==nanmask)
 int Q_isnan (float x);
 
-#define VectorCompare(v1,v2) (((v1)[0]==(v2)[0])&&((v1)[1]==(v2)[1])&&((v1)[2]==(v2)[2]))
-#define DotProduct(x,y) ((x)[0]*(y)[0]+(x)[1]*(y)[1]+(x)[2]*(y)[2])
-#define VectorLength(a) sqrt(DotProduct((a),(a)))
+extern vec3_t vec3_origin;
+
+#define VectorCompare(v1,v2)	( ((v1)[0] == (v2)[0]) && ((v1)[1] == (v2)[1]) && ((v1)[2] == (v2)[2]) )
+#define DotProduct(x,y)		( (x)[0]*(y)[0] + (x)[1]*(y)[1] + (x)[2]*(y)[2] )
+#define VectorLength(a)		sqrt(DotProduct((a),(a)))
 #define CrossProduct(v1,v2,cross) { \
 	(cross)[0] = (v1)[1]*(v2)[2] - (v1)[2]*(v2)[1]; \
 	(cross)[1] = (v1)[2]*(v2)[0] - (v1)[0]*(v2)[2]; \
@@ -78,9 +77,10 @@ fixed16_t Invert24To16(fixed16_t val);
 int GreatestCommonDivisor (int i1, int i2);
 
 void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
-int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct mplane_s *plane);
 float	anglemod(float a);
 
+struct mplane_s;
+int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct mplane_s *plane);
 
 #define BOX_ON_PLANE_SIDE(emins, emaxs, p)	\
 	(((p)->type < 3)?						\

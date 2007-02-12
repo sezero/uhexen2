@@ -1,10 +1,6 @@
 // cvar.c -- dynamic variable tracking
 
-#ifdef SERVERONLY 
-#include "qwsvdef.h"
-#else
 #include "quakedef.h"
-#endif
 
 cvar_t	*cvar_vars;
 static	char	*cvar_null_string = "";

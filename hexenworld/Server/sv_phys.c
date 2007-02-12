@@ -1,6 +1,6 @@
 // sv_phys.c
 
-#include "qwsvdef.h"
+#include "quakedef.h"
 
 /*
 

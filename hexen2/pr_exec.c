@@ -1,7 +1,7 @@
 /*
 	pr_exec.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.15 2007-02-07 17:01:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.16 2007-02-12 16:52:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1003,11 +1003,11 @@ void PR_Profile_f (void)
 			if (i+1 < Cmd_Argc() && !isdigit(*Cmd_Argv(i+1)))
 			{
 				i++;
-				sprintf(saveName, "%s/%s", com_userdir, Cmd_Argv(i));
+				sprintf(saveName, "%s/%s", fs_userdir, Cmd_Argv(i));
 			}
 			else
 			{
-				sprintf(saveName, "%s/profile.txt", com_userdir);
+				sprintf(saveName, "%s/profile.txt", fs_userdir);
 			}
 		}
 		else if (isdigit(*s))

@@ -99,12 +99,12 @@ byte	*Skin_Cache (skin_t *skin)
 // load the pic from disk
 //
 	sprintf (name, "skins/%s.pcx", skin->name);
-	raw = COM_LoadTempFile (name);
+	raw = QIO_LoadTempFile (name);
 	if (!raw)
 	{
 		Con_Printf ("Couldn't load skin %s\n", name);
 		sprintf (name, "skins/%s.pcx", baseskin.string);
-		raw = COM_LoadTempFile (name);
+		raw = QIO_LoadTempFile (name);
 		if (!raw)
 		{
 			skin->failedload = true;
@@ -141,7 +141,7 @@ byte	*Skin_Cache (skin_t *skin)
 	{
 		for (x = 0; x <= pcx->xmax ; )
 		{
-			if ((raw-(byte*)pcx) > com_filesize)
+			if ((raw-(byte*)pcx) > qio_filesize)
 			{
 				Cache_Free (&skin->cache);
 				skin->failedload = true;
@@ -153,7 +153,7 @@ byte	*Skin_Cache (skin_t *skin)
 			if ((dataByte & 0xC0) == 0xC0)
 			{
 				runLength = dataByte & 0x3F;
-				if ((raw-(byte*)pcx) > com_filesize)
+				if ((raw-(byte*)pcx) > qio_filesize)
 				{
 					Cache_Free (&skin->cache);
 					skin->failedload = true;
@@ -178,7 +178,7 @@ byte	*Skin_Cache (skin_t *skin)
 		}
 	}
 
-	if (raw - (byte *)pcx > com_filesize)
+	if (raw - (byte *)pcx > qio_filesize)
 	{
 		Cache_Free (&skin->cache);
 		skin->failedload = true;

@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.26 2007-02-07 17:01:32 sezero Exp $
+	$Id: draw.c,v 1.27 2007-02-12 16:52:45 sezero Exp $
 */
 
 
@@ -80,7 +80,7 @@ qpic_t	*Draw_CachePic (const char *path)
 //
 // load the pic from disk
 //
-	COM_LoadCacheFile (path, &pic->cache);
+	QIO_LoadCacheFile (path, &pic->cache);
 
 	dat = (qpic_t *)pic->cache.data;
 	if (!dat)
@@ -122,7 +122,7 @@ qpic_t  *Draw_CachePicResize (const char *path, int targetWidth, int targetHeigh
 	if (dat)
 		return dat;
 	// Allocate original data temporarily
-	temp = (qpic_t *)COM_LoadTempFile(path);
+	temp = (qpic_t *)QIO_LoadTempFile(path);
 	SwapPic(temp);
 	/* I wish Carmack would thought of something more intuitive than
 	   out-of-bounds array for storing image data */
@@ -163,7 +163,7 @@ void Draw_Init (void)
 
 	if (draw_chars)
 		Z_Free (draw_chars);
-	draw_chars = COM_LoadZoneFile ("gfx/menu/conchars.lmp");
+	draw_chars = QIO_LoadZoneFile ("gfx/menu/conchars.lmp");
 
 	if (draw_reinit)
 		return;
@@ -175,10 +175,10 @@ void Draw_Init (void)
 	for (i = MAX_DISC-1; i >= 0; i--)
 	{
 		snprintf(temp, sizeof(temp), "gfx/menu/skull%d.lmp", i);
-		draw_disc[i] = (qpic_t *)COM_LoadHunkFile (temp);
+		draw_disc[i] = (qpic_t *)QIO_LoadHunkFile (temp);
 	}
 
-	draw_backtile = (qpic_t	*)COM_LoadHunkFile ("gfx/menu/backtile.lmp");
+	draw_backtile = (qpic_t	*)QIO_LoadHunkFile ("gfx/menu/backtile.lmp");
 
 	r_rectdesc.width = draw_backtile->width;
 	r_rectdesc.height = draw_backtile->height;

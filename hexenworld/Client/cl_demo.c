@@ -312,7 +312,7 @@ void CL_Record_f (void)
 		return;
 	}
 
-	snprintf (name, sizeof(name), "%s/%s", com_userdir, Cmd_Argv(1));
+	snprintf (name, sizeof(name), "%s/%s", fs_userdir, Cmd_Argv(1));
 
 //
 // open the demo file
@@ -372,7 +372,7 @@ void CL_ReRecord_f (void)
 		return;
 	}
 
-	snprintf (name, sizeof(name), "%s/%s", com_userdir, Cmd_Argv(1));
+	snprintf (name, sizeof(name), "%s/%s", fs_userdir, Cmd_Argv(1));
 
 //
 // open the demo file
@@ -433,7 +433,7 @@ void CL_PlayDemo_f (void)
 	COM_DefaultExtension (name, ".qwd", sizeof(name));
 
 	Con_Printf ("Playing demo from %s.\n", name);
-	COM_FOpenFile (name, &cls.demofile, false);
+	QIO_FOpenFile (name, &cls.demofile, false);
 	if (!cls.demofile)
 	{
 		Con_Printf ("ERROR: couldn't open %s\n", name);

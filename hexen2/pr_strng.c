@@ -29,7 +29,7 @@ void PR_LoadStrings (void)
 	int		i, count, start;
 	signed char	NewLineChar;
 
-	pr_global_strings = (char *)COM_LoadHunkFile ("strings.txt");
+	pr_global_strings = (char *)QIO_LoadHunkFile ("strings.txt");
 	if (!pr_global_strings)
 		Sys_Error ("PR_LoadStrings: couldn't load strings.txt");
 
@@ -95,7 +95,7 @@ void PR_LoadPuzzleStrings (void)
 
 	puzzle_string_index = NULL;
 	puzzle_string_count = 0;
-	puzzle_strings = (char *)COM_LoadHunkFile ("puzzles.txt");
+	puzzle_strings = (char *)QIO_LoadHunkFile ("puzzles.txt");
 	if ( !puzzle_strings )
 		return;
 
@@ -230,7 +230,7 @@ void PR_LoadInfoStrings (void)
 	int		i, count, start;
 	signed char	NewLineChar;
 
-	pr_global_info_strings = (char *)COM_LoadHunkFile ("infolist.txt");
+	pr_global_info_strings = (char *)QIO_LoadHunkFile ("infolist.txt");
 	if (!pr_global_info_strings)
 		Sys_Error ("PR_LoadInfoStrings: couldn't load infolist.txt");
 

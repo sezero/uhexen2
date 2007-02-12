@@ -2,13 +2,13 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/world.c,v 1.10 2007-02-07 17:04:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/world.c,v 1.11 2007-02-12 16:54:52 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
 */
 
-#include "qwsvdef.h"
+#include "quakedef.h"
 
 typedef struct
 {

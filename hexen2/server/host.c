@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.10 2007-02-09 14:08:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.11 2007-02-12 16:53:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -78,7 +78,7 @@ void Host_RemoveGIPFiles (const char *path)
 	if (path)
 		snprintf(tempdir, MAX_OSPATH, "%s", path);
 	else
-		snprintf(tempdir, MAX_OSPATH, "%s", com_savedir);
+		snprintf(tempdir, MAX_OSPATH, "%s", fs_savedir);
 
 	name = Sys_FindFirstFile (tempdir, "*.gip");
 
@@ -112,7 +112,7 @@ qboolean Host_CopyFiles(const char *source, const char *pat, const char *dest)
 #ifdef _WIN32
 		if (!CopyFile(tempdir,tempdir2,FALSE))
 #else
-		if (COM_CopyFile(tempdir,tempdir2))
+		if (QIO_CopyFile(tempdir,tempdir2))
 #endif
 		{
 			Con_Printf ("Error copying %s to %s\n",tempdir,tempdir2);
@@ -595,6 +595,7 @@ void Host_Init (quakeparms_t *parms)
 	Cbuf_Init ();
 	Cmd_Init ();
 	COM_Init ();
+	FS_Init ();
 	Host_RemoveGIPFiles(NULL);
 	Host_InitLocal ();
 	PR_Init ();

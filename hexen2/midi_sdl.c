@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.31 2007-02-07 17:01:35 sezero Exp $
+	$Id: midi_sdl.c,v 1.32 2007-02-12 16:52:49 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -147,7 +147,7 @@ bad_version:
 	}
 	Con_Printf("found.\n");
 
-	Q_snprintf_err(mididir, sizeof(mididir), "%s/.midi", com_userdir);
+	Q_snprintf_err(mididir, sizeof(mididir), "%s/.midi", fs_userdir);
 	Sys_mkdir_err (mididir);
 
 	// Try initing the audio subsys if it hasn't been already
@@ -209,17 +209,17 @@ void MIDI_Play(const char *Name)
 
 	// Note that midi/ is the standart quake search path, but
 	// .midi/ with the leading dot is the path in the userdir
-	snprintf (midiName, sizeof(midiName), "%s/.midi/%s.mid", com_userdir, Name);
+	snprintf (midiName, sizeof(midiName), "%s/.midi/%s.mid", fs_userdir, Name);
 	if (access(midiName, R_OK) != 0)
 	{
 		Sys_Printf("Extracting file midi/%s.mid\n", Name);
-		midiData = COM_LoadHunkFile (va("midi/%s.mid", Name));
+		midiData = QIO_LoadHunkFile (va("midi/%s.mid", Name));
 		if (!midiData)
 		{
 			Con_Printf("musicfile midi/%s.mid not found\n", Name);
 			return;
 		}
-		if (COM_WriteFile (va(".midi/%s.mid", Name), midiData, com_filesize))
+		if (QIO_WriteFile (va(".midi/%s.mid", Name), midiData, qio_filesize))
 			return;
 	}
 

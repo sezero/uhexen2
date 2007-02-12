@@ -352,10 +352,16 @@ COMMONOBJS = cl_cam.o \
 	cl_tent.o \
 	cl_cmd.o \
 	cmd.o \
-	common.o \
-	info_str.o \
+	q_endian.o \
+	link_ops.o \
+	sizebuf.o \
 	strlcat.o \
 	strlcpy.o \
+	msg_io.o \
+	common.o \
+	quakeio.o \
+	quakefs.o \
+	info_str.o \
 	console.o \
 	crc.o \
 	cvar.o \

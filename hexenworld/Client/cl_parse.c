@@ -138,7 +138,7 @@ qboolean CL_CheckOrDownloadFile (char *filename)
 		return true;
 	}
 
-	COM_FOpenFile (filename, &f, false);
+	QIO_FOpenFile (filename, &f, false);
 	if (f)
 	{	// it exists, no need to download
 		fclose (f);
@@ -332,13 +332,13 @@ static void CL_ParseDownload (void)
 	{
 #if 0
 		if (strncmp(cls.downloadtempname,"skins/",6))
-			sprintf (name, "%s/%s", com_gamedir, cls.downloadtempname);
+			sprintf (name, "%s/%s", fs_gamedir, cls.downloadtempname);
 		else
 			sprintf (name, "hw/%s", cls.downloadtempname);
 #endif
 	// Do I really need to care more about skins like above?..
-		snprintf (name, sizeof(name), "%s/%s", com_userdir, cls.downloadtempname);
-		if ( COM_CreatePath(name) )
+		snprintf (name, sizeof(name), "%s/%s", fs_userdir, cls.downloadtempname);
+		if ( QIO_CreatePath(name) )
 		{
 			msg_readcount += size;
 			Con_Printf ("Unable to create directory for downloading %s\n", cls.downloadtempname);
@@ -389,8 +389,8 @@ static void CL_ParseDownload (void)
 #if 0
 		if (strncmp(cls.downloadtempname,"skins/",6))
 		{
-			sprintf (oldn, "%s/%s", com_gamedir, cls.downloadtempname);
-			sprintf (newn, "%s/%s", com_gamedir, cls.downloadname);
+			sprintf (oldn, "%s/%s", fs_gamedir, cls.downloadtempname);
+			sprintf (newn, "%s/%s", fs_gamedir, cls.downloadname);
 		}
 		else
 		{
@@ -399,8 +399,8 @@ static void CL_ParseDownload (void)
 		}
 #endif
 	// Do I really need to care more about skins like above?..
-		snprintf (oldn, sizeof(oldn), "%s/%s", com_userdir, cls.downloadtempname);
-		snprintf (newn, sizeof(newn), "%s/%s", com_userdir, cls.downloadname);
+		snprintf (oldn, sizeof(oldn), "%s/%s", fs_userdir, cls.downloadtempname);
+		snprintf (newn, sizeof(newn), "%s/%s", fs_userdir, cls.downloadname);
 		r = rename (oldn, newn);
 		if (r)
 			Con_Printf ("failed to rename.\n");
@@ -456,11 +456,11 @@ static void CL_ParseServerData (void)
 		Host_WriteConfiguration ("config.cfg");
 
 		// set the new gamedir and userdir
-		COM_Gamedir(str);
+		FS_Gamedir(str);
 
 		// ZOID - run autoexec.cfg in the gamedir if it exists
 		Cbuf_AddText ("cl_warncmd 0\n");
-		if (COM_FileInGamedir("config.cfg") != -1)
+		if (QFS_FileInGamedir("config.cfg") != -1)
 		{
 		// remove any weird mod specific key bindings / aliases
 			Cbuf_AddText("unbindall\n");
@@ -469,7 +469,7 @@ static void CL_ParseServerData (void)
 			Cbuf_AddText("exec config.cfg\n");
 		}
 		// gamespy crap
-		if (COM_FileInGamedir("frontend.cfg") != -1)
+		if (QFS_FileInGamedir("frontend.cfg") != -1)
 			Cbuf_AddText("exec frontend.cfg\n");
 
 		Cbuf_Execute ();

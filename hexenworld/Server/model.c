@@ -5,10 +5,10 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.10 2007-02-06 12:24:27 sezero Exp $
+	$Id: model.c,v 1.11 2007-02-12 16:54:51 sezero Exp $
 */
 
-#include "qwsvdef.h"
+#include "quakedef.h"
 
 model_t	*loadmodel;
 static char	loadname[32];	// for hunk tags
@@ -203,7 +203,7 @@ static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 //
 // load the file
 //
-	buf = (unsigned *)COM_LoadStackFile (mod->name, stackbuf, sizeof(stackbuf));
+	buf = (unsigned *)QIO_LoadStackFile (mod->name, stackbuf, sizeof(stackbuf));
 	if (!buf)
 	{
 		if (crash)

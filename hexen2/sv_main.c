@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.43 2007-02-09 15:14:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.44 2007-02-12 16:52:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -94,7 +94,7 @@ void SV_Edicts (const char *Name)
 	int		i;
 	edict_t	*e;
 
-	FH = fopen(va("%s/%s", com_userdir, Name), "w");
+	FH = fopen(va("%s/%s", fs_userdir, Name), "w");
 	if (!FH)
 	{
 		Con_Printf("Could not open %s\n", Name);

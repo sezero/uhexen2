@@ -119,10 +119,16 @@ SYSOBJ_SYS = $(SYS_UNIX)
 endif
 
 # Final list of objects
-H2DED_OBJS = cmd.o \
-	common.o \
+H2DED_OBJS = q_endian.o \
+	link_ops.o \
+	sizebuf.o \
 	strlcat.o \
 	strlcpy.o \
+	msg_io.o \
+	common.o \
+	quakeio.o \
+	quakefs.o \
+	cmd.o \
 	crc.o \
 	cvar.o \
 	mathlib.o \

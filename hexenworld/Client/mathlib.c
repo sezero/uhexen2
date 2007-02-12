@@ -2,13 +2,12 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.c,v 1.13 2007-02-11 08:06:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.c,v 1.14 2007-02-12 16:53:10 sezero Exp $
 */
 
 #include "quakedef.h"
 
 vec3_t vec3_origin = { 0, 0, 0 };
-int nanmask = 255 << 23;
 
 /*
 ================

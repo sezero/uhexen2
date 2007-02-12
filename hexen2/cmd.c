@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.24 2007-02-07 17:01:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.25 2007-02-12 16:52:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -287,7 +287,7 @@ static void Cmd_Exec_f (void)
 
 	// FIXME: is this safe freeing the hunk here???
 	mark = Hunk_LowMark ();
-	f = (char *)COM_LoadHunkFile (Cmd_Argv(1));
+	f = (char *)QIO_LoadHunkFile (Cmd_Argv(1));
 	if (!f)
 	{
 		Con_Printf ("couldn't exec %s\n",Cmd_Argv(1));
@@ -868,7 +868,7 @@ static void Cmd_WriteCommands_f (void)
 	cvar_t		*var;
 	cmdalias_t	*a;
 
-	FH = fopen(va("%s/commands.txt", com_userdir),"w");
+	FH = fopen(va("%s/commands.txt", fs_userdir),"w");
 	if (!FH)
 	{
 		return;

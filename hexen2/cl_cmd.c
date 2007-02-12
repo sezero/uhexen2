@@ -2,10 +2,11 @@
 	cl_cmd.c
 	client command forwarding to server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_cmd.c,v 1.1 2005-10-29 21:43:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_cmd.c,v 1.2 2007-02-12 16:52:44 sezero Exp $
 */
 
 #include "quakedef.h"
+#include "pakfile.h"	/* for the maplist cmd */
 
 /*
 ===================
@@ -55,8 +56,131 @@ void Cmd_ForwardToServer_f (void)
 	}
 }
 
+/*
+===========
+Cmd_Maplist_f
+Prints map filenames to the console
+===========
+*/
+static void Cmd_Maplist_f (void)
+{
+	int			i, cnt, dups = 0;
+	pack_t		*pak;
+	searchpath_t	*search;
+	char		**maplist = NULL, mappath[MAX_OSPATH];
+	char	*findname;
+
+	// do two runs - first count the number of maps
+	// then collect their names into maplist
+scanmaps:
+	cnt = 0;
+	// search through the path, one element at a time
+	// either "search->filename" or "search->pak" is defined
+	for (search = fs_searchpaths; search; search = search->next)
+	{
+		if (search->pack)
+		{
+			pak = search->pack;
+
+			for (i = 0; i < pak->numfiles; i++)
+			{
+				if (strncmp ("maps/", pak->files[i].name, 5) == 0  && 
+				    strstr(pak->files[i].name, ".bsp"))
+				{
+					if (maplist)
+					{
+						size_t	len;
+						int	dupl = 0, j;
+						// add to our maplist
+						len = strlen (pak->files[i].name + 5) - 4 + 1;
+								// - ".bsp" (-4) +  "\0" (+1)
+						for (j = 0 ; j < cnt ; j++)
+						{
+							if (!Q_strncasecmp(maplist[j], pak->files[i].name + 5, len-1))
+							{
+								dupl = 1;
+								dups++;
+								break;
+							}
+						}
+						if (!dupl)
+						{
+							maplist[cnt] = malloc (len);
+							Q_strlcpy ((char *)maplist[cnt] , pak->files[i].name + 5, len);
+							cnt++;
+						}
+					}
+					else
+						cnt++;
+				}
+			}
+		}
+		else
+		{	// element is a filename
+			snprintf (mappath, sizeof(mappath), search->filename);
+			Q_strlcat (mappath, "/maps", sizeof(mappath));
+			findname = Sys_FindFirstFile (mappath, "*.bsp");
+			while (findname)
+			{
+				if (maplist)
+				{
+					size_t	len;
+					int	dupl = 0, j;
+					// add to our maplist
+					len = strlen(findname) - 4 + 1;
+					for (j = 0 ; j < cnt ; j++)
+					{
+						if (!Q_strncasecmp(maplist[j], findname, len-1))
+						{
+							dupl = 1;
+							dups++;
+							break;
+						}
+					}
+					if (!dupl)
+					{
+						maplist[cnt] = malloc (len);
+						Q_strlcpy (maplist[cnt], findname, len);
+						cnt++;
+					}
+				}
+				else
+					cnt++;
+				findname = Sys_FindNextFile ();
+			}
+			Sys_FindClose ();
+		}
+	}
+
+	if (maplist == NULL)
+	{
+		// after first run, we know how many maps we have
+		// should I use malloc or something else
+		Con_Printf ("Found %d maps:\n\n", cnt);
+		if (!cnt)
+			return;
+		maplist = malloc(cnt * sizeof (char *));
+		goto scanmaps;
+	}
+
+	// sort the list
+	qsort (maplist, cnt, sizeof(char *), COM_StrCompare);
+	Con_ShowList (cnt, (const char**)maplist);
+	if (dups)
+		Con_Printf ("\neliminated %d duplicate names\n", dups);
+	Con_Printf ("\n");
+
+	// Free memory
+	for (i = 0; i < cnt; i++)
+		free (maplist[i]);
+
+	free (maplist);
+}
+
 void CL_Cmd_Init (void)
 {
 	Cmd_AddCommand ("cmd", Cmd_ForwardToServer_f);
+
+	Cmd_AddCommand ("maplist", Cmd_Maplist_f);
 }
 

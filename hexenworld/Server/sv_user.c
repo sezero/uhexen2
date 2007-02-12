@@ -1,6 +1,6 @@
 // sv_user.c -- server code for moving users
 
-#include "qwsvdef.h"
+#include "quakedef.h"
 #include <ctype.h>
 
 edict_t	*sv_player;
@@ -446,8 +446,6 @@ static void SV_NextDownload_f (void)
 SV_BeginDownload_f
 ==================
 */
-extern	int	file_from_pak; // ZOID did file come from pak?
-
 static void SV_BeginDownload_f(void)
 {
 	char	*name, *p;
@@ -488,7 +486,7 @@ static void SV_BeginDownload_f(void)
 	for (p = name; *p; p++)
 		*p = (char)tolower(*p);
 
-	host_client->downloadsize = COM_FOpenFile (name, &host_client->download, false);
+	host_client->downloadsize = QIO_FOpenFile (name, &host_client->download, false);
 	host_client->downloadcount = 0;
 
 	if (!host_client->download

@@ -156,7 +156,7 @@ unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
 unsigned	d_8to24TranslucentTable[256];
 #if USE_HEXEN2_PALTEX_CODE
-unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1]; // +1: COM_LoadStackFile puts a 0 at the end of the data
+unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1]; // +1: QIO_LoadStackFile puts a 0 at the end of the data
 #else
 unsigned char	d_15to8table[65536];
 #endif
@@ -1047,9 +1047,9 @@ static void VID_CreateInversePalette (unsigned char *palette)
 		}
 	}
 
-	snprintf (path, MAX_OSPATH, "%s/data1/gfx", com_basedir);
+	snprintf (path, MAX_OSPATH, "%s/data1/gfx", fs_basedir);
 	Sys_mkdir (path);
-	snprintf (path, MAX_OSPATH, "%s/data1/gfx/invpal.lmp", com_basedir);
+	snprintf (path, MAX_OSPATH, "%s/data1/gfx/invpal.lmp", fs_basedir);
 	FH = fopen(path, "wb");
 	if (!FH)
 		Sys_Error ("Couldn't create %s", path);
@@ -1143,11 +1143,11 @@ void VID_SetPalette (unsigned char *palette)
 #   ifdef DO_BUILD
 	VID_CreateInversePalette (palette);
 #   else
-	COM_LoadStackFile ("gfx/invpal.lmp", inverse_pal, sizeof(inverse_pal));
+	QIO_LoadStackFile ("gfx/invpal.lmp", inverse_pal, sizeof(inverse_pal));
 #   endif
 
 #else // end of HEXEN2_PALTEX_CODE
-	COM_FOpenFile("glhexen/15to8.pal", &f, true);
+	QIO_FOpenFile("glhexen/15to8.pal", &f, true);
 	if (f)
 	{
 		fread(d_15to8table, 1<<15, 1, f);
@@ -1210,9 +1210,9 @@ void VID_SetPalette (unsigned char *palette)
 				m = 0;
 			}
 		}
-		snprintf(s, sizeof(s), "%s/glhexen", com_userdir);
+		snprintf(s, sizeof(s), "%s/glhexen", fs_userdir);
 		Sys_mkdir (s);
-		snprintf(s, sizeof(s), "%s/glhexen/15to8.pal", com_userdir);
+		snprintf(s, sizeof(s), "%s/glhexen/15to8.pal", fs_userdir);
 		f = fopen(s, "wb");
 		if (f)
 		{
@@ -2140,7 +2140,7 @@ static void VID_EarlyReadConfig (void)
 		NULL
 	};
 
-	COM_FOpenFile ("config.cfg", &cfg_file, true);
+	QIO_FOpenFile ("config.cfg", &cfg_file, true);
 	if (!cfg_file)
 		return;
 
@@ -2279,11 +2279,11 @@ void	VID_Init (unsigned char *palette)
 	Cmd_AddCommand ("vid_restart", VID_Restart_f);
 
 	// prepare directories for caching mesh files
-	snprintf (gldir, sizeof(gldir), "%s/glhexen", com_userdir);
+	snprintf (gldir, sizeof(gldir), "%s/glhexen", fs_userdir);
 	Sys_mkdir (gldir);
-	snprintf (gldir, sizeof(gldir), "%s/glhexen/boss", com_userdir);
+	snprintf (gldir, sizeof(gldir), "%s/glhexen/boss", fs_userdir);
 	Sys_mkdir (gldir);
-	snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", com_userdir);
+	snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", fs_userdir);
 	Sys_mkdir (gldir);
 
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));

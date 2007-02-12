@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.6 2007-02-06 12:24:22 sezero Exp $
+	$Id: midi_mac.c,v 1.7 2007-02-12 16:53:10 sezero Exp $
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -137,7 +137,7 @@ qboolean MIDI_Init (void)
 
 	Con_Printf("Started QuickTime midi.\n");
 
-	Q_snprintf_err(mididir, sizeof(mididir), "%s/.midi", com_userdir);
+	Q_snprintf_err(mididir, sizeof(mididir), "%s/.midi", fs_userdir);
 	Sys_mkdir_err (mididir);
 
 	bPaused = false;
@@ -185,17 +185,17 @@ void MIDI_Play (const char *Name)
 
 	// Note that midi/ is the standart quake search path, but
 	// .midi/ with the leading dot is the path in the userdir
-	snprintf (midiName, sizeof(midiName), "%s/.midi/%s.mid", com_userdir, Name);
+	snprintf (midiName, sizeof(midiName), "%s/.midi/%s.mid", fs_userdir, Name);
 	if (access(midiName, R_OK) != 0)
 	{
 		Sys_Printf("Extracting file midi/%s.mid\n", Name);
-		midiData = COM_LoadHunkFile (va("midi/%s.mid", Name));
+		midiData = QIO_LoadHunkFile (va("midi/%s.mid", Name));
 		if (!midiData)
 		{
 			Con_Printf("musicfile midi/%s.mid not found\n", Name);
 			return;
 		}
-		if (COM_WriteFile (va(".midi/%s.mid", Name), midiData, com_filesize))
+		if (QIO_WriteFile (va(".midi/%s.mid", Name), midiData, qio_filesize))
 			return;
 	}
 

@@ -2,14 +2,10 @@
 	info_str.c
 	Hexen2World info strings handling
 
-	$Id: info_str.c,v 1.1 2007-02-11 13:08:29 sezero Exp $
+	$Id: info_str.c,v 1.2 2007-02-12 16:53:09 sezero Exp $
 */
 
-#if defined(SERVERONLY)
-#include "qwsvdef.h"
-#else
 #include "quakedef.h"
-#endif
 #include <ctype.h>
 
 /*

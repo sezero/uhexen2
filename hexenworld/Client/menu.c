@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.53 2006-10-20 20:32:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.54 2007-02-12 16:53:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -340,7 +340,7 @@ void M_ToggleMenu_f (void)
 }
 
 char BigCharWidth[27][27];
-//static char unused_filler;  // cuz the COM_LoadStackFile puts a 0 at the end of the data
+//static char unused_filler;  // cuz the QIO_LoadStackFile puts a 0 at the end of the data
 
 //#define BUILD_BIG_CHAR 1
 
@@ -415,12 +415,12 @@ static void M_BuildBigCharWidth (void)
 		}
 	}
 
-	sprintf (temp, "%s/gfx/menu/fontsize.lmp", com_gamedir);
+	sprintf (temp, "%s/gfx/menu/fontsize.lmp", fs_gamedir);
 	FH = fopen (temp, "wb");
 	fwrite (BigCharWidth, 1, sizeof(BigCharWidth), FH);
 	fclose (FH);
 #else
-	COM_LoadStackFile ("gfx/menu/fontsize.lmp", BigCharWidth, sizeof(BigCharWidth)+1);
+	QIO_LoadStackFile ("gfx/menu/fontsize.lmp", BigCharWidth, sizeof(BigCharWidth)+1);
 #endif
 }
 
@@ -2574,7 +2574,7 @@ static void M_Menu_Setup_f (void)
 	if (!(gameflags & GAME_PORTALS))
 		if (playerclass.value == CLASS_DEMON)
 			playerclass.value = 0;
-	if (Q_strcasecmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
+	if (Q_strcasecmp(fs_gamedir+1+strlen(fs_basedir), "siege") != 0)
 		if (playerclass.value == CLASS_DWARF)
 			playerclass.value = 0;
 
@@ -2636,7 +2636,7 @@ static void M_Setup_Draw (void)
 	if (!(gameflags & GAME_PORTALS))
 		if (setup_class == CLASS_DEMON)
 			setup_class = 0;
-	if (Q_strcasecmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
+	if (Q_strcasecmp(fs_gamedir+1+strlen(fs_basedir), "siege") != 0)
 		if (setup_class == CLASS_DWARF)
 			setup_class = 0;
 	switch (setup_class)
@@ -2669,7 +2669,7 @@ static void M_Setup_Draw (void)
 		{
 			if (!(gameflags & GAME_PORTALS))
 			{//not succubus
-				if (Q_strcasecmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
+				if (Q_strcasecmp(fs_gamedir+1+strlen(fs_basedir), "siege") != 0)
 					which_class = (rand() % CLASS_THEIF) + 1;
 				else
 				{
@@ -2680,7 +2680,7 @@ static void M_Setup_Draw (void)
 			}
 			else
 			{
-				if (Q_strcasecmp(com_gamedir+1+strlen(com_basedir), "siege") != 0)
+				if (Q_strcasecmp(fs_gamedir+1+strlen(fs_basedir), "siege") != 0)
 					which_class = (rand() % CLASS_DEMON) + 1;
 				else
 					which_class = (rand() % class_limit) + 1;

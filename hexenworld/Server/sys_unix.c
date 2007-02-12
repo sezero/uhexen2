@@ -1,11 +1,11 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.27 2007-02-06 12:24:29 sezero Exp $
+	$Id: sys_unix.c,v 1.28 2007-02-12 16:54:52 sezero Exp $
 
 	Unix system interface code
 */
 
-#include "qwsvdef.h"
+#include "quakedef.h"
 
 // whether to use the password file to determine
 // the path to the home directory
@@ -382,8 +382,8 @@ int main (int argc, char **argv)
 
 // report the filesystem to the user
 	Sys_Printf("userdir is: %s\n", userdir);
-	Sys_Printf("com_gamedir is: %s\n", com_gamedir);
-	Sys_Printf("com_userdir is: %s\n", com_userdir);
+	Sys_Printf("fs_gamedir is: %s\n", fs_gamedir);
+	Sys_Printf("fs_userdir is: %s\n", fs_userdir);
 
 //
 // main loop

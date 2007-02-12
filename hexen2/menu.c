@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.74 2007-02-07 17:01:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.75 2007-02-12 16:52:49 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -469,7 +469,7 @@ void M_ToggleMenu_f (void)
 }
 
 char BigCharWidth[27][27];
-//static char unused_filler;  // cuz the COM_LoadStackFile puts a 0 at the end of the data
+//static char unused_filler;  // cuz the QIO_LoadStackFile puts a 0 at the end of the data
 
 //#define BUILD_BIG_CHAR 1
 
@@ -544,12 +544,12 @@ static void M_BuildBigCharWidth (void)
 		}
 	}
 
-	sprintf (temp, "%s/gfx/menu/fontsize.lmp", com_gamedir);
+	sprintf (temp, "%s/gfx/menu/fontsize.lmp", fs_gamedir);
 	FH = fopen (temp, "wb");
 	fwrite (BigCharWidth, 1, sizeof(BigCharWidth), FH);
 	fclose (FH);
 #else
-	COM_LoadStackFile ("gfx/menu/fontsize.lmp", BigCharWidth, sizeof(BigCharWidth)+1);
+	QIO_LoadStackFile ("gfx/menu/fontsize.lmp", BigCharWidth, sizeof(BigCharWidth)+1);
 #endif
 }
 
@@ -1143,7 +1143,7 @@ static void M_ScanSaves (void)
 	{
 		strncpy (m_filenames[i], "--- UNUSED SLOT ---", sizeof(m_filenames[0])-1);
 		loadable[i] = false;
-		snprintf (name, sizeof(name), "%s/s%i/info.dat", com_savedir, i);
+		snprintf (name, sizeof(name), "%s/s%i/info.dat", fs_savedir, i);
 		f = fopen (name, "r");
 		if (!f)
 			continue;
@@ -1308,7 +1308,7 @@ static void M_ScanMSaves (void)
 	{
 		strncpy (m_filenames[i], "--- UNUSED SLOT ---", sizeof(m_filenames[0])-1);
 		loadable[i] = false;
-		snprintf (name, sizeof(name), "%s/ms%i/info.dat", com_savedir, i);
+		snprintf (name, sizeof(name), "%s/ms%i/info.dat", fs_savedir, i);
 		f = fopen (name, "r");
 		if (!f)
 			continue;

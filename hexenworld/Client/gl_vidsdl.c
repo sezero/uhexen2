@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.129 2007-02-06 12:24:20 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.130 2007-02-12 16:53:09 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -133,7 +133,7 @@ unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
 unsigned	d_8to24TranslucentTable[256];
 #if USE_HEXEN2_PALTEX_CODE
-unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1]; // +1: COM_LoadStackFile puts a 0 at the end of the data
+unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1]; // +1: QIO_LoadStackFile puts a 0 at the end of the data
 #else
 unsigned char	d_15to8table[65536];
 #endif
@@ -717,7 +717,7 @@ static qboolean GL_OpenLibrary(const char *name)
 		// then try loading it
 		if ( name && !strchr(name, '/') )
 		{
-			snprintf (gl_liblocal, MAX_OSPATH, "%s/%s", com_basedir, name);
+			snprintf (gl_liblocal, MAX_OSPATH, "%s/%s", fs_basedir, name);
 			if (access(gl_liblocal, R_OK) == -1)
 				return false;
 
@@ -971,9 +971,9 @@ static void VID_CreateInversePalette (unsigned char *palette)
 		}
 	}
 
-	snprintf (path, MAX_OSPATH, "%s/data1/gfx", com_basedir);
+	snprintf (path, MAX_OSPATH, "%s/data1/gfx", fs_basedir);
 	Sys_mkdir (path);
-	snprintf (path, MAX_OSPATH, "%s/data1/gfx/invpal.lmp", com_basedir);
+	snprintf (path, MAX_OSPATH, "%s/data1/gfx/invpal.lmp", fs_basedir);
 	FH = fopen(path, "wb");
 	if (!FH)
 		Sys_Error ("Couldn't create %s", path);
@@ -1064,11 +1064,11 @@ void VID_SetPalette (unsigned char *palette)
 #   ifdef DO_BUILD
 	VID_CreateInversePalette (palette);
 #   else
-	COM_LoadStackFile ("gfx/invpal.lmp", inverse_pal, sizeof(inverse_pal));
+	QIO_LoadStackFile ("gfx/invpal.lmp", inverse_pal, sizeof(inverse_pal));
 #   endif
 
 #else // end of HEXEN2_PALTEX_CODE
-	COM_FOpenFile("glhexen/15to8.pal", &f, true);
+	QIO_FOpenFile("glhexen/15to8.pal", &f, true);
 	if (f)
 	{
 		fread(d_15to8table, 1<<15, 1, f);
@@ -1116,9 +1116,9 @@ void VID_SetPalette (unsigned char *palette)
 			if (m >= 1000)
 				m = 0;
 		}
-		snprintf(s, sizeof(s), "%s/glhexen", com_userdir);
+		snprintf(s, sizeof(s), "%s/glhexen", fs_userdir);
 		Sys_mkdir (s);
-		snprintf(s, sizeof(s), "%s/glhexen/15to8.pal", com_userdir);
+		snprintf(s, sizeof(s), "%s/glhexen/15to8.pal", fs_userdir);
 		f = fopen(s, "wb");
 		if (f)
 		{
@@ -1450,7 +1450,7 @@ static void VID_EarlyReadConfig (void)
 		NULL
 	};
 
-	COM_FOpenFile ("config.cfg", &cfg_file, true);
+	QIO_FOpenFile ("config.cfg", &cfg_file, true);
 	if (!cfg_file)
 		return;
 
@@ -1624,11 +1624,11 @@ void	VID_Init (unsigned char *palette)
 	vid.numpages = 2;
 
 	// prepare directories for caching mesh files
-	snprintf (gldir, sizeof(gldir), "%s/glhexen", com_userdir);
+	snprintf (gldir, sizeof(gldir), "%s/glhexen", fs_userdir);
 	Sys_mkdir (gldir);
-	snprintf (gldir, sizeof(gldir), "%s/glhexen/boss", com_userdir);
+	snprintf (gldir, sizeof(gldir), "%s/glhexen/boss", fs_userdir);
 	Sys_mkdir (gldir);
-	snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", com_userdir);
+	snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", fs_userdir);
 	Sys_mkdir (gldir);
 
 	// see if the SDL version we linked to is multisampling-capable

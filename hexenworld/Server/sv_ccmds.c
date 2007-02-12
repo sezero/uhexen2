@@ -1,12 +1,12 @@
 
-#include "qwsvdef.h"
+#include "quakedef.h"
 
 static qboolean	sv_allow_cheats;
 
 int	fp_messages = 4, fp_persecond = 4, fp_secondsdead = 10;
 char	fp_msg[255] = { 0 };
 extern cvar_t	cl_warncmd;
-extern char	com_basedir[MAX_OSPATH];
+extern char	fs_basedir[MAX_OSPATH];
 
 /*
 ===============================================================================
@@ -84,7 +84,7 @@ static void SV_Logfile_f (void)
 		return;
 	}
 
-	Q_snprintf_err(name, sizeof(name), "%s/hwsv.log", com_userdir);
+	Q_snprintf_err(name, sizeof(name), "%s/hwsv.log", fs_userdir);
 
 	Con_Printf ("Logging text to %s.\n", name);
 	sv_logfile = fopen (name, "w");
@@ -116,7 +116,7 @@ static void SV_Fraglogfile_f (void)
 	// find an unused name
 	for (i = 0; i < 1000; i++)
 	{
-		Q_snprintf_err(name, sizeof(name), "%s/frag_%i.log", com_userdir, i);
+		Q_snprintf_err(name, sizeof(name), "%s/frag_%i.log", fs_userdir, i);
 
 		sv_fraglogfile = fopen (name, "r");
 		if (!sv_fraglogfile)
@@ -320,7 +320,7 @@ static void SV_Map_f (void)
 
 	// check to make sure the level exists
 	snprintf (expanded, sizeof(expanded), "maps/%s.bsp", level);
-	COM_FOpenFile (expanded, &f, false);
+	QIO_FOpenFile (expanded, &f, false);
 	if (!f)
 	{
 		Con_Printf ("Can't find %s\n", expanded);
@@ -860,7 +860,7 @@ static void SV_Gamedir_f (void)
 
 	if (Cmd_Argc() == 1)
 	{
-		Con_Printf ("Current gamedir: %s\n", com_gamedir);
+		Con_Printf ("Current gamedir: %s\n", fs_gamedir);
 		return;
 	}
 
@@ -879,9 +879,9 @@ static void SV_Gamedir_f (void)
 		return;
 	}
 
-	COM_Gamedir (dir);
+	FS_Gamedir (dir);
 
-// *gamedir is now changed in COM_Gamedir()
+// *gamedir is now changed in FS_Gamedir()
 //	Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
 }
 

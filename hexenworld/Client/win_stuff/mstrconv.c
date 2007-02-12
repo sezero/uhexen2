@@ -1,5 +1,5 @@
 /*
- * $Id: mstrconv.c,v 1.11 2007-02-07 17:03:32 sezero Exp $
+ * $Id: mstrconv.c,v 1.12 2007-02-12 16:54:47 sezero Exp $
  */
 
 #include <windows.h>
@@ -131,13 +131,13 @@ BOOL ConverterInit (const char *szInFile)
 
 	// Attempt to open the input and output files
 	//
-	MidiData = (byte *)COM_LoadHunkFile(szInFile);
+	MidiData = (byte *)QIO_LoadHunkFile(szInFile);
 	if (!MidiData)
 	{
 		goto Init_Cleanup;
 	}
 
-	ifs.cbFileLength = com_filesize;
+	ifs.cbFileLength = qio_filesize;
 	MidiOffset = 0;
 	MidiSize = ifs.cbFileLength;
 

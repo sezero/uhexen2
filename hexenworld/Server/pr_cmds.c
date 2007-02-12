@@ -1,5 +1,5 @@
 
-#include "qwsvdef.h"
+#include "quakedef.h"
 #ifdef _WIN32
 #include <windows.h>
 #else

@@ -1,6 +1,6 @@
 // sv_move.c -- monster movement
 
-#include "qwsvdef.h"
+#include "quakedef.h"
 
 #define	STEPSIZE	18
 

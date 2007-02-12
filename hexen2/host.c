@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.55 2007-02-07 17:01:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.56 2007-02-12 16:52:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -89,7 +89,7 @@ void Host_RemoveGIPFiles (const char *path)
 	if (path)
 		snprintf(tempdir, MAX_OSPATH, "%s", path);
 	else
-		snprintf(tempdir, MAX_OSPATH, "%s", com_savedir);
+		snprintf(tempdir, MAX_OSPATH, "%s", fs_savedir);
 
 	name = Sys_FindFirstFile (tempdir, "*.gip");
 
@@ -123,7 +123,7 @@ qboolean Host_CopyFiles(const char *source, const char *pat, const char *dest)
 #ifdef _WIN32
 		if (!CopyFile(tempdir,tempdir2,FALSE))
 #else
-		if (COM_CopyFile(tempdir,tempdir2))
+		if (QIO_CopyFile(tempdir,tempdir2))
 #endif
 		{
 			Con_Printf ("Error copying %s to %s\n",tempdir,tempdir2);
@@ -354,7 +354,7 @@ static void Host_WriteConfiguration (const char *fname)
 // config.cfg cvars
 	if (host_initialized && !isDedicated)
 	{
-		f = fopen (va("%s/%s",com_userdir,fname), "w");
+		f = fopen (va("%s/%s",fs_userdir,fname), "w");
 		if (!f)
 		{
 			Con_Printf ("Couldn't write %s.\n",fname);
@@ -983,7 +983,7 @@ static void Host_InitVCR (quakeparms_t *parms)
 		if (com_argc != 2)
 			Sys_Error("No other parameters allowed with -playback\n");
 
-		//vcrFile = fopen (va("%s/quake.vcr",com_userdir), "rb");
+		//vcrFile = fopen (va("%s/quake.vcr",fs_userdir), "rb");
 		vcrFile = fopen (va("%s/quake.vcr",parms->userdir), "rb");
 		if (!vcrFile)
 			Sys_Error("playback file not found\n");
@@ -1009,7 +1009,7 @@ static void Host_InitVCR (quakeparms_t *parms)
 
 	if ( (n = COM_CheckParm("-record")) != 0)
 	{
-		//vcrFile = fopen (va("%s/quake.vcr",com_userdir), "wb");
+		//vcrFile = fopen (va("%s/quake.vcr",fs_userdir), "wb");
 		vcrFile = fopen (va("%s/quake.vcr",parms->userdir), "wb");
 
 		i = VCR_SIGNATURE;
@@ -1049,13 +1049,14 @@ void Host_Init (quakeparms_t *parms)
 	Memory_Init (parms->membase, parms->memsize);
 	Cbuf_Init ();
 	Cmd_Init ();
-	CL_Cmd_Init ();
 	V_Init ();
 	Chase_Init ();
 #if NET_USE_VCR
 	Host_InitVCR (parms);
 #endif
 	COM_Init ();
+	FS_Init ();
+	CL_Cmd_Init ();
 	Host_RemoveGIPFiles(NULL);
 	Host_InitLocal ();
 	W_LoadWadFile ("gfx.wad");
@@ -1074,11 +1075,11 @@ void Host_Init (quakeparms_t *parms)
 
 	if (cls.state != ca_dedicated)	// decided in Host_InitLocal() by calling Host_FindMaxClients()
 	{
-		host_basepal = (byte *)COM_LoadHunkFile ("gfx/palette.lmp");
+		host_basepal = (byte *)QIO_LoadHunkFile ("gfx/palette.lmp");
 		if (!host_basepal)
 			Sys_Error ("Couldn't load gfx/palette.lmp");
 
-		host_colormap = (byte *)COM_LoadHunkFile ("gfx/colormap.lmp");
+		host_colormap = (byte *)QIO_LoadHunkFile ("gfx/colormap.lmp");
 		if (!host_colormap)
 			Sys_Error ("Couldn't load gfx/colormap.lmp");
 

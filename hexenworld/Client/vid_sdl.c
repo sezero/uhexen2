@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.60 2007-02-07 17:03:31 sezero Exp $
+	$Id: vid_sdl.c,v 1.61 2007-02-12 16:53:14 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -669,7 +669,7 @@ static void VID_EarlyReadConfig (void)
 		NULL
 	};
 
-	COM_FOpenFile ("config.cfg", &cfg_file, true);
+	QIO_FOpenFile ("config.cfg", &cfg_file, true);
 	if (!cfg_file)
 		return;
 

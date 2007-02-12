@@ -355,7 +355,7 @@ void Con_Printf (const char *fmt, ...)
 
 // log all messages to file
 	if (con_debuglog)
-		Sys_DebugLog(va("%s/%s",com_userdir,DEBUGLOG_FILENAME), "%s", msg);
+		Sys_DebugLog(va("%s/%s",fs_userdir,DEBUGLOG_FILENAME), "%s", msg);
 
 	if (!con_initialized)
 		return;

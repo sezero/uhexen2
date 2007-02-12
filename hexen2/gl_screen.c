@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.38 2007-02-07 17:01:33 sezero Exp $
+	$Id: gl_screen.c,v 1.39 2007-02-12 16:52:46 sezero Exp $
 */
 
 /*=============================================================================
@@ -731,7 +731,7 @@ static void SCR_ScreenShot_f (void)
 	int			i, c, temp;
 	int			mark;
 
-	sprintf (checkname, "%s/shots", com_userdir);
+	sprintf (checkname, "%s/shots", fs_userdir);
 	Sys_mkdir (checkname);
 //
 // find a file name to save it to
@@ -742,7 +742,7 @@ static void SCR_ScreenShot_f (void)
 	{
 		pcxname[11] = i/10 + '0';
 		pcxname[12] = i%10 + '0';
-		sprintf (checkname, "%s/%s", com_userdir, pcxname);
+		sprintf (checkname, "%s/%s", fs_userdir, pcxname);
 		if (access(checkname, F_OK) == -1)
 			break;	// file doesn't exist
 	}
@@ -772,7 +772,7 @@ static void SCR_ScreenShot_f (void)
 		buffer[i] = buffer[i+2];
 		buffer[i+2] = temp;
 	}
-	temp = COM_WriteFile (pcxname, buffer, glwidth*glheight*3 + 18);
+	temp = QIO_WriteFile (pcxname, buffer, glwidth*glheight*3 + 18);
 
 	Hunk_FreeToLowMark(mark);
 	if (!temp)

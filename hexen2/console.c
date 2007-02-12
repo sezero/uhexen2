@@ -203,7 +203,7 @@ void Con_Init (void)
 {
 	char	temp[MAX_OSPATH];
 
-	Q_snprintf_err(temp, sizeof(temp), "%s/%s", com_userdir, DEBUGLOG_FILENAME);
+	Q_snprintf_err(temp, sizeof(temp), "%s/%s", fs_userdir, DEBUGLOG_FILENAME);
 	con_debuglog = COM_CheckParm("-condebug");
 	if (con_debuglog)
 		unlink (temp);
@@ -372,7 +372,7 @@ void Con_Printf (const char *fmt, ...)
 
 // log all messages to file
 	if (con_debuglog)
-		Con_DebugLog(va("%s/%s",com_userdir,DEBUGLOG_FILENAME), "%s", msg);
+		Con_DebugLog(va("%s/%s",fs_userdir,DEBUGLOG_FILENAME), "%s", msg);
 
 	if (!con_initialized)
 		return;

@@ -1,6 +1,6 @@
 // HEADER FILES ------------------------------------------------------------
 
-#include "qwsvdef.h"
+#include "quakedef.h"
 #include <ctype.h>
 
 // MACROS ------------------------------------------------------------------
@@ -981,11 +981,11 @@ void PR_Profile_f (void)
 			if (i+1 < Cmd_Argc() && !isdigit(*Cmd_Argv(i+1)))
 			{
 				i++;
-				sprintf(saveName, "%s/%s", com_userdir, Cmd_Argv(i));
+				sprintf(saveName, "%s/%s", fs_userdir, Cmd_Argv(i));
 			}
 			else
 			{
-				sprintf(saveName, "%s/profile.txt", com_userdir);
+				sprintf(saveName, "%s/profile.txt", fs_userdir);
 			}
 		}
 		else if (isdigit(*s))

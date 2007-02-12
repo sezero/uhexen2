@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.33 2007-02-07 17:01:33 sezero Exp $
+	$Id: gl_model.c,v 1.34 2007-02-12 16:52:46 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -284,7 +284,7 @@ static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 //
 // load the file
 //
-	buf = (unsigned *)COM_LoadStackFile (mod->name, stackbuf, sizeof(stackbuf));
+	buf = (unsigned *)QIO_LoadStackFile (mod->name, stackbuf, sizeof(stackbuf));
 	if (!buf)
 	{
 		if (crash)
@@ -602,7 +602,7 @@ static void Mod_LoadLighting (lump_t *l)
 			COM_StripExtension(litfilename, litfilename);
 			strcat(litfilename, ".lit");
 			Con_DPrintf("trying to load %s\n", litfilename);
-			data = (byte*) COM_LoadHunkFile (litfilename);
+			data = (byte*) QIO_LoadHunkFile (litfilename);
 			if (data)
 			{
 				if (data[0] == 'Q' && data[1] == 'L' && data[2] == 'I' && data[3] == 'T')
@@ -2601,7 +2601,7 @@ static void Mod_Print (void)
 	{
 		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
 		{
-			FH = fopen(va("%s/mcache.txt", com_userdir),"w");
+			FH = fopen(va("%s/mcache.txt", fs_userdir),"w");
 			break;
 		}
 	}

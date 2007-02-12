@@ -97,7 +97,7 @@ sfxcache_t *S_LoadSound (sfx_t *s)
 
 //	Con_Printf ("loading %s\n",namebuffer);
 
-	data = COM_LoadStackFile(namebuffer, stackbuf, sizeof(stackbuf));
+	data = QIO_LoadStackFile(namebuffer, stackbuf, sizeof(stackbuf));
 
 	if (!data)
 	{
@@ -105,7 +105,7 @@ sfxcache_t *S_LoadSound (sfx_t *s)
 		return NULL;
 	}
 
-	info = GetWavinfo (s->name, data, com_filesize);
+	info = GetWavinfo (s->name, data, qio_filesize);
 	if (info.channels != 1)
 	{
 		Con_Printf ("%s is a stereo sample\n",s->name);

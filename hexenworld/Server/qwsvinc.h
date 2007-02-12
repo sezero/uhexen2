@@ -1,28 +1,32 @@
 /*
-	quakedef.h
+	qwsvinc.h
 	primary header for server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/qwsvdef.h,v 1.13 2007-02-11 13:08:32 sezero Exp $
+	$Id: qwsvinc.h,v 1.1 2007-02-12 16:54:51 sezero Exp $
 */
 
-#ifndef __HWSV_DEFS__
-#define __HWSV_DEFS__
+#ifndef __HWSVINC_H
+#define __HWSVINC_H
 
-#include <sys/types.h>
+#include "q_types.h"
 #include <math.h>
+#include <stdio.h>
 #include <string.h>
 #if !defined(_WIN32)
 // for strcasecmp and strncasecmp
 #include <strings.h>
 #endif
 #include <stdarg.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <setjmp.h>
 
-#include "bothdefs.h"
-
+#include "q_endian.h"
+#include "link_ops.h"
+#include "sizebuf.h"
+#include "msg_io.h"
 #include "common.h"
+#include "quakeio.h"
+#include "quakefs.h"
 #include "info_str.h"
 #include "bspfile.h"
 #include "sys.h"
@@ -83,8 +87,5 @@ void SV_Init (quakeparms_t *parms);
 void Con_Printf (const char *fmt, ...) _FUNC_PRINTF(1);
 void Con_DPrintf (const char *fmt, ...) _FUNC_PRINTF(1);
 
-extern	unsigned int	defLosses;	// Defenders losses in Siege
-extern	unsigned int	attLosses;	// Attackers Losses in Siege
-
-#endif	/* __HWSV_DEFS__	*/
+#endif	/* __HWSVINC_H */
 

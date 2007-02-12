@@ -52,7 +52,7 @@ endif
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-MASTEROBJS = cmds.o sys_main.o net.o
+MASTEROBJS = q_endian.o sizebuf.o msg_io.o cmds.o common.o net.o master.o sys_main.o
 
 # Targets
 default: $(BINARY)

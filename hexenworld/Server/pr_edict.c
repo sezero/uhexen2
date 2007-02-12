@@ -1,6 +1,6 @@
 // sv_edict.c -- entity dictionary
 
-#include "qwsvdef.h"
+#include "quakedef.h"
 
 dprograms_t		*progs;
 dfunction_t		*pr_functions;
@@ -1124,7 +1124,7 @@ void PR_LoadProgs (void)
 
 #if USE_MULTIPLE_PROGS
 	// see the comments in progs.h about multiple progs
-	COM_FOpenFile ("maplist.txt", &FH, true);
+	QIO_FOpenFile ("maplist.txt", &FH, true);
 	if (FH)
 	{
 		char	build[2048], *test;
@@ -1189,15 +1189,15 @@ void PR_LoadProgs (void)
 	}
 #endif	// end of USE_MULTIPLE_PROGS
 
-	progs = (dprograms_t *)COM_LoadHunkFile (finalprogname);
+	progs = (dprograms_t *)QIO_LoadHunkFile (finalprogname);
 	if (!progs)
-		progs = (dprograms_t *)COM_LoadHunkFile ("progs.dat");
+		progs = (dprograms_t *)QIO_LoadHunkFile ("progs.dat");
 	if (!progs)
 		SV_Error ("PR_LoadProgs: couldn't load progs.dat");
-	Con_DPrintf ("Programs occupy %uK.\n", com_filesize/1024);
+	Con_DPrintf ("Programs occupy %uK.\n", qio_filesize/1024);
 
 	// add prog crc to the serverinfo
-	sprintf (num, "%u", CRC_Block ((byte *)progs, com_filesize));
+	sprintf (num, "%u", CRC_Block ((byte *)progs, qio_filesize));
 	Info_SetValueForStarKey (svs.info, "*progs", num, MAX_SERVERINFO_STRING);
 
 	// byte swap the header

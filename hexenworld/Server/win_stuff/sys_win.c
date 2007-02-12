@@ -1,7 +1,6 @@
-#include <sys/types.h>
+#include "quakedef.h"
 #include <sys/timeb.h>
 #include <winsock.h>
-#include "qwsvdef.h"
 #include <errno.h>
 #include <io.h>
 #include <conio.h>
@@ -305,8 +304,8 @@ int main (int argc, char **argv)
 	SV_Frame (HX_FRAME_TIME);
 
 // report the filesystem to the user
-	Sys_Printf("com_gamedir is: %s\n",com_gamedir);
-	Sys_Printf("com_userdir is: %s\n",com_userdir);
+	Sys_Printf("fs_gamedir is: %s\n",fs_gamedir);
+	Sys_Printf("fs_userdir is: %s\n",fs_userdir);
 
 //
 // main loop

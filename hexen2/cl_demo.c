@@ -286,7 +286,7 @@ void CL_Record_f (void)
 		track = -1;
 	}
 
-	snprintf (name, sizeof(name), "%s/%s", com_userdir, Cmd_Argv(1));
+	snprintf (name, sizeof(name), "%s/%s", fs_userdir, Cmd_Argv(1));
 
 //
 // start the map up
@@ -377,7 +377,7 @@ void CL_PlayDemo_f (void)
 	}
 */
 
-	COM_FOpenFile (name, &cls.demofile, false);
+	QIO_FOpenFile (name, &cls.demofile, false);
 	if (!cls.demofile)
 	{
 		Con_Printf ("ERROR: couldn't open %s\n", name);

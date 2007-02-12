@@ -2,7 +2,7 @@
 	gl_mesh.c
 	triangle model functions
 
-	$Id: gl_mesh.c,v 1.11 2006-10-20 20:32:29 sezero Exp $
+	$Id: gl_mesh.c,v 1.12 2007-02-12 16:52:46 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -329,7 +329,7 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 	// look for a cached version
 	//
 #if DO_MESH_CACHE
-	snprintf (cache, sizeof(cache), "%s/glhexen/", com_userdir);
+	snprintf (cache, sizeof(cache), "%s/glhexen/", fs_userdir);
 	COM_StripExtension (m->name+strlen("models/"), cache+strlen(cache));
 	Q_strlcat (cache, ".ms2", sizeof(cache));
 
@@ -361,11 +361,11 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 		{
 			char gldir[MAX_OSPATH];
 
-			snprintf (gldir, sizeof(gldir), "%s/glhexen", com_userdir);
+			snprintf (gldir, sizeof(gldir), "%s/glhexen", fs_userdir);
 			Sys_mkdir (gldir);
-			snprintf (gldir, sizeof(gldir), "%s/glhexen/boss", com_userdir);
+			snprintf (gldir, sizeof(gldir), "%s/glhexen/boss", fs_userdir);
 			Sys_mkdir (gldir);
-			snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", com_userdir);
+			snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", fs_userdir);
 			Sys_mkdir (gldir);
 			f = fopen (cache, "wb");
 		}

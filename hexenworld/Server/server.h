@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/server.h,v 1.12 2007-02-06 12:24:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/server.h,v 1.13 2007-02-12 16:54:51 sezero Exp $
 */
 
 #ifndef __H2W_SERVER_H
@@ -365,6 +365,9 @@ extern	char		localinfo[MAX_LOCALINFO_STRING+1];
 extern	int		host_hunklevel;
 extern	FILE		*sv_logfile;
 extern	FILE		*sv_fraglogfile;
+
+extern	unsigned int	defLosses;	// Defenders losses in Siege
+extern	unsigned int	attLosses;	// Attackers Losses in Siege
 
 //===========================================================
 
