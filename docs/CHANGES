@@ -40,6 +40,25 @@ Development Progress	:
     * updated the rpm spec file after importing the xdelta libraries.
       made it to build xdelta before the launcher for correct linkage.
     * updated the mkrelease script
+    * performed a large scale splitting on common.c and common.h. each
+      thing is sent into their own file. new files: quakefs.c, quakeio.c,
+      link_ops.c, sizebuf.c, msg_io.c, q_endian.c, and their *.h headers,
+      and pakfile.h as a new header. similarly, definitions and includes
+      are separated too: quakedef.h contains the definitions only, and
+      quakeinc.h (and qwsvinc.h) contains the includes and prototypes
+      and declarations. common.c and common.h now only contains misc
+      utility stuff, such as procedures command line processing, file
+      name processing, other string processing, and replacent functions.
+      common quake data types are gathered into a new q_types.h header
+      which already includes sys/types.h.
+      as a side effect, several functions (along with some global variables)
+      were renamed:  quakeio stuff are prefixed with QIO_, and quakefs
+      stuff with FS_. see their header files. the procedure for maplist
+      command was moved to cl_cmd.c where it actually belongs. hexenworld
+      master server was processed accordingly and it now closely resembles
+      its game tree counterparts.
+      a similar operation is yet to be performed on the utilities..
+    * rediffed some of the extra patches after the latest changes.
 
 2007-02-11 (CVS):
     * gathered compiler specific definitions and settings into the
