@@ -1,5 +1,5 @@
 
-Hexen II: Hammer of Thyrion 1.4.1
+Hexen II: Hammer of Thyrion 1.4.2
 ---------------------------------
 
 
@@ -89,6 +89,10 @@ b. Manual install/update of data files:
 
    c9675191e75dd25a3b9ed81ee7e05eff  data1/pak0.pak
    c2ac5b0640773eed9ebe1cda2eca2ad0  data1/pak1.pak
+
+   As an alternative, the game launcher has the integrated ability
+   of patching those pak files. Just press the button and it'll be
+   done.
 
    If you have the mission pack (Portal of Praevus), copy the file
    pak3.pak from your cdrom into the "portals" directory in your
