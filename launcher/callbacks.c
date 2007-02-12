@@ -6,6 +6,10 @@
 #include "config_file.h"
 #include "support.h"
 #include "compat_gtk1.h"
+#ifndef DEMOBUILD
+#include <pthread.h>
+#include "apply_patch.h"
+#endif	/* DEMOBUILD */
 
 // from launch_bin.c
 extern int missingexe;
@@ -37,6 +41,118 @@ static char *stats[] = {
 	"  Ready to run the game",
 	"  Binary missing or not executable"
 };
+
+#ifndef DEMOBUILD
+void Log_printf (const char *fmt, ...) __attribute__((format(printf,1,2)));
+
+static char *pstats[] = {
+
+	"  Patch in progress.....",
+	"  Patch process finished"
+};
+int			thread_alive;
+
+static void ui_pump (void)
+{
+	while (gtk_events_pending ())
+		gtk_main_iteration ();
+}
+
+#ifdef WITH_GTK1
+static GtkText *LogEntry = NULL;
+
+static void ui_LogInit (GtkWidget *wgt)
+{
+	LogEntry = GTK_TEXT (wgt);
+	// clear the window
+	gtk_editable_delete_text (GTK_EDITABLE(wgt), 0, -1);
+}
+
+static void ui_LogPrint (const char *txt)
+{
+	gtk_text_insert (LogEntry, NULL, NULL, NULL, txt, strlen(txt));
+}
+
+#else	/* here is the gtk2 version */
+static GtkTextView *LogEntry = NULL;
+
+static void ui_LogInit (GtkWidget *wgt)
+{
+	GtkTextBuffer	*buf;
+	GtkTextIter	start, end;
+
+	LogEntry = GTK_TEXT_VIEW (wgt);
+	// clear the window
+	buf = gtk_text_view_get_buffer (LogEntry);
+	gtk_text_buffer_get_start_iter (buf, &start);
+	gtk_text_buffer_get_end_iter (buf, &end);
+	gtk_text_buffer_delete (buf, &start, &end);
+}
+
+static void ui_LogPrint (const char *txt)
+{
+	GtkTextBuffer	*buf;
+	GtkTextIter	start, end;
+
+	buf = gtk_text_view_get_buffer (LogEntry);
+	gtk_text_buffer_get_start_iter(buf, &start);
+	gtk_text_buffer_get_end_iter(buf, &end);
+	gtk_text_buffer_insert_at_cursor (buf, txt, strlen(txt));
+}
+#endif
+
+static void ui_LogEnd (void)
+{
+	LogEntry = NULL;
+}
+
+void Log_printf (const char *fmt, ...)
+{
+	va_list         argptr;
+	char            text[256];
+
+	if (LogEntry == NULL)
+		return;
+
+	va_start (argptr, fmt);
+	vsnprintf (text, sizeof (text), fmt, argptr);
+	va_end (argptr);
+
+	ui_LogPrint(text);
+}
+
+void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
+{
+	pthread_t		thr;
+	void		*ptr = NULL;
+
+	gtk_widget_set_sensitive (PatchWindow->bAPPLY, FALSE);
+	gtk_widget_set_sensitive (PatchWindow->bCLOSE, FALSE);
+	ui_LogInit (PatchWindow->LOGVIEW);
+
+	thread_alive = 1;
+	if (pthread_create(&thr, NULL, apply_patches, NULL) != 0)
+	{
+		Log_printf ("pthread_create failed");
+		return;
+	}
+
+	gtk_statusbar_push (GTK_STATUSBAR (PatchWindow->PStat), PatchWindow->BinStat, pstats[0]);
+
+	while (thread_alive)
+	{
+		ui_pump ();
+		usleep (10000);
+	}
+
+	pthread_join(thr, (void **) &ptr);
+
+	ui_LogEnd();
+	gtk_widget_set_sensitive (PatchWindow->bCLOSE, TRUE);
+	gtk_widget_set_sensitive (PatchWindow->bAPPLY, TRUE);
+	gtk_statusbar_push (GTK_STATUSBAR (PatchWindow->PStat), PatchWindow->BinStat, pstats[1]);
+}
+#endif	/* ! DEMOBUILD */
 
 void on_SND (GtkEditable *editable, sndwidget_t *wgt)
 {
@@ -211,9 +327,9 @@ void on_HEXEN2 (GtkButton *button, gamewidget_t *wgt)
 	destiny = DEST_H2;
 #ifndef DEMOBUILD
 	gtk_widget_set_sensitive (wgt->PORTALS, TRUE);
-	gtk_widget_set_sensitive (wgt->H2GAME, TRUE);
-	gtk_widget_set_sensitive (wgt->HWGAME, FALSE);
 	gtk_widget_set_sensitive (wgt->LAN_BUTTON, !is_botmatch);
+	gtk_widget_hide (wgt->HWGAME);
+	gtk_widget_show (wgt->H2GAME);
 #else
 	gtk_widget_set_sensitive (wgt->LAN_BUTTON, TRUE);
 #endif
@@ -225,8 +341,8 @@ void on_H2W (GtkButton *button, gamewidget_t *wgt)
 	destiny = DEST_HW;
 #ifndef DEMOBUILD
 	gtk_widget_set_sensitive (wgt->PORTALS, FALSE);
-	gtk_widget_set_sensitive (wgt->H2GAME, FALSE);
-	gtk_widget_set_sensitive (wgt->HWGAME, TRUE);
+	gtk_widget_hide (wgt->H2GAME);
+	gtk_widget_show (wgt->HWGAME);
 #endif
 	gtk_widget_set_sensitive (wgt->LAN_BUTTON, FALSE);
 	UpdateStats(&(wgt->Launch));

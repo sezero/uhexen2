@@ -18,13 +18,135 @@ extern char *h2game_names[MAX_H2GAMES][3];
 extern char *hwgame_names[MAX_HWGAMES][3];
 #endif
 
+static HoTWindow_t	main_win;
+#ifndef DEMOBUILD
+static PatchWindow_t	patch_win;
+#endif
+
 /*********************************************************************/
+
+
+#ifndef DEMOBUILD
+static void destroy_window2(GtkWidget *unused1, gpointer unused2)
+{
+  gtk_widget_destroy (PATCH_WINDOW);
+}
+
+static void create_window2 (GtkWidget *unused1, gpointer unused2)
+{
+  GtkWidget *Txt1;	// Window label
+  GtkWidget *TxtWindow;	// Holder Window for the textview
+
+  PATCH_WINDOW = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_object_set_data (GTK_OBJECT (PATCH_WINDOW), "mywindow2", PATCH_WINDOW);
+  gtk_window_set_title (GTK_WINDOW (PATCH_WINDOW), "Hexen II PAK patch");
+  gtk_window_set_resizable (GTK_WINDOW (PATCH_WINDOW), FALSE);
+  gtk_window_set_modal (GTK_WINDOW (PATCH_WINDOW), TRUE);
+  gtk_widget_set_size_request(PATCH_WINDOW, 354, 240);
+
+  PATCH_TAB = gtk_fixed_new ();
+  gtk_widget_ref (PATCH_TAB);
+  gtk_object_set_data_full (GTK_OBJECT (PATCH_WINDOW), "fixed1", PATCH_TAB,
+				(GtkDestroyNotify) gtk_widget_unref);
+  gtk_container_add (GTK_CONTAINER (PATCH_WINDOW), PATCH_TAB);
+  gtk_widget_show (PATCH_TAB);
+
+  Txt1 = gtk_label_new ("Hexen II PAK files 1.11 patch");
+  gtk_widget_ref (Txt1);
+  gtk_object_set_data_full (GTK_OBJECT (PATCH_WINDOW), "Txt1", Txt1,
+				(GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (Txt1);
+  gtk_fixed_put (GTK_FIXED (PATCH_TAB), Txt1, 14, 14);
+  gtk_label_set_justify (GTK_LABEL (Txt1), GTK_JUSTIFY_LEFT);
+
+// Apply Patch button and Statusbar
+  patch_win.bAPPLY = gtk_button_new_with_label (_("Apply Pak Patch"));
+  gtk_widget_ref (patch_win.bAPPLY);
+  gtk_object_set_data_full (GTK_OBJECT (PATCH_WINDOW), "bAPPLY", patch_win.bAPPLY,
+				(GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (patch_win.bAPPLY);
+  gtk_fixed_put (GTK_FIXED (PATCH_TAB), patch_win.bAPPLY, 14, 186);
+  gtk_widget_set_size_request (patch_win.bAPPLY, 112, 24);
+
+// Holder window for the textview
+  TxtWindow = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_ref (TxtWindow);
+  gtk_object_set_data_full (GTK_OBJECT (PATCH_WINDOW), "TxtWindow", TxtWindow,
+				(GtkDestroyNotify) gtk_widget_unref);
+  gtk_fixed_put (GTK_FIXED (PATCH_TAB), TxtWindow, 14, 32);
+  gtk_widget_set_size_request (TxtWindow, 312, 146);
+  gtk_widget_show (TxtWindow);
+//gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (TxtWindow), GTK_POLICY_ALWAYS, GTK_POLICY_AUTOMATIC);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (TxtWindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+#ifndef WITH_GTK1
+  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (TxtWindow), GTK_SHADOW_ETCHED_IN);
+#endif
+
+// The textview:
+#ifdef WITH_GTK1
+  patch_win.LOGVIEW = gtk_text_new (NULL, NULL);
+#else
+  patch_win.LOGVIEW = gtk_text_view_new ();
+#endif
+  gtk_widget_ref (patch_win.LOGVIEW);
+  gtk_object_set_data_full (GTK_OBJECT (PATCH_WINDOW), "LOGVIEW", patch_win.LOGVIEW,
+				(GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_size_request (patch_win.LOGVIEW, 312, 146);
+  gtk_container_add (GTK_CONTAINER (TxtWindow), patch_win.LOGVIEW);
+  gtk_widget_show (patch_win.LOGVIEW);
+  GTK_WIDGET_UNSET_FLAGS (patch_win.LOGVIEW, GTK_CAN_FOCUS);
+//gtk_widget_set_sensitive (patch_win.LOGVIEW, FALSE);
+#ifdef WITH_GTK1
+//gtk_text_set_line_wrap(GTK_TEXT (patch_win.LOGVIEW), FALSE);
+  gtk_text_set_editable (GTK_TEXT (patch_win.LOGVIEW), FALSE);
+#else
+  gtk_text_view_set_editable (GTK_TEXT_VIEW (patch_win.LOGVIEW), FALSE);
+  gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (patch_win.LOGVIEW), FALSE);
+  gtk_text_view_set_left_margin (GTK_TEXT_VIEW (patch_win.LOGVIEW), 2);
+  gtk_text_view_set_right_margin (GTK_TEXT_VIEW (patch_win.LOGVIEW), 2);
+#endif
+
+// Close button
+  patch_win.bCLOSE = gtk_button_new_with_label (_("Close"));
+  gtk_widget_ref (patch_win.bCLOSE);
+  gtk_object_set_data_full (GTK_OBJECT (PATCH_WINDOW), "bCLOSE", patch_win.bCLOSE,
+				(GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (patch_win.bCLOSE);
+  gtk_fixed_put (GTK_FIXED (PATCH_TAB), patch_win.bCLOSE, 246, 186);
+  gtk_widget_set_size_request (patch_win.bCLOSE, 80, 24);
+
+  PATCH_STATBAR = gtk_statusbar_new ();
+  gtk_widget_ref (PATCH_STATBAR);
+  gtk_object_set_data_full (GTK_OBJECT (PATCH_WINDOW), "PStat", PATCH_STATBAR,
+				(GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (PATCH_STATBAR);
+  gtk_fixed_put (GTK_FIXED (PATCH_TAB), PATCH_STATBAR, 0, 214);
+  gtk_widget_set_size_request (PATCH_STATBAR, 354, 24);
+#ifndef WITH_GTK1
+  gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR(PATCH_STATBAR), FALSE);
+#endif
+  gtk_container_set_border_width (GTK_CONTAINER (PATCH_STATBAR), 2);
+  patch_win.BinStat = gtk_statusbar_get_context_id (GTK_STATUSBAR (PATCH_STATBAR), "PatchStatus");
+  gtk_statusbar_push (GTK_STATUSBAR(PATCH_STATBAR), patch_win.BinStat, _("  Ready..."));
+
+  gtk_signal_connect (GTK_OBJECT (PATCH_WINDOW), "destroy",
+			GTK_SIGNAL_FUNC (destroy_window2), NULL);
+  gtk_signal_connect (GTK_OBJECT (patch_win.bCLOSE), "clicked",
+			GTK_SIGNAL_FUNC (destroy_window2), NULL);
+
+  gtk_signal_connect (GTK_OBJECT (patch_win.bAPPLY), "clicked",
+			GTK_SIGNAL_FUNC (start_xpatch), &patch_win);
+
+  gtk_window_set_transient_for (GTK_WINDOW (PATCH_WINDOW), GTK_WINDOW (MAIN_WINDOW));
+  gtk_window_set_position (GTK_WINDOW (PATCH_WINDOW), GTK_WIN_POS_CENTER_ON_PARENT);
+  gtk_widget_show (PATCH_WINDOW);
+}
+#endif	/* DEMOBUILD */
 
 GtkWidget* create_window1 (void)
 {
   int			i;
 
-  static HoTWindow_t main_win;
   static gamewidget_t Games;
   static sndwidget_t Sound;
 
@@ -48,12 +170,14 @@ GtkWidget* create_window1 (void)
   GtkWidget *TxtSound2;	// Sound options extra
   GtkWidget *TxtSound3;	// Sound options extra
   GtkWidget *TxtGameT;	// GameType Label
-  GtkWidget *TxtGameH2;	// Hexen2 GameType Label
-  GtkWidget *TxtGameHW;	// Hexenworld GameType Label
 // Widgets for additionals which needn't be in a relevant struct
+  GtkWidget *TxtPatch;	// Data patch label
+  GtkWidget *bPATCH;	// PATCH button
   GtkWidget *SRATE_Entry; // Sampling rate listing
   GtkWidget *H2G_Entry;	// Hexen2 games listing
+#ifndef DEMOBUILD
   GtkWidget *HWG_Entry;	// Hexenworld games listing
+#endif	/* DEMOBUILD */
 
 // Separators
   GtkWidget *hseparator0;
@@ -627,30 +751,45 @@ GtkWidget* create_window1 (void)
 
 /*********************************************************************/
 
+// pakfiles 1.11 patch option
+  TxtPatch = gtk_label_new ("Raven 1.11 patch:");
+  gtk_widget_ref (TxtPatch);
+  gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "TxtPatch", TxtPatch,
+				(GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (TxtPatch);
+  gtk_fixed_put (GTK_FIXED (ADDON_TAB2), TxtPatch, 14, 20);
+  gtk_label_set_justify (GTK_LABEL (TxtPatch), GTK_JUSTIFY_LEFT);
+
+// PATCH button
+  bPATCH = gtk_button_new_with_label (_("Patch..."));
+  gtk_widget_ref (bPATCH);
+  gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "bPATCH", bPATCH,
+				(GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (bPATCH);
+  gtk_fixed_put (GTK_FIXED (ADDON_TAB2), bPATCH, 132, 16);
+  gtk_widget_set_size_request (bPATCH, 68, 24);
+#ifndef DEMOBUILD
+  gtk_tooltips_set_tip (tooltips, bPATCH, _("Apply the v1.11 pakfiles patch by Raven Software, if you haven't done already."), NULL);
+#else
+  gtk_widget_set_sensitive (bPATCH, FALSE);
+#endif
+
 // Additional game-types
   TxtGameT = gtk_label_new (_("Extra Game Types:"));
   gtk_widget_ref (TxtGameT);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "TxtGameT", TxtGameT,
 				(GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (TxtGameT);
-  gtk_fixed_put (GTK_FIXED (ADDON_TAB2), TxtGameT, 14, 20);
+  gtk_fixed_put (GTK_FIXED (ADDON_TAB2), TxtGameT, 14, 50);
   gtk_label_set_justify (GTK_LABEL (TxtGameT), GTK_JUSTIFY_LEFT);
 
 // game types menu for hexen2
-  TxtGameH2 = gtk_label_new ("Hexen2:");
-  gtk_widget_ref (TxtGameH2);
-  gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "TxtGameH2", TxtGameH2,
-				(GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (TxtGameH2);
-  gtk_fixed_put (GTK_FIXED (ADDON_TAB2), TxtGameH2, 16, 44);
-  gtk_label_set_justify (GTK_LABEL (TxtGameH2), GTK_JUSTIFY_LEFT);
-
 // there are two botmatch mods only...
   WGT_H2GAME = gtk_combo_new ();
   gtk_widget_ref (WGT_H2GAME);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "SelH2", WGT_H2GAME,
 				(GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_set_size_request (WGT_H2GAME, 132, 32);
+  gtk_widget_set_size_request (WGT_H2GAME, 164, 32);
 #ifndef DEMOBUILD
   TmpList = NULL;
   TmpList = g_list_append (TmpList, (gpointer) "(  None  )");
@@ -659,61 +798,53 @@ GtkWidget* create_window1 (void)
   gtk_combo_set_popdown_strings (GTK_COMBO (WGT_H2GAME), TmpList);
   g_list_free (TmpList);
 #endif	/* DEMOBUILD */
-  gtk_fixed_put (GTK_FIXED (ADDON_TAB2), WGT_H2GAME, 68, 36);
-  gtk_widget_show (WGT_H2GAME);
+  gtk_fixed_put (GTK_FIXED (ADDON_TAB2), WGT_H2GAME, 36, 66);
   H2G_Entry = GTK_COMBO (WGT_H2GAME)->entry;
   gtk_widget_ref (H2G_Entry);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "H2G_Entry", H2G_Entry,
 				(GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (H2G_Entry);
 #ifndef DEMOBUILD
   gtk_entry_set_editable (GTK_ENTRY (H2G_Entry), FALSE);
   gtk_entry_set_text (GTK_ENTRY (H2G_Entry), h2game_names[h2game][1]);
-  if (destiny != DEST_H2)
-	gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
+  if (destiny == DEST_H2)
+  {
+	gtk_widget_show (WGT_H2GAME);
+	gtk_widget_show (H2G_Entry);
+  }
 #else
+  gtk_widget_show (WGT_H2GAME);
+  gtk_widget_show (H2G_Entry);
   gtk_entry_set_text (GTK_ENTRY (H2G_Entry), "(  None  )");
   gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
 #endif
 
+#ifndef DEMOBUILD
 // game types menu for hexenworld
-  TxtGameHW = gtk_label_new ("HWorld:");
-  gtk_widget_ref (TxtGameHW);
-  gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "TxtGameHW", TxtGameHW,
-				(GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (TxtGameHW);
-  gtk_fixed_put (GTK_FIXED (ADDON_TAB2), TxtGameHW, 16, 70);
-  gtk_label_set_justify (GTK_LABEL (TxtGameHW), GTK_JUSTIFY_LEFT);
-
   WGT_HWGAME = gtk_combo_new ();
   gtk_widget_ref (WGT_HWGAME);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "SelHW", WGT_HWGAME,
 				(GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_set_size_request (WGT_HWGAME, 132, 32);
-#ifndef DEMOBUILD
+  gtk_widget_set_size_request (WGT_HWGAME, 164, 32);
   TmpList = NULL;
   TmpList = g_list_append (TmpList, (gpointer) "Plain DeathMatch");
   gtk_combo_set_use_arrows (GTK_COMBO (WGT_HWGAME), FALSE);
   HWGameScan (TmpList);
   gtk_combo_set_popdown_strings (GTK_COMBO (WGT_HWGAME), TmpList);
   g_list_free (TmpList);
-#endif	/* DEMOBUILD */
-  gtk_fixed_put (GTK_FIXED (ADDON_TAB2), WGT_HWGAME, 68, 66);
-  gtk_widget_show (WGT_HWGAME);
+//gtk_fixed_put (GTK_FIXED (ADDON_TAB2), WGT_HWGAME, 68, 66);
+  gtk_fixed_put (GTK_FIXED (ADDON_TAB2), WGT_HWGAME, 36, 66);
   HWG_Entry = GTK_COMBO (WGT_HWGAME)->entry;
   gtk_widget_ref (HWG_Entry);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "HWG_Entry", HWG_Entry,
 				(GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (HWG_Entry);
-#ifndef DEMOBUILD
   gtk_entry_set_editable (GTK_ENTRY (HWG_Entry), FALSE);
   gtk_entry_set_text (GTK_ENTRY (HWG_Entry), hwgame_names[hwgame][1]);
-  if (destiny != DEST_HW)
-	gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
-#else
-  gtk_entry_set_text (GTK_ENTRY (HWG_Entry), "Plain DeathMatch");
-  gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
-#endif
+  if (destiny == DEST_HW)
+  {
+	gtk_widget_show (WGT_HWGAME);
+	gtk_widget_show (HWG_Entry);
+  }
+#endif	/* DEMOBUILD */
 
 /*********************************************************************/
 
@@ -872,6 +1003,8 @@ GtkWidget* create_window1 (void)
 			GTK_SIGNAL_FUNC (HWGameChange), NULL);
   gtk_signal_connect (GTK_OBJECT (WGT_PORTALS), "released",
 			GTK_SIGNAL_FUNC (ReverseOpt), &mp_support);
+  gtk_signal_connect (GTK_OBJECT (bPATCH), "clicked",
+			GTK_SIGNAL_FUNC (create_window2), NULL);
 #endif	/* DEMOBUILD */
   gtk_signal_connect (GTK_OBJECT (WGT_HEXEN2), "released",
 			GTK_SIGNAL_FUNC (on_HEXEN2), &Games);

@@ -11,6 +11,7 @@ void UpdateStats (struct Launch_s *wgt);
 void on_HEXEN2 (GtkButton *button, gamewidget_t *wgt);
 void on_H2W (GtkButton *button, gamewidget_t *wgt);
 #ifndef DEMOBUILD
+void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow);
 void H2GameScan (GList *GameList);
 void HWGameScan (GList *GameList);
 void H2GameChange (GtkEditable *editable, gamewidget_t *wgt);

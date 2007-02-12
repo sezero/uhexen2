@@ -19,6 +19,16 @@ typedef struct {
 	GtkWidget *bMORE;	// More/Less button
 } HoTWindow_t;
 
+typedef struct {
+	GtkWidget *mywindow;	// Main window
+	GtkWidget *fixed1;	// Widgets container
+	GtkWidget *bCLOSE;	// Close button
+	GtkWidget *bAPPLY;	// Apply patch button
+	GtkWidget *LOGVIEW;	// LogEntry line for patch process
+	GtkWidget *PStat;	// Status bar, (patch status)
+	gint	BinStat;	// statbar context id
+} PatchWindow_t;
+
 struct Launch_s {
 	GtkWidget *LStat;	// Status bar, (launch status)
 	gint	BinStat;	// statbar context id
@@ -81,10 +91,12 @@ typedef struct {
 
 // Friendlier definitions for main window layout members
 #define MAIN_WINDOW	main_win.mywindow
+#define PATCH_WINDOW	patch_win.mywindow
 #define HOLDER_BOX	main_win.main_box
 #define BOOK0		main_win.notebook0
 #define BOOK1		main_win.notebook1
 #define BASIC_TAB	main_win.fixed0
+#define PATCH_TAB	patch_win.fixed1
 #define ADDON_TAB1	main_win.fixed1
 #define ADDON_TAB2	main_win.fixed2
 #define TAB0_LABEL	main_win.lbl_tab0
@@ -95,6 +107,7 @@ typedef struct {
 // Friendlier definitions for struct members
 // WGT for "widget"
 #define WGT_STATUSBAR	Games.Launch.LStat
+#define PATCH_STATBAR	patch_win.PStat
 #define BIN_STATUS_ID	Games.Launch.BinStat
 #define WGT_LAUNCH	Games.Launch.bLAUNCH
 #define WGT_OPENGL	Games.Video.bOGL
