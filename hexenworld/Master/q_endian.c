@@ -2,10 +2,15 @@
 	q_endian.c
 	byte order functions
 
-	$Id: q_endian.c,v 1.1 2007-02-12 16:54:49 sezero Exp $
+	$Id: q_endian.c,v 1.2 2007-02-13 14:15:05 sezero Exp $
 */
 
-#include "q_types.h"
+#include "q_endian.h"
+#include <stdlib.h>
+
+#ifdef ASSUMED_LITTLE_ENDIAN
+#warning "Unable to determine CPU endianess. Defaulting to little endian"
+#endif
 
 short ShortSwap (short l)
 {

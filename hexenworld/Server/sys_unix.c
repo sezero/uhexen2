@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.28 2007-02-12 16:54:52 sezero Exp $
+	$Id: sys_unix.c,v 1.29 2007-02-13 14:15:06 sezero Exp $
 
 	Unix system interface code
 */
@@ -19,10 +19,6 @@
 #include <unistd.h>
 #if USE_PASSWORD_FILE
 #include <pwd.h>
-#endif
-
-#ifdef ASSUMED_LITTLE_ENDIAN
-#warning "Unable to determine CPU endianess. Defaulting to little endian"
 #endif
 
 // heapsize: minimum 8 mb, standart 16 mb, max is 32 mb.

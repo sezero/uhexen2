@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.10 2007-02-06 12:23:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.11 2007-02-13 14:15:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -24,10 +24,6 @@
 #include <dirent.h>
 #include <fnmatch.h>
 
-
-#ifdef ASSUMED_LITTLE_ENDIAN
-#warning "Unable to determine CPU endianess. Defaulting to little endian"
-#endif
 
 // heapsize: minimum 8 mb, standart 16 mb, max is 32 mb.
 // -heapsize argument will abide by these min/max settings
