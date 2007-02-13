@@ -3,6 +3,30 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-02-13 (CVS):
+    * updated the makefiles. removed the idirafter stuff, seems not necessary.
+    * moved mathlib.c and mathlib.h to common for the utilities. since all of
+      the utils use double as vec_t and genmodel is an exception (uses float),
+      added special rules for mathlib.o to the makefiles.
+    * performed a large scale splitting on utilities/cmdlib, similar to the one
+      I did to common.c of the game tree yesterday. each thing is sent into their
+      own file. new files in utils/common: pathutil.c, q_endian.c, util_io.c and
+      crc.c, and their *.h counterparts. new headers: q_types.h and util_inc.h.
+      dcc and hcc_old are using the thared cmdlib from now on. Q_filetime() is
+      removed for good: its only user was genmodel.c::Cmd_Skin(), but the file
+      existance check is already done when it calls LoadPCXSkin(), which in turn
+      calls LoadFile which in turn uses SafeOpenRead(), therefore it is safe to
+      remove it. SafeMalloc() is also removed as a procedure and is made into a
+      macro in genmodel/loadtri.c, which is its only user.
+    * moved the ASSUMED_LITTLE_ENDIAN compile time warning to q_endian.c
+    * fixed compilation of q_endian.c after the above change.
+    * splitted glquake.h into two, taking the includes into the new glheader.h
+      which properly gets the opengl typedefs for us. we now can include gl_model.h
+      separately.
+    * updated our common headers.
+    * more updates to our common headers.
+    * re-diff'ed some of the extra patches.
+
 2007-02-12 (CVS):
     * imported the xdelta-1.1 sources into our own cvs repository (module
       name: xdelta11, the same as the one in the xdelta project)
