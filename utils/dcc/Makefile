@@ -7,6 +7,8 @@
 # Path settings:
 # main uhexen2 relative path
 UHEXEN2_TOP=../..
+# where the common sources/objects are
+COMMONDIR=../common
 # where to put the binaries
 DESTDIR =../bin
 
@@ -40,26 +42,34 @@ endif
 # Other build flags
 
 ifeq ($(TARGET_OS),WIN32)
-INCLUDES:= -I$(MINGWDIR)/include -I.
+INCLUDES:= -I$(MINGWDIR)/include -I$(COMMONDIR)
 LDFLAGS := -mconsole
 LDLIBS  :=
 else
-INCLUDES:= -I.
+INCLUDES:= -I$(COMMONDIR)
 LDFLAGS :=
 LDLIBS  :=
 endif
 
-
 # Targets
 all : $(BINARY)
+
+# directory for common objects (our flags may differ
+# from the flags that common objects were compiled.
+COMLIB_DIR:=cmnlibs
 
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
+$(COMLIB_DIR)/%.o: $(COMMONDIR)/%.c
+	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-DHCCOBJS= cmdlib.o \
-	dcc.o \
+COMMONOBJ= $(COMLIB_DIR)/cmdlib.o \
+	$(COMLIB_DIR)/util_io.o \
+	$(COMLIB_DIR)/q_endian.o \
+	$(COMLIB_DIR)/crc.o
+DHCCOBJS= dcc.o \
 	hcc.o \
 	pr_comp.o \
 	pr_lex.o \
@@ -68,9 +78,13 @@ DHCCOBJS= cmdlib.o \
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc
 
-$(BINARY) : $(DHCCOBJS)
-	$(LINKER) -o $(DESTDIR)/$(BINARY) $(DHCCOBJS) $(LDFLAGS) $(LDLIBS)
+$(COMLIB_DIR):
+	@if [ ! -d $@ ]; then mkdir -p $@; fi
+
+$(BINARY) : $(COMLIB_DIR) $(COMMONOBJ) $(DHCCOBJS)
+	$(LINKER) -o $(DESTDIR)/$(BINARY) $(COMMONOBJ) $(DHCCOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
-	rm -f *.o .tmp *.tmp core
+	rm -f *.o $(COMLIB_DIR)/*.o .tmp *.tmp core
+	rm -rf $(COMLIB_DIR)
 

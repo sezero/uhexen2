@@ -1,5 +1,11 @@
 // trace.c
 
+#include "util_inc.h"
+#include "cmdlib.h"
+#include "mathlib.h"
+#include "bspfile.h"
+#include "entities.h"
+#include "threads.h"
 #include "light.h"
 
 typedef struct tnode_s

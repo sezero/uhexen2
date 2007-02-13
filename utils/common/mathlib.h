@@ -5,13 +5,6 @@
 
 #include <math.h>
 
-#ifdef DOUBLEVEC_T
-typedef double vec_t;
-#else
-typedef float vec_t;
-#endif
-typedef vec_t vec3_t[3];
-
 #define	SIDE_FRONT		0
 #define	SIDE_ON			2
 #define	SIDE_BACK		1

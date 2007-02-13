@@ -2,10 +2,15 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.15 2007-02-10 18:01:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.16 2007-02-13 13:34:43 sezero Exp $
 */
 
+#include "util_inc.h"
+#include "cmdlib.h"
+#include "util_io.h"
 #include "qcc.h"
+#include "crc.h"
+#include "q_endian.h"
 
 char		sourcedir[1024];
 char		destfile[1024];

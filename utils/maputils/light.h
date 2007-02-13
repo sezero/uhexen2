@@ -4,12 +4,6 @@
 
 // structure of the light lump
 
-#include "cmdlib.h"
-#include "mathlib.h"
-#include "bspfile.h"
-#include "entities.h"
-#include "threads.h"
-
 #define	ON_EPSILON	0.1
 
 #define	MAXLIGHTS	1024

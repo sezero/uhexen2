@@ -1,5 +1,12 @@
 // lighting.c
 
+#include "util_inc.h"
+#include "cmdlib.h"
+#include "pathutil.h"
+#include "mathlib.h"
+#include "bspfile.h"
+#include "entities.h"
+#include "threads.h"
 #include "light.h"
 
 qboolean	extrasamples;

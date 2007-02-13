@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.6 2007-02-10 18:01:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.7 2007-02-13 13:34:45 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).
@@ -10,8 +10,12 @@
 
 // HEADER FILES ------------------------------------------------------------
 
+#include "util_inc.h"
 #include "cmdlib.h"
+#include "util_io.h"
+#include "crc.h"
 #include "hcc.h"
+#include "q_endian.h"
 
 // MACROS ------------------------------------------------------------------
 

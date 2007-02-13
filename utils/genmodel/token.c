@@ -7,6 +7,9 @@
 
 // HEADER FILES ------------------------------------------------------------
 
+#include "util_inc.h"
+#include "cmdlib.h"
+#include "util_io.h"
 #include "token.h"
 
 // MACROS ------------------------------------------------------------------

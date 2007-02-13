@@ -17,7 +17,11 @@
     See file, 'COPYING', for details.
 */
 
+#include "util_inc.h"
 #include "cmdlib.h"
+#include "util_io.h"
+#include "q_endian.h"
+#include "pathutil.h"
 //#include "mathlib.h"
 #include "bspfile.h"
 #include "tyrlite.h"

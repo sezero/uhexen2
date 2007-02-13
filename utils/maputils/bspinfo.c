@@ -1,5 +1,7 @@
 
+#include "util_inc.h"
 #include "cmdlib.h"
+#include "pathutil.h"
 #include "bspfile.h"
 
 int main (int argc, char **argv)

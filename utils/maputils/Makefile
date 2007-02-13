@@ -67,6 +67,9 @@ mathlib.o: $(COMMONDIR)/mathlib.c
 
 # Objects
 COMMONOBJS= $(COMMONDIR)/cmdlib.o \
+	$(COMMONDIR)/q_endian.o \
+	$(COMMONDIR)/util_io.o \
+	$(COMMONDIR)/pathutil.o \
 	$(COMMONDIR)/strlcat.o \
 	$(COMMONDIR)/strlcpy.o \
 	mathlib.o \

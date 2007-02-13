@@ -8,8 +8,6 @@
 #ifndef __TOKEN_H__
 #define __TOKEN_H__
 
-#include "cmdlib.h"
-
 #ifndef TRUE
 #define TRUE	1
 #endif

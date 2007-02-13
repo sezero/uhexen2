@@ -23,6 +23,12 @@
  * Modifications by Kevin Shanahan, 1999-2000
  */
 
+#include "util_inc.h"
+#include "cmdlib.h"
+#include "mathlib.h"
+#include "bspfile.h"
+#include "entities.h"
+#include "threads.h"
 #include "tyrlite.h"
 
 typedef struct tnode_s

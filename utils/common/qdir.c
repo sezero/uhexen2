@@ -1,11 +1,13 @@
 /*
 	qdir.c
 
-	$Id: qdir.c,v 1.3 2007-02-10 18:01:29 sezero Exp $
+	$Id: qdir.c,v 1.4 2007-02-13 13:34:36 sezero Exp $
 */
 
 
+#include "util_inc.h"
 #include "cmdlib.h"
+#include "util_io.h"
 
 /*
 	qdir will hold the path up to the quake directory,

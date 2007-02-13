@@ -25,12 +25,6 @@
 #ifndef __TYRLITE_H__
 #define __TYRLITE_H__
 
-#include "cmdlib.h"
-#include "mathlib.h"
-#include "bspfile.h"
-#include "entities.h"
-#include "threads.h"
-
 #define JSH2COLOR_VER	"1.2.3"	// version string
 #ifdef _WIN32
 #define PLATFORM_VER	"win32"

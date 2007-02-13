@@ -245,7 +245,6 @@ gotchas
 
 // HEADER FILES ------------------------------------------------------------
 
-#include "cmdlib.h"
 #include <setjmp.h>
 #include "pr_comp.h"
 

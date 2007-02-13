@@ -1,6 +1,9 @@
 
+#include "util_inc.h"
 #include "cmdlib.h"
+#include "util_io.h"
 #include "mathlib.h"
+#include "q_endian.h"
 #include "bspfile.h"
 
 //=============================================================================

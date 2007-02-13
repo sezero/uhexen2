@@ -1,12 +1,13 @@
 /*
 	stmt.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/stmt.c,v 1.1 2006-03-01 09:42:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/stmt.c,v 1.2 2007-02-13 13:34:45 sezero Exp $
 */
 
 
 // HEADER FILES ------------------------------------------------------------
 
+#include "util_inc.h"
 #include "cmdlib.h"
 #include "hcc.h"
 

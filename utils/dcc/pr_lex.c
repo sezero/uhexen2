@@ -1,4 +1,6 @@
 
+#include "util_inc.h"
+#include "cmdlib.h"
 #include "qcc.h"
 
 char		*pr_file_p;

@@ -3,10 +3,6 @@
 #ifndef __SCRIPLIB_H
 #define __SCRIPLIB_H
 
-#ifndef __CMDLIB_H__
-#include "cmdlib.h"
-#endif
-
 #define	MAXTOKEN	128
 
 extern	char	token[MAXTOKEN];

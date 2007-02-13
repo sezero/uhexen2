@@ -19,11 +19,13 @@
 
 // entities.c
 
-
+#include "util_inc.h"
 #include "cmdlib.h"
-
+#include "mathlib.h"
+#include "bspfile.h"
 #include "tyrlite.h"
 #include "entities.h"
+
 
 entity_t	entities[MAX_MAP_ENTITIES];
 int			num_entities;

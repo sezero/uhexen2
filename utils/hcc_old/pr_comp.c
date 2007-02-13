@@ -1,13 +1,15 @@
 /*
 	comp.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/pr_comp.c,v 1.2 2006-03-02 17:52:06 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/pr_comp.c,v 1.3 2007-02-13 13:34:45 sezero Exp $
 */
 
 
 // HEADER FILES ------------------------------------------------------------
 
+#include "util_inc.h"
 #include "cmdlib.h"
+#include "crc.h"
 #include "hcc.h"
 
 // MACROS ------------------------------------------------------------------

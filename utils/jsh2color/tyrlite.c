@@ -22,13 +22,18 @@
  * Modifications by Kevin Shanahan, 1999-2000
  */
 
+#include "util_inc.h"
+#include "cmdlib.h"
+#include "util_io.h"
+#include "pathutil.h"
+#include "mathlib.h"
+#include "bspfile.h"
+#include "entities.h"
+#include "threads.h"
 #include "tyrlite.h"
-#ifdef _WIN32
+#if defined(_WIN32)
 #include <conio.h>
-#include <io.h>
-#else
-#include <unistd.h>
-#endif
+#endif	/* _WIN32 */
 
 float		scaledist	= 1.0F;
 float		scalecos	= 0.5F;

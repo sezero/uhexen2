@@ -3,10 +3,6 @@
 #ifndef __H2UTILS_VIS_H
 #define __H2UTILS_VIS_H
 
-#include "cmdlib.h"
-#include "mathlib.h"
-#include "bspfile.h"
-
 typedef struct
 {
 	qboolean	original;	// don't free, it's part of the portal

@@ -1,5 +1,9 @@
 // merge.c
 
+#include "util_inc.h"
+#include "cmdlib.h"
+#include "mathlib.h"
+#include "bspfile.h"
 #include "bsp5.h"
 
 

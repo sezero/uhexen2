@@ -1,5 +1,9 @@
 
+#include "util_inc.h"
 #include "cmdlib.h"
+#include "util_io.h"
+#include "crc.h"
+#include "q_endian.h"
 #include "qdir.h"
 
 #define	MAX_SOUNDS		1024

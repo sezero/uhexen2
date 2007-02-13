@@ -14,9 +14,13 @@
 
 // HEADER FILES ------------------------------------------------------------
 
+#include "util_inc.h"
 #include "cmdlib.h"
+#include "util_io.h"
+#include "pathutil.h"
 #include "scriplib.h"
 #include "mathlib.h"
+#include "q_endian.h"
 #include "loadtri.h"
 #include "genmodel.h"
 #include "qdir.h"
@@ -1118,7 +1122,6 @@ Cmd_Base
 static void Cmd_Base (void)
 {
 	int		i, j, k;
-	//int		time1;
 	triangle_t	*ptri;
 	byte	*pskinbitmap;
 
@@ -1129,9 +1132,6 @@ static void Cmd_Base (void)
 	//ExpandPathAndArchive (file1);
 
 	sprintf (file1, "%s/%s", cddir, token);
-	//time1 = Q_filetime (file1);
-	//if (time1 == -1)
-	//	Error ("%s doesn't exist", file1);
 
 	// Extract the scaling information from a skin page
 	GetToken(false);
@@ -1214,7 +1214,6 @@ static void Cmd_Skin (void)
 	byte	*pskinbitmap;
 	byte	*ptemp1, *ptemp2;
 	int		i;
-	int		time1;
 	float	scw, sch;
 
 	GetToken (false);
@@ -1224,10 +1223,6 @@ static void Cmd_Skin (void)
 	//ExpandPathAndArchive (file1);
 
 	sprintf (file1, "%s/%s.pcx", cddir, token);
-
-	time1 = Q_filetime (file1);
-	if (time1 == -1)
-		Error ("%s not found", file1);
 
 	if (TokenAvailable ())
 	{
@@ -1326,15 +1321,11 @@ static void GrabFrame (char *frame, int isgroup)
 	int				i, j;
 	trivert_t		*ptrivert;
 	int				numtris;
-	//int				time1;
 
 	//sprintf (file1, "%s/%s.tri", cdpartial, frame);
 	//ExpandPathAndArchive (file1);
 
 	sprintf (file1, "%s/%s", cddir, frame);
-	//time1 = Q_filetime (file1);
-	//if (time1 == -1)
-	//	Error ("%s does not exist",file1);
 
 	printf ("grabbing %s\n", file1);
 	frames[framecount].interval = 0.1F;

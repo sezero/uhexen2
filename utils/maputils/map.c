@@ -1,5 +1,10 @@
 // map.c
 
+#include "util_inc.h"
+#include "cmdlib.h"
+#include "util_io.h"
+#include "mathlib.h"
+#include "bspfile.h"
 #include "bsp5.h"
 
 int			nummapbrushes;

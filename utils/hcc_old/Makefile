@@ -7,6 +7,8 @@
 # Path settings:
 # main uhexen2 relative path
 UHEXEN2_TOP=../..
+# where the common sources/objects are
+COMMONDIR=../common
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -37,11 +39,11 @@ endif
 # Other build flags
 
 ifeq ($(TARGET_OS),WIN32)
-INCLUDES:= -I$(MINGWDIR)/include -I.
+INCLUDES:= -I$(MINGWDIR)/include -I$(COMMONDIR)
 LDFLAGS := -mconsole
 LDLIBS  :=
 else
-INCLUDES:= -I.
+INCLUDES:= -I$(COMMONDIR)
 LDFLAGS :=
 LDLIBS  :=
 endif
@@ -54,7 +56,12 @@ all : $(BINARY)
 	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-HCCOBJS= cmdlib.o \
+HCCOBJS= $(COMMONDIR)/cmdlib.o \
+	$(COMMONDIR)/util_io.o \
+	$(COMMONDIR)/q_endian.o \
+	$(COMMONDIR)/crc.o \
+	$(COMMONDIR)/strlcat.o \
+	$(COMMONDIR)/strlcpy.o \
 	expr.o \
 	hcc.o \
 	pr_comp.o \
@@ -69,5 +76,5 @@ $(BINARY) : $(HCCOBJS)
 	$(LINKER) -o $(BINARY) $(HCCOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
-	rm -f *.o core .tmp *.tmp
+	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core
 

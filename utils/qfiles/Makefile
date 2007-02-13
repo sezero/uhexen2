@@ -57,7 +57,10 @@ all : $(BINARY)
 
 # Objects
 QFILESOBJS= $(COMMONDIR)/cmdlib.o \
+	$(COMMONDIR)/util_io.o \
 	$(COMMONDIR)/qdir.o \
+	$(COMMONDIR)/crc.o \
+	$(COMMONDIR)/q_endian.o \
 	$(COMMONDIR)/strlcat.o \
 	$(COMMONDIR)/strlcpy.o \
 	qfiles.o

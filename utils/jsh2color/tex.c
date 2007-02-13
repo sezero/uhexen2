@@ -25,6 +25,12 @@
 //   at least looks better - yellow is really only suited to base maps
 // - added rogue, hipnotic and zerstorer textures
 
+#include "util_inc.h"
+#include "cmdlib.h"
+#include "mathlib.h"
+#include "bspfile.h"
+#include "entities.h"
+#include "threads.h"
 #include "tyrlite.h"
 
 typedef struct tex_col

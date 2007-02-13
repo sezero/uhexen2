@@ -2,10 +2,10 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/common/mathlib.c,v 1.1 2007-02-13 08:54:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/common/mathlib.c,v 1.2 2007-02-13 13:34:36 sezero Exp $
 */
 
-#include "cmdlib.h"
+#include "util_inc.h"
 #include "mathlib.h"
 
 vec3_t vec3_origin = { 0, 0, 0 };

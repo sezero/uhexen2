@@ -1,4 +1,7 @@
 
+#include "util_inc.h"
+#include "mathlib.h"
+#include "bspfile.h"
 #include "bsp5.h"
 
 void Draw_ClearBounds (void)

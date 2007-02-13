@@ -4,9 +4,6 @@
 #ifndef __BSP5_H__
 #define __BSP5_H__
 
-#include "cmdlib.h"
-#include "mathlib.h"
-#include "bspfile.h"
 
 typedef struct
 {

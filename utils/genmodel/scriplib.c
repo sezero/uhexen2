@@ -1,6 +1,8 @@
 // scriplib.c
 
+#include "util_inc.h"
 #include "cmdlib.h"
+#include "util_io.h"
 #include "scriplib.h"
 
 /*

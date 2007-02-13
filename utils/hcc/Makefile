@@ -59,6 +59,9 @@ all : $(BINARY)
 
 # Objects
 HCCOBJS= $(COMMONDIR)/cmdlib.o \
+	$(COMMONDIR)/util_io.o \
+	$(COMMONDIR)/q_endian.o \
+	$(COMMONDIR)/crc.o \
 	$(COMMONDIR)/strlcat.o \
 	$(COMMONDIR)/strlcpy.o \
 	expr.o \
