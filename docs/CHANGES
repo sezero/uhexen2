@@ -3,7 +3,7 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2007-02-13 (CVS):
+2007-02-13 (CVS, 1.4.2-pre1):
     * updated the makefiles. removed the idirafter stuff, seems not necessary.
     * moved mathlib.c and mathlib.h to common for the utilities. since all of
       the utils use double as vec_t and genmodel is an exception (uses float),
@@ -26,6 +26,9 @@ Development Progress	:
     * updated our common headers.
     * more updates to our common headers.
     * re-diff'ed some of the extra patches.
+    * added a ReleaseNotes file for a future 1.4.2 release.
+    * marked the snapshot of 2007-02-13 as 1.4.2-pre1.
+    * updated the rpm spec file.
 
 2007-02-12 (CVS):
     * imported the xdelta-1.1 sources into our own cvs repository (module
