@@ -2,7 +2,7 @@
 	quakeinc.h
 	primary header for client and server
 
-	$Id: quakeinc.h,v 1.3 2007-02-12 16:52:52 sezero Exp $
+	$Id: quakeinc.h,v 1.4 2007-02-13 16:30:28 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
@@ -144,9 +144,11 @@ typedef struct
 #include "server.h"
 
 #if defined(GLQUAKE)
-#include "glquake.h"	/* already includes gl_model.h  */
+#include "glheader.h"
+#include "gl_model.h"
+#include "glquake.h"
 #elif defined(SERVERONLY)
-#include "server/model.h"  /* h2ded version of model.h  */
+#include "server/model.h"
 #else
 #include "model.h"
 #include "d_iface.h"

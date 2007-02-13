@@ -2,7 +2,7 @@
 	quakeinc.h
 	primary header for client
 
-	$Id: quakeinc.h,v 1.3 2007-02-12 16:53:13 sezero Exp $
+	$Id: quakeinc.h,v 1.4 2007-02-13 16:30:30 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
@@ -59,7 +59,9 @@
 #include "client.h"
 
 #if defined(GLQUAKE)
-#include "glquake.h"	/* already includes gl_model.h  */
+#include "glheader.h"
+#include "gl_model.h"
+#include "glquake.h"
 #else
 #include "model.h"
 #include "d_iface.h"
