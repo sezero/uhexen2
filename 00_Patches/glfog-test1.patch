@@ -13,7 +13,7 @@ Basic experimental fog code extracted from jshexen2 (activate with
 diff -urNp hexen2source-1.4.1/hexen2/gl_func.h hexen2source-1.4.1x/hexen2/gl_func.h
 --- hexen2source-1.4.1/hexen2/gl_func.h	2006-07-19 01:54:02.000000000 +0300
 +++ hexen2source-1.4.1x/hexen2/gl_func.h	2006-08-28 10:34:29.000000000 +0300
-@@ -46,6 +46,11 @@ GL_FUNCTION(void, glColor3ubv, (const GL
+@@ -53,6 +53,11 @@ GL_FUNCTION(void, glColor3ubv, (const GL
  GL_FUNCTION(void, glColor3f, (GLfloat,GLfloat,GLfloat))
  GL_FUNCTION(void, glClearColor, (GLclampf,GLclampf,GLclampf,GLclampf))
  
@@ -229,7 +229,7 @@ diff -urNp hexen2source-1.4.1/hexen2/gl_rmisc.c hexen2source-1.4.1x/hexen2/gl_rm
 diff -urNp hexen2source-1.4.1/hexenworld/Client/gl_func.h hexen2source-1.4.1x/hexenworld/Client/gl_func.h
 --- hexen2source-1.4.1/hexenworld/Client/gl_func.h	2006-07-19 01:54:03.000000000 +0300
 +++ hexen2source-1.4.1x/hexenworld/Client/gl_func.h	2006-08-28 10:34:29.000000000 +0300
-@@ -46,6 +46,11 @@ GL_FUNCTION(void, glColor3ubv, (const GL
+@@ -53,6 +53,11 @@ GL_FUNCTION(void, glColor3ubv, (const GL
  GL_FUNCTION(void, glColor3f, (GLfloat,GLfloat,GLfloat))
  GL_FUNCTION(void, glClearColor, (GLclampf,GLclampf,GLclampf,GLclampf))
  
