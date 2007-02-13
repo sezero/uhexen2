@@ -29,9 +29,9 @@ Version:	1.4.2
 Release:	0
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
-Source:		http://download.sourceforge.net/uhexen2/hexen2source-%{version}%{?prerelease:-%{prever}}.tgz
+Source:		http://download.sourceforge.net/uhexen2/hexen2source-%{version}%{?prerelease:-%{prerelease}}.tgz
 #Source1:	http://download.sourceforge.net/uhexen2/gamedata-src-%{gamecode_ver}.tgz
-Source1:	http://download.sourceforge.net/uhexen2/hexen2source-gamecode-%{version}%{?prerelease:-%{prever}}.tgz
+Source1:	http://download.sourceforge.net/uhexen2/hexen2source-gamecode-%{version}%{?prerelease:-%{prerelease}}.tgz
 Source2:	http://download.sourceforge.net/uhexen2/hexenworld-pakfiles-0.15.tgz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	SDL-devel >= 1.2.4
@@ -67,7 +67,7 @@ internet play. This package contains the files which are required to
 run a HexenWorld server or client, and a master server application.
 
 %prep
-%setup -q -n hexen2source-%{version}%{?prerelease:-%{prever}} -a1 -a2
+%setup -q -n hexen2source-%{version}%{?prerelease:-%{prerelease}} -a1 -a2
 %if %{?_without_asm:1}0
 %__sed -i 's/USE_X86_ASM=yes/USE_X86_ASM=no/' hexen2/Makefile hexenworld/Client/Makefile
 %endif
