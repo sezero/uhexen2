@@ -2,12 +2,17 @@
 	qwsvinc.h
 	primary header for server
 
-	$Id: qwsvinc.h,v 1.1 2007-02-12 16:54:51 sezero Exp $
+	$Id: qwsvinc.h,v 1.2 2007-02-13 16:32:50 sezero Exp $
 */
 
 #ifndef __HWSVINC_H
 #define __HWSVINC_H
 
+/* make sure to include our compile time options first	*/
+#include "h2_opt.h"
+
+/* include the system headers: make sure to use q_types.h
+   instead of <sys/types.h>				*/
 #include "q_types.h"
 #include <math.h>
 #include <stdio.h>
@@ -19,6 +24,8 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <setjmp.h>
+
+/* include the quake headers				*/
 
 #include "q_endian.h"
 #include "link_ops.h"

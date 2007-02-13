@@ -2,12 +2,17 @@
 	quakeinc.h
 	primary header for client and server
 
-	$Id: quakeinc.h,v 1.4 2007-02-13 16:30:28 sezero Exp $
+	$Id: quakeinc.h,v 1.5 2007-02-13 16:32:50 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
 #define __QUAKEINC_H
 
+/* make sure to include our compile time options first	*/
+#include "h2_opt.h"
+
+/* include the system headers: make sure to use q_types.h
+   instead of <sys/types.h>				*/
 #include "q_types.h"
 #include <math.h>
 #include <stdio.h>
@@ -19,6 +24,8 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <setjmp.h>
+
+/* include the quake headers				*/
 
 #include "q_endian.h"
 #include "link_ops.h"
