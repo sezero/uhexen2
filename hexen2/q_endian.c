@@ -2,7 +2,7 @@
 	q_endian.c
 	byte order functions
 
-	$Id: q_endian.c,v 1.2 2007-02-13 14:15:03 sezero Exp $
+	$Id: q_endian.c,v 1.3 2007-02-13 14:24:13 sezero Exp $
 */
 
 #include "q_endian.h"
@@ -14,7 +14,7 @@
 
 short ShortSwap (short l)
 {
-	byte	b1, b2;
+	unsigned char	b1, b2;
 
 	b1 = l & 255;
 	b2 = (l>>8) & 255;
@@ -24,7 +24,7 @@ short ShortSwap (short l)
 
 int LongSwap (int l)
 {
-	byte	b1, b2, b3, b4;
+	unsigned char	b1, b2, b3, b4;
 
 	b1 = l & 255;
 	b2 = (l>>8 ) & 255;
@@ -39,7 +39,7 @@ float FloatSwap (float f)
 	union
 	{
 		float	f;
-		byte	b[4];
+		unsigned char	b[4];
 	} dat1, dat2;
 
 	dat1.f = f;
