@@ -1,0 +1,60 @@
+Hexen II: Hammer of Thyrion
+Release Notes for version 1.4.1
+===============================
+
+Changes since HoT-1.4.1 :
+
+Current state: 1.4.2-pre1 (pre-release, 2007-02-13)
+
+General:
+--------
+- Fixed and improved parsing of puzzles.txt: This fixes the bug where the
+  names used to be listed as Unknown in the puzzle pieces inventory display
+  (which you can access through a key bound to the +showdm command, the
+  default is q).
+- Updated loading of strings.txt, infolist.txt and puzzles.txt.
+- Updates to SDL input code.
+- Mac OS X: Ensured that the basedir always stays the same for Mac OS X.
+  (fix was added in 1.4.1-rev1).
+
+Gameplay:
+---------
+- Gamecode is now at version 1.16a.
+- Fixed an obscure bug where the assasin with her 4th weapon uses the tome
+  of power and can't fire it. (fix was added in 1.4.1-rev1).
+
+Video:
+------
+
+OpenGL Renderer:
+----------------
+
+Sound:
+------
+- Added external music file support via SDL_mixer as an extra patch.
+
+CDAudio:
+--------
+
+HexenWorld:
+-----------
+
+Utilities:
+----------
+
+Launcher:
+----------
+- Added integrated ability to patch the pak files using the xdelta libraries
+  that we just imported.
+- Incremented the version number to 0.9.0.
+
+Other:
+----------------------
+- Updated and sanitized the command lister procedures.
+- Fixed many printf string format errors.
+- Started a large scale attempt at improving const-correctness all over the
+  tree.
+- Updated inline commentaries.
+- Imported the latest xdelta-1.1 sources into the tree.
+- A lot of code clean-up all over the tree.
+
