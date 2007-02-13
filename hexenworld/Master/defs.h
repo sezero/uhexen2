@@ -31,9 +31,8 @@
 #include <stdio.h>
 #include <string.h>
 #if !defined(_WIN32)
-// for strcasecmp and strncasecmp
-#include <strings.h>
-#endif
+#include <strings.h>	/* strcasecmp and strncasecmp	*/
+#endif	/* !_WIN32 */
 #include <stdarg.h>
 #include <stdlib.h>
 #include "q_endian.h"

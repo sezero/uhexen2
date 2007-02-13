@@ -2,7 +2,7 @@
 	quakeinc.h
 	primary header for client and server
 
-	$Id: quakeinc.h,v 1.5 2007-02-13 16:32:50 sezero Exp $
+	$Id: quakeinc.h,v 1.6 2007-02-13 16:55:57 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
@@ -18,9 +18,8 @@
 #include <stdio.h>
 #include <string.h>
 #if !defined(_WIN32)
-// for strcasecmp and strncasecmp
-#include <strings.h>
-#endif
+#include <strings.h>	/* strcasecmp and strncasecmp	*/
+#endif	/* !_WIN32 */
 #include <stdarg.h>
 #include <stdlib.h>
 #include <setjmp.h>

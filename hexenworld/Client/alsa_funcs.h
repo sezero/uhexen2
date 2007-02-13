@@ -1,8 +1,9 @@
 /*
 	alsa_funcs.h
-	$Id: alsa_funcs.h,v 1.7 2007-02-07 17:03:28 sezero Exp $
+	$Id: alsa_funcs.h,v 1.8 2007-02-13 16:56:00 sezero Exp $
 
 	ALSA function list
+	make sure NOT to protect this file against multiple inclusions!
 
 	Copyright (C) 2001 Bill Currie <bill@taniwha.org>
 

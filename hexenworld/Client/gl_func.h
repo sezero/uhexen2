@@ -1,3 +1,10 @@
+/*
+	gl_func.h
+	opengl function pointers
+	make sure NOT to protect this file against multiple inclusions!
+
+	$Id: gl_func.h,v 1.13 2007-02-13 16:56:00 sezero Exp $
+*/
 
 // whether to dlsym gl function calls
 // the define GL_DLSYM is decided in the Makefile
