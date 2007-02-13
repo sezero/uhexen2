@@ -75,11 +75,11 @@ EXT_FLAGS:=-DSERVERONLY $(ARCHFLAGS)
 
 ifeq ($(TARGET_OS),WIN32)
 # Main win32 specific includes and flags
-INCLUDES:= -I$(MINGWDIR)/include -idirafter ./server -idirafter .
+INCLUDES:= -I$(MINGWDIR)/include -I./server -I.
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mconsole
 else
 # Main unix specific includes and flags
-INCLUDES:=  -idirafter ./server -idirafter .
+INCLUDES:=  -I./server -I.
 LDFLAGS := $(LIBSOCKET) -lm
 EXT_FLAGS+= -DPLATFORM_UNIX
 endif
@@ -150,7 +150,6 @@ H2DED_OBJS = q_endian.o \
 	sv_user.o \
 	world.o \
 	$(SYSOBJ_SYS)
-
 
 
 # Targets

@@ -47,7 +47,7 @@ endif
 
 # Other build flags
 EXT_FLAGS:= -DH2W -DSERVERONLY $(ARCHFLAGS)
-INCLUDES := -idirafter ../Client -idirafter .
+INCLUDES := -I../Client -I.
 
 ifeq ($(TARGET_OS),WIN32)
 INCLUDES := -I$(MINGWDIR)/include $(INCLUDES)

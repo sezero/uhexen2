@@ -45,14 +45,17 @@ endif
 # Other build flags
 
 ifeq ($(TARGET_OS),WIN32)
-INCLUDES:= -I$(MINGWDIR)/include -idirafter $(COMMONDIR)
+INCLUDES:= -I$(MINGWDIR)/include -I$(COMMONDIR)
 LDFLAGS := -mconsole
 LDLIBS  :=
 else
-INCLUDES:= -idirafter $(COMMONDIR)
+INCLUDES:= -I$(COMMONDIR)
 LDFLAGS :=
 LDLIBS  := -lm
 endif
+
+# Targets
+all : $(LIGHT) $(VIS) $(QBSP) $(BSPINFO)
 
 # Rules for turning source files into .o files
 %.o: %.c
@@ -90,9 +93,6 @@ QBSPOBJS= brush.o \
 	writebsp.o
 
 BSPINFOBJS= bspinfo.o
-
-# Targets
-all : $(LIGHT) $(VIS) $(QBSP) $(BSPINFO)
 
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc

@@ -40,15 +40,18 @@ endif
 # Other build flags
 
 ifeq ($(TARGET_OS),WIN32)
-INCLUDES:= -I$(MINGWDIR)/include -idirafter .
+INCLUDES:= -I$(MINGWDIR)/include -I.
 LDFLAGS := -mconsole
 LDLIBS  :=
 else
-INCLUDES:= -idirafter .
+INCLUDES:= -I.
 LDFLAGS :=
 LDLIBS  :=
 endif
 
+
+# Targets
+all : $(BINARY)
 
 # Rules for turning source files into .o files
 %.o: %.c
@@ -61,9 +64,6 @@ DHCCOBJS= cmdlib.o \
 	pr_comp.o \
 	pr_lex.o \
 	pr_parse.o
-
-# Targets
-all : $(BINARY)
 
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc

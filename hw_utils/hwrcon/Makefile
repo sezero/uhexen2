@@ -45,10 +45,10 @@ endif
 EXT_FLAGS:=$(ARCHFLAGS)
 
 ifeq ($(TARGET_OS),WIN32)
-INCLUDES := -I$(MINGWDIR)/include -idirafter .
+INCLUDES := -I$(MINGWDIR)/include -I.
 LDFLAGS  := -L$(MINGWDIR)/lib -lwsock32 -mconsole
 else
-INCLUDES := -idirafter .
+INCLUDES := -I.
 LDFLAGS  := $(LIBSOCKET)
 EXT_FLAGS+= -DPLATFORM_UNIX
 endif

@@ -86,18 +86,20 @@ else
 XPATCH_OBJ := xpatch/md5.o xpatch/loki_xdelta.o xpatch/apply_patch.o
 endif
 
-OBJECTS = main.o config_file.o launch_bin.o \
-	interface.o callbacks.o $(XPATCH_OBJ) $(SUPPORT_OBJ)
+# Targets
+all: $(H2LAUNCH)
 
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
+# Objects
+OBJECTS = main.o config_file.o launch_bin.o \
+	interface.o callbacks.o $(XPATCH_OBJ) $(SUPPORT_OBJ)
+
 $(H2LAUNCH): $(OBJECTS)
 	@rm -f $(H2LAUNCH)
 	$(LINKER) -o $(H2LAUNCH) $(OBJECTS) $(LDFLAGS)
-
-all: $(H2LAUNCH)
 
 clean:
 	-rm -f *.o xpatch/*.o core

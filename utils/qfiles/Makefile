@@ -39,14 +39,17 @@ endif
 # Other build flags
 
 ifeq ($(TARGET_OS),WIN32)
-INCLUDES:= -I$(MINGWDIR)/include -idirafter $(COMMONDIR)
+INCLUDES:= -I$(MINGWDIR)/include -I$(COMMONDIR)
 LDFLAGS := -mconsole
 LDLIBS  :=
 else
-INCLUDES:= -idirafter $(COMMONDIR)
+INCLUDES:= -I$(COMMONDIR)
 LDFLAGS :=
 LDLIBS  :=
 endif
+
+# Targets
+all : $(BINARY)
 
 # Rules for turning source files into .o files
 %.o: %.c
@@ -58,9 +61,6 @@ QFILESOBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/strlcat.o \
 	$(COMMONDIR)/strlcpy.o \
 	qfiles.o
-
-# Targets
-all : $(BINARY)
 
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc

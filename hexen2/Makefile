@@ -158,11 +158,11 @@ EXT_FLAGS:=$(ARCHFLAGS)
 
 ifeq ($(TARGET_OS),WIN32)
 # Main win32 specific includes and flags
-INCLUDES:= -I$(UHEXEN2_TOP)/w32stuff/dxsdk/inc -I$(MINGWDIR)/include -idirafter .
+INCLUDES:= -I$(UHEXEN2_TOP)/w32stuff/dxsdk/inc -I$(MINGWDIR)/include -I.
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mwindows
 else
 # Main unix specific includes and flags
-INCLUDES:= -I$(X11_PATH)/include -idirafter .
+INCLUDES:= -I$(X11_PATH)/include -I.
 LDFLAGS := $(LIBSOCKET)
 EXT_FLAGS+= -DPLATFORM_UNIX
 endif
