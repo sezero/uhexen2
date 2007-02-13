@@ -41,6 +41,7 @@ endif
 ifndef DEBUG
 CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
 endif
+CFLAGS := $(CFLAGS) -DDOUBLEVEC_T
 
 # Other build flags
 
@@ -59,6 +60,9 @@ all : $(LIGHT) $(VIS) $(QBSP) $(BSPINFO)
 
 # Rules for turning source files into .o files
 %.o: %.c
+	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
+# special rule for mathlib because of DOUBLEVEC_T
+mathlib.o: $(COMMONDIR)/mathlib.c
 	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects

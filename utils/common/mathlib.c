@@ -1,4 +1,9 @@
-// mathlib.c -- math primitives
+/*
+	mathlib.c
+	math primitives
+
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/common/mathlib.c,v 1.1 2007-02-13 08:54:50 sezero Exp $
+*/
 
 #include "cmdlib.h"
 #include "mathlib.h"

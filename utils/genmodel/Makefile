@@ -54,6 +54,9 @@ all : $(BINARY)
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
+# special rule for mathlib because of DOUBLEVEC_T
+mathlib.o: $(COMMONDIR)/mathlib.c
+	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
 GENMODELOBJS= $(COMMONDIR)/cmdlib.o \
