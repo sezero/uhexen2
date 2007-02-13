@@ -20,16 +20,18 @@
 
 %define gamecode_ver	1.16a
 
+%define prerelease	pre1
+
 Name:		hexen2
 License:	GPL
 Group:		Amusements/Games
-Version:	1.4.1
-Release:	2
+Version:	1.4.2
+Release:	0
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
-Source:		http://download.sourceforge.net/uhexen2/hexen2source-%{version}.tgz
-#Source1:	http://download.sourceforge.net/uhexen2/hexen2source-gamecode-%{version}.tgz
-Source1:	http://download.sourceforge.net/uhexen2/gamedata-src-%{gamecode_ver}.tgz
+Source:		http://download.sourceforge.net/uhexen2/hexen2source-%{version}%{?prerelease:-%{prever}}.tgz
+#Source1:	http://download.sourceforge.net/uhexen2/gamedata-src-%{gamecode_ver}.tgz
+Source1:	http://download.sourceforge.net/uhexen2/hexen2source-gamecode-%{version}%{?prerelease:-%{prever}}.tgz
 Source2:	http://download.sourceforge.net/uhexen2/hexenworld-pakfiles-0.15.tgz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	SDL-devel >= 1.2.4
@@ -65,7 +67,7 @@ internet play. This package contains the files which are required to
 run a HexenWorld server or client, and a master server application.
 
 %prep
-%setup -q -n hexen2source-%{version} -a1 -a2
+%setup -q -n hexen2source-%{version}%{?prerelease:-%{prever}} -a1 -a2
 %if %{?_without_asm:1}0
 %__sed -i 's/USE_X86_ASM=yes/USE_X86_ASM=no/' hexen2/Makefile hexenworld/Client/Makefile
 %endif
@@ -167,6 +169,7 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 docs/ReleaseNotes-1.2.4a %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.4a
 %{__install} -D -m644 docs/ReleaseNotes-1.3.0 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.3.0
 %{__install} -D -m644 docs/ReleaseNotes-1.4.0 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.0
+%{__install} -D -m644 docs/ReleaseNotes-1.4.1 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.1
 
 # Install the gamedata
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/
@@ -270,6 +273,7 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.4a
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.3.0
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.0
+%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.1
 %{!?_without_freedesktop:%{_datadir}/applications/%{desktop_vendor}-%{name}.desktop}
 %{?_without_freedesktop:%{_sysconfdir}/X11/applnk/Games/%{name}.desktop}
 
@@ -290,6 +294,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Mon Feb 13 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-0
+- 1.4.2-pre1 prerelease.
+
 * Mon Feb 05 2007 O.Sezer <sezero@users.sourceforge.net>
 - xdelta is now included in the source tarball.
 
