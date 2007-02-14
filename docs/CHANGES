@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-02-14 (CVS, 1.4.2-pre1):
+    * the string loading changes in 1.4.2-pre1 (specifically the one made
+      on 2007-02-09) broke starting a new game in the mission pack through
+      the menu system: because if the game is newly started we shall not
+      have strings.txt loaded. it is fixed now.
+
 2007-02-13 (CVS, 1.4.2-pre1):
     * updated the makefiles. removed the idirafter stuff, seems not necessary.
     * moved mathlib.c and mathlib.h to common for the utilities. since all of
