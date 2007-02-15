@@ -4,7 +4,14 @@ Development Progress	:
 ---------------------------
 
 2007-02-15 (CVS):
-    * added partial matching support to the maplist command.
+    * added prefix matching support to the maplist command.
+    * cleaned up the maplist command. the duplicate name detection was
+      flawed: if, for example, demo22.bsp was hit first, then demo2.bsp
+      would be discarded due to the strcasecmp usage. it is fixed now.
+      maximum number of maps to be listed is now limited to 256 which
+      eliminates the necessity of two pass search in order to determine
+      the actual count. in such crazy cases where more than 256 maps are
+      present, prefix matching shall be the user's friend.
     * tiny update to the FS_AddGameDirectory procedure.
     * renamed the global gamedirfile to fs_gamedir_nopath and exported it
       through quakefs.h.
