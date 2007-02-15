@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.1 2007-02-12 16:53:12 sezero Exp $
+	$Id: quakefs.c,v 1.2 2007-02-15 07:18:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -305,6 +305,8 @@ FS_AddGameDirectory
 
 Sets fs_gamedir, adds the directory to the head of the path,
 then loads and adds pak1.pak pak2.pak ... 
+This is a callback for FS_Init() ONLY. The dir argument must
+contain a path information, at least a partial one.
 ================
 */
 static void FS_AddGameDirectory (const char *dir, qboolean base_fs)
@@ -316,15 +318,9 @@ static void FS_AddGameDirectory (const char *dir, qboolean base_fs)
 	char			*p;
 	qboolean		been_here = false;
 
-	if ((p = strrchr(dir, '/')) != NULL)
-	{
-		Q_strlcpy_err(gamedirfile, ++p, sizeof(gamedirfile));
-	}
-	else
-	{
-		Q_strlcpy_err(gamedirfile, p, sizeof(gamedirfile));
-	}
 	Q_strlcpy_err(fs_gamedir, dir, sizeof(fs_gamedir));
+	p = strrchr (fs_gamedir, '/');
+	Q_strlcpy_err(gamedirfile, ++p, sizeof(gamedirfile));
 
 //
 // add any pak files in the format pak0.pak pak1.pak, ...
