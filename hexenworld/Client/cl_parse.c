@@ -114,8 +114,6 @@ model_t *player_models[MAX_PLAYER_CLASS];
 int		cl_spikeindex, cl_playerindex[MAX_PLAYER_CLASS], cl_flagindex;
 int		cl_ballindex, cl_missilestarindex, cl_ravenindex, cl_raven2index;
 
-extern	char	gamedirfile[MAX_OSPATH];
-
 
 //=============================================================================
 
@@ -207,7 +205,7 @@ static void Model_NextDownload (void)
 		{
 			Con_Printf ("\nThe required model file '%s' could not be found or downloaded.\n\n", cl.model_name[i]);
 			Con_Printf ("You may need to download or purchase a %s client "
-					"pack in order to play on this server.\n\n", gamedirfile);
+					"pack in order to play on this server.\n\n", fs_gamedir_nopath);
 			CL_Disconnect ();
 			return;
 		}
@@ -448,7 +446,7 @@ static void CL_ParseServerData (void)
 	// game directory
 	str = MSG_ReadString ();
 
-	if (Q_strcasecmp(gamedirfile, str))
+	if (Q_strcasecmp(fs_gamedir_nopath, str))
 	{
 		Con_Printf("Server set the gamedir to %s\n", str);
 

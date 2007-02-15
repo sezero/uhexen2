@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.2 2007-02-15 07:18:57 sezero Exp $
+	$Id: quakefs.c,v 1.3 2007-02-15 07:19:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -19,12 +19,11 @@
 searchpath_t		*fs_searchpaths;
 static searchpath_t	*fs_base_searchpaths;	// without gamedirs
 
-char	fs_gamedir[MAX_OSPATH];
 char	fs_basedir[MAX_OSPATH];
+char	fs_gamedir[MAX_OSPATH];
+char	fs_gamedir_nopath[MAX_OSPATH];
 char	fs_userdir[MAX_OSPATH];
 char	fs_savedir[MAX_OSPATH];	// temporary path for saving gip files
-
-char	gamedirfile[MAX_OSPATH];
 
 unsigned int	gameflags;
 
@@ -213,7 +212,7 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 // check for modifications
 	if (base_fs && paknum <= MAX_PAKDATA-2)
 	{
-		if (strcmp(gamedirfile, dirdata[paknum]) != 0)
+		if (strcmp(fs_gamedir_nopath, dirdata[paknum]) != 0)
 		{
 			// raven didnt ship like that
 			gameflags |= GAME_MODIFIED;
@@ -320,7 +319,7 @@ static void FS_AddGameDirectory (const char *dir, qboolean base_fs)
 
 	Q_strlcpy_err(fs_gamedir, dir, sizeof(fs_gamedir));
 	p = strrchr (fs_gamedir, '/');
-	Q_strlcpy_err(gamedirfile, ++p, sizeof(gamedirfile));
+	Q_strlcpy_err(fs_gamedir_nopath, ++p, sizeof(fs_gamedir_nopath));
 
 //
 // add any pak files in the format pak0.pak pak1.pak, ...
@@ -408,9 +407,9 @@ void FS_Gamedir (const char *dir)
 		return;
 	}
 
-	if (!Q_strcasecmp(gamedirfile, dir))
+	if (!Q_strcasecmp(fs_gamedir_nopath, dir))
 		return;		// still the same
-	Q_strlcpy_err(gamedirfile, dir, sizeof(gamedirfile));
+	Q_strlcpy_err(fs_gamedir_nopath, dir, sizeof(fs_gamedir_nopath));
 
 	// FIXME: Should I check for directory's existence ??
 
