@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.3 2007-02-15 07:19:33 sezero Exp $
+	$Id: quakefs.c,v 1.4 2007-02-15 07:21:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -23,7 +23,6 @@ char	fs_basedir[MAX_OSPATH];
 char	fs_gamedir[MAX_OSPATH];
 char	fs_gamedir_nopath[MAX_OSPATH];
 char	fs_userdir[MAX_OSPATH];
-char	fs_savedir[MAX_OSPATH];	// temporary path for saving gip files
 
 unsigned int	gameflags;
 
@@ -458,7 +457,6 @@ void FS_Gamedir (const char *dir)
 	// change the *gamedir serverinfo properly
 		Info_SetValueForStarKey (svs.info, "*gamedir", "hw", MAX_SERVERINFO_STRING);
 #    endif
-		Q_strlcpy_err (fs_savedir, fs_userdir, sizeof(fs_savedir));
 #endif
 		return;
 	}
@@ -538,13 +536,11 @@ add_pakfiles:
 #ifdef PLATFORM_UNIX
 	Q_snprintf_err(fs_userdir, sizeof(fs_userdir), "%s/%s", host_parms.userdir, dir);
 	Sys_mkdir_err (fs_userdir);
-	Q_strlcpy_err (fs_savedir, fs_userdir, sizeof(fs_savedir));
 // add any pak files in the user's directory
 	if (strcmp(fs_gamedir, fs_userdir))
 		goto add_pakfiles;
 #else
 	Q_strlcpy_err (fs_userdir, fs_gamedir, sizeof(fs_userdir));
-	Q_strlcpy_err (fs_savedir, fs_userdir, sizeof(fs_savedir));
 #endif
 }
 
@@ -807,8 +803,6 @@ void FS_Init (void)
 // the server, will be freed up to here upon a new gamedir
 // command
 	fs_base_searchpaths = fs_searchpaths;
-
-	Q_strlcpy_err(fs_savedir, fs_userdir, sizeof(fs_savedir));
 
 	i = COM_CheckParm ("-game");
 	if (i && !(gameflags & GAME_REGISTERED))

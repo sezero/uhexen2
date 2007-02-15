@@ -2,7 +2,7 @@
 	quakefs.h
 	Hexen II filesystem
 
-	$Id: quakefs.h,v 1.2 2007-02-15 07:19:33 sezero Exp $
+	$Id: quakefs.h,v 1.3 2007-02-15 07:21:40 sezero Exp $
 */
 
 #ifndef __QUAKEFS_H
@@ -21,7 +21,12 @@ extern	char	fs_basedir[MAX_OSPATH];
 extern	char	fs_gamedir[MAX_OSPATH];
 extern	char	fs_gamedir_nopath[MAX_OSPATH];
 extern	char	fs_userdir[MAX_OSPATH];
-extern	char	fs_savedir[MAX_OSPATH];	// temporary path for saving gip files
+
+/* NOTE:  the savedir (fs_savedir, or the
+   old com_savedir) is no longer available
+   as a separate variable. the saves are
+   always put in the current userdir now.
+ */
 
 extern	struct cvar_s	registered;
 extern	struct cvar_s	oem;

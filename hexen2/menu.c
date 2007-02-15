@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.75 2007-02-12 16:52:49 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.76 2007-02-15 07:21:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1143,7 +1143,7 @@ static void M_ScanSaves (void)
 	{
 		strncpy (m_filenames[i], "--- UNUSED SLOT ---", sizeof(m_filenames[0])-1);
 		loadable[i] = false;
-		snprintf (name, sizeof(name), "%s/s%i/info.dat", fs_savedir, i);
+		snprintf (name, sizeof(name), "%s/s%i/info.dat", fs_userdir, i);
 		f = fopen (name, "r");
 		if (!f)
 			continue;
@@ -1308,7 +1308,7 @@ static void M_ScanMSaves (void)
 	{
 		strncpy (m_filenames[i], "--- UNUSED SLOT ---", sizeof(m_filenames[0])-1);
 		loadable[i] = false;
-		snprintf (name, sizeof(name), "%s/ms%i/info.dat", fs_savedir, i);
+		snprintf (name, sizeof(name), "%s/ms%i/info.dat", fs_userdir, i);
 		f = fopen (name, "r");
 		if (!f)
 			continue;
