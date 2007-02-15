@@ -2,7 +2,7 @@
 	cl_cmd.c
 	client command forwarding to server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_cmd.c,v 1.2 2007-02-12 16:53:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_cmd.c,v 1.3 2007-02-15 07:16:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -70,7 +70,19 @@ static void Cmd_Maplist_f (void)
 	pack_t		*pak;
 	searchpath_t	*search;
 	char		**maplist = NULL, mappath[MAX_OSPATH];
-	char	*findname;
+	char	*findname, *prefix;
+	size_t		preLen;
+
+	if (Cmd_Argc() > 1)
+	{
+		prefix = Cmd_Argv(1);
+		preLen = strlen(prefix);
+	}
+	else
+	{
+		preLen = 0;
+		prefix = NULL;
+	}
 
 	// do two runs - first count the number of maps
 	// then collect their names into maplist
@@ -89,6 +101,13 @@ scanmaps:
 				if (strncmp ("maps/", pak->files[i].name, 5) == 0  && 
 				    strstr(pak->files[i].name, ".bsp"))
 				{
+					if (preLen)
+					{
+						if ( Q_strncasecmp(prefix, pak->files[i].name + 5, preLen) )
+						{	// doesn't match the prefix. skip.
+							continue;
+						}
+					}
 					if (maplist)
 					{
 						size_t	len;
@@ -124,6 +143,14 @@ scanmaps:
 			findname = Sys_FindFirstFile (mappath, "*.bsp");
 			while (findname)
 			{
+				if (preLen)
+				{
+					if ( Q_strncasecmp(prefix, findname, preLen) )
+					{	// doesn't match the prefix. skip.
+						findname = Sys_FindNextFile ();
+						continue;
+					}
+				}
 				if (maplist)
 				{
 					size_t	len;
