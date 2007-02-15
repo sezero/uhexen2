@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-02-16 (CVS):
+    * gethostname() may not NUL-terminate the hostname. do it by hand.
+    * added a COMPILE_32BITS option to the makefiles.
+    * updated the release notes file for future v1.4.2 (post-1.4.2-pre1,
+      2007-02-16)
+
 2007-02-15 (CVS):
     * added prefix matching support to the maplist command.
     * cleaned up the maplist command. the duplicate name detection was
