@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.11 2007-02-13 14:15:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.12 2007-02-15 07:22:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -334,7 +334,7 @@ int main(int argc, char *argv[])
 {
 	quakeparms_t	parms;
 	double	time, oldtime;
-	char	cwd[MAX_OSPATH];
+	char	*tmp, cwd[MAX_OSPATH];
 	char	userdir[MAX_OSPATH];
 	int	t;
 
@@ -358,14 +358,26 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	if (!(getcwd (cwd, sizeof(cwd))))
+	memset (cwd, 0, sizeof(cwd));
+	if ( getcwd (cwd, sizeof(cwd)-1) == NULL )
 		Sys_Error ("Couldn't determine current directory");
 
-	if (cwd[strlen(cwd)-1] == '/')
-		cwd[strlen(cwd)-1] = 0;
+	tmp = cwd;
+	while (*tmp != 0)
+		tmp++;
+	while (*tmp == 0)
+	{
+		--tmp;
+		if (*tmp == '/')
+			*tmp = 0;
+	}
+
+	Sys_Printf("basedir is: %s\n", cwd);
 
 	if (Sys_GetUserdir(userdir,sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
+
+	Sys_Printf("userdir is: %s\n", userdir);
 
 	parms.basedir = cwd;
 	parms.userdir = userdir;
@@ -379,8 +391,6 @@ int main(int argc, char *argv[])
 
 	parms.argc = com_argc;
 	parms.argv = com_argv;
-
-	Sys_Printf("userdir is: %s\n", userdir);
 
 	parms.memsize = STD_MEM_ALLOC;
 

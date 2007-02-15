@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.75 2007-02-13 14:15:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.76 2007-02-15 07:22:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -466,11 +466,8 @@ int main(int argc, char *argv[])
 {
 	quakeparms_t	parms;
 	double	time, oldtime, newtime;
-	char	cwd[MAX_OSPATH];
+	char	*tmp, cwd[MAX_OSPATH];
 	char	userdir[MAX_OSPATH];
-#ifdef __MACOSX__
-	char	*tmp;
-#endif
 	int	t;
 	const SDL_version *sdl_version;
 
@@ -494,10 +491,11 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	memset (cwd, 0, sizeof(cwd));
 #ifdef __MACOSX__
 	if ( realpath(argv[0], cwd) == NULL )
 	{
-		if ( !(getcwd (cwd, sizeof(cwd))) )
+		if ( getcwd (cwd, sizeof(cwd)-1) == NULL )
 			Sys_Error ("Couldn't determine current directory");
 	}
 	else
@@ -509,11 +507,18 @@ int main(int argc, char *argv[])
 	tmp = Sys_StripAppBundle(cwd);
 	Q_strlcpy (cwd, tmp, sizeof(cwd));
 #else
-	if ( !(getcwd (cwd, sizeof(cwd))) )
+	if ( getcwd (cwd, sizeof(cwd)-1) == NULL )
 		Sys_Error ("Couldn't determine current directory");
 
-	if (cwd[strlen(cwd)-1] == '/')
-		cwd[strlen(cwd)-1] = 0;
+	tmp = cwd;
+	while (*tmp != 0)
+		tmp++;
+	while (*tmp == 0)
+	{
+		--tmp;
+		if (*tmp == '/')
+			*tmp = 0;
+	}
 #endif
 
 	Sys_Printf("basedir is: %s\n", cwd);
