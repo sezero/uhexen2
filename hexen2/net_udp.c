@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.20 2006-10-21 09:48:40 sezero Exp $
+	$Id: net_udp.c,v 1.21 2007-02-15 23:13:26 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -50,13 +50,13 @@ int UDP_Init (void)
 		return -1;
 
 	// determine my name & address
-
 	// sanity checking added by S.A.
 	if (gethostname(buff, MAXHOSTNAMELEN) != 0)
 	{
 		Sys_Printf ("gethostname failed, errno = %i, disabling udp\n", errno);
 		return -1;
 	}
+	buff[MAXHOSTNAMELEN-1] = 0;
 
 	local = gethostbyname(buff);
 

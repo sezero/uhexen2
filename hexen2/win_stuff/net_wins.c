@@ -77,6 +77,7 @@ int WINS_Init (void)
 	// determine my name & address
 	if (gethostname(buff, MAXHOSTNAMELEN) == 0)
 	{
+		buff[MAXHOSTNAMELEN-1] = 0;
 		blocktime = Sys_DoubleTime();
 		WSASetBlockingHook(BlockingHook);
 		local = gethostbyname(buff);

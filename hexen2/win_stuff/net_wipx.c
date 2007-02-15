@@ -71,6 +71,8 @@ int WIPX_Init (void)
 	// determine my name & address
 	if (gethostname(buff, MAXHOSTNAMELEN) == 0)
 	{
+		buff[MAXHOSTNAMELEN-1] = 0;
+
 		// if the quake hostname isn't set, set it to the machine name
 		if (strcmp(hostname.string, "UNNAMED") == 0)
 		{
