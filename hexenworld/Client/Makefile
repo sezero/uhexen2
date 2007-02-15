@@ -66,6 +66,14 @@
 #			Disable this manually for any other cpu.
 #		no   =	Do not use intel assembly even on ix86.
 #
+# COMPILE_32BITS yes =  Compile as a 32 bit binary. If you are on a 64 bit
+#			platform and having problems with 64 bit compiled
+#			binaries, set this option to yes. Default: no .
+#			If you set this to yes, you need to have the 32 bit
+#			versions of the libraries that you link against.
+#		no   =	Compile for the native word size of your platform,
+#			which is the default option.
+#
 # The default compiler is gcc
 # To build with a different compiler:	make CC=compiler_name [other stuff]
 #
@@ -94,6 +102,7 @@ WITH_SPLASHES=yes
 OPT_EXTRA=yes
 LINK_GL_LIBS=no
 USE_X86_ASM=yes
+COMPILE_32BITS=no
 
 # build environment sanity checks
 ifeq ($(USE_X86_ASM),yes)
@@ -139,6 +148,10 @@ CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
 endif
 endif
 
+ifeq ($(COMPILE_32BITS),yes)
+CFLAGS := $(CFLAGS) -m32
+endif
+
 ifeq ($(OPT_EXTRA),yes)
 # Note: re-check these flags for non-ia32 machines
 CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
@@ -166,6 +179,10 @@ else
 INCLUDES:= -I$(X11_PATH)/include -I.
 LDFLAGS := $(LIBSOCKET)
 EXT_FLAGS+= -DPLATFORM_UNIX
+endif
+
+ifeq ($(COMPILE_32BITS),yes)
+LDFLAGS := $(LDFLAGS) -m32
 endif
 
 GL_DEFS := -DGLQUAKE

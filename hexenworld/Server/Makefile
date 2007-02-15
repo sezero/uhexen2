@@ -1,3 +1,11 @@
+# COMPILE_32BITS yes =  Compile as a 32 bit binary. If you are on a 64 bit
+#			platform and having problems with 64 bit compiled
+#			binaries, set this option to yes. Default: no .
+#			If you set this to yes, you need to have the 32 bit
+#			versions of the libraries that you link against.
+#		no   =	Compile for the native word size of your platform,
+#			which is the default option.
+#
 # To build for the demo version:	make DEMO=1 [other stuff]
 # if building a debug version :		make DEBUG=1 [other stuff]
 
@@ -8,6 +16,9 @@
 # Path settings:
 # main uhexen2 relative path
 UHEXEN2_TOP=../..
+
+# General options (see explanations at the top)
+COMPILE_32BITS=no
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -45,6 +56,10 @@ endif
 endif
 endif
 
+ifeq ($(COMPILE_32BITS),yes)
+CFLAGS := $(CFLAGS) -m32
+endif
+
 # Other build flags
 EXT_FLAGS:= -DH2W -DSERVERONLY $(ARCHFLAGS)
 INCLUDES := -I../Client -I.
@@ -55,6 +70,10 @@ LDFLAGS  := -L$(MINGWDIR)/lib -lm -lwsock32 -mconsole
 else
 EXT_FLAGS+= -DPLATFORM_UNIX
 LDFLAGS  := -lm $(LIBSOCKET)
+endif
+
+ifeq ($(COMPILE_32BITS),yes)
+LDFLAGS := $(LDFLAGS) -m32
 endif
 
 ifdef DEMO
