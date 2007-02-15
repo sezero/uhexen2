@@ -3,7 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2007-02-14 (CVS, 1.4.2-pre1):
+2007-02-15 (CVS):
+    * added partial matching support to the maplist command.
+    * tiny update to the FS_AddGameDirectory procedure.
+    * renamed the global gamedirfile to fs_gamedir_nopath and exported it
+      through quakefs.h.
+    * killed the global variable fs_savedir (formerly com_savedir). it
+      doesn't serve any purpose, we always put our saves into fs_userdir.
+    * small update to the getcwd usage in sys_unix.c.
+
+2007-02-14 (CVS):
     * the string loading changes in 1.4.2-pre1 (specifically the one made
       on 2007-02-09) broke starting a new game in the mission pack through
       the menu system: because if the game is newly started we shall not
