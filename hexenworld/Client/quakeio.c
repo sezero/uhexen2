@@ -2,7 +2,7 @@
 	quakefs.c
 	quake file io
 
-	$Id: quakeio.c,v 1.1 2007-02-12 16:53:13 sezero Exp $
+	$Id: quakeio.c,v 1.2 2007-02-16 23:53:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -12,9 +12,10 @@
 #endif
 #ifdef PLATFORM_UNIX
 #include <unistd.h>
-#include <sys/stat.h>
-#include <errno.h>
 #endif
+#include <sys/stat.h>
+#include <time.h>
+#include <utime.h>
 
 
 size_t		qio_filesize;	// size of the last file opened through QIO
@@ -138,12 +139,28 @@ Copies the FROMPATH file as TOPATH file, creating any dirs needed.
 Used for saving the game. Returns 0 on success, non-zero on error.
 ===========
 */
+#define	COPY_READ_BUFSIZE		16384
 int QIO_CopyFile (const char *frompath, const char *topath)
 {
+	char	buf[COPY_READ_BUFSIZE];
 	FILE	*in, *out;
+	struct stat	st;
 	int		err = 0;
+//	off_t		remaining, count;
 	size_t		remaining, count;
-	char	buf[4096];
+
+	if ( !frompath || !topath )
+	{
+		Con_Printf ("%s: null input\n", __FUNCTION__);
+		return 1;
+	}
+
+	if ( stat (frompath, &st) != 0 )
+	{
+		Con_Printf ("%s: unable to stat %s\n", frompath, __FUNCTION__);
+		return 1;
+	}
+//	remaining = st.st_size;
 
 	in = fopen (frompath, "rb");
 	if (!in)
@@ -177,19 +194,32 @@ int QIO_CopyFile (const char *frompath, const char *topath)
 			count = remaining;
 		else
 			count = sizeof(buf);
+
 		fread (buf, 1, count, in);
 		err = ferror(in);
 		if (err)
 			break;
+
 		fwrite (buf, 1, count, out);
 		err = ferror(out);
 		if (err)
 			break;
+
 		remaining -= count;
 	}
 
 	fclose (in);
 	fclose (out);
+
+	if (!err)
+	{
+	// restore the file's timestamp
+		struct utimbuf		tm;
+		tm.actime = time (NULL);
+		tm.modtime = st.st_mtime;
+		utime (topath, &tm);
+	}
+
 	return err;
 }
 
