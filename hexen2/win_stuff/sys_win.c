@@ -5,6 +5,7 @@
 #include <errno.h>
 #include "resource.h"
 #include <io.h>
+#include <fcntl.h>
 #include "conproc.h"
 
 
@@ -73,6 +74,23 @@ static void Sys_PageIn (void *ptr, int size)
 	}
 }
 
+
+//=============================================================================
+
+
+void Sys_DebugLog (const char *file, const char *fmt, ...)
+{
+	va_list		argptr;
+	static char	data[MAXPRINTMSG];
+	int			fd;
+
+	va_start (argptr, fmt);
+	vsnprintf (data, sizeof (data), fmt, argptr);
+	va_end (argptr);
+	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
+	write(fd, data, strlen(data));
+	close(fd);
+}
 
 /*
 ===============================================================================

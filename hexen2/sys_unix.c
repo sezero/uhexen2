@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.76 2007-02-15 07:22:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.77 2007-02-16 23:48:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -42,6 +42,20 @@ static Uint8		appState;
 
 //=============================================================================
 
+
+void Sys_DebugLog (const char *file, const char *fmt, ...)
+{
+	va_list		argptr;
+	static char	data[MAXPRINTMSG];
+	int			fd;
+
+	va_start (argptr, fmt);
+	vsnprintf (data, sizeof (data), fmt, argptr);
+	va_end (argptr);
+	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
+	write(fd, data, strlen(data));
+	close(fd);
+}
 
 /*
 ===============================================================================

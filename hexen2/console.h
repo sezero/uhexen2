@@ -6,6 +6,7 @@
 #ifndef __CONSOLE_H
 #define __CONSOLE_H
 
+#define		CON_TEXTSIZE	16384
 extern	int con_totallines;
 extern	int con_backscroll;
 extern	qboolean con_forcedup;	// because no entities to refresh

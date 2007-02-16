@@ -2,15 +2,12 @@
 
 #include "quakedef.h"
 #ifdef _WIN32
-#include <io.h>
+#include <io.h>		/* unlink() */
 #endif
 #ifdef PLATFORM_UNIX
-#include <unistd.h>
+#include <unistd.h>	/* unlink() */
 #endif
-#include <fcntl.h>
 
-
-#define		CON_TEXTSIZE	16384
 
 qboolean	con_initialized;
 
@@ -34,7 +31,6 @@ static float	con_times[NUM_CON_TIMES];	// realtime time the line was generated
 
 #define	DEBUGLOG_FILENAME	"qconsole.log"
 static qboolean	con_debuglog;
-static void Con_DebugLog(const char *file, const char *fmt, ...) _FUNC_PRINTF(2);
 
 extern	char	key_lines[32][MAXCMDLINE];
 extern	int		edit_line;
@@ -201,12 +197,9 @@ Con_Init
 */
 void Con_Init (void)
 {
-	char	temp[MAX_OSPATH];
-
-	Q_snprintf_err(temp, sizeof(temp), "%s/%s", fs_userdir, DEBUGLOG_FILENAME);
 	con_debuglog = COM_CheckParm("-condebug");
 	if (con_debuglog)
-		unlink (temp);
+		unlink ( va("%s/%s", fs_userdir, DEBUGLOG_FILENAME) );
 
 	con_text = Hunk_AllocName (CON_TEXTSIZE<<1, "context");
 	Con_Clear_f();
@@ -332,26 +325,6 @@ static void Con_Print (const char *txt)
 
 /*
 ================
-Con_DebugLog
-================
-*/
-static void Con_DebugLog(const char *file, const char *fmt, ...)
-{
-	va_list	argptr;
-	static char	data[MAXPRINTMSG];
-	int			fd;
-
-	va_start(argptr, fmt);
-	vsnprintf(data, sizeof (data), fmt, argptr);
-	va_end(argptr);
-	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
-	write(fd, data, strlen(data));
-	close(fd);
-}
-
-
-/*
-================
 Con_Printf
 
 Handles cursor positioning, line wrapping, etc
@@ -372,7 +345,7 @@ void Con_Printf (const char *fmt, ...)
 
 // log all messages to file
 	if (con_debuglog)
-		Con_DebugLog(va("%s/%s",fs_userdir,DEBUGLOG_FILENAME), "%s", msg);
+		Sys_DebugLog(va("%s/%s",fs_userdir,DEBUGLOG_FILENAME), "%s", msg);
 
 	if (!con_initialized)
 		return;
