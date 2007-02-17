@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.32 2007-02-17 09:29:28 sezero Exp $
+	$Id: midi_sdl.c,v 1.33 2007-02-17 09:46:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -95,7 +95,7 @@ static void MIDI_EndMusicFinished(void)
 qboolean MIDI_Init(void)
 {
 	int audio_rate = 22050;
-	int audio_format = AUDIO_S16;
+	int audio_format = AUDIO_S16SYS;
 	int audio_channels = 2;
 	int audio_buffers = 4096;
 
