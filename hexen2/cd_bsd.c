@@ -1,6 +1,6 @@
 /*
 	cd_bsd.c
-	$Id: cd_bsd.c,v 1.14 2007-02-17 07:55:32 sezero Exp $
+	$Id: cd_bsd.c,v 1.15 2007-02-17 08:00:53 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	A few BSD bits taken from the Dark Places project for Hammer
@@ -64,6 +64,10 @@ static struct ioc_vol orig_vol;	// orig. setting to be restored upon exit
 static struct ioc_vol drv_vol;	// the volume setting we'll be using
 
 
+#define IOCTL_FAILURE(IoctlName)	{					\
+	Con_DPrintf("ioctl failed: %s (errno: %d)\n", #IoctlName, errno);	\
+}
+
 static void CDAudio_Eject(void)
 {
 	if (cdfile == -1 || !enabled)
@@ -71,7 +75,7 @@ static void CDAudio_Eject(void)
 
 	ioctl(cdfile, CDIOCALLOW);
 	if ( ioctl(cdfile, CDIOCEJECT) == -1 )
-		Con_DPrintf("ioctl CDIOCEJECT failed\n");
+		IOCTL_FAILURE(CDIOCEJECT);
 }
 
 static void CDAudio_CloseDoor(void)
@@ -81,7 +85,7 @@ static void CDAudio_CloseDoor(void)
 
 	ioctl(cdfile, CDIOCALLOW);
 	if ( ioctl(cdfile, CDIOCCLOSE) == -1 )
-		Con_DPrintf("ioctl CDIOCCLOSE failed\n");
+		IOCTL_FAILURE(CDIOCCLOSE);
 }
 
 static int CDAudio_GetAudioDiskInfo(void)
@@ -95,7 +99,7 @@ static int CDAudio_GetAudioDiskInfo(void)
 
 	if ( ioctl(cdfile, CDIOREADTOCHEADER, &tochdr) == -1 )
 	{
-		Con_DPrintf("ioctl CDIOREADTOCHEADER failed\n");
+		IOCTL_FAILURE(CDIOREADTOCHEADER);
 		return -1;
 	}
 
@@ -144,7 +148,7 @@ void CDAudio_Play(byte track, qboolean looping)
 	entry.address_format = CD_MSF_FORMAT;
 	if ( ioctl(cdfile, CDIOREADTOCENTRYS, &entry) == -1 )
 	{
-		Con_DPrintf("ioctl CDIOREADTOCENTRYS failed\n");
+		IOCTL_FAILURE(CDIOREADTOCENTRYS);
 		return;
 	}
 	if (toc_buffer.control & CDROM_DATA_TRACK)
@@ -167,12 +171,12 @@ void CDAudio_Play(byte track, qboolean looping)
 
 	if ( ioctl(cdfile, CDIOCPLAYTRACKS, &ti) == -1 )
 	{
-		Con_DPrintf("ioctl CDIOCPLAYTRACKS failed\n");
+		IOCTL_FAILURE(CDIOCPLAYTRACKS);
 		return;
 	}
 
 	if ( ioctl(cdfile, CDIOCRESUME) == -1 )
-		Con_DPrintf("ioctl CDIOCRESUME failed\n");
+		IOCTL_FAILURE(CDIOCRESUME);
 
 	playLooping = looping;
 	playTrack = track;
@@ -189,7 +193,7 @@ void CDAudio_Stop(void)
 
 	if ( ioctl(cdfile, CDIOCSTOP) == -1 )
 	{
-		Con_DPrintf("ioctl CDIOCSTOP failed (%d)\n", errno);
+		IOCTL_FAILURE(CDIOCSTOP);
 		return;
 	}
 	ioctl(cdfile, CDIOCALLOW);
@@ -207,7 +211,7 @@ void CDAudio_Pause(void)
 		return;
 
 	if ( ioctl(cdfile, CDIOCPAUSE) == -1 )
-		Con_DPrintf("ioctl CDIOCPAUSE failed\n");
+		IOCTL_FAILURE(CDIOCPAUSE);
 
 	wasPlaying = playing;
 	playing = false;
@@ -225,7 +229,7 @@ void CDAudio_Resume(void)
 		return;
 
 	if ( ioctl(cdfile, CDIOCRESUME) == -1 )
-		Con_DPrintf("ioctl CDIOCRESUME failed\n");
+		IOCTL_FAILURE(CDIOCRESUME);
 	playing = true;
 }
 
@@ -372,7 +376,7 @@ void CDAudio_Update(void)
 		drv_vol.vol[0] = drv_vol.vol[2] =
 		drv_vol.vol[1] = drv_vol.vol[3] = bgmvolume.value * 255.0;
 		if (ioctl(cdfile, CDIOCSETVOL, &drv_vol) == -1)
-			Con_DPrintf("ioctl CDIOCSETVOL failed\n");
+			IOCTL_FAILURE(CDIOCSETVOL);
 	}
 
 	if (playing && lastchk < time(NULL))
@@ -387,7 +391,7 @@ void CDAudio_Update(void)
 		subchnl.track = playTrack;
 		if (ioctl(cdfile, CDIOCREADSUBCHANNEL, &subchnl) == -1 )
 		{
-			Con_DPrintf("ioctl CDIOCREADSUBCHANNEL failed\n");
+			IOCTL_FAILURE(CDIOCREADSUBCHANNEL);
 			playing = false;
 			return;
 		}
@@ -443,7 +447,7 @@ int CDAudio_Init(void)
 	// get drives volume
 	if (ioctl(cdfile, CDIOCGETVOL, &orig_vol) == -1)
 	{
-		Con_Printf("ioctl CDIOCGETVOL failed\n");
+		IOCTL_FAILURE(CDIOCGETVOL);
 		orig_vol.vol[0] = orig_vol.vol[2] =
 		orig_vol.vol[1] = orig_vol.vol[3] = 255.0;
 	}
@@ -451,7 +455,7 @@ int CDAudio_Init(void)
 	drv_vol.vol[0] = drv_vol.vol[2] =
 	drv_vol.vol[1] = drv_vol.vol[3] = bgmvolume.value * 255.0;
 	if (ioctl(cdfile, CDIOCSETVOL, &drv_vol) == -1)
-		Con_Printf("ioctl CDIOCSETVOL failed\n");
+		IOCTL_FAILURE(CDIOCSETVOL);
 
 	return 0;
 }
@@ -463,7 +467,7 @@ void CDAudio_Shutdown(void)
 	CDAudio_Stop();
 	// put the drives old volume back
 	if (ioctl(cdfile, CDIOCSETVOL, &orig_vol) == -1)
-		Con_Printf("ioctl CDIOCSETVOL failed\n");
+		IOCTL_FAILURE(CDIOCSETVOL);
 	close(cdfile);
 	cdfile = -1;
 }
