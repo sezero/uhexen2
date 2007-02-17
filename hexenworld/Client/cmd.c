@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.21 2007-02-17 07:55:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.22 2007-02-17 20:59:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -293,8 +293,7 @@ static void Cmd_Exec_f (void)
 		Con_Printf ("couldn't exec %s\n",Cmd_Argv(1));
 		return;
 	}
-	if (!Cvar_Command () && (cl_warncmd.value || developer.value))
-		Con_Printf ("execing %s\n",Cmd_Argv(1));
+	Con_Printf ("execing %s\n", Cmd_Argv(1));
 
 	Cbuf_InsertText (f);
 	Hunk_FreeToLowMark (mark);
