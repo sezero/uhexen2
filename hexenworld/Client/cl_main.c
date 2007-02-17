@@ -992,9 +992,12 @@ void CL_Init (void)
 //
 	Cmd_AddCommand ("saveconfig", Host_SaveConfig_f);
 
+	Cvar_RegisterVariable (&developer);
+	if (COM_CheckParm("-developer"))
+		Cvar_SetValue("developer", 1);
+
 	Cvar_RegisterVariable (&show_fps);
 	Cvar_RegisterVariable (&host_speeds);
-	Cvar_RegisterVariable (&developer);
 
 	Cvar_RegisterVariable (&cl_warncmd);
 	Cvar_RegisterVariable (&cl_upspeed);
