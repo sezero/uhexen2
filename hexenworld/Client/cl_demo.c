@@ -177,7 +177,7 @@ static qboolean CL_GetDemoMessage (void)
 	}
 
 	if (cls.state < ca_demostart)
-		Host_Error ("CL_GetDemoMessage: cls.state != ca_active");
+		Host_Error ("%s: cls.state != ca_active", __FUNCTION__);
 
 	// get the msg type
 	fread (&c, sizeof(c), 1, cls.demofile);

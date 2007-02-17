@@ -29,7 +29,7 @@ int SV_ModelIndex (const char *name)
 	}
 
 	if (i == MAX_MODELS || !sv.model_precache[i])
-		SV_Error ("SV_ModelIndex: model %s not precached", name);
+		SV_Error ("%s: model %s not precached", __FUNCTION__, name);
 
 	return i;
 }
@@ -261,7 +261,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	edict_t		*ent;
 	int			i;
 
-	Con_DPrintf ("SpawnServer: %s\n",server);
+	Con_DPrintf ("%s: %s\n", __FUNCTION__, server);
 
 	SV_SaveSpawnparms ();
 

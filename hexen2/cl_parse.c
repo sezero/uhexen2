@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.38 2007-02-09 15:14:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.39 2007-02-17 07:55:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -106,7 +106,7 @@ static entity_t *CL_EntityNum (int num)
 	if (num >= cl.num_entities)
 	{
 		if (num >= MAX_EDICTS)
-			Host_Error ("CL_EntityNum: %i is an invalid number",num);
+			Host_Error ("%s: %i is an invalid number", __FUNCTION__, num);
 		while (cl.num_entities <= num)
 		{
 			cl_entities[cl.num_entities].colormap = vid.colormap;
@@ -152,7 +152,7 @@ static void CL_ParseStartSoundPacket(void)
 	channel &= 7;
 
 	if (ent > MAX_EDICTS)
-		Host_Error ("CL_ParseStartSoundPacket: ent = %i", ent);
+		Host_Error ("%s: ent = %i", __FUNCTION__, ent);
 
 	for (i = 0; i < 3; i++)
 		pos[i] = MSG_ReadCoord ();
@@ -191,15 +191,15 @@ static void CL_KeepaliveMessage (void)
 		switch (ret)
 		{
 		default:
-			Host_Error ("CL_KeepaliveMessage: CL_GetMessage failed");
+			Host_Error ("%s: CL_GetMessage failed", __FUNCTION__);
 		case 0:
 			break;	// nothing waiting
 		case 1:
-			Host_Error ("CL_KeepaliveMessage: received a message");
+			Host_Error ("%s: received a message", __FUNCTION__);
 			break;
 		case 2:
 			if (MSG_ReadByte() != svc_nop)
-				Host_Error ("CL_KeepaliveMessage: datagram wasn't a nop");
+				Host_Error ("%s: datagram wasn't a nop", __FUNCTION__);
 			break;
 		}
 	} while (ret);
@@ -340,7 +340,7 @@ static void CL_ParseServerInfo (void)
 
 		if (cl.model_precache[i] == NULL)
 		{
-			Host_Error("Model %s not found\n", model_precache[i]);
+			Host_Error("Model %s not found", model_precache[i]);
 			return;
 		}
 		CL_KeepaliveMessage ();
@@ -537,7 +537,7 @@ static void CL_ParseUpdate (int bits)
 	{
 		modnum = MSG_ReadShort ();
 		if (modnum >= MAX_MODELS)
-			Host_Error ("CL_ParseModel: bad modnum");
+			Host_Error ("%s: bad modnum", __FUNCTION__);
 	}
 	else
 		modnum = ref_ent->modelindex;
@@ -1012,7 +1012,7 @@ static void CL_NewTranslation (int slot)
 #endif
 
 	if (slot > cl.maxclients)
-		Sys_Error ("CL_NewTranslation: slot > cl.maxclients");
+		Sys_Error ("%s: slot > cl.maxclients", __FUNCTION__);
 	if (!cl.scores[slot].playerclass)
 		return;
 
@@ -1208,7 +1208,7 @@ void CL_ParseServerMessage (void)
 	while (1)
 	{
 		if (msg_badread)
-			Host_Error ("CL_ParseServerMessage: Bad server message");
+			Host_Error ("%s: Bad server message", __FUNCTION__);
 
 		cmd = MSG_ReadByte ();
 
@@ -1242,7 +1242,7 @@ void CL_ParseServerMessage (void)
 		switch (cmd)
 		{
 		default:
-			Host_Error ("CL_ParseServerMessage: Illegible server message\n");
+			Host_Error ("%s: Illegible server message", __FUNCTION__);
 			break;
 
 		case svc_nop:
@@ -1262,7 +1262,8 @@ void CL_ParseServerMessage (void)
 		case svc_version:
 			i = MSG_ReadLong ();
 			if (i != PROTOCOL_VERSION_RAVEN_112 && i != PROTOCOL_VERSION_UQE_113)
-				Host_Error ("CL_ParseServerMessage: Server is protocol %i instead of %i or %i\n", i, PROTOCOL_VERSION_RAVEN_112, PROTOCOL_VERSION_UQE_113);
+				Host_Error ("%s: Server is protocol %i instead of %i or %i",
+						__FUNCTION__, i, PROTOCOL_VERSION_RAVEN_112, PROTOCOL_VERSION_UQE_113);
 			else
 				Con_Printf ("Server using protocol %i\n", i);
 			break;
@@ -1390,7 +1391,7 @@ void CL_ParseServerMessage (void)
 			Sbar_Changed();
 			i = MSG_ReadByte ();
 			if (i >= cl.maxclients)
-				Host_Error ("CL_ParseServerMessage: svc_updatename > MAX_SCOREBOARD");
+				Host_Error ("%s: svc_updatename > MAX_SCOREBOARD", __FUNCTION__);
 			strcpy (cl.scores[i].name, MSG_ReadString ());
 			break;
 
@@ -1398,7 +1399,7 @@ void CL_ParseServerMessage (void)
 			Sbar_Changed();
 			i = MSG_ReadByte ();
 			if (i >= cl.maxclients)
-				Host_Error ("CL_ParseServerMessage: svc_updateclass > MAX_SCOREBOARD");
+				Host_Error ("%s: svc_updateclass > MAX_SCOREBOARD", __FUNCTION__);
 			cl.scores[i].playerclass = (float)MSG_ReadByte();
 			CL_NewTranslation(i); // update the color
 			break;
@@ -1407,7 +1408,7 @@ void CL_ParseServerMessage (void)
 			Sbar_Changed();
 			i = MSG_ReadByte ();
 			if (i >= cl.maxclients)
-				Host_Error ("CL_ParseServerMessage: svc_updatefrags > MAX_SCOREBOARD");
+				Host_Error ("%s: svc_updatefrags > MAX_SCOREBOARD", __FUNCTION__);
 			cl.scores[i].frags = MSG_ReadShort ();
 			break;
 
@@ -1419,7 +1420,7 @@ void CL_ParseServerMessage (void)
 			Sbar_Changed();
 			i = MSG_ReadByte ();
 			if (i >= cl.maxclients)
-				Host_Error ("CL_ParseServerMessage: svc_updatecolors > MAX_SCOREBOARD");
+				Host_Error ("%s: svc_updatecolors > MAX_SCOREBOARD", __FUNCTION__);
 			cl.scores[i].colors = MSG_ReadByte ();
 			CL_NewTranslation (i);
 			break;

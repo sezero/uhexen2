@@ -83,7 +83,7 @@ void SubdivideFace (face_t *f, face_t **prevptr)
 			next = f->next;
 			SplitFace (f, &plane, &front, &back);
 			if (!front || !back)
-				Error ("SubdivideFace: didn't split the polygon");
+				Error ("%s: didn't split the polygon", __FUNCTION__);
 			*prevptr = front;
 			front->next = back;
 			back->next = next;
@@ -149,7 +149,7 @@ void SubdivideFace (face_t *f, face_t **prevptr)
 			next = f->next;
 			SplitFace (f, &plane, &front, &back);
 			if (!front || !back)
-				Error ("SubdivideFace: didn't split the polygon");
+				Error ("%s: didn't split the polygon", __FUNCTION__);
 			*prevptr = back;
 			back->next = front;
 			front->next = next;
@@ -377,7 +377,7 @@ static int GetVertex (vec3_t in, int planenum)
 	VectorCopy (vert, hv->point);
 	hv->num = numvertexes;
 	if (hv->num == MAX_MAP_VERTS)
-		Error ("GetVertex: MAX_MAP_VERTS");
+		Error ("%s: MAX_MAP_VERTS", __FUNCTION__);
 	hvert_p++;
 
 // emit a vertex
@@ -411,7 +411,7 @@ static int GetEdge (vec3_t p1, vec3_t p2, face_t *f)
 	int		i;
 
 	if (!f->contents[0])
-		Error ("GetEdge: 0 contents");
+		Error ("%s: 0 contents", __FUNCTION__);
 
 	c_tryedges++;
 	v1 = GetVertex (p1, f->planenum);
@@ -452,7 +452,7 @@ static void FindFaceEdges (face_t *face)
 
 	face->outputnumber = -1;
 	if (face->numpoints > MAXEDGES)
-		Error ("WriteFace: %i points", face->numpoints);
+		Error ("%s: %i points", __FUNCTION__, face->numpoints);
 
 	for (i = 0; i < face->numpoints ; i++)
 		face->edges[i] = GetEdge (face->pts[i], face->pts[(i+1)%face->numpoints], face);

@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.34 2007-02-12 16:52:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.35 2007-02-17 07:55:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -120,7 +120,7 @@ edict_t *ED_Alloc (void)
 	if (i == MAX_EDICTS)
 	{
 		SV_Edicts("edicts.txt");
-		Sys_Error ("ED_Alloc: no free edicts");
+		Sys_Error ("%s: no free edicts", __FUNCTION__);
 	}
 
 	sv.num_edicts++;
@@ -747,17 +747,17 @@ void ED_ParseGlobals (char *data)
 		if (com_token[0] == '}')
 			break;
 		if (!data)
-			Sys_Error ("ED_ParseEntity: EOF without closing brace");
+			Sys_Error ("%s: EOF without closing brace", __FUNCTION__);
 
 		strcpy (keyname, com_token);
 
 	// parse value
 		data = COM_Parse (data);
 		if (!data)
-			Sys_Error ("ED_ParseEntity: EOF without closing brace");
+			Sys_Error ("%s: EOF without closing brace", __FUNCTION__);
 
 		if (com_token[0] == '}')
-			Sys_Error ("ED_ParseEntity: closing brace without data");
+			Sys_Error ("%s: closing brace without data", __FUNCTION__);
 
 		key = ED_FindGlobal (keyname);
 		if (!key)
@@ -767,7 +767,7 @@ void ED_ParseGlobals (char *data)
 		}
 
 		if (!ED_ParseEpair ((void *)pr_globals, key, com_token))
-			Host_Error ("ED_ParseGlobals: parse error");
+			Host_Error ("%s: parse error", __FUNCTION__);
 	}
 }
 
@@ -910,7 +910,7 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 		if (com_token[0] == '}')
 			break;
 		if (!data)
-			Sys_Error ("ED_ParseEntity: EOF without closing brace");
+			Sys_Error ("%s: EOF without closing brace", __FUNCTION__);
 
 		// anglehack is to allow QuakeEd to write single scalar angles
 		// and allow them to be turned into vectors. (FIXME...)
@@ -939,10 +939,10 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 		// parse value
 		data = COM_Parse (data);
 		if (!data)
-			Sys_Error ("ED_ParseEntity: EOF without closing brace");
+			Sys_Error ("%s: EOF without closing brace", __FUNCTION__);
 
 		if (com_token[0] == '}')
-			Sys_Error ("ED_ParseEntity: closing brace without data");
+			Sys_Error ("%s: closing brace without data", __FUNCTION__);
 
 		init = true;
 
@@ -977,7 +977,7 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 		}
 
 		if (!ED_ParseEpair ((void *)&ent->v, key, com_token))
-			Host_Error ("ED_ParseEdict: parse error");
+			Host_Error ("%s: parse error", __FUNCTION__);
 	}
 
 	if (!init)
@@ -1040,7 +1040,7 @@ void ED_LoadFromFile (char *data)
 #endif
 
 		if (com_token[0] != '{')
-			Sys_Error ("ED_LoadFromFile: found %s when expecting {", com_token);
+			Sys_Error ("%s: found %s when expecting {", __FUNCTION__, com_token);
 
 		if (!ent)
 			ent = EDICT_NUM(0);
@@ -1265,7 +1265,7 @@ void PR_LoadProgs (void)
 
 	progs = (dprograms_t *)QIO_LoadHunkFile (finalprogname);
 	if (!progs)
-		Sys_Error ("PR_LoadProgs: couldn't load %s", finalprogname);
+		Sys_Error ("%s: couldn't load %s", __FUNCTION__, finalprogname);
 	Con_DPrintf ("Programs occupy %uK.\n", qio_filesize/1024);
 
 	for (i = 0; i < qio_filesize; i++)
@@ -1278,7 +1278,7 @@ void PR_LoadProgs (void)
 	if (progs->version != PROG_VERSION)
 		Sys_Error ("progs.dat has wrong version number (%i should be %i)", progs->version, PROG_VERSION);
 	if (progs->crc != PROGS_V111_CRC && progs->crc != PROGS_V112_CRC)
-		Sys_Error ("progs.dat system vars have been modified, progdefs.h is out of date");
+		Sys_Error ("Unexpected crc ( %d ) for progs.dat", progs->crc);
 
 	pr_functions = (dfunction_t *)((byte *)progs + progs->ofs_functions);
 	pr_strings = (char *)progs + progs->ofs_strings;
@@ -1337,7 +1337,7 @@ void PR_LoadProgs (void)
 	{
 		pr_fielddefs[i].type = LittleShort (pr_fielddefs[i].type);
 		if (pr_fielddefs[i].type & DEF_SAVEGLOBAL)
-			Sys_Error ("PR_LoadProgs: pr_fielddefs[i].type & DEF_SAVEGLOBAL");
+			Sys_Error ("%s: pr_fielddefs[i].type & DEF_SAVEGLOBAL", __FUNCTION__);
 		pr_fielddefs[i].ofs = LittleShort (pr_fielddefs[i].ofs);
 		pr_fielddefs[i].s_name = LittleLong (pr_fielddefs[i].s_name);
 	}
@@ -1385,7 +1385,7 @@ void PR_Init (void)
 edict_t *EDICT_NUM(int n)
 {
 	if (n < 0 || n >= sv.max_edicts)
-		Sys_Error ("EDICT_NUM: bad number %i", n);
+		Sys_Error ("%s: bad number %i", __FUNCTION__, n);
 	return (edict_t *)((byte *)sv.edicts+ (n)*pr_edict_size);
 }
 
@@ -1399,12 +1399,16 @@ int NUM_FOR_EDICT(edict_t *e)
 	if (b < 0 || b >= sv.num_edicts)
 	{
 		if (!RemoveBadReferences)
-			Con_DPrintf ("NUM_FOR_EDICT: bad pointer, Class: %s Field: %s, Index %d, Total %d",class_name,field_name,b,sv.num_edicts);
+			Con_DPrintf ("%s: bad pointer, Class: %s Field: %s, Index %d, Total %d",
+					__FUNCTION__, class_name, field_name, b, sv.num_edicts);
+
 		return (0);
 	}
 	if (e->free && RemoveBadReferences)
 	{
-//		Con_Printf ("NUM_FOR_EDICT: freed edict, Class: %s Field: %s, Index %d, Total %d",class_name,field_name,b,sv.num_edicts);
+//		Con_Printf ("%s: freed edict, Class: %s Field: %s, Index %d, Total %d",
+//				__FUNCTION__, class_name, field_name, b, sv.num_edicts);
+
 		return (0);
 	}
 	return b;

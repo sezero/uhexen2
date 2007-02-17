@@ -1,5 +1,5 @@
 /*
- * $Id: midi.c,v 1.14 2007-02-07 17:03:31 sezero Exp $
+ * $Id: midi.c,v 1.15 2007-02-17 07:56:16 sezero Exp $
  */
 
 #include <windows.h>
@@ -263,7 +263,7 @@ void MIDI_Stop(void)
 
 		if (WaitForSingleObject(hBufferReturnEvent,DEBUG_CALLBACK_TIMEOUT) == WAIT_TIMEOUT)
 		{
-			//Con_Printf("Timed out waiting for MIDI callback\n");
+		//	Con_Printf("Timed out waiting for MIDI callback\n");
 			uCallbackStatus = STATUS_CALLBACKDEAD;
 		}
 	}

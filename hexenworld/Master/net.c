@@ -180,7 +180,7 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 		int err = SOCKETERRNO;
 		if (err == EWOULDBLOCK)
 			return;
-		printf ("NET_SendPacket ERROR: %i\n", err);
+		printf ("%s ERROR: %i\n", __FUNCTION__, err);
 	}
 }
 
@@ -194,10 +194,10 @@ static int UDP_OpenSocket (int port)
 	unsigned long _true = true;
 
 	if ((newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
-		Sys_Error ("UDP_OpenSocket: socket: %s", strerror(errno));
+		Sys_Error ("%s: socket: %s", __FUNCTION__, strerror(errno));
 
 	if (ioctlsocket (newsocket, FIONBIO, &_true) == -1)
-		Sys_Error ("UDP_OpenSocket: ioctl FIONBIO: %s", strerror(errno));
+		Sys_Error ("%s: ioctl FIONBIO: %s", __FUNCTION__, strerror(errno));
 
 	address.sin_family = AF_INET;
 	//ZOID -- check for interface binding option
@@ -220,7 +220,7 @@ static int UDP_OpenSocket (int port)
 		address.sin_port = htons((short)port);
 
 	if ( bind(newsocket, (struct sockaddr *)&address, sizeof(address)) == -1)
-		Sys_Error ("UDP_OpenSocket: bind: %s", strerror(errno));
+		Sys_Error ("%s: bind: %s", __FUNCTION__, strerror(errno));
 
 	return newsocket;
 }
@@ -232,14 +232,14 @@ static void NET_GetLocalAddress (void)
 	socklen_t		namelen;
 
 	if (gethostname(buff, 512) == -1)
-		Sys_Error ("NET_Init: gethostname: %s", strerror(errno));
+		Sys_Error ("%s: gethostname: %s", __FUNCTION__, strerror(errno));
 	buff[512-1] = 0;
 
 	NET_StringToAdr (buff, &net_local_adr);
 
 	namelen = sizeof(address);
 	if (getsockname (net_socket, (struct sockaddr *)&address, &namelen) == -1)
-		Sys_Error ("NET_Init: getsockname: %s", strerror(errno));
+		Sys_Error ("%s: getsockname: %s", __FUNCTION__, strerror(errno));
 	net_local_adr.port = address.sin_port;
 
 	printf("IP address %s\n", NET_AdrToString (net_local_adr) );

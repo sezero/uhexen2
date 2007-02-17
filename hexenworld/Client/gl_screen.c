@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.34 2007-02-12 16:53:09 sezero Exp $
+	$Id: gl_screen.c,v 1.35 2007-02-17 07:55:39 sezero Exp $
 */
 
 /*=============================================================================
@@ -624,7 +624,7 @@ static void SCR_ScreenShot_f (void)
 	}
 	if (i == 100)
 	{
-		Con_Printf ("SCR_ScreenShot_f: Couldn't create a TGA file\n");
+		Con_Printf ("%s: Couldn't create a TGA file\n", __FUNCTION__);
 		return;
 	}
 

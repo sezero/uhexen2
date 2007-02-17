@@ -35,7 +35,7 @@ byte *GetFileSpace (int size)
 	file_p += size;
 	UNLOCK;
 	if (file_p > file_end)
-		Error ("GetFileSpace: overrun");
+		Error ("%s: overrun", __FUNCTION__);
 	return buf;
 }
 
@@ -88,15 +88,7 @@ int main (int argc, char **argv)
 	double		start, end;
 	char		source[1024];
 
-#ifdef __alpha
-#  ifdef _WIN32
-	printf ("alpha, win32 ----- LightFaces ----\n");
-#  else
-	printf ("alpha, ----- LightFaces ----\n");
-#  endif
-#else
 	printf ("----- LightFaces ----\n");
-#endif
 	for (i = 1 ; i < argc ; i++)
 	{
 		if (!strcmp(argv[i],"-threads"))

@@ -125,7 +125,7 @@ static void SV_Soundlist_f (void)
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
-		Con_Printf ("SV_Soundlist_f from different level\n");
+		Con_Printf ("%s from different level\n", __FUNCTION__);
 		SV_New_f ();
 		return;
 	}
@@ -154,7 +154,7 @@ static void SV_Modellist_f (void)
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
-		Con_Printf ("SV_Modellist_f from different level\n");
+		Con_Printf ("%s from different level\n", __FUNCTION__);
 		SV_New_f ();
 		return;
 	}
@@ -183,7 +183,7 @@ static void SV_PreSpawn_f (void)
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
-		Con_Printf ("SV_PreSpawn_f from different level\n");
+		Con_Printf ("%s from different level\n", __FUNCTION__);
 		SV_New_f ();
 		return;
 	}
@@ -219,7 +219,7 @@ static void SV_Spawn_f (void)
 	edict_t	*ent;
 	eval_t	*val;
 
-//	Con_Printf("SV_Spawn_f\n");
+//	Con_Printf("%s\n", __FUNCTION__);
 
 	if (host_client->state != cs_connected)
 	{
@@ -230,7 +230,7 @@ static void SV_Spawn_f (void)
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
-		Con_Printf ("SV_Spawn_f from different level\n");
+		Con_Printf ("%s from different level\n", __FUNCTION__);
 		SV_New_f ();
 		return;
 	}
@@ -342,7 +342,7 @@ static void SV_Begin_f (void)
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
-		Con_Printf ("SV_Begin_f from different level\n");
+		Con_Printf ("%s from different level\n", __FUNCTION__);
 		SV_New_f ();
 		return;
 	}
@@ -1353,7 +1353,7 @@ void SV_ExecuteClientMessage (client_t *cl)
 	{
 		if (msg_badread)
 		{
-			Con_Printf ("SV_ReadClientMessage: badread\n");
+			Con_Printf ("%s: badread\n", __FUNCTION__);
 			SV_DropClient (cl);
 			return;
 		}
@@ -1365,7 +1365,7 @@ void SV_ExecuteClientMessage (client_t *cl)
 		switch (c)
 		{
 		default:
-			Con_Printf ("SV_ReadClientMessage: unknown command char\n");
+			Con_Printf ("%s: unknown command char\n", __FUNCTION__);
 			SV_DropClient (cl);
 			return;
 

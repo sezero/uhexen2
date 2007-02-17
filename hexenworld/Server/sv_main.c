@@ -136,7 +136,7 @@ void SV_Error (const char *error, ...)
 	static	qboolean inerror = false;
 
 	if (inerror)
-		Sys_Error ("SV_Error: recursive error! (%s)", string);
+		Sys_Error ("%s: recursive error! (%s)", __FUNCTION__, string);
 
 	inerror = true;
 
@@ -144,13 +144,13 @@ void SV_Error (const char *error, ...)
 	vsnprintf (string, sizeof(string), error, argptr);
 	va_end (argptr);
 
-	Con_Printf ("SV_Error: %s\n", string);
+	Con_Printf ("%s: %s\n", __FUNCTION__, string);
 
 	SV_FinalMessage (va("server crashed: %s\n", string));
 
 	SV_Shutdown ();
 
-	Sys_Error ("SV_Error: %s\n",string);
+	Sys_Error ("%s: %s\n", __FUNCTION__, string);
 }
 
 
@@ -298,10 +298,10 @@ void SV_FullClientUpdate (client_t *client, sizebuf_t *buf)
 	int		i;
 	char	info[MAX_INFO_STRING];
 
-//	Con_Printf("SV_FullClientUpdate\n");
+//	Con_Printf("%s\n", __FUNCTION__);
 	i = client - svs.clients;
 
-//	Sys_Printf("SV_FullClientUpdate:  Updated frags for client %d\n", i);
+//	Sys_Printf("%s:  Updated frags for client %d\n", __FUNCTION__, i);
 
 	MSG_WriteByte (buf, svc_updatedminfo);
 	MSG_WriteByte (buf, i);

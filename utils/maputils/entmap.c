@@ -195,7 +195,7 @@ static qboolean CopyBrush (void)
 		{
 			GetToken (false);
 			if (token[0] != '(')
-				return false; //Error ("CopyBrush: couldn't parse");
+				return false; //Error ("%s: couldn't parse", __FUNCTION__);
 			for (j = 0 ; j < 3 ; j++)
 			{
 				GetToken (false);
@@ -203,7 +203,7 @@ static qboolean CopyBrush (void)
 			}
 			GetToken (false);
 			if (token[0] != ')')
-				return false; //Error ("CopyBrush: couldn't parse");
+				return false; //Error ("%s: couldn't parse", __FUNCTION__);
 		}
 
 		GetToken (false);
@@ -273,7 +273,7 @@ static int ParseEntity (void)
 		return false;
 
 	if (strcmp (token, "{") )
-		Error ("ParseEntity: { not found");
+		Error ("%s: { not found", __FUNCTION__);
 
 	fprintf (f,"{\n");
 
@@ -282,7 +282,7 @@ static int ParseEntity (void)
 	do
 	{
 		if (!GetToken (true))
-			Error ("ParseEntity: EOF without closing brace");
+			Error ("%s: EOF without closing brace", __FUNCTION__);
 		if (!strcmp (token, "}") )
 			break;
 		if (!strcmp (token, "{") )

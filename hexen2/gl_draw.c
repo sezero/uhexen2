@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.95 2007-02-12 16:52:46 sezero Exp $
+	$Id: gl_draw.c,v 1.96 2007-02-17 07:55:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -226,7 +226,7 @@ qpic_t	*Draw_CachePic (const char *path)
 //
 	dat = (qpic_t *)QIO_LoadTempFile (path);
 	if (!dat)
-		Sys_Error ("Draw_CachePic: failed to load %s", path);
+		Sys_Error ("%s: failed to load %s", __FUNCTION__, path);
 	SwapPic (dat);
 
 	// HACK HACK HACK --- we need to keep the bytes for
@@ -293,7 +293,7 @@ qpic_t *Draw_CachePicNoTrans (const char *path)
 //
 	dat = (qpic_t *)QIO_LoadTempFile (path);
 	if (!dat)
-		Sys_Error ("Draw_CachePicNoTrans: failed to load %s", path);
+		Sys_Error ("%s: failed to load %s", __FUNCTION__, path);
 	SwapPic (dat);
 
 	pic->pic.width = dat->width;
@@ -869,7 +869,7 @@ void Draw_PicCropped (int x, int y, qpic_t *pic)
 
 	if ((x < 0) || (x+pic->width > vid.width))
 	{
-		Sys_Error("Draw_PicCropped: bad coordinates");
+		Sys_Error("%s: bad coordinates", __FUNCTION__);
 	}
 
 	if (y >= (int)vid.height || y+pic->height < 0)
@@ -922,7 +922,7 @@ void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
 
 	if ((x < 0) || (x+pic->width > vid.width))
 	{
-		Sys_Error("Draw_PicCropped: bad coordinates");
+		Sys_Error("%s: bad coordinates", __FUNCTION__);
 	}
 
 	if (y >= (int)vid.height || y+h < 0)
@@ -982,7 +982,7 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
 		 (unsigned)(y + pic->height) > vid.height)
 	{
-		Sys_Error ("Draw_TransPic: bad coordinates");
+		Sys_Error ("%s: bad coordinates", __FUNCTION__);
 	}
 
 	Draw_Pic (x, y, pic);
@@ -1471,7 +1471,7 @@ static void fxPalTexImage2D (GLenum target, GLint level, GLint internalformat, G
 
 	// we don't want textures with alpha
 	if (internalformat != 3)
-		Sys_Error ("fxPalTexImage2D: internalformat != 3");
+		Sys_Error ("%s: internalformat != 3", __FUNCTION__);
 
 	for (i = 0; i < mip_width * mip_height; i++)
 	{
@@ -1928,7 +1928,7 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 	else
 	{
 		if (s&3)
-			Sys_Error ("GL_Upload8: s&3");
+			Sys_Error ("%s: s&3", __FUNCTION__);
 		for (i = 0; i < s; i += 4)
 		{
 			trans[i] = d_8to24table[data[i]];
@@ -2004,7 +2004,7 @@ GLuint GL_LoadTexture (const char *identifier, int width, int height, byte *data
 	}
 
 	if (numgltextures >= MAX_GLTEXTURES)
-		Sys_Error ("GL_LoadTexture: cache full, max is %i textures.", MAX_GLTEXTURES);
+		Sys_Error ("%s: cache full, max is %i textures.", __FUNCTION__, MAX_GLTEXTURES);
 
 	glt = &gltextures[numgltextures];
 	numgltextures++;

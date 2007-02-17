@@ -114,7 +114,7 @@ void NET_FreeQSocket(qsocket_t *sock)
 		}
 
 		if (!s)
-			Sys_Error ("NET_FreeQSocket: not active\n");
+			Sys_Error ("%s: not active", __FUNCTION__);
 	}
 
 	// add it to free list
@@ -288,7 +288,7 @@ int	NET_GetMessage (qsocket_t *sock)
 
 	if (sock->disconnected)
 	{
-		Con_Printf("NET_GetMessage: disconnected socket\n");
+		Con_Printf("%s: disconnected socket\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -342,7 +342,7 @@ int NET_SendMessage (qsocket_t *sock, sizebuf_t *data)
 
 	if (sock->disconnected)
 	{
-		Con_Printf("NET_SendMessage: disconnected socket\n");
+		Con_Printf("%s: disconnected socket\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -364,7 +364,7 @@ int NET_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *data)
 
 	if (sock->disconnected)
 	{
-		Con_Printf("NET_SendMessage: disconnected socket\n");
+		Con_Printf("%s: disconnected socket\n", __FUNCTION__);
 		return -1;
 	}
 
@@ -506,7 +506,7 @@ void NET_Init (void)
 		if (i < com_argc-1)
 			DEFAULTnet_hostport = atoi (com_argv[i+1]);
 		else
-			Con_Printf ("NET_Init: ignoring -port argument\n");
+			Con_Printf ("%s: ignoring -port argument\n", __FUNCTION__);
 	}
 	net_hostport = DEFAULTnet_hostport;
 

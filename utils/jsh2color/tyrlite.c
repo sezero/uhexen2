@@ -77,7 +77,7 @@ byte *GetFileSpace (int size)
 	file_p += size;
 	UNLOCK;
 	if (file_p > file_end)
-		Error ("GetFileSpace: overrun");
+		Error ("%s: overrun", __FUNCTION__);
 	return buf;
 }
 
@@ -156,7 +156,7 @@ static void FindFaceOffsets (void)
 		sprintf (name, "*%d", i);
 		ent = FindEntityWithKeyPair("model", name);
 		if ( !ent )
-			Error("FindFaceOffsets: Couldn't find entity for model %s.\n", name);
+			Error("%s: Couldn't find entity for model %s.\n", __FUNCTION__, name);
 
 		classname = ValueForKey (ent, "classname");
 		if ( !strncmp(classname, "rotate_", 7) )

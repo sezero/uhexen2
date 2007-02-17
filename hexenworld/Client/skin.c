@@ -132,7 +132,7 @@ byte	*Skin_Cache (skin_t *skin)
 
 	out = Cache_Alloc (&skin->cache, 320*200, skin->name);
 	if (!out)
-		Sys_Error ("Skin_Cache: couldn't allocate");
+		Sys_Error ("%s: couldn't allocate", __FUNCTION__);
 
 	pix = out;
 	memset (out, 0, 320*200);
@@ -261,7 +261,7 @@ void	Skin_Skins_f (void)
 
 	if (cls.state == ca_disconnected)
 	{
-		Con_Printf("WARNING: cannot complete command because there is no connection to a server\n");
+		Con_Printf("%s: no connection to a server.\n", __FUNCTION__);
 		return;
 	}
 

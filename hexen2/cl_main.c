@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.32 2007-02-07 17:01:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.33 2007-02-17 07:55:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -169,8 +169,8 @@ void CL_EstablishConnection (char *host)
 
 	cls.netcon = NET_Connect (host);
 	if (!cls.netcon)
-		Host_Error ("CL_Connect: connect failed\n");
-	Con_DPrintf ("CL_EstablishConnection: connected to %s\n", host);
+		Host_Error ("%s: connect failed", __FUNCTION__);
+	Con_DPrintf ("%s: connected to %s\n", __FUNCTION__, host);
 
 	cls.demonum = -1;			// not in the demo loop now
 	cls.state = ca_connected;
@@ -871,7 +871,7 @@ int CL_ReadFromServer (void)
 	{
 		ret = CL_GetMessage ();
 		if (ret == -1)
-			Host_Error ("CL_ReadFromServer: lost server connection");
+			Host_Error ("%s: lost server connection", __FUNCTION__);
 		if (!ret)
 			break;
 
@@ -932,7 +932,7 @@ void CL_SendCmd (void)
 	}
 
 	if (NET_SendMessage (cls.netcon, &cls.message) == -1)
-		Host_Error ("CL_WriteToServer: lost server connection");
+		Host_Error ("%s: lost server connection", __FUNCTION__);
 
 	SZ_Clear (&cls.message);
 }

@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.25 2007-02-10 09:02:07 sezero Exp $
+	$Id: sbar.c,v 1.26 2007-02-17 07:55:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -984,7 +984,7 @@ static void FindColor (int slot, int *color1, int *color2)
 	byte	*sourceA, *sourceB, *colorA, *colorB;
 
 	if (slot > MAX_CLIENTS)
-		Sys_Error ("FindColor: slot > cl.maxclients");
+		Sys_Error ("%s: slot > cl.maxclients", __FUNCTION__);
 
 	if (cl.players[slot].playerclass <= 0 || cl.players[slot].playerclass > MAX_PLAYER_CLASS)
 	{

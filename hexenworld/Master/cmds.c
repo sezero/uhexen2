@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Id: cmds.c,v 1.10 2007-02-12 16:54:48 sezero Exp $
+	$Id: cmds.c,v 1.11 2007-02-17 07:56:16 sezero Exp $
 */
 
 #include "defs.h"
@@ -92,7 +92,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 	{
 		if ( !strcmp (cmd_name, cmd->name) )
 		{
-			printf ("Cmd_AddCommand: %s already defined\n", cmd_name);
+			printf ("%s: %s already defined\n", __FUNCTION__, cmd_name);
 			return;
 		}
 	}
@@ -143,7 +143,7 @@ void Cbuf_AddText (const char *text)
 
 	if (cmd_text.cursize + l >= cmd_text.maxsize)
 	{
-		printf ("Cbuf_AddText: overflow\n");
+		printf ("%s: overflow\n", __FUNCTION__);
 		return;
 	}
 

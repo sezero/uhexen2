@@ -2,7 +2,7 @@
 	sizebuf.c
 	sized buffers
 
-	$Id: sizebuf.c,v 1.1 2007-02-12 16:53:13 sezero Exp $
+	$Id: sizebuf.c,v 1.2 2007-02-17 07:55:39 sezero Exp $
 */
 
 #include "q_types.h"
@@ -33,12 +33,13 @@ void *SZ_GetSpace (sizebuf_t *buf, int length)
 	if (buf->cursize + length > buf->maxsize)
 	{
 		if (!buf->allowoverflow)
-			Sys_Error ("SZ_GetSpace: overflow without allowoverflow set");
+			Sys_Error ("%s: overflow without allowoverflow set", __FUNCTION__);
 
 		if (length > buf->maxsize)
-			Sys_Error ("SZ_GetSpace: %i is > full buffer size", length);
+			Sys_Error ("%s: %i is > full buffer size", __FUNCTION__, length);
 
-		Sys_Printf ("SZ_GetSpace: overflow\nCurrently %d of %d, requested %d\n",buf->cursize,buf->maxsize,length);
+		Sys_Printf ("%s: overflow\nCurrently %d of %d, requested %d\n",
+				__FUNCTION__, buf->cursize, buf->maxsize, length);
 		SZ_Clear (buf);
 		buf->overflowed = true;
 	}

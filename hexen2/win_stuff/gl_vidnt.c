@@ -567,7 +567,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	}
 	else
 	{
-		Sys_Error ("VID_SetMode: Bad mode type in modelist");
+		Sys_Error ("%s: Bad mode type in modelist", __FUNCTION__);
 	}
 
 	if (!stat)

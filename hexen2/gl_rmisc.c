@@ -366,7 +366,7 @@ void R_TranslatePlayerSkin (int playernum)
 		original = player_8bit_texels[0];
 
 	if (s & 3)
-		Sys_Error ("R_TranslateSkin: s&3");
+		Sys_Error ("%s: s&3", __FUNCTION__);
 
 #if 0
 	byte	translated[320*200];

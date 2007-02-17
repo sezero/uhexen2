@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.11 2007-02-12 16:54:51 sezero Exp $
+	$Id: model.c,v 1.12 2007-02-17 07:56:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -47,7 +47,7 @@ mleaf_t *Mod_PointInLeaf (vec3_t p, model_t *model)
 	mplane_t	*plane;
 
 	if (!model || !model->nodes)
-		SV_Error ("Mod_PointInLeaf: bad model");
+		SV_Error ("%s: bad model", __FUNCTION__);
 
 	node = model->nodes;
 	while (1)
@@ -151,7 +151,7 @@ model_t *Mod_FindName (const char *name)
 	model_t	*mod;
 
 	if (!name[0])
-		SV_Error ("Mod_ForName: NULL name");
+		SV_Error ("%s: NULL name", __FUNCTION__);
 
 //
 // search the currently loaded models
@@ -207,7 +207,7 @@ static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 	if (!buf)
 	{
 		if (crash)
-			SV_Error ("Mod_NumForName: %s not found", mod->name);
+			SV_Error ("%s: %s not found", __FUNCTION__, mod->name);
 		return NULL;
 	}
 
@@ -468,7 +468,7 @@ static void Mod_LoadVertexes (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		SV_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), loadname);
 
@@ -496,7 +496,7 @@ static void Mod_LoadSubmodels (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		SV_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), loadname);
 
@@ -532,7 +532,7 @@ static void Mod_LoadEdges (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		SV_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( (count + 1) * sizeof(*out), loadname);
 
@@ -561,7 +561,7 @@ static void Mod_LoadTexinfo (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		SV_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), loadname);
 
@@ -669,7 +669,7 @@ static void Mod_LoadFaces (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		SV_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), loadname);
 
@@ -756,7 +756,7 @@ static void Mod_LoadNodes (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		SV_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), loadname);
 
@@ -803,7 +803,7 @@ static void Mod_LoadLeafs (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		SV_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), loadname);
 
@@ -849,7 +849,7 @@ static void Mod_LoadClipnodes (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		SV_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), loadname);
 
@@ -976,7 +976,7 @@ static void Mod_LoadMarksurfaces (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		SV_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), loadname);
 
@@ -987,7 +987,7 @@ static void Mod_LoadMarksurfaces (lump_t *l)
 	{
 		j = LittleShort(in[i]);
 		if (j >= loadmodel->numsurfaces)
-			SV_Error ("Mod_ParseMarksurfaces: bad surface number");
+			SV_Error ("%s: bad surface number", __FUNCTION__);
 		out[i] = loadmodel->surfaces + j;
 	}
 }
@@ -1004,7 +1004,7 @@ static void Mod_LoadSurfedges (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		SV_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), loadname);
 
@@ -1031,7 +1031,7 @@ static void Mod_LoadPlanes (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		SV_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*2*sizeof(*out), loadname);
 
@@ -1071,7 +1071,7 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 
 	i = LittleLong (header->version);
 	if (i != BSPVERSION)
-		SV_Error ("Mod_LoadBrushModel: %s has wrong version number (%i should be %i)", mod->name, i, BSPVERSION);
+		SV_Error ("%s: %s has wrong version number (%i should be %i)", __FUNCTION__, mod->name, i, BSPVERSION);
 
 // swap all the lumps
 	mod_base = (byte *)header;

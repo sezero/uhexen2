@@ -210,11 +210,11 @@ static void ParseEpair (void)
 	mapent->epairs = e;
 
 	if (strlen(token) >= MAX_KEY-1)
-		Error ("ParseEpar: token too long");
+		Error ("%s: token too long", __FUNCTION__);
 	e->key = copystring(token);
 	GetToken (false);
 	if (strlen(token) >= MAX_VALUE-1)
-		Error ("ParseEpar: token too long");
+		Error ("%s: token too long", __FUNCTION__);
 	e->value = copystring(token);
 }
 
@@ -550,7 +550,7 @@ static qboolean ParseEntity (void)
 		return false;
 
 	if (strcmp (token, "{") )
-		Error ("ParseEntity: { not found");
+		Error ("%s: { not found", __FUNCTION__);
 
 	if (num_entities == MAX_MAP_ENTITIES)
 		Error ("num_entities == MAX_MAP_ENTITIES");
@@ -561,7 +561,7 @@ static qboolean ParseEntity (void)
 	do
 	{
 		if (!GetToken (true))
-			Error ("ParseEntity: EOF without closing brace");
+			Error ("%s: EOF without closing brace", __FUNCTION__);
 		if (!strcmp (token, "}") )
 			break;
 		if (!strcmp (token, "{") )

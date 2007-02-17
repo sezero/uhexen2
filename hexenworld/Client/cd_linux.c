@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.19 2006-06-03 14:04:26 sezero Exp $
+	$Id: cd_linux.c,v 1.20 2007-02-17 07:55:38 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -395,7 +395,7 @@ int CDAudio_Init(void)
 
 	if ((cdfile = open(cd_dev, O_RDONLY | O_NONBLOCK)) == -1)
 	{
-		Con_Printf("CDAudio_Init: open of \"%s\" failed (%i)\n", cd_dev, errno);
+		Con_Printf("%s: open of \"%s\" failed (%i)\n", __FUNCTION__, cd_dev, errno);
 		cdfile = -1;
 		return -1;
 	}
@@ -409,7 +409,7 @@ int CDAudio_Init(void)
 
 	if (CDAudio_GetAudioDiskInfo())
 	{
-		Con_Printf("CDAudio_Init: No CD in drive\n");
+		Con_Printf("%s: No CD in drive\n", __FUNCTION__);
 		cdValid = false;
 	}
 

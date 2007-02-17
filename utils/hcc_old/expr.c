@@ -1,7 +1,7 @@
 /*
 	expr.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/expr.c,v 1.3 2007-02-13 13:34:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/expr.c,v 1.4 2007-02-17 07:56:17 sezero Exp $
 
 */
 
@@ -458,7 +458,7 @@ static void PrecacheSound (def_t *e, int ch)
 	}
 	if (numsounds == MAX_SOUNDS)
 	{
-		Error("PrecacheSound: numsounds == MAX_SOUNDS");
+		Error("%s: numsounds == MAX_SOUNDS", __FUNCTION__);
 	}
 	strcpy(precache_sounds[i], n);
 	if (ch >= '1' && ch <= '9')
@@ -497,7 +497,7 @@ static void PrecacheModel (def_t *e, int ch)
 	}
 	if (nummodels == MAX_MODELS)
 	{
-		Error("PrecacheModels: nummodels == MAX_MODELS");
+		Error("%s: nummodels == MAX_MODELS", __FUNCTION__);
 	}
 	strcpy(precache_models[i], n);
 	if (ch >= '1' && ch <= '9')
@@ -536,7 +536,7 @@ static void PrecacheFile (def_t *e, int ch)
 	}
 	if (numfiles == MAX_FILES)
 	{
-		Error("PrecacheFile: numfiles == MAX_FILES");
+		Error("%s: numfiles == MAX_FILES", __FUNCTION__);
 	}
 	strcpy(precache_files[i], n);
 	if (ch >= '1' && ch <= '9')

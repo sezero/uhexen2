@@ -17,7 +17,7 @@ static void CheckStack (leaf_t *leaf, threaddata_t *thread)
 	for (p = thread->pstack_head.next ; p ; p  =p->next)
 	{
 		if (p->leaf == leaf)
-			Error ("CheckStack: leaf recursion");
+			Error ("%s: leaf recursion", __FUNCTION__);
 	}
 }
 
@@ -463,7 +463,7 @@ void PortalFlow (portal_t *p)
 	threaddata_t	data;
 
 	if (p->status != stat_working)
-		Error ("PortalFlow: reflowed");
+		Error ("%s: reflowed", __FUNCTION__);
 	p->status = stat_working;
 
 	p->visbits = malloc (bitbytes);

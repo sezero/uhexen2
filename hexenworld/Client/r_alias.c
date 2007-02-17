@@ -772,7 +772,7 @@ static void R_AliasSetupSkin (void)
 
 	if ((skinnum >= pmdl->numskins) || (skinnum < 0))
 	{
-		Con_DPrintf ("R_AliasSetupSkin: no such skin # %d\n", skinnum);
+		Con_DPrintf ("%s: no such skin # %d\n", __FUNCTION__, skinnum);
 		skinnum = 0;
 	}
 
@@ -894,7 +894,7 @@ static void R_AliasSetupFrame (void)
 	frame = currententity->frame;
 	if ((frame >= pmdl->numframes) || (frame < 0))
 	{
-		Con_DPrintf ("R_AliasSetupFrame: no such frame %d %s\n", frame, currententity->model->name);
+		Con_DPrintf ("%s: no such frame %d %s\n", __FUNCTION__, frame, currententity->model->name);
 		frame = 0;
 	}
 
@@ -992,7 +992,7 @@ void R_AliasDrawModel (alight_t *plighting)
 	R_AliasSetupFrame ();
 
 	if (!currententity->colormap)
-		Sys_Error ("R_AliasDrawModel: !currententity->colormap");
+		Sys_Error ("%s: !currententity->colormap", __FUNCTION__);
 
 	r_affinetridesc.drawtype =
 		(currententity->trivial_accept == 3) && r_recursiveaffinetriangles;

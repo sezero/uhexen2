@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.30 2007-02-12 16:53:10 sezero Exp $
+	$Id: midi_sdl.c,v 1.31 2007-02-17 07:55:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -105,7 +105,7 @@ qboolean MIDI_Init(void)
 	SDL_version *(*Mix_Linked_Version_fp)(void) = NULL;
 
 	bMidiInited = 0;
-	Con_Printf("MIDI_Init: ");
+	Con_Printf("%s: ", __FUNCTION__);
 
 	if (COM_CheckParm("-nomidi") || COM_CheckParm("--nomidi")
 	   || COM_CheckParm("-nosound") || COM_CheckParm("--nosound"))
@@ -156,7 +156,7 @@ bad_version:
 	{
 		if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0)
 		{
-			Con_Printf("MIDI_Init: Cannot initialize SDL_AUDIO: %s\n",SDL_GetError());
+			Con_Printf("%s: Cannot initialize SDL_AUDIO: %s\n", __FUNCTION__, SDL_GetError());
 			bMidiInited = 0;
 			return 0;
 		}
@@ -286,7 +286,7 @@ void MIDI_Cleanup(void)
 	{
 		MIDI_Stop();
 		bMidiInited = 0;
-		Con_Printf("MIDI_Cleanup: closing SDL_mixer\n");
+		Con_Printf("%s: closing SDL_mixer\n", __FUNCTION__);
 		Mix_CloseAudio();
 	//	if (audio_wasinit == 0)
 	//		SDL_QuitSubSystem(SDL_INIT_AUDIO);

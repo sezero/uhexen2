@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.58 2007-02-16 23:53:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.59 2007-02-17 07:55:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -153,13 +153,13 @@ void Host_EndGame (const char *message, ...)
 	va_start (argptr,message);
 	vsnprintf (string,sizeof(string),message,argptr);
 	va_end (argptr);
-	Con_DPrintf ("Host_EndGame: %s\n",string);
+	Con_DPrintf ("%s: %s\n", __FUNCTION__, string);
 
 	if (sv.active)
 		Host_ShutdownServer (false);
 
 	if (cls.state == ca_dedicated)
-		Sys_Error ("Host_EndGame: %s\n",string);	// dedicated servers exit
+		Sys_Error ("%s: %s", __FUNCTION__, string);	// dedicated servers exit
 
 	if (cls.demonum != -1)
 		CL_NextDemo ();
@@ -183,7 +183,7 @@ void Host_Error (const char *error, ...)
 	static	qboolean inerror = false;
 
 	if (inerror)
-		Sys_Error ("Host_Error: recursive error!");
+		Sys_Error ("%s: recursive error!", __FUNCTION__);
 	inerror = true;
 
 	SCR_EndLoadingPlaque ();		// reenable screen updates
@@ -191,13 +191,13 @@ void Host_Error (const char *error, ...)
 	va_start (argptr,error);
 	vsnprintf (string,sizeof(string),error,argptr);
 	va_end (argptr);
-	Con_Printf ("Host_Error: %s\n",string);
+	Con_Printf ("%s: %s\n", __FUNCTION__, string);
 
 	if (sv.active)
 		Host_ShutdownServer (false);
 
 	if (cls.state == ca_dedicated)
-		Sys_Error ("Host_Error: %s\n",string);	// dedicated servers exit
+		Sys_Error ("%s: %s", __FUNCTION__, string);	// dedicated servers exit
 
 	CL_Disconnect ();
 	cls.demonum = -1;
@@ -568,7 +568,7 @@ void Host_ShutdownServer(qboolean crash)
 	MSG_WriteByte(&buf, svc_disconnect);
 	count = NET_SendToAll(&buf, 5);
 	if (count)
-		Con_Printf("Host_ShutdownServer: NET_SendToAll failed for %u clients\n", count);
+		Con_Printf("%s: NET_SendToAll failed for %u clients\n", __FUNCTION__, count);
 
 	for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
 	{
@@ -978,16 +978,16 @@ static void Host_InitVCR (quakeparms_t *parms)
 	if (COM_CheckParm("-playback"))
 	{
 		if (com_argc != 2)
-			Sys_Error("No other parameters allowed with -playback\n");
+			Sys_Error("No other parameters allowed with -playback");
 
 		//vcrFile = fopen (va("%s/quake.vcr",fs_userdir), "rb");
 		vcrFile = fopen (va("%s/quake.vcr",parms->userdir), "rb");
 		if (!vcrFile)
-			Sys_Error("playback file not found\n");
+			Sys_Error("playback file not found");
 
 		fread (&i, 1, sizeof(int), vcrFile);
 		if (i != VCR_SIGNATURE)
-			Sys_Error("Invalid signature in vcr file\n");
+			Sys_Error("Invalid signature in vcr file");
 
 		fread (&com_argc, 1, sizeof(int), vcrFile);
 		com_argv = Z_Malloc(com_argc * sizeof(char *));

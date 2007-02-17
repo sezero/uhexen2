@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.25 2007-02-12 16:52:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.26 2007-02-17 07:55:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -703,7 +703,7 @@ int Cmd_CheckParm (const char *parm)
 	int	i;
 
 	if (!parm)
-		Sys_Error ("Cmd_CheckParm: NULL");
+		Sys_Error ("%s: null input\n", __FUNCTION__);
 
 	for (i = 1; i < Cmd_Argc (); i++)
 		if ( !Q_strcasecmp(parm, Cmd_Argv (i)) )

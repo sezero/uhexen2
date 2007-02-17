@@ -1,7 +1,7 @@
 /*
 	qdir.c
 
-	$Id: qdir.c,v 1.4 2007-02-13 13:34:36 sezero Exp $
+	$Id: qdir.c,v 1.5 2007-02-17 07:56:17 sezero Exp $
 */
 
 
@@ -63,7 +63,7 @@ void SetQdirFromPath (char *path)
 		}
 	}
 
-	Error ("SetQdirFromPath: no %s in %s", BUILDDIR, path);
+	Error ("%s: no %s in %s", __FUNCTION__, BUILDDIR, path);
 }
 
 char *ExpandArg (const char *path)
@@ -86,7 +86,7 @@ char *ExpandPath (const char *path)
 	static char full[1024];
 
 	if (!qdir)
-		Error ("ExpandPath called without qdir set");
+		Error ("%s called without qdir set", __FUNCTION__);
 
 	if (path[0] == '/' || path[0] == '\\' || path[1] == ':')
 	{

@@ -2,7 +2,7 @@
 	cl_tent.c
 	Client side temporary entity effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.13 2006-10-22 15:06:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.14 2007-02-17 07:55:32 sezero Exp $
 */
 
 
@@ -266,7 +266,7 @@ void CL_ParseTEnt(void)
 		R_TeleportSplash (pos);
 		break;
 	default:
-		Sys_Error ("CL_ParseTEnt: bad type");
+		Sys_Error ("%s: bad type", __FUNCTION__);
 	}
 }
 
@@ -342,7 +342,7 @@ static void ParseStream(int type)
 		break;
 	}
 	if (models[0] == NULL)
-		Sys_Error("ParseStream: bad type");
+		Sys_Error("%s: bad type", __FUNCTION__);
 
 	if ((stream = NewStream(ent, tag)) == NULL)
 	{

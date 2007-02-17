@@ -70,7 +70,7 @@ void Cvar_Set (const char *var_name, const char *value)
 	var = Cvar_FindVar (var_name);
 	if (!var)
 	{	// there is an error in C code if this happens
-		Con_Printf ("Cvar_Set: variable %s not found\n", var_name);
+		Con_Printf ("%s: variable %s not found\n", __FUNCTION__, var_name);
 		return;
 	}
 
@@ -146,7 +146,7 @@ void Cvar_RegisterVariable (cvar_t *variable)
 // check for overlap with a command
 	if (Cmd_Exists (variable->name))
 	{
-		Con_Printf ("Cvar_RegisterVariable: %s is a command\n", variable->name);
+		Con_Printf ("%s: %s is a command\n", __FUNCTION__, variable->name);
 		return;
 	}
 

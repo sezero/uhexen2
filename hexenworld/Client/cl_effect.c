@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.c,v 1.11 2007-02-07 17:03:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.c,v 1.12 2007-02-17 07:55:39 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -1117,7 +1117,7 @@ void CL_ParseEffect (void)
 			break;
 
 		default:
-			Sys_Error ("CL_ParseEffect: bad type");
+			Sys_Error ("%s: bad type", __FUNCTION__);
 	}
 
 	if (ImmediateFree)
@@ -1633,11 +1633,11 @@ void CL_TurnEffect (void)
 	// create a clc message to retrieve effect information
 	//	MSG_WriteByte (&cls.netchan.message, clc_get_effect);
 	//	MSG_WriteByte (&cls.netchan.message, idx);
-	//	Con_Printf("CL_TurnEffect: null effect %d\n", idx);
+	//	Con_Printf("%s: null effect %d\n", __FUNCTION__, idx);
 		break;
 
 	default:
-		Con_Printf ("CL_TurnEffect: bad type %d\n", cl.Effects[idx].type);
+		Con_Printf ("%s: bad type %d\n", __FUNCTION__, cl.Effects[idx].type);
 		break;
 	}
 }
@@ -1646,7 +1646,7 @@ static void CL_LinkEntity (entity_t *ent)
 {
 	if (cl_numvisedicts == MAX_VISEDICTS)
 	{	// object list is full
-		//Sys_Error("CL_LinkEntity: Out of vis edicts\n");
+	//	Sys_Error("%s: Out of vis edicts", __FUNCTION__);
 		return;
 	}
 
@@ -2430,7 +2430,7 @@ void CL_ParseMultiEffect (void)
 		break;
 
 	default:
-		Sys_Error ("CL_ParseMultiEffect: bad type");
+		Sys_Error ("%s: bad type", __FUNCTION__);
 	}
 }
 

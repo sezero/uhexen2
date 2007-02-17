@@ -54,7 +54,7 @@ qsocket_t *Loop_Connect (char *host)
 	{
 		if ((loop_client = NET_NewQSocket ()) == NULL)
 		{
-			Con_Printf("Loop_Connect: no qsocket available\n");
+			Con_Printf("%s: no qsocket available\n", __FUNCTION__);
 			return NULL;
 		}
 		strcpy (loop_client->address, "localhost");
@@ -67,7 +67,7 @@ qsocket_t *Loop_Connect (char *host)
 	{
 		if ((loop_server = NET_NewQSocket ()) == NULL)
 		{
-			Con_Printf("Loop_Connect: no qsocket available\n");
+			Con_Printf("%s: no qsocket available\n", __FUNCTION__);
 			return NULL;
 		}
 		strcpy (loop_server->address, "LOCAL");
@@ -143,7 +143,7 @@ int Loop_SendMessage (qsocket_t *sock, sizebuf_t *data)
 	bufferLength = &((qsocket_t *)sock->driverdata)->receiveMessageLength;
 
 	if ((*bufferLength + data->cursize + 4) > NET_MAXMESSAGE)
-		Sys_Error("Loop_SendMessage: overflow\n");
+		Sys_Error("%s: overflow", __FUNCTION__);
 
 	buffer = ((qsocket_t *)sock->driverdata)->receiveMessage + *bufferLength;
 

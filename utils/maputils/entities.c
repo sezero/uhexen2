@@ -106,10 +106,10 @@ void LoadEntities (void)
 		if (!data)
 			break;
 		if (com_token[0] != '{')
-			Error ("LoadEntities: found %s when expecting {",com_token);
+			Error ("%s: found %s when expecting {", __FUNCTION__, com_token);
 
 		if (num_entities == MAX_MAP_ENTITIES)
-			Error ("LoadEntities: MAX_MAP_ENTITIES");
+			Error ("%s: MAX_MAP_ENTITIES", __FUNCTION__);
 		entity = &entities[num_entities];
 		num_entities++;
 
@@ -121,7 +121,7 @@ void LoadEntities (void)
 		// parse key
 			data = COM_Parse (data);
 			if (!data)
-				Error ("LoadEntities: EOF without closing brace");
+				Error ("%s: EOF without closing brace", __FUNCTION__);
 			if (!strcmp(com_token,"}"))
 				break;
 			strcpy (key, com_token);
@@ -129,10 +129,10 @@ void LoadEntities (void)
 		// parse value
 			data = COM_Parse (data);
 			if (!data)
-				Error ("LoadEntities: EOF without closing brace");
+				Error ("%s: EOF without closing brace", __FUNCTION__);
 			c = com_token[0];
 			if (c == '}')
-				Error ("LoadEntities: closing brace without data");
+				Error ("%s: closing brace without data", __FUNCTION__);
 
 			epair = malloc (sizeof(epair_t));
 			memset (epair, 0, sizeof(epair));
@@ -153,7 +153,7 @@ void LoadEntities (void)
 						&entity->origin[0],
 						&entity->origin[1],
 						&entity->origin[2]) != 3)
-					Error ("LoadEntities: not 3 values for origin");
+					Error ("%s: not 3 values for origin", __FUNCTION__);
 			}
 			else if (!strncmp(key, "light", 5))
 			{

@@ -285,7 +285,7 @@ static int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace)
 			break;		// moved the entire distance
 
 		if (!trace.ent)
-			SV_Error ("SV_FlyMove: !trace.ent");
+			SV_Error ("%s: !trace.ent", __FUNCTION__);
 
 		if (trace.plane.normal[2] > 0.7)
 		{
@@ -687,7 +687,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 	qboolean	moveit;
 
 #   if 0
-	Con_DPrintf("SV_PushRotate entity %i (time=%f)\n", NUM_FOR_EDICT(pusher), movetime);
+	Con_DPrintf("%s entity %i (time=%f)\n", __FUNCTION__, NUM_FOR_EDICT(pusher), movetime);
 	Con_DPrintf("%f %f %f (avelocity)\n", pusher->v.avelocity[0], pusher->v.avelocity[1], pusher->v.avelocity[2]);
 	Con_DPrintf("%f %f %f\n", pusher->v.angles[0], pusher->v.angles[1], pusher->v.angles[2]);
 #   endif
@@ -712,7 +712,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 	{
 		slave = PROG_TO_EDICT(master->v.aiment);
 
-		//Con_DPrintf("%f %f %f   slave entity %i\n", slave->v.angles[0], slave->v.angles[1], slave->v.angles[2], NUM_FOR_EDICT(slave));
+	//	Con_DPrintf("%f %f %f   slave entity %i\n", slave->v.angles[0], slave->v.angles[1], slave->v.angles[2], NUM_FOR_EDICT(slave));
 
 		slaves_moved++;
 		VectorCopy (slave->v.angles, moved_from[MAX_EDICTS - slaves_moved]);
@@ -921,7 +921,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 //	float		turn_away, amove_mag;
 
 #   if 0
-	Con_DPrintf("SV_PushRotate entity %i (time=%f)\n", NUM_FOR_EDICT(pusher), movetime);
+	Con_DPrintf("%s entity %i (time=%f)\n", __FUNCTION__, NUM_FOR_EDICT(pusher), movetime);
 	Con_DPrintf("%f %f %f (avelocity)\n", pusher->v.avelocity[0], pusher->v.avelocity[1], pusher->v.avelocity[2]);
 	Con_DPrintf("%f %f %f\n", pusher->v.angles[0], pusher->v.angles[1], pusher->v.angles[2]);
 #   endif
@@ -953,7 +953,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 	{
 		slave = PROG_TO_EDICT(master->v.aiment);
 
-		//Con_DPrintf("%f %f %f   slave entity %i\n", slave->v.angles[0], slave->v.angles[1], slave->v.angles[2], NUM_FOR_EDICT(slave));
+	//	Con_DPrintf("%f %f %f   slave entity %i\n", slave->v.angles[0], slave->v.angles[1], slave->v.angles[2], NUM_FOR_EDICT(slave));
 
 		slaves_moved++;
 		VectorCopy (slave->v.angles, moved_from[MAX_EDICTS - slaves_moved]);
@@ -1069,7 +1069,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 		org2[2] = DotProduct (org, up);
 		VectorSubtract (org2, org, move2);
 
-		//Con_DPrintf("%f %f %f (move2)\n", move2[0], move2[1], move2[2]);
+	//	Con_DPrintf("%f %f %f (move2)\n", move2[0], move2[1], move2[2]);
 
 	//	VectorAdd (check->v.origin, move2, check->v.origin);
 
@@ -1195,13 +1195,13 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 				break;
 		}
 
-		//Con_DPrintf("t: %i\n",t);
+	//	Con_DPrintf("t: %i\n",t);
 
 	//	if (turn_away > 0)
 	//	{
 			if (block)
 			{	// fail the move
-				//Con_DPrintf("Check blocked\n");
+			//	Con_DPrintf("Check blocked\n");
 				if (check->v.mins[0] == check->v.maxs[0])
 					continue;
 				if (check->v.solid == SOLID_NOT || check->v.solid == SOLID_TRIGGER)
@@ -1749,7 +1749,7 @@ void SV_Physics_Client (edict_t *ent, int num)
 		break;
 
 	default:
-		Sys_Error ("SV_Physics_client: bad movetype %i", (int)ent->v.movetype);
+		Sys_Error ("%s: bad movetype %i", __FUNCTION__, (int)ent->v.movetype);
 	}
 
 //
@@ -2070,7 +2070,7 @@ static void SV_RunEntity (edict_t *ent)
 		SV_RunThink (ent);
 		break;
 	default:
-		SV_Error ("SV_Physics: bad movetype %i", (int)ent->v.movetype);
+		SV_Error ("%s: bad movetype %i", __FUNCTION__, (int)ent->v.movetype);
 	}
 
 	if (ent2 != sv.edicts)

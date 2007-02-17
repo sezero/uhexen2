@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.49 2007-02-07 17:01:38 sezero Exp $
+	$Id: snd_dma.c,v 1.50 2007-02-17 07:55:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -308,7 +308,7 @@ static sfx_t *S_FindName (const char *name)
 	sfx_t	*sfx;
 
 	if (!name)
-		Sys_Error ("S_FindName: NULL\n");
+		Sys_Error ("%s: NULL", __FUNCTION__);
 
 	if (strlen(name) >= MAX_QPATH)
 		Sys_Error ("Sound name too long: %s", name);
@@ -323,7 +323,7 @@ static sfx_t *S_FindName (const char *name)
 	}
 
 	if (num_sfx == MAX_SFX)
-		Sys_Error ("S_FindName: out of sfx_t");
+		Sys_Error ("%s: out of sfx_t", __FUNCTION__);
 
 	sfx = &known_sfx[i];
 	Q_strlcpy (sfx->name, name, MAX_QPATH);
@@ -646,14 +646,14 @@ void S_ClearBuffer (void)
 		{
 			if (hresult != DSERR_BUFFERLOST)
 			{
-				Con_Printf ("S_ClearBuffer: DS::Lock Sound Buffer Failed\n");
+				Con_Printf ("%s: DS::Lock Sound Buffer Failed\n", __FUNCTION__);
 				S_Shutdown ();
 				return;
 			}
 
 			if (++reps > 10000)
 			{
-				Con_Printf ("S_ClearBuffer: DS: couldn't restore buffer\n");
+				Con_Printf ("%s: DS: couldn't restore buffer\n", __FUNCTION__);
 				S_Shutdown ();
 				return;
 			}
@@ -686,7 +686,7 @@ void S_StaticSound (sfx_t *sfx, vec3_t origin, float vol, float attenuation)
 
 	if (total_channels == MAX_CHANNELS)
 	{
-		Con_Printf ("StaticSound: MAX_CHANNELS reached\n");
+		Con_Printf ("%s: MAX_CHANNELS reached\n", __FUNCTION__);
 	//	Con_Printf (" failed at (%.2f, %.2f, %.2f)\n",origin[0],origin[1],origin[2]);
 		return;
 	}
@@ -928,7 +928,7 @@ static void S_Update_ (void)
 // check to make sure that we haven't overshot
 	if (paintedtime < soundtime)
 	{
-		//Con_Printf ("S_Update_ : overflow\n");
+	//	Con_Printf ("%s : overflow\n", __FUNCTION__);
 		paintedtime = soundtime;
 	}
 
@@ -1092,7 +1092,7 @@ void S_LocalSound (const char *sound)
 	sfx = S_PrecacheSound (sound);
 	if (!sfx)
 	{
-		Con_Printf ("S_LocalSound: can't cache %s\n", sound);
+		Con_Printf ("%s: can't cache %s\n", __FUNCTION__, sound);
 		return;
 	}
 	S_StartSound (cl.viewentity, -1, sfx, vec3_origin, 1, 1);

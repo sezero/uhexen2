@@ -2,7 +2,7 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.16 2007-02-13 13:34:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.17 2007-02-17 07:56:17 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -399,7 +399,7 @@ def_t *PR_DefForFieldOfs (gofs_t ofs)
 		if (*((int *)&pr_globals[d->ofs]) == ofs)
 			return d;
 	}
-	Error ("PR_DefForFieldOfs: couldn't find %i",ofs);
+	Error ("%s: couldn't find %i", __FUNCTION__, ofs);
 	return NULL;
 }
 
@@ -473,7 +473,7 @@ char *PR_GlobalStringNoContents (gofs_t ofs)
 	val = (void *)&pr_globals[ofs];
 	def = pr_global_defs[ofs];
 	if (!def)
-	//	Error ("PR_GlobalString: no def for %i", ofs);
+	//	Error ("%s: no def for %i", __FUNCTION__, ofs);
 		sprintf (line,"%i(?)", ofs);
 	else
 		sprintf (line,"%i(%s)", ofs, def->name);

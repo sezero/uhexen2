@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.34 2007-02-12 16:52:46 sezero Exp $
+	$Id: gl_model.c,v 1.35 2007-02-17 07:55:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -71,7 +71,7 @@ void *Mod_Extradata (model_t *mod)
 	Mod_LoadModel (mod, true);
 
 	if (!mod->cache.data)
-		Sys_Error ("Mod_Extradata: caching failed");
+		Sys_Error ("%s: caching failed", __FUNCTION__);
 	return mod->cache.data;
 }
 
@@ -87,9 +87,9 @@ mleaf_t *Mod_PointInLeaf (vec3_t p, model_t *model)
 	mplane_t	*plane;
 
 	if (!model)
-		Sys_Error ("Mod_PointInLeaf: NULL model");
+		Sys_Error ("%s: NULL model", __FUNCTION__);
 	if (!model->nodes)
-		Sys_Error ("Mod_PointInLeaf: model w/o nodes : %s",model->name);
+		Sys_Error ("%s: model w/o nodes : %s", __FUNCTION__, model->name);
 
 	node = model->nodes;
 	while (1)
@@ -201,7 +201,7 @@ model_t *Mod_FindName (const char *name)
 	model_t	*mod = NULL;
 
 	if (!name[0])
-		Sys_Error ("Mod_ForName: NULL name");
+		Sys_Error ("%s: NULL name", __FUNCTION__);
 
 //
 // search the currently loaded models
@@ -288,7 +288,7 @@ static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 	if (!buf)
 	{
 		if (crash)
-			Sys_Error ("Mod_NumForName: %s not found", mod->name);
+			Sys_Error ("%s: %s not found", __FUNCTION__, mod->name);
 		return NULL;
 	}
 
@@ -759,7 +759,7 @@ static void Mod_LoadVertexes (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "vertexes");
 
@@ -787,7 +787,7 @@ static void Mod_LoadSubmodels (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "submodels");
 
@@ -823,7 +823,7 @@ static void Mod_LoadEdges (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( (count + 1) * sizeof(*out), "edges");
 
@@ -852,7 +852,7 @@ static void Mod_LoadTexinfo (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "texture");
 
@@ -971,7 +971,7 @@ static void Mod_LoadFaces (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "faces");
 
@@ -1072,7 +1072,7 @@ static void Mod_LoadNodes (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "nodes");
 
@@ -1119,7 +1119,7 @@ static void Mod_LoadLeafs (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "leafs");
 
@@ -1172,7 +1172,7 @@ static void Mod_LoadClipnodes (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "clipnodes");
 
@@ -1322,7 +1322,7 @@ static void Mod_LoadMarksurfaces (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "marksurfaces");
 
@@ -1333,7 +1333,7 @@ static void Mod_LoadMarksurfaces (lump_t *l)
 	{
 		j = LittleShort(in[i]);
 		if (j >= loadmodel->numsurfaces)
-			Sys_Error ("Mod_ParseMarksurfaces: bad surface number");
+			Sys_Error ("%s: bad surface number", __FUNCTION__);
 		out[i] = loadmodel->surfaces + j;
 	}
 }
@@ -1350,7 +1350,7 @@ static void Mod_LoadSurfedges (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "surfedges");
 
@@ -1377,7 +1377,7 @@ static void Mod_LoadPlanes (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*2*sizeof(*out), "planes");
 
@@ -1435,7 +1435,7 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 
 	i = LittleLong (header->version);
 	if (i != BSPVERSION)
-		Sys_Error ("Mod_LoadBrushModel: %s has wrong version number (%i should be %i)", mod->name, i, BSPVERSION);
+		Sys_Error ("%s: %s has wrong version number (%i should be %i)", __FUNCTION__, mod->name, i, BSPVERSION);
 
 // swap all the lumps
 	mod_base = (byte *)header;
@@ -1759,7 +1759,7 @@ static void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int md
 	skin = (byte *)(pskintype + 1);
 
 	if (numskins < 1 || numskins > MAX_SKINS)
-		Sys_Error ("Mod_LoadAliasModel: Invalid # of skins: %d\n", numskins);
+		Sys_Error ("%s: Invalid # of skins: %d", __FUNCTION__, numskins);
 
 	for (i = 0; i < numskins; i++)
 	{
@@ -2093,7 +2093,7 @@ static void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
 	pheader->numframes = LittleLong (pinmodel->numframes);
 	numframes = pheader->numframes;
 	if (numframes < 1)
-		Sys_Error ("Mod_LoadAliasModel: Invalid # of frames: %d\n", numframes);
+		Sys_Error ("%s: Invalid # of frames: %d", __FUNCTION__, numframes);
 
 	pheader->size = LittleFloat (pinmodel->size) * ALIAS_BASE_SIZE_RATIO;
 	mod->synctype = LittleLong (pinmodel->synctype);
@@ -2271,7 +2271,7 @@ static void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	pheader->numframes = LittleLong (pinmodel->numframes);
 	numframes = pheader->numframes;
 	if (numframes < 1)
-		Sys_Error ("Mod_LoadAliasModel: Invalid # of frames: %d\n", numframes);
+		Sys_Error ("%s: Invalid # of frames: %d", __FUNCTION__, numframes);
 
 	pheader->size = LittleFloat (pinmodel->size) * ALIAS_BASE_SIZE_RATIO;
 	mod->synctype = LittleLong (pinmodel->synctype);
@@ -2479,7 +2479,7 @@ static void *Mod_LoadSpriteGroup (model_t *mod, void *pin, mspriteframe_t **ppfr
 	{
 		*poutintervals = LittleFloat (pin_intervals->interval);
 		if (*poutintervals <= 0.0)
-			Sys_Error ("Mod_LoadSpriteGroup: interval<=0");
+			Sys_Error ("%s: interval <= 0", __FUNCTION__);
 
 		poutintervals++;
 		pin_intervals++;
@@ -2550,7 +2550,7 @@ static void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 // load the frames
 //
 	if (numframes < 1)
-		Sys_Error ("Mod_LoadSpriteModel: Invalid # of frames: %d\n", numframes);
+		Sys_Error ("%s: Invalid # of frames: %d", __FUNCTION__, numframes);
 
 	mod->numframes = numframes;
 

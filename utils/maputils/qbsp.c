@@ -83,7 +83,7 @@ winding_t *BaseWindingForPlane (plane_t *p)
 		}
 	}
 	if (x == -1)
-		Error ("BaseWindingForPlane: no axis found");
+		Error ("%s: no axis found", __FUNCTION__);
 
 	VectorClear (vup);
 	switch (x)
@@ -257,7 +257,7 @@ winding_t *ClipWinding (winding_t *in, plane_t *split, qboolean keepon)
 	}
 
 	if (neww->numpoints > maxpts)
-		Error ("ClipWinding: points exceeded estimate");
+		Error ("%s: points exceeded estimate", __FUNCTION__);
 
 // free the original winding
 	FreeWinding (in);
@@ -376,7 +376,7 @@ void DivideWinding (winding_t *in, plane_t *split, winding_t **front, winding_t 
 	}
 
 	if (f->numpoints > maxpts || b->numpoints > maxpts)
-		Error ("ClipWinding: points exceeded estimate");
+		Error ("%s: points exceeded estimate", __FUNCTION__);
 }
 
 
@@ -409,7 +409,7 @@ winding_t *NewWinding (int points)
 	size_t			size;
 
 	if (points > MAX_POINTS_ON_WINDING)
-		Error ("NewWinding: %i points", points);
+		Error ("%s: %i points", __FUNCTION__, points);
 
 //	c_activewindings++;
 //	if (c_activewindings > c_peakwindings)
@@ -753,7 +753,7 @@ static void ReadClipHull (int hullnumber)
 		Error ("Error parsing %s", hullfilename);
 
 	if (n != nummodels)
-		Error ("ReadClipHull: hull had %i models, base had %i", n, nummodels);
+		Error ("%s: hull had %i models, base had %i", __FUNCTION__, n, nummodels);
 
 	for (i = 0 ; i < n ; i++)
 	{
@@ -767,7 +767,7 @@ static void ReadClipHull (int hullnumber)
 	for (i = 0 ; i < n ; i++)
 	{
 		if (numclipnodes == MAX_MAP_CLIPNODES)
-			Error ("ReadClipHull: MAX_MAP_CLIPNODES");
+			Error ("%s: MAX_MAP_CLIPNODES", __FUNCTION__);
 		d = &dclipnodes[numclipnodes];
 		numclipnodes++;
 		if (fscanf (f,"%i : %f %f %f %f : %i %i\n", &junk, &f1, &f2, &f3, &f4, &c1, &c2) != 7)
@@ -1171,17 +1171,7 @@ int main (int argc, char **argv)
 	char		sourcename[1024];
 	char		destname[1024];
 
-#ifdef __alpha
-
-#  ifdef _WIN32
-	printf ("Alpha,Win32---- qbsp ----\n");
-#  else
-	printf ("Alpha---- qbsp ----\n");
-#  endif
-
-#else	// not __alpha
 	printf ("---- qbsp ----\n");
-#endif
 
 #ifdef _WIN32
 	gargs[0] = 0;

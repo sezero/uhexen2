@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.7 2007-02-12 16:53:10 sezero Exp $
+	$Id: midi_mac.c,v 1.8 2007-02-17 07:55:39 sezero Exp $
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -118,7 +118,7 @@ qboolean MIDI_Init (void)
 	OSErr		theErr;
 	char	mididir[MAX_OSPATH];
 
-	Con_Printf("MIDI_Init: ");
+	Con_Printf("%s: ", __FUNCTION__);
 
 	if (COM_CheckParm("-nomidi") || COM_CheckParm("--nomidi")
 	   || COM_CheckParm("-nosound") || COM_CheckParm("--nosound"))
@@ -157,7 +157,7 @@ void MIDI_Cleanup (void)
 	if (bMidiInited)
 	{
 		MIDI_Stop();
-		Con_Printf("MIDI_Cleanup: closing QuickTime.\n");
+		Con_Printf("%s: closing QuickTime.\n", __FUNCTION__);
 		ExitMovies ();
 		bMidiInited = 0;
 	}

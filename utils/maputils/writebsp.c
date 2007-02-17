@@ -255,7 +255,7 @@ void WriteDrawNodes (node_t *headnode)
 
 #if 0
 	if (headnode->contents < 0)
-		Error ("FinishBSPModel: empty model");
+		Error ("%s: empty model", __FUNCTION__);
 #endif
 
 // emit a model
@@ -359,7 +359,7 @@ static void TEX_InitFromWad (char *path)
 	texfile = SafeOpenRead (path);
 	SafeRead (texfile, &wadinfo, sizeof(wadinfo));
 	if (strncmp (wadinfo.identification, "WAD2", 4))
-		Error ("TEX_InitFromWad: %s isn't a wadfile",path);
+		Error ("%s: %s isn't a wadfile", __FUNCTION__, path);
 	wadinfo.numlumps = LittleLong(wadinfo.numlumps);
 	wadinfo.infotableofs = LittleLong(wadinfo.infotableofs);
 	fseek (texfile, wadinfo.infotableofs, SEEK_SET);

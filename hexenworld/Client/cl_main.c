@@ -1109,7 +1109,7 @@ void Host_EndGame (const char *message, ...)
 	vsnprintf (string,sizeof(string),message,argptr);
 	va_end (argptr);
 	Con_Printf ("\n===========================\n");
-	Con_Printf ("Host_EndGame: %s\n",string);
+	Con_Printf ("%s: %s\n", __FUNCTION__, string);
 	Con_Printf ("===========================\n\n");
 
 	CL_Disconnect ();
@@ -1131,13 +1131,13 @@ void Host_Error (const char *error, ...)
 	static	qboolean inerror = false;
 
 	if (inerror)
-		Sys_Error ("Host_Error: recursive error!");
+		Sys_Error ("%s: recursive error!", __FUNCTION__);
 	inerror = true;
 
 	va_start (argptr,error);
 	vsnprintf (string,sizeof(string),error,argptr);
 	va_end (argptr);
-	Con_Printf ("Host_Error: %s\n",string);
+	Con_Printf ("%s: %s\n", __FUNCTION__, string);
 
 	CL_Disconnect ();
 	cls.demonum = -1;
@@ -1145,7 +1145,7 @@ void Host_Error (const char *error, ...)
 	inerror = false;
 
 // FIXME
-	Sys_Error ("Host_Error: %s\n",string);
+	Sys_Error ("%s: %s\n", __FUNCTION__, string);
 }
 
 

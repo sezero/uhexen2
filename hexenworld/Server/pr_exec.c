@@ -145,7 +145,7 @@ void PR_ExecuteProgram (func_t fnum)
 		{
 			ED_Print(PROG_TO_EDICT(PR_GLOBAL_STRUCT(self)));
 		}
-		SV_Error("PR_ExecuteProgram: NULL function");
+		SV_Error("%s: NULL function", __FUNCTION__);
 	}
 
 	f = &pr_functions[fnum];
@@ -771,7 +771,7 @@ static int EnterFunction (dfunction_t *f)
 	c = f->locals;
 	if (localstack_used + c > LOCALSTACK_SIZE)
 	{
-		PR_RunError ("PR_ExecuteProgram: locals stack overflow\n");
+		PR_RunError ("%s: locals stack overflow", __FUNCTION__);
 	}
 
 	for (i = 0; i < c ; i++)
@@ -816,7 +816,7 @@ static int LeaveFunction (void)
 	localstack_used -= c;
 	if (localstack_used < 0)
 	{
-		PR_RunError("PR_ExecuteProgram: locals stack underflow\n");
+		PR_RunError("%s: locals stack underflow", __FUNCTION__);
 	}
 
 	for (i = 0; i < c; i++)

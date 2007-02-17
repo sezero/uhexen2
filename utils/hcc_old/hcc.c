@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.7 2007-02-13 13:34:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.8 2007-02-17 07:56:17 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).
@@ -403,7 +403,7 @@ static def_t *PR_DefForFieldOfs (gofs_t ofs)
 		if (*((int *)&pr_globals[d->ofs]) == ofs)
 			return d;
 	}
-	Error ("PR_DefForFieldOfs: couldn't find %i",ofs);
+	Error ("%s: couldn't find %i", __FUNCTION__, ofs);
 	return NULL;
 }
 
@@ -477,7 +477,7 @@ static char *PR_GlobalStringNoContents (gofs_t ofs)
 	val = (void *)&pr_globals[ofs];
 	def = pr_global_defs[ofs];
 	if (!def)
-	//	Error ("PR_GlobalString: no def for %i", ofs);
+	//	Error ("%s: no def for %i", __FUNCTION__, ofs);
 		sprintf (line,"%i(?)", ofs);
 	else
 		sprintf (line,"%i(%s)", ofs, def->name);

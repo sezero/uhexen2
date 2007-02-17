@@ -224,7 +224,7 @@ static int CopyLump (int lump, void *dest, int size)
 	ofs = header->lumps[lump].fileofs;
 
 	if (length % size)
-		Error ("LoadBSPFile: odd lump size");
+		Error ("%s: odd lump size", __FUNCTION__);
 
 	memcpy (dest, (byte *)header + ofs, length);
 

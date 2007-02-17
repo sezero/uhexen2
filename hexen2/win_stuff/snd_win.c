@@ -375,14 +375,14 @@ static sndinitstat SNDDMA_InitDirect (void)
 	{
 		if (hresult != DSERR_BUFFERLOST)
 		{
-			Con_SafePrintf ("SNDDMA_InitDirect: DS::Lock Sound Buffer Failed\n");
+			Con_SafePrintf ("%s: DS::Lock Sound Buffer Failed\n", __FUNCTION__);
 			FreeSound ();
 			return SIS_FAILURE;
 		}
 
 		if (++reps > 10000)
 		{
-			Con_SafePrintf ("SNDDMA_InitDirect: DS: couldn't restore buffer\n");
+			Con_SafePrintf ("%s: DS: couldn't restore buffer\n", __FUNCTION__);
 			FreeSound ();
 			return SIS_FAILURE;
 		}
@@ -446,9 +446,8 @@ static qboolean SNDDMA_InitWav (void)
 	format.nAvgBytesPerSec = format.nSamplesPerSec * format.nBlockAlign;
 
 	/* Open a waveform device for output using window callback. */
-	while ((hr = waveOutOpen((LPHWAVEOUT)&hWaveOut, WAVE_MAPPER, 
-					&format, 
-					0, 0L, CALLBACK_NULL)) != MMSYSERR_NOERROR)
+	while ( (hr = waveOutOpen((LPHWAVEOUT)&hWaveOut, WAVE_MAPPER, &format, 0, 0L, CALLBACK_NULL))
+										!= MMSYSERR_NOERROR )
 	{
 		if (hr != MMSYSERR_ALLOCATED)
 		{

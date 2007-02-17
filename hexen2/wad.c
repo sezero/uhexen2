@@ -70,7 +70,7 @@ void W_LoadWadFile (const char *filename)
 		wad_len = qio_filesize;
 	}
 	if (!wad_base)
-		Sys_Error ("W_LoadWadFile: couldn't load %s", filename);
+		Sys_Error ("%s: couldn't load %s", __FUNCTION__, filename);
 
 	header = (wadinfo_t *)wad_base;
 
@@ -114,7 +114,7 @@ static lumpinfo_t *W_GetLumpinfo (char *name)
 			return lump_p;
 	}
 
-	Sys_Error ("W_GetLumpinfo: %s not found", name);
+	Sys_Error ("%s: %s not found", __FUNCTION__, name);
 	return NULL;
 }
 
@@ -133,7 +133,7 @@ void *W_GetLumpNum (int num)
 	lumpinfo_t	*lump;
 
 	if (num < 0 || num > wad_numlumps)
-		Sys_Error ("W_GetLumpNum: bad number: %i", num);
+		Sys_Error ("%s: bad number: %i", __FUNCTION__, num);
 
 	lump = wad_lumps + num;
 

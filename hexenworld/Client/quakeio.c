@@ -2,7 +2,7 @@
 	quakefs.c
 	quake file io
 
-	$Id: quakeio.c,v 1.2 2007-02-16 23:53:47 sezero Exp $
+	$Id: quakeio.c,v 1.3 2007-02-17 07:55:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -285,7 +285,7 @@ size_t QIO_FOpenFile (const char *filename, FILE **file, qboolean override_pack)
 		}
 	}
 
-	Sys_Printf ("FindFile: can't find %s\n", filename);
+	Sys_Printf ("%s: can't find %s\n", __FUNCTION__, filename);
 
 	*file = NULL;
 	qio_filesize = (size_t)-1;
@@ -380,11 +380,11 @@ static byte *QIO_LoadFile (const char *path, int usehunk)
 		buf = Q_malloc (len+1);
 		break;
 	default:
-		Sys_Error ("QIO_LoadFile: bad usehunk");
+		Sys_Error ("%s: bad usehunk", __FUNCTION__);
 	}
 
 	if (!buf)
-		Sys_Error ("QIO_LoadFile: not enough space for %s", path);
+		Sys_Error ("%s: not enough space for %s", __FUNCTION__, path);
 
 	((byte *)buf)[len] = 0;
 

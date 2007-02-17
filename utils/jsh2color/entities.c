@@ -180,10 +180,10 @@ void LoadEntities (void)
 		if (!data)
 			break;
 		if (com_token[0] != '{')
-			Error ("LoadEntities: found %s when expecting {",com_token);
+			Error ("%s: found %s when expecting {", __FUNCTION__, com_token);
 
 		if (num_entities == MAX_MAP_ENTITIES)
-			Error ("LoadEntities: MAX_MAP_ENTITIES");
+			Error ("%s: MAX_MAP_ENTITIES", __FUNCTION__);
 		entity = &entities[num_entities];
 		num_entities++;
 
@@ -198,7 +198,7 @@ void LoadEntities (void)
 		// parse key
 			data = COM_Parse (data);
 			if (!data)
-				Error ("LoadEntities: EOF without closing brace");
+				Error ("%s: EOF without closing brace", __FUNCTION__);
 			if (!strcmp(com_token,"}"))
 				break;
 			strcpy (key, com_token);
@@ -206,10 +206,10 @@ void LoadEntities (void)
 		// parse value
 			data = COM_Parse (data);
 			if (!data)
-				Error ("LoadEntities: EOF without closing brace");
+				Error ("%s: EOF without closing brace", __FUNCTION__);
 			c = com_token[0];
 			if (c == '}')
-				Error ("LoadEntities: closing brace without data");
+				Error ("%s: closing brace without data", __FUNCTION__);
 
 			epair = malloc (sizeof(epair_t));
 			memset (epair, 0, sizeof(epair));
@@ -238,7 +238,7 @@ void LoadEntities (void)
 						&entity->origin[0],
 						&entity->origin[1],
 						&entity->origin[2]) != 3)
-					Error ("LoadEntities: not 3 values for origin");
+					Error ("%s: not 3 values for origin", __FUNCTION__);
 			}
 			else if (!strncmp(key, "light", 5))
 			{
@@ -268,7 +268,7 @@ void LoadEntities (void)
 #else
 				if (sscanf(com_token, "%f %f %f", &vec[0], &vec[1], &vec[2]) != 3)
 #endif
-					Error ("LoadEntities: not 3 values for mangle");
+					Error ("%s: not 3 values for mangle", __FUNCTION__);
 
 				/* Precalculate the direction vector		*/
 				entity->use_mangle = true;
@@ -283,7 +283,7 @@ void LoadEntities (void)
 #else
 				if (sscanf(com_token, "%f %f %f", &vec[0], &vec[1], &vec[2]) != 3)
 #endif
-					Error ("LoadEntities: not 3 values for colour");
+					Error ("%s: not 3 values for colour", __FUNCTION__);
 				for (i=0 ; i<3 ; i++)
 					entity->lightcolour[i] = vec[i];
 			}
@@ -296,7 +296,7 @@ void LoadEntities (void)
 #else
 				if (sscanf(com_token, "%f %f %f", &vec[0], &vec[1], &vec[2]) != 3)
 #endif
-					Error ("LoadEntities: not 3 values for _sun_mangle");
+					Error ("%s: not 3 values for _sun_mangle", __FUNCTION__);
 
 				/* Precalculate sun vector and			*/
 				/* make it too large to fit into the map	*/
@@ -316,7 +316,7 @@ void LoadEntities (void)
 						&sunlight_color[0],
 						&sunlight_color[1],
 						&sunlight_color[2]) != 3)
-					Error ("LoadEntities: not 3 values for _sunlight_color");
+					Error ("%s: not 3 values for _sunlight_color", __FUNCTION__);
 			}
 			else if (!strcmp(key, "_minlight_color"))
 			{
@@ -328,7 +328,7 @@ void LoadEntities (void)
 						&minlight_color[0],
 						&minlight_color[1],
 						&minlight_color[2]) != 3)
-					Error ("LoadEntities: not 3 values for _minlight_color");
+					Error ("%s: not 3 values for _minlight_color", __FUNCTION__);
 			}
 			/*
 			else if (!strcmp(key, "angle"))

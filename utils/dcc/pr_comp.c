@@ -290,7 +290,7 @@ void PrecacheSound (def_t *e, int ch)
 			return;
 	}
 	if (numsounds == MAX_SOUNDS)
-		Error ("PrecacheSound: numsounds == MAX_SOUNDS");
+		Error ("%s: numsounds == MAX_SOUNDS", __FUNCTION__);
 	strcpy (precache_sounds[i], n);
 	if (ch >= '1'  && ch <= '9')
 		precache_sounds_block[i] = ch - '0';
@@ -310,8 +310,8 @@ void PrecacheModel (def_t *e, int ch)
 	for (i = 0 ; i < nummodels ; i++)
 		if (!strcmp(n, precache_models[i]))
 			return;
-	if (numsounds == MAX_SOUNDS)
-		Error ("PrecacheModels: numsounds == MAX_SOUNDS");
+	if (nummodels == MAX_MODELS)
+		Error ("%s: nummodels == MAX_MODELS", __FUNCTION__);
 	strcpy (precache_models[i], n);
 	if (ch >= '1' && ch <= '9')
 		precache_models_block[i] = ch - '0';
@@ -334,7 +334,7 @@ void PrecacheFile (def_t *e, int ch)
 			return;
 	}
 	if (numfiles == MAX_FILES)
-		Error ("PrecacheFile: numfiles == MAX_FILES");
+		Error ("%s: numfiles == MAX_FILES", __FUNCTION__);
 	strcpy (precache_files[i], n);
 	if (ch >= '1' && ch <= '9')
 		precache_files_block[i] = ch - '0';

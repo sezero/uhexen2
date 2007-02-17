@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.53 2007-02-07 17:01:33 sezero Exp $
+	$Id: gl_rmain.c,v 1.54 2007-02-17 07:55:32 sezero Exp $
 */
 
 
@@ -228,7 +228,7 @@ static mspriteframe_t *R_GetSpriteFrame (msprite_t *psprite)
 
 	if ((frame >= psprite->numframes) || (frame < 0))
 	{
-		Con_Printf ("R_DrawSprite: no such frame %d\n", frame);
+		Con_Printf ("%s: no such frame %d\n", __FUNCTION__, frame);
 		frame = 0;
 	}
 
@@ -401,7 +401,7 @@ static void R_DrawSpriteModel (entity_t *e)
 	}
 	else
 	{
-		Sys_Error ("R_DrawSprite: Bad sprite type %d", psprite->type);
+		Sys_Error ("%s: Bad sprite type %d", __FUNCTION__, psprite->type);
 	}
 
 	GL_Bind(frame->gl_texturenum);
@@ -637,7 +637,7 @@ static void R_SetupAliasFrame (int frame, aliashdr_t *paliashdr)
 
 	if ((frame >= paliashdr->numframes) || (frame < 0))
 	{
-		Con_DPrintf ("R_AliasSetupFrame: no such frame %d\n", frame);
+		Con_DPrintf ("%s: no such frame %d\n", __FUNCTION__, frame);
 		frame = 0;
 	}
 
@@ -1933,7 +1933,7 @@ void R_RenderView (void)
 		return;
 
 	if (!r_worldentity.model || !cl.worldmodel)
-		Sys_Error ("R_RenderView: NULL worldmodel");
+		Sys_Error ("%s: NULL worldmodel", __FUNCTION__);
 
 	if (r_speeds.value)
 	{

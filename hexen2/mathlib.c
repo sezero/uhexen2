@@ -2,7 +2,7 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.16 2007-02-12 16:52:49 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.17 2007-02-17 07:55:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -160,7 +160,7 @@ int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, mplane_t *p)
 
 #ifdef PARANOID
 	if (sides == 0)
-		Sys_Error ("BoxOnPlaneSide: sides==0");
+		Sys_Error ("%s: sides == 0", __FUNCTION__);
 #endif
 
 	return sides;
@@ -269,11 +269,10 @@ void FloorDivMod (double numer, double denom, int *quotient, int *rem)
 
 #ifndef PARANOID
 	if (denom <= 0.0)
-		Sys_Error ("FloorDivMod: bad denominator %f\n", denom);
+		Sys_Error ("%s: bad denominator %f", __FUNCTION__, denom);
 
 //	if ((floor(numer) != numer) || (floor(denom) != denom))
-//		Sys_Error ("FloorDivMod: non-integer numer or denom %f %f\n",
-//				numer, denom);
+//		Sys_Error ("%s: non-integer numer or denom %f %f", __FUNCTION__, numer, denom);
 #endif
 
 	if (numer >= 0.0)

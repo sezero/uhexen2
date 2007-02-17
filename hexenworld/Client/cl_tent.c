@@ -464,7 +464,7 @@ void CreateStream(int type, int ent, int flags, int tag, float duration, int ski
 		break;
 	}
 	if (models[0] == NULL)
-		Sys_Error("CreateStream: bad type");
+		Sys_Error("%s: bad type", __FUNCTION__);
 
 	if ((stream = NewStream(ent, tag)) == NULL)
 	{
@@ -707,7 +707,7 @@ static void ParseStream(int type)
 		break;
 	}
 	if (models[0] == NULL)
-		Sys_Error("ParseStream: bad type");
+		Sys_Error("%s: bad type", __FUNCTION__);
 
 	if ((stream = NewStream(ent, tag)) == NULL)
 	{
@@ -3474,7 +3474,7 @@ void CL_ParseTEnt (void)
 			break;
 
 		default:
-			Sys_Error ("CL_ParseTEnt: bad type");
+			Sys_Error ("%s: bad type", __FUNCTION__);
 	}
 }
 

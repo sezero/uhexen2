@@ -31,7 +31,7 @@ void PR_LoadStrings (void)
 
 	pr_global_strings = (char *)QIO_LoadHunkFile ("strings.txt");
 	if (!pr_global_strings)
-		Sys_Error ("PR_LoadStrings: couldn't load strings.txt");
+		Sys_Error ("%s: couldn't load strings.txt", __FUNCTION__);
 
 	NewLineChar = -1;
 
@@ -49,7 +49,7 @@ void PR_LoadStrings (void)
 
 	if (!count)
 	{
-		Sys_Error ("PR_LoadStrings: no string lines found");
+		Sys_Error ("%s: no string lines found", __FUNCTION__);
 	}
 
 	pr_string_index = (int *)Hunk_AllocName ((count+1)*4, "string_index");
@@ -232,7 +232,7 @@ void PR_LoadInfoStrings (void)
 
 	pr_global_info_strings = (char *)QIO_LoadHunkFile ("infolist.txt");
 	if (!pr_global_info_strings)
-		Sys_Error ("PR_LoadInfoStrings: couldn't load infolist.txt");
+		Sys_Error ("%s: couldn't load infolist.txt", __FUNCTION__);
 
 	NewLineChar = -1;
 
@@ -250,7 +250,7 @@ void PR_LoadInfoStrings (void)
 
 	if (!count)
 	{
-		Sys_Error ("PR_LoadInfoStrings: no string lines found");
+		Sys_Error ("%s: no string lines found", __FUNCTION__);
 	}
 
 	pr_info_string_index = (int *)Hunk_AllocName ((count+1)*4, "info_string_index");

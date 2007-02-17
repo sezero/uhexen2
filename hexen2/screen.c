@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.35 2007-02-14 10:35:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.36 2007-02-17 07:55:36 sezero Exp $
 */
 
 /*=============================================================================
@@ -762,7 +762,7 @@ static void WritePCXfile (const char *filename, byte *data, int width, int heigh
 	pcx = Hunk_TempAlloc (width*height*2+1000);
 	if (pcx == NULL)
 	{
-		Con_Printf("SCR_ScreenShot_f: not enough memory\n");
+		Con_Printf("%s: not enough memory\n", __FUNCTION__);
 		return;
 	}
 
@@ -839,7 +839,7 @@ static void SCR_ScreenShot_f (void)
 	}
 	if (i == 100)
 	{
-		Con_Printf ("SCR_ScreenShot_f: Couldn't create a PCX file\n");
+		Con_Printf ("%s: Couldn't create a PCX file\n", __FUNCTION__);
 		return;
 	}
 

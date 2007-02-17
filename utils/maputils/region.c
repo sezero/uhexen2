@@ -76,7 +76,7 @@ static qboolean CanJoinFaces (face_t *f, face_t *f2)
 		return false;
 	if (f2->contents[0] != f->contents[0])
 	{	// does this ever happen? theyy shouldn't share.
-		printf ("CanJoinFaces: edge with different contents");
+		printf ("%s: edge with different contents", __FUNCTION__);
 		return false;
 	}
 
@@ -122,7 +122,7 @@ static void RecursiveGrowRegion (dface_t *r, face_t *f)
 		return;
 
 	if (f->outputnumber != -1)
-		Error ("RecursiveGrowRegion: region collision");
+		Error ("%s: region collision", __FUNCTION__);
 	f->outputnumber = numfaces;
 
 // add edges
@@ -261,13 +261,13 @@ static void HealEdges (int e1, int e2)
 	else if (ed->v[1] == ed2->v[1])
 		ed->v[1] = ed2->v[0];
 	else
-		Error ("HealEdges: edges don't meet");
+		Error ("%s: edges don't meet", __FUNCTION__);
 
 	VectorSubtract (dvertexes[ed->v[1]].point, dvertexes[ed->v[0]].point, v2);
 	VectorNormalize (v2);
 
 	if (!VectorCompare (v1, v2))
-		Error ("HealEdges: edges not colinear");
+		Error ("%s: edges not colinear", __FUNCTION__);
 
 	edgemapping[e2] = e1;
 	saved = 0;

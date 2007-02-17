@@ -146,7 +146,7 @@ static surface_t *ChooseMidPlaneFromList (surface_t *surfaces, vec3_t mins, vec3
 			if (!p->onnode)
 				return p;		// first valid surface
 		}
-		Error ("ChooseMidPlaneFromList: no valid planes");
+		Error ("%s: no valid planes", __FUNCTION__);
 	}
 
 	return bestsurface;
@@ -330,7 +330,7 @@ void CalcSurfaceInfo (surface_t *surf)
 	face_t	*f;
 
 	if (!surf->faces)
-		Error ("CalcSurfaceInfo: surface without a face");
+		Error ("%s: surface without a face", __FUNCTION__);
 
 //
 // calculate a bounding box
@@ -560,7 +560,7 @@ static void LinkConvexFaces (surface_t *planelist, node_t *leafnode)
 		break;
 
 	default:
-		Error ("LinkConvexFaces: bad contents number");
+		Error ("%s: bad contents number", __FUNCTION__);
 	}
 
 //

@@ -380,9 +380,9 @@ static texture_t *R_TextureAnimation (texture_t *base)
 	{
 		base = base->anim_next;
 		if (!base)
-			Sys_Error ("R_TextureAnimation: broken cycle");
+			Sys_Error ("%s: broken cycle", __FUNCTION__);
 		if (++count > 100)
-			Sys_Error ("R_TextureAnimation: infinite cycle");
+			Sys_Error ("%s: infinite cycle", __FUNCTION__);
 	}
 
 	return base;
@@ -1474,7 +1474,7 @@ static unsigned int AllocBlock (int w, int h, int *x, int *y)
 		return texnum;
 	}
 
-	Sys_Error ("AllocBlock: full");
+	Sys_Error ("%s: full", __FUNCTION__);
 	return -1;	// shut up the compiler
 }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: mstrconv.c,v 1.12 2007-02-12 16:54:47 sezero Exp $
+ * $Id: mstrconv.c,v 1.13 2007-02-17 07:56:16 sezero Exp $
  */
 
 #include <windows.h>
@@ -509,7 +509,7 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 			}
 		}
 		else if ( (nChkErr = AddEventToStreamBuffer( &teTemp, lpciInfo ))
-			  != CONVERTERR_NOERROR )
+							  != CONVERTERR_NOERROR )
 		{
 			if (nChkErr == CONVERTERR_BUFFERFULL)
 			{
@@ -582,7 +582,7 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 		}
 
 		if ( (nChkErr = AddEventToStreamBuffer( &teTemp, lpciInfo ))
-		     != CONVERTERR_NOERROR )
+						     != CONVERTERR_NOERROR )
 		{
 			if (nChkErr == CONVERTERR_BUFFERFULL)
 			{

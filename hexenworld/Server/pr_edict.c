@@ -97,7 +97,7 @@ edict_t *ED_Alloc (void)
 
 	if (i == MAX_EDICTS)
 	{
-		Con_Printf ("WARNING: ED_Alloc: no free edicts\n");
+		Con_Printf ("WARNING: %s: no free edicts\n", __FUNCTION__);
 		i--;	// step on whatever is the last edict
 		e = EDICT_NUM(i);
 		SV_UnlinkEdict(e);
@@ -717,17 +717,17 @@ void ED_ParseGlobals (char *data)
 		if (com_token[0] == '}')
 			break;
 		if (!data)
-			SV_Error ("ED_ParseEntity: EOF without closing brace");
+			SV_Error ("%s: EOF without closing brace", __FUNCTION__);
 
 		strcpy (keyname, com_token);
 
 	// parse value
 		data = COM_Parse (data);
 		if (!data)
-			SV_Error ("ED_ParseEntity: EOF without closing brace");
+			SV_Error ("%s: EOF without closing brace", __FUNCTION__);
 
 		if (com_token[0] == '}')
-			SV_Error ("ED_ParseEntity: closing brace without data");
+			SV_Error ("%s: closing brace without data", __FUNCTION__);
 
 		key = ED_FindGlobal (keyname);
 		if (!key)
@@ -737,7 +737,7 @@ void ED_ParseGlobals (char *data)
 		}
 
 		if (!ED_ParseEpair ((void *)pr_globals, key, com_token))
-			SV_Error ("ED_ParseGlobals: parse error");
+			SV_Error ("%s: parse error", __FUNCTION__);
 	}
 }
 
@@ -880,7 +880,7 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 		if (com_token[0] == '}')
 			break;
 		if (!data)
-			SV_Error ("ED_ParseEntity: EOF without closing brace");
+			SV_Error ("%s: EOF without closing brace", __FUNCTION__);
 
 		// anglehack is to allow QuakeEd to write single scalar angles
 		// and allow them to be turned into vectors. (FIXME...)
@@ -909,10 +909,10 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 		// parse value
 		data = COM_Parse (data);
 		if (!data)
-			SV_Error ("ED_ParseEntity: EOF without closing brace");
+			SV_Error ("%s: EOF without closing brace", __FUNCTION__);
 
 		if (com_token[0] == '}')
-			SV_Error ("ED_ParseEntity: closing brace without data");
+			SV_Error ("%s: closing brace without data", __FUNCTION__);
 
 		init = true;
 
@@ -947,7 +947,7 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 		}
 
 		if (!ED_ParseEpair ((void *)&ent->v, key, com_token))
-			SV_Error ("ED_ParseEdict: parse error");
+			SV_Error ("%s: parse error", __FUNCTION__);
 	}
 
 	if (!init)
@@ -990,7 +990,7 @@ void ED_LoadFromFile (char *data)
 		if (!data)
 			break;
 		if (com_token[0] != '{')
-			SV_Error ("ED_LoadFromFile: found %s when expecting {", com_token);
+			SV_Error ("%s: found %s when expecting {", __FUNCTION__, com_token);
 
 		if (!ent)
 			ent = EDICT_NUM(0);
@@ -1193,7 +1193,7 @@ void PR_LoadProgs (void)
 	if (!progs)
 		progs = (dprograms_t *)QIO_LoadHunkFile ("progs.dat");
 	if (!progs)
-		SV_Error ("PR_LoadProgs: couldn't load progs.dat");
+		SV_Error ("%s: couldn't load progs.dat", __FUNCTION__);
 	Con_DPrintf ("Programs occupy %uK.\n", qio_filesize/1024);
 
 	// add prog crc to the serverinfo
@@ -1207,7 +1207,10 @@ void PR_LoadProgs (void)
 	if (progs->version != PROG_VERSION)
 		SV_Error ("progs.dat has wrong version number (%i should be %i)", progs->version, PROG_VERSION);
 	if (progs->crc != PROGHEADER_CRC)
-		SV_Error ("You must have hwprogs.dat for HexenWorld installed");
+	{
+		Sys_Printf ("You must have hwprogs.dat for HexenWorld installed:\n");
+		SV_Error ("Unexpected crc ( %d ) for progs.dat", progs->crc);
+	}
 
 	pr_functions = (dfunction_t *)((byte *)progs + progs->ofs_functions);
 	pr_strings = (char *)progs + progs->ofs_strings;
@@ -1250,7 +1253,7 @@ void PR_LoadProgs (void)
 	{
 		pr_fielddefs[i].type = LittleShort (pr_fielddefs[i].type);
 		if (pr_fielddefs[i].type & DEF_SAVEGLOBAL)
-			SV_Error ("PR_LoadProgs: pr_fielddefs[i].type & DEF_SAVEGLOBAL");
+			SV_Error ("%s: pr_fielddefs[i].type & DEF_SAVEGLOBAL", __FUNCTION__);
 		pr_fielddefs[i].ofs = LittleShort (pr_fielddefs[i].ofs);
 		pr_fielddefs[i].s_name = LittleLong (pr_fielddefs[i].s_name);
 	}
@@ -1289,7 +1292,7 @@ void PR_Init (void)
 edict_t *EDICT_NUM(int n)
 {
 	if (n < 0 || n >= MAX_EDICTS)
-		SV_Error ("EDICT_NUM: bad number %i", n);
+		SV_Error ("%s: bad number %i", __FUNCTION__, n);
 	return (edict_t *)((byte *)sv.edicts+ (n)*pr_edict_size);
 }
 
@@ -1303,13 +1306,15 @@ int NUM_FOR_EDICT(edict_t *e)
 	if (b < 0 || b >= sv.num_edicts)
 	{
 		if (!RemoveBadReferences)
-			Con_DPrintf ("NUM_FOR_EDICT: bad pointer, Class: %s Field: %s, Index %d, Total %d",class_name,field_name,b,sv.num_edicts);
+			Con_DPrintf ("%s: bad pointer, Class: %s Field: %s, Index %d, Total %d",
+					__FUNCTION__, class_name, field_name, b, sv.num_edicts);
 		else
 			b = 0;
 	}
 	if (e->free && RemoveBadReferences)
 	{
-//		Con_Printf ("NUM_FOR_EDICT: freed edict, Class: %s Field: %s, Index %d, Total %d",class_name,field_name,b,sv.num_edicts);
+//		Con_Printf ("%s: freed edict, Class: %s Field: %s, Index %d, Total %d",
+//				__FUNCTION__, class_name, field_name, b, sv.num_edicts);
 		b = 0;
 	}
 

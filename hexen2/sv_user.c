@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.15 2007-02-07 17:01:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.16 2007-02-17 07:55:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -661,7 +661,7 @@ nextmsg:
 		ret = NET_GetMessage (host_client->netconnection);
 		if (ret == -1)
 		{
-			Sys_Printf ("SV_ReadClientMessage: NET_GetMessage failed\n");
+			Sys_Printf ("%s: NET_GetMessage failed\n", __FUNCTION__);
 			return false;
 		}
 		if (!ret)
@@ -676,7 +676,7 @@ nextmsg:
 
 			if (msg_badread)
 			{
-				Sys_Printf ("SV_ReadClientMessage: badread\n");
+				Sys_Printf ("%s: badread\n", __FUNCTION__);
 				return false;
 			}
 
@@ -688,7 +688,7 @@ nextmsg:
 				goto nextmsg;	// end of message
 
 			default:
-				Sys_Printf ("SV_ReadClientMessage: unknown command char\n");
+				Sys_Printf ("%s: unknown command char\n", __FUNCTION__);
 				return false;
 
 			case clc_nop:
@@ -746,7 +746,7 @@ nextmsg:
 				break;
 
 			case clc_disconnect:
-			//	Sys_Printf ("SV_ReadClientMessage: client disconnected\n");
+			//	Sys_Printf ("%s: client disconnected\n", __FUNCTION__);
 				return false;
 
 			case clc_move:

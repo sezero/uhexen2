@@ -459,7 +459,7 @@ int CDAudio_Init(void)
 	dwReturn = mciSendCommand(0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_SHAREABLE, (DWORD) (LPVOID) &mciOpenParms);
 	if (dwReturn)
 	{
-		Con_Printf("CDAudio_Init: MCI_OPEN failed (%lu)\n", (unsigned long)dwReturn);
+		Con_Printf("%s: MCI_OPEN failed (%lu)\n", __FUNCTION__, (unsigned long)dwReturn);
 		return -1;
 	}
 	wDeviceID = mciOpenParms.wDeviceID;
@@ -481,7 +481,7 @@ int CDAudio_Init(void)
 
 	if (CDAudio_GetAudioDiskInfo())
 	{
-		Con_Printf("CDAudio_Init: No CD in player.\n");
+		Con_Printf("%s: No CD in player.\n", __FUNCTION__);
 		cdValid = false;
 		//enabled = false;
 	}
@@ -502,6 +502,6 @@ void CDAudio_Shutdown(void)
 		return;
 	CDAudio_Stop();
 	if (mciSendCommand(wDeviceID, MCI_CLOSE, MCI_WAIT, (DWORD)NULL))
-		Con_DPrintf("CDAudio_Shutdown: MCI_CLOSE failed\n");
+		Con_DPrintf("%s: MCI_CLOSE failed\n", __FUNCTION__);
 }
 

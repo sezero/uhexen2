@@ -121,7 +121,7 @@ int WINS_Init (void)
 
 	if ((net_controlsocket = WINS_OpenSocket (0)) == -1)
 	{
-		Con_Printf("WINS_Init: Unable to open control socket\n");
+		Con_Printf("%s: Unable to open control socket\n", __FUNCTION__);
 		if (--winsock_initialized == 0)
 			WSACleanup ();
 		return -1;
@@ -163,7 +163,7 @@ void WINS_Listen (qboolean state)
 		if (net_acceptsocket != -1)
 			return;
 		if ((net_acceptsocket = WINS_OpenSocket (net_hostport)) == -1)
-			Sys_Error ("WINS_Listen: Unable to open accept socket");
+			Sys_Error ("%s: Unable to open accept socket", __FUNCTION__);
 		return;
 	}
 

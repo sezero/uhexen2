@@ -99,7 +99,7 @@ int WIPX_Init (void)
 
 	if ((net_controlsocket = WIPX_OpenSocket (0)) == -1)
 	{
-		Con_Printf("WIPX_Init: Unable to open control socket\n");
+		Con_Printf("%s: Unable to open control socket\n", __FUNCTION__);
 		if (--winsock_initialized == 0)
 			WSACleanup ();
 		return -1;
@@ -142,7 +142,7 @@ void WIPX_Listen (qboolean state)
 		if (net_acceptsocket != -1)
 			return;
 		if ((net_acceptsocket = WIPX_OpenSocket (net_hostport)) == -1)
-			Sys_Error ("WIPX_Listen: Unable to open accept socket\n");
+			Sys_Error ("%s: Unable to open accept socket", __FUNCTION__);
 		return;
 	}
 

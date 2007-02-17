@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.13 2007-02-16 23:53:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.14 2007-02-17 07:55:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -143,17 +143,17 @@ void Host_Error (const char *error, ...)
 	static	qboolean inerror = false;
 
 	if (inerror)
-		Sys_Error ("Host_Error: recursive error!");
+		Sys_Error ("%s: recursive error!", __FUNCTION__);
 	inerror = true;
 
 	va_start (argptr,error);
 	vsnprintf (string,sizeof(string),error,argptr);
 	va_end (argptr);
-	Con_Printf ("Host_Error: %s\n",string);
+	Con_Printf ("%s: %s\n", __FUNCTION__, string);
 
 	Host_ShutdownServer (false);
 
-	Sys_Error ("Host_Error: %s\n",string);	// dedicated servers exit
+	Sys_Error ("%s: %s", __FUNCTION__, string);	// dedicated servers exit
 }
 
 /*
@@ -412,7 +412,7 @@ void Host_ShutdownServer(qboolean crash)
 	MSG_WriteByte(&buf, svc_disconnect);
 	count = NET_SendToAll(&buf, 5);
 	if (count)
-		Con_Printf("Host_ShutdownServer: NET_SendToAll failed for %u clients\n", count);
+		Con_Printf("%s: NET_SendToAll failed for %u clients\n", __FUNCTION__, count);
 
 	for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
 	{

@@ -75,7 +75,7 @@ void SplitFace (face_t *in, plane_t *split, face_t **front, face_t **back)
 	vec3_t	mid;
 
 	if (in->numpoints < 0)
-		Error ("SplitFace: freed face");
+		Error ("%s: freed face", __FUNCTION__);
 	counts[0] = counts[1] = counts[2] = 0;
 
 // determine sides for each point
@@ -116,7 +116,7 @@ void SplitFace (face_t *in, plane_t *split, face_t **front, face_t **back)
 	for (i = 0 ; i < in->numpoints ; i++)
 	{
 		if (newf->numpoints > MAXEDGES || new2->numpoints > MAXEDGES)
-			Error ("SplitFace: numpoints > MAXEDGES");
+			Error ("%s: numpoints > MAXEDGES", __FUNCTION__);
 
 		p1 = in->pts[i];
 
@@ -164,7 +164,7 @@ void SplitFace (face_t *in, plane_t *split, face_t **front, face_t **back)
 	}
 
 	if (newf->numpoints > MAXEDGES || new2->numpoints > MAXEDGES)
-		Error ("SplitFace: numpoints > MAXEDGES");
+		Error ("%s: numpoints > MAXEDGES", __FUNCTION__);
 
 #if 0
 	CheckFace (newf);

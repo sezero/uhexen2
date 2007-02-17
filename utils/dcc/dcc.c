@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.30 2007-02-13 13:34:43 sezero Exp $
+	$Id: dcc.c,v 1.31 2007-02-17 07:56:17 sezero Exp $
 */
 
 
@@ -736,7 +736,7 @@ char *Make_Immediate (gofs_t ofs, char *linestr, int mode)
 			temp_val[i] = NULL;
 			temp_val[i] = malloc(len + 1);
 			if (temp_val[i] == NULL)
-				Error("MakeImmediate failed to create new string for %s\n",linestr);
+				Error("%s: failed to create new string for %s\n", __FUNCTION__, linestr);
 			memcpy(temp_val[i], linestr, len);
 			temp_val[i][len] = '\0';
 
@@ -2092,7 +2092,7 @@ void DEC_ReadData (char *srcfile)
 	{
 		fields[i].type = LittleShort (fields[i].type);
 	//	if (fields[i].type & DEF_SAVEGLOBAL)
-	//		Error ("DEC_ReadData: pr_fielddefs[i].type & DEF_SAVEGLOBAL");
+	//		Error ("%s: pr_fielddefs[i].type & DEF_SAVEGLOBAL", __FUNCTION__);
 		fields[i].ofs = LittleShort (fields[i].ofs);
 		fields[i].s_name = LittleLong (fields[i].s_name);
 	}
@@ -2167,7 +2167,7 @@ int DEC_AlreadySeen (char *fname)
 	}
 
 	if (DEC_FileCtr >= MAX_DEC_FILES-1)
-		Error("DEC_AlreadySeen - too many source files.");
+		Error("%s: too many source files.", __FUNCTION__);
 
 	new1 = (char *) malloc(strlen(fname)+1);
 	if (new1 == NULL)
