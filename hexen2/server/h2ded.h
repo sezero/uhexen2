@@ -1,6 +1,6 @@
 /*
 	h2ded.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/h2ded.h,v 1.3 2006-10-19 06:32:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/h2ded.h,v 1.4 2007-02-17 11:06:02 sezero Exp $
 */
 
 #ifndef __HX2_DED_H
@@ -20,9 +20,15 @@ typedef struct
 
 //=============================================================================
 
+extern	cvar_t	cl_warncmd;
+
+//=============================================================================
+
 #define	Con_Printf	Sys_Printf
 #define	Con_SafePrintf	Sys_Printf
 #define	Con_DPrintf	Sys_DPrintf
+
+//=============================================================================
 
 #endif	/* __HX2_DED_H */
 

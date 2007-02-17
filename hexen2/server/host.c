@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.15 2007-02-17 10:17:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.16 2007-02-17 11:06:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -609,9 +609,10 @@ void Host_Init (quakeparms_t *parms)
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
 
-	Cbuf_InsertText ("exec hexen.rc\n");
+//	Cbuf_InsertText ("exec hexen.rc\n");
+	Cbuf_InsertText ("exec server.cfg\n");
 	Cbuf_Execute();
-	Cbuf_AddText ("cl_warncmd 1\n");
+	cl_warncmd.value = 1;
 
 	host_initialized = true;
 
