@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.60 2007-02-17 10:17:49 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.61 2007-02-17 21:11:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1115,11 +1115,12 @@ void Host_Init (quakeparms_t *parms)
 	// fix the early-set cvars after init
 	if (cls.state != ca_dedicated)
 		VID_PostInitFix ();
-	Cbuf_AddText ("cl_warncmd 1\n");
+
+	Con_Printf("\n======== Hexen II Initialized =========\n\n");
 
 	host_initialized = true;
 
-	Con_Printf("\n======== Hexen II Initialized =========\n\n");
+	Cbuf_AddText ("cl_warncmd 1\n");
 }
 
 

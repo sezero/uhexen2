@@ -1381,11 +1381,12 @@ void Host_Init (quakeparms_t *parms)
 	Cbuf_Execute();
 	// fix the early-set cvars after init
 	VID_PostInitFix ();
-	Cbuf_AddText ("cl_warncmd 1\n");
+
+	Con_Printf ("\n======= HexenWorld Initialized ========\n\n");
 
 	host_initialized = true;
 
-	Con_Printf ("\n======= HexenWorld Initialized ========\n\n");
+	Cbuf_AddText ("cl_warncmd 1\n");
 }
 
 
