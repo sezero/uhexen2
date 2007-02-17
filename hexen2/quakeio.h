@@ -2,11 +2,19 @@
 	quakeio.h
 	quake file io
 
-	$Id: quakeio.h,v 1.1 2007-02-12 16:52:53 sezero Exp $
+	$Id: quakeio.h,v 1.2 2007-02-17 11:22:46 sezero Exp $
 */
 
 #ifndef __QUAKEIO_H
 #define __QUAKEIO_H
+
+#if defined(_WIN32) && !defined(F_OK)
+// values for the mode argument of access(). MS does not define them
+#define	R_OK	4		/* Test for read permission.  */
+#define	W_OK	2		/* Test for write permission.  */
+#define	X_OK	1		/* Test for execute permission.  */
+#define	F_OK	0		/* Test for existence.  */
+#endif
 
 extern	size_t	qio_filesize;	// size of the last file opened through QIO api
 
