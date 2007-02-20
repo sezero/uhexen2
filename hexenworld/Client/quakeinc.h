@@ -2,7 +2,7 @@
 	quakeinc.h
 	primary header for client
 
-	$Id: quakeinc.h,v 1.6 2007-02-13 16:56:00 sezero Exp $
+	$Id: quakeinc.h,v 1.7 2007-02-20 07:48:56 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
@@ -129,8 +129,6 @@ void Host_ClientCommands (const char *fmt, ...) _FUNC_PRINTF(1);
 void Host_ShutdownServer (qboolean crash);
 void Host_WriteConfiguration (const char *fname);
 
-extern	qboolean	msg_suppress_1;	// suppresses resolution and cache size console output
-					//  a fullscreen DIB focus gain/loss
 
 extern	qboolean	noclip_anglehack;
 

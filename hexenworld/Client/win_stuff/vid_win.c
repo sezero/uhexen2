@@ -18,6 +18,8 @@
 #define MAX_DESC	13
 #define VID_ROW_SIZE	3
 
+qboolean	msg_suppress_1 = false;
+
 // new variables. Pa3PyX
 static MGL_surfaceAccessFlagsType	mgldcAccessMode = MGL_NO_ACCESS,
 				memdcAccessMode = MGL_NO_ACCESS,

@@ -106,5 +106,12 @@ extern void (*vid_menudrawfn)(void);
 extern void (*vid_menukeyfn)(int key);
 // video menu function pointers
 
+
+/*
+ * Misc globals:
+ */
+extern	qboolean	msg_suppress_1;	// suppresses resolution and cache size console output
+					//  a fullscreen DIB focus gain/loss
+
 #endif	/* __VID_DEFS_H */
 

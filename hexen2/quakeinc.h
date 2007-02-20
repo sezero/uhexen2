@@ -2,7 +2,7 @@
 	quakeinc.h
 	primary header for client and server
 
-	$Id: quakeinc.h,v 1.7 2007-02-20 07:39:22 sezero Exp $
+	$Id: quakeinc.h,v 1.8 2007-02-20 07:48:52 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
@@ -221,8 +221,6 @@ qboolean SaveGamestate (qboolean ClientsOnly);
 
 extern	qboolean	isDedicated;
 
-extern	qboolean	msg_suppress_1;	// suppresses resolution and cache size console output
-					//  a fullscreen DIB focus gain/loss
 extern	int		current_skill;	// skill level for currently loaded level (in case
 					//  the user changes the cvar while the level is
 					//  running, this reflects the level actually in use)

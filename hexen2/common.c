@@ -2,7 +2,7 @@
 	common.c
 	misc utility functions used in client and server
 
-	$Id: common.c,v 1.92 2007-02-12 16:52:45 sezero Exp $
+	$Id: common.c,v 1.93 2007-02-20 07:48:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -19,8 +19,6 @@ static char	*safeargvs[NUM_SAFE_ARGVS] =
 
 #define CMDLINE_LENGTH	256
 static char	com_cmdline[CMDLINE_LENGTH];
-
-qboolean		msg_suppress_1 = 0;
 
 /*
 ============================================================================

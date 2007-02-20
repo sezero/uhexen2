@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.61 2007-02-12 16:53:14 sezero Exp $
+	$Id: vid_sdl.c,v 1.62 2007-02-20 07:48:56 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -22,6 +22,8 @@
 //#define MIN_HEIGHT		200
 #define MIN_HEIGHT		240
 #define MAX_DESC		13
+
+qboolean	msg_suppress_1 = false;
 
 unsigned char	vid_curpal[256*3];
 unsigned short	d_8to16table[256];
