@@ -2,7 +2,7 @@
 	common.c
 	misc utility functions used in client and server
 
-	$Id: common.c,v 1.89 2007-02-20 07:48:56 sezero Exp $
+	$Id: common.c,v 1.90 2007-02-20 09:21:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -403,12 +403,19 @@ void COM_InitArgv (int argc, char **argv)
 		}
 
 		if (n < (CMDLINE_LENGTH - 1))
-			com_cmdline[n++] = ' ';
+		{
+			if (n)
+				com_cmdline[n++] = ' ';
+		}
 		else
+		{
 			break;
+		}
 	}
 
 	com_cmdline[n] = 0;
+	if (n && com_cmdline[n-1] == ' ')
+		com_cmdline[n-1] = 0;
 
 	safe = false;
 
