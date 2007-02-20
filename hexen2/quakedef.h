@@ -2,7 +2,7 @@
 	quakedef.h
 	common definitions for client and server
 
-	$Id: quakedef.h,v 1.108 2007-02-13 19:35:46 sezero Exp $
+	$Id: quakedef.h,v 1.109 2007-02-20 09:14:44 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -234,6 +234,8 @@
 
 
 /* include our common header file	*/
+/* FIXME: kill this in the future and make each C
+   file include only the necessary headers.	*/
 #include "quakeinc.h"
 
 #endif	/* __QUAKEDEFS_H */

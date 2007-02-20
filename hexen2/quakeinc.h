@@ -2,7 +2,10 @@
 	quakeinc.h
 	primary header for client and server
 
-	$Id: quakeinc.h,v 1.10 2007-02-20 08:28:40 sezero Exp $
+	FIXME:	kill this in the future and make each C
+		file include only the necessary headers.
+
+	$Id: quakeinc.h,v 1.11 2007-02-20 09:14:47 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
@@ -45,84 +48,8 @@
 #include "cmd.h"
 #include "crc.h"
 
-//=============================================================================
-
-typedef struct
-{
-	vec3_t	origin;
-	vec3_t	angles;
-	short	modelindex;
-	byte	frame;
-	byte	colormap;
-	byte	skin;
-	byte	effects;
-	byte	scale;
-	byte	drawflags;
-	byte	abslight;
-	byte	ClearCount[32];
-} entity_state_t;
-
-typedef struct
-{
-	byte	flags;
-	short	index;
-
-	vec3_t	origin;
-	vec3_t	angles;
-	short	modelindex;
-	byte	frame;
-	byte	colormap;
-	byte	skin;
-	byte	effects;
-	byte	scale;
-	byte	drawflags;
-	byte	abslight;
-} entity_state2_t;
-
-typedef struct
-{
-	byte	flags;
-
-	vec3_t	origin;
-	vec3_t	angles;
-	short	modelindex;
-	byte	frame;
-	byte	colormap;
-	byte	skin;
-	byte	effects;
-	byte	scale;
-	byte	drawflags;
-	byte	abslight;
-} entity_state3_t;
-
-#define MAX_CLIENT_STATES	150
-#define MAX_FRAMES		5
-#define MAX_CLIENTS		8
-#define CLEAR_LIMIT		2
-
-#define ENT_STATE_ON		1
-#define ENT_CLEARED		2
-
-typedef struct
-{
-	entity_state2_t	states[MAX_CLIENT_STATES];
-//	unsigned long	frame;
-//	unsigned long	flags;
-	int		count;
-} client_frames_t;
-
-typedef struct
-{
-	entity_state2_t	states[MAX_CLIENT_STATES*2];
-	int		count;
-} client_frames2_t;
-
-typedef struct
-{
-	client_frames_t	frames[MAX_FRAMES+2]; // 0 = base, 1-max = proposed, max+1 = too late
-} client_state2_t;
-
-//=============================================================================
+#include "host.h"
+#include "entstate.h"
 
 #if !defined(SERVERONLY)
 #include "console.h"
@@ -167,67 +94,6 @@ typedef struct
 #include "keys.h"
 #include "menu.h"
 #endif	/* !SERVERONLY */
-
-//=============================================================================
-
-// the host system specifies the base of the directory tree, the
-// command line parms passed to the program, and the amount of memory
-// available for the program to use
-
-typedef struct
-{
-	char	*basedir;
-	char	*userdir;		// userspace directory on UNIX platforms
-	int	argc;
-	char	**argv;
-	void	*membase;
-	int	memsize;
-} quakeparms_t;
-
-
-//=============================================================================
-
-//
-// host
-//
-extern	quakeparms_t	host_parms;
-
-extern	cvar_t		sys_ticrate;
-extern	cvar_t		sys_nostdout;
-extern	cvar_t		developer;
-
-extern	qboolean	isDedicated;
-
-extern	qboolean	host_initialized;	// true if into command execution
-extern	double		host_frametime;
-extern	byte		*host_basepal;
-extern	byte		*host_colormap;
-extern	int		host_framecount;	// incremented every frame, never reset
-extern	double		realtime;		// not bounded in any way, changed at
-						// start of every frame, never reset
-
-void Host_ClearMemory (void);
-void Host_InitCommands (void);
-void Host_Init (quakeparms_t *parms);
-void Host_Shutdown(void);
-void Host_Error (const char *error, ...) _FUNC_PRINTF(1);
-void Host_EndGame (const char *message, ...) _FUNC_PRINTF(1);
-void Host_Frame (float time);
-void Host_Quit_f (void);
-void Host_ClientCommands (const char *fmt, ...) _FUNC_PRINTF(1);
-void Host_ShutdownServer (qboolean crash);
-void Host_RemoveGIPFiles (const char *path);
-qboolean Host_CopyFiles(const char *source, const char *pat, const char *dest);
-qboolean SaveGamestate (qboolean ClientsOnly);
-
-
-extern	int		current_skill;	// skill level for currently loaded level (in case
-					//  the user changes the cvar while the level is
-					//  running, this reflects the level actually in use)
-
-extern	int		sv_kingofhill;
-
-extern	unsigned int	info_mask, info_mask2;	// mission pack objectives
 
 #endif	/* __QUAKEINC_H */
 

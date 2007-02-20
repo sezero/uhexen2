@@ -2,7 +2,7 @@
 	quakedef.h
 	common definitions for client and server
 
-	$Id: quakedef.h,v 1.33 2007-02-13 19:35:47 sezero Exp $
+	$Id: quakedef.h,v 1.34 2007-02-20 09:14:54 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -239,6 +239,8 @@
 
 
 /* include our common header file	*/
+/* FIXME: kill this in the future and make each C
+   file include only the necessary headers.	*/
 #if defined(SERVERONLY)
 #include "qwsvinc.h"
 #else
