@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.59 2007-02-15 07:21:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.60 2007-02-20 08:02:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -26,12 +26,11 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode);
 qboolean SaveGamestate(qboolean ClientsOnly);
 static void RestoreClients(void);
 
-extern unsigned int	info_mask, info_mask2;	// mission pack objectives
+#define TESTSAVE
 
 extern qboolean	mousestate_sa;
 extern void IN_ActivateMouse (void);
 extern void IN_DeactivateMouse (void);
-#define TESTSAVE
 
 /*
 ==================

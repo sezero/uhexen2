@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.12 2007-02-15 07:21:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.13 2007-02-20 08:02:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -25,8 +25,6 @@ static double		old_time;
 static int LoadGamestate(char *level, char *startspot, int ClientsMode);
 qboolean SaveGamestate(qboolean ClientsOnly);
 static void RestoreClients(void);
-
-extern unsigned int	info_mask, info_mask2;	// mission pack objectives
 
 #define TESTSAVE
 

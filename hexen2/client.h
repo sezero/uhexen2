@@ -1,6 +1,6 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.20 2007-02-20 07:39:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.21 2007-02-20 08:02:15 sezero Exp $
 */
 
 #ifndef __HX2_CLIENT_H
@@ -347,6 +347,11 @@ void CL_Stop_f (void);
 void CL_Record_f (void);
 void CL_PlayDemo_f (void);
 void CL_TimeDemo_f (void);
+
+extern	qboolean	intro_playing;	// whether the mission pack intro is playing
+extern	qboolean	skip_start;	// for the mission pack intro
+extern	int		num_intro_msg;	// for the mission pack intro
+					/* skip_start and num_intro_msg are not used at present - O.S */
 
 //
 // cl_parse.c

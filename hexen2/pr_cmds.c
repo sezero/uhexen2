@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.34 2007-02-17 07:55:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.35 2007-02-20 08:02:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -27,7 +27,6 @@ static int	d_lightstylevalue[256];
 extern int	d_lightstylevalue[256];
 extern void	V_WhiteFlash_f(void);
 #endif
-extern unsigned int	info_mask, info_mask2;	// mission pack objectives
 
 
 /*

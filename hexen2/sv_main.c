@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.45 2007-02-17 07:55:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.46 2007-02-20 08:02:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -38,9 +38,6 @@ extern	cvar_t	sv_flypitch;
 
 int		sv_kingofhill;
 unsigned int	info_mask, info_mask2;	// mission pack, objectives
-qboolean	intro_playing = false;	// whether the mission pack intro is playing
-qboolean	skip_start = false;	// for the mission pack intro
-int		num_intro_msg = 0;	// for the mission pack intro
 
 extern float	scr_centertime_off;
 

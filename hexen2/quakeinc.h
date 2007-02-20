@@ -2,7 +2,7 @@
 	quakeinc.h
 	primary header for client and server
 
-	$Id: quakeinc.h,v 1.8 2007-02-20 07:48:52 sezero Exp $
+	$Id: quakeinc.h,v 1.9 2007-02-20 08:02:15 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
@@ -196,6 +196,8 @@ extern	cvar_t		sys_ticrate;
 extern	cvar_t		sys_nostdout;
 extern	cvar_t		developer;
 
+extern	qboolean	isDedicated;
+
 extern	qboolean	host_initialized;	// true if into command execution
 extern	double		host_frametime;
 extern	byte		*host_basepal;
@@ -219,17 +221,14 @@ qboolean Host_CopyFiles(const char *source, const char *pat, const char *dest);
 qboolean SaveGamestate (qboolean ClientsOnly);
 
 
-extern	qboolean	isDedicated;
-
 extern	int		current_skill;	// skill level for currently loaded level (in case
 					//  the user changes the cvar while the level is
 					//  running, this reflects the level actually in use)
 
 extern	qboolean	noclip_anglehack;
 extern	int		sv_kingofhill;
-extern	qboolean	intro_playing;	// whether the mission pack intro is playing
-extern	qboolean	skip_start;	// for the mission pack intro
-extern	int		num_intro_msg;	// for the mission pack intro
+
+extern	unsigned int	info_mask, info_mask2;	// mission pack objectives
 
 #endif	/* __QUAKEINC_H */
 

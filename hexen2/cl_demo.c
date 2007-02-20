@@ -5,6 +5,13 @@ int		stufftext_frame;
 
 static void CL_FinishTimeDemo (void);
 
+// vars for the mission pack intro:
+qboolean	intro_playing = false;	// whether the mission pack intro is playing
+#if 0		/* skip_start and num_intro_msg are not used at present - O.S	*/
+qboolean	skip_start = false;
+int		num_intro_msg = 0;
+#endif		/* 0		*/
+
 /*
 ==============================================================================
 
@@ -34,7 +41,7 @@ void CL_StopPlayback (void)
 		M_ToggleMenu_f();
 
 	intro_playing = false;
-	num_intro_msg = 0;
+//	num_intro_msg = 0;
 
 	fclose (cls.demofile);
 	cls.demoplayback = false;
@@ -162,7 +169,7 @@ int CL_GetMessage (void)
 
 		net_message.cursize = LittleLong (net_message.cursize);
 
-		num_intro_msg++;
+	//	num_intro_msg++;
 
 		if (net_message.cursize > MAX_MSGLEN)
 			Sys_Error ("Demo message > MAX_MSGLEN");
@@ -221,7 +228,7 @@ void CL_Stop_f (void)
 	}
 
 	intro_playing = false;
-	num_intro_msg = 0;
+//	num_intro_msg = 0;
 
 // write a disconnect message to the demo file
 	SZ_Clear (&net_message);
@@ -358,8 +365,8 @@ void CL_PlayDemo_f (void)
 	{
 		// the mission pack specific intro actually
 		// is a pre-recorded demo named t9.dem
-		intro_playing=true;
-//		skip_start=true;
+		intro_playing = true;
+	//	skip_start = true;
 	}
 	else
 	{
