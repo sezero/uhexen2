@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.61 2007-02-20 08:28:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.62 2007-02-20 08:46:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -27,10 +27,6 @@ qboolean SaveGamestate(qboolean ClientsOnly);
 static void RestoreClients(void);
 
 #define TESTSAVE
-
-extern qboolean	mousestate_sa;
-extern void IN_ActivateMouse (void);
-extern void IN_DeactivateMouse (void);
 
 /*
 ==================
@@ -1593,16 +1589,13 @@ static void Host_Pause_f (void)
 	{
 		sv.paused ^= 1;
 
-		// release and grab mouse with pause S.A
 		if (sv.paused)
 		{
 			SV_BroadcastPrintf ("%s paused the game\n", pr_strings + sv_player->v.netname);
-			IN_DeactivateMouse ();
 		}
 		else
 		{
 			SV_BroadcastPrintf ("%s unpaused the game\n",pr_strings + sv_player->v.netname);
-			IN_ActivateMouse ();
 		}
 
 	// send notification to all clients

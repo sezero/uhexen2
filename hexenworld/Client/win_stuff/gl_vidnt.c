@@ -240,6 +240,20 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 void VID_HandlePause (qboolean paused)
 {
+
+	if ((modestate == MS_WINDOWED) && _enable_mouse.value)
+	{
+		if (paused)
+		{
+			IN_DeactivateMouse ();
+			IN_ShowMouse ();
+		}
+		else
+		{
+			IN_ActivateMouse ();
+			IN_HideMouse ();
+		}
+	}
 }
 
 

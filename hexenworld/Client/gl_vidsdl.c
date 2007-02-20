@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.130 2007-02-12 16:53:09 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.131 2007-02-20 08:46:40 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -234,6 +234,24 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 void VID_HandlePause (qboolean paused)
 {
+#if 0	// change to 1 if dont want to disable mouse in fullscreen
+	if ((modestate == MS_WINDOWED) && _enable_mouse.value)
+#else
+	if (_enable_mouse.value)
+#endif
+	{
+		// for consistency , don't show pointer S.A
+		if (paused)
+		{
+			IN_DeactivateMouse ();
+			// IN_ShowMouse ();
+		}
+		else
+		{
+			IN_ActivateMouse ();
+			// IN_HideMouse ();
+		}
+	}
 }
 
 
