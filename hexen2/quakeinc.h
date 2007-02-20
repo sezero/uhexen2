@@ -2,7 +2,7 @@
 	quakeinc.h
 	primary header for client and server
 
-	$Id: quakeinc.h,v 1.6 2007-02-13 16:55:57 sezero Exp $
+	$Id: quakeinc.h,v 1.7 2007-02-20 07:39:22 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
@@ -232,15 +232,6 @@ extern	int		sv_kingofhill;
 extern	qboolean	intro_playing;	// whether the mission pack intro is playing
 extern	qboolean	skip_start;	// for the mission pack intro
 extern	int		num_intro_msg;	// for the mission pack intro
-
-//
-// chase
-//
-extern	cvar_t		chase_active;
-
-void Chase_Init (void);
-void Chase_Reset (void);
-void Chase_Update (void);
 
 #endif	/* __QUAKEINC_H */
 

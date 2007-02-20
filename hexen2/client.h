@@ -1,6 +1,6 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.19 2007-02-20 07:36:06 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.20 2007-02-20 07:39:22 sezero Exp $
 */
 
 #ifndef __HX2_CLIENT_H
@@ -372,6 +372,15 @@ void CL_InitTEnts (void);
 void CL_ClearTEnts (void);
 void CL_ParseTEnt (void);
 void CL_UpdateTEnts (void);
+
+//
+// chase
+//
+extern	cvar_t	chase_active;
+
+void Chase_Init (void);
+void Chase_Reset (void);
+void Chase_Update (void);
 
 #endif	/* __HX2_CLIENT_H */
 
