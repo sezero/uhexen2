@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.60 2007-02-20 08:02:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.61 2007-02-20 08:28:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -150,8 +150,6 @@ static void Host_Notarget_f (void)
 		SV_ClientPrintf ("notarget ON\n");
 }
 
-qboolean noclip_anglehack;
-
 static void Host_Noclip_f (void)
 {
 	if (cmd_source == src_command)
@@ -165,13 +163,11 @@ static void Host_Noclip_f (void)
 
 	if (sv_player->v.movetype != MOVETYPE_NOCLIP)
 	{
-		noclip_anglehack = true;
 		sv_player->v.movetype = MOVETYPE_NOCLIP;
 		SV_ClientPrintf ("noclip ON\n");
 	}
 	else
 	{
-		noclip_anglehack = false;
 		sv_player->v.movetype = MOVETYPE_WALK;
 		SV_ClientPrintf ("noclip OFF\n");
 	}

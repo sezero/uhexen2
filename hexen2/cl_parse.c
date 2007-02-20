@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.39 2007-02-17 07:55:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.40 2007-02-20 08:28:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -418,8 +418,6 @@ static void CL_ParseServerInfo (void)
 		PR_LoadInfoStrings();
 
 	Hunk_Check ();		// make sure nothing is hurt
-
-	noclip_anglehack = false;	// noclip is turned off at start
 
 // we connected to the server, make sure the mouse is going - S.A.
 	mousestate_sa = false;

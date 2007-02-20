@@ -2,7 +2,7 @@
 	quakeinc.h
 	primary header for client and server
 
-	$Id: quakeinc.h,v 1.9 2007-02-20 08:02:15 sezero Exp $
+	$Id: quakeinc.h,v 1.10 2007-02-20 08:28:40 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
@@ -225,7 +225,6 @@ extern	int		current_skill;	// skill level for currently loaded level (in case
 					//  the user changes the cvar while the level is
 					//  running, this reflects the level actually in use)
 
-extern	qboolean	noclip_anglehack;
 extern	int		sv_kingofhill;
 
 extern	unsigned int	info_mask, info_mask2;	// mission pack objectives

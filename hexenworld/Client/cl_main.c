@@ -15,8 +15,6 @@
 #include "winquake.h"
 #endif
 
-qboolean	noclip_anglehack;		// remnant from old quake
-
 static	cvar_t	rcon_password = {"rcon_password", "", CVAR_NONE};
 static	cvar_t	rcon_address = {"rcon_address", "", CVAR_NONE};
 

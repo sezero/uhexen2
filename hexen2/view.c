@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.18 2007-02-07 17:01:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.19 2007-02-20 08:28:40 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -161,7 +161,7 @@ static void V_DriftPitch (void)
 {
 	float		delta, move;
 
-	if (noclip_anglehack || !cl.onground || cl.v.movetype == MOVETYPE_FLY || cls.demoplayback)
+	if (!cl.onground || cl.v.movetype == MOVETYPE_FLY || cl.v.movetype == MOVETYPE_NOCLIP || cls.demoplayback)
 	{
 		cl.driftmove = 0;
 		cl.pitchvel = 0;
@@ -230,7 +230,7 @@ static void V_DriftRoll (void)
 {
 	float		delta, move;
 
-	if (noclip_anglehack || cls.demoplayback)
+	if (cl.v.movetype == MOVETYPE_NOCLIP || cls.demoplayback)
 	{
 		return;
 	}

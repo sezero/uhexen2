@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.37 2007-02-08 14:32:46 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.38 2007-02-20 08:28:46 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -317,7 +317,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 	}
 	else
 	{
-		if ((in_strafe.state & 1) && noclip_anglehack)
+		if ((in_strafe.state & 1) && (cl.v.movetype == MOVETYPE_NOCLIP))
 			cmd->upmove -= m_forward.value * mouse_y;
 		else
 			cmd->forwardmove -= m_forward.value * mouse_y;

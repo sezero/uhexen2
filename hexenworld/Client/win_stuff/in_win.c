@@ -688,7 +688,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 	}
 	else
 	{
-		if ((in_strafe.state & 1) && noclip_anglehack)
+		if ((in_strafe.state & 1) && (cl.v.movetype == MOVETYPE_NOCLIP))
 			cmd->upmove -= m_forward.value * mouse_y;
 		else
 			cmd->forwardmove -= m_forward.value * mouse_y;
