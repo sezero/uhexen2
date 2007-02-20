@@ -3,6 +3,68 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-02-20 (CVS):
+    * the info_mask members of the client_t and client_state_t structures
+      should be of int type, not necessarily long.
+    * moved the chase stuff from quakeinc.h to client.h which is where
+      they belong.
+    * moved msg_suppress_1 from quakeinc.h to vid.h (any place better for
+      it to stay?..). moved tha actual var from common.c to vid_win.c and
+      vid_sdl.c, the software video driver file, where it belongs.
+    * moved the mission pack objectives related vars and declarations to
+      more proper places: intro_playing, skip_start and num_intro_msg
+      belong to cl_demo, not sv_main. they are now exported through clieht.h
+      which is a better place. skip_start and num_intro_msg, on the other
+      hand, are not used now commented them out (probably they were used when
+      Raven prepared the intro demo t9). the info_mask and info_mask2 are now
+      exported through quakeinc.h. (soon, they'll be moved to host.h).
+    * moved siege related client stuff from quakeinc.h and cl_parse.c to
+      client.h and cl_main.c, which are better places for them.
+    * killed the global noclip_anglehack: in hexenworld it isn't used, in
+      hexen2, all client-side things achieved by checking the state of that
+      bool are now done by if(cl.v.movetype == MOVETYPE_NOCLIP).
+    * instead of manually calling IN_DeactivateMouse and IN_ActivateMouse in
+      Host_Pause_f, just leave the job to VID_HandlePause: it is purely a
+      client-side thing and when it sees the svc_setpause message in
+      CL_ParseServerMessage it actually calls VID_HandlePause for god's sake.
+    * took the host declarations stuff out of quakeinc.h and placed them into
+      the new header host.h. for hexen2, created another new header named
+      entstate.h which holds the entity state and client frame structures.
+      quakeinc.h and qwsvinc.h headers now only exist as 'the lazy man's
+      all-in-one big header for all things': it should die in the future and
+      instead of including quakedef.h (which actually does the job of including
+      quakeinc.h), each C file should include only the individual necessary
+      headers.
+    * removed a-million-year-old remainders of parsing code specific to WinMain
+      from our main.
+    * COM_InitArgv: avoid extra spaces in com_cmdline.
+
+2007-02-17 (CVS):
+    * killed Con_DebugLog in hexen2/console.c and favored Sys_DebugLog
+      in sys*.c. one less difference between hexen2 and hexenworld.
+    * increased read buffer size from 4K to 16K for QIO_CopyFile. disabled
+      use native win32 CopyFile and favored QIO_CopyFile, instead. added
+      null argument check to QIO_CopyFile. made QIO_CopyFile to employ utime()
+      and copy the source file's timestamp to destination file (yeah, doing
+      a little fancy.)
+    * always use the __FUNCTION__ macro.
+    * made a IOCTL_FAILURE macro for the failed ioctl reporting job in cd_bsd.c
+      and cd_linux.c.
+    * removed the compile time warning from midi_sdl.c.
+    * request the audio in host-endian format in sdl midi (actually sdl doesn't
+      care and does its own thing, but lets be a little more correct.)
+    * added a -developer command line argument which sets the developer cvar to
+      1 during the init phase (ie. before the config is read). found in tyrquake
+      sources.
+    * commented out the meaningless developer directive in hexen.rc.
+    * h2ded should exec not hexen.rc, but server.cfg, instead, which is similar
+      to hwsv. changed that in Host_Init. the use of cl_warncmd is also fixed
+      now.
+    * moved the mode argument definitions for access(2) from sys.h to quakeio.h
+      where they belong.
+    * removed meaningless Cvar_Command() check, etc, from Cmd_Exec_f().
+    * minor update to Host_Init().
+
 2007-02-16 (CVS):
     * gethostname() may not NUL-terminate the hostname. do it by hand.
     * added a COMPILE_32BITS option to the makefiles.
@@ -138,7 +200,7 @@ Development Progress	:
 
 2007-02-09 (CVS):
     * fixed parsing of puzzles.txt: Raven seems to have had an ability
-      towards doing all things in non-standart way and they did this
+      towards doing all things in non-standard way and they did this
       with only dos style line endings in mind (as they had done parsing
       maplist.txt which I fixed in HoT-1.4.1). This used to result in
       the names listed as Unknown in the puzzle pieces inventory display
@@ -159,8 +221,8 @@ Development Progress	:
       every level load before, as can be seen from the commented out code
       in cl_parse.c::CL_ParseServerInfo() and sv_main.c::SV_SpawnServer().
       hexenworld actually does it this way, loading them at every level
-      start, and it is good thing because, in hexenworld, the gamedir can
-      change between level loads, so can those thext files.
+      start, and it is a good thing because, in hexenworld, the gamedir can
+      change between level loads, so can those text files.
       I'm now switching to this earlier method: hexen2 will also load them
       at every level start. test it as much as you can and in any way that
       you can, and report any problems that you run into.
