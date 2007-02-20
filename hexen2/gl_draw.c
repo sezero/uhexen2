@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.96 2007-02-17 07:55:32 sezero Exp $
+	$Id: gl_draw.c,v 1.97 2007-02-20 21:06:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1964,6 +1964,11 @@ GLuint GL_LoadTexture (const char *identifier, int width, int height, byte *data
 //	unsigned short	crc;
 	gltexture_t	*glt;
 
+#if !defined (H2W)
+	if (cls.state == ca_dedicated)
+		return GL_UNUSED_TEXTURE;
+#endif
+
 	size = width * height;
 	if (rgba)
 		size *= 4;
@@ -1989,10 +1994,7 @@ GLuint GL_LoadTexture (const char *identifier, int width, int height, byte *data
 					mipmap != glt->mipmap )
 				{	// not the same, delete and rebind to new image
 					Con_Printf ("Texture cache mismatch: %d, %s, reloading\n", glt->texnum, identifier);
-#				if !defined (H2W)
-					if (cls.state != ca_dedicated)
-#				endif
-						glDeleteTextures_fp (1, &(glt->texnum));
+					glDeleteTextures_fp (1, &(glt->texnum));
 					goto gl_rebind;
 				}
 				else
@@ -2019,20 +2021,12 @@ gl_rebind:
 //	glt->crc = crc;
 	glt->hash = hash;
 
-#if !defined (H2W)
-	if (cls.state == ca_dedicated)
-		goto dedicated;
-#endif
-
 	GL_Bind (glt->texnum);
 	if (rgba)
 		GL_Upload32 ((unsigned *)data, width, height, mipmap, alpha, false);
 	else
 		GL_Upload8 (data, width, height, mipmap, alpha, mode);
 
-#if !defined (H2W)
-dedicated:
-#endif
 	return glt->texnum;
 }
 
