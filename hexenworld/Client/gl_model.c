@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.30 2007-02-17 07:55:39 sezero Exp $
+	$Id: gl_model.c,v 1.31 2007-02-20 21:11:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -401,6 +401,11 @@ static void Mod_LoadTextures (lump_t *l)
 			tx->offsets[j] = mt->offsets[j] + sizeof(texture_t) - sizeof(miptex_t);
 		// the pixels immediately follow the structures
 		memcpy ( tx+1, mt+1, pixels);
+
+#if !defined (H2W)
+		if (cls.state == ca_dedicated)
+			continue;
+#endif	/* H2W */
 
 		if (!strncmp(mt->name,"sky",3))
 			R_InitSky (tx);
