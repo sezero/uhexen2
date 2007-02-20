@@ -422,8 +422,6 @@ static void CL_ParseDownload (void)
 CL_ParseServerData
 ==================
 */
-int	cl_keyholder = -1;
-int	cl_doc = -1;
 static void CL_ParseServerData (void)
 {
 	char	*str;
@@ -1065,14 +1063,6 @@ CL_ParseServerMessage
 */
 static int	received_framecount;
 int LastServerMessageSize = 0;
-
-// global vars for siege.
-qboolean	cl_siege;
-byte	cl_fraglimit;
-float	cl_timelimit;
-float	cl_server_time_offset;
-unsigned int	defLosses;	// Defenders losses in Siege
-unsigned int	attLosses;	// Attackers Losses in Siege
 
 void CL_ParseServerMessage (void)
 {

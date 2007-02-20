@@ -2,7 +2,7 @@
 	quakeinc.h
 	primary header for client
 
-	$Id: quakeinc.h,v 1.7 2007-02-20 07:48:56 sezero Exp $
+	$Id: quakeinc.h,v 1.8 2007-02-20 08:05:25 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
@@ -131,12 +131,6 @@ void Host_WriteConfiguration (const char *fname);
 
 
 extern	qboolean	noclip_anglehack;
-
-extern	unsigned int	defLosses;	// Defenders losses in Siege
-extern	unsigned int	attLosses;	// Attackers Losses in Siege
-
-extern	int		cl_keyholder;
-extern	int		cl_doc;
 
 #endif	/* __QUAKEINC_H */
 

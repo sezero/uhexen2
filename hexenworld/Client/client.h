@@ -1,6 +1,6 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.13 2007-02-11 13:08:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.14 2007-02-20 08:05:25 sezero Exp $
 */
 
 #ifndef __H2W_CLIENT_H
@@ -556,11 +556,18 @@ void Skin_Skins_f (void);
 void Skin_AllSkins_f (void);
 void Skin_NextDownload (void);
 
-// global vars for siege.
-extern	qboolean	cl_siege;
+//
+// globals for Siege:
+//
+extern	qboolean	cl_siege;	// whether this is a Siege game
 extern	byte		cl_fraglimit;
 extern	float		cl_timelimit;
 extern	float		cl_server_time_offset;
+extern	unsigned int	defLosses;	// Defender losses
+extern	unsigned int	attLosses;	// Attacker losses
+extern	int		cl_keyholder;
+extern	int		cl_doc;
+
 
 #endif	/* __H2W_CLIENT_H */
 

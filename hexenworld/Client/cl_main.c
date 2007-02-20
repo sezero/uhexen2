@@ -76,15 +76,15 @@ entity_t	cl_visedicts_list[2][MAX_VISEDICTS];
 
 static double	connect_time = -1;	// for connection retransmits
 
-quakeparms_t host_parms;
+quakeparms_t	host_parms;
 
 qboolean	host_initialized;	// true if into command execution
 
 double		host_frametime;
 double		realtime;		// without any filtering or bounding
 static double	oldrealtime;		// last frame run
-int			host_framecount;
-static int		host_hunklevel;
+int		host_framecount;
+static int	host_hunklevel;
 
 byte		*host_basepal;
 byte		*host_colormap;
@@ -95,11 +95,23 @@ static	cvar_t	host_speeds = {"host_speeds", "0", CVAR_NONE};	// set for running 
 cvar_t	show_fps = {"show_fps", "0", CVAR_NONE};	// set for running times
 cvar_t	developer = {"developer", "0", CVAR_NONE};
 
-int			fps_count;
+int		fps_count;
 
 jmp_buf 	host_abort;
 
 float	server_version = 0;	// version of server we connected to
+
+//
+// globals for Siege:
+//
+qboolean	cl_siege;	// whether this is a Siege game
+byte		cl_fraglimit;
+float		cl_timelimit;
+float		cl_server_time_offset;
+int		cl_keyholder = -1;
+int		cl_doc = -1;
+unsigned int	defLosses;	// Defender losses
+unsigned int	attLosses;	// Attacker losses
 
 
 /*
