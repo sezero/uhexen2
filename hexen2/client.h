@@ -1,6 +1,6 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.18 2007-02-07 17:01:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.19 2007-02-20 07:36:06 sezero Exp $
 */
 
 #ifndef __HX2_CLIENT_H
@@ -230,7 +230,7 @@ typedef struct
 	short		RemoveList[MAX_CLIENT_STATES], NumToRemove;
 
 // mission pack, objectives strings
-	long		info_mask, info_mask2;
+	int		info_mask, info_mask2;
 } client_state_t;
 
 
