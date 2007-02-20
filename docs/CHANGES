@@ -38,6 +38,12 @@ Development Progress	:
     * removed a-million-year-old remainders of parsing code specific to WinMain
       from our main.
     * COM_InitArgv: avoid extra spaces in com_cmdline.
+    * made GL_LoadTexture to immediately return for dedicated servers, no
+      need to go through the whole procedure. also made Mod_LoadTextures
+      to skip actual texture loading for dedicated servers which, in turn,
+      skips GL_LoadTexture. in fact no one should ever use the client-server
+      binary, let alone the gl-binary as a dedicated server, h2ded is the
+      choice for that purpose. this is for correctness only.
 
 2007-02-17 (CVS):
     * killed Con_DebugLog in hexen2/console.c and favored Sys_DebugLog
