@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.12 2007-02-15 07:22:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.13 2007-02-20 09:19:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -381,11 +381,6 @@ int main(int argc, char *argv[])
 
 	parms.basedir = cwd;
 	parms.userdir = userdir;
-
-	parms.argc = 1;
-	argv[0] = "";
-
-	parms.argv = argv;
 
 	COM_InitArgv (argc, argv);
 

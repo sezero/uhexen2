@@ -314,11 +314,6 @@ int main (int argc, char **argv)
 	parms.basedir = ".";
 	parms.userdir = parms.basedir;	/* no userdir on win32 */
 
-	parms.argc = 1;
-	argv[0] = "";
-
-	parms.argv = argv;
-
 	COM_InitArgv (argc, argv);
 
 	parms.argc = com_argc;
