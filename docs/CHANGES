@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-02-21 (CVS):
+    * added a name tag to the quakeparms structure.
+    * moved sys_nostdout from console.c to sys*.c and moved its initialization
+      to Host_InitLocal. this is not a frequently used cvar, maybe I remove it
+      soon, we'll see...
+    * removed an #if 1 around timeBeginPeriod() call. I've been forgetting
+      it for a while.
+
 2007-02-20 (CVS):
     * the info_mask members of the client_t and client_state_t structures
       should be of int type, not necessarily long.
