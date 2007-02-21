@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.78 2007-02-20 09:18:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.79 2007-02-21 09:29:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -35,6 +35,8 @@
 #define MIN_MEM_ALLOC	0x1000000
 #define STD_MEM_ALLOC	0x2000000
 #define MAX_MEM_ALLOC	0x6000000
+
+cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 
 qboolean		isDedicated;
 static Uint8		appState;

@@ -22,7 +22,6 @@ static short	*con_text=0;
 static float	con_cursorspeed = 4;
 qboolean 	con_forcedup;		// because no entities to refresh
 
-cvar_t		sys_nostdout = {"sys_nostdout", "1", CVAR_NONE};	// - DDOI
 static	cvar_t	con_notifytime = {"con_notifytime", "3", CVAR_NONE};	//seconds
 
 #define	NUM_CON_TIMES 4
@@ -212,7 +211,6 @@ void Con_Init (void)
 // register our commands
 //
 	Cvar_RegisterVariable (&con_notifytime);
-	Cvar_RegisterVariable (&sys_nostdout);	// - DDOI
 
 	Cmd_AddCommand ("toggleconsole", Con_ToggleConsole_f);
 	Cmd_AddCommand ("messagemode", Con_MessageMode_f);

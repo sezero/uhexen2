@@ -1006,6 +1006,8 @@ void CL_Init (void)
 	if (COM_CheckParm("-developer"))
 		Cvar_SetValue("developer", 1);
 
+	Cvar_RegisterVariable (&sys_nostdout);
+
 	Cvar_RegisterVariable (&show_fps);
 	Cvar_RegisterVariable (&host_speeds);
 
@@ -1326,8 +1328,6 @@ Host_Init
 extern void VID_PostInitFix (void);
 void Host_Init (quakeparms_t *parms)
 {
-//	COM_InitArgv (parms->argc, parms->argv);
-
 	host_parms = *parms;
 
 	Memory_Init (parms->membase, parms->memsize);

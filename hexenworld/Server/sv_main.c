@@ -1237,6 +1237,8 @@ static void SV_InitLocal (void)
 	if (COM_CheckParm("-developer"))
 		Cvar_SetValue("developer", 1);
 
+	Cvar_RegisterVariable (&sys_nostdout);
+
 	Cvar_RegisterVariable (&rcon_password);
 	Cvar_RegisterVariable (&password);
 	Cvar_RegisterVariable (&spectator_password);
@@ -1271,8 +1273,6 @@ static void SV_InitLocal (void)
 	Cvar_RegisterVariable (&patternRunner);
 	Cvar_RegisterVariable (&spawn);
 	Cvar_RegisterVariable (&noexit);
-
-	Cvar_RegisterVariable (&sys_nostdout);
 
 	Cvar_RegisterVariable (&timeout);
 	Cvar_RegisterVariable (&zombietime);

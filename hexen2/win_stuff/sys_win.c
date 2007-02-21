@@ -24,6 +24,8 @@
 #define PAUSE_SLEEP		50	// sleep time on pause or minimization
 #define NOT_FOCUS_SLEEP		20	// sleep time when not focus
 
+cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
+
 qboolean	ActiveApp, Minimized;
 qboolean	Win95, Win95old, WinNT;
 

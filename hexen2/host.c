@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.61 2007-02-17 21:11:00 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.62 2007-02-21 09:29:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -311,6 +311,8 @@ static void Host_InitLocal (void)
 	Cvar_RegisterVariable (&developer);
 	if (COM_CheckParm("-developer"))
 		Cvar_SetValue("developer", 1);
+
+	Cvar_RegisterVariable (&sys_nostdout);
 
 	Cvar_RegisterVariable (&host_framerate);
 	Cvar_RegisterVariable (&host_speeds);
