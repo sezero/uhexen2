@@ -347,9 +347,8 @@ int main (int argc, char **argv)
 	if (!parms.membase)
 		Sys_Error ("Insufficient memory.\n");
 
-#if 1
 	timeBeginPeriod (1);
-#endif
+
 	Sys_Printf ("Host_Init\n");
 	Host_Init (&parms);
 
