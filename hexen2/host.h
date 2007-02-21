@@ -2,7 +2,7 @@
 	host.h
 	public host structures and functions
 
-	$Id: host.h,v 1.1 2007-02-20 09:14:44 sezero Exp $
+	$Id: host.h,v 1.2 2007-02-21 09:01:32 sezero Exp $
 */
 
 #ifndef __HX2_HOST_H
@@ -12,7 +12,7 @@
 // command line parms passed to the program, and the amount of memory
 // available for the program to use
 
-typedef struct
+typedef struct quakeparms_s
 {
 	char	*basedir;
 	char	*userdir;	// userspace directory on UNIX platforms

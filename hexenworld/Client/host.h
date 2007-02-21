@@ -2,7 +2,7 @@
 	host.h
 	public host structures and functions
 
-	$Id: host.h,v 1.1 2007-02-20 09:14:54 sezero Exp $
+	$Id: host.h,v 1.2 2007-02-21 09:04:03 sezero Exp $
 */
 
 #ifndef __HX2_HOST_H
@@ -12,10 +12,10 @@
 // command line parms passed to the program, and the amount of memory
 // available for the program to use
 
-typedef struct
+typedef struct quakeparms_s
 {
 	char	*basedir;
-	char	*userdir;		// userspace directory on UNIX platforms
+	char	*userdir;	// userspace directory on UNIX platforms
 	int	argc;
 	char	**argv;
 	void	*membase;
@@ -40,8 +40,8 @@ extern	int		host_framecount;	// incremented every frame, never reset
 extern	double		realtime;		// not bounded in any way, changed at
 						// start of every frame, never reset
 
-void Host_InitCommands (void);
 void Host_Init (quakeparms_t *parms);
+void Host_InitCommands (void);
 void Host_Shutdown(void);
 void Host_Error (const char *error, ...) _FUNC_PRINTF(1);
 void Host_EndGame (const char *message, ...) _FUNC_PRINTF(1);
