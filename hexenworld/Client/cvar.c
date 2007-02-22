@@ -15,10 +15,60 @@ cvar_t *Cvar_FindVar (const char *var_name)
 	cvar_t	*var;
 
 	for (var = cvar_vars ; var ; var = var->next)
+	{
 		if (!strcmp (var_name, var->name))
 			return var;
+	}
 
 	return NULL;
+}
+
+/*
+============
+Cvar_LockVars
+
+used for preventing the early-read cvar values to get over-
+written by the actual final read of config.cfg (which will
+be the case when commandline overrides were used):  mark
+them as locked until Host_Init() completely finishes its job.
+this is a temporary solution until we adopt a better init
+sequence employing the +set arguments like those in quake2/3.
+the num_vars argument must be the exact number of strings in the
+array, otherwise I have nothing against going out of bounds.
+============
+*/
+void Cvar_LockVars (const char **varnames, int num_vars)
+{
+	cvar_t	*var;
+	int		i;
+
+	for (i = 0; i < num_vars && varnames[i]; i++)
+	{
+		var = Cvar_FindVar (varnames[i]);
+		if (var)
+			var->flags |= CVAR_LOCKED;
+	}
+}
+
+void Cvar_UnlockVar (const char *var_name)
+{
+	cvar_t	*var;
+
+	for (var = cvar_vars ; var ; var = var->next)
+	{
+		if (!strcmp (var_name, var->name))
+			var->flags &= ~CVAR_LOCKED;
+	}
+}
+
+void Cvar_UnlockAll (void)
+{
+	cvar_t	*var;
+
+	for (var = cvar_vars ; var ; var = var->next)
+	{
+		var->flags &= ~CVAR_LOCKED;
+	}
 }
 
 /*
@@ -69,8 +119,8 @@ void Cvar_Set (const char *var_name, const char *value)
 		return;
 	}
 
-	if (var->flags & CVAR_ROM)
-		return;	// cvar is marked read-only
+	if ( var->flags & (CVAR_ROM|CVAR_LOCKED) )
+		return;	// cvar is marked read-only or locked temporarily
 
 #ifdef SERVERONLY
 	if (var->flags & CVAR_SERVERINFO)

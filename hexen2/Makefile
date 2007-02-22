@@ -379,6 +379,7 @@ COMMONOBJS = chase.o \
 	console.o \
 	crc.o \
 	cvar.o \
+	cfgfile.o \
 	host.o \
 	host_cmd.o \
 	pr_strng.o \

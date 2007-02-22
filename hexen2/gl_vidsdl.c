@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.139 2007-02-20 08:46:31 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.140 2007-02-22 07:36:22 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -17,7 +17,7 @@
 #define	__GL_FUNC_EXTERN
 
 #include "quakedef.h"
-
+#include "cfgfile.h"
 #include "sdl_inc.h"
 #include <unistd.h>
 
@@ -1444,131 +1444,6 @@ no_fmodes:
 	Cvar_SetValue ("vid_config_gly", modelist[vid_default].height);
 }
 
-/*
-===================
-VID_EarlyReadConfig
-
-performs an early read of config.cfg. a temporary
-solution until we merge a better cvar system.
-===================
-*/
-static void VID_EarlyReadConfig (void)
-{
-	FILE	*cfg_file;
-	char	buff[1024], *tmp;
-	int		i;
-	const char *read_vars[] = {
-		"vid_config_fscr",
-		"vid_config_gl8bit",
-		"vid_config_fsaa",
-		"vid_config_glx",
-		"vid_config_gly",
-		"vid_config_consize",
-		"gl_lightmapfmt",
-		NULL
-	};
-
-	QIO_FOpenFile ("config.cfg", &cfg_file, true);
-	if (!cfg_file)
-		return;
-
-	do {
-		i = 0;
-		memset (buff, 0, sizeof(buff));
-		fgets(buff, sizeof(buff), cfg_file);
-		if (!feof(cfg_file))
-		{
-			// we expect a line in the format that Cvar_WriteVariables
-			// writes to the config file. although I'm trying to be as
-			// much cautious as possible, if the user screws it up by
-			// editing it, it's his fault.
-
-			// remove end-of-line characters
-			while (buff[i])
-			{
-				if (buff[i] == '\r' || buff[i] == '\n')
-					buff[i] = '\0';
-				// while we're here, replace tabs with spaces
-				if (buff[i] == '\t')
-					buff[i] = ' ';
-				i++;
-			}
-			// go to the last character
-			while (buff[i] == 0 && i > 0)
-				i--;
-			// remove trailing spaces
-			while (i > 0)
-			{
-				if (buff[i] == ' ')
-				{
-					buff[i] = '\0';
-					i--;
-				}
-				else
-					break;
-			}
-
-			// the line must end with a quotation mark
-			if (buff[i] != '\"')
-				continue;
-			buff[i] = '\0';
-
-			for (i = 0; read_vars[i]; i++)
-			{
-				// look for the cvar name + one space
-				tmp = strstr(buff, va("%s ",read_vars[i]));
-				if (tmp != buff)
-					continue;
-				// locate the first quotation mark
-				tmp = strchr(buff, '\"');
-				if (tmp)
-				{
-					Cvar_Set (read_vars[i], tmp+1);
-					break;
-				}
-			}
-		}
-	} while (!feof(cfg_file));
-
-	fclose (cfg_file);
-}
-
-static void VID_LockCvars (void)
-{
-	// prevent the early-read cvar values to get overwritten by the
-	// actual final read of config.cfg (which will be the case when
-	// commandline overrides were used):  mark them read only until
-	// Host_Init() completely finishes its job. this is a temporary
-	// solution until we adopt a better init sequence employing the
-	// +set arguments like those in quake2 and quake3.
-	vid_config_fscr.flags |= CVAR_ROM;
-	vid_config_gl8bit.flags |= CVAR_ROM;
-	vid_config_fsaa.flags |= CVAR_ROM;
-	vid_config_glx.flags |= CVAR_ROM;
-	vid_config_gly.flags |= CVAR_ROM;
-	vid_config_consize.flags |= CVAR_ROM;
-	gl_lightmapfmt.flags |= CVAR_ROM;
-}
-
-static void VID_UnlockCvars (void)
-{
-	// to be called from Host_Init() after execing
-	// hexen.rc and flushing the command buffer:
-	// remove the r/o bit from the relevant cvars.
-	vid_config_fscr.flags &= ~CVAR_ROM;
-	vid_config_gl8bit.flags &= ~CVAR_ROM;
-	vid_config_fsaa.flags &= ~CVAR_ROM;
-	vid_config_glx.flags &= ~CVAR_ROM;
-	vid_config_gly.flags &= ~CVAR_ROM;
-	vid_config_consize.flags &= ~CVAR_ROM;
-	gl_lightmapfmt.flags &= ~CVAR_ROM;
-}
-
-void VID_PostInitFix (void)
-{
-	VID_UnlockCvars ();
-}
-
 static void VID_ListModes_f (void)
 {
 	int	i;
@@ -1621,6 +1496,15 @@ void	VID_Init (unsigned char *palette)
 	char	gldir[MAX_OSPATH];
 	SDL_Rect	**enumlist;
 	const SDL_version	*sdl_version;
+	const char	*read_vars[] = {
+				"vid_config_fscr",
+				"vid_config_gl8bit",
+				"vid_config_fsaa",
+				"vid_config_glx",
+				"vid_config_gly",
+				"vid_config_consize",
+				"gl_lightmapfmt" };
+#define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
 
 	Cvar_RegisterVariable (&vid_config_gl8bit);
 	Cvar_RegisterVariable (&vid_config_fsaa);
@@ -1709,7 +1593,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_SetValue ("vid_mode", vid_default);
 
 	// perform an early read of config.cfg
-	VID_EarlyReadConfig();
+	CFG_ReadCvars (read_vars, num_readvars);
 
 	// windowed mode is default
 	// see if the user wants fullscreen
@@ -1825,9 +1709,8 @@ void	VID_Init (unsigned char *palette)
 	// enable paletted textures
 	VID_Init8bitPalette();
 
-	// set the rom bit on the early-read
-	// cvars until Host_Init() is finished
-	VID_LockCvars ();
+	// lock the early-read cvars until Host_Init is finished
+	Cvar_LockVars (read_vars, num_readvars);
 
 	vid_initialized = true;
 	scr_disabled_for_loading = i;

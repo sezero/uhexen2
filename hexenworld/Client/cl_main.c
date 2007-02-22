@@ -10,6 +10,7 @@
 #endif
 
 #include "quakedef.h"
+#include "cfgfile.h"
 
 #if defined(_WIN32)
 #include "winquake.h"
@@ -1325,7 +1326,6 @@ void Host_Frame (float time)
 Host_Init
 ====================
 */
-extern void VID_PostInitFix (void);
 void Host_Init (quakeparms_t *parms)
 {
 	host_parms = *parms;
@@ -1341,6 +1341,8 @@ void Host_Init (quakeparms_t *parms)
 
 	NET_Init (PORT_CLIENT);
 	Netchan_Init ();
+
+	CFG_OpenConfig ("config.cfg");
 
 	W_LoadWadFile ("gfx.wad");
 	Key_Init ();
@@ -1378,6 +1380,8 @@ void Host_Init (quakeparms_t *parms)
 	CL_Init ();
 	IN_Init ();
 
+	CFG_CloseConfig();
+
 #ifdef GLQUAKE
 /*	analogous to host_hunklevel, this will mark OpenGL texture
 	beyond which everything will need to be purged on new map */
@@ -1389,8 +1393,8 @@ void Host_Init (quakeparms_t *parms)
 
 	Cbuf_InsertText ("exec hexen.rc\n");
 	Cbuf_Execute();
-	// fix the early-set cvars after init
-	VID_PostInitFix ();
+	// unlock the early-set cvars after init
+	Cvar_UnlockAll ();
 
 	Con_Printf ("\n======= HexenWorld Initialized ========\n\n");
 

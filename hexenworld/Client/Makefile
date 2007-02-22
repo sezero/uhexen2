@@ -382,6 +382,7 @@ COMMONOBJS = cl_cam.o \
 	console.o \
 	crc.o \
 	cvar.o \
+	cfgfile.o \
 	pr_strng.o \
 	$(SYSOBJ_INPUT) \
 	keys.o \

@@ -2,11 +2,12 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.62 2007-02-21 09:29:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.63 2007-02-22 07:36:22 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "r_local.h"
+#include "cfgfile.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -1040,7 +1041,6 @@ static void Host_InitVCR (quakeparms_t *parms)
 Host_Init
 ====================
 */
-extern void VID_PostInitFix (void);
 void Host_Init (quakeparms_t *parms)
 {
 	host_parms = *parms;
@@ -1060,6 +1060,7 @@ void Host_Init (quakeparms_t *parms)
 	FS_Init ();
 	CL_Cmd_Init ();
 	Host_RemoveGIPFiles(NULL);
+	CFG_OpenConfig ("config.cfg");
 	Host_InitLocal ();
 	W_LoadWadFile ("gfx.wad");
 	Key_Init ();
@@ -1103,6 +1104,8 @@ void Host_Init (quakeparms_t *parms)
 		IN_Init();
 	}
 
+	CFG_CloseConfig();
+
 #ifdef GLQUAKE
 /*	analogous to host_hunklevel, this will mark OpenGL texture
 	beyond which everything will need to be purged on new map */
@@ -1114,9 +1117,8 @@ void Host_Init (quakeparms_t *parms)
 
 	Cbuf_InsertText ("exec hexen.rc\n");
 	Cbuf_Execute();
-	// fix the early-set cvars after init
-	if (cls.state != ca_dedicated)
-		VID_PostInitFix ();
+	// unlock the early-set cvars after init
+	Cvar_UnlockAll ();
 
 	Con_Printf("\n======== Hexen II Initialized =========\n\n");
 

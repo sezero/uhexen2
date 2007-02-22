@@ -50,6 +50,7 @@ interface from being ambiguous.
 #define	CVAR_SERVERINFO		4	// added to serverinfo will be sent to clients (H2/net_dgrm.c and H2W)
 #define	CVAR_USERINFO		8	// added to userinfo, will be sent to server (H2W)
 #define	CVAR_ROM		64
+#define	CVAR_LOCKED		256	// locked temporarily
 
 
 typedef struct cvar_s
@@ -88,6 +89,10 @@ void	Cvar_WriteVariables (FILE *f);
 // with the archive flag set to true.
 
 cvar_t	*Cvar_FindVar (const char *var_name);
+
+void	Cvar_LockVars (const char **varnames, int num_vars);
+void	Cvar_UnlockVar (const char *var_name);
+void	Cvar_UnlockAll (void);
 
 extern	cvar_t		*cvar_vars;
 
