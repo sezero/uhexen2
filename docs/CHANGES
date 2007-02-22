@@ -25,6 +25,8 @@ Development Progress	:
       was hardcoded to be 16.
     * fixed bug that netgraphtexture was not reset in Draw_ReInit in hexenworld.
     * added Cvar_LockVar for locking only one cvar.
+    * made Cvar_LockVar and Cvar_UnlockVar to employ Cvar_FindVar for cvar
+      searching.
 
 2007-02-21 (CVS):
     * added a name tag to the quakeparms structure.
