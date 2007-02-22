@@ -57,7 +57,10 @@ void Cvar_UnlockVar (const char *var_name)
 	for (var = cvar_vars ; var ; var = var->next)
 	{
 		if (!strcmp (var_name, var->name))
+		{
 			var->flags &= ~CVAR_LOCKED;
+			return;
+		}
 	}
 }
 
