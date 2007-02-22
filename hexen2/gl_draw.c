@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.98 2007-02-22 11:24:05 sezero Exp $
+	$Id: gl_draw.c,v 1.99 2007-02-22 18:04:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -520,6 +520,9 @@ void Draw_ReInit (void)
 	Sbar_Init();
 	// Reload the particle texture
 	R_InitParticleTexture();
+#if defined(H2W)
+	R_InitNetgraphTexture();
+#endif	/* H2W */
 
 	Cvar_SetValue ("gl_purge_maptex", temp2);
 	draw_reinit = false;

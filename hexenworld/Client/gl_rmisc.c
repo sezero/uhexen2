@@ -253,13 +253,11 @@ void R_Init (void)
 
 	R_InitParticles ();
 	R_InitParticleTexture ();
+	R_InitNetgraphTexture ();
 
 #ifdef GLTEST
 	Test_Init ();
 #endif
-
-	netgraphtexture = texture_extension_number;
-	texture_extension_number++;
 
 	for (counter = 0 ; counter < MAX_EXTRA_TEXTURES ; counter++)
 		gl_extra_textures[counter] = GL_UNUSED_TEXTURE;

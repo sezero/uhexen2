@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.141 2007-02-22 11:24:05 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.142 2007-02-22 18:04:24 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1252,6 +1252,9 @@ static void VID_ChangeVideoMode(int newmode)
 	Sbar_Init();
 	// Reload the particle texture
 	R_InitParticleTexture();
+#if defined(H2W)
+	R_InitNetgraphTexture();
+#endif	/* H2W */
 
 	vid.recalc_refdef = 1;
 

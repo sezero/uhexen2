@@ -2,7 +2,7 @@
 
 #include "quakedef.h"
 
-GLuint	netgraphtexture;	// netgraph texture
+static	GLuint	netgraphtexture;	// netgraph texture
 
 #define	NET_GRAPHHEIGHT	32
 #define	NET_TIMINGS	256
@@ -140,5 +140,12 @@ void R_NetGraph (void)
 	glTexCoord2f_fp (0, 1);
 	glVertex2f_fp (x, y+NET_GRAPHHEIGHT);
 	glEnd_fp ();
+}
+
+
+void R_InitNetgraphTexture (void)
+{
+	netgraphtexture = texture_extension_number;
+	texture_extension_number++;
 }
 

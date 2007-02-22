@@ -2037,6 +2037,10 @@ static void VID_ChangeVideoMode(int newmode)
 	vid.recalc_refdef = 1;
 	// Reload the particle texture
 	R_InitParticleTexture();
+#if defined(H2W)
+	R_InitNetgraphTexture();
+#endif	/* H2W */
+
 	// Reload model textures and player skins
 	Mod_ReloadTextures();
 	// rebuild the lightmaps

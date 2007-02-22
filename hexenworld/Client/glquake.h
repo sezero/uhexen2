@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.51 2007-02-13 16:30:30 sezero Exp $
+	$Id: glquake.h,v 1.52 2007-02-22 18:05:22 sezero Exp $
 */
 
 
@@ -107,6 +107,7 @@ void R_InitParticleTexture (void);
 void R_ClearParticles (void);
 void R_DrawParticles (void);
 void R_NetGraph (void);
+void R_InitNetgraphTexture (void);
 
 
 // r_local.h -- private refresh defs
@@ -264,7 +265,6 @@ extern	qboolean	envmap;
 extern	GLuint	currenttexture;
 extern	GLuint	particletexture;
 extern	int	skytexturenum;		// index in cl.loadmodel, not gl texture object
-extern	GLuint	netgraphtexture;	// netgraph texture
 extern	GLuint	playertextures[16];
 extern	byte	*playerTranslation;
 extern	int	gl_texlevel;
