@@ -13,6 +13,18 @@ Development Progress	:
       only upload them to the opengl pipeline. Draw_ChangeConsize is now history,
       as well, because the conback drawing procedures actually use vid.conwidth,
       not the width member of the now dead qpic_t conback.
+    * fixed the wrong slot number check in CL_NewTranslation although its
+      caller already does the same check (and does it correctly). in hexen2,
+      moved the MAX_SCOREBOARDNAME definition to client.h for consistancy
+      with hexenworld. in hexenworld, MAX_SCOREBOARD definition is replaced
+      with MAX_CLIENTS but many error messages used the old MAX_SCOREBOARD,
+      changed them accordingly. replaced the only occurance of MAX_SCOREBOARD
+      in sbar.c with MAX_CLIENTS. for consistancy with hexenworld, replaced
+      all MAX_SCOREBOARD usage with MAX_CLIENTS in hexen2.
+    * fixed bug that the array size for playertextures must be MAX_CLIENTS, but
+      was hardcoded to be 16.
+    * fixed bug that netgraphtexture was not reset in Draw_ReInit in hexenworld.
+    * added Cvar_LockVar for locking only one cvar.
 
 2007-02-21 (CVS):
     * added a name tag to the quakeparms structure.
