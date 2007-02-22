@@ -50,6 +50,20 @@ void Cvar_LockVars (const char **varnames, int num_vars)
 	}
 }
 
+void Cvar_LockVar (const char *var_name)
+{
+	cvar_t	*var;
+
+	for (var = cvar_vars ; var ; var = var->next)
+	{
+		if (!strcmp (var_name, var->name))
+		{
+			var->flags |= CVAR_LOCKED;
+			return;
+		}
+	}
+}
+
 void Cvar_UnlockVar (const char *var_name)
 {
 	cvar_t	*var;

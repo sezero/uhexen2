@@ -90,6 +90,7 @@ void	Cvar_WriteVariables (FILE *f);
 
 cvar_t	*Cvar_FindVar (const char *var_name);
 
+void	Cvar_LockVar (const char *var_name);
 void	Cvar_LockVars (const char **varnames, int num_vars);
 void	Cvar_UnlockVar (const char *var_name);
 void	Cvar_UnlockAll (void);
