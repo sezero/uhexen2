@@ -347,7 +347,6 @@ set_size:
 	vid.width = vid.conwidth = w;
 	vid.height = vid.conheight = h;
 	Cvar_SetValue ("vid_config_consize", vid.conwidth);
-	Draw_ChangeConsize();
 	vid.recalc_refdef = 1;
 	if (vid.conwidth != modelist[vid_modenum].width)
 		vid_conscale = true;

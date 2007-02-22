@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.132 2007-02-22 07:36:23 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.133 2007-02-22 11:24:10 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -367,7 +367,6 @@ set_size:
 	vid.width = vid.conwidth = w;
 	vid.height = vid.conheight = h;
 	Cvar_SetValue ("vid_config_consize", vid.conwidth);
-	Draw_ChangeConsize();
 	vid.recalc_refdef = 1;
 	if (vid.conwidth != modelist[vid_modenum].width)
 		vid_conscale = true;

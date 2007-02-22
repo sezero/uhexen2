@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.97 2007-02-20 21:06:21 sezero Exp $
+	$Id: gl_draw.c,v 1.98 2007-02-22 11:24:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -58,6 +58,7 @@ static byte	*draw_smallchars;			// Small characters for status bar
 GLuint		plyrtex[MAX_PLAYER_CLASS][16][16];	// whether or not the corresponding player textures
 							// (in multiplayer config screens) have been loaded
 static GLuint		draw_backtile;
+static GLuint		conback;
 static GLuint		char_texture;
 static GLuint		cs_texture;	// crosshair texture
 static GLuint		char_smalltexture;
@@ -105,9 +106,6 @@ static char *cs_data = {
 	"................................"
 	"................................"
 };
-
-static byte	conback_buffer[sizeof(qpic_t) + sizeof(glpic_t)];
-static qpic_t	*conback = (qpic_t *)&conback_buffer;
 
 int		gl_filter_min = GL_LINEAR_MIPMAP_NEAREST;
 int		gl_filter_max = GL_LINEAR;
@@ -395,30 +393,13 @@ static void Draw_TextureMode_f (void)
 
 /*
 ===============
-Draw_ChangeConsize
-===============
-*/
-void Draw_ChangeConsize (void)
-{
-	conback->width = vid.conwidth;
-	conback->height = vid.conheight;
-}
-
-/*
-===============
 Draw_Init
 ===============
 */
 void Draw_Init (void)
 {
-	int		i;
-	qpic_t	*bt, *cb, *mf;
-/*	byte	*dest;
-	int		x;
-	char	ver[40];*/
-	glpic_t	*gl;
-	int		start;
-	byte	*ncdata;
+	qpic_t		*p;
+	int		i, start;
 
 	if (!draw_reinit)
 	{
@@ -449,54 +430,47 @@ void Draw_Init (void)
 
 	draw_smallchars = W_GetLumpName("tinyfont");
 	for (i = 0; i < 128*32; i++)
+	{
 		if (draw_smallchars[i] == 0)
 			draw_smallchars[i] = 255;	// proper transparent color
+	}
 
 	// now turn them into textures
 	char_smalltexture = GL_LoadTexture ("smallcharset", 128, 32, draw_smallchars, false, true, 0, false);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
-	mf = (qpic_t *)QIO_LoadTempFile("gfx/menu/bigfont2.lmp");
+	p = (qpic_t *)QIO_LoadTempFile("gfx/menu/bigfont2.lmp");
 	for (i = 0; i < 160*80; i++)
-		if (mf->data[i] == 0)
-			mf->data[i] = 255;	// proper transparent color
+	{
+		if (p->data[i] == 0)
+			p->data[i] = 255;	// proper transparent color
+	}
 
-	char_menufonttexture = GL_LoadTexture ("menufont", 160, 80, mf->data, false, true, 0, false);
+	char_menufonttexture = GL_LoadTexture ("menufont", 160, 80, p->data, false, true, 0, false);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
 	start = Hunk_LowMark ();
-	cb = (qpic_t *)QIO_LoadHunkFile ("gfx/menu/conback.lmp");
-	if (!cb)
+	p = (qpic_t *)QIO_LoadHunkFile ("gfx/menu/conback.lmp");
+	if (!p)
 		Sys_Error ("Couldn't load gfx/menu/conback.lmp");
-	SwapPic (cb);
-
-	conback->width = cb->width;
-	conback->height = cb->height;
-	ncdata = cb->data;
+	SwapPic (p);
 
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
-
-	gl = (glpic_t *)conback->data;
-	gl->texnum = GL_LoadTexture ("conback", conback->width, conback->height, ncdata, false, false, 0, false);
-	gl->sl = 0;
-	gl->sh = 1;
-	gl->tl = 0;
-	gl->th = 1;
-	Draw_ChangeConsize();
+	conback = GL_LoadTexture ("conback", p->width, p->height, p->data, false, false, 0, false);
 
 	// free loaded console
 	Hunk_FreeToLowMark (start);
 
 	// load the backtile
 	start = Hunk_LowMark ();
-	bt = (qpic_t *)QIO_LoadHunkFile ("gfx/menu/backtile.lmp");
-	if (!bt)
+	p = (qpic_t *)QIO_LoadHunkFile ("gfx/menu/backtile.lmp");
+	if (!p)
 		Sys_Error ("Couldn't load gfx/menu/backtile.lmp");
 
-	draw_backtile = GL_LoadPicTexture (bt);
+	draw_backtile = GL_LoadPicTexture (p);
 	// free the loaded backtile
 	Hunk_FreeToLowMark (start);
 }
@@ -1120,17 +1094,14 @@ Draw_ConsoleBackground
 
 ================
 */
-static void Draw_ConsolePic (int lines, float ofs, qpic_t *pic, float alpha)
+static void Draw_ConsolePic (int lines, float ofs, GLuint num, float alpha)
 {
-	glpic_t			*gl;
-
-	gl = (glpic_t *)pic->data;
 	glDisable_fp(GL_ALPHA_TEST);
 	glEnable_fp (GL_BLEND);
 //	glBlendFunc_fp(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glCullFace_fp(GL_FRONT);
 	glColor4f_fp (1,1,1,alpha);
-	GL_Bind (gl->texnum);
+	GL_Bind (num);
 
 	glBegin_fp (GL_QUADS);
 	glTexCoord2f_fp (0, 0 + ofs);
