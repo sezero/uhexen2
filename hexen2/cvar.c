@@ -56,30 +56,16 @@ void Cvar_LockVars (const char **varnames, int num_vars)
 
 void Cvar_LockVar (const char *var_name)
 {
-	cvar_t	*var;
-
-	for (var = cvar_vars ; var ; var = var->next)
-	{
-		if (!strcmp (var_name, var->name))
-		{
-			var->flags |= CVAR_LOCKED;
-			return;
-		}
-	}
+	cvar_t	*var = Cvar_FindVar (var_name);
+	if (var)
+		var->flags |= CVAR_LOCKED;
 }
 
 void Cvar_UnlockVar (const char *var_name)
 {
-	cvar_t	*var;
-
-	for (var = cvar_vars ; var ; var = var->next)
-	{
-		if (!strcmp (var_name, var->name))
-		{
-			var->flags &= ~CVAR_LOCKED;
-			return;
-		}
-	}
+	cvar_t	*var = Cvar_FindVar (var_name);
+	if (var)
+		var->flags &= ~CVAR_LOCKED;
 }
 
 void Cvar_UnlockAll (void)
