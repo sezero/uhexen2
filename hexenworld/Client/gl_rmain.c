@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.41 2007-02-17 07:55:39 sezero Exp $
+	$Id: gl_rmain.c,v 1.42 2007-02-22 19:40:08 sezero Exp $
 */
 
 
@@ -24,7 +24,7 @@ qboolean	envmap;				// true during envmap command capture
 GLuint			currenttexture = GL_UNUSED_TEXTURE;	// to avoid unnecessary texture sets
 
 GLuint			particletexture;	// little dot for particles
-GLuint			playertextures[16];	// up to 16 color translated skins
+GLuint			playertextures[MAX_CLIENTS];	// up to MAX_CLIENTS color translated skins
 GLuint			gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for models
 
 int			mirrortexturenum;	// quake texturenum, not gltexturenum

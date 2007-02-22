@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.52 2007-02-22 18:05:22 sezero Exp $
+	$Id: glquake.h,v 1.53 2007-02-22 19:40:08 sezero Exp $
 */
 
 
@@ -265,7 +265,7 @@ extern	qboolean	envmap;
 extern	GLuint	currenttexture;
 extern	GLuint	particletexture;
 extern	int	skytexturenum;		// index in cl.loadmodel, not gl texture object
-extern	GLuint	playertextures[16];
+extern	GLuint	playertextures[MAX_CLIENTS];
 extern	byte	*playerTranslation;
 extern	int	gl_texlevel;
 extern	int	numgltextures;
