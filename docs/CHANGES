@@ -7,6 +7,12 @@ Development Progress	:
     * added the config file reading and init-phase cvar locking to
       the api and took the early reads stuff out of the vid files.
       this is still immature as it was, but it does what we need..
+    * Cvar_UnlockVar should return when it hits what it looks for.
+    * we only store the texture num of conback now, just like we started doing
+      the same for draw_backtile, etc since HoT-1.4.1: we don't store their data,
+      only upload them to the opengl pipeline. Draw_ChangeConsize is now history,
+      as well, because the conback drawing procedures actually use vid.conwidth,
+      not the width member of the now dead qpic_t conback.
 
 2007-02-21 (CVS):
     * added a name tag to the quakeparms structure.
