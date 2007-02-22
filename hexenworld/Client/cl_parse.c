@@ -822,7 +822,7 @@ CL_NewTranslation
 static void CL_NewTranslation (int slot)
 {
 #ifdef GLQUAKE
-	if (slot > MAX_CLIENTS)
+	if (slot >= MAX_CLIENTS)
 		Sys_Error ("%s: slot > MAX_CLIENTS", __FUNCTION__);
 
 	R_TranslatePlayerSkin(slot);
@@ -833,7 +833,7 @@ static void CL_NewTranslation (int slot)
 	byte	*dest, *source, *sourceA, *sourceB, *colorA, *colorB;
 	player_info_t	*player;
 
-	if (slot > MAX_CLIENTS)
+	if (slot >= MAX_CLIENTS)
 		Sys_Error ("%s: slot > MAX_CLIENTS", __FUNCTION__);
 
 	player = &cl.players[slot];
@@ -884,7 +884,7 @@ static void CL_UpdateUserinfo (void)
 
 	slot = MSG_ReadByte ();
 	if (slot >= MAX_CLIENTS)
-		Host_EndGame ("%s: svc_updateuserinfo > MAX_SCOREBOARD", __FUNCTION__);
+		Host_EndGame ("%s: svc_updateuserinfo > MAX_CLIENTS", __FUNCTION__);
 
 	player = &cl.players[slot];
 	player->userid = MSG_ReadLong ();
@@ -1225,14 +1225,14 @@ void CL_ParseServerMessage (void)
 			Sbar_Changed ();
 			i = MSG_ReadByte ();
 			if (i >= MAX_CLIENTS)
-				Host_EndGame ("%s: svc_updatefrags > MAX_SCOREBOARD", __FUNCTION__);
+				Host_EndGame ("%s: svc_updatefrags > MAX_CLIENTS", __FUNCTION__);
 			cl.players[i].frags = MSG_ReadShort ();
 			break;
 
 		case svc_updateping:
 			i = MSG_ReadByte ();
 			if (i >= MAX_CLIENTS)
-				Host_EndGame ("%s: svc_updateping > MAX_SCOREBOARD", __FUNCTION__);
+				Host_EndGame ("%s: svc_updateping > MAX_CLIENTS", __FUNCTION__);
 			cl.players[i].ping = MSG_ReadShort ();
 			break;
 
@@ -1240,7 +1240,7 @@ void CL_ParseServerMessage (void)
 		// time is sent over as seconds ago
 			i = MSG_ReadByte ();
 			if (i >= MAX_CLIENTS)
-				Host_EndGame ("%s: svc_updateentertime > MAX_SCOREBOARD", __FUNCTION__);
+				Host_EndGame ("%s: svc_updateentertime > MAX_CLIENTS", __FUNCTION__);
 			cl.players[i].entertime = realtime - MSG_ReadFloat ();
 			break;
 
@@ -1248,7 +1248,7 @@ void CL_ParseServerMessage (void)
 		// playerclass has changed for this dude
 			i = MSG_ReadByte ();
 			if (i >= MAX_CLIENTS)
-				Host_EndGame ("%s: svc_updatepclass > MAX_SCOREBOARD", __FUNCTION__);
+				Host_EndGame ("%s: svc_updatepclass > MAX_CLIENTS", __FUNCTION__);
 			cl.players[i].playerclass = MSG_ReadByte ();
 			cl.players[i].level = cl.players[i].playerclass&31;
 			cl.players[i].playerclass = cl.players[i].playerclass>>5;
@@ -1258,7 +1258,7 @@ void CL_ParseServerMessage (void)
 		// This dude killed someone, update his frags and level
 			i = MSG_ReadByte ();
 			if (i >= MAX_CLIENTS)
-				Host_EndGame ("%s: svc_updatedminfo > MAX_SCOREBOARD", __FUNCTION__);
+				Host_EndGame ("%s: svc_updatedminfo > MAX_CLIENTS", __FUNCTION__);
 			cl.players[i].frags = MSG_ReadShort ();
 			cl.players[i].playerclass = MSG_ReadByte ();
 			cl.players[i].level = cl.players[i].playerclass&31;
@@ -1275,7 +1275,7 @@ void CL_ParseServerMessage (void)
 		// This dude killed someone, update his frags and level
 			i = MSG_ReadByte ();
 			if (i >= MAX_CLIENTS)
-				Host_EndGame ("%s: svc_updatesiegeteam > MAX_SCOREBOARD", __FUNCTION__);
+				Host_EndGame ("%s: svc_updatesiegeteam > MAX_CLIENTS", __FUNCTION__);
 			cl.players[i].siege_team = MSG_ReadByte ();
 			break;
 

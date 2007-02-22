@@ -1,6 +1,6 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.21 2007-02-20 08:02:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.22 2007-02-22 19:26:51 sezero Exp $
 */
 
 #ifndef __HX2_CLIENT_H
@@ -17,6 +17,7 @@ typedef struct
 	byte		lightlevel;
 } usercmd_t;
 
+#define	MAX_SCOREBOARDNAME	32
 typedef struct
 {
 	char		name[MAX_SCOREBOARDNAME];

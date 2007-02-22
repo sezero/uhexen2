@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.18 2007-02-21 09:47:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.19 2007-02-22 19:26:55 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -173,8 +173,8 @@ static void Host_FindMaxClients (void)
 
 	if (svs.maxclients < 1)
 		svs.maxclients = 8;
-	else if (svs.maxclients > MAX_SCOREBOARD)
-		svs.maxclients = MAX_SCOREBOARD;
+	else if (svs.maxclients > MAX_CLIENTS)
+		svs.maxclients = MAX_CLIENTS;
 
 	svs.maxclientslimit = svs.maxclients;
 	if (svs.maxclientslimit < 4)

@@ -2,7 +2,7 @@
 	quakedef.h
 	common definitions for client and server
 
-	$Id: quakedef.h,v 1.109 2007-02-20 09:14:44 sezero Exp $
+	$Id: quakedef.h,v 1.110 2007-02-22 19:26:51 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -76,12 +76,9 @@
 
 
 //#ifdef DEMOBUILD
-//#define	MAX_SCOREBOARD	8
+//#define	MAX_CLIENTS	8
 //#endif
-#define	MAX_SCOREBOARD	16
-#define	MAX_SCOREBOARDNAME	32
-
-#define	SOUND_CHANNELS	8
+#define	MAX_CLIENTS	16
 
 
 #define	ON_EPSILON	0.1		// point on plane side epsilon

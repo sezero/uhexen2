@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.31 2007-02-17 07:55:36 sezero Exp $
+	$Id: sbar.c,v 1.32 2007-02-22 19:26:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -95,7 +95,7 @@ static cvar_t dmtrans = {"dmtrans", "0", CVAR_ARCHIVE};
 static qpic_t *sb_nums[11];
 static qpic_t *sb_colon, *sb_slash;
 
-static int fragsort[MAX_SCOREBOARD];
+static int fragsort[MAX_CLIENTS];
 
 static int scoreboardlines;
 

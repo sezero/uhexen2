@@ -2,7 +2,7 @@
 	entstate.h
 	structures for entity states and client frames
 
-	$Id: entstate.h,v 1.1 2007-02-20 09:14:44 sezero Exp $
+	$Id: entstate.h,v 1.2 2007-02-22 19:26:51 sezero Exp $
 */
 
 #ifndef __ENTSTATE_H
@@ -58,7 +58,6 @@ typedef struct
 
 #define MAX_CLIENT_STATES	150
 #define MAX_FRAMES		5
-#define MAX_CLIENTS		8
 #define CLEAR_LIMIT		2
 
 #define ENT_STATE_ON		1

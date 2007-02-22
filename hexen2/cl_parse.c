@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.40 2007-02-20 08:28:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.41 2007-02-22 19:26:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -255,7 +255,7 @@ static void CL_ParseServerInfo (void)
 
 // parse maxclients
 	cl.maxclients = MSG_ReadByte ();
-	if (cl.maxclients < 1 || cl.maxclients > MAX_SCOREBOARD)
+	if (cl.maxclients < 1 || cl.maxclients > MAX_CLIENTS)
 	{
 		Con_Printf("Bad maxclients (%u) from server\n", cl.maxclients);
 		return;
@@ -1009,7 +1009,7 @@ static void CL_NewTranslation (int slot)
 	byte	*dest, *source, *sourceA, *sourceB, *colorA, *colorB;
 #endif
 
-	if (slot > cl.maxclients)
+	if (slot >= cl.maxclients)
 		Sys_Error ("%s: slot > cl.maxclients", __FUNCTION__);
 	if (!cl.scores[slot].playerclass)
 		return;
@@ -1389,7 +1389,7 @@ void CL_ParseServerMessage (void)
 			Sbar_Changed();
 			i = MSG_ReadByte ();
 			if (i >= cl.maxclients)
-				Host_Error ("%s: svc_updatename > MAX_SCOREBOARD", __FUNCTION__);
+				Host_Error ("%s: svc_updatename > MAX_CLIENTS", __FUNCTION__);
 			strcpy (cl.scores[i].name, MSG_ReadString ());
 			break;
 
@@ -1397,7 +1397,7 @@ void CL_ParseServerMessage (void)
 			Sbar_Changed();
 			i = MSG_ReadByte ();
 			if (i >= cl.maxclients)
-				Host_Error ("%s: svc_updateclass > MAX_SCOREBOARD", __FUNCTION__);
+				Host_Error ("%s: svc_updateclass > MAX_CLIENTS", __FUNCTION__);
 			cl.scores[i].playerclass = (float)MSG_ReadByte();
 			CL_NewTranslation(i); // update the color
 			break;
@@ -1406,7 +1406,7 @@ void CL_ParseServerMessage (void)
 			Sbar_Changed();
 			i = MSG_ReadByte ();
 			if (i >= cl.maxclients)
-				Host_Error ("%s: svc_updatefrags > MAX_SCOREBOARD", __FUNCTION__);
+				Host_Error ("%s: svc_updatefrags > MAX_CLIENTS", __FUNCTION__);
 			cl.scores[i].frags = MSG_ReadShort ();
 			break;
 
@@ -1418,7 +1418,7 @@ void CL_ParseServerMessage (void)
 			Sbar_Changed();
 			i = MSG_ReadByte ();
 			if (i >= cl.maxclients)
-				Host_Error ("%s: svc_updatecolors > MAX_SCOREBOARD", __FUNCTION__);
+				Host_Error ("%s: svc_updatecolors > MAX_CLIENTS", __FUNCTION__);
 			cl.scores[i].colors = MSG_ReadByte ();
 			CL_NewTranslation (i);
 			break;

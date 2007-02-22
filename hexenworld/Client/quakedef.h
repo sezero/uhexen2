@@ -2,7 +2,7 @@
 	quakedef.h
 	common definitions for client and server
 
-	$Id: quakedef.h,v 1.34 2007-02-20 09:14:54 sezero Exp $
+	$Id: quakedef.h,v 1.35 2007-02-22 19:26:55 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -72,11 +72,6 @@
 //
 #define HX_FRAME_TIME	0.05
 #define HX_FPS		20
-
-
-#define	MAX_SCOREBOARD	32		// max numbers of players
-
-#define	SOUND_CHANNELS	8
 
 
 #define	ON_EPSILON	0.1		// point on plane side epsilon
