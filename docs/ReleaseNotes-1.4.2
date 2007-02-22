@@ -4,7 +4,7 @@ Release Notes for version 1.4.2
 
 Changes since HoT-1.4.1 :
 
-Current state: 1.4.2-pre1+ (pre-release, 2007-02-16)
+Current state: 1.4.2-pre1+ (pre-release, 2007-02-22)
 
 General:
 --------
@@ -29,12 +29,21 @@ Console:
 - Added prefix matching support to the maplist command.
 - A duplicate name detection bug in the maplist command was fixed.
 - Updated and sanitized the command lister procedures.
+- Added a -developer command line argument which sets the developer cvar to
+  1 during the init phase (ie. before the config is read).
+
+Server:
+-------
+- Made the Hexen II dedicated server to exec not hexen.rc or config.cfg, but
+  server.cfg if available.
 
 Video:
 ------
 
 OpenGL Renderer:
 ----------------
+- Fixed bug that the array size for playertextures must be MAX_CLIENTS, but
+  was hardcoded as 16.
 
 Sound:
 ------
@@ -45,6 +54,9 @@ CDAudio:
 
 HexenWorld:
 -----------
+- OpenGL: Fixed bug that netgraphtexture was not reset during reinitializa-
+  tion of the draw subsystem (used to affect the packet loss status graph by
+  r_netgraph).
 
 Launcher:
 ----------
