@@ -66,7 +66,7 @@ void Sys_SendKeyEvents (void);
    be to get rid of all x86 specific stuff.
 */
 
-#if ( defined(_M_IX86) || defined(__i386__) ) && defined(USE_INTEL_ASM) && !defined(SERVERONLY)
+#if defined(USE_INTEL_ASM) && !defined(SERVERONLY) && (defined(_M_IX86) || defined(__i386__))
 
 #	define	id386		1
 #	define	UNALIGNED_OK	1	// set to 0 if unaligned accesses are not supported
@@ -82,14 +82,12 @@ void	Sys_PushFPCW_SetHigh (void);
 
 #	define	id386		0
 #	define	UNALIGNED_OK	0
-#   if !defined(SERVERONLY)
-#	define	MaskExceptions()
-#	define	Sys_SetFPCW()
-#	define	Sys_LowFPPrecision()
-#	define	Sys_HighFPPrecision()
-#	define	Sys_PopFPCW()
-#	define	Sys_PushFPCW_SetHigh()
-#   endif
+#	define	MaskExceptions()	do {} while (0)
+#	define	Sys_SetFPCW()		do {} while (0)
+#	define	Sys_LowFPPrecision()	do {} while (0)
+#	define	Sys_HighFPPrecision()	do {} while (0)
+#	define	Sys_PopFPCW()		do {} while (0)
+#	define	Sys_PushFPCW_SetHigh()	do {} while (0)
 #endif
 
 #endif	/* __HX2_SYS_H */
