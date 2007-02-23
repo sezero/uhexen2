@@ -10,6 +10,13 @@ Development Progress	:
       emitted after COM_InitArgv returned and argc and argv members of
       host_parms are assigned. this way, they will be added to the log
       when I merge the new logging stuff.
+    * defined the x86 fpu functions as do {} while (0) macroes when not
+      using x86 assembly.
+    * opengl: killed the empty procedures which served for compatibility with
+      the software version. defined them as do {} while (0) macroes.
+    * fs_gamedir_nopath (formerly gamedirfile) had an array size of MAX_OSPATH
+      which is crazy because it holds one directory name without any path.
+      made it 32 chars long which should be more than enough.
 
 2007-02-22 (CVS):
     * added the config file reading and init-phase cvar locking to
