@@ -2,14 +2,12 @@
 	common.c
 	misc utility functions used in client and server
 
-	$Id: common.c,v 1.90 2007-02-20 09:21:32 sezero Exp $
+	$Id: common.c,v 1.91 2007-02-23 15:16:17 sezero Exp $
 */
 
 #include "quakedef.h"
 #include <ctype.h>
 
-
-#define NUM_SAFE_ARGVS	6
 
 static char	*largv[MAX_NUM_ARGVS + NUM_SAFE_ARGVS + 1];
 static char	*argvdummy = " ";

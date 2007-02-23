@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.39 2007-02-12 16:53:07 sezero Exp $
+	$Id: common.h,v 1.40 2007-02-23 15:16:17 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -60,6 +60,8 @@ extern void *Q_malloc(unsigned int size);
 extern void Q_free(void *mem);
 
 //============================================================================
+
+#define NUM_SAFE_ARGVS	6
 
 extern	char		com_token[1024];
 extern	qboolean	com_eof;
