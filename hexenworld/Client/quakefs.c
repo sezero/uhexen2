@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.4 2007-02-15 07:21:40 sezero Exp $
+	$Id: quakefs.c,v 1.5 2007-02-23 18:36:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -21,7 +21,7 @@ static searchpath_t	*fs_base_searchpaths;	// without gamedirs
 
 char	fs_basedir[MAX_OSPATH];
 char	fs_gamedir[MAX_OSPATH];
-char	fs_gamedir_nopath[MAX_OSPATH];
+char	fs_gamedir_nopath[32];
 char	fs_userdir[MAX_OSPATH];
 
 unsigned int	gameflags;

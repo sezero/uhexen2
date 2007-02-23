@@ -2,7 +2,7 @@
 	quakefs.h
 	Hexen II filesystem
 
-	$Id: quakefs.h,v 1.3 2007-02-15 07:21:40 sezero Exp $
+	$Id: quakefs.h,v 1.4 2007-02-23 18:36:15 sezero Exp $
 */
 
 #ifndef __QUAKEFS_H
@@ -19,7 +19,7 @@ extern searchpath_t		*fs_searchpaths;
 
 extern	char	fs_basedir[MAX_OSPATH];
 extern	char	fs_gamedir[MAX_OSPATH];
-extern	char	fs_gamedir_nopath[MAX_OSPATH];
+extern	char	fs_gamedir_nopath[32];
 extern	char	fs_userdir[MAX_OSPATH];
 
 /* NOTE:  the savedir (fs_savedir, or the
