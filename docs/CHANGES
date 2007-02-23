@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-02-23 (CVS):
+    * moved the NUM_SAFE_ARGVS definition to common.h, I might use it
+      in near future.
+    * changed the order of some of the init messages so that they are
+      emitted after COM_InitArgv returned and argc and argv members of
+      host_parms are assigned. this way, they will be added to the log
+      when I merge the new logging stuff.
+
 2007-02-22 (CVS):
     * added the config file reading and init-phase cvar locking to
       the api and took the early reads stuff out of the vid files.
