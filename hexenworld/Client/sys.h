@@ -78,7 +78,7 @@ void	Sys_HighFPPrecision (void);
 void	Sys_PopFPCW (void);
 void	Sys_PushFPCW_SetHigh (void);
 
-#else	// not i386 on no intel asm
+#else	// not i386 or no intel asm
 
 #	define	id386		0
 #	define	UNALIGNED_OK	0
