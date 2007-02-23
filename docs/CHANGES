@@ -17,6 +17,11 @@ Development Progress	:
     * fs_gamedir_nopath (formerly gamedirfile) had an array size of MAX_OSPATH
       which is crazy because it holds one directory name without any path.
       made it 32 chars long which should be more than enough.
+    * fixed a tiny typo in sys.h
+    * no need to print the effective console size every frame. do that
+      only at the beginning and at every actual change.
+    * removed a defunct extern from h2ded/host_cmd.c
+    * more constification and corrections (draw, gl_draw, menu, sbar).
 
 2007-02-22 (CVS):
     * added the config file reading and init-phase cvar locking to
