@@ -650,6 +650,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
+	Sys_Printf("basedir is: %s\n", cwd);
+	Sys_Printf("userdir is: %s\n", userdir);
+
 	isDedicated = (COM_CheckParm ("-dedicated") != 0);
 
 #if !defined(NO_SPLASHES)

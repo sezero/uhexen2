@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.30 2007-02-21 09:42:37 sezero Exp $
+	$Id: sys_unix.c,v 1.31 2007-02-23 15:23:21 sezero Exp $
 
 	Unix system interface code
 */
@@ -374,13 +374,13 @@ int main (int argc, char **argv)
 
 	SV_Init (&parms);
 
-// run one frame immediately for first heartbeat
-	SV_Frame (HX_FRAME_TIME);
-
 // report the filesystem to the user
 	Sys_Printf("userdir is: %s\n", userdir);
 	Sys_Printf("fs_gamedir is: %s\n", fs_gamedir);
 	Sys_Printf("fs_userdir is: %s\n", fs_userdir);
+
+// run one frame immediately for first heartbeat
+	SV_Frame (HX_FRAME_TIME);
 
 //
 // main loop

@@ -486,6 +486,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
+	Sys_Printf("basedir is: %s\n", cwd);
+	Sys_Printf("userdir is: %s\n", userdir);
+
 #if !defined(NO_SPLASHES)
 	hwnd_dialog = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, NULL);
 

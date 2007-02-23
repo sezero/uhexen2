@@ -301,12 +301,12 @@ int main (int argc, char **argv)
 
 	SV_Init (&parms);
 
-// run one frame immediately for first heartbeat
-	SV_Frame (HX_FRAME_TIME);
-
 // report the filesystem to the user
 	Sys_Printf("fs_gamedir is: %s\n",fs_gamedir);
 	Sys_Printf("fs_userdir is: %s\n",fs_userdir);
+
+// run one frame immediately for first heartbeat
+	SV_Frame (HX_FRAME_TIME);
 
 //
 // main loop

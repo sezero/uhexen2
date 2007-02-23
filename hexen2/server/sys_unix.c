@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.15 2007-02-21 10:03:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.16 2007-02-23 15:23:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -371,12 +371,8 @@ int main(int argc, char *argv[])
 			*tmp = 0;
 	}
 
-	Sys_Printf("basedir is: %s\n", cwd);
-
 	if (Sys_GetUserdir(userdir,sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
-
-	Sys_Printf("userdir is: %s\n", userdir);
 
 	parms.basedir = cwd;
 	parms.userdir = userdir;
@@ -385,6 +381,9 @@ int main(int argc, char *argv[])
 
 	parms.argc = com_argc;
 	parms.argv = com_argv;
+
+	Sys_Printf("basedir is: %s\n", cwd);
+	Sys_Printf("userdir is: %s\n", userdir);
 
 	parms.memsize = STD_MEM_ALLOC;
 
