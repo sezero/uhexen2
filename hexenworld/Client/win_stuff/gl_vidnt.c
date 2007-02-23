@@ -123,6 +123,7 @@ static int	vid_modenum = NO_MODE;	// current video mode, set after mode setting 
 static int	vid_deskwidth, vid_deskheight, vid_deskbpp, vid_deskmode;
 static int	windowed_default;
 static qboolean	vid_conscale = false;
+static char	vid_consize[MAX_DESC];
 
 extern qboolean	scr_skipupdate;
 extern qboolean	draw_reinit;
@@ -262,7 +263,7 @@ static void VID_ConWidth (int modenum)
 	if (!vid_conscale)
 	{
 		Cvar_SetValue ("vid_config_consize", modelist[modenum].width);
-		return;
+		goto finish;
 	}
 
 	w = (int)vid_config_consize.value;
@@ -280,7 +281,7 @@ static void VID_ConWidth (int modenum)
 	{
 		Cvar_SetValue ("vid_config_consize", modelist[modenum].width);
 		vid_conscale = false;
-		return;
+		goto finish;
 	}
 	vid.width = vid.conwidth = w;
 	vid.height = vid.conheight = h;
@@ -288,6 +289,9 @@ static void VID_ConWidth (int modenum)
 		vid_conscale = true;
 	else
 		vid_conscale = false;
+finish:
+	snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %dx%d)",
+			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
 }
 
 void VID_ChangeConsize(int key)
@@ -334,16 +338,14 @@ set_size:
 		vid_conscale = true;
 	else
 		vid_conscale = false;
+
+	snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %dx%d)",
+			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
 }
 
 char *VID_ReportConsize(void)
 {
-	static char	con_report[32];
-
-	snprintf (con_report, sizeof(con_report), "x%.2f (at %dx%d)",
-			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
-	con_report[sizeof(con_report)-1] = 0;
-	return con_report;
+	return vid_consize;
 }
 
 

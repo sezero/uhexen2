@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.135 2007-02-23 18:35:09 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.136 2007-02-23 19:57:37 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -109,6 +109,7 @@ static int	vid_default = -1;	// modenum of 640x480 as a safe default
 static int	vid_modenum = -1;	// current video mode, set after mode setting succeeds
 static int	vid_maxwidth = 640, vid_maxheight = 480;
 static qboolean	vid_conscale = false;
+static char	vid_consize[MAX_DESC];
 static int	WRHeight, WRWidth;
 
 extern qboolean	scr_skipupdate;
@@ -282,7 +283,7 @@ static void VID_ConWidth (int modenum)
 	if (!vid_conscale)
 	{
 		Cvar_SetValue ("vid_config_consize", modelist[modenum].width);
-		return;
+		goto finish;
 	}
 
 	w = (int)vid_config_consize.value;
@@ -300,7 +301,7 @@ static void VID_ConWidth (int modenum)
 	{
 		Cvar_SetValue ("vid_config_consize", modelist[modenum].width);
 		vid_conscale = false;
-		return;
+		goto finish;
 	}
 	vid.width = vid.conwidth = w;
 	vid.height = vid.conheight = h;
@@ -308,6 +309,9 @@ static void VID_ConWidth (int modenum)
 		vid_conscale = true;
 	else
 		vid_conscale = false;
+finish:
+	snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %dx%d)",
+			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
 }
 
 void VID_ChangeConsize(int key)
@@ -354,16 +358,14 @@ set_size:
 		vid_conscale = true;
 	else
 		vid_conscale = false;
+
+	snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %dx%d)",
+			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
 }
 
 char *VID_ReportConsize(void)
 {
-	static char	con_report[32];
-
-	snprintf (con_report, sizeof(con_report), "x%.2f (at %dx%d)",
-			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
-	con_report[sizeof(con_report)-1] = 0;
-	return con_report;
+	return vid_consize;
 }
 
 
