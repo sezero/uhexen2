@@ -1,7 +1,7 @@
 /*
 	menu.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.h,v 1.5 2006-09-24 17:28:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.h,v 1.6 2007-02-23 23:24:09 sezero Exp $
 */
 
 #ifndef __HX2_MENU_H
@@ -31,14 +31,12 @@ void M_ToggleMenu_f (void);
 void M_Menu_Options_f (void);
 void M_Menu_Quit_f (void);
 
-void M_Print (int cx, int cy, char *str);
-void M_Print2 (int cx, int cy, char *str);
-void M_PrintWhite (int cx, int cy, char *str);
+void M_Print (int cx, int cy, const char *str);
+void M_Print2 (int cx, int cy, const char *str);
+void M_PrintWhite (int cx, int cy, const char *str);
 
 void M_Draw (void);
-void M_DrawCharacter (int cx, int line, int num);
-
-qpic_t	*M_CachePic (char *path);
+void M_DrawCharacter (int cx, int line, const int num);
 
 void M_DrawPic (int x, int y, qpic_t *pic);
 void M_DrawTransPic (int x, int y, qpic_t *pic);
@@ -47,7 +45,7 @@ void M_DrawTextBox2 (int x, int y, int width, int lines);
 
 void M_DrawCheckbox (int x, int y, int on);
 
-void ScrollTitle (char *name);
+void ScrollTitle (const char *name);
 
 #endif	/* __HX2_MENU_H */
 

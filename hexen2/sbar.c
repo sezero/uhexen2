@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.32 2007-02-22 19:26:51 sezero Exp $
+	$Id: sbar.c,v 1.33 2007-02-23 23:24:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -45,8 +45,8 @@ static void Sbar_DrawTransPic(int x, int y, qpic_t *pic);
 static int Sbar_itoa(int num, char *buf);
 static void Sbar_DrawNum(int x, int y, int number, int digits);
 static void Sbar_SortFrags(void);
-//static void Sbar_DrawString(int x, int y, char *str);
-static void Sbar_DrawSmallString(int x, int y, char *str);
+//static void Sbar_DrawString(int x, int y, const char *str);
+static void Sbar_DrawSmallString(int x, int y, const char *str);
 static void DrawBarArtifactNumber(int x, int y, int number);
 
 static void DrawFullScreenInfo(void);
@@ -108,7 +108,7 @@ static qboolean inv_flg;	// true - show inventory interface
 
 static float InventoryHideTime;
 
-extern char *ClassNames[MAX_PLAYER_CLASS];	//from menu.c
+extern const char *ClassNames[MAX_PLAYER_CLASS];	//from menu.c
 
 static int AmuletAC[MAX_PLAYER_CLASS] =
 {
@@ -994,7 +994,7 @@ void Sbar_DeathmatchOverlay(void)
 	}
 }
 
-static void FindName(char *which, char *name)
+static void FindName(const char *which, char *name)
 {
 	int		j;
 
@@ -1695,7 +1695,7 @@ static void Sbar_DrawTransPic(int x, int y, qpic_t *pic)
 //
 //==========================================================================
 #if 0	// seems to have no users...
-static void Sbar_DrawString(int x, int y, char *str)
+static void Sbar_DrawString(int x, int y, const char *str)
 {
 	Draw_String (x+((vid.width-320)>>1), y+vid.height-(int)BarHeight, str);
 }
@@ -1707,7 +1707,7 @@ static void Sbar_DrawString(int x, int y, char *str)
 //
 //==========================================================================
 
-static void Sbar_DrawSmallString(int x, int y, char *str)
+static void Sbar_DrawSmallString(int x, int y, const char *str)
 {
 	Draw_SmallString (x+((vid.width-320)>>1), y+vid.height-(int)BarHeight, str);
 }

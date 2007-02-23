@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.28 2007-02-17 07:55:32 sezero Exp $
+	$Id: draw.c,v 1.29 2007-02-23 23:24:08 sezero Exp $
 */
 
 
@@ -223,26 +223,27 @@ It can be clipped to the top of the screen to allow the console to be
 smoothly scrolled off.
 ================
 */
-void Draw_Character (int x, int y, unsigned int num)
+void Draw_Character (int x, int y, const unsigned int num)
 {
 	byte			*dest;
 	byte			*source;
 	unsigned short	*pusdest;
 	int				drawline;
 	int				row, col;
+	unsigned int			c = num;
 
-	num &= 511;
+	c &= 511;
 
 	if (y <= -8)
 		return;			// totally off screen
 
 	if (y > vid.height - 8 || x < 0 || x > vid.width - 8)
 		return;
-	if (num < 0 || num > 511)
+	if (c < 0 || c > 511)
 		return;
 
-	row = num>>5;
-	col = num&31;
+	row = c>>5;
+	col = c&31;
 	source = draw_chars + (row<<11) + (col<<3);
 
 	if (y < 0)
@@ -358,7 +359,7 @@ void Draw_Character (int x, int y, unsigned int num)
 Draw_String
 ================
 */
-void Draw_String (int x, int y, char *str)
+void Draw_String (int x, int y, const char *str)
 {
 	while (*str)
 	{
@@ -368,7 +369,7 @@ void Draw_String (int x, int y, char *str)
 	}
 }
 
-void Draw_RedString (int x, int y, char *str)
+void Draw_RedString (int x, int y, const char *str)
 {
 	while (*str)
 	{
@@ -378,7 +379,7 @@ void Draw_RedString (int x, int y, char *str)
 	}
 }
 
-static void Draw_Pixel (int x, int y, byte color)
+static void Draw_Pixel (int x, int y, const byte color)
 {
 	byte			*dest;
 	unsigned short	*pusdest;
@@ -435,27 +436,28 @@ void Draw_Crosshair (void)
 //
 //==========================================================================
 
-void Draw_SmallCharacter(int x, int y, int num)
+void Draw_SmallCharacter(int x, int y, const int num)
 {
 	byte		*dest, *source;
 	unsigned short	*pusdest;
 	int		height, row, col;
+	int		c = num;
 
-	if (num < 32)
+	if (c < 32)
 	{
-		num = 0;
+		c = 0;
 	}
-	else if (num >= 'a' && num <= 'z')
+	else if (c >= 'a' && c <= 'z')
 	{
-		num -= 64;
+		c -= 64;
 	}
-	else if (num > '_')
+	else if (c > '_')
 	{
-		num = 0;
+		c = 0;
 	}
 	else
 	{
-		num -= 32;
+		c -= 32;
 	}
 
 	if (y >= vid.height)
@@ -479,8 +481,8 @@ void Draw_SmallCharacter(int x, int y, int num)
 		height = 5;
 	}
 
-	row = num>>4;
-	col = num&15;
+	row = c>>4;
+	col = c&15;
 	source = draw_smallchars+(row<<10)+(col<<3);
 
 	if (r_pixbytes == 1)
@@ -584,7 +586,7 @@ void Draw_SmallCharacter(int x, int y, int num)
 //
 //==========================================================================
 
-void Draw_SmallString (int x, int y, char *str)
+void Draw_SmallString (int x, int y, const char *str)
 {
 	while (*str)
 	{

@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.62 2007-02-20 08:46:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.63 2007-02-23 23:24:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1235,7 +1235,7 @@ static void Host_Name_f (void)
 	MSG_WriteString (&sv.reliable_datagram, host_client->name);
 }
 
-extern char *ClassNames[MAX_PLAYER_CLASS];	//from menu.c
+extern const char *ClassNames[MAX_PLAYER_CLASS];	//from menu.c
 static void Host_Class_f (void)
 {
 	float	newClass;

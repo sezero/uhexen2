@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.76 2007-02-15 07:21:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.77 2007-02-23 23:24:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -121,7 +121,7 @@ static double message_time;
 static void M_ConfigureNetSubsystem(void);
 static void M_Menu_Class_f (void);
 
-char *ClassNames[MAX_PLAYER_CLASS] = 
+const char *ClassNames[MAX_PLAYER_CLASS] = 
 {
 	"Paladin",
 	"Crusader",
@@ -130,7 +130,7 @@ char *ClassNames[MAX_PLAYER_CLASS] =
 	"Demoness"
 };
 
-static char *ClassNamesU[MAX_PLAYER_CLASS] = 
+static const char *ClassNamesU[MAX_PLAYER_CLASS] = 
 {
 	"PALADIN",
 	"CRUSADER",
@@ -139,7 +139,7 @@ static char *ClassNamesU[MAX_PLAYER_CLASS] =
 	"DEMONESS"
 };
 
-static char *DiffNames[MAX_PLAYER_CLASS][4] =
+static const char *DiffNames[MAX_PLAYER_CLASS][4] =
 {
 	{	// Paladin
 		"APPRENTICE",
@@ -187,12 +187,12 @@ M_DrawCharacter
 Draws one solid graphics character, centered, on line
 ================
 */
-void M_DrawCharacter (int cx, int line, int num)
+void M_DrawCharacter (int cx, int line, const int num)
 {
 	Draw_Character ( cx + ((vid.width - 320)>>1), line, num);
 }
 
-void M_Print (int cx, int cy, char *str)
+void M_Print (int cx, int cy, const char *str)
 {
 	while (*str)
 	{
@@ -209,12 +209,12 @@ M_DrawCharacter2
 Draws one solid graphics character, centered H and V
 ================
 */
-static void M_DrawCharacter2 (int cx, int line, int num)
+static void M_DrawCharacter2 (int cx, int line, const int num)
 {
 	Draw_Character ( cx + ((vid.width - 320)>>1), line + ((vid.height - 200)>>1), num);
 }
 
-void M_Print2 (int cx, int cy, char *str)
+void M_Print2 (int cx, int cy, const char *str)
 {
 	while (*str)
 	{
@@ -224,7 +224,7 @@ void M_Print2 (int cx, int cy, char *str)
 	}
 }
 
-void M_PrintWhite (int cx, int cy, char *str)
+void M_PrintWhite (int cx, int cy, const char *str)
 {
 	while (*str)
 	{
@@ -565,32 +565,35 @@ smoothly scrolled off.
 
 #ifndef	GLQUAKE
 
-static int M_DrawBigCharacter (int x, int y, int num, int numNext)
+static int M_DrawBigCharacter (int x, int y, const int num, const int numNext)
 {
 	qpic_t	*p;
 	int	ypos,xpos;
 	byte	*dest;
 	byte	*source;
-	int	add;
+	int	add, c, cNext;
 
 	if (num == ' ')
 		return 32;
 
-	if (num == '/')
-		num = 26;
-	else
-		num -= 65;
+	c = num;
+	cNext = numNext;
 
-	if (num < 0 || num >= 27)	// only a-z and /
+	if (c == '/')
+		c = 26;
+	else
+		c -= 65;
+
+	if (c < 0 || c >= 27)	// only a-z and /
 		return 0;
 
-	if (numNext == '/')
-		numNext = 26;
+	if (cNext == '/')
+		cNext = 26;
 	else
-		numNext -= 65;
+		cNext -= 65;
 
 	p = Draw_CachePic ("gfx/menu/bigfont.lmp");
-	source = p->data + ((num % 8) * 20) + (num / 8 * p->width * 20);
+	source = p->data + ((c % 8) * 20) + (c / 8 * p->width * 20);
 
 	for (ypos = 0; ypos < 19; ypos++)
 	{
@@ -605,39 +608,40 @@ static int M_DrawBigCharacter (int x, int y, int num, int numNext)
 		source += (p->width - 19);
 	}
 
-	if (numNext < 0 || numNext >= 27)
+	if (cNext < 0 || cNext >= 27)
 		return 0;
 
 	add = 0;
-	if (num == (int)'C'-65 && numNext == (int)'P'-65)
+	if (c == (int)'C'-65 && cNext == (int)'P'-65)
 		add = 3;
 
-	return BigCharWidth[num][numNext] + add;
+	return BigCharWidth[c][cNext] + add;
 }
 
 #endif
 
-static void M_DrawBigString(int x, int y, char *string)
+static void M_DrawBigString(int x, int y, const char *string)
 {
-	int c,length;
+	int		_x = x;
+	const char	*p = string;
 
-	x += ((vid.width - 320)>>1);
+	_x += ((vid.width - 320)>>1);
 
-	length = strlen(string);
-	for (c = 0; c < length; c++)
+	while (*p)
 	{
-		x += M_DrawBigCharacter(x,y,string[c],string[c+1]);
+		_x += M_DrawBigCharacter(_x, y, *p, *(p+1));
+		++p;
 	}
 }
 
 
-void ScrollTitle (char *name)
+void ScrollTitle (const char *name)
 {
-	float delta;
-	qpic_t	*p;
-	static char *LastName = "";
-	int finaly;
-	static qboolean CanSwitch = true;
+	qpic_t			*p;
+	float		delta;
+	int		finaly;
+	static const char	*LastName = "";
+	static qboolean		CanSwitch = true;
 
 	if (TitlePercent < TitleTargetPercent)
 	{
@@ -1749,7 +1753,7 @@ forward:
 static int	m_net_cursor = 0;
 static int	m_net_items;
 
-char *net_helpMessage [] = 
+const char *net_helpMessage [] = 
 {
 /* .........1.........2.... */
   " Novell network LANs    ",
@@ -2206,14 +2210,12 @@ enum
 	OGL_ITEMS
 };
 
-typedef struct
+static const struct
 {
 	char	*name;	// legible string value
 	char	*desc;	// description for user
 	int	glenum;	// opengl enum
-} lmformat_t;
-
-static lmformat_t lm_formats[] =
+} lm_formats[] =
 {
 	{ "gl_luminance",	"gl_luminance (8 bit)",	GL_LUMINANCE	},
 #if 0
@@ -2521,7 +2523,7 @@ static void M_OpenGL_Key (int k)
 //=============================================================================
 /* KEYS MENU */
 
-static char *bindnames[][2] =
+static const char *bindnames[][2] =
 {
 	{"+attack",		"attack"},
 	{"impulse 10",		"next weapon"},
@@ -2584,7 +2586,7 @@ static void M_Menu_Keys_f (void)
 }
 
 
-static void M_FindKeysForCommand (char *command, int *twokeys)
+static void M_FindKeysForCommand (const char *command, int *twokeys)
 {
 	int		count;
 	int		j;
@@ -2614,7 +2616,7 @@ static void M_FindKeysForCommand (char *command, int *twokeys)
 	}
 }
 
-static void M_UnbindCommand (char *command)
+static void M_UnbindCommand (const char *command)
 {
 	int		j;
 	int		l;
@@ -2852,7 +2854,7 @@ static int		m_quit_prevstate;
 static qboolean		wasInMenus;
 
 #if 0
-static char *quitMessage [] = 
+static const char *quitMessage [] = 
 {
 /* .........1.........2.... */
   "   Look! Behind you!    ",
@@ -2900,13 +2902,13 @@ static char *quitMessage [] =
 static float LinePos;
 static int LineTimes;
 static int MaxLines;
-static char **LineText;
+static const char **LineText;
 static qboolean SoundPlayed;
 
 
 #define MAX_LINES 138
 
-static char *CreditText[MAX_LINES] =
+static const char *CreditText[MAX_LINES] =
 {
    "Project Director: James Monroe",
    "Creative Director: Brian Raffel",
@@ -3050,7 +3052,7 @@ static char *CreditText[MAX_LINES] =
 
 #define MAX_LINES2 150
 
-static char *Credit2Text[MAX_LINES2] =
+static const char *Credit2Text[MAX_LINES2] =
 {
    "PowerTrip: James (emorog) Monroe",
    "Cartoons: Brian Raffel",
@@ -3582,13 +3584,11 @@ static void M_LanConfig_Key (int key)
 //=============================================================================
 /* GAME OPTIONS MENU */
 
-typedef struct
+static const struct
 {
 	char	*name;
 	char	*description;
-} level_t;
-
-static level_t	levels[] =
+} levels[] =
 {
 	{"demo1", "Blackmarsh"},			// 0
 	{"demo2", "Barbican"},				// 1
@@ -3675,14 +3675,12 @@ static level_t	levels[] =
 	{"tibet10",	"The Inner Sanctum of Praevus"},// 69
 };
 
-typedef struct
+static const struct
 {
 	char	*description;
 	int		firstLevel;
 	int		levels;
-} episode_t;
-
-static episode_t	episodes[] =
+} episodes[] =
 {
 	// Demo
 	{"Demo", 0, 2},

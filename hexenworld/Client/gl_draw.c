@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.82 2007-02-22 18:05:21 sezero Exp $
+	$Id: gl_draw.c,v 1.83 2007-02-23 23:24:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -539,21 +539,22 @@ It can be clipped to the top of the screen to allow the console to be
 smoothly scrolled off.
 ================
 */
-void Draw_Character (int x, int y, unsigned int num)
+void Draw_Character (int x, int y, const unsigned int num)
 {
 	int		row, col;
+	unsigned int	c = num;
 	float	frow, fcol, xsize,ysize;
 
-	if (num == 32)
+	if (c == 32)
 		return;		// space
 
-	num &= 511;
+	c &= 511;
 
 	if (y <= -8)
 		return;		// totally off screen
 
-	row = num>>5;
-	col = num&31;
+	row = c>>5;
+	col = c&31;
 
 	xsize = 0.03125;
 	ysize = 0.0625;
@@ -579,7 +580,7 @@ void Draw_Character (int x, int y, unsigned int num)
 Draw_String
 ================
 */
-void Draw_String (int x, int y, char *str)
+void Draw_String (int x, int y, const char *str)
 {
 	while (*str)
 	{
@@ -589,7 +590,7 @@ void Draw_String (int x, int y, char *str)
 	}
 }
 
-void Draw_RedString (int x, int y, char *str)
+void Draw_RedString (int x, int y, const char *str)
 {
 	while (*str)
 	{
@@ -647,36 +648,37 @@ void Draw_Crosshair (void)
 // screen.
 //
 //==========================================================================
-void Draw_SmallCharacter (int x, int y, int num)
+void Draw_SmallCharacter (int x, int y, const int num)
 {
 	int		row, col;
+	int		c = num;
 	float	frow, fcol, xsize,ysize;
 
-	if (num < 32)
+	if (c < 32)
 	{
-		num = 0;
+		c = 0;
 	}
-	else if (num >= 'a' && num <= 'z')
+	else if (c >= 'a' && c <= 'z')
 	{
-		num -= 64;
+		c -= 64;
 	}
-	else if (num > '_')
+	else if (c > '_')
 	{
-		num = 0;
+		c = 0;
 	}
 	else
 	{
-		num -= 32;
+		c -= 32;
 	}
 
-	if (num == 0)
+	if (c == 0)
 		return;
 
 	if (y <= -8 || y >= vid.height)
 		return; 	// totally off screen
 
-	row = num>>4;
-	col = num&15;
+	row = c>>4;
+	col = c&15;
 
 	xsize = 0.0625;
 	ysize = 0.25;
@@ -702,7 +704,7 @@ void Draw_SmallCharacter (int x, int y, int num)
 // Draw_SmallString
 //
 //==========================================================================
-void Draw_SmallString (int x, int y, char *str)
+void Draw_SmallString (int x, int y, const char *str)
 {
 	while (*str)
 	{
@@ -1037,30 +1039,33 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p
 	glEnd_fp ();
 }
 
-int M_DrawBigCharacter (int x, int y, int num, int numNext)
+int M_DrawBigCharacter (int x, int y, const int num, const int numNext)
 {
 	int		row, col;
 	float	frow, fcol, xsize, ysize;
-	int		add;
+	int		add, c, cNext;
 
 	if (num == ' ')
 		return 32;
 
-	if (num == '/')
-		num = 26;
-	else
-		num -= 65;
+	c = num;
+	cNext = numNext;
 
-	if (num < 0 || num >= 27)  // only a-z and /
+	if (c == '/')
+		c = 26;
+	else
+		c -= 65;
+
+	if (c < 0 || c >= 27)  // only a-z and /
 		return 0;
 
-	if (numNext == '/')
-		numNext = 26;
+	if (cNext == '/')
+		cNext = 26;
 	else
-		numNext -= 65;
+		cNext -= 65;
 
-	row = num/8;
-	col = num%8;
+	row = c / 8;
+	col = c % 8;
 
 	xsize = 0.125;
 	ysize = 0.25;
@@ -1080,14 +1085,14 @@ int M_DrawBigCharacter (int x, int y, int num, int numNext)
 	glVertex2f_fp (x, y+20);
 	glEnd_fp ();
 
-	if (numNext < 0 || numNext >= 27)
+	if (cNext < 0 || cNext >= 27)
 		return 0;
 
 	add = 0;
-	if (num == (int)'C'-65 && numNext == (int)'P'-65)
+	if (c == (int)'C'-65 && cNext == (int)'P'-65)
 		add = 3;
 
-	return BigCharWidth[num][numNext] + add;
+	return BigCharWidth[c][cNext] + add;
 }
 
 

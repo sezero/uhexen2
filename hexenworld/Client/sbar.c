@@ -1,7 +1,7 @@
 /*
 	sbar.c
 
-	$Id: sbar.c,v 1.27 2007-02-22 19:26:55 sezero Exp $
+	$Id: sbar.c,v 1.28 2007-02-23 23:24:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -46,9 +46,9 @@ static void Sbar_DrawTransPic(int x, int y, qpic_t *pic);
 static int Sbar_itoa(int num, char *buf);
 static void Sbar_DrawNum(int x, int y, int number, int digits);
 static void Sbar_SortFrags (qboolean includespec);
-//static void Sbar_DrawString(int x, int y, char *str);
-static void Sbar_DrawRedString (int cx, int cy, char *str);
-static void Sbar_DrawSmallString(int x, int y, char *str);
+//static void Sbar_DrawString(int x, int y, const char *str);
+static void Sbar_DrawRedString (int cx, int cy, const char *str);
+static void Sbar_DrawSmallString(int x, int y, const char *str);
 static void DrawBarArtifactNumber(int x, int y, int number);
 
 static void DrawFullScreenInfo(void);
@@ -113,7 +113,7 @@ static qboolean inv_flg;	// true - show inventory interface
 
 static float InventoryHideTime;
 
-static char *PlayerClassNames[MAX_PLAYER_CLASS] =
+static const char *PlayerClassNames[MAX_PLAYER_CLASS] =
 {
 	"Paladin",
 	"Crusader",
@@ -1212,7 +1212,7 @@ void Sbar_DeathmatchOverlay(void)
 }
 
 #if 0
-static void FindName(char *which, char *name)
+static void FindName(const char *which, char *name)
 {
 	int		j;
 
@@ -2075,13 +2075,13 @@ static void Sbar_DrawTransPic(int x, int y, qpic_t *pic)
 //
 //==========================================================================
 #if 0	// seems to have no users...
-static void Sbar_DrawString(int x, int y, char *str)
+static void Sbar_DrawString(int x, int y, const char *str)
 {
 	Draw_String (x+((vid.width-320)>>1), y+vid.height-(int)BarHeight, str);
 }
 #endif
 
-void Sbar_DrawRedString (int cx, int cy, char *str)
+void Sbar_DrawRedString (int cx, int cy, const char *str)
 {
 	while (*str)
 	{
@@ -2097,7 +2097,7 @@ void Sbar_DrawRedString (int cx, int cy, char *str)
 //
 //==========================================================================
 
-static void Sbar_DrawSmallString(int x, int y, char *str)
+static void Sbar_DrawSmallString(int x, int y, const char *str)
 {
 	Draw_SmallString (x+((vid.width-320)>>1), y+vid.height-(int)BarHeight, str);
 }
