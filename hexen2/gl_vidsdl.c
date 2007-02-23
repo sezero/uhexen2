@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.142 2007-02-22 18:04:24 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.143 2007-02-23 18:35:09 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -213,24 +213,6 @@ cvar_t		_enable_mouse = {"_enable_mouse", "1", CVAR_ARCHIVE};
 
 
 //====================================
-
-// functions for compatability with software renderer
-
-void VID_LockBuffer (void)
-{
-}
-
-void VID_UnlockBuffer (void)
-{
-}
-
-void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
-{
-}
-
-void D_EndDirectRect (int x, int y, int width, int height)
-{
-}
 
 void VID_HandlePause (qboolean paused)
 {

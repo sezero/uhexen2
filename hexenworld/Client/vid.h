@@ -79,9 +79,14 @@ void VID_Shutdown (void);
 void VID_Update (vrect_t *rects);
 // flushes the given rectangles from the view buffer to the screen
 
+#if defined(GLQUAKE)
+#define VID_LockBuffer()	do {} while (0)
+#define VID_UnlockBuffer()	do {} while (0)
+#else	/* real thing for S/W version */
 void VID_LockBuffer (void);
 void VID_UnlockBuffer (void);
-// vid buffer locking
+// vid buffer locking (not used in opengl version)
+#endif	/* GLQUAKE */
 
 void VID_HandlePause (qboolean paused);
 // called only on Win32, when pause happens, so the mouse can be released
@@ -89,18 +94,18 @@ void VID_HandlePause (qboolean paused);
 void VID_ToggleFullscreen (void);	// from Steven
 // toggles between windowed/fullscreen modes. for unix/sdl
 
-#ifdef GLQUAKE
+#if defined(GLQUAKE)
 void VID_ChangeConsize (int key);
 // changes effective console size. callback for the opengl features menu
 
 char *VID_ReportConsize(void);
 // reports effective console size as a string to the opengl features menu
-#endif
+#endif	/* ! GLQUAKE */
 
-#ifndef H2W
+#if !defined(H2W)
 void D_ShowLoadingSize (void);
 // displays progress bars while loading a map. (not used in hexenworld.)
-#endif
+#endif	/* ! H2W */
 
 extern void (*vid_menudrawfn)(void);
 extern void (*vid_menukeyfn)(int key);
@@ -110,8 +115,10 @@ extern void (*vid_menukeyfn)(int key);
 /*
  * Misc globals:
  */
+#if !defined(GLQUAKE)
 extern	qboolean	msg_suppress_1;	// suppresses resolution and cache size console output
 					//  a fullscreen DIB focus gain/loss
+#endif	/* ! GLQUAKE */
 
 #endif	/* __VID_DEFS_H */
 

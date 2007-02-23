@@ -220,24 +220,6 @@ cvar_t		_enable_mouse = {"_enable_mouse", "0", CVAR_ARCHIVE};
 
 //====================================
 
-// functions for compatability with software renderer
-
-void VID_LockBuffer (void)
-{
-}
-
-void VID_UnlockBuffer (void)
-{
-}
-
-void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
-{
-}
-
-void D_EndDirectRect (int x, int y, int width, int height)
-{
-}
-
 void VID_HandlePause (qboolean paused)
 {
 
