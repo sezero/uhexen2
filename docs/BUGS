@@ -26,10 +26,6 @@ Known Bugs
   should be fixed in a better way (R_DrawSpriteModel, probably?).  See
   the workaround in gl_vidnt.c, gl_vidsdl.c, gl_rmain.c.
 
-- HexenWorld (OpenGL Client): Dynamic lights have a problem with RGBA
-  lightmaps (such as torches doesn't illuminate). Luminance mode is fine.
-  To be looked into.
-
 - Hexen II dedicated server: The decorative swords in the village1 and
   demo2 levels are located out of place. To be looked into.
 
