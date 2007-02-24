@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-02-24 (CVS):
+    * HexenWorld OpenGL client had a bug that dynamic lights had a problem
+      with RGBA lightmaps (such as torches didn't illuminate) but Luminance
+      mode was fine. It is fixed now. We still haven't added proper colored
+      dynamic lights like we did in hexen2, but that's for later.
+    * updated the release notes file for future v1.4.2 (2007-02-24).
+
 2007-02-23 (CVS):
     * moved the NUM_SAFE_ARGVS definition to common.h, I might use it
       in near future.
