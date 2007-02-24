@@ -4,10 +4,14 @@ Development Progress	:
 ---------------------------
 
 2007-02-24 (CVS):
-    * HexenWorld OpenGL client had a bug that dynamic lights had a problem
-      with RGBA lightmaps (such as torches didn't illuminate) but Luminance
-      mode was fine. It is fixed now. We still haven't added proper colored
-      dynamic lights like we did in hexen2, but that's for later.
+    * hexenworld opengl client: fixed bug that dynamic lights had a problem
+      with RGBA lightmaps (such as torches didn't illuminate) but luminance
+      mode was fine. Lightmaps in RGBA mode are working now. We still haven't
+      added proper colored dynamic lights like we did in hexen2, but that's
+      for later.
+    * removed the defunct cvar cl_prettylights. it way always on and I think
+      nobody knew about it.  a tiny clean-up in CL_AllocDlight also went in.
+    * updated the BUGS list.
     * updated the release notes file for future v1.4.2 (2007-02-24).
 
 2007-02-23 (CVS):
