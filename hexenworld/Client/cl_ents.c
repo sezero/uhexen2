@@ -57,18 +57,13 @@ dlight_t *CL_AllocDlight (int key)
 	dlight_t	*dl;
 
 // first look for an exact key match
+	dl = cl_dlights;
 	if (key)
 	{
-		dl = cl_dlights;
 		for (i = 0; i < MAX_DLIGHTS; i++, dl++)
 		{
 			if (dl->key == key)
-			{
-				memset (dl, 0, sizeof(*dl));
-				dl->key = key;
-				dl->color[0] = dl->color[1] = dl->color[2] = dl->color[3] = 1;
-				return dl;
-			}
+				goto done;
 		}
 	}
 
@@ -77,18 +72,17 @@ dlight_t *CL_AllocDlight (int key)
 	for (i = 0; i < MAX_DLIGHTS; i++, dl++)
 	{
 		if (dl->die < cl.time)
-		{
-			memset (dl, 0, sizeof(*dl));
-			dl->key = key;
-			dl->color[0] = dl->color[1] = dl->color[2] = dl->color[3] = 1;
-			return dl;
-		}
+			goto done;
 	}
 
 	dl = &cl_dlights[0];
+done:
 	memset (dl, 0, sizeof(*dl));
 	dl->key = key;
-	dl->color[0] = dl->color[1] = dl->color[2] = dl->color[3] = 1;
+	dl->color[0] =
+		dl->color[1] =
+		dl->color[2] =
+		dl->color[3] = 1.0;
 	return dl;
 }
 

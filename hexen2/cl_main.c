@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.33 2007-02-17 07:55:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.34 2007-02-24 20:26:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -28,8 +28,6 @@ cvar_t	m_pitch = {"m_pitch", "0.022", CVAR_ARCHIVE};
 cvar_t	m_yaw = {"m_yaw", "0.022", CVAR_ARCHIVE};
 cvar_t	m_forward = {"m_forward", "1", CVAR_ARCHIVE};
 cvar_t	m_side = {"m_side", "0.8", CVAR_ARCHIVE};
-
-static	cvar_t	cl_prettylights = {"cl_prettylights", "1", CVAR_NONE};
 
 
 client_static_t	cls;
@@ -343,18 +341,13 @@ dlight_t *CL_AllocDlight (int key)
 	dlight_t	*dl;
 
 // first look for an exact key match
+	dl = cl_dlights;
 	if (key)
 	{
-		dl = cl_dlights;
 		for (i = 0; i < MAX_DLIGHTS; i++, dl++)
 		{
 			if (dl->key == key)
-			{
-				memset (dl, 0, sizeof(*dl));
-				dl->key = key;
-				dl->color[0] = dl->color[1] = dl->color[2] = dl->color[3] = 1;
-				return dl;
-			}
+				goto done;
 		}
 	}
 
@@ -363,18 +356,17 @@ dlight_t *CL_AllocDlight (int key)
 	for (i = 0; i < MAX_DLIGHTS; i++, dl++)
 	{
 		if (dl->die < cl.time)
-		{
-			memset (dl, 0, sizeof(*dl));
-			dl->key = key;
-			dl->color[0] = dl->color[1] = dl->color[2] = dl->color[3] = 1;
-			return dl;
-		}
+			goto done;
 	}
 
 	dl = &cl_dlights[0];
+done:
 	memset (dl, 0, sizeof(*dl));
 	dl->key = key;
-	dl->color[0] = dl->color[1] = dl->color[2] = dl->color[3] = 1;
+	dl->color[0] =
+		dl->color[1] =
+		dl->color[2] =
+		dl->color[3] = 1.0;
 	return dl;
 }
 
@@ -571,96 +563,81 @@ static void CL_RelinkEntities (void)
 		{
 			vec3_t		fv, rv, uv;
 
-			if (cl_prettylights.value)
-			{
-				dl = CL_AllocDlight (i);
-				VectorCopy (ent->origin,  dl->origin);
-				dl->origin[2] += 16;
-				AngleVectors (ent->angles, fv, rv, uv);
-				VectorMA (dl->origin, 18, fv, dl->origin);
-				dl->radius = 200 + (rand() & 31);
-				dl->minlight = 32;
-				dl->die = cl.time + 0.1;
+			dl = CL_AllocDlight (i);
+			VectorCopy (ent->origin,  dl->origin);
+			dl->origin[2] += 16;
+			AngleVectors (ent->angles, fv, rv, uv);
+			VectorMA (dl->origin, 18, fv, dl->origin);
+			dl->radius = 200 + (rand() & 31);
+			dl->minlight = 32;
+			dl->die = cl.time + 0.1;
 #		ifdef GLQUAKE
-				if (gl_colored_dynamic_lights.value)
-				{	// Make the dynamic light yellow
-					dl->color[0] = 1.0;
-					dl->color[1] = 1.0;
-					dl->color[2] = 0.5;
-					dl->color[3] = 0.7;
-				}
-#		endif
+			if (gl_colored_dynamic_lights.value)
+			{	// Make the dynamic light yellow
+				dl->color[0] = 1.0;
+				dl->color[1] = 1.0;
+				dl->color[2] = 0.5;
+				dl->color[3] = 0.7;
 			}
+#		endif
 		}
 		if (ent->effects & EF_BRIGHTLIGHT)
 		{
-			if (cl_prettylights.value)
-			{
-				dl = CL_AllocDlight (i);
-				VectorCopy (ent->origin,  dl->origin);
-				dl->origin[2] += 16;
-				dl->radius = 400 + (rand() & 31);
-				dl->die = cl.time + 0.001;
+			dl = CL_AllocDlight (i);
+			VectorCopy (ent->origin,  dl->origin);
+			dl->origin[2] += 16;
+			dl->radius = 400 + (rand() & 31);
+			dl->die = cl.time + 0.001;
 #		ifdef GLQUAKE
-				if (gl_colored_dynamic_lights.value)
-				{
-					dl->color[0] = 0.8;
-					dl->color[1] = 0.8;
-					dl->color[2] = 1.0;
-					dl->color[3] = 0.7;
-				}
-#		endif
+			if (gl_colored_dynamic_lights.value)
+			{
+				dl->color[0] = 0.8;
+				dl->color[1] = 0.8;
+				dl->color[2] = 1.0;
+				dl->color[3] = 0.7;
 			}
+#		endif
 		}
 		if (ent->effects & EF_DIMLIGHT)
 		{
-			if (cl_prettylights.value)
-			{
-				dl = CL_AllocDlight (i);
-				VectorCopy (ent->origin,  dl->origin);
-				dl->radius = 200 + (rand() & 31);
-				dl->die = cl.time + 0.001;
+			dl = CL_AllocDlight (i);
+			VectorCopy (ent->origin,  dl->origin);
+			dl->radius = 200 + (rand() & 31);
+			dl->die = cl.time + 0.001;
 #		ifdef GLQUAKE
-				if (gl_colored_dynamic_lights.value)
-				{
-					dl->color[0] = 0.8;
-					dl->color[1] = 0.6;
-					dl->color[2] = 0.2;
-					dl->color[3] = 0.7;
-				}
-#		endif
+			if (gl_colored_dynamic_lights.value)
+			{
+				dl->color[0] = 0.8;
+				dl->color[1] = 0.6;
+				dl->color[2] = 0.2;
+				dl->color[3] = 0.7;
 			}
+#		endif
 		}
 
 		if (ent->effects & EF_DARKLIGHT)
 		{
-			if (cl_prettylights.value)
-			{
-				dl = CL_AllocDlight (i);
-				VectorCopy (ent->origin,  dl->origin);
-				dl->radius = 200.0 + (rand() & 31);
-				dl->die = cl.time + 0.001;
-				dl->dark = true;
-			}
+			dl = CL_AllocDlight (i);
+			VectorCopy (ent->origin,  dl->origin);
+			dl->radius = 200.0 + (rand() & 31);
+			dl->die = cl.time + 0.001;
+			dl->dark = true;
 		}
 		if (ent->effects & EF_LIGHT)
 		{
-			if (cl_prettylights.value)
-			{
-				dl = CL_AllocDlight (i);
-				VectorCopy (ent->origin,  dl->origin);
-				dl->radius = 200;
-				dl->die = cl.time + 0.001;
+			dl = CL_AllocDlight (i);
+			VectorCopy (ent->origin,  dl->origin);
+			dl->radius = 200;
+			dl->die = cl.time + 0.001;
 #		ifdef GLQUAKE
-				if (gl_colored_dynamic_lights.value)
-				{
-					dl->color[0] = 0.8;
-					dl->color[1] = 0.4;
-					dl->color[2] = 0.2;
-					dl->color[3] = 0.7;
-				}
-#		endif
+			if (gl_colored_dynamic_lights.value)
+			{
+				dl->color[0] = 0.8;
+				dl->color[1] = 0.4;
+				dl->color[2] = 0.2;
+				dl->color[3] = 0.7;
 			}
+#		endif
 		}
 
 		if (ent->model->flags & EF_GIB)
@@ -684,42 +661,38 @@ static void CL_RelinkEntities (void)
 		else if (ent->model->flags & EF_FIREBALL)
 		{
 			R_RocketTrail (oldorg, ent->origin, rt_fireball);
-			if (cl_prettylights.value)
-			{
-				dl = CL_AllocDlight (i);
-				VectorCopy (ent->origin, dl->origin);
-				dl->radius = 120 - (rand() % 20);
-				dl->die = cl.time + 0.01;
+
+			dl = CL_AllocDlight (i);
+			VectorCopy (ent->origin, dl->origin);
+			dl->radius = 120 - (rand() % 20);
+			dl->die = cl.time + 0.01;
 #		ifdef GLQUAKE
-				if (gl_colored_dynamic_lights.value)
-				{
-					dl->color[0] = 0.8;
-					dl->color[1] = 0.2;
-					dl->color[2] = 0.2;
-					dl->color[3] = 0.7;
-				}
-#		endif
+			if (gl_colored_dynamic_lights.value)
+			{
+				dl->color[0] = 0.8;
+				dl->color[1] = 0.2;
+				dl->color[2] = 0.2;
+				dl->color[3] = 0.7;
 			}
+#		endif
 		}
 		else if (ent->model->flags & EF_ACIDBALL)
 		{
 			R_RocketTrail (oldorg, ent->origin, rt_acidball);
-			if (cl_prettylights.value)
-			{
-				dl = CL_AllocDlight (i);
-				VectorCopy (ent->origin, dl->origin);
-				dl->radius = 120 - (rand() % 20);
-				dl->die = cl.time + 0.01;
+
+			dl = CL_AllocDlight (i);
+			VectorCopy (ent->origin, dl->origin);
+			dl->radius = 120 - (rand() % 20);
+			dl->die = cl.time + 0.01;
 #		ifdef GLQUAKE
-				if (gl_colored_dynamic_lights.value)
-				{	// Make the dynamic light green
-					dl->color[0] = 0.2;
-					dl->color[1] = 0.8;
-					dl->color[2] = 0.2;
-					dl->color[3] = 0.7;
-				}
-#		endif
+			if (gl_colored_dynamic_lights.value)
+			{	// Make the dynamic light green
+				dl->color[0] = 0.2;
+				dl->color[1] = 0.8;
+				dl->color[2] = 0.2;
+				dl->color[3] = 0.7;
 			}
+#		endif
 		}
 		else if (ent->model->flags & EF_ICE)
 		{
@@ -728,22 +701,20 @@ static void CL_RelinkEntities (void)
 		else if (ent->model->flags & EF_SPIT)
 		{
 			R_RocketTrail (oldorg, ent->origin, rt_spit);
-			if (cl_prettylights.value)
-			{
-				dl = CL_AllocDlight (i);
-				VectorCopy (ent->origin, dl->origin);
-				dl->radius = -120 - (rand() % 20);
-				dl->die = cl.time + 0.05;
+
+			dl = CL_AllocDlight (i);
+			VectorCopy (ent->origin, dl->origin);
+			dl->radius = -120 - (rand() % 20);
+			dl->die = cl.time + 0.05;
 #		ifdef GLQUAKE
-				if (gl_colored_dynamic_lights.value)
-				{	// Make the dynamic light green
-					dl->color[0] = 0.2;
-					dl->color[1] = 0.6;
-					dl->color[2] = 0.2;
-					dl->color[3] = 0.7;
-				}
-#		endif
+			if (gl_colored_dynamic_lights.value)
+			{	// Make the dynamic light green
+				dl->color[0] = 0.2;
+				dl->color[1] = 0.6;
+				dl->color[2] = 0.2;
+				dl->color[3] = 0.7;
 			}
+#		endif
 		}
 		else if (ent->model->flags & EF_SPELL)
 		{
@@ -990,7 +961,6 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&m_yaw);
 	Cvar_RegisterVariable (&m_forward);
 	Cvar_RegisterVariable (&m_side);
-	Cvar_RegisterVariable (&cl_prettylights);
 
 //	Cvar_RegisterVariable (&cl_autofire);
 
