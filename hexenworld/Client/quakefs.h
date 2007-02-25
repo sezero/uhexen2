@@ -2,12 +2,13 @@
 	quakefs.h
 	Hexen II filesystem
 
-	$Id: quakefs.h,v 1.4 2007-02-23 18:36:15 sezero Exp $
+	$Id: quakefs.h,v 1.5 2007-02-25 19:02:26 sezero Exp $
 */
 
 #ifndef __QUAKEFS_H
 #define __QUAKEFS_H
 
+#if defined(_NEED_SEARCHPATH_T)
 typedef struct searchpath_s
 {
 	char	filename[MAX_OSPATH];
@@ -16,6 +17,7 @@ typedef struct searchpath_s
 } searchpath_t;
 
 extern searchpath_t		*fs_searchpaths;
+#endif	/* _NEED_SEARCHPATH_T */
 
 extern	char	fs_basedir[MAX_OSPATH];
 extern	char	fs_gamedir[MAX_OSPATH];

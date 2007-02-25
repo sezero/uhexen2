@@ -2,8 +2,10 @@
 	quakefs.c
 	quake file io
 
-	$Id: quakeio.c,v 1.3 2007-02-17 07:55:39 sezero Exp $
+	$Id: quakeio.c,v 1.4 2007-02-25 19:02:26 sezero Exp $
 */
+
+#define _NEED_SEARCHPATH_T
 
 #include "quakedef.h"
 #include "pakfile.h"

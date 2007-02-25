@@ -2,8 +2,10 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.6 2007-02-25 19:01:03 sezero Exp $
+	$Id: quakefs.c,v 1.7 2007-02-25 19:02:25 sezero Exp $
 */
+
+#define _NEED_SEARCHPATH_T
 
 #include "quakedef.h"
 #include "pakfile.h"
