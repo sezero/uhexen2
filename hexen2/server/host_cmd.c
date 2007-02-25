@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.15 2007-02-23 23:21:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.16 2007-02-25 16:32:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -207,7 +207,7 @@ static void Host_Map_f (void)
 	if (Cmd_Argc() < 2)	//no map name given
 	{
 		Con_Printf ("map <levelname>: start a new server\n");
-		if (sv.name)
+		if (sv.name[0])
 			Con_Printf ("Currently on: %s\n",sv.name);
 		return;
 	}
