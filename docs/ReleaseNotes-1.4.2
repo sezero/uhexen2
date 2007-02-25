@@ -35,7 +35,10 @@ Console:
 Server:
 -------
 - Made the Hexen II dedicated server to exec not hexen.rc or config.cfg, but
-  server.cfg if available.
+  server.cfg if available. As an alternative, any config file can be exec'ed
+  when starting the server, such as: "h2ded +exec myconfig.cfg"
+- Hexen II dedicated server now starts the demo1 map, if the server is still
+  not active when initialization is complete.
 
 Video:
 ------
@@ -60,6 +63,9 @@ HexenWorld:
 - OpenGL: Fixed bug that dynamic lights had a problem with RGBA lightmaps
   (such as torches didn't illuminate) but luminance mode was fine. Lightmaps
   in RGBA mode are working now.
+- OpenGL: Added colored dynamic lights and extra dynamic lights (stuff copied
+  over from hexen2). The gl_colored_dynamic_lights and gl_extra_dynamic_lights
+  cvars and their menu entries are functional now.
 
 Launcher:
 ----------
