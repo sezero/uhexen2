@@ -3,6 +3,18 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-02-25 (CVS):
+    * h2ded: process the command line arguments at start. if the server is not
+      active when initialization is complete, spawn the demo1 map at start just
+      as hwsv does.
+    * h2ded, map command: don't display the "Currently on" string if sv.name
+      is empty.
+    * added colored dynamic lights and extra dynamic lights to hexenworld
+      opengl client (stuff copied over from hexen2). gl_colored_dynamic_lights
+      and gl_extra_dynamic_lights cvars and their menu entries are functional
+      now.
+    * updated the release notes file for future v1.4.2 (2007-02-25).
+
 2007-02-24 (CVS):
     * hexenworld opengl client: fixed bug that dynamic lights had a problem
       with RGBA lightmaps (such as torches didn't illuminate) but luminance
