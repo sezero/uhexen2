@@ -521,6 +521,17 @@ static void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 		dl->radius = 200 + (rand() & 31);
 		dl->minlight = 32;
 		dl->die = cl.time + 0.1;
+/* since the server never sends svc_muzzleflash, CL_MuzzleFlash()
+   of cl_parse.c does not handle this for us			*/
+#	ifdef GLQUAKE
+		if (gl_colored_dynamic_lights.value)
+		{	// Make the dynamic light yellow
+			dl->color[0] = 1.0;
+			dl->color[1] = 1.0;
+			dl->color[2] = 0.5;
+			dl->color[3] = 0.7;
+		}
+#	endif
 	}
 
 	if (effects & EF_BRIGHTLIGHT)
@@ -530,6 +541,15 @@ static void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 		dl->origin[2] += 16;
 		dl->radius = 400 + (rand() & 31);
 		dl->die = cl.time + 0.001;
+#	ifdef GLQUAKE
+		if (gl_colored_dynamic_lights.value)
+		{
+			dl->color[0] = 0.8;
+			dl->color[1] = 0.8;
+			dl->color[2] = 1.0;
+			dl->color[3] = 0.7;
+		}
+#	endif
 	}
 	if (effects & EF_DIMLIGHT)
 	{
@@ -537,6 +557,15 @@ static void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 		VectorCopy (ent->origin,  dl->origin);
 		dl->radius = 200 + (rand() & 31);
 		dl->die = cl.time + 0.001;
+#	ifdef GLQUAKE
+		if (gl_colored_dynamic_lights.value)
+		{
+			dl->color[0] = 0.8;
+			dl->color[1] = 0.6;
+			dl->color[2] = 0.2;
+			dl->color[3] = 0.7;
+		}
+#	endif
 	}
 /*	if (effects & EF_DARKLIGHT)
 	{
@@ -553,6 +582,15 @@ static void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 		VectorCopy (ent->origin,  dl->origin);
 		dl->radius = 200;
 		dl->die = cl.time + 0.001;
+#	ifdef GLQUAKE
+		if (gl_colored_dynamic_lights.value)
+		{
+			dl->color[0] = 0.8;
+			dl->color[1] = 0.4;
+			dl->color[2] = 0.2;
+			dl->color[3] = 0.7;
+		}
+#	endif
 	}
 
 	if (effects & EF_POISON_GAS)
@@ -809,6 +847,15 @@ static void CL_LinkPacketEntities (void)
 			VectorCopy (ent->origin, dl->origin);
 			dl->radius = 120 - (rand() % 20);
 			dl->die = cl.time + 0.01;
+#		ifdef GLQUAKE
+			if (gl_colored_dynamic_lights.value)
+			{
+				dl->color[0] = 0.8;
+				dl->color[1] = 0.2;
+				dl->color[2] = 0.2;
+				dl->color[3] = 0.7;
+			}
+#		endif
 		}
 		else if (ent->model->flags & EF_ICE)
 		{
@@ -821,6 +868,15 @@ static void CL_LinkPacketEntities (void)
 			VectorCopy (ent->origin, dl->origin);
 			dl->radius = -120 - (rand() % 20);
 			dl->die = cl.time + 0.05;
+#		ifdef GLQUAKE
+			if (gl_colored_dynamic_lights.value)
+			{	// Make the dynamic light green
+				dl->color[0] = 0.2;
+				dl->color[1] = 0.6;
+				dl->color[2] = 0.2;
+				dl->color[3] = 0.7;
+			}
+#		endif
 		}
 		else if (ent->model->flags & EF_SPELL)
 		{
@@ -838,6 +894,23 @@ static void CL_LinkPacketEntities (void)
 		else if (ent->model->flags & EF_VORP_MISSILE)
 		{
 			R_RocketTrail (old_origin, ent->origin, rt_vorpal);
+#		ifdef GLQUAKE
+			// extra dynamic lights
+			if (gl_extra_dynamic_lights.value)
+			{
+				dl = CL_AllocDlight (i);
+				VectorCopy (ent->origin, dl->origin);
+				dl->radius = 240 - (rand() % 20);
+				dl->die = cl.time + 0.01;
+				if (gl_colored_dynamic_lights.value)
+				{	// Make the dynamic light blue
+					dl->color[0] = 0.3;
+					dl->color[1] = 0.3;
+					dl->color[2] = 0.8;
+					dl->color[3] = 0.7;
+				}
+			}
+#		endif
 		}
 		else if (ent->model->flags & EF_SET_STAFF)
 		{
@@ -847,13 +920,68 @@ static void CL_LinkPacketEntities (void)
 		{
 			if ((rand() & 3) < 1)
 				R_RocketTrail (old_origin, ent->origin, rt_magicmissile);
+#		ifdef GLQUAKE
+			// extra dynamic lights
+			if (gl_extra_dynamic_lights.value)
+			{
+				dl = CL_AllocDlight (i);
+				VectorCopy (ent->origin, dl->origin);
+				dl->radius = 240 - (rand() % 20);
+				dl->die = cl.time + 0.01;
+				if (gl_colored_dynamic_lights.value)
+				{	// Make the dynamic light blue
+					dl->color[0] = 0.1;
+					dl->color[1] = 0.1;
+					dl->color[2] = 0.8;
+					dl->color[3] = 0.7;
+				}
+			}
+#		endif
 		}
 		else if (ent->model->flags & EF_BONESHARD)
 			R_RocketTrail (old_origin, ent->origin, rt_boneshard);
 		else if (ent->model->flags & EF_SCARAB)
+		{
 			R_RocketTrail (old_origin, ent->origin, rt_scarab);
+#		ifdef GLQUAKE
+			// extra dynamic lights
+			if (gl_extra_dynamic_lights.value)
+			{
+				dl = CL_AllocDlight (i);
+				VectorCopy (ent->origin, dl->origin);
+				dl->radius = 240 - (rand() % 20);
+				dl->die = cl.time + 0.01;
+				if (gl_colored_dynamic_lights.value)
+				{	// Make the dynamic light orange
+					dl->color[0] = 0.9;
+					dl->color[1] = 0.6;
+					dl->color[2] = 0.1;
+					dl->color[3] = 0.7;
+				}
+			}
+#		endif
+		}
 		else if (ent->model->flags & EF_ACIDBALL)
+		{
 			R_RocketTrail (old_origin, ent->origin, rt_acidball);
+#		ifdef GLQUAKE
+			// extra dynamic lights
+			if (gl_extra_dynamic_lights.value)
+			{
+				dl = CL_AllocDlight (i);
+				VectorCopy (ent->origin, dl->origin);
+				dl->radius = 120 - (rand() % 20);
+				dl->die = cl.time + 0.01;
+				if (gl_colored_dynamic_lights.value)
+				{	// Make the dynamic light green
+					dl->color[0] = 0.2;
+					dl->color[1] = 0.8;
+					dl->color[2] = 0.2;
+					dl->color[3] = 0.7;
+				}
+			}
+#		endif
+		}
 		else if (ent->model->flags & EF_BLOODSHOT)
 			R_RocketTrail (old_origin, ent->origin, rt_bloodshot);
 	}
