@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.19 2007-02-22 19:26:55 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.20 2007-02-25 16:30:53 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -611,15 +611,21 @@ void Host_Init (quakeparms_t *parms)
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
 
-//	Cbuf_InsertText ("exec hexen.rc\n");
 	Cbuf_InsertText ("exec server.cfg\n");
-	Cbuf_Execute();
+
+	cl_warncmd.value = 1;
 
 	Con_Printf("\n===== Hexen II dedicated server initialized ======\n\n");
 
 	host_initialized = true;
 
-	cl_warncmd.value = 1;
+	// process command line arguments
+	Cmd_StuffCmds_f ();
+	Cbuf_Execute ();
+
+	// if a map wasn't specified on the command line, spawn demo1.map
+	if (!sv.name[0])
+		Cmd_ExecuteString ("map demo1", src_command);
 }
 
 
