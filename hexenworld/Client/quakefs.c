@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.5 2007-02-23 18:36:15 sezero Exp $
+	$Id: quakefs.c,v 1.6 2007-02-25 19:01:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -137,28 +137,6 @@ static void CheckRegistered (void)
 	gameflags |= GAME_REGISTERED;
 }
 
-
-/*
-============
-FS_Path_f
-
-============
-*/
-static void FS_Path_f (void)
-{
-	searchpath_t	*s;
-
-	Con_Printf ("Current search path:\n");
-	for (s = fs_searchpaths ; s ; s = s->next)
-	{
-		if (s == fs_base_searchpaths)
-			Con_Printf ("----------\n");
-		if (s->pack)
-			Con_Printf ("%s (%i files)\n", s->pack->filename, s->pack->numfiles);
-		else
-			Con_Printf ("%s\n", s->filename);
-	}
-}
 
 /*
 =================
@@ -677,6 +655,193 @@ static void MoveUserData (void)
 }
 #endif
 
+
+//============================================================================
+
+/* 
+==============================================================================
+
+MISC CONSOLE COMMANDS
+
+==============================================================================
+*/
+
+/*
+============
+FS_Path_f
+Prints the search path to the console
+============
+*/
+static void FS_Path_f (void)
+{
+	searchpath_t	*s;
+
+	Con_Printf ("Current search path:\n");
+	for (s = fs_searchpaths ; s ; s = s->next)
+	{
+		if (s == fs_base_searchpaths)
+			Con_Printf ("----------\n");
+		if (s->pack)
+			Con_Printf ("%s (%i files)\n", s->pack->filename, s->pack->numfiles);
+		else
+			Con_Printf ("%s\n", s->filename);
+	}
+}
+
+/*
+===========
+processMapname: Callback for FS_Maplist_f.
+Returns 0 if a name is skipped, the current
+number of names added to the list if the name
+is added, or -1 upon failures.
+===========
+*/
+#if !defined(SERVERONLY)	/* dedicated servers dont need this command */
+
+#define MAX_NUMMAPS	256	/* max number of maps to list */
+static int		map_count = 0;
+static char		*maplist[MAX_NUMMAPS];
+
+static int processMapname (const char *mapname, const char *partial, size_t len_partial, qboolean from_pak)
+{
+	size_t			len;
+	int			j;
+	char	cur_name[MAX_QPATH];
+
+	if (map_count >= MAX_NUMMAPS)
+	{
+		Con_Printf ("WARNING: reached maximum number of maps to list\n");
+		return -1;
+	}
+
+	if ( len_partial )
+	{
+		if ( Q_strncasecmp(partial, mapname, len_partial) )
+			return 0;	// doesn't match the prefix. skip.
+	}
+
+	Q_strlcpy (cur_name, mapname, sizeof(cur_name));
+	len = strlen(cur_name) - 4;	// ".bsp" : 4
+	if ( from_pak )
+	{
+		if ( strcmp(cur_name + len, ".bsp") )
+			return 0;
+	}
+
+	cur_name[len] = 0;
+	if ( !cur_name[0] )
+		return 0;
+
+	for (j = 0; j < map_count; j++)
+	{
+		if ( !Q_strcasecmp(maplist[j], mapname) )
+			return 0;	// duplicated name. skip.
+	}
+
+	// add to the maplist
+	maplist[map_count] = malloc (len+1);
+	if (maplist[map_count] == NULL)
+	{
+		Con_Printf ("WARNING: Failed allocating memory for maplist\n");
+		return -1;
+	}
+
+	Q_strlcpy (maplist[map_count], mapname, len+1);
+	return (++map_count);
+}
+
+/*
+===========
+FS_Maplist_f
+Prints map filenames to the console
+===========
+*/
+static void FS_Maplist_f (void)
+{
+	searchpath_t	*search;
+	char		*prefix;
+	size_t		preLen;
+
+	if (Cmd_Argc() > 1)
+	{
+		prefix = Cmd_Argv(1);
+		preLen = strlen(prefix);
+	}
+	else
+	{
+		preLen = 0;
+		prefix = NULL;
+	}
+
+	// search through the path, one element at a time
+	// either "search->filename" or "search->pak" is defined
+	for (search = fs_searchpaths; search; search = search->next)
+	{
+		if (search->pack)
+		{
+			int			i;
+
+			for (i = 0; i < search->pack->numfiles; i++)
+			{
+				if ( strncmp("maps/", search->pack->files[i].name, 5) )
+					continue;
+				if ( processMapname(search->pack->files[i].name + 5, prefix, preLen, true) < 0 )
+					goto done;
+			}
+		}
+		else
+		{	// element is a filename
+			char		*findname;
+
+			findname = Sys_FindFirstFile (va("%s/maps",search->filename), "*.bsp");
+			while (findname)
+			{
+				if ( processMapname(findname, prefix, preLen, false) < 0 )
+				{
+					Sys_FindClose ();
+					goto done;
+				}
+				findname = Sys_FindNextFile ();
+			}
+			Sys_FindClose ();
+		}
+	}
+
+done:
+	if (!map_count)
+	{
+		Con_Printf ("No maps found.\n\n");
+		return;
+	}
+	else
+	{
+		Con_Printf ("Found %d maps:\n\n", map_count);
+	}
+
+	// sort the list
+	qsort (maplist, map_count, sizeof(char *), COM_StrCompare);
+	Con_ShowList (map_count, (const char**)maplist);
+	Con_Printf ("\n");
+
+	// free the memory and zero map_count
+	while (map_count)
+	{
+		free (maplist[--map_count]);
+	}
+}
+#endif	/* SERVERONLY */
+
+
+//============================================================================
+
+/* 
+==============================================================================
+
+INIT
+
+==============================================================================
+*/
+
 /*
 ================
 FS_Init
@@ -699,6 +864,9 @@ void FS_Init (void)
 // Register our commands
 //
 	Cmd_AddCommand ("path", FS_Path_f);
+#if !defined(SERVERONLY)
+	Cmd_AddCommand ("maplist", FS_Maplist_f);
+#endif	/* SERVERONLY */
 
 //
 // -basedir <path>
