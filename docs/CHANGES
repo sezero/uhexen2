@@ -14,6 +14,12 @@ Development Progress	:
       and gl_extra_dynamic_lights cvars and their menu entries are functional
       now.
     * updated the release notes file for future v1.4.2 (2007-02-25).
+    * moved (again) the maplist console command to quakefs.
+    * made exporting of searchpath_t structure and fs_searchpaths to depend on
+      _NEED_SEARCHPATH_T definition, added _NEED_SEARCHPATH_T to quakefs.c and
+      quakeio.c: I don't like making them public. quakefs and quakeio actually
+      depend very much on each other but I'd like to keep them separate as much
+      as possible.
 
 2007-02-24 (CVS):
     * hexenworld opengl client: fixed bug that dynamic lights had a problem
