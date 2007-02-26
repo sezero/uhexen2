@@ -3286,11 +3286,6 @@ LONG WINAPI MainWndProc (
 // Video menu stuff
 //========================================================
 
-extern void M_Menu_Options_f (void);
-extern void M_Print (int cx, int cy, char *str);
-extern void M_PrintWhite (int cx, int cy, char *str);
-extern void M_DrawCharacter (int cx, int line, int num);
-
 static int	vid_line, vid_wmodes;
 
 typedef struct
