@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.7 2007-02-25 19:02:25 sezero Exp $
+	$Id: quakefs.c,v 1.8 2007-02-26 09:06:21 sezero Exp $
 */
 
 #define _NEED_SEARCHPATH_T
@@ -21,7 +21,7 @@
 searchpath_t		*fs_searchpaths;
 static searchpath_t	*fs_base_searchpaths;	// without gamedirs
 
-char	fs_basedir[MAX_OSPATH];
+char	*fs_basedir;
 char	fs_gamedir[MAX_OSPATH];
 char	fs_gamedir_nopath[32];
 char	fs_userdir[MAX_OSPATH];
@@ -877,11 +877,12 @@ void FS_Init (void)
 	i = COM_CheckParm ("-basedir");
 	if (i && i < com_argc-1)
 	{
-		Q_strlcpy_err(fs_basedir, com_argv[i+1], sizeof(fs_basedir));
+		fs_basedir = com_argv[i+1];
+		Sys_Printf ("%s: basedir changed to: %s\n", __FUNCTION__, fs_basedir);
 	}
 	else
 	{
-		Q_strlcpy_err(fs_basedir, host_parms.basedir, sizeof(fs_basedir));
+		fs_basedir = host_parms.basedir;
 	}
 
 	Q_strlcpy_err(fs_userdir, host_parms.userdir, sizeof(fs_userdir));
