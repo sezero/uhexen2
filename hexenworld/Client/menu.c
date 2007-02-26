@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.55 2007-02-23 23:24:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.56 2007-02-26 09:08:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2583,8 +2583,8 @@ static void M_Menu_Setup_f (void)
 	if (!(gameflags & GAME_PORTALS))
 		if (playerclass.value == CLASS_DEMON)
 			playerclass.value = 0;
-	if (Q_strcasecmp(fs_gamedir+1+strlen(fs_basedir), "siege") != 0)
-		if (playerclass.value == CLASS_DWARF)
+	if (playerclass.value == CLASS_DWARF)
+		if (Q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
 			playerclass.value = 0;
 
 	setup_class = playerclass.value;
@@ -2645,8 +2645,8 @@ static void M_Setup_Draw (void)
 	if (!(gameflags & GAME_PORTALS))
 		if (setup_class == CLASS_DEMON)
 			setup_class = 0;
-	if (Q_strcasecmp(fs_gamedir+1+strlen(fs_basedir), "siege") != 0)
-		if (setup_class == CLASS_DWARF)
+	if (setup_class == CLASS_DWARF)
+		if (Q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
 			setup_class = 0;
 	switch (setup_class)
 	{
@@ -2678,7 +2678,7 @@ static void M_Setup_Draw (void)
 		{
 			if (!(gameflags & GAME_PORTALS))
 			{//not succubus
-				if (Q_strcasecmp(fs_gamedir+1+strlen(fs_basedir), "siege") != 0)
+				if (Q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
 					which_class = (rand() % CLASS_THEIF) + 1;
 				else
 				{
@@ -2689,7 +2689,7 @@ static void M_Setup_Draw (void)
 			}
 			else
 			{
-				if (Q_strcasecmp(fs_gamedir+1+strlen(fs_basedir), "siege") != 0)
+				if (Q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
 					which_class = (rand() % CLASS_DEMON) + 1;
 				else
 					which_class = (rand() % class_limit) + 1;
