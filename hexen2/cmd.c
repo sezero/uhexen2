@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.27 2007-02-17 20:59:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.28 2007-02-26 18:43:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -93,7 +93,7 @@ void Cbuf_AddText (const char *text)
 
 	if (cmd_text.cursize + l >= cmd_text.maxsize)
 	{
-		Con_Printf ("Cbuf_AddText: overflow\n");
+		Con_Printf ("%s: overflow\n", __FUNCTION__);
 		return;
 	}
 	SZ_Write (&cmd_text, text, l);
@@ -567,7 +567,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 // fail if the command is a variable name
 	if (Cvar_VariableString(cmd_name)[0])
 	{
-		Con_Printf ("Cmd_AddCommand: %s already defined as a var\n", cmd_name);
+		Con_Printf ("%s: %s already defined as a var\n", __FUNCTION__, cmd_name);
 		return;
 	}
 
@@ -576,7 +576,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 	{
 		if ( !strcmp(cmd_name, cmd->name) )
 		{
-			Con_Printf ("Cmd_AddCommand: %s already defined\n", cmd_name);
+			Con_Printf ("%s: %s already defined\n", __FUNCTION__, cmd_name);
 			return;
 		}
 	}
