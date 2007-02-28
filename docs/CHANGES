@@ -5,6 +5,7 @@ Development Progress	:
 
 2007-02-28 (CVS):
     * killed some dead vars.
+    * updated the net_sys header.
 
 2007-02-26 (CVS):
     * fs_basedir needn't hold a full copy of the basedir. made it a pointer
