@@ -2,7 +2,7 @@
 	refresh.h
 	public interface to refresh functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.11 2007-02-07 17:01:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.12 2007-02-28 08:40:16 sezero Exp $
 */
 
 #ifndef __HX2_RENDER_H
@@ -112,8 +112,6 @@ typedef struct
 //
 // refresh
 //
-extern	int		reinit_surfcache;
-
 extern	refdef_t	r_refdef;
 extern	vec3_t		r_origin, vpn, vright, vup;
 
@@ -165,9 +163,6 @@ void R_UpdateParticles (void);
 //
 // surface cache related
 //
-extern	int		reinit_surfcache;
-				// if 1, surface cache is currently empty and
-
 extern	qboolean	r_cache_thrash;
 				// set if thrashing the surface cache
 

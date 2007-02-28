@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.c,v 1.15 2006-10-21 18:21:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.c,v 1.16 2007-02-28 08:40:16 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -42,8 +42,6 @@ cvar_t	crosshaircolor = {"crosshaircolor", "75", CVAR_ARCHIVE}; // 79 seemed too
 static	float	v_dmg_time, v_dmg_roll, v_dmg_pitch;
 
 float		v_targAngle, v_targPitch, v_targDist = 0.0;
-
-extern	int	in_forward, in_forward2, in_back;
 
 frame_t		*view_frame;
 player_state_t	*view_message;

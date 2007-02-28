@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.13 2007-02-17 07:55:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.14 2007-02-28 08:40:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -97,9 +97,6 @@ int		r_wholepolycount;
 
 int		*pfrustum_indexes[4];
 int		r_frustum_indexes[4*6];
-
-int		reinit_surfcache = 1;	// if 1, surface cache is currently empty and
-					// must be reinitialized for current cache size
 
 mleaf_t		*r_viewleaf, *r_oldviewleaf;
 

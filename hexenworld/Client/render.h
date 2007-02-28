@@ -2,7 +2,7 @@
 	refresh.h
 	public interface to refresh functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/render.h,v 1.5 2006-09-24 17:28:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/render.h,v 1.6 2007-02-28 08:40:16 sezero Exp $
 */
 
 #ifndef __HX2_RENDER_H
@@ -107,8 +107,6 @@ typedef struct
 //
 // refresh
 //
-extern	int		reinit_surfcache;
-
 extern	refdef_t	r_refdef;
 extern	vec3_t		r_origin, vpn, vright, vup;
 
@@ -175,9 +173,6 @@ void R_RunQuakeEffect (vec3_t org, float distance);
 //
 // surface cache related
 //
-extern	int		reinit_surfcache;
-				// if 1, surface cache is currently empty and
-
 extern	qboolean	r_cache_thrash;
 				// set if thrashing the surface cache
 

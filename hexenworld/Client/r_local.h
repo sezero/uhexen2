@@ -2,7 +2,7 @@
 	r_local.h
 	private refresh defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.9 2006-09-24 17:28:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.10 2007-02-28 08:40:16 sezero Exp $
 */
 
 #ifndef __R_LOCAL_H
@@ -178,8 +178,6 @@ extern	mvertex_t	*r_ptverts, *r_ptvertsmax;
 
 extern	vec3_t	sbaseaxis[3], tbaseaxis[3];
 extern	float	entity_rotation[3][3];
-
-extern	int	reinit_surfcache;
 
 extern	int	r_currentkey;
 extern	int	r_currentbkey;
