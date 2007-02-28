@@ -37,8 +37,10 @@
 #define SOCKETERRNO errno
 
 #if defined(__MORPHOS__)
-//#undef SOCKETERRNO
-//#define SOCKETERRNO Errno()
+//#if !defined(ixemul)
+#undef SOCKETERRNO
+#define SOCKETERRNO Errno()
+//#endif
 #define socklen_t int
 #define ioctlsocket IoctlSocket
 #define closesocket CloseSocket
