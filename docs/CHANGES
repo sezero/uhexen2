@@ -3,12 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-02-28 (CVS):
+    * killed some dead vars.
+
 2007-02-26 (CVS):
     * fs_basedir needn't hold a full copy of the basedir. made it a pointer
       instead which works as it is intended.
     * the dwarf class checks in the hexenworld menu system needn't do any
       weird strlen thingies. fs_gamedir_nopath is for these kinds of purposes.
     * fixed win32 builds.
+    * cmd.c: always use the __FUNCTION__ macro
 
 2007-02-25 (CVS):
     * h2ded: process the command line arguments at start. if the server is not
