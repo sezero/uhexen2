@@ -8,7 +8,8 @@ Development Progress	:
     * xdelta: touched the stamp-ser files in order to avoid Emacs-Lisp
     * xdelta: updated the readme file for our customized version
     * launcher: xpatch/loki_xdelta.c: synced with the latest xdelta version.
-    * gamedata: updated the xdelta update patch script for xdelta-1.1.4
+    * launcher: xpatch/loki_xdelta.c: small clean-up.
+    * gamedata: updated the xdelta update patch script for xdelta-1.1.4.
     * updated the README file in gamedata/patchdata about xdelta.
 
 2007-02-28 (CVS):
