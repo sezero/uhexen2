@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-03-01 (CVS):
+    * xdelta: merged changes from the official 1.1.4 release at xdelta.org
+    * xdelta: touched the stamp-ser files in order to avoid Emacs-Lisp
+    * xdelta: updated the readme file for our customized version
+
 2007-02-28 (CVS):
     * killed some dead vars.
     * updated the net_sys header.
