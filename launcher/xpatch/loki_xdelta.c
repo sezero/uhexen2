@@ -20,7 +20,7 @@
  *
  * Author: Josh MacDonald <jmacd@CS.Berkeley.EDU>
  *
- * $Id: loki_xdelta.c,v 1.1 2007-02-12 09:35:59 sezero Exp $
+ * $Id: loki_xdelta.c,v 1.2 2007-03-01 15:17:10 sezero Exp $
  */
 
 #include <stdio.h>
@@ -196,7 +196,9 @@ struct _XdFileHandle
 };
 
 /* $Format: "static const char xdelta_version[] = \"$ReleaseVersion$\"; " $ */
-static const char xdelta_version[] = "1.1.3"; 
+#ifndef LOKI_PATCH
+static const char xdelta_version[] = "1.1.4"; 
+#endif
 
 typedef struct _Command Command;
 
@@ -418,9 +420,24 @@ main (gint argc, gchar** argv)
     max_mapped_pages %= 8;
     max_mapped_pages *= 7;
   }
-#endif /* DJGPP */
 
+  /*
+   * (richdawe@bigfoot.com): Strip off the file extension 'exe' from
+   * program_name, since it makes the help messages look ugly.
+   */
+  {
+    char strip_ext[PATH_MAX + 1];
+    char *p;
+
+    strcpy (strip_ext, argv[0]);
+    p = strrchr (strip_ext, '.');
+    if ((p != NULL) && (strncasecmp (p + 1, "exe", 3) == 0))
+      *p = '\0';
+    program_name = g_basename (strip_ext);
+  }
+#else /* !__DJGPP__ */
   program_name = g_basename (argv[0]);
+#endif /* __DJGPP__ */  
 
   g_log_set_handler (G_LOG_DOMAIN,
 		     G_LOG_LEVEL_WARNING,
@@ -1290,7 +1307,6 @@ really_free_all_pages (XdFileHandle* fh)
 	    }
 #endif /* WINHACK */
 	}
-
     }
 
   return TRUE;
@@ -1730,6 +1746,8 @@ delta_command (gint argc, gchar** argv)
 
   if (! xd_handle_really_close (out))
     return 2;
+
+  xdp_generator_free (gen);
 
   return control_offset != header_offset;
 }
