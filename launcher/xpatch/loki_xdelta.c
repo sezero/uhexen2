@@ -20,7 +20,7 @@
  *
  * Author: Josh MacDonald <jmacd@CS.Berkeley.EDU>
  *
- * $Id: loki_xdelta.c,v 1.2 2007-03-01 15:17:10 sezero Exp $
+ * $Id: loki_xdelta.c,v 1.3 2007-03-01 19:06:52 sezero Exp $
  */
 
 #include <stdio.h>
@@ -195,10 +195,15 @@ struct _XdFileHandle
   gint fd;
 };
 
-/* $Format: "static const char xdelta_version[] = \"$ReleaseVersion$\"; " $ */
+
+static gint    delta_command    (gint argc, gchar** argv);
+static gint    patch_command    (gint argc, gchar** argv);
+
 #ifndef LOKI_PATCH
+static gint    info_command     (gint argc, gchar** argv);
+
+/* $Format: "static const char xdelta_version[] = \"$ReleaseVersion$\"; " $ */
 static const char xdelta_version[] = "1.1.4"; 
-#endif
 
 typedef struct _Command Command;
 
@@ -207,14 +212,6 @@ struct _Command {
   gint (* func) (gint argc, gchar** argv);
   gint nargs;
 };
-
-static gint    delta_command    (gint argc, gchar** argv);
-static gint    patch_command    (gint argc, gchar** argv);
-#ifndef LOKI_PATCH
-static gint    info_command     (gint argc, gchar** argv);
-#endif
-
-#ifndef LOKI_PATCH
 
 static const Command commands[] =
 {
@@ -237,7 +234,7 @@ static struct option const long_options[] =
   {0,0,0,0}
 };
 
-#endif /* LOKI_PATCH */
+#endif	/* LOKI_PATCH */
 
 static const gchar* program_name;
 static gint         compress_level = Z_DEFAULT_COMPRESSION;
@@ -329,71 +326,6 @@ event_watch (GenericEvent* ev, GenericEventDef* def, const char* message)
 
   return TRUE;
 }
-
-#endif /* LOKI_PATCH */
-
-
-#ifdef LOKI_PATCH
-
-static int xd_edsio_started = 0;
-
-int loki_xdelta(const char *old, const char *new, const char *out)
-{
-    int argc;
-    gchar args[3][PATH_MAX];
-    gchar *argv[4];
-
-    if ( ! xd_edsio_started ) {
-        if ( ! xd_edsio_init() ) {
-            return(-1);
-        }
-        xd_edsio_started = 1;
-    }
-
-    quiet = TRUE;
-    strcpy(args[0], old);
-    strcpy(args[1], new);
-    strcpy(args[2], out);
-    for ( argc=0; argc<3; ++argc ) {
-        argv[argc] = args[argc];
-    }
-    argv[argc] = NULL;
-
-    if ( ! delta_command(argc, argv) ) {
-        return(-1);
-    }
-    return(0);
-}
-
-int loki_xpatch(const char *pat, const char *old, const char *out)
-{
-    int argc;
-    gchar args[3][PATH_MAX];
-    gchar *argv[4];
-
-    if ( ! xd_edsio_started ) {
-        if ( ! xd_edsio_init() ) {
-            return(-1);
-        }
-        xd_edsio_started = 1;
-    }
-
-    quiet = TRUE;
-    strcpy(args[0], pat);
-    strcpy(args[1], old);
-    strcpy(args[2], out);
-    for ( argc=0; argc<3; ++argc ) {
-        argv[argc] = args[argc];
-    }
-    argv[argc] = NULL;
-
-    if ( patch_command(argc, argv) != 0 ) {
-        return(-1);
-    }
-    return(0);
-}
-
-#else
 
 gint
 main (gint argc, gchar** argv)
@@ -548,7 +480,68 @@ main (gint argc, gchar** argv)
   return (* cmd->func) (argc, argv);
 }
 
-#endif /* LOKI_PATCH */
+#else	/* LOKI_PATCH */
+
+static int xd_edsio_started = 0;
+
+int loki_xdelta(const char *old, const char *new, const char *out)
+{
+    int argc;
+    gchar args[3][PATH_MAX];
+    gchar *argv[4];
+
+    if ( ! xd_edsio_started ) {
+        if ( ! xd_edsio_init() ) {
+            return(-1);
+        }
+        xd_edsio_started = 1;
+    }
+
+    quiet = TRUE;
+    strcpy(args[0], old);
+    strcpy(args[1], new);
+    strcpy(args[2], out);
+    for ( argc=0; argc<3; ++argc ) {
+        argv[argc] = args[argc];
+    }
+    argv[argc] = NULL;
+
+    if ( ! delta_command(argc, argv) ) {
+        return(-1);
+    }
+    return(0);
+}
+
+int loki_xpatch(const char *pat, const char *old, const char *out)
+{
+    int argc;
+    gchar args[3][PATH_MAX];
+    gchar *argv[4];
+
+    if ( ! xd_edsio_started ) {
+        if ( ! xd_edsio_init() ) {
+            return(-1);
+        }
+        xd_edsio_started = 1;
+    }
+
+    quiet = TRUE;
+    strcpy(args[0], pat);
+    strcpy(args[1], old);
+    strcpy(args[2], out);
+    for ( argc=0; argc<3; ++argc ) {
+        argv[argc] = args[argc];
+    }
+    argv[argc] = NULL;
+
+    if ( patch_command(argc, argv) != 0 ) {
+        return(-1);
+    }
+    return(0);
+}
+
+#endif	/* LOKI_PATCH */
+
 
 /* Commands */
 
@@ -1961,7 +1954,7 @@ info_command (gint argc, gchar** argv)
   return 0;
 }
 
-#endif /* LOKI_PATCH */
+#endif	/* LOKI_PATCH */
 
 static gint
 patch_command (gint argc, gchar** argv)
