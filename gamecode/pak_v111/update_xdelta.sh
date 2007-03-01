@@ -29,15 +29,19 @@ if [ "$status" -ne 0 ]; then
 	exit 1
 fi
 
-# make sure our xdelta-1.1.3 exists: people may have
+# make sure our xdelta-1.1.4 exists: people may have
 # newer versions of xdelta which shall not work with
-# our delta files. We use our patched 1.1.3 version,
+# our delta files. We use our patched 1.1.4 version,
 # configured with --disable-shared, and the binary
-# renamed to xdelta113
-if [ ! -f "xdelta113" ]; then
-	have_xdelta=0
-else
+# renamed to xdelta114
+if [ -f "xdelta114" ]; then
 	have_xdelta=1
+	xdelta_bin="xdelta114"
+elif [ -f "xdelta113" ]; then
+	have_xdelta=1
+	xdelta_bin="xdelta113"
+else
+	have_xdelta=0
 fi
 
 # we will patch data1/pak0.pak and data1/pak1.pak
@@ -109,7 +113,7 @@ do
 	# make sure our xdelta exists
 	if [ ${have_xdelta} -eq 0 ]; then
 		rm -f newpak${i}.md5
-		echo "Patch binary xdelta113 not found. Quitting."
+		echo "Patch binary xdelta113 or xdelta114 not found."
 		echo "You can compile it from its up-to-date source"
 		echo "tarball xdelta-1.1.3b.tgz, downloadable from"
 		echo -e "the Hammer of Thyrion website.\n"
@@ -120,9 +124,9 @@ do
 	chmod 644 data1/pak${i}.pak
 	mv --force data1/pak${i}.pak data1/pak${i}.pak.103
 	# apply the patch
-	chmod 755 xdelta113
+	chmod 755 ${xdelta_bin}
 	echo -n -e "\tPatching : "
-	./xdelta113 patch patchdata/data1/data1pak${i}.xd data1/pak${i}.pak.103 data1/pak${i}.pak
+	./${xdelta_bin} patch patchdata/data1/data1pak${i}.xd data1/pak${i}.pak.103 data1/pak${i}.pak
 	status=$?
 	if [ "$status" -ne 0 ]; then
 		echo -e "Failed. Quitting.\n"
