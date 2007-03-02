@@ -19,6 +19,8 @@ Development Progress	:
       makes the hard-coded toggleConsole binds ~ and ` annoying to use on many
       non-US keyboards. This newly added Shift-Esc key combination helps with
       this situation.
+    * updated the documentation about the new console key.
+    * updated the release notes file for future v1.4.2 (2007-03-02).
 
 2007-03-01 (CVS):
     * xdelta: merged changes from the official 1.1.4 release at xdelta.org
