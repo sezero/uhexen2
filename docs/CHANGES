@@ -10,6 +10,15 @@ Development Progress	:
     * updated the launcher README file.
     * xdelta: updated the readme file for our customized 1.1.4b version.
     * updated the xdelta update patch script.
+    * updated the SDL header for new GL attributes added in 1.2.10.
+    * added the hard-coded console toggle bind Shift-Escape to the SDL input
+      driver (from ioquake3): SDL > 1.2.9 does not support disabling "Dead Key"
+      recognition. In order to send "Dead Key" characters (e.g. ~, ', `, and ^),
+      you must key a Space (or sometimes the same character again) after the
+      character to send it on many international keyboard layouts. This behavior
+      makes the hard-coded toggleConsole binds ~ and ` annoying to use on many
+      non-US keyboards. This newly added Shift-Esc key combination helps with
+      this situation.
 
 2007-03-01 (CVS):
     * xdelta: merged changes from the official 1.1.4 release at xdelta.org
