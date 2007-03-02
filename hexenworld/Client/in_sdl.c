@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.38 2007-02-20 08:28:46 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.39 2007-03-02 16:23:41 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -466,6 +466,12 @@ void IN_SendKeyEvents (void)
 			    (event.key.keysym.mod & KMOD_ALT))
 			{
 				VID_ToggleFullscreen();
+				break;
+			}
+			else if ((event.key.keysym.sym == SDLK_ESCAPE) &&
+				 (event.key.keysym.mod & KMOD_SHIFT))
+			{
+				Con_ToggleConsole_f();
 				break;
 			}
 			else if ((event.key.keysym.sym == SDLK_g) &&
