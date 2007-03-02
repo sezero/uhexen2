@@ -459,9 +459,10 @@ at our project page.
 ----------------
 
 Games based on the Quake engine have an in game console - toggled by
-the '~' key - from which variables can be changed.  Some of these
-affect performance, others enable features. A brief list follows but
-for more info see http://www.planetquake.com/console/
+the '~' key or by the Shift-Escape key combination - from which
+variables can be changed.  Some of these affect performance, others
+enable features. A brief list follows but for more info see:
+http://www.planetquake.com/console/
 
 variable	valid values
 --------	------------
