@@ -134,7 +134,7 @@ void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 	if (pthread_create(&thr, NULL, apply_patches, NULL) != 0)
 	{
 		Log_printf ("pthread_create failed");
-		return;
+		goto finish;
 	}
 
 	gtk_statusbar_push (GTK_STATUSBAR (PatchWindow->PStat), PatchWindow->BinStat, pstats[0]);
@@ -147,6 +147,7 @@ void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 
 	pthread_join(thr, (void **) &ptr);
 
+finish:
 	ui_LogEnd();
 	gtk_widget_set_sensitive (PatchWindow->bCLOSE, TRUE);
 	gtk_widget_set_sensitive (PatchWindow->bAPPLY, TRUE);
