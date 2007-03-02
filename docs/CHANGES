@@ -3,10 +3,18 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-03-02 (CVS):
+    * xdelta: tiny cleanups in autogen.sh and configure.in.
+    * xdelta: fixed out of memory condition caused by not properly unmapping
+      files (from the loki_patch tree: Sam Lantinga, Apr 10, 2001).
+    * updated the launcher README file.
+    * xdelta: updated the readme file for our customized 1.1.4b version.
+    * updated the xdelta update patch script.
+
 2007-03-01 (CVS):
     * xdelta: merged changes from the official 1.1.4 release at xdelta.org
-    * xdelta: touched the stamp-ser files in order to avoid Emacs-Lisp
-    * xdelta: updated the readme file for our customized version
+    * xdelta: touched the stamp-ser files in order to avoid Emacs-Lisp.
+    * xdelta: updated the readme file for our customized version.
     * launcher: xpatch/loki_xdelta.c: synced with the latest xdelta version.
     * launcher: xpatch/loki_xdelta.c: small clean-up.
     * gamedata: updated the xdelta update patch script for xdelta-1.1.4.
