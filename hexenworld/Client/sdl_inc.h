@@ -55,13 +55,29 @@ of SDL_Mixer, but 1.2.4 have several fixes in it.
 #endif	/* end of bad version error */
 #endif	/* end of SDL_mixer checks */
 
+
+/* the defines below are actually part of SDL_GLattr enums in SDL
+   versions supporting that relevant feature. */
+
+/* gl stereo attribute was added to SDL beginning from v1.2.5 */
+#define SDL_VER_WITH_STEREO		(SDL_VERSIONNUM(1,2,5))
+#if SDL_COMPILEDVERSION < SDL_VER_WITH_STEREO
+#define SDL_GL_STEREO			(SDL_GL_ACCUM_ALPHA_SIZE+1)
+#endif	/* SDL_VER_WITH_STEREO */
+
 /* multisampling was added to SDL beginning from v1.2.6 */
 #define SDL_VER_WITH_MULTISAMPLING	(SDL_VERSIONNUM(1,2,6))
 #if SDL_COMPILEDVERSION < SDL_VER_WITH_MULTISAMPLING
-/* the defines below are actually enums in SDL versions >= 1.2.6 */
 #define SDL_GL_MULTISAMPLEBUFFERS	(SDL_GL_ACCUM_ALPHA_SIZE+2)
 #define SDL_GL_MULTISAMPLESAMPLES	(SDL_GL_ACCUM_ALPHA_SIZE+3)
-#endif
+#endif	/* SDL_VER_WITH_MULTISAMPLING */
+
+/* swapinterval was added to SDL beginning from v1.2.10 */
+#define SDL_VER_WITH_SWAPINTERVAL	(SDL_VERSIONNUM(1,2,10))
+#if SDL_COMPILEDVERSION < SDL_VER_WITH_SWAPINTERVAL
+#define SDL_GL_ACCELERATED_VISUAL	(SDL_GL_MULTISAMPLESAMPLES+1)
+#define SDL_GL_SWAP_CONTROL		(SDL_GL_MULTISAMPLESAMPLES+2)
+#endif	/* SDL_VER_WITH_SWAPINTERVAL */
 
 #endif	/* __HX2_SDL_INC */
 
