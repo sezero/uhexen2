@@ -9,6 +9,7 @@ Development Progress	:
       files (from the loki_patch tree: Sam Lantinga, Apr 10, 2001).
     * updated the launcher README file.
     * xdelta: updated the readme file for our customized 1.1.4b version.
+    * launcher: fixed a bug in the thread creation failure path.
     * updated the xdelta update patch script.
     * updated the SDL header for new GL attributes added in 1.2.10.
     * added the hard-coded console toggle bind Shift-Escape to the SDL input
