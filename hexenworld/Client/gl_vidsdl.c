@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.136 2007-02-23 19:57:37 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.137 2007-03-03 09:00:23 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1312,7 +1312,7 @@ static void VID_PrepareModes (SDL_Rect **sdl_modes)
 no_fmodes:
 		Con_Printf ("No fullscreen video modes available\n");
 		num_wmodes = RES_640X480 + 1;
-		modelist = (vmode_t *)wmodelist;
+		modelist = wmodelist;
 		nummodes = &num_wmodes;
 		vid_default = RES_640X480;
 		Cvar_SetValue ("vid_config_glx", modelist[vid_default].width);
@@ -1331,7 +1331,7 @@ no_fmodes:
 	//	num_fmodes = -1;
 		num_fmodes = num_wmodes;
 		nummodes = &num_wmodes;
-		modelist = (vmode_t *)wmodelist;
+		modelist = wmodelist;
 		vid_default = RES_640X480;
 		Cvar_SetValue ("vid_config_glx", modelist[vid_default].width);
 		Cvar_SetValue ("vid_config_gly", modelist[vid_default].height);
@@ -1388,7 +1388,7 @@ no_fmodes:
 	// feasible, either. The -width/-height commandline args
 	// remain as the user's trusty old friends here.
 	nummodes = &num_fmodes;
-	modelist = (vmode_t *)fmodelist;
+	modelist = fmodelist;
 
 	// SDL versions older than 1.2.8 have sorting problems
 	qsort(fmodelist, num_fmodes, sizeof fmodelist[0], sort_modes);

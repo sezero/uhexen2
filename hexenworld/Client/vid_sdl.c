@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.63 2007-02-22 07:36:24 sezero Exp $
+	$Id: vid_sdl.c,v 1.64 2007-03-03 09:00:23 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -309,7 +309,7 @@ no_fmodes:
 		Con_Printf ("No fullscreen video modes available\n");
 		if (num_wmodes > RES_640X480)
 			num_wmodes = RES_640X480 + 1;
-		modelist = (vmode_t *)wmodelist;
+		modelist = wmodelist;
 		nummodes = &num_wmodes;
 		vid_default = 0;
 		Cvar_SetValue ("vid_config_swx", modelist[vid_default].width);
@@ -328,7 +328,7 @@ no_fmodes:
 	//	num_fmodes = -1;
 		num_fmodes = num_wmodes;
 		nummodes = &num_wmodes;
-		modelist = (vmode_t *)wmodelist;
+		modelist = wmodelist;
 		vid_default = 0;
 		Cvar_SetValue ("vid_config_swx", modelist[vid_default].width);
 		Cvar_SetValue ("vid_config_swy", modelist[vid_default].height);
@@ -398,7 +398,7 @@ no_fmodes:
 	// feasible, either. The -width/-height commandline args
 	// remain as the user's trusty old friends here.
 	nummodes = &num_fmodes;
-	modelist = (vmode_t *)fmodelist;
+	modelist = fmodelist;
 
 	vid_maxwidth = fmodelist[num_fmodes-1].width;
 	vid_maxheight = fmodelist[num_fmodes-1].height;

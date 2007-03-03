@@ -2229,7 +2229,7 @@ void	VID_Init (unsigned char *palette)
 		}
 		ReleaseDC (NULL, hdc);
 
-		modelist = (vmode_t *)wmodelist;
+		modelist = wmodelist;
 		nummodes = &num_wmodes;
 		vid_default = RES_640X480;
 
@@ -2293,7 +2293,7 @@ void	VID_Init (unsigned char *palette)
 			Sys_Error ("No RGB fullscreen modes available");
 		}
 
-		modelist = (vmode_t *)fmodelist;
+		modelist = fmodelist;
 		nummodes = &num_fmodes;
 		vid_default = -1;
 
@@ -2623,9 +2623,9 @@ void VID_MenuDraw (void)
 		vid_menubpp = modelist[vid_modenum].bpp;
 		vid_menu_fs = (modestate != MS_WINDOWED);
 		if (modestate == MS_WINDOWED)
-			vid_menulist = (vmode_t *)wmodelist;
+			vid_menulist = wmodelist;
 		else
-			vid_menulist = (vmode_t *)fmodelist;
+			vid_menulist = fmodelist;
 		vid_menu_firsttime = false;
 	}
 	// just in case...
@@ -2720,7 +2720,7 @@ static int match_windowed_fullscr_modes (void)
 	int	*tmpcount;
 
 	// choose the new mode
-	tmplist = (vid_menu_fs) ? (vmode_t *)fmodelist : (vmode_t *)wmodelist;
+	tmplist = (vid_menu_fs) ? fmodelist : wmodelist;
 	tmpcount = (vid_menu_fs) ? &num_fmodes : &num_wmodes;
 	for (l = 0; l < *tmpcount; l++)
 	{
@@ -2778,7 +2778,7 @@ void VID_MenuKey (int key)
 			    (have8bit && (is8bit != (true && (int)vid_config_gl8bit.value))) )
 			{
 				Cvar_SetValue("vid_mode", vid_menunum);
-				modelist = (vid_menu_fs) ? (vmode_t *)fmodelist : (vmode_t *)wmodelist;
+				modelist = (vid_menu_fs) ? fmodelist : wmodelist;
 				nummodes = (vid_menu_fs) ? &num_fmodes : &num_wmodes;
 				VID_Restart_f();
 			}
@@ -2794,7 +2794,7 @@ void VID_MenuKey (int key)
 				break;
 			vid_menu_fs = !vid_menu_fs;
 			vid_menunum = match_windowed_fullscr_modes();
-			vid_menulist = (vid_menu_fs) ? (vmode_t *)fmodelist : (vmode_t *)wmodelist;
+			vid_menulist = (vid_menu_fs) ? fmodelist : wmodelist;
 			vid_menubpp = vid_menulist[vid_menunum].bpp;
 			break;
 		case VID_RESOLUTION:
@@ -2826,7 +2826,7 @@ void VID_MenuKey (int key)
 				break;
 			vid_menu_fs = !vid_menu_fs;
 			vid_menunum = match_windowed_fullscr_modes();
-			vid_menulist = (vid_menu_fs) ? (vmode_t *)fmodelist : (vmode_t *)wmodelist;
+			vid_menulist = (vid_menu_fs) ? fmodelist : wmodelist;
 			vid_menubpp = vid_menulist[vid_menunum].bpp;
 			break;
 		case VID_RESOLUTION:
