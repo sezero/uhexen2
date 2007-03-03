@@ -2574,11 +2574,11 @@ void D_ShowLoadingSize(void)
 //========================================================
 
 static int	vid_menunum;
-static vmode_t	*vid_menulist;
-static int	vid_menubpp;
+static int	vid_cursor;
+static vmode_t	*vid_menulist;	// this changes when vid_menu_fs changes
+static int	vid_menubpp;	// if this changes, vid_menunum already changes
 static qboolean	vid_menu_fs;
-static qboolean	want_fstoggle;
-static int	vid_cursor = 0;
+static qboolean	want_fstoggle, need_apply;
 static qboolean	vid_menu_firsttime = true;
 
 enum {
@@ -2586,6 +2586,9 @@ enum {
 	VID_RESOLUTION,
 	VID_BPP,
 	VID_PALTEX,
+	VID_BLANKLINE,	// spacer line
+	VID_RESET,
+	VID_APPLY,
 	VID_ITEMS
 };
 
@@ -2622,17 +2625,14 @@ void VID_MenuDraw (void)
 		vid_menunum = vid_modenum;
 		vid_menubpp = modelist[vid_modenum].bpp;
 		vid_menu_fs = (modestate != MS_WINDOWED);
-		if (modestate == MS_WINDOWED)
-			vid_menulist = wmodelist;
-		else
-			vid_menulist = fmodelist;
+		vid_menulist = (modestate == MS_WINDOWED) ? wmodelist : fmodelist;
+		vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
 		vid_menu_firsttime = false;
 	}
-	// just in case...
-	if ( vid_cursor == VID_BPP && (!vid_menu_fs || !num_fmodes || Win95old ))
-		vid_cursor = VID_RESOLUTION;
 
 	want_fstoggle = ( ((modestate == MS_WINDOWED) && vid_menu_fs) || ((modestate != MS_WINDOWED) && !vid_menu_fs) );
+
+	need_apply = (vid_menunum != vid_modenum) || want_fstoggle || (have8bit && (is8bit != !!vid_config_gl8bit.value));
 
 	M_Print (76, 92 + 8*VID_FULLSCREEN, "Fullscreen: ");
 	M_DrawYesNo (76+12*8, 92 + 8*VID_FULLSCREEN, vid_menu_fs, !want_fstoggle);
@@ -2654,9 +2654,15 @@ void VID_MenuDraw (void)
 
 	M_Print (76, 92 + 8*VID_PALTEX, "8 bit textures:");
 	if (have8bit)
-		M_DrawYesNo (76+16*8, 92 + 8*VID_PALTEX, (int)vid_config_gl8bit.value, (is8bit == (true && (int)vid_config_gl8bit.value)));
+		M_DrawYesNo (76+16*8, 92 + 8*VID_PALTEX, (int)vid_config_gl8bit.value, (is8bit == !!vid_config_gl8bit.value));
 	else
 		M_PrintWhite (76+16*8, 92 + 8*VID_PALTEX, "Not found");
+
+	if (need_apply)
+	{
+		M_Print (76, 92 + 8*VID_RESET, "RESET CHANGES");
+		M_Print (76, 92 + 8*VID_APPLY, "APPLY CHANGES");
+	}
 
 	M_DrawCharacter (64, 92 + vid_cursor*8, 12+((int)(realtime*4)&1));
 }
@@ -2746,6 +2752,7 @@ void VID_MenuKey (int key)
 	switch (key)
 	{
 	case K_ESCAPE:
+		vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
 		M_Menu_Options_f ();
 		break;
 
@@ -2753,9 +2760,21 @@ void VID_MenuKey (int key)
 		S_LocalSound ("raven/menu1.wav");
 		vid_cursor--;
 		if (vid_cursor < 0)
-			vid_cursor = VID_ITEMS-1;
-		if ( vid_cursor == VID_BPP && (!vid_menu_fs || !num_fmodes || Win95old ))
+		{
+			vid_cursor = (need_apply) ? VID_ITEMS-1 : VID_BLANKLINE-1;
+		}
+		else if (vid_cursor == VID_BLANKLINE)
+		{
 			vid_cursor--;
+		}
+		if (!num_fmodes && vid_cursor == 0)
+		{
+			vid_cursor = VID_RESOLUTION;
+		}
+		if ( vid_cursor == VID_BPP && (!vid_menu_fs || !num_fmodes || Win95old ))
+		{
+			vid_cursor--;
+		}
 		break;
 
 	case K_DOWNARROW:
@@ -2763,25 +2782,40 @@ void VID_MenuKey (int key)
 		vid_cursor++;
 		if ( vid_cursor == VID_BPP && (!vid_menu_fs || !num_fmodes || Win95old ))
 			vid_cursor++;
-		if (vid_cursor >= VID_ITEMS)
-			vid_cursor = 0;
+		if (vid_cursor >= VID_BLANKLINE)
+		{
+			if (need_apply)
+			{
+				if (vid_cursor == VID_BLANKLINE)
+					vid_cursor++;
+			}
+			else
+			{
+				vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
+			}
+		}
 		break;
 
 	case K_ENTER:
 		switch (vid_cursor)
 		{
-		case VID_FULLSCREEN:
-		case VID_RESOLUTION:
-		case VID_BPP:
-		case VID_PALTEX:
-			if (vid_menunum != vid_modenum || want_fstoggle ||
-			    (have8bit && (is8bit != (true && (int)vid_config_gl8bit.value))) )
+		case VID_RESET:
+			vid_menunum = vid_modenum;
+			vid_menubpp = modelist[vid_modenum].bpp;
+			vid_menu_fs = (modestate != MS_WINDOWED);
+			vid_menulist = (modestate == MS_WINDOWED) ? wmodelist : fmodelist;
+			Cvar_SetValue ("vid_config_gl8bit", is8bit);
+			vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
+			break;
+		case VID_APPLY:
+			if (need_apply)
 			{
 				Cvar_SetValue("vid_mode", vid_menunum);
 				modelist = (vid_menu_fs) ? fmodelist : wmodelist;
 				nummodes = (vid_menu_fs) ? &num_fmodes : &num_wmodes;
 				VID_Restart_f();
 			}
+			vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
 			break;
 		}
 		return;

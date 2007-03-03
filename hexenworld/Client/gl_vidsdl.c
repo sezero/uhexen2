@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.137 2007-03-03 09:00:23 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.138 2007-03-03 09:10:32 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1799,7 +1799,7 @@ void D_ShowLoadingSize(void)
 
 static int	vid_menunum;
 static int	vid_cursor;
-static qboolean	want_fstoggle;
+static qboolean	want_fstoggle, need_apply;
 static qboolean	vid_menu_firsttime = true;
 
 enum {
@@ -1807,6 +1807,9 @@ enum {
 	VID_RESOLUTION,	// is lower than resolution entry (1)
 	VID_MULTISAMPLE,
 	VID_PALTEX,
+	VID_BLANKLINE,	// spacer line
+	VID_RESET,
+	VID_APPLY,
 	VID_ITEMS
 };
 
@@ -1847,6 +1850,10 @@ void VID_MenuDraw (void)
 
 	want_fstoggle = ( ((modestate == MS_WINDOWED) && vid_menu_fs) || ((modestate != MS_WINDOWED) && !vid_menu_fs) );
 
+	need_apply = (vid_menunum != vid_modenum) || want_fstoggle ||
+			(have8bit && (is8bit != !!vid_config_gl8bit.value)) ||
+			(multisample != (int)vid_config_fsaa.value);
+
 	M_Print (76, 92 + 8*VID_FULLSCREEN, "Fullscreen: ");
 	M_DrawYesNo (76+12*8, 92 + 8*VID_FULLSCREEN, vid_menu_fs, !want_fstoggle);
 
@@ -1869,9 +1876,15 @@ void VID_MenuDraw (void)
 
 	M_Print (76, 92 + 8*VID_PALTEX, "8 bit textures:");
 	if (have8bit)
-		M_DrawYesNo (76+16*8, 92 + 8*VID_PALTEX, (int)vid_config_gl8bit.value, (is8bit == (true && (int)vid_config_gl8bit.value)));
+		M_DrawYesNo (76+16*8, 92 + 8*VID_PALTEX, (int)vid_config_gl8bit.value, (is8bit == !!vid_config_gl8bit.value));
 	else
 		M_PrintWhite (76+16*8, 92 + 8*VID_PALTEX, "Not found");
+
+	if (need_apply)
+	{
+		M_Print (76, 92 + 8*VID_RESET, "RESET CHANGES");
+		M_Print (76, 92 + 8*VID_APPLY, "APPLY CHANGES");
+	}
 
 	M_DrawCharacter (64, 92 + vid_cursor*8, 12+((int)(realtime*4)&1));
 }
@@ -1886,6 +1899,7 @@ void VID_MenuKey (int key)
 	switch (key)
 	{
 	case K_ESCAPE:
+		vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
 		M_Menu_Options_f ();
 		break;
 
@@ -1893,31 +1907,50 @@ void VID_MenuKey (int key)
 		S_LocalSound ("raven/menu1.wav");
 		vid_cursor--;
 		if (vid_cursor < 0)
-			vid_cursor = VID_ITEMS-1;
+		{
+			vid_cursor = (need_apply) ? VID_ITEMS-1 : VID_BLANKLINE-1;
+		}
+		else if (vid_cursor == VID_BLANKLINE)
+		{
+			vid_cursor--;
+		}
 		break;
 
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
 		vid_cursor++;
-		if (vid_cursor >= VID_ITEMS)
-			vid_cursor = 0;
+		if (vid_cursor >= VID_BLANKLINE)
+		{
+			if (need_apply)
+			{
+				if (vid_cursor == VID_BLANKLINE)
+					vid_cursor++;
+			}
+			else
+			{
+				vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
+			}
+		}
 		break;
 
 	case K_ENTER:
 		switch (vid_cursor)
 		{
-		case VID_FULLSCREEN:
-		case VID_RESOLUTION:
-		case VID_MULTISAMPLE:
-		case VID_PALTEX:
-			if ( (vid_menunum != vid_modenum) || want_fstoggle ||
-			     (have8bit && (is8bit != (true && (int)vid_config_gl8bit.value))) ||
-			     (multisample != (int)vid_config_fsaa.value) )
+		case VID_RESET:
+			vid_menu_fs = (modestate != MS_WINDOWED);
+			vid_menunum = vid_modenum;
+			multisample = (int)vid_config_fsaa.value;
+			Cvar_SetValue ("vid_config_gl8bit", is8bit);
+			vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
+			break;
+		case VID_APPLY:
+			if (need_apply)
 			{
 				Cvar_SetValue("vid_mode", vid_menunum);
 				Cvar_SetValue("vid_config_fscr", vid_menu_fs);
 				VID_Restart_f();
 			}
+			vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
 			break;
 		}
 		return;
