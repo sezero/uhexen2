@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.138 2007-03-03 09:10:32 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.139 2007-03-03 10:16:29 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1919,6 +1919,11 @@ void VID_MenuKey (int key)
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
 		vid_cursor++;
+		if (vid_cursor >= VID_ITEMS)
+		{
+			vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
+			break;
+		}
 		if (vid_cursor >= VID_BLANKLINE)
 		{
 			if (need_apply)

@@ -2780,6 +2780,11 @@ void VID_MenuKey (int key)
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
 		vid_cursor++;
+		if (vid_cursor >= VID_ITEMS)
+		{
+			vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
+			break;
+		}
 		if ( vid_cursor == VID_BPP && (!vid_menu_fs || !num_fmodes || Win95old ))
 			vid_cursor++;
 		if (vid_cursor >= VID_BLANKLINE)
