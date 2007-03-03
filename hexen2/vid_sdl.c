@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.67 2007-03-03 09:00:21 sezero Exp $
+	$Id: vid_sdl.c,v 1.68 2007-03-03 10:17:21 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -1059,12 +1059,19 @@ void VID_ToggleFullscreen (void)
 // Video menu stuff
 //========================================================
 
-#define MAX_ROWS		10
-static int	modes_cursor = 0, modes_top = 0;
-static qboolean	vid_cursor;	// 0 : resolution option
-				// 1 : fullscreen option. switched by TAB key
-static qboolean	want_fstoggle;
+static int	vid_menunum;
+static int	vid_cursor;
+static qboolean	want_fstoggle, need_apply;
 static qboolean	vid_menu_firsttime = true;
+
+enum {
+	VID_FULLSCREEN,	// make sure the fullscreen entry (0)
+	VID_RESOLUTION,	// is lower than resolution entry (1)
+	VID_BLANKLINE,	// spacer line
+	VID_RESET,
+	VID_APPLY,
+	VID_ITEMS
+};
 
 static void M_DrawYesNo (int x, int y, int on, int white)
 {
@@ -1091,55 +1098,36 @@ VID_MenuDraw
 */
 void VID_MenuDraw (void)
 {
-	int		i, y;
+	ScrollTitle("gfx/menu/title7.lmp");
 
 	if (vid_menu_firsttime)
 	{	// settings for entering the menu first time
-		vid_cursor = (num_fmodes) ? 0 : 1;
+		vid_menunum = vid_modenum;
 		vid_menu_fs = (modestate != MS_WINDOWED);
-		modes_cursor = vid_modenum;
-		if (modes_cursor < modes_top)
-			modes_top = modes_cursor;
-		else if (modes_cursor >= modes_top+MAX_ROWS)
-			modes_top = modes_cursor - MAX_ROWS + 1;
+		vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
 		vid_menu_firsttime = false;
 	}
 
-	ScrollTitle("gfx/menu/title7.lmp");
-
 	want_fstoggle = ( ((modestate == MS_WINDOWED) && vid_menu_fs) || ((modestate != MS_WINDOWED) && !vid_menu_fs) );
 
-	M_Print (64, 72, "Press TAB to switch options");
+	need_apply = (vid_menunum != vid_modenum) || want_fstoggle;
 
-	M_Print (64, 84, "Fullscreen: ");
-	M_DrawYesNo (184, 84, vid_menu_fs, !want_fstoggle);
+	M_Print (76, 92 + 8*VID_FULLSCREEN, "Fullscreen: ");
+	M_DrawYesNo (76+12*8, 92 + 8*VID_FULLSCREEN, vid_menu_fs, !want_fstoggle);
 
-	if (modes_top)
-		M_DrawCharacter (160, 92, 128);
-	if (modes_top + MAX_ROWS < *nummodes)
-		M_DrawCharacter (160, 92 + ((MAX_ROWS-1)*8), 129);
-
-	M_Print (64, 76+16, "Resolution: ");
-	for (i=0 ; (i < MAX_ROWS) && (i+modes_top < *nummodes); i++)
-	{
-		y = 92 + 8*i;
-
-		if (i+modes_top == vid_modenum)
-			M_PrintWhite (184, y, modelist[i+modes_top].modedesc);
-		else
-			M_Print (184, y, modelist[i+modes_top].modedesc);
-	}
-
-	if (vid_cursor)
-		M_DrawCharacter (172, 92 + (modes_cursor-modes_top)*8, 12+((int)(realtime*4)&1));
+	M_Print (76, 92 + 8*VID_RESOLUTION, "Resolution: ");
+	if (vid_menunum == vid_modenum)
+		M_PrintWhite (76+12*8, 92 + 8*VID_RESOLUTION, modelist[vid_menunum].modedesc);
 	else
+		M_Print (76+12*8, 92 + 8*VID_RESOLUTION, modelist[vid_menunum].modedesc);
+
+	if (need_apply)
 	{
-		M_DrawCharacter (172, 84, 12+((int)(realtime*4)&1));
-		// indicate an unset resolution selection
-		// when we aren't in the scrolling list
-		if (modes_cursor != vid_modenum)
-			M_DrawCharacter (172, 92 + (modes_cursor-modes_top)*8, 13);
+		M_Print (76, 92 + 8*VID_RESET, "RESET CHANGES");
+		M_Print (76, 92 + 8*VID_APPLY, "APPLY CHANGES");
 	}
+
+	M_DrawCharacter (64, 92 + vid_cursor*8, 12+((int)(realtime*4)&1));
 }
 
 /*
@@ -1151,58 +1139,101 @@ void VID_MenuKey (int key)
 {
 	switch (key)
 	{
-	case K_TAB:
-		vid_cursor = !vid_cursor;
-		return;
-
 	case K_ESCAPE:
+		vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
 		M_Menu_Options_f ();
 		return;
 
 	case K_ENTER:
-		if (modes_cursor != vid_modenum || want_fstoggle)
+		switch (vid_cursor)
 		{
-			Cvar_SetValue("vid_mode", modes_cursor);
-			Cvar_SetValue("vid_config_fscr", vid_menu_fs);
-			VID_Restart_f();
+		case VID_RESET:
+			vid_menu_fs = (modestate != MS_WINDOWED);
+			vid_menunum = vid_modenum;
+			vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
+			break;
+		case VID_APPLY:
+			if (need_apply)
+			{
+				Cvar_SetValue("vid_mode", vid_menunum);
+				Cvar_SetValue("vid_config_fscr", vid_menu_fs);
+				VID_Restart_f();
+			}
+			break;
 		}
 		return;
 
 	case K_LEFTARROW:
+		switch (vid_cursor)
+		{
+		case VID_FULLSCREEN:
+			vid_menu_fs = !vid_menu_fs;
+			if (fs_toggle_works)
+				VID_ToggleFullscreen();
+			break;
+		case VID_RESOLUTION:
+			S_LocalSound ("raven/menu1.wav");
+			vid_menunum--;
+			if (vid_menunum < 0)
+				vid_menunum = 0;
+			break;
+		}
+		return;
+
 	case K_RIGHTARROW:
-	// fullscreen / windowed toggling
-		if (vid_cursor == 1)
-			return;	// resolution is on the scrolling list
-		vid_menu_fs = !vid_menu_fs;
-		if (fs_toggle_works)
-			VID_ToggleFullscreen();
+		switch (vid_cursor)
+		{
+		case VID_FULLSCREEN:
+			vid_menu_fs = !vid_menu_fs;
+			if (fs_toggle_works)
+				VID_ToggleFullscreen();
+			break;
+		case VID_RESOLUTION:
+			S_LocalSound ("raven/menu1.wav");
+			vid_menunum++;
+			if (vid_menunum >= *nummodes)
+				vid_menunum = *nummodes - 1;
+			break;
+		}
 		return;
 
 	case K_UPARROW:
-		if (!vid_cursor)
-			return;
-		modes_cursor--;
-		if (modes_cursor < 0)
-			modes_cursor = *nummodes - 1;
 		S_LocalSound ("raven/menu1.wav");
+		vid_cursor--;
+		if (vid_cursor < 0)
+		{
+			vid_cursor = (need_apply) ? VID_ITEMS-1 : VID_BLANKLINE-1;
+		}
+		else if (vid_cursor == VID_BLANKLINE)
+		{
+			vid_cursor--;
+		}
 		break;
 
 	case K_DOWNARROW:
-		if (!vid_cursor)
-			return;
-		modes_cursor++;
-		if (modes_cursor >= *nummodes)
-			modes_cursor = 0;
 		S_LocalSound ("raven/menu1.wav");
+		vid_cursor++;
+		if (vid_cursor >= VID_ITEMS)
+		{
+			vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
+			break;
+		}
+		if (vid_cursor >= VID_BLANKLINE)
+		{
+			if (need_apply)
+			{
+				if (vid_cursor == VID_BLANKLINE)
+					vid_cursor++;
+			}
+			else
+			{
+				vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
+			}
+		}
 		break;
 
 	default:
 		return;
 	}
-
-	if (modes_cursor < modes_top)
-		modes_top = modes_cursor;
-	else if (modes_cursor >= modes_top+MAX_ROWS)
-		modes_top = modes_cursor - MAX_ROWS + 1;
 }
 
