@@ -3,6 +3,18 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-03-03 (CVS):
+    * h2ded: fixed win32 build.
+    * vid_sdl.c, gl_vidsdl.c, gl_vidnt.c: removed unnecessary vmode_t casts.
+    * gl_vidsdl.c, gl_vidnt.c: added 'apply changes' and 'reset changes'
+      items to the video options menu for the opengl version. for those who
+      couldn't figure what to do, there it should be clear enough now ;)
+      similar changes will soon be applied to the software renderer version.
+    * gl_vidsdl.c, gl_vidnt.c: fixed the downarrow key behavior in the new
+      video menu.
+    * ported the new video menu style to the software renderer version.
+    * updated the release notes file for future v1.4.2 (2007-03-03).
+
 2007-03-02 (CVS):
     * xdelta: tiny cleanups in autogen.sh and configure.in.
     * xdelta: fixed out of memory condition caused by not properly unmapping
