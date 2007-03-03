@@ -322,7 +322,7 @@ int main (int argc, char **argv)
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
-	Sys_Printf("basedir is: %s\n", cwd);
+	Sys_Printf("basedir is: %s\n", parms.basedir);
 	Sys_Printf("userdir is: %s\n", parms.userdir);
 
 	parms.memsize = STD_MEM_ALLOC;
