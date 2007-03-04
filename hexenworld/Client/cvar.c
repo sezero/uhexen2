@@ -151,10 +151,16 @@ void Cvar_Set (const char *var_name, const char *value)
 
 #ifdef SERVERONLY
 	// Don't allow deathmatch and coop at the same time
-	if (!strcmp(var->name, deathmatch.name) && var->value != 0)
-		Cvar_Set("coop", "0");
-	if (!strcmp(var->name, coop.name) && var->value != 0)
-		Cvar_Set("deathmatch", "0");
+	if ( !strcmp(var->name, deathmatch.name) )
+	{
+		if (var->value != 0)
+			Cvar_Set("coop", "0");
+	}
+	else if ( !strcmp(var->name, coop.name) )
+	{
+		if (var->value != 0)
+			Cvar_Set("deathmatch", "0");
+	}
 #endif
 }
 

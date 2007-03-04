@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.26 2007-02-17 07:55:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.27 2007-03-04 09:02:20 sezero Exp $
 */
 
 
@@ -278,13 +278,13 @@ static void SCR_CalcRefdef (void)
 // bound viewsize
 	if (scr_viewsize.value < 30)
 		Cvar_Set ("viewsize","30");
-	if (scr_viewsize.value > 120)
+	else if (scr_viewsize.value > 120)
 		Cvar_Set ("viewsize","120");
 
 // bound field of view
 	if (scr_fov.value < 10)
 		Cvar_Set ("fov","10");
-	if (scr_fov.value > 110)
+	else if (scr_fov.value > 110)
 		Cvar_Set ("fov","110");
 
 	oldfov = scr_fov.value;

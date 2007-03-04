@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.c,v 1.16 2007-02-28 08:40:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.c,v 1.17 2007-03-04 09:02:20 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -331,7 +331,7 @@ static void BuildGammaTable (float g)
 		inf = 255 * pow((i + 0.5) / 255.5, g) + 0.5;
 		if (inf < 0)
 			inf = 0;
-		if (inf > 255)
+		else if (inf > 255)
 			inf = 255;
 		gammatable[i] = inf;
 	}
@@ -380,12 +380,12 @@ void V_ParseDamage (void)
 	if (count < 10)
 		count = 10;
 
-	cl.faceanimtime = cl.time + 0.2;	// but sbar face into pain frame
+	cl.faceanimtime = cl.time + 0.2;	// put sbar face into pain frame
 
 	cl.cshifts[CSHIFT_DAMAGE].percent += 3 * count;
 	if (cl.cshifts[CSHIFT_DAMAGE].percent < 0)
 		cl.cshifts[CSHIFT_DAMAGE].percent = 0;
-	if (cl.cshifts[CSHIFT_DAMAGE].percent > 150)
+	else if (cl.cshifts[CSHIFT_DAMAGE].percent > 150)
 		cl.cshifts[CSHIFT_DAMAGE].percent = 150;
 
 	if (armor > blood)
@@ -597,7 +597,7 @@ void V_CalcBlend (void)
 	v_blend[3] = a;
 	if (v_blend[3] > 1)
 		v_blend[3] = 1;
-	if (v_blend[3] < 0)
+	else if (v_blend[3] < 0)
 		v_blend[3] = 0;
 }
 #endif
@@ -771,12 +771,12 @@ static void CalcGunAngle (void)
 	yaw = angledelta(yaw - r_refdef.viewangles[YAW]) * 0.4;
 	if (yaw > 10)
 		yaw = 10;
-	if (yaw < -10)
+	else if (yaw < -10)
 		yaw = -10;
 	pitch = angledelta(-pitch - r_refdef.viewangles[PITCH]) * 0.4;
 	if (pitch > 10)
 		pitch = 10;
-	if (pitch < -10)
+	else if (pitch < -10)
 		pitch = -10;
 	move = host_frametime * 20;
 	if (yaw > oldyaw)

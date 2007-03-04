@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.41 2007-02-17 07:55:32 sezero Exp $
+	$Id: gl_screen.c,v 1.42 2007-03-04 09:02:09 sezero Exp $
 */
 
 /*=============================================================================
@@ -301,13 +301,13 @@ static void SCR_CalcRefdef (void)
 // bound viewsize
 	if (scr_viewsize.value < 30)
 		Cvar_Set ("viewsize","30");
-	if (scr_viewsize.value > 120)
+	else if (scr_viewsize.value > 120)
 		Cvar_Set ("viewsize","120");
 
 // bound field of view
 	if (scr_fov.value < 10)
 		Cvar_Set ("fov","10");
-	if (scr_fov.value > 170)
+	else if (scr_fov.value > 170)
 		Cvar_Set ("fov","170");
 
 	oldfov = scr_fov.value;
