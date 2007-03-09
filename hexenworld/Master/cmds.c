@@ -2,49 +2,201 @@
 	cmd.c
 	Quake script command processing module
 
-	$Id: cmds.c,v 1.11 2007-02-17 07:56:16 sezero Exp $
+	$Id: cmds.c,v 1.12 2007-03-09 09:01:03 sezero Exp $
 */
 
 #include "defs.h"
 
+#define	MAX_ARGS	80
+
 typedef struct cmd_function_s
 {
 	struct cmd_function_s	*next;
-	char		*name;
-	xcommand_t	function;
+	char					*name;
+	xcommand_t				function;
 } cmd_function_t;
 
-#define	MAX_ARGS	80
+static cmd_function_t	*cmd_functions = NULL;
 
-static	int		cmd_argc;
-static	char	*cmd_argv[MAX_ARGS];
-static	char	*cmd_null_string = "";
-static	char	*cmd_args = NULL;
-static	sizebuf_t	cmd_text;
-static	byte		cmd_text_buf[8192];
-
-static	cmd_function_t	*cmd_functions;		// possible commands to execute
+static	int			cmd_argc;
+static	char		*cmd_argv[MAX_ARGS];
+static	char		*cmd_null_string = "";
+static	char		*cmd_args = NULL;
 
 //=============================================================================
 
+/*
+=============================================================================
+
+						COMMAND BUFFER
+
+=============================================================================
+*/
+
+static sizebuf_t	cmd_text;
+static byte	cmd_text_buf[8192];
+
+/*
+============
+Cbuf_Init
+============
+*/
+void Cbuf_Init (void)
+{
+	// space for commands and script files
+	SZ_Init (&cmd_text, cmd_text_buf, sizeof(cmd_text_buf));
+}
+
+
+/*
+============
+Cbuf_AddText
+
+Adds command text at the end of the buffer
+============
+*/
+void Cbuf_AddText (const char *text)
+{
+	int		l;
+
+	l = strlen (text);
+
+	if (cmd_text.cursize + l >= cmd_text.maxsize)
+	{
+		printf ("%s: overflow\n", __FUNCTION__);
+		return;
+	}
+	SZ_Write (&cmd_text, text, l);
+}
+
+
+/*
+============
+Cbuf_InsertText
+
+Adds command text immediately after the current command
+Adds a \n to the text
+FIXME: actually change the command buffer to do less copying
+============
+*/
+void Cbuf_InsertText (const char *text)
+{
+	char	*temp;
+	int		templen;
+
+// copy off any commands still remaining in the exec buffer
+	templen = cmd_text.cursize;
+	if (templen)
+	{
+		temp = (char *)malloc (templen);
+		memcpy (temp, cmd_text.data, templen);
+		SZ_Clear (&cmd_text);
+	}
+	else
+		temp = NULL;	// shut up compiler
+
+// add the entire text of the file
+	Cbuf_AddText (text);
+	SZ_Write (&cmd_text, "\n", 1);
+// add the copied off data
+	if (templen)
+	{
+		SZ_Write (&cmd_text, temp, templen);
+		free (temp);
+	}
+}
+
+/*
+============
+Cbuf_Execute
+============
+*/
+void Cbuf_Execute (void)
+{
+	int		i;
+	char	*text;
+	char	line[1024];
+	int		quotes;
+
+	while (cmd_text.cursize)
+	{
+// find a \n or ; line break
+		text = (char *)cmd_text.data;
+
+		quotes = 0;
+		for (i = 0; i < cmd_text.cursize; i++)
+		{
+			if (text[i] == '"')
+				quotes++;
+			if ( !(quotes&1) &&  text[i] == ';')
+				break;	// don't break if inside a quoted string
+			if (text[i] == '\n')
+				break;
+		}
+
+		memcpy (line, text, i);
+		line[i] = 0;
+
+// delete the text from the command buffer and move remaining commands down
+// this is necessary because commands (exec, alias) can insert data at the
+// beginning of the text buffer
+
+		if (i == cmd_text.cursize)
+			cmd_text.cursize = 0;
+		else
+		{
+			i++;
+			cmd_text.cursize -= i;
+			memcpy (text, text+i, cmd_text.cursize);
+		}
+
+// execute the command line
+		Cmd_ExecuteString (line);
+	}
+}
+
+/*
+=============================================================================
+
+					COMMAND EXECUTION
+
+=============================================================================
+*/
+
+/*
+============
+Cmd_Argc
+============
+*/
 int Cmd_Argc (void)
 {
 	return cmd_argc;
 }
 
+/*
+============
+Cmd_Argv
+============
+*/
 char *Cmd_Argv (int arg)
 {
 	if (arg >= cmd_argc)
 		return cmd_null_string;
-
 	return cmd_argv[arg];
 }
 
+/*
+============
+Cmd_TokenizeString
+
+Parses the given string into command line tokens.
+============
+*/
 void Cmd_TokenizeString (char *text)
 {
 	int		i;
 
-	// clear the args from the last string
+// clear the args from the last string
 	for (i = 0; i < cmd_argc; i++)
 		free (cmd_argv[i]);
 
@@ -52,7 +204,8 @@ void Cmd_TokenizeString (char *text)
 	cmd_args = NULL;
 
 	while (1)
-	{	// skip whitespace up to a /n
+	{
+// skip whitespace up to a /n
 		while (*text && *text <= ' ' && *text != '\n')
 		{
 			text++;
@@ -83,14 +236,20 @@ void Cmd_TokenizeString (char *text)
 	}
 }
 
+
+/*
+============
+Cmd_AddCommand
+============
+*/
 void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 {
 	cmd_function_t	*cmd;
 
-	// fail if the command already exists
+// fail if the command already exists
 	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
 	{
-		if ( !strcmp (cmd_name, cmd->name) )
+		if ( !strcmp(cmd_name, cmd->name) )
 		{
 			printf ("%s: %s already defined\n", __FUNCTION__, cmd_name);
 			return;
@@ -104,17 +263,26 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 	cmd_functions = cmd;
 }
 
+
+/*
+============
+Cmd_ExecuteString
+
+A complete command line has been parsed, so try to execute it
+FIXME: lookupnoadd the token to speed search?
+============
+*/
 void Cmd_ExecuteString (char *text)
 {
 	cmd_function_t	*cmd;
 
 	Cmd_TokenizeString (text);
 
-	// execute the command line
+// execute the command line
 	if (!Cmd_Argc())
 		return;		// no tokens
 
-	// check functions
+// check functions
 	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
 	{
 		if ( !strcmp(cmd_argv[0], cmd->name) )
@@ -129,116 +297,11 @@ void Cmd_ExecuteString (char *text)
 }
 
 
-void Cbuf_Init (void)
-{
-	// space for commands and script files
-	SZ_Init (&cmd_text, cmd_text_buf, sizeof(cmd_text_buf));
-}
-
-void Cbuf_AddText (const char *text)
-{
-	int		l;
-
-	l = strlen (text);
-
-	if (cmd_text.cursize + l >= cmd_text.maxsize)
-	{
-		printf ("%s: overflow\n", __FUNCTION__);
-		return;
-	}
-
-	SZ_Write (&cmd_text, text, strlen (text));
-}
-
-void Cbuf_InsertText (const char *text)
-{
-	char	*temp;
-	int	templen;
-
-	// copy off any commands still remaining in the exec buffer
-	templen = cmd_text.cursize;
-	if (templen)
-	{
-		temp = (char *)malloc (templen);
-		memcpy (temp, cmd_text.data, templen);
-		SZ_Clear (&cmd_text);
-	}
-	else
-	{
-		temp = NULL;	// shut up compiler
-	}
-
-	// add the entire text of the file
-	Cbuf_AddText (text);
-	SZ_Write (&cmd_text, "\n", 1);
-
-	// add the copied off data
-	if (templen)
-	{
-		SZ_Write (&cmd_text, temp, templen);
-		free (temp);
-	}
-}
-
-void Cbuf_Execute (void)
-{
-	int	i, quotes;
-	char	*text;
-	char	line[1024];
-
-	while (cmd_text.cursize)
-	{
-		// find a \n or ; line break
-		text = (char *)cmd_text.data;
-
-		quotes = 0;
-		for (i = 0; i < cmd_text.cursize; i++)
-		{
-			if (text[i] == '"')
-				quotes++;
-			if ( !(quotes&1) &&  text[i] == ';')
-				break;	// don't break if inside a quoted string
-			if (text[i] == '\n')
-				break;
-		}
-
-		memcpy (line, text, i);
-		line[i] = 0;
-
-// delete the text from the command buffer and move remaining commands down
-// this is necessary because commands (exec, alias) can insert data at the
-// beginning of the text buffer
-
-		if (i == cmd_text.cursize)
-		{
-			cmd_text.cursize = 0;
-		}
-		else
-		{
-			i++;
-			cmd_text.cursize -= i;
-			memcpy (text, text+i, cmd_text.cursize);
-		}
-
-		// execute the command line
-		Cmd_ExecuteString (line);
-	}
-}
-
-qboolean Cmd_Exists (const char *cmd_name)
-{
-	cmd_function_t	*cmd;
-
-	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
-	{
-		if ( !strcmp (cmd_name, cmd->name) )
-			return true;
-	}
-
-	return false;
-}
-
-
+/*
+============
+Cmd_Init
+============
+*/
 void Cmd_Init (void)
 {
 }
