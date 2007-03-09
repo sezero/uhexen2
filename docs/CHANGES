@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-03-08 (CVS):
+    * uniform Cmd_AddCommand usage.
+    * re-arranged the cmd layer in hwmaster so that it gives smaller and
+      readable diff output when compared to its hexen2 counterpart.
+
 2007-03-04 (CVS):
     * more trivial stuff: changed a few if conditions to else if.
 
