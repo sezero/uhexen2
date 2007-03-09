@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.65 2007-03-03 10:17:21 sezero Exp $
+	$Id: vid_sdl.c,v 1.66 2007-03-09 07:03:19 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -679,10 +679,10 @@ void VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&vid_showload);
 
-	Cmd_AddCommand ("vid_showinfo", &VID_ShowInfo_f);
-	Cmd_AddCommand ("vid_listmodes", &VID_ListModes_f);
-	Cmd_AddCommand ("vid_nummodes", &VID_NumModes_f);
-	Cmd_AddCommand ("vid_restart", &VID_Restart_f);
+	Cmd_AddCommand ("vid_showinfo", VID_ShowInfo_f);
+	Cmd_AddCommand ("vid_listmodes", VID_ListModes_f);
+	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
+	Cmd_AddCommand ("vid_restart", VID_Restart_f);
 
 	// init sdl
 	// the first check is actually unnecessary

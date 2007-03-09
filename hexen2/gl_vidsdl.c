@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.147 2007-03-03 10:16:23 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.148 2007-03-09 07:01:56 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1504,10 +1504,10 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&gl_lightmapfmt);
 
-	Cmd_AddCommand ("vid_showinfo", &VID_ShowInfo_f);
-	Cmd_AddCommand ("vid_listmodes", &VID_ListModes_f);
-	Cmd_AddCommand ("vid_nummodes", &VID_NumModes_f);
-	Cmd_AddCommand ("vid_restart", &VID_Restart_f);
+	Cmd_AddCommand ("vid_showinfo", VID_ShowInfo_f);
+	Cmd_AddCommand ("vid_listmodes", VID_ListModes_f);
+	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
+	Cmd_AddCommand ("vid_restart", VID_Restart_f);
 
 	vid.numpages = 2;
 

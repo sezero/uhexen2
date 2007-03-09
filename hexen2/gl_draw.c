@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.100 2007-02-23 23:24:08 sezero Exp $
+	$Id: gl_draw.c,v 1.101 2007-03-09 07:01:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -407,7 +407,7 @@ void Draw_Init (void)
 		Cvar_RegisterVariable (&gl_spritemip);
 		Cvar_RegisterVariable (&gl_constretch);
 
-		Cmd_AddCommand ("gl_texturemode", &Draw_TextureMode_f);
+		Cmd_AddCommand ("gl_texturemode", Draw_TextureMode_f);
 
 	}
 
