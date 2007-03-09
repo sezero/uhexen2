@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-03-04 (CVS):
+    * more trivial stuff: changed a few if conditions to else if.
+
 2007-03-03 (CVS):
     * h2ded: fixed win32 build.
     * vid_sdl.c, gl_vidsdl.c, gl_vidnt.c: removed unnecessary vmode_t casts.
