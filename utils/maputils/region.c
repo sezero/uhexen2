@@ -1,4 +1,7 @@
-// region.c
+/*
+	region.c
+	$Id: region.c,v 1.6 2007-03-14 21:04:41 sezero Exp $
+*/
 
 #include "util_inc.h"
 #include "cmdlib.h"

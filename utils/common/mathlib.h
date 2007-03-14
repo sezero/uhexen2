@@ -1,4 +1,9 @@
-// mathlib.h
+/*
+	mathlib.h
+	math primitives
+
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/common/mathlib.h,v 1.3 2007-03-14 21:04:31 sezero Exp $
+*/
 
 #ifndef __MATHLIB_H
 #define __MATHLIB_H

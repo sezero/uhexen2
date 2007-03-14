@@ -1,5 +1,9 @@
+/*
+	cmd.h
+	command buffer and command execution
 
-// cmd.h -- Command buffer and command execution
+	$Id: cmd.h,v 1.3 2007-03-14 21:04:14 sezero Exp $
+*/
 
 #ifndef __HX2_CMD_H
 #define __HX2_CMD_H

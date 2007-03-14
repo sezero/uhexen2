@@ -1,3 +1,10 @@
+/*
+	interface.c
+	hexen2 launcher gtk+ interface
+
+	$Id: interface.c,v 1.49 2007-03-14 21:04:25 sezero Exp $
+*/
+
 #include <gdk/gdkkeysyms.h>
 #include "launcher_defs.h"
 #include "common.h"

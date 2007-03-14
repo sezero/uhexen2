@@ -1,7 +1,9 @@
+/*
+	console.h
+	the game console
 
-//
-// console
-//
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.h,v 1.9 2007-03-14 21:03:03 sezero Exp $
+*/
 
 #ifndef __CONSOLE_H
 #define __CONSOLE_H

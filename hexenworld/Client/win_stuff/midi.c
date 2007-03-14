@@ -1,6 +1,9 @@
 /*
- * $Id: midi.c,v 1.16 2007-03-14 08:12:47 sezero Exp $
- */
+	midi_win.c
+	$Id: midi.c,v 1.17 2007-03-14 21:04:12 sezero Exp $
+
+	MIDI module for Win32
+*/
 
 #include <windows.h>
 #include <windowsx.h>

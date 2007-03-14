@@ -1,4 +1,8 @@
-// r_light.c
+/*
+	r_light.c
+
+	$Id: gl_rlight.c,v 1.13 2007-03-14 21:03:07 sezero Exp $
+*/
 
 #include "quakedef.h"
 

@@ -1,4 +1,9 @@
-// net_chan.c
+/*
+	net_chan.c
+	net channel
+
+	$Id: net_chan.c,v 1.9 2007-03-14 21:03:34 sezero Exp $
+*/
 
 #include "quakedef.h"
 

@@ -1,4 +1,9 @@
-// sys_win.c -- Win32 system interface code
+/*
+	sys_win.c
+	Win32 system interface code
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/sys_win.c,v 1.40 2007-03-14 21:04:13 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "winquake.h"

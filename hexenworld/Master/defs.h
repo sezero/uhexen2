@@ -1,3 +1,9 @@
+/*
+	mst_defs.h
+	common definitions for hexenworld master server
+
+	$Id: defs.h,v 1.29 2007-03-14 21:04:15 sezero Exp $
+*/
 
 #ifndef __HWMASTER_DEFS
 #define __HWMASTER_DEFS

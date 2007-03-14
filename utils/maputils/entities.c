@@ -1,4 +1,7 @@
-// entities.c
+/*
+	entities.c
+	$Id: entities.c,v 1.5 2007-03-14 21:04:38 sezero Exp $
+*/
 
 #include "util_inc.h"
 #include "cmdlib.h"

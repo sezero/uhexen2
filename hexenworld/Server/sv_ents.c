@@ -1,3 +1,9 @@
+/*
+	sv_ents.c
+	server entities handling
+
+	$Id: sv_ents.c,v 1.7 2007-03-14 21:04:18 sezero Exp $
+*/
 
 #include "quakedef.h"
 

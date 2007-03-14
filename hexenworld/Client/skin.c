@@ -1,3 +1,9 @@
+/*
+	skin.c
+	skin loading
+
+	$Id: skin.c,v 1.8 2007-03-14 21:03:41 sezero Exp $
+*/
 
 #include "quakedef.h"
 

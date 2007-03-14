@@ -1,3 +1,10 @@
+/*
+	apply_patch.c
+	hexen2 launcher: binary patch starter
+
+	$Id: apply_patch.c,v 1.2 2007-03-14 21:04:26 sezero Exp $
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>

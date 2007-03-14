@@ -1,3 +1,9 @@
+/*
+	pmove.h
+	player movement
+
+	$Id: pmove.h,v 1.5 2007-03-14 21:03:35 sezero Exp $
+*/
 
 #ifndef __PLAYERMOVE_H
 #define __PLAYERMOVE_H

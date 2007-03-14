@@ -1,5 +1,9 @@
-//	huffman.h
-//	huffman encoding/decoding for use in hexenworld networking
+/*
+	huffman.h
+	huffman encoding/decoding for use in hexenworld networking
+
+	$Id: huffman.h,v 1.4 2007-03-14 21:03:33 sezero Exp $
+*/
 
 #ifndef __H2W_HUFFMAN_H
 #define __H2W_HUFFMAN_H

@@ -2,7 +2,7 @@
 	protocol.h
 	communications protocols
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/protocol.h,v 1.9 2007-03-14 08:15:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/protocol.h,v 1.10 2007-03-14 21:03:17 sezero Exp $
 */
 
 #ifndef __HX2_PROTOCOL_H

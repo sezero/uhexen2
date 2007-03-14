@@ -1,5 +1,12 @@
-// in_win.c -- windows 95 mouse and joystick code
-// 02/21/97 JCB Added extended DirectInput code to support external controllers.
+/*
+	in_win.c
+	$Id: in_win.c,v 1.22 2007-03-14 21:03:26 sezero Exp $
+
+	windows 95 mouse and joystick code
+
+	02/21/97 JCB Added extended DirectInput
+	code to support external controllers.
+*/
 
 #include "quakedef.h"
 #include "winquake.h"

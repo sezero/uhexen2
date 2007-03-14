@@ -2,6 +2,7 @@
 	chase.c
 	chase camera code
 
+	$Id: chase.c,v 1.8 2007-03-14 21:03:00 sezero Exp $
 */
 
 #include "quakedef.h"

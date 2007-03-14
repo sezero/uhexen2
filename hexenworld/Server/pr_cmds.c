@@ -1,3 +1,9 @@
+/*
+	pr_cmds.c
+	prog commands
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.27 2007-03-14 21:04:16 sezero Exp $
+*/
 
 #include "quakedef.h"
 #ifdef _WIN32

@@ -1,3 +1,7 @@
+/*
+	map.h
+	$Id: map.h,v 1.4 2007-03-14 21:04:40 sezero Exp $
+*/
 
 #ifndef __H2UTILS_MAP_H
 #define __H2UTILS_MAP_H

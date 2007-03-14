@@ -1,4 +1,9 @@
-// net.h -- quake's interface to the networking layer
+/*
+	net.h
+	quake's interface to the networking layer
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net.h,v 1.5 2007-03-14 21:03:34 sezero Exp $
+*/
 
 #ifndef __H2W_NET_H
 #define __H2W_NET_H

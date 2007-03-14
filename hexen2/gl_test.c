@@ -1,5 +1,7 @@
 /*
 	gl_test.c
+
+	$Id: gl_test.c,v 1.10 2007-03-14 21:03:07 sezero Exp $
 */
 
 #include "h2option.h"

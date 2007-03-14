@@ -1,3 +1,10 @@
+/*
+	callbacks.h
+	hexen2 launcher callbacks
+
+	$Id: callbacks.h,v 1.21 2007-03-14 21:04:24 sezero Exp $
+*/
+
 #ifndef	LAUNCHER_CALLBACKS_H
 #define	LAUNCHER_CALLBACKS_H
 

@@ -1,4 +1,9 @@
-// sv_user.c -- server code for moving users
+/*
+	sv_user.c
+	server code for moving users
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.20 2007-03-14 21:04:19 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include <ctype.h>

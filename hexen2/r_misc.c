@@ -1,4 +1,8 @@
-// r_misc.c
+/*
+	r_misc.c
+
+	$Id: r_misc.c,v 1.11 2007-03-14 21:03:20 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "r_local.h"

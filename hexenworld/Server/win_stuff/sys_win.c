@@ -1,3 +1,10 @@
+/*
+	sys_win.c
+	Win32 system interface code
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.25 2007-03-14 21:04:20 sezero Exp $
+*/
+
 #include "quakedef.h"
 #include <sys/timeb.h>
 #include <winsock.h>

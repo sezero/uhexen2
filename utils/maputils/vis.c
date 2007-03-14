@@ -1,4 +1,7 @@
-// vis.c
+/*
+	vis.c
+	$Id: vis.c,v 1.9 2007-03-14 21:04:43 sezero Exp $
+*/
 
 #include "util_inc.h"
 #include "cmdlib.h"

@@ -18,9 +18,11 @@
 */
 
 /*
- * tyrlite/ltface.c
- * Modifications by Kevin Shanahan, 1999-2000
- */
+	ltface.c
+	$Id: ltface.c,v 1.9 2007-03-14 21:04:36 sezero Exp $
+
+	Modifications by Kevin Shanahan, 1999-2000
+*/
 
 #include "util_inc.h"
 #include "cmdlib.h"

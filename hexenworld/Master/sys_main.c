@@ -1,4 +1,9 @@
-// sys_main.c
+/*
+	sys_main.c
+	main loop and system interface
+
+	$Id: sys_main.c,v 1.30 2007-03-14 21:04:15 sezero Exp $
+*/
 
 // whether to use the password file to determine
 // the path to the home directory

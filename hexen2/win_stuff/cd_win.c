@@ -1,5 +1,12 @@
-// Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc. All
-// rights reserved.
+/*
+	cd_win.c
+	Win32 cdaudio code
+
+	$Id: cd_win.c,v 1.11 2007-03-14 21:03:25 sezero Exp $
+
+	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc. All
+	rights reserved.
+*/
 
 #include <windows.h>
 #include <mmsystem.h>	// for LCC

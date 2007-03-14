@@ -1,4 +1,8 @@
-// screen.h
+/*
+	screen.h
+
+	$Id: screen.h,v 1.10 2007-03-14 21:03:21 sezero Exp $
+*/
 
 #ifndef __HX2_SCREEN_H
 #define __HX2_SCREEN_H

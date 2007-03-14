@@ -1,3 +1,9 @@
+/*
+	cl_effect.h
+	common effects header
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.h,v 1.10 2007-03-14 21:03:29 sezero Exp $
+*/
 
 #ifndef __CL_EFFECT_H
 #define __CL_EFFECT_H

@@ -3,6 +3,8 @@
 	include this instead of all the other snd_* files
 	to have no sound code whatsoever
 
+	$Id: snd_null.c,v 1.3 2007-03-14 21:03:22 sezero Exp $
+
 	Copyright (C) 1996-1997 Id Software, Inc.
 
 	This program is free software; you can redistribute it and/or

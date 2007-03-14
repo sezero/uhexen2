@@ -1,4 +1,9 @@
-// cl_parse.c  -- parse a message received from the server
+/*
+	cl_parse.c
+	parse a message received from the server
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.35 2007-03-14 21:03:29 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "r_shared.h"

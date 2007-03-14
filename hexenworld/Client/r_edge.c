@@ -1,4 +1,8 @@
-// r_edge.c
+/*
+	r_edge.c
+
+	$Id: r_edge.c,v 1.4 2007-03-14 21:03:36 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "r_local.h"

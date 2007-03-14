@@ -1,3 +1,9 @@
+/*
+	keys.h
+	key definitions and keyboard public functions
+
+	$Id: keys.h,v 1.10 2007-03-14 21:03:11 sezero Exp $
+*/
 
 #ifndef __HX2_KEYS_H
 #define __HX2_KEYS_H

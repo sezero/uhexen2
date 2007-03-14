@@ -1,4 +1,7 @@
 /*
+hwrcon.c
+$Id: hwrcon.c,v 1.8 2007-03-14 21:04:22 sezero Exp $
+
 HWRCON 1.2 HexenWorld Remote CONsole
 Idea based on RCon 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
 Made to work with HexenWorld using code from the HexenWorld

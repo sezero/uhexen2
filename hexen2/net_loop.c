@@ -1,4 +1,9 @@
-// net_loop.c
+/*
+	net_loop.c
+	network loop driver
+
+	$Id: net_loop.c,v 1.5 2007-03-14 21:03:11 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "net_loop.h"

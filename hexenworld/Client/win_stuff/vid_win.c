@@ -1,4 +1,9 @@
-// vid_win.c -- Win32 video driver
+/*
+	vid_win.c
+	Win32 video driver using MGL-4.05
+
+	$Id: vid_win.c,v 1.39 2007-03-14 21:04:13 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "winquake.h"

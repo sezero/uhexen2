@@ -1,3 +1,10 @@
+/*
+	launcher_defs.h
+	hexen2 launcher: common definitions
+
+	$Id: launcher_defs.h,v 1.23 2007-03-14 21:04:25 sezero Exp $
+*/
+
 #ifndef	LAUNCHER_COMMONDEFS_H
 #define	LAUNCHER_COMMONDEFS_H
 

@@ -1,3 +1,8 @@
+/*
+	loki_xdelta.h
+	$Id: loki_xdelta.h,v 1.2 2007-03-14 21:04:27 sezero Exp $
+*/
+
 #ifndef	_LOKI_XDELTA_H
 #define	_LOKI_XDELTA_H
 

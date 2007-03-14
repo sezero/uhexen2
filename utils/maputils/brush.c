@@ -1,4 +1,7 @@
-// brush.c
+/*
+	brush.c
+	$Id: brush.c,v 1.7 2007-03-14 21:04:37 sezero Exp $
+*/
 
 #include "util_inc.h"
 #include "cmdlib.h"

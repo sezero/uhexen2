@@ -1,4 +1,9 @@
-// wad.h
+/*
+	wad.h
+	wad file loading
+
+	$Id: wad.h,v 1.5 2007-03-14 21:03:42 sezero Exp $
+*/
 
 #ifndef __HX2_WAD_H
 #define __HX2_WAD_H

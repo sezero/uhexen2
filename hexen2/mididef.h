@@ -2,6 +2,7 @@
 	mididef.h
 	client midi music functions
 
+	$Id: mididef.h,v 1.6 2007-03-14 21:03:11 sezero Exp $
 */
 
 #ifndef __MIDIDEFS_H

@@ -1,3 +1,10 @@
+/*
+	crc.c
+	crc functions
+
+	$Id: crc.c,v 1.2 2007-03-14 21:04:31 sezero Exp $
+*/
+
 #include "q_types.h"
 #include "crc.h"
 #include <stdlib.h>

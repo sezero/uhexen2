@@ -1,4 +1,9 @@
-// r_efrag.c
+/*
+	r_efrag.c
+	entity fragments
+
+	$Id: r_efrag.c,v 1.7 2007-03-14 21:03:19 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "r_local.h"

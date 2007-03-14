@@ -1,4 +1,9 @@
-// net_vcr.h
+/*
+	net_vcr.h
+	VCR facility for debugging
+
+	$Id: net_vcr.h,v 1.6 2007-03-14 21:03:12 sezero Exp $
+*/
 
 #ifndef __NET_VCR_H
 #define __NET_VCR_H

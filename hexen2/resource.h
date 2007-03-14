@@ -1,3 +1,10 @@
+//
+// resource.h
+// Win32 resource header
+//
+// $Id: resource.h,v 1.6 2007-03-14 21:03:20 sezero Exp $
+//
+
 #ifndef __HX2_RESOURCE_H
 #define __HX2_RESOURCE_H
 

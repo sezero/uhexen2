@@ -1,6 +1,8 @@
 /*
 	net.h
 	quake's interface to the networking layer
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.12 2007-03-14 21:03:11 sezero Exp $
 */
 
 #ifndef __HX2_NET_H

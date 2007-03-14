@@ -1,3 +1,9 @@
+/*
+	progs.h
+	PROGS structures, public functions and vars
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/progs.h,v 1.11 2007-03-14 21:04:17 sezero Exp $
+*/
 
 #ifndef __HX2_PROGS_H
 #define __HX2_PROGS_H

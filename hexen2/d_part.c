@@ -2,6 +2,7 @@
 	d_part.c
 	software driver module for drawing particles
 
+	$Id: d_part.c,v 1.5 2007-03-14 21:03:05 sezero Exp $
 */
 
 #include "quakedef.h"

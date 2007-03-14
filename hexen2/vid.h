@@ -1,4 +1,9 @@
-// vid.h -- video driver defs
+/*
+	vid.h
+	video driver defs
+
+	$Id: vid.h,v 1.27 2007-03-14 21:03:23 sezero Exp $
+*/
 
 #ifndef __VID_DEFS_H
 #define __VID_DEFS_H

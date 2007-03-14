@@ -1,4 +1,9 @@
-// net_wins.c
+/*
+	net_udp.c
+	network UDP driver
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.29 2007-03-14 21:03:34 sezero Exp $
+*/
 
 #include "net_sys.h"
 #include "quakedef.h"

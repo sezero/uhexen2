@@ -1,3 +1,7 @@
+/*
+	threads.c
+	$Id: threads.c,v 1.4 2007-03-14 21:04:42 sezero Exp $
+*/
 
 #include "util_inc.h"
 #include "cmdlib.h"

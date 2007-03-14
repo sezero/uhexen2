@@ -1,4 +1,9 @@
-// view.h
+/*
+	view.h
+	player eye positioning
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.h,v 1.6 2007-03-14 21:03:42 sezero Exp $
+*/
 
 #ifndef __HX2_VIEW_H
 #define __HX2_VIEW_H

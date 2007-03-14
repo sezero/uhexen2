@@ -1,4 +1,9 @@
-// sv_edict.c -- entity dictionary
+/*
+	sv_edict.c
+	entity dictionary
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.18 2007-03-14 21:04:17 sezero Exp $
+*/
 
 #include "quakedef.h"
 

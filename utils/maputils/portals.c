@@ -1,3 +1,7 @@
+/*
+	portals.c
+	$Id: portals.c,v 1.7 2007-03-14 21:04:41 sezero Exp $
+*/
 
 #include "util_inc.h"
 #include "cmdlib.h"

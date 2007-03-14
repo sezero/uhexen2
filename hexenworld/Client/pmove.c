@@ -1,3 +1,9 @@
+/*
+	pmove.c
+	player movement
+
+	$Id: pmove.c,v 1.9 2007-03-14 21:03:35 sezero Exp $
+*/
 
 #include "quakedef.h"
 

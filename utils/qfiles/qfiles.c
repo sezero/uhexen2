@@ -1,3 +1,7 @@
+/*
+	qfiles.c
+	$Id: qfiles.c,v 1.6 2007-03-14 21:05:00 sezero Exp $
+*/
 
 #include "util_inc.h"
 #include "cmdlib.h"

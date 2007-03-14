@@ -1,4 +1,9 @@
-// protocol.h -- communications protocols
+/*
+	protocol.h
+	communications protocols
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/protocol.h,v 1.5 2007-03-14 21:03:35 sezero Exp $
+*/
 
 #ifndef __H2W_PROTOCOL_H
 #define __H2W_PROTOCOL_H

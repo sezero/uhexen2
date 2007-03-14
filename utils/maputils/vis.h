@@ -1,4 +1,7 @@
-// vis.h
+/*
+	vis.h
+	$Id: vis.h,v 1.5 2007-03-14 21:04:43 sezero Exp $
+*/
 
 #ifndef __H2UTILS_VIS_H
 #define __H2UTILS_VIS_H

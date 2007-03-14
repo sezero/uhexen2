@@ -1,6 +1,10 @@
 /*
- * $Id: mstrconv.c,v 1.14 2007-02-17 07:55:38 sezero Exp $
- */
+	mstrconv.c
+	$Id: mstrconv.c,v 1.15 2007-03-14 21:03:26 sezero Exp $
+
+	Converting a MID file to a MIDI stream for
+	playback using the Win32 midiStream API.
+*/
 
 #include <windows.h>
 #include <windowsx.h>

@@ -1,6 +1,9 @@
-//
-// pr_strng.h
-//
+/*
+	pr_strng.h
+	For international stuff
+
+	$Id: pr_strng.h,v 1.6 2007-03-14 21:03:17 sezero Exp $
+*/
 
 #ifndef __PR_STRINGS_H
 #define __PR_STRINGS_H

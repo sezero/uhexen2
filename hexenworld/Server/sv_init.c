@@ -1,3 +1,9 @@
+/*
+	sv_init.c
+	server spawning
+
+	$Id: sv_init.c,v 1.11 2007-03-14 21:04:18 sezero Exp $
+*/
 
 #include "quakedef.h"
 

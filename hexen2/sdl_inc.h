@@ -1,3 +1,10 @@
+/*
+	sdl_inc.h
+	common SDL header
+
+	$Id: sdl_inc.h,v 1.5 2007-03-14 21:03:21 sezero Exp $
+*/
+
 #ifndef __HX2_SDL_INC
 #define __HX2_SDL_INC
 

@@ -15,9 +15,14 @@
     See file, 'COPYING', for details.
 */
 
-// returns a colour for a given texture name.  currently
-// only works with standard quake textures.
-// expand as you see fit - you'll get the idea :-)
+/*
+	tex.c
+	returns a colour for a given texture name.  currently
+	only works with standard quake textures.
+	expand as you see fit - you'll get the idea :-)
+
+	$Id: tex.c,v 1.10 2007-03-14 21:04:36 sezero Exp $
+*/
 
 // V0.4 modifications
 // - made some of the textures that were only used in medieval/metal maps orange

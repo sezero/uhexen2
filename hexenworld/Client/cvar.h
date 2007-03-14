@@ -1,4 +1,9 @@
-// cvar.h
+/*
+	cvar.h
+	dynamic variable tracking
+
+	$Id: cvar.h,v 1.11 2007-03-14 21:03:31 sezero Exp $
+*/
 
 #ifndef __CVAR_H__
 #define __CVAR_H__

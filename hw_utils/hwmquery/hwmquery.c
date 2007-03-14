@@ -1,4 +1,7 @@
 /*
+hwmquery.c
+$Id: hwmquery.c,v 1.9 2007-03-14 21:04:21 sezero Exp $
+
 HWMQUERY 0.1 HexenWorld Master Server Query
 
 This program is free software; you can redistribute it and/or modify

@@ -2,6 +2,7 @@
 	r_aclip.c
 	clip routines for drawing Alias models directly to the screen
 
+	$Id: r_aclip.c,v 1.7 2007-03-14 21:03:36 sezero Exp $
 */
 
 #include "quakedef.h"

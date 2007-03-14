@@ -1,4 +1,10 @@
-// cl_tent.c -- client side temporary entities
+/*
+	cl_tent.c
+	client side temporary entities
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_tent.c,v 1.26 2007-03-14 21:03:30 sezero Exp $
+*/
+
 
 // HEADER FILES ------------------------------------------------------------
 

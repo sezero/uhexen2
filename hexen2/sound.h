@@ -2,6 +2,7 @@
 	sound.h
 	client sound i/o functions
 
+	$Id: sound.h,v 1.19 2007-03-14 21:03:22 sezero Exp $
 */
 
 #ifndef __HX2_SOUND_H

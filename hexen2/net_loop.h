@@ -1,4 +1,9 @@
-// net_loop.h
+/*
+	net_loop.h
+	network loop driver
+
+	$Id: net_loop.h,v 1.4 2007-03-14 21:03:12 sezero Exp $
+*/
 
 #ifndef __NET_LOOP_H
 #define __NET_LOOP_H

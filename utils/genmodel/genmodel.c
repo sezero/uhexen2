@@ -1,12 +1,10 @@
+/*
+	genmodel.c
+	$Id: genmodel.c,v 1.6 2007-03-14 21:04:32 sezero Exp $
 
-//**************************************************************************
-//**
-//** genmodel.c
-//**
-//** Generates a .mdl file from a base frame, a texture bitmap, and a
-//** series of frames.
-//**
-//**************************************************************************
+	Generates a .mdl file from a base frame, a texture bitmap,
+	and a series of frames.
+*/
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4244)

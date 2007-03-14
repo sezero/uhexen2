@@ -1,7 +1,8 @@
 /*
 	sv_phys.c
+	sv physics
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.18 2007-02-17 07:55:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.19 2007-03-14 21:03:23 sezero Exp $
 */
 
 #include "quakedef.h"

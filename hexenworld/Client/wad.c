@@ -1,4 +1,9 @@
-// wad.c
+/*
+	wad.c
+	wad file loading
+
+	$Id: wad.c,v 1.9 2007-03-14 21:03:42 sezero Exp $
+*/
 
 #include "quakedef.h"
 

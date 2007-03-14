@@ -1,4 +1,9 @@
-// conproc.h
+/*
+	conproc.c
+	Quake terminal for Win32
+
+	$Id: conproc.h,v 1.3 2007-03-14 21:03:26 sezero Exp $
+*/
 
 #ifndef __CONPROC_H
 #define __CONPROC_H

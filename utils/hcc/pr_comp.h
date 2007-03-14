@@ -1,5 +1,9 @@
+/*
+	pr_comp.h
+	PROGS structures: This file is shared by Hexen II and HCC
 
-// This file is shared by Hexen II and HCC
+	$Id: pr_comp.h,v 1.3 2007-03-14 21:04:34 sezero Exp $
+*/
 
 #ifndef __PR_COMP_H
 #define __PR_COMP_H

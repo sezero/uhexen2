@@ -1,3 +1,8 @@
+/*
+	snd_win.c
+	$Id: snd_win.c,v 1.20 2007-03-14 21:04:12 sezero Exp $
+*/
+
 #include "quakedef.h"
 #include "winquake.h"
 

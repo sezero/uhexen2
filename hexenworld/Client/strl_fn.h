@@ -1,3 +1,10 @@
+/*
+	strl_fn.h
+	header file for BSD strlcat and strlcpy
+
+	$Id: strl_fn.h,v 1.3 2007-03-14 21:03:42 sezero Exp $
+*/
+
 #ifndef __STRLFUNCS_H
 #define __STRLFUNCS_H
 

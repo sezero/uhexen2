@@ -1,6 +1,8 @@
 /*
 	client.h
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.23 2007-03-14 08:15:15 sezero Exp $
+	client main header
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.24 2007-03-14 21:03:02 sezero Exp $
 */
 
 #ifndef __HX2_CLIENT_H

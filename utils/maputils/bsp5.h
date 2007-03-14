@@ -1,5 +1,7 @@
-
-// bsp5.h
+/*
+	bsp5.h
+	$Id: bsp5.h,v 1.6 2007-03-14 21:04:38 sezero Exp $
+*/
 
 #ifndef __BSP5_H__
 #define __BSP5_H__

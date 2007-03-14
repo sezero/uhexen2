@@ -1,4 +1,7 @@
-// scriplib.h
+/*
+	scriplib.h
+	$Id: scriplib.h,v 1.5 2007-03-14 21:04:33 sezero Exp $
+*/
 
 #ifndef __SCRIPLIB_H
 #define __SCRIPLIB_H

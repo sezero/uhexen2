@@ -1,4 +1,9 @@
-// input.h -- external (non-keyboard) input devices
+/*
+	input.h
+	external (non-keyboard) input devices
+
+	$Id: input.h,v 1.5 2007-03-14 21:03:33 sezero Exp $
+*/
 
 #ifndef __HX2_INPUT_H
 #define __HX2_INPUT_H

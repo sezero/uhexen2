@@ -1,4 +1,8 @@
-// r_sky.c
+/*
+	r_sky.c
+
+	$Id: r_sky.c,v 1.5 2007-03-14 21:03:20 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "r_local.h"

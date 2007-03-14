@@ -1,4 +1,9 @@
-/* crc.h */
+/*
+	crc.h
+	crc functions
+
+	$Id: crc.h,v 1.2 2007-03-14 21:04:31 sezero Exp $
+*/
 
 #ifndef __HX2_CRC_H
 #define __HX2_CRC_H

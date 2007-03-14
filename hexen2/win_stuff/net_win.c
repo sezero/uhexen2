@@ -1,3 +1,8 @@
+/*
+	net_win.c
+	$Id: net_win.c,v 1.7 2007-03-14 21:03:26 sezero Exp $
+*/
+
 #include "quakedef.h"
 
 #include "net_dgrm.h"

@@ -1,7 +1,8 @@
 /*
 	host_cmd.c
+	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.64 2007-03-14 08:16:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.65 2007-03-14 21:03:08 sezero Exp $
 */
 
 #include "quakedef.h"

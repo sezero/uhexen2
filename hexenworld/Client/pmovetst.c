@@ -1,3 +1,10 @@
+/*
+	pmovetst.c
+	player movement testing
+
+	$Id: pmovetst.c,v 1.9 2007-03-14 21:03:35 sezero Exp $
+*/
+
 #include "quakedef.h"
 
 static	hull_t		box_hull;

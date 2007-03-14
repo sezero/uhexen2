@@ -17,6 +17,12 @@
     See file, 'COPYING', for details.
 */
 
+/*
+	bspfile.h
+	common bspfile header
+
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/bspfile.h,v 1.7 2007-03-14 21:04:35 sezero Exp $
+*/
 
 #ifndef __BSPFILE_H
 #define __BSPFILE_H

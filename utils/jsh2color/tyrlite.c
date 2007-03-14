@@ -18,9 +18,11 @@
 */
 
 /*
- * tyrlite/tyrlite.c
- * Modifications by Kevin Shanahan, 1999-2000
- */
+	tyrlite.c
+	$Id: tyrlite.c,v 1.14 2007-03-14 21:04:37 sezero Exp $
+
+	Modifications by Kevin Shanahan, 1999-2000
+*/
 
 #include "util_inc.h"
 #include "cmdlib.h"

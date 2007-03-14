@@ -17,11 +17,12 @@
     See file, 'COPYING', for details.
 */
 
-// trace.c
-
 /*
- * Modifications by Kevin Shanahan, 1999-2000
- */
+	trace.c
+	$Id: trace.c,v 1.7 2007-03-14 21:04:37 sezero Exp $
+
+	Modifications by Kevin Shanahan, 1999-2000
+*/
 
 #include "util_inc.h"
 #include "cmdlib.h"

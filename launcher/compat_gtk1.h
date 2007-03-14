@@ -1,7 +1,13 @@
+/*
+	compat_gtk1.h
+	"gtk-1.2 doesnt have it" wrappers...
+
+	$Id: compat_gtk1.h,v 1.4 2007-03-14 21:04:24 sezero Exp $
+*/
+
 #ifndef	LAUNCHER_GTK1COMPAT_H
 #define	LAUNCHER_GTK1COMPAT_H
 
-// "gtk-1.2 doesnt have it" wrappers...
 #ifdef WITH_GTK1
 
 #define GTK_WIN_POS_CENTER_ON_PARENT	GTK_WIN_POS_MOUSE

@@ -1,3 +1,7 @@
+/*
+	threads.h
+	$Id: threads.h,v 1.4 2007-03-14 21:04:43 sezero Exp $
+*/
 
 #ifndef __H2UTILS_THREADS_H
 #define __H2UTILS_THREADS_H

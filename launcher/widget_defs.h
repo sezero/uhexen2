@@ -1,3 +1,10 @@
+/*
+	widget_defs.h
+	hexen2 launcher: gtk+ widget defs
+
+	$Id: widget_defs.h,v 1.14 2007-03-14 21:04:26 sezero Exp $
+*/
+
 #ifndef	LAUNCHER_WIDGETDEFS_H
 #define	LAUNCHER_WIDGETDEFS_H
 

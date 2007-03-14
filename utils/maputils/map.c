@@ -1,4 +1,7 @@
-// map.c
+/*
+	map.c
+	$Id: map.c,v 1.8 2007-03-14 21:04:40 sezero Exp $
+*/
 
 #include "util_inc.h"
 #include "cmdlib.h"

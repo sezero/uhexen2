@@ -1,6 +1,9 @@
 /*
- * $Id: midi.h,v 1.6 2007-02-07 17:03:31 sezero Exp $
- */
+	midi_win.h
+	$Id: midi.h,v 1.7 2007-03-14 21:04:12 sezero Exp $
+
+	Header file for Win32 MIDI module
+*/
 
 #ifndef __MSTREAM_INCLUDED__
 #define __MSTREAM_INCLUDED__

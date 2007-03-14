@@ -1,12 +1,12 @@
+/*
+	genmodel.h
+	model structures
 
-//**************************************************************************
-//**
-//** genmodel.h
-//**
-//** This file must be identical in the genmodel project and in the H3
-//** project.
-//**
-//**************************************************************************
+	$Id: genmodel.h,v 1.4 2007-03-14 21:03:32 sezero Exp $
+
+	This file must be identical in the genmodel project and in the H3
+	project.
+*/
 
 #ifndef __GENMODEL_H
 #define __GENMODEL_H

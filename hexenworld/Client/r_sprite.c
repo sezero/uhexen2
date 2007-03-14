@@ -1,4 +1,8 @@
-// r_sprite.c
+/*
+	r_sprite.c
+
+	$Id: r_sprite.c,v 1.5 2007-03-14 21:03:37 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "r_local.h"

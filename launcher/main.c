@@ -1,3 +1,9 @@
+/*
+	main.c
+	hexen2 launcher: main loop
+
+	$Id: main.c,v 1.24 2007-03-14 21:04:25 sezero Exp $
+*/
 
 #include "common.h"
 

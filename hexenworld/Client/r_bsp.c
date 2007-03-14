@@ -1,4 +1,8 @@
-// r_bsp.c
+/*
+	r_bsp.c
+
+	$Id: r_bsp.c,v 1.5 2007-03-14 21:03:36 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "r_local.h"

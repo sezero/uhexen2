@@ -1,4 +1,8 @@
-// r_light.c
+/*
+	r_light.c
+
+	$Id: r_light.c,v 1.5 2007-03-14 21:03:36 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "r_local.h"

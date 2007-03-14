@@ -1,4 +1,7 @@
-// trace.c
+/*
+	trace.c
+	$Id: trace.c,v 1.4 2007-03-14 21:04:43 sezero Exp $
+*/
 
 #include "util_inc.h"
 #include "cmdlib.h"

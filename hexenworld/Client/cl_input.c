@@ -1,4 +1,13 @@
-// cl.input.c  -- builds an intended movement command to send to the server
+/*
+	cl.input.c
+	builds an intended movement command to send to the server
+
+	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc.
+	All rights reserved.
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_input.c,v 1.10 2007-03-14 21:03:29 sezero Exp $
+*/
+
 
 #include "quakedef.h"
 

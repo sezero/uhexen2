@@ -1,5 +1,9 @@
-//	hufffreq.h
-//	huffman freq table for use in hexenworld networking
+/*
+	hufffreq.h
+	huffman freq table for use in hexenworld networking
+
+	$Id: hufffreq.h,v 1.2 2007-03-14 21:04:22 sezero Exp $
+*/
 
 /*
 	0.27588720,

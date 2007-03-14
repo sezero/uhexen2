@@ -1,4 +1,9 @@
-// net_wipx.c
+/*
+	net_wipx.c
+	winsock ipx driver
+
+	$Id: net_wipx.c,v 1.15 2007-03-14 21:03:27 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "winquake.h"

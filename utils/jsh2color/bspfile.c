@@ -17,6 +17,11 @@
     See file, 'COPYING', for details.
 */
 
+/*
+	bspfile.c
+	$Id: bspfile.c,v 1.11 2007-03-14 21:04:35 sezero Exp $
+*/
+
 #include "util_inc.h"
 #include "cmdlib.h"
 #include "util_io.h"

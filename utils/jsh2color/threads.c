@@ -17,6 +17,11 @@
     See file, 'COPYING', for details.
 */
 
+/*
+	threads.c
+	$Id: threads.c,v 1.5 2007-03-14 21:04:36 sezero Exp $
+*/
+
 #include "util_inc.h"
 #include "cmdlib.h"
 #include "threads.h"

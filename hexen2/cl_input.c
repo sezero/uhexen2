@@ -4,6 +4,8 @@
 
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc.
 	All rights reserved.
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_input.c,v 1.16 2007-03-14 21:03:01 sezero Exp $
 */
 
 

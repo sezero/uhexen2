@@ -1,4 +1,10 @@
-// WGL functions we may need to link to
+/*
+	wgl_func.h
+	WGL functions we may need to link to
+	make sure NOT to protect this file against multiple inclusions!
+
+	$Id: wgl_func.h,v 1.4 2007-03-14 21:04:13 sezero Exp $
+*/
 
 #ifdef GL_DLSYM
 // These we can't do without

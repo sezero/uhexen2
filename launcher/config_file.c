@@ -1,3 +1,10 @@
+/*
+	config_file.c
+	hexen2 launcher config file handling
+
+	$Id: config_file.c,v 1.38 2007-03-14 21:04:24 sezero Exp $
+*/
+
 #include "common.h"
 #include "launcher_defs.h"
 #include "config_file.h"

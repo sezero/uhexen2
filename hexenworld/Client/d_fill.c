@@ -2,6 +2,7 @@
 	d_clear.c
 	clears a specified rectangle to the specified color
 
+	$Id: d_fill.c,v 1.4 2007-03-14 21:03:31 sezero Exp $
 */
 
 #include "quakedef.h"

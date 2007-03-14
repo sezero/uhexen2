@@ -2,6 +2,7 @@
 	cdaudio.h
 	client cd audio functions
 
+	$Id: cdaudio.h,v 1.4 2007-03-14 21:03:00 sezero Exp $
 */
 
 

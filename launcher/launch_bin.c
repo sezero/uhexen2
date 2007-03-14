@@ -1,3 +1,10 @@
+/*
+	launch_bin.c
+	hexen2 launcher: binary launching
+
+	$Id: launch_bin.c,v 1.39 2007-03-14 21:04:25 sezero Exp $
+*/
+
 #include "common.h"
 #include "launcher_defs.h"
 #include "config_file.h"

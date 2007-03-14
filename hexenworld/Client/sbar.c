@@ -1,7 +1,8 @@
 /*
 	sbar.c
+	Hexen II status bar
 
-	$Id: sbar.c,v 1.28 2007-02-23 23:24:09 sezero Exp $
+	$Id: sbar.c,v 1.29 2007-03-14 21:03:37 sezero Exp $
 */
 
 #include "quakedef.h"

@@ -1,3 +1,10 @@
+//
+// win32res.rc
+// Win32 resource file for Hexen II
+//
+// $Id: win32res.rc,v 1.4 2007-03-14 21:03:24 sezero Exp $
+//
+
 #include <afxres.h>
 #include <winresrc.h>
 #include "resource.h"

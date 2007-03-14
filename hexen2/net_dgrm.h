@@ -1,4 +1,9 @@
-// net_dgrm.h
+/*
+	net_dgrm.h
+	net-datagram header
+
+	$Id: net_dgrm.h,v 1.4 2007-03-14 21:03:11 sezero Exp $
+*/
 
 #ifndef __NET_DATAGRAM_H
 #define __NET_DATAGRAM_H

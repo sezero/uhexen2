@@ -1,3 +1,8 @@
+/*
+	qdir.h
+
+	$Id: qdir.h,v 1.4 2007-03-14 21:04:31 sezero Exp $
+*/
 
 #ifndef __QDIRS_H__
 #define __QDIRS_H__

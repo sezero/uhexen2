@@ -1,3 +1,7 @@
+/*
+	entities.h
+	$Id: entities.h,v 1.4 2007-03-14 21:04:39 sezero Exp $
+*/
 
 #ifndef __ENTITIES_H__
 #define __ENTITIES_H__

@@ -1,4 +1,8 @@
-// r_misc.c
+/*
+	r_misc.c
+
+	$Id: gl_rmisc.c,v 1.34 2007-03-14 21:03:32 sezero Exp $
+*/
 
 #include "quakedef.h"
 

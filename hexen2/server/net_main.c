@@ -1,4 +1,9 @@
-// net_main.c
+/*
+	net_main.c
+	main networking module
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.7 2007-03-14 21:03:25 sezero Exp $
+*/
 
 #include "quakedef.h"
 

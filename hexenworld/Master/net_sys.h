@@ -1,5 +1,9 @@
-// net_sys.h
-// common network system header
+/*
+	net_sys.h
+	common network system header
+
+	$Id: net_sys.h,v 1.3 2007-03-14 21:04:15 sezero Exp $
+*/
 
 #ifndef __NET_SYS_H__
 #define __NET_SYS_H__

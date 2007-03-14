@@ -2,6 +2,7 @@
 	snd_mix.c
 	portable code to mix sounds for snd_dma.c
 
+	$Id: snd_mix.c,v 1.14 2007-03-14 21:03:42 sezero Exp $
 */
 
 #include "quakedef.h"

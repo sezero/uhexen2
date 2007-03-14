@@ -1,4 +1,9 @@
-// entmap.c -- a program for remapping entity key/value pairs
+/*
+	entmap.c
+	a program for remapping entity key/value pairs
+
+	$Id: entmap.c,v 1.5 2007-03-14 21:04:39 sezero Exp $
+*/
 
 #include "util_inc.h"
 #include "cmdlib.h"

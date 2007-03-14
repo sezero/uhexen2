@@ -1,4 +1,9 @@
-// r_surf.c: surface-related refresh code
+/*
+	r_surf.c
+	surface-related refresh code
+
+	$Id: gl_rsurf.c,v 1.25 2007-03-14 21:03:07 sezero Exp $
+*/
 
 #include "quakedef.h"
 

@@ -1,4 +1,9 @@
-// arch_def.h - platform specific definitions
+/*
+	arch_def.h
+	platform specific definitions
+
+	$Id: arch_def.h,v 1.5 2007-03-14 21:03:00 sezero Exp $
+*/
 
 #ifndef __HX2_ARCHDEFS__
 #define __HX2_ARCHDEFS__

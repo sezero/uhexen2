@@ -1,4 +1,9 @@
-// console.c
+/*
+	console.c
+	in-game console and chat message buffer handling
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.c,v 1.23 2007-03-14 21:03:30 sezero Exp $
+*/
 
 #include "quakedef.h"
 

@@ -1,6 +1,9 @@
-//
-// spritegn.h: header file for sprite generation program
-//
+/*
+	spritegn.h
+	header file for sprite generation program
+
+	$Id: spritegn.h,v 1.5 2007-03-14 21:03:22 sezero Exp $
+*/
 
 #ifndef __SPRITEGEN_H
 #define __SPRITEGEN_H

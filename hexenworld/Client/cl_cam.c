@@ -1,10 +1,12 @@
-/* ZOID
- *
- * Player camera tracking in Spectator mode
- *
- * This takes over player controls for spectator automatic camera.
- * Player moves as a spectator, but the camera tracks an enemy player
- */
+/*
+	cl_cam.c
+	Player camera tracking in Spectator mode -- ZOID
+
+	This takes over player controls for spectator automatic camera.
+	Player moves as a spectator, but the camera tracks an enemy player
+
+	$Id: cl_cam.c,v 1.8 2007-03-14 21:03:29 sezero Exp $
+*/
 
 #include "quakedef.h"
 

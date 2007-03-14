@@ -1,7 +1,9 @@
-//
-// pr_strng.c
-// For international stuff
-//
+/*
+	pr_strng.c
+	For international stuff
+
+	$Id: pr_strng.c,v 1.8 2007-03-14 21:03:16 sezero Exp $
+*/
 
 #include "quakedef.h"
 

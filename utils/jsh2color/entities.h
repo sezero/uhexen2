@@ -17,6 +17,11 @@
     See file, 'COPYING', for details.
 */
 
+/*
+	entities.h
+	$Id: entities.h,v 1.7 2007-03-14 21:04:35 sezero Exp $
+*/
+
 #ifndef __ENTITIES_H__
 #define __ENTITIES_H__
 

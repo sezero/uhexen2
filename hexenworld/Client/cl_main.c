@@ -1,4 +1,9 @@
-// cl_main.c  -- client main loop
+/*
+	cl_main.c
+	client main loop
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.70 2007-03-14 21:03:29 sezero Exp $
+*/
 
 #include <sys/types.h>
 

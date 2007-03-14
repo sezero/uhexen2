@@ -2,6 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.8 2007-03-14 21:03:25 sezero Exp $
 */
 
 #define BAN_TEST

@@ -1,7 +1,9 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/hexen2/bspfile.h,v 1.4 2007-02-07 17:01:27 sezero Exp $
- */
+	bspfile.h
+	common bspfile header
 
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/bspfile.h,v 1.5 2007-03-14 21:03:00 sezero Exp $
+*/
 
 #ifndef __BSPFILE_H
 #define __BSPFILE_H

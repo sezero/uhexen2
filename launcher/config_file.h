@@ -1,3 +1,10 @@
+/*
+	config_file.h
+	hexen2 launcher config file handling
+
+	$Id: config_file.h,v 1.10 2007-03-14 21:04:25 sezero Exp $
+*/
+
 #ifndef CONFIG_FILE_H
 #define CONFIG_FILE_H
 

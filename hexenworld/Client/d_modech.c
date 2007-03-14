@@ -2,6 +2,7 @@
 	d_modech.c
 	called when mode has just changed
 
+	$Id: d_modech.c,v 1.5 2007-03-14 21:03:31 sezero Exp $
 */
 
 #include "quakedef.h"

@@ -1,5 +1,8 @@
+/*
+	r_draw.c
 
-// r_draw.c
+	$Id: r_draw.c,v 1.4 2007-03-14 21:03:36 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "r_local.h"

@@ -1,4 +1,9 @@
-// console.c
+/*
+	console.c
+	in-game console and chat message buffer handling
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.c,v 1.29 2007-03-14 21:03:03 sezero Exp $
+*/
 
 #include "quakedef.h"
 #ifdef _WIN32

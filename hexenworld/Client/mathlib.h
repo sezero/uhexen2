@@ -1,4 +1,9 @@
-// mathlib.h
+/*
+	mathlib.h
+	math primitives
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.h,v 1.16 2007-03-14 21:03:34 sezero Exp $
+*/
 
 #ifndef __MATHLIB_H
 #define __MATHLIB_H

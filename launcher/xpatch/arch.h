@@ -1,3 +1,10 @@
+/*
+	loki_patch/arch.h
+	common arch definitions
+
+	$Id: arch.h,v 1.2 2007-03-14 21:04:27 sezero Exp $
+*/
+
 #ifndef __ARCH_H__
 #define __ARCH_H__
 

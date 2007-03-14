@@ -1,4 +1,9 @@
-// net_vcr.c
+/*
+	net_vcr.c
+	VCR facility for debugging
+
+	$Id: net_vcr.c,v 1.9 2007-03-14 21:03:12 sezero Exp $
+*/
 
 #include "h2option.h"
 

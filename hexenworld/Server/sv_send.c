@@ -1,4 +1,9 @@
-// sv_main.c -- server main program
+/*
+	sv_send.c
+	server communication module
+
+	$Id: sv_send.c,v 1.15 2007-03-14 21:04:19 sezero Exp $
+*/
 
 #include "quakedef.h"
 

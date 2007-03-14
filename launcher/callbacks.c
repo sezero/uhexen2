@@ -1,3 +1,10 @@
+/*
+	callbacks.c
+	hexen2 launcher callbacks
+
+	$Id: callbacks.c,v 1.40 2007-03-14 21:04:23 sezero Exp $
+*/
+
 #include "common.h"
 #include "interface.h"
 #include "widget_defs.h"

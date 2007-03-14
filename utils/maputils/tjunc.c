@@ -1,4 +1,7 @@
-// tjunc.c
+/*
+	tjunc.c
+	$Id: tjunc.c,v 1.7 2007-03-14 21:04:43 sezero Exp $
+*/
 
 #include "util_inc.h"
 #include "cmdlib.h"

@@ -1,4 +1,9 @@
-// sys.h -- non-portable functions
+/*
+	sys.h
+	non-portable functions
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys.h,v 1.27 2007-03-14 21:03:23 sezero Exp $
+*/
 
 #ifndef __HX2_SYS_H
 #define __HX2_SYS_H

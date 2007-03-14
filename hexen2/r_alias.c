@@ -2,6 +2,7 @@
 	r_alias.c
 	routines for setting up to draw alias models
 
+	$Id: r_alias.c,v 1.10 2007-03-14 21:03:18 sezero Exp $
 */
 
 #include "quakedef.h"

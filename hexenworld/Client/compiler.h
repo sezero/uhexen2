@@ -1,7 +1,10 @@
 /*
- * Compiler specific definitions and settings
- * used in the uhexen2 (Hammer of Thyrion) tree.
- */
+	compiler.h
+	compiler specific definitions and settings
+	used in the uhexen2 (Hammer of Thyrion) tree.
+
+	$Id: compiler.h,v 1.2 2007-03-14 21:03:30 sezero Exp $
+*/
 
 #ifndef __HX2_COMPILER_H
 #define __HX2_COMPILER_H

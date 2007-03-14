@@ -1,3 +1,9 @@
+/*
+	cl_demo.c
+	demo recording and playback
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_demo.c,v 1.19 2007-03-14 21:03:00 sezero Exp $
+*/
 
 #include "quakedef.h"
 

@@ -1,4 +1,9 @@
-// gl_warp.c -- sky and water polygons
+/*
+	gl_warp.c
+	sky and water polygons
+
+	$Id: gl_warp.c,v 1.23 2007-03-14 21:03:33 sezero Exp $
+*/
 
 #include "quakedef.h"
 

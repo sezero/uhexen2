@@ -1,3 +1,10 @@
+/*
+	cl_pred.c
+	client side player movement prediction
+
+	$Id: cl_pred.c,v 1.10 2007-03-14 21:03:30 sezero Exp $
+*/
+
 #include "quakedef.h"
 #if defined(_WIN32)
 #include "winquake.h"

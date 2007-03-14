@@ -1,4 +1,7 @@
-// bsp5.c
+/*
+	bsp5.c
+	$Id: qbsp.c,v 1.8 2007-03-14 21:04:41 sezero Exp $
+*/
 
 #include "util_inc.h"
 #include "cmdlib.h"

@@ -2,6 +2,7 @@
 	d_init.c
 	rasterization driver initialization
 
+	$Id: d_init.c,v 1.6 2007-03-14 21:03:05 sezero Exp $
 */
 
 #include "quakedef.h"

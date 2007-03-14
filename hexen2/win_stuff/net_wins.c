@@ -1,4 +1,9 @@
-// net_wins.c
+/*
+	net_wins.c
+	winsock udp driver
+
+	$Id: net_wins.c,v 1.14 2007-03-14 21:03:27 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "winquake.h"

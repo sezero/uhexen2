@@ -2,6 +2,7 @@
 	keys.c
 	key up events are sent even if in console mode
 
+	$Id: keys.c,v 1.29 2007-03-14 21:03:33 sezero Exp $
 */
 
 #include "quakedef.h"

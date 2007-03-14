@@ -18,9 +18,11 @@
 */
 
 /*
- * tyrlight/tyrlite.h
- * Modifications by Kevin Shanahan, 1999-2000
- */
+	tyrlite.h
+	$Id: tyrlite.h,v 1.12 2007-03-14 21:04:37 sezero Exp $
+
+	Modifications by Kevin Shanahan, 1999-2000
+*/
 
 #ifndef __TYRLITE_H__
 #define __TYRLITE_H__

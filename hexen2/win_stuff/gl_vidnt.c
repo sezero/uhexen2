@@ -1,4 +1,7 @@
-// gl_vidnt.c -- NT GL vid component
+/*
+	gl_vidnt.c -- NT GL vid component
+	$Id: gl_vidnt.c,v 1.89 2007-03-14 21:03:26 sezero Exp $
+*/
 
 #define	__GL_FUNC_EXTERN
 

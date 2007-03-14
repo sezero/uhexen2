@@ -1,4 +1,7 @@
 /*
+ * lib3dfxgamma.c
+ * $Id: lib3dfxgamma.c,v 1.9 2007-03-14 21:04:30 sezero Exp $
+ *
  * Small library providing gamma control functions for 3Dfx Voodoo1/2
  * cards by abusing the exposed glide symbols when using fxMesa.
  * Author: O. Sezer <sezero@users.sourceforge.net>	License: GPL

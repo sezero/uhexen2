@@ -1,3 +1,10 @@
+/*
+	common.h
+	common header for hexen2 launcher
+
+	$Id: common.h,v 1.5 2007-03-14 21:04:24 sezero Exp $
+*/
+
 #ifndef	LAUNCHER_COMMON_INC_H
 #define	LAUNCHER_COMMON_INC_H
 

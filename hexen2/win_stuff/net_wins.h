@@ -1,4 +1,9 @@
-// net_wins.h
+/*
+	net_wins.h
+	winsock udp driver
+
+	$Id: net_wins.h,v 1.4 2007-03-14 21:03:27 sezero Exp $
+*/
 
 #ifndef __NET_WINSOCK_H
 #define __NET_WINSOCK_H

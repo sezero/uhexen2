@@ -1,4 +1,9 @@
-// world.h
+/*
+	world.c
+	world query functions
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.h,v 1.5 2007-03-14 21:03:24 sezero Exp $
+*/
 
 #ifndef __HX2_WORLD_H
 #define __HX2_WORLD_H

@@ -1,4 +1,9 @@
-/* crc.c */
+/*
+	crc.c
+	crc functions
+
+	$Id: crc.c,v 1.5 2007-03-14 21:03:31 sezero Exp $
+*/
 
 #include "quakedef.h"
 #include "crc.h"

@@ -1,4 +1,9 @@
-// net.c
+/*
+	net_udp.c
+	network UDP driver
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.28 2007-03-14 21:04:15 sezero Exp $
+*/
 
 #include "net_sys.h"
 #include "defs.h"

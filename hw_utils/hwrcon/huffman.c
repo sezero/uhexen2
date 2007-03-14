@@ -1,5 +1,9 @@
-//	huffman.c
-//	huffman encoding/decoding for use in hexenworld networking
+/*
+	huffman.c
+	huffman encoding/decoding for use in hexenworld networking
+
+	$Id: huffman.c,v 1.9 2007-03-14 21:04:22 sezero Exp $
+*/
 
 #include <stdlib.h>
 #include <sys/types.h>

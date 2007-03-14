@@ -2,6 +2,7 @@
 	r_vars.c
 	global refresh variables
 
+	$Id: r_vars.c,v 1.3 2007-03-14 21:03:37 sezero Exp $
 */
 
 #include	"quakedef.h"

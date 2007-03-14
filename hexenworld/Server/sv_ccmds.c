@@ -1,3 +1,9 @@
+/*
+	sv_ccmds.c
+	console commands
+
+	$Id: sv_ccmds.c,v 1.17 2007-03-14 21:04:17 sezero Exp $
+*/
 
 #include "quakedef.h"
 

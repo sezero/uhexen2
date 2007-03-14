@@ -1,3 +1,7 @@
+/*
+	light.h
+	$Id: light.h,v 1.5 2007-03-14 21:04:40 sezero Exp $
+*/
 
 #ifndef __H2UTILS_LIGHT_H
 #define __H2UTILS_LIGHT_H

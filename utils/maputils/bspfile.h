@@ -1,4 +1,9 @@
+/*
+	bspfile.h
+	common bspfile header
 
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/maputils/bspfile.h,v 1.4 2007-03-14 21:04:38 sezero Exp $
+*/
 
 #ifndef __BSPFILE_H
 #define __BSPFILE_H

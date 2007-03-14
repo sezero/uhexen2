@@ -1,4 +1,9 @@
-// cvar.c -- dynamic variable tracking
+/*
+	cvar.c
+	dynamic variable tracking
+
+	$Id: cvar.c,v 1.20 2007-03-14 21:03:31 sezero Exp $
+*/
 
 #include "quakedef.h"
 

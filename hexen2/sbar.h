@@ -1,7 +1,8 @@
 /*
 	sbar.h
+	HUD / status bar
 
-	$Id: sbar.h,v 1.7 2006-09-24 17:28:42 sezero Exp $
+	$Id: sbar.h,v 1.8 2007-03-14 21:03:21 sezero Exp $
 */
 
 #ifndef __HX2_SBAR_H

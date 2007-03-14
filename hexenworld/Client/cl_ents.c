@@ -1,4 +1,9 @@
-// cl_ents.c -- entity parsing and management
+/*
+	cl_ents.c
+	entity parsing and management
+
+	$Id: cl_ents.c,v 1.13 2007-03-14 21:03:29 sezero Exp $
+*/
 
 #include "quakedef.h"
 

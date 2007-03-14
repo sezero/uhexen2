@@ -1,4 +1,9 @@
-// net_wipx.h
+/*
+	net_wipx.h
+	winsock ipx driver
+
+	$Id: net_wipx.h,v 1.4 2007-03-14 21:03:27 sezero Exp $
+*/
 
 #ifndef __NET_WINIPX_H
 #define __NET_WINIPX_H
