@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.20 2007-02-25 16:30:53 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.21 2007-03-14 08:12:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -26,7 +26,7 @@ Memory is cleared / released when a server or client begins, not when they end.
 
 */
 
-quakeparms_t host_parms;
+quakeparms_t	*host_parms;
 
 qboolean	host_initialized;		// true if into command execution
 
@@ -586,14 +586,11 @@ void Host_Frame (float time)
 Host_Init
 ====================
 */
-void Host_Init (quakeparms_t *parms)
+void Host_Init (void)
 {
-	host_parms = *parms;
+	Sys_Printf ("Host_Init\n");
 
-	com_argc = parms->argc;
-	com_argv = parms->argv;
-
-	Memory_Init (parms->membase, parms->memsize);
+	Memory_Init (host_parms->membase, host_parms->memsize);
 	Cbuf_Init ();
 	Cmd_Init ();
 	COM_Init ();
@@ -606,7 +603,7 @@ void Host_Init (quakeparms_t *parms)
 	SV_Init ();
 
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
-	Con_Printf ("%4.1f megabyte heap\n",parms->memsize/ (1024*1024.0));
+	Con_Printf ("%4.1f megabyte heap\n", host_parms->memsize/(1024*1024.0));
 
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();

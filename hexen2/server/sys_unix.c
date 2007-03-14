@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.16 2007-02-23 15:23:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.17 2007-03-14 08:12:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -329,27 +329,35 @@ static void PrintHelp(char *name)
 	printf ("\n");
 }
 
+/*
+===============================================================================
+
+MAIN
+
+===============================================================================
+*/
+static quakeparms_t	parms;
+static char	cwd[MAX_OSPATH], userdir[MAX_OSPATH];
+
 int main(int argc, char *argv[])
 {
-	quakeparms_t	parms;
-	double	time, oldtime;
-	char	*tmp, cwd[MAX_OSPATH];
-	char	userdir[MAX_OSPATH];
-	int	t;
+	int			i;
+	double		time, oldtime;
+	char		*tmp;
 
 	PrintVersion();
 
 	if (argc > 1)
 	{
-		for (t = 1; t < argc; t++)
+		for (i = 1; i < argc; i++)
 		{
-			if ( !(strcmp(argv[t], "-v")) || !(strcmp(argv[t], "-version" )) ||
-				!(strcmp(argv[t], "--version")) )
+			if ( !(strcmp(argv[i], "-v")) || !(strcmp(argv[i], "-version" )) ||
+				!(strcmp(argv[i], "--version")) )
 			{
 				exit(0);
 			}
-			else if ( !(strcmp(argv[t], "-h")) || !(strcmp(argv[t], "-help" )) ||
-				  !(strcmp(argv[t], "-?")) || !(strcmp(argv[t], "--help")) )
+			else if ( !(strcmp(argv[i], "-h")) || !(strcmp(argv[i], "-help" )) ||
+				  !(strcmp(argv[i], "-?")) || !(strcmp(argv[i], "--help")) )
 			{
 				PrintHelp(argv[0]);
 				exit (0);
@@ -371,26 +379,27 @@ int main(int argc, char *argv[])
 			*tmp = 0;
 	}
 
+	memset (userdir, 0, sizeof(userdir));
 	if (Sys_GetUserdir(userdir,sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
 
+	/* initialize the host params */
+	memset (&parms, 0, sizeof(parms));
 	parms.basedir = cwd;
 	parms.userdir = userdir;
+	parms.argc = argc;
+	parms.argv = argv;
+	host_parms = &parms;
 
-	COM_InitArgv (argc, argv);
-
-	parms.argc = com_argc;
-	parms.argv = com_argv;
-
-	Sys_Printf("basedir is: %s\n", cwd);
-	Sys_Printf("userdir is: %s\n", userdir);
+	Sys_Printf("basedir is: %s\n", parms.basedir);
+	Sys_Printf("userdir is: %s\n", parms.userdir);
 
 	parms.memsize = STD_MEM_ALLOC;
 
-	t = COM_CheckParm ("-heapsize");
-	if (t && t < com_argc-1)
+	i = COM_CheckParm ("-heapsize");
+	if (i && i < com_argc-1)
 	{
-		parms.memsize = atoi (com_argv[t + 1]) * 1024;
+		parms.memsize = atoi (com_argv[i+1]) * 1024;
 
 		if ((parms.memsize > MAX_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
 		{
@@ -411,8 +420,7 @@ int main(int argc, char *argv[])
 	if (!parms.membase)
 		Sys_Error ("Insufficient memory.\n");
 
-	Sys_Printf ("Host_Init\n");
-	Host_Init (&parms);
+	Host_Init();
 
 	oldtime = Sys_DoubleTime ();
 

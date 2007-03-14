@@ -283,30 +283,34 @@ static void PrintHelp(char *name)
 }
 
 /*
-==================
-main
+===============================================================================
 
-==================
+MAIN
+
+===============================================================================
 */
+static quakeparms_t	parms;
+static char	cwd[MAX_OSPATH];
+
 int main (int argc, char **argv)
 {
-	quakeparms_t	parms;
+	int			i;
 	double		time, oldtime;
-	int		t;
+	char		*tmp;
 
 	PrintVersion();
 
 	if (argc > 1)
 	{
-		for (t = 1; t < argc; t++)
+		for (i = 1; i < argc; i++)
 		{
-			if ( !(strcmp(argv[t], "-v")) || !(strcmp(argv[t], "-version")) ||
-				  !(strcmp(argv[t], "--version")) )
+			if ( !(strcmp(argv[i], "-v")) || !(strcmp(argv[i], "-version" )) ||
+				  !(strcmp(argv[i], "--version")) )
 			{
 				exit(0);
 			}
-			else if ( !(strcmp(argv[t], "-h")) || !(strcmp(argv[t], "-help")) ||
-			     !(strcmp(argv[t], "--help")) || !(strcmp(argv[t], "-?")) )
+			else if ( !(strcmp(argv[i], "-h")) || !(strcmp(argv[i], "-help" )) ||
+				  !(strcmp(argv[i], "--help")) || !(strcmp(argv[i], "-?")) )
 			{
 				PrintHelp(argv[0]);
 				exit (0);
@@ -314,23 +318,38 @@ int main (int argc, char **argv)
 		}
 	}
 
-	parms.basedir = ".";
-	parms.userdir = parms.basedir;	/* no userdir on win32 */
+	memset (cwd, 0, sizeof(cwd));
+	if ( _getcwd (cwd, sizeof(cwd)-1) == NULL )
+		Sys_Error ("Couldn't determine current directory");
 
-	COM_InitArgv (argc, argv);
+	tmp = cwd;
+	while (*tmp != 0)
+		tmp++;
+	while (*tmp == 0)
+	{
+		--tmp;
+		if (*tmp == '\\' || *tmp == '/')
+			*tmp = 0;
+	}
 
-	parms.argc = com_argc;
-	parms.argv = com_argv;
+	/* initialize the host params */
+	memset (&parms, 0, sizeof(parms));
+	parms.basedir = cwd;
+	parms.userdir = cwd;	/* no userdir on win32 */
+	parms.argc = argc;
+	parms.argv = argv;
+	host_parms = &parms;
 
 	Sys_Printf("basedir is: %s\n", parms.basedir);
 	Sys_Printf("userdir is: %s\n", parms.userdir);
 
 	parms.memsize = STD_MEM_ALLOC;
 
-	t = COM_CheckParm ("-heapsize");
-	if (t && t < com_argc-1)
+	i = COM_CheckParm ("-heapsize");
+	if (i && i < com_argc-1)
 	{
-		parms.memsize = atoi (com_argv[t + 1]) * 1024;
+		parms.memsize = atoi (com_argv[i+1]) * 1024;
+
 		if ((parms.memsize > MAX_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
 		{
 			Sys_Printf ("Requested memory (%d Mb) too large, using the default\n", parms.memsize/(1024*1024));
@@ -352,8 +371,7 @@ int main (int argc, char **argv)
 
 	timeBeginPeriod (1);
 
-	Sys_Printf ("Host_Init\n");
-	Host_Init (&parms);
+	Host_Init();
 
 	oldtime = Sys_DoubleTime ();
 

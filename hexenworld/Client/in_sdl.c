@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.39 2007-03-02 16:23:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.40 2007-03-14 08:12:44 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -166,7 +166,7 @@ IN_StartupMouse
 static void IN_StartupMouse (void)
 {
 	//IN_HideMouse ();
-	if ( COM_CheckParm ("-nomouse") )
+	if (safemode || COM_CheckParm ("-nomouse"))
 	{
 		SDL_WM_GrabInput (SDL_GRAB_OFF);
 		return;

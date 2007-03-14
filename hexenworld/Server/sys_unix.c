@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.31 2007-02-23 15:23:21 sezero Exp $
+	$Id: sys_unix.c,v 1.32 2007-03-14 08:12:48 sezero Exp $
 
 	Unix system interface code
 */
@@ -302,33 +302,36 @@ static void PrintVersion (void)
 }
 
 /*
-==================
-main
+===============================================================================
 
-==================
+MAIN
+
+===============================================================================
 */
+static quakeparms_t	parms;
+static char	cwd[MAX_OSPATH], userdir[MAX_OSPATH];
+
 int main (int argc, char **argv)
 {
-	quakeparms_t	parms;
+	int			i;
 	double		newtime, time, oldtime;
+	char		*tmp;
 	struct timeval	timeout;
 	fd_set		fdset;
-	int		t;
-	static char	userdir[MAX_OSPATH];
 
 	PrintVersion();
 
 	if (argc > 1)
 	{
-		for (t = 1; t < argc; t++)
+		for (i = 1; i < argc; i++)
 		{
-			if ( !(strcmp(argv[t], "-v")) || !(strcmp(argv[t], "-version")) ||
-				  !(strcmp(argv[t], "--version")) )
+			if ( !(strcmp(argv[i], "-v")) || !(strcmp(argv[i], "-version" )) ||
+				!(strcmp(argv[i], "--version")) )
 			{
 				exit(0);
 			}
-			else if ( !(strcmp(argv[t], "-h")) || !(strcmp(argv[t], "-help")) ||
-			     !(strcmp(argv[t], "--help")) || !(strcmp(argv[t], "-?")) )
+			else if ( !(strcmp(argv[i], "-h")) || !(strcmp(argv[i], "-help" )) ||
+				  !(strcmp(argv[i], "-?")) || !(strcmp(argv[i], "--help")) )
 			{
 				printf ("See the documentation for details\n");
 				exit (0);
@@ -336,17 +339,42 @@ int main (int argc, char **argv)
 		}
 	}
 
-	COM_InitArgv (argc, argv);
+	memset (cwd, 0, sizeof(cwd));
+	if ( getcwd (cwd, sizeof(cwd)-1) == NULL )
+		Sys_Error ("Couldn't determine current directory");
 
-	parms.argc = com_argc;
-	parms.argv = com_argv;
+	tmp = cwd;
+	while (*tmp != 0)
+		tmp++;
+	while (*tmp == 0)
+	{
+		--tmp;
+		if (*tmp == '/')
+			*tmp = 0;
+	}
+
+	memset (userdir, 0, sizeof(userdir));
+	if (Sys_GetUserdir(userdir,sizeof(userdir)) != 0)
+		Sys_Error ("Couldn't determine userspace directory");
+
+	/* initialize the host params */
+	memset (&parms, 0, sizeof(parms));
+	parms.basedir = cwd;
+	parms.userdir = userdir;
+	parms.argc = argc;
+	parms.argv = argv;
+	host_parms = &parms;
+
+	Sys_Printf("basedir is: %s\n", parms.basedir);
+	Sys_Printf("userdir is: %s\n", parms.userdir);
 
 	parms.memsize = STD_MEM_ALLOC;
 
-	t = COM_CheckParm ("-heapsize");
-	if (t && t < com_argc-1)
+	i = COM_CheckParm ("-heapsize");
+	if (i && i < com_argc-1)
 	{
-		parms.memsize = atoi (com_argv[t + 1]) * 1024;
+		parms.memsize = atoi (com_argv[i+1]) * 1024;
+
 		if ((parms.memsize > MAX_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
 		{
 			Sys_Printf ("Requested memory (%d Mb) too large, using the default\n", parms.memsize/(1024*1024));
@@ -364,18 +392,11 @@ int main (int argc, char **argv)
 	parms.membase = malloc (parms.memsize);
 
 	if (!parms.membase)
-		Sys_Error("Insufficient memory.\n");
+		Sys_Error ("Insufficient memory.\n");
 
-	parms.basedir = ".";
-
-	if (Sys_GetUserdir(userdir,sizeof(userdir)))
-		Sys_Error ("Couldn't determine userspace directory");
-	parms.userdir = userdir;
-
-	SV_Init (&parms);
+	SV_Init();
 
 // report the filesystem to the user
-	Sys_Printf("userdir is: %s\n", userdir);
 	Sys_Printf("fs_gamedir is: %s\n", fs_gamedir);
 	Sys_Printf("fs_userdir is: %s\n", fs_userdir);
 

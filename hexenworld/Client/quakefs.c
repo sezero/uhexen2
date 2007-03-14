@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.8 2007-02-26 09:06:28 sezero Exp $
+	$Id: quakefs.c,v 1.9 2007-03-14 08:12:45 sezero Exp $
 */
 
 #define _NEED_SEARCHPATH_T
@@ -429,7 +429,7 @@ void FS_Gamedir (const char *dir)
 	// pure hw. weird.. do as he wishes anyway and adjust our variables.
 		Q_snprintf_err(fs_gamedir, sizeof(fs_gamedir), "%s/hw", fs_basedir);
 #    ifdef PLATFORM_UNIX
-		Q_snprintf_err(fs_userdir, sizeof(fs_userdir), "%s/hw", host_parms.userdir);
+		Q_snprintf_err(fs_userdir, sizeof(fs_userdir), "%s/hw", host_parms->userdir);
 #    else
 		Q_strlcpy_err (fs_userdir, fs_gamedir, sizeof(fs_userdir));
 #    endif
@@ -514,7 +514,7 @@ add_pakfiles:
 
 // add user's directory to the search path
 #ifdef PLATFORM_UNIX
-	Q_snprintf_err(fs_userdir, sizeof(fs_userdir), "%s/%s", host_parms.userdir, dir);
+	Q_snprintf_err(fs_userdir, sizeof(fs_userdir), "%s/%s", host_parms->userdir, dir);
 	Sys_mkdir_err (fs_userdir);
 // add any pak files in the user's directory
 	if (strcmp(fs_gamedir, fs_userdir))
@@ -534,7 +534,7 @@ and kept all user the data in <userdir> instead. Starting with
 HoT 1.4.1, we are creating and using <userdir>/data1 . This
 procedure is intended to update the user direcory accordingly.
 Call from FS_Init ~just after~ setting fs_userdir
-to host_parms.userdir/data1
+to host_parms->userdir/data1
 ============
 */
 #ifdef PLATFORM_UNIX
@@ -599,10 +599,10 @@ static void MoveUserData (void)
 
 	for (i = 0; i < NUM_MOVEFILES; i++)
 	{
-		tmp = Sys_FindFirstFile (host_parms.userdir, movefiles[i]);
+		tmp = Sys_FindFirstFile (host_parms->userdir, movefiles[i]);
 		while (tmp)
 		{
-			Q_snprintf_err(tmp1, sizeof(tmp1), "%s/%s", host_parms.userdir, tmp);
+			Q_snprintf_err(tmp1, sizeof(tmp1), "%s/%s", host_parms->userdir, tmp);
 			Q_snprintf_err(tmp2, sizeof(tmp2), "%s/%s", fs_userdir, tmp);
 			do_movedata (tmp1, tmp2, fh);
 			tmp = Sys_FindNextFile ();
@@ -613,7 +613,7 @@ static void MoveUserData (void)
 	// move the savegames
 	for (i = 0; i < MAX_SAVEGAMES; i++)
 	{
-		Q_snprintf_err(tmp1, sizeof(tmp1), "%s/s%d", host_parms.userdir, i);
+		Q_snprintf_err(tmp1, sizeof(tmp1), "%s/s%d", host_parms->userdir, i);
 		if (stat(tmp1, &test) == 0)
 		{
 			if ((test.st_mode & S_IFDIR) == S_IFDIR)
@@ -627,7 +627,7 @@ static void MoveUserData (void)
 	// move the savegames (multiplayer)
 	for (i = 0; i < MAX_SAVEGAMES; i++)
 	{
-		Q_snprintf_err(tmp1, sizeof(tmp1), "%s/ms%d", host_parms.userdir, i);
+		Q_snprintf_err(tmp1, sizeof(tmp1), "%s/ms%d", host_parms->userdir, i);
 		if (stat(tmp1, &test) == 0)
 		{
 			if ((test.st_mode & S_IFDIR) == S_IFDIR)
@@ -641,7 +641,7 @@ static void MoveUserData (void)
 	// other dirs
 	for (i = 0; i < NUM_MOVEDIRS; i++)
 	{
-		Q_snprintf_err(tmp1, sizeof(tmp1), "%s/%s", host_parms.userdir, movedirs[i]);
+		Q_snprintf_err(tmp1, sizeof(tmp1), "%s/%s", host_parms->userdir, movedirs[i]);
 		if (stat(tmp1, &test) == 0)
 		{
 			if ((test.st_mode & S_IFDIR) == S_IFDIR)
@@ -882,15 +882,15 @@ void FS_Init (void)
 	}
 	else
 	{
-		fs_basedir = host_parms.basedir;
+		fs_basedir = host_parms->basedir;
 	}
 
-	Q_strlcpy_err(fs_userdir, host_parms.userdir, sizeof(fs_userdir));
+	Q_strlcpy_err(fs_userdir, host_parms->userdir, sizeof(fs_userdir));
 
 //
 // start up with data1 by default
 //
-	Q_snprintf_err(fs_userdir, sizeof(fs_userdir), "%s/data1", host_parms.userdir);
+	Q_snprintf_err(fs_userdir, sizeof(fs_userdir), "%s/data1", host_parms->userdir);
 #ifdef PLATFORM_UNIX
 // properly move the user data from older versions in the user's directory
 	Sys_mkdir_err (fs_userdir);
@@ -929,7 +929,7 @@ void FS_Init (void)
 		i = Hunk_LowMark ();
 		search_tmp = fs_searchpaths;
 
-		Q_snprintf_err(fs_userdir, sizeof(fs_userdir), "%s/portals", host_parms.userdir);
+		Q_snprintf_err(fs_userdir, sizeof(fs_userdir), "%s/portals", host_parms->userdir);
 		Sys_mkdir_err (fs_userdir);
 		FS_AddGameDirectory (va("%s/portals", fs_basedir), true);
 
@@ -955,12 +955,12 @@ void FS_Init (void)
 			Hunk_FreeToLowMark (i);
 			// back to data1
 			snprintf (fs_gamedir, sizeof(fs_gamedir), "%s/data1", fs_basedir);
-			snprintf (fs_userdir, sizeof(fs_userdir), "%s/data1", host_parms.userdir);
+			snprintf (fs_userdir, sizeof(fs_userdir), "%s/data1", host_parms->userdir);
 		}
 	}
 
 #if defined(H2W)
-	Q_snprintf_err(fs_userdir, sizeof(fs_userdir), "%s/hw", host_parms.userdir);
+	Q_snprintf_err(fs_userdir, sizeof(fs_userdir), "%s/hw", host_parms->userdir);
 	Sys_mkdir_err (fs_userdir);
 	FS_AddGameDirectory (va("%s/hw", fs_basedir), true);
 	// error out for H2W builds if GAME_HEXENWORLD isn't set

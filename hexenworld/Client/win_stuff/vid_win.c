@@ -279,13 +279,13 @@ static qboolean VID_CheckAdequateMem (int width, int height)
 
 // see if there's enough memory, allowing for the normal mode 0x13 pixel,
 // z, and surface buffers
-	//if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
+	//if ((host_parms->memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
 	//	 0x10000 * 3) < MINIMUM_MEMORY)
 	// Pa3PyX: using hopefully better estimation now
 	// Experimentation: the heap should have at least 12.0 megs
 	// remaining (after init) after setting video mode, otherwise
 	// it's Hunk_Alloc failures and cache thrashes upon level load
-	if (host_parms.memsize < tbuffersize + 0x180000 + 0xC00000)
+	if (host_parms->memsize < tbuffersize + 0x180000 + 0xC00000)
 	{
 		return false;		// not enough memory for mode
 	}
@@ -311,12 +311,12 @@ static qboolean VID_AllocBuffers (int width, int height)
 
 // see if there's enough memory, allowing for the normal mode 0x13 pixel,
 // z, and surface buffers
-	//if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
+	//if ((host_parms->memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
 	//	 0x10000 * 3) < MINIMUM_MEMORY)
 	// Pa3PyX: using hopefully better estimation now
 	// if total memory < needed surface cache + (minimum operational memory
 	// less surface cache for 320x200 and typical hunk state after init)
-	if (host_parms.memsize < tbuffersize + 0x180000 + 0xC00000)
+	if (host_parms->memsize < tbuffersize + 0x180000 + 0xC00000)
 	{
 		Con_SafePrintf ("Not enough memory for video mode\n");
 		return false;		// not enough memory for mode
@@ -2131,7 +2131,7 @@ void	VID_Init (unsigned char *palette)
 	Cmd_AddCommand ("vid_fullscreen", VID_Fullscreen_f);
 	Cmd_AddCommand ("vid_minimize", VID_Minimize_f);
 
-	if (COM_CheckParm ("-dibonly"))
+	if (safemode || COM_CheckParm ("-dibonly"))
 		dibonly = true;
 
 	VID_InitMGLDIB (global_hInstance);

@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.69 2007-03-09 07:01:56 sezero Exp $
+	$Id: vid_sdl.c,v 1.70 2007-03-14 08:12:34 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -166,12 +166,12 @@ static qboolean VID_AllocBuffers (int width, int height)
 
 // see if there's enough memory, allowing for the normal mode 0x13 pixel,
 // z, and surface buffers
-	//if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
+	//if ((host_parms->memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
 	//	 0x10000 * 3) < MINIMUM_MEMORY)
 	// Pa3PyX: using hopefully better estimation now
 	// if total memory < needed surface cache + (minimum operational memory
 	// less surface cache for 320x200 and typical hunk state after init)
-	if (host_parms.memsize < tbuffersize + 0x180000 + 0xC00000)
+	if (host_parms->memsize < tbuffersize + 0x180000 + 0xC00000)
 	{
 		Con_SafePrintf ("Not enough memory for video mode\n");
 		return false;		// not enough memory for mode
@@ -211,13 +211,13 @@ static qboolean VID_CheckAdequateMem (int width, int height)
 
 // see if there's enough memory, allowing for the normal mode 0x13 pixel,
 // z, and surface buffers
-	//if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
+	//if ((host_parms->memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
 	//	 0x10000 * 3) < MINIMUM_MEMORY)
 	// Pa3PyX: using hopefully better estimation now
 	// Experimentation: the heap should have at least 12.0 megs
 	// remaining (after init) after setting video mode, otherwise
 	// it's Hunk_Alloc failures and cache thrashes upon level load
-	if (host_parms.memsize < tbuffersize + 0x180000 + 0xC00000)
+	if (host_parms->memsize < tbuffersize + 0x180000 + 0xC00000)
 	{
 		return false;		// not enough memory for mode
 	}
@@ -709,11 +709,11 @@ void VID_Init (unsigned char *palette)
 
 	// windowed mode is default
 	// see if the user wants fullscreen
-	if (COM_CheckParm("-f") || COM_CheckParm("-fullscreen") || COM_CheckParm("--fullscreen"))
+	if (COM_CheckParm("-fullscreen") || COM_CheckParm("-f"))
 	{
 		Cvar_SetValue("vid_config_fscr", 1);
 	}
-	else if (COM_CheckParm("-w") || COM_CheckParm("-window") || COM_CheckParm("--window"))
+	else if (COM_CheckParm("-window") || COM_CheckParm("-w"))
 	{
 		Cvar_SetValue("vid_config_fscr", 0);
 	}

@@ -1,5 +1,5 @@
 /*
- * $Id: midi.c,v 1.15 2007-02-17 07:56:16 sezero Exp $
+ * $Id: midi.c,v 1.16 2007-03-14 08:12:47 sezero Exp $
  */
 
 #include <windows.h>
@@ -119,7 +119,7 @@ qboolean MIDI_Init(void)
 	MMRESULT mmrRetVal;
 	MIDIOUTCAPS midi_caps;
 
-	if (COM_CheckParm("-nomidi"))
+	if (safemode || COM_CheckParm("-nomidi"))
 	{
 		bMidiInited = 0;
 		return false;

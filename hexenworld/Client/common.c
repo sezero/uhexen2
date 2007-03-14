@@ -2,21 +2,15 @@
 	common.c
 	misc utility functions used in client and server
 
-	$Id: common.c,v 1.91 2007-02-23 15:16:17 sezero Exp $
+	$Id: common.c,v 1.92 2007-03-14 08:12:44 sezero Exp $
 */
 
 #include "quakedef.h"
 #include <ctype.h>
 
 
-static char	*largv[MAX_NUM_ARGVS + NUM_SAFE_ARGVS + 1];
-static char	*argvdummy = " ";
+int		safemode;
 
-static char	*safeargvs[NUM_SAFE_ARGVS] =
-	{"-nomidi", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse"};
-
-#define CMDLINE_LENGTH	256
-static char	com_cmdline[CMDLINE_LENGTH];
 
 /*
 ============================================================================
@@ -266,8 +260,6 @@ STRING PARSING FUNCTIONS
 */
 
 char		com_token[1024];
-int		com_argc;
-char		**com_argv;
 
 /*
 ==============
@@ -378,84 +370,17 @@ int COM_CheckParm (const char *parm)
 	return 0;
 }
 
-/*
-================
-COM_InitArgv
-================
-*/
-void COM_InitArgv (int argc, char **argv)
-{
-	qboolean	safe;
-	int		i, j, n;
-
-// reconstitute the command line for the cmdline console command
-	n = 0;
-
-	for (j = 0; (j < MAX_NUM_ARGVS) && (j < argc); j++)
-	{
-		i = 0;
-
-		while ((n < (CMDLINE_LENGTH - 1)) && argv[j][i])
-		{
-			com_cmdline[n++] = argv[j][i++];
-		}
-
-		if (n < (CMDLINE_LENGTH - 1))
-		{
-			if (n)
-				com_cmdline[n++] = ' ';
-		}
-		else
-		{
-			break;
-		}
-	}
-
-	com_cmdline[n] = 0;
-	if (n && com_cmdline[n-1] == ' ')
-		com_cmdline[n-1] = 0;
-
-	safe = false;
-
-	for (com_argc = 0; (com_argc < MAX_NUM_ARGVS) && (com_argc < argc); com_argc++)
-	{
-		largv[com_argc] = argv[com_argc];
-		if (!strcmp ("-safe", argv[com_argc]))
-			safe = true;
-	}
-
-	if (safe)
-	{
-	// force all the safe-mode switches. Note that we reserved extra space in
-	// case we need to add these, so we don't need an overflow check
-		for (i = 0; i < NUM_SAFE_ARGVS; i++)
-		{
-			largv[com_argc] = safeargvs[i];
-			com_argc++;
-		}
-	}
-
-	largv[com_argc] = argvdummy;
-	com_argv = largv;
-}
-
-#if 0
-/*
-================
-COM_AddParm
-
-Adds the given string at the end of the current argument list
-================
-*/
-void COM_AddParm (const char *parm)
-{
-	largv[com_argc++] = parm;
-}
-#endif
-
 static void COM_Cmdline_f (void)
 {
-	Con_Printf ("cmdline is: \"%s\"\n", com_cmdline);
+	int			i;
+
+	Con_Printf ("cmdline was:");
+	for (i = 0; (i < MAX_NUM_ARGVS) && (i < com_argc); i++)
+	{
+		if (com_argv[i])
+			Con_Printf (" %s", com_argv[i]);
+	}
+	Con_Printf ("\n");
 }
 
 /*
@@ -466,5 +391,7 @@ COM_Init
 void COM_Init (void)
 {
 	Cmd_AddCommand ("cmdline", COM_Cmdline_f);
+
+	safemode = COM_CheckParm ("-safe");
 }
 

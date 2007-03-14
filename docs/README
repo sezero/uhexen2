@@ -158,9 +158,9 @@ Important command-line switches:
 
  -portals | -h2mp	Activate the mission pack support: Necessary for
 			playing the Portal of Praevus mission pack.
- -f | --fullscreen	Run the game fullscreen (can also be set from the menu)
- -w | --window		Run the game windowed (can also be set from the menu)
- -g | --gllibrary	Select 3D rendering library
+ -f | -fullscreen	Run the game fullscreen (can also be set from the menu)
+ -w | -window		Run the game windowed (can also be set from the menu)
+ -g | -gllibrary	Select 3D rendering library
  -width   N		Select screen size (can also be set from the menu)
  -height  N		Optional, Must be used with -width (can also be set
 			from the menu)
@@ -201,9 +201,9 @@ Important command-line switches:
  -nomidi		Disable MIDI music
  -listen  N		Enable multiplayer with maximum N players
  -nolan			Disable networking
- -s | --nosound		Run the game without sound
- -v | --version		Display the game version
- -h | --help		Display short help message
+ -s | -nosound		Run the game without sound
+ -v | -version		Display the game version
+ -h | -help		Display short help message
 
 If you wish to brighten the display, simply use the game's menu
 entry. In the unlikely case that it doesn't work for you, you can

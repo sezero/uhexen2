@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.21 2007-02-17 08:00:53 sezero Exp $
+	$Id: cd_linux.c,v 1.22 2007-03-14 08:12:31 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -388,7 +388,7 @@ int CDAudio_Init(void)
 {
 	int i;
 
-	if (COM_CheckParm("-nocdaudio"))
+	if (safemode || COM_CheckParm("-nocdaudio"))
 		return -1;
 
 	if ((i = COM_CheckParm("-cddev")) != 0 && i < com_argc - 1)

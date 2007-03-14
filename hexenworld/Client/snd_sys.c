@@ -2,7 +2,7 @@
 	snd_sys.c
 	pre-Init platform specific sound stuff
 
-	$Id: snd_sys.c,v 1.8 2006-10-05 19:46:08 sezero Exp $
+	$Id: snd_sys.c,v 1.9 2007-03-14 08:12:46 sezero Exp $
 */
 
 
@@ -47,7 +47,7 @@ static void S_NULL_Submit(void)
 
 static void S_InitSys (void)
 {
-	if (COM_CheckParm("-nosound") || COM_CheckParm("--nosound") || COM_CheckParm("-s"))
+	if (safemode || COM_CheckParm("-nosound") || COM_CheckParm("-s"))
 		snd_system = S_SYS_NULL;
 
 #if HAVE_SDL_SOUND

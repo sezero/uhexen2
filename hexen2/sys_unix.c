@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.80 2007-02-23 15:23:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.81 2007-03-14 08:12:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -39,7 +39,6 @@
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 
 qboolean		isDedicated;
-static Uint8		appState;
 
 
 //=============================================================================
@@ -382,20 +381,20 @@ static char *help_strings[] = {
 	"     [-portals | -h2mp ]     Run the Portal of Praevus mission pack",
 #   endif
 #endif
-	"     [-w | --window ]        Run the game windowed",
-	"     [-f | --fullscreen]     Run the game fullscreen",
+	"     [-w | -window ]         Run the game windowed",
+	"     [-f | -fullscreen]      Run the game fullscreen",
 	"     [-width X [-height Y]]  Select screen size",
 #ifdef GLQUAKE
 	"     [-bpp]                  Depth for GL fullscreen mode",
 	"     [-vsync]                Enable sync with monitor refresh",
-	"     [-g | --gllibrary]      Select 3D rendering library",
+	"     [-g | -gllibrary]       Select 3D rendering library",
 	"     [-fsaa N]               Enable N sample antialiasing",
 	"     [-paltex]               Enable 8-bit textures",
 	"     [-nomtex]               Disable multitexture detection/usage",
 #endif
 #if !defined(_NO_SOUND)
 #if SOUND_NUMDRIVERS
-	"     [-s | --nosound]        Run the game without sound",
+	"     [-s | -nosound]         Run the game without sound",
 #endif
 #if (SOUND_NUMDRIVERS > 1)
 #if HAVE_OSS_SOUND
@@ -478,28 +477,37 @@ static char *Sys_StripAppBundle (char *dir)
 }
 #endif	/* __MACOSX__ */
 
+/*
+===============================================================================
+
+MAIN
+
+===============================================================================
+*/
+static Uint8		appState;
+static quakeparms_t	parms;
+static char	cwd[MAX_OSPATH], userdir[MAX_OSPATH];
+
 int main(int argc, char *argv[])
 {
-	quakeparms_t	parms;
-	double	time, oldtime, newtime;
-	char	*tmp, cwd[MAX_OSPATH];
-	char	userdir[MAX_OSPATH];
-	int	t;
+	int			i;
+	double		time, oldtime, newtime;
+	char		*tmp;
 	const SDL_version *sdl_version;
 
 	PrintVersion();
 
 	if (argc > 1)
 	{
-		for (t = 1; t < argc; t++)
+		for (i = 1; i < argc; i++)
 		{
-			if ( !(strcmp(argv[t], "-v")) || !(strcmp(argv[t], "-version" )) ||
-				!(strcmp(argv[t], "--version")) )
+			if ( !(strcmp(argv[i], "-v")) || !(strcmp(argv[i], "-version" )) ||
+				!(strcmp(argv[i], "--version")) )
 			{
 				exit(0);
 			}
-			else if ( !(strcmp(argv[t], "-h")) || !(strcmp(argv[t], "-help" )) ||
-				  !(strcmp(argv[t], "-?")) || !(strcmp(argv[t], "--help")) )
+			else if ( !(strcmp(argv[i], "-h")) || !(strcmp(argv[i], "-help" )) ||
+				  !(strcmp(argv[i], "-?")) || !(strcmp(argv[i], "--help")) )
 			{
 				PrintHelp(argv[0]);
 				exit (0);
@@ -537,19 +545,20 @@ int main(int argc, char *argv[])
 	}
 #endif
 
+	memset (userdir, 0, sizeof(userdir));
 	if (Sys_GetUserdir(userdir,sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
 
+	/* initialize the host params */
+	memset (&parms, 0, sizeof(parms));
 	parms.basedir = cwd;
 	parms.userdir = userdir;
+	parms.argc = argc;
+	parms.argv = argv;
+	host_parms = &parms;
 
-	COM_InitArgv (argc, argv);
-
-	parms.argc = com_argc;
-	parms.argv = com_argv;
-
-	Sys_Printf("basedir is: %s\n", cwd);
-	Sys_Printf("userdir is: %s\n", userdir);
+	Sys_Printf("basedir is: %s\n", parms.basedir);
+	Sys_Printf("userdir is: %s\n", parms.userdir);
 
 	isDedicated = (COM_CheckParm ("-dedicated") != 0);
 
@@ -567,10 +576,10 @@ int main(int argc, char *argv[])
 	else
 		parms.memsize = STD_MEM_ALLOC;
 
-	t = COM_CheckParm ("-heapsize");
-	if (t && t < com_argc-1)
+	i = COM_CheckParm ("-heapsize");
+	if (i && i < com_argc-1)
 	{
-		parms.memsize = atoi (com_argv[t + 1]) * 1024;
+		parms.memsize = atoi (com_argv[i+1]) * 1024;
 
 		if ((parms.memsize > MAX_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
 		{
@@ -593,8 +602,7 @@ int main(int argc, char *argv[])
 
 	Sys_Init ();
 
-	Sys_Printf ("Host_Init\n");
-	Host_Init (&parms);
+	Host_Init();
 
 	oldtime = Sys_DoubleTime ();
 

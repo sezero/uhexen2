@@ -419,22 +419,22 @@ WinMain
 */
 HINSTANCE	global_hInstance;
 int			global_nCmdShow;
-char		*argv[MAX_NUM_ARGVS];
-static char	*empty_string = "";
 #if !defined(NO_SPLASHES)
-HWND	hwnd_dialog;
-#endif
+HWND		hwnd_dialog;
+#endif	/* NO_SPLASHES */
+static char	*argv[MAX_NUM_ARGVS];
+static char	*empty_string = "";
+static char	cwd[1024];
+static quakeparms_t	parms;
 
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	quakeparms_t	parms;
+	int				i;
 	double			time, oldtime, newtime;
 	MEMORYSTATUS	lpBuffer;
-	static	char	cwd[1024];
-	int				t;
 #if !defined(NO_SPLASHES)
 	RECT			rect;
-#endif
+#endif	/* NO_SPLASHES */
 
 	/* previous instances do not exist in Win32 */
 	if (hPrevInstance)
@@ -446,12 +446,14 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	lpBuffer.dwLength = sizeof(MEMORYSTATUS);
 	GlobalMemoryStatus (&lpBuffer);
 
+	memset (cwd, 0, sizeof(cwd));
 	if (!GetCurrentDirectory (sizeof(cwd), cwd))
 		Sys_Error ("Couldn't determine current directory");
 
 	if (cwd[strlen(cwd)-1] == '/')
 		cwd[strlen(cwd)-1] = 0;
 
+	memset (&parms, 0, sizeof(parms));
 	parms.basedir = cwd;
 	parms.userdir = cwd;	/* no userdir on win32 */
 
@@ -480,13 +482,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	}
 
 	parms.argv = argv;
+	host_parms = &parms;	/* initialize the host params */
 
-	COM_InitArgv (parms.argc, parms.argv);
-
-	parms.argc = com_argc;
-	parms.argv = com_argv;
-
-	Sys_Printf("basedir is: %s\n", cwd);
+	Sys_Printf("basedir is: %s\n", parms.basedir);
 	Sys_Printf("userdir is: %s\n", parms.userdir);
 
 #if !defined(NO_SPLASHES)
@@ -509,7 +507,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		UpdateWindow (hwnd_dialog);
 		SetForegroundWindow (hwnd_dialog);
 	}
-#endif
+#endif	/* NO_SPLASHES */
 
 // take the greater of all the available memory or half the total memory,
 // but at least 16 Mb and no more than 32 Mb, unless they explicitly
@@ -525,10 +523,11 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	if (parms.memsize > STD_MEM_ALLOC)
 		parms.memsize = STD_MEM_ALLOC;
 
-	t = COM_CheckParm ("-heapsize");
-	if (t && t < com_argc-1)
+	i = COM_CheckParm ("-heapsize");
+	if (i && i < com_argc-1)
 	{
-		parms.memsize = atoi (com_argv[t + 1]) * 1024;
+		parms.memsize = atoi (com_argv[i+1]) * 1024;
+
 		if ((parms.memsize > MAX_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
 			parms.memsize = MAX_MEM_ALLOC;
 		else if ((parms.memsize < MIN_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
@@ -545,8 +544,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 // because sound is off until we become active
 	S_BlockSound ();
 
-	Sys_Printf ("Host_Init\n");
-	Host_Init (&parms);
+	Host_Init();
 
 	oldtime = Sys_DoubleTime ();
 

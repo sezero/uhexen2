@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.48 2007-02-17 07:55:39 sezero Exp $
+	$Id: snd_dma.c,v 1.49 2007-03-14 08:12:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -202,8 +202,7 @@ void S_Init (void)
 	Cvar_RegisterVariable(&precache);
 	Cvar_RegisterVariable(&bgmtype);
 
-	if (COM_CheckParm("-nosound") || COM_CheckParm("--nosound")
-			|| COM_CheckParm("-s"))
+	if (safemode || COM_CheckParm("-nosound") || COM_CheckParm("-s"))
 		return;
 
 	Con_Printf("\nSound Initialization\n");
@@ -229,7 +228,7 @@ void S_Init (void)
 	Cvar_RegisterVariable(&snd_show);
 	Cvar_RegisterVariable(&_snd_mixahead);
 
-	if (host_parms.memsize < 0x800000)
+	if (host_parms->memsize < 0x800000)
 	{
 		Cvar_Set ("loadas8bit", "1");
 		Con_Printf ("loading all sounds as 8bit\n");

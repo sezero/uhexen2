@@ -1,7 +1,7 @@
 
 #include "quakedef.h"
 
-quakeparms_t		host_parms;
+quakeparms_t	*host_parms;
 
 qboolean	host_initialized;		// true if into command execution (compatability)
 
@@ -1557,11 +1557,11 @@ static void SV_InitNet (void)
 SV_Init
 ====================
 */
-void SV_Init (quakeparms_t *parms)
+void SV_Init (void)
 {
-	host_parms = *parms;
+	Sys_Printf ("Host_Init\n");
 
-	Memory_Init (parms->membase, parms->memsize);
+	Memory_Init (host_parms->membase, host_parms->memsize);
 	Cbuf_Init ();
 	Cmd_Init ();
 
@@ -1584,7 +1584,7 @@ void SV_Init (quakeparms_t *parms)
 	host_initialized = true;
 
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
-	Con_Printf ("%4.1f megabyte heap\n", parms->memsize/ (1024*1024.0));
+	Con_Printf ("%4.1f megabyte heap\n", host_parms->memsize/(1024*1024.0));
 	Con_Printf ("======== HexenWorld Initialized ========\n");
 
 	// process command line arguments

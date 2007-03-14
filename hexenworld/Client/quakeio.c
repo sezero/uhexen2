@@ -2,7 +2,7 @@
 	quakefs.c
 	quake file io
 
-	$Id: quakeio.c,v 1.4 2007-02-25 19:02:26 sezero Exp $
+	$Id: quakeio.c,v 1.5 2007-03-14 08:12:45 sezero Exp $
 */
 
 #define _NEED_SEARCHPATH_T
@@ -109,7 +109,7 @@ int QIO_CreatePath (char *path)
 		return 1;
 	}
 
-	ofs = host_parms.userdir;
+	ofs = host_parms->userdir;
 	if (strstr(path, ofs) != path)
 	{
 		Sys_Error ("Attempted to create a directory out of user's path");

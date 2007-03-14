@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.64 2007-02-22 19:26:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.65 2007-03-14 08:12:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -30,7 +30,7 @@ Memory is cleared / released when a server or client begins, not when they end.
 
 static void Host_WriteConfiguration (const char *fname);
 
-quakeparms_t host_parms;
+quakeparms_t	*host_parms;
 
 qboolean	host_initialized;		// true if into command execution
 
@@ -976,7 +976,7 @@ extern FILE *vcrFile;
 #define	VCR_SIGNATURE	0x56435231
 // "VCR1"
 
-static void Host_InitVCR (quakeparms_t *parms)
+static void Host_InitVCR (void)
 {
 	int		i, len, n;
 	char	*p;
@@ -986,8 +986,7 @@ static void Host_InitVCR (quakeparms_t *parms)
 		if (com_argc != 2)
 			Sys_Error("No other parameters allowed with -playback");
 
-		//vcrFile = fopen (va("%s/quake.vcr",fs_userdir), "rb");
-		vcrFile = fopen (va("%s/quake.vcr",parms->userdir), "rb");
+		vcrFile = fopen (va("%s/quake.vcr",host_parms->userdir), "rb");
 		if (!vcrFile)
 			Sys_Error("playback file not found");
 
@@ -995,9 +994,10 @@ static void Host_InitVCR (quakeparms_t *parms)
 		if (i != VCR_SIGNATURE)
 			Sys_Error("Invalid signature in vcr file");
 
+		p = com_argv[0];
 		fread (&com_argc, 1, sizeof(int), vcrFile);
 		com_argv = Z_Malloc(com_argc * sizeof(char *));
-		com_argv[0] = parms->argv[0];
+		com_argv[0] = p;
 		for (i = 0; i < com_argc; i++)
 		{
 			fread (&len, 1, sizeof(int), vcrFile);
@@ -1006,14 +1006,11 @@ static void Host_InitVCR (quakeparms_t *parms)
 			com_argv[i+1] = p;
 		}
 		com_argc++; /* add one for arg[0] */
-		parms->argc = com_argc;
-		parms->argv = com_argv;
 	}
 
 	if ( (n = COM_CheckParm("-record")) != 0)
 	{
-		//vcrFile = fopen (va("%s/quake.vcr",fs_userdir), "wb");
-		vcrFile = fopen (va("%s/quake.vcr",parms->userdir), "wb");
+		vcrFile = fopen (va("%s/quake.vcr",host_parms->userdir), "wb");
 
 		i = VCR_SIGNATURE;
 		fwrite (&i, 1, sizeof(int), vcrFile);
@@ -1041,20 +1038,17 @@ static void Host_InitVCR (quakeparms_t *parms)
 Host_Init
 ====================
 */
-void Host_Init (quakeparms_t *parms)
+void Host_Init (void)
 {
-	host_parms = *parms;
+	Sys_Printf ("Host_Init\n");
 
-	com_argc = parms->argc;
-	com_argv = parms->argv;
-
-	Memory_Init (parms->membase, parms->memsize);
+	Memory_Init (host_parms->membase, host_parms->memsize);
 	Cbuf_Init ();
 	Cmd_Init ();
 	V_Init ();
 	Chase_Init ();
 #if NET_USE_VCR
-	Host_InitVCR (parms);
+	Host_InitVCR ();
 #endif
 	COM_Init ();
 	FS_Init ();
@@ -1072,7 +1066,7 @@ void Host_Init (quakeparms_t *parms)
 	SV_Init ();
 
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
-	Con_Printf ("%4.1f megabyte heap\n",parms->memsize/ (1024*1024.0));
+	Con_Printf ("%4.1f megabyte heap\n", host_parms->memsize/(1024*1024.0));
 
 	R_InitTextures ();		// needed even for dedicated servers
 

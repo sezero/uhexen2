@@ -452,7 +452,7 @@ int CDAudio_Init(void)
 	MCI_SET_PARMS	mciSetParms;
 	int	n;
 
-	if (COM_CheckParm("-nocdaudio"))
+	if (safemode || COM_CheckParm("-nocdaudio"))
 		return -1;
 
 	mciOpenParms.lpstrDeviceType = "cdaudio";

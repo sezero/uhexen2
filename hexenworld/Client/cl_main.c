@@ -75,7 +75,7 @@ entity_t	cl_visedicts_list[2][MAX_VISEDICTS];
 
 static double	connect_time = -1;	// for connection retransmits
 
-quakeparms_t	host_parms;
+quakeparms_t	*host_parms;
 
 qboolean	host_initialized;	// true if into command execution
 
@@ -1326,11 +1326,11 @@ void Host_Frame (float time)
 Host_Init
 ====================
 */
-void Host_Init (quakeparms_t *parms)
+void Host_Init (void)
 {
-	host_parms = *parms;
+	Sys_Printf ("Host_Init\n");
 
-	Memory_Init (parms->membase, parms->memsize);
+	Memory_Init (host_parms->membase, host_parms->memsize);
 	Cbuf_Init ();
 	Cmd_Init ();
 	V_Init ();
@@ -1351,7 +1351,7 @@ void Host_Init (quakeparms_t *parms)
 	Mod_Init ();
 
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
-	Con_Printf ("%4.1f megs RAM used.\n",parms->memsize/ (1024*1024.0));
+	Con_Printf ("%4.1f megs RAM used.\n", host_parms->memsize/(1024*1024.0));
 
 	R_InitTextures ();
 

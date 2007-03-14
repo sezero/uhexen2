@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.42 2007-02-23 15:16:04 sezero Exp $
+	$Id: common.h,v 1.43 2007-03-14 08:12:32 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -61,19 +61,24 @@ extern void Q_free(void *mem);
 
 //============================================================================
 
-#define NUM_SAFE_ARGVS	6
-
 extern	char		com_token[1024];
 extern	qboolean	com_eof;
 
 char *COM_Parse (char *data);
 
-extern	int		com_argc;
-extern	char	**com_argv;
+extern	int		safemode;
+/* safe mode: in true, the engine will behave as if one
+   of these arguments were actually on the command line:
+   -nosound, -nocdaudio, -nomidi, -stdvid, -dibonly,
+   -nomouse, -nojoy, -nolan
+ */
 
-int COM_CheckParm (const char *parm);
 void COM_Init (void);
-void COM_InitArgv (int argc, char **argv);
+int COM_CheckParm (const char *parm);
+
+/* macros for compatibility with quake api */
+#define	com_argc	host_parms->argc
+#define	com_argv	host_parms->argv
 
 char *COM_SkipPath (char *pathname);
 void COM_StripExtension (const char *in, char *out);

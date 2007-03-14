@@ -2,7 +2,7 @@
 	host.h
 	public host structures and functions
 
-	$Id: host.h,v 1.2 2007-02-21 09:06:06 sezero Exp $
+	$Id: host.h,v 1.3 2007-03-14 08:12:48 sezero Exp $
 */
 
 #ifndef __HX2_HOST_H
@@ -23,7 +23,7 @@ typedef struct quakeparms_s
 } quakeparms_t;
 
 
-extern	quakeparms_t	host_parms;
+extern	quakeparms_t	*host_parms;
 
 extern	cvar_t		sys_nostdout;
 extern	cvar_t		developer;
@@ -34,7 +34,7 @@ extern	double		realtime;		// not bounded in any way, changed at
 						// start of every frame, never reset
 
 void SV_Error (const char *error, ...) _FUNC_PRINTF(1);
-void SV_Init (quakeparms_t *parms);
+void SV_Init (void);
 
 void Con_Printf (const char *fmt, ...) _FUNC_PRINTF(1);
 void Con_DPrintf (const char *fmt, ...) _FUNC_PRINTF(1);

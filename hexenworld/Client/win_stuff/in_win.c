@@ -399,7 +399,7 @@ IN_StartupMouse
 */
 static void IN_StartupMouse (void)
 {
-	if ( COM_CheckParm ("-nomouse") )
+	if (safemode || COM_CheckParm ("-nomouse"))
 		return;
 
 	mouseinitialized = true;
@@ -787,7 +787,7 @@ static void IN_StartupJoystick (void)
 	mmr = ~JOYERR_NOERROR;	// shut up the compiler
 
 	// abort startup if user requests no joystick
-	if ( COM_CheckParm ("-nojoy") )
+	if (safemode || COM_CheckParm ("-nojoy"))
 		return;
 
 	// verify joystick driver is present

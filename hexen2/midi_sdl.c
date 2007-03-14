@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.35 2007-02-17 09:46:00 sezero Exp $
+	$Id: midi_sdl.c,v 1.36 2007-03-14 08:12:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -107,8 +107,7 @@ qboolean MIDI_Init(void)
 	bMidiInited = 0;
 	Con_Printf("%s: ", __FUNCTION__);
 
-	if (COM_CheckParm("-nomidi") || COM_CheckParm("--nomidi")
-	   || COM_CheckParm("-nosound") || COM_CheckParm("--nosound"))
+	if (safemode || COM_CheckParm("-nomidi") || COM_CheckParm("-nosound") || COM_CheckParm("-s"))
 	{
 		Con_Printf("disabled by commandline\n");
 		return 0;

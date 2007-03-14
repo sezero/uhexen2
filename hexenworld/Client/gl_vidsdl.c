@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.140 2007-03-09 07:03:17 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.141 2007-03-14 08:12:44 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1583,11 +1583,11 @@ void	VID_Init (unsigned char *palette)
 
 	// windowed mode is default
 	// see if the user wants fullscreen
-	if (COM_CheckParm("-f") || COM_CheckParm("-fullscreen") || COM_CheckParm("--fullscreen"))
+	if (COM_CheckParm("-fullscreen") || COM_CheckParm("-f"))
 	{
 		Cvar_SetValue("vid_config_fscr", 1);
 	}
-	else if (COM_CheckParm("-w") || COM_CheckParm("-window") || COM_CheckParm("--window"))
+	else if (COM_CheckParm("-window") || COM_CheckParm("-w"))
 	{
 		Cvar_SetValue("vid_config_fscr", 0);
 	}

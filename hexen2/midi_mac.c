@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.8 2007-02-17 07:55:32 sezero Exp $
+	$Id: midi_mac.c,v 1.9 2007-03-14 08:12:32 sezero Exp $
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -120,8 +120,7 @@ qboolean MIDI_Init (void)
 
 	Con_Printf("%s: ", __FUNCTION__);
 
-	if (COM_CheckParm("-nomidi") || COM_CheckParm("--nomidi")
-	   || COM_CheckParm("-nosound") || COM_CheckParm("--nosound"))
+	if (safemode || COM_CheckParm("-nomidi") || COM_CheckParm("-nosound") || COM_CheckParm("-s"))
 	{
 		Con_Printf("disabled by commandline\n");
 		bMidiInited = 0;
