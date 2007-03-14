@@ -2,7 +2,7 @@
 	host.h
 	public host structures and functions
 
-	$Id: host.h,v 1.3 2007-03-14 08:12:32 sezero Exp $
+	$Id: host.h,v 1.4 2007-03-14 08:15:15 sezero Exp $
 */
 
 #ifndef __HX2_HOST_H
@@ -60,7 +60,7 @@ extern	int		current_skill;	// skill level for currently loaded level (in case
 					//  the user changes the cvar while the level is
 					//  running, this reflects the level actually in use)
 
-extern	int		sv_kingofhill;
+extern	int		sv_kingofhill;		// mission pack king of the hill.
 
 extern	unsigned int	info_mask, info_mask2;	// mission pack objectives
 

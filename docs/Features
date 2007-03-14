@@ -19,6 +19,11 @@ Features:
   support for external lit files, texture delete/reload support, fixes
   for texture cache and model mesh cache mismatches.
 
+* Fully network-compatible with Raven's 1.11 windows version, as well as
+  with other Hexen II ports.
+
+* Can load and play games saved with Raven's 1.11 windows version.
+
 * The same binary handles both original hexen2 and the mission pack.
 
 * The same hexen2 binary transparently handles both hexen2 v1.11 and

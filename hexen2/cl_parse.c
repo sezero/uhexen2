@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.41 2007-02-22 19:26:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.42 2007-03-14 08:15:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -21,6 +21,8 @@ model_t *player_models[MAX_PLAYER_CLASS];
 // we issue an +attack to skip the intermission. when reconnecting to the
 // server, we must reverse it by an -attack in Host_Reconnect_f()   - O.S.
 qboolean	demohack = false;
+
+int		cl_protocol;	/* protocol version used by the server */
 
 static const char *svc_strings[] =
 {
@@ -88,6 +90,7 @@ static const char *svc_strings[] =
 	"svc_mod_name",	// UQE v1.13 by Korax, music file name
 	"svc_skybox"	// UQE v1.13 by Korax, skybox name
 };
+#define	NUM_SVC_STRINGS	( sizeof(svc_strings)/sizeof(svc_strings[0]) )
 
 int LastServerMessageSize;
 extern cvar_t precache;
@@ -146,7 +149,7 @@ static void CL_ParseStartSoundPacket(void)
 	channel = MSG_ReadShort ();
 	sound_num = MSG_ReadByte ();
 	if (field_mask & SND_OVERFLOW)
-		sound_num += 256;
+		sound_num += MAX_SOUNDS_OLD;
 
 	ent = channel >> 3;
 	channel &= 7;
@@ -242,15 +245,18 @@ static void CL_ParseServerInfo (void)
 	CL_ClearState ();
 
 // parse protocol version number
-	i = MSG_ReadLong ();
-	if (i != PROTOCOL_VERSION_RAVEN_112 && i !=PROTOCOL_VERSION_UQE_113)
+	cl_protocol = MSG_ReadLong ();
+	if (cl_protocol != PROTOCOL_RAVEN_112 &&
+	    cl_protocol != PROTOCOL_RAVEN_111 &&
+	    cl_protocol != PROTOCOL_UQE_113)
 	{
-		Con_Printf ("\nServer returned version %i, not %i or %i\n", i, PROTOCOL_VERSION_RAVEN_112, PROTOCOL_VERSION_UQE_113);
+		Con_Printf ("\nServer returned version %i, not %i or %i\n",
+				cl_protocol, PROTOCOL_RAVEN_112, PROTOCOL_UQE_113);
 		return;
 	}
 	else
 	{
-		Con_Printf ("\nServer using protocol %i\n", i);
+		Con_Printf ("\nServer using protocol %i\n", cl_protocol);
 	}
 
 // parse maxclients
@@ -265,7 +271,7 @@ static void CL_ParseServerInfo (void)
 // parse gametype
 	cl.gametype = MSG_ReadByte ();
 
-	if (cl.gametype == GAME_DEATHMATCH)
+	if (cl.gametype == GAME_DEATHMATCH && cl_protocol > PROTOCOL_RAVEN_111)
 		sv_kingofhill = MSG_ReadShort ();
 
 // parse signon message
@@ -1102,7 +1108,10 @@ static void CL_ParseStaticSound (void)
 	for (i = 0; i < 3; i++)
 		org[i] = MSG_ReadCoord ();
 
-	sound_num = MSG_ReadShort ();
+	if (cl_protocol == PROTOCOL_RAVEN_111)
+		sound_num = MSG_ReadByte ();
+	else
+		sound_num = MSG_ReadShort();
 	vol = MSG_ReadByte ();
 	atten = MSG_ReadByte ();
 
@@ -1160,6 +1169,43 @@ static void CL_ParseRainEffect(void)
 #define SHOWNET(x) \
 	if (cl_shownet.value == 2) \
 		Con_Printf ("%3i:%s\n", msg_readcount-1, (x));
+
+#if 0	/* for debugging. from fteqw. */
+static void CL_DumpPacket (void)
+{
+	int			i, pos;
+	char	*packet = net_message.data;
+
+	Con_Printf("%s, BEGIN:\n", __FUNCTION__);
+	pos = 0;
+	while (pos < net_message.cursize)
+	{
+		Con_Printf("%5i ", pos);
+		for (i = 0; i < 16; i++)
+		{
+			if (pos >= net_message.cursize)
+				Con_Printf(" X ");
+			else
+				Con_Printf("%2x ", (unsigned char)packet[pos]);
+			pos++;
+		}
+		pos -= 16;
+		for (i = 0; i < 16; i++)
+		{
+			if (pos >= net_message.cursize)
+				Con_Printf("X");
+			else if (packet[pos] == 0)
+				Con_Printf(".");
+			else
+				Con_Printf("%c", (unsigned char)packet[pos]);
+			pos++;
+		}
+		Con_Printf("\n");
+	}
+
+	Con_Printf("%s, --- END ---\n", __FUNCTION__);
+}
+#endif	/* CL_DumpPacket */
 
 /*
 =====================
@@ -1234,13 +1280,17 @@ void CL_ParseServerMessage (void)
 			continue;
 		}
 
-		SHOWNET(svc_strings[cmd]);
+		if (cmd < NUM_SVC_STRINGS)	// else, it'll hit the illegible message below
+		{
+			SHOWNET(svc_strings[cmd]);
+		}
 
 	// other commands
 		switch (cmd)
 		{
 		default:
-			Host_Error ("%s: Illegible server message", __FUNCTION__);
+		//	CL_DumpPacket ();
+			Host_Error ("%s: Illegible server message %d", __FUNCTION__, cmd);
 			break;
 
 		case svc_nop:
@@ -1258,12 +1308,19 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_version:
-			i = MSG_ReadLong ();
-			if (i != PROTOCOL_VERSION_RAVEN_112 && i != PROTOCOL_VERSION_UQE_113)
+			cl_protocol = MSG_ReadLong ();
+			if (cl_protocol != PROTOCOL_RAVEN_112 &&
+			    cl_protocol != PROTOCOL_RAVEN_111 &&
+			    cl_protocol != PROTOCOL_UQE_113)
+			{
 				Host_Error ("%s: Server is protocol %i instead of %i or %i",
-						__FUNCTION__, i, PROTOCOL_VERSION_RAVEN_112, PROTOCOL_VERSION_UQE_113);
+						__FUNCTION__, cl_protocol,
+						PROTOCOL_RAVEN_112, PROTOCOL_UQE_113);
+			}
 			else
-				Con_Printf ("Server using protocol %i\n", i);
+			{
+				Con_Printf ("Server using protocol %i\n", cl_protocol);
+			}
 			break;
 
 		case svc_disconnect:
@@ -1455,19 +1512,16 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_setpause:
+			cl.paused = MSG_ReadByte ();
+			if (cl.paused)
 			{
-				cl.paused = MSG_ReadByte ();
-
-				if (cl.paused)
-				{
-					CDAudio_Pause ();
-					VID_HandlePause (true);
-				}
-				else
-				{
-					CDAudio_Resume ();
-					VID_HandlePause (false);
-				}
+				CDAudio_Pause ();
+				VID_HandlePause (true);
+			}
+			else
+			{
+				CDAudio_Resume ();
+				VID_HandlePause (false);
 			}
 			break;
 
@@ -1825,10 +1879,15 @@ void CL_ParseServerMessage (void)
 					cl.v.flags = MSG_ReadFloat();
 
 				// SC2_OBJ, SC2_OBJ2: mission pack objectives
-				if (sc2 & SC2_OBJ)
-					cl.info_mask = MSG_ReadLong();
-				if (sc2 & SC2_OBJ2)
-					cl.info_mask2 = MSG_ReadLong();
+				// With protocol 18 (PROTOCOL_RAVEN_111), these
+				// bits get set somehow: let's avoid them.
+				if (cl_protocol > PROTOCOL_RAVEN_111)
+				{
+					if (sc2 & SC2_OBJ)
+						cl.info_mask = MSG_ReadLong();
+					if (sc2 & SC2_OBJ2)
+						cl.info_mask2 = MSG_ReadLong();
+				}
 
 				if ((sc1 & SC1_STAT_BAR) || (sc2 & SC2_STAT_BAR))
 					Sbar_Changed();

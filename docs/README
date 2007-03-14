@@ -199,10 +199,12 @@ Important command-line switches:
 				/dev/cdrom for linux, /dev/acd0 for BSD)
  -nocdaudio		Disable cdrom music
  -nomidi		Disable MIDI music
- -listen  N		Enable multiplayer with maximum N players
- -nolan			Disable networking
  -s | -nosound		Run the game without sound
  -v | -version		Display the game version
+ -nolan			Disable networking (incompatible with -listen)
+ -listen  N		Enable multiplayer with maximum N players
+ -protocol N		Run the server using protocol version N, instead of
+			the default. Valid values: 18 (old), 19 (default).
  -h | -help		Display short help message
 
 If you wish to brighten the display, simply use the game's menu
@@ -294,48 +296,17 @@ before compiling SDL_mixer, to point to your timidity data files.
 1.5 Networking / Multiplayer
 ----------------------------
 
-Hammer of Thyrion binaries here WILL NOT play over network with
-Raven's Windows Hexen2 binaries. However, the mission pack is
-network-compatible across platforms. On the other hand we also
-provide Hammer of Thyrion Windows binaries which are fully
-compatible with unix versions.
-
-This has nothing to do with us: Raven's latest Hexen2 version
-is 1.11, and they didn't give us original 1.11 or older sources.
-The network code had changes during the 1.11-1.12 transition and
-we only have the 1.12 sources.
-
-    Deathmatch, TeamPlay, etc:
-	- HexenWorld is highly recommended at both sides.
-
-    Cooperative games:
-	- Linux side  : (gl)hexen2 or (gl)h2mp,
-
-	- Windows side: * (gl)h2mp (original CD version), or
-			* Hammer of Thyrion Windows versions, or
-			* jshexen2,  or
-			* Pa3pyX's Hexen2 1.14-1.15
-
-	should work just fine with each other.
-
-
-Here is a network-compatibility table:
-
-==============================================================
-Binary		Windows		Linux	  Game		Status
-==========	===========	========  ==========	======
-
-(gl)hexen2	<= 1.11		>= 1.12	  Hexen II	FAILS
-		>= 1.12 (*)	>= 1.12	  Hexen II	Runs
-==========	===========	========  ==========	======
-
-(gl)h2mp	>= 1.12		>= 1.12	  Hexen II	Runs
-					  Miss. Pack	Runs
-==========	===========	========  ==========	======
-
-*) Recompiles/ports of the source such as the ones from Pa3Pyx
-   or Hammer of Thyrion, jshexen2, newhexen and such.
-==============================================================
+Since version 1.4.2 (engine version 1.17), Hammer of Thyrion binaries
+are fully compatible Raven's Windows Hexen II-1.11 binaries.  When run
+as a client, it can connect to Raven-1.11 servers and can play just
+fine.  It can playback the demos created with 1.11 version, as well.
+On the other hand, if a 1.11 client wants to connect to a H.o.T. server,
+the server must be started with "-protocol 18" command line argument.
+Remember that the original cdrom versions (1.03) are not supported at
+all: Network compatibility is only valid with the updated 1.11 version.
+Mission pack is, of course, fully network-compatible across platforms.
+As for the other Hexen II ports such as UQE, Pa3PyX, NewHexen, JSHexen,
+Hammer of Thyrion is compatible with them, too.
 
 
 1.6 Game Saves and Configuration files

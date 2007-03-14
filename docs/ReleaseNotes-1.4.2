@@ -8,6 +8,16 @@ Current state: 1.4.2-pre1+ (pre-release, 2007-02-24.)
 
 General:
 --------
+- The engine version is now 1.17.
+- Added support for protocol 18: Hammer of Thyrion is now fully network-
+  compatible with Raven's 1.11 windows version, as it has been with other
+  Hexen II ports.
+- The net compatibility works both ways: When H.o.T is run as a client,
+  it can connect to Raven-1.11 servers and can play just fine. On the
+  other hand, if a 1.11 client wants to connect to a H.o.T. server, the
+  server must be started with "-protocol 18" command line argument.
+- You can also load and play games saved with the 1.11 windows version and
+  can playback the demos recorded with the 1.11 version.
 - Fixed and improved parsing of puzzles.txt: This fixes the bug where the
   names used to be listed as Unknown in the puzzle pieces inventory display
   (you can access the puzzle pieces inventory display using a key bound to

@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.21 2007-03-14 08:12:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.22 2007-03-14 08:15:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -594,13 +594,13 @@ void Host_Init (void)
 	Cbuf_Init ();
 	Cmd_Init ();
 	COM_Init ();
+	SV_Init ();
 	FS_Init ();
 	Host_RemoveGIPFiles(NULL);
 	Host_InitLocal ();
 	PR_Init ();
 	Mod_Init ();
 	NET_Init ();
-	SV_Init ();
 
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
 	Con_Printf ("%4.1f megabyte heap\n", host_parms->memsize/(1024*1024.0));

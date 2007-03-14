@@ -1,7 +1,7 @@
 /*
 	pr_cmds.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.35 2007-02-20 08:02:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.36 2007-03-14 08:15:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -685,7 +685,10 @@ static void PF_ambientsound (void)
 	for (i = 0; i < 3; i++)
 		MSG_WriteCoord(&sv.signon, pos[i]);
 
-	MSG_WriteShort (&sv.signon, soundnum);
+	if (sv_protocol == PROTOCOL_RAVEN_111)
+		MSG_WriteByte (&sv.signon, soundnum);
+	else
+		MSG_WriteShort(&sv.signon, soundnum);
 
 	MSG_WriteByte (&sv.signon, vol*255);
 	MSG_WriteByte (&sv.signon, attenuation*64);
@@ -1718,6 +1721,7 @@ static void PF_precache_file (void)
 static void PF_precache_sound (void)
 {
 	char	*s;
+	int		SOUNDS_MAX; // just to be on the safe side..
 	int		i;
 
 	if (sv.state != ss_loading && !ignore_precache)
@@ -1727,7 +1731,8 @@ static void PF_precache_sound (void)
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
 	PR_CheckEmptyString (s);
 
-	for (i = 0; i < MAX_SOUNDS; i++)
+	SOUNDS_MAX = (sv_protocol == PROTOCOL_RAVEN_111) ? MAX_SOUNDS_OLD : MAX_SOUNDS;
+	for (i = 0; i < SOUNDS_MAX; i++)
 	{
 		if (!sv.sound_precache[i])
 		{

@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.14 2007-02-17 07:55:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.15 2007-03-14 08:15:15 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -282,7 +282,9 @@ void CL_ParseEffect (void)
 			cl.Effects[idx].ef.Smoke.velocity[2] = MSG_ReadFloat ();
 
 			cl.Effects[idx].ef.Smoke.framelength = MSG_ReadFloat ();
-			cl.Effects[idx].ef.Smoke.frame = MSG_ReadFloat ();
+			// smoke frame is a mission pack thing only.
+			if (cl_protocol > PROTOCOL_RAVEN_111)
+				cl.Effects[idx].ef.Smoke.frame = MSG_ReadFloat ();
 
 			if ((cl.Effects[idx].ef.Smoke.entity_index = NewEffectEntity()) != -1)
 			{

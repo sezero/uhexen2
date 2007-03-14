@@ -2,15 +2,16 @@
 	protocol.h
 	communications protocols
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/protocol.h,v 1.8 2007-02-07 17:01:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/protocol.h,v 1.9 2007-03-14 08:15:15 sezero Exp $
 */
 
 #ifndef __HX2_PROTOCOL_H
 #define __HX2_PROTOCOL_H
 
-#define	PROTOCOL_VERSION_RAVEN_112	19
-#define	PROTOCOL_VERSION_UQE_113	20
-#define	PROTOCOL_VERSION		PROTOCOL_VERSION_RAVEN_112
+#define	PROTOCOL_RAVEN_111		18
+#define	PROTOCOL_RAVEN_112		19
+#define	PROTOCOL_UQE_113		20
+#define	PROTOCOL_VERSION		PROTOCOL_RAVEN_112
 
 // if the high bit of the servercmd is set, the low bits are fast update flags:
 #define	U_MOREBITS	(1<<0)

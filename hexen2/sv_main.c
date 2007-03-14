@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.46 2007-02-20 08:02:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.47 2007-03-14 08:15:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -36,7 +36,8 @@ extern	cvar_t	sv_aim;
 extern	cvar_t	sv_walkpitch;
 extern	cvar_t	sv_flypitch;
 
-int		sv_kingofhill;
+int		sv_protocol = PROTOCOL_VERSION;	// protocol version to use
+int		sv_kingofhill;		// mission pack, king of the hill.
 unsigned int	info_mask, info_mask2;	// mission pack, objectives
 
 extern float	scr_centertime_off;
@@ -83,6 +84,19 @@ void SV_Init (void)
 
 	// initialize King of Hill to world
 	sv_kingofhill = 0;
+
+	i = COM_CheckParm ("-protocol");
+	if (i && i < com_argc-1)
+	{
+		sv_protocol = atoi (com_argv[i+1]);
+		if (sv_protocol != PROTOCOL_RAVEN_112 &&
+		    sv_protocol != PROTOCOL_RAVEN_111)
+		{
+			Sys_Error ("Bad protocol request %i: Only %i or %i are accepted as protocol version.",
+					sv_protocol, PROTOCOL_RAVEN_111, PROTOCOL_RAVEN_112);
+		}
+	}
+	Sys_Printf ("Server using %s protocol %i\n", (sv_protocol == PROTOCOL_VERSION) ? "default" : "old", sv_protocol);
 }
 
 void SV_Edicts (const char *Name)
@@ -348,10 +362,10 @@ void SV_StartSound (edict_t *entity, int channel, const char *sample, int volume
 		field_mask |= SND_VOLUME;
 	if (attenuation != DEFAULT_SOUND_PACKET_ATTENUATION)
 		field_mask |= SND_ATTENUATION;
-	if (sound_num > 255)
+	if (sound_num > MAX_SOUNDS_OLD-1)
 	{
 		field_mask |= SND_OVERFLOW;
-		sound_num -= 256;
+		sound_num -= MAX_SOUNDS_OLD;
 	}
 
 // directed messages go only to the entity the are targeted on
@@ -393,13 +407,14 @@ void SV_SendServerinfo (client_t *client)
 	MSG_WriteString (&client->message,message);
 
 	MSG_WriteByte (&client->message, svc_serverinfo);
-	MSG_WriteLong (&client->message, PROTOCOL_VERSION);
+	MSG_WriteLong (&client->message, sv_protocol);
 	MSG_WriteByte (&client->message, svs.maxclients);
 
 	if (!coop.value && deathmatch.value)
 	{
 		MSG_WriteByte (&client->message, GAME_DEATHMATCH);
-		MSG_WriteShort (&client->message, sv_kingofhill);
+		if (sv_protocol > PROTOCOL_RAVEN_111)
+			MSG_WriteShort (&client->message, sv_kingofhill);
 	}
 	else
 		MSG_WriteByte (&client->message, GAME_COOP);
@@ -1335,10 +1350,13 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 			sc2 |= SC2_FLAGS;
 
 		// mission pack, objectives
-		if (info_mask != client->info_mask)
-			sc2 |= SC2_OBJ;
-		if (info_mask2 != client->info_mask2)
-			sc2 |= SC2_OBJ2;
+		if (sv_protocol > PROTOCOL_RAVEN_111)
+		{
+			if (info_mask != client->info_mask)
+				sc2 |= SC2_OBJ;
+			if (info_mask2 != client->info_mask2)
+				sc2 |= SC2_OBJ2;
+		}
 	}
 
 	if (!sc1 && !sc2)
@@ -1493,15 +1511,18 @@ void SV_WriteClientdataToMessage (client_t *client, edict_t *ent, sizebuf_t *msg
 		MSG_WriteFloat (&host_client->message, ent->v.flags);
 
 // mission pack, objectives
-	if (sc2 & SC2_OBJ)
+	if (sv_protocol > PROTOCOL_RAVEN_111)
 	{
-		MSG_WriteLong (&host_client->message, info_mask);
-		client->info_mask = info_mask;
-	}
-	if (sc2 & SC2_OBJ2)
-	{
-		MSG_WriteLong (&host_client->message, info_mask2);
-		client->info_mask2 = info_mask2;
+		if (sc2 & SC2_OBJ)
+		{
+			MSG_WriteLong (&host_client->message, info_mask);
+			client->info_mask = info_mask;
+		}
+		if (sc2 & SC2_OBJ2)
+		{
+			MSG_WriteLong (&host_client->message, info_mask2);
+			client->info_mask2 = info_mask2;
+		}
 	}
 
 end:

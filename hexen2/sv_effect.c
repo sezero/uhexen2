@@ -2,7 +2,7 @@
 	sv_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_effect.c,v 1.6 2007-02-17 07:55:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_effect.c,v 1.7 2007-03-14 08:15:16 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -279,7 +279,9 @@ static void SV_SendEffect (sizebuf_t *sb, int idx)
 			MSG_WriteFloat(sb, sv.Effects[idx].ef.Smoke.velocity[1]);
 			MSG_WriteFloat(sb, sv.Effects[idx].ef.Smoke.velocity[2]);
 			MSG_WriteFloat(sb, sv.Effects[idx].ef.Smoke.framelength);
-			MSG_WriteFloat(sb, sv.Effects[idx].ef.Smoke.frame);
+			// smoke frame is a mission pack thing only.
+			if (sv_protocol > PROTOCOL_RAVEN_111)
+				MSG_WriteFloat(sb, sv.Effects[idx].ef.Smoke.frame);
 			break;
 
 		case CE_SM_WHITE_FLASH:
@@ -495,6 +497,7 @@ void SV_ParseEffect (sizebuf_t *sb)
 		case CE_FLAMEWALL:
 		case CE_FLAMEWALL2:
 		case CE_ONFIRE:
+		// mission pack
 			VectorCopy(G_VECTOR(OFS_PARM1), sv.Effects[idx].ef.Smoke.origin);
 			VectorCopy(G_VECTOR(OFS_PARM2), sv.Effects[idx].ef.Smoke.velocity);
 			sv.Effects[idx].ef.Smoke.framelength = 0.05;
@@ -697,8 +700,17 @@ void SV_SaveEffects (FILE *FH)
 				fprintf(FH, "%f ", sv.Effects[idx].ef.Smoke.velocity[0]);
 				fprintf(FH, "%f ", sv.Effects[idx].ef.Smoke.velocity[1]);
 				fprintf(FH, "%f ", sv.Effects[idx].ef.Smoke.velocity[2]);
-				fprintf(FH, "%f ", sv.Effects[idx].ef.Smoke.framelength);
-				fprintf(FH, "%f\n", sv.Effects[idx].ef.Smoke.frame);
+				// smoke frame is a mission pack thing only.
+				if (sv_protocol > PROTOCOL_RAVEN_111)
+				{
+					fprintf(FH, "%f ", sv.Effects[idx].ef.Smoke.framelength);
+					fprintf(FH, "%f\n", sv.Effects[idx].ef.Smoke.frame);
+				}
+				else
+				{
+					// save it in 1.11 style
+					fprintf(FH, "%f\n", sv.Effects[idx].ef.Smoke.framelength);
+				}
 				break;
 
 			case CE_SM_WHITE_FLASH:
@@ -821,6 +833,8 @@ void SV_SaveEffects (FILE *FH)
 void SV_LoadEffects (FILE *FH)
 {
 	int		idx, Total, count;
+	long		pos;
+	char		tmp[2];
 
 	// Since the map is freshly loaded, clear out any effects as a result of
 	// the loading
@@ -913,8 +927,30 @@ void SV_LoadEffects (FILE *FH)
 				fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.velocity[0]);
 				fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.velocity[1]);
 				fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.velocity[2]);
-				fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.framelength);
-				fscanf(FH, "%f\n", &sv.Effects[idx].ef.Smoke.frame);
+			// smoke frame is a mission pack thing only: read carefully...
+			//	fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.framelength);
+			//	fscanf(FH, "%f\n", &sv.Effects[idx].ef.Smoke.frame);
+				fscanf(FH, "%f", &sv.Effects[idx].ef.Smoke.framelength);
+				pos = ftell (FH);
+				fread (tmp, 1, 1, FH);	/* read one char, see what it is: */
+				if (tmp[0] == '\n' || tmp[0] == '\r')
+				{	/* 1.11 style */
+					sv.Effects[idx].ef.Smoke.frame = 0;
+					while ((tmp[0] == '\n' || tmp[0] == '\r') && !feof(FH))
+					{
+					/* read one char until it's not an EOL char, then
+					   go one char back to the correct position.    */
+						pos = ftell (FH);
+						fread (tmp, 1, 1, FH);
+					};
+					fseek (FH, pos, SEEK_SET);
+				}
+				else
+				{	/* 1.12 mission pack style */
+					//if (tmp[0] != ' ')
+					//	Sys_DPrintf ("broken save ??\n");
+					fscanf(FH, " %f\n", &sv.Effects[idx].ef.Smoke.frame);
+				}
 				break;
 
 			case CE_SM_WHITE_FLASH:

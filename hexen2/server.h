@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.17 2007-02-20 07:36:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.18 2007-03-14 08:15:16 sezero Exp $
 */
 
 #ifndef __HX2_SERVER_H
@@ -231,6 +231,8 @@ extern	cvar_t	timelimit;
 
 extern	server_static_t	svs;		// persistant server info
 extern	server_t	sv;		// local server
+
+extern	int		sv_protocol;	// protocol version to use
 
 extern	client_t	*host_client;
 
