@@ -104,6 +104,7 @@ static const char *svc_strings[] =
 	"NEW PROTOCOL",
 	"NEW PROTOCOL"
 };
+#define	NUM_SVC_STRINGS	( sizeof(svc_strings)/sizeof(svc_strings[0]) )
 
 static int	oldparsecountmod;
 int	parsecountmod;
@@ -1113,7 +1114,10 @@ void CL_ParseServerMessage (void)
 			break;
 		}
 
-		SHOWNET(svc_strings[cmd]);
+		if (cmd < NUM_SVC_STRINGS)	// else, it'll hit the illegible message below
+		{
+			SHOWNET(svc_strings[cmd]);
+		}
 
 	// other commands
 		switch (cmd)
