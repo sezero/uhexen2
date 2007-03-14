@@ -56,7 +56,7 @@
 #define CE_SM_BLUE_FLASH	13	// bluflash.spr
 #define CE_RED_FLASH		14	// redspt.spr
 #define CE_SM_EXPLOSION		15	// sm_expld.spr
-#define CE_BG_EXPLOSION		16	// bg_expld.spr
+#define CE_LG_EXPLOSION		16	// bg_expld.spr
 #define CE_FLOOR_EXPLOSION	17	// fl_expld.spr
 #define CE_RIDER_DEATH		18
 #define CE_BLUE_EXPLOSION	19	// xpspblue.spr
@@ -82,6 +82,7 @@
 #define CE_TELEPORTERBODY	39
 #define CE_BONESHARD		40
 #define CE_BONESHRAPNEL		41
+// New for HexenWorld...
 #define CE_HWMISSILESTAR	42
 #define CE_HWEIDOLONSTAR	43
 #define CE_HWSHEEPINATOR	44

@@ -72,6 +72,7 @@
 #define CE_TELEPORTERBODY	39
 #define CE_BONESHARD		40
 #define CE_BONESHRAPNEL		41
+// New for Mission Pack...
 #define CE_FLAMESTREAM		42	// Flamethrower
 #define CE_SNOW			43
 #define CE_GRAVITYWELL		44

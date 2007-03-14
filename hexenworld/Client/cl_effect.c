@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.c,v 1.12 2007-02-17 07:55:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.c,v 1.13 2007-03-14 08:11:35 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -196,7 +196,7 @@ static void CL_FreeEffect (int idx)
 		case CE_BG_CIRCLE_EXP:
 		case CE_SM_EXPLOSION:
 		case CE_SM_EXPLOSION2:
-		case CE_BG_EXPLOSION:
+		case CE_LG_EXPLOSION:
 		case CE_FLOOR_EXPLOSION:
 		case CE_BLUE_EXPLOSION:
 		case CE_REDSPARK:
@@ -508,7 +508,7 @@ void CL_ParseEffect (void)
 		case CE_BG_CIRCLE_EXP:
 		case CE_SM_EXPLOSION:
 		case CE_SM_EXPLOSION2:
-		case CE_BG_EXPLOSION:
+		case CE_LG_EXPLOSION:
 		case CE_FLOOR_EXPLOSION:
 		case CE_BLUE_EXPLOSION:
 		case CE_REDSPARK:
@@ -563,7 +563,7 @@ void CL_ParseEffect (void)
 					ent->model = Mod_ForName("models/sm_expld.spr", true);
 					S_StartSound (TempSoundChannel(), 1, cl_fxsfx_explode, cl.Effects[idx].ef.Smoke.origin, 1, 1);
 				}
-				else if (cl.Effects[idx].type == CE_BG_EXPLOSION)
+				else if (cl.Effects[idx].type == CE_LG_EXPLOSION)
 				{
 					ent->model = Mod_ForName("models/bg_expld.spr", true);
 					S_StartSound (TempSoundChannel(), 1, cl_fxsfx_explode, cl.Effects[idx].ef.Smoke.origin, 1, 1);
@@ -1835,7 +1835,7 @@ void CL_UpdateEffects (void)
 			case CE_BG_CIRCLE_EXP:
 			case CE_SM_EXPLOSION:
 			case CE_SM_EXPLOSION2:
-			case CE_BG_EXPLOSION:
+			case CE_LG_EXPLOSION:
 			case CE_FLOOR_EXPLOSION:
 			case CE_BLUE_EXPLOSION:
 			case CE_REDSPARK:

@@ -2,7 +2,7 @@
 	sv_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.13 2007-02-17 07:56:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.14 2007-03-14 08:11:36 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -121,7 +121,7 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 		case CE_BG_CIRCLE_EXP:
 		case CE_SM_EXPLOSION:
 		case CE_SM_EXPLOSION2:
-		case CE_BG_EXPLOSION:
+		case CE_LG_EXPLOSION:
 		case CE_FLOOR_EXPLOSION:
 		case CE_BLUE_EXPLOSION:
 		case CE_REDSPARK:
@@ -282,7 +282,7 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 		case CE_BG_CIRCLE_EXP:
 		case CE_SM_EXPLOSION:
 		case CE_SM_EXPLOSION2:
-		case CE_BG_EXPLOSION:
+		case CE_LG_EXPLOSION:
 		case CE_FLOOR_EXPLOSION:
 		case CE_BLUE_EXPLOSION:
 		case CE_REDSPARK:
@@ -574,7 +574,7 @@ void SV_ParseEffect (sizebuf_t *sb)
 		case CE_BG_CIRCLE_EXP:
 		case CE_SM_EXPLOSION:
 		case CE_SM_EXPLOSION2:
-		case CE_BG_EXPLOSION:
+		case CE_LG_EXPLOSION:
 		case CE_FLOOR_EXPLOSION:
 		case CE_BLUE_EXPLOSION:
 		case CE_REDSPARK:
@@ -902,7 +902,7 @@ void SV_SaveEffects (FILE *FH)
 			case CE_BG_CIRCLE_EXP:
 			case CE_SM_EXPLOSION:
 			case CE_SM_EXPLOSION2:
-			case CE_BG_EXPLOSION:
+			case CE_LG_EXPLOSION:
 			case CE_FLOOR_EXPLOSION:
 			case CE_BLUE_EXPLOSION:
 			case CE_REDSPARK:
@@ -1136,7 +1136,7 @@ void SV_LoadEffects (FILE *FH)
 			case CE_BG_CIRCLE_EXP:
 			case CE_SM_EXPLOSION:
 			case CE_SM_EXPLOSION2:
-			case CE_BG_EXPLOSION:
+			case CE_LG_EXPLOSION:
 			case CE_FLOOR_EXPLOSION:
 			case CE_BLUE_EXPLOSION:
 			case CE_REDSPARK:
