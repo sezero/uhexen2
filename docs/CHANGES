@@ -33,6 +33,8 @@ Development Progress	:
     * fixed the ftell() failures on win32 when loading games with unix
       style line endings: the M$ C library seems to lie to ftell() if
       the file is not opened in binary mode. this was a bitch to find..
+    * incremented the engine version to 1.17.
+    * updated the RelNotes file for future 1.4.2.
 
 2007-03-08 (CVS):
     * uniform Cmd_AddCommand usage.
