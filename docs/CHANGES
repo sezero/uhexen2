@@ -3,6 +3,37 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-03-14 (CVS):
+    * minor commentary update to cl_effect.h. also changed the CE_BG_EXPLOSION
+      definition in hexenworld to CE_LG_EXPLOSION to be consistant with hexen2
+      and the gamecode. no actual code change here.
+    * clean-up in the init and command line arguments initialization:
+      removed many unnecessary double-dash versions of the options,
+      updated the documents accordingly.  the command line arguments
+      passed to the program are now stored only in the host_parms
+      structure. made com_argc and com_argv into macros wrapping around
+      the relevant host_parms members. the huge mess in assigning
+      com_argc/com_argv and host_parms->arg{c|v} is also cleaned up.
+      handling of safe mode arguments is moved to the relevant procs.
+      host_parms is now a pointer and is initialized in main().
+      Host_Init and friends no longer accept any arguments.  did a
+      little house cleaning in main(). for consistancy with the other
+      versions, basedir is taken from getcwd() in the dedicated servers.
+    * added support for Raven's 1.11 server protocol 18. with this, H.o.T.
+      is able to connect to Raven's original 1.11 servers or play the demos
+      recorded with that pre-mission pack protocol.  allowed running the
+      server using the old pre-mission pack protocol 18 instead of the
+      default protocol 19. the -protocol command line switch takes 18 or
+      19 as an argument. when protocol 18 is used, games are also saved in
+      the old 1.11 format. on the other hand, the engine can now load old
+      1.11 style games, as well: game loading is neutral to the save-style:
+      1.11 and 1.12 styles are automatically detected and converted to the
+      active style as the player progesses through the game.  updated the
+      documentation accordingly.
+    * fixed the ftell() failures on win32 when loading games with unix
+      style line endings: the M$ C library seems to lie to ftell() if
+      the file is not opened in binary mode. this was a bitch to find..
+
 2007-03-08 (CVS):
     * uniform Cmd_AddCommand usage.
     * re-arranged the cmd layer in hwmaster so that it gives smaller and
