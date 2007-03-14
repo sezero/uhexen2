@@ -1,3 +1,9 @@
+/*
+	lexi.c
+
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_lex.c,v 1.8 2007-03-14 21:22:15 sezero Exp $
+*/
+
 
 #include "util_inc.h"
 #include "cmdlib.h"

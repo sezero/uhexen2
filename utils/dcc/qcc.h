@@ -1,5 +1,7 @@
-
-// qcc.h
+/*
+	qcc.h
+	$Id: qcc.h,v 1.9 2007-03-14 21:22:15 sezero Exp $
+*/
 
 #ifndef __QCC_H__
 #define __QCC_H__

@@ -1,3 +1,9 @@
+/*
+	comp.c
+
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.13 2007-03-14 21:22:14 sezero Exp $
+*/
+
 
 #include "util_inc.h"
 #include "cmdlib.h"

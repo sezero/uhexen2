@@ -1,5 +1,10 @@
-// table of quotients and remainders
-// for [-15...16] / [-15...16]
+/*
+	adivtab.h
+	$Id: adivtab.h,v 1.3 2007-03-14 21:22:03 sezero Exp $
+
+	table of quotients and remainders
+	for [-15...16] / [-15...16]
+*/
 
 // numerator = -15
 	{   1,   0 },
