@@ -1,8 +1,8 @@
 /*
-	h2_opt.h
+	h2option.h
 	Compile time options for Hexen II: Hammer of Thyrion
 
-	$Id: h2_opt.h,v 1.1 2006-09-21 06:05:35 sezero Exp $
+	$Id: h2option.h,v 1.1 2007-03-14 17:45:29 sezero Exp $
 */
 
 

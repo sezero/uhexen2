@@ -5,14 +5,14 @@
 	FIXME:	kill this in the future and make each C
 		file include only the necessary headers.
 
-	$Id: quakeinc.h,v 1.11 2007-02-20 09:14:47 sezero Exp $
+	$Id: quakeinc.h,v 1.12 2007-03-14 17:45:28 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
 #define __QUAKEINC_H
 
 /* make sure to include our compile time options first	*/
-#include "h2_opt.h"
+#include "h2option.h"
 
 /* include the system headers: make sure to use q_types.h
    instead of <sys/types.h>				*/

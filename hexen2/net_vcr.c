@@ -1,6 +1,6 @@
 // net_vcr.c
 
-#include "h2_opt.h"
+#include "h2option.h"
 
 
 #if NET_USE_VCR

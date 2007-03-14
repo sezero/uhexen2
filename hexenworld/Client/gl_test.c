@@ -2,7 +2,7 @@
 	gl_test.c
 */
 
-#include "h2_opt.h"
+#include "h2option.h"
 
 #ifdef GLTEST
 
