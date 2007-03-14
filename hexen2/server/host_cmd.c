@@ -1,7 +1,7 @@
 /*
 	host_cmd.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.16 2007-02-25 16:32:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.17 2007-03-14 08:16:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -828,7 +828,7 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode)
 			Con_Printf ("Loading game from %s...\n", savename);
 	}
 
-	f = fopen (savename, "r");
+	f = fopen (savename, "rb");	// "rb", not "r": I do some ftell magic in SV_LoadEffects
 	if (!f)
 	{
 		if (ClientsMode == 2)
