@@ -2,27 +2,11 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.43 2007-03-14 21:03:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.44 2007-03-15 07:37:56 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "r_shared.h"
-
-//extern	cvar_t	sv_flypitch;
-//extern	cvar_t	sv_walkpitch;
-extern 	cvar_t	bgmtype;
-extern	int	stufftext_frame;
-extern	qboolean mousestate_sa;
-extern	void IN_ActivateMouse (void);
-
-model_t *player_models[MAX_PLAYER_CLASS];
-
-// when recording demos across multiple levels and we hit an intermission,
-// we issue an +attack to skip the intermission. when reconnecting to the
-// server, we must reverse it by an -attack in Host_Reconnect_f()   - O.S.
-qboolean	demohack = false;
-
-int		cl_protocol;	/* protocol version used by the server */
 
 static const char *svc_strings[] =
 {
@@ -92,10 +76,23 @@ static const char *svc_strings[] =
 };
 #define	NUM_SVC_STRINGS	( sizeof(svc_strings)/sizeof(svc_strings[0]) )
 
-int LastServerMessageSize;
-extern cvar_t precache;
+int		cl_protocol;	/* protocol version used by the server */
+int		LastServerMessageSize;
+
+model_t *player_models[MAX_PLAYER_CLASS];
+
+// when recording demos across multiple levels and we hit an intermission,
+// we issue an +attack to skip the intermission. when reconnecting to the
+// server, we must reverse it by an -attack in Host_Reconnect_f()   - O.S.
+qboolean	demohack = false;
+
+extern	cvar_t	precache;
+extern	int	stufftext_frame;
+extern	qboolean mousestate_sa;
+
 
 //=============================================================================
+
 
 /*
 ===============
@@ -805,14 +802,6 @@ static void CL_ParseClientdata (int bits)
 
 	if (bits & SU_IDEALPITCH)
 		cl.idealpitch = MSG_ReadChar ();
-	else
-	{
-		//rjr   is sv_flypitch   useable on the client's end?
-//rjr		if (cl.v.movetype == MOVETYPE_FLY)
-//rjr			cl.idealpitch = sv_flypitch.value;
-//rjr		else
-//rjr			cl.idealpitch = sv_walkpitch.value;
-	}
 
 	if (bits & SU_IDEALROLL)
 		cl.idealroll = MSG_ReadChar ();
@@ -1166,10 +1155,6 @@ static void CL_ParseRainEffect(void)
 	R_RainEffect(org,e_size,x_dir,y_dir,color,count);
 }
 
-#define SHOWNET(x) \
-	if (cl_shownet.value == 2) \
-		Con_Printf ("%3i:%s\n", msg_readcount-1, (x));
-
 #if 0	/* for debugging. from fteqw. */
 static void CL_DumpPacket (void)
 {
@@ -1206,6 +1191,10 @@ static void CL_DumpPacket (void)
 	Con_Printf("%s, --- END ---\n", __FUNCTION__);
 }
 #endif	/* CL_DumpPacket */
+
+#define SHOWNET(x) \
+	if (cl_shownet.value == 2) \
+		Con_Printf ("%3i:%s\n", msg_readcount-1, (x));
 
 /*
 =====================
@@ -1632,275 +1621,275 @@ void CL_ParseServerMessage (void)
 			Cmd_ExecuteString ("help", src_command);
 			break;
 */
-			case svc_set_view_flags:
-				cl.viewent.drawflags |= MSG_ReadByte();
-				break;
+		case svc_set_view_flags:
+			cl.viewent.drawflags |= MSG_ReadByte();
+			break;
 
-			case svc_clear_view_flags:
-				cl.viewent.drawflags &= ~MSG_ReadByte();
-				break;
+		case svc_clear_view_flags:
+			cl.viewent.drawflags &= ~MSG_ReadByte();
+			break;
 
-			case svc_start_effect:
-				CL_ParseEffect();
-				break;
-			case svc_end_effect:
-				CL_EndEffect();
-				break;
+		case svc_start_effect:
+			CL_ParseEffect();
+			break;
+		case svc_end_effect:
+			CL_EndEffect();
+			break;
 
-			case svc_plaque:
-				CL_Plaque();
-				break;
+		case svc_plaque:
+			CL_Plaque();
+			break;
 
-			case svc_particle_explosion:
-				CL_ParticleExplosion();
-				break;
+		case svc_particle_explosion:
+			CL_ParticleExplosion();
+			break;
 
-			case svc_set_view_tint:
-				i = MSG_ReadByte();
-				cl.viewent.colorshade = i;
-				break;
+		case svc_set_view_tint:
+			i = MSG_ReadByte();
+			cl.viewent.colorshade = i;
+			break;
 
-			case svc_reference:
-				packet_loss = false;
-				cl.last_frame = cl.current_frame;
-				cl.last_sequence = cl.current_sequence;
-				cl.current_frame = MSG_ReadByte();
-				cl.current_sequence = MSG_ReadByte();
-				if (cl.need_build == 2)
+		case svc_reference:
+			packet_loss = false;
+			cl.last_frame = cl.current_frame;
+			cl.last_sequence = cl.current_sequence;
+			cl.current_frame = MSG_ReadByte();
+			cl.current_sequence = MSG_ReadByte();
+			if (cl.need_build == 2)
+			{
+//				Con_Printf("CL: NB2 CL(%d,%d) R(%d)\n", cl.current_sequence, cl.current_frame,cl.reference_frame);
+				cl.frames[0].count = cl.frames[1].count = cl.frames[2].count = 0;
+				cl.need_build = 1;
+				cl.reference_frame = cl.current_frame;
+			}
+			else if (cl.last_sequence != cl.current_sequence)
+			{
+//				Con_Printf("CL: Sequence CL(%d,%d) R(%d)\n", cl.current_sequence, cl.current_frame,cl.reference_frame);
+				if (cl.reference_frame >= 1 && cl.reference_frame <= MAX_FRAMES)
 				{
-//					Con_Printf("CL: NB2 CL(%d,%d) R(%d)\n", cl.current_sequence, cl.current_frame,cl.reference_frame);
-					cl.frames[0].count = cl.frames[1].count = cl.frames[2].count = 0;
-					cl.need_build = 1;
-					cl.reference_frame = cl.current_frame;
-				}
-				else if (cl.last_sequence != cl.current_sequence)
-				{
-//					Con_Printf("CL: Sequence CL(%d,%d) R(%d)\n", cl.current_sequence, cl.current_frame,cl.reference_frame);
-					if (cl.reference_frame >= 1 && cl.reference_frame <= MAX_FRAMES)
+					RemovePlace = OrigPlace = NewPlace = AddedIndex = 0;
+					for (i = 0; i < cl.num_entities; i++)
 					{
-						RemovePlace = OrigPlace = NewPlace = AddedIndex = 0;
-						for (i = 0; i < cl.num_entities; i++)
+						if (RemovePlace >= cl.NumToRemove || cl.RemoveList[RemovePlace] != i)
 						{
-							if (RemovePlace >= cl.NumToRemove || cl.RemoveList[RemovePlace] != i)
+							if (NewPlace < cl.frames[1].count &&
+								cl.frames[1].states[NewPlace].index == i)
 							{
-								if (NewPlace < cl.frames[1].count &&
-									cl.frames[1].states[NewPlace].index == i)
-								{
-									cl.frames[2].states[AddedIndex] = cl.frames[1].states[NewPlace];
-									AddedIndex++;
-									cl.frames[2].count++;
-								}
-								else if (OrigPlace < cl.frames[0].count &&
-									     cl.frames[0].states[OrigPlace].index == i)
-								{
-									cl.frames[2].states[AddedIndex] = cl.frames[0].states[OrigPlace];
-									AddedIndex++;
-									cl.frames[2].count++;
-								}
+								cl.frames[2].states[AddedIndex] = cl.frames[1].states[NewPlace];
+								AddedIndex++;
+								cl.frames[2].count++;
 							}
-							else
-								RemovePlace++;
-
-							if (cl.frames[0].states[OrigPlace].index == i)
-								OrigPlace++;
-							if (cl.frames[1].states[NewPlace].index == i)
-								NewPlace++;
+							else if (OrigPlace < cl.frames[0].count &&
+								     cl.frames[0].states[OrigPlace].index == i)
+							{
+								cl.frames[2].states[AddedIndex] = cl.frames[0].states[OrigPlace];
+								AddedIndex++;
+								cl.frames[2].count++;
+							}
 						}
-						cl.frames[0] = cl.frames[2];
+						else
+							RemovePlace++;
+
+						if (cl.frames[0].states[OrigPlace].index == i)
+							OrigPlace++;
+						if (cl.frames[1].states[NewPlace].index == i)
+							NewPlace++;
 					}
-					cl.frames[1].count = cl.frames[2].count = 0;
-					cl.need_build = 1;
-					cl.reference_frame = cl.current_frame;
+					cl.frames[0] = cl.frames[2];
 				}
-				else
-				{
-//					Con_Printf("CL: Normal CL(%d,%d) R(%d)\n", cl.current_sequence, cl.current_frame,cl.reference_frame);
-					cl.need_build = 0;
-				}
+				cl.frames[1].count = cl.frames[2].count = 0;
+				cl.need_build = 1;
+				cl.reference_frame = cl.current_frame;
+			}
+			else
+			{
+//				Con_Printf("CL: Normal CL(%d,%d) R(%d)\n", cl.current_sequence, cl.current_frame,cl.reference_frame);
+				cl.need_build = 0;
+			}
 
-				for (i = 1, ent = cl_entities+1; i < cl.num_entities; i++, ent++)
-				{
-					ent->baseline.flags &= ~BE_ON;
-				}
+			for (i = 1, ent = cl_entities+1; i < cl.num_entities; i++, ent++)
+			{
+				ent->baseline.flags &= ~BE_ON;
+			}
 
-				for (i = 0; i < cl.frames[0].count; i++)
-				{
-					ent = CL_EntityNum (cl.frames[0].states[i].index);
-					ent->model = cl.model_precache[cl.frames[0].states[i].modelindex];
-					ent->baseline.flags |= BE_ON;
-				}
-				break;
+			for (i = 0; i < cl.frames[0].count; i++)
+			{
+				ent = CL_EntityNum (cl.frames[0].states[i].index);
+				ent->model = cl.model_precache[cl.frames[0].states[i].modelindex];
+				ent->baseline.flags |= BE_ON;
+			}
+			break;
 
-			case svc_clear_edicts:
-				j = MSG_ReadByte();
+		case svc_clear_edicts:
+			j = MSG_ReadByte();
+			if (cl.need_build)
+			{
+				cl.NumToRemove = j;
+			}
+			for (i = 0; i < j; i++)
+			{
+				k = MSG_ReadShort();
 				if (cl.need_build)
-				{
-					cl.NumToRemove = j;
-				}
-				for (i = 0; i < j; i++)
-				{
-					k = MSG_ReadShort();
-					if (cl.need_build)
-						cl.RemoveList[i] = k;
-					ent = CL_EntityNum (k);
-					ent->baseline.flags &= ~BE_ON;
-				}
-				break;
+					cl.RemoveList[i] = k;
+				ent = CL_EntityNum (k);
+				ent->baseline.flags &= ~BE_ON;
+			}
+			break;
 
-			case svc_update_inv:
-				sc1 = sc2 = 0;
+		case svc_update_inv:
+			sc1 = sc2 = 0;
 
-				test = MSG_ReadByte();
-				if (test & 1)
-					sc1 |= ((int)MSG_ReadByte());
-				if (test & 2)
-					sc1 |= ((int)MSG_ReadByte())<<8;
-				if (test & 4)
-					sc1 |= ((int)MSG_ReadByte())<<16;
-				if (test & 8)
-					sc1 |= ((int)MSG_ReadByte())<<24;
-				if (test & 16)
-					sc2 |= ((int)MSG_ReadByte());
-				if (test & 32)
-					sc2 |= ((int)MSG_ReadByte())<<8;
-				if (test & 64)
-					sc2 |= ((int)MSG_ReadByte())<<16;
-				if (test & 128)
-					sc2 |= ((int)MSG_ReadByte())<<24;
+			test = MSG_ReadByte();
+			if (test & 1)
+				sc1 |= ((int)MSG_ReadByte());
+			if (test & 2)
+				sc1 |= ((int)MSG_ReadByte())<<8;
+			if (test & 4)
+				sc1 |= ((int)MSG_ReadByte())<<16;
+			if (test & 8)
+				sc1 |= ((int)MSG_ReadByte())<<24;
+			if (test & 16)
+				sc2 |= ((int)MSG_ReadByte());
+			if (test & 32)
+				sc2 |= ((int)MSG_ReadByte())<<8;
+			if (test & 64)
+				sc2 |= ((int)MSG_ReadByte())<<16;
+			if (test & 128)
+				sc2 |= ((int)MSG_ReadByte())<<24;
 
-				if (sc1 & SC1_HEALTH)
-					cl.v.health = MSG_ReadShort();
-				if (sc1 & SC1_LEVEL)
-					cl.v.level = MSG_ReadByte();
-				if (sc1 & SC1_INTELLIGENCE)
-					cl.v.intelligence = MSG_ReadByte();
-				if (sc1 & SC1_WISDOM)
-					cl.v.wisdom = MSG_ReadByte();
-				if (sc1 & SC1_STRENGTH)
-					cl.v.strength = MSG_ReadByte();
-				if (sc1 & SC1_DEXTERITY)
-					cl.v.dexterity = MSG_ReadByte();
-				if (sc1 & SC1_WEAPON)
-					cl.v.weapon = MSG_ReadByte();
-				if (sc1 & SC1_BLUEMANA)
-					cl.v.bluemana = MSG_ReadByte();
-				if (sc1 & SC1_GREENMANA)
-					cl.v.greenmana = MSG_ReadByte();
-				if (sc1 & SC1_EXPERIENCE)
-					cl.v.experience = MSG_ReadLong();
-				if (sc1 & SC1_CNT_TORCH)
-					cl.v.cnt_torch = MSG_ReadByte();
-				if (sc1 & SC1_CNT_H_BOOST)
-					cl.v.cnt_h_boost = MSG_ReadByte();
-				if (sc1 & SC1_CNT_SH_BOOST)
-					cl.v.cnt_sh_boost = MSG_ReadByte();
-				if (sc1 & SC1_CNT_MANA_BOOST)
-					cl.v.cnt_mana_boost = MSG_ReadByte();
-				if (sc1 & SC1_CNT_TELEPORT)
-					cl.v.cnt_teleport = MSG_ReadByte();
-				if (sc1 & SC1_CNT_TOME)
-					cl.v.cnt_tome = MSG_ReadByte();
-				if (sc1 & SC1_CNT_SUMMON)
-					cl.v.cnt_summon = MSG_ReadByte();
-				if (sc1 & SC1_CNT_INVISIBILITY)
-					cl.v.cnt_invisibility = MSG_ReadByte();
-				if (sc1 & SC1_CNT_GLYPH)
-					cl.v.cnt_glyph = MSG_ReadByte();
-				if (sc1 & SC1_CNT_HASTE)
-					cl.v.cnt_haste = MSG_ReadByte();
-				if (sc1 & SC1_CNT_BLAST)
-					cl.v.cnt_blast = MSG_ReadByte();
-				if (sc1 & SC1_CNT_POLYMORPH)
-					cl.v.cnt_polymorph = MSG_ReadByte();
-				if (sc1 & SC1_CNT_FLIGHT)
-					cl.v.cnt_flight = MSG_ReadByte();
-				if (sc1 & SC1_CNT_CUBEOFFORCE)
-					cl.v.cnt_cubeofforce = MSG_ReadByte();
-				if (sc1 & SC1_CNT_INVINCIBILITY)
-					cl.v.cnt_invincibility = MSG_ReadByte();
-				if (sc1 & SC1_ARTIFACT_ACTIVE)
-					cl.v.artifact_active = MSG_ReadFloat();
-				if (sc1 & SC1_ARTIFACT_LOW)
-					cl.v.artifact_low = MSG_ReadFloat();
-				if (sc1 & SC1_MOVETYPE)
-					cl.v.movetype = MSG_ReadByte();
-				if (sc1 & SC1_CAMERAMODE)
-					cl.v.cameramode = MSG_ReadByte();
-				if (sc1 & SC1_HASTED)
-					cl.v.hasted = MSG_ReadFloat();
-				if (sc1 & SC1_INVENTORY)
-					cl.v.inventory = MSG_ReadByte();
-				if (sc1 & SC1_RINGS_ACTIVE)
-					cl.v.rings_active = MSG_ReadFloat();
+			if (sc1 & SC1_HEALTH)
+				cl.v.health = MSG_ReadShort();
+			if (sc1 & SC1_LEVEL)
+				cl.v.level = MSG_ReadByte();
+			if (sc1 & SC1_INTELLIGENCE)
+				cl.v.intelligence = MSG_ReadByte();
+			if (sc1 & SC1_WISDOM)
+				cl.v.wisdom = MSG_ReadByte();
+			if (sc1 & SC1_STRENGTH)
+				cl.v.strength = MSG_ReadByte();
+			if (sc1 & SC1_DEXTERITY)
+				cl.v.dexterity = MSG_ReadByte();
+			if (sc1 & SC1_WEAPON)
+				cl.v.weapon = MSG_ReadByte();
+			if (sc1 & SC1_BLUEMANA)
+				cl.v.bluemana = MSG_ReadByte();
+			if (sc1 & SC1_GREENMANA)
+				cl.v.greenmana = MSG_ReadByte();
+			if (sc1 & SC1_EXPERIENCE)
+				cl.v.experience = MSG_ReadLong();
+			if (sc1 & SC1_CNT_TORCH)
+				cl.v.cnt_torch = MSG_ReadByte();
+			if (sc1 & SC1_CNT_H_BOOST)
+				cl.v.cnt_h_boost = MSG_ReadByte();
+			if (sc1 & SC1_CNT_SH_BOOST)
+				cl.v.cnt_sh_boost = MSG_ReadByte();
+			if (sc1 & SC1_CNT_MANA_BOOST)
+				cl.v.cnt_mana_boost = MSG_ReadByte();
+			if (sc1 & SC1_CNT_TELEPORT)
+				cl.v.cnt_teleport = MSG_ReadByte();
+			if (sc1 & SC1_CNT_TOME)
+				cl.v.cnt_tome = MSG_ReadByte();
+			if (sc1 & SC1_CNT_SUMMON)
+				cl.v.cnt_summon = MSG_ReadByte();
+			if (sc1 & SC1_CNT_INVISIBILITY)
+				cl.v.cnt_invisibility = MSG_ReadByte();
+			if (sc1 & SC1_CNT_GLYPH)
+				cl.v.cnt_glyph = MSG_ReadByte();
+			if (sc1 & SC1_CNT_HASTE)
+				cl.v.cnt_haste = MSG_ReadByte();
+			if (sc1 & SC1_CNT_BLAST)
+				cl.v.cnt_blast = MSG_ReadByte();
+			if (sc1 & SC1_CNT_POLYMORPH)
+				cl.v.cnt_polymorph = MSG_ReadByte();
+			if (sc1 & SC1_CNT_FLIGHT)
+				cl.v.cnt_flight = MSG_ReadByte();
+			if (sc1 & SC1_CNT_CUBEOFFORCE)
+				cl.v.cnt_cubeofforce = MSG_ReadByte();
+			if (sc1 & SC1_CNT_INVINCIBILITY)
+				cl.v.cnt_invincibility = MSG_ReadByte();
+			if (sc1 & SC1_ARTIFACT_ACTIVE)
+				cl.v.artifact_active = MSG_ReadFloat();
+			if (sc1 & SC1_ARTIFACT_LOW)
+				cl.v.artifact_low = MSG_ReadFloat();
+			if (sc1 & SC1_MOVETYPE)
+				cl.v.movetype = MSG_ReadByte();
+			if (sc1 & SC1_CAMERAMODE)
+				cl.v.cameramode = MSG_ReadByte();
+			if (sc1 & SC1_HASTED)
+				cl.v.hasted = MSG_ReadFloat();
+			if (sc1 & SC1_INVENTORY)
+				cl.v.inventory = MSG_ReadByte();
+			if (sc1 & SC1_RINGS_ACTIVE)
+				cl.v.rings_active = MSG_ReadFloat();
 
-				if (sc2 & SC2_RINGS_LOW)
-					cl.v.rings_low = MSG_ReadFloat();
-				if (sc2 & SC2_AMULET)
-					cl.v.armor_amulet = MSG_ReadByte();
-				if (sc2 & SC2_BRACER)
-					cl.v.armor_bracer = MSG_ReadByte();
-				if (sc2 & SC2_BREASTPLATE)
-					cl.v.armor_breastplate = MSG_ReadByte();
-				if (sc2 & SC2_HELMET)
-					cl.v.armor_helmet = MSG_ReadByte();
-				if (sc2 & SC2_FLIGHT_T)
-					cl.v.ring_flight = MSG_ReadByte();
-				if (sc2 & SC2_WATER_T)
-					cl.v.ring_water = MSG_ReadByte();
-				if (sc2 & SC2_TURNING_T)
-					cl.v.ring_turning = MSG_ReadByte();
-				if (sc2 & SC2_REGEN_T)
-					cl.v.ring_regeneration = MSG_ReadByte();
-				if (sc2 & SC2_HASTE_T)
-					cl.v.haste_time = MSG_ReadFloat();
-				if (sc2 & SC2_TOME_T)
-					cl.v.tome_time = MSG_ReadFloat();
-				if (sc2 & SC2_PUZZLE1)
-					sprintf(cl.puzzle_pieces[0], "%.9s", MSG_ReadString());
-				if (sc2 & SC2_PUZZLE2)
-					sprintf(cl.puzzle_pieces[1], "%.9s", MSG_ReadString());
-				if (sc2 & SC2_PUZZLE3)
-					sprintf(cl.puzzle_pieces[2], "%.9s", MSG_ReadString());
-				if (sc2 & SC2_PUZZLE4)
-					sprintf(cl.puzzle_pieces[3], "%.9s", MSG_ReadString());
-				if (sc2 & SC2_PUZZLE5)
-					sprintf(cl.puzzle_pieces[4], "%.9s", MSG_ReadString());
-				if (sc2 & SC2_PUZZLE6)
-					sprintf(cl.puzzle_pieces[5], "%.9s", MSG_ReadString());
-				if (sc2 & SC2_PUZZLE7)
-					sprintf(cl.puzzle_pieces[6], "%.9s", MSG_ReadString());
-				if (sc2 & SC2_PUZZLE8)
-					sprintf(cl.puzzle_pieces[7], "%.9s", MSG_ReadString());
-				if (sc2 & SC2_MAXHEALTH)
-					cl.v.max_health = MSG_ReadShort();
-				if (sc2 & SC2_MAXMANA)
-					cl.v.max_mana = MSG_ReadByte();
-				if (sc2 & SC2_FLAGS)
-					cl.v.flags = MSG_ReadFloat();
+			if (sc2 & SC2_RINGS_LOW)
+				cl.v.rings_low = MSG_ReadFloat();
+			if (sc2 & SC2_AMULET)
+				cl.v.armor_amulet = MSG_ReadByte();
+			if (sc2 & SC2_BRACER)
+				cl.v.armor_bracer = MSG_ReadByte();
+			if (sc2 & SC2_BREASTPLATE)
+				cl.v.armor_breastplate = MSG_ReadByte();
+			if (sc2 & SC2_HELMET)
+				cl.v.armor_helmet = MSG_ReadByte();
+			if (sc2 & SC2_FLIGHT_T)
+				cl.v.ring_flight = MSG_ReadByte();
+			if (sc2 & SC2_WATER_T)
+				cl.v.ring_water = MSG_ReadByte();
+			if (sc2 & SC2_TURNING_T)
+				cl.v.ring_turning = MSG_ReadByte();
+			if (sc2 & SC2_REGEN_T)
+				cl.v.ring_regeneration = MSG_ReadByte();
+			if (sc2 & SC2_HASTE_T)
+				cl.v.haste_time = MSG_ReadFloat();
+			if (sc2 & SC2_TOME_T)
+				cl.v.tome_time = MSG_ReadFloat();
+			if (sc2 & SC2_PUZZLE1)
+				sprintf(cl.puzzle_pieces[0], "%.9s", MSG_ReadString());
+			if (sc2 & SC2_PUZZLE2)
+				sprintf(cl.puzzle_pieces[1], "%.9s", MSG_ReadString());
+			if (sc2 & SC2_PUZZLE3)
+				sprintf(cl.puzzle_pieces[2], "%.9s", MSG_ReadString());
+			if (sc2 & SC2_PUZZLE4)
+				sprintf(cl.puzzle_pieces[3], "%.9s", MSG_ReadString());
+			if (sc2 & SC2_PUZZLE5)
+				sprintf(cl.puzzle_pieces[4], "%.9s", MSG_ReadString());
+			if (sc2 & SC2_PUZZLE6)
+				sprintf(cl.puzzle_pieces[5], "%.9s", MSG_ReadString());
+			if (sc2 & SC2_PUZZLE7)
+				sprintf(cl.puzzle_pieces[6], "%.9s", MSG_ReadString());
+			if (sc2 & SC2_PUZZLE8)
+				sprintf(cl.puzzle_pieces[7], "%.9s", MSG_ReadString());
+			if (sc2 & SC2_MAXHEALTH)
+				cl.v.max_health = MSG_ReadShort();
+			if (sc2 & SC2_MAXMANA)
+				cl.v.max_mana = MSG_ReadByte();
+			if (sc2 & SC2_FLAGS)
+				cl.v.flags = MSG_ReadFloat();
 
-				// SC2_OBJ, SC2_OBJ2: mission pack objectives
-				// With protocol 18 (PROTOCOL_RAVEN_111), these
-				// bits get set somehow: let's avoid them.
-				if (cl_protocol > PROTOCOL_RAVEN_111)
-				{
-					if (sc2 & SC2_OBJ)
-						cl.info_mask = MSG_ReadLong();
-					if (sc2 & SC2_OBJ2)
-						cl.info_mask2 = MSG_ReadLong();
-				}
+			// SC2_OBJ, SC2_OBJ2: mission pack objectives
+			// With protocol 18 (PROTOCOL_RAVEN_111), these
+			// bits get set somehow: let's avoid them.
+			if (cl_protocol > PROTOCOL_RAVEN_111)
+			{
+				if (sc2 & SC2_OBJ)
+					cl.info_mask = MSG_ReadLong();
+				if (sc2 & SC2_OBJ2)
+					cl.info_mask2 = MSG_ReadLong();
+			}
 
-				if ((sc1 & SC1_STAT_BAR) || (sc2 & SC2_STAT_BAR))
-					Sbar_Changed();
+			if ((sc1 & SC1_STAT_BAR) || (sc2 & SC2_STAT_BAR))
+				Sbar_Changed();
 
-				if ((sc1 & SC1_INV) || (sc2 & SC2_INV))
-					SB_InvChanged();
-				break;
+			if ((sc1 & SC1_INV) || (sc2 & SC2_INV))
+				SB_InvChanged();
+			break;
 
-			case svc_mod_name:
-			case svc_skybox:
-				MSG_ReadString();
-				Con_Printf ("Unsupported server msg %d (%s)\n", cmd, svc_strings[cmd]);
-				break;
+		case svc_mod_name:
+		case svc_skybox:
+			MSG_ReadString();
+			Con_Printf ("Unsupported server msg %d (%s)\n", cmd, svc_strings[cmd]);
+			break;
 		}
 	}
 }
