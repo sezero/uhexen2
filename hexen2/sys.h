@@ -2,7 +2,7 @@
 	sys.h
 	non-portable functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys.h,v 1.27 2007-03-14 21:03:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys.h,v 1.28 2007-03-15 13:36:48 sezero Exp $
 */
 
 #ifndef __HX2_SYS_H
@@ -39,17 +39,14 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length);
 void Sys_Error (const char *error, ...) _FUNC_PRINTF(1);
 // an error will cause the entire program to exit
 
-void Sys_Printf (const char *fmt, ...) _FUNC_PRINTF(1);
-void Sys_DPrintf (const char *fmt, ...) _FUNC_PRINTF(1);
-// send text to the console
+void Sys_PrintTerm (const char *msgtxt);
+// prints the given string to the terminal
 
 void Sys_Quit (void);
 
 double Sys_DoubleTime (void);
 
 char *Sys_ConsoleInput (void);
-
-void Sys_DebugLog (const char *file, const char *fmt, ...) _FUNC_PRINTF(2);
 
 void Sys_Sleep (void);
 // called to yield for a little bit so as

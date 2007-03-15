@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.71 2007-03-15 10:33:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.72 2007-03-15 13:36:57 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -16,6 +16,7 @@
 
 #include "quakedef.h"
 #include "cfgfile.h"
+#include "debuglog.h"
 
 #if defined(_WIN32)
 #include "winquake.h"
@@ -1440,5 +1441,6 @@ void Host_Shutdown(void)
 	IN_Shutdown ();
 	if (host_basepal)
 		VID_Shutdown();
+	LOG_Close ();
 }
 

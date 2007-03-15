@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.21 2007-03-14 21:03:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.22 2007-03-15 13:36:46 sezero Exp $
 */
 
 #define BAN_TEST
@@ -97,7 +97,7 @@ static void NET_Ban_f (void)
 {
 	char	addrStr [32];
 	char	maskStr [32];
-	void	(*print) (const char *fmt, ...);
+	void	(*print) (unsigned int flg, const char *fmt, ...);
 
 	if (cmd_source == src_command)
 	{
@@ -106,7 +106,7 @@ static void NET_Ban_f (void)
 			Cmd_ForwardToServer ();
 			return;
 		}
-		print = Con_Printf;
+		print = CON_Printf;
 	}
 	else
 	{
@@ -122,10 +122,10 @@ static void NET_Ban_f (void)
 		{
 			strcpy(addrStr, inet_ntoa(*(struct in_addr *)&banAddr));
 			strcpy(maskStr, inet_ntoa(*(struct in_addr *)&banMask));
-			print("Banning %s [%s]\n", addrStr, maskStr);
+			print(_PRINT_NORMAL, "Banning %s [%s]\n", addrStr, maskStr);
 		}
 		else
-			print("Banning not active\n");
+			print(_PRINT_NORMAL, "Banning not active\n");
 		break;
 
 	case 2:
@@ -142,7 +142,7 @@ static void NET_Ban_f (void)
 		break;
 
 	default:
-		print("BAN ip_address [mask]\n");
+		print(_PRINT_NORMAL, "BAN ip_address [mask]\n");
 		break;
 	}
 }

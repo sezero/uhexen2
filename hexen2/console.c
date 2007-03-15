@@ -2,16 +2,11 @@
 	console.c
 	in-game console and chat message buffer handling
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.c,v 1.29 2007-03-14 21:03:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.c,v 1.30 2007-03-15 13:36:45 sezero Exp $
 */
 
 #include "quakedef.h"
-#ifdef _WIN32
-#include <io.h>		/* unlink() */
-#endif
-#ifdef PLATFORM_UNIX
-#include <unistd.h>	/* unlink() */
-#endif
+#include "debuglog.h"
 
 
 qboolean	con_initialized;
@@ -32,9 +27,6 @@ static	cvar_t	con_notifytime = {"con_notifytime", "3", CVAR_NONE};	//seconds
 #define	NUM_CON_TIMES 4
 static float	con_times[NUM_CON_TIMES];	// realtime time the line was generated
 						// for transparent notify lines
-
-#define	DEBUGLOG_FILENAME	"qconsole.log"
-static qboolean	con_debuglog;
 
 extern	char	key_lines[32][MAXCMDLINE];
 extern	int		edit_line;
@@ -201,10 +193,6 @@ Con_Init
 */
 void Con_Init (void)
 {
-	con_debuglog = COM_CheckParm("-condebug");
-	if (con_debuglog)
-		unlink ( va("%s/%s", fs_userdir, DEBUGLOG_FILENAME) );
-
 	con_text = Hunk_AllocName (CON_TEXTSIZE<<1, "context");
 	Con_Clear_f();
 	con_linewidth = -1;
@@ -328,33 +316,49 @@ static void Con_Print (const char *txt)
 
 /*
 ================
-Con_Printf
-
-Handles cursor positioning, line wrapping, etc
+CON_Printf
+Prepare the message to be printed and
+send it to the proper handlers.
 ================
 */
-void Con_Printf (const char *fmt, ...)
+void CON_Printf (unsigned int flags, const char *fmt, ...)
 {
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
+	int			temp = 0;
 	static qboolean	inupdate;
 
-	va_start (argptr,fmt);
-	vsnprintf (msg,sizeof(msg),fmt,argptr);
+	if (flags & _PRINT_DEVEL && !developer.value)
+	{
+		if (con_debuglog & LOG_DEVEL)	/* full logging */
+		{
+			va_start (argptr, fmt);
+			vsnprintf (msg, sizeof(msg), fmt, argptr);
+			va_end (argptr);
+			LOG_Print (msg);
+		}
+		return;
+	}
+
+	va_start (argptr, fmt);
+	vsnprintf (msg, sizeof(msg), fmt, argptr);
 	va_end (argptr);
 
-// also echo to debugging console
-	Sys_Printf ("%s", msg);	// also echo to debugging console
-
-// log all messages to file
+	Sys_PrintTerm (msg);	// echo to the terminal
 	if (con_debuglog)
-		Sys_DebugLog(va("%s/%s",fs_userdir,DEBUGLOG_FILENAME), "%s", msg);
+		LOG_Print (msg);
 
-	if (!con_initialized)
+	if (flags & _PRINT_TERMONLY || !con_initialized)
 		return;
 
 	if (cls.state == ca_dedicated)
 		return;		// no graphics mode
+
+	if (flags & _PRINT_SAFE)
+	{
+		temp = scr_disabled_for_loading;
+		scr_disabled_for_loading = true;
+	}
 
 // write it to the scrollable buffer
 	Con_Print (msg);
@@ -371,53 +375,11 @@ void Con_Printf (const char *fmt, ...)
 			inupdate = false;
 		}
 	}
-}
 
-
-/*
-================
-Con_DPrintf
-
-A Con_Printf that only shows up if the "developer" cvar is set
-================
-*/
-void Con_DPrintf (const char *fmt, ...)
-{
-	va_list		argptr;
-	char		msg[MAXPRINTMSG];
-
-	if (!developer.value)
-		return;			// don't confuse non-developers with techie stuff...
-
-	va_start (argptr,fmt);
-	vsnprintf(msg, sizeof (msg), fmt, argptr);
-	va_end (argptr);
-
-	Con_Printf ("%s", msg);
-}
-
-
-/*
-==================
-Con_SafePrintf
-
-Okay to call even when the screen can't be updated
-==================
-*/
-void Con_SafePrintf (const char *fmt, ...)
-{
-	va_list		argptr;
-	char		msg[MAXPRINTMSG];
-	int			temp;
-
-	va_start (argptr,fmt);
-	vsnprintf(msg, sizeof (msg), fmt, argptr);
-	va_end (argptr);
-
-	temp = scr_disabled_for_loading;
-	scr_disabled_for_loading = true;
-	Con_Printf ("%s", msg);
-	scr_disabled_for_loading = temp;
+	if (flags & _PRINT_SAFE)
+	{
+		scr_disabled_for_loading = temp;
+	}
 }
 
 

@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.50 2007-03-14 21:03:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.51 2007-03-15 13:36:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -12,6 +12,7 @@
 #include <io.h>
 #include <fcntl.h>
 #include "conproc.h"
+#include "debuglog.h"
 
 
 //#define CRC_A 59461 // "Who's Ridin' With Chaos?"
@@ -53,8 +54,6 @@ static void Sys_InitFloatTime (void);
 
 volatile int		sys_checksum;
 
-//=============================================================================
-
 
 /*
 ================
@@ -81,23 +80,6 @@ static void Sys_PageIn (void *ptr, int size)
 	}
 }
 
-
-//=============================================================================
-
-
-void Sys_DebugLog (const char *file, const char *fmt, ...)
-{
-	va_list		argptr;
-	static char	data[MAXPRINTMSG];
-	int			fd;
-
-	va_start (argptr, fmt);
-	vsnprintf (data, sizeof (data), fmt, argptr);
-	va_end (argptr);
-	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
-	write(fd, data, strlen(data));
-	close(fd);
-}
 
 /*
 ===============================================================================
@@ -263,6 +245,7 @@ static void Sys_Init (void)
 }
 
 
+#define ERROR_PREFIX	"\nFATAL ERROR: "
 void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
@@ -273,11 +256,18 @@ void Sys_Error (const char *error, ...)
 	DWORD		dummy;
 	double		starttime;
 
-	Host_Shutdown ();
-
 	va_start (argptr, error);
 	vsnprintf (text, sizeof (text), error, argptr);
 	va_end (argptr);
+
+	if (con_debuglog)
+	{
+		LOG_Print (ERROR_PREFIX);
+		LOG_Print (text);
+		LOG_Print ("\n\n");
+	}
+
+	Host_Shutdown ();
 
 	if (isDedicated)
 	{
@@ -308,36 +298,17 @@ void Sys_Error (const char *error, ...)
 	exit (1);
 }
 
-void Sys_Printf (const char *fmt, ...)
+void Sys_PrintTerm (const char *msgtxt)
 {
-	va_list		argptr;
-	char		text[MAXPRINTMSG];
 	DWORD		dummy;
 
 	if (isDedicated)
 	{
-		va_start (argptr, fmt);
-		vsnprintf (text, sizeof (text), fmt, argptr);
-		va_end (argptr);
+		if (sys_nostdout.value)
+			return;
 
-		WriteFile(houtput, text, strlen (text), &dummy, NULL);
+		WriteFile(houtput, msgtxt, strlen(msgtxt), &dummy, NULL);
 	}
-}
-
-void Sys_DPrintf (const char *fmt, ...)
-{
-	va_list		argptr;
-	char		text[MAXPRINTMSG];
-	DWORD		dummy;
-
-	if (!isDedicated || !developer.value)
-		return;
-
-	va_start (argptr, fmt);
-	vsnprintf (text, sizeof (text), fmt, argptr);
-	va_end (argptr);
-
-	WriteFile(houtput, text, strlen (text), &dummy, NULL);
 }
 
 void Sys_Quit (void)
@@ -652,6 +623,8 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	parms.argv = argv;
 	host_parms = &parms;	/* initialize the host params */
+
+	LOG_Init (&parms);
 
 	Sys_Printf("basedir is: %s\n", parms.basedir);
 	Sys_Printf("userdir is: %s\n", parms.userdir);

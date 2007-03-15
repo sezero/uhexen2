@@ -374,6 +374,7 @@ COMMONOBJS = chase.o \
 	strlcpy.o \
 	msg_io.o \
 	common.o \
+	debuglog.o \
 	quakeio.o \
 	quakefs.o \
 	console.o \

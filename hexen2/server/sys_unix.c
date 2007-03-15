@@ -2,10 +2,11 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.17 2007-03-14 08:12:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.18 2007-03-15 13:36:56 sezero Exp $
 */
 
 #include "quakedef.h"
+#include "debuglog.h"
 
 // whether to use the password file to determine
 // the path to the home directory
@@ -137,47 +138,39 @@ SYSTEM IO
 ===============================================================================
 */
 
+#define ERROR_PREFIX	"\nFATAL ERROR: "
 void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
 
-	Host_Shutdown ();
-
 	va_start (argptr, error);
-	vsnprintf (text, sizeof (text), error, argptr);
+	vsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
 
-	fprintf(stderr, "\nFATAL ERROR: %s\n\n", text);
+	if (con_debuglog)
+	{
+		LOG_Print (ERROR_PREFIX);
+		LOG_Print (text);
+		LOG_Print ("\n\n");
+	}
+
+	Host_Shutdown ();
+
+	fprintf(stderr, ERROR_PREFIX "%s\n\n", text);
 
 	exit (1);
 }
 
-void Sys_Printf (const char *fmt, ...)
+void Sys_PrintTerm (const char *msgtxt)
 {
-	va_list		argptr;
-	char		text[MAXPRINTMSG];
+	unsigned char		*p;
 
-	va_start (argptr, fmt);
-	vsnprintf (text, sizeof (text), fmt, argptr);
-	va_end (argptr);
-
-	fprintf(stderr, "%s", text);
-}
-
-void Sys_DPrintf (const char *fmt, ...)
-{
-	va_list		argptr;
-	char		text[MAXPRINTMSG];
-
-	if (!developer.value)
+	if (sys_nostdout.value)
 		return;
 
-	va_start (argptr, fmt);
-	vsnprintf (text, sizeof (text), fmt, argptr);
-	va_end (argptr);
-
-	fprintf(stderr, "%s", text);
+	for (p = (unsigned char *) msgtxt; *p; p++)
+		putc (*p, stdout);
 }
 
 void Sys_Quit (void)
@@ -390,6 +383,8 @@ int main(int argc, char *argv[])
 	parms.argc = argc;
 	parms.argv = argv;
 	host_parms = &parms;
+
+	LOG_Init (&parms);
 
 	Sys_Printf("basedir is: %s\n", parms.basedir);
 	Sys_Printf("userdir is: %s\n", parms.userdir);

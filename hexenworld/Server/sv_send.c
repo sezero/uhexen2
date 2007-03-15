@@ -2,7 +2,7 @@
 	sv_send.c
 	server communication module
 
-	$Id: sv_send.c,v 1.15 2007-03-14 21:04:19 sezero Exp $
+	$Id: sv_send.c,v 1.16 2007-03-15 13:37:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -31,6 +31,8 @@ redirect_t	sv_redirected;
 
 extern	cvar_t	sv_phs;
 extern	cvar_t	sv_namedistance;
+
+extern	int	devlog;
 
 
 /*
@@ -86,19 +88,35 @@ void SV_EndRedirect (void)
 
 /*
 ================
-Con_Printf
-
-Handles cursor positioning, line wrapping, etc
+CON_Printf
+Prints either to the console, or, if redirection
+is in effect, to the relevant client.
 ================
 */
-void Con_Printf (const char *fmt, ...)
+void CON_Printf (unsigned int flags, const char *fmt, ...)
 {
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
 
+	if (flags & _PRINT_DEVEL && !developer.value)
+	{
+		if (devlog && sv_logfile)	/* full logging */
+		{
+			va_start (argptr, fmt);
+			vsnprintf (msg, sizeof(msg), fmt, argptr);
+			va_end (argptr);
+			fprintf (sv_logfile, "%s", msg);
+			fflush (sv_logfile);
+		}
+		return;
+	}
+
 	va_start (argptr, fmt);
 	vsnprintf (msg, sizeof(msg), fmt, argptr);
 	va_end (argptr);
+
+	if (flags & _PRINT_TERMONLY)
+		goto _end;
 
 	// add to redirected message
 	if (sv_redirected)
@@ -109,34 +127,13 @@ void Con_Printf (const char *fmt, ...)
 		return;
 	}
 
-	Sys_Printf ("%s", msg);	// also echo to debugging console
+_end:
+	Sys_PrintTerm (msg);	// echo to the terminal
 	if (sv_logfile)
 	{
 		fprintf (sv_logfile, "%s", msg);
 		fflush (sv_logfile);
 	}
-}
-
-/*
-================
-Con_DPrintf
-
-A Con_Printf that only shows up if the "developer" cvar is set
-================
-*/
-void Con_DPrintf (const char *fmt, ...)
-{
-	va_list		argptr;
-	char		msg[MAXPRINTMSG];
-
-	if (!developer.value)
-		return;
-
-	va_start (argptr, fmt);
-	vsnprintf (msg, sizeof(msg), fmt, argptr);
-	va_end (argptr);
-
-	Con_Printf ("%s", msg);
 }
 
 

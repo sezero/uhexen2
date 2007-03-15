@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.32 2007-03-14 08:12:48 sezero Exp $
+	$Id: sys_unix.c,v 1.33 2007-03-15 13:37:04 sezero Exp $
 
 	Unix system interface code
 */
@@ -29,6 +29,7 @@
 #define MAX_MEM_ALLOC	0x2000000
 
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
+int		devlog;	/* log the Con_DPrintf and Sys_DPrintf content when !developer.value */
 
 
 /*
@@ -166,10 +167,15 @@ void Sys_Error (const char *error, ...)
 	char		text[MAXPRINTMSG];
 
 	va_start (argptr, error);
-	vsnprintf (text, sizeof (text), error, argptr);
+	vsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
 
 	printf ("\nFATAL ERROR: %s\n\n", text);
+	if (sv_logfile)
+	{
+		fprintf (sv_logfile, "\nFATAL ERROR: %s\n\n", text);
+		fflush (sv_logfile);
+	}
 
 	exit (1);
 }
@@ -247,37 +253,18 @@ char *Sys_ConsoleInput (void)
 
 /*
 ================
-Sys_Printf
+Sys_PrintTerm
 ================
 */
-void Sys_Printf (const char *fmt, ...)
+void Sys_PrintTerm (const char *msgtxt)
 {
-	va_list		argptr;
-	char		text[MAXPRINTMSG];
+	unsigned char		*p;
 
 	if (sys_nostdout.value)
 		return;
 
-	va_start (argptr, fmt);
-	vsnprintf (text, sizeof (text), fmt, argptr);
-	va_end (argptr);
-
-	fprintf(stderr, "%s", text);
-}
-
-void Sys_DPrintf (const char *fmt, ...)
-{
-	va_list		argptr;
-	char		text[MAXPRINTMSG];
-
-	if (!developer.value || sys_nostdout.value)
-		return;
-
-	va_start (argptr, fmt);
-	vsnprintf (text, sizeof (text), fmt, argptr);
-	va_end (argptr);
-
-	fprintf(stderr, "%s", text);
+	for (p = (unsigned char *) msgtxt; *p; p++)
+		putc (*p, stdout);
 }
 
 /*
@@ -364,6 +351,8 @@ int main (int argc, char **argv)
 	parms.argc = argc;
 	parms.argv = argv;
 	host_parms = &parms;
+
+	devlog = COM_CheckParm("-devlog");
 
 	Sys_Printf("basedir is: %s\n", parms.basedir);
 	Sys_Printf("userdir is: %s\n", parms.userdir);

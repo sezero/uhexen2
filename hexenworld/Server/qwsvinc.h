@@ -5,7 +5,7 @@
 	FIXME:	kill this in the future and make each C
 		file include only the necessary headers.
 
-	$Id: qwsvinc.h,v 1.5 2007-03-14 17:45:29 sezero Exp $
+	$Id: qwsvinc.h,v 1.6 2007-03-15 13:37:00 sezero Exp $
 */
 
 #ifndef __HWSVINC_H
@@ -33,6 +33,7 @@
 #include "link_ops.h"
 #include "sizebuf.h"
 #include "msg_io.h"
+#include "printsys.h"
 #include "common.h"
 #include "quakeio.h"
 #include "quakefs.h"

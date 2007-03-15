@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.18 2007-03-14 21:03:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.19 2007-03-15 13:36:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -54,7 +54,7 @@ static void Host_Status_f (void)
 	int			minutes;
 	int			hours = 0;
 	int			j;
-	void		(*print) (const char *fmt, ...);
+	void		(*print) (unsigned int flg, const char *fmt, ...);
 
 	if (cmd_source == src_command)
 	{
@@ -63,19 +63,19 @@ static void Host_Status_f (void)
 			Con_Printf("Server not active\n");
 			return;
 		}
-		print = Con_Printf;
+		print = CON_Printf;
 	}
 	else
 		print = SV_ClientPrintf;
 
-	print ("host:    %s\n", Cvar_VariableString ("hostname"));
-	print ("version: %4.2f\n", ENGINE_VERSION);
+	print (_PRINT_NORMAL, "host:    %s\n", Cvar_VariableString ("hostname"));
+	print (_PRINT_NORMAL, "version: %4.2f\n", ENGINE_VERSION);
 	if (tcpipAvailable)
-		print ("tcp/ip:  %s\n", my_tcpip_address);
+		print (_PRINT_NORMAL, "tcp/ip:  %s\n", my_tcpip_address);
 	if (ipxAvailable)
-		print ("ipx:     %s\n", my_ipx_address);
-	print ("map:     %s\n", sv.name);
-	print ("players: %i active (%i max)\n\n", net_activeconnections, svs.maxclients);
+		print (_PRINT_NORMAL, "ipx:     %s\n", my_ipx_address);
+	print (_PRINT_NORMAL, "map:     %s\n", sv.name);
+	print (_PRINT_NORMAL, "players: %i active (%i max)\n\n", net_activeconnections, svs.maxclients);
 	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
 	{
 		if (!client->active)
@@ -91,8 +91,8 @@ static void Host_Status_f (void)
 		}
 		else
 			hours = 0;
-		print ("#%-2u %-16.16s  %3i  %2i:%02i:%02i\n", j+1, client->name, (int)client->edict->v.frags, hours, minutes, seconds);
-		print ("   %s\n", client->netconnection->address);
+		print (_PRINT_NORMAL, "#%-2u %-16.16s  %3i  %2i:%02i:%02i\n", j+1, client->name, (int)client->edict->v.frags, hours, minutes, seconds);
+		print (_PRINT_NORMAL, "   %s\n", client->netconnection->address);
 	}
 }
 
@@ -114,9 +114,9 @@ static void Host_God_f (void)
 
 	sv_player->v.flags = (int)sv_player->v.flags ^ FL_GODMODE;
 	if (!((int)sv_player->v.flags & FL_GODMODE) )
-		SV_ClientPrintf ("godmode OFF\n");
+		SV_ClientPrintf (0, "godmode OFF\n");
 	else
-		SV_ClientPrintf ("godmode ON\n");
+		SV_ClientPrintf (0, "godmode ON\n");
 }
 
 static void Host_Notarget_f (void)
@@ -129,9 +129,9 @@ static void Host_Notarget_f (void)
 
 	sv_player->v.flags = (int)sv_player->v.flags ^ FL_NOTARGET;
 	if (!((int)sv_player->v.flags & FL_NOTARGET) )
-		SV_ClientPrintf ("notarget OFF\n");
+		SV_ClientPrintf (0, "notarget OFF\n");
 	else
-		SV_ClientPrintf ("notarget ON\n");
+		SV_ClientPrintf (0, "notarget ON\n");
 }
 
 static void Host_Noclip_f (void)
@@ -145,12 +145,12 @@ static void Host_Noclip_f (void)
 	if (sv_player->v.movetype != MOVETYPE_NOCLIP)
 	{
 		sv_player->v.movetype = MOVETYPE_NOCLIP;
-		SV_ClientPrintf ("noclip ON\n");
+		SV_ClientPrintf (0, "noclip ON\n");
 	}
 	else
 	{
 		sv_player->v.movetype = MOVETYPE_WALK;
-		SV_ClientPrintf ("noclip OFF\n");
+		SV_ClientPrintf (0, "noclip OFF\n");
 	}
 }
 
@@ -170,7 +170,7 @@ static void Host_Ping_f (void)
 	if (cmd_source == src_command)
 		return;
 
-	SV_ClientPrintf ("Client ping times:\n");
+	SV_ClientPrintf (0, "Client ping times:\n");
 	for (i = 0, client = svs.clients; i < svs.maxclients; i++, client++)
 	{
 		if (!client->active)
@@ -179,7 +179,7 @@ static void Host_Ping_f (void)
 		for (j = 0; j < NUM_PING_TIMES; j++)
 			total += client->ping_times[j];
 		total /= NUM_PING_TIMES;
-		SV_ClientPrintf ("%4i %s\n", (int)(total*1000), client->name);
+		SV_ClientPrintf (0, "%4i %s\n", (int)(total*1000), client->name);
 	}
 }
 
@@ -1224,7 +1224,7 @@ static void Host_Say(qboolean teamonly)
 		if (teamplay.value && teamonly && client->edict->v.team != save->edict->v.team)
 			continue;
 		host_client = client;
-		SV_ClientPrintf("%s", text);
+		SV_ClientPrintf(0, "%s", text);
 	}
 	host_client = save;
 
@@ -1284,7 +1284,7 @@ static void Host_Tell_f(void)
 		if (Q_strcasecmp(client->name, Cmd_Argv(1)))
 			continue;
 		host_client = client;
-		SV_ClientPrintf("%s", text);
+		SV_ClientPrintf(0, "%s", text);
 		break;
 	}
 	host_client = save;
@@ -1342,7 +1342,7 @@ static void Host_Kill_f (void)
 
 	if (sv_player->v.health <= 0 && sv_player->v.deadflag != DEAD_NO)
 	{
-		SV_ClientPrintf ("Can't suicide -- already dead!\n");
+		SV_ClientPrintf (0, "Can't suicide -- already dead!\n");
 		return;
 	}
 
@@ -1372,7 +1372,7 @@ static void Host_Pause_f (void)
 		return;
 
 	if (!pausable.value)
-		SV_ClientPrintf ("Pause not allowed.\n");
+		SV_ClientPrintf (0, "Pause not allowed.\n");
 	else
 	{
 		sv.paused ^= 1;
@@ -1655,9 +1655,9 @@ static void Host_Kick_f (void)
 				message++;
 		}
 		if (message)
-			SV_ClientPrintf ("Kicked by %s: %s\n", who, message);
+			SV_ClientPrintf (0, "Kicked by %s: %s\n", who, message);
 		else
-			SV_ClientPrintf ("Kicked by %s\n", who);
+			SV_ClientPrintf (0, "Kicked by %s\n", who);
 		SV_DropClient (false);
 	}
 

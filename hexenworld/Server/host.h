@@ -2,7 +2,7 @@
 	host.h
 	public host structures and functions
 
-	$Id: host.h,v 1.3 2007-03-14 08:12:48 sezero Exp $
+	$Id: host.h,v 1.4 2007-03-15 13:37:00 sezero Exp $
 */
 
 #ifndef __HX2_HOST_H
@@ -35,9 +35,6 @@ extern	double		realtime;		// not bounded in any way, changed at
 
 void SV_Error (const char *error, ...) _FUNC_PRINTF(1);
 void SV_Init (void);
-
-void Con_Printf (const char *fmt, ...) _FUNC_PRINTF(1);
-void Con_DPrintf (const char *fmt, ...) _FUNC_PRINTF(1);
 
 #endif	/* __HX2_HOST_H */
 

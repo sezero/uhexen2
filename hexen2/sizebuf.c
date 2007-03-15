@@ -2,7 +2,7 @@
 	sizebuf.c
 	sized buffers
 
-	$Id: sizebuf.c,v 1.2 2007-02-17 07:55:36 sezero Exp $
+	$Id: sizebuf.c,v 1.3 2007-03-15 13:36:48 sezero Exp $
 */
 
 #include "q_types.h"
@@ -10,6 +10,7 @@
 #include <string.h>
 #include "compiler.h"
 #include "sys.h"
+#include "printsys.h"
 #include "sizebuf.h"
 
 

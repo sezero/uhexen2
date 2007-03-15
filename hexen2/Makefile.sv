@@ -143,6 +143,7 @@ H2DED_OBJS = q_endian.o \
 	strlcpy.o \
 	msg_io.o \
 	common.o \
+	debuglog.o \
 	quakeio.o \
 	quakefs.o \
 	cmd.o \

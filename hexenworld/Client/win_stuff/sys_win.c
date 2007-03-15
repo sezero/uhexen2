@@ -2,10 +2,11 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/sys_win.c,v 1.40 2007-03-14 21:04:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/sys_win.c,v 1.41 2007-03-15 13:37:00 sezero Exp $
 */
 
 #include "quakedef.h"
+#include "debuglog.h"
 #include "winquake.h"
 #include <errno.h>
 #include "resource.h"
@@ -37,23 +38,6 @@ static HANDLE	qwclsemaphore;
 
 static void Sys_InitFloatTime (void);
 
-
-//=============================================================================
-
-
-void Sys_DebugLog (const char *file, const char *fmt, ...)
-{
-	va_list		argptr;
-	static char	data[MAXPRINTMSG];
-	int			fd;
-
-	va_start (argptr, fmt);
-	vsnprintf (data, sizeof (data), fmt, argptr);
-	va_end (argptr);
-	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
-	write(fd, data, strlen(data));
-	close(fd);
-}
 
 /*
 ===============================================================================
@@ -239,45 +223,35 @@ static void Sys_Init (void)
 }
 
 
+#define ERROR_PREFIX	"\nFATAL ERROR: "
 void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
 	char		text[MAXPRINTMSG];
 
-	Host_Shutdown ();
-
 	va_start (argptr, error);
 	vsnprintf (text, sizeof (text), error, argptr);
 	va_end (argptr);
 
+	if (con_debuglog)
+	{
+		LOG_Print (ERROR_PREFIX);
+		LOG_Print (text);
+		LOG_Print ("\n\n");
+	}
+
+	Host_Shutdown ();
+
 	MessageBox(NULL, text, ENGINE_NAME " Error", MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 
-#ifndef SERVERONLY
 	CloseHandle (qwclsemaphore);
-#endif
 
 	exit (1);
 }
 
-void Sys_Printf (const char *fmt, ...)
+void Sys_PrintTerm (const char *msgtxt)
 {
-	va_list		argptr;
-
-	va_start (argptr, fmt);
-	vprintf (fmt, argptr);
-	va_end (argptr);
-}
-
-void Sys_DPrintf (const char *fmt, ...)
-{
-	va_list		argptr;
-
-	if (!developer.value)
-		return;
-
-	va_start (argptr, fmt);
-	vprintf (fmt, argptr);
-	va_end (argptr);
+	/* no stdout for win32 graphical mode */
 }
 
 void Sys_Quit (void)
@@ -488,6 +462,8 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	parms.argv = argv;
 	host_parms = &parms;	/* initialize the host params */
+
+	LOG_Init (&parms);
 
 	Sys_Printf("basedir is: %s\n", parms.basedir);
 	Sys_Printf("userdir is: %s\n", parms.userdir);

@@ -5,7 +5,7 @@
 	FIXME:	kill this in the future and make each C
 		file include only the necessary headers.
 
-	$Id: quakeinc.h,v 1.12 2007-03-14 17:45:28 sezero Exp $
+	$Id: quakeinc.h,v 1.13 2007-03-15 13:36:47 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
@@ -33,6 +33,7 @@
 #include "link_ops.h"
 #include "sizebuf.h"
 #include "msg_io.h"
+#include "printsys.h"
 #include "common.h"
 #include "quakeio.h"
 #include "quakefs.h"

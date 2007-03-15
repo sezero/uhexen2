@@ -2,10 +2,11 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.23 2007-03-15 10:33:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.24 2007-03-15 13:36:56 sezero Exp $
 */
 
 #include "quakedef.h"
+#include "debuglog.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -224,6 +225,36 @@ static void Host_InitLocal (void)
 	Host_FindMaxClients ();
 }
 
+/*
+================
+CON_Printf
+================
+*/
+void CON_Printf (unsigned int flags, const char *fmt, ...)
+{
+	va_list		argptr;
+	char		msg[MAXPRINTMSG];
+
+	if (flags & _PRINT_DEVEL && !developer.value)
+	{
+		if (con_debuglog & LOG_DEVEL)	/* full logging */
+		{
+			va_start (argptr, fmt);
+			vsnprintf (msg, sizeof(msg), fmt, argptr);
+			va_end (argptr);
+			LOG_Print (msg);
+		}
+		return;
+	}
+
+	va_start (argptr, fmt);
+	vsnprintf (msg, sizeof(msg), fmt, argptr);
+	va_end (argptr);
+
+	Sys_PrintTerm (msg);	// echo to the terminal
+	if (con_debuglog)
+		LOG_Print (msg);
+}
 
 /*
 =================
@@ -233,7 +264,7 @@ Sends text across to be displayed
 FIXME: make this just a stuffed echo?
 =================
 */
-void SV_ClientPrintf (const char *fmt, ...)
+void SV_ClientPrintf (unsigned int unused, const char *fmt, ...)
 {
 	va_list		argptr;
 	char		string[1024];
@@ -651,5 +682,6 @@ void Host_Shutdown(void)
 	isdown = true;
 
 	NET_Shutdown ();
+	LOG_Close ();
 }
 

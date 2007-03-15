@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.25 2007-03-14 21:04:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.26 2007-03-15 13:37:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -21,6 +21,7 @@
 #define MAX_MEM_ALLOC	0x2000000
 
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
+int		devlog;	/* log the Con_DPrintf and Sys_DPrintf content when !developer.value */
 
 
 /*
@@ -113,6 +114,11 @@ void Sys_Error (const char *error, ...)
 	va_end (argptr);
 
 	printf ("\nFATAL ERROR: %s\n\n", text);
+	if (sv_logfile)
+	{
+		fprintf (sv_logfile, "\nFATAL ERROR: %s\n\n", text);
+		fflush (sv_logfile);
+	}
 
 #ifdef DEBUG_BUILD
 	getch();
@@ -190,31 +196,18 @@ char *Sys_ConsoleInput (void)
 
 /*
 ================
-Sys_Printf
+Sys_PrintTerm
 ================
 */
-void Sys_Printf (const char *fmt, ...)
+void Sys_PrintTerm (const char *msgtxt)
 {
-	va_list		argptr;
+	unsigned char		*p;
 
 	if (sys_nostdout.value)
 		return;
 
-	va_start (argptr,fmt);
-	vprintf (fmt,argptr);
-	va_end (argptr);
-}
-
-void Sys_DPrintf (const char *fmt, ...)
-{
-	va_list		argptr;
-
-	if (!developer.value || sys_nostdout.value)
-		return;
-
-	va_start (argptr,fmt);
-	vprintf (fmt,argptr);
-	va_end (argptr);
+	for (p = (unsigned char *) msgtxt; *p; p++)
+		putc (*p, stdout);
 }
 
 /*
@@ -297,6 +290,8 @@ int main (int argc, char **argv)
 	parms.argc = argc;
 	parms.argv = argv;
 	host_parms = &parms;
+
+	devlog = COM_CheckParm("-devlog");
 
 	Sys_Printf("basedir is: %s\n", parms.basedir);
 	Sys_Printf("userdir is: %s\n", parms.userdir);

@@ -2,12 +2,13 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.67 2007-03-15 10:33:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.68 2007-03-15 13:36:46 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "r_local.h"
 #include "cfgfile.h"
+#include "debuglog.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -386,7 +387,7 @@ Sends text across to be displayed
 FIXME: make this just a stuffed echo?
 =================
 */
-void SV_ClientPrintf (const char *fmt, ...)
+void SV_ClientPrintf (unsigned int unused, const char *fmt, ...)
 {
 	va_list		argptr;
 	char		string[1024];
@@ -1159,5 +1160,7 @@ void Host_Shutdown(void)
 		IN_Shutdown ();
 		VID_Shutdown();
 	}
+
+	LOG_Close ();
 }
 

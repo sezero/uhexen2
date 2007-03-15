@@ -2,7 +2,7 @@
 	console.h
 	the game console
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.h,v 1.9 2007-03-14 21:03:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.h,v 1.10 2007-03-15 13:36:58 sezero Exp $
 */
 
 #ifndef __CONSOLE_H
@@ -34,9 +34,7 @@ void Con_DrawCharacter (int cx, int line, int num);
 void Con_CheckResize (void);
 void Con_Init (void);
 void Con_DrawConsole (int lines);
-void Con_Printf (const char *fmt, ...) _FUNC_PRINTF(1);
-void Con_DPrintf (const char *fmt, ...) _FUNC_PRINTF(1);
-void Con_SafePrintf (const char *fmt, ...) _FUNC_PRINTF(1);
+
 void Con_ShowList (int , const char **);
 //void Con_Clear_f (void);
 void Con_DrawNotify (void);
