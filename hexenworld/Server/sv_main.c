@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.39 2007-03-14 21:04:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.40 2007-03-15 10:33:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1241,7 +1241,10 @@ static void SV_InitLocal (void)
 
 	Cvar_RegisterVariable (&developer);
 	if (COM_CheckParm("-developer"))
+	{
 		Cvar_SetValue("developer", 1);
+		Cvar_LockVar ("developer");
+	}
 
 	Cvar_RegisterVariable (&sys_nostdout);
 
@@ -1596,6 +1599,8 @@ void SV_Init (void)
 	// process command line arguments
 	Cmd_StuffCmds_f ();
 	Cbuf_Execute ();
+	// unlock the early-set cvars after init
+	Cvar_UnlockAll ();
 
 	// if a map wasn't specified on the command line, spawn demo1.map
 	if (sv.state == ss_dead)

@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.22 2007-03-14 08:15:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.23 2007-03-15 10:33:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -195,7 +195,10 @@ static void Host_InitLocal (void)
 
 	Cvar_RegisterVariable (&developer);
 	if (COM_CheckParm("-developer"))
+	{
 		Cvar_SetValue("developer", 1);
+		Cvar_LockVar ("developer");
+	}
 
 	Cvar_RegisterVariable (&sys_nostdout);
 
@@ -619,6 +622,8 @@ void Host_Init (void)
 	// process command line arguments
 	Cmd_StuffCmds_f ();
 	Cbuf_Execute ();
+	// unlock the early-set cvars after init
+	Cvar_UnlockAll ();
 
 	// if a map wasn't specified on the command line, spawn demo1.map
 	if (!sv.name[0])

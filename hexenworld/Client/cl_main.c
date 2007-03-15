@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.70 2007-03-14 21:03:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.71 2007-03-15 10:33:39 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -1010,7 +1010,10 @@ void CL_Init (void)
 
 	Cvar_RegisterVariable (&developer);
 	if (COM_CheckParm("-developer"))
+	{
 		Cvar_SetValue("developer", 1);
+		Cvar_LockVar ("developer");
+	}
 
 	Cvar_RegisterVariable (&sys_nostdout);
 
