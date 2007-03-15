@@ -73,6 +73,10 @@ Development Progress	:
       the file is not opened in binary mode. this was a bitch to find..
     * incremented the engine version to 1.17.
     * updated the RelNotes file for future 1.4.2.
+    * updated the readme files for the logging options.
+    * added the Full logging option to the game launcher. updated its HoT
+      version to 1.4.2.
+    * updated some of the copyright notices.
 
 2007-03-08 (CVS):
     * uniform Cmd_AddCommand usage.
