@@ -3,6 +3,44 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-03-15 (CVS):
+    * renamed h2_opt.h to h2option.h
+    * prevented possible segfaults in hexenworld shownet command.
+      fix ported over from hexen2.
+    * added missing cvs version headers.
+    * cl_parse.c: small clean-ups.
+    * updated the mkrelease script.
+    * lock the developer cvar during init phase if -developer is specified
+      on the command line. otherwise it will be overwritten the the config
+      is exec'ed.
+    * Consolidated Con_Printf, Con_DPrintf, Con_SafePrintf, Sys_Printf and
+      Sys_DPrintf into a single CON_Printf procedure, located in console.c
+      for the graphical client, in sv_send.c for hexenworld server, and in
+      host.c for hexen II dedicated server. It prepares the message to be
+      printed and sends it to the proper handlers according to the flags it
+      was called with. The old functions are now macros wrapping around the
+      new CON_Printf with correct flags, therefore compatibility the old
+      api is preserved. Because of the new flags argument of CON_Printf, an
+      unused lags argument was also added to SV_ClientPrintf. Gathered all
+      the print prototypes and definitions/macros into the new header file
+      printsys.h. Moved the log facility into the new debuglog.c/debuglog.h.
+      Made the log system to keep its log file always open during the whole
+      session: previously, it closed the file everytime it returned and re-
+      opened it when called again. Made the print system to log Sys_Printf
+      content: previously that content was never written to the log. For
+      this purpose, the log is initialized from within main as early as
+      possible. Logging is two level: Normal mode is activated etihre by
+      using the standart quake command line switch -condebug or by the
+      new -debuglog. Normal mode logs what is seen on the game console and
+      the terminal: Therefore if the developer cvar is not set, Con_DPrintf
+      and Sys_DPrintf content will be lost. The devel mode is activated by
+      using the -devlog command line switch, and this mode will log any
+      output regardless of the developer cvar being set.
+      On the other hand, the on-the-fly log activation/deactivation in the
+      hexenworld server is not touched, neither was its handling of the
+      log file, yet.
+    * updated the RelNotes file for future 1.4.2.
+
 2007-03-14 (CVS):
     * minor commentary update to cl_effect.h. also changed the CE_BG_EXPLOSION
       definition in hexenworld to CE_LG_EXPLOSION to be consistant with hexen2
