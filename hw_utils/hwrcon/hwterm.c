@@ -1,28 +1,32 @@
 /*
-hwterm.c
-$Id: hwterm.c,v 1.13 2007-03-14 21:04:23 sezero Exp $
+	hwterm.c
+	$Id: hwterm.c,v 1.14 2007-03-15 18:18:15 sezero Exp $
 
-HWTERM 1.2 HexenWorld Remote Console Terminal
-Idea based on QTerm 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
-Made to work with HexenWorld using code from the HexenWorld
-engine (C) Raven Software and ID Software. Socket timeout code
-taken from the XQF project.
-Copyright (C) 1998 Michael Dwyer <mdwyer@holly.colostate.edu>
-Copyright (C) 2006 O. Sezer <sezero@users.sourceforge.net>
+	HWTERM 1.2 HexenWorld Remote Console Terminal
+	Idea based on QTerm 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
+	Made to work with HexenWorld using code from the HexenWorld
+	engine (C) Raven Software and ID Software. Socket timeout code
+	taken from the XQF project.
+	Copyright (C) 1998 Michael Dwyer <mdwyer@holly.colostate.edu>
+	Copyright (C) 2006 O. Sezer <sezero@users.sourceforge.net>
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		51 Franklin St, Fifth Floor,
+		Boston, MA  02110-1301, USA
 */
 
 
