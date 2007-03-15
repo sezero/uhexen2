@@ -28,6 +28,9 @@ rm -rf xdelta11/doc/dcc99
 cp -p packaging/hexen2.spec ./hexen2.spec
 rm -rf packaging
 
+# move the license file to the root
+mv docs/LICENSE ./LICENSE
+
 # change all shell scripts' permissions
 find . -name *.sh | xargs chmod 755 
 
