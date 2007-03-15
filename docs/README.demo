@@ -140,11 +140,13 @@ Important command-line switches:
  -nocdaudio		Disable cdrom music
  -nomidi		Disable MIDI music
  -s | -nosound		Run the game without sound
- -v | -version		Display the game version
  -nolan			Disable networking (incompatible with -listen)
  -listen  N		Enable multiplayer with maximum N players
  -protocol N		Run the server using protocol version N, instead of
 			the default. Valid values: 18 (old), 19 (default).
+ -condebug | -debuglog	Logs the console output.
+ -devlog		Enable full logging even when not in developer mode
+ -v | -version		Display the game version
  -h | -help		Display short help message
 
 If you wish to brighten the display, simply use the game's menu
