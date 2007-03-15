@@ -2,7 +2,7 @@
 	widget_defs.h
 	hexen2 launcher: gtk+ widget defs
 
-	$Id: widget_defs.h,v 1.14 2007-03-14 21:04:26 sezero Exp $
+	$Id: widget_defs.h,v 1.15 2007-03-15 15:08:42 sezero Exp $
 */
 
 #ifndef	LAUNCHER_WIDGETDEFS_H
@@ -65,6 +65,7 @@ struct Misc_s {
 	GtkWidget *bLAN;	// LAN button
 	GtkWidget *bMOUSE;	// Mouse button
 	GtkWidget *bDBG;	// Log Debuginfo button
+	GtkWidget *bDBG2;	// Full Log Debuginfo
 	GtkWidget *bMEMHEAP;	// Heapsize check button
 	GtkObject *adjHEAP;	// Heapsize adjustment
 	GtkWidget *spnHEAP;	// Heapsize entry
@@ -148,6 +149,7 @@ typedef struct {
 #define WGT_LANBUTTON	Games.Others.bLAN
 #define WGT_MOUSEBUTTON	Games.Others.bMOUSE
 #define WGT_DBGLOG	Games.Others.bDBG
+#define WGT_DBGLOG2	Games.Others.bDBG2
 #define WGT_MEMHEAP	Games.Others.bMEMHEAP
 #define WGT_HEAPADJ	Games.Others.adjHEAP
 #define WGT_HEAPSIZE	Games.Others.spnHEAP

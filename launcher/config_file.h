@@ -2,7 +2,7 @@
 	config_file.h
 	hexen2 launcher config file handling
 
-	$Id: config_file.h,v 1.10 2007-03-14 21:04:25 sezero Exp $
+	$Id: config_file.h,v 1.11 2007-03-15 15:08:41 sezero Exp $
 */
 
 #ifndef CONFIG_FILE_H
@@ -33,6 +33,7 @@ extern int sndbits;
 extern int lan;
 extern int mouse;
 extern int debug;
+extern int debug2;
 extern int use_heap;
 extern int use_zone;
 extern int heapsize;

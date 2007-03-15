@@ -2,7 +2,7 @@
 	launch_bin.c
 	hexen2 launcher: binary launching
 
-	$Id: launch_bin.c,v 1.39 2007-03-14 21:04:25 sezero Exp $
+	$Id: launch_bin.c,v 1.40 2007-03-15 15:08:41 sezero Exp $
 */
 
 #include "common.h"
@@ -218,7 +218,9 @@ void launch_hexen2_bin (void)
 		args[++i] = zonesize_str;
 	}
 
-	if (debug)
+	if (debug2)
+		args[++i] = "-devlog";
+	else if (debug)
 		args[++i] = "-condebug";
 
 	// finish the list of args

@@ -2,7 +2,7 @@
 	launcher_defs.h
 	hexen2 launcher: common definitions
 
-	$Id: launcher_defs.h,v 1.23 2007-03-14 21:04:25 sezero Exp $
+	$Id: launcher_defs.h,v 1.24 2007-03-15 15:08:42 sezero Exp $
 */
 
 #ifndef	LAUNCHER_COMMONDEFS_H
@@ -16,7 +16,7 @@
 // Hammer of Thyrion version num.
 #define HOT_VERSION_MAJ		1
 #define HOT_VERSION_MID		4
-#define HOT_VERSION_MIN		1
+#define HOT_VERSION_MIN		2
 #define HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 
 // Launcher version num.

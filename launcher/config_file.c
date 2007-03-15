@@ -2,7 +2,7 @@
 	config_file.c
 	hexen2 launcher config file handling
 
-	$Id: config_file.c,v 1.38 2007-03-14 21:04:24 sezero Exp $
+	$Id: config_file.c,v 1.39 2007-03-15 15:08:41 sezero Exp $
 */
 
 #include "common.h"
@@ -33,6 +33,7 @@ int cdaudio		= 1;
 int lan			= 1;
 int mouse		= 1;
 int debug		= 0;
+int debug2		= 0;
 int use_heap		= 0;
 int use_zone		= 0;
 int heapsize		= HEAP_DEFAULT;
@@ -104,6 +105,7 @@ int write_config_file (void)
 		fprintf(cfg_file, "lan=%d\n",lan);
 		fprintf(cfg_file, "mouse=%d\n",mouse);
 		fprintf(cfg_file, "debug=%d\n",debug);
+		fprintf(cfg_file, "debug2=%d\n",debug2);
 		fprintf(cfg_file, "use_heap=%d\n",use_heap);
 		fprintf(cfg_file, "use_zone=%d\n",use_zone);
 		fprintf(cfg_file, "heapsize=%d\n",heapsize);
@@ -303,6 +305,12 @@ int read_config_file (void)
 					debug = atoi(buff + 6);
 					if (debug != 0 && debug != 1)
 						debug = 0;
+				}
+				else if (strstr(buff, "debug2=") == buff)
+				{
+					debug2 = atoi(buff + 7);
+					if (debug2 != 0 && debug2 != 1)
+						debug2 = 0;
 				}
 				else if (strstr(buff, "use_heap=") == buff)
 				{

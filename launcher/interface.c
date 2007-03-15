@@ -2,7 +2,7 @@
 	interface.c
 	hexen2 launcher gtk+ interface
 
-	$Id: interface.c,v 1.49 2007-03-14 21:04:25 sezero Exp $
+	$Id: interface.c,v 1.50 2007-03-15 15:08:41 sezero Exp $
 */
 
 #include <gdk/gdkkeysyms.h>
@@ -976,16 +976,27 @@ GtkWidget* create_window1 (void)
 				(GtkDestroyNotify) gtk_widget_unref);
 
 // Debug output option
-  WGT_DBGLOG = gtk_check_button_new_with_label (_("Log debug output to a file"));
+  WGT_DBGLOG = gtk_check_button_new_with_label (_("Generate log"));
   gtk_widget_ref (WGT_DBGLOG);
   gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "bDBG", WGT_DBGLOG,
 				(GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (WGT_DBGLOG);
   gtk_fixed_put (GTK_FIXED (ADDON_TAB1), WGT_DBGLOG, 14, 280);
-  gtk_widget_set_size_request (WGT_DBGLOG, 176, 24);
+  gtk_widget_set_size_request (WGT_DBGLOG, 116, 24);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_DBGLOG), debug);
   GTK_WIDGET_UNSET_FLAGS (WGT_DBGLOG, GTK_CAN_FOCUS);
-  gtk_tooltips_set_tip (tooltips, WGT_DBGLOG, _("Write console debug output to qconsole.log"), NULL);
+  gtk_tooltips_set_tip (tooltips, WGT_DBGLOG, _("Write console output to a log file"), NULL);
+
+  WGT_DBGLOG2 = gtk_check_button_new_with_label (_("Full log"));
+  gtk_widget_ref (WGT_DBGLOG2);
+  gtk_object_set_data_full (GTK_OBJECT (MAIN_WINDOW), "bDBG2", WGT_DBGLOG2,
+				(GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (WGT_DBGLOG2);
+  gtk_fixed_put (GTK_FIXED (ADDON_TAB1), WGT_DBGLOG2, 134, 280);
+  gtk_widget_set_size_request (WGT_DBGLOG2, 72, 24);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WGT_DBGLOG2), debug2);
+  GTK_WIDGET_UNSET_FLAGS (WGT_DBGLOG2, GTK_CAN_FOCUS);
+  gtk_tooltips_set_tip (tooltips, WGT_DBGLOG2, _("Full developer mode logging"), NULL);
 
 
 /********************************************************************
@@ -1051,6 +1062,8 @@ GtkWidget* create_window1 (void)
 			GTK_SIGNAL_FUNC (ReverseOpt), &gl_nonstd);
   gtk_signal_connect (GTK_OBJECT (WGT_DBGLOG), "toggled",
 			GTK_SIGNAL_FUNC (ReverseOpt), &debug);
+  gtk_signal_connect (GTK_OBJECT (WGT_DBGLOG2), "toggled",
+			GTK_SIGNAL_FUNC (ReverseOpt), &debug2);
   gtk_signal_connect (GTK_OBJECT (WGT_MEMHEAP), "toggled",
 			GTK_SIGNAL_FUNC (ReverseOpt), &use_heap);
   gtk_signal_connect (GTK_OBJECT (WGT_MEMZONE), "toggled",
