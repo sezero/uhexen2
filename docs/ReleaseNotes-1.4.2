@@ -4,7 +4,7 @@ Release Notes for version 1.4.2
 
 Changes since HoT-1.4.1 :
 
-Current state: 1.4.2-pre1+ (pre-release, 2007-03-14.)
+Current state: 1.4.2-pre1+ (pre-release, 2007-03-15.)
 
 General:
 --------
@@ -42,6 +42,13 @@ Console:
 - Updated and sanitized the command lister procedures.
 - Added a -developer command line argument which sets the developer cvar to
   1 during the init phase (ie. before the config is read).
+- Consolidated all Con_Printf and Sys_Printf family of procedures into a
+  single flag based procedure. Added macros for compatibility with the old
+  api.
+- Revised the logging system, made all Con_Printf and Sys_Printf output to
+  be written into the logs forom the start. Added a -devlog command line
+  switch to enable logging of developer message evn when the developer cvar
+  isn't set.
 
 Server:
 -------
