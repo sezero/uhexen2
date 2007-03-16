@@ -2,7 +2,7 @@
 	sv_send.c
 	server communication module
 
-	$Id: sv_send.c,v 1.16 2007-03-15 13:37:04 sezero Exp $
+	$Id: sv_send.c,v 1.17 2007-03-16 20:40:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -96,7 +96,7 @@ is in effect, to the relevant client.
 void CON_Printf (unsigned int flags, const char *fmt, ...)
 {
 	va_list		argptr;
-	char		msg[MAXPRINTMSG];
+	char		msg[MAX_PRINTMSG];
 
 	if (flags & _PRINT_DEVEL && !developer.value)
 	{

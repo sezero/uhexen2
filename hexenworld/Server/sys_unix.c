@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.33 2007-03-15 13:37:04 sezero Exp $
+	$Id: sys_unix.c,v 1.34 2007-03-16 20:40:16 sezero Exp $
 
 	Unix system interface code
 */
@@ -164,7 +164,7 @@ Sys_Error
 void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
-	char		text[MAXPRINTMSG];
+	char		text[MAX_PRINTMSG];
 
 	va_start (argptr, error);
 	vsnprintf (text, sizeof(text), error, argptr);

@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_win.c,v 1.16 2007-03-15 13:36:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_win.c,v 1.17 2007-03-16 20:40:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -116,7 +116,7 @@ SYSTEM IO
 void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
-	char		text[MAXPRINTMSG];
+	char		text[MAX_PRINTMSG];
 
 	va_start (argptr, error);
 	vsnprintf (text, sizeof(text), error, argptr);

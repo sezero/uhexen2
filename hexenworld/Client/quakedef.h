@@ -2,7 +2,7 @@
 	quakedef.h
 	common definitions for client and server
 
-	$Id: quakedef.h,v 1.36 2007-03-16 20:26:54 sezero Exp $
+	$Id: quakedef.h,v 1.37 2007-03-16 20:40:15 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -78,6 +78,8 @@
 
 #define	MAX_MSGLEN	7500		// max length of a reliable message
 #define	MAX_DATAGRAM	1400		// max length of unreliable message
+
+#define MAX_PRINTMSG	4096		// maximum allowed print message length
 
 //
 // per-level limits

@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.82 2007-03-15 13:36:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.83 2007-03-16 20:40:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -188,7 +188,7 @@ static void Sys_Init (void)
 void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
-	char		text[MAXPRINTMSG];
+	char		text[MAX_PRINTMSG];
 
 	va_start (argptr, error);
 	vsnprintf (text, sizeof(text), error, argptr);

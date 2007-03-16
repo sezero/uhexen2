@@ -2,14 +2,11 @@
 	sys.h
 	non-portable functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys.h,v 1.27 2007-03-15 13:36:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys.h,v 1.28 2007-03-16 20:40:15 sezero Exp $
 */
 
 #ifndef __HX2_SYS_H
 #define __HX2_SYS_H
-
-// maximum allowed print message length
-#define MAXPRINTMSG	4096
 
 //
 // file IO

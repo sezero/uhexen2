@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.51 2007-03-15 13:36:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.52 2007-03-16 20:40:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -249,7 +249,7 @@ static void Sys_Init (void)
 void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
-	char		text[MAXPRINTMSG], text2[MAXPRINTMSG];
+	char		text[MAX_PRINTMSG], text2[MAX_PRINTMSG];
 	char		*text3 = "Press Enter to exit\n";
 	char		*text4 = "***********************************\n";
 	char		*text5 = "\n";

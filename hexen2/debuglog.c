@@ -2,7 +2,7 @@
 	debuglog.c
 	logging console output to a file
 
-	$Id: debuglog.c,v 1.1 2007-03-15 13:36:45 sezero Exp $
+	$Id: debuglog.c,v 1.2 2007-03-16 20:40:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -22,7 +22,7 @@ unsigned int		con_debuglog	= LOG_NONE;
 
 static int			log_fd = -1;
 static char		logfilename[MAX_OSPATH];	/* current logfile name	*/
-static char		logbuff[MAXPRINTMSG];		/* our log text buffer	*/
+static char		logbuff[MAX_PRINTMSG];		/* our log text buffer	*/
 
 #define SEPARATOR_LINE	"=======================================\n"
 #define SEPARATOR_LEN	( sizeof(SEPARATOR_LINE) - 1 )
