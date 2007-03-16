@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.37 2007-03-04 09:02:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.38 2007-03-16 22:23:47 sezero Exp $
 */
 
 /*=============================================================================
@@ -103,8 +103,6 @@ static qpic_t	*scr_net;
 static qpic_t	*scr_turtle;
 
 extern	cvar_t	crosshair;
-
-float	introTime = 0.0;	// time for mission pack entry screen
 
 static void SCR_ScreenShot_f (void);
 static void Plaque_Draw (const char *message, qboolean AlwaysDraw);
@@ -1186,9 +1184,11 @@ static void SB_IntermissionOverlay (void)
 	}
 	else if (cl.intermission == 12)	// mission pack entry screen
 	{
-		elapsed = (introTime);
-		if (introTime < 500)
-			introTime += 0.25;
+	// this intermission is NOT triggered by a server message, but
+	// by starting a new game through the menu system. therefore,
+	// you cannot use cl.time, and cl.completed_time must be set by
+	// the menu sytem, as well.
+		elapsed = (Sys_DoubleTime() - cl.completed_time) * 20;
 	}
 	else
 	{

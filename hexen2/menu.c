@@ -1,14 +1,13 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.77 2007-02-23 23:24:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.78 2007-03-16 22:23:47 sezero Exp $
 */
 
 #include "quakedef.h"
 
 extern	modestate_t	modestate;
 extern	cvar_t	crosshair;
-extern	float introTime;
 
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);
@@ -885,9 +884,12 @@ static void M_Difficulty_Key (int key)
 		m_entersound = true;
 		if (m_enter_portals)
 		{
-			introTime = 0.0;
+		// mission pack intermission screen (#12) is only started
+		// by this menu system: we must set cl.completed_time and
+		// cl.intermission by hand here, because there will never
+		// be a svc_intermission for this.
 			cl.intermission = 12;
-			cl.completed_time = cl.time;
+			cl.completed_time = Sys_DoubleTime();
 			key_dest = key_game;
 			m_state = m_none;
 			cls.demonum = m_save_demonum;
