@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.44 2007-03-15 07:37:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.45 2007-03-16 09:54:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -327,6 +327,9 @@ static void CL_ParseServerInfo (void)
 		current_loading_size = 1;
 		loading_stage = 2;
 	}
+
+	// copy the naked name of the map file to the cl structure
+	COM_StripExtension (COM_SkipPath(model_precache[1]), cl.mapname);
 
 	//always precache the world!!!
 	cl.model_precache[1] = Mod_ForName (model_precache[1], false);

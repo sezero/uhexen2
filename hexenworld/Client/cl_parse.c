@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.36 2007-03-15 07:37:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.37 2007-03-16 09:54:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -216,6 +216,9 @@ static void Model_NextDownload (void)
 			return;
 		}
 	}
+
+	// copy the naked name of the map file to the cl structure
+	COM_StripExtension (COM_SkipPath(cl.model_name[1]), cl.mapname);
 
 	// all done
 	cl.worldmodel = cl.model_precache[1];

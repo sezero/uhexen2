@@ -2,7 +2,7 @@
 	client.h
 	client main header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.24 2007-03-14 21:03:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.25 2007-03-16 09:54:35 sezero Exp $
 */
 
 #ifndef __HX2_CLIENT_H
@@ -92,7 +92,6 @@ typedef struct
 	cactive_t	state;
 
 // personalization data sent to server
-	char		mapstring[MAX_QPATH];
 	char		spawnparms[MAX_MAPSTRING];	// to restart a level
 
 // demo loop control
@@ -202,6 +201,7 @@ typedef struct
 	struct model_s	*model_precache[MAX_MODELS];
 	struct sfx_s	*sound_precache[MAX_SOUNDS];
 
+	char		mapname[40];
 	char		levelname[40];		// for display on solo scoreboard
 	int		viewentity;		// cl_entitites[cl.viewentity] = player
 	int		maxclients;

@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.72 2007-03-15 13:36:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.73 2007-03-16 09:54:45 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -394,6 +394,23 @@ void CL_Disconnect (void)
 static void CL_Disconnect_f (void)
 {
 	CL_Disconnect ();
+}
+
+/*
+=====================
+CL_Map_f
+
+prints the current map and level names
+=====================
+*/
+static void CL_Map_f (void)
+{
+	if (Cmd_Argc() > 1)
+		Con_Printf ("only a server can start or change a map\n");
+	else if (cls.state == ca_active)
+		Con_Printf ("Current map: %s (mapname: %s)\n", cl.levelname, cl.mapname);
+	else
+		Con_Printf ("Not connected to a server\n");
 }
 
 /*
@@ -1078,6 +1095,7 @@ void CL_Init (void)
 	Cmd_AddCommand ("stop", CL_Stop_f);
 	Cmd_AddCommand ("playdemo", CL_PlayDemo_f);
 	Cmd_AddCommand ("timedemo", CL_TimeDemo_f);
+	Cmd_AddCommand ("map", CL_Map_f);
 
 	Cmd_AddCommand ("skins", Skin_Skins_f);
 	Cmd_AddCommand ("allskins", Skin_AllSkins_f);

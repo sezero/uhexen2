@@ -2,7 +2,7 @@
 	client.h
 	client main header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.15 2007-03-14 21:03:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.16 2007-03-16 09:54:45 sezero Exp $
 */
 
 #ifndef __H2W_CLIENT_H
@@ -277,6 +277,7 @@ typedef struct
 	struct model_s	*model_precache[MAX_MODELS];
 	struct sfx_s	*sound_precache[MAX_SOUNDS];
 
+	char		mapname[40];
 	char		levelname[40];		// for display on solo scoreboard
 	int		playernum;
 

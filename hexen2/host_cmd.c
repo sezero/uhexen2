@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.66 2007-03-15 13:36:46 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.67 2007-03-16 09:54:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -227,8 +227,9 @@ static void Host_Map_f (void)
 
 	if (Cmd_Argc() < 2)	//no map name given
 	{
-		Con_Printf ("map <levelname>: start a new server\nCurrently on: %s\n",cl.levelname);
-		Con_Printf ("%s\n",cls.mapstring);
+		Con_Printf ("map <levelname>: start a new server\n");
+		if (cls.state == ca_connected)
+			Con_Printf ("Currently on: %s (mapname: %s)\n", cl.levelname, cl.mapname);
 		return;
 	}
 
@@ -248,14 +249,6 @@ static void Host_Map_f (void)
 		info_mask2 = 0x80000000;
 	else
 		info_mask2 = 0;
-
-	cls.mapstring[0] = 0;
-	for (i = 0; i < Cmd_Argc(); i++)
-	{
-		Q_strlcat (cls.mapstring, Cmd_Argv(i), MAX_QPATH);
-		Q_strlcat (cls.mapstring, " ", MAX_QPATH);
-	}
-	Q_strlcat (cls.mapstring, "\n", MAX_QPATH);
 
 	svs.serverflags = 0;		// haven't completed an episode yet
 	Q_strlcpy (name, Cmd_Argv(1), sizeof(name));
