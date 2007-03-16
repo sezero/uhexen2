@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.70 2007-03-14 08:12:34 sezero Exp $
+	$Id: vid_sdl.c,v 1.71 2007-03-16 22:44:44 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -1159,6 +1159,7 @@ void VID_MenuKey (int key)
 				Cvar_SetValue("vid_config_fscr", vid_menu_fs);
 				VID_Restart_f();
 			}
+			vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
 			break;
 		}
 		return;
