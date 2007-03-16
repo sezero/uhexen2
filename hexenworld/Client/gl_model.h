@@ -2,7 +2,7 @@
 	model.h
 	header for model loading and caching
 
-	$Id: gl_model.h,v 1.9 2007-02-06 12:24:13 sezero Exp $
+	$Id: gl_model.h,v 1.10 2007-03-16 20:26:54 sezero Exp $
 */
 
 #ifndef __HX2_MODEL_H
@@ -342,40 +342,41 @@ extern	trivertx_t	*poseverts[MAXALIASFRAMES];
 
 typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 
-// EF_ changes must also be made in model.h
+/* EF_ changes must also be made in both model.h and gl_model.h
+   and you MUST check with the constants in gamecode, as well. */
 
-#define	EF_ROCKET	       1	// leave a trail
-#define	EF_GRENADE	       2	// leave a trail
-#define	EF_GIB		       4	// leave a trail
-#define	EF_ROTATE	       8	// rotate (bonus items)
-#define	EF_TRACER	      16	// green split trail
-#define	EF_ZOMGIB	      32	// small blood trail
-#define	EF_TRACER2	      64	// orange split trail + rotate
-#define	EF_TRACER3	     128	// purple trail
-#define	EF_FIREBALL	     256	// Yellow transparent trail in all directions
-#define	EF_ICE		     512	// Blue-white transparent trail, with gravity
-#define	EF_MIP_MAP	    1024	// This model has mip-maps
-#define	EF_SPIT		    2048	// Black transparent trail with negative light
-#define	EF_TRANSPARENT	    4096	// Transparent sprite
-#define	EF_SPELL	    8192	// Vertical spray of particles
-#define	EF_HOLEY	   16384	// Solid model with color 0
-#define	EF_SPECIAL_TRANS   32768	// Translucency through the particle table
-#define	EF_FACE_VIEW	   65536	// Poly Model always faces you
-#define	EF_VORP_MISSILE	  131072	// leave a trail at top and bottom of model
-#define	EF_SET_STAFF	  262144	// slowly move up and left/right
-#define	EF_MAGICMISSILE	  524288	// a trickle of blue/white particles with gravity
-#define	EF_BONESHARD	 1048576	// a trickle of brown particles with gravity
-#define	EF_SCARAB	 2097152	// white transparent particles with little gravity
-#define	EF_ACIDBALL	 4194304	// Green drippy acid shit
-#define	EF_BLOODSHOT	 8388608	// Blood rain shot trail
+#define	EF_ROCKET		(1 << 0 )	/* leave a trail				*/
+#define	EF_GRENADE		(1 << 1 )	/* leave a trail				*/
+#define	EF_GIB			(1 << 2 )	/* leave a trail				*/
+#define	EF_ROTATE		(1 << 3 )	/* rotate (bonus items)				*/
+#define	EF_TRACER		(1 << 4 )	/* green split trail				*/
+#define	EF_ZOMGIB		(1 << 5 )	/* small blood trail				*/
+#define	EF_TRACER2		(1 << 6 )	/* orange split trail + rotate			*/
+#define	EF_TRACER3		(1 << 7 )	/* purple trail					*/
+#define	EF_FIREBALL		(1 << 8 )	/* Yellow transparent trail in all directions	*/
+#define	EF_ICE			(1 << 9 )	/* Blue-white transparent trail, with gravity	*/
+#define	EF_MIP_MAP		(1 << 10)	/* This model has mip-maps			*/
+#define	EF_SPIT			(1 << 11)	/* Black transparent trail with negative light	*/
+#define	EF_TRANSPARENT		(1 << 12)	/* Transparent sprite				*/
+#define	EF_SPELL		(1 << 13)	/* Vertical spray of particles			*/
+#define	EF_HOLEY		(1 << 14)	/* Solid model with color 0			*/
+#define	EF_SPECIAL_TRANS	(1 << 15)	/* Translucency through the particle table	*/
+#define	EF_FACE_VIEW		(1 << 16)	/* Poly Model always faces you			*/
+#define	EF_VORP_MISSILE		(1 << 17)	/* leave a trail at top and bottom of model	*/
+#define	EF_SET_STAFF		(1 << 18)	/* slowly move up and left/right		*/
+#define	EF_MAGICMISSILE		(1 << 19)	/* a trickle of blue/white particles with gravity	*/
+#define	EF_BONESHARD		(1 << 20)	/* a trickle of brown particles with gravity		*/
+#define	EF_SCARAB		(1 << 21)	/* white transparent particles with little gravity	*/
+#define	EF_ACIDBALL		(1 << 22)	/* Green drippy acid shit				*/
+#define	EF_BLOODSHOT		(1 << 23)	/* Blood rain shot trail				*/
 
-#define	EF_MIP_MAP_FAR	0x1000000	// Set per frame, this model will use the far mip map
+#define	EF_MIP_MAP_FAR		(1 << 24)	/* Set per frame, this model will use the far mip map	*/
 
 // XF_ Extra model effects set by engine: model_t->ex_flags
 // effects are model name dependent
-#define XF_TORCH_GLOW		1	// glowing torches
-#define XF_GLOW			2	// other glows
-#define XF_MISSILE_GLOW		4	// missile glows
+#define XF_TORCH_GLOW		(1 << 0 )	/* glowing torches				*/
+#define XF_GLOW			(1 << 1 )	/* other glows					*/
+#define XF_MISSILE_GLOW		(1 << 2 )	/* missile glows				*/
 
 typedef struct model_s
 {

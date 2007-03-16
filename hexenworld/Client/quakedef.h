@@ -2,7 +2,7 @@
 	quakedef.h
 	common definitions for client and server
 
-	$Id: quakedef.h,v 1.35 2007-02-22 19:26:55 sezero Exp $
+	$Id: quakedef.h,v 1.36 2007-03-16 20:26:54 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -123,44 +123,48 @@
 
 
 //
-// item flags
+// quake item flags
 //
-#define	IT_SHOTGUN		1
-#define	IT_SUPER_SHOTGUN	2
-#define	IT_NAILGUN		4
-#define	IT_SUPER_NAILGUN	8
-#define	IT_GRENADE_LAUNCHER	16
-#define	IT_ROCKET_LAUNCHER	32
-#define	IT_LIGHTNING		64
-#define	IT_SUPER_LIGHTNING	128
-#define	IT_SHELLS		256
-#define	IT_NAILS		512
-#define	IT_ROCKETS		1024
-#define	IT_CELLS		2048
-#define	IT_AXE			4096
-#define	IT_ARMOR1		8192
-#define	IT_ARMOR2		16384
-#define	IT_ARMOR3		32768
-#define	IT_SUPERHEALTH		65536
-#define	IT_KEY1			131072
-#define	IT_KEY2			262144
-#define	IT_INVISIBILITY		524288
-#define	IT_INVULNERABILITY	1048576
-#define	IT_SUIT			2097152
-#define	IT_QUAD			4194304
+#define	IT_SHOTGUN		(1 << 0 )
+#define	IT_SUPER_SHOTGUN	(1 << 1 )
+#define	IT_NAILGUN		(1 << 2 )
+#define	IT_SUPER_NAILGUN	(1 << 3 )
+#define	IT_GRENADE_LAUNCHER	(1 << 4 )
+#define	IT_ROCKET_LAUNCHER	(1 << 5 )
+#define	IT_LIGHTNING		(1 << 6 )
+#define	IT_SUPER_LIGHTNING	(1 << 7 )
+#define	IT_SHELLS		(1 << 8 )
+#define	IT_NAILS		(1 << 9 )
+#define	IT_ROCKETS		(1 << 10)
+#define	IT_CELLS		(1 << 11)
+#define	IT_AXE			(1 << 12)
+#define	IT_ARMOR1		(1 << 13)
+#define	IT_ARMOR2		(1 << 14)
+#define	IT_ARMOR3		(1 << 15)
+#define	IT_SUPERHEALTH		(1 << 16)
+#define	IT_KEY1			(1 << 17)
+#define	IT_KEY2			(1 << 18)
+#define	IT_INVISIBILITY		(1 << 19)
+#define	IT_INVULNERABILITY	(1 << 20)
+#define	IT_SUIT			(1 << 21)
+#define	IT_QUAD			(1 << 22)
 #define	IT_SIGIL1		(1 << 28)
 #define	IT_SIGIL2		(1 << 29)
 #define	IT_SIGIL3		(1 << 30)
 #define	IT_SIGIL4		(1 << 31)
-
-#define	ART_HASTE			1
-#define	ART_INVINCIBILITY		2
-#define	ART_TOMEOFPOWER			4
-#define	ART_INVISIBILITY		8
-#define	ARTFLAG_FROZEN			16
-#define	ARTFLAG_STONED			32
-#define	ARTFLAG_DIVINE_INTERVENTION	64
-#define	ARTFLAG_BOOTS			128
+//
+// hexen2 artifact flags
+//
+#define	ART_HASTE			(1 << 0)
+#define	ART_INVINCIBILITY		(1 << 1)
+#define	ART_TOMEOFPOWER			(1 << 2)
+#define	ART_INVISIBILITY		(1 << 3)
+/* hexen2 and hexenworld versions of these
+   flags are different !!!		*/
+#define	ARTFLAG_FROZEN			(1 << 4)
+#define	ARTFLAG_STONED			(1 << 5)
+#define	ARTFLAG_DIVINE_INTERVENTION	(1 << 6)
+#define	ARTFLAG_BOOTS			(1 << 7)	/* ART_CLIMB in siege gamecode	*/
 
 //
 // edict->drawflags
@@ -200,8 +204,8 @@
 //
 // Player Classes
 //
-#define MAX_PLAYER_CLASS	6
-#define ABILITIES_STR_INDEX	400
+#define MAX_PLAYER_CLASS	6	/* total number of available player classes			*/
+#define ABILITIES_STR_INDEX	400	/* starting number of class ability lines in strings.txt - 1	*/
 
 #define CLASS_PALADIN		1
 #define CLASS_CLERIC 		2
