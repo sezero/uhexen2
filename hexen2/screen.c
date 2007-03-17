@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.38 2007-03-16 22:23:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.39 2007-03-17 07:17:15 sezero Exp $
 */
 
 /*=============================================================================
@@ -1188,7 +1188,7 @@ static void SB_IntermissionOverlay (void)
 	// by starting a new game through the menu system. therefore,
 	// you cannot use cl.time, and cl.completed_time must be set by
 	// the menu sytem, as well.
-		elapsed = (Sys_DoubleTime() - cl.completed_time) * 20;
+		elapsed = (realtime - cl.completed_time) * 20;
 	}
 	else
 	{

@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.78 2007-03-16 22:23:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.79 2007-03-17 07:17:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -889,7 +889,7 @@ static void M_Difficulty_Key (int key)
 		// cl.intermission by hand here, because there will never
 		// be a svc_intermission for this.
 			cl.intermission = 12;
-			cl.completed_time = Sys_DoubleTime();
+			cl.completed_time = realtime;
 			key_dest = key_game;
 			m_state = m_none;
 			cls.demonum = m_save_demonum;
