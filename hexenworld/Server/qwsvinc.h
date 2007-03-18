@@ -5,7 +5,7 @@
 	FIXME:	kill this in the future and make each C
 		file include only the necessary headers.
 
-	$Id: qwsvinc.h,v 1.6 2007-03-15 13:37:00 sezero Exp $
+	$Id: qwsvinc.h,v 1.7 2007-03-18 09:27:46 sezero Exp $
 */
 
 #ifndef __HWSVINC_H
@@ -25,7 +25,6 @@
 #endif	/* !_WIN32 */
 #include <stdarg.h>
 #include <stdlib.h>
-#include <setjmp.h>
 
 /* include the quake headers				*/
 

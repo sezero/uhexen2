@@ -2,14 +2,14 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.68 2007-03-15 13:36:46 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.69 2007-03-18 09:27:34 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "r_local.h"
 #include "cfgfile.h"
 #include "debuglog.h"
-
+#include <setjmp.h>
 #ifdef _WIN32
 #include <windows.h>
 #include <io.h>
@@ -35,6 +35,8 @@ quakeparms_t	*host_parms;
 
 qboolean	host_initialized;		// true if into command execution
 
+static jmp_buf 	host_abortserver;
+
 double		host_frametime;
 double		host_time;
 double		realtime;			// without any filtering or bounding
@@ -44,8 +46,6 @@ int		host_framecount;
 int		host_hunklevel;
 
 client_t	*host_client;			// current client
-
-jmp_buf 	host_abortserver;
 
 byte		*host_basepal;
 byte		*host_colormap;

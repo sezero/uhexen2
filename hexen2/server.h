@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.19 2007-03-15 13:36:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.20 2007-03-18 09:27:39 sezero Exp $
 */
 
 #ifndef __HX2_SERVER_H
@@ -235,8 +235,6 @@ extern	server_t	sv;		// local server
 extern	int		sv_protocol;	// protocol version to use
 
 extern	client_t	*host_client;
-
-extern	jmp_buf		host_abortserver;
 
 extern	double		host_time;
 

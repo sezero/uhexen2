@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.25 2007-03-16 20:40:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.26 2007-03-18 09:27:46 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -37,8 +37,6 @@ double		realtime;			// without any filtering or bounding
 int		host_hunklevel;
 
 client_t	*host_client;			// current client
-
-jmp_buf 	host_abortserver;
 
 cvar_t		sys_ticrate = {"sys_ticrate", "0.05", CVAR_NONE};
 static	cvar_t	host_framerate = {"host_framerate", "0", CVAR_NONE};	// set for slow motion
@@ -551,9 +549,6 @@ Runs all active servers
 */
 static void _Host_Frame (float time)
 {
-	if (setjmp (host_abortserver) )
-		return;			// something bad happened, or the server disconnected
-
 // keep the random time dependent
 	rand ();
 

@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.73 2007-03-16 09:54:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.74 2007-03-18 09:27:46 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -17,7 +17,7 @@
 #include "quakedef.h"
 #include "cfgfile.h"
 #include "debuglog.h"
-
+#include <setjmp.h>
 #if defined(_WIN32)
 #include "winquake.h"
 #endif
@@ -85,6 +85,8 @@ quakeparms_t	*host_parms;
 
 qboolean	host_initialized;	// true if into command execution
 
+static jmp_buf 	host_abort;
+
 double		host_frametime;
 double		realtime;		// without any filtering or bounding
 static double	oldrealtime;		// last frame run
@@ -101,8 +103,6 @@ cvar_t	show_fps = {"show_fps", "0", CVAR_NONE};	// set for running times
 cvar_t	developer = {"developer", "0", CVAR_NONE};
 
 int		fps_count;
-
-jmp_buf 	host_abort;
 
 float	server_version = 0;	// version of server we connected to
 
