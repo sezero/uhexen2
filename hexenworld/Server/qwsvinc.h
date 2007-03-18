@@ -5,11 +5,16 @@
 	FIXME:	kill this in the future and make each C
 		file include only the necessary headers.
 
-	$Id: qwsvinc.h,v 1.7 2007-03-18 09:27:46 sezero Exp $
+	$Id: qwsvinc.h,v 1.8 2007-03-18 10:43:55 sezero Exp $
 */
 
 #ifndef __HWSVINC_H
 #define __HWSVINC_H
+
+/* include the compiler specific stuff	*/
+#include "compiler.h"
+/* include the OS/arch definitions, etc	*/
+#include "arch_def.h"
 
 /* make sure to include our compile time options first	*/
 #include "h2option.h"

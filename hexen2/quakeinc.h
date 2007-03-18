@@ -5,11 +5,16 @@
 	FIXME:	kill this in the future and make each C
 		file include only the necessary headers.
 
-	$Id: quakeinc.h,v 1.14 2007-03-18 09:27:36 sezero Exp $
+	$Id: quakeinc.h,v 1.15 2007-03-18 10:43:53 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
 #define __QUAKEINC_H
+
+/* include the compiler specific stuff	*/
+#include "compiler.h"
+/* include the OS/arch definitions, etc	*/
+#include "arch_def.h"
 
 /* make sure to include our compile time options first	*/
 #include "h2option.h"

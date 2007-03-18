@@ -2,7 +2,7 @@
 	quakedef.h
 	common definitions for client and server
 
-	$Id: quakedef.h,v 1.115 2007-03-18 10:19:56 sezero Exp $
+	$Id: quakedef.h,v 1.116 2007-03-18 10:43:53 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -10,13 +10,6 @@
 
 #define __STRINGIFY(x) #x
 #define STRINGIFY(x) __STRINGIFY(x)
-
-/* include the compiler specific stuff	*/
-#include "compiler.h"
-/* include the OS/arch definitions, etc	*/
-#include "arch_def.h"
-
-/* common definitions start		*/
 
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		4
