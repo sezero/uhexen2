@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.26 2007-03-18 09:27:46 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.27 2007-03-18 12:35:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -60,6 +60,8 @@ cvar_t	coop = {"coop", "0", CVAR_NONE};		// 0 or 1
 cvar_t	pausable = {"pausable", "1", CVAR_NONE};
 
 cvar_t	temp1 = {"temp1", "0", CVAR_NONE};
+
+extern cvar_t	cl_warncmd;
 
 
 /*

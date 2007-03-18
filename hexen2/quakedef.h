@@ -2,7 +2,7 @@
 	quakedef.h
 	common definitions for client and server
 
-	$Id: quakedef.h,v 1.116 2007-03-18 10:43:53 sezero Exp $
+	$Id: quakedef.h,v 1.117 2007-03-18 12:35:12 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -77,8 +77,8 @@
 #define	MAX_EDICTS	600		// FIXME: ouch! ouch! ouch!
 #define	MAX_LIGHTSTYLES	64
 #define	MAX_MODELS	512		// Sent over the net as a word
-#define	MAX_SOUNDS	512		// Sent over the net as a byte
-#define	MAX_SOUNDS_OLD	256		// for Hexen II 1.11
+#define	MAX_SOUNDS	512		// Sent over the net as a short
+#define	MAX_SOUNDS_OLD	256		// for Hexen II 1.11: sent as a byte
 
 
 #define	MAX_STYLESTRING		64

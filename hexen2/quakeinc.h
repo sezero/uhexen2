@@ -5,7 +5,7 @@
 	FIXME:	kill this in the future and make each C
 		file include only the necessary headers.
 
-	$Id: quakeinc.h,v 1.15 2007-03-18 10:43:53 sezero Exp $
+	$Id: quakeinc.h,v 1.16 2007-03-18 12:35:12 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
@@ -54,7 +54,6 @@
 #include "crc.h"
 
 #include "host.h"
-#include "entstate.h"
 
 #if !defined(SERVERONLY)
 #include "console.h"
@@ -74,9 +73,7 @@
 #include "pr_strng.h"
 #include "cl_effect.h"
 
-#if defined(SERVERONLY)
-#include "h2ded.h"
-#else
+#if !defined(SERVERONLY)
 #include "client.h"
 #endif	/* SERVERONLY */
 #include "server.h"

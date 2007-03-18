@@ -2,7 +2,7 @@
 	protocol.h
 	communications protocols
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/protocol.h,v 1.5 2007-03-14 21:03:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/protocol.h,v 1.6 2007-03-18 12:35:36 sezero Exp $
 */
 
 #ifndef __H2W_PROTOCOL_H
@@ -25,7 +25,7 @@
 // the second character will always be \n if the message isn't a single
 // byte long (?? not true anymore?)
 
-#define A2S_ECHO		'g'	// echo back a message
+#define	A2S_ECHO		'g'	// echo back a message
 
 #define	S2C_CONNECTION		'j'
 #define	A2A_PING		'k'	// respond with an A2A_ACK
@@ -39,7 +39,7 @@
 
 
 //==================
-// note that there are some defs.qc that mirror to these numbers
+// note that constant.hc may mirror to some of these numbers
 // also related to svc_strings[] in cl_parse
 //==================
 
@@ -83,7 +83,7 @@
 #define	svc_intermission	30	// [vec3_t] origin [vec3_t] angle
 #define	svc_finale		31	// [string] text
 #define	svc_cdtrack		32	// [byte] track
-#define svc_sellscreen		33
+#define	svc_sellscreen		33
 #define	svc_smallkick		34	// set client punchangle to 2
 #define	svc_bigkick		35	// set client punchangle to 4
 #define	svc_updateping		36	// [byte] [short]
@@ -101,43 +101,43 @@
 #define	svc_soundlist		46	// [strings]
 #define	svc_packetentities	47	// [...]
 #define	svc_deltapacketentities	48	// [...]
-#define svc_maxspeed		49	// maxspeed change, for prediction
-#define svc_entgravity		50	// gravity change, for prediction
+#define	svc_maxspeed		49	// maxspeed change, for prediction
+#define	svc_entgravity		50	// gravity change, for prediction
 
 // Hexen2 specifics
-#define svc_plaque		51
-#define svc_particle_explosion	52
-#define svc_set_view_tint	53
-#define svc_start_effect	54
-#define svc_end_effect		55
-#define svc_set_view_flags	56
-#define svc_clear_view_flags	57
-#define svc_update_inv		58
+#define	svc_plaque		51
+#define	svc_particle_explosion	52
+#define	svc_set_view_tint	53
+#define	svc_start_effect	54
+#define	svc_end_effect		55
+#define	svc_set_view_flags	56
+#define	svc_clear_view_flags	57
+#define	svc_update_inv		58
 #define	svc_particle2		59
 #define	svc_particle3		60	
 #define	svc_particle4		61	
-#define svc_turn_effect		62
-#define svc_update_effect	63
-#define svc_multieffect		64
-#define svc_midi_name		65
+#define	svc_turn_effect		62
+#define	svc_update_effect	63
+#define	svc_multieffect		64
+#define	svc_midi_name		65
 #define	svc_raineffect		66
-#define svc_packmissile		67	// [byte] num [40 bits] xyz type 12 12 12 4
-#define svc_indexed_print	68	// same as svc_print, but sends an index in strings.txt instead of string
-#define svc_targetupdate	69	// [byte] angle [byte] pitch [byte] dist/4 - Hey, I got number 69!  Woo hoo!
-#define svc_name_print		70	// print player's name
-#define svc_sound_update_pos	71	// [short] ent+channel [coord3] pos
-#define svc_update_piv		72	// update players in view
-#define svc_player_sound	73	// sends weapon sound for invisible player
+#define	svc_packmissile		67	// [byte] num [40 bits] xyz type 12 12 12 4
+#define	svc_indexed_print	68	// same as svc_print, but sends an index in strings.txt instead of string
+#define	svc_targetupdate	69	// [byte] angle [byte] pitch [byte] dist/4 - Hey, I got number 69!  Woo hoo!
+#define	svc_name_print		70	// print player's name
+#define	svc_sound_update_pos	71	// [short] ent+channel [coord3] pos
+#define	svc_update_piv		72	// update players in view
+#define	svc_player_sound	73	// sends weapon sound for invisible player
 #define	svc_updatepclass	74	// [byte] [byte]
 #define	svc_updatedminfo	75	// [byte] [short] [byte]
 #define	svc_updatesiegeinfo	76	// [byte] [byte]
 #define	svc_updatesiegeteam	77	// [byte] [byte]
-#define svc_updatesiegelosses	78	// [byte] [byte]
-#define svc_haskey		79	// [byte] [byte]
-#define svc_nonehaskey		80	// [byte] [byte]
-#define svc_isdoc		81	// [byte] [byte]
-#define svc_nodoc		82	// [byte] [byte]
-#define svc_playerskipped	83	// [byte]
+#define	svc_updatesiegelosses	78	// [byte] [byte]
+#define	svc_haskey		79	// [byte] [byte]
+#define	svc_nonehaskey		80	// [byte] [byte]
+#define	svc_isdoc		81	// [byte] [byte]
+#define	svc_nodoc		82	// [byte] [byte]
+#define	svc_playerskipped	83	// [byte]
 
 //==============================================
 
@@ -150,9 +150,9 @@
 #define	clc_move		3	// [[usercmd_t]
 #define	clc_stringcmd		4	// [string] message
 #define	clc_delta		5	// [byte] sequence number, requests delta compression of message
-#define clc_tmove		6	// teleport request, spectator only
-#define clc_inv_select		7
-#define clc_get_effect		8	// [byte] effect id
+#define	clc_tmove		6	// teleport request, spectator only
+#define	clc_inv_select		7
+#define	clc_get_effect		8	// [byte] effect id
 
 //==============================================
 
@@ -172,10 +172,10 @@
 #define	PF_CROUCH		(1<<10)		// offset the view height differently
 //#define	PF_NOGRAV		(1<<11)		// don't apply gravity for prediction
 #define	PF_EFFECTS2		(1<<11)		// player has high byte of effects set...
-#define PF_DRAWFLAGS		(1<<12)
-#define PF_SCALE		(1<<13)
-#define PF_ABSLIGHT		(1<<14)
-#define PF_SOUND		(1<<15)		// play a sound in the weapon channel
+#define	PF_DRAWFLAGS		(1<<12)
+#define	PF_SCALE		(1<<13)
+#define	PF_ABSLIGHT		(1<<14)
+#define	PF_SOUND		(1<<15)		// play a sound in the weapon channel
 
 //==============================================
 
@@ -189,7 +189,7 @@
 #define	CM_UP		(1<<4)
 #define	CM_BUTTONS	(1<<5)
 #define	CM_IMPULSE	(1<<6)
-#define CM_MSEC		(1<<7)
+#define	CM_MSEC		(1<<7)
 
 //==============================================
 
@@ -211,14 +211,14 @@
 #define	U_SKIN		(1<<4)
 #define	U_EFFECTS	(1<<5)
 #define	U_MODEL16	(1<<6)
-#define U_MOREBITS2	(1<<7)
+#define	U_MOREBITS2	(1<<7)
 
-//if MOREBITS2 is set, then send the 3rd byte
+// if MOREBITS2 is set, then send the 3rd byte
 
 #define	U_MODEL		(1<<16)
-#define U_SOUND		(1<<17)
-#define U_DRAWFLAGS	(1<<18)
-#define U_ABSLIGHT	(1<<19)
+#define	U_SOUND		(1<<17)
+#define	U_DRAWFLAGS	(1<<18)
+#define	U_ABSLIGHT	(1<<19)
 
 
 //==============================================
@@ -324,69 +324,69 @@
 #define	TE_LIGHTNINGBLOOD		13
 
 // hexen 2
-#define TE_STREAM_CHAIN			25
-#define TE_STREAM_SUNSTAFF1		26
-#define TE_STREAM_SUNSTAFF2		27
-#define TE_STREAM_LIGHTNING		28
-#define TE_STREAM_COLORBEAM		29
-#define TE_STREAM_ICECHUNKS		30
-#define TE_STREAM_GAZE			31
-#define TE_STREAM_FAMINE		32
+#define	TE_STREAM_CHAIN			25
+#define	TE_STREAM_SUNSTAFF1		26
+#define	TE_STREAM_SUNSTAFF2		27
+#define	TE_STREAM_LIGHTNING		28
+#define	TE_STREAM_COLORBEAM		29
+#define	TE_STREAM_ICECHUNKS		30
+#define	TE_STREAM_GAZE			31
+#define	TE_STREAM_FAMINE		32
 
-#define TE_BIGGRENADE			33
-#define TE_CHUNK			34
-#define TE_HWBONEPOWER			35
-#define TE_HWBONEPOWER2			36
-#define TE_METEORHIT			37
-#define TE_HWRAVENDIE			38
-#define TE_HWRAVENEXPLODE		39
-#define TE_XBOWHIT			40
+#define	TE_BIGGRENADE			33
+#define	TE_CHUNK			34
+#define	TE_HWBONEPOWER			35
+#define	TE_HWBONEPOWER2			36
+#define	TE_METEORHIT			37
+#define	TE_HWRAVENDIE			38
+#define	TE_HWRAVENEXPLODE		39
+#define	TE_XBOWHIT			40
 
 #define	TE_CHUNK2			41
-#define TE_ICEHIT			42
-#define TE_ICESTORM			43
-#define TE_HWMISSILEFLASH		44
-#define TE_SUNSTAFF_CHEAP		45
-#define TE_LIGHTNING_HAMMER		46
-#define TE_DRILLA_EXPLODE		47
-#define TE_DRILLA_DRILL			48
+#define	TE_ICEHIT			42
+#define	TE_ICESTORM			43
+#define	TE_HWMISSILEFLASH		44
+#define	TE_SUNSTAFF_CHEAP		45
+#define	TE_LIGHTNING_HAMMER		46
+#define	TE_DRILLA_EXPLODE		47
+#define	TE_DRILLA_DRILL			48
 
-#define TE_HWTELEPORT			49
-#define TE_SWORD_EXPLOSION		50
+#define	TE_HWTELEPORT			49
+#define	TE_SWORD_EXPLOSION		50
 
-#define TE_AXE_BOUNCE			51
-#define TE_AXE_EXPLODE			52
-#define TE_TIME_BOMB			53
-#define TE_FIREBALL			54
-#define TE_SUNSTAFF_POWER		55
-#define TE_PURIFY2_EXPLODE		56
-#define TE_PLAYER_DEATH			57
-#define TE_PURIFY1_EFFECT		58
-#define TE_TELEPORT_LINGER		59
-#define TE_LINE_EXPLOSION		60
-#define TE_METEOR_CRUSH			61
+#define	TE_AXE_BOUNCE			51
+#define	TE_AXE_EXPLODE			52
+#define	TE_TIME_BOMB			53
+#define	TE_FIREBALL			54
+#define	TE_SUNSTAFF_POWER		55
+#define	TE_PURIFY2_EXPLODE		56
+#define	TE_PLAYER_DEATH			57
+#define	TE_PURIFY1_EFFECT		58
+#define	TE_TELEPORT_LINGER		59
+#define	TE_LINE_EXPLOSION		60
+#define	TE_METEOR_CRUSH			61
 //MISSION PACK
-#define TE_STREAM_LIGHTNING_SMALL	62
+#define	TE_STREAM_LIGHTNING_SMALL	62
 
-#define TE_ACIDBALL			63
-#define TE_ACIDBLOB			64
-#define TE_FIREWALL			65
-#define TE_FIREWALL_IMPACT		66
-#define TE_HWBONERIC			67
-#define TE_POWERFLAME			68
-#define TE_BLOODRAIN			69
-#define TE_AXE				70
-#define TE_PURIFY2_MISSILE		71
-#define TE_SWORD_SHOT			72
-#define TE_ICESHOT			73
-#define TE_METEOR			74
-#define TE_LIGHTNINGBALL		75
-#define TE_MEGAMETEOR			76
-#define TE_CUBEBEAM			77
-#define TE_LIGHTNINGEXPLODE		78
-#define TE_ACID_BALL_FLY		79
-#define TE_ACID_BLOB_FLY		80
-#define TE_CHAINLIGHTNING		81
+#define	TE_ACIDBALL			63
+#define	TE_ACIDBLOB			64
+#define	TE_FIREWALL			65
+#define	TE_FIREWALL_IMPACT		66
+#define	TE_HWBONERIC			67
+#define	TE_POWERFLAME			68
+#define	TE_BLOODRAIN			69
+#define	TE_AXE				70
+#define	TE_PURIFY2_MISSILE		71
+#define	TE_SWORD_SHOT			72
+#define	TE_ICESHOT			73
+#define	TE_METEOR			74
+#define	TE_LIGHTNINGBALL		75
+#define	TE_MEGAMETEOR			76
+#define	TE_CUBEBEAM			77
+#define	TE_LIGHTNINGEXPLODE		78
+#define	TE_ACID_BALL_FLY		79
+#define	TE_ACID_BLOB_FLY		80
+#define	TE_CHAINLIGHTNING		81
 
 /*
 ==========================================================

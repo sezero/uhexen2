@@ -2,22 +2,11 @@
 	client.h
 	client main header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.25 2007-03-16 09:54:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.26 2007-03-18 12:35:10 sezero Exp $
 */
 
 #ifndef __HX2_CLIENT_H
 #define __HX2_CLIENT_H
-
-typedef struct
-{
-	vec3_t		viewangles;
-
-// intended velocities
-	float		forwardmove;
-	float		sidemove;
-	float		upmove;
-	byte		lightlevel;
-} usercmd_t;
 
 #define	MAX_SCOREBOARDNAME	32
 typedef struct
