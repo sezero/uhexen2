@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.48 2007-03-14 21:03:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.49 2007-03-18 16:29:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1900,7 +1900,6 @@ void SV_SpawnServer (const char *server, const char *startspot)
 {
 	edict_t		*ent;
 	int			i;
-	qboolean	stats_restored;
 
 	// let's not have any servers with no name
 	if (hostname.string[0] == 0)
@@ -1912,11 +1911,8 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	Con_DPrintf ("%s: %s\n", __FUNCTION__, server);
 	if (svs.changelevel_issued)
 	{
-		stats_restored = true;
 		SaveGamestate(true);
 	}
-	else
-		stats_restored = false;
 
 //
 // tell all connected clients that we are going to a new level
