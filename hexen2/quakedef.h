@@ -2,7 +2,7 @@
 	quakedef.h
 	common definitions for client and server
 
-	$Id: quakedef.h,v 1.114 2007-03-16 20:40:10 sezero Exp $
+	$Id: quakedef.h,v 1.115 2007-03-18 10:19:56 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -28,20 +28,6 @@
 #define	GLQUAKE_VERSION		1.00
 #define	ENGINE_VERSION		1.17
 #define	ENGINE_NAME		"Hexen2"
-
-#ifndef	DEMOBUILD
-#ifdef __MACOSX__
-#define	AOT_USERDIR		"Library/Application Support/Hexen2"
-#else
-#define	AOT_USERDIR		".hexen2"
-#endif
-#else
-#ifdef __MACOSX__
-#define	AOT_USERDIR		"Library/Application Support/Hexen2 Demo"
-#else
-#define	AOT_USERDIR		".hexen2demo"
-#endif
-#endif
 
 #define	MAX_QPATH	64	// max length of a quake game pathname
 #define	MAX_OSPATH	256	// max length of a filesystem pathname
