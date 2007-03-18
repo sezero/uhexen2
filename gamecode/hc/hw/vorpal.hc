@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/vorpal.hc,v 1.2 2007-02-07 16:58:08 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/vorpal.hc,v 1.3 2007-03-18 08:11:07 sezero Exp $
  */
 
 /*
@@ -149,8 +149,9 @@ void launch_vorpal_missile(void)
 	//missile.effects (+) EF_SWORD_EFFECT;
 	missile.effects (+) EF_NODRAW;
 
-	setorigin (missile, self.origin + v_up * 40);
-	//missile.scale = .5;
+//	setorigin (missile, self.origin + v_up * 40);
+	setorigin (missile, self.origin + self.proj_ofs);
+//	missile.scale = .5;
 	missile.scale = 1;
 
 	if (self.bluemana < 4)

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/vorpal.hc,v 1.2 2007-02-07 16:59:37 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/vorpal.hc,v 1.3 2007-03-18 08:11:07 sezero Exp $
  */
 
 /*
@@ -352,7 +352,8 @@ void launch_vorpal_missile(void)
 	missile.drawflags=MLS_ABSLIGHT;
 	missile.abslight=0.5;
 
-	setorigin (missile, self.origin + v_up * 40);
+//	setorigin (missile, self.origin + v_up * 40);
+	setorigin (missile, self.origin + self.proj_ofs);
 	missile.scale = .5;
 
 	if (self.bluemana < 4)

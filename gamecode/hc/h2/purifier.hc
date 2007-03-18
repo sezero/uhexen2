@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/purifier.hc,v 1.2 2007-02-07 16:57:09 sezero Exp $
+ * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/purifier.hc,v 1.3 2007-03-18 08:11:02 sezero Exp $
  */
 
 /*
@@ -230,7 +230,8 @@ void launch_pmissile2 (void)
 	setmodel (missile, "models/drgnball.mdl");
 	setsize (missile, '0 0 0', '0 0 0');		
 
-	setorigin (missile, self.origin + v_forward*10 + v_right * 1 + v_up * 40);
+//	setorigin (missile, self.origin + v_forward*10 + v_right * 1 + v_up * 40);
+	setorigin (missile, self.origin + self.proj_ofs + v_forward*10);
 
 	missile.effects=EF_BRIGHTLIGHT;
 	missile.nextthink = time + .15;
