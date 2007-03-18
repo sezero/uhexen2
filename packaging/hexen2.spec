@@ -18,7 +18,7 @@
 
 %define desktop_vendor	uhexen2
 
-%define gamecode_ver	1.16a
+%define gamecode_ver	1.17
 
 %define prerelease	pre1
 
@@ -294,6 +294,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Sun Mar 18 2007 O.Sezer <sezero@users.sourceforge.net>
+- gamecode version changed to 1.17.
+
 * Mon Feb 13 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-0
 - 1.4.2-pre1 prerelease.
 
