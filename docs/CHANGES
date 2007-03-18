@@ -3,6 +3,48 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-03-18 (CVS):
+    * even simpler solution for the mission pack intro screen scrolling.
+    * origin fixes for tomed fires of vorpal sword and purifier: paladin used
+      to fire them always from the non-crouched eye position, and it was even
+      the worst when he was looking up (and down). I won't be shooting my back
+      again when I stand just in front of a wall and fire by tomed purifier
+      to the sky from now on ;)
+    * updated the documentation and the scripts, etc, for the new gamecode
+      version 1.17.
+    * updated the print message about svc_mod_name and svc_skybox.
+    * host_abortserver is a client thing only and is static to its own file.
+      removed setjmp.h from the common headers.
+    * moved the userdir definitions to its own header.
+    * moved compiler.h and arch_def.h includes from quakedef.h to quakeinc.h.
+    * killed h2ded.h and entstate.h. moved the usercmd, entity states and
+      client frames stuff to protocol.h. did some whitespace cleaning.
+      maybe a few things can still bee moved from quakedef.h to protocol.h,
+      but enough for now.
+    * minor commentary updates.
+    * fixed net driver checks in hexen2 dedicated server: for the client-server
+      case, driver == 0 means it's a local connection (loop driver), but for the
+      dedicated case, loop isn't compiled.. sigh, this took me a lot of time to
+      notice and fix.
+    * removed the unused var stats_restored from SV_SpawnServer.
+    * updated the RelNotes file for future 1.4.2.
+
+2007-03-16 (CVS):
+    * fixed the mapname reporting in the map command: removed the defunct
+      mapstring member of the client_static structure and added a mapname
+      member to the client_t instead, which holds a copy of the latest map
+      file name. also added a map console command to the hexenworld client
+      only to display the levelname and filename of the running map.
+    * model.h, gl_model.h, quakedef.h: define bitfields using shifts.
+    * renamed the MAXPRINTMSG definition to MAX_PRINTMSG for consistancy
+      with other MAX definitions. moved it to quakedef.h.
+    * fixed system speed dependent mission pack intro text scroll rate.
+      inspired from Pa3PyX' sources but implemented differently. the extra
+      global introTime is removed and cl.completed_time is used properly,
+      instead.
+    * fixed the software renderer video options menu not resetting the
+      option cursor.
+
 2007-03-15 (CVS):
     * renamed h2_opt.h to h2option.h
     * prevented possible segfaults in hexenworld shownet command.
