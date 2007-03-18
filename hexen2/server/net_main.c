@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.8 2007-03-18 13:59:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.9 2007-03-18 16:28:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -304,7 +304,7 @@ int	NET_GetMessage (qsocket_t *sock)
 	ret = sfunc.QGetMessage(sock);
 
 	// see if this connection has timed out
-	if (ret == 0 && sock->driver)
+	if (ret == 0)
 	{
 		if (net_time - sock->lastMessageTime > net_messagetimeout.value)
 		{
@@ -315,14 +315,11 @@ int	NET_GetMessage (qsocket_t *sock)
 
 	if (ret > 0)
 	{
-		if (sock->driver)
-		{
 			sock->lastMessageTime = net_time;
 			if (ret == 1)
 				messagesReceived++;
 			else if (ret == 2)
 				unreliableMessagesReceived++;
-		}
 	}
 
 	return ret;
@@ -355,7 +352,7 @@ int NET_SendMessage (qsocket_t *sock, sizebuf_t *data)
 
 	SetNetTime();
 	r = sfunc.QSendMessage(sock, data);
-	if (r == 1 && sock->driver)
+	if (r == 1)
 		messagesSent++;
 
 	return r;
@@ -377,7 +374,7 @@ int NET_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *data)
 
 	SetNetTime();
 	r = sfunc.SendUnreliableMessage(sock, data);
-	if (r == 1 && sock->driver)
+	if (r == 1)
 		unreliableMessagesSent++;
 
 	return r;
@@ -420,20 +417,6 @@ int NET_SendToAll(sizebuf_t *data, int blocktime)
 			continue;
 		if (host_client->active)
 		{
-		//	FIXME !!!: without the canSend check, a changelevel issued by the
-		//	progs doesn't work, but a changelevel from the console seems fine
-		//	if (host_client->netconnection->driver == 0)
-			if (host_client->netconnection->driver == 0 && NET_CanSendMessage(host_client->netconnection))
-			{
-				NET_SendMessage(host_client->netconnection, data);
-				state1[i] = true;
-				state2[i] = true;
-				continue;
-			}
-			else	// working-around the FIXME above.
-			{
-				NET_GetMessage (host_client->netconnection);
-			}
 			count++;
 			state1[i] = false;
 			state2[i] = false;
