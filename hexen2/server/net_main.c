@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.7 2007-03-14 21:03:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.8 2007-03-18 13:59:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -243,7 +243,9 @@ qsocket_t *NET_CheckNewConnections (void)
 			continue;
 		ret = dfunc.CheckNewConnections ();
 		if (ret)
+		{
 			return ret;
+		}
 	}
 
 	return NULL;
@@ -418,9 +420,8 @@ int NET_SendToAll(sizebuf_t *data, int blocktime)
 			continue;
 		if (host_client->active)
 		{
-		//	without the canSend check, a changelevel issued by the
-		//	progs doesn't work. but a changelevel from the console
-		//	seems fine...
+		//	FIXME !!!: without the canSend check, a changelevel issued by the
+		//	progs doesn't work, but a changelevel from the console seems fine
 		//	if (host_client->netconnection->driver == 0)
 			if (host_client->netconnection->driver == 0 && NET_CanSendMessage(host_client->netconnection))
 			{
@@ -429,7 +430,7 @@ int NET_SendToAll(sizebuf_t *data, int blocktime)
 				state2[i] = true;
 				continue;
 			}
-			else	// see above.
+			else	// working-around the FIXME above.
 			{
 				NET_GetMessage (host_client->netconnection);
 			}

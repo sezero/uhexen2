@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.9 2007-03-15 13:36:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.10 2007-03-18 13:59:47 sezero Exp $
 */
 
 #define BAN_TEST
@@ -153,7 +153,7 @@ int Datagram_SendMessage (qsocket_t *sock, sizebuf_t *data)
 		Sys_Error("%s: zero length message", __FUNCTION__);
 
 	if (data->cursize > NET_MAXMESSAGE)
-		Sys_Error("%s: message too big %u", __FUNCTION__, data->cursize);
+		Sys_Error("%s: message too big: %u", __FUNCTION__, data->cursize);
 
 	if (sock->canSend == false)
 		Sys_Error("%s: called with canSend == false", __FUNCTION__);
@@ -279,7 +279,7 @@ int Datagram_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *data)
 		Sys_Error("%s: zero length message", __FUNCTION__);
 
 	if (data->cursize > MAX_DATAGRAM)
-		Sys_Error("%s: message too big %u", __FUNCTION__, data->cursize);
+		Sys_Error("%s: message too big: %u", __FUNCTION__, data->cursize);
 #endif
 
 	packetLen = NET_HEADERSIZE + data->cursize;
