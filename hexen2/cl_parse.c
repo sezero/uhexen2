@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.45 2007-03-16 09:54:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.46 2007-03-18 08:31:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1891,7 +1891,7 @@ void CL_ParseServerMessage (void)
 		case svc_mod_name:
 		case svc_skybox:
 			MSG_ReadString();
-			Con_Printf ("Unsupported server msg %d (%s)\n", cmd, svc_strings[cmd]);
+			Con_Printf ("Ignoring server msg %d (%s)\n", cmd, svc_strings[cmd]);
 			break;
 		}
 	}
