@@ -2,7 +2,7 @@
 	sv_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_effect.c,v 1.7 2007-03-14 08:15:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_effect.c,v 1.8 2007-03-19 12:56:25 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -833,8 +833,7 @@ void SV_SaveEffects (FILE *FH)
 void SV_LoadEffects (FILE *FH)
 {
 	int		idx, Total, count;
-	long		pos;
-	char		tmp[2];
+	int		c;
 
 	// Since the map is freshly loaded, clear out any effects as a result of
 	// the loading
@@ -931,23 +930,20 @@ void SV_LoadEffects (FILE *FH)
 			//	fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.framelength);
 			//	fscanf(FH, "%f\n", &sv.Effects[idx].ef.Smoke.frame);
 				fscanf(FH, "%f", &sv.Effects[idx].ef.Smoke.framelength);
-				pos = ftell (FH);
-				fread (tmp, 1, 1, FH);	/* read one char, see what it is: */
-				if (tmp[0] == '\n' || tmp[0] == '\r')
+				c = fgetc (FH);	/* read one char, see what it is: */
+				if (c == '\n' || c == '\r')
 				{	/* 1.11 style */
 					sv.Effects[idx].ef.Smoke.frame = 0;
-					while ((tmp[0] == '\n' || tmp[0] == '\r') && !feof(FH))
-					{
 					/* read one char until it's not an EOL char, then
 					   go one char back to the correct position.    */
-						pos = ftell (FH);
-						fread (tmp, 1, 1, FH);
-					};
-					fseek (FH, pos, SEEK_SET);
+					while (!feof(FH) && (c == '\n' || c == '\r'))
+						c = fgetc (FH);
+					if (!feof(FH))
+						ungetc (c, FH);
 				}
 				else
 				{	/* 1.12 mission pack style */
-					//if (tmp[0] != ' ')
+					//if (c != ' ')
 					//	Sys_DPrintf ("broken save ??\n");
 					fscanf(FH, " %f\n", &sv.Effects[idx].ef.Smoke.frame);
 				}
