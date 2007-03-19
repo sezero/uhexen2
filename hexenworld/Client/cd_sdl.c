@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.12 2007-03-14 08:12:43 sezero Exp $
+	$Id: cd_sdl.c,v 1.13 2007-03-19 19:40:06 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Taken from the Twilight project with modifications
@@ -392,7 +392,7 @@ int CDAudio_Init(void)
 	cd_handle = SDL_CDOpen(cd_dev);
 	if (!cd_handle)
 	{
-		Con_Printf ("%s: Unable to open CD-ROM drive %d (%s)\n",
+		Con_Printf ("%s: Unable to open CD-ROM drive %s (%s)\n",
 				__FUNCTION__, SDL_CDName(cd_dev), SDL_GetError());
 		return -1;
 	}
