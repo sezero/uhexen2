@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.79 2007-03-17 07:17:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.80 2007-03-19 20:33:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -719,7 +719,7 @@ void ScrollTitle (const char *name)
 static int	m_main_cursor;
 #define	MAIN_ITEMS	5
 
-static void ReInitMusic(void);
+static void BGM_RestartMusic(void);
 static char	old_bgmtype[20];	// S.A
 
 
@@ -768,7 +768,7 @@ static void M_Main_Key (int key)
 		IN_ActivateMouse ();
 		// and check we haven't changed the music type
 		if (old_bgmtype[0] != 0 && strcmp(old_bgmtype,bgmtype.string) != 0)
-			ReInitMusic ();
+			BGM_RestartMusic ();
 		old_bgmtype[0] = 0;
 
 		key_dest = key_game;
@@ -4489,7 +4489,8 @@ static void M_ConfigureNetSubsystem(void)
 		net_hostport = lanConfig_port;
 }
 
-static void ReInitMusic (void)
+
+static void BGM_RestartMusic (void)
 {
 	// called after exitting the menus and changing the music type
 	// this is pretty crude, but doen't seem to break anything S.A
@@ -4499,14 +4500,12 @@ static void ReInitMusic (void)
 		CDAudio_Stop();
 		MIDI_Play(cl.midi_name);
 	}
-
-	if (Q_strcasecmp(bgmtype.string,"cd") == 0)
+	else if (Q_strcasecmp(bgmtype.string,"cd") == 0)
 	{
 		MIDI_Stop();
 		CDAudio_Play ((byte)cl.cdtrack, true);
 	}
-
-	if (Q_strcasecmp(bgmtype.string,"none") == 0)
+	else
 	{
 		CDAudio_Stop();
 		MIDI_Stop();
