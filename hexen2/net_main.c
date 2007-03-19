@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.17 2007-03-19 12:54:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.18 2007-03-19 12:55:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -82,6 +82,13 @@ static struct
 // these two macros are to make the code more readable
 #define sfunc	net_drivers[sock->driver]
 #define dfunc	net_drivers[net_driverlevel]
+
+/* NOTE: several sock->driver checks in the code serve the
+   purpose of ignoring local connections, because the loop
+   driver always takes number 0: it is the first member in
+   the net_drivers[] array.  If you ever change that, such
+   as by removing the loop driver, you must re-visit those
+   checks and adjust them properly!.			*/
 
 int	net_driverlevel;
 
@@ -727,7 +734,7 @@ int NET_SendToAll(sizebuf_t *data, int blocktime)
 			continue;
 		if (host_client->active)
 		{
-			if (host_client->netconnection->driver == 0)
+			if (host_client->netconnection->driver == 0) // Loopback
 			{
 				NET_SendMessage(host_client->netconnection, data);
 				state1[i] = true;
