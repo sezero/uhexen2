@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.9 2007-03-18 16:28:00 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.10 2007-03-19 12:54:49 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -524,18 +524,19 @@ void NET_Init (void)
 	Cmd_AddCommand ("port", NET_Port_f);
 
 	// initialize all the drivers
-	for (net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
+	for (i = net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
 	{
 		controlSocket = net_drivers[net_driverlevel].Init();
 		if (controlSocket == -1)
 			continue;
+		i++;
 		net_drivers[net_driverlevel].initialized = true;
 		net_drivers[net_driverlevel].controlSock = controlSocket;
 		if (listening)
 			net_drivers[net_driverlevel].Listen (true);
 	}
 
-	if (!tcpipAvailable && !ipxAvailable)
+	if (i == 0)
 		Sys_Error("Network not available!");
 
 	if (*my_ipx_address)
