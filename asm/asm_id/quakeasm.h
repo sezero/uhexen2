@@ -1,36 +1,47 @@
 /*
-	quakeasm.h
-	general asm header file
-	$Id: quakeasm.h,v 1.1 2005-05-17 06:33:04 sezero Exp $
+Copyright (C) 1996-1997 Id Software, Inc.
 
-	Copyright (C) 1996-1997  Id Software, Inc.
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
 
-	This program is free software; you can redistribute it and/or
-	modify it under the terms of the GNU General Public License
-	as published by the Free Software Foundation; either version 2
-	of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
 
-	See the GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to:
-
-		Free Software Foundation, Inc.
-		59 Temple Place - Suite 330
-		Boston, MA  02111-1307, USA
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
+//
+// quakeasm.h: general asm header file
+//
 
-#ifndef _QUAKEASM_H_
-#define _QUAKEASM_H_
+//#define GLQUAKE	1
+
+#if defined(_WIN32) && !defined(WINDED)
+
+#if defined(_M_IX86)
+#define __i386__	1
+#endif
+
+#endif
+
+#ifdef __i386__
+#define id386	1
+#else
+#define id386	0
+#endif
 
 // !!! must be kept the same as in d_iface.h !!!
-#define TRANSPARENT_COLOR 0xFF
+#define TRANSPARENT_COLOR	255
 
+#ifndef NeXT
+#ifndef GLQUAKE
 	.extern C(d_zistepu)
 	.extern C(d_pzbuffer)
 	.extern C(d_zistepv)
@@ -148,6 +159,7 @@
 	.extern C(r_affinetridesc)
 	.extern C(acolormap)
 	.extern C(d_pcolormap)
+	.extern C(r_affinetridesc)
 	.extern C(d_sfrac)
 	.extern C(d_ptex)
 	.extern C(d_pedgespanpackage)
@@ -201,7 +213,6 @@
 	.extern C(r_zistepy)
 	.extern C(D_PolysetSetEdgeTable)
 	.extern C(D_RasterizeAliasPolySmooth)
-	.extern C(D_DrawSingleZSpans)
 
 	.extern float_point5
 	.extern Float2ToThe31nd
@@ -248,16 +259,22 @@
 	.extern tdivz8stepu
 	.extern reciprocal_table_16
 	.extern entryvec_table_16
-	.extern entryvec_table_16T
 	.extern ceil_cw
 	.extern single_cw
 	.extern fp_64kx64k
 	.extern pz
 	.extern spr8entryvec_table
+#endif
 
+	.extern C(snd_scaletable)
+	.extern C(paintbuffer)
+	.extern C(snd_linear_count)
+	.extern C(snd_p)
+	.extern C(snd_vol)
+	.extern C(snd_out)
 	.extern C(vright)
 	.extern C(vup)
 	.extern C(vpn)
+	.extern C(BOPS_Error)
 
-#endif	// _QUAKEASM_H_
-
+#endif
