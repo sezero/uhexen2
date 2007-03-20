@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.68 2007-03-19 12:56:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.69 2007-03-20 08:18:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -24,7 +24,7 @@ int	current_skill;
 static double		old_time;
 
 static int LoadGamestate(char *level, char *startspot, int ClientsMode);
-qboolean SaveGamestate(qboolean ClientsOnly);
+int SaveGamestate(qboolean ClientsOnly);
 static void RestoreClients(void);
 
 #define TESTSAVE
@@ -309,7 +309,54 @@ static void Host_Changelevel_f (void)
 	SV_SaveSpawnparms ();
 	SV_SpawnServer (level, startspot);
 
-	//updatePlaqueMessage();
+//	updatePlaqueMessage();
+}
+
+/*
+==================
+Host_Changelevel2_f
+
+changing levels within a unit
+==================
+*/
+static void Host_Changelevel2_f (void)
+{
+	char	level[MAX_QPATH];
+	char	_startspot[MAX_QPATH];
+	char	*startspot;
+
+	if (Cmd_Argc() < 2)
+	{
+		Con_Printf ("changelevel2 <levelname> : continue game on a new level in the unit\n");
+		return;
+	}
+	if (!sv.active || cls.demoplayback)
+	{
+		Con_Printf ("Only the server may changelevel\n");
+		return;
+	}
+
+	Q_strlcpy (level, Cmd_Argv(1), sizeof(level));
+	if (Cmd_Argc() == 2)
+		startspot = NULL;
+	else
+	{
+		Q_strlcpy (_startspot, Cmd_Argv(2), sizeof(_startspot));
+		startspot = _startspot;
+	}
+
+	SV_SaveSpawnparms ();
+
+	// save the current level's state
+	old_time = sv.time;
+	SaveGamestate (false);
+
+	// try to restore the new level
+	if (LoadGamestate (level, startspot, 0))
+	{
+		SV_SpawnServer (level, startspot);
+		RestoreClients();
+	}
 }
 
 /*
@@ -359,7 +406,7 @@ This is sent just before a server changes levels
 ==================
 */
 extern void R_ClearParticles (void);
-extern qboolean		demohack;
+extern qboolean		demohack;	// see in cl_parse.c
 
 static void Host_Reconnect_f (void)
 {
@@ -375,7 +422,7 @@ static void Host_Reconnect_f (void)
 		return;
 	}
 
-	//updatePlaqueMessage();
+//	updatePlaqueMessage();
 
 	SCR_BeginLoadingPlaque ();
 	cls.signon = 0;		// need new connection messages
@@ -412,8 +459,6 @@ LOAD / SAVE GAME
 ===============================================================================
 */
 
-#define ShortTime "%m/%d/%Y %H:%M"
-
 static char	savename[MAX_OSPATH], savedest[MAX_OSPATH];
 
 /*
@@ -426,9 +471,9 @@ Writes a SAVEGAME_COMMENT_LENGTH character comment describing the game saved
 static void Host_SavegameComment (char *text)
 {
 	size_t		i;
-	char	kills[20];
-	struct tm *tblock;
-	time_t TempTime;
+	char		temp[20];
+	struct tm	*tblock;
+	time_t		TempTime;
 
 	for (i = 0; i < SAVEGAME_COMMENT_LENGTH; i++)
 	{
@@ -443,11 +488,11 @@ static void Host_SavegameComment (char *text)
 
 	TempTime = time(NULL);
 	tblock = localtime(&TempTime);
-	strftime(kills,sizeof(kills),ShortTime,tblock);
-	i = strlen(kills);
+	strftime (temp, sizeof(temp), "%m/%d/%Y %H:%M", tblock);
+	i = strlen(temp);
 	if (i >= SAVEGAME_COMMENT_LENGTH-21)
 		i = SAVEGAME_COMMENT_LENGTH-22;
-	memcpy (text+21, kills, i);
+	memcpy (text+21, temp, i);
 
 // convert space to _ to make stdio happy
 	for (i = 0; i < SAVEGAME_COMMENT_LENGTH; i++)
@@ -468,10 +513,9 @@ static void Host_Savegame_f (void)
 {
 	FILE	*f;
 	int		i;
-	char	comment[SAVEGAME_COMMENT_LENGTH+1];
-	qboolean error_state = false;
-	int attempts = 0;
-	char *message;
+	char		comment[SAVEGAME_COMMENT_LENGTH+1];
+	int		error_state = 0, attempts = 0;
+	char		*message;
 
 	if (cmd_source != src_command)
 		return;
@@ -567,19 +611,18 @@ retry:
 		fprintf (f, "%f\n", svs.clients->spawn_parms[i]);
 	fprintf (f, "%d\n", current_skill);
 	fprintf (f, "%s\n", sv.name);
-	fprintf (f, "%f\n",sv.time);
-	fprintf (f, "%d\n",svs.maxclients);
-	fprintf (f, "%f\n",deathmatch.value);
-	fprintf (f, "%f\n",coop.value);
-	fprintf (f, "%f\n",teamplay.value);
-	fprintf (f, "%f\n",randomclass.value);
-	fprintf (f, "%f\n",cl_playerclass.value);
+	fprintf (f, "%f\n", sv.time);
+	fprintf (f, "%d\n", svs.maxclients);
+	fprintf (f, "%f\n", deathmatch.value);
+	fprintf (f, "%f\n", coop.value);
+	fprintf (f, "%f\n", teamplay.value);
+	fprintf (f, "%f\n", randomclass.value);
+	fprintf (f, "%f\n", cl_playerclass.value);
 	// mission pack, objectives strings
-	fprintf (f, "%d\n",info_mask);
-	fprintf (f, "%d\n",info_mask2);
-	if (ferror(f))
-		error_state = true;
+	fprintf (f, "%d\n", info_mask);
+	fprintf (f, "%d\n", info_mask2);
 
+	error_state = ferror(f);
 	fclose(f);
 
 retrymsg:
@@ -607,18 +650,17 @@ Host_Loadgame_f
 static void Host_Loadgame_f (void)
 {
 	FILE	*f;
-	char	mapname[MAX_QPATH];
-	float	playtime, tfloat;
-	char	str[32768];
-	int	i;
-	edict_t	*ent;
-	int	version;
-	float	tempf;
-	int	tempi;
-	float	spawn_parms[NUM_SPAWN_PARMS];
-	qboolean error_state = false;
-	int	attempts = 0;
-	char *message;
+	char		mapname[MAX_QPATH];
+	float		playtime;
+	char		str[32768];
+	int		version;
+	int		i;
+	int		tempi;
+	float		tempf;
+	edict_t		*ent;
+	float		spawn_parms[NUM_SPAWN_PARMS];
+	int		error_state = 0, attempts = 0;
+	char		*message;
 
 	if (cmd_source != src_command)
 		return;
@@ -665,8 +707,8 @@ static void Host_Loadgame_f (void)
 	for (i = 0; i < NUM_SPAWN_PARMS; i++)
 		fscanf (f, "%f\n", &spawn_parms[i]);
 // this silliness is so we can load 1.06 save files, which have float skill values
-	fscanf (f, "%f\n", &tfloat);
-	current_skill = (int)(tfloat + 0.1);
+	fscanf (f, "%f\n", &tempf);
+	current_skill = (int)(tempf + 0.1);
 	Cvar_SetValue ("skill", (float)current_skill);
 
 	Cvar_SetValue ("deathmatch", 0);
@@ -674,42 +716,42 @@ static void Host_Loadgame_f (void)
 	Cvar_SetValue ("teamplay", 0);
 	Cvar_SetValue ("randomclass", 0);
 
-	fscanf (f, "%s\n",mapname);
-	fscanf (f, "%f\n",&playtime);
+	fscanf (f, "%s\n", mapname);
+	fscanf (f, "%f\n", &playtime);
 
 	tempi = -1;
-	fscanf (f, "%d\n",&tempi);
+	fscanf (f, "%d\n", &tempi);
 	if (tempi >= 1)
 		svs.maxclients = tempi;
 
 	tempf = -1;
-	fscanf (f, "%f\n",&tempf);
+	fscanf (f, "%f\n", &tempf);
 	if (tempf >= 0)
 		Cvar_SetValue ("deathmatch", tempf);
 
 	tempf = -1;
-	fscanf (f, "%f\n",&tempf);
+	fscanf (f, "%f\n", &tempf);
 	if (tempf >= 0)
 		Cvar_SetValue ("coop", tempf);
 
 	tempf = -1;
-	fscanf (f, "%f\n",&tempf);
+	fscanf (f, "%f\n", &tempf);
 	if (tempf >= 0)
 		Cvar_SetValue ("teamplay", tempf);
 
 	tempf = -1;
-	fscanf (f, "%f\n",&tempf);
+	fscanf (f, "%f\n", &tempf);
 	if (tempf >= 0)
 		Cvar_SetValue ("randomclass", tempf);
 
 	tempf = -1;
-	fscanf (f, "%f\n",&tempf);
+	fscanf (f, "%f\n", &tempf);
 	if (tempf >= 0)
 		Cvar_SetValue ("_cl_playerclass", tempf);
 
 	// mission pack, objectives strings
-	fscanf (f, "%d\n",&info_mask);
-	fscanf (f, "%d\n",&info_mask2);
+	fscanf (f, "%d\n", &info_mask);
+	fscanf (f, "%d\n", &info_mask2);
 
 	fclose (f);
 
@@ -761,16 +803,15 @@ retry:
 	}
 }
 
-qboolean SaveGamestate(qboolean ClientsOnly)
+int SaveGamestate (qboolean ClientsOnly)
 {
 	FILE	*f;
 	int		i;
-	char	comment[SAVEGAME_COMMENT_LENGTH+1];
-	edict_t	*ent;
-	int start,end;
-	qboolean error_state = false;
-	int attempts = 0;
-	char *message;
+	edict_t		*ent;
+	int		start, end;
+	char		comment[SAVEGAME_COMMENT_LENGTH+1];
+	int		error_state = 0, attempts = 0;
+	char		*message;
 
 retry:
 	attempts++;
@@ -801,7 +842,7 @@ retry:
 	f = fopen (savename, "w");
 	if (!f)
 	{
-		error_state = true;
+		error_state = -1;
 		goto retrymsg;
 	}
 
@@ -828,10 +869,10 @@ retry:
 			if (sv.lightstyles[i])
 				fprintf (f, "%s\n", sv.lightstyles[i]);
 			else
-				fprintf (f,"m\n");
+				fprintf (f, "m\n");
 		}
 		SV_SaveEffects(f);
-		fprintf(f,"-1\n");
+		fprintf(f, "-1\n");
 		ED_WriteGlobals (f);
 	}
 	else
@@ -854,7 +895,7 @@ retry:
 		{
 			if (host_client->active)
 			{
-				fprintf (f, "%i\n",i);
+				fprintf (f, "%i\n", i);
 				ED_Write (f, ent);
 				fflush (f);
 			}
@@ -862,16 +903,13 @@ retry:
 		}
 		else
 		{
-			fprintf (f, "%i\n",i);
+			fprintf (f, "%i\n", i);
 			ED_Write (f, ent);
 			fflush (f);
 		}
 	}
 
-	if (ferror(f))
-	{
-		error_state = true;
-	}
+	error_state = ferror(f);
 	fclose (f);
 
 retrymsg:
@@ -892,11 +930,11 @@ retrymsg:
 	return error_state;
 }
 
-static void RestoreClients(void)
+static void RestoreClients (void)
 {
-	int i, j;
-	edict_t	*ent;
-	double time_diff;
+	int		i, j;
+	edict_t		*ent;
+	double		time_diff;
 
 	if (LoadGamestate(NULL,NULL,1))
 		return;
@@ -943,18 +981,18 @@ static void RestoreClients(void)
 	SaveGamestate(true);
 }
 
-static int LoadGamestate(char *level, char *startspot, int ClientsMode)
+static int LoadGamestate (char *level, char *startspot, int ClientsMode)
 {
 	FILE	*f;
-	char	mapname[MAX_QPATH];
-	float	playtime, sk;
-	char	str[32768], *start;
+	char		mapname[MAX_QPATH];
+	float		playtime, sk;
+	char		str[32768], *start;
 	int		i, r;
-	edict_t	*ent;
+	edict_t		*ent;
 	int		entnum;
 	int		version;
-//	float	spawn_parms[NUM_SPAWN_PARMS];
-	qboolean auto_correct = false;
+//	float		spawn_parms[NUM_SPAWN_PARMS];
+	qboolean	auto_correct = false;
 
 	if (ClientsMode == 1)
 	{
@@ -1002,8 +1040,8 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode)
 		fscanf (f, "%f\n", &sk);
 		Cvar_SetValue ("skill", sk);
 
-		fscanf (f, "%s\n",mapname);
-		fscanf (f, "%f\n",&playtime);
+		fscanf (f, "%s\n", mapname);
+		fscanf (f, "%f\n", &playtime);
 
 		SV_SpawnServer (mapname, startspot);
 
@@ -1014,8 +1052,8 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode)
 		}
 
 // mission pack, objectives strings
-//		fscanf (f, "%d\n",&info_mask);
-//		fscanf (f, "%d\n",&info_mask2);
+//		fscanf (f, "%d\n", &info_mask);
+//		fscanf (f, "%d\n", &info_mask2);
 
 	// load the light styles
 		for (i = 0; i < MAX_LIGHTSTYLES; i++)
@@ -1131,47 +1169,6 @@ static int LoadGamestate(char *level, char *startspot, int ClientsMode)
 //		svs.clients->spawn_parms[i] = spawn_parms[i];
 
 	return 0;
-}
-
-// changing levels within a unit
-static void Host_Changelevel2_f (void)
-{
-	char	level[MAX_QPATH];
-	char	_startspot[MAX_QPATH];
-	char	*startspot;
-
-	if (Cmd_Argc() < 2)
-	{
-		Con_Printf ("changelevel2 <levelname> : continue game on a new level in the unit\n");
-		return;
-	}
-	if (!sv.active || cls.demoplayback)
-	{
-		Con_Printf ("Only the server may changelevel\n");
-		return;
-	}
-
-	Q_strlcpy (level, Cmd_Argv(1), sizeof(level));
-	if (Cmd_Argc() == 2)
-		startspot = NULL;
-	else
-	{
-		Q_strlcpy (_startspot, Cmd_Argv(2), sizeof(_startspot));
-		startspot = _startspot;
-	}
-
-	SV_SaveSpawnparms ();
-
-	// save the current level's state
-	old_time = sv.time;
-	SaveGamestate (false);
-
-	// try to restore the new level
-	if (LoadGamestate (level, startspot, 0))
-	{
-		SV_SpawnServer (level, startspot);
-		RestoreClients();
-	}
 }
 
 
@@ -1357,13 +1354,13 @@ static void Host_Version_f (void)
 }
 #endif
 
-static void Host_Say(qboolean teamonly)
+static void Host_Say (qboolean teamonly)
 {
-	client_t *client;
-	client_t *save;
-	int		j;
-	char	*p;
-	char	text[64];
+	int			j;
+	client_t	*client;
+	client_t	*save;
+	char		*p;
+	char		text[64];
 	qboolean	fromServer = false;
 
 	if (cmd_source == src_command)
@@ -1418,25 +1415,25 @@ static void Host_Say(qboolean teamonly)
 }
 
 
-static void Host_Say_f(void)
+static void Host_Say_f (void)
 {
 	Host_Say(false);
 }
 
 
-static void Host_Say_Team_f(void)
+static void Host_Say_Team_f (void)
 {
 	Host_Say(true);
 }
 
 
-static void Host_Tell_f(void)
+static void Host_Tell_f (void)
 {
-	client_t *client;
-	client_t *save;
-	int		j;
-	char	*p;
-	char	text[64];
+	int			j;
+	client_t	*client;
+	client_t	*save;
+	char		*p;
+	char		text[64];
 
 	if (cmd_source == src_command)
 	{
@@ -1485,7 +1482,7 @@ static void Host_Tell_f(void)
 Host_Color_f
 ==================
 */
-static void Host_Color_f(void)
+static void Host_Color_f (void)
 {
 	int		top, bottom;
 	int		plyrcolor;
@@ -1577,6 +1574,7 @@ static void Host_Pause_f (void)
 		Cmd_ForwardToServer ();
 		return;
 	}
+
 	if (!pausable.value)
 		SV_ClientPrintf (0, "Pause not allowed.\n");
 	else
@@ -1635,7 +1633,7 @@ static void Host_Spawn_f (void)
 {
 	int		i;
 	client_t	*client;
-	edict_t	*ent;
+	edict_t		*ent;
 
 	if (cmd_source == src_command)
 	{
@@ -1772,6 +1770,25 @@ static void Host_Spawn_f (void)
 	host_client->sendsignon = true;
 }
 
+/*
+==================
+Host_Begin_f
+==================
+*/
+static void Host_Begin_f (void)
+{
+	if (cmd_source == src_command)
+	{
+		Con_Printf ("begin is not valid from the console\n");
+		return;
+	}
+
+	host_client->spawned = true;
+}
+
+//===========================================================================
+
+
 dfunction_t *ED_FindFunctioni (const char *fn_name);
 
 extern char	key_lines[32][MAXCMDLINE];
@@ -1794,12 +1811,12 @@ static int strdiff(char *s1, char *s2)
 	return i;
 }
 
-static void Host_Create_f(void)
+static void Host_Create_f (void)
 {
 	char	*FindName;
 	dfunction_t	*Search, *func;
 	edict_t		*ent;
-	int		i,fLength,NumFound,Diff,NewDiff;
+	int		i, fLength, NumFound, Diff, NewDiff;
 
 	if (!sv.active)
 	{
@@ -1837,12 +1854,12 @@ static void Host_Create_f(void)
 			{
 				if (NumFound == 1)
 				{
-					Con_Printf("   %s\n",pr_strings+func->s_name);
+					Con_Printf("   %s\n", pr_strings + func->s_name);
 				}
 				if (NumFound)
 				{
-					Con_Printf("   %s\n",pr_strings+Search->s_name);
-					NewDiff = strdiff(pr_strings+Search->s_name,pr_strings+func->s_name);
+					Con_Printf("   %s\n", pr_strings + Search->s_name);
+					NewDiff = strdiff(pr_strings + Search->s_name, pr_strings + func->s_name);
 					if (NewDiff < Diff)
 						Diff = NewDiff;
 				}
@@ -1860,14 +1877,14 @@ static void Host_Create_f(void)
 
 		if (NumFound != 1)
 		{
-			snprintf(key_lines[edit_line], MAXCMDLINE, ">create %s", func->s_name+pr_strings);
+			snprintf(key_lines[edit_line], MAXCMDLINE, ">create %s", func->s_name + pr_strings);
 			key_lines[edit_line][Diff+8] = 0;
 			key_linepos = strlen(key_lines[edit_line]);
 			return;
 		}
 	}
 
-	Con_Printf("Executing %s...\n",pr_strings+func->s_name);
+	Con_Printf("Executing %s...\n", pr_strings + func->s_name);
 
 	ent = ED_Alloc ();
 
@@ -1892,22 +1909,6 @@ static void Host_Create_f(void)
 	ignore_precache = true;
 	PR_ExecuteProgram (func - pr_functions);
 	ignore_precache = false;
-}
-
-/*
-==================
-Host_Begin_f
-==================
-*/
-static void Host_Begin_f (void)
-{
-	if (cmd_source == src_command)
-	{
-		Con_Printf ("begin is not valid from the console\n");
-		return;
-	}
-
-	host_client->spawned = true;
 }
 
 //===========================================================================

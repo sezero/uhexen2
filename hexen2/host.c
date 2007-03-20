@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.69 2007-03-18 09:27:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.70 2007-03-20 08:18:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -105,13 +105,13 @@ void Host_RemoveGIPFiles (const char *path)
 	Sys_FindClose();
 }
 
-qboolean Host_CopyFiles(const char *source, const char *pat, const char *dest)
+int Host_CopyFiles (const char *source, const char *pat, const char *dest)
 {
 	char	*name, tempdir[MAX_OSPATH], tempdir2[MAX_OSPATH];
-	qboolean error;
+	int	error;
 
 	name = Sys_FindFirstFile(source, pat);
-	error = false;
+	error = 0;
 
 	while (name)
 	{
@@ -119,14 +119,14 @@ qboolean Host_CopyFiles(const char *source, const char *pat, const char *dest)
 		     snprintf(tempdir2, sizeof(tempdir2),"%s/%s", dest, name) >= sizeof(tempdir2) )
 		{
 			Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
-			error = true;
+			error = -1;
 			goto error_out;
 		}
 
-		if (QIO_CopyFile(tempdir,tempdir2))
+		error = QIO_CopyFile (tempdir, tempdir2);
+		if (error)
 		{
-			Con_Printf ("Error copying %s to %s\n",tempdir,tempdir2);
-			error = true;
+			Con_Printf ("Error copying %s to %s\n", tempdir, tempdir2);
 			goto error_out;
 		}
 
