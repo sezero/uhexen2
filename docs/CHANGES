@@ -3,6 +3,20 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-03-20 (CVS, 1.4.2-pre2):
+    * net_main.c: cleaned-up the network availablity error for dedicated servers.
+    * net_main.c: added commentary on the driver checks in the code.
+    * host_cmd.c, sv_effect.c: reverted the rb mode fopen change and replaced
+      the ftell/fread usage with fgetc and ungetc.
+    * cd_sdl.c: fixed a format string error.
+    * menu.c: renamed ReInitMusic to BGM_RestartMusic and cleaned it up.  this
+      thing will probably require more care in the future: should we add bgmusic.c
+      and bgmusic.h??
+    * host.c, host_cmd.c: clean-up.
+    * re-organized the asm directory.
+    * updated the mkrelease script.
+    * marked the snapshot of 2007-03-20 as 1.4.2-pre2.
+
 2007-03-18 (CVS):
     * even simpler solution for the mission pack intro screen scrolling.
     * origin fixes for tomed fires of vorpal sword and purifier: paladin used
