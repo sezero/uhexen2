@@ -200,7 +200,7 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 gamecode-%{gamecode_ver}/pak_v111/patchdata/data1/data1pak1.xd %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/data1pak1.xd
 
 # Install the update-patcher binaries
-%{__install} -D -m755 xdelta11/xdelta %{buildroot}/%{_prefix}/games/%{name}/xdelta113
+%{__install} -D -m755 xdelta11/xdelta %{buildroot}/%{_prefix}/games/%{name}/xdelta114
 
 # Install the menu icon
 %{__mkdir_p} %{buildroot}/%{_datadir}/pixmaps
@@ -294,6 +294,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Tue Mar 20 2007 O.Sezer <sezero@users.sourceforge.net>
+- xdelta version is 1.1.4: rename the binary properly.
+
 * Tue Mar 20 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-0
 - 1.4.2-pre2 prerelease.
 
