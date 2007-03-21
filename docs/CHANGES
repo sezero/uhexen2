@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-03-21 (CVS):
+    * rpm spec file: fixed renamimg of xdelta binary.
+    * net_dgrm.c: types clean-up.
+
 2007-03-20 (CVS, 1.4.2-pre2):
     * net_main.c: cleaned-up the network availablity error for dedicated servers.
     * net_main.c: added commentary on the driver checks in the code.
