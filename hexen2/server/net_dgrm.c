@@ -2,40 +2,14 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.10 2007-03-18 13:59:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.11 2007-03-21 15:09:28 sezero Exp $
 */
 
 #define BAN_TEST
 
-#ifdef BAN_TEST
-
-#if 0	/* using net_sys.h */
-#define AF_INET 		2	/* internet */
-struct in_addr
-{
-	union
-	{
-		struct { unsigned char s_b1,s_b2,s_b3,s_b4; } S_un_b;
-		struct { unsigned short s_w1,s_w2; } S_un_w;
-		unsigned long S_addr;
-	} S_un;
-};
-#define	s_addr	S_un.S_addr	/* can be used for most tcp & ip code */
-struct sockaddr_in
-{
-	short		sin_family;
-	unsigned short	sin_port;
-	struct in_addr	sin_addr;
-	char			sin_zero[8];
-};
-char *inet_ntoa(struct in_addr in);
-unsigned long inet_addr(const char *cp);
-#endif	// 0
-
+#if defined(BAN_TEST)
 #include "net_sys.h"
-
-#endif	// BAN_TEST
-
+#endif	/* BAN_TEST */
 
 #include "quakedef.h"
 #include "net_dgrm.h"
@@ -78,13 +52,8 @@ static char *StrAddr (struct qsockaddr *addr)
 
 #ifdef BAN_TEST
 
-#if defined(PLATFORM_UNIX)
-uint32_t banAddr = 0x00000000;
-uint32_t banMask = 0xffffffff;
-#else	// _WIN32 or whatever
-unsigned long banAddr = 0x00000000;
-unsigned long banMask = 0xffffffff;
-#endif
+unsigned int	banAddr = 0x00000000;
+unsigned int	banMask = 0xffffffff;
 
 static void NET_Ban_f (void)
 {
@@ -729,7 +698,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 	// check for a ban
 	if (clientaddr.sa_family == AF_INET)
 	{
-		unsigned long testAddr;
+		unsigned int	testAddr;
 		testAddr = ((struct sockaddr_in *)&clientaddr)->sin_addr.s_addr;
 		if ((testAddr & banMask) == banAddr)
 		{
