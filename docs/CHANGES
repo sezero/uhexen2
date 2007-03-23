@@ -5,6 +5,12 @@ Development Progress	:
 
 2007-03-23 (CVS):
     * fixed compilation on windows.
+    * makefile fixes: COMPILE_32BITS must also affect DEBUG builds.
+    * added extra optimization flags to hexenworld server build. misc clean-ups
+      in the makefile.
+    * made win32 version of hexenworld server to use timeGetTime(), similar
+      to hexen2 dedicated server. misc clean-ups in its sys_win.c.
+
 2007-03-21 (CVS):
     * rpm spec file: fixed renamimg of xdelta binary.
     * net_dgrm.c: types clean-up.
