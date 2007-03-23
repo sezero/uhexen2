@@ -21,6 +21,9 @@ X11_PATH ?=/usr/X11R6
 MINGWDIR ?=/mingw
 
 # OS and TARGET_OS detection:
+
+HOST_OS :=$(shell uname -s)
+
 # See if we are running on a Windows installation.
 #WIN_NATIVE :=$(shell if env | grep -i windir > __tmp.tmp; then echo "yes"; fi)
 ifdef windir
@@ -36,28 +39,28 @@ endif
 ifdef WIN_NATIVE
 # we are running on windows. set TARGET_OS to WIN32
 # and set proper nasm binary name
+ifeq (,$(findstring MINGW32,$(HOST_OS)))
+$(error MSys is required for this build system on Windows)
+endif
 HOST_OS :=Windows
 TARGET_OS:=WIN32
-# actually win32 does not have to be x86, but...
-MACH_TYPE:=x86
 NASM_BIN :=nasmw
 else
 # we are running on a Unixish OS
-HOST_OS :=$(shell uname)
+ifdef WINBUILD
+# cross compilation for windows
+TARGET_OS:=WIN32
+else
 TARGET_OS:=UNIX
-MACH_TYPE:=$(shell sh $(UHEXEN2_TOP)/scripts/detect.sh arch)
+endif
 NASM_BIN :=nasm
 endif
 
-ifdef WINBUILD
-# this should be a cross compilation
-TARGET_OS:=WIN32
-endif
-
-ifdef WIN_NATIVE
-ifneq ($(OSTYPE),msys)
-$(error MSys is required for this build system on Windows)
-endif
+ifeq ($(TARGET_OS),WIN32)
+# FIXME: windows does not have to be x86.
+MACH_TYPE:=x86
+else
+MACH_TYPE:=$(shell sh $(UHEXEN2_TOP)/scripts/detect.sh arch)
 endif
 
 # Compiler selection:
