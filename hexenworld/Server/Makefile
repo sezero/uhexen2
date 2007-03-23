@@ -85,7 +85,7 @@ INCLUDES:= -I../Client -I.
 
 ifeq ($(TARGET_OS),WIN32)
 INCLUDES:= -I$(MINGWDIR)/include $(INCLUDES)
-LDFLAGS := -L$(MINGWDIR)/lib -lwsock32 -mconsole
+LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mconsole
 else
 LDFLAGS := $(LIBSOCKET) -lm
 EXT_FLAGS+= -DPLATFORM_UNIX

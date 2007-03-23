@@ -2,10 +2,12 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.27 2007-03-16 20:40:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.28 2007-03-23 21:29:41 sezero Exp $
 */
 
 #include "quakedef.h"
+#include <sys/types.h>
+#include <limits.h>
 #include <sys/timeb.h>
 #include <winsock.h>
 #include <errno.h>
@@ -109,8 +111,8 @@ void Sys_Error (const char *error, ...)
 	va_list		argptr;
 	char		text[MAX_PRINTMSG];
 
-	va_start (argptr,error);
-	vsnprintf (text, sizeof (text), error, argptr);
+	va_start (argptr, error);
+	vsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
 
 	printf ("\nFATAL ERROR: %s\n\n", text);
@@ -130,11 +132,39 @@ void Sys_Error (const char *error, ...)
 
 /*
 ================
+Sys_PrintTerm
+================
+*/
+void Sys_PrintTerm (const char *msgtxt)
+{
+	unsigned char		*p;
+
+	if (sys_nostdout.value)
+		return;
+
+	for (p = (unsigned char *) msgtxt; *p; p++)
+		putc (*p, stdout);
+}
+
+/*
+================
+Sys_Quit
+================
+*/
+void Sys_Quit (void)
+{
+	exit (0);
+}
+
+
+/*
+================
 Sys_DoubleTime
 ================
 */
 double Sys_DoubleTime (void)
 {
+#if 0
 	double t;
 	struct _timeb	tstruct;
 	static int	starttime;
@@ -146,6 +176,28 @@ double Sys_DoubleTime (void)
 	t = (tstruct.time-starttime) + tstruct.millitm*0.001;
 
 	return t;
+#else
+	static qboolean first = true;
+	static DWORD starttime;
+	DWORD now;
+
+	now = timeGetTime();
+
+	if (first)
+	{
+		first = false;
+		starttime = now;
+		return 0.0;
+	}
+
+	if (now < starttime) // wrapped?
+		return (now / 1000.0) + (LONG_MAX - starttime / 1000.0);
+
+	if (now - starttime == 0)
+		return 0.0;
+
+	return (now - starttime) / 1000.0;
+#endif
 }
 
 
@@ -191,33 +243,6 @@ char *Sys_ConsoleInput (void)
 	}
 
 	return NULL;
-}
-
-
-/*
-================
-Sys_PrintTerm
-================
-*/
-void Sys_PrintTerm (const char *msgtxt)
-{
-	unsigned char		*p;
-
-	if (sys_nostdout.value)
-		return;
-
-	for (p = (unsigned char *) msgtxt; *p; p++)
-		putc (*p, stdout);
-}
-
-/*
-================
-Sys_Quit
-================
-*/
-void Sys_Quit (void)
-{
-	exit (0);
 }
 
 
@@ -327,6 +352,8 @@ int main (int argc, char **argv)
 // report the filesystem to the user
 	Sys_Printf("fs_gamedir is: %s\n", fs_gamedir);
 	Sys_Printf("fs_userdir is: %s\n", fs_userdir);
+
+	timeBeginPeriod (1);
 
 // run one frame immediately for first heartbeat
 	SV_Frame (HX_FRAME_TIME);
