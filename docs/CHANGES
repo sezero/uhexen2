@@ -3,6 +3,8 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-03-23 (CVS):
+    * fixed compilation on windows.
 2007-03-21 (CVS):
     * rpm spec file: fixed renamimg of xdelta binary.
     * net_dgrm.c: types clean-up.
