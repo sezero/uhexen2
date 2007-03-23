@@ -70,29 +70,26 @@ CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
 endif
 endif
 
-ifeq ($(COMPILE_32BITS),yes)
-CFLAGS := $(CFLAGS) -m32
-endif
-
 ifeq ($(OPT_EXTRA),yes)
 # Note: re-check these flags for non-ia32 machines
 CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
 CFLAGS := $(CFLAGS) -fomit-frame-pointer
 endif
 endif
+
+ifeq ($(COMPILE_32BITS),yes)
+CFLAGS := $(CFLAGS) -m32
+endif
 # end of compiler flags
 
-
 # Other build flags
-EXT_FLAGS:=-DSERVERONLY $(ARCHFLAGS)
+EXT_FLAGS:= -DSERVERONLY $(ARCHFLAGS)
+INCLUDES:= -I./server -I.
 
 ifeq ($(TARGET_OS),WIN32)
-# Main win32 specific includes and flags
-INCLUDES:= -I$(MINGWDIR)/include -I./server -I.
+INCLUDES:= -I$(MINGWDIR)/include $(INCLUDES)
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mconsole
 else
-# Main unix specific includes and flags
-INCLUDES:=  -I./server -I.
 LDFLAGS := $(LIBSOCKET) -lm
 EXT_FLAGS+= -DPLATFORM_UNIX
 endif

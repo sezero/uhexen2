@@ -148,18 +148,17 @@ CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
 endif
 endif
 
-ifeq ($(COMPILE_32BITS),yes)
-CFLAGS := $(CFLAGS) -m32
-endif
-
 ifeq ($(OPT_EXTRA),yes)
 # Note: re-check these flags for non-ia32 machines
 CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
 CFLAGS := $(CFLAGS) -fomit-frame-pointer
 endif
 endif
-# end of compiler flags
 
+ifeq ($(COMPILE_32BITS),yes)
+CFLAGS := $(CFLAGS) -m32
+endif
+# end of compiler flags
 
 # whether to use x86 assembly
 ifeq ($(USE_X86_ASM),yes)
