@@ -80,6 +80,9 @@
 # The default x86 assembler is nasm. To use a different nasm-compatible
 # assembler, such as yasm	:	make NASM=yasm [other stuff]
 #
+# If X installation is somewhere other than /usr/X11R6, such as /usr/X11R7,
+# specify it on the command line:	make X11BASE=/your/x11/path [other stuff]
+#
 # To build for the demo version:	make DEMO=1 [other stuff]
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
@@ -174,7 +177,7 @@ INCLUDES:= -I$(UHEXEN2_TOP)/w32stuff/dxsdk/inc -I$(MINGWDIR)/include -I.
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mwindows
 else
 # Main unix specific includes and flags
-INCLUDES:= -I$(X11_PATH)/include -I.
+INCLUDES:= -I$(X11BASE)/include -I.
 LDFLAGS := $(LIBSOCKET)
 EXT_FLAGS+= -DPLATFORM_UNIX
 endif

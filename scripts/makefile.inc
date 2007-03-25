@@ -15,7 +15,7 @@
 
 # Common paths:
 # X directory
-X11_PATH ?=/usr/X11R6
+X11BASE ?=/usr/X11R6
 
 # MinGW32 directory:
 MINGWDIR ?=/mingw
@@ -171,6 +171,6 @@ endif
 ifeq ($(TARGET_OS),WIN32)
 GL_LINK := -lopengl32
 else
-GL_LINK := -L$(X11_PATH)/lib -lGL
+GL_LINK := -L$(X11BASE)/lib -lGL
 endif
 
