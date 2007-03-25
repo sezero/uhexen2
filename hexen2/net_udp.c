@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.22 2007-02-17 07:55:35 sezero Exp $
+	$Id: net_udp.c,v 1.23 2007-03-25 07:59:56 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -33,7 +33,7 @@ static int net_controlsocket;
 static int net_broadcastsocket = 0;
 static struct qsockaddr broadcastaddr;
 
-static unsigned long myAddr;
+static unsigned int myAddr;
 
 #include "net_udp.h"
 
@@ -133,12 +133,12 @@ int UDP_OpenSocket (int port)
 {
 	int newsocket;
 	struct sockaddr_in address;
-	qboolean _true = true;
+	int _true = 1;
 
 	if ((newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
 		return -1;
 
-	if (ioctlsocket (newsocket, FIONBIO, (char *)&_true) == -1)
+	if (ioctlsocket (newsocket, FIONBIO, &_true) == -1)
 		goto ErrorReturn;
 
 	address.sin_family = AF_INET;

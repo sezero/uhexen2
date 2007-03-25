@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.23 2007-03-21 15:09:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.24 2007-03-25 07:59:56 sezero Exp $
 */
 
 #define BAN_TEST
@@ -59,8 +59,8 @@ static char *StrAddr (struct qsockaddr *addr)
 
 #ifdef BAN_TEST
 
-unsigned int	banAddr = 0x00000000;
-unsigned int	banMask = 0xffffffff;
+static unsigned int	banAddr = 0x00000000;
+static unsigned int	banMask = 0xffffffff;
 
 static void NET_Ban_f (void)
 {

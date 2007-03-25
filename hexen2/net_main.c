@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.18 2007-03-19 12:55:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.19 2007-03-25 07:59:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -537,8 +537,6 @@ returns 1 if a message was received
 returns -1 if connection is invalid
 =================
 */
-extern void PrintStats(qsocket_t *s);
-
 int	NET_GetMessage (qsocket_t *sock)
 {
 	int ret;

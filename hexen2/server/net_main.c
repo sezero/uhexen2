@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.10 2007-03-19 12:54:49 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.11 2007-03-25 08:00:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -284,8 +284,6 @@ returns 1 if a message was received
 returns -1 if connection is invalid
 =================
 */
-extern void PrintStats(qsocket_t *s);
-
 int	NET_GetMessage (qsocket_t *sock)
 {
 	int ret;
@@ -594,29 +592,5 @@ void NET_Poll(void)
 		pollProcedureList = pp->next;
 		pp->procedure(pp->arg);
 	}
-}
-
-
-void SchedulePollProcedure(PollProcedure *proc, double timeOffset)
-{
-	PollProcedure *pp, *prev;
-
-	proc->nextTime = Sys_DoubleTime() + timeOffset;
-	for (pp = pollProcedureList, prev = NULL; pp; pp = pp->next)
-	{
-		if (pp->nextTime >= proc->nextTime)
-			break;
-		prev = pp;
-	}
-
-	if (prev == NULL)
-	{
-		proc->next = pollProcedureList;
-		pollProcedureList = proc;
-		return;
-	}
-
-	proc->next = pp;
-	prev->next = proc;
 }
 
