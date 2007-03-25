@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.84 2007-03-09 07:02:31 sezero Exp $
+	$Id: gl_draw.c,v 1.85 2007-03-25 08:10:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -409,6 +409,8 @@ void Draw_Init (void)
 
 		Cmd_AddCommand ("gl_texturemode", Draw_TextureMode_f);
 
+	// initialize the player texnums array for multiplayer config screens
+		memset(plyrtex, 0, MAX_PLAYER_CLASS * 16 * 16 * sizeof(GLuint));
 	}
 
 	// load the charset
@@ -987,14 +989,6 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p
 	int		p;
 	// texture handle, name and trackers (Pa3PyX)
 	char texname[20];
-	static qboolean first_time = true;
-
-	// Initialize array of texnums
-	if (first_time)
-	{
-		memset(plyrtex, 0, MAX_PLAYER_CLASS * 16 * 16 * sizeof(GLuint));
-		first_time = false;
-	}
 
 	dest = trans;
 	for (v = 0; v < 64; v++, dest += 64)
