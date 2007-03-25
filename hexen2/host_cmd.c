@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.69 2007-03-20 08:18:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.70 2007-03-25 08:08:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1485,7 +1485,7 @@ Host_Color_f
 static void Host_Color_f (void)
 {
 	int		top, bottom;
-	int		plyrcolor;
+	int		playercolor;
 
 	if (Cmd_Argc() == 1)
 	{
@@ -1509,17 +1509,17 @@ static void Host_Color_f (void)
 	if (bottom > 13)
 		bottom = 13;
 
-	plyrcolor = top*16 + bottom;
+	playercolor = top*16 + bottom;
 
 	if (cmd_source == src_command)
 	{
-		Cvar_SetValue ("_cl_color", plyrcolor);
+		Cvar_SetValue ("_cl_color", playercolor);
 		if (cls.state == ca_connected)
 			Cmd_ForwardToServer ();
 		return;
 	}
 
-	host_client->colors = plyrcolor;
+	host_client->colors = playercolor;
 	host_client->edict->v.team = bottom + 1;
 
 // send notification to all clients

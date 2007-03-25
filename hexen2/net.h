@@ -2,7 +2,7 @@
 	net.h
 	quake's interface to the networking layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.12 2007-03-14 21:03:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.13 2007-03-25 08:08:16 sezero Exp $
 */
 
 #ifndef __HX2_NET_H
@@ -197,8 +197,6 @@ extern int			net_hostport;
 extern int net_driverlevel;
 extern cvar_t		hostname;
 extern cvar_t		net_allowmultiple;
-extern char			playername[];
-extern int			playercolor;
 
 extern int		messagesSent;
 extern int		messagesReceived;
