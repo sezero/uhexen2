@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.74 2007-03-18 09:27:46 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.75 2007-03-25 11:18:35 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -408,7 +408,7 @@ static void CL_Map_f (void)
 	if (Cmd_Argc() > 1)
 		Con_Printf ("only a server can start or change a map\n");
 	else if (cls.state == ca_active)
-		Con_Printf ("Current map: %s (mapname: %s)\n", cl.levelname, cl.mapname);
+		Con_Printf ("Current map: %s ( %s )\n", cl.levelname, cl.mapname);
 	else
 		Con_Printf ("Not connected to a server\n");
 }
