@@ -2,7 +2,7 @@
 	sv_phys.c
 	sv physics
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.19 2007-03-14 21:03:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.20 2007-03-25 08:04:58 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -41,7 +41,7 @@ static	vec3_t	vec_origin = {0.0, 0.0, 0.0};
 
 #define	MOVE_EPSILON	0.01
 
-void SV_Physics_Toss (edict_t *ent);
+static void SV_Physics_Toss (edict_t *ent);
 
 /*
 ================
@@ -80,7 +80,7 @@ static void SV_CheckAllEnts (void)
 SV_CheckVelocity
 ================
 */
-void SV_CheckVelocity (edict_t *ent)
+static void SV_CheckVelocity (edict_t *ent)
 {
 	int		i;
 	float		w;
@@ -120,7 +120,7 @@ in a frame.  Not used for pushmove objects, because they must be exact.
 Returns false if the entity removed itself.
 =============
 */
-qboolean SV_RunThink (edict_t *ent)
+static qboolean SV_RunThink (edict_t *ent)
 {
 	float	thinktime;
 
@@ -158,7 +158,7 @@ SV_Impact
 Two entities have touched, so run their touch functions
 ==================
 */
-void SV_Impact (edict_t *e1, edict_t *e2)
+static void SV_Impact (edict_t *e1, edict_t *e2)
 {
 	int		old_self, old_other;
 
@@ -447,7 +447,7 @@ SV_AddGravity
 
 ============
 */
-void SV_AddGravity (edict_t *ent)
+static void SV_AddGravity (edict_t *ent)
 {
 	float	ent_gravity;
 
@@ -485,7 +485,7 @@ SV_PushEntity
 Does not change the entities velocity at all
 ============
 */
-trace_t SV_PushEntity (edict_t *ent, vec3_t push)
+static trace_t SV_PushEntity (edict_t *ent, vec3_t push)
 {
 	trace_t	trace;
 	vec3_t	start,end, impact;
@@ -1710,7 +1710,7 @@ SV_Physics_Client
 Player character actions
 ================
 */
-void SV_Physics_Client (edict_t *ent, int num)
+static void SV_Physics_Client (edict_t *ent, int num)
 {
 	if ( ! svs.clients[num-1].active )
 		return;		// unconnected slot
@@ -1922,7 +1922,7 @@ SV_Physics_Toss
 Toss, bounce, and fly movement.  When onground, do nothing.
 =============
 */
-void SV_Physics_Toss (edict_t *ent)
+static void SV_Physics_Toss (edict_t *ent)
 {
 	trace_t	trace;
 	vec3_t	move;

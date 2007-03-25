@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.49 2007-03-18 16:29:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.50 2007-03-25 08:04:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -397,7 +397,7 @@ Sends the first message from the server to a connected client.
 This will be sent on the initial connection and upon each server load.
 ================
 */
-void SV_SendServerinfo (client_t *client)
+static void SV_SendServerinfo (client_t *client)
 {
 	char			**s;
 	char			message[2048];
