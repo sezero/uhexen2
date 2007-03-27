@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.37 2007-03-14 21:03:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.38 2007-03-27 11:11:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -251,22 +251,22 @@ setmodel(entity, model)
 */
 static void PF_setmodel (void)
 {
-	edict_t	*e;
-	char	*m, **check;
-	model_t	*mod;
 	int		i;
+	char	*m;
+	model_t		*mod;
+	edict_t		*e;
 
 	e = G_EDICT(OFS_PARM0);
 	m = G_STRING(OFS_PARM1);
 
 // check to see if model was properly precached
-	for (i = 0, check = sv.model_precache; *check; i++, check++)
+	for (i = 0; i < MAX_MODELS && sv.model_precache[i]; i++)
 	{
-		if (!strcmp(*check, m))
+		if (!strcmp(sv.model_precache[i], m))
 			break;
 	}
 
-	if (!*check)
+	if (i == MAX_MODELS || !sv.model_precache[i])
 		PR_RunError ("no precache: %s", m);
 
 	e->v.model = m - pr_strings;
@@ -282,33 +282,39 @@ static void PF_setmodel (void)
 
 static void PF_setpuzzlemodel (void)
 {
-	edict_t	*e;
-	char	*m, **check;
-	model_t	*mod;
 	int		i;
-	char	NewName[256];
+	char	*m, *temp;
+	model_t		*mod;
+	edict_t		*e;
 
 	e = G_EDICT(OFS_PARM0);
 	m = G_STRING(OFS_PARM1);
 
-	sprintf(NewName,"models/puzzle/%s.mdl",m);
+	temp = va ("models/puzzle/%s.mdl", m);
 // check to see if model was properly precached
-	for (i = 0, check = sv.model_precache; *check; i++, check++)
+	for (i = 0; i < MAX_MODELS && sv.model_precache[i]; i++)
 	{
-		if (!strcmp(*check, NewName))
+		if (!strcmp(sv.model_precache[i], temp))
 			break;
 	}
 
-	e->v.model = ED_NewString (NewName) - pr_strings;
-
-	if (!*check)
+	if (i == MAX_MODELS)
 	{
-//		PR_RunError ("no precache: %s", NewName);
-		Con_Printf("**** NO PRECACHE FOR PUZZLE PIECE:");
-		Con_Printf("**** %s\n",NewName);
+		PR_RunError ("%s: overflow", __FUNCTION__);
+	}
+	if (!sv.model_precache[i])
+	{
+		Con_Printf("NO PRECACHE FOR PUZZLE PIECE: %s\n", temp);
+		m = (char *)Hunk_Alloc(1 + strlen(temp));
+		strcpy (m, temp);
 
-		sv.model_precache[i] = e->v.model + pr_strings;
-		sv.models[i] = Mod_ForName (NewName, true);
+		sv.model_precache[i] = m;
+		e->v.model = sv.model_precache[i] - pr_strings;
+		sv.models[i] = Mod_ForName (m, true);
+	}
+	else
+	{
+		e->v.model = sv.model_precache[i] - pr_strings;
 	}
 
 	e->v.modelindex = i;	//SV_ModelIndex (m);
@@ -1825,7 +1831,7 @@ static void PF_precache_model4 (void)
 static void PF_precache_puzzle_model (void)
 {
 	int		i;
-	char	*s, temp[256], *m;
+	char	*m, *temp;
 
 	if (sv.state != ss_loading && !ignore_precache)
 		PR_RunError ("%s: Precache can only be done in spawn functions", __FUNCTION__);
@@ -1833,20 +1839,20 @@ static void PF_precache_puzzle_model (void)
 	m = G_STRING(OFS_PARM0);
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
 
-	sprintf(temp,"models/puzzle/%s.mdl",m);
-	s = ED_NewString (temp);
-
-	PR_CheckEmptyString (s);
+	PR_CheckEmptyString (m);
+	temp = va ("models/puzzle/%s.mdl", m);
 
 	for (i = 0; i < MAX_MODELS; i++)
 	{
 		if (!sv.model_precache[i])
 		{
-			sv.model_precache[i] = s;
-			sv.models[i] = Mod_ForName (s, true);
+			m = (char *)Hunk_Alloc(1 + strlen(temp));
+			strcpy (m, temp);
+			sv.model_precache[i] = m;
+			sv.models[i] = Mod_ForName (m, true);
 			return;
 		}
-		if (!strcmp(sv.model_precache[i], s))
+		if (!strcmp(sv.model_precache[i], temp))
 			return;
 	}
 	PR_RunError ("%s: overflow", __FUNCTION__);
@@ -2416,8 +2422,6 @@ static void PF_WriteEntity (void)
 }
 
 //=============================================================================
-
-extern int SV_ModelIndex (const char *name);
 
 static void PF_makestatic (void)
 {

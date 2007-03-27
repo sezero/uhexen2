@@ -2,7 +2,7 @@
 	progs.h
 	PROGS structures, public functions and vars
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/progs.h,v 1.12 2007-03-14 21:03:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/progs.h,v 1.13 2007-03-27 11:11:18 sezero Exp $
 */
 
 #ifndef __HX2_PROGS_H
@@ -95,9 +95,6 @@ edict_t *ED_Alloc (void);
 edict_t *ED_Alloc_Temp (void);
 void ED_Free (edict_t *ed);
 void ED_ClearEdict (edict_t *e);
-
-char	*ED_NewString (const char *string);
-// returns a copy of the string allocated from the server's string heap
 
 void ED_Print (edict_t *ed);
 void ED_Write (FILE *f, edict_t *ed);

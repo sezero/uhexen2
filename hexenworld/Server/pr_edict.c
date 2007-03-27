@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.18 2007-03-14 21:04:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.19 2007-03-27 11:11:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -476,10 +476,9 @@ For debugging
 */
 void ED_Print (edict_t *ed)
 {
-	int		l;
 	ddef_t	*d;
 	int		*v;
-	int		i, j;
+	int		i, j, l;
 	char	*name;
 	int		type;
 
@@ -494,8 +493,9 @@ void ED_Print (edict_t *ed)
 	{
 		d = &pr_fielddefs[i];
 		name = pr_strings + d->s_name;
-		if ( (name[strlen(name)-2] == '_') && 
-			((name[strlen(name)-1] == 'x') || (name[strlen(name)-1] == 'y') || (name[strlen(name)-1] == 'z')) )
+		l = strlen (name);
+		j = l - 1;
+		if (j > 0 && name[j-1] == '_' && name[j] >= 'x' && name[j] <= 'z')
 			continue;	// skip _x, _y, _z vars
 
 		v = (int *)((char *)&ed->v + d->ofs*4);
@@ -512,7 +512,6 @@ void ED_Print (edict_t *ed)
 			continue;
 
 		Con_Printf ("%s", name);
-		l = strlen (name);
 		while (l++ < 15)
 			Con_Printf (" ");
 
@@ -534,7 +533,6 @@ void ED_Write (FILE *f, edict_t *ed)
 	int		i, j;
 	char	*name;
 	int		type;
-	int		length;
 
 	fprintf (f, "{\n");
 
@@ -555,8 +553,8 @@ void ED_Write (FILE *f, edict_t *ed)
 	{
 		d = &pr_fielddefs[i];
 		name = pr_strings + d->s_name;
-		length = strlen(name);
-		if (name[length-2] == '_' && name[length-1] >= 'x' && name[length-1] <= 'z')
+		j = strlen(name) - 1;
+		if (j > 0 && name[j-1] == '_' && name[j] >= 'x' && name[j] <= 'z')
 			continue;	// skip _x, _y, _z vars
 
 		v = (int *)((char *)&ed->v + d->ofs*4);
@@ -754,7 +752,7 @@ void ED_ParseGlobals (char *data)
 ED_NewString
 =============
 */
-char *ED_NewString (const char *string)
+static char *ED_NewString (const char *string)
 {
 	char	*new, *new_p;
 	int		i, l;
