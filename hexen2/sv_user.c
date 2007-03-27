@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.17 2007-03-14 21:03:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.18 2007-03-27 11:16:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -507,15 +507,13 @@ V_CalcRoll
 ===============
 */
 #if defined(SERVERONLY)
-static float V_CalcRoll (vec3_t angles, vec3_t velocity)
+static float V_CalcRoll (vec3_t Angles, vec3_t Velocity)
 {
-	vec3_t	forward, right, up;
-	float	sign;
-	float	side;
-	float	value;
+	vec3_t	Fwd, Right, Up;
+	float	sign, side, value;
 
-	AngleVectors (angles, forward, right, up);
-	side = DotProduct (velocity, right);
+	AngleVectors (Angles, Fwd, Right, Up);
+	side = DotProduct (Velocity, Right);
 	sign = side < 0 ? -1 : 1;
 	side = fabs(side);
 

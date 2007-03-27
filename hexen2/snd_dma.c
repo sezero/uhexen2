@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.51 2007-03-14 08:12:34 sezero Exp $
+	$Id: snd_dma.c,v 1.52 2007-03-27 11:16:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -27,7 +27,7 @@ static void S_StopAllSoundsC (void);
 // Internal sound data & structures
 // =======================================================================
 
-channel_t   channels[MAX_CHANNELS];
+channel_t   snd_channels[MAX_CHANNELS];
 int		total_channels;
 
 int		snd_blocked = 0;
@@ -394,20 +394,20 @@ channel_t *SND_PickChannel(int entnum, int entchannel)
 	for (ch_idx = NUM_AMBIENTS; ch_idx < NUM_AMBIENTS + MAX_DYNAMIC_CHANNELS; ch_idx++)
 	{
 		if (entchannel != 0		// channel 0 never overrides
-			&& channels[ch_idx].entnum == entnum
-			&& (channels[ch_idx].entchannel == entchannel || entchannel == -1) )
+			&& snd_channels[ch_idx].entnum == entnum
+			&& (snd_channels[ch_idx].entchannel == entchannel || entchannel == -1) )
 		{	// always override sound from same entity
 			first_to_die = ch_idx;
 			break;
 		}
 
 		// don't let monster sounds override player sounds
-		if (channels[ch_idx].entnum == cl.viewentity && entnum != cl.viewentity && channels[ch_idx].sfx)
+		if (snd_channels[ch_idx].entnum == cl.viewentity && entnum != cl.viewentity && snd_channels[ch_idx].sfx)
 			continue;
 
-		if (channels[ch_idx].end - paintedtime < life_left)
+		if (snd_channels[ch_idx].end - paintedtime < life_left)
 		{
-			life_left = channels[ch_idx].end - paintedtime;
+			life_left = snd_channels[ch_idx].end - paintedtime;
 			first_to_die = ch_idx;
 		}
 	}
@@ -415,10 +415,10 @@ channel_t *SND_PickChannel(int entnum, int entchannel)
 	if (first_to_die == -1)
 		return NULL;
 
-	if (channels[first_to_die].sfx)
-		channels[first_to_die].sfx = NULL;
+	if (snd_channels[first_to_die].sfx)
+		snd_channels[first_to_die].sfx = NULL;
 
-	return &channels[first_to_die];
+	return &snd_channels[first_to_die];
 }
 
 /*
@@ -536,7 +536,7 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 
 // if an identical sound has also been started this frame, offset the pos
 // a bit to keep it from just making the first one louder
-	check = &channels[NUM_AMBIENTS];
+	check = &snd_channels[NUM_AMBIENTS];
 	for (ch_idx = NUM_AMBIENTS; ch_idx < NUM_AMBIENTS + MAX_DYNAMIC_CHANNELS; ch_idx++, check++)
 	{
 		if (check == target_chan)
@@ -561,11 +561,11 @@ void S_StopSound(int entnum, int entchannel)
 
 	for (i = NUM_AMBIENTS; i < NUM_AMBIENTS + MAX_DYNAMIC_CHANNELS; i++)
 	{
-		if (channels[i].entnum == entnum
-			&& ((!entchannel)||channels[i].entchannel == entchannel))	// 0 matches any
+		if (snd_channels[i].entnum == entnum
+			&& ((!entchannel) || snd_channels[i].entchannel == entchannel))	// 0 matches any
 		{
-			channels[i].end = 0;
-			channels[i].sfx = NULL;
+			snd_channels[i].end = 0;
+			snd_channels[i].sfx = NULL;
 			if (entchannel)
 				return;	//got a match, not looking for more.
 		}
@@ -578,10 +578,10 @@ void S_UpdateSoundPos (int entnum, int entchannel, vec3_t origin)
 
 	for (i = NUM_AMBIENTS; i < NUM_AMBIENTS + MAX_DYNAMIC_CHANNELS; i++)
 	{
-		if (channels[i].entnum == entnum
-			&& channels[i].entchannel == entchannel)
+		if (snd_channels[i].entnum == entnum
+			&& snd_channels[i].entchannel == entchannel)
 		{
-			VectorCopy(origin, channels[i].origin);
+			VectorCopy(origin, snd_channels[i].origin);
 			return;
 		}
 	}
@@ -598,11 +598,11 @@ void S_StopAllSounds(qboolean clear)
 
 	for (i = 0; i < MAX_CHANNELS; i++)
 	{
-		if (channels[i].sfx)
-			channels[i].sfx = NULL;
+		if (snd_channels[i].sfx)
+			snd_channels[i].sfx = NULL;
 	}
 
-	memset(channels, 0, MAX_CHANNELS * sizeof(channel_t));
+	memset(snd_channels, 0, MAX_CHANNELS * sizeof(channel_t));
 
 	if (clear)
 		S_ClearBuffer ();
@@ -690,7 +690,7 @@ void S_StaticSound (sfx_t *sfx, vec3_t origin, float vol, float attenuation)
 		return;
 	}
 
-	ss = &channels[total_channels];
+	ss = &snd_channels[total_channels];
 	total_channels++;
 
 	sc = S_LoadSound (sfx);
@@ -737,13 +737,13 @@ static void S_UpdateAmbientSounds (void)
 	if (!l || !ambient_level.value)
 	{
 		for (ambient_channel = 0; ambient_channel < NUM_AMBIENTS; ambient_channel++)
-			channels[ambient_channel].sfx = NULL;
+			snd_channels[ambient_channel].sfx = NULL;
 		return;
 	}
 
 	for (ambient_channel = 0; ambient_channel < NUM_AMBIENTS; ambient_channel++)
 	{
-		chan = &channels[ambient_channel];
+		chan = &snd_channels[ambient_channel];
 		chan->sfx = ambient_sfx[ambient_channel];
 
 		vol = (int) (ambient_level.value * l->ambient_sound_level[ambient_channel]);
@@ -797,7 +797,7 @@ void S_Update(vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 	combine = NULL;
 
 // update spatialization for static and dynamic sounds
-	ch = channels+NUM_AMBIENTS;
+	ch = snd_channels + NUM_AMBIENTS;
 	for (i = NUM_AMBIENTS; i < total_channels; i++, ch++)
 	{
 		if (!ch->sfx)
@@ -820,7 +820,7 @@ void S_Update(vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 				continue;
 			}
 		// search for one
-			combine = channels+MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS;
+			combine = snd_channels + MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS;
 			for (j = MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS; j < i; j++, combine++)
 			{
 				if (combine->sfx == ch->sfx)
@@ -850,7 +850,7 @@ void S_Update(vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 	if (snd_show.value)
 	{
 		total = 0;
-		ch = channels;
+		ch = snd_channels;
 		for (i = 0; i < total_channels; i++, ch++)
 		{
 			if (ch->sfx && (ch->leftvol || ch->rightvol) )

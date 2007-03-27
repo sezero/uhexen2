@@ -2,7 +2,7 @@
 	sound.h
 	client sound i/o functions
 
-	$Id: sound.h,v 1.19 2007-03-14 21:03:22 sezero Exp $
+	$Id: sound.h,v 1.20 2007-03-27 11:16:31 sezero Exp $
 */
 
 #ifndef __HX2_SOUND_H
@@ -105,7 +105,7 @@ void SND_Spatialize(channel_t *ch);
 #define	MAX_CHANNELS		128
 #define	MAX_DYNAMIC_CHANNELS	8
 
-extern	channel_t	channels[MAX_CHANNELS];
+extern	channel_t	snd_channels[MAX_CHANNELS];
 // 0 to MAX_DYNAMIC_CHANNELS-1	= normal entity sounds
 // MAX_DYNAMIC_CHANNELS to MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS -1 = water, etc
 // MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS to total_channels = static sounds

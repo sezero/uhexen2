@@ -2,7 +2,7 @@
 	snd_mix.c
 	portable code to mix sounds for snd_dma.c
 
-	$Id: snd_mix.c,v 1.14 2007-03-14 21:03:42 sezero Exp $
+	$Id: snd_mix.c,v 1.15 2007-03-27 11:16:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -266,7 +266,7 @@ void S_PaintChannels (int endtime)
 		memset(paintbuffer, 0, (end - paintedtime) * sizeof(portable_samplepair_t));
 
 	// paint in the channels.
-		ch = channels;
+		ch = snd_channels;
 		for (i = 0; i < total_channels; i++, ch++)
 		{
 			if (!ch->sfx)
