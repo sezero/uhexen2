@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.84 2007-03-18 10:19:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.85 2007-03-30 17:12:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -86,13 +86,13 @@ char *Sys_FindFirstFile (const char *path, const char *pattern)
 		return NULL;
 
 	tmp_len = strlen (pattern);
-	findpattern = malloc (tmp_len + 1);
+	findpattern = Z_Malloc (tmp_len + 1);
 	if (!findpattern)
 		return NULL;
 	strcpy (findpattern, pattern);
 	findpattern[tmp_len] = '\0';
 	tmp_len = strlen (path);
-	findpath = malloc (tmp_len + 1);
+	findpath = Z_Malloc (tmp_len + 1);
 	if (!findpath)
 		return NULL;
 	strcpy (findpath, path);
@@ -129,9 +129,9 @@ void Sys_FindClose (void)
 	if (finddir != NULL)
 		closedir(finddir);
 	if (findpath != NULL)
-		free (findpath);
+		Z_Free (findpath);
 	if (findpattern != NULL)
-		free (findpattern);
+		Z_Free (findpattern);
 	finddir = NULL;
 	findpath = NULL;
 	findpattern = NULL;

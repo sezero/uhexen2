@@ -2,7 +2,7 @@
 	huffman.c
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.c,v 1.12 2007-03-14 21:03:33 sezero Exp $
+	$Id: huffman.c,v 1.13 2007-03-30 17:12:45 sezero Exp $
 */
 
 #include <stdlib.h>
@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include "compiler.h"
+#include "zone.h"
 
 #if defined(DEBUG_BUILD) && !defined(_WIN32)
 #define OutputDebugString(X) fprintf(stderr,"%s",(X))
@@ -160,7 +161,7 @@ static void BuildTree (float *freq)
 
 	for (i = 0; i < 256; i++)
 	{
-		work[i] = (huffnode_t *) malloc(sizeof(huffnode_t));
+		work[i] = (huffnode_t *) Hunk_HighAllocName(sizeof(huffnode_t), "hufftree");
 		work[i]->val = (unsigned char)i;
 		work[i]->freq = freq[i];
 		work[i]->zero = 0;
@@ -196,7 +197,7 @@ static void BuildTree (float *freq)
 			Sys_Error("minatl: %d", minat1);
 		if (minat2 < 0)
 			Sys_Error("minat2: %d", minat2);
-		tmp = (huffnode_t *) malloc(sizeof(huffnode_t));
+		tmp = (huffnode_t *) Hunk_HighAllocName(sizeof(huffnode_t), "hufftree");
 		tmp->zero = work[minat2];
 		tmp->one = work[minat1];
 		tmp->freq = work[minat2]->freq + work[minat1]->freq;
@@ -290,7 +291,7 @@ void HuffEncode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
 	HuffIn += inlen;
 	HuffOut += *outlen;
 
-	buf = malloc(inlen);
+	buf = Z_Malloc(inlen);
 	HuffDecode (out, buf, *outlen, &tlen, inlen);
 	if (tlen != inlen)
 		Sys_Error("bogus compression");
@@ -299,7 +300,7 @@ void HuffEncode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
 		if (in[i] != buf[i])
 			Sys_Error("bogus compression");
 	}
-	free (buf);
+	Z_Free (buf);
 #endif	// DEBUG_BUILD
 }
 

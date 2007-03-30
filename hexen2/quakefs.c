@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.10 2007-03-14 08:15:16 sezero Exp $
+	$Id: quakefs.c,v 1.11 2007-03-30 17:12:43 sezero Exp $
 */
 
 #define _NEED_SEARCHPATH_T
@@ -741,7 +741,7 @@ static int processMapname (const char *mapname, const char *partial, size_t len_
 	}
 
 	// add to the maplist
-	maplist[map_count] = malloc (len+1);
+	maplist[map_count] = Z_Malloc (len+1);
 	if (maplist[map_count] == NULL)
 	{
 		Con_Printf ("WARNING: Failed allocating memory for maplist\n");
@@ -828,7 +828,7 @@ done:
 	// free the memory and zero map_count
 	while (map_count)
 	{
-		free (maplist[--map_count]);
+		Z_Free (maplist[--map_count]);
 	}
 }
 #endif	/* SERVERONLY */
