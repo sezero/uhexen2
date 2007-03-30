@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.18 2007-02-17 07:55:39 sezero Exp $
+	$Id: zone.c,v 1.19 2007-03-30 17:10:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -222,7 +222,7 @@ void Z_CheckHeap (void)
 
 //============================================================================
 
-#define HUNKNAME_LEN	20
+#define HUNKNAME_LEN	24
 typedef struct
 {
 	int		sentinal;
@@ -254,7 +254,7 @@ void Hunk_Check (void)
 	{
 		if (h->sentinal != HUNK_SENTINAL)
 			Sys_Error ("%s: trashed sentinal", __FUNCTION__);
-		if (h->size < 16 || h->size + (byte *)h - hunk_base > hunk_size)
+		if (h->size < sizeof(hunk_t) || h->size + (byte *)h - hunk_base > hunk_size)
 			Sys_Error ("%s: bad size", __FUNCTION__);
 		h = (hunk_t *)((byte *)h+h->size);
 	}
@@ -274,12 +274,12 @@ void *Hunk_AllocName (int size, const char *name)
 #endif
 
 	if (size < 0)
-		Sys_Error ("%s: bad size: %i", __FUNCTION__, size);
+		Sys_Error ("%s: bad size: %i for %s", __FUNCTION__, size, name);
 
 	size = sizeof(hunk_t) + ((size + 15) & ~15);
 
 	if (hunk_size - hunk_low_used - hunk_high_used < size)
-		Sys_Error ("%s: failed on %i bytes", __FUNCTION__, size);
+		Sys_Error ("%s: failed on %i bytes for %s", __FUNCTION__, size, name);
 
 	h = (hunk_t *)(hunk_base + hunk_low_used);
 	hunk_low_used += size;
@@ -715,10 +715,10 @@ void *Cache_Alloc (cache_user_t *c, int size, const char *name)
 	cache_system_t	*cs;
 
 	if (c->data)
-		Sys_Error ("%s: already allocated", __FUNCTION__);
+		Sys_Error ("%s: %s is already allocated", __FUNCTION__, name);
 
 	if (size <= 0)
-		Sys_Error ("%s: size %i", __FUNCTION__, size);
+		Sys_Error ("%s: bad size %i for %s", __FUNCTION__, size, name);
 
 	size = (size + sizeof(cache_system_t) + 15) & ~15;
 
@@ -816,7 +816,7 @@ static void Hunk_Print (qboolean all, qboolean write_file)
 	//
 		if (h->sentinal != HUNK_SENTINAL)
 			Sys_Error ("%s: trashed sentinal", __FUNCTION__);
-		if (h->size < 16 || h->size + (byte *)h - hunk_base > hunk_size)
+		if (h->size < sizeof(hunk_t) || h->size + (byte *)h - hunk_base > hunk_size)
 			Sys_Error ("%s: bad size", __FUNCTION__);
 
 		next = (hunk_t *)((byte *)h+h->size);
