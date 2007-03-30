@@ -3,6 +3,31 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-03-29 (CVS):
+    * several clean-ups in pr_cmd.c and pr_edict.c.
+    * fixed a few -Wshadow warnings which were still present. the warning
+      about channels was when we compiled the sdl midi option and it was
+      arising due to clashes with the SDL_mixer.h header. stupid, really,
+      but it is gone now.
+    * minor tidy-ups in zone.c. also fixed an erronous size check.
+    * sys_unix.c: made Sys_FindFirstFile to use Z_Malloc instead of malloc.
+      quakefs.c: likewise for the maplist command's string allocation.
+      hexenworld/huffman.c: instead of malloc'ing, allocate HuffTree on the
+      hunk (Hunk_HighAlloc).
+
+2007-03-25 (CVS):
+    * more types clean-up in hexen2 net files. also removed the unused
+      SchedulePollProcedure from hexen2 dedicated server. removed unused
+      extern PrintStats from net_main.c.
+    * made some more the functions in sv_main.c and sv_user.c of hexen2 static.
+    * removed the unused externs playercolor and playername from net.h of
+      hexen2. renamed plyrcolor back to playercolor in Host_Color_f (it was
+      previously giving shadowed global warnings against net.h.)
+    * moved initialization of plyrtex to Draw_Init().
+    * renamed X11_PATH to X11BASE, some other open source quake engines also
+      use that name. documented it in the relevant makefiles.
+    * mapname reporting tidy-up.
+
 2007-03-23 (CVS):
     * fixed compilation on windows.
     * makefile fixes: COMPILE_32BITS must also affect DEBUG builds.
