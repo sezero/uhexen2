@@ -3,11 +3,6 @@ Hexen II: Hammer of Thyrion
 Known Bugs
 ---------------------------
 
-- 64 bit: If compiled as a 64 bit binary the game crashes. The bug is
-  actually at the server side code (a 64 bit client can connect to a
-  server and runs properly).  See the bug tracker entry [ 1595885 ]:
-  http://sourceforge.net/tracker/index.php?func=detail&aid=1595885&group_id=124987&atid=701006
-
 - Software renderer clients cannot be compiled for non-x86 cpus because
   of some x86 assembly code about translucency which do not have their C
   counterparts yet. For details, see COMPILE and NonIntel.log in docs.
