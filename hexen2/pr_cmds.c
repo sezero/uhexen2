@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.39 2007-04-01 12:18:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.40 2007-04-01 20:08:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -36,7 +36,6 @@ static char *PR_GetTempString (void)
 static int	d_lightstylevalue[256];
 #else
 extern int	d_lightstylevalue[256];
-extern void	V_WhiteFlash_f(void);
 #endif
 
 
@@ -3196,9 +3195,11 @@ static void PF_updateInfoPlaque (void)
 
 static void PF_doWhiteFlash(void)
 {
-#if !defined(SERVERONLY)
-	V_WhiteFlash_f();
-#endif
+// this thing is a mission pack crap (called from buddha_die()
+// function of buddha.hc upon death of Praevus) and it used to
+// do a V_WhiteFlash_f() here, affecting the local client only.
+	MSG_WriteByte (&sv.reliable_datagram, svc_stufftext);
+	MSG_WriteString (&sv.reliable_datagram, "wf\n");
 }
 
 
