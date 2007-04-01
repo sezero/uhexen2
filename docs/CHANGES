@@ -3,6 +3,31 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-04-01 (CVS):
+    * cl_parse.c: killed some dead code.
+    * 64 bit support: the QuakeC/HexenC interpreter used to use string pointer
+      offsets from pr_strings even when the pointers lead to engine data which
+      is often well out of 32bit range on a 64bit architecture and they lead to
+      crashes. this is resolved by the newly introduced PR_SetEngineString and
+      PR_GetString functions which turn any address outside the pr_strings area
+      into an index into a table of engine string addresses, adding new string
+      addresses to the table as needed. thanks to LordHavoc for pointers about
+      this. the engine strings table is allocated with 256 entries at first
+      (see the PR_STRING_ALLOCSLOTS definition in pr_edict.c) and its size is
+      incremented by 256 as needed and re-allocated on the zone. managing that
+      allocation and reallocation is accomplished by the newly added Z_Realloc
+      function. sv.model_precache, sv.sound_precache and sv.lightstyles are now
+      strings instead of pointers to strings. changed pr_string_temp to cycle
+      between 16 static buffers in order to handle many prints in ftos and vtos
+      calls. killed the non-functional sv.max_edicts: it always used to be set
+      to MAX_EDICTS. probably a few clean-ups here and there also sneaked in.
+    * makefiles: automatically disable ia32 assembly on cpus other than x86.
+    * pr_edict.c: fixed a compiler warning about printf format string.
+    * in_addr_t does not exist in win32 headers: defined it as the type of the
+      S_addr of in_addr structure in our net_sys.h header. changed the types of
+      banAddr and banMask to in_addr_t in net_dgrm.c: the type may be defined
+      differently on different OS'es and/or arch'es.
+
 2007-03-29 (CVS):
     * several clean-ups in pr_cmd.c and pr_edict.c.
     * fixed a few -Wshadow warnings which were still present. the warning
