@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.46 2007-03-18 08:31:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.47 2007-04-01 11:39:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -380,37 +380,6 @@ static void CL_ParseServerInfo (void)
 
 // local state
 	cl_entities[0].model = cl.worldmodel = cl.model_precache[1];
-/*	rjr experimental client side physics - suspect memory is caching out
-	if (!sv.active)
-	{
-		sv.worldmodel = cl.worldmodel;
-		sv.models[1] = sv.worldmodel;
-
-		// load progs to get entity field count
-		PR_LoadProgs ();
-
-		// allocate server memory
-		sv.max_edicts = MAX_EDICTS;
-
-		sv.edicts = Hunk_AllocName (sv.max_edicts*pr_edict_size, "edicts");
-
-		sv.num_edicts = 1;
-		sv.models[1] = sv.worldmodel;
-
-		//
-		// clear world interaction links
-		//
-		SV_ClearWorld ();
-
-		ent = EDICT_NUM(0);
-		memset (&ent->v, 0, progs->entityfields * 4);
-		ent->free = false;
-		ent->v.model = sv.worldmodel->name - pr_strings;
-		ent->v.modelindex = 1;		// world model
-		ent->v.solid = SOLID_BSP;
-		ent->v.movetype = MOVETYPE_PUSH;
-	}
-*/
 
 	R_NewMap ();
 
