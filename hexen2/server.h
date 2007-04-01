@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.20 2007-03-18 09:27:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.21 2007-04-01 12:18:22 sezero Exp $
 */
 
 #ifndef __HX2_SERVER_H
@@ -43,15 +43,14 @@ typedef struct
 	char		startspot[64];
 	char		modelname[MAX_QPATH];	// maps/<name>.bsp, for model_precache[0]
 	struct model_s	*worldmodel;
-	char		*model_precache[MAX_MODELS];	// NULL terminated
+	char		model_precache[MAX_MODELS][MAX_QPATH];	// NULL terminated
 	struct model_s	*models[MAX_MODELS];
-	char		*sound_precache[MAX_SOUNDS];	// NULL terminated
-	char		*lightstyles[MAX_LIGHTSTYLES];
+	char		sound_precache[MAX_SOUNDS][MAX_QPATH];	// NULL terminated
+	char		lightstyles[MAX_LIGHTSTYLES][MAX_STYLESTRING];
 	struct EffectT	Effects[MAX_EFFECTS];
 
 	client_state2_t	*states;
 	int		num_edicts;
-	int		max_edicts;
 	edict_t		*edicts;	// can NOT be array indexed, because
 					// edict_t is variable sized, but can
 					// be used to reference the world ent

@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.40 2007-03-15 10:33:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.41 2007-04-01 12:18:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -220,9 +220,9 @@ void SV_DropClient (client_t *drop)
 			PR_ExecuteProgram (SpectatorDisconnect);
 		}
 	}
-	else if (dmMode.value==DM_SIEGE)
+	else if (dmMode.value == DM_SIEGE)
 	{
-		if (Q_strcasecmp(drop->edict->v.puzzle_inv1+pr_strings,""))
+		if (PR_GetString(drop->edict->v.puzzle_inv1)[0] != '\0')
 		{
 			// this guy has a puzzle piece, call this function anyway
 			// to make sure he leaves it behind

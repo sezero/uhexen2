@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.22 2007-03-25 08:08:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.23 2007-04-01 12:18:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -394,10 +394,10 @@ static void Host_SavegameComment (char *text)
 	}
 	else
 	{
-		i = strlen(sv.edicts->v.netname + pr_strings);
+		i = strlen(PR_GetString(sv.edicts->v.netname));
 		if (i > 20)
 			i = 20;
-		memcpy (text, sv.edicts->v.netname + pr_strings, i);
+		memcpy (text, PR_GetString(sv.edicts->v.netname), i);
 	}
 
 	TempTime = time(NULL);
@@ -734,7 +734,7 @@ int SaveGamestate (qboolean ClientsOnly)
 
 		for (i = 0; i < MAX_LIGHTSTYLES; i++)
 		{
-			if (sv.lightstyles[i])
+			if (sv.lightstyles[i][0])
 				fprintf (f, "%s\n", sv.lightstyles[i]);
 			else
 				fprintf (f, "m\n");
@@ -806,7 +806,7 @@ static void RestoreClients (void)
 
 			//ent->v.colormap = NUM_FOR_EDICT(ent);
 			ent->v.team = (host_client->colors & 15) + 1;
-			ent->v.netname = host_client->name - pr_strings;
+			ent->v.netname = PR_SetEngineString(host_client->name);
 			ent->v.playerclass = host_client->playerclass;
 
 
@@ -916,8 +916,7 @@ static int LoadGamestate (char *level, char *startspot, int ClientsMode)
 		for (i = 0; i < MAX_LIGHTSTYLES; i++)
 		{
 			fscanf (f, "%s\n", str);
-			sv.lightstyles[i] = Hunk_AllocName (strlen(str)+1, "lightstyles");
-			strcpy (sv.lightstyles[i], str);
+			Q_strlcpy (sv.lightstyles[i], str, sizeof(sv.lightstyles[0]));
 		}
 		SV_LoadEffects(f);
 	}
@@ -955,9 +954,9 @@ static int LoadGamestate (char *level, char *startspot, int ClientsMode)
 			ED_ParseGlobals (start);
 			// Need to restore this
 			if (old_progdefs)
-				pr_global_struct_v111->startspot = sv.startspot - pr_strings;
+				pr_global_struct_v111->startspot = PR_SetEngineString(sv.startspot);
 			else
-				pr_global_struct->startspot = sv.startspot - pr_strings;
+				pr_global_struct->startspot = PR_SetEngineString(sv.startspot);
 		}
 		else
 		{
@@ -975,7 +974,7 @@ static int LoadGamestate (char *level, char *startspot, int ClientsMode)
 				SV_LinkEdict (ent, false);
 				if (ent->v.modelindex && ent->v.model)
 				{
-					i = SV_ModelIndex(ent->v.model + pr_strings);
+					i = SV_ModelIndex(PR_GetString(ent->v.model));
 					if (i != ent->v.modelindex)
 					{
 						ent->v.modelindex = i;
@@ -1062,7 +1061,7 @@ static void Host_Name_f (void)
 		if (strcmp(host_client->name, newName) != 0)
 			Con_Printf ("%s renamed to %s\n", host_client->name, newName);
 	strcpy (host_client->name, newName);
-	host_client->edict->v.netname = host_client->name - pr_strings;
+	host_client->edict->v.netname = PR_SetEngineString(host_client->name);
 
 // send notification to all clients
 
@@ -1380,11 +1379,11 @@ static void Host_Pause_f (void)
 
 		if (sv.paused)
 		{
-			SV_BroadcastPrintf ("%s paused the game\n", pr_strings + sv_player->v.netname);
+			SV_BroadcastPrintf ("%s paused the game\n", PR_GetString(sv_player->v.netname));
 		}
 		else
 		{
-			SV_BroadcastPrintf ("%s unpaused the game\n",pr_strings + sv_player->v.netname);
+			SV_BroadcastPrintf ("%s unpaused the game\n",PR_GetString(sv_player->v.netname));
 		}
 
 	// send notification to all clients
@@ -1465,7 +1464,7 @@ static void Host_Spawn_f (void)
 
 			//ent->v.colormap = NUM_FOR_EDICT(ent);
 			ent->v.team = (host_client->colors & 15) + 1;
-			ent->v.netname = host_client->name - pr_strings;
+			ent->v.netname = PR_SetEngineString(host_client->name);
 			ent->v.playerclass = host_client->playerclass;
 
 			if (old_progdefs)

@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.28 2007-03-27 11:11:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.29 2007-04-01 12:18:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -14,8 +14,18 @@
 #endif
 
 
+#define	STRINGTEMP_BUFFERS		16
+#define	STRINGTEMP_LENGTH		1024
+static	char	pr_string_temp[STRINGTEMP_BUFFERS][STRINGTEMP_LENGTH];
+static	byte	pr_string_tempindex = 0;
+
+static char *PR_GetTempString (void)
+{
+	return pr_string_temp[(STRINGTEMP_BUFFERS-1) & ++pr_string_tempindex];
+}
+
 #define	RETURN_EDICT(e) (((int *)pr_globals)[OFS_RETURN] = EDICT_TO_PROG(e))
-#define	RETURN_STRING(s) (((int *)pr_globals)[OFS_RETURN] = s-pr_strings)
+#define	RETURN_STRING(s) (((int *)pr_globals)[OFS_RETURN] = PR_SetEngineString(s))
 
 #define	MSG_BROADCAST	0		// unreliable to all
 #define	MSG_ONE		1		// reliable to one (msg_entity)
@@ -75,7 +85,7 @@ static void PF_error (void)
 
 	s = PF_VarString(0);
 	Con_Printf ("======SERVER ERROR in %s:\n%s\n",
-			pr_strings + pr_xfunction->s_name, s);
+			PR_GetString(pr_xfunction->s_name), s);
 	ed = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 	ED_Print (ed);
 
@@ -99,7 +109,7 @@ static void PF_objerror (void)
 
 	s = PF_VarString(0);
 	Con_Printf ("======OBJECT ERROR in %s:\n%s\n",
-			pr_strings + pr_xfunction->s_name, s);
+			PR_GetString(pr_xfunction->s_name), s);
 	ed = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 	ED_Print (ed);
 	ED_Free (ed);
@@ -262,17 +272,17 @@ static void PF_setmodel (void)
 	m = G_STRING(OFS_PARM1);
 
 // check to see if model was properly precached
-	for (i = 0; i < MAX_MODELS && sv.model_precache[i]; i++)
+	for (i = 0; i < MAX_MODELS; i++)
 	{
 		if (!strcmp(sv.model_precache[i], m))
 			break;
 	}
 
-	if (i == MAX_MODELS || !sv.model_precache[i])
+	if (i == MAX_MODELS)
 		PR_RunError ("no precache: %s", m);
 
-	e->v.model = m - pr_strings;
-	e->v.modelindex = i;
+	e->v.model = PR_SetEngineString(sv.model_precache[i]);
+	e->v.modelindex = i; //SV_ModelIndex (m);
 
 	mod = sv.models[ (int)e->v.modelindex];	// Mod_ForName (m, true);
 
@@ -294,7 +304,7 @@ static void PF_setpuzzlemodel (void)
 
 	temp = va ("models/puzzle/%s.mdl", m);
 // check to see if model was properly precached
-	for (i = 0; i < MAX_MODELS && sv.model_precache[i]; i++)
+	for (i = 1; i < MAX_MODELS && sv.model_precache[i][0]; i++)
 	{
 		if (!strcmp(sv.model_precache[i], temp))
 			break;
@@ -304,19 +314,17 @@ static void PF_setpuzzlemodel (void)
 	{
 		PR_RunError ("%s: overflow", __FUNCTION__);
 	}
-	if (!sv.model_precache[i])
+	if (!sv.model_precache[i][0])
 	{
 		Con_Printf("NO PRECACHE FOR PUZZLE PIECE: %s\n", temp);
-		m = (char *)Hunk_Alloc(1 + strlen(temp));
-		strcpy (m, temp);
+		Q_strlcpy (sv.model_precache[i], temp, sizeof(sv.model_precache[0]));
 
-		sv.model_precache[i] = m;
-		e->v.model = sv.model_precache[i] - pr_strings;
-		sv.models[i] = Mod_ForName (m, true);
+		e->v.model = PR_SetEngineString(sv.model_precache[i]);
+		sv.models[i] = Mod_ForName (temp, true);
 	}
 	else
 	{
-		e->v.model = sv.model_precache[i] - pr_strings;
+		e->v.model = PR_SetEngineString(sv.model_precache[i]);
 	}
 
 	e->v.modelindex = i;	//SV_ModelIndex (m);
@@ -846,7 +854,6 @@ PF_ambientsound
 */
 static void PF_ambientsound (void)
 {
-	char		**check;
 	char		*samp;
 	float		*pos;
 	float		vol, attenuation;
@@ -858,13 +865,13 @@ static void PF_ambientsound (void)
 	attenuation = G_FLOAT(OFS_PARM3);
 
 // check to see if samp was properly precached
-	for (soundnum = 0, check = sv.sound_precache; *check; check++, soundnum++)
+	for (soundnum = 0; soundnum < MAX_SOUNDS; soundnum++)
 	{
-		if (!strcmp(*check,samp))
+		if (!strcmp(sv.sound_precache[soundnum], samp))
 			break;
 	}
 
-	if (!*check)
+	if (soundnum == MAX_SOUNDS)
 	{
 		Con_Printf ("no precache: %s\n", samp);
 		return;
@@ -1365,18 +1372,18 @@ static void PF_dprintv (void)
 	Con_DPrintf (G_STRING(OFS_PARM0),temp);
 }
 
-static char	pr_string_temp[1024];
-
 static void PF_ftos (void)
 {
 	float	v;
-	v = G_FLOAT(OFS_PARM0);
+	char	*s;
 
+	v = G_FLOAT(OFS_PARM0);
+	s = PR_GetTempString();
 	if (v == (int)v)
-		sprintf (pr_string_temp, "%d",(int)v);
+		sprintf (s, "%d",(int)v);
 	else
-		sprintf (pr_string_temp, "%5.1f",v);
-	G_INT(OFS_RETURN) = pr_string_temp - pr_strings;
+		sprintf (s, "%5.1f",v);
+	G_INT(OFS_RETURN) = PR_SetEngineString(s);
 }
 
 static void PF_fabs (void)
@@ -1388,15 +1395,21 @@ static void PF_fabs (void)
 
 static void PF_vtos (void)
 {
-	sprintf (pr_string_temp, "'%5.1f %5.1f %5.1f'", G_VECTOR(OFS_PARM0)[0], G_VECTOR(OFS_PARM0)[1], G_VECTOR(OFS_PARM0)[2]);
-	G_INT(OFS_RETURN) = pr_string_temp - pr_strings;
+	char	*s;
+
+	s = PR_GetTempString();
+	sprintf (s, "'%5.1f %5.1f %5.1f'", G_VECTOR(OFS_PARM0)[0], G_VECTOR(OFS_PARM0)[1], G_VECTOR(OFS_PARM0)[2]);
+	G_INT(OFS_RETURN) = PR_SetEngineString(s);
 }
 
 #ifdef QUAKE2
 static void PF_etos (void)
 {
-	sprintf (pr_string_temp, "entity %i", G_EDICTNUM(OFS_PARM0));
-	G_INT(OFS_RETURN) = pr_string_temp - pr_strings;
+	char	*s;
+
+	s = PR_GetTempString();
+	sprintf (s, "entity %i", G_EDICTNUM(OFS_PARM0));
+	G_INT(OFS_RETURN) = PR_SetEngineString(s);
 }
 #endif
 
@@ -1427,7 +1440,7 @@ static void PF_Remove (void)
 	if (ed == sv.edicts)
 	{
 		Con_DPrintf("Tried to remove the world at %s in %s!\n",
-				pr_xfunction->s_name + pr_strings, pr_xfunction->s_file + pr_strings);
+				PR_GetString(pr_xfunction->s_name), PR_GetString(pr_xfunction->s_file));
 		return;
 	}
 
@@ -1435,7 +1448,7 @@ static void PF_Remove (void)
 	if (i <= MAX_CLIENTS)
 	{
 		Con_DPrintf("Tried to remove a client at %s in %s!\n",
-				pr_xfunction->s_name + pr_strings, pr_xfunction->s_file + pr_strings);
+				PR_GetString(pr_xfunction->s_name), PR_GetString(pr_xfunction->s_file));
 		return;
 	}
 	ED_Free (ed);
@@ -1578,11 +1591,11 @@ static void PF_precache_sound (void)
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
 	PR_CheckEmptyString (s);
 
-	for (i = 0; i < MAX_SOUNDS; i++)
+	for (i = 1; i < MAX_SOUNDS; i++)
 	{
-		if (!sv.sound_precache[i])
+		if (!sv.sound_precache[i][0])
 		{
-			sv.sound_precache[i] = s;
+			Q_strlcpy (sv.sound_precache[i], s, sizeof(sv.sound_precache[0]));
 			return;
 		}
 		if (!strcmp(sv.sound_precache[i], s))
@@ -1619,12 +1632,12 @@ static void PF_precache_model (void)
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
 	PR_CheckEmptyString (s);
 
-	for (i = 0; i < MAX_MODELS; i++)
+	for (i = 1; i < MAX_MODELS; i++)
 	{
-		if (!sv.model_precache[i])
+		if (!sv.model_precache[i][0])
 		{
-			sv.model_precache[i] = s;
-//			sv.models[i] = Mod_ForName (s, true);
+			Q_strlcpy (sv.model_precache[i], s, sizeof(sv.model_precache[0]));
+		//	sv.models[i] = Mod_ForName (sv.model_precache[i], true);
 			return;
 		}
 		if (!strcmp(sv.model_precache[i], s))
@@ -1652,25 +1665,23 @@ static void PF_precache_model3 (void)
 static void PF_precache_puzzle_model (void)
 {
 	int		i;
-	char	*m, *temp;
+	char	*s, *temp;
 
 	if (sv.state != ss_loading && !ignore_precache)
 		PR_RunError ("%s: Precache can only be done in spawn functions", __FUNCTION__);
 
-	m = G_STRING(OFS_PARM0);
+	s = G_STRING(OFS_PARM0);
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
 
-	PR_CheckEmptyString (m);
-	temp = va ("models/puzzle/%s.mdl", m);
+	PR_CheckEmptyString (s);
+	temp = va ("models/puzzle/%s.mdl", s);
 
-	for (i = 0; i < MAX_MODELS; i++)
+	for (i = 1; i < MAX_MODELS; i++)
 	{
-		if (!sv.model_precache[i])
+		if (!sv.model_precache[i][0])
 		{
-			m = (char *)Hunk_Alloc(1 + strlen(temp));
-			strcpy (m, temp);
-			sv.model_precache[i] = m;
-		//	sv.models[i] = Mod_ForName (m, true);	// why commented out??
+			Q_strlcpy (sv.model_precache[i], temp, sizeof(sv.model_precache[i]));
+		//	sv.models[i] = Mod_ForName (sv.model_precache[i], true);
 			return;
 		}
 		if (!strcmp(sv.model_precache[i], temp))
@@ -1794,7 +1805,7 @@ static void PF_lightstyle (void)
 	val = G_STRING(OFS_PARM1);
 
 // change the string in sv
-	sv.lightstyles[style] = val;
+	Q_strlcpy (sv.lightstyles[style], val, sizeof(sv.lightstyles[0]));
 
 // send message to all clients on this server
 	if (sv.state != ss_active)
@@ -1805,8 +1816,8 @@ static void PF_lightstyle (void)
 		if (client->state == cs_spawned)
 		{
 			MSG_WriteChar (&client->netchan.message, svc_lightstyle);
-			MSG_WriteChar (&client->netchan.message,style);
-			MSG_WriteString (&client->netchan.message, val);
+			MSG_WriteChar (&client->netchan.message, style);
+			MSG_WriteString (&client->netchan.message, sv.lightstyles[style]);
 		}
 	}
 }
@@ -1844,11 +1855,9 @@ static void PF_lightstylevalue(void)
 
 static void PF_lightstylestatic(void)
 {
-	int i;
-	int value;
-	int styleNumber;
-	char *styleString;
-	client_t *client;
+	int	i, value, styleNumber;
+	char		*styleString;
+	client_t	*client;
 	static char *styleDefs[] =
 	{
 		"a", "b", "c", "d", "e", "f", "g",
@@ -1870,7 +1879,7 @@ static void PF_lightstylestatic(void)
 	styleString = styleDefs[value];
 
 	// Change the string in sv
-	sv.lightstyles[styleNumber] = styleString;
+	Q_strlcpy (sv.lightstyles[styleNumber], styleString, sizeof(sv.lightstyles[0]));
 	d_lightstylevalue[styleNumber] = value;
 
 	if (sv.state != ss_active)
@@ -1885,7 +1894,7 @@ static void PF_lightstylestatic(void)
 		{
 			MSG_WriteChar (&client->netchan.message, svc_lightstyle);
 			MSG_WriteChar (&client->netchan.message, styleNumber);
-			MSG_WriteString (&client->netchan.message, styleString);
+			MSG_WriteString (&client->netchan.message, sv.lightstyles[styleNumber]);
 		}
 	}
 }
@@ -2257,7 +2266,7 @@ static void PF_makestatic (void)
 
 	MSG_WriteByte (&sv.signon,svc_spawnstatic);
 
-	MSG_WriteShort (&sv.signon, SV_ModelIndex(pr_strings + ent->v.model));
+	MSG_WriteShort(&sv.signon, SV_ModelIndex(PR_GetString(ent->v.model)));
 
 	MSG_WriteByte (&sv.signon, ent->v.frame);
 	MSG_WriteByte (&sv.signon, ent->v.colormap);
@@ -2650,7 +2659,7 @@ static void PF_AwardExperience(void)
 	if (!Amount)
 		return;
 
-	IsPlayer = (Q_strcasecmp(ToEnt->v.classname + pr_strings, "player") == 0);
+	IsPlayer = (Q_strcasecmp(PR_GetString(ToEnt->v.classname), "player") == 0);
 
 	if (FromEnt && Amount == 0.0)
 	{
@@ -3168,7 +3177,7 @@ static void PF_GetString(void)
 	if (Index >= pr_string_count)
 		PR_RunError ("%s: index(%d) >= pr_string_count(%d)", __FUNCTION__, Index, pr_string_count);
 
-	G_INT(OFS_RETURN) = (&pr_global_strings[pr_string_index[Index]]) - pr_strings;
+	G_INT(OFS_RETURN) = PR_SetEngineString(&pr_global_strings[pr_string_index[Index]]);
 }
 
 
@@ -3276,7 +3285,7 @@ static void PF_weapon_sound(void)
 }
 
 
-builtin_t pr_builtin[] =
+static builtin_t pr_builtin[] =
 {
 	PF_Fixme,
 

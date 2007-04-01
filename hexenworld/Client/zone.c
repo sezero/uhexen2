@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.19 2007-03-30 17:10:17 sezero Exp $
+	$Id: zone.c,v 1.20 2007-04-01 12:18:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -195,6 +195,35 @@ void *Z_TagMalloc (int size, int tag)
 	*(int *)((byte *)base + base->size - 4) = ZONEID;
 
 	return (void *) ((byte *)base + sizeof(memblock_t));
+}
+
+void *Z_Realloc (void *ptr, int size)
+{
+	int		old_size;
+	void		*old_ptr;
+	memblock_t	*block;
+	
+	if (!ptr)
+		return Z_Malloc (size);
+
+	block = (memblock_t *) ((byte *) ptr - sizeof (memblock_t));
+	if (block->id != ZONEID)
+		Sys_Error ("%s: realloced a pointer without ZONEID", __FUNCTION__);
+	if (block->tag == 0)
+		Sys_Error ("%s: realloced a freed pointer", __FUNCTION__);
+
+	old_size = block->size;
+	old_ptr = ptr;
+
+	Z_Free (ptr);
+	ptr = Z_TagMalloc (size, 1);
+	if (!ptr)
+		Sys_Error ("%s: failed on allocation of %i bytes", __FUNCTION__, size);
+
+	if (ptr != old_ptr)
+		memmove (ptr, old_ptr, min (old_size, size));
+
+	return ptr;
 }
 
 

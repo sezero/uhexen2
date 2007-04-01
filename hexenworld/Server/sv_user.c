@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.20 2007-03-14 21:04:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.21 2007-04-01 12:18:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -84,7 +84,7 @@ static void SV_New_f (void)
 	{
 	// Use netname on map if there is one, so they don't have to edit strings.txt
 	//	MSG_WriteString(&host_client->netchan.message,"");
-		MSG_WriteString(&host_client->netchan.message,sv.edicts->v.netname + pr_strings);
+		MSG_WriteString(&host_client->netchan.message, PR_GetString(sv.edicts->v.netname));
 	}
 
 	// send the movevars
@@ -119,7 +119,7 @@ SV_Soundlist_f
 */
 static void SV_Soundlist_f (void)
 {
-	char		**s;
+	int		i;
 
 	if (host_client->state != cs_connected)
 	{
@@ -136,8 +136,8 @@ static void SV_Soundlist_f (void)
 	}
 
 	MSG_WriteByte (&host_client->netchan.message, svc_soundlist);
-	for (s = sv.sound_precache+1 ; *s ; s++)
-		MSG_WriteString (&host_client->netchan.message, *s);
+	for (i = 1; i < MAX_SOUNDS && sv.sound_precache[i][0]; i++)
+		MSG_WriteString (&host_client->netchan.message, sv.sound_precache[i]);
 	MSG_WriteByte (&host_client->netchan.message, 0);
 }
 
@@ -148,7 +148,7 @@ SV_Modellist_f
 */
 static void SV_Modellist_f (void)
 {
-	char		**s;
+	int		i;
 
 	if (host_client->state != cs_connected)
 	{
@@ -165,8 +165,8 @@ static void SV_Modellist_f (void)
 	}
 
 	MSG_WriteByte (&host_client->netchan.message, svc_modellist);
-	for (s = sv.model_precache+1 ; *s ; s++)
-		MSG_WriteString (&host_client->netchan.message, *s);
+	for (i = 1; i < MAX_MODELS && sv.model_precache[i][0]; i++)
+		MSG_WriteString (&host_client->netchan.message, sv.model_precache[i]);
 	MSG_WriteByte (&host_client->netchan.message, 0);
 }
 
@@ -250,7 +250,7 @@ static void SV_Spawn_f (void)
 	else
 		ent->v.team = 0;	// FIXME
 
-	ent->v.netname = host_client->name - pr_strings;
+	ent->v.netname = PR_SetEngineString(host_client->name);
 	//ent->v.playerclass = host_client->playerclass = 
 	ent->v.next_playerclass = host_client->next_playerclass;
 	ent->v.has_portals = host_client->portals;
@@ -325,7 +325,7 @@ static void SV_SpawnSpectator (void)
 	for (i = MAX_CLIENTS-1; i < sv.num_edicts; i++)
 	{
 		e = EDICT_NUM(i);
-		if (!strcmp(pr_strings + e->v.classname, "info_player_start"))
+		if (!strcmp(PR_GetString(e->v.classname), "info_player_start"))
 		{
 			VectorCopy (e->v.origin, sv_player->v.origin);
 			return;

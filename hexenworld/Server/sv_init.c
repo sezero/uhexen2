@@ -2,7 +2,7 @@
 	sv_init.c
 	server spawning
 
-	$Id: sv_init.c,v 1.11 2007-03-14 21:04:18 sezero Exp $
+	$Id: sv_init.c,v 1.12 2007-04-01 12:18:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -28,13 +28,13 @@ int SV_ModelIndex (const char *name)
 	if (!name || !name[0])
 		return 0;
 
-	for (i = 0; i < MAX_MODELS && sv.model_precache[i]; i++)
+	for (i = 1; i < MAX_MODELS && sv.model_precache[i][0]; i++)
 	{
 		if (!strcmp(sv.model_precache[i], name))
 			return i;
 	}
 
-	if (i == MAX_MODELS || !sv.model_precache[i])
+	if (i == MAX_MODELS || !sv.model_precache[i][0])
 		SV_Error ("%s: model %s not precached", __FUNCTION__, name);
 
 	return i;
@@ -102,7 +102,7 @@ static void SV_CreateBaseline (void)
 		{
 			svent->baseline.colormap = 0;
 			svent->baseline.modelindex =
-				SV_ModelIndex(pr_strings + svent->v.model);
+				SV_ModelIndex(PR_GetString(svent->v.model));
 		}
 
 		svent->baseline.scale = (int)(svent->v.scale*100.0)&255;
@@ -327,14 +327,13 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	//
 	SV_ClearWorld ();
 
-	sv.sound_precache[0] = pr_strings;
-
-	sv.model_precache[0] = pr_strings;
-	sv.model_precache[1] = sv.modelname;
+	sv.sound_precache[0][0] = '\0';
+	sv.model_precache[0][0] = '\0';
+	Q_strlcpy (sv.model_precache[1], sv.modelname, sizeof(sv.model_precache[0]));
 	sv.models[1] = sv.worldmodel;
 	for (i = 1; i < sv.worldmodel->numsubmodels; i++)
 	{
-		sv.model_precache[1+i] = localmodels[i];
+		Q_strlcpy (sv.model_precache[1+i], localmodels[i], sizeof(sv.model_precache[0]));
 		sv.models[i+1] = Mod_ForName (localmodels[i], false);
 	}
 
@@ -348,7 +347,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 
 	ent = EDICT_NUM(0);
 	ent->free = false;
-	ent->v.model = sv.worldmodel->name - pr_strings;
+	ent->v.model = PR_SetEngineString(sv.worldmodel->name);
 	ent->v.modelindex = 1;	// world model
 	ent->v.solid = SOLID_BSP;
 	ent->v.movetype = MOVETYPE_PUSH;
@@ -375,7 +374,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	pr_global_struct->patternRunner = patternRunner.value;
 	pr_global_struct->max_players = maxclients.value;
 
-	pr_global_struct->startspot = sv.startspot - pr_strings;
+	pr_global_struct->startspot = PR_SetEngineString(sv.startspot);
 
 	sv.current_skill = (int)(skill.value + 0.5);
 	if (sv.current_skill < 0)
@@ -385,7 +384,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 
 	Cvar_SetValue ("skill", (float)sv.current_skill);
 
-	pr_global_struct->mapname = sv.name - pr_strings;
+	pr_global_struct->mapname = PR_SetEngineString(sv.name);
 	// serverflags are for cross level information (sigils)
 	pr_global_struct->serverflags = svs.serverflags;
 

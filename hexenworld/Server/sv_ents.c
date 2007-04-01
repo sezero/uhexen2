@@ -2,7 +2,7 @@
 	sv_ents.c
 	server entities handling
 
-	$Id: sv_ents.c,v 1.7 2007-03-14 21:04:18 sezero Exp $
+	$Id: sv_ents.c,v 1.8 2007-04-01 12:18:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -324,7 +324,7 @@ static void SV_WriteDelta (entity_state_t *from, entity_state_t *to, sizebuf_t *
 	temp_index = to->modelindex;
 	if (((int)ent->v.flags & FL_CLASS_DEPENDENT) && ent->v.model)
 	{
-		strcpy(NewName,ent->v.model + pr_strings);
+		strcpy (NewName, PR_GetString(ent->v.model));
 		if (client->playerclass <= 0 || client->playerclass > MAX_PLAYER_CLASS)
 		{
 			NewName[strlen(NewName)-5] = '1';
@@ -761,21 +761,21 @@ void SV_WriteInventory (client_t *host_cl, edict_t *ent, sizebuf_t *msg)
 //	if (sc2 & SC2_TOME_T)
 //		MSG_WriteFloat(msg, ent->v.tome_time);
 	if (sc2 & SC2_PUZZLE1)
-		MSG_WriteString(msg, pr_strings+ent->v.puzzle_inv1);
+		MSG_WriteString(msg, PR_GetString(ent->v.puzzle_inv1));
 	if (sc2 & SC2_PUZZLE2)
-		MSG_WriteString(msg, pr_strings+ent->v.puzzle_inv2);
+		MSG_WriteString(msg, PR_GetString(ent->v.puzzle_inv2));
 	if (sc2 & SC2_PUZZLE3)
-		MSG_WriteString(msg, pr_strings+ent->v.puzzle_inv3);
+		MSG_WriteString(msg, PR_GetString(ent->v.puzzle_inv3));
 	if (sc2 & SC2_PUZZLE4)
-		MSG_WriteString(msg, pr_strings+ent->v.puzzle_inv4);
+		MSG_WriteString(msg, PR_GetString(ent->v.puzzle_inv4));
 	if (sc2 & SC2_PUZZLE5)
-		MSG_WriteString(msg, pr_strings+ent->v.puzzle_inv5);
+		MSG_WriteString(msg, PR_GetString(ent->v.puzzle_inv5));
 	if (sc2 & SC2_PUZZLE6)
-		MSG_WriteString(msg, pr_strings+ent->v.puzzle_inv6);
+		MSG_WriteString(msg, PR_GetString(ent->v.puzzle_inv6));
 	if (sc2 & SC2_PUZZLE7)
-		MSG_WriteString(msg, pr_strings+ent->v.puzzle_inv7);
+		MSG_WriteString(msg, PR_GetString(ent->v.puzzle_inv7));
 	if (sc2 & SC2_PUZZLE8)
-		MSG_WriteString(msg, pr_strings+ent->v.puzzle_inv8);
+		MSG_WriteString(msg, PR_GetString(ent->v.puzzle_inv8));
 	if (sc2 & SC2_MAXHEALTH)
 		MSG_WriteShort(msg, ent->v.max_health);
 	if (sc2 & SC2_MAXMANA)
@@ -1404,7 +1404,7 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 	for (e = MAX_CLIENTS+1, ent = EDICT_NUM(e); e < sv.num_edicts; e++, ent = NEXT_EDICT(ent))
 	{
 		// ignore ents without visible models
-		if (!ent->v.modelindex || !pr_strings[ent->v.model])
+		if (!ent->v.modelindex || !PR_GetString(ent->v.model)[0])
 			continue;
 
 		if ((int)ent->v.effects & EF_NODRAW)

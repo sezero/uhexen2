@@ -2,7 +2,7 @@
 	sv_send.c
 	server communication module
 
-	$Id: sv_send.c,v 1.17 2007-03-16 20:40:16 sezero Exp $
+	$Id: sv_send.c,v 1.18 2007-04-01 12:18:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -443,13 +443,13 @@ void SV_StartSound (edict_t *entity, int channel, const char *sample, int volume
 		SV_Error ("%s: channel = %i", __FUNCTION__, channel);
 
 // find precache number for sound
-	for (sound_num = 1; sound_num < MAX_SOUNDS && sv.sound_precache[sound_num]; sound_num++)
+	for (sound_num = 1; sound_num < MAX_SOUNDS && sv.sound_precache[sound_num][0]; sound_num++)
 	{
 		if (!strcmp(sample, sv.sound_precache[sound_num]))
 			break;
 	}
 
-	if (sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num])
+	if (sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num][0])
 	{
 		Con_Printf ("%s: %s not precached\n", __FUNCTION__, sample);
 		return;
@@ -657,9 +657,9 @@ void SV_FindModelNumbers (void)
 	sv_ravenmodel = -1;
 	sv_raven2model = -1;
 
-	for (i = 0; i < MAX_MODELS; i++)
+	for (i = 1; i < MAX_MODELS; i++)
 	{
-		if (!sv.model_precache[i])
+		if (!sv.model_precache[i][0])
 			break;
 //		if (!strcmp(sv.model_precache[i],"progs/spike.mdl"))
 //			sv_nailmodel = i;
@@ -764,7 +764,7 @@ static void SV_UpdateClientStats (client_t *client)
 		ent = svs.clients[client->spec_track - 1].edict;
 
 	stats[STAT_HEALTH] = 0;	//ent->v.health;
-	stats[STAT_WEAPON] = SV_ModelIndex(pr_strings+ent->v.weaponmodel);
+	stats[STAT_WEAPON] = SV_ModelIndex(PR_GetString(ent->v.weaponmodel));
 	stats[STAT_AMMO] = 0;	//ent->v.currentammo;
 	stats[STAT_ARMOR] = 0;	//ent->v.armorvalue;
 	stats[STAT_SHELLS] = 0;	//ent->v.ammo_shells;

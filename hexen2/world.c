@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.16 2007-02-17 07:55:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.17 2007-04-01 12:18:23 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -583,7 +583,7 @@ edict_t	*SV_TestEntityPosition (edict_t *ent)
 
 	if (trace.startsolid)
 	{
-	//	Con_DPrintf("%s inside check\n", pr_strings + trace.ent->v.classname);
+	//	Con_DPrintf("%s inside check\n", PR_GetString(trace.ent->v.classname));
 		return sv.edicts;
 	}
 
@@ -880,7 +880,7 @@ static void SV_ClipToLinks (areanode_t *node, moveclip_t *clip)
 		if (touch == clip->passedict)
 			continue;
 		if (touch->v.solid == SOLID_TRIGGER)
-			Sys_Error ("Trigger in clipping list (%s)",touch->v.classname + pr_strings);
+			Sys_Error ("Trigger in clipping list (%s)", PR_GetString(touch->v.classname));
 
 		if ((clip->type == MOVE_NOMONSTERS || clip->type == MOVE_PHASE)
 				&& touch->v.solid != SOLID_BSP)

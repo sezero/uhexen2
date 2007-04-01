@@ -1,7 +1,7 @@
 /*
 	zone.h
 
-	$Id: zone.h,v 1.8 2007-02-07 17:01:42 sezero Exp $
+	$Id: zone.h,v 1.9 2007-04-01 12:18:24 sezero Exp $
 */
 
 #ifndef __ZZONE_H
@@ -76,6 +76,7 @@ void Memory_Init (void *buf, int size);
 
 void Z_Free (void *ptr);
 void *Z_Malloc (int size);			// returns 0 filled memory
+void *Z_Realloc (void *ptr, int size);
 void *Z_TagMalloc (int size, int tag);
 void Z_ClearZone (memzone_t *zone, int size);
 

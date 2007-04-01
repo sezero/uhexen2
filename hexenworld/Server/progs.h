@@ -2,7 +2,7 @@
 	progs.h
 	PROGS structures, public functions and vars
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/progs.h,v 1.12 2007-03-27 11:11:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/progs.h,v 1.13 2007-04-01 12:18:39 sezero Exp $
 */
 
 #ifndef __HX2_PROGS_H
@@ -45,9 +45,6 @@ typedef struct edict_s
 
 extern	dprograms_t		*progs;
 extern	dfunction_t		*pr_functions;
-extern	char			*pr_strings;
-extern	ddef_t			*pr_globaldefs;
-extern	ddef_t			*pr_fielddefs;
 extern	dstatement_t	*pr_statements;
 extern	globalvars_t	*pr_global_struct;
 #define	PR_GLOBAL_STRUCT(parm)	(pr_global_struct->parm)
@@ -87,6 +84,10 @@ void PR_Init (void);
 void PR_ExecuteProgram (func_t fnum);
 void PR_LoadProgs (void);
 
+char *PR_GetString (int num);
+int PR_SetEngineString (char *s);
+int PR_AllocString (int bufferlength, char **ptr);
+
 void PR_Profile_f (void);
 
 edict_t *ED_Alloc (void);
@@ -121,13 +122,13 @@ int NUM_FOR_EDICT(edict_t *e);
 #define	G_EDICT(o) ((edict_t *)((byte *)sv.edicts+ *(int *)&pr_globals[o]))
 #define G_EDICTNUM(o) NUM_FOR_EDICT(G_EDICT(o))
 #define	G_VECTOR(o) (&pr_globals[o])
-#define	G_STRING(o) (pr_strings + *(string_t *)&pr_globals[o])
+#define	G_STRING(o) (PR_GetString(*(string_t *)&pr_globals[o]))
 #define	G_FUNCTION(o) (*(func_t *)&pr_globals[o])
 
 #define	E_FLOAT(e,o) (((float*)&e->v)[o])
 #define	E_INT(e,o) (*(int *)&((float*)&e->v)[o])
 #define	E_VECTOR(e,o) (&((float*)&e->v)[o])
-#define	E_STRING(e,o) (pr_strings + *(string_t *)&((float*)&e->v)[o])
+#define	E_STRING(e,o) (PR_GetString(*(string_t *)&((float*)&e->v)[o]))
 
 extern	int		type_size[8];
 

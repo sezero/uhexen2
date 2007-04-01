@@ -2,7 +2,7 @@
 	sv_phys.c
 	sv physics
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_phys.c,v 1.12 2007-03-14 21:04:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_phys.c,v 1.13 2007-04-01 12:18:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -96,12 +96,12 @@ void SV_CheckVelocity (edict_t *ent)
 	{
 		if (IS_NAN(ent->v.velocity[i]))
 		{
-			Con_Printf ("Got a NaN velocity on %s\n", pr_strings + ent->v.classname);
+			Con_Printf ("Got a NaN velocity on %s\n", PR_GetString(ent->v.classname));
 			ent->v.velocity[i] = 0;
 		}
 		if (IS_NAN(ent->v.origin[i]))
 		{
-			Con_Printf ("Got a NaN origin on %s\n", pr_strings + ent->v.classname);
+			Con_Printf ("Got a NaN origin on %s\n", PR_GetString(ent->v.classname));
 			ent->v.origin[i] = 0;
 		}
 	}

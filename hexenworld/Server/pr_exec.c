@@ -2,7 +2,7 @@
 	pr_exec.c
 	PROGS execution
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.16 2007-03-14 21:04:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.17 2007-04-01 12:18:39 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -269,7 +269,7 @@ void PR_ExecuteProgram (func_t fnum)
 		c->_float = !a->vector[0] && !a->vector[1] && !a->vector[2];
 		break;
 	case OP_NOT_S:
-		c->_float = !a->string || !pr_strings[a->string];
+		c->_float = !a->string || !*PR_GetString(a->string);
 		break;
 	case OP_NOT_FNC:
 		c->_float = !a->function;
@@ -287,7 +287,7 @@ void PR_ExecuteProgram (func_t fnum)
 			&& (a->vector[2] == b->vector[2]);
 		break;
 	case OP_EQ_S:
-		c->_float = !strcmp(pr_strings + a->string, pr_strings + b->string);
+		c->_float = !strcmp(PR_GetString(a->string), PR_GetString(b->string));
 		break;
 	case OP_EQ_E:
 		c->_float = a->_int == b->_int;
@@ -305,7 +305,7 @@ void PR_ExecuteProgram (func_t fnum)
 			|| (a->vector[2] != b->vector[2]);
 		break;
 	case OP_NE_S:
-		c->_float = strcmp(pr_strings + a->string, pr_strings + b->string);
+		c->_float = strcmp(PR_GetString(a->string), PR_GetString(b->string));
 		break;
 	case OP_NE_E:
 		c->_float = a->_int != b->_int;
@@ -893,8 +893,7 @@ static void PrintCallHistory (void)
 		}
 		else
 		{
-			Con_Printf("%12s : %s\n", pr_strings+f->s_file,
-						pr_strings+f->s_name);
+			Con_Printf("%12s : %s\n", PR_GetString(f->s_file), PR_GetString(f->s_name));
 		}
 	}
 }
@@ -1053,13 +1052,13 @@ void PR_Profile_f (void)
 					{
 						fprintf(saveFile, "%05.2f %s\n",
 							((float)bestFunc->profile/(float)total)*100.0,
-							pr_strings+bestFunc->s_name);
+							PR_GetString(bestFunc->s_name));
 					}
 					else
 					{
 						Con_Printf("%05.2f %s\n",
 							((float)bestFunc->profile/(float)total)*100.0,
-							pr_strings+bestFunc->s_name);
+							PR_GetString(bestFunc->s_name));
 					}
 				}
 				j++;
@@ -1098,11 +1097,11 @@ void PR_Profile_f (void)
 		{
 			if (saveFile)
 			{
-				fprintf(saveFile, "\"%s\"\n", pr_strings+currentFile);
+				fprintf(saveFile, "\"%s\"\n", PR_GetString(currentFile));
 			}
 			else
 			{
-				Con_Printf("\"%s\"\n", pr_strings+currentFile);
+				Con_Printf("\"%s\"\n", PR_GetString(currentFile));
 			}
 
 			j = 0;
@@ -1127,13 +1126,13 @@ void PR_Profile_f (void)
 						{
 							fprintf(saveFile, "   %05.2f %s\n",
 								((float)bestFunc->profile/(float)total)*100.0,
-								pr_strings+bestFunc->s_name);
+								PR_GetString(bestFunc->s_name));
 						}
 						else
 						{
 							Con_Printf("   %05.2f %s\n",
 								((float)bestFunc->profile/(float)total)*100.0,
-								pr_strings+bestFunc->s_name);
+								PR_GetString(bestFunc->s_name));
 						}
 					}
 					j++;
