@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.20 2007-04-01 12:18:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.21 2007-04-01 13:38:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1202,7 +1202,7 @@ void PR_LoadProgs (void)
 		progs = (dprograms_t *)QIO_LoadHunkFile ("progs.dat");
 	if (!progs)
 		SV_Error ("%s: couldn't load progs.dat", __FUNCTION__);
-	Con_DPrintf ("Programs occupy %uK.\n", qio_filesize/1024);
+	Con_DPrintf ("Programs occupy %luK.\n", (unsigned long)(qio_filesize/1024));
 
 	// add prog crc to the serverinfo
 	sprintf (num, "%u", CRC_Block ((byte *)progs, qio_filesize));
