@@ -114,10 +114,16 @@ CHECK_SDL=1
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
 # disable x86 assembly if it is not an x86.
-# note: should I keep it if it is an x86_64
-# and the COMPILE_32BITS is set to yes???
 ifneq ($(MACH_TYPE),x86)
+ifeq ($(MACH_TYPE),x86_64)
+#  but keep the ia32 assembly on x86_64 if
+#  compiling as 32 bits for the s/w renderer
+ifneq ($(COMPILE_32BITS),yes)
 USE_X86_ASM=no
+endif
+else
+USE_X86_ASM=no
+endif
 endif
 
 # build environment sanity checks
