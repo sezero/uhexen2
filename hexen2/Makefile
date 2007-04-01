@@ -63,7 +63,7 @@
 #		no   =	No extra optimizations will be made
 #
 # USE_X86_ASM	yes  =  Use x86 assembly on ia32 machines which is faster.
-#			Disable this manually for any other cpu.
+#			Automatically disabled for any other cpu.
 #		no   =	Do not use intel assembly even on ix86.
 #
 # COMPILE_32BITS yes =  Compile as a 32 bit binary. If you are on a 64 bit
@@ -108,14 +108,23 @@ USE_X86_ASM=yes
 COMPILE_32BITS=no
 
 # build environment sanity checks
-ifeq ($(USE_X86_ASM),yes)
-CHECK_NASM=1
-endif
 CHECK_SDL=1
-CHECK_WINDRES=1
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
+
+# disable x86 assembly if it is not an x86.
+# note: should I keep it if it is an x86_64
+# and the COMPILE_32BITS is set to yes???
+ifneq ($(MACH_TYPE),x86)
+USE_X86_ASM=no
+endif
+
+# build environment sanity checks
+ifeq ($(USE_X86_ASM),yes)
+CHECK_NASM=1
+endif
+CHECK_WINDRES=1
 
 # include file for sanity checks
 include $(UHEXEN2_TOP)/scripts/sanity1.inc
