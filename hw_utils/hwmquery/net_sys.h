@@ -2,7 +2,7 @@
 	net_sys.h
 	common network system header
 
-	$Id: net_sys.h,v 1.3 2007-03-14 21:04:21 sezero Exp $
+	$Id: net_sys.h,v 1.4 2007-04-01 13:39:15 sezero Exp $
 */
 
 #ifndef __NET_SYS_H__
@@ -60,6 +60,10 @@
 
 #include <windows.h>
 #include <winsock.h>
+
+// there is no in_addr_t on win32: define it as
+// the type of the S_addr of in_addr structure.
+typedef u_long	in_addr_t;
 
 #if !( defined(_WS2TCPIP_H) || defined(_WS2TCPIP_H_) )
 // on win32, socklen_t seems to be a winsock2 thing
