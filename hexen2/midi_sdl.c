@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.36 2007-03-14 08:12:32 sezero Exp $
+	$Id: midi_sdl.c,v 1.37 2007-04-02 21:06:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -99,7 +99,6 @@ qboolean MIDI_Init(void)
 	int audio_channels = 2;
 	int audio_buffers = 4096;
 
-	char	mididir[MAX_OSPATH];
 	void	*selfsyms;
 	const SDL_version *smixer_version;
 	SDL_version *(*Mix_Linked_Version_fp)(void) = NULL;
@@ -146,9 +145,6 @@ bad_version:
 	}
 	Con_Printf("found.\n");
 
-	Q_snprintf_err(mididir, sizeof(mididir), "%s/.midi", fs_userdir);
-	Sys_mkdir_err (mididir);
-
 	// Try initing the audio subsys if it hasn't been already
 	audio_wasinit = SDL_WasInit(SDL_INIT_AUDIO);
 	if (audio_wasinit == 0)
@@ -190,10 +186,44 @@ bad_version:
 	return true;
 }
 
-void MIDI_Play(const char *Name)
+static int MIDI_ExtractFile (FILE *inFile, const char *Name, size_t size)
 {
-	void	*midiData;
-	char	midiName[MAX_OSPATH];
+	FILE		*outFile;
+	size_t		remaining, count;
+	int		err = 0;
+	char		buf[16384];
+
+	outFile = fopen (Name, "wb");
+	if (!outFile)
+		return -1;
+	remaining = size;
+	while (remaining)
+	{
+		if (remaining < sizeof(buf))
+			count = remaining;
+		else
+			count = sizeof(buf);
+		fread (buf, 1, count, inFile);
+		err = ferror(inFile);
+		if (err)
+			break;
+		fwrite (buf, 1, count, outFile);
+		err = ferror(outFile);
+		if (err)
+			break;
+		remaining -= count;
+	}
+
+	fclose (outFile);
+	return err;
+}
+
+#define	TEMP_MUSICNAME	"tmpmusic"
+
+void MIDI_Play (const char *Name)
+{
+	FILE		*midiFile;
+	char	midiName[MAX_OSPATH], tempName[MAX_QPATH];
 
 	if (!bMidiInited)	//don't try to play if there is no midi
 		return;
@@ -206,31 +236,45 @@ void MIDI_Play(const char *Name)
 		return;
 	}
 
-	// Note that midi/ is the standart quake search path, but
-	// .midi/ with the leading dot is the path in the userdir
-	snprintf (midiName, sizeof(midiName), "%s/.midi/%s.mid", fs_userdir, Name);
-	if (access(midiName, R_OK) != 0)
+	snprintf (tempName, sizeof(tempName), "%s.%s", Name, "mid");
+	QIO_FOpenFile (va("%s/%s", "midi", tempName), &midiFile, false);
+	if (!midiFile)
 	{
-		Sys_Printf("Extracting file midi/%s.mid\n", Name);
-		midiData = QIO_LoadHunkFile (va("midi/%s.mid", Name));
-		if (!midiData)
+		Con_Printf("music file %s not found\n", tempName);
+		return;
+	}
+	else
+	{
+		if (file_from_pak)
 		{
-			Con_Printf("musicfile midi/%s.mid not found\n", Name);
-			return;
+			int		ret;
+
+			Con_Printf("Extracting %s from pakfile\n", tempName);
+			snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, "mid");
+			ret = MIDI_ExtractFile (midiFile, midiName, qio_filesize);
+			fclose (midiFile);
+			if (ret != 0)
+			{
+				Con_Printf("Error while extracting from pak\n");
+				return;
+			}
 		}
-		if (QIO_WriteFile (va(".midi/%s.mid", Name), midiData, qio_filesize))
-			return;
+		else	/* use the file directly */
+		{
+			fclose (midiFile);
+			snprintf (midiName, sizeof(midiName), "%s/%s/%s", qio_filepath, "midi", tempName);
+		}
 	}
 
 	music = Mix_LoadMUS(midiName);
 	if ( music == NULL )
 	{
-		Sys_Printf("Couldn't load %s: %s\n", midiName, SDL_GetError());
+		Con_Printf("Couldn't load %s: %s\n", tempName, SDL_GetError());
 	}
 	else
 	{
 		bFileOpen = 1;
-		Con_Printf ("Started midi music %s\n", Name);
+		Con_Printf ("Started music %s\n", tempName);
 		Mix_FadeInMusic(music,0,2000);
 		bPlaying = 1;
 	}

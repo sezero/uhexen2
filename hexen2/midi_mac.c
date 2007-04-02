@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.9 2007-03-14 08:12:32 sezero Exp $
+	$Id: midi_mac.c,v 1.10 2007-04-02 21:06:44 sezero Exp $
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -116,7 +116,6 @@ static void MIDI_Loop_f (void)
 qboolean MIDI_Init (void)
 {
 	OSErr		theErr;
-	char	mididir[MAX_OSPATH];
 
 	Con_Printf("%s: ", __FUNCTION__);
 
@@ -135,9 +134,6 @@ qboolean MIDI_Init (void)
 	}
 
 	Con_Printf("Started QuickTime midi.\n");
-
-	Q_snprintf_err(mididir, sizeof(mididir), "%s/.midi", fs_userdir);
-	Sys_mkdir_err (mididir);
 
 	bPaused = false;
 	bLooped = true;
@@ -162,10 +158,44 @@ void MIDI_Cleanup (void)
 	}
 }
 
+static int MIDI_ExtractFile (FILE *inFile, const char *Name, size_t size)
+{
+	FILE		*outFile;
+	size_t		remaining, count;
+	int		err = 0;
+	char		buf[16384];
+
+	outFile = fopen (Name, "wb");
+	if (!outFile)
+		return -1;
+	remaining = size;
+	while (remaining)
+	{
+		if (remaining < sizeof(buf))
+			count = remaining;
+		else
+			count = sizeof(buf);
+		fread (buf, 1, count, inFile);
+		err = ferror(inFile);
+		if (err)
+			break;
+		fwrite (buf, 1, count, outFile);
+		err = ferror(outFile);
+		if (err)
+			break;
+		remaining -= count;
+	}
+
+	fclose (outFile);
+	return err;
+}
+
+#define	TEMP_MUSICNAME	"tmpmusic"
+
 void MIDI_Play (const char *Name)
 {
-	void	*midiData;
-	char	midiName[MAX_OSPATH];
+	FILE		*midiFile;
+	char	midiName[MAX_OSPATH], tempName[MAX_QPATH];
 	OSErr	err;
 	FSSpec	midiSpec;
 	FSRef	midiRef;
@@ -182,20 +212,34 @@ void MIDI_Play (const char *Name)
 		return;
 	}
 
-	// Note that midi/ is the standart quake search path, but
-	// .midi/ with the leading dot is the path in the userdir
-	snprintf (midiName, sizeof(midiName), "%s/.midi/%s.mid", fs_userdir, Name);
-	if (access(midiName, R_OK) != 0)
+	snprintf (tempName, sizeof(tempName), "%s.%s", Name, "mid");
+	QIO_FOpenFile (va("%s/%s", "midi", tempName), &midiFile, false);
+	if (!midiFile)
 	{
-		Sys_Printf("Extracting file midi/%s.mid\n", Name);
-		midiData = QIO_LoadHunkFile (va("midi/%s.mid", Name));
-		if (!midiData)
+		Con_Printf("music file %s not found\n", tempName);
+		return;
+	}
+	else
+	{
+		if (file_from_pak)
 		{
-			Con_Printf("musicfile midi/%s.mid not found\n", Name);
-			return;
+			int		ret;
+
+			Con_Printf("Extracting %s from pakfile\n", tempName);
+			snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, "mid");
+			ret = MIDI_ExtractFile (midiFile, midiName, qio_filesize);
+			fclose (midiFile);
+			if (ret != 0)
+			{
+				Con_Printf("Error while extracting from pak\n");
+				return;
+			}
 		}
-		if (QIO_WriteFile (va(".midi/%s.mid", Name), midiData, qio_filesize))
-			return;
+		else	/* use the file directly */
+		{
+			fclose (midiFile);
+			snprintf (midiName, sizeof(midiName), "%s/%s/%s", qio_filepath, "midi", tempName);
+		}
 	}
 
 	// converting path to FSSpec. found in CarbonCocoaIntegration.pdf:
@@ -236,7 +280,7 @@ void MIDI_Play (const char *Name)
 	bgm_volume_old = bgmvolume.value;
 
 	StartMovie (midiTrack);
-	Con_Printf ("Started midi music %s\n", Name);
+	Con_Printf ("Started midi music %s\n", tempName);
 }
 
 void MIDI_Pause (int mode)
