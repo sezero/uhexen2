@@ -2,7 +2,7 @@
 	quakefs.c
 	quake file io
 
-	$Id: quakeio.c,v 1.5 2007-03-14 08:12:45 sezero Exp $
+	$Id: quakeio.c,v 1.6 2007-04-02 21:06:03 sezero Exp $
 */
 
 #define _NEED_SEARCHPATH_T
@@ -21,6 +21,8 @@
 
 
 size_t		qio_filesize;	// size of the last file opened through QIO
+char		*qio_filepath;	// path of the last file opened through QIO
+						// NULL for files in a pak.
 int		file_from_pak;	// ZOID: global indicating that file came from a pak
 
 
@@ -262,6 +264,7 @@ size_t QIO_FOpenFile (const char *filename, FILE **file, qboolean override_pack)
 					fseek (*file, pak->files[i].filepos, SEEK_SET);
 					qio_filesize = (size_t) pak->files[i].filelen;
 					file_from_pak = 1;
+					qio_filepath = NULL;
 					return qio_filesize;
 				}
 		}
@@ -283,6 +286,7 @@ size_t QIO_FOpenFile (const char *filename, FILE **file, qboolean override_pack)
 			*file = fopen (netpath, "rb");
 			if (!*file)
 				Sys_Error ("Couldn't reopen %s", netpath);
+			qio_filepath = search->filename;
 			return QIO_filelength (*file);
 		}
 	}
@@ -290,6 +294,7 @@ size_t QIO_FOpenFile (const char *filename, FILE **file, qboolean override_pack)
 	Sys_Printf ("%s: can't find %s\n", __FUNCTION__, filename);
 
 	*file = NULL;
+	qio_filepath = NULL;
 	qio_filesize = (size_t)-1;
 	return qio_filesize;
 }

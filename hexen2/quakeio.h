@@ -2,7 +2,7 @@
 	quakeio.h
 	quake file io
 
-	$Id: quakeio.h,v 1.2 2007-02-17 11:22:46 sezero Exp $
+	$Id: quakeio.h,v 1.3 2007-04-02 21:06:00 sezero Exp $
 */
 
 #ifndef __QUAKEIO_H
@@ -17,6 +17,8 @@
 #endif
 
 extern	size_t	qio_filesize;	// size of the last file opened through QIO api
+extern	char	*qio_filepath;	// path of the last file opened through QIO api
+						// NULL for files in a pakfile.
 
 extern	int	file_from_pak;	// global indicating that file came from a pak
 
