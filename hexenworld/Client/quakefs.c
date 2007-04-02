@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.10 2007-03-30 17:12:45 sezero Exp $
+	$Id: quakefs.c,v 1.11 2007-04-02 21:07:28 sezero Exp $
 */
 
 #define _NEED_SEARCHPATH_T
@@ -574,7 +574,6 @@ static void MoveUserData (void)
 	{
 		"quick",	// quick saves
 		"shots",	// screenshots
-		".midi",	// midi cache
 		"glhexen",	// model mesh cache
 		/* these are highly unlikely, but just in case.. */
 		"maps",
