@@ -13,108 +13,131 @@ replace it with the mod's name.)
 
 remember that this depends on SDL_mixer and whatever option it was
 compiled with: It needs mikmod for mod files, ogg/vorbis libraries for
-ogg files and smpeg for mp3 files. If, say, it wasn't linked against
-smpeg, then mp3 files won't be played.
+ogg files and smpeg, or preferably libmad, for mp3 files. If, say, it
+wasn't linked against smpeg or libmad, then mp3 files won't be played.
 
 in the game, choose midi as the background music format and you'll be
 ready to go.
 
 
---- midi_sdl.c~	2007-02-06 10:00:33.000000000 +0200
-+++ midi_sdl.c	2007-02-06 10:00:36.000000000 +0200
-@@ -147,6 +147,8 @@ bad_version:
- 	}
- 	Con_Printf("found.\n");
+--- midi_sdl.c~	2007-04-02 23:44:55.000000000 +0300
++++ midi_sdl.c	2007-04-02 23:45:34.000000000 +0300
+@@ -99,6 +99,7 @@ qboolean MIDI_Init(void)
+ 	int audio_channels = 2;
+ 	int audio_buffers = 4096;
  
-+	Q_snprintf_err(mididir, sizeof(mididir), "%s/music", fs_userdir);
-+	Sys_mkdir_err (mididir);
- 	Q_snprintf_err(mididir, sizeof(mididir), "%s/.midi", fs_userdir);
- 	Sys_mkdir_err (mididir);
++	char	musicdir[MAX_OSPATH];
+ 	void	*selfsyms;
+ 	const SDL_version *smixer_version;
+ 	SDL_version *(*Mix_Linked_Version_fp)(void) = NULL;
+@@ -170,6 +171,9 @@ bad_version:
+ 	if (midi_endmusicfnc)
+ 		Mix_HookMusicFinished(midi_endmusicfnc);
  
-@@ -191,10 +193,29 @@ bad_version:
- 	return true;
- }
++	Q_snprintf_err(musicdir, sizeof(musicdir), "%s/music", fs_userdir);
++	Sys_mkdir (musicdir);
++
+ 	Con_Printf("MIDI music initialized.\n");
+ 
+ 	Cmd_AddCommand ("midi_play", MIDI_Play_f);
+@@ -220,10 +224,27 @@ static int MIDI_ExtractFile (FILE *inFil
+ 
+ #define	TEMP_MUSICNAME	"tmpmusic"
  
 +static const struct
 +{
-+	char	*ext;
-+	char	*lookup_dir;
++	char		*ext;		/* the file extension		*/
++	char		*dir;		/* the directory to look in	*/
++	int		cdrip;		/* allow as a rip'ped cd track	*/
 +} MusicFile[] =
 +{
-+	{   "ogg", "music"	},
-+	{   "mp3", "music"	},
-+	{   "mod", "music"	},
-+	{   "it", "music"	},
-+	{   "s3m", "music"	},
-+	{   "mid", "midi"	},	// must be the last entry before NULL
-+	{   NULL,  NULL		}
++	{   "ogg", "music", 1	},
++	{   "mp3", "music", 1	},
++	{   "mod", "music", 0	},
++	{   "it",  "music", 0	},
++	{   "s3m", "music", 0	},
++	{   "mid", "midi",  0	},	/* midi must be the last before NULL	*/
++	{   NULL,   NULL,   0	}	/* the last entry must be NULL		*/
 +};
 +
-+
- void MIDI_Play(const char *Name)
+ void MIDI_Play (const char *Name)
  {
- 	void	*midiData;
- 	char	midiName[MAX_OSPATH];
-+	int			i;
-+	qboolean		search_ripped_tracks;
-+	char		tmp[64];
+ 	FILE		*midiFile;
+ 	char	midiName[MAX_OSPATH], tempName[MAX_QPATH];
++	int			i, search_cdrip;
  
  	if (!bMidiInited)	//don't try to play if there is no midi
  		return;
-@@ -207,6 +228,44 @@ void MIDI_Play(const char *Name)
+@@ -236,11 +257,50 @@ void MIDI_Play (const char *Name)
  		return;
  	}
  
-+	search_ripped_tracks = false;
-+	Q_strlcpy (tmp, Name, sizeof(tmp));
+-	snprintf (tempName, sizeof(tempName), "%s.%s", Name, "mid");
+-	QIO_FOpenFile (va("%s/%s", "midi", tempName), &midiFile, false);
++	search_cdrip = 0;
 +retry:
-+	for (i = 0; ; i++)
++	i = 0;
++	if (search_cdrip)
 +	{
-+	    if (MusicFile[i].ext == NULL)
-+	    {
-+		midiName[0] = '\0';
-+		break;
-+	    }
-+
-+	    if (!search_ripped_tracks)	// search for ripped cd-tracks only under fs_userdir
-+	    {
-+		snprintf (midiName, sizeof(midiName), "%s/%s/%s.%s", fs_gamedir, MusicFile[i].lookup_dir, tmp, MusicFile[i].ext);
-+		if (access(midiName, R_OK) == 0)
++		Con_Printf ("trying a cd-rip for track %d\n", cl.cdtrack);
++	}
++	while (MusicFile[i].ext != NULL)
++	{
++		if ( !strcmp(MusicFile[i].ext, "mid") )
++		{
++			if (!search_cdrip)
++			{
++				search_cdrip = 1;
++				goto retry;
++			}
++			else
++			{
++				search_cdrip = 0;
++				Con_Printf ("trying a midi file\n");
++			}
++		}
++		if (search_cdrip)
++		{
++			if (!MusicFile[i].cdrip)
++			{
++				++i;
++				continue;
++			}
++			snprintf (tempName, sizeof(tempName), "track%02d.%s", cl.cdtrack, MusicFile[i].ext);
++		}
++		else
++		{
++			snprintf (tempName, sizeof(tempName), "%s.%s", Name, MusicFile[i].ext);
++		}
++		QIO_FOpenFile (va("%s/%s", MusicFile[i].dir, tempName), &midiFile, false);
++		if (midiFile)
 +			break;
-+
-+		Sys_Printf("music file %s not available\n", midiName);
-+	    }
-+
-+		snprintf (midiName, sizeof(midiName), "%s/%s/%s.%s", fs_userdir, MusicFile[i].lookup_dir, tmp, MusicFile[i].ext);
-+		if (access(midiName, R_OK) == 0)
-+			break;
-+		Sys_Printf("music file %s not available\n", midiName);
++		++i;
 +	}
 +
-+    if (midiName[0] == '\0')
-+    {
-+	if (!search_ripped_tracks)
-+	{
-+	// specific midi/music filename not found. let's try
-+	// again to find a ripped cdrom track.
-+		snprintf (tmp, sizeof(tmp), "track%02d", cl.cdtrack);
-+		Sys_Printf ("trying ripped cd-track name %s\n", tmp);
-+		search_ripped_tracks = true;
-+		goto retry;
-+	}
-+
- 	// Note that midi/ is the standart quake search path, but
- 	// .midi/ with the leading dot is the path in the userdir
- 	snprintf (midiName, sizeof(midiName), "%s/.midi/%s.mid", fs_userdir, Name);
-@@ -222,6 +281,11 @@ void MIDI_Play(const char *Name)
- 		if (QIO_WriteFile (va(".midi/%s.mid", Name), midiData, qio_filesize))
- 			return;
+ 	if (!midiFile)
+ 	{
+-		Con_Printf("music file %s not found\n", tempName);
++		Con_Printf("no music file for %s was found\n", Name);
+ 		return;
  	}
-+    }
-+    else
-+    {
-+	Sys_Printf("Using music file %s\n", midiName);
-+    }
+ 	else
+@@ -250,7 +310,7 @@ void MIDI_Play (const char *Name)
+ 			int		ret;
  
- 	music = Mix_LoadMUS(midiName);
- 	if ( music == NULL )
+ 			Con_Printf("Extracting %s from pakfile\n", tempName);
+-			snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, "mid");
++			snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, MusicFile[i].ext);
+ 			ret = MIDI_ExtractFile (midiFile, midiName, qio_filesize);
+ 			fclose (midiFile);
+ 			if (ret != 0)
+@@ -262,7 +322,7 @@ void MIDI_Play (const char *Name)
+ 		else	/* use the file directly */
+ 		{
+ 			fclose (midiFile);
+-			snprintf (midiName, sizeof(midiName), "%s/%s/%s", qio_filepath, "midi", tempName);
++			snprintf (midiName, sizeof(midiName), "%s/%s/%s", qio_filepath, MusicFile[i].dir, tempName);
+ 		}
+ 	}
+ 
+
