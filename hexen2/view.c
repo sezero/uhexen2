@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.21 2007-03-04 09:02:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.22 2007-04-02 11:47:44 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -12,7 +12,6 @@
 */
 
 #include "quakedef.h"
-#include "r_local.h"
 
 static	cvar_t	scr_ofsx = {"scr_ofsx", "0", CVAR_NONE};
 static	cvar_t	scr_ofsy = {"scr_ofsy", "0", CVAR_NONE};

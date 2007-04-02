@@ -2,11 +2,10 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.70 2007-03-20 08:18:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.71 2007-04-02 11:47:43 sezero Exp $
 */
 
 #include "quakedef.h"
-#include "r_local.h"
 #include "cfgfile.h"
 #include "debuglog.h"
 #include <setjmp.h>

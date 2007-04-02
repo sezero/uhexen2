@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.27 2007-03-04 09:02:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.28 2007-04-02 11:47:47 sezero Exp $
 */
 
 
@@ -50,7 +50,7 @@
 =============================================================================*/
 
 #include "quakedef.h"
-#include "r_local.h"
+//#include "r_local.h"
 #ifdef _WIN32
 #include "winquake.h"
 #include <io.h>

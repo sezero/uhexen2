@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.c,v 1.17 2007-03-04 09:02:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.c,v 1.18 2007-04-02 11:47:48 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -12,7 +12,6 @@
 */
 
 #include "quakedef.h"
-#include "r_local.h"
 
 static	cvar_t	cl_rollspeed = {"cl_rollspeed", "200", CVAR_NONE};
 static	cvar_t	cl_rollangle = {"cl_rollangle", "2.0", CVAR_NONE};
