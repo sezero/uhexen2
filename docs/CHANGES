@@ -3,7 +3,7 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2007-04-01 (CVS, 1.4.1-pre3):
+2007-04-03 (CVS, 1.4.2-pre3):
     * fixed the doWhiteFlash server message: this thing is a mission pack
       crap (called from the buddha_die() function of buddha.hc upon death
       of Praevus) and it used to do a V_WhiteFlash_f(), affecting the local
