@@ -1,22 +1,24 @@
-this patch resulted after a feature request [ 1597004 ] at our tracker:
+This patch resulted after a feature request [ 1597004 ] at our tracker:
 http://sourceforge.net/tracker/index.php?func=detail&aid=1597004&group_id=124987&atid=701009
 
-initial support for allowing ogg, mp3, and mod (mod, it, s3m) external
-music files to be played instead of the original midi files. the music
+Initial support for allowing ogg, mp3, and mod (mod, it, s3m) external
+music files to be played instead of the original midi files. The music
 files are searched first under <install_dir>/data1/music and then under
 ~/.hexen2/data1/music. In the first pass, the original midi filename is
-searched with a proper extension, if nothing is found, then trackXX is
+searched with a proper extension. If nothing is found, then trackXX is
 searched similarly (XX : cd-track number for the running map). If it is
-not found either, then the original midi file is played. (Note: replace
-data1 with portals for the mission pack. if you are running a mod, then
-replace it with the mod's name.)
+not found either, then the original midi file is played.
+Note: replace data1 with portals for the mission pack. If you are running
+a mod, then replace it with the mod's name. A more technical explanation:
+the music files are searched under the 'music' directories of the whole
+of the game's internal search path.
 
-remember that this depends on SDL_mixer and whatever option it was
+Do remember that this depends on SDL_mixer and whatever option it was
 compiled with: It needs mikmod for mod files, ogg/vorbis libraries for
-ogg files and smpeg, or preferably libmad, for mp3 files. If, say, it
+ogg files, and smpeg, or preferably libmad, for mp3 files. If, say, it
 wasn't linked against smpeg or libmad, then mp3 files won't be played.
 
-in the game, choose midi as the background music format and you'll be
+In the game, choose midi as the background music format and you'll be
 ready to go.
 
 
