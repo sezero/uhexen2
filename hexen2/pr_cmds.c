@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.40 2007-04-01 20:08:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.41 2007-04-03 06:08:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2062,6 +2062,9 @@ static void PF_lightstylestatic(void)
 
 	// Change the string in sv
 	Q_strlcpy (sv.lightstyles[styleNumber], styleString, sizeof(sv.lightstyles[0]));
+#if defined(SERVERONLY)
+	d_lightstylevalue[styleNumber] = value;
+#endif	/* SERVERONLY */
 
 	if (sv.state != ss_active)
 	{
