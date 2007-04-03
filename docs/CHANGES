@@ -3,6 +3,38 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-04-01 (CVS, 1.4.1-pre3):
+    * fixed the doWhiteFlash server message: this thing is a mission pack
+      crap (called from the buddha_die() function of buddha.hc upon death
+      of Praevus) and it used to do a V_WhiteFlash_f(), affecting the local
+      client only. naturally, the recorded demos didn't carry the message
+      and the flash didn't appear. this is the best solution I found.
+    * makefiles: for non-x86 but x86_64 cpu, do not disable x86 assembly if
+      compiling as 32 bit, otherwise the software renderer fails compilation.
+    * hexen2 dedicated server: Host_Init must check sv.active, not sv.name[0]
+      before starting the demo1 map.
+    * hexen2 dedicated server: Host_Map_f must rely on sv.active, not sv.name[0]
+    * hexen2: fixed mapname reporting for dedicated servers.
+    * killed some unnecessary r_local.h includes.
+    * added qio_filepath: it points to the path of the last file opened through
+      QIO. note: not meaningful (NULL) for files in a pak.
+    * midi changes: SDL and QuickTime midi will not blindly cache the midi
+      files in userdir/gamedir/.midi anymore. if a music file is not in a
+      pak file, it will be used directly. otherwise it will be extracted
+      directly into the root of userdir as tmpmusic.mid. the userdir/.midi
+      cache directory is obsoleted now.
+    * since the userdir/.midi directory is now obsoleted, it no longer needs
+      to be moved by MoveUserData().
+    * re-diff'ed the external-music-file-support patch after the midi changes.
+    * hexen2ded: in PF_lightstylestatic copy the value to d_lightstylevalue
+      (from the hexenworld server version).
+    * removed an old #if 1 of mine from Chase_Update.
+    * updated the comments in the external-music-file-support patch.
+    * incremented the engine version to 1.19 for Hexen II and 0.19 for HexenWorld.
+      incremented the gamecode version to 1.19 for consistancy with the engine
+      version. updated the relevant documentation and scripts. marked the snapshot
+      of today (Apr. 03, 2007) as 1.4.2-pre3.
+
 2007-04-01 (CVS):
     * cl_parse.c: killed some dead code.
     * 64 bit support: the QuakeC/HexenC interpreter used to use string pointer
