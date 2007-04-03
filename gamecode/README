@@ -4,7 +4,7 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
-2006-03-18 (1.17):
+2006-03-18 (1.19):
 ===================
 - Origin fixes for tomed fires of vorpal sword and purifier: paladin used
   to fire them always from the non-crouched eye position, and it was even

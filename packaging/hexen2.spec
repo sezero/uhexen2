@@ -18,15 +18,22 @@
 
 %define desktop_vendor	uhexen2
 
-%define gamecode_ver	1.17
+%define gamecode_ver	1.19
 
-%define prerelease	pre2
+# pre-release version: MAKE SURE to change this
+# to an %undefine for the final realease!!
+%define prerelease	pre3
+
+# package release number for final-release:
+%define pkg_final	1
+# package release number for pre-release:
+%define pkg_prerel	3
 
 Name:		hexen2
 License:	GPL
 Group:		Amusements/Games
 Version:	1.4.2
-Release:	0
+Release:	%{?prerelease:0.%{pkg_prerel}.%{prerelease}}%{!?prerelease:%{pkg_final}}
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
 Source:		http://download.sourceforge.net/uhexen2/hexen2source-%{version}%{?prerelease:-%{prerelease}}.tgz
@@ -294,6 +301,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Tue Apr 03 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-0.3.pre3
+- 1.4.2-pre3 prerelease.
+
 * Tue Mar 20 2007 O.Sezer <sezero@users.sourceforge.net>
 - xdelta version is 1.1.4: rename the binary properly.
 
