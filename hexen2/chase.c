@@ -2,7 +2,7 @@
 	chase.c
 	chase camera code
 
-	$Id: chase.c,v 1.8 2007-03-14 21:03:00 sezero Exp $
+	$Id: chase.c,v 1.9 2007-04-03 06:19:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -62,7 +62,7 @@ void Chase_Update (void)
 					- right[i]*chase_right.value;
 	//chase_dest[2] += chase_up.value;
 	chase_dest[2] = r_refdef.vieworg[2] + chase_up.value;
-#if 1
+
 	// find the spot the player is looking at
 	VectorMA (r_refdef.vieworg, 4096, forward, dest);
 	TraceLine (r_refdef.vieworg, dest, stop);
@@ -73,7 +73,7 @@ void Chase_Update (void)
 	if (dist < 1)
 		dist = 1;
 	r_refdef.viewangles[PITCH] = -atan(stop[2] / dist) / M_PI * 180;
-#endif
+
 	// check for walls between player and camera. from quakeforge
 	TraceLine(r_refdef.vieworg, chase_dest, stop);
 	if (VectorLength(stop) != 0)
