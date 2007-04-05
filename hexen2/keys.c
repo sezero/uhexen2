@@ -2,7 +2,7 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.28 2007-03-14 21:03:11 sezero Exp $
+	$Id: keys.c,v 1.29 2007-04-05 07:02:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -291,7 +291,7 @@ static void Key_Console (int key)
 	if (key == K_LEFTARROW)
 	{
 		if (key_linepos > 1)
-		key_linepos--;
+			key_linepos--;
 		return;
 	}
 
@@ -376,7 +376,7 @@ static void Key_Console (int key)
 		return;
 	}
 
-	if (key == K_PGUP || key==K_MWHEELUP)
+	if (key == K_PGUP || key == K_MWHEELUP)
 	{
 		con_backscroll += 2;
 		if (con_backscroll > con_totallines - (vid.height>>3) - 1)
@@ -384,7 +384,7 @@ static void Key_Console (int key)
 		return;
 	}
 
-	if (key == K_PGDN || key==K_MWHEELDOWN)
+	if (key == K_PGDN || key == K_MWHEELDOWN)
 	{
 		con_backscroll -= 2;
 		if (con_backscroll < 0)
@@ -476,7 +476,7 @@ qboolean team_message = false;
 
 static void Key_Message (int key)
 {
-	static int chat_bufferlen = 0;
+	static int	chat_bufferlen = 0;
 
 	if (key == K_ENTER)
 	{
@@ -507,14 +507,11 @@ static void Key_Message (int key)
 	if (key == K_BACKSPACE)
 	{
 		if (chat_bufferlen)
-		{
-			chat_bufferlen--;
-			chat_buffer[chat_bufferlen] = 0;
-		}
+			chat_buffer[--chat_bufferlen] = 0;
 		return;
 	}
 
-	if (chat_bufferlen == 31)
+	if (chat_bufferlen == sizeof(chat_buffer) - 1)
 		return; // all full
 
 	chat_buffer[chat_bufferlen++] = key;

@@ -2,7 +2,7 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.29 2007-03-14 21:03:33 sezero Exp $
+	$Id: keys.c,v 1.30 2007-04-05 07:02:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -323,7 +323,7 @@ static void Key_Console (int key)
 	if (key == K_LEFTARROW)
 	{
 		if (key_linepos > 1)
-		key_linepos--;
+			key_linepos--;
 		return;
 	}
 
@@ -408,13 +408,13 @@ static void Key_Console (int key)
 		return;
 	}
 
-	if (key == K_PGUP || key==K_MWHEELUP)
+	if (key == K_PGUP || key == K_MWHEELUP)
 	{
 		con->display -= 2;
 		return;
 	}
 
-	if (key == K_PGDN || key==K_MWHEELDOWN)
+	if (key == K_PGDN || key == K_MWHEELDOWN)
 	{
 		con->display += 2;
 		if (con->display > con->current)
@@ -536,14 +536,11 @@ static void Key_Message (int key)
 	if (key == K_BACKSPACE)
 	{
 		if (chat_bufferlen)
-		{
-			chat_bufferlen--;
-			chat_buffer[chat_bufferlen] = 0;
-		}
+			chat_buffer[--chat_bufferlen] = 0;
 		return;
 	}
 
-	if (chat_bufferlen == sizeof(chat_buffer)-1)
+	if (chat_bufferlen == sizeof(chat_buffer) - 1)
 		return; // all full
 
 	chat_buffer[chat_bufferlen++] = key;
