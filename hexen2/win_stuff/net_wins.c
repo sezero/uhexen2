@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.15 2007-04-05 07:00:02 sezero Exp $
+	$Id: net_wins.c,v 1.16 2007-04-05 07:01:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -288,7 +288,7 @@ int WINS_CheckNewConnections (void)
 	if (net_acceptsocket == -1)
 		return -1;
 
-	if (recvfrom (net_acceptsocket, buf, sizeof(buf), MSG_PEEK, NULL, NULL) > 0)
+	if (recvfrom (net_acceptsocket, buf, sizeof(buf), MSG_PEEK, NULL, NULL) >= 0)
 	{
 		return net_acceptsocket;
 	}

@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.24 2007-04-05 07:00:00 sezero Exp $
+	$Id: net_udp.c,v 1.25 2007-04-05 07:01:09 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -235,7 +235,7 @@ int UDP_CheckNewConnections (void)
 	if (net_acceptsocket == -1)
 		return -1;
 
-	if (recvfrom (net_acceptsocket, buf, sizeof(buf), MSG_PEEK, NULL, NULL) > 0)
+	if (recvfrom (net_acceptsocket, buf, sizeof(buf), MSG_PEEK, NULL, NULL) >= 0)
 	{
 		return net_acceptsocket;
 	}
