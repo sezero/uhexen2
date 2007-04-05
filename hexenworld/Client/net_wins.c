@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.29 2007-03-14 21:03:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.30 2007-04-05 07:00:04 sezero Exp $
 */
 
 #include "net_sys.h"
@@ -89,7 +89,7 @@ idnewt:28000
 192.246.40.70:28000
 =============
 */
-qboolean NET_StringToAdr (char *s, netadr_t *a)
+qboolean NET_StringToAdr (const char *s, netadr_t *a)
 {
 	struct hostent		*h;
 	struct sockaddr_in	sadr;

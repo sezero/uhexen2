@@ -2,7 +2,7 @@
 	net.h
 	quake's interface to the networking layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net.h,v 1.5 2007-03-14 21:03:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net.h,v 1.6 2007-04-05 07:00:04 sezero Exp $
 */
 
 #ifndef __H2W_NET_H
@@ -33,7 +33,7 @@ void		NET_SendPacket (int length, void *data, netadr_t to);
 qboolean	NET_CompareAdr (netadr_t a, netadr_t b);
 char		*NET_AdrToString (netadr_t a);
 char		*NET_BaseAdrToString (netadr_t a);
-qboolean	NET_StringToAdr (char *s, netadr_t *a);
+qboolean	NET_StringToAdr (const char *s, netadr_t *a);
 
 //============================================================================
 
@@ -90,7 +90,7 @@ extern	int	net_drop;		// packets dropped before this one
 void Netchan_Init (void);
 void Netchan_Transmit (netchan_t *chan, int length, byte *data);
 void Netchan_OutOfBand (netadr_t adr, int length, byte *data);
-void Netchan_OutOfBandPrint (netadr_t adr, char *format, ...) _FUNC_PRINTF(2);
+void Netchan_OutOfBandPrint (netadr_t adr, const char *format, ...) _FUNC_PRINTF(2);
 qboolean Netchan_Process (netchan_t *chan);
 void Netchan_Setup (netchan_t *chan, netadr_t adr);
 

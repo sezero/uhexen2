@@ -1,6 +1,6 @@
 /*
 	net_udp.h
-	$Id: net_udp.h,v 1.5 2006-10-21 09:48:40 sezero Exp $
+	$Id: net_udp.h,v 1.6 2007-04-05 07:00:00 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -38,10 +38,10 @@ int  UDP_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr);
 int  UDP_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr);
 int  UDP_Broadcast (int mysocket, byte *buf, int len);
 char *UDP_AddrToString (struct qsockaddr *addr);
-int  UDP_StringToAddr (char *string, struct qsockaddr *addr);
+int  UDP_StringToAddr (const char *string, struct qsockaddr *addr);
 int  UDP_GetSocketAddr (int mysocket, struct qsockaddr *addr);
 int  UDP_GetNameFromAddr (struct qsockaddr *addr, char *name);
-int  UDP_GetAddrFromName (char *name, struct qsockaddr *addr);
+int  UDP_GetAddrFromName (const char *name, struct qsockaddr *addr);
 int  UDP_AddrCompare (struct qsockaddr *addr1, struct qsockaddr *addr2);
 int  UDP_GetSocketPort (struct qsockaddr *addr);
 int  UDP_SetSocketPort (struct qsockaddr *addr, int port);

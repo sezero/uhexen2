@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.28 2007-03-14 21:04:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.29 2007-04-05 07:00:08 sezero Exp $
 */
 
 #include "net_sys.h"
@@ -88,7 +88,7 @@ char *NET_AdrToString (netadr_t a)
 NET_StringToAdr
 =============
 */
-qboolean NET_StringToAdr (char *s, netadr_t *a)
+qboolean NET_StringToAdr (const char *s, netadr_t *a)
 {
 	struct hostent		*h;
 	struct sockaddr_in	sadr;

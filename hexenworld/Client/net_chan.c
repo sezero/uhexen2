@@ -2,7 +2,7 @@
 	net_chan.c
 	net channel
 
-	$Id: net_chan.c,v 1.9 2007-03-14 21:03:34 sezero Exp $
+	$Id: net_chan.c,v 1.10 2007-04-05 07:00:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -98,7 +98,7 @@ Netchan_OutOfBandPrint
 Sends a text message in an out-of-band datagram
 ================
 */
-void Netchan_OutOfBandPrint (netadr_t adr, char *format, ...)
+void Netchan_OutOfBandPrint (netadr_t adr, const char *format, ...)
 {
 	va_list		argptr;
 	static char		string[8192];

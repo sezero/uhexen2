@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.23 2007-03-25 07:59:56 sezero Exp $
+	$Id: net_udp.c,v 1.24 2007-04-05 07:00:00 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -173,7 +173,7 @@ this lets you type only as much of the net address as required, using
 the local network components to fill in the rest
 ============
 */
-static int PartialIPAddress (char *in, struct qsockaddr *hostaddr)
+static int PartialIPAddress (const char *in, struct qsockaddr *hostaddr)
 {
 	char	buff[256];
 	char	*b;
@@ -330,7 +330,7 @@ char *UDP_AddrToString (struct qsockaddr *addr)
 
 //=============================================================================
 
-int UDP_StringToAddr (char *string, struct qsockaddr *addr)
+int UDP_StringToAddr (const char *string, struct qsockaddr *addr)
 {
 	int	ha1, ha2, ha3, ha4, hp, ipaddr;
 
@@ -378,7 +378,7 @@ int UDP_GetNameFromAddr (struct qsockaddr *addr, char *name)
 
 //=============================================================================
 
-int UDP_GetAddrFromName(char *name, struct qsockaddr *addr)
+int UDP_GetAddrFromName (const char *name, struct qsockaddr *addr)
 {
 	struct hostent *hostentry;
 

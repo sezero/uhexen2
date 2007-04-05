@@ -2,7 +2,7 @@
 	net_wins.h
 	winsock udp driver
 
-	$Id: net_wins.h,v 1.4 2007-03-14 21:03:27 sezero Exp $
+	$Id: net_wins.h,v 1.5 2007-04-05 07:00:02 sezero Exp $
 */
 
 #ifndef __NET_WINSOCK_H
@@ -19,10 +19,10 @@ int  WINS_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr);
 int  WINS_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr);
 int  WINS_Broadcast (int mysocket, byte *buf, int len);
 char *WINS_AddrToString (struct qsockaddr *addr);
-int  WINS_StringToAddr (char *string, struct qsockaddr *addr);
+int  WINS_StringToAddr (const char *string, struct qsockaddr *addr);
 int  WINS_GetSocketAddr (int mysocket, struct qsockaddr *addr);
 int  WINS_GetNameFromAddr (struct qsockaddr *addr, char *name);
-int  WINS_GetAddrFromName (char *name, struct qsockaddr *addr);
+int  WINS_GetAddrFromName (const char *name, struct qsockaddr *addr);
 int  WINS_AddrCompare (struct qsockaddr *addr1, struct qsockaddr *addr2);
 int  WINS_GetSocketPort (struct qsockaddr *addr);
 int  WINS_SetSocketPort (struct qsockaddr *addr, int port);

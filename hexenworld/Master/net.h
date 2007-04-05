@@ -2,7 +2,7 @@
 	net.h
 	quake's interface to the networking layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.h,v 1.2 2007-03-14 21:04:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.h,v 1.3 2007-04-05 07:00:08 sezero Exp $
 */
 
 #ifndef __H2W_NET_H
@@ -33,7 +33,7 @@ qboolean	NET_CompareAdrNoPort (netadr_t a, netadr_t b);
 void		NET_CopyAdr (netadr_t *a, netadr_t *b);
 char		*NET_AdrToString (netadr_t a);
 char		*NET_BaseAdrToString (netadr_t a);
-qboolean	NET_StringToAdr (char *s, netadr_t *a);
+qboolean	NET_StringToAdr (const char *s, netadr_t *a);
 
 #endif	/* __H2W_NET_H */
 

@@ -2,7 +2,7 @@
 	net.h
 	quake's interface to the networking layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.13 2007-03-25 08:08:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.14 2007-04-05 07:00:00 sezero Exp $
 */
 
 #ifndef __HX2_NET_H
@@ -156,10 +156,10 @@ typedef struct
 	int		(*Write) (int mysocket, byte *buf, int len, struct qsockaddr *addr);
 	int		(*Broadcast) (int mysocket, byte *buf, int len);
 	char *		(*AddrToString) (struct qsockaddr *addr);
-	int		(*StringToAddr) (char *string, struct qsockaddr *addr);
+	int		(*StringToAddr) (const char *string, struct qsockaddr *addr);
 	int		(*GetSocketAddr) (int mysocket, struct qsockaddr *addr);
 	int		(*GetNameFromAddr) (struct qsockaddr *addr, char *name);
-	int		(*GetAddrFromName) (char *name, struct qsockaddr *addr);
+	int		(*GetAddrFromName) (const char *name, struct qsockaddr *addr);
 	int		(*AddrCompare) (struct qsockaddr *addr1, struct qsockaddr *addr2);
 	int		(*GetSocketPort) (struct qsockaddr *addr);
 	int		(*SetSocketPort) (struct qsockaddr *addr, int port);
