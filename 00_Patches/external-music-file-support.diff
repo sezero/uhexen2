@@ -22,8 +22,8 @@ In the game, choose midi as the background music format and you'll be
 ready to go.
 
 
---- midi_sdl.c~	2007-04-02 23:44:55.000000000 +0300
-+++ midi_sdl.c	2007-04-02 23:45:34.000000000 +0300
+--- midi_sdl.c~	2007-04-05 11:07:00.000000000 +0300
++++ midi_sdl.c	2007-04-05 12:01:32.000000000 +0300
 @@ -99,6 +99,7 @@ qboolean MIDI_Init(void)
  	int audio_channels = 2;
  	int audio_buffers = 4096;
@@ -42,26 +42,29 @@ ready to go.
  	Con_Printf("MIDI music initialized.\n");
  
  	Cmd_AddCommand ("midi_play", MIDI_Play_f);
-@@ -220,10 +224,27 @@ static int MIDI_ExtractFile (FILE *inFil
+@@ -219,11 +223,30 @@ static int MIDI_ExtractFile (FILE *inFil
+ }
  
  #define	TEMP_MUSICNAME	"tmpmusic"
- 
++#define	MIDI_DIRNAME	"midi"
++#define	MUSIC_DIRNAME	"music"
++#define	MUSIC_DIRNAME2	"mod"		/* UQE Hexen II uses this name	*/
++
 +static const struct
 +{
++	Mix_MusicType	type;		/* as enum'ed in SDL_mixer.h	*/
 +	char		*ext;		/* the file extension		*/
-+	char		*dir;		/* the directory to look in	*/
-+	int		cdrip;		/* allow as a rip'ped cd track	*/
 +} MusicFile[] =
 +{
-+	{   "ogg", "music", 1	},
-+	{   "mp3", "music", 1	},
-+	{   "mod", "music", 0	},
-+	{   "it",  "music", 0	},
-+	{   "s3m", "music", 0	},
-+	{   "mid", "midi",  0	},	/* midi must be the last before NULL	*/
-+	{   NULL,   NULL,   0	}	/* the last entry must be NULL		*/
++	{ MUS_OGG, "ogg" },
++	{ MUS_MP3, "mp3" },
++	{ MUS_MOD, "mod" },
++	{ MUS_MOD, "it"  },
++	{ MUS_MOD, "s3m" },
++	{ MUS_MID, "mid" },	/* midi must be the last before NULL	*/
++	{ MUS_NONE, NULL }	/* the last entry must be NULL		*/
 +};
-+
+ 
  void MIDI_Play (const char *Name)
  {
  	FILE		*midiFile;
@@ -70,7 +73,7 @@ ready to go.
  
  	if (!bMidiInited)	//don't try to play if there is no midi
  		return;
-@@ -236,11 +257,50 @@ void MIDI_Play (const char *Name)
+@@ -236,11 +259,50 @@ void MIDI_Play (const char *Name)
  		return;
  	}
  
@@ -85,7 +88,7 @@ ready to go.
 +	}
 +	while (MusicFile[i].ext != NULL)
 +	{
-+		if ( !strcmp(MusicFile[i].ext, "mid") )
++		if (MusicFile[i].type == MUS_MID)
 +		{
 +			if (!search_cdrip)
 +			{
@@ -100,7 +103,7 @@ ready to go.
 +		}
 +		if (search_cdrip)
 +		{
-+			if (!MusicFile[i].cdrip)
++			if (MusicFile[i].type != MUS_MP3 && MusicFile[i].type != MUS_OGG)
 +			{
 +				++i;
 +				continue;
@@ -111,7 +114,7 @@ ready to go.
 +		{
 +			snprintf (tempName, sizeof(tempName), "%s.%s", Name, MusicFile[i].ext);
 +		}
-+		QIO_FOpenFile (va("%s/%s", MusicFile[i].dir, tempName), &midiFile, false);
++		QIO_FOpenFile (va("%s/%s", MusicFile[i].type == MUS_MID ? MIDI_DIRNAME : MUSIC_DIRNAME, tempName), &midiFile, false);
 +		if (midiFile)
 +			break;
 +		++i;
@@ -124,7 +127,7 @@ ready to go.
  		return;
  	}
  	else
-@@ -250,7 +310,7 @@ void MIDI_Play (const char *Name)
+@@ -250,7 +312,7 @@ void MIDI_Play (const char *Name)
  			int		ret;
  
  			Con_Printf("Extracting %s from pakfile\n", tempName);
@@ -133,12 +136,13 @@ ready to go.
  			ret = MIDI_ExtractFile (midiFile, midiName, qio_filesize);
  			fclose (midiFile);
  			if (ret != 0)
-@@ -262,7 +322,7 @@ void MIDI_Play (const char *Name)
+@@ -262,7 +324,8 @@ void MIDI_Play (const char *Name)
  		else	/* use the file directly */
  		{
  			fclose (midiFile);
 -			snprintf (midiName, sizeof(midiName), "%s/%s/%s", qio_filepath, "midi", tempName);
-+			snprintf (midiName, sizeof(midiName), "%s/%s/%s", qio_filepath, MusicFile[i].dir, tempName);
++			snprintf (midiName, sizeof(midiName), "%s/%s/%s",
++				  qio_filepath, MusicFile[i].type == MUS_MID ? MIDI_DIRNAME : MUSIC_DIRNAME, tempName);
  		}
  	}
  
