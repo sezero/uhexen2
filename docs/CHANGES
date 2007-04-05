@@ -3,6 +3,18 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-04-05 (CVS):
+    * net*: more const correctness stuff.
+    * net_udp.c, net_wins.c: fixed the long-standing recvfrom() bug.
+    * keys.c: minor clean-up.
+    * net_dgrm.c: clean-up of duplicated code for server sending rejects.
+    * introduced DEBUG_Printf, which is equivalent to Sys_DPrintf in debug
+      builds but generating no code for normal builds.
+    * reserved some spamming debug messages to debug builds only.
+    * pr_edict.c: changed the realloc message to a Sys_DPrintf.
+    * midi_sdl.c: clean-up of debug messages.
+    * used SDL_mixer music type enums in the external-music-file-support patch.
+
 2007-04-03 (CVS, 1.4.2-pre3):
     * fixed the doWhiteFlash server message: this thing is a mission pack
       crap (called from the buddha_die() function of buddha.hc upon death
