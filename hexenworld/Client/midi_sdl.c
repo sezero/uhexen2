@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.35 2007-04-02 21:06:45 sezero Exp $
+	$Id: midi_sdl.c,v 1.36 2007-04-05 08:07:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -78,14 +78,14 @@ void MIDI_Update(void)
 
 static void MIDI_EndMusicFinished(void)
 {
-	Sys_Printf("Music finished\n");
+	Sys_DPrintf("Music finished\n");
+
 	if (bLooped)
 	{
-		Sys_Printf("Looping enabled\n");
 		if (Mix_PlayingMusic())
 			Mix_HaltMusic();
 
-		Sys_Printf("Playing again\n");
+		Sys_DPrintf("Playing again\n");
 		Mix_RewindMusic();
 		Mix_FadeInMusic(music,0,2000);
 		bPlaying = 1;
@@ -269,7 +269,7 @@ void MIDI_Play (const char *Name)
 	music = Mix_LoadMUS(midiName);
 	if ( music == NULL )
 	{
-		Sys_Printf("Couldn't load %s: %s\n", tempName, SDL_GetError());
+		Con_Printf("Couldn't load %s: %s\n", tempName, SDL_GetError());
 	}
 	else
 	{
@@ -299,7 +299,6 @@ void MIDI_Pause(int mode)
 
 void MIDI_Loop(int NewValue)
 {
-	Sys_Printf("MIDI_Loop\n");
 	if (NewValue == 2)
 		bLooped = !bLooped;
 	else
