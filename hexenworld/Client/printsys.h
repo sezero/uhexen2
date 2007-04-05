@@ -2,7 +2,7 @@
 	printsys.h
 	console printing
 
-	$Id: printsys.h,v 1.1 2007-03-15 13:36:59 sezero Exp $
+	$Id: printsys.h,v 1.2 2007-04-05 07:43:19 sezero Exp $
 */
 
 #ifndef __PRINTSYS_H
@@ -33,6 +33,12 @@ void CON_Printf (unsigned int flags, const char *fmt, ...) _FUNC_PRINTF(2);
 /* these macros print to the terminal only */
 #define Sys_Printf(fmt, args...)	CON_Printf(_PRINT_TERMONLY, fmt, ##args)
 #define Sys_DPrintf(fmt, args...)	CON_Printf(_PRINT_TERMONLY|_PRINT_DEVEL, fmt, ##args)
+
+#ifdef DEBUG_BUILD
+#define DEBUG_Printf Sys_DPrintf
+#else
+#define DEBUG_Printf(fmt, args...)
+#endif
 
 #endif	/* __PRINTSYS_H */
 
