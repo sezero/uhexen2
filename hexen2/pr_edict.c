@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.38 2007-04-01 13:37:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.39 2007-04-05 07:44:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1471,7 +1471,7 @@ int PR_SetEngineString (char *s)
 			return -1 - i;
 	}
 	// new unknown engine string
-	Con_DPrintf("%s: new engine string %p\n", __FUNCTION__, s);
+	DEBUG_Printf ("%s: new engine string %p\n", __FUNCTION__, s);
 #if 0
 	for (i = 0; i < pr_numknownstrings; i++)
 	{

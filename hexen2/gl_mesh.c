@@ -2,7 +2,7 @@
 	gl_mesh.c
 	triangle model functions
 
-	$Id: gl_mesh.c,v 1.12 2007-02-12 16:52:46 sezero Exp $
+	$Id: gl_mesh.c,v 1.13 2007-04-05 07:44:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -299,8 +299,7 @@ static void BuildTris (void)
 	}
 
 	commands[numcommands++] = 0;		// end of list marker
-
-	Con_DPrintf ("%3i tri %3i vert %3i cmd\n", pheader->numtris, numorder, numcommands);
+	DEBUG_Printf ("%3i tri %3i vert %3i cmd\n", pheader->numtris, numorder, numcommands);
 
 //	allverts += numorder;
 //	alltris += pheader->numtris;
@@ -348,8 +347,7 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 		//
 		// build it from scratch
 		//
-		Con_DPrintf ("meshing %s...\n",m->name);
-
+		DEBUG_Printf ("meshing %s...\n", m->name);
 		BuildTris ();		// trifans or lists
 
 		//
