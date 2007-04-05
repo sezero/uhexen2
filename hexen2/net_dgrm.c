@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.25 2007-04-01 13:39:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.26 2007-04-05 07:14:34 sezero Exp $
 */
 
 #define BAN_TEST
@@ -806,6 +806,18 @@ void Datagram_Listen (qboolean state)
 }
 
 
+static void Datagram_Reject (const char *message, int acceptsocket, struct qsockaddr *addr)
+{
+	SZ_Clear(&net_message);
+	// save space for the header, filled in later
+	MSG_WriteLong(&net_message, 0);
+	MSG_WriteByte(&net_message, CCREP_REJECT);
+	MSG_WriteString(&net_message, message);
+	*((int *)net_message.data) = BigLong(NETFLAG_CTL | (net_message.cursize & NETFLAG_LENGTH_MASK));
+	dfunc.Write (acceptsocket, net_message.data, net_message.cursize, addr);
+	SZ_Clear(&net_message);
+}
+
 static qsocket_t *_Datagram_CheckNewConnections (void)
 {
 	struct qsockaddr clientaddr;
@@ -954,14 +966,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 
 	if (MSG_ReadByte() != NET_PROTOCOL_VERSION)
 	{
-		SZ_Clear(&net_message);
-		// save space for the header, filled in later
-		MSG_WriteLong(&net_message, 0);
-		MSG_WriteByte(&net_message, CCREP_REJECT);
-		MSG_WriteString(&net_message, "Incompatible version.\n");
-		*((int *)net_message.data) = BigLong(NETFLAG_CTL | (net_message.cursize & NETFLAG_LENGTH_MASK));
-		dfunc.Write (acceptsock, net_message.data, net_message.cursize, &clientaddr);
-		SZ_Clear(&net_message);
+		Datagram_Reject("Incompatible version.\n", acceptsock, &clientaddr);
 		return NULL;
 	}
 
@@ -973,14 +978,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 		testAddr = ((struct sockaddr_in *)&clientaddr)->sin_addr.s_addr;
 		if ((testAddr & banMask) == banAddr)
 		{
-			SZ_Clear(&net_message);
-			// save space for the header, filled in later
-			MSG_WriteLong(&net_message, 0);
-			MSG_WriteByte(&net_message, CCREP_REJECT);
-			MSG_WriteString(&net_message, "You have been banned.\n");
-			*((int *)net_message.data) = BigLong(NETFLAG_CTL | (net_message.cursize & NETFLAG_LENGTH_MASK));
-			dfunc.Write (acceptsock, net_message.data, net_message.cursize, &clientaddr);
-			SZ_Clear(&net_message);
+			Datagram_Reject("You have been banned.\n", acceptsock, &clientaddr);
 			return NULL;
 		}
 	}
@@ -1021,14 +1019,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 	if (sock == NULL)
 	{
 		// no room; try to let him know
-		SZ_Clear(&net_message);
-		// save space for the header, filled in later
-		MSG_WriteLong(&net_message, 0);
-		MSG_WriteByte(&net_message, CCREP_REJECT);
-		MSG_WriteString(&net_message, "Server is full.\n");
-		*((int *)net_message.data) = BigLong(NETFLAG_CTL | (net_message.cursize & NETFLAG_LENGTH_MASK));
-		dfunc.Write (acceptsock, net_message.data, net_message.cursize, &clientaddr);
-		SZ_Clear(&net_message);
+		Datagram_Reject("Server is full.\n", acceptsock, &clientaddr);
 		return NULL;
 	}
 
