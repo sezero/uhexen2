@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.80 2007-03-19 20:33:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.81 2007-04-06 06:36:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -753,7 +753,7 @@ static void M_Main_Draw (void)
 	M_DrawBigString (72, 60 + (3 * 20), "HELP");
 	M_DrawBigString (72, 60 + (4 * 20), "QUIT");
 
-	f = (int)(host_time * 10)%8;
+	f = (int)(realtime * 10)%8;
 	M_DrawTransPic (43, 54 + m_main_cursor * 20,Draw_CachePic( va("gfx/menu/menudot%i.lmp", f+1 ) ) );
 }
 
@@ -855,7 +855,7 @@ static void M_Difficulty_Draw (void)
 	for (i = 0; i < NUM_DIFFLEVELS; ++i)
 		M_DrawBigString (72, 60 + (i * 20), DiffNames[setup_class][i]);
 
-	f = (int)(host_time * 10)%8;
+	f = (int)(realtime * 10)%8;
 	M_DrawTransPic (43, 54 + m_diff_cursor * 20, Draw_CachePic(va("gfx/menu/menudot%i.lmp", f+1)) );
 }
 
@@ -950,7 +950,7 @@ static void M_Class_Draw (void)
 	for (i = 0; i < f; ++i)
 		M_DrawBigString (72, 60 + (i * 20), ClassNamesU[i]);
 
-	f = (int)(host_time * 10)%8;
+	f = (int)(realtime * 10)%8;
 	M_DrawTransPic (43, 54 + m_class_cursor * 20, Draw_CachePic(va("gfx/menu/menudot%i.lmp", f+1)) );
 
 	M_DrawPic (251, 54 + 21, Draw_CachePic (va("gfx/cport%d.lmp", m_class_cursor + 1)));
@@ -1056,7 +1056,7 @@ static void M_SinglePlayer_Draw (void)
 		M_DrawBigString (72, 60 + (4 * 20), "VIEW INTRO");
 	}
 
-	f = (int)(host_time * 10)%8;
+	f = (int)(realtime * 10)%8;
 	M_DrawTransPic (43, 54 + m_singleplayer_cursor * 20, Draw_CachePic(va("gfx/menu/menudot%i.lmp", f+1)) );
 }
 
@@ -1353,7 +1353,7 @@ static void M_Menu_MSave_f (void)
 	{
 		message = "Only a network server";
 		message2 = "can save a multiplayer game";
-		message_time = host_time;
+		message_time = realtime;
 		return;
 	}
 	m_entersound = true;
@@ -1470,14 +1470,14 @@ static void M_MultiPlayer_Draw (void)
 	M_DrawBigString (72, 60 + (3 * 20), "LOAD");
 	M_DrawBigString (72, 60 + (4 * 20), "SAVE");
 
-	f = (int)(host_time * 10)%8;
+	f = (int)(realtime * 10)%8;
 	M_DrawTransPic (43, 54 + m_multiplayer_cursor * 20,Draw_CachePic( va("gfx/menu/menudot%i.lmp", f+1 ) ) );
 
 	if (message)
 	{
 		M_PrintWhite ((320/2) - ((27*8)/2), 168, message);
 		M_PrintWhite ((320/2) - ((27*8)/2), 176, message2);
-		if (host_time - 5 > message_time)
+		if (realtime - 5 > message_time)
 			message = NULL;
 	}
 
@@ -1800,7 +1800,7 @@ static void M_Net_Draw (void)
 	M_Print (f, 158, net_helpMessage[m_net_cursor*4+2]);
 	M_Print (f, 166, net_helpMessage[m_net_cursor*4+3]);
 
-	f = (int)(host_time * 10)%8;
+	f = (int)(realtime * 10)%8;
 	M_DrawTransPic (43, 64 + m_net_cursor * 20, Draw_CachePic(va("gfx/menu/menudot%i.lmp", f+1)) );
 }
 

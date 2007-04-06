@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.72 2007-04-06 06:32:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.73 2007-04-06 06:36:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -37,7 +37,6 @@ qboolean	host_initialized;		// true if into command execution
 static jmp_buf 	host_abortserver;
 
 double		host_frametime;
-double		host_time;
 double		realtime;			// without any filtering or bounding
 static double	oldrealtime;			// last frame run
 int		host_framecount;
@@ -341,8 +340,6 @@ static void Host_InitLocal (void)
 	Cvar_RegisterVariable (&temp1);
 
 	Host_FindMaxClients ();
-
-	host_time = 1.0;		// so a think at time 0 won't get called
 }
 
 /*
@@ -835,8 +832,6 @@ static void _Host_Frame (float time)
 	if (!sv.active)
 		CL_SendCmd ();
 
-	host_time += host_frametime;
-
 // fetch results from server
 	if (cls.state == ca_connected)
 	{
@@ -872,8 +867,6 @@ static void _Host_Frame (float time)
 	// the incoming messages have been read
 		if (!sv.active)
 			CL_SendCmd ();
-
-		host_time += host_frametime;
 
 	// fetch results from server
 		if (cls.state == ca_connected)

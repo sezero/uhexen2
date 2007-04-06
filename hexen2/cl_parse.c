@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.47 2007-04-01 11:39:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.48 2007-04-06 06:36:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1198,8 +1198,8 @@ void CL_ParseServerMessage (void)
 	}
 	if (cl_shownet.value == 1)
 	{
-		Con_Printf ("Time: %2.2f Pck: %i ",host_time-lasttime,net_message.cursize);
-		lasttime = host_time;
+		Con_Printf ("Time: %2.2f Pck: %i ", realtime - lasttime, net_message.cursize);
+		lasttime = realtime;
 	}
 	else if (cl_shownet.value == 2)
 		Con_Printf ("------------------\n");
