@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.71 2007-04-02 11:47:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.72 2007-04-06 06:32:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -974,68 +974,6 @@ void Host_Frame (float time)
 //============================================================================
 
 
-#if NET_USE_VCR
-extern FILE *vcrFile;
-#define	VCR_SIGNATURE	0x56435231
-// "VCR1"
-
-static void Host_InitVCR (void)
-{
-	int		i, len, n;
-	char	*p;
-
-	if (COM_CheckParm("-playback"))
-	{
-		if (com_argc != 2)
-			Sys_Error("No other parameters allowed with -playback");
-
-		vcrFile = fopen (va("%s/quake.vcr",host_parms->userdir), "rb");
-		if (!vcrFile)
-			Sys_Error("playback file not found");
-
-		fread (&i, 1, sizeof(int), vcrFile);
-		if (i != VCR_SIGNATURE)
-			Sys_Error("Invalid signature in vcr file");
-
-		p = com_argv[0];
-		fread (&com_argc, 1, sizeof(int), vcrFile);
-		com_argv = Z_Malloc(com_argc * sizeof(char *));
-		com_argv[0] = p;
-		for (i = 0; i < com_argc; i++)
-		{
-			fread (&len, 1, sizeof(int), vcrFile);
-			p = Z_Malloc(len);
-			fread (p, 1, len, vcrFile);
-			com_argv[i+1] = p;
-		}
-		com_argc++; /* add one for arg[0] */
-	}
-
-	if ( (n = COM_CheckParm("-record")) != 0)
-	{
-		vcrFile = fopen (va("%s/quake.vcr",host_parms->userdir), "wb");
-
-		i = VCR_SIGNATURE;
-		fwrite (&i, 1, sizeof(int), vcrFile);
-		i = com_argc - 1;
-		fwrite (&i, 1, sizeof(int), vcrFile);
-		for (i = 1; i < com_argc; i++)
-		{
-			if (i == n)
-			{
-				len = 10;
-				fwrite (&len, 1, sizeof(int), vcrFile);
-				fwrite ("-playback", 1, len, vcrFile);
-				continue;
-			}
-			len = strlen(com_argv[i]) + 1;
-			fwrite (&len, 1, sizeof(int), vcrFile);
-			fwrite (com_argv[i], 1, len, vcrFile);
-		}
-	}
-}
-#endif	// NET_USE_VCR
-
 /*
 ====================
 Host_Init
@@ -1050,9 +988,6 @@ void Host_Init (void)
 	Cmd_Init ();
 	V_Init ();
 	Chase_Init ();
-#if NET_USE_VCR
-	Host_InitVCR ();
-#endif
 	COM_Init ();
 	SV_Init ();
 	FS_Init ();

@@ -2,11 +2,10 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.19 2007-03-25 07:59:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.20 2007-04-06 06:32:49 sezero Exp $
 */
 
 #include "quakedef.h"
-#include "net_vcr.h"
 
 qsocket_t	*net_activeSockets = NULL;
 qsocket_t	*net_freeSockets = NULL;
@@ -49,35 +48,6 @@ cvar_t	hostname = {"hostname", "UNNAMED", CVAR_NONE};
 static qboolean	configRestored = false;
 
 cvar_t	net_allowmultiple = {"net_allowmultiple", "0", CVAR_ARCHIVE};
-
-#if	NET_USE_VCR
-FILE	*vcrFile = NULL;
-static qboolean recording = false;
-
-static struct
-{
-	double	time;
-	int		op;
-	long	session;
-} vcrConnect;
-
-static struct
-{
-	double	time;
-	int		op;
-	long	session;
-	int		ret;
-	int		len;
-} vcrGetMessage;
-
-static struct
-{
-	double	time;
-	int		op;
-	long	session;
-	int		r;
-} vcrSendMessage;
-#endif	// NET_USE_VCR
 
 // these two macros are to make the code more readable
 #define sfunc	net_drivers[sock->driver]
@@ -477,29 +447,9 @@ qsocket_t *NET_CheckNewConnections (void)
 		ret = dfunc.CheckNewConnections ();
 		if (ret)
 		{
-#if NET_USE_VCR
-			if (recording)
-			{
-				vcrConnect.time = host_time;
-				vcrConnect.op = VCR_OP_CONNECT;
-				vcrConnect.session = (long)ret;
-				fwrite (&vcrConnect, 1, sizeof(vcrConnect), vcrFile);
-				fwrite (ret->address, 1, NET_NAMELEN,vcrFile);
-			}
-#endif
 			return ret;
 		}
 	}
-
-#if NET_USE_VCR
-	if (recording)
-	{
-		vcrConnect.time = host_time;
-		vcrConnect.op = VCR_OP_CONNECT;
-		vcrConnect.session = 0;
-		fwrite (&vcrConnect, 1, sizeof(vcrConnect), vcrFile);
-	}
-#endif
 
 	return NULL;
 }
@@ -574,30 +524,6 @@ int	NET_GetMessage (qsocket_t *sock)
 			else if (ret == 2)
 				unreliableMessagesReceived++;
 		}
-
-#if NET_USE_VCR
-		if (recording)
-		{
-			vcrGetMessage.time = host_time;
-			vcrGetMessage.op = VCR_OP_GETMESSAGE;
-			vcrGetMessage.session = (long)sock;
-			vcrGetMessage.ret = ret;
-			vcrGetMessage.len = net_message.cursize;
-			fwrite (&vcrGetMessage, 1, 24, vcrFile);
-			fwrite (net_message.data, 1, net_message.cursize, vcrFile);
-		}
-	}
-	else
-	{
-		if (recording)
-		{
-			vcrGetMessage.time = host_time;
-			vcrGetMessage.op = VCR_OP_GETMESSAGE;
-			vcrGetMessage.session = (long)sock;
-			vcrGetMessage.ret = ret;
-			fwrite (&vcrGetMessage, 1, 20, vcrFile);
-		}
-#endif	// NET_USE_VCR
 	}
 
 	return ret;
@@ -633,17 +559,6 @@ int NET_SendMessage (qsocket_t *sock, sizebuf_t *data)
 	if (r == 1 && sock->driver)
 		messagesSent++;
 
-#if NET_USE_VCR
-	if (recording)
-	{
-		vcrSendMessage.time = host_time;
-		vcrSendMessage.op = VCR_OP_SENDMESSAGE;
-		vcrSendMessage.session = (long)sock;
-		vcrSendMessage.r = r;
-		fwrite (&vcrSendMessage, 1, 20, vcrFile);
-	}
-#endif
-
 	return r;
 }
 
@@ -666,17 +581,6 @@ int NET_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *data)
 	if (r == 1 && sock->driver)
 		unreliableMessagesSent++;
 
-#if NET_USE_VCR
-	if (recording)
-	{
-		vcrSendMessage.time = host_time;
-		vcrSendMessage.op = VCR_OP_SENDMESSAGE;
-		vcrSendMessage.session = (long)sock;
-		vcrSendMessage.r = r;
-		fwrite (&vcrSendMessage, 1, 20, vcrFile);
-	}
-#endif
-
 	return r;
 }
 
@@ -691,8 +595,6 @@ message to be transmitted.
 */
 qboolean NET_CanSendMessage (qsocket_t *sock)
 {
-	int		r;
-
 	if (!sock)
 		return false;
 
@@ -701,20 +603,7 @@ qboolean NET_CanSendMessage (qsocket_t *sock)
 
 	SetNetTime();
 
-	r = sfunc.CanSendMessage(sock);
-
-#if NET_USE_VCR
-	if (recording)
-	{
-		vcrSendMessage.time = host_time;
-		vcrSendMessage.op = VCR_OP_CANSENDMESSAGE;
-		vcrSendMessage.session = (long)sock;
-		vcrSendMessage.r = r;
-		fwrite (&vcrSendMessage, 1, 20, vcrFile);
-	}
-#endif
-
-	return r;
+	return sfunc.CanSendMessage(sock);
 }
 
 
@@ -805,17 +694,6 @@ void NET_Init (void)
 	int			i;
 	int			controlSocket;
 	qsocket_t	*s;
-
-#if NET_USE_VCR
-	if (COM_CheckParm("-playback"))
-	{
-		net_numdrivers = 1;
-		net_drivers[0].Init = VCR_Init;
-	}
-
-	if (COM_CheckParm("-record"))
-		recording = true;
-#endif
 
 	i = COM_CheckParm ("-port");
 	if (!i)
@@ -908,14 +786,6 @@ void NET_Shutdown (void)
 			net_drivers[net_driverlevel].initialized = false;
 		}
 	}
-
-#if NET_USE_VCR
-	if (vcrFile)
-	{
-		Con_Printf ("Closing vcrfile.\n");
-		fclose (vcrFile);
-	}
-#endif
 }
 
 

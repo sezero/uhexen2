@@ -2,7 +2,7 @@
 	h2option.h
 	Compile time options for Hexen II: Hammer of Thyrion
 
-	$Id: h2option.h,v 1.1 2007-03-14 17:45:29 sezero Exp $
+	$Id: h2option.h,v 1.2 2007-04-06 06:32:59 sezero Exp $
 */
 
 
@@ -34,27 +34,6 @@
    class in the old mission through the menu system.
    ================================================================== */
 #define	DISALLOW_DEMONESS_IN_OLD_GAME	1
-
-
-/* ====================================================================
-   NET_USE_VCR
-   Value  :	0 or 1
-   Affects:	host.c, net_main.c, net_vcr.c (hexen2 only)
-
-   VCR facility as a lan driver:
-   The "-record" commandline argument creates a file named quake.vcr
-   and records the game. This is NOT an ordinary demo recording, but
-   a server only feature for debugging server bugs.
-   If you want to use the vcr feature regardless of building a debug
-   version, change the below definition to 1.  For debug builds, it
-   will be set to 1 down below.
-   ================================================================== */
-#define	NET_USE_VCR			0
-/* Allow net_vcr in the debug builds.	============================= */
-#ifdef	DEBUG_BUILD
-#undef	NET_USE_VCR
-#define	NET_USE_VCR			1
-#endif
 
 
 /* ====================================================================
