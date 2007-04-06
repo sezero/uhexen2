@@ -2,7 +2,7 @@
 	common.c
 	misc utility functions used in client and server
 
-	$Id: common.c,v 1.92 2007-03-14 08:12:44 sezero Exp $
+	$Id: common.c,v 1.93 2007-04-06 08:40:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -209,11 +209,7 @@ void COM_FileBase (const char *in, char *out)
 	while (s != in && *s != '.')
 		s--;
 
-	/* Pa3PyX: no range checking -- used to trash the stack and crash the
-	   game randomly upon loading progs, for instance (or in any other
-	   instance where one would supply a filename without a path	*/
-//	for (s2 = s; *s2 && *s2 != '/'; s2--);
-	for (s2 = s; *s2 && *s2 != '/' && s2 >= in; s2--)
+	for (s2 = s; s2 >= in && *s2 && *s2 != '/'; s2--)
 		;
 
 	if (s-s2 < 2)
