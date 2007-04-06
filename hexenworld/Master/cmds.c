@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Id: cmds.c,v 1.12 2007-03-09 09:01:03 sezero Exp $
+	$Id: cmds.c,v 1.13 2007-04-06 08:00:54 sezero Exp $
 */
 
 #include "defs.h"
@@ -180,7 +180,7 @@ Cmd_Argv
 */
 char *Cmd_Argv (int arg)
 {
-	if (arg >= cmd_argc)
+	if (arg < 0 || arg >= cmd_argc)
 		return cmd_null_string;
 	return cmd_argv[arg];
 }
