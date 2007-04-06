@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.28 2007-02-26 18:43:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.29 2007-04-06 07:24:55 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -480,7 +480,7 @@ Cmd_Argv
 */
 char *Cmd_Argv (int arg)
 {
-	if ( (unsigned)arg >= cmd_argc )
+	if (arg < 0 || arg >= cmd_argc)
 		return cmd_null_string;
 	return cmd_argv[arg];
 }
