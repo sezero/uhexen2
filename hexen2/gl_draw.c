@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.102 2007-03-25 08:10:02 sezero Exp $
+	$Id: gl_draw.c,v 1.103 2007-04-07 19:53:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1983,7 +1983,7 @@ GLuint GL_LoadTexture (const char *identifier, int width, int height, byte *data
 
 	glt = &gltextures[numgltextures];
 	numgltextures++;
-	Q_strlcpy (glt->identifier, identifier, MAX_IDENTIFIER);
+	Q_strlcpy (glt->identifier, identifier, MAX_QPATH);
 	glt->texnum = texture_extension_number;
 	texture_extension_number++;
 

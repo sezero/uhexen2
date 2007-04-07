@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.63 2007-02-22 19:40:03 sezero Exp $
+	$Id: glquake.h,v 1.64 2007-04-07 19:53:01 sezero Exp $
 */
 
 
@@ -49,11 +49,10 @@ typedef struct cachepic_s
 	byte		padding[32];	// for appended glpic
 } cachepic_t;
 
-#define MAX_IDENTIFIER	64	// MAX_QPATH
 typedef struct
 {
 	GLuint		texnum;
-	char	identifier[MAX_IDENTIFIER];
+	char	identifier[MAX_QPATH];
 	int		width, height;
 	qboolean	mipmap;
 //	unsigned short	crc;
