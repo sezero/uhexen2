@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.35 2007-03-14 21:03:01 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.36 2007-04-07 19:51:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -186,7 +186,7 @@ void CL_SignonReply (void)
 {
 	char	str[8192];
 
-	Con_DPrintf ("CL_SignonReply: %i\n", cls.signon);
+	Con_DPrintf ("%s: %i\n", __FUNCTION__, cls.signon);
 
 	switch (cls.signon)
 	{
@@ -898,7 +898,7 @@ void CL_SendCmd (void)
 
 	if (!NET_CanSendMessage (cls.netcon))
 	{
-		Con_DPrintf ("CL_WriteToServer: can't send\n");
+		Con_DPrintf ("%s: can't send\n", __FUNCTION__);
 		return;
 	}
 
