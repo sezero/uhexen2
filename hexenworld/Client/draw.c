@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.27 2007-02-23 23:24:08 sezero Exp $
+	$Id: draw.c,v 1.28 2007-04-07 19:55:38 sezero Exp $
 */
 
 
@@ -595,6 +595,38 @@ void Draw_SmallString (int x, int y, const char *str)
 		x += 6;
 	}
 }
+
+//==========================================================================
+//
+// Draw_BigCharacter
+//
+// Callback for M_DrawBigCharacter() of menu.c
+//
+//==========================================================================
+void Draw_BigCharacter (int x, int y, int num)
+{
+	qpic_t	*p;
+	int	ypos, xpos;
+	byte	*dest;
+	byte	*source;
+
+	p = Draw_CachePic ("gfx/menu/bigfont.lmp");
+	source = p->data + ((num % 8) * 20) + (num / 8 * p->width * 20);
+
+	for (ypos = 0; ypos < 19; ypos++)
+	{
+		dest = vid.buffer + (y + ypos) * vid.rowbytes + x;
+		for (xpos = 0; xpos < 19; xpos++, dest++, source++)
+		{
+			if (*source)
+			{
+				*dest = *source;
+			}
+		}
+		source += (p->width - 19);
+	}
+}
+
 
 /*
 =============

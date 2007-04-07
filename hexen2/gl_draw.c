@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.103 2007-04-07 19:53:01 sezero Exp $
+	$Id: gl_draw.c,v 1.104 2007-04-07 19:55:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -716,6 +716,41 @@ void Draw_SmallString (int x, int y, const char *str)
 	}
 }
 
+//==========================================================================
+//
+// Draw_BigCharacter
+//
+// Callback for M_DrawBigCharacter() of menu.c
+//
+//==========================================================================
+void Draw_BigCharacter (int x, int y, int num)
+{
+	int		row, col;
+	float	frow, fcol, xsize, ysize;
+
+	row = num / 8;
+	col = num % 8;
+
+	xsize = 0.125;
+	ysize = 0.25;
+	fcol = col*xsize;
+	frow = row*ysize;
+
+	GL_Bind (char_menufonttexture);
+
+	glBegin_fp (GL_QUADS);
+	glTexCoord2f_fp (fcol, frow);
+	glVertex2f_fp (x, y);
+	glTexCoord2f_fp (fcol + xsize, frow);
+	glVertex2f_fp (x+20, y);
+	glTexCoord2f_fp (fcol + xsize, frow + ysize);
+	glVertex2f_fp (x+20, y+20);
+	glTexCoord2f_fp (fcol, frow + ysize);
+	glVertex2f_fp (x, y+20);
+	glEnd_fp ();
+}
+
+
 /*
 =============
 Draw_Pic
@@ -1031,62 +1066,6 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p
 	glTexCoord2f_fp (0, ( float )PLAYER_PIC_HEIGHT / PLAYER_DEST_HEIGHT);
 	glVertex2f_fp (x, y+pic->height);
 	glEnd_fp ();
-}
-
-int M_DrawBigCharacter (int x, int y, const int num, const int numNext)
-{
-	int		row, col;
-	float	frow, fcol, xsize, ysize;
-	int		add, c, cNext;
-
-	if (num == ' ')
-		return 32;
-
-	c = num;
-	cNext = numNext;
-
-	if (c == '/')
-		c = 26;
-	else
-		c -= 65;
-
-	if (c < 0 || c >= 27)  // only a-z and /
-		return 0;
-
-	if (cNext == '/')
-		cNext = 26;
-	else
-		cNext -= 65;
-
-	row = c / 8;
-	col = c % 8;
-
-	xsize = 0.125;
-	ysize = 0.25;
-	fcol = col*xsize;
-	frow = row*ysize;
-
-	GL_Bind (char_menufonttexture);
-
-	glBegin_fp (GL_QUADS);
-	glTexCoord2f_fp (fcol, frow);
-	glVertex2f_fp (x, y);
-	glTexCoord2f_fp (fcol + xsize, frow);
-	glVertex2f_fp (x+20, y);
-	glTexCoord2f_fp (fcol + xsize, frow + ysize);
-	glVertex2f_fp (x+20, y+20);
-	glTexCoord2f_fp (fcol, frow + ysize);
-	glVertex2f_fp (x, y+20);
-	glEnd_fp ();
-
-	if (cNext < 0 || cNext >= 27)
-		return 0;
-
-	add = 0;
-	if (c == (int)'C'-65 && cNext == (int)'P'-65)
-		add = 3;
-
-	return BigCharWidth[c][cNext] + add;
 }
 
 

@@ -3,7 +3,7 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.22 2007-02-23 23:24:08 sezero Exp $
+	$Id: draw.h,v 1.23 2007-04-07 19:55:38 sezero Exp $
 */
 
 #ifndef __HX2_DRAW_H
@@ -13,7 +13,12 @@
 
 void Draw_Init (void);
 void Draw_ReInit (void);
-void Draw_Character (int x, int y, const unsigned int num);
+
+qpic_t *Draw_PicFromWad (char *name);
+qpic_t *Draw_CachePic (const char *path);
+qpic_t *Draw_CachePicNoTrans (const char *path);
+qpic_t *Draw_CachePicResize (const char *path, int targetWidth, int targetHeight);
+
 void Draw_Pic (int x, int y, qpic_t *pic);
 void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha);
 void Draw_IntermissionPic (qpic_t *pic);
@@ -36,14 +41,13 @@ void Draw_EndDisc (void);
 void Draw_TileClear (int x, int y, int w, int h);
 void Draw_Fill (int x, int y, int w, int h, int c);
 void Draw_FadeScreen (void);
+
+void Draw_Character (int x, int y, const unsigned int num);
 void Draw_String (int x, int y, const char *str);
 void Draw_SmallCharacter (int x, int y, const int num);
 void Draw_SmallString (int x, int y, const char *str);
 void Draw_RedString (int x, int y, const char *str);
-qpic_t *Draw_PicFromWad (char *name);
-qpic_t *Draw_CachePic (const char *path);
-qpic_t *Draw_CachePicNoTrans (const char *path);
-qpic_t *Draw_CachePicResize (const char *path, int targetWidth, int targetHeight);
+void Draw_BigCharacter (int x, int y, int num);
 
 // game/engine name to draw on the console
 #define GAME_MOD_NAME		ENGINE_NAME

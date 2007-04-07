@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.54 2007-04-07 19:53:02 sezero Exp $
+	$Id: glquake.h,v 1.55 2007-04-07 19:55:38 sezero Exp $
 */
 
 
@@ -74,7 +74,6 @@ GLuint GL_LoadTexture (const char *identifier, int width, int height, byte *data
 GLuint GL_LoadPicTexture (qpic_t *pic);
 void D_ClearOpenGLTextures (int last_tex);
 
-int M_DrawBigCharacter (int x, int y, int num, int numNext);
 void GL_BuildLightmaps (void);
 void GL_SetupLightmapFmt (qboolean check_cmdline);
 void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr);

@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.81 2007-04-06 06:36:05 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.82 2007-04-07 19:55:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -467,7 +467,7 @@ void M_ToggleMenu_f (void)
 	}
 }
 
-char BigCharWidth[27][27];
+static char	BigCharWidth[27][27];
 //static char unused_filler;  // cuz the QIO_LoadStackFile puts a 0 at the end of the data
 
 //#define BUILD_BIG_CHAR 1
@@ -552,24 +552,8 @@ static void M_BuildBigCharWidth (void)
 #endif
 }
 
-/*
-================
-Draw_Character
-
-Draws one 8*8 graphics character with 0 being transparent.
-It can be clipped to the top of the screen to allow the console to be
-smoothly scrolled off.
-================
-*/
-
-#ifndef	GLQUAKE
-
 static int M_DrawBigCharacter (int x, int y, const int num, const int numNext)
 {
-	qpic_t	*p;
-	int	ypos,xpos;
-	byte	*dest;
-	byte	*source;
 	int	add, c, cNext;
 
 	if (num == ' ')
@@ -591,21 +575,7 @@ static int M_DrawBigCharacter (int x, int y, const int num, const int numNext)
 	else
 		cNext -= 65;
 
-	p = Draw_CachePic ("gfx/menu/bigfont.lmp");
-	source = p->data + ((c % 8) * 20) + (c / 8 * p->width * 20);
-
-	for (ypos = 0; ypos < 19; ypos++)
-	{
-		dest = vid.buffer + (y+ypos) * vid.rowbytes + x;
-		for (xpos = 0; xpos < 19; xpos++, dest++, source++)
-		{
-			if (*source)
-			{
-				*dest = *source;
-			}
-		}
-		source += (p->width - 19);
-	}
+	Draw_BigCharacter (x, y, c);
 
 	if (cNext < 0 || cNext >= 27)
 		return 0;
@@ -616,8 +586,6 @@ static int M_DrawBigCharacter (int x, int y, const int num, const int numNext)
 
 	return BigCharWidth[c][cNext] + add;
 }
-
-#endif
 
 static void M_DrawBigString(int x, int y, const char *string)
 {
