@@ -2,7 +2,7 @@
 	client.h
 	client main header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.16 2007-03-16 09:54:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.17 2007-04-07 19:54:04 sezero Exp $
 */
 
 #ifndef __H2W_CLIENT_H
@@ -406,8 +406,9 @@ void	CL_DecayLights (void);
 
 void CL_Init (void);
 
+void CL_ClearState (void);
+
 void CL_SendConnectPacket (void);
-void CL_EstablishConnection (char *host);
 
 void CL_Disconnect (void);
 void CL_NextDemo (void);
@@ -437,19 +438,9 @@ extern	kbutton_t	in_mlook, in_klook;
 extern	kbutton_t	in_strafe;
 extern	kbutton_t	in_speed;
 
-char *Key_KeynumToString (int keynum);
-
 void CL_InitInput (void);
 void CL_SendCmd (void);
 void CL_SendMove (usercmd_t *cmd);
-
-void CL_ParseTEnt (void);
-void CL_UpdateTEnts (void);
-
-void CL_ClearState (void);
-
-int  CL_ReadFromServer (void);
-void CL_WriteToServer (usercmd_t *cmd);
 void CL_BaseMove (usercmd_t *cmd);
 
 //
@@ -503,6 +494,9 @@ extern	float		v_targDist;
 //
 void CL_InitTEnts (void);
 void CL_ClearTEnts (void);
+void CL_ParseTEnt (void);
+void CL_UpdateTEnts (void);
+
 void CL_UpdateHammer(entity_t *ent, int edict_num);
 void CL_UpdateBug(entity_t *ent);
 void CL_UpdateIceStorm(entity_t *ent, int edict_num);

@@ -2,7 +2,7 @@
 	keys.h
 	key definitions and keyboard public functions
 
-	$Id: keys.h,v 1.11 2007-03-14 21:03:34 sezero Exp $
+	$Id: keys.h,v 1.12 2007-04-07 19:54:04 sezero Exp $
 */
 
 #ifndef __HX2_KEYS_H
@@ -121,8 +121,10 @@ extern	qboolean	chat_team;
 void Key_Event (int key, qboolean down);
 void Key_Init (void);
 void Key_WriteBindings (FILE *f);
-void Key_SetBinding (int keynum, const char *binding);
 void Key_ClearStates (void);
+
+void Key_SetBinding (int keynum, const char *binding);
+char *Key_KeynumToString (int keynum);
 
 #endif	/* __HX2_KEYS_H */
 

@@ -2,7 +2,7 @@
 	client.h
 	client main header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.26 2007-03-18 12:35:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.27 2007-04-07 19:54:04 sezero Exp $
 */
 
 #ifndef __HX2_CLIENT_H
@@ -283,12 +283,12 @@ void	CL_DecayLights (void);
 
 void CL_Init (void);
 
+void CL_ClearState (void);
+
 void CL_EstablishConnection (char *host);
-void CL_Signon1 (void);
-void CL_Signon2 (void);
-void CL_Signon3 (void);
-void CL_Signon4 (void);
 void CL_SignonReply (void);
+
+int  CL_ReadFromServer (void);
 
 void CL_Disconnect (void);
 void CL_Disconnect_f (void);
@@ -317,17 +317,10 @@ extern	kbutton_t	in_mlook, in_klook;
 extern	kbutton_t	in_strafe;
 extern	kbutton_t	in_speed;
 
-char *Key_KeynumToString (int keynum);
-
 void CL_InitInput (void);
 void CL_SendCmd (void);
-void CL_SendMove (usercmd_t *cmd);
-
-void CL_ClearState (void);
-
-int  CL_ReadFromServer (void);
-void CL_WriteToServer (usercmd_t *cmd);
 void CL_BaseMove (usercmd_t *cmd);
+void CL_SendMove (usercmd_t *cmd);
 
 //
 // cl_demo.c
