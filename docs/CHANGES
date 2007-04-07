@@ -3,6 +3,22 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-04-07 (CVS):
+    * removed the vcr facility: net_vcr is useless today and now it is one
+      less thing to worry about and maintain.
+    * removed the global host_time: it was mostly used in net_vcr. now that it
+      is removed, replaced the rest of its usage with realtime and killed it.
+    * tiny clean-up in Cmd_Argv().
+    * tiny clean-up in COM_FileBase().
+    * clean-up in Cvar_SetValue (use %g to get the shortest representation).
+    * more __FUNCTION__ macro usage: cl_main.c.
+    * replaced MAX_IDENTIFIER with MAX_QPATH in glt structure.
+    * misc header clean-ups: client.h, keys.h.
+    * made M_DrawBigCharacter static to menu.c and moved its content who
+      touches the vid buffer into the new callback Draw_BigCharacter in draw.c
+      and gl_draw.c. with this arrangement, BigCharWidth need not be a global
+      anymore, it is static in menu.c now.
+
 2007-04-05 (CVS):
     * net*: more const correctness stuff.
     * net_udp.c, net_wins.c: fixed the long-standing recvfrom() bug.
