@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.29 2007-04-01 21:20:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.30 2007-04-08 18:50:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -60,8 +60,6 @@ cvar_t	coop = {"coop", "0", CVAR_NONE};		// 0 or 1
 cvar_t	pausable = {"pausable", "1", CVAR_NONE};
 
 cvar_t	temp1 = {"temp1", "0", CVAR_NONE};
-
-extern cvar_t	cl_warncmd;
 
 
 /*
@@ -640,8 +638,9 @@ void Host_Init (void)
 	host_hunklevel = Hunk_LowMark ();
 
 	Cbuf_InsertText ("exec server.cfg\n");
-
-	cl_warncmd.value = 1;
+	Cbuf_Execute ();
+	// unlock the early-set cvars after init
+	Cvar_UnlockAll ();
 
 	Con_Printf("\n===== Hexen II dedicated server initialized ======\n\n");
 
@@ -650,8 +649,6 @@ void Host_Init (void)
 	// process command line arguments
 	Cmd_StuffCmds_f ();
 	Cbuf_Execute ();
-	// unlock the early-set cvars after init
-	Cvar_UnlockAll ();
 
 	// if a map wasn't specified on the command line, spawn demo1.map
 	if (!sv.active)

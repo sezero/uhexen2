@@ -2,7 +2,7 @@
 	client.h
 	client main header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.17 2007-04-07 19:54:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.18 2007-04-08 18:50:39 sezero Exp $
 */
 
 #ifndef __H2W_CLIENT_H
@@ -352,7 +352,6 @@ typedef struct
 //
 // cvars
 //
-extern	cvar_t	cl_warncmd;
 extern	cvar_t	cl_upspeed;
 extern	cvar_t	cl_forwardspeed;
 extern	cvar_t	cl_backspeed;

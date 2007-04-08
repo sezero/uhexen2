@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.37 2007-03-16 09:54:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.38 2007-04-08 18:50:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -464,7 +464,6 @@ static void CL_ParseServerData (void)
 		FS_Gamedir(str);
 
 		// ZOID - run autoexec.cfg in the gamedir if it exists
-		Cbuf_AddText ("cl_warncmd 0\n");
 		if (QFS_FileInGamedir("config.cfg") != -1)
 		{
 		// remove any weird mod specific key bindings / aliases
@@ -478,7 +477,6 @@ static void CL_ParseServerData (void)
 			Cbuf_AddText("exec frontend.cfg\n");
 
 		Cbuf_Execute ();
-		Cbuf_AddText ("cl_warncmd 1\n");
 
 		// re-init draw
 		Draw_ReInit ();

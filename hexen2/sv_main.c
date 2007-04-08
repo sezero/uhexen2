@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.51 2007-04-01 12:18:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.52 2007-04-08 18:50:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -76,6 +76,8 @@ void SV_Init (void)
 	Cvar_RegisterVariable (&sv_update_misc);
 	Cvar_RegisterVariable (&sv_ce_scale);
 	Cvar_RegisterVariable (&sv_ce_max_size);
+
+	SV_UserInit ();
 
 	Cmd_AddCommand ("sv_edicts", Sv_Edicts_f);	
 

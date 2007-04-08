@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.22 2007-04-06 06:36:06 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.23 2007-04-08 18:50:38 sezero Exp $
 */
 
 #ifndef __HX2_SERVER_H
@@ -240,6 +240,7 @@ extern	edict_t		*sv_player;
 //===========================================================
 
 void SV_Init (void);
+void SV_UserInit (void);
 
 void SV_StartParticle (vec3_t org, vec3_t dir, int color, int count);
 void SV_StartParticle2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int effect, int count);

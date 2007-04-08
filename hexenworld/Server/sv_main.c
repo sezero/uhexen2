@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.41 2007-04-01 12:18:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.42 2007-04-08 18:50:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1589,6 +1589,9 @@ void SV_Init (void)
 	host_hunklevel = Hunk_LowMark ();
 
 	Cbuf_InsertText ("exec server.cfg\n");
+	Cbuf_Execute ();
+	// unlock the early-set cvars after init
+	Cvar_UnlockAll ();
 
 	host_initialized = true;
 
@@ -1599,8 +1602,6 @@ void SV_Init (void)
 	// process command line arguments
 	Cmd_StuffCmds_f ();
 	Cbuf_Execute ();
-	// unlock the early-set cvars after init
-	Cvar_UnlockAll ();
 
 	// if a map wasn't specified on the command line, spawn demo1.map
 	if (sv.state == ss_dead)

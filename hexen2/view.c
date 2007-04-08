@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.22 2007-04-02 11:47:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.23 2007-04-08 18:50:38 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -13,12 +13,11 @@
 
 #include "quakedef.h"
 
+static	float	v_dmg_time, v_dmg_roll, v_dmg_pitch;
+
 static	cvar_t	scr_ofsx = {"scr_ofsx", "0", CVAR_NONE};
 static	cvar_t	scr_ofsy = {"scr_ofsy", "0", CVAR_NONE};
 static	cvar_t	scr_ofsz = {"scr_ofsz", "0", CVAR_NONE};
-
-static	cvar_t	cl_rollspeed = {"cl_rollspeed", "200", CVAR_NONE};
-static	cvar_t	cl_rollangle = {"cl_rollangle", "2.0", CVAR_NONE};
 
 static	cvar_t	cl_bob = {"cl_bob", "0.02", CVAR_NONE};
 static	cvar_t	cl_bobcycle = {"cl_bobcycle", "0.6", CVAR_NONE};
@@ -37,12 +36,13 @@ static	cvar_t	v_ipitch_level = {"v_ipitch_level", "0.3", CVAR_NONE};
 
 static	cvar_t	v_idlescale = {"v_idlescale", "0", CVAR_NONE};
 
+cvar_t	cl_rollspeed = {"cl_rollspeed", "200", CVAR_NONE};
+cvar_t	cl_rollangle = {"cl_rollangle", "2.0", CVAR_NONE};
+
 cvar_t	crosshair = {"crosshair", "0", CVAR_ARCHIVE};
 cvar_t	cl_crossx = {"cl_crossx", "0", CVAR_ARCHIVE};
 cvar_t	cl_crossy = {"cl_crossy", "0", CVAR_ARCHIVE};
 cvar_t	crosshaircolor = {"crosshaircolor", "75", CVAR_ARCHIVE}; // 79 seemed too bright
-
-static	float	v_dmg_time, v_dmg_roll, v_dmg_pitch;
 
 
 //=============================================================================

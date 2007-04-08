@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.73 2007-04-06 06:36:05 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.74 2007-04-08 18:50:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -979,8 +979,6 @@ void Host_Init (void)
 	Memory_Init (host_parms->membase, host_parms->memsize);
 	Cbuf_Init ();
 	Cmd_Init ();
-	V_Init ();
-	Chase_Init ();
 	COM_Init ();
 	SV_Init ();
 	FS_Init ();
@@ -988,10 +986,6 @@ void Host_Init (void)
 	Host_RemoveGIPFiles(NULL);
 	CFG_OpenConfig ("config.cfg");
 	Host_InitLocal ();
-	W_LoadWadFile ("gfx.wad");
-	Key_Init ();
-	Con_Init ();
-	M_Init ();
 	PR_Init ();
 	Mod_Init ();
 	NET_Init ();
@@ -1003,6 +997,13 @@ void Host_Init (void)
 
 	if (cls.state != ca_dedicated)	// decided in Host_InitLocal() by calling Host_FindMaxClients()
 	{
+		V_Init ();
+		Chase_Init ();
+		W_LoadWadFile ("gfx.wad");
+		Key_Init ();
+		Con_Init ();
+		M_Init ();
+
 		host_basepal = (byte *)QIO_LoadHunkFile ("gfx/palette.lmp");
 		if (!host_basepal)
 			Sys_Error ("Couldn't load gfx/palette.lmp");
@@ -1040,8 +1041,14 @@ void Host_Init (void)
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
 
-	Cbuf_InsertText ("exec hexen.rc\n");
-	Cbuf_Execute();
+	if (cls.state != ca_dedicated)
+	{
+	// execute the hexen.rc file: a valid file runs default.cfg,
+	// config.cfg and autoexec.cfg in this order, then processes
+	// the command line arguments by sending a stuffcmds.
+		Cbuf_InsertText ("exec hexen.rc\n");
+		Cbuf_Execute();
+	}
 	// unlock the early-set cvars after init
 	Cvar_UnlockAll ();
 
@@ -1049,7 +1056,12 @@ void Host_Init (void)
 
 	host_initialized = true;
 
-	Cbuf_AddText ("cl_warncmd 1\n");
+	if (cls.state == ca_dedicated)
+	{
+	// process command line arguments
+		Cmd_StuffCmds_f ();
+		Cbuf_Execute ();
+	}
 }
 
 

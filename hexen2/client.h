@@ -2,7 +2,7 @@
 	client.h
 	client main header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.27 2007-04-07 19:54:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.28 2007-04-08 18:50:38 sezero Exp $
 */
 
 #ifndef __HX2_CLIENT_H
@@ -233,7 +233,6 @@ extern	cvar_t	cl_name;
 extern	cvar_t	cl_color;
 extern	cvar_t	cl_playerclass;
 
-extern	cvar_t	cl_warncmd;
 extern	cvar_t	cl_upspeed;
 extern	cvar_t	cl_forwardspeed;
 extern	cvar_t	cl_backspeed;

@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.75 2007-03-25 11:18:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.76 2007-04-08 18:50:39 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -1038,7 +1038,6 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&show_fps);
 	Cvar_RegisterVariable (&host_speeds);
 
-	Cvar_RegisterVariable (&cl_warncmd);
 	Cvar_RegisterVariable (&cl_upspeed);
 	Cvar_RegisterVariable (&cl_forwardspeed);
 	Cvar_RegisterVariable (&cl_backspeed);
@@ -1360,7 +1359,6 @@ void Host_Init (void)
 	Memory_Init (host_parms->membase, host_parms->memsize);
 	Cbuf_Init ();
 	Cmd_Init ();
-	V_Init ();
 
 	COM_Init ();
 	FS_Init ();
@@ -1371,16 +1369,18 @@ void Host_Init (void)
 
 	CFG_OpenConfig ("config.cfg");
 
-	W_LoadWadFile ("gfx.wad");
-	Key_Init ();
-	Con_Init ();
-	M_Init ();
 	Mod_Init ();
 
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
 	Con_Printf ("%4.1f megs RAM used.\n", host_parms->memsize/(1024*1024.0));
 
 	R_InitTextures ();
+
+	V_Init ();
+	W_LoadWadFile ("gfx.wad");
+	Key_Init ();
+	Con_Init ();
+	M_Init ();
 
 	host_basepal = (byte *)QIO_LoadHunkFile ("gfx/palette.lmp");
 	if (!host_basepal)
@@ -1418,6 +1418,9 @@ void Host_Init (void)
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
 
+	// execute the hexen.rc file: a valid file runs default.cfg,
+	// config.cfg and autoexec.cfg in this order, then processes
+	// the command line arguments by sending a stuffcmds.
 	Cbuf_InsertText ("exec hexen.rc\n");
 	Cbuf_Execute();
 	// unlock the early-set cvars after init
@@ -1426,8 +1429,6 @@ void Host_Init (void)
 	Con_Printf ("\n======= HexenWorld Initialized ========\n\n");
 
 	host_initialized = true;
-
-	Cbuf_AddText ("cl_warncmd 1\n");
 }
 
 

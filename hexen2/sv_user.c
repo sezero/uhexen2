@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.18 2007-03-27 11:16:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.19 2007-04-08 18:50:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -33,6 +33,9 @@ cvar_t	sv_idealrollscale = {"sv_idealrollscale", "0.8", CVAR_NONE};
 #if defined(SERVERONLY)
 static	cvar_t	cl_rollspeed = {"cl_rollspeed", "200", CVAR_NONE};
 static	cvar_t	cl_rollangle = {"cl_rollangle", "2.0", CVAR_NONE};
+#else
+extern	cvar_t	cl_rollspeed;
+extern	cvar_t	cl_rollangle;
 #endif
 
 
@@ -55,7 +58,7 @@ void SV_SetIdealPitch (void)
 	if (!((int)sv_player->v.flags & FL_ONGROUND))
 		return;
 
-	if (sv_player->v.movetype==MOVETYPE_FLY)
+	if (sv_player->v.movetype == MOVETYPE_FLY)
 		return;
 
 	angleval = sv_player->v.angles[YAW] * M_PI*2 / 360;
@@ -804,5 +807,21 @@ void SV_RunClients (void)
 #endif
 			SV_ClientThink ();
 	}
+}
+
+
+/*
+==============
+SV_UserInit
+==============
+*/
+void SV_UserInit (void)
+{
+#if !defined(SERVERONLY)
+	if (isDedicated)
+		return;
+#endif	/* SERVERONLY */
+	Cvar_RegisterVariable (&cl_rollspeed);
+	Cvar_RegisterVariable (&cl_rollangle);
 }
 

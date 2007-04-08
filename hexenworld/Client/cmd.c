@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.24 2007-04-06 07:25:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.25 2007-04-08 18:50:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -35,8 +35,6 @@ static	char		*cmd_null_string = "";
 static	char		*cmd_args = NULL;
 
 static qboolean	cmd_wait;
-
-cvar_t cl_warncmd = {"cl_warncmd", "0", CVAR_NONE};
 
 
 //=============================================================================
@@ -684,7 +682,7 @@ void Cmd_ExecuteString (char *text, cmd_source_t src)
 	}
 
 // check cvars
-	if (!Cvar_Command () && (cl_warncmd.value || developer.value))
+	if (!Cvar_Command())
 		Con_Printf ("Unknown command \"%s\"\n", Cmd_Argv(0));
 }
 

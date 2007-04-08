@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.73 2007-04-02 08:29:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.74 2007-04-08 18:50:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -228,8 +228,17 @@ static void Host_Map_f (void)
 	if (Cmd_Argc() < 2)	//no map name given
 	{
 		Con_Printf ("map <levelname>: start a new server\n");
-		if (cls.state == ca_connected || (cls.state == ca_dedicated && sv.active))
+		if (cls.state == ca_dedicated)
+		{
+			if (sv.active)
+				Con_Printf ("Currently on: %s\n", sv.name);
+			else
+				Con_Printf ("Server not active\n");
+		}
+		else if (cls.state == ca_connected)
+		{
 			Con_Printf ("Currently on: %s ( %s )\n", cl.levelname, cl.mapname);
+		}
 		return;
 	}
 
@@ -674,6 +683,7 @@ static void Host_Loadgame_f (void)
 	cls.demonum = -1;		// stop demo loop in case this fails
 	CL_Disconnect();
 	Host_RemoveGIPFiles(NULL);
+	key_dest = key_game;		// remove console or menu
 
 	if (snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, Cmd_Argv(1)) >= sizeof(savename))
 	{
