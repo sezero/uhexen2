@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.48 2007-04-06 06:36:05 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.49 2007-04-08 08:51:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1542,30 +1542,27 @@ void CL_ParseServerMessage (void)
 			cl.intermission = MSG_ReadByte();
 			if (oem.value && cl.intermission == 1)
 				cl.intermission = 9;
+			// skip intermissions while recording demos in single
+			// player games, but stop recording at ending scenes.
+			// skip intermissions when playing demos.
 			if (cls.demorecording)
 			{
-			// skip intermissions while recording demos
-			// but stop recording at ending scenes:
-			// 5: finale for the demo version
-			// 6: eidolon, end-1
-			// 7: eidolon, end-2
-			// 8: eidolon, end-3
-			// 9: finale for the bundle version
-			// 10: praevus ending
-			// 12: mission pack opening
-				if (cl.intermission < 5 || cl.intermission > 10)
+				// 5: finale for the demo version
+				// 6, 7, 8: eidolon end-1 to end-3
+				// 9: finale for the bundle version
+				// 10: praevus ending
+				if (sv.active && svs.maxclients == 1 &&
+				    (cl.intermission < 5 || cl.intermission > 10))
 				{
 					cl.intermission = 0;
-					Cbuf_AddText("+attack\n");	// HACK !..
 					demohack = true;
+					Cbuf_AddText("+attack\n");	// HACK !..
 					break;
 				}
-				else
-				{
-					CL_Stop_f ();
-				}
+
+				CL_Stop_f ();
 			}
-			if (cls.demoplayback)
+			else if (cls.demoplayback)
 			{
 				cl.intermission = 0;
 				break;
