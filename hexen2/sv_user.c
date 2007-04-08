@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.19 2007-04-08 18:50:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.20 2007-04-08 19:24:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -818,7 +818,7 @@ SV_UserInit
 void SV_UserInit (void)
 {
 #if !defined(SERVERONLY)
-	if (isDedicated)
+	if (!isDedicated)
 		return;
 #endif	/* SERVERONLY */
 	Cvar_RegisterVariable (&cl_rollspeed);
