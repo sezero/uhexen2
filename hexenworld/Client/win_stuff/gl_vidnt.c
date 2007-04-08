@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.93 2007-04-08 09:44:53 sezero Exp $
+	$Id: gl_vidnt.c,v 1.94 2007-04-08 14:58:03 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -987,9 +987,11 @@ unsigned ColorPercent[16] =
 	25, 51, 76, 102, 114, 127, 140, 153, 165, 178, 191, 204, 216, 229, 237, 247
 };
 
-#ifdef DO_BUILD
+#if USE_HEXEN2_PALTEX_CODE
 // these two procedures should have been used by Raven to
 // generate the gfx/invpal.lmp file which resides in pak0
+
+#define	INVERSE_PALNAME	"gfx/invpal.lmp"
 static int ConvertTrueColorToPal (unsigned char *true_color, unsigned char *palette)
 {
 	int	i;
@@ -1026,11 +1028,11 @@ static int ConvertTrueColorToPal (unsigned char *true_color, unsigned char *pale
 
 static void VID_CreateInversePalette (unsigned char *palette)
 {
-	FILE	*FH;
 	long	r, g, b;
 	long	index = 0;
 	unsigned char	true_color[3];
-	char	path[MAX_OSPATH];
+
+	Con_Printf ("Creating inverse palette\n");
 
 	for (r = 0; r < ( 1 << INVERSE_PAL_R_BITS ); r++)
 	{
@@ -1047,18 +1049,10 @@ static void VID_CreateInversePalette (unsigned char *palette)
 		}
 	}
 
-	snprintf (path, MAX_OSPATH, "%s/data1/gfx", fs_basedir);
-	Sys_mkdir (path);
-	snprintf (path, MAX_OSPATH, "%s/data1/gfx/invpal.lmp", fs_basedir);
-	FH = fopen(path, "wb");
-	if (!FH)
-		Sys_Error ("Couldn't create %s", path);
-	//fwrite (inverse_pal, 1, sizeof(inverse_pal), FH);
-	fwrite (inverse_pal, 1, (sizeof(inverse_pal))-1, FH);
-	fclose (FH);
-	Con_Printf ("Created %s\n", path);
+	QIO_CreatePath(va("%s/%s", fs_userdir, INVERSE_PALNAME));
+	QIO_WriteFile (INVERSE_PALNAME, inverse_pal, sizeof(inverse_pal)-1);
 }
-#endif
+#endif	/* USE_HEXEN2_PALTEX_CODE */
 
 
 void VID_SetPalette (unsigned char *palette)
@@ -1138,13 +1132,9 @@ void VID_SetPalette (unsigned char *palette)
 #if USE_HEXEN2_PALTEX_CODE
 	// This is original hexen2 code for palettized textures
 	// Hexenworld replaced it with quake's newer code below
-
-	// FIXME: Endianness ???
-#   ifdef DO_BUILD
-	VID_CreateInversePalette (palette);
-#   else
-	QIO_LoadStackFile ("gfx/invpal.lmp", inverse_pal, sizeof(inverse_pal));
-#   endif
+	pal = (byte *) QIO_LoadStackFile (INVERSE_PALNAME, inverse_pal, sizeof(inverse_pal));
+	if (pal == NULL)
+		VID_CreateInversePalette (palette);
 
 #else // end of HEXEN2_PALTEX_CODE
 	QIO_FOpenFile("glhexen/15to8.pal", &f, true);
