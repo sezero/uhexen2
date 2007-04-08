@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.149 2007-03-14 08:12:32 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.150 2007-04-08 09:34:18 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1511,6 +1511,7 @@ void	VID_Init (unsigned char *palette)
 
 	vid.numpages = 2;
 
+#if DO_MESH_CACHE
 	// prepare directories for caching mesh files
 	snprintf (gldir, sizeof(gldir), "%s/glhexen", fs_userdir);
 	Sys_mkdir (gldir);
@@ -1518,6 +1519,7 @@ void	VID_Init (unsigned char *palette)
 	Sys_mkdir (gldir);
 	snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", fs_userdir);
 	Sys_mkdir (gldir);
+#endif
 
 	// see if the SDL version we linked to is multisampling-capable
 	sdl_version = SDL_Linked_Version();

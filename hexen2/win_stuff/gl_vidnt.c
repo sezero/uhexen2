@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.89 2007-03-14 21:03:26 sezero Exp $
+	$Id: gl_vidnt.c,v 1.90 2007-04-08 09:34:26 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -2167,6 +2167,7 @@ void	VID_Init (unsigned char *palette)
 	Cmd_AddCommand ("vid_describemodes", VID_DescribeModes_f);
 	Cmd_AddCommand ("vid_restart", VID_Restart_f);
 
+#if DO_MESH_CACHE
 	// prepare directories for caching mesh files
 	snprintf (gldir, sizeof(gldir), "%s/glhexen", fs_userdir);
 	Sys_mkdir (gldir);
@@ -2174,6 +2175,7 @@ void	VID_Init (unsigned char *palette)
 	Sys_mkdir (gldir);
 	snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", fs_userdir);
 	Sys_mkdir (gldir);
+#endif
 
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
 
