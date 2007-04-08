@@ -3,6 +3,41 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-04-08 (CVS):
+    * killed COM_InitArgv in hexenworld master server and rearranged things
+      to be similar to the game engine.
+    * demo recordings covering multiple episodes: stop recording if this is
+      a multiplayer game.
+    * gl_vidsdl.c, gl_vidnt.c: if we aren't caching model meshes, no need to
+      create the relevant directories under userdir.
+    * gl_draw clean-up: draw_chars, draw_smallchars and draw_menufont need not
+      stay resident. switched from LoadHunkFile/Hunk_FreeToLowMark method to
+      LoadTempFile in Draw_Init. took the width/height of bigfont2.lmp from the
+      loaded data instead of using hardcoded 160*80 (other places in the code
+      relies on this 160*80, though.) gathered pic load failure checking into
+      a tiny static procedure named Draw_PicCheckError.
+    * loading of bigchar widths file didn't check the result from LoadStackFile.
+      made it to check for NULL, and made it to generate the width table in case
+      of loading failures.
+    * loading of the inverse palette didn't check the result from LoadStackFile.
+      made it to check for NULL, and made it to generate the palette in case of
+      loading failures.
+    * several small things all together: made the load command to get rid of
+      console or menu. removed the cvar cl_warncmd. tweaked the init sequence:
+      dedicated servers initialize less subsystems: thus V_Init, Chase_Init,
+      Key_Init, Con_Init and M_Init, and loading of gfx.wad happen after
+      R_InitTextures, and only for graphical clients. the dedicated servers do
+      not exec hexen.rc anymore, they just process the command line arguments.
+      h2ded and hwsv flush the command buffer from execing server.cfg before
+      they process the command line arguments.
+    * fixed the silly typo in SV_UserInit from the previous patch.
+    * gl_vidsdl.c, gl_vidnt.c: if we aren't caching model meshes, no need to
+      create the relevant directories under userdir. (properly conditionalized
+      the dirname variable.)
+    * more small things: made the connect command to get rid of console or menu.
+    * more small things: removed unnecessary code from the playdemo command
+      which was supposed to serve getting rid of console or menu.
+
 2007-04-07 (CVS):
     * removed the vcr facility: net_vcr is useless today and now it is one
       less thing to worry about and maintain.
