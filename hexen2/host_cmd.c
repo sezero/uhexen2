@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.74 2007-04-08 18:50:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.75 2007-04-08 19:25:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -449,6 +449,7 @@ static void Host_Connect_f (void)
 	char	name[MAX_QPATH];
 
 	cls.demonum = -1;		// stop demo loop in case this fails
+	key_dest = key_game;		// remove console or menu
 	if (cls.demoplayback)
 	{
 		CL_StopPlayback ();
