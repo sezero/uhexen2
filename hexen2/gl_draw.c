@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.104 2007-04-07 19:55:38 sezero Exp $
+	$Id: gl_draw.c,v 1.105 2007-04-08 11:44:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -50,10 +50,6 @@ static cvar_t	gl_picmip = {"gl_picmip", "0", CVAR_NONE};
 static cvar_t	gl_spritemip = {"gl_spritemip", "0", CVAR_NONE};
 
 static cvar_t	gl_constretch = {"gl_constretch", "0", CVAR_ARCHIVE};
-
-static byte	*draw_chars;				// 8*8 graphic characters
-static byte	*draw_smallchars;			// Small characters for status bar
-//static byte	*draw_menufont; 			// Big Menu Font
 
 GLuint		plyrtex[MAX_PLAYER_CLASS][16][16];	// whether or not the corresponding player textures
 							// (in multiplayer config screens) have been loaded
@@ -135,6 +131,13 @@ int			menu_numcachepics;
 static byte	menuplyr_pixels[MAX_PLAYER_CLASS][PLAYER_PIC_WIDTH*PLAYER_PIC_HEIGHT];
 
 
+static void Draw_PicCheckError (void *ptr, const char *name)
+{
+	if (!ptr)
+		Sys_Error ("Failed to load %s", name);
+}
+
+
 #if 0
 static qpic_t *Draw_PicFromFile (const char *name)
 {
@@ -211,8 +214,10 @@ qpic_t	*Draw_CachePic (const char *path)
 	glpic_t		*gl;
 
 	for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
+	{
 		if (!strcmp (path, pic->name))
 			return &pic->pic;
+	}
 
 	if (menu_numcachepics == MAX_CACHED_PICS)
 		Sys_Error ("menu_numcachepics == MAX_CACHED_PICS");
@@ -223,8 +228,7 @@ qpic_t	*Draw_CachePic (const char *path)
 // load the pic from disk
 //
 	dat = (qpic_t *)QIO_LoadTempFile (path);
-	if (!dat)
-		Sys_Error ("%s: failed to load %s", __FUNCTION__, path);
+	Draw_PicCheckError (dat, path);
 	SwapPic (dat);
 
 	// HACK HACK HACK --- we need to keep the bytes for
@@ -278,8 +282,10 @@ qpic_t *Draw_CachePicNoTrans (const char *path)
 	glpic_t		*gl;
 
 	for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
+	{
 		if (!strcmp (path, pic->name))
 			return &pic->pic;
+	}
 
 	if (menu_numcachepics == MAX_CACHED_PICS)
 		Sys_Error ("menu_numcachepics == MAX_CACHED_PICS");
@@ -290,8 +296,7 @@ qpic_t *Draw_CachePicNoTrans (const char *path)
 // load the pic from disk
 //
 	dat = (qpic_t *)QIO_LoadTempFile (path);
-	if (!dat)
-		Sys_Error ("%s: failed to load %s", __FUNCTION__, path);
+	Draw_PicCheckError (dat, path);
 	SwapPic (dat);
 
 	pic->pic.width = dat->width;
@@ -300,8 +305,10 @@ qpic_t *Draw_CachePicNoTrans (const char *path)
 	gl = (glpic_t *)pic->pic.data;
 	// Get rid of transparencies
 	for (i = 0; i < dat->width * dat->height; i++)
+	{
 		if (dat->data[i] == 255)
 			dat->data[i] = 31; // pal(31) == pal(255) == FCFCFC (white)
+	}
 	gl->texnum = GL_LoadPicTexture (dat);
 
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -399,7 +406,8 @@ Draw_Init
 void Draw_Init (void)
 {
 	qpic_t		*p;
-	int		i, start;
+	byte		*chars;
+	int		i;
 
 	if (!draw_reinit)
 	{
@@ -413,68 +421,56 @@ void Draw_Init (void)
 		memset(plyrtex, 0, MAX_PLAYER_CLASS * 16 * 16 * sizeof(GLuint));
 	}
 
-	// load the charset
-	start = Hunk_LowMark ();
-	draw_chars = QIO_LoadHunkFile ("gfx/menu/conchars.lmp");
+	// load the charset: 8*8 graphic characters
+	chars = QIO_LoadTempFile ("gfx/menu/conchars.lmp");
 	for (i = 0; i < 256*128; i++)
 	{
-		if (draw_chars[i] == 0)
-			draw_chars[i] = 255;	// proper transparent color
+		if (chars[i] == 0)
+			chars[i] = 255;	// proper transparent color
 	}
-
-	char_texture = GL_LoadTexture ("charset", 256, 128, draw_chars, false, true, 0, false);
+	char_texture = GL_LoadTexture ("charset", 256, 128, chars, false, true, 0, false);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
-	// free the loaded charset
-	Hunk_FreeToLowMark (start);
 
-	cs_texture = GL_LoadPixmap ("crosshair", cs_data);
-
-	draw_smallchars = W_GetLumpName("tinyfont");
+	// load the small characters for status bar
+	chars = W_GetLumpName("tinyfont");
 	for (i = 0; i < 128*32; i++)
 	{
-		if (draw_smallchars[i] == 0)
-			draw_smallchars[i] = 255;	// proper transparent color
+		if (chars[i] == 0)
+			chars[i] = 255;	// proper transparent color
 	}
-
-	// now turn them into textures
-	char_smalltexture = GL_LoadTexture ("smallcharset", 128, 32, draw_smallchars, false, true, 0, false);
+	char_smalltexture = GL_LoadTexture ("smallcharset", 128, 32, chars, false, true, 0, false);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
+	// load the big menu font
 	p = (qpic_t *)QIO_LoadTempFile("gfx/menu/bigfont2.lmp");
-	for (i = 0; i < 160*80; i++)
+	Draw_PicCheckError (p, "gfx/menu/bigfont2.lmp");
+	SwapPic (p);
+	for (i = 0; i < p->width * p->height; i++)	// MUST be 160 * 80
 	{
 		if (p->data[i] == 0)
 			p->data[i] = 255;	// proper transparent color
 	}
-
-	char_menufonttexture = GL_LoadTexture ("menufont", 160, 80, p->data, false, true, 0, false);
+	char_menufonttexture = GL_LoadTexture ("menufont", p->width, p->height, p->data, false, true, 0, false);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
-	start = Hunk_LowMark ();
-	p = (qpic_t *)QIO_LoadHunkFile ("gfx/menu/conback.lmp");
-	if (!p)
-		Sys_Error ("Couldn't load gfx/menu/conback.lmp");
+	// load the console background
+	p = (qpic_t *)QIO_LoadTempFile ("gfx/menu/conback.lmp");
+	Draw_PicCheckError (p, "gfx/menu/conback.lmp");
 	SwapPic (p);
-
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 	conback = GL_LoadTexture ("conback", p->width, p->height, p->data, false, false, 0, false);
 
-	// free loaded console
-	Hunk_FreeToLowMark (start);
-
 	// load the backtile
-	start = Hunk_LowMark ();
-	p = (qpic_t *)QIO_LoadHunkFile ("gfx/menu/backtile.lmp");
-	if (!p)
-		Sys_Error ("Couldn't load gfx/menu/backtile.lmp");
-
+	p = (qpic_t *)QIO_LoadTempFile ("gfx/menu/backtile.lmp");
+	Draw_PicCheckError (p, "gfx/menu/backtile.lmp");
 	draw_backtile = GL_LoadPicTexture (p);
-	// free the loaded backtile
-	Hunk_FreeToLowMark (start);
+
+	// load the crosshair texture
+	cs_texture = GL_LoadPixmap ("crosshair", cs_data);
 }
 
 /*
