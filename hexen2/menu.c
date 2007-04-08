@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.82 2007-04-07 19:55:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.83 2007-04-08 14:56:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -467,28 +467,29 @@ void M_ToggleMenu_f (void)
 	}
 }
 
-static char	BigCharWidth[27][27];
-//static char unused_filler;  // cuz the QIO_LoadStackFile puts a 0 at the end of the data
+//#define BIGCHAR_FONT_FILE	"gfx/menu/bigfont.lmp"
+#define	BIGCHAR_FONT_FILE	"gfx/menu/bigfont2.lmp"
+#define	BIGCHAR_WIDTH_FILE	"gfx/menu/fontsize.lmp"
 
-//#define BUILD_BIG_CHAR 1
+static char	BigCharWidth[27][27];
 
 static void M_BuildBigCharWidth (void)
 {
-#ifdef BUILD_BIG_CHAR
-	qpic_t	*p;
-	int ypos,xpos;
-	byte			*source;
-	int biggestX,adjustment;
-	char After[20], Before[20];
-	int numA,numB;
-	FILE *FH;
-	char temp[MAX_OSPATH];
+	qpic_t		*p;
+	byte		*source;
+	int	ypos, xpos;
+	int	numA, numB;
+	int	biggestX, adjustment;
+	char	After[20], Before[20];
 
-	p = Draw_CachePic ("gfx/menu/bigfont.lmp");
+	p = (qpic_t *)QIO_LoadTempFile (BIGCHAR_FONT_FILE);
+	if (!p)
+		Sys_Error ("Failed to load %s", BIGCHAR_FONT_FILE);
+	SwapPic(p);
 
 	for (numA = 0; numA < 27; numA++)
 	{
-		memset(After,20,sizeof(After));
+		memset (After, 20, sizeof(After));
 		source = p->data + ((numA % 8) * 20) + (numA / 8 * p->width * 20);
 		biggestX = 0;
 
@@ -509,7 +510,7 @@ static void M_BuildBigCharWidth (void)
 
 		for (numB = 0; numB < 27; numB++)
 		{
-			memset(Before,0,sizeof(Before));
+			memset (Before, 0, sizeof(Before));
 			source = p->data + ((numB % 8) * 20) + (numB / 8 * p->width * 20);
 			adjustment = 0;
 
@@ -539,17 +540,12 @@ static void M_BuildBigCharWidth (void)
 					break;
 				adjustment--;
 			}
-			BigCharWidth[numA][numB] = adjustment+biggestX;
+			BigCharWidth[numA][numB] = adjustment + biggestX;
 		}
 	}
 
-	sprintf (temp, "%s/gfx/menu/fontsize.lmp", fs_gamedir);
-	FH = fopen (temp, "wb");
-	fwrite (BigCharWidth, 1, sizeof(BigCharWidth), FH);
-	fclose (FH);
-#else
-	QIO_LoadStackFile ("gfx/menu/fontsize.lmp", BigCharWidth, sizeof(BigCharWidth)+1);
-#endif
+	QIO_CreatePath(va("%s/%s", fs_userdir, BIGCHAR_WIDTH_FILE));
+	QIO_WriteFile (BIGCHAR_WIDTH_FILE, BigCharWidth, sizeof(BigCharWidth));
 }
 
 static int M_DrawBigCharacter (int x, int y, const int num, const int numNext)
@@ -4206,6 +4202,12 @@ static void M_ServerList_Key (int k)
 
 void M_Init (void)
 {
+	char		*ptr;
+
+	ptr = (char *) QIO_LoadStackFile (BIGCHAR_WIDTH_FILE, BigCharWidth, sizeof(BigCharWidth)+1);
+	if (ptr == NULL)
+		M_BuildBigCharWidth();
+
 	Cmd_AddCommand ("togglemenu", M_ToggleMenu_f);
 
 	Cmd_AddCommand ("menu_main", M_Menu_Main_f);
@@ -4220,8 +4222,6 @@ void M_Init (void)
 	Cmd_AddCommand ("help", M_Menu_Help_f);
 	Cmd_AddCommand ("menu_quit", M_Menu_Quit_f);
 	Cmd_AddCommand ("menu_class", M_Menu_Class2_f);
-
-	M_BuildBigCharWidth();
 
 	memset (old_bgmtype, 0, sizeof(old_bgmtype));
 }
