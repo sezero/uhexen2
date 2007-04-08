@@ -2,7 +2,7 @@
 	cl_demo.c
 	demo recording and playback
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_demo.c,v 1.17 2007-03-14 21:03:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_demo.c,v 1.18 2007-04-08 19:25:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -407,9 +407,6 @@ CL_PlayDemo_f
 play [demoname]
 ====================
 */
-#define	m_none	0	// enumerated menu state from menu.c
-extern	int	m_state;
-
 void CL_PlayDemo_f (void)
 {
 	char	name[256];
@@ -421,11 +418,7 @@ void CL_PlayDemo_f (void)
 	}
 
 // get rid of the menu and/or console
-	if (key_dest == key_console || key_dest == key_menu)
-	{
-		key_dest = key_game;
-		m_state = m_none;
-	}
+	key_dest = key_game;
 
 //
 // disconnect from server
