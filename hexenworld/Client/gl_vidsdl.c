@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.142 2007-04-08 09:34:26 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.143 2007-04-08 09:44:52 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1479,7 +1479,9 @@ VID_Init
 void	VID_Init (unsigned char *palette)
 {
 	int	i, width, height;
+#if DO_MESH_CACHE
 	char	gldir[MAX_OSPATH];
+#endif
 	SDL_Rect	**enumlist;
 	const SDL_version	*sdl_version;
 	const char	*read_vars[] = {

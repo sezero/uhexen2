@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.90 2007-04-08 09:34:26 sezero Exp $
+	$Id: gl_vidnt.c,v 1.91 2007-04-08 09:44:52 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -2130,7 +2130,9 @@ void	VID_Init (unsigned char *palette)
 {
 	int	i, j, existingmode;
 	int	width, height, bpp, zbits, findbpp, done;
+#if DO_MESH_CACHE
 	char	gldir[MAX_OSPATH];
+#endif
 	HDC	hdc;
 	const char	*read_vars[] = {
 				"vid_config_fscr",
