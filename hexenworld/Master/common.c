@@ -2,7 +2,7 @@
 	common.c
 	misc utility functions
 
-	$Id: common.c,v 1.1 2007-02-12 16:54:48 sezero Exp $
+	$Id: common.c,v 1.2 2007-04-08 08:50:42 sezero Exp $
 */
 
 #include "defs.h"
@@ -11,9 +11,6 @@ char		com_token[1024];
 int		com_argc;
 char	**com_argv;
 
-static char	*largv[MAX_NUM_ARGVS + 1];
-static char	*argvdummy = " ";
-
 /*
 ============================================================================
 
@@ -21,17 +18,6 @@ COMMAND LINE PROCESSING FUNCTIONS
 
 ============================================================================
 */
-
-void COM_InitArgv (int argc, char **argv)
-{
-	for (com_argc = 0; (com_argc < MAX_NUM_ARGVS) && (com_argc < argc); com_argc++)
-	{
-		largv[com_argc] = argv[com_argc];
-	}
-
-	largv[com_argc] = argvdummy;
-	com_argv = largv;
-}
 
 int COM_CheckParm (const char *parm)
 {

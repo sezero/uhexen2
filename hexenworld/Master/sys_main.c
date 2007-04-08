@@ -2,7 +2,7 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.30 2007-03-14 21:04:15 sezero Exp $
+	$Id: sys_main.c,v 1.31 2007-04-08 08:50:42 sezero Exp $
 */
 
 // whether to use the password file to determine
@@ -282,7 +282,8 @@ int main (int argc, char **argv)
 		}
 	}
 
-	COM_InitArgv (argc, argv);
+	com_argv = argv;
+	com_argc = argc;
 
 #ifdef PLATFORM_UNIX
 // userdir stuff
