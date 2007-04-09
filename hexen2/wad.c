@@ -2,7 +2,7 @@
 	wad.c
 	wad file loading
 
-	$Id: wad.c,v 1.9 2007-03-14 21:03:24 sezero Exp $
+	$Id: wad.c,v 1.10 2007-04-09 17:33:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -53,29 +53,28 @@ W_LoadWadFile
 */
 void W_LoadWadFile (const char *filename)
 {
+	byte			*old_base;
 	lumpinfo_t		*lump_p;
 	wadinfo_t		*header;
 	int			i;
 	int			infotableofs;
 
-	// Pa3PyX: check if the file has already been loaded. If so, reload at
-	//	   the same location.
-	// FIXME: Loading another wad (with bigger size) on top of a smaller one
-	//	  may be treacherous (the hunk is purged upon changing maps),
-	//	  although the game never does that except upon changing video
-	//	  modes in OpenGL, where the wad file is the same (so it should
-	//	  load on top of the old one with no problems).
-	if (wad_base)
-	{
-		wad_base = QIO_LoadBufFile(filename, wad_base, &wad_len);
-	}
-	else
-	{
-		wad_base = QIO_LoadHunkFile(filename);
-		wad_len = qio_filesize;
-	}
+/* Upon changing video modes, we need to reload the wad file in OpenGL.
+   FIXME: Loading another bigger wad on top of a smaller one may be
+   treacherous: Due to the size change in such a case, the load method
+   will allocate the wad on the hunk, and the problem is the hunk is
+   purged upon changing maps. Our chance here is we only do this when
+   changing resolutions where the wad file is the same.
+   FIXME-2: Draw_ReInit(), called upon gamedir changes, also re-loads
+   gfx.wad and that may result in 'bad things' (TM). Added a Sys_Error
+   below for such cases.
+ */
+	old_base = wad_base;
+	wad_base = QIO_LoadBufFile (filename, wad_base, &wad_len);
 	if (!wad_base)
 		Sys_Error ("%s: couldn't load %s", __FUNCTION__, filename);
+	if (old_base && old_base != wad_base)
+		Sys_Error ("%s: FIXME: re-loaded a larger wad file!", __FUNCTION__);
 
 	header = (wadinfo_t *)wad_base;
 
