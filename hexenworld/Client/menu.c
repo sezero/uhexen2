@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.59 2007-04-08 14:56:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.60 2007-04-09 17:14:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2827,9 +2827,20 @@ void M_Init (void)
 {
 	char		*ptr;
 
-	ptr = (char *) QIO_LoadStackFile (BIGCHAR_WIDTH_FILE, BigCharWidth, sizeof(BigCharWidth)+1);
+	ptr = (char *) QIO_LoadTempFile (BIGCHAR_WIDTH_FILE);
 	if (ptr == NULL)
 		M_BuildBigCharWidth();
+	else
+	{
+		if (qio_filesize == sizeof(BigCharWidth))
+			memcpy (BigCharWidth, ptr, sizeof(BigCharWidth));
+		else
+		{
+			Con_Printf ("Unexpected file size (%lu) for %s\n",
+					(unsigned long)qio_filesize, BIGCHAR_WIDTH_FILE);
+			M_BuildBigCharWidth();
+		}
+	}
 
 	Cmd_AddCommand ("togglemenu", M_ToggleMenu_f);
 
