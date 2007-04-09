@@ -2,7 +2,7 @@
 	quakefs.c
 	quake file io
 
-	$Id: quakeio.c,v 1.6 2007-04-02 21:06:00 sezero Exp $
+	$Id: quakeio.c,v 1.7 2007-04-09 17:21:17 sezero Exp $
 */
 
 #define _NEED_SEARCHPATH_T
@@ -371,17 +371,16 @@ static byte *QIO_LoadFile (const char *path, int usehunk)
 		buf = Cache_Alloc (loadcache, len+1, base);
 		break;
 	case LOADFILE_STACK:
-		if (len + 1 > loadsize)
-			buf = Hunk_TempAlloc (len+1);
-		else
+		if (len < loadsize)
 			buf = loadbuf;
+		else
+			buf = Hunk_TempAlloc (len+1);
 		break;
 	case LOADFILE_BUF:
-		// Pa3PyX: like 4, except uses hunk (not temp) if no space
-		if (len + 1 > loadsize)
-			buf = Hunk_AllocName(len + 1, path);
-		else
+		if (len < loadsize && loadbuf != NULL)
 			buf = loadbuf;
+		else
+			buf = Hunk_AllocName(len + 1, path);
 		break;
 	case LOADFILE_MALLOC:
 		buf = Q_malloc (len+1);
@@ -439,8 +438,9 @@ byte *QIO_LoadStackFile (const char *path, void *buffer, size_t bufsize)
 	return buf;
 }
 
-// Pa3PyX: Like QIO_LoadStackFile, excepts loads onto
-// the hunk (instead of temp) if there is no space
+// loads into a previously allocated buffer. if space is insufficient
+// or the buffer is NULL, loads onto the hunk.  bufsize is the actual
+// size (without the +1).
 byte *QIO_LoadBufFile (const char *path, void *buffer, size_t *bufsize)
 {
 	byte	*buf;
@@ -448,8 +448,9 @@ byte *QIO_LoadBufFile (const char *path, void *buffer, size_t *bufsize)
 	loadbuf = (byte *)buffer;
 	loadsize = (*bufsize) + 1;
 	buf = QIO_LoadFile (path, LOADFILE_BUF);
-	if (buf && !(*bufsize))
-		*bufsize = qio_filesize;
+	*bufsize = (buf == NULL) ? 0 : qio_filesize;
+	if (loadbuf && buf && buf != loadbuf)
+		Sys_Printf("%s: insufficient buffer for %s not used.\n", __FUNCTION__, path);
 
 	return buf;
 }
