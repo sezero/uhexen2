@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.92 2007-04-08 14:58:02 sezero Exp $
+	$Id: gl_vidnt.c,v 1.93 2007-04-10 17:33:57 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -1029,7 +1029,7 @@ static int ConvertTrueColorToPal (unsigned char *true_color, unsigned char *pale
 static void VID_CreateInversePalette (unsigned char *palette)
 {
 	long	r, g, b;
-	long	index = 0;
+	long	idx = 0;
 	unsigned char	true_color[3];
 
 	Con_Printf ("Creating inverse palette\n");
@@ -1043,8 +1043,8 @@ static void VID_CreateInversePalette (unsigned char *palette)
 				true_color[0] = ( unsigned char )( r << ( 8 - INVERSE_PAL_R_BITS ) );
 				true_color[1] = ( unsigned char )( g << ( 8 - INVERSE_PAL_G_BITS ) );
 				true_color[2] = ( unsigned char )( b << ( 8 - INVERSE_PAL_B_BITS ) );
-				inverse_pal[index] = ConvertTrueColorToPal( true_color, palette );
-				index++;
+				inverse_pal[idx] = ConvertTrueColorToPal( true_color, palette );
+				idx++;
 			}
 		}
 	}

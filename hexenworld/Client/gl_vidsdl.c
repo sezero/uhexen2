@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.144 2007-04-08 14:58:03 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.145 2007-04-10 17:33:58 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -954,7 +954,7 @@ static int ConvertTrueColorToPal (unsigned char *true_color, unsigned char *pale
 static void VID_CreateInversePalette (unsigned char *palette)
 {
 	long	r, g, b;
-	long	index = 0;
+	long	idx = 0;
 	unsigned char	true_color[3];
 
 	Con_Printf ("Creating inverse palette\n");
@@ -968,8 +968,8 @@ static void VID_CreateInversePalette (unsigned char *palette)
 				true_color[0] = ( unsigned char )( r << ( 8 - INVERSE_PAL_R_BITS ) );
 				true_color[1] = ( unsigned char )( g << ( 8 - INVERSE_PAL_G_BITS ) );
 				true_color[2] = ( unsigned char )( b << ( 8 - INVERSE_PAL_B_BITS ) );
-				inverse_pal[index] = ConvertTrueColorToPal( true_color, palette );
-				index++;
+				inverse_pal[idx] = ConvertTrueColorToPal( true_color, palette );
+				idx++;
 			}
 		}
 	}
