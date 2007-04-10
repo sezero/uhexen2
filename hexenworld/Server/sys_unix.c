@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.36 2007-03-30 17:12:46 sezero Exp $
+	$Id: sys_unix.c,v 1.37 2007-04-10 17:36:35 sezero Exp $
 
 	Unix system interface code
 */
@@ -367,14 +367,14 @@ int main (int argc, char **argv)
 
 		if ((parms.memsize > MAX_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
 		{
-			Sys_Printf ("Requested memory (%d Mb) too large, using the default\n", parms.memsize/(1024*1024));
-			Sys_Printf ("maximum. If you are sure, use the -forcemem switch\n");
+			Sys_Printf ("Requested memory (%d Mb) too large, using the default maximum.\n", parms.memsize/(1024*1024));
+			Sys_Printf ("If you are sure, use the -forcemem switch.\n");
 			parms.memsize = MAX_MEM_ALLOC;
 		}
 		else if ((parms.memsize < MIN_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
 		{
-			Sys_Printf ("Requested memory (%d Mb) too little, using the default\n", parms.memsize/(1024*1024));
-			Sys_Printf ("minimum. If you are sure, use the -forcemem switch\n");
+			Sys_Printf ("Requested memory (%d Mb) too little, using the default minimum.\n", parms.memsize/(1024*1024));
+			Sys_Printf ("If you are sure, use the -forcemem switch.\n");
 			parms.memsize = MIN_MEM_ALLOC;
 		}
 	}

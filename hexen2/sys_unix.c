@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.85 2007-03-30 17:12:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.86 2007-04-10 17:36:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -562,14 +562,14 @@ int main(int argc, char *argv[])
 
 		if ((parms.memsize > MAX_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
 		{
-			Sys_Printf ("Requested memory (%d Mb) too large, using the default\n", parms.memsize/(1024*1024));
-			Sys_Printf ("maximum. If you are sure, use the -forcemem switch\n");
+			Sys_Printf ("Requested memory (%d Mb) too large, using the default maximum.\n", parms.memsize/(1024*1024));
+			Sys_Printf ("If you are sure, use the -forcemem switch.\n");
 			parms.memsize = MAX_MEM_ALLOC;
 		}
 		else if ((parms.memsize < MIN_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
 		{
-			Sys_Printf ("Requested memory (%d Mb) too little, using the default\n", parms.memsize/(1024*1024));
-			Sys_Printf ("minimum. If you are sure, use the -forcemem switch\n");
+			Sys_Printf ("Requested memory (%d Mb) too little, using the default minimum.\n", parms.memsize/(1024*1024));
+			Sys_Printf ("If you are sure, use the -forcemem switch.\n");
 			parms.memsize = MIN_MEM_ALLOC;
 		}
 	}

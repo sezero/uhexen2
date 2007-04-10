@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.28 2007-03-23 21:29:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.29 2007-04-10 17:36:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -330,14 +330,14 @@ int main (int argc, char **argv)
 
 		if ((parms.memsize > MAX_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
 		{
-			Sys_Printf ("Requested memory (%d Mb) too large, using the default\n", parms.memsize/(1024*1024));
-			Sys_Printf ("maximum. If you are sure, use the -forcemem switch\n");
+			Sys_Printf ("Requested memory (%d Mb) too large, using the default maximum.\n", parms.memsize/(1024*1024));
+			Sys_Printf ("If you are sure, use the -forcemem switch.\n");
 			parms.memsize = MAX_MEM_ALLOC;
 		}
 		else if ((parms.memsize < MIN_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
 		{
-			Sys_Printf ("Requested memory (%d Mb) too little, using the default\n", parms.memsize/(1024*1024));
-			Sys_Printf ("minimum. If you are sure, use the -forcemem switch\n");
+			Sys_Printf ("Requested memory (%d Mb) too little, using the default minimum.\n", parms.memsize/(1024*1024));
+			Sys_Printf ("If you are sure, use the -forcemem switch.\n");
 			parms.memsize = MIN_MEM_ALLOC;
 		}
 	}
