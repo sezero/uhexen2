@@ -1,6 +1,6 @@
 /*
 	midi_win.c
-	$Id: midi.c,v 1.17 2007-03-14 21:04:12 sezero Exp $
+	$Id: midi.c,v 1.18 2007-04-10 17:53:08 sezero Exp $
 
 	MIDI module for Win32
 */
@@ -382,7 +382,7 @@ static BOOL StreamBufferSetup(const char *Name)
 	for (idx = 0; idx < NUM_STREAM_BUFFERS; idx++)
 	{
 		ciStreamBuffers[idx].mhBuffer.dwBufferLength = OUT_BUFFER_SIZE;
-		ciStreamBuffers[idx].mhBuffer.lpData = Z_Malloc(OUT_BUFFER_SIZE);
+		ciStreamBuffers[idx].mhBuffer.lpData = Z_Malloc(OUT_BUFFER_SIZE, Z_MAINZONE);
 		if (ciStreamBuffers[idx].mhBuffer.lpData == NULL)
 		{
 		// Buffers we already allocated will be killed by WM_DESTROY

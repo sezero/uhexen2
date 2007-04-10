@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.25 2007-04-08 18:50:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cmd.c,v 1.26 2007-04-10 17:53:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -116,7 +116,7 @@ void Cbuf_InsertText (const char *text)
 	templen = cmd_text.cursize;
 	if (templen)
 	{
-		temp = Z_Malloc (templen);
+		temp = Z_Malloc (templen, Z_MAINZONE);
 		memcpy (temp, cmd_text.data, templen);
 		SZ_Clear (&cmd_text);
 	}
@@ -225,7 +225,7 @@ void Cmd_StuffCmds_f (void)
 	if (!s)
 		return;
 
-	text = Z_Malloc (s+1);
+	text = Z_Malloc (s+1, Z_MAINZONE);
 	text[0] = 0;
 	for (i = 1; i < com_argc; i++)
 	{
@@ -237,7 +237,7 @@ void Cmd_StuffCmds_f (void)
 	}
 
 // pull out the commands
-	build = Z_Malloc (s+1);
+	build = Z_Malloc (s+1, Z_MAINZONE);
 	build[0] = 0;
 
 	for (i = 0; i < s-1; i++)
@@ -370,7 +370,7 @@ static void Cmd_Alias_f (void)
 
 	if (!a)
 	{
-		a = Z_Malloc (sizeof(cmdalias_t));
+		a = Z_Malloc (sizeof(cmdalias_t), Z_MAINZONE);
 		a->next = cmd_alias;
 		cmd_alias = a;
 	}
@@ -392,7 +392,7 @@ static void Cmd_Alias_f (void)
 		cmd[1] = 0;
 	}
 
-	a->value = Z_Malloc (strlen (cmd) + 1);
+	a->value = Z_Malloc (strlen(cmd) + 1, Z_MAINZONE);
 	strcpy (a->value, cmd);
 }
 
@@ -542,7 +542,7 @@ void Cmd_TokenizeString (char *text)
 
 		if (cmd_argc < MAX_ARGS)
 		{
-			cmd_argv[cmd_argc] = Z_Malloc (strlen(com_token)+1);
+			cmd_argv[cmd_argc] = Z_Malloc (strlen(com_token)+1, Z_MAINZONE);
 			strcpy (cmd_argv[cmd_argc], com_token);
 			cmd_argc++;
 		}

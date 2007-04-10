@@ -2,7 +2,7 @@
 	quakeio.h
 	quake file io
 
-	$Id: quakeio.h,v 1.3 2007-04-02 21:06:00 sezero Exp $
+	$Id: quakeio.h,v 1.4 2007-04-10 17:53:05 sezero Exp $
 */
 
 #ifndef __QUAKEIO_H
@@ -42,11 +42,11 @@ int QFS_FileInGamedir (const char *fname);
 
 size_t QIO_FOpenFile (const char *filename, FILE **file, qboolean override_pack);
 
+byte *QIO_LoadZoneFile (const char *path, int zone_id);
 byte *QIO_LoadStackFile (const char *path, void *buffer, size_t bufsize);
 byte *QIO_LoadBufFile (const char *path, void *buffer, size_t *bufsize);
 byte *QIO_LoadTempFile (const char *path);
 byte *QIO_LoadHunkFile (const char *path);
-byte *QIO_LoadZoneFile (const char *path);
 byte *QIO_LoadMallocFile (const char *path);
 
 struct cache_user_s;

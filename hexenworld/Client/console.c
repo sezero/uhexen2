@@ -2,7 +2,7 @@
 	console.c
 	in-game console and chat message buffer handling
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.c,v 1.25 2007-03-16 20:40:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.c,v 1.26 2007-04-10 17:53:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -424,7 +424,7 @@ void Con_ShowList (int cnt, const char **list)
 			max_len = len;
 	}
 
-	line = Z_Malloc(con_linewidth + 1);
+	line = Z_Malloc(con_linewidth + 1, Z_MAINZONE);
 	cols = con_linewidth / (max_len + 2);
 	rows = cnt / cols + 1;
 

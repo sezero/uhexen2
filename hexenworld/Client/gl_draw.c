@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.88 2007-04-08 11:44:48 sezero Exp $
+	$Id: gl_draw.c,v 1.89 2007-04-10 17:53:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -506,13 +506,8 @@ void Draw_ReInit (void)
 	Cvar_SetValue ("gl_purge_maptex", 1);
 	Mod_ClearAll ();
 
-	// Reload graphics wad file (Draw_PicFromWad writes glpic_t data (sizes,
-	// texnums) right on top of the original pic data, so the pic data will
-	// be dirty after gl textures are loaded the first time; we need to load
-	// a clean version)
-	W_LoadWadFile ("gfx.wad");
-
 	// Reload pre-map pics, fonts, console, etc
+	W_LoadWadFile ("gfx.wad");
 	Draw_Init();
 	SCR_Init();
 	Sbar_Init();

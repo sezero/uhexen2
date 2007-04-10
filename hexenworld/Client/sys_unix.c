@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.79 2007-04-10 17:36:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.80 2007-04-10 17:53:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -84,15 +84,15 @@ char *Sys_FindFirstFile (const char *path, const char *pattern)
 		return NULL;
 
 	tmp_len = strlen (pattern);
-	findpattern = Z_Malloc (tmp_len + 1);
-	if (!findpattern)
-		return NULL;
+	findpattern = Z_Malloc (tmp_len + 1, Z_MAINZONE);
+//	if (!findpattern)
+//		return NULL;
 	strcpy (findpattern, pattern);
 	findpattern[tmp_len] = '\0';
 	tmp_len = strlen (path);
-	findpath = Z_Malloc (tmp_len + 1);
-	if (!findpath)
-		return NULL;
+	findpath = Z_Malloc (tmp_len + 1, Z_MAINZONE);
+//	if (!findpath)
+//		return NULL;
 	strcpy (findpath, path);
 	findpath[tmp_len] = '\0';
 

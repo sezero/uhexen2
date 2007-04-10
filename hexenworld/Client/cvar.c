@@ -2,7 +2,7 @@
 	cvar.c
 	dynamic variable tracking
 
-	$Id: cvar.c,v 1.21 2007-04-06 09:25:00 sezero Exp $
+	$Id: cvar.c,v 1.22 2007-04-10 17:53:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -150,7 +150,7 @@ void Cvar_Set (const char *var_name, const char *value)
 
 	Z_Free (var->string);	// free the old value string
 
-	var->string = Z_Malloc (strlen(value)+1);
+	var->string = Z_Malloc (strlen(value)+1, Z_MAINZONE);
 	strcpy (var->string, value);
 	var->value = atof (var->string);
 
@@ -216,7 +216,7 @@ void Cvar_RegisterVariable (cvar_t *variable)
 // copy the value off, because future sets will Z_Free it
 	strncpy (value, variable->string, 511);
 	value[511] = '\0';
-	variable->string = Z_Malloc (1);
+	variable->string = Z_Malloc (1, Z_MAINZONE);
 
 // set it through the function to be consistant
 	set_rom = (variable->flags & CVAR_ROM);

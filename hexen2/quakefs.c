@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.12 2007-04-02 21:07:28 sezero Exp $
+	$Id: quakefs.c,v 1.13 2007-04-10 17:53:05 sezero Exp $
 */
 
 #define _NEED_SEARCHPATH_T
@@ -178,7 +178,7 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 	if (numpackfiles > MAX_FILES_IN_PACK)
 		Sys_Error ("%s has %i files", packfile, numpackfiles);
 
-	newfiles = Z_Malloc (numpackfiles * sizeof(packfile_t));
+	newfiles = Z_Malloc (numpackfiles * sizeof(packfile_t), Z_MAINZONE);
 
 	fseek (packhandle, header.dirofs, SEEK_SET);
 	fread (&info, 1, header.dirlen, packhandle);
@@ -266,7 +266,7 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 		newfiles[i].filelen = LittleLong(info[i].filelen);
 	}
 
-	pack = Z_Malloc (sizeof (pack_t));
+	pack = Z_Malloc (sizeof(pack_t), Z_MAINZONE);
 	Q_strlcpy_err(pack->filename, packfile, MAX_OSPATH);
 	pack->handle = packhandle;
 	pack->numfiles = numpackfiles;
@@ -481,7 +481,7 @@ add_pakfiles:
 		pak = FS_LoadPackFile (pakfile, i, false);
 		if (!pak)
 			continue;
-		search = Z_Malloc (sizeof(searchpath_t));
+		search = Z_Malloc (sizeof(searchpath_t), Z_MAINZONE);
 		search->pack = pak;
 		search->next = fs_searchpaths;
 		fs_searchpaths = search;
@@ -491,7 +491,7 @@ add_pakfiles:
 // O.S: this needs to be done ~after~ adding the pakfiles in
 // this dir, so that the dir itself will be placed above the
 // pakfiles in the search order
-	search = Z_Malloc (sizeof(searchpath_t));
+	search = Z_Malloc (sizeof(searchpath_t), Z_MAINZONE);
 	if (been_here)
 	{
 		Q_strlcpy_err(search->filename, fs_userdir, MAX_OSPATH);
@@ -740,7 +740,7 @@ static int processMapname (const char *mapname, const char *partial, size_t len_
 	}
 
 	// add to the maplist
-	maplist[map_count] = Z_Malloc (len+1);
+	maplist[map_count] = Z_Malloc (len+1, Z_MAINZONE);
 	if (maplist[map_count] == NULL)
 	{
 		Con_Printf ("WARNING: Failed allocating memory for maplist\n");

@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.40 2007-04-05 07:53:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.41 2007-04-10 17:53:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1437,7 +1437,7 @@ static void PR_AllocStringSlots (void)
 {
 	pr_maxknownstrings += PR_STRING_ALLOCSLOTS;
 	Sys_DPrintf("%s: realloc'ing for %d slots\n", __FUNCTION__, pr_maxknownstrings);
-	pr_knownstrings = Z_Realloc (pr_knownstrings, pr_maxknownstrings * sizeof(char *));
+	pr_knownstrings = Z_Realloc (pr_knownstrings, pr_maxknownstrings * sizeof(char *), Z_MAINZONE);
 }
 
 char *PR_GetString (int num)

@@ -1,7 +1,7 @@
 /*
 	zone.h
 
-	$Id: zone.h,v 1.9 2007-04-01 12:18:24 sezero Exp $
+	$Id: zone.h,v 1.10 2007-04-10 17:53:05 sezero Exp $
 */
 
 #ifndef __ZZONE_H
@@ -70,19 +70,14 @@ Zone block
 */
 
 
-typedef struct memzone_s memzone_t;
+#define	Z_MAINZONE	(1 << 0)
+#define	Z_SECZONE	(1 << 1)
 
 void Memory_Init (void *buf, int size);
 
 void Z_Free (void *ptr);
-void *Z_Malloc (int size);			// returns 0 filled memory
-void *Z_Realloc (void *ptr, int size);
-void *Z_TagMalloc (int size, int tag);
-void Z_ClearZone (memzone_t *zone, int size);
-
-void Z_DumpHeap (void);
-void Z_CheckHeap (void);
-int Z_FreeMemory (void);
+void *Z_Malloc (int size, int zone_id);		// returns 0 filled memory
+void *Z_Realloc (void *ptr, int size, int zone_id);
 
 void *Hunk_Alloc (int size);		// returns 0 filled memory
 void *Hunk_AllocName (int size, const char *name);

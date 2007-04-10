@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.30 2007-04-07 19:55:38 sezero Exp $
+	$Id: draw.c,v 1.31 2007-04-10 17:53:05 sezero Exp $
 */
 
 
@@ -161,12 +161,15 @@ void Draw_Init (void)
 	int		i;
 	char	temp[MAX_QPATH];
 
+	if (!draw_reinit)
+	{
+		for (i = 0; i < MAX_DISC; i++)
+			draw_disc[i] = NULL;
+	}
+
 	if (draw_chars)
 		Z_Free (draw_chars);
-	draw_chars = QIO_LoadZoneFile ("gfx/menu/conchars.lmp");
-
-	if (draw_reinit)
-		return;
+	draw_chars = QIO_LoadZoneFile ("gfx/menu/conchars.lmp", Z_SECZONE);
 
 	draw_smallchars = W_GetLumpName("tinyfont");
 
@@ -174,11 +177,13 @@ void Draw_Init (void)
 	// skull as we are loading
 	for (i = MAX_DISC-1; i >= 0; i--)
 	{
+		if (draw_disc[i])
+			Z_Free (draw_disc[i]);
 		snprintf(temp, sizeof(temp), "gfx/menu/skull%d.lmp", i);
-		draw_disc[i] = (qpic_t *)QIO_LoadHunkFile (temp);
+		draw_disc[i] = (qpic_t *)QIO_LoadZoneFile (temp, Z_SECZONE);
 	}
 
-	draw_backtile = (qpic_t	*)QIO_LoadHunkFile ("gfx/menu/backtile.lmp");
+	draw_backtile = (qpic_t	*)QIO_LoadZoneFile ("gfx/menu/backtile.lmp", Z_SECZONE);
 
 	r_rectdesc.width = draw_backtile->width;
 	r_rectdesc.height = draw_backtile->height;
@@ -204,10 +209,10 @@ void Draw_ReInit (void)
 	scr_disabled_for_loading = true;
 
 	draw_reinit = true;
-//	W_LoadWadFile ("gfx.wad");
+	W_LoadWadFile ("gfx.wad");
 	Draw_Init();
-//	SCR_Init();
-//	Sbar_Init();
+	SCR_Init();
+	Sbar_Init();
 	draw_reinit = false;
 
 	scr_disabled_for_loading = temp;
