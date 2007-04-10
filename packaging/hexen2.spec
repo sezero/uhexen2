@@ -105,16 +105,14 @@ run a HexenWorld server or client, and a master server application.
 %{__make} -C hexenworld/Client glhw
 
 # Build xdelta binary and its libraries: do this before
-# building the launcher, it statically links to this.
-cd xdelta11
-./autogen.sh
-%if %{?_without_gtk2:1}0
-./configure --disable-shared --disable-glib2
+# building the launcher, it uses its object files.
+%if %{!?_without_gtk2:1}0
+# Build for GLIB2
+%{__make} -C xdelta11 -f Makefile.xd
 %else
-./configure --disable-shared
+# Build for GLIB1.2
+%{__make} GLIB1=yes -C xdelta11 -f Makefile.xd
 %endif
-%{__make}
-cd ..
 
 # Launcher binaries
 %if %{!?_without_gtk2:1}0
@@ -122,7 +120,7 @@ cd ..
 %{__make} -C launcher
 %else
 # Build for GTK1.2
-%{__make} -C launcher GTK1=yes
+%{__make} GTK1=yes -C launcher
 %endif
 # Build the hcode compilers
 %{__make} -C utils/hcc_old
@@ -301,6 +299,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Tue Apr 10 2007 O.Sezer <sezero@users.sourceforge.net>
+- xdelta now builds without autotools.
+
 * Tue Apr 03 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-0.3.pre3
 - 1.4.2-pre3 prerelease.
 
