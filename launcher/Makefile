@@ -95,7 +95,6 @@ LIBEDSIO_OBJS:= $(XDELTA_DIR)/libedsio/library.o \
 		$(XDELTA_DIR)/libedsio/simple.o \
 		$(XDELTA_DIR)/libedsio/edsio.o \
 		$(XDELTA_DIR)/libedsio/edsio_edsio.o \
-		$(XDELTA_DIR)/libedsio/sha.o \
 		$(XDELTA_DIR)/libedsio/md5c.o \
 		$(XDELTA_DIR)/libedsio/fh.o \
 		$(XDELTA_DIR)/libedsio/generic.o \
@@ -103,6 +102,8 @@ LIBEDSIO_OBJS:= $(XDELTA_DIR)/libedsio/library.o \
 		$(XDELTA_DIR)/libedsio/base64.o \
 		$(XDELTA_DIR)/libedsio/maketime.o \
 		$(XDELTA_DIR)/libedsio/partime.o
+# SHA is unused in present code, removed it.
+#		libedsio/sha.o \
 
 LIBXDELTA_OBJS:=$(XDELTA_DIR)/xdelta.o \
 		$(XDELTA_DIR)/xdapply.o \
