@@ -12,6 +12,10 @@
 # main uhexen2 relative path
 UHEXEN2_TOP=..
 
+# whether we should use the gnu auto-tools support when
+# building xdelta libraries:
+AUTOTOOLS ?= 0
+
 HOST_OS:=$(shell uname)
 
 CC_DEFAULT:=gcc
@@ -71,10 +75,12 @@ ifeq ($(HOST_OS),SunOS)
 CFLAGS := $(CFLAGS) -DSUNOS
 endif
 
-ifdef DEMO
 LDFLAGS:=$(GTK_LIBS)
-else
-LDFLAGS:=-Wl,-Bstatic $(XDELTA_LINK) -Wl,-Bdynamic $(GTK_LIBS) -lz -lpthread
+ifndef DEMO
+LDFLAGS:= $(LDFLAGS) -lz -lpthread
+ifneq ($(AUTOTOOLS),0)
+LDFLAGS:=-Wl,-Bstatic $(XDELTA_LINK) -Wl,-Bdynamic $(LDFLAGS)
+endif
 endif
 
 # activate the line below if you activate NLS support
@@ -82,7 +88,26 @@ endif
 
 ifdef DEMO
 XPATCH_OBJ :=
+LIBXDELTA_OBJS:=
+LIBEDSIO_OBJS :=
 else
+LIBEDSIO_OBJS:= $(XDELTA_DIR)/libedsio/library.o \
+		$(XDELTA_DIR)/libedsio/simple.o \
+		$(XDELTA_DIR)/libedsio/edsio.o \
+		$(XDELTA_DIR)/libedsio/edsio_edsio.o \
+		$(XDELTA_DIR)/libedsio/sha.o \
+		$(XDELTA_DIR)/libedsio/md5c.o \
+		$(XDELTA_DIR)/libedsio/fh.o \
+		$(XDELTA_DIR)/libedsio/generic.o \
+		$(XDELTA_DIR)/libedsio/default.o \
+		$(XDELTA_DIR)/libedsio/base64.o \
+		$(XDELTA_DIR)/libedsio/maketime.o \
+		$(XDELTA_DIR)/libedsio/partime.o
+
+LIBXDELTA_OBJS:=$(XDELTA_DIR)/xdelta.o \
+		$(XDELTA_DIR)/xdapply.o \
+		$(XDELTA_DIR)/xd_edsio.o
+
 XPATCH_OBJ := xpatch/md5.o xpatch/loki_xdelta.o xpatch/apply_patch.o
 endif
 
@@ -97,9 +122,15 @@ all: $(H2LAUNCH)
 OBJECTS = main.o config_file.o launch_bin.o \
 	interface.o callbacks.o $(XPATCH_OBJ) $(SUPPORT_OBJ)
 
+ifeq ($(AUTOTOOLS),0)
+ALL_OBJECTS:= $(OBJECTS) $(LIBXDELTA_OBJS) $(LIBEDSIO_OBJS)
+else
+ALL_OBJECTS:= $(OBJECTS)
+endif
+
 $(H2LAUNCH): $(OBJECTS)
 	@rm -f $(H2LAUNCH)
-	$(LINKER) -o $(H2LAUNCH) $(OBJECTS) $(LDFLAGS)
+	$(LINKER) -o $(H2LAUNCH) $(ALL_OBJECTS) $(LDFLAGS)
 
 clean:
 	-rm -f *.o xpatch/*.o core

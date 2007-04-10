@@ -38,16 +38,9 @@ TODO:
 COMPILING:
 ----------
 
-1.  First compile the included xdelta library:
-
-	cd xdelta11
-	./autogen.sh
-	./configure --disable-shared
-	make
-
-    Note: If you want to build it against glib-1.2.x instead
-    of glib-2.x, use the --disable-glib2 switch when configuring,
-    e.g.: ./configure --disable-shared --disable-glib2
+1. First compile the included xdelta library (read the README-1.1.4a
+   file in the xdelta11 directory, but it is as simple as typing:
+   make -f Makefile.xd )
 
 2. Compile the launcher normally:
 
