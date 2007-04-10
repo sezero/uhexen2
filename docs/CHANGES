@@ -3,6 +3,43 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-04-10 (CVS):
+    * added a short Makefile.xd for building xdelta quickly without autotools
+      support. adjusted the Makefile of the launcher accordingly. updated the
+      relevant docs.
+    * xdelta makefile: removed some of my obsoleted comments.
+    * sha is unused in the present xdelta code. removed it from the build.
+    * now that xdelta can build without autotools, adjusted the rpm spec file
+      accordingly.
+    * gl_vidsdl.c, gl_vidnt.c: fixed more of those stupid -Wshadow warnings.
+    * sys_unix.c, sys_win.c: cosmetic stuff - updated some debug messages.
+    * revised zone memory usage: we now initialize a 256 KB secondary zone for
+      static textures (sec_zone), which is especially useful for the software
+      renderer. this is done only for the client-server binary, the dedicated
+      server apps obviously don't need it. the loading of gfx.wad now uses this
+      secondary zone and its reloading (either for video restarts, or through
+      Draw_ReInit) is completely safe because we do not rely on its being the
+      same file. if a mod ever uses a different gfx.wad, game directory changes
+      now correctly reload all of the new files through Draw_ReInit: hexenworld
+      currently makes use of DrawReInit and will benefit from this. if hexen2
+      supports active game directory changing in the future, it'll benefit from
+      this too. as a result of these changes, Z_Malloc now takes zone_id as its
+      second argument, all of its calls in the tree are updated accordingly.
+      the behavior of Z_Realloc is a bit curious now: a buffer allocated on one
+      zone may be reallocated on a different zone, now. Z_ClearZone and Z_TagMalloc
+      were never (and should not ever be) intended for public usage: they are
+      made private to zone.c now.
+
+2007-04-09 (CVS):
+    * fixed the evil of LoadStackFile in loading of the big char widths, we
+      are using temp allocation now. added a warning message for an unlikely
+      case of a different sized file.
+    * updated the LoadBufFile procedure to check for nul buffers. added a
+      warning message for cases where the given buffer is of insufficient size.
+      provided a better documentation for it.
+    * updated the documentation about the evils in our re-loading of gfx.wad.
+      updated W_LoadWadFile after the changes in LoadBufFile.
+
 2007-04-08 (CVS):
     * killed COM_InitArgv in hexenworld master server and rearranged things
       to be similar to the game engine.
