@@ -2,10 +2,26 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.36 2007-04-11 12:33:44 sezero Exp $
+	$Id: zone.c,v 1.37 2007-04-11 13:40:06 sezero Exp $
 */
 
 #include "quakedef.h"
+
+// whether we compile the debug report commands (see in
+// Memory_Init() at the end). always on in debug builds.
+#define	Z_DEBUG_COMMANDS	0
+#if defined(DEBUG_BUILD)
+#undef	Z_DEBUG_COMMANDS
+#define	Z_DEBUG_COMMANDS	1
+#endif	/* DEBUG_BUILD */
+
+// whether Z_Malloc should check zone integrity before
+// every allocation. always off in release builds.
+#define	Z_CHECKHEAP		0
+#if !defined(DEBUG_BUILD)
+#undef	Z_CHECKHEAP
+#define	Z_CHECKHEAP		0
+#endif	/* DEBUG_BUILD */
 
 #define	ZONE_MINSIZE	0x40000
 #define	ZONE_MAXSIZE	0x100000
@@ -173,6 +189,34 @@ static void *Z_TagMalloc (int zone_id, int size, int tag)
 
 /*
 ========================
+Z_CheckHeap
+========================
+*/
+#if Z_CHECKHEAP
+static void Z_CheckHeap (int zone_id)
+{
+	memzone_t	*zone;
+	memblock_t	*block;
+
+	zone = (zone_id == Z_MAINZONE) ? mainzone : sec_zone;
+	if (zone == NULL)
+		Sys_Error ("%s: uninitialized zone", __FUNCTION__);
+	for (block = zone->blocklist.next ; ; block = block->next)
+	{
+		if (block->next == &zone->blocklist)
+			break;			// all blocks have been hit
+		if ( (byte *)block + block->size != (byte *)block->next)
+			Sys_Error ("%s: block size does not touch the next block", __FUNCTION__);
+		if ( block->next->prev != block)
+			Sys_Error ("%s: next block doesn't have proper back link", __FUNCTION__);
+		if (!block->tag && !block->next->tag)
+			Sys_Error ("%s: two consecutive free blocks", __FUNCTION__);
+	}
+}
+#endif	/* Z_CHECKHEAP */
+
+/*
+========================
 Z_Malloc
 ========================
 */
@@ -183,7 +227,9 @@ void *Z_Malloc (int size, int zone_id)
 	if (zone_id != Z_MAINZONE && zone_id != Z_SECZONE)
 		Sys_Error ("%s: Bad Zone ID %i", __FUNCTION__, zone_id);
 
-//	Z_CheckHeap (zone_id);	// DEBUG
+#if Z_CHECKHEAP
+	Z_CheckHeap (zone_id);	// DEBUG
+#endif
 	buf = Z_TagMalloc (zone_id, size, 1);
 	if (!buf)
 		Sys_Error ("%s: failed on allocation of %i bytes", __FUNCTION__, size);
@@ -221,30 +267,6 @@ void *Z_Realloc (void *ptr, int size, int zone_id)
 	return ptr;
 }
 
-
-/*
-========================
-Z_CheckHeap
-========================
-*/
-void Z_CheckHeap (int zone_id)
-{
-	memzone_t	*zone;
-	memblock_t	*block;
-
-	zone = (zone_id == Z_MAINZONE) ? mainzone : sec_zone;
-	for (block = zone->blocklist.next ; ; block = block->next)
-	{
-		if (block->next == &zone->blocklist)
-			break;			// all blocks have been hit
-		if ( (byte *)block + block->size != (byte *)block->next)
-			Sys_Error ("%s: block size does not touch the next block", __FUNCTION__);
-		if ( block->next->prev != block)
-			Sys_Error ("%s: next block doesn't have proper back link", __FUNCTION__);
-		if (!block->tag && !block->next->tag)
-			Sys_Error ("%s: two consecutive free blocks", __FUNCTION__);
-	}
-}
 
 //============================================================================
 
@@ -780,7 +802,7 @@ CONSOLE COMMANDS
 ==============================================================================
 */
 
-#if !defined(SERVERONLY) || defined(DEBUG_BUILD)
+#if Z_DEBUG_COMMANDS
 
 #define MEM_Printf(FH, fmt, args...) {		\
 	Con_Printf(fmt, ##args);		\
@@ -1103,7 +1125,7 @@ static void Memory_Stats_f(void)
 		FH = NULL;
 	}
 }
-#endif	// !SERVERONLY || DEBUG_BUILD
+#endif	/* Z_DEBUG_COMMANDS */
 
 //============================================================================
 
@@ -1177,12 +1199,12 @@ void Memory_Init (void *buf, int size)
 	Cmd_AddCommand ("flush", Cache_Flush);
 #endif	/* SERVERONLY */
 
-#if !defined(SERVERONLY) || defined(DEBUG_BUILD)
+#if Z_DEBUG_COMMANDS
 	Cmd_AddCommand ("sys_memory", Memory_Display_f);
 	Cmd_AddCommand ("sys_stats", Memory_Stats_f);
 #if !defined(SERVERONLY)
 	Cmd_AddCommand ("sys_cache", Cache_Display_f);
-#endif
-#endif
+#endif	/* SERVERONLY */
+#endif	/* Z_DEBUG_COMMANDS */
 }
 
