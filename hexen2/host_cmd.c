@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.75 2007-04-08 19:25:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.76 2007-04-11 08:12:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -20,8 +20,7 @@ extern	cvar_t	pausable;
 extern	cvar_t	sv_flypitch;
 extern	cvar_t	sv_walkpitch;
 
-int	current_skill;
-static double		old_time;
+static	double	old_time;
 
 static int LoadGamestate(char *level, char *startspot, int ClientsMode);
 int SaveGamestate(qboolean ClientsOnly);

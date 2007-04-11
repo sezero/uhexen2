@@ -2,13 +2,14 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.52 2007-04-08 18:50:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.53 2007-04-11 08:12:47 sezero Exp $
 */
 
 #include "quakedef.h"
 
 server_t	sv;
 server_static_t	svs;
+
 qboolean	isworldmodel;
 static char	localmodels[MAX_MODELS][5];	// inline model names for precache
 
@@ -36,6 +37,7 @@ extern	cvar_t	sv_aim;
 extern	cvar_t	sv_walkpitch;
 extern	cvar_t	sv_flypitch;
 
+int		current_skill;
 int		sv_protocol = PROTOCOL_VERSION;	// protocol version to use
 int		sv_kingofhill;		// mission pack, king of the hill.
 unsigned int	info_mask, info_mask2;	// mission pack, objectives
