@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.34 2007-04-11 09:50:06 sezero Exp $
+	$Id: zone.c,v 1.35 2007-04-11 10:39:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -681,8 +681,6 @@ static void Cache_Init (void)
 {
 	cache_head.next = cache_head.prev = &cache_head;
 	cache_head.lru_next = cache_head.lru_prev = &cache_head;
-
-	Cmd_AddCommand ("flush", Cache_Flush);
 }
 
 /*
@@ -1144,6 +1142,10 @@ void Memory_Init (void *buf, int size)
 	hunk_low_used = 0;
 	hunk_high_used = 0;
 
+#if !defined(SERVERONLY)
+	Cache_Init ();
+#endif	/* SERVERONLY */
+
 	p = COM_CheckParm ("-zone");
 	if (p && p < com_argc-1)
 	{
@@ -1172,7 +1174,7 @@ void Memory_Init (void *buf, int size)
 		Memory_InitZone (sec_zone, Z_SECZONE, ZONE_MINSIZE);
 	}
 
-	Cache_Init ();
+	Cmd_AddCommand ("flush", Cache_Flush);
 #endif	/* SERVERONLY */
 
 #if !defined(SERVERONLY) || defined(DEBUG_BUILD)
