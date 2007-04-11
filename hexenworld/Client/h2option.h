@@ -2,7 +2,7 @@
 	h2option.h
 	Compile time options for Hexen II: Hammer of Thyrion
 
-	$Id: h2option.h,v 1.3 2007-04-11 12:11:03 sezero Exp $
+	$Id: h2option.h,v 1.4 2007-04-11 16:22:49 sezero Exp $
 */
 
 
@@ -149,6 +149,23 @@
    option in there), not here.  This affects the final linkage of the
    binary.
    ================================================================== */
+
+
+/* ====================================================================
+   MGNET
+   Value  :	not a value, but a define or undef
+   Affects:	HexenWorld, Server/sv_ents.c :: SV_WritePlayersToClient
+
+   This doesn't ~seem~ to be in the latest binary release of Raven, but
+   it is in the source release. The definition exists in the qwsv.dsp
+   among the compiler flags, too. It uses cardioid_rating() and might
+   send an additional server message, svc_playerskipped. The client
+   calls CL_SavePlayer upon receiving this message (see in cl_parse.c),
+   but that code seems incomplete (see in cl_ents.c).
+   Enabling this option should require bumping the protocol version.
+   Disabled by default.
+   ================================================================== */
+#undef	MGNET
 
 
 #endif	/* __HEXEN2_OPTIONS_H		*/
