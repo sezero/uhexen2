@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.12 2007-02-17 07:56:17 sezero Exp $
+	$Id: model.c,v 1.13 2007-04-11 09:50:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -184,26 +184,15 @@ Loads a model into the cache
 */
 static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 {
-	void	*d;
 	unsigned *buf;
-	byte	stackbuf[1024];		// avoid dirtying the cache heap
 
 	if (!mod->needload)
-	{
-		if (mod->type == mod_alias)
-		{
-			d = Cache_Check (&mod->cache);
-			if (d)
-				return mod;
-		}
-		else
-			return mod;		// not cached at all
-	}
+		return mod;
 
 //
 // load the file
 //
-	buf = (unsigned *)QIO_LoadStackFile (mod->name, stackbuf, sizeof(stackbuf));
+	buf = (unsigned *)QIO_LoadTempFile (mod->name);
 	if (!buf)
 	{
 		if (crash)

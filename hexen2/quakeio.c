@@ -2,7 +2,7 @@
 	quakefs.c
 	quake file io
 
-	$Id: quakeio.c,v 1.8 2007-04-10 17:53:05 sezero Exp $
+	$Id: quakeio.c,v 1.9 2007-04-11 09:50:06 sezero Exp $
 */
 
 #define _NEED_SEARCHPATH_T
@@ -335,8 +335,10 @@ Allways appends a 0 byte to the loaded data.
 #define	LOADFILE_STACK		4
 #define	LOADFILE_BUF		5
 #define	LOADFILE_MALLOC		6
-static cache_user_t *loadcache;
 static byte	*loadbuf;
+#if !defined(SERVERONLY)
+static cache_user_t *loadcache;
+#endif	/* SERVERONLY */
 static size_t		loadsize;
 static int		zone_num;
 
@@ -368,9 +370,11 @@ static byte *QIO_LoadFile (const char *path, int usehunk)
 	case LOADFILE_ZONE:
 		buf = Z_Malloc (len+1, zone_num);
 		break;
+#if !defined(SERVERONLY)
 	case LOADFILE_CACHE:
 		buf = Cache_Alloc (loadcache, len+1, base);
 		break;
+#endif	/* SERVERONLY */
 	case LOADFILE_STACK:
 		if (len < loadsize)
 			buf = loadbuf;
@@ -422,11 +426,13 @@ byte *QIO_LoadTempFile (const char *path)
 	return QIO_LoadFile (path, LOADFILE_TEMPHUNK);
 }
 
+#if !defined(SERVERONLY)
 void QIO_LoadCacheFile (const char *path, struct cache_user_s *cu)
 {
 	loadcache = cu;
 	QIO_LoadFile (path, LOADFILE_CACHE);
 }
+#endif	/* SERVERONLY */
 
 // uses temp hunk if larger than bufsize
 byte *QIO_LoadStackFile (const char *path, void *buffer, size_t bufsize)

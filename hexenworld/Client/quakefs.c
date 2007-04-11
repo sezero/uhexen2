@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.12 2007-04-10 17:53:08 sezero Exp $
+	$Id: quakefs.c,v 1.13 2007-04-11 09:50:10 sezero Exp $
 */
 
 #define _NEED_SEARCHPATH_T
@@ -414,7 +414,9 @@ void FS_Gamedir (const char *dir)
 //
 // flush all data, so it will be forced to reload
 //
+#if !defined(SERVERONLY)
 	Cache_Flush ();
+#endif	/* SERVERONLY */
 
 // check for reserved gamedirs
 	if (!Q_strcasecmp(dir, "hw"))

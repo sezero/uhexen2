@@ -8,7 +8,7 @@
 	This version of model.c and model.h are based on a quake dedicated
 	server application, lhnqserver, by LordHavoc.
 
-	$Id: model.c,v 1.8 2007-02-17 07:55:38 sezero Exp $
+	$Id: model.c,v 1.9 2007-04-11 09:50:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -186,7 +186,6 @@ Loads a model into the cache
 static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 {
 	unsigned *buf;
-	byte	stackbuf[1024];		// avoid dirtying the cache heap
 
 	if (!mod->needload)
 		return mod;
@@ -194,7 +193,7 @@ static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 //
 // load the file
 //
-	buf = (unsigned *)QIO_LoadStackFile (mod->name, stackbuf, sizeof(stackbuf));
+	buf = (unsigned *)QIO_LoadTempFile (mod->name);
 	if (!buf)
 	{
 		if (crash)

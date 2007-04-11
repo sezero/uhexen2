@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.22 2007-04-11 08:04:28 sezero Exp $
+	$Id: zone.c,v 1.23 2007-04-11 09:50:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -32,8 +32,13 @@ typedef struct memzone_s
 	memblock_t	*rover;
 } memzone_t;
 
+#if defined (SERVERONLY)
+#define Cache_FreeLow(x)
+#define Cache_FreeHigh(x)
+#else
 static void Cache_FreeLow (int new_low_hunk);
 static void Cache_FreeHigh (int new_high_hunk);
+#endif
 
 
 /*
@@ -445,6 +450,8 @@ CACHE MEMORY
 
 ===============================================================================
 */
+#if !defined(SERVERONLY)	/* CACHE not used in dedicated server apps */
+
 #define CACHENAME_LEN	32
 typedef struct cache_system_s
 {
@@ -764,6 +771,7 @@ void *Cache_Alloc (cache_user_t *c, int size, const char *name)
 
 	return Cache_Check (c);
 }
+#endif	/* ! SERVERONLY */
 
 
 /*
@@ -875,12 +883,7 @@ static void Hunk_Print (qboolean all, qboolean write_file)
 	}
 }
 
-/*
-============
-Cache_Print
-
-============
-*/
+# if !defined(SERVERONLY)
 static void Cache_Print (qboolean write_file)
 {
 	cache_system_t	*cd;
@@ -929,6 +932,7 @@ static void Cache_Print (qboolean write_file)
 		FH = NULL;
 	}
 }
+# endif
 
 /*
 ========================
@@ -1140,7 +1144,6 @@ void Memory_Init (void *buf, int size)
 	hunk_low_used = 0;
 	hunk_high_used = 0;
 
-	Cache_Init ();
 	p = COM_CheckParm ("-zone");
 	if (p && p < com_argc-1)
 	{
@@ -1168,6 +1171,8 @@ void Memory_Init (void *buf, int size)
 		sec_zone = Hunk_AllocName ( ZONE_MINSIZE, "sec_zone" );
 		Memory_InitZone (sec_zone, Z_SECZONE, ZONE_MINSIZE);
 	}
+
+	Cache_Init ();
 #endif	/* SERVERONLY */
 
 #if !defined(SERVERONLY) || defined(DEBUG_BUILD)
