@@ -2,7 +2,7 @@
 	h2option.h
 	Compile time options for Hexen II: Hammer of Thyrion
 
-	$Id: h2option.h,v 1.2 2007-04-06 06:32:48 sezero Exp $
+	$Id: h2option.h,v 1.3 2007-04-11 12:11:01 sezero Exp $
 */
 
 
@@ -149,18 +149,6 @@
    option in there), not here.  This affects the final linkage of the
    binary.
    ================================================================== */
-
-
-/* ====================================================================
-   GLTEST
-   Value  :	not a value, but a define or undef
-   Affects:	gl_test.c, gl_rmain.c, gl_rmisc.c, cl_tent.c
-
-   The macro GLTEST enables some experimentation stuff for developers.
-   If you want to enable it, change the below undef to a define. This
-   option isn't for users.
-   ================================================================== */
-#undef	GLTEST
 
 
 #endif	/* __HEXEN2_OPTIONS_H		*/

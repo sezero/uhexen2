@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: gl_rmisc.c,v 1.34 2007-03-14 21:03:32 sezero Exp $
+	$Id: gl_rmisc.c,v 1.35 2007-04-11 12:11:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -258,10 +258,6 @@ void R_Init (void)
 	R_InitParticles ();
 	R_InitParticleTexture ();
 	R_InitNetgraphTexture ();
-
-#ifdef GLTEST
-	Test_Init ();
-#endif
 
 	for (counter = 0 ; counter < MAX_EXTRA_TEXTURES ; counter++)
 		gl_extra_textures[counter] = GL_UNUSED_TEXTURE;

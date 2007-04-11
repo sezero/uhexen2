@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.55 2007-02-22 19:40:02 sezero Exp $
+	$Id: gl_rmain.c,v 1.56 2007-04-11 12:11:01 sezero Exp $
 */
 
 
@@ -1756,10 +1756,6 @@ static void R_RenderScene (void)
 	R_DrawAllGlows();
 
 	R_RenderDlights ();
-
-#ifdef GLTEST
-	Test_Draw ();
-#endif
 }
 
 

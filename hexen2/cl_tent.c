@@ -2,7 +2,7 @@
 	cl_tent.c
 	Client side temporary entity effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.14 2007-02-17 07:55:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.15 2007-04-11 12:11:01 sezero Exp $
 */
 
 
@@ -160,11 +160,7 @@ void CL_ParseTEnt(void)
 		pos[0] = MSG_ReadCoord ();
 		pos[1] = MSG_ReadCoord ();
 		pos[2] = MSG_ReadCoord ();
-#if defined(GLQUAKE) && defined(GLTEST)
-		Test_Spawn (pos);
-#else
 		R_RunParticleEffect (pos, vec3_origin, 0, 10);
-#endif
 		if (rand() % 5)
 			S_StartSound (-1, 0, cl_sfx_tink1, pos, 1, 1);
 		else

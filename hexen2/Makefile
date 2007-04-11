@@ -371,7 +371,6 @@ GLOBJS = gl_draw.o \
 	gl_rmisc.o \
 	gl_rsurf.o \
 	gl_screen.o \
-	gl_test.o \
 	gl_warp.o \
 	$(SYSOBJ_GL_VID)
 
