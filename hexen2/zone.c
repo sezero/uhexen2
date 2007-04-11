@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.37 2007-04-11 13:40:06 sezero Exp $
+	$Id: zone.c,v 1.38 2007-04-11 13:44:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -952,36 +952,64 @@ static void Cache_Print (qboolean write_file)
 		FH = NULL;
 	}
 }
-# endif
+# endif	/* SERVERONLY */
 
 /*
 ========================
 Z_Print
 ========================
 */
-#if 0	// not used for now
-static void Z_Print (memzone_t *zone)
+static void Z_Print (memzone_t *zone, FILE *f)
 {
 	memblock_t	*block;
 
-	Con_Printf ("zone size: %i  location: %p\n", zone->size, zone);
+	MEM_Printf (f, "zone size: %i  location: %p\n", zone->size, zone);
 
 	for (block = zone->blocklist.next ; ; block = block->next)
 	{
-		Con_Printf ("block:%p    size:%7i    tag:%3i\n",
+		MEM_Printf (f, "block: %p    size: %7i    tag: %3i\n",
 				block, block->size, block->tag);
 
 		if (block->next == &zone->blocklist)
 			break;			// all blocks have been hit
 		if ( (byte *)block + block->size != (byte *)block->next)
-			Con_Printf ("ERROR: block size does not touch the next block\n");
+			MEM_Printf (f, "ERROR: block size does not touch the next block\n");
 		if ( block->next->prev != block)
-			Con_Printf ("ERROR: next block doesn't have proper back link\n");
+			MEM_Printf (f, "ERROR: next block doesn't have proper back link\n");
 		if (!block->tag && !block->next->tag)
-			Con_Printf ("ERROR: two consecutive free blocks\n");
+			MEM_Printf (f, "ERROR: two consecutive free blocks\n");
 	}
 }
-#endif
+
+static void Zone_Display_f(void)
+{
+	short NumItems,counter;
+	FILE		*FH;
+	qboolean write_file;
+
+	write_file = false;
+	FH = NULL;
+	NumItems = Cmd_Argc();
+	for (counter=1; counter<NumItems; counter++)
+	{
+		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
+			write_file = true;
+	}
+	if (write_file)
+		FH = fopen(va("%s/zone.txt", fs_userdir),"w");
+	
+	MEM_Printf(FH,"-------------------------\n");
+	MEM_Printf(FH," MAIN ZONE:\n");
+	MEM_Printf(FH,"-------------------------\n");
+	Z_Print (mainzone, FH);
+	MEM_Printf(FH,"-------------------------\n");
+	MEM_Printf(FH," SECONDARY ZONE: %s", sec_zone == NULL ? "uninitialized\n" : "\n");
+	MEM_Printf(FH,"-------------------------\n");
+	if (sec_zone != NULL)
+		Z_Print (sec_zone, FH);
+	if (FH)
+		fclose (FH);
+}
 
 static void Memory_Display_f(void)
 {
@@ -1201,6 +1229,7 @@ void Memory_Init (void *buf, int size)
 
 #if Z_DEBUG_COMMANDS
 	Cmd_AddCommand ("sys_memory", Memory_Display_f);
+	Cmd_AddCommand ("sys_zone", Zone_Display_f);
 	Cmd_AddCommand ("sys_stats", Memory_Stats_f);
 #if !defined(SERVERONLY)
 	Cmd_AddCommand ("sys_cache", Cache_Display_f);
