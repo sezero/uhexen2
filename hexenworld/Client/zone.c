@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.27 2007-04-11 13:44:21 sezero Exp $
+	$Id: zone.c,v 1.28 2007-04-11 14:07:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -903,6 +903,26 @@ static void Hunk_Print (qboolean all, qboolean write_file)
 	}
 }
 
+static void Memory_Display_f(void)
+{
+	short NumItems,counter;
+	qboolean all, write_file;
+
+	all = true;
+	write_file = false;
+
+	NumItems = Cmd_Argc();
+	for (counter=1; counter<NumItems; counter++)
+	{
+		if (Q_strcasecmp(Cmd_Argv(counter),"short") == 0)
+			all = false;
+		else if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
+			write_file = true;
+	}
+
+	Hunk_Print(all,write_file);
+}
+
 # if !defined(SERVERONLY)
 static void Cache_Print (qboolean write_file)
 {
@@ -951,6 +971,23 @@ static void Cache_Print (qboolean write_file)
 		fclose(FH);
 		FH = NULL;
 	}
+}
+
+static void Cache_Display_f(void)
+{
+	short NumItems,counter;
+	qboolean write_file;
+
+	write_file = false;
+
+	NumItems = Cmd_Argc();
+	for (counter=1; counter<NumItems; counter++)
+	{
+		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
+			write_file = true;
+	}
+
+	Cache_Print(write_file);
 }
 # endif	/* SERVERONLY */
 
@@ -1009,43 +1046,6 @@ static void Zone_Display_f(void)
 		Z_Print (sec_zone, FH);
 	if (FH)
 		fclose (FH);
-}
-
-static void Memory_Display_f(void)
-{
-	short NumItems,counter;
-	qboolean all, write_file;
-
-	all = true;
-	write_file = false;
-
-	NumItems = Cmd_Argc();
-	for (counter=1; counter<NumItems; counter++)
-	{
-		if (Q_strcasecmp(Cmd_Argv(counter),"short") == 0)
-			all = false;
-		else if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
-			write_file = true;
-	}
-
-	Hunk_Print(all,write_file);
-}
-
-static void Cache_Display_f(void)
-{
-	short NumItems,counter;
-	qboolean write_file;
-
-	write_file = false;
-
-	NumItems = Cmd_Argc();
-	for (counter=1; counter<NumItems; counter++)
-	{
-		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
-			write_file = true;
-	}
-
-	Cache_Print(write_file);
 }
 
 #define NUM_GROUPS 18
