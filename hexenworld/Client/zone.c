@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.24 2007-04-11 10:39:18 sezero Exp $
+	$Id: zone.c,v 1.25 2007-04-11 12:33:46 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1179,8 +1179,10 @@ void Memory_Init (void *buf, int size)
 
 #if !defined(SERVERONLY) || defined(DEBUG_BUILD)
 	Cmd_AddCommand ("sys_memory", Memory_Display_f);
-	Cmd_AddCommand ("sys_cache", Cache_Display_f);
 	Cmd_AddCommand ("sys_stats", Memory_Stats_f);
+#if !defined(SERVERONLY)
+	Cmd_AddCommand ("sys_cache", Cache_Display_f);
+#endif
 #endif
 }
 
