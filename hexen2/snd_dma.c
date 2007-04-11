@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.52 2007-03-27 11:16:31 sezero Exp $
+	$Id: snd_dma.c,v 1.53 2007-04-11 11:28:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -234,19 +234,16 @@ void S_Init (void)
 		Con_Printf ("loading all sounds as 8bit\n");
 	}
 
-	snd_initialized = true;
-
-	S_Startup ();
-
-// further operation is not necessary if the driver initialization failed
-// unless we intend to do a snd_restart with a different driver.
-	if (sound_started == 0)
-		return;
-
 	SND_InitScaletable ();
 
 	known_sfx = (sfx_t *) Hunk_AllocName (MAX_SFX*sizeof(sfx_t), "sfx_t");
 	num_sfx = 0;
+
+	snd_initialized = true;
+
+	S_Startup ();
+	if (sound_started == 0)
+		return;
 
 // provides a tick sound until washed clean
 //	if (shm->buffer)
