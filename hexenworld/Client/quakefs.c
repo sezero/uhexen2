@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.13 2007-04-11 09:50:10 sezero Exp $
+	$Id: quakefs.c,v 1.14 2007-04-11 09:55:36 sezero Exp $
 */
 
 #define _NEED_SEARCHPATH_T
@@ -920,6 +920,14 @@ void FS_Init (void)
 	{
 		if (!Q_strcasecmp(com_argv[i+1], "portals"))
 			check_portals = true;
+	}
+#endif
+#if !defined(H2W)
+	if (sv_protocol == PROTOCOL_RAVEN_111)
+	{
+		if (check_portals)
+			Sys_Printf ("Old protocol requested: disabling mission pack support request.\n");
+		check_portals = false;
 	}
 #endif
 
