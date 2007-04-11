@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.21 2007-04-10 17:53:08 sezero Exp $
+	$Id: zone.c,v 1.22 2007-04-11 08:04:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1163,15 +1163,11 @@ void Memory_Init (void *buf, int size)
 
 #if !defined(SERVERONLY)
 // initialize a 256 KB secondary zone for static textures
-#   ifndef H2W
 	if (!isDedicated)
 	{
-#   endif
 		sec_zone = Hunk_AllocName ( ZONE_MINSIZE, "sec_zone" );
 		Memory_InitZone (sec_zone, Z_SECZONE, ZONE_MINSIZE);
-#   ifndef H2W
 	}
-#   endif
 #endif	/* SERVERONLY */
 
 #if !defined(SERVERONLY) || defined(DEBUG_BUILD)

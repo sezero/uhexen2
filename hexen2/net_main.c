@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.20 2007-04-06 06:32:49 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.21 2007-04-11 08:04:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -751,7 +751,7 @@ void NET_Init (void)
 			net_drivers[net_driverlevel].Listen (true);
 	}
 
-	if (isDedicated && i == 0)
+	if (i == 0 && cls.state == ca_dedicated)
 		Sys_Error("Network not available!");
 
 	if (*my_ipx_address)

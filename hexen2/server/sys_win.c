@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_win.c,v 1.18 2007-04-10 17:36:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_win.c,v 1.19 2007-04-11 08:04:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -24,6 +24,8 @@
 #define MAX_MEM_ALLOC	0x2000000
 
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
+
+qboolean		isDedicated = true;	/* compatibility */
 
 
 /*

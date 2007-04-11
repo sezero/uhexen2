@@ -2,7 +2,7 @@
 	host.h
 	public host structures and functions
 
-	$Id: host.h,v 1.5 2007-03-20 08:18:40 sezero Exp $
+	$Id: host.h,v 1.6 2007-04-11 08:04:23 sezero Exp $
 */
 
 #ifndef __HX2_HOST_H
@@ -25,11 +25,11 @@ typedef struct quakeparms_s
 
 extern	quakeparms_t	*host_parms;
 
+extern	qboolean	isDedicated;
+
 extern	cvar_t		sys_ticrate;
 extern	cvar_t		sys_nostdout;
 extern	cvar_t		developer;
-
-extern	qboolean	isDedicated;
 
 extern	qboolean	host_initialized;	// true if into command execution
 extern	double		host_frametime;
