@@ -3,6 +3,28 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-04-11 (CVS):
+    * isDedicated usage clean-up.
+    * moved the global current_skill to sv_main.c which is its correct place.
+    * cache memory isn't used in dedicated server applications. disabled
+      its compilation in h2ded and hwsv.
+    * maintained missing synchronization between h2 and h2w versions of quakefs.c.
+    * ifdef cleanup for Draw_BeginDisc and Draw_EndDisc.
+    * zone.c: fixed segfault. silly me...
+    * snd_dma.c: initialize the known_sfx and snd_scaletable arrays even if
+      the driver initialization fails.
+    * re-diff'ed the snd_restart-experimental extra patch.
+    * removed gl_test.c and all GLTEST things.
+    * zone.c: fixed debug builds.
+    * restricted the sys_memory, sys_cache and sys_stats commands to debug
+      builds only. if required, the Z_DEBUG_COMMANDS definition in zone.c
+      can be edited to change this. completely disabled the Z_CheckHeap()
+      usage. if required, Z_CHECKHEAP definition in zone.c can be edited to
+      change this in debug builds only.
+    * added a sys_zone console command for debug builds.
+    * zone.c: fixed debug builds (again...)
+    * added the hexenworld MGNET compile time option to h2option.h.
+
 2007-04-10 (CVS):
     * added a short Makefile.xd for building xdelta quickly without autotools
       support. adjusted the Makefile of the launcher accordingly. updated the
