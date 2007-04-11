@@ -2,7 +2,7 @@
 	quakefs.c
 	quake file io
 
-	$Id: quakeio.c,v 1.9 2007-04-11 09:50:06 sezero Exp $
+	$Id: quakeio.c,v 1.10 2007-04-11 10:04:22 sezero Exp $
 */
 
 #define _NEED_SEARCHPATH_T
@@ -342,6 +342,11 @@ static cache_user_t *loadcache;
 static size_t		loadsize;
 static int		zone_num;
 
+#if defined (SERVERONLY)
+#define Draw_BeginDisc()
+#define Draw_EndDisc()
+#endif	/* SERVERONLY */
+
 static byte *QIO_LoadFile (const char *path, int usehunk)
 {
 	FILE	*h;
@@ -399,14 +404,11 @@ static byte *QIO_LoadFile (const char *path, int usehunk)
 
 	((byte *)buf)[len] = 0;
 
-#if !defined(SERVERONLY) && !defined(GLQUAKE)
 	Draw_BeginDisc ();
-#endif
 	fread (buf, 1, len, h);
 	fclose (h);
-#if !defined(SERVERONLY) && !defined(GLQUAKE)
 	Draw_EndDisc ();
-#endif
+
 	return buf;
 }
 
