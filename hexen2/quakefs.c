@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.14 2007-04-11 09:50:06 sezero Exp $
+	$Id: quakefs.c,v 1.15 2007-04-13 11:34:54 sezero Exp $
 */
 
 #define _NEED_SEARCHPATH_T
@@ -31,29 +31,31 @@ unsigned int	gameflags;
 cvar_t	oem = {"oem", "0", CVAR_ROM};
 cvar_t	registered = {"registered", "0", CVAR_ROM};
 
-// look-up table of pak filenames: { numfiles, crc }
-// if a packfile directory differs from this, it is assumed to be hacked
-#define MAX_PAKDATA	6
-static const int pakdata[MAX_PAKDATA][2] = {
-	{ 696,	34289 },	/* pak0.pak, registered	*/
-	{ 523,	2995  },	/* pak1.pak, registered	*/
-	{ 183,	4807  },	/* pak2.pak, oem, data needs verification */
-	{ 245,	1478  },	/* pak3.pak, portals	*/
-	{ 102,	41062 },	/* pak4.pak, hexenworld	*/
-	{ 797,	22780 }		/* pak0.pak, demo v1.11	*/
-//	{ 701,	20870 }		/* pak0.pak, old 1.07 version of the demo */
-//	The old v1.07 demo on the ID Software ftp isn't supported
-//	(pak0.pak::progs.dat : 19267 crc, progheader crc : 14046)
-};
+typedef struct
+{
+	int	numfiles;
+	int	crc;
+	char	*dirname;
+} pakdata_t;
 
-// loacations of pak filenames as shipped by raven
-static const char *dirdata[MAX_PAKDATA] = {
-	"data1",	/* pak0.pak, registered	*/
-	"data1",	/* pak1.pak, registered	*/
-	"data1",	/* pak2.pak, oem	*/
-	"portals",	/* pak3.pak, portals	*/
-	"hw",		/* pak4.pak, hexenworld	*/
-	"data1"		/* pak0.pak, demo	*/
+static pakdata_t pakdata[] =
+{
+	{ 696,	34289, "data1"	},	/* pak0.pak, registered	*/
+	{ 523,	2995 , "data1"	},	/* pak1.pak, registered	*/
+	{ 183,	4807 , "data1"	},	/* pak2.pak, oem, data needs verification */
+	{ 245,	1478 , "portals"},	/* pak3.pak, portals	*/
+	{ 102,	41062, "hw"	},	/* pak4.pak, hexenworld	*/
+	{ 797,	22780, "data1"	}	/* pak0.pak, demo v1.11	*/
+};
+#define	MAX_PAKDATA	(sizeof(pakdata) / sizeof(pakdata[0]))
+
+static pakdata_t old_pakdata[3] =
+{
+	{ 697,	53062, "data1"	},	/* pak0.pak, original cdrom (1.03) version	*/
+	{ 525,	47762, "data1"	},	/* pak1.pak, original cdrom (1.03) version	*/
+	{ 701,	20870, "data1"	}	/* pak0.pak, old 1.07 version of the demo.	*/
+			//	The old v1.07 demo on the ID Software ftp isn't supported.
+			//	(pak0.pak::progs.dat : 19267 crc, progheader crc : 14046).
 };
 
 // this graphic needs to be in the pak file to use registered features
@@ -112,7 +114,7 @@ Looks for the pop.txt file and verifies it.
 Sets the registered flag.
 ================
 */
-static void CheckRegistered (void)
+static int CheckRegistered (void)
 {
 	FILE		*h;
 	unsigned short	check[128];
@@ -121,7 +123,7 @@ static void CheckRegistered (void)
 	QIO_FOpenFile("gfx/pop.lmp", &h, false);
 
 	if (!h)
-		return;
+		return -1;
 
 	fread (check, 1, sizeof(check), h);
 	fclose (h);
@@ -129,14 +131,13 @@ static void CheckRegistered (void)
 	for (i = 0; i < 128; i++)
 	{
 		if ( pop[i] != (unsigned short)BigShort(check[i]) )
-			Sys_Error ("Corrupted data file.");
+		{
+			Sys_Printf ("Corrupted data file\n");
+			return -1;
+		}
 	}
 
-	// check if we have 1.11 versions of pak0.pak and pak1.pak
-	if (!(gameflags & GAME_REGISTERED0) || !(gameflags & GAME_REGISTERED1))
-		Sys_Error ("You must patch your installation with Raven's 1.11 update");
-
-	gameflags |= GAME_REGISTERED;
+	return 0;
 }
 
 
@@ -189,32 +190,51 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 		CRC_ProcessByte (&crc, ((byte *)info)[i]);
 
 // check for modifications
-	if (base_fs && paknum <= MAX_PAKDATA-2)
+	if (base_fs && paknum < MAX_PAKDATA-1)
 	{
-		if (strcmp(fs_gamedir_nopath, dirdata[paknum]) != 0)
+		if (strcmp(fs_gamedir_nopath, pakdata[paknum].dirname) != 0)
 		{
 			// raven didnt ship like that
 			gameflags |= GAME_MODIFIED;
 		}
-		else if (numpackfiles != pakdata[paknum][0])
+		else if (numpackfiles != pakdata[paknum].numfiles)
 		{
 			if (paknum == 0)
 			{
 				// demo ??
-				if (numpackfiles != pakdata[MAX_PAKDATA-1][0])
+				if (crc == pakdata[MAX_PAKDATA-1].crc &&
+				    numpackfiles == pakdata[MAX_PAKDATA-1].numfiles)
 				{
-				// not original
-					gameflags |= GAME_MODIFIED;
+					gameflags |= GAME_DEMO;
 				}
-				else if (crc != pakdata[MAX_PAKDATA-1][1])
+				// old version of demo ??
+				else if (crc == old_pakdata[2].crc &&
+					 numpackfiles == old_pakdata[2].numfiles)
 				{
-				// not original
-					gameflags |= GAME_MODIFIED;
+					gameflags |= GAME_OLD_DEMO;
+				}
+				// old, un-patched cdrom version ??
+				else if (crc == old_pakdata[0].crc &&
+					 numpackfiles == old_pakdata[0].numfiles)
+				{
+					gameflags |= GAME_OLD_CDROM0;
 				}
 				else
+				{	// not original
+					gameflags |= GAME_MODIFIED;
+				}
+			}
+			else if (paknum == 1)
+			{
+				// old, un-patched cdrom version ??
+				if (crc == old_pakdata[1].crc &&
+				    numpackfiles == old_pakdata[1].numfiles)
 				{
-				// both crc and numfiles matched the demo
-					gameflags |= GAME_DEMO;
+					gameflags |= GAME_OLD_CDROM1;
+				}
+				else
+				{	// not original
+					gameflags |= GAME_MODIFIED;
 				}
 			}
 			else
@@ -223,7 +243,7 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 				gameflags |= GAME_MODIFIED;
 			}
 		}
-		else if (crc != pakdata[paknum][1])
+		else if (crc != pakdata[paknum].crc)
 		{
 		// not original
 			gameflags |= GAME_MODIFIED;
@@ -899,13 +919,24 @@ void FS_Init (void)
 #endif
 	FS_AddGameDirectory (va("%s/data1", fs_basedir), true);
 
+	// check if we have 1.11 versions of pak0.pak and pak1.pak
+	if (gameflags & (GAME_OLD_CDROM0|GAME_OLD_CDROM1))
+		Sys_Error ("You must patch your installation with Raven's 1.11 update");
+	if (gameflags & GAME_OLD_DEMO)
+		Sys_Error ("Old version of Hexen II demo isn't supported");
 	// check if we are playing the registered version
-	CheckRegistered ();
+	if (gameflags & GAME_REGISTERED0 && gameflags & GAME_REGISTERED1)
+	{
+		gameflags |= GAME_REGISTERED;
+		if (CheckRegistered() != 0)
+			Sys_Error ("Unable to verify retail version data.");
+	}
 	// check for mix'n'match screw-ups
-	if ((gameflags & GAME_REGISTERED) && ((gameflags & GAME_DEMO) || (gameflags & GAME_OEM)))
+	if ((gameflags & GAME_DEMO && gameflags & GAME_REGISTERED1) ||
+	    (gameflags & GAME_OEM && gameflags & (GAME_REGISTERED|GAME_DEMO)))
 		Sys_Error ("Bad Hexen II installation");
 #if !( defined(H2W) && defined(SERVERONLY) )
-	if ((gameflags & GAME_MODIFIED) && !(gameflags & GAME_REGISTERED))
+	if (gameflags & GAME_MODIFIED && !(gameflags & GAME_REGISTERED))
 		Sys_Error ("You must have the full version of Hexen II to play modified games");
 #endif
 
@@ -933,7 +964,7 @@ void FS_Init (void)
 
 //	if (check_portals && !(gameflags & GAME_REGISTERED))
 //		Sys_Error ("Portal of Praevus requires registered version of Hexen II");
-	if (check_portals && (gameflags & GAME_REGISTERED))
+	if (check_portals && gameflags & GAME_REGISTERED)
 	{
 		i = Hunk_LowMark ();
 		search_tmp = fs_searchpaths;
@@ -1016,7 +1047,6 @@ void FS_Init (void)
 	}
 	else
 	{
-	//	snprintf (temp, sizeof(temp), "unknown");
 	// no proper Raven data: it's best to error out here
 		Sys_Error ("Unable to find a proper Hexen II installation");
 	}

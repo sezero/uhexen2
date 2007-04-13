@@ -2,11 +2,27 @@
 	quakefs.h
 	Hexen II filesystem
 
-	$Id: quakefs.h,v 1.6 2007-02-26 09:06:21 sezero Exp $
+	$Id: quakefs.h,v 1.7 2007-04-13 11:34:54 sezero Exp $
 */
 
 #ifndef __QUAKEFS_H
 #define __QUAKEFS_H
+
+//
+// game data flags
+//
+#define	GAME_DEMO		(1 << 0)
+#define	GAME_OEM		(1 << 1)
+#define	GAME_MODIFIED		(1 << 2)
+#define	GAME_REGISTERED		(1 << 3)
+#define	GAME_REGISTERED0	(1 << 4)
+#define	GAME_REGISTERED1	(1 << 5)
+#define	GAME_PORTALS		(1 << 6)
+#define	GAME_HEXENWORLD		(1 << 7)
+
+#define	GAME_OLD_CDROM0		(1 << 8)
+#define	GAME_OLD_CDROM1		(1 << 9)
+#define	GAME_OLD_DEMO		(1 << 10)
 
 #if defined(_NEED_SEARCHPATH_T)
 typedef struct searchpath_s

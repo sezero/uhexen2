@@ -2,7 +2,7 @@
 	quakedef.h
 	common definitions for client and server
 
-	$Id: quakedef.h,v 1.41 2007-04-03 12:44:50 sezero Exp $
+	$Id: quakedef.h,v 1.42 2007-04-13 11:34:54 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -169,18 +169,6 @@
 #define SCALE_ORIGIN_BOTTOM		32	// Scaling origin at object bottom
 #define SCALE_ORIGIN_TOP		64	// Scaling origin at object top
 #define DRF_TRANSLUCENT			128
-
-//
-// game data flags
-//
-#define	GAME_DEMO		1
-#define	GAME_OEM		2
-#define	GAME_MODIFIED		4
-#define	GAME_REGISTERED		8
-#define	GAME_REGISTERED0	16
-#define	GAME_REGISTERED1	32
-#define	GAME_PORTALS		64
-#define	GAME_HEXENWORLD		128
 
 //
 // Player Classes
