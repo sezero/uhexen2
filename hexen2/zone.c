@@ -2,10 +2,14 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.39 2007-04-11 14:07:26 sezero Exp $
+	$Id: zone.c,v 1.40 2007-04-13 11:33:36 sezero Exp $
 */
 
 #include "quakedef.h"
+
+// whether Z_Malloc should check zone integrity before
+// every allocation.
+#define	Z_CHECKHEAP		0
 
 // whether we compile the debug report commands (see in
 // Memory_Init() at the end). always on in debug builds.
@@ -13,14 +17,6 @@
 #if defined(DEBUG_BUILD)
 #undef	Z_DEBUG_COMMANDS
 #define	Z_DEBUG_COMMANDS	1
-#endif	/* DEBUG_BUILD */
-
-// whether Z_Malloc should check zone integrity before
-// every allocation. always off in release builds.
-#define	Z_CHECKHEAP		0
-#if !defined(DEBUG_BUILD)
-#undef	Z_CHECKHEAP
-#define	Z_CHECKHEAP		0
 #endif	/* DEBUG_BUILD */
 
 #define	ZONE_MINSIZE	0x40000
