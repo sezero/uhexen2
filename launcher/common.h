@@ -2,7 +2,7 @@
 	common.h
 	common header for hexen2 launcher
 
-	$Id: common.h,v 1.6 2007-03-15 18:18:15 sezero Exp $
+	$Id: common.h,v 1.7 2007-04-14 21:30:14 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -37,8 +37,11 @@
 
 #define MAX_OSPATH	256
 
+// from main.c
+extern char	basedir[MAX_OSPATH];
+extern char	userdir[MAX_OSPATH];
+
 // from launch_bin.c
-void CheckExe (void);
 void launch_hexen2_bin (void);
 
 #endif	// LAUNCHER_COMMON_INC_H

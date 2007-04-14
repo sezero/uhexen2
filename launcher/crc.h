@@ -1,8 +1,9 @@
 /*
-	interface.h
-	hexen2 launcher ftk+ interface
+	crc.c
+	crc functions
 
-	$Id: interface.h,v 1.9 2007-04-14 21:30:16 sezero Exp $
+	$Id: crc.h,v 1.1 2007-04-14 21:30:15 sezero Exp $
+	Copyright (C) 1996-1997  Id Software, Inc.
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -23,10 +24,14 @@
 		Boston, MA  02110-1301, USA
 */
 
-#ifndef	LAUNCHER_INTERFACE_H
-#define	LAUNCHER_INTERFACE_H
+#ifndef __HX2_CRC_H
+#define __HX2_CRC_H
 
-gint ui_init (gpointer user_data);
+void CRC_Init(unsigned short *crcvalue);
+void CRC_ProcessByte(unsigned short *crcvalue, unsigned char data);
+void CRC_ProcessBlock (unsigned char *start, unsigned short *crcvalue, int count);
+unsigned short CRC_Value(unsigned short crcvalue);
+unsigned short CRC_Block (unsigned char *start, int count);
 
-#endif	// LAUNCHER_INTERFACE_H
+#endif	/* __HX2_CRC_H */
 

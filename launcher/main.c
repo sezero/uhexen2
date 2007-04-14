@@ -2,7 +2,7 @@
 	main.c
 	hexen2 launcher: main loop
 
-	$Id: main.c,v 1.25 2007-03-15 18:18:16 sezero Exp $
+	$Id: main.c,v 1.26 2007-04-14 21:30:16 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -34,11 +34,12 @@
 #endif
 
 #include "launcher_defs.h"
+#include "games.h"
 #include "config_file.h"
 #include "interface.h"
 //#include "support.h"
 
-static char	bin_dir[MAX_OSPATH];
+char		basedir[MAX_OSPATH];
 char		userdir[MAX_OSPATH];
 
 static char *Sys_SearchCommand (char *filename)
@@ -46,7 +47,7 @@ static char *Sys_SearchCommand (char *filename)
 	static char	pathname[MAX_OSPATH];
 	char	buff[MAX_OSPATH];
 	char	*path;
-	int		m, n;
+	size_t		m, n;
 
 	memset (pathname, 0, sizeof(pathname));
 
@@ -125,8 +126,9 @@ static void Sys_FindBinDir (char *filename, char *out)
 		tmp++;
 	}
 
-	printf("Launcher : %s\n",last);
-	strncpy (out, cmd, (strlen(cmd)-strlen(last)) );
+	printf("Launcher : %s\n", last);
+	while (cmd < last)
+		*out++ = *cmd++;
 }
 
 static int Sys_mkdir (char *path)
@@ -168,10 +170,11 @@ static int Sys_GetUserdir (char *buff, size_t path_len)
 }
 
 
+#undef	GTK_INIT_FUNC
+#define	GTK_INIT_FUNC(f)	(GtkFunction)f
+
 int main (int argc, char *argv[])
 {
-
-	GtkWidget *window1;
 /*
 #ifdef ENABLE_NLS
 	bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
@@ -186,7 +189,8 @@ int main (int argc, char *argv[])
 	add_pixmap_directory (PACKAGE_SOURCE_DIR "/pixmaps");
 */
 
-	printf("Hexen II: Hammer of Thyrion Launcher, version %s\n", LAUNCHER_VERSION_STR);
+	printf("Hexen II: Hammer of Thyrion Launcher, version %i.%i.%i\n",
+		LAUNCHER_VERSION_MAJ, LAUNCHER_VERSION_MID, LAUNCHER_VERSION_MIN);
 
 	if ((Sys_GetUserdir(userdir, sizeof(userdir))) != 0)
 	{
@@ -194,24 +198,18 @@ int main (int argc, char *argv[])
 		exit(1);
 	}
 
-	memset(bin_dir, 0, sizeof(bin_dir));
-	Sys_FindBinDir(argv[0], bin_dir);
-	printf("Basedir  : %s\n",bin_dir);
-	printf("Userdir  : %s\n",userdir);
-
-	read_config_file();
+	memset(basedir, 0, sizeof(basedir));
+	Sys_FindBinDir (argv[0], basedir);
+	printf ("Basedir  : %s\n", basedir);
+	printf ("Userdir  : %s\n", userdir);
 
 //	go into the binary's directory
-	chdir(bin_dir);
+	chdir (basedir);
 
-/*
- * The following code was added by Glade to create one of each component
- * (except popup menus), just so that you see something after building
- * the project. Delete any components that you don't want shown initially.
- */
-	window1 = create_window1 ();
-	gtk_widget_show (window1);
+	scan_game_installation();
+	read_config_file();
 
+	gtk_init_add (GTK_INIT_FUNC(ui_init), NULL);
 	gtk_main ();
 
 	return 0;

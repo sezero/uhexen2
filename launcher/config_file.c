@@ -2,7 +2,7 @@
 	config_file.c
 	hexen2 launcher config file handling
 
-	$Id: config_file.c,v 1.40 2007-03-15 18:18:15 sezero Exp $
+	$Id: config_file.c,v 1.41 2007-04-14 21:30:15 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -25,6 +25,7 @@
 
 #include "common.h"
 #include "launcher_defs.h"
+#include "games.h"
 #include "config_file.h"
 
 // Default values for the options
@@ -60,9 +61,6 @@ int zonesize		= ZONE_DEFAULT;
 int h2game		= 0;
 int hwgame		= 0;
 #endif
-
-// from main.c
-extern char userdir[MAX_OSPATH];
 
 
 static FILE * open_config_file (char *flags)
@@ -142,7 +140,7 @@ int read_config_file (void)
 	cfg_file = open_config_file("r");
 	if (cfg_file == NULL)
 	{
-		printf("Creating default configuration file.....\n");
+		printf("Creating default configuration file...\n");
 		write_config_file();
 		return 0;
 	}
@@ -170,6 +168,8 @@ int read_config_file (void)
 					destiny = atoi(buff + 8);
 					if (destiny != DEST_H2 && destiny != DEST_HW)
 						destiny = DEST_H2;
+					if (destiny == DEST_HW && !(gameflags & GAME_HEXENWORLD))
+						destiny = DEST_H2;
 				}
 #ifndef DEMOBUILD
 				else if (strstr(buff, "h2game=") == buff)
@@ -177,17 +177,27 @@ int read_config_file (void)
 					h2game = atoi(buff + 7);
 					if (h2game < 0 || h2game >= MAX_H2GAMES)
 						h2game = 0;
+					if (!h2game_names[h2game].available)
+						h2game = 0;
+					if (!(gameflags & GAME_REGISTERED))
+						h2game = 0;
 				}
 				else if (strstr(buff, "hwgame=") == buff)
 				{
 					hwgame = atoi(buff + 7);
 					if (hwgame < 0 || hwgame >= MAX_HWGAMES)
 						hwgame = 0;
+					if (!hwgame_names[hwgame].available)
+						hwgame = 0;
+					if (!(gameflags & GAME_REGISTERED))
+						hwgame = 0;
 				}
 				else if (strstr(buff, "mp_support=") == buff)
 				{
 					mp_support = atoi(buff + 11);
 					if (mp_support != 0 && mp_support != 1)
+						mp_support = 0;
+					if (mp_support && !(gameflags & GAME_PORTALS && gameflags & GAME_REGISTERED))
 						mp_support = 0;
 				}
 #endif

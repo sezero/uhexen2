@@ -2,7 +2,7 @@
 	launcher_defs.h
 	hexen2 launcher: common definitions
 
-	$Id: launcher_defs.h,v 1.25 2007-03-15 18:18:16 sezero Exp $
+	$Id: launcher_defs.h,v 1.26 2007-04-14 21:30:16 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -38,8 +38,8 @@
 #define HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 
 // Launcher version num.
-#define LAUNCHER_VERSION_MAJ	0
-#define LAUNCHER_VERSION_MID	9
+#define LAUNCHER_VERSION_MAJ	1
+#define LAUNCHER_VERSION_MID	0
 #define LAUNCHER_VERSION_MIN	0
 #define LAUNCHER_VERSION_STR	STRINGIFY(LAUNCHER_VERSION_MAJ) "." STRINGIFY(LAUNCHER_VERSION_MID) "." STRINGIFY(LAUNCHER_VERSION_MIN)
 
@@ -49,11 +49,9 @@
 #define	AOT_USERDIR	".hexen2demo"
 #endif
 
+// don't change these two
 #define	DEST_H2		0
 #define	DEST_HW		1
-
-#define	H2_BINARY_NAME	"hexen2"
-#define	HW_BINARY_NAME	"hwcl"
 
 #define	RES_320		0
 #define	RES_400		1
@@ -64,9 +62,6 @@
 #define	RES_1280	6
 #define	RES_1600	7
 #define	RES_MAX		8
-
-#define	MAX_H2GAMES	3	// max entries in the h2game_names table
-#define	MAX_HWGAMES	6	// max entries in the hwgame_names table
 
 #if defined(__linux__)
 #define	HAVE_ALSA_SOUND	1
@@ -96,5 +91,5 @@
 #define ZONE_DEFAULT	256	// default zone memory size in KB
 #define ZONE_MAXSIZE	1024	// maximum zone memory size in KB
 
-#endif	// LAUNCHER_COMMONDEFS_H
+#endif	/* LAUNCHER_COMMONDEFS_H */
 

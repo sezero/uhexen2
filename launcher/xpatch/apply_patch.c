@@ -2,7 +2,7 @@
 	apply_patch.c
 	hexen2 launcher: binary patch starter
 
-	$Id: apply_patch.c,v 1.3 2007-03-15 18:18:16 sezero Exp $
+	$Id: apply_patch.c,v 1.4 2007-04-14 21:30:18 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -31,6 +31,7 @@
 
 #include "md5.h"
 #include "loki_xdelta.h"
+#include "apply_patch.h"
 
 extern void Log_printf (const char *fmt, ...) __attribute__((format(printf,1,2)));
 
@@ -65,23 +66,24 @@ static const struct
 
 #define DELTA_DIR	"patchdata"
 
+static	unsigned long		rc;
+
 void *apply_patches (void *unused)
 {
-	int		i, status;
-	static int	rc = 0;
+	int			i;
 	char	dst[MAX_OSPATH],
 		pat[MAX_OSPATH],
 		out[MAX_OSPATH];
 	char	csum[CHECKSUM_SIZE+1];
 
-	status = 0;
+	rc = XPATCH_NONE;
 
 	for (i = 0; i < NUM_PATCHES; i++)
 	{
 		snprintf (dst, sizeof(dst), "%s/%s", patch_data[i].dir_name, patch_data[i].filename);
 		if ( access(dst, R_OK|W_OK) != 0 )
 		{
-			rc = 1;
+			rc |= XPATCH_FAIL;
 			Log_printf ("File %s not found\n", dst);
 			thread_alive = 0;
 			return &rc;
@@ -96,7 +98,7 @@ void *apply_patches (void *unused)
 		}
 		if ( strcmp(csum, patch_data[i].old_md5) )
 		{
-			rc = 1;
+			rc |= XPATCH_FAIL;
 			Log_printf ("File %s is an incompatible version\n", dst);
 			thread_alive = 0;
 			return &rc;
@@ -105,7 +107,7 @@ void *apply_patches (void *unused)
 		snprintf (pat, sizeof(pat), "%s/%s/%s", DELTA_DIR, patch_data[i].dir_name, patch_data[i].deltaname);
 		if ( access(pat, R_OK) != 0 )
 		{
-			rc = 1;
+			rc |= XPATCH_FAIL;
 			Log_printf ("File %s not found\n", pat);
 			thread_alive = 0;
 			return &rc;
@@ -120,7 +122,7 @@ void *apply_patches (void *unused)
 		Log_printf ("Patching %s...\n", dst);
 		if ( loki_xpatch(pat, dst, out) < 0 )
 		{
-			rc = 1;
+			rc |= XPATCH_FAIL;
 			if ( access(out, F_OK) == 0 )
 			{
 				remove (out);
@@ -134,7 +136,7 @@ void *apply_patches (void *unused)
 		md5_compute(out, csum, 1);
 		if ( strcmp(csum, patch_data[i].new_md5) )
 		{
-			rc = 1;
+			rc |= XPATCH_FAIL;
 			remove (out);
 			Log_printf ("File %s failed checksum after patching\n", dst);
 			thread_alive = 0;
@@ -143,18 +145,18 @@ void *apply_patches (void *unused)
 
 		if ( rename(out, dst) < 0 )
 		{
-			rc = 1;
+			rc |= XPATCH_FAIL;
 			remove (out);
 			Log_printf ("Failed renaming patched file to %s\n", patch_data[i].filename);
 			thread_alive = 0;
 			return &rc;
 		}
 
+		rc |= XPATCH_APPLIED;
 		Log_printf ("Patch successful for %s\n", dst);
-		status = 1;
 	}
 
-	if (status)
+	if (rc & XPATCH_APPLIED)
 		Log_printf ("All patches successful\n");
 
 	thread_alive = 0;

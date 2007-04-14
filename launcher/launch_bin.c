@@ -2,7 +2,7 @@
 	launch_bin.c
 	hexen2 launcher: binary launching
 
-	$Id: launch_bin.c,v 1.41 2007-03-15 18:18:15 sezero Exp $
+	$Id: launch_bin.c,v 1.42 2007-04-14 21:30:16 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -25,15 +25,13 @@
 
 #include "common.h"
 #include "launcher_defs.h"
+#include "games.h"
 #include "config_file.h"
 
 static char binary_name[16];
-int	missingexe = 0;
-int	is_botmatch= 0;	// bot matches require -listen,
-			// therefore lan shouldn't be disabled
 
-char *snddrv_names[MAX_SOUND][2] = {
-
+char *snddrv_names[MAX_SOUND][2] =
+{
 	{ "-nosound", "No Sound"},
 #if HAVE_OSS_SOUND
 	{ "-sndoss" , "OSS"	},
@@ -47,8 +45,8 @@ char *snddrv_names[MAX_SOUND][2] = {
 #endif
 };
 
-char *snd_rates[MAX_RATES] = {
-
+char *snd_rates[MAX_RATES] =
+{
 	"Default",
 	"11025",
 	"16000",
@@ -59,27 +57,8 @@ char *snd_rates[MAX_RATES] = {
 	 "8000"
 };
 
-#ifndef DEMOBUILD
-char *h2game_names[MAX_H2GAMES][3] = {
-	// dirname,   user-friendly name, whether it's a botmatch
-	{  NULL     , "(  None  )"	, "0"	},
-	{ "hcbots"  , "BotMatch: Hcbot"	, "1"	},
-	{ "apocbot" , "BotMatch: Apoc"	, "1"	},
-};
-
-char *hwgame_names[MAX_HWGAMES][3] = {
-	// dirname,   user-friendly name, filename for extra check
-	{  NULL     , "Plain DeathMatch", NULL			},
-	{ "hexarena", "HexArena"	, "sound/ha/fight.wav"	},
-	{ "hwctf"   , "Capture the Flag", "models/ctf_flag.mdl"	},
-	{ "siege"   , "Siege"		, "models/h_hank.mdl"	},
-	{ "db"      , "Dungeon Break"	, "models/hookshot.mdl"	},
-	{ "rk"      , "Rival Kingdoms"	, "gfx/siegegfx.wad"	},
-};
-#endif
-
-static char *resolution_args[RES_MAX][2] = {
-
+static char *resolution_args[RES_MAX][2] =
+{
 	{ "320",  "240" },
 	{ "400",  "300" },
 	{ "512",  "384" },
@@ -90,41 +69,19 @@ static char *resolution_args[RES_MAX][2] = {
 	{ "1600", "1200"}
 };
 
-void CheckExe (void)
-{
-	binary_name[0] = '\0';
-
-	if (opengl_support)
-		sprintf (binary_name, "gl");
-
-	if (destiny == DEST_H2)
-		strcat (binary_name, H2_BINARY_NAME);
-	else if (destiny == DEST_HW)
-		strcat (binary_name, HW_BINARY_NAME);
-	else
-	{
-		printf("Warning: unknown destiny choice. Choosing Hexen II\n");
-		strcat (binary_name, H2_BINARY_NAME);
-	}
-
-	if (access(binary_name, X_OK) != 0)
-	{
-		missingexe = 1;
-		printf ("game binary %s missing or not executable\n", binary_name);
-	}
-	else
-	{
-		missingexe = 0;
-		printf ("game binary %s found OK\n", binary_name);
-	}
-}
-
-
 void launch_hexen2_bin (void)
 {
 	int		i;
 	char	*args[40];
 	char	aasamples_str[8], heapsize_str[8], zonesize_str[8];
+
+	binary_name[0] = '\0';
+	if (opengl_support)
+		strcpy (binary_name, "gl");
+	if (destiny == DEST_HW)
+		strcat (binary_name, HW_BINARY_NAME);
+	else
+		strcat (binary_name, H2_BINARY_NAME);
 
 	i = 0;
 	args[i] = binary_name;
@@ -171,27 +128,26 @@ void launch_hexen2_bin (void)
 		args[++i] = "-nocdaudio";
 	}
 
-#ifndef DEMOBUILD
-	if ((destiny == DEST_HW) && (hwgame > 0))
+#if !defined(DEMOBUILD)
+	if (destiny == DEST_HW && hwgame > 0)
 	{
 		args[++i] = "-game";
-		args[++i] = hwgame_names[hwgame][0];
+		args[++i] = hwgame_names[hwgame].dirname;
 	}
-	else if ((destiny == DEST_H2) && (h2game > 0))
+	else if (destiny == DEST_H2 && h2game > 0)
 	{
 		args[++i] = "-game";
-		args[++i] = h2game_names[h2game][0];
+		args[++i] = h2game_names[h2game].dirname;
+		// bot matches require -listen
+		if (h2game_names[h2game].is_botmatch)
+		{
+			args[++i] = "-listen";
+			lan = 1;	// -listen cannot work with -nolan
+		}
 	}
-#endif
+#endif	/* DEMOBUILD */
 
-	// bot matches require -listen
-	if (is_botmatch && (destiny == DEST_H2))
-	{
-		args[++i] = "-listen";
-		lan = 1;	// -listen cannot work with -nolan
-	}
-
-	if ((lan == 0) && (destiny == DEST_H2))
+	if (lan == 0 && destiny == DEST_H2)
 		args[++i] = "-nolan";
 
 	if (!mouse)
@@ -222,14 +178,14 @@ void launch_hexen2_bin (void)
 		args[++i] = gllibrary;
 	}
 
-	if (use_heap && (heapsize >= HEAP_MINSIZE))
+	if (use_heap && heapsize >= HEAP_MINSIZE)
 	{
 		args[++i] = "-heapsize";
 		snprintf (heapsize_str, 8, "%i", heapsize);
 		args[++i] = heapsize_str;
 	}
 
-	if (use_zone && (zonesize >= ZONE_MINSIZE))
+	if (use_zone && zonesize >= ZONE_MINSIZE)
 	{
 		args[++i] = "-zone";
 		snprintf (zonesize_str, 8, "%i", zonesize);
@@ -246,7 +202,7 @@ void launch_hexen2_bin (void)
 
 	gtk_main_quit();
 
-	printf ("\nLaunching %s\n",binary_name);
+	printf ("\nLaunching %s\n", binary_name);
 	printf ("Command line is :\n  ");
 	i = 0;
 	while (args[i])

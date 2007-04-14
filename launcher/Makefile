@@ -66,10 +66,10 @@ CFLAGS := $(CFLAGS) $(GTK_CFLAGS)
 ifdef DEMO
 CFLAGS := $(CFLAGS) -DDEMOBUILD
 else
-CFLAGS := $(CFLAGS) $(XDELTA_FLAGS) -I$(XDELTA_DIR) -I$(XDELTA_DIR)/libedsio -I./xpatch
+CFLAGS := $(CFLAGS) $(XDELTA_FLAGS) -I$(XDELTA_DIR) -I$(XDELTA_DIR)/libedsio -I. -I./xpatch
 endif
 ifdef GTK1
-CFLAGS := $(CFLAGS) -DWITH_GTK1
+CFLAGS := $(CFLAGS) -D_H2L_USE_GTK1
 endif
 ifeq ($(HOST_OS),SunOS)
 CFLAGS := $(CFLAGS) -DSUNOS
@@ -120,16 +120,16 @@ all: $(H2LAUNCH)
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 # Objects
-OBJECTS = main.o config_file.o launch_bin.o \
-	interface.o callbacks.o $(XPATCH_OBJ) $(SUPPORT_OBJ)
+LAUNCHER_OBJS = crc.o games.o config_file.o launch_bin.o interface.o \
+		$(XPATCH_OBJ) $(SUPPORT_OBJ) main.o
 
 ifeq ($(AUTOTOOLS),0)
-ALL_OBJECTS:= $(OBJECTS) $(LIBXDELTA_OBJS) $(LIBEDSIO_OBJS)
+ALL_OBJECTS:= $(LAUNCHER_OBJS) $(LIBXDELTA_OBJS) $(LIBEDSIO_OBJS)
 else
-ALL_OBJECTS:= $(OBJECTS)
+ALL_OBJECTS:= $(LAUNCHER_OBJS)
 endif
 
-$(H2LAUNCH): $(OBJECTS)
+$(H2LAUNCH): $(LAUNCHER_OBJS)
 	@rm -f $(H2LAUNCH)
 	$(LINKER) -o $(H2LAUNCH) $(ALL_OBJECTS) $(LDFLAGS)
 

@@ -2,7 +2,7 @@
 	widget_defs.h
 	hexen2 launcher: gtk+ widget defs
 
-	$Id: widget_defs.h,v 1.16 2007-03-15 18:18:16 sezero Exp $
+	$Id: widget_defs.h,v 1.17 2007-04-14 21:30:17 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -30,7 +30,8 @@
    these structs properly for easier handling.
 */
 
-typedef struct {
+typedef struct
+{
 	GtkWidget *mywindow;	// Main window
 	GtkWidget *main_box;	// Two pane horizontal box
 	GtkWidget *notebook0;	// Basic options pane
@@ -42,25 +43,30 @@ typedef struct {
 	GtkWidget *fixed2;	// Additional options Tab-2
 	GtkWidget *lbl_tab2;	// Additional options Tab-2 label
 	GtkWidget *bMORE;	// More/Less button
-} HoTWindow_t;
+} MainWindow_t;
 
-typedef struct {
+typedef struct
+{
 	GtkWidget *mywindow;	// Main window
 	GtkWidget *fixed1;	// Widgets container
 	GtkWidget *bCLOSE;	// Close button
 	GtkWidget *bAPPLY;	// Apply patch button
+	GtkWidget *bREPORT;	// Report installation status
 	GtkWidget *LOGVIEW;	// LogEntry line for patch process
-	GtkWidget *PStat;	// Status bar, (patch status)
-	gint	BinStat;	// statbar context id
+	GtkWidget *StatusBar;	// Status bar, (patch status)
+	gint	statbar_id;	// statbar context id
+	guint	delete_handler;
 } PatchWindow_t;
 
-struct Launch_s {
-	GtkWidget *LStat;	// Status bar, (launch status)
-	gint	BinStat;	// statbar context id
+struct Launch_s
+{
+	GtkWidget *StatusBar;	// Status bar, (launch status)
+	gint	statbar_id;	// statbar context id
 	GtkWidget *bLAUNCH;	// Launch button
 };
 
-struct Video_s {
+struct Video_s
+{
 	GtkWidget *bOGL;	// OpenGL / Software
 	GtkWidget *cRES;	// Resolution combo
 	GtkWidget *eRES;	// Resolution combo listing
@@ -79,7 +85,17 @@ struct Video_s {
 	GtkWidget *GL_Entry;	// Custom GL library path
 };
 
-struct Misc_s {
+struct Sound_s
+{
+	GtkWidget *cSND;	// Global sound option
+	GtkWidget *cSRATE;	// Sampling rate
+	GtkWidget *bSBITS;	// Sample format
+	GtkWidget *bMIDI;	// Midi music option
+	GtkWidget *bCDA;	// CD Audio option
+};
+
+struct Misc_s
+{
 	GtkWidget *bLAN;	// LAN button
 	GtkWidget *bMOUSE;	// Mouse button
 	GtkWidget *bDBG;	// Log Debuginfo button
@@ -92,15 +108,8 @@ struct Misc_s {
 	GtkWidget *spnZONE;	// Zonesize entry
 };
 
-typedef struct {
-	GtkWidget *cSND;	// Global sound option
-	GtkWidget *cSRATE;	// Sampling rate
-	GtkWidget *bSBITS;	// Sample format
-	GtkWidget *bMIDI;	// Midi music option
-	GtkWidget *bCDA;	// CD Audio option
-} sndwidget_t;
-
-typedef struct {
+typedef struct
+{
 	GtkWidget *bHEXEN2;	// Hexen II
 	GtkWidget *bH2W;	// HexenWorld Client
 	GtkWidget *SelH2;	// Hexen2 Game type selection
@@ -108,97 +117,82 @@ typedef struct {
 	GtkWidget *bH2MP;	// Expansion Pack
 	struct Launch_s Launch;
 	struct Video_s Video;
+	struct Sound_s Sound;
 	struct Misc_s Others;
-} gamewidget_t;
+} options_widget_t;
 
 
 // These crap are some supposed-to-be-friendlier macros for
 // the main window layout members..
 
 // Friendlier definitions for main window layout members
-#define MAIN_WINDOW	main_win.mywindow
-#define PATCH_WINDOW	patch_win.mywindow
-#define HOLDER_BOX	main_win.main_box
-#define BOOK0		main_win.notebook0
-#define BOOK1		main_win.notebook1
-#define BASIC_TAB	main_win.fixed0
-#define PATCH_TAB	patch_win.fixed1
-#define ADDON_TAB1	main_win.fixed1
-#define ADDON_TAB2	main_win.fixed2
-#define TAB0_LABEL	main_win.lbl_tab0
-#define TAB1_LABEL	main_win.lbl_tab1
-#define TAB2_LABEL	main_win.lbl_tab2
-#define MORE_LESS	main_win.bMORE
+#define	MAIN_WINDOW	main_win.mywindow
+#define	PATCH_WINDOW	patch_win.mywindow
+#define	HOLDER_BOX	main_win.main_box
+#define	BOOK0		main_win.notebook0
+#define	BOOK1		main_win.notebook1
+#define	BASIC_TAB	main_win.fixed0
+#define	PATCH_TAB	patch_win.fixed1
+#define	ADDON_TAB1	main_win.fixed1
+#define	ADDON_TAB2	main_win.fixed2
+#define	TAB0_LABEL	main_win.lbl_tab0
+#define	TAB1_LABEL	main_win.lbl_tab1
+#define	TAB2_LABEL	main_win.lbl_tab2
+#define	MORE_LESS	main_win.bMORE
 
 // Friendlier definitions for struct members
 // WGT for "widget"
-#define WGT_STATUSBAR	Games.Launch.LStat
-#define PATCH_STATBAR	patch_win.PStat
-#define BIN_STATUS_ID	Games.Launch.BinStat
-#define WGT_LAUNCH	Games.Launch.bLAUNCH
-#define WGT_OPENGL	Games.Video.bOGL
-#define WGT_RESCOMBO	Games.Video.cRES
-#define WGT_RESLIST	Games.Video.eRES
-#define WGT_CONWBUTTON	Games.Video.bCONW
-#define WGT_CONWCOMBO	Games.Video.cCONW
-#define WGT_CONWLIST	Games.Video.eCONW
-#define WGT_FULLSCR	Games.Video.bFULS
-#define WGT_3DFX	Games.Video.b3DFX
-#define WGT_GL8BIT	Games.Video.b8BIT
-#define WGT_LM_BYTES	Games.Video.bLM_BYTES
-#define WGT_VSYNC	Games.Video.bVSYNC
-#define WGT_FSAA	Games.Video.bFSAA
-#define WGT_ADJFSAA	Games.Video.adjFSAA
-#define WGT_AASAMPLES	Games.Video.spnFSAA
-#define WGT_GLPATH	Games.Video.GL_Entry
-#define WGT_LIBGL	Games.Video.bLIBGL
-#define WGT_SOUND	Sound.cSND
-#define WGT_SRATE	Sound.cSRATE
-#define WGT_SBITS	Sound.bSBITS
-#define WGT_MIDI	Sound.bMIDI
-#define WGT_CDAUDIO	Sound.bCDA
-#define WGT_HEXEN2	Games.bHEXEN2
-#define WGT_H2WORLD	Games.bH2W
-#define WGT_H2GAME	Games.SelH2
-#define WGT_HWGAME	Games.SelHW
-#define WGT_PORTALS	Games.bH2MP
-#define VID_STRUCT	(Games.Video)
-#define LAUNCH_STRUCT	(Games.Launch)
-#define WGT_LANBUTTON	Games.Others.bLAN
-#define WGT_MOUSEBUTTON	Games.Others.bMOUSE
-#define WGT_DBGLOG	Games.Others.bDBG
-#define WGT_DBGLOG2	Games.Others.bDBG2
-#define WGT_MEMHEAP	Games.Others.bMEMHEAP
-#define WGT_HEAPADJ	Games.Others.adjHEAP
-#define WGT_HEAPSIZE	Games.Others.spnHEAP
-#define WGT_MEMZONE	Games.Others.bMEMZONE
-#define WGT_ZONEADJ	Games.Others.adjZONE
-#define WGT_ZONESIZE	Games.Others.spnZONE
+#define	_OPT		Options
+#define	_VIDEO		_OPT.Video
+#define	_SOUND		_OPT.Sound
+#define	_LAUNCH		_OPT.Launch
+#define	_OTHERS		_OPT.Others
 
-// Friendlier definitions for use in callbacks.c
-#define SND_RATE	cSRATE
-#define SND_BITS	bSBITS
-#define MUSIC_MIDI	bMIDI
-#define MUSIC_CD	bCDA
-#define RES_COMBO	cRES
-#define RES_LIST	eRES
-#define CONW_COMBO	cCONW
-#define CONW_LIST	eCONW
-#define CONW_BUTTON	bCONW
-#define STATUSBAR	LStat
-#define PORTALS		bH2MP
-#define H2GAME		SelH2
-#define HWGAME		SelHW
-#define CONW_COMBO_S	Video.cCONW
-#define CONW_BUTTON_S	Video.bCONW
-#define TDFX_BUTTON	Video.b3DFX
-#define GL8BIT_BUTTON	Video.b8BIT
-#define LM_BUTTON	Video.bLM_BYTES
-#define VSYNC_BUTTON	Video.bVSYNC
-#define FSAA_BUTTON	Video.bFSAA
-#define LIBGL_BUTTON	Video.bLIBGL
-#define LAN_BUTTON	Others.bLAN
-#define LAUNCH_BUTTON	bLAUNCH
+#define	WGT_HEXEN2	_OPT.bHEXEN2
+#define	WGT_H2WORLD	_OPT.bH2W
+#define	WGT_H2GAME	_OPT.SelH2
+#define	WGT_HWGAME	_OPT.SelHW
+#define	WGT_PORTALS	_OPT.bH2MP
 
-#endif	// LAUNCHER_WIDGETDEFS_H
+#define	WGT_OPENGL	_VIDEO.bOGL
+#define	WGT_RESCOMBO	_VIDEO.cRES
+#define	WGT_RESLIST	_VIDEO.eRES
+#define	WGT_CONWBUTTON	_VIDEO.bCONW
+#define	WGT_CONWCOMBO	_VIDEO.cCONW
+#define	WGT_CONWLIST	_VIDEO.eCONW
+#define	WGT_FULLSCR	_VIDEO.bFULS
+#define	WGT_3DFX	_VIDEO.b3DFX
+#define	WGT_GL8BIT	_VIDEO.b8BIT
+#define	WGT_LM_BYTES	_VIDEO.bLM_BYTES
+#define	WGT_VSYNC	_VIDEO.bVSYNC
+#define	WGT_FSAA	_VIDEO.bFSAA
+#define	WGT_ADJFSAA	_VIDEO.adjFSAA
+#define	WGT_AASAMPLES	_VIDEO.spnFSAA
+#define	WGT_GLPATH	_VIDEO.GL_Entry
+#define	WGT_LIBGL	_VIDEO.bLIBGL
+
+#define	WGT_SOUND	_SOUND.cSND
+#define	WGT_SRATE	_SOUND.cSRATE
+#define	WGT_SBITS	_SOUND.bSBITS
+#define	WGT_MIDI	_SOUND.bMIDI
+#define	WGT_CDAUDIO	_SOUND.bCDA
+
+#define	WGT_LANBUTTON	_OTHERS.bLAN
+#define	WGT_MOUSEBUTTON	_OTHERS.bMOUSE
+#define	WGT_DBGLOG	_OTHERS.bDBG
+#define	WGT_DBGLOG2	_OTHERS.bDBG2
+#define	WGT_MEMHEAP	_OTHERS.bMEMHEAP
+#define	WGT_HEAPADJ	_OTHERS.adjHEAP
+#define	WGT_HEAPSIZE	_OTHERS.spnHEAP
+#define	WGT_MEMZONE	_OTHERS.bMEMZONE
+#define	WGT_ZONEADJ	_OTHERS.adjZONE
+#define	WGT_ZONESIZE	_OTHERS.spnZONE
+
+#define	WGT_LAUNCH	_LAUNCH.bLAUNCH
+#define	WGT_STATBAR_ID	_LAUNCH.statbar_id
+#define	WGT_STATUSBAR	_LAUNCH.StatusBar
+
+#define	PATCH_STATBAR	patch_win.StatusBar
+
+#endif	/* LAUNCHER_WIDGETDEFS_H */
 
