@@ -3,6 +3,26 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-04-14 (CVS):
+    * zone.c: removed unnecessary conditions from Z_CHECKHEAP.
+    * quakefs: revised pak data checking.
+    * quakefs: more revisions in pak data checking.
+    * major updates in the launcher: moved all of the callbacks into the
+      interface.c and removed unnecessary pointer arguments passed to them.
+      many smallish code clean-ups and whitespace clean-ups here and there.
+      created a new games.c and moved mods scanning into it. new feature:
+      the launcher now scans the installation directory against known game
+      versions for pak file health, and pops up the patch window with a
+      short report if it finds something bad.  new feature: the mission
+      pack is disabled if it isn't present or if the base game data isn't
+      the retail version. similarly, the hexenworld option is disabled if
+      it isn't present. new feature: closing the window is now disabled
+      while the patch is in progress. the init sequence is changed: we now
+      scan game the installation first, then read the config file, register
+      a ui_init() function and then do gtk_main(). the return value from
+      the patch process now has meaning. the version number is now 1.0.0.
+      probably more things that I forgot writing here.
+
 2007-04-11 (CVS):
     * isDedicated usage clean-up.
     * moved the global current_skill to sv_main.c which is its correct place.
