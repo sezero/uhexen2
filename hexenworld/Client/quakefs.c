@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.15 2007-04-13 11:34:54 sezero Exp $
+	$Id: quakefs.c,v 1.16 2007-04-14 09:15:20 sezero Exp $
 */
 
 #define _NEED_SEARCHPATH_T
@@ -909,7 +909,7 @@ void FS_Init (void)
 	Q_strlcpy_err(fs_userdir, host_parms->userdir, sizeof(fs_userdir));
 
 //
-// start up with data1 by default
+// step 1: start up with data1 by default
 //
 	Q_snprintf_err(fs_userdir, sizeof(fs_userdir), "%s/data1", host_parms->userdir);
 #ifdef PLATFORM_UNIX
@@ -919,32 +919,61 @@ void FS_Init (void)
 #endif
 	FS_AddGameDirectory (va("%s/data1", fs_basedir), true);
 
+	if (gameflags & GAME_REGISTERED0 && gameflags & GAME_REGISTERED1)
+		gameflags |= GAME_REGISTERED;
+	// check for bad installations (something cleaner here?)
+	if ((gameflags & GAME_OEM && gameflags & (GAME_REGISTERED|GAME_DEMO|GAME_OLD_DEMO)) ||
+	    (gameflags & (GAME_REGISTERED1|GAME_OLD_CDROM1) && gameflags & (GAME_DEMO|GAME_OLD_DEMO|GAME_OEM)))
+		Sys_Error ("Bad Hexen II installation: mixed data from incompatible versions");
+	if (gameflags & GAME_OLD_DEMO)
+		Sys_Error ("Old version of Hexen II demo isn't supported");
 	// check if we have 1.11 versions of pak0.pak and pak1.pak
 	if (gameflags & (GAME_OLD_CDROM0|GAME_OLD_CDROM1))
 		Sys_Error ("You must patch your installation with Raven's 1.11 update");
-	if (gameflags & GAME_OLD_DEMO)
-		Sys_Error ("Old version of Hexen II demo isn't supported");
-	// check if we are playing the registered version
-	if (gameflags & GAME_REGISTERED0 && gameflags & GAME_REGISTERED1)
+	if (gameflags & GAME_REGISTERED)
 	{
-		gameflags |= GAME_REGISTERED;
 		if (CheckRegistered() != 0)
 			Sys_Error ("Unable to verify retail version data.");
 	}
-	// check for mix'n'match screw-ups
-	if ((gameflags & GAME_DEMO && gameflags & GAME_REGISTERED1) ||
-	    (gameflags & GAME_OEM && gameflags & (GAME_REGISTERED|GAME_DEMO)))
-		Sys_Error ("Bad Hexen II installation");
+
+	// finish the base filesystem setup
+	oem.flags &= ~CVAR_ROM;
+	registered.flags &= ~CVAR_ROM;
+	if (gameflags & GAME_REGISTERED)
+	{
+		snprintf (temp, sizeof(temp), "registered");
+		Cvar_Set ("registered", "1");
+	}
+	else if (gameflags & GAME_OEM)
+	{
+		snprintf (temp, sizeof(temp), "oem");
+		Cvar_Set ("oem", "1");
+	}
+	else if (gameflags & GAME_DEMO)
+	{
+		snprintf (temp, sizeof(temp), "demo");
+	}
+	else
+	{
+	// no proper Raven data: it's best to error out here
+		Sys_Error ("Unable to find a proper Hexen II installation");
+	}
+	oem.flags |= CVAR_ROM;
+	registered.flags |= CVAR_ROM;
+	Sys_Printf ("Playing %s version.\n", temp);
 #if !( defined(H2W) && defined(SERVERONLY) )
 	if (gameflags & GAME_MODIFIED && !(gameflags & GAME_REGISTERED))
 		Sys_Error ("You must have the full version of Hexen II to play modified games");
 #endif
 
+//
+// step 2: portals directory (mission pack)
+//
 #if defined(H2MP) || defined(H2W)
 	if (! COM_CheckParm ("-noportals"))
 		check_portals = true;
 #else
-// see if the user wants mission pack support
+	// see if the user wants mission pack support
 	check_portals = (COM_CheckParm ("-portals")) || (COM_CheckParm ("-missionpack")) || (COM_CheckParm ("-h2mp"));
 	i = COM_CheckParm ("-game");
 	if (i && i < com_argc-1)
@@ -999,6 +1028,9 @@ void FS_Init (void)
 		}
 	}
 
+//
+// step 3: hw directory (hexenworld)
+//
 #if defined(H2W)
 	Q_snprintf_err(fs_userdir, sizeof(fs_userdir), "%s/hw", host_parms->userdir);
 	Sys_mkdir_err (fs_userdir);
@@ -1006,7 +1038,7 @@ void FS_Init (void)
 	// error out for H2W builds if GAME_HEXENWORLD isn't set
 	if (!(gameflags & GAME_HEXENWORLD))
 		Sys_Error ("You must have the HexenWorld data installed");
-#endif
+#endif	/* H2W */
 
 // this is the end of our base searchpath:
 // any set gamedirs, such as those from -game commandline
@@ -1027,32 +1059,5 @@ void FS_Init (void)
 		if (i && i < com_argc-1)
 			FS_Gamedir (com_argv[i+1]);
 	}
-
-// finish the filesystem setup
-	oem.flags &= ~CVAR_ROM;
-	registered.flags &= ~CVAR_ROM;
-	if (gameflags & GAME_REGISTERED)
-	{
-		snprintf (temp, sizeof(temp), "registered");
-		Cvar_Set ("registered", "1");
-	}
-	else if (gameflags & GAME_OEM)
-	{
-		snprintf (temp, sizeof(temp), "oem");
-		Cvar_Set ("oem", "1");
-	}
-	else if (gameflags & GAME_DEMO)
-	{
-		snprintf (temp, sizeof(temp), "demo");
-	}
-	else
-	{
-	// no proper Raven data: it's best to error out here
-		Sys_Error ("Unable to find a proper Hexen II installation");
-	}
-	oem.flags |= CVAR_ROM;
-	registered.flags |= CVAR_ROM;
-
-	Sys_Printf ("Playing %s version.\n", temp);
 }
 
