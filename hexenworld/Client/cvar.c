@@ -2,7 +2,7 @@
 	cvar.c
 	dynamic variable tracking
 
-	$Id: cvar.c,v 1.22 2007-04-10 17:53:07 sezero Exp $
+	$Id: cvar.c,v 1.23 2007-04-15 08:37:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -118,7 +118,8 @@ Cvar_Set
 */
 void Cvar_Set (const char *var_name, const char *value)
 {
-	cvar_t	*var;
+	cvar_t		*var;
+	size_t		varlen;
 
 	var = Cvar_FindVar (var_name);
 	if (!var)
@@ -130,13 +131,39 @@ void Cvar_Set (const char *var_name, const char *value)
 	if ( var->flags & (CVAR_ROM|CVAR_LOCKED) )
 		return;	// cvar is marked read-only or locked temporarily
 
-#ifdef SERVERONLY
+	if (var->flags & CVAR_REGISTERED)
+	{
+		if ( !strcmp(var->string, value) )
+			return;	// no change
+	}
+	else
+	{
+		var->flags |= CVAR_REGISTERED;
+	}
+
+	varlen = strlen(value);
+	if (var->string == NULL)
+	{
+		var->string = Z_Malloc (varlen + 1, Z_MAINZONE);
+	}
+	else if (strlen(var->string) != varlen)
+	{
+		Z_Free (var->string);	// free the old value string
+		var->string = Z_Malloc (varlen + 1, Z_MAINZONE);
+	}
+
+	memcpy (var->string, value, varlen + 1);
+	var->value = atof (var->string);
+
+// handle notifications
+#if defined (H2W)
+#   if defined(SERVERONLY)
 	if (var->flags & CVAR_SERVERINFO)
 	{
 		Info_SetValueForKey (svs.info, var_name, value, MAX_SERVERINFO_STRING);
 		SV_BroadcastCommand ("fullserverinfo \"%s\"\n", svs.info);
 	}
-#else
+#   else /* HWCL */
 	if (var->flags & CVAR_USERINFO)
 	{
 		Info_SetValueForKey (cls.userinfo, var_name, value, MAX_INFO_STRING);
@@ -146,16 +173,17 @@ void Cvar_Set (const char *var_name, const char *value)
 			SZ_Print (&cls.netchan.message, va("setinfo \"%s\" \"%s\"\n", var_name, value));
 		}
 	}
-#endif
+#   endif
+#else	/* ! H2W */
+	if (var->flags & CVAR_NOTIFY)
+	{
+		if (sv.active)
+			SV_BroadcastPrintf ("\"%s\" changed to \"%s\"\n", var_name, value);
+	}
+#endif	/* H2W	*/
 
-	Z_Free (var->string);	// free the old value string
-
-	var->string = Z_Malloc (strlen(value)+1, Z_MAINZONE);
-	strcpy (var->string, value);
-	var->value = atof (var->string);
-
-#ifdef SERVERONLY
-	// Don't allow deathmatch and coop at the same time
+// don't allow deathmatch and coop at the same time
+#if !defined(H2W) || defined(SERVERONLY)
 	if ( !strcmp(var->name, deathmatch.name) )
 	{
 		if (var->value != 0)
@@ -166,7 +194,7 @@ void Cvar_Set (const char *var_name, const char *value)
 		if (var->value != 0)
 			Cvar_Set("deathmatch", "0");
 	}
-#endif
+#endif	/* coop && deathmatch */
 }
 
 /*
@@ -216,7 +244,7 @@ void Cvar_RegisterVariable (cvar_t *variable)
 // copy the value off, because future sets will Z_Free it
 	strncpy (value, variable->string, 511);
 	value[511] = '\0';
-	variable->string = Z_Malloc (1, Z_MAINZONE);
+	variable->string = NULL;
 
 // set it through the function to be consistant
 	set_rom = (variable->flags & CVAR_ROM);

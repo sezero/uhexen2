@@ -2,7 +2,7 @@
 	cvar.h
 	dynamic variable tracking
 
-	$Id: cvar.h,v 1.11 2007-03-14 21:03:31 sezero Exp $
+	$Id: cvar.h,v 1.12 2007-04-15 08:37:14 sezero Exp $
 */
 
 #ifndef __CVAR_H__
@@ -56,6 +56,7 @@ interface from being ambiguous.
 #define	CVAR_USERINFO		8	// added to userinfo, will be sent to server (H2W)
 #define	CVAR_ROM		64
 #define	CVAR_LOCKED		256	// locked temporarily
+#define	CVAR_REGISTERED		1024	// the var is added to the list of variables
 
 
 typedef struct cvar_s
