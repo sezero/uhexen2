@@ -27,6 +27,7 @@ General:
 - Updates to SDL input code.  Added the Shift-Escape key combination as a
   new means for opening the in-game console.
 - Fixed many printf format string errors.
+- Revised pak data checking.
 - Mac OS X: Ensured that the basedir always stays the same (fix was added
   in 1.4.1-rev1).
 
@@ -97,9 +98,12 @@ HexenWorld:
 
 Launcher:
 ----------
-- Added integrated ability to patch the pak files using the xdelta libraries
-  that we just imported.
-- Incremented the version number to 0.9.0.
+- Added integrated ability to patch the pak files.
+- The launcher now scans the installation directory against known game versions
+  for pak file health, and pops up the patch window with a short report if it
+  finds something bad. It now disables the mission pack or hexenworld options
+  according to the results it took from the installation scanning.
+- Many clean-ups. Incremented the version number to 1.0.0.
 
 Utilities:
 ----------
