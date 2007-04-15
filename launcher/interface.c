@@ -2,7 +2,7 @@
 	interface.c
 	hexen2 launcher gtk+ interface
 
-	$Id: interface.c,v 1.52 2007-04-14 21:30:15 sezero Exp $
+	$Id: interface.c,v 1.53 2007-04-15 20:40:38 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -31,25 +31,37 @@
 #include "support.h"
 #include "compat_gtk1.h"
 #include "config_file.h"
-#ifndef DEMOBUILD
+#if !defined(DEMOBUILD)
 #include <pthread.h>
 #include "apply_patch.h"
-#endif	/* DEMOBUILD */
+#endif	/* !DEMOBUILD */
+
+/*********************************************************************/
+// Macros:
 
 #undef	GTK_DESTROYNOTIFY
 #define	GTK_DESTROYNOTIFY(f)	(GtkDestroyNotify)f
+
+/*********************************************************************/
+// Extern data:
 
 // from launch_bin.c
 extern char	*snddrv_names[MAX_SOUND][2];
 extern char	*snd_rates[MAX_RATES];
 
+/*********************************************************************/
+// Public data:
+
+int			thread_alive;
+
+/*********************************************************************/
+// Private data:
+
+static GtkTooltips	*tooltips;
+
 static options_widget_t	Options;
 static MainWindow_t	main_win;
-#ifndef DEMOBUILD
 static PatchWindow_t	patch_win;
-int			thread_alive;
-#endif
-
 static int	bmore = 0, lock = 0;
 
 static char *res_names[RES_MAX] =
@@ -73,9 +85,17 @@ static char *launch_status[] =
 #else	/* RETAIL */
 	"  Installation problem",
 	"  Pak files need patching"
-#endif	/* ! DEMOBUILD */
+#endif	/* DEMOBUILD */
 };
 
+
+/*********************************************************************/
+
+void ui_pump (void)
+{
+	while (gtk_events_pending ())
+		gtk_main_iteration ();
+}
 
 /*********************************************************************
  CALLBACK FUNCTIONS
@@ -106,21 +126,16 @@ static void UpdateStats (void)
 	gtk_widget_set_sensitive (WGT_LAUNCH, !status);
 }
 
-#ifndef DEMOBUILD
 void Log_printf (const char *fmt, ...) __attribute__((format(printf,1,2)));
 
+#if !defined(DEMOBUILD)
 static char *patch_status[] =
 {
 	"  Patch in progress.....",
 	"  Patch process finished",
 	"  Patch process failed"
 };
-
-static void ui_pump (void)
-{
-	while (gtk_events_pending ())
-		gtk_main_iteration ();
-}
+#endif	/* !DEMOBUILD */
 
 #if defined(_H2L_USE_GTK1)
 static GtkText *LogEntry = NULL;
@@ -201,7 +216,7 @@ static void report_status (GtkObject *Unused, PatchWindow_t *PatchWindow)
 		ui_LogInit (PatchWindow->LOGVIEW);
 	}
 
-	Log_printf ("\nInstallation Summary:\n\n");
+	Log_printf ("Installation Summary:\n\n");
 	Log_printf ("Base directory: %s\n", basedir);
 	Log_printf ("PAK file health: %s", (gameflags & GAME_INSTBAD) ? "BAD. Reason(s):\n" : "OK ");
 	if (gameflags & GAME_INSTBAD)
@@ -228,10 +243,21 @@ static void report_status (GtkObject *Unused, PatchWindow_t *PatchWindow)
 
 	Log_printf ("HexenWorld: %s\n", (gameflags & GAME_HEXENWORLD) ? "present " : "not found");
 
+#if defined(DEMOBUILD)
+	if (gameflags & (GAME_INSTBAD0|GAME_REGISTERED))
+	{
+		Log_printf ("---------------------\n");
+		Log_printf ("This is a restricted build of Hexen II Launcher\n");
+		Log_printf ("for the demo version. Use the normal builds for\n");
+		Log_printf ("retail-only functionality and pakfile patching.\n");
+	}
+#endif	/* DEMOBUILD */
+
 	if (end_log)
 		ui_LogEnd ();
 }
 
+#if !defined(DEMOBUILD)
 static gboolean block_window_close (GtkWidget* widget, GdkEvent* event, gpointer user_data)
 {
 	return TRUE;
@@ -276,6 +302,7 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 	{
 		scan_game_installation();
 		UpdateStats ();
+		Log_printf ("---------------------\n");
 		report_status (NULL, PatchWindow);
 		if (gameflags & GAME_REGISTERED)
 		{	// activate the extra game options, if necessary
@@ -485,7 +512,7 @@ static void on_H2W (GtkButton *button, gpointer user_data)
 	UpdateStats ();
 }
 
-#ifndef DEMOBUILD
+#if !defined(DEMOBUILD)
 static void H2GameChange (GtkEditable *editable, gpointer user_data)
 {
 	int	i;
@@ -518,7 +545,6 @@ static void HWGameChange (GtkEditable *editable, gpointer user_data)
 // Normally, we should be all set within this loop, thus no "else"
 	}
 }
-
 #endif	/* ! DEMOBUILD */
 
 static void BoolRevert (GtkObject *Unused, int *opt)
@@ -547,7 +573,6 @@ static void on_MORE (GtkButton *button, gpointer user_data)
  WINDOW CREATING
  *********************************************************************/
 
-#ifndef DEMOBUILD
 static void destroy_window2(GtkWidget *unused1, gpointer user_data)
 {
 	gtk_widget_destroy (PATCH_WINDOW);
@@ -568,17 +593,18 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 	gtk_window_set_title (GTK_WINDOW(PATCH_WINDOW), "Hexen II PAK patch");
 	gtk_window_set_resizable (GTK_WINDOW(PATCH_WINDOW), FALSE);
 	gtk_window_set_modal (GTK_WINDOW(PATCH_WINDOW), TRUE);
-	gtk_widget_set_size_request(PATCH_WINDOW, 354, 240);
+	gtk_widget_set_size_request(PATCH_WINDOW, 360, 240);
 
 	PATCH_TAB = gtk_fixed_new ();
 	gtk_widget_ref (PATCH_TAB);
 	gtk_container_add (GTK_CONTAINER (PATCH_WINDOW), PATCH_TAB);
 	gtk_widget_show (PATCH_TAB);
 
-	Txt1 = gtk_label_new ("Hexen II PAK files 1.11 patch");
+//	Txt1 = gtk_label_new ("Hexen II PAK files 1.11 patch");
+	Txt1 = gtk_label_new ("Hexen II Installation status");
 	gtk_widget_ref (Txt1);
 	gtk_widget_show (Txt1);
-	gtk_fixed_put (GTK_FIXED(PATCH_TAB), Txt1, 14, 14);
+	gtk_fixed_put (GTK_FIXED(PATCH_TAB), Txt1, 14, 12);
 	gtk_label_set_justify (GTK_LABEL(Txt1), GTK_JUSTIFY_LEFT);
 
 // Apply Patch button
@@ -587,25 +613,26 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 	gtk_widget_show (patch_win.bAPPLY);
 	gtk_fixed_put (GTK_FIXED(PATCH_TAB), patch_win.bAPPLY, 14, 186);
 	gtk_widget_set_size_request (patch_win.bAPPLY, 112, 24);
+#if !defined(DEMOBUILD)
+	gtk_tooltips_set_tip (tooltips, patch_win.bAPPLY, _("Apply the v1.11 pakfiles patch by Raven Software."), NULL);
+#endif	/* ! DEMOBUILD */
 
 // Installation status button
-	patch_win.bREPORT = gtk_button_new_with_label (_("Short Report"));
+	patch_win.bREPORT = gtk_button_new_with_label (_("Make Report"));
 	gtk_widget_ref (patch_win.bREPORT);
 	gtk_widget_show (patch_win.bREPORT);
-	gtk_fixed_put (GTK_FIXED(PATCH_TAB), patch_win.bREPORT, 130, 186);
+	gtk_fixed_put (GTK_FIXED(PATCH_TAB), patch_win.bREPORT, 132, 186);
 	gtk_widget_set_size_request (patch_win.bREPORT, 112, 24);
 
 // Holder window for the textview
 	TxtWindow = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_ref (TxtWindow);
 	gtk_fixed_put (GTK_FIXED(PATCH_TAB), TxtWindow, 14, 32);
-	gtk_widget_set_size_request (TxtWindow, 312, 146);
+	gtk_widget_set_size_request (TxtWindow, 324, 146);
 	gtk_widget_show (TxtWindow);
 //	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW(TxtWindow), GTK_POLICY_ALWAYS, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW(TxtWindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-#if !defined(_H2L_USE_GTK1)
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW(TxtWindow), GTK_SHADOW_ETCHED_IN);
-#endif	/* ! _H2L_USE_GTK1 */
 
 // The textview:
 #if defined(_H2L_USE_GTK1)
@@ -614,7 +641,7 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 	patch_win.LOGVIEW = gtk_text_view_new ();
 #endif	/* _H2L_USE_GTK2 */
 	gtk_widget_ref (patch_win.LOGVIEW);
-	gtk_widget_set_size_request (patch_win.LOGVIEW, 312, 146);
+	gtk_widget_set_size_request (patch_win.LOGVIEW, 324, 146);
 	gtk_container_add (GTK_CONTAINER (TxtWindow), patch_win.LOGVIEW);
 	gtk_widget_show (patch_win.LOGVIEW);
 	GTK_WIDGET_UNSET_FLAGS (patch_win.LOGVIEW, GTK_CAN_FOCUS);
@@ -636,8 +663,8 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 	patch_win.bCLOSE = gtk_button_new_with_label (_("Close"));
 	gtk_widget_ref (patch_win.bCLOSE);
 	gtk_widget_show (patch_win.bCLOSE);
-	gtk_fixed_put (GTK_FIXED(PATCH_TAB), patch_win.bCLOSE, 246, 186);
-	gtk_widget_set_size_request (patch_win.bCLOSE, 80, 24);
+	gtk_fixed_put (GTK_FIXED(PATCH_TAB), patch_win.bCLOSE, 250, 186);
+	gtk_widget_set_size_request (patch_win.bCLOSE, 88, 24);
 
 // Statusbar
 	PATCH_STATBAR = gtk_statusbar_new ();
@@ -645,9 +672,7 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 	gtk_widget_show (PATCH_STATBAR);
 	gtk_fixed_put (GTK_FIXED(PATCH_TAB), PATCH_STATBAR, 0, 214);
 	gtk_widget_set_size_request (PATCH_STATBAR, 354, 24);
-#if !defined(_H2L_USE_GTK1)
 	gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR(PATCH_STATBAR), FALSE);
-#endif	/* ! _H2L_USE_GTK1 */
 	gtk_container_set_border_width (GTK_CONTAINER(PATCH_STATBAR), 2);
 	patch_win.statbar_id = gtk_statusbar_get_context_id (GTK_STATUSBAR(PATCH_STATBAR), "PatchStatus");
 	gtk_statusbar_push (GTK_STATUSBAR(PATCH_STATBAR), patch_win.statbar_id, _("  Ready..."));
@@ -663,18 +688,24 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 
 	gtk_signal_connect (GTK_OBJECT(PATCH_WINDOW), "destroy", GTK_SIGNAL_FUNC(destroy_window2), NULL);
 	gtk_signal_connect (GTK_OBJECT(patch_win.bCLOSE), "clicked", GTK_SIGNAL_FUNC(destroy_window2), NULL);
+#if !defined(DEMOBUILD)
 	gtk_signal_connect (GTK_OBJECT(patch_win.bAPPLY), "clicked", GTK_SIGNAL_FUNC(start_xpatch), &patch_win);
 	gtk_signal_connect (GTK_OBJECT(patch_win.bREPORT), "clicked", GTK_SIGNAL_FUNC(report_status), &patch_win);
+#endif	/* !DEMOBUILD */
+
+#if defined(DEMOBUILD)
+	gtk_widget_set_sensitive (patch_win.bAPPLY, FALSE);
+	gtk_widget_set_sensitive (patch_win.bREPORT, FALSE);
+#endif	/* DEMOBUILD */
 
 	gtk_window_set_transient_for (GTK_WINDOW(PATCH_WINDOW), GTK_WINDOW(MAIN_WINDOW));
-//	gtk_window_set_position (GTK_WINDOW(PATCH_WINDOW), GTK_WIN_POS_CENTER_ON_PARENT);
-	gtk_window_set_position (GTK_WINDOW(PATCH_WINDOW), GTK_WIN_POS_NONE);
+//	gtk_window_set_position (GTK_WINDOW(PATCH_WINDOW), GTK_WIN_POS_NONE);
+	gtk_window_set_position (GTK_WINDOW(PATCH_WINDOW), GTK_WIN_POS_CENTER_ON_PARENT);
 	gtk_widget_show (PATCH_WINDOW);
 
 // give a short summary about installation
 	report_status (NULL, &patch_win);
 }
-#endif	/* DEMOBUILD */
 
 static void create_window1 (void)
 {
@@ -718,7 +749,6 @@ static void create_window1 (void)
 	GList *TmpList = NULL;
 	GSList *Destinies = NULL;
 
-	GtkTooltips *tooltips;
 	tooltips = gtk_tooltips_new ();
 
 // Create the main window
@@ -786,7 +816,7 @@ static void create_window1 (void)
 	TxtTitle = gtk_label_new ("Hammer of Thyrion " HOT_VERSION_STR);
 	gtk_widget_ref (TxtTitle);
 	gtk_widget_show (TxtTitle);
-	gtk_fixed_put (GTK_FIXED(BASIC_TAB), TxtTitle, 14, 14);
+	gtk_fixed_put (GTK_FIXED(BASIC_TAB), TxtTitle, 14, 12);
 	gtk_label_set_justify (GTK_LABEL(TxtTitle), GTK_JUSTIFY_LEFT);
 
 /********************************************************************
@@ -808,7 +838,7 @@ static void create_window1 (void)
 	gtk_widget_set_size_request (bSAVE, 112, 24);
 
 // Launch button and Statusbar
-	WGT_LAUNCH = gtk_button_new_with_label (_("Launch Hexen2"));
+	WGT_LAUNCH = gtk_button_new_with_label (_("Play Hexen II"));
 	gtk_widget_ref (WGT_LAUNCH);
 	gtk_widget_show (WGT_LAUNCH);
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_LAUNCH, 12, 300);
@@ -819,9 +849,7 @@ static void create_window1 (void)
 	gtk_widget_show (WGT_STATUSBAR);
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_STATUSBAR, 0, 328);
 	gtk_widget_set_size_request (WGT_STATUSBAR, 230, 24);
-#if !defined(_H2L_USE_GTK1)
 	gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR(WGT_STATUSBAR), FALSE);
-#endif	/* ! _H2L_USE_GTK1 */
 	gtk_container_set_border_width (GTK_CONTAINER (WGT_STATUSBAR), 2);
 	WGT_STATBAR_ID = gtk_statusbar_get_context_id (GTK_STATUSBAR(WGT_STATUSBAR), "BinaryStatus");
 	gtk_statusbar_push (GTK_STATUSBAR(WGT_STATUSBAR), WGT_STATBAR_ID,_("  Waiting status..."));
@@ -832,7 +860,7 @@ static void create_window1 (void)
 	TxtGame0 = gtk_label_new (_("Choose your destiny:"));
 	gtk_widget_ref (TxtGame0);
 	gtk_widget_show (TxtGame0);
-	gtk_fixed_put (GTK_FIXED(BASIC_TAB), TxtGame0, 14, 44);
+	gtk_fixed_put (GTK_FIXED(BASIC_TAB), TxtGame0, 14, 40);
 	gtk_label_set_justify (GTK_LABEL(TxtGame0), GTK_JUSTIFY_LEFT);
 
 // Destiny: Hexen2
@@ -845,20 +873,34 @@ static void create_window1 (void)
 	gtk_widget_ref (WGT_HEXEN2);
 	GTK_WIDGET_UNSET_FLAGS (WGT_HEXEN2, GTK_CAN_FOCUS);
 	gtk_widget_show (WGT_HEXEN2);
-	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_HEXEN2, 24, 64);
+	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_HEXEN2, 24, 60);
 #ifndef DEMOBUILD
 	gtk_widget_set_size_request (WGT_HEXEN2, 80, 24);
 #else
 	gtk_widget_set_size_request (WGT_HEXEN2, 180, 24);
 #endif
-	if ((destiny == DEST_H2) && !mp_support)
+
+// Destiny: HexenWorld
+	WGT_H2WORLD = gtk_radio_button_new_with_label (Destinies, "HexenWorld Multiplayer");
+	Destinies = gtk_radio_button_group (GTK_RADIO_BUTTON(WGT_H2WORLD));
+	gtk_widget_ref (WGT_H2WORLD);
+	GTK_WIDGET_UNSET_FLAGS (WGT_H2WORLD, GTK_CAN_FOCUS);
+	gtk_widget_show (WGT_H2WORLD);
+	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_H2WORLD, 24, 86);
+	gtk_widget_set_size_request (WGT_H2WORLD, 180, 24);
+	if (!(gameflags & GAME_HEXENWORLD))
+		gtk_widget_set_sensitive (WGT_H2WORLD, FALSE);
+
+	if (destiny == DEST_HW)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_H2WORLD), TRUE);
+	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_HEXEN2), TRUE);
 
-// Destiny: H2MP
+// Mission Pack
 #ifndef DEMOBUILD
 	WGT_PORTALS = gtk_check_button_new_with_label ("Praevus");
 	gtk_widget_ref (WGT_PORTALS);
-	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_PORTALS, 112, 64);
+	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_PORTALS, 112, 60);
 	gtk_widget_show (WGT_PORTALS);
 	gtk_tooltips_set_tip (tooltips, WGT_PORTALS, _("play Hexen II with Mission Pack"), NULL);
 	GTK_WIDGET_UNSET_FLAGS (WGT_PORTALS, GTK_CAN_FOCUS);
@@ -868,104 +910,13 @@ static void create_window1 (void)
 		gtk_widget_set_sensitive (WGT_PORTALS, FALSE);
 #endif	/* DEMOBUILD */
 
-// Destiny: HexenWorld
-	WGT_H2WORLD = gtk_radio_button_new_with_label (Destinies, "HexenWorld Multiplayer");
-	Destinies = gtk_radio_button_group (GTK_RADIO_BUTTON(WGT_H2WORLD));
-	gtk_widget_ref (WGT_H2WORLD);
-	GTK_WIDGET_UNSET_FLAGS (WGT_H2WORLD, GTK_CAN_FOCUS);
-	gtk_widget_show (WGT_H2WORLD);
-	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_H2WORLD, 24, 90);
-	gtk_widget_set_size_request (WGT_H2WORLD, 180, 24);
-	if (!(gameflags & GAME_HEXENWORLD))
-		gtk_widget_set_sensitive (WGT_H2WORLD, FALSE);
-	if (destiny == DEST_HW)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_H2WORLD), TRUE);
-
-/*********************************************************************/
-
-// Video Options
-	TxtVideo = gtk_label_new (_("Graphics    :"));
-	gtk_widget_ref (TxtVideo);
-	gtk_widget_show (TxtVideo);
-	gtk_fixed_put (GTK_FIXED(BASIC_TAB), TxtVideo, 14, 166);
-	gtk_label_set_justify (GTK_LABEL(TxtVideo), GTK_JUSTIFY_LEFT);
-
-// opengl/software toggle
-	WGT_OPENGL = gtk_check_button_new_with_label ("OpenGL");
-	gtk_widget_ref (WGT_OPENGL);
-	GTK_WIDGET_UNSET_FLAGS (WGT_OPENGL, GTK_CAN_FOCUS);
-	gtk_widget_show (WGT_OPENGL);
-	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_OPENGL, 100, 162);
-	gtk_widget_set_size_request (WGT_OPENGL, 108, 24);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_OPENGL), opengl_support);
-
-// fullscreen/windowed toggle
-	WGT_FULLSCR = gtk_check_button_new_with_label (_("Fullscreen"));
-	gtk_widget_ref (WGT_FULLSCR);
-	GTK_WIDGET_UNSET_FLAGS (WGT_FULLSCR, GTK_CAN_FOCUS);
-	gtk_widget_show (WGT_FULLSCR);
-	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_FULLSCR, 100, 186);
-	gtk_widget_set_size_request (WGT_FULLSCR, 108, 24);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_FULLSCR), fullscreen);
-
-// resolution
-	TxtResol = gtk_label_new (_("Resolution  :"));
-	gtk_widget_ref (TxtResol);
-	gtk_widget_show (TxtResol);
-	gtk_fixed_put (GTK_FIXED(BASIC_TAB), TxtResol, 14, 218);
-	gtk_label_set_justify (GTK_LABEL(TxtResol), GTK_JUSTIFY_LEFT);
-
-// resolution combo
-	WGT_RESCOMBO = gtk_combo_new ();
-	gtk_widget_ref (WGT_RESCOMBO);
-	gtk_combo_set_use_arrows (GTK_COMBO(WGT_RESCOMBO), FALSE);
-	gtk_widget_set_size_request (WGT_RESCOMBO, 108, 24);
-	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_RESCOMBO, 100, 214);
-// resolution display
-	WGT_RESLIST = GTK_COMBO(WGT_RESCOMBO)->entry;
-	gtk_widget_ref (WGT_RESLIST);
-//	gtk_entry_set_alignment (GTK_ENTRY(WGT_RESLIST), 1);
-	gtk_entry_set_editable (GTK_ENTRY(WGT_RESLIST), FALSE);
-
-// conwidth toggle button
-	WGT_CONWBUTTON = gtk_check_button_new_with_label (_("Conwidth :"));
-	gtk_widget_ref (WGT_CONWBUTTON);
-	gtk_widget_show (WGT_CONWBUTTON);
-	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_CONWBUTTON, 14, 244);
-	gtk_widget_set_size_request (WGT_CONWBUTTON, 84, 24);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_CONWBUTTON), use_con);
-	GTK_WIDGET_UNSET_FLAGS (WGT_CONWBUTTON, GTK_CAN_FOCUS);
-	gtk_tooltips_set_tip (tooltips, WGT_CONWBUTTON, _("Allow bigger/readable text and HUD in high resolutions. Smaller the number, bigger the text. 640 is recommended"), NULL);
-	gtk_widget_set_sensitive (WGT_CONWBUTTON, opengl_support);
-
-// conwidth combo
-	WGT_CONWCOMBO = gtk_combo_new ();
-	gtk_widget_ref (WGT_CONWCOMBO);
-	gtk_combo_set_use_arrows (GTK_COMBO(WGT_CONWCOMBO), FALSE);
-	gtk_widget_set_size_request (WGT_CONWCOMBO, 108, 24);
-	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_CONWCOMBO, 100, 244);
-	gtk_widget_set_sensitive (WGT_CONWCOMBO, opengl_support);
-// conwidth display
-	WGT_CONWLIST = GTK_COMBO(WGT_CONWCOMBO)->entry;
-	gtk_widget_ref (WGT_CONWLIST);
-//	gtk_entry_set_alignment (GTK_ENTRY(WGT_CONWLIST), 1);
-	gtk_entry_set_editable (GTK_ENTRY(WGT_CONWLIST), FALSE);
-
-// menu listing for resolution and conwidth come from a callback
-	Make_ResMenu ();
-	Make_ConWidthMenu();
-	gtk_widget_show (WGT_RESCOMBO);
-	gtk_widget_show (WGT_RESLIST);
-	gtk_widget_show (WGT_CONWCOMBO);
-	gtk_widget_show (WGT_CONWLIST);
-
 /*********************************************************************/
 
 // Sound options (basic: driver selection)
 	TxtSound = gtk_label_new (_("Sound        :"));
 	gtk_widget_ref (TxtSound);
 	gtk_widget_show (TxtSound);
-	gtk_fixed_put (GTK_FIXED(BASIC_TAB), TxtSound, 14, 136);
+	gtk_fixed_put (GTK_FIXED(BASIC_TAB), TxtSound, 14, 132);
 	gtk_label_set_justify (GTK_LABEL(TxtSound), GTK_JUSTIFY_LEFT);
 
 	WGT_SOUND = gtk_combo_new ();
@@ -977,7 +928,7 @@ static void create_window1 (void)
 		TmpList = g_list_append (TmpList, snddrv_names[i][1]);
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_SOUND), TmpList);
 	g_list_free (TmpList);
-	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_SOUND, 100, 132);
+	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_SOUND, 100, 128);
 	gtk_widget_show (WGT_SOUND);
 	SND_Entry = GTK_COMBO(WGT_SOUND)->entry;
 	gtk_widget_ref (SND_Entry);
@@ -985,6 +936,77 @@ static void create_window1 (void)
 	gtk_entry_set_editable (GTK_ENTRY(SND_Entry), FALSE);
 //	gtk_entry_set_alignment (GTK_ENTRY(SND_Entry), 1);
 	gtk_widget_show (SND_Entry);
+
+/*********************************************************************/
+
+// Video Options
+	TxtVideo = gtk_label_new (_("Graphics    :"));
+	gtk_widget_ref (TxtVideo);
+	gtk_widget_show (TxtVideo);
+	gtk_fixed_put (GTK_FIXED(BASIC_TAB), TxtVideo, 14, 158);
+	gtk_label_set_justify (GTK_LABEL(TxtVideo), GTK_JUSTIFY_LEFT);
+
+// opengl/software toggle
+	WGT_OPENGL = gtk_check_button_new_with_label ("OpenGL");
+	gtk_widget_ref (WGT_OPENGL);
+	GTK_WIDGET_UNSET_FLAGS (WGT_OPENGL, GTK_CAN_FOCUS);
+	gtk_widget_show (WGT_OPENGL);
+	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_OPENGL, 100, 154);
+	gtk_widget_set_size_request (WGT_OPENGL, 108, 24);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_OPENGL), opengl_support);
+
+// fullscreen/windowed toggle
+	WGT_FULLSCR = gtk_check_button_new_with_label (_("Fullscreen"));
+	gtk_widget_ref (WGT_FULLSCR);
+	GTK_WIDGET_UNSET_FLAGS (WGT_FULLSCR, GTK_CAN_FOCUS);
+	gtk_widget_show (WGT_FULLSCR);
+	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_FULLSCR, 100, 178);
+	gtk_widget_set_size_request (WGT_FULLSCR, 108, 24);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_FULLSCR), fullscreen);
+
+// resolution
+	TxtResol = gtk_label_new (_("Resolution  :"));
+	gtk_widget_ref (TxtResol);
+	gtk_widget_show (TxtResol);
+	gtk_fixed_put (GTK_FIXED(BASIC_TAB), TxtResol, 14, 210);
+	gtk_label_set_justify (GTK_LABEL(TxtResol), GTK_JUSTIFY_LEFT);
+
+// resolution combo
+	WGT_RESCOMBO = gtk_combo_new ();
+	gtk_widget_ref (WGT_RESCOMBO);
+	gtk_combo_set_use_arrows (GTK_COMBO(WGT_RESCOMBO), FALSE);
+	gtk_widget_set_size_request (WGT_RESCOMBO, 108, 24);
+	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_RESCOMBO, 100, 206);
+// resolution display
+	WGT_RESLIST = GTK_COMBO(WGT_RESCOMBO)->entry;
+	gtk_widget_ref (WGT_RESLIST);
+//	gtk_entry_set_alignment (GTK_ENTRY(WGT_RESLIST), 1);
+	gtk_entry_set_editable (GTK_ENTRY(WGT_RESLIST), FALSE);
+	// menu listing for resolution come from a callback
+	Make_ResMenu ();
+	gtk_widget_show (WGT_RESCOMBO);
+	gtk_widget_show (WGT_RESLIST);
+
+/*********************************************************************/
+
+// pakfiles 1.11 patch option
+	TxtPatch = gtk_label_new ("Info & 1.11 patch :");
+	gtk_widget_ref (TxtPatch);
+	gtk_widget_show (TxtPatch);
+	gtk_fixed_put (GTK_FIXED(BASIC_TAB), TxtPatch, 14, 244);
+	gtk_label_set_justify (GTK_LABEL(TxtPatch), GTK_JUSTIFY_LEFT);
+
+// PATCH button
+	bPATCH = gtk_button_new_with_label (_("Go ..."));
+	gtk_widget_ref (bPATCH);
+	gtk_widget_show (bPATCH);
+	gtk_fixed_put (GTK_FIXED(BASIC_TAB), bPATCH, 132, 240);
+	gtk_widget_set_size_request (bPATCH, 80, 24);
+#ifdef DEMOBUILD
+	gtk_tooltips_set_tip (tooltips, bPATCH, _("See a short summary of your installation."), NULL);
+#else
+	gtk_tooltips_set_tip (tooltips, bPATCH, _("See a short summary of your installation. Apply the v1.11 pakfiles patch by Raven Software, if you haven't done already."), NULL);
+#endif
 
 /********************************************************************
  TAB - 2:		ADDITIONAL OPTIONS
@@ -996,12 +1018,231 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), MORE_LESS, 132, 272);
 	gtk_widget_set_size_request (MORE_LESS, 80, 24);
 
+/*********************************************************************/
+
+// Additional game-types
+	TxtGameT = gtk_label_new (_("Extra Game Types:"));
+	gtk_widget_ref (TxtGameT);
+	gtk_widget_show (TxtGameT);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), TxtGameT, 14, 16);
+	gtk_label_set_justify (GTK_LABEL(TxtGameT), GTK_JUSTIFY_LEFT);
+
+// game types menu for hexen2
+	WGT_H2GAME = gtk_combo_new ();
+	gtk_widget_ref (WGT_H2GAME);
+	gtk_widget_set_size_request (WGT_H2GAME, 172, 32);
+#ifndef DEMOBUILD
+	TmpList = NULL;
+	TmpList = g_list_append (TmpList, (gpointer) "(  None  )");
+	gtk_combo_set_use_arrows (GTK_COMBO(WGT_H2GAME), FALSE);
+	for (i = 1; i < MAX_H2GAMES; i++)
+	{
+		if (h2game_names[i].available)
+			TmpList = g_list_append (TmpList, h2game_names[i].name);
+	}
+	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_H2GAME), TmpList);
+	g_list_free (TmpList);
+#endif	/* DEMOBUILD */
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_H2GAME, 36, 36);
+	H2G_Entry = GTK_COMBO(WGT_H2GAME)->entry;
+	gtk_widget_ref (H2G_Entry);
+#ifndef DEMOBUILD
+	gtk_entry_set_editable (GTK_ENTRY(H2G_Entry), FALSE);
+	gtk_entry_set_text (GTK_ENTRY(H2G_Entry), h2game_names[h2game].name);
+	if (!(gameflags & GAME_REGISTERED))
+		gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
+	if (destiny == DEST_H2)
+	{
+		gtk_widget_show (WGT_H2GAME);
+		gtk_widget_show (H2G_Entry);
+	}
+#else
+	gtk_widget_show (WGT_H2GAME);
+	gtk_widget_show (H2G_Entry);
+	gtk_entry_set_text (GTK_ENTRY(H2G_Entry), "(  None  )");
+	gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
+#endif
+
+#ifndef DEMOBUILD
+// game types menu for hexenworld
+	WGT_HWGAME = gtk_combo_new ();
+	gtk_widget_ref (WGT_HWGAME);
+	gtk_widget_set_size_request (WGT_HWGAME, 172, 32);
+	TmpList = NULL;
+	TmpList = g_list_append (TmpList, (gpointer) "Plain DeathMatch");
+	gtk_combo_set_use_arrows (GTK_COMBO(WGT_HWGAME), FALSE);
+	for (i = 1; i < MAX_HWGAMES; i++)
+	{
+		if (hwgame_names[i].available)
+			TmpList = g_list_append (TmpList, hwgame_names[i].name);
+	}
+	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_HWGAME), TmpList);
+	g_list_free (TmpList);
+//	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_HWGAME, 68, 66);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_HWGAME, 36, 36);
+	HWG_Entry = GTK_COMBO(WGT_HWGAME)->entry;
+	gtk_widget_ref (HWG_Entry);
+	gtk_entry_set_editable (GTK_ENTRY(HWG_Entry), FALSE);
+	gtk_entry_set_text (GTK_ENTRY(HWG_Entry), hwgame_names[hwgame].name);
+	if (!(gameflags & GAME_REGISTERED))
+		gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
+	if (destiny == DEST_HW)
+	{
+		gtk_widget_show (WGT_HWGAME);
+		gtk_widget_show (HWG_Entry);
+	}
+//	if (!(gameflags & GAME_HEXENWORLD))
+//		gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
+#endif	/* DEMOBUILD */
+
+/*********************************************************************/
+
+	hseparator0 = gtk_hseparator_new ();
+	gtk_widget_ref (hseparator0);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), hseparator0, 14, 72);
+	gtk_widget_set_size_request (hseparator0, 200, 8);
+	gtk_widget_show (hseparator0);
+
+/*********************************************************************/
+
+// Additional OpenGL options
+
+	TxtVidExt = gtk_label_new (_("Additional OpenGL Options:"));
+	gtk_widget_ref (TxtVidExt);
+	gtk_widget_show (TxtVidExt);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), TxtVidExt, 14, 90);
+	gtk_label_set_justify (GTK_LABEL(TxtVidExt), GTK_JUSTIFY_LEFT);
+
+// 3dfx Voodoo1/2/Rush support
+	WGT_3DFX = gtk_check_button_new_with_label (_("3dfx gamma support"));
+	gtk_widget_ref (WGT_3DFX);
+	gtk_widget_show (WGT_3DFX);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_3DFX, 14, 112);
+	gtk_widget_set_size_request (WGT_3DFX, 160, 24);
+	gtk_widget_set_sensitive (WGT_3DFX, opengl_support);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_3DFX), fxgamma);
+	GTK_WIDGET_UNSET_FLAGS (WGT_3DFX, GTK_CAN_FOCUS);
+	gtk_tooltips_set_tip (tooltips, WGT_3DFX, _("Special brightness support for old Voodoo1/2 boards"), NULL);
+
+// Whether to use GL_LUMINANCE lightmap format (the -lm_1 and -lm_4 switches)
+	WGT_LM_BYTES = gtk_check_button_new_with_label (_("Use old lightmap format"));
+	gtk_widget_ref (WGT_LM_BYTES);
+	gtk_widget_show (WGT_LM_BYTES);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_LM_BYTES, 14, 134);
+	gtk_widget_set_size_request (WGT_LM_BYTES, 180, 24);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_LM_BYTES), use_lm1);
+	GTK_WIDGET_UNSET_FLAGS (WGT_LM_BYTES, GTK_CAN_FOCUS);
+	gtk_tooltips_set_tip (tooltips, WGT_LM_BYTES, _("GL_RGBA is default. Mark to use the old GL_LUMINANCE format"), NULL);
+	gtk_widget_set_sensitive (WGT_LM_BYTES, opengl_support);
+
+// 8-bit GL Extensions (Paletted Textures)
+	WGT_GL8BIT = gtk_check_button_new_with_label (_("Enable 8-bit textures"));
+	gtk_widget_ref (WGT_GL8BIT);
+	gtk_widget_show (WGT_GL8BIT);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_GL8BIT, 14, 158);
+	gtk_widget_set_size_request (WGT_GL8BIT, 160, 24);
+	gtk_widget_set_sensitive (WGT_GL8BIT, opengl_support);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_GL8BIT), is8bit);
+	GTK_WIDGET_UNSET_FLAGS (WGT_GL8BIT, GTK_CAN_FOCUS);
+	gtk_tooltips_set_tip (tooltips, WGT_GL8BIT, _("Enable 8-bit OpenGL texture extensions"), NULL);
+
+// conwidth toggle button
+	WGT_CONWBUTTON = gtk_check_button_new_with_label (_("Conwidth :"));
+	gtk_widget_ref (WGT_CONWBUTTON);
+	gtk_widget_show (WGT_CONWBUTTON);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_CONWBUTTON, 14, 182);
+	gtk_widget_set_size_request (WGT_CONWBUTTON, 84, 24);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_CONWBUTTON), use_con);
+	GTK_WIDGET_UNSET_FLAGS (WGT_CONWBUTTON, GTK_CAN_FOCUS);
+	gtk_tooltips_set_tip (tooltips, WGT_CONWBUTTON, _("Allow bigger/readable text and HUD in high resolutions. Smaller the number, bigger the text. 640 is recommended"), NULL);
+	gtk_widget_set_sensitive (WGT_CONWBUTTON, opengl_support);
+
+// conwidth combo
+	WGT_CONWCOMBO = gtk_combo_new ();
+	gtk_widget_ref (WGT_CONWCOMBO);
+	gtk_combo_set_use_arrows (GTK_COMBO(WGT_CONWCOMBO), FALSE);
+	gtk_widget_set_size_request (WGT_CONWCOMBO, 108, 24);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_CONWCOMBO, 100, 182);
+	gtk_widget_set_sensitive (WGT_CONWCOMBO, opengl_support);
+// conwidth display
+	WGT_CONWLIST = GTK_COMBO(WGT_CONWCOMBO)->entry;
+	gtk_widget_ref (WGT_CONWLIST);
+//	gtk_entry_set_alignment (GTK_ENTRY(WGT_CONWLIST), 1);
+	gtk_entry_set_editable (GTK_ENTRY(WGT_CONWLIST), FALSE);
+	// menu listing for conwidth come from a callback
+	Make_ConWidthMenu();
+	gtk_widget_show (WGT_CONWCOMBO);
+	gtk_widget_show (WGT_CONWLIST);
+
+// Enable VSync
+	WGT_VSYNC = gtk_check_button_new_with_label (_("Enable VSync"));
+	gtk_widget_ref (WGT_VSYNC);
+	gtk_widget_show (WGT_VSYNC);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_VSYNC, 14, 206);
+	gtk_widget_set_size_request (WGT_VSYNC, 160, 24);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_VSYNC), vsync);
+	GTK_WIDGET_UNSET_FLAGS (WGT_VSYNC, GTK_CAN_FOCUS);
+	gtk_tooltips_set_tip (tooltips, WGT_VSYNC, _("Synchronize with Monitor Refresh"), NULL);
+	gtk_widget_set_sensitive (WGT_VSYNC, opengl_support);
+
+// Multisampling (artialiasing)
+	WGT_FSAA = gtk_check_button_new_with_label (_("FSAA (Antialiasing) :"));
+	gtk_widget_ref (WGT_FSAA);
+	gtk_widget_show (WGT_FSAA);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_FSAA, 14, 230);
+	gtk_widget_set_size_request (WGT_FSAA, 148, 24);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_FSAA), use_fsaa);
+	GTK_WIDGET_UNSET_FLAGS (WGT_FSAA, GTK_CAN_FOCUS);
+	gtk_tooltips_set_tip (tooltips, WGT_FSAA, _("Enable Antialiasing"), NULL);
+	gtk_widget_set_sensitive (WGT_FSAA, opengl_support);
+
+	WGT_ADJFSAA =  gtk_adjustment_new (aasamples, 0, 4, 2, 10, 10);
+	WGT_AASAMPLES = gtk_spin_button_new (GTK_ADJUSTMENT (WGT_ADJFSAA), 2, 0);
+	gtk_entry_set_editable (GTK_ENTRY(WGT_AASAMPLES), FALSE);
+	gtk_widget_show (WGT_AASAMPLES);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_AASAMPLES, 166, 230);
+	gtk_widget_set_size_request (WGT_AASAMPLES, 40, 24);
+	gtk_widget_ref (WGT_AASAMPLES);
+
+// Custom OpenGL Library
+	WGT_LIBGL = gtk_check_button_new_with_label (_("Use a different GL library:"));
+	gtk_widget_ref (WGT_LIBGL);
+	gtk_widget_show (WGT_LIBGL);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_LIBGL, 14, 256);
+	gtk_widget_set_size_request (WGT_LIBGL, 180, 24);
+	gtk_widget_set_sensitive (WGT_LIBGL, opengl_support);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_LIBGL), gl_nonstd);
+	GTK_WIDGET_UNSET_FLAGS (WGT_LIBGL, GTK_CAN_FOCUS);
+	gtk_tooltips_set_tip (tooltips, WGT_LIBGL, _("Type the full path of the OpenGL library"), NULL);
+
+	WGT_GLPATH = gtk_entry_new ();
+	gtk_widget_show (WGT_GLPATH);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_GLPATH, 36, 280);
+	gtk_widget_set_size_request (WGT_GLPATH, 172, 24);
+	gtk_entry_set_max_length (GTK_ENTRY(WGT_GLPATH), sizeof(gllibrary)-1);
+	gtk_entry_set_text (GTK_ENTRY(WGT_GLPATH), gllibrary);
+//	if (!opengl_support || !gl_nonstd)
+//		gtk_widget_set_sensitive (WGT_GLPATH, FALSE);
+	gtk_widget_ref (WGT_GLPATH);
+
+/********************************************************************
+ TAB - 3:		ADDITIONAL OPTIONS
+ ********************************************************************/
+
+	hseparator1 = gtk_hseparator_new ();
+	gtk_widget_ref (hseparator1);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB1), hseparator1, 14, 128);
+	gtk_widget_set_size_request (hseparator1, 200, 8);
+	gtk_widget_show (hseparator1);
+
+/*********************************************************************/
+
 // Additional Sound options
 
 	TxtSndExt = gtk_label_new (_("Additional Sound Options:"));
 	gtk_widget_ref (TxtSndExt);
 	gtk_widget_show (TxtSndExt);
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB1), TxtSndExt, 14, 20);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB1), TxtSndExt, 14, 16);
 	gtk_label_set_justify (GTK_LABEL(TxtSndExt), GTK_JUSTIFY_LEFT);
 
 // Sampling rate selection
@@ -1069,215 +1310,6 @@ static void create_window1 (void)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_MIDI), !midi);
 	GTK_WIDGET_UNSET_FLAGS (WGT_MIDI, GTK_CAN_FOCUS);
 	gtk_tooltips_set_tip (tooltips, WGT_MIDI, _("Mark to Disable Midi"), NULL);
-
-/*********************************************************************/
-
-	hseparator0 = gtk_hseparator_new ();
-	gtk_widget_ref (hseparator0);
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), hseparator0, 14, 102);
-	gtk_widget_set_size_request (hseparator0, 200, 8);
-	gtk_widget_show (hseparator0);
-
-/*********************************************************************/
-
-// Additional OpenGL options
-
-	TxtVidExt = gtk_label_new (_("OpenGL Options:"));
-	gtk_widget_ref (TxtVidExt);
-	gtk_widget_show (TxtVidExt);
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), TxtVidExt, 14, 116);
-	gtk_label_set_justify (GTK_LABEL(TxtVidExt), GTK_JUSTIFY_LEFT);
-
-// 3dfx Voodoo1/2/Rush support
-	WGT_3DFX = gtk_check_button_new_with_label (_("3dfx gamma support"));
-	gtk_widget_ref (WGT_3DFX);
-	gtk_widget_show (WGT_3DFX);
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_3DFX, 14, 134);
-	gtk_widget_set_size_request (WGT_3DFX, 160, 24);
-	gtk_widget_set_sensitive (WGT_3DFX, opengl_support);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_3DFX), fxgamma);
-	GTK_WIDGET_UNSET_FLAGS (WGT_3DFX, GTK_CAN_FOCUS);
-	gtk_tooltips_set_tip (tooltips, WGT_3DFX, _("Special brightness support for old Voodoo1/2 boards"), NULL);
-
-// 8-bit GL Extensions (Paletted Textures)
-	WGT_GL8BIT = gtk_check_button_new_with_label (_("Enable 8-bit textures"));
-	gtk_widget_ref (WGT_GL8BIT);
-	gtk_widget_show (WGT_GL8BIT);
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_GL8BIT, 14, 158);
-	gtk_widget_set_size_request (WGT_GL8BIT, 160, 24);
-	gtk_widget_set_sensitive (WGT_GL8BIT, opengl_support);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_GL8BIT), is8bit);
-	GTK_WIDGET_UNSET_FLAGS (WGT_GL8BIT, GTK_CAN_FOCUS);
-	gtk_tooltips_set_tip (tooltips, WGT_GL8BIT, _("Enable 8-bit OpenGL texture extensions"), NULL);
-
-// Whether to use GL_LUMINANCE lightmap format (the -lm_1 and -lm_4 switches)
-	WGT_LM_BYTES = gtk_check_button_new_with_label (_("Use old lightmap format"));
-	gtk_widget_ref (WGT_LM_BYTES);
-	gtk_widget_show (WGT_LM_BYTES);
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_LM_BYTES, 14, 182);
-	gtk_widget_set_size_request (WGT_LM_BYTES, 180, 24);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_LM_BYTES), use_lm1);
-	GTK_WIDGET_UNSET_FLAGS (WGT_LM_BYTES, GTK_CAN_FOCUS);
-	gtk_tooltips_set_tip (tooltips, WGT_LM_BYTES, _("GL_RGBA is default. Mark to use the old GL_LUMINANCE format"), NULL);
-	gtk_widget_set_sensitive (WGT_LM_BYTES, opengl_support);
-
-// Enable VSync
-	WGT_VSYNC = gtk_check_button_new_with_label (_("Enable VSync"));
-	gtk_widget_ref (WGT_VSYNC);
-	gtk_widget_show (WGT_VSYNC);
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_VSYNC, 14, 206);
-	gtk_widget_set_size_request (WGT_VSYNC, 160, 24);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_VSYNC), vsync);
-	GTK_WIDGET_UNSET_FLAGS (WGT_VSYNC, GTK_CAN_FOCUS);
-	gtk_tooltips_set_tip (tooltips, WGT_VSYNC, _("Synchronize with Monitor Refresh"), NULL);
-	gtk_widget_set_sensitive (WGT_VSYNC, opengl_support);
-
-// Multisampling (artialiasing)
-	WGT_FSAA = gtk_check_button_new_with_label (_("FSAA (Antialiasing):"));
-	gtk_widget_ref (WGT_FSAA);
-	gtk_widget_show (WGT_FSAA);
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_FSAA, 14, 230);
-	gtk_widget_set_size_request (WGT_FSAA, 144, 24);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_FSAA), use_fsaa);
-	GTK_WIDGET_UNSET_FLAGS (WGT_FSAA, GTK_CAN_FOCUS);
-	gtk_tooltips_set_tip (tooltips, WGT_FSAA, _("Enable Antialiasing"), NULL);
-	gtk_widget_set_sensitive (WGT_FSAA, opengl_support);
-
-	WGT_ADJFSAA =  gtk_adjustment_new (aasamples, 0, 4, 2, 10, 10);
-	WGT_AASAMPLES = gtk_spin_button_new (GTK_ADJUSTMENT (WGT_ADJFSAA), 2, 0);
-	gtk_entry_set_editable (GTK_ENTRY(WGT_AASAMPLES), FALSE);
-	gtk_widget_show (WGT_AASAMPLES);
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_AASAMPLES, 162, 230);
-	gtk_widget_set_size_request (WGT_AASAMPLES, 38, 24);
-	gtk_widget_ref (WGT_AASAMPLES);
-
-// Custom OpenGL Library
-	WGT_LIBGL = gtk_check_button_new_with_label (_("Use a different GL library:"));
-	gtk_widget_ref (WGT_LIBGL);
-	gtk_widget_show (WGT_LIBGL);
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_LIBGL, 14, 256);
-	gtk_widget_set_size_request (WGT_LIBGL, 180, 24);
-	gtk_widget_set_sensitive (WGT_LIBGL, opengl_support);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_LIBGL), gl_nonstd);
-	GTK_WIDGET_UNSET_FLAGS (WGT_LIBGL, GTK_CAN_FOCUS);
-	gtk_tooltips_set_tip (tooltips, WGT_LIBGL, _("Type the full path of the OpenGL library"), NULL);
-
-	WGT_GLPATH = gtk_entry_new ();
-	gtk_widget_show (WGT_GLPATH);
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_GLPATH, 36, 280);
-	gtk_widget_set_size_request (WGT_GLPATH, 164, 24);
-	gtk_entry_set_max_length (GTK_ENTRY(WGT_GLPATH), sizeof(gllibrary)-1);
-	gtk_entry_set_text (GTK_ENTRY(WGT_GLPATH), gllibrary);
-//	if (!opengl_support || !gl_nonstd)
-//		gtk_widget_set_sensitive (WGT_GLPATH, FALSE);
-	gtk_widget_ref (WGT_GLPATH);
-
-/********************************************************************
- TAB - 3:		ADDITIONAL OPTIONS
- ********************************************************************/
-
-// pakfiles 1.11 patch option
-	TxtPatch = gtk_label_new ("Raven 1.11 patch:");
-	gtk_widget_ref (TxtPatch);
-	gtk_widget_show (TxtPatch);
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), TxtPatch, 14, 20);
-	gtk_label_set_justify (GTK_LABEL(TxtPatch), GTK_JUSTIFY_LEFT);
-
-// PATCH button
-	bPATCH = gtk_button_new_with_label (_("Patch..."));
-	gtk_widget_ref (bPATCH);
-	gtk_widget_show (bPATCH);
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), bPATCH, 132, 16);
-	gtk_widget_set_size_request (bPATCH, 68, 24);
-#ifndef DEMOBUILD
-	gtk_tooltips_set_tip (tooltips, bPATCH, _("Apply the v1.11 pakfiles patch by Raven Software, if you haven't done already."), NULL);
-#else
-	gtk_widget_set_sensitive (bPATCH, FALSE);
-#endif
-
-// Additional game-types
-	TxtGameT = gtk_label_new (_("Extra Game Types:"));
-	gtk_widget_ref (TxtGameT);
-	gtk_widget_show (TxtGameT);
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), TxtGameT, 14, 50);
-	gtk_label_set_justify (GTK_LABEL(TxtGameT), GTK_JUSTIFY_LEFT);
-
-// game types menu for hexen2
-// there are two botmatch mods only...
-	WGT_H2GAME = gtk_combo_new ();
-	gtk_widget_ref (WGT_H2GAME);
-	gtk_widget_set_size_request (WGT_H2GAME, 164, 32);
-#ifndef DEMOBUILD
-	TmpList = NULL;
-	TmpList = g_list_append (TmpList, (gpointer) "(  None  )");
-	gtk_combo_set_use_arrows (GTK_COMBO(WGT_H2GAME), FALSE);
-	for (i = 1; i < MAX_H2GAMES; i++)
-	{
-		if (h2game_names[i].available)
-			TmpList = g_list_append (TmpList, h2game_names[i].name);
-	}
-	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_H2GAME), TmpList);
-	g_list_free (TmpList);
-#endif	/* DEMOBUILD */
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_H2GAME, 36, 66);
-	H2G_Entry = GTK_COMBO(WGT_H2GAME)->entry;
-	gtk_widget_ref (H2G_Entry);
-#ifndef DEMOBUILD
-	gtk_entry_set_editable (GTK_ENTRY(H2G_Entry), FALSE);
-	gtk_entry_set_text (GTK_ENTRY(H2G_Entry), h2game_names[h2game].name);
-	if (!(gameflags & GAME_REGISTERED))
-		gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
-	if (destiny == DEST_H2)
-	{
-		gtk_widget_show (WGT_H2GAME);
-		gtk_widget_show (H2G_Entry);
-	}
-#else
-	gtk_widget_show (WGT_H2GAME);
-	gtk_widget_show (H2G_Entry);
-	gtk_entry_set_text (GTK_ENTRY(H2G_Entry), "(  None  )");
-	gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
-#endif
-
-#ifndef DEMOBUILD
-// game types menu for hexenworld
-	WGT_HWGAME = gtk_combo_new ();
-	gtk_widget_ref (WGT_HWGAME);
-	gtk_widget_set_size_request (WGT_HWGAME, 164, 32);
-	TmpList = NULL;
-	TmpList = g_list_append (TmpList, (gpointer) "Plain DeathMatch");
-	gtk_combo_set_use_arrows (GTK_COMBO(WGT_HWGAME), FALSE);
-	for (i = 1; i < MAX_HWGAMES; i++)
-	{
-		if (hwgame_names[i].available)
-			TmpList = g_list_append (TmpList, hwgame_names[i].name);
-	}
-	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_HWGAME), TmpList);
-	g_list_free (TmpList);
-//	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_HWGAME, 68, 66);
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_HWGAME, 36, 66);
-	HWG_Entry = GTK_COMBO(WGT_HWGAME)->entry;
-	gtk_widget_ref (HWG_Entry);
-	gtk_entry_set_editable (GTK_ENTRY(HWG_Entry), FALSE);
-	gtk_entry_set_text (GTK_ENTRY(HWG_Entry), hwgame_names[hwgame].name);
-	if (!(gameflags & GAME_REGISTERED))
-		gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
-	if (destiny == DEST_HW)
-	{
-		gtk_widget_show (WGT_HWGAME);
-		gtk_widget_show (HWG_Entry);
-	}
-//	if (!(gameflags & GAME_HEXENWORLD))
-//		gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
-#endif	/* DEMOBUILD */
-
-/*********************************************************************/
-
-	hseparator1 = gtk_hseparator_new ();
-	gtk_widget_ref (hseparator1);
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB1), hseparator1, 14, 128);
-	gtk_widget_set_size_request (hseparator1, 200, 8);
-	gtk_widget_show (hseparator1);
 
 /*********************************************************************/
 
@@ -1479,8 +1511,8 @@ static void create_window1 (void)
 	gtk_signal_connect (GTK_OBJECT(H2G_Entry), "changed", GTK_SIGNAL_FUNC(H2GameChange), NULL);
 	gtk_signal_connect (GTK_OBJECT(HWG_Entry), "changed", GTK_SIGNAL_FUNC(HWGameChange), NULL);
 	gtk_signal_connect (GTK_OBJECT(WGT_PORTALS), "released", GTK_SIGNAL_FUNC(BoolRevert), &mp_support);
-	gtk_signal_connect (GTK_OBJECT(bPATCH), "clicked", GTK_SIGNAL_FUNC(create_window2), NULL);
 #endif	/* DEMOBUILD */
+	gtk_signal_connect (GTK_OBJECT(bPATCH), "clicked", GTK_SIGNAL_FUNC(create_window2), NULL);
 	gtk_signal_connect (GTK_OBJECT(WGT_HEXEN2), "released", GTK_SIGNAL_FUNC(on_HEXEN2), NULL);
 	gtk_signal_connect (GTK_OBJECT(WGT_H2WORLD), "released", GTK_SIGNAL_FUNC(on_H2W), NULL);
 	gtk_signal_connect (GTK_OBJECT(WGT_OPENGL), "released", GTK_SIGNAL_FUNC(on_OGL), NULL);
@@ -1524,14 +1556,12 @@ gint ui_init (gpointer user_data)
 
 // if we have a bad installation (such as un-patched versions
 // of gamedata), pop up the patch window and print a report:
-#ifndef DEMOBUILD
 	if (gameflags & GAME_INSTBAD)
 	{
-		on_MORE (GTK_BUTTON(MORE_LESS), NULL);
+	//	on_MORE (GTK_BUTTON(MORE_LESS), NULL);
 	//	ui_pump ();
 		create_window2 (NULL, NULL);
 	}
-#endif	/* DEMOBUILD */
 
 	return 0;
 }

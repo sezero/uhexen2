@@ -2,7 +2,7 @@
 	config_file.c
 	hexen2 launcher config file handling
 
-	$Id: config_file.c,v 1.41 2007-04-14 21:30:15 sezero Exp $
+	$Id: config_file.c,v 1.42 2007-04-15 20:40:38 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -30,7 +30,6 @@
 
 // Default values for the options
 int destiny		= DEST_H2;
-int mp_support		= 0;
 int opengl_support	= 1;
 int fullscreen		= 1;
 int resolution		= RES_640;
@@ -58,6 +57,7 @@ int use_zone		= 0;
 int heapsize		= HEAP_DEFAULT;
 int zonesize		= ZONE_DEFAULT;
 #ifndef DEMOBUILD
+int mp_support		= 0;
 int h2game		= 0;
 int hwgame		= 0;
 #endif

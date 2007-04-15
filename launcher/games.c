@@ -2,7 +2,7 @@
 	games.c
 	hexen2 launcher, game installation scanning
 
-	$Id: games.c,v 1.1 2007-04-14 21:30:15 sezero Exp $
+	$Id: games.c,v 1.2 2007-04-15 20:40:38 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -187,9 +187,11 @@ finish:
 #if !defined(DEMOBUILD)
 h2game_t h2game_names[] =
 {
-	{  NULL    , "(  None  )"	, 0, 1	},
-	{ "hcbots" , "BotMatch: Hcbot"	, 1, 0	},
-	{ "apocbot", "BotMatch: Apoc"	, 1, 0	},
+	{  NULL    , "(  None  )"	,   NULL,		0, 1 },
+	{ "hcbots" , "BotMatch: HC bots",   "progs.dat",	1, 0 },
+	{ "apocbot", "BotMatch: ApocBot",   "progs.dat",	1, 0 },
+	{ "fo4d"   , "Fortress of 4 Doors", "maps/u_world.bsp",	0, 0 },
+	{ "peanut" , "Project Peanut"	,   "progs.dat",	0, 0 },
 };
 
 const int MAX_H2GAMES = sizeof(h2game_names) / sizeof(h2game_names[0]);
@@ -214,7 +216,7 @@ static void FindMaxStringSize (void)
 
 	for (i = 1; i < MAX_H2GAMES; i++)
 	{
-		len = strlen(h2game_names[i].dirname) + 9;	// strlen("progs.dat") == 9
+		len = strlen(h2game_names[i].dirname) + strlen(hwgame_names[i].checkfile);
 		if (string_size < len)
 			string_size = len;
 	}
@@ -244,7 +246,7 @@ static void scan_h2_mods (void)
 	path = (char *)malloc(string_size);
 	for (i = 1; i < MAX_H2GAMES; i++)
 	{
-		sprintf (path, "%s/progs.dat", h2game_names[i].dirname);
+		sprintf (path, "%s/%s", h2game_names[i].dirname, h2game_names[i].checkfile);
 		if (access(path, R_OK) == 0)
 			h2game_names[i].available = 1;
 	}

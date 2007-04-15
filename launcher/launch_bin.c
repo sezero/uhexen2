@@ -2,7 +2,7 @@
 	launch_bin.c
 	hexen2 launcher: binary launching
 
-	$Id: launch_bin.c,v 1.42 2007-04-14 21:30:16 sezero Exp $
+	$Id: launch_bin.c,v 1.43 2007-04-15 20:40:38 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -86,8 +86,10 @@ void launch_hexen2_bin (void)
 	i = 0;
 	args[i] = binary_name;
 
+#if !defined(DEMOBUILD)
 	if (destiny == DEST_H2 && mp_support)
 		args[++i] = "-portals";
+#endif	/* DEMOBUILD */
 
 	args[++i] = (fullscreen) ? "-f" : "-w";
 

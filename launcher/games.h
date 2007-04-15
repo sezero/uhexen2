@@ -2,7 +2,7 @@
 	games.h
 	hexen2 launcher, game installation scanning
 
-	$Id: games.h,v 1.1 2007-04-14 21:30:15 sezero Exp $
+	$Id: games.h,v 1.2 2007-04-15 20:40:38 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -59,7 +59,8 @@ extern	unsigned int		gameflags;
 typedef struct
 {
 	char	*dirname;
-	char	*name;
+	char	*name;		// user-friendly name
+	char	*checkfile;	// filename for extra check
 	int	is_botmatch;
 	int	available;
 } h2game_t;
