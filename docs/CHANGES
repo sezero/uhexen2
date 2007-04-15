@@ -3,6 +3,22 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-04-15 (CVS):
+    * cvar update: added a new CVAR_REGISTERED flag set during the initial
+      registration process. Cvar_RegisterVariable doesn't allocate a dummy
+      string for the var anymore, but sets the string ptr to NULL. Cvar_Set
+      doesn't blindly free and reallocate string pointers anymore: it only
+      allocates at first time registrations and when the string size differs
+      from the original. Cvar_Set returns without doing anything if string
+      value is not changed unless it is a first time registration. the
+      notifications in Cvar_Set are done only if there was a change. the
+      hexenworld and hexen2 versions of cvar.c are synchronized.
+    * cvar updates, #2: added a new function Cvar_FindVarAfter and used it
+      for CCREQ_RULE_INFO responses in net_dgrm.c and for several things
+      in cmd.c. this ends unnecessary global exposure of cvar_vars. found
+      this in the darplaces tree.
+    * misc documentation updates.
+
 2007-04-14 (CVS):
     * zone.c: removed unnecessary conditions from Z_CHECKHEAP.
     * quakefs: revised pak data checking.
