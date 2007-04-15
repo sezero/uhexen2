@@ -2,12 +2,12 @@
 	cvar.c
 	dynamic variable tracking
 
-	$Id: cvar.c,v 1.27 2007-04-15 08:37:04 sezero Exp $
+	$Id: cvar.c,v 1.28 2007-04-15 09:20:50 sezero Exp $
 */
 
 #include "quakedef.h"
 
-cvar_t	*cvar_vars;
+static	cvar_t	*cvar_vars;
 static	char	*cvar_null_string = "";
 
 /*
@@ -26,6 +26,30 @@ cvar_t *Cvar_FindVar (const char *var_name)
 	}
 
 	return NULL;
+}
+
+cvar_t *Cvar_FindVarAfter (const char *prev_name, unsigned int with_flags)
+{
+	cvar_t	*var;
+
+	if (*prev_name)
+	{
+		var = Cvar_FindVar (prev_name);
+		if (!var)
+			return NULL;
+		var = var->next;
+	}
+	else
+		var = cvar_vars;
+
+	// search for the next cvar matching the needed flags
+	while (var)
+	{
+		if ((var->flags & with_flags) || !with_flags)
+			break;
+		var = var->next;
+	}
+	return var;
 }
 
 /*

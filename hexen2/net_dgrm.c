@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.26 2007-04-05 07:14:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.27 2007-04-15 09:20:50 sezero Exp $
 */
 
 #define BAN_TEST
@@ -922,26 +922,9 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 
 		// find the search start location
 		prevCvarName = MSG_ReadString();
-		if (*prevCvarName)
-		{
-			var = Cvar_FindVar (prevCvarName);
-			if (!var)
-				return NULL;
-			var = var->next;
-		}
-		else
-			var = cvar_vars;
-
-		// search for the next server cvar
-		while (var)
-		{
-			if (var->flags & CVAR_SERVERINFO)
-				break;
-			var = var->next;
-		}
+		var = Cvar_FindVarAfter (prevCvarName, CVAR_SERVERINFO);
 
 		// send the response
-
 		SZ_Clear(&net_message);
 		// save space for the header, filled in later
 		MSG_WriteLong(&net_message, 0);

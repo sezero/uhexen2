@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cmd.c,v 1.31 2007-04-10 17:53:05 sezero Exp $
+	$Id: cmd.c,v 1.32 2007-04-15 09:20:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -619,14 +619,21 @@ qboolean Cmd_CheckCommand (const char *partial)
 	if (!partial || !partial[0])
 		return false;
 	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
+	{
 		if ( !strcmp(partial, cmd->name) )
 			return true;
-	for (var = cvar_vars ; var ; var = var->next)
+	}
+	var = Cvar_FindVarAfter ("", CVAR_NONE);
+	for ( ; var ; var = var->next)
+	{
 		if ( !strcmp(partial, var->name) )
 			return true;
+	}
 	for (a = cmd_alias ; a ; a = a->next)
+	{
 		if ( !strcmp(partial, a->name) )
 			return true;
+	}
 
 	return false;
 }
@@ -773,7 +780,8 @@ int ListCvars (const char *prefix, char **buf, int pos)
 	int i = 0;
 	int preLen = (prefix == NULL) ? 0 : strlen(prefix);
 
-	for (var = cvar_vars ; var ; var = var->next)
+	var = Cvar_FindVarAfter ("", CVAR_NONE);
+	for ( ; var ; var = var->next)
 	{
 		if (!preLen)	// completion procedures always send a prefix
 		{
@@ -880,7 +888,8 @@ static void Cmd_WriteCommands_f (void)
 		fprintf(FH, "   %s :\n\t%s\n", a->name, a->value);
 
 	fprintf(FH,"\n\nConsole Variables:\n");
-	for (var = cvar_vars ; var ; var = var->next)
+	var = Cvar_FindVarAfter ("", CVAR_NONE);
+	for ( ; var ; var = var->next)
 		fprintf(FH, "   %s\n", var->name);
 
 	fclose(FH);
