@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.93 2007-04-10 17:33:57 sezero Exp $
+	$Id: gl_vidnt.c,v 1.94 2007-04-16 09:49:07 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -1133,7 +1133,7 @@ void VID_SetPalette (unsigned char *palette)
 	// This is original hexen2 code for palettized textures
 	// Hexenworld replaced it with quake's newer code below
 	pal = (byte *) QIO_LoadStackFile (INVERSE_PALNAME, inverse_pal, sizeof(inverse_pal));
-	if (pal == NULL)
+	if (pal == NULL || pal != inverse_pal)
 		VID_CreateInversePalette (palette);
 
 #else // end of HEXEN2_PALTEX_CODE

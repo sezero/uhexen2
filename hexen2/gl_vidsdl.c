@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.153 2007-04-10 17:33:49 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.154 2007-04-16 09:49:01 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1055,7 +1055,7 @@ void VID_SetPalette (unsigned char *palette)
 	// This is original hexen2 code for palettized textures
 	// Hexenworld replaced it with quake's newer code below
 	pal = (byte *) QIO_LoadStackFile (INVERSE_PALNAME, inverse_pal, sizeof(inverse_pal));
-	if (pal == NULL)
+	if (pal == NULL || pal != inverse_pal)
 		VID_CreateInversePalette (palette);
 
 #else // end of HEXEN2_PALTEX_CODE
