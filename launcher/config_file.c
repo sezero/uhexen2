@@ -2,7 +2,7 @@
 	config_file.c
 	hexen2 launcher config file handling
 
-	$Id: config_file.c,v 1.42 2007-04-15 20:40:38 sezero Exp $
+	$Id: config_file.c,v 1.43 2007-04-16 13:06:56 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -168,7 +168,7 @@ int read_config_file (void)
 					destiny = atoi(buff + 8);
 					if (destiny != DEST_H2 && destiny != DEST_HW)
 						destiny = DEST_H2;
-					if (destiny == DEST_HW && !(gameflags & GAME_HEXENWORLD))
+					if (!(gameflags & GAME_HEXENWORLD))
 						destiny = DEST_H2;
 				}
 #ifndef DEMOBUILD
@@ -197,7 +197,7 @@ int read_config_file (void)
 					mp_support = atoi(buff + 11);
 					if (mp_support != 0 && mp_support != 1)
 						mp_support = 0;
-					if (mp_support && !(gameflags & GAME_PORTALS && gameflags & GAME_REGISTERED))
+					if (!(gameflags & GAME_PORTALS && gameflags & GAME_REGISTERED))
 						mp_support = 0;
 				}
 #endif
