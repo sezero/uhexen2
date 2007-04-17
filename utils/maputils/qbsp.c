@@ -1,6 +1,6 @@
 /*
 	bsp5.c
-	$Id: qbsp.c,v 1.8 2007-03-14 21:04:41 sezero Exp $
+	$Id: qbsp.c,v 1.9 2007-04-17 15:48:08 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -1120,42 +1120,33 @@ If project path wasn't set with a command line, figure it out by the source
 */
 static void MakeProjectPath (char *sourcebase)
 {
-	char	full[1024];
 	char	*scan;
 	int		l;
 
 	if (projectpath[0])
 	{	// specified by hand, check for trailing slash
 		l = strlen (projectpath);
-		if (projectpath[l-1] != '/')
+		if (projectpath[l-1] == '\\')
+			projectpath[l-1] = '/';
+		else if (projectpath[l-1] != '/')
 			strcat (projectpath, "/");
 	}
 	else
 	{
-		strcpy(full,sourcebase);
-
-/*		if (sourcebase[0] == '/')
-			strcpy (full, sourcebase);
+		memset (projectpath, 0, sizeof(projectpath));
+		scan = strrchr (sourcebase, '/');
+		if (!scan)
+			scan = strrchr (sourcebase, '\\');
+		if (!scan)
+		{
+			projectpath[0] = '.';
+			projectpath[1] = '/';
+		}
 		else
 		{
-			Q_getwd (full);
-			strcat (full, sourcebase);
-		}*/
-
-	// scan for the maps directory
-		scan = full;
-		while (*scan)
-		{
-			if (!strncmp(scan, "maps", 4))
-			{	// take everything up to scan
-				*scan = 0;
-				strcpy (projectpath, full);
-				break;
-			}
 			scan++;
+			memcpy (projectpath, sourcebase, scan - sourcebase);
 		}
-		if (!scan)
-			Error ("Couldn't identify project directory from pathname.  Use -proj <path>");
 	}
 
 	printf ("Project directory: %s\n", projectpath);
