@@ -6,7 +6,7 @@ UHEXEN2_TOP=../..
 if [ "$1" = "strip" ]
 then
 	echo "Stripping binaries"
-	$STRIPPER ../bin/qbsp.exe ../bin/bspinfo.exe ../bin/light.exe ../bin/vis.exe
+	$STRIPPER ../bin/qbsp.exe ../bin/bspinfo.exe ../bin/light.exe ../bin/vis.exe ../bin/bsp2wal.exe
 	exit 0
 fi
 

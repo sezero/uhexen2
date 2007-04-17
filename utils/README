@@ -32,6 +32,9 @@ qfiles	: From Raven's h2mputil package. Builds pak files based
 	  can also regenerate all of the .bsp models used in a
 	  project, which is required if any changes to the file
 	  format have been made.
+	  As of HoT-1.4.2, added the new bsp2wal tool: It extracts
+	  all textures from a bsp file.  WAL format is documented
+	  in the hwal.h header.
 
 jsh2color: A light colouring utility that generates .LIT files.
 	  Taken from the old jshexen2 sources.

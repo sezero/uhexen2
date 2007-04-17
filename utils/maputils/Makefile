@@ -23,11 +23,13 @@ ifeq ($(TARGET_OS),WIN32)
 QBSP=qbsp.exe
 LIGHT=light.exe
 VIS=vis.exe
+BSP2WAL=bsp2wal.exe
 BSPINFO=bspinfo.exe
 else
 QBSP=qbsp
 LIGHT=light
 VIS=vis
+BSP2WAL=bsp2wal
 BSPINFO=bspinfo
 endif
 
@@ -56,7 +58,7 @@ LDLIBS  := -lm
 endif
 
 # Targets
-all : $(LIGHT) $(VIS) $(QBSP) $(BSPINFO)
+all : $(LIGHT) $(VIS) $(QBSP) $(BSPINFO) $(BSP2WAL)
 
 # Rules for turning source files into .o files
 %.o: %.c
@@ -100,6 +102,7 @@ QBSPOBJS= brush.o \
 	writebsp.o
 
 BSPINFOBJS= bspinfo.o
+BSP2WALOBJS= bsp2wal.o
 
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc
@@ -115,6 +118,9 @@ $(QBSP) : $(COMMONOBJS) $(QBSPOBJS)
 
 $(BSPINFO) : $(COMMONOBJS) $(BSPINFOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BSPINFO) $(COMMONOBJS) $(BSPINFOBJS) $(LDFLAGS) $(LDLIBS)
+
+$(BSP2WAL) : $(COMMONOBJS) $(BSP2WALOBJS)
+	$(LINKER) -o $(DESTDIR)/$(BSP2WAL) $(COMMONOBJS) $(BSP2WALOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
 	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core
