@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.96 2007-04-16 09:49:09 sezero Exp $
+	$Id: gl_vidnt.c,v 1.97 2007-04-18 13:34:39 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -160,7 +160,7 @@ unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
 unsigned	d_8to24TranslucentTable[256];
 #if USE_HEXEN2_PALTEX_CODE
-unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1]; // +1: QIO_LoadStackFile puts a 0 at the end of the data
+unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1]; // +1: FS_LoadStackFile puts a 0 at the end of the data
 #else
 unsigned char	d_15to8table[65536];
 #endif
@@ -1049,8 +1049,8 @@ static void VID_CreateInversePalette (unsigned char *palette)
 		}
 	}
 
-	QIO_CreatePath(va("%s/%s", fs_userdir, INVERSE_PALNAME));
-	QIO_WriteFile (INVERSE_PALNAME, inverse_pal, sizeof(inverse_pal)-1);
+	FS_CreatePath(va("%s/%s", fs_userdir, INVERSE_PALNAME));
+	FS_WriteFile (INVERSE_PALNAME, inverse_pal, sizeof(inverse_pal)-1);
 }
 #endif	/* USE_HEXEN2_PALTEX_CODE */
 
@@ -1132,12 +1132,12 @@ void VID_SetPalette (unsigned char *palette)
 #if USE_HEXEN2_PALTEX_CODE
 	// This is original hexen2 code for palettized textures
 	// Hexenworld replaced it with quake's newer code below
-	pal = (byte *) QIO_LoadStackFile (INVERSE_PALNAME, inverse_pal, sizeof(inverse_pal));
+	pal = (byte *) FS_LoadStackFile (INVERSE_PALNAME, inverse_pal, sizeof(inverse_pal));
 	if (pal == NULL || pal != inverse_pal)
 		VID_CreateInversePalette (palette);
 
 #else // end of HEXEN2_PALTEX_CODE
-	QIO_FOpenFile("glhexen/15to8.pal", &f, true);
+	FS_OpenFile("glhexen/15to8.pal", &f, true);
 	if (f)
 	{
 		fread(d_15to8table, 1<<15, 1, f);

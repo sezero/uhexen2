@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.10 2007-04-02 21:06:45 sezero Exp $
+	$Id: midi_mac.c,v 1.11 2007-04-18 13:33:39 sezero Exp $
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -213,7 +213,7 @@ void MIDI_Play (const char *Name)
 	}
 
 	snprintf (tempName, sizeof(tempName), "%s.%s", Name, "mid");
-	QIO_FOpenFile (va("%s/%s", "midi", tempName), &midiFile, false);
+	FS_OpenFile (va("%s/%s", "midi", tempName), &midiFile, false);
 	if (!midiFile)
 	{
 		Con_Printf("music file %s not found\n", tempName);
@@ -227,7 +227,7 @@ void MIDI_Play (const char *Name)
 
 			Con_Printf("Extracting %s from pakfile\n", tempName);
 			snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, "mid");
-			ret = MIDI_ExtractFile (midiFile, midiName, qio_filesize);
+			ret = MIDI_ExtractFile (midiFile, midiName, fs_filesize);
 			fclose (midiFile);
 			if (ret != 0)
 			{
@@ -238,7 +238,7 @@ void MIDI_Play (const char *Name)
 		else	/* use the file directly */
 		{
 			fclose (midiFile);
-			snprintf (midiName, sizeof(midiName), "%s/%s/%s", qio_filepath, "midi", tempName);
+			snprintf (midiName, sizeof(midiName), "%s/%s/%s", fs_filepath, "midi", tempName);
 		}
 	}
 

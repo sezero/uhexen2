@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.30 2007-04-08 18:50:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.31 2007-04-18 13:32:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -109,7 +109,7 @@ int Host_CopyFiles (const char *source, const char *pat, const char *dest)
 			goto error_out;
 		}
 
-		error = QIO_CopyFile (tempdir, tempdir2);
+		error = FS_CopyFile (tempdir, tempdir2);
 		if (error)
 		{
 			Con_Printf ("Error copying %s to %s\n", tempdir, tempdir2);

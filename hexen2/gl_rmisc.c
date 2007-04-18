@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: gl_rmisc.c,v 1.39 2007-04-18 08:43:18 sezero Exp $
+	$Id: gl_rmisc.c,v 1.40 2007-04-18 13:31:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -143,39 +143,39 @@ static void R_Envmap_f (void)
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
 	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	QIO_WriteFile ("env0.rgb", buffer, sizeof(buffer));
+	FS_WriteFile ("env0.rgb", buffer, sizeof(buffer));
 
 	r_refdef.viewangles[1] = 90;
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
 	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	QIO_WriteFile ("env1.rgb", buffer, sizeof(buffer));
+	FS_WriteFile ("env1.rgb", buffer, sizeof(buffer));
 
 	r_refdef.viewangles[1] = 180;
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
 	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	QIO_WriteFile ("env2.rgb", buffer, sizeof(buffer));
+	FS_WriteFile ("env2.rgb", buffer, sizeof(buffer));
 
 	r_refdef.viewangles[1] = 270;
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
 	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	QIO_WriteFile ("env3.rgb", buffer, sizeof(buffer));
+	FS_WriteFile ("env3.rgb", buffer, sizeof(buffer));
 
 	r_refdef.viewangles[0] = -90;
 	r_refdef.viewangles[1] = 0;
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
 	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	QIO_WriteFile ("env4.rgb", buffer, sizeof(buffer));
+	FS_WriteFile ("env4.rgb", buffer, sizeof(buffer));
 
 	r_refdef.viewangles[0] = 90;
 	r_refdef.viewangles[1] = 0;
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 	R_RenderView ();
 	glReadPixels_fp (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	QIO_WriteFile ("env5.rgb", buffer, sizeof(buffer));
+	FS_WriteFile ("env5.rgb", buffer, sizeof(buffer));
 
 	envmap = false;
 	glDrawBuffer_fp (GL_BACK);
@@ -279,7 +279,7 @@ void R_Init (void)
 	for (counter = 0 ; counter < MAX_EXTRA_TEXTURES ; counter++)
 		gl_extra_textures[counter] = GL_UNUSED_TEXTURE;
 
-	playerTranslation = (byte *)QIO_LoadHunkFile ("gfx/player.lmp");
+	playerTranslation = (byte *)FS_LoadHunkFile ("gfx/player.lmp");
 	if (!playerTranslation)
 		Sys_Error ("Couldn't load gfx/player.lmp");
 }

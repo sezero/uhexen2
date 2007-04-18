@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.106 2007-04-10 17:53:05 sezero Exp $
+	$Id: gl_draw.c,v 1.107 2007-04-18 13:31:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -144,7 +144,7 @@ static qpic_t *Draw_PicFromFile (const char *name)
 	qpic_t	*p;
 	glpic_t	*gl;
 
-	p = (qpic_t *)QIO_LoadHunkFile (name);
+	p = (qpic_t *)FS_LoadHunkFile (name);
 	if (!p)
 	{
 		return NULL;
@@ -168,7 +168,7 @@ static qpic_t *Draw_PicFileBuf (const char *name, void *p, size_t *size)
 {
 	glpic_t	*gl;
 
-	p = (void *)QIO_LoadBufFile(name, p, size);
+	p = (void *)FS_LoadBufFile(name, p, size);
 	if (!p)
 		return NULL;
 
@@ -227,7 +227,7 @@ qpic_t	*Draw_CachePic (const char *path)
 //
 // load the pic from disk
 //
-	dat = (qpic_t *)QIO_LoadTempFile (path);
+	dat = (qpic_t *)FS_LoadTempFile (path);
 	Draw_PicCheckError (dat, path);
 	SwapPic (dat);
 
@@ -295,7 +295,7 @@ qpic_t *Draw_CachePicNoTrans (const char *path)
 //
 // load the pic from disk
 //
-	dat = (qpic_t *)QIO_LoadTempFile (path);
+	dat = (qpic_t *)FS_LoadTempFile (path);
 	Draw_PicCheckError (dat, path);
 	SwapPic (dat);
 
@@ -422,7 +422,7 @@ void Draw_Init (void)
 	}
 
 	// load the charset: 8*8 graphic characters
-	chars = QIO_LoadTempFile ("gfx/menu/conchars.lmp");
+	chars = FS_LoadTempFile ("gfx/menu/conchars.lmp");
 	for (i = 0; i < 256*128; i++)
 	{
 		if (chars[i] == 0)
@@ -444,7 +444,7 @@ void Draw_Init (void)
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
 	// load the big menu font
-	p = (qpic_t *)QIO_LoadTempFile("gfx/menu/bigfont2.lmp");
+	p = (qpic_t *)FS_LoadTempFile("gfx/menu/bigfont2.lmp");
 	Draw_PicCheckError (p, "gfx/menu/bigfont2.lmp");
 	SwapPic (p);
 	for (i = 0; i < p->width * p->height; i++)	// MUST be 160 * 80
@@ -457,7 +457,7 @@ void Draw_Init (void)
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
 	// load the console background
-	p = (qpic_t *)QIO_LoadTempFile ("gfx/menu/conback.lmp");
+	p = (qpic_t *)FS_LoadTempFile ("gfx/menu/conback.lmp");
 	Draw_PicCheckError (p, "gfx/menu/conback.lmp");
 	SwapPic (p);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
@@ -465,7 +465,7 @@ void Draw_Init (void)
 	conback = GL_LoadTexture ("conback", p->width, p->height, p->data, false, false, 0, false);
 
 	// load the backtile
-	p = (qpic_t *)QIO_LoadTempFile ("gfx/menu/backtile.lmp");
+	p = (qpic_t *)FS_LoadTempFile ("gfx/menu/backtile.lmp");
 	Draw_PicCheckError (p, "gfx/menu/backtile.lmp");
 	draw_backtile = GL_LoadPicTexture (p);
 

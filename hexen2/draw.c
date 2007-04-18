@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.31 2007-04-10 17:53:05 sezero Exp $
+	$Id: draw.c,v 1.32 2007-04-18 13:31:09 sezero Exp $
 */
 
 
@@ -80,7 +80,7 @@ qpic_t	*Draw_CachePic (const char *path)
 //
 // load the pic from disk
 //
-	QIO_LoadCacheFile (path, &pic->cache);
+	FS_LoadCacheFile (path, &pic->cache);
 
 	dat = (qpic_t *)pic->cache.data;
 	if (!dat)
@@ -122,7 +122,7 @@ qpic_t  *Draw_CachePicResize (const char *path, int targetWidth, int targetHeigh
 	if (dat)
 		return dat;
 	// Allocate original data temporarily
-	temp = (qpic_t *)QIO_LoadTempFile(path);
+	temp = (qpic_t *)FS_LoadTempFile(path);
 	SwapPic(temp);
 	/* I wish Carmack would thought of something more intuitive than
 	   out-of-bounds array for storing image data */
@@ -169,7 +169,7 @@ void Draw_Init (void)
 
 	if (draw_chars)
 		Z_Free (draw_chars);
-	draw_chars = QIO_LoadZoneFile ("gfx/menu/conchars.lmp", Z_SECZONE);
+	draw_chars = FS_LoadZoneFile ("gfx/menu/conchars.lmp", Z_SECZONE);
 
 	draw_smallchars = W_GetLumpName("tinyfont");
 
@@ -180,10 +180,10 @@ void Draw_Init (void)
 		if (draw_disc[i])
 			Z_Free (draw_disc[i]);
 		snprintf(temp, sizeof(temp), "gfx/menu/skull%d.lmp", i);
-		draw_disc[i] = (qpic_t *)QIO_LoadZoneFile (temp, Z_SECZONE);
+		draw_disc[i] = (qpic_t *)FS_LoadZoneFile (temp, Z_SECZONE);
 	}
 
-	draw_backtile = (qpic_t	*)QIO_LoadZoneFile ("gfx/menu/backtile.lmp", Z_SECZONE);
+	draw_backtile = (qpic_t	*)FS_LoadZoneFile ("gfx/menu/backtile.lmp", Z_SECZONE);
 
 	r_rectdesc.width = draw_backtile->width;
 	r_rectdesc.height = draw_backtile->height;

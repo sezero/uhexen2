@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.21 2007-04-01 12:18:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.22 2007-04-18 13:34:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -491,7 +491,7 @@ static void SV_BeginDownload_f(void)
 	for (p = name; *p; p++)
 		*p = (char)tolower(*p);
 
-	host_client->downloadsize = QIO_FOpenFile (name, &host_client->download, false);
+	host_client->downloadsize = FS_OpenFile (name, &host_client->download, false);
 	host_client->downloadcount = 0;
 
 	if (!host_client->download

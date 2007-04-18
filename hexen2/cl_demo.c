@@ -2,7 +2,7 @@
 	cl_demo.c
 	demo recording and playback
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_demo.c,v 1.20 2007-04-08 19:25:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_demo.c,v 1.21 2007-04-18 13:30:53 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -383,7 +383,7 @@ void CL_PlayDemo_f (void)
 	}
 */
 
-	QIO_FOpenFile (name, &cls.demofile, false);
+	FS_OpenFile (name, &cls.demofile, false);
 	if (!cls.demofile)
 	{
 		Con_Printf ("ERROR: couldn't open %s\n", name);

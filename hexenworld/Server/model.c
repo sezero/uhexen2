@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.13 2007-04-11 09:50:10 sezero Exp $
+	$Id: model.c,v 1.14 2007-04-18 13:34:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -192,7 +192,7 @@ static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 //
 // load the file
 //
-	buf = (unsigned *)QIO_LoadTempFile (mod->name);
+	buf = (unsigned *)FS_LoadTempFile (mod->name);
 	if (!buf)
 	{
 		if (crash)

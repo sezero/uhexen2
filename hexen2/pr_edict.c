@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.41 2007-04-10 17:53:05 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.42 2007-04-18 13:31:46 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1196,7 +1196,7 @@ void PR_LoadProgs (void)
 
 #if USE_MULTIPLE_PROGS
 	// see the comments in progs.h about multiple progs
-	QIO_FOpenFile ("maplist.txt", &FH, true);
+	FS_OpenFile ("maplist.txt", &FH, true);
 	if (FH)
 	{
 		char	build[2048], *test;
@@ -1261,12 +1261,12 @@ void PR_LoadProgs (void)
 	}
 #endif	// end of USE_MULTIPLE_PROGS
 
-	progs = (dprograms_t *)QIO_LoadHunkFile (finalprogname);
+	progs = (dprograms_t *)FS_LoadHunkFile (finalprogname);
 	if (!progs)
 		Sys_Error ("%s: couldn't load %s", __FUNCTION__, finalprogname);
-	Con_DPrintf ("Programs occupy %luK.\n", (unsigned long)(qio_filesize/1024));
+	Con_DPrintf ("Programs occupy %luK.\n", (unsigned long)(fs_filesize/1024));
 
-	for (i = 0; i < qio_filesize; i++)
+	for (i = 0; i < fs_filesize; i++)
 		CRC_ProcessByte (&pr_crc, ((byte *)progs)[i]);
 
 	// byte swap the header
@@ -1283,7 +1283,7 @@ void PR_LoadProgs (void)
 	pr_stringssize = 0;
 	for (i = 0; i < progs->numstrings; i++)
 	{
-		if (progs->ofs_strings + pr_stringssize >= qio_filesize)
+		if (progs->ofs_strings + pr_stringssize >= fs_filesize)
 			Host_Error ("progs.dat strings go past end of file\n");
 		pr_stringssize += 1 + strlen(pr_strings + pr_stringssize);
 	}

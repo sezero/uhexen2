@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.41 2007-03-14 08:12:44 sezero Exp $
+	$Id: common.h,v 1.42 2007-04-18 13:33:16 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -14,6 +14,14 @@
 #endif
 
 //============================================================================
+
+#if defined(_WIN32) && !defined(F_OK)
+// values for the mode argument of access(). MS does not define them
+#define	R_OK	4		/* Test for read permission.  */
+#define	W_OK	2		/* Test for write permission.  */
+#define	X_OK	1		/* Test for execute permission.  */
+#define	F_OK	0		/* Test for existence.  */
+#endif
 
 #if defined(_WIN32)
 #define Q_strncasecmp	strnicmp

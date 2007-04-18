@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.84 2007-04-09 17:14:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.85 2007-04-18 13:31:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -482,7 +482,7 @@ static void M_BuildBigCharWidth (void)
 	int	biggestX, adjustment;
 	char	After[20], Before[20];
 
-	p = (qpic_t *)QIO_LoadTempFile (BIGCHAR_FONT_FILE);
+	p = (qpic_t *)FS_LoadTempFile (BIGCHAR_FONT_FILE);
 	if (!p)
 		Sys_Error ("Failed to load %s", BIGCHAR_FONT_FILE);
 	SwapPic(p);
@@ -544,8 +544,8 @@ static void M_BuildBigCharWidth (void)
 		}
 	}
 
-	QIO_CreatePath(va("%s/%s", fs_userdir, BIGCHAR_WIDTH_FILE));
-	QIO_WriteFile (BIGCHAR_WIDTH_FILE, BigCharWidth, sizeof(BigCharWidth));
+	FS_CreatePath(va("%s/%s", fs_userdir, BIGCHAR_WIDTH_FILE));
+	FS_WriteFile (BIGCHAR_WIDTH_FILE, BigCharWidth, sizeof(BigCharWidth));
 }
 
 static int M_DrawBigCharacter (int x, int y, const int num, const int numNext)
@@ -4204,17 +4204,17 @@ void M_Init (void)
 {
 	char		*ptr;
 
-	ptr = (char *) QIO_LoadTempFile (BIGCHAR_WIDTH_FILE);
+	ptr = (char *) FS_LoadTempFile (BIGCHAR_WIDTH_FILE);
 	if (ptr == NULL)
 		M_BuildBigCharWidth();
 	else
 	{
-		if (qio_filesize == sizeof(BigCharWidth))
+		if (fs_filesize == sizeof(BigCharWidth))
 			memcpy (BigCharWidth, ptr, sizeof(BigCharWidth));
 		else
 		{
 			Con_Printf ("Unexpected file size (%lu) for %s\n",
-					(unsigned long)qio_filesize, BIGCHAR_WIDTH_FILE);
+					(unsigned long)fs_filesize, BIGCHAR_WIDTH_FILE);
 			M_BuildBigCharWidth();
 		}
 	}

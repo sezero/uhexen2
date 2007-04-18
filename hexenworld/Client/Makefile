@@ -393,7 +393,6 @@ COMMONOBJS = cl_cam.o \
 	msg_io.o \
 	common.o \
 	debuglog.o \
-	quakeio.o \
 	quakefs.o \
 	info_str.o \
 	console.o \

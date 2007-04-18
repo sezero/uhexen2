@@ -2,7 +2,7 @@
 	skin.c
 	skin loading
 
-	$Id: skin.c,v 1.8 2007-03-14 21:03:41 sezero Exp $
+	$Id: skin.c,v 1.9 2007-04-18 13:34:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -105,12 +105,12 @@ byte	*Skin_Cache (skin_t *skin)
 // load the pic from disk
 //
 	sprintf (name, "skins/%s.pcx", skin->name);
-	raw = QIO_LoadTempFile (name);
+	raw = FS_LoadTempFile (name);
 	if (!raw)
 	{
 		Con_Printf ("Couldn't load skin %s\n", name);
 		sprintf (name, "skins/%s.pcx", baseskin.string);
-		raw = QIO_LoadTempFile (name);
+		raw = FS_LoadTempFile (name);
 		if (!raw)
 		{
 			skin->failedload = true;
@@ -147,7 +147,7 @@ byte	*Skin_Cache (skin_t *skin)
 	{
 		for (x = 0; x <= pcx->xmax ; )
 		{
-			if ((raw-(byte*)pcx) > qio_filesize)
+			if ((raw-(byte*)pcx) > fs_filesize)
 			{
 				Cache_Free (&skin->cache);
 				skin->failedload = true;
@@ -159,7 +159,7 @@ byte	*Skin_Cache (skin_t *skin)
 			if ((dataByte & 0xC0) == 0xC0)
 			{
 				runLength = dataByte & 0x3F;
-				if ((raw-(byte*)pcx) > qio_filesize)
+				if ((raw-(byte*)pcx) > fs_filesize)
 				{
 					Cache_Free (&skin->cache);
 					skin->failedload = true;
@@ -184,7 +184,7 @@ byte	*Skin_Cache (skin_t *skin)
 		}
 	}
 
-	if (raw - (byte *)pcx > qio_filesize)
+	if (raw - (byte *)pcx > fs_filesize)
 	{
 		Cache_Free (&skin->cache);
 		skin->failedload = true;

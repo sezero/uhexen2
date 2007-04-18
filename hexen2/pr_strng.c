@@ -2,7 +2,7 @@
 	pr_strng.c
 	For international stuff
 
-	$Id: pr_strng.c,v 1.8 2007-03-14 21:03:16 sezero Exp $
+	$Id: pr_strng.c,v 1.9 2007-04-18 13:31:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -31,7 +31,7 @@ void PR_LoadStrings (void)
 	int		i, count, start;
 	signed char	NewLineChar;
 
-	pr_global_strings = (char *)QIO_LoadHunkFile ("strings.txt");
+	pr_global_strings = (char *)FS_LoadHunkFile ("strings.txt");
 	if (!pr_global_strings)
 		Sys_Error ("%s: couldn't load strings.txt", __FUNCTION__);
 
@@ -97,7 +97,7 @@ void PR_LoadPuzzleStrings (void)
 
 	puzzle_string_index = NULL;
 	puzzle_string_count = 0;
-	puzzle_strings = (char *)QIO_LoadHunkFile ("puzzles.txt");
+	puzzle_strings = (char *)FS_LoadHunkFile ("puzzles.txt");
 	if ( !puzzle_strings )
 		return;
 
@@ -232,7 +232,7 @@ void PR_LoadInfoStrings (void)
 	int		i, count, start;
 	signed char	NewLineChar;
 
-	pr_global_info_strings = (char *)QIO_LoadHunkFile ("infolist.txt");
+	pr_global_info_strings = (char *)FS_LoadHunkFile ("infolist.txt");
 	if (!pr_global_info_strings)
 		Sys_Error ("%s: couldn't load infolist.txt", __FUNCTION__);
 

@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.38 2007-04-08 18:50:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.39 2007-04-18 13:33:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -142,7 +142,7 @@ qboolean CL_CheckOrDownloadFile (char *filename)
 		return true;
 	}
 
-	QIO_FOpenFile (filename, &f, false);
+	FS_OpenFile (filename, &f, false);
 	if (f)
 	{	// it exists, no need to download
 		fclose (f);
@@ -345,7 +345,7 @@ static void CL_ParseDownload (void)
 #endif
 	// Do I really need to care more about skins like above?..
 		snprintf (name, sizeof(name), "%s/%s", fs_userdir, cls.downloadtempname);
-		if ( QIO_CreatePath(name) )
+		if ( FS_CreatePath(name) )
 		{
 			msg_readcount += size;
 			Con_Printf ("Unable to create directory for downloading %s\n", cls.downloadtempname);
@@ -464,7 +464,7 @@ static void CL_ParseServerData (void)
 		FS_Gamedir(str);
 
 		// ZOID - run autoexec.cfg in the gamedir if it exists
-		if (QFS_FileInGamedir("config.cfg") != -1)
+		if (FS_FileInGamedir("config.cfg") != -1)
 		{
 		// remove any weird mod specific key bindings / aliases
 			Cbuf_AddText("unbindall\n");
@@ -473,7 +473,7 @@ static void CL_ParseServerData (void)
 			Cbuf_AddText("exec config.cfg\n");
 		}
 		// gamespy crap
-		if (QFS_FileInGamedir("frontend.cfg") != -1)
+		if (FS_FileInGamedir("frontend.cfg") != -1)
 			Cbuf_AddText("exec frontend.cfg\n");
 
 		Cbuf_Execute ();

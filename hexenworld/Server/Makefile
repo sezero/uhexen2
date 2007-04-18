@@ -130,7 +130,6 @@ COMMONOBJS = cl_objs/q_endian.o \
 	cl_objs/strlcpy.o \
 	cl_objs/msg_io.o \
 	cl_objs/common.o \
-	cl_objs/quakeio.o \
 	cl_objs/quakefs.o \
 	cl_objs/info_str.o \
 	cl_objs/cmd.o \

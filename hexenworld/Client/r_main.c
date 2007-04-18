@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.15 2007-04-18 08:43:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.16 2007-04-18 13:34:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -277,7 +277,7 @@ void R_Init (void)
 
 	mainTransTable = Hunk_AllocName(65536, "transtable2");
 
-	QIO_FOpenFile ("gfx/tinttab2.lmp", &f, false);
+	FS_OpenFile ("gfx/tinttab2.lmp", &f, false);
 	if (!f)
 		Sys_Error ("Couldn't load gfx/tinttab2.lmp");
 
@@ -303,7 +303,7 @@ void R_Init (void)
 	R_TranPatch7();
 #endif
 
-	playerTranslation = (byte *)QIO_LoadHunkFile ("gfx/player.lmp");
+	playerTranslation = (byte *)FS_LoadHunkFile ("gfx/player.lmp");
 	if (!playerTranslation)
 		Sys_Error ("Couldn't load gfx/player.lmp");
 }

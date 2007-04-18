@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.17 2007-02-12 16:52:53 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.18 2007-04-18 13:32:27 sezero Exp $
 */
 
 
@@ -97,7 +97,7 @@ void R_InitParticles (void)
 
 	transTable = Hunk_AllocName(65536, "transtable");
 
-	QIO_FOpenFile ("gfx/tinttab.lmp", &f, false);
+	FS_OpenFile ("gfx/tinttab.lmp", &f, false);
 	if (!f)
 		Sys_Error ("Couldn't load gfx/tinttab.lmp");
 
@@ -202,7 +202,7 @@ void R_ReadPointFile_f (void)
 	color = (byte)Cvar_VariableValue("leak_color");
 	sprintf (name,"maps/%s.pts", sv.name);
 
-	QIO_FOpenFile (name, &f, false);
+	FS_OpenFile (name, &f, false);
 	if (!f)
 	{
 		Con_Printf ("couldn't open %s\n", name);

@@ -1,6 +1,6 @@
 /*
 	mstrconv.c
-	$Id: mstrconv.c,v 1.15 2007-04-10 17:53:09 sezero Exp $
+	$Id: mstrconv.c,v 1.16 2007-04-18 13:34:41 sezero Exp $
 
 	Converting a MID file to a MIDI stream for
 	playback using the Win32 midiStream API.
@@ -135,13 +135,13 @@ BOOL ConverterInit (const char *szInFile)
 
 	// Attempt to open the input and output files
 	//
-	MidiData = (byte *)QIO_LoadHunkFile(szInFile);
+	MidiData = (byte *)FS_LoadHunkFile(szInFile);
 	if (!MidiData)
 	{
 		goto Init_Cleanup;
 	}
 
-	ifs.cbFileLength = qio_filesize;
+	ifs.cbFileLength = fs_filesize;
 	MidiOffset = 0;
 	MidiSize = ifs.cbFileLength;
 

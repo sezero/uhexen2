@@ -2,17 +2,10 @@
 	cfgfile.c
 	misc reads from the config file
 
-	$Id: cfgfile.c,v 1.1 2007-02-22 07:36:22 sezero Exp $
+	$Id: cfgfile.c,v 1.2 2007-04-18 13:30:52 sezero Exp $
 */
 
-#include "q_types.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include "compiler.h"
-#include "cvar.h"
-#include "quakeio.h"
-#include "common.h"
+#include "quakedef.h"
 
 
 static FILE			*cfg_file;
@@ -116,7 +109,7 @@ void CFG_CloseConfig (void)
 int CFG_OpenConfig (const char *cfg_name)
 {
 	CFG_CloseConfig ();
-	QIO_FOpenFile (cfg_name, &cfg_file, true);
+	FS_OpenFile (cfg_name, &cfg_file, true);
 	if (!cfg_file)
 		return -1;
 	return 0;

@@ -391,7 +391,6 @@ COMMONOBJS = chase.o \
 	msg_io.o \
 	common.o \
 	debuglog.o \
-	quakeio.o \
 	quakefs.o \
 	console.o \
 	crc.o \

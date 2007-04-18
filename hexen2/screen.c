@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.41 2007-04-10 17:53:05 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.42 2007-04-18 13:32:29 sezero Exp $
 */
 
 /*=============================================================================
@@ -809,7 +809,7 @@ static void WritePCXfile (const char *filename, byte *data, int width, int heigh
 
 // write output file 
 	length = pack - (byte *)pcx;
-	QIO_WriteFile (filename, pcx, length);
+	FS_WriteFile (filename, pcx, length);
 }
 
 /*

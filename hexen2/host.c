@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.74 2007-04-08 18:50:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.75 2007-04-18 13:31:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -121,7 +121,7 @@ int Host_CopyFiles (const char *source, const char *pat, const char *dest)
 			goto error_out;
 		}
 
-		error = QIO_CopyFile (tempdir, tempdir2);
+		error = FS_CopyFile (tempdir, tempdir2);
 		if (error)
 		{
 			Con_Printf ("Error copying %s to %s\n", tempdir, tempdir2);
@@ -1004,11 +1004,11 @@ void Host_Init (void)
 		Con_Init ();
 		M_Init ();
 
-		host_basepal = (byte *)QIO_LoadHunkFile ("gfx/palette.lmp");
+		host_basepal = (byte *)FS_LoadHunkFile ("gfx/palette.lmp");
 		if (!host_basepal)
 			Sys_Error ("Couldn't load gfx/palette.lmp");
 
-		host_colormap = (byte *)QIO_LoadHunkFile ("gfx/colormap.lmp");
+		host_colormap = (byte *)FS_LoadHunkFile ("gfx/colormap.lmp");
 		if (!host_colormap)
 			Sys_Error ("Couldn't load gfx/colormap.lmp");
 

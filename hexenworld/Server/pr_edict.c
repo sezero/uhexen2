@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.23 2007-04-10 17:53:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.24 2007-04-18 13:34:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1132,7 +1132,7 @@ void PR_LoadProgs (void)
 
 #if USE_MULTIPLE_PROGS
 	// see the comments in progs.h about multiple progs
-	QIO_FOpenFile ("maplist.txt", &FH, true);
+	FS_OpenFile ("maplist.txt", &FH, true);
 	if (FH)
 	{
 		char	build[2048], *test;
@@ -1197,15 +1197,15 @@ void PR_LoadProgs (void)
 	}
 #endif	// end of USE_MULTIPLE_PROGS
 
-	progs = (dprograms_t *)QIO_LoadHunkFile (finalprogname);
+	progs = (dprograms_t *)FS_LoadHunkFile (finalprogname);
 	if (!progs)
-		progs = (dprograms_t *)QIO_LoadHunkFile ("progs.dat");
+		progs = (dprograms_t *)FS_LoadHunkFile ("progs.dat");
 	if (!progs)
 		SV_Error ("%s: couldn't load progs.dat", __FUNCTION__);
-	Con_DPrintf ("Programs occupy %luK.\n", (unsigned long)(qio_filesize/1024));
+	Con_DPrintf ("Programs occupy %luK.\n", (unsigned long)(fs_filesize/1024));
 
 	// add prog crc to the serverinfo
-	sprintf (num, "%u", CRC_Block ((byte *)progs, qio_filesize));
+	sprintf (num, "%u", CRC_Block ((byte *)progs, fs_filesize));
 	Info_SetValueForStarKey (svs.info, "*progs", num, MAX_SERVERINFO_STRING);
 
 	// byte swap the header
@@ -1225,7 +1225,7 @@ void PR_LoadProgs (void)
 	pr_stringssize = 0;
 	for (i = 0; i < progs->numstrings; i++)
 	{
-		if (progs->ofs_strings + pr_stringssize >= qio_filesize)
+		if (progs->ofs_strings + pr_stringssize >= fs_filesize)
 			SV_Error ("progs.dat strings go past end of file\n");
 		pr_stringssize += 1 + strlen(pr_strings + pr_stringssize);
 	}

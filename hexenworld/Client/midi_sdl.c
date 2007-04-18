@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.36 2007-04-05 08:07:05 sezero Exp $
+	$Id: midi_sdl.c,v 1.37 2007-04-18 13:33:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -237,7 +237,7 @@ void MIDI_Play (const char *Name)
 	}
 
 	snprintf (tempName, sizeof(tempName), "%s.%s", Name, "mid");
-	QIO_FOpenFile (va("%s/%s", "midi", tempName), &midiFile, false);
+	FS_OpenFile (va("%s/%s", "midi", tempName), &midiFile, false);
 	if (!midiFile)
 	{
 		Con_Printf("music file %s not found\n", tempName);
@@ -251,7 +251,7 @@ void MIDI_Play (const char *Name)
 
 			Con_Printf("Extracting %s from pakfile\n", tempName);
 			snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, "mid");
-			ret = MIDI_ExtractFile (midiFile, midiName, qio_filesize);
+			ret = MIDI_ExtractFile (midiFile, midiName, fs_filesize);
 			fclose (midiFile);
 			if (ret != 0)
 			{
@@ -262,7 +262,7 @@ void MIDI_Play (const char *Name)
 		else	/* use the file directly */
 		{
 			fclose (midiFile);
-			snprintf (midiName, sizeof(midiName), "%s/%s/%s", qio_filepath, "midi", tempName);
+			snprintf (midiName, sizeof(midiName), "%s/%s/%s", fs_filepath, "midi", tempName);
 		}
 	}
 

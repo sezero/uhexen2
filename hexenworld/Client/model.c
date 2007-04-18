@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.21 2007-04-18 10:41:12 sezero Exp $
+	$Id: model.c,v 1.22 2007-04-18 13:33:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -274,7 +274,7 @@ static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 //
 // load the file
 //
-	buf = (unsigned *)QIO_LoadStackFile (mod->name, stackbuf, sizeof(stackbuf));
+	buf = (unsigned *)FS_LoadStackFile (mod->name, stackbuf, sizeof(stackbuf));
 	if (!buf)
 	{
 		if (crash)
@@ -391,7 +391,7 @@ static void Mod_LoadTextures (lump_t *l)
 		if (texname[sizeof(WAL_EXT_DIRNAME)] == '*')
 			texname[sizeof(WAL_EXT_DIRNAME)] = WAL_REPLACE_ASTERIX;
 		mark = Hunk_LowMark ();
-		mt_wal = (miptex_wal_t *)QIO_LoadHunkFile(texname);
+		mt_wal = (miptex_wal_t *)FS_LoadHunkFile(texname);
 		if (mt_wal != NULL)
 		{
 			mt_wal->ident = LittleLong (mt_wal->ident);
@@ -1833,7 +1833,7 @@ static void Mod_LoadAliasModel (model_t *mod, void *buffer)
 		char	st[40];
 
 		CRC_Init(&crc);
-		for (len = qio_filesize, p = buffer; len; len--, p++)
+		for (len = fs_filesize, p = buffer; len; len--, p++)
 			CRC_ProcessByte(&crc, *p);
 
 		sprintf(st, "%d", (int) crc);

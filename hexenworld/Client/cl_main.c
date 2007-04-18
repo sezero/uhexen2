@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.77 2007-04-08 19:25:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.78 2007-04-18 13:33:07 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -941,7 +941,7 @@ static void CL_Download_f (void)
 		return;
 	}
 
-	if ( QIO_CreatePath(tmp) )
+	if ( FS_CreatePath(tmp) )
 	{
 		Con_Printf ("Unable to create directory for downloading %s\n", Cmd_Argv(1));
 		return;
@@ -1383,11 +1383,11 @@ void Host_Init (void)
 	Con_Init ();
 	M_Init ();
 
-	host_basepal = (byte *)QIO_LoadHunkFile ("gfx/palette.lmp");
+	host_basepal = (byte *)FS_LoadHunkFile ("gfx/palette.lmp");
 	if (!host_basepal)
 		Sys_Error ("Couldn't load gfx/palette.lmp");
 
-	host_colormap = (byte *)QIO_LoadHunkFile ("gfx/colormap.lmp");
+	host_colormap = (byte *)FS_LoadHunkFile ("gfx/colormap.lmp");
 	if (!host_colormap)
 		Sys_Error ("Couldn't load gfx/colormap.lmp");
 
