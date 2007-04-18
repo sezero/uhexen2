@@ -1,6 +1,6 @@
 /*
 	bsp2wal.c
-	$Id: bsp2wal.c,v 1.1 2007-04-17 15:54:20 sezero Exp $
+	$Id: bsp2wal.c,v 1.2 2007-04-18 08:07:25 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -11,14 +11,10 @@
 #include "bspfile.h"
 #include "hwal.h"
 
-
 // the miptex_wal_t structure has two extra int fields at the beginning
 // and the name field is 32 chars long instead of 16, hence this shift.
 // the rest, ie. the offsets, are the same.
 #define	HWAL_SHIFT		(sizeof(miptex_wal_t) - sizeof(miptex_t))
-
-#define	EXTRACT_DIR		"textures"
-#define	ASTERIX_REPLACE		'-'	/* how about '_' ? */
 
 static char	workpath[1024];
 
@@ -49,8 +45,8 @@ static void WriteWALFile (char *bspfilename)
 		memcpy (workpath, bspfilename, tmp - bspfilename);
 		tmp = workpath + (tmp - bspfilename);
 	}
-	memcpy (tmp, EXTRACT_DIR, sizeof(EXTRACT_DIR));
-	tmp += sizeof(EXTRACT_DIR)-1;
+	memcpy (tmp, WAL_EXT_DIRNAME, sizeof(WAL_EXT_DIRNAME));
+	tmp += sizeof(WAL_EXT_DIRNAME)-1;
 	Q_mkdir (workpath);
 	*tmp++ = '/';
 
@@ -86,7 +82,7 @@ static void WriteWALFile (char *bspfilename)
 		// save file
 		sprintf (tmp, "%s.wal", mt->name);
 		if (tmp[0] == '*')
-			tmp[0] = ASTERIX_REPLACE;
+			tmp[0] = WAL_REPLACE_ASTERIX;
 		printf ("%15s -> %s\n", mt->name, workpath);
 		SaveFile (workpath, (byte *)wt, sizeof(miptex_wal_t) + pixels);
 
