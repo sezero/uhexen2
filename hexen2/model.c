@@ -5,10 +5,11 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.20 2007-02-17 07:55:32 sezero Exp $
+	$Id: model.c,v 1.21 2007-04-18 10:40:36 sezero Exp $
 */
 
 #include "quakedef.h"
+#include "hwal.h"
 #include "r_local.h"
 
 model_t	*loadmodel;
@@ -361,6 +362,10 @@ static void Mod_LoadTextures (lump_t *l)
 	texture_t	*anims[10];
 	texture_t	*altanims[10];
 	dmiptexlump_t *m;
+	// external WAL texture loading
+	char		texname[MAX_QPATH];
+	int		mark;
+	miptex_wal_t	*mt_wal;
 
 	if (!l->filelen)
 	{
@@ -385,19 +390,71 @@ static void Mod_LoadTextures (lump_t *l)
 		for (j = 0; j < MIPLEVELS; j++)
 			mt->offsets[j] = LittleLong (mt->offsets[j]);
 
-		if ( (mt->width & 15) || (mt->height & 15) )
-			Sys_Error ("Texture %s is not 16 aligned", mt->name);
-		pixels = mt->width*mt->height/64*85;
-		tx = Hunk_AllocName (sizeof(texture_t) +pixels, "texture" );
-		loadmodel->textures[i] = tx;
+		if (!r_texture_external.value)
+			goto bsp_tex_internal;
+		// try an external wal texture file first
+		sprintf (texname, "textures/%s.wal", mt->name);
+		if (texname[sizeof(WAL_EXT_DIRNAME)] == '*')
+			texname[sizeof(WAL_EXT_DIRNAME)] = WAL_REPLACE_ASTERIX;
+		mark = Hunk_LowMark ();
+		mt_wal = (miptex_wal_t *)QIO_LoadHunkFile(texname);
+		if (mt_wal != NULL)
+		{
+			mt_wal->ident = LittleLong (mt_wal->ident);
+			mt_wal->version = LittleLong (mt_wal->version);
+			if (mt_wal->ident == IDWALHEADER && mt_wal->version == WALVERSION)
+			{
+				mt_wal->width = LittleLong (mt_wal->width);
+				mt_wal->height = LittleLong (mt_wal->height);
+				for (j = 0; j < MIPLEVELS; j++)
+					mt_wal->offsets[j] = LittleLong (mt_wal->offsets[j]);
+				if ( (mt_wal->width & 15) || (mt_wal->height & 15) )
+				{
+					Hunk_FreeToLowMark (mark);
+					Sys_Printf ("Texture %s is not 16 aligned", texname);
+					goto bsp_tex_internal;
+				}
 
-		memcpy (tx->name, mt->name, sizeof(tx->name));
-		tx->width = mt->width;
-		tx->height = mt->height;
-		for (j = 0; j < MIPLEVELS; j++)
-			tx->offsets[j] = mt->offsets[j] + sizeof(texture_t) - sizeof(miptex_t);
-		// the pixels immediately follow the structures
-		memcpy ( tx+1, mt+1, pixels);
+				pixels = mt_wal->width*mt_wal->height/64*85;
+				tx = Hunk_AllocName (sizeof(texture_t) +pixels, "texture");
+				loadmodel->textures[i] = tx;
+
+				memcpy (tx->name, mt_wal->name, sizeof(tx->name));
+
+				tx->width = mt_wal->width;
+				tx->height = mt_wal->height;
+				for (j = 0; j < MIPLEVELS; j++)
+					tx->offsets[j] = mt_wal->offsets[j] + sizeof(texture_t) - sizeof(miptex_wal_t);
+				// the pixels immediately follow the structures
+				memcpy (tx+1, mt_wal+1, pixels);
+			}
+			else
+			{
+				if (mt_wal->ident != IDWALHEADER)
+					Sys_Printf ("%s: %s is not a valid WAL file\n", __FUNCTION__, texname);
+				if (mt_wal->version != WALVERSION)
+					Sys_Printf ("%s: WAL file %s has unsupported version (%d)\n", __FUNCTION__, texname, mt_wal->version);
+				Hunk_FreeToLowMark (mark);
+				goto bsp_tex_internal;
+			}
+		}
+		else
+		{	// load internal bsp pixel data
+bsp_tex_internal:
+			if ( (mt->width & 15) || (mt->height & 15) )
+				Sys_Error ("Texture %s is not 16 aligned", mt->name);
+			pixels = mt->width*mt->height/64*85;
+			tx = Hunk_AllocName (sizeof(texture_t) +pixels, "texture" );
+			loadmodel->textures[i] = tx;
+
+			memcpy (tx->name, mt->name, sizeof(tx->name));
+			tx->width = mt->width;
+			tx->height = mt->height;
+			for (j = 0; j < MIPLEVELS; j++)
+				tx->offsets[j] = mt->offsets[j] + sizeof(texture_t) - sizeof(miptex_t);
+			// the pixels immediately follow the structures
+			memcpy ( tx+1, mt+1, pixels);
+		}
 
 		if (!strncmp(mt->name,"sky",3))
 			R_InitSky (tx);
