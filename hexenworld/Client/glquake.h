@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.55 2007-04-07 19:55:38 sezero Exp $
+	$Id: glquake.h,v 1.56 2007-04-18 08:47:51 sezero Exp $
 */
 
 
@@ -290,6 +290,7 @@ extern	cvar_t	r_skyalpha;
 extern	cvar_t	r_dynamic;
 extern	cvar_t	r_novis;
 extern	cvar_t	r_wholeframe;
+extern	cvar_t	r_texture_external;
 
 extern	cvar_t	r_netgraph;
 extern	cvar_t	r_entdistance;

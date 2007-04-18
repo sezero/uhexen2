@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.19 2007-02-28 08:40:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.20 2007-04-18 08:43:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -140,6 +140,7 @@ cvar_t	r_aliastransadj = {"r_aliastransadj", "100", CVAR_NONE};
 cvar_t	r_aliasmip = {"r_aliasmip", "80", CVAR_NONE};
 cvar_t	r_wholeframe = {"r_wholeframe", "1", CVAR_ARCHIVE};
 cvar_t	r_transwater = {"r_transwater", "1", CVAR_ARCHIVE};
+cvar_t	r_texture_external = {"r_texture_external", "0", CVAR_ARCHIVE};
 
 //void CreatePassages (void);
 //void SetVisibilityByPassages (void);
@@ -242,6 +243,7 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_aliasmip);
 	Cvar_RegisterVariable (&r_wholeframe);
 	Cvar_RegisterVariable (&r_transwater);
+	Cvar_RegisterVariable (&r_texture_external);
 
 	Cvar_SetValue ("r_maxedges", (float)NUMSTACKEDGES);
 	Cvar_SetValue ("r_maxsurfs", (float)NUMSTACKSURFACES);

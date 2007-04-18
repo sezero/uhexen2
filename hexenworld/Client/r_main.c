@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.14 2007-02-28 08:40:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.15 2007-04-18 08:43:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -143,6 +143,7 @@ cvar_t	r_aliasmip = {"r_aliasmip", "80", CVAR_NONE};
 cvar_t	r_wholeframe = {"r_wholeframe", "1", CVAR_ARCHIVE};
 cvar_t	r_transwater = {"r_transwater", "1", CVAR_ARCHIVE};
 cvar_t	r_teamcolor = {"r_teamcolor", "187", CVAR_ARCHIVE};
+cvar_t	r_texture_external = {"r_texture_external", "0", CVAR_ARCHIVE};
 
 extern void R_NetGraph (void);
 extern void R_ZGraph (void);
@@ -251,6 +252,7 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_wholeframe);
 	Cvar_RegisterVariable (&r_transwater);
 	Cvar_RegisterVariable (&r_teamcolor);
+	Cvar_RegisterVariable (&r_texture_external);
 
 	Cvar_SetValue ("r_maxedges", (float)NUMSTACKEDGES);
 	Cvar_SetValue ("r_maxsurfs", (float)NUMSTACKSURFACES);

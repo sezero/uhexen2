@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: gl_rmisc.c,v 1.38 2007-04-11 12:11:01 sezero Exp $
+	$Id: gl_rmisc.c,v 1.39 2007-04-18 08:43:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -242,6 +242,7 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_novis);
 	Cvar_RegisterVariable (&r_speeds);
 	Cvar_RegisterVariable (&r_wholeframe);
+	Cvar_RegisterVariable (&r_texture_external);
 
 	Cvar_RegisterVariable (&gl_clear);
 	Cvar_RegisterVariable (&gl_cull);

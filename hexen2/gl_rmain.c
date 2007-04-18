@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.56 2007-04-11 12:11:01 sezero Exp $
+	$Id: gl_rmain.c,v 1.57 2007-04-18 08:43:17 sezero Exp $
 */
 
 
@@ -79,6 +79,7 @@ cvar_t	r_skyalpha = {"r_skyalpha", "0.67", CVAR_ARCHIVE};
 cvar_t	r_dynamic = {"r_dynamic", "1", CVAR_NONE};
 cvar_t	r_novis = {"r_novis", "0", CVAR_NONE};
 cvar_t	r_wholeframe = {"r_wholeframe", "1", CVAR_ARCHIVE};
+cvar_t	r_texture_external = {"r_texture_external", "0", CVAR_ARCHIVE};
 
 cvar_t	gl_clear = {"gl_clear", "0", CVAR_NONE};
 cvar_t	gl_cull = {"gl_cull", "1", CVAR_NONE};
