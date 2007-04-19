@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.32 2007-04-19 18:54:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.33 2007-04-19 21:05:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -135,7 +135,7 @@ Host_Error
 This shuts down both the client and server
 ================
 */
-void SV_Error (const char *error, ...)
+void Host_Error (const char *error, ...)
 {
 	va_list		argptr;
 	char		string[1024];
