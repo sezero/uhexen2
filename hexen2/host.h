@@ -2,7 +2,7 @@
 	host.h
 	public host structures and functions
 
-	$Id: host.h,v 1.7 2007-04-19 13:59:41 sezero Exp $
+	$Id: host.h,v 1.8 2007-04-19 18:54:23 sezero Exp $
 */
 
 #ifndef __HX2_HOST_H
@@ -42,7 +42,12 @@ extern	double		realtime;		// not bounded in any way, changed at
 void Host_Init (void);
 void Host_InitCommands (void);
 void Host_Shutdown(void);
+#if !defined(SERVERONLY)
 void Host_Error (const char *error, ...) __attribute__((format(printf,1,2)));
+#else
+void SV_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
+#define Host_Error SV_Error
+#endif
 void Host_EndGame (const char *message, ...) __attribute__((format(printf,1,2)));
 void Host_Frame (float time);
 void Host_Quit_f (void);
