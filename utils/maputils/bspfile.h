@@ -2,7 +2,7 @@
 	bspfile.h
 	common bspfile header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/maputils/bspfile.h,v 1.4 2007-03-14 21:04:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/maputils/bspfile.h,v 1.5 2007-04-19 09:15:46 sezero Exp $
 */
 
 #ifndef __BSPFILE_H
@@ -259,8 +259,8 @@ extern	int			numsurfedges;
 extern	int			dsurfedges[MAX_MAP_SURFEDGES];
 
 
-void	LoadBSPFile (char *filename);
-void	WriteBSPFile (char *filename);
+void	LoadBSPFile (const char *filename);
+void	WriteBSPFile (const char *filename);
 void	PrintBSPFileSizes (void);
 
 #endif	/*  QUAKE_GAME */

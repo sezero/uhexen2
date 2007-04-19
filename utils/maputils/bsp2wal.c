@@ -1,6 +1,6 @@
 /*
 	bsp2wal.c
-	$Id: bsp2wal.c,v 1.2 2007-04-18 08:07:25 sezero Exp $
+	$Id: bsp2wal.c,v 1.3 2007-04-19 09:15:36 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -20,7 +20,7 @@ static char	workpath[1024];
 
 //===========================================================================
 
-static void WriteWALFile (char *bspfilename)
+static void WriteWALFile (const char *bspfilename)
 {
 	int		i, j;
 	dmiptexlump_t	*m;

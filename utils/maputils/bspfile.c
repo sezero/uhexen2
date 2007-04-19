@@ -1,6 +1,6 @@
 /*
 	bspfile.c
-	$Id: bspfile.c,v 1.6 2007-03-14 21:04:38 sezero Exp $
+	$Id: bspfile.c,v 1.7 2007-04-19 09:15:44 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -240,7 +240,7 @@ static int CopyLump (int lump, void *dest, int size)
 LoadBSPFile
 =============
 */
-void LoadBSPFile (char *filename)
+void LoadBSPFile (const char *filename)
 {
 	int			i;
 
@@ -304,7 +304,7 @@ WriteBSPFile
 Swaps the bsp file in place, so it should not be referenced again
 =============
 */
-void WriteBSPFile (char *filename)
+void WriteBSPFile (const char *filename)
 {
 	header = &outheader;
 	memset (header, 0, sizeof(dheader_t));
