@@ -2,7 +2,7 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.c,v 1.16 2007-04-19 14:06:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.c,v 1.17 2007-04-19 17:45:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -52,7 +52,8 @@ BOPS_Error
 Split out like this for ASM to call.
 ==================
 */
-extern void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2)));
+extern void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
+void BOPS_Error (void) __attribute__((noreturn));
 void BOPS_Error (void)
 {
 	Sys_Error ("BoxOnPlaneSide:  Bad signbits");
@@ -121,8 +122,8 @@ int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, mplane_t *p)
 		dist2 = p->normal[0]*emaxs[0] + p->normal[1]*emaxs[1] + p->normal[2]*emaxs[2];
 		break;
 	default:
-		dist1 = dist2 = 0;		// shut up compiler
 		BOPS_Error ();
+		dist1 = dist2 = 0;		// shut up compiler
 		break;
 	}
 

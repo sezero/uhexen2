@@ -1,6 +1,6 @@
 /*
 	hwrcon.c
-	$Id: hwrcon.c,v 1.10 2007-04-19 14:07:57 sezero Exp $
+	$Id: hwrcon.c,v 1.11 2007-04-19 17:45:59 sezero Exp $
 
 	HWRCON 1.2 HexenWorld Remote CONsole
 	Idea based on RCon 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -57,7 +57,7 @@ static WSADATA		winsockdata;
 
 static int		socketfd = -1;
 
-void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2)));
+void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
 
 //=============================================================================
 

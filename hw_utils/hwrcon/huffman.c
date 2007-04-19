@@ -2,7 +2,7 @@
 	huffman.c
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.c,v 1.10 2007-04-19 14:07:50 sezero Exp $
+	$Id: huffman.c,v 1.11 2007-04-19 17:45:56 sezero Exp $
 */
 
 #include <stdlib.h>
@@ -13,7 +13,7 @@
 #include "compiler.h"
 
 
-extern void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2)));
+extern void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
 
 //
 // huffman types and vars
