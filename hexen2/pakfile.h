@@ -1,18 +1,15 @@
 /*
 	pakfile.h
-	the pak file structure
+	on-disk pak file structures
 
-	$Id: pakfile.h,v 1.1 2007-02-12 16:52:50 sezero Exp $
+	$Id: pakfile.h,v 1.2 2007-04-19 09:36:29 sezero Exp $
 */
 
 #ifndef __PAKFILE_H
 #define __PAKFILE_H
 
-//
-// on disk
-//
-
-#define	MAX_FILES_IN_PACK	2048
+// Little-endian "PACK"
+#define IDPAKHEADER		(('K'<<24)+('C'<<16)+('A'<<8)+'P')
 
 #define	PAK_PATH_LENGTH		56
 
@@ -24,36 +21,16 @@ typedef struct
 
 typedef struct
 {
+//	int		ident;	// == IDPAKHEADER
 	char	id[4];
 	int		dirofs;
 	int		dirlen;
 } dpackheader_t;
 
-//
-// in memory
-//
+#define	packfile_t	dpackfile_t
+#define	packheader_t	dpackheader_t
+#define	MAX_FILES_IN_PACK	2048
 
-#if !defined(MAX_QPATH)
-#define	MAX_QPATH		64	/* max length of a quake game pathname	*/
-#endif	/* MAX_QPATH */
-
-typedef struct
-{
-	char	name[MAX_QPATH];
-	int		filepos, filelen;
-} packfile_t;
-
-#if !defined(MAX_OSPATH)
-#define	MAX_OSPATH		256	/* max length of a filesystem pathname	*/
-#endif	/* MAX_OSPATH */
-
-typedef struct pack_s
-{
-	char	filename[MAX_OSPATH];
-	FILE	*handle;
-	int		numfiles;
-	packfile_t	*files;
-} pack_t;
 
 #endif	/* __PAKFILE_H */
 

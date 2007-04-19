@@ -1,6 +1,6 @@
 /*
 	qfiles.c
-	$Id: qfiles.c,v 1.6 2007-03-14 21:05:00 sezero Exp $
+	$Id: qfiles.c,v 1.7 2007-04-19 09:36:54 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -9,6 +9,7 @@
 #include "crc.h"
 #include "q_endian.h"
 #include "qdir.h"
+#include "pakfile.h"
 
 #define	MAX_SOUNDS		1024
 #define	MAX_MODELS		1024
@@ -29,19 +30,6 @@ char		precache_files[MAX_FILES][MAX_DATA_PATH];
 int			precache_files_block[MAX_SOUNDS];
 int			numfiles;
 
-
-typedef struct
-{
-	char	name[56];
-	int		filepos, filelen;
-} packfile_t;
-
-typedef struct
-{
-	char	id[4];
-	int		dirofs;
-	int		dirlen;
-} packheader_t;
 
 packfile_t	pfiles[4096], *pf;
 FILE		*packhandle;

@@ -2,11 +2,12 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.17 2007-04-18 13:33:48 sezero Exp $
+	$Id: quakefs.c,v 1.18 2007-04-19 09:36:42 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "pakfile.h"
+#include "pak.h"
 #ifdef _WIN32
 #include <io.h>
 #endif
