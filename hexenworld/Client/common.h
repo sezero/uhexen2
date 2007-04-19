@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.42 2007-04-18 13:33:16 sezero Exp $
+	$Id: common.h,v 1.43 2007-04-19 14:04:31 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -93,7 +93,7 @@ void COM_StripExtension (const char *in, char *out);
 void COM_FileBase (const char *in, char *out);
 void COM_DefaultExtension (char *path, const char *extension, size_t len);
 
-char	*va(const char *format, ...) _FUNC_PRINTF(1);
+char	*va (const char *format, ...) __attribute__((format(printf,1,2)));
 // does a varargs printf into a temp buffer. cycles between
 // 4 different static buffers. the number of buffers cycled
 // is defined in VA_NUM_BUFFS.

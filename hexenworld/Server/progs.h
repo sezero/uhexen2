@@ -2,7 +2,7 @@
 	progs.h
 	PROGS structures, public functions and vars
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/progs.h,v 1.13 2007-04-01 12:18:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/progs.h,v 1.14 2007-04-19 14:07:34 sezero Exp $
 */
 
 #ifndef __HX2_PROGS_H
@@ -146,7 +146,7 @@ extern func_t SpectatorConnect;
 extern func_t SpectatorThink;
 extern func_t SpectatorDisconnect;
 
-void PR_RunError (const char *error, ...) _FUNC_PRINTF(1);
+void PR_RunError (const char *error, ...) __attribute__((format(printf,1,2)));
 
 void ED_PrintEdicts (void);
 void ED_PrintNum (int ent);

@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.14 2007-02-13 13:34:35 sezero Exp $
+	$Id: cmdlib.h,v 1.15 2007-04-19 14:08:15 sezero Exp $
 */
 
 #ifndef __CMDLIB_H__
@@ -79,7 +79,7 @@ int	Sys_kbhit(void);
 
 double	GetTime (void);
 
-void	Error (const char *error, ...) _FUNC_PRINTF(1);
+void	Error (const char *error, ...) __attribute__((format(printf,1,2)));
 int	CheckParm (const char *check);
 
 char	*COM_Parse (char *data);

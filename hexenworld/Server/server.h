@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/server.h,v 1.14 2007-04-01 12:18:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/server.h,v 1.15 2007-04-19 14:07:38 sezero Exp $
 */
 
 #ifndef __H2W_SERVER_H
@@ -441,9 +441,9 @@ void SV_StartParticle2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int eff
 void SV_StartParticle3 (vec3_t org, vec3_t box, int color, int effect, int count);
 void SV_StartParticle4 (vec3_t org, float radius, int color, int effect, int count);
 void SV_StartRainEffect (vec3_t org, vec3_t e_size, int x_dir, int y_dir, int color, int count);
-void SV_ClientPrintf (client_t *cl, int level, const char *fmt, ...) _FUNC_PRINTF(3);
-void SV_BroadcastPrintf (int level, const char *fmt, ...) _FUNC_PRINTF(2);
-void SV_BroadcastCommand (const char *fmt, ...) _FUNC_PRINTF(1);
+void SV_ClientPrintf (client_t *cl, int level, const char *fmt, ...) __attribute__((format(printf,3,4)));
+void SV_BroadcastPrintf (int level, const char *fmt, ...) __attribute__((format(printf,2,3)));
+void SV_BroadcastCommand (const char *fmt, ...) __attribute__((format(printf,1,2)));
 void SV_SendMessagesToAll (void);
 void SV_FindModelNumbers (void);
 

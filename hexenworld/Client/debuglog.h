@@ -2,7 +2,7 @@
 	debuglog.h
 	logging console output to a file
 
-	$Id: debuglog.h,v 1.1 2007-03-15 13:36:59 sezero Exp $
+	$Id: debuglog.h,v 1.2 2007-04-19 14:05:44 sezero Exp $
 */
 
 #ifndef __DEBUGLOG_H
@@ -27,7 +27,7 @@
 extern	unsigned int		con_debuglog;
 
 void LOG_Print (const char *logdata);
-void LOG_Printf(const char *fmt, ...) _FUNC_PRINTF(1);
+void LOG_Printf(const char *fmt, ...) __attribute__((format(printf,1,2)));
 
 struct quakeparms_s;
 void LOG_Init (struct quakeparms_s *parms);
