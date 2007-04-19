@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.18 2007-04-19 09:36:42 sezero Exp $
+	$Id: quakefs.c,v 1.19 2007-04-19 09:58:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -163,7 +163,7 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 {
 	dpackheader_t	header;
 	int				i;
-	packfile_t		*newfiles;
+	pakfiles_t		*newfiles;
 	int				numpackfiles;
 	pack_t			*pack;
 	FILE			*packhandle;
@@ -187,7 +187,7 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 	if (numpackfiles > MAX_FILES_IN_PACK)
 		Sys_Error ("%s has %i files", packfile, numpackfiles);
 
-	newfiles = Z_Malloc (numpackfiles * sizeof(packfile_t), Z_MAINZONE);
+	newfiles = Z_Malloc (numpackfiles * sizeof(pakfiles_t), Z_MAINZONE);
 
 	fseek (packhandle, header.dirofs, SEEK_SET);
 	fread (&info, 1, header.dirlen, packhandle);
