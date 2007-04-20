@@ -1,6 +1,6 @@
 /*
 	scriplib.c
-	$Id: scriplib.c,v 1.4 2007-03-14 21:04:32 sezero Exp $
+	$Id: scriplib.c,v 1.5 2007-04-20 13:59:37 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -16,12 +16,11 @@ PARSING STUFF
 =============================================================================
 */
 
-char    token[MAXTOKEN];
-char    *scriptbuffer,*script_p,*scriptend_p;
-int             grabbed;
-int             scriptline;
+char		token[MAXTOKEN];
+static char	*scriptbuffer, *script_p, *scriptend_p;
+int		scriptline;
 qboolean	endofscript;
-qboolean	tokenready;	// only true if UnGetToken was just called
+static qboolean	tokenready;	// only true if UnGetToken was just called
 
 /*
 ==============
