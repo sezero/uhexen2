@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.2 2007-04-20 07:46:08 sezero Exp $
+	$Id: util_io.c,v 1.3 2007-04-20 09:38:26 sezero Exp $
 */
 
 
@@ -76,6 +76,23 @@ int Q_filelength (FILE *f)
 	end = ftell (f);
 	fseek (f, pos, SEEK_SET);
 	return end;
+}
+
+/*
+============
+FileTime
+
+returns -1 if not present
+============
+*/
+int FileTime (const char *path)
+{
+	struct	stat	buf;
+
+	if (stat (path, &buf) == -1)
+		return -1;
+
+	return buf.st_mtime;
 }
 
 /*
