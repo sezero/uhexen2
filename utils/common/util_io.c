@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.1 2007-02-13 13:34:36 sezero Exp $
+	$Id: util_io.c,v 1.2 2007-04-20 07:46:08 sezero Exp $
 */
 
 
@@ -135,7 +135,7 @@ SafeWrite
 void SafeWrite (FILE *f, const void *buffer, int count)
 {
 	if (fwrite(buffer, 1, count, f) != (size_t)count)
-		Error("File read failure");
+		Error("File write failure");
 }
 
 /*
@@ -184,6 +184,9 @@ CreatePath
 void CreatePath (char *path)
 {
 	char	*ofs, c;
+
+	if (path[1] == ':')
+		path += 2;
 
 	for (ofs = path+1 ; *ofs ; ofs++)
 	{
