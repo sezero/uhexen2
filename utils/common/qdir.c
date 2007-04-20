@@ -1,7 +1,7 @@
 /*
 	qdir.c
 
-	$Id: qdir.c,v 1.5 2007-02-17 07:56:17 sezero Exp $
+	$Id: qdir.c,v 1.6 2007-04-20 07:30:12 sezero Exp $
 */
 
 
@@ -10,27 +10,32 @@
 #include "util_io.h"
 
 /*
-	qdir will hold the path up to the quake directory,
-	including the slash:
-
-	f:\quake\
-	/raid/quake/
-
-	gamedir will hold qdir + the game directory (id1, id2, etc)
+	qdir will hold the path up to the base hexen2 directory (as
+	defined in BUILDDIR), including the slash:
+		c:\h2mp\
+		/usr/local/games/h2mp/
+	gamedir will hold qdir + the game directory (data1, portals,
+	etc). SetQdirFromPath requires an input containing both the
+	basedir and the gamedir:
+		c:\h2mp\data1\somefile.dat
+		/usr/local/games/h2mp/data1/somefile.dat
+	or similar partials:
+		data1\somefile.dat
+		h2mp/data1/somefile.dat
 */
+
+#define	BUILDDIR	"h2mp"
 
 char		qdir[1024];
 char		gamedir[1024];
 qboolean	archive;
 char		archivedir[1024];
 
-#define BUILDDIR "h2mp"
-
 
 void SetQdirFromPath (char *path)
 {
 	char	temp[1024];
-	char	*c;
+	char	*c, *mark;
 
 	if (!(path[0] == '/' || path[0] == '\\' || path[1] == ':'))
 	{	// path is partial
@@ -39,16 +44,25 @@ void SetQdirFromPath (char *path)
 		path = temp;
 	}
 
-	// search for "quake" in path
-
-	for (c = path ; *c ; c++)
+	c = path;
+	while (*c)
+		++c;
+	while (c > path && *c != '/' && *c != '\\')
+		--c;
+	if (c == path)
+		goto end;
+	mark = c + 1;
+	--c;
+	// search for the basedir (as defined in BUILDDIR) in path
+	while (c != path)
 	{
 		if (!Q_strncasecmp (c, BUILDDIR, sizeof(BUILDDIR)-1))
 		{
 			strncpy (qdir, path, c+sizeof(BUILDDIR)-path);
 			printf ("qdir: %s\n", qdir);
+			// now search for a gamedir in path
 			c += sizeof(BUILDDIR);
-			while (*c)
+			while (c < mark)
 			{
 				if (*c == '/' || *c == '\\')
 				{
@@ -59,11 +73,11 @@ void SetQdirFromPath (char *path)
 				c++;
 			}
 			Error ("No gamedir in %s", path);
-			return;
 		}
+		--c;
 	}
-
-	Error ("%s: no %s in %s", __FUNCTION__, BUILDDIR, path);
+end:
+	Error ("%s: no '%s' in %s", __FUNCTION__, BUILDDIR, path);
 }
 
 char *ExpandArg (const char *path)
