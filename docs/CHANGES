@@ -3,6 +3,43 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-04-16/20 (CVS):
+    * added an extra check to inverse_pal loading to make sure that LoadStackFile
+      didn't allocate it on the hunk.
+    * minor cleanup in launcher/config_file.c.
+    * utilities: fixed the utterly broken project path decision in qbsp. it
+      doesn't scan for a maps directory anymore.
+    * utilities: added the new bsp2wal tool: It extracts all textures from
+      a bsp file. the WAL format, based on a quake2 WAL structure and put
+      together by Jacques 'Korax' Krige, is documented in the hwal.h header.
+    * utilities: moved some definitions from bsp2wal.c to hwal.h header.
+    * added new cvar r_texture_external: whether to use external textures.
+      defaults to 0.
+    * added abilitiy to load external wal texture files instead of internal
+      pixel data of the brush model. works for both the opengl and software
+      renderer versions. adapted from Jacques Krige's code. depends on the
+      r_texture_external cvar being set to 1.
+    * finally merged quakeio stuff into quakefs. separating the two didn't serve
+      to much, so this seemed best. this will be the final api in 1.4.2-final.
+    * updated the compiler.h header.
+    * bsp2wal.c, bspfile.c: constifications.
+    * moved the in-memory structures from pakfile.h into a new pak.h. they
+      are only used by quakefs. put a copy of the pakfile header into the
+      utilities common directory and used it in relevant places.
+    * resolved pakfile type conflicts resulting from the previous commit.
+    * removed the now unnecessary _FUNC_PRINTF macro and directly used
+      __attribute__((format(printf,n,n+1)))
+    * added the noreturn attribute to certain functions.
+    * renamed dedicated server (h2ded) version of Host_Error to SV_Error,
+      which is of noreturn attribute, and defined Host_Error as SV_Error.
+    * reverted the dedicated server Host_Error name change: unnecessary.
+      properly ifdef'ed the header for two different versions.
+    * some fixes to, and a better documentation for SetQdirFromPath(). this
+      functionality is actually a major pain...
+    * minor fixes in the utilities io functions.
+    * utilities: added the FileTime utility function.
+    * tiny clean-up in scriplib of genmodel.
+
 2007-04-15 (CVS):
     * cvar update: added a new CVAR_REGISTERED flag set during the initial
       registration process. Cvar_RegisterVariable doesn't allocate a dummy
