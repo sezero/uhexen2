@@ -3,6 +3,8 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-04-21 (CVS):
+    * updated the build_all scripts for the utilities. fixed its README file.
 2007-04-16/20 (CVS):
     * added an extra check to inverse_pal loading to make sure that LoadStackFile
       didn't allocate it on the hunk.
