@@ -4,7 +4,7 @@ UHEXEN2_TOP=..
 . $UHEXEN2_TOP/scripts/cross_defs
 
 BIN_FILES="bin/hcc.exe bin/vis.exe bin/qbsp.exe bin/light.exe
-bin/qfiles.exe bin/genmodel.exe bin/bspinfo.exe
+bin/qfiles.exe bin/genmodel.exe bin/bspinfo.exe bin/bsp2wal.exe
 bin/jsh2colour.exe
 bin/dhcc.exe hcc_old/hcc.exe"
 

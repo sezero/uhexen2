@@ -2,7 +2,7 @@
 
 EXE_EXT=
 BIN_FILES="bin/hcc bin/vis bin/qbsp bin/light 
-bin/qfiles bin/genmodel bin/bspinfo
+bin/qfiles bin/genmodel bin/bspinfo bin/bsp2wal
 bin/jsh2colour
 bin/dhcc hcc_old/hcc"
 
