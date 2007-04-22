@@ -1,6 +1,6 @@
 /*
 	bsp2wal.c
-	$Id: bsp2wal.c,v 1.3 2007-04-19 09:15:36 sezero Exp $
+	$Id: bsp2wal.c,v 1.4 2007-04-22 08:12:48 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -83,7 +83,7 @@ static void WriteWALFile (const char *bspfilename)
 		sprintf (tmp, "%s.wal", mt->name);
 		if (tmp[0] == '*')
 			tmp[0] = WAL_REPLACE_ASTERIX;
-		printf ("%15s -> %s\n", mt->name, workpath);
+		printf ("%15s (%4i x %-4i) -> %s\n", mt->name, mt->width, mt->height, workpath);
 		SaveFile (workpath, (byte *)wt, sizeof(miptex_wal_t) + pixels);
 
 		free (wt);
