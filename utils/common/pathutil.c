@@ -2,7 +2,7 @@
 	pathutil.c
 	filename handling utilities
 
-	$Id: pathutil.c,v 1.1 2007-02-13 13:34:36 sezero Exp $
+	$Id: pathutil.c,v 1.2 2007-04-22 08:10:54 sezero Exp $
 */
 
 
@@ -78,7 +78,7 @@ void StripExtension (char *path)
 	while (length > 0 && path[length] != '.')
 	{
 		length--;
-		if (path[length] == '/')
+		if (path[length] == '/' || path[length] == '\\')
 			return;		// no extension
 	}
 	if (length)
