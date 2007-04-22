@@ -61,9 +61,9 @@ QFILESOBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/qdir.o \
 	$(COMMONDIR)/crc.o \
 	$(COMMONDIR)/q_endian.o \
-	$(COMMONDIR)/strlcat.o \
-	$(COMMONDIR)/strlcpy.o \
 	qfiles.o
+#	$(COMMONDIR)/strlcat.o \
+#	$(COMMONDIR)/strlcpy.o \
 
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc

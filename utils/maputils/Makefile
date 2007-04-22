@@ -72,10 +72,10 @@ COMMONOBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/q_endian.o \
 	$(COMMONDIR)/util_io.o \
 	$(COMMONDIR)/pathutil.o \
-	$(COMMONDIR)/strlcat.o \
-	$(COMMONDIR)/strlcpy.o \
 	mathlib.o \
 	bspfile.o
+#	$(COMMONDIR)/strlcat.o \
+#	$(COMMONDIR)/strlcpy.o \
 
 LIGHTOBJS= entities.o \
 	light.o \
@@ -101,8 +101,19 @@ QBSPOBJS= brush.o \
 	tjunc.o \
 	writebsp.o
 
-BSPINFOBJS= bspinfo.o
-BSP2WALOBJS= bsp2wal.o
+BSPINFOBJS= $(COMMONDIR)/cmdlib.o \
+	$(COMMONDIR)/q_endian.o \
+	$(COMMONDIR)/util_io.o \
+	$(COMMONDIR)/pathutil.o \
+	bspfile.o \
+	bspinfo.o
+
+BSP2WALOBJS= $(COMMONDIR)/cmdlib.o \
+	$(COMMONDIR)/q_endian.o \
+	$(COMMONDIR)/util_io.o \
+	$(COMMONDIR)/pathutil.o \
+	bspfile.o \
+	bsp2wal.o
 
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc
@@ -116,11 +127,11 @@ $(VIS) : $(COMMONOBJS) $(VISOBJS)
 $(QBSP) : $(COMMONOBJS) $(QBSPOBJS)
 	$(LINKER) -o $(DESTDIR)/$(QBSP) $(COMMONOBJS) $(QBSPOBJS) $(LDFLAGS) $(LDLIBS)
 
-$(BSPINFO) : $(COMMONOBJS) $(BSPINFOBJS)
-	$(LINKER) -o $(DESTDIR)/$(BSPINFO) $(COMMONOBJS) $(BSPINFOBJS) $(LDFLAGS) $(LDLIBS)
+$(BSPINFO) : $(BSPINFOBJS)
+	$(LINKER) -o $(DESTDIR)/$(BSPINFO) $(BSPINFOBJS) $(LDFLAGS)
 
-$(BSP2WAL) : $(COMMONOBJS) $(BSP2WALOBJS)
-	$(LINKER) -o $(DESTDIR)/$(BSP2WAL) $(COMMONOBJS) $(BSP2WALOBJS) $(LDFLAGS) $(LDLIBS)
+$(BSP2WAL) : $(BSP2WALOBJS)
+	$(LINKER) -o $(DESTDIR)/$(BSP2WAL) $(BSP2WALOBJS) $(LDFLAGS)
 
 clean : 
 	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core

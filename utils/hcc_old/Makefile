@@ -60,14 +60,14 @@ HCCOBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/util_io.o \
 	$(COMMONDIR)/q_endian.o \
 	$(COMMONDIR)/crc.o \
-	$(COMMONDIR)/strlcat.o \
-	$(COMMONDIR)/strlcpy.o \
 	expr.o \
 	hcc.o \
 	pr_comp.o \
 	pr_lex.o \
 	pr_parse.o \
 	stmt.o
+#	$(COMMONDIR)/strlcat.o \
+#	$(COMMONDIR)/strlcpy.o \
 
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc

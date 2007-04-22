@@ -64,8 +64,6 @@ JS_OBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/q_endian.o \
 	$(COMMONDIR)/util_io.o \
 	$(COMMONDIR)/pathutil.o \
-	$(COMMONDIR)/strlcat.o \
-	$(COMMONDIR)/strlcpy.o \
 	mathlib.o \
 	bspfile.o \
 	entities.o \
@@ -74,6 +72,8 @@ JS_OBJS= $(COMMONDIR)/cmdlib.o \
 	threads.o \
 	trace.o \
 	tyrlite.o
+#	$(COMMONDIR)/strlcat.o \
+#	$(COMMONDIR)/strlcpy.o \
 
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc

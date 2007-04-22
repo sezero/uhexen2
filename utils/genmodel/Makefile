@@ -63,14 +63,14 @@ GENMODELOBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/q_endian.o \
 	$(COMMONDIR)/util_io.o \
 	$(COMMONDIR)/pathutil.o \
-	$(COMMONDIR)/strlcat.o \
-	$(COMMONDIR)/strlcpy.o \
 	$(COMMONDIR)/qdir.o \
 	mathlib.o \
 	loadtri.o \
 	scriplib.o \
 	token.o \
 	genmodel.o
+#	$(COMMONDIR)/strlcat.o \
+#	$(COMMONDIR)/strlcpy.o \
 
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc
