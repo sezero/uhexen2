@@ -2,7 +2,7 @@
 	cmdlib.c
 	functions common to all of the utilities
 
-	$Id: cmdlib.c,v 1.9 2007-02-13 13:34:35 sezero Exp $
+	$Id: cmdlib.c,v 1.10 2007-04-22 16:00:10 sezero Exp $
 */
 
 
@@ -269,11 +269,11 @@ void Error (const char *error, ...)
 {
 	va_list argptr;
 
-	printf ("************ ERROR ************\n");
+	printf ("*** ERROR: ***\n");
 	va_start (argptr, error);
 	vprintf (error, argptr);
 	va_end (argptr);
-	printf ("\n");
+	printf ("\n\n");
 	exit (1);
 }
 
