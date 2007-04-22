@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.3 2007-04-20 09:38:26 sezero Exp $
+	$Id: util_io.c,v 1.4 2007-04-22 08:10:16 sezero Exp $
 */
 
 
@@ -14,7 +14,12 @@
 #include <errno.h>
 #ifdef _WIN32
 #include <conio.h>
+#include <io.h>
 #include <direct.h>
+#else	/* Unix */
+#include <unistd.h>
+#include <dirent.h>
+#include <fnmatch.h>
 #endif
 #include "cmdlib.h"
 
@@ -35,6 +40,141 @@
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
 // CODE --------------------------------------------------------------------
+
+#ifdef _WIN32
+
+static long			findhandle;
+static struct _finddata_t	finddata;
+
+char *Q_FindNextFile (void)
+{
+	int		retval;
+
+	if (!findhandle || findhandle == -1)
+		return NULL;
+
+	retval = _findnext (findhandle, &finddata);
+	while (retval != -1)
+	{
+		if (finddata.attrib & _A_SUBDIR)
+		{
+			retval = _findnext (findhandle, &finddata);
+			continue;
+		}
+
+		return finddata.name;
+	}
+
+	return NULL;
+}
+
+char *Q_FindFirstFile (const char *path, const char *pattern)
+{
+	char	tmp_buf[256];
+
+	if (findhandle)
+		Error ("FindFirst without FindClose");
+
+	snprintf (tmp_buf, sizeof(tmp_buf), "%s/%s", path, pattern);
+	findhandle = _findfirst (tmp_buf, &finddata);
+
+	if (findhandle != -1)
+	{
+		if (finddata.attrib & _A_SUBDIR)
+			return Q_FindNextFile();
+		else
+			return finddata.name;
+	}
+
+	return NULL;
+}
+
+void Q_FindClose (void)
+{
+	if (findhandle != -1)
+		_findclose (findhandle);
+	findhandle = 0;
+}
+
+#else	/* FindFile for Unix */
+
+static DIR		*finddir;
+static struct dirent	*finddata;
+static char		*findpath, *findpattern;
+static char		matchpath[256];
+
+void Q_FindClose (void)
+{
+	if (finddir != NULL)
+		closedir(finddir);
+	if (findpath != NULL)
+		free (findpath);
+	if (findpattern != NULL)
+		free (findpattern);
+	finddir = NULL;
+	findpath = NULL;
+	findpattern = NULL;
+}
+
+char *Q_FindNextFile (void)
+{
+	struct stat	test;
+
+	if (!finddir)
+		return NULL;
+
+	do {
+		finddata = readdir(finddir);
+		if (finddata != NULL)
+		{
+			if (!fnmatch (findpattern, finddata->d_name, FNM_PATHNAME))
+			{
+				snprintf(matchpath, sizeof(matchpath), "%s/%s", findpath, finddata->d_name);
+				if ( (stat(matchpath, &test) == 0)
+							&& S_ISREG(test.st_mode) )
+					return finddata->d_name;
+			}
+		}
+	} while (finddata != NULL);
+
+	return NULL;
+}
+
+char *Q_FindFirstFile (const char *path, const char *pattern)
+{
+	size_t	tmp_len;
+
+	if (finddir)
+		Error ("FindFirst without FindClose");
+
+	finddir = opendir (path);
+	if (!finddir)
+		return NULL;
+
+	tmp_len = strlen (pattern);
+	findpattern = (char *) malloc (tmp_len + 1);
+	if (!findpattern)
+	{
+		Q_FindClose();
+		return NULL;
+	}
+	strcpy (findpattern, pattern);
+	findpattern[tmp_len] = '\0';
+	tmp_len = strlen (path);
+	findpath = (char *) malloc (tmp_len + 1);
+	if (!findpath)
+	{
+		Q_FindClose();
+		return NULL;
+	}
+	strcpy (findpath, path);
+	findpath[tmp_len] = '\0';
+	if (findpath[tmp_len-1] == '/' || findpath[tmp_len-1] == '\\')
+		findpath[tmp_len-1] = '\0';
+
+	return Q_FindNextFile();
+}
+#endif	/* End of FindFile */
 
 void Q_getwd (char *out)
 {
