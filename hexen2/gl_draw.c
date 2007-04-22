@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.107 2007-04-18 13:31:11 sezero Exp $
+	$Id: gl_draw.c,v 1.108 2007-04-22 14:19:06 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1936,7 +1936,7 @@ GLuint GL_LoadTexture (const char *identifier, int width, int height, byte *data
 					height != glt->height ||
 					mipmap != glt->mipmap )
 				{	// not the same, delete and rebind to new image
-					Con_Printf ("Texture cache mismatch: %d, %s, reloading\n", glt->texnum, identifier);
+					Con_DPrintf ("Texture cache mismatch: %d, %s, reloading\n", glt->texnum, identifier);
 					glDeleteTextures_fp (1, &(glt->texnum));
 					goto gl_rebind;
 				}

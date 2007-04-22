@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: gl_rmisc.c,v 1.40 2007-04-18 13:31:16 sezero Exp $
+	$Id: gl_rmisc.c,v 1.41 2007-04-22 14:19:06 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -490,7 +490,7 @@ void D_ClearOpenGLTextures (int last_tex)
 
 	// Clear player pic cache
 	memset(plyrtex, 0, MAX_PLAYER_CLASS * 16 * 16 * sizeof(GLuint));
-	Con_Printf ("Purged OpenGL textures\n");
+	Con_DPrintf ("Purged OpenGL textures\n");
 }
 
 void D_FlushCaches (void)

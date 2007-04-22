@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.19 2007-04-19 09:58:45 sezero Exp $
+	$Id: quakefs.c,v 1.20 2007-04-22 14:19:06 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -968,7 +968,7 @@ size_t FS_OpenFile (const char *filename, FILE **file, qboolean override_pack)
 		}
 	}
 
-	Sys_Printf ("%s: can't find %s\n", __FUNCTION__, filename);
+	Sys_DPrintf ("%s: can't find %s\n", __FUNCTION__, filename);
 
 	*file = NULL;
 	fs_filepath = NULL;
