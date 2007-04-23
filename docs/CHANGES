@@ -3,8 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2007-04-21 (CVS):
+2007-04-21/23 (CVS):
     * updated the build_all scripts for the utilities. fixed its README file.
+    * added a findfirst/findnext implementation to the utilities io library.
+    * minor fix to utilities StripExtension function.
+    * removed strlcat and strlcpy from the utilities build: they aren't actually
+      used there, yet.
+    * made the bsp2wal tool to report the texture dimensions it extracted.
+    * made some debug messages to appear in developer mode only.
+    * minor cosmetic update to the utilities' Error report.
+    * added the -miponly option to the bsp2wal tool. did some clean-up.
+
 2007-04-16/20 (CVS):
     * added an extra check to inverse_pal loading to make sure that LoadStackFile
       didn't allocate it on the hunk.
