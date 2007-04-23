@@ -2,7 +2,7 @@
 	hwal.h
 	Hexen II, .WAL texture file format
 
-	$Id: hwal.h,v 1.1 2007-04-18 10:41:08 sezero Exp $
+	$Id: hwal.h,v 1.2 2007-04-23 13:08:29 sezero Exp $
 */
 
 #ifndef __HWAL_H
@@ -33,8 +33,8 @@ typedef struct miptex_wal_s
 
 
 #define	WAL_EXT_DIRNAME		"textures"
-#define	WAL_REPLACE_ASTERIX		'-'
-	/* character to replace '*' in texture names. consider '_' ?? */
+#define	WAL_REPLACE_ASTERIX		'_'
+			/* character to replace '*' in texture names. */
 
 
 #endif	/* __HWAL_H */
