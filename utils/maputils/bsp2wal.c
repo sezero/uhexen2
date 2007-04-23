@@ -1,6 +1,6 @@
 /*
 	bsp2wal.c
-	$Id: bsp2wal.c,v 1.4 2007-04-22 08:12:48 sezero Exp $
+	$Id: bsp2wal.c,v 1.5 2007-04-23 09:41:43 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -17,8 +17,32 @@
 #define	HWAL_SHIFT		(sizeof(miptex_wal_t) - sizeof(miptex_t))
 
 static char	workpath[1024];
+static int		miponly;
 
 //===========================================================================
+
+static char *MakeWorkPath (const char *infilename)
+{
+	char		*tmp;
+
+	memset (workpath, 0, sizeof(workpath));
+	tmp = strrchr (infilename, '/');
+	if (!tmp)
+		tmp = strrchr (infilename, '\\');
+	if (!tmp)
+		tmp = workpath;
+	else
+	{
+		tmp++;
+		memcpy (workpath, infilename, tmp - infilename);
+		tmp = workpath + (tmp - infilename);
+	}
+	memcpy (tmp, WAL_EXT_DIRNAME, sizeof(WAL_EXT_DIRNAME));
+	tmp += sizeof(WAL_EXT_DIRNAME)-1;
+	Q_mkdir (workpath);
+	*tmp++ = '/';
+	return tmp;
+}
 
 static void WriteWALFile (const char *bspfilename)
 {
@@ -31,24 +55,9 @@ static void WriteWALFile (const char *bspfilename)
 
 	LoadBSPFile (bspfilename);
 
-	printf ("Extracting HWAL textures from %s...\n", bspfilename);
+	printf ("Extracting MIPTEX data from %s...\n", bspfilename);
 
-	memset (workpath, 0, sizeof(workpath));
-	tmp = strrchr (bspfilename, '/');
-	if (!tmp)
-		tmp = strrchr (bspfilename, '\\');
-	if (!tmp)
-		tmp = workpath;
-	else
-	{
-		tmp++;
-		memcpy (workpath, bspfilename, tmp - bspfilename);
-		tmp = workpath + (tmp - bspfilename);
-	}
-	memcpy (tmp, WAL_EXT_DIRNAME, sizeof(WAL_EXT_DIRNAME));
-	tmp += sizeof(WAL_EXT_DIRNAME)-1;
-	Q_mkdir (workpath);
-	*tmp++ = '/';
+	tmp = MakeWorkPath (bspfilename);
 
 	m = (dmiptexlump_t *)dtexdata;
 	for (i = 0; i < m->nummiptex; i++)
@@ -61,10 +70,19 @@ static void WriteWALFile (const char *bspfilename)
 		mt = (miptex_t *)((byte *)m + m->dataofs[i]);
 		mt->width = LittleLong (mt->width);
 		mt->height = LittleLong (mt->height);
-		for (j = 0; j < MIPLEVELS; j++)
-			mt->offsets[j] = LittleLong (mt->offsets[j]);
-
 		pixels = mt->width * mt->height / 64 * 85;
+
+		if (miponly)
+		{
+			sprintf (tmp, "%s.mip", mt->name);
+			if (tmp[0] == '*')
+				tmp[0] = WAL_REPLACE_ASTERIX;
+			printf ("%15s (%4i x %-4i) -> %s\n", mt->name, mt->width, mt->height, workpath);
+			mt->width = LittleLong (mt->width);
+			mt->height = LittleLong (mt->height);
+			SaveFile (workpath, (byte *)mt, sizeof(miptex_t) + pixels);
+			continue;
+		}
 
 		wt = malloc (sizeof(miptex_wal_t) + pixels);
 		memset (wt, 0, sizeof(miptex_wal_t));
@@ -75,7 +93,10 @@ static void WriteWALFile (const char *bspfilename)
 		wt->height = LittleLong (mt->height);
 		strcpy(wt->name, mt->name);
 		for (j = 0; j < MIPLEVELS; j++)
+		{
+			mt->offsets[j] = LittleLong (mt->offsets[j]);
 			wt->offsets[j] = LittleLong (HWAL_SHIFT + mt->offsets[j]);
+		}
 
 		memcpy (wt+1,  (byte *)m + m->dataofs[i] + sizeof(miptex_t), pixels);
 
@@ -90,15 +111,45 @@ static void WriteWALFile (const char *bspfilename)
 	}
 }
 
+static void print_help (void)
+{
+	printf ("BSP2WAL v1.0\n");
+	printf ("Extracts all miptex data from bsp files, converts them into\n");
+	printf ("HWAL format. The -miponly command line switch makes it skip\n");
+	printf ("the conversion and write them directly in miptex format.\n");
+	printf ("Usage: bsp2wal [-miponly] bspfile [bspfiles]\n");
+}
+
 int main (int argc, char **argv)
 {
 	int			i;
 	char		source[1024];
 
-	if (argc == 1)
-		Error ("usage: bsp2wal bspfile [bspfiles]");
-
 	for (i = 1 ; i < argc ; i++)
+	{
+		if (!strcmp(argv[i], "-miponly"))
+			miponly = 1;
+		else if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help"))
+		{
+			print_help ();
+			exit (0);
+		}
+		else if (argv[i][0] == '-')
+		{
+			print_help ();
+			Error ("Unknown option \"%s\"", argv[i]);
+		}
+		else
+			break;
+	}
+
+	if (i == argc)
+	{
+		print_help ();
+		Error ("No input file specified.");
+	}
+
+	for ( ; i < argc ; i++)
 	{
 		printf ("---------------------\n");
 		strcpy (source, argv[i]);
