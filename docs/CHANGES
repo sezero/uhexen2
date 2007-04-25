@@ -3,6 +3,20 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-04-25 (CVS):
+    * gl_rlight.c, gl_rmain.c: Lighting fixes and improvements:
+      Removed the broken JSHexen2 version of RecursiveLightPointColor and
+      merged LordHavoc's implementation from QSG. Made R_DrawViewModel to
+      set shadelight along with ambientlight; R_DrawAliasModel no longer
+      needs to calc light for the viewmodel.  R_DrawAliasModel now honors
+      the EF_ROTATE flag for the GL_RGBA path: bonus items are no longer
+      dark and look the same way they do with GL_LUMINANCE lightmaps.
+      R_DrawAliasModel now checks the model flags first before doing light
+      calculations: unless the model is MLS_NONE, lighting information is
+      not used, no need to spend time with R_LightPoint stuff.
+      All of these changes had to be done zillions of months ago, how we
+      missed them for this much time is a mystery...
+
 2007-04-21/23 (CVS):
     * updated the build_all scripts for the utilities. fixed its README file.
     * added a findfirst/findnext implementation to the utilities io library.
