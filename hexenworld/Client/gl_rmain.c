@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.44 2007-04-18 08:43:32 sezero Exp $
+	$Id: gl_rmain.c,v 1.45 2007-04-25 20:08:27 sezero Exp $
 */
 
 
@@ -394,7 +394,6 @@ static float	r_avertexnormal_dots[SHADEDOT_QUANT][256] = {
 #include "anorm_dots.h"
 };
 
-static float	shadelightcolor[4];
 static float	*shadedots = r_avertexnormal_dots[0];
 
 static int	lastposenum;
@@ -509,7 +508,7 @@ static void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 			if (gl_lightmap_format == GL_RGBA)
 			{
 				l = shadedots[verts->lightnormalindex];
-				glColor4f_fp (l * shadelightcolor[0], l * shadelightcolor[1], l * shadelightcolor[2], model_constant_alpha);
+				glColor4f_fp (l * lightcolor[0], l * lightcolor[1], l * lightcolor[2], model_constant_alpha);
 			}
 			else
 			{
@@ -653,7 +652,6 @@ static void R_DrawAliasModel (entity_t *e)
 	glpic_t		*gl;
 	char		temp[80];
 	int		mls;
-	int		*lpc;
 	vec3_t		adjust_origin;
 
 	clmodel = currententity->model;
@@ -667,71 +665,22 @@ static void R_DrawAliasModel (entity_t *e)
 	VectorCopy (currententity->origin, r_entorigin);
 	VectorSubtract (r_origin, r_entorigin, modelorg);
 
-	//
-	// get lighting information
-	//
-
-	VectorCopy(currententity->origin, adjust_origin);
-	adjust_origin[2] += (currententity->model->mins[2] + currententity->model->maxs[2]) / 2;
-	ambientlight = shadelight = R_LightPoint (adjust_origin);
-
-	if (gl_lightmap_format == GL_RGBA)
-	{	// get lighting information
-		lpc = R_LightPointColour (adjust_origin);
-		shadelightcolor[0] = (float) lpc[0];
-		shadelightcolor[1] = (float) lpc[1];
-		shadelightcolor[2] = (float) lpc[2];
-		shadelightcolor[3] = (float) lpc[3];
-// not using lpc for ambientlight
-//		ambientlight = shadelightcolor[3];
-	}
-
-	// always give the gun some light
-// R_DrawViewModel() already does this for us.
-//	if (e == &cl.viewent && ambientlight < 24)
-//		ambientlight = shadelight = 24;
-
-	for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
-	{
-		if (cl_dlights[lnum].die >= cl.time)
-		{
-			VectorSubtract (currententity->origin,
-							cl_dlights[lnum].origin,
-							dist);
-			add = cl_dlights[lnum].radius - VectorLength(dist);
-
-			if (add > 0)
-			{
-				ambientlight += add;
-				//ZOID models should be affected by dlights as well
-				shadelight += add;
-				shadelightcolor[0] += (cl_dlights[lnum].color[0] * add);
-				shadelightcolor[1] += (cl_dlights[lnum].color[1] * add);
-				shadelightcolor[2] += (cl_dlights[lnum].color[2] * add);
-				shadelightcolor[3] += add;
-			}
-		}
-	}
-
-	// clamp lighting so it doesn't overbright as much
-	if (ambientlight > 128)
-		ambientlight = 128;
-	if (ambientlight + shadelight > 192)
-		shadelight = 192 - ambientlight;
-
 	mls = currententity->drawflags & MLS_MASKIN;
 	if (currententity->model->flags & EF_ROTATE)
 	{
 		ambientlight = shadelight =
+			lightcolor[0] =
+			lightcolor[1] =
+			lightcolor[2] =
 					60+34+sin(currententity->origin[0]
 						+ currententity->origin[1]
 						+ (cl.time*3.8))*34;
 	}
 	else if (mls == MLS_ABSLIGHT)
 	{
-		shadelightcolor[0] =
-		shadelightcolor[1] =
-		shadelightcolor[2] =
+		lightcolor[0] =
+		lightcolor[1] =
+		lightcolor[2] =
 		ambientlight =
 		shadelight =
 				currententity->abslight;
@@ -739,18 +688,51 @@ static void R_DrawAliasModel (entity_t *e)
 	else if (mls != MLS_NONE)
 	{
 		// Use a model light style (25-30)
-		shadelightcolor[0] =
-		shadelightcolor[1] =
-		shadelightcolor[2] =
+		lightcolor[0] =
+		lightcolor[1] =
+		lightcolor[2] =
 		ambientlight =
 		shadelight =
 				d_lightstylevalue[24+mls]/2;
 	}
+	else if (e != &cl.viewent)	// R_DrawViewModel() already does viewmodel lighting.
+	{
+		// get lighting information
+		VectorCopy(currententity->origin, adjust_origin);
+		adjust_origin[2] += (currententity->model->mins[2] + currententity->model->maxs[2]) / 2;
+		if (gl_lightmap_format == GL_RGBA)
+			ambientlight = R_LightPointColor (adjust_origin);
+		else
+			ambientlight = shadelight = R_LightPoint (adjust_origin);
+
+		for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
+		{
+			if (cl_dlights[lnum].die >= cl.time)
+			{
+				VectorSubtract (currententity->origin, cl_dlights[lnum].origin, dist);
+				add = cl_dlights[lnum].radius - VectorLength(dist);
+				if (add > 0)
+				{
+					ambientlight += add;
+					//ZOID models should be affected by dlights as well
+					shadelight += add;
+					lightcolor[0] += (cl_dlights[lnum].color[0] * add);
+					lightcolor[1] += (cl_dlights[lnum].color[1] * add);
+					lightcolor[2] += (cl_dlights[lnum].color[2] * add);
+				}
+			}
+		}
+
+		// clamp lighting so it doesn't overbright as much
+		if (ambientlight > 128)
+			ambientlight = 128;
+		if (ambientlight + shadelight > 192)
+			shadelight = 192 - ambientlight;
+	}
 
 	shadedots = r_avertexnormal_dots[((int)(e->angles[1] * (SHADEDOT_QUANT / 360.0))) & (SHADEDOT_QUANT - 1)];
 	shadelight = shadelight / 200.0;
-
-	VectorScale(shadelightcolor, 1.0f / 200.0f, shadelightcolor);
+	VectorScale(lightcolor, 1.0f / 200.0f, lightcolor);
 
 	an = e->angles[1] / 180 * M_PI;
 	shadevector[0] = cos(-an);
@@ -1350,7 +1332,6 @@ static void R_DrawViewModel (void)
 	vec3_t		dist;
 	float		add;
 	dlight_t	*dl;
-	int		*lpc;
 
 	if (cl.spectator)
 		return;
@@ -1360,28 +1341,24 @@ static void R_DrawViewModel (void)
 	if (!currententity->model)
 		return;
 
-// not using lpc for ambientlight
-	ambientlight = R_LightPoint (currententity->origin);
-	if (ambientlight < 24)
-		ambientlight = 24;	// always give some light on gun
-
 	if (gl_lightmap_format == GL_RGBA)
 	{
-		lpc = R_LightPointColour (currententity->origin);
-		// always give some light on gun
-// not using lpc for ambientlight
-//		ambientlight = (float) lpc[3] > 24 ? lpc[3] : 24;
-		shadelightcolor[0] = (float) lpc[0] > 24 ? lpc[0] : 24;
-		shadelightcolor[1] = (float) lpc[1] > 24 ? lpc[1] : 24;
-		shadelightcolor[2] = (float) lpc[2] > 24 ? lpc[2] : 24;
-		shadelightcolor[3] = (float) lpc[3] > 24 ? lpc[3] : 24;
+		ambientlight = R_LightPointColor (currententity->origin);
+		if (lightcolor[0] < 24)
+			lightcolor[0] = 24;
+		if (lightcolor[1] < 24)
+			lightcolor[1] = 24;
+		if (lightcolor[2] < 24)
+			lightcolor[2] = 24;
+		if (ambientlight < 24)
+			ambientlight = 24;		// always give some light on gun
 	}
-//	else
-//	{
-//		ambientlight = R_LightPoint (currententity->origin);
-//		if (ambientlight < 24)
-//			ambientlight = 24;	// always give some light on gun
-//	}
+	else
+	{
+		ambientlight = shadelight = R_LightPoint (currententity->origin);
+		if (ambientlight < 24)
+			ambientlight = shadelight = 24;	// always give some light on gun
+	}
 
 // add dynamic lights
 	for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
@@ -1398,10 +1375,9 @@ static void R_DrawViewModel (void)
 		{
 			if (gl_lightmap_format == GL_RGBA)
 			{
-				shadelightcolor[0] += (float) (dl->color[0] * add);
-				shadelightcolor[1] += (float) (dl->color[1] * add);
-				shadelightcolor[2] += (float) (dl->color[2] * add);
-				shadelightcolor[3] += (float) add;
+				lightcolor[0] += (float) (dl->color[0] * add);
+				lightcolor[1] += (float) (dl->color[1] * add);
+				lightcolor[2] += (float) (dl->color[2] * add);
 			}
 			else
 			{
