@@ -28,6 +28,15 @@ General:
   new means for opening the in-game console.
 - Fixed many printf format string errors.
 - Revised pak data checking.
+- Several cvar tweaks.
+- Made the load and connect commands to get rid of the menu or the console.
+- Updates to zone memory usage: a 256 KB secondary zone for static textures
+  (sec_zone) is now initialized, which is especially useful for the software
+  renderer and have its merits for the opengl version, too.
+- Revised several unsafe LoadStackFile and LoadBufFile usage.
+- Removed the useless net_vcr facility.
+- Tweaked the init sequence.
+- Changed the remnants of malloc usage into hunk or zone allocations.
 - Mac OS X: Ensured that the basedir always stays the same (fix was added
   in 1.4.1-rev1).
 
@@ -54,28 +63,40 @@ Console:
   single flag based procedure. Added macros for compatibility with the old
   api.
 - Revised the logging system, made all Con_Printf and Sys_Printf output to
-  be written into the logs forom the start. Added a -devlog command line
-  switch to enable logging of developer message evn when the developer cvar
+  be written into the logs from the start. Added a -devlog command line
+  switch to enable logging of developer message even when the developer cvar
   isn't set.
 
 Server:
 -------
+- Fixed the mission pack's doWhiteFlash server message: it used to affect the
+  local client only. Naturally, the recorded demos didn't carry the message
+  and the flash didn't appear, either. It works properly now.
 - Made the Hexen II dedicated server to exec not hexen.rc or config.cfg, but
   server.cfg if available. As an alternative, any config file can be exec'ed
   when starting the server, such as: "h2ded +exec myconfig.cfg"
 - Hexen II dedicated server now starts the demo1 map, if the server is still
   not active when initialization is complete.
-- Fixed net driver checks in Hexen II dedicated server: It seriously broken
-  in the 1.4.1 release and works properly now.
+- Fixed net driver checks in Hexen II dedicated server: It was broken in the
+  1.4.1 release and works properly now.
 
 Video:
 ------
 - Added 'apply changes' and 'reset changes' items to the video options menu.
 
+Software Renderer:
+------------------
+- Added ability to load external wal texture files instead of internal pixel
+  data of the brush model (depends on the new r_texture_external cvar).
+
 OpenGL Renderer:
 ----------------
+- Some speed-ups in the alias model drawing.
+- Fixed RGBA lighting.
 - Fixed bug that the array size for playertextures must be MAX_CLIENTS, but
   was hardcoded as 16.
+- Added ability to load external wal texture files instead of internal pixel
+  data of the brush model (depends on the new r_texture_external cvar).
 
 Sound:
 ------
@@ -107,12 +128,15 @@ Launcher:
 
 Utilities:
 ----------
+- Added the bsp2wal tool which extracts all texture data into hwal files.
+- Fixed the broken project path decision in qbsp. it doesn't scan for a maps
+  directory anymore.
+- Added a findfirst/findnext implementation to the common library.
 
 Other:
 ----------------------
-- Started a large scale attempt at improving const-correctness all over the
-  tree.
-- Updated inline commentaries.
 - Imported the latest xdelta-1.1 sources into the tree.
+- Started a large scale attempt at improving const-correctness.
+- Updated inline commentaries.
 - A lot of code clean-up all over the tree.
 
