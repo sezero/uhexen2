@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.39 2007-04-18 13:33:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.40 2007-04-28 15:31:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -624,6 +624,8 @@ static void CL_ParseModellist (void)
 	}
 
 	player_models[0] = (model_t *)Mod_FindName ("models/paladin.mdl");
+	// Note: old demo doesnt have necro and crusader classes. add
+	// a GAME_OLD_DEMO flag check ?
 	player_models[1] = (model_t *)Mod_FindName ("models/crusader.mdl");
 	player_models[2] = (model_t *)Mod_FindName ("models/necro.mdl");
 	player_models[3] = (model_t *)Mod_FindName ("models/assassin.mdl");

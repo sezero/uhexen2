@@ -2,7 +2,7 @@
 	config_file.c
 	hexen2 launcher config file handling
 
-	$Id: config_file.c,v 1.43 2007-04-16 13:06:56 sezero Exp $
+	$Id: config_file.c,v 1.44 2007-04-28 15:31:08 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -179,7 +179,7 @@ int read_config_file (void)
 						h2game = 0;
 					if (!h2game_names[h2game].available)
 						h2game = 0;
-					if (!(gameflags & GAME_REGISTERED))
+					if (!(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
 						h2game = 0;
 				}
 				else if (strstr(buff, "hwgame=") == buff)
@@ -189,7 +189,7 @@ int read_config_file (void)
 						hwgame = 0;
 					if (!hwgame_names[hwgame].available)
 						hwgame = 0;
-					if (!(gameflags & GAME_REGISTERED))
+					if (!(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
 						hwgame = 0;
 				}
 				else if (strstr(buff, "mp_support=") == buff)
@@ -197,7 +197,7 @@ int read_config_file (void)
 					mp_support = atoi(buff + 11);
 					if (mp_support != 0 && mp_support != 1)
 						mp_support = 0;
-					if (!(gameflags & GAME_PORTALS && gameflags & GAME_REGISTERED))
+					if (!(gameflags & GAME_PORTALS && gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
 						mp_support = 0;
 				}
 #endif

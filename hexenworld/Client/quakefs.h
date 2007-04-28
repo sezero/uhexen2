@@ -2,7 +2,7 @@
 	quakefs.h
 	Hexen II filesystem
 
-	$Id: quakefs.h,v 1.8 2007-04-18 13:33:50 sezero Exp $
+	$Id: quakefs.h,v 1.9 2007-04-28 15:31:07 sezero Exp $
 */
 
 #ifndef __QUAKEFS_H
@@ -20,9 +20,14 @@
 #define	GAME_PORTALS		(1 << 6)
 #define	GAME_HEXENWORLD		(1 << 7)
 
+/* FIXME:  data for Raven's interim releases, such
+   as 1.07, 1.08, 1.09 and 1.10 are not available.
+   Similarly, more detailed data are needed for the
+   oem (Matrox m3D bundle) version.		*/
 #define	GAME_OLD_CDROM0		(1 << 8)
 #define	GAME_OLD_CDROM1		(1 << 9)
 #define	GAME_OLD_DEMO		(1 << 10)
+#define	GAME_REGISTERED_OLD	(1 << 11)
 
 extern	char	*fs_basedir;
 extern	char	fs_gamedir[MAX_OSPATH];

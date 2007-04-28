@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.76 2007-04-11 08:12:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.77 2007-04-28 15:31:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1252,12 +1252,13 @@ static void Host_Class_f (void)
 	else
 		newClass = atof(Cmd_Args());
 
-//	if (!registered.value && !oem.value && (newClass == CLASS_CLERIC || newClass == CLASS_NECROMANCER))
-//	{
-//		Con_Printf("That class is not available in the demo version.\n");
-//		return;
-//	}
-
+#if ENABLE_OLD_DEMO
+	if (gameflags & GAME_OLD_DEMO && (newClass == CLASS_CLERIC || newClass == CLASS_NECROMANCER))
+	{
+		Con_Printf("That class is not available in this demo version.\n");
+		return;
+	}
+#endif	/* OLD_DEMO */
 	if ((newClass == CLASS_DEMON) && !(gameflags & GAME_PORTALS))
 	{
 		Con_Printf("That class is only available in the mission pack.\n");

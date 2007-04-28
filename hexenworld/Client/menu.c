@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.63 2007-04-28 07:48:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.64 2007-04-28 15:31:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2544,15 +2544,23 @@ static void M_Menu_Setup_f (void)
 	setup_top = setup_oldtop = (int)topcolor.value;
 	setup_bottom = setup_oldbottom = (int)bottomcolor.value;
 
+#if ENABLE_OLD_DEMO
+	if (gameflags & GAME_OLD_DEMO)
+	{
+		if (playerclass.value != CLASS_PALADIN && playerclass.value != CLASS_THEIF)
+			playerclass.value = CLASS_PALADIN;
+	}
+	else
+#endif	/* OLD_DEMO */
 	if (!(gameflags & GAME_PORTALS))
 	{
 		if (playerclass.value == CLASS_DEMON)
-			playerclass.value = 0;
+			playerclass.value = CLASS_PALADIN;
 	}
 	if (playerclass.value == CLASS_DWARF)
 	{
 		if (Q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
-			playerclass.value = 0;
+			playerclass.value = CLASS_PALADIN;
 	}
 
 	setup_class = playerclass.value;
@@ -2610,6 +2618,14 @@ static void M_Setup_Draw (void)
 
 	M_Print (64, 88, "Current Class: ");
 
+#if ENABLE_OLD_DEMO
+	if (gameflags & GAME_OLD_DEMO)
+	{
+		if (setup_class != CLASS_PALADIN && setup_class != CLASS_THEIF)
+			setup_class = CLASS_PALADIN;
+	}
+	else
+#endif	/* OLD_DEMO */
 	if (!(gameflags & GAME_PORTALS))
 	{
 		if (setup_class == CLASS_DEMON)
@@ -2630,7 +2646,6 @@ static void M_Setup_Draw (void)
 		case 3:
 		case 4:
 		case 5:
-			M_PrintWhite (88, 96, ClassNames[setup_class-1]);
 		case 6:
 			M_PrintWhite (88, 96, ClassNames[setup_class-1]);
 			break;
@@ -2732,12 +2747,17 @@ static void M_Setup_Key (int k)
 		}
 		else if (setup_cursor == 3)
 		{
+#if ENABLE_OLD_DEMO
+			if (gameflags & GAME_OLD_DEMO)
+			{
+			// FIXME: doesn't handle random class (setup_class == 0) feature.
+				setup_class = (setup_class == CLASS_PALADIN) ? CLASS_THEIF : CLASS_PALADIN;
+				break;
+			}
+#endif	/* OLD_DEMO */
 			setup_class--;
 			if (setup_class < 0)
 				setup_class = class_limit;
-
-//			if ((!registered.value && !oem.value) && setup_class >= 2 && setup_class <= 3)
-//				setup_class = 1;
 		}
 		else if (setup_cursor == 4)
 			setup_top = setup_top - 1;
@@ -2763,12 +2783,17 @@ forward:
 		}
 		else if (setup_cursor == 3)
 		{
+#if ENABLE_OLD_DEMO
+			if (gameflags & GAME_OLD_DEMO)
+			{
+			// FIXME: doesn't handle random class (setup_class == 0) feature.
+				setup_class = (setup_class == CLASS_PALADIN) ? CLASS_THEIF : CLASS_PALADIN;
+				break;
+			}
+#endif	/* OLD_DEMO */
 			setup_class++;
 			if (setup_class > class_limit)
 				setup_class = 0;
-
-//			if ((!registered.value && !oem.value) && setup_class >= 2 && setup_class <= 3)
-//				setup_class = 4;
 		}
 		else if (setup_cursor == 4)
 			setup_top = setup_top + 1;

@@ -2,7 +2,7 @@
 	h2option.h
 	Compile time options for Hexen II: Hammer of Thyrion
 
-	$Id: h2option.h,v 1.4 2007-04-11 16:22:48 sezero Exp $
+	$Id: h2option.h,v 1.5 2007-04-28 15:31:04 sezero Exp $
 */
 
 
@@ -34,6 +34,49 @@
    class in the old mission through the menu system.
    ================================================================== */
 #define	DISALLOW_DEMONESS_IN_OLD_GAME	1
+
+
+/* ====================================================================
+   ENABLE_OLD_RETAIL
+   Value  :	0 or 1
+   Affects:	filesystem init.
+
+   Allow running with the old, pre-1.11 (such as 1.03 cdrom) versions
+   of Hexen II.  The game actually seems to run fine with the original
+   cdrom version, but Raven's later patches provided several fixes for
+   map/scripting bugs. Therefore, running with the old version may or
+   may not result in unexpected gameplay behavior. Remember that you
+   must still use 1.11 or later (preferably Hammer of Thyrion provided)
+   progs.dat files: this only enables the use of un-patched pak files.
+   FYI, here are the maps that changed between 1.03 and 1.11 versions:
+   demo2, village1, village2, village3, meso1, meso8, egypt6, rider2c,
+   cath, tower, eidolon, ravdm1, ravdm3, ravdm5.  Here are the models
+   that changed:  assassin.mdl, ball.mdl, bonelump.mdl, scrbpwng.mdl.
+   Four sound files (spider: step1.wav, step2.wav and step3.wav,  and
+   weapons: ric2.wav) changed, too.
+   Default: disabled (0).
+   ================================================================== */
+#define	ENABLE_OLD_RETAIL		0
+
+
+/* ====================================================================
+   ENABLE_OLD_DEMO
+   Value  :	0 or 1
+   Affects:	filesystem init. other places.
+
+   Allow running with the old version (28.8.1997, v0.42? 1.07?) of the
+   Hexen II Demo: It was class-restricted (paladin and assassin only),
+   as a result it lacked certain models. It didn't include the demo3
+   level which the later 1.11 version of the demo had. Grep the source
+   for ENABLE_OLD_DEMO and GAME_OLD_DEMO for more info. Even with those
+   runtime checks, it still lacks certain models that our current,
+   1.11 and later version, progs require to be precached. Therefore
+   the old demo version doesn't run as it is.  Besides, it was given
+   out even before the retail version was released, so it may contain
+   map and scripting bugs.
+   Default: disabled (0). Enabling NOT recommended.
+   ================================================================== */
+#define	ENABLE_OLD_DEMO			0
 
 
 /* ====================================================================

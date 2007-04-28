@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.87 2007-04-28 07:48:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.88 2007-04-28 15:31:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -467,6 +467,8 @@ void M_ToggleMenu_f (void)
 	}
 }
 
+// Note: old version of demo has bigfont.lmp, not bigfont2.lmp
+// add a GAME_OLD_DEMO flag check around here ?
 //#define BIGCHAR_FONT_FILE	"gfx/menu/bigfont.lmp"
 #define	BIGCHAR_FONT_FILE	"gfx/menu/bigfont2.lmp"
 #define	BIGCHAR_WIDTH_FILE	"gfx/menu/fontsize.lmp"
@@ -940,22 +942,24 @@ static void M_Class_Key (int key)
 		break;
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
+#if ENABLE_OLD_DEMO
+		if (gameflags & GAME_OLD_DEMO)
+			m_class_cursor = (m_class_cursor == CLASS_PALADIN-1) ? CLASS_THEIF-1 : CLASS_PALADIN-1;
+		else
+#endif	/* OLD_DEMO */
 		if (++m_class_cursor >= f)
 			m_class_cursor = 0;
-
-//		if ((!registered.value && !oem.value) && m_class_cursor >= 1 && m_class_cursor <= 2)
-//			m_class_cursor = CLASS_ITEMS - 1;
-
 		break;
 
 	case K_UPARROW:
 		S_LocalSound ("raven/menu1.wav");
+#if ENABLE_OLD_DEMO
+		if (gameflags & GAME_OLD_DEMO)
+			m_class_cursor = (m_class_cursor == CLASS_PALADIN-1) ? CLASS_THEIF-1 : CLASS_PALADIN-1;
+		else
+#endif	/* OLD_DEMO */
 		if (--m_class_cursor < 0)
 			m_class_cursor = f - 1;
-
-//		if ((!registered.value && !oem.value) && m_class_cursor >= 1 && m_class_cursor <= 2)
-//			m_class_cursor = 0;
-
 		break;
 
 	case K_ENTER:
@@ -1523,6 +1527,14 @@ static void M_Menu_Setup_f (void)
 	setup_class = cl_playerclass.value;
 	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
 		setup_class = MAX_PLAYER_CLASS;
+#if ENABLE_OLD_DEMO
+	if (gameflags & GAME_OLD_DEMO)
+	{
+		if (setup_class != CLASS_PALADIN && setup_class != CLASS_THEIF)
+			setup_class = CLASS_PALADIN;
+	}
+	else
+#endif	/* OLD_DEMO */
 	if (!(gameflags & GAME_PORTALS))
 	{
 		if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES)
@@ -1613,13 +1625,18 @@ static void M_Setup_Key (int k)
 		S_LocalSound ("raven/menu3.wav");
 		if (setup_cursor == 2)
 		{
+#if ENABLE_OLD_DEMO
+			if (gameflags & GAME_OLD_DEMO)
+			{
+				setup_class = (setup_class == CLASS_PALADIN) ? CLASS_THEIF : CLASS_PALADIN;
+				break;
+			}
+#endif	/* OLD_DEMO */
 			setup_class--;
 			if (setup_class < 1)
 				setup_class = MAX_PLAYER_CLASS;
 			if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES && !(gameflags & GAME_PORTALS))
 				setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
-//			if ((!registered.value && !oem.value) && setup_class >= 2 && setup_class < MAX_PLAYER_CLASS)
-//				setup_class = 5;
 		}
 		else if (setup_cursor == 3)
 			setup_top = setup_top - 1;
@@ -1633,13 +1650,18 @@ forward:
 		S_LocalSound ("raven/menu3.wav");
 		if (setup_cursor == 2)
 		{
+#if ENABLE_OLD_DEMO
+			if (gameflags & GAME_OLD_DEMO)
+			{
+				setup_class = (setup_class == CLASS_PALADIN) ? CLASS_THEIF : CLASS_PALADIN;
+				break;
+			}
+#endif	/* OLD_DEMO */
 			setup_class++;
 			if (setup_class > MAX_PLAYER_CLASS)
 				setup_class = 1;
 			if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES && !(gameflags & GAME_PORTALS))
 				setup_class = 1;
-//			if ((!registered.value && !oem.value) && setup_class >= 2 && setup_class < MAX_PLAYER_CLASS)
-//				setup_class = MAX_PLAYER_CLASS;
 		}
 		else if (setup_cursor == 3)
 			setup_top = setup_top + 1;
@@ -3333,6 +3355,14 @@ static void M_Menu_LanConfig_f (void)
 	setup_class = cl_playerclass.value;
 	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
 		setup_class = MAX_PLAYER_CLASS;
+#if ENABLE_OLD_DEMO
+	if (gameflags & GAME_OLD_DEMO)
+	{
+		if (setup_class != CLASS_PALADIN && setup_class != CLASS_THEIF)
+			setup_class = CLASS_PALADIN;
+	}
+	else
+#endif	/* OLD_DEMO */
 	if (!(gameflags & GAME_PORTALS))
 	{
 		if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES)
@@ -3488,6 +3518,13 @@ static void M_LanConfig_Key (int key)
 			break;
 
 		S_LocalSound ("raven/menu3.wav");
+#if ENABLE_OLD_DEMO
+		if (gameflags & GAME_OLD_DEMO)
+		{
+			setup_class = (setup_class == CLASS_PALADIN-1) ? CLASS_THEIF-1 : CLASS_PALADIN-1;
+			break;
+		}
+#endif	/* OLD_DEMO */
 		setup_class--;
 		if (setup_class < 0)
 			setup_class = MAX_PLAYER_CLASS -1;
@@ -3500,6 +3537,13 @@ static void M_LanConfig_Key (int key)
 			break;
 
 		S_LocalSound ("raven/menu3.wav");
+#if ENABLE_OLD_DEMO
+		if (gameflags & GAME_OLD_DEMO)
+		{
+			setup_class = (setup_class == CLASS_PALADIN-1) ? CLASS_THEIF-1 : CLASS_PALADIN-1;
+			break;
+		}
+#endif	/* OLD_DEMO */
 		setup_class++;
 		if (setup_class > MAX_PLAYER_CLASS - 1)
 			setup_class = 0;
@@ -3698,6 +3742,14 @@ static void M_Menu_GameOptions_f (void)
 	setup_class = cl_playerclass.value;
 	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
 		setup_class = MAX_PLAYER_CLASS;
+#if ENABLE_OLD_DEMO
+	if (gameflags & GAME_OLD_DEMO)
+	{
+		if (setup_class != CLASS_PALADIN && setup_class != CLASS_THEIF)
+			setup_class = CLASS_PALADIN;
+	}
+	else
+#endif	/* OLD_DEMO */
 	if (!(gameflags & GAME_PORTALS))
 	{
 		if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES)
@@ -3869,11 +3921,14 @@ static void M_NetStart_Change (int dir)
 		break;
 
 	case 4:
+#if ENABLE_OLD_DEMO
+		if (gameflags & GAME_OLD_DEMO)
+		{
+			setup_class = (setup_class == CLASS_PALADIN-1) ? CLASS_THEIF-1 : CLASS_PALADIN-1;
+			break;
+		}
+#endif	/* OLD_DEMO */
 		setup_class += dir;
-//		if ((!registered.value && !oem.value) && setup_class == 1)
-//			setup_class = MAX_PLAYER_CLASS - 1;
-//		if ((!registered.value && !oem.value) && setup_class == 2)
-//			setup_class = 0;
 		if (setup_class < 0) 
 			setup_class = MAX_PLAYER_CLASS - 1;
 		if (!(gameflags & GAME_PORTALS))

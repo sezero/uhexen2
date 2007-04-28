@@ -2,7 +2,7 @@
 	interface.c
 	hexen2 launcher gtk+ interface
 
-	$Id: interface.c,v 1.53 2007-04-15 20:40:38 sezero Exp $
+	$Id: interface.c,v 1.54 2007-04-28 15:31:08 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -105,7 +105,7 @@ static int CheckStats (void)
 {
 // return broken installations
 #if !defined(DEMOBUILD)
-	if (gameflags & (GAME_INSTBAD1|GAME_INSTBAD2))
+	if (gameflags & (GAME_INSTBAD1|GAME_INSTBAD2|GAME_INSTBAD3))
 		return 2;
 	if (gameflags & GAME_INSTBAD0)
 		return 3;
@@ -221,30 +221,36 @@ static void report_status (GtkObject *Unused, PatchWindow_t *PatchWindow)
 	Log_printf ("PAK file health: %s", (gameflags & GAME_INSTBAD) ? "BAD. Reason(s):\n" : "OK ");
 	if (gameflags & GAME_INSTBAD)
 	{
+		if (gameflags & GAME_INSTBAD3)
+			Log_printf ("- " "Found an old, unsupported version of the demo.\n");
 		if (gameflags & GAME_INSTBAD2)
 			Log_printf ("- " "Found mixed data from incompatible versions.\n");
-		if (gameflags & GAME_OLD_DEMO)
-			Log_printf ("- " "Found an old, unsupported version of the demo.\n");
-		if (gameflags & GAME_INSTBAD0)
-			Log_printf ("- " "Retail pak files not patched to 1.11 version.\n");
 		if (gameflags & GAME_INSTBAD1)
 			Log_printf ("- " "Neither of retail, demo or oem versions found.\n");
+		if (gameflags & GAME_INSTBAD0)
+			Log_printf ("- " "Found pak files not patched to 1.11 version.\n");
+		if (gameflags & GAME_CANPATCH)
+			Log_printf ("- " "Applying the 1.11 pak patch should solve this.\n");
 	}
 	else
 	{
-		Log_printf ("(%s version.)\n", (gameflags & GAME_REGISTERED) ? "retail" : ((gameflags & GAME_OEM) ? "oem" : "demo"));
+		Log_printf ("(%s version.)\n", (gameflags & (GAME_DEMO|GAME_OLD_DEMO)) ? "demo" : ((gameflags & GAME_OEM) ? "oem" : "retail"));
+		if (gameflags & (GAME_REGISTERED_OLD|GAME_OLD_DEMO))
+			Log_printf ("Using old/unsupported 1.03 version pak files.\n");
+		if (gameflags & GAME_CANPATCH)
+			Log_printf ("Applying Raven's 1.11 pak patch is suggested.\n");
 	}
 
 	Log_printf ("Mission Pack: %s", (gameflags & GAME_PORTALS) ? "present " : "not found");
 	if (gameflags & GAME_PORTALS)
-		Log_printf ("%s", (gameflags & GAME_REGISTERED) ? "\n" : "(ignored: no retail base data)\n");
+		Log_printf ("%s", (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)) ? "\n" : "(ignored: no valid retail data)\n");
 	else
 		Log_printf ("\n");
 
 	Log_printf ("HexenWorld: %s\n", (gameflags & GAME_HEXENWORLD) ? "present " : "not found");
 
 #if defined(DEMOBUILD)
-	if (gameflags & (GAME_INSTBAD0|GAME_REGISTERED))
+	if (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD|GAME_CANPATCH))
 	{
 		Log_printf ("---------------------\n");
 		Log_printf ("This is a restricted build of Hexen II Launcher\n");
@@ -304,7 +310,7 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 		UpdateStats ();
 		Log_printf ("---------------------\n");
 		report_status (NULL, PatchWindow);
-		if (gameflags & GAME_REGISTERED)
+		if (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))
 		{	// activate the extra game options, if necessary
 			gtk_widget_set_sensitive (WGT_H2GAME, TRUE);
 			gtk_widget_set_sensitive (WGT_HWGAME, TRUE);
@@ -488,7 +494,7 @@ static void on_HEXEN2 (GtkButton *button, gpointer user_data)
 {
 	destiny = DEST_H2;
 #ifndef DEMOBUILD
-	if (gameflags & GAME_PORTALS && gameflags & GAME_REGISTERED)
+	if (gameflags & GAME_PORTALS && gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))
 		gtk_widget_set_sensitive (WGT_PORTALS, TRUE);
 	gtk_widget_set_sensitive (WGT_LANBUTTON, !h2game_names[h2game].is_botmatch);
 	gtk_widget_hide (WGT_HWGAME);
@@ -503,7 +509,7 @@ static void on_H2W (GtkButton *button, gpointer user_data)
 {
 	destiny = DEST_HW;
 #ifndef DEMOBUILD
-	if (gameflags & GAME_PORTALS && gameflags & GAME_REGISTERED)
+	if (gameflags & GAME_PORTALS && gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))
 		gtk_widget_set_sensitive (WGT_PORTALS, FALSE);
 	gtk_widget_hide (WGT_H2GAME);
 	gtk_widget_show (WGT_HWGAME);
@@ -906,7 +912,7 @@ static void create_window1 (void)
 	GTK_WIDGET_UNSET_FLAGS (WGT_PORTALS, GTK_CAN_FOCUS);
 	gtk_widget_set_size_request (WGT_PORTALS, 80, 24);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_PORTALS), mp_support);
-	if (destiny != DEST_H2 || !(gameflags & GAME_PORTALS && gameflags & GAME_REGISTERED))
+	if (destiny != DEST_H2 || !(gameflags & GAME_PORTALS && gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
 		gtk_widget_set_sensitive (WGT_PORTALS, FALSE);
 #endif	/* DEMOBUILD */
 
@@ -1049,7 +1055,7 @@ static void create_window1 (void)
 #ifndef DEMOBUILD
 	gtk_entry_set_editable (GTK_ENTRY(H2G_Entry), FALSE);
 	gtk_entry_set_text (GTK_ENTRY(H2G_Entry), h2game_names[h2game].name);
-	if (!(gameflags & GAME_REGISTERED))
+	if (!(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
 		gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
 	if (destiny == DEST_H2)
 	{
@@ -1084,7 +1090,7 @@ static void create_window1 (void)
 	gtk_widget_ref (HWG_Entry);
 	gtk_entry_set_editable (GTK_ENTRY(HWG_Entry), FALSE);
 	gtk_entry_set_text (GTK_ENTRY(HWG_Entry), hwgame_names[hwgame].name);
-	if (!(gameflags & GAME_REGISTERED))
+	if (!(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
 		gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
 	if (destiny == DEST_HW)
 	{

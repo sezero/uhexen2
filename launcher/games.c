@@ -2,7 +2,7 @@
 	games.c
 	hexen2 launcher, game installation scanning
 
-	$Id: games.c,v 1.2 2007-04-15 20:40:38 sezero Exp $
+	$Id: games.c,v 1.3 2007-04-28 15:31:08 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -84,13 +84,17 @@ static pakdata_t pakdata[] =
 };
 #define	MAX_PAKDATA	(sizeof(pakdata) / sizeof(pakdata[0]))
 
+/* FIXME:  data for Raven's interim releases, such
+   as 1.07, 1.08, 1.09 and 1.10 are not available.
+   Similarly, more detailed data are needed for the
+   oem (Matrox m3D bundle) version.		*/
 static pakdata_t old_pakdata[3] =
 {
 	{ 697,	53062, "data1"	},	/* pak0.pak, original cdrom (1.03) version	*/
 	{ 525,	47762, "data1"	},	/* pak1.pak, original cdrom (1.03) version	*/
-	{ 701,	20870, "data1"	}	/* pak0.pak, old 1.07 version of the demo.	*/
-			//	The old v1.07 demo on the ID Software ftp isn't supported.
-			//	(pak0.pak::progs.dat : 19267 crc, progheader crc : 14046).
+	{ 701,	20870, "data1"	}	/* pak0.pak, Raven's first version of the demo	*/
+			//	The old (28.8.1997, v0.42? 1.07?) demo is not supported:
+			//	pak0.pak::progs.dat : 19267 crc, progheader crc : 14046.
 };
 
 static void scan_pak_files (const char *packfile, int paknum)
@@ -320,15 +324,37 @@ void scan_game_installation (void)
 
 	if (gameflags & GAME_REGISTERED0 && gameflags & GAME_REGISTERED1)
 		gameflags |= GAME_REGISTERED;
-	if ( gameflags & (GAME_OLD_CDROM0|GAME_OLD_CDROM1) )
-		gameflags |= GAME_INSTBAD|GAME_INSTBAD0;
-	else
-	if ( !(gameflags & (GAME_REGISTERED|GAME_DEMO|GAME_OEM)) )
-		gameflags |= GAME_INSTBAD|GAME_INSTBAD1;
-	// these mix'n'matches would lead to failures: mark as bad
-	if ((gameflags & GAME_OEM && gameflags & (GAME_REGISTERED|GAME_DEMO|GAME_OLD_DEMO)) ||
+	if (gameflags & GAME_OLD_CDROM0 && gameflags & GAME_OLD_CDROM1)
+		gameflags |= GAME_REGISTERED_OLD;
+
+	if (gameflags & GAME_REGISTERED0 && gameflags & GAME_OLD_CDROM1)
+		gameflags |= GAME_CANPATCH0;
+	if (gameflags & GAME_REGISTERED1 && gameflags & GAME_OLD_CDROM0)
+		gameflags |= GAME_CANPATCH1;
+
+	if ((gameflags & GAME_OEM && gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD|GAME_DEMO|GAME_OLD_DEMO)) ||
 	    (gameflags & (GAME_REGISTERED1|GAME_OLD_CDROM1) && gameflags & (GAME_DEMO|GAME_OLD_DEMO|GAME_OEM)))
-		gameflags |= GAME_INSTBAD|GAME_INSTBAD2;
+		gameflags |= GAME_INSTBAD|GAME_INSTBAD2;	/* mix'n'match: bad	*/
+
+	if (!(gameflags & GAME_INSTBAD2) && (gameflags & GAME_REGISTERED_OLD || gameflags & (GAME_CANPATCH0|GAME_CANPATCH1)))
+		gameflags |= GAME_CANPATCH;	/* 1.11 pak patch can fix this thing	*/
+
+	if (gameflags & (GAME_CANPATCH0|GAME_CANPATCH1))
+		gameflags |= GAME_INSTBAD|GAME_INSTBAD2;	/* still a mix'n'match.	*/
+
+#if !ENABLE_OLD_DEMO
+	if (gameflags & GAME_OLD_DEMO)
+		gameflags |= GAME_INSTBAD|GAME_INSTBAD3;
+#endif	/* OLD_DEMO */
+#if !ENABLE_OLD_RETAIL
+	if (gameflags & (GAME_OLD_CDROM0|GAME_OLD_CDROM1))
+		gameflags |= GAME_INSTBAD|GAME_INSTBAD0;
+#endif	/* OLD_RETAIL */
+	if ( !(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD|GAME_DEMO|GAME_OLD_DEMO|GAME_OEM)) )
+	{
+		if ( !(gameflags |= GAME_CANPATCH) )
+			gameflags |= GAME_INSTBAD|GAME_INSTBAD1;	/* no proper Raven data */
+	}
 
 #if !defined(DEMOBUILD)
 	scan_h2_mods ();

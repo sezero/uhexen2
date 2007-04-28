@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.108 2007-04-22 14:19:06 sezero Exp $
+	$Id: gl_draw.c,v 1.109 2007-04-28 15:31:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -444,6 +444,8 @@ void Draw_Init (void)
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
 	// load the big menu font
+	// Note: old version of demo has bigfont.lmp, not bigfont2.lmp
+	// add a GAME_OLD_DEMO flag check ?
 	p = (qpic_t *)FS_LoadTempFile("gfx/menu/bigfont2.lmp");
 	Draw_PicCheckError (p, "gfx/menu/bigfont2.lmp");
 	SwapPic (p);

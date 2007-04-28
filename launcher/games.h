@@ -2,7 +2,7 @@
 	games.h
 	hexen2 launcher, game installation scanning
 
-	$Id: games.h,v 1.2 2007-04-15 20:40:38 sezero Exp $
+	$Id: games.h,v 1.3 2007-04-28 15:31:08 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -38,20 +38,30 @@
 #define	GAME_PORTALS		(1 << 6)
 #define	GAME_HEXENWORLD		(1 << 7)
 
+/* FIXME:  data for Raven's interim releases, such
+   as 1.07, 1.08, 1.09 and 1.10 are not available.
+   Similarly, more detailed data are needed for the
+   oem (Matrox m3D bundle) version.		*/
 #define	GAME_OLD_CDROM0		(1 << 8)
 #define	GAME_OLD_CDROM1		(1 << 9)
 #define	GAME_OLD_DEMO		(1 << 10)
+#define	GAME_REGISTERED_OLD	(1 << 11)
 
-#define	GAME_INSTBAD		(1 << 13)	/* bad data. reason flags below. */
-#define	GAME_INSTBAD0		(1 << 14)	/* un-patched data */
-#define	GAME_INSTBAD1		(1 << 15)	/* no valid data. */
-#define	GAME_INSTBAD2		(1 << 16)	/* mix'n'match data */
+#define	GAME_CANPATCH0		(1 << 13)
+#define	GAME_CANPATCH1		(1 << 14)
+#define	GAME_CANPATCH		(1 << 15)
+#define	GAME_INSTBAD		(1 << 16)	/* bad data. reason flags below. */
+#define	GAME_INSTBAD0		(1 << 17)	/* un-patched data */
+#define	GAME_INSTBAD1		(1 << 18)	/* no valid data. */
+#define	GAME_INSTBAD2		(1 << 19)	/* mix'n'match data */
+#define	GAME_INSTBAD3		(1 << 20)	/* other unsupported data */
 
-// see scan_binaries() before playing with these
-#define	HAVE_H2_BIN		(1 << 17)
-#define	HAVE_HW_BIN		(1 << 18)
-#define	HAVE_GLH2_BIN		(1 << 19)
-#define	HAVE_GLHW_BIN		(1 << 20)
+/* binary availability flags: see scan_binaries()
+   and CheckStats() before playing with these.	*/
+#define	HAVE_H2_BIN		(1 << 21)
+#define	HAVE_HW_BIN		(1 << 22)
+#define	HAVE_GLH2_BIN		(1 << 23)
+#define	HAVE_GLHW_BIN		(1 << 24)
 
 extern	unsigned int		gameflags;
 
@@ -79,6 +89,41 @@ extern	hwgame_t	hwgame_names[];
 extern	const int	MAX_H2GAMES;
 extern	const int	MAX_HWGAMES;
 #endif	/* DEMOBUILD */
+
+/* ====================================================================
+   ENABLE_OLD_RETAIL:	0 or 1
+   Allow running with the old, pre-1.11 (such as 1.03 cdrom) versions
+   of Hexen II.  The game actually seems to run fine with the original
+   cdrom version, but Raven's later patches provided several fixes for
+   map/scripting bugs. Therefore, running with the old version may or
+   may not result in unexpected gameplay behavior. Remember that you
+   must still use 1.11 or later (preferably Hammer of Thyrion provided)
+   progs.dat files: this only enables the use of un-patched pak files.
+   FYI, here are the maps that changed between 1.03 and 1.11 versions:
+   demo2, village1, village2, village3, meso1, meso8, egypt6, rider2c,
+   cath, tower, eidolon, ravdm1, ravdm3, ravdm5.  Here are the models
+   that changed:  assassin.mdl, ball.mdl, bonelump.mdl, scrbpwng.mdl.
+   Four sound files (spider: step1.wav, step2.wav and step3.wav,  and
+   weapons: ric2.wav) changed, too.
+   Default: disabled (0).
+   ================================================================== */
+#define	ENABLE_OLD_RETAIL		0
+
+/* ====================================================================
+   ENABLE_OLD_DEMO:	0 or 1
+   Allow running with the old version (28.8.1997, v0.42? 1.07?) of the
+   Hexen II Demo: It was class-restricted (paladin and assassin only),
+   as a result it lacked certain models. It didn't include the demo3
+   level which the later 1.11 version of the demo had. Grep the source
+   for ENABLE_OLD_DEMO and GAME_OLD_DEMO for more info. Even with those
+   runtime checks, it still lacks certain models that our current,
+   1.11 and later version, progs require to be precached. Therefore
+   the old demo version doesn't run as it is.  Besides, it was given
+   out even before the retail version was released, so it may contain
+   map and scripting bugs.
+   Default: disabled (0). Enabling NOT recommended.
+   ================================================================== */
+#define	ENABLE_OLD_DEMO			0
 
 void scan_game_installation (void);
 

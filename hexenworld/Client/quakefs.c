@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.20 2007-04-22 14:19:10 sezero Exp $
+	$Id: quakefs.c,v 1.21 2007-04-28 15:31:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -57,13 +57,17 @@ static pakdata_t pakdata[] =
 };
 #define	MAX_PAKDATA	(sizeof(pakdata) / sizeof(pakdata[0]))
 
+/* FIXME:  data for Raven's interim releases, such
+   as 1.07, 1.08, 1.09 and 1.10 are not available.
+   Similarly, more detailed data are needed for the
+   oem (Matrox m3D bundle) version.		*/
 static pakdata_t old_pakdata[3] =
 {
 	{ 697,	53062, "data1"	},	/* pak0.pak, original cdrom (1.03) version	*/
 	{ 525,	47762, "data1"	},	/* pak1.pak, original cdrom (1.03) version	*/
-	{ 701,	20870, "data1"	}	/* pak0.pak, old 1.07 version of the demo.	*/
-			//	The old v1.07 demo on the ID Software ftp isn't supported.
-			//	(pak0.pak::progs.dat : 19267 crc, progheader crc : 14046).
+	{ 701,	20870, "data1"	}	/* pak0.pak, Raven's first version of the demo	*/
+			//	The old (28.8.1997, v0.42? 1.07?) demo is not supported:
+			//	pak0.pak::progs.dat : 19267 crc, progheader crc : 14046.
 };
 
 // this graphic needs to be in the pak file to use registered features
@@ -949,7 +953,7 @@ size_t FS_OpenFile (const char *filename, FILE **file, qboolean override_pack)
 		{
 	// check a file in the directory tree
 #ifndef H2W
-			if (!(gameflags & GAME_REGISTERED) && !override_pack)
+			if (!(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)) && !override_pack)
 			{	// if not a registered version, don't ever go beyond base
 				if ( strchr (filename, '/') || strchr (filename,'\\'))
 					continue;
@@ -1343,7 +1347,7 @@ FS_Init
 void FS_Init (void)
 {
 	int		i;
-	char		temp[12];
+	char		temp[32];
 	qboolean	check_portals = false;
 	searchpath_t	*search_tmp, *next_tmp;
 
@@ -1391,25 +1395,28 @@ void FS_Init (void)
 
 	if (gameflags & GAME_REGISTERED0 && gameflags & GAME_REGISTERED1)
 		gameflags |= GAME_REGISTERED;
-	// check for bad installations (something cleaner here?)
-	if ((gameflags & GAME_OEM && gameflags & (GAME_REGISTERED|GAME_DEMO|GAME_OLD_DEMO)) ||
+	if (gameflags & GAME_OLD_CDROM0 && gameflags & GAME_OLD_CDROM1)
+		gameflags |= GAME_REGISTERED_OLD;
+	// check for bad installations (mix'n'match data):
+	if ((gameflags & GAME_REGISTERED0 && gameflags & GAME_OLD_CDROM1) ||
+	    (gameflags & GAME_REGISTERED1 && gameflags & GAME_OLD_CDROM0) ||
+	    (gameflags & GAME_OEM && gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD|GAME_DEMO|GAME_OLD_DEMO)) ||
 	    (gameflags & (GAME_REGISTERED1|GAME_OLD_CDROM1) && gameflags & (GAME_DEMO|GAME_OLD_DEMO|GAME_OEM)))
 		Sys_Error ("Bad Hexen II installation: mixed data from incompatible versions");
+#if !ENABLE_OLD_DEMO
 	if (gameflags & GAME_OLD_DEMO)
 		Sys_Error ("Old version of Hexen II demo isn't supported");
+#endif	/* OLD_DEMO */
+#if !ENABLE_OLD_RETAIL
 	// check if we have 1.11 versions of pak0.pak and pak1.pak
 	if (gameflags & (GAME_OLD_CDROM0|GAME_OLD_CDROM1))
 		Sys_Error ("You must patch your installation with Raven's 1.11 update");
-	if (gameflags & GAME_REGISTERED)
-	{
-		if (CheckRegistered() != 0)
-			Sys_Error ("Unable to verify retail version data.");
-	}
+#endif	/* OLD_RETAIL */
 
 	// finish the base filesystem setup
 	oem.flags &= ~CVAR_ROM;
 	registered.flags &= ~CVAR_ROM;
-	if (gameflags & GAME_REGISTERED)
+	if (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))
 	{
 		snprintf (temp, sizeof(temp), "registered");
 		Cvar_Set ("registered", "1");
@@ -1419,7 +1426,7 @@ void FS_Init (void)
 		snprintf (temp, sizeof(temp), "oem");
 		Cvar_Set ("oem", "1");
 	}
-	else if (gameflags & GAME_DEMO)
+	else if (gameflags & (GAME_DEMO|GAME_OLD_DEMO))
 	{
 		snprintf (temp, sizeof(temp), "demo");
 	}
@@ -1431,8 +1438,15 @@ void FS_Init (void)
 	oem.flags |= CVAR_ROM;
 	registered.flags |= CVAR_ROM;
 	Sys_Printf ("Playing %s version.\n", temp);
+	if (gameflags & (GAME_OLD_DEMO|GAME_REGISTERED_OLD))
+		Sys_Printf ("Using old/unsupported, pre-1.11 version pak files.\n");
+	if (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))
+	{
+		if (CheckRegistered() != 0)
+			Sys_Error ("Unable to verify retail version data.");
+	}
 #if !( defined(H2W) && defined(SERVERONLY) )
-	if (gameflags & GAME_MODIFIED && !(gameflags & GAME_REGISTERED))
+	if (gameflags & GAME_MODIFIED && !(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
 		Sys_Error ("You must have the full version of Hexen II to play modified games");
 #endif
 
@@ -1461,9 +1475,9 @@ void FS_Init (void)
 	}
 #endif
 
-//	if (check_portals && !(gameflags & GAME_REGISTERED))
+//	if (check_portals && !(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
 //		Sys_Error ("Portal of Praevus requires registered version of Hexen II");
-	if (check_portals && gameflags & GAME_REGISTERED)
+	if (check_portals && gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))
 	{
 		i = Hunk_LowMark ();
 		search_tmp = fs_searchpaths;
@@ -1518,7 +1532,7 @@ void FS_Init (void)
 	fs_base_searchpaths = fs_searchpaths;
 
 	i = COM_CheckParm ("-game");
-	if (i && !(gameflags & GAME_REGISTERED))
+	if (i && !(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
 	{
 	// only registered versions can do -game
 		Sys_Error ("You must have the full version of Hexen II to play modified games");
