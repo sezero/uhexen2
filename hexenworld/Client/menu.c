@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.62 2007-04-28 06:52:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.63 2007-04-28 07:48:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -729,7 +729,7 @@ static void M_AdjustSliders (int dir)
 		v_gamma.value -= dir * 0.05;
 		if (v_gamma.value < 0.5)
 			v_gamma.value = 0.5;
-		if (v_gamma.value > 1)
+		else if (v_gamma.value > 1)
 			v_gamma.value = 1;
 		Cvar_SetValue ("gamma", v_gamma.value);
 		break;
@@ -737,7 +737,7 @@ static void M_AdjustSliders (int dir)
 		sensitivity.value += dir * 0.5;
 		if (sensitivity.value < 1)
 			sensitivity.value = 1;
-		if (sensitivity.value > 11)
+		else if (sensitivity.value > 11)
 			sensitivity.value = 11;
 		Cvar_SetValue ("sensitivity", sensitivity.value);
 		break;
@@ -769,7 +769,7 @@ static void M_AdjustSliders (int dir)
 
 		if (bgmvolume.value < 0)
 			bgmvolume.value = 0;
-		if (bgmvolume.value > 1)
+		else if (bgmvolume.value > 1)
 			bgmvolume.value = 1;
 		Cvar_SetValue ("bgmvolume", bgmvolume.value);
 		break;
@@ -777,7 +777,7 @@ static void M_AdjustSliders (int dir)
 		sfxvolume.value += dir * 0.1;
 		if (sfxvolume.value < 0)
 			sfxvolume.value = 0;
-		if (sfxvolume.value > 1)
+		else if (sfxvolume.value > 1)
 			sfxvolume.value = 1;
 		Cvar_SetValue ("volume", sfxvolume.value);
 		break;
@@ -2730,7 +2730,7 @@ static void M_Setup_Key (int k)
 			}
 			cl.spectator = spectator.value;
 		}
-		if (setup_cursor == 3)
+		else if (setup_cursor == 3)
 		{
 			setup_class--;
 			if (setup_class < 0)
@@ -2739,9 +2739,9 @@ static void M_Setup_Key (int k)
 //			if ((!registered.value && !oem.value) && setup_class >= 2 && setup_class <= 3)
 //				setup_class = 1;
 		}
-		if (setup_cursor == 4)
+		else if (setup_cursor == 4)
 			setup_top = setup_top - 1;
-		if (setup_cursor == 5)
+		else if (setup_cursor == 5)
 			setup_bottom = setup_bottom - 1;
 		break;
 	case K_RIGHTARROW:
