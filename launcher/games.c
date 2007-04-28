@@ -2,7 +2,7 @@
 	games.c
 	hexen2 launcher, game installation scanning
 
-	$Id: games.c,v 1.3 2007-04-28 15:31:08 sezero Exp $
+	$Id: games.c,v 1.4 2007-04-28 15:49:16 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -352,7 +352,7 @@ void scan_game_installation (void)
 #endif	/* OLD_RETAIL */
 	if ( !(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD|GAME_DEMO|GAME_OLD_DEMO|GAME_OEM)) )
 	{
-		if ( !(gameflags |= GAME_CANPATCH) )
+		if ( !(gameflags & GAME_CANPATCH) )
 			gameflags |= GAME_INSTBAD|GAME_INSTBAD1;	/* no proper Raven data */
 	}
 
